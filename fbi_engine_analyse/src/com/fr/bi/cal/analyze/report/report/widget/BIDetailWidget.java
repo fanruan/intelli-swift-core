@@ -315,6 +315,7 @@ public class BIDetailWidget extends BIAbstractWidget {
 //    public String getWSThemeColor() {
 //        return data.getWSThemeColor();
 //    }
+    //todo 这边其实是有问题的，setting中 维度信息和样式不应该杂糅在一起
     public BIDetailSetting getSetting() {
         return data;
     }

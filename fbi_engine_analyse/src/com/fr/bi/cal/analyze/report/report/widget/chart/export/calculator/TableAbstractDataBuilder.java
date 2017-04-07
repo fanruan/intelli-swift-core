@@ -41,7 +41,8 @@ public abstract class TableAbstractDataBuilder implements IExcelDataBuilder {
     protected List<String> dimIds;
     protected List<String> targetIds;
     private boolean showColTotal = true;
-private static final String empty_value="--";
+    private static final String EMPTY_VALUE = "--";
+
     public TableAbstractDataBuilder(Map<Integer, List<JSONObject>> dimAndTar, JSONObject dataJSON) throws Exception {
         this.dataJSON = dataJSON;
         this.dimAndTar = dimAndTar;
@@ -318,7 +319,7 @@ private static final String empty_value="--";
             ob.setType("bi.page_table_cell");
             ob.setText(BITableExportDataHelper.getDimensionNameByID(dimAndTar, targetIds.get(i)));
 //            ob.setStyle("BI.SummaryTableHelper.getBodyStyles(self.themeColor, self.tableStyle, i)");
-            ob.setStyle(SummaryTableStyleHelper.getBodyStyles("",""));
+            ob.setStyle(SummaryTableStyleHelper.getBodyStyles("", ""));
             BIBasicTableItem child = new BIBasicTableItem();
             List<ITableItem> childItems = new ArrayList<ITableItem>();
             childItems.add(ob);
@@ -348,7 +349,7 @@ private static final String empty_value="--";
                         ob.setText("bi.target_body_normal_cell");
                         ob.setText(child.getJSONArray("s").getString(j));
 //                        ob.setStyle("BI.SummaryTableHelper.getBodyStyles(self.themeColor, self.tableStyle, j)");
-                        ob.setStyle(SummaryTableStyleHelper.getBodyStyles("",""));
+                        ob.setStyle(SummaryTableStyleHelper.getBodyStyles("", ""));
                         ob.setDId(targetIds.get(j));
                         ob.setClicked(new JSONArray().put(crossPV.getString(indexOB.getInt("cIndex"))));
                         List<ITableItem> tempChild = items.get(j).getChildren();
@@ -369,7 +370,7 @@ private static final String empty_value="--";
                     BIBasicTableItem ob = new BIBasicTableItem();
                     ob.setType("bi.target_body_normal_cell");
                     ob.setText(s.getString(j));
-                    ob.setStyle(SummaryTableStyleHelper.getBodyStyles("",""));
+                    ob.setStyle(SummaryTableStyleHelper.getBodyStyles("", ""));
                     ob.setDId(targetIds.get(j));
                     ob.setClicked(new JSONArray().put(crossPV.getString(indexOB.getInt("cIndex"))));
                     items.get(j).getChildren().get(0).getValue().put(ob.createJSON());
@@ -384,8 +385,9 @@ private static final String empty_value="--";
             JSONObject crossItem = crossItems.getJSONObject(i);
             if (crossItem.has("children")) {
                 JSONArray tempPV = new JSONArray();
+                boolean isValuesAvailable = crossItem.has("values");
                 if (crossItem.has("dId")) {
-                    if (crossItem.has("values") && BIJsonUtils.isArray(crossItem.getString("values"))) {
+                    if (isValuesAvailable && BIJsonUtils.isArray(crossItem.getString("values"))) {
                         for (int j = 0; j < crossItem.getJSONArray("values").length(); j++) {
                             JSONObject object = new JSONObject().put("dId", crossItem.getString("dId")).put("value", getClickedValue4Group(crossItem.getString("text"), crossItem.getString("dId")));
                             tempPV = pv.put(object);
@@ -405,7 +407,7 @@ private static final String empty_value="--";
                         pValues.put(object);
                     }
                 } else if (crossItem.has("dId")) {
-                    if (crossItem.has("values") && BIJsonUtils.isArray(crossItem.getString("values"))) {
+                    if (isValuesAvailable) {
                         for (int j = 0; j < crossItem.getJSONArray("values").length(); j++) {
                             JSONObject object = new JSONObject().put("dId", crossItem.getString("dId")).put("value", getClickedValue4Group(crossItem.getString("text"), crossItem.getString("dId")));
                             pValues.put(object);
@@ -457,7 +459,7 @@ private static final String empty_value="--";
         for (int i = 0; i < items.length(); i++) {
             String dName;
             if (targetIds.size() == 0) {
-                dName = empty_value;
+                dName = EMPTY_VALUE;
             } else {
                 dName = BITableExportDataHelper.getDimensionNameByID(dimAndTar, targetIds.get(i % (targetIds.size())));
             }
@@ -663,7 +665,7 @@ private static final String empty_value="--";
                 item.setType("bi.normal_expander_cell");
                 item.setText(child.getString("n"));
                 item.setDId(currDid);
-                item.setStyle(SummaryTableStyleHelper.getBodyStyles("",""));
+                item.setStyle(SummaryTableStyleHelper.getBodyStyles("", ""));
                 //展开情况——最后一层没有这个展开按钮
                 if (currentLayer < dimIds.size()) {
                     item.setNeedExpand(true);
