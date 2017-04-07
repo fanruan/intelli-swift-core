@@ -344,7 +344,7 @@ public class AnalysisBusiPackManager extends BISystemDataManager<SingleUserAnaly
     }
 
     @Override
-    public JSONObject saveAnalysisETLTable(long userId, String tableId, String newId, String tableName, String describe, String tableJSON) throws Exception {
+    public JSONObject saveAnalysisETLTable(final long userId, String tableId, String newId, String tableName, String describe, String tableJSON) throws Exception {
         AnalysisBusiTable table = null;
         CubeTableSource source = null;
         CubeTableSource oriSource = null;
