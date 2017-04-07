@@ -6,6 +6,7 @@ import com.fr.bi.stable.constant.Status;
 import com.fr.bi.stable.engine.CubeTask;
 
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -72,4 +73,17 @@ public interface BICubeManagerProvider {
     Set<String> getCubeGeneratingTableSourceIds(long userId);
 
     Set<String> getCubeWaiting2GenerateTableSourceIds(long userId);
+
+    boolean hasWaitingTables();
+
+    void addCustomTableTask2Queue(long userId, List<String> baseTableSourceIds,
+                                  List<Integer> updateTypes) throws InterruptedException;
+
+    CubeTask buildCompleteStuff(long userId);
+
+    CubeTask buildStaff(long userId);
+
+    Set<String> getAllCubeWaiting2GenerateTableSouceIds(long userId);
+
+    List<CubeBuildStuff> buildCustomTable(long userId, List<String> baseTableSourceIds, List<Integer> updateTypes);
 }
