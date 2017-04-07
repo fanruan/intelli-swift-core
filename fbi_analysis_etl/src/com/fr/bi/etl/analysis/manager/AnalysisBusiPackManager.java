@@ -27,7 +27,6 @@ import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.exception.BITableAbsentException;
 import com.fr.bi.stable.utils.program.BIStringUtils;
 import com.fr.bi.web.service.action.BISaveAnalysisETLTableAction;
-import com.fr.fs.control.UserControl;
 import com.fr.general.ComparatorUtils;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONException;
@@ -45,11 +44,9 @@ public class AnalysisBusiPackManager extends BISystemDataManager<SingleUserAnaly
 
     private static final String TAG = "AnalysisBusiPackManager";
     private static final long serialVersionUID = -5566625380376195712L;
-    private final long userdUserID = UserControl.getInstance().getSuperManagerID();
 
     public SingleUserAnalysisBusiPackManager getUserAnalysisBusiPackManager(long userId) {
         try {
-            userId = userdUserID;
             return getValue(userId);
         } catch (BIKeyAbsentException e) {
 
@@ -59,7 +56,6 @@ public class AnalysisBusiPackManager extends BISystemDataManager<SingleUserAnaly
 
     @Override
     public SingleUserAnalysisBusiPackManager constructUserManagerValue(Long userId) {
-        userId = userdUserID;
         return BIFactoryHelper.getObject(SingleUserAnalysisBusiPackManager.class, userId);
     }
 
@@ -75,7 +71,6 @@ public class AnalysisBusiPackManager extends BISystemDataManager<SingleUserAnaly
 
     @Override
     public Set<IBusinessPackageGetterService> getAllPackages(long userId) {
-        userId = userdUserID;
         Set<IBusinessPackageGetterService> result = new HashSet<IBusinessPackageGetterService>();
         for (BIBusinessPackage biBusinessPackage : getUserAnalysisBusiPackManager(userId).getAllPacks()) {
             result.add(biBusinessPackage);
@@ -231,7 +226,6 @@ public class AnalysisBusiPackManager extends BISystemDataManager<SingleUserAnaly
 
     @Override
     public JSONObject createPackageJSON(long userId) throws Exception {
-        userId = userdUserID;
         return getUserAnalysisBusiPackManager(userId).createJSON(Locale.CHINA);
     }
 
@@ -245,14 +239,12 @@ public class AnalysisBusiPackManager extends BISystemDataManager<SingleUserAnaly
 //            jo.join(adminJO);
 //        }
 //        return jo;
-        userId = userdUserID;
         return getUserAnalysisBusiPackManager(userId).createJSON(locale);
 
     }
 
     @Override
     public JSONObject createAnalysisPackageJSON(long userId, Locale locale) throws Exception {
-        userId = userdUserID;
         return getUserAnalysisBusiPackManager(userId).createJSON(locale);
     }
 
@@ -310,7 +302,6 @@ public class AnalysisBusiPackManager extends BISystemDataManager<SingleUserAnaly
 
     @Override
     public void removeTable(String tableId, long userId) {
-        userId = userdUserID;
         getUserAnalysisBusiPackManager(userId).removeTable(tableId);
     }
 
@@ -327,14 +318,12 @@ public class AnalysisBusiPackManager extends BISystemDataManager<SingleUserAnaly
 //        try{
 //            return getUserAnalysisBusiPackManager(UserControl.getInstance().getSuperManagerID()).getTable(tableId);
 //        } catch (BITableAbsentException e){
-        userId = userdUserID;
         return getUserAnalysisBusiPackManager(userId).getTable(tableId);
 //        }
     }
 
     @Override
     public Set<BusinessTable> getAllTables(long userId) {
-        userId = userdUserID;
         return getUserAnalysisBusiPackManager(userId).getAllTables();
     }
 
@@ -356,7 +345,6 @@ public class AnalysisBusiPackManager extends BISystemDataManager<SingleUserAnaly
 
     @Override
     public JSONObject saveAnalysisETLTable(long userId, String tableId, String newId, String tableName, String describe, String tableJSON) throws Exception {
-        userId = userdUserID;
         AnalysisBusiTable table = null;
         CubeTableSource source = null;
         CubeTableSource oriSource = null;
@@ -388,9 +376,9 @@ public class AnalysisBusiPackManager extends BISystemDataManager<SingleUserAnaly
         BIUserETLBusinessPackagePersistThreadHolder.getInstance().getBiBusinessPackagePersistThread().triggerWork(new BIBusinessPackagePersistThread.Action() {
             @Override
             public void work() {
-                BIAnalysisETLManagerCenter.getDataSourceManager().persistData(userdUserID);
-                BIAnalysisETLManagerCenter.getAliasManagerProvider().persistData(userdUserID);
-                BIAnalysisETLManagerCenter.getBusiPackManager().persistData(userdUserID);
+                BIAnalysisETLManagerCenter.getDataSourceManager().persistData(userId);
+                BIAnalysisETLManagerCenter.getAliasManagerProvider().persistData(userId);
+                BIAnalysisETLManagerCenter.getBusiPackManager().persistData(userId);
             }
         });
         JSONObject result = generateResultJson(userId, table, tableName);

@@ -26,6 +26,7 @@ import java.util.Set;
 public class AnalysisDataSourceManager extends BISystemDataManager<DataSourceCompoundService> implements BIAnalysisDataSourceManagerProvider {
     private static final long serialVersionUID = -6247770461074364282L;
     private final long usedUserId = UserControl.getInstance().getSuperManagerID();
+
     public DataSourceCompoundService getInstance() {
         try {
             return getValue(usedUserId);
@@ -99,7 +100,6 @@ public class AnalysisDataSourceManager extends BISystemDataManager<DataSourceCom
 
     @Override
     public void persistData(long userId) {
-        userId = usedUserId;
         persistUserData(userId);
     }
 
