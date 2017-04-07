@@ -106,7 +106,7 @@ BI.ETLDateFilterCombo = BI.inherit(BI.Single, {
 
         BI.createWidget({
             type: "bi.absolute",
-            element: this.element,
+            element: this,
             items: [{
                 el: this.combo,
                 top: 0,

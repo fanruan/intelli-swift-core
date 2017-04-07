@@ -44,7 +44,7 @@ BI.DynamicTab = FR.extend(BI.MVCWidget, {
         });
         BI.createWidget({
             type:"bi.vtape",
-            element: this.element,
+            element: this,
             items: [{
                 el: {
                     type: "bi.center",

@@ -50,8 +50,12 @@ BI.AnalysisETLOperatorAddColumnPane = BI.inherit(BI.MVCWidget, {
             self.controller.refreshOneConditionPaneViewIfNeeded();
         })
         this.oneConditionPane = BI.createWidget({
-            type : 'bi.vtape',
-            scrolly : false
+            type: "bi.button_group",
+            items: [],
+            layouts: [{
+                type : 'bi.vtape',
+                scrolly : false
+            }]
         })
         this.allColumnsPane = BI.createWidget({
             type:ETLCst.ANALYSIS_ETL_PAGES.ADD_COLUMN + ETLCst.ANALYSIS_TABLE_PANE + "_all",
@@ -68,7 +72,7 @@ BI.AnalysisETLOperatorAddColumnPane = BI.inherit(BI.MVCWidget, {
         })
         this.card = BI.createWidget({
             type:'bi.card',
-            element:this.element,
+            element: this,
             items:[{
                 cardName:this._constant.SINGLE_COLUMN_CARD,
                 el: {

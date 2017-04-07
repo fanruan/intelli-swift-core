@@ -7,7 +7,7 @@ BI.ETLGroupSortableList = BI.inherit(BI.Widget, {
         var self = this, o = this.options;
         self.list = BI.createWidget({
             type: "bi.sort_list",
-            element: this.element,
+            element: this,
             itemsCreator: function (op, callback) {
                 callback(BI.createItems(o.items, {
                     type : 'bi.multi_select_item'

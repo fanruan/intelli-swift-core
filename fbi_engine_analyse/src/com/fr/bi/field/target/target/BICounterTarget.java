@@ -3,7 +3,6 @@ package com.fr.bi.field.target.target;
 import com.finebi.cube.conf.field.BIBusinessField;
 import com.finebi.cube.conf.field.BusinessField;
 import com.finebi.cube.conf.table.BusinessTable;
-import com.finebi.cube.conf.table.BusinessTableHelper;
 import com.fr.bi.conf.utils.BIModuleUtils;
 import com.fr.bi.field.target.calculator.sum.CountCalculator;
 import com.fr.bi.stable.data.BIFieldID;

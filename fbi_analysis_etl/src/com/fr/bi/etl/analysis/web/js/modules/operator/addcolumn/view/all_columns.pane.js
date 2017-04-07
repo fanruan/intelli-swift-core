@@ -23,7 +23,7 @@ BI.AnalysisETLOperatorAllColumnsPane = FR.extend(BI.Widget, {
         })
         BI.createWidget({
             type:"bi.border",
-            element:this.element,
+            element: this,
             items:{
                 north: {
                     type:"bi.layout",

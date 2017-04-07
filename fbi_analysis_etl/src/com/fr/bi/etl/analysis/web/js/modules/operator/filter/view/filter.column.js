@@ -24,7 +24,7 @@ BI.AnalysisETLOperatorFilterSingleColumn = FR.extend(BI.Widget, {
 
         BI.createWidget({
             type:"bi.vertical",
-            element:this.element,
+            element: this,
             items :[{
                 type:"bi.center_adapt",
                 items :[{

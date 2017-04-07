@@ -127,7 +127,7 @@ BI.ETLFilterViewItemFactory = {
 
     _createDateRange : function (value){
         value = value || {};
-        return [this._getDateText(value.start) ,this._createItemByCls('less-equal-font') , BI.i18nText('BI-Value') , this._createItemByCls('less-equal-font'), this._getDateText(value.end)];
+        return [this._getDateText(value.start) ,this._createItemByCls('less-equal-font') , BI.i18nText('BI-Basic_Value') , this._createItemByCls('less-equal-font'), this._getDateText(value.end)];
     },
 
     _getDateText : function(d){

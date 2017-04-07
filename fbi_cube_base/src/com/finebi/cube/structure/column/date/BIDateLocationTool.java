@@ -65,4 +65,83 @@ public class BIDateLocationTool {
         }
 
     }
+    public static ICubeResourceLocation createYearMonth(ICubeResourceLocation location) {
+        try {
+            return location.buildChildLocation(BIColumnKey.DATA_SUB_TYPE_YEAR_MONTH);
+        } catch (Exception e) {
+            throw BINonValueUtils.beyondControl();
+        }
+    }
+
+    public static ICubeResourceLocation createYearSeacon(ICubeResourceLocation location) {
+        try {
+            return location.buildChildLocation(BIColumnKey.DATA_SUB_TYPE_YEAR_SEASON);
+        } catch (Exception e) {
+            throw BINonValueUtils.beyondControl();
+        }
+    }
+
+    public static ICubeResourceLocation createYearWeekNumber(ICubeResourceLocation location) {
+        try {
+            return location.buildChildLocation(BIColumnKey.DATA_SUB_TYPE_YEAR_WEEK_NUMBER);
+        } catch (Exception e) {
+            throw BINonValueUtils.beyondControl();
+        }
+    }
+
+    public static ICubeResourceLocation createYearMonthDayHour(ICubeResourceLocation location) {
+        try {
+            return location.buildChildLocation(BIColumnKey.DATA_SUB_TYPE_YEAR_MONTH_DAY_HOUR);
+        } catch (Exception e) {
+            throw BINonValueUtils.beyondControl();
+        }
+    }
+
+    public static ICubeResourceLocation createYearMonthDayHourMinute(ICubeResourceLocation location) {
+        try {
+            return location.buildChildLocation(BIColumnKey.DATA_SUB_TYPE_YEAR_MONTH_DAY_HOUR_MINUTE);
+        } catch (Exception e) {
+            throw BINonValueUtils.beyondControl();
+        }
+    }
+
+    public static ICubeResourceLocation createYearMonthDayHourMinuteSecond(ICubeResourceLocation location) {
+        try {
+            return location.buildChildLocation(BIColumnKey.DATA_SUB_TYPE_YEAR_MONTH_DAY_HOUR_MINUTE_SECOND);
+        } catch (Exception e) {
+            throw BINonValueUtils.beyondControl();
+        }
+    }
+
+    public static ICubeResourceLocation createHour(ICubeResourceLocation location) {
+        try {
+            return location.buildChildLocation(BIColumnKey.DATA_SUB_TYPE_HOUR);
+        } catch (Exception e) {
+            throw BINonValueUtils.beyondControl();
+        }
+    }
+
+    public static ICubeResourceLocation createMinute(ICubeResourceLocation location) {
+        try {
+            return location.buildChildLocation(BIColumnKey.DATA_SUB_TYPE_MINUTE);
+        } catch (Exception e) {
+            throw BINonValueUtils.beyondControl();
+        }
+    }
+
+    public static ICubeResourceLocation createSecond(ICubeResourceLocation location) {
+        try {
+            return location.buildChildLocation(BIColumnKey.DATA_SUB_TYPE_SECOND);
+        } catch (Exception e) {
+            throw BINonValueUtils.beyondControl();
+        }
+    }
+
+    public static ICubeResourceLocation createWeekNumber(ICubeResourceLocation location) {
+        try {
+            return location.buildChildLocation(BIColumnKey.DATA_SUB_TYPE_WEEKNUMBER);
+        } catch (Exception e) {
+            throw BINonValueUtils.beyondControl();
+        }
+    }
 }

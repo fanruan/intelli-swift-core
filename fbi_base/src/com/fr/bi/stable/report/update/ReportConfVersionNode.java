@@ -1,9 +1,6 @@
 package com.fr.bi.stable.report.update;
 
-import com.finebi.cube.common.log.BILoggerFactory;
-import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.report.update.operation.ReportUpdateOperation;
-import com.fr.general.ComparatorUtils;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
 
@@ -13,42 +10,46 @@ import java.util.List;
  * Created by kary on 2017/2/4.
  */
 public class ReportConfVersionNode implements Comparable<ReportConfVersionNode> {
-    private ReportVersion version;
+    private ReportVersionEnum version;
     private List<ReportUpdateOperation> reportOperations;
 
-    public ReportConfVersionNode(ReportVersion version, List<ReportUpdateOperation> reportOperation) {
+    public ReportConfVersionNode(ReportVersionEnum version, List<ReportUpdateOperation> reportOperation) {
         this.version = version;
         this.reportOperations = reportOperation;
     }
 
-    public boolean versionCompare(JSONObject settings) {
-        try {
-            return ComparatorUtils.equals(settings.getString("version"), version.getVersionName());
-        } catch (JSONException e) {
-            BILoggerFactory.getLogger(this.getClass()).error(e.getMessage(), e);
-        }
-        return false;
-    }
-
-    public ReportVersion getVersion() {
+    public ReportVersionEnum getVersion() {
         return version;
     }
 
-    public void update(JSONObject settings) throws JSONException {
+    public JSONObject update(JSONObject settings) throws JSONException {
         for (ReportUpdateOperation operation : reportOperations) {
-            operation.update(settings);
+            settings = operation.update(settings);
         }
-    }
-
-    public boolean isLatestVersion() {
-        return ComparatorUtils.equals(version, BIReportConstant.VERSION);
+        return settings;
     }
 
     @Override
     public int compareTo(ReportConfVersionNode o) {
-        if (this.getVersion().getVersionSort() < o.getVersion().getVersionSort()) {
+
+        if (parseValue(this.getVersion().getVersion()) < parseValue(o.getVersion().getVersion())) {
             return -1;
         }
         return 1;
     }
+
+    private double parseValue(String version) {
+        String rs = "";
+        String[] split = version.split("\\.");
+        if (split.length >= 2) {
+            rs += split[0] + ".";
+            for (int i = 1; i < split.length; i++) {
+                rs += split[i];
+            }
+        } else {
+            rs = version;
+        }
+        return Double.valueOf(rs);
+    }
+
 }

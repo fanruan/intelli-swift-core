@@ -10,11 +10,19 @@ import com.fr.json.JSONObject;
  */
 public class VanFunnelWidget extends VanChartWidget{
 
-    public JSONArray createSeries(JSONObject data) throws JSONException {
-        return this.createXYSeries(data);
+    protected String categoryKey(){
+        return "name";
+    }
+
+    protected String valueKey(){
+        return "value";
     }
 
     public String getSeriesType(String dimensionID){
         return "funnel";
+    }
+
+    protected String getTooltipIdentifier(){
+        return NAME + SERIES + VALUE;
     }
 }

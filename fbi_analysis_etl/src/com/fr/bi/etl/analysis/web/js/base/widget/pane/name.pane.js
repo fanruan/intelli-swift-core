@@ -60,7 +60,7 @@ BI.ETLNamePane = BI.inherit(BI.Widget, {
         BI.createWidget({
             type: "bi.vertical",
             cls: "bi-etl-rename-center",
-            element: this.element,
+            element: this,
             items: [{
                 type: "bi.left",
                 items: [{

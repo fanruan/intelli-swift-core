@@ -39,6 +39,13 @@ BI.HistoryTabColltroller = BI.inherit(BI.MVCController, {
         return model.getIndexByValue(v);
     },
 
+    /**
+     * historyTab中实际保存的items(不包括新增的正在编辑的那个)
+     */
+    getSavedItems: function(widget, model){
+        return model.get(ETLCst.ITEMS);
+    },
+
     checkBeforeSave : function (table, widget, model) {
         var v = this._getTabButtonGroup(widget).getValue()[0];
         var position = model.getIndexByValue(v);
@@ -265,8 +272,10 @@ BI.HistoryTabColltroller = BI.inherit(BI.MVCController, {
             var pos = model.getIndexByValue(v);
             if(pos === 0 && widget.options.allHistory === false) {
                 BI.Msg.alert(BI.i18nText('BI-Cannot-Delete'),  BI.i18nText('BI-Cannot-Delete-Last'))
-            }else{
+            }else if(model.get(ETLCst.ITEMS).length - 1 !== pos){
                 confirmCombo.showView();
+            }else{
+                self._removeSheet(v, widget, model)
             }
         });
         var invalidIndex = model.get('invalidIndex');

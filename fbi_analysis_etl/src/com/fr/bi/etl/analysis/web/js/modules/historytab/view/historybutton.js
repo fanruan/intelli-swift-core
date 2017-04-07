@@ -44,7 +44,7 @@ BI.HistoryButton =  FR.extend(BI.BasicButton, {
         this.deleteButton = BI.createWidget(o.deleteButton);
 
         BI.createWidget({
-            element:this.element,
+            element: this,
             type:"bi.htape",
             height:this._constant.height,
             items : [{

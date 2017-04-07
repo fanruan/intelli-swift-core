@@ -6,6 +6,7 @@ import com.fr.bi.stable.utils.file.BIFileUtils;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
 
+import java.io.FileNotFoundException;
 import java.util.Iterator;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -22,14 +23,18 @@ public class ReportKeyChangeOperation extends ReportCamelOperation {
     }
 
     public ReportKeyChangeOperation() {
-    }
-
-    protected String updateKey(String str) {
         try {
             if (null == keys) {
                 keys = readKeyJson();
                 formatValues();
             }
+        } catch (Exception e) {
+            BILoggerFactory.getLogger(this.getClass()).error(e.getMessage(), e);
+        }
+    }
+
+    protected String updateKey(String str) {
+        try {
             return keys.has(str) ? keys.getString(str) : str;
         } catch (Exception e) {
             BILoggerFactory.getLogger(this.getClass()).error(e.getMessage(), e);
@@ -42,8 +47,10 @@ public class ReportKeyChangeOperation extends ReportCamelOperation {
         Iterator iterator = keys.keys();
         while (iterator.hasNext()) {
             String key = (String) iterator.next();
-            String originalKey = keys.getString(key);
-            finalJson.put(patterValues(originalKey), key);
+            String[] originalKeys = patterValues(keys.getString(key)).split("/");
+            for (String oriKey : originalKeys) {
+                finalJson.put(oriKey, key);
+            }
         }
         keys = finalJson;
     }
@@ -57,15 +64,22 @@ public class ReportKeyChangeOperation extends ReportCamelOperation {
         return originalKey;
     }
 
-    private JSONObject readKeyJson() throws JSONException, ClassNotFoundException {
-        String path = FRContext.getCurrentEnv().getPath();
-        List<String> files = BIFileUtils.getListFiles(path, "json", true);
-        for (String filePath : files) {
-            if (filePath.endsWith("keys.json")) {
-                String s = BIFileUtils.readFile(filePath);
-                return new JSONObject(s);
+    private JSONObject readKeyJson() throws JSONException, ClassNotFoundException, FileNotFoundException {
+        String path = null;
+        try {
+            path = FRContext.getCurrentEnv().getPath();
+        } catch (Exception e) {
+            throw new FileNotFoundException();
+        }
+        if (null!=path) {
+            List<String> files = BIFileUtils.getListFiles(path, "json", true);
+            for (String filePath : files) {
+                if (filePath.endsWith("keys.json")) {
+                    String s = BIFileUtils.readFile(filePath);
+                    return new JSONObject(s);
+                }
             }
         }
-        throw new ClassNotFoundException();
+        throw new FileNotFoundException();
     }
 }

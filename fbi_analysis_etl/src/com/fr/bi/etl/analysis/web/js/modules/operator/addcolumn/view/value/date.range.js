@@ -29,7 +29,7 @@ BI.ETLSingleGroupDateRangePane = BI.inherit(BI.Single, {
             text: "-"
         });
         BI.createWidget({
-            element: self.element,
+            element: self,
             type: "bi.center",
             hgap: 15,
             height: this._constants.height,
@@ -55,7 +55,7 @@ BI.ETLSingleGroupDateRangePane = BI.inherit(BI.Single, {
         });
         BI.createWidget({
             type: "bi.horizontal_auto",
-            element: this.element,
+            element: this,
             items: [
                 self.label
             ]

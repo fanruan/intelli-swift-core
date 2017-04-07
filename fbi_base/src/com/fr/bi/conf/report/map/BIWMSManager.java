@@ -2,8 +2,6 @@ package com.fr.bi.conf.report.map;
 
 import com.fr.file.XMLFileManager;
 import com.fr.general.ComparatorUtils;
-import com.fr.json.JSONArray;
-import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
 import com.fr.stable.StringUtils;
 import com.fr.stable.xml.XMLPrintWriter;
@@ -18,7 +16,9 @@ import java.util.Map;
  */
 public class BIWMSManager extends XMLFileManager {
     private static final String XML_TAG = "BIWMSManager";
-    private Map<String, JSONObject> gisMap =  new HashMap<String, JSONObject>();
+
+    private HashMap<String, MapInfo> nameMap = new HashMap<String, MapInfo>();
+
     private static BIWMSManager manager;
 
     public static BIWMSManager getInstance() {
@@ -40,29 +40,25 @@ public class BIWMSManager extends XMLFileManager {
     public void readXML(final XMLableReader reader) {
         if (reader.isChildNode()) {
             if (ComparatorUtils.equals(reader.getTagName(), "gis")) {
+
                 String name = reader.getAttrAsString("name", StringUtils.EMPTY);
+
+               final MapInfo info = new MapInfo();
+
+                nameMap.put(name, info);
+
                 String type = reader.getAttrAsString("type", StringUtils.EMPTY);
-                final JSONObject info = new JSONObject();
-                final JSONArray ja = new JSONArray();
-                try {
-                    info.put("type", type).put("wmsLayer", ja);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-                gisMap.put(name, info);
+                info.setType(type);
+
                 reader.readXMLObject(new XMLReadable() {
                     @Override
                     public void readXML(XMLableReader xmLableReader) {
                         if(xmLableReader.isChildNode()){
                             if(ComparatorUtils.equals(xmLableReader.getTagName(), "wmsLayer")){
-                                ja.put(xmLableReader.getElementValue());
+                                info.addWmsLayer(xmLableReader.getElementValue());
                             }
                             if(ComparatorUtils.equals(xmLableReader.getTagName(), "url")){
-                                try {
-                                    info.put("url", xmLableReader.getElementValue());
-                                } catch (JSONException e) {
-                                    e.printStackTrace();
-                                }
+                                info.setUrl(xmLableReader.getElementValue());
                             }
                         }
                     }
@@ -77,10 +73,14 @@ public class BIWMSManager extends XMLFileManager {
     }
 
     public void clear(){
-        gisMap.clear();
+        nameMap.clear();
     }
 
-    public Map<String, JSONObject> getWMSInfo(){
-        return gisMap;
+    public Map<String, MapInfo> getWMSInfo(){
+        return nameMap;
+    }
+
+    public JSONObject getWMSInfo(String key){
+        return nameMap.get(key).toJSON();
     }
 }
