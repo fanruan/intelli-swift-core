@@ -68,6 +68,9 @@ public abstract class VanChartWidget extends TableWidget {
     private HashMap<String, JSONArray> dimensionIdMap = new HashMap<String, JSONArray>();
     private HashMap<String, String> regionIdMap = new HashMap<String, String>();
 
+    //存下每个指标和纬度的最大最小和平均值
+    private HashMap<String, ArrayList<Double>> idValueMap = new HashMap<String, ArrayList<Double>>();
+
     public abstract String getSeriesType(String dimensionID);
 
     public JSONArray createSeries(JSONObject data) throws Exception{
@@ -498,53 +501,68 @@ public abstract class VanChartWidget extends TableWidget {
     }
 
     protected JSONArray createXYSeries(JSONObject originData) throws Exception{
+        return originData.has("t") ? this.createSeriesWithTop(originData) : this.createSeriesWithChildren(originData);
+    }
+
+    private JSONArray createSeriesWithTop(JSONObject originData) throws Exception{
         JSONArray series = JSONArray.create();
         String[] targetIDs = this.getUsedTargetID();
         String categoryKey = this.categoryKey(), valueKey = this.valueKey();
-        if (originData.has("t")) {//有列表头，多系列
-            JSONObject top = originData.getJSONObject("t"), left = originData.getJSONObject("l");
-            JSONArray topC = top.getJSONArray("c"), leftC = left.getJSONArray("c");
-            boolean isStacked = this.isStacked(targetIDs[0]);
-            double numberScale = this.numberScale(targetIDs[0]);
-            for (int i = 0; i < topC.length(); i++) {
-                JSONObject tObj = topC.getJSONObject(i);
-                String name = tObj.getString("n");
-                JSONArray data = JSONArray.create();
-                for (int j = 0; j < leftC.length(); j++) {
-                    JSONObject lObj = leftC.getJSONObject(j);
-                    String x = lObj.getString("n");
-                    double y = lObj.getJSONObject("s").getJSONArray("c").getJSONObject(i).getJSONArray("s").getDouble(0);
-                    data.put(JSONObject.create().put(categoryKey, x).put(valueKey, y / numberScale));
-                }
-                JSONObject ser = JSONObject.create().put("data", data).put("name", name)
-                        .put("type", this.getSeriesType(targetIDs[0])).put("dimensionID", targetIDs[0]);
-                if(isStacked){
-                    ser.put("stacked", targetIDs[0]);
-                }
-                series.put(ser);
+        ArrayList<Double> valueList = new ArrayList<Double>();
+        JSONObject top = originData.getJSONObject("t"), left = originData.getJSONObject("l");
+        JSONArray topC = top.getJSONArray("c"), leftC = left.getJSONArray("c");
+        boolean isStacked = this.isStacked(targetIDs[0]);
+        double numberScale = this.numberScale(targetIDs[0]);
+        for (int i = 0; i < topC.length(); i++) {
+            JSONObject tObj = topC.getJSONObject(i);
+            String name = tObj.getString("n");
+            JSONArray data = JSONArray.create();
+            for (int j = 0; j < leftC.length(); j++) {
+                JSONObject lObj = leftC.getJSONObject(j);
+                String x = lObj.getString("n");
+                double y = lObj.getJSONObject("s").getJSONArray("c").getJSONObject(i).getJSONArray("s").getDouble(0)/numberScale;
+                data.put(JSONObject.create().put(categoryKey, x).put(valueKey, y));
+                valueList.add(y);
             }
-        }else if(originData.has("c")){
-            JSONArray children = originData.getJSONArray("c");
-            for(int i = 0, len = targetIDs.length; i < len; i++){
-                String id = targetIDs[i], type = this.getSeriesType(id), stackedKey = this.getStackedKey(id);
-                int yAxis = this.yAxisIndex(id);
-                double numberScale = this.numberScale(id);
-                JSONArray data = JSONArray.create();
-                for (int j = 0, count = children.length(); j < count; j++) {
-                    JSONObject lObj = children.getJSONObject(j);
-                    String x = lObj.getString("n");
-                    double y = lObj.getJSONArray("s").getDouble(i) / numberScale;
-                    data.put(JSONObject.create().put(categoryKey, x).put(valueKey, y));
-                }
-                JSONObject ser = JSONObject.create().put("data", data).put("name", id)
-                        .put("type", type).put("yAxis", yAxis).put("dimensionID", id);
-                if(this.isStacked(id)){
-                    ser.put("stacked", stackedKey);
-                }
-                series.put(ser);
+            JSONObject ser = JSONObject.create().put("data", data).put("name", name)
+                    .put("type", this.getSeriesType(targetIDs[0])).put("dimensionID", targetIDs[0]);
+            if(isStacked){
+                ser.put("stacked", targetIDs[0]);
             }
+            series.put(ser);
         }
+        this.idValueMap.put(targetIDs[0], valueList);
 
+        return series;
+    }
+
+    private JSONArray createSeriesWithChildren(JSONObject originData) throws Exception{
+        JSONArray series = JSONArray.create();
+        String[] targetIDs = this.getUsedTargetID();
+        String categoryKey = this.categoryKey(), valueKey = this.valueKey();
+        JSONArray children = originData.getJSONArray("c");
+        for(int i = 0, len = targetIDs.length; i < len; i++){
+            String id = targetIDs[i], type = this.getSeriesType(id), stackedKey = this.getStackedKey(id);
+            int yAxis = this.yAxisIndex(id);
+            ArrayList<Double> valueList = new ArrayList<Double>();
+            double numberScale = this.numberScale(id);
+            JSONArray data = JSONArray.create();
+            for (int j = 0, count = children.length(); j < count; j++) {
+                JSONObject lObj = children.getJSONObject(j);
+                String x = lObj.getString("n");
+                JSONArray targetValues = lObj.getJSONArray("s");
+                double y = targetValues.isNull(i) ? 0 : targetValues.getDouble(i) / numberScale;
+                data.put(JSONObject.create().put(categoryKey, x).put(valueKey, y));
+                valueList.add(y);
+            }
+            JSONObject ser = JSONObject.create().put("data", data).put("name", id)
+                    .put("type", type).put("yAxis", yAxis).put("dimensionID", id);
+            if(this.isStacked(id)){
+                ser.put("stacked", stackedKey);
+            }
+            series.put(ser);
+            this.idValueMap.put(id, valueList);
+        }
         return series;
     }
 
@@ -622,6 +640,13 @@ public abstract class VanChartWidget extends TableWidget {
 
     protected String getRequestURL(){
         return this.requestURL;
+    }
+
+    public Double[] getValuesByID(String id){
+        if(this.idValueMap.containsKey(id)){
+            return this.idValueMap.get(id).toArray(new Double[0]);
+        }
+        return new Double[0];
     }
 
 }

@@ -33,7 +33,7 @@ import java.util.jar.JarFile;
  * Created by Connery on 2015/12/8.
  */
 public class BIClassUtils {
-    private static BILogger logger = BILoggerFactory.getLogger(BIClassUtils.class);
+    private static BILogger LOGGER = BILoggerFactory.getLogger(BIClassUtils.class);
 
     public static Set<Class<?>> getClasses(String pack) {
 
@@ -48,14 +48,14 @@ public class BIClassUtils {
         try {
             dirs = getAggregatedClassLoader(BIClassUtils.class.getClassLoader()).getResources(
                     packageDirName);
-            logger.info("get the package:" + packageDirName);
+            LOGGER.info("get the package:" + packageDirName);
             if (!dirs.hasMoreElements()) {
-                logger.info("using classloader can't get the package resource :" + packageDirName + "" +
+                LOGGER.info("using classloader can't get the package resource :" + packageDirName + "" +
                         ", so read jar file according the WEB-INF location ");
                 try {
                     classes.addAll(getReSourceManual(recursive, packageName, packageDirName));
                 } catch (FileNotFoundException fileError) {
-                    logger.info(fileError.getMessage() + " , use specific server jar location in config", fileError);
+                    LOGGER.info(fileError.getMessage() + " , use specific server jar location in config", fileError);
                     classes.addAll(getResourceByConfig(recursive, packageName, packageDirName));
                 } catch (Exception e) {
                     throw BINonValueUtils.beyondControl(e.getMessage(), e);
@@ -63,12 +63,12 @@ public class BIClassUtils {
             } else {
                 while (dirs.hasMoreElements()) {
                     URL url = dirs.nextElement();
-                    logger.info("scan the URL:" + url.toString());
+                    LOGGER.info("scan the URL:" + url.toString());
                     classes.addAll(getResourceFromLoader(recursive, packageName, packageDirName, url));
                 }
             }
         } catch (IOException e) {
-            BILogDelegate.errorDelegate(e.getMessage(), e);
+            LOGGER.error(e.getMessage(), e);
         }
         return classes;
     }
@@ -112,7 +112,7 @@ public class BIClassUtils {
     private static Set<Class<?>> getReSourceManual(boolean recursive, String packageName, String packageDirName) throws Exception {
 
         String webInfoPath = FRContext.getCurrentEnv().getPath();
-        logger.info("scan the path:" + webInfoPath);
+        LOGGER.info("scan the path:" + webInfoPath);
         File webInfFile = new File(webInfoPath);
         if (webInfFile.exists()) {
             File[] childFiles = webInfFile.listFiles(new FilenameFilter() {
@@ -129,7 +129,7 @@ public class BIClassUtils {
                 throw new FileNotFoundException("The folder :" + webInfFile.getPath() + "lib not found");
             }
         } else {
-            logger.warn("The basic WEB-INF not found", new FileNotFoundException());
+            LOGGER.warn("The basic WEB-INF not found", new FileNotFoundException());
             return new HashSet<Class<?>>();
         }
     }
@@ -142,7 +142,7 @@ public class BIClassUtils {
                 try {
                     classes.addAll(scanJar(recursive, packageName, packageDirName, new JarFile(jarFile)));
                 } catch (Exception e) {
-                    logger.error(e.getMessage(), e);
+                    LOGGER.error(e.getMessage(), e);
                     continue;
                 }
             }
@@ -156,7 +156,7 @@ public class BIClassUtils {
             jar = ((JarURLConnection) url.openConnection()).getJarFile();
             return scanJar(recursive, packageName, packageDirName, jar);
         } catch (IOException e) {
-            BILogDelegate.errorDelegate(e.getMessage(), e);
+            LOGGER.error(e.getMessage(), e);
         }
         return new HashSet<Class<?>>();
     }
@@ -184,7 +184,7 @@ public class BIClassUtils {
         while (entries.hasMoreElements()) {
             JarEntry entry = entries.nextElement();
             String name = entry.getName();
-            logger.debug("scan class:" + name);
+            LOGGER.debug("scan class:" + name);
             // 如果是以/开头的
             if (name.charAt(0) == '/') {
                 // 获取后面的字符串
@@ -203,7 +203,7 @@ public class BIClassUtils {
                     // 如果是一个.class文件 而且不是目录
                     if (name.endsWith(".class") && !entry.isDirectory()) {
                         // 去掉后面的".class" 获取真正的类名
-                        String className = name.substring(packageName.length() + 1, name.length() - 6);
+                        String className = name.substring(packageName.length() + new Integer(1).intValue(), name.length() - new Integer(6).intValue());
                         processClass(classes, packageName, className);
                     }
                 }
@@ -257,8 +257,8 @@ public class BIClassUtils {
                         classes);
             } else {
                 // 如果是java类文件 去掉后面的.class 只留下类名
-                String className = file.getName().substring(0,
-                        file.getName().length() - 6);
+                String className = file.getName().substring(new Integer(0).intValue(),
+                        file.getName().length() - new Integer(6).intValue());
                 processClass(classes, packageName, className);
             }
         }
