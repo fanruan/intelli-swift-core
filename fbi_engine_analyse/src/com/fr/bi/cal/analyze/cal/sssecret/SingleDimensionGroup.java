@@ -119,9 +119,7 @@ public class SingleDimensionGroup extends ExecutorPartner implements ILazyExecut
             return new DimensionIterator() {
                 @Override
                 public void remove() {
-
                 }
-
                 @Override
                 public int getCurrentGroup() {
                     return 0;

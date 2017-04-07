@@ -58,75 +58,9 @@ public class NumberDimensionCalculator extends AbstractDimensionCalculator {
             ICubeColumnIndexReader getter = loader.getTableIndex(usedTableSource).loadGroup(usedColumnKey, getRelationList(), useRealData, groupLimit);
             //数值类型计算空值索引start
             final GroupValueIndex nullGroupValueIndex = loader.getTableIndex(usedTableSource).getNullGroupValueIndex(usedColumnKey);
-//            CubeLinkedHashMap newGetter = new CubeLinkedHashMap();
-//            newGetter.put("", nullGroupValueIndex);
-//            final Iterator iter = getter.iterator();
-//            while (iter.hasNext()) {
-//                Map.Entry entry = (Map.Entry) iter.next();
-//                Object key = entry.getKey();
-//                if (key == null) {
-//                    continue;
-//                }
-//                newGetter.put(key, entry.getValue());
-//            }
-            //数值类型计算空值索引end
             getter = dimension.getGroup().createGroupedMap(getter);
             if (useRealData && isNoGroup() && getSortType() != BIReportConstant.SORT.CUSTOM) {
-                final Iterator iterator = (getSortType() != BIReportConstant.SORT.DESC
-                        && getSortType() != BIReportConstant.SORT.NUMBER_DESC) ? getter.iterator() : getter.previousIterator();
-                final FinalBoolean usedNullIndex = new FinalBoolean();
-                usedNullIndex.flag = false;
-                return new Iterator() {
-                    @Override
-                    public boolean hasNext() {
-                        if (iterator.hasNext()) {
-                            return true;
-                        }
-                        if (!usedNullIndex.flag) {
-                            usedNullIndex.flag = true;
-                            return true;
-                        }
-                        return false;
-                    }
-
-                    @Override
-                    public Object next() {
-                        if (usedNullIndex.flag) {
-                            return new Map.Entry() {
-                                @Override
-                                public Object getKey() {
-                                    return null;
-                                }
-
-                                @Override
-                                public Object getValue() {
-                                    return nullGroupValueIndex;
-                                }
-
-                                @Override
-                                public Object setValue(Object value) {
-                                    return null;
-                                }
-
-                                @Override
-                                public boolean equals(Object o) {
-                                    return false;
-                                }
-
-                                @Override
-                                public int hashCode() {
-                                    return 0;
-                                }
-                            };
-                        }
-                        return iterator.next();
-                    }
-
-                    @Override
-                    public void remove() {
-
-                    }
-                };
+                return getIterator(getter, nullGroupValueIndex);
             }
             return dimension.getSort().createGroupedMap(getter).iterator();
         }
@@ -138,6 +72,64 @@ public class NumberDimensionCalculator extends AbstractDimensionCalculator {
         }
         return getSortType() != BIReportConstant.SORT.NUMBER_DESC ? customMap.iterator() : customMap.previousIterator();
 
+    }
+
+    private Iterator getIterator(ICubeColumnIndexReader getter, final GroupValueIndex nullGroupValueIndex) {
+        final Iterator iterator = (getSortType() != BIReportConstant.SORT.DESC
+                && getSortType() != BIReportConstant.SORT.NUMBER_DESC) ? getter.iterator() : getter.previousIterator();
+        final FinalBoolean usedNullIndex = new FinalBoolean();
+        usedNullIndex.flag = false;
+        return new Iterator() {
+            @Override
+            public boolean hasNext() {
+                if (iterator.hasNext()) {
+                    return true;
+                }
+                if (!usedNullIndex.flag) {
+                    usedNullIndex.flag = true;
+                    return true;
+                }
+                return false;
+            }
+
+            @Override
+            public Object next() {
+                if (usedNullIndex.flag) {
+                    return new Map.Entry() {
+                        @Override
+                        public Object getKey() {
+                            return null;
+                        }
+
+                        @Override
+                        public Object getValue() {
+                            return nullGroupValueIndex;
+                        }
+
+                        @Override
+                        public Object setValue(Object value) {
+                            return null;
+                        }
+
+                        @Override
+                        public boolean equals(Object o) {
+                            return false;
+                        }
+
+                        @Override
+                        public int hashCode() {
+                            return 0;
+                        }
+                    };
+                }
+                return iterator.next();
+            }
+
+            @Override
+            public void remove() {
+
+            }
+        };
     }
 
     private void initCustomMap(ICubeDataLoader loader, boolean useRealData, int groupLimit) {
