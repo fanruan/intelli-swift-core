@@ -1,8 +1,39 @@
 /**
  * Created by windy on 2017/4/5.
  */
-BI.AnalysisETLOperatorFilterPaneModel = BI.inherit(BI.MVCModel, {
+BI.AnalysisETLOperatorFilterPaneModel = BI.inherit(BI.OB, {
 
+    //这get, set, getValue适配原有的结构三个方法，会删
+    get: function(key){
+        return this.options[key];
+    },
+
+    set: function(key, value){
+        this.options[key] = value;
+    },
+
+    getValue: function(key){
+        return BI.deepClone(this.options[key]);
+    },
+
+    update : function () {
+        return BI.deepClone(this._toJSON(this.options));
+    },
+
+    _init: function () {
+        BI.AnalysisETLOperatorFilterPaneModel.superclass._init.apply(this, arguments);
+        var o = this.options;
+        this.populate(o.model);
+    },
+
+    _toJSON : function (attr) {
+        var ob = {};
+        var self  = this;
+        BI.each(attr, function (idx, item) {
+            ob[idx] = BI.isNotNull(item) && BI.isFunction(item.toJSON) ? self._toJSON(item.toJSON()) :item;
+        })
+        return ob;
+    },
 
     check : function () {
         var self = this;
@@ -47,6 +78,11 @@ BI.AnalysisETLOperatorFilterPaneModel = BI.inherit(BI.MVCModel, {
             }
         })
         return [invalid, msg]
+    },
+
+
+    populate: function(model){
+        this.options = BI.extend(this.options, model);
     }
 })
 ETLCst.OPERATOR_MODEL_CLASS[ETLCst.ANALYSIS_ETL_PAGES.FILTER] =  BI.AnalysisETLOperatorFilterPaneModel
