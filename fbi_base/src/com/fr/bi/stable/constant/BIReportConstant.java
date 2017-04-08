@@ -610,4 +610,12 @@ public class BIReportConstant {
         public static final int EDIT = 1;
         public static final int VIEW = 2;
     }
+
+    public static final class RES_STATUS {
+        public static final int NORMAL = 1;
+        public static final int ERROR = 2;
+        public static final int DATA_MISS = 3;
+        public static final int NO_AUTHORITY = 4;
+        public static final int NO_DATA = 5;
+    }
 }
