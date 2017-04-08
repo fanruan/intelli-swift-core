@@ -356,7 +356,7 @@ public abstract class BISummaryWidget extends BIAbstractWidget {
                         String fieldId = srcJo.getString("fieldId");
                         dimensionMap.put(targetId, BIModuleUtils.getBusinessFieldById(new BIFieldID(fieldId)));
                     }
-                    if (targetRelationJo.has("target_relation")) {
+                    if (targetRelationJo.has("targetRelation")) {
                         JSONArray dimensionAndTargetPathsJa = this.createDimensionAndTargetPathsJa(dimensionId, targetId, dims, targetRelationJo);
                         //多对多时纬度的关联关系
                         if (dimensionAndTargetPathsJa.length() > 1) {
@@ -386,7 +386,7 @@ public abstract class BISummaryWidget extends BIAbstractWidget {
             relationMap = new LinkedHashMap<String, List<BITableRelation>>();
             relationsMap.put(dimensionId, relationMap);
         }
-        JSONArray dimensionAndTargetPathsJa = targetRelationJo.getJSONArray("target_relation");
+        JSONArray dimensionAndTargetPathsJa = targetRelationJo.getJSONArray("targetRelation");
         List<BITableRelation> relationList = new ArrayList<BITableRelation>();
         //指标的关联关系
         JSONArray targetRelationsJa = dimensionAndTargetPathsJa.getJSONArray(targetRelationIndex);
@@ -408,7 +408,7 @@ public abstract class BISummaryWidget extends BIAbstractWidget {
                 relationMap.put(targetId, relationList);
             }
         } else {
-            if (ComparatorUtils.equals(BIModuleUtils.getBusinessFieldById(new BIFieldID(primaryFieldId)).getTableBelongTo(), BIModuleUtils.getBusinessFieldById(new BIFieldID(foreignFieldId)).getTableBelongTo()) && !srcJo.has("target_relation")) {
+            if (ComparatorUtils.equals(BIModuleUtils.getBusinessFieldById(new BIFieldID(primaryFieldId)).getTableBelongTo(), BIModuleUtils.getBusinessFieldById(new BIFieldID(foreignFieldId)).getTableBelongTo()) && !srcJo.has("targetRelation")) {
                 relationMap.put(targetId, relationList);
             } else {
                 for (int j = 0; j < targetRelationsJa.length(); j++) {
