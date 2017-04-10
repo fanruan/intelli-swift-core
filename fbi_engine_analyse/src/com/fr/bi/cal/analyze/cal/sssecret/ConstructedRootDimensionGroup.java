@@ -28,39 +28,57 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public class ConstructedRootDimensionGroup extends RootDimensionGroup {
     private MetricMergeResult rootNode;
-    private NameObject targetSort;
+    private NameObject[] dimensionTargetSort;
     private List<CalCalculator> calCalculators;
     private BIDimension[] filterDimension;
     private boolean setIndex;
     private boolean hasInSumMetric;
-    private int sortType;
-    private TargetAndKey sortTarget;
+    private int[] sortType;
+    private TargetGettingKey[] sortTargetKey;
 
     public ConstructedRootDimensionGroup() {
     }
 
-    public ConstructedRootDimensionGroup(List<MetricGroupInfo> metricGroupInfoList, MergeIteratorCreator[] mergeIteratorCreators, BISession session, boolean useRealData,
-                                         NameObject targetSort, List<CalCalculator> calCalculators, BIDimension[] filterDimension, boolean setIndex, boolean hasInSumMetric) {
-        super(metricGroupInfoList, mergeIteratorCreators, session, useRealData);
+    public ConstructedRootDimensionGroup(List<MetricGroupInfo> metricGroupInfoList, MergeIteratorCreator[] mergeIteratorCreators, int sumLength, BISession session, boolean useRealData,
+                                         NameObject[] dimensionTargetSort, List<CalCalculator> calCalculators, BIDimension[] filterDimension, boolean setIndex, boolean hasInSumMetric) {
+        super(metricGroupInfoList, mergeIteratorCreators, sumLength, session, useRealData);
         this.calCalculators = calCalculators;
         this.filterDimension = filterDimension;
-        this.setIndex = setIndex;
-        this.targetSort = targetSort;
+        this.setIndex = setIndex || hasInSumMetric;
+        this.dimensionTargetSort = dimensionTargetSort;
         this.hasInSumMetric = hasInSumMetric;
         initSort();
         initRootNode();
     }
 
     private void initSort() {
-        if (targetSort != null) {
-            sortType = (Integer) targetSort.getObject();
-            for (int i = 0; i < metricGroupInfoList.size(); i++) {
-                MetricGroupInfo info = metricGroupInfoList.get(i);
-                List<TargetAndKey> list = info.getSummaryList();
-                for (TargetAndKey targetAndKey : list) {
-                    if (ComparatorUtils.equals(targetAndKey.getTargetId(), targetSort.getName())) {
-                        sortTarget = targetAndKey;
-                        return;
+        sortType = new int[dimensionTargetSort.length];
+        sortTargetKey = new TargetGettingKey[dimensionTargetSort.length];
+        for (int i = 0; i < dimensionTargetSort.length; i++){
+            NameObject targetSort = dimensionTargetSort[i];
+            if (targetSort != null) {
+                sortType[i] = (Integer) targetSort.getObject();
+                boolean find = false;
+                for (int j = 0; j < metricGroupInfoList.size(); j++) {
+                    MetricGroupInfo info = metricGroupInfoList.get(j);
+                    List<TargetAndKey> list = info.getSummaryList();
+                    for (TargetAndKey targetAndKey : list) {
+                        if (ComparatorUtils.equals(targetAndKey.getTargetId(), targetSort.getName())) {
+                            sortTargetKey[i] = targetAndKey.getTargetGettingKey();
+                            find = true;
+                            break;
+                        }
+                    }
+                    if (find){
+                        break;
+                    }
+                }
+                //再到计算指标里面找下
+                if (sortTargetKey[i] == null){
+                    for (CalCalculator calCalculator :calCalculators){
+                        if (ComparatorUtils.equals(calCalculator.createTargetGettingKey().getTargetName(), targetSort.getName())){
+                            sortTargetKey[i] = calCalculator.createTargetGettingKey();
+                        }
                     }
                 }
             }
@@ -68,7 +86,7 @@ public class ConstructedRootDimensionGroup extends RootDimensionGroup {
     }
 
     private void initRootNode() {
-        rootNode = new MetricMergeResult(null, root.getGvis());
+        rootNode = new MetricMergeResult(null, sumLength, root.getGvis());
         if (columns.length == 0) {
             return;
         }
@@ -88,7 +106,7 @@ public class ConstructedRootDimensionGroup extends RootDimensionGroup {
         for (CalCalculator calCalculator : calCalculators) {
             calculatorMap.put(calCalculator.getName(), calCalculator);
         }
-        if (filterDimension != null || targetSort != null) {
+        if (filterDimension != null || hasTargetSort()) {
             filterAndSort(rootNode, 0, calculatorMap);
             if (filterDimension != null) {
                 reSum();
@@ -96,6 +114,7 @@ public class ConstructedRootDimensionGroup extends RootDimensionGroup {
             sumCalculateMetrics();
         }
         root.setChildren(rootNode.getChilds());
+        root.setSummaryValue(rootNode.getSummaryValue());
         if (setIndex){
             root.setGvis(rootNode.getGvis());
             for (int i = 0; i < metricGroupInfoList.size(); i++){
@@ -104,21 +123,53 @@ public class ConstructedRootDimensionGroup extends RootDimensionGroup {
         }
     }
 
+    private boolean hasTargetSort(){
+        for (NameObject object : dimensionTargetSort){
+            if (object != null){
+                return true;
+            }
+        }
+        return false;
+    }
+
     //过滤排序一起撸了，省得遍历两次node结构，有需要可以改成多线程的
     private void filterAndSort(MetricMergeResult node, int deep, Map<String, TargetCalculator> calculatorMap) {
         if (deep < rowSize) {
             DimensionFilter filter = filterDimension == null ? null : filterDimension[deep].getFilter();
-            if (filter != null || targetSort != null) {
+            if (filter != null || dimensionTargetSort[deep] != null) {
                 List<Node> children = filterAndSort(node.getChilds(), deep, calculatorMap);
                 node.clearChildren();
-                for (Node n : children) {
-                    node.addChild(n);
+                if (children == null || children.isEmpty()){
+                    clearEmptyNode(node);
+                } else {
+                    for (Node n : children) {
+                        node.addChild(n);
+                    }
                 }
             }
             for (Node n : node.getChilds()) {
                 filterAndSort((MetricMergeResult) n, deep + 1, calculatorMap);
             }
         }
+    }
+
+    private void clearEmptyNode(Node node) {
+        Node parent = node.getParent();
+        if (parent != null){
+            List<Node> children = parent.getChilds();
+            parent.clearChildren();
+            for (Node child : children){
+                if (child != node){
+                    parent.addChild(child);
+                }
+            }
+            if (parent.getChildLength() == 0){
+                clearEmptyNode(parent);
+            }
+        } else {
+
+        }
+
     }
 
     private List<Node> filterAndSort(List<Node> children, int deep, Map<String, TargetCalculator> calculatorMap) {
@@ -133,12 +184,12 @@ public class ConstructedRootDimensionGroup extends RootDimensionGroup {
                 }
             }
         }
-        if (targetSort != null) {
+        if (dimensionTargetSort[deep] != null) {
             Collections.sort(results, new Comparator<Node>() {
                 @Override
                 public int compare(Node o1, Node o2) {
-                    Number v1 = o1.getSummaryValue(sortTarget.getTargetGettingKey());
-                    Number v2 = o2.getSummaryValue(sortTarget.getTargetGettingKey());
+                    Number v1 = o1.getSummaryValue(sortTargetKey[deep]);
+                    Number v2 = o2.getSummaryValue(sortTargetKey[deep]);
                     if (v1 == v2) {
                         return 0;
                     }
@@ -152,7 +203,7 @@ public class ConstructedRootDimensionGroup extends RootDimensionGroup {
                         return 0;
                     }
                     boolean v = v1.doubleValue() < v2.doubleValue();
-                    return (sortType == BIReportConstant.SORT.ASC) == v ? -1 : 1;
+                    return (sortType[deep] == BIReportConstant.SORT.ASC) == v ? -1 : 1;
                 }
             });
         }
@@ -266,6 +317,7 @@ public class ConstructedRootDimensionGroup extends RootDimensionGroup {
                     }
                 }
             }
+            MultiThreadManagerImpl.getInstance().awaitExecutor(session);
             sum(rootNode);
         }
 
@@ -359,7 +411,7 @@ public class ConstructedRootDimensionGroup extends RootDimensionGroup {
     public IRootDimensionGroup createClonedRoot() {
         ConstructedRootDimensionGroup root = (ConstructedRootDimensionGroup) super.createClonedRoot();
         root.rootNode = rootNode;
-        root.targetSort = targetSort;
+        root.dimensionTargetSort = dimensionTargetSort;
         root.calCalculators = calCalculators;
         root.filterDimension = filterDimension;
         return root;

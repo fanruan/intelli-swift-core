@@ -61,4 +61,12 @@ public class DateDimensionCalculator extends AbstractDimensionCalculator {
             return BIBaseConstant.COMPARATOR.COMPARABLE.ASC;
         }
     }
+
+    @Override
+    public Object convertToOriginValue(String stringValue) {
+        if (getGroup().getType() == BIReportConstant.GROUP.YMD){
+            return Long.parseLong(stringValue);
+        }
+        return Integer.parseInt(stringValue);
+    }
 }

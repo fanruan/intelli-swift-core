@@ -46,7 +46,7 @@ public class AllNodeMergeIterator implements Iterator<MetricMergeResult> {
 
     private List<CalCalculator> formulaCalculator;
 
-    public AllNodeMergeIterator(MergeIterator mergeIterator, DimensionFilter filter, NameObject targetSort, List<TargetAndKey>[] metricsToCalculate, Map<String, TargetCalculator> calculatedMap, ICubeTableService[] tis, ICubeDataLoader loader, BIMultiThreadExecutor executor, List<CalCalculator> formulaCalculator) {
+    public AllNodeMergeIterator(MergeIterator mergeIterator, int sumLength, DimensionFilter filter, NameObject targetSort, List<TargetAndKey>[] metricsToCalculate, Map<String, TargetCalculator> calculatedMap, ICubeTableService[] tis, ICubeDataLoader loader, BIMultiThreadExecutor executor, List<CalCalculator> formulaCalculator) {
         this.mergeIterator = mergeIterator;
         this.filter = filter;
         this.metricsToCalculate = metricsToCalculate;
@@ -58,11 +58,11 @@ public class AllNodeMergeIterator implements Iterator<MetricMergeResult> {
         this.formulaCalculator = formulaCalculator;
         this.releaseGVI = mergeIterator.canRelease();
         mergeIterator.setReturnResultWithGroupIndex(this.releaseGVI);
-        initIter();
+        initIter(sumLength);
     }
 
-    private void initIter() {
-        root = new Node(null);
+    private void initIter(int sumLength) {
+        root = new Node(sumLength);
         count = new AtomicInteger(0);
         //不是多线程，或者没有指标都表示线程池的计算已经结束
         completed = getMetricsSize() == 0 || executor == null;

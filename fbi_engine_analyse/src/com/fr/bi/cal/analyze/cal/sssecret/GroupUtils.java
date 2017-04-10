@@ -19,12 +19,12 @@ import java.util.List;
 public class GroupUtils {
 
 
-    public static NodeAndPageInfo createNextPageMergeNode(NodeDimensionIterator iterator, Operator op, boolean showSum, boolean shouldSetIndex) {
-        return createMergePageNode(iterator, op, showSum, shouldSetIndex);
+    public static NodeAndPageInfo createNextPageMergeNode(NodeDimensionIterator iterator, Operator op, boolean showSum, boolean shouldSetIndex, int sumLength) {
+        return createMergePageNode(iterator, op, showSum, shouldSetIndex, sumLength);
     }
 
-    private static NodeAndPageInfo createMergePageNode(NodeDimensionIterator iterator, Operator op, boolean showSum, boolean shouldSetIndex) {
-        Node node = new Node();
+    private static NodeAndPageInfo createMergePageNode(NodeDimensionIterator iterator, Operator op, boolean showSum, boolean shouldSetIndex, int sumLength) {
+        Node node = new Node(sumLength);
         GroupConnectionValue gc = iterator.next();
         if (gc == null) {
             return new NodeAndPageInfo(node, iterator);
@@ -38,7 +38,7 @@ public class GroupUtils {
                 Object data = gcvChild.getData();
                 Node child = parent.getChild(data);
                 if (child == null) {
-                    child = new Node(data);
+                    child = new Node(data, sumLength);
                     if (data != BIBaseConstant.EMPTY_NODE_DATA || deep != 0) {
                         parent.addChild(child);
                     }

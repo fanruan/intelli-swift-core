@@ -59,7 +59,7 @@ public class FormulaValueFilter extends AbstractDimensionFilter {
 
     public Object calCalculateTarget(SummaryContainer node, Map<String, TargetCalculator> targetsMap) {
         String formula = "=" + expression;
-        return BIFormularUtils.getCalculatorValue(c, formula, BICollectionUtils.mergeMapByKeyMapValue(targetsMap, node.getSummaryValue()));
+        return BIFormularUtils.getCalculatorValue(c, formula, BICollectionUtils.createMapByKeyMapValue(targetsMap, node.getSummaryValue()));
     }
 
     @Override

@@ -9,8 +9,11 @@ public class SortToolUtils {
     private static final int RESORT_COUNT = 1<<12;
 
     public static SortTool getSortTool(int groupSize, int gviCount){
-        if (gviCount <= 1){
+        if (gviCount == 1){
             return SortTool.DIRECT;
+        }
+        if (gviCount == 0){
+            return SortTool.EMPTY;
         }
         //尽量避免下面的log，/等数学运算
         if (groupSize < gviCount){

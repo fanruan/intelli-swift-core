@@ -74,7 +74,7 @@ public class NodeIndirectFilterIndexCalculator {
         NoneDimensionGroup group = rootGroup.getChildDimensionGroup(index);
         while (group != NoneDimensionGroup.NULL) {
             if (level == lastIndirectFilterDimensionIndex) {
-                sum(childDimensionGroup);
+                sum(group);
             }
             if (level < lastIndirectFilterDimensionIndex) {
                 cal(group, level + 1);

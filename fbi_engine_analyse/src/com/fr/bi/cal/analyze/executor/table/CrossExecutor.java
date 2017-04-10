@@ -276,7 +276,7 @@ public class CrossExecutor extends AbstractTableWidgetExecutor<NewCrossRoot> {
         Map<String, TargetGettingKey> targetsMap = new HashMap<String, TargetGettingKey>();
         TargetGettingKey[] keys = new TargetGettingKey[len];
         for (int i = 0; i < len; i++) {
-            keys[i] = new TargetGettingKey(usedSumTarget[i].createSummaryCalculator().createTargetKey(), usedSumTarget[i].getValue());
+            keys[i] = usedSumTarget[i].createTargetGettingKey();
             targetsMap.put(usedSumTarget[i].getValue(), keys[i]);
         }
         int calpage = paging.getOperator();
