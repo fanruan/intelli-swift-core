@@ -12,9 +12,6 @@ import com.fr.json.JSONArray;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
 
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-
 
 public class CrossNode implements BICrossNode {
     /**
@@ -33,7 +30,7 @@ public class CrossNode implements BICrossNode {
     private CrossNode rightSibling;
     private CrossNode bottomSibling;
 
-    private volatile Map summaryValue = new ConcurrentHashMap(1);
+    private Number[] summaryValue;
 
     private ChildsMap<CrossNode> topChilds = new ChildsMap<CrossNode>();
 
@@ -48,16 +45,16 @@ public class CrossNode implements BICrossNode {
     public CrossNode(CrossHeader head, CrossHeader left) {
         this.head = head;
         this.left = left;
+        this.summaryValue = new Number[left.getSummaryValue().length];
     }
 
     /**
      * 设置汇总值
      */
     @Override
-    public void setSummaryValue(Object key, Object value) {
-        if (value != null) {
-            value = ((Number)value).doubleValue();
-            summaryValue.put(key, value);
+    public void setSummaryValue(TargetGettingKey key, Number value) {
+        if (key.getTargetIndex() < summaryValue.length ) {
+            summaryValue[key.getTargetIndex()] = value;
         }
     }
 
@@ -78,17 +75,20 @@ public class CrossNode implements BICrossNode {
      * @return 汇总的值
      */
     @Override
-    public Number getSummaryValue(Object key) {
-        return (Number) summaryValue.get(key);
+    public Number getSummaryValue(TargetGettingKey key) {
+        if (summaryValue == null || summaryValue.length - 1 < key.getTargetIndex()){
+            return null;
+        }
+        return summaryValue[key.getTargetIndex()];
     }
 
     @Override
-	public Map getSummaryValue() {
+	public Number[] getSummaryValue() {
         return summaryValue;
     }
 
     @Override
-    public void setSummaryValue(Map summaryValue) {
+    public void setSummaryValue(Number[] summaryValue) {
         this.summaryValue = summaryValue;
     }
 
@@ -340,7 +340,9 @@ public class CrossNode implements BICrossNode {
      */
     public CrossNode cloneWithTopChildNode(CrossHeader top) {
         CrossNode n = new CrossNode(this.head, this.left);
-        n.summaryValue.putAll(this.summaryValue);
+        for (int i = 0; i < this.summaryValue.length; i++){
+            n.summaryValue[i] = this.summaryValue[i];
+        }
         CrossNode t = null;
         for (int i = 0; i < top.getChildLength(); i++) {
             Object v = top.getChild(i).getData();
@@ -354,87 +356,6 @@ public class CrossNode implements BICrossNode {
         return n;
     }
 
-
-    /**
-     * 只clone 下方节点的Node
-     *
-     * @return 只clone 下方节点的Node
-     */
-    public CrossNode cloneWithTopChildNode() {
-        CrossNode n = new CrossNode(this.head, this.left);
-        n.summaryValue.putAll(this.summaryValue);
-        CrossNode t = null;
-        for (int i = 0; i < this.getTopChildLength(); i++) {
-            CrossNode child = this.getTopChild(i).cloneWithTopChildNode();
-            n.addTopChild(child);
-            if (t != null) {
-                CubeReadingUtils.setSibling(t, child);
-            }
-            t = child;
-        }
-        return n;
-    }
-
-    /**
-     * 将left1中的所有值和 left2中的key为key2的值合并在一起
-     *
-     * @param left1 节点1
-     * @param left2 节点2
-     * @param key2  节点2的key
-     */
-    public void mergeValue(CrossNode left1, CrossNode left2, TargetGettingKey key2) {
-        if (left1 != null) {
-            this.summaryValue.putAll(left1.summaryValue);
-        }
-        if (left2 != null) {
-            Object v = left2.getSummaryValue(key2);
-            if (v != null) {
-                this.summaryValue.put(key2, v);
-            }
-        }
-    }
-
-
-    /**
-     * 创建只有key的下方子的值
-     *
-     * @param key 值key
-     * @return 只有key的下方子的值
-     */
-    public CrossNode createTopChildNewTargetValueNode(TargetGettingKey key) {
-        CrossNode n = new CrossNode(this.head, this.left);
-        if (key != null) {
-            Object value = getSummaryValue(key.getTargetKey());
-            if (value != null) {
-                n.setSummaryValue(key, value);
-            }
-        }
-        int clen = topChilds.size();
-        CrossNode tempNode = null;
-        for (int i = 0; i < clen; i++) {
-            CrossNode temp_node = topChilds.get(i);
-            CrossNode child = temp_node.createTopChildNewTargetValueNode(key);
-            if (tempNode != null) {
-                CubeReadingUtils.setSibling(tempNode, child);
-            }
-            n.addTopChild(child);
-            tempNode = child;
-        }
-        return n;
-    }
-
-
-    public void clearNullSummary(TargetGettingKey[] keys) {
-        for (int j = 0; j < topChilds.size(); j++) {
-            topChilds.get(j).clearNullSummary(keys);
-        }
-        for (TargetGettingKey key : keys) {
-            if (this.getSummaryValue(key) == null) {
-                this.setSummaryValue(key, 0);
-            }
-        }
-
-    }
 
     /**
      * 注释

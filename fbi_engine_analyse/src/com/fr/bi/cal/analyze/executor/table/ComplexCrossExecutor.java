@@ -91,7 +91,7 @@ public class ComplexCrossExecutor extends AbstractTableWidgetExecutor<NewCrossRo
         int len = usedSumTarget.length;
         TargetGettingKey[] keys = new TargetGettingKey[len];
         for (int i = 0; i < len; i++) {
-            keys[i] = new TargetGettingKey(usedSumTarget[i].createSummaryCalculator().createTargetKey(), usedSumTarget[i].getValue());
+            keys[i] = usedSumTarget[i].createTargetGettingKey();
         }
         boolean hasTarget = keys.length != 0;
         ArrayList<NewCrossRoot> nodes = new ArrayList<NewCrossRoot>();

@@ -4,7 +4,6 @@ import com.finebi.cube.api.ICubeColumnIndexReader;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.report.result.TargetCalculator;
 import com.fr.general.ComparatorUtils;
-import com.fr.third.org.apache.poi.util.StringUtil;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -16,24 +15,18 @@ import java.util.Set;
  */
 public class BICollectionUtils {
 
-    public static Map mergeMapByKeyMapValue(Map key, Map value) {
+    public static Map createMapByKeyMapValue(Map<String, TargetCalculator> key, Number[] value) {
         Map merge = new HashMap();
         if (key == null) {
-            return value;
+            return merge;
         }
         if (value == null) {
             return new HashMap();
         }
-        Iterator<Map.Entry> it = key.entrySet().iterator();
+        Iterator<Map.Entry<String, TargetCalculator>> it = key.entrySet().iterator();
         while (it.hasNext()) {
-            Map.Entry entry = it.next();
-            Object ob;
-            if (entry.getValue() instanceof TargetCalculator) {
-                ob = value.get(((TargetCalculator) entry.getValue()).createTargetGettingKey());
-            } else {
-                ob = value.get(entry.getValue());
-            }
-
+            Map.Entry<String, TargetCalculator> entry = it.next();
+            Object ob = value[entry.getValue().createTargetGettingKey().getTargetIndex()];
             if (ob != null) {
                 merge.put(entry.getKey(), ob);
             }

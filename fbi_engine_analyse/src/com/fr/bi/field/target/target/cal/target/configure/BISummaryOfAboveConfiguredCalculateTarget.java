@@ -10,6 +10,6 @@ public class BISummaryOfAboveConfiguredCalculateTarget extends
 
     @Override
     public TargetCalculator createSummaryCalculator() {
-        return new SumOfAboveCalculator(this, getCalTargetName(), getStart_group());
+        return new SumOfAboveCalculator(this, targetMap.get(getCalTargetName()), getStart_group());
     }
 }

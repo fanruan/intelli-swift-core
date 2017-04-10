@@ -15,8 +15,8 @@ import java.util.Iterator;
  */
 public class SimpleMergeIteratorCreator implements MergeIteratorCreator {
     @Override
-    public Iterator<MetricMergeResult> createIterator(DimensionIterator[] iterators, GroupValueIndex[] gvis, Comparator c, ICubeTableService[] tis, ICubeDataLoader loader) {
-        return new MergeIterator(iterators, gvis, c);
+    public Iterator<MetricMergeResult> createIterator(DimensionIterator[] iterators, int sumLength, GroupValueIndex[] gvis, Comparator c, ICubeTableService[] tis, ICubeDataLoader loader) {
+        return new MergeIterator(iterators, gvis, c, sumLength);
     }
 
     @Override

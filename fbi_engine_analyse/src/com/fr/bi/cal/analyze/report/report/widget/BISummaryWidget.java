@@ -265,22 +265,28 @@ public abstract class BISummaryWidget extends BIAbstractWidget {
         }
         this.dimensions = dims.toArray(new BIDimension[dims.size()]);
         List<BISummaryTarget> tars = new ArrayList<BISummaryTarget>();
-        // young BI-2332 指标数超过65后，计算指标值不对
-        Map<String, TargetGettingKey> targetMap = new ConcurrentHashMap<String, TargetGettingKey>();
         for (int j = 0; j < targetIds.length(); j++) {
             JSONObject tarJo = dimAndTar.getJSONObject(targetIds.getString(j));
             tarJo.put("did", targetIds.getString(j));
             BISummaryTarget target = BITargetFactory.parseTarget(tarJo, userId);
             if (target != null) {
                 tars.add(target);
-                targetMap.put(target.getValue(), target.createSummaryCalculator().createTargetGettingKey());
-                target.setTargetMap(targetMap);
             }
         }
-        this.targets = tars.toArray(new BISummaryTarget[tars.size()]);
+        initTargets(tars);
         this.parseSortFilter(jo, userId);
         parseSettingMap(jo);
         parseDimensionMap(dimAndTar, userId);
+    }
+
+    private void initTargets(List<BISummaryTarget> tars) {
+        this.targets = tars.toArray(new BISummaryTarget[tars.size()]);
+        Map<String, TargetGettingKey> targetMap = new ConcurrentHashMap<String, TargetGettingKey>();
+        for (int i = 0; i < targets.length; i++){
+            targets[i].setSummaryIndex(i);
+            targetMap.put(targets[i].getValue(), targets[i].createSummaryCalculator().createTargetGettingKey());
+            targets[i].setTargetMap(targetMap);
+        }
     }
 
     @Override
@@ -430,7 +436,7 @@ public abstract class BISummaryWidget extends BIAbstractWidget {
         BISummaryTarget[] targets = getViewTargets();
         TargetGettingKey[] keys = new TargetGettingKey[targets.length];
         for (int i = 0; i < targets.length; i++) {
-            keys[i] = targets[i].createSummaryCalculator().createTargetGettingKey();
+            keys[i] = targets[i].createTargetGettingKey();
         }
         return keys;
     }

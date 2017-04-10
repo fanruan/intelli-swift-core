@@ -133,7 +133,7 @@ public class HorGroupExecutor extends AbstractTableWidgetExecutor<Node> {
         CubeIndexLoader cubeIndexLoader = CubeIndexLoader.getInstance(session.getUserId());
         Node tree = cubeIndexLoader.loadPageGroup(true, widget, createTarget4Calculate(), usedDimensions, allDimensions, allSumTarget, calpage, widget.isRealData(), session, expander.getXExpander());
         if (tree == null) {
-            tree = new Node(null, null);
+            tree = new Node(null, allSumTarget.length);
         }
         BILoggerFactory.getLogger().info(DateUtils.timeCostFrom(start) + ": cal time");
         return tree;
