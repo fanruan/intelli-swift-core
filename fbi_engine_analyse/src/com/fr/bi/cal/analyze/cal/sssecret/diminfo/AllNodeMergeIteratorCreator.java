@@ -42,9 +42,9 @@ public class AllNodeMergeIteratorCreator implements MergeIteratorCreator {
     }
 
     @Override
-    public Iterator<MetricMergeResult> createIterator(DimensionIterator[] iterators, GroupValueIndex[] gvis, Comparator c, ICubeTableService[] tis, ICubeDataLoader loader) {
-        MergeIterator iterator = (MergeIterator) creator.createIterator(iterators, gvis, c, tis, loader);
-        return new AllNodeMergeIterator(iterator, filter, targetSort, metricsToCalculate, calculatedMap, tis, loader, executor, formulaCalculator);
+    public Iterator<MetricMergeResult> createIterator(DimensionIterator[] iterators, int sumLength, GroupValueIndex[] gvis, Comparator c, ICubeTableService[] tis, ICubeDataLoader loader) {
+        MergeIterator iterator = (MergeIterator) creator.createIterator(iterators, sumLength, gvis, c, tis, loader);
+        return new AllNodeMergeIterator(iterator, sumLength, filter, targetSort, metricsToCalculate, calculatedMap, tis, loader, executor, formulaCalculator);
     }
 
     @Override

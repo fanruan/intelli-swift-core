@@ -21,6 +21,9 @@ public class BIDetailReportSetting implements BIDetailSetting {
 
     private int number = 0;
 
+    private String themeStyle;
+    private int wsTableStyle;
+
     @Override
     public void parseJSON(JSONObject jo) throws Exception {
         if (jo.has("view")) {
@@ -29,11 +32,11 @@ public class BIDetailReportSetting implements BIDetailSetting {
             try {
                 JSONArray dimIds = views.getJSONArray(BIReportConstant.REGION.DIMENSION1);
                 view = new String[dimIds.length()];
-                for(int i = 0; i < dimIds.length(); i++){
+                for (int i = 0; i < dimIds.length(); i++) {
                     view[i] = dimIds.getString(i);
                 }
-            } catch (Exception e){
-                BILoggerFactory.getLogger().info(e.getMessage(),e);
+            } catch (Exception e) {
+                BILoggerFactory.getLogger().info(e.getMessage(), e);
             }
             if (views.has("style")) {
                 JSONObject style = views.getJSONObject("style");
@@ -44,6 +47,9 @@ public class BIDetailReportSetting implements BIDetailSetting {
                     number = style.optBoolean("showNumber", false) ? 1 : 0;
                 }
             }
+            themeStyle = jo.has("themeStyle") ? jo.getString("themeStyle") : "#04b1c2";
+            wsTableStyle = jo.has("wsTableStyle") ? jo.getInt("wsTableStyle") : 1;
+
         }
     }
 
@@ -78,5 +84,15 @@ public class BIDetailReportSetting implements BIDetailSetting {
     @Override
     public BICore fetchObjectCore() {
         return new BICoreGenerator(this).fetchObjectCore();
+    }
+
+    @Override
+    public int getWSTableStyle() {
+        return this.wsTableStyle;
+    }
+
+    @Override
+    public String getWSThemeColor() {
+        return themeStyle;
     }
 }

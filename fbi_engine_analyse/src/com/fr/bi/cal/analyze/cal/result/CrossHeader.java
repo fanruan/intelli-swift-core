@@ -31,8 +31,8 @@ public class CrossHeader extends Node implements Serializable {
 
     private CrossNode value;
 
-    public CrossHeader(){
-
+    public CrossHeader(int sumLength){
+        super(sumLength);
     }
 
     /**
@@ -40,8 +40,8 @@ public class CrossHeader extends Node implements Serializable {
      *
      * @param data   值
      */
-    public CrossHeader(Comparator comparator, Object data) {
-        super(comparator, data);
+    public CrossHeader(Comparator comparator, Object data, int sumLength) {
+        super(comparator, data, sumLength);
     }
 
     private static CrossNode getBottomNode(CrossNode valueNode, int[] index, int i) {
@@ -56,7 +56,7 @@ public class CrossHeader extends Node implements Serializable {
      */
     @Override
     protected CrossHeader createNewNode() {
-        CrossHeader header = new CrossHeader(this.getComparator(), this.getData());
+        CrossHeader header = new CrossHeader(this.getComparator(), this.getData(), summaryValue.length);
         header.setShowValue(getShowValue());
         return header;
     }
@@ -225,7 +225,7 @@ public class CrossHeader extends Node implements Serializable {
      * @param key 值的key
      */
     @Override
-    public Number getSummaryValue(Object key) {
+    public Number getSummaryValue(TargetGettingKey key) {
         if (value == null) {
             return null;
         }
@@ -233,16 +233,9 @@ public class CrossHeader extends Node implements Serializable {
     }
 
     @Override
-    public Map getSummaryValue() {
+    public Number[] getSummaryValue() {
         if (value == null) {
-            return new HashMap();
-        }
-        return value.getSummaryValue();
-    }
-
-    protected Map getNotNullSummaryValue() {
-        if (value == null) {
-            return new HashMap();
+            return new Number[summaryValue.length];
         }
         return value.getSummaryValue();
     }
@@ -354,30 +347,6 @@ public class CrossHeader extends Node implements Serializable {
             tempNode = child;
         }
         return newnode;
-    }
-
-    /**
-     * 创建只有key值的新左节点
-     *
-     * @param key 值的key
-     * @return 注释
-     */
-    @Override
-    public CrossHeader createNewTargetValueNode(TargetGettingKey key) {
-        CrossHeader n = createNewNode();
-        n.value = value.createTopChildNewTargetValueNode(key);
-        int clen = childs.size();
-        CrossHeader tempNode = null;
-        for (int i = 0; i < clen; i++) {
-            CrossHeader temp_node = (CrossHeader) childs.get(i);
-            CrossHeader child = temp_node.createNewTargetValueNode(key);
-            if (tempNode != null) {
-                CubeReadingUtils.setSibling(tempNode, child);
-            }
-            n.addChild(child);
-            tempNode = child;
-        }
-        return n;
     }
 
     /**
