@@ -10,9 +10,9 @@ import com.fr.bi.cal.analyze.cal.detail.PolyCubeDetailECBlock;
 import com.fr.bi.cal.analyze.executor.detail.DetailExecutor;
 import com.fr.bi.cal.analyze.executor.paging.Paging;
 import com.fr.bi.cal.analyze.executor.paging.PagingFactory;
-import com.fr.bi.cal.analyze.report.report.widget.chart.excelExport.table.basic.IExcelDataBuilder;
-import com.fr.bi.cal.analyze.report.report.widget.chart.excelExport.table.manager.TableDirector;
-import com.fr.bi.cal.analyze.report.report.widget.chart.excelExport.table.summary.build.DetailTableBuilder;
+import com.fr.bi.cal.analyze.report.report.widget.chart.export.basic.IExcelDataBuilder;
+import com.fr.bi.cal.analyze.report.report.widget.chart.export.manager.TableDirector;
+import com.fr.bi.cal.analyze.report.report.widget.chart.export.calculator.DetailTableBuilder;
 import com.fr.bi.cal.analyze.report.report.widget.detail.BIDetailReportSetting;
 import com.fr.bi.cal.analyze.report.report.widget.detail.BIDetailSetting;
 import com.fr.bi.cal.analyze.session.BISession;
@@ -302,10 +302,21 @@ public class BIDetailWidget extends BIAbstractWidget {
             String dId = detailTarget.getId();
             int type = detailTarget.createColumnKey().getFieldType();
             String text = detailTarget.getText();
-            dims.add(new JSONObject().put("dId", dId).put("text", text).put("type", type));
+            dims.add(new JSONObject().put("dId", dId).put("text", text).put("type", type).put("used", detailTarget.isUsed()));
         }
         dimAndTar.put(Integer.valueOf(BIReportConstant.REGION.DIMENSION1), dims);
         return dimAndTar;
     }
 
+    //    public int getWSTableStyle() {
+//        return data.getWSTableStyle();
+//    }
+//
+//    public String getWSThemeColor() {
+//        return data.getWSThemeColor();
+//    }
+    //todo 这边其实是有问题的，setting中 维度信息和样式不应该杂糅在一起
+    public BIDetailSetting getSetting() {
+        return data;
+    }
 }

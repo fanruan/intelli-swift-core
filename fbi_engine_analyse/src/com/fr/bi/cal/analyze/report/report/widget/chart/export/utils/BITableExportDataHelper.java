@@ -1,4 +1,4 @@
-package com.fr.bi.cal.analyze.report.report.widget.chart.excelExport.table.utils;
+package com.fr.bi.cal.analyze.report.report.widget.chart.export.utils;
 
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.general.ComparatorUtils;
@@ -35,10 +35,27 @@ public class BITableExportDataHelper {
         }
         throw new Exception();
     }
-public static boolean isDimensionRegion1ByRegionType(int regionType){
-       return regionType>= Integer.parseInt(BIReportConstant.REGION.DIMENSION1)&&regionType<Integer.parseInt(BIReportConstant.REGION.DIMENSION2);
-}
-    public static boolean isDimensionRegion2ByRegionType(int regionType){
-        return regionType>= Integer.parseInt(BIReportConstant.REGION.DIMENSION2)&&regionType<Integer.parseInt(BIReportConstant.REGION.TARGET1);
+
+    public static boolean isDimUsed(Map<Integer, List<JSONObject>> dimAndTar, String dId) throws Exception {
+        Iterator<Integer> iterator = dimAndTar.keySet().iterator();
+        while (iterator.hasNext()) {
+            Integer next = iterator.next();
+            for (JSONObject jsonObject : dimAndTar.get(next)) {
+                if (ComparatorUtils.equals(jsonObject.getString("dId"), dId)) {
+                    if (jsonObject.has("used")) {
+                        return jsonObject.getBoolean("used");
+                    }
+                }
+            }
+        }
+        return true;
+    }
+
+    public static boolean isDimensionRegion1ByRegionType(int regionType) {
+        return regionType >= Integer.parseInt(BIReportConstant.REGION.DIMENSION1) && regionType < Integer.parseInt(BIReportConstant.REGION.DIMENSION2);
+    }
+
+    public static boolean isDimensionRegion2ByRegionType(int regionType) {
+        return regionType >= Integer.parseInt(BIReportConstant.REGION.DIMENSION2) && regionType < Integer.parseInt(BIReportConstant.REGION.TARGET1);
     }
 }

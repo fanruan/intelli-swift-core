@@ -1,14 +1,17 @@
-package com.fr.bi.cal.analyze.report.report.widget.chart.excelExport.table.summary.build;
+package com.fr.bi.cal.analyze.report.report.widget.chart.export.calculator;
 
-import com.fr.bi.cal.analyze.report.report.widget.chart.excelExport.table.basic.ITableItem;
-import com.fr.bi.cal.analyze.report.report.widget.chart.excelExport.table.summary.basic.BIExcelTableData;
-import com.fr.bi.cal.analyze.report.report.widget.chart.excelExport.table.summary.basic.BIBasicTableItem;
-import com.fr.bi.cal.analyze.report.report.widget.chart.excelExport.table.utils.SummaryTableStyleHelper;
+import com.fr.bi.cal.analyze.report.report.widget.chart.export.basic.BIBasicTableItem;
+import com.fr.bi.cal.analyze.report.report.widget.chart.export.basic.BIExcelTableData;
+import com.fr.bi.cal.analyze.report.report.widget.chart.export.basic.ITableHeader;
+import com.fr.bi.cal.analyze.report.report.widget.chart.export.basic.ITableItem;
+import com.fr.bi.cal.analyze.report.report.widget.chart.export.utils.BITableExportDataHelper;
+import com.fr.bi.cal.analyze.report.report.widget.chart.export.utils.SummaryTableStyleHelper;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -27,8 +30,23 @@ public class DetailTableBuilder extends TableAbstractDataBuilder {
     }
 
     @Override
-    public void createHeadersAndItems() throws Exception {
+    public void createHeaders() throws Exception {
         createTableHeader();
+        removeUnusedHeader();
+    }
+
+    private void removeUnusedHeader() {
+        Iterator<ITableHeader> iterator = headers.iterator();
+        while (iterator.hasNext()) {
+            ITableHeader header = iterator.next();
+            if (!header.isUsed()) {
+                iterator.remove();
+            }
+        }
+    }
+
+    @Override
+    public void createItems() throws Exception {
         createTableItems();
     }
 
@@ -40,24 +58,21 @@ public class DetailTableBuilder extends TableAbstractDataBuilder {
 
     protected void createTableItems() throws Exception {
         JSONArray array = dataJSON.getJSONArray("value");
-//        List<ITableItem> tableItems = new ArrayList<ITableItem>();
         for (int i = 0; i < array.length(); i++) {
             ITableItem rowItem = createRowItem(array.getJSONArray(i));
-//            tableItems.add(rowItem);
-//            items.put(rowItem.createJSON());
             items.add(rowItem);
         }
     }
 
-    private ITableItem createRowItem(JSONArray itemArray) throws JSONException {
+    private ITableItem createRowItem(JSONArray itemArray) throws Exception {
         List<ITableItem> rowItems = new ArrayList<ITableItem>();
         for (int j = 0; j < itemArray.length(); j++) {
             if (isDimensionUsable(dimIds.get(j))) {
                 BIBasicTableItem item = new BIBasicTableItem();
                 item.setType("bi.detail_table_cell");
                 item.setDId(dimIds.get(j));
-                item.setText(itemArray.isNull(j) ?"": itemArray.getString(j));
-                item.setStyle(SummaryTableStyleHelper.getBodyStyles("", "").toString());
+                item.setText(itemArray.isNull(j) ? "" : itemArray.getString(j));
+                item.setStyle(SummaryTableStyleHelper.getBodyStyles("", ""));
                 rowItems.add(item);
             }
         }
@@ -66,7 +81,7 @@ public class DetailTableBuilder extends TableAbstractDataBuilder {
         return rowItem;
     }
 
-    private boolean isDimensionUsable(String s) {
-        return true;
+    private boolean isDimensionUsable(String id) throws Exception {
+        return BITableExportDataHelper.isDimUsed(dimAndTar, id);
     }
 }

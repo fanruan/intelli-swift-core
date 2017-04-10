@@ -1,6 +1,5 @@
-package com.fr.bi.cal.analyze.report.report.widget.chart.excelExport.table.summary.basic;
+package com.fr.bi.cal.analyze.report.report.widget.chart.export.basic;
 
-import com.fr.bi.cal.analyze.report.report.widget.chart.excelExport.table.basic.ITableItem;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;
 
@@ -20,7 +19,7 @@ public class BIBasicTableItem implements ITableItem {
     protected List<ITableItem> children;
     private JSONArray clicked;
     private boolean isSum;
-    private String style;
+    private ITableStyle style;
     private String type;
     private String tag;
 
@@ -69,7 +68,7 @@ public class BIBasicTableItem implements ITableItem {
         isSum = sum;
     }
 
-    public void setStyle(String style) {
+    public void setStyle(ITableStyle style) {
         this.style = style;
     }
 
@@ -118,7 +117,7 @@ public class BIBasicTableItem implements ITableItem {
         return isSum;
     }
 
-    public String getStyle() {
+    public ITableStyle getStyle() {
         return style;
     }
 

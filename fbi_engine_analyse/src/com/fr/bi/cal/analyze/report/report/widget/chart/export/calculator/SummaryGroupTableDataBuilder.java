@@ -1,6 +1,6 @@
-package com.fr.bi.cal.analyze.report.report.widget.chart.excelExport.table.summary.build;
+package com.fr.bi.cal.analyze.report.report.widget.chart.export.calculator;
 
-import com.fr.bi.cal.analyze.report.report.widget.chart.excelExport.table.summary.basic.BIExcelTableData;
+import com.fr.bi.cal.analyze.report.report.widget.chart.export.basic.BIExcelTableData;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
 
@@ -28,11 +28,13 @@ public class SummaryGroupTableDataBuilder extends SummaryCrossTableDataBuilder {
     }
 
     @Override
-    public void createHeadersAndItems() throws Exception {
-        createTableHeader();
+    public void createItems() throws Exception {
         createTableItems();
     }
-
+    @Override
+    public void createHeaders() throws Exception {
+        createTableHeader();
+    }
     @Override
     public BIExcelTableData createTableData() throws JSONException {
         BIExcelTableData tableDataForExport = new BIExcelTableData(headers, items);

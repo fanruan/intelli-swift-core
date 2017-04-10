@@ -1,6 +1,6 @@
-package com.fr.bi.cal.analyze.report.report.widget.chart.excelExport.table.utils;
+package com.fr.bi.cal.analyze.report.report.widget.chart.export.utils;
 
-import com.fr.bi.cal.analyze.report.report.widget.chart.excelExport.table.summary.basic.BITableItemStyle;
+import com.fr.bi.cal.analyze.report.report.widget.chart.export.basic.BITableItemStyle;
 
 /**
  * Created by Kary on 2017/2/26.
