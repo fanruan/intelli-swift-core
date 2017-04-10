@@ -4,6 +4,8 @@ import com.fr.bi.base.BICore;
 import com.fr.bi.base.BICoreGenerator;
 import com.fr.bi.base.annotation.BICoreField;
 import com.finebi.cube.common.log.BILoggerFactory;
+import com.fr.bi.cal.analyze.report.report.widget.styles.BIStyleReportSetting;
+import com.fr.bi.cal.analyze.report.report.widget.styles.BIStyleSetting;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;
@@ -21,8 +23,7 @@ public class BIDetailReportSetting implements BIDetailSetting {
 
     private int number = 0;
 
-    private String themeStyle;
-    private int wsTableStyle;
+    private BIStyleSetting styleSetting;
 
     @Override
     public void parseJSON(JSONObject jo) throws Exception {
@@ -47,10 +48,10 @@ public class BIDetailReportSetting implements BIDetailSetting {
                     number = style.optBoolean("showNumber", false) ? 1 : 0;
                 }
             }
-            themeStyle = jo.has("themeStyle") ? jo.getString("themeStyle") : "#04b1c2";
-            wsTableStyle = jo.has("wsTableStyle") ? jo.getInt("wsTableStyle") : 1;
-
         }
+        JSONObject settings = jo.has("settings") ? jo.getJSONObject("settings") : new JSONObject();
+        styleSetting = new BIStyleReportSetting();
+        styleSetting.parseJSON(settings);
     }
 
     /**
@@ -87,12 +88,7 @@ public class BIDetailReportSetting implements BIDetailSetting {
     }
 
     @Override
-    public int getWSTableStyle() {
-        return this.wsTableStyle;
-    }
-
-    @Override
-    public String getWSThemeColor() {
-        return themeStyle;
+    public BIStyleSetting getStyleSetting() {
+        return styleSetting;
     }
 }

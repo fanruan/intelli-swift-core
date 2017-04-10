@@ -490,16 +490,11 @@ public class TableWidget extends BISummaryWidget {
         Map<Integer, List<JSONObject>> viewMap = this.createViewMap();
         IExcelDataBuilder builder = null;
 
-//        if (dataJSON.has("t")) {
-//            builder = new SumaryCrossTableAbstractDataBuilder(viewMap, dataJSON);
-//        } else {
-//            builder = new SummaryNormalTableAbstractDataBuilder(viewMap, dataJSON);
-//        }
         if (this.table_type == BIReportConstant.TABLE_WIDGET.CROSS_TYPE) {
-            builder = new SummaryCrossTableDataBuilder(viewMap, dataJSON);
+            builder = new SummaryCrossTableDataBuilder(viewMap, dataJSON, data.getStyleSetting());
         }
         if (this.table_type == BIReportConstant.TABLE_WIDGET.GROUP_TYPE) {
-            builder = new SummaryGroupTableDataBuilder(viewMap, dataJSON);
+            builder = new SummaryGroupTableDataBuilder(viewMap, dataJSON, data.getStyleSetting());
         }
         if (null == builder) {
             return new JSONObject();
@@ -527,7 +522,7 @@ public class TableWidget extends BISummaryWidget {
         return this.getBITargetByID(dID);
     }
 
-    protected BISummaryTarget getBITargetByID(String id) throws Exception{
+    protected BISummaryTarget getBITargetByID(String id) throws Exception {
         for (BISummaryTarget target : getTargets()) {
             if (ComparatorUtils.equals(target.getId(), id)) {
                 return target;

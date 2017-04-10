@@ -15,6 +15,7 @@ import com.fr.bi.cal.analyze.report.report.widget.chart.export.manager.TableDire
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.calculator.DetailTableBuilder;
 import com.fr.bi.cal.analyze.report.report.widget.detail.BIDetailReportSetting;
 import com.fr.bi.cal.analyze.report.report.widget.detail.BIDetailSetting;
+import com.fr.bi.cal.analyze.report.report.widget.styles.BIStyleSetting;
 import com.fr.bi.cal.analyze.session.BISession;
 import com.fr.bi.common.persistent.xml.BIIgnoreField;
 import com.fr.bi.conf.report.WidgetType;
@@ -289,7 +290,7 @@ public class BIDetailWidget extends BIAbstractWidget {
     public JSONObject getPostOptions(String sessionId) throws Exception {
         JSONObject dataJSON = this.createDataJSON((BISession) SessionDealWith.getSessionIDInfor(sessionId)).getJSONObject("data");
         Map<Integer, List<JSONObject>> viewMap = createViewMap();
-        IExcelDataBuilder builder = new DetailTableBuilder(viewMap, dataJSON);
+        IExcelDataBuilder builder = new DetailTableBuilder(viewMap, dataJSON,getStyleSettings());
         TableDirector director = new TableDirector(builder);
         director.construct();
         return director.buildTableData().createJSON();
@@ -308,15 +309,7 @@ public class BIDetailWidget extends BIAbstractWidget {
         return dimAndTar;
     }
 
-    //    public int getWSTableStyle() {
-//        return data.getWSTableStyle();
-//    }
-//
-//    public String getWSThemeColor() {
-//        return data.getWSThemeColor();
-//    }
-    //todo 这边其实是有问题的，setting中 维度信息和样式不应该杂糅在一起
-    public BIDetailSetting getSetting() {
-        return data;
+    public BIStyleSetting getStyleSettings() {
+        return data.getStyleSetting();
     }
 }

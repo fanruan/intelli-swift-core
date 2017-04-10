@@ -6,6 +6,7 @@ import com.fr.bi.cal.analyze.report.report.widget.chart.export.basic.BIBasicTabl
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.basic.BIExcelTableData;
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.utils.BITableExportDataHelper;
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.utils.SummaryTableStyleHelper;
+import com.fr.bi.cal.analyze.report.report.widget.styles.BIStyleSetting;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.utils.program.BIJsonUtils;
 import com.fr.json.JSONArray;
@@ -22,8 +23,8 @@ public class SummaryComplexTableBuilder extends TableAbstractDataBuilder {
     private String outer_sum = "__outer_sum_";
     boolean showRowTotal = true;
 
-    public SummaryComplexTableBuilder(Map<Integer, List<JSONObject>> dimAndTar, JSONObject dataJSON) throws Exception {
-        super(dimAndTar, dataJSON);
+    public SummaryComplexTableBuilder(Map<Integer, List<JSONObject>> dimAndTar, JSONObject dataJSON,BIStyleSetting styleSettings) throws Exception {
+        super(dimAndTar, dataJSON, styleSettings);
     }
 
     @Override
@@ -322,7 +323,7 @@ public class SummaryComplexTableBuilder extends TableAbstractDataBuilder {
     }
 
     private JSONObject createSingleCrossTableItems(JSONObject tableData, Map<Integer, List<JSONObject>> dimsByDataPos) throws Exception {
-        SummaryCrossTableDataBuilder builder = new SummaryCrossTableDataBuilder(null, tableData);
+        SummaryCrossTableDataBuilder builder = new SummaryCrossTableDataBuilder(null, tableData,styleSetting);
         builder.initAttrs();
         builder.createItems();
         BIExcelTableData data = builder.createTableData();

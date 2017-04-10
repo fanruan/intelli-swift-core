@@ -1,6 +1,7 @@
 package com.fr.bi.cal.analyze.report.report.widget.chart.export.calculator;
 
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.basic.BIExcelTableData;
+import com.fr.bi.cal.analyze.report.report.widget.styles.BIStyleSetting;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
 
@@ -11,8 +12,8 @@ import java.util.Map;
  * Created by Kary on 2017/2/27.
  */
 public class SummaryCrossTableDataBuilder extends TableAbstractDataBuilder {
-    public SummaryCrossTableDataBuilder(Map<Integer, List<JSONObject>> dimAndTar, JSONObject dataJSON) throws Exception {
-        super(dimAndTar, dataJSON);
+    public SummaryCrossTableDataBuilder(Map<Integer, List<JSONObject>> dimAndTar, JSONObject dataJSON, BIStyleSetting styleSettings) throws Exception {
+        super(dimAndTar, dataJSON, styleSettings);
     }
 
     @Override
