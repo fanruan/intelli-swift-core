@@ -7,5 +7,6 @@ import com.fr.json.JSONParser;
  */
 public interface BIStyleSetting extends JSONParser {
     String getThemeStyle();
+
     int getWsTableStyle();
 }

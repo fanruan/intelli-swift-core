@@ -17,6 +17,7 @@ public class TableDirector {
         builder.initAttrs();
         builder.createHeaders();
         builder.createItems();
+        builder.createTargetStyles();
     }
     public BIExcelTableData buildTableData() throws JSONException {
         return builder.createTableData();

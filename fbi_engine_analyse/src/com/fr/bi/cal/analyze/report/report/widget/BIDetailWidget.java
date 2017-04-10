@@ -10,9 +10,10 @@ import com.fr.bi.cal.analyze.cal.detail.PolyCubeDetailECBlock;
 import com.fr.bi.cal.analyze.executor.detail.DetailExecutor;
 import com.fr.bi.cal.analyze.executor.paging.Paging;
 import com.fr.bi.cal.analyze.executor.paging.PagingFactory;
+import com.fr.bi.cal.analyze.report.report.widget.chart.export.basic.DimAndTargetStyle;
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.basic.IExcelDataBuilder;
-import com.fr.bi.cal.analyze.report.report.widget.chart.export.manager.TableDirector;
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.calculator.DetailTableBuilder;
+import com.fr.bi.cal.analyze.report.report.widget.chart.export.manager.TableDirector;
 import com.fr.bi.cal.analyze.report.report.widget.detail.BIDetailReportSetting;
 import com.fr.bi.cal.analyze.report.report.widget.detail.BIDetailSetting;
 import com.fr.bi.cal.analyze.report.report.widget.styles.BIStyleSetting;
@@ -290,26 +291,38 @@ public class BIDetailWidget extends BIAbstractWidget {
     public JSONObject getPostOptions(String sessionId) throws Exception {
         JSONObject dataJSON = this.createDataJSON((BISession) SessionDealWith.getSessionIDInfor(sessionId)).getJSONObject("data");
         Map<Integer, List<JSONObject>> viewMap = createViewMap();
-        IExcelDataBuilder builder = new DetailTableBuilder(viewMap, dataJSON,getStyleSettings());
+        List<DimAndTargetStyle> dimAndTargetStyles = createChartDimensions();
+        IExcelDataBuilder builder = new DetailTableBuilder(viewMap, dimAndTargetStyles, dataJSON, getGlobalStyleSettings());
         TableDirector director = new TableDirector(builder);
         director.construct();
         return director.buildTableData().createJSON();
     }
 
+    private List<DimAndTargetStyle> createChartDimensions() throws Exception {
+        List<DimAndTargetStyle> dimAndTargetStyles = new ArrayList<DimAndTargetStyle>();
+        for (BIDetailTarget detailTarget : this.getTargets()) {
+            DimAndTargetStyle dimAndTargetStyle = new DimAndTargetStyle(detailTarget.getId(), detailTarget.getChartSetting());
+            dimAndTargetStyle.setChartSetting(detailTarget.getChartSetting());
+            dimAndTargetStyles.add(dimAndTargetStyle);
+        }
+        return dimAndTargetStyles;
+    }
+
     private Map<Integer, List<JSONObject>> createViewMap() throws Exception {
         Map<Integer, List<JSONObject>> dimAndTar = new HashMap<Integer, List<JSONObject>>();
         List<JSONObject> dims = new ArrayList<JSONObject>();
-        for (BIDetailTarget detailTarget : this.getViewDimensions()) {
+        for (BIDetailTarget detailTarget : this.getDimensions()) {
             String dId = detailTarget.getId();
             int type = detailTarget.createColumnKey().getFieldType();
             String text = detailTarget.getText();
-            dims.add(new JSONObject().put("dId", dId).put("text", text).put("type", type).put("used", detailTarget.isUsed()));
+            JSONObject jo = new JSONObject().put("dId", dId).put("text", text).put("type", type).put("used", detailTarget.isUsed());
+            dims.add(jo);
         }
         dimAndTar.put(Integer.valueOf(BIReportConstant.REGION.DIMENSION1), dims);
         return dimAndTar;
     }
 
-    public BIStyleSetting getStyleSettings() {
+    public BIStyleSetting getGlobalStyleSettings() {
         return data.getStyleSetting();
     }
 }

@@ -6,6 +6,7 @@ import com.fr.bi.stable.constant.BIGlobalStyleConstant;
 
 /**
  * Created by Kary on 2017/2/26.
+ * 样式计算
  */
 public class SummaryTableStyleHelper {
     public static ITableStyle getHeaderStyles(String themeColor, String styleType) {

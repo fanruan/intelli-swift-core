@@ -1,4 +1,4 @@
-package com.fr.bi.cal.analyze.report.report.widget.chart.excelExport.table.manager.widget;
+package excelExport.widget;
 
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;

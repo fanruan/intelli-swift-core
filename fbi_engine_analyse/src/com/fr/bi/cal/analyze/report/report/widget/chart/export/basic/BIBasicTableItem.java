@@ -139,7 +139,7 @@ public class BIBasicTableItem implements ITableItem {
         }
         JSONObject jo = new JSONObject();
         jo.put("dId", dId);
-        jo.put("styles", style.createJSON());
+        jo.put("styles", null == style ? new JSONObject() : style.createJSON());
         jo.put("text", text);
         jo.put("type", type);
         jo.put("values", value);

@@ -1,9 +1,6 @@
 package com.fr.bi.cal.analyze.report.report.widget.chart.export.calculator;
 
-import com.fr.bi.cal.analyze.report.report.widget.chart.export.basic.BIBasicTableItem;
-import com.fr.bi.cal.analyze.report.report.widget.chart.export.basic.BIExcelTableData;
-import com.fr.bi.cal.analyze.report.report.widget.chart.export.basic.ITableHeader;
-import com.fr.bi.cal.analyze.report.report.widget.chart.export.basic.ITableItem;
+import com.fr.bi.cal.analyze.report.report.widget.chart.export.basic.*;
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.utils.BITableExportDataHelper;
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.utils.SummaryTableStyleHelper;
 import com.fr.bi.cal.analyze.report.report.widget.styles.BIStyleSetting;
@@ -20,14 +17,22 @@ import java.util.Map;
  * Created by Kary on 2017/3/30.
  */
 public class DetailTableBuilder extends TableAbstractDataBuilder {
-    public DetailTableBuilder(Map<Integer, List<JSONObject>> dimAndTar, JSONObject dataJSON, BIStyleSetting styleSettings) throws Exception {
-        super(dimAndTar, dataJSON, styleSettings);
+    private List<DimAndTargetStyle> styles;
+
+    public DetailTableBuilder(Map<Integer, List<JSONObject>> viewMap, List<DimAndTargetStyle> dimAndTargetStyles, JSONObject dataJSON, BIStyleSetting styleSettings) throws Exception {
+        super(viewMap, dataJSON, styleSettings);
+        this.styles = dimAndTargetStyles;
     }
 
     @Override
     public void initAttrs() throws JSONException {
         initAllAttrs();
         refreshDimsInfo();
+    }
+
+    @Override
+    public void createTargetStyles() {
+
     }
 
     @Override
@@ -85,4 +90,5 @@ public class DetailTableBuilder extends TableAbstractDataBuilder {
     private boolean isDimensionUsable(String id) throws Exception {
         return BITableExportDataHelper.isDimUsed(dimAndTar, id);
     }
+
 }
