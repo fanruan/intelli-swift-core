@@ -97,9 +97,27 @@ public class VanDotWidget extends VanCartesianWidget{
             legend.put("range", this.mapStyleToRange(settings.optJSONArray("fixedStyle")));
         }else{
             legend.put("continuous", true);
+            legend.put("range", this.gradualStyleToRange(settings.optJSONArray("gradientStyle")));
         }
 
         return legend;
+    }
+
+
+    private JSONObject gradualStyleToRange(JSONArray style) throws JSONException{
+        JSONArray colors = JSONArray.create();
+
+        int count = style.length();
+        double max = style.getJSONObject(count - 1).optJSONObject("range").optDouble("max");
+
+        for(int i = 0, len = style.length(); i < len; i++){
+            JSONObject config = style.getJSONObject(i);
+            JSONObject range = config.optJSONObject("range"), colorRange = config.optJSONObject("color_range");
+            double from = range.optDouble("min") / max;
+            colors.put(JSONArray.create().put(from).put(colorRange.optString("from_color")));
+        }
+
+        return JSONObject.create().put("color", colors);
     }
 
     protected String getLegendType(){

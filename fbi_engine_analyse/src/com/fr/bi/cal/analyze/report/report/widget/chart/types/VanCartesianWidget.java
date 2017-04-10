@@ -98,7 +98,7 @@ public abstract class VanCartesianWidget extends VanChartWidget {
             BILoggerFactory.getLogger().error(e.getMessage(),e);
         }
 
-        return String.format("function(){return FR.contentFormat(arguments[0], \"%s\")}", hasSeparator ? "#,###.##" : "#.##");
+        return String.format("function(){return BI.contentFormat(arguments[0], \"%s\")}", hasSeparator ? "#,###.##" : "#.##");
     }
 
     //值标签和小数位数，千分富符，数量级和单位构成的后缀

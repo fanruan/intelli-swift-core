@@ -449,7 +449,7 @@ public abstract class VanChartWidget extends TableWidget {
 
         String format = this.valueFormat(dimension, isTooltip);
 
-        return String.format("function(){return FR.contentFormat(arguments[0], \"%s\")}", format);
+        return String.format("function(){return BI.contentFormat(arguments[0], \"%s\")}", format);
     }
 
     protected String valueFormat(BISummaryTarget dimension, boolean isTooltip){
@@ -471,11 +471,11 @@ public abstract class VanChartWidget extends TableWidget {
     }
 
     protected String intervalLegendFormatter(String format){
-        return String.format("function(){return FR.contentFormat(arguments[0].from, \"%s\") + \"-\" + FR.contentFormat(arguments[0].to, \"%s\")}", format, format);
+        return String.format("function(){return BI.contentFormat(arguments[0].from, \"%s\") + \"-\" + BI.contentFormat(arguments[0].to, \"%s\")}", format, format);
     }
 
     protected String gradualLegendFormatter(String format){
-        return String.format("function(){return FR.contentFormat(arguments[0], \"%s\")}", format);
+        return String.format("function(){return BI.contentFormat(arguments[0], \"%s\")}", format);
     }
 
     protected void formatSeriesTooltipFormat(JSONObject options) throws Exception{
