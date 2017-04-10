@@ -43,7 +43,7 @@ BI.AnalysisETLDetailSelectDataLevel0Item = BI.inherit(BI.Single, {
         this.button = BI.createWidget({
             type: "bi.blank_icon_text_item",
             // trigger: "mousedown",
-            cls: "select-data-level0-item-button " + this._getFieldClass(this._createNewType(o.fieldType, o.value["group"])),
+            cls: "select-data-level0-item-button bi-list-item-select " + this._getFieldClass(this._createNewType(o.fieldType, o.value["group"])),
             forceNotSelected: true,
             blankWidth: o.layer * 20,
             text: o.text,
