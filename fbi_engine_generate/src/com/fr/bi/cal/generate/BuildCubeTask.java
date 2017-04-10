@@ -103,7 +103,6 @@ public class BuildCubeTask implements CubeTask {
 
     @Override
     public void start() {
-//        BIConfigureManagerCenter.getLogManager().logStart(biUser.getUserId());
         BILoggerFactory.clearLoggerCacheValue(BILogConstant.LOG_CACHE_TAG.CUBE_GENERATE_EXCEPTION_INFO);
         BILoggerFactory.clearLoggerCacheValue(BILogConstant.LOG_CACHE_TAG.CUBE_GENERATE_INFO);
         BILoggerFactory.cacheLoggerInfo(BILogConstant.LOG_CACHE_TAG.CUBE_GENERATE_INFO, BILogConstant.LOG_CACHE_SUB_TAG.CUBE_GENERATE_START, System.currentTimeMillis());

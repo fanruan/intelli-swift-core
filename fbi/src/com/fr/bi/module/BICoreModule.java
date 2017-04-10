@@ -650,11 +650,6 @@ public class BICoreModule extends AbstractModule {
 
     }
 
-    @Override
-    public Collection<BIPackageID> getAuthAvailablePackID(long userId) {
-        return null;
-    }
-
     private void registerSystemManager() {
     }
 
