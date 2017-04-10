@@ -1,4 +1,4 @@
-package excelExport;
+package com.fr.bi.cal.analyze.report.report.widget.chart.excelExport.table.manager;
 
 import com.fr.bi.cal.analyze.report.report.widget.TableWidget;
 

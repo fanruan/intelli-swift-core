@@ -1,19 +1,13 @@
-package excelExport;
+package com.fr.bi.cal.analyze.report.report.widget.chart.excelExport.table.manager;
 
 import com.fr.bi.cal.analyze.report.report.widget.TableWidget;
-import com.fr.bi.cal.analyze.report.report.widget.chart.export.basic.BIExcelTableData;
-import com.fr.bi.cal.analyze.report.report.widget.chart.export.basic.IExcelDataBuilder;
-import com.fr.bi.cal.analyze.report.report.widget.chart.export.calculator.SummaryCrossTableDataBuilder;
-import com.fr.bi.cal.analyze.report.report.widget.chart.export.calculator.SummaryGroupTableDataBuilder;
-import com.fr.bi.cal.analyze.report.report.widget.chart.export.manager.TableDirector;
-import com.fr.bi.cal.analyze.report.report.widget.styles.BIStyleReportSetting;
-import com.fr.bi.conf.report.style.ChartSetting;
+import com.fr.bi.cal.analyze.report.report.widget.chart.excelExport.table.manager.widget.WidgetDataTool;
+import com.fr.bi.cal.analyze.report.report.widget.chart.excelExport.table.manager.widget.WidgetStructureTool;
+import com.fr.bi.cal.analyze.report.report.widget.chart.excelExport.table.summary.basic.BIExcelTableData;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
-import excelExport.widget.WidgetDataTool;
-import excelExport.widget.WidgetStructureTool;
 import junit.framework.TestCase;
 import org.junit.Before;
 
@@ -41,24 +35,22 @@ public class ExcelExportDataBuildFactoryTest extends TestCase {
 
     /*普通汇总表，单维度*/
     private void testNormalSummaryTableWithSingleDim(TableWidget widget, JSONObject dataJson) throws Exception {
-        Map<Integer, List<JSONObject>> viewMap = widget.createViewMap();
-        SummaryGroupTableDataBuilder builder = new SummaryGroupTableDataBuilder(viewMap, new ArrayList<ChartSetting>(), dataJson, new BIStyleReportSetting());
-        BIExcelTableData excelTableData = createBIExcelTableData(builder);
+        Map<Integer, List<JSONObject>> viewMap = ExcelExportDataBuildFactory.createViewMap(widget);
+        BIExcelTableData excelTableData = ExcelExportDataBuildFactory.createExportData(viewMap, dataJson);
         List headers = excelTableData.getHeaders();
         assertTrue(headers.size() == calculateNormalHeadersCount(viewMap));
-        JSONObject result = excelTableData.getItems().get(0).createJSON();
+        JSONObject result = excelTableData.getItems().getJSONObject(0);
         assertTrue(dataJson.getJSONArray("s").getString(0).equals(result.getJSONArray("values").getJSONObject(0).getString("text")));
         assertTrue(dataJson.getJSONArray("c").length() == result.getJSONArray("children").length());
     }
 
     /*普通汇总表，多维度*/
     private void testNormalSummaryTableWithMultiDims(TableWidget widget, JSONObject dataJson) throws Exception {
-        Map<Integer, List<JSONObject>> viewMap = widget.createViewMap();
-        SummaryGroupTableDataBuilder builder = new SummaryGroupTableDataBuilder(viewMap, new ArrayList<ChartSetting>(), dataJson, new BIStyleReportSetting());
-        BIExcelTableData biExcelTableData = createBIExcelTableData(builder);
-        List headers = biExcelTableData.getHeaders();
+        Map<Integer, List<JSONObject>> viewMap = ExcelExportDataBuildFactory.createViewMap(widget);
+        BIExcelTableData excelTableData = ExcelExportDataBuildFactory.createExportData(viewMap, dataJson);
+        List headers = excelTableData.getHeaders();
         assertTrue(headers.size() == calculateNormalHeadersCount(viewMap));
-        JSONObject result = biExcelTableData.getItems().get(0).createJSON();
+        JSONObject result = excelTableData.getItems().getJSONObject(0);
         assertTrue(dataJson.getJSONArray("s").getString(0).equals(result.getJSONArray("values").getJSONObject(0).getString("text")));
         JSONArray dataChildren = dataJson.getJSONArray("c");
         JSONArray resultChildren = result.getJSONArray("children");
@@ -72,15 +64,14 @@ public class ExcelExportDataBuildFactoryTest extends TestCase {
     public void testNormalCrossTable() throws Exception {
         widget = WidgetStructureTool.createCrossTableTableWidget();
         dataJson = WidgetDataTool.getNormalCrossData();
-        Map<Integer, List<JSONObject>> viewMap = widget.createViewMap();
-        SummaryCrossTableDataBuilder builder = new SummaryCrossTableDataBuilder(viewMap, new ArrayList<ChartSetting>(), dataJson, new BIStyleReportSetting());
-        BIExcelTableData excelTableData = createBIExcelTableData(builder);
+        Map<Integer, List<JSONObject>> viewMap = ExcelExportDataBuildFactory.createViewMap(widget);
+        BIExcelTableData excelTableData = ExcelExportDataBuildFactory.createExportData(viewMap, dataJson);
         int count = viewMap.get(Integer.valueOf(BIReportConstant.REGION.DIMENSION1)).size() + viewMap.get(Integer.valueOf(BIReportConstant.REGION.TARGET1)).size();
         assertTrue(excelTableData.getHeaders().size() == dataJson.getJSONObject("t").getJSONArray("c").length() + count);
-        assertTrue(excelTableData.getCrossHeaders().size() == viewMap.get(Integer.valueOf(BIReportConstant.REGION.DIMENSION2)).size());
-        assertTrue(excelTableData.getItems().get(0).getChildren().size() == dataJson.getJSONObject("l").getJSONArray("c").length());
-        assertTrue(excelTableData.getItems().get(0).getValue().length() == dataJson.getJSONObject("t").getJSONArray("c").length() + summaryCount);
-    }
+        assertTrue(excelTableData.getCrossHeaders().length()==viewMap.get(Integer.valueOf(BIReportConstant.REGION.DIMENSION2)).size());
+        assertTrue(excelTableData.getItems().getJSONObject(0).getJSONArray("children").length()== dataJson.getJSONObject("l").getJSONArray("c").length());
+        assertTrue(excelTableData.getItems().getJSONObject(0).getJSONArray("values").length()== dataJson.getJSONObject("t").getJSONArray("c").length()+summaryCount);
+            }
 
     private int calculateNormalHeadersCount(Map<Integer, List<JSONObject>> viewMap) {
         int count = 0;
@@ -92,8 +83,8 @@ public class ExcelExportDataBuildFactoryTest extends TestCase {
 
     public void testCreateViewMap() throws Exception {
         Map<Integer, List<JSONObject>> testMap = WidgetStructureTool.createViews();
-        widget = WidgetStructureTool.createNormalTableTableWidget();
-        Map<Integer, List<JSONObject>> viewMap = widget.createViewMap();
+        widget=WidgetStructureTool.createNormalTableTableWidget();
+        Map<Integer, List<JSONObject>> viewMap = ExcelExportDataBuildFactory.createViewMap(widget);
         assertTrue(testMap.size() == viewMap.size());
         Iterator<Integer> iterator = testMap.keySet().iterator();
         while (iterator.hasNext()) {
@@ -122,12 +113,5 @@ public class ExcelExportDataBuildFactoryTest extends TestCase {
                 assertTrue(testObject.getString("text").equals(viewObject.getString("text")));
             }
         }
-    }
-
-    private BIExcelTableData createBIExcelTableData(IExcelDataBuilder builder) throws Exception {
-        TableDirector director = new TableDirector(builder);
-        director.construct();
-        director.buildTableData();
-        return director.buildTableData();
     }
 }
