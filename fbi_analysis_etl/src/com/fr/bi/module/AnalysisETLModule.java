@@ -122,6 +122,11 @@ public class AnalysisETLModule extends AbstractModule {
         PartCubeDataLoader.clearAll();
     }
 
+    @Override
+    public Collection<BIPackageID> getAuthAvailablePackID(long userId) {
+        return null;
+    }
+
     private void clearAnalysisSourceCaches() {
         for (BusinessTable table : BIAnalysisETLManagerCenter.getDataSourceManager().getAllBusinessTable()) {
             int tableType = table.getTableSource().getType();

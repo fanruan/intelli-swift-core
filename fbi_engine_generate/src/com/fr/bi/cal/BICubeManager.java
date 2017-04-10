@@ -40,9 +40,10 @@ public class BICubeManager implements BICubeManagerProvider {
 
     private CustomTableTask taskInfo;
 
-    private boolean isCubeBuilding = false;
-
     private CustomTaskBuilder customTaskBuilder = new CustomTaskBuilder();
+
+    private boolean isSingleTableCubeBuilding = false;
+    private boolean isAllCubeBuilding = false;
 
     private Object object = new Object();
 
@@ -58,7 +59,7 @@ public class BICubeManager implements BICubeManagerProvider {
                         while (true) {
                             try {
                                 taskInfo = CustomTaskQueue.getInstance().take();
-                                isCubeBuilding = true;
+                                startSingleTableBuilding(taskInfo.getUserId());
                                 BILoggerFactory.getLogger().info("Update table ID:" + taskInfo.baseTableSourceIdToString());
                                 int times = 0;
                                 for (int i = 0; i < retryTimes; i++) {
@@ -67,7 +68,7 @@ public class BICubeManager implements BICubeManagerProvider {
                                         for (CubeBuildStuff cubeBuildStuff : cubeBuildStuffList) {
                                             addTask(new BuildCubeTask(new BIUser(taskInfo.getUserId()), cubeBuildStuff), taskInfo.getUserId());
                                         }
-                                        isCubeBuilding = false;
+                                        finishSingleTableBuilding(taskInfo.getUserId());
                                         break;
                                     }
                                     long timeDelay = i * delayTimes;
@@ -83,10 +84,10 @@ public class BICubeManager implements BICubeManagerProvider {
                                 if (times == retryTimes) {
                                     BILoggerFactory.getLogger(this.getClass()).info("up to add SingleTable Cube Task retry times, Please add SingleTable Task again");
                                     BILoggerFactory.getLogger(this.getClass()).info("the SingleTable SourceId is: " + taskInfo.baseTableSourceIdToString());
-                                    isCubeBuilding = false;
+                                    finishSingleTableBuilding(taskInfo.getUserId());
                                 }
                             } catch (Exception e) {
-                                isCubeBuilding = false;
+                                finishSingleTableBuilding(taskInfo.getUserId());
                                 BILoggerFactory.getLogger(this.getClass()).error(e.getMessage(), e);
                             } finally {
                                 synchronized (object) {
@@ -270,8 +271,8 @@ public class BICubeManager implements BICubeManagerProvider {
     }
 
     @Override
-    public boolean hasWaitingTables() {
-        return CustomTaskQueue.getInstance().getSize() > 0 || isCubeBuilding;
+    public boolean isCubeBuilding() {
+        return CustomTaskQueue.getInstance().getSize() > 0 || isSingleTableCubeBuilding || isAllCubeBuilding;
     }
 
     @Override
@@ -308,12 +309,38 @@ public class BICubeManager implements BICubeManagerProvider {
 
     @Override
     public CubeTask buildCompleteStuff(long userId) {
-        return customTaskBuilder.buildCompleteStuff(userId);
+        startAllCubeBuilding(userId);
+        CubeTask cubeTask = customTaskBuilder.buildCompleteStuff(userId);
+        finishAllCubeBuilding(userId);
+        return cubeTask;
     }
 
     @Override
     public CubeTask buildStaff(long userId) {
-        return customTaskBuilder.buildStaff(userId);
+        startAllCubeBuilding(userId);
+        CubeTask cubeTask = customTaskBuilder.buildStaff(userId);
+        finishAllCubeBuilding(userId);
+        return cubeTask;
+    }
+
+    private void startAllCubeBuilding(long userId) {
+        BIConfigureManagerCenter.getLogManager().logAllCubeBuildingStatus(userId, true);
+        isAllCubeBuilding = true;
+    }
+
+    private void finishAllCubeBuilding(long userId) {
+        BIConfigureManagerCenter.getLogManager().logAllCubeBuildingStatus(userId, false);
+        isAllCubeBuilding = false;
+    }
+
+    private void startSingleTableBuilding(long userId) {
+        BIConfigureManagerCenter.getLogManager().logSingleTableBuildingStatus(userId, true);
+        isSingleTableCubeBuilding = true;
+    }
+
+    private void finishSingleTableBuilding(long userId) {
+        BIConfigureManagerCenter.getLogManager().logSingleTableBuildingStatus(userId, false);
+        isSingleTableCubeBuilding = false;
     }
 
     /**

@@ -103,13 +103,14 @@ public class BuildCubeTask implements CubeTask {
 
     @Override
     public void start() {
-        BIConfigureManagerCenter.getLogManager().logStart(biUser.getUserId());
+//        BIConfigureManagerCenter.getLogManager().logStart(biUser.getUserId());
         BILoggerFactory.clearLoggerCacheValue(BILogConstant.LOG_CACHE_TAG.CUBE_GENERATE_EXCEPTION_INFO);
         BILoggerFactory.clearLoggerCacheValue(BILogConstant.LOG_CACHE_TAG.CUBE_GENERATE_INFO);
         BILoggerFactory.cacheLoggerInfo(BILogConstant.LOG_CACHE_TAG.CUBE_GENERATE_INFO, BILogConstant.LOG_CACHE_SUB_TAG.CUBE_GENERATE_START, System.currentTimeMillis());
         BILoggerFactory.cacheLoggerInfo(BILogConstant.LOG_CACHE_TAG.CUBE_GENERATE_INFO, BILogConstant.LOG_CACHE_SUB_TAG.READ_ONLY_BUSINESS_TABLES_OF_TABLE_SOURCE_MAP, BILogHelper.getReadOnlyBusinessTablesOfTableSourceMap());
 
         BIConfigureManagerCenter.getLogManager().relationPathSet(cubeBuildStuff.getTableSourceRelationPathSet(), biUser.getUserId());
+        BIConfigureManagerCenter.getLogManager().relationSet(cubeBuildStuff.getTableSourceRelationSet(),biUser.getUserId());
         BIConfigureManagerCenter.getLogManager().cubeTableSourceSet(cubeBuildStuff.getSingleSourceLayers(), biUser.getUserId());
 
         PerformancePlugManager.getInstance().printSystemParameters();

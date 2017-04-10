@@ -172,7 +172,7 @@ public class ConstructedRootDimensionGroup extends RootDimensionGroup {
 
     }
 
-    private List<Node> filterAndSort(List<Node> children, int deep, Map<String, TargetCalculator> calculatorMap) {
+    private List<Node> filterAndSort(List<Node> children, final int deep, Map<String, TargetCalculator> calculatorMap) {
         DimensionFilter filter = filterDimension == null ? null : filterDimension[deep].getFilter();
         List<Node> results = new ArrayList<Node>();
         if (filter == null) {

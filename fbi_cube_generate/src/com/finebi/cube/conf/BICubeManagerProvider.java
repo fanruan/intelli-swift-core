@@ -74,7 +74,7 @@ public interface BICubeManagerProvider {
 
     Set<String> getCubeWaiting2GenerateTableSourceIds(long userId);
 
-    boolean hasWaitingTables();
+    boolean isCubeBuilding();
 
     void addCustomTableTask2Queue(long userId, List<String> baseTableSourceIds,
                                   List<Integer> updateTypes) throws InterruptedException;
