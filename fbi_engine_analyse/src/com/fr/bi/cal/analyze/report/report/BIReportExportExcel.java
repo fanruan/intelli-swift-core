@@ -141,7 +141,9 @@ public class BIReportExportExcel {
         JSONObject options;
         String key;
         if (widget instanceof VanChartWidget) {
-            options = jo;
+            JSONObject plotOptions = (JSONObject) jo.opt("plotOptions");
+            plotOptions.put("animation", false);
+            options = jo.put("plotOptions", plotOptions);
             key = "vanChartOptions";
         } else {
             options = ((TableWidget) widget).getPostOptions(sessionID);
