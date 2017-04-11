@@ -111,7 +111,7 @@ public class UserWidget implements Serializable {
                 rowCount++;
             }
 
-            if (v.size() != getPageSize()) {
+            if (!((TableWidget) widget).hasVerticalNextPage()) {
                 maxRow = rowCount;
                 break;
             }
@@ -124,6 +124,9 @@ public class UserWidget implements Serializable {
             ((TableWidget) widget).setComplexExpander(new ComplexAllExpander());
             ((TableWidget) widget).setOperator(op);
             Node n = (Node) ((TableWidget) widget).getExecutor(session).getCubeNode();
+            if (n.getFirstChild() == null) {
+                return values;
+            }
             while (n.getFirstChild() != null) {
                 n = n.getFirstChild();
             }

@@ -3,6 +3,7 @@ package com.fr.bi.field.target.calculator.cal;
 import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.api.ICubeTableService;
 import com.finebi.cube.conf.table.BusinessTable;
+import com.fr.bi.conf.report.widget.field.target.BITarget;
 import com.fr.bi.field.target.target.cal.BICalculateTarget;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.report.key.TargetGettingKey;
@@ -19,7 +20,7 @@ public abstract class CalCalculator implements TargetCalculator {
 
     protected BICalculateTarget target;
 
-    protected Map<String, TargetGettingKey> targetMap;
+    protected Map<String, BITarget> targetMap;
     private TargetGettingKey targetGettingKey;
 
     public CalCalculator(BICalculateTarget target) {

@@ -39,7 +39,7 @@ public class GroupUtils {
                 Node child = parent.getChild(data);
                 if (child == null) {
                     child = new Node(data, sumLength);
-                    if (data != BIBaseConstant.EMPTY_NODE_DATA || deep != 0) {
+                    if (deep != 0 || !isEmptyData(data)) {
                         parent.addChild(child);
                     }
                 }
@@ -55,6 +55,10 @@ public class GroupUtils {
         iterator.pageEnd();
         NodeUtils.setSiblingBetweenFirstAndLastChild(node);
         return new NodeAndPageInfo(node, iterator);
+    }
+
+    private static boolean isEmptyData(Object data) {
+        return data == BIBaseConstant.EMPTY_NODE_DATA || (data instanceof Double && Double.isNaN((Double)data));
     }
 
     /**

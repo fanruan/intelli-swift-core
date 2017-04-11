@@ -42,12 +42,14 @@ public class VanGisWidget extends VanChartWidget{
         JSONArray children = originData.getJSONArray("c");
         for(int i = 0, len = targetIDs.length; i < len; i++){
             String id = targetIDs[i];
+            double scale = this.numberScale(id);
             JSONArray data = JSONArray.create();
             for (int j = 0, count = children.length(); j < count; j++) {
                 JSONObject lObj = children.getJSONObject(j);
                 String lnglat = lObj.getString("n");
-                double value = lObj.getJSONArray("s").getDouble(i);
-                data.put(JSONObject.create().put("lnglat", lnglat.split(",")).put("value", value));
+                JSONArray s = lObj.getJSONArray("s");
+                double value = s.isNull(i) ? 0 : s.getDouble(i);
+                data.put(JSONObject.create().put("lnglat", lnglat.split(",")).put("value", value / scale));
             }
             JSONObject ser = JSONObject.create().put("data", data).put("name", this.getDimensionNameByID(id)).put("dimensionID", id);
             series.put(ser);

@@ -42,7 +42,8 @@ BI.AnalysisDetailDetailSelectDataNode = BI.inherit(BI.Widget, {
         if (!BI.Utils.isTableUsableByWidgetID(o.value, o.wId)) {
             this.setEnable(false);
         }
-        BI.Broadcasts.on(BICst.BROADCAST.DIMENSIONS_PREFIX + o.wId, function (tableId) {
+        this._broadcasts = [];
+        this._broadcasts.on(BI.Broadcasts.on(BICst.BROADCAST.DIMENSIONS_PREFIX + o.wId, function (tableId) {
             var enable = BI.Utils.isTableUsableByWidgetID(o.value, o.wId);
             if (enable === false) {
                 self.setEnable(false);
@@ -52,7 +53,7 @@ BI.AnalysisDetailDetailSelectDataNode = BI.inherit(BI.Widget, {
                 var dIds = BI.Utils.getAllDimensionIDs(o.wId);
                 var tIds = [];
                 //这个地方要排除计算指标，因为和计算指标没有tableId
-                var filterDIds = BI.filter(dIds,  function(idx, dId){
+                var filterDIds = BI.filter(dIds, function (idx, dId) {
                     return !BI.Utils.isCalculateTargetByDimensionID(dId);
                 });
                 BI.each(filterDIds, function (id, dId) {
@@ -62,10 +63,10 @@ BI.AnalysisDetailDetailSelectDataNode = BI.inherit(BI.Widget, {
                 enable = BI.Utils.isTableInRelativeTables(tIds, tableId);
             }
             self.setEnable(enable);
-        });
-        BI.Broadcasts.on(BICst.BROADCAST.DIMENSIONS_PREFIX + o.wId, function () {
+        }));
+        this._broadcasts.push(BI.Broadcasts.on(BICst.BROADCAST.DIMENSIONS_PREFIX + o.wId, function () {
             self.setValue([]);
-        });
+        }));
     },
 
     doRedMark: function () {
@@ -133,6 +134,13 @@ BI.AnalysisDetailDetailSelectDataNode = BI.inherit(BI.Widget, {
         }
         !b && this.node.isOpened() && this.node.triggerCollapse();
         this.node.setEnable(b);
+    },
+
+    destroyed: function () {
+        BI.each(this._broadcasts, function (i, removeBroadcast) {
+            removeBroadcast();
+        });
+        this._broadcasts = [];
     }
 });
 BI.shortcut("bi.analysis_detail_detail_select_data_level0_node", BI.AnalysisDetailDetailSelectDataNode);
