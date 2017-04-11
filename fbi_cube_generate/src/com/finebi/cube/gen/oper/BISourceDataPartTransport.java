@@ -133,7 +133,6 @@ public class BISourceDataPartTransport extends BISourceDataTransport {
             fieldList.get(i).setTableBelongTo(tableSource);
             cubeFieldSources[i] = fieldList.get(i);
         }
-
         long rowCount = tableEntityService.isVersionAvailable() ? tableEntityService.getRowCount() : 0;
         TreeSet<Integer> sortRemovedList = new TreeSet<Integer>(BIBaseConstant.COMPARATOR.COMPARABLE.ASC);
         if (tableEntityService.isRemovedListAvailable()) {
@@ -146,7 +145,6 @@ public class BISourceDataPartTransport extends BISourceDataTransport {
         Map<String, List<Object[]>> resultMap = preHandleSQLs(cubeFieldSources, addDateCondition(tableUpdateSetting.getPartDeleteSQL()),
                 addDateCondition(tableUpdateSetting.getPartAddSQL()),
                 addDateCondition(tableUpdateSetting.getPartModifySQL()));
-
           /*remove*/
         if (isLegalSQL(tableUpdateSetting.getPartDeleteSQL())) {
             String columnName = getKeyName(tableUpdateSetting.getPartDeleteSQL());
@@ -158,13 +156,11 @@ public class BISourceDataPartTransport extends BISourceDataTransport {
             }
 
         }
-
         /*add*/
         if (isLegalSQL(tableUpdateSetting.getPartAddSQL())) {
             rowCount = dealWidthAdd(resultMap.get(ADD), rowCount);
             tableEntityService.forceReleaseWriter();
         }
-
         /*modify*/
         if (isLegalSQL(tableUpdateSetting.getPartModifySQL())) {
             String columnName = getKeyName(tableUpdateSetting.getPartModifySQL());
@@ -373,7 +369,6 @@ public class BISourceDataPartTransport extends BISourceDataTransport {
         handleModify(modifyList);
         handleModifyAndDelete(modifyList, deleteList);
         handleModifyAndAdd(modifyList, addList);
-
         Map<String, List<Object[]>> resultMap = new HashMap<String, List<Object[]>>();
         resultMap.put(ADD, addList);
         resultMap.put(MODIFY, modifyList);
