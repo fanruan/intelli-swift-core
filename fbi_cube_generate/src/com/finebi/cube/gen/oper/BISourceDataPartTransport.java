@@ -28,6 +28,7 @@ import com.fr.bi.conf.provider.BILogManagerProvider;
 import com.fr.bi.data.DBQueryExecutor;
 import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.stable.constant.BILogConstant;
+import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.data.db.BIDataValue;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.bi.stable.data.db.SqlSettedStatement;
@@ -49,7 +50,13 @@ import com.fr.stable.collections.array.IntArray;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -58,7 +65,7 @@ import java.util.regex.Pattern;
  * Created by kary on 16/7/13.
  */
 public class BISourceDataPartTransport extends BISourceDataTransport {
-    private static final Logger logger = LoggerFactory.getLogger(BISourceDataPartTransport.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(BISourceDataPartTransport.class);
     private static String ADD = "add";
     private static String DELETE = "delete";
     private static String MODIFY = "modify";
@@ -73,18 +80,18 @@ public class BISourceDataPartTransport extends BISourceDataTransport {
     @Override
     public Object mainTask(IMessage lastReceiveMessage) {
         BILogManager biLogManager = StableFactory.getMarkedObject(BILogManagerProvider.XML_TAG, BILogManager.class);
-        logger.info(BIStringUtils.append("The table:", fetchTableInfo(), " start transport task",
+        LOGGER.info(BIStringUtils.append("The table:", fetchTableInfo(), " start transport task",
                 BILogHelper.logCubeLogTableSourceInfo(tableSource.getSourceID())));
         BILogHelper.cacheCubeLogTableNormalInfo(tableSource.getSourceID(), BILogConstant.LOG_CACHE_TIME_TYPE.TRANSPORT_EXECUTE_START, System.currentTimeMillis());
         long t = System.currentTimeMillis();
         try {
-            logger.info(BIStringUtils.append("The table:", fetchTableInfo(), " copy old FineIndex files"));
+            LOGGER.info(BIStringUtils.append("The table:", fetchTableInfo(), " copy old FineIndex files"));
             copyFromOldCubes();
             tableEntityService.recordCurrentExecuteTime();
-            logger.info(BIStringUtils.append("The table:", fetchTableInfo(), " record table structure info"));
+            LOGGER.info(BIStringUtils.append("The table:", fetchTableInfo(), " record table structure info"));
             recordTableInfo();
             long count = transport();
-            logger.info(BIStringUtils.append("The table:", fetchTableInfo(), " finish transportation operation and record ",
+            LOGGER.info(BIStringUtils.append("The table:", fetchTableInfo(), " finish transportation operation and record ",
                     String.valueOf(count), " records"));
             ICubeResourceDiscovery discovery = BIFactoryHelper.getObject(ICubeResourceDiscovery.class);
             ICubeResourceRetrievalService resourceRetrievalService = new BICubeResourceRetrieval(BICubeConfiguration.getTempConf(String.valueOf(UserControl.getInstance().getSuperManagerID())));
@@ -97,7 +104,7 @@ public class BISourceDataPartTransport extends BISourceDataTransport {
             tableEntityService.forceReleaseWriter();
             tableEntityService.clear();
             long tableCostTime = System.currentTimeMillis() - t;
-            System.out.println("table usage:" + tableCostTime);
+            LOGGER.info("transport cost time: " + tableCostTime + BILogHelper.logCubeLogTableSourceInfo(tableSource.getSourceID()));
             BILogHelper.cacheCubeLogTableNormalInfo(tableSource.getSourceID(), BILogConstant.LOG_CACHE_TIME_TYPE.TRANSPORT_EXECUTE_END, System.currentTimeMillis());
             try {
                 biLogManager.infoTable(tableSource.getPersistentTable(), tableCostTime, UserControl.getInstance().getSuperManagerID());
@@ -126,7 +133,6 @@ public class BISourceDataPartTransport extends BISourceDataTransport {
             fieldList.get(i).setTableBelongTo(tableSource);
             cubeFieldSources[i] = fieldList.get(i);
         }
-
         long rowCount = tableEntityService.isVersionAvailable() ? tableEntityService.getRowCount() : 0;
         TreeSet<Integer> sortRemovedList = new TreeSet<Integer>(BIBaseConstant.COMPARATOR.COMPARABLE.ASC);
         if (tableEntityService.isRemovedListAvailable()) {
@@ -139,7 +145,6 @@ public class BISourceDataPartTransport extends BISourceDataTransport {
         Map<String, List<Object[]>> resultMap = preHandleSQLs(cubeFieldSources, addDateCondition(tableUpdateSetting.getPartDeleteSQL()),
                 addDateCondition(tableUpdateSetting.getPartAddSQL()),
                 addDateCondition(tableUpdateSetting.getPartModifySQL()));
-
           /*remove*/
         if (isLegalSQL(tableUpdateSetting.getPartDeleteSQL())) {
             String columnName = getKeyName(tableUpdateSetting.getPartDeleteSQL());
@@ -151,13 +156,11 @@ public class BISourceDataPartTransport extends BISourceDataTransport {
             }
 
         }
-
         /*add*/
         if (isLegalSQL(tableUpdateSetting.getPartAddSQL())) {
             rowCount = dealWidthAdd(resultMap.get(ADD), rowCount);
             tableEntityService.forceReleaseWriter();
         }
-
         /*modify*/
         if (isLegalSQL(tableUpdateSetting.getPartModifySQL())) {
             String columnName = getKeyName(tableUpdateSetting.getPartModifySQL());
@@ -182,7 +185,11 @@ public class BISourceDataPartTransport extends BISourceDataTransport {
                 Object[] objects = addList.get(i);
                 if (objects != null) {
                     for (int column = 0; column < objects.length; column++) {
+                        List<ICubeFieldSource> fieldList = tableEntityService.getFieldInfo();
                         BIDataValue biDataValue = new BIDataValue(row, column, objects[column]);
+                        if (objects[column] == null && fieldList.get(column).getFieldType() == DBConstant.COLUMN.STRING) {
+                            biDataValue = new BIDataValue(row, column, "");
+                        }
                         tableEntityService.increaseAddDataValue(biDataValue);
                     }
                     row++;
@@ -280,7 +287,9 @@ public class BISourceDataPartTransport extends BISourceDataTransport {
             if (columnNum == 1) {
                 String columnName = BICubeDBUtils.getColumnName(connection, sqlStatement, sql);
                 ICubeFieldSource f = getCubeFieldSource(fields, columnName);
-                if (f == null) return null;
+                if (f == null) {
+                    return null;
+                }
                 if (tableSource.getType() == BIBaseConstant.TABLETYPE.DB) {
                     String dbName = ((DBTableSource) tableSource).getDbName();
                     Table table = new Table(BIConnectionManager.getBIConnectionManager().getSchema(dbName), tableSource.getTableName());
@@ -290,7 +299,7 @@ public class BISourceDataPartTransport extends BISourceDataTransport {
                     finalSql = ((SQLTableSource) tableSource).getQuery() + " t" + " WHERE " + "t." + columnName + " IN " + "(" + sql + ")";
                 }
             } else {
-                logger.error("SQL syntax error: " + tableSource.getTableName() + " columns length incorrect " + sql);
+                LOGGER.error("SQL syntax error: " + tableSource.getTableName() + " columns length incorrect " + sql);
             }
         } catch (Exception e) {
             throw BINonValueUtils.beyondControl(e.getMessage(), e);
@@ -303,12 +312,12 @@ public class BISourceDataPartTransport extends BISourceDataTransport {
 
     private boolean isLegalSQL(String sql) {
         BINonValueUtils.checkNull(sql);
-        logger.info(BIStringUtils.append(BILogHelper.logTableSource(tableSource, " "), " check the sql", sql));
+        LOGGER.info(BIStringUtils.append(BILogHelper.logTableSource(tableSource, " "), " check the sql", sql));
         if (BIStringUtils.isEmptyString(sql) || BIStringUtils.isBlankString(sql)) {
-            logger.info(BIStringUtils.append(BILogHelper.logTableSource(tableSource, " "), " the sql is blank"));
+            LOGGER.info(BIStringUtils.append(BILogHelper.logTableSource(tableSource, " "), " the sql is blank"));
             return false;
         } else if (!containSelect(sql)) {
-            logger.info(BIStringUtils.append(BILogHelper.logTableSource(tableSource, " "), " the sql should be used to query and must contain keyword select "));
+            LOGGER.info(BIStringUtils.append(BILogHelper.logTableSource(tableSource, " "), " the sql should be used to query and must contain keyword select "));
             return false;
         }
         return true;
@@ -320,7 +329,6 @@ public class BISourceDataPartTransport extends BISourceDataTransport {
     }
 
     private Map<String, List<Object[]>> preHandleSQLs(ICubeFieldSource[] fields, String partDeleteSQL, String partAddSQL, String partModifySQL) {
-
         List<Object[]> addList = new ArrayList<Object[]>();
         List<Object[]> deleteList = new ArrayList<Object[]>();
         List<Object[]> modifyList = new ArrayList<Object[]>();
@@ -328,29 +336,28 @@ public class BISourceDataPartTransport extends BISourceDataTransport {
          * 添加删除SQL或者修改SQL为空的情况。
          */
         if (isLegalSQL(partAddSQL)) {
-            logger.info("The table: " + BILogHelper.logTableSource(tableSource, " ") + "execute sql:#" + partAddSQL + "# to add data");
+            LOGGER.info("The table: " + BILogHelper.logTableSource(tableSource, " ") + "execute sql:#" + partAddSQL + "# to add data");
             addList = executeSQL(fields, partAddSQL);
         } else {
-            logger.warn("The table: " + BILogHelper.logTableSource(tableSource, " ") + ", it's add sql is empty");
+            LOGGER.warn("The table: " + BILogHelper.logTableSource(tableSource, " ") + ", it's add sql is empty");
         }
         if (isLegalSQL(partDeleteSQL)) {
-            logger.info("The table: " + BILogHelper.logTableSource(tableSource, " ") + "execute sql:#" + partAddSQL + "# to delete data");
+            LOGGER.info("The table: " + BILogHelper.logTableSource(tableSource, " ") + "execute sql:#" + partAddSQL + "# to delete data");
             deleteList = executeSQL(new ICubeFieldSource[]{getCubeFieldSource(fields, getKeyName(partDeleteSQL))}, partDeleteSQL);
         } else {
-            logger.warn("The table: " + BILogHelper.logTableSource(tableSource, " ") + ", it's delete sql is empty");
+            LOGGER.warn("The table: " + BILogHelper.logTableSource(tableSource, " ") + ", it's delete sql is empty");
         }
         if (isLegalSQL(partModifySQL)) {
-            logger.info("The table: " + BILogHelper.logTableSource(tableSource, " ") + "execute sql:#" + partAddSQL + "# to update data");
+            LOGGER.info("The table: " + BILogHelper.logTableSource(tableSource, " ") + "execute sql:#" + partAddSQL + "# to update data");
 
             modifyList = executeSQL(fields, getModifySql(fields, partModifySQL));
         } else {
-            logger.warn("The table: " + BILogHelper.logTableSource(tableSource, " ") + ", it's modify sql is empty");
+            LOGGER.warn("The table: " + BILogHelper.logTableSource(tableSource, " ") + ", it's modify sql is empty");
 
         }
-
    /*
         * 预处理逻辑：对于同一条Key的记录
-        * 1. 新增中出现n次，修改中出现n-1次，则处理后新增留一次，删除中没有该记录
+        * 1. 新增中出现n次，删除中出现n-1次，则处理后新增留一次，删除中没有该记录
         * 2. 修改中出现n次，处理后则留一次
         *
         * 经过1处理后，某个key的记录最多在新增中出现一次或在删除中出现一次
@@ -364,12 +371,10 @@ public class BISourceDataPartTransport extends BISourceDataTransport {
         handleModify(modifyList);
         handleModifyAndDelete(modifyList, deleteList);
         handleModifyAndAdd(modifyList, addList);
-
         Map<String, List<Object[]>> resultMap = new HashMap<String, List<Object[]>>();
         resultMap.put(ADD, addList);
         resultMap.put(MODIFY, modifyList);
         resultMap.put(DELETE, deleteList);
-
         return resultMap;
     }
 

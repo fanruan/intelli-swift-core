@@ -1,7 +1,8 @@
 package com.fr.bi.field.target.calculator.cal.configure;
 
+import com.fr.bi.conf.report.widget.field.target.BITarget;
 import com.fr.bi.field.target.target.cal.target.configure.BIConfiguredCalculateTarget;
-import com.fr.bi.stable.report.key.TargetGettingKey;
+import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.report.result.BICrossNode;
 import com.fr.bi.stable.report.result.BINode;
 
@@ -13,9 +14,11 @@ import java.util.concurrent.Callable;
 public class SumOfAllCalculator extends SummaryOfAllCalculator {
 
     private static final long serialVersionUID = 1511004295587426830L;
+    private BITarget calTarget;
 
-    public SumOfAllCalculator(BIConfiguredCalculateTarget target, TargetGettingKey calTargetKey, int start_group) {
-        super(target, calTargetKey, start_group);
+    public SumOfAllCalculator(BIConfiguredCalculateTarget target, BITarget calTarget, int start_group) {
+        super(target, calTarget.createTargetGettingKey(), start_group);
+        this.calTarget = calTarget;
     }
 
 
@@ -43,12 +46,16 @@ public class SumOfAllCalculator extends SummaryOfAllCalculator {
             BINode temp_node = getDeepCalNode(rank_node);
             BINode cursor_node = temp_node;
             double sum = 0;
-            while (isNotEnd(cursor_node, deep)) {
-                Number value = cursor_node.getSummaryValue(calTargetKey);
-                if (value != null) {
-                    sum += value.doubleValue();
+            if (calTarget.getSummaryType() == BIReportConstant.SUMMARY_TYPE.SUM || calTarget.getSummaryType() == BIReportConstant.SUMMARY_TYPE.COUNT){
+                sum = rank_node.getSummaryValue(calTargetKey).doubleValue();
+            } else {
+                while (isNotEnd(cursor_node, deep)) {
+                    Number value = cursor_node.getSummaryValue(calTargetKey);
+                    if (value != null) {
+                        sum += value.doubleValue();
+                    }
+                    cursor_node = cursor_node.getSibling();
                 }
-                cursor_node = cursor_node.getSibling();
             }
             cursor_node = temp_node;
             Double value = new Double(sum);
@@ -87,12 +94,16 @@ public class SumOfAllCalculator extends SummaryOfAllCalculator {
             BICrossNode temp_node = getFirstCalCrossNode(rank_node);
             BICrossNode cursor_node = temp_node;
             double sum = 0;
-            while (isNotEnd(cursor_node, deep)) {
-                Number value = cursor_node.getSummaryValue(calTargetKey);
-                if (value != null) {
-                    sum += value.doubleValue();
+            if (calTarget.getSummaryType() == BIReportConstant.SUMMARY_TYPE.SUM || calTarget.getSummaryType() == BIReportConstant.SUMMARY_TYPE.COUNT){
+                sum = rank_node.getSummaryValue(calTargetKey).doubleValue();
+            } else {
+                while (isNotEnd(cursor_node, deep)) {
+                    Number value = cursor_node.getSummaryValue(calTargetKey);
+                    if (value != null) {
+                        sum += value.doubleValue();
+                    }
+                    cursor_node = cursor_node.getBottomSibling();
                 }
-                cursor_node = cursor_node.getBottomSibling();
             }
             cursor_node = temp_node;
             Number value = new Double(sum);

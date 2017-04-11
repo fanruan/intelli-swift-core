@@ -76,4 +76,9 @@ public class BIDebugModule extends AbstractModule {
 
     }
 
+    @Override
+    public Collection<BIPackageID> getAuthAvailablePackID(long userId) {
+        return getAvailablePackID(userId);
+    }
+
 }

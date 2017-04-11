@@ -4,7 +4,12 @@ import com.finebi.cube.api.ICubeDataLoader;
 import com.fr.base.TableData;
 import com.fr.bi.base.BICore;
 import com.fr.bi.common.inter.Traversal;
-import com.fr.bi.stable.data.db.*;
+import com.fr.bi.stable.constant.BIBaseConstant;
+import com.fr.bi.stable.data.db.BICubeFieldSource;
+import com.fr.bi.stable.data.db.BIDataValue;
+import com.fr.bi.stable.data.db.ICubeFieldSource;
+import com.fr.bi.stable.data.db.IPersistentTable;
+import com.fr.bi.stable.data.db.PersistentTable;
 import com.fr.bi.stable.data.source.AbstractTableSource;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.data.source.SourceFile;
@@ -12,7 +17,11 @@ import com.fr.json.JSONObject;
 import com.fr.stable.xml.XMLPrintWriter;
 import com.fr.stable.xml.XMLableReader;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * This class created on 2016/4/10.
@@ -148,6 +157,11 @@ public class BIMemoryDataSource extends AbstractTableSource {
     }
 
     @Override
+    public String getModuleName() {
+        return BIBaseConstant.MODULE_NAME.CORE_MODULE;
+    }
+
+    @Override
     public BICore fetchObjectCore() {
         return null;
     }
@@ -174,8 +188,12 @@ public class BIMemoryDataSource extends AbstractTableSource {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof BIMemoryDataSource)) return false;
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof BIMemoryDataSource)) {
+            return false;
+        }
 
         BIMemoryDataSource that = (BIMemoryDataSource) o;
 
