@@ -6,6 +6,7 @@ import com.finebi.cube.conf.BIAliasManagerProvider;
 import com.finebi.cube.conf.BIDataSourceManagerProvider;
 import com.finebi.cube.conf.BISystemPackageConfigurationProvider;
 import com.finebi.cube.conf.pack.data.BIPackageID;
+import com.finebi.cube.conf.pack.data.IBusinessPackageGetterService;
 import com.finebi.cube.conf.table.BusinessTable;
 import com.fr.bi.cluster.ClusterAdapter;
 import com.fr.bi.cluster.utils.ClusterEnv;
@@ -104,6 +105,21 @@ public class AnalysisETLModule extends AbstractModule {
         List<BIPackageID> list = new ArrayList<BIPackageID>();
         list.add(new BIPackageID(Constants.PACK_ID));
         return list;
+    }
+
+    @Override
+    public Collection<BIPackageID> getAuthAvailablePackID(long userId) {
+        List<BIPackageID> list = new ArrayList<BIPackageID>();
+        BISystemPackageConfigurationProvider provider = getBusiPackManagerProvider();
+        if(provider == null){
+            return list;
+        }else {
+            for (IBusinessPackageGetterService pack : provider.getAllPackages(userId)) {
+                list.add(pack.getID());
+            }
+        }
+        return list;
+
     }
 
     @Override
