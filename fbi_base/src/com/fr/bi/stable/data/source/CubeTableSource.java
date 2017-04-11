@@ -131,4 +131,6 @@ public interface CubeTableSource extends XMLable, JSONCreator, BICoreService, Cl
      */
     boolean hasAbsentFields();
 
+    String getModuleName();
+
 }
