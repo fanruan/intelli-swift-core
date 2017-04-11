@@ -1,11 +1,9 @@
 package com.fr.bi.cal.analyze.report.report.widget.chart.export.calculator;
 
-import com.fr.bi.cal.analyze.report.report.widget.chart.export.basic.BIBasicTableItem;
-import com.fr.bi.cal.analyze.report.report.widget.chart.export.basic.BIExcelTableData;
-import com.fr.bi.cal.analyze.report.report.widget.chart.export.basic.ITableHeader;
-import com.fr.bi.cal.analyze.report.report.widget.chart.export.basic.ITableItem;
+import com.fr.bi.cal.analyze.report.report.widget.chart.export.basic.*;
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.utils.BITableExportDataHelper;
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.utils.SummaryTableStyleHelper;
+import com.fr.bi.cal.analyze.report.report.widget.styles.BIStyleSetting;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
@@ -19,14 +17,22 @@ import java.util.Map;
  * Created by Kary on 2017/3/30.
  */
 public class DetailTableBuilder extends TableAbstractDataBuilder {
-    public DetailTableBuilder(Map<Integer, List<JSONObject>> dimAndTar, JSONObject dataJSON) throws Exception {
-        super(dimAndTar, dataJSON);
+    private List<DimAndTargetStyle> styles;
+
+    public DetailTableBuilder(Map<Integer, List<JSONObject>> viewMap, List<DimAndTargetStyle> dimAndTargetStyles, JSONObject dataJSON, BIStyleSetting styleSettings) throws Exception {
+        super(viewMap, dataJSON, styleSettings);
+        this.styles = dimAndTargetStyles;
     }
 
     @Override
     public void initAttrs() throws JSONException {
         initAllAttrs();
         refreshDimsInfo();
+    }
+
+    @Override
+    public void createTargetStyles() {
+
     }
 
     @Override
@@ -72,7 +78,7 @@ public class DetailTableBuilder extends TableAbstractDataBuilder {
                 item.setType("bi.detail_table_cell");
                 item.setDId(dimIds.get(j));
                 item.setText(itemArray.isNull(j) ? "" : itemArray.getString(j));
-                item.setStyle(SummaryTableStyleHelper.getBodyStyles("", ""));
+                item.setStyle(SummaryTableStyleHelper.getBodyStyles(styleSetting.getThemeStyle(), styleSetting.getWsTableStyle(), j));
                 rowItems.add(item);
             }
         }
@@ -84,4 +90,5 @@ public class DetailTableBuilder extends TableAbstractDataBuilder {
     private boolean isDimensionUsable(String id) throws Exception {
         return BITableExportDataHelper.isDimUsed(dimAndTar, id);
     }
+
 }

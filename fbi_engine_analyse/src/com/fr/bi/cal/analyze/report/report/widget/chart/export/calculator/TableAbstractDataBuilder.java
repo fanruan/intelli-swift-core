@@ -1,14 +1,11 @@
 package com.fr.bi.cal.analyze.report.report.widget.chart.export.calculator;
 
-import com.fr.bi.cal.analyze.report.report.widget.chart.export.basic.IExcelDataBuilder;
-import com.fr.bi.cal.analyze.report.report.widget.chart.export.basic.ITableHeader;
-import com.fr.bi.cal.analyze.report.report.widget.chart.export.basic.ITableItem;
+import com.fr.bi.cal.analyze.report.report.widget.chart.export.basic.*;
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.utils.node.ReportNode;
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.utils.node.ReportNodeTree;
-import com.fr.bi.cal.analyze.report.report.widget.chart.export.basic.BIBasicTableItem;
-import com.fr.bi.cal.analyze.report.report.widget.chart.export.basic.BITableHeader;
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.utils.BITableExportDataHelper;
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.utils.SummaryTableStyleHelper;
+import com.fr.bi.cal.analyze.report.report.widget.styles.BIStyleSetting;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.utils.program.BIJsonUtils;
@@ -37,15 +34,17 @@ public abstract class TableAbstractDataBuilder implements IExcelDataBuilder {
 
     protected JSONObject dataJSON;
     Map<Integer, List<JSONObject>> dimAndTar;
+    BIStyleSetting styleSetting;
     protected ReportNodeTree tree;
     protected List<String> dimIds;
     protected List<String> targetIds;
     private boolean showColTotal = true;
     private static final String EMPTY_VALUE = "--";
 
-    public TableAbstractDataBuilder(Map<Integer, List<JSONObject>> dimAndTar, JSONObject dataJSON) throws Exception {
+    public TableAbstractDataBuilder(Map<Integer, List<JSONObject>> dimAndTar, JSONObject dataJSON, BIStyleSetting styleSettings) throws Exception {
         this.dataJSON = dataJSON;
         this.dimAndTar = dimAndTar;
+        this.styleSetting = styleSettings;
     }
 
     protected void initAllAttrs() {
@@ -318,8 +317,7 @@ public abstract class TableAbstractDataBuilder implements IExcelDataBuilder {
             BIBasicTableItem ob = new BIBasicTableItem();
             ob.setType("bi.page_table_cell");
             ob.setText(BITableExportDataHelper.getDimensionNameByID(dimAndTar, targetIds.get(i)));
-//            ob.setStyle("BI.SummaryTableHelper.getBodyStyles(self.themeColor, self.tableStyle, i)");
-            ob.setStyle(SummaryTableStyleHelper.getBodyStyles("", ""));
+            ob.setStyle(SummaryTableStyleHelper.getBodyStyles(styleSetting.getThemeStyle(), styleSetting.getWsTableStyle(), i));
             BIBasicTableItem child = new BIBasicTableItem();
             List<ITableItem> childItems = new ArrayList<ITableItem>();
             childItems.add(ob);
@@ -348,8 +346,7 @@ public abstract class TableAbstractDataBuilder implements IExcelDataBuilder {
                         BIBasicTableItem ob = new BIBasicTableItem();
                         ob.setText("bi.target_body_normal_cell");
                         ob.setText(child.getJSONArray("s").getString(j));
-//                        ob.setStyle("BI.SummaryTableHelper.getBodyStyles(self.themeColor, self.tableStyle, j)");
-                        ob.setStyle(SummaryTableStyleHelper.getBodyStyles("", ""));
+                        ob.setStyle(SummaryTableStyleHelper.getBodyStyles(styleSetting.getThemeStyle(), styleSetting.getWsTableStyle(), j));
                         ob.setDId(targetIds.get(j));
                         ob.setClicked(new JSONArray().put(crossPV.getString(indexOB.getInt("cIndex"))));
                         List<ITableItem> tempChild = items.get(j).getChildren();
@@ -370,7 +367,7 @@ public abstract class TableAbstractDataBuilder implements IExcelDataBuilder {
                     BIBasicTableItem ob = new BIBasicTableItem();
                     ob.setType("bi.target_body_normal_cell");
                     ob.setText(s.getString(j));
-                    ob.setStyle(SummaryTableStyleHelper.getBodyStyles("", ""));
+                    ob.setStyle(SummaryTableStyleHelper.getBodyStyles(styleSetting.getThemeStyle(), styleSetting.getWsTableStyle(), j));
                     ob.setDId(targetIds.get(j));
                     ob.setClicked(new JSONArray().put(crossPV.getString(indexOB.getInt("cIndex"))));
                     items.get(j).getChildren().get(0).getValue().put(ob.createJSON());
@@ -665,7 +662,8 @@ public abstract class TableAbstractDataBuilder implements IExcelDataBuilder {
                 item.setType("bi.normal_expander_cell");
                 item.setText(child.getString("n"));
                 item.setDId(currDid);
-                item.setStyle(SummaryTableStyleHelper.getBodyStyles("", ""));
+
+                item.setStyle(SummaryTableStyleHelper.getBodyStyles(styleSetting.getThemeStyle(), styleSetting.getWsTableStyle(), i));
                 //展开情况——最后一层没有这个展开按钮
                 if (currentLayer < dimIds.size()) {
                     item.setNeedExpand(true);
@@ -841,4 +839,8 @@ public abstract class TableAbstractDataBuilder implements IExcelDataBuilder {
     protected void setOtherAttrs() {
     }
 
+    @Override
+    public void createTargetStyles() {
+
+    }
 }
