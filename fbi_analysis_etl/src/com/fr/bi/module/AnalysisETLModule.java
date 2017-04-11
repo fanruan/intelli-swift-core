@@ -120,6 +120,21 @@ public class AnalysisETLModule extends AbstractModule {
     }
 
     @Override
+    public Collection<BIPackageID> getAuthAvailablePackID(long userId) {
+        List<BIPackageID> list = new ArrayList<BIPackageID>();
+        BISystemPackageConfigurationProvider provider = getBusiPackManagerProvider();
+        if(provider == null){
+            return list;
+        }else {
+            for (IBusinessPackageGetterService pack : provider.getAllPackages(userId)) {
+                list.add(pack.getID());
+            }
+        }
+        return list;
+
+    }
+
+    @Override
     public void clearAnalysisETLCache(long userId) {
         Map<BusinessTable, CubeTableSource> refreshTables = new HashMap<BusinessTable, CubeTableSource>();
         for (BusinessTable table : BIAnalysisETLManagerCenter.getDataSourceManager().getAllBusinessTable()) {

@@ -30,8 +30,8 @@ BI.AnalysisETLDetailSelectDataLevel0Item = BI.inherit(BI.Single, {
         }
     },
 
-    _createNewType : function (type, group) {
-        if(type ===  BICst.COLUMN.DATE)  {
+    _createNewType: function (type, group) {
+        if (type === BICst.COLUMN.DATE) {
             type = BI.Utils.createDateFieldType(group["type"])
         }
         return type;
@@ -43,8 +43,8 @@ BI.AnalysisETLDetailSelectDataLevel0Item = BI.inherit(BI.Single, {
         this.button = BI.createWidget({
             type: "bi.blank_icon_text_item",
             // trigger: "mousedown",
-            cls: "select-data-level0-item-button " + this._getFieldClass(this._createNewType(o.fieldType, o.value["group"])),
-            forceNotSelected:true,
+            cls: "select-data-level0-item-button bi-list-item-select " + this._getFieldClass(this._createNewType(o.fieldType, o.value["group"])),
+            forceNotSelected: true,
             blankWidth: o.layer * 20,
             text: o.text,
             value: o.value,
@@ -61,7 +61,7 @@ BI.AnalysisETLDetailSelectDataLevel0Item = BI.inherit(BI.Single, {
             title: BI.i18nText("BI-Basic_Preview")
         });
         this.previewBtn.doHighLight();
-        this.previewBtn.on(BI.TextButton.EVENT_CHANGE, function(){
+        this.previewBtn.on(BI.TextButton.EVENT_CHANGE, function () {
             BI.Popovers.create(self.getName(), BI.createWidget({
                 type: "bi.detail_select_data_preview_section",
                 text: o.text,
@@ -89,31 +89,32 @@ BI.AnalysisETLDetailSelectDataLevel0Item = BI.inherit(BI.Single, {
             }]
         });
         this.previewBtn.invisible();
-        this.element.hover(function(){
-            if(BI.Utils.getFieldTypeByID(o.value) === BICst.COLUMN.COUNTER){
+        this.element.hover(function () {
+            if (BI.Utils.getFieldTypeByID(o.value) === BICst.COLUMN.COUNTER) {
                 return;
             }
             self.previewBtn.visible();
-        }, function(){
+        }, function () {
             self.previewBtn.invisible();
         });
         //标蓝
         BI.Utils.isSrcUsedBySrcID(o.id) === true && this.doHighLight();
-        BI.Broadcasts.on(BICst.BROADCAST.SRC_PREFIX + o.id, function(v){
-            if(v === true){
+        this._broadcasts = [];
+        this._broadcasts.push(BI.Broadcasts.on(BICst.BROADCAST.SRC_PREFIX + o.id, function (v) {
+            if (v === true) {
                 self.doHighLight();
             } else {
-                if(BI.Utils.isSrcUsedBySrcID(o.id) === false){
+                if (BI.Utils.isSrcUsedBySrcID(o.id) === false) {
                     self.unHighLight();
                 }
             }
-        });
-        if(BI.isFunction(o.listener)) {
+        }));
+        if (BI.isFunction(o.listener)) {
             o.listener.apply(this);
         }
     },
 
-    setEnable : function (v) {
+    setEnable: function (v) {
         BI.AnalysisETLDetailSelectDataLevel0Item.superclass.setEnable.apply(this, arguments)
         this.button.setEnable(v);
         this.previewBtn.setEnable(v)
@@ -153,6 +154,13 @@ BI.AnalysisETLDetailSelectDataLevel0Item = BI.inherit(BI.Single, {
 
     unHighLight: function () {
         this.button.unHighLight.apply(this.button, arguments);
+    },
+
+    destroyed: function () {
+        BI.each(this._broadcasts, function (i, removeBroadcast) {
+            removeBroadcast();
+        });
+        this._broadcasts = [];
     }
 });
 
