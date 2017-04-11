@@ -44,16 +44,17 @@ public class MonitorUtilsTest extends TestCase {
 
     public void testGetTableRelations() throws BITableAbsentException {
         long userId = -999;
+        int travelCount = 10;
         IMocksControl control = EasyMock.createControl();
         BIAnalysisBusiPackManagerProvider provider = control.createMock(BIAnalysisBusiPackManagerProvider.class);
         StableFactory.registerMarkedObject(BIAnalysisBusiPackManagerProvider.XML_TAG, provider);
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < travelCount; i++) {
             String id = String.valueOf(i + 1);
             provider.getTable(id, userId);
             EasyMock.expectLastCall().andReturn(createEasyMockTable(id)).anyTimes();
         }
         control.replay();
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < travelCount; i++) {
             String id = String.valueOf(i + 1);
             List<TableRelation> list = MonitorUtils.getTableRelations(new SimpleTable(id), userId);
             for (TableRelation r : list) {
