@@ -195,8 +195,12 @@ public class BINationDataSource extends AbstractCubeTableSource{
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof BIMemoryDataSource)) return false;
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof BIMemoryDataSource)) {
+            return false;
+        }
 
         BIMemoryDataSource that = (BIMemoryDataSource) o;
 

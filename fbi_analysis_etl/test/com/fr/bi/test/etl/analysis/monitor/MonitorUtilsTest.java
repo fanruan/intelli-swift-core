@@ -44,7 +44,7 @@ public class MonitorUtilsTest extends TestCase {
 
     public void testGetTableRelations() throws BITableAbsentException {
         long userId = -999;
-        int travelCount = 10;
+        int travelCount = new Integer(10).intValue();
         IMocksControl control = EasyMock.createControl();
         BIAnalysisBusiPackManagerProvider provider = control.createMock(BIAnalysisBusiPackManagerProvider.class);
         StableFactory.registerMarkedObject(BIAnalysisBusiPackManagerProvider.XML_TAG, provider);

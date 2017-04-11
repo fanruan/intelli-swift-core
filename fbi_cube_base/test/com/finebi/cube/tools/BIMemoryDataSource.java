@@ -188,8 +188,12 @@ public class BIMemoryDataSource extends AbstractTableSource {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof BIMemoryDataSource)) return false;
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof BIMemoryDataSource)) {
+            return false;
+        }
 
         BIMemoryDataSource that = (BIMemoryDataSource) o;
 

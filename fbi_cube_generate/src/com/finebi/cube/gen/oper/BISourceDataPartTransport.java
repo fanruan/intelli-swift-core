@@ -287,7 +287,9 @@ public class BISourceDataPartTransport extends BISourceDataTransport {
             if (columnNum == 1) {
                 String columnName = BICubeDBUtils.getColumnName(connection, sqlStatement, sql);
                 ICubeFieldSource f = getCubeFieldSource(fields, columnName);
-                if (f == null) return null;
+                if (f == null) {
+                    return null;
+                }
                 if (tableSource.getType() == BIBaseConstant.TABLETYPE.DB) {
                     String dbName = ((DBTableSource) tableSource).getDbName();
                     Table table = new Table(BIConnectionManager.getBIConnectionManager().getSchema(dbName), tableSource.getTableName());

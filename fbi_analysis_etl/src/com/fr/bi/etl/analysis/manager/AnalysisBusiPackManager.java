@@ -57,7 +57,7 @@ public class AnalysisBusiPackManager extends BISystemDataManager<SingleUserAnaly
 
     private static final String TAG = "AnalysisBusiPackManager";
     private static final long serialVersionUID = -5566625380376195712L;
-    private static final BILogger logger = BILoggerFactory.getLogger(AnalysisBusiPackManager.class);
+    private static final BILogger LOGGER = BILoggerFactory.getLogger(AnalysisBusiPackManager.class);
 
     public SingleUserAnalysisBusiPackManager getUserAnalysisBusiPackManager(long userId) {
         try {
@@ -90,7 +90,7 @@ public class AnalysisBusiPackManager extends BISystemDataManager<SingleUserAnaly
         try {
             allUserList = UserControl.getInstance().findAllUser();
         } catch (Exception e) {
-            logger.error("Get all users failure " + e.getMessage(), e);
+            LOGGER.error("Get all users failure " + e.getMessage(), e);
         }
         for (User user : allUserList) {
             for (BIBusinessPackage biBusinessPackage : getUserAnalysisBusiPackManager(user.getId()).getAllPacks()) {
