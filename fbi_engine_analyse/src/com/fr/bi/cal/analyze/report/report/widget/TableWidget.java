@@ -13,9 +13,9 @@ import com.fr.bi.cal.analyze.executor.paging.PagingFactory;
 import com.fr.bi.cal.analyze.executor.table.*;
 import com.fr.bi.cal.analyze.report.report.BIWidgetFactory;
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.basic.IExcelDataBuilder;
-import com.fr.bi.cal.analyze.report.report.widget.chart.export.manager.TableDirector;
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.calculator.SummaryCrossTableDataBuilder;
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.calculator.SummaryGroupTableDataBuilder;
+import com.fr.bi.cal.analyze.report.report.widget.chart.export.manager.TableDirector;
 import com.fr.bi.cal.analyze.report.report.widget.table.BITableReportSetting;
 import com.fr.bi.cal.analyze.session.BISession;
 import com.fr.bi.common.persistent.xml.BIIgnoreField;
@@ -23,6 +23,7 @@ import com.fr.bi.conf.report.WidgetType;
 import com.fr.bi.conf.report.style.DetailChartSetting;
 import com.fr.bi.conf.report.widget.field.BITargetAndDimension;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
+import com.fr.bi.conf.report.widget.field.target.BITarget;
 import com.fr.bi.conf.session.BISessionProvider;
 import com.fr.bi.field.target.target.BISummaryTarget;
 import com.fr.bi.field.target.target.cal.target.configure.BIConfiguredCalculateTarget;
@@ -31,7 +32,6 @@ import com.fr.bi.stable.constant.BIJSONConstant;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.gvi.GVIUtils;
 import com.fr.bi.stable.gvi.GroupValueIndex;
-import com.fr.bi.stable.report.key.TargetGettingKey;
 import com.fr.bi.stable.utils.BITravalUtils;
 import com.fr.general.ComparatorUtils;
 import com.fr.json.JSONArray;
@@ -455,10 +455,10 @@ public class TableWidget extends BISummaryWidget {
                 }
             }
             if (changed) {
-                Map<String, TargetGettingKey> targetMap = new ConcurrentHashMap<String, TargetGettingKey>();
+                Map<String, BITarget> targetMap = new ConcurrentHashMap<String, BITarget>();
                 for (int i = 0; i < targets.length; i++) {
                     targets[i].setTargetMap(targetMap);
-                    targetMap.put(targets[i].getValue(), targets[i].createSummaryCalculator().createTargetGettingKey());
+                    targetMap.put(targets[i].getValue(), targets[i]);
                 }
             }
         }

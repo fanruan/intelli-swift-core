@@ -281,10 +281,10 @@ public abstract class BISummaryWidget extends BIAbstractWidget {
 
     private void initTargets(List<BISummaryTarget> tars) {
         this.targets = tars.toArray(new BISummaryTarget[tars.size()]);
-        Map<String, TargetGettingKey> targetMap = new ConcurrentHashMap<String, TargetGettingKey>();
+        Map<String, BITarget> targetMap = new ConcurrentHashMap<String, BITarget>();
         for (int i = 0; i < targets.length; i++){
             targets[i].setSummaryIndex(i);
-            targetMap.put(targets[i].getValue(), targets[i].createSummaryCalculator().createTargetGettingKey());
+            targetMap.put(targets[i].getValue(), targets[i]);
             targets[i].setTargetMap(targetMap);
         }
     }

@@ -133,7 +133,9 @@ public class SumOfAboveCalculator extends AbstractConfigureCalculator {
             double sum = 0;
             while (isNotEnd(cursor_node, deep)) {
                 Number value = cursor_node.getSummaryValue(calTargetKey);
-                sum += value.doubleValue();
+                if (value != null){
+                    sum += value.doubleValue();
+                }
                 cursor_node.setSummaryValue(createTargetGettingKey(), new Double(sum));
                 cursor_node = cursor_node.getBottomSibling();
             }

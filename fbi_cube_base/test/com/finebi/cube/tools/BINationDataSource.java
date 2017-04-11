@@ -4,6 +4,7 @@ import com.finebi.cube.api.ICubeDataLoader;
 import com.fr.base.TableData;
 import com.fr.bi.base.BICore;
 import com.fr.bi.common.inter.Traversal;
+import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.stable.data.db.BIDataValue;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.bi.stable.data.db.IPersistentTable;
@@ -16,7 +17,11 @@ import com.fr.stable.StringUtils;
 import com.fr.stable.xml.XMLPrintWriter;
 import com.fr.stable.xml.XMLableReader;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Created by kary on 16/5/17.
@@ -159,6 +164,11 @@ public class BINationDataSource extends AbstractCubeTableSource{
     }
 
     @Override
+    public String getModuleName() {
+        return BIBaseConstant.MODULE_NAME.CORE_MODULE;
+    }
+
+    @Override
     public BICore fetchObjectCore() {
         return null;
     }
@@ -185,8 +195,12 @@ public class BINationDataSource extends AbstractCubeTableSource{
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof BIMemoryDataSource)) return false;
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof BIMemoryDataSource)) {
+            return false;
+        }
 
         BIMemoryDataSource that = (BIMemoryDataSource) o;
 

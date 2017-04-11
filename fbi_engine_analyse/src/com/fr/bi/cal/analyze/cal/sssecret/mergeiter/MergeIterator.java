@@ -112,7 +112,11 @@ public class MergeIterator implements Iterator<MetricMergeResult> {
                         groupIndex[i] = NIOConstant.INTEGER.NULL_VALUE;
                     }
                 } else {
-                    gvis[i] = gvis[i].and(this.gvis[i]);
+                    if (iterators[i].canReGainGroupValueIndex()){
+                        gvis[i] = gvis[i].and(this.gvis[i]);
+                    } else {
+                        gvis[i] = gvis[i].AND(this.gvis[i]);
+                    }
                     if (returnResultWithGroupIndex) {
                         groupIndex[i] = iterators[i].getCurrentGroup();
                     }

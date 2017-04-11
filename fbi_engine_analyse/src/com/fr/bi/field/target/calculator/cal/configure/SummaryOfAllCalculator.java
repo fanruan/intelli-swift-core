@@ -90,7 +90,7 @@ public abstract class SummaryOfAllCalculator extends AbstractConfigureCalculator
 
     protected BICrossNode getFirstCalCrossNode(BICrossNode rank_node) {
         BICrossNode temp_node = rank_node;
-        if (temp_node.getLeftFirstChild() != null) {
+        while (temp_node.getLeftFirstChild() != null) {
             temp_node = temp_node.getLeftFirstChild();
         }
         return temp_node;

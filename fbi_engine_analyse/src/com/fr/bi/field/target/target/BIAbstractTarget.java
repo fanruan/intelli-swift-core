@@ -15,16 +15,16 @@ public abstract class BIAbstractTarget extends BIStyleTarget implements BITarget
     private int summaryIndex;
 
 
+    public int getSummaryType() {
+        return summaryType;
+    }
+
     public void setSummaryIndex(int summaryIndex) {
         this.summaryIndex = summaryIndex;
     }
 
     public int getSummaryIndex(){
         return summaryIndex;
-    }
-
-    public int getSummaryType() {
-        return summaryType;
     }
 
     @Override
