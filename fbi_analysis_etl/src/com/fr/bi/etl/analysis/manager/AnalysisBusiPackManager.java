@@ -108,6 +108,11 @@ public class AnalysisBusiPackManager extends BISystemDataManager<SingleUserAnaly
         return result;
     }
 
+    @Override
+    public Set<IBusinessPackageGetterService> getAllAnalysisPackages(long userId) {
+        return getAllPackages(userId);
+    }
+
 
     @Override
     public boolean isPackageDataChanged(long userId) {

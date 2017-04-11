@@ -1,7 +1,6 @@
 package com.fr.bi.test.etl.analysis.monitor;
 
 import com.finebi.cube.api.ICubeDataLoader;
-import com.finebi.cube.conf.table.BusinessTable;
 import com.fr.base.TableData;
 import com.fr.bi.base.BICore;
 import com.fr.bi.common.inter.Traversal;
@@ -15,6 +14,7 @@ import com.fr.bi.etl.analysis.monitor.MonitorUtils;
 import com.fr.bi.etl.analysis.monitor.SimpleTable;
 import com.fr.bi.etl.analysis.monitor.TableRelation;
 import com.fr.bi.etl.analysis.monitor.TableRelationTree;
+import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.stable.data.db.BIDataValue;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.bi.stable.data.db.IPersistentTable;
@@ -29,7 +29,12 @@ import junit.framework.TestCase;
 import org.easymock.EasyMock;
 import org.easymock.IMocksControl;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Created by daniel on 2017/1/22.
@@ -298,6 +303,11 @@ public class MonitorUtilsTest extends TestCase {
             @Override
             public boolean hasAbsentFields() {
                 return false;
+            }
+
+            @Override
+            public String getModuleName() {
+                return BIBaseConstant.MODULE_NAME.CORE_MODULE;
             }
 
             @Override

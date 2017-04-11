@@ -331,7 +331,6 @@ public class BISourceDataPartTransport extends BISourceDataTransport {
     }
 
     private Map<String, List<Object[]>> preHandleSQLs(ICubeFieldSource[] fields, String partDeleteSQL, String partAddSQL, String partModifySQL) {
-
         List<Object[]> addList = new ArrayList<Object[]>();
         List<Object[]> deleteList = new ArrayList<Object[]>();
         List<Object[]> modifyList = new ArrayList<Object[]>();
@@ -358,7 +357,6 @@ public class BISourceDataPartTransport extends BISourceDataTransport {
             logger.warn("The table: " + BILogHelper.logTableSource(tableSource, " ") + ", it's modify sql is empty");
 
         }
-
    /*
         * 预处理逻辑：对于同一条Key的记录
         * 1. 新增中出现n次，删除中出现n-1次，则处理后新增留一次，删除中没有该记录
@@ -380,7 +378,6 @@ public class BISourceDataPartTransport extends BISourceDataTransport {
         resultMap.put(ADD, addList);
         resultMap.put(MODIFY, modifyList);
         resultMap.put(DELETE, deleteList);
-
         return resultMap;
     }
 
