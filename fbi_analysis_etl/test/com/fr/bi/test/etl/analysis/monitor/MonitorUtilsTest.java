@@ -21,6 +21,7 @@ import com.fr.bi.stable.data.db.IPersistentTable;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.data.source.SourceFile;
 import com.fr.bi.stable.exception.BITableAbsentException;
+import com.fr.fs.control.UserControl;
 import com.fr.json.JSONObject;
 import com.fr.stable.bridge.StableFactory;
 import com.fr.stable.xml.XMLPrintWriter;
@@ -43,7 +44,7 @@ public class MonitorUtilsTest extends TestCase {
 
 
     public void testGetTableRelations() throws BITableAbsentException {
-        long userId = new Long(-999).longValue();
+        long userId = UserControl.getInstance().getSuperManagerID();
         int travelCount = new Integer(10).intValue();
         IMocksControl control = EasyMock.createControl();
         BIAnalysisBusiPackManagerProvider provider = control.createMock(BIAnalysisBusiPackManagerProvider.class);
