@@ -47,16 +47,16 @@ public class MonitorUtilsTest extends TestCase {
         IMocksControl control = EasyMock.createControl();
         BIAnalysisBusiPackManagerProvider provider = control.createMock(BIAnalysisBusiPackManagerProvider.class);
         StableFactory.registerMarkedObject(BIAnalysisBusiPackManagerProvider.XML_TAG, provider);
-        for(int i = 0; i< 10; i++){
+        for (int i = 0; i < 10; i++) {
             String id = String.valueOf(i + 1);
             provider.getTable(id, userId);
             EasyMock.expectLastCall().andReturn(createEasyMockTable(id)).anyTimes();
         }
         control.replay();
-        for(int i = 0; i< 10; i++){
+        for (int i = 0; i < 10; i++) {
             String id = String.valueOf(i + 1);
             List<TableRelation> list = MonitorUtils.getTableRelations(new SimpleTable(id), userId);
-            for(TableRelation r : list) {
+            for (TableRelation r : list) {
                 assertTableRelation(r);
             }
         }
@@ -64,7 +64,7 @@ public class MonitorUtilsTest extends TestCase {
 
     private void assertTableRelation(TableRelation r) {
         TableRelation tr = r.getNext();
-        if(tr != null) {
+        if (tr != null) {
             assertTrue(relationMap.get(r.getTable().getId()).contains(tr.getTable()));
             assertTableRelation(tr);
         }
@@ -111,12 +111,12 @@ public class MonitorUtilsTest extends TestCase {
     }
 
     private AnalysisCubeTableSource createEasyMockSource(final String id) {
-        return  new AnalysisCubeTableSource() {
+        return new AnalysisCubeTableSource() {
 
             @Override
             public void getParentAnalysisBaseTableIds(Set<SimpleTable> set) {
                 Set rs = relationMap.get(id);
-                if(rs != null) {
+                if (rs != null) {
                     set.addAll(rs);
                 }
             }
@@ -222,17 +222,17 @@ public class MonitorUtilsTest extends TestCase {
 
             @Override
             public long read(Traversal<BIDataValue> travel, ICubeFieldSource[] field, ICubeDataLoader loader) {
-                return 0;
+                return new Long(0).longValue();
             }
 
             @Override
             public long read4Part(Traversal<BIDataValue> travel, ICubeFieldSource[] field, ICubeDataLoader loader, int start, int end) {
-                return 0;
+                return new Long(0).longValue();
             }
 
             @Override
             public long read4Part(Traversal<BIDataValue> traversal, ICubeFieldSource[] cubeFieldSources, String sql, long rowCount) {
-                return 0;
+                return new Long(0).longValue();
             }
 
             @Override
