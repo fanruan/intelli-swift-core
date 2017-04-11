@@ -98,12 +98,11 @@ public abstract class VanCartesianWidget extends VanChartWidget {
             BILoggerFactory.getLogger().error(e.getMessage(),e);
         }
 
-        return String.format("function(){return FR.contentFormat(arguments[0], \"%s\")}", hasSeparator ? "#,###.##" : "#.##");
+        return String.format("function(){return BI.contentFormat(arguments[0], \"%s\")}", hasSeparator ? "#,###.##" : "#.##");
     }
 
     //值标签和小数位数，千分富符，数量级和单位构成的后缀
-    protected String valueFormat(BISummaryTarget dimension, boolean isTooltip) {
-
+    protected String valueFormat(BISummaryTarget dimension, boolean isTooltip){
         int yAxis = this.yAxisIndex(dimension.getId());
 
         boolean hasSeparator = true;
@@ -134,7 +133,7 @@ public abstract class VanCartesianWidget extends VanChartWidget {
             format += (scaleUnit + unit);
         }
 
-        return String.format("function(){return FR.contentFormat(arguments[0], \"%s\")}", format);
+        return format;
     }
 
     //todo 坐标轴标题和数量级，单位构成的后缀
@@ -144,7 +143,7 @@ public abstract class VanCartesianWidget extends VanChartWidget {
     }
 
     protected String dataLabelValueFormat(BISummaryTarget dimension){
-        return this.valueFormat(dimension, false);
+        return this.valueFormatFunc(dimension, false);
     }
 
     protected int numberLevel(String dimensionID){

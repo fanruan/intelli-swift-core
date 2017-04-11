@@ -24,6 +24,7 @@ public class VanTreeMapWidget extends VanChartWidget{
         JSONObject top = originData.getJSONObject("t"), left = originData.getJSONObject("l");
         JSONArray topC = top.getJSONArray("c"), leftC = left.getJSONArray("c");
 
+        double scale = this.numberScale(targetIDs[0]);
         for (int i = 0; i < topC.length(); i++) {
             JSONArray children = JSONArray.create();
 
@@ -32,7 +33,8 @@ public class VanTreeMapWidget extends VanChartWidget{
             for (int j = 0; j < leftC.length(); j++) {
                 JSONObject lObj = leftC.getJSONObject(j);
                 String name = lObj.getString("n");
-                double value = lObj.getJSONObject("s").getJSONArray("c").getJSONObject(i).getJSONArray("s").getDouble(0);
+                JSONArray s = lObj.getJSONObject("s").getJSONArray("c").getJSONObject(i).getJSONArray("s");
+                double value = (s.isNull(0) ? 0 : s.getDouble(0)) / scale;
 
                 sum += value;
 
@@ -42,7 +44,7 @@ public class VanTreeMapWidget extends VanChartWidget{
             data.put(JSONObject.create().put("name", tObj.getString("n")).put("value", sum).put("children", children));
         }
 
-        return series.put(JSONObject.create().put("data", data).put("name", StringUtils.EMPTY).put("dimensionID", targetIDs[0]));
+        return series.put(JSONObject.create().put("data", data).put("name", this.getDimensionNameByID(targetIDs[0])).put("dimensionID", targetIDs[0]));
     }
 
     public String getSeriesType(String dimensionID){
