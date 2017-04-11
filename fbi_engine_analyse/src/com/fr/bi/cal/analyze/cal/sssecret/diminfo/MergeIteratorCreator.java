@@ -2,6 +2,7 @@ package com.fr.bi.cal.analyze.cal.sssecret.diminfo;
 
 import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.api.ICubeTableService;
+import com.fr.bi.cal.analyze.cal.multithread.BIMultiThreadExecutor;
 import com.fr.bi.cal.analyze.cal.sssecret.MetricMergeResult;
 import com.fr.bi.stable.engine.cal.DimensionIterator;
 import com.fr.bi.stable.gvi.GroupValueIndex;
@@ -16,6 +17,5 @@ import java.util.Iterator;
 public interface MergeIteratorCreator {
     Iterator<MetricMergeResult> createIterator(DimensionIterator[] iterators, int sumLength, GroupValueIndex[] gvis, Comparator c, ICubeTableService[] tis, ICubeDataLoader loader);
 
-    //三无迭代器才必须有个child，为了跟之前样子一样
-    boolean isSimple();
+    void setExecutor(BIMultiThreadExecutor executor);
 }

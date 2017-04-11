@@ -24,6 +24,6 @@ public class BIRankConfiguredCalculateTarget extends BIConfiguredCalculateTarget
 
     @Override
     public TargetCalculator createSummaryCalculator() {
-        return new RankConfigureCalculator(this, targetMap.get(getCalTargetName()), getStart_group(), rank_type);
+        return new RankConfigureCalculator(this, getCalTargetKey(), getStart_group(), rank_type);
     }
 }

@@ -1,10 +1,12 @@
 package com.fr.bi.field.target.target.cal.target.configure;
 
 import com.fr.bi.base.annotation.BICoreField;
+import com.fr.bi.conf.report.widget.field.target.BITarget;
 import com.fr.bi.field.target.target.BISummaryTarget;
 import com.fr.bi.field.target.target.TargetType;
 import com.fr.bi.field.target.target.cal.BICalculateTarget;
 import com.fr.bi.stable.constant.BIReportConstant;
+import com.fr.bi.stable.report.key.TargetGettingKey;
 import com.fr.bi.stable.utils.BITravalUtils;
 import com.fr.json.JSONObject;
 
@@ -60,6 +62,11 @@ public abstract class BIConfiguredCalculateTarget extends BICalculateTarget {
         return target_id;
     }
 
+    protected TargetGettingKey getCalTargetKey() {
+        BITarget target =  targetMap.get(getCalTargetName());
+        return target == null ? null : target.createTargetGettingKey();
+    }
+
     public int getStart_group() {
         return start_group;
     }
@@ -82,7 +89,7 @@ public abstract class BIConfiguredCalculateTarget extends BICalculateTarget {
     }
 
     @Override
-    public boolean calculateAllPage() {
+    public boolean calculateAllNode() {
         return start_group == BIReportConstant.TARGET_TYPE.CAL_POSITION.ALL;
     }
 

@@ -449,7 +449,7 @@ public class CubeIndexLoader {
 
     private boolean hasAllCalCalculatorTargets(BISummaryTarget[] calculateTargets) {
         for (BISummaryTarget target : calculateTargets) {
-            if (target.calculateAllPage()) {
+            if (target.calculateAllNode()) {
                 return true;
             }
         }
@@ -607,7 +607,7 @@ public class CubeIndexLoader {
         widget.setPageSpinner(isHor ? BIReportConstant.TABLE_PAGE.HORIZON_PRE : BIReportConstant.TABLE_PAGE.VERTICAL_PRE, info.isHasPre());
         widget.setPageSpinner(isHor ? BIReportConstant.TABLE_PAGE.HORIZON_NEXT : BIReportConstant.TABLE_PAGE.VERTICAL_NEXT, info.isHasNext());
         widget.setPageSpinner(BIReportConstant.TABLE_PAGE.TOTAL_PAGE, info.getPage());
-        calFormula(usedTargets, n);
+        calCalculateMetrics(usedTargets, n);
         if (n == null) {
             n = new Node(allSumTarget.length);
         }
@@ -688,17 +688,17 @@ public class CubeIndexLoader {
                 node = new Node(allSumTarget.length);
             }
         }
-        calFormula(usedTargets, node);
+        calCalculateMetrics(usedTargets, node);
         if (node == null) {
             node = new Node(allSumTarget.length);
         }
         nodeMap.put(i, node);
     }
 
-    private void calFormula(BISummaryTarget[] usedTargets, Node node) {
+    private void calCalculateMetrics(BISummaryTarget[] usedTargets, Node node) {
         List<TargetCalculator> targetCalculators = new ArrayList<TargetCalculator>();
-        List<FormulaCalculator> calculateTargets = new ArrayList<FormulaCalculator>();
-        addFormulaCalculators(usedTargets, calculateTargets);
+        List<CalCalculator> calculateTargets = new ArrayList<CalCalculator>();
+        addCalCalculators(usedTargets, calculateTargets);
         for (int j = 0; j < usedTargets.length; j++){
             addTargetCalculator(usedTargets[j], targetCalculators);
         }
@@ -706,16 +706,21 @@ public class CubeIndexLoader {
     }
 
 
-    private static void addFormulaCalculators(BISummaryTarget[] usedTargets, List<FormulaCalculator> formulaCalculateTargets) {
+    private static void addCalCalculators(BISummaryTarget[] usedTargets, List<CalCalculator> calCalculateTargets) {
         for (int i = 0; i < usedTargets.length; i++) {
             BISummaryTarget target = usedTargets[i];
             if (target == null) {
                 continue;
             }
-            if(target.getType() == TargetType.FORMULA) {
-                formulaCalculateTargets.add((FormulaCalculator) target.createSummaryCalculator());
+            TargetCalculator calculator = target.createSummaryCalculator();
+            if(isPartNodeCalculateTarget(target, calculator)) {
+                calCalculateTargets.add((CalCalculator) calculator);
             }
         }
+    }
+
+    private static boolean isPartNodeCalculateTarget(BISummaryTarget target, TargetCalculator calculator) {
+        return (target.getType() != TargetType.NORMAL && !target.calculateAllNode())|| calculator instanceof FormulaCalculator;
     }
     /**
      * 处理计算指标
@@ -737,6 +742,7 @@ public class CubeIndexLoader {
             pg.setColumnIterator(info.getIterator());
         } else {
             pg.setRowIterator(info.getIterator());
+            iterator.getRoot().checkStatus();
         }
         session.setMergerInfoList(widget.getWidgetName(), info.getIterator().getRoot().getMetricGroupInfoList());
         return info;

@@ -41,7 +41,7 @@ public class FormulaCalculator extends CalCalculator {
         if (targetMap != null){
             for (Map.Entry<String, String> entry :  BIFormularUtils.createColumnIndexMap(expression).entrySet()){
                 if (targetMap.containsKey(entry.getValue())){
-                    paraTargetMap.put(entry.getKey(), targetMap.get(entry.getValue()));
+                    paraTargetMap.put(entry.getKey(), targetMap.get(entry.getValue()).createTargetGettingKey());
                 }
             }
         }

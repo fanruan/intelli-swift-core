@@ -235,7 +235,7 @@ public class SingleDimensionGroup extends ExecutorPartner implements ILazyExecut
         if (row < metricMergeResultList.size()) {
             return metricMergeResultList.get(row);
         } else {
-            if (row == 0 && mergeIteratorCreator.isSimple()) {
+            if (row == 0) {
                 MetricMergeResult result = createEmptyResult();
                 addMetricMergeResult(result);
                 return result;
@@ -275,10 +275,8 @@ public class SingleDimensionGroup extends ExecutorPartner implements ILazyExecut
 
     @Override
     public void executorTerminated() {
-        if (mergeIteratorCreator.isSimple()) {
-            MetricMergeResult metricMergeResult = createEmptyResult();
-            addMetricMergeResult(metricMergeResult);
-        }
+        MetricMergeResult metricMergeResult = createEmptyResult();
+        addMetricMergeResult(metricMergeResult);
     }
 
     private MetricMergeResult createEmptyResult() {

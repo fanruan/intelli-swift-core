@@ -300,7 +300,7 @@ public class CrossExecutor extends AbstractTableWidgetExecutor<NewCrossRoot> {
     private void clearNullSummary(CrossHeader left, TargetGettingKey[] keys) {
         for (TargetGettingKey key : keys) {
             if (left.getSummaryValue(key) == null) {
-                left.getValue().setSummaryValue(key, 0);
+                left.getValue().setSummaryValue(key, null);
             }
         }
         for (int i = 0; i < left.getChildLength(); i++) {

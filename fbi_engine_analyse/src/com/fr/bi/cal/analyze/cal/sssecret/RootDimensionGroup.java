@@ -6,6 +6,8 @@ import com.finebi.cube.conf.table.BusinessTable;
 import com.fr.bi.base.key.BIKey;
 import com.fr.bi.cal.analyze.cal.index.loader.MetricGroupInfo;
 import com.fr.bi.cal.analyze.cal.index.loader.TargetAndKey;
+import com.fr.bi.cal.analyze.cal.multithread.BIMultiThreadExecutor;
+import com.fr.bi.cal.analyze.cal.multithread.MultiThreadManagerImpl;
 import com.fr.bi.cal.analyze.cal.result.NodeExpander;
 import com.fr.bi.cal.analyze.cal.sssecret.diminfo.MergeIteratorCreator;
 import com.fr.bi.cal.analyze.session.BISession;
@@ -287,6 +289,18 @@ public class RootDimensionGroup implements IRootDimensionGroup {
         rootDimensionGroup.root = root;
         rootDimensionGroup.rowSize = rowSize;
         return rootDimensionGroup;
+    }
+
+    @Override
+    public void checkStatus() {
+        checkThreadPool();
+    }
+
+    private void checkThreadPool() {
+        BIMultiThreadExecutor executor = MultiThreadManagerImpl.getInstance().isMultiCall() ? MultiThreadManagerImpl.getInstance().getExecutorService() : null;
+        for (MergeIteratorCreator creator : mergeIteratorCreators){
+            creator.setExecutor(executor);
+        }
     }
 
     protected IRootDimensionGroup createNew(){
