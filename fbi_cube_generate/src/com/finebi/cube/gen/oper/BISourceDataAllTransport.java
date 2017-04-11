@@ -31,7 +31,7 @@ import java.util.TreeSet;
  * Created by kary on 16/7/13.
  */
 public class BISourceDataAllTransport extends BISourceDataTransport {
-    private static final Logger Logger = LoggerFactory.getLogger(BISourceDataAllTransport.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(BISourceDataAllTransport.class);
 
     public BISourceDataAllTransport(Cube cube, Cube integrityCube, CubeTableSource tableSource, Set<CubeTableSource> allSources, Set<CubeTableSource> parentTableSource, long version, Map<String, CubeTableSource> tablesNeed2GenerateMap) {
         super(cube, integrityCube, tableSource, allSources, parentTableSource, version, tablesNeed2GenerateMap);
@@ -40,18 +40,18 @@ public class BISourceDataAllTransport extends BISourceDataTransport {
     @Override
     public Object mainTask(IMessage lastReceiveMessage) {
         BILogManager biLogManager = StableFactory.getMarkedObject(BILogManagerProvider.XML_TAG, BILogManager.class);
-        Logger.info(BIStringUtils.append("The table:", fetchTableInfo(), " start transport task",
+        LOGGER.info(BIStringUtils.append("The table:", fetchTableInfo(), " start transport task",
                 BILogHelper.logCubeLogTableSourceInfo(tableSource.getSourceID())));
         tableEntityService.recordCurrentExecuteTime();
         BILogHelper.cacheCubeLogTableNormalInfo(tableSource.getSourceID(), BILogConstant.LOG_CACHE_TIME_TYPE.TRANSPORT_EXECUTE_START, System.currentTimeMillis());
         long t = System.currentTimeMillis();
         try {
-            Logger.info(BIStringUtils.append("The table:", fetchTableInfo(), " record table structure info"));
+            LOGGER.info(BIStringUtils.append("The table:", fetchTableInfo(), " record table structure info"));
             recordTableInfo();
-            Logger.info(BIStringUtils.append("The table:", fetchTableInfo(), " process transportation operation"));
+            LOGGER.info(BIStringUtils.append("The table:", fetchTableInfo(), " process transportation operation"));
             buildTableBasicStructure();
             long count = transport();
-            Logger.info(BIStringUtils.append("The table:", fetchTableInfo(), " finish transportation operation and record ",
+            LOGGER.info(BIStringUtils.append("The table:", fetchTableInfo(), " finish transportation operation and record ",
                     String.valueOf(count), " records"));
             if (count >= 0) {
                 /*清除remove的过滤条件*/
@@ -62,7 +62,7 @@ public class BISourceDataAllTransport extends BISourceDataTransport {
             tableEntityService.addVersion(version);
             tableEntityService.forceReleaseWriter();
             long tableCostTime = System.currentTimeMillis() - t;
-            Logger.info("transport cost time: " + tableCostTime + "ms" + BILogHelper.logCubeLogTableSourceInfo(tableSource.getSourceID()));
+            LOGGER.info("transport cost time: " + tableCostTime + "ms" + BILogHelper.logCubeLogTableSourceInfo(tableSource.getSourceID()));
             BILogHelper.cacheCubeLogTableNormalInfo(tableSource.getSourceID(), BILogConstant.LOG_CACHE_TIME_TYPE.TRANSPORT_EXECUTE_END, System.currentTimeMillis());
             try {
                 biLogManager.infoTable(tableSource.getPersistentTable(), tableCostTime, UserControl.getInstance().getSuperManagerID());
