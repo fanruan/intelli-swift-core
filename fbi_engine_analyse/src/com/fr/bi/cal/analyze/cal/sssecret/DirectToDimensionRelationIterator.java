@@ -9,6 +9,7 @@ import com.fr.bi.stable.engine.index.key.IndexKey;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.gvi.traversal.SingleRowTraversalAction;
 import com.fr.bi.stable.report.result.DimensionCalculator;
+import com.fr.stable.StringUtils;
 
 import java.util.Iterator;
 import java.util.LinkedHashSet;
@@ -49,6 +50,8 @@ public class DirectToDimensionRelationIterator implements DimensionIterator {
                 Object ob = dimensionGetter.getOriginalValue(row);
                 if (ob != null){
                     keyValueSet.add(ob);
+                } else {
+                    keyValueSet.add(StringUtils.EMPTY);
                 }
             }
         });

@@ -1,10 +1,10 @@
 package com.fr.bi.field.target.target;
 
 import com.fr.bi.base.annotation.BICoreField;
+import com.fr.bi.conf.report.widget.field.target.BITarget;
 import com.fr.bi.conf.report.widget.field.target.filter.TargetFilter;
 import com.fr.bi.field.target.filter.TargetFilterFactory;
 import com.fr.bi.stable.constant.DBConstant;
-import com.fr.bi.stable.report.key.TargetGettingKey;
 import com.fr.general.ComparatorUtils;
 import com.fr.json.JSONObject;
 
@@ -32,7 +32,7 @@ public abstract class BISummaryTarget extends BIAbstractTarget {
         return DBConstant.COLUMN.NUMBER;
     }
 
-    public void setTargetMap(Map<String, TargetGettingKey> targetMap) {
+    public void setTargetMap(Map<String, BITarget> targetMap) {
     }
 
     public Collection<String> getCalculateUseTargetIDs(){
@@ -92,7 +92,12 @@ public abstract class BISummaryTarget extends BIAbstractTarget {
     }
 
     @Override
-    public boolean calculateAllPage() {
+    public boolean calculateAllNode() {
+        return false;
+    }
+
+    @Override
+    public boolean calculateSingleNode(BITarget[] usedTargets) {
         return false;
     }
 
