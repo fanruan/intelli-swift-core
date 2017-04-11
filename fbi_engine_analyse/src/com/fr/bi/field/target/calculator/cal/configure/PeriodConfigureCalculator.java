@@ -125,7 +125,8 @@ public class PeriodConfigureCalculator extends AbstractConfigureCalculator {
                 Number value = getValueFromLast(way);
                 if (value != null) {
                     if (type == BIReportConstant.TARGET_TYPE.CAL_VALUE.PERIOD_TYPE.RATE) {
-                        double currentValue = cursor_node.getSummaryValue(calTargetKey).doubleValue();
+                        Number v = cursor_node.getSummaryValue(calTargetKey);
+                        double currentValue = v == null ? 0 : v.doubleValue();
                         cursor_node.setSummaryValue(createTargetGettingKey(), (currentValue - (Double) value) / (Double) value);
                     } else {
                         cursor_node.setSummaryValue(createTargetGettingKey(), value);
@@ -199,7 +200,8 @@ public class PeriodConfigureCalculator extends AbstractConfigureCalculator {
                 Number value = getValueFromLast(way);
                 if (value != null) {
                     if (type == BIReportConstant.TARGET_TYPE.CAL_VALUE.PERIOD_TYPE.RATE) {
-                        double currentValue = cursor_node.getSummaryValue(calTargetKey).doubleValue();
+                        Number v = cursor_node.getSummaryValue(calTargetKey);
+                        double currentValue = v == null ? 0 : v.doubleValue();
                         cursor_node.setSummaryValue(createTargetGettingKey(), (currentValue - (Double) value) / (Double) value);
                     } else {
                         cursor_node.setSummaryValue(createTargetGettingKey(), value);

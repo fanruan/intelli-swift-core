@@ -47,7 +47,7 @@ public class SumOfAllCalculator extends SummaryOfAllCalculator {
             BINode cursor_node = temp_node;
             double sum = 0;
             if (calTarget.getSummaryType() == BIReportConstant.SUMMARY_TYPE.SUM || calTarget.getSummaryType() == BIReportConstant.SUMMARY_TYPE.COUNT){
-                sum = cursor_node.getParent().getSummaryValue(calTargetKey).doubleValue();
+                sum = rank_node.getSummaryValue(calTargetKey).doubleValue();
             } else {
                 while (isNotEnd(cursor_node, deep)) {
                     Number value = cursor_node.getSummaryValue(calTargetKey);
@@ -94,12 +94,16 @@ public class SumOfAllCalculator extends SummaryOfAllCalculator {
             BICrossNode temp_node = getFirstCalCrossNode(rank_node);
             BICrossNode cursor_node = temp_node;
             double sum = 0;
-            while (isNotEnd(cursor_node, deep)) {
-                Number value = cursor_node.getSummaryValue(calTargetKey);
-                if (value != null) {
-                    sum += value.doubleValue();
+            if (calTarget.getSummaryType() == BIReportConstant.SUMMARY_TYPE.SUM || calTarget.getSummaryType() == BIReportConstant.SUMMARY_TYPE.COUNT){
+                sum = rank_node.getSummaryValue(calTargetKey).doubleValue();
+            } else {
+                while (isNotEnd(cursor_node, deep)) {
+                    Number value = cursor_node.getSummaryValue(calTargetKey);
+                    if (value != null) {
+                        sum += value.doubleValue();
+                    }
+                    cursor_node = cursor_node.getBottomSibling();
                 }
-                cursor_node = cursor_node.getBottomSibling();
             }
             cursor_node = temp_node;
             Number value = new Double(sum);
