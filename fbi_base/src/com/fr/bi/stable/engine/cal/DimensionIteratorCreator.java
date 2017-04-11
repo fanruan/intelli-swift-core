@@ -53,12 +53,48 @@ public class DimensionIteratorCreator {
                 return getArrayReSortIterator(getter, filterGVI, startIndex, asc);
             case DIRECT:
                 return getOneKeyIterator(getter, filterGVI);
+            case EMPTY:
+                return EMPTY;
             case TREE_MAP:
                 return getTreeMapSortIterator(getter, filterGVI, startIndex, asc);
             default:
                 return getArraySortIterator(getter, filterGVI, startIndex, asc);
         }
     }
+
+    private static final DimensionIterator EMPTY = new DimensionIterator(){
+
+        @Override
+        public boolean hasNext() {
+            return false;
+        }
+
+        @Override
+        public Map.Entry<Object, GroupValueIndex> next() {
+            return null;
+        }
+
+        @Override
+        public void remove() {
+
+        }
+
+        @Override
+        public int getCurrentGroup() {
+            return 0;
+        }
+
+        @Override
+        public boolean canReGainGroupValueIndex() {
+            return false;
+        }
+
+        @Override
+        public GroupValueIndex getGroupValueIndexByGroupIndex(int groupIndex) {
+            return null;
+        }
+
+    };
 
 
     private static DimensionIterator getAllShowIterator(final ICubeValueEntryGetter getter, int startIndex, boolean asc) {

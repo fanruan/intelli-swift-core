@@ -2,9 +2,9 @@ package com.fr.bi.cal.generate.timerTask.quartz;
 
 import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.conf.BICubeConfigureCenter;
+import com.finebi.cube.conf.CubeGenerationManager;
 import com.finebi.cube.conf.table.BusinessTable;
 import com.fr.bi.base.BICore;
-import com.fr.bi.cal.generate.CubeBuildHelper;
 import com.fr.bi.cal.utils.Single2CollectionUtils;
 import com.fr.bi.stable.constant.DBConstant;
 import com.fr.general.ComparatorUtils;
@@ -31,11 +31,11 @@ public class JobTask implements Job {
         String tableKey = data.getString("tableKey");
         int updateType = data.getInt("updateType");
         if (ComparatorUtils.equals(tableKey, DBConstant.CUBE_UPDATE_TYPE.GLOBAL_UPDATE)) {
-            CubeBuildHelper.getInstance().CubeBuildStaffComplete(userId);
+            CubeGenerationManager.getCubeManager().buildCompleteStuff(userId);
         } else {
             if (isTableUsed(userId, tableKey)) {
                 try {
-                    CubeBuildHelper.getInstance().addCustomTableTask2Queue(userId, Single2CollectionUtils.toList(tableKey),
+                    CubeGenerationManager.getCubeManager().addCustomTableTask2Queue(userId, Single2CollectionUtils.toList(tableKey),
                             Single2CollectionUtils.toList(updateType));
                 } catch (InterruptedException e) {
                     BILoggerFactory.getLogger(this.getClass()).error("addSingleTableTask failure " + e.getMessage(), e);

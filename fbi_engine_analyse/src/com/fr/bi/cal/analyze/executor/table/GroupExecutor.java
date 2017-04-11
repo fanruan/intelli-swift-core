@@ -40,7 +40,7 @@ public class GroupExecutor extends AbstractTableWidgetExecutor<Node> {
     }
 
     public TableCellIterator createCellIterator4Excel() throws Exception {
-        Node tree = getCubeNode();
+       final Node tree = getCubeNode();
         if (tree == null) {
             return new TableCellIterator(0, 0);
         }
@@ -50,8 +50,7 @@ public class GroupExecutor extends AbstractTableWidgetExecutor<Node> {
         DetailChartSetting chartSetting = widget.getChartSetting();
         TargetGettingKey[] keys = new TargetGettingKey[summaryLength];
         for (int i = 0; i < summaryLength; i++) {
-            keys[i] = new TargetGettingKey(usedSumTarget[i].createSummaryCalculator().createTargetKey(),
-                    usedSumTarget[i].getValue());
+            keys[i] = usedSumTarget[i].createTargetGettingKey();
         }
         //显示不显示汇总行
         int rowLen = chartSetting.showRowTotal() ? tree.getTotalLengthWithSummary() : tree.getTotalLength();
@@ -231,7 +230,7 @@ public class GroupExecutor extends AbstractTableWidgetExecutor<Node> {
         Node tree = cubeIndexLoader.loadPageGroup(false, widget, createTarget4Calculate(), usedDimensions,
                 allDimensions, allSumTarget, calpage, widget.isRealData(), session, expander.getYExpander());
         if (tree == null) {
-            tree = new Node();
+            tree = new Node(allSumTarget.length);
         }
         BILoggerFactory.getLogger().info(DateUtils.timeCostFrom(start) + ": cal time");
         return tree;

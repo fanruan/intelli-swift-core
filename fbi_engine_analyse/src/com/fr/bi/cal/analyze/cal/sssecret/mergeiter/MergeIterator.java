@@ -15,18 +15,20 @@ import java.util.Map;
 /**
  * Created by 小灰灰 on 2016/12/30.
  */
-public class MergeIterator implements Iterator<MetricMergeResult>{
+public class MergeIterator implements Iterator<MetricMergeResult> {
     protected MetricMergeResult next;
     private DimensionIterator[] iterators;
     protected GroupValueIndex[] gvis;
     private Comparator c;
+    private int sumLength;
     private Map.Entry<Object, GroupValueIndex>[] entries;
     private boolean returnResultWithGroupIndex = false;
 
-    public MergeIterator(DimensionIterator[] iterators, GroupValueIndex[] gvis, Comparator c) {
+    public MergeIterator(DimensionIterator[] iterators, GroupValueIndex[] gvis, Comparator c, int sumLength) {
         this.iterators = iterators;
         this.gvis = gvis;
         this.c = c;
+        this.sumLength = sumLength;
         initEntries();
     }
 
@@ -47,24 +49,24 @@ public class MergeIterator implements Iterator<MetricMergeResult>{
 
     }
 
-    protected void reSetGroupValueIndex(MetricMergeResult result){
-        int[] group =  ((MetricMergeResultWithGroupIndex)result).getGroupIndex();
+    protected void reSetGroupValueIndex(MetricMergeResult result) {
+        int[] group = ((MetricMergeResultWithGroupIndex) result).getGroupIndex();
         GroupValueIndex[] groupValueIndices = new GroupValueIndex[group.length];
-        for (int i = 0; i < group.length; i ++){
-            if (group[i] != NIOConstant.INTEGER.NULL_VALUE){
+        for (int i = 0; i < group.length; i++) {
+            if (group[i] != NIOConstant.INTEGER.NULL_VALUE) {
                 groupValueIndices[i] = iterators[i].getGroupValueIndexByGroupIndex(group[i]).and(this.gvis[i]);
             }
         }
         result.setGvis(groupValueIndices);
     }
 
-    protected void setReturnResultWithGroupIndex(boolean returnResultWithGroupIndex){
+    protected void setReturnResultWithGroupIndex(boolean returnResultWithGroupIndex) {
         this.returnResultWithGroupIndex = returnResultWithGroupIndex;
     }
 
-    protected boolean canRelease(){
-        for (DimensionIterator iterator : iterators){
-            if (!iterator.canReGainGroupValueIndex()){
+    protected boolean canRelease() {
+        for (DimensionIterator iterator : iterators) {
+            if (!iterator.canReGainGroupValueIndex()) {
                 return false;
             }
         }
@@ -73,17 +75,17 @@ public class MergeIterator implements Iterator<MetricMergeResult>{
 
     private void initEntries() {
         entries = new Map.Entry[iterators.length];
-        for (int i = 0; i < entries.length; i++){
-            if (iterators[i].hasNext()){
+        for (int i = 0; i < entries.length; i++) {
+            if (iterators[i].hasNext()) {
                 entries[i] = iterators[i].next();
             }
         }
     }
 
     private void moveEntries(IntArray array) {
-        for (int i = 0; i < array.size; i++){
+        for (int i = 0; i < array.size; i++) {
             int index = array.get(i);
-            if (iterators[index].hasNext()){
+            if (iterators[index].hasNext()) {
                 entries[index] = iterators[index].next();
             } else {
                 entries[index] = null;
@@ -96,27 +98,27 @@ public class MergeIterator implements Iterator<MetricMergeResult>{
         GroupValueIndex[] gvis = new GroupValueIndex[iterators.length];
         Object minValue = getMinValuePositions(array, gvis);
         //设置mergenode
-        if (minValue == null){
+        if (minValue == null) {
             next = null;
         } else {
             int[] groupIndex = null;
-            if (returnResultWithGroupIndex){
-                groupIndex  = new int[gvis.length];
+            if (returnResultWithGroupIndex) {
+                groupIndex = new int[gvis.length];
             }
-            for (int i = 0; i < gvis.length ; i++){
-                if (this.gvis[i] == null || gvis[i] == null){
+            for (int i = 0; i < gvis.length; i++) {
+                if (this.gvis[i] == null || gvis[i] == null) {
                     gvis[i] = null;
-                    if (returnResultWithGroupIndex){
+                    if (returnResultWithGroupIndex) {
                         groupIndex[i] = NIOConstant.INTEGER.NULL_VALUE;
                     }
                 } else {
                     gvis[i] = gvis[i].and(this.gvis[i]);
-                    if (returnResultWithGroupIndex){
+                    if (returnResultWithGroupIndex) {
                         groupIndex[i] = iterators[i].getCurrentGroup();
                     }
                 }
             }
-            next = returnResultWithGroupIndex ? new MetricMergeResultWithGroupIndex(c, minValue, gvis, groupIndex) : new MetricMergeResult(c, minValue, gvis);
+            next = returnResultWithGroupIndex ? new MetricMergeResultWithGroupIndex(c, minValue, sumLength, gvis, groupIndex) : new MetricMergeResult(c, minValue, sumLength, gvis);
         }
         moveEntries(array);
     }
@@ -134,7 +136,7 @@ public class MergeIterator implements Iterator<MetricMergeResult>{
                     array.add(i);
                 } else {
                     int result = c.compare(minValue, currentValue);
-                    if (result == 0){
+                    if (result == 0) {
                         gvis[i] = entry.getValue();
                         array.add(i);
                     }
@@ -158,7 +160,7 @@ public class MergeIterator implements Iterator<MetricMergeResult>{
         }
 
         @Override
-        public boolean canReGainGroupValueIndex(){
+        public boolean canReGainGroupValueIndex() {
             return false;
         }
 

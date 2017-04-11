@@ -14,7 +14,6 @@ import com.fr.bi.cal.report.report.poly.BIPolyWorkSheet;
 import com.fr.bi.conf.report.BIReport;
 import com.fr.bi.conf.report.BIWidget;
 import com.fr.bi.conf.report.WidgetType;
-import com.fr.bi.conf.session.BISessionProvider;
 import com.fr.bi.fs.BIReportNode;
 import com.fr.bi.manager.PerformancePlugManager;
 import com.fr.bi.stable.constant.BIBaseConstant;

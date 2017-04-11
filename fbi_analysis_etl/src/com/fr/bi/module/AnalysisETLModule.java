@@ -18,9 +18,6 @@ import com.fr.bi.etl.analysis.report.widget.field.filtervalue.number.NumberBotto
 import com.fr.bi.etl.analysis.report.widget.field.filtervalue.number.NumberLargeOrEqualsCLFilter;
 import com.fr.bi.etl.analysis.report.widget.field.filtervalue.number.NumberSmallOrEqualsCLFilter;
 import com.fr.bi.etl.analysis.report.widget.field.filtervalue.number.NumberTopNFilter;
-import com.fr.stable.bridge.event.StableFactoryMessageTransponder;
-import com.fr.stable.bridge.event.StableFactoryProducer;
-import com.fr.stable.bridge.event.StableFactoryResourceType;
 import com.fr.bi.exception.BIKeyDuplicateException;
 import com.fr.bi.field.filtervalue.BIFilterValueMap;
 import com.fr.bi.resource.ResourceConstants;
@@ -31,6 +28,9 @@ import com.fr.bi.web.service.Service4AnalysisETL;
 import com.fr.bi.web.service.action.PartCubeDataLoader;
 import com.fr.cluster.rpc.RPC;
 import com.fr.stable.bridge.StableFactory;
+import com.fr.stable.bridge.event.StableFactoryMessageTransponder;
+import com.fr.stable.bridge.event.StableFactoryProducer;
+import com.fr.stable.bridge.event.StableFactoryResourceType;
 import com.fr.stable.fun.Service;
 import com.fr.web.ResourceHelper;
 
@@ -189,21 +189,23 @@ public class AnalysisETLModule extends AbstractModule {
         StableFactory.registerMarkedObject(BIAliasManagerProvider.class.getName(),/* new BIAnalysisETLAliasManager()*/getBIAliasManagerProvider());
         StableFactory.registerMarkedObject(UserETLCubeDataLoaderCreator.class.getName(), UserETLCubeDataLoaderCreator.getInstance());
     }
+
     private BIAliasManagerProvider getBIAliasManagerProvider() {
         if (ClusterEnv.isCluster()) {
             if (ClusterAdapter.getManager().getHostManager().isSelf()) {
-                BIAnalysisETLAliasManager provider = new BIAnalysisETLAliasManager();
+                BIAnalysisETLAliasManagerWithoutUser provider = new BIAnalysisETLAliasManagerWithoutUser();
                 RPC.registerSkeleton(provider, ClusterAdapter.getManager().getHostManager().getPort());
                 return provider;
             } else {
-                return (BIAliasManagerProvider) RPC.getProxy(BIAnalysisETLAliasManager.class,
+                return (BIAliasManagerProvider) RPC.getProxy(BIAnalysisETLAliasManagerWithoutUser.class,
                         ClusterAdapter.getManager().getHostManager().getIp(),
                         ClusterAdapter.getManager().getHostManager().getPort());
             }
         } else {
-            return new BIAnalysisETLAliasManager();
+            return new BIAnalysisETLAliasManagerWithoutUser();
         }
     }
+
     private UserETLCubeManagerProvider getUserETLCubeManagerProvider() {
         if (ClusterEnv.isCluster()) {
             if (ClusterAdapter.getManager().getHostManager().isSelf()) {
@@ -219,35 +221,36 @@ public class AnalysisETLModule extends AbstractModule {
             return new UserETLCubeManager();
         }
     }
+
     private BIAnalysisBusiPackManagerProvider getBusiPackProvider() {
         if (ClusterEnv.isCluster()) {
             if (ClusterAdapter.getManager().getHostManager().isSelf()) {
-                AnalysisBusiPackManager provider = new AnalysisBusiPackManager();
+                AnalysisBusiPackManagerWithoutUser provider = new AnalysisBusiPackManagerWithoutUser();
                 RPC.registerSkeleton(provider, ClusterAdapter.getManager().getHostManager().getPort());
                 return provider;
             } else {
-                return (BIAnalysisBusiPackManagerProvider) RPC.getProxy(AnalysisBusiPackManager.class,
+                return (BIAnalysisBusiPackManagerProvider) RPC.getProxy(AnalysisBusiPackManagerWithoutUser.class,
                         ClusterAdapter.getManager().getHostManager().getIp(),
                         ClusterAdapter.getManager().getHostManager().getPort());
             }
         } else {
-            return new AnalysisBusiPackManager();
+            return new AnalysisBusiPackManagerWithoutUser();
         }
     }
 
     private BIAnalysisDataSourceManagerProvider getDataSourceProvider() {
         if (ClusterEnv.isCluster()) {
             if (ClusterAdapter.getManager().getHostManager().isSelf()) {
-                AnalysisDataSourceManager provider = new AnalysisDataSourceManager();
+                AnalysisDataSourceManagerWithoutUser provider = new AnalysisDataSourceManagerWithoutUser();
                 RPC.registerSkeleton(provider, ClusterAdapter.getManager().getHostManager().getPort());
                 return provider;
             } else {
-                return (BIAnalysisDataSourceManagerProvider) RPC.getProxy(AnalysisDataSourceManager.class,
+                return (BIAnalysisDataSourceManagerProvider) RPC.getProxy(AnalysisDataSourceManagerWithoutUser.class,
                         ClusterAdapter.getManager().getHostManager().getIp(),
                         ClusterAdapter.getManager().getHostManager().getPort());
             }
         } else {
-            return new AnalysisDataSourceManager();
+            return new AnalysisDataSourceManagerWithoutUser();
         }
     }
 

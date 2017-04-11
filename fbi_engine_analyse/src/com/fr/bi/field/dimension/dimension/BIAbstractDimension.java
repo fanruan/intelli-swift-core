@@ -111,8 +111,8 @@ public abstract class BIAbstractDimension extends BIAbstractTargetAndDimension i
         }
         if (jo.has(BIJSONConstant.JSON_KEYS.STATISTIC_ELEMENT)) {
             JSONObject fieldJo = jo.getJSONObject(BIJSONConstant.JSON_KEYS.STATISTIC_ELEMENT);
-            if (fieldJo.has("target_relation")) {
-                JSONArray relationArray = fieldJo.getJSONArray("target_relation");
+            if (fieldJo.has("targetRelation")) {
+                JSONArray relationArray = fieldJo.getJSONArray("targetRelation");
                 BITableRelation[] tableRelationArray = new BITableRelation[relationArray.length()];
                 for (int i = 0; i < relationArray.length(); i++) {
                     tableRelationArray[i] = BITableRelationHelper.getRelation(relationArray.getJSONObject(i));

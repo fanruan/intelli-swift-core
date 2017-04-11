@@ -14,7 +14,7 @@ import java.util.Iterator;
  * 创建生成子节点的迭代器
  */
 public interface MergeIteratorCreator {
-    Iterator<MetricMergeResult> createIterator(DimensionIterator[] iterators, GroupValueIndex[] gvis, Comparator c, ICubeTableService[] tis, ICubeDataLoader loader);
+    Iterator<MetricMergeResult> createIterator(DimensionIterator[] iterators, int sumLength, GroupValueIndex[] gvis, Comparator c, ICubeTableService[] tis, ICubeDataLoader loader);
 
     //三无迭代器才必须有个child，为了跟之前样子一样
     boolean isSimple();

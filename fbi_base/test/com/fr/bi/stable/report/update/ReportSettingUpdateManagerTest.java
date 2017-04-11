@@ -52,12 +52,7 @@ public class ReportSettingUpdateManagerTest extends TestCase {
         return new BIDesignSetting(str);
     }
 
-    private double getVersionByValue(double versionValue) {
-        for (int i = 0; i < ReportVersionEnum.values().length; i++) {
-            if (ReportVersionEnum.values()[i].getVersion()==versionValue){
-                return ReportVersionEnum.values()[i].getVersion();
-            }
-        }
-        return 0;
+    private String getVersionByValue(double versionValue) {
+        return String.valueOf(versionValue);
     }
 }

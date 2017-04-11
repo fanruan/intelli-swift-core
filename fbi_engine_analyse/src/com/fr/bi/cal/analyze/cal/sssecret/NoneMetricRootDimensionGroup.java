@@ -42,8 +42,8 @@ public class NoneMetricRootDimensionGroup extends RootDimensionGroup {
 
     }
 
-    public NoneMetricRootDimensionGroup(List<MetricGroupInfo> metricGroupInfoList, MergeIteratorCreator[] mergeIteratorCreators, BISession session, boolean useRealData, TargetFilter filter, DimensionFilter[] directDimensionFilters) {
-        super(metricGroupInfoList, mergeIteratorCreators, session, useRealData);
+    public NoneMetricRootDimensionGroup(List<MetricGroupInfo> metricGroupInfoList, MergeIteratorCreator[] mergeIteratorCreators, int sumLength, BISession session, boolean useRealData, TargetFilter filter, DimensionFilter[] directDimensionFilters) {
+        super(metricGroupInfoList, mergeIteratorCreators, sumLength, session, useRealData);
         this.filter = filter;
         this.directDimensionFilters = directDimensionFilters;
     }
@@ -64,7 +64,7 @@ public class NoneMetricRootDimensionGroup extends RootDimensionGroup {
             metrics[i] = dimensionCalculators[0].getField().getTableBelongTo();
             gvis[i] = metricGroupInfoList.get(i).getFilterIndex();
         }
-        root = NoneDimensionGroup.createDimensionGroup(metrics, summaryLists, tis, gvis, session.getLoader());
+        root = NoneDimensionGroup.createDimensionGroup(metrics, summaryLists, sumLength, tis, gvis, session.getLoader());
     }
 
 

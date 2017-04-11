@@ -3,6 +3,7 @@ package com.fr.bi.cal.analyze.report.report.widget.chart.types;
 import com.fr.bi.cal.analyze.report.report.widget.VanChartWidget;
 import com.fr.bi.conf.report.map.BIMapInfoManager;
 import com.fr.bi.conf.report.map.BIWMSManager;
+import com.fr.bi.field.target.target.BISummaryTarget;
 import com.fr.general.Inter;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONException;
@@ -18,10 +19,6 @@ import java.util.Map;
 public class VanMapWidget extends VanChartWidget{
 
     private String subType = StringUtils.EMPTY;
-
-    //配色方案
-    private static final int AUTO = 1;
-    private static final  int CUSTOM = 2;
 
     private static final String THEME = "#04b1c2";
 
@@ -77,6 +74,11 @@ public class VanMapWidget extends VanChartWidget{
 
         legend.put("continuous", false);
 
+        BISummaryTarget[] targets = this.getTargets();
+        if(targets.length > 0){
+            legend.put("formatter", this.intervalLegendFormatter(this.valueFormat(targets[0], true)));
+        }
+
         return legend;
     }
 
@@ -97,25 +99,6 @@ public class VanMapWidget extends VanChartWidget{
         return settings;
     }
 
-    JSONArray mapStyleToRange(JSONArray mapStyle) throws JSONException{
-        JSONArray ranges = JSONArray.create();
-
-        for(int i = 0, len = mapStyle.length(); i < len; i++){
-            JSONObject config = mapStyle.getJSONObject(i), range = config.optJSONObject("range");
-
-            ranges.put(
-                    JSONObject.create()
-                    .put("from", range.optDouble("min"))
-                    .put("to", range.optDouble("max"))
-                    .put("color", config.optString("color"))
-            );
-
-
-        }
-
-        return ranges;
-    }
-
     protected JSONArray parseColors(JSONObject settings, JSONObject globalStyle, JSONObject plateConfig) throws Exception{
         return JSONArray.create().put(settings.optString("chartColor", THEME));
     }
@@ -132,12 +115,14 @@ public class VanMapWidget extends VanChartWidget{
         for(int i = 0, seriesCount = targetIDs.length; i < seriesCount; i++){
             JSONArray data = JSONArray.create(), rawData = originData.getJSONArray("c");
             String id = targetIDs[i];
+            double scale = this.numberScale(id);
             for(int j = 0, dataCount = rawData.length(); j < dataCount; j++){
                 JSONObject item = rawData.getJSONObject(j);
-                double value = item.getJSONArray("s").getDouble(i);
+                JSONArray s = item.getJSONArray("s");
+                double value = s.isNull(i) ? 0 : s.getDouble(i);
                 String areaName =  item.optString("n");
 
-                JSONObject datum = JSONObject.create().put("name", areaName).put("value", value);
+                JSONObject datum = JSONObject.create().put("name", areaName).put("value", value / scale);
 
                 if(item.has("c")){
                     JSONObject drillDown = JSONObject.create();
@@ -162,6 +147,10 @@ public class VanMapWidget extends VanChartWidget{
 
     protected String getLegendType(){
         return "rangeLegend";
+    }
+
+    protected String getTooltipIdentifier(){
+        return NAME + SERIES + VALUE;
     }
 
 }

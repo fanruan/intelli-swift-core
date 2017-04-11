@@ -130,11 +130,6 @@ public abstract class AbstractDimensionCalculator implements DimensionCalculator
     }
 
     @Override
-    public String getSortTarget() {
-        return dimension.getSortTarget();
-    }
-
-    @Override
     public int getSortType() {
         return dimension.getSortType();
     }
@@ -252,5 +247,10 @@ public abstract class AbstractDimensionCalculator implements DimensionCalculator
     @Override
     public void setRelationList(List<BITableSourceRelation> list) {
         relations = list;
+    }
+
+    @Override
+    public Object convertToOriginValue(String stringValue) {
+        return stringValue;
     }
 }

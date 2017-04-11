@@ -12,8 +12,8 @@ import java.util.Comparator;
 public class FilterMergeIterator extends MergeIterator {
     private StringOneValueFilterValue filterValue;
 
-    public FilterMergeIterator(DimensionIterator[] iterators, GroupValueIndex[] gvis, Comparator c, StringOneValueFilterValue filterValue) {
-        super(iterators, gvis, c);
+    public FilterMergeIterator(DimensionIterator[] iterators, GroupValueIndex[] gvis, Comparator c, int sumLength, StringOneValueFilterValue filterValue) {
+        super(iterators, gvis, c, sumLength);
         this.filterValue = filterValue;
     }
 

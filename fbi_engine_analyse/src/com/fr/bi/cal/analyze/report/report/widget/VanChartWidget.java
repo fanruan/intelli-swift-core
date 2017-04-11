@@ -4,11 +4,10 @@ import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.cal.analyze.session.BISession;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.conf.session.BISessionProvider;
-import com.fr.bi.field.target.target.BINumberTarget;
+import com.fr.bi.field.target.target.BISummaryTarget;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.tool.BIReadReportUtils;
 import com.fr.bi.util.BIConfUtils;
-import com.fr.general.ComparatorUtils;
 import com.fr.general.Inter;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONException;
@@ -31,6 +30,16 @@ public abstract class VanChartWidget extends TableWidget {
     private static final double BLUE_DET = 0.114;
     private static final double GRAY = 192;
 
+    //标签和数据点提示的内容
+    public static final String CATEGORY = "${CATEGORY}";
+    public static final String SERIES = "${SERIES}";
+    public static final String VALUE = "${VALUE}";
+    public static final String PERCENT = "${PERCENT}";
+    public static final String X = "${X}";
+    public static final String Y = "${Y}";
+    public static final String SIZE = "${SIZE}";
+    public static final String NAME = "${NAME}";
+
     //兼容前台用数字表示位置的写法，真xx丑
     private static final int TOP = 2;
     private static final int RIGHT = 3;
@@ -51,10 +60,16 @@ public abstract class VanChartWidget extends TableWidget {
     private static final int STYLE_NORMAL = 1; //普通风格
     private static final int STYLE_GRADUAL = 2; //渐变风格
 
+    public static final int AUTO = 1;
+    public static final  int CUSTOM = 2;
+
     private String requestURL = StringUtils.EMPTY;
 
     private HashMap<String, JSONArray> dimensionIdMap = new HashMap<String, JSONArray>();
     private HashMap<String, String> regionIdMap = new HashMap<String, String>();
+
+    //存下每个指标和纬度的最大最小和平均值
+    private HashMap<String, ArrayList<Double>> idValueMap = new HashMap<String, ArrayList<Double>>();
 
     public abstract String getSeriesType(String dimensionID);
 
@@ -83,6 +98,12 @@ public abstract class VanChartWidget extends TableWidget {
     protected double numberScale(String dimensionID){
 
         int level = this.numberLevel(dimensionID);
+
+        return this.numberScaleByLevel(level);
+    }
+
+    protected double numberScaleByLevel(int level){
+
         double scale = 1.0;
 
         if(level == BIReportConstant.TARGET_STYLE.NUM_LEVEL.TEN_THOUSAND){
@@ -112,7 +133,7 @@ public abstract class VanChartWidget extends TableWidget {
 
         }else if(level == BIReportConstant.TARGET_STYLE.NUM_LEVEL.YI){
 
-            unit = Inter.getLocText("BI-Basci_Yi");
+            unit = Inter.getLocText("BI-Basic_Yi");
 
         }else if(level == BIReportConstant.TARGET_STYLE.NUM_LEVEL.PERCENT){
 
@@ -124,8 +145,12 @@ public abstract class VanChartWidget extends TableWidget {
     }
 
     protected int numberLevel(String dimensionID){
+        return this.numberLevelFromSettings(dimensionID);
+    }
+
+    protected int numberLevelFromSettings(String dimensionID){
         try {
-            BINumberTarget  target = ((BINumberTarget) this.getBITargetAndDimension(dimensionID));
+            BISummaryTarget  target = this.getBITargetByID(dimensionID);
 
             return target.getChartSetting().getSettings().optInt("numLevel", BIReportConstant.TARGET_STYLE.NUM_LEVEL.NORMAL);
         }catch (Exception e){
@@ -242,21 +267,37 @@ public abstract class VanChartWidget extends TableWidget {
                 identifier += "${VALUE}";
             }
 
-            if(dataLabels.optBoolean("showPercentage")){
+            if(dataLabelSetting.optBoolean("showPercentage")){
                 identifier += "${PERCENT}";
             }
 
-            formatter.put("identifier", identifier).put("style", dataLabelSetting.optJSONObject("textStyle"));
+            formatter.put("identifier", identifier);
+
+            dataLabels.put("formatter", formatter);
+            dataLabels.put("style", dataLabelSetting.optJSONObject("textStyle"));
+            dataLabels.put("align", this.dataLabelAlign(dataLabelSetting.optInt("position")));
+
+            dataLabels.put("connectorWidth", dataLabelSetting.optBoolean("showTractionLine") == true ? 1 : 0);
         }
 
         return dataLabels;
+    }
+
+    protected String dataLabelAlign(int position){
+        if(position == POSITION_OUTER){
+            return "outside";
+        }else if(position == POSITION_INNER){
+            return "inside";
+        }
+        return "center";
     }
 
     private JSONObject defaultDataLabelSetting() throws JSONException{
 
         return JSONObject.create().put("showCategoryName", true)
                 .put("showSeriesName", true).put("showValue", true).put("showPercentage", false)
-                .put("position", POSITION_OUTER).put("textStyle", defaultFont());
+                .put("position", POSITION_OUTER).put("showTractionLine", false)
+                .put("textStyle", defaultFont());
 
     }
 
@@ -374,15 +415,15 @@ public abstract class VanChartWidget extends TableWidget {
         return style == STYLE_GRADUAL ? "gradual" : "normal";
     }
 
-    protected String tooltipValueFormat(BINumberTarget dimension){
-        return this.valueFormat(dimension, true);
+    protected String tooltipValueFormat(BISummaryTarget dimension){
+        return this.valueFormatFunc(dimension, true);
     }
 
-    protected String dataLabelValueFormat(BINumberTarget dimension){
-        return this.valueFormat(dimension, true);
+    protected String dataLabelValueFormat(BISummaryTarget dimension){
+        return this.valueFormatFunc(dimension, true);
     }
 
-    protected String decimalFormat(BINumberTarget dimension, boolean hasSeparator){
+    protected String decimalFormat(BISummaryTarget dimension, boolean hasSeparator){
         JSONObject settings = dimension.getChartSetting().getSettings();
         int type = settings.optInt("format", 0);
         String format;
@@ -404,8 +445,14 @@ public abstract class VanChartWidget extends TableWidget {
     }
 
     //值标签和小数位数，千分富符，数量级和单位构成的后缀
-    protected String valueFormat(BINumberTarget dimension, boolean isTooltip) {
+    protected String valueFormatFunc(BISummaryTarget dimension, boolean isTooltip) {
 
+        String format = this.valueFormat(dimension, isTooltip);
+
+        return String.format("function(){return BI.contentFormat(arguments[0], \"%s\")}", format);
+    }
+
+    protected String valueFormat(BISummaryTarget dimension, boolean isTooltip){
         JSONObject settings = dimension.getChartSetting().getSettings();
 
         boolean hasSeparator = settings.optBoolean("numSeparators", true);
@@ -420,10 +467,18 @@ public abstract class VanChartWidget extends TableWidget {
             format += (scaleUnit + unit);
         }
 
-        return String.format("function(){return FR.contentFormat(arguments[0], \"%s\")}", format);
+        return format;
     }
 
-    private void formatSeriesTooltipFormat(JSONObject options) throws Exception{
+    protected String intervalLegendFormatter(String format){
+        return String.format("function(){return BI.contentFormat(arguments[0].from, \"%s\") + \"-\" + BI.contentFormat(arguments[0].to, \"%s\")}", format, format);
+    }
+
+    protected String gradualLegendFormatter(String format){
+        return String.format("function(){return BI.contentFormat(arguments[0], \"%s\")}", format);
+    }
+
+    protected void formatSeriesTooltipFormat(JSONObject options) throws Exception{
 
         JSONObject tooltip = options.optJSONObject("plotOptions").optJSONObject("tooltip");
 
@@ -435,17 +490,17 @@ public abstract class VanChartWidget extends TableWidget {
 
             JSONObject formatter = JSONObject.create();
 
-            formatter.put("identifier", this.getTooltipIdentifier()).put("valueFormat", this.tooltipValueFormat((BINumberTarget) this.getBITargetAndDimension(dimensionID)));
+            formatter.put("identifier", this.getTooltipIdentifier()).put("valueFormat", this.tooltipValueFormat(this.getBITargetByID(dimensionID)));
 
             ser.put("tooltip", new JSONObject(tooltip.toString()).put("formatter", formatter));
         }
     }
 
     protected String getTooltipIdentifier(){
-        return "${CATEGORY}${SERIES}${VALUE}";
+        return CATEGORY + SERIES + VALUE;
     }
 
-    private void formatSeriesDataLabelFormat(JSONObject options) throws Exception{
+    protected void formatSeriesDataLabelFormat(JSONObject options) throws Exception{
         JSONObject dataLabels = options.optJSONObject("plotOptions").optJSONObject("dataLabels");
 
         if(dataLabels.optBoolean("enabled")){
@@ -455,8 +510,8 @@ public abstract class VanChartWidget extends TableWidget {
                 JSONObject ser = series.getJSONObject(i);
                 String dimensionID = ser.optString("dimensionID");
 
-                ser.put("dataLabels", new JSONObject(dataLabels.toString())
-                        .put("valueFormat", this.dataLabelValueFormat((BINumberTarget) this.getBITargetAndDimension(dimensionID))));
+                ser.put("dataLabels", new JSONObject(dataLabels.toString()).optJSONObject("formatter")
+                        .put("valueFormat", this.dataLabelValueFormat(this.getBITargetByID(dimensionID))));
             }
         }
     }
@@ -470,53 +525,68 @@ public abstract class VanChartWidget extends TableWidget {
     }
 
     protected JSONArray createXYSeries(JSONObject originData) throws Exception{
+        return originData.has("t") ? this.createSeriesWithTop(originData) : this.createSeriesWithChildren(originData);
+    }
+
+    private JSONArray createSeriesWithTop(JSONObject originData) throws Exception{
         JSONArray series = JSONArray.create();
         String[] targetIDs = this.getUsedTargetID();
         String categoryKey = this.categoryKey(), valueKey = this.valueKey();
-        if (originData.has("t")) {//有列表头，多系列
-            JSONObject top = originData.getJSONObject("t"), left = originData.getJSONObject("l");
-            JSONArray topC = top.getJSONArray("c"), leftC = left.getJSONArray("c");
-            boolean isStacked = this.isStacked(targetIDs[0]);
-            double numberScale = this.numberScale(targetIDs[0]);
-            for (int i = 0; i < topC.length(); i++) {
-                JSONObject tObj = topC.getJSONObject(i);
-                String name = tObj.getString("n");
-                JSONArray data = JSONArray.create();
-                for (int j = 0; j < leftC.length(); j++) {
-                    JSONObject lObj = leftC.getJSONObject(j);
-                    String x = lObj.getString("n");
-                    double y = lObj.getJSONObject("s").getJSONArray("c").getJSONObject(i).getJSONArray("s").getDouble(0);
-                    data.put(JSONObject.create().put(categoryKey, x).put(valueKey, y / numberScale));
-                }
-                JSONObject ser = JSONObject.create().put("data", data).put("name", name)
-                        .put("type", this.getSeriesType(targetIDs[0])).put("dimensionID", targetIDs[0]);
-                if(isStacked){
-                    ser.put("stacked", targetIDs[0]);
-                }
-                series.put(ser);
+        ArrayList<Double> valueList = new ArrayList<Double>();
+        JSONObject top = originData.getJSONObject("t"), left = originData.getJSONObject("l");
+        JSONArray topC = top.getJSONArray("c"), leftC = left.getJSONArray("c");
+        boolean isStacked = this.isStacked(targetIDs[0]);
+        double numberScale = this.numberScale(targetIDs[0]);
+        for (int i = 0; i < topC.length(); i++) {
+            JSONObject tObj = topC.getJSONObject(i);
+            String name = tObj.getString("n");
+            JSONArray data = JSONArray.create();
+            for (int j = 0; j < leftC.length(); j++) {
+                JSONObject lObj = leftC.getJSONObject(j);
+                String x = lObj.getString("n");
+                double y = lObj.getJSONObject("s").getJSONArray("c").getJSONObject(i).getJSONArray("s").getDouble(0)/numberScale;
+                data.put(JSONObject.create().put(categoryKey, x).put(valueKey, y));
+                valueList.add(y);
             }
-        }else if(originData.has("c")){
-            JSONArray children = originData.getJSONArray("c");
-            for(int i = 0, len = targetIDs.length; i < len; i++){
-                String id = targetIDs[i], type = this.getSeriesType(id), stackedKey = this.getStackedKey(id);
-                int yAxis = this.yAxisIndex(id);
-                double numberScale = this.numberScale(id);
-                JSONArray data = JSONArray.create();
-                for (int j = 0, count = children.length(); j < count; j++) {
-                    JSONObject lObj = children.getJSONObject(j);
-                    String x = lObj.getString("n");
-                    double y = lObj.getJSONArray("s").getDouble(i) / numberScale;
-                    data.put(JSONObject.create().put(categoryKey, x).put(valueKey, y));
-                }
-                JSONObject ser = JSONObject.create().put("data", data).put("name", id)
-                        .put("type", type).put("yAxis", yAxis).put("dimensionID", id);
-                if(this.isStacked(id)){
-                    ser.put("stacked", stackedKey);
-                }
-                series.put(ser);
+            JSONObject ser = JSONObject.create().put("data", data).put("name", name)
+                    .put("type", this.getSeriesType(targetIDs[0])).put("dimensionID", targetIDs[0]);
+            if(isStacked){
+                ser.put("stacked", targetIDs[0]);
             }
+            series.put(ser);
         }
+        this.idValueMap.put(targetIDs[0], valueList);
 
+        return series;
+    }
+
+    private JSONArray createSeriesWithChildren(JSONObject originData) throws Exception{
+        JSONArray series = JSONArray.create();
+        String[] targetIDs = this.getUsedTargetID();
+        String categoryKey = this.categoryKey(), valueKey = this.valueKey();
+        JSONArray children = originData.getJSONArray("c");
+        for(int i = 0, len = targetIDs.length; i < len; i++){
+            String id = targetIDs[i], type = this.getSeriesType(id), stackedKey = this.getStackedKey(id);
+            int yAxis = this.yAxisIndex(id);
+            ArrayList<Double> valueList = new ArrayList<Double>();
+            double numberScale = this.numberScale(id);
+            JSONArray data = JSONArray.create();
+            for (int j = 0, count = children.length(); j < count; j++) {
+                JSONObject lObj = children.getJSONObject(j);
+                String x = lObj.getString("n");
+                JSONArray targetValues = lObj.getJSONArray("s");
+                double y = targetValues.isNull(i) ? 0 : targetValues.getDouble(i) / numberScale;
+                data.put(JSONObject.create().put(categoryKey, x).put(valueKey, y));
+                valueList.add(y);
+            }
+            JSONObject ser = JSONObject.create().put("data", data).put("name", id)
+                    .put("type", type).put("yAxis", yAxis).put("dimensionID", id);
+            if(this.isStacked(id)){
+                ser.put("stacked", stackedKey);
+            }
+            series.put(ser);
+            this.idValueMap.put(id, valueList);
+        }
         return series;
     }
 
@@ -537,6 +607,25 @@ public abstract class VanChartWidget extends TableWidget {
                 .put("enabled", legend >= TOP)
                 .put("position", position)
                 .put("style", settings.optJSONObject("legendStyle"));
+    }
+
+    protected JSONArray mapStyleToRange(JSONArray mapStyle) throws JSONException{
+        JSONArray ranges = JSONArray.create();
+
+        for(int i = 0, len = mapStyle.length(); i < len; i++){
+            JSONObject config = mapStyle.getJSONObject(i), range = config.optJSONObject("range");
+
+            ranges.put(
+                    JSONObject.create()
+                            .put("from", range.optDouble("min"))
+                            .put("to", range.optDouble("max"))
+                            .put("color", config.optString("color"))
+            );
+
+
+        }
+
+        return ranges;
     }
 
     public BIDimension getCategoryDimension(){
@@ -575,6 +664,13 @@ public abstract class VanChartWidget extends TableWidget {
 
     protected String getRequestURL(){
         return this.requestURL;
+    }
+
+    public Double[] getValuesByID(String id){
+        if(this.idValueMap.containsKey(id)){
+            return this.idValueMap.get(id).toArray(new Double[0]);
+        }
+        return new Double[0];
     }
 
 }

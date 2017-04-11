@@ -1,10 +1,9 @@
 package com.fr.bi.field.target.calculator.cal.configure;
 
-import com.fr.bi.field.target.key.cal.configuration.summary.BICountOfAllKey;
 import com.fr.bi.field.target.target.cal.target.configure.BIConfiguredCalculateTarget;
+import com.fr.bi.stable.report.key.TargetGettingKey;
 import com.fr.bi.stable.report.result.BICrossNode;
 import com.fr.bi.stable.report.result.BINode;
-import com.fr.bi.stable.report.result.BITargetKey;
 
 import java.util.concurrent.Callable;
 
@@ -14,18 +13,13 @@ import java.util.concurrent.Callable;
 public class CountOfAllCalculator extends SummaryOfAllCalculator {
     private static final long serialVersionUID = 7574028302614199981L;
 
-    public CountOfAllCalculator(BIConfiguredCalculateTarget target, String target_id, int start_group) {
-        super(target, target_id, start_group);
+    public CountOfAllCalculator(BIConfiguredCalculateTarget target, TargetGettingKey calTargetKey, int start_group) {
+        super(target, calTargetKey, start_group);
     }
 
     @Override
     public Callable createNodeDealWith(BINode node) {
         return new RankDealWith(node);
-    }
-
-    @Override
-    public BITargetKey createTargetKey() {
-        return new BICountOfAllKey(targetName, target_id, targetMap, start_group);
     }
 
     @Override
@@ -52,9 +46,9 @@ public class CountOfAllCalculator extends SummaryOfAllCalculator {
                 cursor_node = cursor_node.getSibling();
             }
             cursor_node = temp_node;
-            Object value = new Integer(count);
+            Integer value = new Integer(count);
             while (isNotEnd(cursor_node, deep)) {
-                cursor_node.setSummaryValue(createTargetKey(), value);
+                cursor_node.setSummaryValue(createTargetGettingKey(), value);
                 cursor_node = cursor_node.getSibling();
             }
             return null;
@@ -92,9 +86,8 @@ public class CountOfAllCalculator extends SummaryOfAllCalculator {
                 cursor_node = cursor_node.getBottomSibling();
             }
             cursor_node = temp_node;
-            Object value = count;
             while (isNotEnd(cursor_node, deep)) {
-                cursor_node.setSummaryValue(createTargetGettingKey(), value);
+                cursor_node.setSummaryValue(createTargetGettingKey(), count);
                 cursor_node = cursor_node.getBottomSibling();
             }
             return null;

@@ -1,6 +1,8 @@
 package com.fr.bi.cal.analyze.cal.sssecret;
 
-public class PageIteratorGroup {
+import java.io.Serializable;
+
+public class PageIteratorGroup implements Serializable {
     private static final long serialVersionUID = -5143454742110936232L;
 
     private NodeDimensionIterator rowIterator;

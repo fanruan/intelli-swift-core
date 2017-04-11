@@ -10,11 +10,13 @@ import com.fr.bi.cal.analyze.cal.detail.PolyCubeDetailECBlock;
 import com.fr.bi.cal.analyze.executor.detail.DetailExecutor;
 import com.fr.bi.cal.analyze.executor.paging.Paging;
 import com.fr.bi.cal.analyze.executor.paging.PagingFactory;
+import com.fr.bi.cal.analyze.report.report.widget.chart.export.basic.IExcelDataBuilder;
+import com.fr.bi.cal.analyze.report.report.widget.chart.export.manager.TableDirector;
+import com.fr.bi.cal.analyze.report.report.widget.chart.export.calculator.DetailTableBuilder;
 import com.fr.bi.cal.analyze.report.report.widget.detail.BIDetailReportSetting;
 import com.fr.bi.cal.analyze.report.report.widget.detail.BIDetailSetting;
 import com.fr.bi.cal.analyze.session.BISession;
 import com.fr.bi.common.persistent.xml.BIIgnoreField;
-import com.fr.bi.conf.report.BIWidget;
 import com.fr.bi.conf.report.WidgetType;
 import com.fr.bi.conf.report.widget.field.target.detailtarget.BIDetailTarget;
 import com.fr.bi.conf.report.widget.field.target.filter.TargetFilter;
@@ -34,6 +36,7 @@ import com.fr.json.JSONArray;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
 import com.fr.report.poly.TemplateBlock;
+import com.fr.web.core.SessionDealWith;
 
 import java.util.*;
 
@@ -174,7 +177,7 @@ public class BIDetailWidget extends BIAbstractWidget {
             try {
                 parseDimensions(jo, userId);
             } catch (Exception e) {
-                BILoggerFactory.getLogger().info(e.getMessage(),e);
+                BILoggerFactory.getLogger().info(e.getMessage(), e);
             }
         }
         if (jo.has("filterValue")) {
@@ -197,7 +200,7 @@ public class BIDetailWidget extends BIAbstractWidget {
             this.dimensions[i] = BIDetailTargetFactory.parseTarget(dimObject, userId);
             JSONObject dimensionMap = dimObject.getJSONObject("dimension_map");
             Iterator it = dimensionMap.keys();
-            JSONArray relationJa = dimensionMap.optJSONObject(it.next().toString()).getJSONArray("target_relation");
+            JSONArray relationJa = dimensionMap.optJSONObject(it.next().toString()).getJSONArray("targetRelation");
             List<BITableRelation> relationList = new ArrayList<BITableRelation>();
             for (int j = 0; j < relationJa.length(); j++) {
                 relationList.add(BITableRelationHelper.getRelation(relationJa.getJSONObject(j)));
@@ -272,14 +275,48 @@ public class BIDetailWidget extends BIAbstractWidget {
         return new PolyCubeDetailECBlock(this, session, page);
     }
 
-    
+
     @Override
     public void reSetDetailTarget() {
-        for(BIDetailTarget ele : getDimensions()){
+        for (BIDetailTarget ele : getDimensions()) {
             ele.reSetDetailGetter();
         }
-        for (BIDetailTarget ele: getViewDimensions()){
+        for (BIDetailTarget ele : getViewDimensions()) {
             ele.reSetDetailGetter();
         }
+    }
+
+    public JSONObject getPostOptions(String sessionId) throws Exception {
+        JSONObject dataJSON = this.createDataJSON((BISession) SessionDealWith.getSessionIDInfor(sessionId)).getJSONObject("data");
+        Map<Integer, List<JSONObject>> viewMap = createViewMap();
+        IExcelDataBuilder builder = new DetailTableBuilder(viewMap, dataJSON);
+        TableDirector director = new TableDirector(builder);
+        director.construct();
+        return director.buildTableData().createJSON();
+    }
+
+    private Map<Integer, List<JSONObject>> createViewMap() throws Exception {
+        Map<Integer, List<JSONObject>> dimAndTar = new HashMap<Integer, List<JSONObject>>();
+        List<JSONObject> dims = new ArrayList<JSONObject>();
+        for (BIDetailTarget detailTarget : this.getViewDimensions()) {
+            String dId = detailTarget.getId();
+            int type = detailTarget.createColumnKey().getFieldType();
+            String text = detailTarget.getText();
+            dims.add(new JSONObject().put("dId", dId).put("text", text).put("type", type).put("used", detailTarget.isUsed()));
+        }
+        dimAndTar.put(Integer.valueOf(BIReportConstant.REGION.DIMENSION1), dims);
+        return dimAndTar;
+    }
+
+    //    public int getWSTableStyle() {
+//        return data.getWSTableStyle();
+//    }
+//
+//    public String getWSThemeColor() {
+//        return data.getWSThemeColor();
+//    }
+    //todo 这边其实是有问题的，setting中 维度信息和样式不应该杂糅在一起
+    public BIDetailSetting getSetting() {
+        return data;
     }
 }

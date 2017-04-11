@@ -1,7 +1,7 @@
 package com.fr.bi.stable.report.result;
 
 
-import java.util.Map;
+import com.fr.bi.stable.report.key.TargetGettingKey;
 
 /**
  * Created by 小灰灰 on 2014/4/2.
@@ -14,12 +14,12 @@ public interface SummaryContainer {
      * @param key
      * @param value
      */
-    void setSummaryValue(Object key, Object value);
+    void setSummaryValue(TargetGettingKey key, Number value);
 
 
-    Number getSummaryValue(Object key);
+    Number getSummaryValue(TargetGettingKey key);
 
-    Map getSummaryValue();
+    Number[] getSummaryValue();
 
-    void setSummaryValue(Map summaryValue);
+    void setSummaryValue(Number[] summaryValue);
 }

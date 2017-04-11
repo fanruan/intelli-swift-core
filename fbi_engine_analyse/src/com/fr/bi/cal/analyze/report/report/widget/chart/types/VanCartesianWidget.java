@@ -1,13 +1,18 @@
 package com.fr.bi.cal.analyze.report.report.widget.chart.types;
 
 import com.finebi.cube.common.log.BILoggerFactory;
+import com.fr.base.Formula;
+import com.fr.base.ParameterMapNameSpace;
 import com.fr.bi.cal.analyze.report.report.widget.VanChartWidget;
-import com.fr.bi.field.target.target.BINumberTarget;
+import com.fr.bi.field.target.target.BISummaryTarget;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
+import com.fr.script.Calculator;
 import com.fr.stable.StringUtils;
+
+import java.util.HashMap;
 
 /**
  * Created by eason on 2017/3/2.
@@ -93,12 +98,11 @@ public abstract class VanCartesianWidget extends VanChartWidget {
             BILoggerFactory.getLogger().error(e.getMessage(),e);
         }
 
-        return String.format("function(){return FR.contentFormat(arguments[0], \"%s\")}", hasSeparator ? "#,###.##" : "#.##");
+        return String.format("function(){return BI.contentFormat(arguments[0], \"%s\")}", hasSeparator ? "#,###.##" : "#.##");
     }
 
     //值标签和小数位数，千分富符，数量级和单位构成的后缀
-    protected String valueFormat(BINumberTarget dimension, boolean isTooltip) {
-
+    protected String valueFormat(BISummaryTarget dimension, boolean isTooltip){
         int yAxis = this.yAxisIndex(dimension.getId());
 
         boolean hasSeparator = true;
@@ -129,7 +133,7 @@ public abstract class VanCartesianWidget extends VanChartWidget {
             format += (scaleUnit + unit);
         }
 
-        return String.format("function(){return FR.contentFormat(arguments[0], \"%s\")}", format);
+        return format;
     }
 
     //todo 坐标轴标题和数量级，单位构成的后缀
@@ -138,8 +142,8 @@ public abstract class VanCartesianWidget extends VanChartWidget {
         return StringUtils.isBlank(scaleUnit) ? StringUtils.EMPTY : "(" + this.scaleUnit(level) + unit + ")";
     }
 
-    protected String dataLabelValueFormat(BINumberTarget dimension){
-        return this.valueFormat(dimension, false);
+    protected String dataLabelValueFormat(BISummaryTarget dimension){
+        return this.valueFormatFunc(dimension, false);
     }
 
     protected int numberLevel(String dimensionID){
@@ -223,13 +227,47 @@ public abstract class VanCartesianWidget extends VanChartWidget {
             options.put("zoom", JSONObject.create().put("zoomTool", JSONObject.create().put("enabled", true)));
         }
 
-        options.put("xAxis", this.parseCategoryAxis(settings));
-        options.put("yAxis", this.parseValueAxis(settings));
+        Calculator calculator = Calculator.createCalculator();
+        String[] ids = this.getUsedTargetID();
+        for(int i = 0, len = ids.length; i < len; i++){
+            String id = ids[i];
+            Double[] values = this.getValuesByID(id);
+            if(values.length > 0){
+                double min = Double.MAX_VALUE, max = -min, average = 0, count = values.length;
+                for(int j = 0; j < count; j++){
+                    double value = values[j].doubleValue();
+                    min = Math.min(min, value);
+                    max = Math.max(max, value);
+                    average += value;
+                }
+                average /= count;
+
+                //放参数
+                HashMap map = new HashMap();
+                map.put(String.format("%s0",id), max);
+                map.put(String.format("%s1",id), min);
+                map.put(String.format("%s2",id), average);
+
+                ParameterMapNameSpace space = ParameterMapNameSpace.create(map);
+                calculator.pushNameSpace(space);
+            }
+        }
+
+        options.put(this.getCoordXKey(), this.parseCategoryAxis(settings, calculator));
+        options.put(this.getCoordYKey(), this.parseValueAxis(settings, calculator));
 
         return options;
     }
 
-    protected JSONArray parseCategoryAxis(JSONObject settings) throws JSONException{
+    protected String getCoordXKey(){
+        return "xAxis";
+    }
+
+    protected String getCoordYKey(){
+        return "yAxis";
+    }
+
+    protected JSONArray parseCategoryAxis(JSONObject settings, Calculator calculator) throws JSONException{
 
         JSONObject category = JSONObject.create();
 
@@ -245,20 +283,20 @@ public abstract class VanCartesianWidget extends VanChartWidget {
         return JSONArray.create().put(category);
     }
 
-    protected JSONArray parseValueAxis(JSONObject settings) throws JSONException{
+    protected JSONArray parseValueAxis(JSONObject settings, Calculator calculator) throws JSONException{
 
         JSONArray axis = JSONArray.create();
 
-        axis.put(this.parseLeftValueAxis(settings));
+        axis.put(this.parseLeftValueAxis(settings, calculator));
 
-        axis.put(this.parseRightValueAxis(settings));
+        axis.put(this.parseRightValueAxis(settings, calculator));
 
-        axis.put(this.parseThirdValueAxis(settings));
+        axis.put(this.parseThirdValueAxis(settings, calculator));
 
         return axis;
     }
 
-    protected JSONObject parseLeftValueAxis(JSONObject settings) throws JSONException{
+    protected JSONObject parseLeftValueAxis(JSONObject settings, Calculator calculator) throws JSONException{
 
         JSONObject labelStyle = settings.optJSONObject("leftYLabelStyle");
         String axisTitle = this.axisTitleUnit(settings.optInt("leftYNumberLevel"), settings.optString("leftYUnit"));
@@ -280,10 +318,14 @@ public abstract class VanCartesianWidget extends VanChartWidget {
                 .put("gridLineWidth", settings.optBoolean("hShowGridLine") ? 1 : 0)
                 .put("gridLineColor", settings.optString("hGridLineColor"));
 
+        if(settings.optBoolean("leftYShowCustomScale")){
+            this.putMinMaxInterval(left, settings.optJSONObject("leftYCustomScale"), calculator);
+        }
+
         return left;
     }
 
-    protected JSONObject parseRightValueAxis(JSONObject settings) throws JSONException{
+    protected JSONObject parseRightValueAxis(JSONObject settings, Calculator calculator) throws JSONException{
 
         String axisTitle = this.axisTitleUnit(settings.optInt("rightYNumberLevel"), settings.optString("rightYUnit"));
         boolean enabled = settings.optBoolean("rightYShowTitle");
@@ -302,10 +344,14 @@ public abstract class VanCartesianWidget extends VanChartWidget {
                 .put("lineColor", settings.optString("rightYLineColor")).put("lineWidth", 1)
                 .put("position", "right").put("reversed", settings.optBoolean("rightYReverse", false));
 
+        if(settings.optBoolean("rightYShowCustomScale")){
+            this.putMinMaxInterval(right, settings.optJSONObject("rightYCustomScale"), calculator);
+        }
+
         return right;
     }
 
-    private JSONObject parseThirdValueAxis(JSONObject settings) throws JSONException{
+    private JSONObject parseThirdValueAxis(JSONObject settings, Calculator calculator) throws JSONException{
         String axisTitle = this.axisTitleUnit(settings.optInt("rightY2NumberLevel"), settings.optString("rightY2Unit"));
         boolean enabled = settings.optBoolean("rightY2ShowTitle");
         JSONObject labelStyle = settings.optJSONObject("rightY2LabelStyle");
@@ -323,7 +369,47 @@ public abstract class VanCartesianWidget extends VanChartWidget {
                 .put("lineColor", settings.optString("rightY2LineColor")).put("lineWidth", 1)
                 .put("position", "right").put("reversed", settings.optBoolean("rightY2Reverse", false));
 
+        if(settings.optBoolean("rightY2ShowCustomScale")){
+            this.putMinMaxInterval(right2, settings.optJSONObject("rightY2CustomScale"), calculator);
+        }
+
         return right2;
+    }
+
+    private void putMinMaxInterval(JSONObject axis, JSONObject scale, Calculator calculator) throws JSONException{
+
+        String min = scale.optJSONObject("minScale").optString("formula");
+
+        String max = scale.optJSONObject("maxScale").optString("formula");
+
+        String interval = scale.optJSONObject("interval").optString("formula");
+
+        if(StringUtils.isNotBlank(min)){
+            axis.put("min", this.niceAxisValue(min, calculator));
+        }
+
+        if(StringUtils.isNotBlank(max)){
+            axis.put("max", this.niceAxisValue(max, calculator));
+        }
+
+        if(StringUtils.isNotBlank(interval)){
+            axis.put("tickInterval", this.niceAxisValue(interval, calculator));
+        }
+    }
+
+    //有参数的时候，需要计算出一个相对nice的值
+    //没有的时候直接返回计算结果
+    private double niceAxisValue(String formula, Calculator calculator){
+        double value = 0;
+        try {
+            formula = formula.replaceAll("[{}]", StringUtils.EMPTY);
+            value = Double.parseDouble(calculator.eval(new Formula(formula)).toString());
+
+        }catch (Exception e){
+            BILoggerFactory.getLogger().error(e.getMessage(),e);
+        }
+
+        return value;
     }
 
 }

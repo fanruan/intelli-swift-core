@@ -208,7 +208,7 @@ public class TreeLabelWidget extends BIAbstractWidget{
             this.dimensions[i] = BIDimensionFactory.parseDimension(dimObject, userId);
             JSONObject dimensionMap = dimObject.getJSONObject("dimension_map");
             Iterator it = dimensionMap.keys();
-            JSONArray relationJa = dimensionMap.optJSONObject(it.next().toString()).getJSONArray("target_relation");
+            JSONArray relationJa = dimensionMap.optJSONObject(it.next().toString()).getJSONArray("targetRelation");
             ArrayList<BITableRelation> relationMap = new ArrayList<BITableRelation>();
             for (int j = 0; j < relationJa.length(); j++) {
                 BITableRelation tableRelation = BITableRelationHelper.getRelation(relationJa.getJSONObject(j));
