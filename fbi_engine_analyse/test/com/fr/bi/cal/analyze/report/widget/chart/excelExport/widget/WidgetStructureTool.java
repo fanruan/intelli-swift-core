@@ -1,20 +1,10 @@
-//package excelExport.widget;
-//
-//import com.fr.bi.cal.analyze.report.report.widget.TableWidget;
-//import excelExport.TableTestWidget;
-//import com.fr.json.JSONException;
-//import com.fr.json.JSONObject;
-//
-//import java.util.ArrayList;
-//import java.util.HashMap;
-//import java.util.List;
-//import java.util.Map;
-//
-///**
-// * Created by Kary on 2017/3/7.
-// * 生成测试用的widget
-// */
-//public class WidgetStructureTool {
+package excelExport.widget;
+
+/**
+ * Created by Kary on 2017/3/7.
+ * 生成测试用的widget
+ */
+public class WidgetStructureTool {
 //    public static TableWidget createNormalTableTableWidget() throws Exception {
 //        TableTestWidget widget = new TableTestWidget();
 //        JSONObject widgetJson = new JSONObject().put("view", new JSONObject("{\"30000\":[\"2e00940856ddb764\"],\"10000\":[\"8b978d3875b2aaec\",\"b5735b947e7d47de\"]}"));
@@ -42,4 +32,4 @@
 //        widget.parseJSON(widgetJson, -999);
 //        return widget;
 //    }
-//}
+}

@@ -1,27 +1,11 @@
-//package excelExport;
-//
-//import com.fr.bi.cal.analyze.report.report.widget.TableWidget;
-//import com.fr.bi.cal.analyze.report.report.widget.chart.export.basic.BIExcelTableData;
-//import com.fr.bi.cal.analyze.report.report.widget.chart.export.calculator.SummaryCrossTableDataBuilder;
-//import com.fr.bi.cal.analyze.report.report.widget.chart.export.calculator.SummaryGroupTableDataBuilder;
-//import com.fr.bi.cal.analyze.report.report.widget.chart.export.manager.TableDirector;
-//import com.fr.bi.cal.analyze.report.report.widget.styles.BIStyleReportSetting;
-//import com.fr.bi.conf.report.style.ChartSetting;
-//import com.fr.bi.stable.constant.BIReportConstant;
-//import com.fr.json.JSONArray;
-//import com.fr.json.JSONException;
-//import com.fr.json.JSONObject;
-//import excelExport.widget.WidgetDataTool;
-//import excelExport.widget.WidgetStructureTool;
-//import junit.framework.TestCase;
-//import org.junit.Before;
-//
-//import java.util.*;
-//
-///**
-// * Created by Kary on 2017/3/6.
-// */
-//public class ExcelExportDataBuildFactoryTest extends TestCase {
+package excelExport;
+
+import junit.framework.TestCase;
+
+/**
+ * Created by Kary on 2017/3/6.
+ */
+public class ExcelExportDataBuildFactoryTest extends TestCase {
 //    private TableWidget widget = new TableWidget();
 //    private JSONObject dataJson;
 //    private static int summaryCount = 1;
@@ -145,4 +129,4 @@
 //        director.construct();
 //        BIExcelTableData excelTableData = director.buildTableData();
 //    }
-//}
+}
