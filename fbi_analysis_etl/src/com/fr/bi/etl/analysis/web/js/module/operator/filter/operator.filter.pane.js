@@ -132,7 +132,7 @@ BI.AnalysisETLOperatorFilterPane = BI.inherit(BI.Widget, {
                 BI.extend(item, filter);
             }
         }
-        this.populate();
+        this._populate();
     },
 
     getFilterValue : function (field) {
@@ -183,12 +183,7 @@ BI.AnalysisETLOperatorFilterPane = BI.inherit(BI.Widget, {
         return v;
     },
 
-    //todo 外界调用populate居然还会传options.func进来以拓展自身的controller，现在放widget里，之后删掉
-    populate: function (m, options) {
-        if(BI.isNotNull(m)){
-            this.model.populate(m);
-        }
-        BI.extend(this.options, options);
+    _populate: function(){
         var operator = this.model.get('operator');
         if (BI.isNull(operator)){
             this.model.set('operator', {type : BICst.FILTER_TYPE.AND});
@@ -217,6 +212,13 @@ BI.AnalysisETLOperatorFilterPane = BI.inherit(BI.Widget, {
             update: BI.bind(this.update, this),
             isDefaultValue: BI.bind(this.isDefaultValue, this)
         }, this.options.value.operatorType)
+    },
+
+    //todo 外界调用populate居然还会传options.func进来以拓展自身的controller，现在放widget里，之后删掉
+    populate: function (m, options) {
+        this.model.populate(m);
+        BI.extend(this.options, options);
+        this._populate();
     }
 })
 

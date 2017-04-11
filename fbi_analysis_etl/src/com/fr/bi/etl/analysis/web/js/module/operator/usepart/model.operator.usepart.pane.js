@@ -34,7 +34,7 @@ BI.AnalysisETLOperatorUsePartPaneModel = BI.inherit(BI.MVCModel, {
     },
 
     populate: function(model){
-        this.options = BI.extend(this.options, model);
+        this.options = model || {};
     }
 })
 

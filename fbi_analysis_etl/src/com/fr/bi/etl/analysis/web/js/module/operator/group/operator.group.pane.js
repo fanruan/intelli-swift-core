@@ -208,13 +208,8 @@ BI.AnalysisETLOperatorGroupPane = BI.inherit(BI.Widget, {
         return dimension;
     },
 
-    //原controller
-    populate : function (m, options) {
+    _populate: function(){
         var self = this;
-        if(BI.isNotNull(m)){
-            this.model.populate(m);
-        }
-        BI.extend(this.options, options);
         this._check();
         var parent = this.model.get(ETLCst.PARENTS)[0]
         this.itemsGroup.populate(parent[ETLCst.FIELDS]);
@@ -235,6 +230,13 @@ BI.AnalysisETLOperatorGroupPane = BI.inherit(BI.Widget, {
         });
         this.doCheck();
         this._refreshPreview();
+    },
+
+    //原controller
+    populate : function (m, options) {
+        this.model.populate(m);
+        BI.extend(this.options, options);
+        this._populate();
     },
 
     doCheck : function () {

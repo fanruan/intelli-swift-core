@@ -6,34 +6,6 @@ BI.AnalysisETLOperatorSelectDataModel = BI.inherit(BI.OB, {
 
     _init: function () {
         BI.AnalysisETLOperatorSelectDataModel.superclass._init.apply(this, arguments);
-        //BI.AnalysisETLOperatorSelectDataModel.KEY后台已存这里暂时注释不需要
-        // var operator = this.get("operator");
-        // var fields = [];
-        // if(BI.isNotNull(operator)) {
-        //     var dimensions = operator["dimensions"];
-        //     var self = this;
-        //     BI.each(operator["view"][BICst.REGION.DIMENSION1], function (idx, item) {
-        //         var dim = dimensions[item];
-        //         var fieldType = dim["type"];
-        //         var group = dim["group"]
-        //         if(fieldType !== BICst.TARGET_TYPE.DATE) {
-        //             group = null;
-        //         }
-        //         fieldType = self._getTypeFromTargetType(fieldType, group)
-        //         fields.push({
-        //             "fieldName":dim["name"],
-        //             "fieldType" : fieldType,
-        //             "id": dim["_src"]["fieldId"],
-        //             "uid" : item,
-        //             "group" : BI.isNull(group) ? null : group["type"]
-        //         })
-        //     })
-        // }
-        var fields = this.get(BI.AnalysisETLOperatorSelectDataModel.KEY) || [];
-        this.set(BI.AnalysisETLOperatorSelectDataModel.KEY, fields);
-        //this.set("operator", this._buildDetailTableModel(BI.AnalysisETLOperatorSelectDataModel.KEY));
-        this.set(BI.AnalysisETLOperatorSelectDataModel.TEMP_KEY, fields);
-        this.save();
     },
 
     //这get, set, getValue三个方法会删
@@ -190,7 +162,7 @@ BI.AnalysisETLOperatorSelectDataModel = BI.inherit(BI.OB, {
             var dm = {};
             var tableId = BI.Utils.getTableIdByFieldID(item.id)
             dm[fTable] = {
-                target_relation: BI.Utils.getPathsFromTableAToTableB(tableId, fTable)[0] || []
+                targetRelation: BI.Utils.getPathsFromTableAToTableB(tableId, fTable)[0] || []
             };
             dimensions[item["uid"]] = {
                 _src: {
@@ -273,7 +245,35 @@ BI.AnalysisETLOperatorSelectDataModel = BI.inherit(BI.OB, {
     },
 
     populate: function(model){
-        this.options = BI.extend(this.options, model);
+        this.options = model || {};
+        //BI.AnalysisETLOperatorSelectDataModel.KEY后台已存这里暂时注释不需要
+        // var operator = this.get("operator");
+        // var fields = [];
+        // if(BI.isNotNull(operator)) {
+        //     var dimensions = operator["dimensions"];
+        //     var self = this;
+        //     BI.each(operator["view"][BICst.REGION.DIMENSION1], function (idx, item) {
+        //         var dim = dimensions[item];
+        //         var fieldType = dim["type"];
+        //         var group = dim["group"]
+        //         if(fieldType !== BICst.TARGET_TYPE.DATE) {
+        //             group = null;
+        //         }
+        //         fieldType = self._getTypeFromTargetType(fieldType, group)
+        //         fields.push({
+        //             "fieldName":dim["name"],
+        //             "fieldType" : fieldType,
+        //             "id": dim["_src"]["fieldId"],
+        //             "uid" : item,
+        //             "group" : BI.isNull(group) ? null : group["type"]
+        //         })
+        //     })
+        // }
+        var fields = this.get(BI.AnalysisETLOperatorSelectDataModel.KEY) || [];
+        this.set(BI.AnalysisETLOperatorSelectDataModel.KEY, fields);
+        //this.set("operator", this._buildDetailTableModel(BI.AnalysisETLOperatorSelectDataModel.KEY));
+        this.set(BI.AnalysisETLOperatorSelectDataModel.TEMP_KEY, fields);
+        this.save();
     }
 
 })

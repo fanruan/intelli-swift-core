@@ -174,7 +174,7 @@ BI.AnalysisETLOperatorSelectDataModel = BI.inherit(BI.MVCModel, {
             var dm = {};
             var tableId = BI.Utils.getTableIdByFieldID(item.id)
             dm[fTable] = {
-                target_relation: BI.Utils.getPathsFromTableAToTableB(tableId, fTable)[0] || []
+                targetRelation: BI.Utils.getPathsFromTableAToTableB(tableId, fTable)[0] || []
             };
             dimensions[item["uid"]] = {
                 _src: {

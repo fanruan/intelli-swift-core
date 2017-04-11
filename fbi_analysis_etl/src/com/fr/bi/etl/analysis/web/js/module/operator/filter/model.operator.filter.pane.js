@@ -82,7 +82,7 @@ BI.AnalysisETLOperatorFilterPaneModel = BI.inherit(BI.OB, {
 
 
     populate: function(model){
-        this.options = BI.extend(this.options, model);
+        this.options = model || {};
     }
 })
 ETLCst.OPERATOR_MODEL_CLASS[ETLCst.ANALYSIS_ETL_PAGES.FILTER] =  BI.AnalysisETLOperatorFilterPaneModel

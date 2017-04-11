@@ -325,7 +325,7 @@ BI.AnalysisETLOperatorGroupPaneModel = BI.inherit(BI.OB, {
     },
 
     populate: function(model){
-        this.options = BI.extend(this.options, model);
+        this.options = model || {};
         var operator = this.get('operator') || {};
         this.set(BI.AnalysisETLOperatorGroupPaneModel.DIMKEY, operator[BI.AnalysisETLOperatorGroupPaneModel.DIMKEY] || {});
         this.set(BI.AnalysisETLOperatorGroupPaneModel.VIEWKEY, operator[BI.AnalysisETLOperatorGroupPaneModel.VIEWKEY] || {});

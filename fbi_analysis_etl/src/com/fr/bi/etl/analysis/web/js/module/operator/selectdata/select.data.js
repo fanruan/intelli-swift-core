@@ -13,7 +13,6 @@ BI.AnalysisETLOperatorSelectData = BI.inherit(BI.Widget, {
         this.model = new BI.AnalysisETLOperatorSelectDataModel({
 
         });
-        this._editing = this.model.get(ETLCst.FIELDS).length === 0;
         this.trigger = BI.Utils.triggerPreview()
         return {
             type: "bi.htape",
@@ -98,7 +97,7 @@ BI.AnalysisETLOperatorSelectData = BI.inherit(BI.Widget, {
                         eventName: BI.TopPointerSavePane.EVENT_CANCEL,
                         action: function(){
                             self.saveButton.setEnable(true);
-                            self.populate();
+                            self._populate();
                             self.fireEvent(BI.TopPointerSavePane.EVENT_CANCEL, arguments)
                         }
                     }, {
@@ -281,18 +280,21 @@ BI.AnalysisETLOperatorSelectData = BI.inherit(BI.Widget, {
         this._editing === true ? this._clearMask() : this._showMask();
     },
 
-    //todo 外界调用populate居然还会传options.func进来以拓展自身的controller，现在放widget里，之后删掉
-    populate : function (m, options) {
-        if(BI.isNotNull(m)){
-            this.model.populate(m);
-            this.selectPane.populate(m);
-        }
-        BI.extend(this.options, options);
+    _populate: function(){
         this.center.populate(this.model.update(), BI.extend(this.options, {
             showContent: false
         }));
         this._refreshState();
         this.fireEvent(BI.TopPointerSavePane.EVENT_FIELD_VALID, this.model.getValue(ETLCst.FIELDS))
+    },
+
+    //todo 外界调用populate居然还会传options.func进来以拓展自身的controller，现在放widget里，之后删掉
+    populate : function (m, options) {
+        this.model.populate(m);
+        this._editing = this.model.get(ETLCst.FIELDS).length === 0;
+        this.selectPane.populate(m);
+        BI.extend(this.options, options);
+        this._populate();
     }
 
 })

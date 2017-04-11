@@ -98,11 +98,7 @@ BI.AnalysisETLOperatorUsePartPane = BI.inherit(BI.Widget, {
         return !this.isValid()
     },
 
-    populate: function(m, options){
-        if(BI.isNotNull(m)){
-            this.model.populate(m);
-        }
-        BI.extend(this.options, options);
+    _populate: function(){
         this._check();
         var parent = this.model.get(ETLCst.PARENTS)[0];
         this.fieldList.populate(parent[ETLCst.FIELDS]);
@@ -115,6 +111,12 @@ BI.AnalysisETLOperatorUsePartPane = BI.inherit(BI.Widget, {
             isDefaultValue: BI.bind(this.isDefaultValue, this),
             update: BI.bind(this.update, this)
         }, this.options.value.operatorType)
+    },
+
+    populate: function(m, options){
+        this.model.populate(m);
+        BI.extend(this.options, options);
+        this._populate();
     }
 
 })
