@@ -1,5 +1,9 @@
 package com.fr.bi.common.persistent;
 
+import com.finebi.cube.common.log.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
+
+import java.io.File;
 import java.util.List;
 import java.util.Map;
 
@@ -8,9 +12,14 @@ import java.util.Map;
  */
 public class BIBeanHistoryManager {
     private Map<String, List<String>> beanClassMapping;
-    private static final String DEFAULT_FILE_NAME = Thread.currentThread().getContextClassLoader().getResource("").getPath() +"bean_history_class.xml";
+    private static final String DEFAULT_FILE_NAME = "bean_history_class.xml";
+    private static final BILogger LOGGER = BILoggerFactory.getLogger(BIBeanHistoryManager.class);
 
     private BIBeanHistoryManager() {
+        String filePath = Thread.currentThread().getContextClassLoader().getResource("").getPath() + DEFAULT_FILE_NAME;
+        if (!new File(filePath).exists()) {
+            LOGGER.error("Bean History xml File not found in path " + filePath);
+        }
         initBeanHistoryManager(DEFAULT_FILE_NAME);
     }
 
