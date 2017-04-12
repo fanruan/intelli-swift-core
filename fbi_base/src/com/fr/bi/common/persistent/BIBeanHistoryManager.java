@@ -27,11 +27,11 @@ public class BIBeanHistoryManager {
     }
 
     private static class BIBeanHistoryManagerSingleton {
-        static final BIBeanHistoryManager instance = new BIBeanHistoryManager();
+        static final BIBeanHistoryManager INSTANCE = new BIBeanHistoryManager();
     }
 
     public static BIBeanHistoryManager getInstance() {
-        return BIBeanHistoryManagerSingleton.instance;
+        return BIBeanHistoryManagerSingleton.INSTANCE;
     }
 
     public void registerBeanHistoryManager(Map<String, List<String>> beanClassMapping) {
