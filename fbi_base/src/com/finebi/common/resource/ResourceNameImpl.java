@@ -29,7 +29,7 @@ public class ResourceNameImpl implements ResourceName {
 
     @Override
     public String value() {
-        return this.value();
+        return this.name.value();
     }
 
     @Override

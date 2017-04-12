@@ -14,7 +14,7 @@ public class NameImp implements Name {
     private static final String SEPARATOR = "/";
 
     public NameImp(String selfNameValue, NameProvider parentName) {
-        BINonValueUtils.checkNull(selfNameValue, parentName);
+        BINonValueUtils.checkNull(selfNameValue);
         checkName(selfNameValue);
         this.selfNameValue = selfNameValue;
         this.parentNameProvider = parentName;
@@ -27,12 +27,7 @@ public class NameImp implements Name {
     }
 
     public NameImp(String selfNameValue) {
-        this(selfNameValue, new NameProvider() {
-            @Override
-            public Name getName() {
-                return new BlankName();
-            }
-        });
+        this(selfNameValue, null);
     }
 
     @Override
@@ -43,12 +38,20 @@ public class NameImp implements Name {
     @Override
     public String uniqueValue() {
         StringBuffer sb = new StringBuffer();
-        if (parentNameProvider.getName() != null) {
+        if (isFirstName()) {
+            sb.append(selfNameValue);
+        } else if (parentNameProvider.getName() != null) {
             sb.append(parentNameProvider.getName().uniqueValue());
             sb.append(SEPARATOR);
             sb.append(selfNameValue);
+        } else {
+            throw BINonValueUtils.beyondControl("the name:" + selfNameValue + ". Parent's provider has null name");
         }
         return sb.toString();
+    }
+
+    private boolean isFirstName() {
+        return parentNameProvider == null;
     }
 
     @Override

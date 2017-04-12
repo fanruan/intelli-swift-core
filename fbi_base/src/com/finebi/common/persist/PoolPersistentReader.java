@@ -8,6 +8,6 @@ import com.finebi.common.resource.ResourcePool;
  * @author Connery
  * @since Advanced FineBI Analysis 1.0
  */
-public interface PoolPersistentReader {
-    ResourcePool read();
+public interface PoolPersistentReader<Pool extends ResourcePool>  {
+    Pool read();
 }

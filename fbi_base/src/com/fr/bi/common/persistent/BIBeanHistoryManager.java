@@ -25,10 +25,11 @@ public class BIBeanHistoryManager {
         return Thread.currentThread().getContextClassLoader().getResource("").getPath() + DEFAULT_FILE_NAME;
     }
 
+
     private static Map<String, List<String>> getClassMapping(String beanFilePath) {
         Map<String, List<String>> classMapping = new HashMap<String, List<String>>();
 
-        if(beanFilePath !=null && new File(beanFilePath).exists()) {
+        if (beanFilePath != null && new File(beanFilePath).exists()) {
             Document document = readFile(beanFilePath);
             NodeList beanList = document.getElementsByTagName("bean");
             for (int i = 0; i < beanList.getLength(); i++) {
