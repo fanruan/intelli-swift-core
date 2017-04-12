@@ -103,8 +103,8 @@ public class SingleDimensionGroup extends ExecutorPartner implements ILazyExecut
         }
         boolean urd = useRealData;
         int groupLimit = demoGroupLimit;
-        if (!useRealData && tis[index] != null) {
-            long rowCount = tis[index].getRowCount();
+        if (!useRealData) {
+            long rowCount = tis[index] == null ? loader.getTableIndex(columns[index].getField().getTableBelongTo().getTableSource()).getRowCount() : tis[index].getRowCount();
             if (rowCount < BIBaseConstant.PART_DATA_COUNT_LIMIT) {
                 urd = true;
             } else {
@@ -120,6 +120,7 @@ public class SingleDimensionGroup extends ExecutorPartner implements ILazyExecut
                 @Override
                 public void remove() {
                 }
+
                 @Override
                 public int getCurrentGroup() {
                     return 0;

@@ -29,7 +29,7 @@ import com.fr.bi.stable.engine.index.key.IndexTypeKey;
 import com.fr.bi.stable.gvi.GVIFactory;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.gvi.array.ICubeTableIndexReader;
-import com.fr.bi.stable.structure.collection.map.CubeLinkedHashMap;
+import com.fr.bi.stable.structure.collection.map.CubeColumnIndexPartReader;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
 import com.fr.general.ComparatorUtils;
 import com.fr.stable.collections.array.IntArray;
@@ -396,15 +396,7 @@ public class BICubeTableAdapter implements ICubeTableService {
     public ICubeColumnIndexReader loadGroup(BIKey key, List<BITableSourceRelation> relationList, boolean useRealData, int groupLimit) {
         ICubeColumnIndexReader loadAll = loadGroup(key, relationList);
         if (!useRealData) {
-            CubeLinkedHashMap m = new CubeLinkedHashMap();
-            Iterator iter = loadAll.iterator();
-            int i = 0;
-            while (iter.hasNext() && i < groupLimit) {
-                Map.Entry entry = (Map.Entry) iter.next();
-                m.put(entry.getKey(), entry.getValue());
-                i++;
-            }
-            return m;
+            return new CubeColumnIndexPartReader(loadAll, groupLimit);
         } else {
             return loadAll;
         }
