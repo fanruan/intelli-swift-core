@@ -1,6 +1,5 @@
 package com.fr.bi.common.persistent.xml.reader;
 
-import com.fr.bi.common.persistent.BIBeanHistoryManager;
 import com.fr.stable.xml.XMLReadable;
 import com.fr.stable.xml.XMLableReader;
 
@@ -12,6 +11,7 @@ import java.util.Map;
 public class XMLPersistentReader implements XMLReadable {
     protected BIBeanXMLReaderWrapper beanWrapper;
     protected Map<String, BIBeanXMLReaderWrapper> generatedBean;
+
 
     public XMLPersistentReader(Map<String, BIBeanXMLReaderWrapper> generatedBean, BIBeanXMLReaderWrapper beanWrapper) {
         this.generatedBean = generatedBean;
