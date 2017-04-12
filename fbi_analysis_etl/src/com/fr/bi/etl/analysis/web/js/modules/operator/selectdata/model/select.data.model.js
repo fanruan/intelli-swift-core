@@ -184,7 +184,7 @@ BI.AnalysisETLOperatorSelectDataModel = BI.inherit(BI.MVCModel, {
                 group: {
                     type: BI.isNull(item["group"]) ? BICst.GROUP.NO_GROUP : item["group"]
                 },
-                dimension_map: dm,
+                dimensionMap: dm,
                 name: item["fieldName"],
                 type: self._getDimensionType(item["id"]),
                 used: true

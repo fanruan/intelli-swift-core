@@ -325,7 +325,7 @@ public class TreeWidget extends BIAbstractWidget {
             JSONObject dimObject = dims.getJSONObject(viewJa.getString(i));
             dimObject.put("did", viewJa.getString(i));
             this.dimensions[i] = BIDimensionFactory.parseDimension(dimObject, userId);
-            JSONObject dimensionMap = dimObject.getJSONObject("dimension_map");
+            JSONObject dimensionMap = dimObject.getJSONObject("dimensionMap");
             Iterator it = dimensionMap.keys();
             JSONArray relationJa = dimensionMap.optJSONObject(it.next().toString()).getJSONArray("targetRelation");
             ArrayList<BITableRelation> relationMap = new ArrayList<BITableRelation>();
