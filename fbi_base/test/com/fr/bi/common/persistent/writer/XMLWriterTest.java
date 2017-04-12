@@ -20,7 +20,15 @@ import com.fr.general.ComparatorUtils;
 import com.fr.stable.StableUtils;
 import com.fr.stable.xml.XMLTools;
 import junit.framework.TestCase;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -192,6 +200,26 @@ public class XMLWriterTest extends TestCase {
         IterablePart part = IterablePart.generateParts();
         checkEquals(part, "IterationParts");
 
+    }
+
+    public void testDom() {
+        try {
+            DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+            DocumentBuilder db = dbf.newDocumentBuilder();
+            File file = new File("D:\\Connery\\Code\\conneryDom.xml");
+            Document document = db.newDocument();
+            Element element = document.createElement("node");
+            document.appendChild(element);
+            element.appendChild(document.createElement("table"));
+            TransformerFactory tfactory = TransformerFactory.newInstance();
+            Transformer transformer = tfactory.newTransformer();
+            DOMSource source = new DOMSource(document);
+            StreamResult result = new StreamResult(file);
+            transformer.setOutputProperty("encoding", "UTF-8");
+            transformer.transform(source, result);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public void testListList() {
