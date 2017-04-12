@@ -63,7 +63,7 @@ public abstract class AbstractConfigureCalculator extends CalCalculator {
     }
 
     protected int getActualStart_Group(int start_group, BICrossNode rank_node) {
-        return start_group == 0 ? 0 : getCalDeep(rank_node);
+        return start_group == 0 ? 0 : getCalDeep(rank_node) - 1;
     }
 
 }
