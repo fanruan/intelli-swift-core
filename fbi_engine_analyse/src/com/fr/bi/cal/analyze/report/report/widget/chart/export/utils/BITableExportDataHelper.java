@@ -10,6 +10,7 @@ import java.util.Map;
 
 /**
  * Created by Kary on 2017/2/26.
+ * 指标维度属性
  */
 public class BITableExportDataHelper {
     // FIXME: 2017/2/26 需要抽象出来

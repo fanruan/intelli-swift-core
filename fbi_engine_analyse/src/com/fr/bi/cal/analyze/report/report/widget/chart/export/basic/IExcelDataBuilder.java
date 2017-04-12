@@ -8,6 +8,8 @@ import com.fr.json.JSONException;
 public interface IExcelDataBuilder {
     void initAttrs() throws JSONException;
 
+    void createTargetStyles();
+
     void createHeaders() throws Exception;
 
     void createItems() throws Exception;

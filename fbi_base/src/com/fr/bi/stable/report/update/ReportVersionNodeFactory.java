@@ -1,9 +1,6 @@
 package com.fr.bi.stable.report.update;
 
-import com.fr.bi.stable.report.update.operation.ReportCamelOperation;
-import com.fr.bi.stable.report.update.operation.ReportKeyChangeOperation;
-import com.fr.bi.stable.report.update.operation.ReportNullOperation;
-import com.fr.bi.stable.report.update.operation.ReportUpdateOperation;
+import com.fr.bi.stable.report.update.operation.*;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -31,6 +28,7 @@ public class ReportVersionNodeFactory {
         ArrayList<ReportUpdateOperation> operations = new ArrayList<ReportUpdateOperation>();
         operations.add(new ReportCamelOperation());
         operations.add(new ReportKeyChangeOperation());
+        operations.add(new ReportDimensionTypeOperation());
         return new ReportConfVersionNode(ReportVersionEnum.VERSION_4_0_2, operations);
     }
 }

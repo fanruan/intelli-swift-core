@@ -13,6 +13,7 @@ import com.fr.bi.cal.analyze.executor.paging.PagingFactory;
 import com.fr.bi.cal.analyze.executor.table.*;
 import com.fr.bi.cal.analyze.report.report.BIWidgetFactory;
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.basic.IExcelDataBuilder;
+import com.fr.bi.cal.analyze.report.report.widget.chart.export.calculator.SummaryComplexTableBuilder;
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.calculator.SummaryCrossTableDataBuilder;
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.calculator.SummaryGroupTableDataBuilder;
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.manager.TableDirector;
@@ -20,6 +21,7 @@ import com.fr.bi.cal.analyze.report.report.widget.table.BITableReportSetting;
 import com.fr.bi.cal.analyze.session.BISession;
 import com.fr.bi.common.persistent.xml.BIIgnoreField;
 import com.fr.bi.conf.report.WidgetType;
+import com.fr.bi.conf.report.style.ChartSetting;
 import com.fr.bi.conf.report.style.DetailChartSetting;
 import com.fr.bi.conf.report.widget.field.BITargetAndDimension;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
@@ -488,18 +490,19 @@ public class TableWidget extends BISummaryWidget {
     public JSONObject getPostOptions(String sessionId) throws Exception {
         JSONObject dataJSON = this.createDataJSON((BISession) SessionDealWith.getSessionIDInfor(sessionId)).getJSONObject("data");
         Map<Integer, List<JSONObject>> viewMap = this.createViewMap();
+        List<ChartSetting> chartSettings = new ArrayList<ChartSetting>();
+        createChartSettings(chartSettings);
         IExcelDataBuilder builder = null;
-
-//        if (dataJSON.has("t")) {
-//            builder = new SumaryCrossTableAbstractDataBuilder(viewMap, dataJSON);
-//        } else {
-//            builder = new SummaryNormalTableAbstractDataBuilder(viewMap, dataJSON);
-//        }
-        if (this.table_type == BIReportConstant.TABLE_WIDGET.CROSS_TYPE) {
-            builder = new SummaryCrossTableDataBuilder(viewMap, dataJSON);
-        }
-        if (this.table_type == BIReportConstant.TABLE_WIDGET.GROUP_TYPE) {
-            builder = new SummaryGroupTableDataBuilder(viewMap, dataJSON);
+        switch (this.table_type){
+            case BIReportConstant.TABLE_WIDGET.CROSS_TYPE:
+                builder = new SummaryCrossTableDataBuilder(viewMap, chartSettings, dataJSON, data.getStyleSetting());
+                break;
+            case BIReportConstant.TABLE_WIDGET.GROUP_TYPE:
+                builder = new SummaryGroupTableDataBuilder(viewMap, chartSettings, dataJSON, data.getStyleSetting());
+                break;
+            case BIReportConstant.TABLE_WIDGET.COMPLEX_TYPE:
+                builder=new SummaryComplexTableBuilder(viewMap,chartSettings,dataJSON,data.getStyleSetting());
+                break;
         }
         if (null == builder) {
             return new JSONObject();
@@ -507,6 +510,13 @@ public class TableWidget extends BISummaryWidget {
         TableDirector director = new TableDirector(builder);
         director.construct();
         return director.buildTableData().createJSON();
+    }
+
+    private void createChartSettings(List<ChartSetting> chartSettings) {
+        for (BISummaryTarget target : this.getTargets()) {
+            ChartSetting chartSetting = target.getChartSetting();
+            chartSettings.add(chartSetting);
+        }
     }
 
     public String getDimensionNameByID(String dID) throws Exception {
@@ -536,7 +546,7 @@ public class TableWidget extends BISummaryWidget {
         throw new Exception();
     }
 
-    private Map<Integer, List<JSONObject>> createViewMap() throws Exception {
+    public Map<Integer, List<JSONObject>> createViewMap() throws Exception {
         Map<Integer, List<JSONObject>> dimAndTar = new HashMap<Integer, List<JSONObject>>();
         Iterator<Integer> iterator = view.keySet().iterator();
         while (iterator.hasNext()) {
