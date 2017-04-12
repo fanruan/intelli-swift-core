@@ -199,16 +199,13 @@ public abstract class BIAbstractWidget implements BIWidget {
         }
         GroupValueIndex gvi = loader.getTableIndex(targetKey.getTableSource()).getAllShowIndex();
         GroupValueIndex authGVI = null;
-        //非管理员用户需要考虑到对于权限的过滤条件
-        if (userId != UserControl.getInstance().getSuperManagerID()) {
-            List<TargetFilter> filters = getAuthFilter(userId);
-            for (int i = 0; i < filters.size(); i++) {
-                for (int j = 0; j < row.length; j++) {
-                    if (authGVI == null) {
-                        authGVI = filters.get(i).createFilterIndex(row[j], targetKey, loader, userId);
-                    } else {
-                        authGVI = GVIUtils.OR(authGVI, filters.get(i).createFilterIndex(row[j], targetKey, loader, userId));
-                    }
+        List<TargetFilter> filters = getAuthFilter(userId);
+        for (int i = 0; i < filters.size(); i++) {
+            for (int j = 0; j < row.length; j++) {
+                if (authGVI == null) {
+                    authGVI = filters.get(i).createFilterIndex(row[j], targetKey, loader, userId);
+                } else {
+                    authGVI = GVIUtils.OR(authGVI, filters.get(i).createFilterIndex(row[j], targetKey, loader, userId));
                 }
             }
         }
@@ -224,6 +221,10 @@ public abstract class BIAbstractWidget implements BIWidget {
 
     public List<TargetFilter> getAuthFilter(long userId) {
         List<TargetFilter> filters = new ArrayList<TargetFilter>();
+        //管理员用户没有权限的过滤条件
+        if (userId == UserControl.getInstance().getSuperManagerID()) {
+            return filters;
+        }
         List<BIPackageID> authPacks;
         BISessionProvider session = null;
         if (sessionId != null && SessionDealWith.hasSessionID(sessionId)) {
