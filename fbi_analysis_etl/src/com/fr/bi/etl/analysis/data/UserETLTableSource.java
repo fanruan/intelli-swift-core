@@ -9,12 +9,10 @@ import com.fr.bi.common.inter.Traversal;
 import com.fr.bi.conf.data.source.AbstractETLTableSource;
 import com.fr.bi.conf.data.source.operator.IETLOperator;
 import com.fr.bi.conf.report.BIWidget;
-import com.fr.bi.conf.report.widget.field.BITargetAndDimension;
+import com.fr.bi.etl.analysis.manager.BIAnalysisETLManagerCenter;
 import com.fr.bi.etl.analysis.monitor.SimpleTable;
-import com.fr.bi.etl.analysis.monitor.TableRelation;
 import com.fr.bi.etl.analysis.monitor.TableRelationTree;
 import com.fr.bi.stable.constant.BIBaseConstant;
-import com.fr.bi.etl.analysis.manager.BIAnalysisETLManagerCenter;
 import com.fr.bi.stable.data.db.BIDataValue;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.bi.stable.data.db.PersistentField;
@@ -22,7 +20,13 @@ import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.engine.index.key.IndexKey;
 import com.fr.general.ComparatorUtils;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Created by 小灰灰 on 2015/12/24.
@@ -158,6 +162,11 @@ public class UserETLTableSource extends AbstractETLTableSource<IETLOperator, Use
             source.getSourceUsedBaseSource(set, helper);
         }
         return set;
+    }
+
+    @Override
+    public String getModuleName() {
+        return BIBaseConstant.MODULE_NAME.ANALYSIS_ETL_MODULE;
     }
 
     public void getSourceUsedAnalysisETLSource(Set<AnalysisCubeTableSource> set) {

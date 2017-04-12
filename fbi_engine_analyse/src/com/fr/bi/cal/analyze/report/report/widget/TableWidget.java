@@ -12,17 +12,20 @@ import com.fr.bi.cal.analyze.executor.BIEngineExecutor;
 import com.fr.bi.cal.analyze.executor.paging.PagingFactory;
 import com.fr.bi.cal.analyze.executor.table.*;
 import com.fr.bi.cal.analyze.report.report.BIWidgetFactory;
-import com.fr.bi.cal.analyze.report.report.widget.chart.excelExport.table.basic.IExcelDataBuilder;
-import com.fr.bi.cal.analyze.report.report.widget.chart.excelExport.table.manager.TableDirector;
-import com.fr.bi.cal.analyze.report.report.widget.chart.excelExport.table.summary.build.SummaryCrossTableDataBuilder;
-import com.fr.bi.cal.analyze.report.report.widget.chart.excelExport.table.summary.build.SummaryGroupTableDataBuilder;
+import com.fr.bi.cal.analyze.report.report.widget.chart.export.basic.IExcelDataBuilder;
+import com.fr.bi.cal.analyze.report.report.widget.chart.export.calculator.SummaryComplexTableBuilder;
+import com.fr.bi.cal.analyze.report.report.widget.chart.export.calculator.SummaryCrossTableDataBuilder;
+import com.fr.bi.cal.analyze.report.report.widget.chart.export.calculator.SummaryGroupTableDataBuilder;
+import com.fr.bi.cal.analyze.report.report.widget.chart.export.manager.TableDirector;
 import com.fr.bi.cal.analyze.report.report.widget.table.BITableReportSetting;
 import com.fr.bi.cal.analyze.session.BISession;
 import com.fr.bi.common.persistent.xml.BIIgnoreField;
 import com.fr.bi.conf.report.WidgetType;
+import com.fr.bi.conf.report.style.ChartSetting;
 import com.fr.bi.conf.report.style.DetailChartSetting;
 import com.fr.bi.conf.report.widget.field.BITargetAndDimension;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
+import com.fr.bi.conf.report.widget.field.target.BITarget;
 import com.fr.bi.conf.session.BISessionProvider;
 import com.fr.bi.field.target.target.BISummaryTarget;
 import com.fr.bi.field.target.target.cal.target.configure.BIConfiguredCalculateTarget;
@@ -31,7 +34,6 @@ import com.fr.bi.stable.constant.BIJSONConstant;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.gvi.GVIUtils;
 import com.fr.bi.stable.gvi.GroupValueIndex;
-import com.fr.bi.stable.report.key.TargetGettingKey;
 import com.fr.bi.stable.utils.BITravalUtils;
 import com.fr.general.ComparatorUtils;
 import com.fr.json.JSONArray;
@@ -252,11 +254,6 @@ public class TableWidget extends BISummaryWidget {
             }
         }
 
-        if (jo.has("view")) {
-            parseView(jo.optJSONObject("view"));
-            data.parseJSON(jo);
-        }
-
         if (jo.has("type")) {
             table_type = jo.optInt("type");
         }
@@ -279,11 +276,19 @@ public class TableWidget extends BISummaryWidget {
                 clicked.put(key, c.getJSONArray(key));
             }
         }
+        createDimAndTars(jo);
         changeCalculateTargetStartGroup();
         createDimensionAndTargetMap();
     }
 
-    protected void createDimensionAndTargetMap() {
+    private void createDimAndTars(JSONObject jo) throws Exception {
+        if (jo.has("view")) {
+            parseView(jo.optJSONObject("view"));
+            data.parseJSON(jo);
+        }
+    }
+
+    private void createDimensionAndTargetMap() {
         for (BIDimension dimension : this.getDimensions()) {
             for (Map.Entry<Integer, List<String>> entry : view.entrySet()) {
                 Integer key = entry.getKey();
@@ -321,6 +326,12 @@ public class TableWidget extends BISummaryWidget {
                 dimensionIds.add(tmp.getString(j));
             }
         }
+    }
+
+    private boolean isUsed(String dId) {
+        boolean isDimUsed = dimensionsIdMap.containsKey(dId) && dimensionsIdMap.get(dId).isUsed();
+        boolean isTargetUsed = targetsIdMap.containsKey(dId) && targetsIdMap.get(dId).isUsed();
+        return isDimUsed || isTargetUsed;
     }
 
     public void setComplexExpander(ComplexExpander complexExpander) {
@@ -446,10 +457,10 @@ public class TableWidget extends BISummaryWidget {
                 }
             }
             if (changed) {
-                Map<String, TargetGettingKey> targetMap = new ConcurrentHashMap<String, TargetGettingKey>();
+                Map<String, BITarget> targetMap = new ConcurrentHashMap<String, BITarget>();
                 for (int i = 0; i < targets.length; i++) {
                     targets[i].setTargetMap(targetMap);
-                    targetMap.put(targets[i].getValue(), targets[i].createSummaryCalculator().createTargetGettingKey());
+                    targetMap.put(targets[i].getValue(), targets[i]);
                 }
             }
         }
@@ -479,18 +490,19 @@ public class TableWidget extends BISummaryWidget {
     public JSONObject getPostOptions(String sessionId) throws Exception {
         JSONObject dataJSON = this.createDataJSON((BISession) SessionDealWith.getSessionIDInfor(sessionId)).getJSONObject("data");
         Map<Integer, List<JSONObject>> viewMap = this.createViewMap();
+        List<ChartSetting> chartSettings = new ArrayList<ChartSetting>();
+        createChartSettings(chartSettings);
         IExcelDataBuilder builder = null;
-
-//        if (dataJSON.has("t")) {
-//            builder = new SumaryCrossTableAbstractDataBuilder(viewMap, dataJSON);
-//        } else {
-//            builder = new SummaryNormalTableAbstractDataBuilder(viewMap, dataJSON);
-//        }
-        if (this.table_type == BIReportConstant.TABLE_WIDGET.CROSS_TYPE) {
-            builder = new SummaryCrossTableDataBuilder(viewMap, dataJSON);
-        }
-        if (this.table_type == BIReportConstant.TABLE_WIDGET.GROUP_TYPE) {
-            builder = new SummaryGroupTableDataBuilder(viewMap, dataJSON);
+        switch (this.table_type){
+            case BIReportConstant.TABLE_WIDGET.CROSS_TYPE:
+                builder = new SummaryCrossTableDataBuilder(viewMap, chartSettings, dataJSON, data.getStyleSetting());
+                break;
+            case BIReportConstant.TABLE_WIDGET.GROUP_TYPE:
+                builder = new SummaryGroupTableDataBuilder(viewMap, chartSettings, dataJSON, data.getStyleSetting());
+                break;
+            case BIReportConstant.TABLE_WIDGET.COMPLEX_TYPE:
+                builder=new SummaryComplexTableBuilder(viewMap,chartSettings,dataJSON,data.getStyleSetting());
+                break;
         }
         if (null == builder) {
             return new JSONObject();
@@ -500,8 +512,11 @@ public class TableWidget extends BISummaryWidget {
         return director.buildTableData().createJSON();
     }
 
-    public Map<Integer, List<String>> getWidgetView() {
-        return view;
+    private void createChartSettings(List<ChartSetting> chartSettings) {
+        for (BISummaryTarget target : this.getTargets()) {
+            ChartSetting chartSetting = target.getChartSetting();
+            chartSettings.add(chartSetting);
+        }
     }
 
     public String getDimensionNameByID(String dID) throws Exception {
@@ -531,8 +546,7 @@ public class TableWidget extends BISummaryWidget {
         throw new Exception();
     }
 
-    private Map<Integer, List<JSONObject>> createViewMap() throws Exception {
-        Map<Integer, List<String>> view = getWidgetView();
+    public Map<Integer, List<JSONObject>> createViewMap() throws Exception {
         Map<Integer, List<JSONObject>> dimAndTar = new HashMap<Integer, List<JSONObject>>();
         Iterator<Integer> iterator = view.keySet().iterator();
         while (iterator.hasNext()) {
@@ -540,9 +554,11 @@ public class TableWidget extends BISummaryWidget {
             List<JSONObject> list = new ArrayList<JSONObject>();
             List<String> ids = view.get(next);
             for (String dId : ids) {
-                int type = getFieldTypeByDimensionID(dId);
-                String text = getDimensionNameByID(dId);
-                list.add(new JSONObject().put("dId", dId).put("text", text).put("type", type));
+                if (isUsed(dId)) {
+                    int type = getFieldTypeByDimensionID(dId);
+                    String text = getDimensionNameByID(dId);
+                    list.add(new JSONObject().put("dId", dId).put("text", text).put("type", type));
+                }
             }
             dimAndTar.put(next, list);
         }

@@ -9,8 +9,8 @@ import java.util.Comparator;
  */
 public class MetricMergeResultWithGroupIndex extends MetricMergeResult {
     private int[] groupIndex;
-    public MetricMergeResultWithGroupIndex(Comparator c, Object data, GroupValueIndex[] gvis, int[] groupIndex) {
-        super(c, data, gvis);
+    public MetricMergeResultWithGroupIndex(Comparator c, Object data, int sumLen, GroupValueIndex[] gvis, int[] groupIndex) {
+        super(c, data, sumLen,  gvis);
         this.groupIndex = groupIndex;
     }
 

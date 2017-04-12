@@ -1,7 +1,7 @@
 package com.fr.bi.cal.analyze.cal.result.operator;
 
 
-import com.fr.bi.cal.analyze.cal.sssecret.NodeDimensionIterator;
+        import com.fr.bi.cal.analyze.cal.sssecret.NodeDimensionIterator;
 
 public class LastPageOperator extends AbstractOperator {
 

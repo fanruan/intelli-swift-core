@@ -1,5 +1,6 @@
 package com.fr.bi.cal.analyze.report.report.widget.detail;
 
+import com.fr.bi.cal.analyze.report.report.widget.styles.BIStyleSetting;
 import com.fr.bi.common.BICoreService;
 import com.fr.json.JSONParser;
 
@@ -20,4 +21,6 @@ public interface BIDetailSetting extends JSONParser,BICoreService,Serializable {
     boolean isFreeze();
 
     int isOrder();
+
+    BIStyleSetting getStyleSetting();
 }

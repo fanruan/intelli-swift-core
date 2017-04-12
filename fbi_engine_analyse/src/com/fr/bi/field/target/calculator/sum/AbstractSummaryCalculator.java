@@ -14,6 +14,7 @@ import com.fr.bi.stable.report.result.TargetCalculator;
  */
 public abstract class AbstractSummaryCalculator implements TargetCalculator {
     protected BISummaryTarget target;
+    private TargetGettingKey targetGettingKey;
     /**
      * 计算索引
      */
@@ -22,6 +23,7 @@ public abstract class AbstractSummaryCalculator implements TargetCalculator {
 
     public AbstractSummaryCalculator(BISummaryTarget target) {
         this.target = target;
+        this.targetGettingKey = new TargetGettingKey(target.getSummaryIndex(), getName());
     }
 
 
@@ -49,7 +51,7 @@ public abstract class AbstractSummaryCalculator implements TargetCalculator {
 
     @Override
     public TargetGettingKey createTargetGettingKey() {
-        return new TargetGettingKey(createTargetKey(), getName());
+        return targetGettingKey;
     }
 
     /**
@@ -67,7 +69,7 @@ public abstract class AbstractSummaryCalculator implements TargetCalculator {
             if (target.getTargetFilter() != null) {
                 gvi = gvi.AND(filterIndex);
             }
-            if (gvi != null || !gvi.isAllEmpty()) {
+            if (gvi != null && !gvi.isAllEmpty()) {
                 node.setSummaryValue(key, createSumValue(gvi, ti));
             }
         }
@@ -82,13 +84,4 @@ public abstract class AbstractSummaryCalculator implements TargetCalculator {
      */
     public abstract double createSumValue(GroupValueIndex gvi, ICubeTableService ti);
 
-    /**
-     * 创建指标
-     *
-     * @return 指标数组
-     */
-    @Override
-    public TargetCalculator[] createTargetCalculators() {
-        return new TargetCalculator[]{this};
-    }
 }

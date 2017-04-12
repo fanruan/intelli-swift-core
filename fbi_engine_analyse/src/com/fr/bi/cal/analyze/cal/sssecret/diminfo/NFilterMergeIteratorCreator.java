@@ -2,6 +2,7 @@ package com.fr.bi.cal.analyze.cal.sssecret.diminfo;
 
 import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.api.ICubeTableService;
+import com.fr.bi.cal.analyze.cal.multithread.BIMultiThreadExecutor;
 import com.fr.bi.cal.analyze.cal.sssecret.MetricMergeResult;
 import com.fr.bi.cal.analyze.cal.sssecret.mergeiter.NFilterMergeIterator;
 import com.fr.bi.stable.engine.cal.DimensionIterator;
@@ -21,12 +22,12 @@ public class NFilterMergeIteratorCreator implements MergeIteratorCreator {
     }
 
     @Override
-    public Iterator<MetricMergeResult> createIterator(DimensionIterator[] iterators, GroupValueIndex[] gvis, Comparator c, ICubeTableService[] tis, ICubeDataLoader loader) {
-        return new NFilterMergeIterator(iterators, gvis, c, count);
+    public Iterator<MetricMergeResult> createIterator(DimensionIterator[] iterators, int sumLength, GroupValueIndex[] gvis, Comparator c, ICubeTableService[] tis, ICubeDataLoader loader) {
+        return new NFilterMergeIterator(iterators, gvis, c, sumLength, count);
     }
 
     @Override
-    public boolean isSimple() {
-        return false;
+    public void setExecutor(BIMultiThreadExecutor executor) {
+
     }
 }

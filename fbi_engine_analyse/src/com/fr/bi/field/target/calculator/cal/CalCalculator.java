@@ -3,6 +3,7 @@ package com.fr.bi.field.target.calculator.cal;
 import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.api.ICubeTableService;
 import com.finebi.cube.conf.table.BusinessTable;
+import com.fr.bi.conf.report.widget.field.target.BITarget;
 import com.fr.bi.field.target.target.cal.BICalculateTarget;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.report.key.TargetGettingKey;
@@ -19,14 +20,13 @@ public abstract class CalCalculator implements TargetCalculator {
 
     protected BICalculateTarget target;
 
-    protected String targetName;
-    protected Map targetMap;
-    private transient TargetGettingKey targetGettingKey;
+    protected Map<String, BITarget> targetMap;
+    private TargetGettingKey targetGettingKey;
 
     public CalCalculator(BICalculateTarget target) {
         this.target = target;
-        this.targetName = target.getValue();
         this.targetMap = target.getTargetMap();
+        this.targetGettingKey = new TargetGettingKey(target.getSummaryIndex(), target.getName());
     }
 
     public CalCalculator() {
@@ -72,19 +72,7 @@ public abstract class CalCalculator implements TargetCalculator {
 
     @Override
     public TargetGettingKey createTargetGettingKey() {
-        if (targetGettingKey == null) {
-            targetGettingKey = new TargetGettingKey(this.createTargetKey(), targetName);
-        }
         return targetGettingKey;
-    }
-
-    /**
-     * @return 指标数组
-     * @deprecated 创建计算指标
-     */
-    @Override
-    public TargetCalculator[] createTargetCalculators() {
-        return new TargetCalculator[0];
     }
 
 
@@ -103,7 +91,7 @@ public abstract class CalCalculator implements TargetCalculator {
 
     @Override
     public String getName() {
-        return targetName;
+        return target.getName();
     }
 
 }

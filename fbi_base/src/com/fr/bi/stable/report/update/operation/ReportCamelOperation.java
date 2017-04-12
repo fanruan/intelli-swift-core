@@ -1,6 +1,7 @@
 package com.fr.bi.stable.report.update.operation;
 
 import com.fr.bi.stable.utils.program.BIJsonUtils;
+import com.fr.general.ComparatorUtils;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
@@ -12,9 +13,10 @@ import java.util.regex.Pattern;
 /**
  * Created by kary on 2017/1/23.
  * change underScore to Camel
+ * 首字母下划线不会被过滤
  */
 public class ReportCamelOperation implements ReportUpdateOperation {
-    private static Pattern linePattern = Pattern.compile("_(\\w)");
+    private static Pattern linePattern = Pattern.compile("(?!^)_(\\w)");
 
     @Override
     public JSONObject update(JSONObject reportSetting) throws JSONException {
@@ -76,17 +78,20 @@ public class ReportCamelOperation implements ReportUpdateOperation {
         return lineToCamels(str);
     }
 
+    /* 之前的错误处理把"_src"处理为"src"，现在先在这边转过来，之后这段代码会删掉*/
     private String lineToCamels(String str) {
-//        str = str.toLowerCase();
+        if (ComparatorUtils.equals(str, "src")) {
+            return "_src";
+        }
         Matcher matcher = linePattern.matcher(str);
         StringBuffer sb = new StringBuffer();
         while (matcher.find()) {
             matcher.appendReplacement(sb, matcher.group(1).toUpperCase());
         }
         matcher.appendTail(sb);
-        if (sb.length() > 0) {
-            sb.setCharAt(0, sb.substring(0).toLowerCase().toCharArray()[0]);
-        }
-        return sb.toString().replaceAll("_", "");
+//        if (sb.length() > 0) {
+//            sb.setCharAt(0, sb.substring(0).toLowerCase().toCharArray()[0]);
+//        }
+        return sb.toString();
     }
 }

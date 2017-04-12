@@ -14,21 +14,20 @@ import java.util.concurrent.Callable;
 /**
  * Created by 小灰灰 on 2015/7/2.
  */
-public abstract class SummaryOfAllCalculator extends AbstractConfigureCalulator {
+public abstract class SummaryOfAllCalculator extends AbstractConfigureCalculator {
     private static final long serialVersionUID = 4448457069572400146L;
 
-    public SummaryOfAllCalculator(BIConfiguredCalculateTarget target, String target_id, int start_group) {
-        super(target, target_id, start_group);
+    public SummaryOfAllCalculator(BIConfiguredCalculateTarget target, TargetGettingKey calTargetKey, int start_group) {
+        super(target, calTargetKey, start_group);
     }
 
     @Override
     public void calCalculateTarget(BINode node) {
-        Object key = getCalKey();
-        //获得当前node的纬度数
-        int deep = getCalDeep(node);
-        if (key == null) {
+        if (calTargetKey == null) {
             return;
         }
+        //获得当前node的纬度数
+        int deep = getCalDeep(node);
         BINode tempNode = node;
         //从第几个纬度开始计算
         int calDeep = start_group == 0 ? 0 : deep - start_group;
@@ -55,8 +54,7 @@ public abstract class SummaryOfAllCalculator extends AbstractConfigureCalulator 
 
     @Override
     public void calCalculateTarget(BICrossNode node, TargetGettingKey key1) {
-        Object key = getCalKey();
-        if (key == null) {
+        if (calTargetKey == null) {
             return;
         }
         BICrossNode tempNode = node;
@@ -92,7 +90,7 @@ public abstract class SummaryOfAllCalculator extends AbstractConfigureCalulator 
 
     protected BICrossNode getFirstCalCrossNode(BICrossNode rank_node) {
         BICrossNode temp_node = rank_node;
-        if (temp_node.getLeftFirstChild() != null) {
+        while (temp_node.getLeftFirstChild() != null) {
             temp_node = temp_node.getLeftFirstChild();
         }
         return temp_node;

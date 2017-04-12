@@ -9,6 +9,7 @@ import com.fr.bi.stable.engine.index.key.IndexKey;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.gvi.traversal.SingleRowTraversalAction;
 import com.fr.bi.stable.report.result.DimensionCalculator;
+import com.fr.stable.StringUtils;
 
 import java.util.Iterator;
 import java.util.LinkedHashSet;
@@ -20,14 +21,16 @@ import java.util.Set;
  */
 public class DirectToDimensionRelationIterator implements DimensionIterator {
     private Iterator<Map.Entry<Object, GroupValueIndex>> iterator;
-    private DimensionCalculator calculator;
-    private ICubeDataLoader loader;
-
-
+    private ICubeColumnIndexReader dimensionGetter;
+    private ICubeColumnIndexReader primaryTableGetter;
     protected DirectToDimensionRelationIterator(Iterator<Map.Entry<Object, GroupValueIndex>> iterator, DimensionCalculator calculator, ICubeDataLoader loader) {
         this.iterator = iterator;
-        this.calculator = calculator;
-        this.loader = loader;
+        //默认第一个位置放的是主表
+        CubeTableSource primaryTableSource = calculator.getDirectToDimensionRelationList().get(0).getPrimaryTable();
+        ICubeFieldSource primaryFieldSource = calculator.getDirectToDimensionRelationList().get(0).getPrimaryField();
+        this.dimensionGetter = loader.getTableIndex(calculator.getField().getTableBelongTo().getTableSource()).loadGroup(calculator.createKey());
+        this.primaryTableGetter = loader.getTableIndex(primaryTableSource).loadGroup(new IndexKey(primaryFieldSource.getFieldName()), calculator.getDirectToDimensionRelationList());
+
     }
 
     @Override
@@ -40,18 +43,15 @@ public class DirectToDimensionRelationIterator implements DimensionIterator {
         Map.Entry<Object, GroupValueIndex> entry = iterator.next();
         Object keyValue = entry.getKey();
         final GroupValueIndex gvi = entry.getValue();
-            //默认第一个位置放的是主表
-        CubeTableSource primaryTableSource = calculator.getDirectToDimensionRelationList().get(0).getPrimaryTable();
-        ICubeFieldSource primaryFieldSource = calculator.getDirectToDimensionRelationList().get(0).getPrimaryField();
         final Set keyValueSet = new LinkedHashSet();
-        final ICubeColumnIndexReader dimensionGetter = loader.getTableIndex(calculator.getField().getTableBelongTo().getTableSource()).loadGroup(calculator.createKey());
-        ICubeColumnIndexReader primaryTableGetter = loader.getTableIndex(primaryTableSource).loadGroup(new IndexKey(primaryFieldSource.getFieldName()), calculator.getDirectToDimensionRelationList());
-        primaryTableGetter.getGroupIndex(new Object[]{keyValue})[0].Traversal(new SingleRowTraversalAction() {
+       primaryTableGetter.getGroupIndex(new Object[]{keyValue})[0].Traversal(new SingleRowTraversalAction() {
             @Override
             public void actionPerformed(int row) {
                 Object ob = dimensionGetter.getOriginalValue(row);
                 if (ob != null){
                     keyValueSet.add(ob);
+                } else {
+                    keyValueSet.add(StringUtils.EMPTY);
                 }
             }
         });

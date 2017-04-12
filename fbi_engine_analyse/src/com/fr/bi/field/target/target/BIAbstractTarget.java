@@ -1,7 +1,8 @@
 package com.fr.bi.field.target.target;
 
-import com.fr.bi.field.BIStyleTarget;
 import com.fr.bi.conf.report.widget.field.target.BITarget;
+import com.fr.bi.field.BIStyleTarget;
+import com.fr.bi.stable.report.key.TargetGettingKey;
 import com.fr.json.JSONObject;
 
 public abstract class BIAbstractTarget extends BIStyleTarget implements BITarget {
@@ -11,14 +12,19 @@ public abstract class BIAbstractTarget extends BIStyleTarget implements BITarget
 	private static final long serialVersionUID = 2627125367817748430L;
 	private int summaryType;
     private int chartType;
+    private int summaryIndex;
 
-
-    public void setSummaryType(int summaryType) {
-        this.summaryType = summaryType;
-    }
 
     public int getSummaryType() {
         return summaryType;
+    }
+
+    public void setSummaryIndex(int summaryIndex) {
+        this.summaryIndex = summaryIndex;
+    }
+
+    public int getSummaryIndex(){
+        return summaryIndex;
     }
 
     @Override
@@ -26,6 +32,10 @@ public abstract class BIAbstractTarget extends BIStyleTarget implements BITarget
         return chartType;
     }
 
+    @Override
+    public TargetGettingKey createTargetGettingKey() {
+        return new TargetGettingKey(getSummaryIndex(), getName());
+    }
 
     /**
      * 将JSON对象转换成java对象
@@ -87,4 +97,5 @@ public abstract class BIAbstractTarget extends BIStyleTarget implements BITarget
         result = 31 * result + chartType;
         return result;
     }
+
 }

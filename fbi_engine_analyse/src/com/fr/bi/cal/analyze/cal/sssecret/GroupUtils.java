@@ -19,12 +19,12 @@ import java.util.List;
 public class GroupUtils {
 
 
-    public static NodeAndPageInfo createNextPageMergeNode(NodeDimensionIterator iterator, Operator op, boolean showSum, boolean shouldSetIndex) {
-        return createMergePageNode(iterator, op, showSum, shouldSetIndex);
+    public static NodeAndPageInfo createNextPageMergeNode(NodeDimensionIterator iterator, Operator op, boolean showSum, boolean shouldSetIndex, int sumLength) {
+        return createMergePageNode(iterator, op, showSum, shouldSetIndex, sumLength);
     }
 
-    private static NodeAndPageInfo createMergePageNode(NodeDimensionIterator iterator, Operator op, boolean showSum, boolean shouldSetIndex) {
-        Node node = new Node();
+    private static NodeAndPageInfo createMergePageNode(NodeDimensionIterator iterator, Operator op, boolean showSum, boolean shouldSetIndex, int sumLength) {
+        Node node = new Node(sumLength);
         GroupConnectionValue gc = iterator.next();
         if (gc == null) {
             return new NodeAndPageInfo(node, iterator);
@@ -38,8 +38,8 @@ public class GroupUtils {
                 Object data = gcvChild.getData();
                 Node child = parent.getChild(data);
                 if (child == null) {
-                    child = new Node(data);
-                    if (data != BIBaseConstant.EMPTY_NODE_DATA || deep != 0) {
+                    child = new Node(data, sumLength);
+                    if (deep != 0 || !isEmptyData(data)) {
                         parent.addChild(child);
                     }
                 }
@@ -55,6 +55,10 @@ public class GroupUtils {
         iterator.pageEnd();
         NodeUtils.setSiblingBetweenFirstAndLastChild(node);
         return new NodeAndPageInfo(node, iterator);
+    }
+
+    private static boolean isEmptyData(Object data) {
+        return data == BIBaseConstant.EMPTY_NODE_DATA || (data instanceof Double && Double.isNaN((Double)data));
     }
 
     /**

@@ -37,18 +37,21 @@ public class NodeIteratorCreator {
     private List<MetricGroupInfo> metricGroupInfoList;
     private BIDimension[] rowDimension;
     private BISummaryTarget[] usedTargets;
+    private int sumLength;
     private boolean isRealData;
     private NameObject targetSort;
+    private NameObject[] dimensionTargetSort;
     private TargetFilter filter;
     private final boolean showSum;
     private final boolean setIndex;
     private final boolean calAllPage;
     private Map<String, BISummaryTarget> targetIdMap;
 
-    public NodeIteratorCreator(List<MetricGroupInfo> metricGroupInfoList, BIDimension[] rowDimension, BISummaryTarget[] usedTargets, Map<String, DimensionFilter> targetFilterMap, boolean isRealData, BISession session, NameObject targetSort, TargetFilter filter, boolean showSum, boolean setIndex, boolean calAllPage) {
+    public NodeIteratorCreator(List<MetricGroupInfo> metricGroupInfoList, BIDimension[] rowDimension, BISummaryTarget[] usedTargets, int sumLength, Map<String, DimensionFilter> targetFilterMap, boolean isRealData, BISession session, NameObject targetSort, TargetFilter filter, boolean showSum, boolean setIndex, boolean calAllPage) {
         this.metricGroupInfoList = metricGroupInfoList;
         this.rowDimension = rowDimension;
         this.usedTargets = usedTargets;
+        this.sumLength = sumLength;
         this.isRealData = isRealData;
         this.session = session;
         this.targetSort = targetSort;
@@ -69,6 +72,7 @@ public class NodeIteratorCreator {
     }
 
     private void checkTargetSort() {
+        dimensionTargetSort = new NameObject[rowDimension.length];
         if (targetSort != null) {
             boolean contains = false;
             for (BISummaryTarget t : usedTargets) {
@@ -80,7 +84,34 @@ public class NodeIteratorCreator {
                 targetSort = null;
             }
         }
+        for (int i = 0; i < rowDimension.length; i++){
+            NameObject dimTargetSort = getDimTargetSort(rowDimension[i]);
+            if (targetSort != null){
+                dimensionTargetSort[i] = targetSort;
+            } else {
+                dimensionTargetSort[i] = dimTargetSort;
+            }
+        }
 
+    }
+
+    private NameObject getDimTargetSort(BIDimension dimension) {
+        String target = dimension.getSortTarget();
+        if (target != null) {
+            boolean contains = false;
+            for (BISummaryTarget t : usedTargets) {
+                if (ComparatorUtils.equals(t.getValue(), target)) {
+                    contains = true;
+                }
+            }
+            if (!contains) {
+                target = null;
+            }
+        }
+        if (target != null){
+            return new NameObject(target, dimension.getSort().getSortType());
+        }
+        return null;
     }
 
     //把格子上的指标过滤转化为最后一个维度的维度过滤
@@ -113,9 +144,9 @@ public class NodeIteratorCreator {
         return CalLevel.PART_NODE;
     }
 
-    //如果参数要求全部计算，或者有配置类计算，或者最后一个维度上有过滤（此时要计算IndirectFilter已经把整个node都过滤了，就没必要转化为索引过滤，再去分页计算了）
+    //如果参数要求全部计算，或者有需要全部计算的配置类计算，或者最后一个维度上有过滤（此时要计算IndirectFilter已经把整个node都过滤了，就没必要转化为索引过滤，再去分页计算了）
     private boolean isaAllNode() {
-        return calAllPage || hasConfigureMetrics(targetIdMap.keySet()) || getLastIndirectFilterDimensionIndex() == rowDimension.length - 1;
+        return calAllPage || hasAllCalculateMetrics(targetIdMap.keySet()) || getLastIndirectFilterDimensionIndex() == rowDimension.length - 1;
     }
 
     public IRootDimensionGroup createRoot() {
@@ -129,7 +160,7 @@ public class NodeIteratorCreator {
 
     private IRootDimensionGroup createNormalIteratorRoot() {
         if (usedTargets == null || usedTargets.length == 0) {
-            return new NoneMetricRootDimensionGroup(metricGroupInfoList, createNoneMetricMergeIteratorCreator(), session, isRealData, filter, getDirectDimensionFilter());
+            return new NoneMetricRootDimensionGroup(metricGroupInfoList, createNoneMetricMergeIteratorCreator(), sumLength, session, isRealData, filter, getDirectDimensionFilter());
         }
         GroupValueIndex[] directFilterIndexes = createDirectFilterIndex();
         for (int i = 0; i < directFilterIndexes.length; i++) {
@@ -137,7 +168,7 @@ public class NodeIteratorCreator {
                 metricGroupInfoList.get(i).setFilterIndex(metricGroupInfoList.get(i).getFilterIndex().AND(directFilterIndexes[i]));
             }
         }
-        RootDimensionGroup rootDimensionGroup = new RootDimensionGroup(metricGroupInfoList, createNormalMergeIteratorCreator(), session, isRealData);
+        RootDimensionGroup rootDimensionGroup = new RootDimensionGroup(metricGroupInfoList, createNormalMergeIteratorCreator(), sumLength, session, isRealData);
         GroupValueIndex[] inDirectFilterIndexes = getInDirectFilterIndex(rootDimensionGroup.getRoot(), rootDimensionGroup.getGetters(), rootDimensionGroup.getColumns());
         if (inDirectFilterIndexes.length != 0) {
             GroupValueIndex[] gvis = rootDimensionGroup.getRoot().getGvis();
@@ -164,9 +195,11 @@ public class NodeIteratorCreator {
     private MergeIteratorCreator[] createNormalMergeIteratorCreator() {
         BIMultiThreadExecutor executor = MultiThreadManagerImpl.getInstance().isMultiCall() ? MultiThreadManagerImpl.getInstance().getExecutorService() : null;
         MergeIteratorCreator[] mergeIteratorCreators = new MergeIteratorCreator[rowDimension.length];
+        boolean hasSingleNodeCalMetrics = hasSingleNodeCalMetrics();
         for (int i = 0; i < rowDimension.length; i++) {
-            if (hasTargetSort()) {
-                createAllNodeCreator(mergeIteratorCreators, i, null, targetSort, new SimpleMergeIteratorCreator(), executor);
+            if (dimensionTargetSort[i] != null || hasSingleNodeCalMetrics) {
+                //只有最后一层才算配置类计算
+                createAllNodeCreator(mergeIteratorCreators, i, null, dimensionTargetSort[i], new SimpleMergeIteratorCreator(), executor, hasSingleNodeCalMetrics && i == rowDimension.length - 1);
             } else {
                 mergeIteratorCreators[i] = new SimpleMergeIteratorCreator();
             }
@@ -200,41 +233,59 @@ public class NodeIteratorCreator {
             } else if (filterValue instanceof StringOneValueFilterValue) {
                 mergeIteratorCreators[i] = new FilterMergeIteratorCreator((StringOneValueFilterValue) filterValue);
             } else {
-                createAllNodeCreator(mergeIteratorCreators, i, filter, targetSort, new SimpleMergeIteratorCreator(), executor);
+                createAllNodeCreator(mergeIteratorCreators, i, filter, targetSort, new SimpleMergeIteratorCreator(), executor, false);
             }
         } else {
-            createAllNodeCreator(mergeIteratorCreators, i, filter, targetSort, new SimpleMergeIteratorCreator(), executor);
+            createAllNodeCreator(mergeIteratorCreators, i, filter, targetSort, new SimpleMergeIteratorCreator(), executor, false);
         }
     }
 
     //需要全部计算子节点的IteratorCreator
-    private void createAllNodeCreator(MergeIteratorCreator[] mergeIteratorCreators, int index, DimensionFilter filter, NameObject targetSort, MergeIteratorCreator creator, BIMultiThreadExecutor executor) {
+    private void createAllNodeCreator(MergeIteratorCreator[] mergeIteratorCreators, int index, DimensionFilter filter, NameObject targetSort, MergeIteratorCreator creator, BIMultiThreadExecutor executor, boolean calSingleNodeMetrics) {
         List<TargetAndKey>[] metricsToCalculate = new List[metricGroupInfoList.size()];
         Map<String, TargetCalculator> calculatedMap = new HashMap<String, TargetCalculator>();
         Set<String> metrics = new HashSet<String>();
         List<String> usedTargets = new ArrayList<String>();
-        boolean hasConfigureMetricsFilter = false;
+        boolean hasAllConfigureMetricsFilter = false;
         if (filter != null) {
             usedTargets = filter.getUsedTargets();
-            hasConfigureMetricsFilter = hasConfigureMetrics(usedTargets);
+            hasAllConfigureMetricsFilter = hasAllCalculateMetrics(usedTargets);
         }
         if (targetSort != null) {
             usedTargets.add(targetSort.getName());
         }
+        if (calSingleNodeMetrics){
+            for(BISummaryTarget target : this.usedTargets){
+                if (target.calculateSingleNode(this.usedTargets)){
+                    usedTargets.add(target.getName());
+                }
+            }
+        }
         for (String id : usedTargets) {
             getRelatedNormalIds(id, metrics);
         }
-        List<CalCalculator> formulaCalculators = getRelatedFormulaMetric(usedTargets);
-        fillCalculatedMap(calculatedMap, formulaCalculators);
+        List<CalCalculator> calCalculators = getRelatedCalMetric(usedTargets);
+        fillCalculatedMap(calculatedMap, calCalculators);
         fillMetricsToCalculate(metrics, metricsToCalculate, calculatedMap);
         //如果不过滤配置类计算指标, 就直接过滤, 过滤是配置类计算需要等到全部计算完了才过滤
-        mergeIteratorCreators[index] = new AllNodeMergeIteratorCreator(hasConfigureMetricsFilter ? null : filter, targetSort, metricsToCalculate, calculatedMap, creator, executor, formulaCalculators);
+        mergeIteratorCreators[index] = new AllNodeMergeIteratorCreator(hasAllConfigureMetricsFilter ? null : filter, targetSort, metricsToCalculate, calculatedMap, creator, executor, calCalculators);
     }
 
-    private boolean hasConfigureMetrics(Collection<String> usedTargets) {
+    //是否有需要计算整个节点的配置类计算（一定是组内配置类计算，并且需要计算单个node才能计算出结果，目前只有组内所有值求和不需要）
+    private boolean hasSingleNodeCalMetrics() {
+        for (BISummaryTarget target : usedTargets) {
+            if (target != null && target.calculateSingleNode(usedTargets)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    //如果有非组内的配置类计算，则需要全部计算
+    private boolean hasAllCalculateMetrics(Collection<String> usedTargets) {
         for (String id : usedTargets) {
             BISummaryTarget target = targetIdMap.get(id);
-            if (target != null && target.getType() == TargetType.CONFIGURE) {
+            if (target != null && target.calculateAllNode()) {
                 return true;
             }
         }
@@ -261,36 +312,42 @@ public class NodeIteratorCreator {
         }
     }
 
-    //获取配置类计算相关的计算指标
-    private List<CalCalculator> getRelatedFormulaMetric(Collection<String> ids) {
-        Set<String> formulaIds = new HashSet<String>();
+    //获取相关的计算指标
+    private List<CalCalculator> getRelatedCalMetric(Collection<String> ids) {
+        Set<String> calIds = new HashSet<String>();
         for (String id : ids) {
-            getRelatedFormulaMetricIds(formulaIds, id);
+            getRelatedCalMetricIds(calIds, id);
         }
         List<CalCalculator> formulaCalculator = new ArrayList<CalCalculator>();
-        for (String id : formulaIds) {
+        for (String id : calIds) {
             formulaCalculator.add((CalCalculator) targetIdMap.get(id).createSummaryCalculator());
+        }
+        for (BISummaryTarget target : usedTargets){
+            if (target.calculateSingleNode(usedTargets)){
+
+            }
         }
         return formulaCalculator;
     }
 
-    private void getRelatedFormulaMetricIds(Set<String> formulaIds, String id) {
+    private void getRelatedCalMetricIds(Set<String> calIds, String id) {
         BISummaryTarget target = targetIdMap.get(id);
         if (target == null) {
             return;
         }
-        if (target.getType() == TargetType.FORMULA) {
-            formulaIds.add(target.getName());
+        if (target.getType() != TargetType.NORMAL) {
+            calIds.add(target.getName());
         }
         Collection<String> usedTargets = target.getCalculateUseTargetIDs();
         if (usedTargets != null) {
             for (String usedTarget : usedTargets) {
                 if (!ComparatorUtils.equals(id, target.getName())) {
-                    getRelatedFormulaMetricIds(formulaIds, usedTarget);
+                    getRelatedCalMetricIds(calIds, usedTarget);
                 }
             }
         }
     }
+
 
     private void fillCalculatedMap(Map<String, TargetCalculator> calculatedMap, List<CalCalculator> formulaCalculators) {
         for (CalCalculator calCalculator : formulaCalculators) {
@@ -316,14 +373,14 @@ public class NodeIteratorCreator {
     private ConstructedRootDimensionGroup createAllNodeIteratorRoot() {
         GroupValueIndex[] directFilterIndexes = createDirectFilterIndex();
         for (int i = 0; i < directFilterIndexes.length; i++) {
-            if (directFilterIndexes[i] != null) {
+            if (directFilterIndexes[i] != null && directFilterIndexes[i] != ALL_SHOW) {
                 metricGroupInfoList.get(i).setFilterIndex(metricGroupInfoList.get(i).getFilterIndex().AND(directFilterIndexes[i]));
             }
         }
         //是否提前计算了维度过滤
         //如果有配置类计算的过滤，则需要构建完node之后再排序，之前的过滤一个都别动，要不然影响配置类计算的。如果维度过滤在最后一个维度上面，也等到全部构建完了再过滤
-        boolean canPreFilter = hasDimensionInDirectFilter() && !hasConfigureIndirectDimensionFilter() && getLastIndirectFilterDimensionIndex() != rowDimension.length - 1;
-        ConstructedRootDimensionGroup constructedRootDimensionGroup = new ConstructedRootDimensionGroup(metricGroupInfoList, createAllNodeMergeIteratorCreator(), session, isRealData, targetSort, getCalCalculators(), canPreFilter || !hasDimensionInDirectFilter() ? null : rowDimension, setIndex, hasInSumMetric());
+        boolean canPreFilter = hasDimensionInDirectFilter() && !hasAllNodeIndirectDimensionFilter() && getLastIndirectFilterDimensionIndex() != rowDimension.length - 1;
+        ConstructedRootDimensionGroup constructedRootDimensionGroup = new ConstructedRootDimensionGroup(metricGroupInfoList, createAllNodeMergeIteratorCreator(), sumLength, session, isRealData, dimensionTargetSort, getCalCalculators(), canPreFilter || !hasDimensionInDirectFilter() ? null : rowDimension, setIndex, hasInSumMetric());
         //如果没有配置类计算的过滤，并且最后一个维度没有过滤，可以先算一下IndirectFilter
         if (canPreFilter) {
             GroupValueIndex[] inDirectFilterIndexes = getInDirectFilterIndex(constructedRootDimensionGroup.getRoot(), constructedRootDimensionGroup.getGetters(), constructedRootDimensionGroup.getColumns());
@@ -376,17 +433,18 @@ public class NodeIteratorCreator {
 
     private boolean hasInSumMetric(BISummaryTarget target) {
         return target != null && (target.getSummaryType() != BIReportConstant.SUMMARY_TYPE.SUM &&
-                target.getSummaryType() == BIReportConstant.SUMMARY_TYPE.COUNT);
+                target.getSummaryType() != BIReportConstant.SUMMARY_TYPE.COUNT);
     }
 
-    //维度过滤中包含配置配计算
-    private boolean hasConfigureIndirectDimensionFilter() {
+
+    //维度过滤中包含需要计算整个node的配置配计算
+    private boolean hasAllNodeIndirectDimensionFilter() {
         for (BIDimension dimension : rowDimension) {
             DimensionFilter filter = dimension.getFilter();
             if (filter != null && !filter.canCreateDirectFilter()) {
                 for (String id : filter.getUsedTargets()) {
                     BISummaryTarget target = targetIdMap.get(id);
-                    if (target != null && target.getType() == TargetType.CONFIGURE) {
+                    if (target != null && target.calculateSingleNode(usedTargets)) {
                         return true;
                     }
                 }
@@ -416,7 +474,11 @@ public class NodeIteratorCreator {
                     DimensionCalculator c = metricGroupInfoList.get(i).getRows()[deep];
                     BusinessTable t = metricGroupInfoList.get(i).getMetric();
                     GroupValueIndex filterIndex = resultFilter.createFilterIndex(c, t, session.getLoader(), session.getUserId());
-                    retIndexes[i] = retIndexes[i].and(filterIndex);
+                    if (filterIndex != null){
+                        retIndexes[i] = retIndexes[i].and(filterIndex);
+                    } else {
+                        retIndexes[i] = null;
+                    }
                 }
             }
         }
@@ -432,7 +494,7 @@ public class NodeIteratorCreator {
 
     //是否需要计算不能直接转化为索引的维度过滤, 如果需要, 就通过构建node的方式转化为索引
     private boolean shouldCalIndirectDimensionFilterGVI() {
-        return hasDimensionInDirectFilter() && (showSum || hasTargetSort());
+        return hasDimensionInDirectFilter() && (showSum || hasTargetSortBeforeIndex(getLastIndirectFilterDimensionIndex()));
     }
 
     private DimensionFilter[] getDirectDimensionFilter() {
@@ -456,8 +518,13 @@ public class NodeIteratorCreator {
         return false;
     }
 
-    private boolean hasTargetSort() {
-        return targetSort != null;
+    //从第几个维度之前有没有指标排序
+    private boolean hasTargetSortBeforeIndex(int index) {
+        for (int i = 0; i < index; i++){
+            if (dimensionTargetSort[i] != null){
+                return true;
+            }
+        }
+        return false;
     }
-
 }

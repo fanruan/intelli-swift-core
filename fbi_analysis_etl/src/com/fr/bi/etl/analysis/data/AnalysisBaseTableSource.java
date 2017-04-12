@@ -317,6 +317,11 @@ AnalysisBaseTableSource extends AbstractCubeTableSource implements AnalysisCubeT
         return set;
     }
 
+    @Override
+    public String getModuleName() {
+        return BIBaseConstant.MODULE_NAME.ANALYSIS_ETL_MODULE;
+    }
+
     public void clearUserBaseTableMap() {
         userBaseTableMap.clear();
         widget.refreshColumns();

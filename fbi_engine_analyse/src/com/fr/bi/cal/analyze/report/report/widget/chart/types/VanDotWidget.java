@@ -97,9 +97,27 @@ public class VanDotWidget extends VanCartesianWidget{
             legend.put("range", this.mapStyleToRange(settings.optJSONArray("fixedStyle")));
         }else{
             legend.put("continuous", true);
+            legend.put("range", this.gradualStyleToRange(settings.optJSONArray("gradientStyle")));
         }
 
         return legend;
+    }
+
+
+    private JSONObject gradualStyleToRange(JSONArray style) throws JSONException{
+        JSONArray colors = JSONArray.create();
+
+        int count = style.length();
+        double max = style.getJSONObject(count - 1).optJSONObject("range").optDouble("max");
+
+        for(int i = 0, len = style.length(); i < len; i++){
+            JSONObject config = style.getJSONObject(i);
+            JSONObject range = config.optJSONObject("range"), colorRange = config.optJSONObject("color_range");
+            double from = range.optDouble("min") / max;
+            colors.put(JSONArray.create().put(from).put(colorRange.optString("from_color")));
+        }
+
+        return JSONObject.create().put("color", colors);
     }
 
     protected String getLegendType(){
@@ -130,7 +148,10 @@ public class VanDotWidget extends VanCartesianWidget{
         if(ids.length < SCATTER_COUNT){
             return series;
         }
-        String seriesType = this.getSeriesType(StringUtils.EMPTY);
+
+        double yScale = this.numberScale(ids[0]), xScale = this.numberScale(ids[1]);
+        double sizeScale = ids.length > 2 ? this.numberScaleByLevel(this.numberLevelFromSettings(ids[2])) : 1;
+
         HashMap<String, ArrayList<JSONArray>> seriesMap = new HashMap<String, ArrayList<JSONArray>>();
         Iterator iterator = originData.keys();
         while (iterator.hasNext()) {
@@ -157,11 +178,11 @@ public class VanDotWidget extends VanCartesianWidget{
                     JSONObject obj = dataArray.optJSONObject(j);
                     JSONArray dimensions = obj.optJSONArray("s");
 
-                    double x = dimensions.optDouble(0);
-                    double y = dimensions.optDouble(1);
-                    double value = dimensions.length() > 2 ? dimensions.optDouble(2) : 0;
+                    double y = dimensions.isNull(0) ? 0 : dimensions.optDouble(0);
+                    double x = dimensions.isNull(1) ? 0 : dimensions.optDouble(1);
+                    double value = (dimensions.length() > 2 && !dimensions.isNull(2)) ? dimensions.optDouble(2) : 0;
 
-                    data.put(JSONObject.create().put("x", x).put("y", y).put("size", value));
+                    data.put(JSONObject.create().put("x", x/xScale).put("y", y/yScale).put("size", value/sizeScale));
                 }
             }
 

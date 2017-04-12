@@ -29,26 +29,26 @@ public class AllNodeMergeIteratorCreator implements MergeIteratorCreator {
     private Map<String, TargetCalculator> calculatedMap;
     private MergeIteratorCreator creator;
     private BIMultiThreadExecutor executor;
-    private List<CalCalculator> formulaCalculator;
+    private List<CalCalculator> calCalculator;
 
-    public AllNodeMergeIteratorCreator(DimensionFilter filter, NameObject targetSort, List<TargetAndKey>[] metricsToCalculate, Map<String, TargetCalculator> calculatedMap, MergeIteratorCreator creator, BIMultiThreadExecutor executor, List<CalCalculator> formulaCalculator) {
+    public AllNodeMergeIteratorCreator(DimensionFilter filter, NameObject targetSort, List<TargetAndKey>[] metricsToCalculate, Map<String, TargetCalculator> calculatedMap, MergeIteratorCreator creator, BIMultiThreadExecutor executor, List<CalCalculator> calCalculator) {
         this.filter = filter;
         this.targetSort = targetSort;
         this.metricsToCalculate = metricsToCalculate;
         this.calculatedMap = calculatedMap;
         this.creator = creator;
         this.executor = executor;
-        this.formulaCalculator = formulaCalculator;
+        this.calCalculator = calCalculator;
     }
 
     @Override
-    public Iterator<MetricMergeResult> createIterator(DimensionIterator[] iterators, GroupValueIndex[] gvis, Comparator c, ICubeTableService[] tis, ICubeDataLoader loader) {
-        MergeIterator iterator = (MergeIterator) creator.createIterator(iterators, gvis, c, tis, loader);
-        return new AllNodeMergeIterator(iterator, filter, targetSort, metricsToCalculate, calculatedMap, tis, loader, executor, formulaCalculator);
+    public Iterator<MetricMergeResult> createIterator(DimensionIterator[] iterators, int sumLength, GroupValueIndex[] gvis, Comparator c, ICubeTableService[] tis, ICubeDataLoader loader) {
+        MergeIterator iterator = (MergeIterator) creator.createIterator(iterators, sumLength, gvis, c, tis, loader);
+        return new AllNodeMergeIterator(iterator, sumLength, filter, targetSort, metricsToCalculate, calculatedMap, tis, loader, executor, calCalculator);
     }
 
     @Override
-    public boolean isSimple() {
-        return false;
+    public void setExecutor(BIMultiThreadExecutor executor) {
+        this.executor = executor;
     }
 }

@@ -159,12 +159,12 @@ BI.AnalysisETLOperatorCenterController = BI.inherit(BI.MVCController, {
 
     filterChange : function (filter, widget){
         var showingCard = this._statusAdd ? this._getOperatorPane(widget).getContentWidget().getShowingCard() : this._getOperatorEditPane(widget).getContentWidget();
-        showingCard.controller.filterChange(filter);
+        showingCard.filterChange(filter);
     },
 
     getFilterValue : function (field, widget){
         var showingCard = this._statusAdd ? this._getOperatorPane(widget).getContentWidget().getShowingCard() : this._getOperatorEditPane(widget).getContentWidget();
-        return showingCard.controller.getFilterValue(field);
+        return showingCard.getFilterValue(field);
     },
 
     refreshPreviewData : function (v, widget) {

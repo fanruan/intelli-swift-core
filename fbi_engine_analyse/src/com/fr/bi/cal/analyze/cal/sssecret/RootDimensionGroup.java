@@ -6,6 +6,8 @@ import com.finebi.cube.conf.table.BusinessTable;
 import com.fr.bi.base.key.BIKey;
 import com.fr.bi.cal.analyze.cal.index.loader.MetricGroupInfo;
 import com.fr.bi.cal.analyze.cal.index.loader.TargetAndKey;
+import com.fr.bi.cal.analyze.cal.multithread.BIMultiThreadExecutor;
+import com.fr.bi.cal.analyze.cal.multithread.MultiThreadManagerImpl;
 import com.fr.bi.cal.analyze.cal.result.NodeExpander;
 import com.fr.bi.cal.analyze.cal.sssecret.diminfo.MergeIteratorCreator;
 import com.fr.bi.cal.analyze.session.BISession;
@@ -14,7 +16,6 @@ import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.engine.index.key.IndexKey;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.report.result.DimensionCalculator;
-import com.fr.bi.stable.utils.program.BINonValueUtils;
 import com.fr.cache.list.IntList;
 import com.fr.general.ComparatorUtils;
 
@@ -31,6 +32,7 @@ public class RootDimensionGroup implements IRootDimensionGroup {
 
     protected List<MetricGroupInfo> metricGroupInfoList;
     protected MergeIteratorCreator[] mergeIteratorCreators;
+    protected int sumLength;
     protected BISession session;
     protected boolean useRealData;
 
@@ -47,9 +49,10 @@ public class RootDimensionGroup implements IRootDimensionGroup {
 
     }
 
-    public RootDimensionGroup(List<MetricGroupInfo> metricGroupInfoList, MergeIteratorCreator[] mergeIteratorCreators, BISession session, boolean useRealData) {
+    public RootDimensionGroup(List<MetricGroupInfo> metricGroupInfoList, MergeIteratorCreator[] mergeIteratorCreators, int sumLength, BISession session, boolean useRealData) {
         this.metricGroupInfoList = metricGroupInfoList;
         this.mergeIteratorCreators = mergeIteratorCreators;
+        this.sumLength = sumLength;
         this.session = session;
         this.useRealData = useRealData;
         init();
@@ -63,7 +66,7 @@ public class RootDimensionGroup implements IRootDimensionGroup {
 
     private void initIterator() {
         if (metricGroupInfoList == null || metricGroupInfoList.isEmpty()) {
-            BINonValueUtils.beyondControl("invalid parameters");
+            return;
         }
         rowSize = metricGroupInfoList.get(0).getRows().length;
         for (MetricGroupInfo info : metricGroupInfoList) {
@@ -97,7 +100,7 @@ public class RootDimensionGroup implements IRootDimensionGroup {
             summaryLists[i] = metricGroupInfoList.get(i).getSummaryList();
             gvis[i] = metricGroupInfoList.get(i).getFilterIndex();
         }
-        root = NoneDimensionGroup.createDimensionGroup(metrics, summaryLists, tis, gvis, session.getLoader());
+        root = NoneDimensionGroup.createDimensionGroup(metrics, summaryLists, sumLength, tis, gvis, session.getLoader());
     }
 
     private CubeTableSource getSource(DimensionCalculator column) {
@@ -116,6 +119,10 @@ public class RootDimensionGroup implements IRootDimensionGroup {
             return new IndexKey(primaryField.getFieldName());
         }
         return column.createKey();
+    }
+
+    public List<MetricGroupInfo> getMetricGroupInfoList() {
+        return metricGroupInfoList;
     }
 
     @Override
@@ -270,6 +277,7 @@ public class RootDimensionGroup implements IRootDimensionGroup {
         RootDimensionGroup rootDimensionGroup = (RootDimensionGroup) createNew();
         rootDimensionGroup.metricGroupInfoList = metricGroupInfoList;
         rootDimensionGroup.mergeIteratorCreators = mergeIteratorCreators;
+        rootDimensionGroup.sumLength = sumLength;
         rootDimensionGroup.session = session;
         rootDimensionGroup.useRealData = useRealData;
         rootDimensionGroup.getters = getters;
@@ -281,6 +289,18 @@ public class RootDimensionGroup implements IRootDimensionGroup {
         rootDimensionGroup.root = root;
         rootDimensionGroup.rowSize = rowSize;
         return rootDimensionGroup;
+    }
+
+    @Override
+    public void checkStatus() {
+        checkThreadPool();
+    }
+
+    private void checkThreadPool() {
+        BIMultiThreadExecutor executor = MultiThreadManagerImpl.getInstance().isMultiCall() ? MultiThreadManagerImpl.getInstance().getExecutorService() : null;
+        for (MergeIteratorCreator creator : mergeIteratorCreators){
+            creator.setExecutor(executor);
+        }
     }
 
     protected IRootDimensionGroup createNew(){

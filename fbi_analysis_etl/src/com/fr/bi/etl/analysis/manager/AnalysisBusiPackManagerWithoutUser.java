@@ -81,7 +81,7 @@ public class AnalysisBusiPackManagerWithoutUser extends AnalysisBusiPackManager 
     }
 
     @Override
-    public JSONObject saveAnalysisETLTable(long userId, String tableId, String newId, String tableName, String describe, String tableJSON) throws Exception {
+    public JSONObject saveAnalysisETLTable(final long userId, String tableId, String newId, String tableName, String describe, String tableJSON) throws Exception {
         return super.saveAnalysisETLTable(usedUserID, tableId, newId, tableName, describe, tableJSON);
     }
 }

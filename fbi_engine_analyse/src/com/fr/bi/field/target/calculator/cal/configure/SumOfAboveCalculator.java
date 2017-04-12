@@ -1,13 +1,10 @@
 package com.fr.bi.field.target.calculator.cal.configure;
 
 import com.fr.base.FRContext;
-import com.fr.bi.field.target.key.cal.configuration.BISumOfAboveCalTargetKey;
-import com.fr.bi.field.target.key.sum.AvgKey;
 import com.fr.bi.field.target.target.cal.target.configure.BIConfiguredCalculateTarget;
 import com.fr.bi.stable.report.key.TargetGettingKey;
 import com.fr.bi.stable.report.result.BICrossNode;
 import com.fr.bi.stable.report.result.BINode;
-import com.fr.bi.stable.report.result.BITargetKey;
 import com.fr.bi.stable.utils.CubeBaseUtils;
 
 import java.util.ArrayList;
@@ -16,18 +13,17 @@ import java.util.List;
 /**
  * Created by 小灰灰 on 2015/7/2.
  */
-public class SumOfAboveCalculator extends AbstractConfigureCalulator {
+public class SumOfAboveCalculator extends AbstractConfigureCalculator {
 
     private static final long serialVersionUID = -3095522390932830159L;
 
-    public SumOfAboveCalculator(BIConfiguredCalculateTarget target, String target_id, int start_group) {
-        super(target, target_id, start_group);
+    public SumOfAboveCalculator(BIConfiguredCalculateTarget target, TargetGettingKey calTargetKey, int start_group) {
+        super(target, calTargetKey, start_group);
     }
 
     @Override
     public void calCalculateTarget(BINode node) {
-        Object key = getCalKey();
-        if (key == null) {
+        if (calTargetKey == null) {
             return;
         }
         BINode tempNode = node;
@@ -53,8 +49,7 @@ public class SumOfAboveCalculator extends AbstractConfigureCalulator {
 
     @Override
     public void calCalculateTarget(BICrossNode node, TargetGettingKey key1) {
-        Object key = getCalKey();
-        if (key == null) {
+        if (calTargetKey == null) {
             return;
         }
         BICrossNode tempNode = node;
@@ -78,11 +73,6 @@ public class SumOfAboveCalculator extends AbstractConfigureCalulator {
         }
     }
 
-    @Override
-    public BITargetKey createTargetKey() {
-        return new BISumOfAboveCalTargetKey(targetName, target_id, targetMap, start_group);
-    }
-
     private class RankDealWith implements java.util.concurrent.Callable {
         private BINode rank_node;
 
@@ -93,9 +83,6 @@ public class SumOfAboveCalculator extends AbstractConfigureCalulator {
 
         @Override
         public Object call() throws Exception {
-            Object key = getCalKey();
-            String targetName = ((TargetGettingKey) key).getTargetName();
-            BITargetKey targetKey = ((TargetGettingKey) key).getTargetKey();
             int deep = 0;
             BINode temp_node = rank_node;
             while (temp_node.getFirstChild() != null) {
@@ -105,12 +92,7 @@ public class SumOfAboveCalculator extends AbstractConfigureCalulator {
             BINode cursor_node = temp_node;
             double sum = 0;
             while (isNotEnd(cursor_node, deep)) {
-                Number value;
-                if (targetKey instanceof AvgKey) {
-                    value = getAvgValue(targetName, (AvgKey) targetKey, cursor_node);
-                } else {
-                    value = cursor_node.getSummaryValue(key);
-                }
+                Number value = cursor_node.getSummaryValue(calTargetKey);
                 sum += value == null ? 0 : value.doubleValue();
                 cursor_node.setSummaryValue(createTargetGettingKey(), new Double(sum));
                 cursor_node = cursor_node.getSibling();
@@ -141,7 +123,6 @@ public class SumOfAboveCalculator extends AbstractConfigureCalulator {
 
         @Override
         public Object call() throws Exception {
-            Object key = getCalKey();
             int deep = 0;
             BICrossNode temp_node = rank_node;
             while (temp_node.getLeftFirstChild() != null) {
@@ -151,8 +132,10 @@ public class SumOfAboveCalculator extends AbstractConfigureCalulator {
             BICrossNode cursor_node = temp_node;
             double sum = 0;
             while (isNotEnd(cursor_node, deep)) {
-                Number value = cursor_node.getSummaryValue(key);
-                sum += value.doubleValue();
+                Number value = cursor_node.getSummaryValue(calTargetKey);
+                if (value != null){
+                    sum += value.doubleValue();
+                }
                 cursor_node.setSummaryValue(createTargetGettingKey(), new Double(sum));
                 cursor_node = cursor_node.getBottomSibling();
             }

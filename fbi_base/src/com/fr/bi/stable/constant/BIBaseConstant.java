@@ -499,4 +499,9 @@ public class BIBaseConstant {
         public static final int UTF16BE = 0xfeff;
         public static final int ANSIORASCII = 0x5c75;
     }
+
+    public static final class MODULE_NAME {
+        public static final String CORE_MODULE = "com.fr.bi.module.BICoreModule";
+        public static final String ANALYSIS_ETL_MODULE = "com.fr.bi.module.AnalysisETLModule";
+    }
 }

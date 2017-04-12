@@ -4,6 +4,8 @@ import com.fr.bi.base.BICore;
 import com.fr.bi.base.BICoreGenerator;
 import com.fr.bi.base.annotation.BICoreField;
 import com.finebi.cube.common.log.BILoggerFactory;
+import com.fr.bi.cal.analyze.report.report.widget.styles.BIStyleReportSetting;
+import com.fr.bi.cal.analyze.report.report.widget.styles.BIStyleSetting;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;
@@ -21,6 +23,8 @@ public class BIDetailReportSetting implements BIDetailSetting {
 
     private int number = 0;
 
+    private BIStyleSetting styleSetting;
+
     @Override
     public void parseJSON(JSONObject jo) throws Exception {
         if (jo.has("view")) {
@@ -29,11 +33,11 @@ public class BIDetailReportSetting implements BIDetailSetting {
             try {
                 JSONArray dimIds = views.getJSONArray(BIReportConstant.REGION.DIMENSION1);
                 view = new String[dimIds.length()];
-                for(int i = 0; i < dimIds.length(); i++){
+                for (int i = 0; i < dimIds.length(); i++) {
                     view[i] = dimIds.getString(i);
                 }
-            } catch (Exception e){
-                BILoggerFactory.getLogger().info(e.getMessage(),e);
+            } catch (Exception e) {
+                BILoggerFactory.getLogger().info(e.getMessage(), e);
             }
             if (views.has("style")) {
                 JSONObject style = views.getJSONObject("style");
@@ -45,6 +49,9 @@ public class BIDetailReportSetting implements BIDetailSetting {
                 }
             }
         }
+        JSONObject settings = jo.has("settings") ? jo.getJSONObject("settings") : new JSONObject();
+        styleSetting = new BIStyleReportSetting();
+        styleSetting.parseJSON(settings);
     }
 
     /**
@@ -78,5 +85,10 @@ public class BIDetailReportSetting implements BIDetailSetting {
     @Override
     public BICore fetchObjectCore() {
         return new BICoreGenerator(this).fetchObjectCore();
+    }
+
+    @Override
+    public BIStyleSetting getStyleSetting() {
+        return styleSetting;
     }
 }

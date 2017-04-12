@@ -1,7 +1,6 @@
 package com.fr.bi.test.etl.analysis.monitor;
 
 import com.finebi.cube.api.ICubeDataLoader;
-import com.finebi.cube.conf.table.BusinessTable;
 import com.fr.base.TableData;
 import com.fr.bi.base.BICore;
 import com.fr.bi.common.inter.Traversal;
@@ -15,12 +14,14 @@ import com.fr.bi.etl.analysis.monitor.MonitorUtils;
 import com.fr.bi.etl.analysis.monitor.SimpleTable;
 import com.fr.bi.etl.analysis.monitor.TableRelation;
 import com.fr.bi.etl.analysis.monitor.TableRelationTree;
+import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.stable.data.db.BIDataValue;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.bi.stable.data.db.IPersistentTable;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.data.source.SourceFile;
 import com.fr.bi.stable.exception.BITableAbsentException;
+import com.fr.fs.control.UserControl;
 import com.fr.json.JSONObject;
 import com.fr.stable.bridge.StableFactory;
 import com.fr.stable.xml.XMLPrintWriter;
@@ -29,7 +30,12 @@ import junit.framework.TestCase;
 import org.easymock.EasyMock;
 import org.easymock.IMocksControl;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Created by daniel on 2017/1/22.
@@ -38,20 +44,21 @@ public class MonitorUtilsTest extends TestCase {
 
 
     public void testGetTableRelations() throws BITableAbsentException {
-        long userId = -999;
+        long userId = UserControl.getInstance().getSuperManagerID();
+        int travelCount = new Integer(10).intValue();
         IMocksControl control = EasyMock.createControl();
         BIAnalysisBusiPackManagerProvider provider = control.createMock(BIAnalysisBusiPackManagerProvider.class);
         StableFactory.registerMarkedObject(BIAnalysisBusiPackManagerProvider.XML_TAG, provider);
-        for(int i = 0; i< 10; i++){
+        for (int i = 0; i < travelCount; i++) {
             String id = String.valueOf(i + 1);
             provider.getTable(id, userId);
             EasyMock.expectLastCall().andReturn(createEasyMockTable(id)).anyTimes();
         }
         control.replay();
-        for(int i = 0; i< 10; i++){
+        for (int i = 0; i < travelCount; i++) {
             String id = String.valueOf(i + 1);
             List<TableRelation> list = MonitorUtils.getTableRelations(new SimpleTable(id), userId);
-            for(TableRelation r : list) {
+            for (TableRelation r : list) {
                 assertTableRelation(r);
             }
         }
@@ -59,7 +66,7 @@ public class MonitorUtilsTest extends TestCase {
 
     private void assertTableRelation(TableRelation r) {
         TableRelation tr = r.getNext();
-        if(tr != null) {
+        if (tr != null) {
             assertTrue(relationMap.get(r.getTable().getId()).contains(tr.getTable()));
             assertTableRelation(tr);
         }
@@ -106,12 +113,12 @@ public class MonitorUtilsTest extends TestCase {
     }
 
     private AnalysisCubeTableSource createEasyMockSource(final String id) {
-        return  new AnalysisCubeTableSource() {
+        return new AnalysisCubeTableSource() {
 
             @Override
             public void getParentAnalysisBaseTableIds(Set<SimpleTable> set) {
                 Set rs = relationMap.get(id);
-                if(rs != null) {
+                if (rs != null) {
                     set.addAll(rs);
                 }
             }
@@ -217,17 +224,17 @@ public class MonitorUtilsTest extends TestCase {
 
             @Override
             public long read(Traversal<BIDataValue> travel, ICubeFieldSource[] field, ICubeDataLoader loader) {
-                return 0;
+                return new Long(0).longValue();
             }
 
             @Override
             public long read4Part(Traversal<BIDataValue> travel, ICubeFieldSource[] field, ICubeDataLoader loader, int start, int end) {
-                return 0;
+                return new Long(0).longValue();
             }
 
             @Override
             public long read4Part(Traversal<BIDataValue> traversal, ICubeFieldSource[] cubeFieldSources, String sql, long rowCount) {
-                return 0;
+                return new Long(0).longValue();
             }
 
             @Override
@@ -298,6 +305,11 @@ public class MonitorUtilsTest extends TestCase {
             @Override
             public boolean hasAbsentFields() {
                 return false;
+            }
+
+            @Override
+            public String getModuleName() {
+                return BIBaseConstant.MODULE_NAME.CORE_MODULE;
             }
 
             @Override

@@ -31,8 +31,8 @@ public class NodeSingleDimensionGroup extends SingleDimensionGroup {
      * @param mergeIteratorCreator
      * @param loader
      */
-    protected NodeSingleDimensionGroup(BusinessTable[] metricTables, List<TargetAndKey>[] summaryLists, ICubeTableService[] tis, DimensionCalculator[] columns, ICubeValueEntryGetter[] getters, Object[] data, GroupValueIndex[] gvis, MergeIteratorCreator mergeIteratorCreator, ICubeDataLoader loader, List<Node> children) {
-        super(metricTables, summaryLists, tis, columns, getters, data, gvis, mergeIteratorCreator, loader, true);
+    protected NodeSingleDimensionGroup(BusinessTable[] metricTables, List<TargetAndKey>[] summaryLists, int sumLength, ICubeTableService[] tis, DimensionCalculator[] columns, ICubeValueEntryGetter[] getters, Object[] data, GroupValueIndex[] gvis, MergeIteratorCreator mergeIteratorCreator, ICubeDataLoader loader, List<Node> children) {
+        super(metricTables, summaryLists, sumLength, tis, columns, getters, data, gvis, mergeIteratorCreator, loader, true);
         this.children = children;
     }
 
@@ -61,7 +61,7 @@ public class NodeSingleDimensionGroup extends SingleDimensionGroup {
     }
 
 
-    public static ISingleDimensionGroup createDimensionGroup(BusinessTable[] metrics, List<TargetAndKey>[] summaryLists, ICubeTableService[] tis, DimensionCalculator[] columns, ICubeValueEntryGetter[] getters, Object[] data, GroupValueIndex[] gvis, MergeIteratorCreator mergeIteratorCreator, ICubeDataLoader loader, List<Node> metricMergeResultList) {
-        return new NodeSingleDimensionGroup(metrics, summaryLists, tis, columns, getters, data, gvis, mergeIteratorCreator, loader, metricMergeResultList);
+    public static ISingleDimensionGroup createDimensionGroup(BusinessTable[] metrics, List<TargetAndKey>[] summaryLists, int sumLength, ICubeTableService[] tis, DimensionCalculator[] columns, ICubeValueEntryGetter[] getters, Object[] data, GroupValueIndex[] gvis, MergeIteratorCreator mergeIteratorCreator, ICubeDataLoader loader, List<Node> metricMergeResultList) {
+        return new NodeSingleDimensionGroup(metrics, summaryLists, sumLength, tis, columns, getters, data, gvis, mergeIteratorCreator, loader, metricMergeResultList);
     }
 }

@@ -23,6 +23,6 @@ public class BIPeriodConfiguredCalculateTarget extends
 
     @Override
     public TargetCalculator createSummaryCalculator() {
-        return new PeriodConfigureCalculator(this, getCalTargetName(), getStart_group(), period_type);
+        return new PeriodConfigureCalculator(this, getCalTargetKey(), getStart_group(), period_type);
     }
 }

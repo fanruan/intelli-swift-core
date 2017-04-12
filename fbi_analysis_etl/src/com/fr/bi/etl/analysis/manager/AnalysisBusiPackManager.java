@@ -1,8 +1,13 @@
 package com.fr.bi.etl.analysis.manager;
 
+import com.finebi.cube.common.log.BILogger;
 import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.conf.BISystemDataManager;
-import com.finebi.cube.conf.pack.data.*;
+import com.finebi.cube.conf.pack.data.BIBusinessPackage;
+import com.finebi.cube.conf.pack.data.BIGroupTagName;
+import com.finebi.cube.conf.pack.data.BIPackageID;
+import com.finebi.cube.conf.pack.data.BIPackageName;
+import com.finebi.cube.conf.pack.data.IBusinessPackageGetterService;
 import com.finebi.cube.conf.pack.group.BIBusinessGroup;
 import com.finebi.cube.conf.singletable.SingleTableUpdateManager;
 import com.finebi.cube.conf.table.BIBusinessTable;
@@ -27,6 +32,8 @@ import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.exception.BITableAbsentException;
 import com.fr.bi.stable.utils.program.BIStringUtils;
 import com.fr.bi.web.service.action.BISaveAnalysisETLTableAction;
+import com.fr.fs.base.entity.User;
+import com.fr.fs.control.UserControl;
 import com.fr.general.ComparatorUtils;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONException;
@@ -34,7 +41,13 @@ import com.fr.json.JSONObject;
 import com.fr.stable.StringUtils;
 
 import java.io.File;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * 先注释掉普通用户看管理员的部分
@@ -44,6 +57,7 @@ public class AnalysisBusiPackManager extends BISystemDataManager<SingleUserAnaly
 
     private static final String TAG = "AnalysisBusiPackManager";
     private static final long serialVersionUID = -5566625380376195712L;
+    private static final BILogger LOGGER = BILoggerFactory.getLogger(AnalysisBusiPackManager.class);
 
     public SingleUserAnalysisBusiPackManager getUserAnalysisBusiPackManager(long userId) {
         try {
@@ -72,7 +86,18 @@ public class AnalysisBusiPackManager extends BISystemDataManager<SingleUserAnaly
     @Override
     public Set<IBusinessPackageGetterService> getAllPackages(long userId) {
         Set<IBusinessPackageGetterService> result = new HashSet<IBusinessPackageGetterService>();
-        for (BIBusinessPackage biBusinessPackage : getUserAnalysisBusiPackManager(userId).getAllPacks()) {
+        List<User> allUserList = new ArrayList<User>();
+        try {
+            allUserList = UserControl.getInstance().findAllUser();
+        } catch (Exception e) {
+            LOGGER.error("Get all users failure " + e.getMessage(), e);
+        }
+        for (User user : allUserList) {
+            for (BIBusinessPackage biBusinessPackage : getUserAnalysisBusiPackManager(user.getId()).getAllPacks()) {
+                result.add(biBusinessPackage);
+            }
+        }
+        for (BIBusinessPackage biBusinessPackage : getUserAnalysisBusiPackManager(UserControl.getInstance().getSuperManagerID()).getAllPacks()) {
             result.add(biBusinessPackage);
         }
 //        if (userId != UserControl.getInstance().getSuperManagerID()){
@@ -81,6 +106,11 @@ public class AnalysisBusiPackManager extends BISystemDataManager<SingleUserAnaly
 //            }
 //        }
         return result;
+    }
+
+    @Override
+    public Set<IBusinessPackageGetterService> getAllAnalysisPackages(long userId) {
+        return getAllPackages(userId);
     }
 
 
@@ -350,11 +380,32 @@ public class AnalysisBusiPackManager extends BISystemDataManager<SingleUserAnaly
         CubeTableSource oriSource = null;
         if (StringUtils.isEmpty(newId)) {
             //编辑||新建
-            editOrCreate(userId, tableId, tableName, describe, tableJSON, table, source, oriSource);
+            table = new AnalysisBusiTable(tableId, userId);
+            table.setDescribe(describe);
+            JSONObject jo = new JSONObject(tableJSON);
+            JSONArray items = jo.getJSONArray(Constants.ITEMS);
+            BIAnalysisETLManagerCenter.getAliasManagerProvider().setAliasName(tableId, tableName, userId);
+            source = AnalysisETLSourceFactory.createTableSource(items, userId);
+            table.setSource(source);
+            if (BIAnalysisETLManagerCenter.getDataSourceManager().containBusinessTable(table.getID())) {
+                oriSource = BIAnalysisETLManagerCenter.getDataSourceManager().getTableSource(table);
+            }
         } else {
             //复制
-            copy(userId, tableId, newId, tableName, table, source, oriSource);
+            table = new AnalysisBusiTable(newId, userId);
+            BIAnalysisETLManagerCenter.getAliasManagerProvider().setAliasName(newId, tableName, userId);
+            AnalysisBusiTable oldTable = BIAnalysisETLManagerCenter.getBusiPackManager().getTable(tableId, userId);
+            source = oldTable.getTableSource();
+            oriSource = oldTable.getTableSource();
+            table.setSource(source);
+            table.setDescribe(oldTable.getDescribe());
         }
+        solveTable(table, source, oriSource, userId);
+        JSONObject result = generateResultJson(userId, table, tableName);
+        return result;
+    }
+
+    private void solveTable(AnalysisBusiTable table, CubeTableSource source, CubeTableSource oriSource, final long userId) {
         try {
             BIAnalysisETLManagerCenter.getDataSourceManager().addTableSource(table, table.getTableSource());
             BILoggerFactory.getLogger(BISaveAnalysisETLTableAction.class).info("*********Add AnalysisETL table*******");
@@ -372,7 +423,6 @@ public class AnalysisBusiPackManager extends BISystemDataManager<SingleUserAnaly
         } catch (Exception e) {
             BILoggerFactory.getLogger().error(BIStringUtils.append("analysisSource update failed", source.getSourceID(), e.getMessage()), e);
         }
-
         BIUserETLBusinessPackagePersistThreadHolder.getInstance().getBiBusinessPackagePersistThread().triggerWork(new BIBusinessPackagePersistThread.Action() {
             @Override
             public void work() {
@@ -381,33 +431,6 @@ public class AnalysisBusiPackManager extends BISystemDataManager<SingleUserAnaly
                 BIAnalysisETLManagerCenter.getBusiPackManager().persistData(userId);
             }
         });
-        JSONObject result = generateResultJson(userId, table, tableName);
-        return result;
-    }
-
-    private void editOrCreate(long userId, String tableId, String tableName, String describe, String tableJSON,
-                              AnalysisBusiTable table, CubeTableSource source, CubeTableSource oriSource) throws Exception {
-        table = new AnalysisBusiTable(tableId, userId);
-        table.setDescribe(describe);
-        JSONObject jo = new JSONObject(tableJSON);
-        JSONArray items = jo.getJSONArray(Constants.ITEMS);
-        BIAnalysisETLManagerCenter.getAliasManagerProvider().setAliasName(tableId, tableName, userId);
-        source = AnalysisETLSourceFactory.createTableSource(items, userId);
-        table.setSource(source);
-        if (BIAnalysisETLManagerCenter.getDataSourceManager().containBusinessTable(table.getID())) {
-            oriSource = BIAnalysisETLManagerCenter.getDataSourceManager().getTableSource(table);
-        }
-    }
-
-    private void copy(long userId, String tableId, String newId, String tableName,
-                      AnalysisBusiTable table, CubeTableSource source, CubeTableSource oriSource) throws Exception {
-        table = new AnalysisBusiTable(newId, userId);
-        BIAnalysisETLManagerCenter.getAliasManagerProvider().setAliasName(newId, tableName, userId);
-        AnalysisBusiTable oldTable = BIAnalysisETLManagerCenter.getBusiPackManager().getTable(tableId, userId);
-        source = oldTable.getTableSource();
-        oriSource = oldTable.getTableSource();
-        table.setSource(source);
-        table.setDescribe(oldTable.getDescribe());
     }
 
     private JSONObject generateResultJson(long userId, AnalysisBusiTable table, String tableName) throws Exception {

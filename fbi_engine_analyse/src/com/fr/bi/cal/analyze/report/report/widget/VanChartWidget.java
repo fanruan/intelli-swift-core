@@ -98,6 +98,12 @@ public abstract class VanChartWidget extends TableWidget {
     protected double numberScale(String dimensionID){
 
         int level = this.numberLevel(dimensionID);
+
+        return this.numberScaleByLevel(level);
+    }
+
+    protected double numberScaleByLevel(int level){
+
         double scale = 1.0;
 
         if(level == BIReportConstant.TARGET_STYLE.NUM_LEVEL.TEN_THOUSAND){
@@ -127,7 +133,7 @@ public abstract class VanChartWidget extends TableWidget {
 
         }else if(level == BIReportConstant.TARGET_STYLE.NUM_LEVEL.YI){
 
-            unit = Inter.getLocText("BI-Basci_Yi");
+            unit = Inter.getLocText("BI-Basic_Yi");
 
         }else if(level == BIReportConstant.TARGET_STYLE.NUM_LEVEL.PERCENT){
 
@@ -139,6 +145,10 @@ public abstract class VanChartWidget extends TableWidget {
     }
 
     protected int numberLevel(String dimensionID){
+        return this.numberLevelFromSettings(dimensionID);
+    }
+
+    protected int numberLevelFromSettings(String dimensionID){
         try {
             BISummaryTarget  target = this.getBITargetByID(dimensionID);
 
@@ -406,11 +416,11 @@ public abstract class VanChartWidget extends TableWidget {
     }
 
     protected String tooltipValueFormat(BISummaryTarget dimension){
-        return this.valueFormat(dimension, true);
+        return this.valueFormatFunc(dimension, true);
     }
 
     protected String dataLabelValueFormat(BISummaryTarget dimension){
-        return this.valueFormat(dimension, true);
+        return this.valueFormatFunc(dimension, true);
     }
 
     protected String decimalFormat(BISummaryTarget dimension, boolean hasSeparator){
@@ -435,8 +445,14 @@ public abstract class VanChartWidget extends TableWidget {
     }
 
     //值标签和小数位数，千分富符，数量级和单位构成的后缀
-    protected String valueFormat(BISummaryTarget dimension, boolean isTooltip) {
+    protected String valueFormatFunc(BISummaryTarget dimension, boolean isTooltip) {
 
+        String format = this.valueFormat(dimension, isTooltip);
+
+        return String.format("function(){return BI.contentFormat(arguments[0], \"%s\")}", format);
+    }
+
+    protected String valueFormat(BISummaryTarget dimension, boolean isTooltip){
         JSONObject settings = dimension.getChartSetting().getSettings();
 
         boolean hasSeparator = settings.optBoolean("numSeparators", true);
@@ -451,7 +467,15 @@ public abstract class VanChartWidget extends TableWidget {
             format += (scaleUnit + unit);
         }
 
-        return String.format("function(){return FR.contentFormat(arguments[0], \"%s\")}", format);
+        return format;
+    }
+
+    protected String intervalLegendFormatter(String format){
+        return String.format("function(){return BI.contentFormat(arguments[0].from, \"%s\") + \"-\" + BI.contentFormat(arguments[0].to, \"%s\")}", format, format);
+    }
+
+    protected String gradualLegendFormatter(String format){
+        return String.format("function(){return BI.contentFormat(arguments[0], \"%s\")}", format);
     }
 
     protected void formatSeriesTooltipFormat(JSONObject options) throws Exception{
@@ -486,7 +510,7 @@ public abstract class VanChartWidget extends TableWidget {
                 JSONObject ser = series.getJSONObject(i);
                 String dimensionID = ser.optString("dimensionID");
 
-                ser.put("dataLabels", new JSONObject(dataLabels.toString())
+                ser.put("dataLabels", new JSONObject(dataLabels.toString()).optJSONObject("formatter")
                         .put("valueFormat", this.dataLabelValueFormat(this.getBITargetByID(dimensionID))));
             }
         }

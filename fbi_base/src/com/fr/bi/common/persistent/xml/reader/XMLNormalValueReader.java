@@ -1,10 +1,10 @@
 package com.fr.bi.common.persistent.xml.reader;
 
+import com.finebi.cube.common.log.BILogger;
 import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.common.persistent.BIBeanHistoryManager;
 import com.fr.bi.common.persistent.xml.BIIgnoreField;
 import com.fr.bi.common.persistent.xml.BIXMLTag;
-import com.fr.bi.stable.utils.program.BINonValueUtils;
 import com.fr.bi.stable.utils.program.BITypeUtils;
 import com.fr.general.ComparatorUtils;
 import com.fr.stable.xml.XMLableReader;
@@ -17,6 +17,7 @@ import java.util.Map;
  */
 public class XMLNormalValueReader extends XMLValueReader {
     public static boolean IS_IGNORED_FIELD_USABLE = true;
+    private static final BILogger LOGGER = BILoggerFactory.getLogger(XMLNormalValueReader.class);
 
     public XMLNormalValueReader(BIBeanXMLReaderWrapper beanWrapper, Map<String, BIBeanXMLReaderWrapper> generatedBean) {
         super(beanWrapper, generatedBean);
@@ -33,12 +34,12 @@ public class XMLNormalValueReader extends XMLValueReader {
             String uuid = xmLableReader.getAttrAsString(BIXMLTag.APPEND_INFO, "null");
             BIBeanXMLReaderWrapper wrapper;
 
-            Object fieldValue;
+            Object fieldValue = null;
             try {
                 fieldValue = beanWrapper.getOriginalValue(fieldName);
             } catch (IllegalArgumentException e) {
-                throw BINonValueUtils.beyondControl(e.getMessage() + " \ncurrent class:" + beanWrapper.getBeanClass() + ",and the field:" + fieldName + " is absent", e);
-//                BILoggerFactory.getLogger().debug(e.getMessage() + " \ncurrent class:" + beanWrapper.getBeanClass() + ",and the field:" + fieldName + " is absent", e);
+                LOGGER.warn(" \ncurrent class:" + beanWrapper.getBeanClass() + ",and the field:" + fieldName + " is absent");
+//                throw BINonValueUtils.beyondControl(e.getMessage() + " \ncurrent class:" + beanWrapper.getBeanClass() + ",and the field:" + fieldName + " is absent", e);
             }
             if (useFieldDefaultValue(fieldValue)) {
                 /**

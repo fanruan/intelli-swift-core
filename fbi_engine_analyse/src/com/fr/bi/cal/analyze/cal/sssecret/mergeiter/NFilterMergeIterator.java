@@ -12,8 +12,8 @@ public class NFilterMergeIterator extends MergeIterator {
     private int n = 0;
     private int count = 0;
 
-    public NFilterMergeIterator(DimensionIterator[] iterators, GroupValueIndex[] gvis, Comparator c, int n) {
-        super(iterators, gvis, c);
+    public NFilterMergeIterator(DimensionIterator[] iterators, GroupValueIndex[] gvis, Comparator c, int sumLength, int n) {
+        super(iterators, gvis, c, sumLength);
         this.n = n;
     }
 

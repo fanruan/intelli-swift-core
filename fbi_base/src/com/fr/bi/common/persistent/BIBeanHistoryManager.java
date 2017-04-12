@@ -28,13 +28,15 @@ public class BIBeanHistoryManager {
     private static Map<String, List<String>> getClassMapping(String beanFilePath) {
         Map<String, List<String>> classMapping = new HashMap<String, List<String>>();
 
-        Document document = readFile(beanFilePath);
-        NodeList beanList = document.getElementsByTagName("bean");
-        for (int i = 0; i < beanList.getLength(); i++) {
-            Node bean = beanList.item(i);
+        if(beanFilePath !=null && new File(beanFilePath).exists()) {
+            Document document = readFile(beanFilePath);
+            NodeList beanList = document.getElementsByTagName("bean");
+            for (int i = 0; i < beanList.getLength(); i++) {
+                Node bean = beanList.item(i);
 
-            Node historyClasses = ((DeferredElementImpl) bean).getElementsByTagName("historyClasses").item(0);
-            classMapping.put(((DeferredElementImpl) bean).getAttribute("currentClass"), parseHistoryClass(historyClasses));
+                Node historyClasses = ((DeferredElementImpl) bean).getElementsByTagName("historyClasses").item(0);
+                classMapping.put(((DeferredElementImpl) bean).getAttribute("currentClass"), parseHistoryClass(historyClasses));
+            }
         }
         return classMapping;
     }
