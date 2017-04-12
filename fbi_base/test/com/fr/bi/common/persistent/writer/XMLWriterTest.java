@@ -2,6 +2,7 @@ package com.fr.bi.common.persistent.writer;
 
 import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.common.persistent.BIBeanHistoryManager;
+import com.fr.bi.common.persistent.BeanHistoryXMLReader;
 import com.fr.bi.common.persistent.xml.reader.BIBeanXMLReaderWrapper;
 import com.fr.bi.common.persistent.xml.reader.XMLNormalValueReader;
 import com.fr.bi.common.persistent.xml.reader.XMLPersistentReader;
@@ -26,6 +27,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Connery on 2015/12/31.
@@ -172,7 +175,9 @@ public class XMLWriterTest extends TestCase {
 
     public static Object get(Object object, String name) {
         try {
-            BIBeanHistoryManager.getInstance().initBeanHistoryManager(Thread.currentThread().getContextClassLoader().getResource("").getPath() +"bean_history_class_test.xml");
+            BeanHistoryXMLReader beanHistoryXMLReader = new BeanHistoryXMLReader();
+            Map<String, List<String>> beanMapping = beanHistoryXMLReader.loadBeanHistoryMap(Thread.currentThread().getContextClassLoader().getResource("").getPath() +"bean_history_class_test.xml");
+            BIBeanHistoryManager.getInstance().registerBeanHistoryManager(beanMapping);
             File var3 = new File("./temp/" + name + ".xml");
             StableUtils.makesureFileExist(var3);
             XMLPersistentReader reader = new XMLPersistentReader(new HashMap<String, BIBeanXMLReaderWrapper>(), new BIBeanXMLReaderWrapper(object));

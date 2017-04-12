@@ -4,6 +4,7 @@ import com.finebi.cube.common.log.BILogger;
 import com.finebi.cube.common.log.BILoggerFactory;
 
 import java.io.File;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -11,7 +12,7 @@ import java.util.Map;
  * Created by neil on 17-3-20.
  */
 public class BIBeanHistoryManager {
-    private Map<String, List<String>> beanClassMapping;
+    private Map<String, List<String>> beanClassMapping = new HashMap<String, List<String>>();
     private static final String DEFAULT_FILE_NAME = "bean_history_class.xml";
     private static final BILogger LOGGER = BILoggerFactory.getLogger(BIBeanHistoryManager.class);
 
@@ -20,7 +21,9 @@ public class BIBeanHistoryManager {
         if (!new File(filePath).exists()) {
             LOGGER.error("Bean History xml File not found in path " + filePath);
         }
-        initBeanHistoryManager(DEFAULT_FILE_NAME);
+        BeanHistoryXMLReader beanHistoryXMLReader = new BeanHistoryXMLReader();
+        Map<String, List<String>> beanMapping = beanHistoryXMLReader.loadBeanHistoryMap(filePath);
+        registerBeanHistoryManager(beanMapping);
     }
 
     private static class BIBeanHistoryManagerSingleton {
@@ -31,9 +34,8 @@ public class BIBeanHistoryManager {
         return BIBeanHistoryManagerSingleton.instance;
     }
 
-    public void initBeanHistoryManager(String beanFilePath) {
-        BeanHistoryXMLReader beanHistoryXMLReader = new BeanHistoryXMLReader();
-        this.beanClassMapping = beanHistoryXMLReader.loadBeanHistoryMap(beanFilePath);
+    public void registerBeanHistoryManager(Map<String, List<String>> beanClassMapping) {
+        this.beanClassMapping.putAll(beanClassMapping);
     }
 
     public String getCurrentClassName(String oldClass) {
