@@ -285,7 +285,7 @@ BI.AnalysisETLOperatorSelectData = BI.inherit(BI.Widget, {
             showContent: false
         }));
         this._refreshState();
-        this.fireEvent(BI.TopPointerSavePane.EVENT_FIELD_VALID, this.model.getValue(ETLCst.FIELDS))
+        this.fireEvent(BI.TopPointerSavePane.EVENT_FIELD_VALID, this.model.getCopyValue(ETLCst.FIELDS))
     },
 
     //todo 外界调用populate居然还会传options.func进来以拓展自身的controller，现在放widget里，之后删掉

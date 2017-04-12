@@ -17,7 +17,7 @@ BI.AnalysisETLOperatorSelectDataModel = BI.inherit(BI.OB, {
         this.options[key] = value;
     },
 
-    getValue: function(key){
+    getCopyValue: function(key){
         return BI.deepClone(this.options[key]);
     },
 
@@ -78,11 +78,11 @@ BI.AnalysisETLOperatorSelectDataModel = BI.inherit(BI.OB, {
     },
 
     cancel: function () {
-        this.set(BI.AnalysisETLOperatorSelectDataModel.TEMP_KEY, this.getValue(BI.AnalysisETLOperatorSelectDataModel.KEY))
+        this.set(BI.AnalysisETLOperatorSelectDataModel.TEMP_KEY, this.getCopyValue(BI.AnalysisETLOperatorSelectDataModel.KEY))
     },
 
     getTempFields: function () {
-        return this.getValue(BI.AnalysisETLOperatorSelectDataModel.TEMP_KEY);
+        return this.getCopyValue(BI.AnalysisETLOperatorSelectDataModel.TEMP_KEY);
     },
 
     createDistinctName: function (name) {

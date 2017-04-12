@@ -1,7 +1,7 @@
 /**
- * Created by windy on 2017/4/10.
+ * Created by windy on 2017/4/11.
  */
-BI.AnalysisETLOperatorDatePaneModel = BI.inherit(BI.OB, {
+BI.AnalysisETLOperatorSelectNoneDataPaneModel = BI.inherit(BI.OB, {
 
     //这get, set, getValue适配原有的结构三个方法，会删
     get: function(key){
@@ -12,7 +12,7 @@ BI.AnalysisETLOperatorDatePaneModel = BI.inherit(BI.OB, {
         this.options[key] = value;
     },
 
-    getCopyValue: function(key){
+    getValue: function(key){
         return BI.deepClone(this.options[key]);
     },
 

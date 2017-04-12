@@ -11,7 +11,6 @@ BI.AnalysisETLOperatorAddColumnAbstractDateConvertPane = BI.inherit(BI.Widget, {
 
     render: function(){
         var self = this;
-        this.model =
         this.combo = null;
         this.model = new BI.AnalysisETLOperatorDatePaneModel({});
         return {

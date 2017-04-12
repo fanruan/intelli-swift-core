@@ -12,7 +12,7 @@ BI.AnalysisETLOperatorFilterPaneModel = BI.inherit(BI.OB, {
         this.options[key] = value;
     },
 
-    getValue: function(key){
+    getCopyValue: function(key){
         return BI.deepClone(this.options[key]);
     },
 

@@ -24,7 +24,7 @@ BI.AnalysisETLOperatorAddColumnAllFieldsModel = BI.inherit(BI.OB, {
         delete this.options[key];
     },
 
-    getValue: function(key){
+    getCopyValue: function(key){
         return BI.deepClone(this.options[key]);
     },
 

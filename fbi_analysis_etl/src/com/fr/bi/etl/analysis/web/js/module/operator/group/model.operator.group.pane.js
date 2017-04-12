@@ -12,10 +12,6 @@ BI.AnalysisETLOperatorGroupPaneModel = BI.inherit(BI.OB, {
         this.options[key] = value;
     },
 
-    getValue: function(key){
-        return BI.deepClone(this.options[key]);
-    },
-
 
     _init: function () {
         BI.AnalysisETLOperatorGroupPaneModel.superclass._init.apply(this, arguments);

@@ -296,7 +296,7 @@ BI.AnalysisETLOperatorAddColumnPane = BI.inherit(BI.Widget, {
         var column = this.title.update();
         var fields = {}
         fields[ETLCst.FIELDS] = parent[ETLCst.FIELDS];
-        fields[ETLCst.PARENTS] = this.model.getValue(ETLCst.PARENTS);
+        fields[ETLCst.PARENTS] = this.model.getCopyValue(ETLCst.PARENTS);
         this.currentEditPane.populate(BI.extend(fields, value), {
             fieldType : column.fieldType
         })

@@ -199,7 +199,7 @@ BI.AnalysisETLOperatorAddColumnPeriodPane  = BI.inherit(BI.Widget, {
     },
     _refreshGroup : function () {
         var items = [];
-        var group = this.model.getValue('group')||[];
+        var group = this.model.getCopyValue('group')||[];
         var selectedFields = this._getSelectedFields();
         BI.each(selectedFields, function (i ,item) {
             group.remove(item);

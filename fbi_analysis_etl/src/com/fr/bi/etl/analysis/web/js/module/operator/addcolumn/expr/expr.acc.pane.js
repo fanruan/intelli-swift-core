@@ -226,7 +226,7 @@ BI.AnalysisETLOperatorAddColumnAccPane  = BI.inherit(BI.Widget, {
     _checkGroup : function () {
         if (this._isGroupWillShow()){
             var items = [];
-            var group = this.model.getValue('group')||[];
+            var group = this.model.getCopyValue('group')||[];
             var field = this.model.get('field');
             group.remove(field);
             BI.each(group, function (i, item) {
