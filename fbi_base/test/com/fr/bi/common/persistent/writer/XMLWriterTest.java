@@ -1,6 +1,7 @@
 package com.fr.bi.common.persistent.writer;
 
 import com.finebi.cube.common.log.BILoggerFactory;
+import com.fr.bi.common.persistent.BIBeanHistoryManager;
 import com.fr.bi.common.persistent.xml.reader.BIBeanXMLReaderWrapper;
 import com.fr.bi.common.persistent.xml.reader.XMLNormalValueReader;
 import com.fr.bi.common.persistent.xml.reader.XMLPersistentReader;
@@ -171,9 +172,10 @@ public class XMLWriterTest extends TestCase {
 
     public static Object get(Object object, String name) {
         try {
+            BIBeanHistoryManager.getInstance().initBeanHistoryManager(Thread.currentThread().getContextClassLoader().getResource("").getPath() +"bean_history_class_test.xml");
             File var3 = new File("./temp/" + name + ".xml");
             StableUtils.makesureFileExist(var3);
-            XMLPersistentReader reader = new XMLPersistentReader(new HashMap<String, BIBeanXMLReaderWrapper>(), new BIBeanXMLReaderWrapper(object, Thread.currentThread().getContextClassLoader().getResource("").getPath() + "bean_history_class_test.xml"));
+            XMLPersistentReader reader = new XMLPersistentReader(new HashMap<String, BIBeanXMLReaderWrapper>(), new BIBeanXMLReaderWrapper(object));
             XMLTools.readInputStreamXML(reader, new FileInputStream(var3));
             return object;
         } catch (Exception e) {
