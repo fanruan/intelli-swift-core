@@ -1,6 +1,8 @@
 package com.fr.bi.cal.analyze.report.report.widget.table;
 
 import com.fr.bi.base.annotation.BICoreField;
+import com.fr.bi.cal.analyze.report.report.widget.styles.BIStyleReportSetting;
+import com.fr.bi.cal.analyze.report.report.widget.styles.BIStyleSetting;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.json.JSONObject;
 
@@ -25,6 +27,7 @@ public class BITableReportSetting extends BIAbstractTableSetting {
     private int tableStyle;
     private ArrayList<ArrayList<String>> complex_x_dimension;
     private ArrayList<ArrayList<String>> complex_y_dimension;
+    private BIStyleSetting styleSetting;
 
     /**
      * 组
@@ -72,9 +75,13 @@ public class BITableReportSetting extends BIAbstractTableSetting {
                 tableStyle = jo1.optInt("tableStyle");
             }
             if (jo1.has("showNumber")) {
-                number = jo1.optBoolean("showNumber", false) ? 1 : 0 ;
+                number = jo1.optBoolean("showNumber", false) ? 1 : 0;
             }
         }
+        JSONObject settings = jo.has("settings") ? jo.getJSONObject("settings") : new JSONObject();
+        styleSetting = new BIStyleReportSetting();
+        styleSetting.parseJSON(settings);
+
     }
 
     public int getTableStyle() {
@@ -115,7 +122,8 @@ public class BITableReportSetting extends BIAbstractTableSetting {
         return column;
     }
 
-    @Override public boolean useRealData() {
+    @Override
+    public boolean useRealData() {
         return true;
     }
 
@@ -164,5 +172,9 @@ public class BITableReportSetting extends BIAbstractTableSetting {
             }
         });
         return groups_of_dimension_list;
+    }
+
+    public BIStyleSetting getStyleSetting() {
+        return styleSetting;
     }
 }

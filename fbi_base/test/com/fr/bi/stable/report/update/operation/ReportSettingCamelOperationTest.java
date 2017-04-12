@@ -20,8 +20,8 @@ public class ReportSettingCamelOperationTest extends TestCase {
 
     public void testConvert() throws Exception {
         convertToCamel("table_ori_id", "tableOriId");
-        convertToCamel("_table_id", "tableId");
-
+        convertToCamel("_table_id", "_tableId");
+        convertToCamel("_src", "_src");
     }
 
     public void testRecursionListUpdate() throws Exception {

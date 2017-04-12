@@ -21,7 +21,11 @@ public class BITableItemStyle implements ITableStyle {
 
     @Override
     public JSONObject createJSON() throws Exception {
-        return new JSONObject();
+        JSONObject jo = new JSONObject();
+        jo.put("background", background);
+        jo.put("color", color);
+        jo.put("fontWeight", fontWeight);
+        return jo;
     }
 
     @Override

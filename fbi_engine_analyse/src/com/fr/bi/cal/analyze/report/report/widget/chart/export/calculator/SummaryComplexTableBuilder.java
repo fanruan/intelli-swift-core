@@ -6,6 +6,8 @@ import com.fr.bi.cal.analyze.report.report.widget.chart.export.basic.BIBasicTabl
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.basic.BIExcelTableData;
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.utils.BITableExportDataHelper;
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.utils.SummaryTableStyleHelper;
+import com.fr.bi.cal.analyze.report.report.widget.styles.BIStyleSetting;
+import com.fr.bi.conf.report.style.ChartSetting;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.utils.program.BIJsonUtils;
 import com.fr.json.JSONArray;
@@ -22,8 +24,8 @@ public class SummaryComplexTableBuilder extends TableAbstractDataBuilder {
     private String outer_sum = "__outer_sum_";
     boolean showRowTotal = true;
 
-    public SummaryComplexTableBuilder(Map<Integer, List<JSONObject>> dimAndTar, JSONObject dataJSON) throws Exception {
-        super(dimAndTar, dataJSON);
+    public SummaryComplexTableBuilder(Map<Integer, List<JSONObject>> dimAndTar, List<ChartSetting> chartSettings, JSONObject dataJSON, BIStyleSetting styleSettings) throws Exception {
+        super(dimAndTar, dataJSON, styleSettings);
     }
 
     @Override
@@ -82,7 +84,7 @@ public class SummaryComplexTableBuilder extends TableAbstractDataBuilder {
             createTableItems();
             return;
         }
-        List<ITableItem> tempItems=new ArrayList<ITableItem>();
+        List<ITableItem> tempItems = new ArrayList<ITableItem>();
         for (int i = 0; i < dataJSON.length(); i++) {
             JSONObject rowTable = dataJSON.getJSONObject(String.valueOf(i));
             Map<Integer, List<JSONObject>> dimOb = getDimsByDataPos(i, 0);
@@ -91,7 +93,7 @@ public class SummaryComplexTableBuilder extends TableAbstractDataBuilder {
             for (JSONObject jsonObject : list) {
                 dimIds.add(jsonObject.getString("dId"));
             }
-            BIBasicTableItem item=new BIBasicTableItem();
+            BIBasicTableItem item = new BIBasicTableItem();
             item.setChildren(createCommonTableItems(rowTable.getString("c"), 0, null, dimIds, null));
             //汇总
             if (showRowTotal && rowTable.has("s")) {
@@ -194,7 +196,7 @@ public class SummaryComplexTableBuilder extends TableAbstractDataBuilder {
      */
     private void createComplexTableItems() throws Exception {
 //        JSONArray tempItems = new JSONArray();
-        List<ITableItem> tempItems=new ArrayList<ITableItem>();
+        List<ITableItem> tempItems = new ArrayList<ITableItem>();
         JSONArray tempCrossItems = new JSONArray();
         // 如果行表头和列表头都只有一个region构造一个二维的数组
 
@@ -231,9 +233,9 @@ public class SummaryComplexTableBuilder extends TableAbstractDataBuilder {
     // 要将所有的最外层的values处理成children
     private void parseColTableItems(List<ITableItem> tempItems) throws JSONException {
 //        JSONArray children = new JSONArray();
-        List<ITableItem> children=new ArrayList<ITableItem>();
+        List<ITableItem> children = new ArrayList<ITableItem>();
 //        for (int i = 0; i < tempItems.length(); i++) {
-            for (int i = 0; i < tempItems.size(); i++) {
+        for (int i = 0; i < tempItems.size(); i++) {
 //            JSONObject tItem = tempItems.getJSONObject(i);
 //            children.put(tItem.getJSONArray("children"));
             children.add(tempItems.get(i));
@@ -249,8 +251,8 @@ public class SummaryComplexTableBuilder extends TableAbstractDataBuilder {
 //                children.put(item);
                 children.add(item);
             }
-            items=new ArrayList<ITableItem>();
-            BIBasicTableItem tempItem=new BIBasicTableItem();
+            items = new ArrayList<ITableItem>();
+            BIBasicTableItem tempItem = new BIBasicTableItem();
             tempItem.setChildren(children);
             items.add(tempItem);
 //            items = new JSONArray().put(new JSONObject().put("children", children));
@@ -322,7 +324,7 @@ public class SummaryComplexTableBuilder extends TableAbstractDataBuilder {
     }
 
     private JSONObject createSingleCrossTableItems(JSONObject tableData, Map<Integer, List<JSONObject>> dimsByDataPos) throws Exception {
-        SummaryCrossTableDataBuilder builder = new SummaryCrossTableDataBuilder(null, tableData);
+        SummaryCrossTableDataBuilder builder = new SummaryCrossTableDataBuilder(null, tableData, styleSetting);
         builder.initAttrs();
         builder.createItems();
         BIExcelTableData data = builder.createTableData();
