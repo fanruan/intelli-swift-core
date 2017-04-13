@@ -1,41 +1,29 @@
-BI.AnalysisETLOperatorSelectDataModel = BI.inherit(BI.MVCModel, {
+/**
+ * Created by windy on 2017/4/6.
+ */
+BI.AnalysisETLOperatorSelectDataModel = BI.inherit(BI.OB, {
 
 
     _init: function () {
         BI.AnalysisETLOperatorSelectDataModel.superclass._init.apply(this, arguments);
-        //BI.AnalysisETLOperatorSelectDataModel.KEY后台已存这里暂时注释不需要
-        // var operator = this.get("operator");
-        // var fields = [];
-        // if(BI.isNotNull(operator)) {
-        //     var dimensions = operator["dimensions"];
-        //     var self = this;
-        //     BI.each(operator["view"][BICst.REGION.DIMENSION1], function (idx, item) {
-        //         var dim = dimensions[item];
-        //         var fieldType = dim["type"];
-        //         var group = dim["group"]
-        //         if(fieldType !== BICst.TARGET_TYPE.DATE) {
-        //             group = null;
-        //         }
-        //         fieldType = self._getTypeFromTargetType(fieldType, group)
-        //         fields.push({
-        //             "fieldName":dim["name"],
-        //             "fieldType" : fieldType,
-        //             "id": dim["_src"]["fieldId"],
-        //             "uid" : item,
-        //             "group" : BI.isNull(group) ? null : group["type"]
-        //         })
-        //     })
-        // }
-        var fields = this.get(BI.AnalysisETLOperatorSelectDataModel.KEY) || []
-        this.set(BI.AnalysisETLOperatorSelectDataModel.KEY, fields);
-        //this.set("operator", this._buildDetailTableModel(BI.AnalysisETLOperatorSelectDataModel.KEY));
-        this.set(BI.AnalysisETLOperatorSelectDataModel.TEMP_KEY, fields);
-        this.save();
+    },
+
+    //这get, set, getValue三个方法会删
+    get: function(key){
+        return this.options[key];
+    },
+
+    set: function(key, value){
+        this.options[key] = value;
+    },
+
+    getCopyValue: function(key){
+        return BI.deepClone(this.options[key]);
     },
 
 
     save: function () {
-        this.set(BI.AnalysisETLOperatorSelectDataModel.KEY, this.getTempFields())
+        this.set(BI.AnalysisETLOperatorSelectDataModel.KEY, this.getTempFields());
     },
 
     addField: function (f) {
@@ -86,15 +74,15 @@ BI.AnalysisETLOperatorSelectDataModel = BI.inherit(BI.MVCModel, {
     _addField: function (field) {
         var tempFields = this.get(BI.AnalysisETLOperatorSelectDataModel.TEMP_KEY);
         tempFields.push(field);
-        this.set(BI.AnalysisETLOperatorSelectDataModel.TEMP_KEY, tempFields)
+        this.set(BI.AnalysisETLOperatorSelectDataModel.TEMP_KEY, tempFields);
     },
 
     cancel: function () {
-        this.set(BI.AnalysisETLOperatorSelectDataModel.TEMP_KEY, this.getValue(BI.AnalysisETLOperatorSelectDataModel.KEY))
+        this.set(BI.AnalysisETLOperatorSelectDataModel.TEMP_KEY, this.getCopyValue(BI.AnalysisETLOperatorSelectDataModel.KEY))
     },
 
     getTempFields: function () {
-        return this.getValue(BI.AnalysisETLOperatorSelectDataModel.TEMP_KEY);
+        return this.getCopyValue(BI.AnalysisETLOperatorSelectDataModel.TEMP_KEY);
     },
 
     createDistinctName: function (name) {
@@ -238,7 +226,7 @@ BI.AnalysisETLOperatorSelectDataModel = BI.inherit(BI.MVCModel, {
     },
 
     update4Preview: function () {
-        var v = BI.extend(BI.AnalysisETLOperatorSelectDataModel.superclass.update.apply(this, arguments), {
+        var v = BI.extend({}, this.options, {
             etlType: ETLCst.ETL_TYPE.SELECT_DATA
         })
         v[BI.AnalysisETLOperatorSelectDataModel.KEY] = v[BI.AnalysisETLOperatorSelectDataModel.TEMP_KEY];
@@ -248,12 +236,44 @@ BI.AnalysisETLOperatorSelectDataModel = BI.inherit(BI.MVCModel, {
     },
 
     update: function () {
-        var v = BI.extend(BI.AnalysisETLOperatorSelectDataModel.superclass.update.apply(this, arguments), {
+        var v = BI.extend({}, this.options, {
             etlType: ETLCst.ETL_TYPE.SELECT_DATA
         })
         v["operator"] = this._buildDetailTableModel(BI.AnalysisETLOperatorSelectDataModel.KEY);
         delete v[BI.AnalysisETLOperatorSelectDataModel.TEMP_KEY]
         return v;
+    },
+
+    populate: function(model){
+        this.options = model || {};
+        //BI.AnalysisETLOperatorSelectDataModel.KEY后台已存这里暂时注释不需要
+        // var operator = this.get("operator");
+        // var fields = [];
+        // if(BI.isNotNull(operator)) {
+        //     var dimensions = operator["dimensions"];
+        //     var self = this;
+        //     BI.each(operator["view"][BICst.REGION.DIMENSION1], function (idx, item) {
+        //         var dim = dimensions[item];
+        //         var fieldType = dim["type"];
+        //         var group = dim["group"]
+        //         if(fieldType !== BICst.TARGET_TYPE.DATE) {
+        //             group = null;
+        //         }
+        //         fieldType = self._getTypeFromTargetType(fieldType, group)
+        //         fields.push({
+        //             "fieldName":dim["name"],
+        //             "fieldType" : fieldType,
+        //             "id": dim["_src"]["fieldId"],
+        //             "uid" : item,
+        //             "group" : BI.isNull(group) ? null : group["type"]
+        //         })
+        //     })
+        // }
+        var fields = this.get(BI.AnalysisETLOperatorSelectDataModel.KEY) || [];
+        this.set(BI.AnalysisETLOperatorSelectDataModel.KEY, fields);
+        //this.set("operator", this._buildDetailTableModel(BI.AnalysisETLOperatorSelectDataModel.KEY));
+        this.set(BI.AnalysisETLOperatorSelectDataModel.TEMP_KEY, fields);
+        this.save();
     }
 
 })
