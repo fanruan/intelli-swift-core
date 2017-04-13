@@ -27,6 +27,10 @@ BI.AnalysisETLOperatorAddColumnPane = BI.inherit(BI.Widget, {
         }
     },
 
+    mounted: function(){
+        this._populate();
+    },
+
     _createTabs: function (v) {
         var self = this;
         switch (v) {

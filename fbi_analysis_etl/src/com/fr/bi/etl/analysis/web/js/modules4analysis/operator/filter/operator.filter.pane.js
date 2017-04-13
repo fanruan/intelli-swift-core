@@ -114,6 +114,10 @@ BI.AnalysisETLOperatorFilterPane = BI.inherit(BI.Widget, {
         };
     },
 
+    mounted: function(){
+        this._populate();
+    },
+
     filterChange : function(filter){
         var operator = this.model.get('operator');
         var items = operator.items || [];

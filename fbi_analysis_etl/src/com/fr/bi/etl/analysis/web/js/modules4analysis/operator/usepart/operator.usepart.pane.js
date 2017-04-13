@@ -58,6 +58,10 @@ BI.AnalysisETLOperatorUsePartPane = BI.inherit(BI.Widget, {
         })
     },
 
+    mounted: function(){
+        this._populate();
+    },
+
     doCheck  : function () {
         this.fireEvent(BI.TopPointerSavePane.EVENT_CHECK_SAVE_STATUS, this.isValid(), BI.i18nText("BI-Please_Select_Needed_Field"))
     },

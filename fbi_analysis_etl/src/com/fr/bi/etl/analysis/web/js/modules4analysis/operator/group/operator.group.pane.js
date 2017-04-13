@@ -80,6 +80,10 @@ BI.AnalysisETLOperatorGroupPane = BI.inherit(BI.Widget, {
         };
     },
 
+    mounted: function(){
+        this._populate();
+    },
+
     dropField: function (item) {
         var self = this;
         return {

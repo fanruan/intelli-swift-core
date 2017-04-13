@@ -95,6 +95,10 @@ BI.AnalysisETLOperatorMergeSheetPane = BI.inherit(BI.Widget, {
         }
     },
 
+    mounted: function(){
+        this._populate();
+    },
+
     createTable : function (tables) {
         return BI.map(tables, function (i, item) {
             return {

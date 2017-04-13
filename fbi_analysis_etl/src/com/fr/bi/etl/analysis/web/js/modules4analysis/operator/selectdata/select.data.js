@@ -155,6 +155,10 @@ BI.AnalysisETLOperatorSelectData = BI.inherit(BI.Widget, {
         };
     },
 
+    mounted: function(){
+        this._populate();
+    },
+
     addField : function(fieldId){
         if(this._editing !== true){
             return;
@@ -225,11 +229,6 @@ BI.AnalysisETLOperatorSelectData = BI.inherit(BI.Widget, {
         } else {
             change()
         }
-
-
-
-
-
     },
 
 
