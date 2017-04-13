@@ -140,15 +140,6 @@ public class ETLResourcesHelper {
 				"com/fr/bi/etl/analysis/web/js/modules/mergehistory/control/merge.history.control.js",
 				"com/fr/bi/etl/analysis/web/js/base/widget/button/title/group/operator.title.js",
 				"com/fr/bi/etl/analysis/web/js/base/widget/button/title/group/operator.button.js",
-
-				//替换的selectdata
-				"com/fr/bi/etl/analysis/web/js/module/operator/selectdata/node.level.js",
-				"com/fr/bi/etl/analysis/web/js/module/operator/selectdata/item.level.js",
-				"com/fr/bi/etl/analysis/web/js/module/operator/selectdata/model.select.data.js",
-				"com/fr/bi/etl/analysis/web/js/module/operator/selectdata/select.data.js",
-				"com/fr/bi/etl/analysis/web/js/module/operator/selectdata/select.data.pane.js",
-
-				//原selectdata
 //				"com/fr/bi/etl/analysis/web/js/modules/operator/selectdata/view/node/node.level0.js",
 //				"com/fr/bi/etl/analysis/web/js/modules/operator/selectdata/view/node/node.level1.date.js",
 //				"com/fr/bi/etl/analysis/web/js/modules/operator/selectdata/view/node/node.level2.date.js",
@@ -156,12 +147,10 @@ public class ETLResourcesHelper {
 //				"com/fr/bi/etl/analysis/web/js/modules/operator/selectdata/view/treeitem/item.level0.js",
 //				"com/fr/bi/etl/analysis/web/js/modules/operator/selectdata/view/treeitem/item.level1.js",
 //				"com/fr/bi/etl/analysis/web/js/modules/operator/selectdata/view/treeitem/item.level2.js",
-				"com/fr/bi/etl/analysis/web/js/modules/operator/operator.center.js",
-				"com/fr/bi/etl/analysis/web/js/modules/operator/operator.abstract.control.js",
-				"com/fr/bi/etl/analysis/web/js/modules/operator/operator.abstract.js",
-				"com/fr/bi/etl/analysis/web/js/modules/operator/operator.center.control.js",
-
-				//原addColumn
+//				"com/fr/bi/etl/analysis/web/js/modules/operator/operator.center.js",
+//				"com/fr/bi/etl/analysis/web/js/modules/operator/operator.abstract.control.js",
+//				"com/fr/bi/etl/analysis/web/js/modules/operator/operator.abstract.js",
+//				"com/fr/bi/etl/analysis/web/js/modules/operator/operator.center.control.js",
 //				"com/fr/bi/etl/analysis/web/js/modules/operator/addcolumn/view/add_column.title.js",
 //				"com/fr/bi/etl/analysis/web/js/modules/operator/addcolumn/model/abstract.allfield.pane.model.js",
 //				"com/fr/bi/etl/analysis/web/js/modules/operator/addcolumn/model/add_column.title.model.js",
@@ -204,62 +193,14 @@ public class ETLResourcesHelper {
 //				"com/fr/bi/etl/analysis/web/js/modules/operator/addcolumn/control/value/value.convert.control.js",
 //				"com/fr/bi/etl/analysis/web/js/modules/operator/addcolumn/control/value/value.group.control.js",
 //				"com/fr/bi/etl/analysis/web/js/modules/operator/addcolumn/control/value/value.single.control.js",
-
-				//替换的addColumn
-				"com/fr/bi/etl/analysis/web/js/module/operator/addcolumn/addcolumn.title.js",
-				"com/fr/bi/etl/analysis/web/js/module/operator/addcolumn/abstract.allfield.pane.model.js",
-				"com/fr/bi/etl/analysis/web/js/module/operator/addcolumn/model.addcolumn.title.js",
-				"com/fr/bi/etl/analysis/web/js/module/operator/addcolumn/allcolumns.pane.js",
-				"com/fr/bi/etl/analysis/web/js/module/operator/addcolumn/button.column.js",
-				"com/fr/bi/etl/analysis/web/js/module/operator/addcolumn/operator.addcolumn.js",
-				"com/fr/bi/etl/analysis/web/js/module/operator/addcolumn/date/date.diff.pane.js",
-				"com/fr/bi/etl/analysis/web/js/module/operator/addcolumn/date/date.convert.pane.js",
-				"com/fr/bi/etl/analysis/web/js/module/operator/addcolumn/date/date.convert.pane.year.js",
-				"com/fr/bi/etl/analysis/web/js/module/operator/addcolumn/date/date.convert.pane.month.js",
-				"com/fr/bi/etl/analysis/web/js/module/operator/addcolumn/date/date.convert.pane.season.js",
-				"com/fr/bi/etl/analysis/web/js/module/operator/addcolumn/date/model.date.diff.pane.js",
-				"com/fr/bi/etl/analysis/web/js/module/operator/addcolumn/expr/expr.acc.pane.js",
-				"com/fr/bi/etl/analysis/web/js/module/operator/addcolumn/expr/expr.rank.pane.js",
-				"com/fr/bi/etl/analysis/web/js/module/operator/addcolumn/expr/expr.sum.pane.js",
-				"com/fr/bi/etl/analysis/web/js/module/operator/addcolumn/expr/expr.period.pane.js",
-				"com/fr/bi/etl/analysis/web/js/module/operator/addcolumn/expr/expr.lastperiod.pane.js",
-				"com/fr/bi/etl/analysis/web/js/module/operator/addcolumn/expr/expr.lastperiod.percent.pane.js",
-				"com/fr/bi/etl/analysis/web/js/module/operator/addcolumn/expr/expr.sameperiod.pane.js",
-				"com/fr/bi/etl/analysis/web/js/module/operator/addcolumn/expr/expr.sameperiod.percent.pane.js",
-				"com/fr/bi/etl/analysis/web/js/module/operator/addcolumn/formula/formula.pane.js",
-				"com/fr/bi/etl/analysis/web/js/module/operator/addcolumn/value/date.range.js",
-				"com/fr/bi/etl/analysis/web/js/module/operator/addcolumn/value/value.convert.pane.js",
-				"com/fr/bi/etl/analysis/web/js/module/operator/addcolumn/value/value.group.pane.js",
-				"com/fr/bi/etl/analysis/web/js/module/operator/addcolumn/value/value.group.single.pane.js",
-				"com/fr/bi/etl/analysis/web/js/module/operator/addcolumn/value/value.single.pane.js",
-				"com/fr/bi/etl/analysis/web/js/module/operator/addcolumn/value/model.value.convert.pane.js",
-				"com/fr/bi/etl/analysis/web/js/module/operator/addcolumn/expr/model.expr.numberfields.js",
-				"com/fr/bi/etl/analysis/web/js/module/operator/addcolumn/model.operator.addcolumn.pane.js",
-				"com/fr/bi/etl/analysis/web/js/module/operator/addcolumn/operator.addcolumn.pane.js",
-
-				//原filter
 //				"com/fr/bi/etl/analysis/web/js/modules/operator/filter/view/operator.filter.js",
 //				"com/fr/bi/etl/analysis/web/js/modules/operator/filter/view/filter.content.js",
 //				"com/fr/bi/etl/analysis/web/js/modules/operator/filter/view/filter.column.js",
 //				"com/fr/bi/etl/analysis/web/js/modules/operator/filter/view/filter.table.js",
-
-				//替换的filter
-				"com/fr/bi/etl/analysis/web/js/module/operator/filter/operator.filter.js",
-				"com/fr/bi/etl/analysis/web/js/module/operator/filter/filter.content.js",
-				"com/fr/bi/etl/analysis/web/js/module/operator/filter/filter.column.js",
-				"com/fr/bi/etl/analysis/web/js/module/operator/filter/filter.table.js",
-
-				//原group
 //				"com/fr/bi/etl/analysis/web/js/modules/operator/group/model/operator.group.pane.model.js",
 //				"com/fr/bi/etl/analysis/web/js/modules/operator/group/view/operator.group.js",
 //				"com/fr/bi/etl/analysis/web/js/modules/operator/group/view/operator.group.pane.js",
 //				"com/fr/bi/etl/analysis/web/js/modules/operator/group/control/operator.group.pane.control.js",
-
-				//替换的group
-				"com/fr/bi/etl/analysis/web/js/module/operator/group/model.operator.group.pane.js",
-				"com/fr/bi/etl/analysis/web/js/module/operator/group/operator.group.js",
-				"com/fr/bi/etl/analysis/web/js/module/operator/group/operator.group.pane.js",
-
 //				"com/fr/bi/etl/analysis/web/js/modules/operator/addcolumn/model/operator.add_column.pane.model.js",
 //				"com/fr/bi/etl/analysis/web/js/modules/operator/addcolumn/view/operator.add_column.pane.js",
 //				"com/fr/bi/etl/analysis/web/js/modules/operator/addcolumn/control/operator.add_column.pane.control.js",
@@ -267,10 +208,6 @@ public class ETLResourcesHelper {
 //				"com/fr/bi/etl/analysis/web/js/modules/operator/filter/control/operator.filter.control.js",
 //				"com/fr/bi/etl/analysis/web/js/modules/operator/filter/control/operator.filter.pane.control.js",
 //				"com/fr/bi/etl/analysis/web/js/modules/operator/filter/model/operator.filter.pane.model.js",
-				"com/fr/bi/etl/analysis/web/js/module/operator/filter/operator.filter.pane.js",
-				"com/fr/bi/etl/analysis/web/js/module/operator/filter/model.operator.filter.pane.js",
-//
-//				原mergesheet
 // 				"com/fr/bi/etl/analysis/web/js/modules/operator/mergesheet/model/merge.fields.model.js",
 //				"com/fr/bi/etl/analysis/web/js/modules/operator/mergesheet/model/merge.model.js",
 //				"com/fr/bi/etl/analysis/web/js/modules/operator/mergesheet/view/merge.js",
@@ -287,28 +224,14 @@ public class ETLResourcesHelper {
 //				"com/fr/bi/etl/analysis/web/js/modules/operator/mergesheet/control/merge.preview.control.js",
 //				"com/fr/bi/etl/analysis/web/js/modules/operator/mergesheet/control/merge.type.control.js",
 //				"com/fr/bi/etl/analysis/web/js/modules/operator/mergesheet/control/operator.merge.pane.control.js",
-				"com/fr/bi/etl/analysis/web/js/module/operator/mergesheet/model.merge.common.js",
-				"com/fr/bi/etl/analysis/web/js/module/operator/mergesheet/model.merge.fields.js",
-				"com/fr/bi/etl/analysis/web/js/module/operator/mergesheet/model.merge.js",
-				"com/fr/bi/etl/analysis/web/js/module/operator/mergesheet/merge.js",
-				"com/fr/bi/etl/analysis/web/js/module/operator/mergesheet/merge.fields.js",
-				"com/fr/bi/etl/analysis/web/js/module/operator/mergesheet/merge.type.js",
-				"com/fr/bi/etl/analysis/web/js/module/operator/mergesheet/merge.preview.js",
-				"com/fr/bi/etl/analysis/web/js/module/operator/mergesheet/operator.merge.js",
-				"com/fr/bi/etl/analysis/web/js/module/operator/mergesheet/operator.merge.pane.js",
-				"com/fr/bi/etl/analysis/web/js/module/operator/mergesheet/popover/choosesheet.js",
-				"com/fr/bi/etl/analysis/web/js/module/operator/mergesheet/popover/choosesheet.button.js",
 //				"com/fr/bi/etl/analysis/web/js/modules/operator/usepart/operator.usepart.js",
 //				"com/fr/bi/etl/analysis/web/js/modules/operator/usepart/operator.usepart.pane.js",
 //				"com/fr/bi/etl/analysis/web/js/modules/operator/usepart/operator.usepart.pane.model.js",
 //				"com/fr/bi/etl/analysis/web/js/modules/operator/usepart/operator.usepart.control.js",
 //				"com/fr/bi/etl/analysis/web/js/modules/operator/usepart/operator.usepart.pane.control.js",
-				"com/fr/bi/etl/analysis/web/js/module/operator/usepart/operator.usepart.js",
-				"com/fr/bi/etl/analysis/web/js/module/operator/usepart/operator.usepart.pane.js",
-				"com/fr/bi/etl/analysis/web/js/module/operator/usepart/model.operator.usepart.pane.js",
-				"com/fr/bi/etl/analysis/web/js/modules/operator/selectnonedata/select.none.data.js",
-				"com/fr/bi/etl/analysis/web/js/modules/operator/selectnonedata/select.none.data.pane.js",
-				"com/fr/bi/etl/analysis/web/js/modules/operator/selectnonedata/select.none.data.control.js",
+//				"com/fr/bi/etl/analysis/web/js/modules/operator/selectnonedata/select.none.data.js",
+//				"com/fr/bi/etl/analysis/web/js/modules/operator/selectnonedata/select.none.data.pane.js",
+//				"com/fr/bi/etl/analysis/web/js/modules/operator/selectnonedata/select.none.data.control.js",
 //				"com/fr/bi/etl/analysis/web/js/modules/operator/selectdata/view/select.data.js",
 //				"com/fr/bi/etl/analysis/web/js/modules/operator/selectdata/model/select.data.model.js",
 //				"com/fr/bi/etl/analysis/web/js/modules/operator/selectdata/control/select.data.control.js",
@@ -339,6 +262,8 @@ public class ETLResourcesHelper {
 				"com/fr/bi/etl/analysis/web/js/modules/filter/item/filter.numbern.etl.js",
 
 
+
+
 				// new modules
 				"com/fr/bi/etl/analysis/web/js/modules4analysis/analysis.mainpane.js",
 				"com/fr/bi/etl/analysis/web/js/modules4analysis/analysis.mainpane.model.js",
@@ -352,7 +277,77 @@ public class ETLResourcesHelper {
 				"com/fr/bi/etl/analysis/web/js/modules4analysis/historytab/analysis.historytab.model.js",
 				"com/fr/bi/etl/analysis/web/js/modules4analysis/historytab/button/analysis.historybutton.js",
 				"com/fr/bi/etl/analysis/web/js/modules4analysis/historytab/button/analysis.historybutton.group.js",
-				"com/fr/bi/etl/analysis/web/js/modules4analysis/historytab/button/analysis.historybutton.all.js"
+				"com/fr/bi/etl/analysis/web/js/modules4analysis/historytab/button/analysis.historybutton.all.js",
+
+				//selectdata
+				"com/fr/bi/etl/analysis/web/js/modules4analysis/operator/selectdata/node.level.js",
+				"com/fr/bi/etl/analysis/web/js/modules4analysis/operator/selectdata/item.level.js",
+				"com/fr/bi/etl/analysis/web/js/modules4analysis/operator/selectdata/model.select.data.js",
+				"com/fr/bi/etl/analysis/web/js/modules4analysis/operator/selectdata/select.data.js",
+				"com/fr/bi/etl/analysis/web/js/modules4analysis/operator/selectdata/select.data.pane.js",
+
+				//addColumn
+				"com/fr/bi/etl/analysis/web/js/modules4analysis/operator/addcolumn/addcolumn.title.js",
+				"com/fr/bi/etl/analysis/web/js/modules4analysis/operator/addcolumn/abstract.allfield.pane.model.js",
+				"com/fr/bi/etl/analysis/web/js/modules4analysis/operator/addcolumn/model.addcolumn.title.js",
+				"com/fr/bi/etl/analysis/web/js/modules4analysis/operator/addcolumn/allcolumns.pane.js",
+				"com/fr/bi/etl/analysis/web/js/modules4analysis/operator/addcolumn/button.column.js",
+				"com/fr/bi/etl/analysis/web/js/modules4analysis/operator/addcolumn/operator.addcolumn.js",
+				"com/fr/bi/etl/analysis/web/js/modules4analysis/operator/addcolumn/date/date.diff.pane.js",
+				"com/fr/bi/etl/analysis/web/js/modules4analysis/operator/addcolumn/date/date.convert.pane.js",
+				"com/fr/bi/etl/analysis/web/js/modules4analysis/operator/addcolumn/date/date.convert.pane.year.js",
+				"com/fr/bi/etl/analysis/web/js/modules4analysis/operator/addcolumn/date/date.convert.pane.month.js",
+				"com/fr/bi/etl/analysis/web/js/modules4analysis/operator/addcolumn/date/date.convert.pane.season.js",
+				"com/fr/bi/etl/analysis/web/js/modules4analysis/operator/addcolumn/date/model.date.diff.pane.js",
+				"com/fr/bi/etl/analysis/web/js/modules4analysis/operator/addcolumn/expr/expr.acc.pane.js",
+				"com/fr/bi/etl/analysis/web/js/modules4analysis/operator/addcolumn/expr/expr.rank.pane.js",
+				"com/fr/bi/etl/analysis/web/js/modules4analysis/operator/addcolumn/expr/expr.sum.pane.js",
+				"com/fr/bi/etl/analysis/web/js/modules4analysis/operator/addcolumn/expr/expr.period.pane.js",
+				"com/fr/bi/etl/analysis/web/js/modules4analysis/operator/addcolumn/expr/expr.lastperiod.pane.js",
+				"com/fr/bi/etl/analysis/web/js/modules4analysis/operator/addcolumn/expr/expr.lastperiod.percent.pane.js",
+				"com/fr/bi/etl/analysis/web/js/modules4analysis/operator/addcolumn/expr/expr.sameperiod.pane.js",
+				"com/fr/bi/etl/analysis/web/js/modules4analysis/operator/addcolumn/expr/expr.sameperiod.percent.pane.js",
+				"com/fr/bi/etl/analysis/web/js/modules4analysis/operator/addcolumn/formula/formula.pane.js",
+				"com/fr/bi/etl/analysis/web/js/modules4analysis/operator/addcolumn/value/date.range.js",
+				"com/fr/bi/etl/analysis/web/js/modules4analysis/operator/addcolumn/value/value.convert.pane.js",
+				"com/fr/bi/etl/analysis/web/js/modules4analysis/operator/addcolumn/value/value.group.pane.js",
+				"com/fr/bi/etl/analysis/web/js/modules4analysis/operator/addcolumn/value/value.group.single.pane.js",
+				"com/fr/bi/etl/analysis/web/js/modules4analysis/operator/addcolumn/value/value.single.pane.js",
+				"com/fr/bi/etl/analysis/web/js/modules4analysis/operator/addcolumn/value/model.value.convert.pane.js",
+				"com/fr/bi/etl/analysis/web/js/modules4analysis/operator/addcolumn/expr/model.expr.numberfields.js",
+				"com/fr/bi/etl/analysis/web/js/modules4analysis/operator/addcolumn/model.operator.addcolumn.pane.js",
+				"com/fr/bi/etl/analysis/web/js/modules4analysis/operator/addcolumn/operator.addcolumn.pane.js",
+
+				//filter
+				"com/fr/bi/etl/analysis/web/js/modules4analysis/operator/filter/operator.filter.js",
+				"com/fr/bi/etl/analysis/web/js/modules4analysis/operator/filter/filter.content.js",
+				"com/fr/bi/etl/analysis/web/js/modules4analysis/operator/filter/filter.column.js",
+				"com/fr/bi/etl/analysis/web/js/modules4analysis/operator/filter/filter.table.js",
+				"com/fr/bi/etl/analysis/web/js/modules4analysis/operator/filter/operator.filter.pane.js",
+				"com/fr/bi/etl/analysis/web/js/modules4analysis/operator/filter/model.operator.filter.pane.js",
+
+				//group
+				"com/fr/bi/etl/analysis/web/js/modules4analysis/operator/group/model.operator.group.pane.js",
+				"com/fr/bi/etl/analysis/web/js/modules4analysis/operator/group/operator.group.js",
+				"com/fr/bi/etl/analysis/web/js/modules4analysis/operator/group/operator.group.pane.js",
+
+				//mergeSheet
+				"com/fr/bi/etl/analysis/web/js/modules4analysis/operator/mergesheet/model.merge.common.js",
+				"com/fr/bi/etl/analysis/web/js/modules4analysis/operator/mergesheet/model.merge.fields.js",
+				"com/fr/bi/etl/analysis/web/js/modules4analysis/operator/mergesheet/model.merge.js",
+				"com/fr/bi/etl/analysis/web/js/modules4analysis/operator/mergesheet/merge.js",
+				"com/fr/bi/etl/analysis/web/js/modules4analysis/operator/mergesheet/merge.fields.js",
+				"com/fr/bi/etl/analysis/web/js/modules4analysis/operator/mergesheet/merge.type.js",
+				"com/fr/bi/etl/analysis/web/js/modules4analysis/operator/mergesheet/merge.preview.js",
+				"com/fr/bi/etl/analysis/web/js/modules4analysis/operator/mergesheet/operator.merge.js",
+				"com/fr/bi/etl/analysis/web/js/modules4analysis/operator/mergesheet/operator.merge.pane.js",
+				"com/fr/bi/etl/analysis/web/js/modules4analysis/operator/mergesheet/popover/choosesheet.js",
+				"com/fr/bi/etl/analysis/web/js/modules4analysis/operator/mergesheet/popover/choosesheet.button.js",
+
+				//partfield
+				"com/fr/bi/etl/analysis/web/js/modules4analysis/operator/usepart/operator.usepart.js",
+				"com/fr/bi/etl/analysis/web/js/modules4analysis/operator/usepart/operator.usepart.pane.js",
+				"com/fr/bi/etl/analysis/web/js/modules4analysis/operator/usepart/model.operator.usepart.pane.js"
 		};
 	}
 
