@@ -8,8 +8,8 @@ BI.AnalysisETLOperatorMergeSheetPane = BI.inherit(BI.Widget, {
     },
 
     render: function(){
-        var self = this;
-        this.model = new BI.AnalysisETLMergeSheetModel({})
+        var self = this, o = this.options;
+        this.model = new BI.AnalysisETLMergeSheetModel(o.items);
         return {
             type:"bi.htape",
             items:[{
@@ -131,7 +131,8 @@ BI.AnalysisETLOperatorMergeSheetPane = BI.inherit(BI.Widget, {
         this.table.populate(this.createTable(tables));
         this.mergeFields.populate(this.createCell(this.model.getMergeFieldsName(), "cell"), this.createCell([[tables[0].tableName,tables[1].tableName]], "header"))
         this.fireEvent(BI.AnalysisETLOperatorAbstractController.PREVIEW_CHANGE, {
-            update: BI.bind(this.model.update, this)
+            update: BI.bind(this.model.update, this.model),
+            getCopyValue: BI.bind(this.model.getCopyValue, this.model)
         }, ETLCst.ANALYSIS_TABLE_OPERATOR_KEY.NULL)
         this.fireEvent(BI.TopPointerSavePane.EVENT_FIELD_VALID, this.model.getCopyValue("columns"))
     },
@@ -171,9 +172,17 @@ BI.AnalysisETLOperatorMergeSheetPane = BI.inherit(BI.Widget, {
             }
         })
         BI.Layers.show(BICst.ANALYSIS_MERGE_LAYER)
+    },
+
+    populate: function(m, options){
+        this.model.populate(m);
+        BI.extend(this.options, options);
+        this._populate();
+    },
+
+    getValue: function(){
+        return this.model.update();
     }
-
-
 })
 
 BI.AnalysisETLOperatorMergeSheetPane.MERGE_SHEET_CHANGE="MERGE_SHEET_CHANGE";

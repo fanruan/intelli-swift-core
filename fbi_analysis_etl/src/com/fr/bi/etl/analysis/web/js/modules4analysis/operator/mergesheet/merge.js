@@ -214,6 +214,10 @@ BI.AnalysisETLMergeSheet = BI.inherit(BI.Widget, {
         if(BI.isFunction(this.options.saveHandler)) {
             this.options.saveHandler(this.model.update())
         }
+        //为了临时适配外层节点，等外层节点也整好后可删
+        if(BI.isFunction(this.options.controller.saveHandler)){
+            this.options.controller.saveHandler(this.model.update())
+        }
         BI.Layers.hide(BICst.ANALYSIS_MERGE_LAYER)
     },
 

@@ -23,16 +23,12 @@ BI.AnalysisETLMergeSheetModel = BI.inherit(BI.OB, {
         this.options[key] = value;
     },
 
-    getValue: function(key){
+    getCopyValue: function(key){
         return BI.deepClone(this.options[key]);
     },
 
     getChildValue: function(key){
         return this.get(key).update();
-    },
-
-    getCopyValue: function(key){
-        return BI.deepClone(this.options[key]);
     },
 
     createPreviewData : function () {
@@ -54,7 +50,7 @@ BI.AnalysisETLMergeSheetModel = BI.inherit(BI.OB, {
     },
 
     getMergeFieldsName : function () {
-        var fields = this.get(BI.AnalysisETLMergeSheetModel.MERGE_FIELDS).getValue(ETLCst.FIELDS);
+        var fields = this.get(BI.AnalysisETLMergeSheetModel.MERGE_FIELDS).getCopyValue(ETLCst.FIELDS);
         return  this._createNameArray(fields)
     },
 
@@ -82,7 +78,7 @@ BI.AnalysisETLMergeSheetModel = BI.inherit(BI.OB, {
     },
 
     getSheets : function () {
-        return this.getValue("sheets");
+        return this.getCopyValue("sheets");
     },
 
     _getSheets : function () {
@@ -219,7 +215,7 @@ BI.AnalysisETLMergeSheetModel = BI.inherit(BI.OB, {
 
     update : function () {
         //处理格式转换
-        var mergeType = this.getValue(BI.AnalysisETLMergeSheetModel.MERGE_TYPE).update();
+        var mergeType = this.getCopyValue(BI.AnalysisETLMergeSheetModel.MERGE_TYPE).update();
         var json = BI.deepClone(this.options);
         json[BI.AnalysisETLMergeSheetModel.MERGE_TYPE] = mergeType["merge"];
         json[ETLCst.FIELDS] = json["columns"]
