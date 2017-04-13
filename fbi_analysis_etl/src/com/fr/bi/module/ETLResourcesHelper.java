@@ -277,6 +277,22 @@ public class ETLResourcesHelper {
 				"com/fr/bi/etl/analysis/web/js/modules/filter/item/filter.formula.etl.js",
 				"com/fr/bi/etl/analysis/web/js/modules/filter/item/filter.formula.popover.js",
 				"com/fr/bi/etl/analysis/web/js/modules/filter/item/filter.numbern.etl.js",
+
+
+				// new modules
+				"com/fr/bi/etl/analysis/web/js/modules4analysis/analysis.mainpane.js",
+				"com/fr/bi/etl/analysis/web/js/modules4analysis/analysis.mainpane.model.js",
+				"com/fr/bi/etl/analysis/web/js/modules4analysis/operator/analysis.operatorpane.abstract.js",
+				"com/fr/bi/etl/analysis/web/js/modules4analysis/operator/analysis.operator.center.js",
+				"com/fr/bi/etl/analysis/web/js/modules4analysis/dynamictab/analysis.dynamictab.js",
+				"com/fr/bi/etl/analysis/web/js/modules4analysis/dynamictab/analysis.dynamictab.model.js",
+				"com/fr/bi/etl/analysis/web/js/modules4analysis/dynamictab/button/analysis.dynamictab.button.js",
+				"com/fr/bi/etl/analysis/web/js/modules4analysis/dynamictab/button/analysis.tabsheet.button.js",
+				"com/fr/bi/etl/analysis/web/js/modules4analysis/historytab/analysis.historytab.js",
+				"com/fr/bi/etl/analysis/web/js/modules4analysis/historytab/analysis.historytab.model.js",
+				"com/fr/bi/etl/analysis/web/js/modules4analysis/historytab/button/analysis.historybutton.js",
+				"com/fr/bi/etl/analysis/web/js/modules4analysis/historytab/button/analysis.historybutton.group.js",
+				"com/fr/bi/etl/analysis/web/js/modules4analysis/historytab/button/analysis.historybutton.all.js"
 		};
 	}
 
