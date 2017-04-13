@@ -18,13 +18,13 @@ public class BIUserLogAppender extends AppenderSkeleton {
     protected BIUserLogPool logPool = BIUserLogPool.getInstance();
 
     public void close() {
-        if (this.closed)// 如果被关掉了
+        if (this.closed)
             return;
         this.closed = true;
     }
 
 
-    public boolean requiresLayout() {// 需要使用布局
+    public boolean requiresLayout() {
         return true;
     }
 
