@@ -347,12 +347,8 @@ BI.AnalysisETLOperatorGroupPane = BI.inherit(BI.Widget, {
         }, callback)
     },
 
-    update : function () {
-        return this.model.update();
-    },
-
     getValue: function(){
-        return this.update();
+        return this.model.update();
     }
 })
 

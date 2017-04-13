@@ -310,12 +310,8 @@ BI.AnalysisETLOperatorAddColumnPane = BI.inherit(BI.Widget, {
         }
     },
 
-    update: function(){
-        return this.model.update();
-    },
-
     getValue: function(){
-        return this.update();
+        return this.model.update();
     }
 
 })

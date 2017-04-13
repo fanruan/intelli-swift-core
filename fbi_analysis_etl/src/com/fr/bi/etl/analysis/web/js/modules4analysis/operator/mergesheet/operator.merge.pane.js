@@ -180,12 +180,8 @@ BI.AnalysisETLOperatorMergeSheetPane = BI.inherit(BI.Widget, {
         this._populate();
     },
 
-    update: function(){
-        return this.model.update();
-    },
-
     getValue: function(){
-        return this.update();
+        return this.model.update();
     }
 })
 

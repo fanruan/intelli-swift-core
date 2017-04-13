@@ -173,15 +173,6 @@ BI.AnalysisETLOperatorFilterPane = BI.inherit(BI.Widget, {
         return BI.isNull(items) || items.length === 0
     },
 
-
-    update : function () {
-        var v =  this.model.update();
-        v.etlType = ETLCst.ETL_TYPE.FILTER;
-        var parent = this.model.get(ETLCst.PARENTS)[0];
-        v[ETLCst.FIELDS] = BI.deepClone(parent[ETLCst.FIELDS])
-        return v;
-    },
-
     _populate: function(){
         var operator = this.model.get('operator');
         if (BI.isNull(operator)){
@@ -221,7 +212,11 @@ BI.AnalysisETLOperatorFilterPane = BI.inherit(BI.Widget, {
     },
 
     getValue: function(){
-        return this.update();
+        var v =  this.model.update();
+        v.etlType = ETLCst.ETL_TYPE.FILTER;
+        var parent = this.model.get(ETLCst.PARENTS)[0];
+        v[ETLCst.FIELDS] = BI.deepClone(parent[ETLCst.FIELDS])
+        return v;
     }
 })
 
