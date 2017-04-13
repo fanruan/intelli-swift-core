@@ -206,7 +206,7 @@ public class XMLWriterTest extends TestCase {
         try {
             DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
             DocumentBuilder db = dbf.newDocumentBuilder();
-            File file = new File("D:\\Connery\\Code\\conneryDom.xml");
+            File file = new File("Dom.xml");
             Document document = db.newDocument();
             Element element = document.createElement("node");
             document.appendChild(element);

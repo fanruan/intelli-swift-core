@@ -404,12 +404,12 @@ public class BIDBUtils {
         return dbTable;
     }
 
-    private static String getColumnNameText(com.fr.data.impl.Connection connection, Map item) throws UnsupportedEncodingException {
+    public static String getColumnNameText(com.fr.data.impl.Connection connection, Map item) throws UnsupportedEncodingException {
         String columnNameText = (String) item.get("column_comment");
         return getTransCodeText(connection, columnNameText);
     }
 
-    private static String getTransCodeText(com.fr.data.impl.Connection connection, String originalCodeText) throws UnsupportedEncodingException {
+    public static String getTransCodeText(com.fr.data.impl.Connection connection, String originalCodeText) throws UnsupportedEncodingException {
         String originalCharsetName = connection.getOriginalCharsetName();
         String newCharsetName = connection.getNewCharsetName();
         boolean needCharSetConvert = StringUtils.isNotBlank(originalCharsetName)
