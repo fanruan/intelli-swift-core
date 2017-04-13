@@ -346,8 +346,8 @@ public abstract class BISummaryWidget extends BIAbstractWidget {
         while (it.hasNext()) {
             String dimensionId = (String) it.next();
             JSONObject dims = jo.getJSONObject(dimensionId);
-            if (dims.has("dimension_map")) {
-                JSONObject dimMap = dims.getJSONObject("dimension_map");
+            if (dims.has("dimensionMap")) {
+                JSONObject dimMap = dims.getJSONObject("dimensionMap");
                 Iterator iterator = dimMap.keys();
                 while (iterator.hasNext()) {
                     String targetId = (String) iterator.next();
