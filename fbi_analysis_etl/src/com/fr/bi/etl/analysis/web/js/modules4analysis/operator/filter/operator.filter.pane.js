@@ -103,8 +103,7 @@ BI.AnalysisETLOperatorFilterPane = BI.inherit(BI.Widget, {
     render: function(){
         var self = this, o = this.options;
         this.card = this.operatorCombo = this.content = null;
-        this.model = new BI.AnalysisETLOperatorFilterPaneModel({
-        });
+        this.model = new BI.AnalysisETLOperatorFilterPaneModel(o.items);
         this.operatorCombo = this.content = this.card = null;
         return {
             type:"bi.tab",
@@ -219,6 +218,10 @@ BI.AnalysisETLOperatorFilterPane = BI.inherit(BI.Widget, {
         this.model.populate(m);
         BI.extend(this.options, options);
         this._populate();
+    },
+
+    getValue: function(){
+        return this.update();
     }
 })
 

@@ -14,9 +14,9 @@ BI.AnalysisETLOperatorAddColumnPane = BI.inherit(BI.Widget, {
     },
 
     render: function(){
-        var self = this;
+        var self = this, o = this.options;
         this._editing = false;
-        this.model = new BI.AnalysisETLOperatorAddColumnPaneModel({});
+        this.model = new BI.AnalysisETLOperatorAddColumnPaneModel(o.items);
         this.card = null;
         return {
             type:'bi.tab',
@@ -308,6 +308,14 @@ BI.AnalysisETLOperatorAddColumnPane = BI.inherit(BI.Widget, {
             var column = this.title.update();
             this.currentEditPane.changeFieldType(column.fieldType);
         }
+    },
+
+    update: function(){
+        return this.model.update();
+    },
+
+    getValue: function(){
+        return this.update();
     }
 
 })

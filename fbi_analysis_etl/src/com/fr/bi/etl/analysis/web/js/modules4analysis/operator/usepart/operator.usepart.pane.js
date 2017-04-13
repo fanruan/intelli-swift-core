@@ -117,6 +117,10 @@ BI.AnalysisETLOperatorUsePartPane = BI.inherit(BI.Widget, {
         this.model.populate(m);
         BI.extend(this.options, options);
         this._populate();
+    },
+
+    getValue: function(){
+        return this.model.update();
     }
 
 })

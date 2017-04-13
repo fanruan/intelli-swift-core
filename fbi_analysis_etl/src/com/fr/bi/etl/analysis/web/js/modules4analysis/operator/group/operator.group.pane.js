@@ -13,9 +13,7 @@ BI.AnalysisETLOperatorGroupPane = BI.inherit(BI.Widget, {
         var self = this;
         this.itemsGroup = null;
         this.regions = {};
-        this.model = new BI.AnalysisETLOperatorGroupPaneModel({
-
-        });
+        this.model = new BI.AnalysisETLOperatorGroupPaneModel(o.items);
         var group = {
             type:"bi.group_select_fields_item_group",
             ref: function(_ref){
@@ -351,6 +349,10 @@ BI.AnalysisETLOperatorGroupPane = BI.inherit(BI.Widget, {
 
     update : function () {
         return this.model.update();
+    },
+
+    getValue: function(){
+        return this.update();
     }
 })
 
