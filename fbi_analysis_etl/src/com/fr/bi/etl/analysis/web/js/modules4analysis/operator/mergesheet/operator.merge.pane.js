@@ -7,14 +7,6 @@ BI.AnalysisETLOperatorMergeSheetPane = BI.inherit(BI.Widget, {
         extraCls: "bi-analysis-etl-operator-merge-sheet-pane"
     },
 
-    _initModel : function () {
-        return BI.AnalysisETLMergeSheetModel
-    },
-
-    _initController : function () {
-        return BI.AnalysisETLOperatorMergeSheetPaneController;
-    },
-
     render: function(){
         var self = this;
         this.model = new BI.AnalysisETLMergeSheetModel({})
