@@ -2,7 +2,6 @@ package excelExport;
 
 import com.fr.bi.cal.analyze.report.report.widget.TableWidget;
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.basic.BIExcelTableData;
-import com.fr.bi.cal.analyze.report.report.widget.chart.export.calculator.SummaryComplexTableBuilder;
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.calculator.SummaryCrossTableDataBuilder;
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.calculator.SummaryGroupTableDataBuilder;
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.manager.TableDirector;
@@ -22,7 +21,7 @@ import java.util.*;
 /**
  * Created by Kary on 2017/3/6.
  */
-public class tableExportBuildTest extends TestCase {
+public class ExcelExportDataBuildFactoryTest extends TestCase {
     private TableWidget widget = new TableWidget();
     private JSONObject dataJson;
     private static int summaryCount = 1;
@@ -78,7 +77,6 @@ public class tableExportBuildTest extends TestCase {
         widget = WidgetStructureTool.createCrossTableTableWidget();
         dataJson = WidgetDataTool.getNormalCrossData();
         Map<Integer, List<JSONObject>> viewMap = widget.createViewMap();
-        viewMap.remove(30000);
         SummaryCrossTableDataBuilder builder = new SummaryCrossTableDataBuilder(viewMap, new ArrayList<ChartSetting>(), dataJson, new BIStyleReportSetting());
         TableDirector director = new TableDirector(builder);
         director.construct();
@@ -96,16 +94,6 @@ public class tableExportBuildTest extends TestCase {
             count += viewMap.get(integer).size();
         }
         return count;
-    }
-
-    public void testNormalComplexTable() throws Exception {
-        widget = WidgetStructureTool.createComplexTableTableWidget();
-        dataJson = WidgetDataTool.getNormalComplexData();
-        Map<Integer, List<JSONObject>> viewMap = widget.createViewMap();
-        SummaryComplexTableBuilder builder = new SummaryComplexTableBuilder(viewMap, new ArrayList<ChartSetting>(), dataJson, new BIStyleReportSetting());
-        TableDirector director = new TableDirector(builder);
-        director.construct();
-        BIExcelTableData excelTableData = director.buildTableData();
     }
 
     public void testCreateViewMap() throws Exception {
@@ -142,23 +130,19 @@ public class tableExportBuildTest extends TestCase {
         }
     }
 
-    public void testTempCrossTable() throws Exception {
-        widget = WidgetStructureTool.createCrossTableTableWidget();
-        dataJson = new JSONObject("{\"t\":{\"c\":[{\"c\":[{\"n\":\"f874913d72363f59\"}],\"n\":\"长期协议\"},{\"c\":[{\"n\":\"f874913d72363f59\"}],\"n\":\"长期协议订单\"},{\"c\":[{\"n\":\"f874913d72363f59\"}],\"n\":\"服务协议\"},{\"c\":[{\"n\":\"f874913d72363f59\"}],\"n\":\"购买合同\"}]},\"l\":{\"s\":{\"s\":[2.7787643E8],\"c\":[{\"s\":[1.9485E7]},{\"s\":[2.477942E7]},{\"s\":[1.16658E7]},{\"s\":[2.2194621E8]}]},\"c\":[{\"s\":{\"s\":[1.89731E7],\"c\":[{\"s\":[800000]},{\"s\":[2774100]},{\"s\":[\"\"]},{\"s\":[1.5399E7]}]},\"n\":\"1\"},{\"s\":{\"s\":[4.969621E7],\"c\":[{\"s\":[3580000]},{\"s\":[3126000]},{\"s\":[1760000]},{\"s\":[4.123021E7]}]},\"n\":\"2\"},{\"s\":{\"s\":[7.87012E7],\"c\":[{\"s\":[8295000]},{\"s\":[7163200]},{\"s\":[3440000]},{\"s\":[5.9803E7]}]},\"n\":\"3\"},{\"s\":{\"s\":[2.3084E7],\"c\":[{\"s\":[0]},{\"s\":[7264000]},{\"s\":[1200000]},{\"s\":[1.462E7]}]},\"n\":\"4\"},{\"s\":{\"s\":[6.350912E7],\"c\":[{\"s\":[3050000]},{\"s\":[4112120]},{\"s\":[3180000]},{\"s\":[5.3167E7]}]},\"n\":\"5\"},{\"s\":{\"s\":[4.39128E7],\"c\":[{\"s\":[3760000]},{\"s\":[340000]},{\"s\":[2085800]},{\"s\":[3.7727E7]}]},\"n\":\"6\"},{\"s\":{\"s\":[0],\"c\":[{\"s\":[0]},{\"s\":[\"\"]},{\"s\":[\"\"]},{\"s\":[\"\"]}]},\"n\":\"7\"}]}}");
-        Map<Integer, List<JSONObject>> viewMap = new HashMap<Integer, List<JSONObject>>();
-        List<JSONObject> list=new ArrayList<>();
-        list.add(new JSONObject().put("dId","20ab4f0f6dae6ae9"));
-        viewMap.put(10000,list);
-        List<JSONObject> list2=new ArrayList<>();
-        list2.add(new JSONObject().put("dId","c7cc0209a05bfe6e"));
-        viewMap.put(20000,list2);
-//        List<JSONObject> list3=new ArrayList<>();
-//        list.add(new JSONObject().put("dId","c7cc0209a05bfe6e"));
-//        viewMap.put(30000,list3);
+    public void testCrossTable() throws Exception {
+        dataJson = new JSONObject("{\"t\":{\"c\":[{\"c\":[{\"n\":\"c50edaf57bd5594e\"}],\"n\":\"购买合同\"},{\"c\":[{\"n\":\"c50edaf57bd5594e\"}],\"n\":\"长期协议订单\"},{\"c\":[{\"n\":\"c50edaf57bd5594e\"}],\"n\":\"长期协议\"},{\"c\":[{\"n\":\"c50edaf57bd5594e\"}],\"n\":\"服务协议\"}]},\"l\":{\"s\":{\"s\":[2.7787643E8],\"c\":[{\"s\":[2.2194621E8]},{\"s\":[2.477942E7]},{\"s\":[1.9485E7]},{\"s\":[1.16658E7]}]},\"c\":[{\"s\":{\"s\":[7.87012E7],\"c\":[{\"s\":[5.9803E7]},{\"s\":[7163200]},{\"s\":[8295000]},{\"s\":[3440000]}]},\"n\":\"3\"},{\"s\":{\"s\":[6.350912E7],\"c\":[{\"s\":[5.3167E7]},{\"s\":[4112120]},{\"s\":[3050000]},{\"s\":[3180000]}]},\"n\":\"5\"},{\"s\":{\"s\":[4.969621E7],\"c\":[{\"s\":[4.123021E7]},{\"s\":[3126000]},{\"s\":[3580000]},{\"s\":[1760000]}]},\"n\":\"2\"},{\"s\":{\"s\":[4.39128E7],\"c\":[{\"s\":[3.7727E7]},{\"s\":[340000]},{\"s\":[3760000]},{\"s\":[2085800]}]},\"n\":\"6\"},{\"s\":{\"s\":[2.3084E7],\"c\":[{\"s\":[1.462E7]},{\"s\":[7264000]},{\"s\":[0]},{\"s\":[1200000]}]},\"n\":\"4\"},{\"s\":{\"s\":[1.89731E7],\"c\":[{\"s\":[1.5399E7]},{\"s\":[2774100]},{\"s\":[800000]},{\"s\":[null]}]},\"n\":\"1\"},{\"s\":{\"s\":[0],\"c\":[{\"s\":[null]},{\"s\":[null]},{\"s\":[0]},{\"s\":[null]}]},\"n\":\"7\"}]}}");
+
+        Map<Integer, List<JSONObject>> viewMap = new HashMap<>();
+        List<JSONObject> dims=new ArrayList<>();
+        dims.add(new JSONObject("{\"dId\":\"cd75581c1bc5c671\"}"));
+        List<JSONObject> crossDims=new ArrayList<>();
+        crossDims.add(new JSONObject("{\"dId\":\"0a2ce7d2bec05850\"}"));
+        viewMap.put(10000,dims);
+        viewMap.put(20000,crossDims);
         SummaryCrossTableDataBuilder builder = new SummaryCrossTableDataBuilder(viewMap, new ArrayList<ChartSetting>(), dataJson, new BIStyleReportSetting());
         TableDirector director = new TableDirector(builder);
         director.construct();
         BIExcelTableData excelTableData = director.buildTableData();
-
     }
 }

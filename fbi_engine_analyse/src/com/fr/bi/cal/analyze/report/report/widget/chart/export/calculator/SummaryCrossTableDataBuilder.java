@@ -37,7 +37,7 @@ public class SummaryCrossTableDataBuilder extends TableAbstractDataBuilder {
     @Override
     public void createHeaders() throws Exception {
         //正常交叉表
-        if (null != data && data.has("t")) {
+        if (null != dataJSON && dataJSON.has("t")) {
             createCrossTableItems();
             createCrossTableHeader();
             return;
@@ -55,7 +55,7 @@ public class SummaryCrossTableDataBuilder extends TableAbstractDataBuilder {
     @Override
     public void createItems() throws Exception {
         //正常交叉表
-        if (null != data && data.has("t")) {
+        if (null != dataJSON && dataJSON.has("t")) {
 //            createCrossTableItems();
             return;
         }
