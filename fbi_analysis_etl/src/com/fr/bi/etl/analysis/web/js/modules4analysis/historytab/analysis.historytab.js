@@ -10,17 +10,19 @@ BI.AnalysisHistoryTab = BI.inherit(BI.Widget, {
     props: {
         extraCls: "bi-history-tab",
         allHistory: false,
-        model: {
-            items: []
-        }
+        items: []
     },
 
     render: function () {
-        var self = this, o = this.options;
-        this.model = new BI.AnalysisHistoryTabModel(o.model);
+        var o = this.options;
+        this.model = new BI.AnalysisHistoryTabModel({
+            items: o.items
+        });
+        this.historyTabs = [];
+
         this.tabButton = BI.createWidget({
             type: "bi.analysis_history_button_group",
-            items: [],
+            items: o.items,
             allHistory: o.allHistory,
             layouts: [{
                 type: "bi.vertical"
@@ -102,37 +104,34 @@ BI.AnalysisHistoryTab = BI.inherit(BI.Widget, {
                 self.addNewSheet(arguments[1])
             }
         });
-
         tab.on(BI.TopPointerSavePane.EVENT_SAVE, function (table) {
             self.saveOneSheet(table);
+            self.fireEvent(BI.TopPointerSavePane.EVENT_SAVE, table);
         });
-
         tab.on(BI.TopPointerSavePane.EVENT_FIELD_VALID, function (fields) {
             self.refreshValidFields(v, fields);
             self.fireEvent(BI.AnalysisHistoryTab.VALID_CHANGE)
         });
-
         tab.on(BI.TopPointerSavePane.EVENT_INVALID, function (title) {
             self.setInvalid(v, title);
             self.fireEvent(BI.AnalysisHistoryTab.VALID_CHANGE)
         });
-
         tab.on(BI.AnalysisOperatorTitle.EVENT_SAVE, function (value, desc) {
             self.clickTitleSave(v, value, desc);
         });
-
         tab.on(BI.AnalysisETLOperatorMergeSheetPane.MERGE_SHEET_CHANGE, function () {
             self.fireEvent(BI.AnalysisETLOperatorMergeSheetPane.MERGE_SHEET_CHANGE, arguments)
         });
         tab.on(BI.AnalysisOperatorTitle.EVENT_OPERATOR_CHANGE, function (v) {
             self.tempAddButton(v.getValue())
         });
-        tab.on(BI.TopPointerSavePane.EVENT_CANCEL, function (v) {
+        tab.on(BI.TopPointerSavePane.EVENT_CANCEL, function () {
             self.cancelTempAddButton()
         });
         tab.on(BI.MergeHistory.CANCEL, function () {
             self.selectLastTab()
         });
+        this.historyTabs.push(tab);
         return tab;
     },
 
@@ -230,14 +229,14 @@ BI.AnalysisHistoryTab = BI.inherit(BI.Widget, {
             value: this.model.getValue("value"),
             tableName: value
         })];
-        var res = {};
         var table = {};
         table[ETLCst.ITEMS] = sheets;
-        res["table"] = table;
-        res["id"] = BI.UUID();
-        res["name"] = value;
-        res['describe'] = desc;
-        BI.ETLReq.reqSaveTable(res, BI.emptyFn);
+        var analysis = {};
+        analysis.id = BI.UUID();
+        analysis.name = value;
+        analysis.describe = desc;
+        analysis.table = table;
+        BI.ETLReq.reqSaveTable(analysis, BI.emptyFn);
     },
 
     getOperatorTypeByValue: function (v) {
@@ -281,7 +280,6 @@ BI.AnalysisHistoryTab = BI.inherit(BI.Widget, {
             this.model.set('invalidIndex', Number.MAX_VALUE);
         }
     },
-
 
     cancelTempAddButton: function () {
         this._deleteTempAdd();
@@ -416,6 +414,16 @@ BI.AnalysisHistoryTab = BI.inherit(BI.Widget, {
         })
     },
 
+    selectLastTab: function () {
+        this.tabButton.selectLastValue();
+        this.tab.setSelect(this.tabButton.getValue([0]));
+    },
+
+    getValue: function () {
+        var size = this.historyTabs.length;
+        return this.historyTabs[size - 1].model.update();
+    },
+
     populate: function () {
         var items = this.model.get(ETLCst.ITEMS);
         var self = this;
@@ -428,12 +436,8 @@ BI.AnalysisHistoryTab = BI.inherit(BI.Widget, {
             btn.setValid(false);
             btn.setTitle(this.model.get('invalidTitle'));
         }
-    },
-
-    selectLastTab: function () {
-        this.tabButton.selectLastValue();
-        this.tab.setSelect(this.tabButton.getValue([0]));
     }
+
 });
 BI.AnalysisHistoryTab.VALID_CHANGE = "VALID_CHANGE";
 BI.shortcut("bi.analysis_history_tab", BI.AnalysisHistoryTab);

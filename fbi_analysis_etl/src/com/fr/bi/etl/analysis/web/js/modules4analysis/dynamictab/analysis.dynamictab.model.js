@@ -10,8 +10,6 @@ BI.AnalysisDynamicTabModel = BI.inherit(FR.OB, {
     _init: function () {
         BI.AnalysisDynamicTabModel.superclass._init.apply(this, arguments);
         var self = this, items = this.options.items;
-        this.options.items = [];
-        items = items || [];
         BI.each(items, function (i, item) {
             self.addItem(item)
         });
