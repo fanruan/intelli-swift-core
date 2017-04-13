@@ -198,7 +198,7 @@ public class BIDetailWidget extends BIAbstractWidget {
         this.dimensions = new BIDetailTarget[view.length()];
         for (int i = 0; i < view.length(); i++) {
             JSONObject dimObject = dims.getJSONObject(view.getString(i));
-            dimObject.put("did", view.getString(i));
+            dimObject.put("dId", view.getString(i));
             this.dimensions[i] = BIDetailTargetFactory.parseTarget(dimObject, userId);
             JSONObject dimensionMap = dimObject.getJSONObject("dimensionMap");
             Iterator it = dimensionMap.keys();
