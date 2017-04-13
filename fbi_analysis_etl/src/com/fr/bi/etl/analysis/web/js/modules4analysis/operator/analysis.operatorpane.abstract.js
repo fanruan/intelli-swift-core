@@ -44,7 +44,7 @@ BI.AnalysisOperatorAbstarctPane = BI.inherit(BI.Widget, {
         this.center.on(BI.AnalysisOperatorCenter.DATA_CHANGE, function (model) {
             self.controller.refreshModel(model);
         });
-        this.center.on(BI.AnalysisETLOperatorAbstractController.PREVIEW_CHANGE, function (previewModel, operatorType) {
+        this.center.on(BI.AnalysisOperatorAbstarctPane.PREVIEW_CHANGE, function (previewModel, operatorType) {
             self.controller.refreshPreviewData(previewModel, operatorType)
         });
 
@@ -77,3 +77,5 @@ BI.AnalysisOperatorAbstarctPane = BI.inherit(BI.Widget, {
         })
     }
 });
+BI.AnalysisOperatorAbstarctPane.PREVIEW_CHANGE="preview_change";
+BI.AnalysisOperatorAbstarctPane.VALID_CHANGE = "valid_change";

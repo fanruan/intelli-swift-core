@@ -157,8 +157,8 @@ BI.AnalysisOperatorCenter = BI.inherit(BI.Widget, {
             self.changeEditState(false);
             self.fireEvent(BI.TopPointerSavePane.EVENT_CANCEL, arguments)
         });
-        this.operatorEditPane.on(BI.AnalysisETLOperatorCenter.DATA_CHANGE, function () {
-            self.fireEvent(BI.AnalysisETLOperatorCenter.DATA_CHANGE, arguments)
+        this.operatorEditPane.on(BI.AnalysisOperatorCenter.DATA_CHANGE, function () {
+            self.fireEvent(BI.AnalysisOperatorCenter.DATA_CHANGE, arguments)
         });
         this.operatorEditPane.on(BI.TopPointerSavePane.EVENT_EDIT, function () {
             self.changeEditState(true);
@@ -167,10 +167,10 @@ BI.AnalysisOperatorCenter = BI.inherit(BI.Widget, {
         this.operatorEditPane.on(BI.TopPointerSavePane.EVENT_SAVE, function () {
             self.doSave();
         });
-        this.operatorEditPane.on(BI.AnalysisETLOperatorAbstractController.PREVIEW_CHANGE, function (model, type) {
+        this.operatorEditPane.on(BI.AnalysisOperatorAbstarctPane.PREVIEW_CHANGE, function (model, type) {
             self.doPreviewChange(model, type)
         });
-        this.operatorEditPane.on(BI.AnalysisETLOperatorAbstractController.VALID_CHANGE, function (v) {
+        this.operatorEditPane.on(BI.AnalysisOperatorAbstarctPane.VALID_CHANGE, function (v) {
             self.title.setEnable(v, BI.i18nText("BI-Current_Error"))
         });
         return this.operatorEditPane;
@@ -198,7 +198,7 @@ BI.AnalysisOperatorCenter = BI.inherit(BI.Widget, {
             self.fireEvent(BI.AnalysisETLPreviewTable.EVENT_SORT_COLUMN, arguments)
         });
         this.previewTable.on(BI.AnalysisETLPreviewTable.EVENT_RENAME, function (index, name) {
-            self.fireEvent(BI.AnalysisETLOperatorCenter.EVENT_RENAME, index, name)
+            self.fireEvent(BI.AnalysisOperatorCenter.EVENT_RENAME, index, name)
         });
         return this.previewTable;
     },
@@ -322,7 +322,7 @@ BI.AnalysisOperatorCenter = BI.inherit(BI.Widget, {
     doPreviewChange : function (m, type) {
         var type = (this._editing || type === ETLCst.ANALYSIS_TABLE_OPERATOR_KEY.ERROR ) ? type : ETLCst.ANALYSIS_TABLE_OPERATOR_KEY.NULL;
         this.isError = (type === ETLCst.ANALYSIS_TABLE_OPERATOR_KEY.ERROR);
-        this.fireEvent(BI.AnalysisETLOperatorAbstractController.PREVIEW_CHANGE, m, type)
+        this.fireEvent(BI.AnalysisOperatorAbstarctPane.PREVIEW_CHANGE, m, type)
     },
 
     fieldValuesCreator : function (field, callback) {
@@ -341,4 +341,5 @@ BI.AnalysisOperatorCenter = BI.inherit(BI.Widget, {
 
 });
 BI.AnalysisOperatorCenter.DATA_CHANGE = "DATA_CHANGE";
+BI.AnalysisOperatorCenter.EVENT_RENAME = "EVENT_RENAME";
 BI.shortcut("bi.analysis_operator_center", BI.AnalysisOperatorCenter);

@@ -103,10 +103,10 @@ public class ETLResourcesHelper {
 				"com/fr/bi/etl/analysis/web/js/base/widget/button/drag.button.js",
 				"com/fr/bi/etl/analysis/web/js/base/widget/button/toppointer.js",
 				"com/fr/bi/etl/analysis/web/js/base/widget/button/leftpointerbutton.js",
-				"com/fr/bi/etl/analysis/web/js/modules/node/detail.node.level.js",
-				"com/fr/bi/etl/analysis/web/js/modules/node/node.level8.js",
-				"com/fr/bi/etl/analysis/web/js/modules/node/service.node.level.js",
-				"com/fr/bi/etl/analysis/web/js/modules/node/node.level8.control.js",
+//				"com/fr/bi/etl/analysis/web/js/modules/node/detail.node.level.js",
+//				"com/fr/bi/etl/analysis/web/js/modules/node/node.level8.js",
+//				"com/fr/bi/etl/analysis/web/js/modules/node/service.node.level.js",
+//				"com/fr/bi/etl/analysis/web/js/modules/node/node.level8.control.js",
 				"com/fr/bi/etl/analysis/web/js/base/widget/popover/rename.popover.js",
 				"com/fr/bi/etl/analysis/web/js/base/widget/relation/branch.relation.js",
 				"com/fr/bi/etl/analysis/web/js/base/widget/popover/rename.popover.control.js",
@@ -136,8 +136,8 @@ public class ETLResourcesHelper {
 				"com/fr/bi/etl/analysis/web/js/base/widget/line/progress.line.js",
 				"com/fr/bi/etl/analysis/web/js/base/widget/list/sortable.list.js",
 				"com/fr/bi/etl/analysis/web/js/base/widget/mask/loading.mask.js",
-				"com/fr/bi/etl/analysis/web/js/modules/mergehistory/view/merge.history.js",
-				"com/fr/bi/etl/analysis/web/js/modules/mergehistory/control/merge.history.control.js",
+//				"com/fr/bi/etl/analysis/web/js/modules/mergehistory/view/merge.history.js",
+//				"com/fr/bi/etl/analysis/web/js/modules/mergehistory/control/merge.history.control.js",
 				"com/fr/bi/etl/analysis/web/js/base/widget/button/title/group/operator.title.js",
 				"com/fr/bi/etl/analysis/web/js/base/widget/button/title/group/operator.button.js",
 //				"com/fr/bi/etl/analysis/web/js/modules/operator/selectdata/view/node/node.level0.js",
@@ -278,6 +278,15 @@ public class ETLResourcesHelper {
 				"com/fr/bi/etl/analysis/web/js/modules4analysis/historytab/button/analysis.historybutton.js",
 				"com/fr/bi/etl/analysis/web/js/modules4analysis/historytab/button/analysis.historybutton.group.js",
 				"com/fr/bi/etl/analysis/web/js/modules4analysis/historytab/button/analysis.historybutton.all.js",
+
+				//node
+				"com/fr/bi/etl/analysis/web/js/modules4analysis/node/detail.node.level.js",
+				"com/fr/bi/etl/analysis/web/js/modules4analysis/node/node.level8.js",
+				"com/fr/bi/etl/analysis/web/js/modules4analysis/node/service.node.level.js",
+
+				//mergehistory
+				"com/fr/bi/etl/analysis/web/js/modules4analysis/mergehistory/merge.history.js",
+				"com/fr/bi/etl/analysis/web/js/modules4analysis/mergehistory/model.merge.history.js",
 
 				//selectdata
 				"com/fr/bi/etl/analysis/web/js/modules4analysis/operator/selectdata/node.level.js",

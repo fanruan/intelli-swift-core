@@ -243,7 +243,7 @@ BI.AnalysisHistoryTab = BI.inherit(BI.Widget, {
     getOperatorTypeByValue: function (v) {
         var allHistoryId = this.tabButton.allHistoryId;
         if (v === allHistoryId) {
-            return "bi.analysis_etl_merge_history";
+            return "bi.analysis_merge_history";
         }
         return this.model.getOperatorType(v);
     },

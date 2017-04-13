@@ -75,7 +75,7 @@ BI.AnalysisETLOperatorSelectData = BI.inherit(BI.Widget, {
                 width: 240
             }, {
                 el: {
-                    type: "bi.analysis_etl_operator_center",
+                    type: "bi.analysis_operator_center",
                     nameValidationController: function () {
                         return self.checkNameValid.apply(self, arguments)
                     },
@@ -106,7 +106,7 @@ BI.AnalysisETLOperatorSelectData = BI.inherit(BI.Widget, {
                             self.deleteFieldByIndex(v);
                         }
                     }, {
-                        eventName: BI.AnalysisETLOperatorCenter.EVENT_RENAME,
+                        eventName: BI.AnalysisOperatorCenter.EVENT_RENAME,
                         action: function(index, name){
                             self.renameField(index, name);
                         }
@@ -142,12 +142,12 @@ BI.AnalysisETLOperatorSelectData = BI.inherit(BI.Widget, {
                             self.fireEvent(BI.AnalysisOperatorTitle.EVENT_SAVE, arguments)
                         }
                     }, {
-                        eventName: BI.AnalysisETLOperatorCenter.DATA_CHANGE,
+                        eventName: BI.AnalysisOperatorCenter.DATA_CHANGE,
                         action: function(model){
                             self.populate(model);
                         }
                     }, {
-                        eventName: BI.AnalysisETLOperatorAbstractController.PREVIEW_CHANGE,
+                        eventName: BI.AnalysisOperatorAbstarctPane.PREVIEW_CHANGE,
                         action: function(previewModel, operatorType){
                             self.refreshPreviewData(previewModel, operatorType)
                         }

@@ -138,7 +138,7 @@ BI.AnalysisETLOperatorMergeSheetPane = BI.inherit(BI.Widget, {
         this.table.empty();
         this.table.populate(this.createTable(tables));
         this.mergeFields.populate(this.createCell(this.model.getMergeFieldsName(), "cell"), this.createCell([[tables[0].tableName,tables[1].tableName]], "header"))
-        this.fireEvent(BI.AnalysisETLOperatorAbstractController.PREVIEW_CHANGE, {
+        this.fireEvent(BI.AnalysisOperatorAbstarctPane.PREVIEW_CHANGE, {
             update: BI.bind(this.model.update, this)
         }, ETLCst.ANALYSIS_TABLE_OPERATOR_KEY.NULL)
         this.fireEvent(BI.TopPointerSavePane.EVENT_FIELD_VALID, this.model.getCopyValue("columns"))
@@ -168,7 +168,7 @@ BI.AnalysisETLOperatorMergeSheetPane = BI.inherit(BI.Widget, {
                 if(BI.isFunction(self.options.setSheetName)){
                     self.options.setSheetName(v["name"])
                 };
-                self.fireEvent(BI.AnalysisETLOperatorCenter.DATA_CHANGE, v);
+                self.fireEvent(BI.AnalysisOperatorCenter.DATA_CHANGE, v);
                 self.fireEvent(BI.AnalysisETLOperatorMergeSheetPane.STOP_EDITING);
                 if(!BI.isEqual(v["sheets"], oldSheets)) {
                     self.fireEvent(BI.AnalysisETLOperatorMergeSheetPane.MERGE_SHEET_CHANGE, v, currentTable)

@@ -1,7 +1,7 @@
 /**
  * Created by windy on 2017/4/6.
  */
-BI.AnalysisETLOperatorFilter = BI.inherit(BI.AnalysisETLOperatorAbstractPane, {
+BI.AnalysisETLOperatorFilter = BI.inherit(BI.AnalysisOperatorAbstarctPane, {
 
     props: {
         extraCls: "bi-analysis-etl-operator-select-data",

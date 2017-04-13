@@ -263,7 +263,7 @@ BI.AnalysisETLOperatorGroupPane = BI.inherit(BI.Widget, {
         } else {
             this.model.set(ETLCst.FIELDS, model.createFields());
         }
-        this.fireEvent(BI.AnalysisETLOperatorAbstractController.VALID_CHANGE, !found);
+        this.fireEvent(BI.AnalysisOperatorAbstarctPane.VALID_CHANGE, !found);
     },
 
 
@@ -328,7 +328,7 @@ BI.AnalysisETLOperatorGroupPane = BI.inherit(BI.Widget, {
     },
 
     _refreshPreview : function () {
-        this.fireEvent(BI.AnalysisETLOperatorAbstractController.PREVIEW_CHANGE, this.model, this.model.isValid() ? this.options.value.operatorType : ETLCst.ANALYSIS_TABLE_OPERATOR_KEY.ERROR)
+        this.fireEvent(BI.AnalysisOperatorAbstarctPane.PREVIEW_CHANGE, this.model, this.model.isValid() ? this.options.value.operatorType : ETLCst.ANALYSIS_TABLE_OPERATOR_KEY.ERROR)
     },
 
     getMinMaxValueForNumberCustomGroup : function (fieldName,callback) {
