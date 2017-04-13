@@ -225,7 +225,8 @@ public class XMLWriterTest extends TestCase {
             transformer.setOutputProperty("encoding", "UTF-8");
             transformer.transform(source, result);
         } catch (Exception e) {
-            e.printStackTrace();
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
+            fail();
         }
     }
 

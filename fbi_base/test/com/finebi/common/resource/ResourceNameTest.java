@@ -1,5 +1,6 @@
 package com.finebi.common.resource;
 
+import com.finebi.cube.common.log.BILoggerFactory;
 import junit.framework.TestCase;
 
 /**
@@ -23,7 +24,7 @@ public class ResourceNameTest extends TestCase {
             assertTrue(name1.equals(name2));
             assertFalse(name1.equals(name3));
         }catch (Exception e){
-            e.printStackTrace();
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
             fail();
         }
     }

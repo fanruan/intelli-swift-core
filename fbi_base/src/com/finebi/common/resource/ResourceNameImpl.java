@@ -34,8 +34,8 @@ public class ResourceNameImpl implements ResourceName {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof ResourceNameImpl)) return false;
+        if (this == o){ return true;}
+        if (!(o instanceof ResourceNameImpl)) {return false;}
 
         ResourceNameImpl that = (ResourceNameImpl) o;
 

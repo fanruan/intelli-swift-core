@@ -2,6 +2,8 @@ package com.finebi.common.persist.dom;
 
 import com.finebi.common.persist.PoolPersistentWriter;
 import com.finebi.common.resource.ResourcePool;
+import com.finebi.cube.common.log.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import org.w3c.dom.Document;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -19,6 +21,7 @@ import java.io.File;
  * @since Advanced FineBI Analysis 1.0
  */
 public abstract class PoolDomWriter<Pool extends ResourcePool> implements PoolPersistentWriter<Pool> {
+    private static final BILogger LOGGER = BILoggerFactory.getLogger(PoolDomWriter.class);
     protected String targetPath;
     protected Document document;
 
@@ -33,7 +36,7 @@ public abstract class PoolDomWriter<Pool extends ResourcePool> implements PoolPe
             document = documentBuilder.newDocument();
             writeFile(buildDocument(pool));
         } catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.error(e.getMessage(), e);
         }
     }
 
@@ -48,6 +51,7 @@ public abstract class PoolDomWriter<Pool extends ResourcePool> implements PoolPe
             transformer.setOutputProperty("encoding", "UTF-8");
             transformer.transform(source, result);
         } catch (Exception e) {
+            LOGGER.error(e.getMessage(), e);
 
         }
     }
