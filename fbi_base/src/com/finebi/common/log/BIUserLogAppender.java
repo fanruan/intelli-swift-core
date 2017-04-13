@@ -18,8 +18,9 @@ public class BIUserLogAppender extends AppenderSkeleton {
     protected BIUserLogPool logPool = BIUserLogPool.getInstance();
 
     public void close() {
-        if (this.closed)
+        if (this.closed) {
             return;
+        }
         this.closed = true;
     }
 
