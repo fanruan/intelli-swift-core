@@ -2,6 +2,7 @@ package com.finebi.cube.common.log;
 
 import com.fr.bi.stable.utils.program.BINonValueUtils;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.slf4j.Marker;
 
 /**
@@ -12,6 +13,7 @@ import org.slf4j.Marker;
  */
 public class BILogger implements Logger {
     private Logger logger;
+    private Logger poolLogger = LoggerFactory.getLogger("LogVisible");
 
     public BILogger(Logger logger) {
         BINonValueUtils.checkNull(logger);
@@ -153,9 +155,19 @@ public class BILogger implements Logger {
         logger.info(s);
     }
 
+    public void poolInfo(String s) {
+        logger.info(s);
+        poolLogger.info(s);
+    }
+
     @Override
     public void info(String s, Object o) {
         logger.info(s, o);
+    }
+
+    public void poolInfo(String s, Object o) {
+        logger.info(s, o);
+        poolLogger.info(s, o);
     }
 
     @Override
@@ -213,9 +225,21 @@ public class BILogger implements Logger {
         logger.warn(s);
     }
 
+    public void poolWarn(String s) {
+        logger.warn(s);
+        poolLogger.info(s);
+    }
+
     @Override
     public void warn(String s, Object o) {
         logger.warn(s, o);
+    }
+
+
+    public void poolWarn(String s, Object o) {
+        logger.warn(s, o);
+        poolLogger.info(s, o);
+
     }
 
     @Override
@@ -273,9 +297,20 @@ public class BILogger implements Logger {
         logger.error(s);
     }
 
+    public void poolError(String s) {
+        logger.error(s);
+        poolLogger.info(s);
+    }
+
     @Override
     public void error(String s, Object o) {
         logger.error(s, o);
+    }
+
+    public void poolError(String s, Object o) {
+        logger.error(s, o);
+        poolLogger.info(s, o);
+
     }
 
     @Override
