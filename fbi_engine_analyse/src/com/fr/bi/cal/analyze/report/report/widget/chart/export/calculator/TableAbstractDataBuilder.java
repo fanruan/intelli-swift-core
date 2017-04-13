@@ -32,7 +32,7 @@ public abstract class TableAbstractDataBuilder implements IExcelDataBuilder {
     protected List<ITableItem> items;
     protected List<ITableHeader> headers;
 
-    protected JSONObject dataJSON;
+    protected JSONObject data;
     Map<Integer, List<JSONObject>> dimAndTar;
     BIStyleSetting styleSetting;
     protected ReportNodeTree tree;
@@ -42,7 +42,7 @@ public abstract class TableAbstractDataBuilder implements IExcelDataBuilder {
     private static final String EMPTY_VALUE = "--";
 
     public TableAbstractDataBuilder(Map<Integer, List<JSONObject>> dimAndTar, JSONObject dataJSON, BIStyleSetting styleSettings) throws Exception {
-        this.dataJSON = dataJSON;
+        this.data = dataJSON;
         this.dimAndTar = dimAndTar;
         this.styleSetting = styleSettings;
     }
@@ -60,25 +60,25 @@ public abstract class TableAbstractDataBuilder implements IExcelDataBuilder {
     }
 
     public void amendment() throws JSONException {
-        JSONObject cloneData = new JSONObject(this.dataJSON.toString());
-        this.dataJSON.put("t", new JSONObject().put("c", getTopOfCrossByGroupData(cloneData.getJSONArray("c"))));
-        this.dataJSON.put("l", new JSONObject().put("s", cloneData));
+        JSONObject cloneData = new JSONObject(this.data.toString());
+        this.data.put("t", new JSONObject().put("c", getTopOfCrossByGroupData(cloneData.getJSONArray("c"))));
+        this.data.put("l", new JSONObject().put("s", cloneData));
     }
 
     protected void createTableItems() throws Exception {
         int currentLayer = 0;
         BIBasicTableItem item = new BIBasicTableItem();
         List<ITableItem> children = new ArrayList<ITableItem>();
-        if (dataJSON.has("c")) {
-            children = createCommonTableItems(dataJSON.getString("c"), currentLayer, null, dimIds, new JSONArray());
+        if (data.has("c")) {
+            children = createCommonTableItems(data.getString("c"), currentLayer, null, dimIds, new JSONArray());
         }
         item.setChildren(children);
         //汇总
-        if (!showColTotal && !dataJSON.has("s")) {
+        if (!showColTotal && !data.has("s")) {
             return;
         }
         JSONArray outerValues = new JSONArray();
-        JSONArray s = dataJSON.getJSONArray("s");
+        JSONArray s = data.getJSONArray("s");
         if (dimIds.size() > 0) {
             for (int i = 0; i < s.length(); i++) {
                 BIBasicTableItem temp = new BIBasicTableItem();
@@ -101,7 +101,7 @@ public abstract class TableAbstractDataBuilder implements IExcelDataBuilder {
             }
             BIBasicTableItem temp = new BIBasicTableItem();
             temp.setType("bi.target_body_normal_cell");
-            temp.setText(dataJSON.getJSONArray("s").getString(0));
+            temp.setText(data.getJSONArray("s").getString(0));
             temp.setDId(targetIds.get(0));
             temp.setClicked(new JSONArray().put(new JSONObject()));
             temp.setTag(UUID.randomUUID().toString());
@@ -142,7 +142,7 @@ public abstract class TableAbstractDataBuilder implements IExcelDataBuilder {
     protected void createCrossItems4OnlyCross() throws Exception {
         JSONObject crossItem = new JSONObject();
         //交叉表items
-        List<ITableItem> c = createCrossPartItems(dataJSON.getJSONArray("c"), 0, null);
+        List<ITableItem> c = createCrossPartItems(data.getJSONArray("c"), 0, null);
         crossItem.put("children", c);
         crossItems = new JSONArray().put(crossItem);
     }
@@ -189,29 +189,57 @@ public abstract class TableAbstractDataBuilder implements IExcelDataBuilder {
      * 交叉表 items and crossItems
      */
     protected void createCrossTableItems() throws Exception {
-        JSONObject top = dataJSON.getJSONObject("t");
-        JSONObject left = dataJSON.getJSONObject("l");
+        JSONObject top = data.getJSONObject("t");
+        JSONObject left = data.getJSONObject("l");
         //根据所在的层，汇总情况——是否含有汇总
         crossItemSums.add(0, new JSONArray());
         if (left.has("s")) {
             crossItemSums.set(0, new JSONArray().put(true));
         }
         JSONArray sumArray = new JSONArray();
-        if (left.has("c") && BIJsonUtils.isArray("c")) {
+        if (left.has("c") && BIJsonUtils.isArray(left.getString("c"))) {
             sumArray = left.getJSONArray("c");
         }
         initCrossItemsSum(0, sumArray, crossItemSums);
         //交叉表items
-        createCrossItems(top);
+        this.crossItems = createCrossItems(top);
         //用cross parent value来对应到联动的时候的列表头值
         JSONArray crossPV = new JSONArray();
         parseCrossItem2Array(crossItems, crossPV, new JSONArray());
         //无行表头 有列表头、指标
         if (isOnlyCrossAndTarget()) {
-            items = createItems4OnlyCrossAndTarget(this.dataJSON, crossPV);
+            items = createItems4OnlyCrossAndTarget(this.data, crossPV);
             return;
         }
         createItems4Cross(left, crossPV);
+    }
+
+    private JSONArray createCrossItems(JSONObject top) throws Exception {
+        JSONObject crossItem = new JSONObject();
+        List children = createCrossPartItems(top.getJSONArray("c"), 0, new ReportNode());
+        crossItem.put("children", children);
+        if (showColTotal) {
+            if (isOnlyCrossAndTarget()) {
+                BIBasicTableItem item = new BIBasicTableItem();
+                item.setType("bi.page_table_cell");
+                item.setText("summary");
+                item.setStyle(null);
+                crossItem.put("children", crossItem.getJSONArray("children").put(item.createJSON()));
+            } else {
+                for (String targetId : targetIds) {
+                    BIBasicTableItem item = new BIBasicTableItem();
+                    item.setType("bi.normal_header_cell");
+                    item.setText("summary");
+                    item.setStyle(null);
+                    item.setTag(UUID.randomUUID().toString());
+                    item.setSum(true);
+                    item.setDId(targetId);
+//                    crossItem.put("children", crossItem.getJSONArray("children").put(item.createJSON()));
+                    crossItem.getJSONArray("children").put(item.createJSON());
+                }
+            }
+        }
+        return new JSONArray().put(crossItem);
     }
 
     private void createItems4Cross(JSONObject left, JSONArray crossPV) throws Exception {
@@ -280,35 +308,6 @@ public abstract class TableAbstractDataBuilder implements IExcelDataBuilder {
             }
         }
     }
-
-    private void createCrossItems(JSONObject top) throws Exception {
-        JSONObject crossItem = new JSONObject();
-        List children = createCrossPartItems(top.getJSONArray("c"), 0, new ReportNode());
-        crossItem.put("children", children);
-        if (showColTotal) {
-            if (isOnlyCrossAndTarget()) {
-                BIBasicTableItem item = new BIBasicTableItem();
-                item.setType("bi.page_table_cell");
-                item.setText("summary");
-                item.setStyle(null);
-                crossItem.put("children", crossItem.getJSONArray("children").put(item.createJSON()));
-            } else {
-                for (String targetId : targetIds) {
-                    BIBasicTableItem item = new BIBasicTableItem();
-                    item.setType("bi.normal_header_cell");
-                    item.setText("summary");
-                    item.setStyle(null);
-                    item.setTag(UUID.randomUUID().toString());
-                    item.setSum(true);
-                    item.setDId(targetId);
-//                    crossItem.put("children", crossItem.getJSONArray("children").put(item.createJSON()));
-                    crossItem.getJSONArray("children").put(item.createJSON());
-                }
-            }
-        }
-        crossItems = new JSONArray().put(crossItem);
-    }
-
 
     //仅有列表头和指标 l: {s: {c: [{s: [1, 2]}, {s: [3, 4]}], s: [100, 200]}}
     private List<ITableItem> createItems4OnlyCrossAndTarget(JSONObject dataJSON, JSONArray crossPV) throws Exception {
@@ -518,7 +517,7 @@ public abstract class TableAbstractDataBuilder implements IExcelDataBuilder {
                 initCrossItemsSum(currentLayer, v.getJSONArray("c"), crossItemsSums);
             }
             if (crossItemsSums.size() <= currentLayer) {
-                crossItemsSums.add(new JSONArray());
+                crossItemsSums.add(currentLayer, new JSONArray());
             }
             crossItemsSums.set(currentLayer, crossItemsSums.get(currentLayer).put(v.has("s")));
         }
@@ -536,7 +535,7 @@ public abstract class TableAbstractDataBuilder implements IExcelDataBuilder {
             boolean flag;
             boolean hasC = child.has("c");
             boolean existInTargets = targetIds.contains(child.getString("n"));
-            boolean existInDims = crossDimIds.contains(child.getString("n"));
+            boolean existInDims = crossDimIds.contains(child.getString("n")) || crossDimIds.size() <= currentLayer - 1;
             flag = !hasC && (existInTargets || existInDims);
             if (flag) {
                 return items;

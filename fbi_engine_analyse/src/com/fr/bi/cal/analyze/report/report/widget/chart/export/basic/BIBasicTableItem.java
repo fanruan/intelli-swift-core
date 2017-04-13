@@ -131,10 +131,10 @@ public class BIBasicTableItem implements ITableItem {
 
     @Override
     public JSONObject createJSON() throws Exception {
-        JSONArray childs = new JSONArray();
-        if (null != children) {
-            for (ITableItem item : children) {
-                childs.put(item.createJSON());
+        JSONArray children = new JSONArray();
+        if (null != this.children) {
+            for (ITableItem item : this.children) {
+                children.put(item.createJSON());
             }
         }
         JSONObject jo = new JSONObject();
@@ -143,7 +143,7 @@ public class BIBasicTableItem implements ITableItem {
         jo.put("text", text);
         jo.put("type", type);
         jo.put("values", value);
-        jo.put("children", childs);
+        jo.put("children", children);
         jo.put("isSum", isSum);
         jo.put("isCross", isCross);
         return jo;

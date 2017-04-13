@@ -200,7 +200,7 @@ public class BIDetailWidget extends BIAbstractWidget {
             JSONObject dimObject = dims.getJSONObject(view.getString(i));
             dimObject.put("did", view.getString(i));
             this.dimensions[i] = BIDetailTargetFactory.parseTarget(dimObject, userId);
-            JSONObject dimensionMap = dimObject.getJSONObject("dimension_map");
+            JSONObject dimensionMap = dimObject.getJSONObject("dimensionMap");
             Iterator it = dimensionMap.keys();
             JSONArray relationJa = dimensionMap.optJSONObject(it.next().toString()).getJSONArray("targetRelation");
             List<BITableRelation> relationList = new ArrayList<BITableRelation>();

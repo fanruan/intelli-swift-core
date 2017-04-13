@@ -63,7 +63,7 @@ public class DetailTableBuilder extends TableAbstractDataBuilder {
     }
 
     protected void createTableItems() throws Exception {
-        JSONArray array = dataJSON.getJSONArray("value");
+        JSONArray array = data.getJSONArray("value");
         for (int i = 0; i < array.length(); i++) {
             ITableItem rowItem = createRowItem(array.getJSONArray(i));
             items.add(rowItem);
