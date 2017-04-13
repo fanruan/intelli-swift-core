@@ -56,13 +56,18 @@ public class NameImp implements Name {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o){ return true;}
-        if (!(o instanceof NameImp)) {return false;}
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof NameImp)) {
+            return false;
+        }
 
         NameImp nameImp = (NameImp) o;
 
-        if (selfNameValue != null ? !selfNameValue.equals(nameImp.selfNameValue) : nameImp.selfNameValue != null)
+        if (selfNameValue != null ? !selfNameValue.equals(nameImp.selfNameValue) : nameImp.selfNameValue != null) {
             return false;
+        }
         return parentNameProvider != null ? parentNameProvider.equals(nameImp.parentNameProvider) : nameImp.parentNameProvider == null;
     }
 
