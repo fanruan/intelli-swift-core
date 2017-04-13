@@ -46,7 +46,7 @@ BI.AnalysisETLOperatorUsePartPane = BI.inherit(BI.Widget, {
                     listeners: [{
                         eventName: BI.SelectPartFieldList.EVENT_CHANGE,
                         action: function(){
-                            self.fireEvent(BI.AnalysisOperatorAbstarctPane.PREVIEW_CHANGE, {
+                            self.fireEvent(BI.AnalysisETLOperatorAbstractController.PREVIEW_CHANGE, {
                                 isDefaultValue: BI.bind(self.isDefaultValue, self),
                                 update: BI.bind(self.update, self)
                             }, self.options.value.operatorType)
@@ -107,7 +107,7 @@ BI.AnalysisETLOperatorUsePartPane = BI.inherit(BI.Widget, {
             this.fieldList.setValue(value);
         }
         this.doCheck()
-        this.fireEvent(BI.AnalysisOperatorAbstarctPane.PREVIEW_CHANGE, {
+        this.fireEvent(BI.AnalysisETLOperatorAbstractController.PREVIEW_CHANGE, {
             isDefaultValue: BI.bind(this.isDefaultValue, this),
             update: BI.bind(this.update, this)
         }, this.options.value.operatorType)

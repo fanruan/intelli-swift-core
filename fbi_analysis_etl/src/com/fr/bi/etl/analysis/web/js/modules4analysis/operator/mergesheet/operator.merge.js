@@ -1,7 +1,7 @@
 /**
  * Created by windy on 2017/4/12.
  */
-BI.AnalysisETLOperatorMergeSheet = BI.inherit(BI.AnalysisOperatorAbstarctPane, {
+BI.AnalysisETLOperatorMergeSheet = BI.inherit(BI.AnalysisETLOperatorAbstractPane, {
     _defaultConfig: function () {
         return BI.extend(BI.AnalysisETLOperatorMergeSheet.superclass._defaultConfig.apply(this, arguments), {
             extraCls: "bi-analysis-etl-operator-select-data",

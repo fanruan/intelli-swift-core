@@ -146,7 +146,7 @@ BI.AnalysisETLOperatorFilterPane = BI.inherit(BI.Widget, {
     operatorChange : function (v) {
         var operator = this.model.get("operator");
         this.model.set('operator', BI.extend(operator, {type: v}));
-        this.fireEvent(BI.AnalysisOperatorAbstarctPane.PREVIEW_CHANGE, {
+        this.fireEvent(BI.AnalysisETLOperatorAbstractController.PREVIEW_CHANGE, {
             isDefaultValue: BI.bind(this.isDefaultValue, this)
         }, this.options.value.operatorType);
     },
@@ -165,7 +165,7 @@ BI.AnalysisETLOperatorFilterPane = BI.inherit(BI.Widget, {
             var parent = this.model.get(ETLCst.PARENTS)[0];
             this.fireEvent(BI.TopPointerSavePane.EVENT_FIELD_VALID, BI.deepClone(parent[ETLCst.FIELDS]))
         }
-        this.fireEvent(BI.AnalysisOperatorAbstarctPane.VALID_CHANGE, !invalid[0]);
+        this.fireEvent(BI.AnalysisETLOperatorAbstractController.VALID_CHANGE, !invalid[0]);
     },
 
     isDefaultValue : function () {
@@ -208,7 +208,7 @@ BI.AnalysisETLOperatorFilterPane = BI.inherit(BI.Widget, {
             this.content.populate(items, fieldItems);
         }
         this.doCheck()
-        this.fireEvent(BI.AnalysisOperatorAbstarctPane.PREVIEW_CHANGE, {
+        this.fireEvent(BI.AnalysisETLOperatorAbstractController.PREVIEW_CHANGE, {
             update: BI.bind(this.update, this),
             isDefaultValue: BI.bind(this.isDefaultValue, this)
         }, this.options.value.operatorType)

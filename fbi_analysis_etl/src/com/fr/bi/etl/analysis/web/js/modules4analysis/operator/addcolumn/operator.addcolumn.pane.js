@@ -149,7 +149,7 @@ BI.AnalysisETLOperatorAddColumnPane = BI.inherit(BI.Widget, {
                 this.allColumnsPane.populate(this.model.getAddColumns());
                 break;
         }
-        this.fireEvent(BI.AnalysisOperatorAbstarctPane.PREVIEW_CHANGE, this.model, this.model.isValid() ? this.options.value.operatorType : ETLCst.ANALYSIS_TABLE_OPERATOR_KEY.ERROR)
+        this.fireEvent(BI.AnalysisETLOperatorAbstractController.PREVIEW_CHANGE, this.model, this.model.isValid() ? this.options.value.operatorType : ETLCst.ANALYSIS_TABLE_OPERATOR_KEY.ERROR)
     },
 
     populate : function (m, options) {
@@ -177,7 +177,7 @@ BI.AnalysisETLOperatorAddColumnPane = BI.inherit(BI.Widget, {
         } else {
             this.model.set(ETLCst.FIELDS, [])
         }
-        this.fireEvent(BI.AnalysisOperatorAbstarctPane.VALID_CHANGE, !found);
+        this.fireEvent(BI.AnalysisETLOperatorAbstractController.VALID_CHANGE, !found);
     },
 
     getDefaultCardName : function () {
@@ -198,7 +198,7 @@ BI.AnalysisETLOperatorAddColumnPane = BI.inherit(BI.Widget, {
         this.model.deleteColumnByName(name);
         this._cancelEditColumn();
         this._doModelCheck();
-        this.fireEvent(BI.AnalysisOperatorAbstarctPane.PREVIEW_CHANGE, this.model, this.model.isValid() ? this.options.value.operatorType :  ETLCst.ANALYSIS_TABLE_OPERATOR_KEY.ERROR)
+        this.fireEvent(BI.AnalysisETLOperatorAbstractController.PREVIEW_CHANGE, this.model, this.model.isValid() ? this.options.value.operatorType :  ETLCst.ANALYSIS_TABLE_OPERATOR_KEY.ERROR)
         this.fireEvent(BI.TopPointerSavePane.EVENT_CHECK_SAVE_STATUS, this.model.getAddColumns().length !== 0, BI.i18nText('BI-Basic_Please') + BI.i18nText('BI-Add_Column'))
     },
 
@@ -254,7 +254,7 @@ BI.AnalysisETLOperatorAddColumnPane = BI.inherit(BI.Widget, {
             this.model.addColumn(column);
         }
         this._doModelCheck();
-        this.fireEvent(BI.AnalysisOperatorAbstarctPane.PREVIEW_CHANGE, this.model, this.model.isValid() ? this.options.value.operatorType :  ETLCst.ANALYSIS_TABLE_OPERATOR_KEY.ERROR)
+        this.fireEvent(BI.AnalysisETLOperatorAbstractController.PREVIEW_CHANGE, this.model, this.model.isValid() ? this.options.value.operatorType :  ETLCst.ANALYSIS_TABLE_OPERATOR_KEY.ERROR)
         this._cancelEditColumn();
         if(!isEdit) {
             this.card.getSelectedTab().scrollToEnd();

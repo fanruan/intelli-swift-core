@@ -1,7 +1,7 @@
 /**
  * Created by windy on 2017/4/10.
  */
-BI.AnalysisETLOperatorAddColumn = BI.inherit(BI.AnalysisOperatorAbstarctPane, {
+BI.AnalysisETLOperatorAddColumn = BI.inherit(BI.AnalysisETLOperatorAbstractPane, {
     _defaultConfig: function () {
         return BI.extend(BI.AnalysisETLOperatorAddColumn.superclass._defaultConfig.apply(this, arguments), {
             extraCls: "bi-analysis-etl-operator-select-data",
