@@ -56,8 +56,8 @@ public class NameImp implements Name {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof NameImp)) return false;
+        if (this == o){ return true;}
+        if (!(o instanceof NameImp)) {return false;}
 
         NameImp nameImp = (NameImp) o;
 

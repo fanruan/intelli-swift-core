@@ -21,8 +21,8 @@ public class BlankName implements Name {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof BlankName)) return false;
+        if (this == o){ return true;}
+        if (!(o instanceof BlankName)){ return false;}
 
         BlankName blankName = (BlankName) o;
 
