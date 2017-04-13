@@ -5,6 +5,9 @@ import com.fr.bi.common.world.people.PersonOld1;
 import com.fr.bi.stable.utils.program.BIConstructorUtils;
 import junit.framework.TestCase;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * Created by neil on 17-3-26.
  */
@@ -15,14 +18,20 @@ public class XMLRenameDemo extends TestCase{
         renameClassAndFieldName();
         Object o = readNewObjectFromXml();
 
-        assertTrue(o instanceof Person);
-        assertTrue(PersonOld1.getChenHe().getNameOld().equals(((Person)o).getName()));
-        assertTrue(PersonOld1.getChenHe().getAge() == ((Person)o).getAge());
-        assertTrue(PersonOld1.getChenHe().getMale() == ((Person)o).getMale());
+        assertTrue(o instanceof Map);
+        assertTrue(((Map)o).get("chenhe") instanceof Person);
+        Person person = (Person)((Map)o).get("chenhe");
+
+        assertTrue(PersonOld1.getChenHe().getNameOld().equals(person.getName()));
+        assertTrue(PersonOld1.getChenHe().getAge() == person.getAge());
+        assertTrue(PersonOld1.getChenHe().getMale() == person.getMale());
     }
 
     private void writeObjectToXml() {
-        XMLWriterTest.generate(PersonOld1.getChenHe(), "PersonRenameDemo");
+        Map<String,PersonOld1> personOlds = new HashMap<String, PersonOld1>();
+        personOlds.put("chenhe",PersonOld1.getChenHe());
+        personOlds.put("ab",PersonOld1.getAB());
+        XMLWriterTest.generate(personOlds, "PersonRenameDemo");
     }
 
     private void renameClassAndFieldName() {
@@ -31,7 +40,7 @@ public class XMLRenameDemo extends TestCase{
     }
 
     private Object readNewObjectFromXml() throws Exception{
-        Class objClass = Class.forName(Person.class.getName());
+        Class objClass = HashMap.class;
         Object o;
         o = BIConstructorUtils.forceConstructObject(objClass);
         o = XMLWriterTest.get(o, "PersonRenameDemo");

@@ -12,8 +12,6 @@ import java.util.Map;
  */
 public class BIBeanXMLReaderWrapper extends BIBeanReaderWrapper {
     private Boolean isDisposed;
-    private String beanHistoryFilePath;
-
     public Boolean getDisposed() {
         return isDisposed;
     }
@@ -25,18 +23,6 @@ public class BIBeanXMLReaderWrapper extends BIBeanReaderWrapper {
     public BIBeanXMLReaderWrapper(Object bean) {
         super(bean, bean.getClass());
         isDisposed = false;
-        beanHistoryFilePath = BIBeanHistoryManager.getDefaultFileName();
-    }
-
-    public BIBeanXMLReaderWrapper(Object bean, String beanHistoryFilePath) {
-        super(bean, bean.getClass());
-        isDisposed = false;
-
-        this.beanHistoryFilePath = beanHistoryFilePath;
-    }
-
-    public String getBeanHistoryFilePath() {
-        return beanHistoryFilePath;
     }
 
     public void setBean(Object bean) {
