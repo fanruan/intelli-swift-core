@@ -164,8 +164,8 @@ public class BIDetailWidget extends BIAbstractWidget {
             data = new BIDetailReportSetting();
             data.parseJSON(jo);
         }
-        if (jo.has("sort_sequence")) {
-            JSONArray ja = jo.getJSONArray("sort_sequence");
+        if (jo.has("sortSequence")) {
+            JSONArray ja = jo.getJSONArray("sortSequence");
             int len = ja.length();
             sortTargets = new String[len];
             for (int i = 0; i < len; i++) {
@@ -200,7 +200,7 @@ public class BIDetailWidget extends BIAbstractWidget {
             JSONObject dimObject = dims.getJSONObject(view.getString(i));
             dimObject.put("did", view.getString(i));
             this.dimensions[i] = BIDetailTargetFactory.parseTarget(dimObject, userId);
-            JSONObject dimensionMap = dimObject.getJSONObject("dimension_map");
+            JSONObject dimensionMap = dimObject.getJSONObject("dimensionMap");
             Iterator it = dimensionMap.keys();
             JSONArray relationJa = dimensionMap.optJSONObject(it.next().toString()).getJSONArray("targetRelation");
             List<BITableRelation> relationList = new ArrayList<BITableRelation>();
