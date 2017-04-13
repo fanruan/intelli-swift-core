@@ -2,7 +2,8 @@ BI.DynamictabController = BI.inherit(BI.MVCController, {
 
 
     _defaultConfig: function () {
-        return BI.extend(BI.DynamictabController.superclass._defaultConfig.apply(this, arguments), {});
+        return BI.extend(BI.DynamictabController.superclass._defaultConfig.apply(this, arguments), {
+        });
     },
 
     _init: function () {
@@ -11,36 +12,36 @@ BI.DynamictabController = BI.inherit(BI.MVCController, {
         this.renameController = new BI.ETLRenamePopoverController();
     },
 
-    selectFirstTab: function (widget, model) {
+    selectFirstTab : function (widget, model) {
         this.selectTabByIndex(0, widget, model);
     },
 
-    dealWithCombo: function (v, button, widget, model) {
+    dealWithCombo : function (v, button, widget, model) {
         var self = this;
         switch (v) {
-            case ETLCst.ANALYSIS_TABLE_SET.DELETE: {
+            case ETLCst.ANALYSIS_TABLE_SET.DELETE:{
                 var items = model.get(ETLCst.ITEMS);
-                if (items.length === 1) {
-                    BI.Msg.alert(BI.i18nText('BI-Cannot-Delete'), BI.i18nText('BI-Cannot-Delete-Last'))
+                if(items.length === 1) {
+                    BI.Msg.alert(BI.i18nText('BI-Cannot-Delete'),  BI.i18nText('BI-Cannot-Delete-Last'))
                     break;
                 }
                 var id = button.getValue();
-                BI.Msg.confirm(BI.i18nText("BI-Confirm_Delete"), BI.i18nText("BI-Confirm_Delete") + model.getName(id) + "?", function (v) {
-                    if (v === true) {
+                BI.Msg.confirm(BI.i18nText("BI-Confirm_Delete"),  BI.i18nText("BI-Confirm_Delete") +  model.getName(id) + "?", function (v) {
+                    if(v === true) {
                         self._removeSheet(id, widget, model);
                     }
                 })
                 break;
             }
-            case ETLCst.ANALYSIS_TABLE_SET.COPY: {
+            case ETLCst.ANALYSIS_TABLE_SET.COPY:{
                 this._copySheet(button.getValue(), widget, model);
                 break;
             }
-            case ETLCst.ANALYSIS_TABLE_SET.RENAME: {
+            case ETLCst.ANALYSIS_TABLE_SET.RENAME:{
                 var id = button.getValue();
                 this.renameController.showPopover(model.getName(id), function (v) {
                     return !model.isNameExists(v, id);
-                }, function (v) {
+                }, function(v) {
                     self.renameSheet(v, id, widget, model)
                 });
                 break;
@@ -48,18 +49,18 @@ BI.DynamictabController = BI.inherit(BI.MVCController, {
         }
     },
 
-    renameSheet: function (newName, id, widget, model) {
+    renameSheet : function (newName, id, widget, model) {
         var button = widget.tabButton.getButton(id);
         button.setText(newName);
         model.reName(id, newName)
         this._resize(widget);
     },
 
-    getSheetName: function (id, widget, model) {
+    getSheetName : function (id,  widget, model ){
         return model.getName(id)
     },
 
-    _copySheet: function (id, widget, model) {
+    _copySheet : function(id, widget, model) {
         var item = model.copyItem(id)
         this._addNewButton(item, widget, model);
         this._resize(widget)
@@ -68,28 +69,28 @@ BI.DynamictabController = BI.inherit(BI.MVCController, {
         this._refreshButtonStatus(widget, model)
     },
 
-    _refreshButtonStatus: function (widget, model) {
+    _refreshButtonStatus : function (widget, model) {
         this._getButtonController(widget).setMergeEnable(model.getValue(ETLCst.ITEMS).length > 1);
     },
 
-    _removeSheet: function (id, widget, model) {
+    _removeSheet : function (id, widget, model){
         var deletePos = model.removeItem(id)
-        if (deletePos < 0) {
+        if(deletePos < 0) {
             return;
         }
         var buttonGroup = this._getTabButtonGroup(widget);
         var currentTabValue = buttonGroup.getValue()[0];
         buttonGroup.removeItems(id)
-        if (currentTabValue === id) {
+        if(currentTabValue === id) {
             this.selectTabByIndex(deletePos, widget, model);
         }
         this._resize(widget);
         this._refreshButtonStatus(widget, model)
     },
 
-    selectTabByIndex: function (index, widget, model) {
+    selectTabByIndex : function (index, widget, model) {
         var items = model.get(ETLCst.ITEMS);
-        if (items.length === 0) {
+        if(items.length === 0) {
             return;
         }
         var len = Math.max(0, Math.min(items.length - 1, index))
@@ -97,7 +98,7 @@ BI.DynamictabController = BI.inherit(BI.MVCController, {
     },
 
 
-    addNewSheet: function (v, widget, model) {
+    addNewSheet : function (v, widget, model) {
         var value = model.addItem(v);
         this._addNewButton(value, widget, model);
         this._resize(widget)
@@ -106,57 +107,56 @@ BI.DynamictabController = BI.inherit(BI.MVCController, {
         this._refreshButtonStatus(widget, model)
     },
 
-    _addNewButton: function (value, widget, model) {
+    _addNewButton : function(value, widget, model) {
         var o = widget.options;
         var item = {
-            type: "bi.sheet_button",
+            type:"bi.sheet_button",
             height: o.height - 1,
-            value: value,
-            text: model.getName(value)
+            value : value,
+            text : model.getName(value)
         }
         var button = BI.createWidget(item);
         this.registerComboEvent(button, widget, model);
         this._getTabButtonGroup(widget).addItems([button]);
     },
 
-    _getTabButtonGroup: function (widget) {
+    _getTabButtonGroup : function (widget) {
         return widget.tabButton.tab;
     },
 
-    _getButtonController: function (widget) {
+    _getButtonController : function (widget) {
         return widget.tabButton.controller;
     },
 
-    _resize: function (widget) {
+    _resize : function(widget) {
         this._getButtonController(widget).resize()
     },
 
 
-    hasMergeHistory: function (v, widget, model) {
+    hasMergeHistory : function (v, widget, model) {
         return model.hasMergeHistory(v);
     },
 
-    resize: function (widget) {
+    resize : function (widget) {
         this._resize(widget);
     },
 
-    registerComboEvent: function (button, widget, model) {
+    registerComboEvent : function (button, widget, model) {
         var self = this;
-        button.on(BI.WidgetCombo.EVENT_CHANGE, function (v) {
-            ;
+        button.on(BI.WidgetCombo.EVENT_CHANGE, function(v){;
             self.dealWithCombo(v, button, widget, model);
         });
     },
 
     //FIXME 表格的数据结构现在取第一个选的字段处理,这里只是处理下demo
-    _createTables: function (widget, model) {
+    _createTables : function (widget, model) {
         return model.update()[ETLCst.ITEMS];
     },
 
-    deleteMergeSheet: function (v, widget, model) {
+    deleteMergeSheet : function (v, widget, model) {
         var oldMergeTable = model.getSheetData(v);
         var parents = oldMergeTable[ETLCst.PARENTS];
-        while (parents.length === 1) {
+        while(parents.length === 1) {
             parents = parents[0][ETLCst.PARENTS];
         }
         var self = this;
@@ -167,14 +167,14 @@ BI.DynamictabController = BI.inherit(BI.MVCController, {
         this.selectFirstTab(widget, model)
     },
 
-    changeMergeSheet: function (data, oldMergeTable, v, widget, model) {
+    changeMergeSheet : function (data, oldMergeTable, v, widget, model) {
         var sheets = data["sheets"];
         var self = this;
         BI.each(sheets, function (idx, item) {
             self._removeSheet(item, widget, model);
         });
         BI.each(oldMergeTable, function (idx, item) {
-            if (BI.indexOf(sheets, item.value) < 0) {
+            if(BI.indexOf(sheets, item.value) < 0) {
                 self.addNewSheet(item, widget, model);
             }
         });
@@ -182,27 +182,27 @@ BI.DynamictabController = BI.inherit(BI.MVCController, {
 
     },
 
-    setTabValid: function (v, widget, model) {
+    setTabValid : function (v, widget, model) {
         var isValid = model.get(v).isModelValid();
         var button = widget.tabButton.getButton(v);
         button.setValid(isValid)
     },
 
-    saveMergeSheet: function (v, widget, model) {
+    saveMergeSheet : function (v, widget, model) {
         var sheets = v["sheets"];
         var self = this;
         BI.each(sheets, function (idx, item) {
             self._removeSheet(item, widget, model);
         })
-        self.addNewSheet(v, widget, model)
+        self.addNewSheet(v,  widget, model)
     },
 
-    chooseSheetForMerge: function (widget, model) {
+    chooseSheetForMerge : function (widget, model) {
         var tabs = model.get(ETLCst.ITEMS)
         var items = BI.map(tabs, function (idx, item) {
             return {
                 text: model.getName(item),
-                value: item
+                value:item
             }
         });
 
@@ -232,18 +232,18 @@ BI.DynamictabController = BI.inherit(BI.MVCController, {
             }
             m[ETLCst.PARENTS] = getTablesBySheetId(v);
             BI.createWidget({
-                type: "bi.analysis_etl_merge_sheet",
-                element: BI.Layers.create(BICst.ANALYSIS_MERGE_LAYER, "body"),
-                model: m,
-                controller: {
-                    saveHandler: function (v) {
+                type : "bi.analysis_etl_merge_sheet",
+                element:BI.Layers.create(BICst.ANALYSIS_MERGE_LAYER, "body"),
+                model :m,
+                controller : {
+                    saveHandler : function(v) {
                         self.saveMergeSheet(v, widget, model)
                     }
                 }
             })
             BI.Layers.show(BICst.ANALYSIS_MERGE_LAYER)
         }
-        if (items.length === 2) {
+        if(items.length === 2) {
             var value = [];
             BI.each(items, function (idx, item) {
                 value.push(item.value)
@@ -259,50 +259,39 @@ BI.DynamictabController = BI.inherit(BI.MVCController, {
             })
             popover.on(BI.AnalysisETLMergeSheetPopover.EVENT_CHANGE, func);
             BI.Popovers.remove("etlChooseSheetForMerge");
-            BI.Popovers.create("etlChooseSheetForMerge", popover, {
-                width: 500,
-                height: 400,
-                container: BI.Layers.create(ETLCst.ANALYSIS_POPUP_FOLATBOX_LAYER)
-            }).open("etlChooseSheetForMerge");
+            BI.Popovers.create("etlChooseSheetForMerge", popover, {width : 500, height : 400, container: BI.Layers.create(ETLCst.ANALYSIS_POPUP_FOLATBOX_LAYER)}).open("etlChooseSheetForMerge");
             BI.Layers.show(ETLCst.ANALYSIS_POPUP_FOLATBOX_LAYER)
         }
     },
 
-    getCurrentTables: function (widget, model) {
+    getCurrentTables : function (widget, model) {
         var tables = this._createTables(widget, model);
-        var id = this._getTabButtonGroup(widget).getValue()[0];
+        var id =   this._getTabButtonGroup(widget).getValue()[0];
         var others = [];
         var currentTable = null;
         BI.each(tables, function (idx, item) {
-            if (item.value === id) {
+            if(item.value === id) {
                 currentTable = item;
             } else {
                 others.push(item)
             }
         })
         return {
-            currentTable: currentTable,
-            others: others
+            currentTable :currentTable,
+            others : others
         }
     },
 
-    populate: function (widget, model) {
-        var self = this, o = widget.options;
-        var items = [];
-        BI.each(model.getValue(ETLCst.ITEMS), function (idx, value) {
-            var button = BI.createWidget({
-                type: "bi.sheet_button",
-                height: o.height - 1,
-                value: value,
-                text: model.getName(value)
-            });
-            self.registerComboEvent(button, widget, model);
-            items.push(button);
+    populate : function (widget, model) {
+        var items = model.getValue(ETLCst.ITEMS);
+        this._getTabButtonGroup(widget).empty();
+        var self = this;
+        BI.each(items, function(idx, item){
+            self._addNewButton(item, widget, model)
         });
-        this._getTabButtonGroup(widget).populate(items);
     },
 
-    deferChange: function (widget, model) {
+    deferChange : function (widget, model) {
         this._resize(widget)
         this._getButtonController(widget).scrollToEnd();
         this.selectFirstTab(widget, model);
