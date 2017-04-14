@@ -8,8 +8,8 @@ BI.MergeHistory = BI.inherit(BI.Widget,  {
     },
 
     render: function(){
-        var self = this;
-        this.model = new BI.AnalysisETLMergeHistoryModel({});
+        var self = this, o = this.options;
+        this.model = new BI.AnalysisETLMergeHistoryModel(o.items);
         this.trigger = BI.Utils.triggerPreview();
         return {
             type:"bi.htape",

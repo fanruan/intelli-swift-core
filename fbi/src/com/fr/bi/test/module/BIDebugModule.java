@@ -75,10 +75,4 @@ public class BIDebugModule extends AbstractModule {
     public void clearAnalysisETLCache(long userId) {
 
     }
-
-    @Override
-    public Collection<BIPackageID> getAuthAvailablePackID(long userId) {
-        return getAvailablePackID(userId);
-    }
-
 }

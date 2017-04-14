@@ -2,10 +2,10 @@
  * Created by Young's on 2017/4/5.
  */
 BI.AnalysisMainPane = BI.inherit(BI.Widget, {
-    _constant : {
-        buttonHeight:30,
-        buttonWidth:90,
-        titleHeight:40,
+    _constant: {
+        buttonHeight: 30,
+        buttonWidth: 90,
+        titleHeight: 40,
         WARNING: 1,
         RENAME: 2,
         MULTI_SHEET: 3
@@ -15,34 +15,34 @@ BI.AnalysisMainPane = BI.inherit(BI.Widget, {
         baseCls: "bi-analysis-etl-main bi-analysis-etl-main-animate"
     },
 
-    render: function() {
+    render: function () {
         var self = this, c = this._constant, o = this.options;
         this.model = new BI.AnalysisMainPaneModel(o.model);
         this.saveButton = BI.createWidget({
-            type:"bi.button",
+            type: "bi.button",
             height: this._constant.buttonHeight,
             width: this._constant.buttonWidth,
-            text:BI.i18nText("BI-Basic_Save")
+            text: BI.i18nText("BI-Basic_Save")
         });
 
-        this.saveButton.on(BI.Button.EVENT_CHANGE, function(){
-            if (self.model.getSheetLength() > 1){
+        this.saveButton.on(BI.Button.EVENT_CHANGE, function () {
+            if (self.getSheetLength() > 1) {
                 self.confirmCombo.showView();
                 popupTab.setSelect(c.MULTI_SHEET);
-            } else if (BI.isNull(self.model.getId())){
+            } else if (BI.isNull(self.model.getId())) {
                 self.confirmCombo.showView();
                 popupTab.setSelect(c.RENAME);
                 self.pane.populate(self.model.getTableDefaultName());
                 self.pane.setTemplateNameFocus();
             } else {
                 popupTab.setSelect(c.WARNING);
-                BI.ETLReq.reqCheckTableInUse(self.model.getValue(), function(data){
+                BI.ETLReq.reqCheckTableInUse(self.getValue(), function (data) {
                     var items = data["usedTemplate"] || [];
-                    if(BI.isEmptyArray(items)){
+                    if (BI.isEmptyArray(items)) {
                         self.doSave();
-                    }else{
+                    } else {
                         self.confirmCombo.showView();
-                        items = BI.map(items, function(idx, name){
+                        items = BI.map(items, function (idx, name) {
                             return {
                                 type: "bi.label",
                                 text: name,
@@ -72,9 +72,9 @@ BI.AnalysisMainPane = BI.inherit(BI.Widget, {
             value: BI.i18nText(BI.i18nText("BI-Basic_Sure")),
             handler: function () {
                 self.confirmCombo.hideView();
-                switch (popupTab.getSelect()){
+                switch (popupTab.getSelect()) {
                     case c.MULTI_SHEET:
-                        if (BI.isNull(self.model.get('id'))){
+                        if (BI.isNull(self.model.get('id'))) {
                             popupTab.setSelect(c.RENAME);
                             self.pane.populate(self.model.getTableDefaultName());
                             self.confirmCombo.showView();
@@ -129,56 +129,58 @@ BI.AnalysisMainPane = BI.inherit(BI.Widget, {
         });
 
         var cancelButton = BI.createWidget({
-            type:"bi.button",
+            type: "bi.button",
             height: this._constant.buttonHeight,
             width: this._constant.buttonWidth,
-            level:"ignore",
-            text:BI.i18nText("BI-Basic_Cancel"),
-            handler : function(e){
+            level: "ignore",
+            text: BI.i18nText("BI-Basic_Cancel"),
+            handler: function () {
                 self.doCancel();
             }
         });
 
         var title = BI.createWidget({
-            type:"bi.right",
-            height:this._constant.titleHeight,
+            type: "bi.right",
+            height: this._constant.titleHeight,
             rgap: 20,
-            items : [{
-                type:"bi.center_adapt",
-                cls:"bi-analysis-etl-main-save-button",
-                items:[this.confirmCombo],
-                height:this._constant.titleHeight
+            items: [{
+                type: "bi.center_adapt",
+                cls: "bi-analysis-etl-main-save-button",
+                items: [this.confirmCombo],
+                height: this._constant.titleHeight
             }, {
-                type:"bi.center_adapt",
-                cls:"bi-analysis-etl-main-save-button",
-                items:[cancelButton],
-                height:this._constant.titleHeight
+                type: "bi.center_adapt",
+                cls: "bi-analysis-etl-main-save-button",
+                items: [cancelButton],
+                height: this._constant.titleHeight
             }]
         });
-        self.tab = BI.createWidget({
+
+        this.dynamicTab = BI.createWidget({
             type: "bi.analysis_dynamic_tab",
-            items: []
+            items: this.model.getItems()
         });
+
         BI.createWidget({
-            type:"bi.vtape",
+            type: "bi.vtape",
             element: this,
             items: [{
                 el: title,
-                height:this._constant.titleHeight
+                height: this._constant.titleHeight
             }, {
-                el:self.tab
+                el: this.dynamicTab
             }]
         })
     },
 
-    _createTabs: function(v){
+    _createTabs: function (v) {
         var self = this;
         var c = this._constant;
         switch (v) {
             case c.MULTI_SHEET:
                 return BI.createWidget({
                     type: "bi.vertical_adapt",
-                    items:[{
+                    items: [{
                         type: "bi.label",
                         whiteSpace: "normal",
                         text: BI.i18nText("BI-ETL_Saving_Warning_Text"),
@@ -194,14 +196,14 @@ BI.AnalysisMainPane = BI.inherit(BI.Widget, {
             case c.RENAME:
                 this.pane = BI.createWidget({
                     type: "bi.etl_rename_pane",
-                    renameChecker : function (v) {
+                    renameChecker: function (v) {
                         return !BI.Utils.getAllETLTableNames().contains(v);
                     }
                 });
-                this.pane.on(BI.ETLNamePane.EVENT_VALID, function(){
+                this.pane.on(BI.ETLNamePane.EVENT_VALID, function () {
                     self.confirmButton.setEnable(true);
                 });
-                this.pane.on(BI.ETLNamePane.EVENT_ERROR, function(v){
+                this.pane.on(BI.ETLNamePane.EVENT_ERROR, function (v) {
                     if (BI.isEmptyString(v)) {
                         self.confirmButton.setWarningTitle(BI.i18nText("BI-Report_Name_Not_Null"));
                     } else {
@@ -221,32 +223,40 @@ BI.AnalysisMainPane = BI.inherit(BI.Widget, {
         }
     },
 
-    setVisible : function(v){
+    setVisible: function (v) {
         BI.AnalysisETLMain.superclass.setVisible.apply(this, arguments);
-        if(v === true){
+        if (v === true) {
             BI.Layers.show(ETLCst.ANALYSIS_LAYER);
         } else {
             BI.Layers.remove(ETLCst.ANALYSIS_LAYER);
         }
     },
 
-    doCancel : function () {
+    doCancel: function () {
         var self = this;
         BI.Msg.confirm(BI.i18nText("BI-Basic_Cancel"), BI.i18nText("BI-Etl_Cancel_Warning"), function (v) {
-            if(v === true) {
+            if (v === true) {
                 self.setVisible(false);
                 self.model.resetPoolCurrentUsedTables();
             }
         });
     },
 
-    doSave : function () {
-        var self = this;
-        BI.ETLReq.reqSaveTable(this.model.getValue(), function () {
-            self.setVisible(false);
-        });
+    getSheetLength: function() {
+        return this.dynamicTab.getSheetLength();
     },
 
+    getValue: function() {
+        var value = this.model.getValue();
+        value.table = this.dynamicTab.getValue();
+        return value;
+    },
 
+    doSave: function () {
+        var self = this;
+        BI.ETLReq.reqSaveTable(this.getValue(), function () {
+            self.setVisible(false);
+        });
+    }
 });
 BI.shortcut("bi.analysis_main_pane", BI.AnalysisMainPane);
