@@ -1,6 +1,6 @@
 BI.DynamictabController = BI.inherit(BI.MVCController, {
 
-   
+
     _defaultConfig: function () {
         return BI.extend(BI.DynamictabController.superclass._defaultConfig.apply(this, arguments), {
         });
@@ -136,9 +136,9 @@ BI.DynamictabController = BI.inherit(BI.MVCController, {
     hasMergeHistory : function (v, widget, model) {
         return model.hasMergeHistory(v);
     },
-    
+
     resize : function (widget) {
-      this._resize(widget);
+        this._resize(widget);
     },
 
     registerComboEvent : function (button, widget, model) {
