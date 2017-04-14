@@ -103,7 +103,7 @@ BI.AnalysisETLOperatorFilterPane = BI.inherit(BI.Widget, {
     render: function(){
         var self = this, o = this.options;
         this.card = this.operatorCombo = this.content = null;
-        this.model = new BI.AnalysisETLOperatorFilterPaneModel(o.items);
+        this.model = new BI.AnalysisETLOperatorFilterPaneModel({});
         this.operatorCombo = this.content = this.card = null;
         return {
             type:"bi.tab",
@@ -115,7 +115,7 @@ BI.AnalysisETLOperatorFilterPane = BI.inherit(BI.Widget, {
     },
 
     mounted: function(){
-        this._populate();
+        this.populate(this.options.table);
     },
 
     filterChange : function(filter){
@@ -208,7 +208,6 @@ BI.AnalysisETLOperatorFilterPane = BI.inherit(BI.Widget, {
         }, this.options.value.operatorType)
     },
 
-    //todo 外界调用populate居然还会传options.func进来以拓展自身的controller，现在放widget里，之后删掉
     populate: function (m, options) {
         this.model.populate(m);
         BI.extend(this.options, options);

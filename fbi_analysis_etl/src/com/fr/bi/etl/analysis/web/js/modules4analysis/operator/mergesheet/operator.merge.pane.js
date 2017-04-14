@@ -9,7 +9,7 @@ BI.AnalysisETLOperatorMergeSheetPane = BI.inherit(BI.Widget, {
 
     render: function(){
         var self = this, o = this.options;
-        this.model = new BI.AnalysisETLMergeSheetModel(o.items);
+        this.model = new BI.AnalysisETLMergeSheetModel({});
         return {
             type:"bi.htape",
             items:[{
@@ -96,7 +96,7 @@ BI.AnalysisETLOperatorMergeSheetPane = BI.inherit(BI.Widget, {
     },
 
     mounted: function(){
-        this._populate();
+        this.populate(this.options.table);
     },
 
     createTable : function (tables) {
@@ -131,7 +131,6 @@ BI.AnalysisETLOperatorMergeSheetPane = BI.inherit(BI.Widget, {
 
     _populate : function () {
         var tables = this.model.get(ETLCst.PARENTS);
-        this.table.empty();
         this.table.populate(this.createTable(tables));
         this.mergeFields.populate(this.createCell(this.model.getMergeFieldsName(), "cell"), this.createCell([[tables[0].tableName,tables[1].tableName]], "header"))
         this.fireEvent(BI.AnalysisETLOperatorAbstractController.PREVIEW_CHANGE, {

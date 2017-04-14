@@ -59,7 +59,7 @@ BI.AnalysisETLOperatorUsePartPane = BI.inherit(BI.Widget, {
     },
 
     mounted: function(){
-        this._populate();
+        this.populate(this.options.table);
     },
 
     doCheck  : function () {
