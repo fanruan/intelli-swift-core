@@ -4,19 +4,21 @@
 BI.AnalysisDynamicTab = BI.inherit(BI.Widget, {
     props: {
         extraCls: "bi-sheet-tab-dynamic",
-        model: {
-            items: []
-        },
+        items: [],
         height: 30
     },
 
     render: function () {
         var self = this;
         var o = this.options;
-        this.model = new BI.AnalysisDynamicTabModel(o);
+        this.model = new BI.AnalysisDynamicTabModel({
+            items: o.items
+        });
+        this.sheets = {};
+
         this.tabButton = BI.createWidget({
             type: "bi.analysis_dynamic_tab_button",
-            items: []
+            items: o.items
         });
         this.tabButton.on(BI.AnalysisDynamicTabButton.ADD_SHEET, function (v) {
             self.addNewSheet({});
@@ -33,6 +35,7 @@ BI.AnalysisDynamicTab = BI.inherit(BI.Widget, {
             defaultShowIndex: false,
             cardCreator: BI.bind(this._createTabs, this)
         });
+
         BI.createWidget({
             type: "bi.vtape",
             element: this,
@@ -52,21 +55,25 @@ BI.AnalysisDynamicTab = BI.inherit(BI.Widget, {
 
     _createTabs: function (v) {
         var self = this;
-        this.historyTab = BI.createWidget({
+        var historyTab = BI.createWidget({
             type: "bi.analysis_history_tab",
             cls: "bi-animate-right-in",
             allHistory: this.model.hasMergeHistory(v)
         });
-        this.historyTab.on(BI.AnalysisETLOperatorMergeSheetPane.MERGE_SHEET_CHANGE, function (data, oldSheets) {
+        historyTab.on(BI.TopPointerSavePane.EVENT_SAVE, function (table) {
+
+        });
+        historyTab.on(BI.AnalysisETLOperatorMergeSheetPane.MERGE_SHEET_CHANGE, function (data, oldSheets) {
             self.changeMergeSheet(data, oldSheets, v)
         });
-        this.historyTab.on(BI.AnalysisHistoryTab.VALID_CHANGE, function () {
+        historyTab.on(BI.AnalysisHistoryTab.VALID_CHANGE, function () {
             self.setTabValid(v)
         });
-        this.historyTab.on(BI.AnalysisETLOperatorMergeSheetPane.MERGE_SHEET_DELETE, function () {
+        historyTab.on(BI.AnalysisETLOperatorMergeSheetPane.MERGE_SHEET_DELETE, function () {
             self.deleteMergeSheet(v)
         });
-        return this.historyTab;
+        this.sheets[v] = historyTab;
+        return historyTab;
     },
 
     renameSheet: function (newName, id) {
@@ -169,25 +176,24 @@ BI.AnalysisDynamicTab = BI.inherit(BI.Widget, {
 
     dealWithCombo: function (v, button) {
         var self = this;
+        var id = button.getValue();
         switch (v) {
             case ETLCst.ANALYSIS_TABLE_SET.DELETE:
                 var items = this.model.getItems();
                 if (items.length === 1) {
-                    BI.Msg.alert(BI.i18nText('BI-Cannot-Delete'), BI.i18nText('BI-Cannot-Delete-Last'))
-                    break;
-                    var id = button.getValue();
-                    BI.Msg.confirm(BI.i18nText("BI-Confirm_Delete"), BI.i18nText("BI-Confirm_Delete") + model.getName(id) + "?", function (v) {
-                        if (v === true) {
-                            self._removeSheet(id);
-                        }
-                    });
+                    BI.Msg.alert(BI.i18nText('BI-Cannot-Delete'), BI.i18nText('BI-Cannot-Delete-Last'));
                     break;
                 }
+                BI.Msg.confirm(BI.i18nText("BI-Confirm_Delete"), BI.i18nText("BI-Confirm_Delete") + model.getName(id) + "?", function (v) {
+                    if (v === true) {
+                        self._removeSheet(id);
+                    }
+                });
+                break;
             case ETLCst.ANALYSIS_TABLE_SET.COPY:
                 this._copySheet(button.getValue());
                 break;
             case ETLCst.ANALYSIS_TABLE_SET.RENAME:
-                var id = button.getValue();
                 this.renameController.showPopover(model.getName(id), function (v) {
                     return !model.isNameExists(v, id);
                 }, function (v) {
@@ -206,24 +212,22 @@ BI.AnalysisDynamicTab = BI.inherit(BI.Widget, {
                 value: item
             }
         });
-        var tables = this._createTables();
         var getTablesBySheetId = function (sheets) {
             var tables = [];
-            var self = this;
             BI.each(sheets, function (idx, item) {
                 tables.push(getTableById(item))
             });
             return tables;
         };
         var getTableById = function (id) {
-            return BI.find(tables, function (idx, item) {
+            return BI.find(self.sheets, function (idx, item) {
                 return item.value === id;
             })
         };
         var func = function (v) {
             var m = {
                 name: self.model.createNewName(BI.i18nText("BI-Merge_Table")),
-                tables: tables
+                tables: self.sheets
             };
             m[ETLCst.PARENTS] = getTablesBySheetId(v);
             BI.createWidget({
@@ -264,11 +268,10 @@ BI.AnalysisDynamicTab = BI.inherit(BI.Widget, {
     },
 
     getCurrentTables: function () {
-        var tables = this._createTables();
         var id = this.tabButton.getValue()[0];
         var others = [];
         var currentTable = null;
-        BI.each(tables, function (idx, item) {
+        BI.each(this.sheets, function (idx, item) {
             if (item.value === id) {
                 currentTable = item;
             } else {
@@ -281,12 +284,22 @@ BI.AnalysisDynamicTab = BI.inherit(BI.Widget, {
         }
     },
 
-    _createTables: function () {
-        return this.model.getValue().items;
+    _refreshButtonStatus: function () {
+        this.tabButton.setMergeEnable(this.getSheetLength() > 1);
     },
 
-    _refreshButtonStatus: function () {
-        this.tabButton.setMergeEnable(this.options.items.length > 1);
+    getSheetLength: function () {
+        return BI.size(this.sheets);
+    },
+
+    getValue: function () {
+        var items = [];
+        BI.each(this.sheets, function (id, sheet) {
+            items.push(sheet.getValue());
+        });
+        return {
+            items: items
+        };
     },
 
     populate: function () {
@@ -302,7 +315,6 @@ BI.AnalysisDynamicTab = BI.inherit(BI.Widget, {
             self.registerComboEvent(button);
             items.push(button);
         });
-        this.historyTab && this.historyTab.populate();
         this.tabButton.tab.populate(items);
         BI.nextTick(function () {
             self.deferChange();
