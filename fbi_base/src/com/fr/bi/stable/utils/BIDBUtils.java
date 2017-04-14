@@ -41,6 +41,7 @@ import java.util.Date;
  * 数据库操作
  */
 public class BIDBUtils {
+    private final static int MAX_LONG_COLUMN_SIZE =20;
 
     /**
      * 给数据库列设置初始的类型
@@ -196,7 +197,7 @@ public class BIDBUtils {
      * @return
      */
     private static int getTypeByColumn_size(int column_size) {
-        if (column_size < 20) {
+        if (column_size < MAX_LONG_COLUMN_SIZE) {
             return DBConstant.CLASS.LONG;
         } else {
             return DBConstant.CLASS.STRING;
@@ -274,6 +275,7 @@ public class BIDBUtils {
      * 这么多个数据库，就一个处理的类,还是静态的
      * 这个类型转换有很多问题。一个数据库处理好了，完全可能改坏其他的。
      * TODO 每个数据库，各自的处理逻辑
+     *
      * @param columnInformation
      * @return
      */
@@ -404,12 +406,12 @@ public class BIDBUtils {
         return dbTable;
     }
 
-    private static String getColumnNameText(com.fr.data.impl.Connection connection, Map item) throws UnsupportedEncodingException {
+    public static String getColumnNameText(com.fr.data.impl.Connection connection, Map item) throws UnsupportedEncodingException {
         String columnNameText = (String) item.get("column_comment");
         return getTransCodeText(connection, columnNameText);
     }
 
-    private static String getTransCodeText(com.fr.data.impl.Connection connection, String originalCodeText) throws UnsupportedEncodingException {
+    public static String getTransCodeText(com.fr.data.impl.Connection connection, String originalCodeText) throws UnsupportedEncodingException {
         String originalCharsetName = connection.getOriginalCharsetName();
         String newCharsetName = connection.getNewCharsetName();
         boolean needCharSetConvert = StringUtils.isNotBlank(originalCharsetName)

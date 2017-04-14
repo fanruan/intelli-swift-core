@@ -1,6 +1,8 @@
 package com.fr.bi.common.persistent.writer;
 
 import com.finebi.cube.common.log.BILoggerFactory;
+import com.fr.bi.common.persistent.BIBeanHistoryManager;
+import com.fr.bi.common.persistent.BeanHistoryXMLReader;
 import com.fr.bi.common.persistent.xml.reader.BIBeanXMLReaderWrapper;
 import com.fr.bi.common.persistent.xml.reader.XMLNormalValueReader;
 import com.fr.bi.common.persistent.xml.reader.XMLPersistentReader;
@@ -20,11 +22,21 @@ import com.fr.general.ComparatorUtils;
 import com.fr.stable.StableUtils;
 import com.fr.stable.xml.XMLTools;
 import junit.framework.TestCase;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Connery on 2015/12/31.
@@ -171,9 +183,12 @@ public class XMLWriterTest extends TestCase {
 
     public static Object get(Object object, String name) {
         try {
+            BeanHistoryXMLReader beanHistoryXMLReader = new BeanHistoryXMLReader();
+            Map<String, List<String>> beanMapping = beanHistoryXMLReader.loadBeanHistoryMap(Thread.currentThread().getContextClassLoader().getResource("").getPath() +"bean_history_class_test.xml");
+            BIBeanHistoryManager.getInstance().registerBeanHistoryManager(beanMapping);
             File var3 = new File("./temp/" + name + ".xml");
             StableUtils.makesureFileExist(var3);
-            XMLPersistentReader reader = new XMLPersistentReader(new HashMap<String, BIBeanXMLReaderWrapper>(), new BIBeanXMLReaderWrapper(object, Thread.currentThread().getContextClassLoader().getResource("").getPath() + "bean_history_class_test.xml"));
+            XMLPersistentReader reader = new XMLPersistentReader(new HashMap<String, BIBeanXMLReaderWrapper>(), new BIBeanXMLReaderWrapper(object));
             XMLTools.readInputStreamXML(reader, new FileInputStream(var3));
             return object;
         } catch (Exception e) {
@@ -192,6 +207,27 @@ public class XMLWriterTest extends TestCase {
         IterablePart part = IterablePart.generateParts();
         checkEquals(part, "IterationParts");
 
+    }
+
+    public void testDom() {
+        try {
+            DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+            DocumentBuilder db = dbf.newDocumentBuilder();
+            File file = new File("Dom.xml");
+            Document document = db.newDocument();
+            Element element = document.createElement("node");
+            document.appendChild(element);
+            element.appendChild(document.createElement("table"));
+            TransformerFactory tfactory = TransformerFactory.newInstance();
+            Transformer transformer = tfactory.newTransformer();
+            DOMSource source = new DOMSource(document);
+            StreamResult result = new StreamResult(file);
+            transformer.setOutputProperty("encoding", "UTF-8");
+            transformer.transform(source, result);
+        } catch (Exception e) {
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
+            fail();
+        }
     }
 
     public void testListList() {
