@@ -41,8 +41,8 @@ public class ReportCamelOperation implements ReportUpdateOperation {
     }
 
     //map 结构的递归
-    JSONObject recursionMapUpdate(String str) throws JSONException {
-        JSONObject json = new JSONObject(str);
+    JSONObject recursionMapUpdate(String obj) throws JSONException {
+        JSONObject json = new JSONObject(obj);
         JSONObject res = new JSONObject();
         Set<String> keySet = json.toMap().keySet();
         for (String s : keySet) {
@@ -50,7 +50,7 @@ public class ReportCamelOperation implements ReportUpdateOperation {
             if (flag) {
                 res.put(updateKey(s), recursionMapUpdate(json.getString(s)));
             } else {
-                res.put(updateKey(s), recursionListUpdate(json.getString(s)));
+                res.put(updateKey(s), recursionListUpdate(json.get(s)));
             }
         }
         return res;
@@ -69,7 +69,7 @@ public class ReportCamelOperation implements ReportUpdateOperation {
             if (BIJsonUtils.isKeyValueSet(str)) {
                 return recursionMapUpdate(str);
             } else {
-                return str;
+                return object;
             }
         }
     }
