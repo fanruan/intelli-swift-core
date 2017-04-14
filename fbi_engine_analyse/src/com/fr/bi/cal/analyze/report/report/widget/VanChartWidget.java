@@ -222,7 +222,7 @@ public abstract class VanChartWidget extends TableWidget {
         JSONObject tooltip = JSONObject.create();
 
         String widgetBg = "#ffffff";
-        if(globalStyle.has("widgetBackground")){
+        if (null != globalStyle && globalStyle.has("widgetBackground")) {
             widgetBg = globalStyle.optJSONObject("widgetBackground").optString("value");
             widgetBg = StringUtils.isBlank(widgetBg) ? WHITE : widgetBg;
         }
@@ -405,12 +405,16 @@ public abstract class VanChartWidget extends TableWidget {
 
     private String parseStyle(JSONObject settings, JSONObject globalStyle, JSONObject plateConfig) throws JSONException{
         int style = STYLE_NORMAL;
-        if(settings.has("chartStyle")){
-            style = settings.optInt("chartStyle");
-        }else if(globalStyle.has("chartStyle")){
-            style = globalStyle.optInt("chartStyle");
-        }else if(plateConfig.has("chartStyle")){
-            style = plateConfig.optInt("chartStyle");
+        try {
+            if (settings.has("chartStyle")) {
+                style = settings.optInt("chartStyle");
+            } else if (null != globalStyle && globalStyle.has("chartStyle")) {
+                style = globalStyle.optInt("chartStyle");
+            } else if (plateConfig.has("chartStyle")) {
+                style = plateConfig.optInt("chartStyle");
+            }
+        } catch (Exception e) {
+            BILoggerFactory.getLogger(this.getClass()).error(e.getMessage(), e);
         }
         return style == STYLE_GRADUAL ? "gradual" : "normal";
     }
