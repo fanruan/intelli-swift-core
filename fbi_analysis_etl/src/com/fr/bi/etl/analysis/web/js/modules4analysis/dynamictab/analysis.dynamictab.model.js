@@ -9,80 +9,69 @@ BI.AnalysisDynamicTabModel = BI.inherit(FR.OB, {
 
     _init: function () {
         BI.AnalysisDynamicTabModel.superclass._init.apply(this, arguments);
-        var self = this, items = this.options.items;
-        BI.each(items, function (i, item) {
-            self.addItem(item)
+        this.sheets = [];
+    },
+
+    getSheets: function () {
+        return this.sheets;
+    },
+
+    getSheetByValue: function (value) {
+        return BI.find(this.sheets, function (i, sheet) {
+            return sheet.value === value;
         });
-        if (items.length === 0) {
-            this.addItem()
-        }
     },
 
-    get: function (key) {
-        return this.options[key];
+    getSheetByIndex: function (index) {
+        return this.sheets[index];
     },
 
-    set: function (key, value) {
-        this.options[key] = value;
+    addSheet: function () {
+        var newSheet = {};
+        newSheet.value = BI.UUID();
+        newSheet.tableName = this.createNewName();
+        this.sheets.push(newSheet);
+        return newSheet.value;
     },
 
-    addItem: function (v) {
-        var newItem = BI.extend({}, v);
-        newItem.tableName = this.createNewName(newItem.tableName);
-        return this._createItemModel(newItem)
+    copyItem: function (value) {
+        var newItem = this.getSheetByValue(value);
+        newItem.tableName = this.createNewName(this.getSheetNameByValue(value));
+        return this._createItemModel(newItem);
     },
 
     _createItemModel: function (newItem) {
         newItem.value = BI.UUID();
-        var items = this.options.items;
-        items.push(newItem.value);
-        this.options.items = items;
-        this.options[newItem.value] = new BI.AnalysisHistoryTabModel(newItem);
+        this.sheets.push(newItem);
         return newItem.value;
     },
 
-    copyItem: function (id) {
-        var newItem = this.options[id].getValue();
-        newItem.tableName = this.createNewName(this.getName(id));
-        return this._createItemModel(newItem);
-    },
-
-    getSheetData: function (v) {
-        return this.get(v).getValue();
-    },
-
-    hasMergeHistory: function (v) {
-        return this.get(v).allHistory;
-    },
-
-    removeItem: function (id) {
-        var items = this.options.items;
+    removeSheet: function (id) {
+        var items = this.sheets;
         var newItem = [];
         var deletePos = -1;
         BI.each(items, function (idx, item) {
-            if (item !== id) {
-                newItem.push(item)
+            if (item.value !== id) {
+                newItem.push(item);
             } else {
                 deletePos = idx;
             }
         });
-        this.options.items = newItem;
-        delete this.options[id];
+        this.sheets = newItem;
         return deletePos;
     },
 
     isNameExists: function (name, id) {
         var self = this;
         var hasSameName = false;
-        var items = this.options.items;
-        BI.some(items, function (idx, item) {
-            if (item !== id) {
-                if (self.getName(item) === name) {
+        BI.some(this.sheets, function (idx, item) {
+            if (item.value !== id) {
+                if (self.getSheetByValue(item.value) === name) {
                     hasSameName = true;
                     return true;
                 }
             }
-            var parents = self._getChildParents(item);
+            var parents = self._getChildParents(item.value);
             if (parents.length === 2) {
                 BI.some(parents, function (idx, item) {
                     if (item.tableName === name) {
@@ -95,18 +84,19 @@ BI.AnalysisDynamicTabModel = BI.inherit(FR.OB, {
         return hasSameName;
     },
 
-    _getChildParents: function (id) {
-        var childModel = this.options[id];
-        return BI.isNotNull(childModel) ? (childModel.get("parents") || [] ) : []
+    _getChildParents: function (value) {
+        var sheet = this.getSheetByValue(value);
+        return sheet.parents || [];
     },
 
-    reName: function (id, newName) {
-        this.options[id].options.tableName = newName;
+    reName: function (value, newName) {
+        var sheet = this.getSheetByValue(value);
+        sheet.tableName = newName;
     },
 
-    getName: function (id) {
-        var childModel = this.options[id];
-        return BI.isNotNull(childModel) ? childModel.get("tableName") : void 0
+    getSheetNameByValue: function (value) {
+        var sheet = this.getSheetByValue(value);
+        return sheet.tableName || void 0;
     },
 
     createNewName: function (baseName) {
@@ -124,13 +114,16 @@ BI.AnalysisDynamicTabModel = BI.inherit(FR.OB, {
         return defaultName + ++this.startIndex;
     },
 
+    populate: function (items) {
+        this.sheets = items;
+        if (this.sheets.length === 0) {
+            this.addSheet();
+        }
+    },
+
     getValue: function () {
-        var self = this, tables = [];
-        BI.each(this.options.items, function (i, item) {
-            tables.push(self.options[item].getValue());
-        });
-        var res = {};
-        res[ETLCst.ITEMS] = tables;
-        return res;
+        return {
+            items: this.sheets
+        };
     }
 });

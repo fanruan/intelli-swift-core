@@ -278,6 +278,7 @@ public class ETLResourcesHelper {
 				"com/fr/bi/etl/analysis/web/js/modules4analysis/historytab/button/analysis.historybutton.js",
 				"com/fr/bi/etl/analysis/web/js/modules4analysis/historytab/button/analysis.historybutton.group.js",
 				"com/fr/bi/etl/analysis/web/js/modules4analysis/historytab/button/analysis.historybutton.all.js",
+				"com/fr/bi/etl/analysis/web/js/modules4analysis/dynamictab/rename/analysis.tablerename.js",
 
 				//node
 				"com/fr/bi/etl/analysis/web/js/modules4analysis/node/detail.node.level.js",
