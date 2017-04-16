@@ -16,14 +16,14 @@ public class ResourceNameTest extends TestCase {
      * Author:Connery
      * Date:2017/4/12
      */
-    public void testEquals(){
-        try{
+    public void testEquals() {
+        try {
             ResourceNameImpl name1 = new ResourceNameImpl("A");
             ResourceNameImpl name2 = new ResourceNameImpl("A");
             ResourceNameImpl name3 = new ResourceNameImpl("B");
             assertTrue(name1.equals(name2));
             assertFalse(name1.equals(name3));
-        }catch (Exception e){
+        } catch (Exception e) {
             BILoggerFactory.getLogger().error(e.getMessage(), e);
             fail();
         }
