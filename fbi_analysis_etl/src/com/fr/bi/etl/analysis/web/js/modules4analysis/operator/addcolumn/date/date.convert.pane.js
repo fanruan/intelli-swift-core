@@ -46,9 +46,9 @@ BI.AnalysisETLOperatorAddColumnAbstractDateConvertPane = BI.inherit(BI.Widget, {
 
     _checkCanSave : function () {
         if (BI.isNull(this.model.get('field'))){
-            this.fireEvent(BI.TopPointerSavePane.EVENT_CHECK_SAVE_STATUS, false, BI.i18nText('BI-Property_Not_Setted', BI.i18nText('BI-Basic_Field')));
+            this.fireEvent(BI.AnalysisTopPointerSavePane.EVENT_CHECK_SAVE_STATUS, false, BI.i18nText('BI-Property_Not_Setted', BI.i18nText('BI-Basic_Field')));
         } else {
-            this.fireEvent(BI.TopPointerSavePane.EVENT_CHECK_SAVE_STATUS, true);
+            this.fireEvent(BI.AnalysisTopPointerSavePane.EVENT_CHECK_SAVE_STATUS, true);
         }
     },
 

@@ -70,9 +70,9 @@ public class AnalysisETLSourceFactory {
                     ps.add(createOneTableSource(parents.getJSONObject(i), userId));
                 }
                 AnalysisETLTableSource source = new AnalysisETLTableSource(fieldList, name, AnalysisETLOperatorFactory.createOperatorsByJSON(jo, userId), ps);
-                if (jo.has("invalidIndex")) {
-                    source.setInvalidIndex(jo.getInt("invalidIndex"));
-                }
+//                if (jo.has("invalidIndex")) {
+//                    source.setInvalidIndex(jo.getInt("invalidIndex"));
+//                }
                 return source;
         }
     }
@@ -91,9 +91,10 @@ public class AnalysisETLSourceFactory {
             BusinessTable talbe = BIAnalysisETLManagerCenter.getDataSourceManager().getBusinessTable(new BITableID(jo.getString("widgetTableId")));
             AnalysisCubeTableSource source = (AnalysisCubeTableSource) BIAnalysisETLManagerCenter.getDataSourceManager().getTableSource(talbe);
             if (source.getType() == BIBaseConstant.TABLE_TYPE.BASE) {
-                if (null!=source.getWidgets())
-                for (BIWidget widget : source.getWidgets()) {
-                    return widget;
+                if (null!=source.getWidgets()) {
+                    for (BIWidget widget : source.getWidgets()) {
+                        return widget;
+                    }
                 }
             }
         }

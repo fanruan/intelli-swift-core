@@ -87,16 +87,16 @@ BI.AnalysisSelectDataOperator = BI.inherit(BI.Widget, {
                             self.fireEvent(BI.AnalysisOperatorTitle.EVENT_OPERATOR_CHANGE, arguments)
                         }
                     }, {
-                        eventName: BI.TopPointerSavePane.EVENT_SAVE,
-                        action: function () {
+                        eventName: BI.AnalysisTopPointerSavePane.EVENT_SAVE,
+                        action: function(v){
                             self.saveButton.setEnable(true);
                         }
                     }, {
-                        eventName: BI.TopPointerSavePane.EVENT_CANCEL,
-                        action: function () {
+                        eventName: BI.AnalysisTopPointerSavePane.EVENT_CANCEL,
+                        action: function(){
                             self.saveButton.setEnable(true);
                             self._populate();
-                            self.fireEvent(BI.TopPointerSavePane.EVENT_CANCEL, arguments)
+                            self.fireEvent(BI.AnalysisTopPointerSavePane.EVENT_CANCEL, arguments)
                         }
                     }, {
                         eventName: BI.AnalysisETLPreviewTable.DELETE_EVENT,
@@ -114,14 +114,14 @@ BI.AnalysisSelectDataOperator = BI.inherit(BI.Widget, {
                             self.sortColumn(oldIndex, newIndex);
                         }
                     }, {
-                        eventName: BI.TopPointerSavePane.EVENT_INVALID,
-                        action: function () {
-                            self.fireEvent(BI.TopPointerSavePane.EVENT_INVALID, arguments)
+                        eventName: BI.AnalysisTopPointerSavePane.EVENT_INVALID,
+                        action: function(){
+                            self.fireEvent(BI.AnalysisTopPointerSavePane.EVENT_INVALID, arguments)
                         }
                     }, {
-                        eventName: BI.TopPointerSavePane.EVENT_FIELD_VALID,
-                        action: function () {
-                            self.fireEvent(BI.TopPointerSavePane.EVENT_FIELD_VALID, arguments)
+                        eventName: BI.AnalysisTopPointerSavePane.EVENT_FIELD_VALID,
+                        action: function(){
+                            self.fireEvent(BI.AnalysisTopPointerSavePane.EVENT_FIELD_VALID, arguments)
                         }
                     }, {
                         eventName: BI.Controller.EVENT_CHANGE,
@@ -155,8 +155,8 @@ BI.AnalysisSelectDataOperator = BI.inherit(BI.Widget, {
         };
     },
 
-    addField: function (fieldId) {
-        if (this._editing !== true) {
+    addField : function(fieldId){
+        if(this._editing !== true){
             return;
         }
         this.model.addField(fieldId);
@@ -203,7 +203,7 @@ BI.AnalysisSelectDataOperator = BI.inherit(BI.Widget, {
             if (self._editing === false) {
                 self.model.save();
                 var v = self.model.getValue();
-                self.fireEvent(BI.TopPointerSavePane.EVENT_SAVE, v);
+                self.fireEvent(BI.AnalysisTopPointerSavePane.EVENT_SAVE, v);
             } else {
                 self.model.cancel();
                 self._refreshState();
@@ -276,7 +276,7 @@ BI.AnalysisSelectDataOperator = BI.inherit(BI.Widget, {
             showContent: false
         }));
         this._refreshState();
-        this.fireEvent(BI.TopPointerSavePane.EVENT_FIELD_VALID, this.model.getCopyValue(ETLCst.FIELDS))
+        this.fireEvent(BI.AnalysisTopPointerSavePane.EVENT_FIELD_VALID, this.model.getCopyValue(ETLCst.FIELDS))
     },
 
     populate: function (table) {

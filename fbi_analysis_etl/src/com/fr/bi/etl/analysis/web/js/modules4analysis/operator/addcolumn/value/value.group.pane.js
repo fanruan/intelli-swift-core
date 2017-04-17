@@ -170,7 +170,7 @@ BI.AnalysisETLOperatorAddColumnValueGroupPane = BI.inherit(BI.Widget, {
         pane.on(BI.AnalysisETLOperatorAddColumnValueGroupSinglePane.EVENT_CHANGE, function () {
             self.changeItem()
         })
-        pane.on(BI.TopPointerSavePane.EVENT_CHECK_SAVE_STATUS, function (valid) {
+        pane.on(BI.AnalysisTopPointerSavePane.EVENT_CHECK_SAVE_STATUS, function (valid) {
             self.setValid(pane.getName(), valid)
         })
         pane.checkValid();
@@ -242,7 +242,7 @@ BI.AnalysisETLOperatorAddColumnValueGroupPane = BI.inherit(BI.Widget, {
     },
 
     checkValid : function () {
-        this.fireEvent(BI.TopPointerSavePane.EVENT_CHECK_SAVE_STATUS, this._checkCanSave())
+        this.fireEvent(BI.AnalysisTopPointerSavePane.EVENT_CHECK_SAVE_STATUS, this._checkCanSave())
     },
 
     setEditorValid : function (valid) {

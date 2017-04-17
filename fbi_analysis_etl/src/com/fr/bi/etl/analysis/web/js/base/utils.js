@@ -249,7 +249,7 @@ BI.extend(BI.Utils, {
             };
             var ajaxObject = {
                 work: function (callBack) {
-                    BI.Utils.buildData(previewModel.update(), widget.previewTable, callBack, widget.controller.getFilterValue);
+                    BI.Utils.buildData(previewModel.update(), widget.previewTable, callBack, widget.getFilterValue);
                 }
             };
             var maskElement = widget.previewTable;
@@ -257,7 +257,7 @@ BI.extend(BI.Utils, {
                 case ETLCst.PREVIEW.SELECT : {
                     ajaxObject = {
                         work: function (callBack) {
-                            BI.Utils.buildData(previewModel.update4Preview(), widget.previewTable, callBack, widget.controller.getFilterValue)
+                            BI.Utils.buildData(previewModel.update4Preview(), widget.previewTable, callBack, widget.getFilterValue)
                         }
                     }
 

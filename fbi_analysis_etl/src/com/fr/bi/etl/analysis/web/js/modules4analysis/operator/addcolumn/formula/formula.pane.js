@@ -44,9 +44,9 @@ BI.AnalysisETLOperatorAddColumnFormulaPane = BI.inherit(BI.Widget, {
     _checkCanSave : function () {
         var value = this.model.get('formula');
         if (BI.isNull(value) || BI.isEmptyString(value)){
-            this.fireEvent(BI.TopPointerSavePane.EVENT_CHECK_SAVE_STATUS, false, BI.i18nText('BI-Formula_Valid'));
+            this.fireEvent(BI.AnalysisTopPointerSavePane.EVENT_CHECK_SAVE_STATUS, false, BI.i18nText('BI-Formula_Valid'));
         } else {
-            this.fireEvent(BI.TopPointerSavePane.EVENT_CHECK_SAVE_STATUS, true);
+            this.fireEvent(BI.AnalysisTopPointerSavePane.EVENT_CHECK_SAVE_STATUS, true);
         }
     },
 
