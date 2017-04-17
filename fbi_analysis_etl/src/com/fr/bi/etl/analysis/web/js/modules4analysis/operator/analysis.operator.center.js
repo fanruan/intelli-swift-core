@@ -319,7 +319,7 @@ BI.AnalysisOperatorCenter = BI.inherit(BI.Widget, {
 
     _getPosFromValue : function () {
         var value = this.options.contentItem.value.value;
-        var v = this.getElementByValue(value);
+        var v = this.title.getElementByValue(value);
         //不存在就不指向
         if(v === null) {
             return -999;
