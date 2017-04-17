@@ -70,9 +70,9 @@ public class AnalysisETLSourceFactory {
                     ps.add(createOneTableSource(parents.getJSONObject(i), userId));
                 }
                 AnalysisETLTableSource source = new AnalysisETLTableSource(fieldList, name, AnalysisETLOperatorFactory.createOperatorsByJSON(jo, userId), ps);
-                if (jo.has("invalidIndex")) {
-                    source.setInvalidIndex(jo.getInt("invalidIndex"));
-                }
+//                if (jo.has("invalidIndex")) {
+//                    source.setInvalidIndex(jo.getInt("invalidIndex"));
+//                }
                 return source;
         }
     }

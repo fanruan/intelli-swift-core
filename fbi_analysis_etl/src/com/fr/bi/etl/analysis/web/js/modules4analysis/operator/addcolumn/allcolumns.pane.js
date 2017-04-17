@@ -79,7 +79,7 @@ BI.AnalysisETLOperatorAllColumnsPane = BI.inherit(BI.Widget, {
     },
 
     mounted: function(){
-        this.populate(this.options.items);
+        //this.populate(this.options.items);
     },
 
     populate : function (items) {

@@ -238,7 +238,7 @@ BI.AnalysisETLMergeSheetModel = BI.inherit(BI.OB, {
     },
 
     populate: function(model){
-        this.options = model;
+        this.options = model || {};
         var operator = this.get("operator");
         if(BI.isNotNull(operator)) {
             this.set(BI.AnalysisETLMergeSheetModel.MERGE_TYPE, operator[BI.AnalysisETLMergeSheetModel.MERGE_TYPE]);

@@ -44,7 +44,7 @@ BI.AnalysisETLOperatorAddColumnSumPane  = BI.inherit(BI.AnalysisETLOperatorAddCo
     //原controller
     _checkCanSave : function () {
         if (BI.isNull(this.model.get('sum_type'))){
-            this.fireEvent(BI.TopPointerSavePane.EVENT_CHECK_SAVE_STATUS, false, BI.i18nText('BI-Property_Not_Setted', BI.i18nText('BI-Statistic_Type')));
+            this.fireEvent(BI.AnalysisTopPointerSavePane.EVENT_CHECK_SAVE_STATUS, false, BI.i18nText('BI-Property_Not_Setted', BI.i18nText('BI-Statistic_Type')));
         } else {
             BI.AnalysisETLOperatorAddColumnSumPane.superclass._checkCanSave.apply(this, arguments);
         }

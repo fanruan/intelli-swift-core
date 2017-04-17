@@ -115,7 +115,7 @@ BI.AnalysisETLOperatorFilterPane = BI.inherit(BI.Widget, {
     },
 
     mounted: function(){
-        this.populate(this.options.table);
+        //this.populate(this.options.table);
     },
 
     filterChange : function(filter){
@@ -157,16 +157,16 @@ BI.AnalysisETLOperatorFilterPane = BI.inherit(BI.Widget, {
     doCheck : function () {
         var operator = this.model.get('operator');
         var items = operator.items;
-        this.fireEvent(BI.TopPointerSavePane.EVENT_CHECK_SAVE_STATUS, BI.isNotNull(items) && items.length !== 0, BI.i18nText('BI-Value_Cannot_Be_Null'))
+        this.fireEvent(BI.AnalysisTopPointerSavePane.EVENT_CHECK_SAVE_STATUS, BI.isNotNull(items) && items.length !== 0, BI.i18nText('BI-Value_Cannot_Be_Null'))
     },
 
     _check : function () {
         var invalid = this.model.check();
         if(invalid[0] === true) {
-            this.fireEvent(BI.TopPointerSavePane.EVENT_INVALID, invalid[1])
+            this.fireEvent(BI.AnalysisTopPointerSavePane.EVENT_INVALID, invalid[1])
         } else {
             var parent = this.model.get(ETLCst.PARENTS)[0];
-            this.fireEvent(BI.TopPointerSavePane.EVENT_FIELD_VALID, BI.deepClone(parent[ETLCst.FIELDS]))
+            this.fireEvent(BI.AnalysisTopPointerSavePane.EVENT_FIELD_VALID, BI.deepClone(parent[ETLCst.FIELDS]))
         }
         this.fireEvent(BI.AnalysisETLOperatorAbstractController.VALID_CHANGE, !invalid[0]);
     },
