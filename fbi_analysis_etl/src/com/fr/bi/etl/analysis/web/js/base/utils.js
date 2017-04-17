@@ -1,17 +1,17 @@
 BI.Utils = BI.Utils || {};
 
 BI.extend(BI.Utils, {
-    afterSaveTable : function(res){
-        BI.each(res, function(i, item){
+    afterSaveTable: function (res) {
+        BI.each(res, function (i, item) {
             BI.extend(Pool[i], item);
         })
         BI.Broadcasts.send(BICst.BROADCAST.PACKAGE_PREFIX);
     },
 
-    afterReNameTable : function (id, name, title) {
+    afterReNameTable: function (id, name, title) {
         Pool["translations"][id] = name;
         BI.some(Pool["packages"][ETLCst.PACK_ID]['tables'], function (idx, item) {
-            if(item.id === id) {
+            if (item.id === id) {
                 item.describe = title
                 return true;
             }
@@ -19,17 +19,17 @@ BI.extend(BI.Utils, {
         BI.Broadcasts.send(BICst.BROADCAST.PACKAGE_PREFIX);
     },
 
-    afterDeleteTable : function (id) {
+    afterDeleteTable: function (id) {
         delete Pool["tables"][id];
-        BI.remove(Pool["packages"][ETLCst.PACK_ID]['tables'], function(i, item){
+        BI.remove(Pool["packages"][ETLCst.PACK_ID]['tables'], function (i, item) {
             return item.id === id
         })
         BI.Broadcasts.send(BICst.BROADCAST.PACKAGE_PREFIX);
     },
 
-    getDescribe : function (id) {
-        if (BI.isNotEmptyArray(BI.Utils.getFieldIDsOfTableID(id))){
-            var table =  BI.find(Pool["packages"][ETLCst.PACK_ID]['tables'], function(i, item){
+    getDescribe: function (id) {
+        if (BI.isNotEmptyArray(BI.Utils.getFieldIDsOfTableID(id))) {
+            var table = BI.find(Pool["packages"][ETLCst.PACK_ID]['tables'], function (i, item) {
                 return item.id === id
             })
             return table.describe;
@@ -38,36 +38,36 @@ BI.extend(BI.Utils, {
         }
     },
 
-    isTableEditable : function (id) {
-        var table =  BI.find(Pool["packages"][ETLCst.PACK_ID]['tables'], function(i, item){
+    isTableEditable: function (id) {
+        var table = BI.find(Pool["packages"][ETLCst.PACK_ID]['tables'], function (i, item) {
             return item.id === id
         })
-        if (BI.isNull(table)){
+        if (BI.isNull(table)) {
             return false;
         }
         return table.inedible !== true;
     },
 
-    getAllETLTableNames : function (id) {
+    getAllETLTableNames: function (id) {
         var names = [];
-        if (BI.isNull(Pool["packages"][ETLCst.PACK_ID])){
+        if (BI.isNull(Pool["packages"][ETLCst.PACK_ID])) {
             return names;
         }
-        BI.each(Pool["packages"][ETLCst.PACK_ID]['tables'], function(i, item){
-            if(item.id !== id) {
+        BI.each(Pool["packages"][ETLCst.PACK_ID]['tables'], function (i, item) {
+            if (item.id !== id) {
                 names.push(Pool["translations"][item.id])
             }
         })
         return names;
     },
-    getTableTypeByID :function (tableId){
+    getTableTypeByID: function (tableId) {
         var source = Pool.tables;
         var table = source[tableId];
-        if(!table){
+        if (!table) {
             return BICst.BUSINESS_TABLE_TYPE.NORMAL;
         }
         var key = BICst.JSON_KEYS.TABLE_TYPE;
-        if(table[key] === undefined || table[key] === null){
+        if (table[key] === undefined || table[key] === null) {
             return ETLCst.BUSINESS_TABLE_TYPE.ANALYSIS_TYPE;
         }
         return table[key];
@@ -86,16 +86,16 @@ BI.extend(BI.Utils, {
         }
     },
 
-    createDistinctName : function (array, name) {
+    createDistinctName: function (array, name) {
         var res = name;
         var index = 1;
-        while(BI.indexOf(array, res) > -1){
+        while (BI.indexOf(array, res) > -1) {
             res = name + index++;
         }
         return res;
     },
 
-    getFieldArrayFromTable : function (table) {
+    getFieldArrayFromTable: function (table) {
         var fields = [];
         BI.each(table[ETLCst.FIELDS], function (idx, item) {
             fields = BI.concat(fields, item);
@@ -109,27 +109,27 @@ BI.extend(BI.Utils, {
      * @returns 数组
      */
     getProbablySinglePathTables: function (tableIds) {
-        if(BI.isNull(tableIds) || tableIds.length === 0) {
+        if (BI.isNull(tableIds) || tableIds.length === 0) {
             //不禁用
             return [];
         }
         var fTable = tableIds[0];
         BI.each(tableIds, function (idx, item) {
             var relation = BI.Utils.getPathsFromTableAToTableB(item, fTable);
-            if(relation.length === 0) {
+            if (relation.length === 0) {
                 fTable = item;
             }
         });
         var pTables = Pool.foreignRelations[fTable]
         var result = {};
         BI.each(pTables, function (idx, item) {
-            if(item.length === 1) {
+            if (item.length === 1) {
                 result[idx] = true;
             }
         })
         var fTables = Pool.relations[fTable]
         BI.each(fTables, function (idx, item) {
-            if(item.length === 1) {
+            if (item.length === 1) {
                 result[idx] = true;
             }
         })
@@ -140,7 +140,7 @@ BI.extend(BI.Utils, {
     },
 
     getTextFromFormulaValue: function (formulaValue, fieldItems) {
-        if (BI.isNull(formulaValue) || BI.isNull(fieldItems)){
+        if (BI.isNull(formulaValue) || BI.isNull(fieldItems)) {
             return '';
         }
         var formulaString = "";
@@ -164,7 +164,7 @@ BI.extend(BI.Utils, {
 
     getFieldsFromFormulaValue: function (formulaValue) {
         var fields = [];
-        if (BI.isNull(formulaValue)){
+        if (BI.isNull(formulaValue)) {
             return [];
         }
         var regx = /\$[\{][^\}]*[\}]|\w*\w|\$\{[^\$\(\)\+\-\*\/)\$,]*\w\}|\$\{[^\$\(\)\+\-\*\/]*\w\}|\$\{[^\$\(\)\+\-\*\/]*[\u4e00-\u9fa5]\}|\w|(.)/g;
@@ -174,7 +174,7 @@ BI.extend(BI.Utils, {
             var str = item.match(fieldRegx);
             if (BI.isNotEmptyArray(str)) {
                 fields.push(str[0].substring(2, item.length - 1));
-            } 
+            }
         });
         return fields;
     },
@@ -217,18 +217,18 @@ BI.extend(BI.Utils, {
     },
 
 
-    buildData : function(model, widget, callback, filterValueGetter) {
+    buildData: function (model, widget, callback, filterValueGetter) {
         //测试数据
         var header = [];
         var table = {};
         table[ETLCst.ITEMS] = [model];
         BI.ETLReq.reqPreviewTable(table, function (data) {
-            BI.each(model[ETLCst.FIELDS], function(idx, item){
+            BI.each(model[ETLCst.FIELDS], function (idx, item) {
                 var head = {
-                    text:item.fieldName,
-                    fieldType:item.fieldType,
-                    fieldId:item.fieldId,
-                    filterValueGetter : filterValueGetter
+                    text: item.fieldName,
+                    fieldType: item.fieldType,
+                    fieldId: item.fieldId,
+                    filterValueGetter: filterValueGetter
                 }
                 head[ETLCst.FIELDS] = model[ETLCst.FIELDS]
                 header.push(head);
@@ -238,7 +238,7 @@ BI.extend(BI.Utils, {
 
     },
 
-    triggerPreview : function() {
+    triggerPreview: function () {
         return function (widget, previewModel, operatorType, type) {
             if (this.innerTrigger == null) {
                 this.innerTrigger = new BI.Utils.ThreadRunTrigger();
@@ -247,8 +247,8 @@ BI.extend(BI.Utils, {
                 widget.setPreviewOperator(operatorType);
                 widget.populatePreview.apply(widget, data)
             };
-            var ajaxObject =  {
-                work : function (callBack) {
+            var ajaxObject = {
+                work: function (callBack) {
                     BI.Utils.buildData(previewModel.update(), widget.previewTable, callBack, widget.controller.getFilterValue);
                 }
             };
@@ -288,21 +288,33 @@ BI.extend(BI.Utils, {
                 });
             });
         }
-    }
+    },
+
+    getOperatorByValue: function (value) {
+        return BI.find(ETLCst.ANALYSIS_OPERATORS, function (i, operator) {
+            return operator.value === value;
+        });
+    },
+
+    getOperatorByType: function (operatorType) {
+        return BI.find(ETLCst.ANALYSIS_OPERATORS, function (i, operator) {
+            return operator.operatorType === operatorType;
+        });
+    },
 
 })
 
 BI.ThreadRun = BI.inherit(FR.OB, {
-    _init : function () {
+    _init: function () {
         BI.ThreadRun.superclass._init.apply(this, arguments);
         this.triggerIndex = this.options.triggerIndex;
     },
 
-    getTriggerIndex: function(){
+    getTriggerIndex: function () {
         return this.triggerIndex;
     },
 
-    submit : function (runner) {
+    submit: function (runner) {
         runner.apply(runner, this.options.args)
     },
 
@@ -311,22 +323,22 @@ BI.ThreadRun = BI.inherit(FR.OB, {
 
 BI.Utils.ThreadRunTrigger = function () {
     return BI.throttle(function (ajaxObject, callback, mask) {
-        if(this.triggerIndex == null){
+        if (this.triggerIndex == null) {
             this.triggerIndex = 0;
         }
         this.triggerIndex++;
         var runner = new BI.ThreadRun({
-            args:arguments,
-            triggerIndex:this.triggerIndex
+            args: arguments,
+            triggerIndex: this.triggerIndex
         })
         var self = this;
-        if(self.currentMask == null && mask != null) {
+        if (self.currentMask == null && mask != null) {
             self.currentMask = mask();
         }
         runner.submit(function () {
             ajaxObject.work(function () {
-                if(runner.getTriggerIndex() == self.triggerIndex){
-                    if(self.currentMask != null) {
+                if (runner.getTriggerIndex() == self.triggerIndex) {
+                    if (self.currentMask != null) {
                         self.currentMask.destroy()
                         self.currentMask = null;
                     }
@@ -335,5 +347,5 @@ BI.Utils.ThreadRunTrigger = function () {
 
             })
         })
-    },300)
+    }, 300)
 }

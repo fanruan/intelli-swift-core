@@ -2,25 +2,23 @@
  * Created by windy on 2017/4/6.
  */
 /**
- * @class BI.AnalysisETLSelectDataPane
+ * @class BI.AnalysisSelectDataOperatorPane
  * @extend BI.Widget
  * 选择字段
  */
-BI.AnalysisETLSelectDataPane = BI.inherit(BI.Widget, {
+BI.AnalysisSelectDataOperatorPane = BI.inherit(BI.Widget, {
 
-    props: {
+    props: {},
 
-    },
-
-    beforeCreate: function(){
+    beforeCreate: function () {
         this.id = BI.UUID();
     },
 
-    render: function(){
+    render: function () {
         var self = this;
         return {
             type: "bi.package_select_data_service",
-            ref: function(_ref){
+            ref: function (_ref) {
                 self.service = _ref;
             },
             isDefaultInit: false,
@@ -29,8 +27,8 @@ BI.AnalysisETLSelectDataPane = BI.inherit(BI.Widget, {
             showDateGroup: true,
             listeners: [{
                 eventName: BI.PackageSelectDataService.EVENT_CLICK_ITEM,
-                action: function(){
-                    self.fireEvent(BI.AnalysisETLSelectDataPane.EVENT_CLICK_ITEM, arguments);
+                action: function () {
+                    self.fireEvent(BI.AnalysisSelectDataOperatorPane.EVENT_CLICK_ITEM, arguments);
                 }
             }],
             tablesCreator: function (packageId, opt) {
@@ -92,7 +90,7 @@ BI.AnalysisETLSelectDataPane = BI.inherit(BI.Widget, {
     },
 
     setEnable: function (v) {
-        BI.AnalysisETLSelectDataPane.superclass.setEnable.apply(this, arguments)
+        BI.AnalysisSelectDataOperatorPane.superclass.setEnable.apply(this, arguments)
         this.service.setEnable(v)
     },
 
@@ -114,12 +112,12 @@ BI.AnalysisETLSelectDataPane = BI.inherit(BI.Widget, {
 
 
     registerEvents: function (item, tableId) {
-        var enable = this.isEnable(tableId)
-        item.setEnable(enable)
+        var enable = this.isEnable(tableId);
+        item.setEnable(enable);
         var self = this;
         BI.Broadcasts.on(BICst.BROADCAST.SRC_PREFIX + this._getId(), function () {
             var enable = self.isEnable(tableId);
-            item.setEnable(enable)
+            item.setEnable(enable);
             if (enable === false) {
                 item.fireEvent(BI.Controller.EVENT_CHANGE, BI.Events.COLLAPSE)
             }
@@ -131,5 +129,5 @@ BI.AnalysisETLSelectDataPane = BI.inherit(BI.Widget, {
         this.service.setPackage(ids[0]);
     }
 });
-BI.AnalysisETLSelectDataPane.EVENT_CLICK_ITEM = "EVENT_CLICK_ITEM";
-BI.shortcut("bi.analysis_etl_select_data_pane", BI.AnalysisETLSelectDataPane);
+BI.AnalysisSelectDataOperatorPane.EVENT_CLICK_ITEM = "EVENT_CLICK_ITEM";
+BI.shortcut("bi.analysis_select_data_operator_pane", BI.AnalysisSelectDataOperatorPane);
