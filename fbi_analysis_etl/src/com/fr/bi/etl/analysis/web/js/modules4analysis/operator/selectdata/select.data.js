@@ -10,7 +10,7 @@ BI.AnalysisETLOperatorSelectData = BI.inherit(BI.Widget, {
     render: function(){
         var self = this, o = this.options;
         this.center = this.selectPane = this.cancelButton = this.saveButton = null;
-        this.model = new BI.AnalysisETLOperatorSelectDataModel(o.items);
+        this.model = new BI.AnalysisETLOperatorSelectDataModel({});
         this.trigger = BI.Utils.triggerPreview()
         return {
             type: "bi.htape",
@@ -155,6 +155,10 @@ BI.AnalysisETLOperatorSelectData = BI.inherit(BI.Widget, {
         };
     },
 
+    mounted: function(){
+        this.populate(this.options.table);
+    },
+
     addField : function(fieldId){
         if(this._editing !== true){
             return;
@@ -225,11 +229,6 @@ BI.AnalysisETLOperatorSelectData = BI.inherit(BI.Widget, {
         } else {
             change()
         }
-
-
-
-
-
     },
 
 

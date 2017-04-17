@@ -16,7 +16,7 @@ BI.AnalysisETLOperatorAddColumnPane = BI.inherit(BI.Widget, {
     render: function(){
         var self = this, o = this.options;
         this._editing = false;
-        this.model = new BI.AnalysisETLOperatorAddColumnPaneModel(o.items);
+        this.model = new BI.AnalysisETLOperatorAddColumnPaneModel({});
         this.card = null;
         return {
             type:'bi.tab',
@@ -25,6 +25,10 @@ BI.AnalysisETLOperatorAddColumnPane = BI.inherit(BI.Widget, {
             },
             cardCreator: BI.bind(this._createTabs, this)
         }
+    },
+
+    mounted: function(){
+        this.populate(this.options.table);
     },
 
     _createTabs: function (v) {

@@ -1,11 +1,14 @@
 /**
  * Created by Young's on 2017/4/5.
  */
-BI.AnalysisTabSheetButton = BI.inherit(BI.Widget, {
+BI.AnalysisTabSheetButton = BI.inherit(BI.BasicButton, {
+    _constant : {
+        popupItemHeight:25
+    },
+
     props: {
         extraCls: "bi-tab-sheet-button bi-list-item",
         height: 28,
-        width: 28,
         iconWidth: 13,
         iconHeight: 13,
         text: "sheet1",
@@ -64,7 +67,7 @@ BI.AnalysisTabSheetButton = BI.inherit(BI.Widget, {
                 type: "bi.center_adapt",
                 cls: "bi-inline-vertical",
                 height: o.height,
-                width: o.width,
+                width: o.height,
                 items: [this.combo]
             }]
         })
@@ -87,20 +90,20 @@ BI.AnalysisTabSheetButton = BI.inherit(BI.Widget, {
 
     _createItemList: function () {
         return [{
-            text: BI.i18nText("BI-Rename"),
-            value: ETLCst.ANALYSIS_TABLE_SET.RENAME,
-            title: BI.i18nText("BI-Rename"),
-            extraCls: "rename-font"
-        }, {
-            text: BI.i18nText("BI-Copy"),
-            title: BI.i18nText("BI-Copy"),
-            value: ETLCst.ANALYSIS_TABLE_SET.COPY,
-            extraCls: "widget-copy-h-font"
-        }, {
-            text: BI.i18nText("BI-Remove"),
-            title: BI.i18nText("BI-Remove"),
-            value: ETLCst.ANALYSIS_TABLE_SET.DELETE,
-            extraCls: "widget-delete-h-font"
+            text: BI.i18nText("BI-Basic_Rename"),
+            value:ETLCst.ANALYSIS_TABLE_SET.RENAME,
+            title: BI.i18nText("BI-Basic_Rename"),
+            extraCls:"rename-font"
+        },{
+            text: BI.i18nText("BI-Basic_Copy"),
+            title: BI.i18nText("BI-Basic_Copy"),
+            value:ETLCst.ANALYSIS_TABLE_SET.COPY,
+            extraCls:"widget-copy-h-font"
+        },{
+            text: BI.i18nText("BI-Basic_Remove"),
+            title: BI.i18nText("BI-Basic_Remove"),
+            value:ETLCst.ANALYSIS_TABLE_SET.DELETE,
+            extraCls:"widget-delete-h-font"
         }];
     }
 });
