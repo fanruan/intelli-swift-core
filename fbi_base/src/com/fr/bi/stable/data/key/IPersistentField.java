@@ -8,10 +8,13 @@ import java.io.Serializable;
  * Created by GUY on 2015/3/10.
  */
 public interface IPersistentField extends JSONTransform,Serializable {
+    int getColumnSize();
+
     int getSqlType();
 
     String getFieldName();
 
     boolean isUsable();
 
+    int getScale();
 }
