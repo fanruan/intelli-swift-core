@@ -60,7 +60,7 @@ public class BIID implements XMLable, JSONTransform, NameProvider {
 
     @Override
     public void parseJSON(JSONObject jo) throws Exception {
-        this.id = jo.optString("did", StringUtils.EMPTY);
+        this.id = jo.optString("dId", StringUtils.EMPTY);
         this.text = jo.optString("name", StringUtils.EMPTY);
     }
 
