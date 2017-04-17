@@ -157,8 +157,7 @@ BI.AnalysisMainPane = BI.inherit(BI.Widget, {
         });
 
         this.dynamicTab = BI.createWidget({
-            type: "bi.analysis_dynamic_tab",
-            items: this.model.getItems()
+            type: "bi.analysis_dynamic_tab"
         });
 
         BI.createWidget({
@@ -171,6 +170,10 @@ BI.AnalysisMainPane = BI.inherit(BI.Widget, {
                 el: this.dynamicTab
             }]
         })
+    },
+
+    mounted: function () {
+        this.dynamicTab.populate(this.model.getItems());
     },
 
     _createTabs: function (v) {
@@ -242,11 +245,11 @@ BI.AnalysisMainPane = BI.inherit(BI.Widget, {
         });
     },
 
-    getSheetLength: function() {
+    getSheetLength: function () {
         return this.dynamicTab.getSheetLength();
     },
 
-    getValue: function() {
+    getValue: function () {
         var value = this.model.getValue();
         value.table = this.dynamicTab.getValue();
         return value;

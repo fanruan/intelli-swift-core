@@ -4,38 +4,26 @@
 BI.AnalysisHistoryTabModel = BI.inherit(BI.OB, {
     _init: function () {
         BI.AnalysisHistoryTabModel.superclass._init.apply(this, arguments);
-        var self = this;
-        this.options.items = [];
-        if (BI.isNull(this.options.invalidIndex)) {
-            this.options.invalidIndex = Number.MAX_VALUE;
-        }
-        this.options.allHistory = false;
-        if (BI.isNull(this.options.etlType)) {
-            this.addItemAfter(ETLCst.ANALYSIS_TABLE_HISTORY_TABLE_MAP.CHOOSE_FIELD, -1, new BI.AnalysisETLOperatorSelectDataModel().update())
-        } else {
-            BI.each(self._initItems(BI.deepClone(this.options), []), function (i, item) {
-                self.addItemAfter(item.op, i - 1, item.table)
-            })
-        }
+        this.items = [];
+        this.invalidIndex = -1;
+        this.allHistory = false;
     },
 
-    _initItems: function (table, items) {
+    _initItems: function (table) {
         var operator = ETLCst.ANALYSIS_TABLE_OPERATOR_KEY[table.etlType];
-        var self = this;
-        items = BI.concat([{
+        this.items = this.items.concat({
             op: operator,
             table: table
-        }], items);
-        self._initId([table]);
-        if (BI.isNotNull(table.parents)) {
+        });
+        this._initId([table]);
+        if (BI.isNotNull(table.parents) && table.parent.length > 0) {
             if (table.parents.length !== 2) {
-                items = this._initItems(table.parents[0], items);
+                this._initItems(table.parents[0]);
             } else {
-                self._initId(table.parents);
-                this.options.allHistory = true;
+                this._initId(table.parents);
+                this.allHistory = true;
             }
         }
-        return items;
     },
 
     _initId: function (tables) {
@@ -51,37 +39,44 @@ BI.AnalysisHistoryTabModel = BI.inherit(BI.OB, {
                 if (item.etlType === ETLCst.ETL_TYPE.SELECT_DATA) {
                     item.operator = new BI.AnalysisETLOperatorSelectDataModel(item).update().operator
                 }
-                self._initId(item[ETLCst.PARENTS])
-            })
+                self._initId(item.parent);
+            });
         }
     },
 
-    get: function(key) {
-        return this.options[key];
+    getOperators: function () {
+        return this.items;
     },
 
-    set: function(key, value) {
-        this.options[key] = value;
+    getInvalidIndex: function () {
+        return this.invalidIndex;
     },
 
-    addItemAfter: function (v, index, options) {
-        index++;
-        var newItem = this.createItem(v, options);
-        var items = this.options.items;
-        if (items.length !== 0) {
-            newItem.parents = [items[index - 1]];
+    setInvalidIndex: function (invalidIndex) {
+        this.invalidIndex = invalidIndex;
+    },
+
+    getInvalidTitle: function () {
+        return this.invalidTitle;
+    },
+
+    setInvalidTitle: function (invalidTitle) {
+        this.invalidTitle = invalidTitle;
+    },
+
+    addNewOperator: function (operator, table) {
+        operator.value = BI.UUID();
+        BI.extend(operator, table);
+        if (this.items.length > 0) {
+            operator.parents = [this.items[this.items.length - 1]];
         }
-        if (BI.isNotNull(items[index])) {
-            items[index].parents = [newItem];
-        }
-        items = BI.concat(BI.concat(items.slice(0, index), newItem), items.slice(index));
-        this.options.items = items;
-        return newItem;
+        this.items.push(operator);
+        return operator;
     },
 
     checkBeforeSave: function (table, index) {
         index++;
-        var items = this.options.items;
+        var items = this.items;
         var p = table;
         for (var i = index; i < items.length; i++) {
             var c = BI.deepClone(items[index]);
@@ -100,7 +95,7 @@ BI.AnalysisHistoryTabModel = BI.inherit(BI.OB, {
 
     saveItem: function (table) {
         var index = this.getIndexByValue(table.value);
-        var items = this.options.items;
+        var items = this.items;
         items[index] = table;
         if (BI.isNotNull(items[index - 1])) {
             items[index].parents = [items[index - 1]];
@@ -120,8 +115,8 @@ BI.AnalysisHistoryTabModel = BI.inherit(BI.OB, {
     },
 
     getIndexByValue: function (v) {
-        var pos = this.options.items.length - 1;
-        BI.some(this.options.items, function (idx, item) {
+        var pos = this.items.length;
+        BI.some(this.items, function (idx, item) {
             if (item.value === v) {
                 pos = idx;
                 return true;
@@ -130,37 +125,36 @@ BI.AnalysisHistoryTabModel = BI.inherit(BI.OB, {
         return pos;
     },
 
-    findItem: function (v) {
-        var items = this.options.items;
-        return BI.find(items, function (idx, item) {
-            return item.value === v;
-        })
+    getOperatorByValue: function (value) {
+        return BI.find(this.items, function (i, item) {
+            return item.value === value;
+        });
     },
 
-    setFields: function (v, fields) {
-        var item = this.findItem(v);
-        item[ETLCst.FIELDS] = fields;
+    setFields: function (value, fields) {
+        var item = this.getOperatorByValue(value);
+        item.etlFields = fields;
     },
 
-    getOperatorType: function (v) {
-        var item = this.findItem(v);
-        return item.operatorType
+    getOperatorTypeByValue: function (value) {
+        var operator = this.getOperatorByValue(value);
+        return operator.operatorType;
     },
 
     removeItemFromValue: function (v) {
         var pos = this.getIndexByValue(v);
-        var items = this.options.items;
+        var items = this.items;
         items = items.slice(0, pos);
-        this.options.items = items;
+        this.items = items;
         return pos;
     },
 
     isModelValid: function () {
-        return this.options.invalidIndex >= this.options.items.length
+        return this.invalidIndex === -1 || this.invalidIndex >= this.items.length
     },
 
     createHistoryModel: function () {
-        var items = this.options.items;
+        var items = this.items;
         return {
             items: this._toArray(items[0])
         }
@@ -192,15 +186,29 @@ BI.AnalysisHistoryTabModel = BI.inherit(BI.OB, {
         });
     },
 
+    populate: function (table) {
+        this.value = table.value;
+        this.tableName = table.tableName;
+        this.invalidIndex = table.invalidIndex || this.invalidIndex;
+        this.items = [];
+        if (BI.isNull(table.etlType)) {
+            this.items.push(BI.extend(ETLCst.ANALYSIS_TABLE_HISTORY_TABLE_MAP.CHOOSE_FIELD, {
+                value: BI.UUID()
+            }));
+        } else {
+            this._initItems(table);
+        }
+    },
+
     getValue: function () {
-        var items = this.options.items;
+        var items = this.items;
         var res = BI.extend(BI.extend({}, items[items.length - 1]), {
-            value: BI.deepClone(this.options.value),
-            tableName: BI.deepClone(this.options.tableName),
-            invalidIndex: BI.deepClone(this.options.invalidIndex)
+            value: this.value,
+            tableName: this.tableName,
+            invalidIndex: this.invalidIndex
         });
         if (!this.isModelValid()) {
-            res[ETLCst.FIELDS] = []
+            res.etlFields = []
         }
         return res;
     }

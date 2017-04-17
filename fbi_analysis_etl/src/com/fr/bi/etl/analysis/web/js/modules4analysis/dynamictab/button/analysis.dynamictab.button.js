@@ -12,7 +12,7 @@ BI.AnalysisDynamicTabButton = BI.inherit(BI.Widget, {
 
     render: function () {
         var self = this, o = this.options;
-        this.tab = BI.createWidget({
+        this.sheetGroup = BI.createWidget({
             type: "bi.button_group",
             tagName: "ul",
             height: o.height,
@@ -79,7 +79,7 @@ BI.AnalysisDynamicTabButton = BI.inherit(BI.Widget, {
                 height: o.height,
                 scrollx: false,
                 cls: "bi-sheet-tab-dynamic-horizontal",
-                items: [this.tab,
+                items: [this.sheetGroup,
                     {
                         type: "bi.center_adapt",
                         items: [this.scrollLeft],
@@ -111,7 +111,7 @@ BI.AnalysisDynamicTabButton = BI.inherit(BI.Widget, {
     },
 
     _needScroll : function (visibleWidth, buttonWidth) {
-        var currentLeft = this.tab.element[0].scrollLeft;
+        var currentLeft = this.sheetGroup.element[0].scrollLeft;
         return (visibleWidth > currentLeft && visibleWidth - currentLeft > buttonWidth) ||
             (visibleWidth < currentLeft)
     },
@@ -126,7 +126,7 @@ BI.AnalysisDynamicTabButton = BI.inherit(BI.Widget, {
     },
 
     scrollSelectedVisible : function () {
-        var value = this.tab.getValue()[0];
+        var value = this.sheetGroup.getValue()[0];
         var visibleWidth = this._calculateButtonsWith(function(item){
             if(item.getValue() === value){
                 return true;
@@ -146,7 +146,7 @@ BI.AnalysisDynamicTabButton = BI.inherit(BI.Widget, {
     _calculateButtonsWith : function(fn) {
         var buttonWidth = 0;
         var self = this;
-        BI.some(this.tab.getAllButtons(), function(idx, item){
+        BI.some(this.sheetGroup.getAllButtons(), function(idx, item){
             buttonWidth += item.element.outerWidth();
             if(!(BI.isUndefined(fn)) && fn.apply(self, [item])){
                 return true;
@@ -159,12 +159,12 @@ BI.AnalysisDynamicTabButton = BI.inherit(BI.Widget, {
     },
 
     scrollLeft : function() {
-        this._scrollTo(this.tab.element[0].scrollLeft - this.scrollSection)
+        this._scrollTo(this.sheetGroup.element[0].scrollLeft - this.scrollSection)
     },
 
     _dealWithScrollButtonState:function (){
         var self = this;
-        if(self.tab.element[0].scrollLeft === 0){
+        if(self.sheetGroup.element[0].scrollLeft === 0){
             self.scrollLeft.setEnable(false);
         } else {
             self.scrollLeft.setEnable(true);
@@ -172,9 +172,9 @@ BI.AnalysisDynamicTabButton = BI.inherit(BI.Widget, {
         if(BI.isUndefined(this.buttonWidth)){
             self._calculateButtonsWith();
         }
-        var ulWidth = self.tab.element.outerWidth();
+        var ulWidth = self.sheetGroup.element.outerWidth();
         var maxLeft = this.buttonWidth - ulWidth;
-        if(self.tab.element[0].scrollLeft === maxLeft){
+        if(self.sheetGroup.element[0].scrollLeft === maxLeft){
             self.scrollRight.setEnable(false);
         } else {
             self.scrollRight.setEnable(true);
@@ -182,7 +182,7 @@ BI.AnalysisDynamicTabButton = BI.inherit(BI.Widget, {
     },
 
     scrollRight : function() {
-        this._scrollTo(this.tab.element[0].scrollLeft + this.scrollSection)
+        this._scrollTo(this.sheetGroup.element[0].scrollLeft + this.scrollSection)
     },
 
     scrollToEnd : function (){
@@ -194,7 +194,7 @@ BI.AnalysisDynamicTabButton = BI.inherit(BI.Widget, {
 
     _scrollTo : function (value) {
         var self = this;
-        this.tab.element.animate({
+        this.sheetGroup.element.animate({
             scrollLeft: value
         },  200, null, function(e){
             self._dealWithScrollButtonState();
@@ -212,19 +212,31 @@ BI.AnalysisDynamicTabButton = BI.inherit(BI.Widget, {
         }
         this.scrollLeft.setVisible(showScrollButton);
         this.scrollRight.setVisible(showScrollButton);
-        this.tab.element.width(width);
+        this.sheetGroup.element.width(width);
         this._dealWithScrollButtonState();
         this.scrollSection = width * 2/3;
     },
 
+    addButton: function() {
+
+    },
+
+    getSheetGroup: function() {
+        return this.sheetGroup;
+    },
+
+    populateSheetGroup: function(items) {
+        this.sheetGroup.populate(items);
+    },
+
     getButton: function (v) {
-        return BI.find(this.tab.getAllButtons(), function (idx, item) {
+        return BI.find(this.sheetGroup.getAllButtons(), function (idx, item) {
             return item.getValue() === v;
         })
     },
 
     empty : function () {
-        this.tab.empty();
+        this.sheetGroup.empty();
     }
 });
 BI.AnalysisDynamicTabButton.ADD_SHEET = "ADD_SHEET";
