@@ -40,7 +40,7 @@ BI.AnalysisETLOperatorAddColumnExprLastPeriodPane  = BI.inherit(BI.AnalysisETLOp
     //原controller
     _checkCanSave : function () {
         if (BI.isNull(this.model.get('period'))){
-            this.fireEvent(BI.TopPointerSavePane.EVENT_CHECK_SAVE_STATUS, false, BI.i18nText('BI-Property_Not_Setted',  BI.i18nText('BI-Year_Fen') + '/'+ BI.i18nText('BI-Month_Fen') + '/'+ BI.i18nText('BI-Basic_Quarter')));
+            this.fireEvent(BI.AnalysisTopPointerSavePane.EVENT_CHECK_SAVE_STATUS, false, BI.i18nText('BI-Property_Not_Setted',  BI.i18nText('BI-Year_Fen') + '/'+ BI.i18nText('BI-Month_Fen') + '/'+ BI.i18nText('BI-Basic_Quarter')));
         } else {
             BI.AnalysisETLOperatorAddColumnExprLastPeriodController.superclass._checkCanSave.apply(this, arguments);
         }

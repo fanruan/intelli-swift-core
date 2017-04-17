@@ -166,9 +166,9 @@ BI.AnalysisETLOperatorAddColumnPeriodPane  = BI.inherit(BI.Widget, {
     //原controller
     _checkCanSave : function () {
         if (BI.isNull(this.model.get('field'))){
-            this.fireEvent(BI.TopPointerSavePane.EVENT_CHECK_SAVE_STATUS, false, BI.i18nText('BI-Property_Not_Setted', BI.i18nText('BI-Value_From')));
+            this.fireEvent(BI.AnalysisTopPointerSavePane.EVENT_CHECK_SAVE_STATUS, false, BI.i18nText('BI-Property_Not_Setted', BI.i18nText('BI-Value_From')));
         } else {
-            this.fireEvent(BI.TopPointerSavePane.EVENT_CHECK_SAVE_STATUS, true);
+            this.fireEvent(BI.AnalysisTopPointerSavePane.EVENT_CHECK_SAVE_STATUS, true);
         }
     },
 

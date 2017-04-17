@@ -1,7 +1,7 @@
 /**
  * Created by windy on 2017/4/7.
  */
-BI.AnalysisETLOperatorGroup = BI.inherit(BI.AnalysisETLOperatorAbstractPane, {
+BI.AnalysisETLOperatorGroup = BI.inherit(BI.AnalysisOperatorAbstractPane, {
 
     props: {
         extraCls: "bi-analysis-etl-operator-select-data",

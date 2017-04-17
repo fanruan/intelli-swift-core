@@ -105,19 +105,19 @@ BI.AnalysisHistoryTab = BI.inherit(BI.Widget, {
                     }
                 }
             }, {
-                eventName: BI.TopPointerSavePane.EVENT_SAVE,
+                eventName: BI.AnalysisTopPointerSavePane.EVENT_SAVE,
                 action: function (table) {
                     self.saveOneSheet(table);
-                    self.fireEvent(BI.TopPointerSavePane.EVENT_SAVE, table);
+                    self.fireEvent(BI.AnalysisTopPointerSavePane.EVENT_SAVE, table);
                 }
             }, {
-                eventName: BI.TopPointerSavePane.EVENT_FIELD_VALID,
+                eventName: BI.AnalysisTopPointerSavePane.EVENT_FIELD_VALID,
                 action: function (fields) {
                     self.refreshValidFields(v, fields);
                     self.fireEvent(BI.AnalysisHistoryTab.VALID_CHANGE, self.model.isModelValid());
                 }
             }, {
-                eventName: BI.TopPointerSavePane.EVENT_INVALID,
+                eventName: BI.AnalysisTopPointerSavePane.EVENT_INVALID,
                 action: function (title) {
                     self.setInvalid(v, title);
                     self.fireEvent(BI.AnalysisHistoryTab.VALID_CHANGE, self.model.isModelValid());
@@ -138,7 +138,7 @@ BI.AnalysisHistoryTab = BI.inherit(BI.Widget, {
                     self.tempAddButton(v.getValue())
                 }
             }, {
-                eventName: BI.TopPointerSavePane.EVENT_CANCEL,
+                eventName: BI.AnalysisTopPointerSavePane.EVENT_CANCEL,
                 action: function () {
                     self.cancelTempAddButton()
                 }

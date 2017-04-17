@@ -96,7 +96,7 @@ BI.AnalysisETLOperatorMergeSheetPane = BI.inherit(BI.Widget, {
     },
 
     mounted: function(){
-        this.populate(this.options.table);
+        //this.populate(this.options.table);
     },
 
     createTable : function (tables) {
@@ -137,7 +137,7 @@ BI.AnalysisETLOperatorMergeSheetPane = BI.inherit(BI.Widget, {
             update: BI.bind(this.model.update, this.model),
             getCopyValue: BI.bind(this.model.getCopyValue, this.model)
         }, ETLCst.ANALYSIS_TABLE_OPERATOR_KEY.NULL)
-        this.fireEvent(BI.TopPointerSavePane.EVENT_FIELD_VALID, this.model.getCopyValue("columns"))
+        this.fireEvent(BI.AnalysisTopPointerSavePane.EVENT_FIELD_VALID, this.model.getCopyValue("columns"))
     },
 
 

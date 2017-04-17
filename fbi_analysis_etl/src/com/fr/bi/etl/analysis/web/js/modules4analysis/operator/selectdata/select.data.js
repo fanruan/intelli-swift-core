@@ -73,7 +73,7 @@ BI.AnalysisETLOperatorSelectData = BI.inherit(BI.Widget, {
                 width: 240
             }, {
                 el: {
-                    type: "bi.analysis_etl_operator_center",
+                    type: "bi.analysis_operator_center",
                     nameValidationController: function () {
                         return self.checkNameValid.apply(self, arguments)
                     },
@@ -87,16 +87,16 @@ BI.AnalysisETLOperatorSelectData = BI.inherit(BI.Widget, {
                             self.fireEvent(BI.AnalysisOperatorTitle.EVENT_OPERATOR_CHANGE, arguments)
                         }
                     }, {
-                        eventName: BI.TopPointerSavePane.EVENT_SAVE,
+                        eventName: BI.AnalysisTopPointerSavePane.EVENT_SAVE,
                         action: function(v){
                             self.saveButton.setEnable(true);
                         }
                     }, {
-                        eventName: BI.TopPointerSavePane.EVENT_CANCEL,
+                        eventName: BI.AnalysisTopPointerSavePane.EVENT_CANCEL,
                         action: function(){
                             self.saveButton.setEnable(true);
                             self._populate();
-                            self.fireEvent(BI.TopPointerSavePane.EVENT_CANCEL, arguments)
+                            self.fireEvent(BI.AnalysisTopPointerSavePane.EVENT_CANCEL, arguments)
                         }
                     }, {
                         eventName: BI.AnalysisETLPreviewTable.DELETE_EVENT,
@@ -114,14 +114,14 @@ BI.AnalysisETLOperatorSelectData = BI.inherit(BI.Widget, {
                             self.sortColumn(oldIndex, newIndex);
                         }
                     }, {
-                        eventName: BI.TopPointerSavePane.EVENT_INVALID,
+                        eventName: BI.AnalysisTopPointerSavePane.EVENT_INVALID,
                         action: function(){
-                            self.fireEvent(BI.TopPointerSavePane.EVENT_INVALID, arguments)
+                            self.fireEvent(BI.AnalysisTopPointerSavePane.EVENT_INVALID, arguments)
                         }
                     }, {
-                        eventName: BI.TopPointerSavePane.EVENT_FIELD_VALID,
+                        eventName: BI.AnalysisTopPointerSavePane.EVENT_FIELD_VALID,
                         action: function(){
-                            self.fireEvent(BI.TopPointerSavePane.EVENT_FIELD_VALID, arguments)
+                            self.fireEvent(BI.AnalysisTopPointerSavePane.EVENT_FIELD_VALID, arguments)
                         }
                     }, {
                         eventName: BI.Controller.EVENT_CHANGE,
@@ -156,7 +156,7 @@ BI.AnalysisETLOperatorSelectData = BI.inherit(BI.Widget, {
     },
 
     mounted: function(){
-        this.populate(this.options.table);
+        //this.populate(this.options.table);
     },
 
     addField : function(fieldId){
@@ -209,7 +209,7 @@ BI.AnalysisETLOperatorSelectData = BI.inherit(BI.Widget, {
             if(self._editing === false){
                 self.model.save();
                 var v = self.model.update();
-                self.fireEvent(BI.TopPointerSavePane.EVENT_SAVE, v);
+                self.fireEvent(BI.AnalysisTopPointerSavePane.EVENT_SAVE, v);
             } else {
                 self.model.cancel();
                 self._refreshState();
@@ -282,7 +282,7 @@ BI.AnalysisETLOperatorSelectData = BI.inherit(BI.Widget, {
             showContent: false
         }));
         this._refreshState();
-        this.fireEvent(BI.TopPointerSavePane.EVENT_FIELD_VALID, this.model.getCopyValue(ETLCst.FIELDS))
+        this.fireEvent(BI.AnalysisTopPointerSavePane.EVENT_FIELD_VALID, this.model.getCopyValue(ETLCst.FIELDS))
     },
 
     //todo 外界调用populate居然还会传options.func进来以拓展自身的controller，现在放widget里，之后删掉

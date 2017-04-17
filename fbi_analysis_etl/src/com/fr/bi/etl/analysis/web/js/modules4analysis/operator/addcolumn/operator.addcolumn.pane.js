@@ -28,7 +28,7 @@ BI.AnalysisETLOperatorAddColumnPane = BI.inherit(BI.Widget, {
     },
 
     mounted: function(){
-        this.populate(this.options.table);
+        //this.populate(this.options.table);
     },
 
     _createTabs: function (v) {
@@ -66,9 +66,9 @@ BI.AnalysisETLOperatorAddColumnPane = BI.inherit(BI.Widget, {
                                                     self.title = _ref;
                                                 },
                                                 listeners: [{
-                                                    eventName: BI.TopPointerSavePane.EVENT_CHECK_SAVE_STATUS,
+                                                    eventName: BI.AnalysisTopPointerSavePane.EVENT_CHECK_SAVE_STATUS,
                                                     action: function () {
-                                                        self.fireEvent(BI.TopPointerSavePane.EVENT_CHECK_SAVE_STATUS, arguments)
+                                                        self.fireEvent(BI.AnalysisTopPointerSavePane.EVENT_CHECK_SAVE_STATUS, arguments)
                                                     }
                                                 }, {
                                                     eventName: BI.AnalysisETLOperatorAddColumnPaneTitle.EVENT_ADD_COLUMN_TYPE_CHANGE,
@@ -130,7 +130,7 @@ BI.AnalysisETLOperatorAddColumnPane = BI.inherit(BI.Widget, {
     },
 
     cancelHandler : function () {
-        this.fireEvent(BI.TopPointerSavePane.EVENT_CHECK_SAVE_STATUS, true)
+        this.fireEvent(BI.AnalysisTopPointerSavePane.EVENT_CHECK_SAVE_STATUS, true)
         return this.cancelColumn();
     },
 
@@ -163,13 +163,13 @@ BI.AnalysisETLOperatorAddColumnPane = BI.inherit(BI.Widget, {
     },
 
     doCheck : function () {
-        this.fireEvent(BI.TopPointerSavePane.EVENT_CHECK_SAVE_STATUS, true)
+        this.fireEvent(BI.AnalysisTopPointerSavePane.EVENT_CHECK_SAVE_STATUS, true)
     },
 
     _doModelCheck : function () {
         var found = this.model.check();
         if(found[0] === true) {
-            this.fireEvent(BI.TopPointerSavePane.EVENT_INVALID, found[1])
+            this.fireEvent(BI.AnalysisTopPointerSavePane.EVENT_INVALID, found[1])
         }
         return found[0];
     },
@@ -177,7 +177,7 @@ BI.AnalysisETLOperatorAddColumnPane = BI.inherit(BI.Widget, {
     _check : function () {
         var found = this._doModelCheck()
         if (!found){
-            this.fireEvent(BI.TopPointerSavePane.EVENT_FIELD_VALID, this.model.createFields())
+            this.fireEvent(BI.AnalysisTopPointerSavePane.EVENT_FIELD_VALID, this.model.createFields())
         } else {
             this.model.set(ETLCst.FIELDS, [])
         }
@@ -190,7 +190,7 @@ BI.AnalysisETLOperatorAddColumnPane = BI.inherit(BI.Widget, {
     },
 
     createNewAddColumn : function () {
-        this.fireEvent(BI.TopPointerSavePane.EVENT_CHECK_SAVE_STATUS, true);
+        this.fireEvent(BI.AnalysisTopPointerSavePane.EVENT_CHECK_SAVE_STATUS, true);
         this._editing = true;
         this.card.setSelect(this._constant.SINGLE_COLUMN_CARD);
         this.title.populate({},{
@@ -203,7 +203,7 @@ BI.AnalysisETLOperatorAddColumnPane = BI.inherit(BI.Widget, {
         this._cancelEditColumn();
         this._doModelCheck();
         this.fireEvent(BI.AnalysisETLOperatorAbstractController.PREVIEW_CHANGE, this.model, this.model.isValid() ? this.options.value.operatorType :  ETLCst.ANALYSIS_TABLE_OPERATOR_KEY.ERROR)
-        this.fireEvent(BI.TopPointerSavePane.EVENT_CHECK_SAVE_STATUS, this.model.getAddColumns().length !== 0, BI.i18nText('BI-Basic_Please') + BI.i18nText('BI-Add_Column'))
+        this.fireEvent(BI.AnalysisTopPointerSavePane.EVENT_CHECK_SAVE_STATUS, this.model.getAddColumns().length !== 0, BI.i18nText('BI-Basic_Please') + BI.i18nText('BI-Add_Column'))
     },
 
     editColumnByName : function (name) {
@@ -270,7 +270,7 @@ BI.AnalysisETLOperatorAddColumnPane = BI.inherit(BI.Widget, {
             return false;
         }
         this._saveColumn();
-        this.fireEvent(BI.TopPointerSavePane.EVENT_CHECK_SAVE_STATUS, this.model.getAddColumns().length !== 0);
+        this.fireEvent(BI.AnalysisTopPointerSavePane.EVENT_CHECK_SAVE_STATUS, this.model.getAddColumns().length !== 0);
         return true;
     },
 
@@ -293,8 +293,8 @@ BI.AnalysisETLOperatorAddColumnPane = BI.inherit(BI.Widget, {
         this.currentEditPane = BI.createWidget({
             type : ETLCst.ANALYSIS_ETL_PAGES.ADD_COLUMN + '_' + type
         })
-        this.currentEditPane.on(BI.TopPointerSavePane.EVENT_CHECK_SAVE_STATUS, function () {
-            self.fireEvent(BI.TopPointerSavePane.EVENT_CHECK_SAVE_STATUS, arguments)
+        this.currentEditPane.on(BI.AnalysisTopPointerSavePane.EVENT_CHECK_SAVE_STATUS, function () {
+            self.fireEvent(BI.AnalysisTopPointerSavePane.EVENT_CHECK_SAVE_STATUS, arguments)
         });
         this.oneConditionPane.populate([this.currentEditPane]);
         var column = this.title.update();

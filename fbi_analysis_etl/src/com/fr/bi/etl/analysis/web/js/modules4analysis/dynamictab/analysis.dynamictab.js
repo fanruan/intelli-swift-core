@@ -71,7 +71,7 @@ BI.AnalysisDynamicTab = BI.inherit(BI.Widget, {
                 self.sheets[v] = ref;
             },
             listeners: [{
-                eventName: BI.TopPointerSavePane.EVENT_SAVE,
+                eventName: BI.AnalysisTopPointerSavePane.EVENT_SAVE,
                 action: function () {
 
                 }
