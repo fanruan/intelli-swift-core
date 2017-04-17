@@ -216,6 +216,17 @@ BI.extend(BI.Utils, {
         }
     },
 
+    getOperatorByValue: function (value) {
+        return BI.deepClone(BI.find(ETLCst.ANALYSIS_OPERATORS, function (i, operator) {
+            return operator.value === value;
+        }));
+    },
+
+    getOperatorByType: function (operatorType) {
+        return BI.deepClone(BI.find(ETLCst.ANALYSIS_OPERATORS, function (i, operator) {
+            return operator.operatorType === operatorType;
+        }));
+    },
 
     buildData: function (model, widget, callback, filterValueGetter) {
         //测试数据
@@ -288,21 +299,8 @@ BI.extend(BI.Utils, {
                 });
             });
         }
-    },
-
-    getOperatorByValue: function (value) {
-        return BI.find(ETLCst.ANALYSIS_OPERATORS, function (i, operator) {
-            return operator.value === value;
-        });
-    },
-
-    getOperatorByType: function (operatorType) {
-        return BI.find(ETLCst.ANALYSIS_OPERATORS, function (i, operator) {
-            return operator.operatorType === operatorType;
-        });
-    },
-
-})
+    }
+});
 
 BI.ThreadRun = BI.inherit(FR.OB, {
     _init: function () {
@@ -316,9 +314,8 @@ BI.ThreadRun = BI.inherit(FR.OB, {
 
     submit: function (runner) {
         runner.apply(runner, this.options.args)
-    },
-
-})
+    }
+});
 
 
 BI.Utils.ThreadRunTrigger = function () {
@@ -330,7 +327,7 @@ BI.Utils.ThreadRunTrigger = function () {
         var runner = new BI.ThreadRun({
             args: arguments,
             triggerIndex: this.triggerIndex
-        })
+        });
         var self = this;
         if (self.currentMask == null && mask != null) {
             self.currentMask = mask();
@@ -339,7 +336,7 @@ BI.Utils.ThreadRunTrigger = function () {
             ajaxObject.work(function () {
                 if (runner.getTriggerIndex() == self.triggerIndex) {
                     if (self.currentMask != null) {
-                        self.currentMask.destroy()
+                        self.currentMask.destroy();
                         self.currentMask = null;
                     }
                     callback.apply(this, arguments);
@@ -348,4 +345,4 @@ BI.Utils.ThreadRunTrigger = function () {
             })
         })
     }, 300)
-}
+};

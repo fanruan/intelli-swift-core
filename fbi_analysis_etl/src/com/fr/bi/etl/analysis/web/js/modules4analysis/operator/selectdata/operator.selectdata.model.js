@@ -9,7 +9,11 @@ BI.AnalysisSelectDataOperatorModel = BI.inherit(BI.OB, {
     },
 
     getFields: function () {
-        return this.etlFields;
+        return BI.deepClone(this.etlFields);
+    },
+
+    getTempFields: function () {
+        return BI.deepClone(this.tempETLFields);
     },
 
     save: function () {
@@ -67,10 +71,6 @@ BI.AnalysisSelectDataOperatorModel = BI.inherit(BI.OB, {
 
     cancel: function () {
         this.tempETLFields = BI.deepClone(this.etlFields);
-    },
-
-    getTempFields: function () {
-        return BI.deepClone(this.tempETLFields);
     },
 
     createDistinctName: function (name) {

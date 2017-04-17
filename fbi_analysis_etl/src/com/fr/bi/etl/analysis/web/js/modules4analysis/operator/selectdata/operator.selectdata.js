@@ -88,12 +88,12 @@ BI.AnalysisSelectDataOperator = BI.inherit(BI.Widget, {
                         }
                     }, {
                         eventName: BI.AnalysisTopPointerSavePane.EVENT_SAVE,
-                        action: function(v){
+                        action: function (v) {
                             self.saveButton.setEnable(true);
                         }
                     }, {
                         eventName: BI.AnalysisTopPointerSavePane.EVENT_CANCEL,
-                        action: function(){
+                        action: function () {
                             self.saveButton.setEnable(true);
                             self._populate();
                             self.fireEvent(BI.AnalysisTopPointerSavePane.EVENT_CANCEL, arguments)
@@ -115,12 +115,12 @@ BI.AnalysisSelectDataOperator = BI.inherit(BI.Widget, {
                         }
                     }, {
                         eventName: BI.AnalysisTopPointerSavePane.EVENT_INVALID,
-                        action: function(){
+                        action: function () {
                             self.fireEvent(BI.AnalysisTopPointerSavePane.EVENT_INVALID, arguments)
                         }
                     }, {
                         eventName: BI.AnalysisTopPointerSavePane.EVENT_FIELD_VALID,
-                        action: function(){
+                        action: function () {
                             self.fireEvent(BI.AnalysisTopPointerSavePane.EVENT_FIELD_VALID, arguments)
                         }
                     }, {
@@ -155,8 +155,8 @@ BI.AnalysisSelectDataOperator = BI.inherit(BI.Widget, {
         };
     },
 
-    addField : function(fieldId){
-        if(this._editing !== true){
+    addField: function (fieldId) {
+        if (this._editing !== true) {
             return;
         }
         this.model.addField(fieldId);
@@ -169,7 +169,30 @@ BI.AnalysisSelectDataOperator = BI.inherit(BI.Widget, {
         this.selectPane.setEnableTables(tables);
     },
 
+    _buildMask: function() {
+        return BI.createWidget({
+            type: "bi.etl_loading_mask",
+            masker: this.center.previewTable.element,
+            text: BI.i18nText("BI-Basic_Loading")
+        });
+    },
+
     refreshPopData: function (operatorType) {
+
+        BI.ETLReq.reqPreviewTable(table, function (data) {
+            BI.each(model[ETLCst.FIELDS], function (idx, item) {
+                var head = {
+                    text: item.fieldName,
+                    fieldType: item.fieldType,
+                    fieldId: item.fieldId,
+                    filterValueGetter: filterValueGetter
+                }
+                head[ETLCst.FIELDS] = model[ETLCst.FIELDS]
+                header.push(head);
+            });
+            callback([data.value, header])
+        });
+
         this.trigger(this.center, this.model, operatorType, ETLCst.PREVIEW.SELECT)
     },
 
@@ -236,7 +259,7 @@ BI.AnalysisSelectDataOperator = BI.inherit(BI.Widget, {
         this.cancelButton.setEnable(this.model.needCancel());
         this.saveButton.setText(this._editing === true ? BI.i18nText("BI-Finish_add") : BI.i18nText("BI-continue_add"));
         if (this._editing === true) {
-            this.saveButton.setEnable(this.model.get(BI.AnalysisETLOperatorSelectDataModel.TEMP_KEY).length > 0)
+            this.saveButton.setEnable(this.model.getTempFields().length > 0)
         }
     },
 
@@ -244,7 +267,7 @@ BI.AnalysisSelectDataOperator = BI.inherit(BI.Widget, {
     _refreshCenterState: function () {
         var enable = !this._editing;
         //如果没有添加字段是不可以下一步的
-        if (this.model.get(BI.AnalysisETLOperatorSelectDataModel.KEY) === 0) {
+        if (this.model.getFields().length === 0) {
             enable = false;
         }
         this.center.setEnable(enable)
