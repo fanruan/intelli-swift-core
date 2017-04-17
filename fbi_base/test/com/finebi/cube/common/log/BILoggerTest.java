@@ -59,7 +59,7 @@ public class BILoggerTest extends TestCase {
         try {
             BIUserLogPool logPool = BIUserLogPool.getInstance();
             logPool.clear();
-            LOGGER.poolError("ABC");
+            LOGGER.errorSticky("ABC");
             assertEquals(logPool.getLogEventPool().size(), 1);
             LoggingEvent event = logPool.getLogEventPool().get(0).getEvent();
             assertEquals(event.getMessage(), "ABC");
@@ -67,7 +67,7 @@ public class BILoggerTest extends TestCase {
 
 
             Exception e = new Exception("Exc");
-            LOGGER.poolError("ABC2", e);
+            LOGGER.errorSticky("ABC2", e);
             assertEquals(logPool.getLogEventPool().size(), 2);
             LoggingEvent event2 = logPool.getLogEventPool().get(1).getEvent();
             assertEquals(event2.getMessage(), "ABC2");
@@ -88,7 +88,7 @@ public class BILoggerTest extends TestCase {
         try {
             BIUserLogPool logPool = BIUserLogPool.getInstance();
             logPool.clear();
-            LOGGER.poolInfo("ABC");
+            LOGGER.infoSticky("ABC");
             assertEquals(logPool.getLogEventPool().size(), 1);
             LoggingEvent event = logPool.getLogEventPool().get(0).getEvent();
             assertEquals(event.getMessage(), "ABC");
@@ -96,7 +96,7 @@ public class BILoggerTest extends TestCase {
 
 
             Exception e = new Exception("Exc");
-            LOGGER.poolInfo("ABC2", e);
+            LOGGER.infoSticky("ABC2", e);
             assertEquals(logPool.getLogEventPool().size(), 2);
             LoggingEvent event2 = logPool.getLogEventPool().get(1).getEvent();
             assertEquals(event2.getMessage(), "ABC2");
@@ -117,7 +117,7 @@ public class BILoggerTest extends TestCase {
         try {
             BIUserLogPool logPool = BIUserLogPool.getInstance();
             logPool.clear();
-            LOGGER.poolWarn("ABC");
+            LOGGER.warnSticky("ABC");
             assertEquals(logPool.getLogEventPool().size(), 1);
             LoggingEvent event = logPool.getLogEventPool().get(0).getEvent();
             assertEquals(event.getMessage(), "ABC");
@@ -125,7 +125,7 @@ public class BILoggerTest extends TestCase {
 
 
             Exception e = new Exception("Exc");
-            LOGGER.poolWarn("ABC2", e);
+            LOGGER.warnSticky("ABC2", e);
             assertEquals(logPool.getLogEventPool().size(), 2);
             LoggingEvent event2 = logPool.getLogEventPool().get(1).getEvent();
             assertEquals(event2.getMessage(), "ABC2");

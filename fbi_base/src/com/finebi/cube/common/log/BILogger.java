@@ -155,7 +155,7 @@ public class BILogger implements Logger {
         logger.info(s);
     }
 
-    public void poolInfo(String s) {
+    public void infoSticky(String s) {
         logger.info(s);
         poolLogger.info(s);
     }
@@ -165,7 +165,7 @@ public class BILogger implements Logger {
         logger.info(s, o);
     }
 
-    public void poolInfo(String s, Object o) {
+    public void infoSticky(String s, Object o) {
         logger.info(s, o);
         poolLogger.info(s, o);
     }
@@ -225,7 +225,7 @@ public class BILogger implements Logger {
         logger.warn(s);
     }
 
-    public void poolWarn(String s) {
+    public void warnSticky(String s) {
         logger.warn(s);
         poolLogger.info(s);
     }
@@ -236,7 +236,7 @@ public class BILogger implements Logger {
     }
 
 
-    public void poolWarn(String s, Object o) {
+    public void warnSticky(String s, Object o) {
         logger.warn(s, o);
         poolLogger.info(s, o);
 
@@ -297,7 +297,7 @@ public class BILogger implements Logger {
         logger.error(s);
     }
 
-    public void poolError(String s) {
+    public void errorSticky(String s) {
         logger.error(s);
         poolLogger.info(s);
     }
@@ -307,7 +307,7 @@ public class BILogger implements Logger {
         logger.error(s, o);
     }
 
-    public void poolError(String s, Object o) {
+    public void errorSticky(String s, Object o) {
         logger.error(s, o);
         poolLogger.info(s, o);
 
