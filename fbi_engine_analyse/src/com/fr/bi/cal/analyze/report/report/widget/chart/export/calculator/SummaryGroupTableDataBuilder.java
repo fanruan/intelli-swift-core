@@ -1,8 +1,8 @@
 package com.fr.bi.cal.analyze.report.report.widget.chart.export.calculator;
 
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.basic.BIExcelTableData;
+import com.fr.bi.cal.analyze.report.report.widget.chart.export.basic.DimAndTargetStyle;
 import com.fr.bi.cal.analyze.report.report.widget.styles.BIStyleSetting;
-import com.fr.bi.conf.report.style.ChartSetting;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
 
@@ -14,9 +14,8 @@ import java.util.Map;
  */
 public class SummaryGroupTableDataBuilder extends SummaryCrossTableDataBuilder {
 
-
-    public SummaryGroupTableDataBuilder(Map<Integer, List<JSONObject>> dimAndTar, List<ChartSetting> chartSettings, JSONObject dataJSON, BIStyleSetting styleSetting) throws Exception {
-        super(dimAndTar, chartSettings, dataJSON, styleSetting);
+    public SummaryGroupTableDataBuilder(Map<Integer, List<JSONObject>> dimAndTar, List<DimAndTargetStyle> dimAndTargetStyles, JSONObject dataJSON, BIStyleSetting styleSetting) throws Exception {
+        super(dimAndTar, dimAndTargetStyles, dataJSON, styleSetting);
     }
 
     @Override

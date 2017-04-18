@@ -1,14 +1,10 @@
 package com.fr.bi.cal.analyze.report.report.widget.chart.export.calculator;
 
-import com.fr.bi.cal.analyze.report.report.widget.chart.export.basic.ITableHeader;
-import com.fr.bi.cal.analyze.report.report.widget.chart.export.basic.ITableItem;
-import com.fr.bi.cal.analyze.report.report.widget.chart.export.basic.BIBasicTableItem;
-import com.fr.bi.cal.analyze.report.report.widget.chart.export.basic.BIExcelTableData;
+import com.fr.bi.cal.analyze.report.report.widget.chart.export.basic.*;
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.utils.BITableExportDataHelper;
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.utils.SummaryTableStyleHelper;
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.utils.node.ReportNode;
 import com.fr.bi.cal.analyze.report.report.widget.styles.BIStyleSetting;
-import com.fr.bi.conf.report.style.ChartSetting;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.utils.program.BIJsonUtils;
 import com.fr.json.JSONArray;
@@ -24,9 +20,11 @@ public class SummaryComplexTableBuilder extends TableAbstractDataBuilder {
     private JSONArray converData = new JSONArray();
     private String outer_sum = "__outer_sum_";
     boolean showRowTotal = true;
+    private List<DimAndTargetStyle> dimAndTargetStyles;
 
-    public SummaryComplexTableBuilder(Map<Integer, List<JSONObject>> dimAndTar, List<ChartSetting> chartSettings, JSONObject dataJSON, BIStyleSetting styleSettings) throws Exception {
+    public SummaryComplexTableBuilder(Map<Integer, List<JSONObject>> dimAndTar, List<DimAndTargetStyle> dimAndTargetStyles, JSONObject dataJSON, BIStyleSetting styleSettings) throws Exception {
         super(dimAndTar, dataJSON, styleSettings);
+        this.dimAndTargetStyles=dimAndTargetStyles;
     }
 
     @Override
