@@ -20,7 +20,7 @@ public class SummaryGroupTableDataBuilder extends SummaryCrossTableDataBuilder {
     }
 
     @Override
-    public void initAttrs() throws JSONException {
+    public void initAttrs() throws Exception {
         initAllAttrs();
         refreshDimsInfo();
         //仅有列表头的时候(有指标) 修正数据

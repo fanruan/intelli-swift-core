@@ -25,7 +25,7 @@ public class SummaryCrossTableDataBuilder extends TableAbstractDataBuilder {
     }
 
     @Override
-    public void initAttrs() throws JSONException {
+    public void initAttrs() throws Exception {
         initAllAttrs();
         refreshDimsInfo();
         //仅有列表头的时候(有指标) 修正数据
@@ -37,7 +37,7 @@ public class SummaryCrossTableDataBuilder extends TableAbstractDataBuilder {
     @Override
     public void createHeaders() throws Exception {
         //正常交叉表
-        if (null != dataJSON && dataJSON.has("t")) {
+        if (null != data && data.has("t")) {
             createCrossTableItems();
             createCrossTableHeader();
             return;
@@ -55,7 +55,7 @@ public class SummaryCrossTableDataBuilder extends TableAbstractDataBuilder {
     @Override
     public void createItems() throws Exception {
         //正常交叉表
-        if (null != dataJSON && dataJSON.has("t")) {
+        if (null != data && data.has("t")) {
 //            createCrossTableItems();
             return;
         }
@@ -80,5 +80,4 @@ public class SummaryCrossTableDataBuilder extends TableAbstractDataBuilder {
         return tableDataForExport;
 
     }
-
 }
