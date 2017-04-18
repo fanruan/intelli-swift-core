@@ -120,7 +120,6 @@ public class SingleDimensionGroup extends ExecutorPartner implements ILazyExecut
                 @Override
                 public void remove() {
                 }
-
                 @Override
                 public int getCurrentGroup() {
                     return 0;
