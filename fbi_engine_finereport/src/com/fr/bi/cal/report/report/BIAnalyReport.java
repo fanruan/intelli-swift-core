@@ -2,17 +2,12 @@ package com.fr.bi.cal.report.report;
 
 import com.fr.base.DynamicUnitList;
 import com.fr.main.workbook.ResultWorkBook;
-import com.fr.page.PageSetProvider;
-import com.fr.page.PaperSettingProvider;
 import com.fr.page.ReportPageAttrProvider;
 import com.fr.report.elementcase.ElementCase;
-import com.fr.report.poly.AbstractPolyReport;
-import com.fr.report.report.Report;
-import com.fr.report.report.ResultReport;
+import com.fr.report.poly.AbstractResPolyReport;
 import com.fr.stable.xml.XMLPrintWriter;
 
 import java.util.Iterator;
-import java.util.Map;
 
 /**
  * @author:ben Administrator
@@ -20,7 +15,7 @@ import java.util.Map;
  * @description:ex后的包含resultblock的resultreport，getblock，getresultblock等等需要重构
  */
 
-public class BIAnalyReport extends AbstractPolyReport implements ResultReport {
+public class BIAnalyReport extends AbstractResPolyReport {
     /**
      *
      */
@@ -61,11 +56,6 @@ public class BIAnalyReport extends AbstractPolyReport implements ResultReport {
     }
 
     @Override
-    public void recalculate(Report report, Map parameterMap) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
     public ReportPageAttrProvider getReportPageAttr() {
         return null;
     }
@@ -74,11 +64,5 @@ public class BIAnalyReport extends AbstractPolyReport implements ResultReport {
     public void writeCommonXML(XMLPrintWriter writer) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
-
-    @Override
-    public PageSetProvider generateReportPageSet(PaperSettingProvider paperSetting) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
 
 }
