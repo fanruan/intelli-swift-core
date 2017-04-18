@@ -21,7 +21,7 @@ public class BITableExportDataHelper {
 
     public static String getDimensionNameByID(Map<Integer, List<JSONObject>> dimAndTar, String dId) throws Exception {
         JSONObject dimAndTarsJson = getDimAndTars(dimAndTar, dId);
-        return dimAndTarsJson.getString("text");
+        return dimAndTarsJson.optString("text");
     }
 
     private static JSONObject getDimAndTars(Map<Integer, List<JSONObject>> dimAndTar, String dId) throws Exception {

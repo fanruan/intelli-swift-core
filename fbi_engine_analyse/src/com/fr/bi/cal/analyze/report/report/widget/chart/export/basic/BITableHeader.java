@@ -93,7 +93,7 @@ public class BITableHeader implements ITableHeader {
         jo.put("style", null != getStyle() ? getStyle().createJSON() : "");
         jo.put("text", getText());
         jo.put("type", getType());
-        jo.put("isUsed",isUsed());
+        jo.put("isUsed", isUsed());
         return jo;
     }
 
@@ -119,6 +119,6 @@ public class BITableHeader implements ITableHeader {
         if (json.has("type")) {
             setType(json.getString("type"));
         }
-
+        setUsed(json.optBoolean("used", true));
     }
 }

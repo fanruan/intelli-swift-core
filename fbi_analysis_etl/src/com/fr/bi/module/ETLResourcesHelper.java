@@ -232,7 +232,7 @@ public class ETLResourcesHelper {
 //				"com/fr/bi/etl/analysis/web/js/modules/operator/selectnonedata/select.none.data.js",
 //				"com/fr/bi/etl/analysis/web/js/modules/operator/selectnonedata/select.none.data.pane.js",
 //				"com/fr/bi/etl/analysis/web/js/modules/operator/selectnonedata/select.none.data.control.js",
-//				"com/fr/bi/etl/analysis/web/js/modules/operator/selectdata/view/select.data.js",
+//				"com/fr/bi/etl/analysis/web/js/modules/operator/selectdata/view/operator.selectdata.js",
 //				"com/fr/bi/etl/analysis/web/js/modules/operator/selectdata/model/select.data.model.js",
 //				"com/fr/bi/etl/analysis/web/js/modules/operator/selectdata/control/select.data.control.js",
 //				"com/fr/bi/etl/analysis/web/js/modules/operator/selectdata/view/widget.selectdatapane.js",
@@ -266,8 +266,8 @@ public class ETLResourcesHelper {
 				"com/fr/bi/etl/analysis/web/js/modules4analysis/analysis.mainpane.js",
 				"com/fr/bi/etl/analysis/web/js/modules4analysis/analysis.mainpane.model.js",
 				"com/fr/bi/etl/analysis/web/js/modules4analysis/toppointersavepane/toppointersavepane.js",
-				"com/fr/bi/etl/analysis/web/js/modules4analysis/operator/model.analysis.operatorpane.abstract.js",
-				"com/fr/bi/etl/analysis/web/js/modules4analysis/operator/analysis.operatorpane.abstract.js",
+				"com/fr/bi/etl/analysis/web/js/modules4analysis/operator/model.analysis.operatorpane.js",
+				"com/fr/bi/etl/analysis/web/js/modules4analysis/operator/analysis.operatorpane.js",
 				"com/fr/bi/etl/analysis/web/js/modules4analysis/operator/analysis.operator.center.js",
 				"com/fr/bi/etl/analysis/web/js/modules4analysis/dynamictab/analysis.dynamictab.js",
 				"com/fr/bi/etl/analysis/web/js/modules4analysis/dynamictab/analysis.dynamictab.model.js",
@@ -290,11 +290,11 @@ public class ETLResourcesHelper {
 				"com/fr/bi/etl/analysis/web/js/modules4analysis/mergehistory/model.merge.history.js",
 
 				//selectdata
-				"com/fr/bi/etl/analysis/web/js/modules4analysis/operator/selectdata/node.level.js",
-				"com/fr/bi/etl/analysis/web/js/modules4analysis/operator/selectdata/item.level.js",
-				"com/fr/bi/etl/analysis/web/js/modules4analysis/operator/selectdata/model.select.data.js",
-				"com/fr/bi/etl/analysis/web/js/modules4analysis/operator/selectdata/select.data.js",
-				"com/fr/bi/etl/analysis/web/js/modules4analysis/operator/selectdata/select.data.pane.js",
+				"com/fr/bi/etl/analysis/web/js/modules4analysis/operator/selectdata/item/node.level.js",
+				"com/fr/bi/etl/analysis/web/js/modules4analysis/operator/selectdata/item/item.level.js",
+				"com/fr/bi/etl/analysis/web/js/modules4analysis/operator/selectdata/operator.selectdata.model.js",
+				"com/fr/bi/etl/analysis/web/js/modules4analysis/operator/selectdata/operator.selectdata.js",
+				"com/fr/bi/etl/analysis/web/js/modules4analysis/operator/selectdata/operator.selectdata.pane.js",
 
 				//addColumn
 				"com/fr/bi/etl/analysis/web/js/modules4analysis/operator/addcolumn/addcolumn.title.js",
