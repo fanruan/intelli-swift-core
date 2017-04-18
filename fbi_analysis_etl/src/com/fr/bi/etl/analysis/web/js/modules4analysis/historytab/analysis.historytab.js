@@ -131,6 +131,7 @@ BI.AnalysisHistoryTab = BI.inherit(BI.Widget, {
             ref: function (ref) {
                 self.historyTabs[v] = ref;
             },
+            checkBeforeSave: BI.bind(this.checkBeforeSave, this),
             listeners: [{
                 eventName: BI.Controller.EVENT_CHANGE,
                 action: function (v, table) {

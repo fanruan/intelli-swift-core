@@ -31,14 +31,11 @@ BI.AnalysisHistoryTabModel = BI.inherit(BI.OB, {
         if (BI.isNotNull(tables)) {
             BI.each(tables, function (idx, item) {
                 item.value = item.value || BI.UUID();
-                var operator = ETLCst.ANALYSIS_TABLE_OPERATOR_KEY[item.etlType];
+                var operator = BI.Utils.getOperatorByType(item.etlType);
                 BI.extend(item, {
                     operatorType: operator.operatorType,
                     text: operator.text
                 });
-                if (item.etlType === ETLCst.ETL_TYPE.SELECT_DATA) {
-                    item.operator = new BI.AnalysisETLOperatorSelectDataModel(item).update().operator
-                }
                 self._initId(item.parent);
             });
         }
@@ -192,7 +189,7 @@ BI.AnalysisHistoryTabModel = BI.inherit(BI.OB, {
         this.invalidIndex = table.invalidIndex || this.invalidIndex;
         this.items = [];
         if (BI.isNull(table.etlType)) {
-            this.items.push(BI.extend(ETLCst.ANALYSIS_TABLE_HISTORY_TABLE_MAP.CHOOSE_FIELD, {
+            this.items.push(BI.extend(BI.Utils.getOperatorByValue(ETLCst.ETL_TYPE.SELECT_DATA), {
                 value: BI.UUID()
             }));
         } else {
