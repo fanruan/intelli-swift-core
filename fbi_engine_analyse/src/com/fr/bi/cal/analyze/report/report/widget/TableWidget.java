@@ -12,6 +12,7 @@ import com.fr.bi.cal.analyze.executor.BIEngineExecutor;
 import com.fr.bi.cal.analyze.executor.paging.PagingFactory;
 import com.fr.bi.cal.analyze.executor.table.*;
 import com.fr.bi.cal.analyze.report.report.BIWidgetFactory;
+import com.fr.bi.cal.analyze.report.report.widget.chart.export.basic.DimAndTargetStyle;
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.basic.IExcelDataBuilder;
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.calculator.SummaryComplexTableBuilder;
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.calculator.SummaryCrossTableDataBuilder;
@@ -21,7 +22,6 @@ import com.fr.bi.cal.analyze.report.report.widget.table.BITableReportSetting;
 import com.fr.bi.cal.analyze.session.BISession;
 import com.fr.bi.common.persistent.xml.BIIgnoreField;
 import com.fr.bi.conf.report.WidgetType;
-import com.fr.bi.conf.report.style.ChartSetting;
 import com.fr.bi.conf.report.style.DetailChartSetting;
 import com.fr.bi.conf.report.widget.field.BITargetAndDimension;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
@@ -491,7 +491,7 @@ public class TableWidget extends BISummaryWidget {
     public JSONObject getPostOptions(String sessionId) throws Exception {
         JSONObject dataJSON = this.createDataJSON((BISession) SessionDealWith.getSessionIDInfor(sessionId)).getJSONObject("data");
         Map<Integer, List<JSONObject>> viewMap = this.createViewMap();
-        List<ChartSetting> chartSettings = new ArrayList<ChartSetting>();
+        List<DimAndTargetStyle> chartSettings = new ArrayList<DimAndTargetStyle>();
         createChartSettings(chartSettings);
         IExcelDataBuilder builder = null;
         switch (this.table_type) {
@@ -513,10 +513,10 @@ public class TableWidget extends BISummaryWidget {
         return director.buildTableData().createJSON();
     }
 
-    private void createChartSettings(List<ChartSetting> chartSettings) {
+    private void createChartSettings(List<DimAndTargetStyle> chartSettings) {
         for (BISummaryTarget target : this.getTargets()) {
-            ChartSetting chartSetting = target.getChartSetting();
-            chartSettings.add(chartSetting);
+            DimAndTargetStyle dimAndTargetStyle=new DimAndTargetStyle(target.getId(),target.getChartSetting());
+            chartSettings.add(dimAndTargetStyle);
         }
     }
 

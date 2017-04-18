@@ -2,12 +2,12 @@ package excelExport;
 
 import com.fr.bi.cal.analyze.report.report.widget.TableWidget;
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.basic.BIExcelTableData;
+import com.fr.bi.cal.analyze.report.report.widget.chart.export.basic.DimAndTargetStyle;
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.calculator.SummaryComplexTableBuilder;
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.calculator.SummaryCrossTableDataBuilder;
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.calculator.SummaryGroupTableDataBuilder;
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.manager.TableDirector;
 import com.fr.bi.cal.analyze.report.report.widget.styles.BIStyleReportSetting;
-import com.fr.bi.conf.report.style.ChartSetting;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONException;
@@ -42,7 +42,7 @@ public class tableExportBuildTest extends TestCase {
     /*普通汇总表，单维度*/
     private void testNormalSummaryTableWithSingleDim(TableWidget widget, JSONObject dataJson) throws Exception {
         Map<Integer, List<JSONObject>> viewMap = widget.createViewMap();
-        SummaryGroupTableDataBuilder builder = new SummaryGroupTableDataBuilder(viewMap, new ArrayList<ChartSetting>(), dataJson, new BIStyleReportSetting());
+        SummaryGroupTableDataBuilder builder = new SummaryGroupTableDataBuilder(viewMap, new ArrayList<DimAndTargetStyle>(), dataJson, new BIStyleReportSetting());
         TableDirector director = new TableDirector(builder);
         director.construct();
         director.buildTableData();
@@ -57,7 +57,7 @@ public class tableExportBuildTest extends TestCase {
     /*普通汇总表，多维度*/
     private void testNormalSummaryTableWithMultiDims(TableWidget widget, JSONObject dataJson) throws Exception {
         Map<Integer, List<JSONObject>> viewMap = widget.createViewMap();
-        SummaryGroupTableDataBuilder builder = new SummaryGroupTableDataBuilder(viewMap, new ArrayList<ChartSetting>(), dataJson, new BIStyleReportSetting());
+        SummaryGroupTableDataBuilder builder = new SummaryGroupTableDataBuilder(viewMap, new ArrayList<DimAndTargetStyle>(), dataJson, new BIStyleReportSetting());
         TableDirector director = new TableDirector(builder);
         director.construct();
         BIExcelTableData biExcelTableData = director.buildTableData();
@@ -79,7 +79,7 @@ public class tableExportBuildTest extends TestCase {
         dataJson = WidgetDataTool.getNormalCrossData();
         Map<Integer, List<JSONObject>> viewMap = widget.createViewMap();
         viewMap.remove(30000);
-        SummaryCrossTableDataBuilder builder = new SummaryCrossTableDataBuilder(viewMap, new ArrayList<ChartSetting>(), dataJson, new BIStyleReportSetting());
+        SummaryCrossTableDataBuilder builder = new SummaryCrossTableDataBuilder(viewMap, new ArrayList<DimAndTargetStyle>(), dataJson, new BIStyleReportSetting());
         TableDirector director = new TableDirector(builder);
         director.construct();
         BIExcelTableData excelTableData = director.buildTableData();
@@ -101,7 +101,7 @@ public class tableExportBuildTest extends TestCase {
     public void testNormalComplexTable() throws Exception {
         dataJson = WidgetDataTool.getNormalComplexData();
         Map<Integer, List<JSONObject>> viewMap = WidgetStructureTool.createComplexTableTableWidget().createViewMap();
-        SummaryComplexTableBuilder builder = new SummaryComplexTableBuilder(viewMap, new ArrayList<ChartSetting>(), dataJson, new BIStyleReportSetting());
+        SummaryComplexTableBuilder builder = new SummaryComplexTableBuilder(viewMap, new ArrayList<DimAndTargetStyle>(), dataJson, new BIStyleReportSetting());
         TableDirector director = new TableDirector(builder);
         director.construct();
         BIExcelTableData excelTableData = director.buildTableData();
