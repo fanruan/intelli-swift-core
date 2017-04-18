@@ -103,7 +103,7 @@ BI.AnalysisETLOperatorFilterPane = BI.inherit(BI.Widget, {
     render: function(){
         var self = this, o = this.options;
         this.card = this.operatorCombo = this.content = null;
-        this.model = new BI.AnalysisETLOperatorFilterPaneModel({});
+        this.model = new BI.AnalysisETLOperatorFilterPaneModel();
         this.operatorCombo = this.content = this.card = null;
         return {
             type:"bi.tab",
@@ -203,7 +203,7 @@ BI.AnalysisETLOperatorFilterPane = BI.inherit(BI.Widget, {
         }
         this.doCheck()
         this.fireEvent(BI.AnalysisETLOperatorAbstractController.PREVIEW_CHANGE, {
-            update: BI.bind(this.update, this),
+            update: BI.bind(this.getValue, this),
             isDefaultValue: BI.bind(this.isDefaultValue, this)
         }, this.options.value.operatorType)
     },
