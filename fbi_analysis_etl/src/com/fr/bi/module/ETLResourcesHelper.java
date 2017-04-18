@@ -232,7 +232,7 @@ public class ETLResourcesHelper {
 				"com/fr/bi/etl/analysis/web/js/modules/operator/selectnonedata/select.none.data.js",
 				"com/fr/bi/etl/analysis/web/js/modules/operator/selectnonedata/select.none.data.pane.js",
 				"com/fr/bi/etl/analysis/web/js/modules/operator/selectnonedata/select.none.data.control.js",
-				"com/fr/bi/etl/analysis/web/js/modules/operator/selectdata/view/operator.selectdata.js",
+				"com/fr/bi/etl/analysis/web/js/modules/operator/selectdata/view/select.data.js",
 				"com/fr/bi/etl/analysis/web/js/modules/operator/selectdata/model/select.data.model.js",
 				"com/fr/bi/etl/analysis/web/js/modules/operator/selectdata/control/select.data.control.js",
 				"com/fr/bi/etl/analysis/web/js/modules/operator/selectdata/view/widget.selectdatapane.js",
