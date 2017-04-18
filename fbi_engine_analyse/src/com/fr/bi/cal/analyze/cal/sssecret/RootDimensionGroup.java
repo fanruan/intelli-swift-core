@@ -8,6 +8,7 @@ import com.fr.bi.cal.analyze.cal.index.loader.MetricGroupInfo;
 import com.fr.bi.cal.analyze.cal.index.loader.TargetAndKey;
 import com.fr.bi.cal.analyze.cal.multithread.BIMultiThreadExecutor;
 import com.fr.bi.cal.analyze.cal.multithread.MultiThreadManagerImpl;
+import com.fr.bi.cal.analyze.cal.result.Node;
 import com.fr.bi.cal.analyze.cal.result.NodeExpander;
 import com.fr.bi.cal.analyze.cal.sssecret.diminfo.MergeIteratorCreator;
 import com.fr.bi.cal.analyze.session.BISession;
@@ -126,6 +127,11 @@ public class RootDimensionGroup implements IRootDimensionGroup {
 
     public List<MetricGroupInfo> getMetricGroupInfoList() {
         return metricGroupInfoList;
+    }
+
+    @Override
+    public Node getConstructedRoot() {
+        return new Node(sumLength);
     }
 
     @Override

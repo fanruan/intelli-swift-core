@@ -52,6 +52,10 @@ public class ConstructedRootDimensionGroup extends RootDimensionGroup {
         initRootNode();
     }
 
+    public Node getConstructedRoot(){
+        return rootNode;
+    }
+
     private void initSort() {
         sortType = new int[dimensionTargetSort.length];
         sortTargetKey = new TargetGettingKey[dimensionTargetSort.length];
