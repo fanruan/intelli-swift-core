@@ -91,7 +91,41 @@ BI.AnalysisHistoryTab = BI.inherit(BI.Widget, {
         BI.nextTick(function () {
             self.historyTabs[v].populate(self.model.getOperatorByValue(v));
         });
-        return {
+        var preConfig = {};
+        switch (this.getOperatorTypeByValue(v)) {
+            case ETLCst.ANALYSIS_ETL_PAGES.FILTER:
+                preConfig = {
+                    value:ETLCst.ANALYSIS_TABLE_HISTORY_TABLE_MAP.FILTER
+                };
+                break;
+            case ETLCst.ANALYSIS_ETL_PAGES.GROUP_SUMMARY:
+                preConfig = {
+                    value:ETLCst.ANALYSIS_TABLE_HISTORY_TABLE_MAP.GROUP
+                };
+                break;
+            case ETLCst.ANALYSIS_ETL_PAGES.ADD_COLUMN:
+                preConfig = {
+                    value:ETLCst.ANALYSIS_TABLE_HISTORY_TABLE_MAP.ADD_COLUMN
+                };
+                break;
+            case ETLCst.ANALYSIS_ETL_PAGES.USE_PART_FIELDS:
+                preConfig = {
+                    value:ETLCst.ANALYSIS_TABLE_HISTORY_TABLE_MAP.USE_PART_FIELDS
+                };
+                break;
+            case ETLCst.ANALYSIS_ETL_PAGES.MERGE_SHEET:
+                preConfig = {
+                    value:ETLCst.ANALYSIS_TABLE_HISTORY_TABLE_MAP.MERGED_TABLE
+                };
+                break;
+            case ETLCst.ANALYSIS_ETL_PAGES.SELECT_DATA:
+                preConfig = {
+                    extraCls: "bi-analysis-etl-operator-select-data",
+                    type: ETLCst.ANALYSIS_ETL_PAGES.SELECT_DATA
+                };
+                break;
+        }
+        return BI.extend({
             type: this.getOperatorTypeByValue(v),
             isCurrentTheLastOperator: BI.bind(this.isCurrentTheLastOperator, this),
             ref: function (ref) {
@@ -149,7 +183,7 @@ BI.AnalysisHistoryTab = BI.inherit(BI.Widget, {
                     self.selectLastTab()
                 }
             }]
-        };
+        }, preConfig);
     },
 
     _selectLastTab: function () {

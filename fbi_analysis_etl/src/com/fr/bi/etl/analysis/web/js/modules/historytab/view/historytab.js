@@ -98,10 +98,44 @@ BI.HistoryTab = FR.extend(BI.MVCWidget, {
 
     _createTabs : function(v) {
         var self = this;
-        var tab = BI.createWidget({
-            type:this.controller.getOperatorTypeByValue(v),
+        var preConfig = {};
+        switch (this.controller.getOperatorTypeByValue(v)) {
+            case ETLCst.ANALYSIS_ETL_PAGES.FILTER:
+                preConfig = {
+                    value:ETLCst.ANALYSIS_TABLE_HISTORY_TABLE_MAP.FILTER
+                };
+                break;
+            case ETLCst.ANALYSIS_ETL_PAGES.GROUP_SUMMARY:
+                preConfig = {
+                    value:ETLCst.ANALYSIS_TABLE_HISTORY_TABLE_MAP.GROUP
+                };
+                break;
+            case ETLCst.ANALYSIS_ETL_PAGES.ADD_COLUMN:
+                preConfig = {
+                    value:ETLCst.ANALYSIS_TABLE_HISTORY_TABLE_MAP.ADD_COLUMN
+                };
+                break;
+            case ETLCst.ANALYSIS_ETL_PAGES.USE_PART_FIELDS:
+                preConfig = {
+                    value:ETLCst.ANALYSIS_TABLE_HISTORY_TABLE_MAP.USE_PART_FIELDS
+                };
+                break;
+            case ETLCst.ANALYSIS_ETL_PAGES.MERGE_SHEET:
+                preConfig = {
+                    value:ETLCst.ANALYSIS_TABLE_HISTORY_TABLE_MAP.MERGED_TABLE
+                };
+                break;
+            case ETLCst.ANALYSIS_ETL_PAGES.SELECT_DATA:
+                preConfig = {
+                    extraCls: "bi-analysis-etl-operator-select-data",
+                    type: ETLCst.ANALYSIS_ETL_PAGES.SELECT_DATA
+                }
+        }
+
+        var tab = BI.createWidget(BI.extend({
+            type: "bi.analysis_operator_pane",
             isCurrentTheLastOperator: BI.bind(this.isCurrentTheLastOperator, this)
-        })
+        }, preConfig));
 
         BI.nextTick(function () {
             self.controller.populateOneTab(v);

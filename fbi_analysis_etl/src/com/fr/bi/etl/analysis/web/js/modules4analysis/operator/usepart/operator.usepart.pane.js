@@ -11,9 +11,7 @@ BI.AnalysisETLOperatorUsePartPane = BI.inherit(BI.Widget, {
     render: function(){
         var self = this;
         this.fieldList = null;
-        this.model = new BI.AnalysisETLOperatorUsePartPaneModel({
-
-        })
+        this.model = new BI.AnalysisETLOperatorUsePartPaneModel();
         BI.createWidget({
             type:"bi.vtape",
             element: this,
@@ -56,10 +54,6 @@ BI.AnalysisETLOperatorUsePartPane = BI.inherit(BI.Widget, {
                 }
             }]
         })
-    },
-
-    mounted: function(){
-        //this.populate(this.options.table);
     },
 
     doCheck  : function () {
@@ -110,7 +104,7 @@ BI.AnalysisETLOperatorUsePartPane = BI.inherit(BI.Widget, {
         if (!BI.isNull(value)){
             this.fieldList.setValue(value);
         }
-        this.doCheck()
+        this.doCheck();
         this.fireEvent(BI.AnalysisETLOperatorAbstractController.PREVIEW_CHANGE, {
             isDefaultValue: BI.bind(this.isDefaultValue, this),
             update: BI.bind(this.update, this)
