@@ -15,7 +15,9 @@ public class StreamPagedIterator<T> implements Iterator<T> {
     //通知开始消费的数量，队列里面大于一定的数量就开始唤醒waitfor方法里面等待消费的线程
     private int consumeCount = maxCount - 1;
     //是不是正在消费
-    private volatile boolean isWorking = true;
+    private volatile boolean isConsuming = true;
+    //是不是正在生产
+    private volatile boolean isProducing = true;
     private volatile Queue<T> queue = new LinkedList<T>();
     private volatile boolean isEnd = false;
 
@@ -30,18 +32,20 @@ public class StreamPagedIterator<T> implements Iterator<T> {
 
 
     private void waitFor() {
-        if (queue.size() == produceCount) {
+        if (queue.size() == produceCount && !isProducing) {
             synchronized (this) {
-                this.notify();
+                if (!isProducing){
+                    this.notify();
+                }
             }
         }
         if (queue.isEmpty()) {
             synchronized (this) {
                 while (isRealEmpty() && (!isEnd)) {
                     try {
-                        isWorking = false;
+                        isConsuming = false;
                         this.wait();
-                        isWorking = true;
+                        isConsuming = true;
                     } catch (Exception e) {
                     }
                 }
@@ -87,7 +91,9 @@ public class StreamPagedIterator<T> implements Iterator<T> {
             synchronized (this) {
                 if (queue.size() > maxCount) {
                     try {
+                        isProducing = false;
                         this.wait();
+                        isProducing = true;
                     } catch (Exception e) {
                     }
                 }
@@ -97,9 +103,12 @@ public class StreamPagedIterator<T> implements Iterator<T> {
             queue.add(cellElement);
         }
         //如果消费线程wait住了，并且超过了消费阈值就唤醒消费线程
-        if (queue.size() > consumeCount && !isWorking) {
+        if (queue.size() > consumeCount && !isConsuming) {
             synchronized (this) {
-                this.notify();
+                if (queue.size() > consumeCount && !isConsuming){
+                    isConsuming = true;
+                    this.notify();
+                }
             }
         }
     }
