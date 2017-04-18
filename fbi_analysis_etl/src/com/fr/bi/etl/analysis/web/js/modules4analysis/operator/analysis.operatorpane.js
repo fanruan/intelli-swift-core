@@ -1,7 +1,7 @@
 /**
  * Created by Young's on 2017/4/5.
  */
-BI.AnalysisOperatorAbstractPane = BI.inherit(BI.Widget, {
+BI.AnalysisOperatorPane = BI.inherit(BI.Widget, {
     props: {
         extraCls: "bi-analysis-etl-operator-select-data",
         value: ETLCst.ANALYSIS_TABLE_HISTORY_TABLE_MAP.FILTER,
@@ -48,6 +48,10 @@ BI.AnalysisOperatorAbstractPane = BI.inherit(BI.Widget, {
         this.center.on(BI.AnalysisETLOperatorAbstractController.PREVIEW_CHANGE, function (previewModel, operatorType) {
             self.refreshPreviewData(previewModel, operatorType)
         });
+
+        this.center.on(BI.AnalysisETLOperatorMergeSheetPane.MERGE_SHEET_CHANGE, function () {
+            self.fireEvent(BI.AnalysisETLOperatorMergeSheetPane.MERGE_SHEET_CHANGE, arguments)
+        })
 
         BI.createWidget({
             type: "bi.border",
@@ -107,4 +111,5 @@ BI.AnalysisOperatorAbstractPane = BI.inherit(BI.Widget, {
     }
 });
 BI.AnalysisETLOperatorAbstractController.PREVIEW_CHANGE="preview_change";
-BI.AnalysisETLOperatorAbstractController.VALID_CHANGE = "valid_change"
+BI.AnalysisETLOperatorAbstractController.VALID_CHANGE = "valid_change";
+BI.shortcut("bi.analysis_operator_pane", BI.AnalysisOperatorPane);
