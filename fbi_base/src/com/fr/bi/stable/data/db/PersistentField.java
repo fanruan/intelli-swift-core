@@ -66,6 +66,7 @@ public class PersistentField implements IPersistentField {
         public PersistentField() {
     }
 
+    @Override
     public int getColumnSize() {
         return column_size;
     }
@@ -193,6 +194,7 @@ public class PersistentField implements IPersistentField {
         }
     }
 
+    @Override
     public int getScale() {
         return scale;
     }

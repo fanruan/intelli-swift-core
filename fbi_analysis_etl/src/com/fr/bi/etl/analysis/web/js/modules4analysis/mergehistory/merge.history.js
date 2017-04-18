@@ -9,7 +9,7 @@ BI.MergeHistory = BI.inherit(BI.Widget,  {
 
     render: function(){
         var self = this, o = this.options;
-        this.model = new BI.AnalysisETLMergeHistoryModel(o.items);
+        this.model = new BI.AnalysisETLMergeHistoryModel({});
         this.trigger = BI.Utils.triggerPreview();
         return {
             type:"bi.htape",
@@ -149,6 +149,10 @@ BI.MergeHistory = BI.inherit(BI.Widget,  {
         }
     },
 
+    mounted: function(){
+        //this.populate(this.options.table);
+    },
+
     createButton : function (item) {
         var button = BI.createWidget(BI.extend(item, {
             type:"bi.button",
@@ -172,11 +176,9 @@ BI.MergeHistory = BI.inherit(BI.Widget,  {
         this.buttonGroup = [];
         var self = this;
         var items = this.model.get(ETLCst.ITEMS);
-
-
         var branchArray = [];
         BI.each(items, function (idx, item) {
-            var button = this.createButton(item);
+            var button = self.createButton(item);
             self.buttonGroup.push(button);
             branchArray.push({
                 el:button,
@@ -195,7 +197,7 @@ BI.MergeHistory = BI.inherit(BI.Widget,  {
         }
     },
 
-    popualte: function(m, options){
+    populate: function(m, options){
         this.model.populate(m);
         BI.extend(this.options, options);
         this._populate();
@@ -229,7 +231,7 @@ BI.MergeHistory = BI.inherit(BI.Widget,  {
             }
         });
         BI.Layers.show(this.getName());
-        this._refreshPopData();
+        this._refreshPopData(item);
     },
 
     _setBranchValue: function (id) {
@@ -239,8 +241,12 @@ BI.MergeHistory = BI.inherit(BI.Widget,  {
         })
     },
 
-    _refreshPopData : function (){
-        this.trigger(this.previewTable, this.model, ETLCst.ANALYSIS_TABLE_OPERATOR_KEY.NULL, ETLCst.PREVIEW.MERGE)
+    _refreshPopData : function (item){
+        this.trigger(this.previewTable, item, ETLCst.ANALYSIS_TABLE_OPERATOR_KEY.NULL, ETLCst.PREVIEW.MERGE)
+    },
+
+    getValue: function(){
+        return this.model.update();
     }
 })
 BI.MergeHistory.CANCEL="cancel_view";

@@ -176,7 +176,7 @@ BI.AnalysisETLMergeSheet = BI.inherit(BI.Widget, {
     },
 
     mounted: function(){
-        this.populate(this.options.model);
+        //this.populate(this.options.model);
     },
 
     _populate: function () {

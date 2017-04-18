@@ -9,7 +9,7 @@ BI.AnalysisETLOperatorMergeSheetPane = BI.inherit(BI.Widget, {
 
     render: function(){
         var self = this, o = this.options;
-        this.model = new BI.AnalysisETLMergeSheetModel(o.items);
+        this.model = new BI.AnalysisETLMergeSheetModel({});
         return {
             type:"bi.htape",
             items:[{
@@ -95,6 +95,10 @@ BI.AnalysisETLOperatorMergeSheetPane = BI.inherit(BI.Widget, {
         }
     },
 
+    mounted: function(){
+        //this.populate(this.options.table);
+    },
+
     createTable : function (tables) {
         return BI.map(tables, function (i, item) {
             return {
@@ -127,14 +131,13 @@ BI.AnalysisETLOperatorMergeSheetPane = BI.inherit(BI.Widget, {
 
     _populate : function () {
         var tables = this.model.get(ETLCst.PARENTS);
-        this.table.empty();
         this.table.populate(this.createTable(tables));
         this.mergeFields.populate(this.createCell(this.model.getMergeFieldsName(), "cell"), this.createCell([[tables[0].tableName,tables[1].tableName]], "header"))
         this.fireEvent(BI.AnalysisETLOperatorAbstractController.PREVIEW_CHANGE, {
             update: BI.bind(this.model.update, this.model),
             getCopyValue: BI.bind(this.model.getCopyValue, this.model)
         }, ETLCst.ANALYSIS_TABLE_OPERATOR_KEY.NULL)
-        this.fireEvent(BI.TopPointerSavePane.EVENT_FIELD_VALID, this.model.getCopyValue("columns"))
+        this.fireEvent(BI.AnalysisTopPointerSavePane.EVENT_FIELD_VALID, this.model.getCopyValue("columns"))
     },
 
 

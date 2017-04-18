@@ -133,7 +133,7 @@ BI.AnalysisETLOperatorAddColumnValueGroupSinglePane = BI.inherit(BI.Widget, {
 
     checkValid : function () {
         var v = this.editor.validChecked === true && this.range.validChecked === true;
-        this.fireEvent(BI.TopPointerSavePane.EVENT_CHECK_SAVE_STATUS, v)
+        this.fireEvent(BI.AnalysisTopPointerSavePane.EVENT_CHECK_SAVE_STATUS, v)
     },
 
     _createFieldRangeItem : function (field) {

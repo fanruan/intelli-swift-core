@@ -98,9 +98,9 @@ BI.AnalysisETLOperatorAddColumnValueSinglePane = BI.inherit(BI.Widget, {
     //原controller
     _checkCanSave : function () {
         if (BI.isNull(this.model.get('v'))){
-            this.fireEvent(BI.TopPointerSavePane.EVENT_CHECK_SAVE_STATUS, false, BI.i18nText('BI-Value_Cannot_Be_Null'));
+            this.fireEvent(BI.AnalysisTopPointerSavePane.EVENT_CHECK_SAVE_STATUS, false, BI.i18nText('BI-Value_Cannot_Be_Null'));
         } else {
-            this.fireEvent(BI.TopPointerSavePane.EVENT_CHECK_SAVE_STATUS,  this.valid);
+            this.fireEvent(BI.AnalysisTopPointerSavePane.EVENT_CHECK_SAVE_STATUS,  this.valid);
         }
     },
 

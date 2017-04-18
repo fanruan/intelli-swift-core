@@ -262,11 +262,11 @@ public class ETLResourcesHelper {
 				"com/fr/bi/etl/analysis/web/js/modules/filter/item/filter.numbern.etl.js",
 
 
-
-
 				// new modules
 				"com/fr/bi/etl/analysis/web/js/modules4analysis/analysis.mainpane.js",
 				"com/fr/bi/etl/analysis/web/js/modules4analysis/analysis.mainpane.model.js",
+				"com/fr/bi/etl/analysis/web/js/modules4analysis/toppointersavepane/toppointersavepane.js",
+				"com/fr/bi/etl/analysis/web/js/modules4analysis/operator/model.analysis.operatorpane.abstract.js",
 				"com/fr/bi/etl/analysis/web/js/modules4analysis/operator/analysis.operatorpane.abstract.js",
 				"com/fr/bi/etl/analysis/web/js/modules4analysis/operator/analysis.operator.center.js",
 				"com/fr/bi/etl/analysis/web/js/modules4analysis/dynamictab/analysis.dynamictab.js",
@@ -278,6 +278,7 @@ public class ETLResourcesHelper {
 				"com/fr/bi/etl/analysis/web/js/modules4analysis/historytab/button/analysis.historybutton.js",
 				"com/fr/bi/etl/analysis/web/js/modules4analysis/historytab/button/analysis.historybutton.group.js",
 				"com/fr/bi/etl/analysis/web/js/modules4analysis/historytab/button/analysis.historybutton.all.js",
+				"com/fr/bi/etl/analysis/web/js/modules4analysis/dynamictab/rename/analysis.tablerename.js",
 
 				//node
 				"com/fr/bi/etl/analysis/web/js/modules4analysis/node/detail.node.level.js",

@@ -10,14 +10,12 @@ BI.AnalysisHistoryTab = BI.inherit(BI.Widget, {
     props: {
         extraCls: "bi-history-tab",
         allHistory: false,
-        items: []
+        table: {}
     },
 
     render: function () {
         var o = this.options;
-        this.model = new BI.AnalysisHistoryTabModel({
-            items: o.items
-        });
+        this.model = new BI.AnalysisHistoryTabModel();
         this.historyTabs = [];
 
         this.tabButton = BI.createWidget({
@@ -80,7 +78,6 @@ BI.AnalysisHistoryTab = BI.inherit(BI.Widget, {
                 width: this._constant.width
             }]
         });
-        this.populate();
     },
 
     isCurrentTheLastOperator: function () {
@@ -91,58 +88,77 @@ BI.AnalysisHistoryTab = BI.inherit(BI.Widget, {
 
     _createTabs: function (v) {
         var self = this;
-        var tab = BI.createWidget({
-            type: this.getOperatorTypeByValue(v),
-            isCurrentTheLastOperator: BI.bind(this.isCurrentTheLastOperator, this)
-        });
-
         BI.nextTick(function () {
-            self.populateOneTab(v);
+            self.historyTabs[v].populate(self.model.getOperatorByValue(v));
         });
-        tab.on(BI.Controller.EVENT_CHANGE, function () {
-            if (arguments[0] === false) {
-                self.addNewSheet(arguments[1])
-            }
-        });
-        tab.on(BI.TopPointerSavePane.EVENT_SAVE, function (table) {
-            self.saveOneSheet(table);
-            self.fireEvent(BI.TopPointerSavePane.EVENT_SAVE, table);
-        });
-        tab.on(BI.TopPointerSavePane.EVENT_FIELD_VALID, function (fields) {
-            self.refreshValidFields(v, fields);
-            self.fireEvent(BI.AnalysisHistoryTab.VALID_CHANGE)
-        });
-        tab.on(BI.TopPointerSavePane.EVENT_INVALID, function (title) {
-            self.setInvalid(v, title);
-            self.fireEvent(BI.AnalysisHistoryTab.VALID_CHANGE)
-        });
-        tab.on(BI.AnalysisOperatorTitle.EVENT_SAVE, function (value, desc) {
-            self.clickTitleSave(v, value, desc);
-        });
-        tab.on(BI.AnalysisETLOperatorMergeSheetPane.MERGE_SHEET_CHANGE, function () {
-            self.fireEvent(BI.AnalysisETLOperatorMergeSheetPane.MERGE_SHEET_CHANGE, arguments)
-        });
-        tab.on(BI.AnalysisOperatorTitle.EVENT_OPERATOR_CHANGE, function (v) {
-            self.tempAddButton(v.getValue())
-        });
-        tab.on(BI.TopPointerSavePane.EVENT_CANCEL, function () {
-            self.cancelTempAddButton()
-        });
-        tab.on(BI.MergeHistory.CANCEL, function () {
-            self.selectLastTab()
-        });
-        this.historyTabs.push(tab);
-        return tab;
+        return {
+            type: this.getOperatorTypeByValue(v),
+            isCurrentTheLastOperator: BI.bind(this.isCurrentTheLastOperator, this),
+            ref: function (ref) {
+                self.historyTabs[v] = ref;
+            },
+            listeners: [{
+                eventName: BI.Controller.EVENT_CHANGE,
+                action: function (v, table) {
+                    if (v === false) {
+                        self.addNewHistory(table)
+                    }
+                }
+            }, {
+                eventName: BI.AnalysisTopPointerSavePane.EVENT_SAVE,
+                action: function (table) {
+                    self.saveOneSheet(table);
+                    self.fireEvent(BI.AnalysisTopPointerSavePane.EVENT_SAVE, table);
+                }
+            }, {
+                eventName: BI.AnalysisTopPointerSavePane.EVENT_FIELD_VALID,
+                action: function (fields) {
+                    self.refreshValidFields(v, fields);
+                    self.fireEvent(BI.AnalysisHistoryTab.VALID_CHANGE, self.model.isModelValid());
+                }
+            }, {
+                eventName: BI.AnalysisTopPointerSavePane.EVENT_INVALID,
+                action: function (title) {
+                    self.setInvalid(v, title);
+                    self.fireEvent(BI.AnalysisHistoryTab.VALID_CHANGE, self.model.isModelValid());
+                }
+            }, {
+                eventName: BI.AnalysisOperatorTitle.EVENT_SAVE,
+                action: function (value, desc) {
+                    self.clickTitleSave(v, value, desc);
+                }
+            }, {
+                eventName: BI.AnalysisETLOperatorMergeSheetPane.MERGE_SHEET_CHANGE,
+                action: function () {
+                    self.fireEvent(BI.AnalysisETLOperatorMergeSheetPane.MERGE_SHEET_CHANGE, arguments)
+                }
+            }, {
+                eventName: BI.AnalysisOperatorTitle.EVENT_OPERATOR_CHANGE,
+                action: function () {
+                    self.tempAddButton(v.getValue())
+                }
+            }, {
+                eventName: BI.AnalysisTopPointerSavePane.EVENT_CANCEL,
+                action: function () {
+                    self.cancelTempAddButton()
+                }
+            }, {
+                eventName: BI.MergeHistory.CANCEL,
+                action: function () {
+                    self.selectLastTab()
+                }
+            }]
+        };
     },
 
     _selectLastTab: function () {
-        var items = this.model.get(ETLCst.ITEMS);
-        var validIndex = this.model.get('invalidIndex');
+        var items = this.model.getOperators();
+        var validIndex = this.model.getInvalidIndex();
         this._selectTabByIndex(Math.min(validIndex, items.length - 1));
     },
 
     _selectTabByIndex: function (index) {
-        var items = this.model.get(ETLCst.ITEMS);
+        var items = this.model.getOperators();
         if (items.length === 0) {
             return;
         }
@@ -166,7 +182,7 @@ BI.AnalysisHistoryTab = BI.inherit(BI.Widget, {
      * historyTab中实际保存的items(不包括新增的正在编辑的那个)
      */
     getSavedItems: function () {
-        return this.model.get(ETLCst.ITEMS);
+        return this.model.getOperators();
     },
 
     checkBeforeSave: function (table) {
@@ -175,14 +191,14 @@ BI.AnalysisHistoryTab = BI.inherit(BI.Widget, {
         return this.model.checkBeforeSave(table, position);
     },
 
-    addNewSheet: function (table) {
+    addNewHistory: function (table) {
         this.cancelTempAddButton();
         var operator = ETLCst.ANALYSIS_TABLE_OPERATOR_KEY[table.etlType];
         var v = this.tabButton.getValue()[0];
         var position = this.model.getIndexByValue(v);
-        var item = this.model.addItemAfter(operator, position, table);
+        var item = this.model.addNewOperator(operator, table);
         this._addNewButtonAfterPos(item, position);
-        this.tab.setSelect(item["value"]);
+        this.tab.setSelect(item.value);
         this._refreshAfterSheets(item);
     },
 
@@ -200,7 +216,7 @@ BI.AnalysisHistoryTab = BI.inherit(BI.Widget, {
         var self = this;
         var index = this.model.getIndexByValue(table.value);
         //从index开始更新index后面的面板信息
-        var items = this.model.get(ETLCst.ITEMS);
+        var items = this.model.getOperators();
         for (var i = index + 1; i < items.length; i++) {
             setTimeout(function (item) {
                 return function () {
@@ -244,15 +260,16 @@ BI.AnalysisHistoryTab = BI.inherit(BI.Widget, {
         if (v === allHistoryId) {
             return "bi.analysis_etl_merge_history";
         }
-        return this.model.getOperatorType(v);
+        return this.model.getOperatorTypeByValue(v);
     },
 
     setInvalid: function (v, title) {
         var index = this.model.getIndexByValue(v);
-        if (index <= this.model.get('invalidIndex')) {
-            this.model.set('invalidIndex', index);
-            this.model.set('invalidTitle', title);
-            var items = this.model.get(ETLCst.ITEMS);
+        var invalidIndex = this.model.getInvalidIndex();
+        if (invalidIndex === -1 || index <= invalidIndex) {
+            this.model.setInvalidIndex(index);
+            this.model.setInvalidTitle(title);
+            var items = this.model.getOperators();
             for (var i = index; i < items.length; i++) {
                 var btn = this.tabButton.getButton(items[i].value);
                 this.model.setFields(items[i].value, []);
@@ -269,15 +286,15 @@ BI.AnalysisHistoryTab = BI.inherit(BI.Widget, {
     refreshValidFields: function (v, fields) {
         this.model.setFields(v, fields);
         var index = this.model.getIndexByValue(v);
-        if (index === this.model.get('invalidIndex')) {
-            var items = this.model.get(ETLCst.ITEMS);
+        if (index === this.model.getInvalidIndex()) {
+            var items = this.model.getOperators();
             for (var i = index; i < items.length; i++) {
                 var btn = this.tabButton.getButton(items[i].value);
                 btn.setValid(true);
                 btn.setEnable(true);
                 btn.setTitle(btn.getText());
             }
-            this.model.set('invalidIndex', Number.MAX_VALUE);
+            this.model.setInvalidIndex(-1);
         }
     },
 
@@ -323,7 +340,7 @@ BI.AnalysisHistoryTab = BI.inherit(BI.Widget, {
         var deletePos = this.model.removeItemFromValue(id);
         this.tabButton.deleteFromPosition(deletePos);
         this._selectLastTab();
-        this.fireEvent(BI.AnalysisHistoryTab.VALID_CHANGE);
+        this.fireEvent(BI.AnalysisHistoryTab.VALID_CHANGE, id, this.model.isModelValid());
         var tab = this.tab.getSelectedTab();
         if (BI.isNotNull(tab) && BI.isNotNull(tab.resetPointerPosition)) {
             tab.resetPointerPosition();
@@ -397,10 +414,10 @@ BI.AnalysisHistoryTab = BI.inherit(BI.Widget, {
                 self._removeSheet(v)
             }
         });
-        var invalidIndex = this.model.get('invalidIndex');
-        if (invalidIndex <= index) {
+        var invalidIndex = this.model.getInvalidIndex();
+        if (invalidIndex <= index && invalidIndex !== -1) {
             button.setValid(false);
-            button.setTitle(this.model.get("invalidTitle"))
+            button.setTitle(this.model.getInvalidTitle())
         }
         this.tabButton.addItemFromIndex(button, index);
         button.on(BI.Controller.EVENT_CHANGE, function () {
@@ -424,17 +441,19 @@ BI.AnalysisHistoryTab = BI.inherit(BI.Widget, {
         return this.historyTabs[size - 1].model.update();
     },
 
-    populate: function () {
-        var items = this.model.get(ETLCst.ITEMS);
+    populate: function (table) {
+        this.model.populate(table);
+        var items = this.model.getOperators();
         var self = this;
         BI.each(items, function (idx, item) {
             self._addNewButtonAfterPos(item, idx);
         });
         self._selectLastTab();
-        for (var i = this.model.get('invalidIndex'); i < items.length; i++) {
+        var invalidIndex = this.model.getInvalidIndex();
+        for (var i = invalidIndex; i < items.length && invalidIndex !== -1; i++) {
             var btn = this.tabButton.getButton(items[i].value);
             btn.setValid(false);
-            btn.setTitle(this.model.get('invalidTitle'));
+            btn.setTitle(this.model.getInvalidTitle());
         }
     }
 

@@ -13,7 +13,7 @@ BI.AnalysisETLOperatorGroupPane = BI.inherit(BI.Widget, {
         var self = this;
         this.itemsGroup = null;
         this.regions = {};
-        this.model = new BI.AnalysisETLOperatorGroupPaneModel(o.items);
+        this.model = new BI.AnalysisETLOperatorGroupPaneModel({});
         var group = {
             type:"bi.group_select_fields_item_group",
             ref: function(_ref){
@@ -78,6 +78,10 @@ BI.AnalysisETLOperatorGroupPane = BI.inherit(BI.Widget, {
                 }]
             }]
         };
+    },
+
+    mounted: function(){
+        //this.populate(this.options.table);
     },
 
     dropField: function (item) {
@@ -243,13 +247,13 @@ BI.AnalysisETLOperatorGroupPane = BI.inherit(BI.Widget, {
         BI.each(view,function(region, id){
             self.regions[region].setCommentVisible(BI.isEmpty(id));
         });
-        this.fireEvent(BI.TopPointerSavePane.EVENT_CHECK_SAVE_STATUS, this.model.isFieldValid(), BI.i18nText('BI-Please_Set_Group_Summary'))
+        this.fireEvent(BI.AnalysisTopPointerSavePane.EVENT_CHECK_SAVE_STATUS, this.model.isFieldValid(), BI.i18nText('BI-Please_Set_Group_Summary'))
     },
 
     _doModelCheck : function () {
         var found = this.model.check();
         if(found[0] === true) {
-            this.fireEvent(BI.TopPointerSavePane.EVENT_INVALID, found[1])
+            this.fireEvent(BI.AnalysisTopPointerSavePane.EVENT_INVALID, found[1])
         }
         return found[0];
     },
@@ -257,7 +261,7 @@ BI.AnalysisETLOperatorGroupPane = BI.inherit(BI.Widget, {
     _check : function () {
         var found = this._doModelCheck()
         if (!found){
-            this.fireEvent(BI.TopPointerSavePane.EVENT_FIELD_VALID, this.model.createFields())
+            this.fireEvent(BI.AnalysisTopPointerSavePane.EVENT_FIELD_VALID, this.model.createFields())
         } else {
             this.model.set(ETLCst.FIELDS, model.createFields());
         }

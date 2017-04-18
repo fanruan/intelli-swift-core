@@ -62,10 +62,9 @@ BI.AnalysisETLOperatorAddColumnPaneTitleModel = BI.inherit(BI.OB, {
     },
 
     populate: function(model){
-        var o = this.options;
-        o = model || {};
-        o.fieldType =  o.fieldType || BICst.COLUMN.NUMBER;
-        o.add_column_type = o.add_column_type || BICst.ETL_ADD_COLUMN_TYPE.FORMULA;
+        this.options = model || {};
+        this.options.fieldType =  this.options.fieldType || BICst.COLUMN.NUMBER;
+        this.options.add_column_type = this.options.add_column_type || BICst.ETL_ADD_COLUMN_TYPE.FORMULA;
     }
 
 })

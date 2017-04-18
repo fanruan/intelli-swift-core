@@ -103,7 +103,7 @@ BI.AnalysisETLOperatorFilterPane = BI.inherit(BI.Widget, {
     render: function(){
         var self = this, o = this.options;
         this.card = this.operatorCombo = this.content = null;
-        this.model = new BI.AnalysisETLOperatorFilterPaneModel(o.items);
+        this.model = new BI.AnalysisETLOperatorFilterPaneModel({});
         this.operatorCombo = this.content = this.card = null;
         return {
             type:"bi.tab",
@@ -112,6 +112,10 @@ BI.AnalysisETLOperatorFilterPane = BI.inherit(BI.Widget, {
             },
             cardCreator: BI.bind(this._createTabs, this)
         };
+    },
+
+    mounted: function(){
+        //this.populate(this.options.table);
     },
 
     filterChange : function(filter){
@@ -153,16 +157,16 @@ BI.AnalysisETLOperatorFilterPane = BI.inherit(BI.Widget, {
     doCheck : function () {
         var operator = this.model.get('operator');
         var items = operator.items;
-        this.fireEvent(BI.TopPointerSavePane.EVENT_CHECK_SAVE_STATUS, BI.isNotNull(items) && items.length !== 0, BI.i18nText('BI-Value_Cannot_Be_Null'))
+        this.fireEvent(BI.AnalysisTopPointerSavePane.EVENT_CHECK_SAVE_STATUS, BI.isNotNull(items) && items.length !== 0, BI.i18nText('BI-Value_Cannot_Be_Null'))
     },
 
     _check : function () {
         var invalid = this.model.check();
         if(invalid[0] === true) {
-            this.fireEvent(BI.TopPointerSavePane.EVENT_INVALID, invalid[1])
+            this.fireEvent(BI.AnalysisTopPointerSavePane.EVENT_INVALID, invalid[1])
         } else {
             var parent = this.model.get(ETLCst.PARENTS)[0];
-            this.fireEvent(BI.TopPointerSavePane.EVENT_FIELD_VALID, BI.deepClone(parent[ETLCst.FIELDS]))
+            this.fireEvent(BI.AnalysisTopPointerSavePane.EVENT_FIELD_VALID, BI.deepClone(parent[ETLCst.FIELDS]))
         }
         this.fireEvent(BI.AnalysisETLOperatorAbstractController.VALID_CHANGE, !invalid[0]);
     },
@@ -204,7 +208,6 @@ BI.AnalysisETLOperatorFilterPane = BI.inherit(BI.Widget, {
         }, this.options.value.operatorType)
     },
 
-    //todo 外界调用populate居然还会传options.func进来以拓展自身的controller，现在放widget里，之后删掉
     populate: function (m, options) {
         this.model.populate(m);
         BI.extend(this.options, options);

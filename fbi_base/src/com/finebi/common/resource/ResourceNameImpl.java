@@ -1,7 +1,7 @@
 package com.finebi.common.resource;
 
-import com.finebi.common.name.NameImp;
 import com.finebi.common.name.Name;
+import com.finebi.common.name.NameImp;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
 
 /**
@@ -34,8 +34,12 @@ public class ResourceNameImpl implements ResourceName {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o){ return true;}
-        if (!(o instanceof ResourceNameImpl)) {return false;}
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof ResourceNameImpl)) {
+            return false;
+        }
 
         ResourceNameImpl that = (ResourceNameImpl) o;
 
@@ -45,5 +49,11 @@ public class ResourceNameImpl implements ResourceName {
     @Override
     public int hashCode() {
         return name != null ? name.hashCode() : 0;
+    }
+
+    @Override
+    public String toString() {
+
+        return name.toString();
     }
 }

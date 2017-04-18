@@ -59,8 +59,16 @@ public class BIID implements XMLable, JSONTransform, NameProvider {
     }
 
     @Override
+    /*
+    todo by karl
+    * 前台有传入did的也有传dID，先这么处理，等前台全部统一后再把这里删除
+    * */
     public void parseJSON(JSONObject jo) throws Exception {
-        this.id = jo.optString("did", StringUtils.EMPTY);
+        if (jo.has("did")) {
+            this.id = jo.optString("did", StringUtils.EMPTY);
+        }else {
+            this.id=jo.optString("dId", StringUtils.EMPTY);
+        }
         this.text = jo.optString("name", StringUtils.EMPTY);
     }
 

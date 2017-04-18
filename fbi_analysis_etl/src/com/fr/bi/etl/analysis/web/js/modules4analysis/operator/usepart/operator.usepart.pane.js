@@ -58,13 +58,17 @@ BI.AnalysisETLOperatorUsePartPane = BI.inherit(BI.Widget, {
         })
     },
 
+    mounted: function(){
+        //this.populate(this.options.table);
+    },
+
     doCheck  : function () {
-        this.fireEvent(BI.TopPointerSavePane.EVENT_CHECK_SAVE_STATUS, this.isValid(), BI.i18nText("BI-Please_Select_Needed_Field"))
+        this.fireEvent(BI.AnalysisTopPointerSavePane.EVENT_CHECK_SAVE_STATUS, this.isValid(), BI.i18nText("BI-Please_Select_Needed_Field"))
     },
 
     _check : function () {
         this.model.check();
-        this.fireEvent(BI.TopPointerSavePane.EVENT_FIELD_VALID, this.model.get(ETLCst.FIELDS))
+        this.fireEvent(BI.AnalysisTopPointerSavePane.EVENT_FIELD_VALID, this.model.get(ETLCst.FIELDS))
 
     },
 

@@ -109,15 +109,15 @@ BI.AnalysisETLOperatorAddColumnDateDiffPane = BI.inherit(BI.Widget, {
     //原controller
     _checkCanSave : function () {
         if (BI.isNull(this.model.get('type'))){
-            this.fireEvent(BI.TopPointerSavePane.EVENT_CHECK_SAVE_STATUS, false, BI.i18nText('BI-Property_Not_Setted', BI.i18nText('BI-Unit')));
+            this.fireEvent(BI.AnalysisTopPointerSavePane.EVENT_CHECK_SAVE_STATUS, false, BI.i18nText('BI-Property_Not_Setted', BI.i18nText('BI-Unit')));
         } else if (BI.isNull(this.model.get('firstField'))){
-            this.fireEvent(BI.TopPointerSavePane.EVENT_CHECK_SAVE_STATUS, false, BI.i18nText('BI-Property_Not_Setted', BI.i18nText('BI-Date_Diff')));
+            this.fireEvent(BI.AnalysisTopPointerSavePane.EVENT_CHECK_SAVE_STATUS, false, BI.i18nText('BI-Property_Not_Setted', BI.i18nText('BI-Date_Diff')));
         } else if (BI.isNull(this.model.get('secondField'))){
-            this.fireEvent(BI.TopPointerSavePane.EVENT_CHECK_SAVE_STATUS, false, BI.i18nText('BI-Property_Not_Setted', BI.i18nText('BI-Date_Diff')));
+            this.fireEvent(BI.AnalysisTopPointerSavePane.EVENT_CHECK_SAVE_STATUS, false, BI.i18nText('BI-Property_Not_Setted', BI.i18nText('BI-Date_Diff')));
         } else if (BI.isEqual(this.model.get('secondField'), this.model.get('firstField'))) {
-            this.fireEvent(BI.TopPointerSavePane.EVENT_CHECK_SAVE_STATUS, false, BI.i18nText('BI-Property_Not_Setted', BI.i18nText('BI-Date_Diff')));
+            this.fireEvent(BI.AnalysisTopPointerSavePane.EVENT_CHECK_SAVE_STATUS, false, BI.i18nText('BI-Property_Not_Setted', BI.i18nText('BI-Date_Diff')));
         }else {
-            this.fireEvent(BI.TopPointerSavePane.EVENT_CHECK_SAVE_STATUS, true);
+            this.fireEvent(BI.AnalysisTopPointerSavePane.EVENT_CHECK_SAVE_STATUS, true);
         }
     },
 
