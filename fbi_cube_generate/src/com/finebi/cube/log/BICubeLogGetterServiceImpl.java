@@ -6,11 +6,14 @@ import com.finebi.cube.conf.BICubeConfigureCenter;
 import com.finebi.cube.conf.pack.data.IBusinessPackageGetterService;
 import com.finebi.cube.conf.table.BusinessTable;
 import com.finebi.cube.relation.BITableSourceRelation;
+import com.finebi.cube.relation.BITableSourceRelationPath;
 import com.fr.bi.conf.provider.BIConfigureManagerCenter;
 import com.fr.bi.stable.constant.BILogConstant;
 import com.fr.bi.stable.data.BITableID;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.bi.stable.data.source.CubeTableSource;
+import com.fr.bi.stable.exception.BITablePathEmptyException;
+import com.fr.bi.stable.utils.program.BINonValueUtils;
 import com.fr.fs.control.UserControl;
 
 import java.util.*;
@@ -45,10 +48,9 @@ public class BICubeLogGetterServiceImpl implements BICubeLogGetterService {
         return tableTransportList;
     }
 
-    //TODO 这个map不应该出现有结束时间而没有开始时间，这种情况是个bug，要去排查
     private Long calculateTransportCostTime(Map<String, Object> transportMap) {
         Long cost = null;
-        if (transportMap.containsKey(BILogConstant.LOG_CACHE_TIME_TYPE.TRANSPORT_EXECUTE_END) && transportMap.containsKey(BILogConstant.LOG_CACHE_TIME_TYPE.TRANSPORT_EXECUTE_START)) {
+        if (transportMap.containsKey(BILogConstant.LOG_CACHE_TIME_TYPE.TRANSPORT_EXECUTE_END)) {
             cost = (Long) transportMap.get(BILogConstant.LOG_CACHE_TIME_TYPE.TRANSPORT_EXECUTE_END) - (Long) transportMap.get(BILogConstant.LOG_CACHE_TIME_TYPE.TRANSPORT_EXECUTE_START);
         }
         return cost;
@@ -67,8 +69,12 @@ public class BICubeLogGetterServiceImpl implements BICubeLogGetterService {
                 tablesouceMap.put("tableSourceId", entry.getKey());
                 tablesouceMap.put("tableName", getTableSourceName(entry.getKey()));
                 tablesouceMap.put("packageNames", getPackageNames(entry.getKey()));
-                tablesouceMap.put("fields", calculateFields(entry.getValue()));
-                tableFieldList.add(tablesouceMap);
+
+                Map<String, Object> returnFields = calculateFields(entry.getValue());
+                if (returnFields.size() > 0) {
+                    tablesouceMap.put("fields", returnFields);
+                    tableFieldList.add(tablesouceMap);
+                }
             }
         }
         return tableFieldList;
@@ -134,7 +140,7 @@ public class BICubeLogGetterServiceImpl implements BICubeLogGetterService {
             while (it.hasNext()) {
                 Map.Entry<String, Map<String, Object>> entry = it.next();
                 Map<String, Object> relationMap = calculateRelationCostTime(entry);
-                if(relationMap.get("time") != null) {
+                if (relationMap.get("time") != null) {
                     relationList.add(relationMap);
                 }
             }
@@ -145,30 +151,38 @@ public class BICubeLogGetterServiceImpl implements BICubeLogGetterService {
     private Map<String, Object> calculateRelationCostTime(Map.Entry<String, Map<String, Object>> relationEntry) {
 
         Map<String, Object> tablesouceMap = new HashMap<String, Object>();
-        tablesouceMap.put("relationId", relationEntry.getKey());
-
-        BITableSourceRelation tableRelation = getTableRelationById(relationEntry.getKey());
-        if (tableRelation != null) {
-            tablesouceMap.put("primaryTable", getRelationTableMap(tableRelation.getPrimaryTable(), tableRelation.getPrimaryField()));
-            tablesouceMap.put("foreignTable", getRelationTableMap(tableRelation.getForeignTable(), tableRelation.getForeignField()));
-        } else {
-            LOGGER.warn("table relation is null for relation id " + relationEntry.getKey());
-        }
-
-        Iterator<Map.Entry<String, Object>> iterator = relationEntry.getValue().entrySet().iterator();
-        while (iterator.hasNext()) {
-            Map.Entry<String, Object> entry = iterator.next();
-            if (entry.getKey().equals(BILogConstant.LOG_CACHE_TIME_TYPE.RELATION_INDEX_EXECUTE_END)) {
-                Long endTime = (Long) entry.getValue();
-                Long startTime = (Long) relationEntry.getValue().get(BILogConstant.LOG_CACHE_TIME_TYPE.RELATION_INDEX_EXECUTE_START);
-                tablesouceMap.put("time", endTime - startTime);
-                break;
-            } else {
-                tablesouceMap.put("time", null);
+        try {
+            tablesouceMap.putAll(calculateRelationTableInfo(relationEntry.getKey()));
+            tablesouceMap.put("relationId", relationEntry.getKey());
+            Iterator<Map.Entry<String, Object>> iterator = relationEntry.getValue().entrySet().iterator();
+            while (iterator.hasNext()) {
+                Map.Entry<String, Object> entry = iterator.next();
+                if (entry.getKey().equals(BILogConstant.LOG_CACHE_TIME_TYPE.RELATION_INDEX_EXECUTE_END)) {
+                    Long endTime = (Long) entry.getValue();
+                    Long startTime = (Long) relationEntry.getValue().get(BILogConstant.LOG_CACHE_TIME_TYPE.RELATION_INDEX_EXECUTE_START);
+                    tablesouceMap.put("time", endTime - startTime);
+                    break;
+                } else {
+                    tablesouceMap.put("time", null);
+                }
             }
+        } catch (Exception e) {
+            LOGGER.warn("table relation is missing for relation id " + relationEntry.getKey());
         }
 
         return tablesouceMap;
+    }
+
+    private Map<String, Object> calculateRelationTableInfo(String sourceKey) throws BITablePathEmptyException {
+        Map<String, Object> map = new HashMap<String, Object>();
+        BITableSourceRelationPath tableSourceRelationPath = getTableRelationPath(sourceKey);
+        if (tableSourceRelationPath == null) {
+            throw BINonValueUtils.beyondControl("sourceKey " + sourceKey + " is not found in both relation and path");
+        } else {
+            map.put("primaryTable", getRelationTableMap(tableSourceRelationPath.getFirstRelation().getPrimaryTable(), tableSourceRelationPath.getFirstRelation().getPrimaryField()));
+            map.put("foreignTable", getRelationTableMap(tableSourceRelationPath.getLastRelation().getForeignTable(), tableSourceRelationPath.getLastRelation().getForeignField()));
+        }
+        return map;
     }
 
     @Override
@@ -295,10 +309,10 @@ public class BICubeLogGetterServiceImpl implements BICubeLogGetterService {
         return null;
     }
 
-    private BITableSourceRelation getTableRelationById(String relationId) {
-        Object normalInfoMap = BILoggerFactory.getLoggerCacheValue(BILogConstant.LOG_CACHE_TAG.CUBE_GENERATE_INFO, BILogConstant.LOG_CACHE_SUB_TAG.READ_ONLY_RELATION_MAP);
-        Map<String, BITableSourceRelation> sourceMap = (Map<String, BITableSourceRelation>) normalInfoMap;
-        return sourceMap.get(relationId);
+    private BITableSourceRelationPath getTableRelationPath(String sourceId) {
+        Object normalInfoMap = BILoggerFactory.getLoggerCacheValue(BILogConstant.LOG_CACHE_TAG.CUBE_GENERATE_INFO, BILogConstant.LOG_CACHE_SUB_TAG.READ_ONLY_TABLE_SOURCE_RELATION_PATH_MAP);
+        Map<String, BITableSourceRelationPath> sourceMap = (Map<String, BITableSourceRelationPath>) normalInfoMap;
+        return sourceMap.get(sourceId);
     }
 
     private Map<String, Object> getRelationTableMap(CubeTableSource tableSource, ICubeFieldSource fieldSource) {
