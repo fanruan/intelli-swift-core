@@ -25,5 +25,4 @@ public interface BICubeLogGetterService {
     int getFieldAlreadyIndex();
 
     int getRelationAlreadyGenerate();
-
 }
