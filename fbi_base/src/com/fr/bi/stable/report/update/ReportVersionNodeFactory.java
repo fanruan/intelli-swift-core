@@ -28,7 +28,6 @@ public class ReportVersionNodeFactory {
         ArrayList<ReportUpdateOperation> operations = new ArrayList<ReportUpdateOperation>();
         operations.add(new ReportCamelOperation());
         operations.add(new ReportKeyChangeOperation());
-        operations.add(new ReportDimensionTypeOperation());
         return new ReportConfVersionNode(ReportVersionEnum.VERSION_4_0_2, operations);
     }
 }
