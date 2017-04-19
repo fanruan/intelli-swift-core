@@ -2,7 +2,6 @@ package com.fr.bi.cal.analyze.report.report;
 
 import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.base.FRContext;
-import com.fr.base.ScreenResolution;
 import com.fr.bi.cal.analyze.cal.result.ComplexAllExpander;
 import com.fr.bi.cal.analyze.report.BIReportor;
 import com.fr.bi.cal.analyze.report.report.widget.BIDetailWidget;
@@ -15,39 +14,24 @@ import com.fr.bi.conf.report.BIReport;
 import com.fr.bi.conf.report.BIWidget;
 import com.fr.bi.conf.report.WidgetType;
 import com.fr.bi.fs.BIReportNode;
-import com.fr.bi.manager.PerformancePlugManager;
 import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.stable.constant.BIExcutorConstant;
 import com.fr.bi.stable.constant.BIReportConstant;
-import com.fr.bi.stable.utils.code.BIPrintUtils;
 import com.fr.bi.tool.BIReadReportUtils;
-import com.fr.general.IOUtils;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
 import com.fr.main.workbook.ResultWorkBook;
 import com.fr.report.cell.FloatElement;
 import com.fr.report.poly.PolyECBlock;
-import com.fr.stable.CodeUtils;
-import com.fr.stable.Constants;
-import com.fr.stable.StringUtils;
-import com.fr.stable.unit.FU;
-import com.fr.stable.unit.UnitRectangle;
 import com.fr.web.core.SessionDealWith;
-import sun.misc.BASE64Decoder;
-import sun.misc.BASE64Encoder;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.awt.image.RenderedImage;
 import java.io.*;
-import java.net.URL;
-import java.net.URLConnection;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
-import java.util.Map;
 
 /**
  * Created by AstronautOO7 on 2017/1/11.
@@ -57,11 +41,10 @@ public class BIReportExportExcel {
     private String sessionID;
     private BISession session;
     private BIReportNode node;
-    private static int bytesLength = 256;
     private ArrayList<BIWidget> widgets = new ArrayList<BIWidget>();
     private JSONArray specialWidgets = JSONArray.create();
-    private String PhantomIp = PerformancePlugManager.getInstance().getPhantomServerIP();
-    private int PhantomPort = PerformancePlugManager.getInstance().getPhantomServerPort();
+
+    private int namePosLeft = 21;
 
     protected BIReport report = new BIReportor();
 
@@ -92,12 +75,12 @@ public class BIReportExportExcel {
         }
         BIWorkBook wb = new BIWorkBook();
         BIPolyWorkSheet reportSheet = new BIPolyWorkSheet();
-        PolyECBlock polyECBlock = createPolyECBlock("Dashboard");
+        PolyECBlock polyECBlock = BIReportExportExcelUtils.createPolyECBlock("Dashboard");
         if (widgets.size() != 0) {
             for (BIWidget widget : widgets) {
-                if (widgetHasData(widget)) {
+                if (BIReportExportExcelUtils.widgetHasData(widget)) {
                     if (widget instanceof TableWidget) {
-                        polyECBlock.addFloatElement(renderPicture(widget));
+                        polyECBlock.addFloatElement(renderPicture((TableWidget) widget));
                     }
                 } else {
                     polyECBlock.addFloatElement(renderDefaultChartPic(widget));
@@ -121,6 +104,9 @@ public class BIReportExportExcel {
                 }
             }
         }
+//        DefaultTemplateCellElement cell = new DefaultTemplateCellElement((int) Math.floor(350/100) + 1, (int) Math.floor(550/25) + 1, 1, 1, 123);
+//        polyECBlock.addCellElement(cell);
+
         //dashboard
         reportSheet.addBlock(polyECBlock);
         wb.addReport("Dashboard", reportSheet);
@@ -130,35 +116,39 @@ public class BIReportExportExcel {
         return wb.execute4BI(session.getParameterMap4Execute());
     }
 
-    private FloatElement renderPicture(BIWidget widget) throws Exception {
-        JSONObject jo = JSONObject.create();
-        try {
-            jo = widget.createDataJSON(session);
-        } catch (Exception e) {
-            BILoggerFactory.getLogger().error(e.getMessage(), e);
-            jo.put("error", BIPrintUtils.outputException(e));
-        }
+    private FloatElement renderPicture(TableWidget widget) throws Exception {
+
         JSONObject options;
         String key;
         if (widget instanceof VanChartWidget) {
+            JSONObject jo = JSONObject.create();
+            try {
+                jo = widget.createDataJSON(session);
+            } catch (Exception e) {
+                BILoggerFactory.getLogger().error(e.getMessage(), e);
+            }
             JSONObject plotOptions = (JSONObject) jo.opt("plotOptions");
             plotOptions.put("animation", false);
             options = jo.put("plotOptions", plotOptions);
             key = "vanChartOptions";
         } else {
-            options = ((TableWidget) widget).getPostOptions(sessionID);
+            options = widget.getPostOptions(sessionID);
             key = "tableOptions";
         }
+        JSONObject titleParams = JSONObject.create();
+        titleParams.put("text", widget.getWidgetName());
+        String nameTextAlign = widget.getChartSetting().getDetailChartSetting().optInt("namePos", namePosLeft) == namePosLeft ? "left" : "center";
+        titleParams.put("textAlign", nameTextAlign);
         Rectangle rect = widget.getRect();
         String postOptions = new JSONObject("{" + key + ":" + options + ", width:" + rect.getWidth() +
-                ", height:" + rect.getHeight() + "}").toString();
+                ", height:" + rect.getHeight() + ", titleParams:" + titleParams + "}").toString();
         String base64 = null;
         try {
-            base64 = postMessage(postOptions);
+            base64 = BIReportExportExcelUtils.postMessage(postOptions);
         } catch (IOException e) {
             BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
-        return createFloatElement(base64Decoder(base64), rect);
+        return BIReportExportExcelUtils.createFloatElement(base64, rect);
     }
 
     private FloatElement renderContentWidget(JSONObject wjo) throws JSONException {
@@ -176,12 +166,12 @@ public class BIReportExportExcel {
         String base64 = null;
 
         try {
-            base64 = postMessage(contentOptions.toString());
+            base64 = BIReportExportExcelUtils.postMessage(contentOptions.toString());
         } catch (IOException e) {
             BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
 
-        return createFloatElement(base64Decoder(base64), getWidgetRect(bounds));
+        return BIReportExportExcelUtils.createFloatElement(base64, bounds);
     }
 
     private FloatElement renderImageWidget(JSONObject wjo) {
@@ -196,7 +186,7 @@ public class BIReportExportExcel {
         } catch (Exception e) {
             BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
-        return createFloatElement(sourceImg, getWidgetRect(bounds));
+        return BIReportExportExcelUtils.createFloatElement(sourceImg, bounds);
     }
 
     private FloatElement renderWebWidget(JSONObject wjo) throws JSONException {
@@ -213,29 +203,29 @@ public class BIReportExportExcel {
         String base64 = null;
 
         try {
-            base64 = postMessage(jo.toString());
+            base64 = BIReportExportExcelUtils.postMessage(jo.toString());
         } catch (IOException e) {
             BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
 
-        return createFloatElement(base64Decoder(base64), getWidgetRect(bounds));
+        return BIReportExportExcelUtils.createFloatElement(base64, bounds);
     }
 
     private FloatElement renderDefaultChartPic(BIWidget widget) throws IOException, JSONException {
         String imageFolder = FRContext.getCurrentEnv().getPath() +
                 "/classes/com/fr/bi/web/images/background/charts";
-        String base64 = getDefaultImage(widget.getType(), imageFolder);
+        String base64 = BIReportExportExcelUtils.getDefaultImage(widget.getType(), imageFolder);
         JSONObject imgOptions = JSONObject.create();
         imgOptions.put("base64", base64);
         imgOptions.put("width", widget.getRect().getWidth());
         imgOptions.put("height", widget.getRect().getHeight());
-        String getBase64 = null;
+        String finalBase64 = null;
         try {
-            getBase64 = postMessage(imgOptions.toString());
+            finalBase64 = BIReportExportExcelUtils.postMessage(imgOptions.toString());
         } catch (IOException e) {
             BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
-        return createFloatElement(base64Decoder(getBase64), widget.getRect());
+        return BIReportExportExcelUtils.createFloatElement(finalBase64, widget.getRect());
     }
 
     private BIWorkBook createOtherSheets(BIWorkBook wb) throws CloneNotSupportedException {
@@ -244,7 +234,7 @@ public class BIReportExportExcel {
             return wb;
         }
         for (BIWidget widget : widgets) {
-            if (widgetHasData(widget)) {
+            if (BIReportExportExcelUtils.widgetHasData(widget)) {
                 widget = (BIWidget) widget.clone();
                 switch (widget.getType()) {
                     case TABLE:
@@ -262,132 +252,10 @@ public class BIReportExportExcel {
                 wb.addReport(widget.getWidgetName(), ws);
             } else {
                 BIPolyWorkSheet emptySheet = new BIPolyWorkSheet();
-                emptySheet.addBlock(createPolyECBlock(widget.getWidgetName()));
+                emptySheet.addBlock(BIReportExportExcelUtils.createPolyECBlock(widget.getWidgetName()));
                 wb.addReport(widget.getWidgetName(), emptySheet);
             }
         }
         return wb;
-    }
-
-    private FloatElement createFloatElement(BufferedImage bufferedImage, Rectangle rect) {
-        FloatElement floatElement = new FloatElement(bufferedImage);
-        int resolution = ScreenResolution.getScreenResolution();
-        floatElement.setWidth(FU.valueOfPix((int) rect.getWidth(), resolution));
-        floatElement.setHeight(FU.valueOfPix((int) rect.getHeight(), resolution));
-        floatElement.setLeftDistance(FU.valueOfPix((int) rect.getX(), resolution));
-        floatElement.setTopDistance(FU.valueOfPix((int) rect.getY(), resolution));
-        return floatElement;
-    }
-
-    public String postMessage(String message) throws IOException {
-        URL url = new URL("http://" + PhantomIp + ":" + PhantomPort + "/");
-        URLConnection connection = url.openConnection();
-        connection.setDoOutput(true);
-        connection.setConnectTimeout(5000);
-        connection.setReadTimeout(5000);
-
-        OutputStream out = connection.getOutputStream();
-        out.write(message.getBytes("utf-8"));
-        out.close();
-
-        //get base64 picture
-        InputStream in = connection.getInputStream();
-        String response = IOUtils.inputStream2String(in);
-        in.close();
-
-        return response;
-    }
-
-    public BufferedImage base64Decoder(String base64) {
-        BASE64Decoder decoder = new BASE64Decoder();
-        BufferedImage img = null;
-        try {
-            // decode Base64
-            byte[] bytes = decoder.decodeBuffer(base64);
-            for (int i = 0; i < bytes.length; ++i) {
-                if (bytes[i] < 0) {// 调整异常数据
-                    bytes[i] += bytesLength;
-                }
-            }
-            InputStream inputStream = new ByteArrayInputStream(bytes, 0, bytes.length);
-
-            img = ImageIO.read(inputStream);
-        } catch (Exception e) {
-            return null;
-        }
-        return img;
-    }
-
-    private PolyECBlock createPolyECBlock(String widgetName) {
-        PolyECBlock polyECBlock = new PolyECBlock();
-        polyECBlock.setBlockName(CodeUtils.passwordEncode(CodeUtils.passwordEncode(widgetName)));
-        polyECBlock.getBlockAttr().setFreezeHeight(true);
-        polyECBlock.getBlockAttr().setFreezeWidth(true);
-        polyECBlock.setBounds(new UnitRectangle(new Rectangle(), Constants.DEFAULT_WEBWRITE_AND_SCREEN_RESOLUTION));
-        return polyECBlock;
-    }
-
-    private boolean widgetHasData(BIWidget widget) {
-        return (widget.getViewDimensions().length + widget.getViewTargets().length) != 0;
-    }
-
-    private String getDefaultImage(WidgetType type, String imageFolder) throws IOException {
-        Map<WidgetType, String> map = new HashMap<WidgetType, String>();
-        map.put(WidgetType.STACKED_COLUMN, "/column_accu.png");
-        map.put(WidgetType.STACKED_AREA, "/area_accu.png");
-        map.put(WidgetType.STACKED_RADAR, "/radar_accu.png");
-        map.put(WidgetType.COLUMN, "/column.png");
-        map.put(WidgetType.LINE, "/line.png");
-        map.put(WidgetType.AREA, "/area.png");
-        map.put(WidgetType.PERCENT_STACKED_COLUMN, "/column_percent.png");
-        map.put(WidgetType.PERCENT_STACKED_AREA, "/area_percent.png");
-        map.put(WidgetType.COMPARE_COLUMN, "/column_compare.png");
-        map.put(WidgetType.COMPARE_AREA, "/area_compare.png");
-        map.put(WidgetType.FALL_COLUMN, "/column_fall.png");
-        map.put(WidgetType.RANGE_AREA, "/area_range.png");
-        map.put(WidgetType.BAR, "/bar.png");
-        map.put(WidgetType.STACKED_BAR, "/bar_accu.png");
-        map.put(WidgetType.COMPARE_BAR, "/bar_compare.png");
-        map.put(WidgetType.COMBINE_CHART, "/combine.png");
-        map.put(WidgetType.DONUT, "/donut.png");
-        map.put(WidgetType.RADAR, "/radar.png");
-        map.put(WidgetType.PIE, "/pie.png");
-        map.put(WidgetType.MULTI_AXIS_COMBINE_CHART, "/combine_m.png");
-        map.put(WidgetType.FORCE_BUBBLE, "/bubble_force.png");
-        map.put(WidgetType.GAUGE, "/gauge.png");
-        map.put(WidgetType.DOT, "/bubble.png");
-        map.put(WidgetType.MAP, "/map.png");
-        map.put(WidgetType.GIS_MAP, "/map_gis.png");
-        map.put(WidgetType.TABLE, "/table_group.png");
-        map.put(WidgetType.CROSS_TABLE, "/table_cross.png");
-        map.put(WidgetType.COMPLEX_TABLE, "/table_complex.png");
-        map.put(WidgetType.FUNNEL, "/funnel.png");
-        map.put(WidgetType.MULTI_PIE, "/multi_pie.png");
-        map.put(WidgetType.TREE_MAP, "/tree_map.png");
-        return coderBase64(IOUtils.readImage(imageFolder + map.get(type)));
-    }
-
-    private String coderBase64(Image image) throws IOException {
-        if (image == null) {
-            return StringUtils.EMPTY;
-        }
-        byte[] data = null;
-        // 读取图片字节数组
-        ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        ImageIO.write((RenderedImage) image, "png", bos);
-        data = bos.toByteArray();
-        bos.close();
-
-        // 对字节数组Base64编码
-        BASE64Encoder encoder = new BASE64Encoder();
-        String result = encoder.encode(data);
-        result = result.replace("\r\n", "");
-        return result;// 返回Base64编码过的字节数组字符串
-    }
-
-    private Rectangle getWidgetRect(JSONObject bounds) {
-        Rectangle rect = new Rectangle(bounds.optInt("left"), bounds.optInt("top"),
-                bounds.optInt("width"), bounds.optInt("height"));
-        return rect;
     }
 }
