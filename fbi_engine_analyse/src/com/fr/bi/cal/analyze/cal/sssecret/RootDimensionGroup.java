@@ -45,7 +45,7 @@ public class RootDimensionGroup implements IRootDimensionGroup {
     protected NoneDimensionGroup root;
     protected int rowSize;
 
-    protected RootDimensionGroup(){
+    protected RootDimensionGroup() {
 
     }
 
@@ -82,11 +82,15 @@ public class RootDimensionGroup implements IRootDimensionGroup {
         columns = new DimensionCalculator[rowSize][metricGroupInfoList.size()];
         tis = new ICubeTableService[metricGroupInfoList.size()];
         for (int i = 0; i < metricGroupInfoList.size(); i++) {
+            CubeTableSource source = metricGroupInfoList.get(i).getMetric().getTableSource();
+            // 判空，没有计算指标的时候source会为空
+            if (source != null) {
+                tis[i] = session.getLoader().getTableIndex(source);
+            }
             DimensionCalculator[] rs = metricGroupInfoList.get(i).getRows();
-            tis[i] = session.getLoader().getTableIndex(metricGroupInfoList.get(i).getMetric().getTableSource());
             for (int j = 0; j < rs.length; j++) {
                 columns[j][i] = rs[j];
-                getters[j][i] =  session.getLoader().getTableIndex(getSource(rs[j])).getValueEntryGetter(createKey(rs[j]), rs[j].getRelationList());
+                getters[j][i] = session.getLoader().getTableIndex(getSource(rs[j])).getValueEntryGetter(createKey(rs[j]), rs[j].getRelationList());
             }
         }
     }
@@ -210,7 +214,7 @@ public class RootDimensionGroup implements IRootDimensionGroup {
         //如果往下展开，就继续往下
         NodeExpander ex = expander.getChildExpander(sg.getChildShowName(index[deep]));
         if (ex != null && deep + 1 < index.length) {
-            if (ReturnStatus.GroupEnd == getNext(gv.getChild(), index, deep + 1, ex, list)){
+            if (ReturnStatus.GroupEnd == getNext(gv.getChild(), index, deep + 1, ex, list)) {
                 return ReturnStatus.GroupEnd;
             }
         }
@@ -298,12 +302,12 @@ public class RootDimensionGroup implements IRootDimensionGroup {
 
     private void checkThreadPool() {
         BIMultiThreadExecutor executor = MultiThreadManagerImpl.getInstance().isMultiCall() ? MultiThreadManagerImpl.getInstance().getExecutorService() : null;
-        for (MergeIteratorCreator creator : mergeIteratorCreators){
+        for (MergeIteratorCreator creator : mergeIteratorCreators) {
             creator.setExecutor(executor);
         }
     }
 
-    protected IRootDimensionGroup createNew(){
+    protected IRootDimensionGroup createNew() {
         return new RootDimensionGroup();
     }
 }
