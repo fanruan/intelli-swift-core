@@ -54,23 +54,23 @@ public class SummaryComplexTableBuilder extends TableAbstractDataBuilder {
             return;
         }
         //无行表头
+        //补全该二维数组
         boolean isRegionExist = isColRegionExist() && !isRowRegionExist();
+        JSONArray oneDimTableData = new JSONArray();
         if (isRegionExist) {
             JSONArray clonedData = new JSONArray();
             if (getColRegions().size() == 1) {
                 clonedData.put(data);
             }
-            JSONArray finalData = new JSONArray();
-            finalData.put(new JSONArray());
             for (int i = 0; i < clonedData.length(); i++) {
                 JSONArray cData = clonedData.getJSONArray(i);
                 JSONObject t = new JSONObject().put("c", getTopOfCrossByGroupData(cData));
                 JSONObject l = new JSONObject().put("s", cData);
                 JSONObject tableData = new JSONObject();
                 tableData.put("t", t).put("l", l);
-                finalData.getJSONArray(0).put(i, tableData);
+                oneDimTableData.put(i, tableData);
             }
-            data = finalData.toString();
+            data = new JSONArray().put(oneDimTableData).toString();
             createComplexTableItems();
             createComplexTableHeader();
             setOtherComplexAttrs();
