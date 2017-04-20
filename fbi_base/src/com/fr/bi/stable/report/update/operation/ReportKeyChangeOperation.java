@@ -35,7 +35,7 @@ public class ReportKeyChangeOperation extends ReportCamelOperation {
 
     protected String updateKey(String str) {
         try {
-            return keys.has(str) ? keys.getString(str) : str;
+            return null!=keys?keys.optString("str",str):str;
         } catch (Exception e) {
             BILoggerFactory.getLogger(this.getClass()).error(e.getMessage(), e);
         }
@@ -65,7 +65,7 @@ public class ReportKeyChangeOperation extends ReportCamelOperation {
     }
 
     private JSONObject readKeyJson() throws JSONException, ClassNotFoundException, FileNotFoundException {
-        String path = null;
+        String path;
         try {
             path = FRContext.getCurrentEnv().getPath();
         } catch (Exception e) {
