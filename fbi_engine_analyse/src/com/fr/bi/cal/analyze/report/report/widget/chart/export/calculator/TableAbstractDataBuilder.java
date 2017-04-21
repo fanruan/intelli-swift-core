@@ -58,7 +58,7 @@ public abstract class TableAbstractDataBuilder implements IExcelDataBuilder {
         crossHeaders = new ArrayList<ITableHeader>();
     }
 
-    public void amendment() throws JSONException {
+    protected void amendment() throws JSONException {
         JSONObject cloneData = new JSONObject(this.data.toString());
         this.data.put("t", new JSONObject().put("c", getTopOfCrossByGroupData(cloneData.getJSONArray("c"))));
         this.data.put("l", new JSONObject().put("s", cloneData));
@@ -341,12 +341,12 @@ public abstract class TableAbstractDataBuilder implements IExcelDataBuilder {
                         ob.setText(child.getJSONArray("s").getString(j));
                         ob.setStyle(SummaryTableStyleHelper.getBodyStyles(styleSetting.getThemeStyle(), styleSetting.getWsTableStyle(), j));
                         ob.setDId(targetIds.get(j));
-                        ob.setClicked(new JSONArray().put(crossPV.getString(indexOB.getInt("cIndex"))));
+//                        ob.setClicked(new JSONArray().put(crossPV.getString(indexOB.getInt("cIndex"))));
                         List<ITableItem> tempChild = items.get(j).getChildren();
                         tempChild.add(ob);
                         items.get(j).setChildren(tempChild);
                     }
-                    indexOB.put("cIndex", indexOB.getInt("cIndex") + 1);
+//                    indexOB.put("cIndex", indexOB.getInt("cIndex") + 1);
                 }
             }
         }
@@ -362,11 +362,11 @@ public abstract class TableAbstractDataBuilder implements IExcelDataBuilder {
                     ob.setText(s.getString(j));
                     ob.setStyle(SummaryTableStyleHelper.getBodyStyles(styleSetting.getThemeStyle(), styleSetting.getWsTableStyle(), j));
                     ob.setDId(targetIds.get(j));
-                    ob.setClicked(new JSONArray().put(crossPV.getString(indexOB.getInt("cIndex"))));
+//                    ob.setClicked(new JSONArray().put(crossPV.getString(indexOB.getInt("cIndex"))));
                     items.get(j).getChildren().get(0).getValue().put(ob.createJSON());
                 }
             }
-            indexOB.put("cIndex", indexOB.getInt("cIndex") + 1);
+//            indexOB.put("cIndex", indexOB.getInt("cIndex") + 1);
         }
     }
 

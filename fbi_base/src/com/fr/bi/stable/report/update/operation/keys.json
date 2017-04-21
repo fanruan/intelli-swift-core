@@ -1,0 +1,47 @@
+
+{
+/*  "comment": "注释：常用 key names 以及曾用名",
+  "key": "meaning (previous)",*/
+
+
+  "id": "id",
+  "fieldId": "字段ID (field_id)",
+  "tableId": "表ID (table_id)",
+  "packageId": "业务包ID (package_id)",
+
+  "fieldType": "字段类型 (field_type)",
+  "fieldName": "字段名 (field_type)",
+  "etlType": "ETL类型 (etl_type)",
+  "etlValue": "ETL内容 (etl_value)",
+  "filterType" : "过滤类型 (filter_type)",
+  "filterValue": "过滤内容 (filter_value)",
+
+  "tableName": "表名 (table_name)",
+  "tranName": "转义名 (tran_name)",
+  "tableTranName": "表转义名 (table_tran_name)",
+  "fieldTranName": "字段转义名 (field_tran_name)",
+  "packageName": "业务包名 (package_name)",
+  "groupName": "业务包分组名 (group_name)",
+  "connectionName": "数据连接名 (connection_name)",
+
+  "relations": "关联集合 (relations)",
+  "translations": "转义集合 (translations)",
+  "updateSetting": "更新设置 (update_settings/update_setting/updateSettings)",
+  "excelView": "excelView (excelViews/excel_view/excel_views)",
+  "isEnable": "字段可用 (is_enable)",
+  "isUsable": "字段参与分析 (is_usable)",
+  "roleName": "角色名称 (role_id)",
+  "roleType": "角色类型 (role_type)",
+
+  "numLevel": "数量级 (num_level)",
+  "tempName": "中间表名称 (temp_name)",
+
+  "realData": "真实数据 (real_data)",
+
+  "columnSize": "列宽 (column_size)",
+  "targetRelation": "明细表关联关系 (target_relation)",
+  "sortSequence" : "明细表排序 (sort_sequence)",
+
+  "dimensionMap": "匹配关系(dimension_map)"
+
+}
