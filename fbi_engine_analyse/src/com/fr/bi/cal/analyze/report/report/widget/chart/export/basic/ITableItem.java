@@ -10,6 +10,10 @@ import java.util.List;
  * Created by Kary on 2017/2/26.
  */
 public interface ITableItem extends JSONCreator {
+    String getDId();
+
+    String getText();
+
     JSONArray getValue();
 
     List<ITableItem> getChildren();

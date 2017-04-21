@@ -1,14 +1,14 @@
 package com.fr.bi.stable.report.update.operation;
 
 import com.finebi.cube.common.log.BILoggerFactory;
-import com.fr.base.FRContext;
-import com.fr.bi.stable.utils.file.BIFileUtils;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
 
-import java.io.FileNotFoundException;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.Iterator;
-import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -16,6 +16,7 @@ import java.util.regex.Pattern;
  * Created by Kary on 2017/3/27.
  */
 public class ReportKeyChangeOperation extends ReportCamelOperation {
+    private static final String DEFAULT_FILE_NAME = "keys.json";
     private JSONObject keys;
 
     public ReportKeyChangeOperation(JSONObject keys) {
@@ -35,7 +36,7 @@ public class ReportKeyChangeOperation extends ReportCamelOperation {
 
     protected String updateKey(String str) {
         try {
-            return keys.has(str) ? keys.getString(str) : str;
+            return null != keys ? keys.optString("str", str) : str;
         } catch (Exception e) {
             BILoggerFactory.getLogger(this.getClass()).error(e.getMessage(), e);
         }
@@ -64,22 +65,20 @@ public class ReportKeyChangeOperation extends ReportCamelOperation {
         return originalKey;
     }
 
-    private JSONObject readKeyJson() throws JSONException, ClassNotFoundException, FileNotFoundException {
-        String path = null;
-        try {
-            path = FRContext.getCurrentEnv().getPath();
-        } catch (Exception e) {
-            throw new FileNotFoundException();
+    private JSONObject readKeyJson() throws JSONException, ClassNotFoundException, IOException {
+        StringBuffer keysStr = new StringBuffer();
+        InputStream is = this.getClass().getResourceAsStream("keys.json");
+        if (is==null){
+            BILoggerFactory.getLogger(this.getClass()).error("keys.json not existed in this path"+this.getClass().getResource("").toString());
+            return new JSONObject();
         }
-        if (null!=path) {
-            List<String> files = BIFileUtils.getListFiles(path, "json", true);
-            for (String filePath : files) {
-                if (filePath.endsWith("keys.json")) {
-                    String s = BIFileUtils.readFile(filePath);
-                    return new JSONObject(s);
-                }
-            }
+        BufferedReader br = new BufferedReader(new InputStreamReader(is));
+        String s;
+        while ((s = br.readLine()) != null) {
+            keysStr.append(s);
         }
-        throw new FileNotFoundException();
+
+        BILoggerFactory.getLogger(this.getClass()).error(keysStr.toString());
+        return new JSONObject(keysStr.toString());
     }
 }
