@@ -184,7 +184,7 @@ public class XMLWriterTest extends TestCase {
     public static Object get(Object object, String name) {
         try {
             BeanHistoryXMLReader beanHistoryXMLReader = new BeanHistoryXMLReader();
-            Map<String, List<String>> beanMapping = beanHistoryXMLReader.loadBeanHistoryMap(Thread.currentThread().getContextClassLoader().getResource("").getPath() +"bean_history_class_test.xml");
+            Map<String, List<String>> beanMapping = beanHistoryXMLReader.loadBeanHistoryMap(Thread.currentThread().getContextClassLoader().getResourceAsStream("bean_history_class_test.xml"));
             BIBeanHistoryManager.getInstance().registerBeanHistoryManager(beanMapping);
             File var3 = new File("./temp/" + name + ".xml");
             StableUtils.makesureFileExist(var3);
