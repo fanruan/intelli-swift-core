@@ -4,9 +4,7 @@ import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.base.FRContext;
 import com.fr.bi.cal.analyze.cal.result.ComplexAllExpander;
 import com.fr.bi.cal.analyze.report.BIReportor;
-import com.fr.bi.cal.analyze.report.report.widget.BIDetailWidget;
-import com.fr.bi.cal.analyze.report.report.widget.TableWidget;
-import com.fr.bi.cal.analyze.report.report.widget.VanChartWidget;
+import com.fr.bi.cal.analyze.report.report.widget.*;
 import com.fr.bi.cal.analyze.session.BISession;
 import com.fr.bi.cal.report.main.impl.BIWorkBook;
 import com.fr.bi.cal.report.report.poly.BIPolyWorkSheet;
@@ -43,7 +41,6 @@ public class BIReportExportExcel {
     private BIReportNode node;
     private ArrayList<BIWidget> widgets = new ArrayList<BIWidget>();
     private JSONArray specialWidgets = JSONArray.create();
-
     private int namePosLeft = 21;
 
     protected BIReport report = new BIReportor();
@@ -58,14 +55,41 @@ public class BIReportExportExcel {
         while (it.hasNext()) {
             JSONObject widgetJSON = widgetsJSON.getJSONObject((String) it.next());
             int type = widgetJSON.optInt("type");
-            if (WidgetType.CONTENT.getType() <= type && type <= WidgetType.WEB.getType()) {
-                specialWidgets.put(widgetJSON);
-            } else {
+            parseWidget(type, widgetJSON);
+        }
+    }
+
+    private void parseWidget(int type, JSONObject widgetJo) throws Exception {
+        switch (WidgetType.parse(type)) {
+            case STRING:
+            case NUMBER:
+            case TREE:
+            case SINGLE_SLIDER:
+            case INTERVAL_SLIDER:
+            case LIST_LABEL:
+            case TREE_LABEL:
+            case STRING_LIST:
+            case TREE_LIST:
+            case DATE:
+            case YEAR:
+            case QUARTER:
+            case MONTH:
+            case YMD:
+            case DATE_PANE:
+//            case QUERY:
+//            case RESET:
+            case CONTENT:
+            case IMAGE:
+            case WEB:
+//            case GENERAL_QUERY:
+//            case TABLE_SHOW:
+                specialWidgets.put(widgetJo);
+                break;
+            default:
                 JSONObject exp = new JSONObject("{ type: true, value: [[]]}");
-                widgetJSON.put("page", BIReportConstant.TABLE_PAGE_OPERATOR.ALL_PAGE);
-                widgetJSON.put("expander", new JSONObject("{ x:" + exp + ", y:" + exp + "}"));
-                widgets.add(BIWidgetFactory.parseWidget(widgetJSON, node.getUserId()));
-            }
+                widgetJo.put("page", BIReportConstant.TABLE_PAGE_OPERATOR.ALL_PAGE);
+                widgetJo.put("expander", new JSONObject("{ x:" + exp + ", y:" + exp + "}"));
+                widgets.add(BIWidgetFactory.parseWidget(widgetJo, node.getUserId()));
         }
     }
 
@@ -76,47 +100,96 @@ public class BIReportExportExcel {
         BIWorkBook wb = new BIWorkBook();
         BIPolyWorkSheet reportSheet = new BIPolyWorkSheet();
         PolyECBlock polyECBlock = BIReportExportExcelUtils.createPolyECBlock("Dashboard");
+        polyECBlock.getBlockAttr().setFreezeHeight(true);
+        polyECBlock.getBlockAttr().setFreezeWidth(true);
         if (widgets.size() != 0) {
             for (BIWidget widget : widgets) {
-                if (BIReportExportExcelUtils.widgetHasData(widget)) {
-                    if (widget instanceof TableWidget) {
-                        polyECBlock.addFloatElement(renderPicture((TableWidget) widget));
-                    }
-                } else {
-                    polyECBlock.addFloatElement(renderDefaultChartPic(widget));
-                }
+                polyECBlock.addFloatElement(renderPicture((TableWidget) widget));
             }
         }
+        getSpecialWidgetPic(polyECBlock);
 
+        reportSheet.addBlock(polyECBlock);
+        wb.addReport("Dashboard", reportSheet);
+        createOtherSheets(wb);
+        return wb.execute4BI(session.getParameterMap4Execute());
+    }
+
+    private void getSpecialWidgetPic(PolyECBlock polyECBlock) throws JSONException {
         if (specialWidgets.length() != 0) {
             for (int i = 0; i < specialWidgets.length(); i++) {
                 JSONObject jo = specialWidgets.getJSONObject(i);
                 switch (WidgetType.parse(jo.optInt("type"))) {
                     case CONTENT:
-                        polyECBlock.addFloatElement(renderContentWidget(specialWidgets.getJSONObject(i)));
+                        polyECBlock.addFloatElement(renderContentWidget(jo));
                         break;
                     case IMAGE:
-                        polyECBlock.addFloatElement(renderImageWidget(specialWidgets.getJSONObject(i)));
+                        polyECBlock.addFloatElement(renderImageWidget(jo));
                         break;
                     case WEB:
-                        polyECBlock.addFloatElement(renderWebWidget(specialWidgets.getJSONObject(i)));
+                        polyECBlock.addFloatElement(renderWebWidget(jo));
+                        break;
+                    case STRING:
+                    case LIST_LABEL:
+                    case STRING_LIST:
+                        renderStringListWidget(polyECBlock, jo);
+                        break;
+                    case NUMBER:
+                    case INTERVAL_SLIDER:
+                        renderNumberWidget(polyECBlock, jo);
+                    case TREE:
+                    case TREE_LABEL:
+                    case TREE_LIST:
+                        break;
+                    case YEAR:
+                    case MONTH:
+                    case QUARTER:
+                    case YMD:
+                    case DATE_PANE:
+                    case DATE:
                         break;
                 }
             }
         }
-//        DefaultTemplateCellElement cell = new DefaultTemplateCellElement((int) Math.floor(350/100) + 1, (int) Math.floor(550/25) + 1, 1, 1, 123);
-//        polyECBlock.addCellElement(cell);
+    }
 
-        //dashboard
-        reportSheet.addBlock(polyECBlock);
-        wb.addReport("Dashboard", reportSheet);
+    private void renderStringListWidget(PolyECBlock polyECBlock, JSONObject jo) throws JSONException {
+        JSONObject valueJo = jo.optJSONObject("value");
+        String v;
+        if(jo.optJSONObject("dimensions").length() == 0) {
+            v = "";
+        } else if(valueJo.length() == 0) {
+            v = "无限制";
+        }else {
+            v = (valueJo.optInt("type") == 1 ? "" : "未") + "选中:" + valueJo.optJSONArray("value").join(",");
+        }
+        String output = jo.optString("name") + "\r\n" + v;
+        polyECBlock.addFloatElement(BIReportExportExcelUtils.createFloatElement4String(output, jo.optJSONObject("bounds")));
+    }
 
-        createOtherSheets(wb);
+    private void renderNumberWidget(PolyECBlock polyECBlock, JSONObject jo) {
+        JSONObject valueJo = jo.optJSONObject("value");
+        String v;
+        if(jo.optJSONObject("dimensions").length() == 0) {
+            v = "";
+        } else if(valueJo.length() == 0) {
+            v = "无限制";
+        } else {
+            String min = valueJo.optString("min", "");
+            String closemin = valueJo.optBoolean("closemin", false) == true ? "<=" : "<";
+            String max = valueJo.optString("max", "");
+            String closemax = valueJo.optBoolean("closemax", false) == true ? "<=" : "<";
+            v = (min == "" ? "无限制" : min) + closemin + "值" + closemax + (max == "" ? "无限制" : max);
+        }
 
-        return wb.execute4BI(session.getParameterMap4Execute());
+        String output = jo.optString("name") + "\r\n" + v;
+        polyECBlock.addFloatElement(BIReportExportExcelUtils.createFloatElement4String(output, jo.optJSONObject("bounds")));
     }
 
     private FloatElement renderPicture(TableWidget widget) throws Exception {
+        if (BIReportExportExcelUtils.widgetHasData(widget)) {
+            return renderDefaultChartPic(widget);
+        }
 
         JSONObject options;
         String key;

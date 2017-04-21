@@ -37,12 +37,7 @@ public class BIReportExportExcelUtils {
 
     static FloatElement createFloatElement(BufferedImage bufferedImage, Rectangle rect) {
         FloatElement floatElement = new FloatElement(bufferedImage);
-        int resolution = ScreenResolution.getScreenResolution();
-        floatElement.setWidth(FU.valueOfPix((int) rect.getWidth(), resolution));
-        floatElement.setHeight(FU.valueOfPix((int) rect.getHeight(), resolution));
-        floatElement.setLeftDistance(FU.valueOfPix((int) rect.getX(), resolution));
-        floatElement.setTopDistance(FU.valueOfPix((int) rect.getY(), resolution));
-        return floatElement;
+        return formatFloatElement(floatElement, rect);
     }
 
     static FloatElement createFloatElement(BufferedImage bufferedImage, JSONObject bounds) {
@@ -55,6 +50,20 @@ public class BIReportExportExcelUtils {
 
     static FloatElement createFloatElement(String base64, JSONObject bounds) {
         return createFloatElement(base64, getWidgetRect(bounds));
+    }
+
+    static FloatElement createFloatElement4String (String value, JSONObject bounds) {
+        FloatElement floatElement = new FloatElement(value);
+        return formatFloatElement(floatElement, getWidgetRect(bounds));
+    }
+
+    static FloatElement formatFloatElement(FloatElement floatElement, Rectangle rect) {
+        int resolution = ScreenResolution.getScreenResolution();
+        floatElement.setWidth(FU.valueOfPix((int) rect.getWidth(), resolution));
+        floatElement.setHeight(FU.valueOfPix((int) rect.getHeight(), resolution));
+        floatElement.setLeftDistance(FU.valueOfPix((int) rect.getX(), resolution));
+        floatElement.setTopDistance(FU.valueOfPix((int) rect.getY(), resolution));
+        return floatElement;
     }
 
     static String postMessage(String message) throws IOException {
