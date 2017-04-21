@@ -19,7 +19,7 @@ public class BICubeTimeTaskCreatorManager implements BICubeTimeTaskCreatorProvid
 
     @Override
     public void reGenerateTimeTasks(long userId, List<TimerTaskSchedule> scheduleList) {
-        logger.info("***************timer task settings start*****************");
+//        logger.info("***************timer task settings start*****************");
         for (TimerTaskSchedule schedule : scheduleList) {
             JobTask jobTask = new JobTask();
             try {
@@ -28,15 +28,15 @@ public class BICubeTimeTaskCreatorManager implements BICubeTimeTaskCreatorProvid
                 BILoggerFactory.getLogger().error(e.getMessage(), e);
             }
         }
-        logger.info("***************timer task settings end:*****************");
+//        logger.info("***************timer task settings end:*****************");
     }
 
     @Override
     public void removeAllTimeTasks(long userId) {
         try {
-            logger.info("***************timer task clear start*****************");
+//            logger.info("***************timer task clear start*****************");
             QuartzManager.removeAllJobs();
-            logger.info("***************timer task clear end*****************");
+//            logger.info("***************timer task clear end*****************");
         } catch (SchedulerException e) {
             throw BINonValueUtils.beyondControl(e);
         }

@@ -67,7 +67,7 @@ public class ReportKeyChangeOperation extends ReportCamelOperation {
 
     private JSONObject readKeyJson() throws JSONException, ClassNotFoundException, IOException {
         StringBuffer keysStr = new StringBuffer();
-        InputStream is = this.getClass().getResourceAsStream("keys.json");
+        InputStream is = this.getClass().getResourceAsStream(DEFAULT_FILE_NAME);
         if (is==null){
             BILoggerFactory.getLogger(this.getClass()).error("keys.json not existed in this path"+this.getClass().getResource("").toString());
             return new JSONObject();
