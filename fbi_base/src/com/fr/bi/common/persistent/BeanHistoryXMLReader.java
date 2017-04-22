@@ -9,6 +9,7 @@ import org.w3c.dom.NodeList;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.File;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -19,11 +20,11 @@ import java.util.Map;
  */
 public class BeanHistoryXMLReader {
 
-    public Map<String, List<String>> loadBeanHistoryMap(String beanFilePath){
+    public Map<String, List<String>> loadBeanHistoryMap(InputStream inputStream){
         Map<String, List<String>> classMapping = new HashMap<String, List<String>>();
 
-        if(beanFilePath !=null && new File(beanFilePath).exists()) {
-            Document document = readFile(beanFilePath);
+        if(inputStream !=null ) {
+            Document document = readFile(inputStream);
             NodeList beanList = document.getElementsByTagName("bean");
             for (int i = 0; i < beanList.getLength(); i++) {
                 Node bean = beanList.item(i);
@@ -35,12 +36,11 @@ public class BeanHistoryXMLReader {
         return classMapping;
     }
 
-    private Document readFile(String beanFilePath) {
+    private Document readFile(InputStream inputStream) {
         try {
             DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
             DocumentBuilder db = dbf.newDocumentBuilder();
-            File file = new File(beanFilePath);
-            return db.parse(file);
+            return db.parse(inputStream);
         } catch (Exception e) {
             throw BINonValueUtils.beyondControl(e.getMessage(), e);
         }
