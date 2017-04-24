@@ -19,13 +19,12 @@ public class BIBeanHistoryManager {
 
     private BIBeanHistoryManager() {
         InputStream inputStream = this.getClass().getClassLoader().getResourceAsStream(DEFAULT_FILE_NAME);
-
-        if (inputStream == null) {
-            LOGGER.error("Bean History xml File not found in path " + this.getClass().getClassLoader().getResource(DEFAULT_FILE_NAME).getPath());
-        } else {
+        try {
             BeanHistoryXMLReader beanHistoryXMLReader = new BeanHistoryXMLReader();
             Map<String, List<String>> beanMapping = beanHistoryXMLReader.loadBeanHistoryMap(inputStream);
             registerBeanHistoryManager(beanMapping);
+        } catch (Exception e) {
+            LOGGER.error("Bean History xml File not found in path " + this.getClass().getClassLoader().getResource(DEFAULT_FILE_NAME).getPath());
         }
     }
 
