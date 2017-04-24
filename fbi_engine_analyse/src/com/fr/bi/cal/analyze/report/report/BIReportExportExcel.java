@@ -15,6 +15,7 @@ import com.fr.bi.fs.BIReportNode;
 import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.stable.constant.BIExcutorConstant;
 import com.fr.bi.stable.constant.BIReportConstant;
+import com.fr.bi.stable.locale.Interbi;
 import com.fr.bi.tool.BIReadReportUtils;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONException;
@@ -138,14 +139,23 @@ public class BIReportExportExcel {
                     case INTERVAL_SLIDER:
                         renderNumberWidget(polyECBlock, jo);
                     case TREE:
+                        renderTreeWidget(polyECBlock, jo);
                     case TREE_LABEL:
                     case TREE_LIST:
                         break;
                     case YEAR:
+                        renderYearWidget(polyECBlock, jo);
+                        break;
                     case MONTH:
+                        renderMonthWidget(polyECBlock, jo);
+                        break;
                     case QUARTER:
+                        renderQuarterWidget(polyECBlock, jo);
+                        break;
                     case YMD:
                     case DATE_PANE:
+                        renderDatePaneWidget(polyECBlock, jo);
+                        break;
                     case DATE:
                         break;
                 }
@@ -153,37 +163,81 @@ public class BIReportExportExcel {
         }
     }
 
+    private void renderWidget(PolyECBlock polyECBlock, String v, JSONObject jo) {
+        String name = jo.optString("name");
+        polyECBlock.addFloatElement(BIReportExportExcelUtils.createFloatElement4String(name + "\r\n" + v, jo.optJSONObject("bounds")));
+    }
+
     private void renderStringListWidget(PolyECBlock polyECBlock, JSONObject jo) throws JSONException {
         JSONObject valueJo = jo.optJSONObject("value");
         String v;
-        if(jo.optJSONObject("dimensions").length() == 0) {
+        if (jo.optJSONObject("dimensions").length() == 0) {
             v = "";
-        } else if(valueJo.length() == 0) {
-            v = "无限制";
-        }else {
-            v = (valueJo.optInt("type") == 1 ? "" : "未") + "选中:" + valueJo.optJSONArray("value").join(",");
+        } else if (valueJo.length() == 0) {
+            v = Interbi.getLocText("BI-Unrestricted");
+        } else {
+            v = (valueJo.optInt("type") == 1 ? Interbi.getLocText("BI-Basic_Selected") : Interbi.getLocText("BI-Unchosen")) + ":" + valueJo.optJSONArray("value").join(",");
         }
-        String output = jo.optString("name") + "\r\n" + v;
-        polyECBlock.addFloatElement(BIReportExportExcelUtils.createFloatElement4String(output, jo.optJSONObject("bounds")));
+        renderWidget(polyECBlock, v, jo);
     }
 
     private void renderNumberWidget(PolyECBlock polyECBlock, JSONObject jo) {
         JSONObject valueJo = jo.optJSONObject("value");
         String v;
-        if(jo.optJSONObject("dimensions").length() == 0) {
+        if (jo.optJSONObject("dimensions").length() == 0) {
             v = "";
-        } else if(valueJo.length() == 0) {
-            v = "无限制";
+        } else if (valueJo.length() == 0) {
+            v = Interbi.getLocText("BI-Unrestricted");
         } else {
             String min = valueJo.optString("min", "");
-            String closemin = valueJo.optBoolean("closemin", false) == true ? "<=" : "<";
+            String closeMin = valueJo.optBoolean("closemin", false) == true ? "<=" : "<";
             String max = valueJo.optString("max", "");
-            String closemax = valueJo.optBoolean("closemax", false) == true ? "<=" : "<";
-            v = (min == "" ? "无限制" : min) + closemin + "值" + closemax + (max == "" ? "无限制" : max);
+            String closeMax = valueJo.optBoolean("closemax", false) == true ? "<=" : "<";
+            v = (min == "" ? Interbi.getLocText("BI-Unrestricted") : min) + closeMin + Interbi.getLocText("BI-Basic_Value") + closeMax + (max == "" ? Interbi.getLocText("BI-Unrestricted") : max);
         }
 
-        String output = jo.optString("name") + "\r\n" + v;
-        polyECBlock.addFloatElement(BIReportExportExcelUtils.createFloatElement4String(output, jo.optJSONObject("bounds")));
+        renderWidget(polyECBlock, v, jo);
+    }
+
+    private void renderTreeWidget(PolyECBlock polyECBlock, JSONObject jo) throws JSONException {
+        JSONObject joValue = jo.optJSONObject("value");
+        String str = joValue.toString();
+        renderWidget(polyECBlock, str.substring(1,str.length()-1).replace(":{}", ""), jo);
+    }
+
+    private void renderYearWidget(PolyECBlock polyECBlock, JSONObject jo) {
+        String value = "";
+        if (jo.optString("value") != null) {
+            value = jo.optString("value") + Interbi.getLocText("BI-Year");
+        }
+        renderWidget(polyECBlock, value, jo);
+    }
+
+    private void renderMonthWidget(PolyECBlock polyECBlock, JSONObject jo) {
+        String value = "";
+        JSONObject joValue = jo.optJSONObject("value");
+        if (joValue.length() != 0) {
+            value = joValue.optString("year") + Interbi.getLocText("BI-Year") + (joValue.optInt("month") + 1) + Interbi.getLocText("BI-Multi_Date_Month");
+        }
+        renderWidget(polyECBlock, value, jo);
+    }
+
+    private void renderQuarterWidget(PolyECBlock polyECBlock, JSONObject jo) {
+        JSONObject joValue = jo.optJSONObject("value");
+        String value = "";
+        if (joValue.length() != 0) {
+            value = joValue.optString("year") + Interbi.getLocText("BI-Year") + joValue.optString("quarter") + Interbi.getLocText("BI-Basic_Quarter");
+        }
+        renderWidget(polyECBlock, value, jo);
+    }
+
+    private void renderDatePaneWidget(PolyECBlock polyECBlock, JSONObject jo) {
+        String value = "";
+        JSONObject joValue = jo.optJSONObject("value");
+        if (joValue.length() != 0) {
+            value = joValue.optString("year") + Interbi.getLocText("BI-Year") + (joValue.optInt("month") + 1) + Interbi.getLocText("BI-Multi_Date_Month") + joValue.optString("day") + Interbi.getLocText("BI-Day_Ri");
+        }
+        renderWidget(polyECBlock, value, jo);
     }
 
     private FloatElement renderPicture(TableWidget widget) throws Exception {
