@@ -174,9 +174,11 @@ public class BIReportExportExcel {
         if (jo.optJSONObject("dimensions").length() == 0) {
             v = "";
         } else if (valueJo.length() == 0) {
-            v = Inter.getLocText("BI-Unrestricted");
+            v = Inter.getLocText("BI-Basic_Unrestricted");
         } else {
-            v = (valueJo.optInt("type") == 1 ? Inter.getLocText("BI-Basic_Selected") : Inter.getLocText("BI-Unchosen")) + ":" + valueJo.optJSONArray("value").join(",");
+            String selected = Inter.getLocText("BI-Basic_Selected");
+            String unchosen = Inter.getLocText("BI-Basic_Unchosen");
+            v = (valueJo.optInt("type") == 1 ? selected : unchosen) + ":" + valueJo.optJSONArray("value").join(",");
         }
         renderWidget(polyECBlock, v, jo);
     }
@@ -187,13 +189,16 @@ public class BIReportExportExcel {
         if (jo.optJSONObject("dimensions").length() == 0) {
             v = "";
         } else if (valueJo.length() == 0) {
-            v = Inter.getLocText("BI-Unrestricted");
+            v = Inter.getLocText("BI-Basic_Unrestricted");
         } else {
             String min = valueJo.optString("min", "");
             String closeMin = valueJo.optBoolean("closemin", false) == true ? "<=" : "<";
             String max = valueJo.optString("max", "");
             String closeMax = valueJo.optBoolean("closemax", false) == true ? "<=" : "<";
-            v = (min == "" ? Inter.getLocText("BI-Unrestricted") : min) + closeMin + Inter.getLocText("BI-Basic_Value") + closeMax + (max == "" ? Inter.getLocText("BI-Unrestricted") : max);
+            String str1 = Inter.getLocText("BI-Basic_Unrestricted");
+            String str2 = Inter.getLocText("BI-Basic_Value");
+            String str3 = Inter.getLocText("BI-Basic_Unrestricted");
+            v = (min == "" ? str1 : min) + closeMin + str2 + closeMax + (max == "" ? str3 : max);
         }
 
         renderWidget(polyECBlock, v, jo);
@@ -208,7 +213,8 @@ public class BIReportExportExcel {
     private void renderYearWidget(PolyECBlock polyECBlock, JSONObject jo) {
         String value = "";
         if (jo.optString("value") != null) {
-            value = jo.optString("value") + Inter.getLocText("BI-Year");
+            String str = Inter.getLocText("BI-Basic_Year");
+            value = jo.optString("value") + str;
         }
         renderWidget(polyECBlock, value, jo);
     }
@@ -217,7 +223,9 @@ public class BIReportExportExcel {
         String value = "";
         JSONObject joValue = jo.optJSONObject("value");
         if (joValue.length() != 0) {
-            value = joValue.optString("year") + Inter.getLocText("BI-Year") + (joValue.optInt("month") + 1) + Inter.getLocText("BI-Multi_Date_Month");
+            String str1 = Inter.getLocText("BI-Basic_Year");
+            String str2 = Inter.getLocText("BI-Multi_Date_Month");
+            value = joValue.optString("year") + str1 + (joValue.optInt("month") + 1) + str2;
         }
         renderWidget(polyECBlock, value, jo);
     }
@@ -226,7 +234,9 @@ public class BIReportExportExcel {
         JSONObject joValue = jo.optJSONObject("value");
         String value = "";
         if (joValue.length() != 0) {
-            value = joValue.optString("year") + Inter.getLocText("BI-Year") + joValue.optString("quarter") + Inter.getLocText("BI-Basic_Quarter");
+            String str1 = Inter.getLocText("BI-Basic_Year");
+            String str2 = Inter.getLocText("BI-Basic_Quarter");
+            value = joValue.optString("year") + str1 + joValue.optString("quarter") + str2;
         }
         renderWidget(polyECBlock, value, jo);
     }
@@ -235,7 +245,10 @@ public class BIReportExportExcel {
         String value = "";
         JSONObject joValue = jo.optJSONObject("value");
         if (joValue.length() != 0) {
-            value = joValue.optString("year") + Inter.getLocText("BI-Year") + (joValue.optInt("month") + 1) + Inter.getLocText("BI-Multi_Date_Month") + joValue.optString("day") + Inter.getLocText("BI-Day_Ri");
+            String str1 = Inter.getLocText("BI-Basic_Year");
+            String str2 = Inter.getLocText("BI-Multi_Date_Month");
+            String str3 = Inter.getLocText("BI-Day_Ri");
+            value = joValue.optString("year") + str1 + (joValue.optInt("month") + 1) + str2 + joValue.optString("day") + str3;
         }
         renderWidget(polyECBlock, value, jo);
     }
