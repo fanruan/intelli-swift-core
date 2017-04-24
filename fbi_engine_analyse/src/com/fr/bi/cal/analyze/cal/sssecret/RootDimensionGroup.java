@@ -85,7 +85,7 @@ public class RootDimensionGroup implements IRootDimensionGroup {
             CubeTableSource source = metricGroupInfoList.get(i).getMetric().getTableSource();
             // 判空，没有计算指标的时候source会为空
             if (source != null) {
-                tis[i] = session.getLoader().getTableIndex(source);
+                tis[i] = session.getLoader().getTableIndex(metricGroupInfoList.get(i).getMetric().getTableSource());
             }
             DimensionCalculator[] rs = metricGroupInfoList.get(i).getRows();
             for (int j = 0; j < rs.length; j++) {
