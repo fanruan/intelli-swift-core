@@ -1,5 +1,5 @@
 <?xml version='1.0'?>
-<persistBeans xmlns="E:\work\finebi4s\nuclear-core\fbi_base\src\bean_history_class.xsd">
+<persistBeans xmlns="bean_history_class.xsd">
 
     <bean currentClass="com.fr.bi.common.world.people.Person">
         <historyClasses>
