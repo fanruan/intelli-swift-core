@@ -82,12 +82,11 @@ public class RootDimensionGroup implements IRootDimensionGroup {
         columns = new DimensionCalculator[rowSize][metricGroupInfoList.size()];
         tis = new ICubeTableService[metricGroupInfoList.size()];
         for (int i = 0; i < metricGroupInfoList.size(); i++) {
+            DimensionCalculator[] rs = metricGroupInfoList.get(i).getRows();
             CubeTableSource source = metricGroupInfoList.get(i).getMetric().getTableSource();
-            // 判空，没有计算指标的时候source会为空
             if (source != null) {
                 tis[i] = session.getLoader().getTableIndex(metricGroupInfoList.get(i).getMetric().getTableSource());
             }
-            DimensionCalculator[] rs = metricGroupInfoList.get(i).getRows();
             for (int j = 0; j < rs.length; j++) {
                 columns[j][i] = rs[j];
                 getters[j][i] = session.getLoader().getTableIndex(getSource(rs[j])).getValueEntryGetter(createKey(rs[j]), rs[j].getRelationList());
