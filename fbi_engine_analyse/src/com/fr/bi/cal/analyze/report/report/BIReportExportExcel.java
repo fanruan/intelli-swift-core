@@ -15,8 +15,8 @@ import com.fr.bi.fs.BIReportNode;
 import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.stable.constant.BIExcutorConstant;
 import com.fr.bi.stable.constant.BIReportConstant;
-import com.fr.bi.stable.locale.Interbi;
 import com.fr.bi.tool.BIReadReportUtils;
+import com.fr.general.Inter;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
@@ -174,9 +174,9 @@ public class BIReportExportExcel {
         if (jo.optJSONObject("dimensions").length() == 0) {
             v = "";
         } else if (valueJo.length() == 0) {
-            v = Interbi.getLocText("BI-Unrestricted");
+            v = Inter.getLocText("BI-Unrestricted");
         } else {
-            v = (valueJo.optInt("type") == 1 ? Interbi.getLocText("BI-Basic_Selected") : Interbi.getLocText("BI-Unchosen")) + ":" + valueJo.optJSONArray("value").join(",");
+            v = (valueJo.optInt("type") == 1 ? Inter.getLocText("BI-Basic_Selected") : Inter.getLocText("BI-Unchosen")) + ":" + valueJo.optJSONArray("value").join(",");
         }
         renderWidget(polyECBlock, v, jo);
     }
@@ -187,13 +187,13 @@ public class BIReportExportExcel {
         if (jo.optJSONObject("dimensions").length() == 0) {
             v = "";
         } else if (valueJo.length() == 0) {
-            v = Interbi.getLocText("BI-Unrestricted");
+            v = Inter.getLocText("BI-Unrestricted");
         } else {
             String min = valueJo.optString("min", "");
             String closeMin = valueJo.optBoolean("closemin", false) == true ? "<=" : "<";
             String max = valueJo.optString("max", "");
             String closeMax = valueJo.optBoolean("closemax", false) == true ? "<=" : "<";
-            v = (min == "" ? Interbi.getLocText("BI-Unrestricted") : min) + closeMin + Interbi.getLocText("BI-Basic_Value") + closeMax + (max == "" ? Interbi.getLocText("BI-Unrestricted") : max);
+            v = (min == "" ? Inter.getLocText("BI-Unrestricted") : min) + closeMin + Inter.getLocText("BI-Basic_Value") + closeMax + (max == "" ? Inter.getLocText("BI-Unrestricted") : max);
         }
 
         renderWidget(polyECBlock, v, jo);
@@ -208,7 +208,7 @@ public class BIReportExportExcel {
     private void renderYearWidget(PolyECBlock polyECBlock, JSONObject jo) {
         String value = "";
         if (jo.optString("value") != null) {
-            value = jo.optString("value") + Interbi.getLocText("BI-Year");
+            value = jo.optString("value") + Inter.getLocText("BI-Year");
         }
         renderWidget(polyECBlock, value, jo);
     }
@@ -217,7 +217,7 @@ public class BIReportExportExcel {
         String value = "";
         JSONObject joValue = jo.optJSONObject("value");
         if (joValue.length() != 0) {
-            value = joValue.optString("year") + Interbi.getLocText("BI-Year") + (joValue.optInt("month") + 1) + Interbi.getLocText("BI-Multi_Date_Month");
+            value = joValue.optString("year") + Inter.getLocText("BI-Year") + (joValue.optInt("month") + 1) + Inter.getLocText("BI-Multi_Date_Month");
         }
         renderWidget(polyECBlock, value, jo);
     }
@@ -226,7 +226,7 @@ public class BIReportExportExcel {
         JSONObject joValue = jo.optJSONObject("value");
         String value = "";
         if (joValue.length() != 0) {
-            value = joValue.optString("year") + Interbi.getLocText("BI-Year") + joValue.optString("quarter") + Interbi.getLocText("BI-Basic_Quarter");
+            value = joValue.optString("year") + Inter.getLocText("BI-Year") + joValue.optString("quarter") + Inter.getLocText("BI-Basic_Quarter");
         }
         renderWidget(polyECBlock, value, jo);
     }
@@ -235,7 +235,7 @@ public class BIReportExportExcel {
         String value = "";
         JSONObject joValue = jo.optJSONObject("value");
         if (joValue.length() != 0) {
-            value = joValue.optString("year") + Interbi.getLocText("BI-Year") + (joValue.optInt("month") + 1) + Interbi.getLocText("BI-Multi_Date_Month") + joValue.optString("day") + Interbi.getLocText("BI-Day_Ri");
+            value = joValue.optString("year") + Inter.getLocText("BI-Year") + (joValue.optInt("month") + 1) + Inter.getLocText("BI-Multi_Date_Month") + joValue.optString("day") + Inter.getLocText("BI-Day_Ri");
         }
         renderWidget(polyECBlock, value, jo);
     }
