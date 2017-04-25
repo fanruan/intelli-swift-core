@@ -42,6 +42,8 @@
   "targetRelation": "明细表关联关系 (target_relation)",
   "sortSequence" : "明细表排序 (sort_sequence)",
 
-  "dimensionMap": "匹配关系(dimension_map)"
+  "dimensionMap": "匹配关系(dimension_map)",
+
+  "sumType": "螺旋分析增加列(sum_type)"
 
 }
