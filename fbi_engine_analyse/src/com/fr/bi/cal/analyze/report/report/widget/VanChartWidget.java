@@ -353,7 +353,9 @@ public abstract class VanChartWidget extends TableWidget {
         JSONObject data = super.createDataJSON(session).getJSONObject("data");
 
         JSONObject reportSetting = BIReadReportUtils.getInstance().getBIReportNodeJSON(((BISession) session).getReportNode());
-        JSONObject globalStyle = reportSetting.has("globalStyle")?reportSetting.optJSONObject("globalStyle"):new JSONObject();
+        JSONObject globalStyle = reportSetting.optJSONObject("globalStyle");
+        globalStyle = globalStyle == null ? JSONObject.create() : globalStyle;
+
         return this.createOptions(globalStyle, data);
     }
 
@@ -381,10 +383,9 @@ public abstract class VanChartWidget extends TableWidget {
 
         return options;
     }
-
-    /*
-    * 如果没有的话，使用默认值
-    * */
+/*
+* 如果没有的话，使用默认值
+* */
     protected JSONArray parseColors(JSONObject settings, JSONObject globalStyle, JSONObject plateConfig) throws Exception {
 
         if (settings.has("chartColor")) {
@@ -559,7 +560,8 @@ public abstract class VanChartWidget extends TableWidget {
             for (int j = 0; j < leftC.length(); j++) {
                 JSONObject lObj = leftC.getJSONObject(j);
                 String x = lObj.getString("n");
-                double y = lObj.getJSONObject("s").getJSONArray("c").getJSONObject(i).getJSONArray("s").getDouble(0) / numberScale;
+                JSONArray s = lObj.getJSONObject("s").getJSONArray("c").getJSONObject(i).getJSONArray("s");
+                double y = (s.isNull(0) ? 0 : s.getDouble(0)) / numberScale;
                 data.put(JSONObject.create().put(categoryKey, x).put(valueKey, y));
                 valueList.add(y);
             }
@@ -594,7 +596,7 @@ public abstract class VanChartWidget extends TableWidget {
                 data.put(JSONObject.create().put(categoryKey, x).put(valueKey, y));
                 valueList.add(y);
             }
-            JSONObject ser = JSONObject.create().put("data", data).put("name", id)
+            JSONObject ser = JSONObject.create().put("data", data).put("name", this.getDimensionNameByID(id))
                     .put("type", type).put("yAxis", yAxis).put("dimensionID", id);
             if (this.isStacked(id)) {
                 ser.put("stacked", stackedKey);
