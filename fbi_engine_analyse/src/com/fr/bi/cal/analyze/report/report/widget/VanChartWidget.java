@@ -579,19 +579,26 @@ public abstract class VanChartWidget extends TableWidget {
         JSONArray series = JSONArray.create();
         String[] targetIDs = this.getUsedTargetID();
         String categoryKey = this.categoryKey(), valueKey = this.valueKey();
-        JSONArray children = originData.getJSONArray("c");
+        JSONArray children = originData.optJSONArray("c");
         for (int i = 0, len = targetIDs.length; i < len; i++) {
             String id = targetIDs[i], type = this.getSeriesType(id), stackedKey = this.getStackedKey(id);
             int yAxis = this.yAxisIndex(id);
             ArrayList<Double> valueList = new ArrayList<Double>();
             double numberScale = this.numberScale(id);
             JSONArray data = JSONArray.create();
-            for (int j = 0, count = children.length(); j < count; j++) {
-                JSONObject lObj = children.getJSONObject(j);
-                String x = lObj.getString("n");
-                JSONArray targetValues = lObj.getJSONArray("s");
+            if(children != null) {
+                for (int j = 0, count = children.length(); j < count; j++) {
+                    JSONObject lObj = children.getJSONObject(j);
+                    String x = lObj.getString("n");
+                    JSONArray targetValues = lObj.getJSONArray("s");
+                    double y = targetValues.isNull(i) ? 0 : targetValues.getDouble(i) / numberScale;
+                    data.put(JSONObject.create().put(categoryKey, x).put(valueKey, y));
+                    valueList.add(y);
+                }
+            } else {//饼图没有分类，只有指标。会过来一个汇总值，没有child
+                JSONArray targetValues = originData.optJSONArray("s");
                 double y = targetValues.isNull(i) ? 0 : targetValues.getDouble(i) / numberScale;
-                data.put(JSONObject.create().put(categoryKey, x).put(valueKey, y));
+                data.put(JSONObject.create().put(valueKey, y));
                 valueList.add(y);
             }
             JSONObject ser = JSONObject.create().put("data", data).put("name", getDimensionName(id))
