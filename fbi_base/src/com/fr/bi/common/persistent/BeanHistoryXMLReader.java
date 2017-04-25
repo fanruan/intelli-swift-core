@@ -20,7 +20,7 @@ import java.util.Map;
  */
 public class BeanHistoryXMLReader {
 
-    public Map<String, List<String>> loadBeanHistoryMap(InputStream inputStream){
+    public Map<String, List<String>> loadBeanHistoryMap(InputStream inputStream) throws Exception{
         Map<String, List<String>> classMapping = new HashMap<String, List<String>>();
 
         if(inputStream !=null ) {
@@ -36,14 +36,10 @@ public class BeanHistoryXMLReader {
         return classMapping;
     }
 
-    private Document readFile(InputStream inputStream) {
-        try {
+    private Document readFile(InputStream inputStream) throws Exception{
             DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
             DocumentBuilder db = dbf.newDocumentBuilder();
             return db.parse(inputStream);
-        } catch (Exception e) {
-            throw BINonValueUtils.beyondControl(e.getMessage(), e);
-        }
     }
 
     private List<String> parseHistoryClass(Node historyClasses) {
