@@ -15,6 +15,7 @@ public class TableDirector {
     }
     public void construct() throws Exception {
         builder.initAttrs();
+        builder.amendment();
         builder.createHeaders();
         builder.createItems();
         builder.createTargetStyles();
