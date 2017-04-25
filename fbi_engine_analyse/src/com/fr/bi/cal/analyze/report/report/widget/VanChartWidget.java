@@ -560,7 +560,8 @@ public abstract class VanChartWidget extends TableWidget {
             for (int j = 0; j < leftC.length(); j++) {
                 JSONObject lObj = leftC.getJSONObject(j);
                 String x = lObj.getString("n");
-                double y = lObj.getJSONObject("s").getJSONArray("c").getJSONObject(i).getJSONArray("s").getDouble(0) / numberScale;
+                JSONArray s = lObj.getJSONObject("s").getJSONArray("c").getJSONObject(i).getJSONArray("s");
+                double y = (s.isNull(0) ? 0 : s.getDouble(0)) / numberScale;
                 data.put(JSONObject.create().put(categoryKey, x).put(valueKey, y));
                 valueList.add(y);
             }
