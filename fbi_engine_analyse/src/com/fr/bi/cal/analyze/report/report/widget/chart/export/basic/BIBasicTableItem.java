@@ -3,6 +3,7 @@ package com.fr.bi.cal.analyze.report.report.widget.chart.export.basic;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -80,10 +81,12 @@ public class BIBasicTableItem implements ITableItem {
         this.tag = tag;
     }
 
+    @Override
     public String getDId() {
         return dId;
     }
 
+    @Override
     public String getText() {
         return text;
     }
@@ -130,20 +133,54 @@ public class BIBasicTableItem implements ITableItem {
     }
 
     @Override
-    public JSONObject createJSON() throws Exception {
-        JSONArray childs = new JSONArray();
-        if (null != children) {
-            for (ITableItem item : children) {
-                childs.put(item.createJSON());
+    public void parseJSON(JSONObject jo) throws Exception {
+        if (jo.has("dId")) {
+            dId = jo.optString("dId");
+        }
+        if (jo.has("dId")) {
+            dId = jo.optString("dId");
+        }
+        if (jo.has("text")) {
+            text = jo.optString("text");
+        }
+        if (jo.has("type")) {
+            type = jo.optString("type");
+        }
+        if (jo.has("values")) {
+            value = jo.optJSONArray("values");
+        }
+        if (jo.has("children")) {
+            children=new ArrayList<ITableItem>();
+            for (int i = 0; i < jo.getJSONArray("children").length(); i++) {
+                BIBasicTableItem item = new BIBasicTableItem();
+                item.parseJSON(jo.getJSONArray("children").getJSONObject(i));
+                children.add(item);
             }
         }
+        if (jo.has("isSum")) {
+            isSum = jo.optBoolean("isSum");
+        }
+        if (jo.has("isCross")) {
+            isCross = jo.optBoolean("isCross");
+        }
+
+    }
+
+    @Override
+    public JSONObject createJSON() throws Exception {
         JSONObject jo = new JSONObject();
+        if (null != this.children&&children.size()>0l) {
+            JSONArray children = new JSONArray();
+            for (ITableItem item : this.children) {
+                children.put(item.createJSON());
+            }
+            jo.put("children", children);
+        }
         jo.put("dId", dId);
         jo.put("styles", null == style ? new JSONObject() : style.createJSON());
         jo.put("text", text);
         jo.put("type", type);
         jo.put("values", value);
-        jo.put("children", childs);
         jo.put("isSum", isSum);
         jo.put("isCross", isCross);
         return jo;

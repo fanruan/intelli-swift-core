@@ -3,7 +3,7 @@ package com.fr.bi.common.persistent;
 import com.finebi.cube.common.log.BILogger;
 import com.finebi.cube.common.log.BILoggerFactory;
 
-import java.io.File;
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -17,13 +17,14 @@ public class BIBeanHistoryManager {
     private static final BILogger LOGGER = BILoggerFactory.getLogger(BIBeanHistoryManager.class);
 
     private BIBeanHistoryManager() {
-        String filePath = Thread.currentThread().getContextClassLoader().getResource("").getPath() + DEFAULT_FILE_NAME;
-        if (!new File(filePath).exists()) {
-            LOGGER.error("Bean History xml File not found in path " + filePath);
+        InputStream inputStream = this.getClass().getClassLoader().getResourceAsStream(DEFAULT_FILE_NAME);
+        try {
+            BeanHistoryXMLReader beanHistoryXMLReader = new BeanHistoryXMLReader();
+            Map<String, List<String>> beanMapping = beanHistoryXMLReader.loadBeanHistoryMap(inputStream);
+            registerBeanHistoryManager(beanMapping);
+        } catch (Exception e) {
+            LOGGER.error("Bean History xml File not found in path " + this.getClass().getClassLoader().getResource(DEFAULT_FILE_NAME).getPath());
         }
-        BeanHistoryXMLReader beanHistoryXMLReader = new BeanHistoryXMLReader();
-        Map<String, List<String>> beanMapping = beanHistoryXMLReader.loadBeanHistoryMap(filePath);
-        registerBeanHistoryManager(beanMapping);
     }
 
     private static class BIBeanHistoryManagerSingleton {

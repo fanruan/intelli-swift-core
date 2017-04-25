@@ -9,7 +9,7 @@ import com.fr.bi.stable.constant.BIGlobalStyleConstant;
  * 样式计算
  */
 public class SummaryTableStyleHelper {
-    public static ITableStyle getHeaderStyles(String themeColor, String styleType) {
+    public static ITableStyle getHeaderStyles(String themeColor, int styleType) {
         return new BITableItemStyle(null, null, null);
     }
 

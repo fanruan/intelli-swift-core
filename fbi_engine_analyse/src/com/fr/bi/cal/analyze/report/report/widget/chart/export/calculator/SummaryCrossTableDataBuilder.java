@@ -1,8 +1,8 @@
 package com.fr.bi.cal.analyze.report.report.widget.chart.export.calculator;
 
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.basic.BIExcelTableData;
+import com.fr.bi.cal.analyze.report.report.widget.chart.export.basic.DimAndTargetStyle;
 import com.fr.bi.cal.analyze.report.report.widget.styles.BIStyleSetting;
-import com.fr.bi.conf.report.style.ChartSetting;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
 
@@ -13,11 +13,11 @@ import java.util.Map;
  * Created by Kary on 2017/2/27.
  */
 public class SummaryCrossTableDataBuilder extends TableAbstractDataBuilder {
-    private List<ChartSetting> chartSettings;
+    private List<DimAndTargetStyle> dimAndTargetStyles;
 
-    public SummaryCrossTableDataBuilder(Map<Integer, List<JSONObject>> dimAndTar, List<ChartSetting> chartSettings, JSONObject dataJSON, BIStyleSetting styleSettings) throws Exception {
+    public SummaryCrossTableDataBuilder(Map<Integer, List<JSONObject>> dimAndTar, List<DimAndTargetStyle> dimAndTargetStyles, JSONObject dataJSON, BIStyleSetting styleSettings) throws Exception {
         super(dimAndTar, dataJSON, styleSettings);
-        this.chartSettings = chartSettings;
+        this.dimAndTargetStyles = dimAndTargetStyles;
     }
 
     public SummaryCrossTableDataBuilder(Map<Integer, List<JSONObject>> dimAndTar, JSONObject dataJSON, BIStyleSetting styleSettings) throws Exception {
@@ -25,7 +25,7 @@ public class SummaryCrossTableDataBuilder extends TableAbstractDataBuilder {
     }
 
     @Override
-    public void initAttrs() throws JSONException {
+    public void initAttrs() throws Exception {
         initAllAttrs();
         refreshDimsInfo();
         //仅有列表头的时候(有指标) 修正数据
@@ -37,7 +37,7 @@ public class SummaryCrossTableDataBuilder extends TableAbstractDataBuilder {
     @Override
     public void createHeaders() throws Exception {
         //正常交叉表
-        if (null != dataJSON && dataJSON.has("t")) {
+        if (null != data && data.has("t")) {
             createCrossTableItems();
             createCrossTableHeader();
             return;
@@ -55,7 +55,7 @@ public class SummaryCrossTableDataBuilder extends TableAbstractDataBuilder {
     @Override
     public void createItems() throws Exception {
         //正常交叉表
-        if (null != dataJSON && dataJSON.has("t")) {
+        if (null != data && data.has("t")) {
 //            createCrossTableItems();
             return;
         }
@@ -80,5 +80,4 @@ public class SummaryCrossTableDataBuilder extends TableAbstractDataBuilder {
         return tableDataForExport;
 
     }
-
 }

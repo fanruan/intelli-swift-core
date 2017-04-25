@@ -13,19 +13,13 @@ import com.fr.bi.cluster.utils.ClusterEnv;
 import com.fr.bi.etl.analysis.Constants;
 import com.fr.bi.etl.analysis.data.AnalysisBaseTableSource;
 import com.fr.bi.etl.analysis.data.AnalysisETLTableSource;
-import com.fr.bi.etl.analysis.manager.AnalysisBusiPackManagerWithoutUser;
-import com.fr.bi.etl.analysis.manager.AnalysisDataSourceManagerWithoutUser;
-import com.fr.bi.etl.analysis.manager.BIAnalysisBusiPackManagerProvider;
-import com.fr.bi.etl.analysis.manager.BIAnalysisDataSourceManagerProvider;
-import com.fr.bi.etl.analysis.manager.BIAnalysisETLAliasManagerWithoutUser;
-import com.fr.bi.etl.analysis.manager.BIAnalysisETLManagerCenter;
-import com.fr.bi.etl.analysis.manager.UserETLCubeManager;
-import com.fr.bi.etl.analysis.manager.UserETLCubeManagerProvider;
+import com.fr.bi.etl.analysis.manager.*;
 import com.fr.bi.etl.analysis.monitor.web.Service4AnalysisETLMonitor;
 import com.fr.bi.etl.analysis.report.widget.field.filtervalue.number.NumberBottomNFilter;
 import com.fr.bi.etl.analysis.report.widget.field.filtervalue.number.NumberLargeOrEqualsCLFilter;
 import com.fr.bi.etl.analysis.report.widget.field.filtervalue.number.NumberSmallOrEqualsCLFilter;
 import com.fr.bi.etl.analysis.report.widget.field.filtervalue.number.NumberTopNFilter;
+import com.fr.bi.etl.analysis.resource.ETLResourcesHelper;
 import com.fr.bi.exception.BIKeyDuplicateException;
 import com.fr.bi.field.filtervalue.BIFilterValueMap;
 import com.fr.bi.resource.ResourceConstants;
@@ -42,12 +36,7 @@ import com.fr.stable.bridge.event.StableFactoryResourceType;
 import com.fr.stable.fun.Service;
 import com.fr.web.ResourceHelper;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 
 
 /**
