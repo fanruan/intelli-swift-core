@@ -594,7 +594,7 @@ public abstract class VanChartWidget extends TableWidget {
                 data.put(JSONObject.create().put(categoryKey, x).put(valueKey, y));
                 valueList.add(y);
             }
-            JSONObject ser = JSONObject.create().put("data", data).put("name", id)
+            JSONObject ser = JSONObject.create().put("data", data).put("name", getDimensionName(id))
                     .put("type", type).put("yAxis", yAxis).put("dimensionID", id);
             if (this.isStacked(id)) {
                 ser.put("stacked", stackedKey);
