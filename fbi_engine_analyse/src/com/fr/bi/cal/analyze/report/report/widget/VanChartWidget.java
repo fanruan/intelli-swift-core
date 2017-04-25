@@ -354,6 +354,7 @@ public abstract class VanChartWidget extends TableWidget {
 
         JSONObject reportSetting = BIReadReportUtils.getInstance().getBIReportNodeJSON(((BISession) session).getReportNode());
         JSONObject globalStyle = reportSetting.optJSONObject("globalStyle");
+        globalStyle = globalStyle == null ? JSONObject.create() : globalStyle;
 
         return this.createOptions(globalStyle, data);
     }
