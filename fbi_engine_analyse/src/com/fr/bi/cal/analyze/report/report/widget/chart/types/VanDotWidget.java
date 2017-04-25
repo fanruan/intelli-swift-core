@@ -1,6 +1,7 @@
 package com.fr.bi.cal.analyze.report.report.widget.chart.types;
 
 import com.finebi.cube.common.log.BILoggerFactory;
+import com.fr.bi.conf.report.WidgetType;
 import com.fr.general.FRLogger;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONException;
@@ -142,6 +143,13 @@ public class VanDotWidget extends VanCartesianWidget{
 
     public JSONArray createSeries(JSONObject originData) throws Exception{
 
+
+        WidgetType chartType = this.getChartType();
+
+        if(chartType == WidgetType.BUBBLE || chartType == WidgetType.SCATTER){
+            return this.createBubbleScatterSeries(originData);
+        }
+
         JSONArray series = JSONArray.create();
         String[] ids = this.getUsedTargetID();
 
@@ -192,6 +200,33 @@ public class VanDotWidget extends VanCartesianWidget{
         return series;
     }
 
+    //兼容之前的气泡图散点图
+    public JSONArray createBubbleScatterSeries(JSONObject originData) throws Exception{
+        String[] ids = this.getUsedTargetID();
+
+        JSONArray series = JSONArray.create();
+
+        JSONArray c = originData.optJSONArray("c");
+
+        for(int i = 0, len = c.length(); i < len; i++){
+            JSONObject obj = c.getJSONObject(i);
+
+            JSONArray dimensions = obj.optJSONArray("s");
+
+            double y = dimensions.isNull(0) ? 0 : dimensions.optDouble(0);
+            double x = dimensions.isNull(1) ? 0 : dimensions.optDouble(1);
+            double value = (dimensions.length() > 2 && !dimensions.isNull(2)) ? dimensions.optDouble(2) : 0;
+
+            JSONObject point = JSONObject.create().put("x", x).put("y", y).put("size", value);
+
+            series.put(JSONObject.create().put("data", JSONArray.create().put(point))
+                    .put("name", obj.optString("n")).put("dimensionID", ids[ids.length - 1])
+            );
+        }
+
+        return series;
+    }
+
     protected JSONArray parseCategoryAxis(JSONObject settings, Calculator calculator) throws JSONException{
 
         JSONObject baseAxis = this.parseRightValueAxis(settings, calculator).put("position", "bottom").put("type", "value");
@@ -206,20 +241,30 @@ public class VanDotWidget extends VanCartesianWidget{
 
     public String getSeriesType(String dimensionID){
 
-        JSONObject scopes = this.getChartSetting().getScopes();
+        WidgetType chartType = this.getChartType();
+        if(chartType == WidgetType.DOT){
+            JSONObject scopes = this.getChartSetting().getScopes();
 
-        int type = SCATTER;
-        try {
-            if(scopes.has(TARGET)){
-                type = scopes.getJSONObject(TARGET).optInt("valueType", BUBBLE);
+            int type = SCATTER;
+            try {
+                if(scopes.has(TARGET)){
+                    type = scopes.getJSONObject(TARGET).optInt("valueType", BUBBLE);
+                }
+            }catch (Exception e){
+                FRLogger.getLogger().error(e.getMessage(), e);
             }
-        }catch (Exception e){
-            FRLogger.getLogger().error(e.getMessage(), e);
+
+            int idCount = this.getUsedTargetID().length;
+
+            return (idCount == BUBBLE_DIMENSION && type == BUBBLE ) ? "bubble" : "scatter";
+
+        }else{
+
+            return chartType == WidgetType.BUBBLE ? "bubble" : "scatter";
+
         }
 
-        int idCount = this.getUsedTargetID().length;
 
-        return (idCount == BUBBLE_DIMENSION && type == BUBBLE ) ? "bubble" : "scatter";
     }
 
     protected String getTooltipIdentifier(){
