@@ -142,24 +142,17 @@ public class VanDotWidget extends VanCartesianWidget{
     }
 
     public JSONArray createSeries(JSONObject originData) throws Exception{
-
-
         WidgetType chartType = this.getChartType();
-
         if(chartType == WidgetType.BUBBLE || chartType == WidgetType.SCATTER){
             return this.createBubbleScatterSeries(originData);
         }
-
         JSONArray series = JSONArray.create();
         String[] ids = this.getUsedTargetID();
-
         if(ids.length < SCATTER_COUNT){
             return series;
         }
-
         double yScale = this.numberScale(ids[0]), xScale = this.numberScale(ids[1]);
         double sizeScale = ids.length > 2 ? this.numberScaleByLevel(this.numberLevelFromSettings(ids[2])) : 1;
-
         HashMap<String, ArrayList<JSONArray>> seriesMap = new HashMap<String, ArrayList<JSONArray>>();
         Iterator iterator = originData.keys();
         while (iterator.hasNext()) {
@@ -173,7 +166,6 @@ public class VanDotWidget extends VanCartesianWidget{
                 seriesArray.add(obj.optJSONArray("c"));
             }
         }
-
         iterator = seriesMap.keySet().iterator();
         while (iterator.hasNext()){
             String seriesName = iterator.next().toString();
