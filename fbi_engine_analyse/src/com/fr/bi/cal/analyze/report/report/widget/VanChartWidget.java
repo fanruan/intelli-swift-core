@@ -353,8 +353,7 @@ public abstract class VanChartWidget extends TableWidget {
         JSONObject data = super.createDataJSON(session).getJSONObject("data");
 
         JSONObject reportSetting = BIReadReportUtils.getInstance().getBIReportNodeJSON(((BISession) session).getReportNode());
-        JSONObject globalStyle = reportSetting.optJSONObject("globalStyle");
-
+        JSONObject globalStyle = reportSetting.has("globalStyle")?reportSetting.optJSONObject("globalStyle"):new JSONObject();
         return this.createOptions(globalStyle, data);
     }
 
@@ -382,9 +381,10 @@ public abstract class VanChartWidget extends TableWidget {
 
         return options;
     }
-/*
-* 如果没有的话，使用默认值
-* */
+
+    /*
+    * 如果没有的话，使用默认值
+    * */
     protected JSONArray parseColors(JSONObject settings, JSONObject globalStyle, JSONObject plateConfig) throws Exception {
 
         if (settings.has("chartColor")) {

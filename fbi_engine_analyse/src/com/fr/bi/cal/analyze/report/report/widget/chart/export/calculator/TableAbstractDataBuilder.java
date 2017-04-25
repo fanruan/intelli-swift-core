@@ -58,7 +58,7 @@ public abstract class TableAbstractDataBuilder implements IExcelDataBuilder {
         crossHeaders = new ArrayList<ITableHeader>();
     }
 
-    protected void amendment() throws JSONException {
+    protected void amendmentData() throws JSONException {
         JSONObject cloneData = new JSONObject(this.data.toString());
         this.data.put("t", new JSONObject().put("c", getTopOfCrossByGroupData(cloneData.getJSONArray("c"))));
         this.data.put("l", new JSONObject().put("s", cloneData));
@@ -366,7 +366,7 @@ public abstract class TableAbstractDataBuilder implements IExcelDataBuilder {
                     items.get(j).getChildren().get(0).getValue().put(ob.createJSON());
                 }
             }
-//            indexOB.put("cIndex", indexOB.getInt("cIndex") + 1);
+            indexOB.put("cIndex", indexOB.getInt("cIndex") + 1);
         }
     }
 
@@ -429,7 +429,6 @@ public abstract class TableAbstractDataBuilder implements IExcelDataBuilder {
             crossHeader.setdID(crossDims);
             crossHeader.setType("bi.normal_header_cell");
             crossHeader.setText(BITableExportDataHelper.getDimensionNameByID(dimAndTar, crossDims));
-//            crossHeaders.put(crossHeader.createJSON());
             crossHeaders.add(crossHeader);
         }
 

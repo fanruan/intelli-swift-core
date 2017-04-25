@@ -266,7 +266,7 @@ public class TreeWidget extends BIAbstractWidget {
         AdjustTreeDataStructureExecutorTree executor = new AdjustTreeDataStructureExecutorTree(this, paging, session);
         JSONObject jo = new JSONObject();
         jo.put("floors", floors);
-        jo.put("selected_values", selected_values);
+        jo.put("selectedValues", selected_values);
         executor.parseJSON(jo);
         return executor.getResultJSON();
     }
@@ -284,7 +284,7 @@ public class TreeWidget extends BIAbstractWidget {
             while (it.hasNext()) {
                 String key = it.next().toString();
                 JSONObject filter = targetFilter.getJSONObject(key);
-                filter.put("target_id", key);
+                filter.put("targetId", key);
                 this.targetFilterMap.put(key, DimensionFilterFactory.parseFilter(filter, userId));
             }
         }
