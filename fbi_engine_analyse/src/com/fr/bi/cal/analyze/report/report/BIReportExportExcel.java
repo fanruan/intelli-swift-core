@@ -105,6 +105,7 @@ public class BIReportExportExcel {
         polyECBlock.getBlockAttr().setFreezeWidth(true);
         if (widgets.size() != 0) {
             for (BIWidget widget : widgets) {
+                //TODO 明细表接口
                 polyECBlock.addFloatElement(renderPicture((TableWidget) widget));
             }
         }
@@ -207,7 +208,7 @@ public class BIReportExportExcel {
     private void renderTreeWidget(PolyECBlock polyECBlock, JSONObject jo) throws JSONException {
         JSONObject joValue = jo.optJSONObject("value");
         String str = joValue.toString();
-        renderWidget(polyECBlock, str.substring(1,str.length()-1).replace(":{}", ""), jo);
+        renderWidget(polyECBlock, str.substring(1, str.length() - 1).replace(":{}", ""), jo);
     }
 
     private void renderYearWidget(PolyECBlock polyECBlock, JSONObject jo) {
@@ -254,10 +255,9 @@ public class BIReportExportExcel {
     }
 
     private FloatElement renderPicture(TableWidget widget) throws Exception {
-        if (BIReportExportExcelUtils.widgetHasData(widget)) {
+        if (!BIReportExportExcelUtils.widgetHasData(widget)) {
             return renderDefaultChartPic(widget);
         }
-
         JSONObject options;
         String key;
         if (widget instanceof VanChartWidget) {
