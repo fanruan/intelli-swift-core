@@ -2,6 +2,7 @@ package com.fr.bi.cal.analyze.report.report.widget;
 
 import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.cal.analyze.session.BISession;
+import com.fr.bi.conf.report.WidgetType;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.conf.session.BISessionProvider;
 import com.fr.bi.field.target.target.BISummaryTarget;
@@ -64,6 +65,7 @@ public abstract class VanChartWidget extends TableWidget {
     public static final int CUSTOM = 2;
 
     private String requestURL = StringUtils.EMPTY;
+    private WidgetType chartType = WidgetType.COLUMN;
 
     private HashMap<String, JSONArray> dimensionIdMap = new HashMap<String, JSONArray>();
     private HashMap<String, String> regionIdMap = new HashMap<String, String>();
@@ -208,6 +210,7 @@ public abstract class VanChartWidget extends TableWidget {
         }
 
         this.requestURL = jo.optString("requestURL");
+        this.chartType = WidgetType.parse(jo.optInt("type"));
 
         super.parseJSON(jo, userId);
     }
@@ -695,6 +698,10 @@ public abstract class VanChartWidget extends TableWidget {
             return this.idValueMap.get(id).toArray(new Double[0]);
         }
         return new Double[0];
+    }
+
+    protected WidgetType getChartType(){
+        return this.chartType;
     }
 
 }
