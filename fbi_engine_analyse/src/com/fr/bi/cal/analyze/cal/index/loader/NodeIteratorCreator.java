@@ -42,12 +42,13 @@ public class NodeIteratorCreator {
     private NameObject targetSort;
     private NameObject[] dimensionTargetSort;
     private TargetFilter filter;
+    private List<TargetFilter> authFilter;
     private final boolean showSum;
     private final boolean setIndex;
     private final boolean calAllPage;
     private Map<String, BISummaryTarget> targetIdMap;
 
-    public NodeIteratorCreator(List<MetricGroupInfo> metricGroupInfoList, BIDimension[] rowDimension, BISummaryTarget[] usedTargets, int sumLength, Map<String, DimensionFilter> targetFilterMap, boolean isRealData, BISession session, NameObject targetSort, TargetFilter filter, boolean showSum, boolean setIndex, boolean calAllPage) {
+    public NodeIteratorCreator(List<MetricGroupInfo> metricGroupInfoList, BIDimension[] rowDimension, BISummaryTarget[] usedTargets, int sumLength, Map<String, DimensionFilter> targetFilterMap, boolean isRealData, BISession session, NameObject targetSort, TargetFilter filter, List<TargetFilter> authFilter, boolean showSum, boolean setIndex, boolean calAllPage) {
         this.metricGroupInfoList = metricGroupInfoList;
         this.rowDimension = rowDimension;
         this.usedTargets = usedTargets;
@@ -56,6 +57,7 @@ public class NodeIteratorCreator {
         this.session = session;
         this.targetSort = targetSort;
         this.filter = filter;
+        this.authFilter = authFilter;
         this.showSum = showSum;
         this.setIndex = setIndex;
         this.calAllPage = calAllPage;
@@ -84,9 +86,9 @@ public class NodeIteratorCreator {
                 targetSort = null;
             }
         }
-        for (int i = 0; i < rowDimension.length; i++){
+        for (int i = 0; i < rowDimension.length; i++) {
             NameObject dimTargetSort = getDimTargetSort(rowDimension[i]);
-            if (targetSort != null){
+            if (targetSort != null) {
                 dimensionTargetSort[i] = targetSort;
             } else {
                 dimensionTargetSort[i] = dimTargetSort;
@@ -108,7 +110,7 @@ public class NodeIteratorCreator {
                 target = null;
             }
         }
-        if (target != null){
+        if (target != null) {
             return new NameObject(target, dimension.getSort().getSortType());
         }
         return null;
@@ -160,7 +162,7 @@ public class NodeIteratorCreator {
 
     private IRootDimensionGroup createNormalIteratorRoot() {
         if (usedTargets == null || usedTargets.length == 0) {
-            return new NoneMetricRootDimensionGroup(metricGroupInfoList, createNoneMetricMergeIteratorCreator(), sumLength, session, isRealData, filter, getDirectDimensionFilter());
+            return new NoneMetricRootDimensionGroup(metricGroupInfoList, createNoneMetricMergeIteratorCreator(), sumLength, session, isRealData, filter, authFilter, getDirectDimensionFilter());
         }
         GroupValueIndex[] directFilterIndexes = createDirectFilterIndex();
         for (int i = 0; i < directFilterIndexes.length; i++) {
@@ -254,9 +256,9 @@ public class NodeIteratorCreator {
         if (targetSort != null) {
             usedTargets.add(targetSort.getName());
         }
-        if (calSingleNodeMetrics){
-            for(BISummaryTarget target : this.usedTargets){
-                if (target.calculateSingleNode(this.usedTargets)){
+        if (calSingleNodeMetrics) {
+            for (BISummaryTarget target : this.usedTargets) {
+                if (target.calculateSingleNode(this.usedTargets)) {
                     usedTargets.add(target.getName());
                 }
             }
@@ -321,11 +323,6 @@ public class NodeIteratorCreator {
         List<CalCalculator> formulaCalculator = new ArrayList<CalCalculator>();
         for (String id : calIds) {
             formulaCalculator.add((CalCalculator) targetIdMap.get(id).createSummaryCalculator());
-        }
-        for (BISummaryTarget target : usedTargets){
-            if (target.calculateSingleNode(usedTargets)){
-
-            }
         }
         return formulaCalculator;
     }
@@ -393,6 +390,7 @@ public class NodeIteratorCreator {
                 constructedRootDimensionGroup.getRoot().setGvis(gvis);
             }
         }
+        constructedRootDimensionGroup.construct();
         return constructedRootDimensionGroup;
     }
 
@@ -474,7 +472,7 @@ public class NodeIteratorCreator {
                     DimensionCalculator c = metricGroupInfoList.get(i).getRows()[deep];
                     BusinessTable t = metricGroupInfoList.get(i).getMetric();
                     GroupValueIndex filterIndex = resultFilter.createFilterIndex(c, t, session.getLoader(), session.getUserId());
-                    if (filterIndex != null){
+                    if (filterIndex != null) {
                         retIndexes[i] = retIndexes[i].and(filterIndex);
                     } else {
                         retIndexes[i] = null;
@@ -520,8 +518,8 @@ public class NodeIteratorCreator {
 
     //从第几个维度之前有没有指标排序
     private boolean hasTargetSortBeforeIndex(int index) {
-        for (int i = 0; i < index; i++){
-            if (dimensionTargetSort[i] != null){
+        for (int i = 0; i < index; i++) {
+            if (dimensionTargetSort[i] != null) {
                 return true;
             }
         }

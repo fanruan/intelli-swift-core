@@ -8,6 +8,7 @@ import com.fr.bi.cal.analyze.cal.index.loader.MetricGroupInfo;
 import com.fr.bi.cal.analyze.cal.index.loader.TargetAndKey;
 import com.fr.bi.cal.analyze.cal.multithread.BIMultiThreadExecutor;
 import com.fr.bi.cal.analyze.cal.multithread.MultiThreadManagerImpl;
+import com.fr.bi.cal.analyze.cal.result.Node;
 import com.fr.bi.cal.analyze.cal.result.NodeExpander;
 import com.fr.bi.cal.analyze.cal.sssecret.diminfo.MergeIteratorCreator;
 import com.fr.bi.cal.analyze.session.BISession;
@@ -82,11 +83,11 @@ public class RootDimensionGroup implements IRootDimensionGroup {
         columns = new DimensionCalculator[rowSize][metricGroupInfoList.size()];
         tis = new ICubeTableService[metricGroupInfoList.size()];
         for (int i = 0; i < metricGroupInfoList.size(); i++) {
-            DimensionCalculator[] rs = metricGroupInfoList.get(i).getRows();
             CubeTableSource source = metricGroupInfoList.get(i).getMetric().getTableSource();
             if (source != null){
                 tis[i] = session.getLoader().getTableIndex(metricGroupInfoList.get(i).getMetric().getTableSource());
             }
+            DimensionCalculator[] rs = metricGroupInfoList.get(i).getRows();
             for (int j = 0; j < rs.length; j++) {
                 columns[j][i] = rs[j];
                 getters[j][i] = session.getLoader().getTableIndex(getSource(rs[j])).getValueEntryGetter(createKey(rs[j]), rs[j].getRelationList());
@@ -126,6 +127,11 @@ public class RootDimensionGroup implements IRootDimensionGroup {
 
     public List<MetricGroupInfo> getMetricGroupInfoList() {
         return metricGroupInfoList;
+    }
+
+    @Override
+    public Node getConstructedRoot() {
+        return new Node(sumLength);
     }
 
     @Override

@@ -1,6 +1,5 @@
 package com.fr.bi.cal.analyze.report.report.widget.chart.types;
 
-import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
@@ -36,12 +35,21 @@ public class VanMultiPieWidget extends VanPieWidget{
         JSONArray series = JSONArray.create();
         String[] targetIDs = this.getUsedTargetID();
 
-        if(!originData.has("c") || targetIDs.length < 1){
+        if(targetIDs.length < 1){
             return series;
         }
 
         double scale = this.numberScale(targetIDs[0]);
-        JSONArray data = this.createChildren(originData, scale);
+
+
+        JSONArray data;
+        if(originData.has("c")){
+            data = this.createChildren(originData, scale);
+        } else {
+            JSONArray targetValues = originData.optJSONArray("s");
+            double y = targetValues.isNull(0) ? 0 : targetValues.getDouble(0) / scale;
+            data = JSONArray.create().put(JSONObject.create().put("value", y));
+        }
 
         series.put(JSONObject.create().put("data", data).put("name", this.getDimensionNameByID(targetIDs[0])).put("dimensionID", targetIDs[0]));
 
