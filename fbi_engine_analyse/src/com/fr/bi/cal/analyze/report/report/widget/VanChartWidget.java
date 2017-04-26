@@ -2,6 +2,7 @@ package com.fr.bi.cal.analyze.report.report.widget;
 
 import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.cal.analyze.session.BISession;
+import com.fr.bi.conf.report.WidgetType;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.conf.session.BISessionProvider;
 import com.fr.bi.field.target.target.BISummaryTarget;
@@ -64,6 +65,7 @@ public abstract class VanChartWidget extends TableWidget {
     public static final int CUSTOM = 2;
 
     private String requestURL = StringUtils.EMPTY;
+    private WidgetType chartType = WidgetType.COLUMN;
 
     private HashMap<String, JSONArray> dimensionIdMap = new HashMap<String, JSONArray>();
     private HashMap<String, String> regionIdMap = new HashMap<String, String>();
@@ -208,6 +210,7 @@ public abstract class VanChartWidget extends TableWidget {
         }
 
         this.requestURL = jo.optString("requestURL");
+        this.chartType = WidgetType.parse(jo.optInt("type"));
 
         super.parseJSON(jo, userId);
     }
@@ -354,6 +357,7 @@ public abstract class VanChartWidget extends TableWidget {
 
         JSONObject reportSetting = BIReadReportUtils.getInstance().getBIReportNodeJSON(((BISession) session).getReportNode());
         JSONObject globalStyle = reportSetting.optJSONObject("globalStyle");
+        globalStyle = globalStyle == null ? JSONObject.create() : globalStyle;
 
         return this.createOptions(globalStyle, data);
     }
@@ -559,7 +563,8 @@ public abstract class VanChartWidget extends TableWidget {
             for (int j = 0; j < leftC.length(); j++) {
                 JSONObject lObj = leftC.getJSONObject(j);
                 String x = lObj.getString("n");
-                double y = lObj.getJSONObject("s").getJSONArray("c").getJSONObject(i).getJSONArray("s").getDouble(0) / numberScale;
+                JSONArray s = lObj.getJSONObject("s").getJSONArray("c").getJSONObject(i).getJSONArray("s");
+                double y = (s.isNull(0) ? 0 : s.getDouble(0)) / numberScale;
                 data.put(JSONObject.create().put(categoryKey, x).put(valueKey, y));
                 valueList.add(y);
             }
@@ -579,22 +584,29 @@ public abstract class VanChartWidget extends TableWidget {
         JSONArray series = JSONArray.create();
         String[] targetIDs = this.getUsedTargetID();
         String categoryKey = this.categoryKey(), valueKey = this.valueKey();
-        JSONArray children = originData.getJSONArray("c");
+        JSONArray children = originData.optJSONArray("c");
         for (int i = 0, len = targetIDs.length; i < len; i++) {
             String id = targetIDs[i], type = this.getSeriesType(id), stackedKey = this.getStackedKey(id);
             int yAxis = this.yAxisIndex(id);
             ArrayList<Double> valueList = new ArrayList<Double>();
             double numberScale = this.numberScale(id);
             JSONArray data = JSONArray.create();
-            for (int j = 0, count = children.length(); j < count; j++) {
-                JSONObject lObj = children.getJSONObject(j);
-                String x = lObj.getString("n");
-                JSONArray targetValues = lObj.getJSONArray("s");
+            if(children != null) {
+                for (int j = 0, count = children.length(); j < count; j++) {
+                    JSONObject lObj = children.getJSONObject(j);
+                    String x = lObj.getString("n");
+                    JSONArray targetValues = lObj.getJSONArray("s");
+                    double y = targetValues.isNull(i) ? 0 : targetValues.getDouble(i) / numberScale;
+                    data.put(JSONObject.create().put(categoryKey, x).put(valueKey, y));
+                    valueList.add(y);
+                }
+            } else {//饼图没有分类，只有指标。会过来一个汇总值，没有child
+                JSONArray targetValues = originData.optJSONArray("s");
                 double y = targetValues.isNull(i) ? 0 : targetValues.getDouble(i) / numberScale;
-                data.put(JSONObject.create().put(categoryKey, x).put(valueKey, y));
+                data.put(JSONObject.create().put(valueKey, y));
                 valueList.add(y);
             }
-            JSONObject ser = JSONObject.create().put("data", data).put("name", id)
+            JSONObject ser = JSONObject.create().put("data", data).put("name", getDimensionNameByID(id))
                     .put("type", type).put("yAxis", yAxis).put("dimensionID", id);
             if (this.isStacked(id)) {
                 ser.put("stacked", stackedKey);
@@ -686,6 +698,10 @@ public abstract class VanChartWidget extends TableWidget {
             return this.idValueMap.get(id).toArray(new Double[0]);
         }
         return new Double[0];
+    }
+
+    protected WidgetType getChartType(){
+        return this.chartType;
     }
 
 }

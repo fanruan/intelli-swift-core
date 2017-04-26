@@ -32,12 +32,17 @@ public class SummaryComplexTableBuilder extends TableAbstractDataBuilder {
     public void initAttrs() throws Exception {
         super.initAllAttrs();
         refreshDimsInfo();
+
+    }
+
+    @Override
+    public void amendment() throws Exception {
         //无行表头
         boolean isRegionExist = isColRegionExist() && !isRowRegionExist();
         if (isRegionExist) {
-            amendment();
+            amendmentData();
         }
-        }
+    }
 
     @Override
     public void createHeaders() throws Exception {
@@ -63,8 +68,8 @@ public class SummaryComplexTableBuilder extends TableAbstractDataBuilder {
                 clonedData.put(data);
             }
             for (int i = 0; i < clonedData.length(); i++) {
-                JSONArray cData = clonedData.getJSONArray(i);
-                JSONObject t = new JSONObject().put("c", getTopOfCrossByGroupData(cData));
+                JSONObject cData = new JSONObject(clonedData.getString(i));
+                JSONObject t = new JSONObject().put("c", getTopOfCrossByGroupData(cData.getJSONArray("c")));
                 JSONObject l = new JSONObject().put("s", cData);
                 JSONObject tableData = new JSONObject();
                 tableData.put("t", t).put("l", l);
@@ -155,15 +160,18 @@ public class SummaryComplexTableBuilder extends TableAbstractDataBuilder {
     private void createComplexTableHeader() throws Exception {
         createCrossTableHeader();
         //补齐header的长度
-        int count = 0;
         int rowLength = getLargestLengthOfRowRegions();
         int clolLength = getLargestLengthOfColRegions();
-        JSONObject lastDimHeader = this.headers.get(dimIds.size() - 1).createJSON();
-        ITableHeader lastCrossDimHeader = crossHeaders.get(crossDimIds.size() - 1);
+        ITableHeader lastDimHeader = headers.size() > dimIds.size() ? headers.get(dimIds.size() - 1) : null;
+        ITableHeader lastCrossDimHeader = crossDimIds.size() > crossHeaders.size() ? crossHeaders.get(crossDimIds.size() - 1) : null;
 // FIXME: 2017/3/6
+        int count = 0;
         while (count < rowLength - dimIds.size()) {
-            ITableHeader header = lastCrossDimHeader;
-            this.headers.set(dimIds.size(), header);
+            ITableHeader header = lastDimHeader;
+            if (null != header) {
+                this.headers.set(dimIds.size(), header);
+            }
+            count++;
         }
         count = 0;
         while (count < rowLength - crossDimIds.size()) {
@@ -206,14 +214,14 @@ public class SummaryComplexTableBuilder extends TableAbstractDataBuilder {
         List<ITableItem> tempCrossItems = new ArrayList<ITableItem>();
         // 如果行表头和列表头都只有一个region构造一个二维的数组
 
-        if (new JSONObject(data).has("l") && new JSONObject(data).has("t")) {
-//            data = new JSONArray().put(new JSONArray().put(data)).toString();
+//        if (new JSONObject(data).has("l") && new JSONObject(data).has("t")) {
+        if (!BIJsonUtils.isArray(data)) {
             JSONObject rowValues = new JSONObject();
             createTempItems(tempItems, tempCrossItems, 0, rowValues, new JSONObject(data), 0);
         } else {
-            for (int i = 0; i < new JSONObject(data).length(); i++) {
+            for (int i = 0; i < new JSONArray(data).length(); i++) {
                 JSONObject rowValues = new JSONObject();
-                JSONArray rowTables = new JSONObject(data).getJSONArray(String.valueOf(i));
+                JSONArray rowTables = new JSONArray(data).getJSONArray(i);
                 for (int j = 0; j < rowTables.length(); j++) {
                     JSONObject tableData = rowTables.getJSONObject(j);
                     createTempItems(tempItems, tempCrossItems, i, rowValues, tableData, j);
@@ -246,7 +254,10 @@ public class SummaryComplexTableBuilder extends TableAbstractDataBuilder {
     }
 
     private ITableItem createItemByRowValues(ITableItem item, JSONObject rowValues) throws JSONException {
-        item.setValue(rowValues.getJSONArray(outer_sum));
+        if (null == rowValues || rowValues.length() == 0) {
+            return item;
+        }
+        item.setValue(rowValues.has(outer_sum) ? rowValues.getJSONArray(outer_sum) : new JSONArray());
         for (ITableItem tableItem : item.getChildren()) {
             tableItem.setValue(rowValues.getJSONArray(tableItem.getDId() + tableItem.getText()));
         }
@@ -293,6 +304,7 @@ public class SummaryComplexTableBuilder extends TableAbstractDataBuilder {
     private void parseRowTableItems(JSONObject data, JSONObject rowValues) throws JSONException {
         //最外层的合计 可以通过data中是否包含dId来确定
         if (data.has("values")) {
+
             JSONArray values = data.getJSONArray("values");
             if (data.has("children") && !data.has("dId")) {
                 if (rowValues.has(outer_sum)) {
@@ -342,8 +354,8 @@ public class SummaryComplexTableBuilder extends TableAbstractDataBuilder {
         }
         List<JSONArray> rowRegions = getRowRegions();
         List<JSONArray> colRegions = getColRegions();
-        JSONArray dimIds = rowRegions.get(row);
-        JSONArray crossDimIds = colRegions.get(col);
+        JSONArray dimIds = rowRegions.size() > 0 ? rowRegions.get(row) : new JSONArray();
+        JSONArray crossDimIds = colRegions.size() > 0 ? colRegions.get(col) : new JSONArray();
 
         List<JSONObject> dimIdObj = new ArrayList<JSONObject>();
         for (int i = 0; i < dimIds.length(); i++) {
@@ -376,13 +388,13 @@ public class SummaryComplexTableBuilder extends TableAbstractDataBuilder {
 
     //获取有效的列表头区域
     private boolean isRowRegionExist() throws JSONException {
-        return getRowRegions().size()>0;
+        return getRowRegions().size() > 0;
     }
 
     //行表头是否存在
     private boolean isColRegionExist() throws JSONException {
 //        return dimAndTar.containsKey(Integer.valueOf(BIReportConstant.REGION.DIMENSION1)) && dimAndTar.get(Integer.valueOf(BIReportConstant.REGION.DIMENSION1)).size() > 0;
-    return getColRegions().size()>0;
+        return getColRegions().size() > 0;
     }
 
     private boolean isOnlyCrossAndTarget() throws JSONException {
