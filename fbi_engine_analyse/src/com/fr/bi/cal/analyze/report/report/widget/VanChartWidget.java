@@ -31,6 +31,8 @@ public abstract class VanChartWidget extends TableWidget {
     private static final double BLUE_DET = 0.114;
     private static final double GRAY = 192;
 
+    private static final String STACK_ID_PREFIX = "STACKID";
+
     //标签和数据点提示的内容
     public static final String CATEGORY = "${CATEGORY}";
     public static final String SERIES = "${SERIES}";
@@ -571,7 +573,8 @@ public abstract class VanChartWidget extends TableWidget {
             JSONObject ser = JSONObject.create().put("data", data).put("name", name)
                     .put("type", this.getSeriesType(targetIDs[0])).put("dimensionID", targetIDs[0]);
             if (isStacked) {
-                ser.put("stacked", targetIDs[0]);
+                //todo:应该也有问题，不知道怎么改，遇到bug的话参照createSeriesWithChildren里面的改法
+                ser.put("stack", targetIDs[0]);
             }
             series.put(ser);
         }
@@ -609,7 +612,7 @@ public abstract class VanChartWidget extends TableWidget {
             JSONObject ser = JSONObject.create().put("data", data).put("name", getDimensionNameByID(id))
                     .put("type", type).put("yAxis", yAxis).put("dimensionID", id);
             if (this.isStacked(id)) {
-                ser.put("stacked", stackedKey);
+                ser.put("stack", STACK_ID_PREFIX + yAxis);
             }
             series.put(ser);
             this.idValueMap.put(id, valueList);
