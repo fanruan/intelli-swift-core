@@ -31,6 +31,11 @@ public class DetailTableBuilder extends TableAbstractDataBuilder {
     }
 
     @Override
+    public void amendment() throws Exception {
+
+    }
+
+    @Override
     public void createTargetStyles() {
 
     }

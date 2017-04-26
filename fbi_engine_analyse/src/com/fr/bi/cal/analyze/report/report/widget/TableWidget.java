@@ -247,6 +247,8 @@ public class TableWidget extends BISummaryWidget {
     @Override
     public void parseJSON(JSONObject jo, long userId) throws Exception {
         super.parseJSON(jo, userId);
+        // 放在创建expander之前，因为创建expander的时候需要用到维度的信息
+        createDimAndTars(jo);
         if (jo.has("linkedWidget")) {
             JSONObject linkedWidgetJSON = jo.getJSONObject("linkedWidget");
             if (linkedWidgetJSON.length() > 0) {
@@ -276,7 +278,6 @@ public class TableWidget extends BISummaryWidget {
                 clicked.put(key, c.getJSONArray(key));
             }
         }
-        createDimAndTars(jo);
         changeCalculateTargetStartGroup();
         createDimensionAndTargetMap();
     }
@@ -330,10 +331,10 @@ public class TableWidget extends BISummaryWidget {
 
     //todo 这里，复杂表dimension isUsed返回值有问题，先这样处理，等下再改
     private boolean isUsed(String dId) {
-            boolean isDimUsed = dimensionsIdMap.containsKey(dId) && dimensionsIdMap.get(dId).isUsed();
-            boolean isTargetUsed = targetsIdMap.containsKey(dId) && targetsIdMap.get(dId).isUsed();
-            return isDimUsed || isTargetUsed;
-        }
+        boolean isDimUsed = dimensionsIdMap.containsKey(dId) && dimensionsIdMap.get(dId).isUsed();
+        boolean isTargetUsed = targetsIdMap.containsKey(dId) && targetsIdMap.get(dId).isUsed();
+        return isDimUsed || isTargetUsed;
+    }
 
     public void setComplexExpander(ComplexExpander complexExpander) {
         this.complexExpander = complexExpander;
@@ -357,7 +358,7 @@ public class TableWidget extends BISummaryWidget {
     }
 
     public String[] getUsedTargetID() {
-        Set<String> dimensionIds = new HashSet<String>();
+        Set<String> dimensionIds = new LinkedHashSet<String>();
         for (BISummaryTarget target : this.getTargets()) {
             if (target.isUsed()) {
                 dimensionIds.add(target.getValue());
@@ -515,7 +516,7 @@ public class TableWidget extends BISummaryWidget {
 
     private void createChartSettings(List<DimAndTargetStyle> chartSettings) {
         for (BISummaryTarget target : this.getTargets()) {
-            DimAndTargetStyle dimAndTargetStyle=new DimAndTargetStyle(target.getId(),target.getChartSetting());
+            DimAndTargetStyle dimAndTargetStyle = new DimAndTargetStyle(target.getId(), target.getChartSetting());
             chartSettings.add(dimAndTargetStyle);
         }
     }
@@ -556,12 +557,12 @@ public class TableWidget extends BISummaryWidget {
             List<String> ids = view.get(next);
             for (String dId : ids) {
 //                if (isUsed(dId)) {
-                    int type = getFieldTypeByDimensionID(dId);
-                    String text = getDimensionNameByID(dId);
+                int type = getFieldTypeByDimensionID(dId);
+                String text = getDimensionNameByID(dId);
 //                    if (dId.equals("fb32c3e441af4ada")){
 //                        list.add(new JSONObject().put("dId", dId).put("text", text).put("type", type).put("used",false));
 //                    }else {
-                        list.add(new JSONObject().put("dId", dId).put("text", text).put("type", type).put("used", isUsed(dId)));
+                list.add(new JSONObject().put("dId", dId).put("text", text).put("type", type).put("used", isUsed(dId)));
 //                    }
 //                }
             }
