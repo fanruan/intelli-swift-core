@@ -324,11 +324,6 @@ public class NodeIteratorCreator {
         for (String id : calIds) {
             formulaCalculator.add((CalCalculator) targetIdMap.get(id).createSummaryCalculator());
         }
-        for (BISummaryTarget target : usedTargets) {
-            if (target.calculateSingleNode(usedTargets)) {
-
-            }
-        }
         return formulaCalculator;
     }
 
@@ -395,6 +390,7 @@ public class NodeIteratorCreator {
                 constructedRootDimensionGroup.getRoot().setGvis(gvis);
             }
         }
+        constructedRootDimensionGroup.construct();
         return constructedRootDimensionGroup;
     }
 

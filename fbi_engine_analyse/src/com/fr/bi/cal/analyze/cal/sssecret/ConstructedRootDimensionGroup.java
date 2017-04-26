@@ -48,12 +48,15 @@ public class ConstructedRootDimensionGroup extends RootDimensionGroup {
         this.setIndex = setIndex || hasInSumMetric;
         this.dimensionTargetSort = dimensionTargetSort;
         this.hasInSumMetric = hasInSumMetric;
-        initSort();
-        initRootNode();
     }
 
     public Node getConstructedRoot(){
         return rootNode;
+    }
+
+    public void construct(){
+        initSort();
+        initRootNode();
     }
 
     private void initSort() {

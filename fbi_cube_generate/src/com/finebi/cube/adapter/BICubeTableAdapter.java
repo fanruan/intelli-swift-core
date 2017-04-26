@@ -52,7 +52,8 @@ public class BICubeTableAdapter implements ICubeTableService {
     private Map<BIKey, CubeColumnReaderService> columnReaderServiceMap = new ConcurrentHashMap<BIKey, CubeColumnReaderService>();
     private Map<BIKey, ICubeColumnDetailGetter> columnDetailReaderServiceMap = new ConcurrentHashMap<BIKey, ICubeColumnDetailGetter>();
     private static Map<String, Object> LOCKS = new ConcurrentHashMap<String, Object>();
-    private transient int rowCount = -1;
+    private int rowCount = -1;
+    private IntArray removedList;
 
     public BICubeTableAdapter(Cube cube, CubeTableSource tableSource) {
         this.cube = cube;
@@ -70,6 +71,7 @@ public class BICubeTableAdapter implements ICubeTableService {
 
     private void initData() {
         rowCount = primaryTable.getRowCount();
+        removedList = primaryTable.getRemovedList();
     }
 
     private void initial(CubeTableSource tableSource) {
@@ -210,7 +212,7 @@ public class BICubeTableAdapter implements ICubeTableService {
 
     @Override
     public IntArray getRemovedList() {
-        return primaryTable.getRemovedList();
+        return removedList;
     }
 
 
