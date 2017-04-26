@@ -27,8 +27,8 @@ public class DimensionTargetValueFilter extends AbstractDimensionFilter {
     @Override
     public void parseJSON(JSONObject jo, long userId) throws Exception {
         //维度过滤暂时用不到登陆用户信息
-        if (jo.has("target_id")) {
-            this.target_id = jo.getString("target_id");
+        if (jo.has("targetId")) {
+            this.target_id = jo.getString("targetId");
         }
         filterValue = FilterValueFactory.parseFilterValue(jo, userId);
     }
