@@ -627,7 +627,7 @@ public abstract class VanChartWidget extends TableWidget {
         long dateValue = 0;
         try {
             dateValue = Long.parseLong(category);
-        }catch (Exception e){
+        }catch (NumberFormatException e){
             BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
 
