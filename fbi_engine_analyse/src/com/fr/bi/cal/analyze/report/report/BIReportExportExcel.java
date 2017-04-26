@@ -247,7 +247,7 @@ public class BIReportExportExcel {
         if (joValue.length() != 0) {
             String str1 = Inter.getLocText("BI-Basic_Year");
             String str2 = Inter.getLocText("BI-Multi_Date_Month");
-            String str3 = Inter.getLocText("BI-Day_Ri");
+            String str3 = Inter.getLocText("BI-Date_Day");
             value = joValue.optString("year") + str1 + (joValue.optInt("month") + 1) + str2 + joValue.optString("day") + str3;
         }
         renderWidget(polyECBlock, value, jo);
