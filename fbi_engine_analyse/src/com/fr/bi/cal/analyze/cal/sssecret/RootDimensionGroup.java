@@ -45,7 +45,7 @@ public class RootDimensionGroup implements IRootDimensionGroup {
     protected NoneDimensionGroup root;
     protected int rowSize;
 
-    protected RootDimensionGroup(){
+    protected RootDimensionGroup() {
 
     }
 
@@ -89,7 +89,7 @@ public class RootDimensionGroup implements IRootDimensionGroup {
             }
             for (int j = 0; j < rs.length; j++) {
                 columns[j][i] = rs[j];
-                getters[j][i] =  session.getLoader().getTableIndex(getSource(rs[j])).getValueEntryGetter(createKey(rs[j]), rs[j].getRelationList());
+                getters[j][i] = session.getLoader().getTableIndex(getSource(rs[j])).getValueEntryGetter(createKey(rs[j]), rs[j].getRelationList());
             }
         }
     }
@@ -213,7 +213,7 @@ public class RootDimensionGroup implements IRootDimensionGroup {
         //如果往下展开，就继续往下
         NodeExpander ex = expander.getChildExpander(sg.getChildShowName(index[deep]));
         if (ex != null && deep + 1 < index.length) {
-            if (ReturnStatus.GroupEnd == getNext(gv.getChild(), index, deep + 1, ex, list)){
+            if (ReturnStatus.GroupEnd == getNext(gv.getChild(), index, deep + 1, ex, list)) {
                 return ReturnStatus.GroupEnd;
             }
         }
@@ -301,12 +301,12 @@ public class RootDimensionGroup implements IRootDimensionGroup {
 
     private void checkThreadPool() {
         BIMultiThreadExecutor executor = MultiThreadManagerImpl.getInstance().isMultiCall() ? MultiThreadManagerImpl.getInstance().getExecutorService() : null;
-        for (MergeIteratorCreator creator : mergeIteratorCreators){
+        for (MergeIteratorCreator creator : mergeIteratorCreators) {
             creator.setExecutor(executor);
         }
     }
 
-    protected IRootDimensionGroup createNew(){
+    protected IRootDimensionGroup createNew() {
         return new RootDimensionGroup();
     }
 }
