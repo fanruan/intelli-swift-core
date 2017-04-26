@@ -73,7 +73,7 @@ public class SingleSliderWidget extends TableWidget {
         int start = 0, end = getter.getGroupSize();
         SimpleIntArray groupArray = this.createGroupArray(start, end, new int[0], new int[0], getter, gvi);
 
-        Object min = reader.getGroupValue(groupArray.get(groupArray.get(0)));
+        Object min = reader.getGroupValue(groupArray.get(0));
         Object max = reader.getGroupValue(groupArray.get(groupArray.size() - 1));
         return new MaxAndMin(Double.valueOf(max.toString()), Double.valueOf(min.toString()));
     }
