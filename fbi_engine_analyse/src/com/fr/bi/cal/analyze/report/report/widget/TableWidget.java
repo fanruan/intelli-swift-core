@@ -357,7 +357,7 @@ public class TableWidget extends BISummaryWidget {
     }
 
     public String[] getUsedTargetID() {
-        Set<String> dimensionIds = new HashSet<String>();
+        Set<String> dimensionIds = new LinkedHashSet<String>();
         for (BISummaryTarget target : this.getTargets()) {
             if (target.isUsed()) {
                 dimensionIds.add(target.getValue());
