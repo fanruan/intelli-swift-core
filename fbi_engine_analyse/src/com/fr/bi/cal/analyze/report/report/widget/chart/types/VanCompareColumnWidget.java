@@ -5,5 +5,9 @@ package com.fr.bi.cal.analyze.report.report.widget.chart.types;
  */
 public class VanCompareColumnWidget extends VanColumnWidget{
 
+    @Override
+    protected boolean rightYReverse() {
+        return true;
+    }
 
 }
