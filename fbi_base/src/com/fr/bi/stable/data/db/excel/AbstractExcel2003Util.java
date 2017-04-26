@@ -212,7 +212,10 @@ public abstract class AbstractExcel2003Util implements HSSFListener {
 
     private void processRowRecord(Record record) {
         //此处读到的count都包含了标识行和列结束的cell，即+1了
-        columnCount = ((RowRecord) record).getLastCol();
+        int count = ((RowRecord) record).getLastCol();
+        if (count > columnCount) {
+            columnCount = count;
+        }
     }
 
     private void processBlankRecord(Record record) {
