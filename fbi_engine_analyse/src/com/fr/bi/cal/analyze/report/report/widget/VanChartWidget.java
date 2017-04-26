@@ -18,6 +18,7 @@ import com.fr.stable.StringUtils;
 import com.fr.web.core.SessionDealWith;
 
 import java.awt.*;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.List;
 
@@ -550,6 +551,8 @@ public abstract class VanChartWidget extends TableWidget {
     }
 
     private JSONArray createSeriesWithTop(JSONObject originData) throws Exception {
+        BIDimension category = this.getCategoryDimension();
+        int groupType = category.getGroup().getType();
         JSONArray series = JSONArray.create();
         String[] targetIDs = this.getUsedTargetID();
         String categoryKey = this.categoryKey(), valueKey = this.valueKey();
@@ -567,7 +570,7 @@ public abstract class VanChartWidget extends TableWidget {
                 String x = lObj.getString("n");
                 JSONArray s = lObj.getJSONObject("s").getJSONArray("c").getJSONObject(i).getJSONArray("s");
                 double y = (s.isNull(0) ? 0 : s.getDouble(0)) / numberScale;
-                data.put(JSONObject.create().put(categoryKey, x).put(valueKey, y));
+                data.put(JSONObject.create().put(categoryKey, this.formatCategory(groupType, x)).put(valueKey, y));
                 valueList.add(y);
             }
             JSONObject ser = JSONObject.create().put("data", data).put("name", name)
@@ -584,6 +587,8 @@ public abstract class VanChartWidget extends TableWidget {
     }
 
     private JSONArray createSeriesWithChildren(JSONObject originData) throws Exception {
+        BIDimension category = this.getCategoryDimension();
+        int groupType = category.getGroup().getType();
         JSONArray series = JSONArray.create();
         String[] targetIDs = this.getUsedTargetID();
         String categoryKey = this.categoryKey(), valueKey = this.valueKey();
@@ -600,7 +605,7 @@ public abstract class VanChartWidget extends TableWidget {
                     String x = lObj.getString("n");
                     JSONArray targetValues = lObj.getJSONArray("s");
                     double y = targetValues.isNull(i) ? 0 : targetValues.getDouble(i) / numberScale;
-                    data.put(JSONObject.create().put(categoryKey, x).put(valueKey, y));
+                    data.put(JSONObject.create().put(categoryKey, this.formatCategory(groupType, x)).put(valueKey, y));
                     valueList.add(y);
                 }
             } else {//饼图没有分类，只有指标。会过来一个汇总值，没有child
@@ -618,6 +623,34 @@ public abstract class VanChartWidget extends TableWidget {
             this.idValueMap.put(id, valueList);
         }
         return series;
+    }
+
+    protected String formatCategory(int groupType, String category){
+
+        long dateValue = 0;
+        try {
+            dateValue = Long.parseLong(category);
+        }catch (NumberFormatException e){
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
+        }
+
+        switch (groupType) {
+            case BIReportConstant.GROUP.S:
+                category = BIReportConstant.FULL_QUARTER_NAMES[(int)dateValue];
+                break;
+            case BIReportConstant.GROUP.M:
+                category = BIReportConstant.FULL_MONTH_NAMES[(int)dateValue];
+                break;
+            case BIReportConstant.GROUP.W:
+                category = BIReportConstant.FULL_WEEK_NAMES[(int)dateValue];
+                break;
+            case BIReportConstant.GROUP.YMD:
+                SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+                category = formatter.format(new Date(dateValue));
+                break;
+        }
+
+        return category;
     }
 
     protected JSONObject parseLegend(JSONObject settings) throws JSONException {
