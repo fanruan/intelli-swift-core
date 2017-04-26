@@ -409,7 +409,7 @@ public abstract class VanChartWidget extends TableWidget {
             JSONArray styleList = plateConfig.optJSONArray("styleList");
             for (int i = 0, len = styleList.length(); i < len; i++) {
                 JSONObject predefinedStyle = styleList.getJSONObject(i);
-                if (key == predefinedStyle.optString("value")) {
+                if (key.equals(predefinedStyle.optString("value"))) {
                     return predefinedStyle.optJSONArray("colors");
                 }
             }
