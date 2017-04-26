@@ -14,16 +14,7 @@ public class BIDimensionFactory {
     public static BIDimension parseDimension(JSONObject jo, long userId) throws Exception {
         BIDimension dimension = null;
         if (jo.has("type")) {
-            int type = jo.getInt("type");
-            int subtype = 0;
-            try {
-                if(jo.has("subtype")){
-                    subtype = jo.optInt("subtype");
-                }
-            } catch (Exception ex) {
-
-            }
-            type += subtype;
+            int type = jo.optInt("type");
             switch (type) {
                 case BIReportConstant.TARGET_TYPE.STRING: {
                     dimension = new BIStringDimension();

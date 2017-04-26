@@ -9,6 +9,7 @@ import com.fr.json.JSONArray;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
 import com.fr.stable.StringUtils;
+import com.taobao.top.link.embedded.websocket.util.StringUtil;
 
 import java.awt.*;
 import java.util.Map;
@@ -27,7 +28,7 @@ public class VanMapWidget extends VanChartWidget{
         super.parseJSON(jo, userId);
 
         if(jo.has("subType")){
-            subType = StringUtils.EMPTY;
+            subType = jo.optString("subType");
         }
     }
 
@@ -36,15 +37,25 @@ public class VanMapWidget extends VanChartWidget{
 
         BIMapInfoManager manager = BIMapInfoManager.getInstance();
 
-        for (Map.Entry<String, Integer> entry : manager.getinnerMapLayer().entrySet()) {
-            if(entry.getValue() == 0){
-                subType = entry.getKey();
-                break;
+        if(StringUtils.isBlank(this.subType)){
+            for (Map.Entry<String, Integer> entry : manager.getinnerMapLayer().entrySet()) {
+                if(entry.getValue() == 0){
+                    subType = entry.getKey();
+                    break;
+                }
             }
         }
 
         String d = manager.getinnerMapPath().get(subType);
         String n = manager.getinnerMapTypeName().get(subType);
+
+        if(d == null){
+            d = manager.getCustomMapPath().get(subType);
+        }
+
+        if(n == null){
+            n = manager.getCustomMapTypeName().get(subType);
+        }
 
         JSONObject geo = JSONObject.create().put("data", d).put("name", n);
 
