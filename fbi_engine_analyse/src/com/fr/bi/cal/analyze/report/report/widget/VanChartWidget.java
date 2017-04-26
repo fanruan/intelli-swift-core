@@ -16,7 +16,6 @@ import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
 import com.fr.stable.StringUtils;
 import com.fr.web.core.SessionDealWith;
-import com.taobao.top.link.embedded.websocket.util.StringUtil;
 
 import java.awt.*;
 import java.util.*;
