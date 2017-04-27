@@ -28,7 +28,7 @@ public class BICubeLogHelper extends BILogHelper {
         return tableExceptionInfoJSON;
     }
 
-    public static List<Map<String, Object>> getTableTransportLogInfo(){
+    public static List<Map<String, Object>> getTableTransportLogInfo() {
         return cubeLogGetterService.getTableTransportLogInfo();
     }
 
@@ -38,6 +38,27 @@ public class BICubeLogHelper extends BILogHelper {
 
     public static List<Map<String, Object>> getRelationIndexLogInfo() {
         return cubeLogGetterService.getRelationIndexLogInfo();
+    }
+
+    public static JSONObject getTableTranslateProcess() throws JSONException {
+        JSONObject tableTranslateProcess = new JSONObject();
+        tableTranslateProcess.put("allTranslateTable", cubeLogGetterService.getAllTableNeedTranslate());
+        tableTranslateProcess.put("alreadyTranslateTable", cubeLogGetterService.getTableAlreadyTranslate());
+        return tableTranslateProcess;
+    }
+
+    public static JSONObject getTableFieldIndexProcess() throws JSONException {
+        JSONObject tableFieldIndexProcess = new JSONObject();
+        tableFieldIndexProcess.put("allFieldIndex", cubeLogGetterService.getAllFieldNeedIndex());
+        tableFieldIndexProcess.put("alreadyGenerateFieldIndex", cubeLogGetterService.getFieldAlreadyIndex());
+        return tableFieldIndexProcess;
+    }
+
+    public static JSONObject getRelationGenerateProcess() throws JSONException {
+        JSONObject relationGenerateProcess = new JSONObject();
+        relationGenerateProcess.put("allRelation", cubeLogGetterService.getAllRelationNeedGenerate());
+        relationGenerateProcess.put("alreadyGenerateRelation", cubeLogGetterService.getRelationAlreadyGenerate());
+        return relationGenerateProcess;
     }
 
     public static JSONObject getCubeLogGenerateStartJSON() {

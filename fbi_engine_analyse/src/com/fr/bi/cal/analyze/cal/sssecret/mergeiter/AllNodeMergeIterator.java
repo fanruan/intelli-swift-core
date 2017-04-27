@@ -64,8 +64,8 @@ public class AllNodeMergeIterator implements Iterator<MetricMergeResult> {
     private void initIter(int sumLength) {
         root = new Node(sumLength);
         count = new AtomicInteger(0);
-        //不是多线程，或者没有指标都表示线程池的计算已经结束
-        completed = getMetricsSize() == 0 || executor == null;
+        //不是多线程，或者没有指标并且不需要释放索引都表示线程池的计算已经结束
+        completed = (getMetricsSize() == 0 && !releaseGVI) || executor == null;
         allAdded = false;
         while (mergeIterator.hasNext()) {
             MetricMergeResult result = mergeIterator.next();

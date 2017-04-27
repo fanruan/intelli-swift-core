@@ -1,12 +1,14 @@
 package com.fr.bi.stable.engine.cal;
 
+import com.fr.bi.manager.PerformancePlugManager;
+
 /**
  * Created by 小灰灰 on 2016/8/1.
  */
 public class SortToolUtils {
     private static final long N_LOG_N = 100;
     private static final long GROUP_COUNT = 3;
-    private static final int RESORT_COUNT = 1<<12;
+    private static final int RESORT_COUNT = PerformancePlugManager.getInstance().getReIndexRowCount();
 
     public static SortTool getSortTool(int groupSize, int gviCount){
         if (gviCount == 1){

@@ -58,7 +58,7 @@ public abstract class VanCartesianWidget extends VanChartWidget {
                 .put("rightYShowTitle", false)
                 .put("rightYTitle", StringUtils.EMPTY)
                 .put("rightYTitleStyle", this.defaultFont())
-                .put("rightYReverse", false)
+                .put("rightYReverse", rightYReverse())
                 .put("rightYShowLabel", true)
                 .put("rightYLabelStyle", JSONObject.create().put("textStyle", this.defaultFont()))
                 .put("rightYLineColor", "#dddddd")
@@ -77,6 +77,10 @@ public abstract class VanCartesianWidget extends VanChartWidget {
                 .put("rightYLineColor", true);
 
         return settings;
+    }
+
+    protected boolean rightYReverse() {
+        return false;
     }
 
     //坐标轴标签的格式由千分符号，和数量级构成
@@ -167,9 +171,7 @@ public abstract class VanCartesianWidget extends VanChartWidget {
         return level;
     }
 
-    protected JSONArray createStackedEmptySeries(JSONObject originData) throws Exception{
-        JSONArray series = this.createSeries(originData);
-
+    protected JSONArray addStackedEmptySeries(JSONArray series) throws JSONException{
         if(series.length() > 0){
             JSONObject ser1 = series.getJSONObject(0);
 

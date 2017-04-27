@@ -29,7 +29,7 @@ import com.fr.bi.stable.engine.index.key.IndexTypeKey;
 import com.fr.bi.stable.gvi.GVIFactory;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.gvi.array.ICubeTableIndexReader;
-import com.fr.bi.stable.structure.collection.map.CubeLinkedHashMap;
+import com.fr.bi.stable.structure.collection.map.CubeColumnIndexPartReader;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
 import com.fr.general.ComparatorUtils;
 import com.fr.stable.collections.array.IntArray;
@@ -52,7 +52,8 @@ public class BICubeTableAdapter implements ICubeTableService {
     private Map<BIKey, CubeColumnReaderService> columnReaderServiceMap = new ConcurrentHashMap<BIKey, CubeColumnReaderService>();
     private Map<BIKey, ICubeColumnDetailGetter> columnDetailReaderServiceMap = new ConcurrentHashMap<BIKey, ICubeColumnDetailGetter>();
     private static Map<String, Object> LOCKS = new ConcurrentHashMap<String, Object>();
-    private transient int rowCount = -1;
+    private int rowCount = -1;
+    private IntArray removedList;
 
     public BICubeTableAdapter(Cube cube, CubeTableSource tableSource) {
         this.cube = cube;
@@ -70,6 +71,7 @@ public class BICubeTableAdapter implements ICubeTableService {
 
     private void initData() {
         rowCount = primaryTable.getRowCount();
+        removedList = primaryTable.getRemovedList();
     }
 
     private void initial(CubeTableSource tableSource) {
@@ -210,7 +212,7 @@ public class BICubeTableAdapter implements ICubeTableService {
 
     @Override
     public IntArray getRemovedList() {
-        return primaryTable.getRemovedList();
+        return removedList;
     }
 
 
@@ -396,15 +398,7 @@ public class BICubeTableAdapter implements ICubeTableService {
     public ICubeColumnIndexReader loadGroup(BIKey key, List<BITableSourceRelation> relationList, boolean useRealData, int groupLimit) {
         ICubeColumnIndexReader loadAll = loadGroup(key, relationList);
         if (!useRealData) {
-            CubeLinkedHashMap m = new CubeLinkedHashMap();
-            Iterator iter = loadAll.iterator();
-            int i = 0;
-            while (iter.hasNext() && i < groupLimit) {
-                Map.Entry entry = (Map.Entry) iter.next();
-                m.put(entry.getKey(), entry.getValue());
-                i++;
-            }
-            return m;
+            return new CubeColumnIndexPartReader(loadAll, groupLimit);
         } else {
             return loadAll;
         }
