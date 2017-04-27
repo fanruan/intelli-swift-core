@@ -31,6 +31,9 @@ import java.util.Map;
  */
 public class BIReportExportExcelUtils {
     private static int bytesLength = 256;
+    private static int daysOfFebruary = 29;
+    private static int[] daysOfMonth = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+    private static int timeOut = 5000;
 
     private static String phantomIp = PerformancePlugManager.getInstance().getPhantomServerIP();
     private static int phantomPort = PerformancePlugManager.getInstance().getPhantomServerPort();
@@ -70,8 +73,8 @@ public class BIReportExportExcelUtils {
         URL url = new URL("http://" + phantomIp + ":" + phantomPort + "/");
         URLConnection connection = url.openConnection();
         connection.setDoOutput(true);
-        connection.setConnectTimeout(5000);
-        connection.setReadTimeout(5000);
+        connection.setConnectTimeout(timeOut);
+        connection.setReadTimeout(timeOut);
 
         OutputStream out = connection.getOutputStream();
         out.write(message.getBytes("utf-8"));
@@ -176,5 +179,30 @@ public class BIReportExportExcelUtils {
         Rectangle rect = new Rectangle(bounds.optInt("left"), bounds.optInt("top"),
                 bounds.optInt("width"), bounds.optInt("height"));
         return rect;
+    }
+
+    static int getQuarterStartMonth(int nowMonth) {
+        int quarterStartMonth = 0;
+        if (nowMonth < 3) {
+            quarterStartMonth = 0;
+        }
+        if (2 < nowMonth && nowMonth < 6) {
+            quarterStartMonth = 3;
+        }
+        if (5 < nowMonth && nowMonth < 9) {
+            quarterStartMonth = 6;
+        }
+        if (nowMonth > 8) {
+            quarterStartMonth = 9;
+        }
+        return quarterStartMonth;
+    }
+
+    static int getMonthDays(int year, int month) {
+        if (((0 == (year % 4)) && ((0 != (year % 100)) || (0 == (year % 400)))) && month == 1) {
+            return daysOfFebruary;
+        } else {
+            return daysOfMonth[month];
+        }
     }
 }

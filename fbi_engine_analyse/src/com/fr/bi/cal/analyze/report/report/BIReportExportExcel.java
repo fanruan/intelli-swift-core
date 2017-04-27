@@ -16,6 +16,7 @@ import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.stable.constant.BIExcutorConstant;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.tool.BIReadReportUtils;
+import com.fr.general.DateUtils;
 import com.fr.general.Inter;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONException;
@@ -30,6 +31,7 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Iterator;
 
 /**
@@ -43,6 +45,9 @@ public class BIReportExportExcel {
     private ArrayList<BIWidget> widgets = new ArrayList<BIWidget>();
     private JSONArray specialWidgets = JSONArray.create();
     private int namePosLeft = 21;
+    private int offSet1 = 1;
+    private int offSet3 = 3;
+    private int offSet7 = 7;
 
     protected BIReport report = new BIReportor();
 
@@ -159,6 +164,7 @@ public class BIReportExportExcel {
                         renderDatePaneWidget(polyECBlock, jo);
                         break;
                     case DATE:
+                        renderDateWidget(polyECBlock, jo);
                         break;
                 }
             }
@@ -243,48 +249,73 @@ public class BIReportExportExcel {
         renderWidget(polyECBlock, value, jo);
     }
 
-    private void renderYMDWidget (PolyECBlock polyECBlock, JSONObject jo) {
-
+    private void renderYMDWidget(PolyECBlock polyECBlock, JSONObject jo) {
+        renderWidget(polyECBlock, formatDate(jo.optJSONObject("value")), jo);
     }
 
-    private String formatDate (JSONObject jo) {
+    private String formatDate(JSONObject joValue) {
         //Todo 刚拖进来得时候joValue为空
         String dateValue = "";
-        JSONObject joValue = jo.optJSONObject("value");
-        if(joValue.length() != 0) {
-            if(joValue.has("year")) {
-                dateValue = formatYMD(joValue);
+        if (joValue.length() != 0) {
+            if (joValue.has("year")) {
+                dateValue = joValue.optString("year") + "-" + (joValue.optInt("month") + 1) + "-" + joValue.optString("day");
             } else {
-                switch(joValue.optInt("type")) {
+                Calendar calendar = Calendar.getInstance();
+                switch (joValue.optInt("type")) {
                     case BIReportConstant.DATE_TYPE.MULTI_DATE_YEAR_PREV:
+                        calendar.add(Calendar.YEAR, 0 - offSet1);
+                        break;
                     case BIReportConstant.DATE_TYPE.MULTI_DATE_YEAR_AFTER:
+                        calendar.add(Calendar.YEAR, offSet1);
+                        break;
                     case BIReportConstant.DATE_TYPE.MULTI_DATE_YEAR_BEGIN:
+                        calendar.set(calendar.get(Calendar.YEAR), 0, 1);
+                        break;
                     case BIReportConstant.DATE_TYPE.MULTI_DATE_YEAR_END:
+                        calendar.set(calendar.get(Calendar.YEAR), 11, 31);
+                        break;
                     case BIReportConstant.DATE_TYPE.MULTI_DATE_MONTH_PREV:
+                        calendar.add(Calendar.MONTH, 0 - offSet1);
+                        break;
                     case BIReportConstant.DATE_TYPE.MULTI_DATE_MONTH_AFTER:
+                        calendar.add(Calendar.MONTH, offSet1);
+                        break;
                     case BIReportConstant.DATE_TYPE.MULTI_DATE_MONTH_BEGIN:
+                        calendar.set(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), 1);
+                        break;
                     case BIReportConstant.DATE_TYPE.MULTI_DATE_MONTH_END:
+                        calendar.set(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.getActualMaximum(Calendar.DAY_OF_MONTH));
+                        break;
                     case BIReportConstant.DATE_TYPE.MULTI_DATE_QUARTER_PREV:
+                        calendar.add(Calendar.MONTH, 0 - offSet3);
+                        break;
                     case BIReportConstant.DATE_TYPE.MULTI_DATE_QUARTER_AFTER:
+                        calendar.add(Calendar.MONTH, offSet3);
+                        break;
                     case BIReportConstant.DATE_TYPE.MULTI_DATE_QUARTER_BEGIN:
+                        calendar.set(calendar.get(Calendar.YEAR), BIReportExportExcelUtils.getQuarterStartMonth(calendar.get(Calendar.MONTH)), 1);
+                        break;
                     case BIReportConstant.DATE_TYPE.MULTI_DATE_QUARTER_END:
+                        int month = BIReportExportExcelUtils.getQuarterStartMonth(calendar.get(Calendar.MONTH)) + 2;
+                        int year = calendar.get(Calendar.YEAR);
+                        calendar.set(year, month, BIReportExportExcelUtils.getMonthDays(year, month));
+                        break;
                     case BIReportConstant.DATE_TYPE.MULTI_DATE_WEEK_PREV:
+                        calendar.add(Calendar.DATE, 0 - offSet7);
+                        break;
                     case BIReportConstant.DATE_TYPE.MULTI_DATE_WEEK_AFTER:
+                        calendar.add(Calendar.DATE, offSet7);
+                        break;
                     case BIReportConstant.DATE_TYPE.MULTI_DATE_DAY_PREV:
+                        calendar.add(Calendar.DATE, 0 - offSet1);
+                        break;
                     case BIReportConstant.DATE_TYPE.MULTI_DATE_DAY_AFTER:
+                        calendar.add(Calendar.DATE, offSet1);
+                        break;
                     case BIReportConstant.DATE_TYPE.MULTI_DATE_DAY_TODAY:
-                    case BIReportConstant.DATE_TYPE.MULTI_DATE_PARAM:
-                    case BIReportConstant.DATE_TYPE.MULTI_DATE_CALENDAR:
-                    case BIReportConstant.DATE_TYPE.YEAR_QUARTER:
-                    case BIReportConstant.DATE_TYPE.YEAR_MONTH:
-                    case BIReportConstant.DATE_TYPE.YEAR_WEEK:
-                    case BIReportConstant.DATE_TYPE.YEAR_DAY:
-                    case BIReportConstant.DATE_TYPE.MONTH_WEEK:
-                    case BIReportConstant.DATE_TYPE.MONTH_DAY:
-                    case BIReportConstant.DATE_TYPE.YEAR:
-                    case BIReportConstant.DATE_TYPE.SAME_PERIOD:
-                    case BIReportConstant.DATE_TYPE.LAST_SAME_PERIOD:
+                        break;
                 }
+                dateValue = DateUtils.DATEFORMAT2.format(calendar.getTime());
             }
         }
         return dateValue;
@@ -294,16 +325,32 @@ public class BIReportExportExcel {
         String value = "";
         JSONObject joValue = jo.optJSONObject("value");
         if (joValue.length() != 0) {
-            value = formatYMD(joValue);
+            String str1 = Inter.getLocText("BI-Basic_Year");
+            String str2 = Inter.getLocText("BI-Multi_Date_Month");
+            String str3 = Inter.getLocText("BI-Day_Ri");
+            value = joValue.optString("year") + str1 + (joValue.optInt("month") + 1) + str2 + joValue.optString("day") + str3;
         }
         renderWidget(polyECBlock, value, jo);
     }
 
-    private String formatYMD (JSONObject joValue) {
-        String str1 = Inter.getLocText("BI-Basic_Year");
-        String str2 = Inter.getLocText("BI-Multi_Date_Month");
-        String str3 = Inter.getLocText("BI-Day_Ri");
-        return joValue.optString("year") + str1 + (joValue.optInt("month") + 1) + str2 + joValue.optString("day") + str3;
+    private void renderDateWidget(PolyECBlock polyECBlock, JSONObject jo) {
+        JSONObject joValue = jo.optJSONObject("value");
+        String startValue, endValue;
+        if (joValue.optJSONObject("start") != null) {
+            startValue = formatDate(joValue.optJSONObject("start"));
+        } else {
+            startValue = Inter.getLocText("BI-Basic_Unrestricted");
+
+        }
+
+        if (joValue.optJSONObject("end") != null) {
+            endValue = formatDate(joValue.optJSONObject("end"));
+        } else {
+            endValue = Inter.getLocText("BI-Basic_Unrestricted");
+        }
+
+        String value = startValue + " -- " + endValue;
+        renderWidget(polyECBlock, value, jo);
     }
 
     private FloatElement renderPicture(TableWidget widget) throws Exception {
