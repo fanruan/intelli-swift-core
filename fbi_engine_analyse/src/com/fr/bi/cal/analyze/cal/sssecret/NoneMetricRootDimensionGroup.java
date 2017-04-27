@@ -33,6 +33,7 @@ import java.util.*;
  */
 public class NoneMetricRootDimensionGroup extends RootDimensionGroup {
     private TargetFilter filter;
+    private List<TargetFilter> authFilter;
     private DimensionCalculator[] dimensionCalculators;
     private DimensionFilter[] directDimensionFilters;
     //过滤的地方缓存下NoneDimensionCalculator，要不loadgroup次数太多了，硬盘渣的情况下判断cube exist 太卡。
@@ -42,9 +43,10 @@ public class NoneMetricRootDimensionGroup extends RootDimensionGroup {
 
     }
 
-    public NoneMetricRootDimensionGroup(List<MetricGroupInfo> metricGroupInfoList, MergeIteratorCreator[] mergeIteratorCreators, int sumLength, BISession session, boolean useRealData, TargetFilter filter, DimensionFilter[] directDimensionFilters) {
+    public NoneMetricRootDimensionGroup(List<MetricGroupInfo> metricGroupInfoList, MergeIteratorCreator[] mergeIteratorCreators, int sumLength, BISession session, boolean useRealData, TargetFilter filter, List<TargetFilter> authFilter, DimensionFilter[] directDimensionFilters) {
         super(metricGroupInfoList, mergeIteratorCreators, sumLength, session, useRealData);
         this.filter = filter;
+        this.authFilter = authFilter;
         this.directDimensionFilters = directDimensionFilters;
     }
 
@@ -109,8 +111,16 @@ public class NoneMetricRootDimensionGroup extends RootDimensionGroup {
                 GroupValueIndex pgvi = getCachedNumberDimensionCalculator(i, deep, (NumberDimensionCalculator)ckp, BIConfUtils.convert2TableSourceRelation(firstPath.getAllRelations())).createNoneSortGroupValueMapGetter(ck.getField().getTableBelongTo(), session.getLoader()).getIndex(value);
                 gvi = gvi.AND(pgvi);
             }
-            if (filter != null) {
-                GroupValueIndex filterGvi = filter.createFilterIndex(ck, ck.getField().getTableBelongTo(), session.getLoader(), session.getUserId());
+        }
+        if (filter != null) {
+            GroupValueIndex filterGvi = filter.createFilterIndex(ck, ck.getField().getTableBelongTo(), session.getLoader(), session.getUserId());
+            if (filterGvi != null) {
+                gvi = filterGvi.AND(gvi);
+            }
+        }
+        if (authFilter != null) {
+            for (TargetFilter aFilter : authFilter) {
+                GroupValueIndex filterGvi = aFilter.createFilterIndex(ck, ck.getField().getTableBelongTo(), session.getLoader(), session.getUserId());
                 if (filterGvi != null) {
                     gvi = filterGvi.AND(gvi);
                 }
