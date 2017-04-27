@@ -2,6 +2,7 @@ package com.fr.bi.cal.analyze.cal.sssecret;
 
 
 import com.fr.bi.cal.analyze.cal.index.loader.MetricGroupInfo;
+import com.fr.bi.cal.analyze.cal.multithread.BIMultiThreadExecutor;
 import com.fr.bi.cal.analyze.cal.result.Node;
 import com.fr.bi.cal.analyze.cal.result.NodeExpander;
 import com.fr.cache.list.IntList;
@@ -22,10 +23,10 @@ public interface IRootDimensionGroup {
      * @param list     当前的游标
      */
     ReturnStatus getNext(GroupConnectionValue gv,
-                                int[] index,
-                                int deep,
-                                NodeExpander expander,
-                                IntList list);
+                         int[] index,
+                         int deep,
+                         NodeExpander expander,
+                         IntList list);
 
     int[] getValueStartRow(Object[] value);
 
@@ -35,5 +36,5 @@ public interface IRootDimensionGroup {
 
     IRootDimensionGroup createClonedRoot();
 
-    void checkStatus();
+    void checkStatus(BIMultiThreadExecutor executor);
 }

@@ -3,7 +3,6 @@ package com.fr.bi.cal.analyze.cal.index.loader;
 import com.finebi.cube.api.ICubeValueEntryGetter;
 import com.finebi.cube.conf.table.BusinessTable;
 import com.fr.bi.cal.analyze.cal.multithread.BIMultiThreadExecutor;
-import com.fr.bi.cal.analyze.cal.multithread.MultiThreadManagerImpl;
 import com.fr.bi.cal.analyze.cal.sssecret.*;
 import com.fr.bi.cal.analyze.cal.sssecret.diminfo.*;
 import com.fr.bi.cal.analyze.session.BISession;
@@ -46,9 +45,10 @@ public class NodeIteratorCreator {
     private final boolean showSum;
     private final boolean setIndex;
     private final boolean calAllPage;
+    private BIMultiThreadExecutor executor;
     private Map<String, BISummaryTarget> targetIdMap;
 
-    public NodeIteratorCreator(List<MetricGroupInfo> metricGroupInfoList, BIDimension[] rowDimension, BISummaryTarget[] usedTargets, int sumLength, Map<String, DimensionFilter> targetFilterMap, boolean isRealData, BISession session, NameObject targetSort, TargetFilter filter, List<TargetFilter> authFilter, boolean showSum, boolean setIndex, boolean calAllPage) {
+    public NodeIteratorCreator(List<MetricGroupInfo> metricGroupInfoList, BIDimension[] rowDimension, BISummaryTarget[] usedTargets, int sumLength, Map<String, DimensionFilter> targetFilterMap, boolean isRealData, BISession session, NameObject targetSort, TargetFilter filter, List<TargetFilter> authFilter, boolean showSum, boolean setIndex, boolean calAllPage, BIMultiThreadExecutor executor) {
         this.metricGroupInfoList = metricGroupInfoList;
         this.rowDimension = rowDimension;
         this.usedTargets = usedTargets;
@@ -61,6 +61,7 @@ public class NodeIteratorCreator {
         this.showSum = showSum;
         this.setIndex = setIndex;
         this.calAllPage = calAllPage;
+        this.executor = executor;
         initTargetIdMap();
         checkTargetSort();
         checkTargetFilterMap(targetFilterMap);
@@ -195,7 +196,6 @@ public class NodeIteratorCreator {
 
     //分页计算的MergeIteratorCreator, 由于维度过滤都放到了inDirectFilterIndexes里面处理, 这里去掉维度过滤
     private MergeIteratorCreator[] createNormalMergeIteratorCreator() {
-        BIMultiThreadExecutor executor = MultiThreadManagerImpl.getInstance().isMultiCall() ? MultiThreadManagerImpl.getInstance().getExecutorService() : null;
         MergeIteratorCreator[] mergeIteratorCreators = new MergeIteratorCreator[rowDimension.length];
         boolean hasSingleNodeCalMetrics = hasSingleNodeCalMetrics();
         for (int i = 0; i < rowDimension.length; i++) {
@@ -211,7 +211,6 @@ public class NodeIteratorCreator {
 
     //IndirectFilter的MergeIteratorCreator, 不需要处理排序, 同时, 只有第一个维度可以多线程计算, 如果第二个维度用多线程, 当构建当前节点的任务跟计算当前子节点的任务排在一个队列时会死锁
     private MergeIteratorCreator[] createIndirectFilterMergeIteratorCreator() {
-        BIMultiThreadExecutor executor = MultiThreadManagerImpl.getInstance().isMultiCall() ? MultiThreadManagerImpl.getInstance().getExecutorService() : null;
         MergeIteratorCreator[] mergeIteratorCreators = new MergeIteratorCreator[rowDimension.length];
         for (int i = 0; i < rowDimension.length; i++) {
             DimensionFilter filter = rowDimension[i].getFilter();
@@ -377,7 +376,7 @@ public class NodeIteratorCreator {
         //是否提前计算了维度过滤
         //如果有配置类计算的过滤，则需要构建完node之后再排序，之前的过滤一个都别动，要不然影响配置类计算的。如果维度过滤在最后一个维度上面，也等到全部构建完了再过滤
         boolean canPreFilter = hasDimensionInDirectFilter() && !hasAllNodeIndirectDimensionFilter() && getLastIndirectFilterDimensionIndex() != rowDimension.length - 1;
-        ConstructedRootDimensionGroup constructedRootDimensionGroup = new ConstructedRootDimensionGroup(metricGroupInfoList, createAllNodeMergeIteratorCreator(), sumLength, session, isRealData, dimensionTargetSort, getCalCalculators(), canPreFilter || !hasDimensionInDirectFilter() ? null : rowDimension, setIndex, hasInSumMetric());
+        ConstructedRootDimensionGroup constructedRootDimensionGroup = new ConstructedRootDimensionGroup(metricGroupInfoList, createAllNodeMergeIteratorCreator(), sumLength, session, isRealData, dimensionTargetSort, getCalCalculators(), canPreFilter || !hasDimensionInDirectFilter() ? null : rowDimension, setIndex, hasInSumMetric(), executor);
         //如果没有配置类计算的过滤，并且最后一个维度没有过滤，可以先算一下IndirectFilter
         if (canPreFilter) {
             GroupValueIndex[] inDirectFilterIndexes = getInDirectFilterIndex(constructedRootDimensionGroup.getRoot(), constructedRootDimensionGroup.getGetters(), constructedRootDimensionGroup.getColumns());
@@ -485,7 +484,7 @@ public class NodeIteratorCreator {
 
     private GroupValueIndex[] getInDirectFilterIndex(NoneDimensionGroup root, ICubeValueEntryGetter[][] getters, DimensionCalculator[][] columns) {
         if (shouldCalIndirectDimensionFilterGVI()) {
-            return new NodeIndirectFilterIndexCalculator(root, getters, columns, createIndirectFilterMergeIteratorCreator(), isRealData, getLastIndirectFilterDimensionIndex()).cal();
+            return new NodeIndirectFilterIndexCalculator(root, getters, columns, createIndirectFilterMergeIteratorCreator(), isRealData, getLastIndirectFilterDimensionIndex(), executor).cal();
         }
         return new GroupValueIndex[0];
     }

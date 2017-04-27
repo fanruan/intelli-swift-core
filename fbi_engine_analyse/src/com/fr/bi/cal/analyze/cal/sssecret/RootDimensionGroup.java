@@ -7,7 +7,6 @@ import com.fr.bi.base.key.BIKey;
 import com.fr.bi.cal.analyze.cal.index.loader.MetricGroupInfo;
 import com.fr.bi.cal.analyze.cal.index.loader.TargetAndKey;
 import com.fr.bi.cal.analyze.cal.multithread.BIMultiThreadExecutor;
-import com.fr.bi.cal.analyze.cal.multithread.MultiThreadManagerImpl;
 import com.fr.bi.cal.analyze.cal.result.Node;
 import com.fr.bi.cal.analyze.cal.result.NodeExpander;
 import com.fr.bi.cal.analyze.cal.sssecret.diminfo.MergeIteratorCreator;
@@ -84,7 +83,7 @@ public class RootDimensionGroup implements IRootDimensionGroup {
         tis = new ICubeTableService[metricGroupInfoList.size()];
         for (int i = 0; i < metricGroupInfoList.size(); i++) {
             CubeTableSource source = metricGroupInfoList.get(i).getMetric().getTableSource();
-            if (source != null){
+            if (source != null) {
                 tis[i] = session.getLoader().getTableIndex(metricGroupInfoList.get(i).getMetric().getTableSource());
             }
             DimensionCalculator[] rs = metricGroupInfoList.get(i).getRows();
@@ -301,12 +300,11 @@ public class RootDimensionGroup implements IRootDimensionGroup {
     }
 
     @Override
-    public void checkStatus() {
-        checkThreadPool();
+    public void checkStatus(BIMultiThreadExecutor executor) {
+        checkThreadPool(executor);
     }
 
-    private void checkThreadPool() {
-        BIMultiThreadExecutor executor = MultiThreadManagerImpl.getInstance().isMultiCall() ? MultiThreadManagerImpl.getInstance().getExecutorService() : null;
+    private void checkThreadPool(BIMultiThreadExecutor executor) {
         for (MergeIteratorCreator creator : mergeIteratorCreators) {
             creator.setExecutor(executor);
         }
