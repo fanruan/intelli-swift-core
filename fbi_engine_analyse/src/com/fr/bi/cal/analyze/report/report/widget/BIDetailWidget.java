@@ -16,7 +16,6 @@ import com.fr.bi.cal.analyze.report.report.widget.chart.export.calculator.Detail
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.manager.TableDirector;
 import com.fr.bi.cal.analyze.report.report.widget.detail.BIDetailReportSetting;
 import com.fr.bi.cal.analyze.report.report.widget.detail.BIDetailSetting;
-import com.fr.bi.cal.analyze.report.report.widget.styles.BIStyleSetting;
 import com.fr.bi.cal.analyze.session.BISession;
 import com.fr.bi.common.persistent.xml.BIIgnoreField;
 import com.fr.bi.conf.report.WidgetType;
@@ -292,7 +291,7 @@ public class BIDetailWidget extends BIAbstractWidget {
         JSONObject dataJSON = this.createDataJSON((BISession) SessionDealWith.getSessionIDInfor(sessionId)).getJSONObject("data");
         Map<Integer, List<JSONObject>> viewMap = createViewMap();
         List<DimAndTargetStyle> dimAndTargetStyles = createChartDimensions();
-        IExcelDataBuilder builder = new DetailTableBuilder(viewMap, dimAndTargetStyles, dataJSON, getGlobalStyleSettings());
+        IExcelDataBuilder builder = new DetailTableBuilder(viewMap, dimAndTargetStyles, dataJSON, null);
         TableDirector director = new TableDirector(builder);
         director.construct();
         return director.buildTableData().createJSON();
@@ -320,9 +319,5 @@ public class BIDetailWidget extends BIAbstractWidget {
         }
         dimAndTar.put(Integer.valueOf(BIReportConstant.REGION.DIMENSION1), dims);
         return dimAndTar;
-    }
-
-    public BIStyleSetting getGlobalStyleSettings() {
-        return data.getStyleSetting();
     }
 }
