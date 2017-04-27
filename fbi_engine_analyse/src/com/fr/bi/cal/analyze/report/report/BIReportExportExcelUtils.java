@@ -35,6 +35,9 @@ public class BIReportExportExcelUtils {
     private static int[] daysOfMonth = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
     private static int timeOut = 5000;
     private static int[] month = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11};
+    private static int year4 = 4;
+    private static int year100 = 100;
+    private static int year400 = 400;
 
     private static String phantomIp = PerformancePlugManager.getInstance().getPhantomServerIP();
     private static int phantomPort = PerformancePlugManager.getInstance().getPhantomServerPort();
@@ -190,17 +193,17 @@ public class BIReportExportExcelUtils {
         if (month[2] < nowMonth && nowMonth < month[6]) {
             quarterStartMonth = 3;
         }
-        if (5 < nowMonth && nowMonth < 9) {
-            quarterStartMonth = 6;
+        if (month[5] < nowMonth && nowMonth < month[9]) {
+            quarterStartMonth = month[6];
         }
-        if (nowMonth > 8) {
-            quarterStartMonth = 9;
+        if (nowMonth > month[8]) {
+            quarterStartMonth = month[9];
         }
         return quarterStartMonth;
     }
 
     static int getMonthDays(int year, int month) {
-        if (((0 == (year % 4)) && ((0 != (year % 100)) || (0 == (year % 400)))) && month == 1) {
+        if (((0 == (year % year4)) && ((0 != (year % year100)) || (0 == (year % year400)))) && month == 1) {
             return daysOfFebruary;
         } else {
             return daysOfMonth[month];
