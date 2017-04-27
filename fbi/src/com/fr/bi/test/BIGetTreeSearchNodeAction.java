@@ -37,9 +37,9 @@ public class BIGetTreeSearchNodeAction extends ActionNoSessionCMD {
         String keyword = WebUtils.getHTTPRequestParameter(req, "keyword");
         keyword = keyword == null ? "" : keyword;
 
-        String lastSearchValue = WebUtils.getHTTPRequestParameter(req, "last_search_value");
+        String lastSearchValue = WebUtils.getHTTPRequestParameter(req, "lastSearchValue");
 
-        String selectedValuesString = WebUtils.getHTTPRequestParameter(req, "selected_values");
+        String selectedValuesString = WebUtils.getHTTPRequestParameter(req, "selectedValues");
 //        int times = 1;
 //        if (timesString != null) {
 //            times = Integer.parseInt(timesString);
@@ -61,7 +61,7 @@ public class BIGetTreeSearchNodeAction extends ActionNoSessionCMD {
         jo.put("hasNext", output.size() > getRows());
         jo.put("items", result);
         if (!output.isEmpty()) {
-            jo.put("last_search_value", output.get(output.size() - 1));
+            jo.put("lastSearchValue", output.get(output.size() - 1));
         }
         WebUtils.printAsJSON(res, jo);
     }

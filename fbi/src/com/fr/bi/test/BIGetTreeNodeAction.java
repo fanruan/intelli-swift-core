@@ -33,8 +33,8 @@ public class BIGetTreeNodeAction extends ActionNoSessionCMD {
         String checkedString = WebUtils.getHTTPRequestParameter(req, "check_state");
         String floorString = WebUtils.getHTTPRequestParameter(req, "floors");
 
-        String parentValuesString = WebUtils.getHTTPRequestParameter(req, "parent_values");
-        String selectedValuesString = WebUtils.getHTTPRequestParameter(req, "selected_values");
+        String parentValuesString = WebUtils.getHTTPRequestParameter(req, "parentValues");
+        String selectedValuesString = WebUtils.getHTTPRequestParameter(req, "selectedValues");
 
         String[] values = new String[0];
         JSONArray parentValues = null;

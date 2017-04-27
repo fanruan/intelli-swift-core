@@ -35,9 +35,8 @@ import java.util.*;
 /**
  * Created by fay on 2016/10/14.
  */
-public class TreeLabelWidget extends BIAbstractWidget{
+public class TreeLabelWidget extends BIAbstractWidget {
     private int page = -1;
-    private int data_type = BIReportConstant.TREE.TREE_REQ_TYPE.INIT_DATA;
     private int floors;
     private String parentValues;
     private String selectedValues;
@@ -70,12 +69,12 @@ public class TreeLabelWidget extends BIAbstractWidget{
 
     @Override
     public <T extends BITargetAndDimension> T[] getDimensions() {
-        return (T[])new BITargetAndDimension[0];
+        return (T[]) new BITargetAndDimension[0];
     }
 
     @Override
     public <T extends BITargetAndDimension> T[] getTargets() {
-        return (T[])new BITargetAndDimension[0];
+        return (T[]) new BITargetAndDimension[0];
     }
 
     @Override
@@ -97,13 +96,7 @@ public class TreeLabelWidget extends BIAbstractWidget{
     public JSONObject createDataJSON(BISessionProvider session) throws Exception {
         Paging paging = PagingFactory.createPaging(BIExcutorConstant.PAGINGTYPE.NONE);
         paging.setCurrentPage(page);
-        JSONObject resultJo = new JSONObject();
-        switch (data_type) {
-            case BIReportConstant.TREE.TREE_REQ_TYPE.INIT_DATA:
-                resultJo = getInitDataJSON((BISession) session);
-                break;
-        }
-        return resultJo;
+        return getInitDataJSON((BISession) session);
     }
 
 
@@ -119,11 +112,8 @@ public class TreeLabelWidget extends BIAbstractWidget{
         setTargetTable();
         parseSortFilter(jo, userId);
 
-        if (jo.has("tree_options")) {
-            JSONObject treeJo = jo.getJSONObject("tree_options");
-            if (treeJo.has("type")) {
-                data_type = treeJo.getInt("type");
-            }
+        if (jo.has("treeOptions")) {
+            JSONObject treeJo = jo.getJSONObject("treeOptions");
             if (treeJo.has("floors")) {
                 floors = treeJo.getInt("floors");
             }
@@ -227,7 +217,7 @@ public class TreeLabelWidget extends BIAbstractWidget{
     public List<BITableSourceRelation> getTableSourceRelationList(BIDimension dimension, long userId) {
         ArrayList<BITableRelation> tableRelationList = this.dimensionMap.get(dimension);
         List<BITableSourceRelation> tableSourceRelationList = new ArrayList<BITableSourceRelation>();
-        for(BITableRelation relation: tableRelationList){
+        for (BITableRelation relation : tableRelationList) {
             BITableSourceRelation tableSourceRelation = BIConfUtils.convert2TableSourceRelation(relation);
             tableSourceRelationList.add(tableSourceRelation);
         }

@@ -38,17 +38,17 @@ import java.util.*;
 public class TreeWidget extends BIAbstractWidget {
     private static final long serialVersionUID = -1312790995961254453L;
     private int page = -1;
-    private int data_type = BIReportConstant.TREE.TREE_REQ_TYPE.INIT_DATA;
+    private int data_type = BIReportConstant.TREE.TREE_REQ_TYPE.DEFAULT_DATA;
     private String id;
     private int times;
-    private String check_state;
+    private String checkState;
     private int floors;
-    private String parent_values;
-    private String selected_values;
+    private String parentValues;
+    private String selectedValues;
     private String keyword;
-    private String last_search_value;
-    private String not_selected_value;
-    private String current_select_value;
+    private String lastSearchValue;
+    private String notSelectedValue;
+    private String currentSelectValue;
     private String[] viewData;
     private BIDimension[] dimensions;
     private BusinessTable target;
@@ -78,12 +78,12 @@ public class TreeWidget extends BIAbstractWidget {
 
     @Override
     public <T extends BITargetAndDimension> T[] getDimensions() {
-        return (T[])new BITargetAndDimension[0];
+        return (T[]) new BITargetAndDimension[0];
     }
 
     @Override
     public <T extends BITargetAndDimension> T[] getTargets() {
-        return (T[])new BITargetAndDimension[0];
+        return (T[]) new BITargetAndDimension[0];
     }
 
     @Override
@@ -107,27 +107,27 @@ public class TreeWidget extends BIAbstractWidget {
         paging.setCurrentPage(page);
         JSONObject resultJo = new JSONObject();
         switch (data_type) {
-            case BIReportConstant.TREE.TREE_REQ_TYPE.INIT_DATA:
-                resultJo = getInitDataJSON((BISession) session);
-                break;
-            case BIReportConstant.TREE.TREE_REQ_TYPE.DISPLAY_DATA:
+            case BIReportConstant.TREE.TREE_REQ_TYPE.GET_SELECTED_DATA:
                 resultJo = getDisplayDataJSON((BISession) session);
                 break;
-            case BIReportConstant.TREE.TREE_REQ_TYPE.SEARCH_DATA:
+            case BIReportConstant.TREE.TREE_REQ_TYPE.INIT_DATA:
                 try {
                     resultJo = getSearchDataJSON((BISession) session);
                 } catch (Exception e) {
                     BILoggerFactory.getLogger().error(e.getMessage(), e);
                 }
                 break;
-            case BIReportConstant.TREE.TREE_REQ_TYPE.SELECTED_DATA:
+            case BIReportConstant.TREE.TREE_REQ_TYPE.SELECT_DATA:
                 resultJo = getSelectedDataJSON((BISession) session);
                 break;
-            case BIReportConstant.TREE.TREE_REQ_TYPE.UNSELECTED_DATA:
+            case BIReportConstant.TREE.TREE_REQ_TYPE.UNSELECT_DATA:
                 resultJo = getUnselectedDataJSON((BISession) session);
                 break;
             case BIReportConstant.TREE.TREE_REQ_TYPE.ADJUST_DATA:
                 resultJo = getAdjustDataJSON((BISession) session);
+                break;
+            default:
+                resultJo = getInitDataJSON((BISession) session);
                 break;
         }
         return resultJo;
@@ -146,8 +146,8 @@ public class TreeWidget extends BIAbstractWidget {
         setTargetTable();
         parseSortFilter(jo, userId);
 
-        if (jo.has("tree_options")) {
-            JSONObject treeJo = jo.getJSONObject("tree_options");
+        if (jo.has("treeOptions")) {
+            JSONObject treeJo = jo.getJSONObject("treeOptions");
             if (treeJo.has("type")) {
                 data_type = treeJo.getInt("type");
             }
@@ -157,31 +157,31 @@ public class TreeWidget extends BIAbstractWidget {
             if (treeJo.has("times")) {
                 times = treeJo.getInt("times");
             }
-            if (treeJo.has("check_state")) {
-                check_state = treeJo.getString("check_state");
+            if (treeJo.has("checkState")) {
+                checkState = treeJo.getString("checkState");
             }
             if (treeJo.has("floors")) {
                 floors = treeJo.getInt("floors");
             }
-            if (treeJo.has("parent_values")) {
-                parent_values = treeJo.getString("parent_values");
+            if (treeJo.has("parentValues")) {
+                parentValues = treeJo.getString("parentValues");
             }
-            if (treeJo.has("selected_values")) {
-                selected_values = treeJo.getString("selected_values");
+            if (treeJo.has("selectedValues")) {
+                selectedValues = treeJo.getString("selectedValues");
             }
             if (treeJo.has("keyword")) {
                 keyword = treeJo.getString("keyword");
             }
-            if (treeJo.has("last_search_value")) {
-                last_search_value = treeJo.getString("last_search_value");
+            if (treeJo.has("lastSearchValue")) {
+                lastSearchValue = treeJo.getString("lastSearchValue");
             }
 
-            if (treeJo.has("not_selected_value")) {
-                not_selected_value = treeJo.getString("not_selected_value");
+            if (treeJo.has("notSelectedValue")) {
+                notSelectedValue = treeJo.getString("notSelectedValue");
             }
 
-            if (treeJo.has("current_select_value")) {
-                current_select_value = treeJo.getString("current_select_value");
+            if (treeJo.has("currentSelectValue")) {
+                currentSelectValue = treeJo.getString("currentSelectValue");
             }
         }
 
@@ -196,10 +196,10 @@ public class TreeWidget extends BIAbstractWidget {
         JSONObject jo = new JSONObject();
         jo.put("id", id);
         jo.put("times", times);
-        jo.put("check_state", check_state);
+        jo.put("checkState", checkState);
         jo.put("floors", floors);
-        jo.put("parent_values", parent_values);
-        jo.put("selected_values", selected_values);
+        jo.put("parentValues", parentValues);
+        jo.put("selectedValues", selectedValues);
         executor.parseJSON(jo);
         return executor.getResultJSON();
     }
@@ -211,8 +211,8 @@ public class TreeWidget extends BIAbstractWidget {
         JSONObject jo = new JSONObject();
         jo.put("floors", floors);
         jo.put("keyword", keyword);
-        jo.put("last_search_value", last_search_value);
-        jo.put("selected_values", selected_values);
+        jo.put("lastSearchValue", lastSearchValue);
+        jo.put("selectedValues", selectedValues);
         executor.parseJSON(jo);
         return executor.getResultJSON();
 
@@ -225,7 +225,7 @@ public class TreeWidget extends BIAbstractWidget {
         GetDisplayTreeNodeExecutor executor = new GetDisplayTreeNodeExecutor(this, paging, session);
         JSONObject jo = new JSONObject();
         jo.put("floors", floors);
-        jo.put("selected_values", selected_values);
+        jo.put("selectedValues", selectedValues);
         executor.parseJSON(jo);
         return executor.getResultJSON();
     }
@@ -236,10 +236,10 @@ public class TreeWidget extends BIAbstractWidget {
         GetTreeSelectTreeNodeExecutor executor = new GetTreeSelectTreeNodeExecutor(this, paging, session);
         JSONObject jo = new JSONObject();
         jo.put("floors", floors);
-        jo.put("not_selected_value", not_selected_value);
+        jo.put("notSelectedValue", notSelectedValue);
         jo.put("keyword", keyword);
-        jo.put("selected_values", selected_values);
-        jo.put("parent_values", parent_values);
+        jo.put("selectedValues", selectedValues);
+        jo.put("parentValues", parentValues);
         executor.parseJSON(jo);
         return executor.getResultJSON();
 
@@ -251,10 +251,10 @@ public class TreeWidget extends BIAbstractWidget {
         GetTreeSelectTreeNodeExecutor executor = new GetTreeSelectTreeNodeExecutor(this, paging, session);
         JSONObject jo = new JSONObject();
         jo.put("floors", floors);
-        jo.put("current_select_value", current_select_value);
+        jo.put("currentSelectValue", currentSelectValue);
         jo.put("keyword", keyword);
-        jo.put("selected_values", selected_values);
-        jo.put("parent_values", parent_values);
+        jo.put("selectedValues", selectedValues);
+        jo.put("parentValues", parentValues);
         executor.parseJSON(jo);
         return executor.getResultJSON();
 
@@ -266,7 +266,7 @@ public class TreeWidget extends BIAbstractWidget {
         AdjustTreeDataStructureExecutorTree executor = new AdjustTreeDataStructureExecutorTree(this, paging, session);
         JSONObject jo = new JSONObject();
         jo.put("floors", floors);
-        jo.put("selectedValues", selected_values);
+        jo.put("selectedValues", selectedValues);
         executor.parseJSON(jo);
         return executor.getResultJSON();
     }
@@ -350,7 +350,7 @@ public class TreeWidget extends BIAbstractWidget {
     public List<BITableSourceRelation> getTableSourceRelationList(BIDimension dimension, long userId) {
         ArrayList<BITableRelation> tableRelationList = this.dimensionMap.get(dimension);
         List<BITableSourceRelation> tableSourceRelationList = new ArrayList<BITableSourceRelation>();
-        for(BITableRelation relation: tableRelationList){
+        for (BITableRelation relation : tableRelationList) {
             BITableSourceRelation tableSourceRelation = BIConfUtils.convert2TableSourceRelation(relation);
             tableSourceRelationList.add(tableSourceRelation);
         }

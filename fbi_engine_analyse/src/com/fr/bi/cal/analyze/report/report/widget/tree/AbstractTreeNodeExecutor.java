@@ -35,8 +35,8 @@ public class AbstractTreeNodeExecutor extends TreeExecutor {
         if (jo.has("floors")) {
             floors = jo.getInt("floors");
         }
-        if (jo.has("selected_values")) {
-            selectedValuesString = jo.getString("selected_values");
+        if (jo.has("selectedValues")) {
+            selectedValuesString = jo.getString("selectedValues");
         }
     }
 

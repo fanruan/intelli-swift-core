@@ -24,14 +24,14 @@ public class GetDisplayTreeNodeExecutor extends AbstractTreeNodeExecutor {
     public JSONObject getResultJSON() throws JSONException {
         JSONArray result = new JSONArray();
         JSONObject jo = new JSONObject();
-        JSONObject selected_values = new JSONObject();
+        JSONObject selectedValues = new JSONObject();
         if (selectedValuesString != null) {
-            selected_values = new JSONObject(selectedValuesString);
+            selectedValues = new JSONObject(selectedValuesString);
         }
-        if (selected_values.length() == 0) {
+        if (selectedValues.length() == 0) {
             return jo;
         }
-        doCheck(result, new String[0], String.valueOf(0), 0, selected_values);
+        doCheck(result, new String[0], String.valueOf(0), 0, selectedValues);
         jo.put("hasNext", false);
         jo.put("items", result);
         return jo;
@@ -94,6 +94,7 @@ public class GetDisplayTreeNodeExecutor extends AbstractTreeNodeExecutor {
         String str2 = Inter.getLocText("BI-Basic_Count");
         obj.put("id", id);
         obj.put("pId", pId);
+        obj.put("value", name);
         if (children == 0) {
             obj.put("text", name);
         } else {
