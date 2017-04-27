@@ -532,8 +532,11 @@ public abstract class VanChartWidget extends TableWidget {
                 JSONObject ser = series.getJSONObject(i);
                 String dimensionID = ser.optString("dimensionID");
 
-                ser.put("dataLabels", new JSONObject(dataLabels.toString()).optJSONObject("formatter")
-                        .put("valueFormat", this.dataLabelValueFormat(this.getBITargetByID(dimensionID))));
+                JSONObject labels = new JSONObject(dataLabels.toString());
+                labels.optJSONObject("formatter")
+                        .put("valueFormat", this.dataLabelValueFormat(this.getBITargetByID(dimensionID)));
+
+                ser.put("dataLabels", labels);
             }
         }
     }
