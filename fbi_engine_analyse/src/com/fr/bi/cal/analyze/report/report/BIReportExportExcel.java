@@ -154,6 +154,7 @@ public class BIReportExportExcel {
                         renderQuarterWidget(polyECBlock, jo);
                         break;
                     case YMD:
+                        renderYMDWidget(polyECBlock, jo);
                     case DATE_PANE:
                         renderDatePaneWidget(polyECBlock, jo);
                         break;
@@ -242,16 +243,67 @@ public class BIReportExportExcel {
         renderWidget(polyECBlock, value, jo);
     }
 
+    private void renderYMDWidget (PolyECBlock polyECBlock, JSONObject jo) {
+
+    }
+
+    private String formatDate (JSONObject jo) {
+        //Todo 刚拖进来得时候joValue为空
+        String dateValue = "";
+        JSONObject joValue = jo.optJSONObject("value");
+        if(joValue.length() != 0) {
+            if(joValue.has("year")) {
+                dateValue = formatYMD(joValue);
+            } else {
+                switch(joValue.optInt("type")) {
+                    case BIReportConstant.DATE_TYPE.MULTI_DATE_YEAR_PREV:
+                    case BIReportConstant.DATE_TYPE.MULTI_DATE_YEAR_AFTER:
+                    case BIReportConstant.DATE_TYPE.MULTI_DATE_YEAR_BEGIN:
+                    case BIReportConstant.DATE_TYPE.MULTI_DATE_YEAR_END:
+                    case BIReportConstant.DATE_TYPE.MULTI_DATE_MONTH_PREV:
+                    case BIReportConstant.DATE_TYPE.MULTI_DATE_MONTH_AFTER:
+                    case BIReportConstant.DATE_TYPE.MULTI_DATE_MONTH_BEGIN:
+                    case BIReportConstant.DATE_TYPE.MULTI_DATE_MONTH_END:
+                    case BIReportConstant.DATE_TYPE.MULTI_DATE_QUARTER_PREV:
+                    case BIReportConstant.DATE_TYPE.MULTI_DATE_QUARTER_AFTER:
+                    case BIReportConstant.DATE_TYPE.MULTI_DATE_QUARTER_BEGIN:
+                    case BIReportConstant.DATE_TYPE.MULTI_DATE_QUARTER_END:
+                    case BIReportConstant.DATE_TYPE.MULTI_DATE_WEEK_PREV:
+                    case BIReportConstant.DATE_TYPE.MULTI_DATE_WEEK_AFTER:
+                    case BIReportConstant.DATE_TYPE.MULTI_DATE_DAY_PREV:
+                    case BIReportConstant.DATE_TYPE.MULTI_DATE_DAY_AFTER:
+                    case BIReportConstant.DATE_TYPE.MULTI_DATE_DAY_TODAY:
+                    case BIReportConstant.DATE_TYPE.MULTI_DATE_PARAM:
+                    case BIReportConstant.DATE_TYPE.MULTI_DATE_CALENDAR:
+                    case BIReportConstant.DATE_TYPE.YEAR_QUARTER:
+                    case BIReportConstant.DATE_TYPE.YEAR_MONTH:
+                    case BIReportConstant.DATE_TYPE.YEAR_WEEK:
+                    case BIReportConstant.DATE_TYPE.YEAR_DAY:
+                    case BIReportConstant.DATE_TYPE.MONTH_WEEK:
+                    case BIReportConstant.DATE_TYPE.MONTH_DAY:
+                    case BIReportConstant.DATE_TYPE.YEAR:
+                    case BIReportConstant.DATE_TYPE.SAME_PERIOD:
+                    case BIReportConstant.DATE_TYPE.LAST_SAME_PERIOD:
+                }
+            }
+        }
+        return dateValue;
+    }
+
     private void renderDatePaneWidget(PolyECBlock polyECBlock, JSONObject jo) {
         String value = "";
         JSONObject joValue = jo.optJSONObject("value");
         if (joValue.length() != 0) {
-            String str1 = Inter.getLocText("BI-Basic_Year");
-            String str2 = Inter.getLocText("BI-Multi_Date_Month");
-            String str3 = Inter.getLocText("BI-Day_Ri");
-            value = joValue.optString("year") + str1 + (joValue.optInt("month") + 1) + str2 + joValue.optString("day") + str3;
+            value = formatYMD(joValue);
         }
         renderWidget(polyECBlock, value, jo);
+    }
+
+    private String formatYMD (JSONObject joValue) {
+        String str1 = Inter.getLocText("BI-Basic_Year");
+        String str2 = Inter.getLocText("BI-Multi_Date_Month");
+        String str3 = Inter.getLocText("BI-Day_Ri");
+        return joValue.optString("year") + str1 + (joValue.optInt("month") + 1) + str2 + joValue.optString("day") + str3;
     }
 
     private FloatElement renderPicture(TableWidget widget) throws Exception {

@@ -126,7 +126,7 @@ public class SummaryComplexTableBuilder extends TableAbstractDataBuilder {
                         createItem(outerValues, s, k);
                     }
                     BIBasicTableItem itemNode = new BIBasicTableItem();
-                    itemNode.setType("bi.target_body_normal_cell");
+                    itemNode.setType("bi.my_table_cell");
                     itemNode.setDId(targetIds.get(0));
                     itemNode.setText(s.getString(0));
                     itemNode.setClicked(new JSONArray().put(new JSONObject()));
@@ -145,7 +145,7 @@ public class SummaryComplexTableBuilder extends TableAbstractDataBuilder {
 
     private void createItem(JSONArray outerValues, JSONArray s, int j) throws JSONException {
         BIBasicTableItem itemNode = new BIBasicTableItem();
-        itemNode.setType("bi.target_body_normal_cell");
+        itemNode.setType("bi.my_table_cell");
         itemNode.setDId(targetIds.get(j));
         itemNode.setText(s.getString(j));
         itemNode.setClicked(new JSONArray().put(new JSONObject()));
@@ -433,7 +433,7 @@ public class SummaryComplexTableBuilder extends TableAbstractDataBuilder {
             if (getRowRegions().size() > 0) {
                 for (int i = 0; i < targetIds.size(); i++) {
                     BIBasicTableItem item = new BIBasicTableItem();
-                    item.setType("bi.normal_header_cell");
+                    item.setType("bi.my_table_cell");
                     item.setDId(targetIds.get(i));
                     item.setText("summary");
                     item.setTag(String.valueOf(UUID.randomUUID()));
@@ -446,7 +446,7 @@ public class SummaryComplexTableBuilder extends TableAbstractDataBuilder {
             } else {
                 for (String targetId : targetIds) {
                     BIBasicTableItem item = new BIBasicTableItem();
-                    item.setType("bi.normal_header_cell");
+                    item.setType("bi.my_table_cell");
                     item.setText("summary");
                     item.setStyle(SummaryTableStyleHelper.getHeaderStyles("self.getThemeColor()", styleSetting.getWsTableStyle()));
                     item.setTag(UUID.randomUUID().toString());
