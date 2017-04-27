@@ -1,7 +1,6 @@
 package com.fr.bi.cal.analyze.report.report.widget.chart.types;
 
 import com.fr.json.JSONArray;
-import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
 
 /**
@@ -10,7 +9,7 @@ import com.fr.json.JSONObject;
 public class VanFallColumnWidget extends VanColumnWidget{
 
     public JSONArray createSeries(JSONObject originData) throws Exception {
-        return this.createStackedEmptySeries(originData);
+        return addStackedEmptySeries(super.createSeries(originData));
     }
 
 }
