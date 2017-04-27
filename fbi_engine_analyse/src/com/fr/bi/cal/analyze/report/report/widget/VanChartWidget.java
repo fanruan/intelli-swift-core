@@ -14,6 +14,7 @@ import com.fr.general.Inter;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
+import com.fr.stable.StableUtils;
 import com.fr.stable.StringUtils;
 import com.fr.web.core.SessionDealWith;
 
@@ -31,6 +32,8 @@ public abstract class VanChartWidget extends TableWidget {
     private static final double GREEN_DET = 0.587;
     private static final double BLUE_DET = 0.114;
     private static final double GRAY = 192;
+
+    private static final String STACK_ID_PREFIX = "STACKID";
 
     //标签和数据点提示的内容
     public static final String CATEGORY = "${CATEGORY}";
@@ -110,6 +113,31 @@ public abstract class VanChartWidget extends TableWidget {
     };
 
     public abstract String getSeriesType(String dimensionID);
+
+    public JSONObject createOptions(JSONObject globalStyle, JSONObject data) throws Exception {
+        JSONObject options = JSONObject.create();
+        JSONObject settings = this.getDetailChartSetting();
+        JSONObject plateConfig = BIConfUtils.getPlateConfig();
+
+        options.put("chartType", this.getSeriesType(StringUtils.EMPTY));
+
+        options.put("colors", this.parseColors(settings, globalStyle, plateConfig));
+
+        options.put("style", this.parseStyle(settings, globalStyle, plateConfig));
+
+        options.put(this.getLegendType(), this.parseLegend(settings));
+
+        options.put("plotOptions", this.createPlotOptions(globalStyle, settings));
+
+        options.put("series", this.createSeries(data));
+
+        //处理格式的问题
+        this.formatSeriesTooltipFormat(options);
+
+        this.formatSeriesDataLabelFormat(options);
+
+        return options;
+    }
 
     public JSONArray createSeries(JSONObject data) throws Exception {
         return this.createXYSeries(data);
@@ -398,30 +426,6 @@ public abstract class VanChartWidget extends TableWidget {
         return this.createOptions(globalStyle, data);
     }
 
-    public JSONObject createOptions(JSONObject globalStyle, JSONObject data) throws Exception {
-        JSONObject options = JSONObject.create();
-        JSONObject settings = this.getDetailChartSetting();
-        JSONObject plateConfig = BIConfUtils.getPlateConfig();
-
-        options.put("chartType", this.getSeriesType(StringUtils.EMPTY));
-
-        options.put("colors", this.parseColors(settings, globalStyle, plateConfig));
-
-        options.put("style", this.parseStyle(settings, globalStyle, plateConfig));
-
-        options.put(this.getLegendType(), this.parseLegend(settings));
-
-        options.put("plotOptions", this.createPlotOptions(globalStyle, settings));
-
-        options.put("series", this.createSeries(data));
-
-        //处理格式的问题
-        this.formatSeriesTooltipFormat(options);
-
-        this.formatSeriesDataLabelFormat(options);
-
-        return options;
-    }
 /*
 * 如果没有的话，使用默认值
 * */
@@ -565,8 +569,11 @@ public abstract class VanChartWidget extends TableWidget {
                 JSONObject ser = series.getJSONObject(i);
                 String dimensionID = ser.optString("dimensionID");
 
-                ser.put("dataLabels", new JSONObject(dataLabels.toString()).optJSONObject("formatter")
-                        .put("valueFormat", this.dataLabelValueFormat(this.getBITargetByID(dimensionID))));
+                JSONObject labels = new JSONObject(dataLabels.toString());
+                labels.optJSONObject("formatter")
+                        .put("valueFormat", this.dataLabelValueFormat(this.getBITargetByID(dimensionID)));
+
+                ser.put("dataLabels", labels);
             }
         }
     }
@@ -609,7 +616,8 @@ public abstract class VanChartWidget extends TableWidget {
             JSONObject ser = JSONObject.create().put("data", data).put("name", name)
                     .put("type", this.getSeriesType(targetIDs[0])).put("dimensionID", targetIDs[0]);
             if (isStacked) {
-                ser.put("stacked", targetIDs[0]);
+                //todo:应该也有问题，不知道怎么改，遇到bug的话参照createSeriesWithChildren里面的改法
+                ser.put("stack", targetIDs[0]);
             }
             series.put(ser);
         }
@@ -649,7 +657,7 @@ public abstract class VanChartWidget extends TableWidget {
             JSONObject ser = JSONObject.create().put("data", data).put("name", getDimensionNameByID(id))
                     .put("type", type).put("yAxis", yAxis).put("dimensionID", id);
             if (this.isStacked(id)) {
-                ser.put("stacked", stackedKey);
+                ser.put("stack", STACK_ID_PREFIX + yAxis);
             }
             series.put(ser);
             this.idValueMap.put(id, valueList);
@@ -659,12 +667,13 @@ public abstract class VanChartWidget extends TableWidget {
 
     protected String formatCategory(int groupType, String category){
 
-        long dateValue = 0;
-        try {
-            dateValue = Long.parseLong(category);
-        }catch (NumberFormatException e){
-            BILoggerFactory.getLogger().error(e.getMessage(), e);
+        Number dateCategory = StableUtils.string2Number(category);
+
+        if(dateCategory == null){
+            return category;
         }
+
+        long dateValue = dateCategory.longValue();
 
         switch (groupType) {
             case BIReportConstant.GROUP.S:

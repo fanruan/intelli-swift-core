@@ -244,13 +244,8 @@ public class BICubeLogGetterServiceImpl implements BICubeLogGetterService {
 
     @Override
     public int getRelationAlreadyGenerate() {
-        int size = 0;
-        List<Map<String, Object>> fieldList = getTableFieldIndexLogInfo();
-        for (Map fieldMap : fieldList) {
-            Map fields = (Map) fieldMap.get("relations");
-            size += fields.size();
-        }
-        return size;
+        List<Map<String, Object>> fieldList = getRelationIndexLogInfo();
+        return fieldList.size();
     }
 
     private Set<String> getPackageNames(String tableSouceId) {
