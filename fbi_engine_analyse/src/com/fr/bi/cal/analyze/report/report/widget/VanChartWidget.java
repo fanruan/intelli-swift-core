@@ -79,6 +79,31 @@ public abstract class VanChartWidget extends TableWidget {
 
     public abstract String getSeriesType(String dimensionID);
 
+    public JSONObject createOptions(JSONObject globalStyle, JSONObject data) throws Exception {
+        JSONObject options = JSONObject.create();
+        JSONObject settings = this.getDetailChartSetting();
+        JSONObject plateConfig = BIConfUtils.getPlateConfig();
+
+        options.put("chartType", this.getSeriesType(StringUtils.EMPTY));
+
+        options.put("colors", this.parseColors(settings, globalStyle, plateConfig));
+
+        options.put("style", this.parseStyle(settings, globalStyle, plateConfig));
+
+        options.put(this.getLegendType(), this.parseLegend(settings));
+
+        options.put("plotOptions", this.createPlotOptions(globalStyle, settings));
+
+        options.put("series", this.createSeries(data));
+
+        //处理格式的问题
+        this.formatSeriesTooltipFormat(options);
+
+        this.formatSeriesDataLabelFormat(options);
+
+        return options;
+    }
+
     public JSONArray createSeries(JSONObject data) throws Exception {
         return this.createXYSeries(data);
     }
@@ -366,30 +391,6 @@ public abstract class VanChartWidget extends TableWidget {
         return this.createOptions(globalStyle, data);
     }
 
-    public JSONObject createOptions(JSONObject globalStyle, JSONObject data) throws Exception {
-        JSONObject options = JSONObject.create();
-        JSONObject settings = this.getDetailChartSetting();
-        JSONObject plateConfig = BIConfUtils.getPlateConfig();
-
-        options.put("chartType", this.getSeriesType(StringUtils.EMPTY));
-
-        options.put("colors", this.parseColors(settings, globalStyle, plateConfig));
-
-        options.put("style", this.parseStyle(settings, globalStyle, plateConfig));
-
-        options.put(this.getLegendType(), this.parseLegend(settings));
-
-        options.put("plotOptions", this.createPlotOptions(globalStyle, settings));
-
-        options.put("series", this.createSeries(data));
-
-        //处理格式的问题
-        this.formatSeriesTooltipFormat(options);
-
-        this.formatSeriesDataLabelFormat(options);
-
-        return options;
-    }
 /*
 * 如果没有的话，使用默认值
 * */
