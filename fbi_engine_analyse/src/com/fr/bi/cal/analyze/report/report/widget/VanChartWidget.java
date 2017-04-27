@@ -14,6 +14,7 @@ import com.fr.general.Inter;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
+import com.fr.stable.StableUtils;
 import com.fr.stable.StringUtils;
 import com.fr.web.core.SessionDealWith;
 
@@ -624,12 +625,13 @@ public abstract class VanChartWidget extends TableWidget {
 
     protected String formatCategory(int groupType, String category){
 
-        long dateValue = 0;
-        try {
-            dateValue = Long.parseLong(category);
-        }catch (NumberFormatException e){
-            BILoggerFactory.getLogger().error(e.getMessage(), e);
+        Number dateCategory = StableUtils.string2Number(category);
+
+        if(dateCategory == null){
+            return category;
         }
+
+        long dateValue = dateCategory.longValue();
 
         switch (groupType) {
             case BIReportConstant.GROUP.S:
