@@ -1,6 +1,8 @@
 package com.fr.bi.stable.report.update.operation;
 
 import com.finebi.cube.common.log.BILoggerFactory;
+import com.fr.bi.stable.utils.program.BIStringUtils;
+import com.fr.general.ComparatorUtils;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
 
@@ -36,7 +38,12 @@ public class ReportKeyChangeOperation extends ReportCamelOperation {
 
     protected String updateKey(String str) {
         try {
-            return null != keys ? keys.optString("str", str) : str;
+            String updatedKeys = null != keys ? keys.optString(str, str) : str;
+            if (!ComparatorUtils.equals(updatedKeys, str)) {
+                BILoggerFactory.getLogger(this.getClass()).info(BIStringUtils.append("compatibility warning! the parameter whose name is ", str, " should be transfered"));
+            }
+
+            return updatedKeys;
         } catch (Exception e) {
             BILoggerFactory.getLogger(this.getClass()).error(e.getMessage(), e);
         }
@@ -68,8 +75,8 @@ public class ReportKeyChangeOperation extends ReportCamelOperation {
     private JSONObject readKeyJson() throws JSONException, ClassNotFoundException, IOException {
         StringBuffer keysStr = new StringBuffer();
         InputStream is = this.getClass().getResourceAsStream(DEFAULT_FILE_NAME);
-        if (is==null){
-            BILoggerFactory.getLogger(this.getClass()).error("keys.json not existed in this path"+this.getClass().getResource("").toString());
+        if (is == null) {
+            BILoggerFactory.getLogger(this.getClass()).error("keys.json not existed in this path" + this.getClass().getResource("").toString());
             return new JSONObject();
         }
         BufferedReader br = new BufferedReader(new InputStreamReader(is));

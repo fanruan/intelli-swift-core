@@ -1,6 +1,8 @@
 package com.fr.bi.stable.report.update.operation;
 
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.stable.utils.program.BIJsonUtils;
+import com.fr.bi.stable.utils.program.BIStringUtils;
 import com.fr.general.ComparatorUtils;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONException;
@@ -92,6 +94,9 @@ public class ReportCamelOperation implements ReportUpdateOperation {
 //        if (sb.length() > 0) {
 //            sb.setCharAt(0, sb.substring(0).toLowerCase().toCharArray()[0]);
 //        }
+        if (!ComparatorUtils.equals(str,sb.toString())){
+            BILoggerFactory.getLogger(this.getClass()).info(BIStringUtils.append("compatibility warning! the parameter whose name is ",str," should be transfered"));
+        }
         return sb.toString();
     }
 }
