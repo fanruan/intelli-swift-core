@@ -7,7 +7,6 @@ import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.engine.index.key.IndexKey;
 import com.fr.bi.stable.engine.index.key.IndexTypeKey;
 
-import java.util.Calendar;
 import java.util.Map;
 
 public class BIDateDetailTarget extends BIStringDetailTarget {
@@ -55,20 +54,6 @@ public class BIDateDetailTarget extends BIStringDetailTarget {
     public Object createShowValue(Object value) {
         if (value == null) {
             return null;
-        }
-        Calendar c = Calendar.getInstance();
-        switch (group.getType()) {
-            case BIReportConstant.GROUP.YMD:
-                c.setTimeInMillis((Long) value);
-                return c.get(Calendar.YEAR) + "-" + insertZero(c.get(Calendar.MONTH) + 1) + "-" + insertZero(c.get(Calendar.DAY_OF_MONTH));
-            case BIReportConstant.GROUP.YMDHMS:
-                c.setTimeInMillis((Long) value);
-                return c.get(Calendar.YEAR) + "-"
-                        + insertZero(c.get(Calendar.MONTH) + 1) + "-"
-                        + insertZero(c.get(Calendar.DAY_OF_MONTH)) + " "
-                        + insertZero(c.get(Calendar.HOUR_OF_DAY)) + ":"
-                        + insertZero(c.get(Calendar.MINUTE)) + ":"
-                        + insertZero(c.get(Calendar.SECOND));
         }
         return value;
     }
