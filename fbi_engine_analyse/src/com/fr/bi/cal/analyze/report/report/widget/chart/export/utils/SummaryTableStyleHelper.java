@@ -2,7 +2,7 @@ package com.fr.bi.cal.analyze.report.report.widget.chart.export.utils;
 
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.basic.BITableItemStyle;
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.basic.ITableStyle;
-import com.fr.bi.stable.constant.BIGlobalStyleConstant;
+import com.fr.bi.stable.constant.BIStyleConstant;
 
 /**
  * Created by Kary on 2017/2/26.
@@ -19,7 +19,7 @@ public class SummaryTableStyleHelper {
 
     public static ITableStyle getBodyStyles(String themeColor, int styleType, int index) {
         switch (styleType) {
-            case BIGlobalStyleConstant.TABLE_STYLE.STYLE_NORMAL:
+            case BIStyleConstant.TABLE_STYLE.STYLE_NORMAL:
                 String background = getRowColorByIndexAndThemeColor(index, themeColor);
                 return new BITableItemStyle(background,null,null);
         }

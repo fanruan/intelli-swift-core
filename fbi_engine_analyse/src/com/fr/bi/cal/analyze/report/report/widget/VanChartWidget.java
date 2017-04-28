@@ -6,7 +6,7 @@ import com.fr.bi.conf.report.WidgetType;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.conf.session.BISessionProvider;
 import com.fr.bi.field.target.target.BISummaryTarget;
-import com.fr.bi.stable.constant.BIGlobalStyleConstant;
+import com.fr.bi.stable.constant.BIStyleConstant;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.tool.BIReadReportUtils;
 import com.fr.bi.util.BIConfUtils;
@@ -402,7 +402,7 @@ public abstract class VanChartWidget extends TableWidget {
             if (settings.has("chartColor")) {
                 return settings.getJSONArray("chartColor");
             } else {
-                String[] defaultColors = BIGlobalStyleConstant.DEFAULT_CHART_SETTING.CHART_COLOR;
+                String[] defaultColors = BIStyleConstant.DEFAULT_CHART_SETTING.CHART_COLOR;
                 JSONArray array = new JSONArray();
                 for (int i = 0; i < defaultColors.length; i++) {
                     array.put(defaultColors[i]);

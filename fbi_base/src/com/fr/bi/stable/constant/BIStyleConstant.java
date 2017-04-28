@@ -4,7 +4,7 @@ package com.fr.bi.stable.constant;
  * Created by Kary on 2017/4/7.
  */
 
-public class BIGlobalStyleConstant {
+public class BIStyleConstant {
     //表设置所有默认属性（应该是包含分组表、交叉表、复杂表和其他所有图表）
     public static final class DEFAULT_CHART_SETTING {
         public static final int TABLE_FORM_GROUP = TABLE_FORM.OPEN_ROW;

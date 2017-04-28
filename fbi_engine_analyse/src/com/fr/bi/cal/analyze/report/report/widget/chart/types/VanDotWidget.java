@@ -143,7 +143,7 @@ public class VanDotWidget extends VanCartesianWidget{
 
     public JSONArray createSeries(JSONObject originData) throws Exception{
         WidgetType chartType = this.getChartType();
-        if(chartType == WidgetType.BUBBLE || chartType == WidgetType.SCATTER){
+        if(chartType == WidgetType.BUBBLE || chartType == WidgetType.SCATTER || this.getSeriesDimension() == null){
             return this.createBubbleScatterSeries(originData);
         }
         JSONArray series = JSONArray.create();
@@ -237,7 +237,7 @@ public class VanDotWidget extends VanCartesianWidget{
         if(chartType == WidgetType.DOT){
             JSONObject scopes = this.getChartSetting().getScopes();
 
-            int type = SCATTER;
+            int type = BUBBLE;
             try {
                 if(scopes.has(TARGET)){
                     type = scopes.getJSONObject(TARGET).optInt("valueType", BUBBLE);

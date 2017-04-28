@@ -4,8 +4,8 @@ import com.fr.bi.base.BICore;
 import com.fr.bi.base.BICoreGenerator;
 import com.fr.bi.base.annotation.BICoreField;
 import com.finebi.cube.common.log.BILoggerFactory;
-import com.fr.bi.cal.analyze.report.report.widget.styles.BIStyleReportSetting;
-import com.fr.bi.cal.analyze.report.report.widget.styles.BIStyleSetting;
+import com.fr.bi.cal.analyze.report.report.styles.BIReportStyle;
+import com.fr.bi.cal.analyze.report.report.styles.IReportStyle;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;
@@ -23,7 +23,7 @@ public class BIDetailReportSetting implements BIDetailSetting {
 
     private int number = 0;
 
-    private BIStyleSetting styleSetting;
+    private IReportStyle styleSetting;
 
     @Override
     public void parseJSON(JSONObject jo) throws Exception {
@@ -50,7 +50,7 @@ public class BIDetailReportSetting implements BIDetailSetting {
             }
         }
         JSONObject settings = jo.has("settings") ? jo.getJSONObject("settings") : new JSONObject();
-        styleSetting = new BIStyleReportSetting();
+        styleSetting = new BIReportStyle();
         styleSetting.parseJSON(settings);
     }
 
@@ -87,8 +87,4 @@ public class BIDetailReportSetting implements BIDetailSetting {
         return new BICoreGenerator(this).fetchObjectCore();
     }
 
-    @Override
-    public BIStyleSetting getStyleSetting() {
-        return styleSetting;
-    }
 }

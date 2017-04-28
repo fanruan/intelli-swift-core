@@ -79,7 +79,7 @@ public class VanMapWidget extends VanChartWidget{
         if(settings.optInt("styleRadio", AUTO) == AUTO){
             legend.put("range", JSONObject.create().put("color", settings.optString("chartColor")));
         }else{
-            mapStyle = settings.optJSONArray("mapStyle");
+            mapStyle = settings.optJSONArray("mapStyles");
             legend.put("range", this.mapStyleToRange(mapStyle));
         }
 
