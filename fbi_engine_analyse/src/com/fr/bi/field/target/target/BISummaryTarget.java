@@ -79,6 +79,10 @@ public abstract class BISummaryTarget extends BIAbstractTarget {
         return TargetType.NORMAL;
     }
 
+    public SumType getSumType(){
+        return SumType.GVI;
+    }
+
     /**
      * hash值
      *

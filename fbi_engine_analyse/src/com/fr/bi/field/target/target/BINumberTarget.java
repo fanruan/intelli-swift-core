@@ -1,7 +1,6 @@
 package com.fr.bi.field.target.target;
 
 import com.fr.bi.field.target.calculator.sum.AvgCalculator;
-import com.fr.bi.field.target.calculator.sum.CountCalculator;
 import com.fr.bi.field.target.calculator.sum.MaxCalculator;
 import com.fr.bi.field.target.calculator.sum.MinCalculator;
 import com.fr.bi.field.target.calculator.sum.SumCalculator;
@@ -11,6 +10,10 @@ import com.fr.bi.stable.report.result.TargetCalculator;
 public class BINumberTarget extends BISummaryTarget {
 
     private static final long serialVersionUID = -3265242640054177730L;
+
+	public SumType getSumType(){
+		return getSummaryType() == BIReportConstant.SUMMARY_TYPE.SUM ? SumType.PLUS : SumType.GVI;
+	}
 
     @Override
     public TargetCalculator createSummaryCalculator() {
@@ -23,9 +26,6 @@ public class BINumberTarget extends BISummaryTarget {
 	    	}
 	    	case BIReportConstant.SUMMARY_TYPE.MIN :{
 	    		return  new MinCalculator(this);
-	    	}
-	    	case BIReportConstant.SUMMARY_TYPE.COUNT :{
-	    		return  new CountCalculator(this, getStatisticElement().getFieldName());
 	    	}
 	    	case BIReportConstant.SUMMARY_TYPE.AVG :{
 	    		return  new AvgCalculator(this);

@@ -34,6 +34,7 @@ public class ConstructedRootDimensionGroup extends RootDimensionGroup {
     private boolean setIndex;
     private boolean hasInSumMetric;
     private BIMultiThreadExecutor executor;
+    private boolean calAllPage;
     private int[] sortType;
     private TargetGettingKey[] sortTargetKey;
 
@@ -41,14 +42,16 @@ public class ConstructedRootDimensionGroup extends RootDimensionGroup {
     }
 
     public ConstructedRootDimensionGroup(List<MetricGroupInfo> metricGroupInfoList, MergeIteratorCreator[] mergeIteratorCreators, int sumLength, BISession session, boolean useRealData,
-                                         NameObject[] dimensionTargetSort, List<CalCalculator> calCalculators, BIDimension[] filterDimension, boolean setIndex, boolean hasInSumMetric,  BIMultiThreadExecutor executor) {
+                                         NameObject[] dimensionTargetSort, List<CalCalculator> calCalculators, BIDimension[] filterDimension, boolean setIndex, boolean hasInSumMetric,  BIMultiThreadExecutor executor, boolean calAllPage) {
         super(metricGroupInfoList, mergeIteratorCreators, sumLength, session, useRealData);
         this.calCalculators = calCalculators;
         this.filterDimension = filterDimension;
-        this.setIndex = setIndex || hasInSumMetric;
+        //需要返回带索引的node或者需要使用gvisum的情况
+        this.setIndex = setIndex || (hasInSumMetric && filterDimension != null);
         this.dimensionTargetSort = dimensionTargetSort;
         this.hasInSumMetric = hasInSumMetric;
         this.executor = executor;
+        this.calAllPage = calAllPage;
     }
 
     public Node getConstructedRoot(){
@@ -122,6 +125,7 @@ public class ConstructedRootDimensionGroup extends RootDimensionGroup {
         }
         if (hasTargetSort()){
             sort(rootNode, 0);
+            NodeUtils.setSiblingBetweenFirstAndLastChild(rootNode);
         }
         root.setChildren(rootNode.getChilds());
         root.setSummaryValue(rootNode.getSummaryValue());
@@ -193,6 +197,32 @@ public class ConstructedRootDimensionGroup extends RootDimensionGroup {
         return results;
     }
 
+    //有过滤要重新汇总下
+    private void reSum() {
+        List<TargetGettingKey> keys = new ArrayList<TargetGettingKey>();
+        for (List<TargetAndKey> list : summaryLists) {
+            for (TargetAndKey key : list) {
+                keys.add(key.getTargetGettingKey());
+            }
+        }
+        NodeSummarizing summarizing = hasInSumMetric ? new NodeGVISummarizing(rootNode, keys.toArray(new TargetGettingKey[keys.size()])) : new NodeSummarizing(rootNode, keys.toArray(new TargetGettingKey[keys.size()]));
+        summarizing.sum();
+        //gvi汇总之后如果需要用到全部结果，或者需要排序，就对node再汇总一次，最后一层不需要汇总
+        if (hasInSumMetric && (calAllPage || hasTargetSort())){
+            sumAfterVISummarizing(rootNode, 0);
+        }
+    }
+
+    private void sumAfterVISummarizing(MetricMergeResult node, int deep){
+        sum(node);
+        //最后一层不需要resum
+        if (deep < rowSize - 1) {
+            for (Node n : node.getChilds()) {
+                sumAfterVISummarizing((MetricMergeResult) n, deep + 1);
+            }
+        }
+    }
+
 
     private void sort(MetricMergeResult node, int deep) {
         if (deep < rowSize) {
@@ -222,21 +252,11 @@ public class ConstructedRootDimensionGroup extends RootDimensionGroup {
             }
             for (Node n : node.getChilds()) {
                 sort((MetricMergeResult) n, deep + 1);
+                n.setSibling(null);
             }
         }
     }
 
-    //有过滤要重新汇总下
-    private void reSum() {
-        List<TargetGettingKey> keys = new ArrayList<TargetGettingKey>();
-        for (List<TargetAndKey> list : summaryLists) {
-            for (TargetAndKey key : list) {
-                keys.add(key.getTargetGettingKey());
-            }
-        }
-        NodeSummarizing summarizing = hasInSumMetric ? new NodeGVISummarizing(rootNode, keys.toArray(new TargetGettingKey[keys.size()])) : new NodeSummarizing(rootNode, keys.toArray(new TargetGettingKey[keys.size()]));
-        summarizing.sum();
-    }
 
     private void singleThreadBuild() {
         cal(rootNode, root, 0);
