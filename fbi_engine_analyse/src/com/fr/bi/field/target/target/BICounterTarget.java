@@ -89,6 +89,10 @@ public class BICounterTarget extends BISummaryTarget {
         return result;
     }
 
+    public SumType getSumType(){
+        return StringUtils.isNotEmpty(distinct_field_name) ? SumType.GVI : SumType.PLUS;
+    }
+
     @Override
     public TargetCalculator createSummaryCalculator() {
         return new CountCalculator(this, distinct_field_name);
