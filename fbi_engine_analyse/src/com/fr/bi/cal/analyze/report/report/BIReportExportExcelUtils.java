@@ -4,6 +4,7 @@ import com.fr.base.ScreenResolution;
 import com.fr.bi.conf.report.BIWidget;
 import com.fr.bi.conf.report.WidgetType;
 import com.fr.bi.manager.PerformancePlugManager;
+import com.fr.bi.stable.constant.DateConstant;
 import com.fr.general.IOUtils;
 import com.fr.json.JSONObject;
 import com.fr.report.cell.FloatElement;
@@ -34,7 +35,6 @@ public class BIReportExportExcelUtils {
     private static int daysOfFebruary = 29;
     private static int[] daysOfMonth = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
     private static int timeOut = 5000;
-    private static int[] month = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11};
     private static int year4 = 4;
     private static int year100 = 100;
     private static int year400 = 400;
@@ -186,24 +186,25 @@ public class BIReportExportExcelUtils {
     }
 
     static int getQuarterStartMonth(int nowMonth) {
-        int quarterStartMonth = month[0];
-        if (nowMonth < month[3]) {
-            quarterStartMonth = month[0];
+        int quarterStartMonth = DateConstant.CALENDAR.MONTH.JANUARY;
+        if (nowMonth < DateConstant.CALENDAR.MONTH.APRIL) {
+            quarterStartMonth = DateConstant.CALENDAR.MONTH.JANUARY;
         }
-        if (month[2] < nowMonth && nowMonth < month[6]) {
-            quarterStartMonth = 3;
+        if (DateConstant.CALENDAR.MONTH.MARCH < nowMonth && nowMonth < DateConstant.CALENDAR.MONTH.JULY) {
+            quarterStartMonth = DateConstant.CALENDAR.MONTH.APRIL;
         }
-        if (month[5] < nowMonth && nowMonth < month[9]) {
-            quarterStartMonth = month[6];
+        if (DateConstant.CALENDAR.MONTH.JUNE < nowMonth && nowMonth < DateConstant.CALENDAR.MONTH.OCTOBER) {
+            quarterStartMonth = DateConstant.CALENDAR.MONTH.JULY;
         }
-        if (nowMonth > month[8]) {
-            quarterStartMonth = month[9];
+        if (nowMonth > DateConstant.CALENDAR.MONTH.SEPTEMBER) {
+            quarterStartMonth = DateConstant.CALENDAR.MONTH.SEPTEMBER;
         }
         return quarterStartMonth;
     }
 
     static int getMonthDays(int year, int month) {
-        if (((0 == (year % year4)) && ((0 != (year % year100)) || (0 == (year % year400)))) && month == 1) {
+        boolean isLeapYear = (0 == (year % year4)) && ((0 != (year % year100)) || (0 == (year % year400)));
+        if (isLeapYear && month == 1) {
             return daysOfFebruary;
         } else {
             return daysOfMonth[month];
