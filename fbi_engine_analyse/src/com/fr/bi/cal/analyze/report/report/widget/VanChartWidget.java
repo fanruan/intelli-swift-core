@@ -105,7 +105,7 @@ public abstract class VanChartWidget extends TableWidget {
             Inter.getLocText("BI-Basic_Sunday"),
             Inter.getLocText("BI-Basic_Monday"),
             Inter.getLocText("BI-Basic_Tuesday"),
-            Inter.getLocText("BI-Wednesday"),
+            Inter.getLocText("BI-Basic_Wednesday"),
             Inter.getLocText("BI-Basic_Thursday"),
             Inter.getLocText("BI-Basic_Friday"),
             Inter.getLocText("BI-Basic_Saturday"),
