@@ -3,7 +3,6 @@ package com.fr.bi.cal.analyze.cal.sssecret;
 import com.finebi.cube.api.ICubeValueEntryGetter;
 import com.fr.bi.cal.analyze.cal.multithread.BIMultiThreadExecutor;
 import com.fr.bi.cal.analyze.cal.multithread.BISingleThreadCal;
-import com.fr.bi.cal.analyze.cal.multithread.MultiThreadManagerImpl;
 import com.fr.bi.cal.analyze.cal.sssecret.diminfo.MergeIteratorCreator;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.gvi.GroupValueIndexOrHelper;
@@ -23,18 +22,20 @@ public class NodeIndirectFilterIndexCalculator {
     private boolean useRealData;
     //最后一个需要构建结构的维度
     private int lastIndirectFilterDimensionIndex;
+    private BIMultiThreadExecutor executor;
 
     private GroupValueIndexOrHelper[] helpers;
     private ReentrantLock[] locks;
 
     public NodeIndirectFilterIndexCalculator(NoneDimensionGroup root, ICubeValueEntryGetter[][] getters, DimensionCalculator[][] columns,
-                                             MergeIteratorCreator[] mergeIteratorCreators, boolean useRealData, int lastConstructedDimensionIndex) {
+                                             MergeIteratorCreator[] mergeIteratorCreators, boolean useRealData, int lastConstructedDimensionIndex, BIMultiThreadExecutor executor) {
         this.root = root;
         this.getters = getters;
         this.columns = columns;
         this.mergeIteratorCreators = mergeIteratorCreators;
         this.useRealData = useRealData;
         this.lastIndirectFilterDimensionIndex = lastConstructedDimensionIndex;
+        this.executor = executor;
     }
 
 
@@ -48,8 +49,8 @@ public class NodeIndirectFilterIndexCalculator {
             helpers[i] = new GroupValueIndexOrHelper();
             locks[i] = new ReentrantLock();
         }
-        //在第一个维度过滤的情况下这边不用多线程
-        if (MultiThreadManagerImpl.getInstance().isMultiCall() && lastIndirectFilterDimensionIndex > 0) {
+        //在第一个维度过滤的情况下这边不用多线程，用了效率反而更低
+        if (executor != null && lastIndirectFilterDimensionIndex > 0) {
             multiThreadBuild();
         } else {
             singleThreadBuild();
@@ -110,8 +111,6 @@ public class NodeIndirectFilterIndexCalculator {
         private AtomicInteger[] count;
         //每一层维度被丢进线程池的数量
         private AtomicInteger[] size;
-
-        private BIMultiThreadExecutor executor = MultiThreadManagerImpl.getInstance().getExecutorService();
 
         public void build() {
             int dimensionSize = lastIndirectFilterDimensionIndex;
@@ -192,7 +191,7 @@ public class NodeIndirectFilterIndexCalculator {
             }
 
             private void calculate() {
-                try{
+                try {
                     if (level < lastIndirectFilterDimensionIndex) {
                         SingleDimensionGroup rootGroup = childDimensionGroup.createSingleDimensionGroup(columns[level + 1], getters[level + 1], null, mergeIteratorCreators[level + 1], useRealData);
                         int index = 0;

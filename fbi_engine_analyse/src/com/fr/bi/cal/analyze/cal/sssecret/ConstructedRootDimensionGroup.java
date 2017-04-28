@@ -5,7 +5,6 @@ import com.fr.bi.cal.analyze.cal.index.loader.MetricGroupInfo;
 import com.fr.bi.cal.analyze.cal.index.loader.TargetAndKey;
 import com.fr.bi.cal.analyze.cal.multithread.BIMultiThreadExecutor;
 import com.fr.bi.cal.analyze.cal.multithread.BISingleThreadCal;
-import com.fr.bi.cal.analyze.cal.multithread.MultiThreadManagerImpl;
 import com.fr.bi.cal.analyze.cal.multithread.SummaryCall;
 import com.fr.bi.cal.analyze.cal.result.Node;
 import com.fr.bi.cal.analyze.cal.result.NodeUtils;
@@ -34,6 +33,7 @@ public class ConstructedRootDimensionGroup extends RootDimensionGroup {
     private BIDimension[] filterDimension;
     private boolean setIndex;
     private boolean hasInSumMetric;
+    private BIMultiThreadExecutor executor;
     private int[] sortType;
     private TargetGettingKey[] sortTargetKey;
 
@@ -41,13 +41,14 @@ public class ConstructedRootDimensionGroup extends RootDimensionGroup {
     }
 
     public ConstructedRootDimensionGroup(List<MetricGroupInfo> metricGroupInfoList, MergeIteratorCreator[] mergeIteratorCreators, int sumLength, BISession session, boolean useRealData,
-                                         NameObject[] dimensionTargetSort, List<CalCalculator> calCalculators, BIDimension[] filterDimension, boolean setIndex, boolean hasInSumMetric) {
+                                         NameObject[] dimensionTargetSort, List<CalCalculator> calCalculators, BIDimension[] filterDimension, boolean setIndex, boolean hasInSumMetric,  BIMultiThreadExecutor executor) {
         super(metricGroupInfoList, mergeIteratorCreators, sumLength, session, useRealData);
         this.calCalculators = calCalculators;
         this.filterDimension = filterDimension;
         this.setIndex = setIndex || hasInSumMetric;
         this.dimensionTargetSort = dimensionTargetSort;
         this.hasInSumMetric = hasInSumMetric;
+        this.executor = executor;
     }
 
     public Node getConstructedRoot(){
@@ -98,7 +99,7 @@ public class ConstructedRootDimensionGroup extends RootDimensionGroup {
         if (columns.length == 0) {
             return;
         }
-        if (MultiThreadManagerImpl.getInstance().isMultiCall()) {
+        if (executor != null) {
             multiThreadBuild();
         } else {
             singleThreadBuild();
@@ -301,8 +302,6 @@ public class ConstructedRootDimensionGroup extends RootDimensionGroup {
         //每一层维度被丢进线程池的数量
         private AtomicInteger[] size;
 
-        private BIMultiThreadExecutor executor = MultiThreadManagerImpl.getInstance().getExecutorService();
-
         public void build() {
             count = new AtomicInteger[rowSize];
             size = new AtomicInteger[rowSize];
@@ -332,7 +331,6 @@ public class ConstructedRootDimensionGroup extends RootDimensionGroup {
                     }
                 }
             }
-            MultiThreadManagerImpl.getInstance().awaitExecutor(session);
             sum(rootNode);
         }
 
