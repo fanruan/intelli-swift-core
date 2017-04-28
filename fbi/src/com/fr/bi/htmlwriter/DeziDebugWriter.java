@@ -48,7 +48,7 @@ public class DeziDebugWriter {
             }
 
             for(String s : bases) {
-                writer.write("\t<script type=\"text/javascript\" src=\"${servletURL}?op=resource&resource=/" + s + "\"></script>");
+                writer.write("\t<script type=\"text/javascript\" src=\"${remoteServletURL}?op=resource&resource=/" + s + "\"></script>");
                 writer.newLine();
             }
 
@@ -58,7 +58,7 @@ public class DeziDebugWriter {
             }
 
             for(String s : modules) {
-                writer.write("\t<script type=\"text/javascript\" src=\"${servletURL}?op=resource&resource=/" + s + "\"></script>");
+                writer.write("\t<script type=\"text/javascript\" src=\"${remoteServletURL}?op=resource&resource=/" + s + "\"></script>");
                 writer.newLine();
             }
 
