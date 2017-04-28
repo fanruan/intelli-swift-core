@@ -359,7 +359,7 @@ public class BIGetTreeSearchNodeAction extends ActionNoSessionCMD {
         }
         if (times < RANDOMCIRCLETIME) {
             String v = StableUtils.join(parentValues, ",");
-            for (int i = (times - 1) * 10; i < times * DEFAULTROW; i++) {
+            for (int i = (times - 1) * DEFAULTROW; i < times * DEFAULTROW; i++) {
                 res.add(v + "_" + i);
             }
         }
