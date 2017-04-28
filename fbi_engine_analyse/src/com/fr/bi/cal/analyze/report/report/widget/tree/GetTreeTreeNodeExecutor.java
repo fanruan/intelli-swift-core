@@ -1,10 +1,9 @@
 package com.fr.bi.cal.analyze.report.report.widget.tree;
 
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.cal.analyze.executor.paging.Paging;
 import com.fr.bi.cal.analyze.report.report.widget.TreeWidget;
 import com.fr.bi.cal.analyze.session.BISession;
-import com.fr.bi.stable.constant.BIReportConstant;
-import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.stable.utils.program.BIJsonUtils;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONException;
@@ -34,11 +33,11 @@ public class GetTreeTreeNodeExecutor extends AbstractTreeNodeExecutor {
         if (jo.has("times")) {
             times = jo.getInt("times");
         }
-        if (jo.has("check_state")) {
-            checkStateString = jo.getString("check_state");
+        if (jo.has("checkState")) {
+            checkStateString = jo.getString("checkState");
         }
-        if (jo.has("parent_values")) {
-            parentValuesString = jo.getString("parent_values");
+        if (jo.has("parentValues")) {
+            parentValuesString = jo.getString("parentValues");
         }
 
 
@@ -73,14 +72,14 @@ public class GetTreeTreeNodeExecutor extends AbstractTreeNodeExecutor {
             return new JSONObject();
         }
 
-        JSONObject selected_values = new JSONObject();
+        JSONObject selectedValues = new JSONObject();
         if (selectedValuesString != null) {
-            selected_values = new JSONObject(selectedValuesString);
+            selectedValues = new JSONObject(selectedValuesString);
         }
         int pLen = parentValues == null ? 0 : parentValues.length();
         Map<String, Node> valueMap = new HashMap<String, Node>();
-        if (judgeState(pLen, checked, half, selected_values)) {
-            valueMap = dealWidthSelectedValue(values, selected_values);
+        if (judgeState(pLen, checked, half, selectedValues)) {
+            valueMap = dealWidthSelectedValue(values, selectedValues);
         }
 
         JSONObject jo = new JSONObject();

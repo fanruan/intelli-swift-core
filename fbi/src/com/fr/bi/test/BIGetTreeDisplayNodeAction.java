@@ -24,7 +24,7 @@ public class BIGetTreeDisplayNodeAction extends ActionNoSessionCMD {
 
         String floorString = WebUtils.getHTTPRequestParameter(req, "floors");
 
-        String selectedValuesString = WebUtils.getHTTPRequestParameter(req, "selected_values");
+        String selectedValuesString = WebUtils.getHTTPRequestParameter(req, "selectedValues");
 
         int floors = 1;
         if (floorString != null) {

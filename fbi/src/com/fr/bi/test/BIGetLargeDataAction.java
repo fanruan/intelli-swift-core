@@ -36,7 +36,7 @@ public class BIGetLargeDataAction extends ActionNoSessionCMD {
     public void actionCMD(HttpServletRequest req, HttpServletResponse res) throws Exception {
         String timesString = WebUtils.getHTTPRequestParameter(req, "times");//第几次加载
 
-        String selectedValuesString = WebUtils.getHTTPRequestParameter(req, "selected_values");
+        String selectedValuesString = WebUtils.getHTTPRequestParameter(req, "selectedValues");
         String countString = WebUtils.getHTTPRequestParameter(req, "count");
 
         int times = timesString == null ? 1 : Integer.parseInt(timesString);

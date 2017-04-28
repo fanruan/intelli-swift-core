@@ -22,16 +22,16 @@ public class AdjustTreeDataStructureExecutorTree extends AbstractTreeNodeExecuto
 
     public JSONObject getResultJSON() throws JSONException {
         JSONObject jo = new JSONObject();
-        JSONObject selected_values = new JSONObject();
+        JSONObject selectedValues = new JSONObject();
         if (selectedValuesString != null) {
-            selected_values = new JSONObject(selectedValuesString);
+            selectedValues = new JSONObject(selectedValuesString);
         }
-        if (selected_values.length() == 0) {
+        if (selectedValues.length() == 0) {
             return jo;
         }
 
         List<String[]> result = new ArrayList<String[]>();
-        JSONArray namesArray = selected_values.names();
+        JSONArray namesArray = selectedValues.names();
         String[] names = BIJsonUtils.jsonArray2StringArray(namesArray);
 
         for (String name : names) {
@@ -39,7 +39,7 @@ public class AdjustTreeDataStructureExecutorTree extends AbstractTreeNodeExecuto
             t[0] = name;
             result.add(t);
         }
-        dealWithSelectedValues(selected_values, new String[0], result);
+        dealWithSelectedValues(selectedValues, new String[0], result);
 
         for (String[] strs : result) {
             buildTree(jo, strs);

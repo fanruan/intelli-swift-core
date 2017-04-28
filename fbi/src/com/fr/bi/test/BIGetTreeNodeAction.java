@@ -18,6 +18,11 @@ import java.util.*;
  * Created by guy on 14-10-18.
  */
 public class BIGetTreeNodeAction extends ActionNoSessionCMD {
+    private static final int DEFAULTROW = 10;
+    private static final int CIRCLECOUNT = 20;
+    private static final int CHILDCOUNT = 20;
+    private static final int RANDOMCIRCLETIME = 3;
+    private int TIMES = 2;
 
     /**
      * 方法
@@ -30,11 +35,11 @@ public class BIGetTreeNodeAction extends ActionNoSessionCMD {
     public void actionCMD(HttpServletRequest req, HttpServletResponse res) throws Exception {
         String id = WebUtils.getHTTPRequestParameter(req, "id");
         String timesString = WebUtils.getHTTPRequestParameter(req, "times");//第几次加载
-        String checkedString = WebUtils.getHTTPRequestParameter(req, "check_state");
+        String checkedString = WebUtils.getHTTPRequestParameter(req, "checkState");
         String floorString = WebUtils.getHTTPRequestParameter(req, "floors");
 
-        String parentValuesString = WebUtils.getHTTPRequestParameter(req, "parent_values");
-        String selectedValuesString = WebUtils.getHTTPRequestParameter(req, "selected_values");
+        String parentValuesString = WebUtils.getHTTPRequestParameter(req, "parentValues");
+        String selectedValuesString = WebUtils.getHTTPRequestParameter(req, "selectedValues");
 
         String[] values = new String[0];
         JSONArray parentValues = null;
@@ -233,21 +238,21 @@ public class BIGetTreeNodeAction extends ActionNoSessionCMD {
 
 
     private boolean hasNext(String[] parentValues, int times) {
-        return times < 2;
+        return times < this.TIMES;
     }
 
     private List<String> randomData(String[] parentValues, int times, String selectedValuesString) throws JSONException {
         List<String> res = new ArrayList<String>();
         if (times == -1) {
             String v = StableUtils.join(parentValues, ",");
-            for (int i = 0; i < 20; i++) {
+            for (int i = 0; i < CHILDCOUNT; i++) {
                 res.add(v + "_" + i);
             }
             return res;
         }
-        if (times < 3) {
+        if (times < RANDOMCIRCLETIME) {
             String v = StableUtils.join(parentValues, ",");
-            for (int i = (times - 1) * 10; i < times * 10; i++) {
+            for (int i = (times - 1) * DEFAULTROW; i < times * DEFAULTROW; i++) {
                 res.add(v + "_" + i);
             }
         }
@@ -256,7 +261,7 @@ public class BIGetTreeNodeAction extends ActionNoSessionCMD {
 
 
     private int getChildCount(String[] values) {
-        return 20;
+        return CHILDCOUNT;
     }
 
     @Override

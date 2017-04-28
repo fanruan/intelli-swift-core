@@ -19,18 +19,20 @@ import java.util.List;
 
 public class BIGetTreeSelectNodeAction extends ActionNoSessionCMD {
 
+    private static final int CIRCLECOUNT = 20;
+
     @Override
     public void actionCMD(HttpServletRequest req, HttpServletResponse res) throws Exception {
 
-        String selectedValuesString = WebUtils.getHTTPRequestParameter(req, "selected_values");
-        String notSelectedValueString = WebUtils.getHTTPRequestParameter(req, "not_selected_value");
+        String selectedValuesString = WebUtils.getHTTPRequestParameter(req, "selectedValues");
+        String notSelectedValueString = WebUtils.getHTTPRequestParameter(req, "notSelectedValue");
         String keyword = WebUtils.getHTTPRequestParameter(req, "keyword");
         String floorsString = WebUtils.getHTTPRequestParameter(req, "floors");
-        String parentValueString = WebUtils.getHTTPRequestParameter(req, "parent_values");
+        String parentValueString = WebUtils.getHTTPRequestParameter(req, "parentValues");
 
-        JSONObject selected_values = new JSONObject();
+        JSONObject selectedValues = new JSONObject();
         if (selectedValuesString != null) {
-            selected_values = new JSONObject(selectedValuesString);
+            selectedValues = new JSONObject(selectedValuesString);
         }
 
         String[] parent = new String[0];
@@ -39,29 +41,29 @@ public class BIGetTreeSelectNodeAction extends ActionNoSessionCMD {
             parent = BIJsonUtils.jsonArray2StringArray(parentObject);
         }
 
-        if (selected_values.names() == null || selected_values.names().length() == 0) {
+        if (selectedValues.names() == null || selectedValues.names().length() == 0) {
             WebUtils.printAsJSON(res, new JSONObject());
             return;
         }
 
         int floors = floorsString == null ? 0 : Integer.parseInt(floorsString);
 
-        dealWithSelectValues(selected_values, notSelectedValueString, parent, floors, keyword);
-        WebUtils.printAsJSON(res, selected_values);
+        dealWithSelectValues(selectedValues, notSelectedValueString, parent, floors, keyword);
+        WebUtils.printAsJSON(res, selectedValues);
     }
 
-    private void dealWithSelectValues(JSONObject selected_values, String notSelectedValueString, String[] parent, int floors, String keyword) throws JSONException {
+    private void dealWithSelectValues(JSONObject selectedValues, String notSelectedValueString, String[] parent, int floors, String keyword) throws JSONException {
         String[] p = new String[parent.length + 1];
         System.arraycopy(parent, 0, p, 0, parent.length);
         p[parent.length] = notSelectedValueString;
 
-        if (isChild(selected_values, p)) {
+        if (isChild(selectedValues, p)) {
             List<String[]> result = new ArrayList<String[]>();
             boolean finded = search(parent.length + 1, floors, parent, notSelectedValueString, keyword, result);
 
             if (finded) {
 
-                JSONObject next = selected_values;
+                JSONObject next = selectedValues;
                 int i;
 
                 for (i = 0; i < p.length; i++) {
@@ -88,7 +90,7 @@ public class BIGetTreeSelectNodeAction extends ActionNoSessionCMD {
                 }
                 if (!result.isEmpty()) {
                     for (String[] arr : result) {
-                        buildTree(selected_values, arr);
+                        buildTree(selectedValues, arr);
                     }
                 }
             }
@@ -166,7 +168,7 @@ public class BIGetTreeSelectNodeAction extends ActionNoSessionCMD {
     private List<String> randomData(String[] parentValues) {
         List<String> res = new ArrayList<String>();
         String v = StableUtils.join(parentValues, ",");
-        for (int i = 0; i < 20; i++) {
+        for (int i = 0; i < CIRCLECOUNT; i++) {
             res.add(v + "_" + i);
         }
         return res;

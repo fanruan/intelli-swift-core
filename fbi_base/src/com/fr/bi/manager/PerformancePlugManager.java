@@ -43,7 +43,7 @@ public class PerformancePlugManager implements PerformancePlugManagerInterface {
 
     private long diskSortDumpThreshold = 1l << 15;
 
-    private int biThreadPoolSize = 1;
+    private int biThreadPoolSize = 10;
 
     private int biTransportThreadPoolSize = 2;
 

@@ -21,6 +21,12 @@ import java.util.List;
  */
 public class BIGetTreeSearchNodeAction extends ActionNoSessionCMD {
 
+    private static final int DEFAULTROW = 10;
+    private static final int CIRCLECOUNT = 20;
+    private static final int CHILDCOUNT = 20;
+    private static final int RANDOMCIRCLETIME = 3;
+    private int TIMES =2;
+
     /**
      * 方法
      *
@@ -37,9 +43,9 @@ public class BIGetTreeSearchNodeAction extends ActionNoSessionCMD {
         String keyword = WebUtils.getHTTPRequestParameter(req, "keyword");
         keyword = keyword == null ? "" : keyword;
 
-        String lastSearchValue = WebUtils.getHTTPRequestParameter(req, "last_search_value");
+        String lastSearchValue = WebUtils.getHTTPRequestParameter(req, "lastSearchValue");
 
-        String selectedValuesString = WebUtils.getHTTPRequestParameter(req, "selected_values");
+        String selectedValuesString = WebUtils.getHTTPRequestParameter(req, "selectedValues");
 //        int times = 1;
 //        if (timesString != null) {
 //            times = Integer.parseInt(timesString);
@@ -61,7 +67,7 @@ public class BIGetTreeSearchNodeAction extends ActionNoSessionCMD {
         jo.put("hasNext", output.size() > getRows());
         jo.put("items", result);
         if (!output.isEmpty()) {
-            jo.put("last_search_value", output.get(output.size() - 1));
+            jo.put("lastSearchValue", output.get(output.size() - 1));
         }
         WebUtils.printAsJSON(res, jo);
     }
@@ -346,14 +352,14 @@ public class BIGetTreeSearchNodeAction extends ActionNoSessionCMD {
         List<String> res = new ArrayList<String>();
         if (times <= 0) {
             String v = StableUtils.join(parentValues, ",");
-            for (int i = 0; i < 20; i++) {
+            for (int i = 0; i < CIRCLECOUNT; i++) {
                 res.add(v + "_" + i);
             }
             return res;
         }
-        if (times < 3) {
+        if (times < RANDOMCIRCLETIME) {
             String v = StableUtils.join(parentValues, ",");
-            for (int i = (times - 1) * 10; i < times * 10; i++) {
+            for (int i = (times - 1) * DEFAULTROW; i < times * DEFAULTROW; i++) {
                 res.add(v + "_" + i);
             }
         }
@@ -363,23 +369,23 @@ public class BIGetTreeSearchNodeAction extends ActionNoSessionCMD {
     private List<String> randomData(String[] parentValues) {
         List<String> res = new ArrayList<String>();
         String v = StableUtils.join(parentValues, ",");
-        for (int i = 0; i < 20; i++) {
+        for (int i = 0; i < CIRCLECOUNT; i++) {
             res.add(v + "_" + i);
         }
         return res;
     }
 
     private boolean hasNext(int times) {
-        return times < 2;
+        return times < TIMES;
     }
 
     private int getChildCount(String[] values) {
-        return 20;
+        return CHILDCOUNT;
     }
 
 
     private int getRows() {
-        return 10;
+        return DEFAULTROW;
     }
 
     @Override

@@ -38,7 +38,7 @@ public class StringControlWidget extends TableWidget {
     private static final long serialVersionUID = 8869194713947245611L;
     private int data_type = -2;
     private int times = -1;
-    private String selected_values;
+    private String selectedValues;
     private String[] keywords = new String[0];
     private boolean needDoLoadGroup = false;
 
@@ -52,8 +52,8 @@ public class StringControlWidget extends TableWidget {
         DimensionCalculator calculator = dimension.createCalculator(dimension.getStatisticElement(), new ArrayList<BITableSourceRelation>());
         Set<String> selected_value = new HashSet<String>();
 
-        if (selected_values != null && StringUtils.isNotEmpty(selected_values)) {
-            JSONArray selectedValueArray = new JSONArray(selected_values);
+        if (selectedValues != null && StringUtils.isNotEmpty(selectedValues)) {
+            JSONArray selectedValueArray = new JSONArray(selectedValues);
             selected_value.addAll(Arrays.asList(BIJsonUtils.jsonArray2StringArray(selectedValueArray)));
         }
 
@@ -227,7 +227,7 @@ public class StringControlWidget extends TableWidget {
             if (treeJo.has("times")) {
                 times = treeJo.getInt("times");
             }
-            selected_values = treeJo.optString("selected_values", StringUtils.EMPTY);
+            selectedValues = treeJo.optString("selectedValues", StringUtils.EMPTY);
             String keyword = treeJo.optString("keyword", "");
             if (keyword.isEmpty()) {
                 if (treeJo.has("keywords")) {
