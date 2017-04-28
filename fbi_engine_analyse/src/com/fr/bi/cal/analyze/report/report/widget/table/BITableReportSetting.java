@@ -1,8 +1,6 @@
 package com.fr.bi.cal.analyze.report.report.widget.table;
 
 import com.fr.bi.base.annotation.BICoreField;
-import com.fr.bi.cal.analyze.report.report.widget.styles.BIStyleReportSetting;
-import com.fr.bi.cal.analyze.report.report.widget.styles.BIStyleSetting;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.json.JSONObject;
 
@@ -27,7 +25,6 @@ public class BITableReportSetting extends BIAbstractTableSetting {
     private int tableStyle;
     private ArrayList<ArrayList<String>> complex_x_dimension;
     private ArrayList<ArrayList<String>> complex_y_dimension;
-    private BIStyleSetting styleSetting;
 
     /**
      * 组
@@ -79,8 +76,6 @@ public class BITableReportSetting extends BIAbstractTableSetting {
             }
         }
         JSONObject settings = jo.has("settings") ? jo.getJSONObject("settings") : new JSONObject();
-        styleSetting = new BIStyleReportSetting();
-        styleSetting.parseJSON(settings);
 
     }
 
@@ -174,7 +169,4 @@ public class BITableReportSetting extends BIAbstractTableSetting {
         return groups_of_dimension_list;
     }
 
-    public BIStyleSetting getStyleSetting() {
-        return styleSetting;
-    }
 }
