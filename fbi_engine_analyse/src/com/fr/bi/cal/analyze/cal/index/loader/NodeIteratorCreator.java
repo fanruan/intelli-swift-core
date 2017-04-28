@@ -16,8 +16,8 @@ import com.fr.bi.field.filtervalue.string.nfilter.StringTOPNFilterValue;
 import com.fr.bi.field.filtervalue.string.onevaluefilter.StringOneValueFilterValue;
 import com.fr.bi.field.target.calculator.cal.CalCalculator;
 import com.fr.bi.field.target.target.BISummaryTarget;
+import com.fr.bi.field.target.target.SumType;
 import com.fr.bi.field.target.target.TargetType;
-import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.gvi.GVIFactory;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.report.result.DimensionCalculator;
@@ -376,7 +376,7 @@ public class NodeIteratorCreator {
         //是否提前计算了维度过滤
         //如果有配置类计算的过滤，则需要构建完node之后再排序，之前的过滤一个都别动，要不然影响配置类计算的。如果维度过滤在最后一个维度上面，也等到全部构建完了再过滤
         boolean canPreFilter = hasDimensionInDirectFilter() && !hasAllNodeIndirectDimensionFilter() && getLastIndirectFilterDimensionIndex() != rowDimension.length - 1;
-        ConstructedRootDimensionGroup constructedRootDimensionGroup = new ConstructedRootDimensionGroup(metricGroupInfoList, createAllNodeMergeIteratorCreator(), sumLength, session, isRealData, dimensionTargetSort, getCalCalculators(), canPreFilter || !hasDimensionInDirectFilter() ? null : rowDimension, setIndex, hasInSumMetric(), executor);
+        ConstructedRootDimensionGroup constructedRootDimensionGroup = new ConstructedRootDimensionGroup(metricGroupInfoList, createAllNodeMergeIteratorCreator(), sumLength, session, isRealData, dimensionTargetSort, getCalCalculators(), canPreFilter || !hasDimensionInDirectFilter() ? null : rowDimension, setIndex, hasInSumMetric(), executor, calAllPage);
         //如果没有配置类计算的过滤，并且最后一个维度没有过滤，可以先算一下IndirectFilter
         if (canPreFilter) {
             GroupValueIndex[] inDirectFilterIndexes = getInDirectFilterIndex(constructedRootDimensionGroup.getRoot(), constructedRootDimensionGroup.getGetters(), constructedRootDimensionGroup.getColumns());
@@ -429,8 +429,7 @@ public class NodeIteratorCreator {
     }
 
     private boolean hasInSumMetric(BISummaryTarget target) {
-        return target != null && (target.getSummaryType() != BIReportConstant.SUMMARY_TYPE.SUM &&
-                target.getSummaryType() != BIReportConstant.SUMMARY_TYPE.COUNT);
+        return target != null && (target.getType() == TargetType.NORMAL && target.getSumType() == SumType.GVI);
     }
 
 
