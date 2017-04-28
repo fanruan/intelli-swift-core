@@ -19,21 +19,21 @@ public class BIAdjustTreeDataStructureAction extends ActionNoSessionCMD {
     @Override
     public void actionCMD(HttpServletRequest req, HttpServletResponse res) throws Exception {
 
-        String selectedValuesString = WebUtils.getHTTPRequestParameter(req, "selected_values");
+        String selectedValuesString = WebUtils.getHTTPRequestParameter(req, "selectedValues");
 
-        JSONObject selected_values = new JSONObject();
+        JSONObject selectedValues = new JSONObject();
         if (selectedValuesString != null) {
-            selected_values = new JSONObject(selectedValuesString);
+            selectedValues = new JSONObject(selectedValuesString);
         }
 
-        if (selected_values.names() == null || selected_values.names().length() == 0) {
+        if (selectedValues.names() == null || selectedValues.names().length() == 0) {
             WebUtils.printAsJSON(res, new JSONObject());
             return;
         }
 
 
         List<String[]> result = new ArrayList<String[]>();
-        JSONArray namesArray = selected_values.names();
+        JSONArray namesArray = selectedValues.names();
         String[] names = BIJsonUtils.jsonArray2StringArray(namesArray);
 
         for (String name : names) {
@@ -41,7 +41,7 @@ public class BIAdjustTreeDataStructureAction extends ActionNoSessionCMD {
             t[0] = name;
             result.add(t);
         }
-        dealWithSelectedValues(selected_values, new String[0], result);
+        dealWithSelectedValues(selectedValues, new String[0], result);
 
         JSONObject jo = new JSONObject();
         for (String[] strs : result) {

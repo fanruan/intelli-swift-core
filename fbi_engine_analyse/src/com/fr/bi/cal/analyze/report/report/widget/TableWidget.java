@@ -344,7 +344,6 @@ public class TableWidget extends BISummaryWidget {
         }
     }
 
-    //todo 这里，复杂表dimension isUsed返回值有问题，先这样处理，等下再改
     private boolean isUsed(String dId) {
         boolean isDimUsed = dimensionsIdMap.containsKey(dId) && dimensionsIdMap.get(dId).isUsed();
         boolean isTargetUsed = targetsIdMap.containsKey(dId) && targetsIdMap.get(dId).isUsed();
