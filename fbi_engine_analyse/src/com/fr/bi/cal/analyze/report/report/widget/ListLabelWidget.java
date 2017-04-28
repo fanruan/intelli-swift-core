@@ -31,7 +31,7 @@ public class ListLabelWidget extends BISummaryWidget {
     private static final int STEP = 100;
     private int data_type = -2;
     private int times = -1;
-    private String selected_values;
+    private String selectedValues;
     private String keyword = StringUtils.EMPTY;
 
     @Override
@@ -56,8 +56,8 @@ public class ListLabelWidget extends BISummaryWidget {
         ICubeColumnIndexReader reader = calculator.createNoneSortGroupValueMapGetter(dimension.getStatisticElement().getTableBelongTo(), session.getLoader());
         Set<String> selected_value = new HashSet<String>();
 
-        if (selected_values != null && StringUtils.isNotEmpty(selected_values)) {
-            JSONArray selectedValueArray = new JSONArray(selected_values);
+        if (selectedValues != null && StringUtils.isNotEmpty(selectedValues)) {
+            JSONArray selectedValueArray = new JSONArray(selectedValues);
             selected_value.addAll(Arrays.asList(BIJsonUtils.jsonArray2StringArray(selectedValueArray)));
         }
         if (dimension.getGroup().getType() != BIReportConstant.GROUP.ID_GROUP && dimension.getGroup().getType() != BIReportConstant.GROUP.NO_GROUP) {
@@ -177,7 +177,7 @@ public class ListLabelWidget extends BISummaryWidget {
             if (treeJo.has("times")) {
                 times = treeJo.getInt("times");
             }
-            selected_values = treeJo.optString("selected_values", StringUtils.EMPTY);
+            selectedValues = treeJo.optString("selectedValues", StringUtils.EMPTY);
             keyword = treeJo.optString("keyword", StringUtils.EMPTY);
         }
 

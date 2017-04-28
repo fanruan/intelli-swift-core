@@ -119,8 +119,8 @@ public class TreeLabelWidget extends BIAbstractWidget{
         setTargetTable();
         parseSortFilter(jo, userId);
 
-        if (jo.has("tree_options")) {
-            JSONObject treeJo = jo.getJSONObject("tree_options");
+        if (jo.has("treeOptions")) {
+            JSONObject treeJo = jo.getJSONObject("treeOptions");
             if (treeJo.has("type")) {
                 data_type = treeJo.getInt("type");
             }

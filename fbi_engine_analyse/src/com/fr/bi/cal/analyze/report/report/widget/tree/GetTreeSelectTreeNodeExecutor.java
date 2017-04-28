@@ -21,7 +21,7 @@ public class GetTreeSelectTreeNodeExecutor extends AbstractTreeNodeExecutor {
     private String notSelectedValueString;
     private String toSelectedValueString;
     private String keyword;
-    private String parent_values;
+    private String parentValues;
 
     public GetTreeSelectTreeNodeExecutor(TreeWidget widget, Paging paging, BISession session) {
         super(widget, paging, session);
@@ -30,40 +30,40 @@ public class GetTreeSelectTreeNodeExecutor extends AbstractTreeNodeExecutor {
     @Override
     public void parseJSON(JSONObject jo) throws JSONException {
         super.parseJSON(jo);
-        if (jo.has("not_selected_value")) {
-            notSelectedValueString = jo.getString("not_selected_value");
+        if (jo.has("notSelectedValue")) {
+            notSelectedValueString = jo.getString("notSelectedValue");
         }
 
-        if (jo.has("current_select_value")) {
-            toSelectedValueString = jo.getString("current_select_value");
+        if (jo.has("currentSelectValue")) {
+            toSelectedValueString = jo.getString("currentSelectValue");
         }
 
         if (jo.has("keyword")) {
             keyword = jo.getString("keyword");
         }
 
-        if (jo.has("parent_values")) {
-            parent_values = jo.getString("parent_values");
+        if (jo.has("parentValues")) {
+            parentValues = jo.getString("parentValues");
         }
     }
 
     public JSONObject getResultJSON() throws JSONException {
         String[] parent = new String[0];
         JSONObject jo = new JSONObject();
-        if (parent_values != null) {
-            JSONArray parentObject = new JSONArray(parent_values);
+        if (parentValues != null) {
+            JSONArray parentObject = new JSONArray(parentValues);
             parent = BIJsonUtils.jsonArray2StringArray(parentObject);
         }
 
-        JSONObject selected_values = new JSONObject();
+        JSONObject selectedValues = new JSONObject();
         if (selectedValuesString != null) {
-            selected_values = new JSONObject(selectedValuesString);
+            selectedValues = new JSONObject(selectedValuesString);
         }
-        if (selected_values.length() == 0 && notSelectedValueString != null) {
+        if (selectedValues.length() == 0 && notSelectedValueString != null) {
             return jo;
         }
 
-        jo = selected_values;
+        jo = selectedValues;
         if(notSelectedValueString != null){
             dealWithSelectValues(jo, notSelectedValueString, parent, floors, keyword);
         }
@@ -73,18 +73,18 @@ public class GetTreeSelectTreeNodeExecutor extends AbstractTreeNodeExecutor {
         return jo;
     }
 
-    private void dealWithSelectValues(JSONObject selected_values, String notSelectedValueString, String[] parent, int floors, String keyword) throws JSONException {
+    private void dealWithSelectValues(JSONObject selectedValues, String notSelectedValueString, String[] parent, int floors, String keyword) throws JSONException {
         String[] p = new String[parent.length + 1];
         System.arraycopy(parent, 0, p, 0, parent.length);
         p[parent.length] = notSelectedValueString;
 
-        if (isChild(selected_values, p)) {
+        if (isChild(selectedValues, p)) {
             List<String[]> result = new ArrayList<String[]>();
             boolean finded = search(parent.length + 1, floors, parent, notSelectedValueString, keyword, result);
 
             if (finded) {
 
-                JSONObject next = selected_values;
+                JSONObject next = selectedValues;
                 int i;
 
                 for (i = 0; i < p.length; i++) {
@@ -111,14 +111,14 @@ public class GetTreeSelectTreeNodeExecutor extends AbstractTreeNodeExecutor {
                 }
                 if (!result.isEmpty()) {
                     for (String[] arr : result) {
-                        buildTree(selected_values, arr);
+                        buildTree(selectedValues, arr);
                     }
                 }
             }
         }
     }
 
-    private void dealWithUnselectValues(JSONObject selected_values, String toSelectedValueString, String[] parent, int floors, String keyword) throws JSONException {
+    private void dealWithUnselectValues(JSONObject selectedValues, String toSelectedValueString, String[] parent, int floors, String keyword) throws JSONException {
         String[] p = new String[parent.length + 1];
         System.arraycopy(parent, 0, p, 0, parent.length);
         p[parent.length] = toSelectedValueString;
@@ -129,21 +129,20 @@ public class GetTreeSelectTreeNodeExecutor extends AbstractTreeNodeExecutor {
             int i;
             for(i=0;i<result.size();i++){
                 String[] strs = result.get(i);
-                buildTree(selected_values, strs);
+                buildTree(selectedValues, strs);
                 boolean isSelectedAll = true;
                 int j = strs.length -1;
                 while (isSelectedAll && j >0){
                     String str = strs[j];
                     String preStr = strs[j-1];
-                    isSelectedAll = dealWithIsSelectedAll(selected_values, strs,str,preStr);
+                    isSelectedAll = dealWithIsSelectedAll(selectedValues, strs,str,preStr);
                 }
             }
         }
 
     }
 
-    private boolean dealWithIsSelectedAll(JSONObject selected_values,String[] strs,String str,String preStr){
-        JSONObject selectedValues = selected_values;
+    private boolean dealWithIsSelectedAll(JSONObject selectedValues,String[] strs,String str,String preStr){
         JSONObject preSelectedValue = new JSONObject();
         for (String thisStr:strs){
             if(thisStr == preStr){

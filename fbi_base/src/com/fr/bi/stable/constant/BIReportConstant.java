@@ -1,49 +1,11 @@
 package com.fr.bi.stable.constant;
 
-import com.fr.general.Inter;
-
 /**
  * Created by GUY on 2015/4/3.
  */
 public class BIReportConstant {
 
     public final static String VERSION = "4.0.2";
-
-
-    public static final String[] FULL_QUARTER_NAMES = new String[]{
-            Inter.getLocText("BI-Quarter_1"),
-            Inter.getLocText("BI-Quarter_1"),
-            Inter.getLocText("BI-Quarter_2"),
-            Inter.getLocText("BI-Quarter_3"),
-            Inter.getLocText("BI-Quarter_4")
-    };
-
-    public static final String[] FULL_MONTH_NAMES = new String[]{
-            Inter.getLocText("BI-Basic_January"),
-            Inter.getLocText("BI-Basic_January"),
-            Inter.getLocText("BI-Basic_February"),
-            Inter.getLocText("BI-Basic_March"),
-            Inter.getLocText("BI-Basic_April"),
-            Inter.getLocText("BI-Basic_May"),
-            Inter.getLocText("BI-Basic_June"),
-            Inter.getLocText("BI-Basic_July"),
-            Inter.getLocText("BI-Basic_August"),
-            Inter.getLocText("BI-Basic_September"),
-            Inter.getLocText("BI-Basic_October"),
-            Inter.getLocText("BI-Basic_November"),
-            Inter.getLocText("BI-Basic_December")
-    };
-
-    public static final String[] FULL_WEEK_NAMES = new String[]{
-            Inter.getLocText("BI-Basic_Sunday"),
-            Inter.getLocText("BI-Basic_Monday"),
-            Inter.getLocText("BI-Basic_Tuesday"),
-            Inter.getLocText("BI-Basic_Wednesday"),
-            Inter.getLocText("BI-Basic_Thursday"),
-            Inter.getLocText("BI-Basic_Friday"),
-            Inter.getLocText("BI-Basic_Saturday"),
-            Inter.getLocText("BI-Basic_Sunday")
-    };
 
     public static final class BI_REPORT {
         public final static int NULL = 0x0;

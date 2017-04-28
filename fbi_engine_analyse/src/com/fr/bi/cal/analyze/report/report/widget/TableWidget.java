@@ -18,6 +18,8 @@ import com.fr.bi.cal.analyze.report.report.widget.chart.export.calculator.Summar
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.calculator.SummaryCrossTableDataBuilder;
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.calculator.SummaryGroupTableDataBuilder;
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.manager.TableDirector;
+import com.fr.bi.cal.analyze.report.report.widget.style.BITableWidgetStyle;
+import com.fr.bi.conf.report.widget.IWidgetStyle;
 import com.fr.bi.cal.analyze.report.report.widget.table.BITableReportSetting;
 import com.fr.bi.cal.analyze.session.BISession;
 import com.fr.bi.common.persistent.xml.BIIgnoreField;
@@ -72,6 +74,7 @@ public class TableWidget extends BISummaryWidget {
     private Map<String, BISummaryTarget> targetsIdMap = new HashMap<String, BISummaryTarget>();
 
     protected Map<Integer, List<String>> view = new HashMap<Integer, List<String>>();
+    private BITableWidgetStyle style;
 
     @Override
     public void setPageSpinner(int index, int value) {
@@ -280,6 +283,18 @@ public class TableWidget extends BISummaryWidget {
         }
         changeCalculateTargetStartGroup();
         createDimensionAndTargetMap();
+        createWidgetStyles(jo);
+    }
+
+    private void createWidgetStyles(JSONObject jo) throws Exception {
+        style = new BITableWidgetStyle();
+        JSONArray dimColWidths = new JSONArray();
+        for (int i = 0; i < getViewDimensions().length; i++) {
+            dimColWidths.put(20);
+        }
+        jo.put("mergeCols", dimColWidths);
+        jo.put("columnSize", dimColWidths);
+        style.parseJSON(jo);
     }
 
     private void createDimAndTars(JSONObject jo) throws Exception {
@@ -329,7 +344,6 @@ public class TableWidget extends BISummaryWidget {
         }
     }
 
-    //todo 这里，复杂表dimension isUsed返回值有问题，先这样处理，等下再改
     private boolean isUsed(String dId) {
         boolean isDimUsed = dimensionsIdMap.containsKey(dId) && dimensionsIdMap.get(dId).isUsed();
         boolean isTargetUsed = targetsIdMap.containsKey(dId) && targetsIdMap.get(dId).isUsed();
@@ -497,13 +511,13 @@ public class TableWidget extends BISummaryWidget {
         IExcelDataBuilder builder = null;
         switch (this.table_type) {
             case BIReportConstant.TABLE_WIDGET.CROSS_TYPE:
-                builder = new SummaryCrossTableDataBuilder(viewMap, chartSettings, dataJSON, data.getStyleSetting());
+                builder = new SummaryCrossTableDataBuilder(viewMap, chartSettings, dataJSON, null);
                 break;
             case BIReportConstant.TABLE_WIDGET.GROUP_TYPE:
-                builder = new SummaryGroupTableDataBuilder(viewMap, chartSettings, dataJSON, data.getStyleSetting());
+                builder = new SummaryGroupTableDataBuilder(viewMap, chartSettings, dataJSON, null);
                 break;
             case BIReportConstant.TABLE_WIDGET.COMPLEX_TYPE:
-                builder = new SummaryComplexTableBuilder(viewMap, chartSettings, dataJSON, data.getStyleSetting());
+                builder = new SummaryComplexTableBuilder(viewMap, chartSettings, dataJSON, null);
                 break;
         }
         if (null == builder) {
@@ -569,5 +583,9 @@ public class TableWidget extends BISummaryWidget {
             dimAndTar.put(next, list);
         }
         return dimAndTar;
+    }
+
+    public IWidgetStyle getStyle() {
+        return style;
     }
 }

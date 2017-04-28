@@ -3,7 +3,7 @@ package com.fr.bi.cal.analyze.report.report.widget.chart.export.calculator;
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.basic.*;
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.utils.BITableExportDataHelper;
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.utils.SummaryTableStyleHelper;
-import com.fr.bi.cal.analyze.report.report.widget.styles.BIStyleSetting;
+import com.fr.bi.conf.report.widget.IWidgetStyle;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
@@ -19,7 +19,7 @@ import java.util.Map;
 public class DetailTableBuilder extends TableAbstractDataBuilder {
     private List<DimAndTargetStyle> styles;
 
-    public DetailTableBuilder(Map<Integer, List<JSONObject>> viewMap, List<DimAndTargetStyle> dimAndTargetStyles, JSONObject dataJSON, BIStyleSetting styleSettings) throws Exception {
+    public DetailTableBuilder(Map<Integer, List<JSONObject>> viewMap, List<DimAndTargetStyle> dimAndTargetStyles, JSONObject dataJSON, IWidgetStyle styleSettings) throws Exception {
         super(viewMap, dataJSON, styleSettings);
         this.styles = dimAndTargetStyles;
     }

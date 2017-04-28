@@ -20,6 +20,7 @@ import java.util.List;
 public class GetSearchTreeNodeExecutor extends AbstractTreeNodeExecutor {
     private String keyword;
     private String lastSearchValue;
+    private static int DEFAULTROW;
 
     public GetSearchTreeNodeExecutor(TreeWidget widget, Paging paging, BISession session) {
         super(widget, paging, session);
@@ -32,25 +33,25 @@ public class GetSearchTreeNodeExecutor extends AbstractTreeNodeExecutor {
             keyword = jo.getString("keyword");
         }
 
-        if (jo.has("last_search_value")) {
-            lastSearchValue = jo.getString("last_search_value");
+        if (jo.has("lastSearchValue")) {
+            lastSearchValue = jo.getString("lastSearchValue");
         }
 
     }
 
     public JSONObject getResultJSON() throws Exception {
         JSONArray result = new JSONArray();
-        JSONObject selected_values = new JSONObject();
+        JSONObject selectedValues = new JSONObject();
         if (selectedValuesString != null) {
-            selected_values = new JSONObject(selectedValuesString);
+            selectedValues = new JSONObject(selectedValuesString);
         }
-        List<String> output = search(result, floors, keyword, selected_values, lastSearchValue);
+        List<String> output = search(result, floors, keyword, selectedValues, lastSearchValue);
 
         JSONObject jo = new JSONObject();
         jo.put("hasNext", output.size() > getRows());
         jo.put("items", result);
         if (!output.isEmpty()) {
-            jo.put("last_search_value", output.get(output.size() - 1));
+            jo.put("lastSearchValue", output.get(output.size() - 1));
         }
 
         return jo;
@@ -99,7 +100,7 @@ public class GetSearchTreeNodeExecutor extends AbstractTreeNodeExecutor {
 
 
     private int getRows() {
-        return 10;
+        return DEFAULTROW;
     }
 
     private class NodeSearch implements java.util.concurrent.Callable {

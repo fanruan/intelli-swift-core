@@ -5,7 +5,7 @@ import com.fr.bi.cal.analyze.report.report.widget.chart.export.utils.BITableExpo
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.utils.SummaryTableStyleHelper;
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.utils.node.ReportNode;
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.utils.node.ReportNodeTree;
-import com.fr.bi.cal.analyze.report.report.widget.styles.BIStyleSetting;
+import com.fr.bi.conf.report.widget.IWidgetStyle;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.utils.program.BIJsonUtils;
 import com.fr.bi.stable.utils.program.BIStringUtils;
@@ -33,14 +33,14 @@ public abstract class TableAbstractDataBuilder implements IExcelDataBuilder {
 
     protected JSONObject data;
     Map<Integer, List<JSONObject>> dimAndTar;
-    BIStyleSetting styleSetting;
+    IWidgetStyle styleSetting;
     protected ReportNodeTree tree;
     protected List<String> dimIds;
     protected List<String> targetIds;
     protected boolean showColTotal = true;
     private static final String EMPTY_VALUE = "--";
 
-    public TableAbstractDataBuilder(Map<Integer, List<JSONObject>> dimAndTar, JSONObject dataJSON, BIStyleSetting styleSettings) throws Exception {
+    public TableAbstractDataBuilder(Map<Integer, List<JSONObject>> dimAndTar, JSONObject dataJSON, IWidgetStyle styleSettings) throws Exception {
         this.data = dataJSON;
         this.dimAndTar = dimAndTar;
         this.styleSetting = styleSettings;

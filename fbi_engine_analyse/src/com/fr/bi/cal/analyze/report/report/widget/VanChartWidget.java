@@ -6,7 +6,7 @@ import com.fr.bi.conf.report.WidgetType;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.conf.session.BISessionProvider;
 import com.fr.bi.field.target.target.BISummaryTarget;
-import com.fr.bi.stable.constant.BIGlobalStyleConstant;
+import com.fr.bi.stable.constant.BIStyleConstant;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.tool.BIReadReportUtils;
 import com.fr.bi.util.BIConfUtils;
@@ -76,6 +76,41 @@ public abstract class VanChartWidget extends TableWidget {
 
     //存下每个指标和纬度的最大最小和平均值
     private HashMap<String, ArrayList<Double>> idValueMap = new HashMap<String, ArrayList<Double>>();
+
+    public static final String[] FULL_QUARTER_NAMES = new String[]{
+            Inter.getLocText("BI-Quarter_1"),
+            Inter.getLocText("BI-Quarter_1"),
+            Inter.getLocText("BI-Quarter_2"),
+            Inter.getLocText("BI-Quarter_3"),
+            Inter.getLocText("BI-Quarter_4")
+    };
+
+    public static final String[] FULL_MONTH_NAMES = new String[]{
+            Inter.getLocText("BI-Basic_January"),
+            Inter.getLocText("BI-Basic_January"),
+            Inter.getLocText("BI-Basic_February"),
+            Inter.getLocText("BI-Basic_March"),
+            Inter.getLocText("BI-Basic_April"),
+            Inter.getLocText("BI-Basic_May"),
+            Inter.getLocText("BI-Basic_June"),
+            Inter.getLocText("BI-Basic_July"),
+            Inter.getLocText("BI-Basic_August"),
+            Inter.getLocText("BI-Basic_September"),
+            Inter.getLocText("BI-Basic_October"),
+            Inter.getLocText("BI-Basic_November"),
+            Inter.getLocText("BI-Basic_December")
+    };
+
+    public static final String[] FULL_WEEK_NAMES = new String[]{
+            Inter.getLocText("BI-Basic_Sunday"),
+            Inter.getLocText("BI-Basic_Monday"),
+            Inter.getLocText("BI-Basic_Tuesday"),
+            Inter.getLocText("BI-Basic_Wednesday"),
+            Inter.getLocText("BI-Basic_Thursday"),
+            Inter.getLocText("BI-Basic_Friday"),
+            Inter.getLocText("BI-Basic_Saturday"),
+            Inter.getLocText("BI-Basic_Sunday")
+    };
 
     public abstract String getSeriesType(String dimensionID);
 
@@ -402,7 +437,7 @@ public abstract class VanChartWidget extends TableWidget {
             if (settings.has("chartColor")) {
                 return settings.getJSONArray("chartColor");
             } else {
-                String[] defaultColors = BIGlobalStyleConstant.DEFAULT_CHART_SETTING.CHART_COLOR;
+                String[] defaultColors = BIStyleConstant.DEFAULT_CHART_SETTING.CHART_COLOR;
                 JSONArray array = new JSONArray();
                 for (int i = 0; i < defaultColors.length; i++) {
                     array.put(defaultColors[i]);
@@ -449,7 +484,7 @@ public abstract class VanChartWidget extends TableWidget {
 
     protected String decimalFormat(BISummaryTarget dimension, boolean hasSeparator) {
         JSONObject settings = dimension.getChartSetting().getSettings();
-        int type = settings.optInt("format", 0);
+        int type = settings.optInt("format", BIReportConstant.TARGET_STYLE.FORMAT.NORMAL);//默认为自动
         String format;
         switch (type) {
             case BIReportConstant.TARGET_STYLE.FORMAT.NORMAL:
@@ -642,13 +677,13 @@ public abstract class VanChartWidget extends TableWidget {
 
         switch (groupType) {
             case BIReportConstant.GROUP.S:
-                category = BIReportConstant.FULL_QUARTER_NAMES[(int)dateValue];
+                category = FULL_QUARTER_NAMES[(int)dateValue];
                 break;
             case BIReportConstant.GROUP.M:
-                category = BIReportConstant.FULL_MONTH_NAMES[(int)dateValue];
+                category = FULL_MONTH_NAMES[(int)dateValue];
                 break;
             case BIReportConstant.GROUP.W:
-                category = BIReportConstant.FULL_WEEK_NAMES[(int)dateValue];
+                category = FULL_WEEK_NAMES[(int)dateValue];
                 break;
             case BIReportConstant.GROUP.YMD:
                 SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
