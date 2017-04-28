@@ -56,7 +56,7 @@ public class Font4IE8Writer {
             utilsBr.close();
             utilsReader.close();
 
-            writer.write("@font-face { font-family: 'bi'; src: url('${remoteServletURL}?op=resource&resource=/com/fr/bi/web/resources/fonts/iconfont.eot'); }");
+            writer.write("@font-face { font-family: 'bi'; src: url('${servletURL}?op=resource&resource=/com/fr/bi/web/resources/fonts/iconfont.eot'); }");
 
             writer.newLine();
 
