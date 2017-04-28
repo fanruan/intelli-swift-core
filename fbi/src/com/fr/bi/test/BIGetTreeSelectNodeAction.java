@@ -19,6 +19,8 @@ import java.util.List;
 
 public class BIGetTreeSelectNodeAction extends ActionNoSessionCMD {
 
+    private static final int CIRCLECOUNT = 20;
+
     @Override
     public void actionCMD(HttpServletRequest req, HttpServletResponse res) throws Exception {
 
@@ -166,7 +168,7 @@ public class BIGetTreeSelectNodeAction extends ActionNoSessionCMD {
     private List<String> randomData(String[] parentValues) {
         List<String> res = new ArrayList<String>();
         String v = StableUtils.join(parentValues, ",");
-        for (int i = 0; i < 20; i++) {
+        for (int i = 0; i < CIRCLECOUNT; i++) {
             res.add(v + "_" + i);
         }
         return res;

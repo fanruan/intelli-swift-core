@@ -16,6 +16,8 @@ import java.util.List;
 
 public class BIAdjustTreeDataStructureAction extends ActionNoSessionCMD {
 
+    private static final int CHILDROW = 20;
+
     @Override
     public void actionCMD(HttpServletRequest req, HttpServletResponse res) throws Exception {
 
@@ -93,7 +95,7 @@ public class BIAdjustTreeDataStructureAction extends ActionNoSessionCMD {
     }
 
     private int getChildCount(String[] values) {
-        return 20;
+        return CHILDROW;
     }
 
     @Override
