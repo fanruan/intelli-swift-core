@@ -15,9 +15,7 @@ import com.fr.stable.StableUtils;
 
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by GUY on 2015/4/9.
@@ -96,6 +94,20 @@ public class AutoGroup extends AbstractGroup {
 
     private String getAutoGroupName(int index, double interval) {
         return nFormat.format(start + interval * index) + "-" + nFormat.format(start + interval * (index + 1));
+    }
+
+    public List<String> getAllAutoGroupNames(){
+        List<String> nameList = new ArrayList<String>();
+        double interval = this.interval;
+        if (!hasInterval) {
+            interval = initGroup(min, max);
+        }
+        int index = 0;
+        int groupSize = (int) Math.ceil((max - start) / interval);
+        while (index != groupSize) {
+            nameList.add(getAutoGroupName(index++, interval));
+        }
+        return nameList;
     }
 
     @Override
