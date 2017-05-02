@@ -99,15 +99,15 @@ public class CustomNumberGroup extends AbstractGroup {
     @Override
     public void parseJSON(JSONObject jo) throws Exception {
         super.parseJSON(jo);
-        if (jo.has("group_value")) {
-            JSONObject valueJson = jo.optJSONObject("group_value");
-            if (valueJson.has("group_nodes")) {
-                JSONArray ja = valueJson.getJSONArray("group_nodes");
+        if (jo.has("groupValue")) {
+            JSONObject valueJson = jo.optJSONObject("groupValue");
+            if (valueJson.has("groupNodes")) {
+                JSONArray ja = valueJson.getJSONArray("groupNodes");
                 int len = ja.length();
-                if (valueJson.has("use_other")) {
+                if (valueJson.has("useOther")) {
                     groups = new NumberGroupInfo[len + 1];
                     groups[len] = new NumberOtherGroupInfo();
-                    groups[len].setValue(valueJson.getString("use_other"));
+                    groups[len].setValue(valueJson.getString("useOther"));
                 } else {
                     groups = new NumberGroupInfo[len];
                 }
@@ -125,7 +125,7 @@ public class CustomNumberGroup extends AbstractGroup {
                         groups[i].closemin = oneGroup.getBoolean("closemin");
                     }
 
-                    groups[i].setValue(oneGroup.getString("group_name"));
+                    groups[i].setValue(oneGroup.getString("groupName"));
                 }
             }
         }
