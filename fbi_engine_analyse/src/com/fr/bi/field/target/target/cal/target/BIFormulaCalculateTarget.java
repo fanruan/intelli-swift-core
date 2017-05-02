@@ -26,7 +26,7 @@ public class BIFormulaCalculateTarget extends BICalculateTarget {
         super.parseJSON(jo, userId);
         JSONObject expressionJo = jo.optJSONObject("_src").optJSONObject("expression");
         if (expressionJo != null) {
-            expression = expressionJo.optString("formula_value");
+            expression = expressionJo.optString("formulaValue");
         }
 
     }
