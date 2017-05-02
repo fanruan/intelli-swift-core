@@ -521,17 +521,17 @@ public class BIReportConstant {
 
     public static final class TREE {
         public static final class TREE_REQ_TYPE {
-            public static final int INIT_DATA = 0x0;
+            public static final int DEFAULT_DATA = 0x0;
 
-            public static final int SEARCH_DATA = 0x1;
+            public static final int INIT_DATA = 0x1;
 
-            public static final int SELECTED_DATA = 0x3;
+            public static final int SELECT_DATA = 0x3;
 
             public static final int ADJUST_DATA = 0x2;
 
-            public static final int DISPLAY_DATA = 0x4;
+            public static final int GET_SELECTED_DATA = 0x4;
 
-            public static final int UNSELECTED_DATA = 0x5;
+            public static final int UNSELECT_DATA = 0x5;
         }
 
         public static final int TREE_ITEM_COUNT_PER_PAGE = 0x64;
