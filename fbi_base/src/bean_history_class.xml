@@ -1,4 +1,8 @@
 <?xml version='1.0'?>
 <persistBeans >
-
+    <bean currentClass="com.fr.bi.cal.analyze.cal.result.ComplexAllExpander">
+        <historyClasses>
+            <class value="com.fr.bi.cal.analyze.cal.result.ComplexAllExpalder"/>
+        </historyClasses>
+    </bean>
 </persistBeans>
