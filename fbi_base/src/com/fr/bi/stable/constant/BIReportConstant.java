@@ -623,4 +623,42 @@ public class BIReportConstant {
         public static final int SPLIT = 1;
         public static final int CHINESE = 2;
     }
+
+    public static final class DATE_TYPE {
+        public static final int MULTI_DATE_YEAR_PREV = 1;
+        public static final int MULTI_DATE_YEAR_AFTER = 2;
+        public static final int MULTI_DATE_YEAR_BEGIN = 3;
+        public static final int MULTI_DATE_YEAR_END = 4;
+
+        public static final int MULTI_DATE_MONTH_PREV = 5;
+        public static final int MULTI_DATE_MONTH_AFTER = 6;
+        public static final int MULTI_DATE_MONTH_BEGIN = 7;
+        public static final int MULTI_DATE_MONTH_END = 8;
+
+        public static final int MULTI_DATE_QUARTER_PREV = 9;
+        public static final int MULTI_DATE_QUARTER_AFTER = 10;
+        public static final int MULTI_DATE_QUARTER_BEGIN = 11;
+        public static final int MULTI_DATE_QUARTER_END = 12;
+
+        public static final int MULTI_DATE_WEEK_PREV = 13;
+        public static final int MULTI_DATE_WEEK_AFTER = 14;
+
+        public static final int MULTI_DATE_DAY_PREV = 15;
+        public static final int MULTI_DATE_DAY_AFTER = 16;
+        public static final int MULTI_DATE_DAY_TODAY = 17;
+
+        public static final int MULTI_DATE_PARAM = 18;
+        public static final int MULTI_DATE_CALENDAR = 19;
+
+        public static final int YEAR_QUARTER = 20;
+        public static final int YEAR_MONTH = 21;
+        public static final int YEAR_WEEK = 22;
+        public static final int YEAR_DAY = 23;
+        public static final int MONTH_WEEK = 24;
+        public static final int MONTH_DAY = 25;
+        public static final int YEAR = 26;
+        public static final int SAME_PERIOD = 27;
+        public static final int LAST_SAME_PERIOD = 28;
+
+    }
 }

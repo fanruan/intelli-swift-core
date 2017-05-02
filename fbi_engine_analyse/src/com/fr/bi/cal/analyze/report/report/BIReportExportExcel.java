@@ -16,6 +16,7 @@ import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.stable.constant.BIExcutorConstant;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.tool.BIReadReportUtils;
+import com.fr.general.DateUtils;
 import com.fr.general.Inter;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONException;
@@ -30,6 +31,7 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Iterator;
 
 /**
@@ -43,6 +45,9 @@ public class BIReportExportExcel {
     private ArrayList<BIWidget> widgets = new ArrayList<BIWidget>();
     private JSONArray specialWidgets = JSONArray.create();
     private int namePosLeft = 21;
+    private int offSet1 = 1;
+    private int offSet3 = 3;
+    private int offSet7 = 7;
 
     protected BIReport report = new BIReportor();
 
@@ -105,6 +110,7 @@ public class BIReportExportExcel {
         polyECBlock.getBlockAttr().setFreezeWidth(true);
         if (widgets.size() != 0) {
             for (BIWidget widget : widgets) {
+                //TODO 明细表接口
                 polyECBlock.addFloatElement(renderPicture((TableWidget) widget));
             }
         }
@@ -153,10 +159,12 @@ public class BIReportExportExcel {
                         renderQuarterWidget(polyECBlock, jo);
                         break;
                     case YMD:
+                        renderYMDWidget(polyECBlock, jo);
                     case DATE_PANE:
                         renderDatePaneWidget(polyECBlock, jo);
                         break;
                     case DATE:
+                        renderDateWidget(polyECBlock, jo);
                         break;
                 }
             }
@@ -207,7 +215,7 @@ public class BIReportExportExcel {
     private void renderTreeWidget(PolyECBlock polyECBlock, JSONObject jo) throws JSONException {
         JSONObject joValue = jo.optJSONObject("value");
         String str = joValue.toString();
-        renderWidget(polyECBlock, str.substring(1,str.length()-1).replace(":{}", ""), jo);
+        renderWidget(polyECBlock, str.substring(1, str.length() - 1).replace(":{}", ""), jo);
     }
 
     private void renderYearWidget(PolyECBlock polyECBlock, JSONObject jo) {
@@ -241,23 +249,114 @@ public class BIReportExportExcel {
         renderWidget(polyECBlock, value, jo);
     }
 
+    private void renderYMDWidget(PolyECBlock polyECBlock, JSONObject jo) {
+        renderWidget(polyECBlock, formatDate(jo.optJSONObject("value")), jo);
+    }
+
+    private String formatDate(JSONObject joValue) {
+        //Todo 刚拖进来得时候joValue为空
+        String dateValue = "";
+        if (joValue.length() != 0) {
+            if (joValue.has("year")) {
+                dateValue = joValue.optString("year") + "-" + (joValue.optInt("month") + 1) + "-" + joValue.optString("day");
+            } else {
+                Calendar calendar = Calendar.getInstance();
+                switch (joValue.optInt("type")) {
+                    case BIReportConstant.DATE_TYPE.MULTI_DATE_YEAR_PREV:
+                        calendar.add(Calendar.YEAR, 0 - offSet1);
+                        break;
+                    case BIReportConstant.DATE_TYPE.MULTI_DATE_YEAR_AFTER:
+                        calendar.add(Calendar.YEAR, offSet1);
+                        break;
+                    case BIReportConstant.DATE_TYPE.MULTI_DATE_YEAR_BEGIN:
+                        calendar.set(calendar.get(Calendar.YEAR), 0, 1);
+                        break;
+                    case BIReportConstant.DATE_TYPE.MULTI_DATE_YEAR_END:
+                        calendar.set(calendar.get(Calendar.YEAR), 11, 31);
+                        break;
+                    case BIReportConstant.DATE_TYPE.MULTI_DATE_MONTH_PREV:
+                        calendar.add(Calendar.MONTH, 0 - offSet1);
+                        break;
+                    case BIReportConstant.DATE_TYPE.MULTI_DATE_MONTH_AFTER:
+                        calendar.add(Calendar.MONTH, offSet1);
+                        break;
+                    case BIReportConstant.DATE_TYPE.MULTI_DATE_MONTH_BEGIN:
+                        calendar.set(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), 1);
+                        break;
+                    case BIReportConstant.DATE_TYPE.MULTI_DATE_MONTH_END:
+                        calendar.set(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.getActualMaximum(Calendar.DAY_OF_MONTH));
+                        break;
+                    case BIReportConstant.DATE_TYPE.MULTI_DATE_QUARTER_PREV:
+                        calendar.add(Calendar.MONTH, 0 - offSet3);
+                        break;
+                    case BIReportConstant.DATE_TYPE.MULTI_DATE_QUARTER_AFTER:
+                        calendar.add(Calendar.MONTH, offSet3);
+                        break;
+                    case BIReportConstant.DATE_TYPE.MULTI_DATE_QUARTER_BEGIN:
+                        calendar.set(calendar.get(Calendar.YEAR), BIReportExportExcelUtils.getQuarterStartMonth(calendar.get(Calendar.MONTH)), 1);
+                        break;
+                    case BIReportConstant.DATE_TYPE.MULTI_DATE_QUARTER_END:
+                        int month = BIReportExportExcelUtils.getQuarterStartMonth(calendar.get(Calendar.MONTH)) + 2;
+                        int year = calendar.get(Calendar.YEAR);
+                        calendar.set(year, month, BIReportExportExcelUtils.getMonthDays(year, month));
+                        break;
+                    case BIReportConstant.DATE_TYPE.MULTI_DATE_WEEK_PREV:
+                        calendar.add(Calendar.DATE, 0 - offSet7);
+                        break;
+                    case BIReportConstant.DATE_TYPE.MULTI_DATE_WEEK_AFTER:
+                        calendar.add(Calendar.DATE, offSet7);
+                        break;
+                    case BIReportConstant.DATE_TYPE.MULTI_DATE_DAY_PREV:
+                        calendar.add(Calendar.DATE, 0 - offSet1);
+                        break;
+                    case BIReportConstant.DATE_TYPE.MULTI_DATE_DAY_AFTER:
+                        calendar.add(Calendar.DATE, offSet1);
+                        break;
+                    case BIReportConstant.DATE_TYPE.MULTI_DATE_DAY_TODAY:
+                        break;
+                }
+                dateValue = DateUtils.DATEFORMAT2.format(calendar.getTime());
+            }
+        }
+        return dateValue;
+    }
+
     private void renderDatePaneWidget(PolyECBlock polyECBlock, JSONObject jo) {
         String value = "";
         JSONObject joValue = jo.optJSONObject("value");
         if (joValue.length() != 0) {
             String str1 = Inter.getLocText("BI-Basic_Year");
             String str2 = Inter.getLocText("BI-Multi_Date_Month");
-            String str3 = Inter.getLocText("BI-Date_Day");
+            String str3 = Inter.getLocText("BI-Day_Ri");
             value = joValue.optString("year") + str1 + (joValue.optInt("month") + 1) + str2 + joValue.optString("day") + str3;
         }
         renderWidget(polyECBlock, value, jo);
     }
 
-    private FloatElement renderPicture(TableWidget widget) throws Exception {
-        if (BIReportExportExcelUtils.widgetHasData(widget)) {
-            return renderDefaultChartPic(widget);
+    private void renderDateWidget(PolyECBlock polyECBlock, JSONObject jo) {
+        JSONObject joValue = jo.optJSONObject("value");
+        String startValue, endValue;
+        if (joValue.optJSONObject("start") != null) {
+            startValue = formatDate(joValue.optJSONObject("start"));
+        } else {
+            startValue = Inter.getLocText("BI-Basic_Unrestricted");
+
         }
 
+        if (joValue.optJSONObject("end") != null) {
+            endValue = formatDate(joValue.optJSONObject("end"));
+        } else {
+            endValue = Inter.getLocText("BI-Basic_Unrestricted");
+        }
+
+        String value = startValue + " -- " + endValue;
+        renderWidget(polyECBlock, value, jo);
+    }
+
+    private FloatElement renderPicture(TableWidget widget) throws Exception {
+        if (!BIReportExportExcelUtils.widgetHasData(widget)) {
+            return renderDefaultChartPic(widget);
+        }
         JSONObject options;
         String key;
         if (widget instanceof VanChartWidget) {
