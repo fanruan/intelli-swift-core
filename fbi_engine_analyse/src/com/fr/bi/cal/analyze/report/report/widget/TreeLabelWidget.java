@@ -114,9 +114,6 @@ public class TreeLabelWidget extends BIAbstractWidget {
 
         if (jo.has("treeOptions")) {
             JSONObject treeJo = jo.getJSONObject("treeOptions");
-            if (treeJo.has("type")) {
-                data_type = treeJo.getInt("type");
-            }
             if (treeJo.has("floors")) {
                 floors = treeJo.getInt("floors");
             }
