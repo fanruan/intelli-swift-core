@@ -14,10 +14,10 @@ public class NodeGVISummarizing extends NodeSummarizing {
     }
 
     protected void sum(MetricMergeResult node) {
-        resetSummaryValue(node);
         if (node.getChildLength() == 0) {
             return;
         }
+        resetSummaryValue(node);
         for (int i = 0; i < node.getChildLength(); i++) {
             MetricMergeResult child = (MetricMergeResult) node.getChild(i);
             sum(child);

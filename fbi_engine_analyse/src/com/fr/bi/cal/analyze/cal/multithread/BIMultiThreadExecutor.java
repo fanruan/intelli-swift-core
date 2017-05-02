@@ -41,7 +41,7 @@ public class BIMultiThreadExecutor {
     }
 
     protected void awaitExecutor(final BISession session) {
-        if (null != lists) {
+        if (!isShutDown()) {
             for (MergeSummaryCallList list : lists) {
                 list.add(new BISingleThreadCal() {
                     @Override
@@ -51,13 +51,18 @@ public class BIMultiThreadExecutor {
                 });
                 list.finish();
             }
+            lists = null;
+            executorService.shutdown();
+            try {
+                executorService.awaitTermination(Long.MAX_VALUE, TimeUnit.DAYS);
+            } catch (InterruptedException e) {
+                BILoggerFactory.getLogger().error(e.getMessage(), e);
+            }
+            executorService = null;
         }
-        lists = null;
-        executorService.shutdown();
-        try {
-            executorService.awaitTermination(Long.MAX_VALUE, TimeUnit.DAYS);
-        } catch (InterruptedException e) {
-            BILoggerFactory.getLogger().error(e.getMessage(), e);
-        }
+    }
+
+    protected boolean isShutDown(){
+        return executorService == null;
     }
 }

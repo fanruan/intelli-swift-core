@@ -3,17 +3,21 @@ package com.fr.bi.cal.analyze.cal.multithread;
 import com.fr.bi.cal.analyze.session.BISession;
 import com.fr.bi.manager.PerformancePlugManager;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 /**
  * Created by Hiram on 2015/5/14.
  */
 public class MultiThreadManagerImpl {
+    //同时进行的多线程计算数量，
+    private AtomicInteger count;
     private static MultiThreadManagerImpl ourInstance = new MultiThreadManagerImpl();
-    private static ThreadLocal<BIMultiThreadExecutor> executorServiceThreadLocal = new ThreadLocal<BIMultiThreadExecutor>();
 
     private MultiThreadManagerImpl() {
+        count = new AtomicInteger(0);
     }
 
-    public static boolean isMultiCall() {
+    private boolean isMultiCall() {
         return PerformancePlugManager.getInstance().isUseMultiThreadCal();
     }
 
@@ -21,41 +25,27 @@ public class MultiThreadManagerImpl {
         return ourInstance;
     }
 
-    /**
-     * 刷新当前线程的ExecutorService,一般web容器都会有线程池，用ThreadLocal之前要先清掉
-     */
-
-    public void refreshExecutorService() {
-        if (!isMultiCall()) {
-            return;
-        }
-        executorServiceThreadLocal.set(null);
-    }
 
 
     public BIMultiThreadExecutor getExecutorService() {
-        BIMultiThreadExecutor executorService = executorServiceThreadLocal.get();
-        if (executorService == null) {
-            executorService = createNewExecutorServer();
-            executorServiceThreadLocal.set(executorService);
+        //小于3个才进行多线程计算，并发高的时候多线程反而是累赘
+        if (isMultiCall() && count.get() < 3) {
+            count.incrementAndGet();
+            return createNewExecutorServer();
         }
-        return executorService;
+        return null;
     }
 
 
-    public BIMultiThreadExecutor createNewExecutorServer() {
+    private BIMultiThreadExecutor createNewExecutorServer() {
         return new BIMultiThreadExecutor();
     }
 
 
-    public void awaitExecutor(BISession session) {
-        if (!isMultiCall()) {
-            return;
-        }
-        BIMultiThreadExecutor executorService = executorServiceThreadLocal.get();
-        if (executorService != null){
-            executorService.awaitExecutor(session);
-            refreshExecutorService();
+    public void awaitExecutor(BISession session, BIMultiThreadExecutor executor) {
+        if (executor != null && !executor.isShutDown()){
+            executor.awaitExecutor(session);
+            count.decrementAndGet();
         }
     }
 

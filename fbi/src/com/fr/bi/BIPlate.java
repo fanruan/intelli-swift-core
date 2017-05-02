@@ -72,10 +72,8 @@ public class BIPlate extends AbstractFSPlate {
         registerEntrySomething();
         initOOMKillerForLinux();
         loadMemoryData();
-        /*载入定时任务*/
-        TimerRunner timerRunner = new TimerRunner(UserControl.getInstance().getSuperManagerID());
-        timerRunner.reGenerateTimeTasks();
-        BIConfigureManagerCenter.getLogManager().logEnd(UserControl.getInstance().getSuperManagerID());
+        createTimerTasks();
+
         addBITableColumn4NewConnection();
         addSharedTableColumn4NewConnection();
 
@@ -86,6 +84,12 @@ public class BIPlate extends AbstractFSPlate {
 
         //启动用于截图的phantom服务
         initPhantomServer();
+    }
+
+    private void createTimerTasks() {
+    /*载入定时任务*/
+        TimerRunner timerRunner = new TimerRunner(UserControl.getInstance().getSuperManagerID());
+        timerRunner.reGenerateTimeTasks();
     }
 
     public void loadMemoryData() {
@@ -250,7 +254,7 @@ public class BIPlate extends AbstractFSPlate {
     private void initModules() {
         BIModuleManager.registModule(new BICoreModule());
         Set<Class<?>> set = BIClassUtils.getClasses("com.fr.bi.module");
-        set.addAll(BIClassUtils.getClasses("com.fr.bi.test.module"));
+//        set.addAll(BIClassUtils.getClasses("com.fr.bi.test.module"));
         for (Class c : set) {
             if (BIModule.class.isAssignableFrom(c) && !Modifier.isAbstract(c.getModifiers())) {
                 try {

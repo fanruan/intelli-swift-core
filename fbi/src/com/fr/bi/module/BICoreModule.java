@@ -15,6 +15,7 @@ import com.finebi.cube.conf.singletable.SingleTableUpdateManager;
 import com.finebi.cube.conf.timer.UpdateFrequencyManager;
 import com.finebi.cube.conf.trans.BIAliasManagerWithoutUser;
 import com.fr.base.FRContext;
+import com.fr.bi.web.dezi.demo.DemoService;
 import com.fr.bi.cal.BICubeManager;
 import com.fr.bi.cal.generate.timerTask.BICubeTimeTaskCreatorManager;
 import com.fr.bi.cal.generate.timerTask.BICubeTimeTaskCreatorProvider;
@@ -695,8 +696,8 @@ public class BICoreModule extends AbstractModule {
                 new Service4BIReport(),
                 new Service4BIDezi(),
                 new Service4BIBase(),
-
-                new Service4FineCube()
+                new Service4FineCube(),
+                new DemoService()
         };
     }
 

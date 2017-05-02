@@ -4,6 +4,7 @@ import com.fr.bi.cal.analyze.report.report.widget.chart.export.basic.*;
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.utils.BITableExportDataHelper;
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.utils.SummaryTableStyleHelper;
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.utils.node.ReportNode;
+import com.fr.bi.cal.analyze.report.report.widget.style.BITableWidgetStyle;
 import com.fr.bi.conf.report.widget.IWidgetStyle;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.utils.program.BIJsonUtils;
@@ -378,7 +379,7 @@ public class SummaryComplexTableBuilder extends TableAbstractDataBuilder {
     }
 
     private BIExcelTableData createSingleCrossTableItems(JSONObject tableData, Map<Integer, List<JSONObject>> dimsByDataPos) throws Exception {
-        SummaryCrossTableDataBuilder builder = new SummaryCrossTableDataBuilder(dimsByDataPos, tableData, styleSetting);
+        SummaryCrossTableDataBuilder builder = new SummaryCrossTableDataBuilder(dimsByDataPos, tableData, new BITableWidgetStyle());
         builder.initAttrs();
         builder.createHeaders();
         builder.createItems();

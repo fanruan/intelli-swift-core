@@ -2,6 +2,7 @@ package com.fr.bi.cal.analyze.cal.index.loader;
 
 import com.finebi.cube.conf.table.BusinessTable;
 import com.finebi.cube.relation.BITableSourceRelation;
+import com.fr.bi.cal.analyze.cal.multithread.BIMultiThreadExecutor;
 import com.fr.bi.cal.analyze.cal.multithread.MultiThreadManagerImpl;
 import com.fr.bi.cal.analyze.cal.result.*;
 import com.fr.bi.cal.analyze.cal.result.operator.*;
@@ -745,7 +746,6 @@ public class CubeIndexLoader {
             pg.setColumnIterator(info.getIterator());
         } else {
             pg.setRowIterator(info.getIterator());
-            iterator.getRoot().checkStatus();
         }
         session.setMergerInfoList(widget.getWidgetName(), info.getIterator().getRoot().getMetricGroupInfoList());
         return info;
@@ -783,34 +783,36 @@ public class CubeIndexLoader {
 
         @Override
         public NodeAndPageInfo create() {
-            MultiThreadManagerImpl.getInstance().refreshExecutorService();
+            BIMultiThreadExecutor executor = MultiThreadManagerImpl.getInstance().getExecutorService();
             int summaryLength = usedTargets.length;
             int rowLength = rowDimension.length;
             boolean calAllPage = page == -1;
             if (iterator.getRoot() == null) {
                 IRootDimensionGroup root;
                 if (rowLength != 0 && summaryLength == 0) {
-                    root = createPageGroupNodeWithNoSummary(widget, usedTargets, rowDimension, isCross, isHor, session, rowLength, calAllPage, authFilter);
+                    root = createPageGroupNodeWithNoSummary(widget, usedTargets, rowDimension, isCross, isHor, session, rowLength, calAllPage, authFilter, executor);
                 } else {
-                    root = createPageGroupNodeWithSummary(widget, usedTargets, rowDimension, session, isCross, isHor, summaryLength, rowLength, calAllPage, authFilter);
+                    root = createPageGroupNodeWithSummary(widget, usedTargets, rowDimension, session, isCross, isHor, summaryLength, rowLength, calAllPage, authFilter, executor);
                 }
                 iterator.setRoot(root);
             } else {
                 iterator = iterator.createClonedIterator();
+                iterator.getRoot().checkStatus(executor);
             }
             iterator.setExpander(expander);
-            if (calAllPage){
+            if (calAllPage) {
+                MultiThreadManagerImpl.getInstance().awaitExecutor(session, executor);
                 return new NodeAndPageInfo(iterator.getRoot().getConstructedRoot(), iterator);
             }
-            NodeAndPageInfo info = GroupUtils.createNextPageMergeNode(iterator, op, isHor ? widget.showColumnTotal() : widget.showRowToTal(), isCross, widget.getTargets().length);
-            MultiThreadManagerImpl.getInstance().awaitExecutor(session);
+            NodeAndPageInfo info = GroupUtils.createNextPageMergeNode(iterator, op, isHor ? widget.showColumnTotal() : widget.showRowToTal(), isCross, widget.getTargets().length, executor);
+            MultiThreadManagerImpl.getInstance().awaitExecutor(session, executor);
             return info;
         }
     }
 
     private IRootDimensionGroup createPageGroupNodeWithSummary(BISummaryWidget widget, BISummaryTarget[] usedTargets,
                                                                BIDimension[] rowDimension, BISession session, boolean isCross,
-                                                               boolean isHor, int summaryLength, int rowLength, boolean calAllPage, List<TargetFilter> authFilter) {
+                                                               boolean isHor, int summaryLength, int rowLength, boolean calAllPage, List<TargetFilter> authFilter, BIMultiThreadExecutor executor) {
         List<MetricGroupInfo> mergerInfoList = new ArrayList<MetricGroupInfo>();
         Map<GroupKey, MetricGroupInfo> map = new HashMap<GroupKey, MetricGroupInfo>();
         for (int i = 0; i < summaryLength; i++) {
@@ -840,7 +842,7 @@ public class CubeIndexLoader {
                 metricGroupInfo.addTargetAndKey(new TargetAndKey(target.getName(), summary, summary.createTargetGettingKey()));
             }
         }
-        return getRootDimensionGroup(widget, usedTargets, rowDimension, session, mergerInfoList, isCross, isHor, calAllPage, authFilter);
+        return getRootDimensionGroup(widget, usedTargets, rowDimension, session, mergerInfoList, isCross, isHor, calAllPage, authFilter, executor);
     }
 
     private static void fillRowDimension(BISummaryWidget widget, DimensionCalculator[] row, BIDimension[] rowDimension, int rowLength, BISummaryTarget bdt) {
@@ -854,7 +856,7 @@ public class CubeIndexLoader {
 
     private IRootDimensionGroup createPageGroupNodeWithNoSummary(BISummaryWidget widget, BISummaryTarget[] usedTargets,
                                                                  BIDimension[] rowDimension, boolean isCross, boolean isHor,
-                                                                 BISession session, int rowLength, boolean calAllPage, List<TargetFilter> authFilter) {
+                                                                 BISession session, int rowLength, boolean calAllPage, List<TargetFilter> authFilter, BIMultiThreadExecutor executor) {
         DimensionCalculator[] row = new DimensionCalculator[rowLength];
         for (int i = 0; i < rowLength; i++) {
             row[i] = rowDimension[i].createCalculator(rowDimension[i].getStatisticElement(), new ArrayList<BITableSourceRelation>());
@@ -867,17 +869,17 @@ public class CubeIndexLoader {
         metricGroupInfo.addTargetAndKey(new TargetAndKey(summary.getName(), summary, summary.createTargetGettingKey()));
         List<MetricGroupInfo> list = new ArrayList<MetricGroupInfo>();
         list.add(metricGroupInfo);
-        return getRootDimensionGroup(widget, usedTargets, rowDimension, session, list, isCross, isHor, calAllPage, authFilter);
+        return getRootDimensionGroup(widget, usedTargets, rowDimension, session, list, isCross, isHor, calAllPage, authFilter, executor);
     }
 
 
     private IRootDimensionGroup getRootDimensionGroup(BISummaryWidget widget, BISummaryTarget[] usedTargets, BIDimension[] rowDimension,
                                                       BISession session, List<MetricGroupInfo> metricGroupInfoList, boolean shouldSetIndex,
-                                                      boolean isHor, boolean calAllPage, List<TargetFilter> authFilter) {
+                                                      boolean isHor, boolean calAllPage, List<TargetFilter> authFilter, BIMultiThreadExecutor executor) {
         boolean showSum = isHor ? widget.showColumnTotal() : widget.showRowToTal();
         NodeIteratorCreator iteratorCreator = new NodeIteratorCreator(metricGroupInfoList, rowDimension, usedTargets, widget.getTargets().length,
                 widget.getTargetFilterMap(), widget.isRealData(), session, widget.getTargetSort(), widget.getFilter(), authFilter,
-                showSum, shouldSetIndex, calAllPage);
+                showSum, shouldSetIndex, calAllPage, executor);
         return iteratorCreator.createRoot();
     }
 
