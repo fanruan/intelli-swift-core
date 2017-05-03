@@ -1,7 +1,11 @@
 import com.fr.bi.stable.utils.file.BIFileUtils;
+import com.fr.bi.stable.utils.program.BINonValueUtils;
 import com.fr.json.JSONObject;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -14,14 +18,10 @@ import java.util.regex.Pattern;
  */
 public class findLineKeyTest {
     private static final String outputPath="C:\\code\\FineBI\\keys.json";
-    private static final String rootDir="C:\\code\\FineBI";
     public static void main(String[] args) {
         List<String> rootDirs = setRootDIrs();
         List<String> allFiles = getSelectedFiles(rootDirs);
         Map<String, List<String>> allKeys = getAllKeysFromFiles(allFiles);
-//        for (String s : allKeys.keySet()) {
-//            System.out.println(s);
-//        }
         JSONObject keysJson = new JSONObject(allKeys);
         BIFileUtils.writeFile(outputPath,keysJson.toString());
 
@@ -30,7 +30,11 @@ public class findLineKeyTest {
     private static Map<String,List<String>> getAllKeysFromFiles(List<String> allFiles) {
         Map<String,List<String>> container=new HashMap<String, List<String>>();
         for (String file : allFiles) {
-            List<String> keys = findKey(BIFileUtils.readFile(file));
+            List<String> keys=new ArrayList<String>();
+            List<String> lines = readFile(file);
+            for (String line : lines) {
+               keys.addAll(findKey(line));
+            }
             for (String key : keys) {
                 if (!container.containsKey(key)){
                     container.put(key,new ArrayList<String>());
@@ -43,7 +47,9 @@ public class findLineKeyTest {
 
     private static List<String> setRootDIrs() {
         List<String> rootDirs = new ArrayList<String>();
-        rootDirs.add(rootDir);
+        rootDirs.add("C:\\code\\FineBI\\nuclear-conf");
+        rootDirs.add("C:\\code\\FineBI\\nuclear-core");
+        rootDirs.add("C:\\code\\FineBI\\nuclear-web");
         return rootDirs;
     }
 
@@ -72,8 +78,28 @@ public class findLineKeyTest {
     private static String createRegStr() {
         String normalJsonGetStr="get|getString|getInt|getLong|getDouble|getFloat|getBoolean|getJSONObject|getJsonArray";
         String optJsonGetStr="opt|optString|optInt|optLong|optDouble|optFloat|optBoolean|optJSONObject|optJSONArray|opt";
-        String otherJsonOpeStr="put|putOpt|remove";
+        String otherJsonOpeStr="put|putOpt|remove|has";
         String optionJsonStr=normalJsonGetStr+"|"+optJsonGetStr+"|"+otherJsonOpeStr;
-        return "("+optionJsonStr+")\\(\"([a-z]{1,}_[\\w]{1,})\"\\)";
+        return "("+optionJsonStr+")\\(\"([a-z]{1,}_[\\w]{1,})\"";
     }
-}
+
+    public static List<String> readFile(String path) {
+        File file = new File(path);
+        List<String> lines=new ArrayList<String>();
+        try {
+            FileReader fr = new FileReader(file);
+            BufferedReader reader = new BufferedReader(fr);
+            String line;
+            try {
+                while ((line = reader.readLine()) != null)
+                    lines.add(line);
+                return lines;
+            } finally {
+                reader.close();
+                fr.close();
+            }
+
+        } catch (IOException e) {
+            throw BINonValueUtils.beyondControl(e);
+        }
+    }}
