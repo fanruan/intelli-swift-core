@@ -76,6 +76,9 @@ public class GroupUtils {
                             } else {
                                 singleThreadCal.cal();
                             }
+                        } else if (shouldSetIndex && node.getTargetIndex(targetAndKey.getTargetGettingKey()) == null){
+                            //会出现node copy了summaryValue但是没有index的情况，这时候交叉表就出问题了，需要设置下gvi
+                            node.setTargetIndex(targetAndKey.getTargetGettingKey(), gvis[i]);
                         }
                     }
                 }

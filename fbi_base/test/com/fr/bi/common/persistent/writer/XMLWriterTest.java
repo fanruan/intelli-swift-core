@@ -192,6 +192,7 @@ public class XMLWriterTest extends TestCase {
             XMLTools.readInputStreamXML(reader, new FileInputStream(var3));
             return object;
         } catch (Exception e) {
+            fail();
             BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
         return object;

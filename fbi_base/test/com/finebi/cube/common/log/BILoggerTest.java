@@ -93,7 +93,9 @@ public class BILoggerTest extends TestCase {
             LoggingEvent event = logPool.getLogEventPool().get(0).getEvent();
             assertEquals(event.getMessage(), "ABC");
             assertEquals(event.getLevel(), Level.INFO);
-
+            Object[] list = new Object[2];
+            list[0] = BIUserLogPool.getInstance();
+            list[1] = BIUserLogPool.getInstance();
 
             Exception e = new Exception("Exc");
             LOGGER.infoSticky("ABC2", e);
@@ -117,7 +119,7 @@ public class BILoggerTest extends TestCase {
         try {
             BIUserLogPool logPool = BIUserLogPool.getInstance();
             logPool.clear();
-            LOGGER.warnSticky("ABC");
+            mainTask();
             assertEquals(logPool.getLogEventPool().size(), 1);
             LoggingEvent event = logPool.getLogEventPool().get(0).getEvent();
             assertEquals(event.getMessage(), "ABC");
@@ -135,5 +137,9 @@ public class BILoggerTest extends TestCase {
             LOGGER.error(e.getMessage(), e);
             fail();
         }
+    }
+
+    private void mainTask() {
+        LOGGER.warnSticky("ABC");
     }
 }

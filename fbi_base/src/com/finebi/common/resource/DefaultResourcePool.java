@@ -23,6 +23,15 @@ public class DefaultResourcePool<Name extends ResourceName, Item extends Resourc
     }
 
     @Override
+    public Item getResourceItem(String name) {
+        return pool.get(buildName(name));
+    }
+
+    protected Name buildName(String name) {
+        return (Name) new ResourceNameImpl(name);
+    }
+
+    @Override
     public void addResourceItem(Name name, Item item) {
         pool.put(name, item);
     }
@@ -30,6 +39,11 @@ public class DefaultResourcePool<Name extends ResourceName, Item extends Resourc
     @Override
     public void deleteResourceItem(Name name) {
         pool.remove(name);
+    }
+
+    @Override
+    public void deleteResourceItem(String name) {
+        deleteResourceItem(buildName(name));
     }
 
     @Override
@@ -43,6 +57,11 @@ public class DefaultResourcePool<Name extends ResourceName, Item extends Resourc
     @Override
     public boolean contain(Name name) {
         return pool.containsKey(name);
+    }
+
+    @Override
+    public boolean contain(String name) {
+        return contain(buildName(name));
     }
 
     @Override
