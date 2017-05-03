@@ -32,6 +32,21 @@ public class BIStringUtils {
         return StableUtils.join(strings, "");
     }
 
+    public static String append(Object... objects) {
+        if (objects != null) {
+            String[] strings = new String[objects.length];
+            for (int i = 0; i < objects.length; i++) {
+                if (objects[i] != null) {
+                    strings[i] = objects[i].toString();
+                } else {
+                    strings[i] = "null";
+                }
+            }
+            return StableUtils.join(strings, "");
+        }
+        return "";
+    }
+
     /**
      * 指定字符串末尾字符，并且是唯一的。
      * 例如："/a/b////",处理后应该是"/a/b/"
