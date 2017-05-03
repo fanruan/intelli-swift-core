@@ -187,12 +187,12 @@ public class AutoGroup extends AbstractGroup {
         int maxIndex = max.indexOf(".");
         max = maxIndex == -1 ? max : (max.substring(maxIndex).matches("\\.0+$") ? max.substring(0, maxIndex) : max.replace(".", ""));
         maxBuilder.append(max);
-        return extract2PMD(minValue, maxValue, magnify, count, minBuilder, maxBuilder);
+        return extractLastPart4PMD(minValue, maxValue, magnify, count, minBuilder, maxBuilder);
 
 
     }
 
-    private double extract2PMD(double minValue, double maxValue, int magnify, int count, StringBuilder minBuilder, StringBuilder maxBuilder) {
+    private double extractLastPart4PMD(double minValue, double maxValue, int magnify, int count, StringBuilder minBuilder, StringBuilder maxBuilder) {
         String min;
         String max;
         double minV;
