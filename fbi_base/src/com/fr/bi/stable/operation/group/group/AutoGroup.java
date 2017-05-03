@@ -106,20 +106,20 @@ public class AutoGroup extends AbstractGroup {
     @Override
     public void parseJSON(JSONObject jo) throws Exception {
         super.parseJSON(jo);
-        if (jo.has("group_value")) {
-            JSONObject valueJson = jo.optJSONObject("group_value");
+        if (jo.has("groupValue")) {
+            JSONObject valueJson = jo.optJSONObject("groupValue");
             if (valueJson.has("max")) {
                 max = valueJson.getDouble("max");
             }
             if (valueJson.has("min")) {
                 min = valueJson.getDouble("min");
             }
-            if (valueJson.has("group_interval")) {
+            if (valueJson.has("groupInterval")) {
                 hasInterval = true;
-                interval = valueJson.getDouble("group_interval");
+                interval = valueJson.getDouble("groupInterval");
             } else {
                 hasInterval = false;
-                interval = (max - min) / 5;
+                interval = (max - min) / NUM2PMD_FIVE;
             }
             this.interval = initGroup(min, max);
         }
@@ -155,6 +155,10 @@ public class AutoGroup extends AbstractGroup {
         return dotText.length();
     }
 
+    private static final int NUM2PMD_FIVE = 5;
+    private static final int NUM2PMD_ONE = 1;
+    private static final int NUM2PMD_TEN = 10;
+
     private double initGroup(double minValue, double maxValue) {
         int magnify = 1;
         double minV = Math.abs(minValue);
@@ -183,8 +187,16 @@ public class AutoGroup extends AbstractGroup {
         int maxIndex = max.indexOf(".");
         max = maxIndex == -1 ? max : (max.substring(maxIndex).matches("\\.0+$") ? max.substring(0, maxIndex) : max.replace(".", ""));
         maxBuilder.append(max);
+        return extractLastPart4PMD(minValue, maxValue, magnify, count, minBuilder, maxBuilder);
 
-        //后面补零对齐
+
+    }
+
+    private double extractLastPart4PMD(double minValue, double maxValue, int magnify, int count, StringBuilder minBuilder, StringBuilder maxBuilder) {
+        String min;
+        String max;
+        double minV;
+        double maxV;//后面补零对齐
         int zeros = maxBuilder.length() - minBuilder.length();
         if (zeros > 0) {
             while (zeros-- > 0) {
@@ -206,7 +218,7 @@ public class AutoGroup extends AbstractGroup {
 
         //截位/截位+1
         while (count-- > 0) {
-            magnify *= 10;
+            magnify *= NUM2PMD_TEN;
         }
         minV = minValue < 0 ? -(cutBig(min, i)) : cutSmall(min, i);
         maxV = maxValue < 0 ? -(cutSmall(max, i)) : cutBig(max, i);
@@ -214,7 +226,7 @@ public class AutoGroup extends AbstractGroup {
         double genMax = maxV * magnify;
         this.start = genMin;
         if (!hasInterval) {
-            return Double.parseDouble(StableUtils.convertNumberStringToString((genMax - genMin) / 5));
+            return Double.parseDouble(StableUtils.convertNumberStringToString((genMax - genMin) / NUM2PMD_FIVE));
         } else {
             return this.interval;
         }
