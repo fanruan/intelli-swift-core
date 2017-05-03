@@ -219,8 +219,8 @@ public class StringControlWidget extends TableWidget {
     @Override
     public void parseJSON(JSONObject jo, long userId) throws Exception {
         super.parseJSON(jo, userId);
-        if (jo.has("text_options")) {
-            JSONObject treeJo = jo.getJSONObject("text_options");
+        if (jo.has("textOptions")) {
+            JSONObject treeJo = jo.getJSONObject("textOptions");
             if (treeJo.has("type")) {
                 data_type = treeJo.getInt("type");
             }

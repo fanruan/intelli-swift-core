@@ -94,6 +94,7 @@ public class GetDisplayTreeNodeExecutor extends AbstractTreeNodeExecutor {
         String str2 = Inter.getLocText("BI-Basic_Count");
         obj.put("id", id);
         obj.put("pId", pId);
+        obj.put("value", name);
         if (children == 0) {
             obj.put("text", name);
         } else {

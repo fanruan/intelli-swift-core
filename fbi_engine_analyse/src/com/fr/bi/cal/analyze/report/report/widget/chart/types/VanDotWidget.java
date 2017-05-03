@@ -192,13 +192,17 @@ public class VanDotWidget extends VanCartesianWidget{
         return series;
     }
 
-    //兼容之前的气泡图散点图
-    public JSONArray createBubbleScatterSeries(JSONObject originData) throws Exception{
+
+    private JSONArray createBubbleScatterSeries(JSONObject originData) throws Exception{
         String[] ids = this.getUsedTargetID();
 
         JSONArray series = JSONArray.create();
 
         JSONArray c = originData.optJSONArray("c");
+
+        if(c == null){
+            return series;
+        }
 
         for(int i = 0, len = c.length(); i < len; i++){
             JSONObject obj = c.getJSONObject(i);

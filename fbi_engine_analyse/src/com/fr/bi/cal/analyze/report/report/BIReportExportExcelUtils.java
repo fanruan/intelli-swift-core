@@ -4,6 +4,7 @@ import com.fr.base.ScreenResolution;
 import com.fr.bi.conf.report.BIWidget;
 import com.fr.bi.conf.report.WidgetType;
 import com.fr.bi.manager.PerformancePlugManager;
+import com.fr.bi.stable.constant.DateConstant;
 import com.fr.general.IOUtils;
 import com.fr.json.JSONObject;
 import com.fr.report.cell.FloatElement;
@@ -31,6 +32,12 @@ import java.util.Map;
  */
 public class BIReportExportExcelUtils {
     private static int bytesLength = 256;
+    private static int daysOfFebruary = 29;
+    private static int[] daysOfMonth = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+    private static int timeOut = 5000;
+    private static int year4 = 4;
+    private static int year100 = 100;
+    private static int year400 = 400;
 
     private static String phantomIp = PerformancePlugManager.getInstance().getPhantomServerIP();
     private static int phantomPort = PerformancePlugManager.getInstance().getPhantomServerPort();
@@ -70,8 +77,8 @@ public class BIReportExportExcelUtils {
         URL url = new URL("http://" + phantomIp + ":" + phantomPort + "/");
         URLConnection connection = url.openConnection();
         connection.setDoOutput(true);
-        connection.setConnectTimeout(5000);
-        connection.setReadTimeout(5000);
+        connection.setConnectTimeout(timeOut);
+        connection.setReadTimeout(timeOut);
 
         OutputStream out = connection.getOutputStream();
         out.write(message.getBytes("utf-8"));
@@ -176,5 +183,31 @@ public class BIReportExportExcelUtils {
         Rectangle rect = new Rectangle(bounds.optInt("left"), bounds.optInt("top"),
                 bounds.optInt("width"), bounds.optInt("height"));
         return rect;
+    }
+
+    static int getQuarterStartMonth(int nowMonth) {
+        int quarterStartMonth = DateConstant.CALENDAR.MONTH.JANUARY;
+        if (nowMonth < DateConstant.CALENDAR.MONTH.APRIL) {
+            quarterStartMonth = DateConstant.CALENDAR.MONTH.JANUARY;
+        }
+        if (DateConstant.CALENDAR.MONTH.MARCH < nowMonth && nowMonth < DateConstant.CALENDAR.MONTH.JULY) {
+            quarterStartMonth = DateConstant.CALENDAR.MONTH.APRIL;
+        }
+        if (DateConstant.CALENDAR.MONTH.JUNE < nowMonth && nowMonth < DateConstant.CALENDAR.MONTH.OCTOBER) {
+            quarterStartMonth = DateConstant.CALENDAR.MONTH.JULY;
+        }
+        if (nowMonth > DateConstant.CALENDAR.MONTH.SEPTEMBER) {
+            quarterStartMonth = DateConstant.CALENDAR.MONTH.SEPTEMBER;
+        }
+        return quarterStartMonth;
+    }
+
+    static int getMonthDays(int year, int month) {
+        boolean isLeapYear = (0 == (year % year4)) && ((0 != (year % year100)) || (0 == (year % year400)));
+        if (isLeapYear && month == 1) {
+            return daysOfFebruary;
+        } else {
+            return daysOfMonth[month];
+        }
     }
 }

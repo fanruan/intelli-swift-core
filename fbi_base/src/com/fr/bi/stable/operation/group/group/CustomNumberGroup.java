@@ -42,6 +42,24 @@ public class CustomNumberGroup extends AbstractGroup {
                 break;
             }
         }
+        InnerLoop(newMap, ungroupMap, newMapArray, iter, otherHelper);
+        for (int i = 0; i < groups.length; ++i) {
+            newMap.put(groups[i].getValue(), newMapArray[i].compute().or(newMap.getIndex(groups[i].getValue())));
+        }
+        Iterator it = ungroupMap.iterator();
+        while (it.hasNext()) {
+            Map.Entry entry = (Map.Entry) it.next();
+            if (newMap.containsKey(entry.getKey())) {
+                GroupValueIndex result = newMap.getIndex(entry.getKey()).OR((GroupValueIndex) entry.getValue());
+                newMap.put(entry.getKey(), result);
+            } else {
+                newMap.put(entry.getKey(), entry.getValue());
+            }
+        }
+        return newMap;
+    }
+
+    private void InnerLoop(CubeLinkedHashMap newMap, CubeLinkedHashMap ungroupMap, GroupValueIndexOrHelper[] newMapArray, Iterator iter, GroupValueIndexOrHelper otherHelper) {
         while (iter.hasNext()) {
             Map.Entry entry = (Map.Entry) iter.next();
             if (entry.getKey() == null || ComparatorUtils.equals(entry.getKey(), "")) {
@@ -75,20 +93,6 @@ public class CustomNumberGroup extends AbstractGroup {
                 }
             }
         }
-        for (int i = 0; i < groups.length; ++i) {
-            newMap.put(groups[i].getValue(), newMapArray[i].compute().or(newMap.getIndex(groups[i].getValue())));
-        }
-        Iterator it = ungroupMap.iterator();
-        while (it.hasNext()) {
-            Map.Entry entry = (Map.Entry) it.next();
-            if (newMap.containsKey(entry.getKey())) {
-                GroupValueIndex result = newMap.getIndex(entry.getKey()).OR((GroupValueIndex) entry.getValue());
-                newMap.put(entry.getKey(), result);
-            } else {
-                newMap.put(entry.getKey(), entry.getValue());
-            }
-        }
-        return newMap;
     }
 
     @Override
@@ -99,33 +103,30 @@ public class CustomNumberGroup extends AbstractGroup {
     @Override
     public void parseJSON(JSONObject jo) throws Exception {
         super.parseJSON(jo);
-        if (jo.has("group_value")) {
-            JSONObject valueJson = jo.optJSONObject("group_value");
-            if (valueJson.has("group_nodes")) {
-                JSONArray ja = valueJson.getJSONArray("group_nodes");
+        if (jo.has("groupValue")) {
+            JSONObject valueJson = jo.optJSONObject("groupValue");
+            if (valueJson.has("groupNodes")) {
+                JSONArray ja = valueJson.getJSONArray("groupNodes");
                 int len = ja.length();
-                if (valueJson.has("use_other")) {
+                if (valueJson.has("useOther")) {
                     groups = new NumberGroupInfo[len + 1];
                     groups[len] = new NumberOtherGroupInfo();
-                    groups[len].setValue(valueJson.getString("use_other"));
+                    groups[len].setValue(valueJson.getString("useOther"));
                 } else {
                     groups = new NumberGroupInfo[len];
                 }
                 for (int i = 0; i < len; i++) {
                     JSONObject oneGroup = ja.getJSONObject(i);
-
                     groups[i] = new NumberGroupInfo();
                     if (oneGroup.has("max")) {
                         groups[i].max = oneGroup.getDouble("max");
                         groups[i].closemax = oneGroup.getBoolean("closemax");
                     }
-
                     if (oneGroup.has("min")) {
                         groups[i].min = oneGroup.getDouble("min");
                         groups[i].closemin = oneGroup.getBoolean("closemin");
                     }
-
-                    groups[i].setValue(oneGroup.getString("group_name"));
+                    groups[i].setValue(oneGroup.getString("groupName"));
                 }
             }
         }

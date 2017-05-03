@@ -628,7 +628,7 @@ public abstract class VanChartWidget extends TableWidget {
 
     private JSONArray createSeriesWithChildren(JSONObject originData) throws Exception {
         BIDimension category = this.getCategoryDimension();
-        int groupType = category.getGroup().getType();
+        int groupType = category == null ? BIReportConstant.GROUP.YMD : category.getGroup().getType();
         JSONArray series = JSONArray.create();
         String[] targetIDs = this.getUsedTargetID();
         String categoryKey = this.categoryKey(), valueKey = this.valueKey();
