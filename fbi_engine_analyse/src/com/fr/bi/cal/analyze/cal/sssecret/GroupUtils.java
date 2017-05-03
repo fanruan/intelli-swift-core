@@ -76,8 +76,6 @@ public class GroupUtils {
                             } else {
                                 singleThreadCal.cal();
                             }
-                        } else if (shouldSetIndex){
-                            node.setTargetIndex(targetAndKey.getTargetGettingKey(), gvis[i]);
                         }
                     }
                 }
