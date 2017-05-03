@@ -91,7 +91,6 @@ public class NumberDimensionCalculator extends AbstractDimensionCalculator {
                 }
                 return false;
             }
-
             @Override
             public Object next() {
                 if (usedNullIndex.flag) {
@@ -100,22 +99,18 @@ public class NumberDimensionCalculator extends AbstractDimensionCalculator {
                         public Object getKey() {
                             return null;
                         }
-
                         @Override
                         public Object getValue() {
                             return nullGroupValueIndex;
                         }
-
                         @Override
                         public Object setValue(Object value) {
                             return null;
                         }
-
                         @Override
                         public boolean equals(Object o) {
                             return false;
                         }
-
                         @Override
                         public int hashCode() {
                             return 0;
@@ -124,7 +119,6 @@ public class NumberDimensionCalculator extends AbstractDimensionCalculator {
                 }
                 return iterator.next();
             }
-
             @Override
             public void remove() {
             }
