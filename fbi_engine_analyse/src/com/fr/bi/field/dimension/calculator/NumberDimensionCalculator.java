@@ -91,6 +91,7 @@ public class NumberDimensionCalculator extends AbstractDimensionCalculator {
                 }
                 return false;
             }
+
             @Override
             public Object next() {
                 if (usedNullIndex.flag) {
@@ -99,18 +100,22 @@ public class NumberDimensionCalculator extends AbstractDimensionCalculator {
                         public Object getKey() {
                             return null;
                         }
+
                         @Override
                         public Object getValue() {
                             return nullGroupValueIndex;
                         }
+
                         @Override
                         public Object setValue(Object value) {
                             return null;
                         }
+
                         @Override
                         public boolean equals(Object o) {
                             return false;
                         }
+
                         @Override
                         public int hashCode() {
                             return 0;
@@ -119,6 +124,7 @@ public class NumberDimensionCalculator extends AbstractDimensionCalculator {
                 }
                 return iterator.next();
             }
+
             @Override
             public void remove() {
             }
@@ -169,25 +175,26 @@ public class NumberDimensionCalculator extends AbstractDimensionCalculator {
 
     @Override
     public Object convertToOriginValue(String stringValue) {
-        try{
-            if (BIGroupUtils.isCustomGroup(getGroup())){
+        try {
+            if (BIGroupUtils.isCustomGroup(getGroup())) {
                 return super.convertToOriginValue(stringValue);
             }
             return convertNumber(stringValue);
-        } catch (Exception e){
+        } catch (Exception e) {
             BILoggerFactory.getLogger().error(e.getMessage());
         }
         return null;
     }
 
-    protected Object convertNumber(String value){
-        switch (field.getClassType()){
+    protected Object convertNumber(String value) {
+        switch (field.getClassType()) {
             case DBConstant.CLASS.LONG:
                 return Long.parseLong(value);
             case DBConstant.CLASS.DOUBLE:
                 return Double.parseDouble(value);
+            //BI-4741 long和int类型数据都转为long
             default:
-                return Integer.parseInt(value);
+                return Long.parseLong(value);
         }
     }
 }
