@@ -10,7 +10,8 @@ import java.io.File;
 public class BIConstantWriter {
     private static final Class[] CLS = {BIReportConstant.class, BIJSONConstant.class, DBConstant.class, FunctionConstant.class};
 
-    private static final Class[] EYLCLS = {com.fr.bi.etl.analysis.Constants.class};
+//    private static final Class[] EYLCLS = {com.fr.bi.etl.analysis.Constants.class};
+    private static final Class[] EYLCLS = {null};
 
     public static void main(String[] args) throws Exception{
         String path = System.getProperty("user.dir");

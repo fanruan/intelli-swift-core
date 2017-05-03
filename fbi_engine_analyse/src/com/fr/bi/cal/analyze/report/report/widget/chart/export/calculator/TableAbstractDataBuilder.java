@@ -82,7 +82,7 @@ public abstract class TableAbstractDataBuilder implements IExcelDataBuilder {
             for (int i = 0; i < s.length(); i++) {
                 BIBasicTableItem temp = new BIBasicTableItem();
                 temp.setType("bi.my_table_cell");
-                temp.setText(s.getString(i));
+                temp.setText(s.optString(i));
                 temp.setDId(targetIds.get(i));
                 temp.setStyle(null);
                 temp.setClicked(new JSONArray().put(new JSONObject()));//[{}];
