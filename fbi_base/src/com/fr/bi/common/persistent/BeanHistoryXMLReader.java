@@ -1,14 +1,12 @@
 package com.fr.bi.common.persistent;
 
-import com.fr.bi.stable.utils.program.BINonValueUtils;
-import com.sun.org.apache.xerces.internal.dom.DeferredElementImpl;
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-import java.io.File;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -29,8 +27,8 @@ public class BeanHistoryXMLReader {
             for (int i = 0; i < beanList.getLength(); i++) {
                 Node bean = beanList.item(i);
 
-                Node historyClasses = ((DeferredElementImpl) bean).getElementsByTagName("historyClasses").item(0);
-                classMapping.put(((DeferredElementImpl) bean).getAttribute("currentClass"), parseHistoryClass(historyClasses));
+                Node historyClasses = ((Element) bean).getElementsByTagName("historyClasses").item(0);
+                classMapping.put(((Element) bean).getAttribute("currentClass"), parseHistoryClass(historyClasses));
             }
         }
         return classMapping;
@@ -44,10 +42,10 @@ public class BeanHistoryXMLReader {
 
     private List<String> parseHistoryClass(Node historyClasses) {
         List<String> classNames = new ArrayList<String>();
-        NodeList nodeList = ((DeferredElementImpl) historyClasses).getElementsByTagName("class");
+        NodeList nodeList = ((Element) historyClasses).getElementsByTagName("class");
         for (int i = 0; i < nodeList.getLength(); i++) {
             Node node = nodeList.item(i);
-            classNames.add(((DeferredElementImpl) node).getAttribute("value"));
+            classNames.add(((Element) node).getAttribute("value"));
         }
         return classNames;
     }
