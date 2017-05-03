@@ -215,7 +215,7 @@ public abstract class TableAbstractDataBuilder implements IExcelDataBuilder {
 
     private void createItems4Cross(JSONObject left, JSONArray crossPV) throws Exception {
         BIBasicTableItem item = new BIBasicTableItem();
-        item.setChildren(createCommonTableItems(left.getString("c"), 0, null, dimIds, crossPV));
+        item.setChildren(createCommonTableItems(left.optString("c"), 0, null, dimIds, crossPV));
         if (showColTotal) {
             //汇总值
             JSONArray sums = new JSONArray();

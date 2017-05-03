@@ -169,25 +169,26 @@ public class NumberDimensionCalculator extends AbstractDimensionCalculator {
 
     @Override
     public Object convertToOriginValue(String stringValue) {
-        try{
-            if (BIGroupUtils.isCustomGroup(getGroup())){
+        try {
+            if (BIGroupUtils.isCustomGroup(getGroup())) {
                 return super.convertToOriginValue(stringValue);
             }
             return convertNumber(stringValue);
-        } catch (Exception e){
+        } catch (Exception e) {
             BILoggerFactory.getLogger().error(e.getMessage());
         }
         return null;
     }
 
-    protected Object convertNumber(String value){
-        switch (field.getClassType()){
+    protected Object convertNumber(String value) {
+        switch (field.getClassType()) {
             case DBConstant.CLASS.LONG:
                 return Long.parseLong(value);
             case DBConstant.CLASS.DOUBLE:
                 return Double.parseDouble(value);
+            //BI-4741 long和int类型数据都转为long
             default:
-                return Integer.parseInt(value);
+                return Long.parseLong(value);
         }
     }
 }

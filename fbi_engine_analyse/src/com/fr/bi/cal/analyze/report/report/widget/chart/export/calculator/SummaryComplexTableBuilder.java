@@ -211,24 +211,24 @@ public class SummaryComplexTableBuilder extends TableAbstractDataBuilder {
      * 表示横向（类似与交叉表）会有三个表，纵向会有两个表
      */
     private void createComplexTableItems() throws Exception {
+        JSONArray dataArray = new JSONArray();
         List<ITableItem> tempItems = new ArrayList<ITableItem>();
         List<ITableItem> tempCrossItems = new ArrayList<ITableItem>();
         // 如果行表头和列表头都只有一个region构造一个二维的数组
-
-//        if (new JSONObject(data).has("l") && new JSONObject(data).has("t")) {
-        if (!BIJsonUtils.isArray(data)) {
-            JSONObject rowValues = new JSONObject();
-            createTempItems(tempItems, tempCrossItems, 0, rowValues, new JSONObject(data), 0);
-        } else {
-            for (int i = 0; i < new JSONArray(data).length(); i++) {
-                JSONObject rowValues = new JSONObject();
-                JSONArray rowTables = new JSONArray(data).getJSONArray(i);
-                for (int j = 0; j < rowTables.length(); j++) {
-                    JSONObject tableData = rowTables.getJSONObject(j);
-                    createTempItems(tempItems, tempCrossItems, i, rowValues, tableData, j);
-                }
+        if (new JSONObject(data).has("l") && new JSONObject(data).has("t")) {
+            dataArray = new JSONArray().put(new JSONArray().put(new JSONObject(data)));
+        }else {
+            for (int i = 0; i < new JSONObject(data).length(); i++) {
+               dataArray.put(new JSONObject(data).getJSONArray(String.valueOf(i)));
             }
         }
+            for (int i = 0; i < dataArray.length(); i++) {
+                JSONObject rowValues = new JSONObject();
+                JSONArray rowTables = dataArray.getJSONArray(i);
+                for (int j = 0; j < rowTables.length(); j++) {
+                    createTempItems(tempItems, tempCrossItems, 0, rowValues, rowTables.getJSONObject(j), 0);
+                }
+            }
         parseColTableItems(tempItems);
         parseRowTableCrossItems(tempCrossItems);
     }
