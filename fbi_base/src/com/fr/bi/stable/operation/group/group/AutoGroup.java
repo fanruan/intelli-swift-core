@@ -155,6 +155,10 @@ public class AutoGroup extends AbstractGroup {
         return dotText.length();
     }
 
+    private static final int NUM2PMD_FIVE = 5;
+    private static final int NUM2PMD_ONE = 1;
+    private static final int NUM2PMD_TEN = 10;
+
     private double initGroup(double minValue, double maxValue) {
         int magnify = 1;
         double minV = Math.abs(minValue);
@@ -206,7 +210,7 @@ public class AutoGroup extends AbstractGroup {
 
         //截位/截位+1
         while (count-- > 0) {
-            magnify *= 10;
+            magnify *= NUM2PMD_TEN;
         }
         minV = minValue < 0 ? -(cutBig(min, i)) : cutSmall(min, i);
         maxV = maxValue < 0 ? -(cutSmall(max, i)) : cutBig(max, i);
@@ -214,7 +218,7 @@ public class AutoGroup extends AbstractGroup {
         double genMax = maxV * magnify;
         this.start = genMin;
         if (!hasInterval) {
-            return Double.parseDouble(StableUtils.convertNumberStringToString((genMax - genMin) / 5));
+            return Double.parseDouble(StableUtils.convertNumberStringToString((genMax - genMin) / NUM2PMD_FIVE));
         } else {
             return this.interval;
         }
