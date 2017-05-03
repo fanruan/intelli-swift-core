@@ -511,13 +511,13 @@ public class TableWidget extends BISummaryWidget {
         IExcelDataBuilder builder = null;
         switch (this.table_type) {
             case BIReportConstant.TABLE_WIDGET.CROSS_TYPE:
-                builder = new SummaryCrossTableDataBuilder(viewMap, chartSettings, dataJSON, null);
+                builder = new SummaryCrossTableDataBuilder(viewMap, chartSettings, dataJSON, new BITableWidgetStyle());
                 break;
             case BIReportConstant.TABLE_WIDGET.GROUP_TYPE:
-                builder = new SummaryGroupTableDataBuilder(viewMap, chartSettings, dataJSON, null);
+                builder = new SummaryGroupTableDataBuilder(viewMap, chartSettings, dataJSON, new BITableWidgetStyle());
                 break;
             case BIReportConstant.TABLE_WIDGET.COMPLEX_TYPE:
-                builder = new SummaryComplexTableBuilder(viewMap, chartSettings, dataJSON, null);
+                builder = new SummaryComplexTableBuilder(viewMap, chartSettings, dataJSON, new BITableWidgetStyle());
                 break;
         }
         if (null == builder) {

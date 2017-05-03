@@ -5,4 +5,9 @@
             <class value="com.fr.bi.cal.analyze.cal.result.ComplexAllExpalder"/>
         </historyClasses>
     </bean>
+    <bean currentClass="com.fr.bi.cal.analyze.report.report.styles.BIReportStyle">
+        <historyClasses>
+            <class value="com.fr.bi.cal.analyze.report.report.styles.BIStyleReportSetting"/>
+        </historyClasses>
+    </bean>
 </persistBeans>
