@@ -44,6 +44,12 @@
 
   "dimensionMap": "匹配关系(dimension_map)",
 
-  "sumType": "螺旋分析增加列(sum_type)"
+  "sumType": "螺旋分析增加列(sum_type)",
+
+  "reportId": "模板ID(report_id)",
+  "reportName": "模板名称(report_name)",
+  "createBy": "创建者(create_by)",
+  "reportLocation": "模板目录(report_location)",
+  "realTime": "实时报表(real_time)"
 
 }
