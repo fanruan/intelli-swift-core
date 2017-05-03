@@ -59,7 +59,7 @@ public class BIReportExportExcelUtils {
         return createFloatElement(base64, getWidgetRect(bounds));
     }
 
-    static FloatElement createFloatElement4String (String value, JSONObject bounds) {
+    static FloatElement createFloatElement4String(String value, JSONObject bounds) {
         FloatElement floatElement = new FloatElement(value);
         return formatFloatElement(floatElement, getWidgetRect(bounds));
     }
@@ -68,8 +68,8 @@ public class BIReportExportExcelUtils {
         int resolution = ScreenResolution.getScreenResolution();
         floatElement.setWidth(FU.valueOfPix((int) rect.getWidth(), resolution));
         floatElement.setHeight(FU.valueOfPix((int) rect.getHeight(), resolution));
-        floatElement.setLeftDistance(FU.valueOfPix((int) rect.getX(), resolution));
-        floatElement.setTopDistance(FU.valueOfPix((int) rect.getY(), resolution));
+        floatElement.setLeftDistance(FU.valueOfPix((int) rect.getX() + 10, resolution));
+        floatElement.setTopDistance(FU.valueOfPix((int) rect.getY() + 10, resolution));
         return floatElement;
     }
 

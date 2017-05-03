@@ -144,10 +144,13 @@ public class BIReportExportExcel {
                     case NUMBER:
                     case INTERVAL_SLIDER:
                         renderNumberWidget(polyECBlock, jo);
+                        break;
                     case TREE:
-                        renderTreeWidget(polyECBlock, jo);
-                    case TREE_LABEL:
                     case TREE_LIST:
+                        renderTreeWidget(polyECBlock, jo);
+                        break;
+                    case TREE_LABEL:
+                        renderTreeLabelWidget(polyECBlock, jo);
                         break;
                     case YEAR:
                         renderYearWidget(polyECBlock, jo);
@@ -216,6 +219,26 @@ public class BIReportExportExcel {
         JSONObject joValue = jo.optJSONObject("value");
         String str = joValue.toString();
         renderWidget(polyECBlock, str.substring(1, str.length() - 1).replace(":{}", ""), jo);
+    }
+
+    private void renderTreeLabelWidget(PolyECBlock polyECBlock, JSONObject jo) throws JSONException {
+        JSONArray joValue = jo.optJSONArray("value");
+        JSONObject dimensions = jo.optJSONObject("dimensions");
+        JSONObject view = jo.optJSONObject("view");
+        String value = "";
+        JSONArray viewArray = view.optJSONArray(BIReportConstant.REGION.DIMENSION1);
+        for (int i = 0; i < viewArray.length(); i++) {
+            value += dimensions.optJSONObject(viewArray.getString(i)).optString("name") + ":";
+            if (joValue.length() == 0 || joValue.getJSONArray(i).getString(0).contains("_*_")) {
+                value += Inter.getLocText("BI-Basic_Unrestricted");
+            } else {
+                String v = joValue.getJSONArray(i).toString();
+                value += v.substring(1, v.length() - 1);
+            }
+            value += "\n\r";
+        }
+
+        renderWidget(polyECBlock, value, jo);
     }
 
     private void renderYearWidget(PolyECBlock polyECBlock, JSONObject jo) {
