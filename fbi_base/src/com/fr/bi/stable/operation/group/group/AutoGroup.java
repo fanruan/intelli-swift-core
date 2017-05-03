@@ -15,15 +15,15 @@ import com.fr.stable.StableUtils;
 
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by GUY on 2015/4/9.
  */
 public class AutoGroup extends AbstractGroup {
 
+    private static final int MULTI_TEN = 10;
+    private static final int DEFAULT_GROUP_SIZE = 5;
     private static DecimalFormat nFormat = new DecimalFormat("#.##");
     private double start;
     @BICoreField
@@ -98,6 +98,20 @@ public class AutoGroup extends AbstractGroup {
         return nFormat.format(start + interval * index) + "-" + nFormat.format(start + interval * (index + 1));
     }
 
+    public List<String> getAllAutoGroupNames(){
+        List<String> nameList = new ArrayList<String>();
+        double interval = this.interval;
+        if (!hasInterval) {
+            interval = initGroup(min, max);
+        }
+        int index = 0;
+        int groupSize = (int) Math.ceil((max - start) / interval);
+        while (index != groupSize) {
+            nameList.add(getAutoGroupName(index++, interval));
+        }
+        return nameList;
+    }
+
     @Override
     public boolean isNullGroup() {
         return false;
@@ -119,7 +133,7 @@ public class AutoGroup extends AbstractGroup {
                 interval = valueJson.getDouble("groupInterval");
             } else {
                 hasInterval = false;
-                interval = (max - min) / NUM2PMD_FIVE;
+                interval = (max - min) / DEFAULT_GROUP_SIZE;
             }
             this.interval = initGroup(min, max);
         }
@@ -177,7 +191,6 @@ public class AutoGroup extends AbstractGroup {
         int minIndex = min.indexOf(".");
         min = minIndex == -1 ? min : (min.substring(minIndex).matches("\\.0+$") ? min.substring(0, minIndex) : min.replace(".", ""));
         minBuilder.append(min);
-
         StringBuilder maxBuilder = new StringBuilder("0.");
         while (count - maxCount > 0) {
             maxBuilder.append("0");
@@ -187,48 +200,27 @@ public class AutoGroup extends AbstractGroup {
         int maxIndex = max.indexOf(".");
         max = maxIndex == -1 ? max : (max.substring(maxIndex).matches("\\.0+$") ? max.substring(0, maxIndex) : max.replace(".", ""));
         maxBuilder.append(max);
-        return extractLastPart4PMD(minValue, maxValue, magnify, count, minBuilder, maxBuilder);
-
-
-    }
-
-    private double extractLastPart4PMD(double minValue, double maxValue, int magnify, int count, StringBuilder minBuilder, StringBuilder maxBuilder) {
-        String min;
-        String max;
-        double minV;
-        double maxV;//后面补零对齐
+        //后面补零对齐
         int zeros = maxBuilder.length() - minBuilder.length();
         if (zeros > 0) {
-            while (zeros-- > 0) {
-                minBuilder.append("0");
-            }
+            while (zeros-- > 0) {minBuilder.append("0");}
         } else {
-            while (zeros++ < 0) {
-                maxBuilder.append("0");
-            }
+            while (zeros++ < 0) {maxBuilder.append("0");}
         }
         min = minBuilder.toString();
         max = maxBuilder.toString();
-
         //截零
         int i = max.length() - 1;
         while (min.charAt(i) == '0' && max.charAt(i) == '0' && maxValue != 0 && minValue != 0) {
             i--;
         }
-
         //截位/截位+1
-        while (count-- > 0) {
-            magnify *= NUM2PMD_TEN;
-        }
+        while (count-- > 0) {magnify *= MULTI_TEN;}
         minV = minValue < 0 ? -(cutBig(min, i)) : cutSmall(min, i);
         maxV = maxValue < 0 ? -(cutSmall(max, i)) : cutBig(max, i);
         double genMin = minV * magnify;
         double genMax = maxV * magnify;
         this.start = genMin;
-        if (!hasInterval) {
-            return Double.parseDouble(StableUtils.convertNumberStringToString((genMax - genMin) / NUM2PMD_FIVE));
-        } else {
-            return this.interval;
-        }
+        return hasInterval ? this.interval : (Double.parseDouble(StableUtils.convertNumberStringToString((genMax - genMin) / DEFAULT_GROUP_SIZE)));
     }
 }
