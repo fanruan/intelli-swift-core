@@ -235,13 +235,7 @@ public class SingleDimensionGroup extends ExecutorPartner implements ILazyExecut
         if (row < metricMergeResultList.size()) {
             return metricMergeResultList.get(row);
         } else {
-            if (row == 0) {
-                MetricMergeResult result = createEmptyResult();
-                addMetricMergeResult(result);
-                return result;
-            } else {
-                return MetricMergeResult.NULL;
-            }
+            return MetricMergeResult.NULL;
         }
     }
 
@@ -271,17 +265,6 @@ public class SingleDimensionGroup extends ExecutorPartner implements ILazyExecut
 
     private void addMetricMergeResult(MetricMergeResult metricMergeResult) {
         metricMergeResultList.add(metricMergeResult);
-    }
-
-    @Override
-    public void executorTerminated() {
-        MetricMergeResult metricMergeResult = createEmptyResult();
-        addMetricMergeResult(metricMergeResult);
-    }
-
-    private MetricMergeResult createEmptyResult() {
-        MetricMergeResult metricMergeResult = new MetricMergeResult(columns[0].createEmptyValue(), sumLength, gvis);
-        return metricMergeResult;
     }
 
     /**
