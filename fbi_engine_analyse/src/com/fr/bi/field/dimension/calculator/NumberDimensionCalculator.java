@@ -155,9 +155,9 @@ public class NumberDimensionCalculator extends AbstractDimensionCalculator {
     @Override
     public Comparator getComparator() {
         if (getSortType() == BIReportConstant.SORT.ASC || getSortType() == BIReportConstant.SORT.NUMBER_ASC || getSortType() == BIReportConstant.SORT.NONE) {
-            return getGroup().getType() == BIReportConstant.GROUP.ID_GROUP ? BIBaseConstant.COMPARATOR.COMPARABLE.ASC : BIBaseConstant.COMPARATOR.STRING.ASC_STRING_CC;
+            return getGroup().getType() == BIReportConstant.GROUP.ID_GROUP ? BIBaseConstant.COMPARATOR.NUMBER.ASC : BIBaseConstant.COMPARATOR.STRING.ASC_STRING_CC;
         } else if (getSortType() == BIReportConstant.SORT.DESC || getSortType() == BIReportConstant.SORT.NUMBER_DESC) {
-            return getGroup().getType() == BIReportConstant.GROUP.ID_GROUP ? BIBaseConstant.COMPARATOR.COMPARABLE.DESC : BIBaseConstant.COMPARATOR.STRING.DESC_STRING_CC;
+            return getGroup().getType() == BIReportConstant.GROUP.ID_GROUP ? BIBaseConstant.COMPARATOR.NUMBER.DESC : BIBaseConstant.COMPARATOR.STRING.DESC_STRING_CC;
         } else {
             return new CustomComparator();
         }
