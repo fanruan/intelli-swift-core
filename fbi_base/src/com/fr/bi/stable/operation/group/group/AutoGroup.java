@@ -120,17 +120,17 @@ public class AutoGroup extends AbstractGroup {
     @Override
     public void parseJSON(JSONObject jo) throws Exception {
         super.parseJSON(jo);
-        if (jo.has("group_value")) {
-            JSONObject valueJson = jo.optJSONObject("group_value");
+        if (jo.has("groupValue")) {
+            JSONObject valueJson = jo.optJSONObject("groupValue");
             if (valueJson.has("max")) {
                 max = valueJson.getDouble("max");
             }
             if (valueJson.has("min")) {
                 min = valueJson.getDouble("min");
             }
-            if (valueJson.has("group_interval")) {
+            if (valueJson.has("groupInterval")) {
                 hasInterval = true;
-                interval = valueJson.getDouble("group_interval");
+                interval = valueJson.getDouble("groupInterval");
             } else {
                 hasInterval = false;
                 interval = (max - min) / DEFAULT_GROUP_SIZE;
@@ -168,6 +168,10 @@ public class AutoGroup extends AbstractGroup {
         String dotText = numText.split("\\.")[0];
         return dotText.length();
     }
+
+    private static final int NUM2PMD_FIVE = 5;
+    private static final int NUM2PMD_ONE = 1;
+    private static final int NUM2PMD_TEN = 10;
 
     private double initGroup(double minValue, double maxValue) {
         int magnify = 1;

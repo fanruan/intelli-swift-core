@@ -81,7 +81,7 @@ public abstract class TableAbstractDataBuilder implements IExcelDataBuilder {
         if (dimIds.size() > 0) {
             for (int i = 0; i < s.length(); i++) {
                 BIBasicTableItem temp = new BIBasicTableItem();
-                temp.setType("bi.target_body_normal_cell");
+                temp.setType("bi.my_table_cell");
                 temp.setText(s.getString(i));
                 temp.setDId(targetIds.get(i));
                 temp.setStyle(null);
@@ -93,13 +93,13 @@ public abstract class TableAbstractDataBuilder implements IExcelDataBuilder {
             //使用第一个值作为一个维度
             for (int i = 0; i < s.length(); i++) {
                 BIBasicTableItem temp = new BIBasicTableItem();
-                temp.setType("bi.target_body_normal_cell");
+                temp.setType("bi.my_table_cell");
                 temp.setText(s.getString(i));
                 temp.setDId(targetIds.get(i));
                 temp.setClicked(new JSONArray().put(new JSONObject()));//[{}]
             }
             BIBasicTableItem temp = new BIBasicTableItem();
-            temp.setType("bi.target_body_normal_cell");
+            temp.setType("bi.my_table_cell");
             temp.setText(data.getJSONArray("s").getString(0));
             temp.setDId(targetIds.get(0));
             temp.setClicked(new JSONArray().put(new JSONObject()));
@@ -119,7 +119,7 @@ public abstract class TableAbstractDataBuilder implements IExcelDataBuilder {
             BITableHeader header = new BITableHeader();
             header.setdID(dimId);
             header.setText(BITableExportDataHelper.getDimensionNameByID(dimAndTar, dimId));
-            header.setType("bi.normal_header_cell");
+            header.setType("bi.my_table_cell");
             header.setUsed(BITableExportDataHelper.isDimUsed(dimAndTar, dimId));
             headers.add(header);
         }
@@ -215,7 +215,7 @@ public abstract class TableAbstractDataBuilder implements IExcelDataBuilder {
 
     private void createItems4Cross(JSONObject left, JSONArray crossPV) throws Exception {
         BIBasicTableItem item = new BIBasicTableItem();
-        item.setChildren(createCommonTableItems(left.getString("c"), 0, null, dimIds, crossPV));
+        item.setChildren(createCommonTableItems(left.optString("c"), 0, null, dimIds, crossPV));
         if (showColTotal) {
             //汇总值
             JSONArray sums = new JSONArray();
@@ -235,7 +235,7 @@ public abstract class TableAbstractDataBuilder implements IExcelDataBuilder {
                 if (targetIds.size() > 0) {
                     String tId = targetIds.get(i);
                     BIBasicTableItem tempItem = new BIBasicTableItem();
-                    tempItem.setType("bi.target_body_normal_cell");
+                    tempItem.setType("bi.my_table_cell");
                     tempItem.setText(ss.getString(i));
                     tempItem.setDId(tId);
                     tempItem.setStyle(SummaryTableStyleHelper.getLastSummaryStyles("", ""));
@@ -272,7 +272,7 @@ public abstract class TableAbstractDataBuilder implements IExcelDataBuilder {
             } else {
                 for (String targetId : targetIds) {
                     BIBasicTableItem item = new BIBasicTableItem();
-                    item.setType("bi.normal_header_cell");
+                    item.setType("bi.my_table_cell");
                     item.setText("summary");
                     item.setStyle(null);
                     item.setTag(UUID.randomUUID().toString());
@@ -337,7 +337,7 @@ public abstract class TableAbstractDataBuilder implements IExcelDataBuilder {
                             items.get(j).setChildren(tempChild);
                         }
                         BIBasicTableItem ob = new BIBasicTableItem();
-                        ob.setText("bi.target_body_normal_cell");
+                        ob.setText("bi.my_table_cell");
                         ob.setText(child.getJSONArray("s").getString(j));
                         ob.setStyle(SummaryTableStyleHelper.getBodyStyles(styleSetting.getThemeStyle(), styleSetting.getWsTableStyle(), j));
                         ob.setDId(targetIds.get(j));
@@ -358,7 +358,7 @@ public abstract class TableAbstractDataBuilder implements IExcelDataBuilder {
                         items.get(j).getChildren().get(0).setValue(new JSONArray());
                     }
                     BIBasicTableItem ob = new BIBasicTableItem();
-                    ob.setType("bi.target_body_normal_cell");
+                    ob.setType("bi.my_table_cell");
                     ob.setText(s.getString(j));
                     ob.setStyle(SummaryTableStyleHelper.getBodyStyles(styleSetting.getThemeStyle(), styleSetting.getWsTableStyle(), j));
                     ob.setDId(targetIds.get(j));
@@ -420,14 +420,14 @@ public abstract class TableAbstractDataBuilder implements IExcelDataBuilder {
         for (String dimId : dimIds) {
             BITableHeader header = new BITableHeader();
             header.setdID(dimId);
-            header.setType("bi.normal_header_cell");
+            header.setType("bi.my_table_cell");
             header.setText(BITableExportDataHelper.getDimensionNameByID(dimAndTar, dimId));
             this.headers.add(header);
         }
         for (String crossDims : crossDimIds) {
             BITableHeader crossHeader = new BITableHeader();
             crossHeader.setdID(crossDims);
-            crossHeader.setType("bi.normal_header_cell");
+            crossHeader.setType("bi.my_table_cell");
             crossHeader.setText(BITableExportDataHelper.getDimensionNameByID(dimAndTar, crossDims));
             crossHeaders.add(crossHeader);
         }
@@ -568,7 +568,7 @@ public abstract class TableAbstractDataBuilder implements IExcelDataBuilder {
 
     private BIBasicTableItem setPartItem(int currentLayer, int i, JSONObject child, String currDid, String currValue, ReportNode node) throws Exception {
         BIBasicTableItem item = new BIBasicTableItem();
-        item.setType("bi.normal_expander_cell");
+        item.setType("bi.my_table_cell");
         item.setText(currValue);
         item.setDId(currDid);
         item.setCross(true);
@@ -657,7 +657,7 @@ public abstract class TableAbstractDataBuilder implements IExcelDataBuilder {
                     tempNodeId = tree.getNode(tempNodeId).getParent().getId();
                 }
                 BIBasicTableItem item = new BIBasicTableItem();
-                item.setType("bi.normal_expander_cell");
+                item.setType("bi.my_table_cell");
                 item.setText(child.getString("n"));
                 item.setDId(currDid);
 
@@ -691,7 +691,7 @@ public abstract class TableAbstractDataBuilder implements IExcelDataBuilder {
             int tartSize = targetIds.size();
             for (int j = 0; j < summary.length(); j++) {
                 BIBasicTableItem tarItem = new BIBasicTableItem();
-                tarItem.setType("bi.target_body_normal_cell");
+                tarItem.setType("bi.my_table_cell");
                 tarItem.setText(summary.getString(j));
                 tarItem.setDId(targetIds.get(j % tartSize));
                 tarItem.setClicked(pValues);
@@ -721,7 +721,7 @@ public abstract class TableAbstractDataBuilder implements IExcelDataBuilder {
                 for (int j = 0; j < array.length(); j++) {
                     String tId = targetIds.get(j);
                     BIBasicTableItem tarItem = new BIBasicTableItem();
-                    tarItem.setType("bi.target_body_normal_cell");
+                    tarItem.setType("bi.my_table_cell");
                     tarItem.setText(array.getString(j));
                     tarItem.setClicked(pValues);
                     tarItem.setDId(tId);
@@ -774,7 +774,7 @@ public abstract class TableAbstractDataBuilder implements IExcelDataBuilder {
                 }
                 BIBasicTableItem tarItem = new BIBasicTableItem();
                 tarItem.setDId(tId);
-                tarItem.setType("bi.target_body_normal_cell");
+                tarItem.setType("bi.my_table_cell");
                 tarItem.setText(v);
                 if (crossPV.length() > ob.getInt("index")) {
                     JSONArray array = pValues.put(crossPV.get(ob.getInt("index")));

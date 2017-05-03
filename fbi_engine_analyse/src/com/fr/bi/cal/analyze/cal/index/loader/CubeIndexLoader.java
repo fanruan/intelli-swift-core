@@ -759,14 +759,14 @@ public class CubeIndexLoader {
         private BISummaryWidget widget;
         private BISummaryTarget[] usedTargets;
         private BIDimension[] rowDimension;
-        private boolean isCross;
+        private boolean shouldSetIndex;
         private boolean isHor;
         private BISession session;
         private NodeExpander expander;
         private List<TargetFilter> authFilter;
 
         public NodeAndPageInfoCreator(NodeDimensionIterator iterator, int page, Operator op, BISummaryWidget widget,
-                                      BISummaryTarget[] usedTargets, BIDimension[] rowDimension, boolean isCross,
+                                      BISummaryTarget[] usedTargets, BIDimension[] rowDimension, boolean shouldSetIndex,
                                       boolean isHor, BISession session, NodeExpander expander, List<TargetFilter> authFilter) {
             this.iterator = iterator;
             this.page = page;
@@ -774,7 +774,7 @@ public class CubeIndexLoader {
             this.widget = widget;
             this.usedTargets = usedTargets;
             this.rowDimension = rowDimension;
-            this.isCross = isCross;
+            this.shouldSetIndex = shouldSetIndex;
             this.isHor = isHor;
             this.session = session;
             this.expander = expander;
@@ -790,9 +790,9 @@ public class CubeIndexLoader {
             if (iterator.getRoot() == null) {
                 IRootDimensionGroup root;
                 if (rowLength != 0 && summaryLength == 0) {
-                    root = createPageGroupNodeWithNoSummary(widget, usedTargets, rowDimension, isCross, isHor, session, rowLength, calAllPage, authFilter, executor);
+                    root = createPageGroupNodeWithNoSummary(widget, usedTargets, rowDimension, shouldSetIndex, isHor, session, rowLength, calAllPage, authFilter, executor);
                 } else {
-                    root = createPageGroupNodeWithSummary(widget, usedTargets, rowDimension, session, isCross, isHor, summaryLength, rowLength, calAllPage, authFilter, executor);
+                    root = createPageGroupNodeWithSummary(widget, usedTargets, rowDimension, session, shouldSetIndex, isHor, summaryLength, rowLength, calAllPage, authFilter, executor);
                 }
                 iterator.setRoot(root);
             } else {
@@ -800,11 +800,11 @@ public class CubeIndexLoader {
                 iterator.getRoot().checkStatus(executor);
             }
             iterator.setExpander(expander);
-            if (calAllPage) {
+            if (calAllPage && !shouldSetIndex) {
                 MultiThreadManagerImpl.getInstance().awaitExecutor(session, executor);
                 return new NodeAndPageInfo(iterator.getRoot().getConstructedRoot(), iterator);
             }
-            NodeAndPageInfo info = GroupUtils.createNextPageMergeNode(iterator, op, isHor ? widget.showColumnTotal() : widget.showRowToTal(), isCross, widget.getTargets().length, executor);
+            NodeAndPageInfo info = GroupUtils.createNextPageMergeNode(iterator, op, isHor ? widget.showColumnTotal() : widget.showRowToTal(), shouldSetIndex, widget.getTargets().length, executor);
             MultiThreadManagerImpl.getInstance().awaitExecutor(session, executor);
             return info;
         }
@@ -855,7 +855,7 @@ public class CubeIndexLoader {
     }
 
     private IRootDimensionGroup createPageGroupNodeWithNoSummary(BISummaryWidget widget, BISummaryTarget[] usedTargets,
-                                                                 BIDimension[] rowDimension, boolean isCross, boolean isHor,
+                                                                 BIDimension[] rowDimension, boolean shouldSetIndex, boolean isHor,
                                                                  BISession session, int rowLength, boolean calAllPage, List<TargetFilter> authFilter, BIMultiThreadExecutor executor) {
         DimensionCalculator[] row = new DimensionCalculator[rowLength];
         for (int i = 0; i < rowLength; i++) {
@@ -869,7 +869,7 @@ public class CubeIndexLoader {
         metricGroupInfo.addTargetAndKey(new TargetAndKey(summary.getName(), summary, summary.createTargetGettingKey()));
         List<MetricGroupInfo> list = new ArrayList<MetricGroupInfo>();
         list.add(metricGroupInfo);
-        return getRootDimensionGroup(widget, usedTargets, rowDimension, session, list, isCross, isHor, calAllPage, authFilter, executor);
+        return getRootDimensionGroup(widget, usedTargets, rowDimension, session, list, shouldSetIndex, isHor, calAllPage, authFilter, executor);
     }
 
 

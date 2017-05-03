@@ -38,7 +38,7 @@ import java.util.*;
 public class TreeWidget extends BIAbstractWidget {
     private static final long serialVersionUID = -1312790995961254453L;
     private int page = -1;
-    private int data_type = BIReportConstant.TREE.TREE_REQ_TYPE.INIT_DATA;
+    private int data_type = BIReportConstant.TREE.TREE_REQ_TYPE.DEFAULT_DATA;
     private String id;
     private int times;
     private String checkState;
@@ -78,12 +78,12 @@ public class TreeWidget extends BIAbstractWidget {
 
     @Override
     public <T extends BITargetAndDimension> T[] getDimensions() {
-        return (T[])new BITargetAndDimension[0];
+        return (T[]) new BITargetAndDimension[0];
     }
 
     @Override
     public <T extends BITargetAndDimension> T[] getTargets() {
-        return (T[])new BITargetAndDimension[0];
+        return (T[]) new BITargetAndDimension[0];
     }
 
     @Override
@@ -107,27 +107,27 @@ public class TreeWidget extends BIAbstractWidget {
         paging.setCurrentPage(page);
         JSONObject resultJo = new JSONObject();
         switch (data_type) {
-            case BIReportConstant.TREE.TREE_REQ_TYPE.INIT_DATA:
-                resultJo = getInitDataJSON((BISession) session);
-                break;
-            case BIReportConstant.TREE.TREE_REQ_TYPE.DISPLAY_DATA:
+            case BIReportConstant.TREE.TREE_REQ_TYPE.GET_SELECTED_DATA:
                 resultJo = getDisplayDataJSON((BISession) session);
                 break;
-            case BIReportConstant.TREE.TREE_REQ_TYPE.SEARCH_DATA:
+            case BIReportConstant.TREE.TREE_REQ_TYPE.INIT_DATA:
                 try {
                     resultJo = getSearchDataJSON((BISession) session);
                 } catch (Exception e) {
                     BILoggerFactory.getLogger().error(e.getMessage(), e);
                 }
                 break;
-            case BIReportConstant.TREE.TREE_REQ_TYPE.SELECTED_DATA:
+            case BIReportConstant.TREE.TREE_REQ_TYPE.SELECT_DATA:
                 resultJo = getSelectedDataJSON((BISession) session);
                 break;
-            case BIReportConstant.TREE.TREE_REQ_TYPE.UNSELECTED_DATA:
+            case BIReportConstant.TREE.TREE_REQ_TYPE.UNSELECT_DATA:
                 resultJo = getUnselectedDataJSON((BISession) session);
                 break;
             case BIReportConstant.TREE.TREE_REQ_TYPE.ADJUST_DATA:
                 resultJo = getAdjustDataJSON((BISession) session);
+                break;
+            default:
+                resultJo = getInitDataJSON((BISession) session);
                 break;
         }
         return resultJo;
@@ -350,7 +350,7 @@ public class TreeWidget extends BIAbstractWidget {
     public List<BITableSourceRelation> getTableSourceRelationList(BIDimension dimension, long userId) {
         ArrayList<BITableRelation> tableRelationList = this.dimensionMap.get(dimension);
         List<BITableSourceRelation> tableSourceRelationList = new ArrayList<BITableSourceRelation>();
-        for(BITableRelation relation: tableRelationList){
+        for (BITableRelation relation : tableRelationList) {
             BITableSourceRelation tableSourceRelation = BIConfUtils.convert2TableSourceRelation(relation);
             tableSourceRelationList.add(tableSourceRelation);
         }
