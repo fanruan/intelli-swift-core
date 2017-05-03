@@ -119,7 +119,7 @@ public class AutoGroup extends AbstractGroup {
                 interval = valueJson.getDouble("groupInterval");
             } else {
                 hasInterval = false;
-                interval = (max - min) / 5;
+                interval = (max - min) / NUM2PMD_FIVE;
             }
             this.interval = initGroup(min, max);
         }
@@ -187,8 +187,16 @@ public class AutoGroup extends AbstractGroup {
         int maxIndex = max.indexOf(".");
         max = maxIndex == -1 ? max : (max.substring(maxIndex).matches("\\.0+$") ? max.substring(0, maxIndex) : max.replace(".", ""));
         maxBuilder.append(max);
+        return extract2PMD(minValue, maxValue, magnify, count, minBuilder, maxBuilder);
 
-        //后面补零对齐
+
+    }
+
+    private double extract2PMD(double minValue, double maxValue, int magnify, int count, StringBuilder minBuilder, StringBuilder maxBuilder) {
+        String min;
+        String max;
+        double minV;
+        double maxV;//后面补零对齐
         int zeros = maxBuilder.length() - minBuilder.length();
         if (zeros > 0) {
             while (zeros-- > 0) {
