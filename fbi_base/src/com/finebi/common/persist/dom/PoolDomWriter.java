@@ -8,6 +8,7 @@ import org.w3c.dom.Document;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
@@ -49,6 +50,7 @@ public abstract class PoolDomWriter<Pool extends ResourcePool> implements PoolPe
             DOMSource source = new DOMSource(document);
             StreamResult result = new StreamResult(file);
             transformer.setOutputProperty("encoding", "UTF-8");
+            transformer.setOutputProperty(OutputKeys.INDENT,"yes");
             transformer.transform(source, result);
         } catch (Exception e) {
             LOGGER.error(e.getMessage(), e);
