@@ -1,5 +1,6 @@
 import com.fr.bi.stable.utils.file.BIFileUtils;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
+import com.fr.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -12,29 +13,37 @@ import java.util.regex.Pattern;
 /**
  * Created by Kary on 2017/5/3.
  */
-public class findLineKeyTest {
+public class ReplaceLineKeyTest {
     private static final String outputPath = "C:\\code\\FineBI\\keys.json";
 
     public static void main(String[] args) {
         List<String> rootDirs = setRootDIrs();
         List<String> allFiles = getSelectedFiles(rootDirs);
-//        Map<String, Set<String>> allKeys = getAllKeysFromFiles(allFiles);
-//        JSONObject keysJson = new JSONObject(allKeys);
-//        BIFileUtils.writeFile(outputPath,keysJson.toString());
+        saveKeysInfo(allFiles);
         replaceAllKeys(allFiles);
-//        String jsonStr = "new JSONObject().optJSONObject(\"table_id_count\").getJSONObject(\"column_size_count\");";
-//        String s = replaceKey(jsonStr);
-//        System.out.println(s);
+    }
+
+    private static void saveKeysInfo(List<String> allFiles) {
+        Map<String, Set<String>> allKeys = getAllKeysFromFiles(allFiles);
+        JSONObject keysJson = new JSONObject(allKeys);
+        BIFileUtils.writeFile(outputPath,keysJson.toString());
     }
 
     private static void replaceAllKeys(List<String> allFiles) {
-        Map<String, Set<String>> container = new HashMap<String, Set<String>>();
         for (String file : allFiles) {
+            List<String> fileList=new ArrayList<String>();
+            fileList.add(file);
+            if (getAllKeysFromFiles(fileList).size()==0){
+                continue;
+            }
             System.out.println(file);
             StringBuilder sb=new StringBuilder();
             List<String> lines = readFile(file);
-            for (String line : lines) {
-                sb.append(replaceKey(line)+"\n");
+            for (int i = 0; i < lines.size(); i++) {
+                sb.append(replaceKey(lines.get(i)));
+                if (i<=lines.size()-1) {
+                    sb.append("\n");
+                }
             }
             BIFileUtils.writeFile(file, sb.toString());
         }
@@ -62,8 +71,8 @@ public class findLineKeyTest {
     private static List<String> setRootDIrs() {
         List<String> rootDirs = new ArrayList<String>();
         rootDirs.add("C:\\code\\FineBI\\nuclear-conf");
-        rootDirs.add("C:\\code\\FineBI\\nuclear-core");
-        rootDirs.add("C:\\code\\FineBI\\nuclear-web");
+//        rootDirs.add("C:\\code\\FineBI\\nuclear-core");
+//        rootDirs.add("C:\\code\\FineBI\\nuclear-web");
         return rootDirs;
     }
 
