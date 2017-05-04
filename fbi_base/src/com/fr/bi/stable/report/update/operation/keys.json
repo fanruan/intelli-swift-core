@@ -50,6 +50,7 @@
   "reportName": "模板名称(report_name)",
   "createBy": "创建者(create_by)",
   "reportLocation": "模板目录(report_location)",
-  "realTime": "实时报表(real_time)"
+  "realTime": "实时报表(real_time)",
 
+  "initTime": "初始化时间(init_time)"
 }
