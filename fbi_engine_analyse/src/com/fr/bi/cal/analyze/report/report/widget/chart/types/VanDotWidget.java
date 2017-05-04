@@ -206,7 +206,7 @@ public class VanDotWidget extends VanCartesianWidget{
 
 
     //老的气泡图、散点图。原来的分类---->新点图的系列
-    //新的点图。系列无字段，所有点在一个name=无 的系列里面
+    //新的点图。系列无字段，所有点在一个name=vancharts中默认给的一个系列名 的系列里面
     private JSONArray createBubbleScatterSeries(JSONObject originData) throws Exception{
         String[] ids = this.getUsedTargetID();
 
