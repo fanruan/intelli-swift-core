@@ -7,7 +7,6 @@ import com.fr.json.JSONArray;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
 import com.fr.script.Calculator;
-import com.fr.stable.StringUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -68,7 +67,7 @@ public class VanDotWidget extends VanCartesianWidget{
 
         JSONObject gradualStyle = JSONObject.create();
         gradualStyle.put("range", JSONObject.create().put("min", 0).put("max", 100));
-        gradualStyle.put("color_range", JSONObject.create().put("from_color", "#65B3EE").put("to_color", "#95E1AA"));
+        gradualStyle.put("color_range", JSONObject.create().put("fromColor", "#65B3EE").put("toColor", "#95E1AA"));
 
         settings.put("fixedStyle", fixedStyle);
         settings.put("gradientStyle", JSONArray.create().put(gradualStyle));
@@ -113,9 +112,9 @@ public class VanDotWidget extends VanCartesianWidget{
 
         for(int i = 0, len = style.length(); i < len; i++){
             JSONObject config = style.getJSONObject(i);
-            JSONObject range = config.optJSONObject("range"), colorRange = config.optJSONObject("color_range");
+            JSONObject range = config.optJSONObject("range"), colorRange = config.optJSONObject("colorRange");
             double from = range.optDouble("min") / max;
-            colors.put(JSONArray.create().put(from).put(colorRange.optString("from_color")));
+            colors.put(JSONArray.create().put(from).put(colorRange.optString("fromColor")));
         }
 
         return JSONObject.create().put("color", colors);

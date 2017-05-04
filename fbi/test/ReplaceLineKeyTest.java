@@ -14,34 +14,39 @@ import java.util.regex.Pattern;
  * Created by Kary on 2017/5/3.
  */
 public class ReplaceLineKeyTest {
-    private static final String outputPath = "C:\\code\\FineBI\\keys.json";
+    private static final String outputPath = "C:\\code\\FineBI\\CamelKeys.json";
 
     public static void main(String[] args) {
+        //指定范围
         List<String> rootDirs = setRootDIrs();
         List<String> allFiles = getSelectedFiles(rootDirs);
+        //输出存在的下划线命名
         saveKeysInfo(allFiles);
-        replaceAllKeys(allFiles);
+        //根据白名单和范围进行替换
+//        String[] replaceKeys ={"data_label", "from_color", "color_condition", "x_view", "y_view", "formula_value"};
+//        replaceAllKeys(allFiles, replaceKeys);
     }
 
     private static void saveKeysInfo(List<String> allFiles) {
         Map<String, Set<String>> allKeys = getAllKeysFromFiles(allFiles);
         JSONObject keysJson = new JSONObject(allKeys);
-        BIFileUtils.writeFile(outputPath,keysJson.toString());
+        BIFileUtils.writeFile(outputPath, keysJson.toString());
     }
 
-    private static void replaceAllKeys(List<String> allFiles) {
+    private static void replaceAllKeys(List<String> allFiles, String[] replaceKeys) {
         for (String file : allFiles) {
-            List<String> fileList=new ArrayList<String>();
+            List<String> fileList = new ArrayList<String>();
             fileList.add(file);
-            if (getAllKeysFromFiles(fileList).size()==0){
+            if (getAllKeysFromFiles(fileList).size() == 0) {
                 continue;
             }
             System.out.println(file);
-            StringBuilder sb=new StringBuilder();
+            StringBuilder sb = new StringBuilder();
             List<String> lines = readFile(file);
+
             for (int i = 0; i < lines.size(); i++) {
-                sb.append(replaceKey(lines.get(i)));
-                if (i<=lines.size()-1) {
+                sb.append(replaceKey(lines.get(i),replaceKeys));
+                if (i < lines.size() - 1) {
                     sb.append("\n");
                 }
             }
@@ -71,8 +76,8 @@ public class ReplaceLineKeyTest {
     private static List<String> setRootDIrs() {
         List<String> rootDirs = new ArrayList<String>();
         rootDirs.add("C:\\code\\FineBI\\nuclear-conf");
-//        rootDirs.add("C:\\code\\FineBI\\nuclear-core");
-//        rootDirs.add("C:\\code\\FineBI\\nuclear-web");
+        rootDirs.add("C:\\code\\FineBI\\nuclear-core");
+        rootDirs.add("C:\\code\\FineBI\\nuclear-web");
         return rootDirs;
     }
 
@@ -96,6 +101,21 @@ public class ReplaceLineKeyTest {
             result = m.find();
         }
         return keys;
+    }
+
+    private static String replaceKey(String oriContent, String[] keys) {
+        String finalReg = createRegStr();
+        Pattern linePattern = Pattern.compile(finalReg);
+        Matcher m = linePattern.matcher(oriContent);
+        boolean result = m.find();
+        while (result) {
+            if (Arrays.asList(keys).contains(m.group())) {
+                String camels = lineToCamels(m.group());
+                oriContent = oriContent.replace(m.group(), camels);
+            }
+            result = m.find();
+        }
+        return oriContent;
     }
 
     private static String replaceKey(String oriContent) {
