@@ -595,6 +595,9 @@ public abstract class VanChartWidget extends TableWidget {
         int groupType = category.getGroup().getType();
         JSONArray series = JSONArray.create();
         String[] targetIDs = this.getUsedTargetID();
+        if(targetIDs.length == 0){
+            return series;
+        }
         String categoryKey = this.categoryKey(), valueKey = this.valueKey();
         ArrayList<Double> valueList = new ArrayList<Double>();
         JSONObject top = originData.getJSONObject("t"), left = originData.getJSONObject("l");
