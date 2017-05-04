@@ -205,7 +205,7 @@ public class AllNodeMergeIterator implements Iterator<MetricMergeResult> {
                         return 0;
                     }
                     boolean v = v1.doubleValue() < v2.doubleValue();
-                    return (sortType == BIReportConstant.SORT.NUMBER_ASC) == v ? -1 : 1;
+                    return (sortType == BIReportConstant.SORT.NUMBER_ASC || sortType == BIReportConstant.SORT.ASC) == v ? -1 : 1;
                 }
             });
         }
