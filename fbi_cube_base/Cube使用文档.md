@@ -17,10 +17,10 @@ cube现分为三层结构：
 
 使用的接口多是由cube对象层提供的。包括以下几个基本接口：
 
-* com.finebi.cube.structure.Cube cube主接口
-* com.finebi.cube.structure.CubeTableEntityGetterService cube中table的接口
-* com.finebi.cube.structure.column.CubeColumnReaderService cube中column的接口
-* com.finebi.cube.structure.CubeRelationEntityGetterService cube中relation的接口，包括Table的Relation和Column的Relation
+* com.finebi.com.finebi.cube.structure.Cube cube主接口
+* com.finebi.com.finebi.cube.structure.CubeTableEntityGetterService cube中table的接口
+* com.finebi.com.finebi.cube.structure.column.CubeColumnReaderService cube中column的接口
+* com.finebi.com.finebi.cube.structure.CubeRelationEntityGetterService cube中relation的接口，包括Table的Relation和Column的Relation
 
 
 ##Cube接口详细使用说明

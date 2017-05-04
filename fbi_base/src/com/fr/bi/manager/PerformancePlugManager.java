@@ -3,6 +3,7 @@ package com.fr.bi.manager;
 import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.base.FRContext;
 import com.fr.stable.project.ProjectConstants;
+import com.fr.third.org.hsqldb.lib.StringInputStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -65,8 +66,7 @@ public class PerformancePlugManager implements PerformancePlugManagerInterface {
 
 
     private boolean extremeConcurrency = true;
-    private int reIndexRowCount = 1<<12;
-
+    private int reIndexRowCount = 1 << 12;
 
 
     private PerformancePlugManager() {
@@ -79,9 +79,15 @@ public class PerformancePlugManager implements PerformancePlugManagerInterface {
 
     private void init() {
         try {
-            InputStream in = FRContext.getCurrentEnv().readBean("plugs.properties", ProjectConstants.RESOURCES_NAME);
+            InputStream in = null;
+            try {
+                in = FRContext.getCurrentEnv().readBean("plugs.properties", ProjectConstants.RESOURCES_NAME);
+            } catch (Exception e) {
+                LOGGER.warn("use default values of configuration", e);
+                in = new StringInputStream("");
+            }
             if (in == null) {
-                return;
+                in = new StringInputStream("");
             }
             properties = new Properties();
             properties.load(in);
@@ -418,6 +424,7 @@ public class PerformancePlugManager implements PerformancePlugManagerInterface {
     public boolean isExtremeConcurrency() {
         return extremeConcurrency;
     }
+
     @Override
     public int getReIndexRowCount() {
         return reIndexRowCount;
