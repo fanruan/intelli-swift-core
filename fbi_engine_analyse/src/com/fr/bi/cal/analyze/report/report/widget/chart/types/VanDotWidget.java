@@ -242,9 +242,7 @@ public class VanDotWidget extends VanCartesianWidget{
         }
 
         if(dot){
-            series.put(JSONObject.create().put("data", dotData)
-                    .put("name", Inter.getLocText("BI-Basic_None")).put("dimensionID", ids[ids.length - 1])
-            );
+            series.put(JSONObject.create().put("data", dotData).put("dimensionID", ids[ids.length - 1]));
         }
 
         return series;
