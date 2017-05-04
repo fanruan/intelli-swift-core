@@ -71,8 +71,12 @@ public class BIJsonUtils {
 
 
     public static boolean isKeyValueSet(String str) {
-        BIJsonUtils.JSON_TYPE type = getJSONType(str);
-        return type == BIJsonUtils.JSON_TYPE.JSON_TYPE_OBJECT;
+        try {
+            new JSONObject(str);
+            return true;
+        } catch (JSONException e) {
+            return false;
+        }
     }
 
     public static boolean isArray(String str) {

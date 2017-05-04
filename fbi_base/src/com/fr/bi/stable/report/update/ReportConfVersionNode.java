@@ -26,6 +26,7 @@ public class ReportConfVersionNode implements Comparable<ReportConfVersionNode> 
         for (ReportUpdateOperation operation : reportOperations) {
             settings = operation.update(settings);
         }
+        settings.put("version",version.getVersion());
         return settings;
     }
 

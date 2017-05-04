@@ -22,6 +22,7 @@ public class ReportSettingCamelOperationTest extends TestCase {
         convertToCamel("table_ori_id", "tableOriId");
         convertToCamel("_table_id", "_tableId");
         convertToCamel("_src", "_src");
+        convertToCamel("__time__", "__time__");
     }
 
     public void testRecursionListUpdate() throws Exception {
