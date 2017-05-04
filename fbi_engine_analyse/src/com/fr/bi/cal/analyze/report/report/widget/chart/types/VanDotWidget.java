@@ -96,7 +96,7 @@ public class VanDotWidget extends VanCartesianWidget{
         if(rule == INTERVAL_RULE){
             legend.put("continuous", false);
             legend.put("range", this.mapStyleToRange(settings.optJSONArray("fixedStyle")));
-        }else{
+        }else if(rule == GRADUAL_RULE){
             legend.put("continuous", true);
             legend.put("range", this.gradualStyleToRange(settings.optJSONArray("gradientStyle")));
         }
