@@ -308,6 +308,10 @@ public abstract class VanChartWidget extends TableWidget {
         return plotOptions;
     }
 
+    protected String valueLabelKey() {
+        return "{VALUE}";
+    }
+
     //默认是分类，系列，值的配置
     protected JSONObject createDataLabels(JSONObject settings) throws JSONException {
 
@@ -331,11 +335,19 @@ public abstract class VanChartWidget extends TableWidget {
             }
 
             if (dataLabelSetting.optBoolean("showValue")) {
-                identifier += "${VALUE}";
+                identifier += valueLabelKey();
             }
 
             if (dataLabelSetting.optBoolean("showPercentage")) {
                 identifier += "${PERCENT}";
+            }
+
+            if (dataLabelSetting.optBoolean("showXValue")) {
+                identifier += "${X}";
+            }
+
+            if (dataLabelSetting.optBoolean("showYValue")) {
+                identifier += "${Y}";
             }
 
             formatter.put("identifier", identifier);
