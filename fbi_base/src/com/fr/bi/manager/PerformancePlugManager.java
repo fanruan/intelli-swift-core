@@ -3,10 +3,10 @@ package com.fr.bi.manager;
 import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.base.FRContext;
 import com.fr.stable.project.ProjectConstants;
-import com.fr.third.org.hsqldb.lib.StringInputStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
@@ -84,10 +84,10 @@ public class PerformancePlugManager implements PerformancePlugManagerInterface {
                 in = FRContext.getCurrentEnv().readBean("plugs.properties", ProjectConstants.RESOURCES_NAME);
             } catch (Exception e) {
                 LOGGER.warn("use default values of configuration", e);
-                in = new StringInputStream("");
+                in = emptyInputStream();
             }
             if (in == null) {
-                in = new StringInputStream("");
+                in = emptyInputStream();
             }
             properties = new Properties();
             properties.load(in);
@@ -115,6 +115,11 @@ public class PerformancePlugManager implements PerformancePlugManagerInterface {
             BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
     }
+
+    private InputStream emptyInputStream() {
+        return new ByteArrayInputStream("".getBytes());
+    }
+
 
     private void logConfiguration() {
         LOGGER.info("");
