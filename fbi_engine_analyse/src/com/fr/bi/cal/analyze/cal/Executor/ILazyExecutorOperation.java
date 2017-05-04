@@ -30,5 +30,4 @@ public interface ILazyExecutorOperation<T, F> {
      */
     void mainTask(T itNext, F preCondition) throws TerminateExecutorException;
 
-    void executorTerminated();
 }

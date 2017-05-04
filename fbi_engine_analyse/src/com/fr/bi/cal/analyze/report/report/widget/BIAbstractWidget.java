@@ -172,8 +172,8 @@ public abstract class BIAbstractWidget implements BIWidget {
             JSONObject filterJo = jo.getJSONObject("filter");
             filter = TargetFilterFactory.parseFilter(filterJo, userId);
         }
-        if (jo.has("init_time")) {
-            initTime = jo.getLong("init_time");
+        if (jo.has("initTime")) {
+            initTime = jo.getLong("initTime");
         }
         if (jo.has("realData")) {
             realData = jo.optBoolean("realData", true);

@@ -251,6 +251,49 @@ public class BIBaseConstant {
             }
         }
 
+        public final static class NUMBER {
+
+            public final static Comparator ASC = new N();
+
+            public final static Comparator DESC = new D();
+
+            private static class N implements Comparator<Number>, Serializable {
+
+                @Override
+                public int compare(Number o1, Number o2) {
+                    if (o1 == o2 || (o1 == null && o2 == null)) {
+                        return 0;
+                    }
+                    if (o1 == null) {
+                        return -1;
+                    }
+                    if (o2 == null) {
+                        return 1;
+                    }
+                    return Double.compare(o1.doubleValue(), o2.doubleValue());
+                }
+
+            }
+
+            private static class D implements Comparator<Number>, Serializable {
+
+                @Override
+                public int compare(Number o1, Number o2) {
+                    if (o1 == o2 || (o1 == null && o2 == null)) {
+                        return 0;
+                    }
+                    if (o1 == null) {
+                        return 1;
+                    }
+                    if (o2 == null) {
+                        return -1;
+                    }
+                    return Double.compare(o2.doubleValue(), o1.doubleValue());
+                }
+
+            }
+        }
+
         public final static class STRING {
 
             //			private static final Comparator china = Collator.getInstance(java.util.Locale.CHINA);

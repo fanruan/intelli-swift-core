@@ -1,5 +1,7 @@
 package com.fr.bi.cal.analyze.cal.sssecret;
 
+import com.finebi.cube.api.ICubeDataLoader;
+import com.finebi.cube.api.ICubeTableService;
 import com.fr.bi.cal.analyze.cal.index.loader.CubeIndexLoader;
 import com.fr.bi.cal.analyze.cal.index.loader.MetricGroupInfo;
 import com.fr.bi.cal.analyze.cal.index.loader.TargetAndKey;
@@ -260,6 +262,7 @@ public class ConstructedRootDimensionGroup extends RootDimensionGroup {
 
     private void singleThreadBuild() {
         cal(rootNode, root, 0);
+        sum(rootNode);
     }
 
     private void cal(MetricMergeResult node, NoneDimensionGroup childDimensionGroup, int level) {
@@ -274,10 +277,11 @@ public class ConstructedRootDimensionGroup extends RootDimensionGroup {
             if (level < rowSize - 1) {
                 cal(result, rootGroup.getChildDimensionGroup(index), level + 1);
             }
+            //计算child之后才能sum，因为sum可能会cleargvi
+            sum(result);
             index++;
             result = rootGroup.getMetricMergeResultByWait(index);
         }
-        sum(node);
     }
 
     private void multiThreadBuild() {
@@ -323,9 +327,10 @@ public class ConstructedRootDimensionGroup extends RootDimensionGroup {
         private AtomicInteger[] size;
 
         public void build() {
-            count = new AtomicInteger[rowSize];
-            size = new AtomicInteger[rowSize];
-            for (int i = 0; i < rowSize; i++) {
+            //数组的最后一个来表示汇总的线程是否完成
+            count = new AtomicInteger[rowSize + 1];
+            size = new AtomicInteger[rowSize + 1];
+            for (int i = 0; i < count.length; i++) {
                 count[i] = new AtomicInteger(0);
                 size[i] = new AtomicInteger(0);
             }
@@ -340,6 +345,7 @@ public class ConstructedRootDimensionGroup extends RootDimensionGroup {
                 result = rootGroup.getMetricMergeResultByWait(index);
             }
             //如果多线程计算没有结束，就等结束
+            multiThreadSum(rootNode);
             if (!allCompleted()) {
                 executor.wakeUp();
                 synchronized (this) {
@@ -351,7 +357,6 @@ public class ConstructedRootDimensionGroup extends RootDimensionGroup {
                     }
                 }
             }
-            sum(rootNode);
         }
 
         private boolean allCompleted() {
@@ -378,8 +383,7 @@ public class ConstructedRootDimensionGroup extends RootDimensionGroup {
 
         //当前层的迭代器是否都执行完了
         private boolean currentLevelAllAdded(int level) {
-            //最后一层没有迭代器
-            if (level > rowSize - 1) {
+            if (level > rowSize) {
                 return false;
             }
             //执行完的迭代器的数量不等于0，并且等于上一层的丢进线程池的计算数量。
@@ -424,12 +428,27 @@ public class ConstructedRootDimensionGroup extends RootDimensionGroup {
             }
         }
 
+        private class SingleSummaryCall extends SummaryCall{
+
+            public SingleSummaryCall(ICubeTableService ti, Node node, TargetAndKey targetAndKey, GroupValueIndex gvi, ICubeDataLoader loader) {
+                super(ti, node, targetAndKey, gvi, loader);
+            }
+
+            @Override
+            public void cal() {
+                super.cal();
+                count[rowSize].incrementAndGet();
+                checkComplete(rowSize);
+            }
+        }
+
         private void multiThreadSum(MetricMergeResult node) {
             GroupValueIndex[] gvis = node.getGvis();
             for (int i = 0; i < summaryLists.length; i++) {
                 List<TargetAndKey> targetAndKeys = summaryLists[i];
                 for (TargetAndKey targetAndKey : targetAndKeys) {
-                    executor.add(new SummaryCall(tis[i], node, targetAndKey, gvis[i], session.getLoader()));
+                    size[rowSize].incrementAndGet();
+                    executor.add(new SingleSummaryCall(tis[i], node, targetAndKey, gvis[i], session.getLoader()));
                 }
             }
             if (!setIndex) {
