@@ -109,6 +109,9 @@ public class VanDotWidget extends VanCartesianWidget{
         JSONArray colors = JSONArray.create();
 
         int count = style.length();
+        if(count == 0){//把条件全删了
+            return JSONObject.create();
+        }
         double max = style.getJSONObject(count - 1).optJSONObject("range").optDouble("max");
 
         for(int i = 0, len = style.length(); i < len; i++){
