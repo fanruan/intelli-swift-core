@@ -14,7 +14,7 @@ import java.util.regex.Pattern;
  * Created by Kary on 2017/5/3.
  */
 public class ReplaceLineKeyTest {
-    private static final String outputPath = "C:\\code\\FineBI\\CamelKeys.json";
+    private static final String OUTPUTDIR = "CamelKeys.json";
 
     public static void main(String[] args) {
         //指定范围
@@ -30,7 +30,7 @@ public class ReplaceLineKeyTest {
     private static void saveKeysInfo(List<String> allFiles) {
         Map<String, Set<String>> allKeys = getAllKeysFromFiles(allFiles);
         JSONObject keysJson = new JSONObject(allKeys);
-        BIFileUtils.writeFile(outputPath, keysJson.toString());
+        BIFileUtils.writeFile(OUTPUTDIR, keysJson.toString());
     }
 
     private static void replaceAllKeys(List<String> allFiles, String[] replaceKeys) {
@@ -40,12 +40,11 @@ public class ReplaceLineKeyTest {
             if (getAllKeysFromFiles(fileList).size() == 0) {
                 continue;
             }
-            System.out.println(file);
             StringBuilder sb = new StringBuilder();
             List<String> lines = readFile(file);
 
             for (int i = 0; i < lines.size(); i++) {
-                sb.append(replaceKey(lines.get(i),replaceKeys));
+                sb.append(replaceKey(lines.get(i), replaceKeys));
                 if (i < lines.size() - 1) {
                     sb.append("\n");
                 }
@@ -158,8 +157,9 @@ public class ReplaceLineKeyTest {
             BufferedReader reader = new BufferedReader(fr);
             String line;
             try {
-                while ((line = reader.readLine()) != null)
+                while ((line = reader.readLine()) != null) {
                     lines.add(line);
+                }
                 return lines;
             } finally {
                 reader.close();
