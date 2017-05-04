@@ -121,6 +121,10 @@ public class VanDotWidget extends VanCartesianWidget{
         return JSONObject.create().put("color", colors);
     }
 
+    protected String valueLabelKey() {
+        return "{SIZE}";
+    }
+
     protected String getLegendType(){
 
         String legend = "legend";
@@ -265,5 +269,31 @@ public class VanDotWidget extends VanCartesianWidget{
 
     protected String getTooltipIdentifier(){
         return X + Y + SIZE;
+    }
+
+    protected void formatSeriesDataLabelFormat(JSONObject options) throws Exception {
+        JSONObject dataLabels = options.optJSONObject("plotOptions").optJSONObject("dataLabels");
+
+        String[] ids = this.getUsedTargetID();
+        String[] keys = {"sizeFormat", "YFormat", "XFormat"};
+        int size = ids.length;
+
+        if (dataLabels.optBoolean("enabled")) {
+            JSONArray series = options.optJSONArray("series");
+
+            for (int i = 0, len = series.length(); i < len; i++) {
+                JSONObject ser = series.getJSONObject(i);
+
+                JSONObject labels = new JSONObject(dataLabels.toString());
+
+                JSONObject formatter = labels.optJSONObject("formatter");
+
+                for(int j = size; j > 0; j--){
+                    formatter.put(keys[size - j], this.dataLabelValueFormat(this.getBITargetByID(ids[j - 1])));
+                }
+
+                ser.put("dataLabels", labels);
+            }
+        }
     }
 }
