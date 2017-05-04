@@ -435,7 +435,7 @@ public abstract class VanChartWidget extends TableWidget {
         JSONObject globalStyle = reportSetting.optJSONObject("globalStyle");
         globalStyle = globalStyle == null ? JSONObject.create() : globalStyle;
 
-        return this.createOptions(globalStyle, data);
+        return this.createOptions(globalStyle, data).put("data", data);
     }
 
 /*
