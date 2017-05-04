@@ -77,7 +77,7 @@ public class VanMapWidget extends VanChartWidget{
 
         JSONArray mapStyle;
         if(settings.optInt("styleRadio", AUTO) == AUTO){
-            legend.put("range", JSONObject.create().put("color", settings.optString("chartColor")));
+            legend.put("range", JSONObject.create().put("color", settings.optString("themeColor")));
         }else{
             mapStyle = settings.optJSONArray("mapStyles");
             legend.put("range", this.mapStyleToRange(mapStyle));
@@ -102,16 +102,12 @@ public class VanMapWidget extends VanChartWidget{
 
         settings.put("styleRadio", AUTO);
 
-        settings.put("chartColor", THEME);
+        settings.put("themeColor", THEME);
 
         //todo 自动的时候应该可以删掉
         settings.put("mapStyle", JSONArray.create());
 
         return settings;
-    }
-
-    protected JSONArray parseColors(JSONObject settings, JSONObject globalStyle, JSONObject plateConfig) throws Exception{
-        return JSONArray.create().put(settings.optString("chartColor", THEME));
     }
 
     public JSONArray createSeries(JSONObject originData) throws Exception {
