@@ -82,8 +82,8 @@ public class ReportCamelOperation implements ReportUpdateOperation {
 
     /* 之前的错误处理把"_src"处理为"src"，现在先在这边转过来，之后这段代码会删掉*/
     private String lineToCamels(String str) {
-        if (ComparatorUtils.equals(str, "src")) {
-            return "_src";
+        if (str.contains("__")){
+            return str;
         }
         Matcher matcher = linePattern.matcher(str);
         StringBuffer sb = new StringBuffer();
@@ -91,11 +91,8 @@ public class ReportCamelOperation implements ReportUpdateOperation {
             matcher.appendReplacement(sb, matcher.group(1).toUpperCase());
         }
         matcher.appendTail(sb);
-//        if (sb.length() > 0) {
-//            sb.setCharAt(0, sb.substring(0).toLowerCase().toCharArray()[0]);
-//        }
         if (!ComparatorUtils.equals(str,sb.toString())){
-            BILoggerFactory.getLogger(this.getClass()).info(BIStringUtils.append("compatibility warning! the parameter whose name is ",str," should be transfered"));
+            BILoggerFactory.getLogger(this.getClass()).info(BIStringUtils.append("compatibility warning! the parameter whose name is ",str," should be transferd"));
         }
         return sb.toString();
     }
