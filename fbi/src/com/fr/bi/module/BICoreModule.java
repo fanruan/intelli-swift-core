@@ -24,7 +24,7 @@ import com.fr.bi.cluster.manager.EmptyClusterManager;
 import com.fr.bi.cluster.utils.ClusterEnv;
 import com.fr.bi.conf.base.auth.BISystemAuthorityManager;
 import com.fr.bi.conf.base.cube.BISystemCubeConfManagerWithoutUser;
-import com.fr.bi.conf.base.dataconfig.BISystemDataConfigAuthorityManagerWithoutUser;
+import com.fr.bi.conf.base.dataconfig.BISystemDataConfigAuthorityManager;
 import com.fr.bi.conf.base.datasource.BIConnectionManager;
 import com.fr.bi.conf.base.datasource.BIConnectionProvider;
 import com.fr.bi.conf.base.login.BISystemUserLoginInformationManager;
@@ -65,6 +65,7 @@ import com.fr.bi.tool.BIReadReportProvider;
 import com.fr.bi.tool.BIReadReportUtils;
 import com.fr.bi.web.base.Service4BIBase;
 import com.fr.bi.web.conf.Service4BIConfigure;
+import com.fr.bi.web.dezi.demo.DemoService;
 import com.fr.bi.web.dezi.web.Service4BIDezi;
 import com.fr.bi.web.report.Service4BIReport;
 import com.fr.bi.web.report.services.finecube.Service4FineCube;
@@ -167,7 +168,7 @@ public class BICoreModule extends AbstractModule {
         StableFactory.registerMarkedObject(BICubeTimeTaskCreatorProvider.XML_TAG, new BICubeTimeTaskCreatorManager());
         StableFactory.registerMarkedObject(BICubeTaskRecordProvider.XML_TAG, new BICubeTaskRecordManagerWithoutUser());
 
-        StableFactory.registerMarkedObject(BIDataConfigAuthorityProvider.XML_TAG, new BISystemDataConfigAuthorityManagerWithoutUser());
+        StableFactory.registerMarkedObject(BIDataConfigAuthorityProvider.XML_TAG, new BISystemDataConfigAuthorityManager());
         StableFactory.registerMarkedObject(FBIConfigProvider.XML_TAG, getFBIConfigManager());
 
     }
@@ -696,8 +697,8 @@ public class BICoreModule extends AbstractModule {
                 new Service4BIReport(),
                 new Service4BIDezi(),
                 new Service4BIBase(),
-
-                new Service4FineCube()
+                new Service4FineCube(),
+                new DemoService()
         };
     }
 

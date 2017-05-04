@@ -30,7 +30,7 @@ public abstract class AbstractFormularDetailTarget extends BIAbstractDetailTarge
     public void parseJSON(JSONObject jo, long userId) throws Exception {
         super.parseJSON(jo, userId);
 
-        expression = jo.optJSONObject("_src").optJSONObject("expression").optString("formula_value");
+        expression = jo.optJSONObject("_src").optJSONObject("expression").optString("formulaValue");
     }
 
 

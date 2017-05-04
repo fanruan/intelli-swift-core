@@ -1,5 +1,7 @@
 package com.fr.bi.cal.analyze.cal.sssecret;
 
+import com.finebi.cube.api.ICubeDataLoader;
+import com.finebi.cube.api.ICubeTableService;
 import com.fr.bi.cal.analyze.cal.index.loader.CubeIndexLoader;
 import com.fr.bi.cal.analyze.cal.index.loader.MetricGroupInfo;
 import com.fr.bi.cal.analyze.cal.index.loader.TargetAndKey;
@@ -34,6 +36,7 @@ public class ConstructedRootDimensionGroup extends RootDimensionGroup {
     private boolean setIndex;
     private boolean hasInSumMetric;
     private BIMultiThreadExecutor executor;
+    private boolean calAllPage;
     private int[] sortType;
     private TargetGettingKey[] sortTargetKey;
 
@@ -41,21 +44,23 @@ public class ConstructedRootDimensionGroup extends RootDimensionGroup {
     }
 
     public ConstructedRootDimensionGroup(List<MetricGroupInfo> metricGroupInfoList, MergeIteratorCreator[] mergeIteratorCreators, int sumLength, BISession session, boolean useRealData,
-                                         NameObject[] dimensionTargetSort, List<CalCalculator> calCalculators, BIDimension[] filterDimension, boolean setIndex, boolean hasInSumMetric,  BIMultiThreadExecutor executor) {
+                                         NameObject[] dimensionTargetSort, List<CalCalculator> calCalculators, BIDimension[] filterDimension, boolean setIndex, boolean hasInSumMetric, BIMultiThreadExecutor executor, boolean calAllPage) {
         super(metricGroupInfoList, mergeIteratorCreators, sumLength, session, useRealData);
         this.calCalculators = calCalculators;
         this.filterDimension = filterDimension;
-        this.setIndex = setIndex || hasInSumMetric;
+        //需要返回带索引的node或者需要使用gvisum的情况
+        this.setIndex = setIndex || (hasInSumMetric && filterDimension != null);
         this.dimensionTargetSort = dimensionTargetSort;
         this.hasInSumMetric = hasInSumMetric;
         this.executor = executor;
+        this.calAllPage = calAllPage;
     }
 
-    public Node getConstructedRoot(){
+    public Node getConstructedRoot() {
         return rootNode;
     }
 
-    public void construct(){
+    public void construct() {
         initSort();
         initRootNode();
     }
@@ -63,7 +68,7 @@ public class ConstructedRootDimensionGroup extends RootDimensionGroup {
     private void initSort() {
         sortType = new int[dimensionTargetSort.length];
         sortTargetKey = new TargetGettingKey[dimensionTargetSort.length];
-        for (int i = 0; i < dimensionTargetSort.length; i++){
+        for (int i = 0; i < dimensionTargetSort.length; i++) {
             NameObject targetSort = dimensionTargetSort[i];
             if (targetSort != null) {
                 sortType[i] = (Integer) targetSort.getObject();
@@ -78,14 +83,14 @@ public class ConstructedRootDimensionGroup extends RootDimensionGroup {
                             break;
                         }
                     }
-                    if (find){
+                    if (find) {
                         break;
                     }
                 }
                 //再到计算指标里面找下
-                if (sortTargetKey[i] == null){
-                    for (CalCalculator calCalculator :calCalculators){
-                        if (ComparatorUtils.equals(calCalculator.createTargetGettingKey().getTargetName(), targetSort.getName())){
+                if (sortTargetKey[i] == null) {
+                    for (CalCalculator calCalculator : calCalculators) {
+                        if (ComparatorUtils.equals(calCalculator.createTargetGettingKey().getTargetName(), targetSort.getName())) {
                             sortTargetKey[i] = calCalculator.createTargetGettingKey();
                         }
                     }
@@ -120,22 +125,23 @@ public class ConstructedRootDimensionGroup extends RootDimensionGroup {
             reSum();
             sumCalculateMetrics();
         }
-        if (hasTargetSort()){
+        if (hasTargetSort()) {
             sort(rootNode, 0);
+            NodeUtils.setSiblingBetweenFirstAndLastChild(rootNode);
         }
         root.setChildren(rootNode.getChilds());
         root.setSummaryValue(rootNode.getSummaryValue());
-        if (setIndex){
+        if (setIndex) {
             root.setGvis(rootNode.getGvis());
-            for (int i = 0; i < metricGroupInfoList.size(); i++){
+            for (int i = 0; i < metricGroupInfoList.size(); i++) {
                 metricGroupInfoList.get(i).setFilterIndex(root.getGvis()[i]);
             }
         }
     }
 
-    private boolean hasTargetSort(){
-        for (NameObject object : dimensionTargetSort){
-            if (object != null){
+    private boolean hasTargetSort() {
+        for (NameObject object : dimensionTargetSort) {
+            if (object != null) {
                 return true;
             }
         }
@@ -144,15 +150,15 @@ public class ConstructedRootDimensionGroup extends RootDimensionGroup {
 
     private void clearEmptyNode(Node node) {
         Node parent = node.getParent();
-        if (parent != null){
+        if (parent != null) {
             List<Node> children = parent.getChilds();
             parent.clearChildren();
-            for (Node child : children){
-                if (child != node){
+            for (Node child : children) {
+                if (child != node) {
                     parent.addChild(child);
                 }
             }
-            if (parent.getChildLength() == 0){
+            if (parent.getChildLength() == 0) {
                 clearEmptyNode(parent);
             }
         }
@@ -164,7 +170,7 @@ public class ConstructedRootDimensionGroup extends RootDimensionGroup {
             if (filter != null) {
                 List<Node> children = filter(node.getChilds(), deep, calculatorMap);
                 node.clearChildren();
-                if (children == null || children.isEmpty()){
+                if (children == null || children.isEmpty()) {
                     clearEmptyNode(node);
                 } else {
                     for (Node n : children) {
@@ -193,6 +199,34 @@ public class ConstructedRootDimensionGroup extends RootDimensionGroup {
         return results;
     }
 
+    //有过滤要重新汇总下
+    private void reSum() {
+        List<TargetGettingKey> keys = new ArrayList<TargetGettingKey>();
+        for (List<TargetAndKey> list : summaryLists) {
+            for (TargetAndKey key : list) {
+                keys.add(key.getTargetGettingKey());
+            }
+        }
+        NodeSummarizing summarizing = hasInSumMetric ? new NodeGVISummarizing(rootNode, keys.toArray(new TargetGettingKey[keys.size()])) : new NodeSummarizing(rootNode, keys.toArray(new TargetGettingKey[keys.size()]));
+        summarizing.sum();
+        //gvi汇总之后如果需要用到全部结果，或者需要排序，就对node再汇总一次，最后一层不需要汇总
+        if (hasInSumMetric) {
+            if (calAllPage || hasTargetSort()) {
+                sumAfterVISummarizing(rootNode, 0);
+            }
+        }
+    }
+
+    private void sumAfterVISummarizing(MetricMergeResult node, int deep) {
+        sum(node);
+        //最后一层不需要resum
+        if (deep < rowSize - 1) {
+            for (Node n : node.getChilds()) {
+                sumAfterVISummarizing((MetricMergeResult) n, deep + 1);
+            }
+        }
+    }
+
 
     private void sort(MetricMergeResult node, int deep) {
         if (deep < rowSize) {
@@ -216,30 +250,21 @@ public class ConstructedRootDimensionGroup extends RootDimensionGroup {
                             return 0;
                         }
                         boolean v = v1.doubleValue() < v2.doubleValue();
-                        return (sortType[fDeep] == BIReportConstant.SORT.ASC) == v ? -1 : 1;
+                        return (sortType[fDeep] == BIReportConstant.SORT.NUMBER_ASC || sortType[fDeep] == BIReportConstant.SORT.ASC) == v ? -1 : 1;
                     }
                 });
             }
             for (Node n : node.getChilds()) {
                 sort((MetricMergeResult) n, deep + 1);
+                n.setSibling(null);
             }
         }
     }
 
-    //有过滤要重新汇总下
-    private void reSum() {
-        List<TargetGettingKey> keys = new ArrayList<TargetGettingKey>();
-        for (List<TargetAndKey> list : summaryLists) {
-            for (TargetAndKey key : list) {
-                keys.add(key.getTargetGettingKey());
-            }
-        }
-        NodeSummarizing summarizing = hasInSumMetric ? new NodeGVISummarizing(rootNode, keys.toArray(new TargetGettingKey[keys.size()])) : new NodeSummarizing(rootNode, keys.toArray(new TargetGettingKey[keys.size()]));
-        summarizing.sum();
-    }
 
     private void singleThreadBuild() {
         cal(rootNode, root, 0);
+        sum(rootNode);
     }
 
     private void cal(MetricMergeResult node, NoneDimensionGroup childDimensionGroup, int level) {
@@ -254,10 +279,11 @@ public class ConstructedRootDimensionGroup extends RootDimensionGroup {
             if (level < rowSize - 1) {
                 cal(result, rootGroup.getChildDimensionGroup(index), level + 1);
             }
+            //计算child之后才能sum，因为sum可能会cleargvi
+            sum(result);
             index++;
             result = rootGroup.getMetricMergeResultByWait(index);
         }
-        sum(node);
     }
 
     private void multiThreadBuild() {
@@ -303,9 +329,10 @@ public class ConstructedRootDimensionGroup extends RootDimensionGroup {
         private AtomicInteger[] size;
 
         public void build() {
-            count = new AtomicInteger[rowSize];
-            size = new AtomicInteger[rowSize];
-            for (int i = 0; i < rowSize; i++) {
+            //数组的最后一个来表示汇总的线程是否完成
+            count = new AtomicInteger[rowSize + 1];
+            size = new AtomicInteger[rowSize + 1];
+            for (int i = 0; i < count.length; i++) {
                 count[i] = new AtomicInteger(0);
                 size[i] = new AtomicInteger(0);
             }
@@ -320,6 +347,7 @@ public class ConstructedRootDimensionGroup extends RootDimensionGroup {
                 result = rootGroup.getMetricMergeResultByWait(index);
             }
             //如果多线程计算没有结束，就等结束
+            multiThreadSum(rootNode);
             if (!allCompleted()) {
                 executor.wakeUp();
                 synchronized (this) {
@@ -331,7 +359,6 @@ public class ConstructedRootDimensionGroup extends RootDimensionGroup {
                     }
                 }
             }
-            sum(rootNode);
         }
 
         private boolean allCompleted() {
@@ -358,8 +385,7 @@ public class ConstructedRootDimensionGroup extends RootDimensionGroup {
 
         //当前层的迭代器是否都执行完了
         private boolean currentLevelAllAdded(int level) {
-            //最后一层没有迭代器
-            if (level > rowSize - 1) {
+            if (level > rowSize) {
                 return false;
             }
             //执行完的迭代器的数量不等于0，并且等于上一层的丢进线程池的计算数量。
@@ -404,12 +430,27 @@ public class ConstructedRootDimensionGroup extends RootDimensionGroup {
             }
         }
 
+        private class SingleSummaryCall extends SummaryCall {
+
+            public SingleSummaryCall(ICubeTableService ti, Node node, TargetAndKey targetAndKey, GroupValueIndex gvi, ICubeDataLoader loader) {
+                super(ti, node, targetAndKey, gvi, loader);
+            }
+
+            @Override
+            public void cal() {
+                super.cal();
+                count[rowSize].incrementAndGet();
+                checkComplete(rowSize);
+            }
+        }
+
         private void multiThreadSum(MetricMergeResult node) {
             GroupValueIndex[] gvis = node.getGvis();
             for (int i = 0; i < summaryLists.length; i++) {
                 List<TargetAndKey> targetAndKeys = summaryLists[i];
                 for (TargetAndKey targetAndKey : targetAndKeys) {
-                    executor.add(new SummaryCall(tis[i], node, targetAndKey, gvis[i], session.getLoader()));
+                    size[rowSize].incrementAndGet();
+                    executor.add(new SingleSummaryCall(tis[i], node, targetAndKey, gvis[i], session.getLoader()));
                 }
             }
             if (!setIndex) {

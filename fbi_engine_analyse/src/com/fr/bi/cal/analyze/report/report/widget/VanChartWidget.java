@@ -308,6 +308,10 @@ public abstract class VanChartWidget extends TableWidget {
         return plotOptions;
     }
 
+    protected String valueLabelKey() {
+        return "{VALUE}";
+    }
+
     //默认是分类，系列，值的配置
     protected JSONObject createDataLabels(JSONObject settings) throws JSONException {
 
@@ -331,11 +335,19 @@ public abstract class VanChartWidget extends TableWidget {
             }
 
             if (dataLabelSetting.optBoolean("showValue")) {
-                identifier += "${VALUE}";
+                identifier += valueLabelKey();
             }
 
             if (dataLabelSetting.optBoolean("showPercentage")) {
                 identifier += "${PERCENT}";
+            }
+
+            if (dataLabelSetting.optBoolean("showXValue")) {
+                identifier += "${X}";
+            }
+
+            if (dataLabelSetting.optBoolean("showYValue")) {
+                identifier += "${Y}";
             }
 
             formatter.put("identifier", identifier);
@@ -423,7 +435,7 @@ public abstract class VanChartWidget extends TableWidget {
         JSONObject globalStyle = reportSetting.optJSONObject("globalStyle");
         globalStyle = globalStyle == null ? JSONObject.create() : globalStyle;
 
-        return this.createOptions(globalStyle, data);
+        return this.createOptions(globalStyle, data).put("data", data);
     }
 
 /*
@@ -595,6 +607,9 @@ public abstract class VanChartWidget extends TableWidget {
         int groupType = category.getGroup().getType();
         JSONArray series = JSONArray.create();
         String[] targetIDs = this.getUsedTargetID();
+        if(targetIDs.length == 0){
+            return series;
+        }
         String categoryKey = this.categoryKey(), valueKey = this.valueKey();
         ArrayList<Double> valueList = new ArrayList<Double>();
         JSONObject top = originData.getJSONObject("t"), left = originData.getJSONObject("l");
@@ -628,7 +643,7 @@ public abstract class VanChartWidget extends TableWidget {
 
     private JSONArray createSeriesWithChildren(JSONObject originData) throws Exception {
         BIDimension category = this.getCategoryDimension();
-        int groupType = category.getGroup().getType();
+        int groupType = category == null ? BIReportConstant.GROUP.YMD : category.getGroup().getType();
         JSONArray series = JSONArray.create();
         String[] targetIDs = this.getUsedTargetID();
         String categoryKey = this.categoryKey(), valueKey = this.valueKey();

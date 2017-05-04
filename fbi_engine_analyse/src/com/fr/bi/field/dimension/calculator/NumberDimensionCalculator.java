@@ -155,9 +155,9 @@ public class NumberDimensionCalculator extends AbstractDimensionCalculator {
     @Override
     public Comparator getComparator() {
         if (getSortType() == BIReportConstant.SORT.ASC || getSortType() == BIReportConstant.SORT.NUMBER_ASC || getSortType() == BIReportConstant.SORT.NONE) {
-            return getGroup().getType() == BIReportConstant.GROUP.ID_GROUP ? BIBaseConstant.COMPARATOR.COMPARABLE.ASC : BIBaseConstant.COMPARATOR.STRING.ASC_STRING_CC;
+            return getGroup().getType() == BIReportConstant.GROUP.ID_GROUP ? BIBaseConstant.COMPARATOR.NUMBER.ASC : BIBaseConstant.COMPARATOR.STRING.ASC_STRING_CC;
         } else if (getSortType() == BIReportConstant.SORT.DESC || getSortType() == BIReportConstant.SORT.NUMBER_DESC) {
-            return getGroup().getType() == BIReportConstant.GROUP.ID_GROUP ? BIBaseConstant.COMPARATOR.COMPARABLE.DESC : BIBaseConstant.COMPARATOR.STRING.DESC_STRING_CC;
+            return getGroup().getType() == BIReportConstant.GROUP.ID_GROUP ? BIBaseConstant.COMPARATOR.NUMBER.DESC : BIBaseConstant.COMPARATOR.STRING.DESC_STRING_CC;
         } else {
             return new CustomComparator();
         }
@@ -169,25 +169,26 @@ public class NumberDimensionCalculator extends AbstractDimensionCalculator {
 
     @Override
     public Object convertToOriginValue(String stringValue) {
-        try{
-            if (BIGroupUtils.isCustomGroup(getGroup())){
+        try {
+            if (BIGroupUtils.isCustomGroup(getGroup())) {
                 return super.convertToOriginValue(stringValue);
             }
             return convertNumber(stringValue);
-        } catch (Exception e){
+        } catch (Exception e) {
             BILoggerFactory.getLogger().error(e.getMessage());
         }
         return null;
     }
 
-    protected Object convertNumber(String value){
-        switch (field.getClassType()){
+    protected Object convertNumber(String value) {
+        switch (field.getClassType()) {
             case DBConstant.CLASS.LONG:
                 return Long.parseLong(value);
             case DBConstant.CLASS.DOUBLE:
                 return Double.parseDouble(value);
+            //BI-4741 long和int类型数据都转为long
             default:
-                return Integer.parseInt(value);
+                return Long.parseLong(value);
         }
     }
 }

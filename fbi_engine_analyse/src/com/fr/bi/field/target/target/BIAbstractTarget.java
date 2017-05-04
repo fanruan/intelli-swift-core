@@ -53,8 +53,8 @@ public abstract class BIAbstractTarget extends BIStyleTarget implements BITarget
                 summaryType = groupJo.getInt("type");
             }
         }
-        if (jo.has("style_of_chart")) {
-            JSONObject chartJo = jo.getJSONObject("style_of_chart");
+        if (jo.has("styleOfChart")) {
+            JSONObject chartJo = jo.getJSONObject("styleOfChart");
             if(chartJo.has("type")) {
                 chartType = chartJo.getInt("type");
             }
