@@ -3,6 +3,7 @@ package com.fr.bi.cal.analyze.report.report.widget.chart.types;
 import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.conf.report.WidgetType;
 import com.fr.general.FRLogger;
+import com.fr.general.Inter;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
@@ -204,6 +205,8 @@ public class VanDotWidget extends VanCartesianWidget{
     }
 
 
+    //老的气泡图、散点图。原来的分类---->新点图的系列
+    //新的点图。系列无字段，所有点在一个name=vancharts中默认给的一个系列名 的系列里面
     private JSONArray createBubbleScatterSeries(JSONObject originData) throws Exception{
         String[] ids = this.getUsedTargetID();
 
@@ -214,6 +217,9 @@ public class VanDotWidget extends VanCartesianWidget{
         if(c == null){
             return series;
         }
+
+        boolean dot = this.getChartType() == WidgetType.DOT;//点图没有系列字段，图例显示"无"
+        JSONArray dotData = JSONArray.create();
 
         for(int i = 0, len = c.length(); i < len; i++){
             JSONObject obj = c.getJSONObject(i);
@@ -226,9 +232,17 @@ public class VanDotWidget extends VanCartesianWidget{
 
             JSONObject point = JSONObject.create().put("x", x).put("y", y).put("size", value);
 
-            series.put(JSONObject.create().put("data", JSONArray.create().put(point))
-                    .put("name", obj.optString("n")).put("dimensionID", ids[ids.length - 1])
-            );
+            if(dot){
+                dotData.put(point);
+            } else {
+                series.put(JSONObject.create().put("data", JSONArray.create().put(point))
+                        .put("name", obj.optString("n")).put("dimensionID", ids[ids.length - 1])
+                );
+            }
+        }
+
+        if(dot){
+            series.put(JSONObject.create().put("data", dotData).put("dimensionID", ids[ids.length - 1]));
         }
 
         return series;
