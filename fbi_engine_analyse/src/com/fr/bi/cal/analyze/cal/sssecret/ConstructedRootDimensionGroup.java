@@ -273,11 +273,12 @@ public class ConstructedRootDimensionGroup extends RootDimensionGroup {
         int index = 0;
         MetricMergeResult result = rootGroup.getMetricMergeResultByWait(index);
         while (result != MetricMergeResult.NULL) {
-            sum(result);
             node.addChild(result);
             if (level < rowSize - 1) {
                 cal(result, rootGroup.getChildDimensionGroup(index), level + 1);
             }
+            //计算child之后才能sum，因为sum可能会cleargvi
+            sum(result);
             index++;
             result = rootGroup.getMetricMergeResultByWait(index);
         }

@@ -7,7 +7,15 @@ public enum VanCombineType {
 
     COLUMN(1),//柱状图
     STACKED_COLUMN(2),//堆积柱状图
-    AREA(3);//面积图
+    AREA_NORMAL(3),//面积图
+    AREA_CURVE(4),
+    AREA_RIGHT_ANGLE(5),
+    STACKED_AREA_NORMAL(6),
+    STACKED_AREA_CURVE(7),
+    STACKED_AREA_RIGHT_ANGLE(8),
+    LINE_NORMAL(9),
+    LINE_CURVE(10),
+    LINE_RIGHT_ANGLE(11);
 
     private int type;
 
@@ -36,10 +44,18 @@ public enum VanCombineType {
     public static String parseStringType(int type){
 
         switch (parse(type)){
+            case AREA_NORMAL:
+            case AREA_CURVE:
+            case AREA_RIGHT_ANGLE:
+            case STACKED_AREA_NORMAL:
+            case STACKED_AREA_CURVE:
+            case STACKED_AREA_RIGHT_ANGLE:
+                return "area";
 
-            case COLUMN:
-                return "column";
-
+            case  LINE_NORMAL:
+            case LINE_CURVE:
+            case LINE_RIGHT_ANGLE:
+                return "line";
 
             default:
                 return "column";
