@@ -52,5 +52,6 @@
   "reportLocation": "模板目录(report_location)",
   "realTime": "实时报表(real_time)",
 
-  "initTime": "初始化时间(init_time)"
+  "initTime": "初始化时间(init_time)",
+  "fullFileName": "excel名称(full_file_name)"
 }
