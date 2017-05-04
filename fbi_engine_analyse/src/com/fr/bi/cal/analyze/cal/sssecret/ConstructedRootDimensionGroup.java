@@ -210,8 +210,10 @@ public class ConstructedRootDimensionGroup extends RootDimensionGroup {
         NodeSummarizing summarizing = hasInSumMetric ? new NodeGVISummarizing(rootNode, keys.toArray(new TargetGettingKey[keys.size()])) : new NodeSummarizing(rootNode, keys.toArray(new TargetGettingKey[keys.size()]));
         summarizing.sum();
         //gvi汇总之后如果需要用到全部结果，或者需要排序，就对node再汇总一次，最后一层不需要汇总
-        if (hasInSumMetric && (calAllPage || hasTargetSort())) {
-            sumAfterVISummarizing(rootNode, 0);
+        if (hasInSumMetric) {
+            if (calAllPage || hasTargetSort()) {
+                sumAfterVISummarizing(rootNode, 0);
+            }
         }
     }
 
