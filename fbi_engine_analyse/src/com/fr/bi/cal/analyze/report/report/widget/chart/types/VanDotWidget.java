@@ -113,9 +113,14 @@ public class VanDotWidget extends VanCartesianWidget{
 
         for(int i = 0, len = style.length(); i < len; i++){
             JSONObject config = style.getJSONObject(i);
-            JSONObject range = config.optJSONObject("range"), colorRange = config.optJSONObject("color_range");
-            double from = range.optDouble("min") / max;
-            colors.put(JSONArray.create().put(from).put(colorRange.optString("from_color")));
+            JSONObject range = config.optJSONObject("range"), colorRange = config.optJSONObject("colorRange");
+            if(i == 0) {
+                double from = range.optDouble("min") / max;
+                colors.put(JSONArray.create().put(from).put(colorRange.optString("fromColor")));
+            }
+            double to = range.optDouble("max") / max;
+            colors.put(JSONArray.create().put(to).put(colorRange.optString("toColor")));
+
         }
 
         return JSONObject.create().put("color", colors);
