@@ -1,6 +1,7 @@
 package com.finebi.common.name;
 
 import com.fr.bi.stable.utils.program.BINonValueUtils;
+import com.fr.general.ComparatorUtils;
 
 /**
  * This class created on 2017/4/11.
@@ -11,7 +12,7 @@ import com.fr.bi.stable.utils.program.BINonValueUtils;
 public class NameImp implements Name {
     private String selfNameValue;
     private NameProvider parentNameProvider;
-    private static final String SEPARATOR = "/";
+    public static final String SEPARATOR = "/";
 
     public NameImp(String selfNameValue, NameProvider parentName) {
         BINonValueUtils.checkNull(selfNameValue);
@@ -65,16 +66,12 @@ public class NameImp implements Name {
 
         NameImp nameImp = (NameImp) o;
 
-        if (selfNameValue != null ? !selfNameValue.equals(nameImp.selfNameValue) : nameImp.selfNameValue != null) {
-            return false;
-        }
-        return parentNameProvider != null ? parentNameProvider.equals(nameImp.parentNameProvider) : nameImp.parentNameProvider == null;
+        return ComparatorUtils.equals(uniqueValue(), nameImp.uniqueValue());
     }
 
     @Override
     public int hashCode() {
-        int result = selfNameValue != null ? selfNameValue.hashCode() : 0;
-        result = 31 * result + (parentNameProvider != null ? parentNameProvider.hashCode() : 0);
+        int result = selfNameValue != null ? uniqueValue().hashCode() : 0;
         return result;
     }
 

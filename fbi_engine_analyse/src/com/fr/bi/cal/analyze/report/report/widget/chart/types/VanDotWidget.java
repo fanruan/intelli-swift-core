@@ -3,11 +3,11 @@ package com.fr.bi.cal.analyze.report.report.widget.chart.types;
 import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.conf.report.WidgetType;
 import com.fr.general.FRLogger;
+import com.fr.general.Inter;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
 import com.fr.script.Calculator;
-import com.fr.stable.StringUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -68,7 +68,7 @@ public class VanDotWidget extends VanCartesianWidget{
 
         JSONObject gradualStyle = JSONObject.create();
         gradualStyle.put("range", JSONObject.create().put("min", 0).put("max", 100));
-        gradualStyle.put("color_range", JSONObject.create().put("from_color", "#65B3EE").put("to_color", "#95E1AA"));
+        gradualStyle.put("color_range", JSONObject.create().put("fromColor", "#65B3EE").put("toColor", "#95E1AA"));
 
         settings.put("fixedStyle", fixedStyle);
         settings.put("gradientStyle", JSONArray.create().put(gradualStyle));
@@ -96,7 +96,7 @@ public class VanDotWidget extends VanCartesianWidget{
         if(rule == INTERVAL_RULE){
             legend.put("continuous", false);
             legend.put("range", this.mapStyleToRange(settings.optJSONArray("fixedStyle")));
-        }else{
+        }else if(rule == GRADUAL_RULE){
             legend.put("continuous", true);
             legend.put("range", this.gradualStyleToRange(settings.optJSONArray("gradientStyle")));
         }
@@ -109,16 +109,28 @@ public class VanDotWidget extends VanCartesianWidget{
         JSONArray colors = JSONArray.create();
 
         int count = style.length();
+        if(count == 0){//把条件全删了
+            return JSONObject.create();
+        }
         double max = style.getJSONObject(count - 1).optJSONObject("range").optDouble("max");
 
         for(int i = 0, len = style.length(); i < len; i++){
             JSONObject config = style.getJSONObject(i);
-            JSONObject range = config.optJSONObject("range"), colorRange = config.optJSONObject("color_range");
-            double from = range.optDouble("min") / max;
-            colors.put(JSONArray.create().put(from).put(colorRange.optString("from_color")));
+            JSONObject range = config.optJSONObject("range"), colorRange = config.optJSONObject("colorRange");
+            if(i == 0) {
+                double from = range.optDouble("min") / max;
+                colors.put(JSONArray.create().put(from).put(colorRange.optString("fromColor")));
+            }
+            double to = range.optDouble("max") / max;
+            colors.put(JSONArray.create().put(to).put(colorRange.optString("toColor")));
+
         }
 
         return JSONObject.create().put("color", colors);
+    }
+
+    protected String valueLabelKey() {
+        return "{SIZE}";
     }
 
     protected String getLegendType(){
@@ -193,6 +205,8 @@ public class VanDotWidget extends VanCartesianWidget{
     }
 
 
+    //老的气泡图、散点图。原来的分类---->新点图的系列
+    //新的点图。系列无字段，所有点在一个name=vancharts中默认给的一个系列名 的系列里面
     private JSONArray createBubbleScatterSeries(JSONObject originData) throws Exception{
         String[] ids = this.getUsedTargetID();
 
@@ -203,6 +217,9 @@ public class VanDotWidget extends VanCartesianWidget{
         if(c == null){
             return series;
         }
+
+        boolean dot = this.getChartType() == WidgetType.DOT;//点图没有系列字段，图例显示"无"
+        JSONArray dotData = JSONArray.create();
 
         for(int i = 0, len = c.length(); i < len; i++){
             JSONObject obj = c.getJSONObject(i);
@@ -215,9 +232,17 @@ public class VanDotWidget extends VanCartesianWidget{
 
             JSONObject point = JSONObject.create().put("x", x).put("y", y).put("size", value);
 
-            series.put(JSONObject.create().put("data", JSONArray.create().put(point))
-                    .put("name", obj.optString("n")).put("dimensionID", ids[ids.length - 1])
-            );
+            if(dot){
+                dotData.put(point);
+            } else {
+                series.put(JSONObject.create().put("data", JSONArray.create().put(point))
+                        .put("name", obj.optString("n")).put("dimensionID", ids[ids.length - 1])
+                );
+            }
+        }
+
+        if(dot){
+            series.put(JSONObject.create().put("data", dotData).put("dimensionID", ids[ids.length - 1]));
         }
 
         return series;
@@ -265,5 +290,31 @@ public class VanDotWidget extends VanCartesianWidget{
 
     protected String getTooltipIdentifier(){
         return X + Y + SIZE;
+    }
+
+    protected void formatSeriesDataLabelFormat(JSONObject options) throws Exception {
+        JSONObject dataLabels = options.optJSONObject("plotOptions").optJSONObject("dataLabels");
+
+        String[] ids = this.getUsedTargetID();
+        String[] keys = {"sizeFormat", "YFormat", "XFormat"};
+        int size = ids.length;
+
+        if (dataLabels.optBoolean("enabled")) {
+            JSONArray series = options.optJSONArray("series");
+
+            for (int i = 0, len = series.length(); i < len; i++) {
+                JSONObject ser = series.getJSONObject(i);
+
+                JSONObject labels = new JSONObject(dataLabels.toString());
+
+                JSONObject formatter = labels.optJSONObject("formatter");
+
+                for(int j = size; j > 0; j--){
+                    formatter.put(keys[size - j], this.dataLabelValueFormat(this.getBITargetByID(ids[j - 1])));
+                }
+
+                ser.put("dataLabels", labels);
+            }
+        }
     }
 }

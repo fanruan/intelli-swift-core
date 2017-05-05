@@ -148,7 +148,7 @@ public class AllNodeMergeIterator implements Iterator<MetricMergeResult> {
         }
     }
 
-    private void calculate(MetricMergeResult result){
+    private void calculate(MetricMergeResult result) {
         GroupValueIndex[] gvis = result.getGvis();
         for (int i = 0; i < metricsToCalculate.length; i++) {
             List<TargetAndKey> targetAndKeys = metricsToCalculate[i];
@@ -159,7 +159,7 @@ public class AllNodeMergeIterator implements Iterator<MetricMergeResult> {
                 }
             }
         }
-        if (releaseGVI){
+        if (releaseGVI) {
             result.clearGvis();
         }
     }
@@ -205,7 +205,7 @@ public class AllNodeMergeIterator implements Iterator<MetricMergeResult> {
                         return 0;
                     }
                     boolean v = v1.doubleValue() < v2.doubleValue();
-                    return (sortType == BIReportConstant.SORT.ASC) == v ? -1 : 1;
+                    return (sortType == BIReportConstant.SORT.NUMBER_ASC || sortType == BIReportConstant.SORT.ASC) == v ? -1 : 1;
                 }
             });
         }
@@ -218,8 +218,8 @@ public class AllNodeMergeIterator implements Iterator<MetricMergeResult> {
 
     @Override
     public MetricMergeResult next() {
-        MetricMergeResult result =  resultIter.next();
-        if (releaseGVI){
+        MetricMergeResult result = resultIter.next();
+        if (releaseGVI) {
             mergeIterator.reSetGroupValueIndex(result);
         }
         return result;
