@@ -85,7 +85,7 @@ public class VanMultiPieWidget extends VanPieWidget{
     }
 
     protected String getTooltipIdentifier(){
-        return NAME + SERIES + PERCENT;
+        return NAME + SERIES + VALUE;
     }
 
 }
