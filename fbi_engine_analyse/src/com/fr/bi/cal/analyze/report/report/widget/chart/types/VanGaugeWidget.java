@@ -50,14 +50,16 @@ public class VanGaugeWidget extends VanCartesianWidget{
         int gaugeStyle = settings.optInt("dashboardChartType");
         boolean isPointer = gaugeStyle == NORMAL || gaugeStyle == HALF_DASHBOARD;
 
+        String align = gaugeStyle == HORIZONTAL_TUBE ? "top" : "left";
+
         String valueLabelKey = (isPointer ? SERIES : CATEGORY) + VALUE;
         JSONObject formatter = JSONObject.create().put("identifier", valueLabelKey);
 
-        JSONObject valueLabel = JSONObject.create().put("enabled", true).put("backgroundColor", BG_COLOR).put("align", "left").put("formatter", formatter);
+        JSONObject valueLabel = JSONObject.create().put("enabled", true).put("backgroundColor", BG_COLOR).put("align", align).put("formatter", formatter);
 
         JSONObject seriesLabel = JSONObject.create().put("enabled", true).put("formatter", JSONObject.create().put("identifier", CATEGORY)).put("align", "bottom");
 
-        JSONObject percentageLabel = JSONObject.create().put("enabled", true).put("formatter", JSONObject.create().put("identifier", PERCENT)).put("align", "left");
+        JSONObject percentageLabel = JSONObject.create().put("enabled", true).put("formatter", JSONObject.create().put("identifier", PERCENT)).put("align", align);
 
         plotOptions.put("valueLabel", valueLabel).put("seriesLabel", seriesLabel).put("percentageLabel", percentageLabel);
 
