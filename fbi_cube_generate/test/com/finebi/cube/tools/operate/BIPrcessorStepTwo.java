@@ -34,6 +34,12 @@ public class BIPrcessorStepTwo implements IProcessor {
     public Object getResult() {
         return null;
     }
+
+    @Override
+    public void handleMessage(IMessage receiveMessage) {
+
+    }
+
     @Override
     public void setPublish(IPublish publish) {
         this.publish = publish;

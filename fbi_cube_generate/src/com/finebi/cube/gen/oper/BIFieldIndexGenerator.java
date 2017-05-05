@@ -241,4 +241,9 @@ public class BIFieldIndexGenerator<T> extends BIProcessor {
         constructMap(group2rowNumber, nullRowNumbers);
         return group2rowNumber;
     }
+
+    @Override
+    public void handleMessage(IMessage receiveMessage) {
+
+    }
 }

@@ -276,6 +276,11 @@ public class BIRouterTest extends TestCase {
         public Object getResult() {
             return null;
         }
+
+        @Override
+        public void handleMessage(IMessage receiveMessage) {
+
+        }
     }
 
     private class BIProcessorSend implements IProcessor {
@@ -303,6 +308,11 @@ public class BIRouterTest extends TestCase {
         @Override
         public Object getResult() {
             return null;
+        }
+
+        @Override
+        public void handleMessage(IMessage receiveMessage) {
+
         }
     }
 

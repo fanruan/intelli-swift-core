@@ -37,6 +37,11 @@ public class BIPrcessorStepOne implements IProcessor {
     }
 
     @Override
+    public void handleMessage(IMessage receiveMessage) {
+
+    }
+
+    @Override
     public void setPublish(IPublish publish) {
         this.publish = publish;
     }

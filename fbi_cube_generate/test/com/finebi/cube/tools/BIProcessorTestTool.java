@@ -27,6 +27,11 @@ public class BIProcessorTestTool implements IProcessor<Integer> {
         return null;
     }
 
+    @Override
+    public void handleMessage(IMessage receiveMessage) {
+
+    }
+
     public boolean isReceiveMess() {
         return isReceiveMess;
     }

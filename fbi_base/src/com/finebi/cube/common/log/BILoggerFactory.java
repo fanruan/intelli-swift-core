@@ -95,13 +95,13 @@ public class BILoggerFactory {
 
     public static Object getLoggerCacheValue(String cacheTag, String cacheSubTag) {
         if (!loggerCacheMap.containsKey(cacheTag)) {
-            getLogger(BILoggerFactory.class).warn("\n" + "The LoggerInfoCache does not contains the cacheTag: " + cacheTag);
+//            getLogger(BILoggerFactory.class).warn("\n" + "The LoggerInfoCache does not contains the cacheTag: " + cacheTag);
             return null;
         }
 
         Map specificCacheMap = getSpecificCacheMap(cacheTag);
         if (!specificCacheMap.containsKey(cacheSubTag)) {
-            getLogger(BILoggerFactory.class).warn("\n" + "The LoggerInfoCache contains the cacheTag: " + cacheTag + " but does not contains the subTag: " + cacheSubTag);
+//            getLogger(BILoggerFactory.class).warn("\n" + "The LoggerInfoCache contains the cacheTag: " + cacheTag + " but does not contains the subTag: " + cacheSubTag);
             return null;
         }
         return specificCacheMap.get(cacheSubTag);
