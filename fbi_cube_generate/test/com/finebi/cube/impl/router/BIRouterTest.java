@@ -481,7 +481,8 @@ public class BIRouterTest extends TestCase {
                 Thread.sleep(10);
             }
             Thread.sleep(1000);
-            assertEquals(topicTags.size() * 4, processorReceiver.count);
+            Integer four = new Integer(4);
+            assertEquals(topicTags.size() * four.intValue(), processorReceiver.count);
             assertEquals(topicTags.size() * 2, processorSender.count);
         } catch (Exception e) {
             BILoggerFactory.getLogger().error(e.getMessage(), e);
