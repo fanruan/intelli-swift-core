@@ -1,5 +1,6 @@
 package com.finebi.cube.common.log;
 
+import com.fr.general.FRLogger;
 import org.apache.log4j.PropertyConfigurator;
 import org.apache.log4j.helpers.Loader;
 import org.slf4j.LoggerFactory;
@@ -24,7 +25,7 @@ public class BILoggerFactory {
         URL resource = Loader.getResource("log4j.properties");
         if (resource != null) {
             PropertyConfigurator.configure(resource);
-            System.out.println("The log properties url:" + resource.toString());
+            FRLogger.getLogger().info("The log properties url:" + resource.toString());
         }
 //        }
     }
