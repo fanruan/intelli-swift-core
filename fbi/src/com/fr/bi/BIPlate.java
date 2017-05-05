@@ -254,7 +254,7 @@ public class BIPlate extends AbstractFSPlate {
     private void initModules() {
         BIModuleManager.registModule(new BICoreModule());
         Set<Class<?>> set = BIClassUtils.getClasses("com.fr.bi.module");
-//        set.addAll(BIClassUtils.getClasses("com.fr.bi.test.module"));
+        set.addAll(BIClassUtils.getClasses("com.fr.bi.test"));
         for (Class c : set) {
             if (BIModule.class.isAssignableFrom(c) && !Modifier.isAbstract(c.getModifiers())) {
                 try {
