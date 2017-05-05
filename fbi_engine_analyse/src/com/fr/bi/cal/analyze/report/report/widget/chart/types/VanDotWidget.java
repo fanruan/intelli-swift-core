@@ -3,7 +3,6 @@ package com.fr.bi.cal.analyze.report.report.widget.chart.types;
 import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.conf.report.WidgetType;
 import com.fr.general.FRLogger;
-import com.fr.general.Inter;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
@@ -153,9 +152,20 @@ public class VanDotWidget extends VanCartesianWidget{
         return legend;
     }
 
+    private void dealSeriesMap(HashMap<String, ArrayList<JSONArray>> seriesMap, JSONArray children) throws JSONException{
+        for(int i = 0, len = children.length(); i < len; i++){
+            JSONObject obj = children.getJSONObject(i);
+            String seriesName = obj.optString("n");
+            ArrayList<JSONArray> seriesArray = seriesMap.containsKey(seriesName) ? seriesMap.get(seriesName) : new ArrayList<JSONArray>();
+            seriesMap.put(seriesName, seriesArray);
+            seriesArray.add(obj.has("c") ? obj.optJSONArray("c") : JSONArray.create().put(obj));
+        }
+    }
+
+    //新的点图。系列无字段，所有点在一个name=vancharts中默认给的一个系列名 的系列里面
     public JSONArray createSeries(JSONObject originData) throws Exception{
         WidgetType chartType = this.getChartType();
-        if(chartType == WidgetType.BUBBLE || chartType == WidgetType.SCATTER || this.getSeriesDimension() == null){
+        if(chartType == WidgetType.BUBBLE || chartType == WidgetType.SCATTER){
             return this.createBubbleScatterSeries(originData);
         }
         JSONArray series = JSONArray.create();
@@ -167,17 +177,18 @@ public class VanDotWidget extends VanCartesianWidget{
         double sizeScale = ids.length > 2 ? this.numberScaleByLevel(this.numberLevelFromSettings(ids[2])) : 1;
         HashMap<String, ArrayList<JSONArray>> seriesMap = new HashMap<String, ArrayList<JSONArray>>();
         Iterator iterator = originData.keys();
-        while (iterator.hasNext()) {
-            String key = iterator.next().toString();
-            JSONArray children = originData.optJSONObject(key).optJSONArray("c");
-            for(int i = 0, len = children.length(); i < len; i++){
-                JSONObject obj = children.getJSONObject(i);
-                String seriesName = obj.optString("n");
-                ArrayList<JSONArray> seriesArray = seriesMap.containsKey(seriesName) ? seriesMap.get(seriesName) : new ArrayList<JSONArray>();
-                seriesMap.put(seriesName, seriesArray);
-                seriesArray.add(obj.optJSONArray("c"));
+
+        boolean noSeries = this.getSeriesDimension() == null;
+        if(noSeries){
+            dealSeriesMap(seriesMap, originData.optJSONArray("c"));
+        } else {
+            while (iterator.hasNext()) {
+                String key = iterator.next().toString();
+                dealSeriesMap(seriesMap, originData.optJSONObject(key).optJSONArray("c"));
             }
         }
+
+        JSONArray dotData = JSONArray.create();
         iterator = seriesMap.keySet().iterator();
         while (iterator.hasNext()){
             String seriesName = iterator.next().toString();
@@ -194,19 +205,30 @@ public class VanDotWidget extends VanCartesianWidget{
                     double x = dimensions.isNull(1) ? 0 : dimensions.optDouble(1);
                     double value = (dimensions.length() > 2 && !dimensions.isNull(2)) ? dimensions.optDouble(2) : 0;
 
-                    data.put(JSONObject.create().put("x", x/xScale).put("y", y/yScale).put("size", value/sizeScale));
+                    JSONObject point = JSONObject.create().put("x", x/xScale).put("y", y/yScale).put("size", value/sizeScale);
+
+                    if(noSeries) {
+                        dotData.put(point);
+                    } else {
+                        data.put(point);
+                    }
                 }
             }
 
-            ser.put("data", data).put("name", seriesName).put("dimensionID", ids[ids.length - 1]);
-            series.put(ser);
+            if(!noSeries) {
+                ser.put("data", data).put("name", seriesName).put("dimensionID", ids[ids.length - 1]);
+                series.put(ser);
+            }
+        }
+
+        if(noSeries){
+            series.put(JSONObject.create().put("data", dotData).put("dimensionID", ids[ids.length - 1]));
         }
         return series;
     }
 
 
     //老的气泡图、散点图。原来的分类---->新点图的系列
-    //新的点图。系列无字段，所有点在一个name=vancharts中默认给的一个系列名 的系列里面
     private JSONArray createBubbleScatterSeries(JSONObject originData) throws Exception{
         String[] ids = this.getUsedTargetID();
 
@@ -217,9 +239,6 @@ public class VanDotWidget extends VanCartesianWidget{
         if(c == null){
             return series;
         }
-
-        boolean dot = this.getChartType() == WidgetType.DOT;//点图没有系列字段，图例显示"无"
-        JSONArray dotData = JSONArray.create();
 
         for(int i = 0, len = c.length(); i < len; i++){
             JSONObject obj = c.getJSONObject(i);
@@ -232,17 +251,10 @@ public class VanDotWidget extends VanCartesianWidget{
 
             JSONObject point = JSONObject.create().put("x", x).put("y", y).put("size", value);
 
-            if(dot){
-                dotData.put(point);
-            } else {
-                series.put(JSONObject.create().put("data", JSONArray.create().put(point))
-                        .put("name", obj.optString("n")).put("dimensionID", ids[ids.length - 1])
-                );
-            }
-        }
+            series.put(JSONObject.create().put("data", JSONArray.create().put(point))
+                    .put("name", obj.optString("n")).put("dimensionID", ids[ids.length - 1])
+            );
 
-        if(dot){
-            series.put(JSONObject.create().put("data", dotData).put("dimensionID", ids[ids.length - 1]));
         }
 
         return series;
