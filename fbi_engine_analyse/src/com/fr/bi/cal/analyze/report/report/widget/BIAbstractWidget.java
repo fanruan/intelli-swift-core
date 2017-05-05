@@ -35,6 +35,7 @@ import com.fr.web.core.SessionDealWith;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 
 /**
@@ -53,6 +54,7 @@ public abstract class BIAbstractWidget implements BIWidget {
     private long userId;
     private boolean realData = true;
     private String sessionId;
+    private Locale locale;
 
     public long getUserId() {
         return userId;
@@ -273,5 +275,13 @@ public abstract class BIAbstractWidget implements BIWidget {
 
     public IWidgetStyle getStyle() {
         return null;
+    }
+
+    public void setLocale(Locale locale){
+        this.locale = locale;
+    }
+
+    public Locale getLocale(){
+        return this.locale;
     }
 }
