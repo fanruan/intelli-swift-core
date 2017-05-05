@@ -18,7 +18,9 @@ import com.fr.json.JSONObject;
 import com.fr.stable.StableUtils;
 import com.fr.stable.StringUtils;
 import com.fr.web.core.SessionDealWith;
+import com.fr.web.utils.WebUtils;
 
+import javax.servlet.http.HttpServletRequest;
 import java.awt.*;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -77,6 +79,8 @@ public abstract class VanChartWidget extends TableWidget {
 
     //存下每个指标和纬度的最大最小和平均值
     private HashMap<String, ArrayList<Double>> idValueMap = new HashMap<String, ArrayList<Double>>();
+
+    private Locale locale;
 
     public static final String[] FULL_QUARTER_NAMES = new String[]{
             Inter.getLocText("BI-Quarter_1"),
@@ -428,9 +432,11 @@ public abstract class VanChartWidget extends TableWidget {
         return merge(settings, this.populateDefaultSettings());
     }
 
-    public JSONObject createDataJSON(BISessionProvider session) throws Exception {
+    public JSONObject createDataJSON(BISessionProvider session, HttpServletRequest req) throws Exception {
 
-        JSONObject data = super.createDataJSON(session).getJSONObject("data");
+        this.locale = WebUtils.getLocale(req);
+
+        JSONObject data = super.createDataJSON(session, req).getJSONObject("data");
 
         JSONObject reportSetting = BIReadReportUtils.getInstance().getBIReportNodeJSON(((BISession) session).getReportNode());
         JSONObject globalStyle = reportSetting.optJSONObject("globalStyle");
@@ -861,8 +867,8 @@ public abstract class VanChartWidget extends TableWidget {
         return null;
     }
 
-    public JSONObject getPostOptions(String sessionId) throws Exception {
-        JSONObject chartOptions = this.createDataJSON((BISessionProvider) SessionDealWith.getSessionIDInfor(sessionId));
+    public JSONObject getPostOptions(String sessionId, HttpServletRequest req) throws Exception {
+        JSONObject chartOptions = this.createDataJSON((BISessionProvider) SessionDealWith.getSessionIDInfor(sessionId), req);
         JSONObject plotOptions = chartOptions.optJSONObject("plotOptions");
         plotOptions.put("animation", false);
         chartOptions.put("plotOptions", plotOptions);
@@ -885,7 +891,7 @@ public abstract class VanChartWidget extends TableWidget {
     }
 
     protected String getLocText(String key){
-        return Inter.getLocText(key, this.getLocale());
+        return Inter.getLocText(key, this.locale);
     }
 
 }

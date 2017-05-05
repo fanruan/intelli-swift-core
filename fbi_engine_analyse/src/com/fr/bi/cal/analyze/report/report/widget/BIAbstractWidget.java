@@ -54,7 +54,6 @@ public abstract class BIAbstractWidget implements BIWidget {
     private long userId;
     private boolean realData = true;
     private String sessionId;
-    private Locale locale;
 
     public long getUserId() {
         return userId;
@@ -277,11 +276,4 @@ public abstract class BIAbstractWidget implements BIWidget {
         return null;
     }
 
-    public void setLocale(Locale locale){
-        this.locale = locale;
-    }
-
-    public Locale getLocale(){
-        return this.locale;
-    }
 }

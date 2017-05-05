@@ -27,6 +27,7 @@ import com.fr.report.poly.PolyECBlock;
 import com.fr.web.core.SessionDealWith;
 
 import javax.imageio.ImageIO;
+import javax.servlet.http.HttpServletRequest;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.*;
@@ -99,7 +100,7 @@ public class BIReportExportExcel {
         }
     }
 
-    public ResultWorkBook getExportBook() throws Exception {
+    public ResultWorkBook getExportBook(HttpServletRequest req) throws Exception {
         if (widgets.size() == 0 && specialWidgets.length() == 0) {
             return null;
         }
@@ -111,7 +112,7 @@ public class BIReportExportExcel {
         if (widgets.size() != 0) {
             for (BIWidget widget : widgets) {
                 //TODO 明细表接口
-                polyECBlock.addFloatElement(renderPicture((TableWidget) widget));
+                polyECBlock.addFloatElement(renderPicture((TableWidget) widget, req));
             }
         }
         getSpecialWidgetPic(polyECBlock);
@@ -353,7 +354,7 @@ public class BIReportExportExcel {
         renderWidget(polyECBlock, value, jo);
     }
 
-    private FloatElement renderPicture(TableWidget widget) throws Exception {
+    private FloatElement renderPicture(TableWidget widget, HttpServletRequest req) throws Exception {
         if (!BIReportExportExcelUtils.widgetHasData(widget)) {
             return renderDefaultChartPic(widget);
         }
@@ -362,7 +363,7 @@ public class BIReportExportExcel {
         if (widget instanceof VanChartWidget) {
             JSONObject jo = JSONObject.create();
             try {
-                jo = widget.createDataJSON(session);
+                jo = widget.createDataJSON(session, req);
             } catch (Exception e) {
                 BILoggerFactory.getLogger().error(e.getMessage(), e);
             }
@@ -371,7 +372,7 @@ public class BIReportExportExcel {
             options = jo.put("plotOptions", plotOptions);
             key = "vanChartOptions";
         } else {
-            options = widget.getPostOptions(sessionID);
+            options = widget.getPostOptions(sessionID, req);
             key = "tableOptions";
         }
         JSONObject titleParams = JSONObject.create();
