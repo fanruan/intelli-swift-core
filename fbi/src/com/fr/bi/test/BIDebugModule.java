@@ -17,6 +17,7 @@ import java.util.Locale;
 
 /**
  * Created by daniel on 2016/6/23.
+ * 此类存在，debug模式开启；此类被删除，关闭debug模式
  */
 public class BIDebugModule extends AbstractModule {
     @Override
