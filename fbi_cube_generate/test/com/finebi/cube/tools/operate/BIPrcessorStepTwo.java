@@ -18,13 +18,13 @@ public class BIPrcessorStepTwo implements IProcessor {
     public void process(IMessage lastReceiveMessage) {
         try {
             publish.publicRunningMessage(null);
-            System.out.println("Start Second Step");
+//            System.out.println("Start Second Step");
             try {
                 Thread.sleep(1000);
             } catch (Exception e) {
                 BILoggerFactory.getLogger().error(e.getMessage(), e);
             }
-            System.out.println("Stop  Second Step");
+//            System.out.println("Stop  Second Step");
             publish.publicStopMessage(null);
         } catch (Exception e) {
             BILoggerFactory.getLogger().error(e.getMessage(), e);
