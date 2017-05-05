@@ -686,7 +686,8 @@ public abstract class VanChartWidget extends TableWidget {
 
         int groupType = categoryDimension.getGroup().getType();
         JSONObject dateFormat = categoryDimension.getChartSetting().getSettings().optJSONObject("dateFormat");
-        int dateFormatType = dateFormat.optInt("type", BIReportConstant.DATE_FORMAT.SPLIT);
+
+        int dateFormatType = dateFormat == null ? BIReportConstant.DATE_FORMAT.SPLIT : dateFormat.optInt("type", BIReportConstant.DATE_FORMAT.SPLIT);
 
         Number dateCategory = StableUtils.string2Number(category);
         long dateValue = dateCategory == null ? 0L : dateCategory.longValue();
