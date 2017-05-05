@@ -10,6 +10,49 @@ import com.fr.script.Calculator;
  */
 public class VanCompareColumnWidget extends VanColumnWidget{
 
+    protected JSONObject populateDefaultSettings() throws JSONException {
+        JSONObject settings = super.populateDefaultSettings();
+
+        dealYAxisDiffDefaultSettings(settings);
+
+        return settings;
+    }
+
+    //make yaxis maxValue Double
+    protected void dealYAxisDiffDefaultSettings(JSONObject settings) throws JSONException{
+        StringBuilder right = new StringBuilder("max("), left = new StringBuilder("max(");
+        boolean hasRight = false, hasLeft = false;
+
+        String[] ids = this.getUsedTargetID();
+        for(String id : ids){
+            int yAxis = this.yAxisIndex(id);
+            if(yAxis == 0){
+                hasLeft = true;
+                left.append("$").append(id).append("0,");
+            } else {
+                hasRight = true;
+                right.append("$").append(id).append("0,");
+            }
+        }
+
+        if(hasLeft){
+            left.deleteCharAt(left.length() - 1);
+        }
+        if(hasRight){
+            right.deleteCharAt(right.length() - 1);
+        }
+
+        left.append(")");right.append(")");
+
+        settings
+                .put("rightYShowCustomScale", true)
+                .put("rightYCustomScale", JSONObject.create().put("maxScale", JSONObject.create().put("formula", String.format("=2 * %s", right.toString()))))
+                .put("leftYShowCustomScale", true)
+                .put("leftYCustomScale", JSONObject.create().put("maxScale", JSONObject.create().put("formula", String.format("=2 * %s", left.toString()))))
+
+        ;
+    }
+
     @Override
     protected boolean rightYReverse() {
         return true;
@@ -46,9 +89,13 @@ public class VanCompareColumnWidget extends VanColumnWidget{
             int yAxisIndex = ser.optInt("yAxis");
             if(yAxisIndex == 1){
                 ser.put("xAxis", 1);
+                makeSeriesDataInvert(ser);
             }
         }
 
         return series;
+    }
+
+    protected void makeSeriesDataInvert(JSONObject ser) throws JSONException{
     }
 }
