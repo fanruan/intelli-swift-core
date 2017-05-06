@@ -149,6 +149,10 @@ public class NodeIteratorCreator {
 
     //如果参数要求全部计算，或者有需要全部计算的配置类计算，或者最后一个维度上有过滤（此时要计算IndirectFilter已经把整个node都过滤了，就没必要转化为索引过滤，再去分页计算了）
     private boolean isaAllNode() {
+        //不加维度不能走全部计算，会漏掉根节点
+        if (rowDimension == null || rowDimension.length == 0){
+            return false;
+        }
         return calAllPage || hasAllCalculateMetrics(targetIdMap.keySet()) || getLastIndirectFilterDimensionIndex() == rowDimension.length - 1;
     }
 
