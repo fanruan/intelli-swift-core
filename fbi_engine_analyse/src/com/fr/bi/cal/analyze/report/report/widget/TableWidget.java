@@ -345,9 +345,12 @@ public class TableWidget extends BISummaryWidget {
     }
 
     private boolean isUsed(String dId) {
-        boolean isDimUsed = dimensionsIdMap.containsKey(dId) && dimensionsIdMap.get(dId).isUsed();
-        boolean isTargetUsed = targetsIdMap.containsKey(dId) && targetsIdMap.get(dId).isUsed();
-        return isDimUsed || isTargetUsed;
+        for (BIDimension dimension : this.dimensions) {
+            if (ComparatorUtils.equals(dimension.getId(), dId)) {
+                return dimension.isUsed();
+            }
+        }
+        return true;
     }
 
     public void setComplexExpander(ComplexExpander complexExpander) {
@@ -570,15 +573,9 @@ public class TableWidget extends BISummaryWidget {
             List<JSONObject> list = new ArrayList<JSONObject>();
             List<String> ids = view.get(next);
             for (String dId : ids) {
-//                if (isUsed(dId)) {
                 int type = getFieldTypeByDimensionID(dId);
                 String text = getDimensionNameByID(dId);
-//                    if (dId.equals("fb32c3e441af4ada")){
-//                        list.add(new JSONObject().put("dId", dId).put("text", text).put("type", type).put("used",false));
-//                    }else {
                 list.add(new JSONObject().put("dId", dId).put("text", text).put("type", type).put("used", isUsed(dId)));
-//                    }
-//                }
             }
             dimAndTar.put(next, list);
         }
