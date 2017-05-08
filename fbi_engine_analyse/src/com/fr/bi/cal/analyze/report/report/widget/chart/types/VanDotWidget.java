@@ -312,6 +312,30 @@ public class VanDotWidget extends VanCartesianWidget{
         return X + Y + SIZE;
     }
 
+    protected void formatSeriesTooltipFormat(JSONObject options) throws Exception {
+
+        JSONObject tooltip = options.optJSONObject("plotOptions").optJSONObject("tooltip");
+
+        String[] ids = this.getUsedTargetID();
+        String[] keys = {"sizeFormat", "YFormat", "XFormat"};
+        int size = ids.length;
+
+        JSONArray series = options.optJSONArray("series");
+
+        for (int i = 0, len = series.length(); i < len; i++) {
+            JSONObject ser = series.getJSONObject(i);
+            JSONObject formatter = JSONObject.create();
+
+            formatter.put("identifier", this.getTooltipIdentifier());
+
+            for(int j = size; j > 0; j--){
+                formatter.put(keys[size - j], this.tooltipValueFormat(this.getBITargetByID(ids[j - 1])));
+            }
+
+            ser.put("tooltip", new JSONObject(tooltip.toString()).put("formatter", formatter));
+        }
+    }
+
     protected void formatSeriesDataLabelFormat(JSONObject options) throws Exception {
         JSONObject dataLabels = options.optJSONObject("plotOptions").optJSONObject("dataLabels");
 
