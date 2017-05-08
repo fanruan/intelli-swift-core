@@ -2,6 +2,7 @@ package com.finebi.cube.impl.router;
 
 import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.exception.BIDeliverFailureException;
+import com.finebi.cube.exception.BIFragmentAbsentException;
 import com.finebi.cube.exception.BIFragmentDuplicateException;
 import com.finebi.cube.exception.BIRegisterIsForbiddenException;
 import com.finebi.cube.exception.BITopicAbsentException;
@@ -195,7 +196,7 @@ public class BIRouterTest extends TestCase {
             try {
                 Thread.sleep(10);
             } catch (InterruptedException e) {
-                e.printStackTrace();
+                BILoggerFactory.getLogger().error(e.getMessage(), e);
             }
             assertTrue(subscribe_A.receiveMessage);
             assertFalse(subscribe_B.receiveMessage);
@@ -285,6 +286,11 @@ public class BIRouterTest extends TestCase {
         public Object getResult() {
             return null;
         }
+
+        @Override
+        public void handleMessage(IMessage receiveMessage) {
+
+        }
     }
 
     private class BIProcessorSend implements IProcessor {
@@ -300,7 +306,7 @@ public class BIRouterTest extends TestCase {
             try {
                 router.deliverMessage(new BIMessage(new BIMessageTopic(fTag.getSuperTopicTag()), new BIMessageFragment(fTag), null, null));
             } catch (BIDeliverFailureException e) {
-                e.printStackTrace();
+                BILoggerFactory.getLogger().error(e.getMessage(), e);
             }
         }
 
@@ -312,6 +318,11 @@ public class BIRouterTest extends TestCase {
         @Override
         public Object getResult() {
             return null;
+        }
+
+        @Override
+        public void handleMessage(IMessage receiveMessage) {
+
         }
     }
 
@@ -334,7 +345,7 @@ public class BIRouterTest extends TestCase {
                 try {
                     router.registerTopic(topicTag);
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    BILoggerFactory.getLogger().error(e.getMessage(), e);
                 }
             }
             subscribeOne.subscribeRound(Integer.MAX_VALUE);
@@ -357,7 +368,7 @@ public class BIRouterTest extends TestCase {
             assertEquals(processorTwo.count, topicTags.size());
 
         } catch (Exception e) {
-            e.printStackTrace();
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
             assertTrue(false);
         }
     }
@@ -370,9 +381,9 @@ public class BIRouterTest extends TestCase {
                     try {
                         subscribeOne.orSubscribe(topicTag);
                     } catch (BITopicAbsentException e) {
-                        e.printStackTrace();
+                        BILoggerFactory.getLogger().error(e.getMessage(), e);
                     } catch (BIRegisterIsForbiddenException e) {
-                        e.printStackTrace();
+                        BILoggerFactory.getLogger().error(e.getMessage(), e);
                     }
                 }
                 return new Object();
@@ -390,16 +401,14 @@ public class BIRouterTest extends TestCase {
         try {
             BIProcessorCount processorOne = new BIProcessorCount();
             BIProcessorCount processorTwo = new BIProcessorCount();
-
             final ISubscribe subscribeOne = new BISubscribe(new BISubscribeID("one"), processorOne);
             final ISubscribe subscribeTwo = new BISubscribe(new BISubscribeID("two"), processorTwo);
             final Collection<ITopicTag> topicTags = generateTopicTag();
-
             for (ITopicTag topicTag : topicTags) {
                 try {
                     router.registerTopic(topicTag);
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    BILoggerFactory.getLogger().error(e.getMessage(), e);
                 }
             }
             subscribeOne.subscribeRound(Integer.MAX_VALUE);
@@ -411,23 +420,16 @@ public class BIRouterTest extends TestCase {
             Future<Object> fTwo = getSubmit(subscribeTwo, topicTags, executorService);
             fOne.get();
             fTwo.get();
-
             Future<Object> deOne = executorService.submit(new Callable<Object>() {
                 @Override
                 public Object call() throws Exception {
-                    for (ITopicTag topicTag : topicTags) {
-                        router.deliverMessage(new BIMessage(new BIMessageTopic(topicTag), null, null, null));
-                    }
-                    return new Object();
+                    return deliverMessage(topicTags, router);
                 }
             });
             Future<Object> deTwo = executorService.submit(new Callable<Object>() {
                 @Override
                 public Object call() throws Exception {
-                    for (ITopicTag topicTag : topicTags) {
-                        router.deliverMessage(new BIMessage(new BIMessageTopic(topicTag), null, null, null));
-                    }
-                    return new Object();
+                    return deliverMessage(topicTags, router);
                 }
             });
             deOne.get();
@@ -437,9 +439,8 @@ public class BIRouterTest extends TestCase {
             }
             assertEquals(processorOne.count, topicTags.size() * 2);
             assertEquals(processorTwo.count, topicTags.size() * 2);
-
         } catch (Exception e) {
-            e.printStackTrace();
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
             assertTrue(false);
         }
     }
@@ -451,53 +452,22 @@ public class BIRouterTest extends TestCase {
      */
     public void testMultiThreadSubSend() {
         final IRouter router = BIFactoryHelper.getObject(IRouter.class);
-//        router.setMessageDispatcher(new BIOneThreadDispatcher());
         router.closeVerbose();
         try {
             BIProcessorCount processorReceiver = new BIProcessorCount();
             BIProcessorSend processorSender = new BIProcessorSend();
-
             final ISubscribe subscribeReceiver = new BISubscribe(new BISubscribeID("one"), processorReceiver);
             final ISubscribe subscribeSender = new BISubscribe(new BISubscribeID("two"), processorSender);
-
             final Collection<ITopicTag> topicTags = generateTopicTag();
             final Collection<IFragmentTag> fragmentTags = generateFragmentTag(topicTags);
-
-            for (ITopicTag topicTag : topicTags) {
-                try {
-                    router.registerTopic(topicTag);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-            for (IFragmentTag fragmentTag : fragmentTags) {
-                try {
-                    router.registerFragment(fragmentTag.getSuperTopicTag(), fragmentTag);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-            subscribeReceiver.subscribeRound(Integer.MAX_VALUE);
-            subscribeSender.subscribeRound(Integer.MAX_VALUE);
-            subscribeReceiver.closeVerbose();
-            subscribeSender.closeVerbose();
+            intil(router, subscribeReceiver, subscribeSender, topicTags, fragmentTags);
             ExecutorService executorService = Executors.newFixedThreadPool(4);
             Future<Object> fOne = getSubmit(subscribeReceiver, topicTags, executorService);
             Future<Object> fTwo = getSubmit(subscribeSender, topicTags, executorService);
-
             Future<Object> oneSubFrag = executorService.submit(new Callable<Object>() {
                 @Override
                 public Object call() throws Exception {
-                    for (IFragmentTag fragmentTag : fragmentTags) {
-                        try {
-                            subscribeReceiver.orSubscribe(fragmentTag);
-                        } catch (BITopicAbsentException e) {
-                            e.printStackTrace();
-                        } catch (BIRegisterIsForbiddenException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                    return new Object();
+                    return orSubscribe(fragmentTags, subscribeReceiver);
                 }
             });
             fOne.get();
@@ -506,19 +476,13 @@ public class BIRouterTest extends TestCase {
             Future<Object> deOne = executorService.submit(new Callable<Object>() {
                 @Override
                 public Object call() throws Exception {
-                    for (ITopicTag topicTag : topicTags) {
-                        router.deliverMessage(new BIMessage(new BIMessageTopic(topicTag), null, null, null));
-                    }
-                    return new Object();
+                    return deliverMessage(topicTags, router);
                 }
             });
             Future<Object> deTwo = executorService.submit(new Callable<Object>() {
                 @Override
                 public Object call() throws Exception {
-                    for (ITopicTag topicTag : topicTags) {
-                        router.deliverMessage(new BIMessage(new BIMessageTopic(topicTag), null, null, null));
-                    }
-                    return new Object();
+                    return deliverMessage(topicTags, router);
                 }
             });
             deOne.get();
@@ -527,19 +491,71 @@ public class BIRouterTest extends TestCase {
                 Thread.sleep(10);
             }
             Thread.sleep(1000);
-            assertEquals(topicTags.size() * 4, processorReceiver.count);
+            Integer four = new Integer(4);
+            assertEquals(topicTags.size() * four.intValue(), processorReceiver.count);
             assertEquals(topicTags.size() * 2, processorSender.count);
-
         } catch (Exception e) {
-            e.printStackTrace();
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
             assertTrue(false);
+        }
+    }
+
+    private Object orSubscribe(Collection<IFragmentTag> fragmentTags, ISubscribe subscribeReceiver) throws BIFragmentAbsentException {
+        for (IFragmentTag fragmentTag : fragmentTags) {
+            try {
+                subscribeReceiver.orSubscribe(fragmentTag);
+            } catch (BITopicAbsentException e) {
+                BILoggerFactory.getLogger().error(e.getMessage(), e);
+            } catch (BIRegisterIsForbiddenException e) {
+                BILoggerFactory.getLogger().error(e.getMessage(), e);
+            } catch (BIFragmentAbsentException e) {
+                e.printStackTrace();
+            }
+        }
+        return new Object();
+    }
+
+    private Object deliverMessage(Collection<ITopicTag> topicTags, IRouter router) throws BIDeliverFailureException {
+        for (ITopicTag topicTag : topicTags) {
+            router.deliverMessage(new BIMessage(new BIMessageTopic(topicTag), null, null, null));
+        }
+        return new Object();
+    }
+
+    private void intil(IRouter router, ISubscribe subscribeReceiver, ISubscribe subscribeSender, Collection<ITopicTag> topicTags, Collection<IFragmentTag> fragmentTags) {
+        registerTopic(router, topicTags);
+        registerFragment(router, fragmentTags);
+        subscribeReceiver.subscribeRound(Integer.MAX_VALUE);
+        subscribeSender.subscribeRound(Integer.MAX_VALUE);
+        subscribeReceiver.closeVerbose();
+        subscribeSender.closeVerbose();
+    }
+
+    private void registerFragment(IRouter router, Collection<IFragmentTag> fragmentTags) {
+        for (IFragmentTag fragmentTag : fragmentTags) {
+            try {
+                router.registerFragment(fragmentTag.getSuperTopicTag(), fragmentTag);
+            } catch (Exception e) {
+                BILoggerFactory.getLogger().error(e.getMessage(), e);
+            }
+        }
+    }
+
+    private void registerTopic(IRouter router, Collection<ITopicTag> topicTags) {
+        for (ITopicTag topicTag : topicTags) {
+            try {
+                router.registerTopic(topicTag);
+            } catch (Exception e) {
+                BILoggerFactory.getLogger().error(e.getMessage(), e);
+            }
         }
     }
 
     private Collection<ITopicTag> generateTopicTag() {
         Collection<ITopicTag> result = new HashSet<ITopicTag>();
 //        int time = Math.abs(BIRandomUitils.getRandomInteger() % 8);
-        int time = 100;
+        Integer timeInteger = new Integer(100);
+        int time = timeInteger.intValue();
 
         for (int i = 0; i < time; i++) {
             String topicID = BIRandomUitils.getRandomCharacterString(10);

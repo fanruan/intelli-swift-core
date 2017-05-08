@@ -41,4 +41,9 @@ class FinishObserverProcessor extends BIProcessor<String> {
     public void release() {
 
     }
+
+    @Override
+    public void handleMessage(IMessage receiveMessage) {
+
+    }
 }

@@ -55,7 +55,12 @@ import com.fr.general.DateUtils;
 import com.fr.json.JSONObject;
 import org.slf4j.Logger;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Future;
 
@@ -108,8 +113,10 @@ public class BuildCubeTask implements CubeTask {
 
         BILoggerFactory.cacheLoggerInfo(BILogConstant.LOG_CACHE_TAG.CUBE_GENERATE_INFO, BILogConstant.LOG_CACHE_SUB_TAG.CUBE_GENERATE_START, System.currentTimeMillis());
         BILoggerFactory.cacheLoggerInfo(BILogConstant.LOG_CACHE_TAG.CUBE_GENERATE_INFO, BILogConstant.LOG_CACHE_SUB_TAG.READ_ONLY_BUSINESS_TABLES_OF_TABLE_SOURCE_MAP, BILogHelper.getReadOnlyBusinessTablesOfTableSourceMap());
-        BILoggerFactory.cacheLoggerInfo(BILogConstant.LOG_CACHE_TAG.CUBE_GENERATE_INFO, BILogConstant.LOG_CACHE_SUB_TAG.READ_ONLY_TABLE_SOURCE_RELATION_PATH_MAP, BILogHelper.getReadOnlyTableSourceRelationPathMap(cubeBuildStuff.getTableSourceRelationPathSet()));
 
+        BILoggerFactory.cacheLoggerInfo(BILogConstant.LOG_CACHE_TAG.CUBE_GENERATE_INFO, BILogConstant.LOG_CACHE_SUB_TAG.READ_ONLY_TABLE_SOURCE_RELATION_PATH_MAP, BILogHelper.getReadOnlyTableSourceRelationPathMap(getAllPathAndRelationSet()));
+
+        BIConfigureManagerCenter.getLogManager().relationSet(cubeBuildStuff.getTableSourceRelationSet(), biUser.getUserId());
         BIConfigureManagerCenter.getLogManager().relationPathSet(cubeBuildStuff.getTableSourceRelationPathSet(), biUser.getUserId());
         BIConfigureManagerCenter.getLogManager().cubeTableSourceSet(cubeBuildStuff.getSingleSourceLayers(), biUser.getUserId());
 
@@ -120,6 +127,19 @@ public class BuildCubeTask implements CubeTask {
         logRelation(cubeBuildStuff.getTableSourceRelationSet());
         logPath(filterPath(cubeBuildStuff.getTableSourceRelationPathSet()));
         copyFilesFromOldCubs();
+    }
+
+    private Set<BITableSourceRelationPath> getAllPathAndRelationSet() {
+        Set<BITableSourceRelationPath> allPathAndRelationSet = new HashSet<BITableSourceRelationPath>();
+        Set<BITableSourceRelationPath> pathSet = cubeBuildStuff.getTableSourceRelationPathSet();
+        Set<BITableSourceRelation> relationSet = cubeBuildStuff.getTableSourceRelationSet();
+        for (BITableSourceRelation relation : relationSet) {
+            allPathAndRelationSet.add(new BITableSourceRelationPath(relation));
+        }
+        for (BITableSourceRelationPath path : pathSet) {
+            allPathAndRelationSet.add(path);
+        }
+        return allPathAndRelationSet;
     }
 
     protected Set<BITableSourceRelation> getGeneratedRelation() {

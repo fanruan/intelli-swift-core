@@ -37,6 +37,11 @@ public class BICubeFinishWatcher extends BISubscribe {
             public Object getResult() {
                 return null;
             }
+
+            @Override
+            public void handleMessage(IMessage receiveMessage) {
+
+            }
         });
     }
 
