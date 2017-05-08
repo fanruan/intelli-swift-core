@@ -14,35 +14,47 @@ public class VanTreeMapWidget extends VanChartWidget{
         JSONArray series = JSONArray.create();
         String[] targetIDs = this.getUsedTargetID();
 
-        if(!originData.has("t") || targetIDs.length == 0){
+        if(targetIDs.length == 0){
             return series;
         }
 
-        JSONArray data = JSONArray.create();
-        JSONObject top = originData.getJSONObject("t"), left = originData.getJSONObject("l");
-        JSONArray topC = top.getJSONArray("c"), leftC = left.getJSONArray("c");
-
         double scale = this.numberScale(targetIDs[0]);
-        for (int i = 0; i < topC.length(); i++) {
-            JSONArray children = JSONArray.create();
+        JSONArray data = JSONArray.create();
 
-            JSONObject tObj = topC.getJSONObject(i);
-            double sum = 0;
-            for (int j = 0; j < leftC.length(); j++) {
-                JSONObject lObj = leftC.getJSONObject(j);
-                String name = lObj.getString("n");
-                JSONArray s = lObj.getJSONObject("s").getJSONArray("c").getJSONObject(i).getJSONArray("s");
-                double value = (s.isNull(0) ? 0 : s.getDouble(0)) / scale;
+        JSONObject sery = JSONObject.create();
 
-                sum += value;
+        if(!originData.has("t") && originData.has("s")){
+            JSONArray targetValues = originData.optJSONArray("s");
+            double y = targetValues.isNull(0) ? 0 : targetValues.getDouble(0) / scale;
+            data.put(JSONObject.create().put("value", y));
+        } else {
 
-                children.put(JSONObject.create().put("name", name).put("value", value));
+            JSONObject top = originData.getJSONObject("t"), left = originData.getJSONObject("l");
+            JSONArray topC = top.getJSONArray("c"), leftC = left.getJSONArray("c");
+
+            for (int i = 0; i < topC.length(); i++) {
+                JSONArray children = JSONArray.create();
+
+                JSONObject tObj = topC.getJSONObject(i);
+                double sum = 0;
+                for (int j = 0; j < leftC.length(); j++) {
+                    JSONObject lObj = leftC.getJSONObject(j);
+                    String name = lObj.getString("n");
+                    JSONArray s = lObj.getJSONObject("s").getJSONArray("c").getJSONObject(i).getJSONArray("s");
+                    double value = (s.isNull(0) ? 0 : s.getDouble(0)) / scale;
+
+                    sum += value;
+
+                    children.put(JSONObject.create().put("name", name).put("value", value));
+                }
+
+                data.put(JSONObject.create().put("name", tObj.getString("n")).put("value", sum).put("children", children));
             }
 
-            data.put(JSONObject.create().put("name", tObj.getString("n")).put("value", sum).put("children", children));
+            sery.put("name", this.getSeriesDimension().getText());
         }
 
-        return series.put(JSONObject.create().put("data", data).put("name", this.getSeriesDimension().getText()).put("dimensionID", targetIDs[0]));
+        return series.put(sery.put("data", data).put("dimensionID", targetIDs[0]));
     }
 
     public String getSeriesType(String dimensionID){
