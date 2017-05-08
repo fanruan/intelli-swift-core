@@ -234,8 +234,4 @@ public class TreeLabelWidget extends BIAbstractWidget {
     public void reSetDetailTarget() {
 
     }
-
-    public JSONObject getPostOptions(BISessionProvider session, HttpServletRequest req) throws Exception {
-        return new JSONObject();
-    }
 }
