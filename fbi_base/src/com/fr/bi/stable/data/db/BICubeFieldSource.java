@@ -173,7 +173,7 @@ public class BICubeFieldSource implements ICubeFieldSource {
                 .put("fieldSize", fieldSize)
                 .put("isUsable", isUsable())
                 .put("isEnable", canSetUsable)
-                .put("class_type", classType);
+                .put("classType", classType);
 
         return jo;
     }
@@ -185,7 +185,9 @@ public class BICubeFieldSource implements ICubeFieldSource {
 
         BICubeFieldSource that = (BICubeFieldSource) o;
 
-        if (fieldName != null ? !fieldName.equals(that.fieldName) : that.fieldName != null) return false;
+        if (fieldName != null ? !fieldName.equals(that.fieldName) : that.fieldName != null) {
+            return false
+        } ;
         return tableBelongTo != null ? tableBelongTo.equals(that.tableBelongTo) : that.tableBelongTo == null;
 
     }
