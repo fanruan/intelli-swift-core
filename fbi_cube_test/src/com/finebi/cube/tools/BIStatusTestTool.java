@@ -1,6 +1,5 @@
 package com.finebi.cube.tools;
 
-import com.finebi.cube.tools.BIFragmentTagTestTool;
 import com.finebi.cube.impl.router.status.BIStatusID;
 import com.finebi.cube.impl.router.status.BIStatusTag;
 import com.finebi.cube.router.status.IStatusTag;
