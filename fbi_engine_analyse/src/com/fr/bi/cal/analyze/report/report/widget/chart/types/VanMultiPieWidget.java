@@ -88,4 +88,8 @@ public class VanMultiPieWidget extends VanPieWidget{
         return NAME + SERIES + VALUE;
     }
 
+    protected String categoryLabelKey() {
+        return NAME;
+    }
+
 }

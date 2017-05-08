@@ -6,12 +6,11 @@ import com.fr.bi.conf.report.WidgetType;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.conf.session.BISessionProvider;
 import com.fr.bi.field.target.target.BISummaryTarget;
-import com.fr.bi.stable.constant.BIStyleConstant;
 import com.fr.bi.stable.constant.BIReportConstant;
+import com.fr.bi.stable.constant.BIStyleConstant;
 import com.fr.bi.tool.BIReadReportUtils;
 import com.fr.bi.util.BIConfUtils;
 import com.fr.general.Inter;
-import com.fr.general.jsqlparser.expression.DateValue;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
@@ -314,7 +313,15 @@ public abstract class VanChartWidget extends TableWidget {
     }
 
     protected String valueLabelKey() {
-        return "{VALUE}";
+        return VALUE;
+    }
+
+    protected String categoryLabelKey() {
+        return CATEGORY;
+    }
+
+    protected String seriesLabelKey() {
+        return SERIES;
     }
 
     //默认是分类，系列，值的配置
@@ -332,18 +339,18 @@ public abstract class VanChartWidget extends TableWidget {
             String identifier = "";
 
             if (dataLabelSetting.optBoolean("showCategoryName")) {
-                identifier += "${CATEGORY}";
+                identifier += categoryLabelKey();
             }
 
             if (dataLabelSetting.optBoolean("showSeriesName")) {
-                identifier += "${SERIES}";
+                identifier += seriesLabelKey();
             }
 
             if (dataLabelSetting.optBoolean("showValue")) {
                 identifier += valueLabelKey();
             }
 
-            if (dataLabelSetting.optBoolean("showPercentage")) {
+            if (dataLabelSetting.optBoolean("showPercentage") || dataLabelSetting.optBoolean("showConversionRate")) {
                 identifier += "${PERCENT}";
             }
 
@@ -353,6 +360,14 @@ public abstract class VanChartWidget extends TableWidget {
 
             if (dataLabelSetting.optBoolean("showYValue")) {
                 identifier += "${Y}";
+            }
+
+            if(dataLabelSetting.optBoolean("showBlockName")){
+                identifier += "${NAME}";
+            }
+
+            if(dataLabelSetting.optBoolean("showTargetName")){
+                identifier += "${SERIES}";
             }
 
             formatter.put("identifier", identifier);

@@ -2,9 +2,7 @@ package com.fr.bi.cal.analyze.report.report.widget.chart.types;
 
 import com.fr.bi.cal.analyze.report.report.widget.VanChartWidget;
 import com.fr.json.JSONArray;
-import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
-import com.fr.stable.StringUtils;
 
 /**
  * Created by eason on 2017/2/27.
@@ -44,7 +42,7 @@ public class VanTreeMapWidget extends VanChartWidget{
             data.put(JSONObject.create().put("name", tObj.getString("n")).put("value", sum).put("children", children));
         }
 
-        return series.put(JSONObject.create().put("data", data).put("name", this.getDimensionNameByID(targetIDs[0])).put("dimensionID", targetIDs[0]));
+        return series.put(JSONObject.create().put("data", data).put("name", this.getSeriesDimension().getText()).put("dimensionID", targetIDs[0]));
     }
 
     public String getSeriesType(String dimensionID){
@@ -53,5 +51,9 @@ public class VanTreeMapWidget extends VanChartWidget{
 
     protected String getTooltipIdentifier(){
         return NAME + SERIES + VALUE;
+    }
+
+    protected String categoryLabelKey() {
+        return NAME;
     }
 }
