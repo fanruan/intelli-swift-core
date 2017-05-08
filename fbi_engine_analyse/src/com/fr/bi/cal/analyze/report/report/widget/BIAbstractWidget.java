@@ -272,6 +272,11 @@ public abstract class BIAbstractWidget implements BIWidget {
         return rect;
     }
 
+    @Override
+    public void setLocale(Locale locale) {
+
+    }
+
     public IWidgetStyle getStyle() {
         return null;
     }

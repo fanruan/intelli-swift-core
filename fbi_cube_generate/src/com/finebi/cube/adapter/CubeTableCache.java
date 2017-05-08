@@ -26,8 +26,6 @@ public class CubeTableCache implements Serializable{
         userCubeManager = biUserCubeManager;
         cache = CacheBuilder.newBuilder()
                 .maximumSize(1000)
-                .expireAfterWrite(10, TimeUnit.MINUTES)
-                .expireAfterAccess(3, TimeUnit.MINUTES)
                 .build(new CacheLoader<CubeTableSource, ICubeTableService>() {
                     @Override
                     public ICubeTableService load(CubeTableSource tableSource) throws Exception {

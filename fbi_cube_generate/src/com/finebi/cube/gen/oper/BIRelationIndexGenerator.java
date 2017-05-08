@@ -8,6 +8,7 @@ import com.finebi.cube.exception.BICubeIndexException;
 import com.finebi.cube.impl.pubsub.BIProcessor;
 import com.finebi.cube.impl.pubsub.BIProcessorThreadManager;
 import com.finebi.cube.message.IMessage;
+import com.finebi.cube.message.IMessageBody;
 import com.finebi.cube.relation.BITableSourceRelation;
 import com.finebi.cube.structure.*;
 import com.finebi.cube.structure.column.BIColumnKey;
@@ -57,6 +58,7 @@ public class BIRelationIndexGenerator extends BIProcessor {
     protected Cube cube;
     protected CubeChooser cubeChooser;
     protected BICubeRelation relation;
+    private String isPrimaryFieldDistinct = CubeConstant.RELATION_VALIDATION.VALID;
     private static final Logger LOGGER = LoggerFactory.getLogger(BIRelationIndexGenerator.class);
 
     public BIRelationIndexGenerator(Cube cube, Cube integrityCube, BICubeRelation relation, Map<String, CubeTableSource> tablesNeed2GenerateMap) {
@@ -216,26 +218,41 @@ public class BIRelationIndexGenerator extends BIProcessor {
         //主表的分组数
         int primaryGroupSize = primaryColumn.sizeOfGroup();
         int foreignGroupSize = foreignColumn.sizeOfGroup();
-        //关联外表字段的value值
-        Object foreignColumnValue;
-        //value值在外表的索引
-        GroupValueIndex foreignGroupValueIndex;
-        if (foreignGroupSize == 0) {
-            foreignColumnValue = null;
-            foreignGroupValueIndex = GVIFactory.createAllEmptyIndexGVI();
+        if (primaryGroupSize == primaryTable.getRowCount()) {
+
+
+            //关联外表字段的value值
+            Object foreignColumnValue;
+            //value值在外表的索引
+            GroupValueIndex foreignGroupValueIndex;
+            if (foreignGroupSize == 0) {
+                foreignColumnValue = null;
+                foreignGroupValueIndex = GVIFactory.createAllEmptyIndexGVI();
+            } else {
+                foreignColumnValue = getForeignGroupObjectValue(foreignColumn, 0);
+                foreignGroupValueIndex = getForeignBitmapIndex(foreignColumn, 0);
+            }
+            int[] reverse = new int[foreignTable.getRowCount()];
+            final byte[][] relationIndexBytes = new byte[primaryTable.getRowCount()][];
+            Arrays.fill(reverse, NIOConstant.INTEGER.NULL_VALUE);
+            GroupValueIndex allShowIndex = getTableShowIndex(primaryTable);
+            GroupValueIndex nullIndex = buildIndex(primaryColumn, foreignColumn, c, primaryGroupSize, foreignGroupSize, foreignColumnValue, foreignGroupValueIndex, reverse, relationIndexBytes, allShowIndex);
+            buildIndex(tableRelation, relationIndexBytes);
+            buildReverseIndex(tableRelation, reverse);
+            buildNullIndex(tableRelation, nullIndex);
+            tableRelation.addVersion(System.currentTimeMillis());
         } else {
-            foreignColumnValue = getForeignGroupObjectValue(foreignColumn, 0);
-            foreignGroupValueIndex = getForeignBitmapIndex(foreignColumn, 0);
+            String relationID = StringUtils.EMPTY;
+            try {
+                relationID = BuildLogHelper.calculateRelationID(relation);
+            } catch (Exception e) {
+                BILoggerFactory.getLogger(BIRelationIndexGenerator.class).error("Calculate Relation ID Error, the Relation info is: " + logRelation());
+            }
+            BILogExceptionInfo exceptionInfo = new BILogExceptionInfo(System.currentTimeMillis(), "BuildRelationIndex The error relation info is: " + logRelation(), "the relation's primary field is not distinct ,the relation will not generate", new Exception());
+            BILogHelper.cacheCubeLogRelationException(relationID, exceptionInfo);
+            LOGGER.warn("the relation's primary field is not distinct ,the relation will not generate" + logRelation());
+            isPrimaryFieldDistinct = CubeConstant.RELATION_VALIDATION.INVALID;
         }
-        int[] reverse = new int[foreignTable.getRowCount()];
-        final byte[][] relationIndexBytes = new byte[primaryTable.getRowCount()][];
-        Arrays.fill(reverse, NIOConstant.INTEGER.NULL_VALUE);
-        GroupValueIndex allShowIndex = getTableShowIndex(primaryTable);
-        GroupValueIndex nullIndex = buildIndex(primaryColumn, foreignColumn, c, primaryGroupSize, foreignGroupSize, foreignColumnValue, foreignGroupValueIndex, reverse, relationIndexBytes, allShowIndex);
-        buildIndex(tableRelation, relationIndexBytes);
-        buildReverseIndex(tableRelation, reverse);
-        buildNullIndex(tableRelation, nullIndex);
-        tableRelation.addVersion(System.currentTimeMillis());
     }
 
     protected void buildNullIndex(BICubeRelationEntity tableRelation, GroupValueIndex nullIndex) {
@@ -409,6 +426,11 @@ public class BIRelationIndexGenerator extends BIProcessor {
         return columnType == DBConstant.CLASS.LONG || columnType == DBConstant.CLASS.INTEGER || columnType == DBConstant.CLASS.DOUBLE;
     }
 
+    @Override
+    public void handleMessage(IMessage receiveMessage) {
+
+    }
+
     private class ByteGroupValueIndex implements GroupValueIndex {
         private byte[] bytes;
 
@@ -512,4 +534,13 @@ public class BIRelationIndexGenerator extends BIProcessor {
         }
     }
 
+    @Override
+    protected IMessageBody getFinishMess() {
+        return new IMessageBody() {
+            @Override
+            public String getMessageBody() {
+                return isPrimaryFieldDistinct;
+            }
+        };
+    }
 }
