@@ -19,6 +19,7 @@ import com.fr.report.poly.PolyECBlock;
 import com.fr.report.poly.TemplateBlock;
 import com.fr.stable.collections.array.IntArray;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.*;
 
 /**
@@ -37,7 +38,7 @@ public class SingleSliderWidget extends TableWidget {
         }
     }
 
-    public JSONObject createDataJSON(BISessionProvider session) throws JSONException {
+    public JSONObject createDataJSON(BISessionProvider session, HttpServletRequest req) throws JSONException {
         BIDimension[] dimensions = getDimensions();
         for (int i = 0; i < dimensions.length; i++) {
             BIDimension dimension = dimensions[i];

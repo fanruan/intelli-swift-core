@@ -800,13 +800,18 @@ public class CubeIndexLoader {
                 iterator.getRoot().checkStatus(executor);
             }
             iterator.setExpander(expander);
-            if (calAllPage && !shouldSetIndex) {
+            if (isAllExpandWholeNodeWithoutIndex(calAllPage)) {
                 MultiThreadManagerImpl.getInstance().awaitExecutor(session, executor);
                 return new NodeAndPageInfo(iterator.getRoot().getConstructedRoot(), iterator);
             }
             NodeAndPageInfo info = GroupUtils.createNextPageMergeNode(iterator, op, isHor ? widget.showColumnTotal() : widget.showRowToTal(), shouldSetIndex, widget.getTargets().length, executor);
             MultiThreadManagerImpl.getInstance().awaitExecutor(session, executor);
             return info;
+        }
+
+        //全部展开所有节点并且不需要索引的情况直接返回node，不用再走下面的分页
+        private boolean isAllExpandWholeNodeWithoutIndex(boolean calAllPage) {
+            return calAllPage && !shouldSetIndex && expander == NodeExpander.ALL_EXPANDER;
         }
     }
 

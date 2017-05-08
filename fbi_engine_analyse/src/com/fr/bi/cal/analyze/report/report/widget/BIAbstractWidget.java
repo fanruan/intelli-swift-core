@@ -280,4 +280,5 @@ public abstract class BIAbstractWidget implements BIWidget {
     public IWidgetStyle getStyle() {
         return null;
     }
+
 }

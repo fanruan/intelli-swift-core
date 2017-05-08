@@ -11,13 +11,16 @@ import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.tool.BIReadReportUtils;
 import com.fr.bi.util.BIConfUtils;
 import com.fr.general.Inter;
+import com.fr.general.jsqlparser.expression.DateValue;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
 import com.fr.stable.StableUtils;
 import com.fr.stable.StringUtils;
 import com.fr.web.core.SessionDealWith;
+import com.fr.web.utils.WebUtils;
 
+import javax.servlet.http.HttpServletRequest;
 import java.awt.*;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -76,6 +79,8 @@ public abstract class VanChartWidget extends TableWidget {
 
     //存下每个指标和纬度的最大最小和平均值
     private HashMap<String, ArrayList<Double>> idValueMap = new HashMap<String, ArrayList<Double>>();
+
+    private Locale locale;
 
     public static final String[] FULL_QUARTER_NAMES = new String[]{
             Inter.getLocText("BI-Quarter_1"),
@@ -191,15 +196,15 @@ public abstract class VanChartWidget extends TableWidget {
 
         if (level == BIReportConstant.TARGET_STYLE.NUM_LEVEL.TEN_THOUSAND) {
 
-            unit = Inter.getLocText("BI-Basic_Wan");
+            unit = getLocText("BI-Basic_Wan");
 
         } else if (level == BIReportConstant.TARGET_STYLE.NUM_LEVEL.MILLION) {
 
-            unit = Inter.getLocText("BI-Basic_Million");
+            unit = getLocText("BI-Basic_Million");
 
         } else if (level == BIReportConstant.TARGET_STYLE.NUM_LEVEL.YI) {
 
-            unit = Inter.getLocText("BI-Basic_Yi");
+            unit = getLocText("BI-Basic_Yi");
 
         } else if (level == BIReportConstant.TARGET_STYLE.NUM_LEVEL.PERCENT) {
 
@@ -427,9 +432,11 @@ public abstract class VanChartWidget extends TableWidget {
         return merge(settings, this.populateDefaultSettings());
     }
 
-    public JSONObject createDataJSON(BISessionProvider session) throws Exception {
+    public JSONObject createDataJSON(BISessionProvider session, HttpServletRequest req) throws Exception {
 
-        JSONObject data = super.createDataJSON(session).getJSONObject("data");
+        this.locale = WebUtils.getLocale(req);
+
+        JSONObject data = super.createDataJSON(session, req).getJSONObject("data");
 
         JSONObject reportSetting = BIReadReportUtils.getInstance().getBIReportNodeJSON(((BISession) session).getReportNode());
         JSONObject globalStyle = reportSetting.optJSONObject("globalStyle");
@@ -583,7 +590,8 @@ public abstract class VanChartWidget extends TableWidget {
 
                 JSONObject labels = new JSONObject(dataLabels.toString());
                 labels.optJSONObject("formatter")
-                        .put("valueFormat", this.dataLabelValueFormat(this.getBITargetByID(dimensionID)));
+                        .put("valueFormat", this.dataLabelValueFormat(this.getBITargetByID(dimensionID)))
+                        .put("percentFormat", "function(){return BI.contentFormat(arguments[0], \"#.##%\")}");
 
                 ser.put("dataLabels", labels);
             }
@@ -604,7 +612,6 @@ public abstract class VanChartWidget extends TableWidget {
 
     private JSONArray createSeriesWithTop(JSONObject originData) throws Exception {
         BIDimension category = this.getCategoryDimension();
-        int groupType = category.getGroup().getType();
         JSONArray series = JSONArray.create();
         String[] targetIDs = this.getUsedTargetID();
         if(targetIDs.length == 0){
@@ -625,7 +632,7 @@ public abstract class VanChartWidget extends TableWidget {
                 String x = lObj.getString("n");
                 JSONArray s = lObj.getJSONObject("s").getJSONArray("c").getJSONObject(i).getJSONArray("s");
                 double y = (s.isNull(0) ? 0 : s.getDouble(0)) / numberScale;
-                data.put(JSONObject.create().put(categoryKey, this.formatCategory(groupType, x)).put(valueKey, y));
+                data.put(JSONObject.create().put(categoryKey, this.formatCategory(category, x)).put(valueKey, y));
                 valueList.add(y);
             }
             JSONObject ser = JSONObject.create().put("data", data).put("name", name)
@@ -643,7 +650,6 @@ public abstract class VanChartWidget extends TableWidget {
 
     private JSONArray createSeriesWithChildren(JSONObject originData) throws Exception {
         BIDimension category = this.getCategoryDimension();
-        int groupType = category == null ? BIReportConstant.GROUP.YMD : category.getGroup().getType();
         JSONArray series = JSONArray.create();
         String[] targetIDs = this.getUsedTargetID();
         String categoryKey = this.categoryKey(), valueKey = this.valueKey();
@@ -660,7 +666,7 @@ public abstract class VanChartWidget extends TableWidget {
                     String x = lObj.getString("n");
                     JSONArray targetValues = lObj.getJSONArray("s");
                     double y = targetValues.isNull(i) ? 0 : targetValues.getDouble(i) / numberScale;
-                    data.put(JSONObject.create().put(categoryKey, this.formatCategory(groupType, x)).put(valueKey, y));
+                    data.put(JSONObject.create().put(categoryKey, this.formatCategory(category, x)).put(valueKey, y));
                     valueList.add(y);
                 }
             } else {//饼图没有分类，只有指标。会过来一个汇总值，没有child
@@ -680,15 +686,18 @@ public abstract class VanChartWidget extends TableWidget {
         return series;
     }
 
-    protected String formatCategory(int groupType, String category){
-
-        Number dateCategory = StableUtils.string2Number(category);
-
-        if(dateCategory == null){
+    protected String formatCategory(BIDimension categoryDimension, String category){
+        if(categoryDimension == null || StringUtils.isBlank(category)){
             return category;
         }
 
-        long dateValue = dateCategory.longValue();
+        int groupType = categoryDimension.getGroup().getType();
+        JSONObject dateFormat = categoryDimension.getChartSetting().getSettings().optJSONObject("dateFormat");
+
+        int dateFormatType = dateFormat == null ? BIReportConstant.DATE_FORMAT.SPLIT : dateFormat.optInt("type", BIReportConstant.DATE_FORMAT.SPLIT);
+
+        Number dateCategory = StableUtils.string2Number(category);
+        long dateValue = dateCategory == null ? 0L : dateCategory.longValue();
 
         switch (groupType) {
             case BIReportConstant.GROUP.S:
@@ -701,9 +710,95 @@ public abstract class VanChartWidget extends TableWidget {
                 category = FULL_WEEK_NAMES[(int)dateValue];
                 break;
             case BIReportConstant.GROUP.YMD:
-                SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-                category = formatter.format(new Date(dateValue));
+                category =  this.formatYMDByDateFormat(dateValue, dateFormatType);
                 break;
+            case BIReportConstant.GROUP.YMDHMS:
+                category = this.formatYMDHMSByDateFormat(dateValue, dateFormatType);
+                break;
+            case BIReportConstant.GROUP.YMDH:
+                category = this.formatYMDHByDateFormat(dateValue, dateFormatType);
+                break;
+            case BIReportConstant.GROUP.YMDHM:
+                category = this.formatYMDHMByDateFormat(dateValue, dateFormatType);
+                break;
+            case BIReportConstant.GROUP.YS:
+                category = this.formatCombineDateByDateFormat(category, dateFormatType, new String[]{getLocText("BI-Basic_Year"), getLocText("BI-Basic_Quarter")});
+                break;
+            case BIReportConstant.GROUP.YM:
+                category = this.formatCombineDateByDateFormat(category, dateFormatType, new String[]{getLocText("BI-Basic_Year"), getLocText("BI-Basic_Month")});
+                break;
+            case BIReportConstant.GROUP.YW:
+                category = this.formatCombineDateByDateFormat(category, dateFormatType, new String[]{getLocText("BI-Basic_Year"), getLocText("BI-Week_Simple")});
+                break;
+        }
+
+        return category;
+    }
+
+    private String formatYMDByDateFormat(long dateValue, int dateFormatType){
+        Date date = new Date(dateValue);
+        SimpleDateFormat formatter;
+        if(dateFormatType == BIReportConstant.DATE_FORMAT.CHINESE){
+            formatter = new SimpleDateFormat(String.format("yyyy%sMM%sdd%s", getLocText("BI-Basic_Year"), getLocText("BI-Basic_Month"), getLocText("BI-Date_Day")));
+        }else{
+            formatter = new SimpleDateFormat("yyyy-MM-dd");
+        }
+        return formatter.format(date);
+    }
+
+    private String formatYMDHMSByDateFormat(long dateValue, int dateFormatType){
+        Date date = new Date(dateValue);
+        SimpleDateFormat formatter;
+
+        if(dateFormatType == BIReportConstant.DATE_FORMAT.CHINESE){
+            formatter = new SimpleDateFormat(String.format("yyyy%sMM%sdd%s H%sm%ss%s", getLocText("BI-Basic_Year"), getLocText("BI-Basic_Month"), getLocText("BI-Date_Day"),
+                    getLocText("BI-Hour_Sin"), getLocText("BI-Basic_Minute"), getLocText("BI-Basic_Second")));
+        }else{
+            formatter = new SimpleDateFormat("yyyy-MM-dd H:m:s");
+        }
+        return formatter.format(date);
+    }
+
+    private String formatYMDHByDateFormat(long dateValue, int dateFormatType){
+        Date date = new Date(dateValue);
+        SimpleDateFormat formatter;
+
+        if(dateFormatType == BIReportConstant.DATE_FORMAT.CHINESE){
+            formatter = new SimpleDateFormat(String.format("yyyy%sMM%sdd%s H%s", getLocText("BI-Basic_Year"), getLocText("BI-Basic_Month"),
+                    getLocText("BI-Date_Day"), getLocText("BI-Hour_Sin")));
+        }else{
+            formatter = new SimpleDateFormat("yyyy-MM-dd H");
+        }
+        return formatter.format(date);
+    }
+
+    private String formatYMDHMByDateFormat(long dateValue, int dateFormatType){
+        Date date = new Date(dateValue);
+        SimpleDateFormat formatter;
+
+        if(dateFormatType == BIReportConstant.DATE_FORMAT.CHINESE){
+            formatter = new SimpleDateFormat(String.format("yyyy%sMM%sdd%s H%sm%s", getLocText("BI-Basic_Year"), getLocText("BI-Basic_Month"), getLocText("BI-Date_Day"),
+                    getLocText("BI-Hour_Sin"), getLocText("BI-Basic_Minute")));
+        }else{
+            formatter = new SimpleDateFormat("yyyy-MM-dd H:m");
+        }
+        return formatter.format(date);
+    }
+
+    private String formatCombineDateByDateFormat(String category, int dateFormatType, String[] format){
+
+        if(dateFormatType == BIReportConstant.DATE_FORMAT.CHINESE){
+            String[] text = category.split("-");
+
+            if(text.length == format.length){
+                String resultText = "";
+
+                for(int i = 0, len = text.length; i < len; i++){
+                    resultText += (text[i] + format[i]);
+                }
+
+                return resultText;
+            }
         }
 
         return category;
@@ -773,8 +868,8 @@ public abstract class VanChartWidget extends TableWidget {
         return null;
     }
 
-    public JSONObject getPostOptions(String sessionId) throws Exception {
-        JSONObject chartOptions = this.createDataJSON((BISessionProvider) SessionDealWith.getSessionIDInfor(sessionId));
+    public JSONObject getPostOptions(String sessionId, HttpServletRequest req) throws Exception {
+        JSONObject chartOptions = this.createDataJSON((BISessionProvider) SessionDealWith.getSessionIDInfor(sessionId), req);
         JSONObject plotOptions = chartOptions.optJSONObject("plotOptions");
         plotOptions.put("animation", false);
         chartOptions.put("plotOptions", plotOptions);
@@ -794,6 +889,10 @@ public abstract class VanChartWidget extends TableWidget {
 
     protected WidgetType getChartType(){
         return this.chartType;
+    }
+
+    protected String getLocText(String key){
+        return Inter.getLocText(key, this.locale);
     }
 
 }

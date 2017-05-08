@@ -29,6 +29,7 @@ import com.fr.json.JSONObject;
 import com.fr.report.poly.PolyECBlock;
 import com.fr.report.poly.TemplateBlock;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.*;
 
 
@@ -93,7 +94,7 @@ public class TreeLabelWidget extends BIAbstractWidget {
     }
 
     @Override
-    public JSONObject createDataJSON(BISessionProvider session) throws Exception {
+    public JSONObject createDataJSON(BISessionProvider session, HttpServletRequest req) throws Exception {
         Paging paging = PagingFactory.createPaging(BIExcutorConstant.PAGINGTYPE.NONE);
         paging.setCurrentPage(page);
         return getInitDataJSON((BISession) session);
