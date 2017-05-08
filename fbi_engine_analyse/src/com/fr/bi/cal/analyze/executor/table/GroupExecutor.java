@@ -166,10 +166,7 @@ public class GroupExecutor extends AbstractTableWidgetExecutor<Node> {
         while (temp.getParent() != null) {
             int rowSpan = temp.getTotalLength();
             BIDimension dim = rowDimensions[--i];
-            String data = dim.toString(temp.getData());
-            if (dim.getGroup().getType() == BIReportConstant.GROUP.YMD && GeneralUtils.string2Number(data) != null) {
-                data = DateUtils.DATEFORMAT2.format(new Date(GeneralUtils.string2Number(data).longValue()));
-            }
+            Object data = temp.getData();
             Object v = dim.getValueByType(data);
             if (v != dimensionNames[i] || (i == rowDimensions.length - 1)) {
                 oddEven[i]++;
