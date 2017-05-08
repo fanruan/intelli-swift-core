@@ -47,6 +47,37 @@ public class BIGroupFactory {
             case BIReportConstant.GROUP.YMDHMS:
                 group = new YMDHMSGroup();
                 break;
+            case BIReportConstant.GROUP.MD:
+            case BIReportConstant.GROUP.D:
+                group = new DayGroup();
+                break;
+            case BIReportConstant.GROUP.HOUR:
+                group = new HourGroup();
+                break;
+            case BIReportConstant.GROUP.MINUTE:
+                group = new MinuteGroup();
+                break;
+            case BIReportConstant.GROUP.SECOND:
+                group = new SecondGroup();
+                break;
+            case BIReportConstant.GROUP.WEEK_COUNT:
+                group = new WeekNumberGroup();
+                break;
+            case BIReportConstant.GROUP.YM:
+                group = new YearMonthGroup();
+                break;
+            case BIReportConstant.GROUP.YW:
+                group = new YearWeekNumberGroup();
+                break;
+            case BIReportConstant.GROUP.YMDH:
+                group = new YearMonthDayHourGroup();
+                break;
+            case BIReportConstant.GROUP.YMDHM:
+                group = new YearMonthDayHourMinuteGroup();
+                break;
+            case BIReportConstant.GROUP.YS:
+                group = new YearSeasonGroup();
+                break;
             default:
                 group = new NoGroup();
                 break;

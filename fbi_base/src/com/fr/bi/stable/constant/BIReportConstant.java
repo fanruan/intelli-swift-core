@@ -42,18 +42,19 @@ public class BIReportConstant {
         public final static int CUSTOM_GROUP = 0x4;
 
         public final static int CUSTOM_NUMBER_GROUP = 0x5;
-
+        //年
         public static final int Y = 0x6;
-
+        //季度
         public static final int S = 0x7;
-
+//        月份
         public static final int M = 0x8;
-
+//        星期几
         public static final int W = 0x9;
+//        年月日
         public static final int YMD = 0xA;
-
+//        年日
         public static final int YD = 0xB;
-
+//        每月中的第几天(1-31)
         public static final int MD = 0xC;
 
         public static final int YMDHMS = 0xD;
@@ -63,12 +64,17 @@ public class BIReportConstant {
         public static final int HOUR = 0xF;
         public static final int MINUTE = 0x10;
         public static final int SECOND = 0x11;
+        //周数
         public static final int WEEK_COUNT = 0x12;
+        //        每月中的第几天(1-31)
         public static final int D = 0x13;
+//        年月份
         public static final int YM = 0x14;
+//        年周数
         public static final int YW = 0x15;
         public static final int YMDH = 0x16;
         public static final int YMDHM = 0x17;
+//        年季度
         public static final int YS = 0x18;
 
     }
