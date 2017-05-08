@@ -118,7 +118,7 @@ public class CubeBuildStuffComplete extends AbstractCubeBuildStuff implements Se
                     set.add(relationPath);
                 }
             } catch (Exception e) {
-                BILoggerFactory.getLogger().error(e.getMessage(),e);
+                BILoggerFactory.getLogger().error(e.getMessage(), e);
             }
         }
         set = removeDuplicateRelationPaths(set);
@@ -230,7 +230,14 @@ public class CubeBuildStuffComplete extends AbstractCubeBuildStuff implements Se
             setPrimaryKeyMap(primaryKeyMap);
             Map<CubeTableSource, Set<BITableSourceRelation>> foreignKeyMap = new HashMap<CubeTableSource, Set<BITableSourceRelation>>();
             setForeignKeyMap(foreignKeyMap);
-            setRelationPaths(convertPaths(BICubeConfigureCenter.getTableRelationManager().getAllTablePath(biUser.getUserId())));
+            Set<BITableRelationPath> allPath = BICubeConfigureCenter.getTableRelationManager().getAllTablePath(biUser.getUserId());
+            Set<BITableRelationPath> filteredPath = new HashSet<BITableRelationPath>();
+            for (BITableRelationPath path : allPath) {
+                if (path.size() > 1) {
+                    filteredPath.add(path);
+                }
+            }
+            setRelationPaths(convertPaths(filteredPath));
             calculateDepend();
         } catch (Exception e) {
             throw BINonValueUtils.beyondControl(e);
