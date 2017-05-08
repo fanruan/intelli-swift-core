@@ -40,7 +40,7 @@ public class SummaryGroupTableDataBuilder extends SummaryCrossTableDataBuilder {
 
     @Override
     public BIExcelTableData createTableData() throws JSONException {
-        BIExcelTableData tableDataForExport = new BIExcelTableData(headers, items);
+        BIExcelTableData tableDataForExport = new BIExcelTableData(headers, items,styleSetting);
         return tableDataForExport;
 
     }
