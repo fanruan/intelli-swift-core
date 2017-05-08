@@ -181,13 +181,15 @@ public class BICubeFieldSource implements ICubeFieldSource {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
 
         BICubeFieldSource that = (BICubeFieldSource) o;
 
         if (fieldName != null ? !fieldName.equals(that.fieldName) : that.fieldName != null) {
             return false;
-        } ;
+        }
         return tableBelongTo != null ? tableBelongTo.equals(that.tableBelongTo) : that.tableBelongTo == null;
 
     }
