@@ -126,6 +126,30 @@ public class BICubeFieldSource implements ICubeFieldSource {
         if (jo.has("isEnable")) {
             canSetUsable = jo.optBoolean("isEnable", true);
         }
+        if (jo.has("classType")) {
+            classType = jo.getInt("classType");
+        }
+        //兼容之前的cube
+        if (jo.has("field_name")) {
+            this.setFieldName(jo.getString("field_name"));
+        }
+        if (jo.has("field_id")) {
+            String fieldId = jo.getString("field_id");
+            this.fieldID = new BIFieldID(fieldId);
+        }
+        if (jo.has("field_type")) {
+            fieldType = jo.optInt("field_type", 0);
+        }
+        if (jo.has("field_size")) {
+            fieldSize = jo.optInt("field_size", 0);
+        }
+        if (jo.has("is_usable")) {
+            usable = jo.optBoolean("is_usable", true);
+        }
+
+        if (jo.has("is_enable")) {
+            canSetUsable = jo.optBoolean("is_enable", true);
+        }
         if (jo.has("class_type")) {
             classType = jo.getInt("class_type");
         }
@@ -149,19 +173,25 @@ public class BICubeFieldSource implements ICubeFieldSource {
                 .put("fieldSize", fieldSize)
                 .put("isUsable", isUsable())
                 .put("isEnable", canSetUsable)
-                .put("class_type", classType);
+                .put("classType", classType);
 
         return jo;
     }
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
 
         BICubeFieldSource that = (BICubeFieldSource) o;
 
-        if (fieldName != null ? !fieldName.equals(that.fieldName) : that.fieldName != null) return false;
+        if (fieldName != null ? !fieldName.equals(that.fieldName) : that.fieldName != null) {
+            return false;
+        }
         return tableBelongTo != null ? tableBelongTo.equals(that.tableBelongTo) : that.tableBelongTo == null;
 
     }
