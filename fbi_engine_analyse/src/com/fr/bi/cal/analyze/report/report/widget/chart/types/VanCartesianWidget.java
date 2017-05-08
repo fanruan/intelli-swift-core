@@ -102,7 +102,11 @@ public abstract class VanCartesianWidget extends VanChartWidget {
             BILoggerFactory.getLogger().error(e.getMessage(),e);
         }
 
-        return String.format("function(){return BI.contentFormat(arguments[0], \"%s\")}", hasSeparator ? "#,###.##" : "#.##");
+        return String.format("function(){return BI.contentFormat(%s, \"%s\")}", labelString(yAxis), hasSeparator ? "#,###.##" : "#.##");
+    }
+
+    protected String labelString(int yAxis){
+        return "arguments[0]";
     }
 
     //值标签和小数位数，千分富符，数量级和单位构成的后缀
@@ -380,11 +384,16 @@ public abstract class VanCartesianWidget extends VanChartWidget {
 
     private void putMinMaxInterval(JSONObject axis, JSONObject scale, Calculator calculator) throws JSONException{
 
-        String min = scale.optJSONObject("minScale").optString("formula");
-
-        String max = scale.optJSONObject("maxScale").optString("formula");
-
-        String interval = scale.optJSONObject("interval").optString("formula");
+        String min = StringUtils.EMPTY, max = StringUtils.EMPTY, interval = StringUtils.EMPTY;
+        if(scale.has("minScale")) {
+            min = scale.optJSONObject("minScale").optString("formula");
+        }
+        if(scale.has("maxScale")) {
+            max = scale.optJSONObject("maxScale").optString("formula");
+        }
+        if(scale.has("interval")) {
+            interval = scale.optJSONObject("interval").optString("formula");
+        }
 
         if(StringUtils.isNotBlank(min)){
             axis.put("min", this.niceAxisValue(min, calculator));

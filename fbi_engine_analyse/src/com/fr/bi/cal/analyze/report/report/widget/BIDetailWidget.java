@@ -39,6 +39,7 @@ import com.fr.json.JSONObject;
 import com.fr.report.poly.TemplateBlock;
 import com.fr.web.core.SessionDealWith;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.*;
 
 public class BIDetailWidget extends BIAbstractWidget {
@@ -226,7 +227,7 @@ public class BIDetailWidget extends BIAbstractWidget {
     }
 
     @Override
-    public JSONObject createDataJSON(BISessionProvider session) throws JSONException {
+    public JSONObject createDataJSON(BISessionProvider session, HttpServletRequest req) throws JSONException {
         JSONObject jo = new JSONObject();
         Paging paging = PagingFactory.createPaging(BIExcutorConstant.PAGINGTYPE.GROUP100);
         paging.setCurrentPage(page);
@@ -287,8 +288,8 @@ public class BIDetailWidget extends BIAbstractWidget {
         }
     }
 
-    public JSONObject getPostOptions(String sessionId) throws Exception {
-        JSONObject dataJSON = this.createDataJSON((BISession) SessionDealWith.getSessionIDInfor(sessionId)).getJSONObject("data");
+    public JSONObject getPostOptions(String sessionId, HttpServletRequest req) throws Exception {
+        JSONObject dataJSON = this.createDataJSON((BISession) SessionDealWith.getSessionIDInfor(sessionId), req).getJSONObject("data");
         Map<Integer, List<JSONObject>> viewMap = createViewMap();
         List<DimAndTargetStyle> dimAndTargetStyles = createChartDimensions();
         IExcelDataBuilder builder = new DetailTableBuilder(viewMap, dimAndTargetStyles, dataJSON, null);
