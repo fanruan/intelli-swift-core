@@ -19,13 +19,11 @@ import com.fr.bi.field.target.target.BISummaryTarget;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.report.key.TargetGettingKey;
 import com.fr.general.DateUtils;
-import com.fr.general.GeneralUtils;
 import com.fr.general.Inter;
 import com.fr.json.JSONObject;
 import com.fr.stable.ExportConstants;
 
 import java.awt.Rectangle;
-import java.util.Date;
 
 /**
  * Created by 小灰灰 on 2015/6/30.
