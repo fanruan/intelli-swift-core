@@ -30,6 +30,7 @@ import com.fr.report.poly.TemplateBlock;
 import com.fr.stable.StringUtils;
 import com.fr.stable.collections.array.IntArray;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.*;
 
 public class StringControlWidget extends TableWidget {
@@ -47,7 +48,7 @@ public class StringControlWidget extends TableWidget {
         return 0;
     }
 
-    public JSONObject createDataJSON(BISessionProvider session) throws Exception {
+    public JSONObject createDataJSON(BISessionProvider session, HttpServletRequest req) throws Exception {
         BIDimension dimension = getDimensions()[0];
         DimensionCalculator calculator = dimension.createCalculator(dimension.getStatisticElement(), new ArrayList<BITableSourceRelation>());
         Set<String> selected_value = new HashSet<String>();

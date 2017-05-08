@@ -24,6 +24,7 @@ import com.fr.report.poly.PolyECBlock;
 import com.fr.report.poly.TemplateBlock;
 import com.fr.stable.StringUtils;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.*;
 
 public class ListLabelWidget extends BISummaryWidget {
@@ -49,7 +50,7 @@ public class ListLabelWidget extends BISummaryWidget {
         return 0;
     }
 
-    public JSONObject createDataJSON(BISessionProvider session) throws JSONException {
+    public JSONObject createDataJSON(BISessionProvider session, HttpServletRequest req) throws JSONException {
         BIDimension dimension = getDimensions()[0];
         DimensionCalculator calculator = dimension.createCalculator(dimension.getStatisticElement(), new ArrayList<BITableSourceRelation>());
         GroupValueIndex gvi = createFilterGVI(new DimensionCalculator[]{calculator}, dimension.getStatisticElement().getTableBelongTo(), session.getLoader(), session.getUserId());
