@@ -141,7 +141,7 @@ public abstract class AbstractDetailExecutor extends BIAbstractExecutor<JSONObje
                 v = ExecutorUtils.formatExtremeSumValue(v, numLevel);
             }
 
-            CBCell cell = ExecutorUtils.createCellWithOutStyle(v == null ? NONEVALUE : v.toString(), row, 1, i + widget.isOrder(), 1);
+            CBCell cell = ExecutorUtils.createCellWithOutStyle(v == null ? NONEVALUE : v, row, 1, i + widget.isOrder(), 1);
             List cellList = new ArrayList();
             cellList.add(cell);
             //TODO CBBoxElement需要整合减少内存

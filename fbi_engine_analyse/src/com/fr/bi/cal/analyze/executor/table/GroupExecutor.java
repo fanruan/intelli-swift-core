@@ -19,11 +19,13 @@ import com.fr.bi.field.target.target.BISummaryTarget;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.report.key.TargetGettingKey;
 import com.fr.general.DateUtils;
+import com.fr.general.GeneralUtils;
 import com.fr.general.Inter;
 import com.fr.json.JSONObject;
 import com.fr.stable.ExportConstants;
 
 import java.awt.Rectangle;
+import java.util.Date;
 
 /**
  * Created by 小灰灰 on 2015/6/30.
@@ -163,8 +165,11 @@ public class GroupExecutor extends AbstractTableWidgetExecutor<Node> {
         int i = rowDimensions.length;
         while (temp.getParent() != null) {
             int rowSpan = temp.getTotalLength();
-            Object data = temp.getData();
             BIDimension dim = rowDimensions[--i];
+            String data = dim.toString(temp.getData());
+            if (dim.getGroup().getType() == BIReportConstant.GROUP.YMD && GeneralUtils.string2Number(data) != null) {
+                data = DateUtils.DATEFORMAT2.format(new Date(GeneralUtils.string2Number(data).longValue()));
+            }
             Object v = dim.getValueByType(data);
             if (v != dimensionNames[i] || (i == rowDimensions.length - 1)) {
                 oddEven[i]++;
