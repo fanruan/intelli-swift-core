@@ -193,7 +193,7 @@ public class BIConnectionManager extends XMLFileManager implements BIConnectionP
 
 
     @Override
-    public void updateConnection(String linkData, String oldName) throws Exception {
+    public void updateConnection(String linkData, String oldName, long userId) throws Exception {
         JSONObject linkDataJo = new JSONObject(linkData);
         String newName = linkDataJo.optString("name");
         DatasourceManagerProvider datasourceManager = DatasourceManager.getProviderInstance();
@@ -205,8 +205,11 @@ public class BIConnectionManager extends XMLFileManager implements BIConnectionP
 
         Connection databaseConnection = dl.createDatabaseConnection();
         datasourceManager.putConnection(newName, databaseConnection);
+
+        long createBy = getCreateBy(oldName, userId);
+        long initTime = getInitTime(oldName);
         connMap.remove(oldName);
-        connMap.put(newName, new BIConnection(newName, linkDataJo.optString("schema", null)));
+        connMap.put(newName, new BIConnection(newName, linkDataJo.optString("schema", null), createBy, initTime));
         try {
             FRContext.getCurrentEnv().writeResource(datasourceManager);
             FRContext.getCurrentEnv().writeResource(this);

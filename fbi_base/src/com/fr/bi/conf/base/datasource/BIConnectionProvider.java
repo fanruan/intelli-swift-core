@@ -1,7 +1,6 @@
 package com.fr.bi.conf.base.datasource;
 
 import com.fr.data.impl.Connection;
-import com.fr.data.impl.JDBCDatabaseConnection;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
 
@@ -18,7 +17,7 @@ public interface BIConnectionProvider {
 
     void envChanged();
 
-    void updateConnection(String linkData, String oldName) throws Exception;
+    void updateConnection(String linkData, String oldName, long userId) throws Exception;
 
     void removeConnection(String name);
 
