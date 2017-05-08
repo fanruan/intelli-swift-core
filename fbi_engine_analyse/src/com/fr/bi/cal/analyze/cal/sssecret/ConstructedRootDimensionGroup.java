@@ -102,6 +102,7 @@ public class ConstructedRootDimensionGroup extends RootDimensionGroup {
     private void initRootNode() {
         rootNode = new MetricMergeResult(null, sumLength, root.getGvis());
         if (columns.length == 0) {
+            sum(rootNode);
             return;
         }
         if (executor != null) {
