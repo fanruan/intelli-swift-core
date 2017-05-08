@@ -590,7 +590,8 @@ public abstract class VanChartWidget extends TableWidget {
 
                 JSONObject labels = new JSONObject(dataLabels.toString());
                 labels.optJSONObject("formatter")
-                        .put("valueFormat", this.dataLabelValueFormat(this.getBITargetByID(dimensionID)));
+                        .put("valueFormat", this.dataLabelValueFormat(this.getBITargetByID(dimensionID)))
+                        .put("percentFormat", "function(){return BI.contentFormat(arguments[0], \"#.##%\")}");
 
                 ser.put("dataLabels", labels);
             }
