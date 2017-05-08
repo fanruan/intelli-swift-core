@@ -65,7 +65,8 @@ public class CubeConstant {
 
         public static final int CHECKTASK = 0x2;
     }
-//    public static final class CUBE_TASK_TYPE {
+
+    //    public static final class CUBE_TASK_TYPE {
 //        public static final String GLOBAL_FULL_ = "GLOBAL_FULL";
 //        public static final String GLOBAL_PART = "GLOBAL_PART";
 //        public static final String SINGLE_TABLE_PART = "SINGLE_TABLE_PART";
@@ -74,5 +75,10 @@ public class CubeConstant {
     public static final String CUBE_PROPERTY = "property";
 
     /*每隔多少行输出一次信息*/
-    public static final long LOG_SEPERATOR_ROW = 1l<<16;
+    public static final long LOG_SEPERATOR_ROW = 1l << 16;
+
+    public static final class RELATION_VALIDATION {
+        public static String VALID = "VALID";
+        public static String INVALID = "INVALID";
+    }
 }

@@ -93,6 +93,7 @@ public class BITrigger implements ITrigger {
     @Override
     public void handleMessage(IMessage message) throws BIThresholdIsOffException {
         threshold.handleMessage(message);
+        processor.handleMessage(message);
         if (threshold.isMeetThreshold()) {
             BILoggerFactory.getLogger().debug("Trigger invoke process,get :" + message);
             processor.process(message);

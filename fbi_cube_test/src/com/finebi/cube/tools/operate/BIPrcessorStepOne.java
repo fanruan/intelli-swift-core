@@ -18,13 +18,13 @@ public class BIPrcessorStepOne implements IProcessor {
     public void process(IMessage lastReceiveMessage) {
         try {
             publish.publicRunningMessage(null);
-            System.out.println("Start First Step,");
+//            System.out.println("Start First Step,");
             try {
                 Thread.sleep(100);
             } catch (Exception e) {
                 BILoggerFactory.getLogger().error(e.getMessage(), e);
             }
-            System.out.println("Stop First Step,");
+//            System.out.println("Stop First Step,");
             publish.publicStopMessage(null);
         } catch (Exception e) {
             BILoggerFactory.getLogger().error(e.getMessage(), e);
@@ -34,6 +34,11 @@ public class BIPrcessorStepOne implements IProcessor {
     @Override
     public Object getResult() {
         return null;
+    }
+
+    @Override
+    public void handleMessage(IMessage receiveMessage) {
+
     }
 
     @Override
