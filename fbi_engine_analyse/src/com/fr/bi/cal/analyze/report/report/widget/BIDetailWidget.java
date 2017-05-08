@@ -288,8 +288,8 @@ public class BIDetailWidget extends BIAbstractWidget {
         }
     }
 
-    public JSONObject getPostOptions(String sessionId, HttpServletRequest req) throws Exception {
-        JSONObject dataJSON = this.createDataJSON((BISession) SessionDealWith.getSessionIDInfor(sessionId), req).getJSONObject("data");
+    public JSONObject getPostOptions(BISessionProvider session, HttpServletRequest req) throws Exception {
+        JSONObject dataJSON = this.createDataJSON(session, req).getJSONObject("data");
         Map<Integer, List<JSONObject>> viewMap = createViewMap();
         List<DimAndTargetStyle> dimAndTargetStyles = createChartDimensions();
         IExcelDataBuilder builder = new DetailTableBuilder(viewMap, dimAndTargetStyles, dataJSON, null);

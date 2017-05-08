@@ -507,8 +507,8 @@ public class TableWidget extends BISummaryWidget {
     public void reSetDetailTarget() {
     }
 
-    public JSONObject getPostOptions(String sessionId, HttpServletRequest req) throws Exception {
-        JSONObject dataJSON = this.createDataJSON((BISession) SessionDealWith.getSessionIDInfor(sessionId), req).getJSONObject("data");
+    public JSONObject getPostOptions(BISessionProvider session, HttpServletRequest req) throws Exception {
+        JSONObject dataJSON = this.createDataJSON(session, req).getJSONObject("data");
         Map<Integer, List<JSONObject>> viewMap = this.createViewMap();
         List<DimAndTargetStyle> chartSettings = new ArrayList<DimAndTargetStyle>();
         createChartSettings(chartSettings);

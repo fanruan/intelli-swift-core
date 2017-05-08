@@ -372,7 +372,7 @@ public class BIReportExportExcel {
             options = jo.put("plotOptions", plotOptions);
             key = "vanChartOptions";
         } else {
-            options = widget.getPostOptions(sessionID, req);
+            options = widget.getPostOptions(session, req);
             key = "tableOptions";
         }
         JSONObject titleParams = JSONObject.create();

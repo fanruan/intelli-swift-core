@@ -363,6 +363,10 @@ public class TreeWidget extends BIAbstractWidget {
         return WidgetType.TREE;
     }
 
+    public JSONObject getPostOptions(BISessionProvider session, HttpServletRequest req) throws Exception {
+        return new JSONObject();
+    }
+
     @Override
     public void reSetDetailTarget() {
 

@@ -270,4 +270,8 @@ public class ListLabelWidget extends BISummaryWidget {
 
     }
 
+    public JSONObject getPostOptions(BISessionProvider session, HttpServletRequest req) throws Exception {
+        return new JSONObject();
+    }
+
 }
