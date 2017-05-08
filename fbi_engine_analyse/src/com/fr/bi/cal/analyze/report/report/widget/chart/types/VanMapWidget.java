@@ -120,6 +120,10 @@ public class VanMapWidget extends VanChartWidget{
         BIMapInfoManager manager = BIMapInfoManager.getInstance();
 
         for(int i = 0, seriesCount = targetIDs.length; i < seriesCount; i++){
+
+            String key = i == 0 ? "value" : "size";
+            String type = i == 0 ? "areaMap" : "bubble";
+
             JSONArray data = JSONArray.create(), rawData = originData.getJSONArray("c");
             String id = targetIDs[i];
             double scale = this.numberScale(id);
@@ -129,7 +133,7 @@ public class VanMapWidget extends VanChartWidget{
                 double value = s.isNull(i) ? 0 : s.getDouble(i);
                 String areaName =  item.optString("n");
 
-                JSONObject datum = JSONObject.create().put("name", areaName).put("value", value / scale);
+                JSONObject datum = JSONObject.create().put("name", areaName).put(key, value / scale);
 
                 if(item.has("c")){
                     JSONObject drillDown = JSONObject.create();
@@ -142,7 +146,8 @@ public class VanMapWidget extends VanChartWidget{
                 data.put(datum);
             }
 
-            series.put(JSONObject.create().put("data", data).put("name", this.getDimensionNameByID(id)).put("dimensionID", id));
+            series.put(JSONObject.create().put("data", data).put("type", type)
+                    .put("name", this.getDimensionNameByID(id)).put("dimensionID", id));
         }
 
         return series;

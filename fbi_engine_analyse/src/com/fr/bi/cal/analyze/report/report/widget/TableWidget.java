@@ -45,6 +45,7 @@ import com.fr.report.poly.TemplateBlock;
 import com.fr.stable.StringUtils;
 import com.fr.web.core.SessionDealWith;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -225,7 +226,7 @@ public class TableWidget extends BISummaryWidget {
     }
 
     @Override
-    public JSONObject createDataJSON(BISessionProvider session) throws Exception {
+    public JSONObject createDataJSON(BISessionProvider session, HttpServletRequest req) throws Exception {
         BIEngineExecutor executor = getExecutor((BISession) session);
         JSONObject jo = new JSONObject();
         if (executor != null) {
@@ -503,8 +504,8 @@ public class TableWidget extends BISummaryWidget {
     public void reSetDetailTarget() {
     }
 
-    public JSONObject getPostOptions(String sessionId) throws Exception {
-        JSONObject dataJSON = this.createDataJSON((BISession) SessionDealWith.getSessionIDInfor(sessionId)).getJSONObject("data");
+    public JSONObject getPostOptions(String sessionId, HttpServletRequest req) throws Exception {
+        JSONObject dataJSON = this.createDataJSON((BISession) SessionDealWith.getSessionIDInfor(sessionId), req).getJSONObject("data");
         Map<Integer, List<JSONObject>> viewMap = this.createViewMap();
         List<DimAndTargetStyle> chartSettings = new ArrayList<DimAndTargetStyle>();
         createChartSettings(chartSettings);
