@@ -40,6 +40,37 @@ public class MemoryDateColumn extends AbstractSingleMemoryColumn<Long> {
     }
 
     @Override
+    public long getGroupCount(BIKey key) {
+        /**
+         * Connery:日期类型的，getter要从getters中获取。
+         * 这个对象不能被重用。
+         *
+         */
+        if(this.getter==null) {
+            this.getter = createGroupByType(key, new ArrayList<BITableSourceRelation>(), null);
+        }
+        return this.getter.sizeOfGroup();
+    }
+    /**
+     * Connery:重写掉获取位置的方法。
+     * 日期类型的子类型，从明细数据里面取出来的是原始数据，而非子类型的数据。
+     * 例如 第一季度，需要的groupValue是1，但是原始数据可能是1490756112763
+     */
+    @Override
+    public int getPositionOfGroup(int row, SingleUserNIOReadManager manager) {
+        if (groupPosition != null){
+            return groupPosition.get(row);
+        }
+        for (int i = 0; i < getter.sizeOfGroup(); i++) {
+            GroupValueIndex groupValueIndex = getter.getGroupValueIndex(i);
+            if (groupValueIndex.isOneAt(row)) {
+                return i;
+            }
+        }
+        return 0;
+    }
+
+    @Override
     public ICubeColumnIndexReader createGroupByType(BIKey key, List<BITableSourceRelation> relationList, SingleUserNIOReadManager manager) {
 
         if (key instanceof IndexTypeKey) {
