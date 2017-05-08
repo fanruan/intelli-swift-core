@@ -129,6 +129,39 @@ public class CustomNumberGroup extends AbstractGroup {
                     groups[i].setValue(oneGroup.getString("groupName"));
                 }
             }
+        }else {
+            //兼容之前的
+            if (jo.has("group_value")) {
+                JSONObject valueJson = jo.optJSONObject("group_value");
+                if (valueJson.has("group_nodes")) {
+                    JSONArray ja = valueJson.getJSONArray("group_nodes");
+                    int len = ja.length();
+                    if (valueJson.has("use_other")) {
+                        groups = new NumberGroupInfo[len + 1];
+                        groups[len] = new NumberOtherGroupInfo();
+                        groups[len].setValue(valueJson.getString("use_other"));
+                    } else {
+                        groups = new NumberGroupInfo[len];
+                    }
+                    for (int i = 0; i < len; i++) {
+                        JSONObject oneGroup = ja.getJSONObject(i);
+
+                        groups[i] = new NumberGroupInfo();
+                        if (oneGroup.has("max")) {
+                            groups[i].max = oneGroup.getDouble("max");
+                            groups[i].closemax = oneGroup.getBoolean("closemax");
+                        }
+
+                        if (oneGroup.has("min")) {
+                            groups[i].min = oneGroup.getDouble("min");
+                            groups[i].closemin = oneGroup.getBoolean("closemin");
+                        }
+
+                        groups[i].setValue(oneGroup.getString("group_name"));
+                    }
+                }
+            }
+
         }
     }
 
