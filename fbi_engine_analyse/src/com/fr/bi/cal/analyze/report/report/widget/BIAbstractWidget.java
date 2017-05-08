@@ -35,6 +35,7 @@ import com.fr.web.core.SessionDealWith;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 
 /**
@@ -274,4 +275,5 @@ public abstract class BIAbstractWidget implements BIWidget {
     public IWidgetStyle getStyle() {
         return null;
     }
+
 }

@@ -59,7 +59,7 @@ public class BITopicConainer extends BIMapContainer<ITopicTag, ITopic> implement
         try {
             return getValue(topicTag);
         } catch (BIKeyAbsentException ignore) {
-            throw new BITopicAbsentException();
+            throw new BITopicAbsentException(topicTag != null ? "Topic:" + topicTag.toString() : "");
         }
     }
 

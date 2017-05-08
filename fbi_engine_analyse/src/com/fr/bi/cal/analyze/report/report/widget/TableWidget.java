@@ -45,6 +45,7 @@ import com.fr.report.poly.TemplateBlock;
 import com.fr.stable.StringUtils;
 import com.fr.web.core.SessionDealWith;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -225,7 +226,7 @@ public class TableWidget extends BISummaryWidget {
     }
 
     @Override
-    public JSONObject createDataJSON(BISessionProvider session) throws Exception {
+    public JSONObject createDataJSON(BISessionProvider session, HttpServletRequest req) throws Exception {
         BIEngineExecutor executor = getExecutor((BISession) session);
         JSONObject jo = new JSONObject();
         if (executor != null) {
@@ -345,9 +346,12 @@ public class TableWidget extends BISummaryWidget {
     }
 
     private boolean isUsed(String dId) {
-        boolean isDimUsed = dimensionsIdMap.containsKey(dId) && dimensionsIdMap.get(dId).isUsed();
-        boolean isTargetUsed = targetsIdMap.containsKey(dId) && targetsIdMap.get(dId).isUsed();
-        return isDimUsed || isTargetUsed;
+        for (BIDimension dimension : this.dimensions) {
+            if (ComparatorUtils.equals(dimension.getId(), dId)) {
+                return dimension.isUsed();
+            }
+        }
+        return true;
     }
 
     public void setComplexExpander(ComplexExpander complexExpander) {
@@ -503,21 +507,21 @@ public class TableWidget extends BISummaryWidget {
     public void reSetDetailTarget() {
     }
 
-    public JSONObject getPostOptions(String sessionId) throws Exception {
-        JSONObject dataJSON = this.createDataJSON((BISession) SessionDealWith.getSessionIDInfor(sessionId)).getJSONObject("data");
+    public JSONObject getPostOptions(String sessionId, HttpServletRequest req) throws Exception {
+        JSONObject dataJSON = this.createDataJSON((BISession) SessionDealWith.getSessionIDInfor(sessionId), req).getJSONObject("data");
         Map<Integer, List<JSONObject>> viewMap = this.createViewMap();
         List<DimAndTargetStyle> chartSettings = new ArrayList<DimAndTargetStyle>();
         createChartSettings(chartSettings);
         IExcelDataBuilder builder = null;
         switch (this.table_type) {
             case BIReportConstant.TABLE_WIDGET.CROSS_TYPE:
-                builder = new SummaryCrossTableDataBuilder(viewMap, chartSettings, dataJSON, new BITableWidgetStyle());
+                builder = new SummaryCrossTableDataBuilder(viewMap, chartSettings, dataJSON, style);
                 break;
             case BIReportConstant.TABLE_WIDGET.GROUP_TYPE:
-                builder = new SummaryGroupTableDataBuilder(viewMap, chartSettings, dataJSON, new BITableWidgetStyle());
+                builder = new SummaryGroupTableDataBuilder(viewMap, chartSettings, dataJSON, style);
                 break;
             case BIReportConstant.TABLE_WIDGET.COMPLEX_TYPE:
-                builder = new SummaryComplexTableBuilder(viewMap, chartSettings, dataJSON, new BITableWidgetStyle());
+                builder = new SummaryComplexTableBuilder(viewMap, chartSettings, dataJSON, style);
                 break;
         }
         if (null == builder) {
@@ -570,15 +574,9 @@ public class TableWidget extends BISummaryWidget {
             List<JSONObject> list = new ArrayList<JSONObject>();
             List<String> ids = view.get(next);
             for (String dId : ids) {
-//                if (isUsed(dId)) {
                 int type = getFieldTypeByDimensionID(dId);
                 String text = getDimensionNameByID(dId);
-//                    if (dId.equals("fb32c3e441af4ada")){
-//                        list.add(new JSONObject().put("dId", dId).put("text", text).put("type", type).put("used",false));
-//                    }else {
                 list.add(new JSONObject().put("dId", dId).put("text", text).put("type", type).put("used", isUsed(dId)));
-//                    }
-//                }
             }
             dimAndTar.put(next, list);
         }

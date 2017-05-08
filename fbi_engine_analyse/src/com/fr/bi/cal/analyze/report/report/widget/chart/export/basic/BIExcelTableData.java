@@ -1,5 +1,6 @@
 package com.fr.bi.cal.analyze.report.report.widget.chart.export.basic;
 
+import com.fr.bi.conf.report.widget.IWidgetStyle;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONCreator;
 import com.fr.json.JSONObject;
@@ -15,17 +16,20 @@ public class BIExcelTableData implements JSONCreator {
     private List<ITableItem> items;
     private List<ITableHeader> crossHeaders;
     private JSONArray crossItems;
+    private IWidgetStyle widgetStyle;
 
-    public BIExcelTableData(List<ITableHeader> headers, List<ITableItem> items, List<ITableHeader> crossHeaders, JSONArray crossItems) {
+    public BIExcelTableData(List<ITableHeader> headers, List<ITableItem> items, List<ITableHeader> crossHeaders, JSONArray crossItems, IWidgetStyle widgetStyle) {
         this.headers = headers;
         this.items = items;
         this.crossHeaders = crossHeaders;
         this.crossItems = crossItems;
+        this.widgetStyle = widgetStyle;
     }
 
-    public BIExcelTableData(List<ITableHeader> headers, List<ITableItem> items) {
+    public BIExcelTableData(List<ITableHeader> headers, List<ITableItem> items, IWidgetStyle widgetStyle) {
         this.headers = headers;
         this.items = items;
+        this.widgetStyle = widgetStyle;
     }
 
     @Override
@@ -71,5 +75,9 @@ public class BIExcelTableData implements JSONCreator {
 
     public JSONArray getCrossItems() {
         return crossItems;
+    }
+
+    public IWidgetStyle getWidgetStyle() {
+        return widgetStyle;
     }
 }

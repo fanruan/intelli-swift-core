@@ -81,7 +81,7 @@ public class SummaryCrossTableDataBuilder extends TableAbstractDataBuilder {
 
     @Override
     public BIExcelTableData createTableData() throws JSONException {
-        BIExcelTableData tableDataForExport = new BIExcelTableData(headers, items, crossHeaders, crossItems);
+        BIExcelTableData tableDataForExport = new BIExcelTableData(headers, items, crossHeaders, crossItems, styleSetting);
         return tableDataForExport;
 
     }

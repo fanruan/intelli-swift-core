@@ -33,7 +33,7 @@ public abstract class TableAbstractDataBuilder implements IExcelDataBuilder {
 
     protected JSONObject data;
     Map<Integer, List<JSONObject>> dimAndTar;
-    IWidgetStyle styleSetting;
+    protected IWidgetStyle styleSetting;
     protected ReportNodeTree tree;
     protected List<String> dimIds;
     protected List<String> targetIds;
