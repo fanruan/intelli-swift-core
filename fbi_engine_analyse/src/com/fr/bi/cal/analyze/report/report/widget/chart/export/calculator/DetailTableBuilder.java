@@ -63,7 +63,7 @@ public class DetailTableBuilder extends TableAbstractDataBuilder {
 
     @Override
     public BIExcelTableData createTableData() throws JSONException {
-        BIExcelTableData tableDataForExport = new BIExcelTableData(headers, items);
+        BIExcelTableData tableDataForExport = new BIExcelTableData(headers, items,this.styleSetting);
         return tableDataForExport;
     }
 
