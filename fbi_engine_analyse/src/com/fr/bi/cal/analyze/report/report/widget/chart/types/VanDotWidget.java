@@ -168,13 +168,11 @@ public class VanDotWidget extends VanCartesianWidget{
         if(chartType == WidgetType.BUBBLE || chartType == WidgetType.SCATTER){
             return this.createBubbleScatterSeries(originData);
         }
-        JSONArray series = JSONArray.create();
         String[] ids = this.getUsedTargetID();
         if(ids.length < SCATTER_COUNT){
-            return series;
+            return JSONArray.create();
         }
-        double yScale = this.numberScale(ids[0]), xScale = this.numberScale(ids[1]);
-        double sizeScale = ids.length > 2 ? this.numberScaleByLevel(this.numberLevelFromSettings(ids[2])) : 1;
+
         HashMap<String, ArrayList<JSONArray>> seriesMap = new HashMap<String, ArrayList<JSONArray>>();
         Iterator iterator = originData.keys();
 
@@ -188,8 +186,17 @@ public class VanDotWidget extends VanCartesianWidget{
             }
         }
 
+        return createDotSeries(noSeries, ids, seriesMap);
+    }
+
+    private JSONArray createDotSeries(boolean noSeries, String[] ids, HashMap<String, ArrayList<JSONArray>> seriesMap) throws JSONException{
+        JSONArray series = JSONArray.create();
+
+        double yScale = this.numberScale(ids[0]), xScale = this.numberScale(ids[1]);
+        double sizeScale = ids.length > 2 ? this.numberScaleByLevel(this.numberLevelFromSettings(ids[2])) : 1;
+
         JSONArray dotData = JSONArray.create();
-        iterator = seriesMap.keySet().iterator();
+        Iterator iterator = seriesMap.keySet().iterator();
         while (iterator.hasNext()){
             String seriesName = iterator.next().toString();
             ArrayList<JSONArray> seriesArray = seriesMap.get(seriesName);
@@ -224,6 +231,7 @@ public class VanDotWidget extends VanCartesianWidget{
         if(noSeries){
             series.put(JSONObject.create().put("data", dotData).put("dimensionID", ids[ids.length - 1]));
         }
+
         return series;
     }
 
