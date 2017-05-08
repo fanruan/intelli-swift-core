@@ -1,5 +1,6 @@
 package com.finebi.integration.cube.gen;
 
+
 import com.finebi.cube.BICubeTestBase;
 import com.finebi.cube.ICubeConfiguration;
 import com.finebi.cube.common.log.BILoggerFactory;
@@ -21,7 +22,13 @@ import com.finebi.cube.structure.column.BIColumnKey;
 import com.finebi.cube.structure.column.CubeColumnReaderService;
 import com.finebi.cube.structure.table.BICubeTableEntity;
 import com.finebi.cube.structure.table.CompoundCubeTableReader;
-import com.finebi.cube.tools.*;
+import com.finebi.cube.tools.BIMemDataSourceDependent;
+import com.finebi.cube.tools.BIMemDataSourceTestToolCube;
+import com.finebi.cube.tools.BIMemoryDataSource;
+import com.finebi.cube.tools.BIMemoryDataSourceFactory;
+import com.finebi.cube.tools.BINationDataFactory;
+import com.finebi.cube.tools.BITableSourceTestTool;
+import com.finebi.cube.tools.DBFieldTestTool;
 import com.finebi.cube.tools.subset.BISourceDataNeverTransportTestTool;
 import com.finebi.cube.tools.subset.BISourceDataPartTransportTestTool;
 import com.finebi.cube.utils.BICubePathUtils;
@@ -34,7 +41,11 @@ import com.fr.bi.stable.data.source.CubeTableSource;
 import java.io.File;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * This class created on 2016/4/6.
@@ -172,7 +183,7 @@ public class BISourceDataTransportTest extends BICubeTestBase {
     public void testTransportCompoundTable() {
         try {
             CubeTableSource tableSourceParent = BIMemoryDataSourceFactory.generateTableA();
-            List<CubeTableSource> list = new ArrayList<>();
+            List<CubeTableSource> list = new ArrayList<CubeTableSource>();
             list.add(tableSourceParent);
             BIMemDataSourceDependent tableSource = new BIMemDataSourceDependent(list);
             Set<CubeTableSource> parents = new HashSet<CubeTableSource>();
@@ -214,7 +225,7 @@ public class BISourceDataTransportTest extends BICubeTestBase {
     public void testCompoundSubTableRelation() {
         try {
             CubeTableSource tableSourceParent = BIMemoryDataSourceFactory.generateTableA();
-            List<CubeTableSource> list = new ArrayList<>();
+            List<CubeTableSource> list = new ArrayList<CubeTableSource>();
             list.add(tableSourceParent);
             BIMemDataSourceDependent tableSource = new BIMemDataSourceDependent(list);
             Set<CubeTableSource> parents = new HashSet<CubeTableSource>();
