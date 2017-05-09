@@ -1,7 +1,6 @@
 package com.finebi.cube.tools;
 
 import com.finebi.cube.impl.pubsub.BISubscribeID;
-import com.finebi.cube.tools.BISubscribeTestTool;
 
 /**
  * This class created on 2016/3/22.
