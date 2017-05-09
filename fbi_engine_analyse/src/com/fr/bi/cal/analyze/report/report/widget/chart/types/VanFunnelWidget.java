@@ -36,4 +36,8 @@ public class VanFunnelWidget extends VanChartWidget{
     protected String getTooltipIdentifier(){
         return NAME + SERIES + VALUE;
     }
+
+    protected String categoryLabelKey() {
+        return NAME;
+    }
 }

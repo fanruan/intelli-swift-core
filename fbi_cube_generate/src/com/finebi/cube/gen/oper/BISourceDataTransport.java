@@ -7,6 +7,7 @@ import com.finebi.cube.conf.utils.BILogHelper;
 import com.finebi.cube.impl.pubsub.BIProcessor;
 import com.finebi.cube.impl.pubsub.BIProcessorThreadManager;
 import com.finebi.cube.location.BICubeLocation;
+import com.finebi.cube.message.IMessage;
 import com.finebi.cube.structure.BITableKey;
 import com.finebi.cube.structure.Cube;
 import com.finebi.cube.structure.CubeTableEntityService;
@@ -174,5 +175,10 @@ public abstract class BISourceDataTransport extends BIProcessor {
 
     protected String fetchTableInfo() {
         return BILogHelper.logTableSource(tableSource, " ");
+    }
+
+    @Override
+    public void handleMessage(IMessage receiveMessage) {
+
     }
 }
