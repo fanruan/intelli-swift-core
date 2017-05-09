@@ -99,7 +99,7 @@ public abstract class BIAbstractDimension extends BIAbstractTargetAndDimension i
             sortJo.put("type", BISortUtils.getSortTypeByDimensionType(sortJo.optInt("type", BIReportConstant.SORT.NONE), jo.optInt("type")));
             this.sort = BISortFactory.parseSort(sortJo);
             JSONObject s = jo.getJSONObject("sort");
-            if (s.has("sortTarget")) {
+            if (sort.getSortType() != BIReportConstant.SORT.CUSTOM && s.has("sortTarget")) {
                 this.sortTarget = s.optString("sortTarget");
             }
         }
