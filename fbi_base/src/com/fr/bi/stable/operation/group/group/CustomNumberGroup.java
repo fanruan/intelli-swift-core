@@ -92,6 +92,9 @@ public class CustomNumberGroup extends AbstractGroup {
                 if (otherHelper != null) {
                     otherHelper.add(gvi);
                 } else {
+                    /**
+                     * Connery:BI-5034,Double转String
+                     */
                     String name = StableUtils.convertNumberStringToString(((Number) entry.getKey()).doubleValue());
                     ungroupMap.put(name, gvi);
                 }
