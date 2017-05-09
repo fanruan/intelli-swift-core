@@ -94,4 +94,8 @@ public interface Cube extends ICubeVersion, Serializable {
     boolean exist(ITableKey tableKey, BICubeTablePath relationPath);
 
     boolean exist(ITableKey tableKey, BIColumnKey field, BICubeTablePath relationPath);
+
+    boolean isResourceExist(ITableKey tableKey);
+
+    boolean isResourceExist(ITableKey tableKey, BICubeTablePath relationPath);
 }
