@@ -101,9 +101,11 @@ public class BITableWidgetStyle implements IWidgetStyle {
             headerRowSize = settingJo.optInt("rowHeight");
             footerRowSize = settingJo.optInt("rowHeight");
             rowSize = settingJo.optInt("maxRow");
-            JSONArray array = settingJo.getJSONArray("mergeCols");
-            mergeCols = (List<Integer>) array.toUnmodifiableList();
-            columnSize = (List<Integer>) array.toUnmodifiableList();
+            if (settingJo.has("mergeCols")) {
+                JSONArray array = settingJo.optJSONArray("mergeCols");
+                mergeCols = (List<Integer>) array.toUnmodifiableList();
+                columnSize = (List<Integer>) array.toUnmodifiableList();
+            }
             showRowToTal = settingJo.optBoolean("showRowToTal");
             themeStyle = settingJo.optString("themeStyle");
             wsTableStyle = settingJo.optInt("wsTableStyle");
