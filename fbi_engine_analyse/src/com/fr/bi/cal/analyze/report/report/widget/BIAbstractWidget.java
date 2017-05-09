@@ -36,7 +36,6 @@ import javax.servlet.http.HttpServletRequest;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 
 /**
@@ -273,10 +272,7 @@ public abstract class BIAbstractWidget implements BIWidget {
         return rect;
     }
 
-    @Override
-    public void setLocale(Locale locale) {
 
-    }
 
     public IWidgetStyle getStyle() {
         return null;
