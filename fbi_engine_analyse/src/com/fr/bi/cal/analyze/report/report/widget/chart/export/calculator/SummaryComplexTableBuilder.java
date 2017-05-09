@@ -251,6 +251,7 @@ public class SummaryComplexTableBuilder extends TableAbstractDataBuilder {
         }
         if (j == 0) {
             for (int length = 0; length < singleTable.createJSON().getJSONArray("items").length(); length++) {
+            mergeItems(tempItems,createItemByRowValues(singleTable.getItems().get(length), rowValues));
                 tempItems.add(createItemByRowValues(singleTable.getItems().get(length), rowValues));
             }
         }
@@ -267,6 +268,9 @@ public class SummaryComplexTableBuilder extends TableAbstractDataBuilder {
                 }
             }
         }
+    }
+
+    private void mergeItems(List<ITableItem> tempItems, ITableItem itemByRowValues) {
     }
 
     private ITableItem createItemByRowValues(ITableItem item, JSONObject rowValues) throws JSONException {
