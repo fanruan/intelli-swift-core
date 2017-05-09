@@ -63,8 +63,8 @@ public class BIFieldIndexGenerator<T> extends BIProcessor {
     protected ICubeColumnEntityService<T> columnEntityService;
     protected Cube cube;
     protected long rowCount;
-    private final String CACHE = "caches";
-    private final String BASEPATH = File.separator  + CACHE;
+    private static final String CACHE = "caches";
+    private static final String BASEPATH = File.separator  + CACHE;
     public BIFieldIndexGenerator(Cube cube, CubeTableSource tableSource, ICubeFieldSource hostBICubeFieldSource, BIColumnKey targetColumnKey) {
         this.tableSource = tableSource;
         this.hostBICubeFieldSource = hostBICubeFieldSource;
