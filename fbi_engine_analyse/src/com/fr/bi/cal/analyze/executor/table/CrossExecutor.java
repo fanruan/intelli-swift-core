@@ -4,6 +4,7 @@ import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.base.Style;
 import com.fr.bi.base.FinalInt;
 import com.fr.bi.cal.analyze.cal.index.loader.CubeIndexLoader;
+import com.fr.bi.cal.analyze.cal.index.loader.MetricGroupInfo;
 import com.fr.bi.cal.analyze.cal.result.*;
 import com.fr.bi.cal.analyze.executor.iterator.TableCellIterator;
 import com.fr.bi.cal.analyze.executor.iterator.StreamPagedIterator;
@@ -78,7 +79,6 @@ public class CrossExecutor extends AbstractTableWidgetExecutor<NewCrossRoot> {
     }
 
     /**
-     *
      * @param roots         ComplexCrossExecutor复用此方法时需要的参数
      * @param widget        ComplexCrossExecutor复用此方法时需要的参数
      * @param colDimension  ComplexCrossExecutor复用此方法时需要的参数
@@ -107,7 +107,7 @@ public class CrossExecutor extends AbstractTableWidgetExecutor<NewCrossRoot> {
             pagedIterator.addCell(cell);
             FinalInt columnIdx = new FinalInt();
             columnIdx.value = rowDimension.length + widget.isOrder();
-            for(int i = 0; i < rootsLen; i++) {
+            for (int i = 0; i < rootsLen; i++) {
                 tops[i] = (CrossHeader) tops[i].getFirstChild();
                 //列表头
                 getColDimensionsTitle(widget, colDimension, usedSumTarget, pagedIterator, tops[i], rowIdx.value, columnIdx, style);
@@ -123,7 +123,7 @@ public class CrossExecutor extends AbstractTableWidgetExecutor<NewCrossRoot> {
         if (widget.getViewTargets().length > 1) {
             FinalInt targetsTitleColumnIdx = new FinalInt();
             targetsTitleColumnIdx.value = rowDimension.length + widget.isOrder();
-            for(int i = 0; i < rootsLen; i++) {
+            for (int i = 0; i < rootsLen; i++) {
                 getTargetsTitle(usedSumTarget, pagedIterator, tops[i], rowIdx.value, targetsTitleColumnIdx, style);
             }
         }
@@ -295,6 +295,21 @@ public class CrossExecutor extends AbstractTableWidgetExecutor<NewCrossRoot> {
     @Override
     public JSONObject createJSONObject() throws Exception {
         return getCubeNode().toJSONObject(rowDimension, colDimension, widget.getTargetsKey());
+    }
+
+    @Override
+    public List<MetricGroupInfo> getLinkedWidgetFilterGVIList() throws Exception {
+        if (getSession() == null) {
+            return null;
+        }
+        int calPage = paging.getOperator();
+        List<NodeAndPageInfo> infoList = CubeIndexLoader.getInstance(session.getUserId()).getPageCrossGroupInfoList(createTarget4Calculate(), rowDimension, colDimension, allSumTarget, calPage, widget.useRealData(), session, expander, widget);
+        ArrayList<MetricGroupInfo> gviList = new ArrayList<MetricGroupInfo>();
+        for (NodeAndPageInfo info : infoList) {
+            gviList.addAll(info.getIterator().getRoot().getMetricGroupInfoList());
+        }
+        return gviList;
+
     }
 
     private void clearNullSummary(CrossHeader left, TargetGettingKey[] keys) {

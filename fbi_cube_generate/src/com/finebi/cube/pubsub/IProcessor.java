@@ -16,4 +16,6 @@ public interface IProcessor<R> {
     void setPublish(IPublish publish);
 
     R getResult();
+
+    void handleMessage(IMessage receiveMessage);
 }
