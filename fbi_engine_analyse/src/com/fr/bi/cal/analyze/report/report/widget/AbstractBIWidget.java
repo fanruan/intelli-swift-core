@@ -43,7 +43,7 @@ import java.util.List;
  *
  * @author Daniel-pc
  */
-public abstract class BIAbstractWidget implements BIWidget {
+public abstract class AbstractBIWidget implements BIWidget {
 
     private static final long serialVersionUID = 1959074307747827366L;
     private String blockName;
