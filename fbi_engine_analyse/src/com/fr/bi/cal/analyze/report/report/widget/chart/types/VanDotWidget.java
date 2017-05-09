@@ -3,6 +3,7 @@ package com.fr.bi.cal.analyze.report.report.widget.chart.types;
 import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.conf.report.WidgetType;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
+import com.fr.bi.field.target.target.BISummaryTarget;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.general.ComparatorUtils;
 import com.fr.general.FRLogger;
@@ -364,22 +365,34 @@ public class VanDotWidget extends VanCartesianWidget{
         JSONObject tooltip = options.optJSONObject("plotOptions").optJSONObject("tooltip");
 
         String[] ids = this.getUsedTargetID();
-        String[] keys = {"sizeFormat", "YFormat", "XFormat"};
-        int size = ids.length;
+        String[] keys1 = {"(" + getLocText("BI-Basic_Value") +") ", "(Y) ", "(X) "};
+        String[] keys2 = {"size", "y", "x"};
+        int targetSize = ids.length;
+
+        List<StringBuilder> stringBuilderList = new ArrayList<StringBuilder>();
+        //size y x or y x or x
+        for(int j = targetSize; j > 0; j--){
+            BISummaryTarget target = this.getBITargetByID(ids[j - 1]);
+            String format = this.valueFormat(target, true);
+
+            stringBuilderList.add(new StringBuilder().append("+ \"<br>\" + \"").append(keys1[targetSize - j])
+                    .append(target.getText()).append(":\" + ")
+                    .append(String.format("BI.contentFormat(this.%s, \"%s\")", keys2[targetSize - j], format)));
+        }
+
+
+        StringBuilder formatterBuilder = new StringBuilder("function() { return this.options.description + \" \" + this.seriesName ");
+        //x y size
+        for(int j = targetSize - 1; j > -1; j--){
+            formatterBuilder.append(stringBuilderList.get(j));
+        }
+        formatterBuilder.append("}");
 
         JSONArray series = options.optJSONArray("series");
-
         for (int i = 0, len = series.length(); i < len; i++) {
             JSONObject ser = series.getJSONObject(i);
-            JSONObject formatter = JSONObject.create();
 
-            formatter.put("identifier", this.getTooltipIdentifier());
-
-            for(int j = size; j > 0; j--){
-                formatter.put(keys[size - j], this.tooltipValueFormat(this.getBITargetByID(ids[j - 1])));
-            }
-
-            ser.put("tooltip", new JSONObject(tooltip.toString()).put("formatter", formatter));
+            ser.put("tooltip", new JSONObject(tooltip.toString()).put("formatter", formatterBuilder.toString()));
         }
     }
 
@@ -407,5 +420,9 @@ public class VanDotWidget extends VanCartesianWidget{
                 ser.put("dataLabels", labels);
             }
         }
+    }
+
+    protected String categoryLabelKey() {
+        return DESCRIPTION;
     }
 }

@@ -46,6 +46,7 @@ public abstract class VanChartWidget extends TableWidget {
     public static final String Y = "${Y}";
     public static final String SIZE = "${SIZE}";
     public static final String NAME = "${NAME}";
+    public static final String DESCRIPTION = "${DESCRIPTION}";
 
     //兼容前台用数字表示位置的写法，真xx丑
     private static final int TOP = 2;
