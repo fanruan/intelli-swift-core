@@ -19,7 +19,7 @@ import com.fr.bi.etl.analysis.report.widget.field.filtervalue.number.NumberBotto
 import com.fr.bi.etl.analysis.report.widget.field.filtervalue.number.NumberLargeOrEqualsCLFilter;
 import com.fr.bi.etl.analysis.report.widget.field.filtervalue.number.NumberSmallOrEqualsCLFilter;
 import com.fr.bi.etl.analysis.report.widget.field.filtervalue.number.NumberTopNFilter;
-//import com.fr.bi.etl.analysis.resource.ETLResourcesHelper;
+import com.fr.bi.etl.analysis.resource.ETLResourcesHelper;
 import com.fr.bi.exception.BIKeyDuplicateException;
 import com.fr.bi.field.filtervalue.BIFilterValueMap;
 import com.fr.bi.resource.ResourceConstants;
@@ -78,21 +78,21 @@ public class AnalysisETLModule extends AbstractModule {
     }
 
     private void registerStyleFiles() {
-//
-//        StableFactory.registerStyleFiles(ETLResourcesHelper.DEFAULT_CSS, ETLResourcesHelper.getDefaultCss());
-//
-//        StableFactory.registerStyleFiles(ResourceConstants.DEFAULT_DESIGN_CSS, ETLResourcesHelper.getDefaultCss());
-//        StableFactory.registerStyleFiles(ResourceConstants.DEFAULT_SHOW_CSS, ETLResourcesHelper.getDefaultCss());
-//        StableFactory.registerStyleFiles(ResourceConstants.DEFAULT_CONF_CSS, ETLResourcesHelper.getAnimateCss());
-//        StableFactory.registerJavaScriptFiles(ETLResourcesHelper.MONITOR_JS, ETLResourcesHelper.getMonitorJS());
-//        StableFactory.registerStyleFiles(ETLResourcesHelper.MONITOR_CSS, ETLResourcesHelper.getMonitorCss());
-//        StableFactory.registerStyleFiles(ETLResourcesHelper.MONITOR_CSS, ETLResourcesHelper.getAnimateCss());
+
+        StableFactory.registerStyleFiles(ETLResourcesHelper.DEFAULT_CSS, ETLResourcesHelper.getDefaultCss());
+
+        StableFactory.registerStyleFiles(ResourceConstants.DEFAULT_DESIGN_CSS, ETLResourcesHelper.getDefaultCss());
+        StableFactory.registerStyleFiles(ResourceConstants.DEFAULT_SHOW_CSS, ETLResourcesHelper.getDefaultCss());
+        StableFactory.registerStyleFiles(ResourceConstants.DEFAULT_CONF_CSS, ETLResourcesHelper.getAnimateCss());
+        StableFactory.registerJavaScriptFiles(ETLResourcesHelper.MONITOR_JS, ETLResourcesHelper.getMonitorJS());
+        StableFactory.registerStyleFiles(ETLResourcesHelper.MONITOR_CSS, ETLResourcesHelper.getMonitorCss());
+        StableFactory.registerStyleFiles(ETLResourcesHelper.MONITOR_CSS, ETLResourcesHelper.getAnimateCss());
     }
 
     private void registerJavaScriptFiles() {
 
-//        StableFactory.registerJavaScriptFiles(ETLResourcesHelper.DEFAULT_JS, ETLResourcesHelper.getDefaultJs());
-//        StableFactory.registerJavaScriptFiles(ResourceConstants.DEFAULT_DESIGN_JS, ETLResourcesHelper.getDefaultJs());
+        StableFactory.registerJavaScriptFiles(ETLResourcesHelper.DEFAULT_JS, ETLResourcesHelper.getDefaultJs());
+        StableFactory.registerJavaScriptFiles(ResourceConstants.DEFAULT_DESIGN_JS, ETLResourcesHelper.getDefaultJs());
     }
 
     public void loadResources(Locale[] locales) {
