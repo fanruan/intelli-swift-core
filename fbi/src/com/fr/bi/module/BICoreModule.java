@@ -45,15 +45,7 @@ import com.fr.bi.conf.provider.BIUserLoginInformationProvider;
 import com.fr.bi.conf.records.BICubeTaskRecordManagerWithoutUser;
 import com.fr.bi.conf.report.BIFSReportProvider;
 import com.fr.bi.conf.tablelock.BIConfTableLockDAO;
-import com.fr.bi.fs.BIDAOProvider;
-import com.fr.bi.fs.BIDAOUtils;
-import com.fr.bi.fs.BIReportDAO;
-import com.fr.bi.fs.BIReportNodeLock;
-import com.fr.bi.fs.BIReportNodeLockDAO;
-import com.fr.bi.fs.BISuperManagetDAOManager;
-import com.fr.bi.fs.BITableMapper;
-import com.fr.bi.fs.HSQLBIReportDAO;
-import com.fr.bi.fs.TableDataBIReportDAO;
+import com.fr.bi.fs.*;
 import com.fr.bi.resource.BaseResourceHelper;
 import com.fr.bi.resource.CommonResourceHelper;
 import com.fr.bi.resource.ConfResourceHelper;
@@ -169,6 +161,7 @@ public class BICoreModule extends AbstractModule {
 
         StableFactory.registerMarkedObject(BIDataConfigAuthorityProvider.XML_TAG, new BISystemDataConfigAuthorityManager());
         StableFactory.registerMarkedObject(FBIConfigProvider.XML_TAG, getFBIConfigManager());
+        StableFactory.registerMarkedObject(BITableDataDAOProvider.XML_TAG, getBITableDataDAOManager());
 
     }
 
@@ -187,7 +180,21 @@ public class BICoreModule extends AbstractModule {
             return FBIConfig.getInstance();
         }
     }
-
+    public BITableDataDAOProvider getBITableDataDAOManager() {
+        if (ClusterEnv.isCluster()) {
+            if (ClusterAdapter.getManager().getHostManager().isSelf()) {
+                BITableDataDAOManager provider = BITableDataDAOManager.getInstance();
+                RPC.registerSkeleton(provider, ClusterAdapter.getManager().getHostManager().getPort());
+                return provider;
+            } else {
+                return (BITableDataDAOProvider) RPC.getProxy(BITableDataDAOManager.class,
+                        ClusterAdapter.getManager().getHostManager().getIp(),
+                        ClusterAdapter.getManager().getHostManager().getPort());
+            }
+        } else {
+            return BITableDataDAOManager.getInstance();
+        }
+    }
     public BIUpdateFrequencyManagerProvider getBIUpdateSettingManager() {
         if (ClusterEnv.isCluster()) {
             if (ClusterAdapter.getManager().getHostManager().isSelf()) {
