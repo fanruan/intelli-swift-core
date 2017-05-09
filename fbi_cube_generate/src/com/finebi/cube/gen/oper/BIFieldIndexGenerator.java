@@ -28,6 +28,7 @@ import com.fr.bi.stable.io.newio.NIOConstant;
 import com.fr.bi.stable.utils.algorithem.BIMD5Utils;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
 import com.fr.bi.stable.utils.program.BIStringUtils;
+import com.fr.bi.util.BIConfigurePathUtils;
 import com.fr.fs.control.UserControl;
 import com.fr.stable.bridge.StableFactory;
 import com.fr.stable.collections.array.IntArray;
@@ -63,8 +64,7 @@ public class BIFieldIndexGenerator<T> extends BIProcessor {
     protected Cube cube;
     protected long rowCount;
     private final String CACHE = "caches";
-    private final String BASEPATH = File.separator + ProjectConstants.RESOURCES_NAME + File.separator + CACHE;
-
+    private final String BASEPATH = File.separator  + CACHE;
     public BIFieldIndexGenerator(Cube cube, CubeTableSource tableSource, ICubeFieldSource hostBICubeFieldSource, BIColumnKey targetColumnKey) {
         this.tableSource = tableSource;
         this.hostBICubeFieldSource = hostBICubeFieldSource;
@@ -236,7 +236,7 @@ public class BIFieldIndexGenerator<T> extends BIProcessor {
 
     private IntArrayListExternalMap<T> createExternalMap(IntArray nullRowNumbers) {
         String tableSourceID = tableSource.getSourceID();
-        String dataFloder = FRContext.getCurrentEnv().getPath() + BASEPATH + File.separator + tableSourceID + File.separator + BIMD5Utils.getMD5String(new String[]{tableSourceID, targetColumnKey.getKey()});
+        String dataFloder = BIConfigurePathUtils.createBasePath() + BASEPATH + File.separator + tableSourceID + File.separator + BIMD5Utils.getMD5String(new String[]{tableSourceID, targetColumnKey.getKey()});
         IntArrayListExternalMap<T> group2rowNumber = ExternalIntArrayMapFactory.getIntListExternalMap(columnEntityService.getClassType(), columnEntityService.getGroupComparator(), dataFloder);
         constructMap(group2rowNumber, nullRowNumbers);
         return group2rowNumber;
