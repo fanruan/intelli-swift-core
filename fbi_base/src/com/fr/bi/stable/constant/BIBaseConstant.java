@@ -36,7 +36,7 @@ public class BIBaseConstant {
     public final static int OFFSETOX1 = 0x1;
     public final static int OFFSETOX3F = 0x3F;
     public final static int OFFSET20 = 20;
-    public final static int PREVIEW_COUNT = 50;
+    public final static int PREVIEW_COUNT = 200;
     public final static int MEMORY_PREVIEW_COUNT = 20;
     public static final int CLASSIC_BI = 0;
     public static final int HIHIDATA = 1;
