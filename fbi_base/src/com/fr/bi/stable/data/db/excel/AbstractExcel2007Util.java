@@ -4,6 +4,7 @@ import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.general.ComparatorUtils;
 import com.fr.stable.ColumnRow;
 import com.fr.stable.StringUtils;
+import com.fr.third.v2.org.apache.poi.hssf.record.NumberRecord;
 import com.fr.third.v2.org.apache.poi.hssf.usermodel.HSSFDateUtil;
 import com.fr.third.v2.org.apache.poi.openxml4j.exceptions.OpenXML4JException;
 import com.fr.third.v2.org.apache.poi.openxml4j.opc.OPCPackage;
@@ -286,6 +287,8 @@ public abstract class AbstractExcel2007Util {
         private static final int ZERO = 48;
         private static final int ALPHABET = 26;
 
+        private static final int SPECIAL_DATE_TYPE = 31;//poi中没有处理“XXXX年XX月XX日”，这种中文日期，单独提出来处理吧。
+
         public MyXSSFSheetHandler(StylesTable styles, ReadOnlySharedStringsTable strings, DataFormatter dataFormatter) {
             this.value = new StringBuffer();
             this.formula = new StringBuffer();
@@ -483,9 +486,13 @@ public abstract class AbstractExcel2007Util {
             }
         }
 
+        private boolean isBelongInSpecialDateType() {
+            return this.formatIndex == SPECIAL_DATE_TYPE;
+        }
+
         public void processNumber() {
             String n = value.toString();
-            boolean isDateFormat = this.formatString != null && (this.formatString.contains("yy") || this.formatString.contains("dd") || this.formatString.contains("mm"));
+            boolean isDateFormat = this.formatString != null && (HSSFDateUtil.isADateFormat(this.formatIndex, this.formatString) || isBelongInSpecialDateType());
             if (isDateFormat) {
                 try {
                     Date date = HSSFDateUtil.getJavaDate(Double.parseDouble(n));

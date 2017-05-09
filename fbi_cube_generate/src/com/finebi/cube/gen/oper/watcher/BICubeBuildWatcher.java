@@ -53,6 +53,11 @@ public abstract class BICubeBuildWatcher implements IProcessor {
     }
 
     @Override
+    public void handleMessage(IMessage receiveMessage) {
+
+    }
+
+    @Override
     public Object getResult() {
         return null;
     }
