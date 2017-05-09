@@ -747,7 +747,7 @@ public class CubeIndexLoader {
         } else {
             pg.setRowIterator(info.getIterator());
         }
-        session.setMergerInfoList(widget.getWidgetName(), info.getIterator().getRoot().getMetricGroupInfoList());
+//        session.setMergerInfoList(widget.getWidgetName(), info.getIterator().getRoot().getMetricGroupInfoList());
         return info;
     }
 
@@ -800,13 +800,18 @@ public class CubeIndexLoader {
                 iterator.getRoot().checkStatus(executor);
             }
             iterator.setExpander(expander);
-            if (calAllPage && !shouldSetIndex) {
+            if (isAllExpandWholeNodeWithoutIndex(calAllPage)) {
                 MultiThreadManagerImpl.getInstance().awaitExecutor(session, executor);
                 return new NodeAndPageInfo(iterator.getRoot().getConstructedRoot(), iterator);
             }
             NodeAndPageInfo info = GroupUtils.createNextPageMergeNode(iterator, op, isHor ? widget.showColumnTotal() : widget.showRowToTal(), shouldSetIndex, widget.getTargets().length, executor);
             MultiThreadManagerImpl.getInstance().awaitExecutor(session, executor);
             return info;
+        }
+
+        //全部展开所有节点并且不需要索引的情况直接返回node，不用再走下面的分页
+        private boolean isAllExpandWholeNodeWithoutIndex(boolean calAllPage) {
+            return calAllPage && !shouldSetIndex && expander == NodeExpander.ALL_EXPANDER;
         }
     }
 
@@ -890,4 +895,76 @@ public class CubeIndexLoader {
     public void releaseAll() {
         releaseIndexs();
     }
+
+    public List<NodeAndPageInfo> getPageGroupInfoList(boolean isHor, BISummaryWidget widget, final BISummaryTarget[] usedTarget,
+                                                      final BIDimension[] rowDimension, BIDimension[] allDimension,
+                                                      final BISummaryTarget[] sumTarget, int page, boolean useRealData,
+                                                      //TODO 需要传到group内部处理只计算index不计算值
+                                                      final BISession session, NodeExpander expander) throws Exception {
+        checkRegisteration(sumTarget, allDimension);
+        BISummaryTarget[] usedTargets = createUsedSummaryTargets(rowDimension, usedTarget, sumTarget);
+        PageIteratorGroup pg;
+
+        String widgetName = widget.getWidgetName();
+        if (needCreateNewIterator(page)) {
+            pg = new PageIteratorGroup();
+            session.setPageIteratorGroup(useRealData, widgetName, pg);
+        } else {
+            pg = session.getPageIteratorGroup(useRealData, widgetName);
+        }
+        NodeAndPageInfo info = createPageGroupNode(widget, usedTargets, rowDimension, page, expander, session,
+                isHor ? createColumnOperator(page, widget) : createRowOperator(page, widget), pg, false, isHor);
+        ArrayList<NodeAndPageInfo> infoList = new ArrayList<NodeAndPageInfo>();
+        infoList.add(info);
+        return infoList;
+    }
+
+
+    public List<NodeAndPageInfo> getPageCrossGroupInfoList(BISummaryTarget[] usedTarget, BIDimension[] rowDimension, BIDimension[] colDimension, BISummaryTarget[] sumTarget,
+                                                           int page, boolean useRealData, BISession session, CrossExpander expander, BISummaryWidget widget) throws Exception {
+        BIDimension[] allDimension = createBiDimensionAdpaters(rowDimension, colDimension);
+        checkRegisteration(sumTarget, allDimension);
+        /**
+         * 交叉表调用createUsedSummaryTargets的时候把row和cross的dimension都传入进去，而不是只传rowDimension
+         * 详见BI-2304
+         */
+        BISummaryTarget[] usedTargets = createUsedSummaryTargets(ArrayUtils.addAll(rowDimension, colDimension), usedTarget, sumTarget);
+        int summaryLength = usedTargets.length;
+        LinkedList calculateTargets = new LinkedList();
+        LinkedList noneCalculateTargets = new LinkedList();
+        classifyTargets(usedTargets, summaryLength, calculateTargets, noneCalculateTargets);
+        String widgetName = widget.getWidgetName();
+        PageIteratorGroup pg;
+        if (!needCreateNewIterator(page)) {
+            pg = session.getPageIteratorGroup(useRealData, widgetName);
+        } else {
+            pg = new PageIteratorGroup();
+            session.setPageIteratorGroup(useRealData, widgetName, pg);
+        }
+        if (hasAllCalCalculatorTargets(usedTargets)) {
+            return getAllCalCrossInfoList(rowDimension, colDimension, page, session, expander, widget, usedTargets, pg);
+        }
+        NodeAndPageInfo leftInfo = getLeftInfo(rowDimension, page, expander, widget, session, usedTargets, pg);
+        NodeAndPageInfo topInfo = getTopInfo(colDimension, page, expander, widget, session, usedTargets, pg);
+        ArrayList<NodeAndPageInfo> infoArrayList = new ArrayList<NodeAndPageInfo>();
+        infoArrayList.add(leftInfo);
+        infoArrayList.add(topInfo);
+        return infoArrayList;
+    }
+
+    private List<NodeAndPageInfo> getAllCalCrossInfoList(BIDimension[] rowDimension, BIDimension[] colDimension, int page, BISession session,
+                                                         CrossExpander expander, BISummaryWidget widget, BISummaryTarget[] usedTargets, PageIteratorGroup pg) throws Exception {
+        NodeAndPageInfo leftInfo = getLeftInfo(rowDimension, page, expander, widget, session, usedTargets, pg);
+        NodeAndPageInfo leftAllInfo = getLeftInfo(rowDimension, -1, expander, widget, session, usedTargets, new PageIteratorGroup());
+        NodeAndPageInfo topInfo = getTopInfo(colDimension, page, expander, widget, session, usedTargets, pg);
+        if (usedTargets.length != 0 && isEmpty(topInfo)) {
+            leftInfo.getNode().getChilds().clear();
+            leftInfo.setHasNext(false);
+        }
+        ArrayList<NodeAndPageInfo> infoArrayList = new ArrayList<NodeAndPageInfo>();
+        infoArrayList.add(leftAllInfo);
+        infoArrayList.add(topInfo);
+        return infoArrayList;
+    }
+
 }

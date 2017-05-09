@@ -1,5 +1,6 @@
 package com.finebi.cube.common.log;
 
+import com.fr.general.FRLogger;
 import org.apache.log4j.PropertyConfigurator;
 import org.apache.log4j.helpers.Loader;
 import org.slf4j.LoggerFactory;
@@ -24,7 +25,7 @@ public class BILoggerFactory {
         URL resource = Loader.getResource("log4j.properties");
         if (resource != null) {
             PropertyConfigurator.configure(resource);
-            System.out.println("The log properties url:" + resource.toString());
+            FRLogger.getLogger().info("The log properties url:" + resource.toString());
         }
 //        }
     }
@@ -95,13 +96,13 @@ public class BILoggerFactory {
 
     public static Object getLoggerCacheValue(String cacheTag, String cacheSubTag) {
         if (!loggerCacheMap.containsKey(cacheTag)) {
-            getLogger(BILoggerFactory.class).warn("\n" + "The LoggerInfoCache does not contains the cacheTag: " + cacheTag);
+//            getLogger(BILoggerFactory.class).warn("\n" + "The LoggerInfoCache does not contains the cacheTag: " + cacheTag);
             return null;
         }
 
         Map specificCacheMap = getSpecificCacheMap(cacheTag);
         if (!specificCacheMap.containsKey(cacheSubTag)) {
-            getLogger(BILoggerFactory.class).warn("\n" + "The LoggerInfoCache contains the cacheTag: " + cacheTag + " but does not contains the subTag: " + cacheSubTag);
+//            getLogger(BILoggerFactory.class).warn("\n" + "The LoggerInfoCache contains the cacheTag: " + cacheTag + " but does not contains the subTag: " + cacheSubTag);
             return null;
         }
         return specificCacheMap.get(cacheSubTag);

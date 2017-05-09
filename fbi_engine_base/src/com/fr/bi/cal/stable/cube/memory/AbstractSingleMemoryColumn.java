@@ -11,6 +11,7 @@ import com.fr.bi.stable.file.MemoryColumnFile;
 import com.fr.bi.stable.gvi.GVIFactory;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.gvi.array.ICubeTableIndexReader;
+import com.fr.bi.stable.gvi.traversal.SingleRowTraversalAction;
 import com.fr.bi.stable.index.CubeGenerator;
 import com.fr.bi.stable.io.newio.NIOReader;
 import com.fr.bi.stable.io.newio.NIOWriter;
@@ -22,10 +23,7 @@ import com.fr.bi.stable.structure.collection.map.CubeTreeMap;
 import com.fr.stable.StringUtils;
 import com.fr.stable.collections.array.IntArray;
 
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
 
 /**
  * Created by 小灰灰 on 2016/1/14.
@@ -36,12 +34,30 @@ public abstract class AbstractSingleMemoryColumn<T> implements MemoryColumnFile<
     protected ICubeColumnIndexReader getter;
     protected Object getterLock = new Object();
     protected AnyIndexArray<T> detail;
+    protected AnyIndexArray<Integer> groupPosition;
+
 
     public AbstractSingleMemoryColumn() {
         initDetail();
     }
 
     protected abstract void initDetail();
+
+    protected void initGroupPosition(CubeTreeMap map){
+        groupPosition = new AnyIndexArray<Integer>();
+        Iterator<GroupValueIndex> it = map.values().iterator();
+        int position = 0;
+        while (it.hasNext()){
+            final int p = position;
+            it.next().Traversal(new SingleRowTraversalAction() {
+                @Override
+                public void actionPerformed(int row) {
+                    groupPosition.add(row, p);
+                }
+            });
+            position++;
+        }
+    }
 
     @Override
 
@@ -119,6 +135,9 @@ public abstract class AbstractSingleMemoryColumn<T> implements MemoryColumnFile<
 
     @Override
     public int getPositionOfGroup(int row, SingleUserNIOReadManager manager) {
+        if (groupPosition != null){
+            return groupPosition.get(row);
+        }
         T value = detail.get(row);
         for (int i = 0; i < getter.sizeOfGroup(); i++) {
             GroupValueIndex groupValueIndex = getter.getGroupValueIndex(i);
@@ -157,6 +176,7 @@ public abstract class AbstractSingleMemoryColumn<T> implements MemoryColumnFile<
         for (Map.Entry<Object, IntArray> entry : treeMap.entrySet()) {
             getter.put(entry.getKey(), GVIFactory.createGroupValueIndexBySimpleIndex(entry.getValue()));
         }
+        initGroupPosition(getter);
         return nullList.size == 0 ? getter : new CubeIndexGetterWithNullValue(getter, null, GVIFactory.createGroupValueIndexBySimpleIndex(nullList));
     }
 

@@ -32,6 +32,7 @@ import com.fr.stable.Constants;
 import com.fr.stable.unit.UnitRectangle;
 import com.fr.web.core.SessionDealWith;
 
+import javax.servlet.http.HttpServletRequest;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -272,8 +273,16 @@ public abstract class BIAbstractWidget implements BIWidget {
         return rect;
     }
 
+    @Override
+    public void setLocale(Locale locale) {
+
+    }
+
     public IWidgetStyle getStyle() {
         return null;
     }
 
+    public JSONObject getPostOptions(BISessionProvider session, HttpServletRequest req) throws Exception {
+        return new JSONObject();
+    }
 }

@@ -242,16 +242,16 @@ public class AnalysisETLModule extends AbstractModule {
     private BIAnalysisBusiPackManagerProvider getBusiPackProvider() {
         if (ClusterEnv.isCluster()) {
             if (ClusterAdapter.getManager().getHostManager().isSelf()) {
-                AnalysisBusiPackManagerWithoutUser provider = new AnalysisBusiPackManagerWithoutUser();
+                AnalysisBusiPackManager provider = new AnalysisBusiPackManager();
                 RPC.registerSkeleton(provider, ClusterAdapter.getManager().getHostManager().getPort());
                 return provider;
             } else {
-                return (BIAnalysisBusiPackManagerProvider) RPC.getProxy(AnalysisBusiPackManagerWithoutUser.class,
+                return (BIAnalysisBusiPackManagerProvider) RPC.getProxy(AnalysisBusiPackManager.class,
                         ClusterAdapter.getManager().getHostManager().getIp(),
                         ClusterAdapter.getManager().getHostManager().getPort());
             }
         } else {
-            return new AnalysisBusiPackManagerWithoutUser();
+            return new AnalysisBusiPackManager();
         }
     }
 

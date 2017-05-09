@@ -3,9 +3,11 @@ package com.fr.bi.cal.generate;
 import com.finebi.cube.api.BICubeManager;
 import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.conf.BICubeConfigureCenter;
+import com.finebi.cube.conf.table.BusinessTable;
 import com.finebi.cube.impl.conf.CubeBuildStuffComplete;
 import com.finebi.cube.relation.BITableSourceRelationPath;
 import com.fr.bi.base.BIUser;
+import com.fr.bi.cal.stable.loader.CubeReadingTableIndexLoader;
 import com.fr.bi.common.inter.BrokenTraversal;
 import com.fr.bi.common.inter.Traversal;
 import com.fr.bi.conf.provider.BIConfigureManagerCenter;
@@ -27,6 +29,7 @@ import java.io.File;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 /**
@@ -168,7 +171,8 @@ public class CubeRunner {
         BICubeManager.getInstance().fetchCubeLoader(biUser.getUserId()).clear();
         /* 前台进度条完成进度最多到90%，当cube文件替换完成后传入调用logEnd，进度条直接到100%*/
 
-        Executors.newFixedThreadPool(1).submit(new Runnable() {
+        ExecutorService service = Executors.newFixedThreadPool(2);
+        service.submit(new Runnable() {
             @Override
             public void run() {
                 try {
@@ -179,7 +183,15 @@ public class CubeRunner {
                 }
             }
         });
-
+        service.submit(new Runnable() {
+            @Override
+            public void run() {
+                //生成完cube预读一次
+                for (BusinessTable table : BICubeConfigureCenter.getPackageManager().getAnalysisAllTables(biUser.getUserId())){
+                    CubeReadingTableIndexLoader.getInstance(biUser.getUserId()).getTableIndex(table.getTableSource());
+                }
+            }
+        });
         BIConfigureManagerCenter.getLogManager().logEnd(biUser.getUserId());
     }
 
