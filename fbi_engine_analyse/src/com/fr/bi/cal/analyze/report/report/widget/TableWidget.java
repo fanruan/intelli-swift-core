@@ -1,6 +1,7 @@
 package com.fr.bi.cal.analyze.report.report.widget;
 
 
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.conf.table.BusinessTable;
 import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.cal.analyze.cal.index.loader.MetricGroupInfo;
@@ -10,7 +11,12 @@ import com.fr.bi.cal.analyze.cal.result.CrossExpander;
 import com.fr.bi.cal.analyze.cal.table.PolyCubeECBlock;
 import com.fr.bi.cal.analyze.executor.BIEngineExecutor;
 import com.fr.bi.cal.analyze.executor.paging.PagingFactory;
-import com.fr.bi.cal.analyze.executor.table.*;
+import com.fr.bi.cal.analyze.executor.table.ComplexCrossExecutor;
+import com.fr.bi.cal.analyze.executor.table.ComplexGroupExecutor;
+import com.fr.bi.cal.analyze.executor.table.ComplexHorGroupExecutor;
+import com.fr.bi.cal.analyze.executor.table.CrossExecutor;
+import com.fr.bi.cal.analyze.executor.table.GroupExecutor;
+import com.fr.bi.cal.analyze.executor.table.HorGroupExecutor;
 import com.fr.bi.cal.analyze.report.report.BIWidgetFactory;
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.basic.DimAndTargetStyle;
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.basic.IExcelDataBuilder;
@@ -19,12 +25,12 @@ import com.fr.bi.cal.analyze.report.report.widget.chart.export.calculator.Summar
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.calculator.SummaryGroupTableDataBuilder;
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.manager.TableDirector;
 import com.fr.bi.cal.analyze.report.report.widget.style.BITableWidgetStyle;
-import com.fr.bi.conf.report.widget.IWidgetStyle;
 import com.fr.bi.cal.analyze.report.report.widget.table.BITableReportSetting;
 import com.fr.bi.cal.analyze.session.BISession;
 import com.fr.bi.common.persistent.xml.BIIgnoreField;
 import com.fr.bi.conf.report.WidgetType;
 import com.fr.bi.conf.report.style.DetailChartSetting;
+import com.fr.bi.conf.report.widget.IWidgetStyle;
 import com.fr.bi.conf.report.widget.field.BITargetAndDimension;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.conf.report.widget.field.target.BITarget;
@@ -45,8 +51,16 @@ import com.fr.report.poly.TemplateBlock;
 import com.fr.stable.StringUtils;
 import com.fr.web.core.SessionDealWith;
 
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import javax.servlet.http.HttpServletRequest;
-import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 
@@ -489,14 +503,18 @@ public class TableWidget extends BISummaryWidget {
     public GroupValueIndex createLinkedFilterGVI(BusinessTable targetKey, BISession session) {
         if (linkedWidget != null) {
             GroupValueIndex fatherWidgetLinkedFilterGVI = linkedWidget.createLinkedFilterGVI(targetKey, session);
-            List<MetricGroupInfo> metricGroupInfoList = session.getMetricGroupInfoList(this.linkedWidget.getWidgetName());
-            if (metricGroupInfoList == null) {
-                return null;
-            }
-            for (MetricGroupInfo mergerInfo : metricGroupInfoList) {
-                if (ComparatorUtils.equals(mergerInfo.getMetric(), (targetKey))) {
-                    return GVIUtils.AND(fatherWidgetLinkedFilterGVI, GVIUtils.AND(mergerInfo.getFilterIndex(), mergerInfo.getFilterIndex()));
+            try {
+                List<MetricGroupInfo> metricGroupInfoList = linkedWidget.getExecutor(session).getLinkedWidgetFilterGVIList();
+                if (metricGroupInfoList == null) {
+                    return null;
                 }
+                for (MetricGroupInfo mergerInfo : metricGroupInfoList) {
+                    if (ComparatorUtils.equals(mergerInfo.getMetric(), (targetKey))) {
+                        return GVIUtils.AND(fatherWidgetLinkedFilterGVI, GVIUtils.AND(mergerInfo.getFilterIndex(), mergerInfo.getFilterIndex()));
+                    }
+                }
+            } catch (Exception e) {
+                BILoggerFactory.getLogger(this.getClass()).error(e.getMessage(), e);
             }
         }
         return null;
@@ -507,8 +525,8 @@ public class TableWidget extends BISummaryWidget {
     public void reSetDetailTarget() {
     }
 
-    public JSONObject getPostOptions(String sessionId, HttpServletRequest req) throws Exception {
-        JSONObject dataJSON = this.createDataJSON((BISession) SessionDealWith.getSessionIDInfor(sessionId), req).getJSONObject("data");
+    public JSONObject getPostOptions(BISessionProvider session, HttpServletRequest req) throws Exception {
+        JSONObject dataJSON = this.createDataJSON(session, req).getJSONObject("data");
         Map<Integer, List<JSONObject>> viewMap = this.createViewMap();
         List<DimAndTargetStyle> chartSettings = new ArrayList<DimAndTargetStyle>();
         createChartSettings(chartSettings);

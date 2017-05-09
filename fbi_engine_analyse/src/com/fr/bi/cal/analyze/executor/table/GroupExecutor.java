@@ -4,9 +4,12 @@ import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.base.Style;
 import com.fr.bi.base.FinalInt;
 import com.fr.bi.cal.analyze.cal.index.loader.CubeIndexLoader;
-import com.fr.bi.cal.analyze.cal.result.*;
-import com.fr.bi.cal.analyze.executor.iterator.TableCellIterator;
+import com.fr.bi.cal.analyze.cal.index.loader.MetricGroupInfo;
+import com.fr.bi.cal.analyze.cal.result.CrossExpander;
+import com.fr.bi.cal.analyze.cal.result.Node;
+import com.fr.bi.cal.analyze.cal.result.NodeAndPageInfo;
 import com.fr.bi.cal.analyze.executor.iterator.StreamPagedIterator;
+import com.fr.bi.cal.analyze.executor.iterator.TableCellIterator;
 import com.fr.bi.cal.analyze.executor.paging.Paging;
 import com.fr.bi.cal.analyze.executor.utils.ExecutorUtils;
 import com.fr.bi.cal.analyze.report.report.widget.TableWidget;
@@ -23,7 +26,9 @@ import com.fr.general.Inter;
 import com.fr.json.JSONObject;
 import com.fr.stable.ExportConstants;
 
-import java.awt.Rectangle;
+import java.awt.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by 小灰灰 on 2015/6/30.
@@ -40,7 +45,7 @@ public class GroupExecutor extends AbstractTableWidgetExecutor<Node> {
     }
 
     public TableCellIterator createCellIterator4Excel() throws Exception {
-       final Node tree = getCubeNode();
+        final Node tree = getCubeNode();
         if (tree == null) {
             return new TableCellIterator(0, 0);
         }
@@ -74,9 +79,9 @@ public class GroupExecutor extends AbstractTableWidgetExecutor<Node> {
     }
 
     /**
-     * @param widget ComplexGroupExecutor复用时需要的参数
+     * @param widget         ComplexGroupExecutor复用时需要的参数
      * @param usedDimensions ComplexGroupExecutor复用时需要的参数
-     * @param usedSumTarget ComplexGroupExecutor复用时需要的参数
+     * @param usedSumTarget  ComplexGroupExecutor复用时需要的参数
      * @param pagedIterator
      * @throws Exception
      */
@@ -114,13 +119,12 @@ public class GroupExecutor extends AbstractTableWidgetExecutor<Node> {
     }
 
     /**
-     *
-     * @param n ComplexGroupExecutor复用时需要的参数
-     * @param widget ComplexGroupExecutor复用时需要的参数
+     * @param n             ComplexGroupExecutor复用时需要的参数
+     * @param widget        ComplexGroupExecutor复用时需要的参数
      * @param rowDimensions ComplexGroupExecutor复用时需要的参数
      * @param iter
-     * @param start ComplexGroupExecutor复用时需要的参数
-     * @param rowIdx ComplexGroupExecutor复用时需要的参数
+     * @param start         ComplexGroupExecutor复用时需要的参数
+     * @param rowIdx        ComplexGroupExecutor复用时需要的参数
      */
     public static void generateCells(Node n, TableWidget widget, BIDimension[] rowDimensions, TableCellIterator iter, FinalInt start, FinalInt rowIdx) {
         while (n.getFirstChild() != null) {
@@ -163,8 +167,8 @@ public class GroupExecutor extends AbstractTableWidgetExecutor<Node> {
         int i = rowDimensions.length;
         while (temp.getParent() != null) {
             int rowSpan = temp.getTotalLength();
-            Object data = temp.getData();
             BIDimension dim = rowDimensions[--i];
+            Object data = temp.getData();
             Object v = dim.getValueByType(data);
             if (v != dimensionNames[i] || (i == rowDimensions.length - 1)) {
                 oddEven[i]++;
@@ -239,6 +243,29 @@ public class GroupExecutor extends AbstractTableWidgetExecutor<Node> {
     @Override
     public JSONObject createJSONObject() throws Exception {
         return getCubeNode().toJSONObject(usedDimensions, widget.getTargetsKey(), -1);
+    }
+
+    @Override
+    public List<MetricGroupInfo> getLinkedWidgetFilterGVIList() throws Exception {
+        if (session == null) {
+            return null;
+        }
+        int rowLength = usedDimensions.length;
+        int summaryLength = usedSumTarget.length;
+        int columnLen = rowLength + summaryLength;
+        if (columnLen == 0) {
+            return null;
+        }
+        int calPage = paging.getOperator();
+        CubeIndexLoader cubeIndexLoader = CubeIndexLoader.getInstance(session.getUserId());
+        List<NodeAndPageInfo> infoList = cubeIndexLoader.getPageGroupInfoList(false, widget, createTarget4Calculate(), usedDimensions,
+                allDimensions, allSumTarget, calPage, widget.isRealData(), session, expander.getYExpander());
+        ArrayList<MetricGroupInfo> gviList = new ArrayList<MetricGroupInfo>();
+        for (NodeAndPageInfo info : infoList) {
+            gviList.addAll(info.getIterator().getRoot().getMetricGroupInfoList());
+        }
+        return gviList;
+
     }
 
     @Override

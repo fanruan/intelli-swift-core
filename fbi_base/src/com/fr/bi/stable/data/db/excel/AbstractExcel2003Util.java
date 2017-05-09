@@ -12,11 +12,13 @@ import com.fr.third.v2.org.apache.poi.hssf.eventusermodel.dummyrecord.LastCellOf
 import com.fr.third.v2.org.apache.poi.hssf.eventusermodel.dummyrecord.MissingCellDummyRecord;
 import com.fr.third.v2.org.apache.poi.hssf.model.HSSFFormulaParser;
 import com.fr.third.v2.org.apache.poi.hssf.record.*;
+import com.fr.third.v2.org.apache.poi.hssf.usermodel.HSSFDateUtil;
 import com.fr.third.v2.org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import com.fr.third.v2.org.apache.poi.poifs.filesystem.POIFSFileSystem;
 
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -44,6 +46,8 @@ public abstract class AbstractExcel2003Util implements HSSFListener {
     private boolean outputNextStringRecord;
     private int thisRow = -1, thisColumn = -1;
     private String thisStr = null;
+
+    private static final int SPECIAL_DATE_TYPE = 31;//poi中没有处理“XXXX年XX月XX日”，这种中文日期，单独提出来处理吧。
 
     public AbstractExcel2003Util(String filename) throws IOException {
         this.fs = new POIFSFileSystem(new FileInputStream(filename));
@@ -277,6 +281,10 @@ public abstract class AbstractExcel2003Util implements HSSFListener {
         }
     }
 
+    private boolean isBelongInSpecialDateType(NumberRecord numberRecord) {
+        return formatListener.getFormatIndex(numberRecord) == SPECIAL_DATE_TYPE;
+    }
+
     private void processNumberRecord(Record record) {
         NumberRecord numberRecord = (NumberRecord) record;
         thisRow = numberRecord.getRow();
@@ -285,6 +293,10 @@ public abstract class AbstractExcel2003Util implements HSSFListener {
             thisStr = String.valueOf(numberRecord.getValue());
         } else if (formatListener.formatNumberDateCell(numberRecord).contains("%")) {
             thisStr = String.valueOf(numberRecord.getValue());
+        } else if (isBelongInSpecialDateType(numberRecord)) {
+            Date date = HSSFDateUtil.getJavaDate(numberRecord.getValue());
+            SimpleDateFormat dformat = new SimpleDateFormat("yyyy-MM-dd hh:MM:ss");
+            thisStr = dformat.format(date);
         } else {
             thisStr = formatListener.formatNumberDateCell(numberRecord);
         }

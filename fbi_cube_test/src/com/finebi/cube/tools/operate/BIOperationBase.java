@@ -34,6 +34,11 @@ public abstract class BIOperationBase {
             }
 
             @Override
+            public void handleMessage(IMessage receiveMessage) {
+
+            }
+
+            @Override
             public void setPublish(IPublish publish) {
                 BIOperationBase.this.publish = publish;
             }

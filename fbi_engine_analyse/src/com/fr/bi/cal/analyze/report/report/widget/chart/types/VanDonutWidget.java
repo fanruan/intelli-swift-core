@@ -20,4 +20,12 @@ public class VanDonutWidget extends VanChartWidget {
         return plotOptions;
     }
 
+    protected String categoryLabelKey() {
+        return SERIES;
+    }
+
+    protected String seriesLabelKey() {
+        return CATEGORY;
+    }
+
 }

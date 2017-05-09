@@ -47,4 +47,12 @@ public class VanPieWidget extends VanChartWidget{
     protected String getTooltipIdentifier(){
         return SERIES + VALUE;
     }
+
+    protected String categoryLabelKey() {
+        return SERIES;
+    }
+
+    protected String seriesLabelKey() {
+        return CATEGORY;
+    }
 }

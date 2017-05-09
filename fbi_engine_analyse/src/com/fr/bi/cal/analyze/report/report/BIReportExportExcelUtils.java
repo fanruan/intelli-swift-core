@@ -38,6 +38,7 @@ public class BIReportExportExcelUtils {
     private static int year4 = 4;
     private static int year100 = 100;
     private static int year400 = 400;
+    private static int pageMargin = 10;
 
     private static String phantomIp = PerformancePlugManager.getInstance().getPhantomServerIP();
     private static int phantomPort = PerformancePlugManager.getInstance().getPhantomServerPort();
@@ -59,17 +60,18 @@ public class BIReportExportExcelUtils {
         return createFloatElement(base64, getWidgetRect(bounds));
     }
 
-    static FloatElement createFloatElement4String (String value, JSONObject bounds) {
+    static FloatElement createFloatElement4String(String value, JSONObject bounds) {
         FloatElement floatElement = new FloatElement(value);
         return formatFloatElement(floatElement, getWidgetRect(bounds));
     }
 
     static FloatElement formatFloatElement(FloatElement floatElement, Rectangle rect) {
         int resolution = ScreenResolution.getScreenResolution();
+//        int resolution = Constants.DEFAULT_PRINT_AND_EXPORT_RESOLUTION;
         floatElement.setWidth(FU.valueOfPix((int) rect.getWidth(), resolution));
         floatElement.setHeight(FU.valueOfPix((int) rect.getHeight(), resolution));
-        floatElement.setLeftDistance(FU.valueOfPix((int) rect.getX(), resolution));
-        floatElement.setTopDistance(FU.valueOfPix((int) rect.getY(), resolution));
+        floatElement.setLeftDistance(FU.valueOfPix((int) rect.getX() + pageMargin, resolution));
+        floatElement.setTopDistance(FU.valueOfPix((int) rect.getY() + pageMargin, resolution));
         return floatElement;
     }
 

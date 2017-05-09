@@ -10,8 +10,16 @@ import com.finebi.cube.exception.IllegalRelationPathException;
 import com.finebi.cube.impl.pubsub.BIProcessor;
 import com.finebi.cube.impl.pubsub.BIProcessorThreadManager;
 import com.finebi.cube.message.IMessage;
+import com.finebi.cube.message.IMessageBody;
 import com.finebi.cube.relation.BITableSourceRelation;
-import com.finebi.cube.structure.*;
+import com.finebi.cube.structure.BICubeRelation;
+import com.finebi.cube.structure.BICubeTablePath;
+import com.finebi.cube.structure.Cube;
+import com.finebi.cube.structure.CubeRelationEntityGetterService;
+import com.finebi.cube.structure.CubeTableEntityGetterService;
+import com.finebi.cube.structure.ICubeIndexDataGetterService;
+import com.finebi.cube.structure.ICubeRelationEntityService;
+import com.finebi.cube.structure.ITableKey;
 import com.finebi.cube.utils.BIRelationHelper;
 import com.fr.bi.conf.log.BILogManager;
 import com.fr.bi.conf.provider.BILogManagerProvider;
@@ -29,6 +37,7 @@ import com.fr.bi.stable.io.newio.NIOConstant;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
 import com.fr.bi.stable.utils.program.BIStringUtils;
 import com.fr.fs.control.UserControl;
+import com.fr.general.ComparatorUtils;
 import com.fr.stable.bridge.StableFactory;
 import com.google.common.base.Stopwatch;
 import org.slf4j.Logger;
@@ -50,6 +59,7 @@ public class BITablePathIndexBuilder extends BIProcessor {
     protected Cube cube;
     protected CubeChooser cubeChooser;
     protected BICubeTablePath relationPath;
+    private boolean isAllDependRelationValid = true;
     private static final Logger LOGGER = LoggerFactory.getLogger(BITablePathIndexBuilder.class);
 
     public BITablePathIndexBuilder(Cube cube, Cube integrityCube, BICubeTablePath relationPath, Map<String, CubeTableSource> tablesNeed2GenerateMap) {
@@ -75,11 +85,17 @@ public class BITablePathIndexBuilder extends BIProcessor {
     @Override
     public Object mainTask(IMessage lastReceiveMessage) {
         Stopwatch stopwatch = Stopwatch.createStarted();
-        LOGGER.info(BIStringUtils.append("\n    ", logPath(), "start building path index main task"));
-        BILogHelper.cacheCubeLogRelationNormalInfo(relationPath.getSourceID(), BILogConstant.LOG_CACHE_TIME_TYPE.RELATION_INDEX_EXECUTE_START, System.currentTimeMillis());
-        buildRelationPathIndex();
-        BILogHelper.cacheCubeLogRelationNormalInfo(relationPath.getSourceID(), BILogConstant.LOG_CACHE_TIME_TYPE.RELATION_INDEX_EXECUTE_END, System.currentTimeMillis());
-        LOGGER.info(BIStringUtils.append("\n    ", logPath(), "finish building path index main task,{} second "), stopwatch.elapsed(TimeUnit.SECONDS));
+        if (isAllDependRelationValid) {
+            LOGGER.info(BIStringUtils.append("\n    ", logPath(), "start building path index main task"));
+            BILogHelper.cacheCubeLogRelationNormalInfo(relationPath.getSourceID(), BILogConstant.LOG_CACHE_TIME_TYPE.RELATION_INDEX_EXECUTE_START, System.currentTimeMillis());
+            buildRelationPathIndex();
+            BILogHelper.cacheCubeLogRelationNormalInfo(relationPath.getSourceID(), BILogConstant.LOG_CACHE_TIME_TYPE.RELATION_INDEX_EXECUTE_END, System.currentTimeMillis());
+            LOGGER.info(BIStringUtils.append("\n    ", logPath(), "finish building path index main task,{} second "), stopwatch.elapsed(TimeUnit.SECONDS));
+        } else {
+            BILogExceptionInfo exceptionInfo = new BILogExceptionInfo(System.currentTimeMillis(), BIStringUtils.append("TablePathIndex Error", getTablePathInfo()), "the path depend relations is not all valid, the path will not be generate", new Exception());
+            BILogHelper.cacheCubeLogRelationException(relationPath.getSourceID(), exceptionInfo);
+            LOGGER.warn(BIStringUtils.append("\n    ", logPath(), "the path depend relations is not all valid, the path will not be generate"));
+        }
         return null;
     }
 
@@ -314,6 +330,24 @@ public class BITablePathIndexBuilder extends BIProcessor {
         }
     }
 
+    @Override
+    public void handleMessage(IMessage receiveMessage) {
+        isAllDependRelationValid = isAllDependRelationValid && ComparatorUtils.equals(receiveMessage.getBody().getMessageBody(), CubeConstant.RELATION_VALIDATION.VALID);
+    }
+
+    @Override
+    protected IMessageBody getFinishMess() {
+        return new IMessageBody() {
+            @Override
+            public String getMessageBody() {
+                if (isAllDependRelationValid) {
+                    return CubeConstant.RELATION_VALIDATION.VALID;
+                } else {
+                    return CubeConstant.RELATION_VALIDATION.INVALID;
+                }
+            }
+        };
+    }
 
 //    public void setCubeChooser(CubeCalculatorChooser cubeChooser) {
 //        this.cubeChooser = cubeChooser;
