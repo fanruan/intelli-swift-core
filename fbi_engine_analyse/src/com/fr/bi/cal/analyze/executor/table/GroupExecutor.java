@@ -167,8 +167,8 @@ public class GroupExecutor extends AbstractTableWidgetExecutor<Node> {
         int i = rowDimensions.length;
         while (temp.getParent() != null) {
             int rowSpan = temp.getTotalLength();
-            Object data = temp.getData();
             BIDimension dim = rowDimensions[--i];
+            Object data = temp.getData();
             Object v = dim.getValueByType(data);
             if (v != dimensionNames[i] || (i == rowDimensions.length - 1)) {
                 oddEven[i]++;
