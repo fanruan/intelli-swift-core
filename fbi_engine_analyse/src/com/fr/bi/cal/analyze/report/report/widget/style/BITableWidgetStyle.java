@@ -94,17 +94,20 @@ public class BITableWidgetStyle implements IWidgetStyle {
 
     @Override
     public void parseJSON(JSONObject jo) throws Exception {
-        showSequence = jo.optBoolean("showNumber");
-        freezeCols = jo.optBoolean("freezeDim");
-        headerRowSize = jo.optInt("rowHeight");
-        footerRowSize = jo.optInt("rowHeight");
-        rowSize = jo.optInt("maxRow");
-        JSONArray array = jo.getJSONArray("mergeCols");
-        mergeCols = (List<Integer>) array.toUnmodifiableList();
-        columnSize= (List<Integer>) array.toUnmodifiableList();
-        showRowToTal = jo.optBoolean("showRowToTal");
-        themeStyle = jo.optString("themeStyle");
-        wsTableStyle = jo.optInt("wsTableStyle");
+        if (jo.has("settings")) {
+            JSONObject settingJo = jo.getJSONObject("settings");
+            showSequence = settingJo.optBoolean("showNumber");
+            freezeCols = settingJo.optBoolean("freezeDim");
+            headerRowSize = settingJo.optInt("rowHeight");
+            footerRowSize = settingJo.optInt("rowHeight");
+            rowSize = settingJo.optInt("maxRow");
+            JSONArray array = settingJo.getJSONArray("mergeCols");
+            mergeCols = (List<Integer>) array.toUnmodifiableList();
+            columnSize = (List<Integer>) array.toUnmodifiableList();
+            showRowToTal = settingJo.optBoolean("showRowToTal");
+            themeStyle = settingJo.optString("themeStyle");
+            wsTableStyle = settingJo.optInt("wsTableStyle");
+        }
     }
 
 }
