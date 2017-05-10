@@ -11,12 +11,7 @@ import com.fr.bi.cal.analyze.cal.result.CrossExpander;
 import com.fr.bi.cal.analyze.cal.table.PolyCubeECBlock;
 import com.fr.bi.cal.analyze.executor.BIEngineExecutor;
 import com.fr.bi.cal.analyze.executor.paging.PagingFactory;
-import com.fr.bi.cal.analyze.executor.table.ComplexCrossExecutor;
-import com.fr.bi.cal.analyze.executor.table.ComplexGroupExecutor;
-import com.fr.bi.cal.analyze.executor.table.ComplexHorGroupExecutor;
-import com.fr.bi.cal.analyze.executor.table.CrossExecutor;
-import com.fr.bi.cal.analyze.executor.table.GroupExecutor;
-import com.fr.bi.cal.analyze.executor.table.HorGroupExecutor;
+import com.fr.bi.cal.analyze.executor.table.*;
 import com.fr.bi.cal.analyze.report.report.BIWidgetFactory;
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.basic.DimAndTargetStyle;
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.basic.IExcelDataBuilder;
@@ -49,18 +44,9 @@ import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
 import com.fr.report.poly.TemplateBlock;
 import com.fr.stable.StringUtils;
-import com.fr.web.core.SessionDealWith;
 
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 import javax.servlet.http.HttpServletRequest;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 

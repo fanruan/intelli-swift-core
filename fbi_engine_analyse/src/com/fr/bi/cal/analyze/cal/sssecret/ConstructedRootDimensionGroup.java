@@ -101,10 +101,6 @@ public class ConstructedRootDimensionGroup extends RootDimensionGroup {
 
     private void initRootNode() {
         rootNode = new MetricMergeResult(null, sumLength, root.getGvis());
-        if (columns.length == 0) {
-            sum(rootNode);
-            return;
-        }
         if (executor != null) {
             multiThreadBuild();
         } else {
@@ -337,15 +333,17 @@ public class ConstructedRootDimensionGroup extends RootDimensionGroup {
                 count[i] = new AtomicInteger(0);
                 size[i] = new AtomicInteger(0);
             }
-            SingleDimensionGroup rootGroup = root.createSingleDimensionGroup(columns[0], getters[0], null, mergeIteratorCreators[0], useRealData);
-            int index = 0;
-            MetricMergeResult result = rootGroup.getMetricMergeResultByWait(index);
-            while (result != MetricMergeResult.NULL) {
-                rootNode.addChild(result);
-                size[0].incrementAndGet();
-                executor.add(new SingleChildCal(result, rootGroup.getChildDimensionGroup(index), 0));
-                index++;
-                result = rootGroup.getMetricMergeResultByWait(index);
+            if (rowSize > 0){
+                SingleDimensionGroup rootGroup = root.createSingleDimensionGroup(columns[0], getters[0], null, mergeIteratorCreators[0], useRealData);
+                int index = 0;
+                MetricMergeResult result = rootGroup.getMetricMergeResultByWait(index);
+                while (result != MetricMergeResult.NULL) {
+                    rootNode.addChild(result);
+                    size[0].incrementAndGet();
+                    executor.add(new SingleChildCal(result, rootGroup.getChildDimensionGroup(index), 0));
+                    index++;
+                    result = rootGroup.getMetricMergeResultByWait(index);
+                }
             }
             //如果多线程计算没有结束，就等结束
             multiThreadSum(rootNode);
