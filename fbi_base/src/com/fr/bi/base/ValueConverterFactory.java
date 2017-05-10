@@ -108,7 +108,7 @@ public class ValueConverterFactory {
 
         @Override
         public String result2Value(Long t) {
-            Integer weekNumber = BITimeUtils.getFieldFromTime(t, Calendar.WEEK_OF_YEAR) + 1;
+            Integer weekNumber = BITimeUtils.getFieldFromTime(t, Calendar.WEEK_OF_YEAR);
             Integer year = BITimeUtils.getFieldFromTime(t, Calendar.YEAR);
             return year+"-"+weekNumber;
         }
@@ -117,7 +117,7 @@ public class ValueConverterFactory {
 
         @Override
         public Integer result2Value(Long t) {
-            Integer weekNumber = BITimeUtils.getFieldFromTime(t, Calendar.WEEK_OF_YEAR) + 1;
+            Integer weekNumber = BITimeUtils.getFieldFromTime(t, Calendar.WEEK_OF_YEAR);
             return weekNumber;
         }
     };
