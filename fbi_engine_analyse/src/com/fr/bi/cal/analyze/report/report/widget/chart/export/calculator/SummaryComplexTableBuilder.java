@@ -346,7 +346,8 @@ public class SummaryComplexTableBuilder extends TableAbstractDataBuilder {
                 }
             }
         }
-        if (data.has("values") && (data.has("dId") || !isRowRegionExist())) {
+        boolean rowRegionAvaliable=data.has("dId") || !isRowRegionExist();
+        if (data.has("values") && rowRegionAvaliable) {
             String itemId = data.optString("dId", "") + data.optString("text", "");
             boolean hasItems = rowValues.has(itemId) && rowValues.getJSONArray(itemId).length() > 0;
             if (!hasItems) {
