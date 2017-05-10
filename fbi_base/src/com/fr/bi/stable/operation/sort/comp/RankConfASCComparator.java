@@ -10,10 +10,10 @@ public class RankConfASCComparator extends ASCComparator{
             return 0;
         }
         if (o1 == null) {
-            return 1;
+            return -1;
         }
         if (o2 == null) {
-            return -1;
+            return 1;
         }
         return super.compare(o1, o2);
     }
