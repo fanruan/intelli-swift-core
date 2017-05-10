@@ -36,7 +36,7 @@ import java.util.*;
 /**
  * Created by fay on 2016/10/14.
  */
-public class TreeLabelWidget extends BIAbstractWidget {
+public class TreeLabelWidget extends AbstractBIWidget {
     private int page = -1;
     private int floors;
     private String parentValues;

@@ -13,6 +13,7 @@ import java.util.List;
  */
 public class BITableWidgetStyle implements IWidgetStyle {
     private static final long serialVersionUID = -675827399089527747L;
+//    @PersistNameHistory(historyNames = {"showSequence"})
     private boolean showSequence;
     private boolean freezeCols;
     private List<Integer> mergeCols;
