@@ -1,9 +1,9 @@
 package com.fr.bi.cal.analyze.report.report.widget.chart.types;
 
 import com.finebi.cube.common.log.BILoggerFactory;
+import com.fr.base.TemplateUtils;
 import com.fr.bi.conf.report.WidgetType;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
-import com.fr.bi.field.target.target.BISummaryTarget;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.general.ComparatorUtils;
 import com.fr.general.FRLogger;
@@ -11,12 +11,10 @@ import com.fr.json.JSONArray;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
 import com.fr.script.Calculator;
+import com.fr.stable.CoreConstants;
 import com.fr.stable.StringUtils;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by eason on 2017/2/27.
@@ -55,6 +53,16 @@ public class VanDotWidget extends VanCartesianWidget{
     private static final int BUBBLE_DIMENSION = 3;
 
     private List<String> seriesIDs = new ArrayList<String>();
+    private static String tooltipTpl;
+
+    private String getTooltipTpl() {
+        if(StringUtils.isEmpty(tooltipTpl)){
+            tooltipTpl = TemplateUtils.readTemplate2String(
+                    "/com/fr/bi/cal/analyze/report/report/widget/chart/tpl/dotTooltip.tpl",
+                    CoreConstants.CHARSET_OF_EMBEDDED_FILE);
+        }
+        return tooltipTpl;
+    }
 
     protected void dealView(List<String> sorted, JSONObject vjo) throws JSONException{
         super.dealView(sorted, vjo);
@@ -364,39 +372,43 @@ public class VanDotWidget extends VanCartesianWidget{
         return X + Y + SIZE;
     }
 
+    private void addFormat2Map(Map<String, String> tplRenderMap, String[] ids, int index, String key) throws Exception{
+        if(ids.length > index){
+            String format = this.valueFormat(this.getBITargetByID(ids[index]), true);
+            tplRenderMap.put(key, format);
+        }
+    }
+
     protected void formatSeriesTooltipFormat(JSONObject options) throws Exception {
-
-        JSONObject tooltip = options.optJSONObject("plotOptions").optJSONObject("tooltip");
-
         String[] ids = this.getUsedTargetID();
-        String[] keys1 = {"(" + getLocText("BI-Basic_Value") +") ", "(Y) ", "(X) "};
-        String[] keys2 = {"size", "y", "x"};
-        int targetSize = ids.length;
 
-        List<StringBuilder> stringBuilderList = new ArrayList<StringBuilder>();
-        //size y x or y x or x
-        for(int j = targetSize; j > 0; j--){
-            BISummaryTarget target = this.getBITargetByID(ids[j - 1]);
-            String format = this.valueFormat(target, true);
+        Map<String, String> tplMap = new HashMap<String, String>();
 
-            stringBuilderList.add(new StringBuilder().append("+ \"<br>\" + \"").append(keys1[targetSize - j])
-                    .append(target.getText()).append(":\" + ")
-                    .append(String.format("BI.contentFormat(this.%s, \"%s\")", keys2[targetSize - j], format)));
+        tplMap.put("key1_X", "(X)");
+        tplMap.put("key2_X", "x");
+        addFormat2Map(tplMap, ids, 0, "format_X");
+
+        tplMap.put("key1_Y", "(Y)");
+        tplMap.put("key2_Y", "y");
+        addFormat2Map(tplMap, ids, 1, "format_Y");
+
+        tplMap.put("key1_SIZE", "(" + getLocText("BI-Basic_Value") +")");
+        tplMap.put("key2_SIZE", "size");
+        addFormat2Map(tplMap, ids, 2, "format_SIZE");
+
+        String formatter = StringUtils.EMPTY;
+        try {
+            formatter = TemplateUtils.renderParameter4Tpl(getTooltipTpl(), tplMap);
+        } catch (Exception e) {
+            FRLogger.getLogger().error(e.getMessage(), e);
         }
-
-
-        StringBuilder formatterBuilder = new StringBuilder("function() { return this.options.description + \" \" + this.seriesName ");
-        //x y size
-        for(int j = targetSize - 1; j > -1; j--){
-            formatterBuilder.append(stringBuilderList.get(j));
-        }
-        formatterBuilder.append("}");
 
         JSONArray series = options.optJSONArray("series");
+        JSONObject tooltip = options.optJSONObject("plotOptions").optJSONObject("tooltip");
         for (int i = 0, len = series.length(); i < len; i++) {
             JSONObject ser = series.getJSONObject(i);
 
-            ser.put("tooltip", new JSONObject(tooltip.toString()).put("formatter", formatterBuilder.toString()));
+            ser.put("tooltip", new JSONObject(tooltip.toString()).put("formatter", formatter));
         }
     }
 
