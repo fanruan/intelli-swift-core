@@ -142,8 +142,8 @@ public class CustomNumberGroup extends AbstractGroup {
     }
 
     private void parseValueWithOldData(JSONObject jo) throws JSONException {
-        if (jo.has("group_value")) {
-            JSONObject valueJson = jo.optJSONObject("group_value");
+        if (jo.has("groupValue")) {
+            JSONObject valueJson = jo.optJSONObject("groupValue");
             if (valueJson.has("group_nodes")) {
                 JSONArray ja = valueJson.getJSONArray("group_nodes");
                 int len = ja.length();
