@@ -36,7 +36,7 @@ import java.util.*;
 /**
  * Created by roy on 16/4/14.
  */
-public class TreeWidget extends BIAbstractWidget {
+public class TreeWidget extends AbstractBIWidget {
     private static final long serialVersionUID = -1312790995961254453L;
     private int page = -1;
     private int data_type = BIReportConstant.TREE.TREE_REQ_TYPE.DEFAULT_DATA;

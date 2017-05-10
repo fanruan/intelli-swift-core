@@ -194,7 +194,7 @@ public abstract class BICubeColumnEntity<T> implements ICubeColumnEntityService<
     @Override
     public boolean existRelationPath(BICubeTablePath path) {
         try {
-            return !getRelationIndexGetter(path).isEmpty();
+            return getRelationIndexGetter(path).isDataAvailable();
         } catch (Exception e) {
             return false;
         }
