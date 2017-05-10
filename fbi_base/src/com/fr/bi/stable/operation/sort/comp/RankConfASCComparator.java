@@ -9,6 +9,9 @@ public class RankConfASCComparator extends ASCComparator{
         if (o1 == o2) {
             return 0;
         }
+        /**
+         * Connery：BI-5094 Null值算小
+         */
         if (o1 == null) {
             return -1;
         }
