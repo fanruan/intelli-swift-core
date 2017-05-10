@@ -83,7 +83,7 @@ public class DetailTableBuilder extends TableAbstractDataBuilder {
                 item.setType("bi.detail_table_cell");
                 item.setDId(dimIds.get(j));
                 item.setText(itemArray.isNull(j) ? "" : itemArray.getString(j));
-                item.setStyle(SummaryTableStyleHelper.getBodyStyles(styleSetting.getThemeStyle(), styleSetting.getWsTableStyle(), j));
+                item.setStyle(SummaryTableStyleHelper.getBodyStyles(styleSetting.getThemeStyle(), styleSetting.getTableStyleGroup(), j));
                 rowItems.add(item);
             }
         }
