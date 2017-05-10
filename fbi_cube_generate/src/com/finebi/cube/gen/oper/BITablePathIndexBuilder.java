@@ -332,7 +332,9 @@ public class BITablePathIndexBuilder extends BIProcessor {
 
     @Override
     public void handleMessage(IMessage receiveMessage) {
-        isAllDependRelationValid = isAllDependRelationValid && ComparatorUtils.equals(receiveMessage.getBody().getMessageBody(), CubeConstant.RELATION_VALIDATION.VALID);
+        if (receiveMessage.getBody() != null) {
+            isAllDependRelationValid = isAllDependRelationValid && ComparatorUtils.equals(receiveMessage.getBody().getMessageBody(), CubeConstant.RELATION_VALIDATION.VALID);
+        }
     }
 
     @Override

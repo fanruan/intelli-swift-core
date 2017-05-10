@@ -42,7 +42,7 @@ import com.fr.report.poly.TemplateBlock;
 import javax.servlet.http.HttpServletRequest;
 import java.util.*;
 
-public class BIDetailWidget extends BIAbstractWidget {
+public class BIDetailWidget extends AbstractBIWidget {
     private static final long serialVersionUID = 3558768164064392671L;
     @BICoreField
     private BIDetailSetting data;

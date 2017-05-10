@@ -11,6 +11,7 @@ import com.finebi.cube.structure.column.CubeColumnReaderService;
 import com.finebi.cube.structure.property.BICubeVersion;
 import com.finebi.cube.structure.table.BICubeTableEntity;
 import com.finebi.cube.structure.table.CompoundCubeTableReader;
+import com.finebi.cube.utils.BICubeUtils;
 import com.fr.bi.stable.constant.CubeConstant;
 import com.fr.bi.stable.exception.BITablePathConfusionException;
 import com.fr.bi.stable.exception.BITablePathEmptyException;
@@ -107,20 +108,12 @@ public class BICube implements Cube {
 
     @Override
     public boolean exist(ITableKey tableKey) {
-        try {
-            ICubeResourceLocation location = resourceRetrievalService.retrieveResource(tableKey);
-            if (isResourceExist(location)) {
-                CubeTableEntityGetterService tableEntityGetterService = getCubeTable(tableKey);
-                boolean result = tableEntityGetterService.tableDataAvailable();
-                tableEntityGetterService.clear();
-                return result;
-            }
-            return false;
-
-        } catch (BICubeResourceAbsentException e) {
-            e.printStackTrace();
-            return false;
-        } catch (BICubeTableAbsentException e) {
+        if(isResourceExist(tableKey)) {
+            CubeTableEntityGetterService tableEntityGetterService = getCubeTable(tableKey);
+            boolean result = BICubeUtils.tableExist(tableKey, tableEntityGetterService, this);
+            tableEntityGetterService.clear();
+            return result;
+        }else {
             return false;
         }
     }
@@ -138,71 +131,50 @@ public class BICube implements Cube {
 
     @Override
     public boolean exist(ITableKey tableKey, BICubeTablePath relationPath) {
-        if (exist(tableKey)) {
-            try {
-                ICubeResourceLocation location = resourceRetrievalService.retrieveResource(tableKey, relationPath);
-                if (isResourceExist(location)) {
-                    CubeTableEntityGetterService tableEntityGetterService = getCubeTable(tableKey);
-                    boolean result = tableEntityGetterService.relationExists(relationPath);
-                    tableEntityGetterService.clear();
-                    return result;
-                }
-                return false;
-            } catch (BICubeResourceAbsentException e) {
-                logger.warn(e.getMessage(), e);
-                return false;
-            } catch (BITablePathEmptyException e) {
-                logger.warn(e.getMessage(), e);
-                return false;
-            }
-        } else {
+        if(isResourceExist(tableKey)) {
+            CubeTableEntityGetterService tableEntityGetterService = getCubeTable(tableKey);
+            boolean result = BICubeUtils.tableRelationExist(tableKey, relationPath, tableEntityGetterService, this);
+            tableEntityGetterService.clear();
+            return result;
+        }else{
             return false;
         }
     }
 
     @Override
     public boolean exist(ITableKey tableKey, BIColumnKey field, BICubeTablePath relationPath) {
-        CubeColumnReaderService columnReaderService = null;
-        CubeRelationEntityGetterService basicTableRelation = null;
-        CubeRelationEntityGetterService fieldRelation = null;
-        try {
-            columnReaderService = getCubeColumn(tableKey, field);
-            basicTableRelation = getCubeRelation(tableKey, relationPath);
+        if(isResourceExist(tableKey)) {
+            CubeTableEntityGetterService tableEntityGetterService = getCubeTable(tableKey);
+            boolean result = BICubeUtils.tableFieldRelationExist(tableKey, field, relationPath, tableEntityGetterService, this);
+            tableEntityGetterService.clear();
+            return result;
+        }else {
+            return false;
+        }
+    }
 
-            if (exist(tableKey, relationPath)) {
-                /**
-                 * 如果基础关联存在，那么需要判断版本。字段版本，必须晚于基础关联版本
-                 */
-                long basicRelationVersion = basicTableRelation.getCubeVersion();
-                if (columnReaderService.existRelationPath(relationPath)) {
-                    fieldRelation = columnReaderService.getRelationIndexGetter(relationPath);
-                    long fieldRelationVersion = fieldRelation.getCubeVersion();
-                    if (basicRelationVersion > fieldRelationVersion) {
-                        return false;
-                    } else {
-                        return true;
-                    }
-                } else {
-                    return false;
-                }
-            } else {
-                /**
-                 * 如果基础关联不存在，那么就依据字段关联自身。
-                 */
-                return columnReaderService.existRelationPath(relationPath);
-            }
-        } catch (Exception e) {
-            throw BINonValueUtils.beyondControl(e);
-        } finally {
-            if (columnReaderService != null) {
-                columnReaderService.clear();
-            }
-            if (basicTableRelation != null) {
-                basicTableRelation.clear();
-            }
-            if (fieldRelation != null) {
-                fieldRelation.clear();
-            }
+    @Override
+    public boolean isResourceExist(ITableKey tableKey) {
+        try {
+            ICubeResourceLocation location = resourceRetrievalService.retrieveResource(tableKey);
+            return isResourceExist(location);
+        } catch (BICubeResourceAbsentException e) {
+            logger.warn(e.getMessage(), e);
+            return false;
+        }
+    }
+
+    @Override
+    public boolean isResourceExist(ITableKey tableKey, BICubeTablePath relationPath) {
+        try {
+            ICubeResourceLocation location = resourceRetrievalService.retrieveResource(tableKey, relationPath);
+            return isResourceExist(location);
+        } catch (BICubeResourceAbsentException e) {
+            logger.warn(e.getMessage(), e);
+            return false;
+        } catch (BITablePathEmptyException e) {
+            logger.warn(e.getMessage(), e);
+            return false;
         }
     }
 

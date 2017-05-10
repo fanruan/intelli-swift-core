@@ -13,7 +13,7 @@ import java.util.List;
  */
 public class BITableWidgetStyle implements IWidgetStyle {
     private static final long serialVersionUID = -675827399089527747L;
-    private boolean showSequence;
+    private boolean showNumber;
     private boolean freezeCols;
     private List<Integer> mergeCols;
     private List<Integer> columnSize;
@@ -22,12 +22,16 @@ public class BITableWidgetStyle implements IWidgetStyle {
     private int rowSize;
     private boolean showRowToTal;
     private String themeStyle;
+    private int tableStyleGroup;
+    private String themeColor;
     private int wsTableStyle;
+    private JSONArray chartColor;
+
 
     public BITableWidgetStyle() {
         themeStyle = BIStyleConstant.DEFAULT_CHART_SETTING.THEME_COLOR;
-        wsTableStyle = BIStyleConstant.DEFAULT_CHART_SETTING.TABLE_STYLE_GROUP;
-        showSequence = BIStyleConstant.DEFAULT_CHART_SETTING.SHOW_NUMBER;
+        tableStyleGroup = BIStyleConstant.DEFAULT_CHART_SETTING.TABLE_STYLE_GROUP;
+        showNumber = BIStyleConstant.DEFAULT_CHART_SETTING.SHOW_NUMBER;
         freezeCols = BIStyleConstant.DEFAULT_CHART_SETTING.FREEZE_DIM;
         headerRowSize = BIStyleConstant.DEFAULT_CHART_SETTING.ROW_HEIGHT;
         footerRowSize = BIStyleConstant.DEFAULT_CHART_SETTING.ROW_HEIGHT;
@@ -35,69 +39,69 @@ public class BITableWidgetStyle implements IWidgetStyle {
         showRowToTal = BIStyleConstant.DEFAULT_CHART_SETTING.SHOW_ROW_TOTAL;
         mergeCols = new ArrayList<Integer>();
         columnSize = new ArrayList<Integer>();
+        themeColor = BIStyleConstant.DEFAULT_CHART_SETTING.THEME_COLOR;
+        wsTableStyle = BIStyleConstant.DEFAULT_CHART_SETTING.TABLE_STYLE_GROUP;
+        chartColor=new JSONArray();
     }
 
-    @Override
-    public boolean isShowSequence() {
-        return showSequence;
-    }
-
-    @Override
-    public int[] getFreezeCols() {
-        return new int[0];
+    public boolean isShowNumber() {
+        return showNumber;
     }
 
     public boolean isFreezeCols() {
         return freezeCols;
     }
 
-    @Override
-    public List<?> getMergeCols() {
+    public List<Integer> getMergeCols() {
         return mergeCols;
     }
 
-    @Override
     public List<Integer> getColumnSize() {
         return columnSize;
     }
 
-    @Override
     public int getHeaderRowSize() {
         return headerRowSize;
     }
 
-    @Override
     public int getFooterRowSize() {
         return footerRowSize;
     }
 
-    @Override
     public int getRowSize() {
         return rowSize;
     }
 
-    @Override
     public boolean isShowRowToTal() {
         return showRowToTal;
     }
 
-    @Override
     public String getThemeStyle() {
         return themeStyle;
     }
 
-    @Override
+    public int getTableStyleGroup() {
+        return tableStyleGroup;
+    }
+
+    public String getThemeColor() {
+        return themeColor;
+    }
+
     public int getWsTableStyle() {
         return wsTableStyle;
     }
 
+    public JSONArray getChartColor() {
+        return chartColor;
+    }
 
     @Override
     public void parseJSON(JSONObject jo) throws Exception {
         if (jo.has("settings")) {
             JSONObject settingJo = jo.getJSONObject("settings");
-            showSequence = settingJo.optBoolean("showNumber");
-            freezeCols = settingJo.optBoolean("freezeDim");
+            showNumber = settingJo.optBoolean("showNumber");
+            freezeCols = settingJo.optBoolean("freezeFirstColumn");
             headerRowSize = settingJo.optInt("rowHeight");
             footerRowSize = settingJo.optInt("rowHeight");
             rowSize = settingJo.optInt("maxRow");
@@ -110,7 +114,10 @@ public class BITableWidgetStyle implements IWidgetStyle {
             }
             showRowToTal = settingJo.optBoolean("showRowToTal");
             themeStyle = settingJo.optString("themeStyle");
-            wsTableStyle = settingJo.optInt("wsTableStyle");
+            tableStyleGroup = settingJo.optInt("tableStyleGroup");
+            themeColor = settingJo.optString("themeColor");
+            wsTableStyle = settingJo.optInt("charStyle");
+            chartColor=settingJo.optJSONArray("charColor");
         }
     }
 
