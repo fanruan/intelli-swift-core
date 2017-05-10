@@ -38,18 +38,14 @@ public class BITableWidgetStyle implements IWidgetStyle {
         columnSize = new ArrayList<Integer>();
     }
 
-    @Override
-    public boolean isShowSequence() {
-        return showSequence;
-    }
-
-    @Override
-    public int[] getFreezeCols() {
-        return new int[0];
-    }
 
     public boolean isFreezeCols() {
         return freezeCols;
+    }
+
+    @Override
+    public boolean isShowNumber() {
+        return false;
     }
 
     @Override
@@ -85,6 +81,11 @@ public class BITableWidgetStyle implements IWidgetStyle {
     @Override
     public String getThemeStyle() {
         return themeStyle;
+    }
+
+    @Override
+    public int getTableStyleGroup() {
+        return wsTableStyle;
     }
 
     @Override
