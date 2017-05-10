@@ -47,6 +47,7 @@ public abstract class VanChartWidget extends TableWidget {
     public static final String SIZE = "${SIZE}";
     public static final String NAME = "${NAME}";
     public static final String DESCRIPTION = "${DESCRIPTION}";
+    public static final String ARRIVALRATE = "${ARRIVALRATE}";
 
     //兼容前台用数字表示位置的写法，真xx丑
     private static final int TOP = 2;
@@ -351,19 +352,22 @@ public abstract class VanChartWidget extends TableWidget {
                 identifier += valueLabelKey();
             }
             if (dataLabelSetting.optBoolean("showPercentage") || dataLabelSetting.optBoolean("showConversionRate")) {
-                identifier += "${PERCENT}";
+                identifier += PERCENT;
+            }
+            if (dataLabelSetting.optBoolean("showArrivalRate")){
+                identifier += ARRIVALRATE;
             }
             if (dataLabelSetting.optBoolean("showXValue")) {
-                identifier += "${X}";
+                identifier += X;
             }
             if (dataLabelSetting.optBoolean("showYValue")) {
-                identifier += "${Y}";
+                identifier += Y;
             }
             if(dataLabelSetting.optBoolean("showBlockName")){
-                identifier += "${NAME}";
+                identifier += NAME;
             }
             if(dataLabelSetting.optBoolean("showTargetName")){
-                identifier += "${SERIES}";
+                identifier += SERIES;
             }
 
             formatter.put("identifier", identifier);
@@ -602,7 +606,8 @@ public abstract class VanChartWidget extends TableWidget {
                 JSONObject labels = new JSONObject(dataLabels.toString());
                 labels.optJSONObject("formatter")
                         .put("valueFormat", this.dataLabelValueFormat(this.getBITargetByID(dimensionID)))
-                        .put("percentFormat", "function(){return BI.contentFormat(arguments[0], \"#.##%\")}");
+                        .put("percentFormat", "function(){return BI.contentFormat(arguments[0], \"#.##%\")}")
+                        .put("arrivalrateFormat", "function(){return BI.contentFormat(arguments[0], \"#.##%\")}");
 
                 ser.put("dataLabels", labels);
             }
