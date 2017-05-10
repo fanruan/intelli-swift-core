@@ -54,6 +54,7 @@ public class VanTreeMapWidget extends VanChartWidget{
     }
 
     public JSONArray createSeries(JSONObject originData) throws Exception {
+        String[] dimensionIDs = this.getUsedDimensionID();
 
         JSONArray series = JSONArray.create();
         String[] targetIDs = this.getUsedTargetID();
@@ -80,7 +81,8 @@ public class VanTreeMapWidget extends VanChartWidget{
         if(hasSecondLevel){
             sery.put("name", getDimensionNameByID(targetIDs[0]));
         }
-        return series.put(sery.put("data", data).put("dimensionID", targetIDs[0]));
+        return series.put(sery.put("data", data)
+                .put("dimensionIDs", dimensionIDs).put("targetIDs", JSONArray.create().put(targetIDs[0])));
     }
 
     private void createTopLeftSeries(JSONObject originData, double scale, JSONArray data) throws JSONException{

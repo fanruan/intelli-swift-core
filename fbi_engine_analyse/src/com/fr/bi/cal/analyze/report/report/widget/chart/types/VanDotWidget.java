@@ -242,6 +242,7 @@ public class VanDotWidget extends VanCartesianWidget{
 
     private JSONArray dealSeriesMap(boolean noSeries, String[] ids, HashMap<String, JSONArray> seriesMap) throws JSONException{
         JSONArray series = JSONArray.create();
+        String[] dimensionIDs = this.getUsedDimensionID();
 
         double yScale = this.numberScale(ids[0]), xScale = this.numberScale(ids[1]);
         double sizeScale = ids.length > 2 ? this.numberScaleByLevel(this.numberLevelFromSettings(ids[2])) : 1;
@@ -271,13 +272,14 @@ public class VanDotWidget extends VanCartesianWidget{
             }
 
             if(!noSeries) {
-                ser.put("data", data).put("name", seriesName).put("dimensionID", ids[ids.length - 1]);
+                ser.put("data", data).put("name", seriesName).put("dimensionIDs", dimensionIDs).put("targetIDs", ids);
+
                 series.put(ser);
             }
         }
 
         if(noSeries){
-            series.put(JSONObject.create().put("data", dotData).put("dimensionID", ids[ids.length - 1]));
+            series.put(JSONObject.create().put("data", dotData).put("dimensionIDs", dimensionIDs).put("targetIDs", ids));
         }
 
         return series;
@@ -286,6 +288,8 @@ public class VanDotWidget extends VanCartesianWidget{
 
     //老的气泡图、散点图。原来的分类---->新点图的系列
     private JSONArray createBubbleScatterSeries(JSONObject originData) throws Exception{
+        BIDimension category = this.getCategoryDimension();
+
         String[] ids = this.getUsedTargetID();
 
         JSONArray series = JSONArray.create();
@@ -308,7 +312,7 @@ public class VanDotWidget extends VanCartesianWidget{
             JSONObject point = JSONObject.create().put("x", x).put("y", y).put("size", value);
 
             series.put(JSONObject.create().put("data", JSONArray.create().put(point))
-                    .put("name", obj.optString("n")).put("dimensionID", ids[ids.length - 1])
+                    .put("name", obj.optString("n")).put("dimensionIDs", JSONArray.create().put(category.getValue())).put("targetIDs", ids)
             );
 
         }
