@@ -1,13 +1,41 @@
 package com.fr.bi.cal.analyze.report.report.widget.chart.types;
 
 import com.fr.bi.cal.analyze.report.report.widget.VanChartWidget;
+import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.json.JSONArray;
+import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
+
+import java.util.List;
 
 /**
  * Created by eason on 2017/2/27.
  */
 public class VanTreeMapWidget extends VanChartWidget{
+
+    protected void dealView(List<String> sorted, JSONObject vjo) throws JSONException {
+        int firstRegion = Integer.parseInt(BIReportConstant.REGION.DIMENSION2);
+        int secondRegion = Integer.parseInt(BIReportConstant.REGION.DIMENSION1);
+
+        JSONArray firstArray = JSONArray.create(), secondArray = JSONArray.create();
+
+        for (String region : sorted) {
+
+            if (Integer.parseInt(region) == firstRegion) {
+                firstArray = vjo.optJSONArray(region);
+                vjo.remove(region);
+            }
+
+            if (Integer.parseInt(region) == secondRegion) {
+                secondArray = vjo.optJSONArray(region);
+                vjo.remove(region);
+            }
+        }
+
+        vjo.put(BIReportConstant.REGION.DIMENSION1, firstArray);
+        vjo.put(BIReportConstant.REGION.DIMENSION2, secondArray);
+    }
+
 
     public JSONArray createSeries(JSONObject originData) throws Exception {
 
@@ -51,7 +79,7 @@ public class VanTreeMapWidget extends VanChartWidget{
                 data.put(JSONObject.create().put("name", tObj.getString("n")).put("value", sum).put("children", children));
             }
 
-            sery.put("name", this.getSeriesDimension().getText());
+            sery.put("name", getDimensionNameByID(targetIDs[0]));
         }
 
         return series.put(sery.put("data", data).put("dimensionID", targetIDs[0]));
