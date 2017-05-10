@@ -19,6 +19,7 @@ import com.finebi.cube.structure.*;
 import com.finebi.cube.structure.column.BIColumnKey;
 import com.finebi.cube.structure.column.CubeColumnReaderService;
 import com.finebi.cube.utils.BICubePathUtils;
+import com.finebi.cube.utils.BICubeUtils;
 import com.fr.bi.base.key.BIKey;
 import com.fr.bi.exception.BIKeyAbsentException;
 import com.fr.bi.stable.constant.BIReportConstant;
@@ -299,7 +300,7 @@ public class BICubeTableAdapter implements ICubeTableService {
     }
 
     private boolean isFieldRelationExist(BIColumnKey columnKey, BICubeTablePath path) {
-        return this.cube.exist(this.tableKey, columnKey, path);
+        return BICubeUtils.tableFieldRelationExist(tableKey, columnKey, path, primaryTable, cube);
     }
 
     private String getColumnSubType(BIKey biKey) {

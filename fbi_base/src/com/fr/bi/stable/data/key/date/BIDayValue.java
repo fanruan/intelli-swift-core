@@ -9,6 +9,7 @@ import com.fr.bi.stable.utils.time.BIDateUtils;
  * Created by 小灰灰 on 2016/1/6.
  */
 public class BIDayValue implements BIDateValue<Long>{
+    private static final long serialVersionUID = 8929149164149289066L;
     @BICoreField
     private long value;
 
