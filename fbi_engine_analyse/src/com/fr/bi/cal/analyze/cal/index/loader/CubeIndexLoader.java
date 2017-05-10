@@ -551,16 +551,7 @@ public class CubeIndexLoader {
     }
 
     private boolean isEmpty(NodeAndPageInfo info) {
-        if (info.getNode().getChilds().isEmpty()) {
-            return true;
-        }
-        for (Node n : info.getNode().getChilds()) {
-            Map<TargetGettingKey, GroupValueIndex> targetIndexValueMap = n.getTargetIndexValueMap();
-            if (targetIndexValueMap != null && !targetIndexValueMap.isEmpty()) {
-                return false;
-            }
-        }
-        return true;
+        return info.getNode().getChilds().isEmpty();
     }
 
     private void calculateCrossTarget(CalCalculator calCalculator, NewCrossRoot root, TargetGettingKey key1) {
