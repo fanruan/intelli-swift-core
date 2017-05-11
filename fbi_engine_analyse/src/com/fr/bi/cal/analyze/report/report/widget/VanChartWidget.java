@@ -598,8 +598,13 @@ public abstract class VanChartWidget extends TableWidget {
         return CATEGORY + SERIES + VALUE;
     }
 
+    //gauge deal valueLabel
+    protected String dataLabelsKey() {
+        return "dataLabels";
+    }
+
     protected void formatSeriesDataLabelFormat(JSONObject options) throws Exception {
-        JSONObject dataLabels = options.optJSONObject("plotOptions").optJSONObject("dataLabels");
+        JSONObject dataLabels = options.optJSONObject("plotOptions").optJSONObject(dataLabelsKey());
 
         if (dataLabels.optBoolean("enabled")) {
             JSONArray series = options.optJSONArray("series");
@@ -613,7 +618,7 @@ public abstract class VanChartWidget extends TableWidget {
                         .put("percentFormat", "function(){return BI.contentFormat(arguments[0], \"#.##%\")}")
                         .put("arrivalrateFormat", "function(){return BI.contentFormat(arguments[0], \"#.##%\")}");
 
-                ser.put("dataLabels", labels);
+                ser.put(dataLabelsKey(), labels);
             }
         }
     }

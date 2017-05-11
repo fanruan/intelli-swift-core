@@ -59,11 +59,15 @@ public class VanGaugeWidget extends VanCartesianWidget{
 
         JSONObject seriesLabel = JSONObject.create().put("enabled", true).put("formatter", JSONObject.create().put("identifier", CATEGORY)).put("align", "bottom");
 
-        JSONObject percentageLabel = JSONObject.create().put("enabled", true).put("formatter", JSONObject.create().put("identifier", PERCENT)).put("align", align);
+        JSONObject percentageLabel = JSONObject.create().put("enabled", true).put("formatter", JSONObject.create().put("identifier", PERCENT).put("percentFormat", "function(){return BI.contentFormat(arguments[0], \"#.##%\")}")).put("align", align);
 
         plotOptions.put("valueLabel", valueLabel).put("seriesLabel", seriesLabel).put("percentageLabel", percentageLabel);
 
         return plotOptions;
+    }
+
+    protected String dataLabelsKey() {
+        return "valueLabel";
     }
 
     public JSONArray createSeries(JSONObject originData) throws Exception{
