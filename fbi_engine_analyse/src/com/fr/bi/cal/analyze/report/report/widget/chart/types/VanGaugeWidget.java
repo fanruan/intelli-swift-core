@@ -90,18 +90,28 @@ public class VanGaugeWidget extends VanCartesianWidget{
         }
 
         int pointerCount = settings.optInt("dashboardPointer");
+        boolean multi = gaugeStyle == NORMAL || gaugeStyle == HALF_DASHBOARD;
+        multi = multi && pointerCount == MULTI_POINTERS;
 
+        JSONArray newSeries = JSONArray.create();
         for(int i = 0, len = series.length(); i < len; i++){
             JSONObject ser = series.getJSONObject(i);
             ser.put("style", style).put("thermometerLayout", layout);
 
-            if(pointerCount == SINGLE_POINTER){
-                JSONArray data = ser.optJSONArray("data");
-                ser.put("data", JSONArray.create().put(data.getJSONObject(0)));
+            if(multi){//将一个系列的多个点拆成多个系列
+                newSeries.put(ser);
+            } else {
+                JSONArray datas = ser.optJSONArray("data");
+                for(int dataIndex = 0, dataCount = datas.length(); dataIndex < dataCount; dataIndex ++){
+                    JSONObject newSer = new JSONObject(ser.toString());
+                    newSer.put("data", JSONArray.create().put(datas.optJSONObject(dataIndex)));
+                    newSeries.put(newSer);
+                }
             }
+
         }
 
-        return series;
+        return newSeries;
     }
 
     protected JSONObject createDataLabels(JSONObject settings) throws JSONException{
