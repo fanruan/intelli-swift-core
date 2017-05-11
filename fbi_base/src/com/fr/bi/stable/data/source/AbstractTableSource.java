@@ -279,7 +279,7 @@ public abstract class AbstractTableSource implements CubeTableSource {
                 this.fields = getFieldFromPersistentTable();
             }
         } catch (Exception e) {
-            BILoggerFactory.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error("Table " + this.getSourceID() + " has error ! Please check !", e);
         }
         return this.fields;
     }
@@ -440,8 +440,12 @@ public abstract class AbstractTableSource implements CubeTableSource {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         CubeTableSource that = (CubeTableSource) o;
         return ComparatorUtils.equals(that.getSourceID(), this.getSourceID());
 
