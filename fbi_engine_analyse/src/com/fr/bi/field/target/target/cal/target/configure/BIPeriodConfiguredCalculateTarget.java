@@ -10,19 +10,19 @@ import com.fr.json.JSONObject;
 public class BIPeriodConfiguredCalculateTarget extends
         BIConfiguredCalculateTarget {
     @BICoreField
-    private int period_type = BIReportConstant.TARGET_TYPE.CAL_VALUE.PERIOD_TYPE.VALUE;
+    private int periodType = BIReportConstant.TARGET_TYPE.CAL_VALUE.PERIOD_TYPE.VALUE;
 
     @Override
     public void parseJSON(JSONObject jo, long userId) throws Exception {
         super.parseJSON(jo, userId);
         if (jo.has("_src")) {
             JSONObject srcJo = jo.optJSONObject("_src");
-            this.period_type = srcJo.optJSONObject("expression").optInt("period_type");
+            this.periodType = srcJo.optJSONObject("expression").optInt("periodType");
         }
     }
 
     @Override
     public TargetCalculator createSummaryCalculator() {
-        return new PeriodConfigureCalculator(this, getCalTargetKey(), getStart_group(), period_type);
+        return new PeriodConfigureCalculator(this, getCalTargetKey(), getStart_group(), periodType);
     }
 }
