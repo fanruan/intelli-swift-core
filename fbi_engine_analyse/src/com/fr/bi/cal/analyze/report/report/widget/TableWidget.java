@@ -398,6 +398,16 @@ public class TableWidget extends BISummaryWidget {
         return dimensionIds.toArray(new String[0]);
     }
 
+    protected String[] getUsedDimensionID() {
+        Set<String> dimensionIds = new LinkedHashSet<String>();
+        for (BIDimension dimension : this.getDimensions()) {
+            if(dimension.isUsed()) {
+                dimensionIds.add(dimension.getValue());
+            }
+        }
+        return dimensionIds.toArray(new String[0]);
+    }
+
     public String[] getAllTargetIds() {
         Set<String> targetIds = new HashSet<String>();
         for (BISummaryTarget target : this.getTargets()) {
