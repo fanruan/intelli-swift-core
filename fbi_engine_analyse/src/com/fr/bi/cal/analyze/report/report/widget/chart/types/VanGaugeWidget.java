@@ -98,9 +98,20 @@ public class VanGaugeWidget extends VanCartesianWidget{
             JSONObject ser = series.getJSONObject(i);
             ser.put("style", style).put("thermometerLayout", layout);
 
-            if(multi){//将一个系列的多个点拆成多个系列
-                newSeries.put(ser);
-            } else {
+            if(multi){
+                JSONObject combineSer = newSeries.optJSONObject(0);
+                if(combineSer == null){
+                    combineSer = ser;
+                    newSeries.put(combineSer);
+                } else {//将多个指标的点放到一个系列里
+                    JSONArray combineData = combineSer.optJSONArray("data");
+                    JSONArray datas = ser.optJSONArray("data");
+                    for(int dataIndex = 0, dataCount = datas.length(); dataIndex < dataCount; dataIndex ++) {
+                        combineData.put(datas.opt(dataIndex));
+                    }
+                    combineSer.put("data", combineData);
+                }
+            } else {//将一个系列的多个点拆成多个系列
                 JSONArray datas = ser.optJSONArray("data");
                 for(int dataIndex = 0, dataCount = datas.length(); dataIndex < dataCount; dataIndex ++){
                     JSONObject newSer = new JSONObject(ser.toString());
