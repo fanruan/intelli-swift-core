@@ -56,7 +56,7 @@ public class BINumberDimension extends BIAbstractDimension {
     }
 
     private void formatAutoGroupJSON(JSONObject group, long userId) throws JSONException {
-        JSONObject groupValue = group.optJSONObject("group_value");
+        JSONObject groupValue = group.optJSONObject("groupValue");
         if(groupValue == null){
             groupValue = JSONObject.create();
         }
@@ -65,7 +65,7 @@ public class BINumberDimension extends BIAbstractDimension {
         ICubeColumnIndexReader reader = ti.loadGroup(new IndexKey(this.getStatisticElement().getFieldName()));
         groupValue.put(BIJSONConstant.JSON_KEYS.FILED_MAX_VALUE, ti != null ?  GeneralUtils.objectToNumber(BICollectionUtils.lastUnNullKey(reader)) : 0);
         groupValue.put(BIJSONConstant.JSON_KEYS.FIELD_MIN_VALUE, ti != null ? GeneralUtils.objectToNumber(BICollectionUtils.firstUnNullKey(reader)) : 0);
-        group.put("group_value", groupValue);
+        group.put("groupValue", groupValue);
     }
 
     @Override

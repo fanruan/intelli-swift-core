@@ -13,8 +13,11 @@ import com.fr.general.ComparatorUtils;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
+import com.fr.stable.StableUtils;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.Map;
 
 /**
  * Created by GUY on 2015/4/9.
@@ -26,9 +29,10 @@ public class CustomNumberGroup extends AbstractGroup {
 
     @Override
     public ICubeColumnIndexReader createGroupedMap(ICubeColumnIndexReader baseMap) {
-        if (isNullGroup()) {
-            return baseMap;
-        }
+        //BI-5106 自定义分组没有任何分组的时候报错
+//        if (isNullGroup()) {
+//            return baseMap;
+//        }
         CubeLinkedHashMap newMap = new CubeLinkedHashMap();
         CubeLinkedHashMap ungroupMap = new CubeLinkedHashMap();
         GroupValueIndexOrHelper[] newMapArray = new GroupValueIndexOrHelper[groups.length];
@@ -71,7 +75,7 @@ public class CustomNumberGroup extends AbstractGroup {
                 if (newMap.get("") == null) {
                     newMap.put("", entry.getValue());
                 } else {
-                    newMap.put("", GVIUtils.OR((GroupValueIndex)entry.getValue(), (GroupValueIndex) newMap.get("")));
+                    newMap.put("", GVIUtils.OR((GroupValueIndex) entry.getValue(), (GroupValueIndex) newMap.get("")));
                 }
                 continue;
             }
@@ -89,7 +93,10 @@ public class CustomNumberGroup extends AbstractGroup {
                 if (otherHelper != null) {
                     otherHelper.add(gvi);
                 } else {
-                    String name = entry.getKey().toString();
+                    /**
+                     * Connery:BI-5034,Double转String
+                     */
+                    String name = StableUtils.convertNumberStringToString(((Number) entry.getKey()).doubleValue());
                     ungroupMap.put(name, gvi);
                 }
             }
@@ -130,7 +137,7 @@ public class CustomNumberGroup extends AbstractGroup {
                     groups[i].setValue(oneGroup.getString("groupName"));
                 }
             }
-        }else {
+        } else {
             parseValueWithOldData(jo);
         }
     }

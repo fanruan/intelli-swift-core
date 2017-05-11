@@ -260,8 +260,12 @@ public abstract class TableAbstractDataBuilder implements IExcelDataBuilder {
 
     protected JSONArray createCrossItems(JSONObject top) throws Exception {
         JSONObject crossItem = new JSONObject();
-        List children = createCrossPartItems(top.getJSONArray("c"), 0, new ReportNode());
-        crossItem.put("children", children);
+        List<ITableItem> children = createCrossPartItems(top.getJSONArray("c"), 0, new ReportNode());
+        JSONArray childrenArray=new JSONArray();
+        for (ITableItem child : children) {
+           childrenArray.put(child.createJSON());
+        }
+        crossItem.put("children", childrenArray);
         if (showColTotal) {
             if (isOnlyCrossAndTarget()) {
                 BIBasicTableItem item = new BIBasicTableItem();
@@ -331,22 +335,18 @@ public abstract class TableAbstractDataBuilder implements IExcelDataBuilder {
                     createItems(items, child, indexOB, crossPV);
                 } else if (child.has("s")) {
                     for (int j = 0; j < child.getJSONArray("s").length(); j++) {
-                        if (items.get(j).getChildren().get(0).hasValues()) {
-                            List<ITableItem> tempChild = new ArrayList<ITableItem>();
-                            tempChild.add(new BIBasicTableItem());
-                            items.get(j).setChildren(tempChild);
+                        ITableItem children = items.get(j).getChildren().get(0);
+                        if (children.hasValues()) {
+                            children.setChildren(new ArrayList<ITableItem>());
                         }
                         BIBasicTableItem ob = new BIBasicTableItem();
                         ob.setText("bi.my_table_cell");
                         ob.setText(child.getJSONArray("s").getString(j));
                         ob.setStyle(SummaryTableStyleHelper.getBodyStyles(styleSetting.getThemeStyle(), styleSetting.getWsTableStyle(), j));
-                        ob.setDId(targetIds.get(j));
-//                        ob.setClicked(new JSONArray().put(crossPV.getString(indexOB.getInt("cIndex"))));
-                        List<ITableItem> tempChild = items.get(j).getChildren();
-                        tempChild.add(ob);
-                        items.get(j).setChildren(tempChild);
+                        JSONArray values = null == children.getValue() ? new JSONArray() : children.getValue();
+                        values.put(ob.createJSON());
+                        children.setValue(values);
                     }
-//                    indexOB.put("cIndex", indexOB.getInt("cIndex") + 1);
                 }
             }
         }
@@ -362,7 +362,6 @@ public abstract class TableAbstractDataBuilder implements IExcelDataBuilder {
                     ob.setText(s.getString(j));
                     ob.setStyle(SummaryTableStyleHelper.getBodyStyles(styleSetting.getThemeStyle(), styleSetting.getWsTableStyle(), j));
                     ob.setDId(targetIds.get(j));
-//                    ob.setClicked(new JSONArray().put(crossPV.getString(indexOB.getInt("cIndex"))));
                     items.get(j).getChildren().get(0).getValue().put(ob.createJSON());
                 }
             }
@@ -526,7 +525,7 @@ public abstract class TableAbstractDataBuilder implements IExcelDataBuilder {
      */
     protected List<ITableItem> createCrossPartItems(JSONArray c, int currentLayer, ReportNode parent) throws Exception {
         List items = new ArrayList();
-        List crossHeaderIItems = new ArrayList();
+        List<ITableItem> crossHeaderIItems = new ArrayList();
         currentLayer++;
         for (int i = 0; i < c.length(); i++) {
             JSONObject child = c.getJSONObject(i);
@@ -561,7 +560,7 @@ public abstract class TableAbstractDataBuilder implements IExcelDataBuilder {
                 tempLayer--;
             }
             BIBasicTableItem item = setPartItem(currentLayer, i, child, currDid, currValue, node);
-            crossHeaderIItems.add(item.createJSON());
+            crossHeaderIItems.add(item);
         }
         return crossHeaderIItems;
     }

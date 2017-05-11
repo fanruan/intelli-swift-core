@@ -5,9 +5,6 @@ import com.fr.bi.stable.constant.BIStyleConstant;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * Created by Kary on 2017/4/27.
  */
@@ -15,8 +12,8 @@ public class BITableWidgetStyle implements IWidgetStyle {
     private static final long serialVersionUID = -675827399089527747L;
     private boolean showSequence;
     private boolean freezeCols;
-    private List<Integer> mergeCols;
-    private List<Integer> columnSize;
+    private JSONArray mergeCols;
+    private JSONArray columnSize;
     private int headerRowSize;
     private int footerRowSize;
     private int rowSize;
@@ -33,31 +30,27 @@ public class BITableWidgetStyle implements IWidgetStyle {
         footerRowSize = BIStyleConstant.DEFAULT_CHART_SETTING.ROW_HEIGHT;
         rowSize = BIStyleConstant.DEFAULT_CHART_SETTING.MAX_ROW;
         showRowToTal = BIStyleConstant.DEFAULT_CHART_SETTING.SHOW_ROW_TOTAL;
-        mergeCols = new ArrayList<Integer>();
-        columnSize = new ArrayList<Integer>();
+        mergeCols = new JSONArray();
+        columnSize = new JSONArray();
     }
 
-    @Override
-    public boolean isShowSequence() {
-        return showSequence;
-    }
-
-    @Override
-    public int[] getFreezeCols() {
-        return new int[0];
-    }
 
     public boolean isFreezeCols() {
         return freezeCols;
     }
 
     @Override
-    public List<?> getMergeCols() {
+    public boolean isShowNumber() {
+        return false;
+    }
+
+    @Override
+    public JSONArray getMergeCols() {
         return mergeCols;
     }
 
     @Override
-    public List<Integer> getColumnSize() {
+    public JSONArray getColumnSize() {
         return columnSize;
     }
 
@@ -87,6 +80,11 @@ public class BITableWidgetStyle implements IWidgetStyle {
     }
 
     @Override
+    public int getTableStyleGroup() {
+        return wsTableStyle;
+    }
+
+    @Override
     public int getWsTableStyle() {
         return wsTableStyle;
     }
@@ -102,9 +100,8 @@ public class BITableWidgetStyle implements IWidgetStyle {
             footerRowSize = settingJo.optInt("rowHeight");
             rowSize = settingJo.optInt("maxRow");
             if (settingJo.has("mergeCols")) {
-                JSONArray array = settingJo.optJSONArray("mergeCols");
-                mergeCols = (List<Integer>) array.toUnmodifiableList();
-                columnSize = (List<Integer>) array.toUnmodifiableList();
+                mergeCols = settingJo.optJSONArray("mergeCols");
+                columnSize = settingJo.optJSONArray("mergeCols");
             }
             showRowToTal = settingJo.optBoolean("showRowToTal");
             themeStyle = settingJo.optString("themeStyle");
@@ -112,6 +109,21 @@ public class BITableWidgetStyle implements IWidgetStyle {
         }
     }
 
+    @Override
+    public JSONObject createJSON() throws Exception {
+        JSONObject jo = new JSONObject();
+        jo.put("showSequence", showSequence);
+        jo.put("freezeCols", freezeCols);
+        jo.put("mergeCols", mergeCols);
+        jo.put("columnSize", columnSize);
+        jo.put("headerRowSize", headerRowSize);
+        jo.put("footerRowSize", footerRowSize);
+        jo.put("rowSize", rowSize);
+        jo.put("showRowToTal", showRowToTal);
+        jo.put("themeStyle", themeStyle);
+        jo.put("wsTableStyle", wsTableStyle);
+        return jo;
+    }
 }
 
 

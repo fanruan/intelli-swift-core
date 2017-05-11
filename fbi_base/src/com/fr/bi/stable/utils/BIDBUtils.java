@@ -385,12 +385,12 @@ public class BIDBUtils {
             Map item = (Map) iterator.next();
             String columnName = (String) item.get("column_name");
             String columnNameText = getColumnNameText(connection, item);
-            int columnType = ((Integer) item.get("column_type")).intValue();
+            int columnType = (Integer) item.get("column_type");
             if (columnType == Types.OTHER && dialect instanceof OracleDialect) {
                 columnType = recheckOracleColumnType(conn, columnName, table, columnType);
             }
-            boolean columnKey = ((Boolean) item.get("column_key")).booleanValue();
-            int columnSize = ((Integer) item.get("column_size")).intValue();
+            boolean columnKey = (Boolean) item.get("column_key");
+            int columnSize = (Integer) item.get("column_size");
             int decimal_digits = PersistentField.DEFALUTSCALE;
             if (item.containsKey("DECIMAL_DIGITS")) {
                 decimal_digits = (Integer) item.get("DECIMAL_DIGITS");
