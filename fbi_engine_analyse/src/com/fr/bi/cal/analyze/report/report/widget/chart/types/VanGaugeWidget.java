@@ -97,6 +97,10 @@ public class VanGaugeWidget extends VanCartesianWidget{
         boolean multi = gaugeStyle == NORMAL || gaugeStyle == HALF_DASHBOARD;
         multi = multi && pointerCount == MULTI_POINTERS;
 
+        return dealSeries(series, style, layout, multi);
+    }
+
+    private JSONArray dealSeries(JSONArray series, String style, String layout, boolean multi) throws JSONException {
         JSONArray newSeries = JSONArray.create();
         for(int i = 0, len = series.length(); i < len; i++){
             JSONObject ser = series.getJSONObject(i);
