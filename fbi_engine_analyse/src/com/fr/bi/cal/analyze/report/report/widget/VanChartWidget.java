@@ -375,6 +375,7 @@ public abstract class VanChartWidget extends TableWidget {
             dataLabels.put("formatter", formatter);
             dataLabels.put("style", dataLabelSetting.optJSONObject("textStyle"));
             dataLabels.put("align", this.dataLabelAlign(dataLabelSetting.optInt("position")));
+            dataLabels.put("autoAdjust", dataLabelSetting.optBoolean("optimizeLabel"));
 
             dataLabels.put("connectorWidth", dataLabelSetting.optBoolean("showTractionLine") == true ? 1 : 0);
         }
