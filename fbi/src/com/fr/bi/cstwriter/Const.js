@@ -302,7 +302,7 @@ EXPR_LP_PERCENT: "expr_last_period_percent",
 EXPR_SUM: "expr_sum",
 EXPR_ACC: "expr_acc",
 EXPR_RANK: "expr_rank",
-GROUP: "group_value",
+GROUP: "groupValue",
 SINGLE_VALUE: "single_value",
 VALUE_CONVERT: "value_convert"
 }

@@ -287,16 +287,14 @@ public class BIPlate extends AbstractFSPlate {
     private void initPlugin() {
         try {
             ExtraClassManager.getInstance().addMutable(DialectCreatorImpl.XML_TAG, new DialectCreatorImpl(), PluginSimplify.create("bi", "com.fr.bi.plugin.db.ads"));
-            ExtraClassManager.getInstance().addHackActionCMD("fs_load", "fs_signin", "com.fr.bi.plugin.login", "com.fr.bi.web.base.services.BISignInAction");
         } catch (Exception e) {
             FRLogger.getLogger().error(e.getMessage(), e);
         }
     }
 
-
     @Override
     public String[] getPlateStyleFiles4WebClient() {
-        return (String[]) ArrayUtils.addAll(FsResourceHelper.getFsCss(), new String[]{
+        return ArrayUtils.addAll(FsResourceHelper.getFsCss(), new String[]{
                 "/com/fr/bi/web/cross/css/bi.toolbar.add.css",
                 "/com/fr/bi/web/cross/css/bi.shared.table.css",
 
