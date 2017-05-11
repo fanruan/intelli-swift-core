@@ -75,7 +75,7 @@ public class BIReportExportExcelUtils {
         return floatElement;
     }
 
-    static String postMessage(String message) throws IOException {
+    public static String postMessage(String message) throws IOException {
         URL url = new URL("http://" + phantomIp + ":" + phantomPort + "/");
         URLConnection connection = url.openConnection();
         connection.setDoOutput(true);
