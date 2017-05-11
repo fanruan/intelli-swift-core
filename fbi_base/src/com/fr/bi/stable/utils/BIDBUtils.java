@@ -41,7 +41,7 @@ import java.util.Date;
  * 数据库操作
  */
 public class BIDBUtils {
-    private final static int MAX_LONG_COLUMN_SIZE =20;
+    private final static int MAX_LONG_COLUMN_SIZE = 20;
 
     /**
      * 给数据库列设置初始的类型
@@ -641,9 +641,16 @@ public class BIDBUtils {
             attr = new DBCPConnectionPoolAttr();
             jdbcDatabaseConnection.setDbcpAttr(attr);
         }
-        attr.setTimeBetweenEvictionRunsMillis(500000);
-        attr.setMinEvictableIdleTimeMillis(300000);
-        attr.setTestOnBorrow(false);
+        //BI-4806处理
+        //testOnBorrow不赋值。。
+        // 其余两项判断为fr初始值时才做bi需要的初始化，否则不赋值。。供配置可修改。
+        if (attr.getTimeBetweenEvictionRunsMillis() == -1) {
+            attr.setTimeBetweenEvictionRunsMillis(500000);
+        }
+        if (attr.getMinEvictableIdleTimeMillis() == 1800000) {
+            attr.setMinEvictableIdleTimeMillis(300000);
+        }
+//        attr.setTestOnBorrow(false);
     }
 
     public static TableData createTableData(List<String> fields, DataModel dataModel) throws Exception {
