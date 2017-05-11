@@ -1,7 +1,6 @@
 package com.fr.bi.cal.analyze.report.report.widget.chart.export.calculator;
 
-import com.fr.bi.cal.analyze.report.report.widget.chart.export.basic.BIExcelTableData;
-import com.fr.bi.cal.analyze.report.report.widget.chart.export.basic.DimAndTargetStyle;
+import com.fr.bi.cal.analyze.report.report.widget.chart.export.item.BITableDataConstructor;
 import com.fr.bi.conf.report.widget.IWidgetStyle;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
@@ -13,12 +12,6 @@ import java.util.Map;
  * Created by Kary on 2017/2/27.
  */
 public class SummaryCrossTableDataBuilder extends TableAbstractDataBuilder {
-    private List<DimAndTargetStyle> dimAndTargetStyles;
-
-    public SummaryCrossTableDataBuilder(Map<Integer, List<JSONObject>> dimAndTar, List<DimAndTargetStyle> dimAndTargetStyles, JSONObject dataJSON, IWidgetStyle styleSettings) throws Exception {
-        super(dimAndTar, dataJSON, styleSettings);
-        this.dimAndTargetStyles = dimAndTargetStyles;
-    }
 
     public SummaryCrossTableDataBuilder(Map<Integer, List<JSONObject>> dimAndTar, JSONObject dataJSON, IWidgetStyle styleSettings) throws Exception {
         super(dimAndTar, dataJSON, styleSettings);
@@ -80,8 +73,8 @@ public class SummaryCrossTableDataBuilder extends TableAbstractDataBuilder {
     }
 
     @Override
-    public BIExcelTableData createTableData() throws JSONException {
-        BIExcelTableData tableDataForExport = new BIExcelTableData(headers, items, crossHeaders, crossItems, styleSetting);
+    public BITableDataConstructor createTableData() throws JSONException {
+        BITableDataConstructor tableDataForExport = new BITableDataConstructor(headers, items, crossHeaders, crossItems, styleSetting);
         return tableDataForExport;
 
     }
