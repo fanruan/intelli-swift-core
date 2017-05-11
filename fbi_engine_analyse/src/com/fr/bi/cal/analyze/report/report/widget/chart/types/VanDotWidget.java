@@ -319,9 +319,13 @@ public class VanDotWidget extends VanCartesianWidget{
 
             JSONObject point = JSONObject.create().put("x", x).put("y", y).put("size", value);
 
-            series.put(JSONObject.create().put("data", JSONArray.create().put(point))
-                    .put("name", obj.optString("n")).put("dimensionIDs", JSONArray.create().put(category.getValue())).put("targetIDs", ids)
-            );
+            JSONObject ser = JSONObject.create().put("data", JSONArray.create().put(point))
+                    .put("name", obj.optString("n")).put("targetIDs", ids);
+
+            if(category != null){
+                ser.put("dimensionIDs", JSONArray.create().put(category.getValue()));
+            }
+            series.put(ser);
 
         }
 
