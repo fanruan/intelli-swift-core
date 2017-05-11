@@ -22,10 +22,6 @@ public class SummaryGroupTableDataBuilder extends SummaryCrossTableDataBuilder {
     public void initAttrs() throws Exception {
         initAllAttrs();
         refreshDimsInfo();
-        //仅有列表头的时候(有指标) 修正数据
-//        if (this.dimIds.size() == 0 && this.crossDimIds.size() > 0 && this.targetIds.size() > 0) {
-//            amendment();
-//        }
     }
 
     @Override

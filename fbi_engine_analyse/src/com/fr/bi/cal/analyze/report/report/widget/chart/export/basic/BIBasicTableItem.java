@@ -13,16 +13,13 @@ public class BIBasicTableItem implements ITableItem {
 
     private String dId;
     private String text;
-    private JSONArray value;
-    private boolean isCross;
+    private JSONArray values;
     private boolean needExpand;
     private boolean isExpanded;
     protected List<ITableItem> children;
-    private JSONArray clicked;
-    private boolean isSum;
     private ITableStyle style;
     private String type;
-    private String tag;
+    private String value;
 
     public BIBasicTableItem() {
     }
@@ -36,12 +33,8 @@ public class BIBasicTableItem implements ITableItem {
     }
 
     @Override
-    public void setValue(JSONArray value) {
-        this.value = value;
-    }
-
-    public void setCross(boolean cross) {
-        isCross = cross;
+    public void setValues(JSONArray value) {
+        this.values = value;
     }
 
     public void setNeedExpand(boolean needExpand) {
@@ -58,15 +51,7 @@ public class BIBasicTableItem implements ITableItem {
 
     @Override
     public boolean hasValues() {
-        return null != value && value.length() > 0;
-    }
-
-    public void setClicked(JSONArray clicked) {
-        this.clicked = clicked;
-    }
-
-    public void setSum(boolean sum) {
-        isSum = sum;
+        return null != values && values.length() > 0;
     }
 
     public void setStyle(ITableStyle style) {
@@ -75,10 +60,6 @@ public class BIBasicTableItem implements ITableItem {
 
     public void setType(String type) {
         this.type = type;
-    }
-
-    public void setTag(String tag) {
-        this.tag = tag;
     }
 
     @Override
@@ -92,12 +73,8 @@ public class BIBasicTableItem implements ITableItem {
     }
 
     @Override
-    public JSONArray getValue() {
-        return value;
-    }
-
-    public boolean isCross() {
-        return isCross;
+    public JSONArray getValues() {
+        return values;
     }
 
     public boolean isNeedExpand() {
@@ -112,14 +89,6 @@ public class BIBasicTableItem implements ITableItem {
         return children;
     }
 
-    public JSONArray getClicked() {
-        return clicked;
-    }
-
-    public boolean isSum() {
-        return isSum;
-    }
-
     public ITableStyle getStyle() {
         return style;
     }
@@ -128,8 +97,20 @@ public class BIBasicTableItem implements ITableItem {
         return type;
     }
 
-    public String getTag() {
-        return tag;
+    public String getdId() {
+        return dId;
+    }
+
+    public void setdId(String dId) {
+        this.dId = dId;
+    }
+
+    public String getValue() {
+        return value;
+    }
+
+    public void setValue(String value) {
+        this.value = value;
     }
 
     @Override
@@ -137,18 +118,19 @@ public class BIBasicTableItem implements ITableItem {
         if (jo.has("dId")) {
             dId = jo.optString("dId");
         }
-        if (jo.has("dId")) {
-            dId = jo.optString("dId");
-        }
         if (jo.has("text")) {
             text = jo.optString("text");
         }
-        if (jo.has("type")) {
-            type = jo.optString("type");
-        }
+//        if (jo.has("type")) {
+//            type = jo.optString("type");
+//        }
         if (jo.has("values")) {
-            value = jo.optJSONArray("values");
+            values = jo.optJSONArray("values");
         }
+        if (jo.has("value")) {
+            value = jo.optString("value");
+        }
+
         if (jo.has("children")) {
             children=new ArrayList<ITableItem>();
             for (int i = 0; i < jo.getJSONArray("children").length(); i++) {
@@ -156,12 +138,6 @@ public class BIBasicTableItem implements ITableItem {
                 item.parseJSON(jo.getJSONArray("children").getJSONObject(i));
                 children.add(item);
             }
-        }
-        if (jo.has("isSum")) {
-            isSum = jo.optBoolean("isSum");
-        }
-        if (jo.has("isCross")) {
-            isCross = jo.optBoolean("isCross");
         }
 
     }
@@ -177,12 +153,11 @@ public class BIBasicTableItem implements ITableItem {
             jo.put("children", children);
         }
         jo.put("dId", dId);
-        jo.put("styles", null == style ? new JSONObject() : style.createJSON());
+//        jo.put("styles", null == style ? new JSONObject() : style.createJSON());
         jo.put("text", text);
-        jo.put("type", type);
-        jo.put("values", value);
-        jo.put("isSum", isSum);
-        jo.put("isCross", isCross);
+//        jo.put("type", type);
+        jo.put("values", values);
+        jo.put("value",value);
         return jo;
     }
 

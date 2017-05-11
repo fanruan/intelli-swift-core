@@ -57,8 +57,8 @@ public class BIExcelTableData implements JSONCreator {
         if (null != crossItems) {
             jo.put("crossItems", crossItems);
         }
-        if (null!=widgetStyle){
-            jo.put("widgetStyle",widgetStyle.createJSON());
+        if (null != widgetStyle) {
+            jo.put("widgetStyle", widgetStyle.createJSON());
         }
         return jo;
     }

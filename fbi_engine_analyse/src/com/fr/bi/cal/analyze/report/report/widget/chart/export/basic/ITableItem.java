@@ -14,11 +14,11 @@ public interface ITableItem extends JSONCreator {
 
     String getText();
 
-    JSONArray getValue();
+    JSONArray getValues();
 
     List<ITableItem> getChildren();
 
-    void setValue(JSONArray value);
+    void setValues(JSONArray value);
 
     void setChildren(List<ITableItem> children);
 

@@ -64,7 +64,7 @@ public class TableWidget extends BISummaryWidget {
     private BITableReportSetting data = new BITableReportSetting();
     private int[] pageSpinner = new int[5];
     private int operator = BIReportConstant.TABLE_PAGE_OPERATOR.REFRESH;
-    private int table_type = BIReportConstant.TABLE_WIDGET.GROUP_TYPE;
+    private int tableType = BIReportConstant.TABLE_WIDGET.GROUP_TYPE;
     @BIIgnoreField
     private transient BIDimension[] usedDimension;
     @BIIgnoreField
@@ -160,7 +160,7 @@ public class TableWidget extends BISummaryWidget {
         boolean calculateTarget = targetSort != null || !targetFilterMap.isEmpty();
         CrossExpander expander = new CrossExpander(complexExpander.getXExpander(0), complexExpander.getYExpander(0));
         boolean hasTarget = calculateTarget || getViewTargets().length > 0;
-        if (this.table_type == BIReportConstant.TABLE_WIDGET.COMPLEX_TYPE || this.table_type == BIReportConstant.WIDGET.DOT) {
+        if (this.tableType == BIReportConstant.TABLE_WIDGET.COMPLEX_TYPE || this.tableType == BIReportConstant.WIDGET.DOT) {
             return createComplexExecutor(session, hasTarget, complexExpander, expander);
         } else {
             return createNormalExecutor(session, hasTarget, getViewDimensions(), getViewTopDimensions(), expander);
@@ -261,7 +261,7 @@ public class TableWidget extends BISummaryWidget {
         }
 
         if (jo.has("type")) {
-            table_type = jo.optInt("type");
+            tableType = jo.optInt("type");
         }
 
         if (jo.has("page")) {
@@ -517,7 +517,7 @@ public class TableWidget extends BISummaryWidget {
         List<DimAndTargetStyle> chartSettings = new ArrayList<DimAndTargetStyle>();
         createChartSettings(chartSettings);
         IExcelDataBuilder builder = null;
-        switch (this.table_type) {
+        switch (this.tableType) {
             case BIReportConstant.TABLE_WIDGET.CROSS_TYPE:
                 builder = new SummaryCrossTableDataBuilder(viewMap, chartSettings, dataJSON, style);
                 break;

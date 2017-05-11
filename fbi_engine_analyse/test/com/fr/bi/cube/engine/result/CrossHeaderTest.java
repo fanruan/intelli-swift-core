@@ -81,7 +81,7 @@ public class CrossHeaderTest extends TestCase {
 //        header.setValue(node);
 //
 //        header.buildLeftRelation(l);
-//        assertSame(l.getValue(),node);
+//        assertSame(l.getValues(),node);
 //
 //    }
 //    public void testCratePageNode()

@@ -9,6 +9,7 @@ import com.fr.bi.conf.report.widget.IWidgetStyle;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.utils.program.BIJsonUtils;
 import com.fr.bi.stable.utils.program.BIStringUtils;
+import com.fr.general.Inter;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
@@ -39,6 +40,7 @@ public abstract class TableAbstractDataBuilder implements IExcelDataBuilder {
     protected List<String> targetIds;
     protected boolean showColTotal = true;
     private static final String EMPTY_VALUE = "--";
+    private static final String SUMMMARY= Inter.getLocText("BI-Summary_Values");
 
     public TableAbstractDataBuilder(Map<Integer, List<JSONObject>> dimAndTar, JSONObject dataJSON, IWidgetStyle styleSettings) throws Exception {
         this.data = dataJSON;
@@ -85,10 +87,9 @@ public abstract class TableAbstractDataBuilder implements IExcelDataBuilder {
                 temp.setText(s.optString(i));
                 temp.setDId(targetIds.get(i));
                 temp.setStyle(null);
-                temp.setClicked(new JSONArray().put(new JSONObject()));//[{}];
                 outerValues.put(temp.createJSON());
             }
-            item.setValue(outerValues);
+            item.setValues(outerValues);
         } else {
             //使用第一个值作为一个维度
             for (int i = 0; i < s.length(); i++) {
@@ -96,18 +97,14 @@ public abstract class TableAbstractDataBuilder implements IExcelDataBuilder {
                 temp.setType("bi.my_table_cell");
                 temp.setText(s.getString(i));
                 temp.setDId(targetIds.get(i));
-                temp.setClicked(new JSONArray().put(new JSONObject()));//[{}]
             }
             BIBasicTableItem temp = new BIBasicTableItem();
             temp.setType("bi.my_table_cell");
             temp.setText(data.getJSONArray("s").getString(0));
             temp.setDId(targetIds.get(0));
-            temp.setClicked(new JSONArray().put(new JSONObject()));
-            temp.setTag(UUID.randomUUID().toString());
-            temp.setSum(true);
-            temp.setValue(outerValues);
+            temp.setValues(outerValues);
             item.getChildren().add(temp);
-            item.setValue(new JSONArray().put(item.createJSON()));
+            item.setValues(new JSONArray().put(item.createJSON()));
         }
         items.add(item);
     }
@@ -239,7 +236,6 @@ public abstract class TableAbstractDataBuilder implements IExcelDataBuilder {
                     tempItem.setText(ss.getString(i));
                     tempItem.setDId(tId);
                     tempItem.setStyle(SummaryTableStyleHelper.getLastSummaryStyles("", ""));
-                    tempItem.setClicked(new JSONArray());
                     outerValues.put(tempItem.createJSON());
                 }
             }
@@ -252,7 +248,7 @@ public abstract class TableAbstractDataBuilder implements IExcelDataBuilder {
 
                 sums.put(outerValues.getJSONObject(i));
             }
-            item.setValue(sums);
+            item.setValues(sums);
         }
         this.items = new ArrayList<ITableItem>();
         items.add(item);
@@ -270,17 +266,15 @@ public abstract class TableAbstractDataBuilder implements IExcelDataBuilder {
             if (isOnlyCrossAndTarget()) {
                 BIBasicTableItem item = new BIBasicTableItem();
                 item.setType("bi.page_table_cell");
-                item.setText("summary");
+                item.setText(SUMMMARY);
                 item.setStyle(null);
                 crossItem.put("children", crossItem.getJSONArray("children").put(item.createJSON()));
             } else {
                 for (String targetId : targetIds) {
                     BIBasicTableItem item = new BIBasicTableItem();
                     item.setType("bi.my_table_cell");
-                    item.setText("summary");
+                    item.setText(SUMMMARY);
                     item.setStyle(null);
-                    item.setTag(UUID.randomUUID().toString());
-                    item.setSum(true);
                     item.setDId(targetId);
                     crossItem.getJSONArray("children").put(item.createJSON());
                 }
@@ -343,9 +337,9 @@ public abstract class TableAbstractDataBuilder implements IExcelDataBuilder {
                         ob.setText("bi.my_table_cell");
                         ob.setText(child.getJSONArray("s").getString(j));
                         ob.setStyle(SummaryTableStyleHelper.getBodyStyles(styleSetting.getThemeStyle(), styleSetting.getWsTableStyle(), j));
-                        JSONArray values = null == children.getValue() ? new JSONArray() : children.getValue();
+                        JSONArray values = null == children.getValues() ? new JSONArray() : children.getValues();
                         values.put(ob.createJSON());
-                        children.setValue(values);
+                        children.setValues(values);
                     }
                 }
             }
@@ -355,14 +349,14 @@ public abstract class TableAbstractDataBuilder implements IExcelDataBuilder {
                 JSONArray s = data.getJSONArray("s");
                 for (int j = 0; j < s.length(); j++) {
                     if (!items.get(j).getChildren().get(0).hasValues()) {
-                        items.get(j).getChildren().get(0).setValue(new JSONArray());
+                        items.get(j).getChildren().get(0).setValues(new JSONArray());
                     }
                     BIBasicTableItem ob = new BIBasicTableItem();
                     ob.setType("bi.my_table_cell");
                     ob.setText(s.getString(j));
                     ob.setStyle(SummaryTableStyleHelper.getBodyStyles(styleSetting.getThemeStyle(), styleSetting.getWsTableStyle(), j));
                     ob.setDId(targetIds.get(j));
-                    items.get(j).getChildren().get(0).getValue().put(ob.createJSON());
+                    items.get(j).getChildren().get(0).getValues().put(ob.createJSON());
                 }
             }
             indexOB.put("cIndex", indexOB.getInt("cIndex") + 1);
@@ -461,7 +455,7 @@ public abstract class TableAbstractDataBuilder implements IExcelDataBuilder {
                     for (String targetId : targetIds) {
                         BITableHeader header = new BITableHeader();
                         header.setText("summary:" + BITableExportDataHelper.getDimensionNameByID(dimAndTar, targetId));
-                        header.setTitle("summary" + BITableExportDataHelper.getDimensionNameByID(dimAndTar, targetId));
+                        header.setTitle(SUMMMARY + BITableExportDataHelper.getDimensionNameByID(dimAndTar, targetId));
                         header.setTag(UUID.randomUUID().toString());
                         header.setType("bi.page_table_cell");
                         headers.add(header);
@@ -469,7 +463,7 @@ public abstract class TableAbstractDataBuilder implements IExcelDataBuilder {
                 }
             } else if (item.has("isSum") && item.getBoolean("isSum")) {
                 //合计
-                item.put("text", "summary" + BITableExportDataHelper.getDimensionNameByID(dimAndTar, item.getString("dId")));
+                item.put("text", SUMMMARY + BITableExportDataHelper.getDimensionNameByID(dimAndTar, item.getString("dId")));
                 item.put("cls", "cross-table-target-header");
                 BITableHeader header = new BITableHeader();
                 header.parseJson(item);
@@ -570,7 +564,6 @@ public abstract class TableAbstractDataBuilder implements IExcelDataBuilder {
         item.setType("bi.my_table_cell");
         item.setText(currValue);
         item.setDId(currDid);
-        item.setCross(true);
         if (currentLayer < crossDimIds.size()) {
             item.setNeedExpand(true);
             item.setExpanded(false);
@@ -599,7 +592,7 @@ public abstract class TableAbstractDataBuilder implements IExcelDataBuilder {
                     itemList.put(jsonArray);
                 }
             }
-            item.setValue(itemList);
+            item.setValues(itemList);
         }
         if (showColTotal || null != item.getChildren()) {
             JSONArray itemList = new JSONArray();
@@ -610,7 +603,7 @@ public abstract class TableAbstractDataBuilder implements IExcelDataBuilder {
                     itemList.put(new String());
                 }
             }
-            item.setValue(itemList);
+            item.setValues(itemList);
         }
         return item;
     }
@@ -693,10 +686,9 @@ public abstract class TableAbstractDataBuilder implements IExcelDataBuilder {
                 tarItem.setType("bi.my_table_cell");
                 tarItem.setText(summary.getString(j));
                 tarItem.setDId(targetIds.get(j % tartSize));
-                tarItem.setClicked(pValues);
                 vs.put(tarItem.createJSON());
             }
-            item.setValue(vs);
+            item.setValues(vs);
         }
         item.setExpanded(true);
     }
@@ -722,12 +714,11 @@ public abstract class TableAbstractDataBuilder implements IExcelDataBuilder {
                     BIBasicTableItem tarItem = new BIBasicTableItem();
                     tarItem.setType("bi.my_table_cell");
                     tarItem.setText(array.getString(j));
-                    tarItem.setClicked(pValues);
                     tarItem.setDId(tId);
                     values.put(tarItem.createJSON());
                 }
             }
-            item.setValue(values);
+            item.setValues(values);
         }
     }
 
@@ -775,12 +766,6 @@ public abstract class TableAbstractDataBuilder implements IExcelDataBuilder {
                 tarItem.setDId(tId);
                 tarItem.setType("bi.my_table_cell");
                 tarItem.setText(v);
-                if (crossPV.length() > ob.getInt("index")) {
-                    JSONArray array = pValues.put(crossPV.get(ob.getInt("index")));
-                    tarItem.setClicked(array);
-                } else {
-                    tarItem.setClicked(pValues);
-                }
                 sum.put(tarItem.createJSON());
                 ob.put("index", ob.getInt("index") + 1);
             }

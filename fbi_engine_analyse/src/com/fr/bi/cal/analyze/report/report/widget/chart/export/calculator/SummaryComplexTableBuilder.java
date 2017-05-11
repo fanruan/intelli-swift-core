@@ -127,7 +127,7 @@ public class SummaryComplexTableBuilder extends TableAbstractDataBuilder {
                     for (int j = 0; j < s.length(); j++) {
                         createItem(outerValues, s, j);
                     }
-                    item.setValue(outerValues);
+                    item.setValues(outerValues);
                 } else {
                     //使用第一个值作为一个维度
                     for (int k = 0; k < s.length(); k++) {
@@ -137,13 +137,10 @@ public class SummaryComplexTableBuilder extends TableAbstractDataBuilder {
                     itemNode.setType("bi.my_table_cell");
                     itemNode.setDId(targetIds.get(0));
                     itemNode.setText(s.getString(0));
-                    itemNode.setClicked(new JSONArray().put(new JSONObject()));
                     itemNode.setStyle(SummaryTableStyleHelper.getLastSummaryStyles("", ""));
-                    itemNode.setSum(true);
-                    itemNode.setTag(UUID.randomUUID().toString());
-                    itemNode.setValue(outerValues);
+                    itemNode.setValues(outerValues);
                     item.getChildren().add(itemNode);
-                    item.setValue(new JSONArray().put(item));
+                    item.setValues(new JSONArray().put(item));
                 }
             }
             tempItems.add(item);
@@ -156,7 +153,6 @@ public class SummaryComplexTableBuilder extends TableAbstractDataBuilder {
         itemNode.setType("bi.my_table_cell");
         itemNode.setDId(targetIds.get(j));
         itemNode.setText(s.getString(j));
-        itemNode.setClicked(new JSONArray().put(new JSONObject()));
         itemNode.setStyle(SummaryTableStyleHelper.getLastSummaryStyles("", ""));
         outerValues.put(itemNode);
     }
@@ -283,9 +279,9 @@ public class SummaryComplexTableBuilder extends TableAbstractDataBuilder {
         if (null == rowValues || rowValues.length() == 0) {
             return item;
         }
-        item.setValue(rowValues.has(outer_sum) ? rowValues.getJSONArray(outer_sum) : new JSONArray());
+        item.setValues(rowValues.has(outer_sum) ? rowValues.getJSONArray(outer_sum) : new JSONArray());
         for (ITableItem tableItem : item.getChildren()) {
-            tableItem.setValue(rowValues.getJSONArray((null == tableItem.getDId() ? "" : tableItem.getDId()) + tableItem.getText()));
+            tableItem.setValues(rowValues.getJSONArray((null == tableItem.getDId() ? "" : tableItem.getDId()) + tableItem.getText()));
         }
         return item;
     }
@@ -310,12 +306,11 @@ public class SummaryComplexTableBuilder extends TableAbstractDataBuilder {
                 BIBasicTableItem summaryValueItem = new BIBasicTableItem();
                 summaryValueItem.setType("bi.page_table_cell");
                 summaryValueItem.setText("summary");
-                summaryValueItem.setTag(UUID.randomUUID().toString());
                 JSONArray tempArray = new JSONArray();
                 for (ITableItem tempItem : tempItems) {
                     tempArray.put(tempItem.createJSON());
                 }
-                summaryValueItem.setValue(tempArray);
+                summaryValueItem.setValues(tempArray);
                 summaryValueItem.setStyle(SummaryTableStyleHelper.getLastSummaryStyles("", ""));
                 List<ITableItem> childrenAddSummaryValue = tempItems.get(i).getChildren();
                 childrenAddSummaryValue.add(summaryValueItem);
@@ -478,9 +473,7 @@ public class SummaryComplexTableBuilder extends TableAbstractDataBuilder {
                     item.setType("bi.my_table_cell");
                     item.setDId(targetIds.get(i));
                     item.setText("summary");
-                    item.setTag(String.valueOf(UUID.randomUUID()));
                     item.setStyle(SummaryTableStyleHelper.getHeaderStyles("self.getThemeColor()", styleSetting.getTableStyleGroup()));
-                    item.setSum(true);
                     children.add(item.createJSON());
                 }
 
@@ -490,8 +483,6 @@ public class SummaryComplexTableBuilder extends TableAbstractDataBuilder {
                     item.setType("bi.my_table_cell");
                     item.setText("summary");
                     item.setStyle(SummaryTableStyleHelper.getHeaderStyles("self.getThemeColor()", styleSetting.getTableStyleGroup()));
-                    item.setTag(UUID.randomUUID().toString());
-                    item.setSum(true);
                     item.setDId(targetId);
                     crossItem.getJSONArray("children").put(item.createJSON());
                 }
