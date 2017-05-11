@@ -21,7 +21,7 @@ public class SummaryTableStyleHelper {
         switch (styleType) {
             case BIStyleConstant.TABLE_STYLE.STYLE_NORMAL:
                 String background = getRowColorByIndexAndThemeColor(index, themeColor);
-                return new BITableItemStyle(background,null,null);
+                return new BITableItemStyle(background, null, null);
         }
         return new BITableItemStyle(null, null, null);
     }
@@ -31,9 +31,10 @@ public class SummaryTableStyleHelper {
     }
 
     private static String getRowColorByIndexAndThemeColor(int index, String color) {
-       return index%2==0?getOddColorByThemeColor(color):getEvenColorByThemeColor(color);
+        return index % 2 == 0 ? getOddColorByThemeColor(color) : getEvenColorByThemeColor(color);
     }
-//grb计算逻辑待补全
+
+    //grb计算逻辑待补全
     private static String getEvenColorByThemeColor(String color) {
         return "parseHEXAlpha2HEX(color, 0.2)";
     }
