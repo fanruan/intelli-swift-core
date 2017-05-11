@@ -1,4 +1,4 @@
-package com.fr.bi.cal.analyze.report.report.widget.chart.export.basic;
+package com.fr.bi.cal.analyze.report.report.widget.chart.export.style;
 
 import com.fr.json.JSONCreator;
 import com.fr.json.JSONObject;

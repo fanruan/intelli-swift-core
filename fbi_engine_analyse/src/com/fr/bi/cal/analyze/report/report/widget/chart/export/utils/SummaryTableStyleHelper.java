@@ -1,7 +1,7 @@
 package com.fr.bi.cal.analyze.report.report.widget.chart.export.utils;
 
-import com.fr.bi.cal.analyze.report.report.widget.chart.export.basic.BITableItemStyle;
-import com.fr.bi.cal.analyze.report.report.widget.chart.export.basic.ITableStyle;
+import com.fr.bi.cal.analyze.report.report.widget.chart.export.style.BITableItemStyle;
+import com.fr.bi.cal.analyze.report.report.widget.chart.export.style.ITableStyle;
 import com.fr.bi.stable.constant.BIStyleConstant;
 
 /**

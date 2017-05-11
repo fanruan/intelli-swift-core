@@ -285,6 +285,10 @@ public abstract class AbstractExcel2003Util implements HSSFListener {
         return formatListener.getFormatIndex(numberRecord) == SPECIAL_DATE_TYPE;
     }
 
+    private boolean isDateType(NumberRecord numberRecord) {
+        return HSSFDateUtil.isADateFormat(formatListener.getFormatIndex(numberRecord), formatListener.getFormatString(numberRecord));
+    }
+
     private void processNumberRecord(Record record) {
         NumberRecord numberRecord = (NumberRecord) record;
         thisRow = numberRecord.getRow();
@@ -293,10 +297,9 @@ public abstract class AbstractExcel2003Util implements HSSFListener {
             thisStr = String.valueOf(numberRecord.getValue());
         } else if (formatListener.formatNumberDateCell(numberRecord).contains("%")) {
             thisStr = String.valueOf(numberRecord.getValue());
-        } else if (isBelongInSpecialDateType(numberRecord)) {
+        } else if (isDateType(numberRecord) || isBelongInSpecialDateType(numberRecord)) {
             Date date = HSSFDateUtil.getJavaDate(numberRecord.getValue());
-            SimpleDateFormat dformat = new SimpleDateFormat("yyyy-MM-dd hh:MM:ss");
-            thisStr = dformat.format(date);
+            thisStr = DateUtils.getDate2LStr(date);
         } else {
             thisStr = formatListener.formatNumberDateCell(numberRecord);
         }
