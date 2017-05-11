@@ -53,6 +53,15 @@ public class VanTreeMapWidget extends VanChartWidget{
         return false;
     }
 
+    public JSONObject createPlotOptions(JSONObject globalStyle, JSONObject settings) throws Exception{
+        JSONObject plotOptions = super.createPlotOptions(globalStyle, settings);
+
+        JSONObject tooltip = plotOptions.optJSONObject("tooltip");
+        tooltip.put("shared", true);
+
+        return plotOptions;
+    }
+
     public JSONArray createSeries(JSONObject originData) throws Exception {
         String[] dimensionIDs = this.getUsedDimensionID();
 
