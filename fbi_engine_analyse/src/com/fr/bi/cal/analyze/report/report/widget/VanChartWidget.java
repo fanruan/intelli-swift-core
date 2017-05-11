@@ -572,6 +572,11 @@ public abstract class VanChartWidget extends TableWidget {
         return String.format("function(){return BI.contentFormat(arguments[0], \"%s\")}", format);
     }
 
+    private BISummaryTarget getSerBITarget(JSONObject ser) throws Exception{
+        JSONArray ids = ser.optJSONArray("targetIDs");
+        return ids == null ? null : getBITargetByID(ids.optString(0));
+    }
+
     protected void formatSeriesTooltipFormat(JSONObject options) throws Exception {
 
         JSONObject tooltip = options.optJSONObject("plotOptions").optJSONObject("tooltip");
@@ -580,11 +585,10 @@ public abstract class VanChartWidget extends TableWidget {
 
         for (int i = 0, len = series.length(); i < len; i++) {
             JSONObject ser = series.getJSONObject(i);
-            String targetID = ser.optJSONArray("targetIDs").optString(0);
 
             JSONObject formatter = JSONObject.create();
 
-            formatter.put("identifier", this.getTooltipIdentifier()).put("valueFormat", this.tooltipValueFormat(this.getBITargetByID(targetID)));
+            formatter.put("identifier", this.getTooltipIdentifier()).put("valueFormat", this.tooltipValueFormat(this.getSerBITarget(ser)));
 
             ser.put("tooltip", new JSONObject(tooltip.toString()).put("formatter", formatter));
         }
@@ -602,11 +606,10 @@ public abstract class VanChartWidget extends TableWidget {
 
             for (int i = 0, len = series.length(); i < len; i++) {
                 JSONObject ser = series.getJSONObject(i);
-                String targetID = ser.optJSONArray("targetIDs").optString(0);
 
                 JSONObject labels = new JSONObject(dataLabels.toString());
                 labels.optJSONObject("formatter")
-                        .put("valueFormat", this.dataLabelValueFormat(this.getBITargetByID(targetID)))
+                        .put("valueFormat", this.dataLabelValueFormat(getSerBITarget(ser)))
                         .put("percentFormat", "function(){return BI.contentFormat(arguments[0], \"#.##%\")}")
                         .put("arrivalrateFormat", "function(){return BI.contentFormat(arguments[0], \"#.##%\")}");
 
@@ -696,8 +699,11 @@ public abstract class VanChartWidget extends TableWidget {
             }
             JSONObject ser = JSONObject.create().put("data", data).put("name", getDimensionNameByID(id))
                     .put("type", type).put("yAxis", yAxis)
-                    .put("dimensionIDs", JSONArray.create().put(category.getValue()))
                     .put("targetIDs", JSONArray.create().put(id));
+
+            if(category != null){
+                ser.put("dimensionIDs", JSONArray.create().put(category.getValue()));
+            }
 
             if (this.isStacked(id)) {
                 ser.put("stack", STACK_ID_PREFIX + yAxis);
