@@ -16,6 +16,7 @@ import com.fr.bi.cal.analyze.report.report.widget.chart.export.calculator.Detail
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.manager.TableDirector;
 import com.fr.bi.cal.analyze.report.report.widget.detail.BIDetailReportSetting;
 import com.fr.bi.cal.analyze.report.report.widget.detail.BIDetailSetting;
+import com.fr.bi.cal.analyze.report.report.widget.style.BITableWidgetStyle;
 import com.fr.bi.cal.analyze.session.BISession;
 import com.fr.bi.common.persistent.xml.BIIgnoreField;
 import com.fr.bi.conf.report.WidgetType;
@@ -56,7 +57,7 @@ public class BIDetailWidget extends AbstractBIWidget {
     private BusinessTable target;//目标表
     private List<String> parent_widget = new ArrayList<String>();
     private String[] sortTargets = new String[0];
-
+    private BITableWidgetStyle widgetStyle;
     //page from 1~ max
     private int page = 1;
 
@@ -163,6 +164,7 @@ public class BIDetailWidget extends AbstractBIWidget {
             data = new BIDetailReportSetting();
             data.parseJSON(jo);
         }
+        parseWidgetStyle(jo);
         if (jo.has("sortSequence")) {
             JSONArray ja = jo.getJSONArray("sortSequence");
             int len = ja.length();
@@ -188,6 +190,13 @@ public class BIDetailWidget extends AbstractBIWidget {
                 String key = it.next().toString();
                 targetFilterMap.put(key, TargetFilterFactory.parseFilter(targetFilter.getJSONObject(key), userId));
             }
+        }
+    }
+
+    private void parseWidgetStyle(JSONObject jo) throws Exception {
+        widgetStyle=new BITableWidgetStyle();
+        if (jo.has("settings")) {
+            widgetStyle.parseJSON(jo);
         }
     }
 
@@ -291,7 +300,7 @@ public class BIDetailWidget extends AbstractBIWidget {
         JSONObject dataJSON = this.createDataJSON(session, req).getJSONObject("data");
         Map<Integer, List<JSONObject>> viewMap = createViewMap();
         List<DimAndTargetStyle> dimAndTargetStyles = createChartDimensions();
-        IExcelDataBuilder builder = new DetailTableBuilder(viewMap, dimAndTargetStyles, dataJSON, null);
+        IExcelDataBuilder builder = new DetailTableBuilder(viewMap, dimAndTargetStyles, dataJSON, new BITableWidgetStyle());
         TableDirector director = new TableDirector(builder);
         director.construct();
         return director.buildTableData().createJSON();
