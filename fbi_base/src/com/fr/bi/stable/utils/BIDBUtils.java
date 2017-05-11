@@ -41,6 +41,10 @@ import java.util.Date;
  * 数据库操作
  */
 public class BIDBUtils {
+    private static int INIT_TIME_BETWEEN_EVICTION_RUNS_MILLIS = -1;
+    private static int BI_TIME_BETWEEN_EVICTION_RUNS_MILLI = 500000;
+    private static int INIT_MIN_EVICTABLEIDLE_TIME_MILLIS = 1800000;
+    private static int BI_MIN_EVICTABLEIDLE_TIME_MILLIS = 300000;
     private final static int MAX_LONG_COLUMN_SIZE = 20;
 
     /**
@@ -644,11 +648,11 @@ public class BIDBUtils {
         //BI-4806处理
         //testOnBorrow不赋值。。
         // 其余两项判断为fr初始值时才做bi需要的初始化，否则不赋值。。供配置可修改。
-        if (attr.getTimeBetweenEvictionRunsMillis() == -1) {
-            attr.setTimeBetweenEvictionRunsMillis(500000);
+        if (attr.getTimeBetweenEvictionRunsMillis() == INIT_TIME_BETWEEN_EVICTION_RUNS_MILLIS) {
+            attr.setTimeBetweenEvictionRunsMillis(BI_TIME_BETWEEN_EVICTION_RUNS_MILLI);
         }
-        if (attr.getMinEvictableIdleTimeMillis() == 1800000) {
-            attr.setMinEvictableIdleTimeMillis(300000);
+        if (attr.getMinEvictableIdleTimeMillis() == INIT_MIN_EVICTABLEIDLE_TIME_MILLIS) {
+            attr.setMinEvictableIdleTimeMillis(BI_MIN_EVICTABLEIDLE_TIME_MILLIS);
         }
 //        attr.setTestOnBorrow(false);
     }
