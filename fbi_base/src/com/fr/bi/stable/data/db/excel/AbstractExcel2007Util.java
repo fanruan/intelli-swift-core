@@ -2,6 +2,7 @@ package com.fr.bi.stable.data.db.excel;
 
 import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.general.ComparatorUtils;
+import com.fr.general.DateUtils;
 import com.fr.stable.ColumnRow;
 import com.fr.stable.StringUtils;
 import com.fr.third.v2.org.apache.poi.hssf.record.NumberRecord;
@@ -10,6 +11,7 @@ import com.fr.third.v2.org.apache.poi.openxml4j.exceptions.OpenXML4JException;
 import com.fr.third.v2.org.apache.poi.openxml4j.opc.OPCPackage;
 import com.fr.third.v2.org.apache.poi.ss.usermodel.BuiltinFormats;
 import com.fr.third.v2.org.apache.poi.ss.usermodel.DataFormatter;
+import com.fr.third.v2.org.apache.poi.ss.usermodel.DateUtil;
 import com.fr.third.v2.org.apache.poi.ss.util.NumberToTextConverter;
 import com.fr.third.v2.org.apache.poi.xssf.eventusermodel.ReadOnlySharedStringsTable;
 import com.fr.third.v2.org.apache.poi.xssf.eventusermodel.XSSFReader;
@@ -496,8 +498,7 @@ public abstract class AbstractExcel2007Util {
             if (isDateFormat) {
                 try {
                     Date date = HSSFDateUtil.getJavaDate(Double.parseDouble(n));
-                    SimpleDateFormat dformat = new SimpleDateFormat("yyyy-MM-dd hh:MM:ss");
-                    cellValue = dformat.format(date);
+                    cellValue=DateUtils.getDate2LStr(date);
                 } catch (Exception e) {
                     cellValue = n;
                 }
