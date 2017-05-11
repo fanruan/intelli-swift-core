@@ -6,6 +6,8 @@ import com.fr.bi.cal.generate.timerTask.BICubeTimeTaskCreatorManager;
 import com.fr.bi.cal.generate.timerTask.BICubeTimeTaskCreatorProvider;
 import com.fr.bi.cal.generate.timerTask.TimerTaskSchedule;
 import com.fr.bi.cal.generate.timerTask.adapter.TimerScheduleAdapter;
+import com.fr.bi.cluster.ClusterAdapter;
+import com.fr.bi.cluster.utils.ClusterEnv;
 import com.fr.bi.conf.manager.update.source.UpdateSettingSource;
 import com.fr.bi.conf.provider.BIConfigureManagerCenter;
 import com.fr.stable.bridge.StableFactory;
@@ -26,7 +28,7 @@ public class TimerRunner {
     public TimerRunner(long userId) {
         biUser = new BIUser(userId);
         biCubeTimeTaskCreatorProvider = StableFactory.getMarkedObject(BICubeTimeTaskCreatorProvider.XML_TAG, BICubeTimeTaskCreatorManager.class);
-        scheduleList=new ArrayList<TimerTaskSchedule>();
+        scheduleList = new ArrayList<TimerTaskSchedule>();
     }
 
     public void envChanged() {
@@ -51,7 +53,12 @@ public class TimerRunner {
     }
 
     private List<TimerTaskSchedule> getTimerTaskSchedules() {
-        Map<String, UpdateSettingSource> allTimeTaskMap = BIConfigureManagerCenter.getUpdateFrequencyManager().getUpdateSettings(biUser.getUserId());
-        return TimerScheduleAdapter.convertSchedule(this.biUser.getUserId(), allTimeTaskMap);
+        //子节点不添加定时任务。
+        if (ClusterEnv.isCluster() && !ClusterAdapter.getManager().getHostManager().isSelf()) {
+            return new ArrayList<TimerTaskSchedule>();
+        } else {
+            Map<String, UpdateSettingSource> allTimeTaskMap = BIConfigureManagerCenter.getUpdateFrequencyManager().getUpdateSettings(biUser.getUserId());
+            return TimerScheduleAdapter.convertSchedule(this.biUser.getUserId(), allTimeTaskMap);
+        }
     }
 }

@@ -53,7 +53,7 @@ public class VanMultiPieWidget extends VanPieWidget{
         }
 
         series.put(JSONObject.create().put("data", data).put("name", this.getDimensionNameByID(targetIDs[0]))
-                .put("dimensionIDs", dimensionIDs).put("targetIDs", targetIDs));
+                .put("dimensionIDs", dimensionIDs).put("targetIDs", JSONArray.create().put(targetIDs[0])));
 
         return series;
     }
