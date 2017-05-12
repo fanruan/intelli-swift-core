@@ -59,11 +59,15 @@ public class VanGaugeWidget extends VanCartesianWidget{
 
         JSONObject seriesLabel = JSONObject.create().put("enabled", true).put("formatter", JSONObject.create().put("identifier", CATEGORY)).put("align", "bottom");
 
-        JSONObject percentageLabel = JSONObject.create().put("enabled", true).put("formatter", JSONObject.create().put("identifier", PERCENT)).put("align", align);
+        JSONObject percentageLabel = JSONObject.create().put("enabled", true).put("formatter", JSONObject.create().put("identifier", PERCENT).put("percentFormat", "function(){return BI.contentFormat(arguments[0], \"#.##%\")}")).put("align", align);
 
         plotOptions.put("valueLabel", valueLabel).put("seriesLabel", seriesLabel).put("percentageLabel", percentageLabel);
 
         return plotOptions;
+    }
+
+    protected String dataLabelsKey() {
+        return "valueLabel";
     }
 
     public JSONArray createSeries(JSONObject originData) throws Exception{
@@ -90,18 +94,43 @@ public class VanGaugeWidget extends VanCartesianWidget{
         }
 
         int pointerCount = settings.optInt("dashboardPointer");
+        boolean multi = gaugeStyle == NORMAL || gaugeStyle == HALF_DASHBOARD;
+        multi = multi && pointerCount == MULTI_POINTERS;
 
+        return dealSeries(series, style, layout, multi);
+    }
+
+    private JSONArray dealSeries(JSONArray series, String style, String layout, boolean multi) throws JSONException {
+        JSONArray newSeries = JSONArray.create();
         for(int i = 0, len = series.length(); i < len; i++){
             JSONObject ser = series.getJSONObject(i);
             ser.put("style", style).put("thermometerLayout", layout);
 
-            if(pointerCount == SINGLE_POINTER){
-                JSONArray data = ser.optJSONArray("data");
-                ser.put("data", JSONArray.create().put(data.getJSONObject(0)));
+            if(multi){
+                JSONObject combineSer = newSeries.optJSONObject(0);
+                if(combineSer == null){
+                    combineSer = ser;
+                    newSeries.put(combineSer);
+                } else {//将多个指标的点放到一个系列里
+                    JSONArray combineData = combineSer.optJSONArray("data");
+                    JSONArray datas = ser.optJSONArray("data");
+                    for(int dataIndex = 0, dataCount = datas.length(); dataIndex < dataCount; dataIndex ++) {
+                        combineData.put(datas.opt(dataIndex));
+                    }
+                    combineSer.put("data", combineData);
+                }
+            } else {//将一个系列的多个点拆成多个系列
+                JSONArray datas = ser.optJSONArray("data");
+                for(int dataIndex = 0, dataCount = datas.length(); dataIndex < dataCount; dataIndex ++){
+                    JSONObject newSer = new JSONObject(ser.toString());
+                    newSer.put("data", JSONArray.create().put(datas.optJSONObject(dataIndex)));
+                    newSeries.put(newSer);
+                }
             }
+
         }
 
-        return series;
+        return newSeries;
     }
 
     protected JSONObject createDataLabels(JSONObject settings) throws JSONException{

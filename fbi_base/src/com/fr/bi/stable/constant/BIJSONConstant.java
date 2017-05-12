@@ -58,7 +58,7 @@ public class BIJSONConstant {
         public static final String EXPR_SUM = "expr_sum";
         public static final String EXPR_ACC = "expr_acc";
         public static final String EXPR_RANK = "expr_rank";
-        public static final String GROUP = "group_value";
+        public static final String GROUP = "groupValue";
         public static final String SINGLE_VALUE = "single_value";
         public static final String VALUE_CONVERT = "value_convert";
     }

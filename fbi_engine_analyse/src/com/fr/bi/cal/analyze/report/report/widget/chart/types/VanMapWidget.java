@@ -9,9 +9,7 @@ import com.fr.json.JSONArray;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
 import com.fr.stable.StringUtils;
-import com.taobao.top.link.embedded.websocket.util.StringUtil;
 
-import java.awt.*;
 import java.util.Map;
 
 /**
@@ -111,6 +109,8 @@ public class VanMapWidget extends VanChartWidget{
     }
 
     public JSONArray createSeries(JSONObject originData) throws Exception {
+        String[] dimensionIDs = this.getUsedDimensionID();
+
         JSONArray series = JSONArray.create();
         if(!originData.has("c")){
             return series;
@@ -147,7 +147,9 @@ public class VanMapWidget extends VanChartWidget{
             }
 
             series.put(JSONObject.create().put("data", data).put("type", type)
-                    .put("name", this.getDimensionNameByID(id)).put("dimensionID", id));
+                    .put("name", this.getDimensionNameByID(id))
+                    .put("targetIDs", JSONArray.create().put(id))
+                    .put("dimensionIDs", dimensionIDs));
         }
 
         return series;
@@ -163,6 +165,10 @@ public class VanMapWidget extends VanChartWidget{
 
     protected String getTooltipIdentifier(){
         return NAME + SERIES + VALUE;
+    }
+
+    protected JSONArray parseColors(JSONObject settings, JSONObject globalStyle, JSONObject plateConfig) throws Exception {
+        return JSONArray.create();
     }
 
 }

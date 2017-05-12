@@ -374,17 +374,19 @@ public class BIRelationIndexGenerator extends BIProcessor {
     }
 
     private void initReverseIndex(final int[] index, final int row, GroupValueIndex gvi) {
-        gvi.Traversal(new SingleRowTraversalAction() {
-            @Override
-            public void actionPerformed(int rowIndex) {
-                try {
-                    index[rowIndex] = row;
-                } catch (ArrayIndexOutOfBoundsException e) {
-                    LOGGER.error("Array size:" + index.length + " row index:" + rowIndex);
-                    throw e;
+        if (gvi != null) {
+            gvi.Traversal(new SingleRowTraversalAction() {
+                @Override
+                public void actionPerformed(int rowIndex) {
+                    try {
+                        index[rowIndex] = row;
+                    } catch (ArrayIndexOutOfBoundsException e) {
+                        LOGGER.error("Array size:" + index.length + " row index:" + rowIndex);
+                        throw e;
+                    }
                 }
-            }
-        });
+            });
+        }
     }
 
     private void buildIndex(BICubeRelationEntity tableRelation, byte[][] relationIndex) {
