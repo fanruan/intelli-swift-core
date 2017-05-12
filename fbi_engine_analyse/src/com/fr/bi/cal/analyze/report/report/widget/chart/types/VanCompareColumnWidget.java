@@ -10,8 +10,8 @@ import com.fr.script.Calculator;
  */
 public class VanCompareColumnWidget extends VanColumnWidget{
 
-    protected JSONObject populateDefaultSettings() throws JSONException {
-        JSONObject settings = super.populateDefaultSettings();
+    protected JSONObject getDetailChartSetting() throws JSONException {
+        JSONObject settings = super.getDetailChartSetting();
 
         dealYAxisDiffDefaultSettings(settings);
 
@@ -45,17 +45,13 @@ public class VanCompareColumnWidget extends VanColumnWidget{
         left.append(")");right.append(")");
 
         settings
+                .put("rightYReverse", true)
                 .put("rightYShowCustomScale", true)
                 .put("rightYCustomScale", JSONObject.create().put("maxScale", JSONObject.create().put("formula", String.format("=2 * %s", right.toString()))))
                 .put("leftYShowCustomScale", true)
                 .put("leftYCustomScale", JSONObject.create().put("maxScale", JSONObject.create().put("formula", String.format("=2 * %s", left.toString()))))
 
         ;
-    }
-
-    @Override
-    protected boolean rightYReverse() {
-        return true;
     }
 
     private JSONObject createEmptyCategoryAxis(JSONObject settings) throws JSONException{

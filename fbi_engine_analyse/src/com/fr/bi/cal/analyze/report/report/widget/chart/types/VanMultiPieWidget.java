@@ -34,7 +34,6 @@ public class VanMultiPieWidget extends VanPieWidget{
 
         JSONArray series = JSONArray.create();
         String[] targetIDs = this.getUsedTargetID();
-        String[] dimensionIDs = this.getUsedDimensionID();
 
         if(targetIDs.length < 1){
             return series;
@@ -52,8 +51,7 @@ public class VanMultiPieWidget extends VanPieWidget{
             data = JSONArray.create().put(JSONObject.create().put("value", y));
         }
 
-        series.put(JSONObject.create().put("data", data).put("name", this.getDimensionNameByID(targetIDs[0]))
-                .put("dimensionIDs", dimensionIDs).put("targetIDs", targetIDs));
+        series.put(JSONObject.create().put("data", data).put("name", this.getDimensionNameByID(targetIDs[0])).put("dimensionID", targetIDs[0]));
 
         return series;
     }

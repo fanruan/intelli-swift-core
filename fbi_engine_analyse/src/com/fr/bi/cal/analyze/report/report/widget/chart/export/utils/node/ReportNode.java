@@ -1,6 +1,6 @@
 package com.fr.bi.cal.analyze.report.report.widget.chart.export.utils.node;
 
-import com.fr.bi.cal.analyze.report.report.widget.chart.export.basic.BIBasicTableItem;
+import com.fr.bi.cal.analyze.report.report.widget.chart.export.item.BIBasicTableItem;
 
 import java.util.ArrayList;
 import java.util.List;

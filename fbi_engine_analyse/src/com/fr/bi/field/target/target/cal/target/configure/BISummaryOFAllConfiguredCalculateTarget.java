@@ -62,7 +62,7 @@ public class BISummaryOFAllConfiguredCalculateTarget extends
         super.parseJSON(jo, userId);
         if (jo.has("_src")) {
             JSONObject srcJo = jo.optJSONObject("_src");
-            this.summary_type = srcJo.optJSONObject("expression").optInt("summaryType");
+            this.summary_type = srcJo.optJSONObject("expression").optInt("summary_type");
         }
     }
 

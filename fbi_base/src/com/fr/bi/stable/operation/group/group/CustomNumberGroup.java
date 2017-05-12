@@ -29,10 +29,9 @@ public class CustomNumberGroup extends AbstractGroup {
 
     @Override
     public ICubeColumnIndexReader createGroupedMap(ICubeColumnIndexReader baseMap) {
-        //BI-5106 自定义分组没有任何分组的时候报错
-//        if (isNullGroup()) {
-//            return baseMap;
-//        }
+        if (isNullGroup()) {
+            return baseMap;
+        }
         CubeLinkedHashMap newMap = new CubeLinkedHashMap();
         CubeLinkedHashMap ungroupMap = new CubeLinkedHashMap();
         GroupValueIndexOrHelper[] newMapArray = new GroupValueIndexOrHelper[groups.length];
@@ -143,15 +142,15 @@ public class CustomNumberGroup extends AbstractGroup {
     }
 
     private void parseValueWithOldData(JSONObject jo) throws JSONException {
-        if (jo.has("group_value")) {
-            JSONObject valueJson = jo.optJSONObject("group_value");
-            if (valueJson.has("group_nodes")) {
-                JSONArray ja = valueJson.getJSONArray("group_nodes");
+        if (jo.has("groupValue")) {
+            JSONObject valueJson = jo.optJSONObject("groupValue");
+            if (valueJson.has("groupNodes")) {
+                JSONArray ja = valueJson.getJSONArray("groupNodes");
                 int len = ja.length();
-                if (valueJson.has("use_other")) {
+                if (valueJson.has("useOther")) {
                     groups = new NumberGroupInfo[len + 1];
                     groups[len] = new NumberOtherGroupInfo();
-                    groups[len].setValue(valueJson.getString("use_other"));
+                    groups[len].setValue(valueJson.getString("useOther"));
                 } else {
                     groups = new NumberGroupInfo[len];
                 }
@@ -169,7 +168,7 @@ public class CustomNumberGroup extends AbstractGroup {
                         groups[i].closemin = oneGroup.getBoolean("closemin");
                     }
 
-                    groups[i].setValue(oneGroup.getString("group_name"));
+                    groups[i].setValue(oneGroup.getString("groupName"));
                 }
             }
         }
