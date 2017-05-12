@@ -360,6 +360,14 @@ public class ConstructedRootDimensionGroup extends RootDimensionGroup {
             }
         }
 
+        /**
+         * 计算是否全部完成。
+         * 乍一看，完成的等于添加了，就是全完成了，没问题。
+         * 后来再想想，不对呀，万一计算线程太快，加一个算一个，到某一个时间节点刚好count跟size都相等了，岂不是还没算完就结束了？赶紧判断下是不是每一层都加进来了。
+         * 最后想明白了，是不会出现没算完就结束的。因为再主线程里面已经把size[0]给丢满了，如果count[i]==size[i]的情况，size[i+1]一定是满的，
+         * 而multiThreadSum是发生再count[level].incrementAndGet()之前的，所以size与count相等说明一定是计算完了
+         * @return
+         */
         private boolean allCompleted() {
             for (int i = 0; i < count.length; i++) {
                 if (count[i].get() != size[i].get()) {
