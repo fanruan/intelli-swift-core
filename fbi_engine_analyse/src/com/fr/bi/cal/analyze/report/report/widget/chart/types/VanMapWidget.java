@@ -4,7 +4,6 @@ import com.fr.bi.cal.analyze.report.report.widget.VanChartWidget;
 import com.fr.bi.conf.report.map.BIMapInfoManager;
 import com.fr.bi.conf.report.map.BIWMSManager;
 import com.fr.bi.field.target.target.BISummaryTarget;
-import com.fr.bi.stable.constant.BIStyleConstant;
 import com.fr.general.Inter;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONException;
