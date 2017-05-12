@@ -67,6 +67,9 @@ public abstract class VanChartWidget extends TableWidget {
     private static final int STYLE_NORMAL = 1; //普通风格
     private static final int STYLE_GRADUAL = 2; //渐变风格
 
+    private static final int WEEK_COUNT = 52;
+    private static final int MONTH_COUNT = 12;
+
     public static final int AUTO = 1;
     public static final int CUSTOM = 2;
 
@@ -818,8 +821,8 @@ public abstract class VanChartWidget extends TableWidget {
         int weekOfYear = c.get(Calendar.WEEK_OF_YEAR);
         int mouth = c.get(Calendar.MONTH);
         //如果月份是12月，且求出来的周数是第一周，说明该日期实质上是这一年的第53周，也是下一年的第一周
-        if (mouth >= 11 && weekOfYear <= 1) {
-            weekOfYear += 52;
+        if (mouth >= MONTH_COUNT - 1 && weekOfYear <= 1) {
+            weekOfYear += WEEK_COUNT;
         }
         return weekOfYear;
     }
