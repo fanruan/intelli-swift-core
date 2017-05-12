@@ -362,7 +362,7 @@ public class ConstructedRootDimensionGroup extends RootDimensionGroup {
 
         private boolean allCompleted() {
             for (int i = 0; i < count.length; i++) {
-                if (count[i].get() != size[i].get() || !currentLevelAllAdded(i)) {
+                if (count[i].get() != size[i].get()) {
                     return false;
                 }
             }
