@@ -29,7 +29,7 @@ public class TableDataBIReportDAO implements BIReportDAO, BISharedReportDAO {
      */
     @Override
     public void saveOrUpdate(BIReportNode node) throws Exception {
-        BITableDataDAOManager.getInstance().saveOrUpdateBIReportNode(node);
+        BITableDataDAOManager.getProviderInstance().saveOrUpdateBIReportNode(node);
     }
 
 
@@ -38,7 +38,7 @@ public class TableDataBIReportDAO implements BIReportDAO, BISharedReportDAO {
      */
     @Override
     public List findByUserID(long userid) throws Exception {
-        return BITableDataDAOManager.getInstance().findBIReportNodeByUserId(userid);
+        return BITableDataDAOManager.getProviderInstance().findBIReportNodeByUserId(userid);
     }
 
     /* (non-Javadoc)
@@ -46,7 +46,7 @@ public class TableDataBIReportDAO implements BIReportDAO, BISharedReportDAO {
      */
     @Override
     public BIReportNode findByID(long id) throws Exception {
-        return BITableDataDAOManager.getInstance().findBIReportNodeById(id);
+        return BITableDataDAOManager.getProviderInstance().findBIReportNodeById(id);
     }
 
     /* (non-Javadoc)
@@ -65,7 +65,7 @@ public class TableDataBIReportDAO implements BIReportDAO, BISharedReportDAO {
      */
     @Override
     public boolean deleteByID(long id) throws Exception {
-        return BITableDataDAOManager.getInstance().deleteBIReportNodeById(id);
+        return BITableDataDAOManager.getProviderInstance().deleteBIReportNodeById(id);
     }
 
     /* (non-Javadoc)
@@ -73,16 +73,16 @@ public class TableDataBIReportDAO implements BIReportDAO, BISharedReportDAO {
      */
     @Override
     public BIReportNode findByName(String name) throws Exception {
-        return BITableDataDAOManager.getInstance().findBIReportNodeByName(name);
+        return BITableDataDAOManager.getProviderInstance().findBIReportNodeByName(name);
     }
 
     public List<BIReportNode> findByParentID(String pId) throws Exception {
-        return BITableDataDAOManager.getInstance().findByParentID(pId);
+        return BITableDataDAOManager.getProviderInstance().findByParentID(pId);
     }
 
     @Override
     public List listAll() throws Exception {
-        return BITableDataDAOManager.getInstance().findAllBIReportNode();
+        return BITableDataDAOManager.getProviderInstance().findAllBIReportNode();
     }
 
     /**
@@ -93,7 +93,7 @@ public class TableDataBIReportDAO implements BIReportDAO, BISharedReportDAO {
      */
     @Override
     public void resetSharedByReportIdAndUsers(long reportId, long createBy, long[] userIds, boolean isReset) throws Exception {
-        BITableDataDAOManager.getInstance().resetSharedByReportIdAndUsers(reportId, createBy, userIds, isReset);
+        BITableDataDAOManager.getProviderInstance().resetSharedByReportIdAndUsers(reportId, createBy, userIds, isReset);
     }
 
     /**
@@ -103,7 +103,7 @@ public class TableDataBIReportDAO implements BIReportDAO, BISharedReportDAO {
      */
     @Override
     public List<User> findUsersByReport(long reportId, long createBy) {
-        return BITableDataDAOManager.getInstance().findUsersAccessibleOfTemplateId(reportId, createBy);
+        return BITableDataDAOManager.getProviderInstance().findUsersAccessibleOfTemplateId(reportId, createBy);
     }
 
     /**
@@ -114,12 +114,12 @@ public class TableDataBIReportDAO implements BIReportDAO, BISharedReportDAO {
      */
     @Override
     public List<BISharedReportNode> findReportsByShare2User(long userId) {
-        return BITableDataDAOManager.getInstance().findReportsByShare2User(userId);
+        return BITableDataDAOManager.getProviderInstance().findReportsByShare2User(userId);
     }
 
     @Override
     public void removeSharedByReport(long reportId, long createBy) {
-        BITableDataDAOManager.getInstance().removeSharedByReport(reportId, createBy);
+        BITableDataDAOManager.getProviderInstance().removeSharedByReport(reportId, createBy);
     }
 
 

@@ -53,5 +53,10 @@
   "realTime": "实时报表(real_time)",
 
   "initTime": "初始化时间(init_time)",
-  "fullFileName": "excel名称(full_file_name)"
+  "fullFileName": "excel名称(full_file_name)",
+
+  "groupNodes": "自定义分组节点",
+  "groupValue": "自定义分组的key",
+  "useOther": "分组到其他"
+
 }

@@ -46,7 +46,7 @@ import com.fr.stable.collections.array.IntArray;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
-public abstract class BISummaryWidget extends BIAbstractWidget {
+public abstract class BISummaryWidget extends AbstractBIWidget {
     private static final long serialVersionUID = -4264115812022703958L;
     @BICoreField
     protected BISummaryTarget[] targets;

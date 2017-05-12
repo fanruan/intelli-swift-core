@@ -242,7 +242,6 @@ public abstract class VanChartWidget extends TableWidget {
         if (jo.has("view")) {
             JSONObject vjo = jo.optJSONObject("view");
 
-            JSONArray ja = JSONArray.create();
             Iterator it = vjo.keys();
             List<String> sorted = new ArrayList<String>();
             while (it.hasNext()) {
@@ -255,32 +254,38 @@ public abstract class VanChartWidget extends TableWidget {
                 }
             });
 
-            for (String region : sorted) {
-
-                if (Integer.parseInt(region) < TARGET) {
-                    continue;
-                }
-
-                JSONArray tmp = vjo.getJSONArray(region);
-
-                dimensionIdMap.put(region, tmp);//后面用来计算坐标轴和堆积属性
-
-                for (int j = 0; j < tmp.length(); j++) {
-                    String key = tmp.getString(j);
-                    ja.put(key);
-                    regionIdMap.put(key, region);
-                }
-
-                vjo.remove(region);
-            }
-
-            vjo.put(BIReportConstant.REGION.TARGET1, ja);
+           dealView(sorted, vjo);
         }
 
         this.requestURL = jo.optString("requestURL");
         this.chartType = WidgetType.parse(jo.optInt("type"));
 
         super.parseJSON(jo, userId);
+    }
+
+    protected void dealView(List<String> sorted, JSONObject vjo) throws JSONException{
+        JSONArray ja = JSONArray.create();
+
+        for (String region : sorted) {
+
+            if (Integer.parseInt(region) < TARGET) {
+                continue;
+            }
+
+            JSONArray tmp = vjo.getJSONArray(region);
+
+            dimensionIdMap.put(region, tmp);//后面用来计算坐标轴和堆积属性
+
+            for (int j = 0; j < tmp.length(); j++) {
+                String key = tmp.getString(j);
+                ja.put(key);
+                regionIdMap.put(key, region);
+            }
+
+            vjo.remove(region);
+        }
+
+        vjo.put(BIReportConstant.REGION.TARGET1, ja);
     }
 
     public JSONObject createPlotOptions(JSONObject globalStyle, JSONObject settings) throws Exception {
@@ -583,8 +588,13 @@ public abstract class VanChartWidget extends TableWidget {
         return CATEGORY + SERIES + VALUE;
     }
 
+    //gauge deal valueLabel
+    protected String dataLabelsKey() {
+        return "dataLabels";
+    }
+
     protected void formatSeriesDataLabelFormat(JSONObject options) throws Exception {
-        JSONObject dataLabels = options.optJSONObject("plotOptions").optJSONObject("dataLabels");
+        JSONObject dataLabels = options.optJSONObject("plotOptions").optJSONObject(dataLabelsKey());
 
         if (dataLabels.optBoolean("enabled")) {
             JSONArray series = options.optJSONArray("series");
@@ -598,7 +608,7 @@ public abstract class VanChartWidget extends TableWidget {
                         .put("valueFormat", this.dataLabelValueFormat(this.getBITargetByID(dimensionID)))
                         .put("percentFormat", "function(){return BI.contentFormat(arguments[0], \"#.##%\")}");
 
-                ser.put("dataLabels", labels);
+                ser.put(dataLabelsKey(), labels);
             }
         }
     }

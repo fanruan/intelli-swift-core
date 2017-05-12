@@ -2,15 +2,20 @@ package com.fr.bi.cal.analyze.report.report.widget.chart.types;
 
 import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.conf.report.WidgetType;
+import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
+import com.fr.bi.stable.constant.BIReportConstant;
+import com.fr.general.ComparatorUtils;
 import com.fr.general.FRLogger;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
 import com.fr.script.Calculator;
+import com.fr.stable.StringUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 
 /**
  * Created by eason on 2017/2/27.
@@ -47,6 +52,37 @@ public class VanDotWidget extends VanCartesianWidget{
     private static final int INTERVAL = 100;
 
     private static final int BUBBLE_DIMENSION = 3;
+
+    private List<String> seriesIDs = new ArrayList<String>();
+
+    protected void dealView(List<String> sorted, JSONObject vjo) throws JSONException{
+        super.dealView(sorted, vjo);
+
+        JSONArray ja = JSONArray.create();
+
+        int seriesRegion = Integer.parseInt(BIReportConstant.REGION.DIMENSION2);
+
+        for (String region : sorted) {
+
+            if (Integer.parseInt(region) > seriesRegion) {
+                continue;
+            }
+
+            JSONArray tmp = vjo.getJSONArray(region);
+
+            for (int j = 0; j < tmp.length(); j++) {
+                String key = tmp.getString(j);
+                ja.put(key);
+                if (Integer.parseInt(region) == seriesRegion) {
+                    this.seriesIDs.add(key);
+                }
+            }
+
+            vjo.remove(region);
+        }
+
+        vjo.put(BIReportConstant.REGION.DIMENSION1, ja);
+    }
 
     protected JSONObject populateDefaultSettings() throws JSONException {
         JSONObject settings = super.populateDefaultSettings();
@@ -152,15 +188,6 @@ public class VanDotWidget extends VanCartesianWidget{
         return legend;
     }
 
-    private void dealSeriesMap(HashMap<String, ArrayList<JSONArray>> seriesMap, JSONArray children) throws JSONException{
-        for(int i = 0, len = children.length(); i < len; i++){
-            JSONObject obj = children.getJSONObject(i);
-            String seriesName = obj.optString("n");
-            ArrayList<JSONArray> seriesArray = seriesMap.containsKey(seriesName) ? seriesMap.get(seriesName) : new ArrayList<JSONArray>();
-            seriesMap.put(seriesName, seriesArray);
-            seriesArray.add(obj.has("c") ? obj.optJSONArray("c") : JSONArray.create().put(obj));
-        }
-    }
 
     //新的点图。系列无字段，所有点在一个name=vancharts中默认给的一个系列名 的系列里面
     public JSONArray createSeries(JSONObject originData) throws Exception{
@@ -173,23 +200,46 @@ public class VanDotWidget extends VanCartesianWidget{
             return JSONArray.create();
         }
 
-        HashMap<String, ArrayList<JSONArray>> seriesMap = new HashMap<String, ArrayList<JSONArray>>();
-        Iterator iterator = originData.keys();
-
-        boolean noSeries = this.getSeriesDimension() == null;
-        if(noSeries){
-            dealSeriesMap(seriesMap, originData.optJSONArray("c"));
-        } else {
-            while (iterator.hasNext()) {
-                String key = iterator.next().toString();
-                dealSeriesMap(seriesMap, originData.optJSONObject(key).optJSONArray("c"));
+        boolean noSeries = true;
+        for(String id : this.seriesIDs){
+            for (BIDimension dimension : getDimensions()) {
+                if (ComparatorUtils.equals(dimension.getId(), id) && dimension.isUsed()) {
+                    noSeries = false;
+                }
             }
         }
 
-        return createDotSeries(noSeries, ids, seriesMap);
+        return createDotSeries(noSeries, originData);
     }
 
-    private JSONArray createDotSeries(boolean noSeries, String[] ids, HashMap<String, ArrayList<JSONArray>> seriesMap) throws JSONException{
+    private JSONArray createDotSeries(boolean noSeries, JSONObject originData) throws JSONException{
+        HashMap<String, JSONArray> seriesMap = new HashMap<String, JSONArray>();
+
+        dealChildren(noSeries, new StringBuilder(), originData.optJSONArray("c"), seriesMap);
+
+        return dealSeriesMap(noSeries, this.getUsedTargetID(), seriesMap);
+    }
+
+    private void dealChildren(boolean noSeries, StringBuilder description, JSONArray children,  HashMap<String, JSONArray> seriesMap) throws JSONException{
+        for(int i = 0, len = children.length(); i < len; i++){
+            JSONObject child = children.getJSONObject(i);
+            StringBuilder childSescription = new StringBuilder(description.toString());
+            if(child.has("c") || noSeries){
+                childSescription.append(child.optString("n")).append(StringUtils.BLANK);
+            }
+            if(child.has("c")){
+                dealChildren(noSeries, childSescription, child.optJSONArray("c"), seriesMap);
+            } else {
+                String seriesName = child.optString("n");
+                JSONArray dataArray = seriesMap.containsKey(seriesName) ? seriesMap.get(seriesName) : JSONArray.create();
+                seriesMap.put(seriesName, dataArray);
+                child.put("description", description.toString());
+                dataArray.put(child);
+            }
+        }
+    }
+
+    private JSONArray dealSeriesMap(boolean noSeries, String[] ids, HashMap<String, JSONArray> seriesMap) throws JSONException{
         JSONArray series = JSONArray.create();
 
         double yScale = this.numberScale(ids[0]), xScale = this.numberScale(ids[1]);
@@ -199,26 +249,23 @@ public class VanDotWidget extends VanCartesianWidget{
         Iterator iterator = seriesMap.keySet().iterator();
         while (iterator.hasNext()){
             String seriesName = iterator.next().toString();
-            ArrayList<JSONArray> seriesArray = seriesMap.get(seriesName);
+            JSONArray dataArray = seriesMap.get(seriesName);
             JSONObject ser = JSONObject.create();
             JSONArray data = JSONArray.create();
-            for(int i = 0, size = seriesArray.size(); i < size; i++){
-                JSONArray dataArray = seriesArray.get(i);
-                for(int j = 0, count = dataArray.length(); j < count; j++){
-                    JSONObject obj = dataArray.optJSONObject(j);
-                    JSONArray dimensions = obj.optJSONArray("s");
+            for(int j = 0, count = dataArray.length(); j < count; j++){
+                JSONObject obj = dataArray.optJSONObject(j);
+                JSONArray dimensions = obj.optJSONArray("s");
 
-                    double y = dimensions.isNull(0) ? 0 : dimensions.optDouble(0);
-                    double x = dimensions.isNull(1) ? 0 : dimensions.optDouble(1);
-                    double value = (dimensions.length() > 2 && !dimensions.isNull(2)) ? dimensions.optDouble(2) : 0;
+                double y = dimensions.isNull(0) ? 0 : dimensions.optDouble(0);
+                double x = dimensions.isNull(1) ? 0 : dimensions.optDouble(1);
+                double value = (dimensions.length() > 2 && !dimensions.isNull(2)) ? dimensions.optDouble(2) : 0;
 
-                    JSONObject point = JSONObject.create().put("x", x/xScale).put("y", y/yScale).put("size", value/sizeScale);
+                JSONObject point = JSONObject.create().put("x", x/xScale).put("y", y/yScale).put("size", value/sizeScale).put("description", obj.optString("description"));
 
-                    if(noSeries) {
-                        dotData.put(point);
-                    } else {
-                        data.put(point);
-                    }
+                if(noSeries) {
+                    dotData.put(point);
+                } else {
+                    data.put(point);
                 }
             }
 

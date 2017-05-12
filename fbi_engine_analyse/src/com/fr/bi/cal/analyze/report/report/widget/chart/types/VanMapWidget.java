@@ -165,4 +165,8 @@ public class VanMapWidget extends VanChartWidget{
         return NAME + SERIES + VALUE;
     }
 
+    protected JSONArray parseColors(JSONObject settings, JSONObject globalStyle, JSONObject plateConfig) throws Exception {
+        return JSONArray.create();
+    }
+
 }

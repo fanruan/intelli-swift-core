@@ -13,8 +13,11 @@ import com.fr.general.ComparatorUtils;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
+import com.fr.stable.StableUtils;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.Map;
 
 /**
  * Created by GUY on 2015/4/9.
@@ -71,7 +74,7 @@ public class CustomNumberGroup extends AbstractGroup {
                 if (newMap.get("") == null) {
                     newMap.put("", entry.getValue());
                 } else {
-                    newMap.put("", GVIUtils.OR((GroupValueIndex)entry.getValue(), (GroupValueIndex) newMap.get("")));
+                    newMap.put("", GVIUtils.OR((GroupValueIndex) entry.getValue(), (GroupValueIndex) newMap.get("")));
                 }
                 continue;
             }
@@ -89,7 +92,10 @@ public class CustomNumberGroup extends AbstractGroup {
                 if (otherHelper != null) {
                     otherHelper.add(gvi);
                 } else {
-                    String name = entry.getKey().toString();
+                    /**
+                     * Connery:BI-5034,Double转String
+                     */
+                    String name = StableUtils.convertNumberStringToString(((Number) entry.getKey()).doubleValue());
                     ungroupMap.put(name, gvi);
                 }
             }
@@ -130,21 +136,21 @@ public class CustomNumberGroup extends AbstractGroup {
                     groups[i].setValue(oneGroup.getString("groupName"));
                 }
             }
-        }else {
+        } else {
             parseValueWithOldData(jo);
         }
     }
 
     private void parseValueWithOldData(JSONObject jo) throws JSONException {
-        if (jo.has("group_value")) {
-            JSONObject valueJson = jo.optJSONObject("group_value");
-            if (valueJson.has("group_nodes")) {
-                JSONArray ja = valueJson.getJSONArray("group_nodes");
+        if (jo.has("groupValue")) {
+            JSONObject valueJson = jo.optJSONObject("groupValue");
+            if (valueJson.has("groupNodes")) {
+                JSONArray ja = valueJson.getJSONArray("groupNodes");
                 int len = ja.length();
-                if (valueJson.has("use_other")) {
+                if (valueJson.has("useOther")) {
                     groups = new NumberGroupInfo[len + 1];
                     groups[len] = new NumberOtherGroupInfo();
-                    groups[len].setValue(valueJson.getString("use_other"));
+                    groups[len].setValue(valueJson.getString("useOther"));
                 } else {
                     groups = new NumberGroupInfo[len];
                 }
@@ -162,7 +168,7 @@ public class CustomNumberGroup extends AbstractGroup {
                         groups[i].closemin = oneGroup.getBoolean("closemin");
                     }
 
-                    groups[i].setValue(oneGroup.getString("group_name"));
+                    groups[i].setValue(oneGroup.getString("groupName"));
                 }
             }
         }

@@ -9,6 +9,15 @@ import com.fr.json.JSONObject;
  */
 public class VanTreeMapWidget extends VanChartWidget{
 
+    public JSONObject createPlotOptions(JSONObject globalStyle, JSONObject settings) throws Exception{
+        JSONObject plotOptions = super.createPlotOptions(globalStyle, settings);
+
+        JSONObject tooltip = plotOptions.optJSONObject("tooltip");
+        tooltip.put("shared", true);
+
+        return plotOptions;
+    }
+
     public JSONArray createSeries(JSONObject originData) throws Exception {
 
         JSONArray series = JSONArray.create();

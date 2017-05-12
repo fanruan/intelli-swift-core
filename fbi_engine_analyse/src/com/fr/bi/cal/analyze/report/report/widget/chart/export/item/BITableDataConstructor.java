@@ -1,4 +1,4 @@
-package com.fr.bi.cal.analyze.report.report.widget.chart.export.basic;
+package com.fr.bi.cal.analyze.report.report.widget.chart.export.item;
 
 import com.fr.bi.conf.report.widget.IWidgetStyle;
 import com.fr.json.JSONArray;
@@ -11,14 +11,14 @@ import java.util.List;
  * Created by Kary on 2017/2/13.
  * todo 少用json
  */
-public class BIExcelTableData implements JSONCreator {
+public class BITableDataConstructor implements JSONCreator {
     private List<ITableHeader> headers;
     private List<ITableItem> items;
     private List<ITableHeader> crossHeaders;
     private JSONArray crossItems;
     private IWidgetStyle widgetStyle;
 
-    public BIExcelTableData(List<ITableHeader> headers, List<ITableItem> items, List<ITableHeader> crossHeaders, JSONArray crossItems, IWidgetStyle widgetStyle) {
+    public BITableDataConstructor(List<ITableHeader> headers, List<ITableItem> items, List<ITableHeader> crossHeaders, JSONArray crossItems, IWidgetStyle widgetStyle) {
         this.headers = headers;
         this.items = items;
         this.crossHeaders = crossHeaders;
@@ -26,7 +26,7 @@ public class BIExcelTableData implements JSONCreator {
         this.widgetStyle = widgetStyle;
     }
 
-    public BIExcelTableData(List<ITableHeader> headers, List<ITableItem> items, IWidgetStyle widgetStyle) {
+    public BITableDataConstructor(List<ITableHeader> headers, List<ITableItem> items, IWidgetStyle widgetStyle) {
         this.headers = headers;
         this.items = items;
         this.widgetStyle = widgetStyle;
@@ -57,6 +57,9 @@ public class BIExcelTableData implements JSONCreator {
         if (null != crossItems) {
             jo.put("crossItems", crossItems);
         }
+        if (null != widgetStyle) {
+            jo.put("widgetStyle", widgetStyle.createJSON());
+        }
         return jo;
     }
 
@@ -75,6 +78,10 @@ public class BIExcelTableData implements JSONCreator {
 
     public JSONArray getCrossItems() {
         return crossItems;
+    }
+
+    public void setCrossItems(JSONArray crossItems) {
+        this.crossItems = crossItems;
     }
 
     public IWidgetStyle getWidgetStyle() {
