@@ -14,11 +14,6 @@ public class VanCompareBarWidget extends VanCompareColumnWidget{
         return true;
     }
 
-    @Override
-    protected boolean rightYReverse() {
-        return false;
-    }
-
     protected void dealYAxisDiffDefaultSettings(JSONObject settings) throws JSONException {
     }
 

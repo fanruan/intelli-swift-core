@@ -1,6 +1,10 @@
 package com.fr.bi.cal.analyze.report.report.widget.chart.export.calculator;
 
-import com.fr.bi.cal.analyze.report.report.widget.chart.export.basic.*;
+import com.fr.bi.cal.analyze.report.report.widget.chart.export.format.TableCellFormatOperation;
+import com.fr.bi.cal.analyze.report.report.widget.chart.export.item.BIBasicTableItem;
+import com.fr.bi.cal.analyze.report.report.widget.chart.export.item.BITableDataConstructor;
+import com.fr.bi.cal.analyze.report.report.widget.chart.export.item.ITableHeader;
+import com.fr.bi.cal.analyze.report.report.widget.chart.export.item.ITableItem;
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.utils.BITableExportDataHelper;
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.utils.SummaryTableStyleHelper;
 import com.fr.bi.conf.report.widget.IWidgetStyle;
@@ -17,11 +21,11 @@ import java.util.Map;
  * Created by Kary on 2017/3/30.
  */
 public class DetailTableBuilder extends TableAbstractDataBuilder {
-    private List<DimAndTargetStyle> styles;
+    private List<TableCellFormatOperation> styles;
 
-    public DetailTableBuilder(Map<Integer, List<JSONObject>> viewMap, List<DimAndTargetStyle> dimAndTargetStyles, JSONObject dataJSON, IWidgetStyle styleSettings) throws Exception {
+    public DetailTableBuilder(Map<Integer, List<JSONObject>> viewMap, List<TableCellFormatOperation> tableCellFormatOperations, JSONObject dataJSON, IWidgetStyle styleSettings) throws Exception {
         super(viewMap, dataJSON, styleSettings);
-        this.styles = dimAndTargetStyles;
+        this.styles = tableCellFormatOperations;
     }
 
     @Override
@@ -62,8 +66,8 @@ public class DetailTableBuilder extends TableAbstractDataBuilder {
     }
 
     @Override
-    public BIExcelTableData createTableData() throws JSONException {
-        BIExcelTableData tableDataForExport = new BIExcelTableData(headers, items,this.styleSetting);
+    public BITableDataConstructor createTableData() throws JSONException {
+        BITableDataConstructor tableDataForExport = new BITableDataConstructor(headers, items,this.styleSetting);
         return tableDataForExport;
     }
 
@@ -80,7 +84,6 @@ public class DetailTableBuilder extends TableAbstractDataBuilder {
         for (int j = 0; j < itemArray.length(); j++) {
             if (isDimensionUsable(dimIds.get(j))) {
                 BIBasicTableItem item = new BIBasicTableItem();
-                item.setType("bi.detail_table_cell");
                 item.setDId(dimIds.get(j));
                 item.setText(itemArray.isNull(j) ? "" : itemArray.getString(j));
                 item.setStyle(SummaryTableStyleHelper.getBodyStyles(styleSetting.getThemeStyle(), styleSetting.getTableStyleGroup(), j));
