@@ -279,7 +279,7 @@ public abstract class AbstractTableSource implements CubeTableSource {
                 this.fields = getFieldFromPersistentTable();
             }
         } catch (Exception e) {
-            BILoggerFactory.getLogger().error("Table " + this.getSourceID() + " has error ! Please check !", e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
         return this.fields;
     }
