@@ -32,6 +32,11 @@ public class BIDay implements Serializable {
         day =  c.get(Calendar.DAY_OF_MONTH);
         month = c.get(Calendar.MONTH);
         year =  c.get(Calendar.YEAR);
+        c.set(Calendar.HOUR_OF_DAY, 0);
+        c.set(Calendar.MINUTE, 0);
+        c.set(Calendar.SECOND, 0);
+        c.set(Calendar.MILLISECOND, 0);
+        this.time = c.getTimeInMillis();
     }
 
     public BIDay(int year, int month, int day) {
@@ -42,7 +47,7 @@ public class BIDay implements Serializable {
         c.set(Calendar.YEAR, year);
         c.set(Calendar.MONTH, month);
         c.set(Calendar.DAY_OF_MONTH, day);
-        c.set(Calendar.HOUR, 0);
+        c.set(Calendar.HOUR_OF_DAY, 0);
         c.set(Calendar.MINUTE, 0);
         c.set(Calendar.SECOND, 0);
         c.set(Calendar.MILLISECOND, 0);
