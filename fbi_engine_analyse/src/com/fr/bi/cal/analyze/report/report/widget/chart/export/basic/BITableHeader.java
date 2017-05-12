@@ -11,16 +11,16 @@ public class BITableHeader implements ITableHeader {
     private String title;
     private String tag;
     private String dID;
-    private ITableStyle style;
+    private ITableStyle styles;
     private String type;
     private boolean isUsed;
 
-    public BITableHeader(String text, String title, String tag, String dID, ITableStyle style, boolean isUsed) {
+    public BITableHeader(String text, String title, String tag, String dID, ITableStyle styles, boolean isUsed) {
         this.text = text;
         this.title = title;
         this.tag = tag;
         this.dID = dID;
-        this.style = style;
+        this.styles = styles;
         this.isUsed = isUsed;
     }
 
@@ -67,12 +67,12 @@ public class BITableHeader implements ITableHeader {
         this.dID = dID;
     }
 
-    public ITableStyle getStyle() {
-        return style;
+    public ITableStyle getStyles() {
+        return styles;
     }
 
-    public void setStyle(BITableItemStyle style) {
-        this.style = style;
+    public void setStyles(ITableStyle style) {
+        this.styles = style;
     }
 
     @Override
@@ -90,7 +90,7 @@ public class BITableHeader implements ITableHeader {
         jo.put("title", getTitle());
         jo.put("tag", getTag());
         jo.put("dId", getdID());
-        jo.put("style", null != getStyle() ? getStyle().createJSON() : "");
+        jo.put("styles", null != getStyles() ? getStyles().createJSON() : "");
         jo.put("text", getText());
         jo.put("type", getType());
         jo.put("isUsed", isUsed());
@@ -108,10 +108,10 @@ public class BITableHeader implements ITableHeader {
         if (json.has("dId")) {
             setdID(json.getString("dId"));
         }
-        if (json.has("style")) {
-            BITableItemStyle style = new BITableItemStyle();
-            style.parse(json.getJSONObject("style"));
-            setStyle(style);
+        if (json.has("styles")) {
+            BITableItemStyle styles = new BITableItemStyle();
+            styles.parse(json.getJSONObject("styles"));
+            setStyles(styles);
         }
         if (json.has("text")) {
             setText(json.getString("text"));

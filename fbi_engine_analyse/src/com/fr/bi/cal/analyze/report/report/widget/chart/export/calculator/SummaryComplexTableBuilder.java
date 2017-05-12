@@ -138,7 +138,7 @@ public class SummaryComplexTableBuilder extends TableAbstractDataBuilder {
                     itemNode.setDId(targetIds.get(0));
                     itemNode.setText(s.getString(0));
                     itemNode.setClicked(new JSONArray().put(new JSONObject()));
-                    itemNode.setStyle(SummaryTableStyleHelper.getLastSummaryStyles("", ""));
+                    itemNode.setStyles(SummaryTableStyleHelper.getLastSummaryStyles(styleSetting.getThemeColor(), styleSetting.getTableStyleGroup()));
                     itemNode.setSum(true);
                     itemNode.setTag(UUID.randomUUID().toString());
                     itemNode.setValue(outerValues);
@@ -157,7 +157,7 @@ public class SummaryComplexTableBuilder extends TableAbstractDataBuilder {
         itemNode.setDId(targetIds.get(j));
         itemNode.setText(s.getString(j));
         itemNode.setClicked(new JSONArray().put(new JSONObject()));
-        itemNode.setStyle(SummaryTableStyleHelper.getLastSummaryStyles("", ""));
+        itemNode.setStyles(SummaryTableStyleHelper.getLastSummaryStyles(styleSetting.getThemeColor(), styleSetting.getTableStyleGroup()));
         outerValues.put(itemNode);
     }
 
@@ -316,7 +316,7 @@ public class SummaryComplexTableBuilder extends TableAbstractDataBuilder {
                     tempArray.put(tempItem.createJSON());
                 }
                 summaryValueItem.setValue(tempArray);
-                summaryValueItem.setStyle(SummaryTableStyleHelper.getLastSummaryStyles("", ""));
+                summaryValueItem.setStyles(SummaryTableStyleHelper.getLastSummaryStyles(styleSetting.getThemeColor(), styleSetting.getTableStyleGroup()));
                 List<ITableItem> childrenAddSummaryValue = tempItems.get(i).getChildren();
                 childrenAddSummaryValue.add(summaryValueItem);
                 tempItems.get(i).setChildren(childrenAddSummaryValue);
@@ -479,7 +479,7 @@ public class SummaryComplexTableBuilder extends TableAbstractDataBuilder {
                     item.setDId(targetIds.get(i));
                     item.setText("summary");
                     item.setTag(String.valueOf(UUID.randomUUID()));
-                    item.setStyle(SummaryTableStyleHelper.getHeaderStyles("self.getThemeColor()", styleSetting.getTableStyleGroup()));
+                    item.setStyles(SummaryTableStyleHelper.getHeaderStyles(styleSetting.getThemeColor(), styleSetting.getTableStyleGroup()));
                     item.setSum(true);
                     children.add(item.createJSON());
                 }
@@ -489,7 +489,7 @@ public class SummaryComplexTableBuilder extends TableAbstractDataBuilder {
                     BIBasicTableItem item = new BIBasicTableItem();
                     item.setType("bi.my_table_cell");
                     item.setText("summary");
-                    item.setStyle(SummaryTableStyleHelper.getHeaderStyles("self.getThemeColor()", styleSetting.getTableStyleGroup()));
+                    item.setStyles(SummaryTableStyleHelper.getHeaderStyles(styleSetting.getThemeColor(), styleSetting.getTableStyleGroup()));
                     item.setTag(UUID.randomUUID().toString());
                     item.setSum(true);
                     item.setDId(targetId);

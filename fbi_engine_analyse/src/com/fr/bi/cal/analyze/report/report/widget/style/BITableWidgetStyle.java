@@ -9,34 +9,23 @@ import com.fr.json.JSONObject;
  * Created by Kary on 2017/4/27.
  */
 public class BITableWidgetStyle implements IWidgetStyle {
-    private static final long serialVersionUID = -675827399089527747L;
-    private boolean showSequence;
-    private boolean freezeCols;
-    private JSONArray mergeCols;
-    private JSONArray columnSize;
-    private int headerRowSize;
-    private int footerRowSize;
-    private int rowSize;
-    private boolean showRowToTal;
-    private String themeStyle;
-    private int wsTableStyle;
+
+    private boolean freezeDim;
+    private boolean showNumber;
+    private int rowHeight;
+    private int maxRow;
+    private boolean showRowTotal;
+    private String themeColor;
+    private int tableStyleGroup;
 
     public BITableWidgetStyle() {
-        themeStyle = BIStyleConstant.DEFAULT_CHART_SETTING.THEME_COLOR;
-        wsTableStyle = BIStyleConstant.DEFAULT_CHART_SETTING.TABLE_STYLE_GROUP;
-        showSequence = BIStyleConstant.DEFAULT_CHART_SETTING.SHOW_NUMBER;
-        freezeCols = BIStyleConstant.DEFAULT_CHART_SETTING.FREEZE_DIM;
-        headerRowSize = BIStyleConstant.DEFAULT_CHART_SETTING.ROW_HEIGHT;
-        footerRowSize = BIStyleConstant.DEFAULT_CHART_SETTING.ROW_HEIGHT;
-        rowSize = BIStyleConstant.DEFAULT_CHART_SETTING.MAX_ROW;
-        showRowToTal = BIStyleConstant.DEFAULT_CHART_SETTING.SHOW_ROW_TOTAL;
-        mergeCols = new JSONArray();
-        columnSize = new JSONArray();
-    }
-
-
-    public boolean isFreezeCols() {
-        return freezeCols;
+        themeColor = BIStyleConstant.DEFAULT_CHART_SETTING.THEME_COLOR;
+        tableStyleGroup = BIStyleConstant.DEFAULT_CHART_SETTING.TABLE_STYLE_GROUP;
+        showNumber = BIStyleConstant.DEFAULT_CHART_SETTING.SHOW_NUMBER;
+        freezeDim = BIStyleConstant.DEFAULT_CHART_SETTING.FREEZE_DIM;
+        rowHeight = BIStyleConstant.DEFAULT_CHART_SETTING.ROW_HEIGHT;
+        maxRow = BIStyleConstant.DEFAULT_CHART_SETTING.MAX_ROW;
+        showRowTotal = BIStyleConstant.DEFAULT_CHART_SETTING.SHOW_ROW_TOTAL;
     }
 
     @Override
@@ -45,83 +34,54 @@ public class BITableWidgetStyle implements IWidgetStyle {
     }
 
     @Override
-    public JSONArray getMergeCols() {
-        return mergeCols;
-    }
-
-    @Override
-    public JSONArray getColumnSize() {
-        return columnSize;
-    }
-
-    @Override
-    public int getHeaderRowSize() {
-        return headerRowSize;
-    }
-
-    @Override
-    public int getFooterRowSize() {
-        return footerRowSize;
+    public int getRowHeight() {
+        return rowHeight;
     }
 
     @Override
     public int getRowSize() {
-        return rowSize;
+        return maxRow;
     }
 
     @Override
-    public boolean isShowRowToTal() {
-        return showRowToTal;
+    public boolean isShowRowTotal() {
+        return showRowTotal;
     }
 
     @Override
-    public String getThemeStyle() {
-        return themeStyle;
+    public String getThemeColor() {
+        return themeColor;
     }
 
     @Override
     public int getTableStyleGroup() {
-        return wsTableStyle;
+        return tableStyleGroup;
     }
-
-    @Override
-    public int getWsTableStyle() {
-        return wsTableStyle;
-    }
-
 
     @Override
     public void parseJSON(JSONObject jo) throws Exception {
         if (jo.has("settings")) {
             JSONObject settingJo = jo.getJSONObject("settings");
-            showSequence = settingJo.optBoolean("showNumber");
-            freezeCols = settingJo.optBoolean("freezeDim");
-            headerRowSize = settingJo.optInt("rowHeight");
-            footerRowSize = settingJo.optInt("rowHeight");
-            rowSize = settingJo.optInt("maxRow");
-            if (settingJo.has("mergeCols")) {
-                mergeCols = settingJo.optJSONArray("mergeCols");
-                columnSize = settingJo.optJSONArray("mergeCols");
-            }
-            showRowToTal = settingJo.optBoolean("showRowToTal");
-            themeStyle = settingJo.optString("themeStyle");
-            wsTableStyle = settingJo.optInt("wsTableStyle");
+            showNumber = settingJo.optBoolean("showNumber", showNumber);
+            freezeDim = settingJo.optBoolean("freezeDim", freezeDim);
+            rowHeight = settingJo.optInt("rowHeight", rowHeight);
+            maxRow = settingJo.optInt("maxRow", maxRow);
+            showRowTotal = settingJo.optBoolean("showRowTotal", showRowTotal);
+            themeColor = settingJo.optString("themeColor", themeColor);
+            tableStyleGroup = settingJo.optInt("tableStyleGroup", tableStyleGroup);
         }
     }
 
     @Override
     public JSONObject createJSON() throws Exception {
         JSONObject jo = new JSONObject();
-        jo.put("showSequence", showSequence);
-        jo.put("freezeCols", freezeCols);
-        jo.put("mergeCols", mergeCols);
-        jo.put("columnSize", columnSize);
-        jo.put("headerRowSize", headerRowSize);
-        jo.put("footerRowSize", footerRowSize);
-        jo.put("rowSize", rowSize);
-        jo.put("showRowToTal", showRowToTal);
-        jo.put("themeStyle", themeStyle);
-        jo.put("wsTableStyle", wsTableStyle);
+        jo.put("showNumber", showNumber);
+        jo.put("freezeDim", freezeDim);
+        jo.put("rowHeight", rowHeight);
+        jo.put("maxRow", maxRow);
+        jo.put("showRowTotal", showRowTotal);
+        jo.put("themeColor", themeColor);
+        jo.put("tableStyleGroup", tableStyleGroup);
         return jo;
     }
 }

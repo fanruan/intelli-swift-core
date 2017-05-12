@@ -20,7 +20,7 @@ public class BIBasicTableItem implements ITableItem {
     protected List<ITableItem> children;
     private JSONArray clicked;
     private boolean isSum;
-    private ITableStyle style;
+    private ITableStyle styles;
     private String type;
     private String tag;
 
@@ -69,8 +69,8 @@ public class BIBasicTableItem implements ITableItem {
         isSum = sum;
     }
 
-    public void setStyle(ITableStyle style) {
-        this.style = style;
+    public void setStyles(ITableStyle styles) {
+        this.styles = styles;
     }
 
     public void setType(String type) {
@@ -120,8 +120,8 @@ public class BIBasicTableItem implements ITableItem {
         return isSum;
     }
 
-    public ITableStyle getStyle() {
-        return style;
+    public ITableStyle getStyles() {
+        return styles;
     }
 
     public String getType() {
@@ -177,7 +177,7 @@ public class BIBasicTableItem implements ITableItem {
             jo.put("children", children);
         }
         jo.put("dId", dId);
-        jo.put("styles", null == style ? new JSONObject() : style.createJSON());
+        jo.put("styles", null == styles ? new JSONObject() : styles.createJSON());
         jo.put("text", text);
         jo.put("type", type);
         jo.put("values", value);
