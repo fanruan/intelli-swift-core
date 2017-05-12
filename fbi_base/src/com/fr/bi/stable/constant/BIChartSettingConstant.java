@@ -62,11 +62,9 @@ public class BIChartSettingConstant {
     //数据标签样式的几个常量
     public static final class DATA_LABEL_RANGE {
         public static final int ALL = 140;
-        public static final int Classification = 141;
-        public static final int Series = 142;
+        public static final int CLASSIFICATION = 141;
+        public static final int SERIES = 142;
     }
-
-    ;
 
     public static final class DATA_LABEL_STYLE_TYPE {
         public static final int TEXT = 143;
