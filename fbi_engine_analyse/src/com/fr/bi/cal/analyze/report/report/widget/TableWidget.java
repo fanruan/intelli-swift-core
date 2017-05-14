@@ -17,9 +17,12 @@ import com.fr.bi.cal.analyze.report.report.widget.chart.export.calculator.IExcel
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.calculator.SummaryComplexTableBuilder;
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.calculator.SummaryCrossTableDataBuilder;
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.calculator.SummaryGroupTableDataBuilder;
-import com.fr.bi.cal.analyze.report.report.widget.chart.export.format.FormatSetting;
-import com.fr.bi.cal.analyze.report.report.widget.chart.export.format.TableFormatSetting;
-import com.fr.bi.cal.analyze.report.report.widget.chart.export.format.TableCellFormatOperation;
+import com.fr.bi.cal.analyze.report.report.widget.chart.export.format.operation.BITableCellDimFormatOperation;
+import com.fr.bi.cal.analyze.report.report.widget.chart.export.format.operation.BITableCellTargetFormatOperation;
+import com.fr.bi.cal.analyze.report.report.widget.chart.export.format.operation.ITableCellFormatOperation;
+import com.fr.bi.cal.analyze.report.report.widget.chart.export.format.setting.ICellFormatSetting;
+import com.fr.bi.cal.analyze.report.report.widget.chart.export.format.setting.BICellFormatSetting;
+import com.fr.bi.cal.analyze.report.report.widget.chart.export.item.BITableDataConstructor;
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.utils.BITableConstructHelper;
 import com.fr.bi.cal.analyze.report.report.widget.style.BITableWidgetStyle;
 import com.fr.bi.cal.analyze.report.report.widget.table.BITableReportSetting;
@@ -526,8 +529,8 @@ public class TableWidget extends BISummaryWidget {
     public JSONObject getPostOptions(BISessionProvider session, HttpServletRequest req) throws Exception {
         JSONObject dataJSON = this.createDataJSON(session, req).getJSONObject("data");
         Map<Integer, List<JSONObject>> viewMap = this.createViewMap();
-        List<TableCellFormatOperation> formSettings = new ArrayList<TableCellFormatOperation>();
-        createChartSettings(formSettings);
+        Map<String, ITableCellFormatOperation> formOperationsMap = new HashMap<String, ITableCellFormatOperation>();
+        createFormatOperations(formOperationsMap);
         IExcelDataBuilder builder = null;
         switch (this.tableType) {
             case BIReportConstant.TABLE_WIDGET.CROSS_TYPE:
@@ -543,15 +546,23 @@ public class TableWidget extends BISummaryWidget {
         if (null == builder) {
             return new JSONObject();
         }
-        return BITableConstructHelper.buildTableData(builder).createJSON();
+        BITableDataConstructor data = BITableConstructHelper.buildTableData(builder);
+//        BITableConstructHelper.formatCells(data, formOperationsMap);
+        return data.createJSON();
     }
 
-    private void createChartSettings(List<TableCellFormatOperation> chartSettings) throws Exception {
+    private void createFormatOperations(Map<String, ITableCellFormatOperation> operationsMap) throws Exception {
         for (BISummaryTarget target : this.getTargets()) {
-            FormatSetting setting = new TableFormatSetting();
+            ICellFormatSetting setting = new BICellFormatSetting();
             setting.parseJSON(target.getChartSetting().getSettings());
-            TableCellFormatOperation TableCellFormatOperation = new TableCellFormatOperation(target.getId(),getFieldTypeByDimensionID(target.getId()), setting);
-            chartSettings.add(TableCellFormatOperation);
+            ITableCellFormatOperation op = new BITableCellTargetFormatOperation(setting);
+            operationsMap.put(target.getId(), op);
+        }
+        for (BIDimension dimension : this.getDimensions()) {
+            ICellFormatSetting setting = new BICellFormatSetting();
+            setting.parseJSON(dimension.getChartSetting().getSettings());
+            ITableCellFormatOperation op = new BITableCellDimFormatOperation(dimension.getGroup().getType(), setting);
+            operationsMap.put(dimension.getId(), op);
         }
     }
 
