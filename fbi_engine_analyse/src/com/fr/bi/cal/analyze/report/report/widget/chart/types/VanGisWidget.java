@@ -49,13 +49,22 @@ public class VanGisWidget extends VanChartWidget{
                 String lnglat = lObj.getString("n");
                 JSONArray s = lObj.getJSONArray("s");
                 double value = s.isNull(i) ? 0 : s.getDouble(i);
-                data.put(JSONObject.create().put("lnglat", lnglat.split(",")).put("value", value / scale));
+                JSONObject d = JSONObject.create().put("lnglat", lnglat.split(",")).put("value", value / scale);
+                JSONArray c = lObj.optJSONArray("c");
+                if(c != null && c.length() > 0){
+                    d.put("name", c.optJSONObject(0).optString("n"));
+                }
+                data.put(d);
             }
             JSONObject ser = JSONObject.create().put("data", data).put("name", this.getDimensionNameByID(id)).put("dimensionID", id);
             series.put(ser);
         }
 
         return series;
+    }
+
+    protected String getTooltipIdentifier(){
+        return NAME + SERIES + VALUE;
     }
 
     public String getSeriesType(String dimensionID){
