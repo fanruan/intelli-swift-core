@@ -16,7 +16,6 @@ public class BIBasicTableItem implements ITableItem {
     private String dId;
     private String text;
     private List<ITableItem> values;
-
     private boolean needExpand;
     private boolean isExpanded;
     protected List<ITableItem> children;

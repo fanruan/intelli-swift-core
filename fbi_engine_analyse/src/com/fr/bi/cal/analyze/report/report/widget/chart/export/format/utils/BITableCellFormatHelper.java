@@ -19,6 +19,7 @@ import java.util.Date;
 public class BITableCellFormatHelper {
     static final String PERCENT_SYMBOL = "%";
     static final int DEFAULT_SCALE = 1;
+    static final int ONE_HUNDRED=100;
 
     public static String targetValueFormat(JSONObject settings, String text) throws JSONException {
         if (BIStringUtils.isEmptyString(text) || !StableUtils.isNumber(text)) {
@@ -53,7 +54,7 @@ public class BITableCellFormatHelper {
                     value /= Math.pow(10, 8);
                     break;
                 case BIReportConstant.TARGET_STYLE.NUM_LEVEL.PERCENT:
-                    value *= 100;
+                    value *= ONE_HUNDRED;
                     break;
             }
         } catch (Exception e) {
