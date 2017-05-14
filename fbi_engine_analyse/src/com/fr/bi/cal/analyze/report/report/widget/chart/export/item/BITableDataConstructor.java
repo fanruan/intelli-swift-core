@@ -17,6 +17,7 @@ public class BITableDataConstructor implements JSONCreator {
     private List<ITableHeader> crossHeaders;
     private JSONArray crossItems;
     private IWidgetStyle widgetStyle;
+    private JSONObject page;
 
     public BITableDataConstructor(List<ITableHeader> headers, List<ITableItem> items, List<ITableHeader> crossHeaders, JSONArray crossItems, IWidgetStyle widgetStyle) {
         this.headers = headers;

@@ -332,7 +332,6 @@ public abstract class TableAbstractDataBuilder implements IExcelDataBuilder {
                             children.setChildren(new ArrayList<ITableItem>());
                         }
                         BIBasicTableItem ob = new BIBasicTableItem();
-                        ob.setText("bi.my_table_cell");
                         ob.setText(child.getJSONArray("s").getString(j));
                         ob.setStyle(SummaryTableStyleHelper.getBodyStyles(styleSetting.getThemeStyle(), styleSetting.getWsTableStyle(), j));
                         List<ITableItem> values = null == children.getValues() ? new ArrayList<ITableItem>() : children.getValues();

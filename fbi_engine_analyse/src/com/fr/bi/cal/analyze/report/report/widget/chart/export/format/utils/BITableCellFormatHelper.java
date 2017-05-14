@@ -1,12 +1,15 @@
 package com.fr.bi.cal.analyze.report.report.widget.chart.export.format.utils;
 
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.stable.constant.BIReportConstant;
+import com.fr.bi.stable.utils.program.BIStringUtils;
 import com.fr.general.Inter;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
 import com.fr.stable.StableUtils;
 import com.fr.stable.StringUtils;
 
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -18,40 +21,48 @@ public class BITableCellFormatHelper {
     static final int DEFAULT_SCALE = 1;
 
     public static String targetValueFormat(JSONObject settings, String text) throws JSONException {
-        if (!StableUtils.isNumber(text) || Double.valueOf(text) == 0) {
+        if (BIStringUtils.isEmptyString(text) || !StableUtils.isNumber(text)) {
             return text;
         }
-        int numLevel = settings.optInt("numLevel", DEFAULT_SCALE);
-        text = parseNumByLevel(numLevel, text);
-        String tail = createUnit(settings);
-        int format = settings.optInt("format");
-        boolean numSeparators = settings.getBoolean("numSeparators");
-
+        float value = Float.valueOf(text);
+        value = parseNumByLevel(settings, value);
+        text = parseNumByFormat(decimalFormat(settings), value);
+        String tail = createTailUnit(settings);
         return text + tail;
     }
 
-    private static String parseNumByLevel(int numLevel, String text) {
-        Double res = Double.valueOf(text);
-        switch (numLevel) {
-            case BIReportConstant.TARGET_STYLE.NUM_LEVEL.TEN_THOUSAND:
-                res /= 10000;
-                break;
-            case BIReportConstant.TARGET_STYLE.NUM_LEVEL.MILLION:
-                res /= 1000000;
-                break;
-            case BIReportConstant.TARGET_STYLE.NUM_LEVEL.YI:
-                res /= 100000000;
-                break;
-            case BIReportConstant.TARGET_STYLE.NUM_LEVEL.PERCENT:
-                res *= 100;
-                break;
-        }
-        return String.valueOf(res);
+    private static String parseNumByFormat(String format, float value) {
+        DecimalFormat decimalFormat = new DecimalFormat(format);
+        return decimalFormat.format(value);
     }
 
-    public static String createUnit(JSONObject settings) {
-        String format = decimalFormat(settings, settings.optBoolean("numSeparators", true));
+    private static float parseNumByLevel(JSONObject setting, float value) {
+        try {
+            if (value == 0) {
+                return value;
+            }
+            int numLevel = setting.optInt("numLevel", DEFAULT_SCALE);
+            switch (numLevel) {
+                case BIReportConstant.TARGET_STYLE.NUM_LEVEL.TEN_THOUSAND:
+                    value /= Math.pow(10, 3);
+                    break;
+                case BIReportConstant.TARGET_STYLE.NUM_LEVEL.MILLION:
+                    value /= Math.pow(10, 6);
+                    break;
+                case BIReportConstant.TARGET_STYLE.NUM_LEVEL.YI:
+                    value /= Math.pow(10, 8);
+                    break;
+                case BIReportConstant.TARGET_STYLE.NUM_LEVEL.PERCENT:
+                    value *= 100;
+                    break;
+            }
+        } catch (Exception e) {
+            BILoggerFactory.getLogger(BITableCellFormatHelper.class).error(e.getMessage(), e);
+        }
+        return value;
+    }
 
+    public static String createTailUnit(JSONObject settings) {
         String scaleUnit = scaleUnit(settings.optInt("numLevel"));
         String unit = settings.optString("unit", StringUtils.EMPTY);
         return scaleUnit + unit;
@@ -204,7 +215,8 @@ public class BITableCellFormatHelper {
             Inter.getLocText("BI-Basic_Sunday")
     };
 
-    private static String decimalFormat(JSONObject setting, boolean hasSeparator) {
+    private static String decimalFormat(JSONObject setting) {
+        boolean hasSeparator = setting.optBoolean("numSeparators", true);
         int type = setting.optInt("format", BIReportConstant.TARGET_STYLE.FORMAT.NORMAL);//默认为自动
         String format;
         switch (type) {

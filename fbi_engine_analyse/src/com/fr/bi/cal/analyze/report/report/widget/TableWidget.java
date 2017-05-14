@@ -527,10 +527,9 @@ public class TableWidget extends BISummaryWidget {
     }
 
     public JSONObject getPostOptions(BISessionProvider session, HttpServletRequest req) throws Exception {
-        JSONObject dataJSON = this.createDataJSON(session, req).getJSONObject("data");
+        JSONObject res = this.createDataJSON(session, req);
+        JSONObject dataJSON = res.getJSONObject("data");
         Map<Integer, List<JSONObject>> viewMap = this.createViewMap();
-        Map<String, ITableCellFormatOperation> formOperationsMap = new HashMap<String, ITableCellFormatOperation>();
-        createFormatOperations(formOperationsMap);
         IExcelDataBuilder builder = null;
         switch (this.tableType) {
             case BIReportConstant.TABLE_WIDGET.CROSS_TYPE:
@@ -540,15 +539,21 @@ public class TableWidget extends BISummaryWidget {
                 builder = new SummaryGroupTableDataBuilder(viewMap, dataJSON, style);
                 break;
             case BIReportConstant.TABLE_WIDGET.COMPLEX_TYPE:
-                builder = new SummaryComplexTableBuilder(viewMap, dataJSON, style);
-                break;
-        }
+        builder = new SummaryComplexTableBuilder(viewMap, dataJSON, style);
+        break;
+    }
         if (null == builder) {
-            return new JSONObject();
-        }
-        BITableDataConstructor data = BITableConstructHelper.buildTableData(builder);
-//        BITableConstructHelper.formatCells(data, formOperationsMap);
-        return data.createJSON();
+        return new JSONObject();
+    }
+    BITableDataConstructor data = BITableConstructHelper.buildTableData(builder);
+        BITableConstructHelper.formatCells(data, getStringITableCellFormatOperationMap());
+        return data.createJSON().put("page",res.getJSONArray("page"));
+    }
+
+    private Map<String, ITableCellFormatOperation> getStringITableCellFormatOperationMap() throws Exception {
+        Map<String, ITableCellFormatOperation> formOperationsMap = new HashMap<String, ITableCellFormatOperation>();
+        createFormatOperations(formOperationsMap);
+        return formOperationsMap;
     }
 
     private void createFormatOperations(Map<String, ITableCellFormatOperation> operationsMap) throws Exception {
