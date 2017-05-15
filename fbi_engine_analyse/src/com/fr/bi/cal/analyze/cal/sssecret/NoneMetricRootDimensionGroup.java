@@ -1,6 +1,6 @@
 package com.fr.bi.cal.analyze.cal.sssecret;
 
-import com.finebi.cube.api.BICubeManager;
+import com.finebi.cube.api.UserAnalysisCubeDataLoaderCreator;
 import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.conf.BICubeConfigureCenter;
 import com.finebi.cube.conf.field.BusinessField;
@@ -154,7 +154,7 @@ public class NoneMetricRootDimensionGroup extends RootDimensionGroup {
         }
 
         DateKeyTargetFilterValue dktf = new DateKeyTargetFilterValue(((DateDimensionCalculator) ckp).getGroupDate(), currentSet);
-        GroupValueIndex pgvi = dktf.createFilterIndex(ckp, ck.getField().getTableBelongTo(), BICubeManager.getInstance().fetchCubeLoader(session.getUserId()), session.getUserId());
+        GroupValueIndex pgvi = dktf.createFilterIndex(ckp, ck.getField().getTableBelongTo(), UserAnalysisCubeDataLoaderCreator.getInstance().fetchCubeLoader(session.getUserId()), session.getUserId());
         if (pgvi != null) {
             gvi = gvi.AND(pgvi);
         }

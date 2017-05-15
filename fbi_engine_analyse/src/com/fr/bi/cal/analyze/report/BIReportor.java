@@ -1,6 +1,6 @@
 package com.fr.bi.cal.analyze.report;
 
-import com.finebi.cube.api.BICubeManager;
+import com.finebi.cube.api.UserAnalysisCubeDataLoaderCreator;
 import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.conf.field.BIBusinessField;
 import com.finebi.cube.conf.field.BusinessField;
@@ -159,7 +159,7 @@ public class BIReportor implements BIReport {
 
     @Override
     public void parseJSON(JSONObject jo, long userId) throws Exception {
-        this.parseJSON(jo, userId, BICubeManager.getInstance().fetchCubeLoader(userId));
+        this.parseJSON(jo, userId, UserAnalysisCubeDataLoaderCreator.getInstance().fetchCubeLoader(userId));
     }
 
     /**
