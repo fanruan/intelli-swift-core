@@ -225,17 +225,17 @@ public class VanDotWidget extends VanCartesianWidget{
     private JSONArray createDotSeries(boolean noSeries, JSONObject originData) throws JSONException{
         HashMap<String, JSONArray> seriesMap = new HashMap<String, JSONArray>();
 
-        dealChildren(noSeries, new StringBuilder(), originData.optJSONArray("c"), seriesMap);
+        dealChildren(noSeries, new ArrayList<String>(), originData.optJSONArray("c"), seriesMap);
 
         return dealSeriesMap(noSeries, this.getUsedTargetID(), seriesMap);
     }
 
-    private void dealChildren(boolean noSeries, StringBuilder description, JSONArray children,  HashMap<String, JSONArray> seriesMap) throws JSONException{
+    private void dealChildren(boolean noSeries, List<String> description, JSONArray children,  HashMap<String, JSONArray> seriesMap) throws JSONException{
         for(int i = 0, len = children.length(); i < len; i++){
             JSONObject child = children.getJSONObject(i);
-            StringBuilder childSescription = new StringBuilder(description.toString());
+            List<String> childSescription = new ArrayList<String>(description);
             if(child.has("c") || noSeries){
-                childSescription.append(child.optString("n")).append(StringUtils.BLANK);
+                childSescription.add(child.optString("n"));
             }
             if(child.has("c")){
                 dealChildren(noSeries, childSescription, child.optJSONArray("c"), seriesMap);
@@ -243,7 +243,7 @@ public class VanDotWidget extends VanCartesianWidget{
                 String seriesName = child.optString("n");
                 JSONArray dataArray = seriesMap.containsKey(seriesName) ? seriesMap.get(seriesName) : JSONArray.create();
                 seriesMap.put(seriesName, dataArray);
-                child.put("description", description.toString());
+                child.put("description", description);
                 dataArray.put(child);
             }
         }
@@ -271,7 +271,7 @@ public class VanDotWidget extends VanCartesianWidget{
                 double x = dimensions.isNull(1) ? 0 : dimensions.optDouble(1);
                 double value = (dimensions.length() > 2 && !dimensions.isNull(2)) ? dimensions.optDouble(2) : 0;
 
-                JSONObject point = JSONObject.create().put("x", x/xScale).put("y", y/yScale).put("size", value/sizeScale).put("description", obj.optString("description"));
+                JSONObject point = JSONObject.create().put("x", x/xScale).put("y", y/yScale).put("size", value/sizeScale).put("description", obj.optJSONArray("description"));
 
                 if(noSeries) {
                     dotData.put(point);
