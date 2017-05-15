@@ -306,7 +306,7 @@ public class SummaryComplexTableBuilder extends TableAbstractDataBuilder {
             boolean isSummary = showRowTotal && targetIds.size() > 0 && (isColRegionExist() || isRowRegionExist()) && !isOnlyCrossAndTarget();
             if (isSummary) {
                 BIBasicTableItem summaryValueItem = new BIBasicTableItem();
-                summaryValueItem.setText(SUMMMARY);
+                summaryValueItem.setText(SUMMARY);
                 JSONArray tempArray = new JSONArray();
                 for (ITableItem tempItem : tempItems) {
                     tempArray.put(tempItem.createJSON());
