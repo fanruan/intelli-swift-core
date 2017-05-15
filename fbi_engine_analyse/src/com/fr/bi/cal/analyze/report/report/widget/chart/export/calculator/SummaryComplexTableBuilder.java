@@ -121,7 +121,7 @@ public class SummaryComplexTableBuilder extends TableAbstractDataBuilder {
                 dimIds.add(jsonObject.getString("dId"));
             }
             BIBasicTableItem item = new BIBasicTableItem();
-            item.setChildren(createCommonTableItems(rowTable.getString("c"), 0, null, dimIds, null));
+            item.setChildren(createCommonTableItems(rowTable.getString("c"), 0, null, dimIds));
             //汇总
             if (showRowTotal && rowTable.has("s")) {
 //                JSONArray outerValues = new JSONArray();
