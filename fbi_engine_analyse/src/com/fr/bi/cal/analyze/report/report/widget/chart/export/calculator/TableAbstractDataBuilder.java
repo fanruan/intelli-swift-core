@@ -662,8 +662,6 @@ public abstract class TableAbstractDataBuilder implements IExcelDataBuilder {
                 while (tempLayer > 0) {
                     String pv = tree.getNode(tempNodeId).getName();
                     String dId = dimIds.get(tempLayer - 1);
-//                    JSONArray value = getClickedValue4Group(pv, dId);
-//                    pValues.put(new JSONObject().put("value", value).put("dId", dId));
                     pValues.put(new JSONObject().put("dId", dId));
                     tempLayer--;
                     tempNodeId = tree.getNode(tempNodeId).getParent().getId();
@@ -674,10 +672,8 @@ public abstract class TableAbstractDataBuilder implements IExcelDataBuilder {
 
                 item.setStyles(SummaryTableStyleHelper.getBodyStyles(styleSetting.getThemeColor(), styleSetting.getTableStyleGroup(), i));
                 //展开情况——最后一层没有这个展开按钮
-                if (currentLayer < dimIds.size()) {
-                    item.setNeedExpand(true);
-                    item.setExpanded(false);
-                }
+                    item.setNeedExpand(currentLayer < dimIds.size());
+                    item.setExpanded(child.has("c"));
                 //有c->说明有children，构造children，并且需要在children中加入汇总情况（如果有并且需要）
                 if (child.has("c")) {
                     hasChildren(currentLayer, dimIds, crossPV, child, node, item);
@@ -705,12 +701,10 @@ public abstract class TableAbstractDataBuilder implements IExcelDataBuilder {
             }
             item.setValues(vs);
         }
-        item.setExpanded(true);
     }
 
     private void hasNoneChildren(JSONArray crossPV, int i, JSONObject child, JSONArray pValues, BIBasicTableItem item) throws Exception {
         if (child.has("s")) {
-//            JSONArray values = new JSONArray();
             List<ITableItem> values = new ArrayList<ITableItem>();
             boolean hasSC = BIJsonUtils.isKeyValueSet(child.getString("s")) && child.getJSONObject("s").has("c");
             boolean isArraySS = BIJsonUtils.isKeyValueSet(child.getString("s")) && BIJsonUtils.isArray(child.getJSONObject("s").getString("s"));
@@ -819,19 +813,6 @@ public abstract class TableAbstractDataBuilder implements IExcelDataBuilder {
         }
         return summary;
     }
-
-    //根据text dId 获取clicked 处理分组的情况
-//    protected JSONArray getClickedValue4Group(String pv, String dId) throws Exception {
-//        JSONArray clicked = new JSONArray();
-////        String group = BITableExportDataHelper.getDimensionNameByID(dimAndTar, dId);
-////        int filedType = BITableExportDataHelper.getFieldTypeByDimensionID(dimAndTar, dId);
-////        if (null != group || ComparatorUtils.equals(group, "")) {
-////            if (filedType == DBConstant.COLUMN.STRING) {
-////            } else if (filedType == DBConstant.COLUMN.NUMBER) {
-////            }
-////        }
-//        return clicked;
-//    }
 
     protected void setOtherAttrs() {
     }

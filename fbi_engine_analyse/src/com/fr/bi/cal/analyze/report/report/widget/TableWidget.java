@@ -547,11 +547,11 @@ public class TableWidget extends BISummaryWidget {
             return new JSONObject();
         }
         BITableDataConstructor data = BITableConstructHelper.buildTableData(builder);
-        BITableConstructHelper.formatCells(data, getStringITableCellFormatOperationMap());
+        BITableConstructHelper.formatCells(data, getITableCellFormatOperationMap());
         return data.createJSON().put("page", res.getJSONArray("page"));
     }
 
-    private Map<String, ITableCellFormatOperation> getStringITableCellFormatOperationMap() throws Exception {
+    private Map<String, ITableCellFormatOperation> getITableCellFormatOperationMap() throws Exception {
         Map<String, ITableCellFormatOperation> formOperationsMap = new HashMap<String, ITableCellFormatOperation>();
         createFormatOperations(formOperationsMap);
         return formOperationsMap;
