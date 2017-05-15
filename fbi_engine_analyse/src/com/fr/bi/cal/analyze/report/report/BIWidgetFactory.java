@@ -1,6 +1,6 @@
 package com.fr.bi.cal.analyze.report.report;
 
-import com.finebi.cube.api.BICubeManager;
+import com.finebi.cube.api.UserAnalysisCubeDataLoaderCreator;
 import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.cal.analyze.report.report.widget.*;
@@ -156,6 +156,6 @@ public class BIWidgetFactory {
      * @throws Exception
      */
     public static BIWidget parseWidget(JSONObject jo, long userId) throws Exception {
-        return parseWidget(jo, userId, BICubeManager.getInstance().fetchCubeLoader(userId));
+        return parseWidget(jo, userId, UserAnalysisCubeDataLoaderCreator.getInstance().fetchCubeLoader(userId));
     }
 }

@@ -1,6 +1,6 @@
 package com.fr.bi.cal.analyze.session;
 
-import com.finebi.cube.api.BICubeManager;
+import com.finebi.cube.api.UserAnalysisCubeDataLoaderCreator;
 import com.finebi.cube.api.ICubeDataLoader;
 import com.fr.bi.cal.analyze.report.BIReportor;
 import com.fr.bi.conf.report.BIReport;
@@ -58,7 +58,7 @@ public abstract class BIAbstractSession extends AbstractSession implements BISes
 
     @Override
     public ICubeDataLoader getLoader() {
-        return BICubeManager.getInstance().fetchCubeLoader(accessUserId);
+        return UserAnalysisCubeDataLoaderCreator.getInstance().fetchCubeLoader(accessUserId);
     }
 
     @Override
