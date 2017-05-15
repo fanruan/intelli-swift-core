@@ -69,7 +69,7 @@ public class SummaryCrossTableDataBuilder extends TableAbstractDataBuilder {
     private void getNoneTarCrossTable() throws Exception {
         createCrossHeader4OnlyCross();
         createCrossItems4OnlyCross();
-//        setOtherAttrs4OnlyCross();
+        setOtherAttrs4OnlyCross();
     }
 
     @Override
