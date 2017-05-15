@@ -388,8 +388,11 @@ public abstract class VanCartesianWidget extends VanChartWidget {
     private JSONArray parsePlotLines(String regionID){
 
         JSONArray dIDs = this.getDimensionIDArray(regionID);
-
         JSONArray plotLines = JSONArray.create();
+
+        if(dIDs == null){
+            return plotLines;
+        }
 
         for(int i = 0, len = dIDs.length(); i < len; i++){
             try {
