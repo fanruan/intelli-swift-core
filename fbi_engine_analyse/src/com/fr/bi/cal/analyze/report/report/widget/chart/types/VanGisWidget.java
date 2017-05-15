@@ -31,6 +31,9 @@ public class VanGisWidget extends VanChartWidget{
 
         plotOptions.put("icon", icon);
 
+        JSONObject tooltip = plotOptions.optJSONObject("tooltip");
+        tooltip.put("shared", true);
+
         return plotOptions;
     }
 
@@ -38,6 +41,7 @@ public class VanGisWidget extends VanChartWidget{
 
         JSONArray series = JSONArray.create();
         String[] targetIDs = this.getUsedTargetID();
+        String[] dimensionIDs = this.getUsedDimensionID();
 
         JSONArray children = originData.getJSONArray("c");
         for(int i = 0, len = targetIDs.length; i < len; i++){
@@ -56,8 +60,9 @@ public class VanGisWidget extends VanChartWidget{
                 }
                 data.put(d);
             }
-            JSONObject ser = JSONObject.create().put("data", data).put("name", this.getDimensionNameByID(id)).put("dimensionID", id);
-            series.put(ser);
+            JSONObject ser = JSONObject.create().put("data", data).put("name", this.getDimensionNameByID(id))
+                    .put("targetIDs", JSONArray.create().put(id))
+                    .put("dimensionIDs", dimensionIDs);            series.put(ser);
         }
 
         return series;
