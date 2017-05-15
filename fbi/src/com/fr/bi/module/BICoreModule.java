@@ -1,6 +1,7 @@
 package com.fr.bi.module;
 
 import com.finebi.cube.api.ICubeDataLoaderCreator;
+import com.finebi.cube.api.UserAnalysisCubeDataLoaderCreator;
 import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.conf.BIAliasManagerProvider;
 import com.finebi.cube.conf.BICubeManagerProvider;
@@ -141,7 +142,7 @@ public class BICoreModule extends AbstractModule {
 
     @Override
     public ICubeDataLoaderCreator getCubeDataLoaderCreator() {
-        return StableFactory.getMarkedObject(ICubeDataLoaderCreator.XML_TAG, ICubeDataLoaderCreator.class);
+        return StableFactory.getMarkedObject(UserAnalysisCubeDataLoaderCreator.XML_TAG, ICubeDataLoaderCreator.class);
     }
 
 
@@ -154,7 +155,7 @@ public class BICoreModule extends AbstractModule {
         StableFactory.registerMarkedObject(BIUpdateFrequencyManagerProvider.XML_TAG, getBIUpdateSettingManager());
         StableFactory.registerMarkedObject(BISystemPackageConfigurationProvider.XML_TAG, getPackManagerProvider());
         StableFactory.registerMarkedObject(BIAuthorityManageProvider.XML_TAG, getBISystemAuthorityManager());
-        StableFactory.registerMarkedObject(ICubeDataLoaderCreator.XML_TAG, com.finebi.cube.api.BICubeManager.getInstance());
+        StableFactory.registerMarkedObject(UserAnalysisCubeDataLoaderCreator.XML_TAG, UserAnalysisCubeDataLoaderCreator.getInstance());
         StableFactory.registerMarkedObject(BIDataSourceManagerProvider.XML_TAG, getSourceManagerProvider());
         StableFactory.registerMarkedObject(BIAliasManagerProvider.XML_TAG, getTransManagerProvider());
         StableFactory.registerMarkedObject(BITableRelationConfigurationProvider.XML_TAG, getConnectionManagerProvider());
@@ -190,6 +191,7 @@ public class BICoreModule extends AbstractModule {
             return FBIConfig.getInstance();
         }
     }
+
     public BITableDataDAOProvider getBITableDataDAOManager() {
         if (ClusterEnv.isCluster()) {
             if (ClusterAdapter.getManager().getHostManager().isSelf()) {
@@ -205,6 +207,7 @@ public class BICoreModule extends AbstractModule {
             return BITableDataDAOManager.getInstance();
         }
     }
+
     public BIUpdateFrequencyManagerProvider getBIUpdateSettingManager() {
         if (ClusterEnv.isCluster()) {
             if (ClusterAdapter.getManager().getHostManager().isSelf()) {
