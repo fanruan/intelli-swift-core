@@ -4,6 +4,7 @@ import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.base.Formula;
 import com.fr.base.ParameterMapNameSpace;
 import com.fr.bi.cal.analyze.report.report.widget.VanChartWidget;
+import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.field.target.target.BISummaryTarget;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.json.JSONArray;
@@ -324,6 +325,8 @@ public abstract class VanCartesianWidget extends VanChartWidget {
             this.putMinMaxInterval(left, settings.optJSONObject("leftYCustomScale"), calculator);
         }
 
+        left.put("plotLines", this.parsePlotLines(BIReportConstant.REGION.TARGET1));
+
         return left;
     }
 
@@ -350,6 +353,8 @@ public abstract class VanCartesianWidget extends VanChartWidget {
             this.putMinMaxInterval(right, settings.optJSONObject("rightYCustomScale"), calculator);
         }
 
+        right.put("plotLines", this.parsePlotLines(BIReportConstant.REGION.TARGET2));
+
         return right;
     }
 
@@ -375,7 +380,43 @@ public abstract class VanCartesianWidget extends VanChartWidget {
             this.putMinMaxInterval(right2, settings.optJSONObject("rightY2CustomScale"), calculator);
         }
 
+        right2.put("plotLines", this.parsePlotLines(BIReportConstant.REGION.TARGET2));
+
         return right2;
+    }
+
+    private JSONArray parsePlotLines(String regionID){
+
+        JSONArray dIDs = this.getDimensionIDArray(regionID);
+
+        JSONArray plotLines = JSONArray.create();
+
+        for(int i = 0, len = dIDs.length(); i < len; i++){
+            try {
+                BISummaryTarget dimension = this.getBITargetByID(dIDs.optString(i));
+                JSONArray cordons = dimension.getChartSetting().getCordon();
+
+                for(int j = 0, count = cordons.length(); j < count; j++){
+
+                    JSONObject config = cordons.optJSONObject(j);
+
+                    plotLines.put(
+                            JSONObject.create().put("value", config.optDouble("cordonValue"))
+                            .put("color", config.optString("cordonColor"))
+                            .put(
+                                    "label", JSONObject.create().put("text", config.optString("cordonName")).put("style", defaultFont()).put("align", "right")
+                            )
+                    );
+
+                }
+
+            }catch (Exception ex){
+                BILoggerFactory.getLogger().error(ex.getMessage(), ex);
+            }
+
+        }
+
+        return plotLines;
     }
 
     private void putMinMaxInterval(JSONObject axis, JSONObject scale, Calculator calculator) throws JSONException{
