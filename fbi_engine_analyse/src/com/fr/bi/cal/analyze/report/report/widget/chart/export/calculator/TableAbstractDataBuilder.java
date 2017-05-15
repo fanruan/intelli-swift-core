@@ -38,9 +38,9 @@ public abstract class TableAbstractDataBuilder implements IExcelDataBuilder {
     protected ReportNodeTree tree;
     protected List<String> dimIds;
     protected List<String> targetIds;
-    protected boolean showColTotal = true;
+    protected boolean showColTotal;
     protected static final String EMPTY_VALUE = "--";
-    protected static final String SUMMARY= Inter.getLocText("BI-Summary_Values");
+    protected static final String SUMMARY = Inter.getLocText("BI-Summary_Values");
     protected static String OUTERSUM = "__outer_sum_";
 
     public TableAbstractDataBuilder(Map<Integer, List<JSONObject>> dimAndTar, JSONObject dataJSON, IWidgetStyle styleSettings) throws Exception {
@@ -59,6 +59,7 @@ public abstract class TableAbstractDataBuilder implements IExcelDataBuilder {
         items = new ArrayList<ITableItem>();
         headers = new ArrayList<ITableHeader>();
         crossHeaders = new ArrayList<ITableHeader>();
+        showColTotal = this.styleSetting.isShowRowTotal();
     }
 
     protected void amendmentData() throws JSONException {
@@ -76,38 +77,50 @@ public abstract class TableAbstractDataBuilder implements IExcelDataBuilder {
         }
         item.setChildren(children);
         //汇总
-        if (!showColTotal && !data.has("s")) {
-            return;
-        }
-        List<ITableItem> outerValues = new ArrayList<ITableItem>();
-        JSONArray s = data.getJSONArray("s");
-        if (dimIds.size() > 0) {
-            List<ITableItem> items = new ArrayList<ITableItem>();
-            for (int i = 0; i < s.length(); i++) {
+        boolean isArrayAvailable = data.has("s") && isValidArray(data.getJSONArray("s"));
+        if (showColTotal && isArrayAvailable) {
+            List<ITableItem> outerValues = new ArrayList<ITableItem>();
+            JSONArray s = data.getJSONArray("s");
+            if (dimIds.size() > 0) {
+                List<ITableItem> items = new ArrayList<ITableItem>();
+                for (int i = 0; i < s.length(); i++) {
+                    ITableItem temp = new BIBasicTableItem();
+                    temp.setText(s.optString(i));
+                    temp.setDId(targetIds.get(i));
+                    temp.setStyles(null);
+                    items.add(temp);
+                }
+                item.addValues(items);
+            } else {
+                //使用第一个值作为一个维度
+                for (int i = 0; i < s.length(); i++) {
+                    BIBasicTableItem temp = new BIBasicTableItem();
+                    temp.setText(s.getString(i));
+                    temp.setDId(targetIds.get(i));
+                }
                 ITableItem temp = new BIBasicTableItem();
-                temp.setText(s.optString(i));
-                temp.setDId(targetIds.get(i));
-                temp.setStyles(null);
-                items.add(temp);
+                temp.setText(data.getJSONArray("s").getString(0));
+                temp.setDId(targetIds.get(0));
+                temp.setValues(outerValues);
+                item.getChildren().add(temp);
+                ArrayList<ITableItem> items = new ArrayList<ITableItem>();
+                items.add(item);
+                item.setValues(items);
             }
-            item.addValues(items);
-        } else {
-            //使用第一个值作为一个维度
-            for (int i = 0; i < s.length(); i++) {
-                BIBasicTableItem temp = new BIBasicTableItem();
-                temp.setText(s.getString(i));
-                temp.setDId(targetIds.get(i));
-            }
-            ITableItem temp = new BIBasicTableItem();
-            temp.setText(data.getJSONArray("s").getString(0));
-            temp.setDId(targetIds.get(0));
-            temp.setValues(outerValues);
-            item.getChildren().add(temp);
-            ArrayList<ITableItem> items = new ArrayList<ITableItem>();
-            items.add(item);
-            item.setValues(items);
         }
         items.add(item);
+    }
+
+    private boolean isValidArray(JSONArray array) throws JSONException {
+
+        try {
+            for (int i = 0; i < array.length(); i++) {
+                array.get(i);
+            }
+        } catch (JSONException e) {
+            return false;
+        }
+        return true;
     }
 
     protected void createTableHeader() throws Exception {
@@ -516,7 +529,7 @@ public abstract class TableAbstractDataBuilder implements IExcelDataBuilder {
 //            }
             if (crossItemsSums.size() < currentLayer) {
                 crossItemsSums.add(crossItemsSums.size(), new JSONArray());
-                crossItemsSums.get(crossItemsSums.size()-1).put(!v.isNull("c"));
+                crossItemsSums.get(crossItemsSums.size() - 1).put(!v.isNull("c"));
             }
         }
     }
@@ -680,10 +693,7 @@ public abstract class TableAbstractDataBuilder implements IExcelDataBuilder {
     private void hasChildren(int currentLayer, List<String> dimIds, JSONArray crossPV, JSONObject child, ReportNode node, BIBasicTableItem item) throws Exception {
         List children = createCommonTableItems(child.getString("c"), currentLayer, node, dimIds, crossPV);
         item.setChildren(children);
-        //在tableForm为 行展开模式 的时候 如果不显示汇总行 只是最后一行不显示汇总
-        // TODO: 2017/2/22 如何定义tableFrom属性从而来确定是否为行展开？
-        boolean openCol = true;
-        if (showColTotal || openCol) {
+        if (showColTotal) {
             List<ITableItem> vs = new ArrayList<ITableItem>();
             JSONArray summary = getOneRowSummary(child.getString("s"));
             int tartSize = targetIds.size();

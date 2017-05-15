@@ -526,6 +526,7 @@ public class TableWidget extends BISummaryWidget {
     public void reSetDetailTarget() {
     }
 
+    /*todo 想办法把数据和样式格式分离出来*/
     public JSONObject getPostOptions(BISessionProvider session, HttpServletRequest req) throws Exception {
         JSONObject res = this.createDataJSON(session, req);
         JSONObject dataJSON = res.getJSONObject("data");
@@ -539,15 +540,15 @@ public class TableWidget extends BISummaryWidget {
                 builder = new SummaryGroupTableDataBuilder(viewMap, dataJSON, style);
                 break;
             case BIReportConstant.TABLE_WIDGET.COMPLEX_TYPE:
-        builder = new SummaryComplexTableBuilder(viewMap, dataJSON, style);
-        break;
-    }
+                builder = new SummaryComplexTableBuilder(viewMap, dataJSON, style);
+                break;
+        }
         if (null == builder) {
-        return new JSONObject();
-    }
-    BITableDataConstructor data = BITableConstructHelper.buildTableData(builder);
+            return new JSONObject();
+        }
+        BITableDataConstructor data = BITableConstructHelper.buildTableData(builder);
         BITableConstructHelper.formatCells(data, getStringITableCellFormatOperationMap());
-        return data.createJSON().put("page",res.getJSONArray("page"));
+        return data.createJSON().put("page", res.getJSONArray("page"));
     }
 
     private Map<String, ITableCellFormatOperation> getStringITableCellFormatOperationMap() throws Exception {
@@ -585,7 +586,6 @@ public class TableWidget extends BISummaryWidget {
                 return dimension;
             }
         }
-
         return this.getBITargetByID(dID);
     }
 
