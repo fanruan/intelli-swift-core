@@ -10,7 +10,7 @@ import java.util.List;
  * Created by Kary on 2017/2/26.
  */
 public interface ITableItem extends JSONCreator {
-    void setStyle(ITableStyle style);
+    void setStyles(ITableStyle style);
 
 //    void setType(String type);
 
@@ -41,8 +41,6 @@ public interface ITableItem extends JSONCreator {
     void setChildren(List<ITableItem> children);
 
     boolean hasValues();
-
-    ITableStyle getStyle();
 
 //    String getType();
 
