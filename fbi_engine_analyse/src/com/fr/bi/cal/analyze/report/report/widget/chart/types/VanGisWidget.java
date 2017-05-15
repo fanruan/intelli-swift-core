@@ -1,8 +1,6 @@
 package com.fr.bi.cal.analyze.report.report.widget.chart.types;
 
 import com.fr.bi.cal.analyze.report.report.widget.VanChartWidget;
-import com.fr.bi.conf.session.BISessionProvider;
-import com.fr.bi.stable.constant.BIChartSettingConstant;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
@@ -31,6 +29,9 @@ public class VanGisWidget extends VanChartWidget{
 
         plotOptions.put("icon", icon);
 
+        JSONObject tooltip = plotOptions.optJSONObject("tooltip");
+        tooltip.put("shared", true);
+
         return plotOptions;
     }
 
@@ -38,6 +39,7 @@ public class VanGisWidget extends VanChartWidget{
 
         JSONArray series = JSONArray.create();
         String[] targetIDs = this.getUsedTargetID();
+        String[] dimensionIDs = this.getUsedDimensionID();
 
         JSONArray children = originData.getJSONArray("c");
         for(int i = 0, len = targetIDs.length; i < len; i++){
@@ -56,8 +58,9 @@ public class VanGisWidget extends VanChartWidget{
                 }
                 data.put(d);
             }
-            JSONObject ser = JSONObject.create().put("data", data).put("name", this.getDimensionNameByID(id)).put("dimensionID", id);
-            series.put(ser);
+            JSONObject ser = JSONObject.create().put("data", data).put("name", this.getDimensionNameByID(id))
+                    .put("targetIDs", JSONArray.create().put(id))
+                    .put("dimensionIDs", dimensionIDs);            series.put(ser);
         }
 
         return series;
@@ -69,5 +72,10 @@ public class VanGisWidget extends VanChartWidget{
 
     public String getSeriesType(String dimensionID){
         return "pointMap";
+    }
+
+    protected void toLegendJSON(JSONObject options, JSONObject settings) throws JSONException{
+        options.put("legend", JSONObject.create().put("enabled", false));
+        options.put("rangeLegend", JSONObject.create().put("enabled", false));
     }
 }
