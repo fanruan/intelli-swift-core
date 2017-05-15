@@ -1,4 +1,4 @@
-package com.fr.bi.cal.analyze.report.report.widget.chart.export.format;
+package com.fr.bi.cal.analyze.report.report.widget.chart.export.format.setting;
 
 import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;
@@ -6,7 +6,7 @@ import com.fr.json.JSONObject;
 /**
  * Created by Kary on 2017/5/11.
  */
-public class TableFormatSetting  implements FormatSetting{
+public class BICellFormatSetting implements ICellFormatSetting {
 
     private String unit;
     private boolean numSeparators;
@@ -15,45 +15,22 @@ public class TableFormatSetting  implements FormatSetting{
     private JSONArray conditions;
     private int iconStyle;
     private int mark;
-
-    @Override
-    public String getUnit() {
-        return unit;
-    }
-
-    @Override
-    public boolean isNumSeparators() {
-        return numSeparators;
-    }
-
-    @Override
-    public int getNumberLevel() {
-        return numberLevel;
-    }
-
-    @Override
-    public int getFormat() {
-        return format;
-    }
-
-    @Override
-    public JSONArray getConditions() {
-        return conditions;
-    }
-
-    @Override
-    public int getIconStyle() {
-        return iconStyle;
-    }
-
-    @Override
-    public int getMark() {
-        return mark;
-    }
+    private int dateFormatType;
+    private boolean hasSeparator=true;
 
     @Override
     public JSONObject createJSON() throws Exception {
-        return null;
+        JSONObject jo=JSONObject.create();
+        jo.put("unit",unit);
+        jo.put("numSeparators",numSeparators);
+        jo.put("numLevel",numberLevel);
+        jo.put("format",format);
+        jo.put("conditions",conditions);
+        jo.put("iconStyle",iconStyle);
+        jo.put("mark",mark);
+        jo.put("hasSeparator", hasSeparator);
+        jo.put("dateFormat", new JSONObject().put("type", dateFormatType));
+        return jo;
     }
     @Override
     public void parseJSON(JSONObject jo) throws Exception {
@@ -66,6 +43,9 @@ public class TableFormatSetting  implements FormatSetting{
         if (jo.has("numLevel")){
             numberLevel=jo.optInt("numLevel");
         }
+        if (jo.has("iconStyle")){
+            numberLevel=jo.optInt("iconStyle");
+        }
         if (jo.has("format")){
             format=jo.optInt("format");
         }
@@ -75,9 +55,15 @@ public class TableFormatSetting  implements FormatSetting{
         if (jo.has("iconStyle")){
             iconStyle=jo.optInt("iconStyle");
         }
+        if (jo.has("hasSeparator")){
+            hasSeparator=jo.optBoolean("hasSeparator");
+        }
+
         if (jo.has("mark")){
             mark=jo.optInt("mark");
         }
-
+        if (jo.has("dateFormat") && jo.getJSONObject("dateFormat").has("type")) {
+            dateFormatType = jo.getJSONObject("dateFormat").optInt("type");
+        }
     }
 }

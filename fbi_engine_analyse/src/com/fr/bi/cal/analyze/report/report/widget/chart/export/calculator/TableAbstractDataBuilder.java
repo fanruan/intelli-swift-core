@@ -79,10 +79,10 @@ public abstract class TableAbstractDataBuilder implements IExcelDataBuilder {
         if (!showColTotal && !data.has("s")) {
             return;
         }
-        List<ITableItem> outerValues=new ArrayList<ITableItem>();
+        List<ITableItem> outerValues = new ArrayList<ITableItem>();
         JSONArray s = data.getJSONArray("s");
         if (dimIds.size() > 0) {
-            List<ITableItem> items=new ArrayList<ITableItem>();
+            List<ITableItem> items = new ArrayList<ITableItem>();
             for (int i = 0; i < s.length(); i++) {
                 ITableItem temp = new BIBasicTableItem();
                 temp.setText(s.optString(i));
@@ -218,7 +218,7 @@ public abstract class TableAbstractDataBuilder implements IExcelDataBuilder {
         if (showColTotal) {
             //汇总值
 //            JSONArray sums = new JSONArray();
-            List<ITableItem> sums=new ArrayList<ITableItem>();
+            List<ITableItem> sums = new ArrayList<ITableItem>();
             JSONObject ob = new JSONObject().put("index", 0);
             boolean hasSC = BIJsonUtils.isKeyValueSet(left.getString("s")) && left.getJSONObject("s").has("c");
             boolean hasSS = BIJsonUtils.isKeyValueSet(left.getString("s")) && left.getJSONObject("s").has("s");
@@ -230,7 +230,7 @@ public abstract class TableAbstractDataBuilder implements IExcelDataBuilder {
                 }
             }
 //            JSONArray outerValues = new JSONArray();
-            List<ITableItem> outerValues=new ArrayList<ITableItem>();
+            List<ITableItem> outerValues = new ArrayList<ITableItem>();
             JSONArray ss = left.getJSONObject("s").getJSONArray("s");
             for (int i = 0; i < ss.length(); i++) {
                 if (targetIds.size() > 0) {
@@ -511,10 +511,13 @@ public abstract class TableAbstractDataBuilder implements IExcelDataBuilder {
             if (null != v && v.has("c")) {
                 initCrossItemsSum(currentLayer, v.getJSONArray("c"), crossItemsSums);
             }
-            if (crossItemsSums.size() <= currentLayer) {
-                crossItemsSums.add(currentLayer, new JSONArray());
+//            if (crossItemsSums.size() <= currentLayer) {
+//                crossItemsSums.add(currentLayer, new JSONArray());
+//            }
+            if (crossItemsSums.size() < currentLayer) {
+                crossItemsSums.add(crossItemsSums.size(), new JSONArray());
+                crossItemsSums.get(crossItemsSums.size()-1).put(!v.isNull("c"));
             }
-            crossItemsSums.set(currentLayer, crossItemsSums.get(currentLayer).put(v.has("s")));
         }
     }
 
@@ -681,7 +684,7 @@ public abstract class TableAbstractDataBuilder implements IExcelDataBuilder {
         // TODO: 2017/2/22 如何定义tableFrom属性从而来确定是否为行展开？
         boolean openCol = true;
         if (showColTotal || openCol) {
-            List<ITableItem> vs=new ArrayList<ITableItem>();
+            List<ITableItem> vs = new ArrayList<ITableItem>();
             JSONArray summary = getOneRowSummary(child.getString("s"));
             int tartSize = targetIds.size();
             for (int j = 0; j < summary.length(); j++) {
@@ -698,7 +701,7 @@ public abstract class TableAbstractDataBuilder implements IExcelDataBuilder {
     private void hasNoneChildren(JSONArray crossPV, int i, JSONObject child, JSONArray pValues, BIBasicTableItem item) throws Exception {
         if (child.has("s")) {
 //            JSONArray values = new JSONArray();
-            List<ITableItem> values=new ArrayList<ITableItem>();
+            List<ITableItem> values = new ArrayList<ITableItem>();
             boolean hasSC = BIJsonUtils.isKeyValueSet(child.getString("s")) && child.getJSONObject("s").has("c");
             boolean isArraySS = BIJsonUtils.isKeyValueSet(child.getString("s")) && BIJsonUtils.isArray(child.getJSONObject("s").getString("s"));
             if (hasSC || isArraySS) {
@@ -829,7 +832,7 @@ public abstract class TableAbstractDataBuilder implements IExcelDataBuilder {
     }
 
     protected List<ITableItem> convertToItemList(JSONArray jsonArray) throws Exception {
-        List<ITableItem> items=new ArrayList<ITableItem>();
+        List<ITableItem> items = new ArrayList<ITableItem>();
         for (int i = 0; i < jsonArray.length(); i++) {
             BIBasicTableItem item = new BIBasicTableItem();
             if (BIJsonUtils.isKeyValueSet(jsonArray.getString(0))) {

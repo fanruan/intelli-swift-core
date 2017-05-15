@@ -10,8 +10,8 @@ import com.fr.bi.cal.analyze.cal.detail.PolyCubeDetailECBlock;
 import com.fr.bi.cal.analyze.executor.detail.DetailExecutor;
 import com.fr.bi.cal.analyze.executor.paging.Paging;
 import com.fr.bi.cal.analyze.executor.paging.PagingFactory;
-import com.fr.bi.cal.analyze.report.report.widget.chart.export.format.TableFormatSetting;
-import com.fr.bi.cal.analyze.report.report.widget.chart.export.format.TableCellFormatOperation;
+import com.fr.bi.cal.analyze.report.report.widget.chart.export.format.setting.BICellFormatSetting;
+import com.fr.bi.cal.analyze.report.report.widget.chart.export.format.operation.BITableCellDimFormatOperation;
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.calculator.IExcelDataBuilder;
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.calculator.DetailTableBuilder;
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.utils.BITableConstructHelper;
@@ -300,20 +300,20 @@ public class BIDetailWidget extends AbstractBIWidget {
     public JSONObject getPostOptions(BISessionProvider session, HttpServletRequest req) throws Exception {
         JSONObject dataJSON = this.createDataJSON(session, req).getJSONObject("data");
         Map<Integer, List<JSONObject>> viewMap = createViewMap();
-        List<TableCellFormatOperation> tableCellFormatOperations = createChartDimensions();
-        IExcelDataBuilder builder = new DetailTableBuilder(viewMap, tableCellFormatOperations, dataJSON, new BITableWidgetStyle());
+        List<BITableCellDimFormatOperation> BITableCellDimFormatOperations = createChartDimensions();
+        IExcelDataBuilder builder = new DetailTableBuilder(viewMap, BITableCellDimFormatOperations, dataJSON, new BITableWidgetStyle());
         return BITableConstructHelper.buildTableData(builder).createJSON();
     }
 
-    private List<TableCellFormatOperation> createChartDimensions() throws Exception {
-        List<TableCellFormatOperation> tableCellFormatOperations = new ArrayList<TableCellFormatOperation>();
+    private List<BITableCellDimFormatOperation> createChartDimensions() throws Exception {
+        List<BITableCellDimFormatOperation> BITableCellDimFormatOperations = new ArrayList<BITableCellDimFormatOperation>();
         for (BIDetailTarget detailTarget : this.getTargets()) {
-            TableFormatSetting setting = new TableFormatSetting();
+            BICellFormatSetting setting = new BICellFormatSetting();
             setting.parseJSON(detailTarget.getChartSetting().getSettings());
-            TableCellFormatOperation TableCellFormatOperation = new TableCellFormatOperation(detailTarget.getId(),0, setting);
-            tableCellFormatOperations.add(TableCellFormatOperation);
+            BITableCellDimFormatOperation BITableCellDimFormatOperation = new BITableCellDimFormatOperation(0, setting);
+            BITableCellDimFormatOperations.add(BITableCellDimFormatOperation);
         }
-        return tableCellFormatOperations;
+        return BITableCellDimFormatOperations;
     }
 
     private Map<Integer, List<JSONObject>> createViewMap() throws Exception {
