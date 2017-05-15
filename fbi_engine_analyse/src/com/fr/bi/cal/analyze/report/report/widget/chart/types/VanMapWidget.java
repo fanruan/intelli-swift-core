@@ -112,6 +112,7 @@ public class VanMapWidget extends VanChartWidget{
 
     public JSONArray createSeries(JSONObject originData) throws Exception {
         JSONArray series = JSONArray.create();
+        String[] dimensionIDs = this.getUsedDimensionID();
         if(!originData.has("c")){
             return series;
         }
@@ -147,7 +148,9 @@ public class VanMapWidget extends VanChartWidget{
             }
 
             series.put(JSONObject.create().put("data", data).put("type", type)
-                    .put("name", this.getDimensionNameByID(id)).put("dimensionID", id));
+                    .put("name", this.getDimensionNameByID(id))
+                    .put("targetIDs", JSONArray.create().put(id))
+                    .put("dimensionIDs", dimensionIDs));
         }
 
         return series;
