@@ -20,7 +20,6 @@ public class BIBasicTableItem implements ITableItem {
     private boolean isExpanded;
     protected List<ITableItem> children;
     private ITableStyle styles;
-    private ITableStyle style;
 //    private String type;
     private String value;
 
@@ -105,11 +104,6 @@ public class BIBasicTableItem implements ITableItem {
 
     public List<ITableItem> getChildren() {
         return children;
-    }
-
-    @Override
-    public ITableStyle getStyle() {
-        return style;
     }
 
 //    @Override

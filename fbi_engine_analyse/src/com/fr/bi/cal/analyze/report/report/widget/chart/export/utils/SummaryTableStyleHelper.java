@@ -14,6 +14,11 @@ import java.awt.*;
  * 样式计算
  */
 public class SummaryTableStyleHelper {
+    private static int GRAY_LEVEL = 140;
+    private static double RED_PROPORTION = 0.299;
+    private static double GREEN_PROPORTION = 0.587;
+    private static double BLUE_PROPORTION = 0.114;
+
     public static ITableStyle getHeaderStyles(String themeColor, int styleType) {
         switch(styleType) {
             case BIStyleConstant.TABLE_STYLE.STYLE_NORMAL:
@@ -82,7 +87,7 @@ public class SummaryTableStyleHelper {
 
     private static boolean isDarkColor(String color) {
         Color rgb = Color.decode(color);
-        long grayLevel = Math.round(rgb.getRed() * 0.299 + rgb.getGreen() * 0.587 + rgb.getBlue() * 0.114);
-        return grayLevel < 140;
+        long grayLevel = Math.round(rgb.getRed() * RED_PROPORTION + rgb.getGreen() * GREEN_PROPORTION + rgb.getBlue() * BLUE_PROPORTION);
+        return grayLevel < GRAY_LEVEL;
     }
 }

@@ -40,7 +40,7 @@ public abstract class TableAbstractDataBuilder implements IExcelDataBuilder {
     protected List<String> targetIds;
     protected boolean showColTotal = true;
     protected static final String EMPTY_VALUE = "--";
-    protected static final String SUMMMARY= Inter.getLocText("BI-Summary_Values");
+    protected static final String SUMMARY= Inter.getLocText("BI-Summary_Values");
     protected static String OUTERSUM = "__outer_sum_";
 
     public TableAbstractDataBuilder(Map<Integer, List<JSONObject>> dimAndTar, JSONObject dataJSON, IWidgetStyle styleSettings) throws Exception {
@@ -268,7 +268,7 @@ public abstract class TableAbstractDataBuilder implements IExcelDataBuilder {
                 BIBasicTableItem item = new BIBasicTableItem();
                 item.setText("summary");
                 item.setStyles(null);
-                item.setText(SUMMMARY);
+                item.setText(SUMMARY);
                 item.setStyles(null);
                 crossItem.put("children", crossItem.getJSONArray("children").put(item.createJSON()));
             } else {
@@ -276,7 +276,7 @@ public abstract class TableAbstractDataBuilder implements IExcelDataBuilder {
                     BIBasicTableItem item = new BIBasicTableItem();
                     item.setText("summary");
                     item.setStyles(null);
-                    item.setText(SUMMMARY);
+                    item.setText(SUMMARY);
                     item.setStyles(null);
                     item.setDId(targetId);
                     crossItem.getJSONArray("children").put(item.createJSON());
@@ -459,7 +459,7 @@ public abstract class TableAbstractDataBuilder implements IExcelDataBuilder {
                     for (String targetId : targetIds) {
                         BITableHeader header = new BITableHeader();
                         header.setText("summary:" + BITableExportDataHelper.getDimensionNameByID(dimAndTar, targetId));
-                        header.setTitle(SUMMMARY + BITableExportDataHelper.getDimensionNameByID(dimAndTar, targetId));
+                        header.setTitle(SUMMARY + BITableExportDataHelper.getDimensionNameByID(dimAndTar, targetId));
                         header.setTag(UUID.randomUUID().toString());
                         header.setType("bi.page_table_cell");
                         headers.add(header);
@@ -467,7 +467,7 @@ public abstract class TableAbstractDataBuilder implements IExcelDataBuilder {
                 }
             } else if (item.has("isSum") && item.getBoolean("isSum")) {
                 //合计
-                item.put("text", SUMMMARY + BITableExportDataHelper.getDimensionNameByID(dimAndTar, item.getString("dId")));
+                item.put("text", SUMMARY + BITableExportDataHelper.getDimensionNameByID(dimAndTar, item.getString("dId")));
                 item.put("cls", "cross-table-target-header");
                 BITableHeader header = new BITableHeader();
                 header.parseJson(item);
