@@ -67,6 +67,9 @@ public abstract class VanChartWidget extends TableWidget {
     private static final int STYLE_NORMAL = 1; //普通风格
     private static final int STYLE_GRADUAL = 2; //渐变风格
 
+    private static final int WEEK_COUNT = 52;
+    private static final int MONTH_COUNT = 12;
+
     public static final int AUTO = 1;
     public static final int CUSTOM = 2;
 
@@ -737,13 +740,13 @@ public abstract class VanChartWidget extends TableWidget {
                 category = this.formatYMDHMByDateFormat(dateValue, dateFormatType);
                 break;
             case BIReportConstant.GROUP.YS:
-                category = this.formatCombineDateByDateFormat(category, dateFormatType, new String[]{getLocText("BI-Basic_Year"), getLocText("BI-Basic_Quarter")});
+                category = this.formatYSByDateFormat(dateValue, dateFormatType);
                 break;
             case BIReportConstant.GROUP.YM:
-                category = this.formatCombineDateByDateFormat(category, dateFormatType, new String[]{getLocText("BI-Basic_Year"), getLocText("BI-Basic_Month")});
+                category = this.formatYMByDateFormat(dateValue, dateFormatType);
                 break;
             case BIReportConstant.GROUP.YW:
-                category = this.formatCombineDateByDateFormat(category, dateFormatType, new String[]{getLocText("BI-Basic_Year"), getLocText("BI-Week_Simple")});
+                category = this.formatYWByDateFormat(dateValue, dateFormatType);
                 break;
         }
 
@@ -800,23 +803,59 @@ public abstract class VanChartWidget extends TableWidget {
         return formatter.format(date);
     }
 
-    private String formatCombineDateByDateFormat(String category, int dateFormatType, String[] format){
+    private String formatYMByDateFormat(long dateValue, int dateFormatType){
+        Date date = new Date(dateValue);
+        SimpleDateFormat formatter;
 
         if(dateFormatType == BIReportConstant.DATE_FORMAT.CHINESE){
-            String[] text = category.split("-");
-
-            if(text.length == format.length){
-                String resultText = "";
-
-                for(int i = 0, len = text.length; i < len; i++){
-                    resultText += (text[i] + format[i]);
-                }
-
-                return resultText;
-            }
+            formatter = new SimpleDateFormat(String.format("yyyy%sMM%s", getLocText("BI-Basic_Year"), getLocText("BI-Basic_Month")));
+        }else{
+            formatter = new SimpleDateFormat("yyyy-MM");
         }
+        return formatter.format(date);
+    }
 
-        return category;
+    private int getWeekOfYear(Date date) {
+        Calendar c = Calendar.getInstance();
+        c.setTime(date);
+        int weekOfYear = c.get(Calendar.WEEK_OF_YEAR);
+        int mouth = c.get(Calendar.MONTH);
+        //如果月份是12月，且求出来的周数是第一周，说明该日期实质上是这一年的第53周，也是下一年的第一周
+        if (mouth >= MONTH_COUNT - 1 && weekOfYear <= 1) {
+            weekOfYear += WEEK_COUNT;
+        }
+        return weekOfYear;
+    }
+
+    private String formatYWByDateFormat(long dateValue, int dateFormatType){
+        Date date = new Date(dateValue);
+        SimpleDateFormat formatter;
+        int week = getWeekOfYear(date);
+        if(dateFormatType == BIReportConstant.DATE_FORMAT.CHINESE){
+            formatter = new SimpleDateFormat(String.format("yyyy%s" + week + "%s", getLocText("BI-Basic_Year"), getLocText("BI-Week_Simple")));
+        }else{
+            formatter = new SimpleDateFormat("yyyy-" + week);
+        }
+        return formatter.format(date);
+    }
+
+    private int getSeason(Date date) {
+        Calendar c = Calendar.getInstance();
+        c.setTime(date);
+        int month = c.get(Calendar.MONTH);
+        return month / 3 + 1;
+    }
+
+    private String formatYSByDateFormat(long dateValue, int dateFormatType){
+        Date date = new Date(dateValue);
+        SimpleDateFormat formatter;
+        int season = getSeason(date);
+        if(dateFormatType == BIReportConstant.DATE_FORMAT.CHINESE){
+            formatter = new SimpleDateFormat(String.format("yyyy%s" + season + "%s", getLocText("BI-Basic_Year"), getLocText("BI-Basic_Quarter")));
+        }else{
+            formatter = new SimpleDateFormat("yyyy-" + season);
+        }
+        return formatter.format(date);
     }
 
     protected JSONObject parseLegend(JSONObject settings) throws JSONException {
