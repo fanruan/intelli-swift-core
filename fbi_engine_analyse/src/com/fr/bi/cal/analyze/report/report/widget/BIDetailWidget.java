@@ -298,11 +298,12 @@ public class BIDetailWidget extends AbstractBIWidget {
     }
 
     public JSONObject getPostOptions(BISessionProvider session, HttpServletRequest req) throws Exception {
-        JSONObject dataJSON = this.createDataJSON(session, req).getJSONObject("data");
+        JSONObject data = this.createDataJSON(session, req);
+        JSONObject dataJSON = data.getJSONObject("data");
         Map<Integer, List<JSONObject>> viewMap = createViewMap();
         List<BITableCellDimFormatOperation> BITableCellDimFormatOperations = createChartDimensions();
         IExcelDataBuilder builder = new DetailTableBuilder(viewMap, BITableCellDimFormatOperations, dataJSON, new BITableWidgetStyle());
-        return BITableConstructHelper.buildTableData(builder).createJSON();
+        return BITableConstructHelper.buildTableData(builder).createJSON().put("row", data.optLong("row", 0)).put("siez", data.optLong("size", 0));
     }
 
     private List<BITableCellDimFormatOperation> createChartDimensions() throws Exception {
@@ -310,7 +311,7 @@ public class BIDetailWidget extends AbstractBIWidget {
         for (BIDetailTarget detailTarget : this.getTargets()) {
             BICellFormatSetting setting = new BICellFormatSetting();
             setting.parseJSON(detailTarget.getChartSetting().getSettings());
-            BITableCellDimFormatOperation BITableCellDimFormatOperation = new BITableCellDimFormatOperation(0, setting);
+            BITableCellDimFormatOperation BITableCellDimFormatOperation = new BITableCellDimFormatOperation(detailTarget.createColumnKey().getFieldType(), setting);
             BITableCellDimFormatOperations.add(BITableCellDimFormatOperation);
         }
         return BITableCellDimFormatOperations;

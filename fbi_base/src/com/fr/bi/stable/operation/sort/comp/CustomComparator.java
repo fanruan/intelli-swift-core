@@ -23,7 +23,7 @@ public class CustomComparator extends AbstractComparator<String> implements Seri
 
     @Override
     public int compare(String o1, String o2) {
-        if (sortReg == null&&sortReg.length!=0) {
+        if (sortReg == null||sortReg.length!=0) {
             return ComparatorUtils.compare(o1, o2);
         } else {
             return ComparatorUtils.compare(getIndex(o1), getIndex(o2));

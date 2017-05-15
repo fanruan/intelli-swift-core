@@ -526,11 +526,11 @@ public class TableWidget extends BISummaryWidget {
     public void reSetDetailTarget() {
     }
 
+    /*todo 想办法把数据和样式格式分离出来*/
     public JSONObject getPostOptions(BISessionProvider session, HttpServletRequest req) throws Exception {
-        JSONObject dataJSON = this.createDataJSON(session, req).getJSONObject("data");
+        JSONObject res = this.createDataJSON(session, req);
+        JSONObject dataJSON = res.getJSONObject("data");
         Map<Integer, List<JSONObject>> viewMap = this.createViewMap();
-        Map<String, ITableCellFormatOperation> formOperationsMap = new HashMap<String, ITableCellFormatOperation>();
-        createFormatOperations(formOperationsMap);
         IExcelDataBuilder builder = null;
         switch (this.tableType) {
             case BIReportConstant.TABLE_WIDGET.CROSS_TYPE:
@@ -547,8 +547,14 @@ public class TableWidget extends BISummaryWidget {
             return new JSONObject();
         }
         BITableDataConstructor data = BITableConstructHelper.buildTableData(builder);
-//        BITableConstructHelper.formatCells(data, formOperationsMap);
-        return data.createJSON();
+        BITableConstructHelper.formatCells(data, getITableCellFormatOperationMap());
+        return data.createJSON().put("page", res.getJSONArray("page"));
+    }
+
+    private Map<String, ITableCellFormatOperation> getITableCellFormatOperationMap() throws Exception {
+        Map<String, ITableCellFormatOperation> formOperationsMap = new HashMap<String, ITableCellFormatOperation>();
+        createFormatOperations(formOperationsMap);
+        return formOperationsMap;
     }
 
     private void createFormatOperations(Map<String, ITableCellFormatOperation> operationsMap) throws Exception {
@@ -580,7 +586,6 @@ public class TableWidget extends BISummaryWidget {
                 return dimension;
             }
         }
-
         return this.getBITargetByID(dID);
     }
 
