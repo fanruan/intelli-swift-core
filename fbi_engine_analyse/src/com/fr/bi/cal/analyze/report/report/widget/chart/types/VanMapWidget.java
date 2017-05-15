@@ -4,14 +4,14 @@ import com.fr.bi.cal.analyze.report.report.widget.VanChartWidget;
 import com.fr.bi.conf.report.map.BIMapInfoManager;
 import com.fr.bi.conf.report.map.BIWMSManager;
 import com.fr.bi.field.target.target.BISummaryTarget;
+import com.fr.bi.stable.constant.BIReportConstant;
+import com.fr.general.ComparatorUtils;
 import com.fr.general.Inter;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
 import com.fr.stable.StringUtils;
-import com.taobao.top.link.embedded.websocket.util.StringUtil;
 
-import java.awt.*;
 import java.util.Map;
 
 /**
@@ -68,6 +68,11 @@ public class VanMapWidget extends VanChartWidget{
 
         options.put("geo", geo);
 
+        options.put("dTools", JSONObject.create()
+                .put("enabled", true).put("currentColor", "62b2ef").put("backgroundColor", "white")
+                .put("style", JSONObject.create().put("fontFamily", "Microsoft YaHei").put("color", "#b2b2b2").put("fontSize", "12px"))
+        );
+
         return options;
     }
 
@@ -120,12 +125,14 @@ public class VanMapWidget extends VanChartWidget{
         BIMapInfoManager manager = BIMapInfoManager.getInstance();
 
         for(int i = 0, seriesCount = targetIDs.length; i < seriesCount; i++){
+            String id = targetIDs[i];
 
-            String key = i == 0 ? "value" : "size";
-            String type = i == 0 ? "areaMap" : "bubble";
+            boolean isBubble = ComparatorUtils.equals(this.getRegionID(id), BIReportConstant.REGION.TARGET2);
+            String key = isBubble ? "size" : "value";
+            String type = isBubble ? "bubble" : "areaMap";
 
             JSONArray data = JSONArray.create(), rawData = originData.getJSONArray("c");
-            String id = targetIDs[i];
+
             double scale = this.numberScale(id);
             for(int j = 0, dataCount = rawData.length(); j < dataCount; j++){
                 JSONObject item = rawData.getJSONObject(j);
@@ -139,7 +146,7 @@ public class VanMapWidget extends VanChartWidget{
                     JSONObject drillDown = JSONObject.create();
                     String mapPath = manager.getinnerMapName().get(areaName);
                     drillDown.put("series", this.createSeries(item));
-                    drillDown.put("geo", JSONObject.create().put("data", mapPath).put("name", areaName));
+                    drillDown.put("geo", JSONObject.create().put("data", manager.getinnerMapPath().get(mapPath)).put("name", areaName));
                     datum.put("drilldown", drillDown);
                 }
 
