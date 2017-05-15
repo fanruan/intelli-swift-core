@@ -134,7 +134,7 @@ public abstract class VanChartWidget extends TableWidget {
 
         options.put("style", this.parseStyle(settings, globalStyle, plateConfig));
 
-        options.put(this.getLegendType(), this.parseLegend(settings));
+        toLegendJSON(options, settings);
 
         options.put("plotOptions", this.createPlotOptions(globalStyle, settings));
 
@@ -146,6 +146,10 @@ public abstract class VanChartWidget extends TableWidget {
         this.formatSeriesDataLabelFormat(options);
 
         return options;
+    }
+
+    protected void toLegendJSON(JSONObject options, JSONObject settings) throws JSONException{
+        options.put(this.getLegendType(), this.parseLegend(settings));
     }
 
     public JSONArray createSeries(JSONObject data) throws Exception {
