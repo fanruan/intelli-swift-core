@@ -46,6 +46,8 @@ public abstract class VanChartWidget extends TableWidget {
     public static final String Y = "${Y}";
     public static final String SIZE = "${SIZE}";
     public static final String NAME = "${NAME}";
+    public static final String DESCRIPTION = "${DESCRIPTION}";
+    public static final String ARRIVALRATE = "${ARRIVALRATE}";
 
     //兼容前台用数字表示位置的写法，真xx丑
     private static final int TOP = 2;
@@ -132,7 +134,7 @@ public abstract class VanChartWidget extends TableWidget {
 
         options.put("style", this.parseStyle(settings, globalStyle, plateConfig));
 
-        options.put(this.getLegendType(), this.parseLegend(settings));
+        toLegendJSON(options, settings);
 
         options.put("plotOptions", this.createPlotOptions(globalStyle, settings));
 
@@ -144,6 +146,10 @@ public abstract class VanChartWidget extends TableWidget {
         this.formatSeriesDataLabelFormat(options);
 
         return options;
+    }
+
+    protected void toLegendJSON(JSONObject options, JSONObject settings) throws JSONException{
+        options.put(this.getLegendType(), this.parseLegend(settings));
     }
 
     public JSONArray createSeries(JSONObject data) throws Exception {
@@ -353,19 +359,22 @@ public abstract class VanChartWidget extends TableWidget {
                 identifier += valueLabelKey();
             }
             if (dataLabelSetting.optBoolean("showPercentage") || dataLabelSetting.optBoolean("showConversionRate")) {
-                identifier += "${PERCENT}";
+                identifier += PERCENT;
+            }
+            if (dataLabelSetting.optBoolean("showArrivalRate")){
+                identifier += ARRIVALRATE;
             }
             if (dataLabelSetting.optBoolean("showXValue")) {
-                identifier += "${X}";
+                identifier += X;
             }
             if (dataLabelSetting.optBoolean("showYValue")) {
-                identifier += "${Y}";
+                identifier += Y;
             }
             if(dataLabelSetting.optBoolean("showBlockName")){
-                identifier += "${NAME}";
+                identifier += NAME;
             }
             if(dataLabelSetting.optBoolean("showTargetName")){
-                identifier += "${SERIES}";
+                identifier += SERIES;
             }
 
             formatter.put("identifier", identifier);
@@ -373,6 +382,7 @@ public abstract class VanChartWidget extends TableWidget {
             dataLabels.put("formatter", formatter);
             dataLabels.put("style", dataLabelSetting.optJSONObject("textStyle"));
             dataLabels.put("align", this.dataLabelAlign(dataLabelSetting.optInt("position")));
+            dataLabels.put("autoAdjust", dataLabelSetting.optBoolean("optimizeLabel"));
 
             dataLabels.put("connectorWidth", dataLabelSetting.optBoolean("showTractionLine") == true ? 1 : 0);
         }
@@ -569,6 +579,11 @@ public abstract class VanChartWidget extends TableWidget {
         return String.format("function(){return BI.contentFormat(arguments[0], \"%s\")}", format);
     }
 
+    private BISummaryTarget getSerBITarget(JSONObject ser) throws Exception{
+        JSONArray ids = ser.optJSONArray("targetIDs");
+        return ids == null ? null : getBITargetByID(ids.optString(0));
+    }
+
     protected void formatSeriesTooltipFormat(JSONObject options) throws Exception {
 
         JSONObject tooltip = options.optJSONObject("plotOptions").optJSONObject("tooltip");
@@ -577,11 +592,10 @@ public abstract class VanChartWidget extends TableWidget {
 
         for (int i = 0, len = series.length(); i < len; i++) {
             JSONObject ser = series.getJSONObject(i);
-            String dimensionID = ser.optString("dimensionID");
 
             JSONObject formatter = JSONObject.create();
 
-            formatter.put("identifier", this.getTooltipIdentifier()).put("valueFormat", this.tooltipValueFormat(this.getBITargetByID(dimensionID)));
+            formatter.put("identifier", this.getTooltipIdentifier()).put("valueFormat", this.tooltipValueFormat(this.getSerBITarget(ser)));
 
             ser.put("tooltip", new JSONObject(tooltip.toString()).put("formatter", formatter));
         }
@@ -604,12 +618,13 @@ public abstract class VanChartWidget extends TableWidget {
 
             for (int i = 0, len = series.length(); i < len; i++) {
                 JSONObject ser = series.getJSONObject(i);
-                String dimensionID = ser.optString("dimensionID");
 
                 JSONObject labels = new JSONObject(dataLabels.toString());
                 labels.optJSONObject("formatter")
-                        .put("valueFormat", this.dataLabelValueFormat(this.getBITargetByID(dimensionID)))
-                        .put("percentFormat", "function(){return BI.contentFormat(arguments[0], \"#.##%\")}");
+                        .put("valueFormat", this.dataLabelValueFormat(this.getSerBITarget(ser)))
+                        .put("percentFormat", "function(){return BI.contentFormat(arguments[0], \"#.##%\")}")
+                        .put("arrivalrateFormat", "function(){return BI.contentFormat(arguments[0], \"#.##%\")}");
+
 
                 ser.put(dataLabelsKey(), labels);
             }
@@ -632,6 +647,7 @@ public abstract class VanChartWidget extends TableWidget {
         BIDimension category = this.getCategoryDimension();
         JSONArray series = JSONArray.create();
         String[] targetIDs = this.getUsedTargetID();
+        String[] dimensionIDs = this.getUsedDimensionID();
         if(targetIDs.length == 0){
             return series;
         }
@@ -654,7 +670,10 @@ public abstract class VanChartWidget extends TableWidget {
                 valueList.add(y);
             }
             JSONObject ser = JSONObject.create().put("data", data).put("name", name)
-                    .put("type", this.getSeriesType(targetIDs[0])).put("dimensionID", targetIDs[0]);
+                    .put("type", this.getSeriesType(targetIDs[0]))
+                    .put("dimensionIDs", dimensionIDs)
+                    .put("targetIDs", JSONArray.create().put(targetIDs[0]));
+
             if (isStacked) {
                 //todo:应该也有问题，不知道怎么改，遇到bug的话参照createSeriesWithChildren里面的改法
                 ser.put("stack", targetIDs[0]);
@@ -670,6 +689,7 @@ public abstract class VanChartWidget extends TableWidget {
         BIDimension category = this.getCategoryDimension();
         JSONArray series = JSONArray.create();
         String[] targetIDs = this.getUsedTargetID();
+        String[] dimensionIDs = this.getUsedDimensionID();
         String categoryKey = this.categoryKey(), valueKey = this.valueKey();
         JSONArray children = originData.optJSONArray("c");
         for (int i = 0, len = targetIDs.length; i < len; i++) {
@@ -694,7 +714,9 @@ public abstract class VanChartWidget extends TableWidget {
                 valueList.add(y);
             }
             JSONObject ser = JSONObject.create().put("data", data).put("name", getDimensionNameByID(id))
-                    .put("type", type).put("yAxis", yAxis).put("dimensionID", id);
+                    .put("type", type).put("yAxis", yAxis)
+                    .put("dimensionIDs", dimensionIDs)
+                    .put("targetIDs", JSONArray.create().put(id));
             if (this.isStacked(id)) {
                 ser.put("stack", STACK_ID_PREFIX + yAxis);
             }
