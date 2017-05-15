@@ -1,7 +1,10 @@
 package com.fr.bi.cal.analyze.report.report.widget.chart.types;
 
 import com.fr.bi.cal.analyze.report.report.widget.VanChartWidget;
+import com.fr.bi.conf.session.BISessionProvider;
+import com.fr.bi.stable.constant.BIChartSettingConstant;
 import com.fr.json.JSONArray;
+import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
 
 /**
@@ -32,7 +35,6 @@ public class VanGisWidget extends VanChartWidget{
     }
 
     public JSONArray createSeries(JSONObject originData) throws Exception {
-        String[] dimensionIDs = this.getUsedDimensionID();
 
         JSONArray series = JSONArray.create();
         String[] targetIDs = this.getUsedTargetID();
@@ -47,15 +49,22 @@ public class VanGisWidget extends VanChartWidget{
                 String lnglat = lObj.getString("n");
                 JSONArray s = lObj.getJSONArray("s");
                 double value = s.isNull(i) ? 0 : s.getDouble(i);
-                data.put(JSONObject.create().put("lnglat", lnglat.split(",")).put("value", value / scale));
+                JSONObject d = JSONObject.create().put("lnglat", lnglat.split(",")).put("value", value / scale);
+                JSONArray c = lObj.optJSONArray("c");
+                if(c != null && c.length() > 0){
+                    d.put("name", c.optJSONObject(0).optString("n"));
+                }
+                data.put(d);
             }
-            JSONObject ser = JSONObject.create().put("data", data).put("name", this.getDimensionNameByID(id))
-                    .put("targetIDs", JSONArray.create().put(id))
-                    .put("dimensionIDs", dimensionIDs);
+            JSONObject ser = JSONObject.create().put("data", data).put("name", this.getDimensionNameByID(id)).put("dimensionID", id);
             series.put(ser);
         }
 
         return series;
+    }
+
+    protected String getTooltipIdentifier(){
+        return NAME + SERIES + VALUE;
     }
 
     public String getSeriesType(String dimensionID){

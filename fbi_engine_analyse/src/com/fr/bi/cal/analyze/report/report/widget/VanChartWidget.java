@@ -46,8 +46,6 @@ public abstract class VanChartWidget extends TableWidget {
     public static final String Y = "${Y}";
     public static final String SIZE = "${SIZE}";
     public static final String NAME = "${NAME}";
-    public static final String DESCRIPTION = "${DESCRIPTION}";
-    public static final String ARRIVALRATE = "${ARRIVALRATE}";
 
     //兼容前台用数字表示位置的写法，真xx丑
     private static final int TOP = 2;
@@ -68,6 +66,9 @@ public abstract class VanChartWidget extends TableWidget {
 
     private static final int STYLE_NORMAL = 1; //普通风格
     private static final int STYLE_GRADUAL = 2; //渐变风格
+
+    private static final int WEEK_COUNT = 52;
+    private static final int MONTH_COUNT = 12;
 
     public static final int AUTO = 1;
     public static final int CUSTOM = 2;
@@ -352,22 +353,19 @@ public abstract class VanChartWidget extends TableWidget {
                 identifier += valueLabelKey();
             }
             if (dataLabelSetting.optBoolean("showPercentage") || dataLabelSetting.optBoolean("showConversionRate")) {
-                identifier += PERCENT;
-            }
-            if (dataLabelSetting.optBoolean("showArrivalRate")){
-                identifier += ARRIVALRATE;
+                identifier += "${PERCENT}";
             }
             if (dataLabelSetting.optBoolean("showXValue")) {
-                identifier += X;
+                identifier += "${X}";
             }
             if (dataLabelSetting.optBoolean("showYValue")) {
-                identifier += Y;
+                identifier += "${Y}";
             }
             if(dataLabelSetting.optBoolean("showBlockName")){
-                identifier += NAME;
+                identifier += "${NAME}";
             }
             if(dataLabelSetting.optBoolean("showTargetName")){
-                identifier += SERIES;
+                identifier += "${SERIES}";
             }
 
             formatter.put("identifier", identifier);
@@ -579,11 +577,11 @@ public abstract class VanChartWidget extends TableWidget {
 
         for (int i = 0, len = series.length(); i < len; i++) {
             JSONObject ser = series.getJSONObject(i);
-            String targetID = ser.optJSONArray("targetIDs").optString(0);
+            String dimensionID = ser.optString("dimensionID");
 
             JSONObject formatter = JSONObject.create();
 
-            formatter.put("identifier", this.getTooltipIdentifier()).put("valueFormat", this.tooltipValueFormat(this.getBITargetByID(targetID)));
+            formatter.put("identifier", this.getTooltipIdentifier()).put("valueFormat", this.tooltipValueFormat(this.getBITargetByID(dimensionID)));
 
             ser.put("tooltip", new JSONObject(tooltip.toString()).put("formatter", formatter));
         }
@@ -593,23 +591,27 @@ public abstract class VanChartWidget extends TableWidget {
         return CATEGORY + SERIES + VALUE;
     }
 
+    //gauge deal valueLabel
+    protected String dataLabelsKey() {
+        return "dataLabels";
+    }
+
     protected void formatSeriesDataLabelFormat(JSONObject options) throws Exception {
-        JSONObject dataLabels = options.optJSONObject("plotOptions").optJSONObject("dataLabels");
+        JSONObject dataLabels = options.optJSONObject("plotOptions").optJSONObject(dataLabelsKey());
 
         if (dataLabels.optBoolean("enabled")) {
             JSONArray series = options.optJSONArray("series");
 
             for (int i = 0, len = series.length(); i < len; i++) {
                 JSONObject ser = series.getJSONObject(i);
-                String targetID = ser.optJSONArray("targetIDs").optString(0);
+                String dimensionID = ser.optString("dimensionID");
 
                 JSONObject labels = new JSONObject(dataLabels.toString());
                 labels.optJSONObject("formatter")
-                        .put("valueFormat", this.dataLabelValueFormat(this.getBITargetByID(targetID)))
-                        .put("percentFormat", "function(){return BI.contentFormat(arguments[0], \"#.##%\")}")
-                        .put("arrivalrateFormat", "function(){return BI.contentFormat(arguments[0], \"#.##%\")}");
+                        .put("valueFormat", this.dataLabelValueFormat(this.getBITargetByID(dimensionID)))
+                        .put("percentFormat", "function(){return BI.contentFormat(arguments[0], \"#.##%\")}");
 
-                ser.put("dataLabels", labels);
+                ser.put(dataLabelsKey(), labels);
             }
         }
     }
@@ -652,9 +654,7 @@ public abstract class VanChartWidget extends TableWidget {
                 valueList.add(y);
             }
             JSONObject ser = JSONObject.create().put("data", data).put("name", name)
-                    .put("type", this.getSeriesType(targetIDs[0]))
-                    .put("dimensionIDs", JSONArray.create().put(category.getValue()))
-                    .put("targetIDs", JSONArray.create().put(targetIDs[0]));
+                    .put("type", this.getSeriesType(targetIDs[0])).put("dimensionID", targetIDs[0]);
             if (isStacked) {
                 //todo:应该也有问题，不知道怎么改，遇到bug的话参照createSeriesWithChildren里面的改法
                 ser.put("stack", targetIDs[0]);
@@ -694,10 +694,7 @@ public abstract class VanChartWidget extends TableWidget {
                 valueList.add(y);
             }
             JSONObject ser = JSONObject.create().put("data", data).put("name", getDimensionNameByID(id))
-                    .put("type", type).put("yAxis", yAxis)
-                    .put("dimensionIDs", JSONArray.create().put(category.getValue()))
-                    .put("targetIDs", JSONArray.create().put(id));
-
+                    .put("type", type).put("yAxis", yAxis).put("dimensionID", id);
             if (this.isStacked(id)) {
                 ser.put("stack", STACK_ID_PREFIX + yAxis);
             }
@@ -743,13 +740,13 @@ public abstract class VanChartWidget extends TableWidget {
                 category = this.formatYMDHMByDateFormat(dateValue, dateFormatType);
                 break;
             case BIReportConstant.GROUP.YS:
-                category = this.formatCombineDateByDateFormat(category, dateFormatType, new String[]{getLocText("BI-Basic_Year"), getLocText("BI-Basic_Quarter")});
+                category = this.formatYSByDateFormat(dateValue, dateFormatType);
                 break;
             case BIReportConstant.GROUP.YM:
-                category = this.formatCombineDateByDateFormat(category, dateFormatType, new String[]{getLocText("BI-Basic_Year"), getLocText("BI-Basic_Month")});
+                category = this.formatYMByDateFormat(dateValue, dateFormatType);
                 break;
             case BIReportConstant.GROUP.YW:
-                category = this.formatCombineDateByDateFormat(category, dateFormatType, new String[]{getLocText("BI-Basic_Year"), getLocText("BI-Week_Simple")});
+                category = this.formatYWByDateFormat(dateValue, dateFormatType);
                 break;
         }
 
@@ -806,23 +803,59 @@ public abstract class VanChartWidget extends TableWidget {
         return formatter.format(date);
     }
 
-    private String formatCombineDateByDateFormat(String category, int dateFormatType, String[] format){
+    private String formatYMByDateFormat(long dateValue, int dateFormatType){
+        Date date = new Date(dateValue);
+        SimpleDateFormat formatter;
 
         if(dateFormatType == BIReportConstant.DATE_FORMAT.CHINESE){
-            String[] text = category.split("-");
-
-            if(text.length == format.length){
-                String resultText = "";
-
-                for(int i = 0, len = text.length; i < len; i++){
-                    resultText += (text[i] + format[i]);
-                }
-
-                return resultText;
-            }
+            formatter = new SimpleDateFormat(String.format("yyyy%sMM%s", getLocText("BI-Basic_Year"), getLocText("BI-Basic_Month")));
+        }else{
+            formatter = new SimpleDateFormat("yyyy-MM");
         }
+        return formatter.format(date);
+    }
 
-        return category;
+    private int getWeekOfYear(Date date) {
+        Calendar c = Calendar.getInstance();
+        c.setTime(date);
+        int weekOfYear = c.get(Calendar.WEEK_OF_YEAR);
+        int mouth = c.get(Calendar.MONTH);
+        //如果月份是12月，且求出来的周数是第一周，说明该日期实质上是这一年的第53周，也是下一年的第一周
+        if (mouth >= MONTH_COUNT - 1 && weekOfYear <= 1) {
+            weekOfYear += WEEK_COUNT;
+        }
+        return weekOfYear;
+    }
+
+    private String formatYWByDateFormat(long dateValue, int dateFormatType){
+        Date date = new Date(dateValue);
+        SimpleDateFormat formatter;
+        int week = getWeekOfYear(date);
+        if(dateFormatType == BIReportConstant.DATE_FORMAT.CHINESE){
+            formatter = new SimpleDateFormat(String.format("yyyy%s" + week + "%s", getLocText("BI-Basic_Year"), getLocText("BI-Week_Simple")));
+        }else{
+            formatter = new SimpleDateFormat("yyyy-" + week);
+        }
+        return formatter.format(date);
+    }
+
+    private int getSeason(Date date) {
+        Calendar c = Calendar.getInstance();
+        c.setTime(date);
+        int month = c.get(Calendar.MONTH);
+        return month / 3 + 1;
+    }
+
+    private String formatYSByDateFormat(long dateValue, int dateFormatType){
+        Date date = new Date(dateValue);
+        SimpleDateFormat formatter;
+        int season = getSeason(date);
+        if(dateFormatType == BIReportConstant.DATE_FORMAT.CHINESE){
+            formatter = new SimpleDateFormat(String.format("yyyy%s" + season + "%s", getLocText("BI-Basic_Year"), getLocText("BI-Basic_Quarter")));
+        }else{
+            formatter = new SimpleDateFormat("yyyy-" + season);
+        }
+        return formatter.format(date);
     }
 
     protected JSONObject parseLegend(JSONObject settings) throws JSONException {

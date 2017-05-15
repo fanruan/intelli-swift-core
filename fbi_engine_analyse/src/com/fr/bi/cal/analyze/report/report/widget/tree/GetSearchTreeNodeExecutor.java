@@ -20,7 +20,7 @@ import java.util.List;
 public class GetSearchTreeNodeExecutor extends AbstractTreeNodeExecutor {
     private String keyword;
     private String lastSearchValue;
-    private static int DEFAULTROW;
+    private static int DEFAULTROW = 100;
 
     public GetSearchTreeNodeExecutor(TreeWidget widget, Paging paging, BISession session) {
         super(widget, paging, session);

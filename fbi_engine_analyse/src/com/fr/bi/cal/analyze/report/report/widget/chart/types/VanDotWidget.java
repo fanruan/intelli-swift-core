@@ -1,7 +1,6 @@
 package com.fr.bi.cal.analyze.report.report.widget.chart.types;
 
 import com.finebi.cube.common.log.BILoggerFactory;
-import com.fr.base.TemplateUtils;
 import com.fr.bi.conf.report.WidgetType;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.stable.constant.BIReportConstant;
@@ -11,10 +10,12 @@ import com.fr.json.JSONArray;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
 import com.fr.script.Calculator;
-import com.fr.stable.CoreConstants;
 import com.fr.stable.StringUtils;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * Created by eason on 2017/2/27.
@@ -53,16 +54,6 @@ public class VanDotWidget extends VanCartesianWidget{
     private static final int BUBBLE_DIMENSION = 3;
 
     private List<String> seriesIDs = new ArrayList<String>();
-    private static String tooltipTpl;
-
-    private String getTooltipTpl() {
-        if(StringUtils.isEmpty(tooltipTpl)){
-            tooltipTpl = TemplateUtils.readTemplate2String(
-                    "/com/fr/bi/cal/analyze/report/report/widget/chart/tpl/dotTooltip.tpl",
-                    CoreConstants.CHARSET_OF_EMBEDDED_FILE);
-        }
-        return tooltipTpl;
-    }
 
     protected void dealView(List<String> sorted, JSONObject vjo) throws JSONException{
         super.dealView(sorted, vjo);
@@ -250,7 +241,6 @@ public class VanDotWidget extends VanCartesianWidget{
 
     private JSONArray dealSeriesMap(boolean noSeries, String[] ids, HashMap<String, JSONArray> seriesMap) throws JSONException{
         JSONArray series = JSONArray.create();
-        String[] dimensionIDs = this.getUsedDimensionID();
 
         double yScale = this.numberScale(ids[0]), xScale = this.numberScale(ids[1]);
         double sizeScale = ids.length > 2 ? this.numberScaleByLevel(this.numberLevelFromSettings(ids[2])) : 1;
@@ -280,14 +270,13 @@ public class VanDotWidget extends VanCartesianWidget{
             }
 
             if(!noSeries) {
-                ser.put("data", data).put("name", seriesName).put("dimensionIDs", dimensionIDs).put("targetIDs", ids);
-
+                ser.put("data", data).put("name", seriesName).put("dimensionID", ids[ids.length - 1]);
                 series.put(ser);
             }
         }
 
         if(noSeries){
-            series.put(JSONObject.create().put("data", dotData).put("dimensionIDs", dimensionIDs).put("targetIDs", ids));
+            series.put(JSONObject.create().put("data", dotData).put("dimensionID", ids[ids.length - 1]));
         }
 
         return series;
@@ -296,8 +285,6 @@ public class VanDotWidget extends VanCartesianWidget{
 
     //老的气泡图、散点图。原来的分类---->新点图的系列
     private JSONArray createBubbleScatterSeries(JSONObject originData) throws Exception{
-        BIDimension category = this.getCategoryDimension();
-
         String[] ids = this.getUsedTargetID();
 
         JSONArray series = JSONArray.create();
@@ -320,7 +307,7 @@ public class VanDotWidget extends VanCartesianWidget{
             JSONObject point = JSONObject.create().put("x", x).put("y", y).put("size", value);
 
             series.put(JSONObject.create().put("data", JSONArray.create().put(point))
-                    .put("name", obj.optString("n")).put("dimensionIDs", JSONArray.create().put(category.getValue())).put("targetIDs", ids)
+                    .put("name", obj.optString("n")).put("dimensionID", ids[ids.length - 1])
             );
 
         }
@@ -372,41 +359,25 @@ public class VanDotWidget extends VanCartesianWidget{
         return X + Y + SIZE;
     }
 
-    private void addFormat2Map(Map<String, String> tplRenderMap, String[] ids, int index, String key) throws Exception{
-        if(ids.length > index){
-            String format = this.valueFormat(this.getBITargetByID(ids[index]), true);
-            tplRenderMap.put(key, format);
-        }
-    }
-
     protected void formatSeriesTooltipFormat(JSONObject options) throws Exception {
+
+        JSONObject tooltip = options.optJSONObject("plotOptions").optJSONObject("tooltip");
+
         String[] ids = this.getUsedTargetID();
-
-        Map<String, String> tplMap = new HashMap<String, String>();
-
-        tplMap.put("key1_X", "(X)");
-        tplMap.put("key2_X", "x");
-        addFormat2Map(tplMap, ids, 0, "format_X");
-
-        tplMap.put("key1_Y", "(Y)");
-        tplMap.put("key2_Y", "y");
-        addFormat2Map(tplMap, ids, 1, "format_Y");
-
-        tplMap.put("key1_SIZE", "(" + getLocText("BI-Basic_Value") +")");
-        tplMap.put("key2_SIZE", "size");
-        addFormat2Map(tplMap, ids, 2, "format_SIZE");
-
-        String formatter = StringUtils.EMPTY;
-        try {
-            formatter = TemplateUtils.renderParameter4Tpl(getTooltipTpl(), tplMap);
-        } catch (Exception e) {
-            FRLogger.getLogger().error(e.getMessage(), e);
-        }
+        String[] keys = {"sizeFormat", "YFormat", "XFormat"};
+        int size = ids.length;
 
         JSONArray series = options.optJSONArray("series");
-        JSONObject tooltip = options.optJSONObject("plotOptions").optJSONObject("tooltip");
+
         for (int i = 0, len = series.length(); i < len; i++) {
             JSONObject ser = series.getJSONObject(i);
+            JSONObject formatter = JSONObject.create();
+
+            formatter.put("identifier", this.getTooltipIdentifier());
+
+            for(int j = size; j > 0; j--){
+                formatter.put(keys[size - j], this.tooltipValueFormat(this.getBITargetByID(ids[j - 1])));
+            }
 
             ser.put("tooltip", new JSONObject(tooltip.toString()).put("formatter", formatter));
         }
@@ -436,9 +407,5 @@ public class VanDotWidget extends VanCartesianWidget{
                 ser.put("dataLabels", labels);
             }
         }
-    }
-
-    protected String categoryLabelKey() {
-        return DESCRIPTION;
     }
 }
