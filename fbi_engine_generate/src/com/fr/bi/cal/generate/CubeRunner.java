@@ -1,6 +1,6 @@
 package com.fr.bi.cal.generate;
 
-import com.finebi.cube.api.BICubeManager;
+import com.finebi.cube.api.UserAnalysisCubeDataLoaderCreator;
 import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.conf.BICubeConfigureCenter;
 import com.finebi.cube.conf.table.BusinessTable;
@@ -168,7 +168,7 @@ public class CubeRunner {
         } finally {
             BICubeConfigureCenter.getPackageManager().endBuildingCube(biUser.getUserId());
         }
-        BICubeManager.getInstance().fetchCubeLoader(biUser.getUserId()).clear();
+        UserAnalysisCubeDataLoaderCreator.getInstance().fetchCubeLoader(biUser.getUserId()).clear();
         /* 前台进度条完成进度最多到90%，当cube文件替换完成后传入调用logEnd，进度条直接到100%*/
 
         ExecutorService service = Executors.newFixedThreadPool(2);

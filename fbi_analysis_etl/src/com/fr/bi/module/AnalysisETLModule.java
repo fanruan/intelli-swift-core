@@ -112,9 +112,9 @@ public class AnalysisETLModule extends AbstractModule {
     public Collection<BIPackageID> getAuthAvailablePackID(long userId) {
         List<BIPackageID> list = new ArrayList<BIPackageID>();
         BISystemPackageConfigurationProvider provider = getBusiPackManagerProvider();
-        if(provider == null){
+        if (provider == null) {
             return list;
-        }else {
+        } else {
             for (IBusinessPackageGetterService pack : provider.getAllPackages(userId)) {
                 list.add(pack.getID());
             }
@@ -194,7 +194,7 @@ public class AnalysisETLModule extends AbstractModule {
 
     @Override
     public ICubeDataLoaderCreator getCubeDataLoaderCreator() {
-        return StableFactory.getMarkedObject(UserETLCubeDataLoaderCreator.class.getName(), ICubeDataLoaderCreator.class);
+        return StableFactory.getMarkedObject(UserETLCubeDataLoaderCreator.XML_TAG, ICubeDataLoaderCreator.class);
     }
 
 
@@ -204,7 +204,7 @@ public class AnalysisETLModule extends AbstractModule {
         StableFactory.registerMarkedObject(UserETLCubeManager.class.getName(), new UserETLCubeManager());
         StableFactory.registerMarkedObject(UserETLCubeManagerProvider.class.getName(), getUserETLCubeManagerProvider());
         StableFactory.registerMarkedObject(BIAliasManagerProvider.class.getName(),/* new BIAnalysisETLAliasManager()*/getBIAliasManagerProvider());
-        StableFactory.registerMarkedObject(UserETLCubeDataLoaderCreator.class.getName(), UserETLCubeDataLoaderCreator.getInstance());
+        StableFactory.registerMarkedObject(UserETLCubeDataLoaderCreator.XML_TAG, UserETLCubeDataLoaderCreator.getInstance());
     }
 
     private BIAliasManagerProvider getBIAliasManagerProvider() {

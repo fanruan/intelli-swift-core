@@ -12,17 +12,18 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author Connery
  * @since 4.0
  */
-public class BICubeManager implements ICubeDataLoaderCreator{
+public class UserAnalysisCubeDataLoaderCreator implements ICubeDataLoaderCreator {
+    public static String XML_TAG = "UserAnalysisCubeDataLoaderCreator";
     private Map<BIUser, ICubeDataLoader> container = new ConcurrentHashMap<BIUser, ICubeDataLoader>();
-    private static BICubeManager instance;
+    private static UserAnalysisCubeDataLoaderCreator instance;
 
-    public static BICubeManager getInstance() {
+    public static UserAnalysisCubeDataLoaderCreator getInstance() {
         if (instance != null) {
             return instance;
         } else {
-            synchronized (BICubeManager.class) {
+            synchronized (UserAnalysisCubeDataLoaderCreator.class) {
                 if (instance == null) {
-                    instance = new BICubeManager();
+                    instance = new UserAnalysisCubeDataLoaderCreator();
                 }
                 return instance;
             }
@@ -50,7 +51,7 @@ public class BICubeManager implements ICubeDataLoaderCreator{
         return fetchCubeLoader(new BIUser(user));
     }
 
-    private BICubeManager() {
+    private UserAnalysisCubeDataLoaderCreator() {
 
     }
 }
