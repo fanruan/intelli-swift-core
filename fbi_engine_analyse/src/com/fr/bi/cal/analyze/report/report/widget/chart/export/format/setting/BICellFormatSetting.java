@@ -44,7 +44,7 @@ public class BICellFormatSetting implements ICellFormatSetting {
             numberLevel=jo.optInt("numLevel");
         }
         if (jo.has("iconStyle")){
-            numberLevel=jo.optInt("iconStyle");
+            iconStyle=jo.optInt("iconStyle");
         }
         if (jo.has("format")){
             format=jo.optInt("format");
