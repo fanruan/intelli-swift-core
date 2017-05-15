@@ -1,8 +1,6 @@
 package com.fr.bi.cal.analyze.report.report.widget.chart.types;
 
 import com.fr.bi.cal.analyze.report.report.widget.VanChartWidget;
-import com.fr.bi.conf.session.BISessionProvider;
-import com.fr.bi.stable.constant.BIChartSettingConstant;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
@@ -74,5 +72,10 @@ public class VanGisWidget extends VanChartWidget{
 
     public String getSeriesType(String dimensionID){
         return "pointMap";
+    }
+
+    protected void toLegendJSON(JSONObject options, JSONObject settings) throws JSONException{
+        options.put("legend", JSONObject.create().put("enabled", false));
+        options.put("rangeLegend", JSONObject.create().put("enabled", false));
     }
 }

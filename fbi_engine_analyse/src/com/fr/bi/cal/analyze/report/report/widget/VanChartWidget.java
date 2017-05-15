@@ -134,7 +134,7 @@ public abstract class VanChartWidget extends TableWidget {
 
         options.put("style", this.parseStyle(settings, globalStyle, plateConfig));
 
-        options.put(this.getLegendType(), this.parseLegend(settings));
+        toLegendJSON(options, settings);
 
         options.put("plotOptions", this.createPlotOptions(globalStyle, settings));
 
@@ -146,6 +146,10 @@ public abstract class VanChartWidget extends TableWidget {
         this.formatSeriesDataLabelFormat(options);
 
         return options;
+    }
+
+    protected void toLegendJSON(JSONObject options, JSONObject settings) throws JSONException{
+        options.put(this.getLegendType(), this.parseLegend(settings));
     }
 
     public JSONArray createSeries(JSONObject data) throws Exception {
@@ -643,6 +647,7 @@ public abstract class VanChartWidget extends TableWidget {
         BIDimension category = this.getCategoryDimension();
         JSONArray series = JSONArray.create();
         String[] targetIDs = this.getUsedTargetID();
+        String[] dimensionIDs = this.getUsedDimensionID();
         if(targetIDs.length == 0){
             return series;
         }
@@ -666,10 +671,9 @@ public abstract class VanChartWidget extends TableWidget {
             }
             JSONObject ser = JSONObject.create().put("data", data).put("name", name)
                     .put("type", this.getSeriesType(targetIDs[0]))
+                    .put("dimensionIDs", dimensionIDs)
                     .put("targetIDs", JSONArray.create().put(targetIDs[0]));
-            if(category != null){
-                ser.put("dimensionIDs", JSONArray.create().put(category.getValue()));
-            }
+
             if (isStacked) {
                 //todo:应该也有问题，不知道怎么改，遇到bug的话参照createSeriesWithChildren里面的改法
                 ser.put("stack", targetIDs[0]);
@@ -685,6 +689,7 @@ public abstract class VanChartWidget extends TableWidget {
         BIDimension category = this.getCategoryDimension();
         JSONArray series = JSONArray.create();
         String[] targetIDs = this.getUsedTargetID();
+        String[] dimensionIDs = this.getUsedDimensionID();
         String categoryKey = this.categoryKey(), valueKey = this.valueKey();
         JSONArray children = originData.optJSONArray("c");
         for (int i = 0, len = targetIDs.length; i < len; i++) {
@@ -710,7 +715,7 @@ public abstract class VanChartWidget extends TableWidget {
             }
             JSONObject ser = JSONObject.create().put("data", data).put("name", getDimensionNameByID(id))
                     .put("type", type).put("yAxis", yAxis)
-                    .put("dimensionIDs", JSONArray.create().put(category.getValue()))
+                    .put("dimensionIDs", dimensionIDs)
                     .put("targetIDs", JSONArray.create().put(id));
             if (this.isStacked(id)) {
                 ser.put("stack", STACK_ID_PREFIX + yAxis);
