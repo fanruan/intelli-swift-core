@@ -276,7 +276,7 @@ public abstract class VanCartesianWidget extends VanChartWidget {
         for(int i = 0, count = series.length(); i < count; i++){
             JSONObject ser = series.optJSONObject(i);
             JSONArray targetIDs = ser.optJSONArray("targetIDs");
-
+            String type = ser.optString("type");
             if(targetIDs == null){
                 continue;
             }
@@ -307,9 +307,14 @@ public abstract class VanCartesianWidget extends VanChartWidget {
                                 if(styleSetting.has("src")){
                                     String url = styleSetting.optString("src");
                                     BufferedImage bufferedImage = IOUtils.readImage(this.getLocalImagePath(url));
-                                    datum.put("image", this.getCompleteImageUrl(url));
-                                    datum.put("imageWidth", bufferedImage.getWidth());
-                                    datum.put("imageHeight", bufferedImage.getHeight());
+                                    if(type == "area" || type == "line"){
+                                        datum.put("marker", JSONObject.create().put("symbol", this.getCompleteImageUrl(url)).put("width", bufferedImage.getWidth()).put("height", bufferedImage.getHeight()));
+                                    }else{
+                                        datum.put("image", this.getCompleteImageUrl(url));
+                                        datum.put("imageWidth", bufferedImage.getWidth());
+                                        datum.put("imageHeight", bufferedImage.getHeight());
+                                    }
+
                                 }
                             }
                         }
