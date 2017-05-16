@@ -303,7 +303,7 @@ public class BIDetailWidget extends AbstractBIWidget {
         Map<Integer, List<JSONObject>> viewMap = createViewMap();
         List<BITableCellDimFormatOperation> BITableCellDimFormatOperations = createChartDimensions();
         IExcelDataBuilder builder = new DetailTableBuilder(viewMap, BITableCellDimFormatOperations, dataJSON, new BITableWidgetStyle());
-        return BITableConstructHelper.buildTableData(builder).createJSON().put("row", data.optLong("row", 0)).put("siez", data.optLong("size", 0));
+        return BITableConstructHelper.buildTableData(builder).createJSON().put("row", data.optLong("row", 0)).put("size", data.optLong("size", 0));
     }
 
     private List<BITableCellDimFormatOperation> createChartDimensions() throws Exception {

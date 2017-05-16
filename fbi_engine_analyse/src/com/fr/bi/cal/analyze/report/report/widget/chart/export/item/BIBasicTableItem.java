@@ -14,14 +14,14 @@ import java.util.List;
 public class BIBasicTableItem implements ITableItem {
 
     private String dId;
-    private String text;
+    private String value;
     private List<ITableItem> values;
     private boolean needExpand;
     private boolean isExpanded;
     protected List<ITableItem> children;
     private ITableStyle styles;
 //    private String type;
-    private String value;
+    private String text;
 
     public BIBasicTableItem() {
     }
@@ -32,8 +32,8 @@ public class BIBasicTableItem implements ITableItem {
     }
 
     @Override
-    public void setText(String text) {
-        this.text = text;
+    public void setValue(String value) {
+        this.value = value;
     }
 
     @Override
@@ -83,8 +83,8 @@ public class BIBasicTableItem implements ITableItem {
     }
 
     @Override
-    public String getText() {
-        return text;
+    public String getValue() {
+        return value;
     }
 
     @Override
@@ -123,13 +123,13 @@ public class BIBasicTableItem implements ITableItem {
         this.dId = dId;
     }
 
-    public String getValue() {
-        return value;
+    public String getText() {
+        return text;
     }
 
     @Override
-    public void setValue(String value) {
-        this.value = value;
+    public void setText(String text) {
+        this.text=text;
     }
 
     @Override
@@ -138,7 +138,7 @@ public class BIBasicTableItem implements ITableItem {
             dId = jo.optString("dId");
         }
         if (jo.has("text")) {
-            text = jo.optString("text");
+            value = jo.optString("text");
         }
 //        if (jo.has("type")) {
 //            type = jo.optString("type");
@@ -157,9 +157,9 @@ public class BIBasicTableItem implements ITableItem {
             }
         }
 
-        if (jo.has("value")) {
-            value = jo.optString("value");
-        }
+//        if (jo.has("value")) {
+//            value = jo.optString("value");
+//        }
 
         if (jo.has("children")) {
             children = new ArrayList<ITableItem>();
@@ -184,7 +184,7 @@ public class BIBasicTableItem implements ITableItem {
         }
         jo.put("dId", dId);
         jo.put("styles", null == styles ? new JSONObject() : styles.createJSON());
-        jo.put("text", text);
+        jo.put("text", value);
 //        jo.put("type", type);
         if (null != this.values && values.size() > 0) {
             JSONArray TempValues = new JSONArray();
@@ -194,7 +194,7 @@ public class BIBasicTableItem implements ITableItem {
             jo.put("values", TempValues);
         }
 
-        jo.put("value", value);
+//        jo.put("value", value);
         return jo;
     }
 
