@@ -358,7 +358,7 @@ public abstract class VanChartWidget extends TableWidget {
     protected JSONObject createDataLabels(JSONObject settings) throws JSONException {
         boolean miniMode = settings.optBoolean("miniMode", false);
         boolean showDataLabel = settings.optBoolean("showDataLabel", false);
-        JSONObject dataLabels = JSONObject.create().put("enabled", showDataLabel);
+        JSONObject dataLabels = JSONObject.create().put("enabled", showDataLabel).put("autoAdjust", true);
 
         if (showDataLabel || miniMode) {
             JSONObject dataLabelSetting = settings.has("dataLabelSetting") ? settings.optJSONObject("dataLabelSetting") : this.defaultDataLabelSetting();
