@@ -13,16 +13,15 @@ import com.fr.json.JSONObject;
 public class VanCompareBarWidget extends VanCompareColumnWidget{
 
     protected int numberLevel(String dimensionID){
+        int level = BIReportConstant.TARGET_STYLE.NUM_LEVEL.NORMAL;
         try {
             JSONObject settings = this.getDetailChartSetting();
-
-            return settings.optInt("leftYNumberLevel");
-
+            level = settings.optInt("leftYNumberLevel", level);
         }catch (Exception e){
             BILoggerFactory.getLogger().error(e.getMessage(),e);
         }
 
-        return BIReportConstant.TARGET_STYLE.NUM_LEVEL.NORMAL;
+        return level;
     }
 
     public boolean isInverted(){
