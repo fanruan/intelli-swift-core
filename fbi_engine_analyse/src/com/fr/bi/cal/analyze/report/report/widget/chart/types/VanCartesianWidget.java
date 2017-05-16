@@ -272,7 +272,6 @@ public abstract class VanCartesianWidget extends VanChartWidget {
 
     private void dealImageFillConditions(JSONObject options){
         JSONArray series = options.optJSONArray("series");
-
         for(int i = 0, count = series.length(); i < count; i++){
             JSONObject ser = series.optJSONObject(i);
             JSONArray targetIDs = ser.optJSONArray("targetIDs");
@@ -280,23 +279,18 @@ public abstract class VanCartesianWidget extends VanChartWidget {
             if(targetIDs == null){
                 continue;
             }
-
             try{
                 String targetID = targetIDs.optString(0);
                 BISummaryTarget target = this.getBITargetByID(targetID);
                 JSONArray dataImage = target.getChartSetting().getDataImage();
-
                 if(dataImage != null) {
-
                     int filterCount = dataImage.length();
                     FilterValue[] filterValues = this.createFilterValues(dataImage);
-
                     JSONArray data = ser.optJSONArray("data");
                     for (int dataIndex = 0, dataCount = data.length(); dataIndex < dataCount; dataIndex++) {
                         JSONObject datum = data.optJSONObject(dataIndex);
                         String x = datum.optString("x");
                         double y = datum.optDouble("y");
-
                         for (int filterIndex = 0; filterIndex < filterCount; filterIndex++) {
                             FilterValue filter = filterValues[filterIndex];
                             JSONObject config = dataImage.optJSONObject(filterIndex);
@@ -320,7 +314,6 @@ public abstract class VanCartesianWidget extends VanChartWidget {
                         }
                     }
                 }
-
             }catch (Exception e){
                 BILoggerFactory.getLogger().error(e.getMessage(),e);
             }
