@@ -156,6 +156,12 @@ public class BIChartSettingConstant {
     public static final class DOT_STYLE {
         public static final int SQUARE = 1;
         public static final int TRIANGLE = 2;
+        public static final int CIRCLE = 3;
+        public static final int DIAMOND = 4;
+        public static final int HOLLOW_SQUARE = 5;
+        public static final int HOLLOW_TRIANGLE = 6;
+        public static final int HOLLOW_CIRCLE = 7;
+        public static final int HOLLOW_DIAMON = 8;
     }
 
     public static final class DATA_LABEL {
