@@ -231,8 +231,8 @@ public abstract class VanCartesianWidget extends VanChartWidget {
         options.put("dataSheet", JSONObject.create().put("enabled", settings.optBoolean("showDataTable"))
                 .put("style", this.defaultFont()).put("borderColor", "#000000").put("borderWidth", 1));
 
-        if(settings.optBoolean("showZoom")){
-            options.put("zoom", JSONObject.create().put("zoomTool", JSONObject.create().put("enabled", true)));
+        if(settings.optBoolean("showZoom") && !settings.optBoolean("miniMode")){
+            options.put("zoom", JSONObject.create().put("zoomTool", JSONObject.create().put("enabled", true)).put("zoomType", ""));
         }
 
         Calculator calculator = Calculator.createCalculator();
@@ -261,13 +261,32 @@ public abstract class VanCartesianWidget extends VanChartWidget {
             }
         }
 
-        options.put(this.getCoordXKey(), this.parseCategoryAxis(settings, calculator));
-        options.put(this.getCoordYKey(), this.parseValueAxis(settings, calculator));
+        JSONArray cateArray = this.parseCategoryAxis(settings, calculator);
+        JSONArray valueArray = this.parseValueAxis(settings, calculator);
+        if(settings.optBoolean("miniMode", false)){
+            checkMIniMode(cateArray, true);
+            checkMIniMode(valueArray, false);
+        }
+        options.put(this.getCoordXKey(), cateArray);
+        options.put(this.getCoordYKey(), valueArray);
 
         this.dealDataLabelsConditions(options);
         this.dealImageFillConditions(options);
 
         return options;
+    }
+
+    private void checkMIniMode(JSONArray array, boolean cate) throws JSONException{
+        if(array == null){
+            return;
+        }
+        for(int i = 0, len = array.length(); i < len; i++){
+            JSONObject axis = array.optJSONObject(i);
+            if(axis == null){
+                continue;
+            }
+            axis.put("showLabel", cate).put("lineWidth", 0).put("gridLineWidth", 0).put("enableTick", false).put("title", JSONObject.create().put("enabled", false));
+        }
     }
 
     private void dealImageFillConditions(JSONObject options){
@@ -335,45 +354,45 @@ public abstract class VanCartesianWidget extends VanChartWidget {
         return filterValues;
     }
 
-    private void dealDataLabelsConditions(JSONObject options){
+    private void dealDataLabelsConditions(JSONObject options) {
         JSONArray series = options.optJSONArray("series");
-        for(int i = 0, count = series.length(); i < count; i++){
+        for (int i = 0, count = series.length(); i < count; i++) {
             JSONObject ser = series.optJSONObject(i);
             JSONArray targetIDs = ser.optJSONArray("targetIDs");
-            if(targetIDs == null){
+            if (targetIDs == null) {
                 continue;
             }
-            try{
+            try {
                 String targetID = targetIDs.optString(0);
                 BISummaryTarget target = this.getBITargetByID(targetID);
                 //标签的条件属性
                 JSONObject dataLabels = ser.optJSONObject("dataLabels");
                 JSONArray labelCondition = target.getChartSetting().getDataLabels();
-                if(labelCondition != null && dataLabels != null && dataLabels.optBoolean("enabled") == true){
+                if (labelCondition != null && dataLabels != null && dataLabels.optBoolean("enabled") == true) {
                     int filterCount = labelCondition.length();
                     FilterValue[] filterValues = this.createFilterValues(labelCondition);
                     JSONArray data = ser.optJSONArray("data");
-                    for(int dataIndex = 0, dataCount = data.length(); dataIndex < dataCount; dataIndex++){
+                    for (int dataIndex = 0, dataCount = data.length(); dataIndex < dataCount; dataIndex++) {
                         JSONObject datum = data.optJSONObject(dataIndex);
                         String x = datum.optString("x");
                         double y = datum.optDouble("y");
-                        for(int filterIndex = 0; filterIndex < filterCount; filterIndex++){
+                        for (int filterIndex = 0; filterIndex < filterCount; filterIndex++) {
                             FilterValue filter = filterValues[filterIndex];
                             JSONObject config = labelCondition.optJSONObject(filterIndex);
                             String id = config.optString("targetId");
-                            if(filter.isMatchValue(ComparatorUtils.equals(targetID, id) ? y : x)){
+                            if (filter.isMatchValue(ComparatorUtils.equals(targetID, id) ? y : x)) {
                                 JSONObject styleSetting = config.optJSONObject("styleSetting");
                                 JSONObject textStyle = styleSetting.optJSONObject("textStyle");
                                 JSONObject imgStyle = styleSetting.optJSONObject("imgStyle");
                                 JSONObject customDataLabels = new JSONObject(dataLabels.toString());
-                                if(textStyle.has("fontFamily")){
+                                if (textStyle.has("fontFamily")) {
                                     customDataLabels.put("style", textStyle);
                                 }
-                                if(imgStyle.has("src")){
+                                if (imgStyle.has("src")) {
                                     String url = imgStyle.optString("src");
                                     BufferedImage img = IOUtils.readImage(this.getLocalImagePath(url));
                                     customDataLabels.put("formatter", String.format(IMG_TMP, this.getCompleteImageUrl(url))).put("useHtml", true)
-                                    .put("labelWidth", img.getWidth()).put("labelHeight", img.getHeight());
+                                            .put("labelWidth", img.getWidth()).put("labelHeight", img.getHeight());
                                 }
                                 datum.put("dataLabels", customDataLabels);
                                 break;
@@ -381,8 +400,8 @@ public abstract class VanCartesianWidget extends VanChartWidget {
                         }
                     }
                 }
-            }catch (Exception e){
-                BILoggerFactory.getLogger().error(e.getMessage(),e);
+            } catch (Exception e) {
+                BILoggerFactory.getLogger().error(e.getMessage(), e);
             }
         }
     }
@@ -396,14 +415,16 @@ public abstract class VanCartesianWidget extends VanChartWidget {
     }
 
     protected JSONArray parseCategoryAxis(JSONObject settings, Calculator calculator) throws JSONException{
+        JSONObject labelStyle = settings.optJSONObject("catLabelStyle");
 
         JSONObject category = JSONObject.create();
 
         category
                 .put("type", "category").put("position", "bottom")
-                .put("title", JSONObject.create().put("enabled", settings.optJSONObject("catShowTitle")).put("style", settings.optJSONObject("catTitleStyle")).put("text", settings.optString("catTitle")))
+                .put("title", JSONObject.create().put("enabled", settings.optBoolean("catShowTitle")).put("style", settings.optJSONObject("catTitleStyle")).put("text", settings.optString("catTitle")))
                 .put("showLabel", settings.optBoolean("catShowLabel") && !settings.optBoolean("showDataTable"))
-                .put("labelStyle", settings.optJSONObject("catLabelStyle"))
+                .put("labelStyle", labelStyle.optJSONObject("textStyle"))
+                .put("labelRotation", labelStyle.optInt("textDirection"))
                 .put("lineColor", settings.optString("catLineColor"))
                 .put("gridLineWidth", settings.optBoolean("vShowGridLine") ? 1 : 0)
                 .put("gridLineColor", settings.optString("vGridLineColor"));
