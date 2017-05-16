@@ -225,11 +225,13 @@ public abstract class VanCartesianWidget extends VanChartWidget {
     public  JSONObject createOptions(JSONObject globalStyle, JSONObject data) throws Exception{
         JSONObject settings = this.getDetailChartSetting();
         JSONObject options = super.createOptions(globalStyle, data);
-        options.put("dataSheet", JSONObject.create().put("enabled", settings.optBoolean("showDataTable"))
+        boolean isInverted = this.isInverted();//bar
+
+        options.put("dataSheet", JSONObject.create().put("enabled", settings.optBoolean("showDataTable") && !isInverted)
                 .put("style", this.defaultFont()).put("borderColor", "#000000").put("borderWidth", 1));
 
         if(settings.optBoolean("showZoom") && !settings.optBoolean("miniMode")){
-            options.put("zoom", JSONObject.create().put("zoomTool", JSONObject.create().put("enabled", true)).put("zoomType", ""));
+            options.put("zoom", JSONObject.create().put("zoomTool", JSONObject.create().put("enabled", !isInverted)).put("zoomType", ""));
         }
 
         Calculator calculator = Calculator.createCalculator();
