@@ -57,6 +57,10 @@
 
   "groupNodes": "自定义分组节点",
   "groupValue": "自定义分组的key",
-  "useOther": "分组到其他"
+  "useOther": "分组到其他",
+
+  "summaryType": "计算指标类型1(summary_type)",
+  "rankType": "计算指标类型2(rank_type)",
+  "periodType": "计算指标类型3(period_type)"
 
 }
