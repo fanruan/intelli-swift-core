@@ -731,7 +731,7 @@ public abstract class VanChartWidget extends TableWidget {
             } else {//饼图没有分类，只有指标。会过来一个汇总值，没有child
                 JSONArray targetValues = originData.optJSONArray("s");
                 double y = targetValues.isNull(i) ? 0 : targetValues.getDouble(i) / numberScale;
-                data.put(JSONObject.create().put(valueKey, y));
+                data.put(JSONObject.create().put(valueKey, y).put(categoryKey, StringUtils.EMPTY));
                 valueList.add(y);
             }
             JSONObject ser = JSONObject.create().put("data", data).put("name", getDimensionNameByID(id))
