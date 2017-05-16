@@ -28,6 +28,9 @@ public class AllShowRoaringGroupValueIndex extends AbstractGroupValueIndex {
 
 	@Override
 	public GroupValueIndex AND(GroupValueIndex valueIndex) {
+		if (valueIndex == null || GVIUtils.isAllShowRoaringGroupValueIndex(valueIndex)) {
+			return this.clone();
+		}
 		return valueIndex;
 	}
 
