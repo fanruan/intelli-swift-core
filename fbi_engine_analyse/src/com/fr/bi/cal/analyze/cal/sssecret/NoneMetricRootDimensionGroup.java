@@ -150,6 +150,7 @@ public class NoneMetricRootDimensionGroup extends RootDimensionGroup {
         if (value instanceof Number) {
             currentSet.add(BIDateValueFactory.createDateValue(ckp.getGroup().getType(), (Number) value));
         } else if (ck instanceof DateDimensionCalculator) {
+            // 像周数等分组这里的value是字符串类型
             currentSet.add(BIDateValueFactory.createDateValue(ckp.getGroup().getType(),  value));
         } else {
             currentSet.add(null);
