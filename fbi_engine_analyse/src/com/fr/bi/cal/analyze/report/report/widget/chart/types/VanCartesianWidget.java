@@ -4,15 +4,19 @@ import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.base.Formula;
 import com.fr.base.ParameterMapNameSpace;
 import com.fr.bi.cal.analyze.report.report.widget.VanChartWidget;
-import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
+import  com.fr.bi.field.filtervalue.FilterValueFactory;
+import com.fr.bi.conf.report.widget.field.filtervalue.FilterValue;
 import com.fr.bi.field.target.target.BISummaryTarget;
 import com.fr.bi.stable.constant.BIReportConstant;
+import com.fr.general.ComparatorUtils;
+import com.fr.general.IOUtils;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
 import com.fr.script.Calculator;
 import com.fr.stable.StringUtils;
 
+import java.awt.image.BufferedImage;
 import java.util.HashMap;
 
 /**
@@ -29,6 +33,7 @@ public abstract class VanCartesianWidget extends VanChartWidget {
     private static final String TRANS = "rgba(0,0,0,0)";
 
     private static final int VERTICAL = 90;
+    private static final String imgTemplate = "function(){return \"<img src = %s>\"}";
 
     protected JSONObject populateDefaultSettings() throws JSONException{
         JSONObject settings = super.populateDefaultSettings();
@@ -259,7 +264,129 @@ public abstract class VanCartesianWidget extends VanChartWidget {
         options.put(this.getCoordXKey(), this.parseCategoryAxis(settings, calculator));
         options.put(this.getCoordYKey(), this.parseValueAxis(settings, calculator));
 
+        this.dealDataLabelsConditions(options);
+        this.dealImageFillConditions(options);
+
         return options;
+    }
+
+    private void dealImageFillConditions(JSONObject options){
+        JSONArray series = options.optJSONArray("series");
+
+        for(int i = 0, count = series.length(); i < count; i++){
+            JSONObject ser = series.optJSONObject(i);
+            JSONArray targetIDs = ser.optJSONArray("targetIDs");
+
+            if(targetIDs == null){
+                continue;
+            }
+
+            try{
+                String targetID = targetIDs.optString(0);
+                BISummaryTarget target = this.getBITargetByID(targetID);
+                JSONArray dataImage = target.getChartSetting().getDataImage();
+
+                if(dataImage != null) {
+
+                    int filterCount = dataImage.length();
+                    FilterValue[] filterValues = this.createFilterValues(dataImage);
+
+                    JSONArray data = ser.optJSONArray("data");
+                    for (int dataIndex = 0, dataCount = data.length(); dataIndex < dataCount; dataIndex++) {
+                        JSONObject datum = data.optJSONObject(dataIndex);
+                        String x = datum.optString("x");
+                        double y = datum.optDouble("y");
+
+                        for (int filterIndex = 0; filterIndex < filterCount; filterIndex++) {
+                            FilterValue filter = filterValues[filterIndex];
+                            JSONObject config = dataImage.optJSONObject(filterIndex);
+                            String id = config.optString("targetId");
+
+                            if(filter.isMatchValue(ComparatorUtils.equals(targetID, id) ? y : x)) {
+                                JSONObject styleSetting = config.optJSONObject("styleSetting");
+                                if(styleSetting.has("src")){
+                                    String url = styleSetting.optString("src");
+                                    BufferedImage bufferedImage = IOUtils.readImage(this.getLocalImagePath(url));
+                                    datum.put("image", this.getCompleteImageUrl(url));
+                                    datum.put("imageWidth", bufferedImage.getWidth());
+                                    datum.put("imageHeight", bufferedImage.getHeight());
+                                }
+                            }
+                        }
+                    }
+                }
+
+            }catch (Exception e){
+                BILoggerFactory.getLogger().error(e.getMessage(),e);
+            }
+
+        }
+    }
+
+    protected FilterValue[] createFilterValues(JSONArray config){
+        int filterCount = config.length();
+        FilterValue[] filterValues = new FilterValue[filterCount];
+        for (int filterIndex = 0; filterIndex < filterCount; filterIndex++) {
+            try {
+                filterValues[filterIndex] = FilterValueFactory.parseFilterValue(config.optJSONObject(filterIndex), this.getUserId());
+            }catch (Exception e){
+                BILoggerFactory.getLogger().error(e.getMessage(),e);
+            }
+        }
+
+        return filterValues;
+    }
+
+    private void dealDataLabelsConditions(JSONObject options){
+        JSONArray series = options.optJSONArray("series");
+        for(int i = 0, count = series.length(); i < count; i++){
+            JSONObject ser = series.optJSONObject(i);
+            JSONArray targetIDs = ser.optJSONArray("targetIDs");
+            if(targetIDs == null){
+                continue;
+            }
+            try{
+                String targetID = targetIDs.optString(0);
+                BISummaryTarget target = this.getBITargetByID(targetID);
+                //标签的条件属性
+                JSONObject dataLabels = ser.optJSONObject("dataLabels");
+                JSONArray labelCondition = target.getChartSetting().getDataLabels();
+                if(labelCondition != null && dataLabels != null && dataLabels.optBoolean("enabled") == true){
+                    int filterCount = labelCondition.length();
+                    FilterValue[] filterValues = this.createFilterValues(labelCondition);
+                    JSONArray data = ser.optJSONArray("data");
+                    for(int dataIndex = 0, dataCount = data.length(); dataIndex < dataCount; dataIndex++){
+                        JSONObject datum = data.optJSONObject(dataIndex);
+                        String x = datum.optString("x");
+                        double y = datum.optDouble("y");
+                        for(int filterIndex = 0; filterIndex < filterCount; filterIndex++){
+                            FilterValue filter = filterValues[filterIndex];
+                            JSONObject config = labelCondition.optJSONObject(filterIndex);
+                            String id = config.optString("targetId");
+                            if(filter.isMatchValue(ComparatorUtils.equals(targetID, id) ? y : x)){
+                                JSONObject styleSetting = config.optJSONObject("styleSetting");
+                                JSONObject textStyle = styleSetting.optJSONObject("textStyle");
+                                JSONObject imgStyle = styleSetting.optJSONObject("imgStyle");
+                                JSONObject customDataLabels = new JSONObject(dataLabels.toString());
+                                if(textStyle.has("fontFamily")){
+                                    customDataLabels.put("style", textStyle);
+                                }
+                                if(imgStyle.has("src")){
+                                    String url = imgStyle.optString("src");
+                                    BufferedImage img = IOUtils.readImage(this.getLocalImagePath(url));
+                                    customDataLabels.put("formatter", String.format(imgTemplate, this.getCompleteImageUrl(url))).put("useHtml", true)
+                                    .put("labelWidth", img.getWidth()).put("labelHeight", img.getHeight());
+                                }
+                                datum.put("dataLabels", customDataLabels);
+                                break;
+                            }
+                        }
+                    }
+                }
+            }catch (Exception e){
+                BILoggerFactory.getLogger().error(e.getMessage(),e);
+            }
+        }
     }
 
     protected String getCoordXKey(){

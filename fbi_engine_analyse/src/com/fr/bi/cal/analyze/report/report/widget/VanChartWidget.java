@@ -1,11 +1,13 @@
 package com.fr.bi.cal.analyze.report.report.widget;
 
 import com.finebi.cube.common.log.BILoggerFactory;
+import com.fr.base.FRContext;
 import com.fr.bi.cal.analyze.session.BISession;
 import com.fr.bi.conf.report.WidgetType;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.conf.session.BISessionProvider;
 import com.fr.bi.field.target.target.BISummaryTarget;
+import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.constant.BIStyleConstant;
 import com.fr.bi.tool.BIReadReportUtils;
@@ -21,6 +23,7 @@ import com.fr.web.utils.WebUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import java.awt.*;
+import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.List;
@@ -270,6 +273,14 @@ public abstract class VanChartWidget extends TableWidget {
         this.chartType = WidgetType.parse(jo.optInt("type"));
 
         super.parseJSON(jo, userId);
+    }
+
+    protected String getCompleteImageUrl (String url) {
+        return requestURL + "?op=fr_bi&cmd=get_uploaded_image&image_id=" + url;
+    }
+
+    protected String getLocalImagePath(String url){
+        return FRContext.getCurrentEnv().getPath() + BIBaseConstant.UPLOAD_IMAGE.IMAGE_PATH + File.separator + url;
     }
 
     protected void dealView(List<String> sorted, JSONObject vjo) throws JSONException{
