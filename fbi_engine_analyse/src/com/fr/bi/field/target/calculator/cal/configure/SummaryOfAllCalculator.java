@@ -80,7 +80,7 @@ public abstract class SummaryOfAllCalculator extends AbstractConfigureCalculator
 
     /**
      * 子节点为空，不用进行计算指标计算。
-     *
+     * BI-5299
      * @param cursor_node
      * @return
      */
