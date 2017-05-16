@@ -17,7 +17,7 @@ public class BIPeriodConfiguredCalculateTarget extends
         super.parseJSON(jo, userId);
         if (jo.has("_src")) {
             JSONObject srcJo = jo.optJSONObject("_src");
-            this.period_type = srcJo.optJSONObject("expression").optInt("period_type");
+            this.period_type = srcJo.optJSONObject("expression").optInt("periodType");
         }
     }
 
