@@ -149,7 +149,12 @@ public abstract class VanChartWidget extends TableWidget {
     }
 
     protected void toLegendJSON(JSONObject options, JSONObject settings) throws JSONException{
-        options.put(this.getLegendType(), this.parseLegend(settings));
+        if(settings.optBoolean("miniMode", false)){
+            options.put("legend", JSONObject.create().put("enabled", false));
+            options.put("rangeLegend", JSONObject.create().put("enabled", false));
+        } else {
+            options.put(this.getLegendType(), this.parseLegend(settings));
+        }
     }
 
     public JSONArray createSeries(JSONObject data) throws Exception {
@@ -340,44 +345,16 @@ public abstract class VanChartWidget extends TableWidget {
 
     //默认是分类，系列，值的配置
     protected JSONObject createDataLabels(JSONObject settings) throws JSONException {
+        boolean miniMode = settings.optBoolean("miniMode", false);
         boolean showDataLabel = settings.optBoolean("showDataLabel", false);
         JSONObject dataLabels = JSONObject.create().put("enabled", showDataLabel);
 
-        if (showDataLabel) {
+        if (showDataLabel || miniMode) {
             JSONObject dataLabelSetting = settings.has("dataLabelSetting") ? settings.optJSONObject("dataLabelSetting") : this.defaultDataLabelSetting();
 
             JSONObject formatter = JSONObject.create();
-            String identifier = "";
 
-            if (dataLabelSetting.optBoolean("showCategoryName")) {
-                identifier += categoryLabelKey();
-            }
-            if (dataLabelSetting.optBoolean("showSeriesName")) {
-                identifier += seriesLabelKey();
-            }
-            if (dataLabelSetting.optBoolean("showValue")) {
-                identifier += valueLabelKey();
-            }
-            if (dataLabelSetting.optBoolean("showPercentage") || dataLabelSetting.optBoolean("showConversionRate")) {
-                identifier += PERCENT;
-            }
-            if (dataLabelSetting.optBoolean("showArrivalRate")){
-                identifier += ARRIVALRATE;
-            }
-            if (dataLabelSetting.optBoolean("showXValue")) {
-                identifier += X;
-            }
-            if (dataLabelSetting.optBoolean("showYValue")) {
-                identifier += Y;
-            }
-            if(dataLabelSetting.optBoolean("showBlockName")){
-                identifier += NAME;
-            }
-            if(dataLabelSetting.optBoolean("showTargetName")){
-                identifier += SERIES;
-            }
-
-            formatter.put("identifier", identifier);
+            formatter.put("identifier", miniMode ? VALUE : labelIdentifier(dataLabelSetting));
 
             dataLabels.put("formatter", formatter);
             dataLabels.put("style", dataLabelSetting.optJSONObject("textStyle"));
@@ -388,6 +365,39 @@ public abstract class VanChartWidget extends TableWidget {
         }
 
         return dataLabels;
+    }
+
+    private String labelIdentifier(JSONObject dataLabelSetting) {
+        String identifier = "";
+
+        if (dataLabelSetting.optBoolean("showCategoryName")) {
+            identifier += categoryLabelKey();
+        }
+        if (dataLabelSetting.optBoolean("showSeriesName")) {
+            identifier += seriesLabelKey();
+        }
+        if (dataLabelSetting.optBoolean("showValue")) {
+            identifier += valueLabelKey();
+        }
+        if (dataLabelSetting.optBoolean("showPercentage") || dataLabelSetting.optBoolean("showConversionRate")) {
+            identifier += PERCENT;
+        }
+        if (dataLabelSetting.optBoolean("showArrivalRate")){
+            identifier += ARRIVALRATE;
+        }
+        if (dataLabelSetting.optBoolean("showXValue")) {
+            identifier += X;
+        }
+        if (dataLabelSetting.optBoolean("showYValue")) {
+            identifier += Y;
+        }
+        if(dataLabelSetting.optBoolean("showBlockName")){
+            identifier += NAME;
+        }
+        if(dataLabelSetting.optBoolean("showTargetName")){
+            identifier += SERIES;
+        }
+        return identifier;
     }
 
     protected String dataLabelAlign(int position) {

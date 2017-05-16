@@ -225,8 +225,8 @@ public abstract class VanCartesianWidget extends VanChartWidget {
         options.put("dataSheet", JSONObject.create().put("enabled", settings.optBoolean("showDataTable"))
                 .put("style", this.defaultFont()).put("borderColor", "#000000").put("borderWidth", 1));
 
-        if(settings.optBoolean("showZoom")){
-            options.put("zoom", JSONObject.create().put("zoomTool", JSONObject.create().put("enabled", true)));
+        if(settings.optBoolean("showZoom") && !settings.optBoolean("miniMode")){
+            options.put("zoom", JSONObject.create().put("zoomTool", JSONObject.create().put("enabled", true)).put("zoomType", ""));
         }
 
         Calculator calculator = Calculator.createCalculator();
@@ -255,10 +255,29 @@ public abstract class VanCartesianWidget extends VanChartWidget {
             }
         }
 
-        options.put(this.getCoordXKey(), this.parseCategoryAxis(settings, calculator));
-        options.put(this.getCoordYKey(), this.parseValueAxis(settings, calculator));
+        JSONArray cateArray = this.parseCategoryAxis(settings, calculator);
+        JSONArray valueArray = this.parseValueAxis(settings, calculator);
+        if(settings.optBoolean("miniMode", false)){
+            checkMIniMode(cateArray, true);
+            checkMIniMode(valueArray, false);
+        }
+        options.put(this.getCoordXKey(), cateArray);
+        options.put(this.getCoordYKey(), valueArray);
 
         return options;
+    }
+
+    private void checkMIniMode(JSONArray array, boolean cate) throws JSONException{
+        if(array == null){
+            return;
+        }
+        for(int i = 0, len = array.length(); i < len; i++){
+            JSONObject axis = array.optJSONObject(i);
+            if(axis == null){
+                continue;
+            }
+            axis.put("showLabel", cate).put("lineWidth", 0).put("gridLineWidth", 0).put("enableTick", false).put("title", JSONObject.create().put("enabled", false));
+        }
     }
 
     protected String getCoordXKey(){
@@ -270,14 +289,16 @@ public abstract class VanCartesianWidget extends VanChartWidget {
     }
 
     protected JSONArray parseCategoryAxis(JSONObject settings, Calculator calculator) throws JSONException{
+        JSONObject labelStyle = settings.optJSONObject("catLabelStyle");
 
         JSONObject category = JSONObject.create();
 
         category
                 .put("type", "category").put("position", "bottom")
-                .put("title", JSONObject.create().put("enabled", settings.optJSONObject("catShowTitle")).put("style", settings.optJSONObject("catTitleStyle")).put("text", settings.optString("catTitle")))
+                .put("title", JSONObject.create().put("enabled", settings.optBoolean("catShowTitle")).put("style", settings.optJSONObject("catTitleStyle")).put("text", settings.optString("catTitle")))
                 .put("showLabel", settings.optBoolean("catShowLabel") && !settings.optBoolean("showDataTable"))
-                .put("labelStyle", settings.optJSONObject("catLabelStyle"))
+                .put("labelStyle", labelStyle.optJSONObject("textStyle"))
+                .put("labelRotation", labelStyle.optInt("textDirection"))
                 .put("lineColor", settings.optString("catLineColor"))
                 .put("gridLineWidth", settings.optBoolean("vShowGridLine") ? 1 : 0)
                 .put("gridLineColor", settings.optString("vGridLineColor"));
