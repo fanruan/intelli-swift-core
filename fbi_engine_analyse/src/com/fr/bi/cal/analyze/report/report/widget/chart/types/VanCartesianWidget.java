@@ -225,7 +225,7 @@ public abstract class VanCartesianWidget extends VanChartWidget {
         options.put("dataSheet", JSONObject.create().put("enabled", settings.optBoolean("showDataTable"))
                 .put("style", this.defaultFont()).put("borderColor", "#000000").put("borderWidth", 1));
 
-        if(settings.optBoolean("showZoom")){
+        if(settings.optBoolean("showZoom") && !settings.optBoolean("miniMode")){
             options.put("zoom", JSONObject.create().put("zoomTool", JSONObject.create().put("enabled", true)).put("zoomType", ""));
         }
 
@@ -255,10 +255,29 @@ public abstract class VanCartesianWidget extends VanChartWidget {
             }
         }
 
-        options.put(this.getCoordXKey(), this.parseCategoryAxis(settings, calculator));
-        options.put(this.getCoordYKey(), this.parseValueAxis(settings, calculator));
+        JSONArray cateArray = this.parseCategoryAxis(settings, calculator);
+        JSONArray valueArray = this.parseValueAxis(settings, calculator);
+        if(settings.optBoolean("miniMode", false)){
+            checkMIniMode(cateArray, true);
+            checkMIniMode(valueArray, false);
+        }
+        options.put(this.getCoordXKey(), cateArray);
+        options.put(this.getCoordYKey(), valueArray);
 
         return options;
+    }
+
+    private void checkMIniMode(JSONArray array, boolean cate) throws JSONException{
+        if(array == null){
+            return;
+        }
+        for(int i = 0, len = array.length(); i < len; i++){
+            JSONObject axis = array.optJSONObject(i);
+            if(axis == null){
+                continue;
+            }
+            axis.put("showLabel", cate).put("lineWidth", 0).put("gridLineWidth", 0).put("enableTick", false).put("title", JSONObject.create().put("enabled", false));
+        }
     }
 
     protected String getCoordXKey(){
