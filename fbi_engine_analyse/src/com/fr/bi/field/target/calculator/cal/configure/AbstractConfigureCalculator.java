@@ -48,6 +48,8 @@ public abstract class AbstractConfigureCalculator extends CalCalculator {
         return deep;
     }
 
+
+
     protected int getCalDeep(BICrossNode rank_node) {
         int deep = 0;
         BICrossNode node = rank_node;
