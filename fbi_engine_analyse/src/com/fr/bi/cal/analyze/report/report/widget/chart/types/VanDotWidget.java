@@ -389,11 +389,11 @@ public class VanDotWidget extends VanCartesianWidget{
 
         tplMap.put("key1X", "(X)");
         tplMap.put("key2X", "x");
-        addFormat2Map(tplMap, ids, 0, "formatX");
+        addFormat2Map(tplMap, ids, 1, "formatX");
 
         tplMap.put("key1Y", "(Y)");
         tplMap.put("key2Y", "y");
-        addFormat2Map(tplMap, ids, 1, "formatY");
+        addFormat2Map(tplMap, ids, 0, "formatY");
 
         tplMap.put("key1SIZE", "(" + getLocText("BI-Basic_Value") +")");
         tplMap.put("key2SIZE", "size");
