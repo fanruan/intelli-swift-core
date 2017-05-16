@@ -295,7 +295,7 @@ public abstract class VanCartesianWidget extends VanChartWidget {
 
         category
                 .put("type", "category").put("position", "bottom")
-                .put("title", JSONObject.create().put("enabled", settings.optJSONObject("catShowTitle")).put("style", settings.optJSONObject("catTitleStyle")).put("text", settings.optString("catTitle")))
+                .put("title", JSONObject.create().put("enabled", settings.optBoolean("catShowTitle")).put("style", settings.optJSONObject("catTitleStyle")).put("text", settings.optString("catTitle")))
                 .put("showLabel", settings.optBoolean("catShowLabel") && !settings.optBoolean("showDataTable"))
                 .put("labelStyle", labelStyle.optJSONObject("textStyle"))
                 .put("labelRotation", labelStyle.optInt("textDirection"))
