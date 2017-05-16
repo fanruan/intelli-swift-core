@@ -270,6 +270,7 @@ public abstract class VanCartesianWidget extends VanChartWidget {
     }
 
     protected JSONArray parseCategoryAxis(JSONObject settings, Calculator calculator) throws JSONException{
+        JSONObject labelStyle = settings.optJSONObject("catLabelStyle");
 
         JSONObject category = JSONObject.create();
 
@@ -277,7 +278,8 @@ public abstract class VanCartesianWidget extends VanChartWidget {
                 .put("type", "category").put("position", "bottom")
                 .put("title", JSONObject.create().put("enabled", settings.optJSONObject("catShowTitle")).put("style", settings.optJSONObject("catTitleStyle")).put("text", settings.optString("catTitle")))
                 .put("showLabel", settings.optBoolean("catShowLabel") && !settings.optBoolean("showDataTable"))
-                .put("labelStyle", settings.optJSONObject("catLabelStyle"))
+                .put("labelStyle", labelStyle.optJSONObject("textStyle"))
+                .put("labelRotation", labelStyle.optInt("textDirection"))
                 .put("lineColor", settings.optString("catLineColor"))
                 .put("gridLineWidth", settings.optBoolean("vShowGridLine") ? 1 : 0)
                 .put("gridLineColor", settings.optString("vGridLineColor"));
