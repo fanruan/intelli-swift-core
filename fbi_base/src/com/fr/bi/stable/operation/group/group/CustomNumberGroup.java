@@ -29,9 +29,10 @@ public class CustomNumberGroup extends AbstractGroup {
 
     @Override
     public ICubeColumnIndexReader createGroupedMap(ICubeColumnIndexReader baseMap) {
-        if (isNullGroup()) {
-            return baseMap;
-        }
+        //BI-5106 自定义分组没有任何分组的时候报错
+//        if (isNullGroup()) {
+//            return baseMap;
+//        }
         CubeLinkedHashMap newMap = new CubeLinkedHashMap();
         CubeLinkedHashMap ungroupMap = new CubeLinkedHashMap();
         GroupValueIndexOrHelper[] newMapArray = new GroupValueIndexOrHelper[groups.length];
