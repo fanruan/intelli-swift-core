@@ -226,7 +226,7 @@ public abstract class VanCartesianWidget extends VanChartWidget {
                 .put("style", this.defaultFont()).put("borderColor", "#000000").put("borderWidth", 1));
 
         if(settings.optBoolean("showZoom")){
-            options.put("zoom", JSONObject.create().put("zoomTool", JSONObject.create().put("enabled", true)));
+            options.put("zoom", JSONObject.create().put("zoomTool", JSONObject.create().put("enabled", true)).put("zoomType", ""));
         }
 
         Calculator calculator = Calculator.createCalculator();
