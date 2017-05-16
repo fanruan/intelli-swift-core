@@ -292,10 +292,11 @@ public abstract class VanCartesianWidget extends VanChartWidget {
         JSONObject labelStyle = settings.optJSONObject("catLabelStyle");
 
         JSONObject category = JSONObject.create();
+        boolean enabled = settings.optBoolean("catShowTitle");
 
         category
                 .put("type", "category").put("position", "bottom")
-                .put("title", JSONObject.create().put("enabled", settings.optBoolean("catShowTitle")).put("style", settings.optJSONObject("catTitleStyle")).put("text", settings.optString("catTitle")))
+                .put("title", JSONObject.create().put("style", settings.optJSONObject("catTitleStyle")).put("text", enabled ?settings.optString("catTitle") : StringUtils.EMPTY))
                 .put("showLabel", settings.optBoolean("catShowLabel") && !settings.optBoolean("showDataTable"))
                 .put("labelStyle", labelStyle.optJSONObject("textStyle"))
                 .put("labelRotation", labelStyle.optInt("textDirection"))
