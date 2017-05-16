@@ -33,7 +33,7 @@ public abstract class VanCartesianWidget extends VanChartWidget {
     private static final String TRANS = "rgba(0,0,0,0)";
 
     private static final int VERTICAL = 90;
-    private static final String imgTemplate = "function(){return \"<img src = %s>\"}";
+    private static final String IMG_TMP = "function(){return \"<img src = %s>\"}";
 
     protected JSONObject populateDefaultSettings() throws JSONException{
         JSONObject settings = super.populateDefaultSettings();
@@ -372,7 +372,7 @@ public abstract class VanCartesianWidget extends VanChartWidget {
                                 if(imgStyle.has("src")){
                                     String url = imgStyle.optString("src");
                                     BufferedImage img = IOUtils.readImage(this.getLocalImagePath(url));
-                                    customDataLabels.put("formatter", String.format(imgTemplate, this.getCompleteImageUrl(url))).put("useHtml", true)
+                                    customDataLabels.put("formatter", String.format(IMG_TMP, this.getCompleteImageUrl(url))).put("useHtml", true)
                                     .put("labelWidth", img.getWidth()).put("labelHeight", img.getHeight());
                                 }
                                 datum.put("dataLabels", customDataLabels);
