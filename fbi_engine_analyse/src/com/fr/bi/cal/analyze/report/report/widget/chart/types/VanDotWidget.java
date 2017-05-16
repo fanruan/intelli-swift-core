@@ -403,7 +403,7 @@ public class VanDotWidget extends VanCartesianWidget{
         try {
             formatter = TemplateUtils.renderParameter4Tpl(getTooltipTpl(), tplMap);
         } catch (Exception e) {
-            FRLogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(),e);
         }
 
         JSONArray series = options.optJSONArray("series");
