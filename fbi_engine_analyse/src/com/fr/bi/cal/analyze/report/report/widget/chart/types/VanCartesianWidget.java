@@ -223,11 +223,8 @@ public abstract class VanCartesianWidget extends VanChartWidget {
     }
 
     public  JSONObject createOptions(JSONObject globalStyle, JSONObject data) throws Exception{
-
         JSONObject settings = this.getDetailChartSetting();
-
         JSONObject options = super.createOptions(globalStyle, data);
-
         options.put("dataSheet", JSONObject.create().put("enabled", settings.optBoolean("showDataTable"))
                 .put("style", this.defaultFont()).put("borderColor", "#000000").put("borderWidth", 1));
 
