@@ -17,15 +17,25 @@ public class VanCompareBarWidget extends VanCompareColumnWidget{
     protected void dealYAxisDiffDefaultSettings(JSONObject settings) throws JSONException {
     }
 
-    protected void makeSeriesDataInvert(JSONObject ser) throws JSONException{
-        ser.put("yAxis", 0);
+    protected JSONArray dealSeriesWithEmptyAxis(JSONArray series) throws JSONException{
+        for(int i = 0, len = series.length(); i < len; i++){
+            JSONObject ser = series.getJSONObject(i);
 
-        JSONArray datas = ser.optJSONArray("data");
-        String valueKey = this.valueKey();
-        for (int i = 0, len = datas.length(); i < len; i++) {
-            JSONObject point = datas.getJSONObject(i);
-            point.put(valueKey, -point.optDouble(valueKey));
+            int yAxisIndex = ser.optInt("yAxis");
+            if(yAxisIndex == 0){
+                ser.put("xAxis", 1);
+                JSONArray datas = ser.optJSONArray("data");
+                String valueKey = this.valueKey();
+                for (int j = 0, size = datas.length(); j < size; j++) {
+                    JSONObject point = datas.getJSONObject(j);
+                    point.put(valueKey, -point.optDouble(valueKey));
+                }
+            }
+
+            ser.put("yAxis", 0);
         }
+
+        return series;
     }
 
     protected String valueFormatFunc(BISummaryTarget dimension, boolean isTooltip) {
@@ -34,7 +44,7 @@ public class VanCompareBarWidget extends VanCompareColumnWidget{
 
         String format = this.valueFormat(dimension, isTooltip);
 
-        return index == 1 ? String.format("function(){return BI.contentFormat(-arguments[0], \"%s\")}", format)
+        return index == 0 ? String.format("function(){return BI.contentFormat(-arguments[0], \"%s\")}", format)
                 : String.format("function(){return BI.contentFormat(arguments[0], \"%s\")}", format);
     }
 
