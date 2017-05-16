@@ -334,6 +334,10 @@ public class VanDotWidget extends VanCartesianWidget{
 
         JSONObject baseAxis = this.parseRightValueAxis(settings, calculator).put("position", "bottom").put("type", "value");
 
+        if (baseAxis.has("title")) {
+            baseAxis.optJSONObject("title").put("rotation", 0);
+        }
+
         return JSONArray.create().put(baseAxis);
     }
 
