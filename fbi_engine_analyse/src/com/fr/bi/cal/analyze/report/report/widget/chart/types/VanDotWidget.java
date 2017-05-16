@@ -158,6 +158,7 @@ public class VanDotWidget extends VanCartesianWidget{
             return JSONObject.create();
         }
         double max = style.getJSONObject(count - 1).optJSONObject("range").optDouble("max");
+        double min = style.getJSONObject(0).optJSONObject("range").optDouble("min");
 
         for(int i = 0, len = style.length(); i < len; i++){
             JSONObject config = style.getJSONObject(i);
@@ -171,7 +172,7 @@ public class VanDotWidget extends VanCartesianWidget{
 
         }
 
-        return JSONObject.create().put("color", colors);
+        return JSONObject.create().put("color", colors).put("min", min).put("max", max);
     }
 
     protected String valueLabelKey() {
