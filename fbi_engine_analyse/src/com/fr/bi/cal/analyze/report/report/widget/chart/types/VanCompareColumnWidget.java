@@ -66,8 +66,8 @@ public class VanCompareColumnWidget extends VanColumnWidget{
     }
 
     @Override
-    protected JSONArray parseCategoryAxis(JSONObject settings, Calculator calculator) throws JSONException {
-        JSONArray array = super.parseCategoryAxis(settings, calculator);
+    protected JSONArray parseCategoryAxis(JSONObject settings) throws JSONException {
+        JSONArray array = super.parseCategoryAxis(settings);
         array.put(createEmptyCategoryAxis(settings));
         return array;
     }

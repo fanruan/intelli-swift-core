@@ -14,6 +14,7 @@ import com.fr.json.JSONArray;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
 import com.fr.script.Calculator;
+import com.fr.stable.StableUtils;
 import com.fr.stable.StringUtils;
 
 import java.awt.image.BufferedImage;
@@ -234,34 +235,8 @@ public abstract class VanCartesianWidget extends VanChartWidget {
             options.put("zoom", JSONObject.create().put("zoomTool", JSONObject.create().put("enabled", !isInverted)).put("zoomType", ""));
         }
 
-        Calculator calculator = Calculator.createCalculator();
-        String[] ids = this.getUsedTargetID();
-        for(int i = 0, len = ids.length; i < len; i++){
-            String id = ids[i];
-            Double[] values = this.getValuesByID(id);
-            if(values.length > 0){
-                double min = Double.MAX_VALUE, max = -min, average = 0, count = values.length;
-                for(int j = 0; j < count; j++){
-                    double value = values[j].doubleValue();
-                    min = Math.min(min, value);
-                    max = Math.max(max, value);
-                    average += value;
-                }
-                average /= count;
-
-                //放参数
-                HashMap map = new HashMap();
-                map.put(String.format("%s0",id), max);
-                map.put(String.format("%s1",id), min);
-                map.put(String.format("%s2",id), average);
-
-                ParameterMapNameSpace space = ParameterMapNameSpace.create(map);
-                calculator.pushNameSpace(space);
-            }
-        }
-
-        JSONArray cateArray = this.parseCategoryAxis(settings, calculator);
-        JSONArray valueArray = this.parseValueAxis(settings, calculator);
+        JSONArray cateArray = this.parseCategoryAxis(settings);
+        JSONArray valueArray = this.parseValueAxis(settings);
         if(settings.optBoolean("miniMode", false)){
             checkMIniMode(cateArray, true);
             checkMIniMode(valueArray, false);
@@ -413,7 +388,7 @@ public abstract class VanCartesianWidget extends VanChartWidget {
         return "yAxis";
     }
 
-    protected JSONArray parseCategoryAxis(JSONObject settings, Calculator calculator) throws JSONException{
+    protected JSONArray parseCategoryAxis(JSONObject settings) throws JSONException{
         JSONObject labelStyle = settings.optJSONObject("catLabelStyle");
 
         JSONObject category = JSONObject.create();
@@ -431,20 +406,20 @@ public abstract class VanCartesianWidget extends VanChartWidget {
         return JSONArray.create().put(category);
     }
 
-    protected JSONArray parseValueAxis(JSONObject settings, Calculator calculator) throws JSONException{
+    protected JSONArray parseValueAxis(JSONObject settings) throws JSONException{
 
         JSONArray axis = JSONArray.create();
 
-        axis.put(this.parseLeftValueAxis(settings, calculator));
+        axis.put(this.parseLeftValueAxis(settings));
 
-        axis.put(this.parseRightValueAxis(settings, calculator));
+        axis.put(this.parseRightValueAxis(settings));
 
-        axis.put(this.parseThirdValueAxis(settings, calculator));
+        axis.put(this.parseThirdValueAxis(settings));
 
         return axis;
     }
 
-    protected JSONObject parseLeftValueAxis(JSONObject settings, Calculator calculator) throws JSONException{
+    protected JSONObject parseLeftValueAxis(JSONObject settings) throws JSONException{
 
         JSONObject labelStyle = settings.optJSONObject("leftYLabelStyle");
         String axisTitle = this.axisTitleUnit(settings.optInt("leftYNumberLevel"), settings.optString("leftYUnit"));
@@ -467,7 +442,7 @@ public abstract class VanCartesianWidget extends VanChartWidget {
                 .put("gridLineColor", settings.optString("hGridLineColor"));
 
         if(settings.optBoolean("leftYShowCustomScale")){
-            this.putMinMaxInterval(left, settings.optJSONObject("leftYCustomScale"), calculator);
+            this.putMinMaxInterval(left, settings.optJSONObject("leftYCustomScale"));
         }
 
         left.put("plotLines", this.parsePlotLines(BIReportConstant.REGION.TARGET1));
@@ -475,7 +450,7 @@ public abstract class VanCartesianWidget extends VanChartWidget {
         return left;
     }
 
-    protected JSONObject parseRightValueAxis(JSONObject settings, Calculator calculator) throws JSONException{
+    protected JSONObject parseRightValueAxis(JSONObject settings) throws JSONException{
 
         String axisTitle = this.axisTitleUnit(settings.optInt("rightYNumberLevel"), settings.optString("rightYUnit"));
         boolean enabled = settings.optBoolean("rightYShowTitle");
@@ -495,7 +470,7 @@ public abstract class VanCartesianWidget extends VanChartWidget {
                 .put("position", "right").put("reversed", settings.optBoolean("rightYReverse", false));
 
         if(settings.optBoolean("rightYShowCustomScale")){
-            this.putMinMaxInterval(right, settings.optJSONObject("rightYCustomScale"), calculator);
+            this.putMinMaxInterval(right, settings.optJSONObject("rightYCustomScale"));
         }
 
         right.put("plotLines", this.parsePlotLines(BIReportConstant.REGION.TARGET2));
@@ -503,7 +478,7 @@ public abstract class VanCartesianWidget extends VanChartWidget {
         return right;
     }
 
-    private JSONObject parseThirdValueAxis(JSONObject settings, Calculator calculator) throws JSONException{
+    private JSONObject parseThirdValueAxis(JSONObject settings) throws JSONException{
         String axisTitle = this.axisTitleUnit(settings.optInt("rightY2NumberLevel"), settings.optString("rightY2Unit"));
         boolean enabled = settings.optBoolean("rightY2ShowTitle");
         JSONObject labelStyle = settings.optJSONObject("rightY2LabelStyle");
@@ -522,7 +497,7 @@ public abstract class VanCartesianWidget extends VanChartWidget {
                 .put("position", "right").put("reversed", settings.optBoolean("rightY2Reverse", false));
 
         if(settings.optBoolean("rightY2ShowCustomScale")){
-            this.putMinMaxInterval(right2, settings.optJSONObject("rightY2CustomScale"), calculator);
+            this.putMinMaxInterval(right2, settings.optJSONObject("rightY2CustomScale"));
         }
 
         right2.put("plotLines", this.parsePlotLines(BIReportConstant.REGION.TARGET2));
@@ -567,45 +542,29 @@ public abstract class VanCartesianWidget extends VanChartWidget {
         return plotLines;
     }
 
-    private void putMinMaxInterval(JSONObject axis, JSONObject scale, Calculator calculator) throws JSONException{
+    private void putMinMaxInterval(JSONObject axis, JSONObject scale) throws JSONException{
 
         String min = StringUtils.EMPTY, max = StringUtils.EMPTY, interval = StringUtils.EMPTY;
         if(scale.has("minScale")) {
-            min = scale.optJSONObject("minScale").optString("formula");
+            min = scale.optString("minScale");
         }
         if(scale.has("maxScale")) {
-            max = scale.optJSONObject("maxScale").optString("formula");
+            max = scale.optString("maxScale");
         }
         if(scale.has("interval")) {
-            interval = scale.optJSONObject("interval").optString("formula");
+            interval = scale.optString("interval");
         }
 
         if(StringUtils.isNotBlank(min)){
-            axis.put("min", this.niceAxisValue(min, calculator));
+            axis.put("min", StableUtils.string2Number(min).doubleValue());
         }
 
         if(StringUtils.isNotBlank(max)){
-            axis.put("max", this.niceAxisValue(max, calculator));
+            axis.put("max", StableUtils.string2Number(max).doubleValue());
         }
 
         if(StringUtils.isNotBlank(interval)){
-            axis.put("tickInterval", this.niceAxisValue(interval, calculator));
+            axis.put("tickInterval", StableUtils.string2Number(interval).doubleValue());
         }
     }
-
-    //有参数的时候，需要计算出一个相对nice的值
-    //没有的时候直接返回计算结果
-    private double niceAxisValue(String formula, Calculator calculator){
-        double value = 0;
-        try {
-            formula = formula.replaceAll("[{}]", StringUtils.EMPTY);
-            value = Double.parseDouble(calculator.eval(new Formula(formula)).toString());
-
-        }catch (Exception e){
-            BILoggerFactory.getLogger().error(e.getMessage(),e);
-        }
-
-        return value;
-    }
-
 }
