@@ -17,7 +17,7 @@ public class BIRankConfiguredCalculateTarget extends BIConfiguredCalculateTarget
         super.parseJSON(jo, userId);
         if (jo.has("_src")) {
             JSONObject srcJo = jo.optJSONObject("_src");
-            this.rank_type = srcJo.optJSONObject("expression").optInt("rank_type");
+            this.rank_type = srcJo.optJSONObject("expression").optInt("rankType");
         }
     }
 

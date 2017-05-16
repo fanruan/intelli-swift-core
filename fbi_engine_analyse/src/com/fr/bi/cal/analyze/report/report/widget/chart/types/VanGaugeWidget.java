@@ -63,6 +63,11 @@ public class VanGaugeWidget extends VanCartesianWidget{
 
         plotOptions.put("valueLabel", valueLabel).put("seriesLabel", seriesLabel).put("percentageLabel", percentageLabel);
 
+        if(settings.optInt("styleRadio", AUTO) != AUTO){
+            JSONArray dashboardStyles = settings.optJSONArray("dashboardStyles");
+            plotOptions.put("bands", this.mapStyleToRange(dashboardStyles));
+        }
+
         return plotOptions;
     }
 
