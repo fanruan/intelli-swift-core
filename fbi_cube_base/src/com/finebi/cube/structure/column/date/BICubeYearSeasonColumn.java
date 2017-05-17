@@ -2,10 +2,10 @@ package com.finebi.cube.structure.column.date;
 
 import com.finebi.cube.data.ICubeResourceDiscovery;
 import com.finebi.cube.location.ICubeResourceLocation;
-import com.finebi.cube.structure.column.BICubeDoubleColumn;
 import com.finebi.cube.structure.column.BICubeStringColumn;
 import com.fr.bi.base.ValueConverterFactory;
 import com.fr.bi.stable.constant.DateConstant;
+import com.fr.stable.StringUtils;
 
 /**
  * Created by wang on 2017/3/28.
@@ -28,5 +28,15 @@ public class BICubeYearSeasonColumn extends BICubeDateSubColumn<String> {
 
     public String getGroupValue(int position) {
         return ((BICubeStringColumn)selfColumnEntity).getGroupValue(position);
+    }
+
+    /**
+     * 获取空值表示对象
+     *
+     * @return
+     */
+    @Override
+    public String getCubeNullValue() {
+        return StringUtils.EMPTY;
     }
 }

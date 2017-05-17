@@ -43,8 +43,7 @@ public class BICubeIntegerGroupData extends BICubeGroupData<Integer> {
 
     @Override
     public Integer getGroupObjectValueByPosition(int index) {
-        int value = getGroupValueByPosition(index);
-        return value == NIOConstant.INTEGER.NULL_VALUE ? null : value;
+        return getGroupValueByPosition(index);
     }
 
 }

@@ -16,6 +16,7 @@ import com.fr.bi.stable.constant.BIJSONConstant;
 import com.fr.bi.stable.data.db.*;
 import com.fr.bi.stable.engine.index.key.IndexKey;
 import com.fr.bi.stable.exception.FieldNameDuplicateException;
+import com.fr.bi.stable.utils.BICollectionUtils;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
 import com.fr.general.ComparatorUtils;
 import com.fr.json.JSONArray;
@@ -160,7 +161,7 @@ public abstract class AbstractTableSource implements CubeTableSource {
         Map<BIKey, ICubeFieldSource> map = new ConcurrentHashMap<BIKey, ICubeFieldSource>();
         map.putAll(tableIndex.getColumns());
         ArrayList<ICubeFieldSource> fieldsCube = new ArrayList<ICubeFieldSource>();
-//        将内存中的cube的fields按照前端的fields排序，需要考虑数据库字段增加删除的情况
+        //将内存中的cube的fields按照前端的fields排序，需要考虑数据库字段增加删除的情况
         for (String fieldName : fields) {
             IndexKey key = new IndexKey(fieldName);
             if (map.containsKey(key)) {
@@ -184,8 +185,10 @@ public abstract class AbstractTableSource implements CubeTableSource {
             int count = Math.min(tableIndex.getRowCount(), BIBaseConstant.PREVIEW_COUNT);
             for (int i = 0; i < count; i++) {
                 if (remove.indexOf(i) < 0) {
-                    values.put(tableIndex.getColumnDetailReader(new IndexKey(column.getFieldName())).getValue(i));
-                }
+                    // 从底层获取的数据传送给前端展示还需要做一下空值处理
+                    Object v = tableIndex.getColumnDetailReader(new IndexKey(column.getFieldName())).getValue(i);
+                    v = BICollectionUtils.cubeValueToWebDisplay(v);
+                    values.put(v);                }
             }
         }
         return new JSONObject().put(BIJSONConstant.JSON_KEYS.FIELDS, allFieldNamesJo).put(BIJSONConstant.JSON_KEYS.VALUE, fieldValues).put(BIJSONConstant.JSON_KEYS.TYPE, fieldTypes);
