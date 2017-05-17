@@ -12,8 +12,6 @@ import java.util.List;
 public interface ITableItem extends JSONCreator {
     void setStyles(ITableStyle style);
 
-//    void setType(String type);
-
     String getDId();
 
     String getValue();
@@ -41,8 +39,6 @@ public interface ITableItem extends JSONCreator {
     void setChildren(List<ITableItem> children);
 
     boolean hasValues();
-
-//    String getType();
 
     String getdId();
 

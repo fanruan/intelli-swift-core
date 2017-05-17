@@ -21,6 +21,30 @@ public abstract class SummaryOfAllCalculator extends AbstractConfigureCalculator
         super(target, calTargetKey, start_group);
     }
 
+    public BINode getCalculatedRootNode(BINode rank_node) {
+        BINode currentNode;
+        BINode maxDeepNode = rank_node;
+        do {
+            currentNode = maxDeepNode;
+            maxDeepNode = getMaxDeepNode(currentNode);
+        } while (maxDeepNode.getDeep() > 1);
+        return currentNode;
+
+    }
+
+    public BINode getMaxDeepNode(BINode rank_node) {
+        BINode max = null;
+        int maxDeep = 0;
+        for (BINode node : rank_node.getChilds()) {
+            int nodeDeep = node.getDeep();
+            if (nodeDeep > maxDeep) {
+                max = node;
+                maxDeep = nodeDeep;
+            }
+        }
+        return max;
+    }
+
     @Override
     public void calCalculateTarget(BINode node) {
         if (calTargetKey == null) {
@@ -28,6 +52,7 @@ public abstract class SummaryOfAllCalculator extends AbstractConfigureCalculator
         }
         //获得当前node的纬度数
         int deep = getCalDeep(node);
+//         deep = 2;
         BINode tempNode = node;
         //从第几个纬度开始计算
         int calDeep = start_group == 0 ? 0 : deep - start_group;
@@ -37,10 +62,13 @@ public abstract class SummaryOfAllCalculator extends AbstractConfigureCalculator
             }
             tempNode = tempNode.getFirstChild();
         }
+        tempNode = getCalculatedRootNode(node);
         List nodeList = new ArrayList();
         BINode cursor_node = tempNode;
         while (cursor_node != null) {
-            nodeList.add(createNodeDealWith(cursor_node));
+            if (shouldCalculate(cursor_node)) {
+                nodeList.add(createNodeDealWith(cursor_node));
+            }
             cursor_node = cursor_node.getSibling();
         }
         try {
@@ -48,6 +76,16 @@ public abstract class SummaryOfAllCalculator extends AbstractConfigureCalculator
         } catch (InterruptedException e) {
             FRContext.getLogger().error(e.getMessage(), e);
         }
+    }
+
+    /**
+     * 子节点为空，不用进行计算指标计算。
+     * BI-5299
+     * @param cursor_node
+     * @return
+     */
+    public boolean shouldCalculate(BINode cursor_node) {
+        return !cursor_node.getChilds().isEmpty();
     }
 
     public abstract Callable createNodeDealWith(BINode node);
@@ -105,7 +143,6 @@ public abstract class SummaryOfAllCalculator extends AbstractConfigureCalculator
         }
         return temp_node;
     }
-
 
 
 }

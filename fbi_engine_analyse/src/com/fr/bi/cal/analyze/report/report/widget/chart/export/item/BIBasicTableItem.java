@@ -14,14 +14,13 @@ import java.util.List;
 public class BIBasicTableItem implements ITableItem {
 
     private String dId;
-    private String value;
+    private String text;
     private List<ITableItem> values;
     private boolean needExpand;
     private boolean isExpanded;
     protected List<ITableItem> children;
     private ITableStyle styles;
-//    private String type;
-    private String text;
+    private String value;
 
     public BIBasicTableItem() {
     }
@@ -32,8 +31,8 @@ public class BIBasicTableItem implements ITableItem {
     }
 
     @Override
-    public void setValue(String value) {
-        this.value = value;
+    public void setText(String text) {
+        this.text = text;
     }
 
     @Override
@@ -72,19 +71,14 @@ public class BIBasicTableItem implements ITableItem {
         this.styles = styles;
     }
 
-//    @Override
-//    public void setType(String type) {
-//        this.type = type;
-//    }
-
     @Override
     public String getDId() {
         return dId;
     }
 
     @Override
-    public String getValue() {
-        return value;
+    public String getText() {
+        return text;
     }
 
     @Override
@@ -106,11 +100,6 @@ public class BIBasicTableItem implements ITableItem {
         return children;
     }
 
-//    @Override
-//    public String getType() {
-//        return type;
-//    }
-
     @Override
     public String getdId() {
         return dId;
@@ -123,13 +112,13 @@ public class BIBasicTableItem implements ITableItem {
         this.dId = dId;
     }
 
-    public String getText() {
-        return text;
+    public String getValue() {
+        return value;
     }
 
     @Override
-    public void setText(String text) {
-        this.text=text;
+    public void setValue(String value) {
+        this.value = value;
     }
 
     @Override
@@ -138,11 +127,8 @@ public class BIBasicTableItem implements ITableItem {
             dId = jo.optString("dId");
         }
         if (jo.has("text")) {
-            value = jo.optString("text");
+            text = jo.optString("text");
         }
-//        if (jo.has("type")) {
-//            type = jo.optString("type");
-//        }
         if (jo.has("values")) {
             if (null==values){
                 values=new ArrayList<ITableItem>();
@@ -157,9 +143,9 @@ public class BIBasicTableItem implements ITableItem {
             }
         }
 
-//        if (jo.has("value")) {
-//            value = jo.optString("value");
-//        }
+        if (jo.has("value")) {
+            value = jo.optString("value");
+        }
 
         if (jo.has("children")) {
             children = new ArrayList<ITableItem>();
@@ -184,8 +170,7 @@ public class BIBasicTableItem implements ITableItem {
         }
         jo.put("dId", dId);
         jo.put("styles", null == styles ? new JSONObject() : styles.createJSON());
-        jo.put("text", value);
-//        jo.put("type", type);
+        jo.put("text", text);
         if (null != this.values && values.size() > 0) {
             JSONArray TempValues = new JSONArray();
             for (ITableItem item : this.values) {
@@ -194,7 +179,7 @@ public class BIBasicTableItem implements ITableItem {
             jo.put("values", TempValues);
         }
 
-//        jo.put("value", value);
+        jo.put("value", value);
         return jo;
     }
 

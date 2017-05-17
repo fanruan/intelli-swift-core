@@ -331,16 +331,20 @@ public class VanDotWidget extends VanCartesianWidget{
         return series;
     }
 
-    protected JSONArray parseCategoryAxis(JSONObject settings, Calculator calculator) throws JSONException{
+    protected JSONArray parseCategoryAxis(JSONObject settings) throws JSONException{
 
-        JSONObject baseAxis = this.parseRightValueAxis(settings, calculator).put("position", "bottom").put("type", "value");
+        JSONObject baseAxis = this.parseRightValueAxis(settings).put("position", "bottom").put("type", "value");
+
+        if (baseAxis.has("title")) {
+            baseAxis.optJSONObject("title").put("rotation", 0);
+        }
 
         return JSONArray.create().put(baseAxis);
     }
 
-    protected JSONArray parseValueAxis(JSONObject settings, Calculator calculator) throws JSONException{
+    protected JSONArray parseValueAxis(JSONObject settings) throws JSONException{
 
-        return JSONArray.create().put(this.parseLeftValueAxis(settings, calculator));
+        return JSONArray.create().put(this.parseLeftValueAxis(settings));
     }
 
     public String getSeriesType(String dimensionID){
@@ -403,7 +407,7 @@ public class VanDotWidget extends VanCartesianWidget{
         try {
             formatter = TemplateUtils.renderParameter4Tpl(getTooltipTpl(), tplMap);
         } catch (Exception e) {
-            FRLogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(),e);
         }
 
         JSONArray series = options.optJSONArray("series");
