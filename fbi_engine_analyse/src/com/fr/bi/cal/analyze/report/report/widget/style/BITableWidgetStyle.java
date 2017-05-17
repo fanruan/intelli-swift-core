@@ -14,9 +14,9 @@ public class BITableWidgetStyle implements IWidgetStyle {
     private int rowHeight;
     private int maxRow;
     private boolean showRowTotal;
-    private boolean showColTotal;
     private String themeColor;
     private int tableStyleGroup;
+    private boolean showColTotal;
 
     public BITableWidgetStyle() {
         themeColor = BIStyleConstant.DEFAULT_CHART_SETTING.THEME_COLOR;

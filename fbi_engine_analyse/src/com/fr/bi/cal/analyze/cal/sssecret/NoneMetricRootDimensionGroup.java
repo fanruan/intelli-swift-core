@@ -39,7 +39,7 @@ public class NoneMetricRootDimensionGroup extends RootDimensionGroup {
     //过滤的地方缓存下NoneDimensionCalculator，要不loadgroup次数太多了，硬盘渣的情况下判断cube exist 太卡。
     private Map<CachedNoneDimensionCalculatorKey, DimensionCalculator> noneDimensionCalculatorMap = new HashMap<CachedNoneDimensionCalculatorKey, DimensionCalculator>();
 
-    protected NoneMetricRootDimensionGroup(){
+    protected NoneMetricRootDimensionGroup() {
 
     }
 
@@ -96,7 +96,7 @@ public class NoneMetricRootDimensionGroup extends RootDimensionGroup {
             } else if (ckp instanceof StringDimensionCalculator) {
                 Set currentSet = ((StringDimensionCalculator) ckp).createFilterValueSet((String) value, session.getLoader());
                 StringINFilterValue stf = new StringINFilterValue(currentSet);
-                BITableRelationPath firstPath  = getBiTableRelationPath(ck, ckp);
+                BITableRelationPath firstPath = getBiTableRelationPath(ck, ckp);
                 if (firstPath == null) {
                     continue;
                 }
@@ -104,11 +104,11 @@ public class NoneMetricRootDimensionGroup extends RootDimensionGroup {
                         ck.getField().getTableBelongTo(), session.getLoader(), session.getUserId());
                 gvi = gvi.AND(pgvi);
             } else if (ckp instanceof NumberDimensionCalculator) {
-                BITableRelationPath firstPath  = getBiTableRelationPath(ck, ckp);
+                BITableRelationPath firstPath = getBiTableRelationPath(ck, ckp);
                 if (firstPath == null) {
                     continue;
                 }
-                GroupValueIndex pgvi = getCachedNumberDimensionCalculator(i, deep, (NumberDimensionCalculator)ckp, BIConfUtils.convert2TableSourceRelation(firstPath.getAllRelations())).createNoneSortGroupValueMapGetter(ck.getField().getTableBelongTo(), session.getLoader()).getIndex(value);
+                GroupValueIndex pgvi = getCachedNumberDimensionCalculator(i, deep, (NumberDimensionCalculator) ckp, BIConfUtils.convert2TableSourceRelation(firstPath.getAllRelations())).createNoneSortGroupValueMapGetter(ck.getField().getTableBelongTo(), session.getLoader()).getIndex(value);
                 gvi = gvi.AND(pgvi);
             }
         }
@@ -149,7 +149,7 @@ public class NoneMetricRootDimensionGroup extends RootDimensionGroup {
          */
         if (value instanceof Number) {
             currentSet.add(BIDateValueFactory.createDateValue(ckp.getGroup().getType(), (Number) value));
-        } else {
+        }else {
             currentSet.add(null);
         }
 
@@ -176,24 +176,24 @@ public class NoneMetricRootDimensionGroup extends RootDimensionGroup {
     }
 
     //这个是单线程执行的
-    private DimensionCalculator getCachedNoneDimensionCalculator(int pIndex, int index, BusinessField field, List<BITableSourceRelation> relation){
+    private DimensionCalculator getCachedNoneDimensionCalculator(int pIndex, int index, BusinessField field, List<BITableSourceRelation> relation) {
         CachedNoneDimensionCalculatorKey key = new CachedNoneDimensionCalculatorKey(pIndex, index);
-        if (!noneDimensionCalculatorMap.containsKey(key)){
+        if (!noneDimensionCalculatorMap.containsKey(key)) {
             noneDimensionCalculatorMap.put(key, new CachedNoneDimensionCalculator(field, relation));
         }
         return noneDimensionCalculatorMap.get(key);
     }
 
     //这个是单线程执行的
-    private DimensionCalculator getCachedNumberDimensionCalculator(int pIndex, int index, NumberDimensionCalculator numberDimensionCalculator, List<BITableSourceRelation> relation){
+    private DimensionCalculator getCachedNumberDimensionCalculator(int pIndex, int index, NumberDimensionCalculator numberDimensionCalculator, List<BITableSourceRelation> relation) {
         CachedNoneDimensionCalculatorKey key = new CachedNoneDimensionCalculatorKey(pIndex, index);
-        if (!noneDimensionCalculatorMap.containsKey(key)){
+        if (!noneDimensionCalculatorMap.containsKey(key)) {
             noneDimensionCalculatorMap.put(key, new CachedNumberDimensionCalculator(numberDimensionCalculator, relation));
         }
         return noneDimensionCalculatorMap.get(key);
     }
 
-    private class CachedNoneDimensionCalculatorKey{
+    private class CachedNoneDimensionCalculatorKey {
         private int pIndex;
         private int index;
 

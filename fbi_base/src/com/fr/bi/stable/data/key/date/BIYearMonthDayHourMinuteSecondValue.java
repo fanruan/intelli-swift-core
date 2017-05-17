@@ -1,22 +1,26 @@
 package com.fr.bi.stable.data.key.date;
 
+
 import com.fr.bi.base.BICore;
 import com.fr.bi.base.BICoreGenerator;
 import com.fr.bi.base.annotation.BICoreField;
+import com.fr.bi.stable.utils.time.BIDateUtils;
 
 /**
- * Created by 小灰灰 on 2016/1/6.
+ * Created by wang on 2017/5/12.
  */
-public abstract class IntDateValue implements BIDateValue <Integer>{
-    private static final long serialVersionUID = 1132369972153619547L;
+public class BIYearMonthDayHourMinuteSecondValue implements BIDateValue<Long>{
+    private static final long serialVersionUID = 2870982660215317080L;
     @BICoreField
-    protected int value;
-    public IntDateValue(int value) {
-        this.value = value;
+    private long value;
+
+    public BIYearMonthDayHourMinuteSecondValue(long value) {
+        this.value = BIDateUtils.toYearMonthDayHourMinuteSecond(value);
     }
 
+
     @Override
-    public Integer getValue() {
+    public Long getValue() {
         return value;
     }
 
@@ -34,7 +38,7 @@ public abstract class IntDateValue implements BIDateValue <Integer>{
             return false;
         }
 
-        IntDateValue that = (IntDateValue) o;
+        BIYearMonthDayHourMinuteSecondValue that = (BIYearMonthDayHourMinuteSecondValue) o;
 
         return value == that.value;
 
@@ -42,6 +46,7 @@ public abstract class IntDateValue implements BIDateValue <Integer>{
 
     @Override
     public int hashCode() {
-        return value;
+        return (int) (value ^ (value >>> 32));
     }
 }
+

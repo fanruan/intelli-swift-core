@@ -357,10 +357,10 @@ public abstract class VanChartWidget extends TableWidget {
     //默认是分类，系列，值的配置
     protected JSONObject createDataLabels(JSONObject settings) throws JSONException {
         boolean miniMode = settings.optBoolean("miniMode", false);
-        boolean showDataLabel = settings.optBoolean("showDataLabel", false);
+        boolean showDataLabel = settings.optBoolean("showDataLabel", false) || miniMode;
         JSONObject dataLabels = JSONObject.create().put("enabled", showDataLabel).put("autoAdjust", true);
 
-        if (showDataLabel || miniMode) {
+        if (showDataLabel) {
             JSONObject dataLabelSetting = settings.has("dataLabelSetting") ? settings.optJSONObject("dataLabelSetting") : this.defaultDataLabelSetting();
 
             JSONObject formatter = JSONObject.create();
@@ -616,10 +616,15 @@ public abstract class VanChartWidget extends TableWidget {
 
             JSONObject formatter = JSONObject.create();
 
-            formatter.put("identifier", this.getTooltipIdentifier()).put("valueFormat", this.tooltipValueFormat(this.getSerBITarget(ser)));
+            formatter.put("identifier", this.getTooltipIdentifier()).put(this.tooltipValueKey(), this.tooltipValueFormat(this.getSerBITarget(ser)));
 
             ser.put("tooltip", new JSONObject(tooltip.toString()).put("formatter", formatter));
         }
+    }
+
+    //百分比堆积的图，所谓的值，是百分比
+    protected String tooltipValueKey(){
+        return "valueFormat";
     }
 
     protected String getTooltipIdentifier() {
