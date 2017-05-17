@@ -125,6 +125,41 @@ public class BIDateUtils {
         c.set(Calendar.MILLISECOND, 0);
         return c.getTimeInMillis();
     }
+//year-month 统一设置为该月份第一天
+    public static long toYearMonth(long t) {
+        Calendar c = Calendar.getInstance();
+        c.setTimeInMillis(t);
+        c.set(Calendar.DAY_OF_MONTH, 1);
+        c.set(Calendar.HOUR_OF_DAY, 0);
+        c.set(Calendar.MINUTE, 0);
+        c.set(Calendar.SECOND, 0);
+        c.set(Calendar.MILLISECOND, 0);
+        return c.getTimeInMillis();
+    }
+//    year-weeknumber 统一设置为该周的第一天
+    public static long toYearWeekNumber(long t) {
+        Calendar c = Calendar.getInstance();
+        c.setTimeInMillis(t);
+        c.set(Calendar.DAY_OF_WEEK, 1);
+        c.set(Calendar.HOUR_OF_DAY, 0);
+        c.set(Calendar.MINUTE, 0);
+        c.set(Calendar.SECOND, 0);
+        c.set(Calendar.MILLISECOND, 0);
+        return c.getTimeInMillis();
+    }
+//    year-season 统一设置为该季度的第一个月的第一天
+    public static long toYearSeason(long t) {
+        Calendar c = Calendar.getInstance();
+        c.setTimeInMillis(t);
+        c.set(Calendar.DAY_OF_MONTH, 1);
+        c.set(Calendar.HOUR_OF_DAY, 0);
+        c.set(Calendar.MINUTE, 0);
+        c.set(Calendar.SECOND, 0);
+        c.set(Calendar.MILLISECOND, 0);
+        int month = (BITimeUtils.getFieldFromTime(t, Calendar.MONTH)/3)*3;
+        c.set(Calendar.MONTH, month);
+        return c.getTimeInMillis();
+    }
     /**
      * 获取当前时间
      *

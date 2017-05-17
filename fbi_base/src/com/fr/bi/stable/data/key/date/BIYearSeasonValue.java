@@ -1,6 +1,5 @@
 package com.fr.bi.stable.data.key.date;
 
-
 import com.fr.bi.base.BICore;
 import com.fr.bi.base.BICoreGenerator;
 import com.fr.bi.base.annotation.BICoreField;
@@ -9,13 +8,13 @@ import com.fr.bi.stable.utils.time.BIDateUtils;
 /**
  * Created by wang on 2017/5/12.
  */
-public class BIYearMonthDayHourValue implements BIDateValue<Long>{
+public class BIYearSeasonValue implements BIDateValue<Long>{
     private static final long serialVersionUID = 1740249305390162117L;
     @BICoreField
     private long value;
 
-    public BIYearMonthDayHourValue(long value) {
-        this.value = BIDateUtils.toYearMonthDayHour(value);
+    public BIYearSeasonValue(long value) {
+        this.value = BIDateUtils.toYearSeason(value);
     }
 
 
@@ -38,7 +37,7 @@ public class BIYearMonthDayHourValue implements BIDateValue<Long>{
             return false;
         }
 
-        BIYearMonthDayHourValue that = (BIYearMonthDayHourValue) o;
+        BIYearSeasonValue that = (BIYearSeasonValue) o;
 
         return value == that.value;
 
@@ -49,4 +48,3 @@ public class BIYearMonthDayHourValue implements BIDateValue<Long>{
         return (int) (value ^ (value >>> 32));
     }
 }
-
