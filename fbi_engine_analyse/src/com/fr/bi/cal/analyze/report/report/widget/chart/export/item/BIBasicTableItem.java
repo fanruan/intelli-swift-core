@@ -77,11 +77,6 @@ public class BIBasicTableItem implements ITableItem {
     }
 
     @Override
-    public String getText() {
-        return text;
-    }
-
-    @Override
     public List<ITableItem> getValues() {
         return values;
     }
