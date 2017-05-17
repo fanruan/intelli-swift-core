@@ -45,23 +45,13 @@ public enum VanCombineType {
 
     public static String parseStringType(VanCombineType type){
 
-        switch (type){
-            case AREA_NORMAL:
-            case AREA_CURVE:
-            case AREA_RIGHT_ANGLE:
-            case STACKED_AREA_NORMAL:
-            case STACKED_AREA_CURVE:
-            case STACKED_AREA_RIGHT_ANGLE:
-                return "area";
-
-            case  LINE_NORMAL:
-            case LINE_CURVE:
-            case LINE_RIGHT_ANGLE:
-                return "line";
-
-            default:
-                return "column";
+        if(type == AREA_NORMAL || type == AREA_CURVE || type == AREA_RIGHT_ANGLE || type == STACKED_AREA_NORMAL || type == STACKED_AREA_CURVE || type == STACKED_AREA_RIGHT_ANGLE){
+            return "area";
+        }else if(type == LINE_NORMAL || type == LINE_CURVE || type == LINE_RIGHT_ANGLE){
+            return "line";
         }
+
+        return "column";
     }
 
     public static boolean isStacked(VanCombineType widgetType){
