@@ -14,7 +14,6 @@ public class BITableWidgetStyle implements IWidgetStyle {
     private int rowHeight;
     private int maxRow;
     private boolean showRowTotal;
-    private boolean showColTotal;
     private String themeColor;
     private int tableStyleGroup;
     private boolean showColTotal;
@@ -92,10 +91,6 @@ public class BITableWidgetStyle implements IWidgetStyle {
         jo.put("themeColor", themeColor);
         jo.put("tableStyleGroup", tableStyleGroup);
         return jo;
-    }
-
-    public boolean isShowColTotal() {
-        return showColTotal;
     }
 }
 
