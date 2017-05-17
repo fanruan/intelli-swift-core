@@ -158,6 +158,7 @@ public class VanDotWidget extends VanCartesianWidget{
             return JSONObject.create();
         }
         double max = style.getJSONObject(count - 1).optJSONObject("range").optDouble("max");
+        double min = style.getJSONObject(0).optJSONObject("range").optDouble("min");
 
         for(int i = 0, len = style.length(); i < len; i++){
             JSONObject config = style.getJSONObject(i);
@@ -171,7 +172,7 @@ public class VanDotWidget extends VanCartesianWidget{
 
         }
 
-        return JSONObject.create().put("color", colors);
+        return JSONObject.create().put("color", colors).put("min", min).put("max", max);
     }
 
     protected String valueLabelKey() {
@@ -330,16 +331,20 @@ public class VanDotWidget extends VanCartesianWidget{
         return series;
     }
 
-    protected JSONArray parseCategoryAxis(JSONObject settings, Calculator calculator) throws JSONException{
+    protected JSONArray parseCategoryAxis(JSONObject settings) throws JSONException{
 
-        JSONObject baseAxis = this.parseRightValueAxis(settings, calculator).put("position", "bottom").put("type", "value");
+        JSONObject baseAxis = this.parseRightValueAxis(settings).put("position", "bottom").put("type", "value");
+
+        if (baseAxis.has("title")) {
+            baseAxis.optJSONObject("title").put("rotation", 0);
+        }
 
         return JSONArray.create().put(baseAxis);
     }
 
-    protected JSONArray parseValueAxis(JSONObject settings, Calculator calculator) throws JSONException{
+    protected JSONArray parseValueAxis(JSONObject settings) throws JSONException{
 
-        return JSONArray.create().put(this.parseLeftValueAxis(settings, calculator));
+        return JSONArray.create().put(this.parseLeftValueAxis(settings));
     }
 
     public String getSeriesType(String dimensionID){
@@ -388,11 +393,11 @@ public class VanDotWidget extends VanCartesianWidget{
 
         tplMap.put("key1X", "(X)");
         tplMap.put("key2X", "x");
-        addFormat2Map(tplMap, ids, 0, "formatX");
+        addFormat2Map(tplMap, ids, 1, "formatX");
 
         tplMap.put("key1Y", "(Y)");
         tplMap.put("key2Y", "y");
-        addFormat2Map(tplMap, ids, 1, "formatY");
+        addFormat2Map(tplMap, ids, 0, "formatY");
 
         tplMap.put("key1SIZE", "(" + getLocText("BI-Basic_Value") +")");
         tplMap.put("key2SIZE", "size");
@@ -402,7 +407,7 @@ public class VanDotWidget extends VanCartesianWidget{
         try {
             formatter = TemplateUtils.renderParameter4Tpl(getTooltipTpl(), tplMap);
         } catch (Exception e) {
-            FRLogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(),e);
         }
 
         JSONArray series = options.optJSONArray("series");

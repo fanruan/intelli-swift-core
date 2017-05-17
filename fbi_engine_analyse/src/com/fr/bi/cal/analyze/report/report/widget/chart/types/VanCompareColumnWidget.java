@@ -66,8 +66,8 @@ public class VanCompareColumnWidget extends VanColumnWidget{
     }
 
     @Override
-    protected JSONArray parseCategoryAxis(JSONObject settings, Calculator calculator) throws JSONException {
-        JSONArray array = super.parseCategoryAxis(settings, calculator);
+    protected JSONArray parseCategoryAxis(JSONObject settings) throws JSONException {
+        JSONArray array = super.parseCategoryAxis(settings);
         array.put(createEmptyCategoryAxis(settings));
         return array;
     }
@@ -78,20 +78,17 @@ public class VanCompareColumnWidget extends VanColumnWidget{
         return dealSeriesWithEmptyAxis(series);
     }
 
-    private JSONArray dealSeriesWithEmptyAxis(JSONArray series) throws JSONException{
+    protected JSONArray dealSeriesWithEmptyAxis(JSONArray series) throws JSONException{
         for(int i = 0, len = series.length(); i < len; i++){
             JSONObject ser = series.getJSONObject(i);
 
             int yAxisIndex = ser.optInt("yAxis");
             if(yAxisIndex == 1){
                 ser.put("xAxis", 1);
-                makeSeriesDataInvert(ser);
             }
         }
 
         return series;
     }
 
-    protected void makeSeriesDataInvert(JSONObject ser) throws JSONException{
-    }
 }

@@ -1,11 +1,13 @@
 package com.fr.bi.cal.analyze.report.report.widget;
 
 import com.finebi.cube.common.log.BILoggerFactory;
+import com.fr.base.FRContext;
 import com.fr.bi.cal.analyze.session.BISession;
 import com.fr.bi.conf.report.WidgetType;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.conf.session.BISessionProvider;
 import com.fr.bi.field.target.target.BISummaryTarget;
+import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.constant.BIStyleConstant;
 import com.fr.bi.tool.BIReadReportUtils;
@@ -21,6 +23,7 @@ import com.fr.web.utils.WebUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import java.awt.*;
+import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.List;
@@ -277,6 +280,14 @@ public abstract class VanChartWidget extends TableWidget {
         super.parseJSON(jo, userId);
     }
 
+    protected String getCompleteImageUrl (String url) {
+        return requestURL + "?op=fr_bi&cmd=get_uploaded_image&image_id=" + url;
+    }
+
+    protected String getLocalImagePath(String url){
+        return FRContext.getCurrentEnv().getPath() + BIBaseConstant.UPLOAD_IMAGE.IMAGE_PATH + File.separator + url;
+    }
+
     protected void dealView(List<String> sorted, JSONObject vjo) throws JSONException{
         JSONArray ja = JSONArray.create();
 
@@ -347,7 +358,7 @@ public abstract class VanChartWidget extends TableWidget {
     protected JSONObject createDataLabels(JSONObject settings) throws JSONException {
         boolean miniMode = settings.optBoolean("miniMode", false);
         boolean showDataLabel = settings.optBoolean("showDataLabel", false);
-        JSONObject dataLabels = JSONObject.create().put("enabled", showDataLabel);
+        JSONObject dataLabels = JSONObject.create().put("enabled", showDataLabel).put("autoAdjust", true);
 
         if (showDataLabel || miniMode) {
             JSONObject dataLabelSetting = settings.has("dataLabelSetting") ? settings.optJSONObject("dataLabelSetting") : this.defaultDataLabelSetting();
@@ -720,7 +731,7 @@ public abstract class VanChartWidget extends TableWidget {
             } else {//饼图没有分类，只有指标。会过来一个汇总值，没有child
                 JSONArray targetValues = originData.optJSONArray("s");
                 double y = targetValues.isNull(i) ? 0 : targetValues.getDouble(i) / numberScale;
-                data.put(JSONObject.create().put(valueKey, y));
+                data.put(JSONObject.create().put(valueKey, y).put(categoryKey, StringUtils.EMPTY));
                 valueList.add(y);
             }
             JSONObject ser = JSONObject.create().put("data", data).put("name", getDimensionNameByID(id))
@@ -918,7 +929,7 @@ public abstract class VanChartWidget extends TableWidget {
             ranges.put(
                     JSONObject.create()
                             .put("from", range.optDouble("min"))
-                            .put("to", range.optDouble("max"))
+                            .put("to", range.optDouble("max", Integer.MAX_VALUE))
                             .put("color", config.optString("color"))
             );
 

@@ -20,7 +20,6 @@ public class BIBasicTableItem implements ITableItem {
     private boolean isExpanded;
     protected List<ITableItem> children;
     private ITableStyle styles;
-//    private String type;
     private String value;
 
     public BIBasicTableItem() {
@@ -72,11 +71,6 @@ public class BIBasicTableItem implements ITableItem {
         this.styles = styles;
     }
 
-//    @Override
-//    public void setType(String type) {
-//        this.type = type;
-//    }
-
     @Override
     public String getDId() {
         return dId;
@@ -105,11 +99,6 @@ public class BIBasicTableItem implements ITableItem {
     public List<ITableItem> getChildren() {
         return children;
     }
-
-//    @Override
-//    public String getType() {
-//        return type;
-//    }
 
     @Override
     public String getdId() {
@@ -140,9 +129,6 @@ public class BIBasicTableItem implements ITableItem {
         if (jo.has("text")) {
             text = jo.optString("text");
         }
-//        if (jo.has("type")) {
-//            type = jo.optString("type");
-//        }
         if (jo.has("values")) {
             if (null==values){
                 values=new ArrayList<ITableItem>();
@@ -185,7 +171,6 @@ public class BIBasicTableItem implements ITableItem {
         jo.put("dId", dId);
         jo.put("styles", null == styles ? new JSONObject() : styles.createJSON());
         jo.put("text", text);
-//        jo.put("type", type);
         if (null != this.values && values.size() > 0) {
             JSONArray TempValues = new JSONArray();
             for (ITableItem item : this.values) {

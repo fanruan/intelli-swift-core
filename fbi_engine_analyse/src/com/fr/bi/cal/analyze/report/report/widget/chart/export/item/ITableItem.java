@@ -12,11 +12,9 @@ import java.util.List;
 public interface ITableItem extends JSONCreator {
     void setStyles(ITableStyle style);
 
-//    void setType(String type);
-
     String getDId();
 
-    String getText();
+    String getValue();
 
     List<ITableItem> getValues();
 
@@ -28,7 +26,7 @@ public interface ITableItem extends JSONCreator {
 
     void setDId(String dId);
 
-    void setText(String text);
+    void setValue(String text);
 
     void setValues(List<ITableItem> values);
 
@@ -42,13 +40,11 @@ public interface ITableItem extends JSONCreator {
 
     boolean hasValues();
 
-//    String getType();
-
     String getdId();
 
     void setdId(String dId);
 
-    void setValue(String value);
+    void setText(String text);
 
     void parseJSON(JSONObject jo) throws Exception;
 }

@@ -85,7 +85,7 @@ public class DetailTableBuilder extends TableAbstractDataBuilder {
             if (isDimensionUsable(dimIds.get(j))) {
                 BIBasicTableItem item = new BIBasicTableItem();
                 item.setDId(dimIds.get(j));
-                item.setText(itemArray.isNull(j) ? "" : itemArray.getString(j));
+                item.setValue(itemArray.isNull(j) ? "" : itemArray.getString(j));
                 item.setStyles(SummaryTableStyleHelper.getBodyStyles(styleSetting.getThemeColor(), styleSetting.getTableStyleGroup(), j));
                 rowItems.add(item);
             }
