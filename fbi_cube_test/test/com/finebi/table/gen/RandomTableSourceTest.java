@@ -8,6 +8,7 @@ package com.finebi.table.gen;
 
 import com.finebi.cube.common.log.BILogger;
 import com.finebi.cube.common.log.BILoggerFactory;
+import com.finebi.tool.BITestConstants;
 import com.fr.bi.common.inter.Traversal;
 import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.data.db.BIDataValue;
@@ -26,7 +27,7 @@ public class RandomTableSourceTest extends TestCase {
      */
     public void testRandomTableSource() {
         try {
-            RandomTableSource tableSource = new RandomTableSource(10);
+            RandomTableSource tableSource = new RandomTableSource(BITestConstants.TEN);
 
             List<BIRandomFieldSource> fields = new ArrayList<BIRandomFieldSource>();
             fields.add(new BICubeLongRandomFieldSource(tableSource, "id", DBConstant.CLASS.LONG, 2, 10, 10));
