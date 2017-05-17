@@ -1,5 +1,7 @@
 package com.fr.bi.cal.analyze.report.report.widget.chart.types;
 
+import com.fr.bi.conf.report.WidgetType;
+
 /**
  * Created by eason on 2017/3/23.
  */
@@ -41,9 +43,9 @@ public enum VanCombineType {
         return COLUMN;
     }
 
-    public static String parseStringType(int type){
+    public static String parseStringType(VanCombineType type){
 
-        switch (parse(type)){
+        switch (type){
             case AREA_NORMAL:
             case AREA_CURVE:
             case AREA_RIGHT_ANGLE:
@@ -60,6 +62,20 @@ public enum VanCombineType {
             default:
                 return "column";
         }
+    }
 
+    public static boolean isStacked(VanCombineType widgetType){
+
+        return widgetType == STACKED_AREA_NORMAL || widgetType == STACKED_AREA_CURVE || widgetType == STACKED_AREA_RIGHT_ANGLE || widgetType == STACKED_COLUMN;
+    }
+
+    public static boolean isCurve(VanCombineType widgetType){
+
+        return widgetType == AREA_CURVE || widgetType == STACKED_AREA_CURVE || widgetType == LINE_CURVE;
+    }
+
+    public static boolean isStep(VanCombineType widgetType){
+
+        return widgetType == AREA_RIGHT_ANGLE || widgetType == STACKED_AREA_RIGHT_ANGLE || widgetType == LINE_RIGHT_ANGLE;
     }
 }
