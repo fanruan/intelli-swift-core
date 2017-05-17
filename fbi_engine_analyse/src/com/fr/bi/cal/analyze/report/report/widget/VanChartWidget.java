@@ -616,10 +616,15 @@ public abstract class VanChartWidget extends TableWidget {
 
             JSONObject formatter = JSONObject.create();
 
-            formatter.put("identifier", this.getTooltipIdentifier()).put("valueFormat", this.tooltipValueFormat(this.getSerBITarget(ser)));
+            formatter.put("identifier", this.getTooltipIdentifier()).put(this.tooltipValueKey(), this.tooltipValueFormat(this.getSerBITarget(ser)));
 
             ser.put("tooltip", new JSONObject(tooltip.toString()).put("formatter", formatter));
         }
+    }
+
+    //百分比堆积的图，所谓的值，是百分比
+    protected String tooltipValueKey(){
+        return "valueFormat";
     }
 
     protected String getTooltipIdentifier() {

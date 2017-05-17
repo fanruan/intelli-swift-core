@@ -76,7 +76,6 @@ public class BIBasicTableItem implements ITableItem {
         return dId;
     }
 
-    @Override
     public String getText() {
         return text;
     }
