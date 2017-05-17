@@ -95,11 +95,6 @@ public class BIBasicTableItem implements ITableItem {
         return children;
     }
 
-    @Override
-    public String getdId() {
-        return dId;
-    }
-
     public ITableStyle getStyles() {
         return styles;
     }

@@ -14,7 +14,7 @@ public class BITableCellTargetFormatOperation implements ITableCellFormatOperati
     }
 
     @Override
-    public String FormatValues(String text) throws Exception {
+    public String formatValues(String text) throws Exception {
         return BITableCellFormatHelper.targetValueFormat(ICellFormatSetting.createJSON(),text);
     }
 
