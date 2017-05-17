@@ -7,7 +7,7 @@ import com.fr.bi.base.annotation.BICoreField;
 /**
  * Created by 小灰灰 on 2016/1/6.
  */
-public abstract class IntDateValue implements BIDateValue {
+public abstract class IntDateValue implements BIDateValue <Integer>{
     private static final long serialVersionUID = 1132369972153619547L;
     @BICoreField
     protected int value;
