@@ -17,6 +17,7 @@ public class BITableWidgetStyle implements IWidgetStyle {
     private boolean showRowTotal;
     private String themeColor;
     private int tableStyleGroup;
+    private boolean showColTotal;
 
     public BITableWidgetStyle() {
         themeColor = BIStyleConstant.DEFAULT_CHART_SETTING.THEME_COLOR;
@@ -26,6 +27,7 @@ public class BITableWidgetStyle implements IWidgetStyle {
         rowHeight = BIStyleConstant.DEFAULT_CHART_SETTING.ROW_HEIGHT;
         maxRow = BIStyleConstant.DEFAULT_CHART_SETTING.MAX_ROW;
         showRowTotal = BIStyleConstant.DEFAULT_CHART_SETTING.SHOW_ROW_TOTAL;
+        showColTotal = BIStyleConstant.DEFAULT_CHART_SETTING.SHOW_COL_TOTAL;
     }
 
     @Override
@@ -67,6 +69,7 @@ public class BITableWidgetStyle implements IWidgetStyle {
             rowHeight = settingJo.optInt("rowHeight", rowHeight);
             maxRow = settingJo.optInt("maxRow", maxRow);
             showRowTotal = settingJo.optBoolean("showRowTotal", showRowTotal);
+            showColTotal = settingJo.optBoolean("showColTotal", showColTotal);
             themeColor = settingJo.optString("themeColor", themeColor);
             tableStyleGroup = settingJo.optInt("tableStyleGroup", tableStyleGroup);
         }
@@ -80,9 +83,14 @@ public class BITableWidgetStyle implements IWidgetStyle {
         jo.put("rowHeight", rowHeight);
         jo.put("maxRow", maxRow);
         jo.put("showRowTotal", showRowTotal);
+        jo.put("showColTotal", showColTotal);
         jo.put("themeColor", themeColor);
         jo.put("tableStyleGroup", tableStyleGroup);
         return jo;
+    }
+
+    public boolean isShowColTotal() {
+        return showColTotal;
     }
 }
 
