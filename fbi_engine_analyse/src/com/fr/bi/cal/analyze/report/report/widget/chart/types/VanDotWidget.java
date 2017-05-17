@@ -10,7 +10,6 @@ import com.fr.general.FRLogger;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
-import com.fr.script.Calculator;
 import com.fr.stable.CoreConstants;
 import com.fr.stable.StringUtils;
 
@@ -140,10 +139,14 @@ public class VanDotWidget extends VanCartesianWidget{
         int rule = settings.optInt("displayRules");
         if(rule == INTERVAL_RULE){
             legend.put("continuous", false);
-            legend.put("range", this.mapStyleToRange(settings.optJSONArray("fixedStyle")));
+            if(settings.optInt("fixedStyleRadio") != AUTO){
+                legend.put("range", this.mapStyleToRange(settings.optJSONArray("fixedStyle")));
+            }
         }else if(rule == GRADUAL_RULE){
             legend.put("continuous", true);
-            legend.put("range", this.gradualStyleToRange(settings.optJSONArray("gradientStyle")));
+            if(settings.optInt("gradientStyleRadio") != AUTO){
+                legend.put("range", this.gradualStyleToRange(settings.optJSONArray("gradientStyle")));
+            }
         }
 
         return legend;

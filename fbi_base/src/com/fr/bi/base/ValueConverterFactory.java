@@ -95,22 +95,18 @@ public class ValueConverterFactory {
             return BIDateUtils.toYearMonthDayHourMinuteSecond(t);
         }
     };
-    private static final ValueConverter<Long, String> YEAR_MONTH = new ValueConverter<Long, String>() {
+    private static final ValueConverter<Long, Long> YEAR_MONTH = new ValueConverter<Long, Long>() {
 
         @Override
-        public String result2Value(Long t) {
-            Integer month = BITimeUtils.getFieldFromTime(t, Calendar.MONTH) + 1;
-            Integer year = BITimeUtils.getFieldFromTime(t, Calendar.YEAR);
-            return year+"-"+month;
+        public Long result2Value(Long t) {
+            return BIDateUtils.toYearMonth(t);
         }
     };
-    private static final ValueConverter<Long, String> YEAR_WEEKNUMBER = new ValueConverter<Long, String>() {
+    private static final ValueConverter<Long, Long> YEAR_WEEKNUMBER = new ValueConverter<Long, Long>() {
 
         @Override
-        public String result2Value(Long t) {
-            Integer weekNumber = BITimeUtils.getFieldFromTime(t, Calendar.WEEK_OF_YEAR);
-            Integer year = BITimeUtils.getFieldFromTime(t, Calendar.YEAR);
-            return year+"-"+weekNumber;
+        public Long result2Value(Long t) {
+            return BIDateUtils.toYearWeekNumber(t);
         }
     };
     private static final ValueConverter<Long, Integer> WEEKNUMBER = new ValueConverter<Long, Integer>() {
@@ -121,13 +117,11 @@ public class ValueConverterFactory {
             return weekNumber;
         }
     };
-    private static final ValueConverter<Long, String> YEAR_SEASON = new ValueConverter<Long, String>() {
+    private static final ValueConverter<Long, Long> YEAR_SEASON = new ValueConverter<Long, Long>() {
 
         @Override
-        public String result2Value(Long t) {
-            int month = BITimeUtils.getFieldFromTime(t, Calendar.MONTH);
-            Integer year = BITimeUtils.getFieldFromTime(t, Calendar.YEAR);
-            return year+"-"+getSeason(month);
+        public Long result2Value(Long t) {
+            return BIDateUtils.toYearSeason(t);
         }
     };
     private static int getSeason(int month) {
