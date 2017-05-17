@@ -2,40 +2,48 @@ package com.fr.bi.stable.data.key.date;
 
 import com.fr.bi.stable.constant.BIReportConstant;
 
+
 /**
  * Created by 小灰灰 on 2016/1/6.
  */
 public class BIDateValueFactory {
-    public static BIDateValue createDateValue(int type, Object value) {
+    public static BIDateValue createDateValue(int type, Number value) {
         switch (type) {
             case BIReportConstant.GROUP.Y:
-                return new BIYearValue(((Number) value).intValue());
+                return new BIYearValue(value.intValue());
             case BIReportConstant.GROUP.M:
-                return new BIMonthValue(((Number) value).intValue());
+                return new BIMonthValue(value.intValue());
             case BIReportConstant.GROUP.S:
-                return new BISeasonValue(((Number) value).intValue());
+                return new BISeasonValue(value.intValue());
             case BIReportConstant.GROUP.W:
-                return new BIWeekValue(((Number) value).intValue());
-            case BIReportConstant.GROUP.YMD:
-                return new BIDayValue(((Number) value).longValue());
-            case BIReportConstant.GROUP.WEEK_COUNT:
-                return new BIWeekCountValue(((Number) value).intValue());
+                return new BIWeekValue(value.intValue());
             case BIReportConstant.GROUP.HOUR:
-                return new BIHourValue(((Number) value).intValue());
+                return new BIHourValue(value.intValue());
             case BIReportConstant.GROUP.MINUTE:
-                return new BIMinuteValue(((Number) value).intValue());
+                return new BIMinuteValue(value.intValue());
             case BIReportConstant.GROUP.SECOND:
-                return new BISecondValue(((Number) value).intValue());
-            case BIReportConstant.GROUP.YS:
-                return new BIYearSessionValue((String) value);
-            case BIReportConstant.GROUP.YM:
-                return new BIYearMonthValue((String) value);
-            case BIReportConstant.GROUP.YW:
-                return new BIYearWeekCountValue((String) value);
+                return new BISecondValue(value.intValue());
+            case BIReportConstant.GROUP.WEEK_COUNT:
+                return new BIWeekNumberValue(value.intValue());
+            case BIReportConstant.GROUP.MD:
+            case BIReportConstant.GROUP.D:
+                return new BIDayOfMonthValue(value.intValue());
+            case BIReportConstant.GROUP.YMD:
+                return new BIDayValue(value.longValue());
+            case BIReportConstant.GROUP.YMDH:
+                return new BIYearMonthDayHourValue(value.longValue());
             case BIReportConstant.GROUP.YMDHM:
-                return new BIYearMonthDayHourMinuteValue(((Number) value).longValue());
+                return new BIYearMonthDayHourMinuteValue(value.longValue());
             case BIReportConstant.GROUP.YMDHMS:
-                return new BIYearMonthDayHourMinuteSecondValue(((Number) value).longValue());
+                return new BIYearMonthDayHourMinuteSecondValue(value.longValue());
+            case BIReportConstant.GROUP.YM:
+                return  new BIYearMonthValue(value.longValue());
+            case BIReportConstant.GROUP.YW:
+                return  new BIYearWeekNumberValue(value.longValue());
+            case BIReportConstant.GROUP.YS:
+                return  new BIYearSeasonValue(value.longValue());
+            default:
+                break;
         }
         return null;
     }
