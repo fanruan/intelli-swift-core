@@ -68,8 +68,8 @@ public class BIDateColumnTest extends BICubeTestBase {
         c.set(Calendar.MINUTE, 11);
         c.set(Calendar.SECOND, 33);
         c.set(Calendar.MILLISECOND, 0);
-        System.err.println(c.getTime());
-        System.err.println(c.getTimeInMillis());
+//        System.err.println(c.getTime());
+//        System.err.println(c.getTimeInMillis());
     }
 
     public void testYearColumn() {
@@ -81,7 +81,6 @@ public class BIDateColumnTest extends BICubeTestBase {
             date.forceReleaseWriter();
             assertEquals(Integer.valueOf(2017), yearColumn.getOriginalValueByRow(0));
         } catch (BICubeColumnAbsentException e) {
-            e.printStackTrace();
             assertTrue(false);
         }
     }
@@ -94,7 +93,6 @@ public class BIDateColumnTest extends BICubeTestBase {
             date.forceReleaseWriter();
             assertEquals(Integer.valueOf(6), monthColumn.getOriginalValueByRow(0));
         } catch (BICubeColumnAbsentException e) {
-            e.printStackTrace();
             assertTrue(false);
         }
     }
@@ -107,7 +105,6 @@ public class BIDateColumnTest extends BICubeTestBase {
             date.forceReleaseWriter();
             assertEquals(Integer.valueOf(2), seasonColumn.getOriginalValueByRow(0));
         } catch (BICubeColumnAbsentException e) {
-            e.printStackTrace();
             assertTrue(false);
         }
     }
@@ -121,7 +118,6 @@ public class BIDateColumnTest extends BICubeTestBase {
             date.forceReleaseWriter();
             assertEquals(Integer.valueOf(26), weekNumberColumn.getOriginalValueByRow(0));
         } catch (BICubeColumnAbsentException e) {
-            e.printStackTrace();
             assertTrue(false);
         }
     }
@@ -134,7 +130,6 @@ public class BIDateColumnTest extends BICubeTestBase {
             date.forceReleaseWriter();
             assertEquals(Integer.valueOf(4), weekColumn.getOriginalValueByRow(0));
         } catch (BICubeColumnAbsentException e) {
-            e.printStackTrace();
             assertTrue(false);
         }
     }
@@ -147,7 +142,6 @@ public class BIDateColumnTest extends BICubeTestBase {
             date.forceReleaseWriter();
             assertEquals(Integer.valueOf(29), dayColumn.getOriginalValueByRow(0));
         } catch (BICubeColumnAbsentException e) {
-            e.printStackTrace();
             assertTrue(false);
         }
     }
@@ -162,7 +156,6 @@ public class BIDateColumnTest extends BICubeTestBase {
             t.setTime(new Date(time));
             assertEquals(t.get(Calendar.HOUR_OF_DAY), hourColumn.getOriginalValueByRow(0));
         } catch (BICubeColumnAbsentException e) {
-            e.printStackTrace();
             assertTrue(false);
         }
     }
@@ -177,7 +170,6 @@ public class BIDateColumnTest extends BICubeTestBase {
             t.setTime(new Date(time));
             assertEquals(t.get(Calendar.MINUTE), minuteColumn.getOriginalValueByRow(0));
         } catch (BICubeColumnAbsentException e) {
-            e.printStackTrace();
             assertTrue(false);
         }
     }
@@ -192,7 +184,6 @@ public class BIDateColumnTest extends BICubeTestBase {
             t.setTime(new Date(time));
             assertEquals(t.get(Calendar.SECOND), secondColumn.getOriginalValueByRow(0));
         } catch (BICubeColumnAbsentException e) {
-            e.printStackTrace();
             assertTrue(false);
         }
     }
@@ -216,7 +207,6 @@ public class BIDateColumnTest extends BICubeTestBase {
             c.set(Calendar.MONTH, month);
             assertEquals(c.getTimeInMillis(), yearSeasonColumn.getOriginalValueByRow(0));
         } catch (BICubeColumnAbsentException e) {
-            e.printStackTrace();
             assertTrue(false);
         }
     }
@@ -239,7 +229,6 @@ public class BIDateColumnTest extends BICubeTestBase {
             c.set(Calendar.MILLISECOND, 0);
             assertEquals(c.getTimeInMillis(), yearMonthColumn.getOriginalValueByRow(0));
         } catch (BICubeColumnAbsentException e) {
-            e.printStackTrace();
             assertTrue(false);
         }
     }
@@ -261,7 +250,6 @@ public class BIDateColumnTest extends BICubeTestBase {
             c.set(Calendar.MILLISECOND, 0);
             assertEquals(c.getTimeInMillis(), yearMonthColumn.getOriginalValueByRow(0));
         } catch (BICubeColumnAbsentException e) {
-            e.printStackTrace();
             assertTrue(false);
         }
     }
@@ -282,7 +270,6 @@ public class BIDateColumnTest extends BICubeTestBase {
             c.set(Calendar.MILLISECOND, 0);
             assertEquals(c.getTimeInMillis(), yearMonthDayColumn.getOriginalValueByRow(0));
         } catch (BICubeColumnAbsentException e) {
-            e.printStackTrace();
             assertTrue(false);
         }
     }
@@ -300,7 +287,6 @@ public class BIDateColumnTest extends BICubeTestBase {
             t.set(Calendar.MILLISECOND,0);
             assertEquals(t.getTimeInMillis(), yearMonthDayHourColumn.getOriginalValueByRow(0));
         } catch (BICubeColumnAbsentException e) {
-            e.printStackTrace();
             assertTrue(false);
         }
     }
@@ -317,7 +303,6 @@ public class BIDateColumnTest extends BICubeTestBase {
             t.set(Calendar.MILLISECOND,0);
             assertEquals(t.getTimeInMillis(), yearMonthDayHourMinuteColumn.getOriginalValueByRow(0));
         } catch (BICubeColumnAbsentException e) {
-            e.printStackTrace();
             assertTrue(false);
         }
     }
@@ -333,7 +318,6 @@ public class BIDateColumnTest extends BICubeTestBase {
             t.set(Calendar.MILLISECOND,0);
             assertEquals(t.getTimeInMillis(), yearMonthDayHourMinuteSecondColumn.getOriginalValueByRow(0));
         } catch (BICubeColumnAbsentException e) {
-            e.printStackTrace();
             assertTrue(false);
         }
     }
@@ -356,7 +340,6 @@ public class BIDateColumnTest extends BICubeTestBase {
             String name = BIMD5Utils.getMD5String(values);
             assertTrue(relationLocation.contains(name));
         } catch (Exception e) {
-            e.printStackTrace();
             assertTrue(false);
         }
     }
