@@ -139,7 +139,7 @@ public class SummaryComplexTableBuilder extends TableAbstractDataBuilder {
                     }
                     BIBasicTableItem itemNode = new BIBasicTableItem();
                     itemNode.setDId(targetIds.get(0));
-                    itemNode.setText(s.getString(0));
+                    itemNode.setValue(s.getString(0));
                     itemNode.setStyles(SummaryTableStyleHelper.getLastSummaryStyles(styleSetting.getThemeColor(), styleSetting.getTableStyleGroup()));
                     itemNode.setValues(outerValues);
                     item.getChildren().add(itemNode);
@@ -156,7 +156,7 @@ public class SummaryComplexTableBuilder extends TableAbstractDataBuilder {
     private void createItem(List<ITableItem> outerValues, JSONArray s, int j) throws JSONException {
         BIBasicTableItem itemNode = new BIBasicTableItem();
         itemNode.setDId(targetIds.get(j));
-        itemNode.setText(s.getString(j));
+        itemNode.setValue(s.getString(j));
         itemNode.setStyles(SummaryTableStyleHelper.getLastSummaryStyles(styleSetting.getThemeColor(), styleSetting.getTableStyleGroup()));
 //        itemNode.setStyles(SummaryTableStyleHelper.getLastSummaryStyles("", ""));
         outerValues.add(itemNode);
@@ -283,7 +283,7 @@ public class SummaryComplexTableBuilder extends TableAbstractDataBuilder {
 
         item.setValues(convertToItemList(rowValues.has(OUTERSUM) ? rowValues.getJSONArray(OUTERSUM) : new JSONArray()));
         for (ITableItem tableItem : item.getChildren()) {
-            tableItem.setValues(convertToItemList(rowValues.getJSONArray((null == tableItem.getDId() ? "" : tableItem.getDId()) + tableItem.getText())));
+            tableItem.setValues(convertToItemList(rowValues.getJSONArray((null == tableItem.getDId() ? "" : tableItem.getDId()) + tableItem.getValue())));
         }
         return item;
     }
@@ -306,7 +306,7 @@ public class SummaryComplexTableBuilder extends TableAbstractDataBuilder {
             boolean isSummary = showRowTotal && targetIds.size() > 0 && (isColRegionExist() || isRowRegionExist()) && !isOnlyCrossAndTarget();
             if (isSummary) {
                 BIBasicTableItem summaryValueItem = new BIBasicTableItem();
-                summaryValueItem.setText(SUMMARY);
+                summaryValueItem.setValue(SUMMARY);
                 JSONArray tempArray = new JSONArray();
                 for (ITableItem tempItem : tempItems) {
                     tempArray.put(tempItem.createJSON());
@@ -472,7 +472,7 @@ public class SummaryComplexTableBuilder extends TableAbstractDataBuilder {
                 for (int i = 0; i < targetIds.size(); i++) {
                     BIBasicTableItem item = new BIBasicTableItem();
                     item.setDId(targetIds.get(i));
-                    item.setText("summary");
+                    item.setValue("summary");
                     item.setStyles(SummaryTableStyleHelper.getHeaderStyles(styleSetting.getThemeColor(), styleSetting.getTableStyleGroup()));
                     children.add(item.createJSON());
                 }
@@ -480,7 +480,7 @@ public class SummaryComplexTableBuilder extends TableAbstractDataBuilder {
             } else {
                 for (String targetId : targetIds) {
                     BIBasicTableItem item = new BIBasicTableItem();
-                    item.setText("summary");
+                    item.setValue("summary");
                     item.setStyles(SummaryTableStyleHelper.getHeaderStyles(styleSetting.getThemeColor(), styleSetting.getTableStyleGroup()));
                     item.setDId(targetId);
                     crossItem.getJSONArray("children").put(item.createJSON());
