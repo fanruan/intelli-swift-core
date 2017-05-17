@@ -8,6 +8,7 @@ package com.finebi.table.gen;
 
 import com.finebi.cube.common.log.BILogger;
 import com.finebi.cube.common.log.BILoggerFactory;
+import com.finebi.tool.BITestConstants;
 import junit.framework.TestCase;
 
 import java.util.HashSet;
@@ -45,13 +46,13 @@ public class StringFieldValueGeneratorTest extends TestCase {
     public void testStringRead() {
         try {
             Set<String> valueSet = new HashSet<String>();
-            int group = 100;
-            int row = 1000;
+            int group = BITestConstants.HUNDRED;
+            int row = BITestConstants.THOUSAND;
             StringFieldValueGenerator generator = new StringFieldValueGenerator(group, row);
             for (int i = 0; i < row; i++) {
                 valueSet.add(generator.getValue());
             }
-            assertTrue(valueSet.size() > group - 10);
+            assertTrue(valueSet.size() > group - BITestConstants.TEN);
 
         } catch (Exception e) {
             LOGGER.error(e.getMessage(), e);
