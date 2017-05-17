@@ -16,4 +16,6 @@ public class BITestConstants {
     public static final int TEN = 10;
     public static final int HUNDRED = 100;
     public static final int THOUSAND = 1000;
+    public static final int MILLION =1000000;
+    public static final int BILLION = 1000000000;
 }

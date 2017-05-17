@@ -25,12 +25,12 @@ public class StringFieldValueGeneratorTest extends TestCase {
     public void testStringSpeed() {
         try {
             long time = System.currentTimeMillis();
-            StringFieldValueGenerator generator = new StringFieldValueGenerator(100000, 100000000);
+            StringFieldValueGenerator generator = new StringFieldValueGenerator(BITestConstants.MILLION, BITestConstants.BILLION);
             time = System.currentTimeMillis() - time;
             /**
-             * 机器不同，情况不同。在i5-4200u+ddr3下的结果是60ms-70ms结果。
+             * 机器不同，情况不同。在i5-4200u+ddr3下的结果是500ms-600ms结果。
              */
-            assertTrue(time < 100);
+            assertTrue(time < 600);
 
         } catch (Exception e) {
             LOGGER.error(e.getMessage(), e);
