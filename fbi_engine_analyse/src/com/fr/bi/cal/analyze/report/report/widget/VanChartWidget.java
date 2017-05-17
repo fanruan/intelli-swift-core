@@ -357,10 +357,10 @@ public abstract class VanChartWidget extends TableWidget {
     //默认是分类，系列，值的配置
     protected JSONObject createDataLabels(JSONObject settings) throws JSONException {
         boolean miniMode = settings.optBoolean("miniMode", false);
-        boolean showDataLabel = settings.optBoolean("showDataLabel", false);
+        boolean showDataLabel = settings.optBoolean("showDataLabel", false) || miniMode;
         JSONObject dataLabels = JSONObject.create().put("enabled", showDataLabel).put("autoAdjust", true);
 
-        if (showDataLabel || miniMode) {
+        if (showDataLabel) {
             JSONObject dataLabelSetting = settings.has("dataLabelSetting") ? settings.optJSONObject("dataLabelSetting") : this.defaultDataLabelSetting();
 
             JSONObject formatter = JSONObject.create();
