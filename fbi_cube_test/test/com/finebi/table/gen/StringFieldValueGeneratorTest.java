@@ -30,7 +30,7 @@ public class StringFieldValueGeneratorTest extends TestCase {
             /**
              * 机器不同，情况不同。在i5-4200u+ddr3下的结果是500ms-600ms结果。
              */
-            assertTrue(time < 600);
+            assertTrue(time < BITestConstants.HUNDRED * BITestConstants.SIX);
 
         } catch (Exception e) {
             LOGGER.error(e.getMessage(), e);

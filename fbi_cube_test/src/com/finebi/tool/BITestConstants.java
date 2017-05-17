@@ -13,6 +13,8 @@ import com.finebi.cube.common.log.BILoggerFactory;
 
 public class BITestConstants {
     private final static BILogger LOGGER = BILoggerFactory.getLogger(BITestConstants.class);
+    public static final int SIX = 6;
+
     public static final int TEN = 10;
     public static final int HUNDRED = 100;
     public static final int THOUSAND = 1000;
