@@ -3,12 +3,13 @@ package com.fr.bi.cal.analyze.report.report.widget.chart.types;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
-import com.fr.script.Calculator;
 
 /**
  * Created by eason on 2017/2/27.
  */
 public class VanCompareColumnWidget extends VanColumnWidget{
+
+    private static final double DEFAULT_MAX = 100;
 
     protected JSONArray parseValueAxis(JSONObject settings) throws JSONException{
 
@@ -41,11 +42,11 @@ public class VanCompareColumnWidget extends VanColumnWidget{
         }
 
         if(leftYMax == -Double.MAX_VALUE){
-            leftYMax = 100;
+            leftYMax = DEFAULT_MAX;
         }
 
         if(rightYMax == -Double.MAX_VALUE){
-            leftYMax = 100;
+            leftYMax = DEFAULT_MAX;
         }
 
         settings.put("rightYReverse", true);
