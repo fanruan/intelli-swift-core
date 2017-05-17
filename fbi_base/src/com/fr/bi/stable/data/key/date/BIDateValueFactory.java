@@ -42,6 +42,8 @@ public class BIDateValueFactory {
                 return  new BIYearWeekNumberValue(value.longValue());
             case BIReportConstant.GROUP.YS:
                 return  new BIYearSeasonValue(value.longValue());
+            default:
+                break;
         }
         return null;
     }
