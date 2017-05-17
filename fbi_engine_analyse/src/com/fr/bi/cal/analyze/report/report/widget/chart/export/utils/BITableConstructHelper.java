@@ -53,9 +53,9 @@ public class BITableConstructHelper {
                 recurisiveFormatText(child, ops);
             }
         }
-        if (item.getText() != null && item.getDId() != null) {
+        if (item.getValue() != null && item.getDId() != null) {
             if (null != ops.get(item.getDId())) {
-                item.setText(ops.get(item.getDId()).FormatValues(item.getText()));
+                item.setText(ops.get(item.getDId()).FormatValues(item.getValue()));
             }
         }
     }

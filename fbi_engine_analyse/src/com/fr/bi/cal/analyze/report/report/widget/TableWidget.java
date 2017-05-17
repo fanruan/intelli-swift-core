@@ -40,6 +40,7 @@ import com.fr.bi.field.target.target.cal.target.configure.BIConfiguredCalculateT
 import com.fr.bi.field.target.target.cal.target.configure.BIPeriodConfiguredCalculateTarget;
 import com.fr.bi.stable.constant.BIJSONConstant;
 import com.fr.bi.stable.constant.BIReportConstant;
+import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.gvi.GVIUtils;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.utils.BITravalUtils;
@@ -577,7 +578,12 @@ public class TableWidget extends BISummaryWidget {
     }
 
     public int getFieldTypeByDimensionID(String dID) throws Exception {
-        return getBITargetAndDimension(dID).createColumnKey().getFieldType();
+        boolean isCalTarget=null==getBITargetAndDimension(dID).createColumnKey();
+        if (isCalTarget) {
+            return DBConstant.COLUMN.NUMBER;
+        }else {
+            return getBITargetAndDimension(dID).createColumnKey().getFieldType();
+        }
     }
 
     protected BITargetAndDimension getBITargetAndDimension(String dID) throws Exception {

@@ -2,7 +2,6 @@ package com.fr.bi.cal.analyze.report.report.widget.style;
 
 import com.fr.bi.conf.report.widget.IWidgetStyle;
 import com.fr.bi.stable.constant.BIStyleConstant;
-import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;
 
 /**
@@ -15,6 +14,7 @@ public class BITableWidgetStyle implements IWidgetStyle {
     private int rowHeight;
     private int maxRow;
     private boolean showRowTotal;
+    private boolean showColTotal;
     private String themeColor;
     private int tableStyleGroup;
     private boolean showColTotal;
@@ -58,6 +58,11 @@ public class BITableWidgetStyle implements IWidgetStyle {
     @Override
     public int getTableStyleGroup() {
         return tableStyleGroup;
+    }
+
+    @Override
+    public boolean isShowColTotal() {
+        return showColTotal;
     }
 
     @Override
