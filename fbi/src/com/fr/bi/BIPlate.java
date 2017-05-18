@@ -329,9 +329,6 @@ public class BIPlate extends AbstractFSPlate {
         return (String[]) ArrayUtils.addAll(FsResourceHelper.getFsJs(), new String[]{
                 "/com/fr/bi/web/cross/js/usermanager/bi.usermanager.js",
                 "/com/fr/bi/web/cross/js/bi.user.manager.js",
-                "/com/fr/bi/web/cross/js/effect/create.by.me.js",
-                "/com/fr/bi/web/cross/js/effect/share.to.me.js",
-                "/com/fr/bi/web/cross/js/effect/allreports.js",
                 "/com/fr/bi/web/cross/js/bi.share.js",
                 "/com/fr/bi/web/cross/js/theme/bi.chartpreview.js",
                 "/com/fr/bi/web/cross/js/theme/bi.stylesetting.js",
