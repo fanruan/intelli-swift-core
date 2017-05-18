@@ -88,6 +88,7 @@ public class VanTreeMapWidget extends VanChartWidget{
     private void createTopLeftSeries(JSONObject originData, double scale, JSONArray data) throws JSONException{
         JSONObject top = originData.getJSONObject("t"), left = originData.getJSONObject("l");
         JSONArray topC = top.getJSONArray("c"), leftC = left.getJSONArray("c");
+        BIDimension seriesDim = this.getSeriesDimension(), categoryDim = this.getCategoryDimension();
 
         for (int i = 0; i < topC.length(); i++) {
             JSONArray children = JSONArray.create();
@@ -96,16 +97,18 @@ public class VanTreeMapWidget extends VanChartWidget{
             double sum = 0;
             for (int j = 0; j < leftC.length(); j++) {
                 JSONObject lObj = leftC.getJSONObject(j);
-                String name = lObj.getString("n");
+                String name = lObj.getString("n"), formattedName = this.formatDimension(categoryDim, name);
                 JSONArray s = lObj.getJSONObject("s").getJSONArray("c").getJSONObject(i).getJSONArray("s");
                 double value = (s.isNull(0) ? 0 : s.getDouble(0)) / scale;
 
                 sum += value;
 
-                children.put(JSONObject.create().put("name", name).put("value", value));
+                children.put(JSONObject.create().put("name", formattedName).put(LONG_DATE, this.getLongDate(formattedName, name)).put("value", value));
             }
 
-            data.put(JSONObject.create().put("name", tObj.getString("n")).put("value", sum).put("children", children));
+            String name = tObj.getString("n"), formattedName = this.formatDimension(seriesDim, name);
+
+            data.put(JSONObject.create().put("name", formattedName).put(LONG_DATE, this.getLongDate(formattedName, name)).put("value", sum).put("children", children));
         }
     }
 
@@ -119,15 +122,17 @@ public class VanTreeMapWidget extends VanChartWidget{
 
         for (int j = 0; j < childrenC.length(); j++) {
             JSONObject lObj = childrenC.getJSONObject(j);
-            String name = lObj.getString("n");
+            BIDimension dimension = hasFirstLevel ? this.getCategoryDimension() : this.getSeriesDimension();
+            String name = lObj.getString("n"), formattedName = this.formatDimension(dimension, name);
+
             JSONArray s = lObj.getJSONArray("s");
             double value = (s.isNull(0) ? 0 : s.getDouble(0)) / scale;
 
             if(hasFirstLevel) {
                 sum += value;
-                children.put(JSONObject.create().put("name", name).put("value", value));
+                children.put(JSONObject.create().put("name", formattedName).put(LONG_DATE, this.getLongDate(formattedName, name)).put("value", value));
             } else if(hasSecondLevel){
-                data.put(JSONObject.create().put("name", name).put("value", value));
+                data.put(JSONObject.create().put("name", formattedName).put(LONG_DATE, this.getLongDate(formattedName, name)).put("value", value));
             }
         }
 
