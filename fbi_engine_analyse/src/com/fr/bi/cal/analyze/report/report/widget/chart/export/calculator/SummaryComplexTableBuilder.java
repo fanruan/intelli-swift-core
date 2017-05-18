@@ -36,7 +36,6 @@ public class SummaryComplexTableBuilder extends TableAbstractDataBuilder {
     public void initAttrs() throws Exception {
         super.initAllAttrs();
         refreshDimsInfo();
-
     }
 
     @Override
@@ -158,7 +157,6 @@ public class SummaryComplexTableBuilder extends TableAbstractDataBuilder {
         itemNode.setDId(targetIds.get(j));
         itemNode.setValue(s.getString(j));
         itemNode.setStyles(SummaryTableStyleHelper.getLastSummaryStyles(styleSetting.getThemeColor(), styleSetting.getTableStyleGroup()));
-//        itemNode.setStyles(SummaryTableStyleHelper.getLastSummaryStyles("", ""));
         outerValues.add(itemNode);
     }
 
@@ -252,16 +250,16 @@ public class SummaryComplexTableBuilder extends TableAbstractDataBuilder {
         for (int k = 0; k < singleTable.getItems().size(); k++) {
             parseRowTableItems(singleTable.getItems().get(k).createJSON(), rowValues);
         }
-        for (int length = 0; length < singleTable.createJSON().getJSONArray("items").length(); length++) {
-            ITableItem item = createItemByRowValues(singleTable.getItems().get(length), rowValues);
-            if (tempItems.size() <= i) {
-                tempItems.add(item);
-            }
+//        for (int length = 0; length < singleTable.getItems().size(); length++) {
+//            createItemByRowValues(singleTable.getItems().get(length), rowValues);
+//        }
+        if (j == 0) {
+            tempItems.addAll(singleTable.getItems());
         }
         if (i == 0) {
-            for (int length = 0; length < singleTable.createJSON().getJSONArray("crossItems").length(); length++) {
+            for (int length = 0; length < singleTable.getCrossItems().size(); length++) {
                 BIBasicTableItem item = new BIBasicTableItem();
-                item.parseJSON(singleTable.createJSON().getJSONArray("crossItems").getJSONObject(length));
+                item.parseJSON(singleTable.getCrossItems().get(i).createJSON());
                 if (tempCrossItems.size() > 0) {
                     List<ITableItem> children = tempCrossItems.get(0).getChildren();
                     children.addAll(item.getChildren());
@@ -273,62 +271,52 @@ public class SummaryComplexTableBuilder extends TableAbstractDataBuilder {
         }
     }
 
-    private void mergeItems(List<ITableItem> tempItems, ITableItem itemByRowValues) {
-    }
-
-    private ITableItem createItemByRowValues(ITableItem item, JSONObject rowValues) throws Exception {
-        if (null == rowValues || rowValues.length() == 0) {
-            return item;
-        }
-
-        item.setValues(convertToItemList(rowValues.has(OUTERSUM) ? rowValues.getJSONArray(OUTERSUM) : new JSONArray()));
-        for (ITableItem tableItem : item.getChildren()) {
-            tableItem.setValues(convertToItemList(rowValues.getJSONArray((null == tableItem.getDId() ? "" : tableItem.getDId()) + tableItem.getValue())));
-        }
-        return item;
-    }
+//    private ITableItem createItemByRowValues(ITableItem item, JSONObject rowValues) throws Exception {
+//        if (null == rowValues || rowValues.length() == 0) {
+//            return item;
+//        }
+//
+//        item.setValues(convertToItemList(rowValues.has(OUTERSUM) ? rowValues.getJSONArray(OUTERSUM) : new JSONArray()));
+//        for (ITableItem tableItem : item.getChildren()) {
+//            tableItem.setValues(convertToItemList(rowValues.getJSONArray((null == tableItem.getDId() ? "" : tableItem.getDId()) + tableItem.getValue())));
+//        }
+//        return item;
+//    }
 
     private void parseRowTableCrossItems(List<ITableItem> tempCrossItems) throws Exception {
-        JSONArray crossArray = new JSONArray();
+        List<ITableItem> crossArray = new ArrayList<ITableItem>();
         for (ITableItem tempCrossItem : tempCrossItems) {
             for (int i = 0; i < tempCrossItem.createJSON().getJSONArray("children").length(); i++) {
-                crossArray.put(tempCrossItem.createJSON().getJSONArray("children").get(i));
+                crossArray.add(tempCrossItem.getChildren().get(i));
             }
         }
-        crossItems.put(new JSONObject().put("children", crossArray));
+        ITableItem item = new BIBasicTableItem();
+        item.setChildren(crossArray);
+        crossItems.add(item);
     }
 
     // 处理列 针对于children
     // 要将所有的最外层的values处理成children
     private void parseColTableItems(List<ITableItem> tempItems) throws Exception {
-        List<ITableItem> children = new ArrayList<ITableItem>();
         for (int i = 0; i < tempItems.size(); i++) {
             boolean isSummary = showRowTotal && targetIds.size() > 0 && (isColRegionExist() || isRowRegionExist()) && !isOnlyCrossAndTarget();
             if (isSummary) {
                 BIBasicTableItem summaryValueItem = new BIBasicTableItem();
                 summaryValueItem.setValue(SUMMARY);
-                JSONArray tempArray = new JSONArray();
-                for (ITableItem tempItem : tempItems) {
-                    tempArray.put(tempItem.createJSON());
-                }
+                summaryValueItem.setValues(tempItems.get(i).getValues());
                 summaryValueItem.setStyles(SummaryTableStyleHelper.getLastSummaryStyles(styleSetting.getThemeColor(), styleSetting.getTableStyleGroup()));
-                summaryValueItem.setValues(convertToItemList(tempArray));
                 List<ITableItem> childrenAddSummaryValue = tempItems.get(i).getChildren();
                 childrenAddSummaryValue.add(summaryValueItem);
                 tempItems.get(i).setChildren(childrenAddSummaryValue);
+                tempItems.get(i).setValues(null);
             }
-            children.add(tempItems.get(i));
-            items = new ArrayList<ITableItem>();
-            BIBasicTableItem tempItem = new BIBasicTableItem();
-            tempItem.setChildren(children);
-            items.add(tempItem);
+            items.add(tempItems.get(i));
         }
     }
 
     //对于首层，可以以行号作为key，其他层以dId + text作为key
     //一般只处理有values（同时有children的表示合计、否则表示相应的值）
     private void parseRowTableItems(JSONObject data, JSONObject rowValues) throws JSONException {
-        //最外层的合计 可以通过data中是否包含dId来确定
         //最外层的合计 可以通过data中是否包含dId来确定
         if (data.has("children") && data.has("values") && !data.has("dId")) {
             if (rowValues.has(OUTERSUM)) {
@@ -401,9 +389,6 @@ public class SummaryComplexTableBuilder extends TableAbstractDataBuilder {
     private BITableDataConstructor createSingleCrossTableItems(JSONObject tableData, Map<Integer, List<JSONObject>> dimsByDataPos) throws Exception {
         SummaryCrossTableDataBuilder builder = new SummaryCrossTableDataBuilder(dimsByDataPos, tableData, new BITableWidgetStyle());
         builder.initAttrs();
-//        if (isColRegionExist() && !isRowRegionExist()) {
-//            builder.amendment();
-//        }
         builder.createHeaders();
         builder.createItems();
         BITableDataConstructor data = builder.createTableData();
@@ -463,10 +448,10 @@ public class SummaryComplexTableBuilder extends TableAbstractDataBuilder {
         return rowRegions;
     }
 
-    protected JSONArray createCrossItems(JSONObject top) throws Exception {
-        JSONObject crossItem = new JSONObject();
-        List children = createCrossPartItems(top.getJSONArray("c"), 0, new ReportNode());
-        crossItem.put("children", children);
+    protected List<ITableItem> createCrossItems(JSONObject top) throws Exception {
+        ITableItem crossItem = new BIBasicTableItem();
+        List<ITableItem> children = createCrossPartItems(top.getJSONArray("c"), 0, new ReportNode());
+        crossItem.setChildren(children);
         if (showColTotal) {
             if (isRowRegionExist()) {
                 for (int i = 0; i < targetIds.size(); i++) {
@@ -474,7 +459,7 @@ public class SummaryComplexTableBuilder extends TableAbstractDataBuilder {
                     item.setDId(targetIds.get(i));
                     item.setValue("summary");
                     item.setStyles(SummaryTableStyleHelper.getHeaderStyles(styleSetting.getThemeColor(), styleSetting.getTableStyleGroup()));
-                    children.add(item.createJSON());
+                    children.add(item);
                 }
 
             } else {
@@ -483,11 +468,13 @@ public class SummaryComplexTableBuilder extends TableAbstractDataBuilder {
                     item.setValue("summary");
                     item.setStyles(SummaryTableStyleHelper.getHeaderStyles(styleSetting.getThemeColor(), styleSetting.getTableStyleGroup()));
                     item.setDId(targetId);
-                    crossItem.getJSONArray("children").put(item.createJSON());
+                    crossItem.getChildren().add(item);
                 }
             }
         }
-        return new JSONArray().put(crossItem);
+        List<ITableItem> crossItems = new ArrayList<ITableItem>();
+        crossItems.add(crossItem);
+        return crossItems;
     }
 
     //获取有效的列表头区域
@@ -510,17 +497,24 @@ public class SummaryComplexTableBuilder extends TableAbstractDataBuilder {
     }
 
     protected void refreshDimsInfo() throws Exception {
+        loop:
         for (Integer integer : dimAndTar.keySet()) {
             if (BITableExportDataHelper.isDimensionRegion1ByRegionType(integer)) {
                 for (JSONObject s : dimAndTar.get(integer)) {
                     dimIds.add(s.getString("dId"));
                 }
-
+                if (dimIds.size() > 0) {
+                    break loop;
+                }
             }
         }
+        loop:
         if (dimAndTar.containsKey(Integer.valueOf(BIReportConstant.REGION.DIMENSION2))) {
             for (JSONObject s : dimAndTar.get(Integer.valueOf(BIReportConstant.REGION.DIMENSION2))) {
                 crossDimIds.add(s.getString("dId"));
+            }
+            if (crossDimIds.size() > 0) {
+                break loop;
             }
         }
         //使用中的指标
