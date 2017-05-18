@@ -124,6 +124,10 @@ public abstract class VanChartWidget extends TableWidget {
 
     public abstract String getSeriesType(String dimensionID);
 
+    public String getSeriesType(String dimensionID, String seriesName){
+        return this.getSeriesType(dimensionID);
+    }
+
     public JSONObject createOptions(JSONObject globalStyle, JSONObject data) throws Exception {
         JSONObject options = JSONObject.create();
         JSONObject settings = this.getDetailChartSetting();
@@ -170,8 +174,16 @@ public abstract class VanChartWidget extends TableWidget {
         return false;
     }
 
+    protected boolean isStacked(String dimensionID, String seriesName){
+        return this.isStacked(dimensionID);
+    }
+
     protected String getStackedKey(String dimensionID) {
         return dimensionID;
+    }
+
+    protected String getStackedKey(String dimensionID, String seriesName){
+        return this.getStackedKey(dimensionID);
     }
 
     protected int yAxisIndex(String dimensionID) {
@@ -679,14 +691,13 @@ public abstract class VanChartWidget extends TableWidget {
         ArrayList<Double> valueList = new ArrayList<Double>();
         JSONObject top = originData.getJSONObject("t"), left = originData.getJSONObject("l");
         JSONArray topC = top.getJSONArray("c"), leftC = left.getJSONArray("c");
-        String id = targetIDs[0], stackedKey = this.getStackedKey(id);
-        boolean isStacked = this.isStacked(id);
-        int yAxis = this.yAxisIndex(id);
-
+        String id = targetIDs[0];
         double numberScale = this.numberScale(targetIDs[0]);
         for (int i = 0; i < topC.length(); i++) {
             JSONObject tObj = topC.getJSONObject(i);
             String name = tObj.getString("n");
+            String stackedKey = this.getStackedKey(id, name);
+            boolean isStacked = this.isStacked(id, name);
             JSONArray data = JSONArray.create();
             for (int j = 0; j < leftC.length(); j++) {
                 JSONObject lObj = leftC.getJSONObject(j);
@@ -697,12 +708,12 @@ public abstract class VanChartWidget extends TableWidget {
                 valueList.add(y);
             }
             JSONObject ser = JSONObject.create().put("data", data).put("name", name)
-                    .put("type", this.getSeriesType(targetIDs[0]))
+                    .put("type", this.getSeriesType(id, name))
                     .put("dimensionIDs", dimensionIDs)
-                    .put("targetIDs", JSONArray.create().put(targetIDs[0]));
+                    .put("targetIDs", JSONArray.create().put(id));
 
             if (isStacked) {
-                ser.put("stack", stackedKey + yAxis);
+                ser.put("stack", stackedKey);
             }
             series.put(ser);
         }
