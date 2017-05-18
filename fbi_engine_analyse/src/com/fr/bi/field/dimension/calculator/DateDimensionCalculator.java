@@ -64,21 +64,26 @@ public class DateDimensionCalculator extends AbstractDimensionCalculator {
         }
     }
 
+    private boolean isLongValueGroupType() {
+        int groupType = getGroup().getType();
+        return groupType == BIReportConstant.GROUP.YMD || groupType == BIReportConstant.GROUP.YMDH ||
+                groupType == BIReportConstant.GROUP.YMDHM || groupType == BIReportConstant.GROUP.YMDHMS ||
+                groupType == BIReportConstant.GROUP.YM || groupType == BIReportConstant.GROUP.YW ||
+                groupType == BIReportConstant.GROUP.YS;
+    }
+
     @Override
     public Object convertToOriginValue(String stringValue) {
         // 前端传过来的数据进行转换为后台的原始底层数据，主要是空值的处理
-        // 处理的真是够xx的，只有YMD，YM, YS, YW是long类型的
+        // 处理的真是够xx的，只有一个YMD是long类型的
         // TODO 现在新增的分组中似乎不仅仅是YMD是long类型的,所以这边对于时间类型的各种分组仍然需要进一步的进行测试??
-        int groupType = getGroup().getType();
         if (StringUtils.isEmpty(stringValue)) {
-            if (groupType == BIReportConstant.GROUP.YMD || groupType == BIReportConstant.GROUP.YM
-                    || groupType == BIReportConstant.GROUP.YW || groupType == BIReportConstant.GROUP.YS) {
+            if (isLongValueGroupType()) {
                 return NIOConstant.LONG.NULL_VALUE;
             }
             return NIOConstant.INTEGER.NULL_VALUE;
         }
-        if (groupType == BIReportConstant.GROUP.YMD || groupType == BIReportConstant.GROUP.YM
-                || groupType == BIReportConstant.GROUP.YW || groupType == BIReportConstant.GROUP.YS){
+        if (isLongValueGroupType()){
             return Long.parseLong(stringValue);
         }
         return Integer.parseInt(stringValue);
