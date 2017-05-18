@@ -5,6 +5,7 @@ import com.finebi.cube.location.ICubeResourceLocation;
 import com.finebi.cube.structure.column.BICubeIntegerColumn;
 import com.fr.bi.base.ValueConverterFactory;
 import com.fr.bi.stable.constant.DateConstant;
+import com.fr.bi.stable.io.newio.NIOConstant;
 
 
 /**
@@ -20,7 +21,7 @@ public class BICubeDayColumn extends BICubeDateSubColumn<Integer> {
 
     @Override
     protected Integer convertDate(Long date) {
-        return date != null ? (Integer) ValueConverterFactory.createDateValueConverter(DateConstant.DATE.DAY).result2Value(date) : null;
+        return date != null ? (Integer) ValueConverterFactory.createDateValueConverter(DateConstant.DATE.DAY).result2Value(date) : NIOConstant.INTEGER.NULL_VALUE;
     }
 
     @Override
@@ -30,5 +31,15 @@ public class BICubeDayColumn extends BICubeDateSubColumn<Integer> {
 
     public int getGroupValue(int position) {
         return ((BICubeIntegerColumn)selfColumnEntity).getGroupValue(position);
+    }
+
+    /**
+     * 获取空值表示对象
+     *
+     * @return
+     */
+    @Override
+    public Integer getCubeNullValue() {
+        return NIOConstant.INTEGER.NULL_VALUE;
     }
 }

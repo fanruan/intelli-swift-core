@@ -6,6 +6,8 @@ import com.fr.bi.base.key.BIKey;
 import com.fr.bi.field.dimension.calculator.DateDimensionCalculator;
 import com.fr.bi.stable.engine.index.key.IndexTypeKey;
 import com.fr.bi.stable.report.result.DimensionCalculator;
+import com.fr.bi.stable.utils.BICollectionUtils;
+import com.fr.stable.StringUtils;
 
 import java.util.List;
 
@@ -45,6 +47,17 @@ public class BIDateDimension extends BIAbstractDimension {
 
     @Override
     public Object getValueByType(Object data) {
-        return data == null || !(data instanceof Number) ? null : Long.parseLong(data.toString());
+        return data;
+    }
+
+    /**
+     * 转化string
+     *
+     * @param v 值
+     * @return 转化的string
+     */
+    @Override
+    public String toString(Object v) {
+        return BICollectionUtils.cubeValueToWebDisplay(v) == null ? StringUtils.EMPTY : v.toString();
     }
 }

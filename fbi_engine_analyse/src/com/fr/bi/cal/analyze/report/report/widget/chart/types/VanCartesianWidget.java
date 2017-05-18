@@ -1,11 +1,9 @@
 package com.fr.bi.cal.analyze.report.report.widget.chart.types;
 
 import com.finebi.cube.common.log.BILoggerFactory;
-import com.fr.base.Formula;
-import com.fr.base.ParameterMapNameSpace;
 import com.fr.bi.cal.analyze.report.report.widget.VanChartWidget;
-import  com.fr.bi.field.filtervalue.FilterValueFactory;
 import com.fr.bi.conf.report.widget.field.filtervalue.FilterValue;
+import com.fr.bi.field.filtervalue.FilterValueFactory;
 import com.fr.bi.field.target.target.BISummaryTarget;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.general.ComparatorUtils;
@@ -13,12 +11,10 @@ import com.fr.general.IOUtils;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
-import com.fr.script.Calculator;
 import com.fr.stable.StableUtils;
 import com.fr.stable.StringUtils;
 
 import java.awt.image.BufferedImage;
-import java.util.HashMap;
 
 /**
  * Created by eason on 2017/3/2.
@@ -468,7 +464,9 @@ public abstract class VanCartesianWidget extends VanChartWidget {
                 .put("labelStyle", labelStyle.optJSONObject("textStyle"))
                 .put("labelRotation", labelStyle.optInt("textDirection"))
                 .put("lineColor", settings.optString("rightYLineColor")).put("lineWidth", 1)
-                .put("position", "right").put("reversed", settings.optBoolean("rightYReverse", false));
+                .put("position", "right").put("reversed", settings.optBoolean("rightYReverse", false))
+                .put("gridLineWidth", settings.optBoolean("hShowGridLine") ? 1 : 0)
+                .put("gridLineColor", settings.optString("hGridLineColor"));
 
         if(settings.optBoolean("rightYShowCustomScale")){
             this.putMinMaxInterval(right, settings.optJSONObject("rightYCustomScale"));
@@ -495,7 +493,9 @@ public abstract class VanCartesianWidget extends VanChartWidget {
                 .put("labelStyle", labelStyle.optJSONObject("textStyle"))
                 .put("labelRotation", labelStyle.optInt("textDirection"))
                 .put("lineColor", settings.optString("rightY2LineColor")).put("lineWidth", 1)
-                .put("position", "right").put("reversed", settings.optBoolean("rightY2Reverse", false));
+                .put("position", "right").put("reversed", settings.optBoolean("rightY2Reverse", false))
+                .put("gridLineWidth", settings.optBoolean("hShowGridLine") ? 1 : 0)
+                .put("gridLineColor", settings.optString("hGridLineColor"));
 
         if(settings.optBoolean("rightY2ShowCustomScale")){
             this.putMinMaxInterval(right2, settings.optJSONObject("rightY2CustomScale"));
@@ -567,5 +567,78 @@ public abstract class VanCartesianWidget extends VanChartWidget {
         if(StringUtils.isNotBlank(interval)){
             axis.put("tickInterval", StableUtils.string2Number(interval).doubleValue());
         }
+    }
+
+
+    //=========================about compare chart==========================================================
+    private static final double DEFAULT_MAX = 100;
+
+    //make yaxis maxValue Double
+    protected void dealCompareChartYAxis(JSONObject settings) throws JSONException{
+
+        double leftYMax = -Double.MAX_VALUE, rightYMax = -Double.MAX_VALUE;
+        String[] ids = this.getUsedTargetID();
+
+        for(String id : ids){
+
+            Double[] values = this.getValuesByID(id);
+
+            int yAxis = this.yAxisIndex(id);
+            if(yAxis == 0){
+                for (int j = 0, count = values.length; j < count; j++) {
+                    leftYMax = Math.max(leftYMax, values[j].doubleValue());
+                }
+            }else{
+                for (int j = 0, count = values.length; j < count; j++) {
+                    rightYMax = Math.max(rightYMax, values[j].doubleValue());
+                }
+            }
+        }
+
+        if(leftYMax == -Double.MAX_VALUE){
+            leftYMax = DEFAULT_MAX;
+        }
+
+        if(rightYMax == -Double.MAX_VALUE){
+            leftYMax = DEFAULT_MAX;
+        }
+
+        settings.put("rightYReverse", true);
+
+        if(!settings.optBoolean("leftYShowCustomScale")){
+            settings
+                    .put("leftYShowCustomScale", true)
+                    .put("leftYCustomScale", JSONObject.create().put("maxScale", 2 * leftYMax));
+        }
+
+        if(!settings.optBoolean("rightYShowCustomScale")){
+            settings
+                    .put("rightYShowCustomScale", true)
+                    .put("rightYCustomScale", JSONObject.create().put("maxScale", 2 * rightYMax));
+        }
+
+    }
+
+    protected JSONObject createEmptyCategoryAxis(JSONObject settings) throws JSONException{
+        return JSONObject.create()
+                .put("type", "category")
+                .put("position", "top")
+                .put("showLabel", false)
+                .put("lineWidth", 0)
+                .put("enableTick", false)
+                .put("labelStyle", settings.optJSONObject("catLabelStyle"));
+    }
+
+    protected JSONArray dealSeriesWithEmptyAxis(JSONArray series) throws JSONException{
+        for(int i = 0, len = series.length(); i < len; i++){
+            JSONObject ser = series.getJSONObject(i);
+
+            int yAxisIndex = ser.optInt("yAxis");
+            if(yAxisIndex == 1){
+                ser.put("xAxis", 1);
+            }
+        }
+
+        return series;
     }
 }

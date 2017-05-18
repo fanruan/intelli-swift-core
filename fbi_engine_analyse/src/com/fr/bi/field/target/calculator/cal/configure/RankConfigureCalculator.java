@@ -8,6 +8,7 @@ import com.fr.bi.stable.operation.sort.comp.RankConfDSCComparator;
 import com.fr.bi.stable.report.key.TargetGettingKey;
 import com.fr.bi.stable.report.result.BICrossNode;
 import com.fr.bi.stable.report.result.BINode;
+import com.fr.bi.stable.utils.BICollectionUtils;
 import com.fr.bi.stable.utils.CubeBaseUtils;
 
 import java.util.*;
@@ -113,9 +114,14 @@ public class RankConfigureCalculator extends AbstractConfigureCalculator {
             int rank = 1;
             Iterator iter = sortMap.entrySet().iterator();
             while (iter.hasNext()) {
-                Map.Entry entry = (Map.Entry) iter.next();
-                result.put(entry.getKey(), new Integer(rank));
-                rank += ((Integer) entry.getValue()).intValue();
+                Map.Entry<Comparable, Integer> entry = (Map.Entry) iter.next();
+                Comparable keyValue = entry.getKey();
+                // 空值就进行跳过 空值不参与排序
+                if (BICollectionUtils.isCubeNullKey(keyValue)) {
+                    continue;
+                }
+                result.put(keyValue, new Integer(rank));
+                rank += entry.getValue().intValue();
             }
             cursor_node = temp_node;
             while (isNotEnd(cursor_node, deep)) {

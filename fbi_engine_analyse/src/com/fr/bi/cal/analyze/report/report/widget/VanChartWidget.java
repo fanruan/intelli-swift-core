@@ -38,8 +38,6 @@ public abstract class VanChartWidget extends TableWidget {
     private static final double BLUE_DET = 0.114;
     private static final double GRAY = 192;
 
-    private static final String STACK_ID_PREFIX = "STACKID";
-
     //标签和数据点提示的内容
     public static final String CATEGORY = "${CATEGORY}";
     public static final String SERIES = "${SERIES}";
@@ -600,7 +598,7 @@ public abstract class VanChartWidget extends TableWidget {
         return String.format("function(){return BI.contentFormat(arguments[0], \"%s\")}", format);
     }
 
-    private BISummaryTarget getSerBITarget(JSONObject ser) throws Exception{
+    protected BISummaryTarget getSerBITarget(JSONObject ser) throws Exception{
         JSONArray ids = ser.optJSONArray("targetIDs");
         return ids == null ? null : getBITargetByID(ids.optString(0));
     }
@@ -681,7 +679,10 @@ public abstract class VanChartWidget extends TableWidget {
         ArrayList<Double> valueList = new ArrayList<Double>();
         JSONObject top = originData.getJSONObject("t"), left = originData.getJSONObject("l");
         JSONArray topC = top.getJSONArray("c"), leftC = left.getJSONArray("c");
-        boolean isStacked = this.isStacked(targetIDs[0]);
+        String id = targetIDs[0], stackedKey = this.getStackedKey(id);
+        boolean isStacked = this.isStacked(id);
+        int yAxis = this.yAxisIndex(id);
+
         double numberScale = this.numberScale(targetIDs[0]);
         for (int i = 0; i < topC.length(); i++) {
             JSONObject tObj = topC.getJSONObject(i);
@@ -701,8 +702,7 @@ public abstract class VanChartWidget extends TableWidget {
                     .put("targetIDs", JSONArray.create().put(targetIDs[0]));
 
             if (isStacked) {
-                //todo:应该也有问题，不知道怎么改，遇到bug的话参照createSeriesWithChildren里面的改法
-                ser.put("stack", targetIDs[0]);
+                ser.put("stack", stackedKey + yAxis);
             }
             series.put(ser);
         }
@@ -744,7 +744,7 @@ public abstract class VanChartWidget extends TableWidget {
                     .put("dimensionIDs", dimensionIDs)
                     .put("targetIDs", JSONArray.create().put(id));
             if (this.isStacked(id)) {
-                ser.put("stack", STACK_ID_PREFIX + yAxis);
+                ser.put("stack", stackedKey + yAxis);
             }
             series.put(ser);
             this.idValueMap.put(id, valueList);

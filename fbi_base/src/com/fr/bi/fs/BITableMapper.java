@@ -16,6 +16,7 @@ public class BITableMapper {
 
     public static class BI_REPORT_NODE_LOCK {
 //        public static final String REPORT_NODE_LOCK_ID = "reportNodeLockId";
+        public static final String FIELD_EDITUSERID = "currentEditUserId";
         public static final String FIELD_USERID = "userId";
         public static final String REPORT_ID = "reportId";
         public static final String SESSIONID = "sessionId";
@@ -24,10 +25,11 @@ public class BITableMapper {
         public static final ObjectTableMapper TABLE_MAPPER = new ObjectTableMapper(BIReportNodeLock.class, new FieldColumnMapper[]{
                 new PrimaryKeyFCMapper("id", Types.BIGINT, new ColumnSize(10)),
                 new CommonFieldColumnMapper(FIELD_USERID, Types.BIGINT, new ColumnSize(10), false),
+                new CommonFieldColumnMapper(FIELD_EDITUSERID, Types.BIGINT, new ColumnSize(10), false),
                 new CommonFieldColumnMapper(REPORT_ID, Types.BIGINT, new ColumnSize(10), false),
                 new CommonFieldColumnMapper(LOCKED_TIME, Types.BIGINT, new ColumnSize(10), false),
                 new CommonFieldColumnMapper(SESSIONID, Types.VARCHAR, new ColumnSize(50),false),
-        }, new String[][]{new String[]{/*REPORT_NODE_LOCK_ID,*/FIELD_USERID, REPORT_ID,LOCKED_TIME, SESSIONID}});
+        }, new String[][]{new String[]{/*REPORT_NODE_LOCK_ID,*/FIELD_USERID,FIELD_EDITUSERID, REPORT_ID,LOCKED_TIME, SESSIONID}});
     }
 
     public static class BI_CONF_TABLE_LOCK {

@@ -8,8 +8,10 @@ import com.finebi.cube.relation.BITableSourceRelation;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.stable.constant.BIReportConstant;
+import com.fr.bi.stable.io.newio.NIOConstant;
 import com.fr.bi.stable.operation.sort.comp.ComparatorFacotry;
 import com.fr.bi.stable.structure.collection.map.CubeTreeMap;
+import com.fr.stable.StringUtils;
 
 import java.util.Comparator;
 import java.util.Iterator;
@@ -64,6 +66,15 @@ public class DateDimensionCalculator extends AbstractDimensionCalculator {
 
     @Override
     public Object convertToOriginValue(String stringValue) {
+        // 前端传过来的数据进行转换为后台的原始底层数据，主要是空值的处理
+        // 处理的真是够xx的，只有一个YMD是long类型的
+        // TODO 现在新增的分组中似乎不仅仅是YMD是long类型的,所以这边对于时间类型的各种分组仍然需要进一步的进行测试??
+        if (StringUtils.isEmpty(stringValue)) {
+            if (getGroup().getType() == BIReportConstant.GROUP.YMD) {
+                return NIOConstant.LONG.NULL_VALUE;
+            }
+            return NIOConstant.INTEGER.NULL_VALUE;
+        }
         if (getGroup().getType() == BIReportConstant.GROUP.YMD){
             return Long.parseLong(stringValue);
         }

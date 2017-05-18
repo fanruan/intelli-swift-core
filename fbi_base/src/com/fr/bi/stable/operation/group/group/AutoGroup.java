@@ -55,7 +55,7 @@ public class AutoGroup extends AbstractGroup {
         Iterator<Map.Entry<Number, GroupValueIndex>> it = baseMap.iterator();
         while (it.hasNext()) {
             Map.Entry<Number, GroupValueIndex> entry = it.next();
-            if (entry.getKey() == null || ComparatorUtils.equals(entry.getKey(), "")) {
+            if (BICollectionUtils.isCubeNullKey(entry.getKey())) {
                 if (resultMap.get("") == null) {
                     resultMap.put("", entry.getValue());
                 } else {

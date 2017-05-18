@@ -29,6 +29,14 @@ public class VanPercentStackedColumnWidget extends VanStackedColumnWidget{
         return series;
     }
 
+    protected JSONObject parseLeftValueAxis(JSONObject settings) throws JSONException{
+        JSONObject left = super.parseLeftValueAxis(settings);
+
+        left.put("formatter", "function(){return this * 100}");
+
+        return left;
+    }
+
     //百分比堆积的图，所谓的值，是百分比
     protected String tooltipValueKey(){
         return "percentFormat";

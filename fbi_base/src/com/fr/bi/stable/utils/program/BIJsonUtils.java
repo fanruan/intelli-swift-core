@@ -84,8 +84,10 @@ public class BIJsonUtils {
 
     public static JSONArray arrayConcat(JSONArray left, JSONArray right) throws JSONException {
         JSONArray res = new JSONArray(left.toString());
-        for (int i = 0; i < right.length(); i++) {
-            res.put(right.get(i));
+        if (right != null) {
+            for (int i = 0; i < right.length(); i++) {
+                res.put(right.get(i));
+            }
         }
         return res;
     }

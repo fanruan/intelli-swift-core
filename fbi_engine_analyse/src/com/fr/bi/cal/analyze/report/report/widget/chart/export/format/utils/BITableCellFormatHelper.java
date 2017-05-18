@@ -44,7 +44,7 @@ public class BITableCellFormatHelper {
             int numLevel = setting.optInt("numLevel", DEFAULT_SCALE);
             switch (numLevel) {
                 case BIReportConstant.TARGET_STYLE.NUM_LEVEL.TEN_THOUSAND:
-                    value /= Math.pow(10, 3);
+                    value /= Math.pow(10, 4);
                     break;
                 case BIReportConstant.TARGET_STYLE.NUM_LEVEL.MILLION:
                     value /= Math.pow(10, 6);

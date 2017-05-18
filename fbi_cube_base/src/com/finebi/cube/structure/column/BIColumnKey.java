@@ -40,6 +40,8 @@ public final class BIColumnKey implements BIKey {
     //星期几（1-7）
     public static final String DATA_SUB_TYPE_WEEK = "_fineBI_sub_week_column_";
     public static final String DATA_SUB_TYPE_YEAR_MONTH_DAY = "_fineBI_sub_year_month_day_column_";
+
+
     public static final String DATA_SUB_TYPE_YEAR_MONTH = "_fineBI_sub_year_month_column_";
     public static final String DATA_SUB_TYPE_YEAR_SEASON = "_fineBI_sub_year_season_column_";
     public static final String DATA_SUB_TYPE_YEAR_WEEK_NUMBER = "_fineBI_sub_year_week_number_column_";

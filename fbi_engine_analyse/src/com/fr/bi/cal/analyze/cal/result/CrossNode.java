@@ -8,6 +8,7 @@ import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.report.key.TargetGettingKey;
 import com.fr.bi.stable.report.result.BICrossNode;
 import com.fr.bi.stable.structure.collection.map.ChildsMap;
+import com.fr.bi.stable.utils.BICollectionUtils;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
@@ -369,7 +370,7 @@ public class CrossNode implements BICrossNode {
         JSONArray summary = new JSONArray();
         jo.put("s", summary);
         for (int i = 0; i < keys.length; i++) {
-            summary.put(getSummaryValue(keys[i]));
+            summary.put(BICollectionUtils.cubeValueToWebDisplay(getSummaryValue(keys[i])));
         }
         if(keys.length == 0){
             summary.put("--");
