@@ -12,6 +12,10 @@ import com.fr.stable.StringUtils;
  */
 public class VanCombinationWidget extends VanCartesianWidget{
 
+    private static final int STACK_COLUMN = 1;
+    private static final int STACK_AREA_CURVE = 4;
+    private static final int STACK_AREA_STEP = 5;
+
     public JSONArray createSeries(JSONObject data) throws Exception{
         JSONArray series = super.createSeries(data);
 
@@ -87,7 +91,7 @@ public class VanCombinationWidget extends VanCartesianWidget{
             return this.getSeriesType(dimensionID);
         }
 
-        return item.optInt("type") == 1 ? "column" : "area";
+        return item.optInt("type") == STACK_COLUMN ? "column" : "area";
     }
 
     public boolean isStacked(String dimensionID, String seriesName){
@@ -112,7 +116,7 @@ public class VanCombinationWidget extends VanCartesianWidget{
             return VanCombineType.isCurve(type);
         }
 
-        return item.optInt("type") == 4;
+        return item.optInt("type") == STACK_AREA_CURVE;
 
     }
 
@@ -123,6 +127,6 @@ public class VanCombinationWidget extends VanCartesianWidget{
             return VanCombineType.isStep(type);
         }
 
-        return item.optInt("type") == 5;
+        return item.optInt("type") == STACK_AREA_STEP;
     }
 }
