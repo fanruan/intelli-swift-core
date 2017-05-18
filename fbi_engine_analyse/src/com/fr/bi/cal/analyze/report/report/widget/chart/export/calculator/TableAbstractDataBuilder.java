@@ -244,7 +244,6 @@ public abstract class TableAbstractDataBuilder implements IExcelDataBuilder {
     }
 
     protected List<ITableItem> createCrossItems(JSONObject top) throws Exception {
-//        JSONObject crossItem = new JSONObject();
         ITableItem crossItem = new BIBasicTableItem();
         List<ITableItem> children = createCrossPartItems(top.getJSONArray("c"), 0, new ReportNode());
         crossItem.setChildren(children);
@@ -254,14 +253,12 @@ public abstract class TableAbstractDataBuilder implements IExcelDataBuilder {
                 item.setStyles(SummaryTableStyleHelper.getLastSummaryStyles(styleSetting.getThemeColor(), styleSetting.getTableStyleGroup()));
                 item.setValue(SUMMARY);
                 crossItem.getChildren().add(item);
-//                crossItem.put("children", crossItem.getJSONArray("children").put(item.createJSON()));
             } else {
                 for (String targetId : targetIds) {
                     BIBasicTableItem item = new BIBasicTableItem();
                     item.setValue(SUMMARY);
                     item.setStyles(SummaryTableStyleHelper.getLastSummaryStyles(styleSetting.getThemeColor(), styleSetting.getTableStyleGroup()));
                     item.setDId(targetId);
-//                    crossItem.getJSONArray("children").put(item.createJSON());
                     crossItem.getChildren().add(item);
                 }
             }

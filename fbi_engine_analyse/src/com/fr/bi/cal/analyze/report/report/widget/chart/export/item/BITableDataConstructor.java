@@ -55,7 +55,11 @@ public class BITableDataConstructor implements JSONCreator {
             jo.put("items", itemArray);
         }
         if (null != crossItems) {
-            jo.put("crossItems", crossItems);
+            JSONArray itemArray = new JSONArray();
+            for (ITableItem item : crossItems) {
+                itemArray.put(item.createJSON());
+            }
+            jo.put("crossItems", itemArray);
         }
         if (null != widgetStyle) {
             jo.put("widgetStyle", widgetStyle.createJSON());
