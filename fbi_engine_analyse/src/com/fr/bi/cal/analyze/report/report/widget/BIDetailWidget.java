@@ -10,11 +10,11 @@ import com.fr.bi.cal.analyze.cal.detail.PolyCubeDetailECBlock;
 import com.fr.bi.cal.analyze.executor.detail.DetailExecutor;
 import com.fr.bi.cal.analyze.executor.paging.Paging;
 import com.fr.bi.cal.analyze.executor.paging.PagingFactory;
+import com.fr.bi.cal.analyze.report.report.widget.chart.export.calculator.DetailTableBuilder;
+import com.fr.bi.cal.analyze.report.report.widget.chart.export.calculator.IExcelDataBuilder;
+import com.fr.bi.cal.analyze.report.report.widget.chart.export.format.operation.BITableCellFormatOperation;
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.format.operation.ITableCellFormatOperation;
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.format.setting.BICellFormatSetting;
-import com.fr.bi.cal.analyze.report.report.widget.chart.export.format.operation.BITableCellDimFormatOperation;
-import com.fr.bi.cal.analyze.report.report.widget.chart.export.calculator.IExcelDataBuilder;
-import com.fr.bi.cal.analyze.report.report.widget.chart.export.calculator.DetailTableBuilder;
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.item.BITableDataConstructor;
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.utils.BITableConstructHelper;
 import com.fr.bi.cal.analyze.report.report.widget.detail.BIDetailReportSetting;
@@ -28,6 +28,7 @@ import com.fr.bi.conf.report.widget.field.target.filter.TargetFilter;
 import com.fr.bi.conf.session.BISessionProvider;
 import com.fr.bi.conf.utils.BIModuleUtils;
 import com.fr.bi.field.target.detailtarget.BIDetailTargetFactory;
+import com.fr.bi.field.target.detailtarget.field.BIDateDetailTarget;
 import com.fr.bi.field.target.detailtarget.formula.BINumberFormulaDetailTarget;
 import com.fr.bi.field.target.filter.TargetFilterFactory;
 import com.fr.bi.stable.constant.BIBaseConstant;
@@ -314,8 +315,12 @@ public class BIDetailWidget extends AbstractBIWidget {
         for (BIDetailTarget detailTarget : this.getTargets()) {
             BICellFormatSetting setting = new BICellFormatSetting();
             setting.parseJSON(detailTarget.getChartSetting().getSettings());
-            ITableCellFormatOperation BITableCellDimFormatOperation = new BITableCellDimFormatOperation(detailTarget.createColumnKey().getFieldType(), setting);
-            formatOperationMap.put(detailTarget.getId(), BITableCellDimFormatOperation);
+            int groupType = 0;
+            if (detailTarget instanceof BIDateDetailTarget) {
+                groupType = ((BIDateDetailTarget) detailTarget).getGroup().getType();
+            }
+            ITableCellFormatOperation op = new BITableCellFormatOperation(groupType, setting);
+            formatOperationMap.put(detailTarget.getId(), op);
         }
         return formatOperationMap;
     }

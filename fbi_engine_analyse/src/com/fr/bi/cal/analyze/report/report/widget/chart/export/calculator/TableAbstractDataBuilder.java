@@ -397,17 +397,17 @@ public abstract class TableAbstractDataBuilder implements IExcelDataBuilder {
                         headers.add(header);
                     }
                 }
-            } else if (item.createJSON().has("isSum") && item.createJSON().getBoolean("isSum")) {
+            } else if (isSUm(item.getDId())) {
                 //合计
-                item.setValue(SUMMARY + BITableExportDataHelper.getDimensionNameByID(dimAndTar, item.getDId()));
                 BITableHeader header = new BITableHeader();
+                header.setText(SUMMARY + BITableExportDataHelper.getDimensionNameByID(dimAndTar, item.getDId()));
                 header.parseJson(item.createJSON());
+                header.setSum(true);
                 headers.add(header);
             } else if (!(item.getValues() == null || item.getValues().size() == 0)) {
                 //单指标情况下，指标不显示，合并到上面
                 if (targetIds.size() == 1) {
                     BITableHeader header = new BITableHeader();
-                    header.parseJson(item.createJSON());
                     header.setText(item.getValue());
                     headers.add(header);
                 } else {
@@ -430,6 +430,10 @@ public abstract class TableAbstractDataBuilder implements IExcelDataBuilder {
                 headers.add(header);
             }
         }
+    }
+
+    private boolean isSUm(String dId) {
+        return !BIStringUtils.isBlankString(dId) && targetIds.contains(dId);
     }
 
 
@@ -702,14 +706,14 @@ public abstract class TableAbstractDataBuilder implements IExcelDataBuilder {
                 if (BIJsonUtils.isKeyValueSet(sum)) {
 //                    summary.put(getOneRowSummary(sum));
                     summary = BIJsonUtils.arrayConcat(summary, getOneRowSummary(sum));
-                }else {
+                } else {
                     summary.put(sum);
                 }
             }
         } else if (BIJsonUtils.isKeyValueSet(sums)) {
             JSONObject jo = new JSONObject(sums);
-            String c = jo.has("c")?jo.getString("c"):null;
-            String s = jo.has("s")?jo.getString("s"):null;
+            String c = jo.has("c") ? jo.getString("c") : null;
+            String s = jo.has("s") ? jo.getString("s") : null;
             //是否显示列汇总 并且有指标
             if (null != c && null != s) {
                 summary = BIJsonUtils.arrayConcat(summary, getOneRowSummary(c));

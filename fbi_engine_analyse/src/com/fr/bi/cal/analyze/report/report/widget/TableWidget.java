@@ -17,11 +17,10 @@ import com.fr.bi.cal.analyze.report.report.widget.chart.export.calculator.IExcel
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.calculator.SummaryComplexTableBuilder;
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.calculator.SummaryCrossTableDataBuilder;
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.calculator.SummaryGroupTableDataBuilder;
-import com.fr.bi.cal.analyze.report.report.widget.chart.export.format.operation.BITableCellDimFormatOperation;
-import com.fr.bi.cal.analyze.report.report.widget.chart.export.format.operation.BITableCellTargetFormatOperation;
+import com.fr.bi.cal.analyze.report.report.widget.chart.export.format.operation.BITableCellFormatOperation;
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.format.operation.ITableCellFormatOperation;
-import com.fr.bi.cal.analyze.report.report.widget.chart.export.format.setting.ICellFormatSetting;
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.format.setting.BICellFormatSetting;
+import com.fr.bi.cal.analyze.report.report.widget.chart.export.format.setting.ICellFormatSetting;
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.item.BITableDataConstructor;
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.utils.BITableConstructHelper;
 import com.fr.bi.cal.analyze.report.report.widget.style.BITableWidgetStyle;
@@ -544,9 +543,6 @@ public class TableWidget extends BISummaryWidget {
                 builder = new SummaryComplexTableBuilder(viewMap, dataJSON, style);
                 break;
         }
-        if (null == builder) {
-            return new JSONObject();
-        }
         BITableDataConstructor data = BITableConstructHelper.buildTableData(builder);
         BITableConstructHelper.formatCells(data, getITableCellFormatOperationMap());
         return data.createJSON().put("page", res.getJSONArray("page"));
@@ -562,13 +558,13 @@ public class TableWidget extends BISummaryWidget {
         for (BISummaryTarget target : this.getTargets()) {
             ICellFormatSetting setting = new BICellFormatSetting();
             setting.parseJSON(target.getChartSetting().getSettings());
-            ITableCellFormatOperation op = new BITableCellTargetFormatOperation(setting);
+            ITableCellFormatOperation op = new BITableCellFormatOperation(setting);
             operationsMap.put(target.getId(), op);
         }
         for (BIDimension dimension : this.getDimensions()) {
             ICellFormatSetting setting = new BICellFormatSetting();
             setting.parseJSON(dimension.getChartSetting().getSettings());
-            ITableCellFormatOperation op = new BITableCellDimFormatOperation(dimension.getGroup().getType(), setting);
+            ITableCellFormatOperation op = new BITableCellFormatOperation(dimension.getGroup().getType(), setting);
             operationsMap.put(dimension.getId(), op);
         }
     }
