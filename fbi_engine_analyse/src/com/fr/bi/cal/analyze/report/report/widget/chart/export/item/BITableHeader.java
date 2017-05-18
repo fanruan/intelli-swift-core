@@ -16,14 +16,16 @@ public class BITableHeader implements ITableHeader {
     private ITableStyle styles;
     private String type;
     private boolean isUsed;
+    private boolean isSum;
 
-    public BITableHeader(String text, String title, String tag, String dID, ITableStyle styles, boolean isUsed) {
+    public BITableHeader(String text, String title, String tag, String dID, ITableStyle styles, boolean isUsed, boolean isSum) {
         this.text = text;
         this.title = title;
         this.tag = tag;
         this.dID = dID;
         this.styles = styles;
         this.isUsed = isUsed;
+        this.isSum = isSum;
     }
 
     public BITableHeader() {
@@ -96,7 +98,18 @@ public class BITableHeader implements ITableHeader {
         jo.put("text", getText());
         jo.put("type", getType());
         jo.put("isUsed", isUsed());
+        jo.put("isSum", isSum);
         return jo;
+    }
+
+    @Override
+    public boolean isSum() {
+        return isSum;
+    }
+
+    @Override
+    public void setSum(boolean sum) {
+        isSum = sum;
     }
 
     @Override

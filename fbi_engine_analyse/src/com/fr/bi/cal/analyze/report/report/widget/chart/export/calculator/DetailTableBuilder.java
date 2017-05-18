@@ -1,6 +1,5 @@
 package com.fr.bi.cal.analyze.report.report.widget.chart.export.calculator;
 
-import com.fr.bi.cal.analyze.report.report.widget.chart.export.format.operation.BITableCellDimFormatOperation;
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.item.BIBasicTableItem;
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.item.BITableDataConstructor;
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.item.ITableHeader;
@@ -21,11 +20,9 @@ import java.util.Map;
  * Created by Kary on 2017/3/30.
  */
 public class DetailTableBuilder extends TableAbstractDataBuilder {
-    private List<BITableCellDimFormatOperation> styles;
 
-    public DetailTableBuilder(Map<Integer, List<JSONObject>> viewMap, List<BITableCellDimFormatOperation> BITableCellDimFormatOperations, JSONObject dataJSON, IWidgetStyle styleSettings) throws Exception {
+    public DetailTableBuilder(Map<Integer, List<JSONObject>> viewMap , JSONObject dataJSON, IWidgetStyle styleSettings) throws Exception {
         super(viewMap, dataJSON, styleSettings);
-        this.styles = BITableCellDimFormatOperations;
     }
 
     @Override
