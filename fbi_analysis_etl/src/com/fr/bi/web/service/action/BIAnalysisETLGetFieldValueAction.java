@@ -9,6 +9,7 @@ import com.fr.bi.etl.analysis.data.UserCubeTableSource;
 import com.fr.bi.stable.constant.BIJSONConstant;
 import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.engine.index.key.IndexKey;
+import com.fr.bi.stable.utils.BICollectionUtils;
 import com.fr.bi.stable.utils.DateUtils;
 import com.fr.fs.web.service.ServiceUtils;
 import com.fr.json.JSONArray;
@@ -60,6 +61,10 @@ public class BIAnalysisETLGetFieldValueAction extends AbstractAnalysisETLAction{
     }
 
     private Object getText(Object ob, int fieldType) {
+        // 如果是空值则像字符串那样进行处理直接进行显示""表示空值
+        if (BICollectionUtils.isCubeNullKey(ob)) {
+            return StringUtils.EMPTY;
+        }
         if (fieldType == DBConstant.COLUMN.DATE){
             return DateUtils.format(new Date((Long)ob));
         }

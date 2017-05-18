@@ -19,6 +19,7 @@ import com.fr.bi.stable.operation.sort.ISort;
 import com.fr.bi.stable.operation.sort.sort.NoSort;
 import com.fr.bi.stable.report.result.BINode;
 import com.fr.bi.stable.report.result.TargetCalculator;
+import com.fr.bi.stable.utils.BICollectionUtils;
 import com.fr.general.ComparatorUtils;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;
@@ -125,7 +126,8 @@ public abstract class BIAbstractDimension extends BIAbstractTargetAndDimension i
 
     @Override
     public String toString(Object v) {
-        return v == null ? StringUtils.EMPTY : v.toString();
+        // 空值給前台的時候需要進行转换一下
+        return BICollectionUtils.cubeValueToWebDisplay(v) == null ? StringUtils.EMPTY : v.toString();
     }
 
     @Override

@@ -40,7 +40,7 @@ public class BIDoubleNIOWriter extends BIBasicNIOWriter<Double> implements ICube
 
     @Override
     protected void addValue(int row, Double value) {
-        doubleBuffer.put(row, value == null ? Double.NaN : value.doubleValue());
+        doubleBuffer.put(row, value == null ? NIOConstant.DOUBLE.NULL_VALUE : value.doubleValue());
     }
 
     @Override

@@ -27,7 +27,7 @@ public class NIOConstant {
 
         public static final long PAGE_MODE_TO_AND_READ_VALUE = (PAGE_SIZE << MAX_SINGLE_FILE_PART_SIZE) - 1;
 
-        public static final double NULL_VALUE = Double.NaN;
+        public static final double NULL_VALUE = Double.NEGATIVE_INFINITY;
     }
 
     public static final class INTEGER {
