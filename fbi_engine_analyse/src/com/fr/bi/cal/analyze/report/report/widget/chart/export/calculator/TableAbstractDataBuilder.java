@@ -716,13 +716,10 @@ public abstract class TableAbstractDataBuilder implements IExcelDataBuilder {
             //是否显示列汇总 并且有指标
             if (null != c && null != s) {
                 summary = BIJsonUtils.arrayConcat(summary, getOneRowSummary(c));
-//                summary.put(getOneRowSummary(s));
                 if (showColTotal && targetIds.size() > 0) {
-//                    summary.put(getOneRowSummary(s));
                     summary = BIJsonUtils.arrayConcat(summary, getOneRowSummary(s));
                 }
             } else if (null != s) {
-//                summary.put(getOneRowSummary(s));
                 summary = BIJsonUtils.arrayConcat(summary, getOneRowSummary(s));
             }
         }

@@ -19,8 +19,7 @@ public class BITableCellDimFormatOperation implements ITableCellFormatOperation 
     @Override
     public String formatValues(String text) throws Exception {
         JSONObject format = null != ICellFormatSetting ? ICellFormatSetting.createJSON() : new JSONObject();
-        String value = BITableCellFormatHelper.dateFormat(format, typeGroup, text);
-        return value;
+        return BITableCellFormatHelper.dateFormat(format, typeGroup, text);
     }
 
 }
