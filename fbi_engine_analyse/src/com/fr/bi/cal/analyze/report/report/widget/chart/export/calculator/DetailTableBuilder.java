@@ -23,9 +23,8 @@ import java.util.Map;
 public class DetailTableBuilder extends TableAbstractDataBuilder {
     private List<BITableCellDimFormatOperation> styles;
 
-    public DetailTableBuilder(Map<Integer, List<JSONObject>> viewMap, List<BITableCellDimFormatOperation> BITableCellDimFormatOperations, JSONObject dataJSON, IWidgetStyle styleSettings) throws Exception {
+    public DetailTableBuilder(Map<Integer, List<JSONObject>> viewMap , JSONObject dataJSON, IWidgetStyle styleSettings) throws Exception {
         super(viewMap, dataJSON, styleSettings);
-        this.styles = BITableCellDimFormatOperations;
     }
 
     @Override
