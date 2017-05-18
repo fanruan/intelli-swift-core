@@ -12,6 +12,7 @@ import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.constant.BIStyleConstant;
 import com.fr.bi.tool.BIReadReportUtils;
 import com.fr.bi.util.BIConfUtils;
+import com.fr.general.ComparatorUtils;
 import com.fr.general.Inter;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONException;
@@ -49,6 +50,8 @@ public abstract class VanChartWidget extends TableWidget {
     public static final String NAME = "${NAME}";
     public static final String DESCRIPTION = "${DESCRIPTION}";
     public static final String ARRIVALRATE = "${ARRIVALRATE}";
+
+    private static final String LONG_DATE = "longDate";
 
     //兼容前台用数字表示位置的写法，真xx丑
     private static final int TOP = 2;
@@ -704,7 +707,10 @@ public abstract class VanChartWidget extends TableWidget {
                 String x = lObj.getString("n");
                 JSONArray s = lObj.getJSONObject("s").getJSONArray("c").getJSONObject(i).getJSONArray("s");
                 double y = (s.isNull(0) ? 0 : s.getDouble(0)) / numberScale;
-                data.put(JSONObject.create().put(categoryKey, this.formatCategory(category, x)).put(valueKey, y));
+                String formattedCategory = this.formatCategory(category, x);
+                data.put(
+                        JSONObject.create().put(categoryKey, formattedCategory).put(valueKey, y).put(LONG_DATE, ComparatorUtils.equals(formattedCategory, x) ? StringUtils.EMPTY : x)
+                );
                 valueList.add(y);
             }
             JSONObject ser = JSONObject.create().put("data", data).put("name", name)
@@ -741,7 +747,10 @@ public abstract class VanChartWidget extends TableWidget {
                     String x = lObj.getString("n");
                     JSONArray targetValues = lObj.getJSONArray("s");
                     double y = targetValues.isNull(i) ? 0 : targetValues.getDouble(i) / numberScale;
-                    data.put(JSONObject.create().put(categoryKey, this.formatCategory(category, x)).put(valueKey, y));
+                    String formattedCategory = this.formatCategory(category, x);
+                    data.put(
+                            JSONObject.create().put(categoryKey, formattedCategory).put(valueKey, y).put(LONG_DATE, ComparatorUtils.equals(formattedCategory, x) ? StringUtils.EMPTY : x)
+                    );
                     valueList.add(y);
                 }
             } else {//没有分类，只有指标。会过来一个汇总值，没有child
