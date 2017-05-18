@@ -129,6 +129,8 @@ public class VanDotWidget extends VanCartesianWidget{
 
         plotOptions.put("shadow", settings.optInt("bubbleStyle") == SHADOW);
 
+        plotOptions.put("marker", JSONObject.create().put("symbol", settings.optString("dotStyle")).put("enabled", true));
+
         return plotOptions;
     }
 
