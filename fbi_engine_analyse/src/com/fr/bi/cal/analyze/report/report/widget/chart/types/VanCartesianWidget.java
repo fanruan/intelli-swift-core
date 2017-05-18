@@ -219,7 +219,7 @@ public abstract class VanCartesianWidget extends VanChartWidget {
         return false;
     }
 
-    public  JSONObject createOptions(JSONObject globalStyle, JSONObject data) throws Exception{
+    public JSONObject createOptions(JSONObject globalStyle, JSONObject data) throws Exception{
         JSONObject settings = this.getDetailChartSetting();
         JSONObject options = super.createOptions(globalStyle, data);
         boolean isInverted = this.isInverted();//bar
@@ -477,7 +477,7 @@ public abstract class VanCartesianWidget extends VanChartWidget {
         return right;
     }
 
-    private JSONObject parseThirdValueAxis(JSONObject settings) throws JSONException{
+    protected JSONObject parseThirdValueAxis(JSONObject settings) throws JSONException{
         String axisTitle = this.axisTitleUnit(settings.optInt("rightY2NumberLevel"), settings.optString("rightY2Unit"));
         boolean enabled = settings.optBoolean("rightY2ShowTitle");
         JSONObject labelStyle = settings.optJSONObject("rightY2LabelStyle");
