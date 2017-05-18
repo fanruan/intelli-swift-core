@@ -600,7 +600,7 @@ public abstract class VanChartWidget extends TableWidget {
         return String.format("function(){return BI.contentFormat(arguments[0], \"%s\")}", format);
     }
 
-    private BISummaryTarget getSerBITarget(JSONObject ser) throws Exception{
+    protected BISummaryTarget getSerBITarget(JSONObject ser) throws Exception{
         JSONArray ids = ser.optJSONArray("targetIDs");
         return ids == null ? null : getBITargetByID(ids.optString(0));
     }
