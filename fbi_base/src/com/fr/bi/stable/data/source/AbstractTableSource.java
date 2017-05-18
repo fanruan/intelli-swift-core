@@ -188,7 +188,8 @@ public abstract class AbstractTableSource implements CubeTableSource {
                     // 从底层获取的数据传送给前端展示还需要做一下空值处理
                     Object v = tableIndex.getColumnDetailReader(new IndexKey(column.getFieldName())).getValue(i);
                     v = BICollectionUtils.cubeValueToWebDisplay(v);
-                    values.put(v);                }
+                    values.put(v);
+                }
             }
         }
         return new JSONObject().put(BIJSONConstant.JSON_KEYS.FIELDS, allFieldNamesJo).put(BIJSONConstant.JSON_KEYS.VALUE, fieldValues).put(BIJSONConstant.JSON_KEYS.TYPE, fieldTypes);
