@@ -123,7 +123,6 @@ public class SummaryComplexTableBuilder extends TableAbstractDataBuilder {
             item.setChildren(createCommonTableItems(rowTable.getString("c"), 0, null, dimIds));
             //汇总
             if (showRowTotal && rowTable.has("s")) {
-//                JSONArray outerValues = new JSONArray();
                 List<ITableItem> outerValues = new ArrayList<ITableItem>();
                 JSONArray s = rowTable.getJSONArray("s");
                 if (dimIds.size() > 0) {
