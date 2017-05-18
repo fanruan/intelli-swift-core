@@ -1,15 +1,16 @@
 package com.finebi.cube.adapter;
 
 import com.finebi.cube.api.ICubeColumnIndexReader;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.exception.BICubeIndexException;
 import com.finebi.cube.exception.BIResourceInvalidException;
+import com.finebi.cube.relation.BITableSourceRelation;
 import com.finebi.cube.structure.BICubeTablePath;
 import com.finebi.cube.structure.ICubeIndexDataGetterService;
 import com.finebi.cube.structure.column.CubeColumnReaderService;
 import com.finebi.cube.utils.BICubePathUtils;
 import com.fr.bi.stable.gvi.GVIFactory;
 import com.fr.bi.stable.gvi.GroupValueIndex;
-import com.finebi.cube.relation.BITableSourceRelation;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
 
 import java.io.Serializable;
@@ -279,7 +280,7 @@ public class BIColumnIndexReader<T> implements ICubeColumnIndexReader<T> {
             try {
                 c_index = columnReaderService.getPositionOfGroupByGroupValue(start) + 1;
             } catch (BIResourceInvalidException e) {
-                e.printStackTrace();
+                BILoggerFactory.getLogger(BIColumnIndexReader.class).error(e.getMessage(), e);
             }
         }
 
@@ -311,7 +312,7 @@ public class BIColumnIndexReader<T> implements ICubeColumnIndexReader<T> {
             try {
                 c_index = columnReaderService.getPositionOfGroupByGroupValue(start);
             } catch (BIResourceInvalidException e) {
-                e.printStackTrace();
+                BILoggerFactory.getLogger(BIColumnIndexReader.class).error(e.getMessage(), e);
             }
         }
 
@@ -377,12 +378,15 @@ public class BIColumnIndexReader<T> implements ICubeColumnIndexReader<T> {
         return columnReaderService.getClassType();
     }
 
+    /**
+     * 获取空值gvi
+     * 直接用类型对应的空值表示来进行获取
+     * 需要注意的是时间列的空值获取方式
+     *
+     * @return
+     */
     @Override
     public GroupValueIndex getNULLIndex() {
-        try {
-            return indexDataGetterService.getNULLIndex(0);
-        } catch (BICubeIndexException e) {
-            throw BINonValueUtils.beyondControl(e);
-        }
+        return getIndex(columnReaderService.getCubeNullValue());
     }
 }

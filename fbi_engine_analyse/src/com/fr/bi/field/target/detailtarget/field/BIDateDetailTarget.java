@@ -6,12 +6,18 @@ import com.fr.bi.base.key.BIKey;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.engine.index.key.IndexKey;
 import com.fr.bi.stable.engine.index.key.IndexTypeKey;
+import com.fr.bi.stable.utils.BICollectionUtils;
 
 import java.util.Map;
 
 public class BIDateDetailTarget extends BIStringDetailTarget {
 
     private static final long serialVersionUID = -3300500860997448514L;
+
+    /**
+     * 第一个前面不插入"0"的月份如4-->"04" PMD...
+     */
+    private static int FIRST_NOT_INSERT_ZERO_MONTH = 10;
 
     /**
      * 取值
@@ -26,11 +32,8 @@ public class BIDateDetailTarget extends BIStringDetailTarget {
             int r = row.intValue();
             if (r > -1) {
                 initialTableSource(loader);
-                Object ob = columnDetailGetter.getValue(r);
-                if (ob == null) {
-                    return ob;
-                }
-                return ((Number) ob).longValue();
+                // 直接返回原始值
+                return columnDetailGetter.getValue(r);
             }
         }
         return null;
@@ -52,14 +55,15 @@ public class BIDateDetailTarget extends BIStringDetailTarget {
      */
     @Override
     public Object createShowValue(Object value) {
-        if (value == null) {
+        // 不是空值的时候才进行下面的处理
+        if (BICollectionUtils.isCubeNullKey(value)) {
             return null;
         }
         return value;
     }
 
     private Object insertZero(int time) {
-        if (time < 10) {
+        if (time < FIRST_NOT_INSERT_ZERO_MONTH) {
             return "0" + time;
         }
         return "" + time;

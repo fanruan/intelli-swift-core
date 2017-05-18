@@ -20,6 +20,7 @@ import com.fr.bi.stable.io.sortlist.ISortNIOReadList;
 import com.fr.bi.stable.operation.sort.comp.ComparatorFacotry;
 import com.fr.bi.stable.structure.collection.CubeIndexGetterWithNullValue;
 import com.fr.bi.stable.structure.collection.map.CubeTreeMap;
+import com.fr.bi.stable.utils.BICollectionUtils;
 import com.fr.stable.StringUtils;
 import com.fr.stable.collections.array.IntArray;
 
@@ -156,7 +157,7 @@ public abstract class AbstractSingleMemoryColumn<T> implements MemoryColumnFile<
         for (int i = 0; i < detail.size(); i++) {
             T t = detail.get(i);
             Object value = t;
-            if (t != null) {
+            if (BICollectionUtils.isNotCubeNullKey(value)) {
                 value = converter.result2Value(t);
                 if (value instanceof Integer) {
                     value = ((Integer) value).longValue();

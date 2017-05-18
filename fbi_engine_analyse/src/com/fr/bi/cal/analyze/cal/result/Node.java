@@ -10,17 +10,15 @@ import com.fr.bi.stable.report.key.TargetGettingKey;
 import com.fr.bi.stable.report.result.BINode;
 import com.fr.bi.stable.report.result.TargetCalculator;
 import com.fr.bi.stable.structure.collection.map.ChildsMap;
+import com.fr.bi.stable.utils.BICollectionUtils;
 import com.fr.general.ComparatorUtils;
 import com.fr.general.NameObject;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
+import com.fr.stable.StringUtils;
 
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -85,7 +83,9 @@ public class Node implements BINode {
      * @param data
      */
     private void initShowValue(Object data) {
-        setShowValue(data == null ? null : data.toString());
+        // 先进行一次空值判断以及转换
+        data = BICollectionUtils.cubeValueToWebDisplay(data);
+        setShowValue(data == null ? StringUtils.EMPTY : data.toString());
     }
 
     @Override
@@ -792,7 +792,8 @@ public class Node implements BINode {
         JSONArray summary = new JSONArray();
         for (int i = 0; i < keys.length; i++) {
 //            summary.put(GeneralUtils.objectToNumber(GeneralUtils.objectToString(this.getSummaryValue(keys[i]))));
-            summary.put(this.getSummaryValue(keys[i]));
+            // 需要对汇总值进行转换，如果会汇总值为空值的表示则不进行显示
+            summary.put(BICollectionUtils.cubeValueToWebDisplay(this.getSummaryValue(keys[i])));
         }
         jo.put("s", summary);
         jo.put("x", getTotalLengthWithSummary());

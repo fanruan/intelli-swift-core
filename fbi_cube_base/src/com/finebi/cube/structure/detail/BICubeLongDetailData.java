@@ -35,12 +35,21 @@ public class BICubeLongDetailData extends BICubeDetailData<Long> {
 
     @Override
     public Long getOriginalObjectValueByRow(int rowNumber) {
-        long value = getOriginalValueByRow(rowNumber);
-        return value == NIOConstant.LONG.NULL_VALUE ? null : value;
+        return  getOriginalValueByRow(rowNumber);
     }
 
     @Override
     public int getClassType() {
         return DBConstant.CLASS.LONG;
+    }
+
+    /**
+     * 获取空值表示
+     *
+     * @return
+     */
+    @Override
+    public Long getCubeNullValue() {
+        return NIOConstant.LONG.NULL_VALUE;
     }
 }

@@ -1,9 +1,12 @@
 package com.finebi.cube.structure.column;
 
 import com.finebi.cube.data.ICubeResourceDiscovery;
+import com.finebi.cube.exception.BICubeIndexException;
 import com.finebi.cube.location.ICubeResourceLocation;
 import com.finebi.cube.structure.detail.BICubeLongDetailData;
 import com.finebi.cube.structure.group.BICubeLongGroupData;
+import com.fr.bi.stable.gvi.GVIFactory;
+import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.io.newio.NIOConstant;
 
 /**
@@ -39,7 +42,34 @@ public class BICubeLongColumn extends BICubeColumnEntity<Long> {
 
     @Override
     public Long getOriginalObjectValueByRow(int rowNumber) {
-        long value = getOriginalValueByRow(rowNumber);
-        return value == NIOConstant.LONG.NULL_VALUE ? null : value;
+        return getOriginalValueByRow(rowNumber);
+    }
+
+    /**
+     * 获取空值表示对象
+     *
+     * @return
+     */
+    @Override
+    public Long getCubeNullValue() {
+        return NIOConstant.LONG.NULL_VALUE;
+    }
+
+    /**
+     * 获取空值gvi
+     * <p>
+     * 把空值当成一个正常的分组,像字符串那样进行处理
+     *
+     * @param position
+     * @return
+     * @throws BICubeIndexException
+     */
+    @Override
+    public GroupValueIndex getNULLIndex(int position) throws BICubeIndexException {
+        try {
+            return getIndexByGroupValue(NIOConstant.LONG.NULL_VALUE);
+        } catch (Exception e) {
+            return GVIFactory.createAllEmptyIndexGVI();
+        }
     }
 }
