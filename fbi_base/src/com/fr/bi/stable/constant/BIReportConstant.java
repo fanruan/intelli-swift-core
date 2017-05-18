@@ -622,11 +622,13 @@ public class BIReportConstant {
     }
 
     public static final class RES_STATUS {
-        public static final int NORMAL = 1;
-        public static final int ERROR = 2;
-        public static final int DATA_MISS = 3;
-        public static final int NO_AUTHORITY = 4;
-        public static final int NO_DATA = 5;
+        public static final int NORMAL = 62400000;
+        public static final int ERROR = 62400001;
+        public static final int DATA_MISS = 62400002;
+        public static final int NO_AUTHORITY = 62400003;
+        public static final int NO_DATA = 62400004;
+//        public static final int LOGIN_TIME_OUT = 62400005;
+//        public static final int SESSION_TIME_OUT = 62400006;
     }
 
     public static final class DATE_FORMAT {

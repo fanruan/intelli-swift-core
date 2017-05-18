@@ -298,24 +298,12 @@ public class BIPlate extends AbstractFSPlate {
                 "/com/fr/bi/web/cross/css/bi.toolbar.add.css",
                 "/com/fr/bi/web/cross/css/bi.shared.table.css",
 
-                "/com/fr/bi/web/cross/css/bi.extra.dialog.css",
-                "/com/fr/bi/web/cross/css/bi.edit.dialog.css",
-                "/com/fr/bi/web/cross/css/bi.share.dialog.css",
-                "/com/fr/bi/web/cross/css/bi.quicklist.css",
-                "/com/fr/bi/web/cross/css/bi.rename.dialog.css",
-
-                "/com/fr/bi/web/cross/css/bi.template.list.css",
-                "/com/fr/bi/web/cross/css/bi.template.createdlist.css",
-
                 "/com/fr/bi/web/cross/css/theme/bi.chartpreview.css",
                 "/com/fr/bi/web/cross/css/theme/bi.stylesetting.css",
                 "/com/fr/bi/web/cross/css/theme/bi.theme.css",
                 "/com/fr/bi/web/cross/css/usermanager/bi.usermanager.css",
 
                 "/com/fr/bi/web/cross/css/reporthangout/hangoutreport.plate.css",
-
-                "/com/fr/bi/web/cross/css/bi.text.css",
-
         });
     }
 
