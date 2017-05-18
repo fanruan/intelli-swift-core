@@ -233,28 +233,32 @@ public class SummaryComplexTableBuilder extends TableAbstractDataBuilder {
             }
         }
         for (int i = 0; i < dataArray.length(); i++) {
+            JSONArray tableData = dataArray.getJSONArray(i);
+            //* rowValues在这个作用域缓存所有tables的数据
             JSONObject rowValues = new JSONObject();
-            JSONArray rowTables = dataArray.getJSONArray(i);
-            for (int j = 0; j < rowTables.length(); j++) {
-                createTempItems(tempItems, tempCrossItems, i, rowValues, rowTables.getJSONObject(j), j);
+            List<ITableItem> singleTempItems = new ArrayList<ITableItem>();
+            for (int j = 0; j < tableData.length(); j++) {
+                singleTempItems = createTempItems(tempCrossItems, i, rowValues, tableData.getJSONObject(j), j);
             }
+            tempItems.addAll(singleTempItems);
         }
         parseColTableItems(tempItems);
         parseRowTableCrossItems(tempCrossItems);
     }
 
-    private void createTempItems(List<ITableItem> tempItems, List<ITableItem> tempCrossItems, int i, JSONObject rowValues, JSONObject tableData, int j) throws Exception {
+    /*
+    * 这个结构是从前台直接拷过来的，需优化
+    *
+    * */
+    private List<ITableItem> createTempItems(List<ITableItem> tempCrossItems, int i, JSONObject rowValues, JSONObject tableData, int j) throws Exception {
         //parse一个表结构
         Map<Integer, List<JSONObject>> dimAndTar = getDimsByDataPos(i, j);
         BITableDataConstructor singleTable = createSingleCrossTableItems(tableData, dimAndTar);
         for (int k = 0; k < singleTable.getItems().size(); k++) {
-            parseRowTableItems(singleTable.getItems().get(k).createJSON(), rowValues);
+            putNewValuesIntoRowTables(singleTable.getItems().get(k), rowValues, "");
         }
-//        for (int length = 0; length < singleTable.getItems().size(); length++) {
-//            createItemByRowValues(singleTable.getItems().get(length), rowValues);
-//        }
-        if (j == 0) {
-            tempItems.addAll(singleTable.getItems());
+        for (int length = 0; length < singleTable.getItems().size(); length++) {
+            singleTable.getItems().set(length, expandTableValues(singleTable.getItems().get(length), rowValues));
         }
         if (i == 0) {
             for (int length = 0; length < singleTable.getCrossItems().size(); length++) {
@@ -269,19 +273,31 @@ public class SummaryComplexTableBuilder extends TableAbstractDataBuilder {
                 }
             }
         }
+        return singleTable.getItems();
     }
 
-//    private ITableItem createItemByRowValues(ITableItem item, JSONObject rowValues) throws Exception {
-//        if (null == rowValues || rowValues.length() == 0) {
-//            return item;
-//        }
-//
-//        item.setValues(convertToItemList(rowValues.has(OUTERSUM) ? rowValues.getJSONArray(OUTERSUM) : new JSONArray()));
-//        for (ITableItem tableItem : item.getChildren()) {
-//            tableItem.setValues(convertToItemList(rowValues.getJSONArray((null == tableItem.getDId() ? "" : tableItem.getDId()) + tableItem.getValue())));
-//        }
-//        return item;
-//    }
+    /*
+    * 扩展item中的value值，数据从rowValues获取
+    * */
+    private ITableItem expandTableValues(ITableItem tableItem, JSONObject rowValues) throws Exception {
+        ITableItem item = new BIBasicTableItem();
+        item.parseJSON(tableItem.createJSON());
+        if (null == rowValues || rowValues.length() == 0) {
+            return item;
+        }
+        //最外层汇总
+        if (tableItem.getDId() == null) {
+            item.setValues(convertToItemList(rowValues.has(OUTERSUM) ? rowValues.getJSONArray(OUTERSUM) : new JSONArray()));
+        }
+        if (item.getChildren() != null) {
+            for (int i = 0; i < item.getChildren().size(); i++) {
+                ITableItem child = item.getChildren().get(i);
+                child.setValues(convertToItemList(rowValues.getJSONArray((null == child.getDId() ? "" : child.getDId()) + child.getValue())));
+                item.getChildren().set(i, expandTableValues(child, rowValues));
+            }
+        }
+        return item;
+    }
 
     private void parseRowTableCrossItems(List<ITableItem> tempCrossItems) throws Exception {
         List<ITableItem> crossArray = new ArrayList<ITableItem>();
@@ -314,41 +330,34 @@ public class SummaryComplexTableBuilder extends TableAbstractDataBuilder {
         }
     }
 
+    //从table中获取信息，缓存再rowValues里面
     //对于首层，可以以行号作为key，其他层以dId + text作为key
     //一般只处理有values（同时有children的表示合计、否则表示相应的值）
-    private void parseRowTableItems(JSONObject data, JSONObject rowValues) throws JSONException {
-        //最外层的合计 可以通过data中是否包含dId来确定
-        if (data.has("children") && data.has("values") && !data.has("dId")) {
-            if (rowValues.has(OUTERSUM)) {
-                rowValues.put(OUTERSUM, data.get("values"));
-            } else {
-                for (int i = 0; i < data.getJSONArray("values").length(); i++) {
-                    if (!rowValues.has(OUTERSUM)) {
-                        rowValues.put(OUTERSUM, new JSONArray());
-                    }
-                    rowValues.getJSONArray(OUTERSUM).put(data.getJSONArray("values").get(i));
-                }
-            }
+    private void putNewValuesIntoRowTables(ITableItem data, JSONObject rowValues, String pId) throws Exception {
+        String itemId = "";
+        if (data.getDId() != null && data.getValue() != null) {
+            itemId = pId + data.getValue();
         }
-        boolean rowRegionAvaliable = data.has("dId") || !isRowRegionExist();
-        if (data.has("values") && rowRegionAvaliable) {
-            String itemId = data.optString("dId", "") + data.optString("text", "");
+        //最外层的合计 可以通过data中是否包含dId来确定
+        if (data.getChildren() != null && data.getDId() == null) {
+            if (!rowValues.has(OUTERSUM)) {
+                rowValues.put(OUTERSUM, new JSONArray());
+            }
+            rowValues.put(OUTERSUM, BIJsonUtils.arrayConcat(rowValues.getJSONArray(OUTERSUM), data.createJSON().getJSONArray("values")));
+        }
+        boolean rowRegionAvailable = data.getDId() != null || !isRowRegionExist();
+        if (data.getValues() != null && rowRegionAvailable) {
+            itemId = data.getDId() + data.getValue();
             boolean hasItems = rowValues.has(itemId) && rowValues.getJSONArray(itemId).length() > 0;
             if (!hasItems) {
-                rowValues.put(itemId, data.get("values"));
+                rowValues.put(itemId, data.createJSON().get("values"));
             } else {
-                for (int i = 0; i < data.getJSONArray("values").length(); i++) {
-                    if (rowValues.has(itemId)) {
-                        rowValues.getJSONArray(itemId).put(data.getJSONArray("values").get(i));
-                    } else {
-                        rowValues.put(itemId, new JSONArray().put(data.getJSONArray("values").get(i)));
-                    }
-                }
+                rowValues.put(itemId, BIJsonUtils.arrayConcat(rowValues.getJSONArray(itemId), data.createJSON().getJSONArray("values")));
             }
         }
-        if (data.has("children") && data.getJSONArray("children").length() > 0) {
-            for (int i = 0; i < data.getJSONArray("children").length(); i++) {
-                parseRowTableItems(data.getJSONArray("children").getJSONObject(i), rowValues);
+        if (data.getChildren() != null && data.getChildren().size() > 0) {
+            for (int i = 0; i < data.getChildren().size(); i++) {
+                putNewValuesIntoRowTables(data.getChildren().get(i), rowValues, itemId);
             }
         }
     }
