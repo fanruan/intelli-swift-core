@@ -10,5 +10,9 @@ import com.fr.json.JSONObject;
 public interface ITableHeader extends JSONCreator {
     boolean isUsed();
 
+    boolean isSum();
+
+    void setSum(boolean sum);
+
     void parseJson(JSONObject json) throws JSONException;
 }
