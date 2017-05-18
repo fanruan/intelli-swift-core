@@ -18,7 +18,6 @@ public class GroupBuilderTest extends TestCase {
         IExcelDataBuilder builder = new SummaryGroupTableDataBuilder(BuilderTestUtils.createViewMap(viewMapStr), new JSONObject(dataStr), new BITableWidgetStyle());
         BITableDataConstructor data = BITableConstructHelper.buildTableData(builder);
         assertTrue(data.getItems().size()==1);
-        assertTrue(data.getItems().get(0).getChildren().get(0).getValues().size()+1==data.getHeaders().size());
     }
     public void testNormalDataWithNoExpand() throws Exception {
         String viewMapStr = BuilderDataFactory.GROUP.NOTAR_NOEXPAND.VIEWMAP;

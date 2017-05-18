@@ -2,10 +2,8 @@ package com.fr.bi.cal.analyze.report.report.widget.chart.export.utils;
 
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.calculator.IExcelDataBuilder;
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.format.operation.ITableCellFormatOperation;
-import com.fr.bi.cal.analyze.report.report.widget.chart.export.item.BIBasicTableItem;
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.item.BITableDataConstructor;
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.item.ITableItem;
-import com.fr.json.JSONArray;
 
 import java.util.Map;
 
@@ -30,15 +28,9 @@ public class BITableConstructHelper {
         if (data.getCrossItems() == null) {
             return;
         } else {
-            //todo json转对象
-            JSONArray resultCrossItems = new JSONArray();
-            for (int i = 0; i < data.getCrossItems().length(); i++) {
-                ITableItem item = new BIBasicTableItem();
-                item.parseJSON(data.getCrossItems().getJSONObject(i));
-                recurisiveFormatText(item, operations);
-                resultCrossItems.put(item.createJSON());
+            for (ITableItem childItem : data.getCrossItems()) {
+                recurisiveFormatText(childItem, operations);
             }
-            data.setCrossItems(resultCrossItems);
         }
     }
 
@@ -55,8 +47,11 @@ public class BITableConstructHelper {
         }
         if (item.getValue() != null && item.getDId() != null) {
             if (null != ops.get(item.getDId())) {
-                item.setText(ops.get(item.getDId()).FormatValues(item.getValue()));
+                item.setText(ops.get(item.getDId()).formatValues(item.getValue()));
+                item.setValue(ops.get(item.getDId()).formatValues(item.getValue()));
             }
+        }else {
+            item.setText(item.getValue());
         }
     }
 }
