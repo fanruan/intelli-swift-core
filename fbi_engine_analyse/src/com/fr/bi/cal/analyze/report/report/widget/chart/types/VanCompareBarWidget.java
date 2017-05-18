@@ -28,7 +28,7 @@ public class VanCompareBarWidget extends VanCompareColumnWidget{
         return true;
     }
 
-    protected void dealYAxisDiffDefaultSettings(JSONObject settings) throws JSONException {
+    protected void dealCompareChartYAxis(JSONObject settings) throws JSONException {
     }
 
     protected JSONArray dealSeriesWithEmptyAxis(JSONArray series) throws JSONException{

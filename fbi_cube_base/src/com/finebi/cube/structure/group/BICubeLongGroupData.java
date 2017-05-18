@@ -33,8 +33,7 @@ public class BICubeLongGroupData extends BICubeGroupData<Long> {
 
     @Override
     public Long getGroupObjectValueByPosition(int index) {
-        long value = getGroupValueByPosition(index);
-        return value == NIOConstant.LONG.NULL_VALUE ? null : value;
+        return  getGroupValueByPosition(index);
     }
 
     public long getGroupValueByPosition(int position) {

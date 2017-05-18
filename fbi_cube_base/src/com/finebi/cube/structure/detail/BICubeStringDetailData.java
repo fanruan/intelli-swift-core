@@ -1,11 +1,12 @@
 package com.finebi.cube.structure.detail;
 
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.data.ICubeResourceDiscovery;
 import com.finebi.cube.data.input.ICubeStringReader;
 import com.finebi.cube.exception.BIResourceInvalidException;
 import com.finebi.cube.location.ICubeResourceLocation;
 import com.fr.bi.stable.constant.DBConstant;
-import com.finebi.cube.common.log.BILoggerFactory;
+import com.fr.stable.StringUtils;
 
 /**
  * This class created on 2016/3/29.
@@ -44,5 +45,15 @@ public class BICubeStringDetailData extends BICubeDetailData<String> {
     @Override
     public int getClassType() {
         return DBConstant.CLASS.STRING;
+    }
+
+    /**
+     * 获取空值表示
+     *
+     * @return
+     */
+    @Override
+    public String getCubeNullValue() {
+        return StringUtils.EMPTY;
     }
 }

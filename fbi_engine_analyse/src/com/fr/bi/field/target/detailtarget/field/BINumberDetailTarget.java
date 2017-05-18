@@ -1,6 +1,7 @@
 package com.fr.bi.field.target.detailtarget.field;
 
 import com.fr.bi.field.target.detailtarget.BIAbstractDetailTarget;
+import com.fr.bi.stable.utils.BICollectionUtils;
 
 import java.util.Map;
 
@@ -17,7 +18,8 @@ public class BINumberDetailTarget extends BIAbstractDetailTarget {
      */
     @Override
     public Object createShowValue(Object value) {
-        return value;
+        // 需要进行一下空值
+        return BICollectionUtils.cubeValueToWebDisplay(value);
     }
 
 

@@ -16,51 +16,57 @@ public class BICellFormatSetting implements ICellFormatSetting {
     private int iconStyle;
     private int mark;
     private int dateFormatType;
-    private boolean hasSeparator=true;
+    private boolean hasSeparator;
+
+    public BICellFormatSetting() {
+        hasSeparator = true;
+        numSeparators = true;
+    }
 
     @Override
     public JSONObject createJSON() throws Exception {
-        JSONObject jo=JSONObject.create();
-        jo.put("unit",unit);
-        jo.put("numSeparators",numSeparators);
-        jo.put("numLevel",numberLevel);
-        jo.put("format",format);
-        jo.put("conditions",conditions);
-        jo.put("iconStyle",iconStyle);
-        jo.put("mark",mark);
+        JSONObject jo = JSONObject.create();
+        jo.put("unit", unit);
+        jo.put("numSeparators", numSeparators);
+        jo.put("numLevel", numberLevel);
+        jo.put("format", format);
+        jo.put("conditions", conditions);
+        jo.put("iconStyle", iconStyle);
+        jo.put("mark", mark);
         jo.put("hasSeparator", hasSeparator);
         jo.put("dateFormat", new JSONObject().put("type", dateFormatType));
         return jo;
     }
+
     @Override
     public void parseJSON(JSONObject jo) throws Exception {
-        if (jo.has("unit")){
-            unit=jo.optString("unit");
+        if (jo.has("unit")) {
+            unit = jo.optString("unit");
         }
-        if (jo.has("numSeparators")){
-            numSeparators=jo.optBoolean("numSeparators");
+        if (jo.has("numSeparators")) {
+            numSeparators = jo.optBoolean("numSeparators");
         }
-        if (jo.has("numLevel")){
-            numberLevel=jo.optInt("numLevel");
+        if (jo.has("numLevel")) {
+            numberLevel = jo.optInt("numLevel");
         }
-        if (jo.has("iconStyle")){
-            iconStyle=jo.optInt("iconStyle");
+        if (jo.has("iconStyle")) {
+            iconStyle = jo.optInt("iconStyle");
         }
-        if (jo.has("format")){
-            format=jo.optInt("format");
+        if (jo.has("format")) {
+            format = jo.optInt("format");
         }
-        if (jo.has("conditions")){
-            conditions=jo.optJSONArray("conditions");
+        if (jo.has("conditions")) {
+            conditions = jo.optJSONArray("conditions");
         }
-        if (jo.has("iconStyle")){
-            iconStyle=jo.optInt("iconStyle");
+        if (jo.has("iconStyle")) {
+            iconStyle = jo.optInt("iconStyle");
         }
-        if (jo.has("hasSeparator")){
-            hasSeparator=jo.optBoolean("hasSeparator");
+        if (jo.has("hasSeparator")) {
+            hasSeparator = jo.optBoolean("hasSeparator");
         }
 
-        if (jo.has("mark")){
-            mark=jo.optInt("mark");
+        if (jo.has("mark")) {
+            mark = jo.optInt("mark");
         }
         if (jo.has("dateFormat") && jo.getJSONObject("dateFormat").has("type")) {
             dateFormatType = jo.getJSONObject("dateFormat").optInt("type");

@@ -40,4 +40,14 @@ public class BICubeByteColumn extends BICubeColumnEntity<Byte> {
     public Byte getOriginalObjectValueByRow(int rowNumber) {
         return getOriginalValueByRow(rowNumber);
     }
+
+    /**
+     * 获取空值表示对象
+     * TODO 字节类型的如今是怎样的一种空值表示
+     * @return
+     */
+    @Override
+    public Byte getCubeNullValue() {
+        return null;
+    }
 }
