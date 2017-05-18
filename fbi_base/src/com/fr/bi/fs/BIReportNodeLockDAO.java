@@ -96,7 +96,7 @@ public class BIReportNodeLockDAO extends PlatformDataAccessObject {
      * @param userId
      * @param reportId
      */
-    public boolean lock(String sessionId, long userId, long reportId) {
+    public boolean lock(String sessionId, long userId, long reportId,long editUserId) {
         if (StringUtils.isEmpty(sessionId)) {
             return false;
         }
@@ -105,7 +105,7 @@ public class BIReportNodeLockDAO extends PlatformDataAccessObject {
             synchronized (this) {
                 lock = getLock(userId, reportId);
                 if (lock == null || lock.size() == 0) {
-                    BIReportNodeLock l = new BIReportNodeLock(sessionId, userId, reportId);
+                    BIReportNodeLock l = new BIReportNodeLock(sessionId, userId, reportId,editUserId);
                     lock(l);
                     lock = new ArrayList<BIReportNodeLock>();
                     lock.add(l);
@@ -128,13 +128,13 @@ public class BIReportNodeLockDAO extends PlatformDataAccessObject {
      * @param userId
      * @param reportId
      */
-    public void forceLock(String sessionId, long userId, long reportId) {
-        boolean isLock = lock(sessionId, userId, reportId);
+    public void forceLock(String sessionId, long userId, long reportId,long editUserId) {
+        boolean isLock = lock(sessionId, userId, reportId,editUserId);
         if (!isLock) {
             synchronized (this) {
                 BIReportNodeLock lock = getLock(sessionId, userId, reportId);
                 if (lock == null) {
-                    lock = new BIReportNodeLock(sessionId, userId, reportId);
+                    lock = new BIReportNodeLock(sessionId, userId, reportId,editUserId);
                     lock(lock);
                 }
             }

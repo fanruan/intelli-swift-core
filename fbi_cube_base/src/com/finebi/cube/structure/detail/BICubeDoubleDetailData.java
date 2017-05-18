@@ -39,7 +39,16 @@ public class BICubeDoubleDetailData extends BICubeDetailData<Double> {
 
     @Override
     public Double getOriginalObjectValueByRow(int rowNumber) {
-        double value = getOriginalValueByRow(rowNumber);
-        return Double.isNaN(value)? null : value;
+        return getOriginalValueByRow(rowNumber);
+    }
+
+    /**
+     * 获取空值表示
+     *
+     * @return
+     */
+    @Override
+    public Double getCubeNullValue() {
+        return NIOConstant.DOUBLE.NULL_VALUE;
     }
 }

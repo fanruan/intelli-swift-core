@@ -19,7 +19,6 @@ import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.operation.group.BIGroupUtils;
 import com.fr.bi.stable.operation.sort.comp.ComparatorFacotry;
 import com.fr.bi.stable.operation.sort.comp.CustomComparator;
-import com.fr.bi.stable.structure.collection.CubeIndexGetterWithNullValue;
 import com.fr.bi.stable.structure.collection.map.CubeTreeMap;
 
 import java.util.Comparator;
@@ -127,10 +126,11 @@ public class NumberDimensionCalculator extends AbstractDimensionCalculator {
 
     private void initCustomMap(ICubeDataLoader loader, boolean useRealData, int groupLimit) {
         ICubeColumnIndexReader getter = loader.getTableIndex(field.getTableBelongTo().getTableSource()).loadGroup(dimension.createKey(field), getRelationList(), useRealData, groupLimit);
-        GroupValueIndex nullGroupValueIndex = loader.getTableIndex(field.getTableBelongTo().getTableSource()).getNullGroupValueIndex(dimension.createKey(field));
-        if (!nullGroupValueIndex.isAllEmpty()) {
-            getter = new CubeIndexGetterWithNullValue(getter, null, nullGroupValueIndex);
-        }
+        //BI-5055 这边空分组取得不对，应该取得是主表空分组对应字表的gvi，而不是取出主表自己的gvi
+//        GroupValueIndex nullGroupValueIndex = loader.getTableIndex(field.getTableBelongTo().getTableSource()).getNullGroupValueIndex(dimension.createKey(field));
+//        if (!nullGroupValueIndex.isAllEmpty()) {
+//            getter = new CubeIndexGetterWithNullValue(getter, null, nullGroupValueIndex);
+//        }
         getter = dimension.getGroup().createGroupedMap(getter);
 
         if (isCustomSort()) {

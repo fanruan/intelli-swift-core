@@ -38,7 +38,16 @@ public class BICubeIntegerDetailData extends BICubeDetailData<Integer> {
 
     @Override
     public Integer getOriginalObjectValueByRow(int rowNumber) {
-        int value = getOriginalValueByRow(rowNumber);
-        return value == NIOConstant.INTEGER.NULL_VALUE ? null : value;
+        return getOriginalValueByRow(rowNumber);
+    }
+
+    /**
+     * 获取空值表示
+     *
+     * @return
+     */
+    @Override
+    public Integer getCubeNullValue() {
+        return NIOConstant.INTEGER.NULL_VALUE;
     }
 }

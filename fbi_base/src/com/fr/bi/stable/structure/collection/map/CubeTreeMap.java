@@ -1,8 +1,10 @@
 package com.fr.bi.stable.structure.collection.map;
 
-import com.fr.bi.common.inter.Release;
-import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.finebi.cube.api.ICubeColumnIndexReader;
+import com.fr.bi.common.inter.Release;
+import com.fr.bi.stable.gvi.GVIFactory;
+import com.fr.bi.stable.gvi.GroupValueIndex;
+import com.fr.bi.stable.utils.BICollectionUtils;
 
 import java.util.Comparator;
 import java.util.Iterator;
@@ -28,7 +30,15 @@ public class CubeTreeMap<K> extends TreeMap implements ICubeColumnIndexReader, R
 
     @Override
     public GroupValueIndex getNULLIndex() {
-        return null;
+        // 返回空值GVI
+        Iterator it = keySet().iterator();
+        while (it.hasNext()) {
+            Object o = it.next();
+            if (BICollectionUtils.isCubeNullKey(o)) {
+                return getIndex(o);
+            }
+        }
+        return GVIFactory.createAllEmptyIndexGVI();
     }
 
     @Override

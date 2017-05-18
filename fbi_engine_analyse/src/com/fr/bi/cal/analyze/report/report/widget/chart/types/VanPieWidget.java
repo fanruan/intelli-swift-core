@@ -1,6 +1,8 @@
 package com.fr.bi.cal.analyze.report.report.widget.chart.types;
 
 import com.fr.bi.cal.analyze.report.report.widget.VanChartWidget;
+import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
+import com.fr.json.JSONArray;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
 import com.fr.stable.StringUtils;
@@ -54,5 +56,29 @@ public class VanPieWidget extends VanChartWidget{
 
     protected String seriesLabelKey() {
         return CATEGORY;
+    }
+
+    protected JSONArray createSeriesWithChildren(JSONObject originData) throws Exception {
+        BIDimension category = this.getCategoryDimension();
+        JSONArray children = originData.optJSONArray("c");
+
+        if(category == null && children == null){//没有分类，只有指标，显示一个饼
+            String[] targetIDs = this.getUsedTargetID();
+            JSONArray datas = JSONArray.create();
+            JSONArray targets = JSONArray.create();
+            for (int i = 0, len = targetIDs.length; i < len; i++) {
+                String id = targetIDs[i];
+                JSONArray targetValues = originData.optJSONArray("s");
+                double y = targetValues.isNull(i) ? 0 : targetValues.getDouble(i) / numberScale(id);
+                datas.put(JSONObject.create().put("y", y).put("x", getDimensionNameByID(id)));
+                targets.put(id);
+            }
+
+            JSONObject ser = JSONObject.create().put("data", datas).put("type", "pie").put("dimensionIDs", JSONArray.create()).put("targetIDs", targets);
+
+            return JSONArray.create().put(ser);
+
+        }
+        return super.createSeriesWithChildren(originData);
     }
 }

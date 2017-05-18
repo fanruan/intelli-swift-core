@@ -2,9 +2,11 @@ package com.fr.bi.field.target.calculator.cal.configure;
 
 import com.fr.base.FRContext;
 import com.fr.bi.field.target.target.cal.target.configure.BIConfiguredCalculateTarget;
+import com.fr.bi.stable.io.newio.NIOConstant;
 import com.fr.bi.stable.report.key.TargetGettingKey;
 import com.fr.bi.stable.report.result.BICrossNode;
 import com.fr.bi.stable.report.result.BINode;
+import com.fr.bi.stable.utils.BICollectionUtils;
 import com.fr.bi.stable.utils.CubeBaseUtils;
 
 import java.util.ArrayList;
@@ -90,10 +92,15 @@ public class SumOfAboveCalculator extends AbstractConfigureCalculator {
                 deep++;
             }
             BINode cursor_node = temp_node;
-            double sum = 0;
+            double sum = NIOConstant.DOUBLE.NULL_VALUE;
             while (isNotEnd(cursor_node, deep)) {
                 Number value = cursor_node.getSummaryValue(calTargetKey);
-                sum += value == null ? 0 : value.doubleValue();
+                if (BICollectionUtils.isNotCubeNullKey(value)) {
+                    if (sum == NIOConstant.DOUBLE.NULL_VALUE) {
+                        sum = 0;
+                    }
+                    sum += value.doubleValue();
+                }
                 cursor_node.setSummaryValue(createTargetGettingKey(), new Double(sum));
                 cursor_node = cursor_node.getSibling();
             }

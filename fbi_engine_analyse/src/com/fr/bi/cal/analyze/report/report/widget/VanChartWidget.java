@@ -711,7 +711,7 @@ public abstract class VanChartWidget extends TableWidget {
         return series;
     }
 
-    private JSONArray createSeriesWithChildren(JSONObject originData) throws Exception {
+    protected JSONArray createSeriesWithChildren(JSONObject originData) throws Exception {
         BIDimension category = this.getCategoryDimension();
         JSONArray series = JSONArray.create();
         String[] targetIDs = this.getUsedTargetID();
@@ -733,7 +733,7 @@ public abstract class VanChartWidget extends TableWidget {
                     data.put(JSONObject.create().put(categoryKey, this.formatCategory(category, x)).put(valueKey, y));
                     valueList.add(y);
                 }
-            } else {//饼图没有分类，只有指标。会过来一个汇总值，没有child
+            } else {//没有分类，只有指标。会过来一个汇总值，没有child
                 JSONArray targetValues = originData.optJSONArray("s");
                 double y = targetValues.isNull(i) ? 0 : targetValues.getDouble(i) / numberScale;
                 data.put(JSONObject.create().put(valueKey, y).put(categoryKey, StringUtils.EMPTY));
