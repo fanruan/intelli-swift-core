@@ -247,7 +247,7 @@ public class SummaryComplexTableBuilder extends TableAbstractDataBuilder {
     }
 
     /*
-    * 这个结构是从前台直接拷过来的，有很大优化空间，等有空了再改，我保证
+    * 这个结构是从前台直接拷过来的，需优化
     *
     * */
     private List<ITableItem> createTempItems(List<ITableItem> tempCrossItems, int i, JSONObject rowValues, JSONObject tableData, int j) throws Exception {
