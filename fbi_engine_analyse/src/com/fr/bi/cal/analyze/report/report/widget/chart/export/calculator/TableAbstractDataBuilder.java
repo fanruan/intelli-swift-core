@@ -3,8 +3,6 @@ package com.fr.bi.cal.analyze.report.report.widget.chart.export.calculator;
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.item.*;
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.utils.BITableExportDataHelper;
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.utils.SummaryTableStyleHelper;
-import com.fr.bi.cal.analyze.report.report.widget.chart.export.utils.node.ReportNode;
-import com.fr.bi.cal.analyze.report.report.widget.chart.export.utils.node.ReportNodeTree;
 import com.fr.bi.conf.report.widget.IWidgetStyle;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.utils.program.BIJsonUtils;
@@ -30,11 +28,9 @@ public abstract class TableAbstractDataBuilder implements IExcelDataBuilder {
     //fixme 尽量避免使用json来代替对象
     protected List<ITableItem> items;
     protected List<ITableHeader> headers;
-
     protected JSONObject data;
     Map<Integer, List<JSONObject>> dimAndTar;
     protected IWidgetStyle styleSetting;
-    protected ReportNodeTree tree;
     protected List<String> dimIds;
     protected List<String> targetIds;
     protected boolean showColTotal;
@@ -50,7 +46,6 @@ public abstract class TableAbstractDataBuilder implements IExcelDataBuilder {
     }
 
     protected void initAllAttrs() {
-        tree = new ReportNodeTree();
         dimIds = new ArrayList<String>();
         targetIds = new ArrayList<String>();
         crossItems = new ArrayList<ITableItem>();
@@ -73,7 +68,7 @@ public abstract class TableAbstractDataBuilder implements IExcelDataBuilder {
         BIBasicTableItem item = new BIBasicTableItem();
         List<ITableItem> children = new ArrayList<ITableItem>();
         if (data.has("c")) {
-            children = createCommonTableItems(data.getString("c"), currentLayer, null, dimIds);
+            children = createCommonTableItems(data.getString("c"), currentLayer, dimIds);
         }
         item.setChildren(children);
         //汇总
@@ -150,7 +145,7 @@ public abstract class TableAbstractDataBuilder implements IExcelDataBuilder {
     protected void createCrossItems4OnlyCross() throws Exception {
         ITableItem crossItem = new BIBasicTableItem();
         //交叉表items
-        List<ITableItem> c = createCrossPartItems(data.getJSONArray("c"), 0, null);
+        List<ITableItem> c = createCrossPartItems(data.getJSONArray("c"), 0);
         crossItem.setChildren(c);
         List<ITableItem> itemList = new ArrayList<ITableItem>();
         itemList.add(crossItem);
@@ -213,7 +208,7 @@ public abstract class TableAbstractDataBuilder implements IExcelDataBuilder {
 
     private void createItems4Cross(JSONObject left) throws Exception {
         BIBasicTableItem item = new BIBasicTableItem();
-        item.setChildren(createCommonTableItems(left.optString("c"), 0, null, dimIds));
+        item.setChildren(createCommonTableItems(left.optString("c"), 0, dimIds));
         if (showRowTotal) {
             //汇总值
             List<ITableItem> sums = new ArrayList<ITableItem>();
@@ -247,7 +242,7 @@ public abstract class TableAbstractDataBuilder implements IExcelDataBuilder {
 
     protected List<ITableItem> createCrossItems(JSONObject top) throws Exception {
         ITableItem crossItem = new BIBasicTableItem();
-        List<ITableItem> children = createCrossPartItems(top.getJSONArray("c"), 0, new ReportNode());
+        List<ITableItem> children = createCrossPartItems(top.getJSONArray("c"), 0);
         crossItem.setChildren(children);
         if (showColTotal) {
             if (isOnlyCrossAndTarget()) {
@@ -464,7 +459,7 @@ public abstract class TableAbstractDataBuilder implements IExcelDataBuilder {
     /**
      * 交叉表——crossItems
      */
-    protected List<ITableItem> createCrossPartItems(JSONArray c, int currentLayer, ReportNode parent) throws Exception {
+    protected List<ITableItem> createCrossPartItems(JSONArray c, int currentLayer) throws Exception {
         List items = new ArrayList();
         List<ITableItem> crossHeaderIItems = new ArrayList();
         currentLayer++;
@@ -477,32 +472,16 @@ public abstract class TableAbstractDataBuilder implements IExcelDataBuilder {
             if (!hasC && isExisted) {
                 return items;
             }
-            String cId = child.has("n") ? UUID.randomUUID().toString() : child.getString("n");
             String currDid = crossDimIds.get(currentLayer - 1);
             String currValue = child.getString("n");
-            String nodeId = null != parent ? parent.getId() + cId : cId;
-            ReportNode node = new ReportNode(nodeId);
-            node.setName(child.getString("n"));
-            node.setdId(currDid);
-            this.tree.addNode(parent, node);
             int tempLayer = currentLayer;
-            String tempNodeId = nodeId;
-            while (tempLayer > 0) {
-                String dId = crossDimIds.get(tempLayer - 1);
-                ReportNode itemNode = tree.getNode(tempNodeId);
-                JSONObject json = new JSONObject();
-                json.put("value", itemNode.getName() + dId);
-                json.put("dId", dId);
-                tempNodeId = itemNode.getParent().getId();
-                tempLayer--;
-            }
-            BIBasicTableItem item = setPartItem(currentLayer, i, child, currDid, currValue, node);
+            BIBasicTableItem item = setPartItem(currentLayer, i, child, currDid, currValue);
             crossHeaderIItems.add(item);
         }
         return crossHeaderIItems;
     }
 
-    private BIBasicTableItem setPartItem(int currentLayer, int i, JSONObject child, String currDid, String currValue, ReportNode node) throws Exception {
+    private BIBasicTableItem setPartItem(int currentLayer, int i, JSONObject child, String currDid, String currValue) throws Exception {
         BIBasicTableItem item = new BIBasicTableItem();
         item.setValue(currValue);
         item.setDId(currDid);
@@ -511,9 +490,9 @@ public abstract class TableAbstractDataBuilder implements IExcelDataBuilder {
             item.setExpanded(false);
         }
         if (child.has("c") && child.getJSONArray("c").length() > 0) {
-            List children = createCrossPartItems(child.getJSONArray("c"), currentLayer, node);
+            List children = createCrossPartItems(child.getJSONArray("c"), currentLayer);
             if (children.size() > 0) {
-                item.setChildren(createCrossPartItems(child.getJSONArray("c"), currentLayer, node));
+                item.setChildren(createCrossPartItems(child.getJSONArray("c"), currentLayer));
                 item.setExpanded(true);
             }
         }
@@ -553,36 +532,19 @@ public abstract class TableAbstractDataBuilder implements IExcelDataBuilder {
      *
      * @param strC         json结构中的c节点
      * @param currentLayer 当前所在层数
-     * @param parentNode   父节点node
      * @param dimIds       行表头
      * @returns {Array}
      * @private
      */
-    protected List<ITableItem> createCommonTableItems(String strC, int currentLayer, ReportNode parentNode, List<String> dimIds) throws Exception {
+    protected List<ITableItem> createCommonTableItems(String strC, int currentLayer, List<String> dimIds) throws Exception {
         List<ITableItem> items = new ArrayList<ITableItem>();
         currentLayer++;
         if (BIJsonUtils.isArray(strC)) {
             JSONArray c = new JSONArray(strC);
             for (int i = 0; i < c.length(); i++) {
                 JSONObject child = c.getJSONObject(i);
-                //可以直接使用每一层中的树节点的parent.id + child.n作为id，第一层无需考虑，因为第一层不可能有相同值
                 //考虑到空字符串问题
-                String cId = child.has("n") ? child.getString("n") : BIStringUtils.emptyString();
-                String nodeId = null != parentNode ? parentNode.getId() + cId : cId;
-                ReportNode node = new ReportNode();
-                node.setId(nodeId);
                 String currDid = dimIds.get(currentLayer - 1);
-                String currValue = child.getString("n");
-                node.setName(currValue);
-                node.setdId(currDid);
-                this.tree.addNode(parentNode, node);
-//                JSONArray pValues = new JSONArray();
-                int tempLayer = currentLayer;
-                String tempNodeId = nodeId;
-                while (tempLayer > 0) {
-                    tempLayer--;
-                    tempNodeId = tree.getNode(tempNodeId).getParent().getId();
-                }
                 BIBasicTableItem item = new BIBasicTableItem();
                 item.setValue(child.getString("n"));
                 item.setDId(currDid);
@@ -592,7 +554,7 @@ public abstract class TableAbstractDataBuilder implements IExcelDataBuilder {
                 item.setExpanded(child.has("c"));
                 //有c->说明有children，构造children，并且需要在children中加入汇总情况（如果有并且需要）
                 if (child.has("c")) {
-                    hasChildren(currentLayer, dimIds, child, node, item);
+                    hasChildren(currentLayer, dimIds, child, item);
                 } else if (child.has("s")) {
                     hasNoneChildren(child, item);
                 }
@@ -602,8 +564,8 @@ public abstract class TableAbstractDataBuilder implements IExcelDataBuilder {
         return items;
     }
 
-    private void hasChildren(int currentLayer, List<String> dimIds, JSONObject child, ReportNode node, BIBasicTableItem item) throws Exception {
-        List children = createCommonTableItems(child.getString("c"), currentLayer, node, dimIds);
+    private void hasChildren(int currentLayer, List<String> dimIds, JSONObject child, BIBasicTableItem item) throws Exception {
+        List children = createCommonTableItems(child.getString("c"), currentLayer, dimIds);
         item.setChildren(children);
         if (showRowTotal) {
             List<ITableItem> vs = new ArrayList<ITableItem>();

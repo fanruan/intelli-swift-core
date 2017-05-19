@@ -6,7 +6,6 @@ import com.fr.bi.cal.analyze.report.report.widget.chart.export.item.ITableHeader
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.item.ITableItem;
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.utils.BITableExportDataHelper;
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.utils.SummaryTableStyleHelper;
-import com.fr.bi.cal.analyze.report.report.widget.chart.export.utils.node.ReportNode;
 import com.fr.bi.conf.report.widget.IWidgetStyle;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.utils.program.BIJsonUtils;
@@ -118,7 +117,7 @@ public class SummaryComplexTableBuilder extends TableAbstractDataBuilder {
                 dimIds.add(jsonObject.getString("dId"));
             }
             BIBasicTableItem item = new BIBasicTableItem();
-            item.setChildren(createCommonTableItems(rowTable.getString("c"), 0, null, dimIds));
+            item.setChildren(createCommonTableItems(rowTable.getString("c"), 0, dimIds));
             //汇总
             if (showRowTotal && rowTable.has("s")) {
                 List<ITableItem> outerValues = new ArrayList<ITableItem>();
@@ -456,7 +455,7 @@ public class SummaryComplexTableBuilder extends TableAbstractDataBuilder {
 
     protected List<ITableItem> createCrossItems(JSONObject top) throws Exception {
         ITableItem crossItem = new BIBasicTableItem();
-        List<ITableItem> children = createCrossPartItems(top.getJSONArray("c"), 0, new ReportNode());
+        List<ITableItem> children = createCrossPartItems(top.getJSONArray("c"), 0);
         crossItem.setChildren(children);
         if (showColTotal) {
             if (isRowRegionExist()) {

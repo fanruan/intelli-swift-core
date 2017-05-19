@@ -48,5 +48,9 @@ public interface ITableItem extends JSONCreator {
 
     void setText(String text);
 
+    boolean isSum();
+
+    void setSum(boolean sum);
+
     void parseJSON(JSONObject jo) throws Exception;
 }
