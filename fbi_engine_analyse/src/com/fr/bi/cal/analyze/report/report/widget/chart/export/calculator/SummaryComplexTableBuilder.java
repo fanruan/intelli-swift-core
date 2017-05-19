@@ -1,13 +1,12 @@
 package com.fr.bi.cal.analyze.report.report.widget.chart.export.calculator;
 
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.item.BIBasicTableItem;
+import com.fr.bi.cal.analyze.report.report.widget.chart.export.item.BITableDataConstructor;
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.item.ITableHeader;
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.item.ITableItem;
-import com.fr.bi.cal.analyze.report.report.widget.chart.export.item.BITableDataConstructor;
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.utils.BITableExportDataHelper;
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.utils.SummaryTableStyleHelper;
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.utils.node.ReportNode;
-import com.fr.bi.cal.analyze.report.report.widget.style.BITableWidgetStyle;
 import com.fr.bi.conf.report.widget.IWidgetStyle;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.utils.program.BIJsonUtils;
@@ -285,14 +284,14 @@ public class SummaryComplexTableBuilder extends TableAbstractDataBuilder {
             return item;
         }
         //最外层汇总
-        if (tableItem.getDId() == null) {
+        if (tableItem.getDId() == null&&tableItem.getChildren()!=null&&tableItem.getChildren().size()>0&&tableItem.getValues()!=null&&tableItem.getValues().size()>0) {
             item.setValues(convertToItemList(rowValues.has(OUTERSUM) ? rowValues.getJSONArray(OUTERSUM) : new JSONArray()));
+        } else {
+            item.setValues(convertToItemList(rowValues.optJSONArray(String.valueOf(item.getDId()) + String.valueOf(item.getValue()))));
         }
         if (item.getChildren() != null) {
             for (int i = 0; i < item.getChildren().size(); i++) {
-                ITableItem child = item.getChildren().get(i);
-                child.setValues(convertToItemList(rowValues.getJSONArray((null == child.getDId() ? "" : child.getDId()) + child.getValue())));
-                item.getChildren().set(i, expandTableValues(child, rowValues));
+                item.getChildren().set(i, expandTableValues(item.getChildren().get(i), rowValues));
             }
         }
         return item;
@@ -323,10 +322,10 @@ public class SummaryComplexTableBuilder extends TableAbstractDataBuilder {
                 List<ITableItem> childrenAddSummaryValue = tempItems.get(i).getChildren();
                 childrenAddSummaryValue.add(summaryValueItem);
                 tempItems.get(i).setChildren(childrenAddSummaryValue);
-                tempItems.get(i).setValues(null);
+//                tempItems.get(i).setValues(null);
             }
-            items.add(tempItems.get(i));
         }
+        this.items.addAll(tempItems);
     }
 
     //从table中获取信息，缓存再rowValues里面
@@ -342,7 +341,7 @@ public class SummaryComplexTableBuilder extends TableAbstractDataBuilder {
             if (!rowValues.has(OUTERSUM)) {
                 rowValues.put(OUTERSUM, new JSONArray());
             }
-            rowValues.put(OUTERSUM, BIJsonUtils.arrayConcat(rowValues.getJSONArray(OUTERSUM), data.createJSON().getJSONArray("values")));
+            rowValues.put(OUTERSUM, BIJsonUtils.arrayConcat(rowValues.optJSONArray(OUTERSUM), data.createJSON().optJSONArray("values")));
         }
         boolean rowRegionAvailable = data.getDId() != null || !isRowRegionExist();
         if (data.getValues() != null && rowRegionAvailable) {
@@ -395,7 +394,7 @@ public class SummaryComplexTableBuilder extends TableAbstractDataBuilder {
     }
 
     private BITableDataConstructor createSingleCrossTableItems(JSONObject tableData, Map<Integer, List<JSONObject>> dimsByDataPos) throws Exception {
-        SummaryCrossTableDataBuilder builder = new SummaryCrossTableDataBuilder(dimsByDataPos, tableData, new BITableWidgetStyle());
+        SummaryCrossTableDataBuilder builder = new SummaryCrossTableDataBuilder(dimsByDataPos, tableData, this.styleSetting);
         builder.initAttrs();
         builder.createHeaders();
         builder.createItems();

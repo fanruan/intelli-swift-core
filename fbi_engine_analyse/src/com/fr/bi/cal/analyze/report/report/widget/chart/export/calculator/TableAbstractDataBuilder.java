@@ -27,7 +27,6 @@ public abstract class TableAbstractDataBuilder implements IExcelDataBuilder {
     List<ITableHeader> crossHeaders;
     List<ITableItem> crossItems;
     List<String> crossDimIds;
-    List<JSONArray> crossItemSums;
     //fixme 尽量避免使用json来代替对象
     protected List<ITableItem> items;
     protected List<ITableHeader> headers;
@@ -56,7 +55,6 @@ public abstract class TableAbstractDataBuilder implements IExcelDataBuilder {
         targetIds = new ArrayList<String>();
         crossItems = new ArrayList<ITableItem>();
         crossDimIds = new ArrayList<String>();
-        crossItemSums = new ArrayList<JSONArray>();
         items = new ArrayList<ITableItem>();
         headers = new ArrayList<ITableHeader>();
         crossHeaders = new ArrayList<ITableHeader>();
@@ -80,7 +78,7 @@ public abstract class TableAbstractDataBuilder implements IExcelDataBuilder {
         item.setChildren(children);
         //汇总
         boolean isArrayAvailable = data.has("s") && isValidArray(data.getJSONArray("s"));
-        if (showColTotal && isArrayAvailable) {
+        if (showRowTotal && isArrayAvailable) {
             List<ITableItem> outerValues = new ArrayList<ITableItem>();
             JSONArray s = data.getJSONArray("s");
             if (dimIds.size() > 0) {
@@ -181,7 +179,7 @@ public abstract class TableAbstractDataBuilder implements IExcelDataBuilder {
             if (child.has("c")) {
                 obj.put("c", getTopOfCrossByGroupData(child.getJSONArray("c")));
                 if (child.has("n")) {
-                    obj.put("n", child.getJSONObject("n"));
+                    obj.put("n", child.get("n"));
                 }
                 newC.put(obj);
                 return newC;
@@ -297,6 +295,7 @@ public abstract class TableAbstractDataBuilder implements IExcelDataBuilder {
             BIBasicTableItem ob = new BIBasicTableItem();
             ob.setValue(BITableExportDataHelper.getDimensionNameByID(dimAndTar, targetIds.get(i)));
             ob.setStyles(SummaryTableStyleHelper.getBodyStyles(styleSetting.getThemeColor(), styleSetting.getTableStyleGroup(), i));
+            ob.setDId(targetIds.get(i));
             BIBasicTableItem child = new BIBasicTableItem();
             List<ITableItem> childItems = new ArrayList<ITableItem>();
             childItems.add(ob);
@@ -321,6 +320,7 @@ public abstract class TableAbstractDataBuilder implements IExcelDataBuilder {
                             children.setValues(new ArrayList<ITableItem>());
                         }
                         BIBasicTableItem ob = new BIBasicTableItem();
+                        ob.setDId(targetIds.get(j));
                         ob.setValue(child.getJSONArray("s").getString(j));
                         ob.setStyles(SummaryTableStyleHelper.getBodyStyles(styleSetting.getThemeColor(), styleSetting.getTableStyleGroup(), j));
                         List<ITableItem> values = null == children.getValues() ? new ArrayList<ITableItem>() : children.getValues();
@@ -517,10 +517,8 @@ public abstract class TableAbstractDataBuilder implements IExcelDataBuilder {
                 item.setExpanded(true);
             }
         }
-        boolean hasSum = crossItemSums.size() > currentLayer && crossItemSums.get(currentLayer).length() > i && crossItemSums.get(currentLayer).getBoolean(i);
-        boolean showColAndSums = showColTotal && hasSum;
         boolean childExist = null != item.getChildren() && item.getChildren().size() > 0;
-        if (showColAndSums && childExist) {
+        if (showColTotal && childExist) {
             JSONArray itemList = new JSONArray();
             if (isOnlyCrossAndTarget()) {
                 itemList.put(new JSONArray());
@@ -738,6 +736,9 @@ public abstract class TableAbstractDataBuilder implements IExcelDataBuilder {
     }
 
     protected List<ITableItem> convertToItemList(JSONArray jsonArray) throws Exception {
+        if (jsonArray == null) {
+            return null;
+        }
         List<ITableItem> items = new ArrayList<ITableItem>();
         for (int i = 0; i < jsonArray.length(); i++) {
             BIBasicTableItem item = new BIBasicTableItem();
