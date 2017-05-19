@@ -23,7 +23,6 @@ import java.util.Map;
  * Created by Kary on 2017/2/27.
  */
 public class SummaryComplexTableBuilder extends TableAbstractDataBuilder {
-    boolean showRowTotal = true;
     private String data;
 
     public SummaryComplexTableBuilder(Map<Integer, List<JSONObject>> dimAndTar, JSONObject dataJSON, IWidgetStyle styleSettings) throws Exception {
@@ -322,7 +321,7 @@ public class SummaryComplexTableBuilder extends TableAbstractDataBuilder {
                 List<ITableItem> childrenAddSummaryValue = tempItems.get(i).getChildren();
                 childrenAddSummaryValue.add(summaryValueItem);
                 tempItems.get(i).setChildren(childrenAddSummaryValue);
-//                tempItems.get(i).setValues(null);
+                tempItems.get(i).setValues(null);
             }
         }
         this.items.addAll(tempItems);
