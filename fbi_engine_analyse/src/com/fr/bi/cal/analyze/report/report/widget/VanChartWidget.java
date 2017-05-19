@@ -8,6 +8,7 @@ import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.conf.session.BISessionProvider;
 import com.fr.bi.field.target.target.BISummaryTarget;
 import com.fr.bi.stable.constant.BIBaseConstant;
+import com.fr.bi.stable.constant.BIChartSettingConstant;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.constant.BIStyleConstant;
 import com.fr.bi.tool.BIReadReportUtils;
@@ -53,25 +54,11 @@ public abstract class VanChartWidget extends TableWidget {
 
     public static final String LONG_DATE = "longDate";
 
-    //兼容前台用数字表示位置的写法，真xx丑
-    private static final int TOP = 2;
-    private static final int RIGHT = 3;
-    private static final int BOTTOM = 4;
-    private static final int LEFT = 5;
-
-    //标签位置
-    private static final int POSITION_INNER = 1;
-    private static final int POSITION_OUTER = 2;
-    private static final int POSITION_CENTER = 3;
-
     private static final int TARGET = 30000;
     private static final int TARGET_BASE = 10000;
 
     private static final String PERCENT_SYMBOL = "%";
     private static final String WHITE = "#ffffff";
-
-    private static final int STYLE_NORMAL = 1; //普通风格
-    private static final int STYLE_GRADUAL = 2; //渐变风格
 
     private static final int WEEK_COUNT = 52;
     private static final int MONTH_COUNT = 12;
@@ -425,9 +412,9 @@ public abstract class VanChartWidget extends TableWidget {
     }
 
     protected String dataLabelAlign(int position) {
-        if (position == POSITION_OUTER) {
+        if (position == BIChartSettingConstant.DATA_LABEL.POSITION_OUTER) {
             return "outside";
-        } else if (position == POSITION_INNER) {
+        } else if (position == BIChartSettingConstant.DATA_LABEL.POSITION_INNER) {
             return "inside";
         }
         return "center";
@@ -437,7 +424,7 @@ public abstract class VanChartWidget extends TableWidget {
 
         return JSONObject.create().put("showCategoryName", true)
                 .put("showSeriesName", true).put("showValue", true).put("showPercentage", false)
-                .put("position", POSITION_OUTER).put("showTractionLine", false)
+                .put("position", BIChartSettingConstant.DATA_LABEL.POSITION_OUTER).put("showTractionLine", false)
                 .put("textStyle", defaultFont());
 
     }
@@ -455,8 +442,10 @@ public abstract class VanChartWidget extends TableWidget {
         JSONObject settings = JSONObject.create();
 
         //图例
-        settings.put("legend", BOTTOM)
+        settings.put("legend", BIChartSettingConstant.CHART_LEGENDS.BOTTOM)
                 .put("legendStyle", this.defaultFont());
+
+        settings.put("clickZoom", true);
 
         return settings;
     }
@@ -535,7 +524,7 @@ public abstract class VanChartWidget extends TableWidget {
     }
 
     private String parseStyle(JSONObject settings, JSONObject globalStyle, JSONObject plateConfig) throws JSONException {
-        int style = STYLE_NORMAL;
+        int style = BIChartSettingConstant.CHART_STYLE.STYLE_NORMAL;
         try {
             if (settings.has("chartStyle")) {
                 style = settings.optInt("chartStyle");
@@ -547,7 +536,7 @@ public abstract class VanChartWidget extends TableWidget {
         } catch (Exception e) {
             BILoggerFactory.getLogger(this.getClass()).error(e.getMessage(), e);
         }
-        return style == STYLE_GRADUAL ? "gradual" : "normal";
+        return style == BIChartSettingConstant.CHART_STYLE.STYLE_GRADUAL ? "gradual" : "normal";
     }
 
     protected String tooltipValueFormat(BISummaryTarget dimension) {
@@ -935,16 +924,16 @@ public abstract class VanChartWidget extends TableWidget {
         int legend = settings.optInt("legend");
         String position = "top";
 
-        if (legend == RIGHT) {
+        if (legend == BIChartSettingConstant.CHART_LEGENDS.RIGHT) {
             position = "right";
-        } else if (legend == BOTTOM) {
+        } else if (legend == BIChartSettingConstant.CHART_LEGENDS.BOTTOM) {
             position = "bottom";
-        } else if (legend == LEFT) {
+        } else if (legend == BIChartSettingConstant.CHART_LEGENDS.LEFT) {
             position = "left";
         }
 
         return JSONObject.create()
-                .put("enabled", legend >= TOP)
+                .put("enabled", legend >= BIChartSettingConstant.CHART_LEGENDS.TOP)
                 .put("position", position)
                 .put("style", settings.optJSONObject("legendStyle"));
     }

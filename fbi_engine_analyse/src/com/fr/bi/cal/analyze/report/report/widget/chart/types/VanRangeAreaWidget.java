@@ -48,6 +48,10 @@ public class VanRangeAreaWidget extends VanAreaWidget{
 
         JSONArray series = options.optJSONArray("series");
 
+        if(series == null || series.length() == 0){
+            return;
+        }
+
         JSONObject firstSeries = series.optJSONObject(0);
         JSONArray firstDatas = firstSeries.optJSONArray("data");
 
@@ -57,21 +61,21 @@ public class VanRangeAreaWidget extends VanAreaWidget{
             JSONArray datas = ser.optJSONArray("data");
             for(int dataIndex = 0, dataCount = datas.length(); dataIndex < dataCount; dataIndex++){
                 JSONObject d = datas.optJSONObject(dataIndex);
-                JSONObject labels = new JSONObject(dataLabels.toString());
-                String format = this.valueFormat(this.getSerBITarget(ser), false);
                 double y = firstDatas.optJSONObject(i).optDouble("y");
-                labels.optJSONObject("formatter")
-                        .put("valueFormat", String.format("function(){return BI.contentFormat(arguments[0] + %s , \"%s\")}", y, format))
-                        .put("percentFormat", "function(){return BI.contentFormat(arguments[0], \"#.##%\")}");
 
+                JSONObject labels = new JSONObject(dataLabels.toString());
+                if(labels.has("formatter")) {
+                    String format = this.valueFormat(this.getSerBITarget(ser), false);
+                    labels.optJSONObject("formatter")
+                            .put("valueFormat", String.format("function(){return BI.contentFormat(arguments[0] + %s , \"%s\")}", y, format))
+                            .put("percentFormat", "function(){return BI.contentFormat(arguments[0], \"#.##%\")}");
+                }
                 d.put(dataLabelsKey(), labels);
 
                 JSONObject formatter = JSONObject.create();
                 String tooltipFormat = this.valueFormat(this.getSerBITarget(ser), true);
-
                 formatter.put("identifier", this.getTooltipIdentifier())
                         .put(this.tooltipValueKey(), String.format("function(){return BI.contentFormat(arguments[0] + %s , \"%s\")}", y, tooltipFormat));
-
                 d.put("tooltip", new JSONObject(tooltip.toString()).put("formatter", formatter));
             }
         }
