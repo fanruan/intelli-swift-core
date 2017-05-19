@@ -28,7 +28,7 @@ public class VanMultiPieWidget extends VanPieWidget{
 
         plotOptions.put("gradual", settings.optInt("gradientType") == LIGHTER ? "lighter" : "darker");
 
-        plotOptions.put("drilldown", true);
+        plotOptions.put("drilldown", settings.optBoolean("clickZoom"));
 
         return plotOptions;
     }
