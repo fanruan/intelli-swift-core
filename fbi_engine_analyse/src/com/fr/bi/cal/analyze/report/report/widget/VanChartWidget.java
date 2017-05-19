@@ -458,6 +458,8 @@ public abstract class VanChartWidget extends TableWidget {
         settings.put("legend", BOTTOM)
                 .put("legendStyle", this.defaultFont());
 
+        settings.put("clickZoom", true);
+
         return settings;
     }
 
