@@ -48,5 +48,7 @@ public interface ITableItem extends JSONCreator {
 
     void setText(String text);
 
+    String getText();
+
     void parseJSON(JSONObject jo) throws Exception;
 }

@@ -544,7 +544,7 @@ public class TableWidget extends BISummaryWidget {
                 break;
         }
         BITableDataConstructor data = BITableConstructHelper.buildTableData(builder);
-        BITableConstructHelper.formatCells(data, getITableCellFormatOperationMap());
+        BITableConstructHelper.formatCells(data, getITableCellFormatOperationMap(), style);
         return data.createJSON().put("page", res.getJSONArray("page"));
     }
 
