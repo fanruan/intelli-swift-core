@@ -8,6 +8,7 @@ import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.conf.session.BISessionProvider;
 import com.fr.bi.field.target.target.BISummaryTarget;
 import com.fr.bi.stable.constant.BIBaseConstant;
+import com.fr.bi.stable.constant.BIChartSettingConstant;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.constant.BIStyleConstant;
 import com.fr.bi.tool.BIReadReportUtils;
@@ -51,27 +52,13 @@ public abstract class VanChartWidget extends TableWidget {
     public static final String DESCRIPTION = "${DESCRIPTION}";
     public static final String ARRIVALRATE = "${ARRIVALRATE}";
 
-    private static final String LONG_DATE = "longDate";
-
-    //兼容前台用数字表示位置的写法，真xx丑
-    private static final int TOP = 2;
-    private static final int RIGHT = 3;
-    private static final int BOTTOM = 4;
-    private static final int LEFT = 5;
-
-    //标签位置
-    private static final int POSITION_INNER = 1;
-    private static final int POSITION_OUTER = 2;
-    private static final int POSITION_CENTER = 3;
+    public static final String LONG_DATE = "longDate";
 
     private static final int TARGET = 30000;
     private static final int TARGET_BASE = 10000;
 
     private static final String PERCENT_SYMBOL = "%";
     private static final String WHITE = "#ffffff";
-
-    private static final int STYLE_NORMAL = 1; //普通风格
-    private static final int STYLE_GRADUAL = 2; //渐变风格
 
     private static final int WEEK_COUNT = 52;
     private static final int MONTH_COUNT = 12;
@@ -425,9 +412,9 @@ public abstract class VanChartWidget extends TableWidget {
     }
 
     protected String dataLabelAlign(int position) {
-        if (position == POSITION_OUTER) {
+        if (position == BIChartSettingConstant.DATA_LABEL.POSITION_OUTER) {
             return "outside";
-        } else if (position == POSITION_INNER) {
+        } else if (position == BIChartSettingConstant.DATA_LABEL.POSITION_INNER) {
             return "inside";
         }
         return "center";
@@ -437,7 +424,7 @@ public abstract class VanChartWidget extends TableWidget {
 
         return JSONObject.create().put("showCategoryName", true)
                 .put("showSeriesName", true).put("showValue", true).put("showPercentage", false)
-                .put("position", POSITION_OUTER).put("showTractionLine", false)
+                .put("position", BIChartSettingConstant.DATA_LABEL.POSITION_OUTER).put("showTractionLine", false)
                 .put("textStyle", defaultFont());
 
     }
@@ -455,8 +442,10 @@ public abstract class VanChartWidget extends TableWidget {
         JSONObject settings = JSONObject.create();
 
         //图例
-        settings.put("legend", BOTTOM)
+        settings.put("legend", BIChartSettingConstant.CHART_LEGENDS.BOTTOM)
                 .put("legendStyle", this.defaultFont());
+
+        settings.put("clickZoom", true);
 
         return settings;
     }
@@ -535,7 +524,7 @@ public abstract class VanChartWidget extends TableWidget {
     }
 
     private String parseStyle(JSONObject settings, JSONObject globalStyle, JSONObject plateConfig) throws JSONException {
-        int style = STYLE_NORMAL;
+        int style = BIChartSettingConstant.CHART_STYLE.STYLE_NORMAL;
         try {
             if (settings.has("chartStyle")) {
                 style = settings.optInt("chartStyle");
@@ -547,7 +536,7 @@ public abstract class VanChartWidget extends TableWidget {
         } catch (Exception e) {
             BILoggerFactory.getLogger(this.getClass()).error(e.getMessage(), e);
         }
-        return style == STYLE_GRADUAL ? "gradual" : "normal";
+        return style == BIChartSettingConstant.CHART_STYLE.STYLE_GRADUAL ? "gradual" : "normal";
     }
 
     protected String tooltipValueFormat(BISummaryTarget dimension) {
@@ -683,7 +672,7 @@ public abstract class VanChartWidget extends TableWidget {
     }
 
     private JSONArray createSeriesWithTop(JSONObject originData) throws Exception {
-        BIDimension category = this.getCategoryDimension();
+        BIDimension category = this.getCategoryDimension(), seriesDim = this.getSeriesDimension();
         JSONArray series = JSONArray.create();
         String[] targetIDs = this.getUsedTargetID();
         String[] dimensionIDs = this.getUsedDimensionID();
@@ -698,7 +687,7 @@ public abstract class VanChartWidget extends TableWidget {
         double numberScale = this.numberScale(targetIDs[0]);
         for (int i = 0; i < topC.length(); i++) {
             JSONObject tObj = topC.getJSONObject(i);
-            String name = tObj.getString("n");
+            String name = tObj.getString("n"), formattedName = this.formatDimension(seriesDim, name);
             String stackedKey = this.getStackedKey(id, name);
             boolean isStacked = this.isStacked(id, name);
             JSONArray data = JSONArray.create();
@@ -707,13 +696,13 @@ public abstract class VanChartWidget extends TableWidget {
                 String x = lObj.getString("n");
                 JSONArray s = lObj.getJSONObject("s").getJSONArray("c").getJSONObject(i).getJSONArray("s");
                 double y = (s.isNull(0) ? 0 : s.getDouble(0)) / numberScale;
-                String formattedCategory = this.formatCategory(category, x);
+                String formattedCategory = this.formatDimension(category, x);
                 data.put(
-                        JSONObject.create().put(categoryKey, formattedCategory).put(valueKey, y).put(LONG_DATE, ComparatorUtils.equals(formattedCategory, x) ? StringUtils.EMPTY : x)
+                        JSONObject.create().put(categoryKey, formattedCategory).put(valueKey, y).put(LONG_DATE, this.getLongDate(formattedCategory, x))
                 );
                 valueList.add(y);
             }
-            JSONObject ser = JSONObject.create().put("data", data).put("name", name)
+            JSONObject ser = JSONObject.create().put("data", data).put("name", formattedName).put(LONG_DATE, this.getLongDate(formattedName, name))
                     .put("type", this.getSeriesType(id, name))
                     .put("dimensionIDs", dimensionIDs)
                     .put("targetIDs", JSONArray.create().put(id));
@@ -728,8 +717,12 @@ public abstract class VanChartWidget extends TableWidget {
         return series;
     }
 
+    protected String getLongDate(String formatted, String origin){
+        return ComparatorUtils.equals(formatted, origin) ? StringUtils.EMPTY : origin;
+    }
+
     protected JSONArray createSeriesWithChildren(JSONObject originData) throws Exception {
-        BIDimension category = this.getCategoryDimension();
+        BIDimension category = this.getCategoryDimension(), seriesDim = this.getSeriesDimension();
         JSONArray series = JSONArray.create();
         String[] targetIDs = this.getUsedTargetID();
         String[] dimensionIDs = this.getUsedDimensionID();
@@ -747,7 +740,7 @@ public abstract class VanChartWidget extends TableWidget {
                     String x = lObj.getString("n");
                     JSONArray targetValues = lObj.getJSONArray("s");
                     double y = targetValues.isNull(i) ? 0 : targetValues.getDouble(i) / numberScale;
-                    String formattedCategory = this.formatCategory(category, x);
+                    String formattedCategory = this.formatDimension(category, x);
                     data.put(
                             JSONObject.create().put(categoryKey, formattedCategory).put(valueKey, y).put(LONG_DATE, ComparatorUtils.equals(formattedCategory, x) ? StringUtils.EMPTY : x)
                     );
@@ -772,53 +765,53 @@ public abstract class VanChartWidget extends TableWidget {
         return series;
     }
 
-    protected String formatCategory(BIDimension categoryDimension, String category){
-        if(categoryDimension == null || StringUtils.isBlank(category)){
-            return category;
+    protected String formatDimension(BIDimension dimension, String dimensionName){
+        if(dimension == null || StringUtils.isBlank(dimensionName)){
+            return dimensionName;
         }
 
-        int groupType = categoryDimension.getGroup().getType();
-        JSONObject dateFormat = categoryDimension.getChartSetting().getSettings().optJSONObject("dateFormat");
+        int groupType = dimension.getGroup().getType();
+        JSONObject dateFormat = dimension.getChartSetting().getSettings().optJSONObject("dateFormat");
 
         int dateFormatType = dateFormat == null ? BIReportConstant.DATE_FORMAT.SPLIT : dateFormat.optInt("type", BIReportConstant.DATE_FORMAT.SPLIT);
 
-        Number dateCategory = StableUtils.string2Number(category);
+        Number dateCategory = StableUtils.string2Number(dimensionName);
         long dateValue = dateCategory == null ? 0L : dateCategory.longValue();
 
         switch (groupType) {
             case BIReportConstant.GROUP.S:
-                category = FULL_QUARTER_NAMES[(int)dateValue];
+                dimensionName = FULL_QUARTER_NAMES[(int)dateValue];
                 break;
             case BIReportConstant.GROUP.M:
-                category = FULL_MONTH_NAMES[(int)dateValue];
+                dimensionName = FULL_MONTH_NAMES[(int)dateValue];
                 break;
             case BIReportConstant.GROUP.W:
-                category = FULL_WEEK_NAMES[(int)dateValue];
+                dimensionName = FULL_WEEK_NAMES[(int)dateValue];
                 break;
             case BIReportConstant.GROUP.YMD:
-                category =  this.formatYMDByDateFormat(dateValue, dateFormatType);
+                dimensionName =  this.formatYMDByDateFormat(dateValue, dateFormatType);
                 break;
             case BIReportConstant.GROUP.YMDHMS:
-                category = this.formatYMDHMSByDateFormat(dateValue, dateFormatType);
+                dimensionName = this.formatYMDHMSByDateFormat(dateValue, dateFormatType);
                 break;
             case BIReportConstant.GROUP.YMDH:
-                category = this.formatYMDHByDateFormat(dateValue, dateFormatType);
+                dimensionName = this.formatYMDHByDateFormat(dateValue, dateFormatType);
                 break;
             case BIReportConstant.GROUP.YMDHM:
-                category = this.formatYMDHMByDateFormat(dateValue, dateFormatType);
+                dimensionName = this.formatYMDHMByDateFormat(dateValue, dateFormatType);
                 break;
             case BIReportConstant.GROUP.YS:
-                category = this.formatYSByDateFormat(dateValue, dateFormatType);
+                dimensionName = this.formatYSByDateFormat(dateValue, dateFormatType);
                 break;
             case BIReportConstant.GROUP.YM:
-                category = this.formatYMByDateFormat(dateValue, dateFormatType);
+                dimensionName = this.formatYMByDateFormat(dateValue, dateFormatType);
                 break;
             case BIReportConstant.GROUP.YW:
-                category = this.formatYWByDateFormat(dateValue, dateFormatType);
+                dimensionName = this.formatYWByDateFormat(dateValue, dateFormatType);
                 break;
         }
 
-        return category;
+        return dimensionName;
     }
 
     private String formatYMDByDateFormat(long dateValue, int dateFormatType){
@@ -931,16 +924,16 @@ public abstract class VanChartWidget extends TableWidget {
         int legend = settings.optInt("legend");
         String position = "top";
 
-        if (legend == RIGHT) {
+        if (legend == BIChartSettingConstant.CHART_LEGENDS.RIGHT) {
             position = "right";
-        } else if (legend == BOTTOM) {
+        } else if (legend == BIChartSettingConstant.CHART_LEGENDS.BOTTOM) {
             position = "bottom";
-        } else if (legend == LEFT) {
+        } else if (legend == BIChartSettingConstant.CHART_LEGENDS.LEFT) {
             position = "left";
         }
 
         return JSONObject.create()
-                .put("enabled", legend >= TOP)
+                .put("enabled", legend >= BIChartSettingConstant.CHART_LEGENDS.TOP)
                 .put("position", position)
                 .put("style", settings.optJSONObject("legendStyle"));
     }
@@ -964,17 +957,26 @@ public abstract class VanChartWidget extends TableWidget {
         return ranges;
     }
 
-    public BIDimension getCategoryDimension() {
+    public BIDimension getCategoryDimension(int index) {
         List<String> dimensionIds = view.get(Integer.parseInt(BIReportConstant.REGION.DIMENSION1));
         if (dimensionIds == null) {
             return null;
         }
+
+        int dIndex = 0;
         for (BIDimension dimension : this.getDimensions()) {
             if (dimensionIds.contains(dimension.getValue()) && dimension.isUsed()) {
-                return dimension;
+                if(dIndex == index){
+                    return dimension;
+                }
+                dIndex++;
             }
         }
         return null;
+    }
+
+    public BIDimension getCategoryDimension() {
+        return this.getCategoryDimension(0);
     }
 
     public BIDimension getSeriesDimension() {
