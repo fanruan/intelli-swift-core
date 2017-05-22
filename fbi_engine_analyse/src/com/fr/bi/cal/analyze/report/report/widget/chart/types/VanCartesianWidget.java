@@ -212,6 +212,8 @@ public abstract class VanCartesianWidget extends VanChartWidget {
             plotOptions.put("curve", true);
         }
 
+        plotOptions.put("connectNulls", settings.optBoolean("nullContinuity"));
+
         return plotOptions;
     }
 
