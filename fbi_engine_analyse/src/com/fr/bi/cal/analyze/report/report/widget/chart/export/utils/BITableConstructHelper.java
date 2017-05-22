@@ -6,7 +6,6 @@ import com.fr.bi.cal.analyze.report.report.widget.chart.export.item.BITableDataC
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.item.ITableHeader;
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.item.ITableItem;
 import com.fr.bi.cal.analyze.report.report.widget.style.BITableWidgetStyle;
-import com.fr.json.JSONException;
 
 import java.util.Map;
 
