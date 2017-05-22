@@ -17,13 +17,13 @@ public class VanRangeAreaWidget extends VanAreaWidget{
 
             JSONObject firstSeries = series.optJSONObject(0);
             if(series.length() > 1) {
-                firstSeries.put("fillColorOpacity", 0).put("stack", 0);
+                firstSeries.put("fillColorOpacity", 0).put("stack", "stack0");
             }
             JSONArray firstDatas = firstSeries.optJSONArray("data");
 
             for (int i = 1, len = series.length(); i < len; i++) {
                 JSONObject ser = series.optJSONObject(i);
-                ser.put("stack", 0);
+                ser.put("stack", "stack0");
 
                 JSONArray datas = ser.optJSONArray("data");
                 for(int dataIndex = 0, dataCount = datas.length(); dataIndex < dataCount; dataIndex++){
@@ -55,13 +55,13 @@ public class VanRangeAreaWidget extends VanAreaWidget{
         JSONObject firstSeries = series.optJSONObject(0);
         JSONArray firstDatas = firstSeries.optJSONArray("data");
 
-        for (int i = 1, len = series.length(); i < len; i++) {
-            JSONObject ser = series.getJSONObject(i);
+        for (int seriesIndex = 1, len = series.length(); seriesIndex < len; seriesIndex++) {
+            JSONObject ser = series.getJSONObject(seriesIndex);
 
             JSONArray datas = ser.optJSONArray("data");
             for(int dataIndex = 0, dataCount = datas.length(); dataIndex < dataCount; dataIndex++){
                 JSONObject d = datas.optJSONObject(dataIndex);
-                double y = firstDatas.optJSONObject(i).optDouble("y");
+                double y = firstDatas.optJSONObject(dataIndex).optDouble("y");
 
                 JSONObject labels = new JSONObject(dataLabels.toString());
                 if(labels.has("formatter")) {
