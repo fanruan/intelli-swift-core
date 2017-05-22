@@ -92,7 +92,7 @@ public class ReportCamelOperation implements ReportUpdateOperation {
         }
         matcher.appendTail(sb);
         if (!ComparatorUtils.equals(str,sb.toString())){
-            BILoggerFactory.getLogger(this.getClass()).info(BIStringUtils.append("compatibility warning! the parameter whose name is ",str," should be transferd"));
+            BILoggerFactory.getLogger(this.getClass()).debug(BIStringUtils.append("compatibility warning! the parameter whose name is ",str," should be transferd"));
         }
         return sb.toString();
     }
