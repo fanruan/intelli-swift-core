@@ -6,7 +6,6 @@ import com.fr.bi.cal.analyze.report.report.widget.chart.export.item.BITableDataC
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.item.ITableHeader;
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.item.ITableItem;
 import com.fr.bi.cal.analyze.report.report.widget.style.BITableWidgetStyle;
-import com.fr.json.JSONException;
 
 import java.util.Map;
 
@@ -32,9 +31,14 @@ public class BITableConstructHelper {
             header.setStyles(SummaryTableStyleHelper.getHeaderStyles(style.getThemeColor(), style.getTableStyleGroup()));
         }
 
-
         if (data.getItems().size() != 0) {
             traversalItems(data.getItems(), operations, 0, 0, style);
+        }
+
+        if (data.getCrossItems() != null) {
+            for (ITableItem childItem : data.getCrossItems()) {
+                traversalCrossItems(childItem, operations);
+            }
         }
 
         if (data.getCrossHeaders() != null) {
@@ -43,11 +47,6 @@ public class BITableConstructHelper {
             }
         }
 
-        if (data.getCrossItems() != null) {
-            for (ITableItem childItem : data.getCrossItems()) {
-                traversalCrossItems(childItem, operations);
-            }
-        }
     }
 
     private static void traversalItems(java.util.List<ITableItem> items, Map<String, ITableCellFormatOperation> ops, int layerIndex, int rowIndex, BITableWidgetStyle style) throws Exception {
@@ -62,10 +61,13 @@ public class BITableConstructHelper {
                         it.setText(ops.get(it.getDId()).formatValues(it.getValue()));
                         it.setValue(ops.get(it.getDId()).formatValues(it.getValue()));
                     }
+//                    traversalCrossItems(it, ops);
                 }
             }
             if (item.getText() != null || item.getValue() != null) {
                 item.setStyles(SummaryTableStyleHelper.getBodyStyles(style.getThemeColor(), style.getTableStyleGroup(), rowIndex));
+                item.setText(ops.get(item.getDId()).formatValues(item.getValue()));
+                item.setValue(ops.get(item.getDId()).formatValues(item.getValue()));
             }
             rowIndex++;
         }
@@ -77,6 +79,16 @@ public class BITableConstructHelper {
                 traversalCrossItems(childItem, ops);
             }
         }
+        if (item.getValues() != null) {
+            for (ITableItem it : item.getValues()) {
+                if (null != ops.get(it.getDId())) {
+                    it.setText(ops.get(it.getDId()).formatValues(it.getValue()));
+                    it.setValue(ops.get(it.getDId()).formatValues(it.getValue()));
+                }
+//                traversalCrossItems(it, ops);
+            }
+        }
+
         if (item.getValue() != null && item.getDId() != null) {
             if (null != ops.get(item.getDId())) {
                 item.setText(ops.get(item.getDId()).formatValues(item.getValue()));
