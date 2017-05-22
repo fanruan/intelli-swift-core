@@ -64,7 +64,7 @@ public class ValueConverterFactory {
         @Override
         public Integer result2Value(Long t) {
             int week = BITimeUtils.getFieldFromTime(t, Calendar.DAY_OF_WEEK) - 1;
-            return week == 0 ? DateConstant.CALENDAR.WEEK.SUNDAY_7: week;
+            return week == 0 ? DateConstant.CALENDAR.WEEK.SUNDAY_7 : week;
         }
     };
     private static final ValueConverter<Long, Long> YMD = new ValueConverter<Long, Long>() {
@@ -113,8 +113,7 @@ public class ValueConverterFactory {
 
         @Override
         public Integer result2Value(Long t) {
-            Integer weekNumber = BITimeUtils.getFieldFromTime(t, Calendar.WEEK_OF_YEAR);
-            return weekNumber;
+            return BIDateUtils.toWeekNumber(t);
         }
     };
     private static final ValueConverter<Long, Long> YEAR_SEASON = new ValueConverter<Long, Long>() {
@@ -124,6 +123,7 @@ public class ValueConverterFactory {
             return BIDateUtils.toYearSeason(t);
         }
     };
+
     private static int getSeason(int month) {
         return month / 3 + 1;
     }
@@ -161,13 +161,13 @@ public class ValueConverterFactory {
             case DateConstant.DATE.WEEKNUMBER: {
                 return WEEKNUMBER;
             }
-            case DateConstant.DATE.HOUR:{
+            case DateConstant.DATE.HOUR: {
                 return HOUR;
             }
-            case DateConstant.DATE.MINUTE:{
+            case DateConstant.DATE.MINUTE: {
                 return MINUTE;
             }
-            case DateConstant.DATE.SECOND:{
+            case DateConstant.DATE.SECOND: {
                 return SECOND;
             }
             case DateConstant.DATE.YEAR_MONTH_DAY_HOUR: {
@@ -193,16 +193,16 @@ public class ValueConverterFactory {
             case BIReportConstant.GROUP.M: {
                 return MONTH;
             }
-            case  BIReportConstant.GROUP.S: {
+            case BIReportConstant.GROUP.S: {
                 return SEASON;
             }
-            case  BIReportConstant.GROUP.MD: {
+            case BIReportConstant.GROUP.MD: {
                 return MONTH_DAY;
             }
-            case  BIReportConstant.GROUP.W: {
+            case BIReportConstant.GROUP.W: {
                 return WEEK;
             }
-            case  BIReportConstant.GROUP.YMD: {
+            case BIReportConstant.GROUP.YMD: {
                 return YMD;
             }
             default: {
