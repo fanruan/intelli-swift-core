@@ -38,8 +38,7 @@ public class SummaryTableStyleHelper {
         switch (styleType) {
             case BIStyleConstant.TABLE_STYLE.STYLE_NORMAL:
                 String background = getRowColorByIndexAndThemeColor(index, themeColor);
-                String filter = "progid:DXImageTransform.Microsoft.gradient(startColorstr=#0D" + themeColor.substring(1) + ",endColorstr=#0D" + themeColor.substring(1) + ");";
-                return new BITableItemStyle(background, null, null, filter);
+                return new BITableItemStyle(background, null, null);
         }
         return new BITableItemStyle(null, null, null);
     }

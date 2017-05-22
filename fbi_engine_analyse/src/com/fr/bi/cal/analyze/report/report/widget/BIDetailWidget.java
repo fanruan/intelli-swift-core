@@ -306,7 +306,7 @@ public class BIDetailWidget extends AbstractBIWidget {
         Map<Integer, List<JSONObject>> viewMap = createViewMap();
         IExcelDataBuilder builder = new DetailTableBuilder(viewMap, dataJSON, new BITableWidgetStyle());
         BITableDataConstructor tableData = BITableConstructHelper.buildTableData(builder);
-        BITableConstructHelper.formatCells(tableData, createChartDimensions());
+        BITableConstructHelper.formatCells(tableData, createChartDimensions(), widgetStyle);
         return tableData.createJSON().put("row", data.optLong("row", 0)).put("size", data.optLong("size", 0));
     }
 

@@ -48,6 +48,8 @@ public interface ITableItem extends JSONCreator {
 
     void setText(String text);
 
+    String getText();
+
     boolean isSum();
 
     void setSum(boolean sum);

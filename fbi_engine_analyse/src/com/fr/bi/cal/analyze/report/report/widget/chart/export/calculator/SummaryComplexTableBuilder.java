@@ -135,7 +135,6 @@ public class SummaryComplexTableBuilder extends TableAbstractDataBuilder {
                     BIBasicTableItem itemNode = new BIBasicTableItem();
                     itemNode.setDId(targetIds.get(0));
                     itemNode.setValue(s.getString(0));
-                    itemNode.setStyles(SummaryTableStyleHelper.getLastSummaryStyles(styleSetting.getThemeColor(), styleSetting.getTableStyleGroup()));
                     itemNode.setValues(outerValues);
                     item.getChildren().add(itemNode);
                     List<ITableItem> values = new ArrayList<ITableItem>();

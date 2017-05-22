@@ -2,6 +2,7 @@ package com.fr.bi.cal.analyze.report.report.widget.chart.export.item;
 
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.style.BITableItemStyle;
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.style.ITableStyle;
+import com.fr.bi.cal.analyze.report.report.widget.style.BITableWidgetStyle;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
 

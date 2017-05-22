@@ -124,7 +124,6 @@ public abstract class TableAbstractDataBuilder implements IExcelDataBuilder {
             header.setdID(dimId);
             header.setText(BITableExportDataHelper.getDimensionNameByID(dimAndTar, dimId));
             header.setUsed(BITableExportDataHelper.isDimUsed(dimAndTar, dimId));
-            header.setStyles(SummaryTableStyleHelper.getHeaderStyles(styleSetting.getThemeColor(), styleSetting.getTableStyleGroup()));
             headers.add(header);
         }
     }
