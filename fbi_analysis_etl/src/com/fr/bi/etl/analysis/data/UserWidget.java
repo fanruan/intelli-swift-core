@@ -19,6 +19,7 @@ import com.fr.bi.conf.report.WidgetType;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.report.key.TargetGettingKey;
+import com.fr.stable.StableUtils;
 import com.fr.stable.StringUtils;
 
 import java.io.Serializable;
@@ -55,7 +56,7 @@ public class UserWidget implements Serializable {
 
     public List<List> createData(int start, int end) {
         end = Math.min(end, maxRow);
-        if (!contains(start, end)) {
+        if (!contains(start, end) || StableUtils.isDebug()) {
             synchronized (lock) {
                 if (!contains(start, end)) {
                     if (widget.getType() == WidgetType.DETAIL) {
