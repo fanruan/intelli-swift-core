@@ -58,7 +58,7 @@ public abstract class TableAbstractDataBuilder implements IExcelDataBuilder {
         crossHeaders = new ArrayList<ITableHeader>();
         showColTotal = this.styleSetting.isShowColTotal();
         showRowTotal = this.styleSetting.isShowRowTotal();
-        crossItemsSums=new ArrayList<List<Boolean>>();
+        crossItemsSums = new ArrayList<List<Boolean>>();
     }
 
     protected void amendmentData() throws JSONException {
@@ -218,10 +218,10 @@ public abstract class TableAbstractDataBuilder implements IExcelDataBuilder {
         currentLayer++;
         for (int i = 0; i < sums.length(); i++) {
             JSONObject sum = sums.getJSONObject(i);
-            if (sum!=null&&sum.has("c")){
+            if (sum != null && sum.has("c")) {
                 initCrossItemsSum(currentLayer, sum.getJSONArray("c"));
             }
-            while (crossItemsSums.size()<=currentLayer){
+            while (crossItemsSums.size() <= currentLayer) {
                 crossItemsSums.add(new ArrayList<Boolean>());
             }
             crossItemsSums.get(currentLayer).add(sum.has("s"));
@@ -495,7 +495,8 @@ public abstract class TableAbstractDataBuilder implements IExcelDataBuilder {
             }
         }
         boolean childExist = null != item.getChildren() && item.getChildren().size() > 0;
-        if (hasSum && showColTotal && childExist) {
+        boolean flag = hasSum && showColTotal;
+        if (flag && childExist) {
             JSONArray itemList = new JSONArray();
             if (isOnlyCrossAndTarget()) {
                 itemList.put(new JSONArray());
