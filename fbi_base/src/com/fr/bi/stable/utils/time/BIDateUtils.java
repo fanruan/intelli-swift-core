@@ -162,13 +162,13 @@ public class BIDateUtils {
     public static int toWeekNumber(long t) {
         Calendar c = Calendar.getInstance();
         c.setTimeInMillis(t);
-        int javaWeek = c.get(Calendar.WEEK_OF_YEAR);
+        int resultWeekNumber = c.get(Calendar.WEEK_OF_YEAR);
         int year = c.get(Calendar.YEAR);
-        c.add(Calendar.DAY_OF_MONTH, -7);
-        if (javaWeek < c.get(Calendar.WEEK_OF_YEAR) && (c.get(Calendar.YEAR) == year)) {
-            javaWeek = c.get(Calendar.WEEK_OF_YEAR) + 1;
+        c.add(Calendar.DAY_OF_MONTH, (-1*DateConstant.CALENDAR.WEEK.SUNDAY_7 ));
+        if (resultWeekNumber < c.get(Calendar.WEEK_OF_YEAR) && (c.get(Calendar.YEAR) == year)) {
+            resultWeekNumber = c.get(Calendar.WEEK_OF_YEAR) + 1;
         }
-        return javaWeek;
+        return resultWeekNumber;
     }
 
     //    year-season 统一设置为该季度的第一个月的第一天
