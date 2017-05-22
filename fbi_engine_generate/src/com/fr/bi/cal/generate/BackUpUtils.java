@@ -14,6 +14,8 @@ import java.util.Date;
 public class BackUpUtils {
 
     private static final String FOLDER = "backup";
+    private static final String BIREPORT_NAME = "biReport";
+    private static final String USER_ANALYSIS_ETL_CONFIG = "sue";
     private static final FileFilter FILTER = new FileFilter() {
 
         @Override
@@ -43,13 +45,22 @@ public class BackUpUtils {
             BIFileUtils.copyFile(f.getName(), currentFolder, targetFolder);
         }
         backupBIReport(currentFolder, targetFolder);
+        backupUserAnalysisETLConfig(currentFolder,targetFolder);
     }
 
     private static void backupBIReport(File currentFolder, File targetFolder) {
-        File biReport = new File(currentFolder, "biReport");
-        if (biReport.exists() && biReport.isDirectory()) {
-            File targetBIReport = new File(targetFolder, "biReport");
-            copyFolder(biReport, targetBIReport);
+        backupFolder(currentFolder, targetFolder, BIREPORT_NAME);
+    }
+
+    private static void backupUserAnalysisETLConfig(File currentFolder, File targetFolder){
+        backupFolder(currentFolder, targetFolder, USER_ANALYSIS_ETL_CONFIG);
+    }
+
+    private static void backupFolder(File currentFolder, File targetFolder, String folderName) {
+        File file = new File(currentFolder, folderName);
+        if (file.exists() && file.isDirectory()) {
+            File targetBIReport = new File(targetFolder, folderName);
+            copyFolder(file, targetBIReport);
         }
     }
 
