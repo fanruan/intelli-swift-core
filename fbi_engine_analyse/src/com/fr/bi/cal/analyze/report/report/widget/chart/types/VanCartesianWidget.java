@@ -189,7 +189,7 @@ public abstract class VanCartesianWidget extends VanChartWidget {
             JSONArray data = ser0.optJSONArray("data");
             for(int i = 0, len = data.length(); i < len; i++){
                 JSONObject dataPoint = data.getJSONObject(i);
-                double y = dataPoint.optDouble("y");
+                double y = dataPoint.optDouble("y", 0);
                 dataPoint.put("y", stackValue);
                 stackValue += y;
             }
@@ -281,7 +281,7 @@ public abstract class VanCartesianWidget extends VanChartWidget {
                     for (int dataIndex = 0, dataCount = data.length(); dataIndex < dataCount; dataIndex++) {
                         JSONObject datum = data.optJSONObject(dataIndex);
                         String x = datum.optString("x");
-                        double y = datum.optDouble("y");
+                        double y = datum.optDouble("y", 0);
                         for (int filterIndex = 0; filterIndex < filterCount; filterIndex++) {
                             FilterValue filter = filterValues[filterIndex];
                             JSONObject config = dataImage.optJSONObject(filterIndex);
@@ -347,7 +347,7 @@ public abstract class VanCartesianWidget extends VanChartWidget {
                     for (int dataIndex = 0, dataCount = data.length(); dataIndex < dataCount; dataIndex++) {
                         JSONObject datum = data.optJSONObject(dataIndex);
                         String x = datum.optString("x");
-                        double y = datum.optDouble("y");
+                        double y = datum.optDouble("y", 0);
                         for (int filterIndex = 0; filterIndex < filterCount; filterIndex++) {
                             FilterValue filter = filterValues[filterIndex];
                             JSONObject config = labelCondition.optJSONObject(filterIndex);
