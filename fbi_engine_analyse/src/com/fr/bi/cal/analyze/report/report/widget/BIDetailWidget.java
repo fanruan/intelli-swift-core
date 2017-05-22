@@ -293,10 +293,14 @@ public class BIDetailWidget extends AbstractBIWidget {
     @Override
     public void reSetDetailTarget() {
         for (BIDetailTarget ele : getDimensions()) {
-            ele.reSetDetailGetter();
+            if(ele != null){
+                ele.reSetDetailGetter();
+            }
         }
         for (BIDetailTarget ele : getViewDimensions()) {
-            ele.reSetDetailGetter();
+            if(ele != null){
+                ele.reSetDetailGetter();
+            }
         }
     }
 

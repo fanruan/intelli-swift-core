@@ -56,13 +56,29 @@ public abstract class SummaryOfAllCalculator extends AbstractConfigureCalculator
         BINode tempNode = node;
         //从第几个纬度开始计算
         int calDeep = start_group == 0 ? 0 : deep - start_group;
+        /**
+         *
+         */
+
         for (int i = 0; i < calDeep; i++) {
             if (tempNode.getFirstChild() == null) {
                 break;
             }
             tempNode = tempNode.getFirstChild();
         }
-        tempNode = getCalculatedRootNode(node);
+        /**
+         * Connery：功能逻辑是要计算最后维度（start_group所在维度做汇总），所以深度
+         * 必须大于start_group，这样才有value做汇总。
+         * |D1|D2|D3|   v| 这样的维度，node的深度必须到达D3才能有v的值。
+         *
+         * 加1是因为node默认有一个空root
+         *
+         */
+        if (node.getDeep() > node.getFrameDeep() ) {
+            tempNode = getCalculatedRootNode(node);
+        } else {
+            return;
+        }
         List nodeList = new ArrayList();
         BINode cursor_node = tempNode;
         while (cursor_node != null) {
@@ -78,9 +94,11 @@ public abstract class SummaryOfAllCalculator extends AbstractConfigureCalculator
         }
     }
 
+
     /**
      * 子节点为空，不用进行计算指标计算。
      * BI-5299
+     *
      * @param cursor_node
      * @return
      */

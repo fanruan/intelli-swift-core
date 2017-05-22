@@ -60,6 +60,7 @@ public class Node implements BINode {
     private transient Map<TargetGettingKey, Double> childAVG;
     //TODO 低效的算法， 放在result无所谓
     private transient Map<TopNKey, Double> topNLineMap;
+    private int frameDeep;
 
     public Node(int sumLength) {
         childs = new ChildsMap<Node>();
@@ -236,6 +237,16 @@ public class Node implements BINode {
             }
         }
         return max + 1;
+    }
+
+    @Override
+    public int getFrameDeep() {
+        return frameDeep;
+    }
+
+    @Override
+    public int setFrameDeep(int deep) {
+        return frameDeep = deep;
     }
 
     public int getTotalLengthWithSummary() {

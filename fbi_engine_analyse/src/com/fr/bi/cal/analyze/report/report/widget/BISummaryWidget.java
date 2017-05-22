@@ -25,6 +25,7 @@ import com.fr.bi.stable.constant.BIJSONConstant;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.data.BIFieldID;
 import com.fr.bi.stable.data.BITableID;
+import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.gvi.AllShowRoaringGroupValueIndex;
 import com.fr.bi.stable.gvi.GVIUtils;
 import com.fr.bi.stable.gvi.GroupValueIndex;
@@ -43,7 +44,12 @@ import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
 import com.fr.stable.collections.array.IntArray;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 public abstract class BISummaryWidget extends AbstractBIWidget {
@@ -166,10 +172,12 @@ public abstract class BISummaryWidget extends AbstractBIWidget {
 
     private String logRelation(BITableRelation relation) {
         try {
+            CubeTableSource primaryTableSource = BusinessTableHelper.getBusinessTable(relation.getPrimaryTable().getID()).getTableSource();
+            CubeTableSource foreignTableSource = BusinessTableHelper.getBusinessTable(relation.getForeignTable().getID()).getTableSource();
             return BIStringUtils.append(
-                    " Primary Table:" + BusinessTableHelper.getBusinessTable(relation.getPrimaryTable().getID()).getTableSource().getTableName(),
+                    " Primary Table:" + primaryTableSource.getTableName() + " " + primaryTableSource.getSourceID(),
                     ",primary field :" + relation.getPrimaryField().getFieldName(),
-                    ",foreign table:" + BusinessTableHelper.getBusinessTable(relation.getForeignTable().getID()).getTableSource().getTableName(),
+                    ",foreign table:" + foreignTableSource.getTableName() + " " + foreignTableSource.getSourceID(),
                     ",foreign filed:" + relation.getForeignField().getFieldName());
         } catch (Exception e) {
             BILoggerFactory.getLogger(BITableRelation.class).error(e.getMessage(), e);
@@ -282,7 +290,7 @@ public abstract class BISummaryWidget extends AbstractBIWidget {
     private void initTargets(List<BISummaryTarget> tars) {
         this.targets = tars.toArray(new BISummaryTarget[tars.size()]);
         Map<String, BITarget> targetMap = new ConcurrentHashMap<String, BITarget>();
-        for (int i = 0; i < targets.length; i++){
+        for (int i = 0; i < targets.length; i++) {
             targets[i].setSummaryIndex(i);
             targetMap.put(targets[i].getValue(), targets[i]);
             targets[i].setTargetMap(targetMap);

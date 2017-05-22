@@ -61,7 +61,7 @@ public class VanRangeAreaWidget extends VanAreaWidget{
             JSONArray datas = ser.optJSONArray("data");
             for(int dataIndex = 0, dataCount = datas.length(); dataIndex < dataCount; dataIndex++){
                 JSONObject d = datas.optJSONObject(dataIndex);
-                double y = firstDatas.optJSONObject(dataIndex).optDouble("y");
+                double y = firstDatas.optJSONObject(dataIndex).optDouble("y", 0);
 
                 JSONObject labels = new JSONObject(dataLabels.toString());
                 if(labels.has("formatter")) {
