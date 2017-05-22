@@ -64,7 +64,7 @@ public class BITableConstructHelper {
 //                    traversalCrossItems(it, ops);
                 }
             }
-            if (item.getText() != null || item.getValue() != null) {
+            if (item.getValue() != null&&item.getDId()!=null) {
                 item.setStyles(SummaryTableStyleHelper.getBodyStyles(style.getThemeColor(), style.getTableStyleGroup(), rowIndex));
                 item.setText(ops.get(item.getDId()).formatValues(item.getValue()));
                 item.setValue(ops.get(item.getDId()).formatValues(item.getValue()));
