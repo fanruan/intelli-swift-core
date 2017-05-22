@@ -79,8 +79,10 @@ public class AnalysisETLSourceFactory {
 
     private static BusinessTable getAnyTableWithSource(AnalysisBaseTableSource temp) {
         for (BusinessTable table : BIAnalysisETLManagerCenter.getDataSourceManager().getAllBusinessTable()) {
-            if (ComparatorUtils.equals(table.getTableSource().getSourceID(), temp.getSourceID())) {
-                return table;
+            if(table.getTableSource()!=null) {
+                if (ComparatorUtils.equals(table.getTableSource().getSourceID(), temp.getSourceID())) {
+                    return table;
+                }
             }
         }
         return null;
