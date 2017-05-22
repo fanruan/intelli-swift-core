@@ -61,6 +61,8 @@
 
   "summaryType": "计算指标类型1(summary_type)",
   "rankType": "计算指标类型2(rank_type)",
-  "periodType": "计算指标类型3(period_type)"
+  "periodType": "计算指标类型3(period_type)",
+
+  "formulaValue":"指标公式表达式(formula_value)"
 
 }
