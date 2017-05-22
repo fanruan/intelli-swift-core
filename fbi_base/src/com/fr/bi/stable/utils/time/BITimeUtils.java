@@ -4,7 +4,6 @@ import com.fr.bi.stable.constant.CubeConstant;
 import com.fr.bi.stable.constant.DateConstant;
 
 import java.util.Calendar;
-import java.util.Date;
 
 /**
  *
@@ -19,8 +18,24 @@ public class BITimeUtils {
     public static int getFieldFromTime(Long t, int field) {
         if (t != null && t != DateConstant.DATEMAP.NULLDATE) {
             Calendar c = Calendar.getInstance();
-            c.setTime(new Date(t));
+            c.setTimeInMillis(t);
             return c.get(field);
+        } else {
+            return CubeConstant.NULLINDEX;
+        }
+    }
+
+    /**
+     * 加一个传Calendar的方法，Calendar.getInstance()会耗费大量的内存，传一个过来保证线程安全
+     * @param t
+     * @param field
+     * @param calendar
+     * @return
+     */
+    public static int getFieldFromTime(Long t, int field, Calendar calendar) {
+        if (t != null && t != DateConstant.DATEMAP.NULLDATE) {
+            calendar.setTimeInMillis(t);
+            return calendar.get(field);
         } else {
             return CubeConstant.NULLINDEX;
         }

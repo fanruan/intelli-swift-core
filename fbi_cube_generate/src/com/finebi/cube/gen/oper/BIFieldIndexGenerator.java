@@ -13,7 +13,6 @@ import com.finebi.cube.structure.Cube;
 import com.finebi.cube.structure.CubeTableEntityGetterService;
 import com.finebi.cube.structure.column.BIColumnKey;
 import com.finebi.cube.structure.column.ICubeColumnEntityService;
-import com.fr.base.FRContext;
 import com.fr.bi.conf.log.BILogManager;
 import com.fr.bi.conf.provider.BILogManagerProvider;
 import com.fr.bi.manager.PerformancePlugManager;
@@ -32,7 +31,6 @@ import com.fr.bi.util.BIConfigurePathUtils;
 import com.fr.fs.control.UserControl;
 import com.fr.stable.bridge.StableFactory;
 import com.fr.stable.collections.array.IntArray;
-import com.fr.stable.project.ProjectConstants;
 import com.google.common.base.Stopwatch;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -51,7 +49,7 @@ import java.util.concurrent.TimeUnit;
  * @since 4.0
  */
 public class BIFieldIndexGenerator<T> extends BIProcessor {
-    private static final Logger LOGGER = LoggerFactory.getLogger(BIFieldIndexGenerator.class);
+    protected static final Logger LOGGER = LoggerFactory.getLogger(BIFieldIndexGenerator.class);
 
     protected CubeTableSource tableSource;
     protected ICubeFieldSource hostBICubeFieldSource;
@@ -73,7 +71,7 @@ public class BIFieldIndexGenerator<T> extends BIProcessor {
         initThreadPool();
     }
 
-    private void initial() {
+    protected void initial() {
         try {
             CubeTableEntityGetterService tableEntityService = cube.getCubeTable(new BITableKey(tableSource.getSourceID()));
             columnEntityService = (ICubeColumnEntityService<T>) tableEntityService.getColumnDataGetter(targetColumnKey);
@@ -83,7 +81,7 @@ public class BIFieldIndexGenerator<T> extends BIProcessor {
         }
     }
 
-    private String logFileInfo() {
+    protected String logFileInfo() {
         try {
             return BIStringUtils.append("The table:" + tableSource.getTableName(), " ", tableSource.getSourceID(), " the field:" + hostBICubeFieldSource.getFieldName());
         } catch (Exception e) {
@@ -106,12 +104,7 @@ public class BIFieldIndexGenerator<T> extends BIProcessor {
         Stopwatch stopwatch = Stopwatch.createStarted();
         biLogManager.logIndexStart(UserControl.getInstance().getSuperManagerID());
         try {
-            initial();
-            if (PerformancePlugManager.getInstance().isDiskSort()) {
-                buildTableIndexExternal();
-            } else {
-                buildTableIndex();
-            }
+            buildFieldIndex();
             LOGGER.info(BIStringUtils.append(logFileInfo(), " finish building field index main task,elapse:", String.valueOf(stopwatch.elapsed(TimeUnit.SECONDS)), " second"));
             BILogHelper.cacheCubeLogFieldNormalInfo(tableSource.getSourceID(), hostBICubeFieldSource.getFieldName(), BILogConstant.LOG_CACHE_TIME_TYPE.FIELD_INDEX_EXECUTE_END, System.currentTimeMillis());
             try {
@@ -133,6 +126,15 @@ public class BIFieldIndexGenerator<T> extends BIProcessor {
             throw BINonValueUtils.beyondControl(e.getMessage(), e);
         } finally {
             columnEntityService.forceReleaseWriter();
+        }
+    }
+
+    protected void buildFieldIndex() {
+        initial();
+        if (PerformancePlugManager.getInstance().isDiskSort()) {
+            buildTableIndexExternal();
+        } else {
+            buildTableIndex();
         }
     }
 

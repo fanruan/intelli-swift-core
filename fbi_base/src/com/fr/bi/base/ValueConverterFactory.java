@@ -15,12 +15,22 @@ public class ValueConverterFactory {
         public Integer result2Value(Long t) {
             return BITimeUtils.getFieldFromTime(t, Calendar.YEAR);
         }
+
+        @Override
+        public Integer result2Value(Long t, Calendar calendar) {
+            return BITimeUtils.getFieldFromTime(t, Calendar.YEAR, calendar);
+        }
     };
     private static final ValueConverter<Long, Integer> MONTH = new ValueConverter<Long, Integer>() {
 
         @Override
         public Integer result2Value(Long t) {
             return BITimeUtils.getFieldFromTime(t, Calendar.MONTH) + 1;
+        }
+
+        @Override
+        public Integer result2Value(Long t, Calendar calendar) {
+            return BITimeUtils.getFieldFromTime(t, Calendar.MONTH, calendar) + 1;
         }
     };
     private static final ValueConverter<Long, Integer> SEASON = new ValueConverter<Long, Integer>() {
@@ -30,12 +40,23 @@ public class ValueConverterFactory {
             int month = BITimeUtils.getFieldFromTime(t, Calendar.MONTH);
             return getSeason(month);
         }
+
+        @Override
+        public Integer result2Value(Long t, Calendar calendar) {
+            int month = BITimeUtils.getFieldFromTime(t, Calendar.MONTH, calendar);
+            return getSeason(month);
+        }
     };
     private static final ValueConverter<Long, Integer> HOUR = new ValueConverter<Long, Integer>() {
 
         @Override
         public Integer result2Value(Long t) {
             return BITimeUtils.getFieldFromTime(t, Calendar.HOUR_OF_DAY);
+        }
+
+        @Override
+        public Integer result2Value(Long t, Calendar calendar) {
+            return BITimeUtils.getFieldFromTime(t, Calendar.HOUR_OF_DAY, calendar);
         }
     };
     private static final ValueConverter<Long, Integer> MINUTE = new ValueConverter<Long, Integer>() {
@@ -44,6 +65,11 @@ public class ValueConverterFactory {
         public Integer result2Value(Long t) {
             return BITimeUtils.getFieldFromTime(t, Calendar.MINUTE);
         }
+
+        @Override
+        public Integer result2Value(Long t, Calendar calendar) {
+            return BITimeUtils.getFieldFromTime(t, Calendar.MINUTE, calendar);
+        }
     };
     private static final ValueConverter<Long, Integer> SECOND = new ValueConverter<Long, Integer>() {
 
@@ -51,12 +77,22 @@ public class ValueConverterFactory {
         public Integer result2Value(Long t) {
             return BITimeUtils.getFieldFromTime(t, Calendar.SECOND);
         }
+
+        @Override
+        public Integer result2Value(Long t, Calendar calendar) {
+            return BITimeUtils.getFieldFromTime(t, Calendar.SECOND, calendar);
+        }
     };
     private static final ValueConverter<Long, Integer> MONTH_DAY = new ValueConverter<Long, Integer>() {
 
         @Override
         public Integer result2Value(Long t) {
             return BITimeUtils.getFieldFromTime(t, Calendar.DAY_OF_MONTH);
+        }
+
+        @Override
+        public Integer result2Value(Long t, Calendar calendar) {
+            return BITimeUtils.getFieldFromTime(t, Calendar.DAY_OF_MONTH, calendar);
         }
     };
     private static final ValueConverter<Long, Integer> WEEK = new ValueConverter<Long, Integer>() {
@@ -66,12 +102,23 @@ public class ValueConverterFactory {
             int week = BITimeUtils.getFieldFromTime(t, Calendar.DAY_OF_WEEK) - 1;
             return week == 0 ? DateConstant.CALENDAR.WEEK.SUNDAY_7: week;
         }
+
+        @Override
+        public Integer result2Value(Long t, Calendar calendar) {
+            int week = BITimeUtils.getFieldFromTime(t, Calendar.DAY_OF_WEEK, calendar) - 1;
+            return week == 0 ? DateConstant.CALENDAR.WEEK.SUNDAY_7: week;
+        }
     };
     private static final ValueConverter<Long, Long> YMD = new ValueConverter<Long, Long>() {
 
         @Override
         public Long result2Value(Long t) {
             return BIDateUtils.toSimpleDay(t);
+        }
+
+        @Override
+        public Long result2Value(Long t, Calendar calendar) {
+            return BIDateUtils.toSimpleDay(t, calendar);
         }
     };
     private static final ValueConverter<Long, Long> YEAR_MONTH_DAY_HOUR = new ValueConverter<Long, Long>() {
@@ -80,6 +127,11 @@ public class ValueConverterFactory {
         public Long result2Value(Long t) {
             return BIDateUtils.toYearMonthDayHour(t);
         }
+
+        @Override
+        public Long result2Value(Long t, Calendar calendar) {
+            return BIDateUtils.toYearMonthDayHour(t, calendar);
+        }
     };
     private static final ValueConverter<Long, Long> YEAR_MONTH_DAY_HOUR_MINUTE = new ValueConverter<Long, Long>() {
 
@@ -87,12 +139,22 @@ public class ValueConverterFactory {
         public Long result2Value(Long t) {
             return BIDateUtils.toYearMonthDayHourMinute(t);
         }
+
+        @Override
+        public Long result2Value(Long t, Calendar calendar) {
+            return BIDateUtils.toYearMonthDayHourMinute(t, calendar);
+        }
     };
     private static final ValueConverter<Long, Long> YEAR_MONTH_DAY_HOUR_MINUTE_SECOND = new ValueConverter<Long, Long>() {
 
         @Override
         public Long result2Value(Long t) {
             return BIDateUtils.toYearMonthDayHourMinuteSecond(t);
+        }
+
+        @Override
+        public Long result2Value(Long t, Calendar c) {
+            return BIDateUtils.toYearMonthDayHourMinuteSecond(t, c);
         }
     };
     private static final ValueConverter<Long, String> YEAR_MONTH = new ValueConverter<Long, String>() {

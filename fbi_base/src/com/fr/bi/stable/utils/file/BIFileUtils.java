@@ -1,9 +1,8 @@
 package com.fr.bi.stable.utils.file;
 
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.base.FRContext;
 import com.fr.bi.stable.io.io.GroupReader;
-import com.finebi.cube.common.log.BILoggerFactory;
-import com.fr.bi.stable.utils.mem.BIMemoryUtils;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
 import com.fr.general.ComparatorUtils;
 import com.fr.stable.StableUtils;
@@ -11,7 +10,6 @@ import com.fr.stable.StableUtils;
 import java.io.*;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
-import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 import java.util.List;
@@ -156,30 +154,31 @@ public class BIFileUtils {
             }
             in = new RandomAccessFile(source, "r").getChannel();
             out = new RandomAccessFile(dest, "rw").getChannel();
-            long currentSize = 0;
-            long max_persize = MAX_PERSIZE;
-            long total_size = in.size();
-            while (true) {
-                if (currentSize == total_size) {
-                    break;
-                }
-                long left_size = total_size - currentSize;
-                long size = Math.min(left_size, max_persize);
-                MappedByteBuffer reader = null, writer = null;
-                try {
-                    reader = in.map(FileChannel.MapMode.READ_ONLY, currentSize, size);
-                    writer = out.map(FileChannel.MapMode.READ_WRITE, currentSize, size);
-                    for (int p = 0; p < size; p++) {
-                        writer.put(p, reader.get(p));
-                    }
-                    currentSize += size;
-                } catch (Exception e) {
-                    BILoggerFactory.getLogger().error(e.getMessage(), e);
-                } finally {
-                    BIMemoryUtils.un_map(writer);
-                    BIMemoryUtils.un_map(reader);
-                }
-            }
+//            long currentSize = 0;
+//            long max_persize = MAX_PERSIZE;
+//            long total_size = in.size();
+//            while (true) {
+//                if (currentSize == total_size) {
+//                    break;
+//                }
+//                long left_size = total_size - currentSize;
+//                long size = Math.min(left_size, max_persize);
+//                MappedByteBuffer reader = null, writer = null;
+//                try {
+//                    reader = in.map(FileChannel.MapMode.READ_ONLY, currentSize, size);
+//                    writer = out.map(FileChannel.MapMode.READ_WRITE, currentSize, size);
+//                    for (int p = 0; p < size; p++) {
+//                        writer.put(p, reader.get(p));
+//                    }
+//                    currentSize += size;
+//                } catch (Exception e) {
+//                    BILoggerFactory.getLogger().error(e.getMessage(), e);
+//                } finally {
+//                    BIMemoryUtils.un_map(writer);
+//                    BIMemoryUtils.un_map(reader);
+//                }
+//            }
+            in.transferTo(0, in.size(), out);
         } catch (Exception e) {
             BILoggerFactory.getLogger().error(e.getMessage(), e);
         } finally {

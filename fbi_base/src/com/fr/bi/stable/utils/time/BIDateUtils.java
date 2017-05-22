@@ -96,7 +96,10 @@ public class BIDateUtils {
     }
 
     public static long toSimpleDay(long t) {
-        Calendar c = Calendar.getInstance();
+        return toSimpleDay(t, Calendar.getInstance());
+    }
+
+    public static long toSimpleDay(long t, Calendar c) {
         c.setTimeInMillis(t);
         c.set(Calendar.HOUR_OF_DAY, 0);
         c.set(Calendar.MINUTE, 0);
@@ -104,23 +107,35 @@ public class BIDateUtils {
         c.set(Calendar.MILLISECOND, 0);
         return c.getTimeInMillis();
     }
+
     public static long toYearMonthDayHour(long t) {
-        Calendar c = Calendar.getInstance();
+        return toYearMonthDayHour(t, Calendar.getInstance());
+    }
+
+    public static long toYearMonthDayHour(long t, Calendar c) {
         c.setTimeInMillis(t);
         c.set(Calendar.MINUTE, 0);
         c.set(Calendar.SECOND, 0);
         c.set(Calendar.MILLISECOND, 0);
         return c.getTimeInMillis();
     }
+
     public static long toYearMonthDayHourMinute(long t) {
-        Calendar c = Calendar.getInstance();
+        return toYearMonthDayHourMinute(t, Calendar.getInstance());
+    }
+
+    public static long toYearMonthDayHourMinute(long t, Calendar c) {
         c.setTimeInMillis(t);
         c.set(Calendar.SECOND, 0);
         c.set(Calendar.MILLISECOND, 0);
         return c.getTimeInMillis();
     }
+
     public static long toYearMonthDayHourMinuteSecond(long t) {
-        Calendar c = Calendar.getInstance();
+        return toYearMonthDayHourMinuteSecond(t, Calendar.getInstance());
+    }
+
+    public static long toYearMonthDayHourMinuteSecond(long t, Calendar c) {
         c.setTimeInMillis(t);
         c.set(Calendar.MILLISECOND, 0);
         return c.getTimeInMillis();
