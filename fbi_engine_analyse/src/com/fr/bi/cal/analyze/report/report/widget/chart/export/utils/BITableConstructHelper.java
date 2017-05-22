@@ -61,7 +61,7 @@ public class BITableConstructHelper {
                         it.setText(ops.get(it.getDId()).formatValues(it.getValue()));
                         it.setValue(ops.get(it.getDId()).formatValues(it.getValue()));
                     }
-                    traversalCrossItems(it, ops);
+//                    traversalCrossItems(it, ops);
                 }
             }
             if (item.getText() != null || item.getValue() != null) {
@@ -85,7 +85,7 @@ public class BITableConstructHelper {
                     it.setText(ops.get(it.getDId()).formatValues(it.getValue()));
                     it.setValue(ops.get(it.getDId()).formatValues(it.getValue()));
                 }
-                traversalCrossItems(it, ops);
+//                traversalCrossItems(it, ops);
             }
         }
 
