@@ -442,11 +442,11 @@ public class SummaryComplexTableBuilder extends TableAbstractDataBuilder {
                     if (dIdJson.optBoolean("used")) {
                         temp.put(dIdJson.getString("dId"));
                     }
-                    if (temp.length() > 0) {
-                        rowRegions.add(temp);
-                    }
-
                 }
+                if (temp.length() > 0) {
+                    rowRegions.add(temp);
+                }
+
             }
         }
         return rowRegions;
