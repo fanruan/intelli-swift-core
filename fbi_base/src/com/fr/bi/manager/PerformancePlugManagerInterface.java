@@ -106,10 +106,4 @@ public interface PerformancePlugManagerInterface {
      * @return
      */
     boolean isForceWriter();
-
-    /**
-     * 生成cube的时候是否释放读的文件
-     * @return
-     */
-    boolean isGeneratingReleaseReader();
 }

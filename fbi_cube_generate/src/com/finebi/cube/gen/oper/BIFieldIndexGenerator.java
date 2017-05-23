@@ -49,7 +49,7 @@ import java.util.concurrent.TimeUnit;
  * @since 4.0
  */
 public class BIFieldIndexGenerator<T> extends BIProcessor {
-    protected static final Logger LOGGER = LoggerFactory.getLogger(BIFieldIndexGenerator.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(BIFieldIndexGenerator.class);
 
     protected CubeTableSource tableSource;
     protected ICubeFieldSource hostBICubeFieldSource;
@@ -71,7 +71,7 @@ public class BIFieldIndexGenerator<T> extends BIProcessor {
         initThreadPool();
     }
 
-    protected void initial() {
+    private void initial() {
         try {
             CubeTableEntityGetterService tableEntityService = cube.getCubeTable(new BITableKey(tableSource.getSourceID()));
             columnEntityService = (ICubeColumnEntityService<T>) tableEntityService.getColumnDataGetter(targetColumnKey);
@@ -81,7 +81,7 @@ public class BIFieldIndexGenerator<T> extends BIProcessor {
         }
     }
 
-    protected String logFileInfo() {
+    private String logFileInfo() {
         try {
             return BIStringUtils.append("The table:" + tableSource.getTableName(), " ", tableSource.getSourceID(), " the field:" + hostBICubeFieldSource.getFieldName());
         } catch (Exception e) {
@@ -104,7 +104,12 @@ public class BIFieldIndexGenerator<T> extends BIProcessor {
         Stopwatch stopwatch = Stopwatch.createStarted();
         biLogManager.logIndexStart(UserControl.getInstance().getSuperManagerID());
         try {
-            buildFieldIndex();
+            initial();
+            if (PerformancePlugManager.getInstance().isDiskSort()) {
+                buildTableIndexExternal();
+            } else {
+                buildTableIndex();
+            }
             LOGGER.info(BIStringUtils.append(logFileInfo(), " finish building field index main task,elapse:", String.valueOf(stopwatch.elapsed(TimeUnit.SECONDS)), " second"));
             BILogHelper.cacheCubeLogFieldNormalInfo(tableSource.getSourceID(), hostBICubeFieldSource.getFieldName(), BILogConstant.LOG_CACHE_TIME_TYPE.FIELD_INDEX_EXECUTE_END, System.currentTimeMillis());
             try {
@@ -126,27 +131,12 @@ public class BIFieldIndexGenerator<T> extends BIProcessor {
             throw BINonValueUtils.beyondControl(e.getMessage(), e);
         } finally {
             columnEntityService.forceReleaseWriter();
-            if (PerformancePlugManager.getInstance().isGeneratingReleaseReader()){
-                columnEntityService.forceReleaseReader();
-            }
-        }
-    }
-
-    protected void buildFieldIndex() {
-        initial();
-        if (PerformancePlugManager.getInstance().isDiskSort()) {
-            buildTableIndexExternal();
-        } else {
-            buildTableIndex();
         }
     }
 
     @Override
     public void release() {
         columnEntityService.forceReleaseWriter();
-        if (PerformancePlugManager.getInstance().isGeneratingReleaseReader()){
-            columnEntityService.forceReleaseReader();
-        }
         columnEntityService.clear();
     }
 

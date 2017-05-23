@@ -73,8 +73,6 @@ public class PerformancePlugManager implements PerformancePlugManagerInterface {
 
     private boolean isForceWriter = false;
 
-    private boolean isGeneratingReleaseReader = false;
-
 
     private PerformancePlugManager() {
         init();
@@ -120,7 +118,6 @@ public class PerformancePlugManager implements PerformancePlugManagerInterface {
             cubeReaderReleaseSleepTime = getLong(PERFORMANCE + ".cubeReaderReleaseSleepTime", cubeReaderReleaseSleepTime);
             isDirectGenerating = getBoolean(PERFORMANCE + ".isDirectGenerating", isDirectGenerating);
             isForceWriter = getBoolean(PERFORMANCE + ".isForceWriter", isForceWriter);
-            isGeneratingReleaseReader = getBoolean(PERFORMANCE + ".isGeneratingReleaseReader", isGeneratingReleaseReader);
 //            logConfiguration();
         } catch (Exception e) {
             BILoggerFactory.getLogger().error(e.getMessage(), e);
@@ -157,7 +154,6 @@ public class PerformancePlugManager implements PerformancePlugManagerInterface {
 
         LOGGER.info("The value of {}.isDirectGenerating is {}", PERFORMANCE, isDirectGenerating);
         LOGGER.info("The value of {}.isForceWriter is {}", PERFORMANCE, isForceWriter);
-        LOGGER.info("The value of {}.isGeneratingReleaseReader is {}", PERFORMANCE, isGeneratingReleaseReader);
         LOGGER.info("");
         LOGGER.info("");
     }
@@ -472,11 +468,6 @@ public class PerformancePlugManager implements PerformancePlugManagerInterface {
     @Override
     public boolean isForceWriter() {
         return isForceWriter;
-    }
-
-    @Override
-    public boolean isGeneratingReleaseReader() {
-        return isGeneratingReleaseReader;
     }
 
 }

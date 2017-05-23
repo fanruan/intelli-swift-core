@@ -250,7 +250,7 @@ public class BICubeOperationManager {
                             BIColumnKey targetColumnKey = columnKeyIterator.next();
                             BIOperation<Object> operation = new BIOperation<Object>(
                                     tableSource.getSourceID() + "_" + targetColumnKey.getFullName(),
-                                    getFieldIndexBuilder(cube, tableSource, field, targetColumnKey, getUpdateSetting(tableSource)));
+                                    getFieldIndexBuilder(cube, tableSource, field, targetColumnKey));
                             ITopicTag topicTag = BITopicUtils.generateTopicTag(tableSource);
                             operation.setOperationTopicTag(topicTag);
                             operation.setOperationFragmentTag(BIFragmentUtils.generateFragment(topicTag, targetColumnKey.getFullName()));
@@ -456,23 +456,8 @@ public class BICubeOperationManager {
         return BIRelationHelper.isRelationContainsSelfCircle(relation);
     }
 
-    protected BIFieldIndexGenerator getFieldIndexBuilder(Cube cube, CubeTableSource tableSource, ICubeFieldSource BICubeFieldSource, BIColumnKey targetColumnKey, UpdateSettingSource tableUpdateSetting) {
-        if (null == tableUpdateSetting || !(BITableKeyUtils.isTableExisted(tableSource, BICubeConfiguration.getConf(String.valueOf(UserControl.getInstance().getSuperManagerID()))))) {
-            return new BIFieldIndexGenerator(cube, tableSource, BICubeFieldSource, targetColumnKey);
-        }
-        switch (tableUpdateSetting.getUpdateType()) {
-            case DBConstant.SINGLE_TABLE_UPDATE_TYPE.ALL: {
-                return new BIFieldIndexGenerator(cube, tableSource, BICubeFieldSource, targetColumnKey);
-            }
-            case DBConstant.SINGLE_TABLE_UPDATE_TYPE.PART: {
-                return new BIFieldIndexPartGenerator(cube, tableSource, BICubeFieldSource, targetColumnKey);
-            }
-            case DBConstant.SINGLE_TABLE_UPDATE_TYPE.NEVER: {
-                return new BIFieldIndexNeverGenerator(cube, tableSource, BICubeFieldSource, targetColumnKey);
-            }
-            default:
-                return new BIFieldIndexGenerator(cube, tableSource, BICubeFieldSource, targetColumnKey);
-        }
+    protected BIFieldIndexGenerator getFieldIndexBuilder(Cube cube, CubeTableSource tableSource, ICubeFieldSource BICubeFieldSource, BIColumnKey targetColumnKey) {
+        return new BIFieldIndexGenerator(cube, tableSource, BICubeFieldSource, targetColumnKey);
     }
 
     protected BITableSourceBuildWatcher getTableWatcherBuilder(CubeTableEntityService tableEntityService) {

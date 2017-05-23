@@ -17,7 +17,6 @@ import com.finebi.cube.utils.BIRelationHelper;
 import com.fr.bi.conf.log.BILogManager;
 import com.fr.bi.conf.provider.BILogManagerProvider;
 import com.fr.bi.conf.report.widget.RelationColumnKey;
-import com.fr.bi.manager.PerformancePlugManager;
 import com.fr.bi.stable.constant.BILogConstant;
 import com.fr.bi.stable.constant.CubeConstant;
 import com.fr.bi.stable.constant.DBConstant;
@@ -191,37 +190,22 @@ public class BIRelationIndexGenerator extends BIProcessor {
     private void release(CubeTableEntityGetterService primaryTable, CubeTableEntityGetterService foreignTable, ICubeColumnEntityService primaryColumn, ICubeColumnEntityService foreignColumn, BICubeRelationEntity tableRelation, BICubeTableAdapter pTableAdapter) {
         if (primaryTable != null) {
             primaryTable.forceReleaseWriter();
-            if (PerformancePlugManager.getInstance().isGeneratingReleaseReader()){
-                primaryTable.forceReleaseReader();
-            }
             primaryTable.clear();
         }
         if (foreignTable != null) {
             foreignTable.forceReleaseWriter();
-            if (PerformancePlugManager.getInstance().isGeneratingReleaseReader()){
-                foreignTable.forceReleaseReader();
-            }
             foreignTable.clear();
         }
         if (primaryColumn != null) {
             primaryColumn.forceReleaseWriter();
-            if (PerformancePlugManager.getInstance().isGeneratingReleaseReader()){
-                primaryColumn.forceReleaseReader();
-            }
             primaryColumn.clear();
         }
         if (foreignColumn != null) {
             foreignColumn.forceReleaseWriter();
-            if (PerformancePlugManager.getInstance().isGeneratingReleaseReader()){
-                foreignColumn.forceReleaseReader();
-            }
             foreignColumn.clear();
         }
         if (tableRelation != null) {
             tableRelation.forceReleaseWriter();
-            if (PerformancePlugManager.getInstance().isGeneratingReleaseReader()){
-                tableRelation.forceReleaseReader();
-            }
             tableRelation.clear();
         }
         if (cube != null) {
