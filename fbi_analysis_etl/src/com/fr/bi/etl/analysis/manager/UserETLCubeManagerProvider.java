@@ -30,6 +30,8 @@ public interface UserETLCubeManagerProvider extends Release {
 
     boolean checkVersion(AnalysisCubeTableSource source, BIUser user);
 
+    boolean isError(AnalysisCubeTableSource source, BIUser user);
+
 	/**
 	 * 是否可用状态
 	 * @param source

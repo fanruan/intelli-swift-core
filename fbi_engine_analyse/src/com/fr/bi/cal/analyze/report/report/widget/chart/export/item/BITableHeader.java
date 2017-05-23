@@ -2,7 +2,6 @@ package com.fr.bi.cal.analyze.report.report.widget.chart.export.item;
 
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.style.BITableItemStyle;
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.style.ITableStyle;
-import com.fr.bi.cal.analyze.report.report.widget.style.BITableWidgetStyle;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
 
@@ -18,16 +17,6 @@ public class BITableHeader implements ITableHeader {
     private String type;
     private boolean isUsed;
     private boolean isSum;
-
-    public BITableHeader(String text, String title, String tag, String dID, ITableStyle styles, boolean isUsed, boolean isSum) {
-        this.text = text;
-        this.title = title;
-        this.tag = tag;
-        this.dID = dID;
-        this.styles = styles;
-        this.isUsed = isUsed;
-        this.isSum = isSum;
-    }
 
     public BITableHeader() {
     }
@@ -135,6 +124,7 @@ public class BITableHeader implements ITableHeader {
         if (json.has("type")) {
             setType(json.getString("type"));
         }
+        isSum = json.optBoolean("isSum", false);
         setUsed(json.optBoolean("used", true));
     }
 }

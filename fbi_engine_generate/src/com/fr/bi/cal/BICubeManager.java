@@ -1,5 +1,6 @@
 package com.fr.bi.cal;
 
+import com.finebi.cube.common.log.BILogger;
 import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.conf.BICubeManagerProvider;
 import com.finebi.cube.conf.CubeBuildStuff;
@@ -51,6 +52,8 @@ public class BICubeManager implements BICubeManagerProvider {
 
     private int delayTimes = 5000;
 
+    private static BILogger LOGGER = BILoggerFactory.getLogger(BICubeManager.class);
+
     public BICubeManager() {
         Thread taskAddThread = new Thread(
                 new Runnable() {
@@ -60,7 +63,7 @@ public class BICubeManager implements BICubeManagerProvider {
                             try {
                                 taskInfo = CustomTaskQueue.getInstance().take();
                                 startSingleTableBuilding(taskInfo.getUserId());
-                                BILoggerFactory.getLogger().info("Update table ID:" + taskInfo.baseTableSourceIdToString());
+                                LOGGER.info("Update table ID:" + taskInfo.baseTableSourceIdToString());
                                 int times = 0;
                                 for (int i = 0; i < retryTimes; i++) {
                                     if (!hasTask()) {
@@ -72,23 +75,23 @@ public class BICubeManager implements BICubeManagerProvider {
                                         break;
                                     }
                                     long timeDelay = i * delayTimes;
-                                    BILoggerFactory.getLogger(this.getClass()).info("Cube is generating, wait to add SingleTable Cube Task until finished, retry times : " + i);
-                                    BILoggerFactory.getLogger(this.getClass()).info("the SingleTable SourceId is: " + taskInfo.baseTableSourceIdToString());
+                                    LOGGER.info("Cube is generating, wait to add SingleTable Cube Task until finished, retry times : " + i);
+                                    LOGGER.info("the SingleTable SourceId is: " + taskInfo.baseTableSourceIdToString());
                                     try {
                                         Thread.sleep(timeDelay);
                                     } catch (InterruptedException e) {
-                                        BILoggerFactory.getLogger(this.getClass()).error(e.getMessage(), e);
+                                        LOGGER.error(e.getMessage(), e);
                                     }
                                     times++;
                                 }
                                 if (times == retryTimes) {
-                                    BILoggerFactory.getLogger(this.getClass()).info("up to add SingleTable Cube Task retry times, Please add SingleTable Task again");
-                                    BILoggerFactory.getLogger(this.getClass()).info("the SingleTable SourceId is: " + taskInfo.baseTableSourceIdToString());
+                                    LOGGER.info("up to add SingleTable Cube Task retry times, Please add SingleTable Task again");
+                                    LOGGER.info("the SingleTable SourceId is: " + taskInfo.baseTableSourceIdToString());
                                     finishSingleTableBuilding(taskInfo.getUserId());
                                 }
                             } catch (Exception e) {
                                 finishSingleTableBuilding(taskInfo.getUserId());
-                                BILoggerFactory.getLogger(this.getClass()).error(e.getMessage(), e);
+                                LOGGER.error(e.getMessage(), e);
                             } finally {
                                 synchronized (object) {
                                     taskInfo = null;
@@ -238,10 +241,11 @@ public class BICubeManager implements BICubeManagerProvider {
     @Override
     public boolean cubeTaskBuild(long userId, String baseTableSourceId, int updateType) {
         try {
+            boolean result = true;
             if (StringUtils.isEmpty(baseTableSourceId)) {
                 CubeTask cubeTask = this.buildStaff(userId);
                 if (cubeTask != null) {
-                    addTask(cubeTask, userId);
+                    result = addTask(cubeTask, userId);
                 }
             } else {
                 addCustomTableTask2Queue(userId, Single2CollectionUtils.toList(baseTableSourceId),
@@ -250,10 +254,10 @@ public class BICubeManager implements BICubeManagerProvider {
             BIConfigureManagerCenter.getCubeConfManager().updatePackageLastModify();
             BIConfigureManagerCenter.getCubeConfManager().updateMultiPathLastCubeStatus(BIReportConstant.MULTI_PATH_STATUS.NOT_NEED_GENERATE_CUBE);
             BIConfigureManagerCenter.getCubeConfManager().persistData(userId);
-            return true;
+            return result;
         } catch (Exception e) {
             CubeGenerationManager.getCubeManager().setStatus(userId, Status.WRONG);
-            BILoggerFactory.getLogger(this.getClass()).error("FineIndex task build failed" + "\n" + e.getMessage(), e);
+            LOGGER.error("FineIndex task build failed" + "\n" + e.getMessage(), e);
             return false;
         } finally {
             CubeGenerationManager.getCubeManager().setStatus(userId, Status.END);
@@ -279,27 +283,27 @@ public class BICubeManager implements BICubeManagerProvider {
     public synchronized void addCustomTableTask2Queue(long userId, List<String> baseTableSourceIds, List<Integer> updateTypes)
             throws InterruptedException {
         if (baseTableSourceIds.isEmpty() || updateTypes.isEmpty() || baseTableSourceIds.size() != updateTypes.size()) {
-            BILoggerFactory.getLogger().error("Add single table task to queue failed");
+            LOGGER.error("Add single table task to queue failed");
             return;
         }
-        BILoggerFactory.getLogger().info("Add single table task to queue:"
+        LOGGER.info("Add single table task to queue:"
                 + Collection2StringUtils.collection2String(baseTableSourceIds));
         if (CustomTaskQueue.getInstance().isEmpty()) {
             CustomTaskQueue.getInstance().put(new CustomTableTask(userId, baseTableSourceIds, updateTypes));
-            BILoggerFactory.getLogger().info("TaskQueue is empty ! Add single table task: "
+            LOGGER.info("TaskQueue is empty ! Add single table task: "
                     + Collection2StringUtils.collection2String(baseTableSourceIds) +
                     " , updateType : " + Collection2StringUtils.collection2String(updateTypes));
         } else {
             CustomTableTask task = CustomTaskQueue.getInstance().poll();
             if (task != null) {
                 CustomTaskQueue.getInstance().put(task.taskMerge(userId, baseTableSourceIds, updateTypes));
-                BILoggerFactory.getLogger().info("TaskQueue is not empty!Merge single table task: "
+                LOGGER.info("TaskQueue is not empty!Merge single table task: "
                         + Collection2StringUtils.collection2String(baseTableSourceIds)
                         + " , updateType : " + Collection2StringUtils.collection2String(updateTypes)
                         + " to:" + task.baseTableSourceIdToString());
             } else {
                 CustomTaskQueue.getInstance().put(new CustomTableTask(userId, baseTableSourceIds, updateTypes));
-                BILoggerFactory.getLogger().info("TaskQueue is empty!Add single table task: "
+                LOGGER.info("TaskQueue is empty!Add single table task: "
                         + Collection2StringUtils.collection2String(baseTableSourceIds)
                         + " , updateType : " + Collection2StringUtils.collection2String(updateTypes));
 
@@ -369,5 +373,11 @@ public class BICubeManager implements BICubeManagerProvider {
     @Override
     public List<CubeBuildStuff> buildCustomTable(long userId, List<String> baseTableSourceIds, List<Integer> updateTypes) {
         return customTaskBuilder.buildCustomTable(userId, baseTableSourceIds, updateTypes);
+    }
+
+    @Override
+    public CubeTask getUpdatingTask(long userId) {
+        SingleUserCubeManager singleUserCubeManager = getCubeManager(userId);
+        return singleUserCubeManager.getUpdatingTask();
     }
 }

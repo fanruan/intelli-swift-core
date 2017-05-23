@@ -68,6 +68,7 @@ public class PerformancePlugManager implements PerformancePlugManagerInterface {
     private boolean extremeConcurrency = true;
     private int reIndexRowCount = 1 << 12;
 
+    private long cubeReaderReleaseSleepTime = 1L;
     private boolean isDirectGenerating = false;
 
     private boolean isForceWriter = false;
@@ -116,6 +117,7 @@ public class PerformancePlugManager implements PerformancePlugManagerInterface {
             retryMaxSleepTime = getLong(PERFORMANCE + ".retryMaxSleepTime", retryMaxSleepTime);
             extremeConcurrency = getBoolean(PERFORMANCE + ".extremeConcurrency", extremeConcurrency);
             reIndexRowCount = getInt(PERFORMANCE + ".reIndexRowCount", reIndexRowCount);
+            cubeReaderReleaseSleepTime = getLong(PERFORMANCE + ".cubeReaderReleaseSleepTime", cubeReaderReleaseSleepTime);
             isDirectGenerating = getBoolean(PERFORMANCE + ".isDirectGenerating", isDirectGenerating);
             isForceWriter = getBoolean(PERFORMANCE + ".isForceWriter", isForceWriter);
             isGeneratingReleaseReader = getBoolean(PERFORMANCE + ".isGeneratingReleaseReader", isGeneratingReleaseReader);
@@ -151,6 +153,8 @@ public class PerformancePlugManager implements PerformancePlugManagerInterface {
         LOGGER.info("The value of {}.deployModeSelectSize is {}", PERFORMANCE, deployModeSelectSize);
         LOGGER.info("The value of {}.retryMaxTimes is {}", PERFORMANCE, retryMaxTimes);
         LOGGER.info("The value of {}.retryMaxSleepTime is {}", PERFORMANCE, retryMaxSleepTime);
+        LOGGER.info("The value of {}.cubeReaderReleaseSleepTime is {}", PERFORMANCE, cubeReaderReleaseSleepTime);
+
         LOGGER.info("The value of {}.isDirectGenerating is {}", PERFORMANCE, isDirectGenerating);
         LOGGER.info("The value of {}.isForceWriter is {}", PERFORMANCE, isForceWriter);
         LOGGER.info("The value of {}.isGeneratingReleaseReader is {}", PERFORMANCE, isGeneratingReleaseReader);
@@ -456,6 +460,10 @@ public class PerformancePlugManager implements PerformancePlugManagerInterface {
         return minCubeFreeHDSpaceRate;
     }
 
+    @Override
+    public long getCubeReaderReleaseSleepTime() {
+        return cubeReaderReleaseSleepTime;
+    }
     @Override
     public boolean isDirectGenerating (){
         return isDirectGenerating;

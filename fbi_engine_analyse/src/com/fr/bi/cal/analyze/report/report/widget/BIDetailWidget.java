@@ -293,10 +293,14 @@ public class BIDetailWidget extends AbstractBIWidget {
     @Override
     public void reSetDetailTarget() {
         for (BIDetailTarget ele : getDimensions()) {
-            ele.reSetDetailGetter();
+            if(ele != null){
+                ele.reSetDetailGetter();
+            }
         }
         for (BIDetailTarget ele : getViewDimensions()) {
-            ele.reSetDetailGetter();
+            if(ele != null){
+                ele.reSetDetailGetter();
+            }
         }
     }
 
@@ -307,7 +311,7 @@ public class BIDetailWidget extends AbstractBIWidget {
         IExcelDataBuilder builder = new DetailTableBuilder(viewMap, dataJSON, new BITableWidgetStyle());
         BITableDataConstructor tableData = BITableConstructHelper.buildTableData(builder);
         BITableConstructHelper.formatCells(tableData, createChartDimensions(), widgetStyle);
-        return tableData.createJSON().put("row", data.optLong("row", 0)).put("size", data.optLong("size", 0));
+        return tableData.createJSON().put("row", data.optLong("row", 0)).put("size", data.optLong("size", 0)).put("dimensionLength",dimensions.length);
     }
 
     private Map<String, ITableCellFormatOperation> createChartDimensions() throws Exception {
