@@ -40,7 +40,7 @@ public abstract class TableAbstractDataBuilder implements IExcelDataBuilder {
     protected static final String EMPTY_VALUE = "--";
     protected static final String SUMMARY = Inter.getLocText("BI-Summary_Values");
     protected static String OUTERSUM = "__outer_sum_";
-    protected List<List<Boolean>> crossItemsSums;
+//    protected List<List<Boolean>> crossItemsSums;
 
     public TableAbstractDataBuilder(Map<Integer, List<JSONObject>> dimAndTar, JSONObject dataJSON, IWidgetStyle styleSettings) throws Exception {
         this.data = dataJSON;
@@ -58,7 +58,7 @@ public abstract class TableAbstractDataBuilder implements IExcelDataBuilder {
         crossHeaders = new ArrayList<ITableHeader>();
         showColTotal = this.styleSetting.isShowColTotal();
         showRowTotal = this.styleSetting.isShowRowTotal();
-        crossItemsSums = new ArrayList<List<Boolean>>();
+//        crossItemsSums = new ArrayList<List<Boolean>>();
     }
 
     protected void amendmentData() throws JSONException {
@@ -199,12 +199,11 @@ public abstract class TableAbstractDataBuilder implements IExcelDataBuilder {
     protected void createCrossTableItems() throws Exception {
         JSONObject top = data.getJSONObject("t");
         JSONObject left = data.getJSONObject("l");
-        if (left.has("s")) {
-            crossItemsSums.add(new ArrayList<Boolean>());
-            crossItemsSums.get(0).add(true);
-        }
-
-        initCrossItemsSum(0, left.getJSONArray("c"));
+//        if (left.has("s")) {
+//            crossItemsSums.add(new ArrayList<Boolean>());
+//            crossItemsSums.get(0).add(true);
+//        }
+//        initCrossItemsSum(0, left.getJSONArray("c"));
         this.crossItems = createCrossItems(top);
         //无行表头 有列表头、指标
         if (isOnlyCrossAndTarget()) {
@@ -214,20 +213,20 @@ public abstract class TableAbstractDataBuilder implements IExcelDataBuilder {
         createItems4Cross(left);
     }
 
-    protected void initCrossItemsSum(int currentLayer, JSONArray sums) throws JSONException {
-        currentLayer++;
-        for (int i = 0; i < sums.length(); i++) {
-            JSONObject sum = sums.getJSONObject(i);
-            if (sum != null && sum.has("c")) {
-                initCrossItemsSum(currentLayer, sum.getJSONArray("c"));
-            }
-            while (crossItemsSums.size() <= currentLayer) {
-                crossItemsSums.add(new ArrayList<Boolean>());
-            }
-            crossItemsSums.get(currentLayer).add(sum.has("s"));
-        }
-
-    }
+//    protected void initCrossItemsSum(int currentLayer, JSONArray sums) throws JSONException {
+//        currentLayer++;
+//        for (int i = 0; i < sums.length(); i++) {
+//            JSONObject sum = sums.getJSONObject(i);
+//            if (sum != null && sum.has("c")) {
+//                initCrossItemsSum(currentLayer, sum.getJSONArray("c"));
+//            }
+//            while (crossItemsSums.size() <= currentLayer) {
+//                crossItemsSums.add(new ArrayList<Boolean>());
+//            }
+//            crossItemsSums.get(currentLayer).add(sum.has("s"));
+//        }
+//
+//    }
 
     private void createItems4Cross(JSONObject left) throws Exception {
         BIBasicTableItem item = new BIBasicTableItem();
@@ -486,7 +485,7 @@ public abstract class TableAbstractDataBuilder implements IExcelDataBuilder {
             item.setNeedExpand(true);
             item.setExpanded(false);
         }
-        boolean hasSum = isSummary(currentLayer, i);
+//        boolean hasSum = isSummary(currentLayer, i);
         if (child.has("c") && child.getJSONArray("c").length() > 0) {
             List children = createCrossPartItems(child.getJSONArray("c"), currentLayer);
             if (children.size() > 0) {
@@ -495,8 +494,8 @@ public abstract class TableAbstractDataBuilder implements IExcelDataBuilder {
             }
         }
         boolean childExist = null != item.getChildren() && item.getChildren().size() > 0;
-        boolean flag = hasSum && showColTotal;
-        if (flag && childExist) {
+//        boolean flag = hasSum && showColTotal;
+        if (showColTotal && childExist) {
             JSONArray itemList = new JSONArray();
             if (isOnlyCrossAndTarget()) {
                 itemList.put(new JSONArray());
@@ -526,13 +525,13 @@ public abstract class TableAbstractDataBuilder implements IExcelDataBuilder {
         return item;
     }
 
-    private boolean isSummary(int currentLayer, int i) {
-        if (crossItemsSums.size() > currentLayer && crossItemsSums.get(currentLayer).size() > i) {
-            return crossItemsSums.get(currentLayer).get(i);
-        } else {
-            return false;
-        }
-    }
+//    private boolean isSummary(int currentLayer, int i) {
+//        if (crossItemsSums.size() > currentLayer && crossItemsSums.get(currentLayer).size() > i) {
+//            return crossItemsSums.get(currentLayer).get(i);
+//        } else {
+//            return false;
+//        }
+//    }
 
     /**
      * 通用的创建items方法
