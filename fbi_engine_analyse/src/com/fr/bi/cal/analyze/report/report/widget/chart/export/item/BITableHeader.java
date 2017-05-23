@@ -18,16 +18,6 @@ public class BITableHeader implements ITableHeader {
     private boolean isUsed;
     private boolean isSum;
 
-    public BITableHeader(String text, String title, String tag, String dID, ITableStyle styles, boolean isUsed, boolean isSum) {
-        this.text = text;
-        this.title = title;
-        this.tag = tag;
-        this.dID = dID;
-        this.styles = styles;
-        this.isUsed = isUsed;
-        this.isSum = isSum;
-    }
-
     public BITableHeader() {
     }
 
@@ -134,6 +124,7 @@ public class BITableHeader implements ITableHeader {
         if (json.has("type")) {
             setType(json.getString("type"));
         }
+        isSum = json.optBoolean("isSum", false);
         setUsed(json.optBoolean("used", true));
     }
 }

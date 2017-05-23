@@ -698,7 +698,7 @@ public abstract class VanChartWidget extends TableWidget {
                 double y = (s.isNull(0) ? 0 : s.getDouble(0)) / numberScale;
                 String formattedCategory = this.formatDimension(category, x);
                 data.put(
-                        JSONObject.create().put(categoryKey, formattedCategory).put(valueKey, y).put(LONG_DATE, this.getLongDate(formattedCategory, x))
+                        JSONObject.create().put(categoryKey, formattedCategory).put(valueKey, s.isNull(0) ? "-" : y).put(LONG_DATE, this.getLongDate(formattedCategory, x))
                 );
                 valueList.add(y);
             }
@@ -742,7 +742,7 @@ public abstract class VanChartWidget extends TableWidget {
                     double y = targetValues.isNull(i) ? 0 : targetValues.getDouble(i) / numberScale;
                     String formattedCategory = this.formatDimension(category, x);
                     data.put(
-                            JSONObject.create().put(categoryKey, formattedCategory).put(valueKey, y).put(LONG_DATE, ComparatorUtils.equals(formattedCategory, x) ? StringUtils.EMPTY : x)
+                            JSONObject.create().put(categoryKey, formattedCategory).put(valueKey, targetValues.isNull(i) ? '-' : 0).put(LONG_DATE, ComparatorUtils.equals(formattedCategory, x) ? StringUtils.EMPTY : x)
                     );
                     valueList.add(y);
                 }

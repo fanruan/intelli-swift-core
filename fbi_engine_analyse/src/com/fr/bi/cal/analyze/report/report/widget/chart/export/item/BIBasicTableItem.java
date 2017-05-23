@@ -21,6 +21,7 @@ public class BIBasicTableItem implements ITableItem {
     protected List<ITableItem> children;
     private ITableStyle styles;
     private String value;
+    private boolean isSum;
 
     public BIBasicTableItem() {
     }
@@ -102,6 +103,7 @@ public class BIBasicTableItem implements ITableItem {
     public ITableStyle getStyles() {
         return styles;
     }
+
     public void setdId(String dId) {
         this.dId = dId;
     }
@@ -116,6 +118,16 @@ public class BIBasicTableItem implements ITableItem {
     }
 
     @Override
+    public boolean isSum() {
+        return isSum;
+    }
+
+    @Override
+    public void setSum(boolean sum) {
+        isSum = sum;
+    }
+
+    @Override
     public void parseJSON(JSONObject jo) throws Exception {
         if (jo.has("dId")) {
             dId = jo.optString("dId");
@@ -123,9 +135,13 @@ public class BIBasicTableItem implements ITableItem {
         if (jo.has("text")) {
             text = jo.optString("text");
         }
+        if (jo.has("isSum")) {
+            isSum = jo.optBoolean("isSum");
+        }
+
         if (jo.has("values")) {
-            if (null==values){
-                values=new ArrayList<ITableItem>();
+            if (null == values) {
+                values = new ArrayList<ITableItem>();
             }
             children = new ArrayList<ITableItem>();
             for (int i = 0; i < jo.getJSONArray("values").length(); i++) {
@@ -165,6 +181,7 @@ public class BIBasicTableItem implements ITableItem {
         jo.put("dId", dId);
         jo.put("styles", null == styles ? new JSONObject() : styles.createJSON());
         jo.put("text", text);
+        jo.put("isSum", isSum);
         if (null != this.values && values.size() > 0) {
             JSONArray TempValues = new JSONArray();
             for (ITableItem item : this.values) {

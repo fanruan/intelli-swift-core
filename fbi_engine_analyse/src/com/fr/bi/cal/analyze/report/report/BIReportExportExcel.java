@@ -112,7 +112,7 @@ public class BIReportExportExcel {
         if (widgets.size() != 0) {
             for (BIWidget widget : widgets) {
                 //TODO 明细表接口
-                polyECBlock.addFloatElement(renderPicture((TableWidget) widget, req));
+                polyECBlock.addFloatElement(renderPicture(widget, req));
             }
         }
         getSpecialWidgetPic(polyECBlock);
@@ -385,7 +385,8 @@ public class BIReportExportExcel {
         renderWidget(polyECBlock, value, jo);
     }
 
-    private FloatElement renderPicture(TableWidget widget, HttpServletRequest req) throws Exception {
+    //fixme wiget缺乏一个统一入口
+    private FloatElement renderPicture(BIWidget widget, HttpServletRequest req) throws Exception {
         if (!BIReportExportExcelUtils.widgetHasData(widget)) {
             return renderDefaultChartPic(widget);
         }
@@ -408,8 +409,10 @@ public class BIReportExportExcel {
         }
         JSONObject titleParams = JSONObject.create();
         titleParams.put("text", widget.getWidgetName());
-        String nameTextAlign = widget.getChartSetting().getDetailChartSetting().optInt("namePos", namePosLeft) == namePosLeft ? "left" : "center";
-        titleParams.put("textAlign", nameTextAlign);
+        if (widget instanceof TableWidget) {
+            String nameTextAlign = ((TableWidget) widget).getChartSetting().getDetailChartSetting().optInt("namePos", namePosLeft) == namePosLeft ? "left" : "center";
+            titleParams.put("textAlign", nameTextAlign);
+        }
         Rectangle rect = widget.getRect();
         String postOptions = new JSONObject("{" + key + ":" + options + ", width:" + rect.getWidth() +
                 ", height:" + rect.getHeight() + ", titleParams:" + titleParams + "}").toString();

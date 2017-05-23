@@ -29,8 +29,6 @@ public class VanRadarWidget extends VanCartesianWidget{
 
         plotOptions.put("columnType", false);
 
-        plotOptions.put("connectNulls", settings.optBoolean("nullContinuity"));
-
         return plotOptions;
     }
 

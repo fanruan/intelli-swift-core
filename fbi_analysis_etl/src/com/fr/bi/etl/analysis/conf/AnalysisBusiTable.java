@@ -1,5 +1,6 @@
 package com.fr.bi.etl.analysis.conf;
 
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.conf.field.BIBusinessField;
 import com.finebi.cube.conf.field.BusinessField;
 import com.finebi.cube.conf.table.BIBusinessTable;
@@ -14,12 +15,15 @@ import com.fr.bi.stable.data.BIFieldID;
 import com.fr.bi.stable.data.db.PersistentField;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.utils.BIDBUtils;
-import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.general.Inter;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Created by 小灰灰 on 2015/12/11.
@@ -136,13 +140,16 @@ public class AnalysisBusiTable extends BIBusinessTable {
 
     public Set<BusinessTable> getUsedTables() {
         Set<BusinessTable> usedTables = new HashSet<BusinessTable>();
-        for (BIWidget widget : ((AnalysisCubeTableSource) source).getWidgets()) {
-            if (null != widget && null != widget.getUsedTableDefine()) {
-                for (BusinessTable table : widget.getUsedTableDefine()) {
-                    usedTables.add(table);
+        if (source != null) {
+            for (BIWidget widget : ((AnalysisCubeTableSource) source).getWidgets()) {
+                if (null != widget && null != widget.getUsedTableDefine()) {
+                    for (BusinessTable table : widget.getUsedTableDefine()) {
+                        usedTables.add(table);
+                    }
                 }
             }
         }
+
         return usedTables;
     }
 }

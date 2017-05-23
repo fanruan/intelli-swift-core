@@ -61,4 +61,13 @@ public interface BINode extends SummaryContainer {
 
     int getDeep();
 
+    /**
+     * 获得根node的整体的deep,
+     * attention：这个deep==使用的维度数，只有根node能获得。
+     *
+     * @return
+     */
+    int getFrameDeep();
+
+    int setFrameDeep(int deep);
 }

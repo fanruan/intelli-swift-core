@@ -308,6 +308,13 @@ public class UserETLCubeManager extends XMLFileManager implements UserETLCubeMan
         return  f;
     }
 
+    @Override
+    public boolean isError(AnalysisCubeTableSource source, BIUser user) {
+        SingleUserETLTableCubeManager manager = createManager(source, user);
+        return manager.isError();
+    }
+
+
     public long getTableVersion(AnalysisCubeTableSource source, BIUser user) {
         SingleUserETLTableCubeManager manager = createManager(source, user);
         try {

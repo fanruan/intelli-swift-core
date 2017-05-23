@@ -4,6 +4,7 @@ import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.base.TemplateUtils;
 import com.fr.bi.conf.report.WidgetType;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
+import com.fr.bi.stable.constant.BIChartSettingConstant;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.general.ComparatorUtils;
 import com.fr.general.FRLogger;
@@ -98,7 +99,7 @@ public class VanDotWidget extends VanCartesianWidget{
 
         settings.put("displayRules", SERIES_RULE);
         settings.put("bubbleStyle", NO_SHADOW);
-        settings.put("dotStyle", SQUARE);
+        settings.put("dotStyle", BIChartSettingConstant.DOT_STYLE.SQUARE);
 
         settings.put("bubbleSizeFrom", MIN_SIZE);
         settings.put("bubbleSizeTo", MAX_SIZE);

@@ -1,5 +1,6 @@
 package com.fr.bi.etl.analysis.manager;
 
+import com.finebi.cube.common.log.BILogger;
 import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.conf.BIAliasManagerProvider;
 import com.finebi.cube.conf.BISystemDataManager;
@@ -17,6 +18,7 @@ import java.io.File;
  */
 public class BIAnalysisETLAliasManager extends BISystemDataManager<UserAliasManager> implements BIAliasManagerProvider {
     private static final long serialVersionUID = 7737620413603253982L;
+    private static BILogger LOGGER = BILoggerFactory.getLogger(BIAnalysisETLAliasManager.class);
 
     @Override
     public UserAliasManager constructUserManagerValue(Long userId) {
@@ -39,7 +41,7 @@ public class BIAnalysisETLAliasManager extends BISystemDataManager<UserAliasMana
         try {
             return getValue(userId);
         } catch (BIKeyAbsentException e) {
-            BILoggerFactory.getLogger().error(e.getMessage(), e);
+            LOGGER.error(e.getMessage(), e);
             throw BINonValueUtils.beyondControl(e);
         }
     }
@@ -52,10 +54,10 @@ public class BIAnalysisETLAliasManager extends BISystemDataManager<UserAliasMana
             }
             putKeyValue(userId, value);
         } catch (BIKeyAbsentException e) {
-            BILoggerFactory.getLogger().error(e.getMessage(), e);
+            LOGGER.error(e.getMessage(), e);
             throw BINonValueUtils.beyondControl(e);
         } catch (BIKeyDuplicateException e) {
-            BILoggerFactory.getLogger().error(e.getMessage(), e);
+            LOGGER.error(e.getMessage(), e);
         }
     }
 
@@ -82,7 +84,7 @@ public class BIAnalysisETLAliasManager extends BISystemDataManager<UserAliasMana
             }
             return jo;
         } catch (Exception e) {
-            BILoggerFactory.getLogger().error(e.getMessage(), e);
+            LOGGER.error(e.getMessage(), e);
             throw BINonValueUtils.beyondControl(e);
         }
     }
