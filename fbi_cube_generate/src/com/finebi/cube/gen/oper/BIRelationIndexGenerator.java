@@ -17,6 +17,7 @@ import com.finebi.cube.utils.BIRelationHelper;
 import com.fr.bi.conf.log.BILogManager;
 import com.fr.bi.conf.provider.BILogManagerProvider;
 import com.fr.bi.conf.report.widget.RelationColumnKey;
+import com.fr.bi.manager.PerformancePlugManager;
 import com.fr.bi.stable.constant.BILogConstant;
 import com.fr.bi.stable.constant.CubeConstant;
 import com.fr.bi.stable.constant.DBConstant;
@@ -32,12 +33,13 @@ import com.fr.bi.stable.operation.sort.comp.ASCComparator;
 import com.fr.bi.stable.operation.sort.comp.CastDoubleASCComparator;
 import com.fr.bi.stable.operation.sort.comp.CastFloatASCComparator;
 import com.fr.bi.stable.operation.sort.comp.CastLongASCComparator;
+import com.fr.bi.stable.structure.array.IntArray;
+import com.fr.bi.stable.structure.array.IntListFactory;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
 import com.fr.bi.stable.utils.program.BIStringUtils;
 import com.fr.fs.control.UserControl;
 import com.fr.stable.StringUtils;
 import com.fr.stable.bridge.StableFactory;
-import com.fr.stable.collections.array.IntArray;
 import com.google.common.base.Stopwatch;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,7 +47,10 @@ import org.slf4j.LoggerFactory;
 import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -186,22 +191,37 @@ public class BIRelationIndexGenerator extends BIProcessor {
     private void release(CubeTableEntityGetterService primaryTable, CubeTableEntityGetterService foreignTable, ICubeColumnEntityService primaryColumn, ICubeColumnEntityService foreignColumn, BICubeRelationEntity tableRelation, BICubeTableAdapter pTableAdapter) {
         if (primaryTable != null) {
             primaryTable.forceReleaseWriter();
+            if (PerformancePlugManager.getInstance().isGeneratingReleaseReader()){
+                primaryTable.forceReleaseReader();
+            }
             primaryTable.clear();
         }
         if (foreignTable != null) {
             foreignTable.forceReleaseWriter();
+            if (PerformancePlugManager.getInstance().isGeneratingReleaseReader()){
+                foreignTable.forceReleaseReader();
+            }
             foreignTable.clear();
         }
         if (primaryColumn != null) {
             primaryColumn.forceReleaseWriter();
+            if (PerformancePlugManager.getInstance().isGeneratingReleaseReader()){
+                primaryColumn.forceReleaseReader();
+            }
             primaryColumn.clear();
         }
         if (foreignColumn != null) {
             foreignColumn.forceReleaseWriter();
+            if (PerformancePlugManager.getInstance().isGeneratingReleaseReader()){
+                foreignColumn.forceReleaseReader();
+            }
             foreignColumn.clear();
         }
         if (tableRelation != null) {
             tableRelation.forceReleaseWriter();
+            if (PerformancePlugManager.getInstance().isGeneratingReleaseReader()){
+                tableRelation.forceReleaseReader();
+            }
             tableRelation.clear();
         }
         if (cube != null) {
@@ -232,9 +252,8 @@ public class BIRelationIndexGenerator extends BIProcessor {
                 foreignColumnValue = getForeignGroupObjectValue(foreignColumn, 0);
                 foreignGroupValueIndex = getForeignBitmapIndex(foreignColumn, 0);
             }
-            int[] reverse = new int[foreignTable.getRowCount()];
+            IntArray reverse = IntListFactory.createIntArray(foreignTable.getRowCount(), NIOConstant.INTEGER.NULL_VALUE);
             final byte[][] relationIndexBytes = new byte[primaryTable.getRowCount()][];
-            Arrays.fill(reverse, NIOConstant.INTEGER.NULL_VALUE);
             GroupValueIndex allShowIndex = getTableShowIndex(primaryTable);
             GroupValueIndex nullIndex = buildIndex(primaryColumn, foreignColumn, c, primaryGroupSize, foreignGroupSize, foreignColumnValue, foreignGroupValueIndex, reverse, relationIndexBytes, allShowIndex);
             buildIndex(tableRelation, relationIndexBytes);
@@ -269,7 +288,7 @@ public class BIRelationIndexGenerator extends BIProcessor {
 
     private GroupValueIndex buildIndex(ICubeColumnEntityService primaryColumn, ICubeColumnEntityService foreignColumn, Comparator c,
                                        int primaryGroupSize, int foreignGroupSize, Object foreignColumnValue, GroupValueIndex foreignGroupValueIndex,
-                                       int[] reverse, final byte[][] relationIndexBytes, GroupValueIndex allShowIndex) throws BICubeIndexException {
+                                       IntArray reverse, final byte[][] relationIndexBytes, GroupValueIndex allShowIndex) throws BICubeIndexException {
         Stopwatch stopwatch = Stopwatch.createStarted();
         GroupValueIndex nullIndex = GVIFactory.createAllEmptyIndexGVI();
         Object primaryColumnValue;
@@ -347,40 +366,34 @@ public class BIRelationIndexGenerator extends BIProcessor {
         }
     }
 
-    private void matchRelation(byte[][] relationIndexBytes, GroupValueIndex foreignGroupValueIndex, int[] reverse, GroupValueIndex pGroupValueIndex) {
-        final IntArray array = new IntArray();
-        pGroupValueIndex.Traversal(new TraversalAction() {
+    private void matchRelation(final byte[][] relationIndexBytes, final GroupValueIndex foreignGroupValueIndex, final com.fr.bi.stable.structure.array.IntArray reverse, GroupValueIndex pGroupValueIndex) {
+        final byte[] bytes = foreignGroupValueIndex.getBytes();
+        pGroupValueIndex.Traversal(new SingleRowTraversalAction() {
             @Override
-            public void actionPerformed(int[] data) {
-                array.addAll(data);
+            public void actionPerformed(int row) {
+                relationIndexBytes[row] = bytes;
+                try {
+                    initReverseIndex(reverse, row, foreignGroupValueIndex);
+                } catch (ArrayIndexOutOfBoundsException e) {
+                    foreignGroupValueIndex.Traversal(new SingleRowTraversalAction() {
+                        @Override
+                        public void actionPerformed(int rowIndex) {
+                            LOGGER.error("GVI value:" + rowIndex);
+                        }
+                    });
+                    LOGGER.error(e.getMessage(), e);
+                }
             }
         });
-        byte[] bytes = foreignGroupValueIndex.getBytes();
-        for (int i = 0; i < array.size; i++) {
-            relationIndexBytes[array.get(i)] = bytes;
-
-            try {
-                initReverseIndex(reverse, array.get(i), foreignGroupValueIndex);
-            } catch (ArrayIndexOutOfBoundsException e) {
-                foreignGroupValueIndex.Traversal(new SingleRowTraversalAction() {
-                    @Override
-                    public void actionPerformed(int rowIndex) {
-                        LOGGER.error("GVI value:" + rowIndex);
-                    }
-                });
-                LOGGER.error(e.getMessage(), e);
-            }
-        }
     }
-
-    private void initReverseIndex(final int[] index, final int row, GroupValueIndex gvi) {
+    private void initReverseIndex(final IntArray index, final int row, GroupValueIndex gvi) {
         gvi.Traversal(new SingleRowTraversalAction() {
             @Override
             public void actionPerformed(int rowIndex) {
                 try {
-                    index[rowIndex] = row;
+                    index.put(rowIndex, row);
                 } catch (ArrayIndexOutOfBoundsException e) {
-                    LOGGER.error("Array size:" + index.length + " row index:" + rowIndex);
+                    LOGGER.error("Array size:" + index.size() + " row index:" + rowIndex);
                     throw e;
                 }
             }
@@ -394,10 +407,11 @@ public class BIRelationIndexGenerator extends BIProcessor {
         }
     }
 
-    private void buildReverseIndex(ICubeRelationEntityService tableRelation, int[] index) {
-        for (int i = 0; i < index.length; i++) {
-            tableRelation.addReverseIndex(i, index[i]);
+    private void buildReverseIndex(ICubeRelationEntityService tableRelation, IntArray index) {
+        for (int i = 0; i < index.size(); i++) {
+            tableRelation.addReverseIndex(i, index.get(i));
         }
+        index.release();
     }
 
     private Comparator generateComparatorByType(int primaryColumnType, int foreignColumnType) {

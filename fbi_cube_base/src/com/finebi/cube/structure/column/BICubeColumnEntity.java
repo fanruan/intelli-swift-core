@@ -11,6 +11,7 @@ import com.finebi.cube.structure.group.ICubeGroupDataService;
 import com.finebi.cube.structure.property.BICubeColumnPositionOfGroupService;
 import com.finebi.cube.structure.property.BICubeVersion;
 import com.fr.bi.stable.constant.DBConstant;
+import com.fr.bi.stable.gvi.GVIFactory;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.gvi.RoaringGroupValueIndex;
 import com.fr.bi.stable.utils.program.BITypeUtils;
@@ -146,7 +147,12 @@ public abstract class BICubeColumnEntity<T> implements ICubeColumnEntityService<
 
     @Override
     public GroupValueIndex getNULLIndex(int position) throws BICubeIndexException {
-        return indexDataService.getNULLIndex(position);
+        try {
+            return getIndexByGroupValue(detailDataService.getCubeNullValue());
+        } catch (Exception e) {
+        }
+        // FIXME 还有什么类型分组GVI没有考虑到的
+        return GVIFactory.createAllEmptyIndexGVI();
     }
 
     @Override
@@ -267,6 +273,18 @@ public abstract class BICubeColumnEntity<T> implements ICubeColumnEntityService<
         }
     }
 
+    /**
+     * 获取原始值
+     * 在BIDoubleNIOWriter层已经对空值做了处理
+     * String(null)-->""
+     * Double(null)-->NIOConstant.DOUBLE.NULL_VALUE
+     * Integer(null)-->NIOConstant.Integer.NULL_VALUE
+     * Long(null)-->NIOConstant.Long.NULL_VALUE
+     * 这边直接进行返回就可以
+     *
+     * @param rowNumber 数据库中的行号
+     * @return
+     */
     @Override
     public T getOriginalObjectValueByRow(int rowNumber) {
         return null;
@@ -295,5 +313,9 @@ public abstract class BICubeColumnEntity<T> implements ICubeColumnEntityService<
     @Override
     public Boolean isVersionAvailable() {
         return cubeVersion.isVersionAvailable();
+    }
+
+    public T createValue(Object v) {
+        return (T) v;
     }
 }

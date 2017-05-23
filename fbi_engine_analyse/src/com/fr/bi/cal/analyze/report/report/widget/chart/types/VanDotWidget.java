@@ -4,13 +4,13 @@ import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.base.TemplateUtils;
 import com.fr.bi.conf.report.WidgetType;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
+import com.fr.bi.stable.constant.BIChartSettingConstant;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.general.ComparatorUtils;
 import com.fr.general.FRLogger;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
-import com.fr.script.Calculator;
 import com.fr.stable.CoreConstants;
 import com.fr.stable.StringUtils;
 
@@ -99,7 +99,7 @@ public class VanDotWidget extends VanCartesianWidget{
 
         settings.put("displayRules", SERIES_RULE);
         settings.put("bubbleStyle", NO_SHADOW);
-        settings.put("dotStyle", SQUARE);
+        settings.put("dotStyle", BIChartSettingConstant.DOT_STYLE.SQUARE);
 
         settings.put("bubbleSizeFrom", MIN_SIZE);
         settings.put("bubbleSizeTo", MAX_SIZE);
@@ -130,6 +130,8 @@ public class VanDotWidget extends VanCartesianWidget{
 
         plotOptions.put("shadow", settings.optInt("bubbleStyle") == SHADOW);
 
+        plotOptions.put("marker", JSONObject.create().put("symbol", settings.optString("dotStyle")).put("enabled", true));
+
         return plotOptions;
     }
 
@@ -140,10 +142,14 @@ public class VanDotWidget extends VanCartesianWidget{
         int rule = settings.optInt("displayRules");
         if(rule == INTERVAL_RULE){
             legend.put("continuous", false);
-            legend.put("range", this.mapStyleToRange(settings.optJSONArray("fixedStyle")));
+            if(settings.optInt("fixedStyleRadio") != AUTO){
+                legend.put("range", this.mapStyleToRange(settings.optJSONArray("fixedStyle")));
+            }
         }else if(rule == GRADUAL_RULE){
             legend.put("continuous", true);
-            legend.put("range", this.gradualStyleToRange(settings.optJSONArray("gradientStyle")));
+            if(settings.optInt("gradientStyleRadio") != AUTO){
+                legend.put("range", this.gradualStyleToRange(settings.optJSONArray("gradientStyle")));
+            }
         }
 
         return legend;
@@ -231,20 +237,29 @@ public class VanDotWidget extends VanCartesianWidget{
         return dealSeriesMap(noSeries, this.getUsedTargetID(), seriesMap);
     }
 
-    private void dealChildren(boolean noSeries, List<String> description, JSONArray children,  HashMap<String, JSONArray> seriesMap) throws JSONException{
+    private void dealChildren(boolean noSeries, List<String> longDateDesc, JSONArray children,  HashMap<String, JSONArray> seriesMap) throws JSONException{
         for(int i = 0, len = children.length(); i < len; i++){
             JSONObject child = children.getJSONObject(i);
-            List<String> childSescription = new ArrayList<String>(description);
+            List<String> childDescription = new ArrayList<String>(longDateDesc);
             if(child.has("c") || noSeries){
-                childSescription.add(child.optString("n"));
+                childDescription.add(child.optString("n"));
             }
             if(child.has("c")){
-                dealChildren(noSeries, childSescription, child.optJSONArray("c"), seriesMap);
+                dealChildren(noSeries, childDescription, child.optJSONArray("c"), seriesMap);
             } else {
                 String seriesName = child.optString("n");
                 JSONArray dataArray = seriesMap.containsKey(seriesName) ? seriesMap.get(seriesName) : JSONArray.create();
                 seriesMap.put(seriesName, dataArray);
-                child.put("description", description);
+
+                String[] desc = new String[longDateDesc.size()];
+
+                for(int index = 0, count = desc.length; index < count; index++){
+                    BIDimension categoryDim = this.getCategoryDimension(index);
+                    desc[index] = this.formatDimension(categoryDim, longDateDesc.get(index));
+                }
+                child.put("longDateDescription", longDateDesc);
+                child.put("description", desc);
+
                 dataArray.put(child);
             }
         }
@@ -252,6 +267,7 @@ public class VanDotWidget extends VanCartesianWidget{
 
     private JSONArray dealSeriesMap(boolean noSeries, String[] ids, HashMap<String, JSONArray> seriesMap) throws JSONException{
         JSONArray series = JSONArray.create();
+        BIDimension seriesDim = this.getSeriesDimension();
         String[] dimensionIDs = this.getUsedDimensionID();
 
         double yScale = this.numberScale(ids[0]), xScale = this.numberScale(ids[1]);
@@ -272,7 +288,8 @@ public class VanDotWidget extends VanCartesianWidget{
                 double x = dimensions.isNull(1) ? 0 : dimensions.optDouble(1);
                 double value = (dimensions.length() > 2 && !dimensions.isNull(2)) ? dimensions.optDouble(2) : 0;
 
-                JSONObject point = JSONObject.create().put("x", x/xScale).put("y", y/yScale).put("size", value/sizeScale).put("description", obj.optJSONArray("description"));
+                JSONObject point = JSONObject.create().put("x", x/xScale).put("y", y/yScale).put("size", value/sizeScale)
+                        .put("description", obj.optJSONArray("description")).put("longDateDescription", obj.optJSONArray("longDateDescription"));
 
                 if(noSeries) {
                     dotData.put(point);
@@ -282,7 +299,9 @@ public class VanDotWidget extends VanCartesianWidget{
             }
 
             if(!noSeries) {
-                ser.put("data", data).put("name", seriesName).put("dimensionIDs", dimensionIDs).put("targetIDs", ids);                series.put(ser);
+                String formattedName = this.formatDimension(seriesDim, seriesName);
+                ser.put("data", data).put("name", formattedName).put(LONG_DATE, seriesName).put("dimensionIDs", dimensionIDs).put("targetIDs", ids);
+                series.put(ser);
             }
         }
 
@@ -331,16 +350,20 @@ public class VanDotWidget extends VanCartesianWidget{
         return series;
     }
 
-    protected JSONArray parseCategoryAxis(JSONObject settings, Calculator calculator) throws JSONException{
+    protected JSONArray parseCategoryAxis(JSONObject settings) throws JSONException{
 
-        JSONObject baseAxis = this.parseRightValueAxis(settings, calculator).put("position", "bottom").put("type", "value");
+        JSONObject baseAxis = this.parseRightValueAxis(settings).put("position", "bottom").put("type", "value");
+
+        if (baseAxis.has("title")) {
+            baseAxis.optJSONObject("title").put("rotation", 0);
+        }
 
         return JSONArray.create().put(baseAxis);
     }
 
-    protected JSONArray parseValueAxis(JSONObject settings, Calculator calculator) throws JSONException{
+    protected JSONArray parseValueAxis(JSONObject settings) throws JSONException{
 
-        return JSONArray.create().put(this.parseLeftValueAxis(settings, calculator));
+        return JSONArray.create().put(this.parseLeftValueAxis(settings));
     }
 
     public String getSeriesType(String dimensionID){
@@ -403,7 +426,7 @@ public class VanDotWidget extends VanCartesianWidget{
         try {
             formatter = TemplateUtils.renderParameter4Tpl(getTooltipTpl(), tplMap);
         } catch (Exception e) {
-            FRLogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(),e);
         }
 
         JSONArray series = options.optJSONArray("series");

@@ -10,11 +10,13 @@ import com.fr.bi.stable.report.key.TargetGettingKey;
 import com.fr.bi.stable.report.result.BINode;
 import com.fr.bi.stable.report.result.TargetCalculator;
 import com.fr.bi.stable.structure.collection.map.ChildsMap;
+import com.fr.bi.stable.utils.BICollectionUtils;
 import com.fr.general.ComparatorUtils;
 import com.fr.general.NameObject;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
+import com.fr.stable.StringUtils;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -81,7 +83,9 @@ public class Node implements BINode {
      * @param data
      */
     private void initShowValue(Object data) {
-        setShowValue(data == null ? null : data.toString());
+        // 先进行一次空值判断以及转换
+        data = BICollectionUtils.cubeValueToWebDisplay(data);
+        setShowValue(data == null ? StringUtils.EMPTY : data.toString());
     }
 
     @Override
@@ -198,8 +202,8 @@ public class Node implements BINode {
         return childs.values();
     }
 
-    public void clearChildren(){
-        for (Node n : getChilds()){
+    public void clearChildren() {
+        for (Node n : getChilds()) {
             n.sibling = null;
         }
         childs = new ChildsMap<Node>();
@@ -216,6 +220,22 @@ public class Node implements BINode {
             res += node.getTotalLength();
         }
         return res;
+    }
+
+    @Override
+    public int getDeep() {
+        if (childs == null || childs.isEmpty()) {
+            return 1;
+        }
+        int max = 0;
+        for (int i = 0; i < childs.size(); i++) {
+            Node node = childs.get(i);
+            int temp = node.getDeep();
+            if (max < temp) {
+                max = temp;
+            }
+        }
+        return max + 1;
     }
 
     public int getTotalLengthWithSummary() {
@@ -280,7 +300,7 @@ public class Node implements BINode {
             return false;
         }
         Node child = getChild(0);
-        for (int i = 0; i < summaryValue.length; i++){
+        for (int i = 0; i < summaryValue.length; i++) {
             if (!ComparatorUtils.equals(summaryValue[i], child.summaryValue[i])) {
                 return true;
             }
@@ -296,14 +316,14 @@ public class Node implements BINode {
                 value = null;
             }
         }
-        if (key.getTargetIndex() < summaryValue.length){
+        if (key.getTargetIndex() < summaryValue.length) {
             summaryValue[key.getTargetIndex()] = value;
         }
     }
 
     @Override
     public Number getSummaryValue(TargetGettingKey key) {
-        if (summaryValue == null || summaryValue.length - 1 < key.getTargetIndex()){
+        if (summaryValue == null || summaryValue.length - 1 < key.getTargetIndex()) {
             return null;
         }
         return summaryValue[key.getTargetIndex()];
@@ -772,7 +792,8 @@ public class Node implements BINode {
         JSONArray summary = new JSONArray();
         for (int i = 0; i < keys.length; i++) {
 //            summary.put(GeneralUtils.objectToNumber(GeneralUtils.objectToString(this.getSummaryValue(keys[i]))));
-            summary.put(this.getSummaryValue(keys[i]));
+            // 需要对汇总值进行转换，如果会汇总值为空值的表示则不进行显示
+            summary.put(BICollectionUtils.cubeValueToWebDisplay(this.getSummaryValue(keys[i])));
         }
         jo.put("s", summary);
         jo.put("x", getTotalLengthWithSummary());
@@ -816,7 +837,8 @@ public class Node implements BINode {
         public boolean equals(Object o) {
             if (this == o) {
                 return true;
-            } ;
+            }
+            ;
             if (o == null || getClass() != o.getClass()) {
                 return false;
             }

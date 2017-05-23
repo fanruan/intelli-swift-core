@@ -1,6 +1,8 @@
 package com.fr.bi.cal.analyze.report.report.widget.chart.types;
 
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.field.target.target.BISummaryTarget;
+import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
@@ -10,11 +12,23 @@ import com.fr.json.JSONObject;
  */
 public class VanCompareBarWidget extends VanCompareColumnWidget{
 
+    protected int numberLevel(String dimensionID){
+        int level = BIReportConstant.TARGET_STYLE.NUM_LEVEL.NORMAL;
+        try {
+            JSONObject settings = this.getDetailChartSetting();
+            level = settings.optInt("leftYNumberLevel", level);
+        }catch (Exception e){
+            BILoggerFactory.getLogger().error(e.getMessage(),e);
+        }
+
+        return level;
+    }
+
     public boolean isInverted(){
         return true;
     }
 
-    protected void dealYAxisDiffDefaultSettings(JSONObject settings) throws JSONException {
+    protected void dealCompareChartYAxis(JSONObject settings) throws JSONException {
     }
 
     protected JSONArray dealSeriesWithEmptyAxis(JSONArray series) throws JSONException{

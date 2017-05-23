@@ -78,9 +78,6 @@ public class BINumberDimension extends BIAbstractDimension {
 
     @Override
     public String toString(Object v) {
-        if (v instanceof Double) {
-            return StableUtils.convertNumberStringToString(((Double) v).doubleValue());
-        }
         return super.toString(v);
     }
 

@@ -13,64 +13,9 @@ import java.util.Date;
  *
  */
 public class BIReportNodeLock extends DAOBean {
-	
-	/* (non-Javadoc)
-	 * @see java.lang.Object#hashCode()
-	 */
 
-	/* (non-Javadoc)
-	 * @see java.lang.Object#hashCode()
-	 */
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = super.hashCode();
-		result = prime * result + (int) (reportId ^ (reportId >>> 32));
-		result = prime * result + ((sessionId == null) ? 0 : sessionId.hashCode());
-		result = prime * result + (int) (userId ^ (userId >>> 32));
-		return result;
-	}
+	private static final long serialVersionUID = -1947786480683007710L;
 
-	/* (non-Javadoc)
-	 * @see java.lang.Object#equals(java.lang.Object)
-	 */
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj){
-			return true;
-		}
-		if (!super.equals(obj)){
-			return false;
-		}
-		if (getClass() != obj.getClass()){
-			return false;
-		}
-		BIReportNodeLock other = (BIReportNodeLock) obj;
-		if (reportId != other.reportId){
-			return false;
-		}
-		if (sessionId == null) {
-			if (other.sessionId != null){
-				return false;
-			}
-		} else if (!ComparatorUtils.equals(sessionId, other.sessionId)){
-			return false;
-		}
-		if (userId != other.userId){
-			return false;
-		}
-		return true;
-	}
-	
-	public BIReportNodeLock(){
-	}
-	
-	public BIReportNodeLock(String sessionId, long userId, long reportId){
-		this.sessionId = sessionId;
-		this.userId = userId;
-		this.reportId = reportId;
-		this.lockedTime = System.currentTimeMillis();
-	}
 	//
 	//访问的sessionId
 	private String sessionId;
@@ -78,9 +23,22 @@ public class BIReportNodeLock extends DAOBean {
 	private long userId;
 	//报表id
 	private long reportId;
+	//	当前编辑用户的id
+	private long currentEditUserId;
 
 	//锁占用时间
 	private long lockedTime = System.currentTimeMillis();
+	
+	public BIReportNodeLock(){
+	}
+	public BIReportNodeLock(String sessionId, long userId, long reportId,long currentEditUserId){
+		this.sessionId = sessionId;
+		this.userId = userId;
+		this.reportId = reportId;
+		this.currentEditUserId = currentEditUserId;
+		this.lockedTime = System.currentTimeMillis();
+	}
+
 	public String getSessionId(){
 		return sessionId;
 	}
@@ -88,10 +46,7 @@ public class BIReportNodeLock extends DAOBean {
 	public void updateLockedTime(){
 		this.lockedTime = System.currentTimeMillis();
 	}
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = -1947786480683007710L;
+
 
 	/* (non-Javadoc)
 	 * @see com.fr.data.dao.DAOBean#hashCode4Properties()
@@ -122,13 +77,65 @@ public class BIReportNodeLock extends DAOBean {
 		return lockedTime;
 	}
 
+	public long getCurrentEditUserId() {
+		return currentEditUserId;
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) {
+			return true;
+		}
+		if (o == null || getClass() != o.getClass()){
+			return false;
+		}
+		if (!super.equals(o)) {
+			return false;
+		}
+		BIReportNodeLock that = (BIReportNodeLock) o;
+		if (userId != that.userId) {
+			return false;
+		}
+		if (reportId != that.reportId){
+			return false;
+		}
+		if (currentEditUserId != that.currentEditUserId) {
+			return false;
+		}
+		if (lockedTime != that.lockedTime){
+			return false;
+		}
+		if (sessionId == null) {
+			if (that.sessionId != null){
+				return false;
+			}
+		}
+		else if (!ComparatorUtils.equals(sessionId, that.sessionId)){
+			return false;
+		}
+		return true;
+	}
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = super.hashCode();
+		result = prime * result + (sessionId != null ? sessionId.hashCode() : 0);
+		result = prime * result + (int) (userId ^ (userId >>> 32));
+		result = prime * result + (int) (reportId ^ (reportId >>> 32));
+		result = prime * result + (int) (currentEditUserId ^ (currentEditUserId >>> 32));
+		result = prime * result + (int) (lockedTime ^ (lockedTime >>> 32));
+		return result;
+	}
+
+
 	@Override
 	public String toString() {
 		return "BIReportNodeLock{" +
 				"sessionId='" + sessionId + '\'' +
 				", userId=" + userId +
 				", reportId=" + reportId +
-				", lockedTime=" + new Date(lockedTime).toString() +
+				", currentEditUserId=" + currentEditUserId +
+				", lockedTime=" + lockedTime +
 				'}';
 	}
 }

@@ -4,6 +4,7 @@ import com.finebi.cube.data.ICubeResourceDiscovery;
 import com.finebi.cube.location.ICubeResourceLocation;
 import com.finebi.cube.structure.detail.BICubeStringDetailData;
 import com.finebi.cube.structure.group.BICubeStringGroupData;
+import com.fr.stable.StringUtils;
 
 /**
  * This class created on 2016/3/29.
@@ -39,6 +40,16 @@ public class BICubeStringColumn extends BICubeColumnEntity<String> {
     @Override
     public String getOriginalObjectValueByRow(int rowNumber) {
         return getOriginalValueByRow(rowNumber);
+    }
+
+    /**
+     * 获取空值表示对象
+     *
+     * @return
+     */
+    @Override
+    public String getCubeNullValue() {
+        return StringUtils.EMPTY;
     }
 }
 

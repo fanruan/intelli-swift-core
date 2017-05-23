@@ -1,6 +1,7 @@
 package com.fr.bi.cal.stable.tableindex.index;
 
 import com.finebi.cube.api.ICubeColumnDetailGetter;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.conf.field.BusinessField;
 import com.fr.bi.base.key.BIKey;
 import com.fr.bi.cal.stable.tableindex.AbstractTableIndex;
@@ -9,8 +10,9 @@ import com.fr.bi.stable.engine.index.key.IndexKey;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.gvi.traversal.CalculatorTraversalAction;
 import com.fr.bi.stable.gvi.traversal.SingleRowTraversalAction;
+import com.fr.bi.stable.io.newio.NIOConstant;
 import com.fr.bi.stable.io.newio.SingleUserNIOReadManager;
-import com.finebi.cube.common.log.BILoggerFactory;
+import com.fr.bi.stable.utils.BICollectionUtils;
 
 import java.util.HashSet;
 import java.util.Map;
@@ -27,7 +29,7 @@ public abstract class BaseTableIndex extends AbstractTableIndex {
     protected Map<BIKey, Double> numberSumValueMap = new ConcurrentHashMap<BIKey, Double>();
 
     protected BaseTableIndex(String path, SingleUserNIOReadManager manager) {
-        super( path, manager);
+        super(path, manager);
     }
 
     public BaseTableIndex(BITableCubeFile cube) {
@@ -43,7 +45,6 @@ public abstract class BaseTableIndex extends AbstractTableIndex {
     public BIKey getColumnIndex(BusinessField field) {
         return getColumnIndex(field.getFieldName());
     }
-
 
 
     @Override
@@ -124,10 +125,19 @@ public abstract class BaseTableIndex extends AbstractTableIndex {
     public double getSUMValue(GroupValueIndex gvi, BIKey summaryIndex) {
         final ICubeColumnDetailGetter list = getColumnDetailReader(summaryIndex);
         CalculatorTraversalAction ss = new CalculatorTraversalAction() {
+            // 这里不能像SumCalculator那样先获取PrimitiveDetailGetter然后在判断是否都为空值因为MemoryDetailGetter不支持
+            // 所以只能一个个进行判断
+
+            protected double sum = NIOConstant.DOUBLE.NULL_VALUE;
+
             @Override
             public void actionPerformed(int row) {
                 Object v = list.getValue(row);
-                if (v != null) {
+                // 空汇总值不参与计算
+                if (!BICollectionUtils.isCubeNullKey(v)) {
+                    if (BICollectionUtils.isCubeNullKey(sum)) {
+                        sum = 0;
+                    }
                     double res = ((Number) v).doubleValue();
                     sum += res;
                 }

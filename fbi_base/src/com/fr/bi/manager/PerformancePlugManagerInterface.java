@@ -88,4 +88,23 @@ public interface PerformancePlugManagerInterface {
     void setMinCubeFreeHDSpaceRate(double rate);
 
     double getMinCubeFreeHDSpaceRate();
+
+    /**
+     * 是否利用堆外内存来生成cube
+     * 主要解决星巴克频繁gc的问题，这个参数为true的时候用完cube也要释放reader，并且写文件也要force
+     * @return
+     */
+    boolean isDirectGenerating();
+
+    /**
+     * 写文件的时候是否强制同步
+     * @return
+     */
+    boolean isForceWriter();
+
+    /**
+     * 生成cube的时候是否释放读的文件
+     * @return
+     */
+    boolean isGeneratingReleaseReader();
 }

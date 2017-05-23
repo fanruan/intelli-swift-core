@@ -16,7 +16,7 @@ public interface ITableItem extends JSONCreator {
 
     String getDId();
 
-    String getText();
+    String getValue();
 
     List<ITableItem> getValues();
 
@@ -28,7 +28,7 @@ public interface ITableItem extends JSONCreator {
 
     void setDId(String dId);
 
-    void setText(String text);
+    void setValue(String text);
 
     void setValues(List<ITableItem> values);
 
@@ -44,11 +44,15 @@ public interface ITableItem extends JSONCreator {
 
 //    String getType();
 
-    String getdId();
-
     void setdId(String dId);
 
-    void setValue(String value);
+    void setText(String text);
+
+    String getText();
+
+    boolean isSum();
+
+    void setSum(boolean sum);
 
     void parseJSON(JSONObject jo) throws Exception;
 }

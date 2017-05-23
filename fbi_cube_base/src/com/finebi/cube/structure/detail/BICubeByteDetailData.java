@@ -39,4 +39,14 @@ public class BICubeByteDetailData extends BICubeDetailData<Byte> {
     public Byte getOriginalObjectValueByRow(int rowNumber) {
         return getOriginalValueByRow(rowNumber);
     }
+
+    /**
+     * 获取空值表示
+     *
+     * @return
+     */
+    @Override
+    public Byte getCubeNullValue() {
+        return null;
+    }
 }

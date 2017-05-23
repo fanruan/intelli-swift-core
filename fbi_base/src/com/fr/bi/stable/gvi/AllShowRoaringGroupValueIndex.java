@@ -14,7 +14,7 @@ import java.io.IOException;
  */
 public class AllShowRoaringGroupValueIndex extends AbstractGroupValueIndex {
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = -1712666277155873986L;
 	private int rowCount;
@@ -28,18 +28,18 @@ public class AllShowRoaringGroupValueIndex extends AbstractGroupValueIndex {
 
 	@Override
 	public GroupValueIndex AND(GroupValueIndex valueIndex) {
-		if (valueIndex == null){
+		if (valueIndex == null || GVIUtils.isAllShowRoaringGroupValueIndex(valueIndex)) {
 			return this.clone();
 		}
 		return valueIndex;
 	}
-	
+
 	@Override
 	public GroupValueIndex ANDNOT(GroupValueIndex valueIndex) {
 		return valueIndex.NOT(rowCount);
 	}
 
-	
+
 	@Override
 	public GroupValueIndex andnot(GroupValueIndex valueIndex) {
 		return ANDNOT(valueIndex);
@@ -88,7 +88,7 @@ public class AllShowRoaringGroupValueIndex extends AbstractGroupValueIndex {
 	}
 
 	private static final int POS = 10;
-	
+
 	private static final int LEN = 1 << POS;
 	@Override
 	public void Traversal(TraversalAction action) {
@@ -96,7 +96,7 @@ public class AllShowRoaringGroupValueIndex extends AbstractGroupValueIndex {
 		for (int i = 0; i < size; i++) {
 			int len = (i == size - 1) ? (rowCount % LEN) : LEN;
 			int[] array = new int[len];
-            int start = i << POS;
+			int start = i << POS;
 			for(int j = 0; j < len; j ++){
 				array[j] = start  + j;
 			}
@@ -121,7 +121,7 @@ public class AllShowRoaringGroupValueIndex extends AbstractGroupValueIndex {
 		}
 		return false;
 	}
-	
+
 
 	@Override
 	public boolean isOneAt(int rowIndex) {

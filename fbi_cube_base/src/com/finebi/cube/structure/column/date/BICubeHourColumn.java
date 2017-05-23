@@ -5,6 +5,9 @@ import com.finebi.cube.location.ICubeResourceLocation;
 import com.finebi.cube.structure.column.BICubeIntegerColumn;
 import com.fr.bi.base.ValueConverterFactory;
 import com.fr.bi.stable.constant.DateConstant;
+import com.fr.bi.stable.io.newio.NIOConstant;
+
+import java.util.Calendar;
 
 
 /**
@@ -22,6 +25,12 @@ public class BICubeHourColumn extends BICubeDateSubColumn<Integer> {
         return date != null ? (Integer) ValueConverterFactory.createDateValueConverter(DateConstant.DATE.HOUR).result2Value(date) : null;
     }
 
+
+    @Override
+    protected Integer convertDate(Long date, Calendar calendar) {
+        return date != null ? (Integer) ValueConverterFactory.createDateValueConverter(DateConstant.DATE.HOUR).result2Value(date, calendar) : null;
+    }
+
     @Override
     protected void initialColumnEntity(ICubeResourceLocation currentLocation) {
         selfColumnEntity = new BICubeIntegerColumn(discovery, currentLocation);
@@ -29,5 +38,15 @@ public class BICubeHourColumn extends BICubeDateSubColumn<Integer> {
 
     public int getGroupValue(int position) {
         return ((BICubeIntegerColumn)selfColumnEntity).getGroupValue(position);
+    }
+
+    /**
+     * 获取空值表示对象
+     *
+     * @return
+     */
+    @Override
+    public Integer getCubeNullValue() {
+        return NIOConstant.INTEGER.NULL_VALUE;
     }
 }

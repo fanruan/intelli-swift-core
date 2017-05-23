@@ -9,4 +9,8 @@ public class VanStackedColumnWidget extends VanColumnWidget{
         return true;
     }
 
+    protected String getStackedKey(String dimensionID) {
+        return this.getUsedTargetID()[0];
+    }
+
 }

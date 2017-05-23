@@ -3,6 +3,7 @@ package com.fr.bi.field.target.calculator.sum;
 import com.finebi.cube.api.ICubeTableService;
 import com.fr.bi.field.target.target.BISummaryTarget;
 import com.fr.bi.stable.gvi.GroupValueIndex;
+import com.fr.bi.stable.io.newio.NIOConstant;
 
 /**
  * Created by 小灰灰 on 2015/6/30.
@@ -18,7 +19,7 @@ public class AvgCalculator extends AbstractSummaryCalculator {
     @Override
     public double createSumValue(GroupValueIndex gvi, ICubeTableService ti) {
         if (gvi == null || gvi.isAllEmpty()){
-            return Double.NaN;
+            return NIOConstant.DOUBLE.NULL_VALUE;
         }
         return ti.getSUMValue(gvi, target.createKey(target.getStatisticElement())) / gvi.getRowsCountWithData();
     }

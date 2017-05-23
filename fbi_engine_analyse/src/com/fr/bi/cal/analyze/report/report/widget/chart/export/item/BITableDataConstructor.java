@@ -15,21 +15,21 @@ public class BITableDataConstructor implements JSONCreator {
     private List<ITableHeader> headers;
     private List<ITableItem> items;
     private List<ITableHeader> crossHeaders;
-    private JSONArray crossItems;
-    private IWidgetStyle widgetStyle;
+    private List<ITableItem> crossItems;
+    private IWidgetStyle settings;
 
-    public BITableDataConstructor(List<ITableHeader> headers, List<ITableItem> items, List<ITableHeader> crossHeaders, JSONArray crossItems, IWidgetStyle widgetStyle) {
+    public BITableDataConstructor(List<ITableHeader> headers, List<ITableItem> items, List<ITableHeader> crossHeaders, List<ITableItem> crossItems, IWidgetStyle widgetStyle) {
         this.headers = headers;
         this.items = items;
         this.crossHeaders = crossHeaders;
         this.crossItems = crossItems;
-        this.widgetStyle = widgetStyle;
+        this.settings = widgetStyle;
     }
 
     public BITableDataConstructor(List<ITableHeader> headers, List<ITableItem> items, IWidgetStyle widgetStyle) {
         this.headers = headers;
         this.items = items;
-        this.widgetStyle = widgetStyle;
+        this.settings = widgetStyle;
     }
 
     @Override
@@ -55,10 +55,14 @@ public class BITableDataConstructor implements JSONCreator {
             jo.put("items", itemArray);
         }
         if (null != crossItems) {
-            jo.put("crossItems", crossItems);
+            JSONArray itemArray = new JSONArray();
+            for (ITableItem item : crossItems) {
+                itemArray.put(item.createJSON());
+            }
+            jo.put("crossItems", itemArray);
         }
-        if (null != widgetStyle) {
-            jo.put("widgetStyle", widgetStyle.createJSON());
+        if (null != settings) {
+            jo.put("settings", settings.createJSON());
         }
         return jo;
     }
@@ -76,15 +80,11 @@ public class BITableDataConstructor implements JSONCreator {
         return crossHeaders;
     }
 
-    public JSONArray getCrossItems() {
+    public List<ITableItem> getCrossItems() {
         return crossItems;
     }
 
-    public void setCrossItems(JSONArray crossItems) {
-        this.crossItems = crossItems;
-    }
-
     public IWidgetStyle getWidgetStyle() {
-        return widgetStyle;
+        return settings;
     }
 }

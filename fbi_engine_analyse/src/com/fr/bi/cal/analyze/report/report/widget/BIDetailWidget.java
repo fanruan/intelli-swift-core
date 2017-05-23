@@ -10,10 +10,12 @@ import com.fr.bi.cal.analyze.cal.detail.PolyCubeDetailECBlock;
 import com.fr.bi.cal.analyze.executor.detail.DetailExecutor;
 import com.fr.bi.cal.analyze.executor.paging.Paging;
 import com.fr.bi.cal.analyze.executor.paging.PagingFactory;
-import com.fr.bi.cal.analyze.report.report.widget.chart.export.format.setting.BICellFormatSetting;
-import com.fr.bi.cal.analyze.report.report.widget.chart.export.format.operation.BITableCellDimFormatOperation;
-import com.fr.bi.cal.analyze.report.report.widget.chart.export.calculator.IExcelDataBuilder;
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.calculator.DetailTableBuilder;
+import com.fr.bi.cal.analyze.report.report.widget.chart.export.calculator.IExcelDataBuilder;
+import com.fr.bi.cal.analyze.report.report.widget.chart.export.format.operation.BITableCellFormatOperation;
+import com.fr.bi.cal.analyze.report.report.widget.chart.export.format.operation.ITableCellFormatOperation;
+import com.fr.bi.cal.analyze.report.report.widget.chart.export.format.setting.BICellFormatSetting;
+import com.fr.bi.cal.analyze.report.report.widget.chart.export.item.BITableDataConstructor;
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.utils.BITableConstructHelper;
 import com.fr.bi.cal.analyze.report.report.widget.detail.BIDetailReportSetting;
 import com.fr.bi.cal.analyze.report.report.widget.detail.BIDetailSetting;
@@ -26,6 +28,7 @@ import com.fr.bi.conf.report.widget.field.target.filter.TargetFilter;
 import com.fr.bi.conf.session.BISessionProvider;
 import com.fr.bi.conf.utils.BIModuleUtils;
 import com.fr.bi.field.target.detailtarget.BIDetailTargetFactory;
+import com.fr.bi.field.target.detailtarget.field.BIDateDetailTarget;
 import com.fr.bi.field.target.detailtarget.formula.BINumberFormulaDetailTarget;
 import com.fr.bi.field.target.filter.TargetFilterFactory;
 import com.fr.bi.stable.constant.BIBaseConstant;
@@ -301,20 +304,25 @@ public class BIDetailWidget extends AbstractBIWidget {
         JSONObject data = this.createDataJSON(session, req);
         JSONObject dataJSON = data.getJSONObject("data");
         Map<Integer, List<JSONObject>> viewMap = createViewMap();
-        List<BITableCellDimFormatOperation> BITableCellDimFormatOperations = createChartDimensions();
-        IExcelDataBuilder builder = new DetailTableBuilder(viewMap, BITableCellDimFormatOperations, dataJSON, new BITableWidgetStyle());
-        return BITableConstructHelper.buildTableData(builder).createJSON().put("row", data.optLong("row", 0)).put("siez", data.optLong("size", 0));
+        IExcelDataBuilder builder = new DetailTableBuilder(viewMap, dataJSON, new BITableWidgetStyle());
+        BITableDataConstructor tableData = BITableConstructHelper.buildTableData(builder);
+        BITableConstructHelper.formatCells(tableData, createChartDimensions(), widgetStyle);
+        return tableData.createJSON().put("row", data.optLong("row", 0)).put("size", data.optLong("size", 0));
     }
 
-    private List<BITableCellDimFormatOperation> createChartDimensions() throws Exception {
-        List<BITableCellDimFormatOperation> BITableCellDimFormatOperations = new ArrayList<BITableCellDimFormatOperation>();
+    private Map<String, ITableCellFormatOperation> createChartDimensions() throws Exception {
+        Map<String, ITableCellFormatOperation> formatOperationMap = new HashMap<String, ITableCellFormatOperation>();
         for (BIDetailTarget detailTarget : this.getTargets()) {
             BICellFormatSetting setting = new BICellFormatSetting();
             setting.parseJSON(detailTarget.getChartSetting().getSettings());
-            BITableCellDimFormatOperation BITableCellDimFormatOperation = new BITableCellDimFormatOperation(detailTarget.createColumnKey().getFieldType(), setting);
-            BITableCellDimFormatOperations.add(BITableCellDimFormatOperation);
+            int groupType = 0;
+            if (detailTarget instanceof BIDateDetailTarget) {
+                groupType = ((BIDateDetailTarget) detailTarget).getGroup().getType();
+            }
+            ITableCellFormatOperation op = new BITableCellFormatOperation(groupType, setting);
+            formatOperationMap.put(detailTarget.getId(), op);
         }
-        return BITableCellDimFormatOperations;
+        return formatOperationMap;
     }
 
     private Map<Integer, List<JSONObject>> createViewMap() throws Exception {

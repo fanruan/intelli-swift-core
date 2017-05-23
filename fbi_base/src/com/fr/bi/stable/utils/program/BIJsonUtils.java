@@ -6,7 +6,6 @@ import com.fr.json.JSONObject;
 import com.fr.stable.StringUtils;
 
 /**
- *
  * Created by Connery on 2015/12/4.
  */
 public class BIJsonUtils {
@@ -32,7 +31,6 @@ public class BIJsonUtils {
     }
 
 
-
     public static JSONObject jsonJoin(JSONObject left, JSONObject right) throws JSONException {
         JSONObject jo = new JSONObject();
         JSONArray arr = left.names();
@@ -52,7 +50,7 @@ public class BIJsonUtils {
         JSON_TYPE_ERROR
     }
 
-   public static BIJsonUtils.JSON_TYPE getJSONType(String str) {
+    public static BIJsonUtils.JSON_TYPE getJSONType(String str) {
         if (StringUtils.isEmpty(str)) {
             return BIJsonUtils.JSON_TYPE.JSON_TYPE_ERROR;
         }
@@ -82,5 +80,15 @@ public class BIJsonUtils {
     public static boolean isArray(String str) {
         BIJsonUtils.JSON_TYPE type = getJSONType(str);
         return type == BIJsonUtils.JSON_TYPE.JSON_TYPE_ARRAY;
+    }
+
+    public static JSONArray arrayConcat(JSONArray left, JSONArray right) throws JSONException {
+        JSONArray res = new JSONArray(left.toString());
+        if (right != null) {
+            for (int i = 0; i < right.length(); i++) {
+                res.put(right.get(i));
+            }
+        }
+        return res;
     }
 }

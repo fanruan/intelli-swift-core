@@ -33,4 +33,10 @@ public interface ICubeDetailDataService<T> extends Release ,ICubeResourceForceRe
 
     void buildStructure();
 
+    /**
+     * 获取空值表示
+     * @return
+     */
+    T getCubeNullValue();
+
 }
