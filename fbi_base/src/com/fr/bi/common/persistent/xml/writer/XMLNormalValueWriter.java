@@ -1,8 +1,9 @@
 package com.fr.bi.common.persistent.xml.writer;
 
+import com.finebi.cube.common.log.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.common.persistent.xml.BIIgnoreField;
 import com.fr.bi.common.persistent.xml.BIXMLTag;
-import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.stable.xml.XMLPrintWriter;
 
 import java.beans.IntrospectionException;
@@ -20,6 +21,8 @@ public class XMLNormalValueWriter extends XMLValueWriter {
 
     public static boolean IS_IGNORED_FIELD_USABLE = true;
     public static boolean USE_CONTENT_SAVE_VALUE = true;
+
+    private static BILogger LOGGER = BILoggerFactory.getLogger(XMLNormalValueWriter.class);
 
     @Override
     protected String getDisposedUUID(Object obj) {
@@ -74,8 +77,8 @@ public class XMLNormalValueWriter extends XMLValueWriter {
                         fieldTagEnd(writer);
                     }
                 }
-            } catch (Exception e) {
-                BILoggerFactory.getLogger().error(e.getMessage(), e);
+            } catch (Throwable e) {
+                LOGGER.error(e.getMessage(), e);
                 fieldTagEnd(writer);
                 continue;
             }

@@ -64,7 +64,7 @@ public class XMLNormalValueReader extends XMLValueReader {
                 }
             }
         } catch (Exception e) {
-            BILoggerFactory.getLogger().error(e.getMessage(), e);
+            LOGGER.error(e.getMessage(), e);
         }
 
     }

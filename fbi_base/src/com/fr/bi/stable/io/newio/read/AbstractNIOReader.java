@@ -1,9 +1,10 @@
 package com.fr.bi.stable.io.newio.read;
 
+import com.finebi.cube.common.log.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.stable.io.newio.NIOConstant;
 import com.fr.bi.stable.io.newio.NIOReadWriter;
 import com.fr.bi.stable.io.newio.NIOReader;
-import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.stable.utils.mem.BIReleaseUtils;
 
 import java.io.File;
@@ -25,6 +26,8 @@ public abstract class AbstractNIOReader<T> extends NIOReadWriter implements NIOR
     protected volatile boolean gotohell = false;
     boolean[] initIndex = new boolean[INIT_INDEX_LENGTH];
     private File baseFile;
+
+    private static BILogger LOGGER = BILoggerFactory.getLogger(AbstractNIOReader.class);
 
     public AbstractNIOReader(File cacheFile) {
         this.baseFile = cacheFile;
@@ -57,7 +60,7 @@ public abstract class AbstractNIOReader<T> extends NIOReadWriter implements NIOR
                 //但愿10ms能 执行完get方法否则可能导致jvm崩溃
                 this.wait(10);
             } catch (InterruptedException e) {
-                BILoggerFactory.getLogger().error(e.getMessage(), e);
+                LOGGER.error(e.getMessage(), e);
             }
             clearBuffer();
         }
@@ -105,7 +108,7 @@ public abstract class AbstractNIOReader<T> extends NIOReadWriter implements NIOR
                     }
                 }
             } catch (IOException e) {
-            	BILoggerFactory.getLogger().error(e.getMessage(), e);
+            	LOGGER.error(e.getMessage(), e);
             }
         }
     }
@@ -123,7 +126,7 @@ public abstract class AbstractNIOReader<T> extends NIOReadWriter implements NIOR
         try {
             return new RandomAccessFile(cacheFile, "r").getChannel();
         } catch (FileNotFoundException e) {
-        	BILoggerFactory.getLogger().error(e.getMessage(), e);
+        	LOGGER.error(e.getMessage(), e);
         }
         return null;
     }

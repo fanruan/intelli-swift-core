@@ -266,6 +266,7 @@ public class BIConnectionManager extends XMLFileManager implements BIConnectionP
                 jo.put("name", name);
 
                 jo.put("createBy", getCreateBy(name, UserControl.getInstance().getSuperManagerID()));
+                jo.put("initTime", getInitTime(name));
                 if (isMicrosoftAccessDatabase(jo.optString("driver"), jo.optString("url"))) {
                     continue;
                 }
