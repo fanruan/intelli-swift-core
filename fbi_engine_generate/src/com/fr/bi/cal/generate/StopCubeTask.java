@@ -19,7 +19,6 @@ import com.fr.bi.common.factory.BIFactoryHelper;
 import com.fr.bi.stable.engine.CubeTask;
 import com.fr.bi.stable.engine.CubeTaskType;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
-import com.fr.fs.control.UserControl;
 import com.fr.json.JSONObject;
 
 import java.util.HashSet;
@@ -81,7 +80,6 @@ public class StopCubeTask implements CubeTask {
     }
 
 
-
     public static IMessage generateMessageStopDataSourceStart() {
         return buildTopic(new BIMessageTopic(BICubeBuildTopicTag.START_BUILD_CUBE));
     }
@@ -93,7 +91,7 @@ public class StopCubeTask implements CubeTask {
 
     @Override
     public long getUserId() {
-        return UserControl.getInstance().getSuperManagerID();
+        return biUser.getUserId();
     }
 
     @Override
