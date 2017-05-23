@@ -138,8 +138,7 @@ public abstract class AbstractSingleMemoryColumn<T> implements MemoryColumnFile<
     @Override
     public int getPositionOfGroup(int row, SingleUserNIOReadManager manager) {
         if (groupPosition != null) {
-            Integer value = groupPosition.get(row);
-           return processPosition(value);
+            return processPosition(groupPosition.get(row));
         }
         T value = detail.get(row);
         for (int i = 0; i < getter.sizeOfGroup(); i++) {
@@ -151,13 +150,14 @@ public abstract class AbstractSingleMemoryColumn<T> implements MemoryColumnFile<
         return 0;
     }
 
-    protected int processPosition(Integer value){
+    protected int processPosition(Integer value) {
         if (value == null) {
             return NIOConstant.INTEGER.NULL_VALUE;
         } else {
             return value;
         }
     }
+
     public ICubeColumnIndexReader createGroupByType(BIKey key, ValueConverter converter, Comparator comparator) {
         CubeTreeMap getter = new CubeTreeMap(comparator);
         Map<Object, IntArray> treeMap = new TreeMap<Object, IntArray>();
