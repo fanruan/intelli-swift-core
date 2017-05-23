@@ -68,6 +68,7 @@ public class PerformancePlugManager implements PerformancePlugManagerInterface {
     private boolean extremeConcurrency = true;
     private int reIndexRowCount = 1 << 12;
 
+    private long cubeReaderReleaseSleepTime = 1L;
 
     private PerformancePlugManager() {
         init();
@@ -110,6 +111,7 @@ public class PerformancePlugManager implements PerformancePlugManagerInterface {
             retryMaxSleepTime = getLong(PERFORMANCE + ".retryMaxSleepTime", retryMaxSleepTime);
             extremeConcurrency = getBoolean(PERFORMANCE + ".extremeConcurrency", extremeConcurrency);
             reIndexRowCount = getInt(PERFORMANCE + ".reIndexRowCount", reIndexRowCount);
+            cubeReaderReleaseSleepTime = getLong(PERFORMANCE + ".cubeReaderReleaseSleepTime", cubeReaderReleaseSleepTime);
 //            logConfiguration();
         } catch (Exception e) {
             BILoggerFactory.getLogger().error(e.getMessage(), e);
@@ -142,6 +144,7 @@ public class PerformancePlugManager implements PerformancePlugManagerInterface {
         LOGGER.info("The value of {}.deployModeSelectSize is {}", PERFORMANCE, deployModeSelectSize);
         LOGGER.info("The value of {}.retryMaxTimes is {}", PERFORMANCE, retryMaxTimes);
         LOGGER.info("The value of {}.retryMaxSleepTime is {}", PERFORMANCE, retryMaxSleepTime);
+        LOGGER.info("The value of {}.cubeReaderReleaseSleepTime is {}", PERFORMANCE, cubeReaderReleaseSleepTime);
 
         LOGGER.info("");
         LOGGER.info("");
@@ -445,5 +448,8 @@ public class PerformancePlugManager implements PerformancePlugManagerInterface {
         return minCubeFreeHDSpaceRate;
     }
 
-
+    @Override
+    public long getCubeReaderReleaseSleepTime() {
+        return cubeReaderReleaseSleepTime;
+    }
 }
