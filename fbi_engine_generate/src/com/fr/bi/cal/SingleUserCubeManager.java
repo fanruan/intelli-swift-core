@@ -155,4 +155,7 @@ public class SingleUserCubeManager {
         return runner.getCubeWaiting2GenerateTableSourceIds();
     }
 
+    public CubeTask getUpdatingTask() {
+        return runner.getUpdatingTask();
+    }
 }
