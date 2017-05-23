@@ -152,7 +152,7 @@ public abstract class AbstractSingleMemoryColumn<T> implements MemoryColumnFile<
 
     protected int processPosition(Integer value) {
         /**
-         * Connery: 螺旋分析中null值没有GroupPosition
+         * Connery: BI-5488螺旋分析中null值没有GroupPosition
          * 现在统一按照NIOConstant.INTEGER.NULL_VALUE处理。
          */
         if (value == null) {
