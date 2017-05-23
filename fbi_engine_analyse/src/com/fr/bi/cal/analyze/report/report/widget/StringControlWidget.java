@@ -13,12 +13,10 @@ import com.fr.bi.conf.session.BISessionProvider;
 import com.fr.bi.stable.constant.BIJSONConstant;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.constant.DBConstant;
-import com.fr.bi.stable.gvi.AllShowRoaringGroupValueIndex;
 import com.fr.bi.stable.gvi.GroupValueIndex;
-import com.fr.bi.stable.gvi.traversal.SingleRowTraversalAction;
-import com.fr.bi.stable.io.newio.NIOConstant;
 import com.fr.bi.stable.io.sortlist.ArrayLookupHelper;
 import com.fr.bi.stable.report.result.DimensionCalculator;
+import com.fr.bi.stable.utils.BICollectionUtils;
 import com.fr.bi.stable.utils.program.BIJsonUtils;
 import com.fr.bi.stable.utils.program.BIPhoneticismUtils;
 import com.fr.general.ComparatorUtils;
@@ -28,7 +26,6 @@ import com.fr.json.JSONObject;
 import com.fr.report.poly.PolyECBlock;
 import com.fr.report.poly.TemplateBlock;
 import com.fr.stable.StringUtils;
-import com.fr.stable.collections.array.IntArray;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.*;
@@ -347,7 +344,7 @@ public class StringControlWidget extends TableWidget {
         outer:
         for (int i = array.size() - 1; i > -1; i--) {
             Object ob = reader.getGroupValue(array.get(i));
-            String str = ob.toString();
+            String str  = BICollectionUtils.isCubeNullKey(ob) ? StringUtils.EMPTY : ob.toString();
             for (String keyword : keys) {
                 if (match(str, keyword, selectedValue, mode)) {
                     if (matched >= start && matched < end) {
@@ -377,7 +374,12 @@ public class StringControlWidget extends TableWidget {
         outer:
         for (int i = 0; i < array.size(); i++) {
             Object ob = reader.getGroupValue(array.get(i));
-            String str = ob.toString();
+            String str = null;
+            if(BICollectionUtils.isCubeNullKey(ob)){
+                str = StringUtils.EMPTY;
+            }else {
+                str = ob.toString();
+            }
             for (String keyword : keys) {
                 if (match(str, keyword, selectedValue, mode)) {
                     if (matched >= start && matched < end) {
