@@ -472,7 +472,7 @@ public class BuildCubeTask implements CubeTask {
 
     @Override
     public long getUserId() {
-        return biUser.getUserId();
+        return UserControl.getInstance().getSuperManagerID();
     }
 
     @Override
