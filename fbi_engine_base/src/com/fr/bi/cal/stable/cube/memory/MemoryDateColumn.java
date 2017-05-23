@@ -1,7 +1,7 @@
 package com.fr.bi.cal.stable.cube.memory;
 
-import com.finebi.cube.api.ICubeColumnIndexReader;
 import com.finebi.cube.api.ICubeColumnDetailGetter;
+import com.finebi.cube.api.ICubeColumnIndexReader;
 import com.finebi.cube.relation.BITableSourceRelation;
 import com.fr.bi.base.ValueConverterFactory;
 import com.fr.bi.base.key.BIKey;
@@ -58,8 +58,9 @@ public class MemoryDateColumn extends AbstractSingleMemoryColumn<Long> {
      */
     @Override
     public int getPositionOfGroup(int row, SingleUserNIOReadManager manager) {
-        if (groupPosition != null){
-            return groupPosition.get(row);
+        if (groupPosition != null) {
+            Integer value = groupPosition.get(row);
+            return processPosition(value);
         }
         for (int i = 0; i < getter.sizeOfGroup(); i++) {
             GroupValueIndex groupValueIndex = getter.getGroupValueIndex(i);

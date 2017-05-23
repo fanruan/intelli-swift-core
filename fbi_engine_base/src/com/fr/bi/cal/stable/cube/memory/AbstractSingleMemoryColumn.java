@@ -13,6 +13,7 @@ import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.gvi.array.ICubeTableIndexReader;
 import com.fr.bi.stable.gvi.traversal.SingleRowTraversalAction;
 import com.fr.bi.stable.index.CubeGenerator;
+import com.fr.bi.stable.io.newio.NIOConstant;
 import com.fr.bi.stable.io.newio.NIOReader;
 import com.fr.bi.stable.io.newio.NIOWriter;
 import com.fr.bi.stable.io.newio.SingleUserNIOReadManager;
@@ -44,11 +45,11 @@ public abstract class AbstractSingleMemoryColumn<T> implements MemoryColumnFile<
 
     protected abstract void initDetail();
 
-    protected void initGroupPosition(CubeTreeMap map){
+    protected void initGroupPosition(CubeTreeMap map) {
         groupPosition = new AnyIndexArray<Integer>();
         Iterator<GroupValueIndex> it = map.values().iterator();
         int position = 0;
-        while (it.hasNext()){
+        while (it.hasNext()) {
             final int p = position;
             it.next().Traversal(new SingleRowTraversalAction() {
                 @Override
@@ -136,8 +137,9 @@ public abstract class AbstractSingleMemoryColumn<T> implements MemoryColumnFile<
 
     @Override
     public int getPositionOfGroup(int row, SingleUserNIOReadManager manager) {
-        if (groupPosition != null){
-            return groupPosition.get(row);
+        if (groupPosition != null) {
+            Integer value = groupPosition.get(row);
+           return processPosition(value);
         }
         T value = detail.get(row);
         for (int i = 0; i < getter.sizeOfGroup(); i++) {
@@ -149,7 +151,13 @@ public abstract class AbstractSingleMemoryColumn<T> implements MemoryColumnFile<
         return 0;
     }
 
-
+    protected int processPosition(Integer value){
+        if (value == null) {
+            return NIOConstant.INTEGER.NULL_VALUE;
+        } else {
+            return value;
+        }
+    }
     public ICubeColumnIndexReader createGroupByType(BIKey key, ValueConverter converter, Comparator comparator) {
         CubeTreeMap getter = new CubeTreeMap(comparator);
         Map<Object, IntArray> treeMap = new TreeMap<Object, IntArray>();
