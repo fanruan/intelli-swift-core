@@ -48,6 +48,7 @@ public class CubeRunner {
     private CubeBuildStuffComplete object;
     private static Set<String> cubeGeneratingTableSourceIDs;
     private static final Logger LOGGER = BILoggerFactory.getLogger(CubeRunner.class);
+    private CubeTask updatingCubeTask = null;
 
     public CubeRunner(long userId) {
         biUser = new BIUser(userId);
@@ -65,6 +66,7 @@ public class CubeRunner {
         cubeThread.setTraversal(new Traversal<CubeTask>() {
             @Override
             public void actionPerformed(CubeTask cubeTask) {
+                updatingCubeTask = cubeTask;
                 cubeGeneratingTableSourceIDs = cubeTask.getTaskTableSourceIds();
                 long start = System.currentTimeMillis();
                 setStatue(Status.WAITING);
@@ -87,6 +89,7 @@ public class CubeRunner {
                     LOGGER.info(BIDateUtils.getCurrentDateTime() + " Build OLAP database Cost:" + DateUtils.timeCostFrom(start));
                     cubeGeneratingTableSourceIDs.clear();
                     BIConfigureManagerCenter.getCubeConfManager().updatePackageLastModify();
+                    updatingCubeTask = null;
                 }
             }
         });
@@ -271,5 +274,9 @@ public class CubeRunner {
             i++;
         }
         return tableSourceIdsSet;
+    }
+
+    public CubeTask getUpdatingTask() {
+        return updatingCubeTask;
     }
 }

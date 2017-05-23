@@ -86,4 +86,6 @@ public interface BICubeManagerProvider {
     Set<String> getAllCubeWaiting2GenerateTableSouceIds(long userId);
 
     List<CubeBuildStuff> buildCustomTable(long userId, List<String> baseTableSourceIds, List<Integer> updateTypes);
+
+    CubeTask getUpdatingTask(long userId);
 }

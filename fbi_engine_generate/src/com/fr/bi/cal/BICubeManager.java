@@ -22,12 +22,8 @@ import com.fr.general.GeneralContext;
 import com.fr.stable.EnvChangedListener;
 import com.fr.stable.StringUtils;
 
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -245,10 +241,11 @@ public class BICubeManager implements BICubeManagerProvider {
     @Override
     public boolean cubeTaskBuild(long userId, String baseTableSourceId, int updateType) {
         try {
+            boolean result = true;
             if (StringUtils.isEmpty(baseTableSourceId)) {
                 CubeTask cubeTask = this.buildStaff(userId);
                 if (cubeTask != null) {
-                    addTask(cubeTask, userId);
+                    result = addTask(cubeTask, userId);
                 }
             } else {
                 addCustomTableTask2Queue(userId, Single2CollectionUtils.toList(baseTableSourceId),
@@ -257,7 +254,7 @@ public class BICubeManager implements BICubeManagerProvider {
             BIConfigureManagerCenter.getCubeConfManager().updatePackageLastModify();
             BIConfigureManagerCenter.getCubeConfManager().updateMultiPathLastCubeStatus(BIReportConstant.MULTI_PATH_STATUS.NOT_NEED_GENERATE_CUBE);
             BIConfigureManagerCenter.getCubeConfManager().persistData(userId);
-            return true;
+            return result;
         } catch (Exception e) {
             CubeGenerationManager.getCubeManager().setStatus(userId, Status.WRONG);
             LOGGER.error("FineIndex task build failed" + "\n" + e.getMessage(), e);
@@ -376,5 +373,11 @@ public class BICubeManager implements BICubeManagerProvider {
     @Override
     public List<CubeBuildStuff> buildCustomTable(long userId, List<String> baseTableSourceIds, List<Integer> updateTypes) {
         return customTaskBuilder.buildCustomTable(userId, baseTableSourceIds, updateTypes);
+    }
+
+    @Override
+    public CubeTask getUpdatingTask(long userId) {
+        SingleUserCubeManager singleUserCubeManager = getCubeManager(userId);
+        return singleUserCubeManager.getUpdatingTask();
     }
 }
