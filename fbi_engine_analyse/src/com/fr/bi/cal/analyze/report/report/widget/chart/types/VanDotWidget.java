@@ -253,9 +253,9 @@ public class VanDotWidget extends VanCartesianWidget{
 
                 List<String> desc = new ArrayList<String>();
 
-                for(int index = 0, count = longDateDesc.size(); index < count; index++){
+                for(int index = 0, count = childDescription.size(); index < count; index++){
                     BIDimension categoryDim = this.getCategoryDimension(index);
-                    desc.add(this.formatDimension(categoryDim, longDateDesc.get(index)));
+                    desc.add(this.formatDimension(categoryDim, childDescription.get(index)));
                 }
                 child.put("longDateDescription", longDateDesc);
                 child.put("description", desc);
