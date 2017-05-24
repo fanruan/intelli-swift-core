@@ -39,7 +39,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
-import java.util.*;
+import java.util.Calendar;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.TreeMap;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -49,7 +52,7 @@ import java.util.concurrent.TimeUnit;
  * @since 4.0
  */
 public class BIFieldIndexGenerator<T> extends BIProcessor {
-    private static final Logger LOGGER = LoggerFactory.getLogger(BIFieldIndexGenerator.class);
+    protected static final Logger LOGGER = LoggerFactory.getLogger(BIFieldIndexGenerator.class);
 
     protected CubeTableSource tableSource;
     protected ICubeFieldSource hostBICubeFieldSource;
@@ -71,7 +74,7 @@ public class BIFieldIndexGenerator<T> extends BIProcessor {
         initThreadPool();
     }
 
-    private void initial() {
+    protected void initial() {
         try {
             CubeTableEntityGetterService tableEntityService = cube.getCubeTable(new BITableKey(tableSource.getSourceID()));
             columnEntityService = (ICubeColumnEntityService<T>) tableEntityService.getColumnDataGetter(targetColumnKey);
@@ -81,7 +84,7 @@ public class BIFieldIndexGenerator<T> extends BIProcessor {
         }
     }
 
-    private String logFileInfo() {
+    protected String logFileInfo() {
         try {
             return BIStringUtils.append("The table:" + tableSource.getTableName(), " ", tableSource.getSourceID(), " the field:" + hostBICubeFieldSource.getFieldName());
         } catch (Exception e) {
@@ -104,12 +107,7 @@ public class BIFieldIndexGenerator<T> extends BIProcessor {
         Stopwatch stopwatch = Stopwatch.createStarted();
         biLogManager.logIndexStart(UserControl.getInstance().getSuperManagerID());
         try {
-            initial();
-            if (PerformancePlugManager.getInstance().isDiskSort()) {
-                buildTableIndexExternal();
-            } else {
-                buildTableIndex();
-            }
+            buildFieldIndex();
             LOGGER.info(BIStringUtils.append(logFileInfo(), " finish building field index main task,elapse:", String.valueOf(stopwatch.elapsed(TimeUnit.SECONDS)), " second"));
             BILogHelper.cacheCubeLogFieldNormalInfo(tableSource.getSourceID(), hostBICubeFieldSource.getFieldName(), BILogConstant.LOG_CACHE_TIME_TYPE.FIELD_INDEX_EXECUTE_END, System.currentTimeMillis());
             try {
@@ -131,6 +129,15 @@ public class BIFieldIndexGenerator<T> extends BIProcessor {
             throw BINonValueUtils.beyondControl(e.getMessage(), e);
         } finally {
             columnEntityService.forceReleaseWriter();
+        }
+    }
+
+    protected void buildFieldIndex(){
+        initial();
+        if (PerformancePlugManager.getInstance().isDiskSort()) {
+            buildTableIndexExternal();
+        } else {
+            buildTableIndex();
         }
     }
 
@@ -203,7 +210,7 @@ public class BIFieldIndexGenerator<T> extends BIProcessor {
         return groupValueIndex;
     }
 
-    private void constructMap(Map<T, IntList> map, IntList nullRowNumbers) {
+    protected void constructMap(Map<T, IntList> map, IntList nullRowNumbers) {
         LOGGER.info(BIStringUtils.append(logFileInfo(), " read detail data ,the row count:", String.valueOf(rowCount)));
         Stopwatch stopwatch = Stopwatch.createStarted();
         OriginValueGetter<T> getter;
@@ -262,7 +269,7 @@ public class BIFieldIndexGenerator<T> extends BIProcessor {
 
     }
 
-    private interface OriginValueGetter<T>{
+    protected interface OriginValueGetter<T>{
         T getOriginalObjectValueByRow(int row);
     }
 
