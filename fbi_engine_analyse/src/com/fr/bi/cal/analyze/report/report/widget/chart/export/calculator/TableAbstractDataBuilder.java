@@ -279,7 +279,6 @@ public abstract class TableAbstractDataBuilder implements IExcelDataBuilder {
                 for (String targetId : targetIds) {
                     BIBasicTableItem item = new BIBasicTableItem();
                     item.setValue(SUMMARY);
-                    item.setStyles(SummaryTableStyleHelper.getLastSummaryStyles(styleSetting.getThemeColor(), styleSetting.getTableStyleGroup()));
                     item.setDId(targetId);
                     crossItem.getChildren().add(item);
                     item.setSum(true);
@@ -414,18 +413,19 @@ public abstract class TableAbstractDataBuilder implements IExcelDataBuilder {
                     //合计
                     for (String targetId : targetIds) {
                         BITableHeader header = new BITableHeader();
-                        header.setText(SUMMARY + BITableExportDataHelper.getDimensionNameByID(dimAndTar, targetId));
-                        header.setTitle(SUMMARY + BITableExportDataHelper.getDimensionNameByID(dimAndTar, targetId));
+                        header.setText(SUMMARY + ":" + BITableExportDataHelper.getDimensionNameByID(dimAndTar, targetId));
+                        header.setTitle(SUMMARY + ":" + BITableExportDataHelper.getDimensionNameByID(dimAndTar, targetId));
                         header.setTag(UUID.randomUUID().toString());
                         header.setType("bi.page_table_cell");
-                        header.setStyles(SummaryTableStyleHelper.getHeaderStyles(styleSetting.getThemeColor(), styleSetting.getTableStyleGroup()));
                         headers.add(header);
                     }
                 }
             } else if (item.isSum()) {
                 //合计
+                //设置crossItem中的值
+                item.setValue(SUMMARY + ":" + BITableExportDataHelper.getDimensionNameByID(dimAndTar, item.getDId()));
                 BITableHeader header = new BITableHeader();
-                header.setText(SUMMARY + BITableExportDataHelper.getDimensionNameByID(dimAndTar, item.getDId()));
+                header.setText(SUMMARY + ":" + BITableExportDataHelper.getDimensionNameByID(dimAndTar, item.getDId()));
                 header.parseJson(item.createJSON());
                 headers.add(header);
             } else if (!(item.getValues() == null || item.getValues().size() == 0)) {
