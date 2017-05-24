@@ -4,6 +4,7 @@ import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.data.ICubeSourceReleaseManager;
 import com.finebi.cube.data.disk.NIOHandlerManager;
 import com.finebi.cube.data.input.primitive.ICubePrimitiveReader;
+import com.fr.bi.manager.PerformancePlugManager;
 
 import java.io.File;
 import java.io.IOException;
@@ -60,7 +61,7 @@ public abstract class BIAbstractBaseNIOReader implements ICubePrimitiveReader {
         return !isValid;
     }
 
-    protected abstract void unMap() throws IOException ;
+    protected abstract void unMap() throws IOException;
 
     @Override
     public void destroySource() {
@@ -73,7 +74,7 @@ public abstract class BIAbstractBaseNIOReader implements ICubePrimitiveReader {
                 //但愿10ms能 执行完get方法否则可能导致jvm崩溃
                 //锁太浪费资源了，10ms目前并没有遇到问题
                 //daniel:改成1ms，最垃圾的磁盘也读完了
-                Thread.currentThread().sleep(1);
+                Thread.currentThread().sleep(PerformancePlugManager.getInstance().getCubeReaderReleaseSleepTime());
             } catch (InterruptedException e) {
                 BILoggerFactory.getLogger(this.getClass()).error(e.getMessage(), e);
             }
@@ -103,15 +104,17 @@ public abstract class BIAbstractBaseNIOReader implements ICubePrimitiveReader {
             //先改变isValid状态再判断canClear
             isValid = false;
             setBufferInValid();
-            try {
-                //但愿10ms能 执行完get方法否则可能导致jvm崩溃
-                //锁太浪费资源了，10ms目前并没有遇到问题
-                //daniel:改成1ms，最垃圾的磁盘也读完了
-                Thread.currentThread().sleep(1);
-            } catch (InterruptedException e) {
-                BILoggerFactory.getLogger().error(e.getMessage(), e);
+            if(PerformancePlugManager.getInstance().isUnmapReader()) {
+                try {
+                    //但愿10ms能 执行完get方法否则可能导致jvm崩溃
+                    //锁太浪费资源了，10ms目前并没有遇到问题
+                    //daniel:改成1ms，最垃圾的磁盘也读完了
+                    Thread.currentThread().sleep(PerformancePlugManager.getInstance().getCubeReaderReleaseSleepTime());
+                } catch (InterruptedException e) {
+                    BILoggerFactory.getLogger().error(e.getMessage(), e);
+                }
+                unMap();
             }
-            unMap();
         } catch (IOException e) {
             BILoggerFactory.getLogger().error(e.getMessage(), e);
         } finally {
@@ -137,10 +140,12 @@ public abstract class BIAbstractBaseNIOReader implements ICubePrimitiveReader {
     public void setHandlerReleaseHelper(NIOHandlerManager releaseHelper) {
         this.nioHandlerManager = releaseHelper;
     }
+
     @Override
-    public NIOHandlerManager getHandlerReleaseHelper(){
+    public NIOHandlerManager getHandlerReleaseHelper() {
         return this.nioHandlerManager;
     }
+
     @Override
     public boolean canReader() {
         return isValid && baseFile.exists() && baseFile.length() > 0;

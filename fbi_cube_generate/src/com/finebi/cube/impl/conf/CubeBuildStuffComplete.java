@@ -1,12 +1,18 @@
 package com.finebi.cube.impl.conf;
 
 import com.finebi.cube.ICubeConfiguration;
+import com.finebi.cube.common.log.BILogger;
 import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.conf.AbstractCubeBuildStuff;
 import com.finebi.cube.conf.BICubeConfiguration;
 import com.finebi.cube.conf.BICubeConfigureCenter;
 import com.finebi.cube.conf.CalculateDependTool;
-import com.finebi.cube.relation.*;
+import com.finebi.cube.relation.BICubeGenerateRelation;
+import com.finebi.cube.relation.BICubeGenerateRelationPath;
+import com.finebi.cube.relation.BITableRelation;
+import com.finebi.cube.relation.BITableRelationPath;
+import com.finebi.cube.relation.BITableSourceRelation;
+import com.finebi.cube.relation.BITableSourceRelationPath;
 import com.finebi.cube.utils.BIDataStructTranUtils;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.conf.manager.update.source.UpdateSettingSource;
@@ -19,7 +25,12 @@ import com.fr.bi.stable.utils.program.BINonValueUtils;
 
 import java.io.File;
 import java.io.Serializable;
-import java.util.*;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * This class created on 2016/5/23.
@@ -34,6 +45,8 @@ public class CubeBuildStuffComplete extends AbstractCubeBuildStuff implements Se
      */
     private static final long serialVersionUID = -2315016175890907748L;
     private Set<CubeTableSource> allSingleSources;
+
+    private static BILogger LOGGER = BILoggerFactory.getLogger(CubeBuildStuffComplete.class);
 
     private Set<BITableSourceRelation> tableSourceRelationSet;
     private Set<BITableRelation> tableRelationSet;
@@ -101,7 +114,7 @@ public class CubeBuildStuffComplete extends AbstractCubeBuildStuff implements Se
                     set.add(tableSourceRelation);
                 }
             } catch (Exception e) {
-                BILoggerFactory.getLogger().error(e.getMessage(), e);
+                LOGGER.error(e.getMessage(), e);
                 continue;
             }
         }
@@ -118,7 +131,7 @@ public class CubeBuildStuffComplete extends AbstractCubeBuildStuff implements Se
                     set.add(relationPath);
                 }
             } catch (Exception e) {
-                BILoggerFactory.getLogger().error(e.getMessage(), e);
+                LOGGER.error(e.getMessage(), e);
             }
         }
         set = removeDuplicateRelationPaths(set);

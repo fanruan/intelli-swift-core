@@ -413,15 +413,21 @@ public class AnalysisBusiPackManager extends BISystemDataManager<SingleUserAnaly
             BILoggerFactory.getLogger(BISaveAnalysisETLTableAction.class).info("The added table is: " + logTable(table));
             BILoggerFactory.getLogger(BISaveAnalysisETLTableAction.class).info("*********Add AnalysisETL table*******");
         } catch (BIKeyDuplicateException e) {
-            BILoggerFactory.getLogger(this.getClass()).error(e.getMessage(), e);
+            LOGGER.error(e.getMessage(), e);
         }
-        refreshTables(getUsedTables(table, oriSource));
-        BIAnalysisETLManagerCenter.getUserETLCubeManagerProvider().refresh();
+        try {
+            refreshTables(getUsedTables(table, oriSource));
+            BIAnalysisETLManagerCenter.getUserETLCubeManagerProvider().refresh();
+        } catch (Throwable exception) {
+            LOGGER.error(BIStringUtils.append("analysisSource update failed cause refresh table failed", source.getSourceID(), exception.getMessage()), exception);
+        }
+
+        LOGGER.info("*********update packageLastModify*******");
         BIConfigureManagerCenter.getCubeConfManager().updatePackageLastModify();
         try {
             BIAnalysisETLManagerCenter.getUserETLCubeManagerProvider().checkTableIndex((AnalysisCubeTableSource) source, new BIUser(userId));
         } catch (Exception e) {
-            BILoggerFactory.getLogger().error(BIStringUtils.append("analysisSource update failed", source.getSourceID(), e.getMessage()), e);
+            LOGGER.error(BIStringUtils.append("analysisSource update failed", source.getSourceID(), e.getMessage()), e);
         }
         BIUserETLBusinessPackagePersistThreadHolder.getInstance().getBiBusinessPackagePersistThread().triggerWork(new BIBusinessPackagePersistThread.Action() {
             @Override

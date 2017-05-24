@@ -22,6 +22,7 @@ import com.fr.stable.StableUtils;
 import com.fr.stable.StringUtils;
 import com.fr.web.core.SessionDealWith;
 import com.fr.web.utils.WebUtils;
+import com.taobao.top.link.embedded.websocket.util.StringUtil;
 
 import javax.servlet.http.HttpServletRequest;
 import java.awt.*;
@@ -698,7 +699,7 @@ public abstract class VanChartWidget extends TableWidget {
                 double y = (s.isNull(0) ? 0 : s.getDouble(0)) / numberScale;
                 String formattedCategory = this.formatDimension(category, x);
                 data.put(
-                        JSONObject.create().put(categoryKey, formattedCategory).put(valueKey, y).put(LONG_DATE, this.getLongDate(formattedCategory, x))
+                        JSONObject.create().put(categoryKey, formattedCategory).put(valueKey, s.isNull(0) ? "-" : y).put(LONG_DATE, this.getLongDate(formattedCategory, x))
                 );
                 valueList.add(y);
             }
@@ -723,6 +724,11 @@ public abstract class VanChartWidget extends TableWidget {
 
     protected JSONArray createSeriesWithChildren(JSONObject originData) throws Exception {
         BIDimension category = this.getCategoryDimension(), seriesDim = this.getSeriesDimension();
+
+        if(seriesDim != null){
+            return this.createSeriesWithSeriesDimension(originData, seriesDim);
+        }
+
         JSONArray series = JSONArray.create();
         String[] targetIDs = this.getUsedTargetID();
         String[] dimensionIDs = this.getUsedDimensionID();
@@ -742,7 +748,7 @@ public abstract class VanChartWidget extends TableWidget {
                     double y = targetValues.isNull(i) ? 0 : targetValues.getDouble(i) / numberScale;
                     String formattedCategory = this.formatDimension(category, x);
                     data.put(
-                            JSONObject.create().put(categoryKey, formattedCategory).put(valueKey, y).put(LONG_DATE, ComparatorUtils.equals(formattedCategory, x) ? StringUtils.EMPTY : x)
+                            JSONObject.create().put(categoryKey, formattedCategory).put(valueKey, targetValues.isNull(i) ? "-" : y).put(LONG_DATE, ComparatorUtils.equals(formattedCategory, x) ? StringUtils.EMPTY : x)
                     );
                     valueList.add(y);
                 }
@@ -762,6 +768,44 @@ public abstract class VanChartWidget extends TableWidget {
             series.put(ser);
             this.idValueMap.put(id, valueList);
         }
+        return series;
+    }
+
+    //系列指标不为空的时候创建多个系列
+    protected JSONArray createSeriesWithSeriesDimension(JSONObject originData, BIDimension seriesDim) throws Exception{
+        JSONArray series = JSONArray.create();
+        String[] targetIDs = this.getUsedTargetID();
+        String[] dimensionIDs = this.getUsedDimensionID();
+        String categoryKey = this.categoryKey(), valueKey = this.valueKey();
+        JSONArray children = originData.optJSONArray("c");
+        for (int i = 0, len = targetIDs.length; i < len; i++) {
+            String id = targetIDs[i], type = this.getSeriesType(id);
+            int yAxis = this.yAxisIndex(id);
+            ArrayList<Double> valueList = new ArrayList<Double>();
+            double numberScale = this.numberScale(id);
+            if(children != null) {
+                for (int j = 0, count = children.length(); j < count; j++) {
+                    JSONObject lObj = children.getJSONObject(j);
+                    String seriesName = lObj.getString("n");
+                    String formattedName = this.formatDimension(seriesDim, seriesName);
+                    JSONArray targetValues = lObj.getJSONArray("s");
+                    double y = targetValues.isNull(i) ? 0 : targetValues.getDouble(i) / numberScale;
+
+                    JSONObject datum = JSONObject.create().put(categoryKey, StringUtils.EMPTY).put(valueKey, targetValues.isNull(i) ? "-" : y);
+
+                    JSONObject ser = JSONObject.create().put("data", JSONArray.create().put(datum)).put("name", getDimensionNameByID(id))
+                            .put("type", type).put("yAxis", yAxis)
+                            .put("dimensionIDs", dimensionIDs)
+                            .put("targetIDs", JSONArray.create().put(id))
+                            .put("name", formattedName).put(LONG_DATE, this.getLongDate(formattedName, seriesName));
+                    series.put(ser);
+                    valueList.add(y);
+                }
+            }
+
+            this.idValueMap.put(id, valueList);
+        }
+
         return series;
     }
 

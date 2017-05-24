@@ -1,11 +1,12 @@
 package com.finebi.cube.map.map2;
 
+import com.finebi.cube.common.log.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.map.ExternalMapIO;
 import com.fr.bi.stable.io.newio.NIOReader;
 import com.fr.bi.stable.io.newio.NIOWriter;
 import com.fr.bi.stable.io.newio.read.IntNIOReader;
 import com.fr.bi.stable.io.newio.write.IntNIOWriter;
-import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.stable.collections.array.IntArray;
 
 import java.io.File;
@@ -27,6 +28,8 @@ public abstract class ExternalMapIOIntArrayList<K> implements ExternalMapIO<K, I
     protected NIOWriter<K> keyWriter = null;
     protected NIOReader<K> keyReader = null;
     protected int size;
+    private static BILogger LOGGER = BILoggerFactory.getLogger(ExternalMapIOIntArrayList.class);
+    
 
     public ExternalMapIOIntArrayList(String ID_path) {
         String intPath = getValuePath(ID_path);
@@ -62,7 +65,7 @@ public abstract class ExternalMapIOIntArrayList<K> implements ExternalMapIO<K, I
                     file.createNewFile();
                 }
             } catch (Exception ex) {
-                BILoggerFactory.getLogger().error(ex.getMessage(), ex);
+                LOGGER.error(ex.getMessage(), ex);
             }
         }
         return file;
@@ -177,12 +180,12 @@ public abstract class ExternalMapIOIntArrayList<K> implements ExternalMapIO<K, I
         try {
             getValueReader().clear();
         } catch (FileNotFoundException ex) {
-            BILoggerFactory.getLogger().error(ex.getMessage(), ex);
+            LOGGER.error(ex.getMessage(), ex);
         }
         try {
             getKeyReader().clear();
         } catch (FileNotFoundException ex) {
-            BILoggerFactory.getLogger().error(ex.getMessage(), ex);
+            LOGGER.error(ex.getMessage(), ex);
         }
         getKeyWriter().clear();
     }

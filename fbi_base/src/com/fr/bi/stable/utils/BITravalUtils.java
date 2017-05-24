@@ -25,6 +25,9 @@ public class BITravalUtils {
     public static <T extends NameProvider> T getTargetByName(String name, T[] targets) {
         for (int i = 0, len = targets.length; i < len; i++) {
             NameProvider t = targets[i];
+            if(t == null){
+                continue;
+            }
             if (ComparatorUtils.equals(t.getValue(), name)) {
                 return targets[i];
             }

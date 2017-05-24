@@ -15,6 +15,7 @@ import com.fr.bi.stable.constant.CellConstant;
 import com.fr.bi.stable.data.db.BIRowValue;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.finebi.cube.common.log.BILoggerFactory;
+import com.fr.bi.stable.utils.BICollectionUtils;
 import com.fr.general.DateUtils;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONException;
@@ -108,7 +109,7 @@ public class DetailExecutor extends AbstractDetailExecutor {
                 }
                 JSONArray jsonArray = new JSONArray();
                 for (int i = 0; i < row.getValues().length; i++) {
-                    jsonArray.put(dimensions[i].createShowValue(row.getValues()[i]));
+                    jsonArray.put(BICollectionUtils.cubeValueToWebDisplay(dimensions[i].createShowValue(row.getValues()[i])));
                 }
                 ja.put(jsonArray);
                 return false;

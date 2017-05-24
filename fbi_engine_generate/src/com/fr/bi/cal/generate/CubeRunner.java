@@ -48,6 +48,7 @@ public class CubeRunner {
     private CubeBuildStuffComplete object;
     private static Set<String> cubeGeneratingTableSourceIDs;
     private static final Logger LOGGER = BILoggerFactory.getLogger(CubeRunner.class);
+    private CubeTask updatingCubeTask = null;
 
     public CubeRunner(long userId) {
         biUser = new BIUser(userId);
@@ -65,19 +66,19 @@ public class CubeRunner {
         cubeThread.setTraversal(new Traversal<CubeTask>() {
             @Override
             public void actionPerformed(CubeTask cubeTask) {
+                updatingCubeTask = cubeTask;
+                cubeGeneratingTableSourceIDs = cubeTask.getTaskTableSourceIds();
                 long start = System.currentTimeMillis();
                 setStatue(Status.WAITING);
                 start();
                 try {
                     setStatue(Status.START);
-                    cubeGeneratingTableSourceIDs = cubeTask.getTaskTableSourceIds();
                     cubeTask.start();
                     setStatue(Status.LOADING);
                     cubeTask.run();
                     setStatue(Status.LOADED);
                     setStatue(Status.REPLACING);
                     cubeTask.end();
-                    cubeGeneratingTableSourceIDs.clear();
                     setStatue(Status.END);
                 } catch (Exception e) {
                     LOGGER.error(e.getMessage(), e);
@@ -86,6 +87,9 @@ public class CubeRunner {
                     finish(cubeTask);
                     setStatue(Status.NULL);
                     LOGGER.info(BIDateUtils.getCurrentDateTime() + " Build OLAP database Cost:" + DateUtils.timeCostFrom(start));
+                    cubeGeneratingTableSourceIDs.clear();
+                    BIConfigureManagerCenter.getCubeConfManager().updatePackageLastModify();
+                    updatingCubeTask = null;
                 }
             }
         });
@@ -187,7 +191,7 @@ public class CubeRunner {
             @Override
             public void run() {
                 //生成完cube预读一次
-                for (BusinessTable table : BICubeConfigureCenter.getPackageManager().getAnalysisAllTables(biUser.getUserId())){
+                for (BusinessTable table : BICubeConfigureCenter.getPackageManager().getAnalysisAllTables(biUser.getUserId())) {
                     CubeReadingTableIndexLoader.getInstance(biUser.getUserId()).getTableIndex(table.getTableSource());
                 }
             }
@@ -270,5 +274,9 @@ public class CubeRunner {
             i++;
         }
         return tableSourceIdsSet;
+    }
+
+    public CubeTask getUpdatingTask() {
+        return updatingCubeTask;
     }
 }

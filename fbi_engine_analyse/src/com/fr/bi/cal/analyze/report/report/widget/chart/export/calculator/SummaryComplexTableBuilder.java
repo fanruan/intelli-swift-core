@@ -1,9 +1,10 @@
 package com.fr.bi.cal.analyze.report.report.widget.chart.export.calculator;
 
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.item.BIBasicTableItem;
-import com.fr.bi.cal.analyze.report.report.widget.chart.export.item.BITableDataConstructor;
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.item.ITableHeader;
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.item.ITableItem;
+import com.fr.bi.cal.analyze.report.report.widget.chart.export.item.constructor.BISummaryDataConstructor;
+import com.fr.bi.cal.analyze.report.report.widget.chart.export.item.constructor.DataConstructor;
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.utils.BITableExportDataHelper;
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.utils.SummaryTableStyleHelper;
 import com.fr.bi.conf.report.widget.IWidgetStyle;
@@ -248,7 +249,7 @@ public class SummaryComplexTableBuilder extends TableAbstractDataBuilder {
     private List<ITableItem> createTempItems(List<ITableItem> tempCrossItems, int i, JSONObject rowValues, JSONObject tableData, int j) throws Exception {
         //parse一个表结构
         Map<Integer, List<JSONObject>> dimAndTar = getDimsByDataPos(i, j);
-        BITableDataConstructor singleTable = createSingleCrossTableItems(tableData, dimAndTar);
+        DataConstructor singleTable = createSingleCrossTableItems(tableData, dimAndTar);
         for (int k = 0; k < singleTable.getItems().size(); k++) {
             putNewValuesIntoRowTables(singleTable.getItems().get(k), rowValues, "");
         }
@@ -390,12 +391,12 @@ public class SummaryComplexTableBuilder extends TableAbstractDataBuilder {
         return dimAndTars;
     }
 
-    private BITableDataConstructor createSingleCrossTableItems(JSONObject tableData, Map<Integer, List<JSONObject>> dimsByDataPos) throws Exception {
+    private DataConstructor createSingleCrossTableItems(JSONObject tableData, Map<Integer, List<JSONObject>> dimsByDataPos) throws Exception {
         SummaryCrossTableDataBuilder builder = new SummaryCrossTableDataBuilder(dimsByDataPos, tableData, this.styleSetting);
         builder.initAttrs();
         builder.createHeaders();
         builder.createItems();
-        BITableDataConstructor data = builder.createTableData();
+        DataConstructor data = builder.createTableData();
         return data;
     }
 
@@ -426,8 +427,8 @@ public class SummaryComplexTableBuilder extends TableAbstractDataBuilder {
     }
 
     @Override
-    public BITableDataConstructor createTableData() throws JSONException {
-        BITableDataConstructor tableDataForExport = new BITableDataConstructor(headers, items, crossHeaders, crossItems, this.styleSetting);
+    public DataConstructor createTableData() throws JSONException {
+        DataConstructor tableDataForExport = new BISummaryDataConstructor(headers, items, crossHeaders, crossItems, this.styleSetting);
         return tableDataForExport;
     }
 
@@ -442,11 +443,11 @@ public class SummaryComplexTableBuilder extends TableAbstractDataBuilder {
                     if (dIdJson.optBoolean("used")) {
                         temp.put(dIdJson.getString("dId"));
                     }
-                    if (temp.length() > 0) {
-                        rowRegions.add(temp);
-                    }
-
                 }
+                if (temp.length() > 0) {
+                    rowRegions.add(temp);
+                }
+
             }
         }
         return rowRegions;
