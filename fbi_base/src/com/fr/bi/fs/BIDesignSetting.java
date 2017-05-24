@@ -1,5 +1,6 @@
 package com.fr.bi.fs;
 
+import com.finebi.ProductConstants;
 import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.stable.report.update.ReportSettingUpdateManager;
 import com.fr.json.JSONException;
@@ -19,6 +20,14 @@ public class BIDesignSetting implements XMLable, XMLFileReader {
 
     public BIDesignSetting(String reportSetting) {
         this.reportSetting = reportSetting;
+    }
+
+    public void updateLastModifyTime() {
+        try {
+            reportSetting = new JSONObject(reportSetting).put("lastModifyTime", ProductConstants.getReleaseDate()).toString();
+        } catch (JSONException e) {
+            BILoggerFactory.getLogger(this.getClass()).error(e.getMessage(), e);
+        }
     }
 
     public BIDesignSetting() {
