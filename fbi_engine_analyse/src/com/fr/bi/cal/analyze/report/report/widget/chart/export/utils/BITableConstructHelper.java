@@ -65,15 +65,19 @@ public class BITableConstructHelper {
                     it.setStyles(SummaryTableStyleHelper.getBodyStyles(style.getThemeColor(), style.getTableStyleGroup(), rowIndex));
                     if (null != ops.get(it.getDId())) {
                         it.setText(ops.get(it.getDId()).formatValues(it.getValue()));
-                        it.setValue(ops.get(it.getDId()).formatValues(it.getValue()));
+//                        it.setValue(ops.get(it.getDId()).formatValues(it.getValue()));
                     }
 //                    traversalCrossItems(it, ops);
                 }
             }
-            if (item.getValue() != null && item.getDId() != null) {
-                item.setStyles(SummaryTableStyleHelper.getBodyStyles(style.getThemeColor(), style.getTableStyleGroup(), rowIndex));
-                item.setText(ops.get(item.getDId()).formatValues(item.getValue()));
-                item.setValue(ops.get(item.getDId()).formatValues(item.getValue()));
+            if (item.getValue() != null) {
+                if (item.getDId() != null) {
+                    item.setStyles(SummaryTableStyleHelper.getBodyStyles(style.getThemeColor(), style.getTableStyleGroup(), rowIndex));
+                    item.setText(ops.get(item.getDId()).formatValues(item.getValue()));
+//                    item.setValue(ops.get(item.getDId()).formatValues(item.getValue()));
+                } else {
+                    item.setText(item.getValue());
+                }
             }
 /*
 * 第一列换行
@@ -94,7 +98,7 @@ public class BITableConstructHelper {
             for (ITableItem it : item.getValues()) {
                 if (null != ops.get(it.getDId())) {
                     it.setText(ops.get(it.getDId()).formatValues(it.getValue()));
-                    it.setValue(ops.get(it.getDId()).formatValues(it.getValue()));
+//                    it.setValue(ops.get(it.getDId()).formatValues(it.getValue()));
                 }
 //                traversalCrossItems(it, ops);
             }
@@ -103,7 +107,7 @@ public class BITableConstructHelper {
         if (item.getValue() != null && item.getDId() != null) {
             if (null != ops.get(item.getDId())) {
                 item.setText(ops.get(item.getDId()).formatValues(item.getValue()));
-                item.setValue(ops.get(item.getDId()).formatValues(item.getValue()));
+//                item.setValue(ops.get(item.getDId()).formatValues(item.getValue()));
             }
         } else {
             item.setText(item.getValue());
