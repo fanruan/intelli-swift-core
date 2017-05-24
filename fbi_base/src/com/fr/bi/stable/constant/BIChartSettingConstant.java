@@ -167,7 +167,7 @@ public class BIChartSettingConstant {
     public static final class DATA_LABEL {
         public static final int POSITION_INNER = 1;
         public static final int POSITION_OUTER = 2;
-        public static final int POSITION_CENTER = 2;
+        public static final int POSITION_CENTER = 3;
     }
 
     public static final class ACCUMULATE_TYPE {
