@@ -1,6 +1,6 @@
 package com.fr.bi.cal.analyze.report.report.widget.chart.export.calculator;
 
-import com.fr.bi.cal.analyze.report.report.widget.chart.export.item.BITableDataConstructor;
+import com.fr.bi.cal.analyze.report.report.widget.chart.export.item.constructor.DataConstructor;
 import com.fr.json.JSONException;
 
 /**
@@ -17,5 +17,5 @@ public interface IExcelDataBuilder {
 
     void createItems() throws Exception;
 
-    BITableDataConstructor createTableData() throws JSONException;
+    DataConstructor createTableData() throws JSONException;
 }

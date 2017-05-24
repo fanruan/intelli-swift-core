@@ -188,4 +188,8 @@ public class CubeReadingTableIndexLoader implements ICubeDataLoader {
         return 0;
     }
 
+    public void clearUserCubeDataLoader() {
+        userMap.remove(user.getUserId());
+    }
+
 }

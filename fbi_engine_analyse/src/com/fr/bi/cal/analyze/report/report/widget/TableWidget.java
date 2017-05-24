@@ -21,7 +21,7 @@ import com.fr.bi.cal.analyze.report.report.widget.chart.export.format.operation.
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.format.operation.ITableCellFormatOperation;
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.format.setting.BICellFormatSetting;
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.format.setting.ICellFormatSetting;
-import com.fr.bi.cal.analyze.report.report.widget.chart.export.item.BITableDataConstructor;
+import com.fr.bi.cal.analyze.report.report.widget.chart.export.item.constructor.DataConstructor;
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.utils.BITableConstructHelper;
 import com.fr.bi.cal.analyze.report.report.widget.style.BITableWidgetStyle;
 import com.fr.bi.cal.analyze.report.report.widget.table.BITableReportSetting;
@@ -533,7 +533,7 @@ public class TableWidget extends BISummaryWidget {
                 builder = new SummaryComplexTableBuilder(viewMap, dataJSON, style);
                 break;
         }
-        BITableDataConstructor data = BITableConstructHelper.buildTableData(builder);
+        DataConstructor data = BITableConstructHelper.buildTableData(builder);
         BITableConstructHelper.formatCells(data, getITableCellFormatOperationMap(), style);
         return data.createJSON().put("page", res.getJSONArray("page")).put("dimensionLength",dimensions.length);
     }
