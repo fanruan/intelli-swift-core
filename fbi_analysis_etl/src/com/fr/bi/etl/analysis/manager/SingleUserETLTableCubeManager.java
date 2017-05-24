@@ -4,7 +4,6 @@
 package com.fr.bi.etl.analysis.manager;
 
 import com.finebi.cube.api.ICubeTableService;
-import com.finebi.cube.common.log.BILogger;
 import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.common.inter.BrokenTraversal;
 import com.fr.bi.common.inter.Release;
@@ -17,7 +16,6 @@ import com.fr.bi.stable.structure.queue.ThreadUnitedQueue;
 import com.fr.bi.stable.utils.file.BIFileUtils;
 import com.fr.bi.util.BIConfigurePathUtils;
 import com.fr.general.ComparatorUtils;
-import com.fr.general.FRLogger;
 import com.fr.stable.StringUtils;
 
 import java.io.File;
@@ -188,6 +186,10 @@ public class SingleUserETLTableCubeManager implements Release {
 			updateTask = null;
 		}
 		tq.clear();
+	}
+
+	public boolean isError(){
+		return isError;
 	}
 	
 }

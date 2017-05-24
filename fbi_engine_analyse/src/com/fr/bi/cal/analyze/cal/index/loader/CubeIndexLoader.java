@@ -600,11 +600,22 @@ public class CubeIndexLoader {
         widget.setPageSpinner(isHor ? BIReportConstant.TABLE_PAGE.HORIZON_PRE : BIReportConstant.TABLE_PAGE.VERTICAL_PRE, info.isHasPre());
         widget.setPageSpinner(isHor ? BIReportConstant.TABLE_PAGE.HORIZON_NEXT : BIReportConstant.TABLE_PAGE.VERTICAL_NEXT, info.isHasNext());
         widget.setPageSpinner(BIReportConstant.TABLE_PAGE.TOTAL_PAGE, info.getPage());
+        setNodeFrameDeep(n, widget);
         calCalculateMetrics(usedTargets, n);
         if (n == null) {
             n = new Node(allSumTarget.length);
         }
         return n;
+    }
+
+    private void setNodeFrameDeep(Node n, BISummaryWidget widget) {
+        int count = 0;
+        for (BIDimension dimension : widget.getDimensions()) {
+            if (dimension.isUsed()) {
+                count++;
+            }
+        }
+        n.setFrameDeep(count);
     }
 
     /**

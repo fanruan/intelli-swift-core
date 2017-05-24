@@ -29,6 +29,10 @@ public class VanPercentStackedColumnWidget extends VanStackedColumnWidget{
         return series;
     }
 
+    protected double numberScale(String dimensionID) {
+        return 1;
+    }
+
     protected JSONObject parseLeftValueAxis(JSONObject settings) throws JSONException{
         JSONObject left = super.parseLeftValueAxis(settings);
 

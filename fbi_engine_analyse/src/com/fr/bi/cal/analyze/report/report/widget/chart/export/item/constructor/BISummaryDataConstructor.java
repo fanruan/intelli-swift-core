@@ -1,8 +1,10 @@
-package com.fr.bi.cal.analyze.report.report.widget.chart.export.item;
+package com.fr.bi.cal.analyze.report.report.widget.chart.export.item.constructor;
 
+import com.fr.bi.cal.analyze.report.report.widget.chart.export.item.ITableHeader;
+import com.fr.bi.cal.analyze.report.report.widget.chart.export.item.ITableItem;
+import com.fr.bi.conf.report.WidgetType;
 import com.fr.bi.conf.report.widget.IWidgetStyle;
 import com.fr.json.JSONArray;
-import com.fr.json.JSONCreator;
 import com.fr.json.JSONObject;
 
 import java.util.List;
@@ -11,25 +13,26 @@ import java.util.List;
  * Created by Kary on 2017/2/13.
  * todo 少用json
  */
-public class BITableDataConstructor implements JSONCreator {
-    private List<ITableHeader> headers;
-    private List<ITableItem> items;
+public class BISummaryDataConstructor implements DataConstructor {
+    protected int widgetType = WidgetType.TABLE.getType();
+    protected List<ITableHeader> headers;
+    protected List<ITableItem> items;
     private List<ITableHeader> crossHeaders;
     private List<ITableItem> crossItems;
-    private IWidgetStyle widgetStyle;
+    private IWidgetStyle settings;
 
-    public BITableDataConstructor(List<ITableHeader> headers, List<ITableItem> items, List<ITableHeader> crossHeaders, List<ITableItem> crossItems, IWidgetStyle widgetStyle) {
+    public BISummaryDataConstructor(List<ITableHeader> headers, List<ITableItem> items, List<ITableHeader> crossHeaders, List<ITableItem> crossItems, IWidgetStyle widgetStyle) {
         this.headers = headers;
         this.items = items;
         this.crossHeaders = crossHeaders;
         this.crossItems = crossItems;
-        this.widgetStyle = widgetStyle;
+        this.settings = widgetStyle;
     }
 
-    public BITableDataConstructor(List<ITableHeader> headers, List<ITableItem> items, IWidgetStyle widgetStyle) {
+    public BISummaryDataConstructor(List<ITableHeader> headers, List<ITableItem> items, IWidgetStyle widgetStyle) {
         this.headers = headers;
         this.items = items;
-        this.widgetStyle = widgetStyle;
+        this.settings = widgetStyle;
     }
 
     @Override
@@ -61,30 +64,40 @@ public class BITableDataConstructor implements JSONCreator {
             }
             jo.put("crossItems", itemArray);
         }
-        if (null != widgetStyle) {
-            jo.put("widgetStyle", widgetStyle.createJSON());
+        if (null != settings) {
+            jo.put("settings", settings.createJSON());
         }
+        jo.put("widgetType", widgetType);
         return jo;
     }
 
+    @Override
+    public int getWidgetType() {
+        return this.widgetType;
+    }
 
+    @Override
     public List<ITableHeader> getHeaders() {
         return headers;
     }
 
+    @Override
     public List<ITableItem> getItems() {
         return items;
     }
 
+    @Override
     public List<ITableHeader> getCrossHeaders() {
         return crossHeaders;
     }
 
+    @Override
     public List<ITableItem> getCrossItems() {
         return crossItems;
     }
 
+    @Override
     public IWidgetStyle getWidgetStyle() {
-        return widgetStyle;
+        return settings;
     }
 }

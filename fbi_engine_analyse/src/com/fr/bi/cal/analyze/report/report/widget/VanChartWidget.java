@@ -8,6 +8,7 @@ import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.conf.session.BISessionProvider;
 import com.fr.bi.field.target.target.BISummaryTarget;
 import com.fr.bi.stable.constant.BIBaseConstant;
+import com.fr.bi.stable.constant.BIChartSettingConstant;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.constant.BIStyleConstant;
 import com.fr.bi.tool.BIReadReportUtils;
@@ -21,6 +22,7 @@ import com.fr.stable.StableUtils;
 import com.fr.stable.StringUtils;
 import com.fr.web.core.SessionDealWith;
 import com.fr.web.utils.WebUtils;
+import com.taobao.top.link.embedded.websocket.util.StringUtil;
 
 import javax.servlet.http.HttpServletRequest;
 import java.awt.*;
@@ -53,25 +55,11 @@ public abstract class VanChartWidget extends TableWidget {
 
     public static final String LONG_DATE = "longDate";
 
-    //兼容前台用数字表示位置的写法，真xx丑
-    private static final int TOP = 2;
-    private static final int RIGHT = 3;
-    private static final int BOTTOM = 4;
-    private static final int LEFT = 5;
-
-    //标签位置
-    private static final int POSITION_INNER = 1;
-    private static final int POSITION_OUTER = 2;
-    private static final int POSITION_CENTER = 3;
-
     private static final int TARGET = 30000;
     private static final int TARGET_BASE = 10000;
 
     private static final String PERCENT_SYMBOL = "%";
     private static final String WHITE = "#ffffff";
-
-    private static final int STYLE_NORMAL = 1; //普通风格
-    private static final int STYLE_GRADUAL = 2; //渐变风格
 
     private static final int WEEK_COUNT = 52;
     private static final int MONTH_COUNT = 12;
@@ -425,9 +413,9 @@ public abstract class VanChartWidget extends TableWidget {
     }
 
     protected String dataLabelAlign(int position) {
-        if (position == POSITION_OUTER) {
+        if (position == BIChartSettingConstant.DATA_LABEL.POSITION_OUTER) {
             return "outside";
-        } else if (position == POSITION_INNER) {
+        } else if (position == BIChartSettingConstant.DATA_LABEL.POSITION_INNER) {
             return "inside";
         }
         return "center";
@@ -435,9 +423,10 @@ public abstract class VanChartWidget extends TableWidget {
 
     private JSONObject defaultDataLabelSetting() throws JSONException {
 
-        return JSONObject.create().put("showCategoryName", true)
-                .put("showSeriesName", true).put("showValue", true).put("showPercentage", false)
-                .put("position", POSITION_OUTER).put("showTractionLine", false)
+        //兼容4.0,勾选标签的时候只有值
+        return JSONObject.create().put("showCategoryName", false)
+                .put("showSeriesName", false).put("showValue", true).put("showPercentage", false)
+                .put("position", BIChartSettingConstant.DATA_LABEL.POSITION_OUTER).put("showTractionLine", true)
                 .put("textStyle", defaultFont());
 
     }
@@ -455,8 +444,10 @@ public abstract class VanChartWidget extends TableWidget {
         JSONObject settings = JSONObject.create();
 
         //图例
-        settings.put("legend", BOTTOM)
+        settings.put("legend", BIChartSettingConstant.CHART_LEGENDS.BOTTOM)
                 .put("legendStyle", this.defaultFont());
+
+        settings.put("clickZoom", true);
 
         return settings;
     }
@@ -535,7 +526,7 @@ public abstract class VanChartWidget extends TableWidget {
     }
 
     private String parseStyle(JSONObject settings, JSONObject globalStyle, JSONObject plateConfig) throws JSONException {
-        int style = STYLE_NORMAL;
+        int style = BIChartSettingConstant.CHART_STYLE.STYLE_NORMAL;
         try {
             if (settings.has("chartStyle")) {
                 style = settings.optInt("chartStyle");
@@ -547,7 +538,7 @@ public abstract class VanChartWidget extends TableWidget {
         } catch (Exception e) {
             BILoggerFactory.getLogger(this.getClass()).error(e.getMessage(), e);
         }
-        return style == STYLE_GRADUAL ? "gradual" : "normal";
+        return style == BIChartSettingConstant.CHART_STYLE.STYLE_GRADUAL ? "gradual" : "normal";
     }
 
     protected String tooltipValueFormat(BISummaryTarget dimension) {
@@ -619,7 +610,10 @@ public abstract class VanChartWidget extends TableWidget {
     }
 
     protected void formatSeriesTooltipFormat(JSONObject options) throws Exception {
+        this.defaultFormatSeriesTooltipFormat(options);
+    }
 
+    protected void defaultFormatSeriesTooltipFormat(JSONObject options) throws Exception {
         JSONObject tooltip = options.optJSONObject("plotOptions").optJSONObject("tooltip");
 
         JSONArray series = options.optJSONArray("series");
@@ -650,6 +644,10 @@ public abstract class VanChartWidget extends TableWidget {
     }
 
     protected void formatSeriesDataLabelFormat(JSONObject options) throws Exception {
+        this.defaultFormatSeriesDataLabelFormat(options);
+    }
+
+    protected void defaultFormatSeriesDataLabelFormat(JSONObject options) throws Exception {
         JSONObject dataLabels = options.optJSONObject("plotOptions").optJSONObject(dataLabelsKey());
 
         if (dataLabels.optBoolean("enabled")) {
@@ -709,7 +707,7 @@ public abstract class VanChartWidget extends TableWidget {
                 double y = (s.isNull(0) ? 0 : s.getDouble(0)) / numberScale;
                 String formattedCategory = this.formatDimension(category, x);
                 data.put(
-                        JSONObject.create().put(categoryKey, formattedCategory).put(valueKey, y).put(LONG_DATE, this.getLongDate(formattedCategory, x))
+                        JSONObject.create().put(categoryKey, formattedCategory).put(valueKey, s.isNull(0) ? "-" : y).put(LONG_DATE, this.getLongDate(formattedCategory, x))
                 );
                 valueList.add(y);
             }
@@ -734,6 +732,11 @@ public abstract class VanChartWidget extends TableWidget {
 
     protected JSONArray createSeriesWithChildren(JSONObject originData) throws Exception {
         BIDimension category = this.getCategoryDimension(), seriesDim = this.getSeriesDimension();
+
+        if(seriesDim != null){
+            return this.createSeriesWithSeriesDimension(originData, seriesDim);
+        }
+
         JSONArray series = JSONArray.create();
         String[] targetIDs = this.getUsedTargetID();
         String[] dimensionIDs = this.getUsedDimensionID();
@@ -753,7 +756,7 @@ public abstract class VanChartWidget extends TableWidget {
                     double y = targetValues.isNull(i) ? 0 : targetValues.getDouble(i) / numberScale;
                     String formattedCategory = this.formatDimension(category, x);
                     data.put(
-                            JSONObject.create().put(categoryKey, formattedCategory).put(valueKey, y).put(LONG_DATE, ComparatorUtils.equals(formattedCategory, x) ? StringUtils.EMPTY : x)
+                            JSONObject.create().put(categoryKey, formattedCategory).put(valueKey, targetValues.isNull(i) ? "-" : y).put(LONG_DATE, ComparatorUtils.equals(formattedCategory, x) ? StringUtils.EMPTY : x)
                     );
                     valueList.add(y);
                 }
@@ -773,6 +776,44 @@ public abstract class VanChartWidget extends TableWidget {
             series.put(ser);
             this.idValueMap.put(id, valueList);
         }
+        return series;
+    }
+
+    //系列指标不为空的时候创建多个系列
+    protected JSONArray createSeriesWithSeriesDimension(JSONObject originData, BIDimension seriesDim) throws Exception{
+        JSONArray series = JSONArray.create();
+        String[] targetIDs = this.getUsedTargetID();
+        String[] dimensionIDs = this.getUsedDimensionID();
+        String categoryKey = this.categoryKey(), valueKey = this.valueKey();
+        JSONArray children = originData.optJSONArray("c");
+        for (int i = 0, len = targetIDs.length; i < len; i++) {
+            String id = targetIDs[i], type = this.getSeriesType(id);
+            int yAxis = this.yAxisIndex(id);
+            ArrayList<Double> valueList = new ArrayList<Double>();
+            double numberScale = this.numberScale(id);
+            if(children != null) {
+                for (int j = 0, count = children.length(); j < count; j++) {
+                    JSONObject lObj = children.getJSONObject(j);
+                    String seriesName = lObj.getString("n");
+                    String formattedName = this.formatDimension(seriesDim, seriesName);
+                    JSONArray targetValues = lObj.getJSONArray("s");
+                    double y = targetValues.isNull(i) ? 0 : targetValues.getDouble(i) / numberScale;
+
+                    JSONObject datum = JSONObject.create().put(categoryKey, StringUtils.EMPTY).put(valueKey, targetValues.isNull(i) ? "-" : y);
+
+                    JSONObject ser = JSONObject.create().put("data", JSONArray.create().put(datum)).put("name", getDimensionNameByID(id))
+                            .put("type", type).put("yAxis", yAxis)
+                            .put("dimensionIDs", dimensionIDs)
+                            .put("targetIDs", JSONArray.create().put(id))
+                            .put("name", formattedName).put(LONG_DATE, this.getLongDate(formattedName, seriesName));
+                    series.put(ser);
+                    valueList.add(y);
+                }
+            }
+
+            this.idValueMap.put(id, valueList);
+        }
+
         return series;
     }
 
@@ -935,16 +976,16 @@ public abstract class VanChartWidget extends TableWidget {
         int legend = settings.optInt("legend");
         String position = "top";
 
-        if (legend == RIGHT) {
+        if (legend == BIChartSettingConstant.CHART_LEGENDS.RIGHT) {
             position = "right";
-        } else if (legend == BOTTOM) {
+        } else if (legend == BIChartSettingConstant.CHART_LEGENDS.BOTTOM) {
             position = "bottom";
-        } else if (legend == LEFT) {
+        } else if (legend == BIChartSettingConstant.CHART_LEGENDS.LEFT) {
             position = "left";
         }
 
         return JSONObject.create()
-                .put("enabled", legend >= TOP)
+                .put("enabled", legend >= BIChartSettingConstant.CHART_LEGENDS.TOP)
                 .put("position", position)
                 .put("style", settings.optJSONObject("legendStyle"));
     }

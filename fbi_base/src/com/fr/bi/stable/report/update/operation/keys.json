@@ -8,6 +8,7 @@
   "fieldId": "字段ID (field_id)",
   "tableId": "表ID (table_id)",
   "packageId": "业务包ID (package_id)",
+  "dashboardChartType": "仪表盘类型 (chartDashboardType)",
 
   "fieldType": "字段类型 (field_type)",
   "fieldName": "字段名 (field_type)",
@@ -61,6 +62,8 @@
 
   "summaryType": "计算指标类型1(summary_type)",
   "rankType": "计算指标类型2(rank_type)",
-  "periodType": "计算指标类型3(period_type)"
+  "periodType": "计算指标类型3(period_type)",
+
+  "formulaValue":"指标公式表达式(formula_value)"
 
 }

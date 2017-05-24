@@ -1,7 +1,7 @@
 package com.fr.bi.cal.stable.cube.memory;
 
-import com.finebi.cube.api.ICubeColumnIndexReader;
 import com.finebi.cube.api.ICubeColumnDetailGetter;
+import com.finebi.cube.api.ICubeColumnIndexReader;
 import com.finebi.cube.relation.BITableSourceRelation;
 import com.fr.bi.base.ValueConverterFactory;
 import com.fr.bi.base.key.BIKey;
@@ -46,11 +46,12 @@ public class MemoryDateColumn extends AbstractSingleMemoryColumn<Long> {
          * 这个对象不能被重用。
          *
          */
-        if(this.getter==null) {
+        if (this.getter == null) {
             this.getter = createGroupByType(key, new ArrayList<BITableSourceRelation>(), null);
         }
         return this.getter.sizeOfGroup();
     }
+
     /**
      * Connery:重写掉获取位置的方法。
      * 日期类型的子类型，从明细数据里面取出来的是原始数据，而非子类型的数据。
@@ -58,8 +59,8 @@ public class MemoryDateColumn extends AbstractSingleMemoryColumn<Long> {
      */
     @Override
     public int getPositionOfGroup(int row, SingleUserNIOReadManager manager) {
-        if (groupPosition != null){
-            return groupPosition.get(row);
+        if (groupPosition != null) {
+            return processPosition(groupPosition.get(row));
         }
         for (int i = 0; i < getter.sizeOfGroup(); i++) {
             GroupValueIndex groupValueIndex = getter.getGroupValueIndex(i);

@@ -17,13 +17,13 @@ public class VanRangeAreaWidget extends VanAreaWidget{
 
             JSONObject firstSeries = series.optJSONObject(0);
             if(series.length() > 1) {
-                firstSeries.put("fillColorOpacity", 0).put("stack", 0);
+                firstSeries.put("fillColorOpacity", 0).put("stack", "stack0");
             }
             JSONArray firstDatas = firstSeries.optJSONArray("data");
 
             for (int i = 1, len = series.length(); i < len; i++) {
                 JSONObject ser = series.optJSONObject(i);
-                ser.put("stack", 0);
+                ser.put("stack", "stack0");
 
                 JSONArray datas = ser.optJSONArray("data");
                 for(int dataIndex = 0, dataCount = datas.length(); dataIndex < dataCount; dataIndex++){
@@ -48,30 +48,34 @@ public class VanRangeAreaWidget extends VanAreaWidget{
 
         JSONArray series = options.optJSONArray("series");
 
+        if(series == null || series.length() == 0){
+            return;
+        }
+
         JSONObject firstSeries = series.optJSONObject(0);
         JSONArray firstDatas = firstSeries.optJSONArray("data");
 
-        for (int i = 1, len = series.length(); i < len; i++) {
-            JSONObject ser = series.getJSONObject(i);
+        for (int seriesIndex = 1, len = series.length(); seriesIndex < len; seriesIndex++) {
+            JSONObject ser = series.getJSONObject(seriesIndex);
 
             JSONArray datas = ser.optJSONArray("data");
             for(int dataIndex = 0, dataCount = datas.length(); dataIndex < dataCount; dataIndex++){
                 JSONObject d = datas.optJSONObject(dataIndex);
-                JSONObject labels = new JSONObject(dataLabels.toString());
-                String format = this.valueFormat(this.getSerBITarget(ser), false);
-                double y = firstDatas.optJSONObject(i).optDouble("y");
-                labels.optJSONObject("formatter")
-                        .put("valueFormat", String.format("function(){return BI.contentFormat(arguments[0] + %s , \"%s\")}", y, format))
-                        .put("percentFormat", "function(){return BI.contentFormat(arguments[0], \"#.##%\")}");
+                double y = firstDatas.optJSONObject(dataIndex).optDouble("y", 0);
 
+                JSONObject labels = new JSONObject(dataLabels.toString());
+                if(labels.has("formatter")) {
+                    String format = this.valueFormat(this.getSerBITarget(ser), false);
+                    labels.optJSONObject("formatter")
+                            .put("valueFormat", String.format("function(){return BI.contentFormat(arguments[0] + %s , \"%s\")}", y, format))
+                            .put("percentFormat", "function(){return BI.contentFormat(arguments[0], \"#.##%\")}");
+                }
                 d.put(dataLabelsKey(), labels);
 
                 JSONObject formatter = JSONObject.create();
                 String tooltipFormat = this.valueFormat(this.getSerBITarget(ser), true);
-
                 formatter.put("identifier", this.getTooltipIdentifier())
                         .put(this.tooltipValueKey(), String.format("function(){return BI.contentFormat(arguments[0] + %s , \"%s\")}", y, tooltipFormat));
-
                 d.put("tooltip", new JSONObject(tooltip.toString()).put("formatter", formatter));
             }
         }

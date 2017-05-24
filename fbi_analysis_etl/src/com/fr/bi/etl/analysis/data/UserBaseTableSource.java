@@ -63,16 +63,17 @@ public class UserBaseTableSource extends AnalysisBaseTableSource implements User
     @Override
     public boolean isParentAvailable() {
         for (BITargetAndDimension dim : widget.getViewDimensions()) {
-            if (dim.getStatisticElement() != null && dim.createTableKey() != null) {
-                if(!isAvailable(dim.createTableKey().getTableSource())){
+            if (dim != null && dim.getStatisticElement() != null && dim.createTableKey() != null) {
+                if (!isAvailable(dim.createTableKey().getTableSource())) {
                     return false;
-                };
+                }
+                ;
             }
         }
         for (BITargetAndDimension target : widget.getViewTargets()) {
-            if (target.getStatisticElement() != null && target.createTableKey() != null) {
-                if(!isAvailable( target.createTableKey().getTableSource())){
-                    return  false;
+            if (target != null && target.getStatisticElement() != null && target.createTableKey() != null) {
+                if (!isAvailable(target.createTableKey().getTableSource())) {
+                    return false;
                 }
             }
         }
@@ -97,12 +98,12 @@ public class UserBaseTableSource extends AnalysisBaseTableSource implements User
 
 
     private boolean isAvailable(CubeTableSource source) {
-        if(source instanceof AnalysisCubeTableSource){
-            if(!BIAnalysisETLManagerCenter.getUserETLCubeManagerProvider().isAvailable((AnalysisCubeTableSource) source, new BIUser(userId))) {
-                return  false;
+        if (source instanceof AnalysisCubeTableSource) {
+            if (!BIAnalysisETLManagerCenter.getUserETLCubeManagerProvider().isAvailable((AnalysisCubeTableSource) source, new BIUser(userId))) {
+                return false;
             }
         }
-        return  true;
+        return true;
     }
 
     @Override

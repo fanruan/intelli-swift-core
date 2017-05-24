@@ -9,6 +9,7 @@ import com.fr.bi.etl.analysis.conf.AnalysisPackManager;
 import com.fr.bi.stable.exception.BITableAbsentException;
 import com.fr.json.JSONObject;
 
+import java.util.HashSet;
 import java.util.Locale;
 import java.util.Set;
 
@@ -45,7 +46,9 @@ public class SingleUserAnalysisBusiPackManager{
     }
 
     public Set<BIBusinessPackage> getAllPacks(){
-        return pack.getAnylysis().getAllPackages();
+        HashSet<BIBusinessPackage> packSet = new HashSet<BIBusinessPackage>();
+        packSet.add(pack.getAnylysis().getPack());
+        return packSet;
     }
 
     public Set<BusinessTable> getAllTables(){

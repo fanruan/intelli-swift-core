@@ -33,7 +33,7 @@ public class AnalysisETLPackageSet extends BIPackageContainer {
         return new AnalysisETLBusiPack(id, pack, user, System.currentTimeMillis());
     }
 
-    private AnalysisETLBusiPack getPack() {
+    public AnalysisETLBusiPack getPack() {
         if (pack != null) {
             return pack;
         }
