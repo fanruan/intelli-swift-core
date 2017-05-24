@@ -69,7 +69,7 @@ public class BIConfTableLockDAO extends PlatformDataAccessObject {
      */
     public List<BIConfTableLock> getLock(long userId, String tableId) {
         Map<String, Object> fvMap = new HashMap<String, Object>();
-        fvMap.put(BITableMapper.BI_CONF_TABLE_LOCK.USER_ID, userId);
+//        fvMap.put(BITableMapper.BI_CONF_TABLE_LOCK.USER_ID, userId);
         fvMap.put(BITableMapper.BI_CONF_TABLE_LOCK.TABLE_ID, tableId);
         return createSession().listByFieldValues(BIConfTableLock.class, fvMap);
     }

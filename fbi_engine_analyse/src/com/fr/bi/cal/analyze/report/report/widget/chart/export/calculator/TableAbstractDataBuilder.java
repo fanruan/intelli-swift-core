@@ -413,8 +413,8 @@ public abstract class TableAbstractDataBuilder implements IExcelDataBuilder {
                     //合计
                     for (String targetId : targetIds) {
                         BITableHeader header = new BITableHeader();
-                        header.setText(SUMMARY + BITableExportDataHelper.getDimensionNameByID(dimAndTar, targetId));
-                        header.setTitle(SUMMARY + BITableExportDataHelper.getDimensionNameByID(dimAndTar, targetId));
+                        header.setText(SUMMARY + ":" + BITableExportDataHelper.getDimensionNameByID(dimAndTar, targetId));
+                        header.setTitle(SUMMARY + ":" + BITableExportDataHelper.getDimensionNameByID(dimAndTar, targetId));
                         header.setTag(UUID.randomUUID().toString());
                         header.setType("bi.page_table_cell");
                         headers.add(header);
@@ -423,9 +423,9 @@ public abstract class TableAbstractDataBuilder implements IExcelDataBuilder {
             } else if (item.isSum()) {
                 //合计
                 //设置crossItem中的值
-                item.setValue(SUMMARY + BITableExportDataHelper.getDimensionNameByID(dimAndTar, item.getDId()));
+                item.setValue(SUMMARY + ":" + BITableExportDataHelper.getDimensionNameByID(dimAndTar, item.getDId()));
                 BITableHeader header = new BITableHeader();
-                header.setText(SUMMARY + BITableExportDataHelper.getDimensionNameByID(dimAndTar, item.getDId()));
+                header.setText(SUMMARY + ":" + BITableExportDataHelper.getDimensionNameByID(dimAndTar, item.getDId()));
                 header.parseJson(item.createJSON());
                 headers.add(header);
             } else if (!(item.getValues() == null || item.getValues().size() == 0)) {
