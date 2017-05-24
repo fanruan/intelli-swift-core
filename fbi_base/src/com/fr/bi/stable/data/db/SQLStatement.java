@@ -4,6 +4,10 @@ import com.fr.data.impl.Connection;
 import com.fr.stable.StringUtils;
 
 /**
+ * TODO 删除这个类，都由tableSource自己处理
+ * @deprecated  由于执行SQL的类用到这个，暂时删不掉。这个对象除了toString方法外，
+ * 没有太多作用，反倒限制太多，强行将sql语句转为子查询的结构，带来很多问题。
+ * http://www.finedevelop.com/pages/viewpage.action?pageId=12974253
  * Created by GUY on 2015/3/10.
  */
 public class SQLStatement {
