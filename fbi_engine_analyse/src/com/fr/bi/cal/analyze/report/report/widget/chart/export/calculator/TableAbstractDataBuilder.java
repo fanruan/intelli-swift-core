@@ -5,7 +5,6 @@ import com.fr.bi.cal.analyze.report.report.widget.chart.export.item.BITableHeade
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.item.ITableHeader;
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.item.ITableItem;
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.utils.BITableExportDataHelper;
-import com.fr.bi.cal.analyze.report.report.widget.chart.export.utils.SummaryTableStyleHelper;
 import com.fr.bi.conf.report.widget.IWidgetStyle;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.utils.program.BIJsonUtils;
@@ -427,6 +426,7 @@ public abstract class TableAbstractDataBuilder implements IExcelDataBuilder {
                 BITableHeader header = new BITableHeader();
                 header.setText(SUMMARY + ":" + BITableExportDataHelper.getDimensionNameByID(dimAndTar, item.getDId()));
                 header.parseJson(item.createJSON());
+                header.setSum(item.isSum());
                 headers.add(header);
             } else if (!(item.getValues() == null || item.getValues().size() == 0)) {
                 //单指标情况下，指标不显示，合并到上面
