@@ -100,6 +100,7 @@ public class BIBasicTableItem implements ITableItem {
         return children;
     }
 
+    @Override
     public ITableStyle getStyles() {
         return styles;
     }
@@ -135,9 +136,9 @@ public class BIBasicTableItem implements ITableItem {
         if (jo.has("text")) {
             text = jo.optString("text");
         }
-        if (jo.has("isSum")) {
-            isSum = jo.optBoolean("isSum");
-        }
+//        if (jo.has("isSum")) {
+//            isSum = jo.optBoolean("isSum");
+//        }
 
         if (jo.has("values")) {
             if (null == values) {

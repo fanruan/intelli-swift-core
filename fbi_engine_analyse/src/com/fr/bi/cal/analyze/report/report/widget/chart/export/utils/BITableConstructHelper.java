@@ -60,29 +60,23 @@ public class BITableConstructHelper {
             if (item.getChildren() != null) {
                 traversalItems(item.getChildren(), ops, layerIndex + 1, rowIndex, style, isDetail);
             }
+            setText(ops, item);
             if (item.getValues() != null) {
                 for (ITableItem it : item.getValues()) {
-                    it.setStyles(SummaryTableStyleHelper.getBodyStyles(style.getThemeColor(), style.getTableStyleGroup(), rowIndex));
-                    if (null != ops.get(it.getDId())) {
-                        it.setText(ops.get(it.getDId()).formatValues(it.getValue()));
-//                        it.setValue(ops.get(it.getDId()).formatValues(it.getValue()));
+                    setText(ops,it);
+                }
+                if (item.getChildren() != null) {
+                    for (ITableItem it : item.getValues()) {
+                        it.setStyles(SummaryTableStyleHelper.getLastSummaryStyles(style.getThemeColor(), style.getTableStyleGroup()));
                     }
-//                    traversalCrossItems(it, ops);
-                }
-            }
-            if (item.getValue() != null) {
-                if (item.getDId() != null) {
-                    item.setStyles(SummaryTableStyleHelper.getBodyStyles(style.getThemeColor(), style.getTableStyleGroup(), rowIndex));
-                    item.setText(ops.get(item.getDId()).formatValues(item.getValue()));
-//                    item.setValue(ops.get(item.getDId()).formatValues(item.getValue()));
                 } else {
-                    item.setText(item.getValue());
+                    for (ITableItem it : item.getValues()) {
+                        it.setStyles(SummaryTableStyleHelper.getBodyStyles(style.getThemeColor(), style.getTableStyleGroup(), rowIndex));
+                    }
                 }
             }
-/*
-* 第一列换行
-* */
-            if (isDetail && layerIndex == 0) {
+            //第一列换行
+            if (!isDetail || (isDetail && layerIndex == 0)) {
                 rowIndex++;
             }
         }
@@ -96,21 +90,17 @@ public class BITableConstructHelper {
         }
         if (item.getValues() != null) {
             for (ITableItem it : item.getValues()) {
-                if (null != ops.get(it.getDId())) {
-                    it.setText(ops.get(it.getDId()).formatValues(it.getValue()));
-//                    it.setValue(ops.get(it.getDId()).formatValues(it.getValue()));
-                }
-//                traversalCrossItems(it, ops);
+                setText(ops, it);
             }
         }
+        setText(ops, item);
+    }
 
-        if (item.getValue() != null && item.getDId() != null) {
-            if (null != ops.get(item.getDId())) {
-                item.setText(ops.get(item.getDId()).formatValues(item.getValue()));
-//                item.setValue(ops.get(item.getDId()).formatValues(item.getValue()));
-            }
+    private static void setText(Map<String, ITableCellFormatOperation> ops, ITableItem it) throws Exception {
+        if (null != ops.get(it.getDId())) {
+            it.setText(ops.get(it.getDId()).formatValues(it.getValue()));
         } else {
-            item.setText(item.getValue());
+            it.setText(it.getValue());
         }
     }
 }
