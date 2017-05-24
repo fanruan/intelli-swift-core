@@ -1,6 +1,6 @@
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.calculator.IExcelDataBuilder;
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.calculator.SummaryGroupTableDataBuilder;
-import com.fr.bi.cal.analyze.report.report.widget.chart.export.item.BITableDataConstructor;
+import com.fr.bi.cal.analyze.report.report.widget.chart.export.item.constructor.DataConstructor;
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.utils.BITableConstructHelper;
 import com.fr.bi.cal.analyze.report.report.widget.style.BITableWidgetStyle;
 import com.fr.bi.stable.constant.BIReportConstant;
@@ -16,14 +16,14 @@ public class GroupBuilderTest extends TestCase {
         String viewMapStr = BuilderDataFactory.GROUP.NODIM_NOEXPAND.VIEWMAP;
         String dataStr = BuilderDataFactory.GROUP.NODIM_NOEXPAND.DATA;
         IExcelDataBuilder builder = new SummaryGroupTableDataBuilder(BuilderTestUtils.createViewMap(viewMapStr), new JSONObject(dataStr), new BITableWidgetStyle());
-        BITableDataConstructor data = BITableConstructHelper.buildTableData(builder);
+        DataConstructor data = BITableConstructHelper.buildTableData(builder);
         assertTrue(data.getItems().size()==1);
     }
     public void testNormalDataWithNoExpand() throws Exception {
         String viewMapStr = BuilderDataFactory.GROUP.NOTAR_NOEXPAND.VIEWMAP;
         String dataStr = BuilderDataFactory.GROUP.NOTAR_NOEXPAND.DATA;
         IExcelDataBuilder builder = new SummaryGroupTableDataBuilder(BuilderTestUtils.createViewMap(viewMapStr), new JSONObject(dataStr), new BITableWidgetStyle());
-        BITableDataConstructor data = BITableConstructHelper.buildTableData(builder);
+        DataConstructor data = BITableConstructHelper.buildTableData(builder);
         assertTrue(data.getItems().get(0).getValues().size()== BuilderTestUtils.createViewMap(viewMapStr).get(Integer.valueOf(BIReportConstant.REGION.DIMENSION1)).size());
         assertTrue(data.getItems().get(0).getChildren().size()==data.getHeaders().size());
     }
@@ -32,7 +32,7 @@ public class GroupBuilderTest extends TestCase {
         String viewMapStr = BuilderDataFactory.GROUP.NORMAL_NOEXPAND.VIEWMAP;
         String dataStr = BuilderDataFactory.GROUP.NORMAL_NOEXPAND.DATA;
         IExcelDataBuilder builder = new SummaryGroupTableDataBuilder(BuilderTestUtils.createViewMap(viewMapStr), new JSONObject(dataStr), new BITableWidgetStyle());
-        BITableDataConstructor data = BITableConstructHelper.buildTableData(builder);
+        DataConstructor data = BITableConstructHelper.buildTableData(builder);
         assertTrue(data.getHeaders().size()== BuilderTestUtils.createViewMap(viewMapStr).get(Integer.valueOf(BIReportConstant.REGION.DIMENSION1)).size());
     }
 }
