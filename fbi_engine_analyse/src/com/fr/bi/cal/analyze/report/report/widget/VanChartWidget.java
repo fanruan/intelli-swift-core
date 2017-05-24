@@ -610,7 +610,10 @@ public abstract class VanChartWidget extends TableWidget {
     }
 
     protected void formatSeriesTooltipFormat(JSONObject options) throws Exception {
+        this.defaultFormatSeriesTooltipFormat(options);
+    }
 
+    protected void defaultFormatSeriesTooltipFormat(JSONObject options) throws Exception {
         JSONObject tooltip = options.optJSONObject("plotOptions").optJSONObject("tooltip");
 
         JSONArray series = options.optJSONArray("series");
@@ -641,6 +644,10 @@ public abstract class VanChartWidget extends TableWidget {
     }
 
     protected void formatSeriesDataLabelFormat(JSONObject options) throws Exception {
+        this.defaultFormatSeriesDataLabelFormat(options);
+    }
+
+    protected void defaultFormatSeriesDataLabelFormat(JSONObject options) throws Exception {
         JSONObject dataLabels = options.optJSONObject("plotOptions").optJSONObject(dataLabelsKey());
 
         if (dataLabels.optBoolean("enabled")) {
