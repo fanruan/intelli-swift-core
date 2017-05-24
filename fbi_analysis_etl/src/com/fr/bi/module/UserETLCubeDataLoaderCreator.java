@@ -31,6 +31,11 @@ public class UserETLCubeDataLoaderCreator implements ICubeDataLoaderCreator {
 
     }
 
+    @Override
+    public void clear(long userId) {
+
+    }
+
     public ICubeDataLoader fetchCubeLoader(long user) {
         return fetchCubeLoader(new BIUser(user));
     }

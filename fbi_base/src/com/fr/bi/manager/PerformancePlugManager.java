@@ -71,6 +71,7 @@ public class PerformancePlugManager implements PerformancePlugManagerInterface {
     private long cubeReaderReleaseSleepTime = 1L;
     private boolean isDirectGenerating = false;
 
+    private boolean unmapReader = false;
     private boolean isForceWriter = false;
 
 
@@ -114,6 +115,7 @@ public class PerformancePlugManager implements PerformancePlugManagerInterface {
             retryMaxTimes = getInt(PERFORMANCE + ".retryMaxTimes", retryMaxTimes);
             retryMaxSleepTime = getLong(PERFORMANCE + ".retryMaxSleepTime", retryMaxSleepTime);
             extremeConcurrency = getBoolean(PERFORMANCE + ".extremeConcurrency", extremeConcurrency);
+            unmapReader = getBoolean(PERFORMANCE + ".unmapReader", unmapReader);
             reIndexRowCount = getInt(PERFORMANCE + ".reIndexRowCount", reIndexRowCount);
             cubeReaderReleaseSleepTime = getLong(PERFORMANCE + ".cubeReaderReleaseSleepTime", cubeReaderReleaseSleepTime);
             isDirectGenerating = getBoolean(PERFORMANCE + ".isDirectGenerating", isDirectGenerating);
@@ -151,6 +153,7 @@ public class PerformancePlugManager implements PerformancePlugManagerInterface {
         LOGGER.info("The value of {}.retryMaxTimes is {}", PERFORMANCE, retryMaxTimes);
         LOGGER.info("The value of {}.retryMaxSleepTime is {}", PERFORMANCE, retryMaxSleepTime);
         LOGGER.info("The value of {}.cubeReaderReleaseSleepTime is {}", PERFORMANCE, cubeReaderReleaseSleepTime);
+        LOGGER.info("The value of {}.unmapReader is {}", PERFORMANCE, unmapReader);
 
         LOGGER.info("The value of {}.isDirectGenerating is {}", PERFORMANCE, isDirectGenerating);
         LOGGER.info("The value of {}.isForceWriter is {}", PERFORMANCE, isForceWriter);
@@ -470,4 +473,12 @@ public class PerformancePlugManager implements PerformancePlugManagerInterface {
         return isForceWriter;
     }
 
+
+    public boolean isUnmapReader() {
+        return unmapReader;
+    }
+
+    public void setUnmapReader(boolean unmapReader) {
+        this.unmapReader = unmapReader;
+    }
 }

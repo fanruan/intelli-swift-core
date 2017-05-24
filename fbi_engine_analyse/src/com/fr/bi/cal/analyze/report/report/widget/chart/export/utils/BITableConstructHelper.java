@@ -2,11 +2,13 @@ package com.fr.bi.cal.analyze.report.report.widget.chart.export.utils;
 
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.calculator.IExcelDataBuilder;
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.format.operation.ITableCellFormatOperation;
-import com.fr.bi.cal.analyze.report.report.widget.chart.export.item.BITableDataConstructor;
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.item.ITableHeader;
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.item.ITableItem;
+import com.fr.bi.cal.analyze.report.report.widget.chart.export.item.constructor.DataConstructor;
 import com.fr.bi.cal.analyze.report.report.widget.style.BITableWidgetStyle;
+import com.fr.bi.conf.report.WidgetType;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -14,7 +16,7 @@ import java.util.Map;
  */
 public class BITableConstructHelper {
 
-    public static BITableDataConstructor buildTableData(IExcelDataBuilder builder) throws Exception {
+    public static DataConstructor buildTableData(IExcelDataBuilder builder) throws Exception {
         builder.initAttrs();
         builder.amendment();
         builder.createHeaders();
@@ -23,7 +25,11 @@ public class BITableConstructHelper {
         return builder.createTableData();
     }
 
-    public static void formatCells(BITableDataConstructor data, Map<String, ITableCellFormatOperation> operations, BITableWidgetStyle style) throws Exception {
+    /*
+    * 明细表样式特殊处理
+    * */
+    public static void formatCells(DataConstructor data, Map<String, ITableCellFormatOperation> operations, BITableWidgetStyle style) throws Exception {
+        boolean isDetail = data.getWidgetType() == WidgetType.DETAIL.getType();
         for (ITableHeader header : data.getHeaders()) {
             if (header.isSum()) {
                 header.setStyles(SummaryTableStyleHelper.getLastSummaryStyles(style.getThemeColor(), style.getTableStyleGroup()));
@@ -32,7 +38,7 @@ public class BITableConstructHelper {
         }
 
         if (data.getItems().size() != 0) {
-            traversalItems(data.getItems(), operations, 0, 0, style);
+            traversalItems(data.getItems(), operations, 0, 0, style, isDetail);
         }
 
         if (data.getCrossItems() != null) {
@@ -49,10 +55,10 @@ public class BITableConstructHelper {
 
     }
 
-    private static void traversalItems(java.util.List<ITableItem> items, Map<String, ITableCellFormatOperation> ops, int layerIndex, int rowIndex, BITableWidgetStyle style) throws Exception {
+    private static void traversalItems(List<ITableItem> items, Map<String, ITableCellFormatOperation> ops, int layerIndex, int rowIndex, BITableWidgetStyle style, boolean isDetail) throws Exception {
         for (ITableItem item : items) {
             if (item.getChildren() != null) {
-                traversalItems(item.getChildren(), ops, layerIndex + 1, rowIndex, style);
+                traversalItems(item.getChildren(), ops, layerIndex + 1, rowIndex, style, isDetail);
             }
             if (item.getValues() != null) {
                 for (ITableItem it : item.getValues()) {
@@ -64,12 +70,17 @@ public class BITableConstructHelper {
 //                    traversalCrossItems(it, ops);
                 }
             }
-            if (item.getValue() != null&&item.getDId()!=null) {
+            if (item.getValue() != null && item.getDId() != null) {
                 item.setStyles(SummaryTableStyleHelper.getBodyStyles(style.getThemeColor(), style.getTableStyleGroup(), rowIndex));
                 item.setText(ops.get(item.getDId()).formatValues(item.getValue()));
                 item.setValue(ops.get(item.getDId()).formatValues(item.getValue()));
             }
-            rowIndex++;
+/*
+* 第一列换行
+* */
+            if (isDetail && layerIndex == 0) {
+                rowIndex++;
+            }
         }
     }
 

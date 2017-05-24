@@ -15,7 +15,8 @@ import com.fr.bi.cal.analyze.report.report.widget.chart.export.calculator.IExcel
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.format.operation.BITableCellFormatOperation;
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.format.operation.ITableCellFormatOperation;
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.format.setting.BICellFormatSetting;
-import com.fr.bi.cal.analyze.report.report.widget.chart.export.item.BITableDataConstructor;
+import com.fr.bi.cal.analyze.report.report.widget.chart.export.item.ITableItem;
+import com.fr.bi.cal.analyze.report.report.widget.chart.export.item.constructor.DataConstructor;
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.utils.BITableConstructHelper;
 import com.fr.bi.cal.analyze.report.report.widget.detail.BIDetailReportSetting;
 import com.fr.bi.cal.analyze.report.report.widget.detail.BIDetailSetting;
@@ -37,6 +38,7 @@ import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.data.BITableID;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.utils.BITravalUtils;
+import com.fr.bi.stable.utils.file.BIFileUtils;
 import com.fr.bi.stable.utils.program.BIStringUtils;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONException;
@@ -44,6 +46,7 @@ import com.fr.json.JSONObject;
 import com.fr.report.poly.TemplateBlock;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 import java.util.*;
 
 public class BIDetailWidget extends AbstractBIWidget {
@@ -293,12 +296,12 @@ public class BIDetailWidget extends AbstractBIWidget {
     @Override
     public void reSetDetailTarget() {
         for (BIDetailTarget ele : getDimensions()) {
-            if(ele != null){
+            if (ele != null) {
                 ele.reSetDetailGetter();
             }
         }
         for (BIDetailTarget ele : getViewDimensions()) {
-            if(ele != null){
+            if (ele != null) {
                 ele.reSetDetailGetter();
             }
         }
@@ -309,9 +312,32 @@ public class BIDetailWidget extends AbstractBIWidget {
         JSONObject dataJSON = data.getJSONObject("data");
         Map<Integer, List<JSONObject>> viewMap = createViewMap();
         IExcelDataBuilder builder = new DetailTableBuilder(viewMap, dataJSON, new BITableWidgetStyle());
-        BITableDataConstructor tableData = BITableConstructHelper.buildTableData(builder);
+        DataConstructor tableData = BITableConstructHelper.buildTableData(builder);
         BITableConstructHelper.formatCells(tableData, createChartDimensions(), widgetStyle);
-        return tableData.createJSON().put("row", data.optLong("row", 0)).put("size", data.optLong("size", 0)).put("dimensionLength",dimensions.length);
+        JSONObject res = new JSONObject();
+        res.put("row", data.optLong("row", 0));
+        res.put("header", tableData.createJSON().get("header"));
+        JSONArray itemsArray = new JSONArray();
+        for (ITableItem item : tableData.getItems()) {
+            JSONArray itemArray = new JSONArray();
+            for (ITableItem tableItem : item.getChildren()) {
+                itemArray.put(tableItem.createJSON());
+            }
+            itemsArray.put(itemArray);
+        }
+        res.put("items", itemsArray);
+        res.put("widgetType", getType().getType());
+        res.put("dimensionLength", dimensions.length).put("row", data.optLong("row", 0)).put("size", data.optLong("size", 0));
+        res.put("settings",tableData.getWidgetStyle().createJSON());
+        return res;
+//        return createTestData();
+    }
+
+    /*假数据，测试用*/
+    private JSONObject createTestData() throws IOException, JSONException {
+        StringBuffer keysStr = new StringBuffer();
+        String s = BIFileUtils.readFile("C:\\data.txt");
+        return new JSONObject(s);
     }
 
     private Map<String, ITableCellFormatOperation> createChartDimensions() throws Exception {
