@@ -423,9 +423,10 @@ public abstract class VanChartWidget extends TableWidget {
 
     private JSONObject defaultDataLabelSetting() throws JSONException {
 
-        return JSONObject.create().put("showCategoryName", true)
-                .put("showSeriesName", true).put("showValue", true).put("showPercentage", false)
-                .put("position", BIChartSettingConstant.DATA_LABEL.POSITION_OUTER).put("showTractionLine", false)
+        //兼容4.0,勾选标签的时候只有值
+        return JSONObject.create().put("showCategoryName", false)
+                .put("showSeriesName", false).put("showValue", true).put("showPercentage", false)
+                .put("position", BIChartSettingConstant.DATA_LABEL.POSITION_OUTER).put("showTractionLine", true)
                 .put("textStyle", defaultFont());
 
     }
