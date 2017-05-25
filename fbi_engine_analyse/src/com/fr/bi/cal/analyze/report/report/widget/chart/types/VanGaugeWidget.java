@@ -61,7 +61,9 @@ public class VanGaugeWidget extends VanCartesianWidget{
 
         JSONObject percentageLabel = JSONObject.create().put("enabled", true).put("formatter", JSONObject.create().put("identifier", PERCENT).put("percentFormat", "function(){return BI.contentFormat(arguments[0], \"#.##%\")}")).put("align", align);
 
-        plotOptions.put("valueLabel", valueLabel).put("seriesLabel", seriesLabel).put("percentageLabel", percentageLabel);
+//        plotOptions.put("valueLabel", valueLabel).put("seriesLabel", seriesLabel).put("percentageLabel", percentageLabel);
+
+        plotOptions.put("valueLabel", valueLabel).put("seriesLabel", seriesLabel);
 
         if(settings.optInt("styleRadio", AUTO) != AUTO){
             JSONArray dashboardStyles = settings.optJSONArray("dashboardStyles");
