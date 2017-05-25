@@ -101,7 +101,7 @@ public class BICollectionUtils {
             return true;
         } else if (key instanceof String && StringUtils.EMPTY.equals(key)) {
             return true;
-        } else if (key instanceof Double && ((Double) key).isInfinite()) {
+        } else if (key instanceof Double && NIOConstant.DOUBLE.NULL_VALUE == (Double)key) {
             return true;
         } else if (key instanceof Long && NIOConstant.LONG.NULL_VALUE == (Long) key) {
             return true;
@@ -132,7 +132,7 @@ public class BICollectionUtils {
         if (key == null || key instanceof String) {
             return key;
         }
-        if (key instanceof Double && ((Double) key).isInfinite()) {
+        if (key instanceof Double && NIOConstant.DOUBLE.NULL_VALUE == ((Double) key)) {
             return null;
         }
         if (key instanceof Long && NIOConstant.LONG.NULL_VALUE == (Long) key) {
