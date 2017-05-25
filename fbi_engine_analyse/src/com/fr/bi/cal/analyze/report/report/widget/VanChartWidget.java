@@ -883,7 +883,7 @@ public abstract class VanChartWidget extends TableWidget {
 
         if(dateFormatType == BIReportConstant.DATE_FORMAT.CHINESE){
             formatter = new SimpleDateFormat(String.format("yyyy%sMM%sdd%s H%sm%ss%s", getLocText("BI-Basic_Year"), getLocText("BI-Basic_Month"), getLocText("BI-Date_Day"),
-                    getLocText("BI-Hour_Sin"), getLocText("BI-Basic_Minute"), getLocText("BI-Basic_Second")));
+                    getLocText("BI-Hour_Sin"), getLocText("BI-Basic_Minute"), getLocText("BI-Basic_Seconds")));
         }else{
             formatter = new SimpleDateFormat("yyyy-MM-dd H:m:s");
         }
