@@ -56,5 +56,7 @@ public interface ITableItem extends JSONCreator {
 
     void setSum(boolean sum);
 
+    void mergeItems(ITableItem newItem) throws Exception;
+
     void parseJSON(JSONObject jo) throws Exception;
 }

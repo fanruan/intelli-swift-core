@@ -129,6 +129,25 @@ public class BIBasicTableItem implements ITableItem {
     }
 
     @Override
+    public void mergeItems(ITableItem newItem) throws Exception {
+        if (newItem == null) {
+            return;
+        }
+        if (getValues()!=null) {
+            getValues().addAll(newItem.getValues());
+        }else {
+            setValues(newItem.getValues());
+        }
+        if (getChildren() != null) {
+            for (int i = 0; i < newItem.getChildren().size(); i++) {
+                getChildren().get(i).mergeItems(newItem.getChildren().get(i));
+            }
+        }else {
+            setChildren(newItem.getChildren());
+        }
+    }
+
+    @Override
     public void parseJSON(JSONObject jo) throws Exception {
         if (jo.has("dId")) {
             dId = jo.optString("dId");

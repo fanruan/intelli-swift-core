@@ -38,7 +38,6 @@ public abstract class TableAbstractDataBuilder implements IExcelDataBuilder {
     protected boolean showRowTotal;
     protected static final String EMPTY_VALUE = "--";
     protected static final String SUMMARY = Inter.getLocText("BI-Summary_Values");
-    protected static String OUTERSUM = "__outer_sum_";
 //    protected List<List<Boolean>> crossItemsSums;
 
     public TableAbstractDataBuilder(Map<Integer, List<JSONObject>> dimAndTar, JSONObject dataJSON, IWidgetStyle styleSettings) throws Exception {

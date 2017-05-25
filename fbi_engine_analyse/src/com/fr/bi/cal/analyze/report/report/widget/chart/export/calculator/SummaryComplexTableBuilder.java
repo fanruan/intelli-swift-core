@@ -230,12 +230,13 @@ public class SummaryComplexTableBuilder extends TableAbstractDataBuilder {
         for (int i = 0; i < dataArray.length(); i++) {
             JSONArray tableData = dataArray.getJSONArray(i);
             //* rowValues在这个作用域缓存所有tables的数据
-            JSONObject rowValues = new JSONObject();
-            List<ITableItem> singleTempItems = new ArrayList<ITableItem>();
             for (int j = 0; j < tableData.length(); j++) {
-                singleTempItems = createTempItems(tempCrossItems, i, rowValues, tableData.getJSONObject(j), j);
+                if (tempItems.size() <= i) {
+                    tempItems.add(createSingleItem(tempCrossItems, i, tableData.getJSONObject(j), j));
+                } else {
+                    tempItems.get(i).mergeItems(createSingleItem(tempCrossItems, i, tableData.getJSONObject(j), j));
+                }
             }
-            tempItems.addAll(singleTempItems);
         }
         parseColTableItems(tempItems);
         parseRowTableCrossItems(tempCrossItems);
@@ -245,16 +246,10 @@ public class SummaryComplexTableBuilder extends TableAbstractDataBuilder {
     * 这个结构是从前台直接拷过来的，需优化
     *
     * */
-    private List<ITableItem> createTempItems(List<ITableItem> tempCrossItems, int i, JSONObject rowValues, JSONObject tableData, int j) throws Exception {
+    private ITableItem createSingleItem(List<ITableItem> tempCrossItems, int i, JSONObject tableData, int j) throws Exception {
         //parse一个表结构
         Map<Integer, List<JSONObject>> dimAndTar = getDimsByDataPos(i, j);
         DataConstructor singleTable = createSingleCrossTableItems(tableData, dimAndTar);
-        for (int k = 0; k < singleTable.getItems().size(); k++) {
-            putNewValuesIntoRowTables(singleTable.getItems().get(k), rowValues, "");
-        }
-        for (int length = 0; length < singleTable.getItems().size(); length++) {
-            singleTable.getItems().set(length, expandTableValues(singleTable.getItems().get(length), rowValues));
-        }
         if (i == 0) {
             for (int length = 0; length < singleTable.getCrossItems().size(); length++) {
                 ITableItem item = singleTable.getCrossItems().get(i);
@@ -267,33 +262,7 @@ public class SummaryComplexTableBuilder extends TableAbstractDataBuilder {
                 }
             }
         }
-        return singleTable.getItems();
-    }
-
-    /*
-    * 扩展item中的value值，数据从rowValues获取
-    * */
-    private ITableItem expandTableValues(ITableItem tableItem, JSONObject rowValues) throws Exception {
-        ITableItem item = new BIBasicTableItem();
-        item.parseJSON(tableItem.createJSON());
-        if (null == rowValues || rowValues.length() == 0) {
-            return item;
-        }
-        //最外层汇总
-        if (tableItem.getDId() == null && tableItem.getChildren() != null && tableItem.getChildren().size() > 0 && tableItem.getValues() != null && tableItem.getValues().size() > 0) {
-            item.setValues(convertToItemList(rowValues.has(OUTERSUM) ? rowValues.getJSONArray(OUTERSUM) : new JSONArray()));
-        } else {
-            JSONArray array = rowValues.optJSONArray(String.valueOf(item.getDId()) + String.valueOf(item.getValue()));
-            if (null != array) {
-                item.setValues(convertToItemList(array));
-            }
-        }
-        if (item.getChildren() != null) {
-            for (int i = 0; i < item.getChildren().size(); i++) {
-                item.getChildren().set(i, expandTableValues(item.getChildren().get(i), rowValues));
-            }
-        }
-        return item;
+        return singleTable.getItems().get(0);
     }
 
     private void parseRowTableCrossItems(List<ITableItem> tempCrossItems) throws Exception {
@@ -331,37 +300,6 @@ public class SummaryComplexTableBuilder extends TableAbstractDataBuilder {
             }
         }
         this.items.add(childItem);
-    }
-
-    //从table中获取信息，缓存再rowValues里面
-    //对于首层，可以以行号作为key，其他层以dId + text作为key
-    //一般只处理有values（同时有children的表示合计、否则表示相应的值）
-    private void putNewValuesIntoRowTables(ITableItem data, JSONObject rowValues, String pId) throws Exception {
-        String itemId = "";
-        if (data.getDId() != null && data.getValue() != null) {
-            itemId = pId + data.getDId() + data.getValue();
-        }
-        //最外层的合计 可以通过data中是否包含dId来确定
-        if (data.getChildren() != null && data.getDId() == null) {
-            if (!rowValues.has(OUTERSUM)) {
-                rowValues.put(OUTERSUM, new JSONArray());
-            }
-            rowValues.put(OUTERSUM, BIJsonUtils.arrayConcat(rowValues.optJSONArray(OUTERSUM), data.createJSON().optJSONArray("values")));
-        }
-        boolean rowRegionAvailable = data.getDId() != null || !isRowRegionExist();
-        if (data.getValues() != null && rowRegionAvailable) {
-            boolean hasItems = rowValues.has(itemId) && rowValues.getJSONArray(itemId).length() > 0;
-            if (!hasItems) {
-                rowValues.put(itemId, data.createJSON().get("values"));
-            } else {
-                rowValues.put(itemId, BIJsonUtils.arrayConcat(rowValues.getJSONArray(itemId), data.createJSON().getJSONArray("values")));
-            }
-        }
-        if (data.getChildren() != null && data.getChildren().size() > 0) {
-            for (int i = 0; i < data.getChildren().size(); i++) {
-                putNewValuesIntoRowTables(data.getChildren().get(i), rowValues, itemId);
-            }
-        }
     }
 
     private Map<Integer, List<JSONObject>> getDimsByDataPos(int row, int col) throws JSONException {
