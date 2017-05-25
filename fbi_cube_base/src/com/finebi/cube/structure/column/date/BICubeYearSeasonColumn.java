@@ -8,6 +8,8 @@ import com.fr.bi.base.ValueConverterFactory;
 import com.fr.bi.stable.constant.DateConstant;
 import com.fr.bi.stable.io.newio.NIOConstant;
 
+import java.util.Calendar;
+
 /**
  * Created by wang on 2017/3/28.
  * 年-季度
@@ -21,6 +23,13 @@ public class BICubeYearSeasonColumn extends BICubeDateSubColumn<Long> {
     protected Long convertDate(Long date) {
         return date != null ? (Long) ValueConverterFactory.createDateValueConverter(DateConstant.DATE.YEAR_SEASON).result2Value(date) : null;
     }
+
+
+    @Override
+    protected Long convertDate(Long date, Calendar calendar) {
+        return date != null ? (Long) ValueConverterFactory.createDateValueConverter(DateConstant.DATE.YEAR_SEASON).result2Value(date, calendar) : null;
+    }
+
 
     @Override
     protected void initialColumnEntity(ICubeResourceLocation currentLocation) {
