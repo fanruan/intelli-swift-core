@@ -167,7 +167,6 @@ public class SummaryComplexTableBuilder extends TableAbstractDataBuilder {
         int colLength = getLargestLengthOfColRegions();
         ITableHeader lastDimHeader = headers.size() > dimIds.size() ? headers.get(dimIds.size() - 1) : null;
         ITableHeader lastCrossDimHeader = crossDimIds.size() > crossHeaders.size() ? crossHeaders.get(crossDimIds.size() - 1) : null;
-// FIXME: 2017/3/6
         int count = 0;
         while (count < rowLength - dimIds.size()) {
             ITableHeader header = lastDimHeader;
@@ -258,8 +257,7 @@ public class SummaryComplexTableBuilder extends TableAbstractDataBuilder {
         }
         if (i == 0) {
             for (int length = 0; length < singleTable.getCrossItems().size(); length++) {
-                BIBasicTableItem item = new BIBasicTableItem();
-                item.parseJSON(singleTable.getCrossItems().get(i).createJSON());
+                ITableItem item = singleTable.getCrossItems().get(i);
                 if (tempCrossItems.size() > 0) {
                     List<ITableItem> children = tempCrossItems.get(0).getChildren();
                     children.addAll(item.getChildren());
@@ -282,10 +280,13 @@ public class SummaryComplexTableBuilder extends TableAbstractDataBuilder {
             return item;
         }
         //最外层汇总
-        if (tableItem.getDId() == null&&tableItem.getChildren()!=null&&tableItem.getChildren().size()>0&&tableItem.getValues()!=null&&tableItem.getValues().size()>0) {
+        if (tableItem.getDId() == null && tableItem.getChildren() != null && tableItem.getChildren().size() > 0 && tableItem.getValues() != null && tableItem.getValues().size() > 0) {
             item.setValues(convertToItemList(rowValues.has(OUTERSUM) ? rowValues.getJSONArray(OUTERSUM) : new JSONArray()));
         } else {
-            item.setValues(convertToItemList(rowValues.optJSONArray(String.valueOf(item.getDId()) + String.valueOf(item.getValue()))));
+            JSONArray array = rowValues.optJSONArray(String.valueOf(item.getDId()) + String.valueOf(item.getValue()));
+            if (null != array) {
+                item.setValues(convertToItemList(array));
+            }
         }
         if (item.getChildren() != null) {
             for (int i = 0; i < item.getChildren().size(); i++) {
@@ -310,6 +311,7 @@ public class SummaryComplexTableBuilder extends TableAbstractDataBuilder {
     // 处理列 针对于children
     // 要将所有的最外层的values处理成children
     private void parseColTableItems(List<ITableItem> tempItems) throws Exception {
+        ITableItem childItem = new BIBasicTableItem();
         for (int i = 0; i < tempItems.size(); i++) {
             boolean isSummary = showRowTotal && targetIds.size() > 0 && (isColRegionExist() || isRowRegionExist()) && !isOnlyCrossAndTarget();
             if (isSummary) {
@@ -322,8 +324,13 @@ public class SummaryComplexTableBuilder extends TableAbstractDataBuilder {
                 tempItems.get(i).setChildren(childrenAddSummaryValue);
                 tempItems.get(i).setValues(null);
             }
+            if (childItem.getChildren() == null) {
+                childItem.setChildren(tempItems.get(i).getChildren());
+            } else {
+                childItem.getChildren().addAll(tempItems.get(i).getChildren());
+            }
         }
-        this.items.addAll(tempItems);
+        this.items.add(childItem);
     }
 
     //从table中获取信息，缓存再rowValues里面
@@ -332,7 +339,7 @@ public class SummaryComplexTableBuilder extends TableAbstractDataBuilder {
     private void putNewValuesIntoRowTables(ITableItem data, JSONObject rowValues, String pId) throws Exception {
         String itemId = "";
         if (data.getDId() != null && data.getValue() != null) {
-            itemId = pId + data.getValue();
+            itemId = pId + data.getDId() + data.getValue();
         }
         //最外层的合计 可以通过data中是否包含dId来确定
         if (data.getChildren() != null && data.getDId() == null) {
@@ -343,7 +350,6 @@ public class SummaryComplexTableBuilder extends TableAbstractDataBuilder {
         }
         boolean rowRegionAvailable = data.getDId() != null || !isRowRegionExist();
         if (data.getValues() != null && rowRegionAvailable) {
-            itemId = data.getDId() + data.getValue();
             boolean hasItems = rowValues.has(itemId) && rowValues.getJSONArray(itemId).length() > 0;
             if (!hasItems) {
                 rowValues.put(itemId, data.createJSON().get("values"));
@@ -513,15 +519,17 @@ public class SummaryComplexTableBuilder extends TableAbstractDataBuilder {
                 }
             }
         }
-        loop:
-        if (dimAndTar.containsKey(Integer.valueOf(BIReportConstant.REGION.DIMENSION2))) {
-            for (JSONObject s : dimAndTar.get(Integer.valueOf(BIReportConstant.REGION.DIMENSION2))) {
-                crossDimIds.add(s.getString("dId"));
-            }
-            if (crossDimIds.size() > 0) {
-                break loop;
+        for (Integer integer : dimAndTar.keySet()) {
+            if (BITableExportDataHelper.isDimensionRegion2ByRegionType(integer)) {
+                for (JSONObject s : dimAndTar.get(integer)) {
+                    crossDimIds.add(s.getString("dId"));
+                }
+                if (crossDimIds.size() > 0) {
+                    break;
+                }
             }
         }
+
         //使用中的指标
         if (dimAndTar.containsKey(Integer.valueOf(BIReportConstant.REGION.TARGET1))) {
             for (JSONObject s : dimAndTar.get(Integer.valueOf(BIReportConstant.REGION.TARGET1))) {

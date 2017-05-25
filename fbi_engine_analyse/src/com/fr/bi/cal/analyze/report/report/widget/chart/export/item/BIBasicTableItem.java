@@ -180,8 +180,8 @@ public class BIBasicTableItem implements ITableItem {
             jo.put("children", childrenArray);
         }
         jo.put("dId", dId);
-        jo.put("styles", null == styles ? new JSONObject() : styles.createJSON());
         jo.put("text", text);
+//        jo.put("styles", null == styles ? new JSONObject() : styles.createJSON());
 //        jo.put("isSum", isSum);
         if (null != this.values && values.size() > 0) {
             JSONArray TempValues = new JSONArray();
