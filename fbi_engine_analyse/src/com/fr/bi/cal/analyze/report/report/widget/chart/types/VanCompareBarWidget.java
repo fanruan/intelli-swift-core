@@ -28,6 +28,7 @@ public class VanCompareBarWidget extends VanCompareColumnWidget{
         return true;
     }
 
+    //把值轴1的警戒线取负，把值轴2的警戒线放到值轴1里面"
     protected JSONArray parseValueAxis(JSONObject settings) throws JSONException{
         JSONArray axisArray = super.parseValueAxis(settings);
         JSONObject leftAxis = axisArray.optJSONObject(0);
