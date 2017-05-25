@@ -8,6 +8,7 @@
   "fieldId": "字段ID (field_id)",
   "tableId": "表ID (table_id)",
   "packageId": "业务包ID (package_id)",
+  "dashboardChartType": "仪表盘类型 (chartDashboardType)",
 
   "fieldType": "字段类型 (field_type)",
   "fieldName": "字段名 (field_type)",

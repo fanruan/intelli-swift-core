@@ -36,6 +36,7 @@ public class ReportSettingUpdateManager {
         while (iterator.hasNext()) {
             ReportConfVersionNode node = iterator.next();
             boolean flag = parseValue(getVersion(setting).getVersion()) < parseValue(node.getVersion().getVersion());
+            flag = true;
             if (flag) {
                 BILoggerFactory.getLogger(this.getClass()).debug(BIStringUtils.append("profile files is updating ", this.getVersion(setting).getVersion() + "------>" + node.getVersion().getVersion()));
                 reportSettings = node.update(reportSettings);
