@@ -7,6 +7,8 @@ import com.fr.bi.base.ValueConverterFactory;
 import com.fr.bi.stable.constant.DateConstant;
 import com.fr.bi.stable.io.newio.NIOConstant;
 
+import java.util.Calendar;
+
 /**
  * This class created on 2016/3/30.
  * 年月日
@@ -21,6 +23,11 @@ public class BICubeYearMonthDayColumn extends BICubeDateSubColumn<Long> {
     @Override
     protected Long convertDate(Long date) {
         return date != null ? (Long) ValueConverterFactory.createDateValueConverter(DateConstant.DATE.YMD).result2Value(date) : null;
+    }
+
+    @Override
+    protected Long convertDate(Long date, Calendar calendar) {
+        return date != null ? (Long) ValueConverterFactory.createDateValueConverter(DateConstant.DATE.YMD).result2Value(date, calendar) : null;
     }
 
     @Override

@@ -7,6 +7,8 @@ import com.fr.bi.base.ValueConverterFactory;
 import com.fr.bi.stable.constant.DateConstant;
 import com.fr.bi.stable.io.newio.NIOConstant;
 
+import java.util.Calendar;
+
 
 /**
  * This class created on 2017/03/28
@@ -21,6 +23,11 @@ public class BICubeSecondColumn extends BICubeDateSubColumn<Integer> {
     @Override
     protected Integer convertDate(Long date) {
         return date != null ? (Integer) ValueConverterFactory.createDateValueConverter(DateConstant.DATE.SECOND).result2Value(date) : null;
+    }
+
+    @Override
+    protected Integer convertDate(Long date, Calendar calendar) {
+        return date != null ? (Integer) ValueConverterFactory.createDateValueConverter(DateConstant.DATE.SECOND).result2Value(date, calendar) : null;
     }
 
     @Override

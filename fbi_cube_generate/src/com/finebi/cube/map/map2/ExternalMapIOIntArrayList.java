@@ -7,7 +7,8 @@ import com.fr.bi.stable.io.newio.NIOReader;
 import com.fr.bi.stable.io.newio.NIOWriter;
 import com.fr.bi.stable.io.newio.read.IntNIOReader;
 import com.fr.bi.stable.io.newio.write.IntNIOWriter;
-import com.fr.stable.collections.array.IntArray;
+import com.fr.bi.stable.structure.array.IntList;
+import com.fr.bi.stable.structure.array.IntListFactory;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -18,7 +19,7 @@ import java.util.Map;
  *
  * Created by wang on 2016/9/2.
  */
-public abstract class ExternalMapIOIntArrayList<K> implements ExternalMapIO<K, IntArray> {
+public abstract class ExternalMapIOIntArrayList<K> implements ExternalMapIO<K, IntList> {
     protected IntNIOWriter valueWriter = null;
     protected IntNIOReader valueReader = null;
     protected Position positionWriter;
@@ -118,15 +119,16 @@ public abstract class ExternalMapIOIntArrayList<K> implements ExternalMapIO<K, I
     }
 
     @Override
-    public void write(K key, IntArray value) {
+    public void write(K key, IntList value) {
         writeKey(key);
         /**
          * 记录下来有多少个数据，以为用到writer对象。
          */
-        getValueWriter().add(positionWriter.valuePosition++, value.size);
-        for (int i = 0; i < value.size; i++) {
+        getValueWriter().add(positionWriter.valuePosition++, value.size());
+        for (int i = 0; i < value.size(); i++) {
             getValueWriter().add(positionWriter.valuePosition++, value.get(i));
         }
+        value.clear();
     }
 
 //    abstract int recordAmount(IntArrayList value);
@@ -140,16 +142,16 @@ public abstract class ExternalMapIOIntArrayList<K> implements ExternalMapIO<K, I
     }
 
     @Override
-    public Map<K, IntArray> read() throws FileNotFoundException {
+    public Map<K, IntList> read() throws FileNotFoundException {
         if (canRead()) {
             K key = readKey();
             int amount = getValueReader().get(positionReader.valuePosition++);
-            IntArray list = generateList();
+            IntList list = generateList();
             for (int i = 0; compare(i, amount); i++) {
                 list.add(getValueReader().get(positionReader.valuePosition++));
             }
-            if (!isEmpty(key) || list.size != 0) {
-                Map<K, IntArray> result = new HashMap<K, IntArray>();
+            if (!isEmpty(key) || list.size() != 0) {
+                Map<K, IntList> result = new HashMap<K, IntList>();
                 result.put(key, list);
                 return result;
             } else {
@@ -164,8 +166,8 @@ public abstract class ExternalMapIOIntArrayList<K> implements ExternalMapIO<K, I
         return i < amount;
     }
 
-    private IntArray generateList(){
-        return new IntArray();
+    private IntList generateList(){
+        return IntListFactory.createIntList();
     }
 
     private boolean canRead() {
