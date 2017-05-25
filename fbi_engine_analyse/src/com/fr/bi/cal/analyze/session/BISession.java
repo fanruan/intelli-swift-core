@@ -467,4 +467,12 @@ public class BISession extends BIAbstractSession {
     public List<MetricGroupInfo> getMetricGroupInfoList(String widgetName) {
         return mergerInfoListMap.get(widgetName);
     }
+
+    public void clearCachedMaps() {
+        detailIndexMap.clear();
+        detailValueMap.clear();
+        partPageGroup.clear();
+        pageGroup.clear();
+    }
+
 }

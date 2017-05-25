@@ -45,6 +45,7 @@ import com.fr.bi.conf.provider.BIUpdateFrequencyManagerProvider;
 import com.fr.bi.conf.provider.BIUserLoginInformationProvider;
 import com.fr.bi.conf.records.BICubeTaskRecordManagerWithoutUser;
 import com.fr.bi.conf.report.BIFSReportProvider;
+import com.fr.bi.conf.tablelock.BIConfTableLock;
 import com.fr.bi.conf.tablelock.BIConfTableLockDAO;
 import com.fr.bi.fs.BIDAOProvider;
 import com.fr.bi.fs.BIDAOUtils;
@@ -616,10 +617,12 @@ public class BICoreModule extends AbstractModule {
 
     private void registerDAO() {
         if ((!ClusterEnv.isCluster())) {
-            dropBIReportNodeLockDAOTable();
+            dropBILockDAOTable(BIReportNodeLock.class);
+            dropBILockDAOTable(BIConfTableLock.class);
         }
         if (ClusterAdapter.getManager().getHostManager().isSelf() && isFirstTimeInit) {
-            dropBIReportNodeLockDAOTable();
+            dropBILockDAOTable(BIReportNodeLock.class);
+            dropBILockDAOTable(BIConfTableLock.class);
         }
 
         StableFactory.registerMarkedObject(HSQLDBDAOControl.class.getName(), HSQLBIReportDAO.getInstance());
@@ -628,10 +631,10 @@ public class BICoreModule extends AbstractModule {
         StableFactory.registerMarkedObject(BIConfTableLockDAO.class.getName(), BIConfTableLockDAO.getInstance());
     }
 
-    private void dropBIReportNodeLockDAOTable() {
+    private void dropBILockDAOTable(Class Lock) {
         Connection cn = null;
         PreparedStatement ps = null;
-        String tableName = ObjectTableMapper.PREFIX_NAME + BIReportNodeLock.class.getSimpleName();
+        String tableName = ObjectTableMapper.PREFIX_NAME + Lock.getSimpleName();
         try {
             cn = PlatformDB.getDB().createConnection();
             ps = cn.prepareStatement("DROP TABLE " + DialectFactory.generateDialect(cn).column2SQL(tableName));

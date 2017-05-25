@@ -69,6 +69,11 @@ public class PerformancePlugManager implements PerformancePlugManagerInterface {
     private int reIndexRowCount = 1 << 12;
 
     private long cubeReaderReleaseSleepTime = 1L;
+    private boolean isDirectGenerating = false;
+
+    private boolean unmapReader = false;
+    private boolean isForceWriter = false;
+
 
     private PerformancePlugManager() {
         init();
@@ -110,8 +115,11 @@ public class PerformancePlugManager implements PerformancePlugManagerInterface {
             retryMaxTimes = getInt(PERFORMANCE + ".retryMaxTimes", retryMaxTimes);
             retryMaxSleepTime = getLong(PERFORMANCE + ".retryMaxSleepTime", retryMaxSleepTime);
             extremeConcurrency = getBoolean(PERFORMANCE + ".extremeConcurrency", extremeConcurrency);
+            unmapReader = getBoolean(PERFORMANCE + ".unmapReader", unmapReader);
             reIndexRowCount = getInt(PERFORMANCE + ".reIndexRowCount", reIndexRowCount);
             cubeReaderReleaseSleepTime = getLong(PERFORMANCE + ".cubeReaderReleaseSleepTime", cubeReaderReleaseSleepTime);
+            isDirectGenerating = getBoolean(PERFORMANCE + ".isDirectGenerating", isDirectGenerating);
+            isForceWriter = getBoolean(PERFORMANCE + ".isForceWriter", isForceWriter);
 //            logConfiguration();
         } catch (Exception e) {
             BILoggerFactory.getLogger().error(e.getMessage(), e);
@@ -145,7 +153,10 @@ public class PerformancePlugManager implements PerformancePlugManagerInterface {
         LOGGER.info("The value of {}.retryMaxTimes is {}", PERFORMANCE, retryMaxTimes);
         LOGGER.info("The value of {}.retryMaxSleepTime is {}", PERFORMANCE, retryMaxSleepTime);
         LOGGER.info("The value of {}.cubeReaderReleaseSleepTime is {}", PERFORMANCE, cubeReaderReleaseSleepTime);
+        LOGGER.info("The value of {}.unmapReader is {}", PERFORMANCE, unmapReader);
 
+        LOGGER.info("The value of {}.isDirectGenerating is {}", PERFORMANCE, isDirectGenerating);
+        LOGGER.info("The value of {}.isForceWriter is {}", PERFORMANCE, isForceWriter);
         LOGGER.info("");
         LOGGER.info("");
     }
@@ -451,5 +462,23 @@ public class PerformancePlugManager implements PerformancePlugManagerInterface {
     @Override
     public long getCubeReaderReleaseSleepTime() {
         return cubeReaderReleaseSleepTime;
+    }
+    @Override
+    public boolean isDirectGenerating (){
+        return isDirectGenerating;
+    }
+
+    @Override
+    public boolean isForceWriter() {
+        return isForceWriter;
+    }
+
+
+    public boolean isUnmapReader() {
+        return unmapReader;
+    }
+
+    public void setUnmapReader(boolean unmapReader) {
+        this.unmapReader = unmapReader;
     }
 }

@@ -43,8 +43,8 @@ public class VanDotWidget extends VanCartesianWidget{
     private static final int TRIANGLE = 2;
 
     //气泡的大小
-    private static final int MIN_SIZE = 15;
-    private static final int MAX_SIZE = 80;
+    private static final int MIN_SIZE = 12;
+    private static final int MAX_SIZE = 40;
 
     //值区间的默认颜色
     private static final String[] INTERVAL_COLORS = new String[]{"#65B3EE", "#95E1AA", "#F8D08E"};
@@ -251,11 +251,11 @@ public class VanDotWidget extends VanCartesianWidget{
                 JSONArray dataArray = seriesMap.containsKey(seriesName) ? seriesMap.get(seriesName) : JSONArray.create();
                 seriesMap.put(seriesName, dataArray);
 
-                String[] desc = new String[longDateDesc.size()];
+                List<String> desc = new ArrayList<String>();
 
-                for(int index = 0, count = desc.length; index < count; index++){
+                for(int index = 0, count = childDescription.size(); index < count; index++){
                     BIDimension categoryDim = this.getCategoryDimension(index);
-                    desc[index] = this.formatDimension(categoryDim, longDateDesc.get(index));
+                    desc.add(this.formatDimension(categoryDim, childDescription.get(index)));
                 }
                 child.put("longDateDescription", longDateDesc);
                 child.put("description", desc);

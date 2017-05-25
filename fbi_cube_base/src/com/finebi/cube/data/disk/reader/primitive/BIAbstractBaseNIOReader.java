@@ -104,15 +104,17 @@ public abstract class BIAbstractBaseNIOReader implements ICubePrimitiveReader {
             //先改变isValid状态再判断canClear
             isValid = false;
             setBufferInValid();
-            try {
-                //但愿10ms能 执行完get方法否则可能导致jvm崩溃
-                //锁太浪费资源了，10ms目前并没有遇到问题
-                //daniel:改成1ms，最垃圾的磁盘也读完了
-                Thread.currentThread().sleep(PerformancePlugManager.getInstance().getCubeReaderReleaseSleepTime());
-            } catch (InterruptedException e) {
-                BILoggerFactory.getLogger().error(e.getMessage(), e);
+            if(PerformancePlugManager.getInstance().isUnmapReader()) {
+                try {
+                    //但愿10ms能 执行完get方法否则可能导致jvm崩溃
+                    //锁太浪费资源了，10ms目前并没有遇到问题
+                    //daniel:改成1ms，最垃圾的磁盘也读完了
+                    Thread.currentThread().sleep(PerformancePlugManager.getInstance().getCubeReaderReleaseSleepTime());
+                } catch (InterruptedException e) {
+                    BILoggerFactory.getLogger().error(e.getMessage(), e);
+                }
+                unMap();
             }
-            unMap();
         } catch (IOException e) {
             BILoggerFactory.getLogger().error(e.getMessage(), e);
         } finally {
