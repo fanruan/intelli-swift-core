@@ -168,6 +168,4 @@ public abstract class BICubeDetailData<T> implements ICubeDetailDataService<T> {
     public void recordVersion(CubeVersion version) {
 
     }
-
-    public abstract T getCubeNullValue();
 }
