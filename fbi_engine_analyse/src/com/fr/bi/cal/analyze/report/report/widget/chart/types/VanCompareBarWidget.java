@@ -28,6 +28,29 @@ public class VanCompareBarWidget extends VanCompareColumnWidget{
         return true;
     }
 
+    protected JSONArray parseValueAxis(JSONObject settings) throws JSONException{
+        JSONArray axisArray = super.parseValueAxis(settings);
+        JSONObject leftAxis = axisArray.optJSONObject(0);
+        if(leftAxis != null){
+            JSONArray resultLines = JSONArray.create();
+            JSONObject rightAxis = axisArray.optJSONObject(1);
+            if(rightAxis != null && rightAxis.has("plotLines")){
+                resultLines = rightAxis.optJSONArray("plotLines");
+            }
+            JSONArray plotLines = leftAxis.optJSONArray("plotLines");
+            if(plotLines != null){
+                for(int i = 0, len = plotLines.length(); i < len;i++){
+                    JSONObject line = plotLines.optJSONObject(i);
+                    line.put("value", -line.optDouble("value"));
+                    resultLines.put(line);
+                }
+            }
+            leftAxis.put("plotLines", resultLines);
+        }
+
+        return axisArray;
+    }
+
     protected void dealCompareChartYAxis(JSONObject settings) throws JSONException {
     }
 
