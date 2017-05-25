@@ -59,6 +59,4 @@ public class BIReadReportUtils implements BIReadReportProvider {
                 new BIDesignSetting());
         return setting.getReportJSON();
     }
-
-
 }
