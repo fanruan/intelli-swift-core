@@ -685,12 +685,12 @@ public abstract class VanChartWidget extends TableWidget {
         JSONArray series = JSONArray.create();
         String[] targetIDs = this.getUsedTargetID();
         String[] dimensionIDs = this.getUsedDimensionID();
-        if(targetIDs.length == 0){
-            return series;
-        }
         String categoryKey = this.categoryKey(), valueKey = this.valueKey();
         ArrayList<Double> valueList = new ArrayList<Double>();
-        JSONObject top = originData.getJSONObject("t"), left = originData.getJSONObject("l");
+        JSONObject top = originData.optJSONObject("t"), left = originData.optJSONObject("l");
+        if(targetIDs.length == 0 || !top.has("c") || !left.has("c")){
+            return series;
+        }
         JSONArray topC = top.getJSONArray("c"), leftC = left.getJSONArray("c");
         String id = targetIDs[0];
         double numberScale = this.numberScale(targetIDs[0]);
