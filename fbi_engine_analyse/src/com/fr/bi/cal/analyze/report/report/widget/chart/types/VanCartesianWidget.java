@@ -282,7 +282,7 @@ public abstract class VanCartesianWidget extends VanChartWidget {
                         JSONObject datum = data.optJSONObject(dataIndex);
                         String x = datum.optString("x");
                         double y = datum.optDouble("y", 0);
-                        for (int filterIndex = 0; filterIndex < filterCount; filterIndex++) {
+                        for (int filterIndex = filterCount - 1; filterIndex >= 0; filterIndex--) {
                             FilterValue filter = filterValues[filterIndex];
                             JSONObject config = dataImage.optJSONObject(filterIndex);
                             String id = config.optString("targetId");
@@ -348,7 +348,7 @@ public abstract class VanCartesianWidget extends VanChartWidget {
                         JSONObject datum = data.optJSONObject(dataIndex);
                         String x = datum.optString("x");
                         double y = datum.optDouble("y", 0);
-                        for (int filterIndex = 0; filterIndex < filterCount; filterIndex++) {
+                        for (int filterIndex = filterCount - 1; filterIndex >= 0; filterIndex--) {
                             FilterValue filter = filterValues[filterIndex];
                             JSONObject config = labelCondition.optJSONObject(filterIndex);
                             String id = config.optString("targetId");
