@@ -76,7 +76,7 @@ public class VanMultiPieWidget extends VanPieWidget{
             double value = s.isNull(0) ? 0 : s.getDouble(0);
             String name =  item.optString("n");
             String formattedName = this.formatDimension(categoryDim, name);
-            JSONObject datum = JSONObject.create().put("name", formattedName).put("value", value/scale).put(LONG_DATE, this.getLongDate(formattedName, name));
+            JSONObject datum = JSONObject.create().put("name", formattedName).put("value", value/scale).put(LONG_DATE, name);
             if(item.has("c")){
                 datum.put("children", this.createChildren(item, scale, level + 1));
             }

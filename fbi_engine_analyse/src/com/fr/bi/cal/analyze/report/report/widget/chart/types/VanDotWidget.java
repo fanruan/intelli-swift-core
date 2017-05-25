@@ -6,6 +6,7 @@ import com.fr.bi.conf.report.WidgetType;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.stable.constant.BIChartSettingConstant;
 import com.fr.bi.stable.constant.BIReportConstant;
+import com.fr.bi.stable.io.io.ListWriter;
 import com.fr.general.ComparatorUtils;
 import com.fr.general.FRLogger;
 import com.fr.json.JSONArray;
@@ -53,6 +54,7 @@ public class VanDotWidget extends VanCartesianWidget{
     private static final int BUBBLE_DIMENSION = 3;
 
     private List<String> seriesIDs = new ArrayList<String>();
+    private List<String> categoryIDs = new ArrayList<String>();
 
     private static String tooltipTpl;
 
@@ -83,8 +85,11 @@ public class VanDotWidget extends VanCartesianWidget{
             for (int j = 0; j < tmp.length(); j++) {
                 String key = tmp.getString(j);
                 ja.put(key);
-                if (Integer.parseInt(region) == seriesRegion) {
+
+                if(Integer.parseInt(region) == seriesRegion){
                     this.seriesIDs.add(key);
+                }else{
+                    this.categoryIDs.add(key);
                 }
             }
 
@@ -300,13 +305,13 @@ public class VanDotWidget extends VanCartesianWidget{
 
             if(!noSeries) {
                 String formattedName = this.formatDimension(seriesDim, seriesName);
-                ser.put("data", data).put("name", formattedName).put(LONG_DATE, seriesName).put("dimensionIDs", dimensionIDs).put("targetIDs", ids);
+                ser.put("data", data).put("name", formattedName).put(LONG_DATE, seriesName).put("dimensionIDs", dimensionIDs).put("targetIDs", new JSONArray(ids));
                 series.put(ser);
             }
         }
 
         if(noSeries){
-            series.put(JSONObject.create().put("data", dotData).put("dimensionIDs", dimensionIDs).put("targetIDs", ids));
+            series.put(JSONObject.create().put("data", dotData).put("dimensionIDs", dimensionIDs).put("targetIDs", new JSONArray(ids)));
         }
 
         return series;
@@ -338,7 +343,7 @@ public class VanDotWidget extends VanCartesianWidget{
             JSONObject point = JSONObject.create().put("x", x).put("y", y).put("size", value);
 
             JSONObject ser = JSONObject.create().put("data", JSONArray.create().put(point))
-                    .put("name", obj.optString("n")).put("targetIDs", ids);
+                    .put("name", obj.optString("n")).put("targetIDs", new JSONArray(ids));
 
             if(category != null){
                 ser.put("dimensionIDs", JSONArray.create().put(category.getValue()));
@@ -466,5 +471,34 @@ public class VanDotWidget extends VanCartesianWidget{
 
     protected String categoryLabelKey() {
         return DESCRIPTION;
+    }
+
+    protected Object findTarget(String id, JSONObject datum, JSONObject ser){
+
+        for(int i = 0, len = this.seriesIDs.size(); i < len; i++){
+            if(ComparatorUtils.equals(this.seriesIDs.get(i), id)){
+                return ser.optString(LONG_DATE);
+            }
+        }
+
+        for(int i = 0, len = this.categoryIDs.size(); i < len; i++){
+            if(ComparatorUtils.equals(this.categoryIDs.get(i), id)){
+                return datum.optJSONArray("longDateDescription").optString(i);
+            }
+        }
+
+        String[] targetIDs = this.getUsedTargetID();
+        for(int i = 0, len = targetIDs.length; i < len; i++){
+            if(targetIDs[i] == id){
+                if(i == 0){
+                    return datum.optDouble("x", 0);
+                }else if(i == 1){
+                    return datum.optDouble("y", 0);
+                }else if(i == 2){
+                    return datum.optDouble("size", 0);
+                }
+            }
+        }
+        return null;
     }
 }
