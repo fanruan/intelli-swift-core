@@ -1,6 +1,7 @@
 package com.fr.bi.cal.analyze.report.report.widget.chart.types;
 
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
+import com.fr.bi.stable.constant.BIChartSettingConstant;
 import com.fr.general.ComparatorUtils;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONException;
@@ -76,7 +77,7 @@ public class VanMultiPieWidget extends VanPieWidget{
             double value = s.isNull(0) ? 0 : s.getDouble(0);
             String name =  item.optString("n");
             String formattedName = this.formatDimension(categoryDim, name);
-            JSONObject datum = JSONObject.create().put("name", formattedName).put("value", value/scale).put(LONG_DATE, this.getLongDate(formattedName, name));
+            JSONObject datum = JSONObject.create().put("name", formattedName).put("value", value/scale).put(LONG_DATE, name);
             if(item.has("c")){
                 datum.put("children", this.createChildren(item, scale, level + 1));
             }
@@ -96,6 +97,15 @@ public class VanMultiPieWidget extends VanPieWidget{
 
     protected String categoryLabelKey() {
         return NAME;
+    }
+
+    protected JSONObject defaultDataLabelSetting() throws JSONException {
+
+        return JSONObject.create().put("showCategoryName", true)
+                .put("showSeriesName", false).put("showValue", false).put("showPercentage", true)
+                .put("position", BIChartSettingConstant.DATA_LABEL.POSITION_INNER).put("showTractionLine", false)
+                .put("textStyle", defaultFont());
+
     }
 
 }
