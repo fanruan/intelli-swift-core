@@ -32,8 +32,6 @@ public interface ITableItem extends JSONCreator {
 
     void setValues(List<ITableItem> values);
 
-    void addValues(List<ITableItem> values);
-
     void setNeedExpand(boolean needExpand);
 
     void setExpanded(boolean expanded);

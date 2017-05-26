@@ -42,14 +42,6 @@ public class BIBasicTableItem implements ITableItem {
     }
 
     @Override
-    public void addValues(List<ITableItem> values) {
-        if (this.values == null) {
-            this.values = new ArrayList<ITableItem>();
-        }
-        this.values.addAll(values);
-    }
-
-    @Override
     public void setNeedExpand(boolean needExpand) {
         this.needExpand = needExpand;
     }
@@ -133,16 +125,16 @@ public class BIBasicTableItem implements ITableItem {
         if (newItem == null) {
             return;
         }
-        if (getValues()!=null) {
+        if (getValues() != null) {
             getValues().addAll(newItem.getValues());
-        }else {
+        } else {
             setValues(newItem.getValues());
         }
         if (getChildren() != null) {
             for (int i = 0; i < newItem.getChildren().size(); i++) {
                 getChildren().get(i).mergeItems(newItem.getChildren().get(i));
             }
-        }else {
+        } else {
             setChildren(newItem.getChildren());
         }
     }

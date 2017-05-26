@@ -276,11 +276,15 @@ public class SummaryComplexTableBuilder extends TableAbstractDataBuilder {
                 BIBasicTableItem summaryValueItem = new BIBasicTableItem();
                 summaryValueItem.setValue(SUMMARY);
                 summaryValueItem.setValues(tempItems.get(i).getValues());
-                summaryValueItem.setStyles(SummaryTableStyleHelper.getLastSummaryStyles(styleSetting.getThemeColor(), styleSetting.getTableStyleGroup()));
                 List<ITableItem> childrenAddSummaryValue = tempItems.get(i).getChildren();
                 childrenAddSummaryValue.add(summaryValueItem);
                 tempItems.get(i).setChildren(childrenAddSummaryValue);
                 tempItems.get(i).setValues(null);
+            }else {
+                if (childItem.getValues() == null) {
+                    childItem.setValues(tempItems.get(i).getValues());
+                } else
+                    childItem.getValues().addAll(tempItems.get(i).getValues());
             }
             if (childItem.getChildren() == null) {
                 childItem.setChildren(tempItems.get(i).getChildren());
@@ -320,7 +324,6 @@ public class SummaryComplexTableBuilder extends TableAbstractDataBuilder {
         dimAndTars.put(Integer.valueOf(BIReportConstant.REGION.DIMENSION1), dimIdObj);
         dimAndTars.put(Integer.valueOf(BIReportConstant.REGION.DIMENSION2), crossDimIdObj);
         dimAndTars.put(Integer.valueOf(BIReportConstant.REGION.TARGET1), targetIdObj);
-
         return dimAndTars;
     }
 
