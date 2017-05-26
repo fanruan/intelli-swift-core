@@ -1,13 +1,16 @@
 package com.fr.bi.stable.report.update;
 
+import com.finebi.ProductConstants;
 import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.exception.BIReportVersionAbsentException;
 import com.fr.bi.fs.BIDesignSetting;
+import com.fr.bi.stable.utils.DateUtils;
 import com.fr.bi.stable.utils.program.BIStringUtils;
 import com.fr.general.ComparatorUtils;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
@@ -35,13 +38,19 @@ public class ReportSettingUpdateManager {
         Iterator<ReportConfVersionNode> iterator = versionNodes.iterator();
         while (iterator.hasNext()) {
             ReportConfVersionNode node = iterator.next();
-            boolean flag = parseValue(getVersion(setting).getVersion()) < parseValue(node.getVersion().getVersion());
-            if (flag) {
+            boolean needUpdate = updateStatusCheck(setting, node);
+            if (needUpdate) {
                 BILoggerFactory.getLogger(this.getClass()).debug(BIStringUtils.append("profile files is updating ", this.getVersion(setting).getVersion() + "------>" + node.getVersion().getVersion()));
                 reportSettings = node.update(reportSettings);
             }
         }
         return new BIDesignSetting(reportSettings.toString());
+    }
+
+    private boolean updateStatusCheck(BIDesignSetting setting, ReportConfVersionNode node) throws BIReportVersionAbsentException, JSONException, ParseException {
+        boolean isBeforeLatestVersion = parseValue(getVersion(setting).getVersion()) < parseValue(node.getVersion().getVersion());
+        boolean isBeforeLatestDate = !setting.getReportJSON().has("lastModifyTime") || DateUtils.parse(setting.getReportJSON().getString("lastModifyTime")).before(DateUtils.parse(ProductConstants.getReleaseDate()));
+        return isBeforeLatestDate || isBeforeLatestVersion;
     }
 
     /***

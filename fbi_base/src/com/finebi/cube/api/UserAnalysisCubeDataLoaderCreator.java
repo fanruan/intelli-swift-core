@@ -47,6 +47,17 @@ public class UserAnalysisCubeDataLoaderCreator implements ICubeDataLoaderCreator
 
     }
 
+    @Override
+    public void clear(long userId) {
+        if (container.containsKey(new BIUser(userId))) {
+            synchronized (container) {
+                if (container.containsKey(new BIUser(userId))) {
+                    container.remove(new BIUser(userId));
+                }
+            }
+        }
+    }
+
     public ICubeDataLoader fetchCubeLoader(long user) {
         return fetchCubeLoader(new BIUser(user));
     }

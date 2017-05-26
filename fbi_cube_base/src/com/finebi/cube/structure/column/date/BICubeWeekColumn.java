@@ -7,6 +7,8 @@ import com.fr.bi.base.ValueConverterFactory;
 import com.fr.bi.stable.constant.DateConstant;
 import com.fr.bi.stable.io.newio.NIOConstant;
 
+import java.util.Calendar;
+
 /**
  * This class created on 2016/3/30.
  * 星期几1-7
@@ -22,6 +24,11 @@ public class BICubeWeekColumn extends BICubeDateSubColumn<Integer> {
     protected Integer convertDate(Long date) {
         return date != null ? (Integer) ValueConverterFactory.createDateValueConverter(DateConstant.DATE.WEEK).result2Value(date) : null;
 
+    }
+
+    @Override
+    protected Integer convertDate(Long date, Calendar calendar) {
+        return date != null ? (Integer) ValueConverterFactory.createDateValueConverter(DateConstant.DATE.WEEK).result2Value(date, calendar) : null;
     }
 
     @Override

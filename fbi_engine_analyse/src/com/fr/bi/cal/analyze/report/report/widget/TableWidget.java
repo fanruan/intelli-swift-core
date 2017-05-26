@@ -21,7 +21,7 @@ import com.fr.bi.cal.analyze.report.report.widget.chart.export.format.operation.
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.format.operation.ITableCellFormatOperation;
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.format.setting.BICellFormatSetting;
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.format.setting.ICellFormatSetting;
-import com.fr.bi.cal.analyze.report.report.widget.chart.export.item.BITableDataConstructor;
+import com.fr.bi.cal.analyze.report.report.widget.chart.export.item.constructor.DataConstructor;
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.utils.BITableConstructHelper;
 import com.fr.bi.cal.analyze.report.report.widget.style.BITableWidgetStyle;
 import com.fr.bi.cal.analyze.report.report.widget.table.BITableReportSetting;
@@ -42,6 +42,7 @@ import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.gvi.GVIUtils;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.utils.BITravalUtils;
+import com.fr.bi.stable.utils.file.BIFileUtils;
 import com.fr.general.ComparatorUtils;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONException;
@@ -50,6 +51,7 @@ import com.fr.report.poly.TemplateBlock;
 import com.fr.stable.StringUtils;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -533,9 +535,17 @@ public class TableWidget extends BISummaryWidget {
                 builder = new SummaryComplexTableBuilder(viewMap, dataJSON, style);
                 break;
         }
-        BITableDataConstructor data = BITableConstructHelper.buildTableData(builder);
+        DataConstructor data = BITableConstructHelper.buildTableData(builder);
         BITableConstructHelper.formatCells(data, getITableCellFormatOperationMap(), style);
         return data.createJSON().put("page", res.getJSONArray("page")).put("dimensionLength",dimensions.length);
+//        return createTestData().put("page", res.getJSONArray("page")).put("dimensionLength", dimensions.length).put("settings", data.getWidgetStyle().createJSON()).put("widgetType", getType().getType());
+    }
+
+    /*假数据，测试用*/
+    private JSONObject createTestData() throws IOException, JSONException {
+        StringBuffer keysStr = new StringBuffer();
+        String s = BIFileUtils.readFile("C:\\data.json");
+        return new JSONObject(s);
     }
 
     private Map<String, ITableCellFormatOperation> getITableCellFormatOperationMap() throws Exception {
@@ -605,7 +615,7 @@ public class TableWidget extends BISummaryWidget {
             for (String dId : ids) {
                 String text = getDimensionNameByID(dId);
                 if (isUsedById(dId)) {
-                    list.add(new JSONObject().put("dId", dId).put("text", text).put("used",isUsedById(dId)));
+                    list.add(new JSONObject().put("dId", dId).put("text", text).put("used", isUsedById(dId)));
                 }
             }
             dimAndTar.put(next, list);

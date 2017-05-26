@@ -423,9 +423,10 @@ public abstract class VanChartWidget extends TableWidget {
 
     private JSONObject defaultDataLabelSetting() throws JSONException {
 
-        return JSONObject.create().put("showCategoryName", true)
-                .put("showSeriesName", true).put("showValue", true).put("showPercentage", false)
-                .put("position", BIChartSettingConstant.DATA_LABEL.POSITION_OUTER).put("showTractionLine", false)
+        //兼容4.0,勾选标签的时候只有值
+        return JSONObject.create().put("showCategoryName", false)
+                .put("showSeriesName", false).put("showValue", true).put("showPercentage", false)
+                .put("position", BIChartSettingConstant.DATA_LABEL.POSITION_OUTER).put("showTractionLine", true)
                 .put("textStyle", defaultFont());
 
     }
@@ -609,7 +610,10 @@ public abstract class VanChartWidget extends TableWidget {
     }
 
     protected void formatSeriesTooltipFormat(JSONObject options) throws Exception {
+        this.defaultFormatSeriesTooltipFormat(options);
+    }
 
+    protected void defaultFormatSeriesTooltipFormat(JSONObject options) throws Exception {
         JSONObject tooltip = options.optJSONObject("plotOptions").optJSONObject("tooltip");
 
         JSONArray series = options.optJSONArray("series");
@@ -640,6 +644,10 @@ public abstract class VanChartWidget extends TableWidget {
     }
 
     protected void formatSeriesDataLabelFormat(JSONObject options) throws Exception {
+        this.defaultFormatSeriesDataLabelFormat(options);
+    }
+
+    protected void defaultFormatSeriesDataLabelFormat(JSONObject options) throws Exception {
         JSONObject dataLabels = options.optJSONObject("plotOptions").optJSONObject(dataLabelsKey());
 
         if (dataLabels.optBoolean("enabled")) {
@@ -677,12 +685,12 @@ public abstract class VanChartWidget extends TableWidget {
         JSONArray series = JSONArray.create();
         String[] targetIDs = this.getUsedTargetID();
         String[] dimensionIDs = this.getUsedDimensionID();
-        if(targetIDs.length == 0){
-            return series;
-        }
         String categoryKey = this.categoryKey(), valueKey = this.valueKey();
         ArrayList<Double> valueList = new ArrayList<Double>();
-        JSONObject top = originData.getJSONObject("t"), left = originData.getJSONObject("l");
+        JSONObject top = originData.optJSONObject("t"), left = originData.optJSONObject("l");
+        if(targetIDs.length == 0 || !top.has("c") || !left.has("c")){
+            return series;
+        }
         JSONArray topC = top.getJSONArray("c"), leftC = left.getJSONArray("c");
         String id = targetIDs[0];
         double numberScale = this.numberScale(targetIDs[0]);
@@ -699,11 +707,11 @@ public abstract class VanChartWidget extends TableWidget {
                 double y = (s.isNull(0) ? 0 : s.getDouble(0)) / numberScale;
                 String formattedCategory = this.formatDimension(category, x);
                 data.put(
-                        JSONObject.create().put(categoryKey, formattedCategory).put(valueKey, s.isNull(0) ? "-" : y).put(LONG_DATE, this.getLongDate(formattedCategory, x))
+                        JSONObject.create().put(categoryKey, formattedCategory).put(valueKey, s.isNull(0) ? "-" : y).put(LONG_DATE, x)
                 );
                 valueList.add(y);
             }
-            JSONObject ser = JSONObject.create().put("data", data).put("name", formattedName).put(LONG_DATE, this.getLongDate(formattedName, name))
+            JSONObject ser = JSONObject.create().put("data", data).put("name", formattedName).put(LONG_DATE, name)
                     .put("type", this.getSeriesType(id, name))
                     .put("dimensionIDs", dimensionIDs)
                     .put("targetIDs", JSONArray.create().put(id));
@@ -716,10 +724,6 @@ public abstract class VanChartWidget extends TableWidget {
         this.idValueMap.put(targetIDs[0], valueList);
 
         return series;
-    }
-
-    protected String getLongDate(String formatted, String origin){
-        return ComparatorUtils.equals(formatted, origin) ? StringUtils.EMPTY : origin;
     }
 
     protected JSONArray createSeriesWithChildren(JSONObject originData) throws Exception {
@@ -748,7 +752,7 @@ public abstract class VanChartWidget extends TableWidget {
                     double y = targetValues.isNull(i) ? 0 : targetValues.getDouble(i) / numberScale;
                     String formattedCategory = this.formatDimension(category, x);
                     data.put(
-                            JSONObject.create().put(categoryKey, formattedCategory).put(valueKey, targetValues.isNull(i) ? '-' : y).put(LONG_DATE, ComparatorUtils.equals(formattedCategory, x) ? StringUtils.EMPTY : x)
+                            JSONObject.create().put(categoryKey, formattedCategory).put(valueKey, targetValues.isNull(i) ? "-" : y).put(LONG_DATE, ComparatorUtils.equals(formattedCategory, x) ? StringUtils.EMPTY : x)
                     );
                     valueList.add(y);
                 }
@@ -791,13 +795,13 @@ public abstract class VanChartWidget extends TableWidget {
                     JSONArray targetValues = lObj.getJSONArray("s");
                     double y = targetValues.isNull(i) ? 0 : targetValues.getDouble(i) / numberScale;
 
-                    JSONObject datum = JSONObject.create().put(categoryKey, StringUtils.EMPTY).put(valueKey, targetValues.isNull(i) ? '-' : y);
+                    JSONObject datum = JSONObject.create().put(categoryKey, StringUtils.EMPTY).put(valueKey, targetValues.isNull(i) ? "-" : y);
 
                     JSONObject ser = JSONObject.create().put("data", JSONArray.create().put(datum)).put("name", getDimensionNameByID(id))
                             .put("type", type).put("yAxis", yAxis)
                             .put("dimensionIDs", dimensionIDs)
                             .put("targetIDs", JSONArray.create().put(id))
-                            .put("name", formattedName).put(LONG_DATE, this.getLongDate(formattedName, seriesName));
+                            .put("name", formattedName).put(LONG_DATE, seriesName);
                     series.put(ser);
                     valueList.add(y);
                 }
@@ -875,7 +879,7 @@ public abstract class VanChartWidget extends TableWidget {
 
         if(dateFormatType == BIReportConstant.DATE_FORMAT.CHINESE){
             formatter = new SimpleDateFormat(String.format("yyyy%sMM%sdd%s H%sm%ss%s", getLocText("BI-Basic_Year"), getLocText("BI-Basic_Month"), getLocText("BI-Date_Day"),
-                    getLocText("BI-Hour_Sin"), getLocText("BI-Basic_Minute"), getLocText("BI-Basic_Second")));
+                    getLocText("BI-Hour_Sin"), getLocText("BI-Basic_Minute"), getLocText("BI-Basic_Seconds")));
         }else{
             formatter = new SimpleDateFormat("yyyy-MM-dd H:m:s");
         }

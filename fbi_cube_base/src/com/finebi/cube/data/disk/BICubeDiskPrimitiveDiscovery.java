@@ -25,28 +25,17 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class BICubeDiskPrimitiveDiscovery implements ICubePrimitiveResourceDiscovery {
 
-    private static BICubeDiskPrimitiveDiscovery instance;
+    private static BICubeDiskPrimitiveDiscovery instance = new BICubeDiskPrimitiveDiscovery();
     private Map<ICubeResourceLocation, ResourceLock> resourceLockMap;
     private Map<String, NIOResourceManager> fileResourceMap;
-    private boolean releasingResource = false;
+    private volatile boolean releasingResource = false;
 
     public boolean isReleasingResource() {
-        synchronized (this) {
-            return releasingResource;
-        }
+        return releasingResource;
     }
 
-    public static synchronized BICubeDiskPrimitiveDiscovery getInstance() {
-        if (instance != null) {
-            return instance;
-        } else {
-            synchronized (BIPrimitiveNIOWriterManager.class) {
-                if (instance == null) {
-                    instance = new BICubeDiskPrimitiveDiscovery();
-                }
-                return instance;
-            }
-        }
+    public static  BICubeDiskPrimitiveDiscovery getInstance() {
+        return instance;
     }
 
     private BICubeDiskPrimitiveDiscovery() {

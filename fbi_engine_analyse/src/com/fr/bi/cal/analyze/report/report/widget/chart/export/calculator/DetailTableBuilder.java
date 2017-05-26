@@ -1,11 +1,11 @@
 package com.fr.bi.cal.analyze.report.report.widget.chart.export.calculator;
 
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.item.BIBasicTableItem;
-import com.fr.bi.cal.analyze.report.report.widget.chart.export.item.BITableDataConstructor;
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.item.ITableHeader;
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.item.ITableItem;
+import com.fr.bi.cal.analyze.report.report.widget.chart.export.item.constructor.BIDetailDataConstructor;
+import com.fr.bi.cal.analyze.report.report.widget.chart.export.item.constructor.DataConstructor;
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.utils.BITableExportDataHelper;
-import com.fr.bi.cal.analyze.report.report.widget.chart.export.utils.SummaryTableStyleHelper;
 import com.fr.bi.conf.report.widget.IWidgetStyle;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONException;
@@ -63,8 +63,8 @@ public class DetailTableBuilder extends TableAbstractDataBuilder {
     }
 
     @Override
-    public BITableDataConstructor createTableData() throws JSONException {
-        BITableDataConstructor tableDataForExport = new BITableDataConstructor(headers, items,this.styleSetting);
+    public DataConstructor createTableData() throws JSONException {
+        DataConstructor tableDataForExport = new BIDetailDataConstructor(headers, items,this.styleSetting);
         return tableDataForExport;
     }
 
@@ -83,7 +83,6 @@ public class DetailTableBuilder extends TableAbstractDataBuilder {
                 BIBasicTableItem item = new BIBasicTableItem();
                 item.setDId(dimIds.get(j));
                 item.setValue(itemArray.isNull(j) ? "" : itemArray.getString(j));
-                item.setStyles(SummaryTableStyleHelper.getBodyStyles(styleSetting.getThemeColor(), styleSetting.getTableStyleGroup(), j));
                 rowItems.add(item);
             }
         }
