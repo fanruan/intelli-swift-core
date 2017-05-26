@@ -287,6 +287,39 @@ public class ValueConverterFactory {
             case BIReportConstant.GROUP.YMD: {
                 return YMD;
             }
+            case BIReportConstant.GROUP.WEEK_COUNT:{
+                return WEEKNUMBER;
+            }
+            case BIReportConstant.GROUP.HOUR:{
+                return HOUR;
+            }
+            case BIReportConstant.GROUP.MINUTE:{
+                return MINUTE;
+            }
+            case BIReportConstant.GROUP.SECOND:{
+                return SECOND;
+            }
+            case BIReportConstant.GROUP.YS:{
+                return YEAR_SEASON;
+            }
+            case BIReportConstant.GROUP.YM:{
+                return YEAR_MONTH;
+            }
+            case BIReportConstant.GROUP.YW:{
+                return YEAR_WEEKNUMBER;
+            }
+            case BIReportConstant.GROUP.YMDH:{
+                return YEAR_MONTH_DAY_HOUR;
+            }
+            case BIReportConstant.GROUP.YMDHM:{
+                return YEAR_MONTH_DAY_HOUR_MINUTE;
+            }
+            case BIReportConstant.GROUP.YMDHMS:{
+                return YEAR_MONTH_DAY_HOUR_MINUTE_SECOND;
+            }
+            case BIReportConstant.GROUP.D:{
+                return MONTH_DAY;
+            }
             default: {
                 return ValueConverter.DEFAULT;
             }
