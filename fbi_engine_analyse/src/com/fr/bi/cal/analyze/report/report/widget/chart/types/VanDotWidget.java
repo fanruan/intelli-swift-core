@@ -514,4 +514,12 @@ public class VanDotWidget extends VanCartesianWidget{
         }
         return null;
     }
+
+    protected JSONObject defaultDataLabelSetting() throws JSONException {
+
+        return JSONObject.create().put("showCategoryName", false).put("showSeriesName", false)
+                .put("showXValue", true).put("showYValue", true).put("showValue", true)
+                .put("textStyle", defaultFont());
+
+    }
 }

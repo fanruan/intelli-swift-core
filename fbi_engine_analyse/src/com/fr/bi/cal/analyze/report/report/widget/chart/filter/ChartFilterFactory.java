@@ -16,8 +16,6 @@ public class ChartFilterFactory {
             switch (filterValue.getInt("filterType")){
                 case BIReportConstant.FILTER_TYPE.AND:
                     break;
-                case BIReportConstant.FILTER_TYPE.OR:
-                    break;
                 case BIReportConstant.FILTER_TYPE.EMPTY_CONDITION:
                     break;
                 case BIReportConstant.DIMENSION_FILTER_NUMBER.TOP_N:

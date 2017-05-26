@@ -420,7 +420,7 @@ public abstract class VanChartWidget extends TableWidget {
         return "center";
     }
 
-    private JSONObject defaultDataLabelSetting() throws JSONException {
+    protected JSONObject defaultDataLabelSetting() throws JSONException {
 
         //兼容4.0,勾选标签的时候只有值
         return JSONObject.create().put("showCategoryName", false)

@@ -4,6 +4,7 @@ import com.fr.bi.cal.analyze.report.report.widget.VanChartWidget;
 import com.fr.bi.conf.report.map.BIMapInfoManager;
 import com.fr.bi.conf.report.map.BIWMSManager;
 import com.fr.bi.field.target.target.BISummaryTarget;
+import com.fr.bi.stable.constant.BIChartSettingConstant;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.general.ComparatorUtils;
 import com.fr.general.Inter;
@@ -179,4 +180,11 @@ public class VanMapWidget extends VanChartWidget{
         return JSONArray.create();
     }
 
+    protected JSONObject defaultDataLabelSetting() throws JSONException {
+
+        return JSONObject.create().put("showBlockName", true).put("showTargetName", true)
+                .put("showValue", true).put("showPercentage", false)
+                .put("textStyle", defaultFont());
+
+    }
 }
