@@ -111,12 +111,12 @@ public class VanTreeMapWidget extends VanChartWidget{
 
                 sum += value;
 
-                children.put(JSONObject.create().put("name", formattedName).put(LONG_DATE, this.getLongDate(formattedName, name)).put("value", value));
+                children.put(JSONObject.create().put("name", formattedName).put(LONG_DATE, name).put("value", value));
             }
 
             String name = tObj.getString("n"), formattedName = this.formatDimension(seriesDim, name);
 
-            data.put(JSONObject.create().put("name", formattedName).put(LONG_DATE, this.getLongDate(formattedName, name)).put("value", sum).put("children", children));
+            data.put(JSONObject.create().put("name", formattedName).put(LONG_DATE, name).put("value", sum).put("children", children));
         }
     }
 
@@ -138,9 +138,9 @@ public class VanTreeMapWidget extends VanChartWidget{
 
             if(hasFirstLevel) {
                 sum += value;
-                children.put(JSONObject.create().put("name", formattedName).put(LONG_DATE, this.getLongDate(formattedName, name)).put("value", value));
+                children.put(JSONObject.create().put("name", formattedName).put(LONG_DATE, name).put("value", value));
             } else if(hasSecondLevel){
-                data.put(JSONObject.create().put("name", formattedName).put(LONG_DATE, this.getLongDate(formattedName, name)).put("value", value));
+                data.put(JSONObject.create().put("name", formattedName).put(LONG_DATE, name).put("value", value));
             }
         }
 

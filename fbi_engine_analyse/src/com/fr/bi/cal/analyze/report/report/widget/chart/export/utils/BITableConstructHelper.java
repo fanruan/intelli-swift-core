@@ -63,7 +63,7 @@ public class BITableConstructHelper {
             setText(ops, item);
             if (item.getValues() != null) {
                 for (ITableItem it : item.getValues()) {
-                    setText(ops,it);
+                    setText(ops, it);
                 }
                 if (item.getChildren() != null) {
                     for (ITableItem it : item.getValues()) {

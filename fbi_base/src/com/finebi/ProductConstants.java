@@ -84,7 +84,7 @@ public class ProductConstants {
         if (PROP == null) {
             PROP = new Properties();
             try {
-                PROP.load(IOUtils.readResource("com/fr/bi/build.properties"));
+                PROP.load(IOUtils.readResource("com/finebi/build.properties"));
             } catch (Exception e) {
                 // do nothing
             }
