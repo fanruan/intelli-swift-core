@@ -22,7 +22,6 @@ import com.fr.stable.StableUtils;
 import com.fr.stable.StringUtils;
 import com.fr.web.core.SessionDealWith;
 import com.fr.web.utils.WebUtils;
-import com.taobao.top.link.embedded.websocket.util.StringUtil;
 
 import javax.servlet.http.HttpServletRequest;
 import java.awt.*;
