@@ -277,8 +277,8 @@ public abstract class VanCartesianWidget extends VanChartWidget {
                 JSONArray dataImage = target.getChartSetting().getDataImage();
                 if(dataImage != null) {
                     int filterCount = dataImage.length();
-                    FilterValue[] filterValues = this.createFilterValues(dataImage);
                     JSONArray data = ser.optJSONArray("data");
+                    FilterValue[] filterValues = this.createFilterValues(dataImage, data);
                     for (int dataIndex = 0, dataCount = data.length(); dataIndex < dataCount; dataIndex++) {
                         JSONObject datum = data.optJSONObject(dataIndex);
                         for (int filterIndex = filterCount - 1; filterIndex >= 0; filterIndex--) {
@@ -310,12 +310,12 @@ public abstract class VanCartesianWidget extends VanChartWidget {
         }
     }
 
-    protected FilterValue[] createFilterValues(JSONArray config){
+    protected FilterValue[] createFilterValues(JSONArray config, JSONArray data){
         int filterCount = config.length();
         FilterValue[] filterValues = new FilterValue[filterCount];
         for (int filterIndex = 0; filterIndex < filterCount; filterIndex++) {
             try {
-                filterValues[filterIndex] = ChartFilterFactory.parseFilterValue(config.optJSONObject(filterIndex), this.getUserId());
+                filterValues[filterIndex] = ChartFilterFactory.parseFilterValue(config.optJSONObject(filterIndex), this.getUserId(), data);
             }catch (Exception e){
                 BILoggerFactory.getLogger().error(e.getMessage(),e);
             }
@@ -360,8 +360,8 @@ public abstract class VanCartesianWidget extends VanChartWidget {
                 JSONArray labelCondition = this.getDataLabelConditions(target);
                 if (labelCondition != null && dataLabels != null && dataLabels.optBoolean("enabled") == true) {
                     int filterCount = labelCondition.length();
-                    FilterValue[] filterValues = this.createFilterValues(labelCondition);
                     JSONArray data = ser.optJSONArray("data");
+                    FilterValue[] filterValues = this.createFilterValues(labelCondition, data);
                     for (int dataIndex = 0, dataCount = data.length(); dataIndex < dataCount; dataIndex++) {
                         JSONObject datum = data.optJSONObject(dataIndex);
                         for (int filterIndex = filterCount - 1; filterIndex >= 0; filterIndex--) {
