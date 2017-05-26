@@ -160,7 +160,7 @@ public abstract class BICubeDateSubColumn<T> implements ICubeColumnEntityService
     public Number getOriginalValueByRow(int rowNumber) {
         long value = hostDataColumn.getOriginalValueByRow(rowNumber);
         // 这里之所以不返回原始值是为了其子类好处理。真正的子类如果是空值会真正进行返回相应的空值对应的最小值。
-        return convertDate(value);
+        return convertDate(value == NIOConstant.LONG.NULL_VALUE ? null : value);
     }
 
     /**
