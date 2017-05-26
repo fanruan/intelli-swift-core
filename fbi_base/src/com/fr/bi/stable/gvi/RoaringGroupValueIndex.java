@@ -5,6 +5,7 @@ import com.fr.bi.stable.gvi.roaringbitmap.RoaringBitmap;
 import com.fr.bi.stable.gvi.traversal.BrokenTraversalAction;
 import com.fr.bi.stable.gvi.traversal.SingleRowTraversalAction;
 import com.fr.bi.stable.gvi.traversal.TraversalAction;
+import com.fr.bi.stable.structure.array.IntList;
 
 import java.io.DataInput;
 import java.io.DataOutput;
@@ -213,6 +214,14 @@ public class RoaringGroupValueIndex extends AbstractGroupValueIndex {
 	@Override
 	public void readFields(DataInput in) throws IOException {
 		bitmap.deserialize(in);
+	}
+
+	public static RoaringGroupValueIndex createGroupValueIndex(IntList intList) {
+		RoaringGroupValueIndex roaringGroupValueIndex = new RoaringGroupValueIndex();
+		for (int i = 0; i < intList.size(); i++){
+			roaringGroupValueIndex.bitmap.add(intList.get(i));
+		}
+		return roaringGroupValueIndex;
 	}
 
 	public static RoaringGroupValueIndex createGroupValueIndex(int[] rowIndexs) {

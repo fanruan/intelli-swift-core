@@ -5,4 +5,12 @@ package com.fr.bi.stable.exception;
  */
 public class BITableAbsentException extends Exception {
     private static final long serialVersionUID = 7708307064741612162L;
+
+    public BITableAbsentException(String s) {
+        super(s);
+    }
+
+    public BITableAbsentException() {
+        super();
+    }
 }

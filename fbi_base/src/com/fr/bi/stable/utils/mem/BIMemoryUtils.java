@@ -1,5 +1,7 @@
 package com.fr.bi.stable.utils.mem;
 
+import com.fr.bi.manager.PerformancePlugManager;
+
 import java.nio.MappedByteBuffer;
 
 /**
@@ -16,7 +18,9 @@ public class BIMemoryUtils {
      */
     public static void un_map(final MappedByteBuffer buffer) {
         if (buffer != null) {
-            //buffer.force();
+            if (PerformancePlugManager.getInstance().isForceWriter()){
+                buffer.force();
+            }
             BIReleaseUtils.doClean(buffer);
         }
     }

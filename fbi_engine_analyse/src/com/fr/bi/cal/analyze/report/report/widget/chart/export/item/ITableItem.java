@@ -44,6 +44,8 @@ public interface ITableItem extends JSONCreator {
 
 //    String getType();
 
+    ITableStyle getStyles();
+
     void setdId(String dId);
 
     void setText(String text);
