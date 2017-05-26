@@ -229,52 +229,41 @@ public class SummaryComplexTableBuilder extends TableAbstractDataBuilder {
         }
         for (int i = 0; i < dataArray.length(); i++) {
             JSONArray tableData = dataArray.getJSONArray(i);
-            //* rowValues在这个作用域缓存所有tables的数据
             for (int j = 0; j < tableData.length(); j++) {
+                //parse一个表结构
+                Map<Integer, List<JSONObject>> dimAndTar = getDimsByDataPos(i, j);
+                DataConstructor singleTable = createSingleCrossTableItems(tableData.getJSONObject(j), dimAndTar);
+                if (i == 0) {
+                    tempCrossItems.addAll(singleTable.getCrossItems());
+                }
                 if (tempItems.size() <= i) {
-                    tempItems.add(createSingleItem(tempCrossItems, i, tableData.getJSONObject(j), j));
+                    tempItems.add(singleTable.getItems().get(0));
                 } else {
-                    tempItems.get(i).mergeItems(createSingleItem(tempCrossItems, i, tableData.getJSONObject(j), j));
+                    tempItems.get(i).mergeItems(singleTable.getItems().get(0));
                 }
             }
         }
+        //item和crossItem如果有多个的话，合并
         parseColTableItems(tempItems);
         parseRowTableCrossItems(tempCrossItems);
     }
 
-    /*
-    * 这个结构是从前台直接拷过来的，需优化
-    *
-    * */
-    private ITableItem createSingleItem(List<ITableItem> tempCrossItems, int i, JSONObject tableData, int j) throws Exception {
-        //parse一个表结构
-        Map<Integer, List<JSONObject>> dimAndTar = getDimsByDataPos(i, j);
-        DataConstructor singleTable = createSingleCrossTableItems(tableData, dimAndTar);
-        if (i == 0) {
-            for (int length = 0; length < singleTable.getCrossItems().size(); length++) {
-                ITableItem item = singleTable.getCrossItems().get(i);
-                if (tempCrossItems.size() > 0) {
-                    List<ITableItem> children = tempCrossItems.get(0).getChildren();
-                    children.addAll(item.getChildren());
-                    tempCrossItems.get(0).setChildren(children);
-                } else {
-                    tempCrossItems.add(item);
+    private void parseRowTableCrossItems(List<ITableItem> tempCrossItems) throws Exception {
+        if (tempCrossItems.size() == 1) {
+            crossItems = tempCrossItems;
+        } else {
+            List<ITableItem> crossArray = new ArrayList<ITableItem>();
+            for (ITableItem tempCrossItem : tempCrossItems) {
+                if (tempCrossItem.getChildren() != null) {
+                    for (int i = 0; i < tempCrossItem.getChildren().size(); i++) {
+                        crossArray.add(tempCrossItem.getChildren().get(i));
+                    }
                 }
             }
+            ITableItem item = new BIBasicTableItem();
+            item.setChildren(crossArray);
+            crossItems.add(item);
         }
-        return singleTable.getItems().get(0);
-    }
-
-    private void parseRowTableCrossItems(List<ITableItem> tempCrossItems) throws Exception {
-        List<ITableItem> crossArray = new ArrayList<ITableItem>();
-        for (ITableItem tempCrossItem : tempCrossItems) {
-            for (int i = 0; i < tempCrossItem.createJSON().getJSONArray("children").length(); i++) {
-                crossArray.add(tempCrossItem.getChildren().get(i));
-            }
-        }
-        ITableItem item = new BIBasicTableItem();
-        item.setChildren(crossArray);
-        crossItems.add(item);
     }
 
     // 处理列 针对于children
