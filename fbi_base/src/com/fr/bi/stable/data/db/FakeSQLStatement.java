@@ -9,6 +9,8 @@ import com.finebi.cube.common.log.BILogger;
 import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.data.impl.Connection;
 
+import java.lang.ref.WeakReference;
+
 /**
  * @deprecated 封装SQL语句，兼容SQLStatement
  *
