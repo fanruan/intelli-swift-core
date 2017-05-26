@@ -48,23 +48,12 @@ public class SummaryCrossTableDataBuilder extends TableAbstractDataBuilder {
         }
         //无列表头(普通汇总表)
         createTableHeader();
+        createTableItems();
 
     }
 
     @Override
     public void createItems() throws Exception {
-        //正常交叉表
-        if (null != data && data.has("t")) {
-//            createCrossTableItems();
-            return;
-        }
-        //仅有列表头的时候（无指标）
-        if (this.dimIds.size() == 0 && this.crossDimIds.size() > 0 && this.targetIds.size() == 0) {
-//            getNoneTarCrossTable();
-            return;
-        }
-        //无列表头(普通汇总表)
-        createTableItems();
     }
 
     private void getNoneTarCrossTable() throws Exception {

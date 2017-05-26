@@ -24,6 +24,7 @@ import com.fr.bi.cluster.ClusterManager;
 import com.fr.bi.cluster.manager.EmptyClusterManager;
 import com.fr.bi.cluster.utils.ClusterEnv;
 import com.fr.bi.conf.base.auth.BISystemAuthorityManager;
+import com.fr.bi.conf.base.cube.BISystemCubeConfManager;
 import com.fr.bi.conf.base.cube.BISystemCubeConfManagerWithoutUser;
 import com.fr.bi.conf.base.dataconfig.BISystemDataConfigAuthorityManager;
 import com.fr.bi.conf.base.datasource.BIConnectionManager;
@@ -372,7 +373,7 @@ public class BICoreModule extends AbstractModule {
     protected BICubeConfManagerProvider getBICubeConfManager() {
         if (ClusterEnv.isCluster()) {
             if (ClusterAdapter.getManager().getHostManager().isSelf()) {
-                BISystemCubeConfManagerWithoutUser provider = new BISystemCubeConfManagerWithoutUser();
+                BISystemCubeConfManager provider = new BISystemCubeConfManager();
                 RPC.registerSkeleton(provider, ClusterAdapter.getManager().getHostManager().getPort());
                 return provider;
             } else {
@@ -381,7 +382,7 @@ public class BICoreModule extends AbstractModule {
                         ClusterAdapter.getManager().getHostManager().getPort());
             }
         } else {
-            return new BISystemCubeConfManagerWithoutUser();
+            return new BISystemCubeConfManager();
         }
     }
 

@@ -6,7 +6,7 @@ import com.finebi.cube.structure.column.BICubeIntegerColumn;
 import com.fr.bi.base.ValueConverterFactory;
 import com.fr.bi.stable.constant.DateConstant;
 import com.fr.bi.stable.io.newio.NIOConstant;
-
+import com.fr.bi.stable.utils.BICollectionUtils;
 import java.util.Calendar;
 
 /**
@@ -22,14 +22,24 @@ public class BICubeWeekColumn extends BICubeDateSubColumn<Integer> {
 
     @Override
     protected Integer convertDate(Long date) {
-        return date != null ? (Integer) ValueConverterFactory.createDateValueConverter(DateConstant.DATE.WEEK).result2Value(date) : null;
-
+        //return date != null ? (Integer) ValueConverterFactory.createDateValueConverter(DateConstant.DATE.WEEK).result2Value(date) : null;
+        if(BICollectionUtils.isCubeNullKey(date)){
+            return NIOConstant.INTEGER.NULL_VALUE;
+        }else{
+            return (Integer) ValueConverterFactory.createDateValueConverter(DateConstant.DATE.WEEK).result2Value(date);
+        }
     }
 
     @Override
     protected Integer convertDate(Long date, Calendar calendar) {
-        return date != null ? (Integer) ValueConverterFactory.createDateValueConverter(DateConstant.DATE.WEEK).result2Value(date, calendar) : null;
+        //return date != null ? (Integer) ValueConverterFactory.createDateValueConverter(DateConstant.DATE.WEEK).result2Value(date, calendar) : null;
+        if(BICollectionUtils.isCubeNullKey(date)){
+            return NIOConstant.INTEGER.NULL_VALUE;
+        }else{
+            return (Integer) ValueConverterFactory.createDateValueConverter(DateConstant.DATE.WEEK).result2Value(date, calendar);
+        }
     }
+
 
     @Override
     protected void initialColumnEntity(ICubeResourceLocation currentLocation) {
