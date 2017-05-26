@@ -1,6 +1,7 @@
 package com.fr.bi.cal.analyze.report.report.widget.chart.types;
 
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
+import com.fr.bi.stable.constant.BIChartSettingConstant;
 import com.fr.general.ComparatorUtils;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONException;
@@ -96,6 +97,15 @@ public class VanMultiPieWidget extends VanPieWidget{
 
     protected String categoryLabelKey() {
         return NAME;
+    }
+
+    protected JSONObject defaultDataLabelSetting() throws JSONException {
+
+        return JSONObject.create().put("showCategoryName", true)
+                .put("showSeriesName", false).put("showValue", false).put("showPercentage", true)
+                .put("position", BIChartSettingConstant.DATA_LABEL.POSITION_INNER).put("showTractionLine", false)
+                .put("textStyle", defaultFont());
+
     }
 
 }
