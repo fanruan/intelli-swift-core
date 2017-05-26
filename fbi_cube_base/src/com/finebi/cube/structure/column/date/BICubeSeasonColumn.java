@@ -20,7 +20,7 @@ public class BICubeSeasonColumn extends BICubeDateSubColumn<Integer> {
 
     @Override
     protected Integer convertDate(Long date) {
-        return date != null ? (Integer) ValueConverterFactory.createDateValueConverter(DateConstant.DATE.SEASON).result2Value(date) : null;
+        return date != NIOConstant.LONG.NULL_VALUE? (Integer) ValueConverterFactory.createDateValueConverter(DateConstant.DATE.SEASON).result2Value(date) : NIOConstant.INTEGER.NULL_VALUE;
     }
 
     @Override
