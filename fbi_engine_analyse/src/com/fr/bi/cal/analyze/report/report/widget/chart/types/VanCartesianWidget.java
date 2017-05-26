@@ -281,14 +281,11 @@ public abstract class VanCartesianWidget extends VanChartWidget {
                     JSONArray data = ser.optJSONArray("data");
                     for (int dataIndex = 0, dataCount = data.length(); dataIndex < dataCount; dataIndex++) {
                         JSONObject datum = data.optJSONObject(dataIndex);
-                        String x = datum.optString("x");
-                        double y = datum.optDouble("y", 0);
                         for (int filterIndex = filterCount - 1; filterIndex >= 0; filterIndex--) {
                             FilterValue filter = filterValues[filterIndex];
                             JSONObject config = dataImage.optJSONObject(filterIndex);
                             String id = config.optString("targetId");
-
-                            if(filter.isMatchValue(ComparatorUtils.equals(targetID, id) ? y : x)) {
+                            if(filter.isMatchValue(this.findTarget(id, datum, ser))) {
                                 JSONObject styleSetting = config.optJSONObject("styleSetting");
                                 if(styleSetting.has("src")){
                                     String url = styleSetting.optString("src");
