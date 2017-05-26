@@ -65,7 +65,7 @@ public abstract class VanCartesianWidget extends VanChartWidget {
                 .put("rightYShowLabel", true)
                 .put("rightYLabelStyle", JSONObject.create().put("textStyle", this.defaultFont()))
                 .put("rightYLineColor", "#dddddd")
-                .put("rightYLineColor", true);
+                .put("rightYSeparator", true);
 
         //右二值轴
         settings.put("rightY2Unit", StringUtils.EMPTY)
@@ -77,7 +77,7 @@ public abstract class VanCartesianWidget extends VanChartWidget {
                 .put("rightY2ShowLabel", true)
                 .put("rightY2LabelStyle", JSONObject.create().put("textStyle", this.defaultFont()))
                 .put("rightY2LineColor", "#dddddd")
-                .put("rightYLineColor", true);
+                .put("rightY2Separator", true);
 
         return settings;
     }
