@@ -1,4 +1,4 @@
-package com.fr.bi;
+package com.finebi;
 
 import com.fr.general.IOUtils;
 import com.fr.stable.Branch;
@@ -36,7 +36,6 @@ public class ProductConstants {
 
 
     public static final String REVISION_VERSION = loadAttribute("Revision_Version", "0");
-
 
 
     /**
@@ -85,7 +84,7 @@ public class ProductConstants {
         if (PROP == null) {
             PROP = new Properties();
             try {
-                PROP.load(IOUtils.readResource("com/fr/bi/build.properties"));
+                PROP.load(IOUtils.readResource("com/finebi/build.properties"));
             } catch (Exception e) {
                 // do nothing
             }
@@ -141,5 +140,9 @@ public class ProductConstants {
         }
 
         return envHome.getAbsolutePath();
+    }
+
+    public static String getReleaseDate() {
+        return loadAttribute("RELEASE", StringUtils.EMPTY);
     }
 }

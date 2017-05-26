@@ -42,6 +42,7 @@ import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.gvi.GVIUtils;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.utils.BITravalUtils;
+import com.fr.bi.stable.utils.file.BIFileUtils;
 import com.fr.general.ComparatorUtils;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONException;
@@ -50,6 +51,7 @@ import com.fr.report.poly.TemplateBlock;
 import com.fr.stable.StringUtils;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -538,6 +540,13 @@ public class TableWidget extends BISummaryWidget {
         return data.createJSON().put("page", res.getJSONArray("page")).put("dimensionLength",dimensions.length);
     }
 
+    /*假数据，测试用*/
+    private JSONObject createTestData() throws IOException, JSONException {
+        StringBuffer keysStr = new StringBuffer();
+        String s = BIFileUtils.readFile("C:\\data.json");
+        return new JSONObject(s);
+    }
+
     private Map<String, ITableCellFormatOperation> getITableCellFormatOperationMap() throws Exception {
         Map<String, ITableCellFormatOperation> formOperationsMap = new HashMap<String, ITableCellFormatOperation>();
         createFormatOperations(formOperationsMap);
@@ -605,7 +614,7 @@ public class TableWidget extends BISummaryWidget {
             for (String dId : ids) {
                 String text = getDimensionNameByID(dId);
                 if (isUsedById(dId)) {
-                    list.add(new JSONObject().put("dId", dId).put("text", text).put("used",isUsedById(dId)));
+                    list.add(new JSONObject().put("dId", dId).put("text", text).put("used", isUsedById(dId)));
                 }
             }
             dimAndTar.put(next, list);

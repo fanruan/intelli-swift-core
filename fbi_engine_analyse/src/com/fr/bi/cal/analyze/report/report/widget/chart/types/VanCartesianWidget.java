@@ -2,8 +2,9 @@ package com.fr.bi.cal.analyze.report.report.widget.chart.types;
 
 import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.cal.analyze.report.report.widget.VanChartWidget;
+import com.fr.bi.cal.analyze.report.report.widget.chart.filter.ChartFilterFactory;
+import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.conf.report.widget.field.filtervalue.FilterValue;
-import com.fr.bi.field.filtervalue.FilterValueFactory;
 import com.fr.bi.field.target.target.BISummaryTarget;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.general.ComparatorUtils;
@@ -65,7 +66,7 @@ public abstract class VanCartesianWidget extends VanChartWidget {
                 .put("rightYShowLabel", true)
                 .put("rightYLabelStyle", JSONObject.create().put("textStyle", this.defaultFont()))
                 .put("rightYLineColor", "#dddddd")
-                .put("rightYLineColor", true);
+                .put("rightYSeparator", true);
 
         //右二值轴
         settings.put("rightY2Unit", StringUtils.EMPTY)
@@ -77,7 +78,7 @@ public abstract class VanCartesianWidget extends VanChartWidget {
                 .put("rightY2ShowLabel", true)
                 .put("rightY2LabelStyle", JSONObject.create().put("textStyle", this.defaultFont()))
                 .put("rightY2LineColor", "#dddddd")
-                .put("rightYLineColor", true);
+                .put("rightY2Separator", true);
 
         return settings;
     }
@@ -276,18 +277,15 @@ public abstract class VanCartesianWidget extends VanChartWidget {
                 JSONArray dataImage = target.getChartSetting().getDataImage();
                 if(dataImage != null) {
                     int filterCount = dataImage.length();
-                    FilterValue[] filterValues = this.createFilterValues(dataImage);
                     JSONArray data = ser.optJSONArray("data");
+                    FilterValue[] filterValues = this.createFilterValues(dataImage, data);
                     for (int dataIndex = 0, dataCount = data.length(); dataIndex < dataCount; dataIndex++) {
                         JSONObject datum = data.optJSONObject(dataIndex);
-                        String x = datum.optString("x");
-                        double y = datum.optDouble("y", 0);
-                        for (int filterIndex = 0; filterIndex < filterCount; filterIndex++) {
+                        for (int filterIndex = filterCount - 1; filterIndex >= 0; filterIndex--) {
                             FilterValue filter = filterValues[filterIndex];
                             JSONObject config = dataImage.optJSONObject(filterIndex);
                             String id = config.optString("targetId");
-
-                            if(filter.isMatchValue(ComparatorUtils.equals(targetID, id) ? y : x)) {
+                            if(filter.isMatchValue(this.findTarget(id, datum, ser))) {
                                 JSONObject styleSetting = config.optJSONObject("styleSetting");
                                 if(styleSetting.has("src")){
                                     String url = styleSetting.optString("src");
@@ -312,18 +310,42 @@ public abstract class VanCartesianWidget extends VanChartWidget {
         }
     }
 
-    protected FilterValue[] createFilterValues(JSONArray config){
+    protected FilterValue[] createFilterValues(JSONArray config, JSONArray data){
         int filterCount = config.length();
         FilterValue[] filterValues = new FilterValue[filterCount];
         for (int filterIndex = 0; filterIndex < filterCount; filterIndex++) {
             try {
-                filterValues[filterIndex] = FilterValueFactory.parseFilterValue(config.optJSONObject(filterIndex), this.getUserId());
+                filterValues[filterIndex] = ChartFilterFactory.parseFilterValue(config.optJSONObject(filterIndex), this.getUserId(), data);
             }catch (Exception e){
                 BILoggerFactory.getLogger().error(e.getMessage(),e);
             }
         }
 
         return filterValues;
+    }
+
+    protected Object findTarget(String id, JSONObject datum, JSONObject ser){
+
+        BIDimension categoryDim = this.getCategoryDimension();
+        BIDimension seriesDim = this.getSeriesDimension();
+
+        if(categoryDim != null && ComparatorUtils.equals(categoryDim.getId(), id)){
+            return datum.optString(LONG_DATE);
+        }
+
+        if(seriesDim != null && ComparatorUtils.equals(seriesDim.getId(), id)){
+            return ser.optString(LONG_DATE);
+        }
+
+        return datum.optDouble("y", 0);
+    }
+
+    protected Object findTarget(String id, JSONObject config, JSONObject datum, JSONObject ser){
+        return findTarget(id, datum, ser);
+    }
+
+    protected JSONArray getDataLabelConditions(BISummaryTarget target){
+        return target.getChartSetting().getDataLabels();
     }
 
     private void dealDataLabelsConditions(JSONObject options) {
@@ -339,20 +361,19 @@ public abstract class VanCartesianWidget extends VanChartWidget {
                 BISummaryTarget target = this.getBITargetByID(targetID);
                 //标签的条件属性
                 JSONObject dataLabels = ser.optJSONObject("dataLabels");
-                JSONArray labelCondition = target.getChartSetting().getDataLabels();
+                JSONArray labelCondition = this.getDataLabelConditions(target);
                 if (labelCondition != null && dataLabels != null && dataLabels.optBoolean("enabled") == true) {
                     int filterCount = labelCondition.length();
-                    FilterValue[] filterValues = this.createFilterValues(labelCondition);
                     JSONArray data = ser.optJSONArray("data");
+                    FilterValue[] filterValues = this.createFilterValues(labelCondition, data);
                     for (int dataIndex = 0, dataCount = data.length(); dataIndex < dataCount; dataIndex++) {
                         JSONObject datum = data.optJSONObject(dataIndex);
-                        String x = datum.optString("x");
-                        double y = datum.optDouble("y", 0);
-                        for (int filterIndex = 0; filterIndex < filterCount; filterIndex++) {
+                        for (int filterIndex = filterCount - 1; filterIndex >= 0; filterIndex--) {
                             FilterValue filter = filterValues[filterIndex];
                             JSONObject config = labelCondition.optJSONObject(filterIndex);
                             String id = config.optString("targetId");
-                            if (filter.isMatchValue(ComparatorUtils.equals(targetID, id) ? y : x)) {
+                            Object matchTarget = this.findTarget(id, config, datum, ser);
+                            if (target != null && filter.isMatchValue(matchTarget)){
                                 JSONObject styleSetting = config.optJSONObject("styleSetting");
                                 JSONObject textStyle = styleSetting.optJSONObject("textStyle");
                                 JSONObject imgStyle = styleSetting.optJSONObject("imgStyle");
@@ -363,8 +384,7 @@ public abstract class VanCartesianWidget extends VanChartWidget {
                                 if (imgStyle.has("src")) {
                                     String url = imgStyle.optString("src");
                                     BufferedImage img = IOUtils.readImage(this.getLocalImagePath(url));
-                                    customDataLabels.put("formatter", String.format(IMG_TMP, this.getCompleteImageUrl(url))).put("useHtml", true)
-                                            .put("labelWidth", img.getWidth()).put("labelHeight", img.getHeight());
+                                    customDataLabels.put("formatter", String.format(IMG_TMP, this.getCompleteImageUrl(url))).put("useHtml", true).put("labelWidth", img.getWidth()).put("labelHeight", img.getHeight());
                                 }
                                 datum.put("dataLabels", customDataLabels);
                                 break;
@@ -520,20 +540,19 @@ public abstract class VanCartesianWidget extends VanChartWidget {
         for(int i = 0, len = dIDs.length(); i < len; i++){
             try {
                 BISummaryTarget dimension = this.getBITargetByID(dIDs.optString(i));
-                JSONArray cordons = dimension.getChartSetting().getCordon();
+                if(dimension.isUsed()) {
+                    JSONArray cordons = dimension.getChartSetting().getCordon();
 
-                for(int j = 0, count = cordons.length(); j < count; j++){
+                    for (int j = 0, count = cordons.length(); j < count; j++) {
+                        JSONObject config = cordons.optJSONObject(j);
 
-                    JSONObject config = cordons.optJSONObject(j);
+                        plotLines.put(
+                                JSONObject.create().put("value", config.optDouble("cordonValue"))
+                                        .put("color", config.optString("cordonColor"))
+                                        .put("label", JSONObject.create().put("text", config.optString("cordonName")).put("style", defaultFont()).put("align", "right"))
+                        );
 
-                    plotLines.put(
-                            JSONObject.create().put("value", config.optDouble("cordonValue"))
-                            .put("color", config.optString("cordonColor"))
-                            .put(
-                                    "label", JSONObject.create().put("text", config.optString("cordonName")).put("style", defaultFont()).put("align", "right")
-                            )
-                    );
-
+                    }
                 }
 
             }catch (Exception ex){

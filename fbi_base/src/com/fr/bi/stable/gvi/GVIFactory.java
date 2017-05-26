@@ -1,5 +1,6 @@
 package com.fr.bi.stable.gvi;
 
+import com.fr.bi.stable.structure.array.IntList;
 import com.fr.stable.collections.array.IntArray;
 
 /**
@@ -13,6 +14,20 @@ public class GVIFactory {
 
     public static GroupValueIndex createAllEmptyIndexGVI() {
         return new RoaringGroupValueIndex();
+    }
+
+    /**
+     * 根据简单索引创建分组值索引
+     *@param list 数据
+     */
+    public static GroupValueIndex createGroupValueIndexBySimpleIndex(IntList list) {
+        if (list.size() == 1){
+            return new IDGroupValueIndex(list.get(0));
+        }
+        if(list.size() == 0){
+            return createAllEmptyIndexGVI();
+        }
+        return RoaringGroupValueIndex.createGroupValueIndex(list);
     }
 
     /**

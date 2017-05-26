@@ -28,6 +28,14 @@ public class VanForceBubbleWidget extends VanDotWidget{
         this.defaultFormatSeriesDataLabelFormat(options);
     }
 
+    public JSONObject createOptions(JSONObject globalStyle, JSONObject data) throws Exception{
+        JSONObject options = super.createOptions(globalStyle, data);
+
+        options.put(this.getCoordXKey(), JSONObject.EMPTY);
+        options.put(this.getCoordYKey(), JSONObject.EMPTY);
+
+        return options;
+    }
 
     protected String getTooltipIdentifier() {
         return CATEGORY + SERIES + VALUE;

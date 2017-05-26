@@ -362,6 +362,14 @@ public class AnalysisBusiPackManager extends BISystemDataManager<SingleUserAnaly
         return null;
     }
 
+    public BusinessTable getAnalysisTableById(long userId, String tableId) throws BITableAbsentException {
+        return null;
+    }
+
+    public BusinessTable getConfigTableById(long userId, String tableId) throws BITableAbsentException {
+        return null;
+    }
+
 
     @Override
     public void parseSinglePackageJSON(long userId, BIPackageID packageId, JSONArray tableIdsJA, JSONObject usedFieldsJO, JSONObject tableDataJO) throws Exception {

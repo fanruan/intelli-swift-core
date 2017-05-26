@@ -2,6 +2,7 @@ package com.fr.bi.cal.analyze.report.report.widget.chart.types;
 
 import com.fr.bi.cal.analyze.report.report.widget.VanChartWidget;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
+import com.fr.bi.stable.constant.BIChartSettingConstant;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
@@ -80,5 +81,14 @@ public class VanPieWidget extends VanChartWidget{
 
         }
         return super.createSeriesWithChildren(originData);
+    }
+
+    protected JSONObject defaultDataLabelSetting() throws JSONException {
+
+        return JSONObject.create().put("showCategoryName", false)
+                .put("showSeriesName", false).put("showValue", true).put("showPercentage", true)
+                .put("position", BIChartSettingConstant.DATA_LABEL.POSITION_OUTER).put("showTractionLine", true)
+                .put("textStyle", defaultFont());
+
     }
 }

@@ -6,6 +6,10 @@ import com.finebi.cube.structure.column.BICubeLongColumn;
 import com.fr.bi.base.ValueConverterFactory;
 import com.fr.bi.stable.constant.DateConstant;
 import com.fr.bi.stable.io.newio.NIOConstant;
+import com.fr.bi.stable.utils.BICollectionUtils;
+
+import java.util.Calendar;
+
 /**
  * Created by wang on 2017/3/28.
  * 年-周数
@@ -17,8 +21,25 @@ public class BICubeYearWeekNumberColumn extends BICubeDateSubColumn<Long> {
 
     @Override
     protected Long convertDate(Long date) {
-        return date != null ? (Long) ValueConverterFactory.createDateValueConverter(DateConstant.DATE.YEAR_WEEKNUMBER).result2Value(date) : null;
+        //return date != null ? (Long) ValueConverterFactory.createDateValueConverter(DateConstant.DATE.YEAR_WEEKNUMBER).result2Value(date) : null;
+        if(BICollectionUtils.isCubeNullKey(date)){
+            return NIOConstant.LONG.NULL_VALUE;
+        }else{
+            return (Long) ValueConverterFactory.createDateValueConverter(DateConstant.DATE.YEAR_WEEKNUMBER).result2Value(date) ;
+        }
     }
+
+
+    @Override
+    protected Long convertDate(Long date, Calendar calendar) {
+        //return date != null ? (Long) ValueConverterFactory.createDateValueConverter(DateConstant.DATE.YEAR_WEEKNUMBER).result2Value(date, calendar) : null;
+        if(BICollectionUtils.isCubeNullKey(date)){
+            return NIOConstant.LONG.NULL_VALUE;
+        }else{
+            return (Long) ValueConverterFactory.createDateValueConverter(DateConstant.DATE.YEAR_WEEKNUMBER).result2Value(date, calendar);
+        }
+    }
+
 
     @Override
     protected void initialColumnEntity(ICubeResourceLocation currentLocation) {
