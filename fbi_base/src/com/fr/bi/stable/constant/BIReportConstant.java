@@ -673,4 +673,10 @@ public class BIReportConstant {
         public static final int LAST_SAME_PERIOD = 28;
 
     }
+
+    public static final class ENTRY_STATUS {
+        public static final int NORMAL = 1;
+        public static final int IS_EDITING = 2;
+        public static final int NOT_EXIST = 3;
+    }
 }
