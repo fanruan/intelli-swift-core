@@ -547,4 +547,11 @@ public class BIBaseConstant {
         public static final String CORE_MODULE = "com.fr.bi.module.BICoreModule";
         public static final String ANALYSIS_ETL_MODULE = "com.fr.bi.module.AnalysisETLModule";
     }
+
+    public static final class NUMBER_VALUE {
+        public static final int ZONE = 0;
+
+        public static final int ONE = 1;
+        public static final int TWO = 2;
+    }
 }

@@ -97,7 +97,7 @@ public class SQLStatement {
     @Override
     public String toString() {
         String query = "SELECT " + (StringUtils.isEmpty(select) ? "*" : select) + " FROM " + from;
-        if (!StringUtils.isEmpty(where)) {
+        if (StringUtils.isNotEmpty(where)) {
             query += " WHERE " + where;
         }
         return query;
