@@ -77,6 +77,9 @@ public abstract class VanChartWidget extends TableWidget {
 
     private Locale locale;
 
+    //todo:整理一下settings globalstyle plateconfig
+    private JSONObject globalStyle;
+
     public static final String[] FULL_QUARTER_NAMES = new String[]{
             Inter.getLocText("BI-Quarter_1"),
             Inter.getLocText("BI-Quarter_1"),
@@ -452,8 +455,11 @@ public abstract class VanChartWidget extends TableWidget {
     }
 
     protected JSONObject defaultFont() throws JSONException {
+        if(this.globalStyle != null && this.globalStyle.has("chartFont")){
+            JSONObject chartFont = this.globalStyle.optJSONObject("chartFont");
+            return new JSONObject(chartFont.toString()).put("fontFamily", "Microsoft YaHei").put("fontSize", "12px");
+        }
 
-        //todo 这边的字体要全局取一下
         return JSONObject.create()
                 .put("fontFamily", "Microsoft YaHei")
                 .put("color", "rgb(178, 178, 178)")
@@ -489,6 +495,7 @@ public abstract class VanChartWidget extends TableWidget {
         JSONObject globalStyle = reportSetting.optJSONObject("globalStyle");
         globalStyle = globalStyle == null ? JSONObject.create() : globalStyle;
 
+        this.globalStyle = globalStyle;
         return this.createOptions(globalStyle, data).put("data", data);
     }
 
