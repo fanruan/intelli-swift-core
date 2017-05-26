@@ -44,7 +44,6 @@ public class BICubeDoubleGroupData extends BICubeGroupData<Double> {
 
     @Override
     public Double getGroupObjectValueByPosition(int index) {
-        Double value = getGroupValueByPosition(index);
-        return Double.isNaN(value) ? null : value;
+        return  getGroupValueByPosition(index);
     }
 }

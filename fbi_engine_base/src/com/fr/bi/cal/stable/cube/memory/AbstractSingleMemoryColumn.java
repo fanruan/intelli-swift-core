@@ -13,6 +13,7 @@ import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.gvi.array.ICubeTableIndexReader;
 import com.fr.bi.stable.gvi.traversal.SingleRowTraversalAction;
 import com.fr.bi.stable.index.CubeGenerator;
+import com.fr.bi.stable.io.newio.NIOConstant;
 import com.fr.bi.stable.io.newio.NIOReader;
 import com.fr.bi.stable.io.newio.NIOWriter;
 import com.fr.bi.stable.io.newio.SingleUserNIOReadManager;
@@ -20,6 +21,7 @@ import com.fr.bi.stable.io.sortlist.ISortNIOReadList;
 import com.fr.bi.stable.operation.sort.comp.ComparatorFacotry;
 import com.fr.bi.stable.structure.collection.CubeIndexGetterWithNullValue;
 import com.fr.bi.stable.structure.collection.map.CubeTreeMap;
+import com.fr.bi.stable.utils.BICollectionUtils;
 import com.fr.stable.StringUtils;
 import com.fr.stable.collections.array.IntArray;
 
@@ -43,11 +45,11 @@ public abstract class AbstractSingleMemoryColumn<T> implements MemoryColumnFile<
 
     protected abstract void initDetail();
 
-    protected void initGroupPosition(CubeTreeMap map){
+    protected void initGroupPosition(CubeTreeMap map) {
         groupPosition = new AnyIndexArray<Integer>();
         Iterator<GroupValueIndex> it = map.values().iterator();
         int position = 0;
-        while (it.hasNext()){
+        while (it.hasNext()) {
             final int p = position;
             it.next().Traversal(new SingleRowTraversalAction() {
                 @Override
@@ -135,8 +137,8 @@ public abstract class AbstractSingleMemoryColumn<T> implements MemoryColumnFile<
 
     @Override
     public int getPositionOfGroup(int row, SingleUserNIOReadManager manager) {
-        if (groupPosition != null){
-            return groupPosition.get(row);
+        if (groupPosition != null) {
+            return processPosition(groupPosition.get(row));
         }
         T value = detail.get(row);
         for (int i = 0; i < getter.sizeOfGroup(); i++) {
@@ -148,6 +150,17 @@ public abstract class AbstractSingleMemoryColumn<T> implements MemoryColumnFile<
         return 0;
     }
 
+    protected int processPosition(Integer value) {
+        /**
+         * Connery: BI-5488螺旋分析中null值没有GroupPosition
+         * 现在统一按照NIOConstant.INTEGER.NULL_VALUE处理。
+         */
+        if (value == null) {
+            return NIOConstant.INTEGER.NULL_VALUE;
+        } else {
+            return value;
+        }
+    }
 
     public ICubeColumnIndexReader createGroupByType(BIKey key, ValueConverter converter, Comparator comparator) {
         CubeTreeMap getter = new CubeTreeMap(comparator);
@@ -156,7 +169,7 @@ public abstract class AbstractSingleMemoryColumn<T> implements MemoryColumnFile<
         for (int i = 0; i < detail.size(); i++) {
             T t = detail.get(i);
             Object value = t;
-            if (t != null) {
+            if (BICollectionUtils.isNotCubeNullKey(value)) {
                 value = converter.result2Value(t);
                 if (value instanceof Integer) {
                     value = ((Integer) value).longValue();

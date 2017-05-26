@@ -74,6 +74,7 @@ public interface PerformancePlugManagerInterface {
      * @return
      */
     boolean isExtremeConcurrency();
+
     /**
      * 内存索引的行数
      * 小鱼这个行数在算维度关系的时候会根据上层索引直接生成索引，而不是从磁盘再读一遍。
@@ -81,6 +82,7 @@ public interface PerformancePlugManagerInterface {
      * 磁盘慢的这个值就设大点，默认1<<12。
      * 星巴克哪种读硬盘很慢的情况4000000比较合适
      * 设的太大会比较占内存，最好不要超过一亿
+     *
      * @return
      */
     int getReIndexRowCount();
@@ -88,4 +90,20 @@ public interface PerformancePlugManagerInterface {
     void setMinCubeFreeHDSpaceRate(double rate);
 
     double getMinCubeFreeHDSpaceRate();
+
+    long getCubeReaderReleaseSleepTime();
+
+
+    /**
+     * 是否利用堆外内存来生成cube
+     * 主要解决星巴克频繁gc的问题，这个参数为true的时候用完cube也要释放reader，并且写文件也要force
+     * @return
+     */
+    boolean isDirectGenerating();
+
+    /**
+     * 写文件的时候是否强制同步
+     * @return
+     */
+    boolean isForceWriter();
 }

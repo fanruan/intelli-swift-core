@@ -17,6 +17,7 @@ public class BITableItemStyle implements ITableStyle {
     }
 
     public BITableItemStyle() {
+
     }
 
     @Override

@@ -40,6 +40,8 @@ public class ETLTableObject implements Release, Delete {
 
     private volatile boolean isClear = false;
 
+    private static BILogger LOGGER = BILoggerFactory.getLogger(ETLTableObject.class);
+
     public ETLTableObject(final UserCubeTableSource source, final String id) {
         this.path = BIConfigurePathUtils.createUserETLCubePath(source.fetchObjectCore().getIDValue(), id);
         ti = new BICubeTableAdapter(new BICube(new BICubeResourceRetrieval(new ICubeConfiguration() {
@@ -83,7 +85,7 @@ public class ETLTableObject implements Release, Delete {
     public void delete() {
         boolean success = BIFileUtils.delete(new File(this.path).getParentFile());
         if(!success) {
-            BILoggerFactory.getLogger().error("delete failed" + this.path);
+            LOGGER.error("delete failed" + this.path);
             List<String> fileList = BIFileUtils.deleteFiles(new File(this.path).getParentFile());
             for(String s : fileList) {
                 new File(s).deleteOnExit();

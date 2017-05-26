@@ -17,9 +17,11 @@ import com.fr.bi.cal.analyze.report.report.widget.chart.export.calculator.IExcel
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.calculator.SummaryComplexTableBuilder;
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.calculator.SummaryCrossTableDataBuilder;
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.calculator.SummaryGroupTableDataBuilder;
-import com.fr.bi.cal.analyze.report.report.widget.chart.export.format.FormatSetting;
-import com.fr.bi.cal.analyze.report.report.widget.chart.export.format.TableFormatSetting;
-import com.fr.bi.cal.analyze.report.report.widget.chart.export.format.TableCellFormatOperation;
+import com.fr.bi.cal.analyze.report.report.widget.chart.export.format.operation.BITableCellFormatOperation;
+import com.fr.bi.cal.analyze.report.report.widget.chart.export.format.operation.ITableCellFormatOperation;
+import com.fr.bi.cal.analyze.report.report.widget.chart.export.format.setting.BICellFormatSetting;
+import com.fr.bi.cal.analyze.report.report.widget.chart.export.format.setting.ICellFormatSetting;
+import com.fr.bi.cal.analyze.report.report.widget.chart.export.item.constructor.DataConstructor;
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.utils.BITableConstructHelper;
 import com.fr.bi.cal.analyze.report.report.widget.style.BITableWidgetStyle;
 import com.fr.bi.cal.analyze.report.report.widget.table.BITableReportSetting;
@@ -40,6 +42,7 @@ import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.gvi.GVIUtils;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.utils.BITravalUtils;
+import com.fr.bi.stable.utils.file.BIFileUtils;
 import com.fr.general.ComparatorUtils;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONException;
@@ -48,6 +51,7 @@ import com.fr.report.poly.TemplateBlock;
 import com.fr.stable.StringUtils;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -347,15 +351,6 @@ public class TableWidget extends BISummaryWidget {
         }
     }
 
-    private boolean isUsed(String dId) {
-        for (BIDimension dimension : this.dimensions) {
-            if (ComparatorUtils.equals(dimension.getId(), dId)) {
-                return dimension.isUsed();
-            }
-        }
-        return true;
-    }
-
     public void setComplexExpander(ComplexExpander complexExpander) {
         this.complexExpander = complexExpander;
     }
@@ -523,11 +518,11 @@ public class TableWidget extends BISummaryWidget {
     public void reSetDetailTarget() {
     }
 
+    /*todo 想办法把数据和样式格式分离出来*/
     public JSONObject getPostOptions(BISessionProvider session, HttpServletRequest req) throws Exception {
-        JSONObject dataJSON = this.createDataJSON(session, req).getJSONObject("data");
+        JSONObject res = this.createDataJSON(session, req);
+        JSONObject dataJSON = res.getJSONObject("data");
         Map<Integer, List<JSONObject>> viewMap = this.createViewMap();
-        List<TableCellFormatOperation> formSettings = new ArrayList<TableCellFormatOperation>();
-        createChartSettings(formSettings);
         IExcelDataBuilder builder = null;
         switch (this.tableType) {
             case BIReportConstant.TABLE_WIDGET.CROSS_TYPE:
@@ -540,18 +535,37 @@ public class TableWidget extends BISummaryWidget {
                 builder = new SummaryComplexTableBuilder(viewMap, dataJSON, style);
                 break;
         }
-        if (null == builder) {
-            return new JSONObject();
-        }
-        return BITableConstructHelper.buildTableData(builder).createJSON();
+        DataConstructor data = BITableConstructHelper.buildTableData(builder);
+        BITableConstructHelper.formatCells(data, getITableCellFormatOperationMap(), style);
+        return data.createJSON().put("page", res.getJSONArray("page")).put("dimensionLength",dimensions.length);
+//        return createTestData().put("page", res.getJSONArray("page")).put("dimensionLength", dimensions.length).put("settings", data.getWidgetStyle().createJSON()).put("widgetType", getType().getType());
     }
 
-    private void createChartSettings(List<TableCellFormatOperation> chartSettings) throws Exception {
+    /*假数据，测试用*/
+    private JSONObject createTestData() throws IOException, JSONException {
+        StringBuffer keysStr = new StringBuffer();
+        String s = BIFileUtils.readFile("C:\\data.json");
+        return new JSONObject(s);
+    }
+
+    private Map<String, ITableCellFormatOperation> getITableCellFormatOperationMap() throws Exception {
+        Map<String, ITableCellFormatOperation> formOperationsMap = new HashMap<String, ITableCellFormatOperation>();
+        createFormatOperations(formOperationsMap);
+        return formOperationsMap;
+    }
+
+    private void createFormatOperations(Map<String, ITableCellFormatOperation> operationsMap) throws Exception {
         for (BISummaryTarget target : this.getTargets()) {
-            FormatSetting setting = new TableFormatSetting();
+            ICellFormatSetting setting = new BICellFormatSetting();
             setting.parseJSON(target.getChartSetting().getSettings());
-            TableCellFormatOperation TableCellFormatOperation = new TableCellFormatOperation(target.getId(),getFieldTypeByDimensionID(target.getId()), setting);
-            chartSettings.add(TableCellFormatOperation);
+            ITableCellFormatOperation op = new BITableCellFormatOperation(setting);
+            operationsMap.put(target.getId(), op);
+        }
+        for (BIDimension dimension : this.getDimensions()) {
+            ICellFormatSetting setting = new BICellFormatSetting();
+            setting.parseJSON(dimension.getChartSetting().getSettings());
+            ITableCellFormatOperation op = new BITableCellFormatOperation(dimension.getGroup().getType(), setting);
+            operationsMap.put(dimension.getId(), op);
         }
     }
 
@@ -559,8 +573,18 @@ public class TableWidget extends BISummaryWidget {
         return getBITargetAndDimension(dID).getText();
     }
 
-    public int getFieldTypeByDimensionID(String dID) throws Exception {
-        return getBITargetAndDimension(dID).createColumnKey().getFieldType();
+    public boolean isUsedById(String dID) throws Exception {
+        for (int i = 0; i < this.dimensions.length; i++) {
+            if (ComparatorUtils.equals(dID, dimensions[i].getId())) {
+                return dimensions[i].isUsed();
+            }
+        }
+        for (int i = 0; i < this.targets.length; i++) {
+            if (ComparatorUtils.equals(dID, targets[i].getId())) {
+                return targets[i].isUsed();
+            }
+        }
+        throw new Exception();
     }
 
     protected BITargetAndDimension getBITargetAndDimension(String dID) throws Exception {
@@ -569,7 +593,6 @@ public class TableWidget extends BISummaryWidget {
                 return dimension;
             }
         }
-
         return this.getBITargetByID(dID);
     }
 
@@ -590,9 +613,10 @@ public class TableWidget extends BISummaryWidget {
             List<JSONObject> list = new ArrayList<JSONObject>();
             List<String> ids = view.get(next);
             for (String dId : ids) {
-                int type = getFieldTypeByDimensionID(dId);
                 String text = getDimensionNameByID(dId);
-                list.add(new JSONObject().put("dId", dId).put("text", text).put("type", type).put("used", isUsed(dId)));
+                if (isUsedById(dId)) {
+                    list.add(new JSONObject().put("dId", dId).put("text", text).put("used", isUsedById(dId)));
+                }
             }
             dimAndTar.put(next, list);
         }

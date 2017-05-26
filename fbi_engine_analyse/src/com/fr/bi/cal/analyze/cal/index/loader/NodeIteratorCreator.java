@@ -3,8 +3,17 @@ package com.fr.bi.cal.analyze.cal.index.loader;
 import com.finebi.cube.api.ICubeValueEntryGetter;
 import com.finebi.cube.conf.table.BusinessTable;
 import com.fr.bi.cal.analyze.cal.multithread.BIMultiThreadExecutor;
-import com.fr.bi.cal.analyze.cal.sssecret.*;
-import com.fr.bi.cal.analyze.cal.sssecret.diminfo.*;
+import com.fr.bi.cal.analyze.cal.sssecret.ConstructedRootDimensionGroup;
+import com.fr.bi.cal.analyze.cal.sssecret.IRootDimensionGroup;
+import com.fr.bi.cal.analyze.cal.sssecret.NodeIndirectFilterIndexCalculator;
+import com.fr.bi.cal.analyze.cal.sssecret.NoneDimensionGroup;
+import com.fr.bi.cal.analyze.cal.sssecret.NoneMetricRootDimensionGroup;
+import com.fr.bi.cal.analyze.cal.sssecret.RootDimensionGroup;
+import com.fr.bi.cal.analyze.cal.sssecret.diminfo.AllNodeMergeIteratorCreator;
+import com.fr.bi.cal.analyze.cal.sssecret.diminfo.FilterMergeIteratorCreator;
+import com.fr.bi.cal.analyze.cal.sssecret.diminfo.MergeIteratorCreator;
+import com.fr.bi.cal.analyze.cal.sssecret.diminfo.NFilterMergeIteratorCreator;
+import com.fr.bi.cal.analyze.cal.sssecret.diminfo.SimpleMergeIteratorCreator;
 import com.fr.bi.cal.analyze.session.BISession;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.conf.report.widget.field.dimension.filter.DimensionFilter;
@@ -25,7 +34,14 @@ import com.fr.bi.stable.report.result.TargetCalculator;
 import com.fr.general.ComparatorUtils;
 import com.fr.general.NameObject;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Created by 小灰灰 on 2016/11/17.
@@ -469,12 +485,15 @@ public class NodeIteratorCreator {
                 if (resultFilter != null && resultFilter.canCreateDirectFilter()) {
                     DimensionCalculator c = metricGroupInfoList.get(i).getRows()[deep];
                     BusinessTable t = metricGroupInfoList.get(i).getMetric();
-                    GroupValueIndex filterIndex = resultFilter.createFilterIndex(c, t, session.getLoader(), session.getUserId());
-                    if (filterIndex != null) {
-                        retIndexes[i] = retIndexes[i].and(filterIndex);
-                    } else {
-                        retIndexes[i] = null;
+                    if (t.getTableSource() != null) {
+                        GroupValueIndex filterIndex = resultFilter.createFilterIndex(c, t, session.getLoader(), session.getUserId());
+                        if (filterIndex != null) {
+                            retIndexes[i] = retIndexes[i].and(filterIndex);
+                        } else {
+                            retIndexes[i] = null;
+                        }
                     }
+
                 }
             }
         }

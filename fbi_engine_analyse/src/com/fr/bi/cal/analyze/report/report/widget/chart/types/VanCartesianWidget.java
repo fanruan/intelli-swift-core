@@ -1,18 +1,21 @@
 package com.fr.bi.cal.analyze.report.report.widget.chart.types;
 
 import com.finebi.cube.common.log.BILoggerFactory;
-import com.fr.base.Formula;
-import com.fr.base.ParameterMapNameSpace;
 import com.fr.bi.cal.analyze.report.report.widget.VanChartWidget;
+import com.fr.bi.cal.analyze.report.report.widget.chart.filter.ChartFilterFactory;
+import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
+import com.fr.bi.conf.report.widget.field.filtervalue.FilterValue;
 import com.fr.bi.field.target.target.BISummaryTarget;
 import com.fr.bi.stable.constant.BIReportConstant;
+import com.fr.general.ComparatorUtils;
+import com.fr.general.IOUtils;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
-import com.fr.script.Calculator;
+import com.fr.stable.StableUtils;
 import com.fr.stable.StringUtils;
 
-import java.util.HashMap;
+import java.awt.image.BufferedImage;
 
 /**
  * Created by eason on 2017/3/2.
@@ -28,6 +31,7 @@ public abstract class VanCartesianWidget extends VanChartWidget {
     private static final String TRANS = "rgba(0,0,0,0)";
 
     private static final int VERTICAL = 90;
+    private static final String IMG_TMP = "function(){return \"<img src = %s>\"}";
 
     protected JSONObject populateDefaultSettings() throws JSONException{
         JSONObject settings = super.populateDefaultSettings();
@@ -62,7 +66,7 @@ public abstract class VanCartesianWidget extends VanChartWidget {
                 .put("rightYShowLabel", true)
                 .put("rightYLabelStyle", JSONObject.create().put("textStyle", this.defaultFont()))
                 .put("rightYLineColor", "#dddddd")
-                .put("rightYLineColor", true);
+                .put("rightYSeparator", true);
 
         //右二值轴
         settings.put("rightY2Unit", StringUtils.EMPTY)
@@ -74,7 +78,7 @@ public abstract class VanCartesianWidget extends VanChartWidget {
                 .put("rightY2ShowLabel", true)
                 .put("rightY2LabelStyle", JSONObject.create().put("textStyle", this.defaultFont()))
                 .put("rightY2LineColor", "#dddddd")
-                .put("rightYLineColor", true);
+                .put("rightY2Separator", true);
 
         return settings;
     }
@@ -186,7 +190,7 @@ public abstract class VanCartesianWidget extends VanChartWidget {
             JSONArray data = ser0.optJSONArray("data");
             for(int i = 0, len = data.length(); i < len; i++){
                 JSONObject dataPoint = data.getJSONObject(i);
-                double y = dataPoint.optDouble("y");
+                double y = dataPoint.optDouble("y", 0);
                 dataPoint.put("y", stackValue);
                 stackValue += y;
             }
@@ -209,6 +213,8 @@ public abstract class VanCartesianWidget extends VanChartWidget {
             plotOptions.put("curve", true);
         }
 
+        plotOptions.put("connectNulls", settings.optBoolean("nullContinuity"));
+
         return plotOptions;
     }
 
@@ -216,49 +222,180 @@ public abstract class VanCartesianWidget extends VanChartWidget {
         return false;
     }
 
-    public  JSONObject createOptions(JSONObject globalStyle, JSONObject data) throws Exception{
-
+    public JSONObject createOptions(JSONObject globalStyle, JSONObject data) throws Exception{
         JSONObject settings = this.getDetailChartSetting();
-
         JSONObject options = super.createOptions(globalStyle, data);
+        boolean isInverted = this.isInverted();//bar
 
-        options.put("dataSheet", JSONObject.create().put("enabled", settings.optBoolean("showDataTable"))
+        options.put("dataSheet", JSONObject.create().put("enabled", settings.optBoolean("showDataTable") && !isInverted)
                 .put("style", this.defaultFont()).put("borderColor", "#000000").put("borderWidth", 1));
 
-        if(settings.optBoolean("showZoom")){
-            options.put("zoom", JSONObject.create().put("zoomTool", JSONObject.create().put("enabled", true)));
+        if(settings.optBoolean("showZoom") && !settings.optBoolean("miniMode")){
+            options.put("zoom", JSONObject.create().put("zoomTool", JSONObject.create().put("enabled", !isInverted)).put("zoomType", ""));
         }
 
-        Calculator calculator = Calculator.createCalculator();
-        String[] ids = this.getUsedTargetID();
-        for(int i = 0, len = ids.length; i < len; i++){
-            String id = ids[i];
-            Double[] values = this.getValuesByID(id);
-            if(values.length > 0){
-                double min = Double.MAX_VALUE, max = -min, average = 0, count = values.length;
-                for(int j = 0; j < count; j++){
-                    double value = values[j].doubleValue();
-                    min = Math.min(min, value);
-                    max = Math.max(max, value);
-                    average += value;
+        JSONArray cateArray = this.parseCategoryAxis(settings);
+        JSONArray valueArray = this.parseValueAxis(settings);
+        if(settings.optBoolean("miniMode", false)){
+            checkMIniMode(cateArray, true);
+            checkMIniMode(valueArray, false);
+        }
+        options.put(this.getCoordXKey(), cateArray);
+        options.put(this.getCoordYKey(), valueArray);
+
+        this.dealDataLabelsConditions(options);
+        this.dealImageFillConditions(options);
+
+        return options;
+    }
+
+    private void checkMIniMode(JSONArray array, boolean cate) throws JSONException{
+        if(array == null){
+            return;
+        }
+        for(int i = 0, len = array.length(); i < len; i++){
+            JSONObject axis = array.optJSONObject(i);
+            if(axis == null){
+                continue;
+            }
+            axis.put("showLabel", cate).put("lineWidth", 0).put("gridLineWidth", 0).put("enableTick", false).put("title", JSONObject.create().put("enabled", false));
+        }
+    }
+
+    private void dealImageFillConditions(JSONObject options){
+        JSONArray series = options.optJSONArray("series");
+        for(int i = 0, count = series.length(); i < count; i++){
+            JSONObject ser = series.optJSONObject(i);
+            JSONArray targetIDs = ser.optJSONArray("targetIDs");
+            String type = ser.optString("type");
+            if(targetIDs == null){
+                continue;
+            }
+            try{
+                String targetID = targetIDs.optString(0);
+                BISummaryTarget target = this.getBITargetByID(targetID);
+                JSONArray dataImage = target.getChartSetting().getDataImage();
+                if(dataImage != null) {
+                    int filterCount = dataImage.length();
+                    JSONArray data = ser.optJSONArray("data");
+                    FilterValue[] filterValues = this.createFilterValues(dataImage, data);
+                    for (int dataIndex = 0, dataCount = data.length(); dataIndex < dataCount; dataIndex++) {
+                        JSONObject datum = data.optJSONObject(dataIndex);
+                        for (int filterIndex = filterCount - 1; filterIndex >= 0; filterIndex--) {
+                            FilterValue filter = filterValues[filterIndex];
+                            JSONObject config = dataImage.optJSONObject(filterIndex);
+                            String id = config.optString("targetId");
+                            if(filter.isMatchValue(this.findTarget(id, datum, ser))) {
+                                JSONObject styleSetting = config.optJSONObject("styleSetting");
+                                if(styleSetting.has("src")){
+                                    String url = styleSetting.optString("src");
+                                    BufferedImage bufferedImage = IOUtils.readImage(this.getLocalImagePath(url));
+                                    if(type == "area" || type == "line"){
+                                        datum.put("marker", JSONObject.create().put("symbol", this.getCompleteImageUrl(url)).put("width", bufferedImage.getWidth()).put("height", bufferedImage.getHeight()));
+                                    }else{
+                                        datum.put("image", this.getCompleteImageUrl(url));
+                                        datum.put("imageWidth", bufferedImage.getWidth());
+                                        datum.put("imageHeight", bufferedImage.getHeight());
+                                    }
+
+                                }
+                            }
+                        }
+                    }
                 }
-                average /= count;
+            }catch (Exception e){
+                BILoggerFactory.getLogger().error(e.getMessage(),e);
+            }
 
-                //放参数
-                HashMap map = new HashMap();
-                map.put(String.format("%s0",id), max);
-                map.put(String.format("%s1",id), min);
-                map.put(String.format("%s2",id), average);
+        }
+    }
 
-                ParameterMapNameSpace space = ParameterMapNameSpace.create(map);
-                calculator.pushNameSpace(space);
+    protected FilterValue[] createFilterValues(JSONArray config, JSONArray data){
+        int filterCount = config.length();
+        FilterValue[] filterValues = new FilterValue[filterCount];
+        for (int filterIndex = 0; filterIndex < filterCount; filterIndex++) {
+            try {
+                filterValues[filterIndex] = ChartFilterFactory.parseFilterValue(config.optJSONObject(filterIndex), this.getUserId(), data);
+            }catch (Exception e){
+                BILoggerFactory.getLogger().error(e.getMessage(),e);
             }
         }
 
-        options.put(this.getCoordXKey(), this.parseCategoryAxis(settings, calculator));
-        options.put(this.getCoordYKey(), this.parseValueAxis(settings, calculator));
+        return filterValues;
+    }
 
-        return options;
+    protected Object findTarget(String id, JSONObject datum, JSONObject ser){
+
+        BIDimension categoryDim = this.getCategoryDimension();
+        BIDimension seriesDim = this.getSeriesDimension();
+
+        if(categoryDim != null && ComparatorUtils.equals(categoryDim.getId(), id)){
+            return datum.optString(LONG_DATE);
+        }
+
+        if(seriesDim != null && ComparatorUtils.equals(seriesDim.getId(), id)){
+            return ser.optString(LONG_DATE);
+        }
+
+        return datum.optDouble("y", 0);
+    }
+
+    protected Object findTarget(String id, JSONObject config, JSONObject datum, JSONObject ser){
+        return findTarget(id, datum, ser);
+    }
+
+    protected JSONArray getDataLabelConditions(BISummaryTarget target){
+        return target.getChartSetting().getDataLabels();
+    }
+
+    private void dealDataLabelsConditions(JSONObject options) {
+        JSONArray series = options.optJSONArray("series");
+        for (int i = 0, count = series.length(); i < count; i++) {
+            JSONObject ser = series.optJSONObject(i);
+            JSONArray targetIDs = ser.optJSONArray("targetIDs");
+            if (targetIDs == null) {
+                continue;
+            }
+            try {
+                String targetID = targetIDs.optString(0);
+                BISummaryTarget target = this.getBITargetByID(targetID);
+                //标签的条件属性
+                JSONObject dataLabels = ser.optJSONObject("dataLabels");
+                JSONArray labelCondition = this.getDataLabelConditions(target);
+                if (labelCondition != null && dataLabels != null && dataLabels.optBoolean("enabled") == true) {
+                    int filterCount = labelCondition.length();
+                    JSONArray data = ser.optJSONArray("data");
+                    FilterValue[] filterValues = this.createFilterValues(labelCondition, data);
+                    for (int dataIndex = 0, dataCount = data.length(); dataIndex < dataCount; dataIndex++) {
+                        JSONObject datum = data.optJSONObject(dataIndex);
+                        for (int filterIndex = filterCount - 1; filterIndex >= 0; filterIndex--) {
+                            FilterValue filter = filterValues[filterIndex];
+                            JSONObject config = labelCondition.optJSONObject(filterIndex);
+                            String id = config.optString("targetId");
+                            Object matchTarget = this.findTarget(id, config, datum, ser);
+                            if (target != null && filter.isMatchValue(matchTarget)){
+                                JSONObject styleSetting = config.optJSONObject("styleSetting");
+                                JSONObject textStyle = styleSetting.optJSONObject("textStyle");
+                                JSONObject imgStyle = styleSetting.optJSONObject("imgStyle");
+                                JSONObject customDataLabels = new JSONObject(dataLabels.toString());
+                                if (textStyle.has("fontFamily")) {
+                                    customDataLabels.put("style", textStyle);
+                                }
+                                if (imgStyle.has("src")) {
+                                    String url = imgStyle.optString("src");
+                                    BufferedImage img = IOUtils.readImage(this.getLocalImagePath(url));
+                                    customDataLabels.put("formatter", String.format(IMG_TMP, this.getCompleteImageUrl(url))).put("useHtml", true).put("labelWidth", img.getWidth()).put("labelHeight", img.getHeight());
+                                }
+                                datum.put("dataLabels", customDataLabels);
+                                break;
+                            }
+                        }
+                    }
+                }
+            } catch (Exception e) {
+                BILoggerFactory.getLogger().error(e.getMessage(), e);
+            }
+        }
     }
 
     protected String getCoordXKey(){
@@ -269,15 +406,18 @@ public abstract class VanCartesianWidget extends VanChartWidget {
         return "yAxis";
     }
 
-    protected JSONArray parseCategoryAxis(JSONObject settings, Calculator calculator) throws JSONException{
+    protected JSONArray parseCategoryAxis(JSONObject settings) throws JSONException{
+        JSONObject labelStyle = settings.optJSONObject("catLabelStyle");
 
         JSONObject category = JSONObject.create();
+        boolean enabled = settings.optBoolean("catShowTitle");
 
         category
                 .put("type", "category").put("position", "bottom")
-                .put("title", JSONObject.create().put("enabled", settings.optJSONObject("catShowTitle")).put("style", settings.optJSONObject("catTitleStyle")).put("text", settings.optString("catTitle")))
+                .put("title", JSONObject.create().put("style", settings.optJSONObject("catTitleStyle")).put("text", enabled ?settings.optString("catTitle") : StringUtils.EMPTY))
                 .put("showLabel", settings.optBoolean("catShowLabel") && !settings.optBoolean("showDataTable"))
-                .put("labelStyle", settings.optJSONObject("catLabelStyle"))
+                .put("labelStyle", labelStyle.optJSONObject("textStyle"))
+                .put("labelRotation", labelStyle.optInt("textDirection"))
                 .put("lineColor", settings.optString("catLineColor"))
                 .put("gridLineWidth", settings.optBoolean("vShowGridLine") ? 1 : 0)
                 .put("gridLineColor", settings.optString("vGridLineColor"));
@@ -285,20 +425,20 @@ public abstract class VanCartesianWidget extends VanChartWidget {
         return JSONArray.create().put(category);
     }
 
-    protected JSONArray parseValueAxis(JSONObject settings, Calculator calculator) throws JSONException{
+    protected JSONArray parseValueAxis(JSONObject settings) throws JSONException{
 
         JSONArray axis = JSONArray.create();
 
-        axis.put(this.parseLeftValueAxis(settings, calculator));
+        axis.put(this.parseLeftValueAxis(settings));
 
-        axis.put(this.parseRightValueAxis(settings, calculator));
+        axis.put(this.parseRightValueAxis(settings));
 
-        axis.put(this.parseThirdValueAxis(settings, calculator));
+        axis.put(this.parseThirdValueAxis(settings));
 
         return axis;
     }
 
-    protected JSONObject parseLeftValueAxis(JSONObject settings, Calculator calculator) throws JSONException{
+    protected JSONObject parseLeftValueAxis(JSONObject settings) throws JSONException{
 
         JSONObject labelStyle = settings.optJSONObject("leftYLabelStyle");
         String axisTitle = this.axisTitleUnit(settings.optInt("leftYNumberLevel"), settings.optString("leftYUnit"));
@@ -321,13 +461,15 @@ public abstract class VanCartesianWidget extends VanChartWidget {
                 .put("gridLineColor", settings.optString("hGridLineColor"));
 
         if(settings.optBoolean("leftYShowCustomScale")){
-            this.putMinMaxInterval(left, settings.optJSONObject("leftYCustomScale"), calculator);
+            this.putMinMaxInterval(left, settings.optJSONObject("leftYCustomScale"));
         }
+
+        left.put("plotLines", this.parsePlotLines(BIReportConstant.REGION.TARGET1));
 
         return left;
     }
 
-    protected JSONObject parseRightValueAxis(JSONObject settings, Calculator calculator) throws JSONException{
+    protected JSONObject parseRightValueAxis(JSONObject settings) throws JSONException{
 
         String axisTitle = this.axisTitleUnit(settings.optInt("rightYNumberLevel"), settings.optString("rightYUnit"));
         boolean enabled = settings.optBoolean("rightYShowTitle");
@@ -344,16 +486,20 @@ public abstract class VanCartesianWidget extends VanChartWidget {
                 .put("labelStyle", labelStyle.optJSONObject("textStyle"))
                 .put("labelRotation", labelStyle.optInt("textDirection"))
                 .put("lineColor", settings.optString("rightYLineColor")).put("lineWidth", 1)
-                .put("position", "right").put("reversed", settings.optBoolean("rightYReverse", false));
+                .put("position", "right").put("reversed", settings.optBoolean("rightYReverse", false))
+                .put("gridLineWidth", settings.optBoolean("hShowGridLine") ? 1 : 0)
+                .put("gridLineColor", settings.optString("hGridLineColor"));
 
         if(settings.optBoolean("rightYShowCustomScale")){
-            this.putMinMaxInterval(right, settings.optJSONObject("rightYCustomScale"), calculator);
+            this.putMinMaxInterval(right, settings.optJSONObject("rightYCustomScale"));
         }
+
+        right.put("plotLines", this.parsePlotLines(BIReportConstant.REGION.TARGET2));
 
         return right;
     }
 
-    private JSONObject parseThirdValueAxis(JSONObject settings, Calculator calculator) throws JSONException{
+    protected JSONObject parseThirdValueAxis(JSONObject settings) throws JSONException{
         String axisTitle = this.axisTitleUnit(settings.optInt("rightY2NumberLevel"), settings.optString("rightY2Unit"));
         boolean enabled = settings.optBoolean("rightY2ShowTitle");
         JSONObject labelStyle = settings.optJSONObject("rightY2LabelStyle");
@@ -369,54 +515,151 @@ public abstract class VanCartesianWidget extends VanChartWidget {
                 .put("labelStyle", labelStyle.optJSONObject("textStyle"))
                 .put("labelRotation", labelStyle.optInt("textDirection"))
                 .put("lineColor", settings.optString("rightY2LineColor")).put("lineWidth", 1)
-                .put("position", "right").put("reversed", settings.optBoolean("rightY2Reverse", false));
+                .put("position", "right").put("reversed", settings.optBoolean("rightY2Reverse", false))
+                .put("gridLineWidth", settings.optBoolean("hShowGridLine") ? 1 : 0)
+                .put("gridLineColor", settings.optString("hGridLineColor"));
 
         if(settings.optBoolean("rightY2ShowCustomScale")){
-            this.putMinMaxInterval(right2, settings.optJSONObject("rightY2CustomScale"), calculator);
+            this.putMinMaxInterval(right2, settings.optJSONObject("rightY2CustomScale"));
         }
+
+        right2.put("plotLines", this.parsePlotLines(BIReportConstant.REGION.TARGET2));
 
         return right2;
     }
 
-    private void putMinMaxInterval(JSONObject axis, JSONObject scale, Calculator calculator) throws JSONException{
+    private JSONArray parsePlotLines(String regionID){
+
+        JSONArray dIDs = this.getDimensionIDArray(regionID);
+        JSONArray plotLines = JSONArray.create();
+
+        if(dIDs == null){
+            return plotLines;
+        }
+
+        for(int i = 0, len = dIDs.length(); i < len; i++){
+            try {
+                BISummaryTarget dimension = this.getBITargetByID(dIDs.optString(i));
+                if(dimension.isUsed()) {
+                    JSONArray cordons = dimension.getChartSetting().getCordon();
+
+                    for (int j = 0, count = cordons.length(); j < count; j++) {
+                        JSONObject config = cordons.optJSONObject(j);
+
+                        plotLines.put(
+                                JSONObject.create().put("value", config.optDouble("cordonValue"))
+                                        .put("color", config.optString("cordonColor"))
+                                        .put("label", JSONObject.create().put("text", config.optString("cordonName")).put("style", defaultFont()).put("align", "right"))
+                        );
+
+                    }
+                }
+
+            }catch (Exception ex){
+                BILoggerFactory.getLogger().error(ex.getMessage(), ex);
+            }
+
+        }
+
+        return plotLines;
+    }
+
+    private void putMinMaxInterval(JSONObject axis, JSONObject scale) throws JSONException{
 
         String min = StringUtils.EMPTY, max = StringUtils.EMPTY, interval = StringUtils.EMPTY;
         if(scale.has("minScale")) {
-            min = scale.optJSONObject("minScale").optString("formula");
+            min = scale.optString("minScale");
         }
         if(scale.has("maxScale")) {
-            max = scale.optJSONObject("maxScale").optString("formula");
+            max = scale.optString("maxScale");
         }
         if(scale.has("interval")) {
-            interval = scale.optJSONObject("interval").optString("formula");
+            interval = scale.optString("interval");
         }
 
         if(StringUtils.isNotBlank(min)){
-            axis.put("min", this.niceAxisValue(min, calculator));
+            axis.put("min", StableUtils.string2Number(min).doubleValue());
         }
 
         if(StringUtils.isNotBlank(max)){
-            axis.put("max", this.niceAxisValue(max, calculator));
+            axis.put("max", StableUtils.string2Number(max).doubleValue());
         }
 
         if(StringUtils.isNotBlank(interval)){
-            axis.put("tickInterval", this.niceAxisValue(interval, calculator));
+            axis.put("tickInterval", StableUtils.string2Number(interval).doubleValue());
         }
     }
 
-    //有参数的时候，需要计算出一个相对nice的值
-    //没有的时候直接返回计算结果
-    private double niceAxisValue(String formula, Calculator calculator){
-        double value = 0;
-        try {
-            formula = formula.replaceAll("[{}]", StringUtils.EMPTY);
-            value = Double.parseDouble(calculator.eval(new Formula(formula)).toString());
 
-        }catch (Exception e){
-            BILoggerFactory.getLogger().error(e.getMessage(),e);
+    //=========================about compare chart==========================================================
+    private static final double DEFAULT_MAX = 100;
+
+    //make yaxis maxValue Double
+    protected void dealCompareChartYAxis(JSONObject settings) throws JSONException{
+
+        double leftYMax = -Double.MAX_VALUE, rightYMax = -Double.MAX_VALUE;
+        String[] ids = this.getUsedTargetID();
+
+        for(String id : ids){
+
+            Double[] values = this.getValuesByID(id);
+
+            int yAxis = this.yAxisIndex(id);
+            if(yAxis == 0){
+                for (int j = 0, count = values.length; j < count; j++) {
+                    leftYMax = Math.max(leftYMax, values[j].doubleValue());
+                }
+            }else{
+                for (int j = 0, count = values.length; j < count; j++) {
+                    rightYMax = Math.max(rightYMax, values[j].doubleValue());
+                }
+            }
         }
 
-        return value;
+        if(leftYMax == -Double.MAX_VALUE){
+            leftYMax = DEFAULT_MAX;
+        }
+
+        if(rightYMax == -Double.MAX_VALUE){
+            leftYMax = DEFAULT_MAX;
+        }
+
+        settings.put("rightYReverse", true);
+
+        if(!settings.optBoolean("leftYShowCustomScale")){
+            settings
+                    .put("leftYShowCustomScale", true)
+                    .put("leftYCustomScale", JSONObject.create().put("maxScale", 2 * leftYMax));
+        }
+
+        if(!settings.optBoolean("rightYShowCustomScale")){
+            settings
+                    .put("rightYShowCustomScale", true)
+                    .put("rightYCustomScale", JSONObject.create().put("maxScale", 2 * rightYMax));
+        }
+
     }
 
+    protected JSONObject createEmptyCategoryAxis(JSONObject settings) throws JSONException{
+        return JSONObject.create()
+                .put("type", "category")
+                .put("position", "top")
+                .put("showLabel", false)
+                .put("lineWidth", 0)
+                .put("enableTick", false)
+                .put("labelStyle", settings.optJSONObject("catLabelStyle"));
+    }
+
+    protected JSONArray dealSeriesWithEmptyAxis(JSONArray series) throws JSONException{
+        for(int i = 0, len = series.length(); i < len; i++){
+            JSONObject ser = series.getJSONObject(i);
+
+            int yAxisIndex = ser.optInt("yAxis");
+            if(yAxisIndex == 1){
+                ser.put("xAxis", 1);
+            }
+        }
+
+        return series;
+    }
 }

@@ -76,4 +76,10 @@ public interface CubeColumnReaderService<T> extends ICubeIndexDataGetterService,
     CubeRelationEntityGetterService getRelationIndexGetter(BICubeTablePath path) throws BICubeRelationAbsentException, IllegalRelationPathException;
 
     int getClassType();
+
+    /**
+     * 获取空值表示对象
+     * @return
+     */
+    T getCubeNullValue();
 }

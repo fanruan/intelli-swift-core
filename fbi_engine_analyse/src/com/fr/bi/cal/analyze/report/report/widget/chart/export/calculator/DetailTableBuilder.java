@@ -1,12 +1,11 @@
 package com.fr.bi.cal.analyze.report.report.widget.chart.export.calculator;
 
-import com.fr.bi.cal.analyze.report.report.widget.chart.export.format.TableCellFormatOperation;
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.item.BIBasicTableItem;
-import com.fr.bi.cal.analyze.report.report.widget.chart.export.item.BITableDataConstructor;
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.item.ITableHeader;
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.item.ITableItem;
+import com.fr.bi.cal.analyze.report.report.widget.chart.export.item.constructor.BIDetailDataConstructor;
+import com.fr.bi.cal.analyze.report.report.widget.chart.export.item.constructor.DataConstructor;
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.utils.BITableExportDataHelper;
-import com.fr.bi.cal.analyze.report.report.widget.chart.export.utils.SummaryTableStyleHelper;
 import com.fr.bi.conf.report.widget.IWidgetStyle;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONException;
@@ -21,11 +20,9 @@ import java.util.Map;
  * Created by Kary on 2017/3/30.
  */
 public class DetailTableBuilder extends TableAbstractDataBuilder {
-    private List<TableCellFormatOperation> styles;
 
-    public DetailTableBuilder(Map<Integer, List<JSONObject>> viewMap, List<TableCellFormatOperation> tableCellFormatOperations, JSONObject dataJSON, IWidgetStyle styleSettings) throws Exception {
+    public DetailTableBuilder(Map<Integer, List<JSONObject>> viewMap , JSONObject dataJSON, IWidgetStyle styleSettings) throws Exception {
         super(viewMap, dataJSON, styleSettings);
-        this.styles = tableCellFormatOperations;
     }
 
     @Override
@@ -66,8 +63,8 @@ public class DetailTableBuilder extends TableAbstractDataBuilder {
     }
 
     @Override
-    public BITableDataConstructor createTableData() throws JSONException {
-        BITableDataConstructor tableDataForExport = new BITableDataConstructor(headers, items,this.styleSetting);
+    public DataConstructor createTableData() throws JSONException {
+        DataConstructor tableDataForExport = new BIDetailDataConstructor(headers, items,this.styleSetting);
         return tableDataForExport;
     }
 
@@ -85,8 +82,7 @@ public class DetailTableBuilder extends TableAbstractDataBuilder {
             if (isDimensionUsable(dimIds.get(j))) {
                 BIBasicTableItem item = new BIBasicTableItem();
                 item.setDId(dimIds.get(j));
-                item.setText(itemArray.isNull(j) ? "" : itemArray.getString(j));
-                item.setStyle(SummaryTableStyleHelper.getBodyStyles(styleSetting.getThemeStyle(), styleSetting.getTableStyleGroup(), j));
+                item.setValue(itemArray.isNull(j) ? "" : itemArray.getString(j));
                 rowItems.add(item);
             }
         }

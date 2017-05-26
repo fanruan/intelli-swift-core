@@ -2,7 +2,7 @@ package com.finebi.cube.map.map2;
 
 
 import com.finebi.cube.map.ExternalMapIO;
-import com.fr.stable.collections.array.IntArray;
+import com.fr.bi.stable.structure.array.IntList;
 
 import java.io.FileNotFoundException;
 import java.util.Iterator;
@@ -12,23 +12,23 @@ import java.util.TreeMap;
 /**
  * Created by Connery on 2015/11/30.
  */
-public class MemIntArrayExternalMapIO<K> implements ExternalMapIO<K, IntArray> {
-    private TreeMap<K, IntArray> currentContainer;
+public class MemIntArrayExternalMapIO<K> implements ExternalMapIO<K, IntList> {
+    private TreeMap<K, IntList> currentContainer;
     private Iterator<K> iterator;
 
-    public MemIntArrayExternalMapIO(TreeMap<K, IntArray> currentContainer) {
-        this.currentContainer = new TreeMap<K, IntArray>(currentContainer);
+    public MemIntArrayExternalMapIO(TreeMap<K, IntList> currentContainer) {
+        this.currentContainer = new TreeMap<K, IntList>(currentContainer);
         this.iterator = currentContainer.keySet().iterator();
     }
 
     @Override
-    public void write(K key, IntArray value) {
+    public void write(K key, IntList value) {
 
     }
 
     @Override
-    public Map<K, IntArray> read() throws FileNotFoundException {
-        TreeMap<K, IntArray> result = new TreeMap<K, IntArray>();
+    public Map<K, IntList> read() throws FileNotFoundException {
+        TreeMap<K, IntList> result = new TreeMap<K, IntList>();
         if (iterator.hasNext()) {
             K key = iterator.next();
             result.put(key, currentContainer.get(key));

@@ -19,9 +19,9 @@ public class BIBasicTableItem implements ITableItem {
     private boolean needExpand;
     private boolean isExpanded;
     protected List<ITableItem> children;
-    private ITableStyle style;
-//    private String type;
+    private ITableStyle styles;
     private String value;
+    private boolean isSum;
 
     public BIBasicTableItem() {
     }
@@ -68,22 +68,15 @@ public class BIBasicTableItem implements ITableItem {
         return null != this.values && values.size() > 0;
     }
 
-    @Override
-    public void setStyle(ITableStyle style) {
-        this.style = style;
+    public void setStyles(ITableStyle styles) {
+        this.styles = styles;
     }
-
-//    @Override
-//    public void setType(String type) {
-//        this.type = type;
-//    }
 
     @Override
     public String getDId() {
         return dId;
     }
 
-    @Override
     public String getText() {
         return text;
     }
@@ -108,21 +101,10 @@ public class BIBasicTableItem implements ITableItem {
     }
 
     @Override
-    public ITableStyle getStyle() {
-        return style;
+    public ITableStyle getStyles() {
+        return styles;
     }
 
-//    @Override
-//    public String getType() {
-//        return type;
-//    }
-
-    @Override
-    public String getdId() {
-        return dId;
-    }
-
-    @Override
     public void setdId(String dId) {
         this.dId = dId;
     }
@@ -137,6 +119,16 @@ public class BIBasicTableItem implements ITableItem {
     }
 
     @Override
+    public boolean isSum() {
+        return isSum;
+    }
+
+    @Override
+    public void setSum(boolean sum) {
+        isSum = sum;
+    }
+
+    @Override
     public void parseJSON(JSONObject jo) throws Exception {
         if (jo.has("dId")) {
             dId = jo.optString("dId");
@@ -144,12 +136,13 @@ public class BIBasicTableItem implements ITableItem {
         if (jo.has("text")) {
             text = jo.optString("text");
         }
-//        if (jo.has("type")) {
-//            type = jo.optString("type");
+//        if (jo.has("isSum")) {
+//            isSum = jo.optBoolean("isSum");
 //        }
+
         if (jo.has("values")) {
-            if (null==values){
-                values=new ArrayList<ITableItem>();
+            if (null == values) {
+                values = new ArrayList<ITableItem>();
             }
             children = new ArrayList<ITableItem>();
             for (int i = 0; i < jo.getJSONArray("values").length(); i++) {
@@ -187,9 +180,9 @@ public class BIBasicTableItem implements ITableItem {
             jo.put("children", childrenArray);
         }
         jo.put("dId", dId);
-        jo.put("styles", null == style ? new JSONObject() : style.createJSON());
+        jo.put("styles", null == styles ? new JSONObject() : styles.createJSON());
         jo.put("text", text);
-//        jo.put("type", type);
+//        jo.put("isSum", isSum);
         if (null != this.values && values.size() > 0) {
             JSONArray TempValues = new JSONArray();
             for (ITableItem item : this.values) {

@@ -1,6 +1,7 @@
 package com.fr.bi.module;
 
 import com.finebi.cube.api.ICubeDataLoaderCreator;
+import com.finebi.cube.api.UserAnalysisCubeDataLoaderCreator;
 import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.conf.BIAliasManagerProvider;
 import com.finebi.cube.conf.BICubeManagerProvider;
@@ -44,6 +45,7 @@ import com.fr.bi.conf.provider.BIUpdateFrequencyManagerProvider;
 import com.fr.bi.conf.provider.BIUserLoginInformationProvider;
 import com.fr.bi.conf.records.BICubeTaskRecordManagerWithoutUser;
 import com.fr.bi.conf.report.BIFSReportProvider;
+import com.fr.bi.conf.tablelock.BIConfTableLock;
 import com.fr.bi.conf.tablelock.BIConfTableLockDAO;
 import com.fr.bi.fs.BIDAOProvider;
 import com.fr.bi.fs.BIDAOUtils;
@@ -141,7 +143,7 @@ public class BICoreModule extends AbstractModule {
 
     @Override
     public ICubeDataLoaderCreator getCubeDataLoaderCreator() {
-        return StableFactory.getMarkedObject(ICubeDataLoaderCreator.XML_TAG, ICubeDataLoaderCreator.class);
+        return StableFactory.getMarkedObject(UserAnalysisCubeDataLoaderCreator.XML_TAG, ICubeDataLoaderCreator.class);
     }
 
 
@@ -154,7 +156,7 @@ public class BICoreModule extends AbstractModule {
         StableFactory.registerMarkedObject(BIUpdateFrequencyManagerProvider.XML_TAG, getBIUpdateSettingManager());
         StableFactory.registerMarkedObject(BISystemPackageConfigurationProvider.XML_TAG, getPackManagerProvider());
         StableFactory.registerMarkedObject(BIAuthorityManageProvider.XML_TAG, getBISystemAuthorityManager());
-        StableFactory.registerMarkedObject(ICubeDataLoaderCreator.XML_TAG, com.finebi.cube.api.BICubeManager.getInstance());
+        StableFactory.registerMarkedObject(UserAnalysisCubeDataLoaderCreator.XML_TAG, UserAnalysisCubeDataLoaderCreator.getInstance());
         StableFactory.registerMarkedObject(BIDataSourceManagerProvider.XML_TAG, getSourceManagerProvider());
         StableFactory.registerMarkedObject(BIAliasManagerProvider.XML_TAG, getTransManagerProvider());
         StableFactory.registerMarkedObject(BITableRelationConfigurationProvider.XML_TAG, getConnectionManagerProvider());
@@ -190,6 +192,7 @@ public class BICoreModule extends AbstractModule {
             return FBIConfig.getInstance();
         }
     }
+
     public BITableDataDAOProvider getBITableDataDAOManager() {
         if (ClusterEnv.isCluster()) {
             if (ClusterAdapter.getManager().getHostManager().isSelf()) {
@@ -205,6 +208,7 @@ public class BICoreModule extends AbstractModule {
             return BITableDataDAOManager.getInstance();
         }
     }
+
     public BIUpdateFrequencyManagerProvider getBIUpdateSettingManager() {
         if (ClusterEnv.isCluster()) {
             if (ClusterAdapter.getManager().getHostManager().isSelf()) {
@@ -613,10 +617,12 @@ public class BICoreModule extends AbstractModule {
 
     private void registerDAO() {
         if ((!ClusterEnv.isCluster())) {
-            dropBIReportNodeLockDAOTable();
+            dropBILockDAOTable(BIReportNodeLock.class);
+            dropBILockDAOTable(BIConfTableLock.class);
         }
         if (ClusterAdapter.getManager().getHostManager().isSelf() && isFirstTimeInit) {
-            dropBIReportNodeLockDAOTable();
+            dropBILockDAOTable(BIReportNodeLock.class);
+            dropBILockDAOTable(BIConfTableLock.class);
         }
 
         StableFactory.registerMarkedObject(HSQLDBDAOControl.class.getName(), HSQLBIReportDAO.getInstance());
@@ -625,10 +631,10 @@ public class BICoreModule extends AbstractModule {
         StableFactory.registerMarkedObject(BIConfTableLockDAO.class.getName(), BIConfTableLockDAO.getInstance());
     }
 
-    private void dropBIReportNodeLockDAOTable() {
+    private void dropBILockDAOTable(Class Lock) {
         Connection cn = null;
         PreparedStatement ps = null;
-        String tableName = ObjectTableMapper.PREFIX_NAME + BIReportNodeLock.class.getSimpleName();
+        String tableName = ObjectTableMapper.PREFIX_NAME + Lock.getSimpleName();
         try {
             cn = PlatformDB.getDB().createConnection();
             ps = cn.prepareStatement("DROP TABLE " + DialectFactory.generateDialect(cn).column2SQL(tableName));

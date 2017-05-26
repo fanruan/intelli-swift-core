@@ -40,7 +40,7 @@ public class ReportKeyChangeOperation extends ReportCamelOperation {
         try {
             String updatedKeys = null != keys ? keys.optString(str, str) : str;
             if (!ComparatorUtils.equals(updatedKeys, str)) {
-                BILoggerFactory.getLogger(this.getClass()).info(BIStringUtils.append("compatibility warning! the parameter whose name is ", str, " should be transfered"));
+                BILoggerFactory.getLogger(this.getClass()).debug(BIStringUtils.append("compatibility warning! the parameter whose name is ", str, " should be transfered"));
             }
 
             return updatedKeys;

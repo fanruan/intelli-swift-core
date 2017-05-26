@@ -55,12 +55,7 @@ import com.fr.general.DateUtils;
 import com.fr.json.JSONObject;
 import org.slf4j.Logger;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Future;
 
@@ -477,7 +472,7 @@ public class BuildCubeTask implements CubeTask {
 
     @Override
     public long getUserId() {
-        return UserControl.getInstance().getSuperManagerID();
+        return biUser.getUserId();
     }
 
     @Override

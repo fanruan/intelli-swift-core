@@ -96,7 +96,10 @@ public class BIDateUtils {
     }
 
     public static long toSimpleDay(long t) {
-        Calendar c = Calendar.getInstance();
+        return toSimpleDay(t, Calendar.getInstance());
+    }
+
+    public static long toSimpleDay(long t, Calendar c) {
         c.setTimeInMillis(t);
         c.set(Calendar.HOUR_OF_DAY, 0);
         c.set(Calendar.MINUTE, 0);
@@ -104,27 +107,110 @@ public class BIDateUtils {
         c.set(Calendar.MILLISECOND, 0);
         return c.getTimeInMillis();
     }
+
     public static long toYearMonthDayHour(long t) {
-        Calendar c = Calendar.getInstance();
+        return toYearMonthDayHour(t, Calendar.getInstance());
+    }
+
+    public static long toYearMonthDayHour(long t, Calendar c) {
         c.setTimeInMillis(t);
         c.set(Calendar.MINUTE, 0);
         c.set(Calendar.SECOND, 0);
         c.set(Calendar.MILLISECOND, 0);
         return c.getTimeInMillis();
     }
+
     public static long toYearMonthDayHourMinute(long t) {
-        Calendar c = Calendar.getInstance();
+        return toYearMonthDayHourMinute(t, Calendar.getInstance());
+    }
+
+    public static long toYearMonthDayHourMinute(long t, Calendar c) {
         c.setTimeInMillis(t);
         c.set(Calendar.SECOND, 0);
         c.set(Calendar.MILLISECOND, 0);
         return c.getTimeInMillis();
     }
+
     public static long toYearMonthDayHourMinuteSecond(long t) {
-        Calendar c = Calendar.getInstance();
+        return toYearMonthDayHourMinuteSecond(t, Calendar.getInstance());
+    }
+
+    public static long toYearMonthDayHourMinuteSecond(long t, Calendar c) {
         c.setTimeInMillis(t);
         c.set(Calendar.MILLISECOND, 0);
         return c.getTimeInMillis();
     }
+
+    //year-month 统一设置为该月份第一天
+    public static long toYearMonth(long t) {
+        return toYearMonth(t, Calendar.getInstance());
+    }
+
+    //year-month 统一设置为该月份第一天
+    public static long toYearMonth(long t, Calendar c) {
+        c.setTimeInMillis(t);
+        c.set(Calendar.DAY_OF_MONTH, 1);
+        c.set(Calendar.HOUR_OF_DAY, 0);
+        c.set(Calendar.MINUTE, 0);
+        c.set(Calendar.SECOND, 0);
+        c.set(Calendar.MILLISECOND, 0);
+        return c.getTimeInMillis();
+    }
+
+    //    year-weeknumber 统一设置为该周的第一天
+    public static long toYearWeekNumber(long t) {
+        return toYearWeekNumber(t, Calendar.getInstance());
+    }
+
+    //    year-weeknumber 统一设置为该周的第一天
+    public static long toYearWeekNumber(long t, Calendar c) {
+        c.setTimeInMillis(t);
+        int year = c.get(Calendar.YEAR);
+        c.set(Calendar.DAY_OF_WEEK, 1);
+        c.set(Calendar.HOUR_OF_DAY, 0);
+        c.set(Calendar.MINUTE, 0);
+        c.set(Calendar.SECOND, 0);
+        c.set(Calendar.MILLISECOND, 0);
+        if (c.get(Calendar.YEAR) != year) {
+            c.set(Calendar.YEAR, year);
+            c.set(Calendar.MONTH, 0);
+            c.set(Calendar.DAY_OF_MONTH, 1);
+        }
+        return c.getTimeInMillis();
+    }
+
+    public static int toWeekNumber(long t) {
+        return toWeekNumber(t, Calendar.getInstance());
+    }
+
+    public static int toWeekNumber(long t, Calendar c) {
+        c.setTimeInMillis(t);
+        int resultWeekNumber = c.get(Calendar.WEEK_OF_YEAR);
+        int year = c.get(Calendar.YEAR);
+        c.add(Calendar.DAY_OF_MONTH, (-1*DateConstant.CALENDAR.WEEK.SUNDAY_7 ));
+        if (resultWeekNumber < c.get(Calendar.WEEK_OF_YEAR) && (c.get(Calendar.YEAR) == year)) {
+            resultWeekNumber = c.get(Calendar.WEEK_OF_YEAR) + 1;
+        }
+        return resultWeekNumber;
+    }
+
+    public static long toYearSeason(long t) {
+        return toYearSeason(t, Calendar.getInstance());
+    }
+
+    //    year-season 统一设置为该季度的第一个月的第一天
+    public static long toYearSeason(long t, Calendar c) {
+        c.setTimeInMillis(t);
+        c.set(Calendar.DAY_OF_MONTH, 1);
+        c.set(Calendar.HOUR_OF_DAY, 0);
+        c.set(Calendar.MINUTE, 0);
+        c.set(Calendar.SECOND, 0);
+        c.set(Calendar.MILLISECOND, 0);
+        int month = (BITimeUtils.getFieldFromTime(t, Calendar.MONTH) / 3) * 3;
+        c.set(Calendar.MONTH, month);
+        return c.getTimeInMillis();
+    }
+
     /**
      * 获取当前时间
      *

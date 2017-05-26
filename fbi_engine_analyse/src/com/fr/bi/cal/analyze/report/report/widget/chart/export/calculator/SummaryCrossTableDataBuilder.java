@@ -1,6 +1,7 @@
 package com.fr.bi.cal.analyze.report.report.widget.chart.export.calculator;
 
-import com.fr.bi.cal.analyze.report.report.widget.chart.export.item.BITableDataConstructor;
+import com.fr.bi.cal.analyze.report.report.widget.chart.export.item.constructor.BISummaryDataConstructor;
+import com.fr.bi.cal.analyze.report.report.widget.chart.export.item.constructor.DataConstructor;
 import com.fr.bi.conf.report.widget.IWidgetStyle;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
@@ -69,12 +70,12 @@ public class SummaryCrossTableDataBuilder extends TableAbstractDataBuilder {
     private void getNoneTarCrossTable() throws Exception {
         createCrossHeader4OnlyCross();
         createCrossItems4OnlyCross();
-//        setOtherAttrs4OnlyCross();
+        setOtherAttrs4OnlyCross();
     }
 
     @Override
-    public BITableDataConstructor createTableData() throws JSONException {
-        BITableDataConstructor tableDataForExport = new BITableDataConstructor(headers, items, crossHeaders, crossItems, styleSetting);
+    public DataConstructor createTableData() throws JSONException {
+        DataConstructor tableDataForExport = new BISummaryDataConstructor(headers, items, crossHeaders, crossItems, styleSetting);
         return tableDataForExport;
 
     }

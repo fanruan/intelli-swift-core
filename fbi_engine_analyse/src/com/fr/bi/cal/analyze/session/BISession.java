@@ -137,7 +137,7 @@ public class BISession extends BIAbstractSession {
             this.isEdit = true;
             return;
         }
-        lockDAO.forceLock(sessionID, node.getUserId(), node.getId());
+        lockDAO.forceLock(sessionID, node.getUserId(), node.getId(),getUserId());
         this.isEdit = true;
     }
 
@@ -157,7 +157,7 @@ public class BISession extends BIAbstractSession {
             return isEdit;
         }
         if (isEdit) {
-            isEdit = lockDAO.lock(sessionID, node.getUserId(), node.getId());
+            isEdit = lockDAO.lock(sessionID, node.getUserId(), node.getId(),getUserId());
             if (!isEdit) {
                 List<BIReportNodeLock> locks = lockDAO.getLock(node.getUserId(), node.getId());
                 boolean doForce = true;
@@ -467,4 +467,12 @@ public class BISession extends BIAbstractSession {
     public List<MetricGroupInfo> getMetricGroupInfoList(String widgetName) {
         return mergerInfoListMap.get(widgetName);
     }
+
+    public void clearCachedMaps() {
+        detailIndexMap.clear();
+        detailValueMap.clear();
+        partPageGroup.clear();
+        pageGroup.clear();
+    }
+
 }

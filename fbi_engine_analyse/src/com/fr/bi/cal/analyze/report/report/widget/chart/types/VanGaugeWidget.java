@@ -49,19 +49,23 @@ public class VanGaugeWidget extends VanCartesianWidget{
 
         int gaugeStyle = settings.optInt("dashboardChartType");
         boolean isPointer = gaugeStyle == NORMAL || gaugeStyle == HALF_DASHBOARD;
+        boolean isMultiPointer = (settings.optInt("dashboardPointer") == MULTI_POINTERS) && isPointer;
 
         String align = gaugeStyle == HORIZONTAL_TUBE ? "top" : "left";
 
-        String valueLabelKey = (isPointer ? SERIES : CATEGORY) + VALUE;
+        String valueLabelKey = SERIES + VALUE;
+
         JSONObject formatter = JSONObject.create().put("identifier", valueLabelKey);
 
         JSONObject valueLabel = JSONObject.create().put("enabled", true).put("backgroundColor", BG_COLOR).put("align", align).put("formatter", formatter);
-
         JSONObject seriesLabel = JSONObject.create().put("enabled", true).put("formatter", JSONObject.create().put("identifier", CATEGORY)).put("align", "bottom");
 
-        JSONObject percentageLabel = JSONObject.create().put("enabled", true).put("formatter", JSONObject.create().put("identifier", PERCENT).put("percentFormat", "function(){return BI.contentFormat(arguments[0], \"#.##%\")}")).put("align", align);
+        plotOptions.put("valueLabel", valueLabel).put("seriesLabel", seriesLabel);
 
-        plotOptions.put("valueLabel", valueLabel).put("seriesLabel", seriesLabel).put("percentageLabel", percentageLabel);
+        if(settings.optInt("styleRadio", AUTO) != AUTO){
+            JSONArray dashboardStyles = settings.optJSONArray("dashboardStyles");
+            plotOptions.put("bands", this.mapStyleToRange(dashboardStyles));
+        }
 
         return plotOptions;
     }
@@ -93,9 +97,8 @@ public class VanGaugeWidget extends VanCartesianWidget{
             layout = "horizontal";
         }
 
-        int pointerCount = settings.optInt("dashboardPointer");
-        boolean multi = gaugeStyle == NORMAL || gaugeStyle == HALF_DASHBOARD;
-        multi = multi && pointerCount == MULTI_POINTERS;
+        boolean isPointer = gaugeStyle == NORMAL || gaugeStyle == HALF_DASHBOARD;
+        boolean multi = isPointer && (settings.optInt("dashboardPointer") == MULTI_POINTERS);
 
         return dealSeries(series, style, layout, multi);
     }

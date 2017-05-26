@@ -2,8 +2,9 @@ package com.fr.bi.stable.utils;
 
 import com.finebi.cube.api.ICubeColumnIndexReader;
 import com.fr.bi.stable.gvi.GroupValueIndex;
+import com.fr.bi.stable.io.newio.NIOConstant;
 import com.fr.bi.stable.report.result.TargetCalculator;
-import com.fr.general.ComparatorUtils;
+import com.fr.stable.StringUtils;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -57,12 +58,12 @@ public class BICollectionUtils {
 
     public static <T> T firstUnNullKey(ICubeColumnIndexReader<T> baseMap) {
         T firstKey = baseMap.firstKey();
-        if (firstKey == null || ComparatorUtils.equals(firstKey, "")) {
+        if (isCubeNullKey(firstKey)) {
             Iterator<Map.Entry<T, GroupValueIndex>> iter = baseMap.iterator(firstKey);
             while (iter.hasNext()) {
                 Map.Entry<T, GroupValueIndex> entry = iter.next();
                 firstKey = entry.getKey();
-                if (firstKey != null && firstKey != "") {
+                if (isNotCubeNullKey(firstKey)) {
                     break;
                 }
             }
@@ -72,17 +73,75 @@ public class BICollectionUtils {
 
     public static <T> T lastUnNullKey(ICubeColumnIndexReader<T> baseMap) {
         T lastKey = baseMap.lastKey();
-        if (lastKey == null || ComparatorUtils.equals(lastKey, "")) {
+        if (isCubeNullKey(lastKey)) {
             Iterator<Map.Entry<T, GroupValueIndex>> iter = baseMap.previousIterator(lastKey);
             while (iter.hasNext()) {
                 Map.Entry<T, GroupValueIndex> entry = iter.next();
                 lastKey = entry.getKey();
-                if (lastKey != null && lastKey != "") {
+                if (isNotCubeNullKey(lastKey)) {
                     break;
                 }
             }
         }
         return lastKey;
+    }
+
+    /**
+     * 是否为cube底层返回空值
+     *
+     * @param key
+     * @param <T>
+     * @return
+     */
+    public static <T> Boolean isCubeNullKey(T key) {
+        // FIXME 来一个更好的判断方法。。。
+        if (key == null) {
+            return true;
+        } else if (key instanceof Integer && NIOConstant.INTEGER.NULL_VALUE == (Integer) key) {
+            return true;
+        } else if (key instanceof String && StringUtils.EMPTY.equals(key)) {
+            return true;
+        } else if (key instanceof Double && NIOConstant.DOUBLE.NULL_VALUE == (Double)key) {
+            return true;
+        } else if (key instanceof Long && NIOConstant.LONG.NULL_VALUE == (Long) key) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * 是否为空值
+     *
+     * @param key
+     * @param <T>
+     * @return
+     */
+    public static <T> boolean isNotCubeNullKey(T key) {
+        return !isCubeNullKey(key);
+    }
+
+    /**
+     * 底层的值显示给前端展示的值转换
+     * 主要是处理空值的情况
+     *
+     * @param key
+     * @param <T>
+     * @return
+     */
+    public static <T> T cubeValueToWebDisplay(T key) {
+        if (key == null || key instanceof String) {
+            return key;
+        }
+        if (key instanceof Double && NIOConstant.DOUBLE.NULL_VALUE == ((Double) key)) {
+            return null;
+        }
+        if (key instanceof Long && NIOConstant.LONG.NULL_VALUE == (Long) key) {
+            return null;
+        }
+        if (key instanceof Integer && NIOConstant.INTEGER.NULL_VALUE == (Integer) key) {
+            return null;
+        }
+        return key;
     }
 
 }

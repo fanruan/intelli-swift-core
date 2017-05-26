@@ -64,7 +64,7 @@ public class XMLNormalValueReader extends XMLValueReader {
                 }
             }
         } catch (Exception e) {
-            BILoggerFactory.getLogger().error(e.getMessage(), e);
+            LOGGER.error(e.getMessage(), e);
         }
 
     }
@@ -96,6 +96,10 @@ public class XMLNormalValueReader extends XMLValueReader {
     }
 
     private boolean isIgnore(Field field) {
-        return IS_IGNORED_FIELD_USABLE && field.isAnnotationPresent(BIIgnoreField.class);
+        if (field != null) {
+            return IS_IGNORED_FIELD_USABLE && field.isAnnotationPresent(BIIgnoreField.class);
+        } else {
+            return false;
+        }
     }
 }

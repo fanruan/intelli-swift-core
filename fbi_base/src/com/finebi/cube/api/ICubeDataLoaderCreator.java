@@ -8,4 +8,6 @@ import com.fr.bi.base.BIUser;
 public interface ICubeDataLoaderCreator {
     String XML_TAG = "ICubeDataLoaderCreator";
     ICubeDataLoader fetchCubeLoader(BIUser user);
+
+    void clear(long userId);
 }

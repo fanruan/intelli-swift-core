@@ -7,7 +7,7 @@ import java.io.Serializable;
 /**
  * Created by 小灰灰 on 2016/1/4.
  */
-public interface BIDateValue<T extends Number> extends BICoreService,Serializable{
+public interface BIDateValue<T> extends BICoreService,Serializable{
 
     T getValue();
 
