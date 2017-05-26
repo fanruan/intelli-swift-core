@@ -22,7 +22,6 @@ import com.fr.stable.StableUtils;
 import com.fr.stable.StringUtils;
 import com.fr.web.core.SessionDealWith;
 import com.fr.web.utils.WebUtils;
-import com.taobao.top.link.embedded.websocket.util.StringUtil;
 
 import javax.servlet.http.HttpServletRequest;
 import java.awt.*;
@@ -421,7 +420,7 @@ public abstract class VanChartWidget extends TableWidget {
         return "center";
     }
 
-    private JSONObject defaultDataLabelSetting() throws JSONException {
+    protected JSONObject defaultDataLabelSetting() throws JSONException {
 
         //兼容4.0,勾选标签的时候只有值
         return JSONObject.create().put("showCategoryName", false)
