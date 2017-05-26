@@ -539,20 +539,19 @@ public abstract class VanCartesianWidget extends VanChartWidget {
         for(int i = 0, len = dIDs.length(); i < len; i++){
             try {
                 BISummaryTarget dimension = this.getBITargetByID(dIDs.optString(i));
-                JSONArray cordons = dimension.getChartSetting().getCordon();
+                if(dimension.isUsed()) {
+                    JSONArray cordons = dimension.getChartSetting().getCordon();
 
-                for(int j = 0, count = cordons.length(); j < count; j++){
+                    for (int j = 0, count = cordons.length(); j < count; j++) {
+                        JSONObject config = cordons.optJSONObject(j);
 
-                    JSONObject config = cordons.optJSONObject(j);
+                        plotLines.put(
+                                JSONObject.create().put("value", config.optDouble("cordonValue"))
+                                        .put("color", config.optString("cordonColor"))
+                                        .put("label", JSONObject.create().put("text", config.optString("cordonName")).put("style", defaultFont()).put("align", "right"))
+                        );
 
-                    plotLines.put(
-                            JSONObject.create().put("value", config.optDouble("cordonValue"))
-                            .put("color", config.optString("cordonColor"))
-                            .put(
-                                    "label", JSONObject.create().put("text", config.optString("cordonName")).put("style", defaultFont()).put("align", "right")
-                            )
-                    );
-
+                    }
                 }
 
             }catch (Exception ex){
