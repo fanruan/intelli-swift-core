@@ -4,6 +4,7 @@ import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.base.TemplateUtils;
 import com.fr.bi.conf.report.WidgetType;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
+import com.fr.bi.field.target.target.BISummaryTarget;
 import com.fr.bi.stable.constant.BIChartSettingConstant;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.io.io.ListWriter;
@@ -471,6 +472,18 @@ public class VanDotWidget extends VanCartesianWidget{
 
     protected String categoryLabelKey() {
         return DESCRIPTION;
+    }
+
+    protected JSONArray getDataLabelConditions(BISummaryTarget target){
+
+        try {
+            JSONObject settings = this.getDetailChartSetting();
+            return settings.optJSONArray("dataLabel");
+        }catch (Exception e){
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
+        }
+
+        return null;
     }
 
     protected Object findTarget(String id, JSONObject datum, JSONObject ser){
