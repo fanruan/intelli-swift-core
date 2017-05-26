@@ -15,8 +15,9 @@ public class ChartFilterFactory {
         if(filterValue.has("filterType")){
             switch (filterValue.getInt("filterType")){
                 case BIReportConstant.FILTER_TYPE.AND:
-                    break;
-                case BIReportConstant.FILTER_TYPE.EMPTY_CONDITION:
+
+                    filter = new DotChartAndFilter(filterValue, userID, data);
+
                     break;
                 case BIReportConstant.DIMENSION_FILTER_NUMBER.TOP_N:
                     filter = new ChartNumberTopNFilter(filterValue, userID, data);

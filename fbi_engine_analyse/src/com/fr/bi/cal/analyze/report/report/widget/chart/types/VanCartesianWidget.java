@@ -340,6 +340,10 @@ public abstract class VanCartesianWidget extends VanChartWidget {
         return datum.optDouble("y", 0);
     }
 
+    protected Object findTarget(String id, JSONObject config, JSONObject datum, JSONObject ser){
+        return findTarget(id, datum, ser);
+    }
+
     protected JSONArray getDataLabelConditions(BISummaryTarget target){
         return target.getChartSetting().getDataLabels();
     }
@@ -368,7 +372,7 @@ public abstract class VanCartesianWidget extends VanChartWidget {
                             FilterValue filter = filterValues[filterIndex];
                             JSONObject config = labelCondition.optJSONObject(filterIndex);
                             String id = config.optString("targetId");
-                            Object matchTarget = this.findTarget(id, datum, ser);
+                            Object matchTarget = this.findTarget(id, config, datum, ser);
                             if (target != null && filter.isMatchValue(matchTarget)){
                                 JSONObject styleSetting = config.optJSONObject("styleSetting");
                                 JSONObject textStyle = styleSetting.optJSONObject("textStyle");

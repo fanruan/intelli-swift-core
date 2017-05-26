@@ -486,8 +486,7 @@ public class VanDotWidget extends VanCartesianWidget{
         return null;
     }
 
-    protected Object findTarget(String id, JSONObject datum, JSONObject ser){
-
+    protected Object findTarget(String id, JSONObject config, JSONObject datum, JSONObject ser){
         for(int i = 0, len = this.seriesIDs.size(); i < len; i++){
             if(ComparatorUtils.equals(this.seriesIDs.get(i), id)){
                 return ser.optString(LONG_DATE);
@@ -500,19 +499,18 @@ public class VanDotWidget extends VanCartesianWidget{
             }
         }
 
-        String[] targetIDs = this.getUsedTargetID();
-        for(int i = 0, len = targetIDs.length; i < len; i++){
-            if(targetIDs[i] == id){
-                if(i == 0){
-                    return datum.optDouble("x", 0);
-                }else if(i == 1){
-                    return datum.optDouble("y", 0);
-                }else if(i == 2){
-                    return datum.optDouble("size", 0);
-                }
+        if(config.has("key")){
+            String key = config.optString("key");
+            if(ComparatorUtils.equals(key, "x")){
+                return datum.optDouble("x", 0);
+            }else if(ComparatorUtils.equals(key, "y")){
+                return datum.optDouble("y", 0);
+            }else if(ComparatorUtils.equals(key, "z")){
+                return datum.optDouble("size", 0);
             }
         }
-        return null;
+
+        return datum;
     }
 
     protected JSONObject defaultDataLabelSetting() throws JSONException {
