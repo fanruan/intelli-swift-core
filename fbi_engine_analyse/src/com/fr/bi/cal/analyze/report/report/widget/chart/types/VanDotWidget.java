@@ -4,8 +4,10 @@ import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.base.TemplateUtils;
 import com.fr.bi.conf.report.WidgetType;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
+import com.fr.bi.field.target.target.BISummaryTarget;
 import com.fr.bi.stable.constant.BIChartSettingConstant;
 import com.fr.bi.stable.constant.BIReportConstant;
+import com.fr.bi.stable.io.io.ListWriter;
 import com.fr.general.ComparatorUtils;
 import com.fr.general.FRLogger;
 import com.fr.json.JSONArray;
@@ -53,6 +55,7 @@ public class VanDotWidget extends VanCartesianWidget{
     private static final int BUBBLE_DIMENSION = 3;
 
     private List<String> seriesIDs = new ArrayList<String>();
+    private List<String> categoryIDs = new ArrayList<String>();
 
     private static String tooltipTpl;
 
@@ -83,8 +86,11 @@ public class VanDotWidget extends VanCartesianWidget{
             for (int j = 0; j < tmp.length(); j++) {
                 String key = tmp.getString(j);
                 ja.put(key);
-                if (Integer.parseInt(region) == seriesRegion) {
+
+                if(Integer.parseInt(region) == seriesRegion){
                     this.seriesIDs.add(key);
+                }else{
+                    this.categoryIDs.add(key);
                 }
             }
 
@@ -97,7 +103,6 @@ public class VanDotWidget extends VanCartesianWidget{
     protected JSONObject populateDefaultSettings() throws JSONException {
         JSONObject settings = super.populateDefaultSettings();
 
-        settings.put("displayRules", SERIES_RULE);
         settings.put("bubbleStyle", NO_SHADOW);
         settings.put("dotStyle", BIChartSettingConstant.DOT_STYLE.SQUARE);
 
@@ -142,12 +147,12 @@ public class VanDotWidget extends VanCartesianWidget{
         int rule = settings.optInt("displayRules");
         if(rule == INTERVAL_RULE){
             legend.put("continuous", false);
-            if(settings.optInt("fixedStyleRadio") != AUTO){
+            if(settings.optInt("fixedStyleRadio") == BIChartSettingConstant.SCALE_SETTING.CUSTOM){
                 legend.put("range", this.mapStyleToRange(settings.optJSONArray("fixedStyle")));
             }
-        }else if(rule == GRADUAL_RULE){
+        }else if(rule != SERIES_RULE){//只能是普通图例的，前台处理好了。如果是可选择的，默认什么都没传过来，默认是渐变色
             legend.put("continuous", true);
-            if(settings.optInt("gradientStyleRadio") != AUTO){
+            if(settings.optInt("gradientStyleRadio") == BIChartSettingConstant.SCALE_SETTING.CUSTOM){
                 legend.put("range", this.gradualStyleToRange(settings.optJSONArray("gradientStyle")));
             }
         }
@@ -166,12 +171,17 @@ public class VanDotWidget extends VanCartesianWidget{
         double max = style.getJSONObject(count - 1).optJSONObject("range").optDouble("max");
         double min = style.getJSONObject(0).optJSONObject("range").optDouble("min");
 
+        boolean first = true;
         for(int i = 0, len = style.length(); i < len; i++){
             JSONObject config = style.getJSONObject(i);
             JSONObject range = config.optJSONObject("range"), colorRange = config.optJSONObject("colorRange");
-            if(i == 0) {
+            if(colorRange == null){
+                continue;
+            }
+            if(first) {
                 double from = range.optDouble("min") / max;
                 colors.put(JSONArray.create().put(from).put(colorRange.optString("fromColor")));
+                first = false;
             }
             double to = range.optDouble("max") / max;
             colors.put(JSONArray.create().put(to).put(colorRange.optString("toColor")));
@@ -252,12 +262,16 @@ public class VanDotWidget extends VanCartesianWidget{
                 seriesMap.put(seriesName, dataArray);
 
                 List<String> desc = new ArrayList<String>();
+                List<String> longDesc = new ArrayList<String>();
 
                 for(int index = 0, count = childDescription.size(); index < count; index++){
+                    String childDesc = childDescription.get(index);
                     BIDimension categoryDim = this.getCategoryDimension(index);
-                    desc.add(this.formatDimension(categoryDim, childDescription.get(index)));
+
+                    desc.add(this.formatDimension(categoryDim, childDesc));
+                    longDesc.add(childDesc);
                 }
-                child.put("longDateDescription", longDateDesc);
+                child.put("longDateDescription", longDesc);
                 child.put("description", desc);
 
                 dataArray.put(child);
@@ -300,13 +314,13 @@ public class VanDotWidget extends VanCartesianWidget{
 
             if(!noSeries) {
                 String formattedName = this.formatDimension(seriesDim, seriesName);
-                ser.put("data", data).put("name", formattedName).put(LONG_DATE, seriesName).put("dimensionIDs", dimensionIDs).put("targetIDs", ids);
+                ser.put("data", data).put("name", formattedName).put(LONG_DATE, seriesName).put("dimensionIDs", dimensionIDs).put("targetIDs", new JSONArray(ids));
                 series.put(ser);
             }
         }
 
         if(noSeries){
-            series.put(JSONObject.create().put("data", dotData).put("dimensionIDs", dimensionIDs).put("targetIDs", ids));
+            series.put(JSONObject.create().put("data", dotData).put("dimensionIDs", dimensionIDs).put("targetIDs", new JSONArray(ids)));
         }
 
         return series;
@@ -338,7 +352,7 @@ public class VanDotWidget extends VanCartesianWidget{
             JSONObject point = JSONObject.create().put("x", x).put("y", y).put("size", value);
 
             JSONObject ser = JSONObject.create().put("data", JSONArray.create().put(point))
-                    .put("name", obj.optString("n")).put("targetIDs", ids);
+                    .put("name", obj.optString("n")).put("targetIDs", new JSONArray(ids));
 
             if(category != null){
                 ser.put("dimensionIDs", JSONArray.create().put(category.getValue()));
@@ -466,5 +480,52 @@ public class VanDotWidget extends VanCartesianWidget{
 
     protected String categoryLabelKey() {
         return DESCRIPTION;
+    }
+
+    protected JSONArray getDataLabelConditions(BISummaryTarget target){
+
+        try {
+            JSONObject settings = this.getDetailChartSetting();
+            return settings.optJSONArray("dataLabel");
+        }catch (Exception e){
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
+        }
+
+        return null;
+    }
+
+    protected Object findTarget(String id, JSONObject config, JSONObject datum, JSONObject ser){
+        for(int i = 0, len = this.seriesIDs.size(); i < len; i++){
+            if(ComparatorUtils.equals(this.seriesIDs.get(i), id)){
+                return ser.optString(LONG_DATE);
+            }
+        }
+
+        for(int i = 0, len = this.categoryIDs.size(); i < len; i++){
+            if(ComparatorUtils.equals(this.categoryIDs.get(i), id)){
+                return datum.optJSONArray("longDateDescription").optString(i);
+            }
+        }
+
+        if(config.has("key")){
+            String key = config.optString("key");
+            if(ComparatorUtils.equals(key, "x")){
+                return datum.optDouble("x", 0);
+            }else if(ComparatorUtils.equals(key, "y")){
+                return datum.optDouble("y", 0);
+            }else if(ComparatorUtils.equals(key, "z")){
+                return datum.optDouble("size", 0);
+            }
+        }
+
+        return datum;
+    }
+
+    protected JSONObject defaultDataLabelSetting() throws JSONException {
+
+        return JSONObject.create().put("showCategoryName", false).put("showSeriesName", false)
+                .put("showXValue", true).put("showYValue", true).put("showValue", true)
+                .put("textStyle", defaultFont());
+
     }
 }

@@ -32,8 +32,6 @@ public interface ITableItem extends JSONCreator {
 
     void setValues(List<ITableItem> values);
 
-    void addValues(List<ITableItem> values);
-
     void setNeedExpand(boolean needExpand);
 
     void setExpanded(boolean expanded);
@@ -42,7 +40,7 @@ public interface ITableItem extends JSONCreator {
 
     boolean hasValues();
 
-//    String getType();
+    ITableStyle getStyles();
 
     void setdId(String dId);
 
@@ -53,6 +51,8 @@ public interface ITableItem extends JSONCreator {
     boolean isSum();
 
     void setSum(boolean sum);
+
+    void mergeItems(ITableItem newItem) throws Exception;
 
     void parseJSON(JSONObject jo) throws Exception;
 }

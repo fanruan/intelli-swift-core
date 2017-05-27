@@ -5,7 +5,6 @@ import com.fr.bi.cal.analyze.report.report.widget.chart.export.item.BITableHeade
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.item.ITableHeader;
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.item.ITableItem;
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.utils.BITableExportDataHelper;
-import com.fr.bi.cal.analyze.report.report.widget.chart.export.utils.SummaryTableStyleHelper;
 import com.fr.bi.conf.report.widget.IWidgetStyle;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.utils.program.BIJsonUtils;
@@ -39,8 +38,6 @@ public abstract class TableAbstractDataBuilder implements IExcelDataBuilder {
     protected boolean showRowTotal;
     protected static final String EMPTY_VALUE = "--";
     protected static final String SUMMARY = Inter.getLocText("BI-Summary_Values");
-    protected static String OUTERSUM = "__outer_sum_";
-//    protected List<List<Boolean>> crossItemsSums;
 
     public TableAbstractDataBuilder(Map<Integer, List<JSONObject>> dimAndTar, JSONObject dataJSON, IWidgetStyle styleSettings) throws Exception {
         this.data = dataJSON;
@@ -86,10 +83,13 @@ public abstract class TableAbstractDataBuilder implements IExcelDataBuilder {
                     ITableItem temp = new BIBasicTableItem();
                     temp.setValue(s.optString(i));
                     temp.setDId(targetIds.get(i));
-                    temp.setStyles(SummaryTableStyleHelper.getBodyStyles(styleSetting.getThemeColor(), styleSetting.getTableStyleGroup(), i));
                     values.add(temp);
                 }
-                item.addValues(values);
+                if (item.getValues() == null) {
+                    item.setValues(values);
+                } else {
+                    item.getValues().addAll(values);
+                }
             } else {
                 //使用第一个值作为一个维度
                 for (int i = 0; i < s.length(); i++) {
@@ -164,7 +164,7 @@ public abstract class TableAbstractDataBuilder implements IExcelDataBuilder {
             BITableHeader header = new BITableHeader();
             header.setdID(crossDimIds.get(i));
             header.setText(BITableExportDataHelper.getDimensionNameByID(dimAndTar, crossDimIds.get(i)));
-            header.setStyles(null);
+//            header.setStyles(null);
             crossHeaders.add(header);
         }
     }
@@ -183,7 +183,7 @@ public abstract class TableAbstractDataBuilder implements IExcelDataBuilder {
                     obj.put("n", child.get("n"));
                 }
                 newC.put(obj);
-                return newC;
+                continue;
             }
             if (child.has("n")) {
                 JSONArray tempArray = new JSONArray();
@@ -202,11 +202,7 @@ public abstract class TableAbstractDataBuilder implements IExcelDataBuilder {
     protected void createCrossTableItems() throws Exception {
         JSONObject top = data.getJSONObject("t");
         JSONObject left = data.getJSONObject("l");
-//        if (left.has("s")) {
-//            crossItemsSums.add(new ArrayList<Boolean>());
-//            crossItemsSums.get(0).add(true);
-//        }
-//        initCrossItemsSum(0, left.getJSONArray("c"));
+
         this.crossItems = createCrossItems(top);
         //无行表头 有列表头、指标
         if (isOnlyCrossAndTarget()) {
@@ -215,21 +211,6 @@ public abstract class TableAbstractDataBuilder implements IExcelDataBuilder {
         }
         createItems4Cross(left);
     }
-
-//    protected void initCrossItemsSum(int currentLayer, JSONArray sums) throws JSONException {
-//        currentLayer++;
-//        for (int i = 0; i < sums.length(); i++) {
-//            JSONObject sum = sums.getJSONObject(i);
-//            if (sum != null && sum.has("c")) {
-//                initCrossItemsSum(currentLayer, sum.getJSONArray("c"));
-//            }
-//            while (crossItemsSums.size() <= currentLayer) {
-//                crossItemsSums.add(new ArrayList<Boolean>());
-//            }
-//            crossItemsSums.get(currentLayer).add(sum.has("s"));
-//        }
-//
-//    }
 
     private void createItems4Cross(JSONObject left) throws Exception {
         BIBasicTableItem item = new BIBasicTableItem();
@@ -254,7 +235,7 @@ public abstract class TableAbstractDataBuilder implements IExcelDataBuilder {
                         BIBasicTableItem tempItem = new BIBasicTableItem();
                         tempItem.setValue(ss.optString(i));
                         tempItem.setDId(tId);
-                        tempItem.setStyles(SummaryTableStyleHelper.getLastSummaryStyles(styleSetting.getThemeColor(), styleSetting.getTableStyleGroup()));
+//                        tempItem.setStyles(SummaryTableStyleHelper.getLastSummaryStyles(styleSetting.getThemeColor(), styleSetting.getTableStyleGroup()));
                         sums.add(tempItem);
                     }
                 }
@@ -272,7 +253,6 @@ public abstract class TableAbstractDataBuilder implements IExcelDataBuilder {
         if (showColTotal) {
             if (isOnlyCrossAndTarget()) {
                 BIBasicTableItem item = new BIBasicTableItem();
-                item.setStyles(SummaryTableStyleHelper.getLastSummaryStyles(styleSetting.getThemeColor(), styleSetting.getTableStyleGroup()));
                 item.setValue(SUMMARY);
                 crossItem.getChildren().add(item);
             } else {
@@ -314,7 +294,7 @@ public abstract class TableAbstractDataBuilder implements IExcelDataBuilder {
         for (int i = 0; i < targetIds.size(); i++) {
             BIBasicTableItem ob = new BIBasicTableItem();
             ob.setValue(BITableExportDataHelper.getDimensionNameByID(dimAndTar, targetIds.get(i)));
-            ob.setStyles(SummaryTableStyleHelper.getBodyStyles(styleSetting.getThemeColor(), styleSetting.getTableStyleGroup(), i));
+//            ob.setStyles(SummaryTableStyleHelper.getBodyStyles(styleSetting.getThemeColor(), styleSetting.getTableStyleGroup(), i));
             ob.setDId(targetIds.get(i));
             BIBasicTableItem child = new BIBasicTableItem();
             List<ITableItem> childItems = new ArrayList<ITableItem>();
@@ -342,7 +322,7 @@ public abstract class TableAbstractDataBuilder implements IExcelDataBuilder {
                         BIBasicTableItem ob = new BIBasicTableItem();
                         ob.setDId(targetIds.get(j));
                         ob.setValue(child.getJSONArray("s").getString(j));
-                        ob.setStyles(SummaryTableStyleHelper.getBodyStyles(styleSetting.getThemeColor(), styleSetting.getTableStyleGroup(), j));
+//                        ob.setStyles(SummaryTableStyleHelper.getBodyStyles(styleSetting.getThemeColor(), styleSetting.getTableStyleGroup(), j));
                         List<ITableItem> values = null == children.getValues() ? new ArrayList<ITableItem>() : children.getValues();
                         values.add(ob);
                         children.setValues(values);
@@ -359,7 +339,7 @@ public abstract class TableAbstractDataBuilder implements IExcelDataBuilder {
                     }
                     BIBasicTableItem ob = new BIBasicTableItem();
                     ob.setValue(s.getString(j));
-                    ob.setStyles(SummaryTableStyleHelper.getBodyStyles(styleSetting.getThemeColor(), styleSetting.getTableStyleGroup(), j));
+//                    ob.setStyles(SummaryTableStyleHelper.getBodyStyles(styleSetting.getThemeColor(), styleSetting.getTableStyleGroup(), j));
                     ob.setDId(targetIds.get(j));
                     items.get(j).getChildren().get(0).getValues().add(ob);
                 }
@@ -427,6 +407,7 @@ public abstract class TableAbstractDataBuilder implements IExcelDataBuilder {
                 BITableHeader header = new BITableHeader();
                 header.setText(SUMMARY + ":" + BITableExportDataHelper.getDimensionNameByID(dimAndTar, item.getDId()));
                 header.parseJson(item.createJSON());
+                header.setSum(item.isSum());
                 headers.add(header);
             } else if (!(item.getValues() == null || item.getValues().size() == 0)) {
                 //单指标情况下，指标不显示，合并到上面
@@ -557,7 +538,7 @@ public abstract class TableAbstractDataBuilder implements IExcelDataBuilder {
                 BIBasicTableItem item = new BIBasicTableItem();
                 item.setValue(child.getString("n"));
                 item.setDId(currDid);
-                item.setStyles(SummaryTableStyleHelper.getBodyStyles(styleSetting.getThemeColor(), styleSetting.getTableStyleGroup(), i));
+//                item.setStyles(SummaryTableStyleHelper.getBodyStyles(styleSetting.getThemeColor(), styleSetting.getTableStyleGroup(), i));
                 //展开情况——最后一层没有这个展开按钮
                 item.setNeedExpand(currentLayer < dimIds.size());
                 item.setExpanded(child.has("c"));
@@ -584,7 +565,7 @@ public abstract class TableAbstractDataBuilder implements IExcelDataBuilder {
                 BIBasicTableItem tarItem = new BIBasicTableItem();
                 tarItem.setValue(summary.getString(j));
                 tarItem.setDId(targetIds.get(j % tartSize));
-                tarItem.setStyles(item.getStyles());
+//                tarItem.setStyles(item.getStyles());
                 vs.add(tarItem);
             }
             item.setValues(vs);
@@ -611,7 +592,7 @@ public abstract class TableAbstractDataBuilder implements IExcelDataBuilder {
                     BIBasicTableItem tarItem = new BIBasicTableItem();
                     tarItem.setValue(array.getString(j));
                     tarItem.setDId(tId);
-                    tarItem.setStyles(item.getStyles());
+//                    tarItem.setStyles(item.getStyles());
                     values.add(tarItem);
                 }
             }
@@ -657,7 +638,7 @@ public abstract class TableAbstractDataBuilder implements IExcelDataBuilder {
                 BIBasicTableItem tarItem = new BIBasicTableItem();
                 tarItem.setDId(tId);
                 tarItem.setValue(v);
-                tarItem.setStyles(SummaryTableStyleHelper.getLastSummaryStyles(styleSetting.getThemeColor(), styleSetting.getTableStyleGroup()));
+//                tarItem.setStyles(SummaryTableStyleHelper.getLastSummaryStyles(styleSetting.getThemeColor(), styleSetting.getTableStyleGroup()));
                 sum.add(tarItem);
             }
         }

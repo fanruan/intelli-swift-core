@@ -66,19 +66,21 @@ public class BIReportConstant {
         public static final int MINUTE = 0x10;
         // 秒
         public static final int SECOND = 0x11;
-        // 周数
+
+        // 周数 一年中第几周
         public static final int WEEK_COUNT = 0x12;
         //  每月中的第几天(1-31)
         public static final int D = 0x13;
         //  年月份
         public static final int YM = 0x14;
-        //  年周数
+
+        //  年周数 年+第几周周数
         public static final int YW = 0x15;
         // 年月日时
         public static final int YMDH = 0x16;
         // 年月日时分
         public static final int YMDHM = 0x17;
-        //  年季度
+        //  年季度 年+第几季度
         public static final int YS = 0x18;
 
     }
@@ -672,5 +674,11 @@ public class BIReportConstant {
         public static final int SAME_PERIOD = 27;
         public static final int LAST_SAME_PERIOD = 28;
 
+    }
+
+    public static final class ENTRY_STATUS {
+        public static final int NORMAL = 1;
+        public static final int IS_EDITING = 2;
+        public static final int NOT_EXIST = 3;
     }
 }

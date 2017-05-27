@@ -20,7 +20,6 @@ import com.fr.bi.stable.utils.BICollectionUtils;
 import com.fr.general.GeneralUtils;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
-import com.fr.stable.StableUtils;
 
 import java.util.List;
 
@@ -69,7 +68,7 @@ public class BINumberDimension extends BIAbstractDimension {
             ICubeColumnIndexReader reader = cubeTableService.loadGroup(new IndexKey(this.getStatisticElement().getFieldName()));
             groupValue.put(BIJSONConstant.JSON_KEYS.FILED_MAX_VALUE, cubeTableService != null ? GeneralUtils.objectToNumber(BICollectionUtils.lastUnNullKey(reader)) : 0);
             groupValue.put(BIJSONConstant.JSON_KEYS.FIELD_MIN_VALUE, cubeTableService != null ? GeneralUtils.objectToNumber(BICollectionUtils.firstUnNullKey(reader)) : 0);
-            group.put("group_value", groupValue);
+            group.put("groupValue", groupValue);
         } catch (NullPointerException npe) {
             BILoggerFactory.getLogger(BINumberDimension.class).error("cubeTableService is null ! Tablesource："
                     + this.getStatisticElement().getTableBelongTo().getTableSource() + " is not exist！", npe);

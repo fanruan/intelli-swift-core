@@ -4,7 +4,6 @@ import com.fr.bi.cal.analyze.report.report.widget.chart.export.style.BITableItem
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.style.ITableStyle;
 import com.fr.bi.stable.constant.BIStyleConstant;
 import com.fr.json.JSONException;
-import com.fr.json.JSONObject;
 import com.fr.stable.StringUtils;
 
 import java.awt.*;
@@ -28,10 +27,6 @@ public class SummaryTableStyleHelper {
             default:
                 return new BITableItemStyle(null, null, null);
         }
-    }
-
-    public static ITableStyle getBodyStyles(String themeColor, int styleType) {
-        return new BITableItemStyle(null, null, null);
     }
 
     public static ITableStyle getBodyStyles(String themeColor, int styleType, int index) throws JSONException {

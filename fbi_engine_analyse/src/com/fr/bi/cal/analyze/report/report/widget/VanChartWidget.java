@@ -22,7 +22,6 @@ import com.fr.stable.StableUtils;
 import com.fr.stable.StringUtils;
 import com.fr.web.core.SessionDealWith;
 import com.fr.web.utils.WebUtils;
-import com.taobao.top.link.embedded.websocket.util.StringUtil;
 
 import javax.servlet.http.HttpServletRequest;
 import java.awt.*;
@@ -77,6 +76,9 @@ public abstract class VanChartWidget extends TableWidget {
     private HashMap<String, ArrayList<Double>> idValueMap = new HashMap<String, ArrayList<Double>>();
 
     private Locale locale;
+
+    //todo:整理一下settings globalstyle plateconfig
+    private JSONObject globalStyle;
 
     public static final String[] FULL_QUARTER_NAMES = new String[]{
             Inter.getLocText("BI-Quarter_1"),
@@ -421,7 +423,7 @@ public abstract class VanChartWidget extends TableWidget {
         return "center";
     }
 
-    private JSONObject defaultDataLabelSetting() throws JSONException {
+    protected JSONObject defaultDataLabelSetting() throws JSONException {
 
         //兼容4.0,勾选标签的时候只有值
         return JSONObject.create().put("showCategoryName", false)
@@ -453,8 +455,11 @@ public abstract class VanChartWidget extends TableWidget {
     }
 
     protected JSONObject defaultFont() throws JSONException {
+        if(this.globalStyle != null && this.globalStyle.has("chartFont")){
+            JSONObject chartFont = this.globalStyle.optJSONObject("chartFont");
+            return new JSONObject(chartFont.toString()).put("fontFamily", "Microsoft YaHei").put("fontSize", "12px");
+        }
 
-        //todo 这边的字体要全局取一下
         return JSONObject.create()
                 .put("fontFamily", "Microsoft YaHei")
                 .put("color", "rgb(178, 178, 178)")
@@ -486,9 +491,9 @@ public abstract class VanChartWidget extends TableWidget {
 
         JSONObject data = super.createDataJSON(session, req).getJSONObject("data");
 
-        JSONObject reportSetting = BIReadReportUtils.getInstance().getBIReportNodeJSON(((BISession) session).getReportNode());
-        JSONObject globalStyle = reportSetting.optJSONObject("globalStyle");
-        globalStyle = globalStyle == null ? JSONObject.create() : globalStyle;
+        //globalStyle从前台传过来的json取，不从.fbi模板取原因：设置全局样式，先刷新图表，后save模板，所以刷新图表取得全局样式不是最新的
+        this.globalStyle = this.getChartSetting().getGlobalStyle();
+        this.globalStyle = this.globalStyle == null ? JSONObject.create() : this.globalStyle;
 
         return this.createOptions(globalStyle, data).put("data", data);
     }
@@ -685,12 +690,12 @@ public abstract class VanChartWidget extends TableWidget {
         JSONArray series = JSONArray.create();
         String[] targetIDs = this.getUsedTargetID();
         String[] dimensionIDs = this.getUsedDimensionID();
-        if(targetIDs.length == 0){
-            return series;
-        }
         String categoryKey = this.categoryKey(), valueKey = this.valueKey();
         ArrayList<Double> valueList = new ArrayList<Double>();
-        JSONObject top = originData.getJSONObject("t"), left = originData.getJSONObject("l");
+        JSONObject top = originData.optJSONObject("t"), left = originData.optJSONObject("l");
+        if(targetIDs.length == 0 || !top.has("c") || !left.has("c")){
+            return series;
+        }
         JSONArray topC = top.getJSONArray("c"), leftC = left.getJSONArray("c");
         String id = targetIDs[0];
         double numberScale = this.numberScale(targetIDs[0]);
@@ -704,14 +709,15 @@ public abstract class VanChartWidget extends TableWidget {
                 JSONObject lObj = leftC.getJSONObject(j);
                 String x = lObj.getString("n");
                 JSONArray s = lObj.getJSONObject("s").getJSONArray("c").getJSONObject(i).getJSONArray("s");
-                double y = (s.isNull(0) ? 0 : s.getDouble(0)) / numberScale;
+                boolean isNull =  s.isNull(0) || Double.isNaN(s.getDouble(0));
+                double y = (isNull ? 0 : s.getDouble(0)) / numberScale;
                 String formattedCategory = this.formatDimension(category, x);
                 data.put(
-                        JSONObject.create().put(categoryKey, formattedCategory).put(valueKey, s.isNull(0) ? "-" : y).put(LONG_DATE, this.getLongDate(formattedCategory, x))
+                        JSONObject.create().put(categoryKey, formattedCategory).put(valueKey, isNull ? "-" : y).put(LONG_DATE, x)
                 );
                 valueList.add(y);
             }
-            JSONObject ser = JSONObject.create().put("data", data).put("name", formattedName).put(LONG_DATE, this.getLongDate(formattedName, name))
+            JSONObject ser = JSONObject.create().put("data", data).put("name", formattedName).put(LONG_DATE, name)
                     .put("type", this.getSeriesType(id, name))
                     .put("dimensionIDs", dimensionIDs)
                     .put("targetIDs", JSONArray.create().put(id));
@@ -724,10 +730,6 @@ public abstract class VanChartWidget extends TableWidget {
         this.idValueMap.put(targetIDs[0], valueList);
 
         return series;
-    }
-
-    protected String getLongDate(String formatted, String origin){
-        return ComparatorUtils.equals(formatted, origin) ? StringUtils.EMPTY : origin;
     }
 
     protected JSONArray createSeriesWithChildren(JSONObject originData) throws Exception {
@@ -805,7 +807,7 @@ public abstract class VanChartWidget extends TableWidget {
                             .put("type", type).put("yAxis", yAxis)
                             .put("dimensionIDs", dimensionIDs)
                             .put("targetIDs", JSONArray.create().put(id))
-                            .put("name", formattedName).put(LONG_DATE, this.getLongDate(formattedName, seriesName));
+                            .put("name", formattedName).put(LONG_DATE, seriesName);
                     series.put(ser);
                     valueList.add(y);
                 }
@@ -883,7 +885,7 @@ public abstract class VanChartWidget extends TableWidget {
 
         if(dateFormatType == BIReportConstant.DATE_FORMAT.CHINESE){
             formatter = new SimpleDateFormat(String.format("yyyy%sMM%sdd%s H%sm%ss%s", getLocText("BI-Basic_Year"), getLocText("BI-Basic_Month"), getLocText("BI-Date_Day"),
-                    getLocText("BI-Hour_Sin"), getLocText("BI-Basic_Minute"), getLocText("BI-Basic_Second")));
+                    getLocText("BI-Hour_Sin"), getLocText("BI-Basic_Minute"), getLocText("BI-Basic_Seconds")));
         }else{
             formatter = new SimpleDateFormat("yyyy-MM-dd H:m:s");
         }
