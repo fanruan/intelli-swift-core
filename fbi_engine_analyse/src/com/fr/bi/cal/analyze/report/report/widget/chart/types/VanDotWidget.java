@@ -258,12 +258,16 @@ public class VanDotWidget extends VanCartesianWidget{
                 seriesMap.put(seriesName, dataArray);
 
                 List<String> desc = new ArrayList<String>();
+                List<String> longDesc = new ArrayList<String>();
 
                 for(int index = 0, count = childDescription.size(); index < count; index++){
+                    String childDesc = childDescription.get(index);
                     BIDimension categoryDim = this.getCategoryDimension(index);
-                    desc.add(this.formatDimension(categoryDim, childDescription.get(index)));
+
+                    desc.add(this.formatDimension(categoryDim, childDesc));
+                    longDesc.add(childDesc);
                 }
-                child.put("longDateDescription", longDateDesc);
+                child.put("longDateDescription", longDesc);
                 child.put("description", desc);
 
                 dataArray.put(child);
