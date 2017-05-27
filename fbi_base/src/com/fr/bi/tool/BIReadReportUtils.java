@@ -34,6 +34,13 @@ public class BIReadReportUtils implements BIReadReportProvider {
 
     @Override
     public JSONObject getBIReportNodeJSON(BIReportNode node) throws Exception {
+        BIDesignSetting setting = getBIReportNodeSetting(node);
+        setting.updateSetting();
+        return setting.getReportJSON();
+    }
+
+    @Override
+    public BIDesignSetting getBIReportNodeSetting(BIReportNode node) throws Exception {
         String nodePath = CodeUtils.decodeText(node.getPath());
         /**
          * 兼容以前的绝对路径
@@ -54,10 +61,8 @@ public class BIReadReportUtils implements BIReadReportProvider {
         if (!file.exists()) {
             throw new RuntimeException("can't find file:" + node.getPath() + "! might be delete or move!");
         }
-        BIDesignSetting setting = (BIDesignSetting) BaseXMLUtils.readXMLFile(
+        return  (BIDesignSetting) BaseXMLUtils.readXMLFile(
                 BaseUtils.readResource(file.getAbsolutePath()),
                 new BIDesignSetting());
-        setting.updateSetting();
-        return setting.getReportJSON();
     }
 }
