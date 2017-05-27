@@ -710,10 +710,11 @@ public abstract class VanChartWidget extends TableWidget {
                 JSONObject lObj = leftC.getJSONObject(j);
                 String x = lObj.getString("n");
                 JSONArray s = lObj.getJSONObject("s").getJSONArray("c").getJSONObject(i).getJSONArray("s");
-                double y = (s.isNull(0) ? 0 : s.getDouble(0)) / numberScale;
+                boolean isNull =  s.isNull(0) || Double.isNaN(s.getDouble(0));
+                double y = (isNull ? 0 : s.getDouble(0)) / numberScale;
                 String formattedCategory = this.formatDimension(category, x);
                 data.put(
-                        JSONObject.create().put(categoryKey, formattedCategory).put(valueKey, s.isNull(0) ? "-" : y).put(LONG_DATE, x)
+                        JSONObject.create().put(categoryKey, formattedCategory).put(valueKey, isNull ? "-" : y).put(LONG_DATE, x)
                 );
                 valueList.add(y);
             }
