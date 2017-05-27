@@ -59,14 +59,15 @@ public class BIReadReportUtils implements BIReadReportProvider {
     }
 
     public void saveReportSetting(BIReportNode node, BIDesignSetting setting) throws Exception {
-        File file = getFileLocation(node);
-        readWriteLock.writeLock().lock();
         try {
+            readWriteLock.writeLock().lock();
+            File file = getFileLocation(node);
             new BIDesignReport(setting).writeFile(file);
         } catch (Exception e) {
             BILoggerFactory.getLogger(this.getClass()).error(e.getMessage(), e);
+        }finally {
+            readWriteLock.writeLock().unlock();
         }
-        readWriteLock.writeLock().unlock();
     }
 
     private File getFileLocation(BIReportNode node) throws Exception {
