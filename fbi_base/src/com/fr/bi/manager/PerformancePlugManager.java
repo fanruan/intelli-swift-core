@@ -74,6 +74,9 @@ public class PerformancePlugManager implements PerformancePlugManagerInterface {
     private boolean unmapReader = false;
     private boolean isForceWriter = false;
 
+    //cube单个文件的最大的size
+    private long maxCubeFileSize = 8;
+
 
     private PerformancePlugManager() {
         init();
@@ -120,6 +123,7 @@ public class PerformancePlugManager implements PerformancePlugManagerInterface {
             cubeReaderReleaseSleepTime = getLong(PERFORMANCE + ".cubeReaderReleaseSleepTime", cubeReaderReleaseSleepTime);
             isDirectGenerating = getBoolean(PERFORMANCE + ".isDirectGenerating", isDirectGenerating);
             isForceWriter = getBoolean(PERFORMANCE + ".isForceWriter", isForceWriter);
+            maxCubeFileSize = getLong(PERFORMANCE + ".maxCubeFileSize", maxCubeFileSize);
 //            logConfiguration();
         } catch (Exception e) {
             BILoggerFactory.getLogger().error(e.getMessage(), e);
@@ -154,9 +158,9 @@ public class PerformancePlugManager implements PerformancePlugManagerInterface {
         LOGGER.info("The value of {}.retryMaxSleepTime is {}", PERFORMANCE, retryMaxSleepTime);
         LOGGER.info("The value of {}.cubeReaderReleaseSleepTime is {}", PERFORMANCE, cubeReaderReleaseSleepTime);
         LOGGER.info("The value of {}.unmapReader is {}", PERFORMANCE, unmapReader);
-
         LOGGER.info("The value of {}.isDirectGenerating is {}", PERFORMANCE, isDirectGenerating);
         LOGGER.info("The value of {}.isForceWriter is {}", PERFORMANCE, isForceWriter);
+        LOGGER.info("The value of {}.maxCubeFileSize is {}", PERFORMANCE, maxCubeFileSize);
         LOGGER.info("");
         LOGGER.info("");
     }
@@ -480,5 +484,10 @@ public class PerformancePlugManager implements PerformancePlugManagerInterface {
 
     public void setUnmapReader(boolean unmapReader) {
         this.unmapReader = unmapReader;
+    }
+
+    @Override
+    public long getMaxCubeFileSize() {
+        return maxCubeFileSize;
     }
 }

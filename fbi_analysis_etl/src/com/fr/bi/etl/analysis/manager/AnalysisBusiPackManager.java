@@ -61,7 +61,11 @@ public class AnalysisBusiPackManager extends BISystemDataManager<SingleUserAnaly
 
     public SingleUserAnalysisBusiPackManager getUserAnalysisBusiPackManager(long userId) {
         try {
-            return getValue(userId);
+            SingleUserAnalysisBusiPackManager manager =  getValue(userId);
+            if (!manager.checkVersion()){
+                persistData(userId);
+            }
+            return manager;
         } catch (BIKeyAbsentException e) {
 
             throw new NullPointerException("Please check the userID:" + userId + ",which getIndex a empty manager");
