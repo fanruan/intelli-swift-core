@@ -4,17 +4,20 @@ import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.conf.table.BusinessTable;
 import com.fr.bi.base.annotation.BICoreField;
+import com.fr.bi.cal.analyze.report.report.widget.BISummaryWidget;
 import com.fr.bi.common.inter.Traversal;
 import com.fr.bi.common.persistent.xml.BIIgnoreField;
 import com.fr.bi.conf.report.BIWidget;
 import com.fr.bi.conf.report.WidgetType;
 import com.fr.bi.conf.report.widget.field.BITargetAndDimension;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
+import com.fr.bi.conf.report.widget.field.target.BITarget;
 import com.fr.bi.etl.analysis.Constants;
 import com.fr.bi.etl.analysis.manager.BIAnalysisETLManagerCenter;
 import com.fr.bi.etl.analysis.monitor.*;
 import com.fr.bi.exception.BIKeyAbsentException;
 import com.fr.bi.field.target.detailtarget.BIAbstractDetailTarget;
+import com.fr.bi.field.target.target.BISummaryTarget;
 import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.constant.DBConstant;
@@ -224,6 +227,17 @@ AnalysisBaseTableSource extends AbstractCubeTableSource implements AnalysisCubeT
         refreshWidget();
     }
 
+    public void resetTargetsMap(){
+        if (widget instanceof BISummaryWidget){
+            BISummaryTarget[] targets = ((BISummaryWidget) widget).getTargets();
+            Map<String, BITarget> targetMap = new ConcurrentHashMap<String, BITarget>();
+            for (int i = 0; i < targets.length; i++) {
+                targets[i].setSummaryIndex(i);
+                targetMap.put(targets[i].getValue(), targets[i]);
+                targets[i].setTargetMap(targetMap);
+            }
+        }
+    }
 
     public void reSetWidgetDetailGetter() {
         widget.reSetDetailTarget();

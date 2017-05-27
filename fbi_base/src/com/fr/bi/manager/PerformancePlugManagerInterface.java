@@ -106,4 +106,11 @@ public interface PerformancePlugManagerInterface {
      * @return
      */
     boolean isForceWriter();
+
+    /**
+     * cube文件的大小
+     * 返回4m左移的位置，最小4，最大8，4就是64M，8就是1G
+     * @return
+     */
+    long getMaxCubeFileSize();
 }

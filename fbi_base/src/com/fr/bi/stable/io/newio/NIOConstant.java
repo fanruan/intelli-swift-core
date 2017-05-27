@@ -1,19 +1,21 @@
 package com.fr.bi.stable.io.newio;
 
 
+import com.fr.bi.manager.PerformancePlugManager;
+
 public class NIOConstant {
 
     public static long PAGE_STEP = 22L;
 
     public static long PAGE_SIZE = 1 << PAGE_STEP;
 
-    public static long MAX_SINGLE_FILE_PART_SIZE = 8L;
+    public static long MAX_SINGLE_FILE_PART_SIZE = Math.max(4L, Math.min(PerformancePlugManager.getInstance().getMaxCubeFileSize(), 8L));
 
     public static long MINFILE_SIZE = 12L;
 
-    public static long SINGLE_FILE_LENGTH = 1 << 30;
-
     public static long MAX_SINGLE_FILE_PART_MOVE_ALL = PAGE_STEP + MAX_SINGLE_FILE_PART_SIZE;
+
+    public static long SINGLE_FILE_LENGTH = 1 << MAX_SINGLE_FILE_PART_MOVE_ALL;
 
     public static final class DOUBLE {
 
