@@ -145,9 +145,10 @@ public abstract class VanCartesianWidget extends VanChartWidget {
     }
 
     //todo 坐标轴标题和数量级，单位构成的后缀
-    protected String axisTitleUnit(int level, String unit){
-        String scaleUnit = this.scaleUnit(level);
-        return StringUtils.isBlank(scaleUnit) ? StringUtils.EMPTY : "(" + this.scaleUnit(level) + unit + ")";
+    private String axisTitleUnit(int level, String unit){
+        String result = this.scaleUnit(level);
+        result += unit;
+        return StringUtils.isEmpty(result) ? StringUtils.EMPTY : "(" + result + ")";
     }
 
     protected String dataLabelValueFormat(BISummaryTarget dimension){
