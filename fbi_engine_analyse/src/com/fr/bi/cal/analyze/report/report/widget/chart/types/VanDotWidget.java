@@ -263,7 +263,7 @@ public class VanDotWidget extends VanCartesianWidget{
                     BIDimension categoryDim = this.getCategoryDimension(index);
                     desc.add(this.formatDimension(categoryDim, childDescription.get(index)));
                 }
-                child.put("longDateDescription", longDateDesc);
+                child.put("longDateDescription", childDescription);
                 child.put("description", desc);
 
                 dataArray.put(child);
