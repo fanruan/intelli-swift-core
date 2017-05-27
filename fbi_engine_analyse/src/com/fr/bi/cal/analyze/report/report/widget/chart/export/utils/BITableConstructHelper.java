@@ -38,7 +38,18 @@ public class BITableConstructHelper {
         }
 
         if (data.getItems().size() != 0) {
-            traversalItems(data.getItems(), operations, 0, 0, style, isDetail);
+            if (isDetail) {
+                for (int i = 0; i < data.getItems().size(); i++) {
+                    ITableItem item=data.getItems().get(i);
+                    setText(operations, item);
+                    item.setStyles(SummaryTableStyleHelper.getBodyStyles(style.getThemeColor(), style.getTableStyleGroup(), i));
+                    for (ITableItem child : item.getChildren()) {
+                        child.setStyles(SummaryTableStyleHelper.getBodyStyles(style.getThemeColor(), style.getTableStyleGroup(), i));
+                        setText(operations, child);
+                    }
+                }
+            }
+            traversalItems(data.getItems(), operations, 0, 0, style);
         }
 
         if (data.getCrossItems() != null) {
@@ -55,10 +66,10 @@ public class BITableConstructHelper {
 
     }
 
-    private static void traversalItems(List<ITableItem> items, Map<String, ITableCellFormatOperation> ops, int layerIndex, int rowIndex, BITableWidgetStyle style, boolean isDetail) throws Exception {
+    private static void traversalItems(List<ITableItem> items, Map<String, ITableCellFormatOperation> ops, int layerIndex, int rowIndex, BITableWidgetStyle style) throws Exception {
         for (ITableItem item : items) {
             if (item.getChildren() != null) {
-                traversalItems(item.getChildren(), ops, layerIndex + 1, rowIndex, style, isDetail);
+                traversalItems(item.getChildren(), ops, layerIndex + 1, rowIndex, style);
             }
             setText(ops, item);
             if (item.getValues() != null) {
@@ -75,10 +86,8 @@ public class BITableConstructHelper {
                     }
                 }
             }
-            //第一列换行
-            if (!isDetail || (isDetail && layerIndex == 0)) {
-                rowIndex++;
-            }
+            item.setStyles(SummaryTableStyleHelper.getBodyStyles(style.getThemeColor(), style.getTableStyleGroup(), rowIndex));
+            rowIndex++;
         }
     }
 

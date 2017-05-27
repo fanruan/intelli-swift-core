@@ -1,6 +1,7 @@
 package com.fr.bi.cal.analyze.report.report.widget.chart.export.calculator;
 
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.item.BIBasicTableItem;
+import com.fr.bi.cal.analyze.report.report.widget.chart.export.item.BITableHeader;
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.item.ITableHeader;
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.item.ITableItem;
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.item.constructor.BISummaryDataConstructor;
@@ -165,8 +166,8 @@ public class SummaryComplexTableBuilder extends TableAbstractDataBuilder {
         //补齐header的长度
         int rowLength = getLargestLengthOfRowRegions();
         int colLength = getLargestLengthOfColRegions();
-        ITableHeader lastDimHeader = headers.size() > dimIds.size() ? headers.get(dimIds.size() - 1) : null;
-        ITableHeader lastCrossDimHeader = crossDimIds.size() > crossHeaders.size() ? crossHeaders.get(crossDimIds.size() - 1) : null;
+        ITableHeader lastDimHeader = headers.size() > dimIds.size() ? headers.get(dimIds.size() - 1) : new BITableHeader();
+        ITableHeader lastCrossDimHeader = crossDimIds.size() >= crossHeaders.size() ? crossHeaders.get(crossDimIds.size() - 1) : new BITableHeader();
         int count = 0;
         while (count < rowLength - dimIds.size()) {
             ITableHeader header = lastDimHeader;
