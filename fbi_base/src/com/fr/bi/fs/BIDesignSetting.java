@@ -43,6 +43,10 @@ public class BIDesignSetting implements XMLable, XMLFileReader {
         }
     }
 
+    public boolean needUpdate() throws Exception {
+        return ReportSettingUpdateManager.getInstance().needUpdate(this);
+    }
+
     @Override
     public Object readFileContent(XMLableReader var1) {
         BIDesignSetting var2 = new BIDesignSetting();
