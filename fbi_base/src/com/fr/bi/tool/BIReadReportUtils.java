@@ -1,7 +1,9 @@
 package com.fr.bi.tool;
 
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.base.BaseUtils;
 import com.fr.base.BaseXMLUtils;
+import com.fr.bi.fs.BIDesignReport;
 import com.fr.bi.fs.BIDesignSetting;
 import com.fr.bi.fs.BIFileRepository;
 import com.fr.bi.fs.BIReportNode;
@@ -10,6 +12,7 @@ import com.fr.stable.CodeUtils;
 import com.fr.stable.bridge.StableFactory;
 
 import java.io.File;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 /**
  * Created by Young's on 2016/9/23.
@@ -18,6 +21,7 @@ import java.io.File;
 public class BIReadReportUtils implements BIReadReportProvider {
     public static final String XML_TAG = "BIReadReportUtils";
     private static BIReadReportUtils manager;
+    protected final ReentrantReadWriteLock readWriteLock = new ReentrantReadWriteLock();
 
     public static BIReadReportProvider getBIReadReportManager() {
         return StableFactory.getMarkedObject(BIReadReportProvider.XML_TAG, BIReadReportProvider.class);
@@ -35,12 +39,38 @@ public class BIReadReportUtils implements BIReadReportProvider {
     @Override
     public JSONObject getBIReportNodeJSON(BIReportNode node) throws Exception {
         BIDesignSetting setting = getBIReportNodeSetting(node);
-        setting.updateSetting();
+        if (setting.needUpdate()) {
+            setting.updateSetting();
+            saveReportSetting(node, setting);
+        }
         return setting.getReportJSON();
     }
 
     @Override
     public BIDesignSetting getBIReportNodeSetting(BIReportNode node) throws Exception {
+        File file = getFileLocation(node);
+        if (!file.exists()) {
+            throw new RuntimeException("can't find file:" + node.getPath() + "! might be delete or move!");
+        }
+        BIDesignSetting biDesignSetting = (BIDesignSetting) BaseXMLUtils.readXMLFile(
+                BaseUtils.readResource(file.getAbsolutePath()),
+                new BIDesignSetting());
+        return biDesignSetting;
+    }
+
+    public void saveReportSetting(BIReportNode node, BIDesignSetting setting) throws Exception {
+        try {
+            readWriteLock.writeLock().lock();
+            File file = getFileLocation(node);
+            new BIDesignReport(setting).writeFile(file);
+        } catch (Exception e) {
+            BILoggerFactory.getLogger(this.getClass()).error(e.getMessage(), e);
+        }finally {
+            readWriteLock.writeLock().unlock();
+        }
+    }
+
+    private File getFileLocation(BIReportNode node) throws Exception {
         String nodePath = CodeUtils.decodeText(node.getPath());
         /**
          * 兼容以前的绝对路径
@@ -57,12 +87,6 @@ public class BIReadReportUtils implements BIReadReportProvider {
             nodePath = nodePath.substring(1);
         }
         File parent = BIFileRepository.getInstance().getBIDirFile(node.getUserId());
-        File file = new File(parent, nodePath);
-        if (!file.exists()) {
-            throw new RuntimeException("can't find file:" + node.getPath() + "! might be delete or move!");
-        }
-        return  (BIDesignSetting) BaseXMLUtils.readXMLFile(
-                BaseUtils.readResource(file.getAbsolutePath()),
-                new BIDesignSetting());
+        return new File(parent, nodePath);
     }
 }
