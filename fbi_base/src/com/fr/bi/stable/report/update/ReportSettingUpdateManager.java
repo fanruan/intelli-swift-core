@@ -47,6 +47,18 @@ public class ReportSettingUpdateManager {
         return new BIDesignSetting(reportSettings.toString());
     }
 
+    public boolean needUpdate(BIDesignSetting setting) throws Exception {
+        Iterator<ReportConfVersionNode> iterator = versionNodes.iterator();
+        while (iterator.hasNext()) {
+            ReportConfVersionNode node = iterator.next();
+            boolean needUpdate = updateStatusCheck(setting, node);
+            if (needUpdate) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     private boolean updateStatusCheck(BIDesignSetting setting, ReportConfVersionNode node) throws BIReportVersionAbsentException, JSONException, ParseException {
         boolean isBeforeLatestVersion = parseValue(getVersion(setting).getVersion()) < parseValue(node.getVersion().getVersion());
         boolean isBeforeLatestDate = !setting.getReportJSON().has("lastModifyTime") || DateUtils.parse(setting.getReportJSON().getString("lastModifyTime")).before(DateUtils.parse(ProductConstants.getReleaseDate()));

@@ -6,6 +6,7 @@ import com.finebi.cube.structure.column.BICubeLongColumn;
 import com.fr.bi.base.ValueConverterFactory;
 import com.fr.bi.stable.constant.DateConstant;
 import com.fr.bi.stable.io.newio.NIOConstant;
+
 import com.fr.bi.stable.utils.BICollectionUtils;
 
 import java.util.Calendar;
@@ -40,6 +41,7 @@ public class BICubeYearMonthDayColumn extends BICubeDateSubColumn<Long> {
             return (Long) ValueConverterFactory.createDateValueConverter(DateConstant.DATE.YMD).result2Value(date, calendar) ;
         }
     }
+
 
     @Override
     protected void initialColumnEntity(ICubeResourceLocation currentLocation) {

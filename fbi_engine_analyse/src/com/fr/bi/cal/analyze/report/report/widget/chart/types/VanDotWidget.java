@@ -103,7 +103,6 @@ public class VanDotWidget extends VanCartesianWidget{
     protected JSONObject populateDefaultSettings() throws JSONException {
         JSONObject settings = super.populateDefaultSettings();
 
-        settings.put("displayRules", SERIES_RULE);
         settings.put("bubbleStyle", NO_SHADOW);
         settings.put("dotStyle", BIChartSettingConstant.DOT_STYLE.SQUARE);
 
@@ -148,12 +147,12 @@ public class VanDotWidget extends VanCartesianWidget{
         int rule = settings.optInt("displayRules");
         if(rule == INTERVAL_RULE){
             legend.put("continuous", false);
-            if(settings.optInt("fixedStyleRadio") != AUTO){
+            if(settings.optInt("fixedStyleRadio") == BIChartSettingConstant.SCALE_SETTING.CUSTOM){
                 legend.put("range", this.mapStyleToRange(settings.optJSONArray("fixedStyle")));
             }
-        }else if(rule == GRADUAL_RULE){
+        }else if(rule != SERIES_RULE){//只能是普通图例的，前台处理好了。如果是可选择的，默认什么都没传过来，默认是渐变色
             legend.put("continuous", true);
-            if(settings.optInt("gradientStyleRadio") != AUTO){
+            if(settings.optInt("gradientStyleRadio") == BIChartSettingConstant.SCALE_SETTING.CUSTOM){
                 legend.put("range", this.gradualStyleToRange(settings.optJSONArray("gradientStyle")));
             }
         }
@@ -172,12 +171,17 @@ public class VanDotWidget extends VanCartesianWidget{
         double max = style.getJSONObject(count - 1).optJSONObject("range").optDouble("max");
         double min = style.getJSONObject(0).optJSONObject("range").optDouble("min");
 
+        boolean first = true;
         for(int i = 0, len = style.length(); i < len; i++){
             JSONObject config = style.getJSONObject(i);
             JSONObject range = config.optJSONObject("range"), colorRange = config.optJSONObject("colorRange");
-            if(i == 0) {
+            if(colorRange == null){
+                continue;
+            }
+            if(first) {
                 double from = range.optDouble("min") / max;
                 colors.put(JSONArray.create().put(from).put(colorRange.optString("fromColor")));
+                first = false;
             }
             double to = range.optDouble("max") / max;
             colors.put(JSONArray.create().put(to).put(colorRange.optString("toColor")));

@@ -40,6 +40,7 @@ public class BICubeWeekNumberColumn extends BICubeDateSubColumn<Integer> {
         }
     }
 
+
     @Override
     protected void initialColumnEntity(ICubeResourceLocation currentLocation) {
         selfColumnEntity = new BICubeIntegerColumn(discovery, currentLocation);

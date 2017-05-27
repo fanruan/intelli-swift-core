@@ -6,13 +6,14 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <meta http-equiv="Page-Enter" content="revealTrans(duration=5.0,transition=3)">
     <title>SPPA Monitor</title>
-    <link rel="stylesheet" type="text/css" href="${servletURL}?op=emb&resource=finereport.css&__v__=${__v__}"/>
-    <link rel="stylesheet" type="text/css" href="${servletURL}?op=emb&resource=base.css&__v__=${__v__}"/>
-    <link rel="stylesheet" type="text/css" href="${servletURL}?op=emb&resource=sppa_monitor.css&__v__=${__v__}"/>
-    <script type="text/javascript" src="${servletURL}?op=emb&resource=finereport.js&inter=${__locale__}&__v__=${__v__}"></script>
-    <script type="text/javascript" src="${servletURL}?op=emb&resource=third.js&__v__=${__v__}"></script>
-    <script type="text/javascript" src="${servletURL}?op=emb&resource=base.js&__v__=${__v__}"></script>
-    <script type="text/javascript" src="${servletURL}?op=emb&resource=sppa_monitor.js&__v__=${__v__}"></script>
+    <link rel="stylesheet" type="text/css" href="${remoteServletURL}?op=emb&resource=finereport.css&__v__=${__v__}"/>
+    <link rel="stylesheet" type="text/css" href="${remoteServletURL}?op=emb&resource=base.css&__v__=${__v__}"/>
+    <link rel="stylesheet" type="text/css" href="${remoteServletURL}?op=emb&resource=sppa_monitor.css&__v__=${__v__}"/>
+    <link rel="stylesheet" type="text/css" href="${servletURL}?op=emb&resource=finereport.local.css"/>
+    <script type="text/javascript" src="${remoteServletURL}?op=emb&resource=finereport.js&inter=${__locale__}&__v__=${__v__}"></script>
+    <script type="text/javascript" src="${remoteServletURL}?op=emb&resource=third.js&__v__=${__v__}"></script>
+    <script type="text/javascript" src="${remoteServletURL}?op=emb&resource=base.js&__v__=${__v__}"></script>
+    <script type="text/javascript" src="${remoteServletURL}?op=emb&resource=sppa_monitor.js&__v__=${__v__}"></script>
     <script type="text/javascript">
         $(document).ready(function () {
             BI.Monitor.init()
