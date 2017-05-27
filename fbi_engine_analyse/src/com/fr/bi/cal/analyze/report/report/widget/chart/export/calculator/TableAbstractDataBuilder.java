@@ -38,7 +38,6 @@ public abstract class TableAbstractDataBuilder implements IExcelDataBuilder {
     protected boolean showRowTotal;
     protected static final String EMPTY_VALUE = "--";
     protected static final String SUMMARY = Inter.getLocText("BI-Summary_Values");
-//    protected List<List<Boolean>> crossItemsSums;
 
     public TableAbstractDataBuilder(Map<Integer, List<JSONObject>> dimAndTar, JSONObject dataJSON, IWidgetStyle styleSettings) throws Exception {
         this.data = dataJSON;
@@ -203,6 +202,7 @@ public abstract class TableAbstractDataBuilder implements IExcelDataBuilder {
     protected void createCrossTableItems() throws Exception {
         JSONObject top = data.getJSONObject("t");
         JSONObject left = data.getJSONObject("l");
+
         this.crossItems = createCrossItems(top);
         //无行表头 有列表头、指标
         if (isOnlyCrossAndTarget()) {

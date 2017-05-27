@@ -66,12 +66,14 @@ public class BIReportConstant {
         public static final int MINUTE = 0x10;
         // 秒
         public static final int SECOND = 0x11;
+
         // 周数 一年中第几周
         public static final int WEEK_COUNT = 0x12;
         //  每月中的第几天(1-31)
         public static final int D = 0x13;
         //  年月份
         public static final int YM = 0x14;
+
         //  年周数 年+第几周周数
         public static final int YW = 0x15;
         // 年月日时

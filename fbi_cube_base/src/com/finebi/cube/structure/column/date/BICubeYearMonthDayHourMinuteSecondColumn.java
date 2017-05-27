@@ -40,6 +40,7 @@ public class BICubeYearMonthDayHourMinuteSecondColumn extends BICubeDateSubColum
         }
     }
 
+
     @Override
     protected void initialColumnEntity(ICubeResourceLocation currentLocation) {
         selfColumnEntity = new BICubeLongColumn(discovery, currentLocation);

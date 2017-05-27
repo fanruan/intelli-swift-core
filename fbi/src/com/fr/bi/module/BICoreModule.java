@@ -672,6 +672,7 @@ public class BICoreModule extends AbstractModule {
         StableFactory.registerStyleFiles(ResourceConstants.DEFAULT_MODULE_CSS, CommonResourceHelper.getCommonCss());
 
         StableFactory.registerJavaScriptFiles(ResourceConstants.DEFAULT_FORMULA_JS, BaseResourceHelper.getFormulaCollectionJS(), BaseResourceHelper.FormulaTransmitter);
+        StableFactory.registerStyleFiles(ResourceConstants.DEFAULT_LOCAL_CSS, BaseResourceHelper.getLocalCss());
     }
 
     public void loadResources(Locale[] locales) {

@@ -7,7 +7,6 @@ import com.fr.bi.base.ValueConverterFactory;
 import com.fr.bi.stable.constant.DateConstant;
 import com.fr.bi.stable.io.newio.NIOConstant;
 import com.fr.bi.stable.utils.BICollectionUtils;
-
 import java.util.Calendar;
 
 
@@ -40,6 +39,7 @@ public class BICubeSecondColumn extends BICubeDateSubColumn<Integer> {
             return (Integer) ValueConverterFactory.createDateValueConverter(DateConstant.DATE.SECOND).result2Value(date, calendar);
         }
     }
+
 
     @Override
     protected void initialColumnEntity(ICubeResourceLocation currentLocation) {

@@ -230,6 +230,7 @@ public class SummaryComplexTableBuilder extends TableAbstractDataBuilder {
         }
         for (int i = 0; i < dataArray.length(); i++) {
             JSONArray tableData = dataArray.getJSONArray(i);
+
             for (int j = 0; j < tableData.length(); j++) {
                 //parse一个表结构
                 Map<Integer, List<JSONObject>> dimAndTar = getDimsByDataPos(i, j);
@@ -244,6 +245,7 @@ public class SummaryComplexTableBuilder extends TableAbstractDataBuilder {
                 }
             }
         }
+
         //item和crossItem如果有多个的话，合并
         parseColTableItems(tempItems);
         parseRowTableCrossItems(tempCrossItems);
@@ -270,6 +272,7 @@ public class SummaryComplexTableBuilder extends TableAbstractDataBuilder {
     // 处理列 针对于children
     // 要将所有的最外层的values处理成children
     private void parseColTableItems(List<ITableItem> tempItems) throws Exception {
+
         ITableItem childItem = new BIBasicTableItem();
         for (int i = 0; i < tempItems.size(); i++) {
             boolean isSummary = showRowTotal && targetIds.size() > 0 && (isColRegionExist() || isRowRegionExist()) && !isOnlyCrossAndTarget();
@@ -281,6 +284,7 @@ public class SummaryComplexTableBuilder extends TableAbstractDataBuilder {
                 childrenAddSummaryValue.add(summaryValueItem);
                 tempItems.get(i).setChildren(childrenAddSummaryValue);
                 tempItems.get(i).setValues(null);
+
             }else {
                 if (childItem.getValues() == null) {
                     childItem.setValues(tempItems.get(i).getValues());

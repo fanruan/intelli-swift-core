@@ -584,4 +584,3 @@
 # define BI_FUNCTION_ARRAY 4
 # define BI_FUNCTION_LOGIC 5
 # define BI_FUNCTION_OTHER 6
-
