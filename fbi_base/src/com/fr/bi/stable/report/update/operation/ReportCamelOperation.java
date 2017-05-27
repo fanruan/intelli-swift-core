@@ -57,12 +57,47 @@ public class ReportCamelOperation implements ReportUpdateOperation {
         for (String s : keySet) {
             boolean flag = BIJsonUtils.isKeyValueSet(json.get(s).toString());
             if (flag) {
+                if (ComparatorUtils.equals(s, "widgets")) {
+                    json = correctPreviousSrcError(json);
+                }
+
                 res.put(updateKey(s), recursionMapUpdate(json.getString(s)));
             } else {
                 res.put(updateKey(s), recursionListUpdate(json.get(s)));
             }
         }
         return res;
+    }
+
+
+    /*
+    * 处理之前stable版本保存图片时把整个url全保存进去了，没有地方拦截了，先在此处修正
+    * /WebReport/ReportServer?op=fr_bi&cmd=get_uploaded_image&image_id=47a49db9-6a37-46ab-96a3-d615c46ccecc_表样.jpg" -> 47a49db9-6a37-46ab-96a3-d615c46ccecc_表样.jpg"
+    * */
+    private JSONObject correctPreviousSrcError(JSONObject json) throws JSONException {
+        if (BIJsonUtils.isKeyValueSet(json.getString("widgets"))) {
+            Iterator keys = json.getJSONObject("widgets").keys();
+            while (keys.hasNext()) {
+                String dimId = keys.next().toString();
+                JSONObject dimJson = json.getJSONObject("widgets").getJSONObject(dimId);
+                if (dimJson.has("src")) {
+                    dimJson.put("src", correctImgSrc(dimJson.getString("src")));
+                }
+            }
+        }
+        return json;
+    }
+
+    //所有不符合get格式的都当异常处理掉
+    private String correctImgSrc(String src) {
+        try {
+            String content = src.split("//?")[src.split("//?").length - 1];
+            String imageInfo = content.split("//&")[content.split("//&").length - 1];
+            return imageInfo.substring(imageInfo.lastIndexOf("=") + 1, imageInfo.length());
+        } catch (Exception e) {
+            BILoggerFactory.getLogger(this.getClass()).error(e.getMessage(), e);
+        }
+        return src;
     }
 
     //list结构的递归
@@ -83,9 +118,18 @@ public class ReportCamelOperation implements ReportUpdateOperation {
         }
     }
 
+    /*
+    * 如果对应关系能在keys.json中找到，使用keys.json
+    * 如果获取不了，默认转驼峰
+    * */
     protected String updateKey(String str) {
-        String convertToCamel = lineToCamels(str);
-        return mactchKeysJson(convertToCamel);
+        String res;
+        if (keys.has(str)) {
+            res = mactchKeysJson(str);
+        } else {
+            res = lineToCamels(str);
+        }
+        return res;
     }
 
     private String mactchKeysJson(String str) {
