@@ -149,8 +149,8 @@ public class GetTreeSelectTreeNodeExecutor extends AbstractTreeNodeExecutor {
         p[parent.length] = toSelectedValueString;
 
         List<String[]> result = new ArrayList<String[]>();
-        boolean finded = searchWithSelectNode(parent.length + 1, floors, parent, toSelectedValueString, keyword, result);
-        if (result.size() > 0) {
+        boolean finded = search(parent.length + 1, floors, parent, toSelectedValueString, keyword, new ArrayList<String[]>(), result);
+        if (finded && result.size() > 0) {
             int i;
             for (i = 0; i < result.size(); i++) {
                 String[] strs = result.get(i);
@@ -257,11 +257,9 @@ public class GetTreeSelectTreeNodeExecutor extends AbstractTreeNodeExecutor {
         String[] newParents = new String[parents.length + 1];
         System.arraycopy(parents, 0, newParents, 0, parents.length);
         newParents[parents.length] = value;
-        if (keyword != null) {
-            if (isMatch(value, keyword)) {
-                match.add(newParents);
-                return true;
-            }
+        if (isMatch(value, keyword)) {
+            match.add(newParents);
+            return true;
         }
 
 
@@ -292,49 +290,10 @@ public class GetTreeSelectTreeNodeExecutor extends AbstractTreeNodeExecutor {
         return can;
     }
 
-    private boolean searchWithSelectNode(int deep, int floor, String[] parents, String value, String keyword, List<String[]> result) throws JSONException {
-
-        String[] newParents = new String[parents.length + 1];
-        System.arraycopy(parents, 0, newParents, 0, parents.length);
-        newParents[parents.length] = value;
-        if (keyword != null) {
-            if (isMatch(value, keyword)) {
-                result.add(newParents);
-                return true;
-            }
-        } else {
-            result.add(newParents);
+    private boolean isMatch(String name, String keyword) {
+        if (keyword == null) {
             return true;
         }
-
-
-        if (deep >= floor) {
-            return false;
-        }
-
-        List<String> vl = createData(newParents, -1);
-
-        List<String> notSearch = new ArrayList<String>();
-        boolean can = false;
-
-        for (int i = 0, len = vl.size(); i < len; i++) {
-            if (searchWithSelectNode(deep + 1, floor, newParents, vl.get(i), keyword, result)) {
-                can = true;
-                notSearch.add(vl.get(i));
-            }
-        }
-        if (can) {
-            for (String v : notSearch) {
-                String[] next = new String[newParents.length + 1];
-                System.arraycopy(newParents, 0, next, 0, newParents.length);
-                next[newParents.length] = v;
-                result.add(next);
-            }
-        }
-        return can;
-    }
-
-    private boolean isMatch(String name, String keyword) {
         String py = BIPhoneticismUtils.getPingYin(name);
         if (name.toUpperCase().contains(keyword.toUpperCase())
                 || py.toUpperCase().contains(keyword.toUpperCase())) {
