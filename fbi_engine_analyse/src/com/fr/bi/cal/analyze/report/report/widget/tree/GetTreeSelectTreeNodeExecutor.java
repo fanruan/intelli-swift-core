@@ -89,7 +89,7 @@ public class GetTreeSelectTreeNodeExecutor extends AbstractTreeNodeExecutor {
                 if (pNode.has(name)) {
                     pNode.remove(name);
                     //递归删掉空父节点
-                    while (tp.length > 0 && pNode.length() == 0) {
+                    while (tp.length > 0 && (pNode.names() == null || pNode.names().length() == 0)) {
                         name = tp[tp.length - 1];
                         String[] nextP = new String[tp.length - 1];
                         System.arraycopy(tp, 0, nextP, 0, tp.length - 1);
@@ -195,7 +195,7 @@ public class GetTreeSelectTreeNodeExecutor extends AbstractTreeNodeExecutor {
         } catch (JSONException e) {
             BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
-        if (selectedValues.length() == childsLength) {
+        if (selectedValues.names() == null || selectedValues.names().length() == childsLength) {
             try {
                 preSelectedValue.put(preStr, new JSONObject());
             } catch (JSONException e) {
