@@ -91,10 +91,10 @@ public class GetTreeSelectTreeNodeExecutor extends AbstractTreeNodeExecutor {
                     //递归删掉空父节点
                     while (tp.length > 0 && pNode.length() == 0) {
                         name = tp[tp.length - 1];
-                        String[] nextP = new String[p.length - 1];
-                        System.arraycopy(p, 0, nextP, 0, p.length - 1);
-                        p = nextP;
-                        pNode = getNode(selectedValues, p);
+                        String[] nextP = new String[tp.length - 1];
+                        System.arraycopy(tp, 0, nextP, 0, tp.length - 1);
+                        tp = nextP;
+                        pNode = getNode(selectedValues, tp);
                         pNode.remove(name);
                     }
                 }
