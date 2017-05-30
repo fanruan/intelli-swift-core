@@ -78,29 +78,24 @@ public class GetTreeSelectTreeNodeExecutor extends AbstractTreeNodeExecutor {
         System.arraycopy(parent, 0, p, 0, parent.length);
         p[parent.length] = notSelectedValueString;
 
-        //存储的值中存在这个值就把它删掉
+        //选中的值中存在这个值就把它删掉
         if (canFindKey(selectedValues, p)) {
             //如果搜索的值在父亲链中
             if (isSearchValueInParents(p)) {
-                String name = notSelectedValueString;
-                String[] tp = new String[parent.length];
-                System.arraycopy(parent, 0, tp, 0, parent.length);
-                JSONObject pNode = getNode(selectedValues, parent);
-                if (pNode.has(name)) {
-                    pNode.remove(name);
-                    //递归删掉空父节点
-                    while (tp.length > 0 && (pNode.names() == null || pNode.names().length() == 0)) {
-                        name = tp[tp.length - 1];
-                        String[] nextP = new String[tp.length - 1];
-                        System.arraycopy(tp, 0, nextP, 0, tp.length - 1);
-                        tp = nextP;
-                        pNode = getNode(selectedValues, tp);
-                        pNode.remove(name);
+                deleteNode(selectedValues, p);
+            } else {
+                //找到所有搜索到的节点删掉
+                List<String[]> result = new ArrayList<String[]>();
+                List<String[]> searched = new ArrayList<String[]>();
+                //从当前值开始搜
+                boolean finded = search(parent.length + 1, floors, parent, notSelectedValueString, keyword, result, searched);
+                if (finded && !searched.isEmpty()) {
+                    for (String[] arr : searched) {
+                        deleteNode(selectedValues, arr);
                     }
                 }
             }
-        }
-        if (isChild(selectedValues, p)) {
+        } else if (isChild(selectedValues, p)) {//如果有父亲节点是全选的状态
             List<String[]> result = new ArrayList<String[]>();
             boolean finded;
             //如果parentValues中有匹配的值，说明搜索结果不在当前值下
@@ -108,7 +103,7 @@ public class GetTreeSelectTreeNodeExecutor extends AbstractTreeNodeExecutor {
                 finded = true;
             } else {
                 //从当前值开始搜
-                finded = search(parent.length + 1, floors, parent, notSelectedValueString, keyword, result);
+                finded = search(parent.length + 1, floors, parent, notSelectedValueString, keyword, result, new ArrayList<String[]>());
                 p = parent;
             }
 
@@ -121,7 +116,7 @@ public class GetTreeSelectTreeNodeExecutor extends AbstractTreeNodeExecutor {
                     String v = p[i];
                     JSONObject t = next.optJSONObject(v);
                     if (t == null) {
-                        if (next.names() == null || next.names().length() == 0) {
+                        if (next.length() == 0) {
                             String[] split = new String[i];
                             System.arraycopy(p, 0, split, 0, i);
                             List<String> expanded = createData(split, -1);
@@ -195,7 +190,7 @@ public class GetTreeSelectTreeNodeExecutor extends AbstractTreeNodeExecutor {
         } catch (JSONException e) {
             BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
-        if (selectedValues.names() == null || selectedValues.names().length() == childsLength) {
+        if (selectedValues.length() == childsLength) {
             try {
                 preSelectedValue.put(preStr, new JSONObject());
             } catch (JSONException e) {
@@ -257,13 +252,14 @@ public class GetTreeSelectTreeNodeExecutor extends AbstractTreeNodeExecutor {
         return false;
     }
 
-    private boolean search(int deep, int floor, String[] parents, String value, String keyword, List<String[]> result) throws JSONException {
+    private boolean search(int deep, int floor, String[] parents, String value, String keyword, List<String[]> result, List<String[]> match) throws JSONException {
 
         String[] newParents = new String[parents.length + 1];
         System.arraycopy(parents, 0, newParents, 0, parents.length);
         newParents[parents.length] = value;
         if (keyword != null) {
             if (isMatch(value, keyword)) {
+                match.add(newParents);
                 return true;
             }
         }
@@ -279,7 +275,7 @@ public class GetTreeSelectTreeNodeExecutor extends AbstractTreeNodeExecutor {
         boolean can = false;
 
         for (int i = 0, len = vl.size(); i < len; i++) {
-            if (search(deep + 1, floor, newParents, vl.get(i), keyword, result)) {
+            if (search(deep + 1, floor, newParents, vl.get(i), keyword, result, match)) {
                 can = true;
             } else {
                 notSearch.add(vl.get(i));
@@ -345,6 +341,25 @@ public class GetTreeSelectTreeNodeExecutor extends AbstractTreeNodeExecutor {
             return true;
         }
         return false;
+    }
+
+    private void deleteNode(JSONObject selectedValues, String[] parents) {
+        String name = parents[parents.length - 1];
+        String[] tp = new String[parents.length - 1];
+        System.arraycopy(parents, 0, tp, 0, parents.length - 1);
+        JSONObject pNode = getNode(selectedValues, tp);
+        if (pNode.has(name)) {
+            pNode.remove(name);
+            //递归删掉空父节点
+            while (tp.length > 0 && pNode.length() == 0) {
+                name = tp[tp.length - 1];
+                String[] nextP = new String[tp.length - 1];
+                System.arraycopy(tp, 0, nextP, 0, tp.length - 1);
+                tp = nextP;
+                pNode = getNode(selectedValues, tp);
+                pNode.remove(name);
+            }
+        }
     }
 
     private void buildTree(JSONObject jo, String[] values) throws JSONException {
