@@ -293,10 +293,10 @@ public class BISourceDataPartTransport extends BISourceDataTransport {
                 if (tableSource.getType() == BIBaseConstant.TABLETYPE.DB) {
                     String dbName = ((DBTableSource) tableSource).getDbName();
                     Table table = new Table(BIConnectionManager.getBIConnectionManager().getSchema(dbName), tableSource.getTableName());
-                    finalSql = "SELECT *" + " FROM " + dialect.table2SQL(table) + " t" + " WHERE " + "t." + columnName + " IN " + "(" + sql + ")";
+                    finalSql = "SELECT *" + " FROM " + dialect.table2SQL(table)  + " WHERE "  + columnName + " IN " + "(" + sql + ")";
                 }
                 if (tableSource.getType() == BIBaseConstant.TABLETYPE.SQL) {
-                    finalSql = ((SQLTableSource) tableSource).getQuery() + " t" + " WHERE " + "t." + columnName + " IN " + "(" + sql + ")";
+                    finalSql = ((SQLTableSource) tableSource).getQuery() +  " WHERE "  + columnName + " IN " + "(" + sql + ")";
                 }
             } else {
                 LOGGER.error("SQL syntax error: " + tableSource.getTableName() + " columns length incorrect " + sql);
