@@ -1,6 +1,6 @@
 apply plugin: 'java'
 def webName="nuclear-web"
-def branchName = "bugfix%2F4.0S"
+def branchName = "4.0.2"
 def buildDir="../../${webName}/${branchName}"
 
 task copyModel{
