@@ -64,6 +64,11 @@
   "rankType": "计算指标类型2(rank_type)",
   "periodType": "计算指标类型3(period_type)",
 
-  "formulaValue":"指标公式表达式(formula_value)"
+  "formulaValue":"指标公式表达式(formula_value)",
+
+  "cordonName": "警戒线颜色(cordon_name)",
+  "cordonValue": "警戒线值(cordon_value)",
+  "cordonNumberLevel": "警戒线数量级(cordon_number_level)",
+  "cordonColor": "警戒线颜色(cordon_color)"
 
 }
