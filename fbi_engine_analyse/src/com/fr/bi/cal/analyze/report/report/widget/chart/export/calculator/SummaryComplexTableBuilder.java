@@ -172,14 +172,18 @@ public class SummaryComplexTableBuilder extends TableAbstractDataBuilder {
         while (count < rowLength - dimIds.size()) {
             ITableHeader header = lastDimHeader;
             if (null != header) {
-                this.headers.set(dimIds.size(), header);
+//                this.headers.set(dimIds.size(), header);
+                this.headers.add(header);
             }
             count++;
         }
         count = 0;
         while (count < colLength - crossDimIds.size()) {
+            if (null != lastCrossDimHeader) {
+                crossHeaders.add(lastCrossDimHeader);
+            }
             count++;
-            crossHeaders.add(crossDimIds.size(), lastCrossDimHeader);
+//            crossHeaders.add(crossDimIds.size(), lastCrossDimHeader);
         }
 
     }
@@ -285,7 +289,7 @@ public class SummaryComplexTableBuilder extends TableAbstractDataBuilder {
                 tempItems.get(i).setChildren(childrenAddSummaryValue);
                 tempItems.get(i).setValues(null);
 
-            }else {
+            } else {
                 if (childItem.getValues() == null) {
                     childItem.setValues(tempItems.get(i).getValues());
                 } else
