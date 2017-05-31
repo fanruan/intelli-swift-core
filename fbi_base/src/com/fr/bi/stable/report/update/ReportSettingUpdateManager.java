@@ -13,7 +13,6 @@ import com.fr.json.JSONObject;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
@@ -62,32 +61,32 @@ public class ReportSettingUpdateManager {
 
     private boolean updateStatusCheck(BIDesignSetting setting, ReportConfVersionNode node) throws BIReportVersionAbsentException, JSONException, ParseException {
         boolean isBeforeLatestVersion = parseValue(getVersion(setting).getVersion()) < parseValue(node.getVersion().getVersion());
-        boolean isBeforeLatestDate = isBeforeReleaseTime(setting);
+        boolean isBeforeLatestDate = !setting.getReportJSON().has("lastModifyTime") || DateUtils.parse(setting.getReportJSON().getString("lastModifyTime")).before(DateUtils.parse(ProductConstants.getReleaseDate()));
         return isBeforeLatestDate || isBeforeLatestVersion;
     }
 
-    /*
-    * 兼容原来的格式（yyyy-MM-dd）
-    * */
-    private boolean isBeforeReleaseTime(BIDesignSetting setting) throws JSONException, ParseException {
-        if (!setting.getReportJSON().has("lastModifyTime")) {
-            return true;
-        }
-        String datePattern = "yyyy-MM-dd HH:mm:ss";
-        Date lastModifyTime;
-        try {
-            lastModifyTime = DateUtils.parse(setting.getReportJSON().getString("lastModifyTime"), datePattern);
-        } catch (ParseException e) {
-            lastModifyTime = DateUtils.parse(setting.getReportJSON().getString("lastModifyTime"));
-        }
-        Date releaseTime;
-        try {
-            releaseTime = DateUtils.parse(ProductConstants.getReleaseDate(), datePattern);
-        } catch (ParseException e) {
-            releaseTime = DateUtils.parse(ProductConstants.getReleaseDate());
-        }
-        return lastModifyTime.before(releaseTime);
-    }
+//    /*
+//    * 兼容原来的格式（yyyy-MM-dd）
+//    * */
+//    private boolean isBeforeReleaseTime(BIDesignSetting setting) throws JSONException, ParseException {
+//        if (!setting.getReportJSON().has("lastModifyTime")) {
+//            return true;
+//        }
+//        String datePattern = "yyyy-MM-dd HH:mm:ss";
+//        Date lastModifyTime;
+//        try {
+//            lastModifyTime = DateUtils.parse(setting.getReportJSON().getString("lastModifyTime"), datePattern);
+//        } catch (ParseException e) {
+//            lastModifyTime = DateUtils.parse(setting.getReportJSON().getString("lastModifyTime"));
+//        }
+//        Date releaseTime;
+//        try {
+//            releaseTime = DateUtils.parse(ProductConstants.getReleaseDate(), datePattern);
+//        } catch (ParseException e) {
+//            releaseTime = DateUtils.parse(ProductConstants.getReleaseDate());
+//        }
+//        return lastModifyTime.before(releaseTime);
+//    }
 
     /***
      *
