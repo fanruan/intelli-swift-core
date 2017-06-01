@@ -572,6 +572,10 @@ public abstract class VanCartesianWidget extends VanChartWidget {
 
     private void putMinMaxInterval(JSONObject axis, JSONObject scale) throws JSONException{
 
+        if(scale == null){
+            return;
+        }
+
         String min = StringUtils.EMPTY, max = StringUtils.EMPTY, interval = StringUtils.EMPTY;
         if(scale.has("minScale")) {
             min = scale.optString("minScale");
