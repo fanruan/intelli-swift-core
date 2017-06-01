@@ -40,27 +40,33 @@ public class SingleUserAnalysisBusiPackManager{
 
     public boolean checkVersion() {
         if (!ComparatorUtils.equals(this.version, "4.0.2")){
-            try {
-                checkWidget();
-            } catch (Exception e){
-                BILoggerFactory.getLogger().error(e.getMessage());
-                return true;
+            synchronized (this){
+                if (!ComparatorUtils.equals(this.version, "4.0.2")){
+                    try {
+                        checkWidget();
+                    } catch (Exception e){
+                        BILoggerFactory.getLogger().error(e.getMessage());
+                        return true;
+                    }
+                    this.version = "4.0.2";
+                    return false;
+                }
             }
-            this.version = "4.0.2";
-            return false;
         }
         return true;
     }
 
     private void checkWidget() throws BIKeyDuplicateException {
+        BILoggerFactory.getLogger().info("start check spa busipack");
         for (BusinessTable table : getAllTables()){
             CubeTableSource source = table.getTableSource();
             if (source.getType() == BIBaseConstant.TABLE_TYPE.BASE){
                 ((AnalysisBaseTableSource)source).resetTargetsMap();
+                BIAnalysisETLManagerCenter.getDataSourceManager().addTableSource(table, table.getTableSource());
             }
-            BIAnalysisETLManagerCenter.getDataSourceManager().addTableSource(table, table.getTableSource());
         }
         BIAnalysisETLManagerCenter.getDataSourceManager().persistData(UserControl.getInstance().getSuperManagerID());
+        BILoggerFactory.getLogger().info("finish check spa busipack");
     }
 
     public void addTable(AnalysisBusiTable table) {
