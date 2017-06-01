@@ -252,7 +252,7 @@ public class BIDBUtils {
         String query = tableData.getQuery();
         com.fr.data.impl.Connection connection = tableData.getDatabase();
         java.sql.Connection conn = null;
-        if (!"".equals(query)) {
+        if (StringUtils.isNotEmpty(query)) {
             try {
                 conn = connection.createConnection();
                 Dialect dialect = DialectFactory.generateDialect(conn, connection.getDriver());
