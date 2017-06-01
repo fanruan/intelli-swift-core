@@ -53,7 +53,10 @@ public abstract class AbstractTableSource implements CubeTableSource {
 
     @Override
     public String getTableName() {
-        return getPersistentTable().getTableName();
+        if (getPersistentTable() != null) {
+            return getPersistentTable().getTableName();
+        }
+        return null;
     }
 
     @Override
