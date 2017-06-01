@@ -259,8 +259,13 @@ public abstract class VanCartesianWidget extends VanChartWidget {
             if(axis == null){
                 continue;
             }
-            axis.put("showLabel", cate).put("lineWidth", 0).put("gridLineWidth", 0).put("enableTick", false).put("title", JSONObject.create().put("enabled", false));
+            axis.put("showLabel", showLabelInMiniMode(cate, i)).put("lineWidth", 0).put("gridLineWidth", 0).put("enableTick", false).put("title", JSONObject.create().put("enabled", false));
         }
+    }
+
+    //这个暂时只是为了对比条形柱状图极简模式下，第二个分类轴标签不显示
+    protected boolean showLabelInMiniMode(boolean cate, int index) {
+        return cate;
     }
 
     private void dealImageFillConditions(JSONObject options){
@@ -662,5 +667,23 @@ public abstract class VanCartesianWidget extends VanChartWidget {
         }
 
         return series;
+    }
+
+    protected JSONObject getSeriesAccumulationItem(String seriesName){
+        BIDimension seriesDim = this.getSeriesDimension();
+
+        if(seriesDim != null && seriesDim.getChartSetting().hasSeriesAccumulation()){
+            JSONArray items = seriesDim.getChartSetting().getSeriesAccumulation();
+            for(int i = 0, count = items.length(); i < count; i++){
+                JSONObject obj = items.optJSONObject(i);
+                JSONArray objItems = obj.optJSONArray("items");
+                for(int j = objItems.length() - 1; j >=0; j--){
+                    if(ComparatorUtils.equals(objItems.optString(j), seriesName)){
+                        return obj;
+                    }
+                }
+            }
+        }
+        return null;
     }
 }

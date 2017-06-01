@@ -17,6 +17,11 @@ public class VanCompareColumnWidget extends VanColumnWidget{
 
     }
 
+    //这个暂时只是为了对比条形图极简模式下，第二个分类轴标签不显示
+    protected boolean showLabelInMiniMode(boolean cate, int index) {
+        return cate && index == 0;
+    }
+
     @Override
     protected JSONArray parseCategoryAxis(JSONObject settings) throws JSONException {
         JSONArray array = super.parseCategoryAxis(settings);

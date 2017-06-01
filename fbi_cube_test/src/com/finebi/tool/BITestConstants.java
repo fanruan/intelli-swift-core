@@ -20,4 +20,7 @@ public class BITestConstants {
     public static final int THOUSAND = 1000;
     public static final int MILLION =1000000;
     public static final int BILLION = 1000000000;
+    public static final int MAPSIZE = 405000;
+    public static final int GAP = 4;
+    public static final double DOUBLEBASE= 1.1;
 }
