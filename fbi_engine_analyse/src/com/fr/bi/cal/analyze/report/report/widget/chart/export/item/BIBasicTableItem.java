@@ -147,10 +147,6 @@ public class BIBasicTableItem implements ITableItem {
         if (jo.has("text")) {
             text = jo.optString("text");
         }
-//        if (jo.has("isSum")) {
-//            isSum = jo.optBoolean("isSum");
-//        }
-
         if (jo.has("values")) {
             if (null == values) {
                 values = new ArrayList<ITableItem>();
@@ -192,8 +188,7 @@ public class BIBasicTableItem implements ITableItem {
         }
         jo.put("dId", dId);
         jo.put("text", text);
-//        jo.put("styles", null == styles ? new JSONObject() : styles.createJSON());
-//        jo.put("isSum", isSum);
+        jo.put("styles", null == styles ? new JSONObject() : styles.createJSON());
         if (null != this.values && values.size() > 0) {
             JSONArray TempValues = new JSONArray();
             for (ITableItem item : this.values) {

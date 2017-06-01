@@ -65,6 +65,29 @@ public class ReportSettingUpdateManager {
         return isBeforeLatestDate || isBeforeLatestVersion;
     }
 
+//    /*
+//    * 兼容原来的格式（yyyy-MM-dd）
+//    * */
+//    private boolean isBeforeReleaseTime(BIDesignSetting setting) throws JSONException, ParseException {
+//        if (!setting.getReportJSON().has("lastModifyTime")) {
+//            return true;
+//        }
+//        String datePattern = "yyyy-MM-dd HH:mm:ss";
+//        Date lastModifyTime;
+//        try {
+//            lastModifyTime = DateUtils.parse(setting.getReportJSON().getString("lastModifyTime"), datePattern);
+//        } catch (ParseException e) {
+//            lastModifyTime = DateUtils.parse(setting.getReportJSON().getString("lastModifyTime"));
+//        }
+//        Date releaseTime;
+//        try {
+//            releaseTime = DateUtils.parse(ProductConstants.getReleaseDate(), datePattern);
+//        } catch (ParseException e) {
+//            releaseTime = DateUtils.parse(ProductConstants.getReleaseDate());
+//        }
+//        return lastModifyTime.before(releaseTime);
+//    }
+
     /***
      *
      * @return
