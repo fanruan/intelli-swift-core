@@ -2,6 +2,7 @@ package com.finebi.environment.map;
 
 import com.finebi.cube.map.ExternalMap;
 import com.finebi.cube.map.map2.StringIntArrayListExternalMap;
+import com.finebi.tool.BITestConstants;
 import com.fr.bi.stable.operation.sort.comp.ComparatorFacotry;
 import com.fr.bi.stable.structure.array.IntList;
 import com.fr.bi.stable.structure.array.IntListFactory;
@@ -16,11 +17,11 @@ import java.util.Map;
 public class TestStringIntArrayListExternalMap {
     public static void main(String[] args) {
         StringIntArrayListExternalMap map = new StringIntArrayListExternalMap(ComparatorFacotry.CHINESE_ASC, "test/String");
-        for (int c = 1; c < 40000; c++) {
+        for (int c = 1; c < BITestConstants.MAPSIZE; c++) {
             IntList list = IntListFactory.createIntList();
-            for (int i = 3; i > 0; i--) {
+            for (int i = BITestConstants.GAP-1; i > 0; i--) {
                 list.add(i * c);
-                list.add(i * c + 4);
+                list.add(i * c + BITestConstants.GAP);
             }
             map.put(c + "haha", list);
         }
