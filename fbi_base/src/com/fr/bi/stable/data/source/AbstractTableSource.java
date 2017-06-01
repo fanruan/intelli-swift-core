@@ -279,11 +279,20 @@ public abstract class AbstractTableSource implements CubeTableSource {
 
     public Map<String, ICubeFieldSource> getFields() {
         try {
-            if (fields.isEmpty()) {
+            return getFieldsWithException();
+        } catch (Exception e) {
+            BILoggerFactory.getLogger().error("Table " + this.getSourceID() + " has error ! Please check !", e);
+            return null;
+        }
+    }
+
+    public Map<String, ICubeFieldSource> getFieldsWithException() {
+        try {
+            if (fields == null || fields.isEmpty()) {
                 this.fields = getFieldFromPersistentTable();
             }
         } catch (Exception e) {
-            BILoggerFactory.getLogger().error("Table " + this.getSourceID() + " has error ! Please check !", e);
+            throw BINonValueUtils.beyondControl(e.getMessage(), e);
         }
         return this.fields;
     }
@@ -380,7 +389,15 @@ public abstract class AbstractTableSource implements CubeTableSource {
         List<JSONObject> stringList = new ArrayList<JSONObject>();
         List<JSONObject> numberList = new ArrayList<JSONObject>();
         List<JSONObject> dateList = new ArrayList<JSONObject>();
-        Map<String, ICubeFieldSource> fields = getRecordedFields();
+
+        Map<String, ICubeFieldSource> fields = null;
+        try {
+            fields = getFieldsWithException();
+        } catch (Exception e) {
+            jo.put("error", e.getMessage());
+            fields = new HashMap<String, ICubeFieldSource>();
+        }
+
         for (Map.Entry<String, ICubeFieldSource> entry : fields.entrySet()) {
             ICubeFieldSource field = entry.getValue();
             stringList.add(field.createJSON());
