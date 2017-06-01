@@ -28,8 +28,8 @@ public class TestStringIntArrayListExternalMap {
         Iterator<ExternalMap.Entry<String, IntList>> it = map.getIterator();
         while (it.hasNext()) {
             Map.Entry<String, IntList> entry = it.next();
-            System.out.println(entry.getKey());
+//            System.out.println(entry.getKey());
         }
-        System.err.println(map.size());
+//        System.err.println(map.size());
     }
 }

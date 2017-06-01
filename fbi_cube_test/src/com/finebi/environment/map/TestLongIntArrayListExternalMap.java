@@ -16,11 +16,13 @@ import java.util.Map;
 public class TestLongIntArrayListExternalMap {
     public static void main(String[] args) {
         LongIntArrayListExternalMap map = new LongIntArrayListExternalMap(ComparatorFacotry.LONG_ASC, "test/Long");
-        for (long c = 1; c < 40000; c++) {
+        int mapSize = 405000;
+        int gap = 4;
+        for (long c = 1; c < mapSize; c++) {
             IntList list = IntListFactory.createIntList();
             for (int i = 3; i > 0; i--) {
                 list.add((int) (i * c));
-                list.add((int) (i * c + 4));
+                list.add((int) (i * c + gap));
             }
             map.put(c, list);
         }
@@ -28,8 +30,8 @@ public class TestLongIntArrayListExternalMap {
         Iterator<ExternalMap.Entry<Long, IntList>> it = map.getIterator();
         while (it.hasNext()) {
             Map.Entry<Long, IntList> entry = it.next();
-            System.out.println(entry.getKey());
+            entry.getKey();
         }
-        System.err.println(map.size());
+//        System.err.println(map.size());
     }
 }
