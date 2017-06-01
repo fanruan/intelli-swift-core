@@ -107,39 +107,41 @@ public class GetTreeSelectTreeNodeExecutor extends AbstractTreeNodeExecutor {
                 finded = search(parent.length + 1, floors, parent, notSelectedValueString, keyword, result, new ArrayList<String[]>());
                 p = parent;
             }
-
             if (finded) {
-
-                JSONObject next = selectedValues;
-                int i;
-
-                for (i = 0; i < p.length; i++) {
-                    String v = p[i];
-                    JSONObject t = next.optJSONObject(v);
-                    if (t == null) {
-                        if (next.length() == 0) {
-                            String[] split = new String[i];
-                            System.arraycopy(p, 0, split, 0, i);
-                            List<String> expanded = createData(split, -1);
-                            for (String ex : expanded) {
-                                if (i == p.length - 1 && ComparatorUtils.equals(ex, notSelectedValueString)) {
-                                    continue;
-                                }
-                                next.put(ex, new JSONObject());
-                            }
-                            next = next.optJSONObject(v);
-                        } else {
-                            next.put(v, next = new JSONObject());
-                        }
-                    } else {
-                        next = t;
-                    }
-                }
+                expandSelectValues(selectedValues, p);
                 if (!result.isEmpty()) {
                     for (String[] arr : result) {
                         buildTree(selectedValues, arr);
                     }
                 }
+            }
+        }
+    }
+
+    private void expandSelectValues(JSONObject selectedValues, String[] p) throws JSONException {
+        JSONObject next = selectedValues;
+        int i;
+
+        for (i = 0; i < p.length; i++) {
+            String v = p[i];
+            JSONObject t = next.optJSONObject(v);
+            if (t == null) {
+                if (next.length() == 0) {
+                    String[] split = new String[i];
+                    System.arraycopy(p, 0, split, 0, i);
+                    List<String> expanded = createData(split, -1);
+                    for (String ex : expanded) {
+                        if (i == p.length - 1 && ComparatorUtils.equals(ex, notSelectedValueString)) {
+                            continue;
+                        }
+                        next.put(ex, new JSONObject());
+                    }
+                    next = next.optJSONObject(v);
+                } else {
+                    next.put(v, next = new JSONObject());
+                }
+            } else {
+                next = t;
             }
         }
     }
