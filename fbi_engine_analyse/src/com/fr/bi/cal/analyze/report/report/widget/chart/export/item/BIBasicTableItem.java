@@ -198,6 +198,7 @@ public class BIBasicTableItem implements ITableItem {
         }
 
         jo.put("value", value);
+        jo.put("isSum", isSum);
         return jo;
     }
 
