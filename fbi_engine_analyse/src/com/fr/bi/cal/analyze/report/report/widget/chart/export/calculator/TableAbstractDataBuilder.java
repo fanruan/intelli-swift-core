@@ -16,7 +16,6 @@ import com.fr.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
 
 /**
@@ -394,9 +393,6 @@ public abstract class TableAbstractDataBuilder implements IExcelDataBuilder {
                     for (String targetId : targetIds) {
                         BITableHeader header = new BITableHeader();
                         header.setText(SUMMARY + ":" + BITableExportDataHelper.getDimensionNameByID(dimAndTar, targetId));
-                        header.setTitle(SUMMARY + ":" + BITableExportDataHelper.getDimensionNameByID(dimAndTar, targetId));
-                        header.setTag(UUID.randomUUID().toString());
-                        header.setType("bi.page_table_cell");
                         headers.add(header);
                     }
                 }
@@ -420,18 +416,12 @@ public abstract class TableAbstractDataBuilder implements IExcelDataBuilder {
                     for (int j = 0; j < values.size(); j++) {
                         BITableHeader header = new BITableHeader();
                         header.setText(BITableExportDataHelper.getDimensionNameByID(dimAndTar, targetIds.get(j)));
-                        header.setTitle(BITableExportDataHelper.getDimensionNameByID(dimAndTar, targetIds.get(j)));
-                        header.setTag(UUID.randomUUID().toString());
-                        header.setType("bi.page_table_cell");
                         headers.add(header);
                     }
                 }
             } else {
                 BITableHeader header = new BITableHeader();
                 header.setText(dName);
-                header.setType("bi.page_table_cell");
-                header.setTitle(dName);
-                header.setTag(UUID.randomUUID().toString());
                 headers.add(header);
             }
         }
