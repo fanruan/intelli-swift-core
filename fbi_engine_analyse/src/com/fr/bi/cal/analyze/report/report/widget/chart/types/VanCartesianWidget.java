@@ -259,8 +259,13 @@ public abstract class VanCartesianWidget extends VanChartWidget {
             if(axis == null){
                 continue;
             }
-            axis.put("showLabel", cate).put("lineWidth", 0).put("gridLineWidth", 0).put("enableTick", false).put("title", JSONObject.create().put("enabled", false));
+            axis.put("showLabel", showLabelInMiniMode(cate, i)).put("lineWidth", 0).put("gridLineWidth", 0).put("enableTick", false).put("title", JSONObject.create().put("enabled", false));
         }
+    }
+
+    //这个暂时只是为了对比条形柱状图极简模式下，第二个分类轴标签不显示
+    protected boolean showLabelInMiniMode(boolean cate, int index) {
+        return cate;
     }
 
     private void dealImageFillConditions(JSONObject options){
