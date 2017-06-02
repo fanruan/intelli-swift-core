@@ -62,6 +62,6 @@ public class CustomCubeGenerateTaskTest extends ICubeGenerateTaskTest {
         sourceIdUpdateTypeMap.put(sourceId3, new ArrayList<Integer>());
         sourceIdUpdateTypeMap.put(sourceId4, new ArrayList<Integer>());
         cubeGenerateTask.addTables(sourceIdUpdateTypeMap);
-        assertTrue(cubeGenerateTask.getSourceIdUpdateTypeMap().size() == 4);
+        assertEquals(cubeGenerateTask.getSourceIdUpdateTypeMap().size(), 4);
     }
 }
