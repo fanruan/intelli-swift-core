@@ -100,6 +100,10 @@ public class BIPlate extends AbstractFSPlate {
             BICubeConfigureCenter.getTableRelationManager().getAllTablePath(UserControl.getInstance().getSuperManagerID());
             BICubeConfigureCenter.getDataSourceManager().getAllBusinessTable();
             BIConfigureManagerCenter.getUpdateFrequencyManager().getUpdateSettings(UserControl.getInstance().getSuperManagerID());
+
+            /// TODO: 2017/6/2 目前通过维护packageManager中的Map来提供分析可用资源的获取，真正解决需要从cube配置中获取到当前Cube中存在的资源
+            BICubeConfigureCenter.getPackageManager().getAllPackages(UserControl.getInstance().getSuperManagerID());
+            BICubeConfigureCenter.getPackageManager().initialAnalysisResourceMap(UserControl.getInstance().getSuperManagerID());
         } catch (Exception e) {
             throw BINonValueUtils.beyondControl(e);
         }
