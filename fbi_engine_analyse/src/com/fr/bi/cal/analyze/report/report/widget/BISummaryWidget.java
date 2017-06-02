@@ -368,7 +368,7 @@ public abstract class BISummaryWidget extends AbstractBIWidget {
                         }
                         JSONObject srcJo = targetRelationJo.getJSONObject(BIJSONConstant.JSON_KEYS.STATISTIC_ELEMENT);
                         String fieldId = srcJo.getString("fieldId");
-                        dimensionMap.put(targetId, BIModuleUtils.getBusinessFieldById(new BIFieldID(fieldId)));
+                        dimensionMap.put(targetId, BIModuleUtils.getAnalysisBusinessFieldById(new BIFieldID(fieldId)));
                     }
                     if (targetRelationJo.has("targetRelation")) {
                         JSONArray dimensionAndTargetPathsJa = this.createDimensionAndTargetPathsJa(dimensionId, targetId, dims, targetRelationJo);
@@ -422,7 +422,7 @@ public abstract class BISummaryWidget extends AbstractBIWidget {
                 relationMap.put(targetId, relationList);
             }
         } else {
-            if (ComparatorUtils.equals(BIModuleUtils.getBusinessFieldById(new BIFieldID(primaryFieldId)).getTableBelongTo(), BIModuleUtils.getBusinessFieldById(new BIFieldID(foreignFieldId)).getTableBelongTo()) && !srcJo.has("targetRelation")) {
+            if (ComparatorUtils.equals(BIModuleUtils.getAnalysisBusinessFieldById(new BIFieldID(primaryFieldId)).getTableBelongTo(), BIModuleUtils.getAnalysisBusinessFieldById(new BIFieldID(foreignFieldId)).getTableBelongTo()) && !srcJo.has("targetRelation")) {
                 relationMap.put(targetId, relationList);
             } else {
                 for (int j = 0; j < targetRelationsJa.length(); j++) {
@@ -495,7 +495,7 @@ public abstract class BISummaryWidget extends AbstractBIWidget {
                 Map.Entry<String, BusinessField> entry = dimensionFieldOfTargetIterator.next();
                 BusinessField dimensionFieldOfTarget = entry.getValue();
                 if (dimensionFieldOfTarget != null) {
-                    refreshedDimensionFieldOfTargetsMap.put(entry.getKey(), BIModuleUtils.getBusinessFieldById(dimensionFieldOfTarget.getFieldID()));
+                    refreshedDimensionFieldOfTargetsMap.put(entry.getKey(), BIModuleUtils.getAnalysisBusinessFieldById(dimensionFieldOfTarget.getFieldID()));
                 }
             }
             refreshedDimensionsMap.put(dimensionsMapEntry.getKey(), refreshedDimensionFieldOfTargetsMap);

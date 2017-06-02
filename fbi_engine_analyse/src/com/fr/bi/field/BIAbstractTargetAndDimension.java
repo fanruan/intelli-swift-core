@@ -2,7 +2,6 @@ package com.fr.bi.field;
 
 import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.conf.field.BusinessField;
-import com.finebi.cube.conf.field.BusinessFieldHelper;
 import com.finebi.cube.conf.table.BusinessTable;
 import com.fr.bi.base.BICore;
 import com.fr.bi.base.BICoreGenerator;
@@ -83,7 +82,7 @@ public abstract class BIAbstractTargetAndDimension extends BIID implements BITar
 
     @Override
     public boolean useHyperLink() {
-        boolean expressEmpty=StringUtils.isEmpty(hyperLinkExpression);
+        boolean expressEmpty = StringUtils.isEmpty(hyperLinkExpression);
         return !expressEmpty && useHyperLink;
     }
 
@@ -101,8 +100,8 @@ public abstract class BIAbstractTargetAndDimension extends BIID implements BITar
         if (jo.has(BIJSONConstant.JSON_KEYS.STATISTIC_ELEMENT)) {
             JSONObject fieldJo = jo.getJSONObject(BIJSONConstant.JSON_KEYS.STATISTIC_ELEMENT);
             if (fieldJo.has("fieldId")) {
-                //获取分析用的字段
-                column = BusinessFieldHelper.getAnalysisBusinessFieldSource(new BIFieldID(fieldJo.getString("fieldId")));
+                //获取分析用的字段,恶心的螺旋分析处理
+                column = BIModuleUtils.getAnalysisBusinessFieldById(new BIFieldID(fieldJo.getString("fieldId")));
             }
         }
         chartSetting = new ChartSetting();
@@ -157,25 +156,25 @@ public abstract class BIAbstractTargetAndDimension extends BIID implements BITar
     @Override
     //FIXME 这里的结构太诡异了，保存了MD5，还有刷新方法，现在如果中间表删除，则不影响螺旋分析的生成，不知道到底好不好
     public void refreshColumn() {
-        if (column != null){
-            BusinessField c = BIModuleUtils.getBusinessFieldById(column.getFieldID());
-            if(c != null){
+        if (column != null) {
+            BusinessField c = BIModuleUtils.getAnalysisBusinessFieldById(column.getFieldID());
+            if (c != null) {
                 column = c;
             }
         }
     }
 
-    public ChartSetting getChartSetting(){
+    public ChartSetting getChartSetting() {
         return chartSetting;
     }
 
     @Override
-    public String getId(){
-       return super.getValue();
+    public String getId() {
+        return super.getValue();
     }
 
     @Override
-    public String getText(){
+    public String getText() {
         return super.getText();
     }
 }

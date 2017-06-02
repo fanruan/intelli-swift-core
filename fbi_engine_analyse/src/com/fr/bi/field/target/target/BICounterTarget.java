@@ -34,7 +34,7 @@ public class BICounterTarget extends BISummaryTarget {
             /**
              * Connery：
              */
-            BusinessField field = BIModuleUtils.getBusinessFieldById(new BIFieldID(distinct_field_id));
+            BusinessField field = BIModuleUtils.getAnalysisBusinessFieldById(new BIFieldID(distinct_field_id));
             if (field == null) {
                 String tableId = obj.getString("tableId");
                 BusinessField column = new BIBusinessField(new BIFieldID(distinct_field_id));
@@ -89,7 +89,7 @@ public class BICounterTarget extends BISummaryTarget {
         return result;
     }
 
-    public SumType getSumType(){
+    public SumType getSumType() {
         return StringUtils.isNotEmpty(distinct_field_name) ? SumType.GVI : SumType.PLUS;
     }
 
