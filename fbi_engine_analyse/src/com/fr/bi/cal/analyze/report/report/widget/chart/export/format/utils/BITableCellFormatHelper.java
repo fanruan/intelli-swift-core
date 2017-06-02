@@ -2,7 +2,6 @@ package com.fr.bi.cal.analyze.report.report.widget.chart.export.format.utils;
 
 import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.stable.constant.BIReportConstant;
-import com.fr.bi.stable.constant.BIStyleConstant;
 import com.fr.bi.stable.utils.program.BIStringUtils;
 import com.fr.general.Inter;
 import com.fr.json.JSONArray;
@@ -263,26 +262,23 @@ public class BITableCellFormatHelper {
     }
 
     public static JSONObject createTextStyle(JSONObject settings, String text) throws JSONException {
-        if (StringUtils.isEmpty(text)) {
-            return new JSONObject();
-        }
         Float num;
         try {
             num = Float.valueOf(text);
         } catch (NumberFormatException e) {
-            return new JSONObject();
+            return JSONObject.create();
         }
-        String markResult = getTextCompareResult(settings, num);
+        int markResult = getTextCompareResult(settings, num);
         int iconStyle = settings.getInt("iconStyle");
         String textColor = getTextColor(settings, num);
-        return new JSONObject().put("markResult", markResult).put("iconStyle", iconStyle).put("color", textColor);
+        return JSONObject.create().put("markResult", markResult).put("iconStyle", iconStyle).put("color", textColor);
     }
 
-    private static String getTextCompareResult(JSONObject settings, Float num) throws JSONException {
+    private static int getTextCompareResult(JSONObject settings, Float num) throws JSONException {
         if (!settings.has("mark") || num < settings.getInt("mark")) {
-            return BIStyleConstant.ARROW_DIRECTION.DOWN;
+            return BIReportConstant.TARGET_COMPARE_RES.LESS;
         } else {
-            return num == settings.getLong("mark") ? BIStyleConstant.ARROW_DIRECTION.MIDDLE : BIStyleConstant.ARROW_DIRECTION.UP;
+            return num == settings.getLong("mark") ? BIReportConstant.TARGET_COMPARE_RES.EQUAL : BIReportConstant.TARGET_COMPARE_RES.MORE;
         }
     }
 
@@ -298,7 +294,7 @@ public class BITableCellFormatHelper {
                 return conditions.getJSONObject(i).getString("color");
             }
         }
-        return "";
+        return StringUtils.EMPTY;
     }
 
 }
