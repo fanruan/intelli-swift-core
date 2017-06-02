@@ -174,7 +174,7 @@ public class AutoGroup extends AbstractGroup {
     private static final int NUM2PMD_TEN = 10;
 
     private double initGroup(double minValue, double maxValue) {
-        int magnify = 1;
+        double magnify = 1;
         double minV = Math.abs(minValue);
         double maxV = Math.abs(maxValue);
         int minCount = this.checkMagnifyCount(minV);
