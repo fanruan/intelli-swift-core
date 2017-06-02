@@ -95,7 +95,8 @@ public class GetTreeSelectTreeNodeExecutor extends AbstractTreeNodeExecutor {
                     }
                 }
             }
-        } else if (isChild(selectedValues, p)) {//如果有父亲节点是全选的状态
+        }
+        if (isChild(selectedValues, p)) {//如果有父亲节点是全选的状态
             List<String[]> result = new ArrayList<String[]>();
             boolean finded;
             //如果parentValues中有匹配的值，说明搜索结果不在当前值下
@@ -106,39 +107,41 @@ public class GetTreeSelectTreeNodeExecutor extends AbstractTreeNodeExecutor {
                 finded = search(parent.length + 1, floors, parent, notSelectedValueString, keyword, result, new ArrayList<String[]>());
                 p = parent;
             }
-
             if (finded) {
-
-                JSONObject next = selectedValues;
-                int i;
-
-                for (i = 0; i < p.length; i++) {
-                    String v = p[i];
-                    JSONObject t = next.optJSONObject(v);
-                    if (t == null) {
-                        if (next.length() == 0) {
-                            String[] split = new String[i];
-                            System.arraycopy(p, 0, split, 0, i);
-                            List<String> expanded = createData(split, -1);
-                            for (String ex : expanded) {
-                                if (i == p.length - 1 && ComparatorUtils.equals(ex, notSelectedValueString)) {
-                                    continue;
-                                }
-                                next.put(ex, new JSONObject());
-                            }
-                            next = next.optJSONObject(v);
-                        } else {
-                            next.put(v, next = new JSONObject());
-                        }
-                    } else {
-                        next = t;
-                    }
-                }
+                expandSelectValues(selectedValues, p);
                 if (!result.isEmpty()) {
                     for (String[] arr : result) {
                         buildTree(selectedValues, arr);
                     }
                 }
+            }
+        }
+    }
+
+    private void expandSelectValues(JSONObject selectedValues, String[] p) throws JSONException {
+        JSONObject next = selectedValues;
+        int i;
+
+        for (i = 0; i < p.length; i++) {
+            String v = p[i];
+            JSONObject t = next.optJSONObject(v);
+            if (t == null) {
+                if (next.length() == 0) {
+                    String[] split = new String[i];
+                    System.arraycopy(p, 0, split, 0, i);
+                    List<String> expanded = createData(split, -1);
+                    for (String ex : expanded) {
+                        if (i == p.length - 1 && ComparatorUtils.equals(ex, notSelectedValueString)) {
+                            continue;
+                        }
+                        next.put(ex, new JSONObject());
+                    }
+                    next = next.optJSONObject(v);
+                } else {
+                    next.put(v, next = new JSONObject());
+                }
+            } else {
+                next = t;
             }
         }
     }
@@ -307,7 +310,7 @@ public class GetTreeSelectTreeNodeExecutor extends AbstractTreeNodeExecutor {
         String[] tp = new String[parents.length - 1];
         System.arraycopy(parents, 0, tp, 0, parents.length - 1);
         JSONObject pNode = getNode(selectedValues, tp);
-        if (pNode.has(name)) {
+        if (pNode != null && pNode.has(name)) {
             pNode.remove(name);
             //递归删掉空父节点
             while (tp.length > 0 && pNode.length() == 0) {
@@ -316,7 +319,9 @@ public class GetTreeSelectTreeNodeExecutor extends AbstractTreeNodeExecutor {
                 System.arraycopy(tp, 0, nextP, 0, tp.length - 1);
                 tp = nextP;
                 pNode = getNode(selectedValues, tp);
-                pNode.remove(name);
+                if (pNode != null) {
+                    pNode.remove(name);
+                }
             }
         }
     }

@@ -252,24 +252,26 @@ public class BIDBUtils {
         String query = tableData.getQuery();
         com.fr.data.impl.Connection connection = tableData.getDatabase();
         java.sql.Connection conn = null;
-        try {
-            conn = connection.createConnection();
-            Dialect dialect = DialectFactory.generateDialect(conn, connection.getDriver());
-            ColumnInformation[] columns = com.fr.data.core.db.DBUtils.checkInColumnInformation(conn, dialect, query);
-            for (int i = 0, cols = columns.length; i < cols; i++) {
-                int columnSize = columns[i].getColumnSize();
-                PersistentField column;
-                if (columnSize == 0) {
-                    column = new PersistentField(columns[i].getColumnName(), columns[i].getColumnType(), columns[i].getColumnSize());
-                } else {
-                    column = convert4Scale(columns[i]);
+        if (StringUtils.isNotEmpty(query)) {
+            try {
+                conn = connection.createConnection();
+                Dialect dialect = DialectFactory.generateDialect(conn, connection.getDriver());
+                ColumnInformation[] columns = com.fr.data.core.db.DBUtils.checkInColumnInformation(conn, dialect, query);
+                for (int i = 0, cols = columns.length; i < cols; i++) {
+                    int columnSize = columns[i].getColumnSize();
+                    PersistentField column;
+                    if (columnSize == 0) {
+                        column = new PersistentField(columns[i].getColumnName(), columns[i].getColumnType(), columns[i].getColumnSize());
+                    } else {
+                        column = convert4Scale(columns[i]);
+                    }
+                    table.addColumn(column);
                 }
-                table.addColumn(column);
+            } catch (Exception e) {
+                throw BINonValueUtils.beyondControl(e);
+            } finally {
+                com.fr.data.core.db.DBUtils.closeConnection(conn);
             }
-        } catch (Exception e) {
-            throw BINonValueUtils.beyondControl(e);
-        } finally {
-            com.fr.data.core.db.DBUtils.closeConnection(conn);
         }
         return table;
     }

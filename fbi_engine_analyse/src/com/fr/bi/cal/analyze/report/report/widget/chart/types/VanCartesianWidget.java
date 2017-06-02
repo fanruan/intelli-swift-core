@@ -259,8 +259,13 @@ public abstract class VanCartesianWidget extends VanChartWidget {
             if(axis == null){
                 continue;
             }
-            axis.put("showLabel", cate).put("lineWidth", 0).put("gridLineWidth", 0).put("enableTick", false).put("title", JSONObject.create().put("enabled", false));
+            axis.put("showLabel", showLabelInMiniMode(cate, i)).put("lineWidth", 0).put("gridLineWidth", 0).put("enableTick", false).put("title", JSONObject.create().put("enabled", false));
         }
+    }
+
+    //这个暂时只是为了对比条形柱状图极简模式下，第二个分类轴标签不显示
+    protected boolean showLabelInMiniMode(boolean cate, int index) {
+        return cate;
     }
 
     private void dealImageFillConditions(JSONObject options){
@@ -414,6 +419,7 @@ public abstract class VanCartesianWidget extends VanChartWidget {
         boolean enabled = settings.optBoolean("catShowTitle");
 
         category
+                .put("maxWidth", COMPONENT_MAX_SIZE).put("maxHeight", COMPONENT_MAX_SIZE)
                 .put("type", "category").put("position", "bottom")
                 .put("title", JSONObject.create().put("style", settings.optJSONObject("catTitleStyle")).put("text", enabled ?settings.optString("catTitle") : StringUtils.EMPTY))
                 .put("showLabel", settings.optBoolean("catShowLabel") && !settings.optBoolean("showDataTable"))
@@ -446,6 +452,7 @@ public abstract class VanCartesianWidget extends VanChartWidget {
         boolean enabled = settings.optBoolean("leftYShowTitle");
 
         JSONObject left = JSONObject.create()
+                .put("maxWidth", COMPONENT_MAX_SIZE).put("maxHeight", COMPONENT_MAX_SIZE)
                 .put("type", "value")
                 .put("title", JSONObject.create()
                         .put("style", settings.optJSONObject("leftYTitleStyle"))
@@ -476,6 +483,7 @@ public abstract class VanCartesianWidget extends VanChartWidget {
         boolean enabled = settings.optBoolean("rightYShowTitle");
         JSONObject labelStyle = settings.optJSONObject("rightYLabelStyle");
         JSONObject right = JSONObject.create()
+                .put("maxWidth", COMPONENT_MAX_SIZE).put("maxHeight", COMPONENT_MAX_SIZE)
                 .put("type", "value")
                 .put("title", JSONObject.create()
                         .put("style", settings.optJSONObject("rightYTitleStyle"))
@@ -489,7 +497,7 @@ public abstract class VanCartesianWidget extends VanChartWidget {
                 .put("lineColor", settings.optString("rightYLineColor")).put("lineWidth", 1)
                 .put("position", "right").put("reversed", settings.optBoolean("rightYReverse", false))
                 .put("gridLineWidth", settings.optBoolean("hShowGridLine") ? 1 : 0)
-                .put("gridLineColor", settings.optString("hGridLineColor"));
+                .put("gridLineColor", hasData(BIReportConstant.REGION.TARGET1) ? "" : settings.optString("hGridLineColor"));
 
         if(settings.optBoolean("rightYShowCustomScale")){
             this.putMinMaxInterval(right, settings.optJSONObject("rightYCustomScale"));
@@ -505,6 +513,7 @@ public abstract class VanCartesianWidget extends VanChartWidget {
         boolean enabled = settings.optBoolean("rightY2ShowTitle");
         JSONObject labelStyle = settings.optJSONObject("rightY2LabelStyle");
         JSONObject right2 = JSONObject.create()
+                .put("maxWidth", COMPONENT_MAX_SIZE).put("maxHeight", COMPONENT_MAX_SIZE)
                 .put("type", "value")
                 .put("title", JSONObject.create()
                         .put("style", settings.optJSONObject("rightY2TitleStyle"))
@@ -518,7 +527,7 @@ public abstract class VanCartesianWidget extends VanChartWidget {
                 .put("lineColor", settings.optString("rightY2LineColor")).put("lineWidth", 1)
                 .put("position", "right").put("reversed", settings.optBoolean("rightY2Reverse", false))
                 .put("gridLineWidth", settings.optBoolean("hShowGridLine") ? 1 : 0)
-                .put("gridLineColor", settings.optString("hGridLineColor"));
+                .put("gridLineColor", (hasData(BIReportConstant.REGION.TARGET1) ||  hasData(BIReportConstant.REGION.TARGET2)) ? "" : settings.optString("hGridLineColor"));
 
         if(settings.optBoolean("rightY2ShowCustomScale")){
             this.putMinMaxInterval(right2, settings.optJSONObject("rightY2CustomScale"));
@@ -527,6 +536,22 @@ public abstract class VanCartesianWidget extends VanChartWidget {
         right2.put("plotLines", this.parsePlotLines(BIReportConstant.REGION.TARGET2));
 
         return right2;
+    }
+
+    private boolean hasData(String regionID) {
+        JSONArray dIDs = this.getDimensionIDArray(regionID);
+
+        for(int i = 0, len = dIDs.length(); i < len; i++){
+            try {
+                BISummaryTarget dimension = this.getBITargetByID(dIDs.optString(i));
+                if(dimension.isUsed()) {
+                    return true;
+                }
+            }catch (Exception ex){
+                BILoggerFactory.getLogger().error(ex.getMessage(), ex);
+            }
+        }
+        return false;
     }
 
     private JSONArray parsePlotLines(String regionID){
@@ -566,6 +591,10 @@ public abstract class VanCartesianWidget extends VanChartWidget {
     }
 
     private void putMinMaxInterval(JSONObject axis, JSONObject scale) throws JSONException{
+
+        if(scale == null){
+            return;
+        }
 
         String min = StringUtils.EMPTY, max = StringUtils.EMPTY, interval = StringUtils.EMPTY;
         if(scale.has("minScale")) {
@@ -662,5 +691,23 @@ public abstract class VanCartesianWidget extends VanChartWidget {
         }
 
         return series;
+    }
+
+    protected JSONObject getSeriesAccumulationItem(String seriesName){
+        BIDimension seriesDim = this.getSeriesDimension();
+
+        if(seriesDim != null && seriesDim.getChartSetting().hasSeriesAccumulation()){
+            JSONArray items = seriesDim.getChartSetting().getSeriesAccumulation();
+            for(int i = 0, count = items.length(); i < count; i++){
+                JSONObject obj = items.optJSONObject(i);
+                JSONArray objItems = obj.optJSONArray("items");
+                for(int j = objItems.length() - 1; j >=0; j--){
+                    if(ComparatorUtils.equals(objItems.optString(j), seriesName)){
+                        return obj;
+                    }
+                }
+            }
+        }
+        return null;
     }
 }
