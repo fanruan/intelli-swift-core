@@ -2,25 +2,22 @@ package com.fr.bi.cal;
 
 import com.finebi.cube.common.log.BILogger;
 import com.finebi.cube.common.log.BILoggerFactory;
-import com.finebi.cube.conf.BICubeManagerProvider;
-import com.finebi.cube.conf.CubeBuildStuff;
-import com.finebi.cube.conf.CubeGenerationManager;
+import com.finebi.cube.conf.*;
 import com.finebi.cube.impl.conf.CubeBuildStuffComplete;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.cal.generate.BuildCubeTask;
-import com.fr.bi.cal.generate.CustomTableTask;
 import com.fr.bi.cal.generate.CustomTaskBuilder;
-import com.fr.bi.cal.generate.queue.CustomTaskQueue;
-import com.fr.bi.cal.utils.Collection2StringUtils;
-import com.fr.bi.cal.utils.Single2CollectionUtils;
+import com.fr.bi.cal.generate.queue.CubeGenerateTaskQueue;
+import com.fr.bi.cal.generate.task.AllCubeGenerateTask;
+import com.fr.bi.cal.generate.task.SingleCubeGenerateTask;
 import com.fr.bi.conf.provider.BIConfigureManagerCenter;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.constant.Status;
 import com.fr.bi.stable.engine.CubeTask;
+import com.fr.bi.stable.structure.queue.CubeTaskCondition;
 import com.fr.bi.stable.utils.program.BIConstructorUtils;
 import com.fr.general.GeneralContext;
 import com.fr.stable.EnvChangedListener;
-import com.fr.stable.StringUtils;
 
 import java.util.*;
 import java.util.Map.Entry;
@@ -39,69 +36,19 @@ public class BICubeManager implements BICubeManagerProvider {
         this.userMap = userMap;
     }
 
-    private CustomTableTask taskInfo;
+    private ICubeGenerateTask cubeGenerateTask;
 
-    private CustomTaskBuilder customTaskBuilder = new CustomTaskBuilder();
-
-    private boolean isSingleTableCubeBuilding = false;
-    private boolean isAllCubeBuilding = false;
+    private boolean isCubeBuilding = false;
 
     private Object object = new Object();
 
-    private int retryTimes = 100;
-
-    private int delayTimes = 5000;
+    private CubeGenerateTaskQueue cubeGenerateTaskQueue = new CubeGenerateTaskQueue();
 
     private static BILogger LOGGER = BILoggerFactory.getLogger(BICubeManager.class);
 
     public BICubeManager() {
-        Thread taskAddThread = new Thread(
-                new Runnable() {
-                    @Override
-                    public void run() {
-                        while (true) {
-                            try {
-                                taskInfo = CustomTaskQueue.getInstance().take();
-                                startSingleTableBuilding(taskInfo.getUserId());
-                                LOGGER.info("Update table ID:" + taskInfo.baseTableSourceIdToString());
-                                int times = 0;
-                                for (int i = 0; i < retryTimes; i++) {
-                                    if (!hasTask()) {
-                                        List<CubeBuildStuff> cubeBuildStuffList = customTaskBuilder.CubeBuildCustomTables(taskInfo.getUserId(), taskInfo.getBaseTableSourceIdList(), taskInfo.getUpdateTypeList());
-                                        for (CubeBuildStuff cubeBuildStuff : cubeBuildStuffList) {
-                                            addTask(new BuildCubeTask(new BIUser(taskInfo.getUserId()), cubeBuildStuff), taskInfo.getUserId());
-                                        }
-                                        finishSingleTableBuilding(taskInfo.getUserId());
-                                        break;
-                                    }
-                                    long timeDelay = i * delayTimes;
-                                    LOGGER.info("Cube is generating, wait to add SingleTable Cube Task until finished, retry times : " + i);
-                                    LOGGER.info("the SingleTable SourceId is: " + taskInfo.baseTableSourceIdToString());
-                                    try {
-                                        Thread.sleep(timeDelay);
-                                    } catch (InterruptedException e) {
-                                        LOGGER.error(e.getMessage(), e);
-                                    }
-                                    times++;
-                                }
-                                if (times == retryTimes) {
-                                    LOGGER.info("up to add SingleTable Cube Task retry times, Please add SingleTable Task again");
-                                    LOGGER.info("the SingleTable SourceId is: " + taskInfo.baseTableSourceIdToString());
-                                    finishSingleTableBuilding(taskInfo.getUserId());
-                                }
-                            } catch (Exception e) {
-                                finishSingleTableBuilding(taskInfo.getUserId());
-                                LOGGER.error(e.getMessage(), e);
-                            } finally {
-                                synchronized (object) {
-                                    taskInfo = null;
-                                }
-                            }
-                        }
-                    }
-                }
-        );
-        taskAddThread.start();
+        CubeBuildRunnable cubeBuildRunnable = new CubeBuildRunnable();
+        new Thread(cubeBuildRunnable).start();
     }
 
     public SingleUserCubeManager getCubeManager(long userId) {
@@ -116,7 +63,6 @@ public class BICubeManager implements BICubeManagerProvider {
             }
         });
     }
-
 
     @Override
     public CubeBuildStuffComplete getGeneratingObject(long userId) {
@@ -241,16 +187,7 @@ public class BICubeManager implements BICubeManagerProvider {
     @Override
     public boolean cubeTaskBuild(long userId, String baseTableSourceId, int updateType) {
         try {
-            boolean result = true;
-            if (StringUtils.isEmpty(baseTableSourceId)) {
-                CubeTask cubeTask = this.buildStaff(userId);
-                if (cubeTask != null) {
-                    result = addTask(cubeTask, userId);
-                }
-            } else {
-                addCustomTableTask2Queue(userId, Single2CollectionUtils.toList(baseTableSourceId),
-                        Single2CollectionUtils.toList(updateType));
-            }
+            boolean result = addCubeGenerateTask2Queue(userId, baseTableSourceId, updateType, false);
             BIConfigureManagerCenter.getCubeConfManager().updatePackageLastModify();
             BIConfigureManagerCenter.getCubeConfManager().updateMultiPathLastCubeStatus(BIReportConstant.MULTI_PATH_STATUS.NOT_NEED_GENERATE_CUBE);
             BIConfigureManagerCenter.getCubeConfManager().persistData(userId);
@@ -276,75 +213,17 @@ public class BICubeManager implements BICubeManagerProvider {
 
     @Override
     public boolean isCubeBuilding() {
-        return CustomTaskQueue.getInstance().getSize() > 0 || isSingleTableCubeBuilding || isAllCubeBuilding;
+        return cubeGenerateTaskQueue.getSize() > 0 || isCubeBuilding;
     }
 
-    @Override
-    public synchronized void addCustomTableTask2Queue(long userId, List<String> baseTableSourceIds, List<Integer> updateTypes)
-            throws InterruptedException {
-        if (baseTableSourceIds.isEmpty() || updateTypes.isEmpty() || baseTableSourceIds.size() != updateTypes.size()) {
-            LOGGER.error("Add single table task to queue failed");
-            return;
-        }
-        LOGGER.info("Add single table task to queue:"
-                + Collection2StringUtils.collection2String(baseTableSourceIds));
-        if (CustomTaskQueue.getInstance().isEmpty()) {
-            CustomTaskQueue.getInstance().put(new CustomTableTask(userId, baseTableSourceIds, updateTypes));
-            LOGGER.info("TaskQueue is empty ! Add single table task: "
-                    + Collection2StringUtils.collection2String(baseTableSourceIds) +
-                    " , updateType : " + Collection2StringUtils.collection2String(updateTypes));
-        } else {
-            CustomTableTask task = CustomTaskQueue.getInstance().poll();
-            if (task != null) {
-                CustomTaskQueue.getInstance().put(task.taskMerge(userId, baseTableSourceIds, updateTypes));
-                LOGGER.info("TaskQueue is not empty!Merge single table task: "
-                        + Collection2StringUtils.collection2String(baseTableSourceIds)
-                        + " , updateType : " + Collection2StringUtils.collection2String(updateTypes)
-                        + " to:" + task.baseTableSourceIdToString());
-            } else {
-                CustomTaskQueue.getInstance().put(new CustomTableTask(userId, baseTableSourceIds, updateTypes));
-                LOGGER.info("TaskQueue is empty!Add single table task: "
-                        + Collection2StringUtils.collection2String(baseTableSourceIds)
-                        + " , updateType : " + Collection2StringUtils.collection2String(updateTypes));
-
-            }
-        }
-    }
-
-    @Override
-    public CubeTask buildCompleteStuff(long userId) {
-        startAllCubeBuilding(userId);
-        CubeTask cubeTask = customTaskBuilder.buildCompleteStuff(userId);
-        finishAllCubeBuilding(userId);
-        return cubeTask;
-    }
-
-    @Override
-    public CubeTask buildStaff(long userId) {
-        startAllCubeBuilding(userId);
-        CubeTask cubeTask = customTaskBuilder.buildStaff(userId);
-        finishAllCubeBuilding(userId);
-        return cubeTask;
-    }
-
-    private void startAllCubeBuilding(long userId) {
+    private void startCubeBuilding(long userId) {
         BIConfigureManagerCenter.getLogManager().logAllCubeBuildingStatus(userId, true);
-        isAllCubeBuilding = true;
+        isCubeBuilding = true;
     }
 
-    private void finishAllCubeBuilding(long userId) {
+    private void finishCubeBuilding(long userId) {
         BIConfigureManagerCenter.getLogManager().logAllCubeBuildingStatus(userId, false);
-        isAllCubeBuilding = false;
-    }
-
-    private void startSingleTableBuilding(long userId) {
-        BIConfigureManagerCenter.getLogManager().logSingleTableBuildingStatus(userId, true);
-        isSingleTableCubeBuilding = true;
-    }
-
-    private void finishSingleTableBuilding(long userId) {
-        BIConfigureManagerCenter.getLogManager().logSingleTableBuildingStatus(userId, false);
-        isSingleTableCubeBuilding = false;
+        isCubeBuilding = false;
     }
 
     /**
@@ -357,27 +236,119 @@ public class BICubeManager implements BICubeManagerProvider {
     public Set<String> getAllCubeWaiting2GenerateTableSouceIds(long userId) {
         Set<String> tableSourceIdSet = new HashSet<String>();
         tableSourceIdSet.addAll(getCubeWaiting2GenerateTableSourceIds(userId));
-        Iterator<CustomTableTask> taskIterator = CustomTaskQueue.getInstance().getQueue().iterator();
-        while (taskIterator.hasNext()) {
-            CustomTableTask task = taskIterator.next();
-            tableSourceIdSet.addAll(task.getBaseTableSourceIdList());
-        }
+        tableSourceIdSet.addAll(cubeGenerateTaskQueue.getTableSourceIds());
+
         synchronized (object) {
-            if (taskInfo != null) {
-                tableSourceIdSet.addAll(taskInfo.getBaseTableSourceIdList());
+            if (cubeGenerateTask != null) {
+                tableSourceIdSet.add(cubeGenerateTask.getTableSourceId());
             }
         }
         return tableSourceIdSet;
     }
 
+
     @Override
-    public List<CubeBuildStuff> buildCustomTable(long userId, List<String> baseTableSourceIds, List<Integer> updateTypes) {
-        return customTaskBuilder.buildCustomTable(userId, baseTableSourceIds, updateTypes);
+    public synchronized boolean addCubeGenerateTask2Queue(long userId, String baseTableSourceId, Integer updateType, boolean isTimedTask) {
+        try {
+            //todo  判断添加的任务是否重复。
+            BILoggerFactory.getLogger(BICubeManager.class).info("Add CubeGenerateTask to taskqueue!" + (isTimedTask ? "(TimedTask)" : "(ManualTask)"));
+            ICubeGenerateTask cubeGenerateTask;
+            if (baseTableSourceId != null) {
+                cubeGenerateTask = new SingleCubeGenerateTask(baseTableSourceId, updateType, userId);
+                cubeGenerateTaskQueue.put(cubeGenerateTask);
+            } else {
+                if (isTimedTask) {
+                    cubeGenerateTask = new AllCubeGenerateTask(userId);
+                    cubeGenerateTaskQueue.put(cubeGenerateTask);
+                } else {
+                    cubeGenerateTask = CustomTaskBuilder.getCubeGenerateTask(userId);
+                    cubeGenerateTaskQueue.put(cubeGenerateTask);
+                }
+            }
+            BILoggerFactory.getLogger(BICubeManager.class).info(cubeGenerateTask.getTaskInfo());
+//            CubeGenerateTaskQueue.getInstance().showTasks();
+        } catch (Exception e) {
+            BILoggerFactory.getLogger(BICubeManager.class).error("CubeGenerateTask:" +
+                    ((baseTableSourceId != null) ? baseTableSourceId : "All") + " add to task queue failed！", e);
+            return false;
+        }
+        return true;
+
+    }
+
+    private class CubeBuildRunnable implements Runnable {
+        @Override
+        public void run() {
+            while (true) {
+                try {
+                    if (hasTask()) {
+                        CubeTaskCondition.getInstance().await();
+                    }
+                    cubeGenerateTask = cubeGenerateTaskQueue.take();
+                    //合并
+                    cubeGenerateTask = mergeTaskIfNeed(cubeGenerateTask);
+                    long userId = cubeGenerateTask.getUserId();
+                    startCubeBuilding(userId);
+                    ITaskCalculator taskCalculator = cubeGenerateTask.getTaskCalculator();
+                    CubeBuildStuff cubeBuildStuff = taskCalculator.generateCubeBuildStuff();
+                    CubeTask cubeTask = new BuildCubeTask(new BIUser(userId), cubeBuildStuff);
+                    addTask(cubeTask, userId);
+
+                    finishCubeBuilding(userId);
+                } catch (Exception e) {
+                    BILoggerFactory.getLogger(BICubeManager.class).error(e.getMessage(), e);
+                } finally {
+                    synchronized (object) {
+                        cubeGenerateTask = null;
+                    }
+                }
+            }
+        }
+
+        /**
+         * 当前任务是全局、单表、自定义更新任务时，则往后取任务，如果取出的不是check和empty，则合并，直到下一个任务是check和empty。
+         * 当前任务是check和empty时，不合并。
+         *
+         * @param mainCubeGenerateTask
+         */
+        private ICubeGenerateTask mergeTaskIfNeed(ICubeGenerateTask mainCubeGenerateTask) throws InterruptedException {
+            BILoggerFactory.getLogger(BICubeManager.class).info("=============Begin to merge task!============");
+            BILoggerFactory.getLogger(BICubeManager.class).info("mainCubeGenerateTask:" + mainCubeGenerateTask.getTaskInfo());
+            if (mainCubeGenerateTask.isOk2Merge()) {
+                while (cubeGenerateTaskQueue.peek() != null) {
+                    ICubeGenerateTask nextCubeGenerateTask = cubeGenerateTaskQueue.peek();
+                    BILoggerFactory.getLogger(BICubeManager.class).info("nextCubeGenerateTask:" + nextCubeGenerateTask.getTaskInfo());
+                    if (nextCubeGenerateTask.isOk2Merge()) {
+                        mainCubeGenerateTask = mainCubeGenerateTask.merge(nextCubeGenerateTask);
+                        cubeGenerateTaskQueue.poll();
+                        continue;
+                    }
+                    break;
+                }
+            }
+            BILoggerFactory.getLogger(BICubeManager.class).info("=============Task merge end!============");
+            return mainCubeGenerateTask;
+        }
     }
 
     @Override
     public CubeTask getUpdatingTask(long userId) {
         SingleUserCubeManager singleUserCubeManager = getCubeManager(userId);
         return singleUserCubeManager.getUpdatingTask();
+    }
+
+    public List<ICubeGenerateTask> getCubeGenerateTasks() {
+        return cubeGenerateTaskQueue.getCubeGenerateTasks();
+    }
+
+    public boolean removeCubeGenerateTask(ICubeGenerateTask task) {
+        return cubeGenerateTaskQueue.remove(task);
+    }
+
+    public boolean removeCubeGenerateTask(List<ICubeGenerateTask> tasks) {
+        for (ICubeGenerateTask task : tasks) {
+            cubeGenerateTaskQueue.remove(task);
+        }
+        return true;
     }
 }

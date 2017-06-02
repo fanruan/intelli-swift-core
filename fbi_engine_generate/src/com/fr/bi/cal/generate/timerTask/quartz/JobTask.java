@@ -5,9 +5,7 @@ import com.finebi.cube.conf.BICubeConfigureCenter;
 import com.finebi.cube.conf.CubeGenerationManager;
 import com.finebi.cube.conf.table.BusinessTable;
 import com.fr.bi.base.BICore;
-import com.fr.bi.cal.utils.Single2CollectionUtils;
 import com.fr.bi.stable.constant.DBConstant;
-import com.fr.bi.stable.engine.CubeTask;
 import com.fr.general.ComparatorUtils;
 import com.fr.third.org.quartz.Job;
 import com.fr.third.org.quartz.JobDataMap;
@@ -32,16 +30,10 @@ public class JobTask implements Job {
         String tableKey = data.getString("tableKey");
         int updateType = data.getInt("updateType");
         if (ComparatorUtils.equals(tableKey, DBConstant.CUBE_UPDATE_TYPE.GLOBAL_UPDATE)) {
-            CubeTask cubeTask = CubeGenerationManager.getCubeManager().buildCompleteStuff(userId);
-            CubeGenerationManager.getCubeManager().addTask(cubeTask, userId);
+            CubeGenerationManager.getCubeManager().addCubeGenerateTask2Queue(userId, null, null, true);
         } else {
             if (isTableUsed(userId, tableKey)) {
-                try {
-                    CubeGenerationManager.getCubeManager().addCustomTableTask2Queue(userId, Single2CollectionUtils.toList(tableKey),
-                            Single2CollectionUtils.toList(updateType));
-                } catch (InterruptedException e) {
-                    BILoggerFactory.getLogger(this.getClass()).error("addSingleTableTask failure " + e.getMessage(), e);
-                }
+                CubeGenerationManager.getCubeManager().addCubeGenerateTask2Queue(userId, tableKey, updateType, true);
             } else {
                 BILoggerFactory.getLogger(this.getClass()).warn("the table " + tableKey + " is not existed. Timer task canceled");
             }
