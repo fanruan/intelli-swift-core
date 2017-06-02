@@ -413,7 +413,7 @@ public abstract class BISummaryWidget extends AbstractBIWidget {
 
         JSONObject srcJo = dims.getJSONObject(BIJSONConstant.JSON_KEYS.STATISTIC_ELEMENT);
         if (primaryTableId != null && foreignTableId != null) {
-            if (ComparatorUtils.equals(BIModuleUtils.getBusinessTableById(new BITableID(primaryTableId)), BIModuleUtils.getBusinessTableById(new BITableID(foreignTableId)))) {
+            if (ComparatorUtils.equals(BIModuleUtils.getAnalysisBusinessTableById(new BITableID(primaryTableId)), BIModuleUtils.getAnalysisBusinessTableById(new BITableID(foreignTableId)))) {
                 relationMap.put(targetId, relationList);
             } else {
                 for (int j = 0; j < targetRelationsJa.length(); j++) {
