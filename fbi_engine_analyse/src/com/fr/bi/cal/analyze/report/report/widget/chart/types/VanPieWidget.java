@@ -36,7 +36,7 @@ public class VanPieWidget extends VanChartWidget{
 
         int type = settings.optInt("pieChartType");
 
-        plotOptions.put("innerRadius", settings.optInt("innerRadius"));
+        plotOptions.put("innerRadius", settings.optInt("innerRadius") + "%");
         plotOptions.put("endAngle", settings.optInt("totalAngle"));
         plotOptions.put("roseType", type == NORMAL ? StringUtils.EMPTY : (type == EQUAL_ARC_ROSE ? "sameArc":"differentArc"));
 
