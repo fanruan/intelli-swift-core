@@ -313,6 +313,7 @@ public class GetSearchTreeNodeExecutor extends AbstractTreeNodeExecutor {
                     JSONObject obj = new JSONObject();
                     obj.put("id", id);
                     obj.put("pId", pId);
+                    obj.put("value", name);
                     obj.put("text", name);
                     obj.put("title", title);
                     obj.put("isParent", isParent);
