@@ -3,6 +3,7 @@ package com.fr.bi.etl.analysis.manager;
 import com.finebi.cube.common.log.BILogger;
 import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.conf.BISystemDataManager;
+import com.finebi.cube.conf.field.BusinessField;
 import com.finebi.cube.conf.pack.data.BIBusinessPackage;
 import com.finebi.cube.conf.pack.data.BIGroupTagName;
 import com.finebi.cube.conf.pack.data.BIPackageID;
@@ -25,6 +26,7 @@ import com.fr.bi.etl.analysis.Constants;
 import com.fr.bi.etl.analysis.conf.AnalysisBusiTable;
 import com.fr.bi.etl.analysis.data.AnalysisCubeTableSource;
 import com.fr.bi.etl.analysis.data.AnalysisETLSourceFactory;
+import com.fr.bi.exception.BIFieldAbsentException;
 import com.fr.bi.exception.BIKeyAbsentException;
 import com.fr.bi.exception.BIKeyDuplicateException;
 import com.fr.bi.stable.data.BITableID;
@@ -374,6 +376,11 @@ public class AnalysisBusiPackManager extends BISystemDataManager<SingleUserAnaly
         return null;
     }
 
+    @Override
+    public BusinessField getAnalysisFieldByFieldId(long userId, String fieldId) throws BIFieldAbsentException {
+        return null;
+    }
+
 
     @Override
     public void parseSinglePackageJSON(long userId, BIPackageID packageId, JSONArray tableIdsJA, JSONObject usedFieldsJO, JSONObject tableDataJO) throws Exception {
@@ -382,6 +389,11 @@ public class AnalysisBusiPackManager extends BISystemDataManager<SingleUserAnaly
 
     @Override
     public void packageAddTableSource(long userId, BIPackageID packageId, String tableId, CubeTableSource source, boolean enSureFields) throws BIKeyDuplicateException, BIPackageAbsentException, BITableAbsentException {
+
+    }
+
+    @Override
+    public void initialAnalysisResourceMap(long userId) {
 
     }
 

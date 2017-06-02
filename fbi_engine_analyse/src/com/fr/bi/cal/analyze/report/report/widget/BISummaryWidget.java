@@ -172,8 +172,8 @@ public abstract class BISummaryWidget extends AbstractBIWidget {
 
     private String logRelation(BITableRelation relation) {
         try {
-            CubeTableSource primaryTableSource = BusinessTableHelper.getBusinessTable(relation.getPrimaryTable().getID()).getTableSource();
-            CubeTableSource foreignTableSource = BusinessTableHelper.getBusinessTable(relation.getForeignTable().getID()).getTableSource();
+            CubeTableSource primaryTableSource = BusinessTableHelper.getAnalysisBusinessTable(relation.getPrimaryTable().getID()).getTableSource();
+            CubeTableSource foreignTableSource = BusinessTableHelper.getAnalysisBusinessTable(relation.getForeignTable().getID()).getTableSource();
             return BIStringUtils.append(
                     " Primary Table:" + primaryTableSource.getTableName() + " " + primaryTableSource.getSourceID(),
                     ",primary field :" + relation.getPrimaryField().getFieldName(),
