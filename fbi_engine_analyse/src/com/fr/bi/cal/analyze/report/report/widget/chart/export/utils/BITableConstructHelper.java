@@ -40,12 +40,12 @@ public class BITableConstructHelper {
         if (data.getItems().size() != 0) {
             if (isDetail) {
                 for (int i = 0; i < data.getItems().size(); i++) {
-                    ITableItem item=data.getItems().get(i);
-                    setText(operations, item);
+                    ITableItem item = data.getItems().get(i);
+                    formatText(operations, item);
                     item.setStyles(SummaryTableStyleHelper.getBodyStyles(style.getThemeColor(), style.getTableStyleGroup(), i));
                     for (ITableItem child : item.getChildren()) {
                         child.setStyles(SummaryTableStyleHelper.getBodyStyles(style.getThemeColor(), style.getTableStyleGroup(), i));
-                        setText(operations, child);
+                        formatText(operations, child);
                     }
                 }
             }
@@ -71,10 +71,12 @@ public class BITableConstructHelper {
             if (item.getChildren() != null) {
                 traversalItems(item.getChildren(), ops, layerIndex + 1, rowIndex, style);
             }
-            setText(ops, item);
+            formatText(ops, item);
+            setTextStyle(ops, item);
             if (item.getValues() != null) {
                 for (ITableItem it : item.getValues()) {
-                    setText(ops, it);
+                    formatText(ops, it);
+                    setTextStyle(ops, it);
                 }
                 if (item.getChildren() != null) {
                     for (ITableItem it : item.getValues()) {
@@ -99,17 +101,23 @@ public class BITableConstructHelper {
         }
         if (item.getValues() != null) {
             for (ITableItem it : item.getValues()) {
-                setText(ops, it);
+                formatText(ops, it);
             }
         }
-        setText(ops, item);
+        formatText(ops, item);
     }
 
-    private static void setText(Map<String, ITableCellFormatOperation> ops, ITableItem it) throws Exception {
+    private static void formatText(Map<String, ITableCellFormatOperation> ops, ITableItem it) throws Exception {
         if (null != ops.get(it.getDId())) {
-            it.setText(ops.get(it.getDId()).formatValues(it.getValue()));
+            it.setText(ops.get(it.getDId()).formatTextValues(it.getValue()));
         } else {
             it.setText(it.getValue());
+        }
+    }
+
+    private static void setTextStyle(Map<String, ITableCellFormatOperation> ops, ITableItem it) throws Exception {
+        if (null != ops.get(it.getDId())) {
+            it.setTextStyles(ops.get(it.getDId()).createTextStyle(it.getValue()));
         }
     }
 }

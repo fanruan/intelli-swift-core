@@ -2,8 +2,10 @@ package com.fr.bi.cal.analyze.report.report.widget.chart.export.format.utils;
 
 import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.stable.constant.BIReportConstant;
+import com.fr.bi.stable.constant.BIStyleConstant;
 import com.fr.bi.stable.utils.program.BIStringUtils;
 import com.fr.general.Inter;
+import com.fr.json.JSONArray;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
 import com.fr.stable.StableUtils;
@@ -259,4 +261,44 @@ public class BITableCellFormatHelper {
 
         return unit;
     }
+
+    public static JSONObject createTextStyle(JSONObject settings, String text) throws JSONException {
+        if (StringUtils.isEmpty(text)) {
+            return new JSONObject();
+        }
+        Float num;
+        try {
+            num = Float.valueOf(text);
+        } catch (NumberFormatException e) {
+            return new JSONObject();
+        }
+        String markResult = getTextCompareResult(settings, num);
+        int iconStyle = settings.getInt("iconStyle");
+        String textColor = getTextColor(settings, num);
+        return new JSONObject().put("markResult", markResult).put("iconStyle", iconStyle).put("color", textColor);
+    }
+
+    private static String getTextCompareResult(JSONObject settings, Float num) throws JSONException {
+        if (!settings.has("mark") || num < settings.getInt("mark")) {
+            return BIStyleConstant.ARROW_DIRECTION.DOWN;
+        } else {
+            return num == settings.getLong("mark") ? BIStyleConstant.ARROW_DIRECTION.MIDDLE : BIStyleConstant.ARROW_DIRECTION.UP;
+        }
+    }
+
+    private static String getTextColor(JSONObject settings, Float num) throws JSONException {
+        JSONArray conditions = settings.getJSONArray("conditions");
+        for (int i = 0; i < conditions.length(); i++) {
+            JSONObject range = conditions.getJSONObject(i).getJSONObject("range");
+            long min = range.getLong("min");
+            long max = range.getLong("max");
+            boolean minBoolean = range.optBoolean("closemin", false) ? num >= min : num > min;
+            boolean maxBoolean = range.optBoolean("closemax", false) ? num <= max : num < max;
+            if (minBoolean && maxBoolean) {
+                return conditions.getJSONObject(i).getString("color");
+            }
+        }
+        return "";
+    }
+
 }

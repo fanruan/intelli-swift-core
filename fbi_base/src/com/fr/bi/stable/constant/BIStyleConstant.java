@@ -53,5 +53,12 @@ public class BIStyleConstant {
     public static final int DASHBOARD_WIDGET_NAME_POS_LEFT = 20;      //标题位置居左
     public static final int DASHBOARD_WIDGET_NAME_POS_CENTER = 21;     //标题位置居右
 
-
+    /*
+    * 标记箭头方向
+    * */
+    public static final class ARROW_DIRECTION {
+        public static final String UP = "up";
+        public static final String MIDDLE = "middle";
+        public static final String DOWN = "down";
+    }
 }
