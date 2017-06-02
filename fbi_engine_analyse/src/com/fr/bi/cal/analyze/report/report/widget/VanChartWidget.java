@@ -2,7 +2,6 @@ package com.fr.bi.cal.analyze.report.report.widget;
 
 import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.base.FRContext;
-import com.fr.bi.cal.analyze.session.BISession;
 import com.fr.bi.conf.report.WidgetType;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.conf.session.BISessionProvider;
@@ -11,7 +10,6 @@ import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.stable.constant.BIChartSettingConstant;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.constant.BIStyleConstant;
-import com.fr.bi.tool.BIReadReportUtils;
 import com.fr.bi.util.BIConfUtils;
 import com.fr.general.ComparatorUtils;
 import com.fr.general.Inter;
@@ -51,6 +49,8 @@ public abstract class VanChartWidget extends TableWidget {
     public static final String NAME = "${NAME}";
     public static final String DESCRIPTION = "${DESCRIPTION}";
     public static final String ARRIVALRATE = "${ARRIVALRATE}";
+
+    protected static final String COMPONENT_MAX_SIZE = "30%";
 
     public static final String LONG_DATE = "longDate";
 
@@ -143,7 +143,22 @@ public abstract class VanChartWidget extends TableWidget {
 
         this.formatSeriesDataLabelFormat(options);
 
+        options.put("tools", toolsJSON());
+
         return options;
+    }
+
+    private JSONObject toolsJSON() throws JSONException {
+        return JSONObject.create()
+                .put("hidden", false)
+                .put("toImage", falseEnabledJSONObject())
+                .put("sort", falseEnabledJSONObject())
+                .put("fullScreen",falseEnabledJSONObject())
+                .put("refresh", falseEnabledJSONObject());
+    }
+
+    private JSONObject falseEnabledJSONObject() throws JSONException {
+        return JSONObject.create().put("enabled", false);
     }
 
     protected void toLegendJSON(JSONObject options, JSONObject settings) throws JSONException{
@@ -665,7 +680,7 @@ public abstract class VanChartWidget extends TableWidget {
                 labels.optJSONObject("formatter")
                         .put("valueFormat", this.dataLabelValueFormat(this.getSerBITarget(ser)))
                         .put("percentFormat", "function(){return BI.contentFormat(arguments[0], \"#.##%\")}")
-                        .put("arrivalrateFormat", "function(){return BI.contentFormat(arguments[0], \"#.##%\")}");
+                        .put("arrivalRateFormat", "function(){return BI.contentFormat(arguments[0], \"#.##%\")}");
 
 
                 ser.put(dataLabelsKey(), labels);
@@ -987,6 +1002,8 @@ public abstract class VanChartWidget extends TableWidget {
         }
 
         return JSONObject.create()
+                .put("maxHeight", COMPONENT_MAX_SIZE)
+                .put("maxWidth", COMPONENT_MAX_SIZE)
                 .put("enabled", legend >= BIChartSettingConstant.CHART_LEGENDS.TOP)
                 .put("position", position)
                 .put("style", settings.optJSONObject("legendStyle"));
