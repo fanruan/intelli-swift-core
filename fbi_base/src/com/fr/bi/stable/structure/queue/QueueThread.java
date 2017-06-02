@@ -1,9 +1,9 @@
 package com.fr.bi.stable.structure.queue;
 
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.common.inter.BrokenTraversal;
 import com.fr.bi.common.inter.Traversal;
 import com.fr.bi.stable.structure.thread.BIThread;
-import com.finebi.cube.common.log.BILoggerFactory;
 
 import java.util.Iterator;
 import java.util.Queue;
@@ -166,10 +166,10 @@ public class QueueThread<T> implements BIQueue<T>, BIThread {
                         BILoggerFactory.getLogger().error(e.getMessage(), e);
                     }
                 }
-
                 generatorQueue.poll();
                 generated = generating;
                 generating = null;
+                CubeTaskCondition.getInstance().signalAll();
             }
         }
     }
