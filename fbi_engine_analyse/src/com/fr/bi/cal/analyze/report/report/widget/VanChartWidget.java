@@ -665,7 +665,7 @@ public abstract class VanChartWidget extends TableWidget {
                 labels.optJSONObject("formatter")
                         .put("valueFormat", this.dataLabelValueFormat(this.getSerBITarget(ser)))
                         .put("percentFormat", "function(){return BI.contentFormat(arguments[0], \"#.##%\")}")
-                        .put("arrivalrateFormat", "function(){return BI.contentFormat(arguments[0], \"#.##%\")}");
+                        .put("arrivalRateFormat", "function(){return BI.contentFormat(arguments[0], \"#.##%\")}");
 
 
                 ser.put(dataLabelsKey(), labels);
