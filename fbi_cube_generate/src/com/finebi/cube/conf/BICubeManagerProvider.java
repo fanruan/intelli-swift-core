@@ -76,16 +76,22 @@ public interface BICubeManagerProvider {
 
     boolean isCubeBuilding();
 
-    void addCustomTableTask2Queue(long userId, List<String> baseTableSourceIds,
-                                  List<Integer> updateTypes) throws InterruptedException;
-
-    CubeTask buildCompleteStuff(long userId);
-
-    CubeTask buildStaff(long userId);
-
     Set<String> getAllCubeWaiting2GenerateTableSouceIds(long userId);
 
-    List<CubeBuildStuff> buildCustomTable(long userId, List<String> baseTableSourceIds, List<Integer> updateTypes);
-
     CubeTask getUpdatingTask(long userId);
+
+    /**
+     * @param userId
+     * @param baseTableSourceId
+     * @param updateType
+     * @param isTimedTask       是否定时更新触发的任务
+     * @return
+     */
+    boolean addCubeGenerateTask2Queue(long userId, String baseTableSourceId, Integer updateType, boolean isTimedTask);
+
+    List<ICubeGenerateTask> getCubeGenerateTasks();
+
+    boolean removeCubeGenerateTask(ICubeGenerateTask task);
+
+    boolean removeCubeGenerateTask(List<ICubeGenerateTask> tasks);
 }

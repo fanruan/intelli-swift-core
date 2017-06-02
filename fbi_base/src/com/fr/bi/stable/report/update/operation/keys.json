@@ -69,6 +69,9 @@
   "cordonName": "警戒线颜色(cordon_name)",
   "cordonValue": "警戒线值(cordon_value)",
   "cordonNumberLevel": "警戒线数量级(cordon_number_level)",
-  "cordonColor": "警戒线颜色(cordon_color)"
+  "cordonColor": "警戒线颜色(cordon_color)",
 
+  "miniMode": "极简模式(minimalistModel)",
+  "styleRadio":"地图配色(auto_custom)",
+  "mapStyles":"地图样式配置(map_styles)"
 }

@@ -294,7 +294,7 @@ public class TreeWidget extends AbstractBIWidget {
     private void setTargetTable() {
         if (dimensions.length > 0) {
             BITableID targetTableID = dimensions[0].createTableKey().getID();
-            target = BIModuleUtils.getBusinessTableById(targetTableID);
+            target = BIModuleUtils.getAnalysisBusinessTableById(targetTableID);
             for (int i = 0; i < dimensions.length; i++) {
                 List<BITableRelation> relations = this.getRelationList(dimensions[i]);
                 if (!relations.isEmpty()) {
