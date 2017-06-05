@@ -2,11 +2,13 @@ package com.finebi.cube.conf;
 
 
 import com.finebi.cube.impl.conf.CubeBuildStuffComplete;
+import com.finebi.cube.relation.BITableRelation;
 import com.fr.bi.stable.constant.Status;
 import com.fr.bi.stable.engine.CubeTask;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -81,6 +83,8 @@ public interface BICubeManagerProvider {
     CubeTask getUpdatingTask(long userId);
 
     /**
+     * 添加单表、全局、check、empty任务用
+     *
      * @param userId
      * @param baseTableSourceId
      * @param updateType
@@ -88,6 +92,17 @@ public interface BICubeManagerProvider {
      * @return
      */
     boolean addCubeGenerateTask2Queue(long userId, String baseTableSourceId, Integer updateType, boolean isTimedTask);
+
+    /**
+     * 添加custom任务用
+     *
+     * @param userId
+     * @param isTimedTask
+     * @param tableRelations
+     * @param sourceIdUpdateTypeMap 基础表id--更新类型
+     * @return
+     */
+    boolean addCubeGenerateTask2Queue(long userId, boolean isTimedTask, List<BITableRelation> tableRelations, Map<String, Integer> sourceIdUpdateTypeMap);
 
     List<ICubeGenerateTask> getCubeGenerateTasks();
 

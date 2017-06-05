@@ -11,7 +11,12 @@ import com.fr.bi.cal.analyze.cal.result.CrossExpander;
 import com.fr.bi.cal.analyze.cal.table.PolyCubeECBlock;
 import com.fr.bi.cal.analyze.executor.BIEngineExecutor;
 import com.fr.bi.cal.analyze.executor.paging.PagingFactory;
-import com.fr.bi.cal.analyze.executor.table.*;
+import com.fr.bi.cal.analyze.executor.table.ComplexCrossExecutor;
+import com.fr.bi.cal.analyze.executor.table.ComplexGroupExecutor;
+import com.fr.bi.cal.analyze.executor.table.ComplexHorGroupExecutor;
+import com.fr.bi.cal.analyze.executor.table.CrossExecutor;
+import com.fr.bi.cal.analyze.executor.table.GroupExecutor;
+import com.fr.bi.cal.analyze.executor.table.HorGroupExecutor;
 import com.fr.bi.cal.analyze.report.report.BIWidgetFactory;
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.calculator.IExcelDataBuilder;
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.calculator.SummaryComplexTableBuilder;
@@ -42,7 +47,6 @@ import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.gvi.GVIUtils;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.utils.BITravalUtils;
-import com.fr.bi.stable.utils.file.BIFileUtils;
 import com.fr.general.ComparatorUtils;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONException;
@@ -51,8 +55,14 @@ import com.fr.report.poly.TemplateBlock;
 import com.fr.stable.StringUtils;
 
 import javax.servlet.http.HttpServletRequest;
-import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 
@@ -541,11 +551,11 @@ public class TableWidget extends BISummaryWidget {
     }
 
     /*假数据，测试用*/
-    private JSONObject createTestData() throws IOException, JSONException {
-        StringBuffer keysStr = new StringBuffer();
-        String s = BIFileUtils.readFile("C:\\data.json");
-        return new JSONObject(s);
-    }
+//    private JSONObject createTestData() throws IOException, JSONException {
+//        StringBuffer keysStr = new StringBuffer();
+//        String s = BIFileUtils.readFile("C:\\data.json");
+//        return data.createJSON().put("page", res.getJSONArray("page")).put("dimensionLength",dimensions.length).put("header",createTestData().get("header")).put("crossHeader",createTestData().get("crossHeader")).put("items",createTestData().get("items")).put("crossItems",createTestData().get("crossItems"));
+//    }
 
     private Map<String, ITableCellFormatOperation> getITableCellFormatOperationMap() throws Exception {
         Map<String, ITableCellFormatOperation> formOperationsMap = new HashMap<String, ITableCellFormatOperation>();

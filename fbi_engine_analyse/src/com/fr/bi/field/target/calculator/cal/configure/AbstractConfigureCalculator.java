@@ -49,7 +49,6 @@ public abstract class AbstractConfigureCalculator extends CalCalculator {
     }
 
 
-
     protected int getCalDeep(BICrossNode rank_node) {
         int deep = 0;
         BICrossNode node = rank_node;
@@ -66,6 +65,41 @@ public abstract class AbstractConfigureCalculator extends CalCalculator {
 
     protected int getActualStart_Group(int start_group, BICrossNode rank_node) {
         return start_group == 0 ? 0 : getCalDeep(rank_node) - 1;
+    }
+
+    public BINode getCalculatedRootNode(BINode rank_node) {
+        BINode currentNode;
+        BINode maxDeepNode = rank_node;
+        do {
+            currentNode = maxDeepNode;
+            maxDeepNode = getMaxDeepNode(currentNode);
+        } while (maxDeepNode.getDeep() > 1);
+        return currentNode;
+
+    }
+
+    public BINode getMaxDeepNode(BINode rank_node) {
+        BINode max = null;
+        int maxDeep = 0;
+        for (BINode node : rank_node.getChilds()) {
+            int nodeDeep = node.getDeep();
+            if (nodeDeep > maxDeep) {
+                max = node;
+                maxDeep = nodeDeep;
+            }
+        }
+        return max;
+    }
+
+    /**
+     * 子节点为空，不用进行计算指标计算。
+     * BI-5299
+     *
+     * @param cursor_node
+     * @return
+     */
+    public boolean shouldCalculate(BINode cursor_node) {
+        return !cursor_node.getChilds().isEmpty();
     }
 
 }
