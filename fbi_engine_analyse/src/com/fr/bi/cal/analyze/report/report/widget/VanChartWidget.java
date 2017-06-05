@@ -717,8 +717,8 @@ public abstract class VanChartWidget extends TableWidget {
         for (int i = 0; i < topC.length(); i++) {
             JSONObject tObj = topC.getJSONObject(i);
             String name = tObj.getString("n"), formattedName = this.formatDimension(seriesDim, name);
-            String stackedKey = this.getStackedKey(id, name);
-            boolean isStacked = this.isStacked(id, name);
+            String stackedKey = this.getStackedKey(id, formattedName);
+            boolean isStacked = this.isStacked(id, formattedName);
             JSONArray data = JSONArray.create();
             for (int j = 0; j < leftC.length(); j++) {
                 JSONObject lObj = leftC.getJSONObject(j);
@@ -733,7 +733,7 @@ public abstract class VanChartWidget extends TableWidget {
                 valueList.add(y);
             }
             JSONObject ser = JSONObject.create().put("data", data).put("name", formattedName).put(LONG_DATE, name)
-                    .put("type", this.getSeriesType(id, name))
+                    .put("type", this.getSeriesType(id, formattedName))
                     .put("dimensionIDs", dimensionIDs)
                     .put("targetIDs", JSONArray.create().put(id));
 
