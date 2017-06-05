@@ -201,9 +201,7 @@ public class BIDBUtils {
      * @return
      */
     private static int getTypeByColumn_size(int column_size) {
-
-        int maxColumnSize = 20;
-        if (column_size < maxColumnSize) {
+        if (column_size < MAX_LONG_COLUMN_SIZE) {
             return DBConstant.CLASS.LONG;
         } else {
             return DBConstant.CLASS.STRING;
