@@ -48,8 +48,9 @@ public class BITableConstructHelper {
                         formatText(operations, child);
                     }
                 }
+            } else {
+                traversalItems(data.getItems(), operations, 0, 0, style);
             }
-            traversalItems(data.getItems(), operations, 0, 0, style);
         }
 
         if (data.getCrossItems() != null) {
