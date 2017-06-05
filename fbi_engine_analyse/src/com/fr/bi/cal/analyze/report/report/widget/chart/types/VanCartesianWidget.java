@@ -542,6 +542,10 @@ public abstract class VanCartesianWidget extends VanChartWidget {
     private boolean hasData(String regionID) {
         JSONArray dIDs = this.getDimensionIDArray(regionID);
 
+        if(dIDs == null){
+            return false;
+        }
+
         for(int i = 0, len = dIDs.length(); i < len; i++){
             try {
                 BISummaryTarget dimension = this.getBITargetByID(dIDs.optString(i));
