@@ -4,11 +4,13 @@ import com.finebi.cube.common.log.BILogger;
 import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.conf.*;
 import com.finebi.cube.impl.conf.CubeBuildStuffComplete;
+import com.finebi.cube.relation.BITableRelation;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.cal.generate.BuildCubeTask;
 import com.fr.bi.cal.generate.CustomTaskBuilder;
 import com.fr.bi.cal.generate.queue.CubeGenerateTaskQueue;
 import com.fr.bi.cal.generate.task.AllCubeGenerateTask;
+import com.fr.bi.cal.generate.task.CustomCubeGenerateTask;
 import com.fr.bi.cal.generate.task.SingleCubeGenerateTask;
 import com.fr.bi.conf.provider.BIConfigureManagerCenter;
 import com.fr.bi.stable.constant.BIReportConstant;
@@ -274,6 +276,24 @@ public class BICubeManager implements BICubeManagerProvider {
         }
         return true;
 
+    }
+
+    public boolean addCubeGenerateTask2Queue(long userId, boolean isTimedTask,
+                                             List<BITableRelation> tableRelations, Map<String, Integer> sourceIdUpdateTypeMap) {
+        try {
+            BILoggerFactory.getLogger(BICubeManager.class).info("Add Custom CubeGenerateTask to taskqueue!" + (isTimedTask ? "(TimedTask)" : "(ManualTask)"));
+            Map<String, List<Integer>> sourceIdUpdateTypesMap = new HashMap<String, List<Integer>>();
+            for (Map.Entry<String, Integer> entry : sourceIdUpdateTypeMap.entrySet()) {
+                sourceIdUpdateTypesMap.put(entry.getKey(), new ArrayList<Integer>());
+                sourceIdUpdateTypesMap.get(entry.getKey()).add(entry.getValue());
+            }
+            ICubeGenerateTask cubeGenerateTask = new CustomCubeGenerateTask(userId, sourceIdUpdateTypesMap, tableRelations);
+            cubeGenerateTaskQueue.put(cubeGenerateTask);
+        } catch (Exception e) {
+            BILoggerFactory.getLogger(BICubeManager.class).error(e.getMessage(), e);
+            return false;
+        }
+        return true;
     }
 
     private class CubeBuildRunnable implements Runnable {
