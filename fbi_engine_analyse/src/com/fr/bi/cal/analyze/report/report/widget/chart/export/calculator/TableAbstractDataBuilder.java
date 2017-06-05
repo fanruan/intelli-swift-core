@@ -12,6 +12,7 @@ import com.fr.general.Inter;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
+import com.fr.stable.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,7 +36,7 @@ public abstract class TableAbstractDataBuilder implements IExcelDataBuilder {
     protected List<String> targetIds;
     protected boolean showColTotal;
     protected boolean showRowTotal;
-    protected static final String EMPTY_VALUE = "--";
+    protected static final String EMPTY_VALUE = StringUtils.EMPTY;
     protected static final String SUMMARY = Inter.getLocText("BI-Summary_Values");
 
     public TableAbstractDataBuilder(Map<Integer, List<JSONObject>> dimAndTar, JSONObject dataJSON, IWidgetStyle styleSettings) throws Exception {
