@@ -11,9 +11,11 @@ import com.finebi.cube.relation.BITableRelation;
 import com.finebi.cube.relation.BITableRelationPath;
 import com.finebi.cube.relation.BITableSourceRelation;
 import com.finebi.cube.relation.BITableSourceRelationPath;
+import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
 
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -25,6 +27,7 @@ public class CubeUpdateUtils {
 
 
     private static BILogger logger = BILoggerFactory.getLogger(CubeUpdateUtils.class);
+
     /**
      * 获得配置部分存在，但是在cube中缺少的表
      *
@@ -92,7 +95,7 @@ public class CubeUpdateUtils {
                 BILoggerFactory.getLogger(CubeUpdateUtils.class).error(e.getMessage(), e);
                 continue;
             }
-            if (sourceRelation != null && !BICubeRelationUtils.isRelationExisted(sourceRelation, cubeConfiguration)){
+            if (sourceRelation != null && !BICubeRelationUtils.isRelationExisted(sourceRelation, cubeConfiguration)) {
                 absentRelations.add(sourceRelation);
             }
         }
@@ -124,5 +127,34 @@ public class CubeUpdateUtils {
         } catch (Exception e) {
             throw BINonValueUtils.beyondControl(e);
         }
+    }
+
+    /**
+     * 优先级 all>part>never
+     *
+     * @param updateTypeSet
+     * @return
+     */
+    public static int calcUpdateType(Collection<Integer> updateTypeSet) {
+        if (updateTypeSet == null || updateTypeSet.isEmpty()) {
+            return DBConstant.SINGLE_TABLE_UPDATE_TYPE.ALL;
+        } else if (updateTypeSet.contains(DBConstant.SINGLE_TABLE_UPDATE_TYPE.ALL)) {
+            return DBConstant.SINGLE_TABLE_UPDATE_TYPE.ALL;
+        } else if (updateTypeSet.contains(DBConstant.SINGLE_TABLE_UPDATE_TYPE.PART)) {
+            return DBConstant.SINGLE_TABLE_UPDATE_TYPE.PART;
+        } else {
+            return DBConstant.SINGLE_TABLE_UPDATE_TYPE.NEVER;
+        }
+    }
+
+    /**
+     * 优先级 all>part>never
+     *
+     * @param oldType
+     * @param newType
+     * @return
+     */
+    public static int calcUpdateType(Integer oldType, Integer newType) {
+        return oldType <= newType ? oldType : newType;
     }
 }

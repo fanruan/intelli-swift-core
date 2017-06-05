@@ -106,7 +106,7 @@ public class AutoGroup extends AbstractGroup {
         }
         int index = 0;
         int groupSize = (int) Math.ceil((max - start) / interval);
-        while (index != groupSize) {
+        while (index < groupSize) {
             nameList.add(getAutoGroupName(index++, interval));
         }
         return nameList;
@@ -174,7 +174,7 @@ public class AutoGroup extends AbstractGroup {
     private static final int NUM2PMD_TEN = 10;
 
     private double initGroup(double minValue, double maxValue) {
-        int magnify = 1;
+        double magnify = 1;
         double minV = Math.abs(minValue);
         double maxV = Math.abs(maxValue);
         int minCount = this.checkMagnifyCount(minV);

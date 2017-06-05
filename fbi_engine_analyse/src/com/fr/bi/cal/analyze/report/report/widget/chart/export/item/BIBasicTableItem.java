@@ -22,6 +22,8 @@ public class BIBasicTableItem implements ITableItem {
     private ITableStyle styles;
     private String value;
     private boolean isSum;
+    //text样式，简单处理
+    private JSONObject textStyles;
 
     public BIBasicTableItem() {
     }
@@ -121,6 +123,11 @@ public class BIBasicTableItem implements ITableItem {
     }
 
     @Override
+    public void setTextStyles(JSONObject textStyles) {
+        this.textStyles = textStyles;
+    }
+
+    @Override
     public void mergeItems(ITableItem newItem) throws Exception {
         if (newItem == null) {
             return;
@@ -199,6 +206,7 @@ public class BIBasicTableItem implements ITableItem {
 
         jo.put("value", value);
         jo.put("isSum", isSum);
+        jo.put("textStyle", textStyles);
         return jo;
     }
 
