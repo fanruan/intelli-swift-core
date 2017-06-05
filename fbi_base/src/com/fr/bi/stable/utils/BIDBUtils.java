@@ -196,7 +196,8 @@ public class BIDBUtils {
      * @return
      */
     private static int getTypeByColumn_size(int column_size) {
-        if (column_size < 20) {
+        int maxColumnSize = 20;
+        if (column_size < maxColumnSize) {
             return DBConstant.CLASS.LONG;
         } else {
             return DBConstant.CLASS.STRING;
@@ -318,7 +319,18 @@ public class BIDBUtils {
 
         DataModel dm = null;
         try {
-            dm = tableData.createDataModel(Calculator.createCalculator(), tableName);
+        //    dm = tableData.createDataModel(Calculator.createCalculator(), tableName);
+            /**
+             * Modifier: Yee
+             * Modify date: 2017-06-05
+             * mongodb插件创建DataModel时的createDataModel(Calculator c)方法调用的是取所有数据的方法。
+             * 使用tableData.createDataModel(Calculator.createCalculator(), tableName)调用createDataModel(Calculator c)
+             *   创建DataModel时，mongodb插件取的是所有数据所以需要取出所有数据后才能获取字段。
+             * 使用tableData.createDataModel(Calculator.createCalculator(), TableData.RESULT_NOT_NEED);
+             *   创建DataModel时mongodb插件只取一条数据，在数据量大的情况下能有效提高效率
+             * 尝试修改createDataModel(Calculator c)方法，无法判断是在查询数据还是在取字段。
+             */
+            dm = tableData.createDataModel(Calculator.createCalculator(), TableData.RESULT_NOT_NEED);
             int cols = dm.getColumnCount();
             JSONObject jo = new JSONObject();
             jo.put("tableName", tableName);
