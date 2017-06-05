@@ -5,7 +5,7 @@ import com.fr.bi.cal.analyze.report.report.widget.chart.export.item.ITableHeader
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.item.ITableItem;
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.item.constructor.BIDetailDataConstructor;
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.item.constructor.DataConstructor;
-import com.fr.bi.cal.analyze.report.report.widget.chart.export.utils.BITableExportDataHelper;
+import com.fr.bi.cal.analyze.report.report.widget.chart.export.utils.BITableDimensionHelper;
 import com.fr.bi.conf.report.widget.IWidgetStyle;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONException;
@@ -92,7 +92,7 @@ public class DetailTableBuilder extends TableAbstractDataBuilder {
     }
 
     private boolean isDimensionUsable(String id) throws Exception {
-        return BITableExportDataHelper.isDimUsed(dimAndTar, id);
+        return BITableDimensionHelper.isDimUsed(dimAndTar, id);
     }
 
 }

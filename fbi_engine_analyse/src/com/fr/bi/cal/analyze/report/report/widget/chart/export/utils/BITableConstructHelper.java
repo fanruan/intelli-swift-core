@@ -32,9 +32,9 @@ public class BITableConstructHelper {
         boolean isDetail = data.getWidgetType() == WidgetType.DETAIL.getType();
         for (ITableHeader header : data.getHeaders()) {
             if (header.isSum()) {
-                header.setStyles(SummaryTableStyleHelper.getLastSummaryStyles(style.getThemeColor(), style.getTableStyleGroup()));
+                header.setStyles(BITableStyleHelper.getLastSummaryStyles(style.getThemeColor(), style.getTableStyleGroup()));
             }
-            header.setStyles(SummaryTableStyleHelper.getHeaderStyles(style.getThemeColor(), style.getTableStyleGroup()));
+            header.setStyles(BITableStyleHelper.getHeaderStyles(style.getThemeColor(), style.getTableStyleGroup()));
         }
 
         if (data.getItems().size() != 0) {
@@ -42,9 +42,9 @@ public class BITableConstructHelper {
                 for (int i = 0; i < data.getItems().size(); i++) {
                     ITableItem item = data.getItems().get(i);
                     formatText(operations, item);
-                    item.setStyles(SummaryTableStyleHelper.getBodyStyles(style.getThemeColor(), style.getTableStyleGroup(), i));
+                    item.setStyles(BITableStyleHelper.getBodyStyles(style.getThemeColor(), style.getTableStyleGroup(), i));
                     for (ITableItem child : item.getChildren()) {
-                        child.setStyles(SummaryTableStyleHelper.getBodyStyles(style.getThemeColor(), style.getTableStyleGroup(), i));
+                        child.setStyles(BITableStyleHelper.getBodyStyles(style.getThemeColor(), style.getTableStyleGroup(), i));
                         formatText(operations, child);
                     }
                 }
@@ -61,7 +61,7 @@ public class BITableConstructHelper {
 
         if (data.getCrossHeaders() != null) {
             for (ITableHeader crossHeader : data.getCrossHeaders()) {
-                crossHeader.setStyles(SummaryTableStyleHelper.getHeaderStyles(style.getThemeColor(), style.getTableStyleGroup()));
+                crossHeader.setStyles(BITableStyleHelper.getHeaderStyles(style.getThemeColor(), style.getTableStyleGroup()));
             }
         }
 
@@ -81,15 +81,15 @@ public class BITableConstructHelper {
                 }
                 if (item.getChildren() != null) {
                     for (ITableItem it : item.getValues()) {
-                        it.setStyles(SummaryTableStyleHelper.getLastSummaryStyles(style.getThemeColor(), style.getTableStyleGroup()));
+                        it.setStyles(BITableStyleHelper.getLastSummaryStyles(style.getThemeColor(), style.getTableStyleGroup()));
                     }
                 } else {
                     for (ITableItem it : item.getValues()) {
-                        it.setStyles(SummaryTableStyleHelper.getBodyStyles(style.getThemeColor(), style.getTableStyleGroup(), rowIndex));
+                        it.setStyles(BITableStyleHelper.getBodyStyles(style.getThemeColor(), style.getTableStyleGroup(), rowIndex));
                     }
                 }
             }
-            item.setStyles(SummaryTableStyleHelper.getBodyStyles(style.getThemeColor(), style.getTableStyleGroup(), rowIndex));
+            item.setStyles(BITableStyleHelper.getBodyStyles(style.getThemeColor(), style.getTableStyleGroup(), rowIndex));
             rowIndex++;
         }
     }
