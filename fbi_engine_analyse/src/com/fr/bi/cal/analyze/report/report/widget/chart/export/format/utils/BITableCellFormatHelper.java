@@ -284,14 +284,16 @@ public class BITableCellFormatHelper {
 
     private static String getTextColor(JSONObject settings, Float num) throws JSONException {
         JSONArray conditions = settings.optJSONArray("conditions");
-        for (int i = 0; i < conditions.length(); i++) {
-            JSONObject range = conditions.getJSONObject(i).getJSONObject("range");
-            long min = range.getLong("min");
-            long max = range.getLong("max");
-            boolean minBoolean = range.optBoolean("closemin", false) ? num >= min : num > min;
-            boolean maxBoolean = range.optBoolean("closemax", false) ? num <= max : num < max;
-            if (minBoolean && maxBoolean) {
-                return conditions.getJSONObject(i).getString("color");
+        if (null!=conditions) {
+            for (int i = 0; i < conditions.length(); i++) {
+                JSONObject range = conditions.getJSONObject(i).getJSONObject("range");
+                long min = range.getLong("min");
+                long max = range.getLong("max");
+                boolean minBoolean = range.optBoolean("closemin", false) ? num >= min : num > min;
+                boolean maxBoolean = range.optBoolean("closemax", false) ? num <= max : num < max;
+                if (minBoolean && maxBoolean) {
+                    return conditions.getJSONObject(i).getString("color");
+                }
             }
         }
         return StringUtils.EMPTY;

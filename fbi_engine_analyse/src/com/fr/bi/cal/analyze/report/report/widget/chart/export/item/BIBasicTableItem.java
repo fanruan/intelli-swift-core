@@ -193,9 +193,13 @@ public class BIBasicTableItem implements ITableItem {
             }
             jo.put("children", childrenArray);
         }
-        jo.put("dId", dId);
+        if (null != dId) {
+            jo.put("dId", dId);
+        }
         jo.put("text", text);
-        jo.put("styles", null == styles ? new JSONObject() : styles.createJSON());
+        if (null != styles) {
+            jo.put("styles", null == styles ? new JSONObject() : styles.createJSON());
+        }
         if (null != this.values && values.size() > 0) {
             JSONArray TempValues = new JSONArray();
             for (ITableItem item : this.values) {
@@ -205,8 +209,10 @@ public class BIBasicTableItem implements ITableItem {
         }
 
         jo.put("value", value);
-        jo.put("isSum", isSum);
-        jo.put("textStyle", textStyles);
+            jo.put("isSum", isSum);
+        if (textStyles != null) {
+            jo.put("textStyle", textStyles);
+        }
         return jo;
     }
 
