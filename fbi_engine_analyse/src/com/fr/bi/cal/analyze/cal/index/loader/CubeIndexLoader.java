@@ -14,6 +14,7 @@ import com.fr.bi.cal.analyze.report.report.widget.TableWidget;
 import com.fr.bi.cal.analyze.session.BISession;
 import com.fr.bi.conf.VT4FBI;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
+import com.fr.bi.conf.report.widget.field.dimension.filter.DimensionFilter;
 import com.fr.bi.conf.report.widget.field.target.filter.TargetFilter;
 import com.fr.bi.field.target.calculator.cal.CalCalculator;
 import com.fr.bi.field.target.calculator.cal.FormulaCalculator;
@@ -905,14 +906,9 @@ public class CubeIndexLoader {
                                                       final BISession session, NodeExpander expander) throws Exception {
         checkRegisteration(sumTarget, allDimension);
         BISummaryTarget[] usedTargets = createUsedSummaryTargets(rowDimension, usedTarget, sumTarget);
-        PageIteratorGroup pg;
-
-        String widgetName = widget.getWidgetName();
-        if (needCreateNewIterator(page)) {
-            pg = new PageIteratorGroup();
-            session.setPageIteratorGroup(useRealData, widgetName, pg);
-        } else {
-            pg = session.getPageIteratorGroup(useRealData, widgetName);
+        PageIteratorGroup pg = new PageIteratorGroup();
+        if (hasDimensionFilter(rowDimension, widget.getTargetFilterMap())) {
+            return new ArrayList<NodeAndPageInfo>();
         }
         NodeAndPageInfo info = createPageGroupNode(widget, usedTargets, rowDimension, page, expander, session,
                 isHor ? createColumnOperator(page, widget) : createRowOperator(page, widget), pg, false, isHor);
@@ -921,11 +917,24 @@ public class CubeIndexLoader {
         return infoList;
     }
 
+    private boolean hasDimensionFilter(BIDimension[] rowDimension, Map<String, DimensionFilter> targetFilterMap) {
+        for (BIDimension dimension : rowDimension) {
+            DimensionFilter filter = dimension.getFilter();
+            if (filter != null) {
+                return true;
+            }
+        }
+        return targetFilterMap != null;
+    }
+
 
     public List<NodeAndPageInfo> getPageCrossGroupInfoList(BISummaryTarget[] usedTarget, BIDimension[] rowDimension, BIDimension[] colDimension, BISummaryTarget[] sumTarget,
                                                            int page, boolean useRealData, BISession session, CrossExpander expander, BISummaryWidget widget) throws Exception {
         BIDimension[] allDimension = createBiDimensionAdpaters(rowDimension, colDimension);
         checkRegisteration(sumTarget, allDimension);
+        if (hasDimensionFilter(allDimension, widget.getTargetFilterMap())) {
+            return new ArrayList<NodeAndPageInfo>();
+        }
         /**
          * 交叉表调用createUsedSummaryTargets的时候把row和cross的dimension都传入进去，而不是只传rowDimension
          * 详见BI-2304
