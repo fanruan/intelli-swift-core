@@ -153,7 +153,6 @@ public class SummaryComplexTableBuilder extends TableAbstractDataBuilder {
         BIBasicTableItem itemNode = new BIBasicTableItem();
         itemNode.setDId(targetIds.get(j));
         itemNode.setValue(s.getString(j));
-        itemNode.setStyles(BITableStyleHelper.getLastSummaryStyles(styleSetting.getThemeColor(), styleSetting.getTableStyleGroup()));
         outerValues.add(itemNode);
     }
 
