@@ -47,7 +47,7 @@ public class StopWhenGetRowOperator implements Operator {
         }
         for (Object o : stopRow) {
             GroupConnectionValue c = p.getChild();
-            if (!c.getData().equals(o)) {
+            if (!c.getData().toString().equals(o)) {
                 return false;
             }
             p = c;
