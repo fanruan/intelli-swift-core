@@ -55,7 +55,7 @@ public class BITableConstructHelper {
 
         if (data.getCrossItems() != null) {
             for (ITableItem childItem : data.getCrossItems()) {
-                traversalCrossItems(childItem, operations);
+                traversalCrossItems(childItem, operations, style);
             }
         }
 
@@ -94,10 +94,10 @@ public class BITableConstructHelper {
         }
     }
 
-    private static void traversalCrossItems(ITableItem item, Map<String, ITableCellFormatOperation> ops) throws Exception {
+    private static void traversalCrossItems(ITableItem item, Map<String, ITableCellFormatOperation> ops, BITableWidgetStyle style) throws Exception {
         if (item.getChildren() != null) {
             for (ITableItem childItem : item.getChildren()) {
-                traversalCrossItems(childItem, ops);
+                traversalCrossItems(childItem, ops, style);
             }
         }
         if (item.getValues() != null) {
@@ -105,6 +105,7 @@ public class BITableConstructHelper {
                 formatText(ops, it);
             }
         }
+        item.setStyles(BITableStyleHelper.getHeaderStyles(style.getThemeColor(), style.getTableStyleGroup()));
         formatText(ops, item);
     }
 

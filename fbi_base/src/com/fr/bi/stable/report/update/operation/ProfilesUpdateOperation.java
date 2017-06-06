@@ -1,6 +1,7 @@
 package com.fr.bi.stable.report.update.operation;
 
 import com.finebi.cube.common.log.BILoggerFactory;
+import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.utils.program.BIJsonUtils;
 import com.fr.bi.stable.utils.program.BIStringUtils;
 import com.fr.general.ComparatorUtils;
@@ -19,15 +20,18 @@ import java.util.regex.Pattern;
 
 /**
  * Created by kary on 2017/1/23.
- * change underScore to Camel
- * 首字母下划线不会被过滤
+ * 此处的升级内容：
+ * 驼峰以及自定义key值修改
+ * 图片uri修正
+ * 散点气泡图type升级成点图的type
+
  */
-public class ReportCamelOperation implements ReportUpdateOperation {
+public class ProfilesUpdateOperation implements ReportUpdateOperation {
     private static final String DEFAULT_FILE_NAME = "keys.json";
     private JSONObject keys;
     private static Pattern linePattern = Pattern.compile("(?!^)_(\\w)");
 
-    public ReportCamelOperation() {
+    public ProfilesUpdateOperation() {
         try {
             if (null == keys) {
                 keys = readKeyJson();
@@ -59,14 +63,33 @@ public class ReportCamelOperation implements ReportUpdateOperation {
             if (flag) {
                 if (ComparatorUtils.equals(s, "widgets")) {
                     json = correctPreviousSrcError(json);
+                    json=correctScatterType(json);
                 }
-
                 res.put(updateKey(s), recursionMapUpdate(json.getString(s)));
             } else {
                 res.put(updateKey(s), recursionListUpdate(json.get(s)));
             }
         }
         return res;
+    }
+/*
+* 散点气泡图type升级
+* type 26，28->67
+* */
+    private JSONObject correctScatterType(JSONObject json) throws JSONException {
+        if (BIJsonUtils.isKeyValueSet(json.getString("widgets"))) {
+            Iterator keys = json.getJSONObject("widgets").keys();
+            while (keys.hasNext()) {
+                String dimId = keys.next().toString();
+                JSONObject dimJson = json.getJSONObject("widgets").getJSONObject(dimId);
+                if (dimJson.has("type")) {
+                    if (dimJson.getInt("type")== BIReportConstant.WIDGET.BUBBLE||dimJson.getInt("type")==BIReportConstant.WIDGET.SCATTER) {
+                        dimJson.put("type", BIReportConstant.WIDGET.DOT);
+                    }
+                }
+            }
+        }
+        return json;
     }
 
 
