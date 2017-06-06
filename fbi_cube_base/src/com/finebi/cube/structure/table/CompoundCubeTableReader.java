@@ -53,11 +53,16 @@ public class CompoundCubeTableReader implements CubeTableEntityService {
 
     private void initialFields() {
         if (hostTable.tableDataAvailable()) {
-            for (ICubeFieldSource field : hostTable.getFieldInfo()) {
-                if (!compoundFields.contains(field)) {
-                    compoundFields.add(field);
-                    fieldSource.put(field, hostTable);
+            if (hostTable.getFieldInfo() != null) {
+                for (ICubeFieldSource field : hostTable.getFieldInfo()) {
+                    if (!compoundFields.contains(field)) {
+                        compoundFields.add(field);
+                        fieldSource.put(field, hostTable);
+                    }
                 }
+            } else {
+                BILoggerFactory.getLogger(CompoundCubeTableReader.class).error(
+                        "hostTable sourceId:" + hostTable.tableKey.getSourceID() + " fields is null!Please check field file in cubes!");
             }
         } else {
             if (null == hostTable) {

@@ -153,7 +153,7 @@ public class BIDetailWidget extends AbstractBIWidget {
                 break;
             }
         }
-        target = BIModuleUtils.getBusinessTableById(new BITableID(targetTableID));
+        target = BIModuleUtils.getAnalysisBusinessTableById(new BITableID(targetTableID));
         for (int i = 0; i < dimensions.length; i++) {
             List<BITableRelation> relations = dimensions[i].getRelationList(null, userID);
             if (!relations.isEmpty()) {
@@ -259,7 +259,7 @@ public class BIDetailWidget extends AbstractBIWidget {
             return;
         }
         try {
-            BusinessTable newTable = BIModuleUtils.getBusinessTableById(target.getID());
+            BusinessTable newTable = BIModuleUtils.getAnalysisBusinessTableById(target.getID());
             if (null != newTable) {
                 CubeTableSource newSource = newTable.getTableSource();
                 if (isAnalysisSource(newSource)) {
@@ -328,7 +328,7 @@ public class BIDetailWidget extends AbstractBIWidget {
         res.put("items", itemsArray);
         res.put("widgetType", getType().getType());
         res.put("dimensionLength", dimensions.length).put("row", data.optLong("row", 0)).put("size", data.optLong("size", 0));
-        res.put("settings",tableData.getWidgetStyle().createJSON());
+        res.put("settings", tableData.getWidgetStyle().createJSON());
         return res;
 //        return createTestData();
     }

@@ -32,24 +32,25 @@ public class BITableConstructHelper {
         boolean isDetail = data.getWidgetType() == WidgetType.DETAIL.getType();
         for (ITableHeader header : data.getHeaders()) {
             if (header.isSum()) {
-                header.setStyles(SummaryTableStyleHelper.getLastSummaryStyles(style.getThemeColor(), style.getTableStyleGroup()));
+                header.setStyles(BITableStyleHelper.getLastSummaryStyles(style.getThemeColor(), style.getTableStyleGroup()));
             }
-            header.setStyles(SummaryTableStyleHelper.getHeaderStyles(style.getThemeColor(), style.getTableStyleGroup()));
+            header.setStyles(BITableStyleHelper.getHeaderStyles(style.getThemeColor(), style.getTableStyleGroup()));
         }
 
         if (data.getItems().size() != 0) {
             if (isDetail) {
                 for (int i = 0; i < data.getItems().size(); i++) {
-                    ITableItem item=data.getItems().get(i);
-                    setText(operations, item);
-                    item.setStyles(SummaryTableStyleHelper.getBodyStyles(style.getThemeColor(), style.getTableStyleGroup(), i));
+                    ITableItem item = data.getItems().get(i);
+                    formatText(operations, item);
+                    item.setStyles(BITableStyleHelper.getBodyStyles(style.getThemeColor(), style.getTableStyleGroup(), i));
                     for (ITableItem child : item.getChildren()) {
-                        child.setStyles(SummaryTableStyleHelper.getBodyStyles(style.getThemeColor(), style.getTableStyleGroup(), i));
-                        setText(operations, child);
+                        child.setStyles(BITableStyleHelper.getBodyStyles(style.getThemeColor(), style.getTableStyleGroup(), i));
+                        formatText(operations, child);
                     }
                 }
+            } else {
+                traversalItems(data.getItems(), operations, 0, 0, style);
             }
-            traversalItems(data.getItems(), operations, 0, 0, style);
         }
 
         if (data.getCrossItems() != null) {
@@ -60,7 +61,7 @@ public class BITableConstructHelper {
 
         if (data.getCrossHeaders() != null) {
             for (ITableHeader crossHeader : data.getCrossHeaders()) {
-                crossHeader.setStyles(SummaryTableStyleHelper.getHeaderStyles(style.getThemeColor(), style.getTableStyleGroup()));
+                crossHeader.setStyles(BITableStyleHelper.getHeaderStyles(style.getThemeColor(), style.getTableStyleGroup()));
             }
         }
 
@@ -71,22 +72,24 @@ public class BITableConstructHelper {
             if (item.getChildren() != null) {
                 traversalItems(item.getChildren(), ops, layerIndex + 1, rowIndex, style);
             }
-            setText(ops, item);
+            formatText(ops, item);
+            setTextStyle(ops, item);
             if (item.getValues() != null) {
                 for (ITableItem it : item.getValues()) {
-                    setText(ops, it);
+                    formatText(ops, it);
+                    setTextStyle(ops, it);
                 }
                 if (item.getChildren() != null) {
                     for (ITableItem it : item.getValues()) {
-                        it.setStyles(SummaryTableStyleHelper.getLastSummaryStyles(style.getThemeColor(), style.getTableStyleGroup()));
+                        it.setStyles(BITableStyleHelper.getLastSummaryStyles(style.getThemeColor(), style.getTableStyleGroup()));
                     }
                 } else {
                     for (ITableItem it : item.getValues()) {
-                        it.setStyles(SummaryTableStyleHelper.getBodyStyles(style.getThemeColor(), style.getTableStyleGroup(), rowIndex));
+                        it.setStyles(BITableStyleHelper.getBodyStyles(style.getThemeColor(), style.getTableStyleGroup(), rowIndex));
                     }
                 }
             }
-            item.setStyles(SummaryTableStyleHelper.getBodyStyles(style.getThemeColor(), style.getTableStyleGroup(), rowIndex));
+            item.setStyles(BITableStyleHelper.getBodyStyles(style.getThemeColor(), style.getTableStyleGroup(), rowIndex));
             rowIndex++;
         }
     }
@@ -99,17 +102,23 @@ public class BITableConstructHelper {
         }
         if (item.getValues() != null) {
             for (ITableItem it : item.getValues()) {
-                setText(ops, it);
+                formatText(ops, it);
             }
         }
-        setText(ops, item);
+        formatText(ops, item);
     }
 
-    private static void setText(Map<String, ITableCellFormatOperation> ops, ITableItem it) throws Exception {
+    private static void formatText(Map<String, ITableCellFormatOperation> ops, ITableItem it) throws Exception {
         if (null != ops.get(it.getDId())) {
-            it.setText(ops.get(it.getDId()).formatValues(it.getValue()));
+            it.setText(ops.get(it.getDId()).formatTextValues(it.getValue()));
         } else {
             it.setText(it.getValue());
+        }
+    }
+
+    private static void setTextStyle(Map<String, ITableCellFormatOperation> ops, ITableItem it) throws Exception {
+        if (null != ops.get(it.getDId())) {
+            it.setTextStyles(ops.get(it.getDId()).createTextStyle(it.getValue()));
         }
     }
 }

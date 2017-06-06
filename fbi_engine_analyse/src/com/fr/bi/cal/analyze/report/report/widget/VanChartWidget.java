@@ -2,7 +2,6 @@ package com.fr.bi.cal.analyze.report.report.widget;
 
 import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.base.FRContext;
-import com.fr.bi.cal.analyze.session.BISession;
 import com.fr.bi.conf.report.WidgetType;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.conf.session.BISessionProvider;
@@ -11,7 +10,6 @@ import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.stable.constant.BIChartSettingConstant;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.constant.BIStyleConstant;
-import com.fr.bi.tool.BIReadReportUtils;
 import com.fr.bi.util.BIConfUtils;
 import com.fr.general.ComparatorUtils;
 import com.fr.general.Inter;
@@ -51,6 +49,9 @@ public abstract class VanChartWidget extends TableWidget {
     public static final String NAME = "${NAME}";
     public static final String DESCRIPTION = "${DESCRIPTION}";
     public static final String ARRIVALRATE = "${ARRIVALRATE}";
+
+    protected static final String COMPONENT_MAX_SIZE = "30%";
+    protected static final String TRANS_SERIES = "transSeries";
 
     public static final String LONG_DATE = "longDate";
 
@@ -143,7 +144,22 @@ public abstract class VanChartWidget extends TableWidget {
 
         this.formatSeriesDataLabelFormat(options);
 
+        options.put("tools", toolsJSON());
+
         return options;
+    }
+
+    private JSONObject toolsJSON() throws JSONException {
+        return JSONObject.create()
+                .put("hidden", false)
+                .put("toImage", falseEnabledJSONObject())
+                .put("sort", falseEnabledJSONObject())
+                .put("fullScreen",falseEnabledJSONObject())
+                .put("refresh", falseEnabledJSONObject());
+    }
+
+    protected JSONObject falseEnabledJSONObject() throws JSONException {
+        return JSONObject.create().put("enabled", false);
     }
 
     protected void toLegendJSON(JSONObject options, JSONObject settings) throws JSONException{
@@ -626,6 +642,10 @@ public abstract class VanChartWidget extends TableWidget {
         for (int i = 0, len = series.length(); i < len; i++) {
             JSONObject ser = series.getJSONObject(i);
 
+            if(ser.optBoolean(TRANS_SERIES)){
+                continue;
+            }
+
             JSONObject formatter = JSONObject.create();
 
             formatter.put("identifier", this.getTooltipIdentifier()).put(this.tooltipValueKey(), this.tooltipValueFormat(this.getSerBITarget(ser)));
@@ -661,11 +681,15 @@ public abstract class VanChartWidget extends TableWidget {
             for (int i = 0, len = series.length(); i < len; i++) {
                 JSONObject ser = series.getJSONObject(i);
 
+                if(ser.optBoolean(TRANS_SERIES)){
+                    continue;
+                }
+
                 JSONObject labels = new JSONObject(dataLabels.toString());
                 labels.optJSONObject("formatter")
                         .put("valueFormat", this.dataLabelValueFormat(this.getSerBITarget(ser)))
                         .put("percentFormat", "function(){return BI.contentFormat(arguments[0], \"#.##%\")}")
-                        .put("arrivalrateFormat", "function(){return BI.contentFormat(arguments[0], \"#.##%\")}");
+                        .put("arrivalRateFormat", "function(){return BI.contentFormat(arguments[0], \"#.##%\")}");
 
 
                 ser.put(dataLabelsKey(), labels);
@@ -702,8 +726,8 @@ public abstract class VanChartWidget extends TableWidget {
         for (int i = 0; i < topC.length(); i++) {
             JSONObject tObj = topC.getJSONObject(i);
             String name = tObj.getString("n"), formattedName = this.formatDimension(seriesDim, name);
-            String stackedKey = this.getStackedKey(id, name);
-            boolean isStacked = this.isStacked(id, name);
+            String stackedKey = this.getStackedKey(id, formattedName);
+            boolean isStacked = this.isStacked(id, formattedName);
             JSONArray data = JSONArray.create();
             for (int j = 0; j < leftC.length(); j++) {
                 JSONObject lObj = leftC.getJSONObject(j);
@@ -718,7 +742,7 @@ public abstract class VanChartWidget extends TableWidget {
                 valueList.add(y);
             }
             JSONObject ser = JSONObject.create().put("data", data).put("name", formattedName).put(LONG_DATE, name)
-                    .put("type", this.getSeriesType(id, name))
+                    .put("type", this.getSeriesType(id, formattedName))
                     .put("dimensionIDs", dimensionIDs)
                     .put("targetIDs", JSONArray.create().put(id));
 
@@ -987,6 +1011,8 @@ public abstract class VanChartWidget extends TableWidget {
         }
 
         return JSONObject.create()
+                .put("maxHeight", COMPONENT_MAX_SIZE)
+                .put("maxWidth", COMPONENT_MAX_SIZE)
                 .put("enabled", legend >= BIChartSettingConstant.CHART_LEGENDS.TOP)
                 .put("position", position)
                 .put("style", settings.optJSONObject("legendStyle"));

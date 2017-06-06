@@ -2,11 +2,13 @@ package com.finebi.cube.conf;
 
 
 import com.finebi.cube.impl.conf.CubeBuildStuffComplete;
+import com.finebi.cube.relation.BITableRelation;
 import com.fr.bi.stable.constant.Status;
 import com.fr.bi.stable.engine.CubeTask;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -76,16 +78,35 @@ public interface BICubeManagerProvider {
 
     boolean isCubeBuilding();
 
-    void addCustomTableTask2Queue(long userId, List<String> baseTableSourceIds,
-                                  List<Integer> updateTypes) throws InterruptedException;
-
-    CubeTask buildCompleteStuff(long userId);
-
-    CubeTask buildStaff(long userId);
-
     Set<String> getAllCubeWaiting2GenerateTableSouceIds(long userId);
 
-    List<CubeBuildStuff> buildCustomTable(long userId, List<String> baseTableSourceIds, List<Integer> updateTypes);
-
     CubeTask getUpdatingTask(long userId);
+
+    /**
+     * 添加单表、全局、check、empty任务用
+     *
+     * @param userId
+     * @param baseTableSourceId
+     * @param updateType
+     * @param isTimedTask       是否定时更新触发的任务
+     * @return
+     */
+    boolean addCubeGenerateTask2Queue(long userId, String baseTableSourceId, Integer updateType, boolean isTimedTask);
+
+    /**
+     * 添加custom任务用
+     *
+     * @param userId
+     * @param isTimedTask
+     * @param tableRelations
+     * @param sourceIdUpdateTypeMap 基础表id--更新类型
+     * @return
+     */
+    boolean addCubeGenerateTask2Queue(long userId, boolean isTimedTask, List<BITableRelation> tableRelations, Map<String, Integer> sourceIdUpdateTypeMap);
+
+    List<ICubeGenerateTask> getCubeGenerateTasks();
+
+    boolean removeCubeGenerateTask(ICubeGenerateTask task);
+
+    boolean removeCubeGenerateTask(List<ICubeGenerateTask> tasks);
 }

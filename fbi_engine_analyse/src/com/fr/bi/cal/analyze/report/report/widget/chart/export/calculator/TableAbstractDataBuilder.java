@@ -4,7 +4,7 @@ import com.fr.bi.cal.analyze.report.report.widget.chart.export.item.BIBasicTable
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.item.BITableHeader;
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.item.ITableHeader;
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.item.ITableItem;
-import com.fr.bi.cal.analyze.report.report.widget.chart.export.utils.BITableExportDataHelper;
+import com.fr.bi.cal.analyze.report.report.widget.chart.export.utils.BITableDimensionHelper;
 import com.fr.bi.conf.report.widget.IWidgetStyle;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.utils.program.BIJsonUtils;
@@ -16,7 +16,6 @@ import com.fr.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
 
 /**
@@ -129,8 +128,7 @@ public abstract class TableAbstractDataBuilder implements IExcelDataBuilder {
         for (String dimId : allIds) {
             BITableHeader header = new BITableHeader();
             header.setdID(dimId);
-            header.setText(BITableExportDataHelper.getDimensionNameByID(dimAndTar, dimId));
-            header.setUsed(BITableExportDataHelper.isDimUsed(dimAndTar, dimId));
+            header.setText(BITableDimensionHelper.getDimensionNameByID(dimAndTar, dimId));
             headers.add(header);
         }
     }
@@ -163,7 +161,7 @@ public abstract class TableAbstractDataBuilder implements IExcelDataBuilder {
         for (int i = 0; i < crossDimIds.size(); i++) {
             BITableHeader header = new BITableHeader();
             header.setdID(crossDimIds.get(i));
-            header.setText(BITableExportDataHelper.getDimensionNameByID(dimAndTar, crossDimIds.get(i)));
+            header.setText(BITableDimensionHelper.getDimensionNameByID(dimAndTar, crossDimIds.get(i)));
 //            header.setStyles(null);
             crossHeaders.add(header);
         }
@@ -293,7 +291,7 @@ public abstract class TableAbstractDataBuilder implements IExcelDataBuilder {
         JSONObject l = dataJSON.getJSONObject("l");
         for (int i = 0; i < targetIds.size(); i++) {
             BIBasicTableItem ob = new BIBasicTableItem();
-            ob.setValue(BITableExportDataHelper.getDimensionNameByID(dimAndTar, targetIds.get(i)));
+            ob.setValue(BITableDimensionHelper.getDimensionNameByID(dimAndTar, targetIds.get(i)));
 //            ob.setStyles(SummaryTableStyleHelper.getBodyStyles(styleSetting.getThemeColor(), styleSetting.getTableStyleGroup(), i));
             ob.setDId(targetIds.get(i));
             BIBasicTableItem child = new BIBasicTableItem();
@@ -354,13 +352,13 @@ public abstract class TableAbstractDataBuilder implements IExcelDataBuilder {
         for (String dimId : dimIds) {
             BITableHeader header = new BITableHeader();
             header.setdID(dimId);
-            header.setText(BITableExportDataHelper.getDimensionNameByID(dimAndTar, dimId));
+            header.setText(BITableDimensionHelper.getDimensionNameByID(dimAndTar, dimId));
             this.headers.add(header);
         }
         for (String crossDims : crossDimIds) {
             BITableHeader crossHeader = new BITableHeader();
             crossHeader.setdID(crossDims);
-            crossHeader.setText(BITableExportDataHelper.getDimensionNameByID(dimAndTar, crossDims));
+            crossHeader.setText(BITableDimensionHelper.getDimensionNameByID(dimAndTar, crossDims));
             crossHeaders.add(crossHeader);
         }
 
@@ -384,7 +382,7 @@ public abstract class TableAbstractDataBuilder implements IExcelDataBuilder {
             if (targetIds.size() == 0) {
                 dName = EMPTY_VALUE;
             } else {
-                dName = BITableExportDataHelper.getDimensionNameByID(dimAndTar, targetIds.get(i % (targetIds.size())));
+                dName = BITableDimensionHelper.getDimensionNameByID(dimAndTar, targetIds.get(i % (targetIds.size())));
             }
             ITableItem item = items.get(i);
             if (item.getChildren() != null && item.getChildren().size() != 0) {
@@ -393,19 +391,16 @@ public abstract class TableAbstractDataBuilder implements IExcelDataBuilder {
                     //合计
                     for (String targetId : targetIds) {
                         BITableHeader header = new BITableHeader();
-                        header.setText(SUMMARY + ":" + BITableExportDataHelper.getDimensionNameByID(dimAndTar, targetId));
-                        header.setTitle(SUMMARY + ":" + BITableExportDataHelper.getDimensionNameByID(dimAndTar, targetId));
-                        header.setTag(UUID.randomUUID().toString());
-                        header.setType("bi.page_table_cell");
+                        header.setText(SUMMARY + ":" + BITableDimensionHelper.getDimensionNameByID(dimAndTar, targetId));
                         headers.add(header);
                     }
                 }
             } else if (item.isSum()) {
                 //合计
                 //设置crossItem中的值
-                item.setValue(SUMMARY + ":" + BITableExportDataHelper.getDimensionNameByID(dimAndTar, item.getDId()));
+                item.setValue(SUMMARY + ":" + BITableDimensionHelper.getDimensionNameByID(dimAndTar, item.getDId()));
                 BITableHeader header = new BITableHeader();
-                header.setText(SUMMARY + ":" + BITableExportDataHelper.getDimensionNameByID(dimAndTar, item.getDId()));
+                header.setText(SUMMARY + ":" + BITableDimensionHelper.getDimensionNameByID(dimAndTar, item.getDId()));
                 header.parseJson(item.createJSON());
                 header.setSum(item.isSum());
                 headers.add(header);
@@ -419,19 +414,13 @@ public abstract class TableAbstractDataBuilder implements IExcelDataBuilder {
                     List<ITableItem> values = item.getValues();
                     for (int j = 0; j < values.size(); j++) {
                         BITableHeader header = new BITableHeader();
-                        header.setText(BITableExportDataHelper.getDimensionNameByID(dimAndTar, targetIds.get(j)));
-                        header.setTitle(BITableExportDataHelper.getDimensionNameByID(dimAndTar, targetIds.get(j)));
-                        header.setTag(UUID.randomUUID().toString());
-                        header.setType("bi.page_table_cell");
+                        header.setText(BITableDimensionHelper.getDimensionNameByID(dimAndTar, targetIds.get(j)));
                         headers.add(header);
                     }
                 }
             } else {
                 BITableHeader header = new BITableHeader();
                 header.setText(dName);
-                header.setType("bi.page_table_cell");
-                header.setTitle(dName);
-                header.setTag(UUID.randomUUID().toString());
                 headers.add(header);
             }
         }

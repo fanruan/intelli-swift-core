@@ -681,4 +681,13 @@ public class BIReportConstant {
         public static final int IS_EDITING = 2;
         public static final int NOT_EXIST = 3;
     }
+
+    /*
+  * 计算指标比较结果
+  * */
+    public static final class TARGET_COMPARE_RES {
+        public static final int LESS = 1;
+        public static final int EQUAL = 2;
+        public static final int MORE = 3;
+    }
 }
