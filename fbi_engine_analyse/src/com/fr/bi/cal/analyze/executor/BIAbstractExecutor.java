@@ -40,10 +40,6 @@ public abstract class BIAbstractExecutor<T> implements BIEngineExecutor<T> {
         return new ArrayList<MetricGroupInfo>();
     }
 
-    public Node getGroupNodeWidthGvi() throws Exception{
-        return null;
-    }
-
     public Node getStopOnRowNode(Object[] rowData) throws Exception{
         return null;
     }
