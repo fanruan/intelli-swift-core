@@ -6,8 +6,8 @@ import com.fr.bi.cal.analyze.report.report.widget.chart.export.item.ITableHeader
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.item.ITableItem;
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.item.constructor.BISummaryDataConstructor;
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.item.constructor.DataConstructor;
-import com.fr.bi.cal.analyze.report.report.widget.chart.export.utils.BITableExportDataHelper;
-import com.fr.bi.cal.analyze.report.report.widget.chart.export.utils.SummaryTableStyleHelper;
+import com.fr.bi.cal.analyze.report.report.widget.chart.export.utils.BITableDimensionHelper;
+import com.fr.bi.cal.analyze.report.report.widget.chart.export.utils.BITableStyleHelper;
 import com.fr.bi.conf.report.widget.IWidgetStyle;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.utils.program.BIJsonUtils;
@@ -153,7 +153,7 @@ public class SummaryComplexTableBuilder extends TableAbstractDataBuilder {
         BIBasicTableItem itemNode = new BIBasicTableItem();
         itemNode.setDId(targetIds.get(j));
         itemNode.setValue(s.getString(j));
-        itemNode.setStyles(SummaryTableStyleHelper.getLastSummaryStyles(styleSetting.getThemeColor(), styleSetting.getTableStyleGroup()));
+        itemNode.setStyles(BITableStyleHelper.getLastSummaryStyles(styleSetting.getThemeColor(), styleSetting.getTableStyleGroup()));
         outerValues.add(itemNode);
     }
 
@@ -232,7 +232,6 @@ public class SummaryComplexTableBuilder extends TableAbstractDataBuilder {
         }
         for (int i = 0; i < dataArray.length(); i++) {
             JSONArray tableData = dataArray.getJSONArray(i);
-
             for (int j = 0; j < tableData.length(); j++) {
                 //parse一个表结构
                 Map<Integer, List<JSONObject>> dimAndTar = getDimsByDataPos(i, j);
@@ -274,13 +273,13 @@ public class SummaryComplexTableBuilder extends TableAbstractDataBuilder {
     // 处理列 针对于children
     // 要将所有的最外层的values处理成children
     private void parseColTableItems(List<ITableItem> tempItems) throws Exception {
-
         ITableItem childItem = new BIBasicTableItem();
         for (int i = 0; i < tempItems.size(); i++) {
             boolean isSummary = showRowTotal && targetIds.size() > 0 && (isColRegionExist() || isRowRegionExist()) && !isOnlyCrossAndTarget();
             if (isSummary) {
                 BIBasicTableItem summaryValueItem = new BIBasicTableItem();
                 summaryValueItem.setValue(SUMMARY);
+                summaryValueItem.setSum(true);
                 summaryValueItem.setValues(tempItems.get(i).getValues());
                 List<ITableItem> childrenAddSummaryValue = tempItems.get(i).getChildren();
                 childrenAddSummaryValue.add(summaryValueItem);
@@ -380,7 +379,7 @@ public class SummaryComplexTableBuilder extends TableAbstractDataBuilder {
         List<JSONArray> rowRegions = new ArrayList<JSONArray>();
         for (Integer regionId : dimAndTar.keySet()) {
             JSONArray temp = new JSONArray();
-            if (BITableExportDataHelper.isDimensionRegion1ByRegionType(regionId)) {
+            if (BITableDimensionHelper.isDimensionRegion1ByRegionType(regionId)) {
                 List<JSONObject> list = dimAndTar.get(regionId);
                 for (JSONObject dIdJson : list) {
                     if (dIdJson.optBoolean("used")) {
@@ -406,7 +405,7 @@ public class SummaryComplexTableBuilder extends TableAbstractDataBuilder {
                     BIBasicTableItem item = new BIBasicTableItem();
                     item.setDId(targetIds.get(i));
                     item.setValue("summary");
-                    item.setStyles(SummaryTableStyleHelper.getHeaderStyles(styleSetting.getThemeColor(), styleSetting.getTableStyleGroup()));
+                    item.setStyles(BITableStyleHelper.getHeaderStyles(styleSetting.getThemeColor(), styleSetting.getTableStyleGroup()));
                     children.add(item);
                 }
 
@@ -414,7 +413,7 @@ public class SummaryComplexTableBuilder extends TableAbstractDataBuilder {
                 for (String targetId : targetIds) {
                     BIBasicTableItem item = new BIBasicTableItem();
                     item.setValue("summary");
-                    item.setStyles(SummaryTableStyleHelper.getHeaderStyles(styleSetting.getThemeColor(), styleSetting.getTableStyleGroup()));
+                    item.setStyles(BITableStyleHelper.getHeaderStyles(styleSetting.getThemeColor(), styleSetting.getTableStyleGroup()));
                     item.setDId(targetId);
                     crossItem.getChildren().add(item);
                 }
@@ -429,7 +428,7 @@ public class SummaryComplexTableBuilder extends TableAbstractDataBuilder {
     public List<JSONArray> getColRegions() throws JSONException {
         List<JSONArray> colRegions = new ArrayList<JSONArray>();
         for (Integer regionId : dimAndTar.keySet()) {
-            if (BITableExportDataHelper.isDimensionRegion2ByRegionType(regionId)) {
+            if (BITableDimensionHelper.isDimensionRegion2ByRegionType(regionId)) {
                 JSONArray array = new JSONArray();
                 for (JSONObject dIdJson : dimAndTar.get(regionId)) {
                     if (dIdJson.has("used") && dIdJson.getBoolean("used")) {
@@ -447,7 +446,7 @@ public class SummaryComplexTableBuilder extends TableAbstractDataBuilder {
     protected void refreshDimsInfo() throws Exception {
         loop:
         for (Integer integer : dimAndTar.keySet()) {
-            if (BITableExportDataHelper.isDimensionRegion1ByRegionType(integer)) {
+            if (BITableDimensionHelper.isDimensionRegion1ByRegionType(integer)) {
                 for (JSONObject s : dimAndTar.get(integer)) {
                     dimIds.add(s.getString("dId"));
                 }
@@ -457,7 +456,7 @@ public class SummaryComplexTableBuilder extends TableAbstractDataBuilder {
             }
         }
         for (Integer integer : dimAndTar.keySet()) {
-            if (BITableExportDataHelper.isDimensionRegion2ByRegionType(integer)) {
+            if (BITableDimensionHelper.isDimensionRegion2ByRegionType(integer)) {
                 for (JSONObject s : dimAndTar.get(integer)) {
                     crossDimIds.add(s.getString("dId"));
                 }
@@ -470,7 +469,7 @@ public class SummaryComplexTableBuilder extends TableAbstractDataBuilder {
         //使用中的指标
         if (dimAndTar.containsKey(Integer.valueOf(BIReportConstant.REGION.TARGET1))) {
             for (JSONObject s : dimAndTar.get(Integer.valueOf(BIReportConstant.REGION.TARGET1))) {
-                if (BITableExportDataHelper.isDimUsed(dimAndTar, s.getString("dId"))) {
+                if (BITableDimensionHelper.isDimUsed(dimAndTar, s.getString("dId"))) {
                     targetIds.add(s.getString("dId"));
                 }
             }

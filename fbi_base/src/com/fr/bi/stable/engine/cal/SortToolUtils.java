@@ -34,4 +34,20 @@ public class SortToolUtils {
         return gviCount <= RESORT_COUNT ? SortTool.TREE_MAP_RE_SORT : SortTool.TREE_MAP;
     }
 
+    public static SortTool getGroupValueTool(int groupSize, int gviCount){
+        if (gviCount == 1){
+            return SortTool.DIRECT;
+        }
+        if (gviCount == 0){
+            return SortTool.EMPTY;
+        }
+        //尽量避免下面的log，/等数学运算
+        if (groupSize < gviCount){
+            return  SortTool.INT_ARRAY;
+        }
+        double treeMap = gviCount * Math.log(gviCount) * N_LOG_N;
+        double intArray = groupSize * GROUP_COUNT ;
+        return treeMap < intArray ? SortTool.TREE_MAP :  SortTool.INT_ARRAY;
+    }
+
 }

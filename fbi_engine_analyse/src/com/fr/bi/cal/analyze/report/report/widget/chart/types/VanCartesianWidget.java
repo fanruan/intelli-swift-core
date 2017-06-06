@@ -9,6 +9,7 @@ import com.fr.bi.field.target.target.BISummaryTarget;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.general.ComparatorUtils;
 import com.fr.general.IOUtils;
+import com.fr.general.Inter;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
@@ -27,7 +28,7 @@ public abstract class VanCartesianWidget extends VanChartWidget {
     private static final int STEP = 2;
     private static final int CURVE = 3;
 
-    private static final String FALL_COLUMN = "fallColumn";
+    private static final String FALL_COLUMN = Inter.getLocText("BI-Fall_Column");
     private static final String TRANS = "rgba(0,0,0,0)";
 
     private static final int VERTICAL = 90;
@@ -540,6 +541,10 @@ public abstract class VanCartesianWidget extends VanChartWidget {
 
     private boolean hasData(String regionID) {
         JSONArray dIDs = this.getDimensionIDArray(regionID);
+
+        if(dIDs == null){
+            return false;
+        }
 
         for(int i = 0, len = dIDs.length(); i < len; i++){
             try {
