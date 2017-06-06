@@ -12,7 +12,7 @@ import java.util.Map;
  * Created by Kary on 2017/2/26.
  * 指标维度属性
  */
-public class BITableExportDataHelper {
+public class BITableDimensionHelper {
     // FIXME: 2017/2/26 需要抽象出来
     public static int getFieldTypeByDimensionID(Map<Integer, List<JSONObject>> dimAndTar, String dId) throws Exception {
         JSONObject dimAndTarsJson = getDimAndTars(dimAndTar, dId);

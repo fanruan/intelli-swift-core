@@ -21,21 +21,16 @@ import java.util.concurrent.LinkedBlockingQueue;
  */
 public class CubeGenerateTaskQueue {
 
-    private String threadName = "CubeTaskConditionSignalThread";
+    private static final String THREAD_NAME = "CubeTaskConditionSignalThread";
+
+    private static final long SLEEP_TIME = 10000L;
 
     private BlockingQueue<ICubeGenerateTask> queue = new LinkedBlockingQueue<ICubeGenerateTask>(
             1000);
-    private Object lockObject = new Object();
-
-//    private static CubeGenerateTaskQueue instance;
-//
-//    static {
-//        instance = new CubeGenerateTaskQueue();
-//    }
+    private final Object lockObject = new Object();
 
     public CubeGenerateTaskQueue() {
         new Thread(new Runnable() {
-            private long sleepTime = 10000l;
 
             /**
              * 当CubeRunner hasTask()为false时。确保做了signalAll操作。
@@ -47,18 +42,14 @@ public class CubeGenerateTaskQueue {
                         if (!CubeGenerationManager.getCubeManager().hasTask()) {
                             CubeTaskCondition.getInstance().signalAll();
                         }
-                        Thread.sleep(sleepTime);
+                        Thread.sleep(SLEEP_TIME);
                     } catch (InterruptedException e) {
                         BILoggerFactory.getLogger(CubeTaskCondition.class).error(e.getMessage(), e);
                     }
                 }
             }
-        }, threadName).start();
+        }, THREAD_NAME).start();
     }
-
-//    public static CubeGenerateTaskQueue getInstance() {
-//        return instance;
-//    }
 
     public void put(ICubeGenerateTask tableTask) throws InterruptedException {
         synchronized (lockObject) {

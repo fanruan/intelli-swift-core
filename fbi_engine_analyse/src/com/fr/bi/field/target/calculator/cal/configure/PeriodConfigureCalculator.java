@@ -36,13 +36,22 @@ public class PeriodConfigureCalculator extends AbstractConfigureCalculator {
         }
         int deep = getCalDeep(node);
         BINode tempNode = node;
-        //从第几个纬度开始计算
-        int calDeep = start_group == 0 ? deep - 1 : deep;
-        for (int i = 0; i < calDeep; i++) {
-            if (tempNode.getFirstChild() == null) {
-                break;
+
+        if (start_group == 0) {
+            //从第几个纬度开始计算
+            int calDeep = deep - 1;
+            for (int i = 0; i < calDeep; i++) {
+                if (tempNode.getFirstChild() == null) {
+                    break;
+                }
+                tempNode = tempNode.getFirstChild();
             }
-            tempNode = tempNode.getFirstChild();
+        } else {
+            if (node.getDeep() > node.getFrameDeep()) {
+                tempNode = getMaxDeepNode(getCalculatedRootNode(node));
+            } else {
+                return;
+            }
         }
         List<RankDealWith> nodeList = new ArrayList<RankDealWith>();
         BINode cursor_node = tempNode;
