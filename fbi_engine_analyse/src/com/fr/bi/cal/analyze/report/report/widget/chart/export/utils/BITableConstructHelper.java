@@ -76,26 +76,27 @@ public class BITableConstructHelper {
             }
             formatText(ops, item);
             setTextStyle(ops, item);
-            setStyleByIndexAndLayer(rowIndex, layer, style, item);
-            item.setStyles(BITableStyleHelper.getBodyStyles(style.getThemeColor(), style.getTableStyleGroup(), rowIndex));
+            setStyle(rowIndex, layer, style, item);
             if (item.getValues() != null) {
                 for (ITableItem it : item.getValues()) {
                     formatText(ops, it);
                     setTextStyle(ops, it);
-                    setStyleByIndexAndLayer(rowIndex, layer, style, it);
+                    if ((layer == 0 && item.getValues() != null) || item.isSum()) {
+                        it.setStyles(BITableStyleHelper.getLastSummaryStyles(style.getThemeColor(), style.getTableStyleGroup()));
+                    } else {
+                        it.setStyles(BITableStyleHelper.getBodyStyles(style.getThemeColor(), style.getTableStyleGroup(), rowIndex));
+                    }
                 }
             }
         }
     }
 
-    /*
-    * 首层汇总深色
-    * */
-    private static void setStyleByIndexAndLayer(int rowIndex, int layer, BITableWidgetStyle style, ITableItem it) throws JSONException {
-        if (layer == 0) {
-            it.setStyles(BITableStyleHelper.getLastSummaryStyles(style.getThemeColor(), style.getTableStyleGroup()));
+    private static void setStyle(int rowIndex, int layer, BITableWidgetStyle style, ITableItem item) throws JSONException {
+        boolean isOutSummary=layer == 0 && item.getValues() != null;
+        if (isOutSummary || item.isSum()) {
+            item.setStyles(BITableStyleHelper.getLastSummaryStyles(style.getThemeColor(), style.getTableStyleGroup()));
         } else {
-            it.setStyles(BITableStyleHelper.getBodyStyles(style.getThemeColor(), style.getTableStyleGroup(), rowIndex));
+            item.setStyles(BITableStyleHelper.getBodyStyles(style.getThemeColor(), style.getTableStyleGroup(), rowIndex));
         }
     }
 

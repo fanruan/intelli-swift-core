@@ -279,6 +279,7 @@ public class SummaryComplexTableBuilder extends TableAbstractDataBuilder {
             if (isSummary) {
                 BIBasicTableItem summaryValueItem = new BIBasicTableItem();
                 summaryValueItem.setValue(SUMMARY);
+                summaryValueItem.setSum(true);
                 if (childrenAddSummaryValue.size() > 0) {
                     summaryValueItem.setDId(tempItems.get(i).getChildren().get(0).getDId());
                 }
