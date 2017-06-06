@@ -51,6 +51,7 @@ public abstract class VanChartWidget extends TableWidget {
     public static final String ARRIVALRATE = "${ARRIVALRATE}";
 
     protected static final String COMPONENT_MAX_SIZE = "30%";
+    protected static final String TRANS_SERIES = "transSeries";
 
     public static final String LONG_DATE = "longDate";
 
@@ -157,7 +158,7 @@ public abstract class VanChartWidget extends TableWidget {
                 .put("refresh", falseEnabledJSONObject());
     }
 
-    private JSONObject falseEnabledJSONObject() throws JSONException {
+    protected JSONObject falseEnabledJSONObject() throws JSONException {
         return JSONObject.create().put("enabled", false);
     }
 
@@ -641,6 +642,10 @@ public abstract class VanChartWidget extends TableWidget {
         for (int i = 0, len = series.length(); i < len; i++) {
             JSONObject ser = series.getJSONObject(i);
 
+            if(ser.optBoolean(TRANS_SERIES)){
+                continue;
+            }
+
             JSONObject formatter = JSONObject.create();
 
             formatter.put("identifier", this.getTooltipIdentifier()).put(this.tooltipValueKey(), this.tooltipValueFormat(this.getSerBITarget(ser)));
@@ -675,6 +680,10 @@ public abstract class VanChartWidget extends TableWidget {
 
             for (int i = 0, len = series.length(); i < len; i++) {
                 JSONObject ser = series.getJSONObject(i);
+
+                if(ser.optBoolean(TRANS_SERIES)){
+                    continue;
+                }
 
                 JSONObject labels = new JSONObject(dataLabels.toString());
                 labels.optJSONObject("formatter")
