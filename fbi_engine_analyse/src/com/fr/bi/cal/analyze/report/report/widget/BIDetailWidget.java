@@ -76,7 +76,7 @@ public class BIDetailWidget extends AbstractBIWidget {
 
     private TableWidget linkedWidget;
 
-    protected Map<String, JSONArray> clicked = new HashMap<String, JSONArray>();
+    private Map<String, JSONArray> clicked = new HashMap<String, JSONArray>();
 
     public int getPage() {
         return page;
