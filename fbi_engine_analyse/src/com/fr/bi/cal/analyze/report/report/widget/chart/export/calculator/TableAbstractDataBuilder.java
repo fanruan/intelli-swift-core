@@ -7,6 +7,7 @@ import com.fr.bi.cal.analyze.report.report.widget.chart.export.item.ITableItem;
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.utils.BITableDimensionHelper;
 import com.fr.bi.conf.report.widget.IWidgetStyle;
 import com.fr.bi.stable.constant.BIReportConstant;
+import com.fr.bi.stable.constant.BIStyleConstant;
 import com.fr.bi.stable.utils.program.BIJsonUtils;
 import com.fr.general.Inter;
 import com.fr.json.JSONArray;
@@ -285,6 +286,12 @@ public abstract class TableAbstractDataBuilder implements IExcelDataBuilder {
                 targetIds.add(s.getString("dId"));
             }
         }
+        resetShowTotals();
+    }
+
+    private void resetShowTotals() {
+        showColTotal = showRowTotal && targetIds.size() > 0;
+        showRowTotal = showRowTotal && targetIds.size() > 0;
     }
 
     //仅有列表头和指标 l: {s: {c: [{s: [1, 2]}, {s: [3, 4]}], s: [100, 200]}}
@@ -547,7 +554,7 @@ public abstract class TableAbstractDataBuilder implements IExcelDataBuilder {
     private void hasChildren(int currentLayer, List<String> dimIds, JSONObject child, BIBasicTableItem item) throws Exception {
         List children = createCommonTableItems(child.getString("c"), currentLayer, dimIds);
         item.setChildren(children);
-        if (showRowTotal) {
+        if (showRowTotal||this.styleSetting.getTableFormGroup()== BIStyleConstant.TABLE_FORM.OPEN_COL) {
             List<ITableItem> vs = new ArrayList<ITableItem>();
             JSONArray summary = getOneRowSummary(child.getString("s"));
             int tartSize = targetIds.size();
