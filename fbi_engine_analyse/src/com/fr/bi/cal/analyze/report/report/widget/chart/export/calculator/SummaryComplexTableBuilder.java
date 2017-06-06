@@ -275,28 +275,24 @@ public class SummaryComplexTableBuilder extends TableAbstractDataBuilder {
     private void parseColTableItems(List<ITableItem> tempItems) throws Exception {
         ITableItem childItem = new BIBasicTableItem();
         for (int i = 0; i < tempItems.size(); i++) {
+            List<ITableItem> childrenAddSummaryValue = tempItems.get(i).getChildren();
             boolean isSummary = showRowTotal && targetIds.size() > 0 && (isColRegionExist() || isRowRegionExist()) && !isOnlyCrossAndTarget();
             if (isSummary) {
                 BIBasicTableItem summaryValueItem = new BIBasicTableItem();
                 summaryValueItem.setValue(SUMMARY);
-                summaryValueItem.setSum(true);
+                if (childrenAddSummaryValue.size() > 0) {
+                    summaryValueItem.setDId(tempItems.get(i).getChildren().get(0).getDId());
+                }
                 summaryValueItem.setValues(tempItems.get(i).getValues());
-                List<ITableItem> childrenAddSummaryValue = tempItems.get(i).getChildren();
                 childrenAddSummaryValue.add(summaryValueItem);
-                tempItems.get(i).setChildren(childrenAddSummaryValue);
-                tempItems.get(i).setValues(null);
-
-            } else {
-                if (childItem.getValues() == null) {
-                    childItem.setValues(tempItems.get(i).getValues());
-                } else
-                    childItem.getValues().addAll(tempItems.get(i).getValues());
             }
+            tempItems.get(i).setChildren(childrenAddSummaryValue);
             if (childItem.getChildren() == null) {
                 childItem.setChildren(tempItems.get(i).getChildren());
             } else {
                 childItem.getChildren().addAll(tempItems.get(i).getChildren());
             }
+
         }
         this.items.add(childItem);
     }

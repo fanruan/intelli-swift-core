@@ -28,7 +28,8 @@ public abstract class VanCartesianWidget extends VanChartWidget {
     private static final int STEP = 2;
     private static final int CURVE = 3;
 
-    private static final String FALL_COLUMN = Inter.getLocText("BI-Fall_Column");
+    //这个是对比柱状图的stackid和transSeries的name，任意string都可以，不会展示到图上，不用国际化什么的。
+    private static final String FALL_COLUMN = "fallColumn";
     private static final String TRANS = "rgba(0,0,0,0)";
 
     private static final int VERTICAL = 90;
@@ -185,8 +186,8 @@ public abstract class VanCartesianWidget extends VanChartWidget {
 
             JSONObject ser0 = new JSONObject(ser1.toString());
             ser0.put("name", FALL_COLUMN).put("color", TRANS).put("borderColor", TRANS).put("borderWidth", 0)
-                    .put("clickColor", TRANS).put("mouseOverColor", TRANS).put("tooltip", JSONObject.create().put("enabled", false))
-                    .put("fillColor", TRANS).put("marker", JSONObject.create().put("enabled", false));
+                    .put("clickColor", TRANS).put("mouseOverColor", TRANS).put("tooltip", falseEnabledJSONObject()).put("dataLabels", falseEnabledJSONObject())
+                    .put("fillColor", TRANS).put("marker", falseEnabledJSONObject()).put(TRANS_SERIES, true);
 
             double stackValue = 0;
             JSONArray data = ser0.optJSONArray("data");
@@ -541,6 +542,10 @@ public abstract class VanCartesianWidget extends VanChartWidget {
 
     private boolean hasData(String regionID) {
         JSONArray dIDs = this.getDimensionIDArray(regionID);
+
+        if(dIDs == null){
+            return false;
+        }
 
         for(int i = 0, len = dIDs.length(); i < len; i++){
             try {
