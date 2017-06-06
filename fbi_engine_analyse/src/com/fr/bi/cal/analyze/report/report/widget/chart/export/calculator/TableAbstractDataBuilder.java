@@ -400,6 +400,7 @@ public abstract class TableAbstractDataBuilder implements IExcelDataBuilder {
                     for (String targetId : targetIds) {
                         BITableHeader header = new BITableHeader();
                         header.setText(SUMMARY + ":" + BITableDimensionHelper.getDimensionNameByID(dimAndTar, targetId));
+                        header.setSum(true);
                         headers.add(header);
                     }
                 }
@@ -417,6 +418,7 @@ public abstract class TableAbstractDataBuilder implements IExcelDataBuilder {
                 if (targetIds.size() == 1) {
                     BITableHeader header = new BITableHeader();
                     header.setText(item.getValue());
+                    header.parseJson(item.createJSON());
                     headers.add(header);
                 } else {
                     List<ITableItem> values = item.getValues();
