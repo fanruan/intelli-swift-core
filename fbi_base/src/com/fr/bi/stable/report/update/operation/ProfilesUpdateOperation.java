@@ -83,8 +83,9 @@ public class ProfilesUpdateOperation implements ReportUpdateOperation {
                 String dimId = keys.next().toString();
                 JSONObject dimJson = json.getJSONObject("widgets").getJSONObject(dimId);
                 if (dimJson.has("type")) {
-                    if (dimJson.getInt("type")== BIReportConstant.WIDGET.BUBBLE||dimJson.getInt("type")==BIReportConstant.WIDGET.SCATTER)
-                    dimJson.put("type", BIReportConstant.WIDGET.DOT);
+                    if (dimJson.getInt("type")== BIReportConstant.WIDGET.BUBBLE||dimJson.getInt("type")==BIReportConstant.WIDGET.SCATTER) {
+                        dimJson.put("type", BIReportConstant.WIDGET.DOT);
+                    }
                 }
             }
         }
