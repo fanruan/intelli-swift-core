@@ -35,34 +35,34 @@ public class AnalysisETLOperatorFactory {
     public static List<IETLOperator> createOperatorsByJSON(JSONObject jo, long userId) throws Exception {
         List<IETLOperator> list = new ArrayList<IETLOperator>();
         int etlType = jo.getInt("etlType");
-        switch (etlType){
-            case Constants.ETL_TYPE.USE_PART_FIELDS :{
+        switch (etlType) {
+            case Constants.ETL_TYPE.USE_PART_FIELDS: {
                 IETLOperator op = new UsePartOperator();
                 op.parseJSON(jo.getJSONObject("operator"));
                 list.add(op);
                 break;
             }
-            case Constants.ETL_TYPE.ADD_COLUMN :{
+            case Constants.ETL_TYPE.ADD_COLUMN: {
                 JSONObject operators = jo.getJSONObject("operator");
                 JSONArray columns = operators.getJSONArray("columns");
-                for (int i = 0; i < columns.length(); i ++){
+                for (int i = 0; i < columns.length(); i++) {
                     list.add(createAddColumnOperator(columns.getJSONObject(i), userId));
                 }
                 break;
             }
-            case Constants.ETL_TYPE.GROUP_SUMMARY :{
+            case Constants.ETL_TYPE.GROUP_SUMMARY: {
                 IETLOperator op = new TableSumByGroupOperator();
                 op.parseJSON(jo.getJSONObject("operator"));
                 list.add(op);
                 break;
             }
-            case Constants.ETL_TYPE.FILTER :{
+            case Constants.ETL_TYPE.FILTER: {
                 IETLOperator op = new TableColumnFieldsFilterOperator(userId);
                 op.parseJSON(jo.getJSONObject("operator"));
                 list.add(op);
                 break;
             }
-            case Constants.ETL_TYPE.MERGE_SHEET :{
+            case Constants.ETL_TYPE.MERGE_SHEET: {
                 IETLOperator op = new TableMergeOperator();
                 op.parseJSON(jo.getJSONObject("operator"));
                 list.add(op);
@@ -75,58 +75,63 @@ public class AnalysisETLOperatorFactory {
     private static IETLOperator createAddColumnOperator(JSONObject jo, long userId) throws Exception {
         String type = jo.getString("addColumnType");
         IETLOperator op = null;
-        if (ComparatorUtils.equals(type, BIJSONConstant.ETL_ADD_COLUMN_TYPE.FORMULA)){
+        if (ComparatorUtils.equals(type, BIJSONConstant.ETL_ADD_COLUMN_TYPE.FORMULA)) {
             op = new ETLFormularOperator(userId);
-        } else if (ComparatorUtils.equals(type, BIJSONConstant.ETL_ADD_COLUMN_TYPE.DATE_DIFF)){
+        } else if (ComparatorUtils.equals(type, BIJSONConstant.ETL_ADD_COLUMN_TYPE.DATE_DIFF)) {
             op = new DateDiffOperator(userId);
-        } else if (ComparatorUtils.equals(type, BIJSONConstant.ETL_ADD_COLUMN_TYPE.DATE_YEAR)
-                || ComparatorUtils.equals(type, BIJSONConstant.ETL_ADD_COLUMN_TYPE.DATE_SEASON)
-                || ComparatorUtils.equals(type, BIJSONConstant.ETL_ADD_COLUMN_TYPE.DATE_MONTH)){
+        } else if (isDate(type)) {
             op = new GetValueFromDateOperator(userId);
-        } else if (ComparatorUtils.equals(type, BIJSONConstant.ETL_ADD_COLUMN_TYPE.GROUP)){
+        } else if (ComparatorUtils.equals(type, BIJSONConstant.ETL_ADD_COLUMN_TYPE.GROUP)) {
             op = new ExpressionValueOperator(userId);
-        }  else if (ComparatorUtils.equals(type, BIJSONConstant.ETL_ADD_COLUMN_TYPE.SINGLE_VALUE)){
+        } else if (ComparatorUtils.equals(type, BIJSONConstant.ETL_ADD_COLUMN_TYPE.SINGLE_VALUE)) {
             op = new SingleValueOperator(userId);
-        } else if (ComparatorUtils.equals(type, BIJSONConstant.ETL_ADD_COLUMN_TYPE.VALUE_CONVERT)){
+        } else if (ComparatorUtils.equals(type, BIJSONConstant.ETL_ADD_COLUMN_TYPE.VALUE_CONVERT)) {
             op = new ValueConverOperator(userId);
-        } else if (ComparatorUtils.equals(type, BIJSONConstant.ETL_ADD_COLUMN_TYPE.EXPR_ACC)){
+        } else if (ComparatorUtils.equals(type, BIJSONConstant.ETL_ADD_COLUMN_TYPE.EXPR_ACC)) {
             op = new AccumulateRowCalculatorOperator();
-        } else if (ComparatorUtils.equals(type, BIJSONConstant.ETL_ADD_COLUMN_TYPE.EXPR_RANK)){
+        } else if (ComparatorUtils.equals(type, BIJSONConstant.ETL_ADD_COLUMN_TYPE.EXPR_RANK)) {
             op = new RankRowCalculatorOperator();
-        } else if (ComparatorUtils.equals(type, BIJSONConstant.ETL_ADD_COLUMN_TYPE.EXPR_SUM)){
+        } else if (ComparatorUtils.equals(type, BIJSONConstant.ETL_ADD_COLUMN_TYPE.EXPR_SUM)) {
             op = new AllDataRowCalculatorOperator();
-        } else if (ComparatorUtils.equals(type, BIJSONConstant.ETL_ADD_COLUMN_TYPE.EXPR_LP)){
+        } else if (ComparatorUtils.equals(type, BIJSONConstant.ETL_ADD_COLUMN_TYPE.EXPR_LP)) {
             op = new PeriodRowCalculatorOperator();
-        } else if (ComparatorUtils.equals(type, BIJSONConstant.ETL_ADD_COLUMN_TYPE.EXPR_LP_PERCENT)){
+        } else if (ComparatorUtils.equals(type, BIJSONConstant.ETL_ADD_COLUMN_TYPE.EXPR_LP_PERCENT)) {
             op = new PeriodPercentRowCalculatorOperator();
-        } else if (ComparatorUtils.equals(type, BIJSONConstant.ETL_ADD_COLUMN_TYPE.EXPR_CPP)){
+        } else if (ComparatorUtils.equals(type, BIJSONConstant.ETL_ADD_COLUMN_TYPE.EXPR_CPP)) {
             op = new CorrespondMonthPeriodRowCalculatorOperator();
-        } else if (ComparatorUtils.equals(type, BIJSONConstant.ETL_ADD_COLUMN_TYPE.EXPR_CPP_PERCENT)){
+        } else if (ComparatorUtils.equals(type, BIJSONConstant.ETL_ADD_COLUMN_TYPE.EXPR_CPP_PERCENT)) {
             op = new CorrespondMonthPeriodPercentRowCalculatorOperator();
         }
         op.parseJSON(jo);
         return op;
     }
 
+    private static boolean isDate(String type) {
+        boolean isSeasonOrMonth = ComparatorUtils.equals(type, BIJSONConstant.ETL_ADD_COLUMN_TYPE.DATE_SEASON)
+                || ComparatorUtils.equals(type, BIJSONConstant.ETL_ADD_COLUMN_TYPE.DATE_MONTH);
+        boolean isYear = ComparatorUtils.equals(type, BIJSONConstant.ETL_ADD_COLUMN_TYPE.DATE_YEAR);
+        return isYear || isSeasonOrMonth;
+    }
+
     public static void createJSONByOperators(JSONObject jo, List<IETLOperator> operators) throws Exception {
-        if (operators.get(0).isAddColumnOprator()){
+        if (operators.get(0).isAddColumnOprator()) {
             jo.put("etlType", Constants.ETL_TYPE.ADD_COLUMN);
             JSONObject operator = new JSONObject();
             JSONArray columns = new JSONArray();
-            for (IETLOperator op : operators){
+            for (IETLOperator op : operators) {
                 columns.put(op.createJSON());
             }
             operator.put("columns", columns);
             jo.put("operator", operator);
         } else {
             IETLOperator operator = operators.get(0);
-            if (ComparatorUtils.equals(operator.xmlTag(), TableMergeOperator.XML_TAG)){
+            if (ComparatorUtils.equals(operator.xmlTag(), TableMergeOperator.XML_TAG)) {
                 jo.put("etlType", Constants.ETL_TYPE.MERGE_SHEET);
-            } else if(ComparatorUtils.equals(operator.xmlTag(), TableColumnFieldsFilterOperator.XML_TAG)){
+            } else if (ComparatorUtils.equals(operator.xmlTag(), TableColumnFieldsFilterOperator.XML_TAG)) {
                 jo.put("etlType", Constants.ETL_TYPE.FILTER);
-            } else if(ComparatorUtils.equals(operator.xmlTag(), TableSumByGroupOperator.XML_TAG)){
+            } else if (ComparatorUtils.equals(operator.xmlTag(), TableSumByGroupOperator.XML_TAG)) {
                 jo.put("etlType", Constants.ETL_TYPE.GROUP_SUMMARY);
-            } else if(ComparatorUtils.equals(operator.xmlTag(), UsePartOperator.XML_TAG)){
+            } else if (ComparatorUtils.equals(operator.xmlTag(), UsePartOperator.XML_TAG)) {
                 jo.put("etlType", Constants.ETL_TYPE.USE_PART_FIELDS);
             }
             jo.put("operator", operator.createJSON());

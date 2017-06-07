@@ -9,7 +9,7 @@
     "DateDiffOperator.java",
     "SingleValueOperator.java"
   ],
-  "join_names": [
+  "joinNames": [
     "TableJoinOperator.java"
   ],
   "is_enable": [
@@ -42,7 +42,7 @@
     "AdsMysqlOdbcDialect.java",
     "BIDBUtils.java"
   ],
-  "join_style": [
+  "joinStyle": [
     "TableJoinOperator.java"
   ],
   "loop_err": [
@@ -131,7 +131,7 @@
   "new_groups": [
     "OperatorFactory.java"
   ],
-  "join_fields": [
+  "joinFields": [
     "TableJoinOperator.java"
   ],
   "column_type": [
