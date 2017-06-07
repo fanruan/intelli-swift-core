@@ -100,6 +100,10 @@ public class BIPlate extends AbstractFSPlate {
             BICubeConfigureCenter.getTableRelationManager().getAllTablePath(UserControl.getInstance().getSuperManagerID());
             BICubeConfigureCenter.getDataSourceManager().getAllBusinessTable();
             BIConfigureManagerCenter.getUpdateFrequencyManager().getUpdateSettings(UserControl.getInstance().getSuperManagerID());
+
+            /// TODO: 2017/6/2 目前通过维护packageManager中的Map来提供分析可用资源的获取，真正解决需要从cube配置中获取到当前Cube中存在的资源
+            BICubeConfigureCenter.getPackageManager().getAllPackages(UserControl.getInstance().getSuperManagerID());
+            BICubeConfigureCenter.getPackageManager().initialAnalysisResourceMap(UserControl.getInstance().getSuperManagerID());
         } catch (Exception e) {
             throw BINonValueUtils.beyondControl(e);
         }
@@ -325,6 +329,7 @@ public class BIPlate extends AbstractFSPlate {
                 "/com/fr/bi/web/cross/js/bi.toolbar.add.js",
                 "/com/fr/bi/web/cross/js/bi.directory.edit.js",
                 "/com/fr/bi/web/cross/js/reporthangout/hangoutreport.plate.js",
+                "/com/fr/bi/web/cross/js/reporthangout/node/node.multilayer.arrow.plate.js",
                 "/com/fr/bi/web/cross/js/reporthangout/bireportdialog.js",
                 "/com/fr/bi/web/cross/js/configauth/bi.config.authmanage.js"
         });

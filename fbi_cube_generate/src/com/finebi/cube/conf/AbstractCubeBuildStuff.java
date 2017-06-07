@@ -298,7 +298,7 @@ public abstract class AbstractCubeBuildStuff implements CubeBuildStuff {
         return check.HDSpaceCheck(new File(conf.getRootURI().getPath()));
     }
 
-    protected Set<String> getDependTableSourceIdSet(Set<List<Set<CubeTableSource>>> dependTableSource) {
+    protected Set<String>  getDependTableSourceIdSet(Set<List<Set<CubeTableSource>>> dependTableSource) {
         Set<String> tableSourceIDSet = new HashSet<String>();
         for (CubeTableSource tableSource : BIDataStructTranUtils.set2Set(dependTableSource)) {
             if (tableSource != null) {

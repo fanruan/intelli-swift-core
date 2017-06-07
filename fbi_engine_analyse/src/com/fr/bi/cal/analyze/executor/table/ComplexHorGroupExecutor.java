@@ -19,6 +19,7 @@ import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.report.key.TargetGettingKey;
 import com.fr.general.DateUtils;
+import com.fr.general.GeneralUtils;
 import com.fr.general.Inter;
 import com.fr.json.JSONObject;
 
@@ -112,6 +113,9 @@ public class ComplexHorGroupExecutor extends AbstractTableWidgetExecutor {
                 while (temp != null) {
                     Object data = temp.getData();
                     Object v = dim.getValueByType(data);
+                    if (dim.getGroup().getType() == BIReportConstant.GROUP.YMD && GeneralUtils.string2Number(v.toString()) != null) {
+                        v = DateUtils.DATEFORMAT2.format(new Date(GeneralUtils.string2Number(v.toString()).longValue()));
+                    }
                     int rowSpan = (dimensions.length == colDimIdx + 1) ? maxRowDimLen - colDimIdx : 1;
                     CBCell dimCell = ExecutorUtils.createCell(v, colDimIdx, rowSpan, columnIdx, temp.getTotalLength(), style);
                     pagedIterator.addCell(dimCell);

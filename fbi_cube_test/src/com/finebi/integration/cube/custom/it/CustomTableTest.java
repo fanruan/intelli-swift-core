@@ -1,4 +1,4 @@
-package com.finebi.integration.cube.custom;
+package com.finebi.integration.cube.custom.it;
 
 import com.finebi.cube.conf.BIDataSourceManagerProvider;
 import com.finebi.cube.conf.BISystemPackageConfigurationProvider;
@@ -10,12 +10,6 @@ import com.finebi.cube.relation.BICubeGenerateRelationPath;
 import com.finebi.cube.relation.BITableSourceRelation;
 import com.finebi.cube.relation.BITableSourceRelationPath;
 import com.finebi.cube.utils.BIDataStructTranUtils;
-import com.finebi.integration.cube.custom.it.CustomCubeConfManager;
-import com.finebi.integration.cube.custom.it.CustomDataSourceManager;
-import com.finebi.integration.cube.custom.it.CustomPackageProvider;
-import com.finebi.integration.cube.custom.it.CustomRelationProvider;
-import com.finebi.integration.cube.custom.it.CustomTableCreater;
-import com.finebi.integration.cube.custom.it.CustomTableTestTool;
 import com.fr.bi.conf.base.cube.BISystemCubeConfManager;
 import com.fr.bi.conf.manager.update.BIUpdateSettingManager;
 import com.fr.bi.conf.manager.update.source.UpdateSettingSource;
@@ -25,12 +19,7 @@ import com.fr.fs.control.UserControl;
 import com.fr.stable.bridge.StableFactory;
 import junit.framework.TestCase;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created by Lucifer on 2017-3-20.

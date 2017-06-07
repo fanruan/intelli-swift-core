@@ -17,6 +17,7 @@ public class BITableWidgetStyle implements IWidgetStyle {
     private String themeColor;
     private int tableStyleGroup;
     private boolean showColTotal;
+    private int tableFormGroup;
 
     public BITableWidgetStyle() {
         themeColor = BIStyleConstant.DEFAULT_CHART_SETTING.THEME_COLOR;
@@ -27,6 +28,7 @@ public class BITableWidgetStyle implements IWidgetStyle {
         maxRow = BIStyleConstant.DEFAULT_CHART_SETTING.MAX_ROW;
         showRowTotal = BIStyleConstant.DEFAULT_CHART_SETTING.SHOW_ROW_TOTAL;
         showColTotal = BIStyleConstant.DEFAULT_CHART_SETTING.SHOW_COL_TOTAL;
+        tableFormGroup=BIStyleConstant.TABLE_FORM.OPEN_ROW;
     }
 
     @Override
@@ -65,6 +67,11 @@ public class BITableWidgetStyle implements IWidgetStyle {
     }
 
     @Override
+    public int getTableFormGroup() {
+        return tableFormGroup;
+    }
+
+    @Override
     public void parseJSON(JSONObject jo) throws Exception {
         if (jo.has("settings")) {
             JSONObject settingJo = jo.getJSONObject("settings");
@@ -76,6 +83,7 @@ public class BITableWidgetStyle implements IWidgetStyle {
             showColTotal = settingJo.optBoolean("showColTotal", showColTotal);
             themeColor = settingJo.optString("themeColor", themeColor);
             tableStyleGroup = settingJo.optInt("tableStyleGroup", tableStyleGroup);
+            tableFormGroup=settingJo.optInt("tableFormGroup",tableFormGroup);
         }
     }
 

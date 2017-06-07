@@ -26,7 +26,8 @@ public class GroupUtils {
             return new NodeAndPageInfo(node, iterator);
         }
         addSummaryValue(node, gc, showSum, shouldSetIndex, executor);
-        while (!op.isPageEnd() && gc != null && gc.getChild() != null) {
+        // 判断分页是否停止的时候应该放入一行的信息进去 这样能让operator提供更多的功能,比如说构建到某一行的时候就停止构建
+        while (!op.isPageEnd(gc) && gc != null && gc.getChild() != null) {
             GroupConnectionValue gcvChild = gc.getChild();
             Node parent = node;
             while (gcvChild != null) {
@@ -76,7 +77,8 @@ public class GroupUtils {
                             } else {
                                 singleThreadCal.cal();
                             }
-                        } else if (shouldSetIndex && node.getTargetIndex(targetAndKey.getTargetGettingKey()) == null){
+                        }
+                        if (shouldSetIndex && node.getTargetIndex(targetAndKey.getTargetGettingKey()) == null){
                             //会出现node copy了summaryValue但是没有index的情况，这时候交叉表就出问题了，需要设置下gvi
                             node.setTargetIndex(targetAndKey.getTargetGettingKey(), gvis[i]);
                         }

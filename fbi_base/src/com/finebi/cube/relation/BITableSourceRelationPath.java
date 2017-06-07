@@ -9,6 +9,7 @@ import com.fr.bi.stable.utils.algorithem.BIMD5Utils;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
 
 import java.util.Iterator;
+import java.util.List;
 
 /**
  * This class created on 2016/3/9.
@@ -69,5 +70,22 @@ public class BITableSourceRelationPath extends BIBasicRelationPath<CubeTableSour
         return getFirstRelation().primaryField;
     }
 
-
+    @Override
+    public boolean equals(Object o) {
+        if (o instanceof BITableSourceRelationPath) {
+            List<BITableSourceRelation> oRelations = ((BITableSourceRelationPath) o).getAllRelations();
+            if (oRelations.size() == this.getAllRelations().size()) {
+                for (BITableSourceRelation oRelation : oRelations) {
+                    if (!this.getAllRelations().contains(oRelation)) {
+                        return false;
+                    }
+                }
+                return true;
+            } else {
+                return false;
+            }
+        } else {
+            return false;
+        }
+    }
 }
