@@ -15,9 +15,9 @@ public abstract class BIStyleTarget extends BIAbstractTargetAndDimension {
     @Override
     public void parseJSON(JSONObject jo, long userId) throws Exception {
         super.parseJSON(jo, userId);
-        if (jo.has("style_conditions")) {
+        if (jo.has("styleConditions")) {
             style = new TargetStyle();
-            style.parseJSON(jo.getJSONObject("style_conditions"));
+            style.parseJSON(jo.getJSONObject("styleConditions"));
         }
     }
 

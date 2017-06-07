@@ -7,7 +7,6 @@ import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.field.target.target.BISummaryTarget;
 import com.fr.bi.stable.constant.BIChartSettingConstant;
 import com.fr.bi.stable.constant.BIReportConstant;
-import com.fr.bi.stable.io.io.ListWriter;
 import com.fr.general.ComparatorUtils;
 import com.fr.general.FRLogger;
 import com.fr.json.JSONArray;
@@ -16,7 +15,11 @@ import com.fr.json.JSONObject;
 import com.fr.stable.CoreConstants;
 import com.fr.stable.StringUtils;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by eason on 2017/2/27.
@@ -118,7 +121,7 @@ public class VanDotWidget extends VanCartesianWidget{
 
         JSONObject gradualStyle = JSONObject.create();
         gradualStyle.put("range", JSONObject.create().put("min", 0).put("max", 100));
-        gradualStyle.put("color_range", JSONObject.create().put("fromColor", "#65B3EE").put("toColor", "#95E1AA"));
+        gradualStyle.put("colorRange", JSONObject.create().put("fromColor", "#65B3EE").put("toColor", "#95E1AA"));
 
         settings.put("fixedStyle", fixedStyle);
         settings.put("gradientStyle", JSONArray.create().put(gradualStyle));
