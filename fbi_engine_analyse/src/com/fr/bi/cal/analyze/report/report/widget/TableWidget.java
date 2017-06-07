@@ -4,14 +4,20 @@ package com.fr.bi.cal.analyze.report.report.widget;
 import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.conf.table.BusinessTable;
 import com.fr.bi.base.annotation.BICoreField;
-import com.fr.bi.cal.analyze.cal.index.loader.MetricGroupInfo;
 import com.fr.bi.cal.analyze.cal.result.BIComplexExecutData;
 import com.fr.bi.cal.analyze.cal.result.ComplexExpander;
 import com.fr.bi.cal.analyze.cal.result.CrossExpander;
+import com.fr.bi.cal.analyze.cal.result.NewCrossRoot;
+import com.fr.bi.cal.analyze.cal.result.Node;
 import com.fr.bi.cal.analyze.cal.table.PolyCubeECBlock;
 import com.fr.bi.cal.analyze.executor.BIEngineExecutor;
 import com.fr.bi.cal.analyze.executor.paging.PagingFactory;
-import com.fr.bi.cal.analyze.executor.table.*;
+import com.fr.bi.cal.analyze.executor.table.ComplexCrossExecutor;
+import com.fr.bi.cal.analyze.executor.table.ComplexGroupExecutor;
+import com.fr.bi.cal.analyze.executor.table.ComplexHorGroupExecutor;
+import com.fr.bi.cal.analyze.executor.table.CrossExecutor;
+import com.fr.bi.cal.analyze.executor.table.GroupExecutor;
+import com.fr.bi.cal.analyze.executor.table.HorGroupExecutor;
 import com.fr.bi.cal.analyze.report.report.BIWidgetFactory;
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.calculator.IExcelDataBuilder;
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.calculator.SummaryComplexTableBuilder;
@@ -41,8 +47,8 @@ import com.fr.bi.stable.constant.BIJSONConstant;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.gvi.GVIUtils;
 import com.fr.bi.stable.gvi.GroupValueIndex;
+import com.fr.bi.stable.report.key.TargetGettingKey;
 import com.fr.bi.stable.utils.BITravalUtils;
-import com.fr.bi.stable.utils.file.BIFileUtils;
 import com.fr.general.ComparatorUtils;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONException;
@@ -51,8 +57,14 @@ import com.fr.report.poly.TemplateBlock;
 import com.fr.stable.StringUtils;
 
 import javax.servlet.http.HttpServletRequest;
-import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 
@@ -62,29 +74,42 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author Daniel-pc
  */
 public class TableWidget extends BISummaryWidget {
+
     private static final long serialVersionUID = -4736577206434772688L;
+
     /**
      * 保存列字段等内容
      */
     @BICoreField
     private BITableReportSetting data = new BITableReportSetting();
+
     private int[] pageSpinner = new int[5];
+
     private int operator = BIReportConstant.TABLE_PAGE_OPERATOR.REFRESH;
+
     private int tableType = BIReportConstant.TABLE_WIDGET.GROUP_TYPE;
+
     @BIIgnoreField
     private transient BIDimension[] usedDimension;
+
     @BIIgnoreField
     private transient BISummaryTarget[] usedTargets;
+
     private DetailChartSetting settings = new DetailChartSetting();
+
     protected Map<String, JSONArray> clicked = new HashMap<String, JSONArray>();
+
     protected Map<String, BIDimension> dimensionsIdMap = new HashMap<String, BIDimension>();
+
     private Map<String, BISummaryTarget> targetsIdMap = new HashMap<String, BISummaryTarget>();
 
     protected Map<Integer, List<String>> view = new HashMap<Integer, List<String>>();
+
     private BITableWidgetStyle style;
 
     @Override
     public void setPageSpinner(int index, int value) {
+
         this.pageSpinner[index] = value;
     }
 
@@ -92,6 +117,7 @@ public class TableWidget extends BISummaryWidget {
 
     @Override
     public BIDimension[] getViewDimensions() {
+
         if (usedDimension != null) {
             return usedDimension;
         }
@@ -113,6 +139,7 @@ public class TableWidget extends BISummaryWidget {
 
     @Override
     public BISummaryTarget[] getViewTargets() {
+
         if (usedTargets != null) {
             return usedTargets;
         }
@@ -133,6 +160,7 @@ public class TableWidget extends BISummaryWidget {
     }
 
     public BIDimension[] getViewTopDimensions() {
+
         BIDimension[] dimensions = getDimensions();
         if (data != null) {
             String[] array = data.getColumn();
@@ -149,6 +177,7 @@ public class TableWidget extends BISummaryWidget {
     }
 
     public boolean useRealData() {
+
         return data.useRealData();
     }
 
@@ -159,10 +188,12 @@ public class TableWidget extends BISummaryWidget {
      */
     @Override
     public int isOrder() {
+
         return settings.isOrder();
     }
 
     public BIEngineExecutor getExecutor(BISession session) {
+
         boolean calculateTarget = targetSort != null || !targetFilterMap.isEmpty();
         CrossExpander expander = new CrossExpander(complexExpander.getXExpander(0), complexExpander.getYExpander(0));
         boolean hasTarget = calculateTarget || getViewTargets().length > 0;
@@ -180,6 +211,7 @@ public class TableWidget extends BISummaryWidget {
      * @return 表格处理excute
      */
     public BIEngineExecutor createComplexExecutor(BISession session, boolean hasTarget, ComplexExpander complexExpander, CrossExpander expander) {
+
         BIEngineExecutor executor;
         int summaryLen = getViewTargets().length;
         ArrayList<ArrayList<String>> row = data.getComplex_x_dimension();
@@ -214,6 +246,7 @@ public class TableWidget extends BISummaryWidget {
     }
 
     private BIEngineExecutor createNormalExecutor(BISession session, boolean hasTarget, BIDimension[] usedRows, BIDimension[] usedColumn, CrossExpander expander) {
+
         BIEngineExecutor executor;
         int summaryLen = getViewTargets().length;
         //有列表头和指标 horGroupExecutor 垂直的分组表
@@ -233,6 +266,7 @@ public class TableWidget extends BISummaryWidget {
 
     @Override
     public JSONObject createDataJSON(BISessionProvider session, HttpServletRequest req) throws Exception {
+
         BIEngineExecutor executor = getExecutor((BISession) session);
         JSONObject jo = new JSONObject();
         if (executor != null) {
@@ -251,11 +285,13 @@ public class TableWidget extends BISummaryWidget {
      */
     @Override
     protected TemplateBlock createBIBlock(BISession session) {
+
         return new PolyCubeECBlock(this, session, operator);
     }
 
     @Override
     public void parseJSON(JSONObject jo, long userId) throws Exception {
+
         super.parseJSON(jo, userId);
         // 放在创建expander之前，因为创建expander的时候需要用到维度的信息
         createDimAndTars(jo);
@@ -294,6 +330,7 @@ public class TableWidget extends BISummaryWidget {
     }
 
     private void createWidgetStyles(JSONObject jo) throws Exception {
+
         style = new BITableWidgetStyle();
         JSONArray dimColWidths = new JSONArray();
         for (int i = 0; i < getViewDimensions().length; i++) {
@@ -305,6 +342,7 @@ public class TableWidget extends BISummaryWidget {
     }
 
     private void createDimAndTars(JSONObject jo) throws Exception {
+
         if (jo.has("view")) {
             parseView(jo.optJSONObject("view"));
             data.parseJSON(jo);
@@ -312,6 +350,7 @@ public class TableWidget extends BISummaryWidget {
     }
 
     private void createDimensionAndTargetMap() {
+
         for (BIDimension dimension : this.getDimensions()) {
             for (Map.Entry<Integer, List<String>> entry : view.entrySet()) {
                 Integer key = entry.getKey();
@@ -339,6 +378,7 @@ public class TableWidget extends BISummaryWidget {
     }
 
     public void parseView(JSONObject jo) throws Exception {
+
         Iterator it = jo.keys();
         while (it.hasNext()) {
             Integer region = Integer.parseInt(it.next().toString());
@@ -352,10 +392,12 @@ public class TableWidget extends BISummaryWidget {
     }
 
     public void setComplexExpander(ComplexExpander complexExpander) {
+
         this.complexExpander = complexExpander;
     }
 
     private void parsExpander(JSONObject jo) throws Exception {
+
         complexExpander = new ComplexExpander(data.getColumn().length, data.getRow().length);
         complexExpander.parseJSON(jo.getJSONObject(BIJSONConstant.JSON_KEYS.EXPANDER));
         if (jo.has(BIJSONConstant.JSON_KEYS.CLICKEDVALUE)) {
@@ -368,11 +410,13 @@ public class TableWidget extends BISummaryWidget {
     }
 
     public String getDimensionName(String id) {
+
         BISummaryTarget target = this.targetsIdMap.get(id);
         return target == null ? StringUtils.EMPTY : target.getText();
     }
 
     public String[] getUsedTargetID() {
+
         Set<String> dimensionIds = new LinkedHashSet<String>();
         for (BISummaryTarget target : this.getTargets()) {
             if (target.isUsed()) {
@@ -384,10 +428,12 @@ public class TableWidget extends BISummaryWidget {
     }
 
     public DetailChartSetting getChartSetting() {
+
         return settings;
     }
 
     public String[] getAllDimensionIds() {
+
         Set<String> dimensionIds = new HashSet<String>();
         for (BIDimension dimension : this.getDimensions()) {
             dimensionIds.add(dimension.getValue());
@@ -396,6 +442,7 @@ public class TableWidget extends BISummaryWidget {
     }
 
     protected String[] getUsedDimensionID() {
+
         Set<String> dimensionIds = new LinkedHashSet<String>();
         for (BIDimension dimension : this.getDimensions()) {
             if (dimension.isUsed()) {
@@ -406,6 +453,7 @@ public class TableWidget extends BISummaryWidget {
     }
 
     public String[] getAllTargetIds() {
+
         Set<String> targetIds = new HashSet<String>();
         for (BISummaryTarget target : this.getTargets()) {
             targetIds.add(target.getValue());
@@ -414,6 +462,7 @@ public class TableWidget extends BISummaryWidget {
     }
 
     public JSONObject getWidgetDrill() throws JSONException {
+
         JSONObject drills = JSONObject.create();
         String[] dimensionIds = this.getAllDimensionIds();
 
@@ -428,6 +477,7 @@ public class TableWidget extends BISummaryWidget {
     }
 
     public BIDimension getDrillDimension(JSONArray drill) throws JSONException {
+
         if (drill == null || drill.length() == 0) {
             return null;
         }
@@ -436,40 +486,49 @@ public class TableWidget extends BISummaryWidget {
     }
 
     public boolean showRowToTal() {
+
         return settings.showRowTotal();
     }
 
     @Override
     public boolean showColumnTotal() {
+
         return settings.showColTotal();
     }
 
     @Override
     public WidgetType getType() {
+
         return WidgetType.TABLE;
     }
 
     public void setOperator(int operator) {
+
         this.operator = operator;
     }
 
     public boolean hasVerticalPrePage() {
+
         return pageSpinner[BIReportConstant.TABLE_PAGE.VERTICAL_PRE] > 0;
     }
 
     public boolean hasVerticalNextPage() {
+
         return pageSpinner[BIReportConstant.TABLE_PAGE.VERTICAL_NEXT] > 0;
     }
 
     public boolean hasHorizonPrePage() {
+
         return pageSpinner[BIReportConstant.TABLE_PAGE.HORIZON_PRE] > 0;
     }
 
     public boolean hasHorizonNextPage() {
+
         return pageSpinner[BIReportConstant.TABLE_PAGE.HORIZON_NEXT] > 0;
     }
 
     private void changeCalculateTargetStartGroup() {
+
         boolean changed = false;
         BISummaryTarget[] targets = getTargets();
         if (this.getViewDimensions().length <= 1 && this.getViewDimensions().length != 0) {
@@ -494,18 +553,21 @@ public class TableWidget extends BISummaryWidget {
     }
 
     public GroupValueIndex createLinkedFilterGVI(BusinessTable targetKey, BISession session) {
+
         if (linkedWidget != null) {
             GroupValueIndex fatherWidgetLinkedFilterGVI = linkedWidget.createLinkedFilterGVI(targetKey, session);
             try {
-                List<MetricGroupInfo> metricGroupInfoList = linkedWidget.getExecutor(session).getLinkedWidgetFilterGVIList();
-                if (metricGroupInfoList == null) {
-                    return null;
-                }
-                for (MetricGroupInfo mergerInfo : metricGroupInfoList) {
-                    if (ComparatorUtils.equals(mergerInfo.getMetric(), (targetKey))) {
-                        return GVIUtils.AND(fatherWidgetLinkedFilterGVI, GVIUtils.AND(mergerInfo.getFilterIndex(), mergerInfo.getFilterIndex()));
-                    }
-                }
+                GroupValueIndex linkFilter = getLinkFilter(this.linkedWidget, this.clicked, session);
+                return GVIUtils.AND(fatherWidgetLinkedFilterGVI, linkFilter);
+                //List<MetricGroupInfo> metricGroupInfoList = linkedWidget.getExecutor(session).getLinkedWidgetFilterGVIList();
+                //if (metricGroupInfoList == null) {
+                //    return null;
+                //}
+                //for (MetricGroupInfo mergerInfo : metricGroupInfoList) {
+                //    if (ComparatorUtils.equals(mergerInfo.getMetric(), (targetKey))) {
+                //        return GVIUtils.AND(fatherWidgetLinkedFilterGVI, GVIUtils.AND(mergerInfo.getFilterIndex(), mergerInfo.getFilterIndex()));
+                //    }
+                //}
             } catch (Exception e) {
                 BILoggerFactory.getLogger(this.getClass()).error(e.getMessage(), e);
             }
@@ -514,12 +576,176 @@ public class TableWidget extends BISummaryWidget {
     }
 
 
+    public GroupValueIndex getLinkFilter(TableWidget linkedWidget, Map<String, JSONArray> clicked, BISession session) {
+
+        BIEngineExecutor linkExecutor = linkedWidget.getExecutor(session);
+        GroupValueIndex linkGvi = null;
+        try {
+            Object[] rowData = getLinkRowData(clicked);
+            // 在点击行的地方进行停止构建树
+            // 交叉表的情况
+            if (linkExecutor instanceof CrossExecutor) {
+                return getCrossWidgetLinkFilter(linkedWidget, clicked, session, (CrossExecutor) linkExecutor);
+            }
+            Node linkNode = linkExecutor.getStopOnRowNode(rowData);
+            // 总汇总值
+            if (rowData == null || rowData.length == 0) {
+                for (String key : clicked.keySet()) {
+                    linkGvi = GVIUtils.AND(linkGvi, getTargetIndex(key, linkNode.getTargetIndexValueMap()));
+                }
+                return linkGvi;
+            }
+            Node p = linkNode;
+            for (String key : clicked.keySet()) {
+                JSONArray keyJson = clicked.get(key);
+                for (int i = keyJson.length() - 1; i >= 0; i--) {
+                    JSONObject object = keyJson.getJSONObject(i);
+                    Object clickValue = object.getJSONArray("value").getString(0);
+                    String did = object.getString("dId");
+                    for (Node n : p.getChilds()) {
+                        if (n.getShowValue().equals(clickValue)) {
+                            p = n;
+                            break;
+                        }
+                    }
+                }
+                linkGvi = GVIUtils.AND(linkGvi, getTargetIndex(key, p.getTargetIndexValueMap()));
+            }
+        } catch (Exception e) {
+
+        }
+        return linkGvi;
+    }
+
+    /**
+     * 交叉表联动条件
+     *
+     * @param linkedWidget
+     * @param clicked
+     * @param session
+     * @return
+     */
+    public GroupValueIndex getCrossWidgetLinkFilter(TableWidget linkedWidget, Map<String, JSONArray> clicked, BISession session, CrossExecutor executor) throws Exception {
+        // 区分哪些是行数据,哪些是列数据
+        List<Object> row = new ArrayList<Object>();
+        List<Object> col = new ArrayList<Object>();
+        GroupValueIndex linkGvi = null;
+        String target = getLinkRowAndColData(clicked, linkedWidget, row, col);
+        NewCrossRoot c = executor.getStopOnRowNode(row.toArray(), col.toArray());
+        Node left = c.getLeft();
+        Node top = c.getTop();
+        if (row.size() == 0 && col.size() == 0) {
+            // 总汇总值得时候
+            linkGvi = GVIUtils.AND(linkGvi, getTargetIndex(target, left.getTargetIndexValueMap()));
+            linkGvi = GVIUtils.AND(linkGvi, getTargetIndex(target, top.getTargetIndexValueMap()));
+            return linkGvi;
+        }
+
+        linkGvi = GVIUtils.AND(getLinkNodeFilter(left, target, row), linkGvi);
+        linkGvi = GVIUtils.AND(getLinkNodeFilter(top, target, col), linkGvi);
+        return linkGvi;
+    }
+
+    private GroupValueIndex getTargetIndex(String target, Map<TargetGettingKey, GroupValueIndex> targetIndexs) {
+
+        for (TargetGettingKey k : targetIndexs.keySet()) {
+            if (k.getTargetName().equals(target)) {
+                return targetIndexs.get(k);
+            }
+        }
+        return null;
+    }
+
+    private GroupValueIndex getLinkNodeFilter(Node n, String target, List<Object> data) {
+
+        if (n != null) {
+            if (data.size() == 0) {
+                return getTargetIndex(target, n.getTargetIndexValueMap());
+            }
+            Node parent = n;
+            for (int i = 0; i < data.size(); i++) {
+                Object cv = data.get(i);
+                Node child = parent.getChild(cv);
+                parent = child;
+            }
+            return getTargetIndex(target, parent.getTargetIndexValueMap());
+        }
+        return null;
+    }
+
+    private Object[] getLinkRowData(Map<String, JSONArray> clicked) throws Exception {
+
+        try {
+            if (clicked != null) {
+                for (String key : clicked.keySet()) {
+                    JSONArray keyJson = clicked.get(key);
+                    Object rowData[] = new Object[keyJson.length()];
+                    int j = 0;
+                    for (int i = keyJson.length() - 1; i >= 0; i--) {
+                        // 每个维度根据指标来选出点击的值得gvi
+                        JSONObject object = keyJson.getJSONObject(i);
+                        String click = object.getJSONArray("value").getString(0);
+                        String did = object.getString("dId");
+                        rowData[j++] = click;
+                    }
+                    return rowData;
+                }
+            }
+        } catch (Exception e) {
+
+        }
+        return new Object[0];
+    }
+
+    private String getLinkRowAndColData(Map<String, JSONArray> clicked, TableWidget linkedWidget, List row, List col) {
+
+        String target = null;
+        try {
+            if (clicked != null) {
+                for (String key : clicked.keySet()) {
+                    target = key;
+                    JSONArray keyJson = clicked.get(key);
+                    for (int i = keyJson.length() - 1; i >= 0; i--) {
+                        // 每个维度根据指标来选出点击的值得gvi
+                        JSONObject object = keyJson.getJSONObject(i);
+                        String click = object.getJSONArray("value").getString(0);
+                        String did = object.getString("dId");
+                        if (isDimensionContain(did, linkedWidget.getViewDimensions())) {
+                            row.add(click);
+                        } else {
+                            col.add(click);
+                        }
+                    }
+                }
+            }
+        } catch (Exception e) {
+
+        }
+        return target;
+    }
+
+    private boolean isDimensionContain(String did, BIDimension[] dims) {
+
+        if (dims == null || dims.length == 0) {
+            return false;
+        }
+        for (BIDimension d : dims) {
+            if (d.getId().equals(did)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+
     @Override
     public void reSetDetailTarget() {
+
     }
 
     /*todo 想办法把数据和样式格式分离出来*/
     public JSONObject getPostOptions(BISessionProvider session, HttpServletRequest req) throws Exception {
+
         JSONObject res = this.createDataJSON(session, req);
         JSONObject dataJSON = res.getJSONObject("data");
         Map<Integer, List<JSONObject>> viewMap = this.createViewMap();
@@ -537,23 +763,25 @@ public class TableWidget extends BISummaryWidget {
         }
         DataConstructor data = BITableConstructHelper.buildTableData(builder);
         BITableConstructHelper.formatCells(data, getITableCellFormatOperationMap(), style);
-        return data.createJSON().put("page", res.getJSONArray("page")).put("dimensionLength",dimensions.length);
+        return data.createJSON().put("page", res.getJSONArray("page")).put("dimensionLength", dimensions.length);
     }
 
     /*假数据，测试用*/
-    private JSONObject createTestData() throws IOException, JSONException {
-        StringBuffer keysStr = new StringBuffer();
-        String s = BIFileUtils.readFile("C:\\data.json");
-        return new JSONObject(s);
-    }
+    //    private JSONObject createTestData() throws IOException, JSONException {
+    //        StringBuffer keysStr = new StringBuffer();
+    //        String s = BIFileUtils.readFile("C:\\data.json");
+    //        return data.createJSON().put("page", res.getJSONArray("page")).put("dimensionLength",dimensions.length).put("header",createTestData().get("header")).put("crossHeader",createTestData().get("crossHeader")).put("items",createTestData().get("items")).put("crossItems",createTestData().get("crossItems"));
+    //    }
 
     private Map<String, ITableCellFormatOperation> getITableCellFormatOperationMap() throws Exception {
+
         Map<String, ITableCellFormatOperation> formOperationsMap = new HashMap<String, ITableCellFormatOperation>();
         createFormatOperations(formOperationsMap);
         return formOperationsMap;
     }
 
     private void createFormatOperations(Map<String, ITableCellFormatOperation> operationsMap) throws Exception {
+
         for (BISummaryTarget target : this.getTargets()) {
             ICellFormatSetting setting = new BICellFormatSetting();
             setting.parseJSON(target.getChartSetting().getSettings());
@@ -569,10 +797,12 @@ public class TableWidget extends BISummaryWidget {
     }
 
     public String getDimensionNameByID(String dID) throws Exception {
+
         return getBITargetAndDimension(dID).getText();
     }
 
     public boolean isUsedById(String dID) throws Exception {
+
         for (int i = 0; i < this.dimensions.length; i++) {
             if (ComparatorUtils.equals(dID, dimensions[i].getId())) {
                 return dimensions[i].isUsed();
@@ -587,6 +817,7 @@ public class TableWidget extends BISummaryWidget {
     }
 
     protected BITargetAndDimension getBITargetAndDimension(String dID) throws Exception {
+
         for (BIDimension dimension : getDimensions()) {
             if (ComparatorUtils.equals(dimension.getId(), dID)) {
                 return dimension;
@@ -596,6 +827,7 @@ public class TableWidget extends BISummaryWidget {
     }
 
     protected BISummaryTarget getBITargetByID(String id) throws Exception {
+
         for (BISummaryTarget target : getTargets()) {
             if (ComparatorUtils.equals(target.getId(), id)) {
                 return target;
@@ -605,6 +837,7 @@ public class TableWidget extends BISummaryWidget {
     }
 
     public Map<Integer, List<JSONObject>> createViewMap() throws Exception {
+
         Map<Integer, List<JSONObject>> dimAndTar = new HashMap<Integer, List<JSONObject>>();
         Iterator<Integer> iterator = view.keySet().iterator();
         while (iterator.hasNext()) {
@@ -623,6 +856,7 @@ public class TableWidget extends BISummaryWidget {
     }
 
     public IWidgetStyle getStyle() {
+
         return style;
     }
 }

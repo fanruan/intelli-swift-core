@@ -39,28 +39,35 @@ public class SingleUserAnalysisBusiPackManager{
     }
 
     public boolean checkVersion() {
-        if (!ComparatorUtils.equals(this.version, "4.0.2")){
-            try {
-                checkWidget();
-            } catch (Exception e){
-                BILoggerFactory.getLogger().error(e.getMessage());
-                return true;
+        //ResourceHelper那边取了所有用户的业务包，没做过螺旋分析的用户也会new一个空的manager对象，这边判断下如果业务包是空的，就不兼容了，要不几万个用户卡死了
+        if (!pack.getAllTables().isEmpty() && !ComparatorUtils.equals(this.version, "4.0.2")){
+            synchronized (this){
+                if (!ComparatorUtils.equals(this.version, "4.0.2")){
+                    try {
+                        checkWidget();
+                    } catch (Exception e){
+                        BILoggerFactory.getLogger().error(e.getMessage());
+                        return true;
+                    }
+                    this.version = "4.0.2";
+                    return false;
+                }
             }
-            this.version = "4.0.2";
-            return false;
         }
         return true;
     }
 
     private void checkWidget() throws BIKeyDuplicateException {
+        BILoggerFactory.getLogger().info("start check spa busipack");
         for (BusinessTable table : getAllTables()){
             CubeTableSource source = table.getTableSource();
             if (source.getType() == BIBaseConstant.TABLE_TYPE.BASE){
                 ((AnalysisBaseTableSource)source).resetTargetsMap();
+                BIAnalysisETLManagerCenter.getDataSourceManager().addTableSource(table, table.getTableSource());
             }
-            BIAnalysisETLManagerCenter.getDataSourceManager().addTableSource(table, table.getTableSource());
         }
         BIAnalysisETLManagerCenter.getDataSourceManager().persistData(UserControl.getInstance().getSuperManagerID());
+        BILoggerFactory.getLogger().info("finish check spa busipack");
     }
 
     public void addTable(AnalysisBusiTable table) {

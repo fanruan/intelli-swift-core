@@ -29,6 +29,7 @@ import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.web.service.Service4AnalysisETL;
 import com.fr.bi.web.service.action.PartCubeDataLoader;
 import com.fr.cluster.rpc.RPC;
+import com.fr.fs.control.UserControl;
 import com.fr.stable.bridge.StableFactory;
 import com.fr.stable.bridge.event.StableFactoryMessageTransponder;
 import com.fr.stable.bridge.event.StableFactoryProducer;
@@ -52,6 +53,11 @@ public class AnalysisETLModule extends AbstractModule {
         registerManager();
         registerFilter();
         registerResources();
+        dealWithOldVersion();
+    }
+
+    private void dealWithOldVersion() {
+        BIAnalysisETLManagerCenter.getBusiPackManager().getAllTables(UserControl.getInstance().getSuperManagerID());
     }
 
     /**

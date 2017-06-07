@@ -3,7 +3,9 @@ package com.fr.bi.cal.analyze.report.report.widget.chart.export.format.utils;
 import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.utils.program.BIStringUtils;
+import com.fr.general.ComparatorUtils;
 import com.fr.general.Inter;
+import com.fr.json.JSONArray;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
 import com.fr.stable.StableUtils;
@@ -19,6 +21,7 @@ import java.util.Date;
 public class BITableCellFormatHelper {
     static final String PERCENT_SYMBOL = "%";
     static final int DEFAULT_SCALE = 1;
+    static final String NONEVALUE = "--";
 
     public static String targetValueFormat(JSONObject settings, String text) throws JSONException {
         if (BIStringUtils.isEmptyString(text) || !StableUtils.isNumber(text)) {
@@ -69,7 +72,7 @@ public class BITableCellFormatHelper {
     }
 
     public static String dateFormat(JSONObject format, int groupType, String text) throws JSONException {
-        if (StringUtils.isBlank(text)) {
+        if (StringUtils.isBlank(text)||ComparatorUtils.equals(text,NONEVALUE)) {
             return text;
         }
         JSONObject dateFormat = format.optJSONObject("dateFormat");
@@ -259,4 +262,43 @@ public class BITableCellFormatHelper {
 
         return unit;
     }
+
+    public static JSONObject createTextStyle(JSONObject settings, String text) throws JSONException {
+        Float num;
+        try {
+            num = Float.valueOf(text);
+        } catch (NumberFormatException e) {
+            return JSONObject.create();
+        }
+        int markResult = getTextCompareResult(settings, num);
+        int iconStyle = settings.getInt("iconStyle");
+        String textColor = getTextColor(settings, num);
+        return JSONObject.create().put("markResult", markResult).put("iconStyle", iconStyle).put("color", textColor);
+    }
+
+    private static int getTextCompareResult(JSONObject settings, Float num) throws JSONException {
+        if (!settings.has("mark") || num < settings.getInt("mark")) {
+            return BIReportConstant.TARGET_COMPARE_RES.LESS;
+        } else {
+            return num == settings.getLong("mark") ? BIReportConstant.TARGET_COMPARE_RES.EQUAL : BIReportConstant.TARGET_COMPARE_RES.MORE;
+        }
+    }
+
+    private static String getTextColor(JSONObject settings, Float num) throws JSONException {
+        JSONArray conditions = settings.optJSONArray("conditions");
+        if (null!=conditions) {
+            for (int i = 0; i < conditions.length(); i++) {
+                JSONObject range = conditions.getJSONObject(i).getJSONObject("range");
+                long min = range.getLong("min");
+                long max = range.getLong("max");
+                boolean minBoolean = range.optBoolean("closemin", false) ? num >= min : num > min;
+                boolean maxBoolean = range.optBoolean("closemax", false) ? num <= max : num < max;
+                if (minBoolean && maxBoolean) {
+                    return conditions.getJSONObject(i).getString("color");
+                }
+            }
+        }
+        return StringUtils.EMPTY;
+    }
+
 }

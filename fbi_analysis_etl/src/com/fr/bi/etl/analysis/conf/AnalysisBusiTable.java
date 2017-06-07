@@ -123,7 +123,10 @@ public class AnalysisBusiTable extends BIBusinessTable {
             fields.put(field.getFieldID().getIdentityValue(), filedJson);
             stringList.add(filedJson);
         }
+        //兼容以前老的记录数ID，包含表转义名的
         fields.put(getID().getIdentity() + BIAnalysisETLManagerCenter.getAliasManagerProvider().getTransManager(userId).getTransName(getID().getIdentityValue()) + Inter.getLocText("BI-Basic_Records"), createCountField(userId));
+        //真正使用的记录数ID
+        fields.put(getID().getIdentity() + Inter.getLocText("BI-Basic_Records"), createCountField(userId));
         countList.add(createCountField(userId));
         ja.put(stringList).put(numberList).put(dateList).put(countList);
         JSONObject result = new JSONObject();
@@ -140,7 +143,7 @@ public class AnalysisBusiTable extends BIBusinessTable {
         jo.put("tableId", getID().getIdentity());
         jo.put("isUsable", true);
         //记录数的id先暂时用拼接
-        jo.put("id", jo.optString("tableId") + BIAnalysisETLManagerCenter.getAliasManagerProvider().getTransManager(userId).getTransName(getID().getIdentityValue()) + Inter.getLocText("BI-Basic_Records"));
+        jo.put("id", jo.optString("tableId") + Inter.getLocText("BI-Basic_Records"));
         return jo;
     }
 

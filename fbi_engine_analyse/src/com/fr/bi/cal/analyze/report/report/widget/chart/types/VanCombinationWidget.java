@@ -65,24 +65,6 @@ public class VanCombinationWidget extends VanCartesianWidget{
         return this.isStacked(dimensionID) ? regionID : StringUtils.EMPTY;
     }
 
-    private JSONObject getSeriesAccumulationItem(String seriesName){
-        BIDimension seriesDim = this.getSeriesDimension();
-
-        if(seriesDim != null && seriesDim.getChartSetting().hasSeriesAccumulation()){
-            JSONArray items = seriesDim.getChartSetting().getSeriesAccumulation();
-            for(int i = 0, count = items.length(); i < count; i++){
-                JSONObject obj = items.optJSONObject(i);
-                JSONArray objItems = obj.optJSONArray("items");
-                for(int j = objItems.length() - 1; j >=0; j--){
-                    if(ComparatorUtils.equals(objItems.optString(j), seriesName)){
-                        return obj;
-                    }
-                }
-            }
-        }
-        return null;
-    }
-
     public String getSeriesType(String dimensionID, String seriesName){
 
         JSONObject item = this.getSeriesAccumulationItem(seriesName);

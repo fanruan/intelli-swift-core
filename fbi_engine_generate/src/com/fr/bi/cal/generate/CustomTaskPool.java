@@ -1,7 +1,6 @@
 package com.fr.bi.cal.generate;
 
 import com.finebi.cube.common.log.BILoggerFactory;
-import com.finebi.cube.conf.CubeGenerationManager;
 import com.fr.bi.cal.utils.Single2CollectionUtils;
 import com.fr.bi.conf.manager.update.source.UpdateSettingSource;
 import com.fr.bi.conf.provider.BIConfigureManagerCenter;
@@ -66,7 +65,7 @@ public class CustomTaskPool {
                     }
                     updateTypeList.add(updateSettingSource.getUpdateType());
                 }
-                CubeGenerationManager.getCubeManager().addCustomTableTask2Queue(userId, baseSourceIdList, updateTypeList);
+//                CubeGenerationManager.getCubeManager().addCustomTableTask2Queue(userId, baseSourceIdList, updateTypeList);
             }
             return true;
         } catch (Exception e) {
