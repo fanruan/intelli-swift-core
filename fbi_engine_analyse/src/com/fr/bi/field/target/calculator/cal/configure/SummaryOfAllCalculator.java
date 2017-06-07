@@ -21,30 +21,6 @@ public abstract class SummaryOfAllCalculator extends AbstractConfigureCalculator
         super(target, calTargetKey, start_group);
     }
 
-    public BINode getCalculatedRootNode(BINode rank_node) {
-        BINode currentNode;
-        BINode maxDeepNode = rank_node;
-        do {
-            currentNode = maxDeepNode;
-            maxDeepNode = getMaxDeepNode(currentNode);
-        } while (maxDeepNode.getDeep() > 1);
-        return currentNode;
-
-    }
-
-    public BINode getMaxDeepNode(BINode rank_node) {
-        BINode max = null;
-        int maxDeep = 0;
-        for (BINode node : rank_node.getChilds()) {
-            int nodeDeep = node.getDeep();
-            if (nodeDeep > maxDeep) {
-                max = node;
-                maxDeep = nodeDeep;
-            }
-        }
-        return max;
-    }
-
     @Override
     public void calCalculateTarget(BINode node) {
         if (calTargetKey == null) {
@@ -92,18 +68,6 @@ public abstract class SummaryOfAllCalculator extends AbstractConfigureCalculator
         } catch (InterruptedException e) {
             FRContext.getLogger().error(e.getMessage(), e);
         }
-    }
-
-
-    /**
-     * 子节点为空，不用进行计算指标计算。
-     * BI-5299
-     *
-     * @param cursor_node
-     * @return
-     */
-    public boolean shouldCalculate(BINode cursor_node) {
-        return !cursor_node.getChilds().isEmpty();
     }
 
     public abstract Callable createNodeDealWith(BINode node);

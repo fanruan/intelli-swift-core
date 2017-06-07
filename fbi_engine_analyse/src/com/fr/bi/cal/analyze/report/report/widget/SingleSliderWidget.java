@@ -8,19 +8,16 @@ import com.fr.bi.cal.analyze.session.BISession;
 import com.fr.bi.conf.report.WidgetType;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.conf.session.BISessionProvider;
-import com.fr.bi.stable.gvi.AllShowRoaringGroupValueIndex;
 import com.fr.bi.stable.gvi.GroupValueIndex;
-import com.fr.bi.stable.gvi.traversal.SingleRowTraversalAction;
-import com.fr.bi.stable.io.newio.NIOConstant;
 import com.fr.bi.stable.report.result.DimensionCalculator;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
 import com.fr.report.poly.PolyECBlock;
 import com.fr.report.poly.TemplateBlock;
-import com.fr.stable.collections.array.IntArray;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Comparator;
 
 /**
  * Created by zcf on 2017/1/20.
@@ -29,6 +26,8 @@ public class SingleSliderWidget extends TableWidget {
     private WidgetType type;
     private double minMin;
     private double maxMax;
+    private double filterMinMin;
+    private double filterMaxMax;
 
     @Override
     public void parseJSON(JSONObject jo, long userId) throws Exception {
@@ -39,6 +38,20 @@ public class SingleSliderWidget extends TableWidget {
     }
 
     public JSONObject createDataJSON(BISessionProvider session, HttpServletRequest req) throws JSONException {
+        updateMinMax(true, session);
+        updateMinMax(false, session);
+        JSONObject jo = JSONObject.create();
+        jo.put("max", this.maxMax);
+        jo.put("min", this.minMin);
+        jo.put("filterMax", this.filterMaxMax);
+        jo.put("filterMin", this.filterMinMin);
+        return jo;
+    }
+
+    private void updateMinMax(boolean needFilter, BISessionProvider session) throws JSONException{
+        if(needFilter == false){
+            this.setFilter(null);
+        }
         BIDimension[] dimensions = getDimensions();
         for (int i = 0; i < dimensions.length; i++) {
             BIDimension dimension = dimensions[i];
@@ -48,12 +61,12 @@ public class SingleSliderWidget extends TableWidget {
             ICubeTableService ti = session.getLoader().getTableIndex(dimension.getStatisticElement().getTableBelongTo().getTableSource());
             ICubeValueEntryGetter getter = ti.getValueEntryGetter(dimension.createKey(dimension.getStatisticElement()), new ArrayList<BITableSourceRelation>());
             MaxAndMin maxAndMin = createIDGroupIndex(gvi, reader, getter, calculator.getComparator());
-            updateMaxAndMin(i, maxAndMin);
+            if(needFilter) {
+                updateMaxAndMinWithFilter(i, maxAndMin);
+            } else{
+                updateMaxAndMin(i, maxAndMin);
+            }
         }
-        JSONObject jo = JSONObject.create();
-        jo.put("max", this.maxMax);
-        jo.put("min", this.minMin);
-        return jo;
     }
 
     private void updateMaxAndMin(int i, MaxAndMin maxAndMin) {
@@ -66,6 +79,20 @@ public class SingleSliderWidget extends TableWidget {
             }
             if (maxAndMin.getMax() > maxMax) {
                 maxMax = maxAndMin.getMax();
+            }
+        }
+    }
+
+    private void updateMaxAndMinWithFilter(int i, MaxAndMin maxAndMin) {
+        if (i == 0) {
+            filterMinMin = maxAndMin.getMin();
+            filterMaxMax = maxAndMin.getMax();
+        } else {
+            if (maxAndMin.getMin() < filterMinMin) {
+                filterMinMin = maxAndMin.getMin();
+            }
+            if (maxAndMin.getMax() > filterMaxMax) {
+                filterMaxMax = maxAndMin.getMax();
             }
         }
     }

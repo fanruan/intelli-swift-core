@@ -4,9 +4,26 @@ import com.finebi.cube.conf.table.BusinessTable;
 import com.finebi.cube.relation.BITableSourceRelation;
 import com.fr.bi.cal.analyze.cal.multithread.BIMultiThreadExecutor;
 import com.fr.bi.cal.analyze.cal.multithread.MultiThreadManagerImpl;
-import com.fr.bi.cal.analyze.cal.result.*;
-import com.fr.bi.cal.analyze.cal.result.operator.*;
-import com.fr.bi.cal.analyze.cal.sssecret.*;
+import com.fr.bi.cal.analyze.cal.result.BIComplexExecutData;
+import com.fr.bi.cal.analyze.cal.result.ComplexExpander;
+import com.fr.bi.cal.analyze.cal.result.CrossExpander;
+import com.fr.bi.cal.analyze.cal.result.CrossHeader;
+import com.fr.bi.cal.analyze.cal.result.NewCrossRoot;
+import com.fr.bi.cal.analyze.cal.result.Node;
+import com.fr.bi.cal.analyze.cal.result.NodeAndPageInfo;
+import com.fr.bi.cal.analyze.cal.result.NodeExpander;
+import com.fr.bi.cal.analyze.cal.result.operator.AllPageOperator;
+import com.fr.bi.cal.analyze.cal.result.operator.LastPageOperator;
+import com.fr.bi.cal.analyze.cal.result.operator.NextPageOperator;
+import com.fr.bi.cal.analyze.cal.result.operator.Operator;
+import com.fr.bi.cal.analyze.cal.result.operator.RefreshPageOperator;
+import com.fr.bi.cal.analyze.cal.result.operator.StopWhenGetRowOperator;
+import com.fr.bi.cal.analyze.cal.sssecret.CrossCalculator;
+import com.fr.bi.cal.analyze.cal.sssecret.GroupUtils;
+import com.fr.bi.cal.analyze.cal.sssecret.IRootDimensionGroup;
+import com.fr.bi.cal.analyze.cal.sssecret.NodeDimensionIterator;
+import com.fr.bi.cal.analyze.cal.sssecret.PageIteratorGroup;
+import com.fr.bi.cal.analyze.cal.sssecret.TreeIterator;
 import com.fr.bi.cal.analyze.cal.store.GroupKey;
 import com.fr.bi.cal.analyze.exception.NoneRegisterationException;
 import com.fr.bi.cal.analyze.report.report.widget.BISummaryWidget;
@@ -14,6 +31,7 @@ import com.fr.bi.cal.analyze.report.report.widget.TableWidget;
 import com.fr.bi.cal.analyze.session.BISession;
 import com.fr.bi.conf.VT4FBI;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
+import com.fr.bi.conf.report.widget.field.dimension.filter.DimensionFilter;
 import com.fr.bi.conf.report.widget.field.target.filter.TargetFilter;
 import com.fr.bi.field.target.calculator.cal.CalCalculator;
 import com.fr.bi.field.target.calculator.cal.FormulaCalculator;
@@ -40,8 +58,15 @@ import com.fr.stable.EnvChangedListener;
 import com.fr.stable.collections.lazy.LazyCalculateContainer;
 import com.fr.stable.collections.lazy.LazyValueCreator;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -905,14 +930,9 @@ public class CubeIndexLoader {
                                                       final BISession session, NodeExpander expander) throws Exception {
         checkRegisteration(sumTarget, allDimension);
         BISummaryTarget[] usedTargets = createUsedSummaryTargets(rowDimension, usedTarget, sumTarget);
-        PageIteratorGroup pg;
-
-        String widgetName = widget.getWidgetName();
-        if (needCreateNewIterator(page)) {
-            pg = new PageIteratorGroup();
-            session.setPageIteratorGroup(useRealData, widgetName, pg);
-        } else {
-            pg = session.getPageIteratorGroup(useRealData, widgetName);
+        PageIteratorGroup pg = new PageIteratorGroup();
+        if (hasDimensionFilter(rowDimension, widget.getTargetFilterMap())) {
+            return new ArrayList<NodeAndPageInfo>();
         }
         NodeAndPageInfo info = createPageGroupNode(widget, usedTargets, rowDimension, page, expander, session,
                 isHor ? createColumnOperator(page, widget) : createRowOperator(page, widget), pg, false, isHor);
@@ -921,11 +941,44 @@ public class CubeIndexLoader {
         return infoList;
     }
 
+    private boolean hasDimensionFilter(BIDimension[] rowDimension, Map<String, DimensionFilter> targetFilterMap) {
+        for (BIDimension dimension : rowDimension) {
+            DimensionFilter filter = dimension.getFilter();
+            if (filter != null) {
+                return true;
+            }
+        }
+        return targetFilterMap != null;
+    }
+
+
+    /**
+     * 当获取到某一行的时候进行结束的node节点
+     * @return
+     */
+    public Node getStopWhenGetRowNode(Object[]stopRowData,BISummaryWidget widget, final BISummaryTarget[] usedTarget,
+                                      final BIDimension[] rowDimension, BIDimension[] allDimension,
+                                      final BISummaryTarget[] sumTarget, int page,
+                                      final BISession session, NodeExpander expander) throws Exception{
+        NodeAndPageInfo info = null ;
+        Operator op = new StopWhenGetRowOperator(stopRowData);
+
+        checkRegisteration(sumTarget, allDimension);
+        BISummaryTarget[] usedTargets = createUsedSummaryTargets(rowDimension, usedTarget, sumTarget);
+        info = createPageGroupNode(widget, usedTargets, rowDimension, page, expander, session,
+                                   op, new PageIteratorGroup(), true, false);
+
+        return info.getNode();
+    }
+
 
     public List<NodeAndPageInfo> getPageCrossGroupInfoList(BISummaryTarget[] usedTarget, BIDimension[] rowDimension, BIDimension[] colDimension, BISummaryTarget[] sumTarget,
                                                            int page, boolean useRealData, BISession session, CrossExpander expander, BISummaryWidget widget) throws Exception {
         BIDimension[] allDimension = createBiDimensionAdpaters(rowDimension, colDimension);
         checkRegisteration(sumTarget, allDimension);
+        if (hasDimensionFilter(allDimension, widget.getTargetFilterMap())) {
+            return new ArrayList<NodeAndPageInfo>();
+        }
         /**
          * 交叉表调用createUsedSummaryTargets的时候把row和cross的dimension都传入进去，而不是只传rowDimension
          * 详见BI-2304

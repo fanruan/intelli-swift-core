@@ -49,7 +49,7 @@ public class RelationsGetter {
 //        }
         Set<String> genereteTableMD5s = new HashSet<String>();
         for (BusinessTable table : generateTable) {
-            genereteTableMD5s.add(BusinessTableHelper.getTableDataSource(table).getSourceID());
+            genereteTableMD5s.add(BusinessTableHelper.getConfigTableDataSource(table).getSourceID());
 
         }
         return genereteTableMD5s;

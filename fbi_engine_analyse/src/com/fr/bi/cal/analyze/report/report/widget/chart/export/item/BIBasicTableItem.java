@@ -22,6 +22,8 @@ public class BIBasicTableItem implements ITableItem {
     private ITableStyle styles;
     private String value;
     private boolean isSum;
+    //text样式，简单处理
+    private JSONObject textStyles;
 
     public BIBasicTableItem() {
     }
@@ -121,6 +123,11 @@ public class BIBasicTableItem implements ITableItem {
     }
 
     @Override
+    public void setTextStyles(JSONObject textStyles) {
+        this.textStyles = textStyles;
+    }
+
+    @Override
     public void mergeItems(ITableItem newItem) throws Exception {
         if (newItem == null) {
             return;
@@ -147,10 +154,6 @@ public class BIBasicTableItem implements ITableItem {
         if (jo.has("text")) {
             text = jo.optString("text");
         }
-//        if (jo.has("isSum")) {
-//            isSum = jo.optBoolean("isSum");
-//        }
-
         if (jo.has("values")) {
             if (null == values) {
                 values = new ArrayList<ITableItem>();
@@ -190,10 +193,13 @@ public class BIBasicTableItem implements ITableItem {
             }
             jo.put("children", childrenArray);
         }
-        jo.put("dId", dId);
+        if (null != dId) {
+            jo.put("dId", dId);
+        }
         jo.put("text", text);
-//        jo.put("styles", null == styles ? new JSONObject() : styles.createJSON());
-//        jo.put("isSum", isSum);
+        if (null != styles) {
+            jo.put("styles", null == styles ? new JSONObject() : styles.createJSON());
+        }
         if (null != this.values && values.size() > 0) {
             JSONArray TempValues = new JSONArray();
             for (ITableItem item : this.values) {
@@ -203,6 +209,10 @@ public class BIBasicTableItem implements ITableItem {
         }
 
         jo.put("value", value);
+            jo.put("isSum", isSum);
+        if (textStyles != null) {
+            jo.put("textStyle", textStyles);
+        }
         return jo;
     }
 
