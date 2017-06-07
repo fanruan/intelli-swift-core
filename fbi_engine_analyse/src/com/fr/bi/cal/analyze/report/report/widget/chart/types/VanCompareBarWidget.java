@@ -80,10 +80,11 @@ public class VanCompareBarWidget extends VanCompareColumnWidget{
 
         int index = yAxisIndex(dimension.getValue());
 
-        String format = this.valueFormat(dimension, isTooltip);
+        String format = this.valueFormat(dimension);
+        String unit = this.valueUnit(dimension, isTooltip);
 
-        return index == 0 ? String.format("function(){return BI.contentFormat(-arguments[0], \"%s\")}", format)
-                : String.format("function(){return BI.contentFormat(arguments[0], \"%s\")}", format);
+        return index == 0 ? String.format("function(){return BI.contentFormat(-arguments[0], \"%s\") + \"%s\"}", format, unit)
+                : String.format("function(){return BI.contentFormat(arguments[0], \"%s\") + \"%s\"}", format, unit);
     }
 
     protected String labelString(int yAxis){
