@@ -65,6 +65,11 @@ public class BITableWidgetStyle implements IWidgetStyle {
     }
 
     @Override
+    public int getTableFormGroup() {
+        return 0;
+    }
+
+    @Override
     public void parseJSON(JSONObject jo) throws Exception {
         if (jo.has("settings")) {
             JSONObject settingJo = jo.getJSONObject("settings");
