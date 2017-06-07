@@ -10,6 +10,7 @@ import com.fr.bi.cal.analyze.cal.detail.PolyCubeDetailECBlock;
 import com.fr.bi.cal.analyze.executor.detail.DetailExecutor;
 import com.fr.bi.cal.analyze.executor.paging.Paging;
 import com.fr.bi.cal.analyze.executor.paging.PagingFactory;
+import com.fr.bi.cal.analyze.report.report.BIWidgetFactory;
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.calculator.DetailTableBuilder;
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.calculator.IExcelDataBuilder;
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.format.operation.BITableCellFormatOperation;
@@ -47,7 +48,12 @@ import com.fr.report.poly.TemplateBlock;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 public class BIDetailWidget extends AbstractBIWidget {
     private static final long serialVersionUID = 3558768164064392671L;
@@ -67,6 +73,10 @@ public class BIDetailWidget extends AbstractBIWidget {
     private BITableWidgetStyle widgetStyle;
     //page from 1~ max
     private int page = 1;
+
+    private TableWidget linkedWidget;
+
+    private Map<String, JSONArray> clicked = new HashMap<String, JSONArray>();
 
     public int getPage() {
         return page;
@@ -196,6 +206,22 @@ public class BIDetailWidget extends AbstractBIWidget {
             while (it.hasNext()) {
                 String key = it.next().toString();
                 targetFilterMap.put(key, TargetFilterFactory.parseFilter(targetFilter.getJSONObject(key), userId));
+            }
+        }
+
+        if (jo.has("linkedWidget")) {
+            JSONObject linkedWidgetJSON = jo.getJSONObject("linkedWidget");
+            if (linkedWidgetJSON.length() > 0) {
+                this.linkedWidget = (TableWidget) BIWidgetFactory.parseWidget(linkedWidgetJSON, userId);
+            }
+        }
+
+        if (jo.has("clicked")) {
+            JSONObject c = jo.getJSONObject("clicked");
+            Iterator it = c.keys();
+            while (it.hasNext()) {
+                String key = it.next().toString();
+                clicked.put(key, c.getJSONArray(key));
             }
         }
     }
@@ -328,9 +354,9 @@ public class BIDetailWidget extends AbstractBIWidget {
         res.put("items", itemsArray);
         res.put("widgetType", getType().getType());
         res.put("dimensionLength", dimensions.length).put("row", data.optLong("row", 0)).put("size", data.optLong("size", 0));
-        res.put("settings", tableData.getWidgetStyle().createJSON());
+        res.put("settings",tableData.getWidgetStyle().createJSON());
         return res;
-//        return createTestData();
+        //        return createTestData();
     }
 
     /*假数据，测试用*/
@@ -367,5 +393,21 @@ public class BIDetailWidget extends AbstractBIWidget {
         }
         dimAndTar.put(Integer.valueOf(BIReportConstant.REGION.DIMENSION1), dims);
         return dimAndTar;
+    }
+
+    public TableWidget getLinkWidget(){
+        return linkedWidget;
+    }
+
+    public void setLinkWidget(TableWidget linkedWidget){
+        this.linkedWidget = linkedWidget;
+    }
+
+    public Map<String, JSONArray> getClicked(){
+        return this.clicked;
+    }
+
+    public void setClicked(Map<String, JSONArray> clicked){
+        this.clicked = clicked;
     }
 }

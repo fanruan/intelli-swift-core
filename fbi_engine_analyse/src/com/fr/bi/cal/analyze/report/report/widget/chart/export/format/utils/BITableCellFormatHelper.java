@@ -3,6 +3,7 @@ package com.fr.bi.cal.analyze.report.report.widget.chart.export.format.utils;
 import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.utils.program.BIStringUtils;
+import com.fr.general.ComparatorUtils;
 import com.fr.general.Inter;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONException;
@@ -20,6 +21,7 @@ import java.util.Date;
 public class BITableCellFormatHelper {
     static final String PERCENT_SYMBOL = "%";
     static final int DEFAULT_SCALE = 1;
+    static final String NONEVALUE = "--";
 
     public static String targetValueFormat(JSONObject settings, String text) throws JSONException {
         if (BIStringUtils.isEmptyString(text) || !StableUtils.isNumber(text)) {
@@ -70,7 +72,7 @@ public class BITableCellFormatHelper {
     }
 
     public static String dateFormat(JSONObject format, int groupType, String text) throws JSONException {
-        if (StringUtils.isBlank(text)) {
+        if (StringUtils.isBlank(text)||ComparatorUtils.equals(text,NONEVALUE)) {
             return text;
         }
         JSONObject dateFormat = format.optJSONObject("dateFormat");

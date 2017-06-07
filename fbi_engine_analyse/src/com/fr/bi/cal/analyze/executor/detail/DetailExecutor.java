@@ -1,5 +1,6 @@
 package com.fr.bi.cal.analyze.executor.detail;
 
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.base.FinalInt;
 import com.fr.bi.cal.analyze.executor.GVIRunner;
 import com.fr.bi.cal.analyze.executor.TableRowTraversal;
@@ -8,13 +9,14 @@ import com.fr.bi.cal.analyze.executor.detail.execute.DetailPartGVIRunner;
 import com.fr.bi.cal.analyze.executor.iterator.TableCellIterator;
 import com.fr.bi.cal.analyze.executor.paging.Paging;
 import com.fr.bi.cal.analyze.report.report.widget.BIDetailWidget;
+import com.fr.bi.cal.analyze.report.report.widget.TableWidget;
 import com.fr.bi.cal.analyze.session.BISession;
 import com.fr.bi.cal.report.engine.CBCell;
 import com.fr.bi.conf.report.widget.field.target.detailtarget.BIDetailTarget;
 import com.fr.bi.stable.constant.CellConstant;
 import com.fr.bi.stable.data.db.BIRowValue;
+import com.fr.bi.stable.gvi.GVIUtils;
 import com.fr.bi.stable.gvi.GroupValueIndex;
-import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.stable.utils.BICollectionUtils;
 import com.fr.general.DateUtils;
 import com.fr.json.JSONArray;
@@ -95,6 +97,14 @@ public class DetailExecutor extends AbstractDetailExecutor {
     public JSONObject getCubeNode() throws JSONException {
         long start = System.currentTimeMillis();
         GroupValueIndex gvi = createDetailViewGvi();
+        if(widget.getLinkWidget() != null && widget.getLinkWidget() instanceof TableWidget){
+            TableWidget linkWidget = ((TableWidget)widget.getLinkWidget());
+            // 其联动组件的父联动gvi
+            GroupValueIndex pLinkGvi = linkWidget.createLinkedFilterGVI(null,session);
+            // 其联动组件的点击过滤gvi
+            GroupValueIndex linkGvi = linkWidget.getLinkFilter(linkWidget,widget.getClicked(),session);
+            gvi = GVIUtils.AND(gvi,GVIUtils.AND(pLinkGvi,linkGvi));
+        }
         paging.setTotalSize(gvi.getRowsCountWithData());
         final JSONArray ja = new JSONArray();
         JSONObject jo = new JSONObject();

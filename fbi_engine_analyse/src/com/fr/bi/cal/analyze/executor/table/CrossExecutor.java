@@ -321,6 +321,44 @@ public class CrossExecutor extends AbstractTableWidgetExecutor<NewCrossRoot> {
 
     }
 
+    /**
+     *
+     * @param rowData       行值
+     * @param colData       列值
+     * @return
+     * @throws Exception
+     */
+    public NewCrossRoot getStopOnRowNode(Object[] rowData,Object colData[]) throws Exception{
+        // 行的
+        if (session == null) {
+            return null;
+        }
+        int rowLength = widget.getViewDimensions().length;
+        int summaryLength = usedSumTarget.length;
+        int columnLen = rowLength + summaryLength;
+        if (columnLen == 0) {
+            return null;
+        }
+        int calPage = paging.getOperator();
+        CubeIndexLoader cubeIndexLoader = CubeIndexLoader.getInstance(session.getUserId());
+        //cubeIndexLoader.getGroupNodeWidthGvi(widget,);
+        Node l = cubeIndexLoader.getStopWhenGetRowNode(rowData, widget, createTarget4Calculate(), widget.getViewDimensions(),
+                                                       allDimensions, allSumTarget, calPage, session, CrossExpander.ALL_EXPANDER.getYExpander());
+
+
+        rowLength = widget.getViewTopDimensions().length;
+        columnLen = rowLength + summaryLength;
+        if(columnLen == 0){
+            return null;
+        }
+
+        Node t = cubeIndexLoader.getStopWhenGetRowNode(colData, widget, createTarget4Calculate(), widget.getViewTopDimensions(),
+                                                       allDimensions, allSumTarget, calPage, session, CrossExpander.ALL_EXPANDER.getYExpander());
+
+        NewCrossRoot r = new NewCrossRoot(l.createCrossHeader(), t.createCrossHeader());
+        return r;
+    }
+
     private void clearNullSummary(CrossHeader left, TargetGettingKey[] keys) {
         for (TargetGettingKey key : keys) {
             if (left.getSummaryValue(key) == null) {
