@@ -7,6 +7,7 @@ import com.fr.bi.cal.analyze.report.report.widget.chart.export.item.ITableItem;
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.item.constructor.DataConstructor;
 import com.fr.bi.cal.analyze.report.report.widget.style.BITableWidgetStyle;
 import com.fr.bi.conf.report.WidgetType;
+import com.fr.json.JSONException;
 
 import java.util.List;
 import java.util.Map;
@@ -31,9 +32,6 @@ public class BITableConstructHelper {
     public static void formatCells(DataConstructor data, Map<String, ITableCellFormatOperation> operations, BITableWidgetStyle style) throws Exception {
         boolean isDetail = data.getWidgetType() == WidgetType.DETAIL.getType();
         for (ITableHeader header : data.getHeaders()) {
-            if (header.isSum()) {
-                header.setStyles(BITableStyleHelper.getLastSummaryStyles(style.getThemeColor(), style.getTableStyleGroup()));
-            }
             header.setStyles(BITableStyleHelper.getHeaderStyles(style.getThemeColor(), style.getTableStyleGroup()));
         }
 
@@ -67,30 +65,38 @@ public class BITableConstructHelper {
 
     }
 
-    private static void traversalItems(List<ITableItem> items, Map<String, ITableCellFormatOperation> ops, int layerIndex, int rowIndex, BITableWidgetStyle style) throws Exception {
+    /*
+    * 首行汇总为深色
+    * */
+    private static void traversalItems(List<ITableItem> items, Map<String, ITableCellFormatOperation> ops, int rowIndex, int layer, BITableWidgetStyle style) throws Exception {
         for (ITableItem item : items) {
+            rowIndex++;
             if (item.getChildren() != null) {
-                traversalItems(item.getChildren(), ops, layerIndex + 1, rowIndex, style);
+                traversalItems(item.getChildren(), ops, rowIndex, layer + 1, style);
             }
             formatText(ops, item);
             setTextStyle(ops, item);
+            setStyle(rowIndex, layer, style, item);
             if (item.getValues() != null) {
                 for (ITableItem it : item.getValues()) {
                     formatText(ops, it);
                     setTextStyle(ops, it);
-                }
-                if (item.getChildren() != null) {
-                    for (ITableItem it : item.getValues()) {
+                    if ((layer == 0 && item.getValues() != null) || item.isSum()) {
                         it.setStyles(BITableStyleHelper.getLastSummaryStyles(style.getThemeColor(), style.getTableStyleGroup()));
-                    }
-                } else {
-                    for (ITableItem it : item.getValues()) {
+                    } else {
                         it.setStyles(BITableStyleHelper.getBodyStyles(style.getThemeColor(), style.getTableStyleGroup(), rowIndex));
                     }
                 }
             }
+        }
+    }
+
+    private static void setStyle(int rowIndex, int layer, BITableWidgetStyle style, ITableItem item) throws JSONException {
+        boolean isOutSummary=layer == 0 && item.getValues() != null;
+        if (isOutSummary || item.isSum()) {
+            item.setStyles(BITableStyleHelper.getLastSummaryStyles(style.getThemeColor(), style.getTableStyleGroup()));
+        } else {
             item.setStyles(BITableStyleHelper.getBodyStyles(style.getThemeColor(), style.getTableStyleGroup(), rowIndex));
-            rowIndex++;
         }
     }
 

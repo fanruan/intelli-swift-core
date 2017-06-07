@@ -19,6 +19,7 @@ import com.fr.bi.field.target.target.BISummaryTarget;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.report.key.TargetGettingKey;
 import com.fr.general.DateUtils;
+import com.fr.general.GeneralUtils;
 import com.fr.general.Inter;
 import com.fr.json.JSONObject;
 import com.fr.stable.ExportConstants;
@@ -138,9 +139,14 @@ public class CrossExecutor extends AbstractTableWidgetExecutor<NewCrossRoot> {
         while (temp != null) {
             int columnSpan = temp.getTotalLength() * targetNum;
             Object data = temp.getData();
-            BIDimension dim = widget.getViewDimensions()[rowIdx];
-            Object v = dim.getValueByType(data);
-            CBCell cell = ExecutorUtils.createCell(v, rowIdx, colDimension.length + (usedSumTarget.length == 1 ? 1 : 0), columnIdx.value, columnSpan, style);
+            BIDimension[] dims = widget.getViewTopDimensions();
+            BIDimension dim = dims[rowIdx];
+            String v = dim.toString(dim.getValueByType(data));
+            if (dim.getGroup().getType() == BIReportConstant.GROUP.YMD && GeneralUtils.string2Number(v) != null) {
+                v = DateUtils.DATEFORMAT2.format(new Date(GeneralUtils.string2Number(v).longValue()));
+            }
+            int rowSpan = (rowIdx == dims.length - 1) ? (usedSumTarget.length == 1 ? 2 : 1) : 1;
+            CBCell cell = ExecutorUtils.createCell(v, rowIdx, rowSpan, columnIdx.value, columnSpan, style);
             pagedIterator.addCell(cell);
             columnIdx.value += columnSpan;
             temp = (CrossHeader) temp.getSibling();
@@ -223,6 +229,9 @@ public class CrossExecutor extends AbstractTableWidgetExecutor<NewCrossRoot> {
             Object data = parent.getData();
             BIDimension dim = rowDimension[--i];
             Object v = dim.getValueByType(data);
+            if (dim.getGroup().getType() == BIReportConstant.GROUP.YMD && GeneralUtils.string2Number(v.toString()) != null) {
+                v = DateUtils.DATEFORMAT2.format(new Date(GeneralUtils.string2Number(v.toString()).longValue()));
+            }
             if (v != dimensionNames[i] || (i == dimensionNames.length - 1)) {
                 oddEven[i]++;
                 //不应该加一 为了和前台展示统一 奇偶行的颜色互换
@@ -310,6 +319,44 @@ public class CrossExecutor extends AbstractTableWidgetExecutor<NewCrossRoot> {
         }
         return gviList;
 
+    }
+
+    /**
+     *
+     * @param rowData       行值
+     * @param colData       列值
+     * @return
+     * @throws Exception
+     */
+    public NewCrossRoot getStopOnRowNode(Object[] rowData,Object colData[]) throws Exception{
+        // 行的
+        if (session == null) {
+            return null;
+        }
+        int rowLength = widget.getViewDimensions().length;
+        int summaryLength = usedSumTarget.length;
+        int columnLen = rowLength + summaryLength;
+        if (columnLen == 0) {
+            return null;
+        }
+        int calPage = paging.getOperator();
+        CubeIndexLoader cubeIndexLoader = CubeIndexLoader.getInstance(session.getUserId());
+        //cubeIndexLoader.getGroupNodeWidthGvi(widget,);
+        Node l = cubeIndexLoader.getStopWhenGetRowNode(rowData, widget, createTarget4Calculate(), widget.getViewDimensions(),
+                                                       allDimensions, allSumTarget, calPage, session, CrossExpander.ALL_EXPANDER.getYExpander());
+
+
+        rowLength = widget.getViewTopDimensions().length;
+        columnLen = rowLength + summaryLength;
+        if(columnLen == 0){
+            return null;
+        }
+
+        Node t = cubeIndexLoader.getStopWhenGetRowNode(colData, widget, createTarget4Calculate(), widget.getViewTopDimensions(),
+                                                       allDimensions, allSumTarget, calPage, session, CrossExpander.ALL_EXPANDER.getYExpander());
+
+        NewCrossRoot r = new NewCrossRoot(l.createCrossHeader(), t.createCrossHeader());
+        return r;
     }
 
     private void clearNullSummary(CrossHeader left, TargetGettingKey[] keys) {

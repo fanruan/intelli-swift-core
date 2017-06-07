@@ -153,7 +153,6 @@ public class SummaryComplexTableBuilder extends TableAbstractDataBuilder {
         BIBasicTableItem itemNode = new BIBasicTableItem();
         itemNode.setDId(targetIds.get(j));
         itemNode.setValue(s.getString(j));
-        itemNode.setStyles(BITableStyleHelper.getLastSummaryStyles(styleSetting.getThemeColor(), styleSetting.getTableStyleGroup()));
         outerValues.add(itemNode);
     }
 
@@ -280,6 +279,7 @@ public class SummaryComplexTableBuilder extends TableAbstractDataBuilder {
             if (isSummary) {
                 BIBasicTableItem summaryValueItem = new BIBasicTableItem();
                 summaryValueItem.setValue(SUMMARY);
+                summaryValueItem.setSum(true);
                 if (childrenAddSummaryValue.size() > 0) {
                     summaryValueItem.setDId(tempItems.get(i).getChildren().get(0).getDId());
                 }

@@ -54,7 +54,7 @@ public class ProfilesUpdateOperation implements ReportUpdateOperation {
     }
 
     //map 结构的递归
-    JSONObject recursionMapUpdate(String obj) throws JSONException {
+    public JSONObject recursionMapUpdate(String obj) throws JSONException {
         JSONObject json = new JSONObject(obj);
         JSONObject res = new JSONObject();
         Set<String> keySet = json.toMap().keySet();
@@ -124,7 +124,7 @@ public class ProfilesUpdateOperation implements ReportUpdateOperation {
     }
 
     //list结构的递归
-    Object recursionListUpdate(Object object) throws JSONException {
+    public Object recursionListUpdate(Object object) throws JSONException {
         String str = object.toString();
         if (BIJsonUtils.isArray(str)) {
             JSONArray array = new JSONArray(str);
@@ -145,7 +145,7 @@ public class ProfilesUpdateOperation implements ReportUpdateOperation {
     * 如果对应关系能在keys.json中找到，使用keys.json
     * 如果获取不了，默认转驼峰
     * */
-    protected String updateKey(String str) {
+    public String updateKey(String str) {
         String res;
         if (keys.has(str)) {
             res = mactchKeysJson(str);
