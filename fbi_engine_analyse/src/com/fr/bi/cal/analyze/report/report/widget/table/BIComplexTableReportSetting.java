@@ -80,12 +80,11 @@ public class BIComplexTableReportSetting extends BITableReportSetting {
     @Override
     public void parseJSON(JSONObject jo) throws Exception {
         super.parseJSON(jo);
-        if (jo.has("complex_data")) {
-            JSONObject complexData = jo.getJSONObject("complex_data");
+        if (jo.has("complexData")) {
+            JSONObject complexData = jo.getJSONObject("complexData");
 
-            if (complexData.has("x_view")) {
-
-                JSONArray xView = complexData.getJSONArray("x_view");
+            if (complexData.has("xView")) {
+                JSONArray xView = complexData.getJSONArray("xView");
                 complex_x_dimension = new ArrayList<ArrayList<String>>();
 
                 for (int i = 0; i < xView.length(); i++) {
@@ -103,9 +102,9 @@ public class BIComplexTableReportSetting extends BITableReportSetting {
                 }
             }
 
-            if (complexData.has("y_view")) {
+            if (complexData.has("yView")) {
 
-                JSONArray xView = complexData.getJSONArray("y_view");
+                JSONArray xView = complexData.getJSONArray("yView");
                 complex_y_dimension = new ArrayList<ArrayList<String>>();
 
                 for (int i = 0; i < xView.length(); i++) {
