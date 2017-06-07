@@ -486,8 +486,7 @@ public class BIReportExportExcel {
     }
 
     private FloatElement renderDefaultChartPic(BIWidget widget) throws IOException, JSONException {
-        String imageFolder = FRContext.getCurrentEnv().getPath() +
-                "/classes/com/fr/bi/web/images/background/charts";
+        String imageFolder = "/com/fr/bi/web/images/background/charts";
         String base64 = BIReportExportExcelUtils.getDefaultImage(widget.getType(), imageFolder);
         JSONObject imgOptions = JSONObject.create();
         imgOptions.put("base64", base64);

@@ -4,6 +4,7 @@ import com.fr.bi.conf.report.BIWidget;
 import com.fr.bi.conf.report.WidgetType;
 import com.fr.bi.manager.PerformancePlugManager;
 import com.fr.bi.stable.constant.DateConstant;
+import com.fr.general.GeneralUtils;
 import com.fr.general.IOUtils;
 import com.fr.json.JSONObject;
 import com.fr.report.cell.FloatElement;
@@ -159,7 +160,8 @@ public class BIReportExportExcelUtils {
         map.put(WidgetType.FUNNEL, "/funnel.png");
         map.put(WidgetType.MULTI_PIE, "/multi_pie.png");
         map.put(WidgetType.TREE_MAP, "/tree_map.png");
-        return coderBase64(IOUtils.readImage(imageFolder + map.get(type)));
+        InputStream in = GeneralUtils.class.getResourceAsStream(imageFolder + map.get(type));
+        return coderBase64(IOUtils.readImage(in));
     }
 
     static String coderBase64(Image image) throws IOException {
