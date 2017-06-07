@@ -18,14 +18,17 @@ public class BITableHeader implements ITableHeader {
     public BITableHeader() {
     }
 
+    @Override
     public String getText() {
         return text;
     }
 
+    @Override
     public void setText(String text) {
         this.text = text;
     }
 
+    @Override
     public String getdID() {
         return dID;
     }
