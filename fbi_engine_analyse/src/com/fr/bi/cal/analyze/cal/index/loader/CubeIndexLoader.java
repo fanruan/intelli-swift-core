@@ -4,9 +4,26 @@ import com.finebi.cube.conf.table.BusinessTable;
 import com.finebi.cube.relation.BITableSourceRelation;
 import com.fr.bi.cal.analyze.cal.multithread.BIMultiThreadExecutor;
 import com.fr.bi.cal.analyze.cal.multithread.MultiThreadManagerImpl;
-import com.fr.bi.cal.analyze.cal.result.*;
-import com.fr.bi.cal.analyze.cal.result.operator.*;
-import com.fr.bi.cal.analyze.cal.sssecret.*;
+import com.fr.bi.cal.analyze.cal.result.BIComplexExecutData;
+import com.fr.bi.cal.analyze.cal.result.ComplexExpander;
+import com.fr.bi.cal.analyze.cal.result.CrossExpander;
+import com.fr.bi.cal.analyze.cal.result.CrossHeader;
+import com.fr.bi.cal.analyze.cal.result.NewCrossRoot;
+import com.fr.bi.cal.analyze.cal.result.Node;
+import com.fr.bi.cal.analyze.cal.result.NodeAndPageInfo;
+import com.fr.bi.cal.analyze.cal.result.NodeExpander;
+import com.fr.bi.cal.analyze.cal.result.operator.AllPageOperator;
+import com.fr.bi.cal.analyze.cal.result.operator.LastPageOperator;
+import com.fr.bi.cal.analyze.cal.result.operator.NextPageOperator;
+import com.fr.bi.cal.analyze.cal.result.operator.Operator;
+import com.fr.bi.cal.analyze.cal.result.operator.RefreshPageOperator;
+import com.fr.bi.cal.analyze.cal.result.operator.StopWhenGetRowOperator;
+import com.fr.bi.cal.analyze.cal.sssecret.CrossCalculator;
+import com.fr.bi.cal.analyze.cal.sssecret.GroupUtils;
+import com.fr.bi.cal.analyze.cal.sssecret.IRootDimensionGroup;
+import com.fr.bi.cal.analyze.cal.sssecret.NodeDimensionIterator;
+import com.fr.bi.cal.analyze.cal.sssecret.PageIteratorGroup;
+import com.fr.bi.cal.analyze.cal.sssecret.TreeIterator;
 import com.fr.bi.cal.analyze.cal.store.GroupKey;
 import com.fr.bi.cal.analyze.exception.NoneRegisterationException;
 import com.fr.bi.cal.analyze.report.report.widget.BISummaryWidget;
@@ -41,8 +58,15 @@ import com.fr.stable.EnvChangedListener;
 import com.fr.stable.collections.lazy.LazyCalculateContainer;
 import com.fr.stable.collections.lazy.LazyValueCreator;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -925,6 +949,26 @@ public class CubeIndexLoader {
             }
         }
         return targetFilterMap != null;
+    }
+
+
+    /**
+     * 当获取到某一行的时候进行结束的node节点
+     * @return
+     */
+    public Node getStopWhenGetRowNode(Object[]stopRowData,BISummaryWidget widget, final BISummaryTarget[] usedTarget,
+                                      final BIDimension[] rowDimension, BIDimension[] allDimension,
+                                      final BISummaryTarget[] sumTarget, int page,
+                                      final BISession session, NodeExpander expander) throws Exception{
+        NodeAndPageInfo info = null ;
+        Operator op = new StopWhenGetRowOperator(stopRowData);
+
+        checkRegisteration(sumTarget, allDimension);
+        BISummaryTarget[] usedTargets = createUsedSummaryTargets(rowDimension, usedTarget, sumTarget);
+        info = createPageGroupNode(widget, usedTargets, rowDimension, page, expander, session,
+                                   op, new PageIteratorGroup(), true, false);
+
+        return info.getNode();
     }
 
 
