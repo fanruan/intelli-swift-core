@@ -170,11 +170,13 @@ public class GetTreeTreeNodeExecutor extends AbstractTreeNodeExecutor {
                     } else {
                         nodeJa.put("id", id + "_" + times + "_" + (i + 1));
                     }
+                    String name = list.get(i);
                     nodeJa.put("times", 1);
-                    nodeJa.put("text", list.get(i));
-                    nodeJa.put("title", list.get(i));
+                    nodeJa.put("value", name);
+                    nodeJa.put("text", name);
+                    nodeJa.put("title", name);
 
-                    CheckState state = getCheckState(list.get(i), parentValues, valueMap, checked, half, hasChild);
+                    CheckState state = getCheckState(name, parentValues, valueMap, checked, half, hasChild);
 
                     nodeJa.put("checked", state.isCheck());
                     nodeJa.put("halfCheck", state.isHalf());

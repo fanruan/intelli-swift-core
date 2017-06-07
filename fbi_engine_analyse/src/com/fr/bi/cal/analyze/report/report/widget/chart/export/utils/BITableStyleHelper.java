@@ -12,7 +12,7 @@ import java.awt.*;
  * Created by Kary on 2017/2/26.
  * 样式计算
  */
-public class SummaryTableStyleHelper {
+public class BITableStyleHelper {
     private static int GRAY_LEVEL = 140;
     private static double RED_PROPORTION = 0.299;
     private static double GREEN_PROPORTION = 0.587;

@@ -411,6 +411,7 @@ public class BIReportConstant {
         public static final int DASHBOARD = 0x19;          //仪表盘
 
         public static final int BUBBLE = 0x1a;            //气泡图
+
         public static final int SCATTER = 0x1c;           //散点图
         public static final int FORCE_BUBBLE = 0x1b;      //力学气泡图
 
@@ -680,5 +681,14 @@ public class BIReportConstant {
         public static final int NORMAL = 1;
         public static final int IS_EDITING = 2;
         public static final int NOT_EXIST = 3;
+    }
+
+    /*
+  * 计算指标比较结果
+  * */
+    public static final class TARGET_COMPARE_RES {
+        public static final int LESS = 1;
+        public static final int EQUAL = 2;
+        public static final int MORE = 3;
     }
 }

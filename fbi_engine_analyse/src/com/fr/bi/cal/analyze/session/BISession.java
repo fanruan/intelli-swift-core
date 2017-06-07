@@ -10,9 +10,7 @@ import com.fr.bi.cal.analyze.executor.detail.key.DetailSortKey;
 import com.fr.bi.cal.analyze.report.report.widget.BIDetailWidget;
 import com.fr.bi.cal.analyze.report.report.widget.TableWidget;
 import com.fr.bi.cal.report.main.impl.BIWorkBook;
-import com.fr.bi.cal.stable.engine.TempCubeTask;
 import com.fr.bi.cal.stable.loader.CubeReadingTableIndexLoader;
-import com.fr.bi.cal.stable.loader.CubeTempModelReadingTableIndexLoader;
 import com.fr.bi.cluster.utils.ClusterEnv;
 import com.fr.bi.conf.report.BIReport;
 import com.fr.bi.conf.report.BIWidget;
@@ -56,7 +54,6 @@ public class BISession extends BIAbstractSession {
     private static final long serialVersionUID = 7928902437685692328L;
     private static final long EDIT_TIME = 45000;
     private boolean isEdit;
-    private boolean isRealTime;
     private BIReportNode node;
     //pony 缓存loader
     private ICubeDataLoader loader;
@@ -137,7 +134,7 @@ public class BISession extends BIAbstractSession {
             this.isEdit = true;
             return;
         }
-        lockDAO.forceLock(sessionID, node.getUserId(), node.getId(),getUserId());
+        lockDAO.forceLock(sessionID, node.getUserId(), node.getId(), getUserId());
         this.isEdit = true;
     }
 
@@ -157,7 +154,7 @@ public class BISession extends BIAbstractSession {
             return isEdit;
         }
         if (isEdit) {
-            isEdit = lockDAO.lock(sessionID, node.getUserId(), node.getId(),getUserId());
+            isEdit = lockDAO.lock(sessionID, node.getUserId(), node.getId(), getUserId());
             if (!isEdit) {
                 List<BIReportNodeLock> locks = lockDAO.getLock(node.getUserId(), node.getId());
                 boolean doForce = true;
@@ -232,22 +229,6 @@ public class BISession extends BIAbstractSession {
 
     public String getTempTableId() {
         return tempTableId;
-    }
-
-    public void setTempTableMd5(String tempTableMd5) {
-        this.tempTableMd5 = tempTableMd5;
-    }
-
-    public void setTempTableId(String tempTableId) {
-        this.tempTableId = tempTableId;
-    }
-
-    public boolean isRealTime() {
-        return isRealTime;
-    }
-
-    public void setIsRealTime(boolean isRealTime) {
-        this.isRealTime = isRealTime;
     }
 
     public ResultWorkBook getExportBookByName(String name) throws CloneNotSupportedException {
@@ -353,24 +334,13 @@ public class BISession extends BIAbstractSession {
     @Override
     public ICubeDataLoader getLoader() {
         synchronized (this) {
-            if (!isRealTime()) {
-                return CubeReadingTableIndexLoader.getInstance(accessUserId);
-            } else {
-                if (loader == null) {
-                    loader = CubeTempModelReadingTableIndexLoader.getInstance(new TempCubeTask(getTempTableMd5(), getTempTableId(), getUserId()));
-                }
-                return loader;
-            }
+            return CubeReadingTableIndexLoader.getInstance(accessUserId);
         }
     }
 
     @Override
     public void updateTime() {
         this.lastTime = System.currentTimeMillis();
-        if (isRealTime()) {
-            CubeTempModelReadingTableIndexLoader loader = (CubeTempModelReadingTableIndexLoader) CubeTempModelReadingTableIndexLoader.getInstance(new TempCubeTask(getTempTableMd5(), getTempTableId(), getUserId()));
-            loader.updateTime();
-        }
     }
 
     public PageIteratorGroup getPageIteratorGroup(boolean useRealData, String widgetName) {

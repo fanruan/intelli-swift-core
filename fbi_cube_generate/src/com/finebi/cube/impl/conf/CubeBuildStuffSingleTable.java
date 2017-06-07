@@ -130,9 +130,9 @@ public class CubeBuildStuffSingleTable extends AbstractCubeBuildStuff implements
                 if (null != convertRelation) {
                     this.biTableSourceRelationSet.add(convertRelation);
                     Set<CubeTableSource> dependTableSourceSet = new HashSet<CubeTableSource>();
-                    boolean containsTable = convertRelation.getPrimaryTable().getSourceID().equals(BusinessTableHelper.getTableDataSource(businessTable.getID()).getSourceID()) || convertRelation.getForeignTable().getSourceID().equals(BusinessTableHelper.getTableDataSource(businessTable.getID()).getSourceID());
+                    boolean containsTable = convertRelation.getPrimaryTable().getSourceID().equals(BusinessTableHelper.getConfigTableDataSource(businessTable.getID()).getSourceID()) || convertRelation.getForeignTable().getSourceID().equals(BusinessTableHelper.getConfigTableDataSource(businessTable.getID()).getSourceID());
                     if (containsTable) {
-                        dependTableSourceSet.add(BusinessTableHelper.getTableDataSource(businessTable.getID()));
+                        dependTableSourceSet.add(BusinessTableHelper.getConfigTableDataSource(businessTable.getID()));
                     }
                     BICubeGenerateRelation generateRelation = new BICubeGenerateRelation(convertRelation, dependTableSourceSet);
                     this.cubeGenerateRelationSet.add(generateRelation);
