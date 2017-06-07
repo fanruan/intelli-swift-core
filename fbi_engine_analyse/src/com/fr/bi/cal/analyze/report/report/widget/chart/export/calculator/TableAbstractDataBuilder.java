@@ -131,6 +131,7 @@ public abstract class TableAbstractDataBuilder implements IExcelDataBuilder {
             BITableHeader header = new BITableHeader();
             header.setdID(dimId);
             header.setText(BITableDimensionHelper.getDimensionNameByID(dimAndTar, dimId));
+            header.setUsed(BITableDimensionHelper.isDimUsed(dimAndTar, dimId));
             headers.add(header);
         }
     }
