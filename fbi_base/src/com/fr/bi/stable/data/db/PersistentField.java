@@ -1,5 +1,6 @@
 package com.fr.bi.stable.data.db;
 
+import com.fr.bi.common.persistent.annotation.PersistNameHistory;
 import com.fr.bi.stable.data.key.IPersistentField;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.utils.BIDBUtils;
@@ -29,46 +30,47 @@ public class PersistentField implements IPersistentField {
     private String columnName;
     private String remark;
     private boolean isPrimaryKey;
-    private int column_size;
+    @PersistNameHistory(historyNames = {"colum_size"})
+    private int columnSize;
     private int biType;
     private boolean canSetUsable;
     //小数位数
     private int scale = DEFALUTSCALE;
 
-    public PersistentField(String columnName, String remark, int type, boolean isPrimaryKey, int column_size, int scale) {
+    public PersistentField(String columnName, String remark, int type, boolean isPrimaryKey, int columnSize, int scale) {
         this.setSqlType(type);
         this.setColumnName(columnName);
-        this.biType = BIDBUtils.sqlType2BI(type, column_size, scale);
+        this.biType = BIDBUtils.sqlType2BI(type, columnSize, scale);
         this.remark = remark;
         this.isPrimaryKey = isPrimaryKey;
         //FIXME 临时处理大于8K长度的字段，比如sqlserver TEXT; 截取前255
-        this.column_size = column_size > 8000 ? 255 : column_size;
+        this.columnSize = columnSize > 8000 ? 255 : columnSize;
 //        if (scale == 0) {
 //            System.out.println("find");
 //        }
         this.scale = scale;
     }
 
-    public PersistentField(String columnName, String remark, int type, int column_size, int scale) {
-        this(columnName, remark, type, false, column_size, scale);
+    public PersistentField(String columnName, String remark, int type, int columnSize, int scale) {
+        this(columnName, remark, type, false, columnSize, scale);
     }
 
-    public PersistentField(String columnName, int type, int column_size) {
-        this(columnName, columnName, type, column_size, DEFALUTSCALE);
+    public PersistentField(String columnName, int type, int columnSize) {
+        this(columnName, columnName, type, columnSize, DEFALUTSCALE);
     }
 
     public PersistentField(String columnName, int type) {
         this(columnName, columnName, type, DEFALUTCOLUMN_SIZE, DEFALUTSCALE);
     }
-    public PersistentField(String columnName, int type, int column_size,int scale) {
-        this(columnName, columnName, type, column_size, scale);
+    public PersistentField(String columnName, int type, int columnSize, int scale) {
+        this(columnName, columnName, type, columnSize, scale);
     }
         public PersistentField() {
     }
 
     @Override
     public int getColumnSize() {
-        return column_size;
+        return columnSize;
     }
 
     /**
@@ -112,8 +114,8 @@ public class PersistentField implements IPersistentField {
         return biType;
     }
 
-    public void setColumn_size(int column_size) {
-        this.column_size = column_size;
+    public void setColumnSize(int columnSize) {
+        this.columnSize = columnSize;
     }
 
     /**
@@ -151,10 +153,10 @@ public class PersistentField implements IPersistentField {
         jo.put("text", this.getFieldName());
         jo.put("value", this.getFieldName());
         jo.put("type", this.getSqlType());
-        jo.put("biColumnType", BIDBUtils.sqlType2BI(this.getSqlType(), column_size, scale));
+        jo.put("biColumnType", BIDBUtils.sqlType2BI(this.getSqlType(), columnSize, scale));
         jo.put("scale", scale);
         jo.put("isPrimaryKey", isPrimaryKey());
-        jo.put("column_size", column_size);
+        jo.put("columnSize", columnSize);
         return jo;
     }
 
@@ -186,8 +188,8 @@ public class PersistentField implements IPersistentField {
         if (jo.has("isPrimaryKey")) {
             this.setSqlType(jo.getInt("isPrimaryKey"));
         }
-        if (jo.has("column_size")) {
-            this.column_size = jo.getInt("column_size");
+        if (jo.has("columnSize")) {
+            this.columnSize = jo.getInt("columnSize");
         }
         if (jo.has("scale")) {
             this.scale = jo.getInt("scale");

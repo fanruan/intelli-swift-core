@@ -73,7 +73,7 @@ public class AnalysisETLOperatorFactory {
     }
 
     private static IETLOperator createAddColumnOperator(JSONObject jo, long userId) throws Exception {
-        String type = jo.getString("add_column_type");
+        String type = jo.getString("addColumnType");
         IETLOperator op = null;
         if (ComparatorUtils.equals(type, BIJSONConstant.ETL_ADD_COLUMN_TYPE.FORMULA)){
             op = new ETLFormularOperator(userId);
