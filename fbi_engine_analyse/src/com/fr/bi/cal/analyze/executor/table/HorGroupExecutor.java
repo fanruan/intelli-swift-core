@@ -18,10 +18,12 @@ import com.fr.bi.field.target.target.BISummaryTarget;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.report.key.TargetGettingKey;
 import com.fr.general.DateUtils;
+import com.fr.general.GeneralUtils;
 import com.fr.general.Inter;
 import com.fr.json.JSONObject;
 
 import java.awt.*;
+import java.util.Date;
 
 public class HorGroupExecutor extends AbstractTableWidgetExecutor<Node> {
     private Rectangle rectangle;
@@ -76,8 +78,10 @@ public class HorGroupExecutor extends AbstractTableWidgetExecutor<Node> {
             int columnIdx = widget.isOrder() + 1;
             BIDimension dim = colDimension[colDimIdx];
             while (temp != null) {
-                Object data = temp.getData();
-                Object v = dim.getValueByType(data);
+                String v = dim.toString(temp.getData());
+                if (dim.getGroup().getType() == BIReportConstant.GROUP.YMD && GeneralUtils.string2Number(v) != null) {
+                    v = DateUtils.DATEFORMAT2.format(new Date(GeneralUtils.string2Number(v).longValue()));
+                }
                 CBCell dimCell = ExecutorUtils.createCell(v, colDimIdx, 1, columnIdx, temp.getTotalLength(), style);
                 pagedIterator.addCell(dimCell);
                 columnIdx += temp.getTotalLength();
