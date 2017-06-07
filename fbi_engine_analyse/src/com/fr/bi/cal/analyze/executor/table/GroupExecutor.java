@@ -248,7 +248,7 @@ public class GroupExecutor extends AbstractTableWidgetExecutor<Node> {
         int calpage = paging.getOperator();
         CubeIndexLoader cubeIndexLoader = CubeIndexLoader.getInstance(session.getUserId());
         Node tree = cubeIndexLoader.loadPageGroup(false, widget, createTarget4Calculate(), usedDimensions,
-                                                  allDimensions, allSumTarget, calpage, widget.isRealData(), session, expander.getYExpander());
+                                                    allDimensions, allSumTarget, calpage, widget.isRealData(), session, expander.getYExpander());
         if (tree == null) {
             tree = new Node(allSumTarget.length);
         }
@@ -277,7 +277,7 @@ public class GroupExecutor extends AbstractTableWidgetExecutor<Node> {
         int calPage = paging.getOperator();
         CubeIndexLoader cubeIndexLoader = CubeIndexLoader.getInstance(session.getUserId());
         List<NodeAndPageInfo> infoList = cubeIndexLoader.getPageGroupInfoList(false, widget, createTarget4Calculate(), usedDimensions,
-                                                                              allDimensions, allSumTarget, calPage, widget.isRealData(), session, expander.getYExpander());
+                allDimensions, allSumTarget, calPage, widget.isRealData(), session, expander.getYExpander());
         ArrayList<MetricGroupInfo> gviList = new ArrayList<MetricGroupInfo>();
         for (NodeAndPageInfo info : infoList) {
             gviList.addAll(info.getIterator().getRoot().getMetricGroupInfoList());
@@ -302,7 +302,7 @@ public class GroupExecutor extends AbstractTableWidgetExecutor<Node> {
         widget.setWidgetName(getRandWidgetName());
         //cubeIndexLoader.getGroupNodeWidthGvi(widget,);
         Node n = cubeIndexLoader.getStopWhenGetRowNode(stopRow, widget, createTarget4Calculate(), usedDimensions,
-                                                       allDimensions, allSumTarget, calPage, session, CrossExpander.ALL_EXPANDER.getYExpander());
+                allDimensions, allSumTarget, calPage, session, CrossExpander.ALL_EXPANDER.getYExpander());
         // TODO 这一步是否有必要
         widget.setWidgetName(oldName);
         return n;
