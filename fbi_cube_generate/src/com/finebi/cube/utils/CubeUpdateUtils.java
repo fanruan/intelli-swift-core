@@ -7,10 +7,16 @@ import com.finebi.cube.conf.BICubeConfiguration;
 import com.finebi.cube.conf.BICubeConfigureCenter;
 import com.finebi.cube.conf.BISystemConfigHelper;
 import com.finebi.cube.conf.table.BusinessTable;
+import com.finebi.cube.data.ICubeResourceDiscovery;
+import com.finebi.cube.location.BICubeResourceRetrieval;
+import com.finebi.cube.location.ICubeResourceRetrievalService;
 import com.finebi.cube.relation.BITableRelation;
 import com.finebi.cube.relation.BITableRelationPath;
 import com.finebi.cube.relation.BITableSourceRelation;
 import com.finebi.cube.relation.BITableSourceRelationPath;
+import com.finebi.cube.structure.BICube;
+import com.finebi.cube.structure.Cube;
+import com.fr.bi.common.factory.BIFactoryHelper;
 import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
@@ -157,4 +163,41 @@ public class CubeUpdateUtils {
     public static int calcUpdateType(Integer oldType, Integer newType) {
         return oldType <= newType ? oldType : newType;
     }
+
+    public static boolean isPart(long userId) {
+        ICubeResourceDiscovery discovery = BIFactoryHelper.getObject(ICubeResourceDiscovery.class);
+        ICubeResourceRetrievalService resourceRetrievalService = new BICubeResourceRetrieval(BICubeConfiguration.getConf(Long.toString(userId)));
+        Cube cube = new BICube(resourceRetrievalService, discovery);
+        boolean isPart = (CubeUpdateUtils.getCubeAbsentTables(userId).size() > 0 || CubeUpdateUtils.getCubeAbsentRelations(userId).size() > 0 || CubeUpdateUtils.getCubeAbsentPaths(userId).size() > 0) && cube.isVersionAvailable();
+        return isPart;
+    }
+
+    /**
+     * @param userId
+     * @return
+     */
+    public static boolean isUpdateMeta(long userId) {
+        /**
+         * 关联减少，表没有变化
+         */
+        boolean relationReduced = BICubeConfigureCenter.getTableRelationManager().isRelationReduced(userId) &&
+                BICubeConfigureCenter.getPackageManager().isTableNoChange(userId);
+        /**
+         * 表减少，关联没有变化
+         */
+        boolean tableReduced = BICubeConfigureCenter.getPackageManager().isTableReduced(userId) &&
+                BICubeConfigureCenter.getTableRelationManager().isRelationNoChange(userId);
+        /**
+         * 关联和表都减少了
+         */
+        boolean tableRelationReduced = BICubeConfigureCenter.getPackageManager().isTableReduced(userId) &&
+                BICubeConfigureCenter.getTableRelationManager().isRelationReduced(userId);
+        return relationReduced || tableReduced || tableRelationReduced;
+    }
+
+    public static boolean isNeed2GenerateCube(long userId) {
+        return isPart(userId) || isUpdateMeta(userId);
+    }
+
+
 }
