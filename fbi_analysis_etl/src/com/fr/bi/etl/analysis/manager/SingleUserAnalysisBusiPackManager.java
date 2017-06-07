@@ -39,7 +39,8 @@ public class SingleUserAnalysisBusiPackManager{
     }
 
     public boolean checkVersion() {
-        if (!ComparatorUtils.equals(this.version, "4.0.2")){
+        //ResourceHelper那边取了所有用户的业务包，没做过螺旋分析的用户也会new一个空的manager对象，这边判断下如果业务包是空的，就不兼容了，要不几万个用户卡死了
+        if (!pack.getAllTables().isEmpty() && !ComparatorUtils.equals(this.version, "4.0.2")){
             synchronized (this){
                 if (!ComparatorUtils.equals(this.version, "4.0.2")){
                     try {
