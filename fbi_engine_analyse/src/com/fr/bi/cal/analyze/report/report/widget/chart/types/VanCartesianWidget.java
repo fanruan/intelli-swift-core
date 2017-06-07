@@ -111,39 +111,44 @@ public abstract class VanCartesianWidget extends VanChartWidget {
         return "arguments[0]";
     }
 
-    //值标签和小数位数，千分富符，数量级和单位构成的后缀
-    protected String valueFormat(BISummaryTarget dimension, boolean isTooltip){
+    protected String unitFromSetting(BISummaryTarget dimension) {
         int yAxis = this.yAxisIndex(dimension.getId());
-
-        boolean hasSeparator = true;
-        String unit = StringUtils.EMPTY;
 
         try {
             JSONObject settings = this.getDetailChartSetting();
 
             if(yAxis == 0){
-                hasSeparator = settings.optBoolean("leftYSeparator");
-                unit = settings.optString("leftYUnit");
+                return settings.optString("leftYUnit");
             }else if(yAxis == 1){
-                hasSeparator = settings.optBoolean("rightYSeparator");
-                unit = settings.optString("rightYUnit");
+                return settings.optString("rightYUnit");
             }else if(yAxis == 2){
-                hasSeparator = settings.optBoolean("rightY2Separator");
-                unit = settings.optString("rightY2Unit");
+                return settings.optString("rightY2Unit");
+            }
+        }catch (Exception e){
+            BILoggerFactory.getLogger().error(e.getMessage(),e);
+        }
+
+        return StringUtils.EMPTY;
+    }
+
+    protected boolean hasSeparatorFromSetting(BISummaryTarget dimension){
+        int yAxis = this.yAxisIndex(dimension.getId());
+
+        try {
+            JSONObject settings = this.getDetailChartSetting();
+
+            if(yAxis == 0){
+                return settings.optBoolean("leftYSeparator");
+            }else if(yAxis == 1){
+                return settings.optBoolean("rightYSeparator");
+            }else if(yAxis == 2){
+                return settings.optBoolean("rightY2Separator");
             }
 
         }catch (Exception e){
             BILoggerFactory.getLogger().error(e.getMessage(),e);
         }
-
-        String scaleUnit = this.scaleUnit(this.numberLevel(dimension.getId()));
-
-        String format = this.decimalFormat(dimension, hasSeparator);
-        if(isTooltip){
-            format += (scaleUnit + unit);
-        }
-
-        return format;
+        return true;
     }
 
     //todo 坐标轴标题和数量级，单位构成的后缀
