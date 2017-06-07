@@ -142,6 +142,8 @@ public class GroupExecutor extends AbstractTableWidgetExecutor<Node> {
             n = n.getFirstChild();
         }
         int[] oddEven = new int[rowDimensions.length];
+        //需要根据行表头的个数来确定会总行的columnIndex
+        int rowDimLength = rowDimensions.length;
         Object[] dimensionNames = new Object[rowDimensions.length];
         while (n != null) {
             Node temp = n;
@@ -152,21 +154,35 @@ public class GroupExecutor extends AbstractTableWidgetExecutor<Node> {
                 start.value++;
             }
             StreamPagedIterator pagedIterator = iter.getIteratorByPage(start.value);
-            generateTargetCells(temp, widget, rowDimensions, pagedIterator, rowIdx.value);
+            generateTargetCells(temp, widget, rowDimensions, pagedIterator, rowIdx.value, false);
             generateDimNames(temp, widget, rowDimensions, dimensionNames, oddEven, pagedIterator, rowIdx.value);
-
+            if (checkIfgenerateSumCell(temp)) {
+                rowIdx.value++;
+                Style style = BITableStyle.getInstance().getYSumStringCellStyle();
+                CBCell cell = ExecutorUtils.createCell(Inter.getLocText("BI-Summary_Values"), rowIdx.value, 1, rowDimLength - 1, rowDimensions.length - rowDimLength + 1, style);
+                pagedIterator.addCell(cell);
+                generateTargetCells(temp.getParent(), widget, rowDimensions, pagedIterator, rowIdx.value, true);
+            }
             n = n.getSibling();
         }
     }
 
-    private static void generateTargetCells(Node temp, TableWidget widget, BIDimension[] rowDimensions, StreamPagedIterator pagedIterator, int rowIdx) {
+    private static boolean checkIfgenerateSumCell(Node temp) {
+        return temp.getSibling() == null || (temp.getParent() != null && temp.getSibling().getParent() != null && (temp.getParent() != temp.getSibling().getParent()));
+    }
 
+    private static void generateTargetCells(Node temp, TableWidget widget, BIDimension[] rowDimensions, StreamPagedIterator pagedIterator, int rowIdx, boolean isSum) {
         int targetsKeyIndex = 0;
         for (TargetGettingKey key : widget.getTargetsKey()) {
             int columnIdx = targetsKeyIndex + rowDimensions.length + widget.isOrder();
             Object data = temp.getSummaryValue(key);
-            boolean isPercent = widget.getChartSetting().getNumberLevelByTargetId(key.getTargetName()) == BIReportConstant.TARGET_STYLE.NUM_LEVEL.PERCENT;
-            Style style = BITableStyle.getInstance().getNumberCellStyle(data, rowIdx % 2 == 1, isPercent);
+            Style style;
+            if(!isSum) {
+                boolean isPercent = widget.getChartSetting().getNumberLevelByTargetId(key.getTargetName()) == BIReportConstant.TARGET_STYLE.NUM_LEVEL.PERCENT;
+                style = BITableStyle.getInstance().getNumberCellStyle(data, rowIdx % 2 == 1, isPercent);
+            } else {
+                style = BITableStyle.getInstance().getYSumStringCellStyle();
+            }
             CBCell cell = ExecutorUtils.createCell(data, rowIdx, 1, columnIdx, 1, style);
             pagedIterator.addCell(cell);
             targetsKeyIndex++;
@@ -181,6 +197,7 @@ public class GroupExecutor extends AbstractTableWidgetExecutor<Node> {
             int rowSpan = temp.getTotalLength();
             BIDimension dim = rowDimensions[--i];
             String data = dim.toString(temp.getData());
+            //年月日字段格式化
             if (dim.getGroup().getType() == BIReportConstant.GROUP.YMD && GeneralUtils.string2Number(data) != null) {
                 data = DateUtils.DATEFORMAT2.format(new Date(GeneralUtils.string2Number(data).longValue()));
             }
@@ -188,6 +205,7 @@ public class GroupExecutor extends AbstractTableWidgetExecutor<Node> {
             if (v != dimensionNames[i] || (i == rowDimensions.length - 1)) {
                 oddEven[i]++;
                 Style style = BITableStyle.getInstance().getDimensionCellStyle(v instanceof Number, (oddEven[i] + 1) % 2 == 0);
+                rowSpan = i == rowDimensions.length - 1 ? rowSpan : rowSpan + 1;
                 CBCell cell = ExecutorUtils.createCell(v, rowIdx, rowSpan, i + widget.isOrder(), 1, style);
                 pagedIterator.addCell(cell);
                 if (i == 0 && widget.isOrder() == 1) {
@@ -248,7 +266,7 @@ public class GroupExecutor extends AbstractTableWidgetExecutor<Node> {
         int calpage = paging.getOperator();
         CubeIndexLoader cubeIndexLoader = CubeIndexLoader.getInstance(session.getUserId());
         Node tree = cubeIndexLoader.loadPageGroup(false, widget, createTarget4Calculate(), usedDimensions,
-                allDimensions, allSumTarget, calpage, widget.isRealData(), session, expander.getYExpander());
+                                                  allDimensions, allSumTarget, calpage, widget.isRealData(), session, expander.getYExpander());
         if (tree == null) {
             tree = new Node(allSumTarget.length);
         }
@@ -277,7 +295,7 @@ public class GroupExecutor extends AbstractTableWidgetExecutor<Node> {
         int calPage = paging.getOperator();
         CubeIndexLoader cubeIndexLoader = CubeIndexLoader.getInstance(session.getUserId());
         List<NodeAndPageInfo> infoList = cubeIndexLoader.getPageGroupInfoList(false, widget, createTarget4Calculate(), usedDimensions,
-                allDimensions, allSumTarget, calPage, widget.isRealData(), session, expander.getYExpander());
+                                                                              allDimensions, allSumTarget, calPage, widget.isRealData(), session, expander.getYExpander());
         ArrayList<MetricGroupInfo> gviList = new ArrayList<MetricGroupInfo>();
         for (NodeAndPageInfo info : infoList) {
             gviList.addAll(info.getIterator().getRoot().getMetricGroupInfoList());
@@ -302,7 +320,7 @@ public class GroupExecutor extends AbstractTableWidgetExecutor<Node> {
         widget.setWidgetName(getRandWidgetName());
         //cubeIndexLoader.getGroupNodeWidthGvi(widget,);
         Node n = cubeIndexLoader.getStopWhenGetRowNode(stopRow, widget, createTarget4Calculate(), usedDimensions,
-                allDimensions, allSumTarget, calPage, session, CrossExpander.ALL_EXPANDER.getYExpander());
+                                                       allDimensions, allSumTarget, calPage, session, CrossExpander.ALL_EXPANDER.getYExpander());
         // TODO 这一步是否有必要
         widget.setWidgetName(oldName);
         return n;
