@@ -87,6 +87,10 @@ public abstract class AbstractBIWidget implements BIWidget {
         return filter;
     }
 
+    public void setFilter(TargetFilter filter){
+        this.filter = filter;
+    }
+
     /**
      * 创建workbook
      *
