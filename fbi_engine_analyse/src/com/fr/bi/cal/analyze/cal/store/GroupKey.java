@@ -2,7 +2,7 @@ package com.fr.bi.cal.analyze.cal.store;
 
 import com.finebi.cube.conf.table.BusinessTable;
 import com.fr.bi.conf.report.widget.field.dimension.filter.ResultFilter;
-import com.fr.bi.stable.report.result.DimensionCalculator;
+import com.fr.bi.report.result.DimensionCalculator;
 import com.fr.bi.stable.utils.algorithem.BIHashCodeUtils;
 import com.fr.general.ComparatorUtils;
 

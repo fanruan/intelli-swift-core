@@ -1,9 +1,8 @@
 package com.fr.bi.stable.engine.cal;
 
 import com.finebi.cube.api.ICubeTableService;
-import com.fr.bi.base.key.BIKey;
 import com.fr.bi.stable.gvi.GroupValueIndex;
-import com.fr.bi.stable.report.result.DimensionCalculator;
+import com.fr.bi.report.result.DimensionCalculator;
 import com.fr.bi.stable.structure.CubeValueEntryNode;
 
 /**

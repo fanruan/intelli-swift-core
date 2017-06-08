@@ -5,7 +5,7 @@ import com.fr.bi.field.target.calculator.sum.MaxCalculator;
 import com.fr.bi.field.target.calculator.sum.MinCalculator;
 import com.fr.bi.field.target.calculator.sum.SumCalculator;
 import com.fr.bi.stable.constant.BIReportConstant;
-import com.fr.bi.stable.report.result.TargetCalculator;
+import com.fr.bi.report.result.TargetCalculator;
 
 public class BINumberTarget extends BISummaryTarget {
 

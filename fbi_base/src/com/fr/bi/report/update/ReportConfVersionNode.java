@@ -1,6 +1,6 @@
-package com.fr.bi.stable.report.update;
+package com.fr.bi.report.update;
 
-import com.fr.bi.stable.report.update.operation.ReportUpdateOperation;
+import com.fr.bi.report.update.operation.ReportUpdateOperation;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
 

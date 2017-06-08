@@ -2,7 +2,7 @@ package com.fr.bi.cal.analyze.cal.sssecret;
 
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.gvi.GroupValueIndexOrHelper;
-import com.fr.bi.stable.report.key.TargetGettingKey;
+import com.fr.bi.report.key.TargetGettingKey;
 
 /**
  * Created by 小灰灰 on 2017/2/20.
