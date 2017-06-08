@@ -5,8 +5,8 @@ package com.fr.bi.cal.analyze.cal.result;
 
 import com.fr.bi.cal.analyze.cal.utils.CubeReadingUtils;
 import com.fr.bi.stable.gvi.GroupValueIndex;
-import com.fr.bi.stable.report.key.TargetGettingKey;
-import com.fr.bi.stable.report.result.BICrossNode;
+import com.fr.bi.report.key.TargetGettingKey;
+import com.fr.bi.report.result.BICrossNode;
 import com.fr.bi.stable.structure.collection.map.ChildsMap;
 import com.fr.bi.stable.utils.BICollectionUtils;
 import com.fr.json.JSONArray;

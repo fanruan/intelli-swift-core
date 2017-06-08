@@ -7,9 +7,9 @@ import com.fr.bi.conf.report.widget.field.filtervalue.FilterValue;
 import com.fr.bi.field.dimension.filter.AbstractDimensionFilter;
 import com.fr.bi.field.filtervalue.FilterValueFactory;
 import com.fr.bi.stable.gvi.GroupValueIndex;
-import com.fr.bi.stable.report.result.DimensionCalculator;
-import com.fr.bi.stable.report.result.BINode;
-import com.fr.bi.stable.report.result.TargetCalculator;
+import com.fr.bi.report.result.DimensionCalculator;
+import com.fr.bi.report.result.BINode;
+import com.fr.bi.report.result.TargetCalculator;
 import com.fr.general.ComparatorUtils;
 import com.fr.json.JSONObject;
 

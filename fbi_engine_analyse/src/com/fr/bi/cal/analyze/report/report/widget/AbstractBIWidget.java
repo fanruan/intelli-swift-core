@@ -22,7 +22,7 @@ import com.fr.bi.field.dimension.calculator.NoneDimensionCalculator;
 import com.fr.bi.field.target.filter.TargetFilterFactory;
 import com.fr.bi.stable.gvi.GVIUtils;
 import com.fr.bi.stable.gvi.GroupValueIndex;
-import com.fr.bi.stable.report.result.DimensionCalculator;
+import com.fr.bi.report.result.DimensionCalculator;
 import com.fr.fs.control.UserControl;
 import com.fr.json.JSONObject;
 import com.fr.main.impl.WorkBook;

@@ -1,4 +1,4 @@
-package com.fr.bi.stable.report.update.operation;
+package com.fr.bi.report.update.operation;
 
 import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.stable.constant.BIReportConstant;

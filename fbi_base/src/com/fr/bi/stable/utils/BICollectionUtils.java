@@ -3,7 +3,7 @@ package com.fr.bi.stable.utils;
 import com.finebi.cube.api.ICubeColumnIndexReader;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.io.newio.NIOConstant;
-import com.fr.bi.stable.report.result.TargetCalculator;
+import com.fr.bi.report.result.TargetCalculator;
 import com.fr.stable.StringUtils;
 
 import java.util.HashMap;
