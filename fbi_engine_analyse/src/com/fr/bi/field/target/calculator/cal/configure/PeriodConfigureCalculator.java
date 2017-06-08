@@ -36,13 +36,22 @@ public class PeriodConfigureCalculator extends AbstractConfigureCalculator {
         }
         int deep = getCalDeep(node);
         BINode tempNode = node;
-        //从第几个纬度开始计算
-        int calDeep = start_group == 0 ? deep - 1 : deep;
-        for (int i = 0; i < calDeep; i++) {
-            if (tempNode.getFirstChild() == null) {
-                break;
+
+        if (start_group == 0) {
+            //从第几个纬度开始计算
+            int calDeep = deep - 1;
+            for (int i = 0; i < calDeep; i++) {
+                if (tempNode.getFirstChild() == null) {
+                    break;
+                }
+                tempNode = tempNode.getFirstChild();
             }
-            tempNode = tempNode.getFirstChild();
+        } else {
+            if (node.getDeep() > node.getFrameDeep()) {
+                tempNode = getMaxDeepNode(getCalculatedRootNode(node));
+            } else {
+                return;
+            }
         }
         List<RankDealWith> nodeList = new ArrayList<RankDealWith>();
         BINode cursor_node = tempNode;
@@ -123,16 +132,14 @@ public class PeriodConfigureCalculator extends AbstractConfigureCalculator {
                     n = n.getParent();
                 }
                 Number value = getValueFromLast(way);
-                if (value != null) {
-                    if (type == BIReportConstant.TARGET_TYPE.CAL_VALUE.PERIOD_TYPE.RATE) {
-                        Number v = cursor_node.getSummaryValue(calTargetKey);
-                        double currentValue = v == null ? 0 : v.doubleValue();
-                        cursor_node.setSummaryValue(createTargetGettingKey(), (currentValue - (Double) value) / (Double) value);
-                    } else {
-                        cursor_node.setSummaryValue(createTargetGettingKey(), value);
-                    }
-
+                if (value != null && type == BIReportConstant.TARGET_TYPE.CAL_VALUE.PERIOD_TYPE.RATE) {
+                    Number v = cursor_node.getSummaryValue(calTargetKey);
+                    double currentValue = v == null ? 0 : v.doubleValue();
+                    cursor_node.setSummaryValue(createTargetGettingKey(), (currentValue - (Double) value) / (Double) value);
+                } else {
+                    cursor_node.setSummaryValue(createTargetGettingKey(), value);
                 }
+
                 cursor_node = cursor_node.getSibling();
             }
             return null;

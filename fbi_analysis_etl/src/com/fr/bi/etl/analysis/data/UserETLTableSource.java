@@ -59,6 +59,11 @@ public class UserETLTableSource extends AbstractETLTableSource<IETLOperator, Use
     }
 
     @Override
+    public void resetTargetsMap() {
+
+    }
+
+    @Override
     public int getType() {
         return BIBaseConstant.TABLE_TYPE.USER_ETL;
     }

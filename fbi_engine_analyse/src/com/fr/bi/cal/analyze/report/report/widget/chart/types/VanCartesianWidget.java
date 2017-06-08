@@ -9,6 +9,7 @@ import com.fr.bi.field.target.target.BISummaryTarget;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.general.ComparatorUtils;
 import com.fr.general.IOUtils;
+import com.fr.general.Inter;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
@@ -27,6 +28,7 @@ public abstract class VanCartesianWidget extends VanChartWidget {
     private static final int STEP = 2;
     private static final int CURVE = 3;
 
+    //这个是对比柱状图的stackid和transSeries的name，任意string都可以，不会展示到图上，不用国际化什么的。
     private static final String FALL_COLUMN = "fallColumn";
     private static final String TRANS = "rgba(0,0,0,0)";
 
@@ -109,39 +111,44 @@ public abstract class VanCartesianWidget extends VanChartWidget {
         return "arguments[0]";
     }
 
-    //值标签和小数位数，千分富符，数量级和单位构成的后缀
-    protected String valueFormat(BISummaryTarget dimension, boolean isTooltip){
+    protected String unitFromSetting(BISummaryTarget dimension) {
         int yAxis = this.yAxisIndex(dimension.getId());
-
-        boolean hasSeparator = true;
-        String unit = StringUtils.EMPTY;
 
         try {
             JSONObject settings = this.getDetailChartSetting();
 
             if(yAxis == 0){
-                hasSeparator = settings.optBoolean("leftYSeparator");
-                unit = settings.optString("leftYUnit");
+                return settings.optString("leftYUnit");
             }else if(yAxis == 1){
-                hasSeparator = settings.optBoolean("rightYSeparator");
-                unit = settings.optString("rightYUnit");
+                return settings.optString("rightYUnit");
             }else if(yAxis == 2){
-                hasSeparator = settings.optBoolean("rightY2Separator");
-                unit = settings.optString("rightY2Unit");
+                return settings.optString("rightY2Unit");
+            }
+        }catch (Exception e){
+            BILoggerFactory.getLogger().error(e.getMessage(),e);
+        }
+
+        return StringUtils.EMPTY;
+    }
+
+    protected boolean hasSeparatorFromSetting(BISummaryTarget dimension){
+        int yAxis = this.yAxisIndex(dimension.getId());
+
+        try {
+            JSONObject settings = this.getDetailChartSetting();
+
+            if(yAxis == 0){
+                return settings.optBoolean("leftYSeparator");
+            }else if(yAxis == 1){
+                return settings.optBoolean("rightYSeparator");
+            }else if(yAxis == 2){
+                return settings.optBoolean("rightY2Separator");
             }
 
         }catch (Exception e){
             BILoggerFactory.getLogger().error(e.getMessage(),e);
         }
-
-        String scaleUnit = this.scaleUnit(this.numberLevel(dimension.getId()));
-
-        String format = this.decimalFormat(dimension, hasSeparator);
-        if(isTooltip){
-            format += (scaleUnit + unit);
-        }
-
-        return format;
+        return true;
     }
 
     //todo 坐标轴标题和数量级，单位构成的后缀
@@ -184,8 +191,8 @@ public abstract class VanCartesianWidget extends VanChartWidget {
 
             JSONObject ser0 = new JSONObject(ser1.toString());
             ser0.put("name", FALL_COLUMN).put("color", TRANS).put("borderColor", TRANS).put("borderWidth", 0)
-                    .put("clickColor", TRANS).put("mouseOverColor", TRANS).put("tooltip", JSONObject.create().put("enabled", false))
-                    .put("fillColor", TRANS).put("marker", JSONObject.create().put("enabled", false));
+                    .put("clickColor", TRANS).put("mouseOverColor", TRANS).put("tooltip", falseEnabledJSONObject()).put("dataLabels", falseEnabledJSONObject())
+                    .put("fillColor", TRANS).put("marker", falseEnabledJSONObject()).put(TRANS_SERIES, true);
 
             double stackValue = 0;
             JSONArray data = ser0.optJSONArray("data");
@@ -540,6 +547,10 @@ public abstract class VanCartesianWidget extends VanChartWidget {
 
     private boolean hasData(String regionID) {
         JSONArray dIDs = this.getDimensionIDArray(regionID);
+
+        if(dIDs == null){
+            return false;
+        }
 
         for(int i = 0, len = dIDs.length(); i < len; i++){
             try {

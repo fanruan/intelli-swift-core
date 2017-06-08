@@ -51,6 +51,7 @@ public abstract class VanChartWidget extends TableWidget {
     public static final String ARRIVALRATE = "${ARRIVALRATE}";
 
     protected static final String COMPONENT_MAX_SIZE = "30%";
+    protected static final String TRANS_SERIES = "transSeries";
 
     public static final String LONG_DATE = "longDate";
 
@@ -157,7 +158,7 @@ public abstract class VanChartWidget extends TableWidget {
                 .put("refresh", falseEnabledJSONObject());
     }
 
-    private JSONObject falseEnabledJSONObject() throws JSONException {
+    protected JSONObject falseEnabledJSONObject() throws JSONException {
         return JSONObject.create().put("enabled", false);
     }
 
@@ -593,31 +594,45 @@ public abstract class VanChartWidget extends TableWidget {
     //值标签和小数位数，千分富符，数量级和单位构成的后缀
     protected String valueFormatFunc(BISummaryTarget dimension, boolean isTooltip) {
 
-        String format = this.valueFormat(dimension, isTooltip);
+        String format = this.valueFormat(dimension);
 
-        return String.format("function(){return BI.contentFormat(arguments[0], \"%s\")}", format);
+        String unit = this.valueUnit(dimension, isTooltip);
+
+        return String.format("function(){return BI.contentFormat(arguments[0], \"%s\") + \"%s\"}", format, unit);
     }
 
-    protected String valueFormat(BISummaryTarget dimension, boolean isTooltip) {
+    protected String unitFromSetting(BISummaryTarget dimension) {
         JSONObject settings = dimension.getChartSetting().getSettings();
+        return settings.optString("unit", StringUtils.EMPTY);
+    }
 
-        boolean hasSeparator = settings.optBoolean("numSeparators", true);
+    protected boolean hasSeparatorFromSetting(BISummaryTarget dimension){
+        JSONObject settings = dimension.getChartSetting().getSettings();
+        return settings.optBoolean("numSeparators", true);
+    }
 
-        String format = this.decimalFormat(dimension, hasSeparator);
-
+    //数量级和单位，直接在值后面加，不会改变数值的。（数值为数量级处理过的，不是原始数值）
+    protected String valueUnit(BISummaryTarget dimension, boolean isTooltip) {
         String scaleUnit = this.scaleUnit(this.numberLevel(dimension.getId()));
-
-        String unit = settings.optString("unit", StringUtils.EMPTY);
+        String unit = unitFromSetting(dimension);
 
         if (isTooltip) {
-            format += (scaleUnit + unit);
+            return  (scaleUnit + unit);
+        } else if(scaleUnit.equals(PERCENT_SYMBOL)){//标签也要把百分号加上
+            return scaleUnit;
         }
-
-        return format;
+        return StringUtils.EMPTY;
     }
 
-    protected String intervalLegendFormatter(String format) {
-        return String.format("function(){return BI.contentFormat(arguments[0].from, \"%s\") + \"-\" + BI.contentFormat(arguments[0].to, \"%s\")}", format, format);
+    //小数位数和千分符，即会改变数值的
+    protected String valueFormat(BISummaryTarget dimension) {
+        boolean hasSeparator = hasSeparatorFromSetting(dimension);
+
+        return this.decimalFormat(dimension, hasSeparator);
+    }
+
+    protected String intervalLegendFormatter(String format, String unit) {
+        return String.format("function(){return BI.contentFormat(arguments[0].from, \"%s\") + \"%s\" + \"-\" + BI.contentFormat(arguments[0].to, \"%s\") + \"%s\"}", format, unit, format, unit);
     }
 
     protected String gradualLegendFormatter(String format) {
@@ -640,6 +655,10 @@ public abstract class VanChartWidget extends TableWidget {
 
         for (int i = 0, len = series.length(); i < len; i++) {
             JSONObject ser = series.getJSONObject(i);
+
+            if(ser.optBoolean(TRANS_SERIES)){
+                continue;
+            }
 
             JSONObject formatter = JSONObject.create();
 
@@ -675,6 +694,10 @@ public abstract class VanChartWidget extends TableWidget {
 
             for (int i = 0, len = series.length(); i < len; i++) {
                 JSONObject ser = series.getJSONObject(i);
+
+                if(ser.optBoolean(TRANS_SERIES)){
+                    continue;
+                }
 
                 JSONObject labels = new JSONObject(dataLabels.toString());
                 labels.optJSONObject("formatter")
@@ -717,8 +740,8 @@ public abstract class VanChartWidget extends TableWidget {
         for (int i = 0; i < topC.length(); i++) {
             JSONObject tObj = topC.getJSONObject(i);
             String name = tObj.getString("n"), formattedName = this.formatDimension(seriesDim, name);
-            String stackedKey = this.getStackedKey(id, name);
-            boolean isStacked = this.isStacked(id, name);
+            String stackedKey = this.getStackedKey(id, formattedName);
+            boolean isStacked = this.isStacked(id, formattedName);
             JSONArray data = JSONArray.create();
             for (int j = 0; j < leftC.length(); j++) {
                 JSONObject lObj = leftC.getJSONObject(j);
@@ -733,7 +756,7 @@ public abstract class VanChartWidget extends TableWidget {
                 valueList.add(y);
             }
             JSONObject ser = JSONObject.create().put("data", data).put("name", formattedName).put(LONG_DATE, name)
-                    .put("type", this.getSeriesType(id, name))
+                    .put("type", this.getSeriesType(id, formattedName))
                     .put("dimensionIDs", dimensionIDs)
                     .put("targetIDs", JSONArray.create().put(id));
 

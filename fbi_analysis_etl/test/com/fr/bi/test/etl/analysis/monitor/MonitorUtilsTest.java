@@ -128,6 +128,11 @@ public class MonitorUtilsTest extends TestCase {
             }
 
             @Override
+            public void resetTargetsMap() {
+
+            }
+
+            @Override
             public UserCubeTableSource createUserTableSource(long userId) {
                 return null;
             }

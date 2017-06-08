@@ -18,14 +18,17 @@ public class BITableHeader implements ITableHeader {
     public BITableHeader() {
     }
 
+    @Override
     public String getText() {
         return text;
     }
 
+    @Override
     public void setText(String text) {
         this.text = text;
     }
 
+    @Override
     public String getdID() {
         return dID;
     }
@@ -57,7 +60,6 @@ public class BITableHeader implements ITableHeader {
         jo.put("dId", getdID());
         jo.put("styles", null != getStyles() ? getStyles().createJSON() : "");
         jo.put("text", getText());
-        jo.put("isUsed", isUsed());
         jo.put("isSum", isSum);
         return jo;
     }
@@ -86,6 +88,5 @@ public class BITableHeader implements ITableHeader {
             setText(json.getString("text"));
         }
         isSum = json.optBoolean("isSum", false);
-        setUsed(json.optBoolean("used", true));
     }
 }

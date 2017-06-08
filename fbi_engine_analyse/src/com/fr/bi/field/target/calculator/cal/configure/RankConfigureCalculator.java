@@ -40,10 +40,19 @@ public class RankConfigureCalculator extends AbstractConfigureCalculator {
                 tempNode = tempNode.getFirstChild();
             }
         }
+
+        if (node.getDeep() > node.getFrameDeep()) {
+            tempNode = getCalculatedRootNode(node);
+        } else {
+            return;
+        }
+
         List nodeList = new ArrayList();
         BINode cursor_node = tempNode;
         while (cursor_node != null) {
-            nodeList.add(new RankDealWith(cursor_node));
+            if (shouldCalculate(cursor_node)) {
+                nodeList.add(new RankDealWith(cursor_node));
+            }
             cursor_node = cursor_node.getSibling();
         }
         try {
