@@ -1,5 +1,6 @@
 package com.finebi.cube.structure.table;
 
+import com.finebi.cube.common.log.BILogger;
 import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.data.ICubeResourceDiscovery;
 import com.finebi.cube.exception.BICubeColumnAbsentException;
@@ -20,7 +21,14 @@ import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.general.ComparatorUtils;
 import com.fr.stable.collections.array.IntArray;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
 
 /**
  * This class created on 2016/5/9.
@@ -30,13 +38,14 @@ import java.util.*;
  */
 public class CompoundCubeTableReader implements CubeTableEntityService {
     private static final long serialVersionUID = -4117510045396401762L;
-    private BICubeTableEntity hostTable;
+    protected BICubeTableEntity hostTable;
+    private BILogger LOGGER = BILoggerFactory.getLogger(CompoundCubeTableReader.class);
     /**
      * 上次Table对象
      */
-    private CubeTableEntityService parentTable;
+    protected CubeTableEntityService parentTable;
     protected Map<ICubeFieldSource, CubeTableEntityService> fieldSource = new HashMap<ICubeFieldSource, CubeTableEntityService>();
-    private List<ICubeFieldSource> compoundFields = new ArrayList<ICubeFieldSource>();
+    protected List<ICubeFieldSource> compoundFields = new ArrayList<ICubeFieldSource>();
 
     public CompoundCubeTableReader(ITableKey tableKey, ICubeResourceRetrievalService resourceRetrievalService, ICubeResourceDiscovery discovery) {
         hostTable = new BICubeTableEntity(tableKey, resourceRetrievalService, discovery);
@@ -47,11 +56,15 @@ public class CompoundCubeTableReader implements CubeTableEntityService {
         initialFields();
     }
 
+    public CompoundCubeTableReader(ITableKey tableKey, ICubeResourceRetrievalService resourceRetrievalService, ICubeResourceRetrievalService integrityResourceRetrievalService, ICubeResourceDiscovery discovery) {
+
+    }
+
     public CubeTableEntityService getParentTable() {
         return parentTable;
     }
 
-    private void initialFields() {
+    protected void initialFields() {
         if (hostTable.tableDataAvailable()) {
             if (hostTable.getFieldInfo() != null) {
                 for (ICubeFieldSource field : hostTable.getFieldInfo()) {
@@ -61,14 +74,14 @@ public class CompoundCubeTableReader implements CubeTableEntityService {
                     }
                 }
             } else {
-                BILoggerFactory.getLogger(CompoundCubeTableReader.class).error(
+                LOGGER.error(
                         "hostTable sourceId:" + hostTable.tableKey.getSourceID() + " fields is null!Please check field file in cubes!");
             }
         } else {
             if (null == hostTable) {
-                BILoggerFactory.getLogger(CompoundCubeTableReader.class).error("hostTable null");
+                LOGGER.error("hostTable null");
             } else {
-                BILoggerFactory.getLogger(CompoundCubeTableReader.class).error("hostTable sourceId" + hostTable.tableKey.getSourceID());
+                LOGGER.error("hostTable sourceId" + hostTable.tableKey.getSourceID());
             }
             throw new BICubeTableAbsentException("Please generate FineIndex firstly ,The Table:" + hostTable.tableKey.getSourceID() + " absent");
         }
@@ -83,11 +96,11 @@ public class CompoundCubeTableReader implements CubeTableEntityService {
         }
     }
 
-    private boolean isInFacedFields(ICubeFieldSource field) {
+    protected boolean isInFacedFields(ICubeFieldSource field) {
         return getFieldNamesFromParent().contains(field.getFieldName());
     }
 
-    private boolean isParentAvailable() {
+    protected boolean isParentAvailable() {
         return parentTable != null;
     }
 
@@ -217,7 +230,7 @@ public class CompoundCubeTableReader implements CubeTableEntityService {
             }
             return allField;
         } catch (Exception e) {
-            BILoggerFactory.getLogger(CompoundCubeTableReader.class).error(e.getMessage(), e);
+            LOGGER.error(e.getMessage(), e);
             return " error ";
         }
     }
