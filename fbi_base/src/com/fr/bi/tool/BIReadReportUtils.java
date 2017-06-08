@@ -46,8 +46,7 @@ public class BIReadReportUtils implements BIReadReportProvider {
         return setting.getReportJSON();
     }
 
-    @Override
-    public BIDesignSetting getBIReportNodeSetting(BIReportNode node) throws Exception {
+    private BIDesignSetting getBIReportNodeSetting(BIReportNode node) throws Exception {
         File file = getFileLocation(node);
         if (!file.exists()) {
             throw new RuntimeException("can't find file:" + node.getPath() + "! might be delete or move!");

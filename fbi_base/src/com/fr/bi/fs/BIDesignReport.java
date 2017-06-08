@@ -20,7 +20,6 @@ public class BIDesignReport implements Serializable{
 
     protected void save(OutputStream var1) throws Exception {
         if (this.setting != null) {
-            setting.updateLastModifyTime();
             BaseXMLUtils.writeXMLFile(var1, this.setting);
         } else {
             throw new RuntimeException("setting is null");

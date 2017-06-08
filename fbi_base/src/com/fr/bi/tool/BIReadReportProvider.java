@@ -1,6 +1,5 @@
 package com.fr.bi.tool;
 
-import com.fr.bi.fs.BIDesignSetting;
 import com.fr.bi.fs.BIReportNode;
 import com.fr.json.JSONObject;
 
@@ -10,5 +9,5 @@ import com.fr.json.JSONObject;
 public interface BIReadReportProvider {
     String XML_TAG = "BIReadReport";
     JSONObject getBIReportNodeJSON(BIReportNode node) throws Exception;
-    BIDesignSetting getBIReportNodeSetting(BIReportNode node) throws Exception;
+//    BIDesignSetting getBIReportNodeSetting(BIReportNode node) throws Exception;
 }

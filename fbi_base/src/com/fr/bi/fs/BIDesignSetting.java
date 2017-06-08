@@ -22,21 +22,14 @@ public class BIDesignSetting implements XMLable, XMLFileReader {
         this.reportSetting = reportSetting;
     }
 
-    public void updateLastModifyTime() {
-        try {
-            reportSetting = new JSONObject(reportSetting).put("lastModifyTime", ProductConstants.getReleaseDate()).toString();
-        } catch (JSONException e) {
-            BILoggerFactory.getLogger(this.getClass()).error(e.getMessage(), e);
-        }
-    }
-
     public BIDesignSetting() {
     }
 
     public void updateSetting() {
         try {
             if (null != reportSetting) {
-                this.reportSetting = ReportSettingUpdateManager.getInstance().updateReportSettings(this).getReportSetting().toString();
+                this.reportSetting = ReportSettingUpdateManager.getInstance().updateReportSettings(this).getReportJSON().toString();
+                this.reportSetting = new JSONObject(reportSetting).put("lastModifyTime", ProductConstants.getReleaseDate()).toString();
             }
         } catch (Exception e) {
             BILoggerFactory.getLogger(this.getClass()).error(e.getMessage(), e);
@@ -61,10 +54,6 @@ public class BIDesignSetting implements XMLable, XMLFileReader {
 
     public JSONObject getReportJSON() throws JSONException {
         return new JSONObject(this.reportSetting);
-    }
-
-    public String getReportSetting() {
-        return reportSetting;
     }
 
     @Override
