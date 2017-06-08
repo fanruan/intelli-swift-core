@@ -2,7 +2,7 @@ package com.fr.bi.field.target.target;
 
 import com.fr.bi.conf.report.widget.field.target.BITarget;
 import com.fr.bi.field.BIStyleTarget;
-import com.fr.bi.stable.report.key.TargetGettingKey;
+import com.fr.bi.report.key.TargetGettingKey;
 import com.fr.json.JSONObject;
 
 public abstract class BIAbstractTarget extends BIStyleTarget implements BITarget {

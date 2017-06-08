@@ -2,7 +2,7 @@ package com.fr.bi.field.target.target.cal.target.configure;
 
 
 import com.fr.bi.field.target.calculator.cal.configure.SumOfAboveCalculator;
-import com.fr.bi.stable.report.result.TargetCalculator;
+import com.fr.bi.report.result.TargetCalculator;
 
 public class BISummaryOfAboveConfiguredCalculateTarget extends
         BIConfiguredCalculateTarget {
