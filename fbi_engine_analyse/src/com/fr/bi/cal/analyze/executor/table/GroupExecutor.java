@@ -170,11 +170,13 @@ public class GroupExecutor extends AbstractTableWidgetExecutor<Node> {
         //isLastSum 是否是最后一行会总行
         boolean isLastSum = temp.getParent() != null && temp.getSibling() == null;
         if (isLastSum || checkIfGenerateSumCell(temp)) {
-            Style style = BITableStyle.getInstance().getYSumStringCellStyle();
-            rowIdx.value++;
-            CBCell cell = ExecutorUtils.createCell(Inter.getLocText("BI-Summary_Values"), rowIdx.value, 1, columnIdx, rowDimensions.length - columnIdx, style);
-            pagedIterator.addCell(cell);
-            generateTargetCells(temp.getParent(), widget, rowDimensions, pagedIterator, rowIdx.value, true);
+            if(temp.getParent().getTotalLength() != 1) {
+                Style style = BITableStyle.getInstance().getYSumStringCellStyle();
+                rowIdx.value++;
+                CBCell cell = ExecutorUtils.createCell(Inter.getLocText("BI-Summary_Values"), rowIdx.value, 1, columnIdx, rowDimensions.length - columnIdx, style);
+                pagedIterator.addCell(cell);
+                generateTargetCells(temp.getParent(), widget, rowDimensions, pagedIterator, rowIdx.value, true);
+            }
             //开辟新内存，不对temp进行修改
             Node parent = temp.getParent();
             generateSumCells(parent, widget, rowDimensions, pagedIterator, rowIdx, columnIdx - 1);
