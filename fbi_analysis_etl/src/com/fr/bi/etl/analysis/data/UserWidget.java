@@ -207,10 +207,11 @@ public class UserWidget implements Serializable {
         }
     }
 
+    private static final int STEP = 1000;
     private Iterator<List<List>> createDetailDataIterator() {
         return new Iterator<List<List>>() {
             int page = 0;
-            int step = 1000;
+            int step = STEP;
             List<List> data = get();
             @Override
             public void remove() {
