@@ -18,9 +18,13 @@ import com.fr.bi.cal.report.engine.CBCell;
 import com.fr.bi.conf.report.style.BITableStyle;
 import com.fr.bi.conf.report.style.DetailChartSetting;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
+import com.fr.bi.field.target.target.BICounterTarget;
+import com.fr.bi.field.target.target.BINumberTarget;
 import com.fr.bi.field.target.target.BISummaryTarget;
-import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.report.key.TargetGettingKey;
+import com.fr.bi.stable.constant.BIReportConstant;
+import com.fr.bi.stable.io.newio.NIOConstant;
+import com.fr.bi.stable.utils.BICollectionUtils;
 import com.fr.general.DateUtils;
 import com.fr.general.GeneralUtils;
 import com.fr.general.Inter;
@@ -30,6 +34,7 @@ import com.fr.stable.ExportConstants;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -42,6 +47,11 @@ public class GroupExecutor extends AbstractTableWidgetExecutor<Node> {
     private BIDimension[] usedDimensions;
 
     private CrossExpander expander;
+
+    /**
+     * 节点返回之前的处理管道
+     */
+    private HashMap<Object, ResultNodeDealWithPipeline> nodeDealWidthPipelines = new HashMap<Object, ResultNodeDealWithPipeline>();
 
     public GroupExecutor(TableWidget widget, Paging paging, BISession session, CrossExpander expander) {
 
@@ -253,6 +263,14 @@ public class GroupExecutor extends AbstractTableWidgetExecutor<Node> {
             tree = new Node(allSumTarget.length);
         }
         BILoggerFactory.getLogger().info(DateUtils.timeCostFrom(start) + ": cal time");
+
+        // 如果不是实时数据 表格展示的时候,看到的汇总数据由各子节点的汇总数据求得
+        // 尚待确定的功能
+        //if (!widget.isRealData()) {
+        //    addResultNodeDealWithPipline(new SummaryValueKeepSameAsViewPipeline());
+        //}
+        // 结果返回前的处理
+        //dealWithResultNode(tree);
         return tree;
     }
 
@@ -317,6 +335,204 @@ public class GroupExecutor extends AbstractTableWidgetExecutor<Node> {
     public Rectangle getSouthEastRectangle() {
 
         return rectangle;
+    }
+
+    /**
+     * 初始化工作
+     */
+    private void init() {
+        // 注册节点返回管道
+        registerResultNodeDealWithPipline();
+    }
+
+    /**
+     * 注册节点返回之前的操作管道
+     */
+    private void registerResultNodeDealWithPipline() {
+
+    }
+
+    /**
+     * 添加处理管道
+     *
+     * @param pipeline
+     */
+    public void addResultNodeDealWithPipline(ResultNodeDealWithPipeline pipeline) {
+
+        if (pipeline != null) {
+            nodeDealWidthPipelines.put(pipeline.getPipelineName(), pipeline);
+        }
+    }
+
+    /**
+     * 删除处理管道
+     *
+     * @param pipelineName
+     * @return
+     */
+    public ResultNodeDealWithPipeline removeResultNodeDealWithPipline(Object pipelineName) {
+
+        if (pipelineName != null) {
+            return nodeDealWidthPipelines.remove(pipelineName);
+        }
+        return null;
+    }
+
+    /**
+     * 处理结果返回管道
+     */
+    private Node dealWithResultNode(Node n) {
+
+        Node result = n;
+        for (ResultNodeDealWithPipeline pipeline : nodeDealWidthPipelines.values()) {
+            result = pipeline.dealWidthNode(result);
+        }
+        return result;
+    }
+
+    /**
+     * 返回结果之前进行对node进行操作的管道
+     * 1: 现在有一个需求是在设置界面的时候,分组汇总值并不和显示值一样,所以需要进行添加一层处理
+     * 2: 不想以后多一个需求在另添加一个方法,所以定义一个接口,到时候有什么需要对节点进行特殊处理的只需要实现一个接口然后进行注册就行了.
+     */
+    public interface ResultNodeDealWithPipeline {
+
+        /**
+         * 处理节点
+         */
+        Node dealWidthNode(Node n);
+
+        /**
+         * 管道的签名,作为hashmap的key值
+         *
+         * @return
+         */
+        Object getPipelineName();
+    }
+
+    /**
+     * 详细设置的时候,让分组的汇总值改为由显示出来的节点求得.因为详细设置只是显示部分节点
+     */
+    private class SummaryValueKeepSameAsViewPipeline implements ResultNodeDealWithPipeline {
+
+        @Override
+        public Node dealWidthNode(Node n) {
+
+            if (n == null) {
+                return n;
+            }
+            dealwidth(n);
+            return n;
+        }
+
+        private void dealwidth(Node parent) {
+            // 叶子节点,或者没有child的节点
+            if (null == parent || parent.getChilds().size() == 0) {
+                return;
+            }
+            List<Node> childs = parent.getChilds();
+            for (Node child : childs) {
+                dealwidth(child);
+            }
+            setSummaryValue(parent, childs);
+        }
+
+        private void setSummaryValue(Node parent, List<Node> childs) {
+
+            int summaryLen = parent.getSummaryValue().length;
+            Number[] summary = parent.getSummaryValue();
+            for (int i = 0; i < summaryLen; i++) {
+                BISummaryTarget target = widget.getTargets()[i];
+                // 该指标使用的时候才需要进行操心这些事情
+                if (target.isUsed()) {
+                    List<Number> childSummaryList = new ArrayList<Number>();
+                    for (Node child : childs) {
+                        childSummaryList.add(child.getSummaryValue()[i]);
+                    }
+                    summary[i] = getNodeIndexSummary(target, summary[i], childSummaryList);
+                }
+            }
+            parent.setSummaryValue(summary);
+        }
+
+        private Number getNodeIndexSummary(BISummaryTarget target, Number parentSum, List<Number> childSummaryList) {
+            // FIXME 来一个更好的方法...
+            Number r = 0;
+            // 计数或数值求和
+            if (target instanceof BICounterTarget || (target instanceof BINumberTarget && BIReportConstant.SUMMARY_TYPE.SUM == target.getSummaryType())) {
+                // 求和
+                r = getSum(childSummaryList);
+            } else if (target instanceof BINumberTarget && BIReportConstant.SUMMARY_TYPE.MAX == target.getSummaryType()) {
+                // 最大
+                r = getMax(childSummaryList);
+            } else if (target instanceof BINumberTarget && BIReportConstant.SUMMARY_TYPE.MIN == target.getSummaryType()) {
+                // 最小
+                r = getMin(childSummaryList);
+            } else if (target instanceof BINumberTarget && BIReportConstant.SUMMARY_TYPE.AVG == target.getSummaryType()) {
+                // 平均
+                r = getSum(childSummaryList).doubleValue() / childSummaryList.size();
+            } else {
+                // 其它情况返回原值
+                r = parentSum;
+            }
+            return r;
+        }
+
+        private Number getSum(List<Number> childSummaryList) {
+
+            double r = NIOConstant.DOUBLE.NULL_VALUE;
+            // 求和
+            for (Number n : childSummaryList) {
+                if (BICollectionUtils.isNotCubeNullKey(n)) {
+                    if (BICollectionUtils.isCubeNullKey(r)) {
+                        r = n.doubleValue();
+                    } else {
+                        r += n.doubleValue();
+                    }
+                }
+            }
+            return r;
+        }
+
+        private Number getMax(List<Number> numberList) {
+
+            double max = NIOConstant.DOUBLE.NULL_VALUE;
+            if (numberList.size() == 0) {
+                return max;
+            }
+            for (Number n : numberList) {
+                if (BICollectionUtils.isNotCubeNullKey(n)) {
+                    double t = n.doubleValue();
+                    max = (max > t) ? max : t;
+                }
+            }
+            return max;
+        }
+
+        private Number getMin(List<Number> numberList) {
+
+            double min = NIOConstant.DOUBLE.NULL_VALUE;
+            if (numberList.size() == 0) {
+                return min;
+            }
+            for (Number n : numberList) {
+                if (BICollectionUtils.isNotCubeNullKey(n)) {
+                    double t = n.doubleValue();
+                    if (BICollectionUtils.isCubeNullKey(min)) {
+                        min = t;
+                    } else {
+                        min = (min < t) ? min : t;
+                    }
+                }
+            }
+            return min;
+        }
+
+        @Override
+        public Object getPipelineName() {
+
+            return "SummaryValueKeepTheSameAsViewPipeline";
+        }
     }
 
 }
