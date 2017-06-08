@@ -142,6 +142,8 @@ public class GroupExecutor extends AbstractTableWidgetExecutor<Node> {
             n = n.getFirstChild();
         }
         int[] oddEven = new int[rowDimensions.length];
+        //需要根据行表头的个数来确定会总行的columnIndex
+        int rowDimLength = rowDimensions.length;
         Object[] dimensionNames = new Object[rowDimensions.length];
         while (n != null) {
             Node temp = n;
@@ -152,21 +154,45 @@ public class GroupExecutor extends AbstractTableWidgetExecutor<Node> {
                 start.value++;
             }
             StreamPagedIterator pagedIterator = iter.getIteratorByPage(start.value);
-            generateTargetCells(temp, widget, rowDimensions, pagedIterator, rowIdx.value);
+            generateTargetCells(temp, widget, rowDimensions, pagedIterator, rowIdx.value, false);
             generateDimNames(temp, widget, rowDimensions, dimensionNames, oddEven, pagedIterator, rowIdx.value);
-
+            generateSumCells(temp, widget, rowDimensions, pagedIterator, rowIdx, rowDimLength - 1);
             n = n.getSibling();
         }
     }
 
-    private static void generateTargetCells(Node temp, TableWidget widget, BIDimension[] rowDimensions, StreamPagedIterator pagedIterator, int rowIdx) {
+    private static boolean checkIfGenerateSumCell(Node temp) {
+        //判断空值 比较当前节点和下一个兄弟节点是否有同一个父亲节点
+        return temp.getParent() != null && temp.getSibling() != null && temp.getSibling().getParent() != null && (temp.getParent() != temp.getSibling().getParent());
+    }
 
+    private static void generateSumCells(Node temp, TableWidget widget, BIDimension[] rowDimensions, StreamPagedIterator pagedIterator, FinalInt rowIdx, int columnIdx) {
+        //isLastSum 是否是最后一行会总行
+        boolean isLastSum = temp.getParent() != null && temp.getSibling() == null;
+        if (isLastSum || checkIfGenerateSumCell(temp)) {
+            Style style = BITableStyle.getInstance().getYSumStringCellStyle();
+            rowIdx.value++;
+            CBCell cell = ExecutorUtils.createCell(Inter.getLocText("BI-Summary_Values"), rowIdx.value, 1, columnIdx, rowDimensions.length - columnIdx, style);
+            pagedIterator.addCell(cell);
+            generateTargetCells(temp.getParent(), widget, rowDimensions, pagedIterator, rowIdx.value, true);
+            //开辟新内存，不对temp进行修改
+            Node parent = temp.getParent();
+            generateSumCells(parent, widget, rowDimensions, pagedIterator, rowIdx, columnIdx - 1);
+        }
+    }
+
+    private static void generateTargetCells(Node temp, TableWidget widget, BIDimension[] rowDimensions, StreamPagedIterator pagedIterator, int rowIdx, boolean isSum) {
         int targetsKeyIndex = 0;
         for (TargetGettingKey key : widget.getTargetsKey()) {
             int columnIdx = targetsKeyIndex + rowDimensions.length + widget.isOrder();
             Object data = temp.getSummaryValue(key);
-            boolean isPercent = widget.getChartSetting().getNumberLevelByTargetId(key.getTargetName()) == BIReportConstant.TARGET_STYLE.NUM_LEVEL.PERCENT;
-            Style style = BITableStyle.getInstance().getNumberCellStyle(data, rowIdx % 2 == 1, isPercent);
+            Style style;
+            if (!isSum) {
+                boolean isPercent = widget.getChartSetting().getNumberLevelByTargetId(key.getTargetName()) == BIReportConstant.TARGET_STYLE.NUM_LEVEL.PERCENT;
+                style = BITableStyle.getInstance().getNumberCellStyle(data, rowIdx % 2 == 1, isPercent);
+            } else {
+                style = BITableStyle.getInstance().getXSumStringCellStyle();
+            }
             CBCell cell = ExecutorUtils.createCell(data, rowIdx, 1, columnIdx, 1, style);
             pagedIterator.addCell(cell);
             targetsKeyIndex++;
@@ -181,13 +207,15 @@ public class GroupExecutor extends AbstractTableWidgetExecutor<Node> {
             int rowSpan = temp.getTotalLength();
             BIDimension dim = rowDimensions[--i];
             String data = dim.toString(temp.getData());
+            //年月日字段格式化
             if (dim.getGroup().getType() == BIReportConstant.GROUP.YMD && GeneralUtils.string2Number(data) != null) {
                 data = DateUtils.DATEFORMAT2.format(new Date(GeneralUtils.string2Number(data).longValue()));
             }
             Object v = dim.getValueByType(data);
             if (v != dimensionNames[i] || (i == rowDimensions.length - 1)) {
                 oddEven[i]++;
-                Style style = BITableStyle.getInstance().getDimensionCellStyle(v instanceof Number, (oddEven[i] + 1) % 2 == 0);
+                Style style = BITableStyle.getInstance().getDimensionCellStyle(v instanceof Number, rowIdx % 2 == 1);
+//                rowSpan = i == rowDimensions.length - 1 ? rowSpan : rowSpan + 1;
                 CBCell cell = ExecutorUtils.createCell(v, rowIdx, rowSpan, i + widget.isOrder(), 1, style);
                 pagedIterator.addCell(cell);
                 if (i == 0 && widget.isOrder() == 1) {
@@ -248,7 +276,7 @@ public class GroupExecutor extends AbstractTableWidgetExecutor<Node> {
         int calpage = paging.getOperator();
         CubeIndexLoader cubeIndexLoader = CubeIndexLoader.getInstance(session.getUserId());
         Node tree = cubeIndexLoader.loadPageGroup(false, widget, createTarget4Calculate(), usedDimensions,
-                                                    allDimensions, allSumTarget, calpage, widget.isRealData(), session, expander.getYExpander());
+                allDimensions, allSumTarget, calpage, widget.isRealData(), session, expander.getYExpander());
         if (tree == null) {
             tree = new Node(allSumTarget.length);
         }
