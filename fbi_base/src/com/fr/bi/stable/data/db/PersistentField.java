@@ -4,71 +4,63 @@ import com.fr.bi.stable.data.key.IPersistentField;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.utils.BIDBUtils;
 import com.fr.general.ComparatorUtils;
-import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
 
 /**
  * 保存列的信息
- *
- * @author Daniel-pc
  */
 public class PersistentField implements IPersistentField {
-    /**
-     *
-     */
-    public static final int DEFALUTSCALE = 15;
 
-    public static final int DEFALUTCOLUMN_SIZE = 100;
+    public static final int DEFAULT_SCALE = 15;
+
+    private static final int DEFAULT_COLUMN_SIZE = 100;
+
     private static final long serialVersionUID = -3638876557665551219L;
-
-    public String getRemark() {
-        return remark;
-    }
 
     private int sqlType;
     private String columnName;
     private String remark;
     private boolean isPrimaryKey;
-    private int column_size;
+    private int columnSize;
     private int biType;
-    private boolean canSetUsable;
     //小数位数
-    private int scale = DEFALUTSCALE;
+    private int scale = DEFAULT_SCALE;
 
-    public PersistentField(String columnName, String remark, int type, boolean isPrimaryKey, int column_size, int scale) {
+    public PersistentField(String columnName, String remark, int type, boolean isPrimaryKey, int columnSize, int scale) {
         this.setSqlType(type);
         this.setColumnName(columnName);
-        this.biType = BIDBUtils.sqlType2BI(type, column_size, scale);
+        this.biType = BIDBUtils.sqlType2BI(type, columnSize, scale);
         this.remark = remark;
         this.isPrimaryKey = isPrimaryKey;
         //FIXME 临时处理大于8K长度的字段，比如sqlserver TEXT; 截取前255
-        this.column_size = column_size > 8000 ? 255 : column_size;
-//        if (scale == 0) {
-//            System.out.println("find");
-//        }
+        this.columnSize = columnSize > 8000 ? 255 : columnSize;
         this.scale = scale;
     }
 
-    public PersistentField(String columnName, String remark, int type, int column_size, int scale) {
-        this(columnName, remark, type, false, column_size, scale);
+    public PersistentField(String columnName, String remark, int type, int columnSize, int scale) {
+        this(columnName, remark, type, false, columnSize, scale);
     }
 
-    public PersistentField(String columnName, int type, int column_size) {
-        this(columnName, columnName, type, column_size, DEFALUTSCALE);
+    public PersistentField(String columnName, int type, int columnSize) {
+        this(columnName, columnName, type, columnSize, DEFAULT_SCALE);
     }
 
     public PersistentField(String columnName, int type) {
-        this(columnName, columnName, type, DEFALUTCOLUMN_SIZE, DEFALUTSCALE);
+        this(columnName, columnName, type, DEFAULT_COLUMN_SIZE, DEFAULT_SCALE);
     }
-    public PersistentField(String columnName, int type, int column_size,int scale) {
-        this(columnName, columnName, type, column_size, scale);
+    public PersistentField(String columnName, int type, int columnSize, int scale) {
+        this(columnName, columnName, type, columnSize, scale);
     }
         public PersistentField() {
     }
 
+    public String getRemark() {
+        return remark;
+    }
+
     @Override
     public int getColumnSize() {
-        return column_size;
+        return columnSize;
     }
 
     /**
@@ -112,8 +104,8 @@ public class PersistentField implements IPersistentField {
         return biType;
     }
 
-    public void setColumn_size(int column_size) {
-        this.column_size = column_size;
+    public void setColumnSize(int columnSize) {
+        this.columnSize = columnSize;
     }
 
     /**
@@ -147,26 +139,14 @@ public class PersistentField implements IPersistentField {
      */
     @Override
     public JSONObject createJSON() throws Exception {
-        JSONObject jo = new JSONObject();
+        JSONObject jo = JSONObject.create();
         jo.put("text", this.getFieldName());
         jo.put("value", this.getFieldName());
         jo.put("type", this.getSqlType());
-        jo.put("biColumnType", BIDBUtils.sqlType2BI(this.getSqlType(), column_size, scale));
+        jo.put("biColumnType", BIDBUtils.sqlType2BI(this.getSqlType(), columnSize, scale));
         jo.put("scale", scale);
         jo.put("isPrimaryKey", isPrimaryKey());
-        jo.put("column_size", column_size);
-        return jo;
-    }
-
-    /**
-     * 创建转义名json对象
-     *
-     * @return 创建的json对象
-     * @throws JSONException
-     */
-    public JSONObject asJson4TableTranslater() throws JSONException {
-        JSONObject jo = new JSONObject();
-        jo.put("fieldName", this.getFieldName()).put("field_name_text", this.remark);
+        jo.put("columnSize", columnSize);
         return jo;
     }
 
@@ -186,8 +166,8 @@ public class PersistentField implements IPersistentField {
         if (jo.has("isPrimaryKey")) {
             this.setSqlType(jo.getInt("isPrimaryKey"));
         }
-        if (jo.has("column_size")) {
-            this.column_size = jo.getInt("column_size");
+        if (jo.has("columnSize")) {
+            this.columnSize = jo.getInt("columnSize");
         }
         if (jo.has("scale")) {
             this.scale = jo.getInt("scale");
@@ -220,9 +200,5 @@ public class PersistentField implements IPersistentField {
                 && ComparatorUtils.equals(((PersistentField) o2).getFieldName(), this.getFieldName())
                 && ((PersistentField) o2).getSqlType() == this.getSqlType()
                 && ((PersistentField) o2).isPrimaryKey() == this.isPrimaryKey();
-    }
-
-    public boolean canSetUsable() {
-        return canSetUsable;
     }
 }

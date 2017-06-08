@@ -127,6 +127,15 @@ public class BIWidgetFactory {
             case INTERVAL_SLIDER:
                 biWidget = new SingleSliderWidget();
                 break;
+            case YEAR:
+                biWidget = new YearControlWidget();
+                break;
+            case QUARTER:
+                biWidget = new QuarterControlWidget();
+                break;
+            case MONTH:
+                biWidget = new MonthControlWidget();
+                break;
             default:
                 biWidget = createVanChartWidget(type);
         }

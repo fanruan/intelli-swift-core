@@ -7,7 +7,6 @@ import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.field.target.target.BISummaryTarget;
 import com.fr.bi.stable.constant.BIChartSettingConstant;
 import com.fr.bi.stable.constant.BIReportConstant;
-import com.fr.bi.stable.io.io.ListWriter;
 import com.fr.general.ComparatorUtils;
 import com.fr.general.FRLogger;
 import com.fr.json.JSONArray;
@@ -16,7 +15,11 @@ import com.fr.json.JSONObject;
 import com.fr.stable.CoreConstants;
 import com.fr.stable.StringUtils;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by eason on 2017/2/27.
@@ -118,7 +121,7 @@ public class VanDotWidget extends VanCartesianWidget{
 
         JSONObject gradualStyle = JSONObject.create();
         gradualStyle.put("range", JSONObject.create().put("min", 0).put("max", 100));
-        gradualStyle.put("color_range", JSONObject.create().put("fromColor", "#65B3EE").put("toColor", "#95E1AA"));
+        gradualStyle.put("colorRange", JSONObject.create().put("fromColor", "#65B3EE").put("toColor", "#95E1AA"));
 
         settings.put("fixedStyle", fixedStyle);
         settings.put("gradientStyle", JSONArray.create().put(gradualStyle));
@@ -412,10 +415,13 @@ public class VanDotWidget extends VanCartesianWidget{
         return X + Y + SIZE;
     }
 
-    private void addFormat2Map(Map<String, String> tplRenderMap, String[] ids, int index, String key) throws Exception{
+    private void addFormat2Map(Map<String, String> tplRenderMap, String[] ids, int index, String formatKey, String unitKey) throws Exception{
         if(ids.length > index){
-            String format = this.valueFormat(this.getBITargetByID(ids[index]), true);
-            tplRenderMap.put(key, format);
+            BISummaryTarget target = this.getBITargetByID(ids[index]);
+            String format = this.valueFormat(target);
+            String unit = this.valueUnit(target, true);
+            tplRenderMap.put(formatKey, format);
+            tplRenderMap.put(unitKey, unit);
         }
     }
 
@@ -426,15 +432,15 @@ public class VanDotWidget extends VanCartesianWidget{
 
         tplMap.put("key1X", "(X)");
         tplMap.put("key2X", "x");
-        addFormat2Map(tplMap, ids, 1, "formatX");
+        addFormat2Map(tplMap, ids, 1, "formatX", "unitX");
 
         tplMap.put("key1Y", "(Y)");
         tplMap.put("key2Y", "y");
-        addFormat2Map(tplMap, ids, 0, "formatY");
+        addFormat2Map(tplMap, ids, 0, "formatY", "unitY");
 
         tplMap.put("key1SIZE", "(" + getLocText("BI-Basic_Value") +")");
         tplMap.put("key2SIZE", "size");
-        addFormat2Map(tplMap, ids, 2, "formatSIZE");
+        addFormat2Map(tplMap, ids, 2, "formatSIZE", "unitSIZE");
 
         String formatter = StringUtils.EMPTY;
         try {
@@ -456,7 +462,7 @@ public class VanDotWidget extends VanCartesianWidget{
         JSONObject dataLabels = options.optJSONObject("plotOptions").optJSONObject("dataLabels");
 
         String[] ids = this.getUsedTargetID();
-        String[] keys = {"sizeFormat", "YFormat", "XFormat"};
+        String[] keys = {"sizeFormat", "XFormat", "YFormat"};
         int size = ids.length;
 
         if (dataLabels.optBoolean("enabled")) {

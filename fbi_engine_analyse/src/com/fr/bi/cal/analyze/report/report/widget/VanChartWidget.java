@@ -594,31 +594,45 @@ public abstract class VanChartWidget extends TableWidget {
     //值标签和小数位数，千分富符，数量级和单位构成的后缀
     protected String valueFormatFunc(BISummaryTarget dimension, boolean isTooltip) {
 
-        String format = this.valueFormat(dimension, isTooltip);
+        String format = this.valueFormat(dimension);
 
-        return String.format("function(){return BI.contentFormat(arguments[0], \"%s\")}", format);
+        String unit = this.valueUnit(dimension, isTooltip);
+
+        return String.format("function(){return BI.contentFormat(arguments[0], \"%s\") + \"%s\"}", format, unit);
     }
 
-    protected String valueFormat(BISummaryTarget dimension, boolean isTooltip) {
+    protected String unitFromSetting(BISummaryTarget dimension) {
         JSONObject settings = dimension.getChartSetting().getSettings();
+        return settings.optString("unit", StringUtils.EMPTY);
+    }
 
-        boolean hasSeparator = settings.optBoolean("numSeparators", true);
+    protected boolean hasSeparatorFromSetting(BISummaryTarget dimension){
+        JSONObject settings = dimension.getChartSetting().getSettings();
+        return settings.optBoolean("numSeparators", true);
+    }
 
-        String format = this.decimalFormat(dimension, hasSeparator);
-
+    //数量级和单位，直接在值后面加，不会改变数值的。（数值为数量级处理过的，不是原始数值）
+    protected String valueUnit(BISummaryTarget dimension, boolean isTooltip) {
         String scaleUnit = this.scaleUnit(this.numberLevel(dimension.getId()));
-
-        String unit = settings.optString("unit", StringUtils.EMPTY);
+        String unit = unitFromSetting(dimension);
 
         if (isTooltip) {
-            format += (scaleUnit + unit);
+            return  (scaleUnit + unit);
+        } else if(scaleUnit.equals(PERCENT_SYMBOL)){//标签也要把百分号加上
+            return scaleUnit;
         }
-
-        return format;
+        return StringUtils.EMPTY;
     }
 
-    protected String intervalLegendFormatter(String format) {
-        return String.format("function(){return BI.contentFormat(arguments[0].from, \"%s\") + \"-\" + BI.contentFormat(arguments[0].to, \"%s\")}", format, format);
+    //小数位数和千分符，即会改变数值的
+    protected String valueFormat(BISummaryTarget dimension) {
+        boolean hasSeparator = hasSeparatorFromSetting(dimension);
+
+        return this.decimalFormat(dimension, hasSeparator);
+    }
+
+    protected String intervalLegendFormatter(String format, String unit) {
+        return String.format("function(){return BI.contentFormat(arguments[0].from, \"%s\") + \"%s\" + \"-\" + BI.contentFormat(arguments[0].to, \"%s\") + \"%s\"}", format, unit, format, unit);
     }
 
     protected String gradualLegendFormatter(String format) {

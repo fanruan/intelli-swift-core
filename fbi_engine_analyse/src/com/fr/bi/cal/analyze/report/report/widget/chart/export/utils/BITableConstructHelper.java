@@ -33,17 +33,18 @@ public class BITableConstructHelper {
         boolean isDetail = data.getWidgetType() == WidgetType.DETAIL.getType();
         for (ITableHeader header : data.getHeaders()) {
             header.setStyles(BITableStyleHelper.getHeaderStyles(style.getThemeColor(), style.getTableStyleGroup()));
+            formatHeaderText(operations, header);
         }
 
         if (data.getItems().size() != 0) {
             if (isDetail) {
                 for (int i = 0; i < data.getItems().size(); i++) {
                     ITableItem item = data.getItems().get(i);
-                    formatText(operations, item);
+                    formatItemText(operations, item);
                     item.setStyles(BITableStyleHelper.getBodyStyles(style.getThemeColor(), style.getTableStyleGroup(), i));
                     for (ITableItem child : item.getChildren()) {
                         child.setStyles(BITableStyleHelper.getBodyStyles(style.getThemeColor(), style.getTableStyleGroup(), i));
-                        formatText(operations, child);
+                        formatItemText(operations, child);
                     }
                 }
             } else {
@@ -74,13 +75,13 @@ public class BITableConstructHelper {
             if (item.getChildren() != null) {
                 traversalItems(item.getChildren(), ops, rowIndex, layer + 1, style);
             }
-            formatText(ops, item);
-            setTextStyle(ops, item);
+            formatItemText(ops, item);
+            setItemTextStyle(ops, item);
             setStyle(rowIndex, layer, style, item);
             if (item.getValues() != null) {
                 for (ITableItem it : item.getValues()) {
-                    formatText(ops, it);
-                    setTextStyle(ops, it);
+                    formatItemText(ops, it);
+                    setItemTextStyle(ops, it);
                     if ((layer == 0 && item.getValues() != null) || item.isSum()) {
                         it.setStyles(BITableStyleHelper.getLastSummaryStyles(style.getThemeColor(), style.getTableStyleGroup()));
                     } else {
@@ -92,7 +93,7 @@ public class BITableConstructHelper {
     }
 
     private static void setStyle(int rowIndex, int layer, BITableWidgetStyle style, ITableItem item) throws JSONException {
-        boolean isOutSummary=layer == 0 && item.getValues() != null;
+        boolean isOutSummary = layer == 0 && item.getValues() != null;
         if (isOutSummary || item.isSum()) {
             item.setStyles(BITableStyleHelper.getLastSummaryStyles(style.getThemeColor(), style.getTableStyleGroup()));
         } else {
@@ -108,14 +109,14 @@ public class BITableConstructHelper {
         }
         if (item.getValues() != null) {
             for (ITableItem it : item.getValues()) {
-                formatText(ops, it);
+                formatItemText(ops, it);
             }
         }
         item.setStyles(BITableStyleHelper.getHeaderStyles(style.getThemeColor(), style.getTableStyleGroup()));
-        formatText(ops, item);
+        formatItemText(ops, item);
     }
 
-    private static void formatText(Map<String, ITableCellFormatOperation> ops, ITableItem it) throws Exception {
+    private static void formatItemText(Map<String, ITableCellFormatOperation> ops, ITableItem it) throws Exception {
         if (null != ops.get(it.getDId())) {
             it.setText(ops.get(it.getDId()).formatTextValues(it.getValue()));
         } else {
@@ -123,7 +124,13 @@ public class BITableConstructHelper {
         }
     }
 
-    private static void setTextStyle(Map<String, ITableCellFormatOperation> ops, ITableItem it) throws Exception {
+    private static void formatHeaderText(Map<String, ITableCellFormatOperation> ops, ITableHeader header) throws Exception {
+        if (null != ops.get(header.getdID())) {
+            header.setText(ops.get(header.getdID()).formatTextValues(header.getText()));
+        }
+    }
+
+    private static void setItemTextStyle(Map<String, ITableCellFormatOperation> ops, ITableItem it) throws Exception {
         if (null != ops.get(it.getDId())) {
             it.setTextStyles(ops.get(it.getDId()).createTextStyle(it.getValue()));
         }
