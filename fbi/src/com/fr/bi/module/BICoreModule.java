@@ -67,7 +67,7 @@ import com.fr.bi.resource.ResourceConstants;
 import com.fr.bi.resource.ShowResourceHelper;
 import com.fr.bi.stable.utils.BIDBUtils;
 import com.fr.bi.tool.BIReadReportProvider;
-import com.fr.bi.tool.BIReadReportUtils;
+import com.fr.bi.util.BIReadReportUtils;
 import com.fr.bi.web.base.Service4BIBase;
 import com.fr.bi.web.conf.Service4BIConfigure;
 import com.fr.bi.web.dezi.web.Service4BIDezi;

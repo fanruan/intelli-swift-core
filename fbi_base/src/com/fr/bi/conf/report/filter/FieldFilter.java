@@ -5,7 +5,7 @@ import com.finebi.cube.conf.table.BusinessTable;
 import com.fr.bi.base.provider.ParseJSONWithUID;
 import com.fr.bi.common.BICoreService;
 import com.fr.bi.stable.gvi.GroupValueIndex;
-import com.fr.bi.stable.report.result.DimensionCalculator;
+import com.fr.bi.report.result.DimensionCalculator;
 import com.fr.json.JSONCreator;
 
 import java.io.Serializable;
