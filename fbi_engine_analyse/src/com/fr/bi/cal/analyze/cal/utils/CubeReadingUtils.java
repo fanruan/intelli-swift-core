@@ -9,9 +9,9 @@ import com.fr.bi.cal.analyze.cal.result.Node;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.field.target.target.BISummaryTarget;
 import com.fr.bi.stable.engine.index.utils.TableIndexUtils;
-import com.fr.bi.stable.report.key.TargetGettingKey;
-import com.fr.bi.stable.report.result.BINode;
-import com.fr.bi.stable.report.result.DimensionCalculator;
+import com.fr.bi.report.key.TargetGettingKey;
+import com.fr.bi.report.result.BINode;
+import com.fr.bi.report.result.DimensionCalculator;
 import com.fr.data.impl.EmbeddedTableData;
 import edu.emory.mathcs.backport.java.util.Arrays;
 

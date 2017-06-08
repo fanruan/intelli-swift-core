@@ -15,7 +15,7 @@ import com.fr.bi.stable.engine.index.key.IndexKey;
 import com.fr.bi.stable.operation.group.BIGroupFactory;
 import com.fr.bi.stable.operation.group.group.AutoGroup;
 import com.fr.bi.stable.operation.sort.BISortFactory;
-import com.fr.bi.stable.report.result.DimensionCalculator;
+import com.fr.bi.report.result.DimensionCalculator;
 import com.fr.bi.stable.utils.BICollectionUtils;
 import com.fr.general.GeneralUtils;
 import com.fr.json.JSONException;

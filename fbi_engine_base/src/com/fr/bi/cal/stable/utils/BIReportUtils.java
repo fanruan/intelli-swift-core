@@ -5,7 +5,7 @@ import com.finebi.cube.conf.field.BusinessField;
 import com.fr.bi.fs.BIReportNode;
 import com.fr.bi.stable.constant.BIJSONConstant;
 import com.fr.bi.stable.data.BIFieldID;
-import com.fr.bi.tool.BIReadReportUtils;
+import com.fr.bi.util.BIReadReportUtils;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
