@@ -2,7 +2,7 @@ package com.fr.bi.field.target.target;
 
 import com.fr.bi.field.target.calculator.sum.StringAppendCalculator;
 import com.fr.bi.stable.constant.DBConstant;
-import com.fr.bi.stable.report.result.TargetCalculator;
+import com.fr.bi.report.result.TargetCalculator;
 
 /**
  * Created by 小灰灰 on 2014/10/24.

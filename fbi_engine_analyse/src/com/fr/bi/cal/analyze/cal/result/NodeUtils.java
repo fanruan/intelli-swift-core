@@ -2,8 +2,8 @@ package com.fr.bi.cal.analyze.cal.result;
 
 
 import com.fr.bi.stable.operation.sort.comp.ComparatorFacotry;
-import com.fr.bi.stable.report.key.TargetGettingKey;
-import com.fr.bi.stable.report.result.BINode;
+import com.fr.bi.report.key.TargetGettingKey;
+import com.fr.bi.report.result.BINode;
 import com.fr.bi.stable.structure.tree.NTree;
 
 /**

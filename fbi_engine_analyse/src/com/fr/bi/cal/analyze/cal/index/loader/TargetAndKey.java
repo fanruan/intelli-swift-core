@@ -1,7 +1,7 @@
 package com.fr.bi.cal.analyze.cal.index.loader;
 
-import com.fr.bi.stable.report.key.TargetGettingKey;
-import com.fr.bi.stable.report.result.TargetCalculator;
+import com.fr.bi.report.key.TargetGettingKey;
+import com.fr.bi.report.result.TargetCalculator;
 
 /**
  * Created by 小灰灰 on 2016/9/26.

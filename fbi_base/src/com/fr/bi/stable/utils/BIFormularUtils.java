@@ -5,7 +5,7 @@ import com.fr.bi.stable.constant.DBConstant;
 import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.base.key.BIKey;
 import com.finebi.cube.api.ICubeTableService;
-import com.fr.bi.stable.report.key.TargetGettingKey;
+import com.fr.bi.report.key.TargetGettingKey;
 import com.fr.bi.stable.utils.program.BIStringUtils;
 import com.fr.script.Calculator;
 import com.fr.stable.Primitive;
