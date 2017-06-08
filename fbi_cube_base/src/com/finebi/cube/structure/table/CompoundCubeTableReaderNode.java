@@ -37,8 +37,8 @@ import java.util.*;
 public class CompoundCubeTableReaderNode implements CubeTableEntityService {
 
     private static final long serialVersionUID = 6706265224623557416L;
-    private List<CubeTableEntityService> currentLevelTables = new ArrayList<CubeTableEntityService>();
-    private CubeTableEntityService masterTable = null;
+    protected List<CubeTableEntityService> currentLevelTables = new ArrayList<CubeTableEntityService>();
+    protected CubeTableEntityService masterTable = null;
     protected ICubeResourceDiscovery discovery;
     protected ICubeResourceRetrievalService resourceRetrievalService;
     protected Map<ICubeFieldSource, CubeTableEntityService> fieldSource = new HashMap<ICubeFieldSource, CubeTableEntityService>();
@@ -57,7 +57,11 @@ public class CompoundCubeTableReaderNode implements CubeTableEntityService {
         }
     }
 
-    private void initialFieldSource(CubeTableEntityService tableEntityService) {
+    public CompoundCubeTableReaderNode(List<ITableKey> tableKeys, ICubeResourceRetrievalService resourceRetrievalService, ICubeResourceRetrievalService integrityResourceRetrievalService, ICubeResourceDiscovery discovery) {
+
+    }
+
+    protected void initialFieldSource(CubeTableEntityService tableEntityService) {
         if (tableEntityService.tableDataAvailable()) {
             for (ICubeFieldSource field : tableEntityService.getFieldInfo()) {
 
