@@ -30,7 +30,7 @@ public class BIFormularUtils {
             if (columnIndex != null) {
                 Object value = ti.getColumnDetailReader(columnIndex).getValue(row);
                 int fieldType = ti.getColumns().get(columnIndex).getFieldType();
-                if (value != null) {
+                if (BICollectionUtils.isNotCubeNullKey(value)) {
                     if (fieldType == DBConstant.COLUMN.DATE) {
                         value = new Date((Long) value);
                     }
