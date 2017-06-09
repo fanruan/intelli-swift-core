@@ -8,7 +8,6 @@
   "fieldId": "字段ID (field_id)",
   "tableId": "表ID (table_id)",
   "packageId": "业务包ID (package_id)",
-  "dashboardChartType": "仪表盘类型 (chartDashboardType)",
 
   "fieldType": "字段类型 (field_type)",
   "fieldName": "字段名 (field_type)",
@@ -66,10 +65,15 @@
 
   "formulaValue":"指标公式表达式(formula_value)",
 
+  "dashboardChartType": "仪表盘类型(chart_dashboard_type/chartDashboardType)",
+
   "cordonName": "警戒线颜色(cordon_name)",
   "cordonValue": "警戒线值(cordon_value)",
   "cordonNumberLevel": "警戒线数量级(cordon_number_level)",
   "cordonColor": "警戒线颜色(cordon_color)",
+
+  "legend": "图例位置(chart_legend/chartLegend)",
+  "lineAreaChartType": "折线类型(chart_line_type/chartLineType)",
 
   "miniMode": "极简模式(minimalistModel)",
   "styleRadio":"地图配色(auto_custom)",
