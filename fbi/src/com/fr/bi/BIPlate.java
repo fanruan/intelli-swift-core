@@ -9,6 +9,7 @@ import com.fr.base.FRContext;
 import com.fr.bi.cal.generate.TimerRunner;
 import com.fr.bi.cal.report.BIActor;
 import com.fr.bi.cal.report.db.DialectCreatorImpl;
+import com.fr.bi.cal.report.db.KylinDialectCreatorImpl;
 import com.fr.bi.conf.VT4FBI;
 import com.fr.bi.conf.base.datasource.BIConnectionManager;
 import com.fr.bi.conf.provider.BIConfigureManagerCenter;
@@ -291,6 +292,8 @@ public class BIPlate extends AbstractFSPlate {
     private void initPlugin() {
         try {
             ExtraClassManager.getInstance().addMutable(DialectCreatorImpl.XML_TAG, new DialectCreatorImpl(), PluginSimplify.create("bi", "com.fr.bi.plugin.db.ads"));
+            ExtraClassManager.getInstance().addMutable(KylinDialectCreatorImpl.XML_TAG, new KylinDialectCreatorImpl(), PluginSimplify.create("bi", "com.fr.bi.plugin.db.kylin"));
+
         } catch (Exception e) {
             FRLogger.getLogger().error(e.getMessage(), e);
         }

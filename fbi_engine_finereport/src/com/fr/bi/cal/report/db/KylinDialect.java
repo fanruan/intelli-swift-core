@@ -65,7 +65,7 @@ public class KylinDialect extends AbstractDialect {
     public String table2SQL(Table table) {
         if(table == null) {
             return "";
-        } else if(!StringUtils.isBlank(this.left_quote) && !StringUtils.isBlank(this.right_quote)) {
+        } else if(StringUtils.isNotBlank(this.left_quote) && StringUtils.isNotBlank(this.right_quote)) {
             StringBuffer sb = new StringBuffer();
             sb.append(this.column2SQL(table.getName()));
             return sb.toString();
