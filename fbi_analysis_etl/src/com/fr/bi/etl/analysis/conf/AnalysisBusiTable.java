@@ -118,7 +118,7 @@ public class AnalysisBusiTable extends BIBusinessTable {
             stringList.add(filedJson);
         }
         //兼容以前老的记录数ID，包含表转义名的
-        fields.put(getID().getIdentity() + BIAnalysisETLManagerCenter.getAliasManagerProvider().getTransManager(userId).getTransName(getID().getIdentityValue()) + Inter.getLocText("BI-Basic_Records"), createCountField(userId));
+        fields.put(getID().getIdentity() + BIAnalysisETLManagerCenter.getAliasManagerProvider().getAliasNameFromAllUsers(getID().getIdentityValue()) + Inter.getLocText("BI-Basic_Records"), createCountField(userId));
         //真正使用的记录数ID
         fields.put(getID().getIdentity() + Inter.getLocText("BI-Basic_Records"), createCountField(userId));
         countList.add(createCountField(userId));
@@ -133,7 +133,7 @@ public class AnalysisBusiTable extends BIBusinessTable {
     private JSONObject createCountField(long userId) throws Exception {
         JSONObject jo = new JSONObject();
         jo.put("fieldType", DBConstant.COLUMN.COUNTER);
-        jo.put("fieldName", BIAnalysisETLManagerCenter.getAliasManagerProvider().getTransManager(userId).getTransName(getID().getIdentityValue()) + Inter.getLocText("BI-Basic_Records"));
+        jo.put("fieldName", BIAnalysisETLManagerCenter.getAliasManagerProvider().getAliasNameFromAllUsers(getID().getIdentityValue()) + Inter.getLocText("BI-Basic_Records"));
         jo.put("tableId", getID().getIdentity());
         jo.put("isUsable", true);
         //记录数的id先暂时用拼接

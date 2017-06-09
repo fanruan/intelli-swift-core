@@ -2,7 +2,7 @@ package com.fr.bi.cal.analyze.cal.index.loader;
 
 import com.finebi.cube.conf.table.BusinessTable;
 import com.fr.bi.stable.gvi.GroupValueIndex;
-import com.fr.bi.stable.report.result.DimensionCalculator;
+import com.fr.bi.report.result.DimensionCalculator;
 
 import java.util.ArrayList;
 import java.util.List;

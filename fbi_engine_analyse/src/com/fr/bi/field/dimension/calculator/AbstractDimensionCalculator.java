@@ -19,7 +19,7 @@ import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.engine.index.key.IndexKey;
 import com.fr.bi.stable.operation.group.IGroup;
-import com.fr.bi.stable.report.result.DimensionCalculator;
+import com.fr.bi.report.result.DimensionCalculator;
 
 import java.util.ArrayList;
 import java.util.Comparator;

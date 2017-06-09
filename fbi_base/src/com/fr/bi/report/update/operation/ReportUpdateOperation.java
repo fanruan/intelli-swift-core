@@ -1,4 +1,4 @@
-package com.fr.bi.stable.report.update.operation;
+package com.fr.bi.report.update.operation;
 
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;

@@ -15,7 +15,7 @@ import com.fr.bi.fs.BIReportNode;
 import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.stable.constant.BIExcutorConstant;
 import com.fr.bi.stable.constant.BIReportConstant;
-import com.fr.bi.tool.BIReadReportUtils;
+import com.fr.bi.util.BIReadReportUtils;
 import com.fr.general.DateUtils;
 import com.fr.general.Inter;
 import com.fr.json.JSONArray;

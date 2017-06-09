@@ -5,8 +5,8 @@ package com.fr.bi.cal.analyze.cal.result;
 
 
 import com.fr.bi.stable.gvi.GroupValueIndex;
-import com.fr.bi.stable.report.key.TargetGettingKey;
-import com.fr.bi.stable.report.result.TargetCalculator;
+import com.fr.bi.report.key.TargetGettingKey;
+import com.fr.bi.report.result.TargetCalculator;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;

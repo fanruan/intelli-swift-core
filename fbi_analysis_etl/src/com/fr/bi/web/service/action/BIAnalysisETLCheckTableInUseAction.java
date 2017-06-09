@@ -2,7 +2,7 @@ package com.fr.bi.web.service.action;
 
 import com.fr.bi.fs.BIDAOUtils;
 import com.fr.bi.fs.BIReportNode;
-import com.fr.bi.tool.BIReadReportUtils;
+import com.fr.bi.util.BIReadReportUtils;
 import com.fr.fs.web.service.ServiceUtils;
 import com.fr.general.ComparatorUtils;
 import com.fr.json.JSONArray;

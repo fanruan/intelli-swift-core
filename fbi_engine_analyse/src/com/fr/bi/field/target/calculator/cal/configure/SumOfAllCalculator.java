@@ -3,8 +3,8 @@ package com.fr.bi.field.target.calculator.cal.configure;
 import com.fr.bi.conf.report.widget.field.target.BITarget;
 import com.fr.bi.field.target.target.cal.target.configure.BIConfiguredCalculateTarget;
 import com.fr.bi.stable.constant.BIReportConstant;
-import com.fr.bi.stable.report.result.BICrossNode;
-import com.fr.bi.stable.report.result.BINode;
+import com.fr.bi.report.result.BICrossNode;
+import com.fr.bi.report.result.BINode;
 
 import java.util.concurrent.Callable;
 
