@@ -21,6 +21,7 @@ import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.field.target.target.BISummaryTarget;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.report.key.TargetGettingKey;
+import com.fr.general.ComparatorUtils;
 import com.fr.general.DateUtils;
 import com.fr.general.GeneralUtils;
 import com.fr.general.Inter;
@@ -169,8 +170,8 @@ public class GroupExecutor extends AbstractTableWidgetExecutor<Node> {
     private static void generateSumCells(Node temp, TableWidget widget, BIDimension[] rowDimensions, StreamPagedIterator pagedIterator, FinalInt rowIdx, int columnIdx) {
         //isLastSum 是否是最后一行会总行
         boolean isLastSum = temp.getParent() != null && temp.getSibling() == null;
-        if (isLastSum || checkIfGenerateSumCell(temp)) {
-            if(temp.getParent().getTotalLength() != 1) {
+        if ((widget.getViewTargets().length != 0) && (isLastSum || checkIfGenerateSumCell(temp))) {
+            if (temp.getParent().getTotalLength() != 1) {
                 Style style = BITableStyle.getInstance().getYSumStringCellStyle();
                 rowIdx.value++;
                 CBCell cell = ExecutorUtils.createCell(Inter.getLocText("BI-Summary_Values"), rowIdx.value, 1, columnIdx, rowDimensions.length - columnIdx, style);
@@ -189,11 +190,11 @@ public class GroupExecutor extends AbstractTableWidgetExecutor<Node> {
             int columnIdx = targetsKeyIndex + rowDimensions.length + widget.isOrder();
             Object data = temp.getSummaryValue(key);
             Style style;
+            boolean isPercent = ComparatorUtils.equals(widget.getChartSetting().getNumberLevelByTargetId(key.getTargetName()), BIReportConstant.TARGET_STYLE.NUM_LEVEL.PERCENT);
             if (!isSum) {
-                boolean isPercent = widget.getChartSetting().getNumberLevelByTargetId(key.getTargetName()) == BIReportConstant.TARGET_STYLE.NUM_LEVEL.PERCENT;
                 style = BITableStyle.getInstance().getNumberCellStyle(data, rowIdx % 2 == 1, isPercent);
             } else {
-                style = BITableStyle.getInstance().getXSumStringCellStyle();
+                style = BITableStyle.getInstance().getYTotalCellStyle(data, 1, isPercent);
             }
             CBCell cell = ExecutorUtils.createCell(data, rowIdx, 1, columnIdx, 1, style);
             pagedIterator.addCell(cell);
@@ -206,7 +207,6 @@ public class GroupExecutor extends AbstractTableWidgetExecutor<Node> {
         //维度第一次出现即addCell
         int i = rowDimensions.length;
         while (temp.getParent() != null) {
-            int rowSpan = temp.getTotalLength();
             BIDimension dim = rowDimensions[--i];
             String data = dim.toString(temp.getData());
             //年月日字段格式化
@@ -215,9 +215,9 @@ public class GroupExecutor extends AbstractTableWidgetExecutor<Node> {
             }
             Object v = dim.getValueByType(data);
             if (v != dimensionNames[i] || (i == rowDimensions.length - 1)) {
+                int rowSpan = widget.getViewTargets().length != 0 ? temp.getTotalLengthWithSummary() : temp.getTotalLength();
                 oddEven[i]++;
                 Style style = BITableStyle.getInstance().getDimensionCellStyle(v instanceof Number, rowIdx % 2 == 1);
-//                rowSpan = i == rowDimensions.length - 1 ? rowSpan : rowSpan + 1;
                 CBCell cell = ExecutorUtils.createCell(v, rowIdx, rowSpan, i + widget.isOrder(), 1, style);
                 pagedIterator.addCell(cell);
                 if (i == 0 && widget.isOrder() == 1) {
