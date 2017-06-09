@@ -20,6 +20,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class PerformancePlugManager implements PerformancePlugManagerInterface {
     private static final Logger LOGGER = LoggerFactory.getLogger(PerformancePlugManager.class);
     private final static String PERFORMANCE = "performance";
+    private final static String LIMIT = "limit";
     public static int DEFAULT_DEPLOY_MODE_ON = 4096;
     public static int DEFAULT_DEPLOY_MODE_OFF = -1;
     private static PerformancePlugManager ourInstance = new PerformancePlugManager();
@@ -76,6 +77,8 @@ public class PerformancePlugManager implements PerformancePlugManagerInterface {
 
     private int maxStructureSize = 0;
 
+    private int maxSPADetailSize = 0;
+
     private PerformancePlugManager() {
         init();
     }
@@ -119,7 +122,8 @@ public class PerformancePlugManager implements PerformancePlugManagerInterface {
             isDirectGenerating = getBoolean(PERFORMANCE + ".isDirectGenerating", isDirectGenerating);
             isForceWriter = getBoolean(PERFORMANCE + ".isForceWriter", isForceWriter);
             maxCubeFileSize = getLong(PERFORMANCE + ".maxCubeFileSize", maxCubeFileSize);
-            maxStructureSize = getInt(PERFORMANCE + ".maxStructureSize", maxStructureSize);
+            maxStructureSize = getInt(LIMIT + ".maxStructureSize", maxStructureSize);
+            maxSPADetailSize = getInt(LIMIT + ".maxSPADetailSize", maxSPADetailSize);
 //            logConfiguration();
         } catch (Exception e) {
             BILoggerFactory.getLogger().error(e.getMessage(), e);
@@ -472,5 +476,10 @@ public class PerformancePlugManager implements PerformancePlugManagerInterface {
     @Override
     public int getMaxStructureSize() {
         return maxStructureSize;
+    }
+
+    @Override
+    public int getMaxSPADetailSize() {
+        return maxSPADetailSize;
     }
 }
