@@ -60,6 +60,13 @@ public class AnalysisETLTableSource extends AbstractETLTableSource<IETLOperator,
         return tree;
     }
 
+    @Override
+    public void resetTargetsMap() {
+        for (AnalysisCubeTableSource source :getParents()){
+            source.resetTargetsMap();
+        }
+    }
+
 
     @Override
     public Set<BIWidget> getWidgets() {

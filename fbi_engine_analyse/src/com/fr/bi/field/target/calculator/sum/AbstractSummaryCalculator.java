@@ -5,9 +5,9 @@ import com.finebi.cube.api.ICubeTableService;
 import com.finebi.cube.conf.table.BusinessTable;
 import com.fr.bi.field.target.target.BISummaryTarget;
 import com.fr.bi.stable.gvi.GroupValueIndex;
-import com.fr.bi.stable.report.key.TargetGettingKey;
-import com.fr.bi.stable.report.result.SummaryContainer;
-import com.fr.bi.stable.report.result.TargetCalculator;
+import com.fr.bi.report.key.TargetGettingKey;
+import com.fr.bi.report.result.SummaryContainer;
+import com.fr.bi.report.result.TargetCalculator;
 
 /**
  * Created by 小灰灰 on 2015/6/30.

@@ -5,7 +5,7 @@ import com.finebi.cube.relation.BITableSourceRelation;
 import com.fr.bi.base.key.BIKey;
 import com.fr.bi.field.dimension.calculator.DateDimensionCalculator;
 import com.fr.bi.stable.engine.index.key.IndexTypeKey;
-import com.fr.bi.stable.report.result.DimensionCalculator;
+import com.fr.bi.report.result.DimensionCalculator;
 import com.fr.bi.stable.utils.BICollectionUtils;
 import com.fr.stable.StringUtils;
 

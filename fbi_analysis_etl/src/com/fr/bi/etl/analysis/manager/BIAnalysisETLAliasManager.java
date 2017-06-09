@@ -8,10 +8,13 @@ import com.finebi.cube.conf.trans.UserAliasManager;
 import com.fr.bi.exception.BIKeyAbsentException;
 import com.fr.bi.exception.BIKeyDuplicateException;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
+import com.fr.fs.base.entity.User;
 import com.fr.fs.control.UserControl;
 import com.fr.json.JSONObject;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by 小灰灰 on 2016/6/8.
@@ -69,6 +72,29 @@ public class BIAnalysisETLAliasManager extends BISystemDataManager<UserAliasMana
     @Override
     public String getAliasName(String id, long userId) {
         return getTransManager(userId).getTransName(id);
+    }
+
+    @Override
+    public String getAliasNameFromAllUsers(String id) {
+        String aliasName = null;
+        aliasName = getTransManager(UserControl.getInstance().getSuperManagerID()).getTransName(id);
+        if (aliasName != null) {
+            return aliasName;
+        }
+        List<User> allUserList = new ArrayList<User>();
+        try {
+            allUserList = UserControl.getInstance().findAllUser();
+        } catch (Exception e) {
+            LOGGER.error("Get all users failure " + e.getMessage(), e);
+        }
+        for (User user : allUserList) {
+            aliasName = getTransManager(user.getId()).getTransName(id);
+            if (aliasName != null) {
+                break;
+            }
+        }
+        return aliasName;
+
     }
 
     @Override

@@ -83,6 +83,11 @@ public class AnalysisTempTableSource extends AbstractCubeTableSource implements 
     }
 
     @Override
+    public void resetTargetsMap() {
+
+    }
+
+    @Override
     public IPersistentTable getPersistentTable() {
         return new PersistentTable(StringUtils.EMPTY, StringUtils.EMPTY, StringUtils.EMPTY);
     }
