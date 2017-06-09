@@ -9,7 +9,7 @@ import com.finebi.cube.relation.BITableSourceRelation;
 import com.fr.bi.base.key.BIKey;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.gvi.traversal.BrokenTraversalAction;
-import com.fr.bi.stable.report.result.DimensionCalculator;
+import com.fr.bi.report.result.DimensionCalculator;
 import com.fr.bi.stable.structure.CubeValueEntryNode;
 import com.fr.bi.stable.structure.object.CubeValueEntry;
 import com.fr.bi.stable.structure.object.CubeValueEntrySort;

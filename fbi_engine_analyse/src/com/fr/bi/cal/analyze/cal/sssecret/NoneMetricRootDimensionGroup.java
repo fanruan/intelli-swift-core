@@ -22,7 +22,7 @@ import com.fr.bi.stable.data.key.date.BIDateValue;
 import com.fr.bi.stable.data.key.date.BIDateValueFactory;
 import com.fr.bi.stable.exception.BITableUnreachableException;
 import com.fr.bi.stable.gvi.GroupValueIndex;
-import com.fr.bi.stable.report.result.DimensionCalculator;
+import com.fr.bi.report.result.DimensionCalculator;
 import com.fr.bi.util.BIConfUtils;
 import com.fr.general.ComparatorUtils;
 

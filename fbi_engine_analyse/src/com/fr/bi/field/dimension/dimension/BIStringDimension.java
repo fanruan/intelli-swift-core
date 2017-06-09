@@ -5,7 +5,7 @@ import com.fr.bi.field.dimension.calculator.StringDimensionCalculator;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.operation.group.BIGroupFactory;
 import com.finebi.cube.relation.BITableSourceRelation;
-import com.fr.bi.stable.report.result.DimensionCalculator;
+import com.fr.bi.report.result.DimensionCalculator;
 import com.fr.json.JSONObject;
 
 import java.util.List;

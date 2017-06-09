@@ -1,4 +1,4 @@
-package com.fr.bi.stable.report.key;
+package com.fr.bi.report.key;
 
 public class TargetGettingKey {
 

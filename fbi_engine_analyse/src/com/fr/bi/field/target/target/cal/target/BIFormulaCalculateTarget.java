@@ -5,7 +5,7 @@ import com.fr.bi.field.target.calculator.cal.FormulaCalculator;
 import com.fr.bi.field.target.target.BISummaryTarget;
 import com.fr.bi.field.target.target.TargetType;
 import com.fr.bi.field.target.target.cal.BICalculateTarget;
-import com.fr.bi.stable.report.result.TargetCalculator;
+import com.fr.bi.report.result.TargetCalculator;
 import com.fr.bi.stable.utils.BIFormularUtils;
 import com.fr.bi.stable.utils.BITravalUtils;
 import com.fr.json.JSONObject;

@@ -1,4 +1,4 @@
-package com.fr.bi.stable.report.store;
+package com.fr.bi.report.store;
 
 import java.util.Comparator;
 

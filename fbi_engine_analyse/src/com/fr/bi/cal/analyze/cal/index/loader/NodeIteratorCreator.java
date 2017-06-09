@@ -29,8 +29,8 @@ import com.fr.bi.field.target.target.SumType;
 import com.fr.bi.field.target.target.TargetType;
 import com.fr.bi.stable.gvi.GVIFactory;
 import com.fr.bi.stable.gvi.GroupValueIndex;
-import com.fr.bi.stable.report.result.DimensionCalculator;
-import com.fr.bi.stable.report.result.TargetCalculator;
+import com.fr.bi.report.result.DimensionCalculator;
+import com.fr.bi.report.result.TargetCalculator;
 import com.fr.general.ComparatorUtils;
 import com.fr.general.NameObject;
 

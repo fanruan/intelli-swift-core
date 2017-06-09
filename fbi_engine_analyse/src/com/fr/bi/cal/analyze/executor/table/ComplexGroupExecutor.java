@@ -11,7 +11,7 @@ import com.fr.bi.cal.analyze.executor.iterator.StreamPagedIterator;
 import com.fr.bi.cal.analyze.executor.paging.Paging;
 import com.fr.bi.cal.analyze.report.report.widget.TableWidget;
 import com.fr.bi.cal.analyze.session.BISession;
-import com.fr.bi.stable.report.key.TargetGettingKey;
+import com.fr.bi.report.key.TargetGettingKey;
 import com.fr.general.DateUtils;
 import com.fr.json.JSONObject;
 
