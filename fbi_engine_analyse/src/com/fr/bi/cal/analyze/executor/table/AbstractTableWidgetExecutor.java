@@ -1,5 +1,6 @@
 package com.fr.bi.cal.analyze.executor.table;
 
+import com.fr.bi.cal.analyze.cal.result.Node;
 import com.fr.bi.cal.analyze.executor.BIAbstractExecutor;
 import com.fr.bi.cal.analyze.executor.paging.Paging;
 import com.fr.bi.cal.analyze.report.report.widget.TableWidget;

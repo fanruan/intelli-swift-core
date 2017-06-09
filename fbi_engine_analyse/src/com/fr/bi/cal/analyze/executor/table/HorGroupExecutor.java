@@ -85,9 +85,19 @@ public class HorGroupExecutor extends AbstractTableWidgetExecutor<Node> {
                 CBCell dimCell = ExecutorUtils.createCell(v, colDimIdx, 1, columnIdx, temp.getTotalLength(), style);
                 pagedIterator.addCell(dimCell);
                 columnIdx += temp.getTotalLength();
+//                generateTitleSumCell(temp, pagedIterator, colDimIdx, columnIdx);
                 temp = temp.getSibling();
             }
             colDimIdx++;
+        }
+    }
+
+    private void generateTitleSumCell(Node temp, StreamPagedIterator pagedIterator, int colDimIdx, int columnIdx) {
+        if (checkIfGenerateSumCell(temp)) {
+            columnIdx++;
+            Style style = BITableStyle.getInstance().getYSumStringCellStyle();
+            CBCell cell = ExecutorUtils.createCell(Inter.getLocText("BI-Summary_Values"), colDimIdx, temp.getDeep(), columnIdx, 1, style);
+            pagedIterator.addCell(cell);
         }
     }
 
@@ -115,9 +125,31 @@ public class HorGroupExecutor extends AbstractTableWidgetExecutor<Node> {
                 Style style = BITableStyle.getInstance().getNumberCellStyle(data, (i + 1) % 2 == 1, isPercent);
                 CBCell cell = ExecutorUtils.createCell(data, rowIdx + i, 1, columnIdx++, 1, style);
                 pagedIterator.addCell(cell);
+                generateTargetSumCell(temp, keys, i, pagedIterator, rowIdx + i, columnIdx, style);
                 temp = temp.getSibling();
             }
         }
+    }
+
+    private void generateTargetSumCell(Node temp, TargetGettingKey[] keys, int i, StreamPagedIterator pagedIterator, int rowIdx, int columnIdx, Style style) {
+        if ((widget.getViewTargets().length != 0) && checkIfGenerateSumCell(temp)) {
+            if (temp.getParent().getChildLength() != 1) {
+                Object data = temp.getParent().getSummaryValue(keys[i]);
+                CBCell cell = ExecutorUtils.createCell(data, rowIdx + i, 1, columnIdx++, 1, style);
+                pagedIterator.addCell(cell);
+            }
+            //开辟新内存，不对temp进行修改
+            Node parent = temp.getParent();
+            generateTargetSumCell(parent, keys, i, pagedIterator, rowIdx, columnIdx, style);
+        }
+    }
+
+    private static boolean checkIfGenerateSumCell(Node temp) {
+        //isLastSum 是否是最后一行汇总行
+        boolean isLastSum = temp.getSibling() == null;
+        //判断空值 比较当前节点和下一个兄弟节点是否有同一个父亲节点
+        boolean needSumCell = temp.getParent() != null && temp.getSibling() != null && temp.getSibling().getParent() != null && (temp.getParent() != temp.getSibling().getParent());
+        return isLastSum || needSumCell;
     }
 
     @Override

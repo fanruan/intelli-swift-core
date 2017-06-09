@@ -163,18 +163,25 @@ public class GroupExecutor extends AbstractTableWidgetExecutor<Node> {
     }
 
     private static boolean checkIfGenerateSumCell(Node temp) {
+        //isLastSum 是否是最后一行汇总行
+        boolean isLastSum = temp.getSibling() == null;
         //判断空值 比较当前节点和下一个兄弟节点是否有同一个父亲节点
-        return temp.getParent() != null && temp.getSibling() != null && temp.getSibling().getParent() != null && (temp.getParent() != temp.getSibling().getParent());
+        boolean needSumCell = temp.getParent() != null && temp.getSibling() != null && temp.getSibling().getParent() != null && (temp.getParent() != temp.getSibling().getParent());
+        return isLastSum || needSumCell;
     }
 
     private static void generateSumCells(Node temp, TableWidget widget, BIDimension[] rowDimensions, StreamPagedIterator pagedIterator, FinalInt rowIdx, int columnIdx) {
         //isLastSum 是否是最后一行会总行
         boolean isLastSum = temp.getParent() != null && temp.getSibling() == null;
-        if ((widget.getViewTargets().length != 0) && (isLastSum || checkIfGenerateSumCell(temp))) {
-            if (temp.getParent().getTotalLength() != 1) {
+        if ((widget.getViewTargets().length != 0) && checkIfGenerateSumCell(temp)) {
+            if (temp.getParent().getChildLength() != 1) {
                 Style style = BITableStyle.getInstance().getYSumStringCellStyle();
                 rowIdx.value++;
-                CBCell cell = ExecutorUtils.createCell(Inter.getLocText("BI-Summary_Values"), rowIdx.value, 1, columnIdx, rowDimensions.length - columnIdx, style);
+                if (widget.isOrder() == 1 && isLastSum) {
+                    CBCell cell = ExecutorUtils.createCell(Inter.getLocText("BI-Summary_Values"), rowIdx.value, 1, 0, 1, style);
+                    pagedIterator.addCell(cell);
+                }
+                CBCell cell = ExecutorUtils.createCell(Inter.getLocText("BI-Summary_Values"), rowIdx.value, 1, columnIdx + widget.isOrder(), rowDimensions.length - columnIdx, style);
                 pagedIterator.addCell(cell);
                 generateTargetCells(temp.getParent(), widget, rowDimensions, pagedIterator, rowIdx.value, true);
             }
