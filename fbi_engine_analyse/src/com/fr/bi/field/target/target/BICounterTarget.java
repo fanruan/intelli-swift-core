@@ -10,17 +10,19 @@ import com.fr.bi.field.target.calculator.sum.CountCalculator;
 import com.fr.bi.stable.data.BIFieldID;
 import com.fr.bi.stable.data.BITableID;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
-import com.fr.bi.stable.data.db.IPersistentTable;
-import com.fr.bi.stable.data.db.PersistentField;
+
+
 import com.fr.bi.stable.data.source.CubeTableSource;
-import com.fr.bi.stable.report.result.TargetCalculator;
+
+import com.fr.bi.report.result.TargetCalculator;
+
 import com.fr.general.ComparatorUtils;
 import com.fr.json.JSONObject;
 import com.fr.stable.StringUtils;
 
 import java.util.HashSet;
 import java.util.Set;
-import java.util.logging.Logger;
+
 
 public class BICounterTarget extends BISummaryTarget {
 

@@ -8,7 +8,7 @@ import com.fr.bi.stable.engine.cal.DimensionIterator;
 import com.fr.bi.stable.engine.index.key.IndexKey;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.gvi.traversal.SingleRowTraversalAction;
-import com.fr.bi.stable.report.result.DimensionCalculator;
+import com.fr.bi.report.result.DimensionCalculator;
 import com.fr.stable.StringUtils;
 
 import java.util.Iterator;
