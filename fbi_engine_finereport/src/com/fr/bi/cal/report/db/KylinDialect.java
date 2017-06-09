@@ -18,7 +18,7 @@ public class KylinDialect extends AbstractDialect {
     public String getTopNRowSql(int row, Table table) {
         return "select * from " + this.table2SQL(table) + " limit " + row;
     }
-
+    @Override
     public String defaultValidationQuery(Connection conn) {
         try {
             DatabaseMetaData e = conn.getMetaData();
