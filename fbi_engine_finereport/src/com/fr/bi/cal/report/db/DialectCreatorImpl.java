@@ -21,7 +21,9 @@ public class DialectCreatorImpl extends AbstractDialectCreator {
         if (ComparatorUtils.equals(driver.getDriver(), "org.apache.hive.jdbc.HiveDriver")) {
             return HiveDialect.class;
         }
-
+        if (ComparatorUtils.equals(driver.getDriver(), "org.apache.kylin.jdbc.Driver")) {
+            return KylinDialect.class;
+        }
         //return null的话, 在外部还能继续从metadata里处理, 从driver获取和从metadata获取是顺序的关系, 不是同级的.
         //driver里获取不到, 再从metadata里找.
         return null;
@@ -32,6 +34,9 @@ public class DialectCreatorImpl extends AbstractDialectCreator {
         try {
             if (ComparatorUtils.equals(connection.getMetaData().getDriverName(), "Hive JDBC")) {
                 return HiveDialect.class;
+            }
+            if (ComparatorUtils.equals(connection.getMetaData().getDriverName(), "Kylin JDBC Driver")) {
+                return KylinDialect.class;
             }
         } catch (SQLException e) {
             BILoggerFactory.getLogger(DialectCreatorImpl.class).error(e.getMessage(), e);
