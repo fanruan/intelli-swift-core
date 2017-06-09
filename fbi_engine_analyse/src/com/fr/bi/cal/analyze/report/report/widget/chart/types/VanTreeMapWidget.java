@@ -160,7 +160,7 @@ public class VanTreeMapWidget extends VanChartWidget{
     }
 
     protected String getTooltipIdentifier(){
-        return NAME + SERIES + VALUE;
+        return NAME + SERIES + VALUE + PERCENT;
     }
 
     protected String categoryLabelKey() {
