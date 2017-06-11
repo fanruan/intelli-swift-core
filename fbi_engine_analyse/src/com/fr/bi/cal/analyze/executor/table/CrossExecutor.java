@@ -193,7 +193,7 @@ public class CrossExecutor extends AbstractTableWidgetExecutor<NewCrossRoot> {
             for (int i = 0; i < lengthWithSum; i++) {
                 generateTargetTitleWithSum(usedSumTarget, "", pagedIterator, rowIdx, columnIdx, style);
             }
-            if(checkIfGenerateTitleSumCells(temp)) {
+            if(checkIfGenerateTitleSumCells(temp) && temp.getParent().getChildLength() != 1) {
                 generateTargetTitleWithSum(usedSumTarget, Inter.getLocText("BI-Summary_Values") + ":", pagedIterator, rowIdx, columnIdx, sumStyle);
             }
             temp = (CrossHeader) temp.getSibling();
