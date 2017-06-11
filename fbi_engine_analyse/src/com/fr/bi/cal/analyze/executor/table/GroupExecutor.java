@@ -96,7 +96,6 @@ public class GroupExecutor extends AbstractTableWidgetExecutor<Node> {
      * @throws Exception
      */
     public static void generateTitle(TableWidget widget, BIDimension[] usedDimensions, BISummaryTarget[] usedSumTarget, StreamPagedIterator pagedIterator) throws Exception {
-
         Style style = BITableStyle.getInstance().getTitleDimensionCellStyle(0);
         if (widget.isOrder() != 0) {
             CBCell cell = ExecutorUtils.createCell(Inter.getLocText("BI-Number_Index"), 0, 1, 0, 1, style);
@@ -138,7 +137,6 @@ public class GroupExecutor extends AbstractTableWidgetExecutor<Node> {
      * @param rowIdx        ComplexGroupExecutor复用时需要的参数
      */
     public static void generateCells(Node n, TableWidget widget, BIDimension[] rowDimensions, TableCellIterator iter, FinalInt start, FinalInt rowIdx) {
-
         while (n.getFirstChild() != null) {
             n = n.getFirstChild();
         }
@@ -162,22 +160,13 @@ public class GroupExecutor extends AbstractTableWidgetExecutor<Node> {
         }
     }
 
-    private static boolean checkIfGenerateSumCell(Node temp) {
-        //isLastSum 是否是最后一行汇总行
-        boolean isLastSum = temp.getSibling() == null;
-        //判断空值 比较当前节点和下一个兄弟节点是否有同一个父亲节点
-        boolean needSumCell = temp.getParent() != null && temp.getSibling() != null && temp.getSibling().getParent() != null && (temp.getParent() != temp.getSibling().getParent());
-        return isLastSum || needSumCell;
-    }
-
     private static void generateSumCells(Node temp, TableWidget widget, BIDimension[] rowDimensions, StreamPagedIterator pagedIterator, FinalInt rowIdx, int columnIdx) {
         //isLastSum 是否是最后一行会总行
-        boolean isLastSum = temp.getParent() != null && temp.getSibling() == null;
         if ((widget.getViewTargets().length != 0) && checkIfGenerateSumCell(temp)) {
             if (temp.getParent().getChildLength() != 1) {
                 Style style = BITableStyle.getInstance().getYSumStringCellStyle();
                 rowIdx.value++;
-                if (widget.isOrder() == 1 && isLastSum) {
+                if (widget.isOrder() == 1 && temp.getSibling() == null) {
                     CBCell cell = ExecutorUtils.createCell(Inter.getLocText("BI-Summary_Values"), rowIdx.value, 1, 0, 1, style);
                     pagedIterator.addCell(cell);
                 }
@@ -237,41 +226,8 @@ public class GroupExecutor extends AbstractTableWidgetExecutor<Node> {
         }
     }
 
-    //    static boolean judgeNode(Node node, BITarget[] sumColumn) {
-    //        return (node.needSummary()) && sumColumn.length > 0;
-    //    }
-    //
-    //    static int dealWithExpanSumNode(Node node, NodeExpander expander, CBCell[][] cbcells, int row, int column, BIDimension[] rowColumn, BITarget[] sumColumn, TargetGettingKey[] keys,
-    //                                    final ArrayList<String> indexList, int total, int hasNumber, int tempRow, BIComplexExecutData rowData, DetailChartSetting chartSetting) {
-    //        CBCell cell = null;
-    //        int rowLength = rowColumn.length;
-    //        if (chartSetting.showRowTotal() && judgeNode(node, sumColumn)) {
-    //            cell = new CBCell(Inter.getLocText("BI-Summary_Summary"));
-    //            cell.setRow(tempRow);
-    //            cell.setColumn(column == 0 ? 0 : (column + hasNumber));
-    //            cell.setRowSpan(1);
-    //            int noneChildSpan = rowData.getNoneChildSpan(column, rowLength);
-    //            cell.setColumnSpan(column == 0 ? (noneChildSpan + hasNumber) : noneChildSpan);
-    //            if (column > 0 && hasNumber == 1) {
-    //                createSummaryCellElement(cbcells, tempRow);
-    //            }
-    //            cell.setStyle(BITableStyle.getInstance().getYSumStringCellStyle(total));
-    //            cell.setCellGUIAttr(BITableStyle.getInstance().getCellAttr());
-    //            List<CBCell> cellList = new ArrayList<CBCell>();
-    //            cellList.add(cell);
-    //            CBBoxElement cbox = new CBBoxElement(cellList);
-    //            cbox.setName(rowColumn[column].getValue());
-    //            cbox.setType(CellConstant.CBCELL.SUMARYNAME);
-    //            cell.setBoxElement(cbox);
-    //            cbox.setDimensionJSON(getDimensionJSONString(rowColumn, column - 1, node));
-    //            cbcells[cell.getColumn()][cell.getRow()] = cell;
-    //            dealWithExpandNodeMetrics(node, cbcells, rowColumn, sumColumn, keys, total, tempRow, chartSetting);
-    //        }
-    //        return tempRow;
-    //    }
     @Override
     public Node getCubeNode() throws Exception {
-
         if (session == null) {
             return null;
         }
@@ -295,13 +251,11 @@ public class GroupExecutor extends AbstractTableWidgetExecutor<Node> {
 
     @Override
     public JSONObject createJSONObject() throws Exception {
-
         return getCubeNode().toJSONObject(usedDimensions, widget.getTargetsKey(), -1);
     }
 
     @Override
     public List<MetricGroupInfo> getLinkedWidgetFilterGVIList() throws Exception {
-
         if (session == null) {
             return null;
         }
@@ -323,7 +277,6 @@ public class GroupExecutor extends AbstractTableWidgetExecutor<Node> {
     }
 
     public Node getStopOnRowNode(Object[] stopRow) throws Exception {
-
         if (session == null) {
             return null;
         }

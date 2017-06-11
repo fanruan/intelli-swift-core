@@ -30,6 +30,16 @@ public abstract class AbstractTableWidgetExecutor<T> extends BIAbstractExecutor<
 //        this.expander = CrossExpander.ALL_EXPANDER;
     }
 
+    static boolean checkIfGenerateSumCell(Node temp) {
+        //到根节点停止
+        boolean isNotRoot = temp.getParent() != null;
+        //isLastSum 是否是最后一行汇总行
+        boolean isLastSum = temp.getSibling() == null;
+        //判断空值 比较当前节点和下一个兄弟节点是否有同一个父亲节点
+        boolean needSumCell = isNotRoot && temp.getSibling() != null && temp.getSibling().getParent() != null && (temp.getParent() != temp.getSibling().getParent());
+        return isNotRoot && (isLastSum || needSumCell);
+    }
+
     @Override
     public Rectangle getSouthEastRectangle() {
         return null;
