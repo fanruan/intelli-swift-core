@@ -35,8 +35,8 @@ public class BITableCellFormatHelper {
             return text + tail;
         } catch (NumberFormatException e) {
             BILoggerFactory.getLogger(BITableCellFormatHelper.class).error(e.getMessage(), e);
-            return text;
         }
+        return text;
     }
 
     private static String parseNumByFormat(String format, float value) {
