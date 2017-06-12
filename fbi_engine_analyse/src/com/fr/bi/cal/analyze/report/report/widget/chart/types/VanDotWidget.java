@@ -305,7 +305,7 @@ public class VanDotWidget extends VanCartesianWidget{
                 double x = dimensions.isNull(1) ? 0 : dimensions.optDouble(1);
                 double value = (dimensions.length() > 2 && !dimensions.isNull(2)) ? dimensions.optDouble(2) : 0;
 
-                JSONObject point = JSONObject.create().put("x", x/xScale).put("y", y/yScale).put("size", value/sizeScale)
+                JSONObject point = JSONObject.create().put("x", checkInfinity(x/xScale)).put("y", checkInfinity(y/yScale)).put("size", checkInfinity(value/sizeScale))
                         .put("description", obj.optJSONArray("description")).put("longDateDescription", obj.optJSONArray("longDateDescription"));
 
                 if(noSeries) {
@@ -352,7 +352,7 @@ public class VanDotWidget extends VanCartesianWidget{
             double x = dimensions.isNull(1) ? 0 : dimensions.optDouble(1);
             double value = (dimensions.length() > 2 && !dimensions.isNull(2)) ? dimensions.optDouble(2) : 0;
 
-            JSONObject point = JSONObject.create().put("x", x).put("y", y).put("size", value);
+            JSONObject point = JSONObject.create().put("x", checkInfinity(x)).put("y", checkInfinity(y)).put("size", checkInfinity(value));
 
             JSONObject ser = JSONObject.create().put("data", JSONArray.create().put(point))
                     .put("name", obj.optString("n")).put("targetIDs", new JSONArray(ids));

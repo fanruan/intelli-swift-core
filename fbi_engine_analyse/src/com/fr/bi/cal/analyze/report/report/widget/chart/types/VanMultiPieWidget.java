@@ -53,7 +53,7 @@ public class VanMultiPieWidget extends VanPieWidget{
         } else {
             JSONArray targetValues = originData.optJSONArray("s");
             double y = targetValues.isNull(0) ? 0 : targetValues.getDouble(0) / scale;
-            data = JSONArray.create().put(JSONObject.create().put("value", y));
+            data = JSONArray.create().put(JSONObject.create().put("value", checkInfinity(y)));
         }
 
         series.put(JSONObject.create().put("data", data).put("name", this.getDimensionNameByID(targetIDs[0]))
@@ -77,7 +77,7 @@ public class VanMultiPieWidget extends VanPieWidget{
             double value = s.isNull(0) ? 0 : s.getDouble(0);
             String name =  item.optString("n");
             String formattedName = this.formatDimension(categoryDim, name);
-            JSONObject datum = JSONObject.create().put("name", formattedName).put("value", value/scale).put(LONG_DATE, name);
+            JSONObject datum = JSONObject.create().put("name", formattedName).put("value", checkInfinity(value/scale)).put(LONG_DATE, name);
             if(item.has("c")){
                 datum.put("children", this.createChildren(item, scale, level + 1));
             }
