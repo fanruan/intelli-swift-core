@@ -1,6 +1,5 @@
 package com.fr.bi.cal.analyze.report.report.widget.chart.types;
 
-import com.fr.json.JSONArray;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
 
@@ -13,10 +12,8 @@ public class VanBarWidget extends VanColumnWidget{
         return true;
     }
 
-    protected JSONArray parseCategoryAxis(JSONObject settings) throws JSONException {
-        JSONArray array = super.parseCategoryAxis(settings);
-        array.optJSONObject(0).put("reversed", true);
-        return array;
+    protected boolean cateAxisReversed() {
+        return true;
     }
 
     protected JSONObject parseLeftValueAxis(JSONObject settings) throws JSONException {
