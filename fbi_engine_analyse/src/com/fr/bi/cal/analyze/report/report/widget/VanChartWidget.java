@@ -662,15 +662,13 @@ public abstract class VanChartWidget extends TableWidget {
 
             JSONObject formatter = JSONObject.create();
 
-            formatter.put("identifier", this.getTooltipIdentifier()).put(this.tooltipValueKey(), this.tooltipValueFormat(this.getSerBITarget(ser)));
+            formatter.put("identifier", this.getTooltipIdentifier())
+                    .put("valueFormat", this.tooltipValueFormat(this.getSerBITarget(ser)))
+                    .put("percentFormat", "function(){return BI.contentFormat(arguments[0], \"#.##%\")}")
+                    .put("arrivalRateFormat", "function(){return BI.contentFormat(arguments[0], \"#.##%\")}");
 
             ser.put("tooltip", new JSONObject(tooltip.toString()).put("formatter", formatter));
         }
-    }
-
-    //百分比堆积的图，所谓的值，是百分比
-    protected String tooltipValueKey(){
-        return "valueFormat";
     }
 
     protected String getTooltipIdentifier() {
@@ -751,7 +749,7 @@ public abstract class VanChartWidget extends TableWidget {
                 double y = (isNull ? 0 : s.getDouble(0)) / numberScale;
                 String formattedCategory = this.formatDimension(category, x);
                 data.put(
-                        JSONObject.create().put(categoryKey, formattedCategory).put(valueKey, isNull ? "-" : y).put(LONG_DATE, x)
+                        JSONObject.create().put(categoryKey, formattedCategory).put(valueKey, isNull ? "-" : checkInfinity(y)).put(LONG_DATE, x)
                 );
                 valueList.add(y);
             }
@@ -768,6 +766,10 @@ public abstract class VanChartWidget extends TableWidget {
         this.idValueMap.put(targetIDs[0], valueList);
 
         return series;
+    }
+
+    protected double checkInfinity(double y){
+        return (y == Double.POSITIVE_INFINITY || y == Double.NEGATIVE_INFINITY) ? 0 : y;
     }
 
     protected JSONArray createSeriesWithChildren(JSONObject originData) throws Exception {
@@ -796,14 +798,14 @@ public abstract class VanChartWidget extends TableWidget {
                     double y = targetValues.isNull(i) ? 0 : targetValues.getDouble(i) / numberScale;
                     String formattedCategory = this.formatDimension(category, x);
                     data.put(
-                            JSONObject.create().put(categoryKey, formattedCategory).put(valueKey, targetValues.isNull(i) ? "-" : y).put(LONG_DATE, ComparatorUtils.equals(formattedCategory, x) ? StringUtils.EMPTY : x)
+                            JSONObject.create().put(categoryKey, formattedCategory).put(valueKey, targetValues.isNull(i) ? "-" : checkInfinity(y)).put(LONG_DATE, ComparatorUtils.equals(formattedCategory, x) ? StringUtils.EMPTY : x)
                     );
                     valueList.add(y);
                 }
             } else {//没有分类，只有指标。会过来一个汇总值，没有child
                 JSONArray targetValues = originData.optJSONArray("s");
                 double y = targetValues.isNull(i) ? 0 : targetValues.getDouble(i) / numberScale;
-                data.put(JSONObject.create().put(valueKey, y).put(categoryKey, StringUtils.EMPTY));
+                data.put(JSONObject.create().put(valueKey, checkInfinity(y)).put(categoryKey, StringUtils.EMPTY));
                 valueList.add(y);
             }
             JSONObject ser = JSONObject.create().put("data", data).put("name", getDimensionNameByID(id))
@@ -839,7 +841,7 @@ public abstract class VanChartWidget extends TableWidget {
                     JSONArray targetValues = lObj.getJSONArray("s");
                     double y = targetValues.isNull(i) ? 0 : targetValues.getDouble(i) / numberScale;
 
-                    JSONObject datum = JSONObject.create().put(categoryKey, StringUtils.EMPTY).put(valueKey, targetValues.isNull(i) ? "-" : y);
+                    JSONObject datum = JSONObject.create().put(categoryKey, StringUtils.EMPTY).put(valueKey, targetValues.isNull(i) ? "-" : checkInfinity(y));
 
                     JSONObject ser = JSONObject.create().put("data", JSONArray.create().put(datum)).put("name", getDimensionNameByID(id))
                             .put("type", type).put("yAxis", yAxis)

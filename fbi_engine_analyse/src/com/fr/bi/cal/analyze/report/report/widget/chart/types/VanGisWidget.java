@@ -75,7 +75,7 @@ public class VanGisWidget extends VanChartWidget{
                 if(tmp.length == 2 && StableUtils.string2Number(tmp[0]) != null){
                     JSONArray s = lObj.getJSONArray("s");
                     double value = s.isNull(i) ? 0 : s.getDouble(i);
-                    JSONObject d = JSONObject.create().put("lnglat", tmp).put("value", value / scale);
+                    JSONObject d = JSONObject.create().put("lnglat", tmp).put("value", checkInfinity(value / scale));
                     JSONArray c = lObj.optJSONArray("c");
                     if(c != null && c.length() > 0){
                         d.put("name", c.optJSONObject(0).optString("n"));
