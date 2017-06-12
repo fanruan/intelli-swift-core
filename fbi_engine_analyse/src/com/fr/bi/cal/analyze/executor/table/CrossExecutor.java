@@ -260,7 +260,7 @@ public class CrossExecutor extends AbstractTableWidgetExecutor<NewCrossRoot> {
                 crossNodes[i] = (CrossHeader) crossNodes[i].getSibling();
             }
             rowIdx.value++;
-            generateRowSumCells(tempFirstNode, widget, pagedIterator, rowIdx, rowDimensions.length - 1, maxDimLen);
+            generateRowSumCells(tempFirstNode, widget, pagedIterator, rowIdx, rowDimensions.length - 1 + widget.isOrder(), maxDimLen);
         }
     }
 
@@ -272,7 +272,7 @@ public class CrossExecutor extends AbstractTableWidgetExecutor<NewCrossRoot> {
                     CBCell cell = ExecutorUtils.createCell(Inter.getLocText("BI-Summary_Values"), rowIdx.value, 1, 0, 1, style);
                     pagedIterator.addCell(cell);
                 }
-                CBCell cell = ExecutorUtils.createCell(Inter.getLocText("BI-Summary_Values"), rowIdx.value, 1, columnIdx + widget.isOrder(), maxColumnDimensionsLength- columnIdx, style);
+                CBCell cell = ExecutorUtils.createCell(Inter.getLocText("BI-Summary_Values"), rowIdx.value, 1, columnIdx, maxColumnDimensionsLength- columnIdx + widget.isOrder(), style);
                 pagedIterator.addCell(cell);
                 FinalInt sumIdx = new FinalInt();
                 sumIdx.value = maxColumnDimensionsLength + widget.isOrder();
