@@ -337,32 +337,30 @@ public class CrossExecutor extends AbstractTableWidgetExecutor<NewCrossRoot> {
                 generateTopChildren(widget, temp.getTopChild(i), pagedIterator, rowIdx, columnIdx, titleRowSpan, isSum);
             }
         } else {
+            Style style = Style.getInstance();
             for (TargetGettingKey key : widget.getTargetsKey()) {
                 Object v = temp.getSummaryValue(key);
                 boolean isPercent = widget.getChartSetting().getNumberLevelByTargetId(key.getTargetName()) == BIReportConstant.TARGET_STYLE.NUM_LEVEL.PERCENT;
-                Style style;
-                if (!isSum) {
                     style = BITableStyle.getInstance().getNumberCellStyle(v, (rowIdx - titleRowSpan + 1) % 2 == 1, isPercent);
-                } else {
-                    style = BITableStyle.getInstance().getNumberCellStyle(v, rowIdx % 2 == 1, isPercent);
-                }
                 CBCell cell = ExecutorUtils.createCell(v, rowIdx, 1, columnIdx.value, 1, style);
                 pagedIterator.addCell(cell);
                 columnIdx.value++;
-                generateColumnSumCell(temp, widget, pagedIterator, key, rowIdx, columnIdx, style);
             }
+            generateColumnSumCell(temp, widget, pagedIterator, widget.getTargetsKey(), rowIdx, columnIdx, style);
         }
     }
 
-    private static void generateColumnSumCell(CrossNode temp, TableWidget widget, StreamPagedIterator pagedIterator, TargetGettingKey key, int rowIdx, FinalInt columnIdx, Style style) {
-        if ((widget.getViewTargets().length != 0) && checkIfGenerateColumnSumCell(temp)) {
+    private static void generateColumnSumCell(CrossNode temp, TableWidget widget, StreamPagedIterator pagedIterator, TargetGettingKey[] keys, int rowIdx, FinalInt columnIdx, Style style) {
+        if (widget.getViewTargets().length != 0 && checkIfGenerateColumnSumCell(temp)) {
             if (temp.getTopParent().getTopChildLength() != 1) {
-                Object data = temp.getTopParent().getSummaryValue(key);
-                CBCell cell = ExecutorUtils.createCell(data, rowIdx, 1, columnIdx.value++, 1, style);
-                pagedIterator.addCell(cell);
+                for(TargetGettingKey key : keys){
+                    Object data = temp.getTopParent().getSummaryValue(key);
+                    CBCell cell = ExecutorUtils.createCell(data, rowIdx, 1, columnIdx.value++, 1, style);
+                    pagedIterator.addCell(cell);
+                }
             }
             CrossNode parent = temp.getTopParent();
-            generateColumnSumCell(parent, widget, pagedIterator, key, rowIdx, columnIdx, style);
+            generateColumnSumCell(parent, widget, pagedIterator, keys, rowIdx, columnIdx, style);
         }
     }
 

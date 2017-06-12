@@ -2,6 +2,7 @@ package com.fr.bi.cal.analyze.executor.table;
 
 import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.base.Style;
+import com.fr.bi.base.FinalInt;
 import com.fr.bi.cal.analyze.cal.index.loader.CubeIndexLoader;
 import com.fr.bi.cal.analyze.cal.result.BIComplexExecutData;
 import com.fr.bi.cal.analyze.cal.result.ComplexExpander;
@@ -87,22 +88,24 @@ public class ComplexHorGroupExecutor extends AbstractTableWidgetExecutor {
         }
         int colDimIdx = 0;
         int firstColumnDimLen = rowData.getDimensionArray(0).length;
+        //一行一行的生成单元格，按列表头区域维度最多的个数来确定行数
         while (colDimIdx < maxRowDimLen) {
-            int columnIdx = widget.isOrder();
+            FinalInt columnIdx = new FinalInt();
+            columnIdx.value += widget.isOrder();
             //列表头中第一个维度的维度名显示在行的开头
             if (firstColumnDimLen > colDimIdx) {
                 int rowSpan = firstColumnDimLen - 1 == colDimIdx ? maxRowDimLen - colDimIdx : 1;
                 CBCell cell = ExecutorUtils.createCell(rowData.getDimensionArray(0)[colDimIdx].getText(), colDimIdx,
-                        rowSpan, columnIdx, 1, style);
+                        rowSpan, columnIdx.value, 1, style);
                 pagedIterator.addCell(cell);
             }
-            columnIdx++;
+            columnIdx.value++;
             generateDimCell(nodes, pagedIterator, style, colDimIdx, columnIdx, maxRowDimLen);
             colDimIdx++;
         }
     }
 
-    private void generateDimCell(Node[] nodes, StreamPagedIterator pagedIterator, Style style, int colDimIdx, int columnIdx, int maxRowDimLen) {
+    private void generateDimCell(Node[] nodes, StreamPagedIterator pagedIterator, Style style, int colDimIdx, FinalInt columnIdx, int maxRowDimLen) {
         for (int i = 0, j = rowData.getDimensionArrayLength(); i < j; i++) {
             BIDimension[] dimensions = rowData.getDimensionArray(i);
             //列表头不同区域中的维度个数可能不同
@@ -116,12 +119,15 @@ public class ComplexHorGroupExecutor extends AbstractTableWidgetExecutor {
                     if (dim.getGroup().getType() == BIReportConstant.GROUP.YMD && GeneralUtils.string2Number(v.toString()) != null) {
                         v = DateUtils.DATEFORMAT2.format(new Date(GeneralUtils.string2Number(v.toString()).longValue()));
                     }
-                    int rowSpan = (dimensions.length == colDimIdx + 1) ? maxRowDimLen - colDimIdx : 1;
-                    CBCell dimCell = ExecutorUtils.createCell(v, colDimIdx, rowSpan, columnIdx, temp.getTotalLength(), style);
+                    int rowSpan = (dimensions.length == colDimIdx + 1) ? (maxRowDimLen - colDimIdx) : temp.getDeep();
+                    CBCell dimCell = ExecutorUtils.createCell(v, colDimIdx, rowSpan, columnIdx.value, temp.getTotalLengthWithSummary(), style);
                     pagedIterator.addCell(dimCell);
-                    columnIdx += temp.getTotalLength();
+                    columnIdx.value += temp.getTotalLengthWithSummary();
+                    HorGroupExecutor.generateTitleSumCells(temp, pagedIterator, colDimIdx, columnIdx, rowSpan);
                     temp = temp.getSibling();
                 }
+            } else {
+                columnIdx.value += nodes[i].getParent().getTotalLengthWithSummary();
             }
         }
     }
@@ -136,7 +142,8 @@ public class ComplexHorGroupExecutor extends AbstractTableWidgetExecutor {
         }
 
         for (int i = 0; i < usedSumTarget.length; i++) {
-            int columnIdx = widget.isOrder() + 1;
+            FinalInt columnIdx = new FinalInt();
+            columnIdx.value += widget.isOrder() + 1;
             Style headStyle = BITableStyle.getInstance().getDimensionCellStyle(false, (i + 1) % 2 == 1);
             if (widget.isOrder() == 1) {
                 CBCell orderCell = ExecutorUtils.createCell(i + 1, rowIdx + i, 1, 0, 1, headStyle);
@@ -151,8 +158,9 @@ public class ComplexHorGroupExecutor extends AbstractTableWidgetExecutor {
                     Object data = temp.getSummaryValue(keys[i]);
                     boolean isPercent = widget.getChartSetting().getNumberLevelByTargetId(keys[i].getTargetName()) == BIReportConstant.TARGET_STYLE.NUM_LEVEL.PERCENT;
                     Style style = BITableStyle.getInstance().getNumberCellStyle(data, (i + 1) % 2 == 1, isPercent);
-                    CBCell cell = ExecutorUtils.createCell(data, rowIdx + i, 1, columnIdx++, 1, style);
+                    CBCell cell = ExecutorUtils.createCell(data, rowIdx + i, 1, columnIdx.value++, 1, style);
                     pagedIterator.addCell(cell);
+                    HorGroupExecutor.generateTargetSumCell(temp, widget, keys[i], pagedIterator, rowIdx + i, columnIdx, style);
                     temp = temp.getSibling();
                 }
             }
