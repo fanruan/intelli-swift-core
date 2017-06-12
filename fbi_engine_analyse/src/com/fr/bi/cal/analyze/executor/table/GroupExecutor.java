@@ -73,7 +73,6 @@ public class GroupExecutor extends AbstractTableWidgetExecutor<Node> {
         new Thread() {
 
             public void run() {
-
                 try {
                     FinalInt start = new FinalInt();
                     generateTitle(widget, usedDimensions, usedSumTarget, iter.getIteratorByPage(start.value), usedDimensions.length);
