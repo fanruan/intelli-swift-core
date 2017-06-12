@@ -111,7 +111,7 @@ public class CrossExecutor extends AbstractTableWidgetExecutor<NewCrossRoot> {
             for (int i = 0; i < rootsLen; i++) {
                 tops[i] = (CrossHeader) tops[i].getFirstChild();
                 //列表头
-                getColDimensionsTitle(widget, colDimension, usedSumTarget, pagedIterator, tops[i], rowIdx.value, columnIdx, style);
+                getColDimensionsTitle(widget, usedSumTarget, pagedIterator, tops[i], rowIdx.value, columnIdx, style);
             }
             rowIdx.value++;
             colDimLen++;
@@ -130,8 +130,7 @@ public class CrossExecutor extends AbstractTableWidgetExecutor<NewCrossRoot> {
         }
     }
 
-    private static void getColDimensionsTitle(TableWidget widget, BIDimension[] colDimension,
-                                              BISummaryTarget[] usedSumTarget, StreamPagedIterator pagedIterator,
+    private static void getColDimensionsTitle(TableWidget widget, BISummaryTarget[] usedSumTarget, StreamPagedIterator pagedIterator,
                                               CrossHeader top, int rowIdx, FinalInt columnIdx, Style style) {
         int targetNum = widget.getViewTargets().length;
 
@@ -193,17 +192,17 @@ public class CrossExecutor extends AbstractTableWidgetExecutor<NewCrossRoot> {
             for (int i = 0; i < lengthWithSum; i++) {
                 generateTargetTitleWithSum(usedSumTarget, "", pagedIterator, rowIdx, columnIdx, style);
             }
-            if(checkIfGenerateTitleSumCells(temp) && temp.getParent().getChildLength() != 1) {
+            if (checkIfGenerateTitleSumCells(temp) && temp.getParent().getChildLength() != 1) {
                 generateTargetTitleWithSum(usedSumTarget, Inter.getLocText("BI-Summary_Values") + ":", pagedIterator, rowIdx, columnIdx, sumStyle);
             }
             temp = (CrossHeader) temp.getSibling();
         }
-        if(usedSumTarget.length != 0) {
+        if (usedSumTarget.length != 0) {
             generateTargetTitleWithSum(usedSumTarget, Inter.getLocText("BI-Summary_Values") + ":", pagedIterator, rowIdx, columnIdx, sumStyle);
         }
     }
 
-    private static void generateTargetTitleWithSum (BISummaryTarget[] usedSumTarget, String text,StreamPagedIterator pagedIterator, int rowIdx, FinalInt columnIdx, Style style) {
+    private static void generateTargetTitleWithSum(BISummaryTarget[] usedSumTarget, String text, StreamPagedIterator pagedIterator, int rowIdx, FinalInt columnIdx, Style style) {
         for (BISummaryTarget anUsedSumTarget : usedSumTarget) {
             CBCell cell = ExecutorUtils.createCell(text + anUsedSumTarget.getText(), rowIdx, 1, columnIdx.value++, 1, style);
             pagedIterator.addCell(cell);
@@ -245,6 +244,7 @@ public class CrossExecutor extends AbstractTableWidgetExecutor<NewCrossRoot> {
                 start.value++;
             }
             StreamPagedIterator pagedIterator = iter.getIteratorByPage(start.value);
+            CrossNode tempFirstNode = null;
             for (int i = 0, j = crossNodes.length; i < j; i++) {
                 CrossNode temp = crossNodes[i].getValue();
                 //第一次出现表头时创建cell
@@ -253,33 +253,35 @@ public class CrossExecutor extends AbstractTableWidgetExecutor<NewCrossRoot> {
                     generateDimensionName(parent, rowDimensions, pagedIterator, dimensionNames, oddEven, rowIdx, columnIdx,
                             widget.isOrder(), maxDimLen);
                 }
-                generateTopChildren(widget, temp, pagedIterator, rowIdx.value, columnIdx, titleRowSpan, false);
-                generateRowSumCells(temp, widget, rowDimensions, pagedIterator, rowIdx, rowDimensions.length - 1);
+                generateTopChildren(widget, temp, pagedIterator, rowIdx.value, columnIdx, titleRowSpan);
+                if(i == 0) {
+                    tempFirstNode = crossNodes[0].getValue();
+                }
                 crossNodes[i] = (CrossHeader) crossNodes[i].getSibling();
             }
             rowIdx.value++;
+            generateRowSumCells(tempFirstNode, widget, pagedIterator, rowIdx, rowDimensions.length - 1, maxDimLen);
         }
     }
 
-    private static void generateRowSumCells(CrossNode temp, TableWidget widget, BIDimension[] rowDimensions, StreamPagedIterator pagedIterator, FinalInt rowIdx, int columnIdx) {
-        //isLastSum 是否是最后一行会总行
+    private static void generateRowSumCells(CrossNode temp, TableWidget widget, StreamPagedIterator pagedIterator, FinalInt rowIdx, int columnIdx,int maxColumnDimensionsLength) {
         if ((widget.getViewTargets().length != 0) && checkIfGenerateRowSumCell(temp)) {
             if (temp.getLeftParent().getLeftChildLength() != 1) {
                 Style style = BITableStyle.getInstance().getYSumStringCellStyle();
-                rowIdx.value++;
                 if (widget.isOrder() == 1 && temp.getBottomSibling() == null) {
                     CBCell cell = ExecutorUtils.createCell(Inter.getLocText("BI-Summary_Values"), rowIdx.value, 1, 0, 1, style);
                     pagedIterator.addCell(cell);
                 }
-                CBCell cell = ExecutorUtils.createCell(Inter.getLocText("BI-Summary_Values"), rowIdx.value, 1, columnIdx + widget.isOrder(), rowDimensions.length - columnIdx, style);
+                CBCell cell = ExecutorUtils.createCell(Inter.getLocText("BI-Summary_Values"), rowIdx.value, 1, columnIdx + widget.isOrder(), maxColumnDimensionsLength- columnIdx, style);
                 pagedIterator.addCell(cell);
                 FinalInt sumIdx = new FinalInt();
-                sumIdx.value = rowDimensions.length + widget.isOrder();
-                generateTopChildren(widget, temp.getLeftParent(), pagedIterator, rowIdx.value, sumIdx, 1, true);
+                sumIdx.value = maxColumnDimensionsLength + widget.isOrder();
+                generateTopChildren(widget, temp.getLeftParent(), pagedIterator, rowIdx.value, sumIdx, 1);
+                rowIdx.value++;
             }
             //开辟新内存，不对temp进行修改
             CrossNode parent = temp.getLeftParent();
-            generateRowSumCells(parent, widget, rowDimensions, pagedIterator, rowIdx, columnIdx - 1);
+            generateRowSumCells(parent, widget, pagedIterator, rowIdx, columnIdx - 1, maxColumnDimensionsLength);
         }
     }
 
@@ -330,18 +332,18 @@ public class CrossExecutor extends AbstractTableWidgetExecutor<NewCrossRoot> {
     }
 
     private static void generateTopChildren(TableWidget widget, CrossNode temp, StreamPagedIterator pagedIterator,
-                                            int rowIdx, FinalInt columnIdx, int titleRowSpan, boolean isSum) {
+                                            int rowIdx, FinalInt columnIdx, int titleRowSpan) {
         if (temp.getTopFirstChild() != null) {
             int topChildrenLen = temp.getTopChildLength();
             for (int i = 0; i < topChildrenLen; i++) {
-                generateTopChildren(widget, temp.getTopChild(i), pagedIterator, rowIdx, columnIdx, titleRowSpan, isSum);
+                generateTopChildren(widget, temp.getTopChild(i), pagedIterator, rowIdx, columnIdx, titleRowSpan);
             }
         } else {
             Style style = Style.getInstance();
             for (TargetGettingKey key : widget.getTargetsKey()) {
                 Object v = temp.getSummaryValue(key);
                 boolean isPercent = widget.getChartSetting().getNumberLevelByTargetId(key.getTargetName()) == BIReportConstant.TARGET_STYLE.NUM_LEVEL.PERCENT;
-                    style = BITableStyle.getInstance().getNumberCellStyle(v, (rowIdx - titleRowSpan + 1) % 2 == 1, isPercent);
+                style = BITableStyle.getInstance().getNumberCellStyle(v, (rowIdx - titleRowSpan + 1) % 2 == 1, isPercent);
                 CBCell cell = ExecutorUtils.createCell(v, rowIdx, 1, columnIdx.value, 1, style);
                 pagedIterator.addCell(cell);
                 columnIdx.value++;
@@ -353,7 +355,7 @@ public class CrossExecutor extends AbstractTableWidgetExecutor<NewCrossRoot> {
     private static void generateColumnSumCell(CrossNode temp, TableWidget widget, StreamPagedIterator pagedIterator, TargetGettingKey[] keys, int rowIdx, FinalInt columnIdx, Style style) {
         if (widget.getViewTargets().length != 0 && checkIfGenerateColumnSumCell(temp)) {
             if (temp.getTopParent().getTopChildLength() != 1) {
-                for(TargetGettingKey key : keys){
+                for (TargetGettingKey key : keys) {
                     Object data = temp.getTopParent().getSummaryValue(key);
                     CBCell cell = ExecutorUtils.createCell(data, rowIdx, 1, columnIdx.value++, 1, style);
                     pagedIterator.addCell(cell);
