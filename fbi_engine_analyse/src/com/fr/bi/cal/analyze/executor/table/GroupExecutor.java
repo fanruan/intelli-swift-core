@@ -160,6 +160,9 @@ public class GroupExecutor extends AbstractTableWidgetExecutor<Node> {
                 generateSumCells(temp, widget, pagedIterator, rowIdx, rowDimLength - 1, maxRowDimensionsLength);
             }
             n = n.getSibling();
+            while (n.getFirstChild() != null) {
+                n = n.getFirstChild();
+            }
         }
     }
 
@@ -216,7 +219,7 @@ public class GroupExecutor extends AbstractTableWidgetExecutor<Node> {
                                          StreamPagedIterator pagedIterator, int rowIdx, int maxRowDimensionsLength) {
         //维度第一次出现即addCell
         int i = rowDimensions.length;
-        Style style = Style.getInstance();
+        Style style;
         while (temp.getParent() != null) {
             BIDimension dim = rowDimensions[--i];
             String data = dim.toString(temp.getData());
@@ -239,11 +242,6 @@ public class GroupExecutor extends AbstractTableWidgetExecutor<Node> {
                 dimensionNames[i] = data;
             }
             temp = temp.getParent();
-        }
-        //父节点为空时，一行的单元格塞不全
-        for (int j = 0; j < i; j++) {
-            CBCell cell = ExecutorUtils.createCell(NONEVALUE, rowIdx, 1, j + widget.isOrder(), 1, style);
-            pagedIterator.addCell(cell);
         }
     }
 
