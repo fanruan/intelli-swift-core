@@ -21,17 +21,21 @@ import java.util.Date;
 public class BITableCellFormatHelper {
     static final String PERCENT_SYMBOL = "%";
     static final int DEFAULT_SCALE = 1;
-    static final String NONEVALUE = "--";
+    static final String NONE_VALUE = "--";
 
     public static String targetValueFormat(JSONObject settings, String text) throws JSONException {
-        if (BIStringUtils.isEmptyString(text) || !StableUtils.isNumber(text)) {
+        if (BIStringUtils.isEmptyString(text)) {
             return text;
         }
-        float value = Float.valueOf(text);
-        value = parseNumByLevel(settings, value);
-        text = parseNumByFormat(decimalFormat(settings), value);
-        String tail = createTailUnit(settings);
-        return text + tail;
+        try {
+            float value = Float.valueOf(text);
+            value = parseNumByLevel(settings, value);
+            text = parseNumByFormat(decimalFormat(settings), value);
+            String tail = createTailUnit(settings);
+            return text + tail;
+        } catch (NumberFormatException e) {
+            return text;
+        }
     }
 
     private static String parseNumByFormat(String format, float value) {
@@ -72,7 +76,7 @@ public class BITableCellFormatHelper {
     }
 
     public static String dateFormat(JSONObject format, int groupType, String text) throws JSONException {
-        if (StringUtils.isBlank(text)||ComparatorUtils.equals(text,NONEVALUE)) {
+        if (StringUtils.isBlank(text)||ComparatorUtils.equals(text, NONE_VALUE)) {
             return text;
         }
         JSONObject dateFormat = format.optJSONObject("dateFormat");
