@@ -2,11 +2,9 @@ package com.fr.bi.cal.analyze.report.report.widget.chart.types;
 
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.stable.constant.BIChartSettingConstant;
-import com.fr.general.ComparatorUtils;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
-import com.fr.stable.StringUtils;
 
 /**
  * Created by eason on 2017/3/22.
@@ -49,11 +47,11 @@ public class VanMultiPieWidget extends VanPieWidget{
 
         JSONArray data;
         if(originData.has("c")){
-            data = this.createChildren(originData, scale, 0);
+            data = this.createChildren(originData, scale, 0, targetIDs[0]);
         } else {
             JSONArray targetValues = originData.optJSONArray("s");
             double y = targetValues.isNull(0) ? 0 : targetValues.getDouble(0) / scale;
-            data = JSONArray.create().put(JSONObject.create().put("value", checkInfinity(y)));
+            data = JSONArray.create().put(JSONObject.create().put("value", numberFormat(targetIDs[0],y)));
         }
 
         series.put(JSONObject.create().put("data", data).put("name", this.getDimensionNameByID(targetIDs[0]))
@@ -62,7 +60,7 @@ public class VanMultiPieWidget extends VanPieWidget{
         return series;
     }
 
-    private JSONArray createChildren(JSONObject originData, double scale, int level) throws JSONException {
+    private JSONArray createChildren(JSONObject originData, double scale, int level, String id) throws JSONException {
         JSONArray children = JSONArray.create();
 
         if(!originData.has("c")){
@@ -77,9 +75,9 @@ public class VanMultiPieWidget extends VanPieWidget{
             double value = s.isNull(0) ? 0 : s.getDouble(0);
             String name =  item.optString("n");
             String formattedName = this.formatDimension(categoryDim, name);
-            JSONObject datum = JSONObject.create().put("name", formattedName).put("value", checkInfinity(value/scale)).put(LONG_DATE, name);
+            JSONObject datum = JSONObject.create().put("name", formattedName).put("value", numberFormat(id,value/scale)).put(LONG_DATE, name);
             if(item.has("c")){
-                datum.put("children", this.createChildren(item, scale, level + 1));
+                datum.put("children", this.createChildren(item, scale, level + 1, id));
             }
             children.put(datum);
         }
