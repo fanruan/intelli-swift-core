@@ -111,7 +111,7 @@ public class VanTreeMapWidget extends VanChartWidget{
 
                 sum += value;
 
-                children.put(JSONObject.create().put("name", formattedName).put(LONG_DATE, name).put("value", value));
+                children.put(JSONObject.create().put("name", formattedName).put(LONG_DATE, name).put("value", checkInfinity(value)));
             }
 
             String name = tObj.getString("n"), formattedName = this.formatDimension(seriesDim, name);
@@ -138,9 +138,9 @@ public class VanTreeMapWidget extends VanChartWidget{
 
             if(hasFirstLevel) {
                 sum += value;
-                children.put(JSONObject.create().put("name", formattedName).put(LONG_DATE, name).put("value", value));
+                children.put(JSONObject.create().put("name", formattedName).put(LONG_DATE, name).put("value", checkInfinity(value)));
             } else if(hasSecondLevel){
-                data.put(JSONObject.create().put("name", formattedName).put(LONG_DATE, name).put("value", value));
+                data.put(JSONObject.create().put("name", formattedName).put(LONG_DATE, name).put("value", checkInfinity(value)));
             }
         }
 
@@ -152,7 +152,7 @@ public class VanTreeMapWidget extends VanChartWidget{
     private void createTargetSeries(JSONObject originData, double scale, JSONArray data) throws JSONException{
         JSONArray targetValues = originData.optJSONArray("s");
         double y = targetValues.isNull(0) ? 0 : targetValues.getDouble(0) / scale;
-        data.put(JSONObject.create().put("value", y));
+        data.put(JSONObject.create().put("value", checkInfinity(y)));
     }
 
     public String getSeriesType(String dimensionID){

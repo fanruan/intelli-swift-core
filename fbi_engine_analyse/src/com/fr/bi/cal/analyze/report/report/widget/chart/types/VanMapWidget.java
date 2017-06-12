@@ -142,7 +142,7 @@ public class VanMapWidget extends VanChartWidget{
                 double value = s.isNull(i) ? 0 : s.getDouble(i);
                 String areaName =  item.optString("n");
 
-                JSONObject datum = JSONObject.create().put("name", areaName).put(key, value / scale);
+                JSONObject datum = JSONObject.create().put("name", areaName).put(key, checkInfinity(value / scale));
 
                 if(item.has("c")){
                     JSONObject drillDown = JSONObject.create();
