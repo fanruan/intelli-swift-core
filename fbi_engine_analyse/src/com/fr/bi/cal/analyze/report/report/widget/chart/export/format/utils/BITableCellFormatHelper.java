@@ -24,7 +24,7 @@ public class BITableCellFormatHelper {
     static final String NONE_VALUE = "--";
 
     public static String targetValueFormat(JSONObject settings, String text) throws JSONException {
-        if (BIStringUtils.isEmptyString(text)) {
+        if (BIStringUtils.isEmptyString(text) || StableUtils.isNumber(text)) {
             return text;
         }
         try {
@@ -34,6 +34,7 @@ public class BITableCellFormatHelper {
             String tail = createTailUnit(settings);
             return text + tail;
         } catch (NumberFormatException e) {
+            BILoggerFactory.getLogger(BITableCellFormatHelper.class).error(e.getMessage(), e);
             return text;
         }
     }
