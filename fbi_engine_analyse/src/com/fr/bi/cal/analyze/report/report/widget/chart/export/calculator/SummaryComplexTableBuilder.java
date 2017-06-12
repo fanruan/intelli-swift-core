@@ -91,7 +91,7 @@ public class SummaryComplexTableBuilder extends TableAbstractDataBuilder {
         }
         //无列表头 有指标 当作多个普通分组表
         if (isRowRegionExist() && !isColRegionExist() && targetIds.size() > 0) {
-            createTableHeader();
+            createTableHeader4MultiGroups();
             createMultiGroupItems();
             setOtherAttrs();
             return;
@@ -100,6 +100,34 @@ public class SummaryComplexTableBuilder extends TableAbstractDataBuilder {
         createTableHeader();
         createTableItems();
         setOtherAttrs();
+    }
+
+    private void createTableHeader4MultiGroups() throws Exception {
+        createTableHeader();
+        complementHeaders();
+    }
+
+    //补齐header的长度
+    private void complementHeaders() throws JSONException {
+        int rowLength = getLargestLengthOfRowRegions();
+        int colLength = getLargestLengthOfColRegions();
+        ITableHeader lastDimHeader = headers.size() > dimIds.size() ? headers.get(dimIds.size() - 1) : new BITableHeader();
+        ITableHeader lastCrossDimHeader = crossDimIds.size() >= crossHeaders.size() && crossDimIds.size() > 0 ? crossHeaders.get(crossDimIds.size() - 1) : new BITableHeader();
+        int count = 0;
+        while (count < rowLength - dimIds.size()) {
+            ITableHeader header = lastDimHeader;
+            if (null != header) {
+                this.headers.add(dimIds.size() + count, header);
+            }
+            count++;
+        }
+        count = 0;
+        while (count < colLength - crossDimIds.size()) {
+            if (null != lastCrossDimHeader) {
+                crossHeaders.add(crossDimIds.size() + count, lastCrossDimHeader);
+            }
+            count++;
+        }
     }
 
     //仅有行表头和指标的情况
@@ -162,27 +190,7 @@ public class SummaryComplexTableBuilder extends TableAbstractDataBuilder {
 
     private void createComplexTableHeader() throws Exception {
         createCrossTableHeader();
-        //补齐header的长度
-        int rowLength = getLargestLengthOfRowRegions();
-        int colLength = getLargestLengthOfColRegions();
-        ITableHeader lastDimHeader = headers.size() > dimIds.size() ? headers.get(dimIds.size() - 1) : new BITableHeader();
-        ITableHeader lastCrossDimHeader = crossDimIds.size() >= crossHeaders.size() ? crossHeaders.get(crossDimIds.size() - 1) : new BITableHeader();
-        int count = 0;
-        while (count < rowLength - dimIds.size()) {
-            ITableHeader header = lastDimHeader;
-            if (null != header) {
-                this.headers.add(dimIds.size() + count, header);
-            }
-            count++;
-        }
-        count = 0;
-        while (count < colLength - crossDimIds.size()) {
-            if (null != lastCrossDimHeader) {
-                crossHeaders.add(crossDimIds.size() + count, lastCrossDimHeader);
-            }
-            count++;
-        }
-
+        complementHeaders();
     }
 
     private int getLargestLengthOfColRegions() throws JSONException {
