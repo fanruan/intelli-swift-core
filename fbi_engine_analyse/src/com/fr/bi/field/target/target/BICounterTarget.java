@@ -1,5 +1,7 @@
 package com.fr.bi.field.target.target;
 
+import com.finebi.cube.common.log.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.conf.field.BIBusinessField;
 import com.finebi.cube.conf.field.BusinessField;
 import com.finebi.cube.conf.table.BusinessTable;
@@ -7,16 +9,25 @@ import com.fr.bi.conf.utils.BIModuleUtils;
 import com.fr.bi.field.target.calculator.sum.CountCalculator;
 import com.fr.bi.stable.data.BIFieldID;
 import com.fr.bi.stable.data.BITableID;
-import com.fr.bi.stable.data.db.IPersistentTable;
-import com.fr.bi.stable.data.db.PersistentField;
+import com.fr.bi.stable.data.db.ICubeFieldSource;
+
+
+import com.fr.bi.stable.data.source.CubeTableSource;
+
 import com.fr.bi.report.result.TargetCalculator;
+
 import com.fr.general.ComparatorUtils;
 import com.fr.json.JSONObject;
 import com.fr.stable.StringUtils;
 
+import java.util.HashSet;
+import java.util.Set;
+
+
 public class BICounterTarget extends BISummaryTarget {
 
     private String distinct_field_name;
+    private static BILogger LOGGER = BILoggerFactory.getLogger(BICounterTarget.class);
 
     /**
      * 将JSON对象转换成java对象
@@ -44,13 +55,29 @@ public class BICounterTarget extends BISummaryTarget {
                 this.distinct_field_name = StringUtils.EMPTY;
                 return;
             }
-            IPersistentTable table = field.getTableBelongTo().getTableSource().getPersistentTable();
-            PersistentField c = table.getField(field.getFieldName());
-            if (c == null) {
+            if (!contain(field)) {
                 this.distinct_field_name = StringUtils.EMPTY;
                 return;
             }
             this.distinct_field_name = field.getFieldName();
+        }
+    }
+
+    private boolean contain(BusinessField field) {
+        if (field != null && field.getTableBelongTo() != null) {
+            CubeTableSource table = field.getTableBelongTo().getTableSource();
+            if (table != null) {
+                Set<ICubeFieldSource> fieldSources = table.getFacetFields(new HashSet<CubeTableSource>());
+                for (ICubeFieldSource fieldSource : fieldSources) {
+                    if (ComparatorUtils.equals(fieldSource.getFieldName(), field.getFieldName())) {
+                        return true;
+                    }
+                }
+                LOGGER.warn("{} doesn't contain field:{}", table.getTableName(), field.getFieldName());
+            }
+            return false;
+        } else {
+            return false;
         }
     }
 
