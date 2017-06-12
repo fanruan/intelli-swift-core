@@ -20,7 +20,7 @@ public abstract class ExternalMap<K, V> implements Map<K, V> {
     public static boolean HYBRID = true;
     private static String dataFolderName = "externalData";
     static private int BUFFER_SIZE = 20000;
-    //    private WriteFile save;
+    //    private WriteFile writeFile;
     private static String file4CountName = "count";
     Comparator comparator;
     private TreeMap<K, V> currentContainer;
