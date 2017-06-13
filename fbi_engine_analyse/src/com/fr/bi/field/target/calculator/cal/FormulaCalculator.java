@@ -57,7 +57,7 @@ public class FormulaCalculator extends CalCalculator {
     public boolean isAllFieldsReady(Set<TargetGettingKey> targetSet) {
         Iterator<String> it = BIFormularUtils.createColumnIndexMap(expression).values().iterator();
         while (it.hasNext()) {
-            Object key = targetMap.get(it.next());
+            Object key = targetMap.get(it.next()).createTargetGettingKey();
             if (key == null) {
                 return false;
             }
