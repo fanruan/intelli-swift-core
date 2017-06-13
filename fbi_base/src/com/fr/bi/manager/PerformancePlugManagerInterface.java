@@ -108,8 +108,16 @@ public interface PerformancePlugManagerInterface {
     long getMaxCubeFileSize();
 
     /**
-     *
+     * 控制单个分析中的node的size，超过这个size就不继续计算，并且会日志记录模板信息。
+     * 默认0，表示不限制
      * @return
      */
     int getMaxStructureSize();
+
+    /**
+     * 控制螺旋分析中单个字段的的明细的行数，超过行数就不继续计算，并且会日志记录模板信息。
+     * 默认0，表示不限制
+     * @return
+     */
+    int getMaxSPADetailSize();
 }
