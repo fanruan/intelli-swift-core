@@ -477,9 +477,8 @@ public abstract class VanChartWidget extends TableWidget {
         return "center";
     }
 
+    //勾选标签没具体配置的时候的默认值
     protected JSONObject defaultDataLabelSetting() throws JSONException {
-
-        //兼容4.0,勾选标签的时候只有值
         return JSONObject.create().put("showCategoryName", false)
                 .put("showSeriesName", false).put("showValue", true).put("showPercentage", false)
                 .put("position", BIChartSettingConstant.DATA_LABEL.POSITION_OUTER).put("showTractionLine", true)
