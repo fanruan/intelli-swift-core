@@ -32,7 +32,7 @@ public abstract class VanCartesianWidget extends VanChartWidget {
     private static final String FALL_COLUMN = "fallColumn";
     private static final String TRANS = "rgba(0,0,0,0)";
 
-    private static final int VERTICAL = 90;
+    protected static final int VERTICAL = 90;
     private static final String IMG_TMP = "function(){return \"<img src = %s>\"}";
 
     protected JSONObject populateDefaultSettings() throws JSONException{
@@ -221,7 +221,8 @@ public abstract class VanCartesianWidget extends VanChartWidget {
             plotOptions.put("curve", true);
         }
 
-        plotOptions.put("connectNulls", settings.optBoolean("nullContinuity"));
+        //没配置，默认true
+        plotOptions.put("connectNulls", !settings.has("nullContinuity") || settings.optBoolean("nullContinuity"));
 
         return plotOptions;
     }
@@ -428,7 +429,7 @@ public abstract class VanCartesianWidget extends VanChartWidget {
         category
                 .put("maxWidth", COMPONENT_MAX_SIZE).put("maxHeight", COMPONENT_MAX_SIZE)
                 .put("type", "category").put("position", "bottom")
-                .put("title", JSONObject.create().put("style", settings.optJSONObject("catTitleStyle")).put("text", enabled ?settings.optString("catTitle") : StringUtils.EMPTY))
+                .put("title", JSONObject.create().put("rotation", cateAxisRotation()).put("style", settings.optJSONObject("catTitleStyle")).put("text", enabled ?settings.optString("catTitle") : StringUtils.EMPTY))
                 .put("showLabel", settings.optBoolean("catShowLabel") && !settings.optBoolean("showDataTable"))
                 .put("labelStyle", labelStyle.optJSONObject("textStyle"))
                 .put("labelRotation", labelStyle.optInt("textDirection"))
@@ -438,6 +439,14 @@ public abstract class VanCartesianWidget extends VanChartWidget {
                 .put("reversed", cateAxisReversed());
 
         return JSONArray.create().put(category);
+    }
+
+    protected double cateAxisRotation() {
+        return 0;
+    }
+
+    protected double valueAxisRotation() {
+        return VERTICAL;
     }
 
     protected boolean cateAxisReversed() {
@@ -469,7 +478,7 @@ public abstract class VanCartesianWidget extends VanChartWidget {
                 .put("title", JSONObject.create()
                         .put("style", settings.optJSONObject("leftYTitleStyle"))
                         .put("text", enabled ? settings.optString("leftYTitle") + axisTitle : axisTitle)
-                        .put("rotation", VERTICAL)
+                        .put("rotation", valueAxisRotation())
                 )
                 .put("showLabel", settings.optBoolean("leftYShowLabel"))
                 .put("formatter", this.tickFormatter(0))
@@ -500,7 +509,7 @@ public abstract class VanCartesianWidget extends VanChartWidget {
                 .put("title", JSONObject.create()
                         .put("style", settings.optJSONObject("rightYTitleStyle"))
                         .put("text", enabled ? settings.optString("rightYTitle") + axisTitle : axisTitle)
-                        .put("rotation", VERTICAL)
+                        .put("rotation", valueAxisRotation())
                 )
                 .put("showLabel", settings.optBoolean("rightYShowLabel"))
                 .put("formatter", this.tickFormatter(1))
@@ -530,7 +539,7 @@ public abstract class VanCartesianWidget extends VanChartWidget {
                 .put("title", JSONObject.create()
                         .put("style", settings.optJSONObject("rightY2TitleStyle"))
                         .put("text", enabled ? settings.optString("rightY2Title") + axisTitle : axisTitle)
-                        .put("rotation", VERTICAL)
+                        .put("rotation", valueAxisRotation())
                 )
                 .put("showLabel", settings.optBoolean("rightY2ShowLabel"))
                 .put("formatter", this.tickFormatter(2))

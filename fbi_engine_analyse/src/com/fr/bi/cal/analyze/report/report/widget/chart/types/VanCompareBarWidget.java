@@ -33,6 +33,14 @@ public class VanCompareBarWidget extends VanCompareColumnWidget{
         return true;
     }
 
+    protected double cateAxisRotation() {
+        return VERTICAL;
+    }
+
+    protected double valueAxisRotation() {
+        return 0;
+    }
+
     //把值轴1的警戒线取负，把值轴2的警戒线放到值轴1里面"
     protected JSONArray parseValueAxis(JSONObject settings) throws JSONException{
         JSONArray axisArray = super.parseValueAxis(settings);
