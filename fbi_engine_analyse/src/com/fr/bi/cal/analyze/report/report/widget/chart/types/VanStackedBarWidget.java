@@ -17,4 +17,12 @@ public class VanStackedBarWidget extends VanStackedColumnWidget{
         return super.parseLeftValueAxis(settings).put("position", "right");
     }
 
+    protected double cateAxisRotation() {
+        return VERTICAL;
+    }
+
+    protected double valueAxisRotation() {
+        return 0;
+    }
+
 }
