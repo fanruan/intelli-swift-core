@@ -78,11 +78,11 @@ public class VanTreeMapWidget extends VanChartWidget{
 
         JSONArray data = JSONArray.create();
         if(originData.has("t") && originData.has("l")){//两个维度、一个指标
-            createTopLeftSeries(originData, scale, data);
+            createTopLeftSeries(originData, scale, data, targetIDs[0]);
         } else if(originData.has("c")){//一个维度、一个指标
-            createChildrenSeries(originData, scale, hasFirstLevel, hasSecondLevel, data);
+            createChildrenSeries(originData, scale, hasFirstLevel, hasSecondLevel, data, targetIDs[0]);
         } else if(originData.has("s")){//一个指标
-            createTargetSeries(originData, scale, data);
+            createTargetSeries(originData, scale, data, targetIDs[0]);
         }
 
         JSONObject sery = JSONObject.create();
@@ -93,7 +93,7 @@ public class VanTreeMapWidget extends VanChartWidget{
                 .put("dimensionIDs", dimensionIDs).put("targetIDs", JSONArray.create().put(targetIDs[0])));
     }
 
-    private void createTopLeftSeries(JSONObject originData, double scale, JSONArray data) throws JSONException{
+    private void createTopLeftSeries(JSONObject originData, double scale, JSONArray data, String id) throws JSONException{
         JSONObject top = originData.getJSONObject("t"), left = originData.getJSONObject("l");
         JSONArray topC = top.getJSONArray("c"), leftC = left.getJSONArray("c");
         BIDimension seriesDim = this.getSeriesDimension(), categoryDim = this.getCategoryDimension();
@@ -111,7 +111,7 @@ public class VanTreeMapWidget extends VanChartWidget{
 
                 sum += value;
 
-                children.put(JSONObject.create().put("name", formattedName).put(LONG_DATE, name).put("value", value));
+                children.put(JSONObject.create().put("name", formattedName).put(LONG_DATE, name).put("value", numberFormat(id, value)));
             }
 
             String name = tObj.getString("n"), formattedName = this.formatDimension(seriesDim, name);
@@ -121,7 +121,7 @@ public class VanTreeMapWidget extends VanChartWidget{
     }
 
     private void createChildrenSeries(JSONObject originData, double scale,
-                                      boolean hasFirstLevel, boolean hasSecondLevel, JSONArray data) throws JSONException{
+                                      boolean hasFirstLevel, boolean hasSecondLevel, JSONArray data, String id) throws JSONException{
         JSONArray childrenC = originData.optJSONArray("c");
 
 
@@ -138,9 +138,9 @@ public class VanTreeMapWidget extends VanChartWidget{
 
             if(hasFirstLevel) {
                 sum += value;
-                children.put(JSONObject.create().put("name", formattedName).put(LONG_DATE, name).put("value", value));
+                children.put(JSONObject.create().put("name", formattedName).put(LONG_DATE, name).put("value", numberFormat(id,value)));
             } else if(hasSecondLevel){
-                data.put(JSONObject.create().put("name", formattedName).put(LONG_DATE, name).put("value", value));
+                data.put(JSONObject.create().put("name", formattedName).put(LONG_DATE, name).put("value", numberFormat(id,value)));
             }
         }
 
@@ -149,10 +149,10 @@ public class VanTreeMapWidget extends VanChartWidget{
         }
     }
 
-    private void createTargetSeries(JSONObject originData, double scale, JSONArray data) throws JSONException{
+    private void createTargetSeries(JSONObject originData, double scale, JSONArray data, String id) throws JSONException{
         JSONArray targetValues = originData.optJSONArray("s");
         double y = targetValues.isNull(0) ? 0 : targetValues.getDouble(0) / scale;
-        data.put(JSONObject.create().put("value", y));
+        data.put(JSONObject.create().put("value", numberFormat(id,y)));
     }
 
     public String getSeriesType(String dimensionID){
@@ -160,7 +160,7 @@ public class VanTreeMapWidget extends VanChartWidget{
     }
 
     protected String getTooltipIdentifier(){
-        return NAME + SERIES + VALUE;
+        return NAME + SERIES + VALUE + PERCENT;
     }
 
     protected String categoryLabelKey() {

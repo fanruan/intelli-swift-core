@@ -4,9 +4,9 @@ package com.fr.bi.field.dimension.filter.general;
 import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.conf.table.BusinessTable;
 import com.fr.bi.stable.gvi.GroupValueIndex;
-import com.fr.bi.stable.report.result.DimensionCalculator;
-import com.fr.bi.stable.report.result.BINode;
-import com.fr.bi.stable.report.result.TargetCalculator;
+import com.fr.bi.report.result.DimensionCalculator;
+import com.fr.bi.report.result.BINode;
+import com.fr.bi.report.result.TargetCalculator;
 
 import java.util.Map;
 

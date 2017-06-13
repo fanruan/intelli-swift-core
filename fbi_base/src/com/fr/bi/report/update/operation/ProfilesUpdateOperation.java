@@ -1,6 +1,8 @@
-package com.fr.bi.stable.report.update.operation;
+package com.fr.bi.report.update.operation;
 
 import com.finebi.cube.common.log.BILoggerFactory;
+import com.fr.bi.report.update.ReportVersionEnum;
+import com.fr.bi.stable.constant.BIChartSettingConstant;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.utils.program.BIJsonUtils;
 import com.fr.bi.stable.utils.program.BIStringUtils;
@@ -62,6 +64,7 @@ public class ProfilesUpdateOperation implements ReportUpdateOperation {
             boolean flag = BIJsonUtils.isKeyValueSet(json.get(s).toString());
             if (flag) {
                 if (ComparatorUtils.equals(s, "widgets")) {
+                 //   json = correctDataLabels(json);
                     json = correctPreviousSrcError(json);
                     json=correctScatterType(json);
                 }
@@ -71,6 +74,50 @@ public class ProfilesUpdateOperation implements ReportUpdateOperation {
             }
         }
         return res;
+    }
+
+    //4.0的图表标签默认设置，和402默认有些不一样，所以在这边写。调整标签位置，灰色雅黑12px。
+    private JSONObject correctDataLabels(JSONObject json) throws JSONException {
+        if(ReportVersionEnum.VERSION_4_0.getVersion().equals(json.optString("version"))) {
+            if (BIJsonUtils.isKeyValueSet(json.getString("widgets"))) {
+                Iterator keys = json.getJSONObject("widgets").keys();
+                while (keys.hasNext()) {
+                    String dimId = keys.next().toString();
+                    JSONObject dimJson = json.getJSONObject("widgets").getJSONObject(dimId);
+                    if(dimJson.has("type") && dimJson.has("settings")){
+                        JSONObject settings = dimJson.optJSONObject("settings");
+                        int type = dimJson.optInt("type");
+
+                        JSONObject dataLabelSettings = JSONObject.create().put("optimizeLabel", true).put("showTractionLine", true)
+                                .put("textStyle", JSONObject.create().put("fontFamily", "Microsoft YaHei").put("fontSize", "12px").put("color", "rgb(178, 178, 178)"));
+
+                        switch (type){
+                            case BIReportConstant.WIDGET.PIE:
+                            case BIReportConstant.WIDGET.DONUT:
+                                dataLabelSettings.put("showCategoryName", false).put("showSeriesName", false)
+                                        .put("showValue", true).put("showPercentage", true)
+                                        .put("position", BIChartSettingConstant.DATA_LABEL.POSITION_OUTER);break;
+                            case BIReportConstant.WIDGET.FORCE_BUBBLE:
+                                dataLabelSettings.put("showCategoryName", true).put("showSeriesName", false)
+                                        .put("showValue", true).put("showPercentage", false);break;
+                            case BIReportConstant.WIDGET.BUBBLE:
+                                dataLabelSettings.put("showCategoryName", false).put("showSeriesName", false)
+                                    .put("showXValue", true).put("showYValue", true).put("showValue", true);break;
+                            case BIReportConstant.WIDGET.SCATTER:
+                                dataLabelSettings.put("showCategoryName", false).put("showSeriesName", false)
+                                        .put("showXValue", true).put("showYValue", true).put("showValue", false);break;
+                            default:
+                                dataLabelSettings.put("showCategoryName", false).put("showSeriesName", false)
+                                        .put("showValue", true).put("showPercentage", false)
+                                        .put("position", BIChartSettingConstant.DATA_LABEL.POSITION_OUTER);break;
+                        }
+
+                        settings.put("dataLabelSetting", dataLabelSettings);
+                    }
+                }
+            }
+        }
+        return json;
     }
 /*
 * 散点气泡图type升级
@@ -129,7 +176,7 @@ public class ProfilesUpdateOperation implements ReportUpdateOperation {
         if (BIJsonUtils.isArray(str)) {
             JSONArray array = new JSONArray(str);
             for (int i = 0; i < array.length(); i++) {
-                array.put(i, recursionListUpdate(array.getString(i)));
+                array.put(i, recursionListUpdate(array.get(i)));
             }
             return array;
         } else {

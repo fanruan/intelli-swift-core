@@ -28,4 +28,8 @@ public class VanDonutWidget extends VanChartWidget {
         return CATEGORY;
     }
 
+    protected String getTooltipIdentifier() {
+        return CATEGORY + SERIES + VALUE + PERCENT;
+    }
+
 }

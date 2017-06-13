@@ -30,7 +30,7 @@ import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.constant.CellConstant;
 import com.fr.bi.stable.gvi.GVIUtils;
 import com.fr.bi.stable.gvi.GroupValueIndex;
-import com.fr.bi.stable.report.result.DimensionCalculator;
+import com.fr.bi.report.result.DimensionCalculator;
 import com.fr.bi.stable.utils.algorithem.BIComparatorUtils;
 import com.fr.bi.util.BIConfUtils;
 import com.fr.general.ComparatorUtils;
@@ -127,7 +127,7 @@ public abstract class AbstractDetailExecutor extends BIAbstractExecutor<JSONObje
             BIDetailTarget t = viewDimension[i];
             Object v = ob[i];
             v = viewDimension[i].createShowValue(v);
-            if(t instanceof BIAbstractDetailTarget) {
+            if(t instanceof BIAbstractDetailTarget &&  v != null) {
                 if (((BIAbstractDetailTarget) t).getGroup().getType() == BIReportConstant.GROUP.YMD && GeneralUtils.string2Number(v.toString()) != null) {
                     v = DateUtils.DATEFORMAT2.format(new Date(GeneralUtils.string2Number(v.toString()).longValue()));
                 }

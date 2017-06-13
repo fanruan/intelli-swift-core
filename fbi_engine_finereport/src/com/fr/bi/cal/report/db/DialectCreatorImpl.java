@@ -18,10 +18,6 @@ public class DialectCreatorImpl extends AbstractDialectCreator {
         if (ComparatorUtils.equals(driver.getDriver(), "sun.jdbc.odbc.JdbcOdbcDriver")) {
             return AdsMysqlOdbcDialect.class;
         }
-        if (ComparatorUtils.equals(driver.getDriver(), "org.apache.hive.jdbc.HiveDriver")) {
-            return HiveDialect.class;
-        }
-
         //return null的话, 在外部还能继续从metadata里处理, 从driver获取和从metadata获取是顺序的关系, 不是同级的.
         //driver里获取不到, 再从metadata里找.
         return null;

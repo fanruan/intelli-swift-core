@@ -48,7 +48,7 @@ public class VanPieWidget extends VanChartWidget{
     }
 
     protected String getTooltipIdentifier(){
-        return SERIES + VALUE;
+        return CATEGORY + SERIES + VALUE + PERCENT;
     }
 
     protected String categoryLabelKey() {
@@ -71,7 +71,7 @@ public class VanPieWidget extends VanChartWidget{
                 String id = targetIDs[i];
                 JSONArray targetValues = originData.optJSONArray("s");
                 double y = targetValues.isNull(i) ? 0 : targetValues.getDouble(i) / numberScale(id);
-                datas.put(JSONObject.create().put("y", y).put("x", getDimensionNameByID(id)));
+                datas.put(JSONObject.create().put("y", numberFormat(id, y)).put("x", getDimensionNameByID(id)));
                 targets.put(id);
             }
 

@@ -100,10 +100,11 @@ public class BIDetailWidget extends AbstractBIWidget {
         if (data != null) {
             String[] array = data.getView();
             List<BIDetailTarget> usedDimensions = new ArrayList<BIDetailTarget>();
-            for (int i = 0; i < array.length; i++) {
-                BIDetailTarget dimension = BITravalUtils.getTargetByName(array[i], dimensions);
-                usedDimensions.add(dimension);
-
+            for (String anArray : array) {
+                BIDetailTarget dimension = BITravalUtils.getTargetByName(anArray, dimensions);
+                if(dimension.isUsed()) {
+                    usedDimensions.add(dimension);
+                }
             }
             dims = usedDimensions.toArray(new BIDetailTarget[usedDimensions.size()]);
         }
@@ -386,9 +387,12 @@ public class BIDetailWidget extends AbstractBIWidget {
         List<JSONObject> dims = new ArrayList<JSONObject>();
         for (BIDetailTarget detailTarget : this.getDimensions()) {
             String dId = detailTarget.getId();
-            int type = detailTarget.createColumnKey().getFieldType();
             String text = detailTarget.getText();
-            JSONObject jo = new JSONObject().put("dId", dId).put("text", text).put("type", type).put("used", detailTarget.isUsed());
+            JSONObject jo = JSONObject.create().put("dId", dId).put("text", text).put("used", detailTarget.isUsed());
+            //计算指标不一定有type
+            if (null!=detailTarget.createColumnKey()){
+                jo.put("type",detailTarget.createColumnKey().getFieldType());
+            }
             dims.add(jo);
         }
         dimAndTar.put(Integer.valueOf(BIReportConstant.REGION.DIMENSION1), dims);

@@ -47,7 +47,7 @@ import com.fr.bi.stable.constant.BIJSONConstant;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.gvi.GVIUtils;
 import com.fr.bi.stable.gvi.GroupValueIndex;
-import com.fr.bi.stable.report.key.TargetGettingKey;
+import com.fr.bi.report.key.TargetGettingKey;
 import com.fr.bi.stable.utils.BITravalUtils;
 import com.fr.general.ComparatorUtils;
 import com.fr.json.JSONArray;
@@ -702,6 +702,7 @@ public class TableWidget extends BISummaryWidget {
         String target = null;
         try {
             if (clicked != null) {
+                Map<String, String> m = new HashMap<String, String>();
                 for (String key : clicked.keySet()) {
                     target = key;
                     JSONArray keyJson = clicked.get(key);
@@ -710,11 +711,21 @@ public class TableWidget extends BISummaryWidget {
                         JSONObject object = keyJson.getJSONObject(i);
                         String click = object.getJSONArray("value").getString(0);
                         String did = object.getString("dId");
-                        if (isDimensionContain(did, linkedWidget.getViewDimensions())) {
-                            row.add(click);
-                        } else {
-                            col.add(click);
-                        }
+                        m.put(did, click);
+                    }
+                }
+                // 传过来的顺序不一定就是正确的为确保万一还是采用这样的做法.
+                for (BIDimension dimension : linkedWidget.getViewDimensions()) {
+                    String c = m.get(dimension.getId());
+                    // 点击某一个汇总值得时候不一定有
+                    if (c != null) {
+                        row.add(c);
+                    }
+                }
+                for (BIDimension dimension : linkedWidget.getViewTopDimensions()) {
+                    String c = m.get(dimension.getId());
+                    if (c != null) {
+                        col.add(c);
                     }
                 }
             }
@@ -763,7 +774,7 @@ public class TableWidget extends BISummaryWidget {
         }
         DataConstructor data = BITableConstructHelper.buildTableData(builder);
         BITableConstructHelper.formatCells(data, getITableCellFormatOperationMap(), style);
-        return data.createJSON().put("page", res.getJSONArray("page")).put("dimensionLength", dimensions.length);
+        return data.createJSON().put("page", res.getJSONArray("page")).put("dimensionLength", dimensions.length).put("widgetType",this.tableType);
     }
 
     /*假数据，测试用*/

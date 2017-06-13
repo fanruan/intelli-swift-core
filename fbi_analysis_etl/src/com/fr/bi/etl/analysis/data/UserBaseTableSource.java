@@ -5,14 +5,15 @@ import com.fr.bi.base.BIUser;
 import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.common.inter.Traversal;
 import com.fr.bi.conf.report.widget.field.BITargetAndDimension;
-import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.etl.analysis.manager.BIAnalysisETLManagerCenter;
+import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.stable.data.db.BIDataValue;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.general.ComparatorUtils;
 
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -114,9 +115,10 @@ public class UserBaseTableSource extends AnalysisBaseTableSource implements User
     @Override
     public long read(Traversal<BIDataValue> travel, ICubeFieldSource[] field, ICubeDataLoader loader) {
         this.userWidget.clear();
-        int index = 0, step = 1000, total = 0;
-        while (total == (index) * step) {
-            List<List> values = userWidget.createData(index * step, index * step + step);
+        int total = 0;
+        Iterator<List<List>> valueIterator = userWidget.getDataIterator();
+        while (valueIterator.hasNext()) {
+            List<List> values = valueIterator.next();
             for (int i = 0; i < values.size(); i++) {
                 List value = values.get(i);
                 for (int j = 0; j < value.size(); j++) {
@@ -124,8 +126,8 @@ public class UserBaseTableSource extends AnalysisBaseTableSource implements User
                 }
             }
             total += values.size();
-            index++;
         }
+        this.userWidget.clear();
         return total;
     }
 
