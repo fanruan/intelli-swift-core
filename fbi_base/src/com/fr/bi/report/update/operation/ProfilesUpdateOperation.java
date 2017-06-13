@@ -96,20 +96,20 @@ public class ProfilesUpdateOperation implements ReportUpdateOperation {
                             case BIReportConstant.WIDGET.DONUT:
                                 dataLabelSettings.put("showCategoryName", false).put("showSeriesName", false)
                                         .put("showValue", true).put("showPercentage", true)
-                                        .put("position", BIChartSettingConstant.DATA_LABEL.POSITION_OUTER);
+                                        .put("position", BIChartSettingConstant.DATA_LABEL.POSITION_OUTER);break;
                             case BIReportConstant.WIDGET.FORCE_BUBBLE:
                                 dataLabelSettings.put("showCategoryName", true).put("showSeriesName", false)
-                                        .put("showValue", true).put("showPercentage", false);
+                                        .put("showValue", true).put("showPercentage", false);break;
                             case BIReportConstant.WIDGET.BUBBLE:
                                 dataLabelSettings.put("showCategoryName", false).put("showSeriesName", false)
-                                    .put("showXValue", true).put("showYValue", true).put("showValue", true);
+                                    .put("showXValue", true).put("showYValue", true).put("showValue", true);break;
                             case BIReportConstant.WIDGET.SCATTER:
                                 dataLabelSettings.put("showCategoryName", false).put("showSeriesName", false)
-                                        .put("showXValue", true).put("showYValue", true).put("showValue", false);
+                                        .put("showXValue", true).put("showYValue", true).put("showValue", false);break;
                             default:
                                 dataLabelSettings.put("showCategoryName", false).put("showSeriesName", false)
                                         .put("showValue", true).put("showPercentage", false)
-                                        .put("position", BIChartSettingConstant.DATA_LABEL.POSITION_OUTER);
+                                        .put("position", BIChartSettingConstant.DATA_LABEL.POSITION_OUTER);break;
                         }
 
                         settings.put("dataLabelSetting", dataLabelSettings);
