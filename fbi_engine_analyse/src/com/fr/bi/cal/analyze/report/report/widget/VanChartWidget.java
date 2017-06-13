@@ -79,7 +79,7 @@ public abstract class VanChartWidget extends TableWidget {
 
     private Locale locale;
 
-    //todo:整理一下settings globalstyle plateconfig
+    //todo:@shine 4.1版本整理一下settings globalstyle plateconfig
     private JSONObject globalStyle;
 
     public static final String[] FULL_QUARTER_NAMES = new String[]{
