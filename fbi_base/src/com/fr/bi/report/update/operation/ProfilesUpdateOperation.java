@@ -64,7 +64,7 @@ public class ProfilesUpdateOperation implements ReportUpdateOperation {
             boolean flag = BIJsonUtils.isKeyValueSet(json.get(s).toString());
             if (flag) {
                 if (ComparatorUtils.equals(s, "widgets")) {
-                    json = correctOptimizeLabel(json);
+                    json = correctDataLabels(json);
                     json = correctPreviousSrcError(json);
                     json=correctScatterType(json);
                 }
@@ -77,7 +77,7 @@ public class ProfilesUpdateOperation implements ReportUpdateOperation {
     }
 
     //4.0的图表标签默认设置，和402默认有些不一样，所以在这边写。调整标签位置，灰色雅黑12px。
-    private JSONObject correctOptimizeLabel(JSONObject json) throws JSONException {
+    private JSONObject correctDataLabels(JSONObject json) throws JSONException {
         if(ReportVersionEnum.VERSION_4_0.getVersion().equals(json.optString("version"))) {
             if (BIJsonUtils.isKeyValueSet(json.getString("widgets"))) {
                 Iterator keys = json.getJSONObject("widgets").keys();
