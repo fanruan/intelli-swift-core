@@ -36,7 +36,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public class ConstructedRootDimensionGroup extends RootDimensionGroup {
 
-    private MetricMergeResult rootNode;
+    protected MetricMergeResult rootNode;
 
     private NameObject[] dimensionTargetSort;
 
@@ -48,7 +48,7 @@ public class ConstructedRootDimensionGroup extends RootDimensionGroup {
 
     private boolean hasInSumMetric;
 
-    private BIMultiThreadExecutor executor;
+    protected BIMultiThreadExecutor executor;
 
     private boolean calAllPage;
 
@@ -258,18 +258,18 @@ public class ConstructedRootDimensionGroup extends RootDimensionGroup {
         //gvi汇总之后如果需要用到全部结果，或者需要排序，就对node再汇总一次，最后一层不需要汇总
         if (hasInSumMetric) {
             if (calAllPage || hasTargetSort()) {
-                sumAfterVISummarizing(rootNode, 0);
+                sumAfterGVISummarizing(rootNode, 0);
             }
         }
     }
 
-    private void sumAfterVISummarizing(MetricMergeResult node, int deep) {
+    private void sumAfterGVISummarizing(MetricMergeResult node, int deep) {
 
         sum(node);
         //最后一层不需要resum
         if (deep < rowSize - 1) {
             for (Node n : node.getChilds()) {
-                sumAfterVISummarizing((MetricMergeResult) n, deep + 1);
+                sumAfterGVISummarizing((MetricMergeResult) n, deep + 1);
             }
         }
     }
@@ -312,7 +312,7 @@ public class ConstructedRootDimensionGroup extends RootDimensionGroup {
     }
 
 
-    private void singleThreadBuild() {
+    protected void singleThreadBuild() {
 
         cal(rootNode, root, 0);
         sum(rootNode);
@@ -338,7 +338,7 @@ public class ConstructedRootDimensionGroup extends RootDimensionGroup {
         }
     }
 
-    private void multiThreadBuild() {
+    protected void multiThreadBuild() {
 
         new MultiThreadBuilder().build();
     }
@@ -359,7 +359,7 @@ public class ConstructedRootDimensionGroup extends RootDimensionGroup {
         }
     }
 
-    private void sum(MetricMergeResult node) {
+    protected void sum(MetricMergeResult node) {
 
         GroupValueIndex[] gvis = node.getGvis();
         for (int i = 0; i < summaryLists.length; i++) {
@@ -378,7 +378,7 @@ public class ConstructedRootDimensionGroup extends RootDimensionGroup {
         return ng.createNodeSingleDimensionGroup(columns[deep], getters[deep], data, mergeIteratorCreators[deep], ng.getChildren());
     }
 
-    private class MultiThreadBuilder {
+    protected class MultiThreadBuilder {
 
         //每一层维度计算完成的数量
         private AtomicInteger[] count;
@@ -401,7 +401,7 @@ public class ConstructedRootDimensionGroup extends RootDimensionGroup {
                 while (result != MetricMergeResult.NULL) {
                     rootNode.addChild(result);
                     size[0].incrementAndGet();
-                    executor.add(new SingleChildCal(result, rootGroup.getChildDimensionGroup(index), 0));
+                    addTask(new SingleChildCal(result, rootGroup.getChildDimensionGroup(index), 0));
                     index++;
                     result = rootGroup.getMetricMergeResultByWait(index);
                 }
@@ -419,6 +419,10 @@ public class ConstructedRootDimensionGroup extends RootDimensionGroup {
                     }
                 }
             }
+        }
+
+        protected void addTask(SingleChildCal cal) {
+            executor.add(cal);
         }
 
         /**
@@ -464,7 +468,7 @@ public class ConstructedRootDimensionGroup extends RootDimensionGroup {
             return count[level].get() != 0 && count[level].get() == size[level].get();
         }
 
-        private class SingleChildCal implements BISingleThreadCal {
+        protected class SingleChildCal implements BISingleThreadCal {
 
             private MetricMergeResult node;
 
@@ -495,7 +499,7 @@ public class ConstructedRootDimensionGroup extends RootDimensionGroup {
                         MetricMergeResult result = rootGroup.getMetricMergeResultByWait(index);
                         while (result != MetricMergeResult.NULL) {
                             node.addChild(result);
-                            executor.add(new SingleChildCal(result, rootGroup.getChildDimensionGroup(index), level + 1));
+                            addTask(new SingleChildCal(result, rootGroup.getChildDimensionGroup(index), level + 1));
                             size[level + 1].incrementAndGet();
                             index++;
                             result = rootGroup.getMetricMergeResultByWait(index);

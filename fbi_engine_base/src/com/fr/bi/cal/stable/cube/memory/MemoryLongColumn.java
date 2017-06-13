@@ -16,7 +16,7 @@ public class MemoryLongColumn extends AbstractSingleMemoryColumn<Long> {
 
     @Override
     protected void initDetail() {
-        detail = new AnyIndexArray<Long>();
+        detail = new AnyIndexArrayCreator<Long>().create();
     }
 
 }

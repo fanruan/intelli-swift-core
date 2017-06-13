@@ -228,21 +228,21 @@ public class DimensionIteratorCreator {
 
 
     private static DimensionIterator getArraySortIterator(final ICubeValueEntryGetter getter, GroupValueIndex filterGVI, int startIndex, boolean asc) {
-        final int[] groupIndex = new int[getter.getGroupSize()];
-        Arrays.fill(groupIndex, NIOConstant.INTEGER.NULL_VALUE);
+        //改成boolean小一点,反正这边只是标记一下
+        final boolean[] groupIndex = new boolean[getter.getGroupSize()];
         filterGVI.Traversal(new SingleRowTraversalAction() {
             @Override
             public void actionPerformed(int row) {
                 int groupRow = getter.getPositionOfGroupByRow(row);
                 if (groupRow != NIOConstant.INTEGER.NULL_VALUE) {
-                    groupIndex[groupRow] = groupRow;
+                    groupIndex[groupRow] = true;
                 }
             }
         });
         return asc ? getArraySortASCIterator(getter, groupIndex, startIndex) : getArraySortDESCIterator(getter, groupIndex, startIndex);
     }
 
-    private static DimensionIterator getArraySortDESCIterator(final ICubeValueEntryGetter getter, final int[] groupIndex, final int startIndex) {
+    private static DimensionIterator getArraySortDESCIterator(final ICubeValueEntryGetter getter, final boolean[] groupIndex, final int startIndex) {
         return new DimensionIterator() {
 
             private int index = groupIndex.length - 1 - startIndex;
@@ -254,7 +254,7 @@ public class DimensionIteratorCreator {
 
             @Override
             public boolean hasNext() {
-                while (index >= 0 && groupIndex[index] == NIOConstant.INTEGER.NULL_VALUE) {
+                while (index >= 0 && groupIndex[index] == false) {
                     index--;
                 }
                 return index >= 0;
@@ -309,7 +309,7 @@ public class DimensionIteratorCreator {
         };
     }
 
-    private static DimensionIterator getArraySortASCIterator(final ICubeValueEntryGetter getter, final int[] groupIndex, final int startIndex) {
+    private static DimensionIterator getArraySortASCIterator(final ICubeValueEntryGetter getter, final boolean[] groupIndex, final int startIndex) {
         return new DimensionIterator() {
 
             private int index = startIndex;
@@ -321,7 +321,7 @@ public class DimensionIteratorCreator {
 
             @Override
             public boolean hasNext() {
-                while (index < groupIndex.length && groupIndex[index] == NIOConstant.INTEGER.NULL_VALUE) {
+                while (index < groupIndex.length && groupIndex[index] == false) {
                     index++;
                 }
                 return index < groupIndex.length;

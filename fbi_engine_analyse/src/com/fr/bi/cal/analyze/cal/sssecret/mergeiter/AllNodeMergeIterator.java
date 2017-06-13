@@ -29,8 +29,7 @@ public class AllNodeMergeIterator implements Iterator<MetricMergeResult> {
     private Map<String, TargetCalculator> calculatedMap;
     private ICubeTableService[] tis;
     private ICubeDataLoader loader;
-    private Node root;
-    private MergeIterator mergeIterator;
+    protected Node root;
     private Iterator<MetricMergeResult> resultIter;
     private boolean releaseGVI;
     //线程池是否已经计算完成
@@ -40,11 +39,12 @@ public class AllNodeMergeIterator implements Iterator<MetricMergeResult> {
     //已经完成计算的数量
     private AtomicInteger count;
     //丢近线程池的计算的数量
-    private int size;
-
+    protected int size;
     private BIMultiThreadExecutor executor;
 
     private List<CalCalculator> formulaCalculator;
+
+    protected MergeIterator mergeIterator;
 
     public AllNodeMergeIterator(MergeIterator mergeIterator, int sumLength, DimensionFilter filter, NameObject targetSort, List<TargetAndKey>[] metricsToCalculate, Map<String, TargetCalculator> calculatedMap, ICubeTableService[] tis, ICubeDataLoader loader, BIMultiThreadExecutor executor, List<CalCalculator> formulaCalculator) {
         this.mergeIterator = mergeIterator;
@@ -67,12 +67,7 @@ public class AllNodeMergeIterator implements Iterator<MetricMergeResult> {
         //不是多线程，或者没有指标并且不需要释放索引都表示线程池的计算已经结束
         completed = (getMetricsSize() == 0 && !releaseGVI) || executor == null;
         allAdded = false;
-        while (mergeIterator.hasNext()) {
-            MetricMergeResult result = mergeIterator.next();
-            checkSum(result);
-            root.addChild(result);
-            ++size;
-        }
+        initRoot();
         allAdded = true;
         //如果多线程计算没有结束，就等结束
         //有可能在设置allAdded = true之前就结束了，导致 checkComplete 没执行，这边还要判断下size
@@ -99,6 +94,15 @@ public class AllNodeMergeIterator implements Iterator<MetricMergeResult> {
         }
         checkSort(resultList);
         resultIter = resultList.iterator();
+    }
+
+    protected void initRoot() {
+        while (mergeIterator.hasNext()) {
+            MetricMergeResult result = mergeIterator.next();
+            checkSum(result);
+            root.addChild(result);
+            ++size;
+        }
     }
 
     private void checkFormulaMetrics() {
@@ -140,7 +144,7 @@ public class AllNodeMergeIterator implements Iterator<MetricMergeResult> {
         return size;
     }
 
-    private void checkSum(MetricMergeResult result) {
+    protected void checkSum(MetricMergeResult result) {
         if (executor != null && metricsToCalculate != null) {
             executor.add(new SummaryCountCal(result));
         } else {
