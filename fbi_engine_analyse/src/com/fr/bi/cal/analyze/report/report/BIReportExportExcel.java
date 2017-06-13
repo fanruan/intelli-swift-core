@@ -388,7 +388,7 @@ public class BIReportExportExcel {
     //fixme wiget缺乏一个统一入口
     private FloatElement renderPicture(BIWidget widget, HttpServletRequest req) throws Exception {
         if (!BIReportExportExcelUtils.widgetHasData(widget)) {
-            return renderDefaultChartPic(widget);
+            return BIReportExportExcelUtils.createFloatElement("", widget.getRect());
         }
         JSONObject options;
         String key;
@@ -483,22 +483,6 @@ public class BIReportExportExcel {
         }
 
         return BIReportExportExcelUtils.createFloatElement(base64, bounds);
-    }
-
-    private FloatElement renderDefaultChartPic(BIWidget widget) throws IOException, JSONException {
-        String imageFolder = "/com/fr/bi/web/images/background/charts";
-        String base64 = BIReportExportExcelUtils.getDefaultImage(widget.getType(), imageFolder);
-        JSONObject imgOptions = JSONObject.create();
-        imgOptions.put("base64", base64);
-        imgOptions.put("width", widget.getRect().getWidth());
-        imgOptions.put("height", widget.getRect().getHeight());
-        String finalBase64 = null;
-        try {
-            finalBase64 = BIReportExportExcelUtils.postMessage(imgOptions.toString());
-        } catch (IOException e) {
-            BILoggerFactory.getLogger().error(e.getMessage(), e);
-        }
-        return BIReportExportExcelUtils.createFloatElement(finalBase64, widget.getRect());
     }
 
     private BIWorkBook createOtherSheets(BIWorkBook wb) throws CloneNotSupportedException {
