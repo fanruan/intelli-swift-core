@@ -24,6 +24,11 @@ public class VanCompareBarWidget extends VanCompareColumnWidget{
         return level;
     }
 
+
+    protected JSONObject parseLeftValueAxis(JSONObject settings) throws JSONException {
+        return super.parseLeftValueAxis(settings).put("position", "right");
+    }
+
     public boolean isInverted(){
         return true;
     }
