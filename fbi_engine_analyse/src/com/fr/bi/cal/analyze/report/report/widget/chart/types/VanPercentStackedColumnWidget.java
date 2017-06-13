@@ -35,7 +35,7 @@ public class VanPercentStackedColumnWidget extends VanStackedColumnWidget{
     }
 
     protected String scaleUnit(int level) {
-        return StringUtils.EMPTY;
+        return PERCENT_SYMBOL;
     }
 
     protected JSONObject parseLeftValueAxis(JSONObject settings) throws JSONException{

@@ -59,7 +59,7 @@ public abstract class VanChartWidget extends TableWidget {
     private static final int TARGET = 30000;
     private static final int TARGET_BASE = 10000;
 
-    private static final String PERCENT_SYMBOL = "%";
+    protected static final String PERCENT_SYMBOL = "%";
     private static final String WHITE = "#ffffff";
 
     private static final int WEEK_COUNT = 52;
