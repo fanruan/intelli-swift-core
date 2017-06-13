@@ -100,10 +100,11 @@ public class BIDetailWidget extends AbstractBIWidget {
         if (data != null) {
             String[] array = data.getView();
             List<BIDetailTarget> usedDimensions = new ArrayList<BIDetailTarget>();
-            for (int i = 0; i < array.length; i++) {
-                BIDetailTarget dimension = BITravalUtils.getTargetByName(array[i], dimensions);
-                usedDimensions.add(dimension);
-
+            for (String anArray : array) {
+                BIDetailTarget dimension = BITravalUtils.getTargetByName(anArray, dimensions);
+                if(dimension.isUsed()) {
+                    usedDimensions.add(dimension);
+                }
             }
             dims = usedDimensions.toArray(new BIDetailTarget[usedDimensions.size()]);
         }
