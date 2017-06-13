@@ -132,60 +132,6 @@ public class BIReportExportExcelUtils {
         return (widget.getViewDimensions().length + widget.getViewTargets().length) != 0;
     }
 
-    static String getDefaultImage(WidgetType type, String imageFolder) throws IOException {
-        Map<WidgetType, String> map = new HashMap<WidgetType, String>();
-        map.put(WidgetType.STACKED_COLUMN, "/column_accu.png");
-        map.put(WidgetType.STACKED_AREA, "/area_accu.png");
-        map.put(WidgetType.STACKED_RADAR, "/radar_accu.png");
-        map.put(WidgetType.COLUMN, "/column.png");
-        map.put(WidgetType.LINE, "/line.png");
-        map.put(WidgetType.AREA, "/area.png");
-        map.put(WidgetType.PERCENT_STACKED_COLUMN, "/column_percent.png");
-        map.put(WidgetType.PERCENT_STACKED_AREA, "/area_percent.png");
-        map.put(WidgetType.COMPARE_COLUMN, "/column_compare.png");
-        map.put(WidgetType.COMPARE_AREA, "/area_compare.png");
-        map.put(WidgetType.FALL_COLUMN, "/column_fall.png");
-        map.put(WidgetType.RANGE_AREA, "/area_range.png");
-        map.put(WidgetType.BAR, "/bar.png");
-        map.put(WidgetType.STACKED_BAR, "/bar_accu.png");
-        map.put(WidgetType.COMPARE_BAR, "/bar_compare.png");
-        map.put(WidgetType.COMBINE_CHART, "/combine.png");
-        map.put(WidgetType.DONUT, "/donut.png");
-        map.put(WidgetType.RADAR, "/radar.png");
-        map.put(WidgetType.PIE, "/pie.png");
-        map.put(WidgetType.MULTI_AXIS_COMBINE_CHART, "/combine_m.png");
-        map.put(WidgetType.FORCE_BUBBLE, "/bubble_force.png");
-        map.put(WidgetType.GAUGE, "/gauge.png");
-        map.put(WidgetType.DOT, "/bubble.png");
-        map.put(WidgetType.MAP, "/map.png");
-        map.put(WidgetType.GIS_MAP, "/map_gis.png");
-        map.put(WidgetType.TABLE, "/table_group.png");
-        map.put(WidgetType.CROSS_TABLE, "/table_cross.png");
-        map.put(WidgetType.COMPLEX_TABLE, "/table_complex.png");
-        map.put(WidgetType.FUNNEL, "/funnel.png");
-        map.put(WidgetType.MULTI_PIE, "/multi_pie.png");
-        map.put(WidgetType.TREE_MAP, "/tree_map.png");
-        return coderBase64(IOUtils.readImage(imageFolder + map.get(type)));
-    }
-
-    static String coderBase64(Image image) throws IOException {
-        if (image == null) {
-            return StringUtils.EMPTY;
-        }
-        byte[] data = null;
-        // 读取图片字节数组
-        ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        ImageIO.write((RenderedImage) image, "png", bos);
-        data = bos.toByteArray();
-        bos.close();
-
-        // 对字节数组Base64编码
-        BASE64Encoder encoder = new BASE64Encoder();
-        String result = encoder.encode(data);
-        result = result.replace("\r\n", "");
-        return result;// 返回Base64编码过的字节数组字符串
-    }
-
     static Rectangle getWidgetRect(JSONObject bounds) {
         Rectangle rect = new Rectangle(bounds.optInt("left"), bounds.optInt("top"),
                 bounds.optInt("width"), bounds.optInt("height"));
