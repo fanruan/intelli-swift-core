@@ -129,7 +129,7 @@ public class ProfilesUpdateOperation implements ReportUpdateOperation {
         if (BIJsonUtils.isArray(str)) {
             JSONArray array = new JSONArray(str);
             for (int i = 0; i < array.length(); i++) {
-                array.put(i, recursionListUpdate(array.getString(i)));
+                array.put(i, recursionListUpdate(array.get(i)));
             }
             return array;
         } else {
