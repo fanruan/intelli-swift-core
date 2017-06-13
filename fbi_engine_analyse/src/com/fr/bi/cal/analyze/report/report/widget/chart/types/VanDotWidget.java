@@ -15,11 +15,7 @@ import com.fr.json.JSONObject;
 import com.fr.stable.CoreConstants;
 import com.fr.stable.StringUtils;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by eason on 2017/2/27.
@@ -304,8 +300,8 @@ public class VanDotWidget extends VanCartesianWidget{
                 double y = dimensions.isNull(0) ? 0 : dimensions.optDouble(0);
                 double x = dimensions.isNull(1) ? 0 : dimensions.optDouble(1);
                 double value = (dimensions.length() > 2 && !dimensions.isNull(2)) ? dimensions.optDouble(2) : 0;
-
-                JSONObject point = JSONObject.create().put("x", x/xScale).put("y", y/yScale).put("size", value/sizeScale)
+                String size = ids.length > 2 ? numberFormat(ids[2], value/sizeScale) : value/sizeScale + "";
+                JSONObject point = JSONObject.create().put("x", numberFormat(ids[1], x/xScale)).put("y", numberFormat(ids[0],y/yScale)).put("size", size)
                         .put("description", obj.optJSONArray("description")).put("longDateDescription", obj.optJSONArray("longDateDescription"));
 
                 if(noSeries) {
@@ -352,7 +348,7 @@ public class VanDotWidget extends VanCartesianWidget{
             double x = dimensions.isNull(1) ? 0 : dimensions.optDouble(1);
             double value = (dimensions.length() > 2 && !dimensions.isNull(2)) ? dimensions.optDouble(2) : 0;
 
-            JSONObject point = JSONObject.create().put("x", x).put("y", y).put("size", value);
+            JSONObject point = JSONObject.create().put("x", checkInfinity(x)).put("y", checkInfinity(y)).put("size", checkInfinity(value));
 
             JSONObject ser = JSONObject.create().put("data", JSONArray.create().put(point))
                     .put("name", obj.optString("n")).put("targetIDs", new JSONArray(ids));
