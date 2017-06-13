@@ -2,7 +2,7 @@ package com.fr.bi.field.target.target.cal.target.configure;
 
 import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.field.target.calculator.cal.configure.RankConfigureCalculator;
-import com.fr.bi.stable.report.result.TargetCalculator;
+import com.fr.bi.report.result.TargetCalculator;
 import com.fr.json.JSONObject;
 
 public class BIRankConfiguredCalculateTarget extends BIConfiguredCalculateTarget {

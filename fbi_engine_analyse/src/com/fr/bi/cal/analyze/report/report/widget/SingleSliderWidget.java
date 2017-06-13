@@ -9,7 +9,8 @@ import com.fr.bi.conf.report.WidgetType;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.conf.session.BISessionProvider;
 import com.fr.bi.stable.gvi.GroupValueIndex;
-import com.fr.bi.stable.report.result.DimensionCalculator;
+import com.fr.bi.report.result.DimensionCalculator;
+import com.fr.bi.stable.utils.BICollectionUtils;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
 import com.fr.report.poly.PolyECBlock;
@@ -101,9 +102,28 @@ public class SingleSliderWidget extends TableWidget {
         int start = 0, end = getter.getGroupSize();
         SimpleIntArray groupArray = this.createGroupArray(start, end, new int[0], new int[0], getter, gvi);
 
-        Object min = reader.getGroupValue(groupArray.get(0));
-        Object max = reader.getGroupValue(groupArray.get(groupArray.size() - 1));
+        Object min = null;
+        Object max = null;
+        for (int i = 0; i < end; i++) {
+            Object tmin = reader.getGroupValue(groupArray.get(i));
+            if (BICollectionUtils.isNotCubeNullKey(tmin)) {
+                min = tmin;
+                break;
+            }
+        }
+        for (int i = end - 1; i >= 0; i--) {
+            Object tmax = reader.getGroupValue(groupArray.get(i));
+            if (BICollectionUtils.isNotCubeNullKey(tmax)) {
+                max = tmax;
+                break;
+            }
+        }
+        if (min == null && max == null) {
+            return new MaxAndMin(0, 0);
+        }
         return new MaxAndMin(Double.valueOf(max.toString()), Double.valueOf(min.toString()));
+
+
     }
 
     @Override

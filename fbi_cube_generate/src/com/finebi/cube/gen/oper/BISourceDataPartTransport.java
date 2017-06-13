@@ -146,8 +146,8 @@ public class BISourceDataPartTransport extends BISourceDataTransport {
                 addDateCondition(tableUpdateSetting.getPartAddSQL()),
                 addDateCondition(tableUpdateSetting.getPartModifySQL()));
           /*remove*/
-        if (isLegalSQL(tableUpdateSetting.getPartDeleteSQL())) {
-            String columnName = getKeyName(tableUpdateSetting.getPartDeleteSQL());
+        if (isLegalSQL(addDateCondition(tableUpdateSetting.getPartDeleteSQL()))) {
+            String columnName = getKeyName(addDateCondition(tableUpdateSetting.getPartDeleteSQL()));
             if (getCubeFieldSource(cubeFieldSources, columnName) != null) {
                 sortRemovedList = dealWithRemove(columnName,
                         resultMap.get(DELETE), sortRemovedList, loader);
@@ -157,13 +157,13 @@ public class BISourceDataPartTransport extends BISourceDataTransport {
 
         }
         /*add*/
-        if (isLegalSQL(tableUpdateSetting.getPartAddSQL())) {
+        if (isLegalSQL(addDateCondition(tableUpdateSetting.getPartAddSQL()))) {
             rowCount = dealWidthAdd(resultMap.get(ADD), rowCount);
             tableEntityService.forceReleaseWriter();
         }
         /*modify*/
-        if (isLegalSQL(tableUpdateSetting.getPartModifySQL())) {
-            String columnName = getKeyName(tableUpdateSetting.getPartModifySQL());
+        if (isLegalSQL(addDateCondition(tableUpdateSetting.getPartModifySQL()))) {
+            String columnName = getKeyName(addDateCondition(tableUpdateSetting.getPartModifySQL()));
             sortRemovedList = dealWithRemove(columnName,
                     resultMap.get(MODIFY), sortRemovedList, loader);
             rowCount = dealWidthAdd(resultMap.get(MODIFY), rowCount);
@@ -293,10 +293,10 @@ public class BISourceDataPartTransport extends BISourceDataTransport {
                 if (tableSource.getType() == BIBaseConstant.TABLETYPE.DB) {
                     String dbName = ((DBTableSource) tableSource).getDbName();
                     Table table = new Table(BIConnectionManager.getBIConnectionManager().getSchema(dbName), tableSource.getTableName());
-                    finalSql = "SELECT *" + " FROM " + dialect.table2SQL(table)  + " WHERE "  + columnName + " IN " + "(" + sql + ")";
+                    finalSql = "SELECT *" + " FROM " + dialect.table2SQL(table) + " WHERE " + columnName + " IN " + "(" + sql + ")";
                 }
                 if (tableSource.getType() == BIBaseConstant.TABLETYPE.SQL) {
-                    finalSql = ((SQLTableSource) tableSource).getQuery() +  " WHERE "  + columnName + " IN " + "(" + sql + ")";
+                    finalSql = ((SQLTableSource) tableSource).getQuery() + " WHERE " + columnName + " IN " + "(" + sql + ")";
                 }
             } else {
                 LOGGER.error("SQL syntax error: " + tableSource.getTableName() + " columns length incorrect " + sql);

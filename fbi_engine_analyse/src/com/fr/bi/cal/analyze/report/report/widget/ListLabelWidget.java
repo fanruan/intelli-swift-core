@@ -13,7 +13,7 @@ import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.io.sortlist.ArrayLookupHelper;
-import com.fr.bi.stable.report.result.DimensionCalculator;
+import com.fr.bi.report.result.DimensionCalculator;
 import com.fr.bi.stable.utils.program.BIJsonUtils;
 import com.fr.bi.stable.utils.program.BIPhoneticismUtils;
 import com.fr.general.ComparatorUtils;

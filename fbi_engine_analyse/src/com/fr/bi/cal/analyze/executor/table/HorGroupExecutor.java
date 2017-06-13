@@ -16,7 +16,7 @@ import com.fr.bi.conf.report.style.BITableStyle;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.field.target.target.BISummaryTarget;
 import com.fr.bi.stable.constant.BIReportConstant;
-import com.fr.bi.stable.report.key.TargetGettingKey;
+import com.fr.bi.report.key.TargetGettingKey;
 import com.fr.general.DateUtils;
 import com.fr.general.GeneralUtils;
 import com.fr.general.Inter;

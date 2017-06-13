@@ -93,7 +93,7 @@ public class VanMapWidget extends VanChartWidget{
 
         BISummaryTarget[] targets = this.getTargets();
         if(targets.length > 0){
-            legend.put("formatter", this.intervalLegendFormatter(this.valueFormat(targets[0], true)));
+            legend.put("formatter", this.intervalLegendFormatter(this.valueFormat(targets[0]), this.valueUnit(targets[0], true)));
         }
 
         return legend;

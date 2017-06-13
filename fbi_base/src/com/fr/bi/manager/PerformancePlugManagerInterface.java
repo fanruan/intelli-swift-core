@@ -21,13 +21,6 @@ public interface PerformancePlugManagerInterface {
 
     boolean isSearchPinYin();
 
-    boolean isGetTemplateScreenCapture();
-
-    boolean controlMaxMemory();
-
-    int getMaxNodeCount();
-
-
     boolean isDiskSort();
 
     /**
@@ -113,4 +106,10 @@ public interface PerformancePlugManagerInterface {
      * @return
      */
     long getMaxCubeFileSize();
+
+    /**
+     *
+     * @return
+     */
+    int getMaxStructureSize();
 }

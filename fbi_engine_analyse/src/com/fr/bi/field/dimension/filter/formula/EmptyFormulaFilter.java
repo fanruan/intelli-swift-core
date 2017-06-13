@@ -2,8 +2,8 @@ package com.fr.bi.field.dimension.filter.formula;
 
 import com.finebi.cube.api.ICubeDataLoader;
 import com.fr.bi.field.dimension.filter.AbstractDimensionFilter;
-import com.fr.bi.stable.report.result.BINode;
-import com.fr.bi.stable.report.result.TargetCalculator;
+import com.fr.bi.report.result.BINode;
+import com.fr.bi.report.result.TargetCalculator;
 import com.fr.json.JSONObject;
 
 import java.util.ArrayList;

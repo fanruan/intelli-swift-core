@@ -1,7 +1,7 @@
-package com.fr.bi.stable.report.result;
+package com.fr.bi.report.result;
 
+import com.fr.bi.report.key.TargetGettingKey;
 import com.fr.bi.stable.gvi.GroupValueIndex;
-import com.fr.bi.stable.report.key.TargetGettingKey;
 import com.fr.general.NameObject;
 
 import java.util.Comparator;

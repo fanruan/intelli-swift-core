@@ -1,7 +1,8 @@
-package com.fr.bi.stable.report.update;
+package com.fr.bi.report.update;
 
-import com.fr.bi.stable.report.update.operation.*;
-
+import com.fr.bi.report.update.operation.ProfilesUpdateOperation;
+import com.fr.bi.report.update.operation.ReportNullOperation;
+import com.fr.bi.report.update.operation.ReportUpdateOperation;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;

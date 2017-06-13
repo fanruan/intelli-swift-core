@@ -25,6 +25,11 @@ public abstract class AbstractGroup implements IGroup, BICoreService {
         return type;
     }
 
+    @Override
+    public void setType(int type) {
+        this.type = type;
+    }
+
 
     @Override
     public JSONObject createJSON() throws Exception {

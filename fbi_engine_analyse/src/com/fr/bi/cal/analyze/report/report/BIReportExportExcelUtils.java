@@ -82,16 +82,22 @@ public class BIReportExportExcelUtils {
         connection.setConnectTimeout(timeOut);
         connection.setReadTimeout(timeOut);
 
-        OutputStream out = connection.getOutputStream();
-        out.write(message.getBytes("utf-8"));
-        out.close();
 
-        //get base64 picture
-        InputStream in = connection.getInputStream();
-        String response = IOUtils.inputStream2String(in);
-        in.close();
-
-        return response;
+        OutputStream out = null;
+        InputStream in = null;
+        try {
+            out = connection.getOutputStream();
+            out.write(message.getBytes("utf-8"));
+            in = connection.getInputStream();
+            return IOUtils.inputStream2String(in);
+        } finally {
+            if (out != null) {
+                out.close();
+            }
+            if (in != null) {
+                in.close();
+            }
+        }
     }
 
     static BufferedImage base64Decoder(String base64) {
