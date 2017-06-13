@@ -127,7 +127,7 @@ public abstract class AbstractDetailExecutor extends BIAbstractExecutor<JSONObje
             BIDetailTarget t = viewDimension[i];
             Object v = ob[i];
             v = viewDimension[i].createShowValue(v);
-            if(t instanceof BIAbstractDetailTarget) {
+            if(t instanceof BIAbstractDetailTarget &&  v != null) {
                 if (((BIAbstractDetailTarget) t).getGroup().getType() == BIReportConstant.GROUP.YMD && GeneralUtils.string2Number(v.toString()) != null) {
                     v = DateUtils.DATEFORMAT2.format(new Date(GeneralUtils.string2Number(v.toString()).longValue()));
                 }
