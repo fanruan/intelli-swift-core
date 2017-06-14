@@ -39,7 +39,7 @@
   "catTitle": "分类轴标题(x_axis_title)",
   "radarChartType": "雷达图类型(chart_radar_type)",
   "nullContinuity": "空值连续(null_continue)",
-  "miniMode": "极简模式(minimalistModel)",
+  "miniMode": "极简模式(minimalist_model)",
 
   "isShowBackgroundLayer": "地图显示背景图层(show_background_layer)",
   "backgroundLayerInfo": "背景图层信息(background_layer_info)",
