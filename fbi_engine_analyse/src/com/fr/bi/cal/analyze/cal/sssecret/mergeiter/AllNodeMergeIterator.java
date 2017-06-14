@@ -12,8 +12,8 @@ import com.fr.bi.conf.report.widget.field.dimension.filter.DimensionFilter;
 import com.fr.bi.field.target.calculator.cal.CalCalculator;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.gvi.GroupValueIndex;
-import com.fr.bi.stable.report.key.TargetGettingKey;
-import com.fr.bi.stable.report.result.TargetCalculator;
+import com.fr.bi.report.key.TargetGettingKey;
+import com.fr.bi.report.result.TargetCalculator;
 import com.fr.general.NameObject;
 
 import java.util.*;

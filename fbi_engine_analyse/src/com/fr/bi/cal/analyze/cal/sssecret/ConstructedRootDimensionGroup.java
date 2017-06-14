@@ -18,8 +18,8 @@ import com.fr.bi.field.target.calculator.cal.CalCalculator;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.gvi.GVIUtils;
 import com.fr.bi.stable.gvi.GroupValueIndex;
-import com.fr.bi.stable.report.key.TargetGettingKey;
-import com.fr.bi.stable.report.result.TargetCalculator;
+import com.fr.bi.report.key.TargetGettingKey;
+import com.fr.bi.report.result.TargetCalculator;
 import com.fr.general.ComparatorUtils;
 import com.fr.general.NameObject;
 

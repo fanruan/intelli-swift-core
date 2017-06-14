@@ -11,6 +11,8 @@ public interface IGroup extends JSONTransform, Cloneable, XMLable {
 
     int getType();
 
+    void setType(int type);
+
     ICubeColumnIndexReader createGroupedMap(ICubeColumnIndexReader baseMap);
 
     boolean isNullGroup();

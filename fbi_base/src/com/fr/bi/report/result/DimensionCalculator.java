@@ -1,4 +1,4 @@
-package com.fr.bi.stable.report.result;
+package com.fr.bi.report.result;
 
 import com.finebi.cube.conf.field.BusinessField;
 import com.finebi.cube.conf.table.BusinessTable;

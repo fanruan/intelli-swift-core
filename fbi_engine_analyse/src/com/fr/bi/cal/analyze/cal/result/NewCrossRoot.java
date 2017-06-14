@@ -4,8 +4,8 @@
 package com.fr.bi.cal.analyze.cal.result;
 
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
-import com.fr.bi.stable.report.key.TargetGettingKey;
-import com.fr.bi.stable.report.result.TargetCalculator;
+import com.fr.bi.report.key.TargetGettingKey;
+import com.fr.bi.report.result.TargetCalculator;
 import com.fr.general.NameObject;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;

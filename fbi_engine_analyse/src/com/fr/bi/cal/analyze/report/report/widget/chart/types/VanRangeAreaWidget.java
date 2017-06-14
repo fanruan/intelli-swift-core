@@ -1,5 +1,6 @@
 package com.fr.bi.cal.analyze.report.report.widget.chart.types;
 
+import com.fr.bi.field.target.target.BISummaryTarget;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;
 
@@ -64,18 +65,21 @@ public class VanRangeAreaWidget extends VanAreaWidget{
                 double y = firstDatas.optJSONObject(dataIndex).optDouble("y", 0);
 
                 JSONObject labels = new JSONObject(dataLabels.toString());
+                BISummaryTarget target = this.getSerBITarget(ser);
+                String format = this.valueFormat(target);
                 if(labels.has("formatter")) {
-                    String format = this.valueFormat(this.getSerBITarget(ser), false);
+                    String unit = this.valueUnit(target, false);
                     labels.optJSONObject("formatter")
-                            .put("valueFormat", String.format("function(){return BI.contentFormat(arguments[0] + %s , \"%s\")}", y, format))
+                            .put("valueFormat", String.format("function(){return BI.contentFormat(arguments[0] + %s , \"%s\") + \"%s\"}", y, format, unit))
                             .put("percentFormat", "function(){return BI.contentFormat(arguments[0], \"#.##%\")}");
                 }
                 d.put(dataLabelsKey(), labels);
 
                 JSONObject formatter = JSONObject.create();
-                String tooltipFormat = this.valueFormat(this.getSerBITarget(ser), true);
+                String tooltipUnit = this.valueUnit(target, true);
+
                 formatter.put("identifier", this.getTooltipIdentifier())
-                        .put(this.tooltipValueKey(), String.format("function(){return BI.contentFormat(arguments[0] + %s , \"%s\")}", y, tooltipFormat));
+                        .put(this.tooltipValueKey(), String.format("function(){return BI.contentFormat(arguments[0] + %s , \"%s\") + \"%s\"}", y, format, tooltipUnit));
                 d.put("tooltip", new JSONObject(tooltip.toString()).put("formatter", formatter));
             }
         }

@@ -300,7 +300,7 @@ public class BIDBUtils {
                     null,
                     columnInformation.getColumnType(),
                     columnInformation.getColumnSize(),
-                    PersistentField.DEFALUTSCALE);
+                    PersistentField.DEFAULT_SCALE);
         } else {
             return new PersistentField(
                     columnInformation.getColumnName(),
@@ -408,13 +408,13 @@ public class BIDBUtils {
             }
             boolean columnKey = (Boolean) item.get("column_key");
             int columnSize = (Integer) item.get("column_size");
-            int decimal_digits = PersistentField.DEFALUTSCALE;
+            int decimal_digits = PersistentField.DEFAULT_SCALE;
             if (item.containsKey("DECIMAL_DIGITS")) {
                 decimal_digits = (Integer) item.get("DECIMAL_DIGITS");
             }
             if (!(dialect instanceof OracleDialect)) {
                 if (columnType == DBConstant.CLASS.DECIMAL) {
-                    decimal_digits = PersistentField.DEFALUTSCALE;
+                    decimal_digits = PersistentField.DEFAULT_SCALE;
                 }
             }
 
