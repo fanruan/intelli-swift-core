@@ -20,6 +20,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class PerformancePlugManager implements PerformancePlugManagerInterface {
     private static final Logger LOGGER = LoggerFactory.getLogger(PerformancePlugManager.class);
     private final static String PERFORMANCE = "performance";
+    private final static String LIMIT = "limit";
     public static int DEFAULT_DEPLOY_MODE_ON = 4096;
     public static int DEFAULT_DEPLOY_MODE_OFF = -1;
     private static PerformancePlugManager ourInstance = new PerformancePlugManager();
@@ -33,9 +34,6 @@ public class PerformancePlugManager implements PerformancePlugManagerInterface {
     private boolean uniqueThread = false;
     private boolean returnEmptyIndex = false;
     private boolean isSearchPinYin = true;
-    private boolean isGetTemplateScreenCapture = true;
-    private boolean isControlMaxMemory = false;
-    private int maxNodeCount = Integer.MAX_VALUE;
     private boolean useMultiThreadCal = false;
     private double minCubeFreeHDSpaceRate = 2;
 
@@ -77,6 +75,9 @@ public class PerformancePlugManager implements PerformancePlugManagerInterface {
     //cube单个文件的最大的size
     private long maxCubeFileSize = 8;
 
+    private int maxStructureSize = 0;
+
+    private int maxSPADetailSize = 0;
 
     private PerformancePlugManager() {
         init();
@@ -103,10 +104,7 @@ public class PerformancePlugManager implements PerformancePlugManagerInterface {
             setTimeoutConfig(properties);
             returnEmptyIndex = getBoolean(PERFORMANCE + ".emptyWhenNotSelect", false);
             isSearchPinYin = getBoolean(PERFORMANCE + ".isSearchPinYin", true);
-            isGetTemplateScreenCapture = getBoolean(PERFORMANCE + ".isGetTemplateScreenCapture", true);
-            isControlMaxMemory = getBoolean(PERFORMANCE + ".isControlMaxMemory", isControlMaxMemory);
             useMultiThreadCal = getBoolean(PERFORMANCE + ".useMultiThreadCal", useMultiThreadCal);
-            maxNodeCount = getInt(PERFORMANCE + ".maxNodeCount", maxNodeCount);
             diskSortDumpThreshold = getLong(PERFORMANCE + ".diskSortDumpThreshold", diskSortDumpThreshold);
             diskSort = getBoolean(PERFORMANCE + ".useDiskSort", false);
             biThreadPoolSize = getInt(PERFORMANCE + ".biThreadPoolSize", biThreadPoolSize);
@@ -124,6 +122,8 @@ public class PerformancePlugManager implements PerformancePlugManagerInterface {
             isDirectGenerating = getBoolean(PERFORMANCE + ".isDirectGenerating", isDirectGenerating);
             isForceWriter = getBoolean(PERFORMANCE + ".isForceWriter", isForceWriter);
             maxCubeFileSize = getLong(PERFORMANCE + ".maxCubeFileSize", maxCubeFileSize);
+            maxStructureSize = getInt(LIMIT + ".maxStructureSize", maxStructureSize);
+            maxSPADetailSize = getInt(LIMIT + ".maxSPADetailSize", maxSPADetailSize);
 //            logConfiguration();
         } catch (Exception e) {
             BILoggerFactory.getLogger().error(e.getMessage(), e);
@@ -142,10 +142,7 @@ public class PerformancePlugManager implements PerformancePlugManagerInterface {
                 "The current value is displayed  below ");
         LOGGER.info("The value of {}.returnEmptyIndex is {}", PERFORMANCE, returnEmptyIndex);
         LOGGER.info("The value of {}.isSearchPinYin is {}", PERFORMANCE, isSearchPinYin);
-        LOGGER.info("The value of {}.isGetTemplateScreenCapture is {}", PERFORMANCE, isGetTemplateScreenCapture);
-        LOGGER.info("The value of {}.isControlMaxMemory is {}", PERFORMANCE, isControlMaxMemory);
         LOGGER.info("The value of {}.useMultiThreadCal is {}", PERFORMANCE, useMultiThreadCal);
-        LOGGER.info("The value of {}.maxNodeCount is {}", PERFORMANCE, maxNodeCount);
         LOGGER.info("The value of {}.diskSortDumpThreshold is {}", PERFORMANCE, diskSortDumpThreshold);
         LOGGER.info("The value of {}.useDiskSort is {}", PERFORMANCE, diskSort);
         LOGGER.info("The value of {}.biThreadPoolSize is {}", PERFORMANCE, biThreadPoolSize);
@@ -367,16 +364,6 @@ public class PerformancePlugManager implements PerformancePlugManagerInterface {
         return isSearchPinYin;
     }
 
-    @Override
-    public boolean controlMaxMemory() {
-        return isControlMaxMemory;
-    }
-
-    @Override
-    public int getMaxNodeCount() {
-        return maxNodeCount;
-    }
-
 
     @Override
     public boolean isDiskSort() {
@@ -386,11 +373,6 @@ public class PerformancePlugManager implements PerformancePlugManagerInterface {
     @Override
     public long getDiskSortDumpThreshold() {
         return diskSortDumpThreshold;
-    }
-
-    @Override
-    public boolean isGetTemplateScreenCapture() {
-        return isGetTemplateScreenCapture;
     }
 
 
@@ -489,5 +471,15 @@ public class PerformancePlugManager implements PerformancePlugManagerInterface {
     @Override
     public long getMaxCubeFileSize() {
         return maxCubeFileSize;
+    }
+
+    @Override
+    public int getMaxStructureSize() {
+        return maxStructureSize;
+    }
+
+    @Override
+    public int getMaxSPADetailSize() {
+        return maxSPADetailSize;
     }
 }

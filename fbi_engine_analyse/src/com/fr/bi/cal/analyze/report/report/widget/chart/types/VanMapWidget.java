@@ -4,7 +4,6 @@ import com.fr.bi.cal.analyze.report.report.widget.VanChartWidget;
 import com.fr.bi.conf.report.map.BIMapInfoManager;
 import com.fr.bi.conf.report.map.BIWMSManager;
 import com.fr.bi.field.target.target.BISummaryTarget;
-import com.fr.bi.stable.constant.BIChartSettingConstant;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.general.ComparatorUtils;
 import com.fr.general.Inter;
@@ -93,7 +92,7 @@ public class VanMapWidget extends VanChartWidget{
 
         BISummaryTarget[] targets = this.getTargets();
         if(targets.length > 0){
-            legend.put("formatter", this.intervalLegendFormatter(this.valueFormat(targets[0], true)));
+            legend.put("formatter", this.intervalLegendFormatter(this.valueFormat(targets[0]), this.valueUnit(targets[0], true)));
         }
 
         return legend;
@@ -142,7 +141,7 @@ public class VanMapWidget extends VanChartWidget{
                 double value = s.isNull(i) ? 0 : s.getDouble(i);
                 String areaName =  item.optString("n");
 
-                JSONObject datum = JSONObject.create().put("name", areaName).put(key, value / scale);
+                JSONObject datum = JSONObject.create().put("name", areaName).put(key, numberFormat(id,value / scale));
 
                 if(item.has("c")){
                     JSONObject drillDown = JSONObject.create();

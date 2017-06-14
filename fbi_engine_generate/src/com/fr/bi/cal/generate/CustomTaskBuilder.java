@@ -1,25 +1,22 @@
 package com.fr.bi.cal.generate;
 
-import com.finebi.cube.conf.BICubeConfiguration;
 import com.finebi.cube.conf.BICubeConfigureCenter;
+import com.finebi.cube.conf.ICubeGenerateTask;
 import com.finebi.cube.conf.table.BusinessTable;
-import com.finebi.cube.data.ICubeResourceDiscovery;
-import com.finebi.cube.location.BICubeResourceRetrieval;
-import com.finebi.cube.location.ICubeResourceRetrievalService;
-import com.finebi.cube.structure.BICube;
-import com.finebi.cube.structure.Cube;
 import com.finebi.cube.utils.CubeUpdateUtils;
 import com.fr.bi.cal.generate.task.AllCubeGenerateTask;
 import com.fr.bi.cal.generate.task.EmptyCubeGenerateTask;
-import com.finebi.cube.conf.ICubeGenerateTask;
 import com.fr.bi.cal.generate.task.PartCubeGenerateTask;
-import com.fr.bi.common.factory.BIFactoryHelper;
 import com.fr.bi.conf.data.source.ETLTableSource;
 import com.fr.bi.conf.data.source.TableSourceUtils;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.general.ComparatorUtils;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Created by Lucifer on 2017-4-1.
@@ -50,37 +47,6 @@ public class CustomTaskBuilder {
             }
         }
         return true;
-    }
-
-    /**
-     * @param userId
-     * @return
-     */
-    private static boolean isUpdateMeta(long userId) {
-        /**
-         * 关联减少，表没有变化
-         */
-        boolean relationReduced = BICubeConfigureCenter.getTableRelationManager().isRelationReduced(userId) &&
-                BICubeConfigureCenter.getPackageManager().isTableNoChange(userId);
-        /**
-         * 表减少，关联没有变化
-         */
-        boolean tableReduced = BICubeConfigureCenter.getPackageManager().isTableReduced(userId) &&
-                BICubeConfigureCenter.getTableRelationManager().isRelationNoChange(userId);
-        /**
-         * 关联和表都减少了
-         */
-        boolean tableRelationReduced = BICubeConfigureCenter.getPackageManager().isTableReduced(userId) &&
-                BICubeConfigureCenter.getTableRelationManager().isRelationReduced(userId);
-        return relationReduced || tableReduced || tableRelationReduced;
-    }
-
-    private static boolean isPart(long userId) {
-        ICubeResourceDiscovery discovery = BIFactoryHelper.getObject(ICubeResourceDiscovery.class);
-        ICubeResourceRetrievalService resourceRetrievalService = new BICubeResourceRetrieval(BICubeConfiguration.getConf(Long.toString(userId)));
-        Cube cube = new BICube(resourceRetrievalService, discovery);
-        boolean isPart = (CubeUpdateUtils.getAllCubeAbsentTables(userId).size() > 0 || CubeUpdateUtils.getCubeAbsentRelations(userId).size() > 0 || CubeUpdateUtils.getCubeAbsentPaths(userId).size() > 0) && cube.isVersionAvailable();
-        return isPart;
     }
 
 
@@ -143,9 +109,9 @@ public class CustomTaskBuilder {
     }
 
     public static ICubeGenerateTask getCubeGenerateTask(long userId) {
-        if (isPart(userId)) {
+        if (CubeUpdateUtils.isPart(userId)) {
             return new PartCubeGenerateTask(userId);
-        } else if (isUpdateMeta(userId)) {
+        } else if (CubeUpdateUtils.isUpdateMeta(userId)) {
             return new EmptyCubeGenerateTask(userId);
         } else {
             return new AllCubeGenerateTask(userId);

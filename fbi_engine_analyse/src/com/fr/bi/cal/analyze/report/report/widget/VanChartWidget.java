@@ -24,6 +24,7 @@ import com.fr.web.utils.WebUtils;
 import javax.servlet.http.HttpServletRequest;
 import java.awt.*;
 import java.io.File;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.List;
@@ -51,13 +52,14 @@ public abstract class VanChartWidget extends TableWidget {
     public static final String ARRIVALRATE = "${ARRIVALRATE}";
 
     protected static final String COMPONENT_MAX_SIZE = "30%";
+    protected static final String TRANS_SERIES = "transSeries";
 
     public static final String LONG_DATE = "longDate";
 
     private static final int TARGET = 30000;
     private static final int TARGET_BASE = 10000;
 
-    private static final String PERCENT_SYMBOL = "%";
+    protected static final String PERCENT_SYMBOL = "%";
     private static final String WHITE = "#ffffff";
 
     private static final int WEEK_COUNT = 52;
@@ -77,7 +79,7 @@ public abstract class VanChartWidget extends TableWidget {
 
     private Locale locale;
 
-    //todo:整理一下settings globalstyle plateconfig
+    //todo:@shine 4.1版本整理一下settings globalstyle plateconfig
     private JSONObject globalStyle;
 
     public static final String[] FULL_QUARTER_NAMES = new String[]{
@@ -157,7 +159,7 @@ public abstract class VanChartWidget extends TableWidget {
                 .put("refresh", falseEnabledJSONObject());
     }
 
-    private JSONObject falseEnabledJSONObject() throws JSONException {
+    protected JSONObject falseEnabledJSONObject() throws JSONException {
         return JSONObject.create().put("enabled", false);
     }
 
@@ -200,11 +202,48 @@ public abstract class VanChartWidget extends TableWidget {
         return (regionID - TARGET) / TARGET_BASE;
     }
 
+    //@shine todo:4.1版本整理下value的处理。所有图表value的 null infinity scale format 等统一在这边处理。
+    // 处理原始数据。数量级和小数位数。
+    private String numberScaleAndFormat(String dimensionID, double value){
+        double scale = numberScale(dimensionID);
+        value = value / scale;
+        return numberFormat(dimensionID, value);
+    }
+
     protected double numberScale(String dimensionID) {
 
         int level = this.numberLevel(dimensionID);
 
         return this.numberScaleByLevel(level);
+    }
+
+
+    protected String numberFormat(String dimensionID, double y) {
+        y = checkInfinity(y);
+        try {
+            BISummaryTarget target = this.getBITargetByID(dimensionID);
+            JSONObject settings = target.getChartSetting().getSettings();
+            int type = settings.optInt("formatDecimal", BIReportConstant.TARGET_STYLE.FORMAT.NORMAL);//默认为自动
+            String format;
+            switch (type) {
+                case BIReportConstant.TARGET_STYLE.FORMAT.NORMAL:
+                    format = "#.##";
+                    break;
+                case BIReportConstant.TARGET_STYLE.FORMAT.ZERO2POINT:
+                    format = "#0";
+                    break;
+                default:
+                    format = "#0.";
+                    for (int i = 0; i < type; i++) {
+                        format += "0";
+                    }
+            }
+            DecimalFormat decimalFormat = new DecimalFormat(format);
+            return decimalFormat.format(y);
+        } catch (Exception e){
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
+        }
+        return y + "";
     }
 
     protected double numberScaleByLevel(int level) {
@@ -438,9 +477,8 @@ public abstract class VanChartWidget extends TableWidget {
         return "center";
     }
 
+    //勾选标签没具体配置的时候的默认值
     protected JSONObject defaultDataLabelSetting() throws JSONException {
-
-        //兼容4.0,勾选标签的时候只有值
         return JSONObject.create().put("showCategoryName", false)
                 .put("showSeriesName", false).put("showValue", true).put("showPercentage", false)
                 .put("position", BIChartSettingConstant.DATA_LABEL.POSITION_OUTER).put("showTractionLine", true)
@@ -571,7 +609,7 @@ public abstract class VanChartWidget extends TableWidget {
 
     protected String decimalFormat(BISummaryTarget dimension, boolean hasSeparator) {
         JSONObject settings = dimension.getChartSetting().getSettings();
-        int type = settings.optInt("format", BIReportConstant.TARGET_STYLE.FORMAT.NORMAL);//默认为自动
+        int type = settings.optInt("formatDecimal", BIReportConstant.TARGET_STYLE.FORMAT.NORMAL);//默认为自动
         String format;
         switch (type) {
             case BIReportConstant.TARGET_STYLE.FORMAT.NORMAL:
@@ -593,31 +631,45 @@ public abstract class VanChartWidget extends TableWidget {
     //值标签和小数位数，千分富符，数量级和单位构成的后缀
     protected String valueFormatFunc(BISummaryTarget dimension, boolean isTooltip) {
 
-        String format = this.valueFormat(dimension, isTooltip);
+        String format = this.valueFormat(dimension);
 
-        return String.format("function(){return BI.contentFormat(arguments[0], \"%s\")}", format);
+        String unit = this.valueUnit(dimension, isTooltip);
+
+        return String.format("function(){return BI.contentFormat(arguments[0], \"%s\") + \"%s\"}", format, unit);
     }
 
-    protected String valueFormat(BISummaryTarget dimension, boolean isTooltip) {
+    protected String unitFromSetting(BISummaryTarget dimension) {
         JSONObject settings = dimension.getChartSetting().getSettings();
+        return settings.optString("unit", StringUtils.EMPTY);
+    }
 
-        boolean hasSeparator = settings.optBoolean("numSeparators", true);
+    protected boolean hasSeparatorFromSetting(BISummaryTarget dimension){
+        JSONObject settings = dimension.getChartSetting().getSettings();
+        return settings.optBoolean("numSeparators", true);
+    }
 
-        String format = this.decimalFormat(dimension, hasSeparator);
-
+    //数量级和单位，直接在值后面加，不会改变数值的。（数值为数量级处理过的，不是原始数值）
+    protected String valueUnit(BISummaryTarget dimension, boolean isTooltip) {
         String scaleUnit = this.scaleUnit(this.numberLevel(dimension.getId()));
-
-        String unit = settings.optString("unit", StringUtils.EMPTY);
+        String unit = unitFromSetting(dimension);
 
         if (isTooltip) {
-            format += (scaleUnit + unit);
+            return  (scaleUnit + unit);
+        } else if(scaleUnit.equals(PERCENT_SYMBOL)){//标签也要把百分号加上
+            return scaleUnit;
         }
-
-        return format;
+        return StringUtils.EMPTY;
     }
 
-    protected String intervalLegendFormatter(String format) {
-        return String.format("function(){return BI.contentFormat(arguments[0].from, \"%s\") + \"-\" + BI.contentFormat(arguments[0].to, \"%s\")}", format, format);
+    //小数位数和千分符，即会改变数值的
+    protected String valueFormat(BISummaryTarget dimension) {
+        boolean hasSeparator = hasSeparatorFromSetting(dimension);
+
+        return this.decimalFormat(dimension, hasSeparator);
+    }
+
+    protected String intervalLegendFormatter(String format, String unit) {
+        return String.format("function(){return BI.contentFormat(arguments[0].from, \"%s\") + \"%s\" + \"-\" + BI.contentFormat(arguments[0].to, \"%s\") + \"%s\"}", format, unit, format, unit);
     }
 
     protected String gradualLegendFormatter(String format) {
@@ -641,17 +693,19 @@ public abstract class VanChartWidget extends TableWidget {
         for (int i = 0, len = series.length(); i < len; i++) {
             JSONObject ser = series.getJSONObject(i);
 
+            if(ser.optBoolean(TRANS_SERIES)){
+                continue;
+            }
+
             JSONObject formatter = JSONObject.create();
 
-            formatter.put("identifier", this.getTooltipIdentifier()).put(this.tooltipValueKey(), this.tooltipValueFormat(this.getSerBITarget(ser)));
+            formatter.put("identifier", this.getTooltipIdentifier())
+                    .put("valueFormat", this.tooltipValueFormat(this.getSerBITarget(ser)))
+                    .put("percentFormat", "function(){return BI.contentFormat(arguments[0], \"#.##%\")}")
+                    .put("arrivalRateFormat", "function(){return BI.contentFormat(arguments[0], \"#.##%\")}");
 
             ser.put("tooltip", new JSONObject(tooltip.toString()).put("formatter", formatter));
         }
-    }
-
-    //百分比堆积的图，所谓的值，是百分比
-    protected String tooltipValueKey(){
-        return "valueFormat";
     }
 
     protected String getTooltipIdentifier() {
@@ -675,6 +729,10 @@ public abstract class VanChartWidget extends TableWidget {
 
             for (int i = 0, len = series.length(); i < len; i++) {
                 JSONObject ser = series.getJSONObject(i);
+
+                if(ser.optBoolean(TRANS_SERIES)){
+                    continue;
+                }
 
                 JSONObject labels = new JSONObject(dataLabels.toString());
                 labels.optJSONObject("formatter")
@@ -728,7 +786,7 @@ public abstract class VanChartWidget extends TableWidget {
                 double y = (isNull ? 0 : s.getDouble(0)) / numberScale;
                 String formattedCategory = this.formatDimension(category, x);
                 data.put(
-                        JSONObject.create().put(categoryKey, formattedCategory).put(valueKey, isNull ? "-" : y).put(LONG_DATE, x)
+                        JSONObject.create().put(categoryKey, formattedCategory).put(valueKey, isNull ? "-" : numberFormat(id, y)).put(LONG_DATE, x)
                 );
                 valueList.add(y);
             }
@@ -745,6 +803,10 @@ public abstract class VanChartWidget extends TableWidget {
         this.idValueMap.put(targetIDs[0], valueList);
 
         return series;
+    }
+
+    protected double checkInfinity(double y){
+        return (y == Double.POSITIVE_INFINITY || y == Double.NEGATIVE_INFINITY) ? 0 : y;
     }
 
     protected JSONArray createSeriesWithChildren(JSONObject originData) throws Exception {
@@ -773,14 +835,14 @@ public abstract class VanChartWidget extends TableWidget {
                     double y = targetValues.isNull(i) ? 0 : targetValues.getDouble(i) / numberScale;
                     String formattedCategory = this.formatDimension(category, x);
                     data.put(
-                            JSONObject.create().put(categoryKey, formattedCategory).put(valueKey, targetValues.isNull(i) ? "-" : y).put(LONG_DATE, ComparatorUtils.equals(formattedCategory, x) ? StringUtils.EMPTY : x)
+                            JSONObject.create().put(categoryKey, formattedCategory).put(valueKey, targetValues.isNull(i) ? "-" : numberFormat(id, y)).put(LONG_DATE, ComparatorUtils.equals(formattedCategory, x) ? StringUtils.EMPTY : x)
                     );
                     valueList.add(y);
                 }
             } else {//没有分类，只有指标。会过来一个汇总值，没有child
                 JSONArray targetValues = originData.optJSONArray("s");
                 double y = targetValues.isNull(i) ? 0 : targetValues.getDouble(i) / numberScale;
-                data.put(JSONObject.create().put(valueKey, y).put(categoryKey, StringUtils.EMPTY));
+                data.put(JSONObject.create().put(valueKey, numberFormat(id, y)).put(categoryKey, StringUtils.EMPTY));
                 valueList.add(y);
             }
             JSONObject ser = JSONObject.create().put("data", data).put("name", getDimensionNameByID(id))
@@ -816,7 +878,7 @@ public abstract class VanChartWidget extends TableWidget {
                     JSONArray targetValues = lObj.getJSONArray("s");
                     double y = targetValues.isNull(i) ? 0 : targetValues.getDouble(i) / numberScale;
 
-                    JSONObject datum = JSONObject.create().put(categoryKey, StringUtils.EMPTY).put(valueKey, targetValues.isNull(i) ? "-" : y);
+                    JSONObject datum = JSONObject.create().put(categoryKey, StringUtils.EMPTY).put(valueKey, targetValues.isNull(i) ? "-" : numberFormat(id, y));
 
                     JSONObject ser = JSONObject.create().put("data", JSONArray.create().put(datum)).put("name", getDimensionNameByID(id))
                             .put("type", type).put("yAxis", yAxis)

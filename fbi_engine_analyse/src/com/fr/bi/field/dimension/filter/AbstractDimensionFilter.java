@@ -7,7 +7,7 @@ import com.fr.bi.base.BICore;
 import com.fr.bi.base.BICoreGenerator;
 import com.fr.bi.conf.report.widget.field.dimension.filter.DimensionFilter;
 import com.fr.bi.stable.gvi.GroupValueIndex;
-import com.fr.bi.stable.report.result.DimensionCalculator;
+import com.fr.bi.report.result.DimensionCalculator;
 import com.fr.json.JSONObject;
 
 /**

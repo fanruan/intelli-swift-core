@@ -8,7 +8,7 @@ import com.fr.bi.field.target.calculator.cal.configure.MaxOfAllCalculator;
 import com.fr.bi.field.target.calculator.cal.configure.MinOfAllCalculator;
 import com.fr.bi.field.target.calculator.cal.configure.SumOfAllCalculator;
 import com.fr.bi.stable.constant.BIReportConstant;
-import com.fr.bi.stable.report.result.TargetCalculator;
+import com.fr.bi.report.result.TargetCalculator;
 import com.fr.bi.stable.utils.BITravalUtils;
 import com.fr.json.JSONObject;
 

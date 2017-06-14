@@ -15,7 +15,7 @@ import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.engine.index.key.IndexKey;
 import com.fr.bi.stable.gvi.GroupValueIndex;
-import com.fr.bi.stable.report.result.DimensionCalculator;
+import com.fr.bi.report.result.DimensionCalculator;
 import com.fr.cache.list.IntList;
 import com.fr.general.ComparatorUtils;
 
@@ -236,7 +236,7 @@ public class RootDimensionGroup implements IRootDimensionGroup {
 
     private ISingleDimensionGroup getCacheDimensionGroup(GroupConnectionValue gv, int deep) {
         // 前提是getData值有长度的时候才进行比较
-        if (singleDimensionGroupCache[deep] == null || singleDimensionGroupCache[deep].getData().length == 0 || !ComparatorUtils.equals(singleDimensionGroupCache[deep].getData(), getParentsValuesByGv(gv, deep))) {
+        if (singleDimensionGroupCache[deep] == null || !ComparatorUtils.equals(singleDimensionGroupCache[deep].getData(), getParentsValuesByGv(gv, deep))) {
             singleDimensionGroupCache[deep] = createSingleDimensionGroup(gv, deep);
         }
         return singleDimensionGroupCache[deep];

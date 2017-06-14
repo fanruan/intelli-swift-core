@@ -1,11 +1,12 @@
 package com.fr.bi.cal.analyze.report.report.widget.chart.types;
 
 import com.fr.bi.cal.analyze.report.report.widget.VanChartWidget;
+import com.fr.bi.conf.report.map.BIWMSManager;
+import com.fr.general.Inter;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
 import com.fr.stable.StableUtils;
-import com.fr.stable.StringUtils;
 
 /**
  * Created by eason on 2017/2/27.
@@ -16,10 +17,27 @@ public class VanGisWidget extends VanChartWidget{
     private static final String ATTRIBUTION = "<a><img src=\"http://webapi.amap.com/theme/v1.3/mapinfo_05.png\">&copy; 2016 AutoNavi</a>";
     private static final String GIS_ICON_PATH =  "?op=resource&resource=/com/fr/bi/web/images/icon/chartsetting/address_marker_big.png";
 
+    protected JSONObject populateDefaultSettings() throws JSONException {
+        JSONObject settings = super.populateDefaultSettings();
+
+        settings.put("isShowBackgroundLayer", true);
+
+        settings.put("backgroundLayerInfo", Inter.getLocText("BI-GAO_DE_MAP"));
+
+        return settings;
+    }
+
     public JSONObject createOptions(JSONObject globalStyle, JSONObject data) throws Exception{
         JSONObject options = super.createOptions(globalStyle, data);
 
-        options.put("geo", JSONObject.create().put("tileLayer", TILE_LAYER).put("attribution", ATTRIBUTION));
+        JSONObject settings = this.getDetailChartSetting();
+
+        JSONObject geo = JSONObject.create();
+        if(settings.optBoolean("isShowBackgroundLayer")){
+            JSONObject config = BIWMSManager.getInstance().getWMSInfo(settings.optString("backgroundLayerInfo"));
+            geo.put("tileLayer", config.optString("url"));
+        }
+        options.put("geo", geo);
 
         return options;
     }
@@ -56,7 +74,7 @@ public class VanGisWidget extends VanChartWidget{
                 if(tmp.length == 2 && StableUtils.string2Number(tmp[0]) != null){
                     JSONArray s = lObj.getJSONArray("s");
                     double value = s.isNull(i) ? 0 : s.getDouble(i);
-                    JSONObject d = JSONObject.create().put("lnglat", tmp).put("value", value / scale);
+                    JSONObject d = JSONObject.create().put("lnglat", tmp).put("value", numberFormat(id,value / scale));
                     JSONArray c = lObj.optJSONArray("c");
                     if(c != null && c.length() > 0){
                         d.put("name", c.optJSONObject(0).optString("n"));

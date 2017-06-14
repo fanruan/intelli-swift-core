@@ -28,6 +28,7 @@ import com.finebi.cube.relation.BITableSourceRelation;
 import com.finebi.cube.relation.BITableSourceRelationPath;
 import com.finebi.cube.router.IRouter;
 import com.finebi.cube.structure.BICube;
+import com.finebi.cube.structure.BICubeFromMultiSource;
 import com.finebi.cube.tools.operate.BIOperationID;
 import com.finebi.cube.utils.BIDataStructTranUtils;
 import com.finebi.cube.utils.CubeUpdateUtils;
@@ -55,7 +56,12 @@ import com.fr.general.DateUtils;
 import com.fr.json.JSONObject;
 import org.slf4j.Logger;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Future;
 
@@ -86,7 +92,7 @@ public class BuildCubeTask implements CubeTask {
         cubeConfiguration = cubeBuildStuff.getCubeConfiguration();
         retrievalService = new BICubeResourceRetrieval(cubeConfiguration);
         ICubeConfiguration IntegrityCubeConfiguration = BICubeConfiguration.getConf(Long.toString(biUser.getUserId()));
-        this.cube = new BICube(retrievalService, BIFactoryHelper.getObject(ICubeResourceDiscovery.class));
+        this.cube = new BICubeFromMultiSource(retrievalService, new BICubeResourceRetrieval(IntegrityCubeConfiguration), BIFactoryHelper.getObject(ICubeResourceDiscovery.class));
         this.integrityCube = new BICube(new BICubeResourceRetrieval(IntegrityCubeConfiguration), BIFactoryHelper.getObject(ICubeResourceDiscovery.class));
         retryNTimes = 100;
     }

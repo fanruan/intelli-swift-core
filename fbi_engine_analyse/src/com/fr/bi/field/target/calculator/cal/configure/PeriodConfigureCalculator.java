@@ -3,9 +3,9 @@ package com.fr.bi.field.target.calculator.cal.configure;
 import com.fr.base.FRContext;
 import com.fr.bi.field.target.target.cal.target.configure.BIConfiguredCalculateTarget;
 import com.fr.bi.stable.constant.BIReportConstant;
-import com.fr.bi.stable.report.key.TargetGettingKey;
-import com.fr.bi.stable.report.result.BICrossNode;
-import com.fr.bi.stable.report.result.BINode;
+import com.fr.bi.report.key.TargetGettingKey;
+import com.fr.bi.report.result.BICrossNode;
+import com.fr.bi.report.result.BINode;
 import com.fr.bi.stable.utils.CubeBaseUtils;
 import com.fr.general.ComparatorUtils;
 
@@ -132,16 +132,14 @@ public class PeriodConfigureCalculator extends AbstractConfigureCalculator {
                     n = n.getParent();
                 }
                 Number value = getValueFromLast(way);
-                if (value != null) {
-                    if (type == BIReportConstant.TARGET_TYPE.CAL_VALUE.PERIOD_TYPE.RATE) {
-                        Number v = cursor_node.getSummaryValue(calTargetKey);
-                        double currentValue = v == null ? 0 : v.doubleValue();
-                        cursor_node.setSummaryValue(createTargetGettingKey(), (currentValue - (Double) value) / (Double) value);
-                    } else {
-                        cursor_node.setSummaryValue(createTargetGettingKey(), value);
-                    }
-
+                if (value != null && type == BIReportConstant.TARGET_TYPE.CAL_VALUE.PERIOD_TYPE.RATE) {
+                    Number v = cursor_node.getSummaryValue(calTargetKey);
+                    double currentValue = v == null ? 0 : v.doubleValue();
+                    cursor_node.setSummaryValue(createTargetGettingKey(), (currentValue - (Double) value) / (Double) value);
+                } else {
+                    cursor_node.setSummaryValue(createTargetGettingKey(), value);
                 }
+
                 cursor_node = cursor_node.getSibling();
             }
             return null;

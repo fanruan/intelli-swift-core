@@ -74,8 +74,10 @@ AnalysisBaseTableSource extends AbstractCubeTableSource implements AnalysisCubeT
             dbTable = new PersistentTable(null, fetchObjectCore().getID().getIdentityValue(), null);
             for (int i = 0; i < fieldList.size(); i++) {
                 AnalysisETLSourceField c = fieldList.get(i);
-                int sqlType = i < widget.getViewDimensions().length ? getSqlType(i) : BIDBUtils.biTypeToSql(c.getFieldType());
-                dbTable.addColumn(new PersistentField(c.getFieldName(), sqlType));
+                if (widget != null){
+                    int sqlType = i < widget.getViewDimensions().length ? getSqlType(i) : BIDBUtils.biTypeToSql(c.getFieldType());
+                    dbTable.addColumn(new PersistentField(c.getFieldName(), sqlType));
+                }
             }
 
         }
@@ -235,6 +237,24 @@ AnalysisBaseTableSource extends AbstractCubeTableSource implements AnalysisCubeT
                 targets[i].setSummaryIndex(i);
                 targetMap.put(targets[i].getValue(), targets[i]);
                 targets[i].setTargetMap(targetMap);
+            }
+        }
+        if (widget != null){
+            for (BITargetAndDimension dim : widget.getViewDimensions()) {
+                if (dim.getStatisticElement() != null && dim.createTableKey() != null && dim.createTableKey().getTableSource() != null) {
+                    CubeTableSource source = dim.createTableKey().getTableSource();
+                    if (source.getType() == BIBaseConstant.TABLE_TYPE.BASE || source.getType() == BIBaseConstant.TABLE_TYPE.ETL) {
+                        ((AnalysisCubeTableSource)source).resetTargetsMap();
+                    }
+                }
+            }
+            for (BITargetAndDimension target : widget.getViewTargets()) {
+                if (target.getStatisticElement() != null && target.createTableKey() != null && target.createTableKey().getTableSource() != null) {
+                    CubeTableSource source = target.createTableKey().getTableSource();
+                    if (source.getType() == BIBaseConstant.TABLE_TYPE.BASE || source.getType() == BIBaseConstant.TABLE_TYPE.ETL) {
+                        ((AnalysisCubeTableSource)source).resetTargetsMap();
+                    }
+                }
             }
         }
     }

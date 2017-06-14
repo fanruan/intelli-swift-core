@@ -3,6 +3,7 @@ package com.fr.bi.cal.analyze.report.report.widget.chart.export.format.utils;
 import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.utils.program.BIStringUtils;
+import com.fr.general.ComparatorUtils;
 import com.fr.general.Inter;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONException;
@@ -20,16 +21,22 @@ import java.util.Date;
 public class BITableCellFormatHelper {
     static final String PERCENT_SYMBOL = "%";
     static final int DEFAULT_SCALE = 1;
+    static final String NONE_VALUE = "--";
 
     public static String targetValueFormat(JSONObject settings, String text) throws JSONException {
-        if (BIStringUtils.isEmptyString(text) || !StableUtils.isNumber(text)) {
+        if (BIStringUtils.isEmptyString(text) || StableUtils.isNumber(text)) {
             return text;
         }
-        float value = Float.valueOf(text);
-        value = parseNumByLevel(settings, value);
-        text = parseNumByFormat(decimalFormat(settings), value);
-        String tail = createTailUnit(settings);
-        return text + tail;
+        try {
+            float value = Float.valueOf(text);
+            value = parseNumByLevel(settings, value);
+            text = parseNumByFormat(decimalFormat(settings), value);
+            String tail = createTailUnit(settings);
+            return text + tail;
+        } catch (NumberFormatException e) {
+            BILoggerFactory.getLogger(BITableCellFormatHelper.class).error(e.getMessage(), e);
+        }
+        return text;
     }
 
     private static String parseNumByFormat(String format, float value) {
@@ -70,7 +77,7 @@ public class BITableCellFormatHelper {
     }
 
     public static String dateFormat(JSONObject format, int groupType, String text) throws JSONException {
-        if (StringUtils.isBlank(text)) {
+        if (StringUtils.isBlank(text) || ComparatorUtils.equals(text, NONE_VALUE)) {
             return text;
         }
         JSONObject dateFormat = format.optJSONObject("dateFormat");
@@ -262,15 +269,18 @@ public class BITableCellFormatHelper {
     }
 
     public static JSONObject createTextStyle(JSONObject settings, String text) throws JSONException {
-        Float num;
-        try {
-            num = Float.valueOf(text);
-        } catch (NumberFormatException e) {
+        if (BIStringUtils.isEmptyString(text) || StableUtils.isNumber(text)) {
             return JSONObject.create();
         }
+        Float num = Float.valueOf(text);
         int markResult = getTextCompareResult(settings, num);
         int iconStyle = settings.getInt("iconStyle");
-        String textColor = getTextColor(settings, num);
+        String textColor = "";
+        try {
+            textColor= getTextColor(settings, num);
+        } catch (JSONException e) {
+            BILoggerFactory.getLogger(BITableCellFormatHelper.class).error(e.getMessage(), e);
+        }
         return JSONObject.create().put("markResult", markResult).put("iconStyle", iconStyle).put("color", textColor);
     }
 
@@ -284,7 +294,7 @@ public class BITableCellFormatHelper {
 
     private static String getTextColor(JSONObject settings, Float num) throws JSONException {
         JSONArray conditions = settings.optJSONArray("conditions");
-        if (null!=conditions) {
+        if (null != conditions) {
             for (int i = 0; i < conditions.length(); i++) {
                 JSONObject range = conditions.getJSONObject(i).getJSONObject("range");
                 long min = range.getLong("min");

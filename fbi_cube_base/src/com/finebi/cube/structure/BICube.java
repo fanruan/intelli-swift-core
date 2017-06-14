@@ -29,11 +29,11 @@ import java.util.concurrent.ConcurrentHashMap;
 public class BICube implements Cube {
     private static BILogger logger = BILoggerFactory.getLogger(BICube.class);
     private static final long serialVersionUID = -5241804642657280524L;
-    private ICubeResourceRetrievalService resourceRetrievalService;
-    private ICubeResourceDiscovery discovery;
-    private BICubeVersion cubeVersion;
+    protected ICubeResourceRetrievalService resourceRetrievalService;
+    protected ICubeResourceDiscovery discovery;
+    protected BICubeVersion cubeVersion;
     private static String CUBE_PROPERTY = CubeConstant.CUBE_PROPERTY;
-    private Map<String, CompoundCubeTableReader> cacheTableReader;
+    protected Map<String, CompoundCubeTableReader> cacheTableReader;
 
     public BICube(ICubeResourceRetrievalService resourceRetrievalService, ICubeResourceDiscovery discovery) {
         this.resourceRetrievalService = resourceRetrievalService;
@@ -42,7 +42,11 @@ public class BICube implements Cube {
         cacheTableReader = new ConcurrentHashMap<String, CompoundCubeTableReader>();
     }
 
-    private ICubeResourceLocation getCubeLocation() {
+    public BICube(ICubeResourceRetrievalService resourceRetrievalService, ICubeResourceRetrievalService integrityResourceRetrievalService, ICubeResourceDiscovery discovery) {
+
+    }
+
+    protected ICubeResourceLocation getCubeLocation() {
         try {
             return this.resourceRetrievalService.retrieveRootResource(CUBE_PROPERTY);
         } catch (BICubeResourceAbsentException e) {

@@ -16,35 +16,53 @@ import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.conf.report.widget.field.dimension.filter.DimensionFilter;
 import com.fr.bi.field.target.calculator.cal.CalCalculator;
 import com.fr.bi.stable.constant.BIReportConstant;
+import com.fr.bi.stable.gvi.GVIUtils;
 import com.fr.bi.stable.gvi.GroupValueIndex;
-import com.fr.bi.stable.report.key.TargetGettingKey;
-import com.fr.bi.stable.report.result.TargetCalculator;
+import com.fr.bi.report.key.TargetGettingKey;
+import com.fr.bi.report.result.TargetCalculator;
 import com.fr.general.ComparatorUtils;
 import com.fr.general.NameObject;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Created by 小灰灰 on 2017/1/17.
  */
 public class ConstructedRootDimensionGroup extends RootDimensionGroup {
+
     private MetricMergeResult rootNode;
+
     private NameObject[] dimensionTargetSort;
+
     private List<CalCalculator> calCalculators;
+
     private BIDimension[] filterDimension;
+
     private boolean setIndex;
+
     private boolean hasInSumMetric;
+
     private BIMultiThreadExecutor executor;
+
     private boolean calAllPage;
+
     private int[] sortType;
+
     private TargetGettingKey[] sortTargetKey;
 
     public ConstructedRootDimensionGroup() {
+
     }
 
     public ConstructedRootDimensionGroup(List<MetricGroupInfo> metricGroupInfoList, MergeIteratorCreator[] mergeIteratorCreators, int sumLength, BISession session, boolean useRealData,
                                          NameObject[] dimensionTargetSort, List<CalCalculator> calCalculators, BIDimension[] filterDimension, boolean setIndex, boolean hasInSumMetric, BIMultiThreadExecutor executor, boolean calAllPage) {
+
         super(metricGroupInfoList, mergeIteratorCreators, sumLength, session, useRealData);
         this.calCalculators = calCalculators;
         this.filterDimension = filterDimension;
@@ -57,15 +75,18 @@ public class ConstructedRootDimensionGroup extends RootDimensionGroup {
     }
 
     public Node getConstructedRoot() {
+
         return rootNode;
     }
 
     public void construct() {
+
         initSort();
         initRootNode();
     }
 
     private void initSort() {
+
         sortType = new int[dimensionTargetSort.length];
         sortTargetKey = new TargetGettingKey[dimensionTargetSort.length];
         for (int i = 0; i < dimensionTargetSort.length; i++) {
@@ -100,6 +121,7 @@ public class ConstructedRootDimensionGroup extends RootDimensionGroup {
     }
 
     private void initRootNode() {
+
         rootNode = new MetricMergeResult(null, sumLength, root.getGvis());
         if (executor != null) {
             multiThreadBuild();
@@ -137,6 +159,7 @@ public class ConstructedRootDimensionGroup extends RootDimensionGroup {
     }
 
     private boolean hasTargetSort() {
+
         for (NameObject object : dimensionTargetSort) {
             if (object != null) {
                 return true;
@@ -146,6 +169,7 @@ public class ConstructedRootDimensionGroup extends RootDimensionGroup {
     }
 
     private void clearEmptyNode(Node node) {
+
         Node parent = node.getParent();
         if (parent != null) {
             List<Node> children = parent.getChilds();
@@ -162,6 +186,7 @@ public class ConstructedRootDimensionGroup extends RootDimensionGroup {
     }
 
     private void filter(MetricMergeResult node, int deep, Map<String, TargetCalculator> calculatorMap) {
+
         if (deep < rowSize) {
             DimensionFilter filter = filterDimension == null ? null : filterDimension[deep].getFilter();
             if (filter != null) {
@@ -172,16 +197,39 @@ public class ConstructedRootDimensionGroup extends RootDimensionGroup {
                 } else {
                     for (Node n : children) {
                         node.addChild(n);
+                        if (setIndex) {
+                            // node 的gvi需要更新
+                            GroupValueIndex c[] = new GroupValueIndex[node.getGvis().length];
+                            int i = 0;
+                            for (GroupValueIndex g : ((MetricMergeResult) n).getGvis()) {
+                                c[i] = GVIUtils.OR(c[i++], g);
+                            }
+                            node.setGvis(c);
+                        }
                     }
                 }
             }
+            GroupValueIndex c[] = null;
+            if (setIndex) {
+                c = new GroupValueIndex[node.getGvis().length];
+            }
             for (Node n : node.getChilds()) {
                 filter((MetricMergeResult) n, deep + 1, calculatorMap);
+                if (setIndex) {
+                    int i = 0;
+                    for (GroupValueIndex g : ((MetricMergeResult) n).getGvis()) {
+                        c[i] = GVIUtils.OR(c[i++], g);
+                    }
+                }
+            }
+            if (setIndex) {
+                node.setGvis(c);
             }
         }
     }
 
     private List<Node> filter(List<Node> children, final int deep, Map<String, TargetCalculator> calculatorMap) {
+
         DimensionFilter filter = filterDimension == null ? null : filterDimension[deep].getFilter();
         List<Node> results = new ArrayList<Node>();
         if (filter == null) {
@@ -198,6 +246,7 @@ public class ConstructedRootDimensionGroup extends RootDimensionGroup {
 
     //有过滤要重新汇总下
     private void reSum() {
+
         List<TargetGettingKey> keys = new ArrayList<TargetGettingKey>();
         for (List<TargetAndKey> list : summaryLists) {
             for (TargetAndKey key : list) {
@@ -215,6 +264,7 @@ public class ConstructedRootDimensionGroup extends RootDimensionGroup {
     }
 
     private void sumAfterVISummarizing(MetricMergeResult node, int deep) {
+
         sum(node);
         //最后一层不需要resum
         if (deep < rowSize - 1) {
@@ -226,12 +276,15 @@ public class ConstructedRootDimensionGroup extends RootDimensionGroup {
 
 
     private void sort(MetricMergeResult node, int deep) {
+
         if (deep < rowSize) {
             if (dimensionTargetSort[deep] != null) {
                 final int fDeep = deep;
                 Collections.sort(node.getChilds(), new Comparator<Node>() {
+
                     @Override
                     public int compare(Node o1, Node o2) {
+
                         Number v1 = o1.getSummaryValue(sortTargetKey[fDeep]);
                         Number v2 = o2.getSummaryValue(sortTargetKey[fDeep]);
                         if (v1 == v2) {
@@ -260,11 +313,13 @@ public class ConstructedRootDimensionGroup extends RootDimensionGroup {
 
 
     private void singleThreadBuild() {
+
         cal(rootNode, root, 0);
         sum(rootNode);
     }
 
     private void cal(MetricMergeResult node, NoneDimensionGroup childDimensionGroup, int level) {
+
         if (level >= rowSize) {
             return;
         }
@@ -284,10 +339,12 @@ public class ConstructedRootDimensionGroup extends RootDimensionGroup {
     }
 
     private void multiThreadBuild() {
+
         new MultiThreadBuilder().build();
     }
 
     private void sumCalculateMetrics() {
+
         NodeUtils.setSiblingBetweenFirstAndLastChild(rootNode);
         if (!calCalculators.isEmpty()) {
             List<TargetCalculator> calculatorList = new ArrayList<TargetCalculator>();
@@ -303,6 +360,7 @@ public class ConstructedRootDimensionGroup extends RootDimensionGroup {
     }
 
     private void sum(MetricMergeResult node) {
+
         GroupValueIndex[] gvis = node.getGvis();
         for (int i = 0; i < summaryLists.length; i++) {
             List<TargetAndKey> targetAndKeys = summaryLists[i];
@@ -316,12 +374,15 @@ public class ConstructedRootDimensionGroup extends RootDimensionGroup {
     }
 
     protected ISingleDimensionGroup createSingleDimensionGroup(Object[] data, NoneDimensionGroup ng, int deep) {
+
         return ng.createNodeSingleDimensionGroup(columns[deep], getters[deep], data, mergeIteratorCreators[deep], ng.getChildren());
     }
 
     private class MultiThreadBuilder {
+
         //每一层维度计算完成的数量
         private AtomicInteger[] count;
+
         //每一层维度被丢进线程池的数量
         private AtomicInteger[] size;
 
@@ -333,7 +394,7 @@ public class ConstructedRootDimensionGroup extends RootDimensionGroup {
                 count[i] = new AtomicInteger(0);
                 size[i] = new AtomicInteger(0);
             }
-            if (rowSize > 0){
+            if (rowSize > 0) {
                 SingleDimensionGroup rootGroup = root.createSingleDimensionGroup(columns[0], getters[0], null, mergeIteratorCreators[0], useRealData);
                 int index = 0;
                 MetricMergeResult result = rootGroup.getMetricMergeResultByWait(index);
@@ -366,9 +427,11 @@ public class ConstructedRootDimensionGroup extends RootDimensionGroup {
          * 后来再想想，不对呀，万一计算线程太快，加一个算一个，到某一个时间节点刚好count跟size都相等了，岂不是还没算完就结束了？赶紧判断下是不是每一层都加进来了。
          * 最后想明白了，是不会出现没算完就结束的。因为再主线程里面已经把size[0]给丢满了，如果count[i]==size[i]的情况，size[i+1]一定是满的，
          * 而multiThreadSum是发生再count[level].incrementAndGet()之前的，所以size与count相等说明一定是计算完了
+         *
          * @return
          */
         private boolean allCompleted() {
+
             for (int i = 0; i < count.length; i++) {
                 if (count[i].get() != size[i].get()) {
                     return false;
@@ -378,6 +441,7 @@ public class ConstructedRootDimensionGroup extends RootDimensionGroup {
         }
 
         private void checkComplete(int level) {
+
             if (currentLevelAllAdded(level)) {
                 //完成了一个维度必须唤醒下线程，要不肯能会wait住死掉。
                 executor.wakeUp();
@@ -392,6 +456,7 @@ public class ConstructedRootDimensionGroup extends RootDimensionGroup {
 
         //当前层的迭代器是否都执行完了
         private boolean currentLevelAllAdded(int level) {
+
             if (level > rowSize) {
                 return false;
             }
@@ -400,11 +465,15 @@ public class ConstructedRootDimensionGroup extends RootDimensionGroup {
         }
 
         private class SingleChildCal implements BISingleThreadCal {
+
             private MetricMergeResult node;
+
             private NoneDimensionGroup childDimensionGroup;
+
             private int level;
 
             public SingleChildCal(MetricMergeResult result, NoneDimensionGroup childDimensionGroup, int level) {
+
                 this.node = result;
                 this.childDimensionGroup = childDimensionGroup;
                 this.level = level;
@@ -412,11 +481,13 @@ public class ConstructedRootDimensionGroup extends RootDimensionGroup {
 
             @Override
             public void cal() {
+
                 cal(node, childDimensionGroup, level);
                 checkComplete(level);
             }
 
             private void cal(MetricMergeResult node, NoneDimensionGroup childDimensionGroup, int level) {
+
                 try {
                     if (level < rowSize - 1) {
                         SingleDimensionGroup rootGroup = childDimensionGroup.createSingleDimensionGroup(columns[level + 1], getters[level + 1], null, mergeIteratorCreators[level + 1], useRealData);
@@ -440,11 +511,13 @@ public class ConstructedRootDimensionGroup extends RootDimensionGroup {
         private class SingleSummaryCall extends SummaryCall {
 
             public SingleSummaryCall(ICubeTableService ti, Node node, TargetAndKey targetAndKey, GroupValueIndex gvi, ICubeDataLoader loader) {
+
                 super(ti, node, targetAndKey, gvi, loader);
             }
 
             @Override
             public void cal() {
+
                 super.cal();
                 count[rowSize].incrementAndGet();
                 checkComplete(rowSize);
@@ -452,6 +525,7 @@ public class ConstructedRootDimensionGroup extends RootDimensionGroup {
         }
 
         private void multiThreadSum(MetricMergeResult node) {
+
             GroupValueIndex[] gvis = node.getGvis();
             for (int i = 0; i < summaryLists.length; i++) {
                 List<TargetAndKey> targetAndKeys = summaryLists[i];
@@ -470,6 +544,7 @@ public class ConstructedRootDimensionGroup extends RootDimensionGroup {
 
     @Override
     public IRootDimensionGroup createClonedRoot() {
+
         ConstructedRootDimensionGroup root = (ConstructedRootDimensionGroup) super.createClonedRoot();
         root.rootNode = rootNode;
         root.dimensionTargetSort = dimensionTargetSort;
@@ -480,6 +555,7 @@ public class ConstructedRootDimensionGroup extends RootDimensionGroup {
 
     @Override
     protected IRootDimensionGroup createNew() {
+
         return new ConstructedRootDimensionGroup();
     }
 }

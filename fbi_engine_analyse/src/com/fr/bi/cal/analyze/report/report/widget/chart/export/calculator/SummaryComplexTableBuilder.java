@@ -91,7 +91,7 @@ public class SummaryComplexTableBuilder extends TableAbstractDataBuilder {
         }
         //无列表头 有指标 当作多个普通分组表
         if (isRowRegionExist() && !isColRegionExist() && targetIds.size() > 0) {
-            createTableHeader();
+            createTableHeader4MultiGroups();
             createMultiGroupItems();
             setOtherAttrs();
             return;
@@ -100,6 +100,34 @@ public class SummaryComplexTableBuilder extends TableAbstractDataBuilder {
         createTableHeader();
         createTableItems();
         setOtherAttrs();
+    }
+
+    private void createTableHeader4MultiGroups() throws Exception {
+        createTableHeader();
+        complementHeaders();
+    }
+
+    //补齐header的长度
+    private void complementHeaders() throws JSONException {
+        int rowLength = getLargestLengthOfRowRegions();
+        int colLength = getLargestLengthOfColRegions();
+        ITableHeader lastDimHeader = headers.size() > dimIds.size() ? headers.get(dimIds.size() - 1) : new BITableHeader();
+        ITableHeader lastCrossDimHeader = crossDimIds.size() >= crossHeaders.size() && crossDimIds.size() > 0 ? crossHeaders.get(crossDimIds.size() - 1) : new BITableHeader();
+        int count = 0;
+        while (count < rowLength - dimIds.size()) {
+            ITableHeader header = lastDimHeader;
+            if (null != header) {
+                this.headers.add(dimIds.size() + count, header);
+            }
+            count++;
+        }
+        count = 0;
+        while (count < colLength - crossDimIds.size()) {
+            if (null != lastCrossDimHeader) {
+                crossHeaders.add(crossDimIds.size() + count, lastCrossDimHeader);
+            }
+            count++;
+        }
     }
 
     //仅有行表头和指标的情况
@@ -153,7 +181,6 @@ public class SummaryComplexTableBuilder extends TableAbstractDataBuilder {
         BIBasicTableItem itemNode = new BIBasicTableItem();
         itemNode.setDId(targetIds.get(j));
         itemNode.setValue(s.getString(j));
-        itemNode.setStyles(BITableStyleHelper.getLastSummaryStyles(styleSetting.getThemeColor(), styleSetting.getTableStyleGroup()));
         outerValues.add(itemNode);
     }
 
@@ -163,27 +190,7 @@ public class SummaryComplexTableBuilder extends TableAbstractDataBuilder {
 
     private void createComplexTableHeader() throws Exception {
         createCrossTableHeader();
-        //补齐header的长度
-        int rowLength = getLargestLengthOfRowRegions();
-        int colLength = getLargestLengthOfColRegions();
-        ITableHeader lastDimHeader = headers.size() > dimIds.size() ? headers.get(dimIds.size() - 1) : new BITableHeader();
-        ITableHeader lastCrossDimHeader = crossDimIds.size() >= crossHeaders.size() ? crossHeaders.get(crossDimIds.size() - 1) : new BITableHeader();
-        int count = 0;
-        while (count < rowLength - dimIds.size()) {
-            ITableHeader header = lastDimHeader;
-            if (null != header) {
-                this.headers.add(dimIds.size() + count, header);
-            }
-            count++;
-        }
-        count = 0;
-        while (count < colLength - crossDimIds.size()) {
-            if (null != lastCrossDimHeader) {
-                crossHeaders.add(crossDimIds.size() + count, lastCrossDimHeader);
-            }
-            count++;
-        }
-
+        complementHeaders();
     }
 
     private int getLargestLengthOfColRegions() throws JSONException {
@@ -275,28 +282,25 @@ public class SummaryComplexTableBuilder extends TableAbstractDataBuilder {
     private void parseColTableItems(List<ITableItem> tempItems) throws Exception {
         ITableItem childItem = new BIBasicTableItem();
         for (int i = 0; i < tempItems.size(); i++) {
+            List<ITableItem> childrenAddSummaryValue = tempItems.get(i).getChildren();
             boolean isSummary = showRowTotal && targetIds.size() > 0 && (isColRegionExist() || isRowRegionExist()) && !isOnlyCrossAndTarget();
             if (isSummary) {
                 BIBasicTableItem summaryValueItem = new BIBasicTableItem();
                 summaryValueItem.setValue(SUMMARY);
                 summaryValueItem.setSum(true);
+                if (childrenAddSummaryValue.size() > 0) {
+                    summaryValueItem.setDId(tempItems.get(i).getChildren().get(0).getDId());
+                }
                 summaryValueItem.setValues(tempItems.get(i).getValues());
-                List<ITableItem> childrenAddSummaryValue = tempItems.get(i).getChildren();
                 childrenAddSummaryValue.add(summaryValueItem);
-                tempItems.get(i).setChildren(childrenAddSummaryValue);
-                tempItems.get(i).setValues(null);
-
-            } else {
-                if (childItem.getValues() == null) {
-                    childItem.setValues(tempItems.get(i).getValues());
-                } else
-                    childItem.getValues().addAll(tempItems.get(i).getValues());
             }
+            tempItems.get(i).setChildren(childrenAddSummaryValue);
             if (childItem.getChildren() == null) {
                 childItem.setChildren(tempItems.get(i).getChildren());
             } else {
                 childItem.getChildren().addAll(tempItems.get(i).getChildren());
             }
+
         }
         this.items.add(childItem);
     }

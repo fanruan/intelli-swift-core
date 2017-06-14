@@ -18,11 +18,12 @@ import com.fr.bi.conf.report.BIWidget;
 import com.fr.bi.conf.report.WidgetType;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.stable.constant.BIReportConstant;
-import com.fr.bi.stable.report.key.TargetGettingKey;
+import com.fr.bi.report.key.TargetGettingKey;
 import com.fr.stable.StringUtils;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -69,6 +70,8 @@ public class UserWidget implements Serializable {
         end = Math.min(end, maxRow);
         return getDate(start, end);
     }
+
+
 
     private List<List> getDate(int start, int end) {
         List<List> values = new ArrayList<List>();
@@ -156,6 +159,32 @@ public class UserWidget implements Serializable {
         return values;
     }
 
+    private Iterator<List<List>> createTableDataIterator() {
+        return new Iterator<List<List>>() {
+            List<List> v = getNextValue(session, BIReportConstant.TABLE_PAGE_OPERATOR.REFRESH);
+            @Override
+            public void remove() {
+
+            }
+
+            @Override
+            public boolean hasNext() {
+                return v != null;
+            }
+
+            @Override
+            public List<List> next() {
+                List<List> temp = v;
+                if (((TableWidget) widget).hasVerticalNextPage()){
+                    v = getNextValue(session, BIReportConstant.TABLE_PAGE_OPERATOR.ROW_NEXT);
+                } else {
+                    v = null;
+                }
+                return temp;
+            }
+        };
+    }
+
     private void createDetailData(int start, int end) {
         int step = end - start;
         Paging paging = PagingFactory.createPaging(step);
@@ -178,13 +207,66 @@ public class UserWidget implements Serializable {
         }
     }
 
+    private static final int STEP = 1000;
+    private Iterator<List<List>> createDetailDataIterator() {
+        return new Iterator<List<List>>() {
+            int page = 0;
+            int step = STEP;
+            List<List> data = get();
+            @Override
+            public void remove() {
+
+            }
+
+            private List<List> get(){
+                return getDetailData(step * page, step *(++page));
+            }
+
+            @Override
+            public boolean hasNext() {
+                return data != null && !data.isEmpty();
+            }
+
+            @Override
+            public List<List> next() {
+                List<List> temp = data;
+                data = get();
+                return temp;
+            }
+        };
+    }
+
+    private List<List> getDetailData(int start, int end) {
+        int step = end - start;
+        Paging paging = PagingFactory.createPaging(step);
+        paging.setPageSize(step);
+        int page = start / step;
+        paging.setCurrentPage(page + 1);
+        DetailExecutor exe = new DetailExecutor((BIDetailWidget) widget, paging, session);
+        List<List> data =  exe.getData();
+        if (paging.getTotalSize() > start){
+            return data;
+        }
+        return null;
+    }
+
+
     public void clear() {
         synchronized (lock) {
             maxRow = Integer.MAX_VALUE;
             tempValue.clear();
+            session.clearCachedMaps();
             session = new UserSession();
         }
 
+    }
+
+    public Iterator<List<List>> getDataIterator() {
+        if (widget.getType() == WidgetType.DETAIL) {
+            return createDetailDataIterator();
+        } else {
+            return createTableDataIterator();
+        }
     }
 
     private class UserSession extends BISession {

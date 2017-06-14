@@ -5,9 +5,9 @@ import com.fr.bi.field.target.target.cal.target.configure.BIConfiguredCalculateT
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.operation.sort.comp.RankConfASCComparator;
 import com.fr.bi.stable.operation.sort.comp.RankConfDSCComparator;
-import com.fr.bi.stable.report.key.TargetGettingKey;
-import com.fr.bi.stable.report.result.BICrossNode;
-import com.fr.bi.stable.report.result.BINode;
+import com.fr.bi.report.key.TargetGettingKey;
+import com.fr.bi.report.result.BICrossNode;
+import com.fr.bi.report.result.BINode;
 import com.fr.bi.stable.utils.BICollectionUtils;
 import com.fr.bi.stable.utils.CubeBaseUtils;
 

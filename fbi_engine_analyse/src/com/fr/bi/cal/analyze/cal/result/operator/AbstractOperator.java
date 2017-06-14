@@ -1,6 +1,8 @@
 package com.fr.bi.cal.analyze.cal.result.operator;
 
 
+import com.fr.bi.cal.analyze.cal.sssecret.GroupConnectionValue;
+
 public abstract class AbstractOperator implements Operator {
 
     private int counter = 0;
@@ -22,7 +24,7 @@ public abstract class AbstractOperator implements Operator {
     }
 
     @Override
-    public boolean isPageEnd() {
+    public boolean isPageEnd(GroupConnectionValue gc) {
         return counter >= maxRow;
     }
 

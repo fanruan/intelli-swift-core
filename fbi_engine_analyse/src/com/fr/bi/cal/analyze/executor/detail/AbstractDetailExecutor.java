@@ -23,24 +23,24 @@ import com.fr.bi.conf.report.widget.field.target.filter.TargetFilter;
 import com.fr.bi.field.BIAbstractTargetAndDimension;
 import com.fr.bi.field.BIStyleTarget;
 import com.fr.bi.field.dimension.calculator.NoneDimensionCalculator;
+import com.fr.bi.field.target.detailtarget.BIAbstractDetailTarget;
 import com.fr.bi.field.target.detailtarget.field.BINumberDetailTarget;
 import com.fr.bi.field.target.detailtarget.formula.BINumberFormulaDetailTarget;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.constant.CellConstant;
 import com.fr.bi.stable.gvi.GVIUtils;
 import com.fr.bi.stable.gvi.GroupValueIndex;
-import com.fr.bi.stable.report.result.DimensionCalculator;
+import com.fr.bi.report.result.DimensionCalculator;
 import com.fr.bi.stable.utils.algorithem.BIComparatorUtils;
 import com.fr.bi.util.BIConfUtils;
 import com.fr.general.ComparatorUtils;
+import com.fr.general.DateUtils;
+import com.fr.general.GeneralUtils;
 import com.fr.general.Inter;
 import com.fr.json.JSONObject;
 import com.fr.stable.StringUtils;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by GUY on 2015/4/16.
@@ -127,6 +127,11 @@ public abstract class AbstractDetailExecutor extends BIAbstractExecutor<JSONObje
             BIDetailTarget t = viewDimension[i];
             Object v = ob[i];
             v = viewDimension[i].createShowValue(v);
+            if(t instanceof BIAbstractDetailTarget &&  v != null) {
+                if (((BIAbstractDetailTarget) t).getGroup().getType() == BIReportConstant.GROUP.YMD && GeneralUtils.string2Number(v.toString()) != null) {
+                    v = DateUtils.DATEFORMAT2.format(new Date(GeneralUtils.string2Number(v.toString()).longValue()));
+                }
+            }
             ChartSetting chartSetting = null;
             int numLevel = BIReportConstant.TARGET_STYLE.NUM_LEVEL.NORMAL;
             if (t instanceof BINumberDetailTarget) {

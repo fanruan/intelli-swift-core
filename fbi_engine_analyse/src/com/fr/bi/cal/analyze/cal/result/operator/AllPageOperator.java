@@ -1,5 +1,7 @@
 package com.fr.bi.cal.analyze.cal.result.operator;
 
+import com.fr.bi.cal.analyze.cal.sssecret.GroupConnectionValue;
+
 public class AllPageOperator extends NextPageOperator {
 
     public AllPageOperator() {
@@ -7,7 +9,7 @@ public class AllPageOperator extends NextPageOperator {
     }
 
     @Override
-    public boolean isPageEnd() {
+    public boolean isPageEnd(GroupConnectionValue gc) {
         return false;
     }
 

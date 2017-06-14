@@ -11,7 +11,7 @@ import com.fr.bi.cal.analyze.executor.iterator.StreamPagedIterator;
 import com.fr.bi.cal.analyze.executor.paging.Paging;
 import com.fr.bi.cal.analyze.report.report.widget.TableWidget;
 import com.fr.bi.cal.analyze.session.BISession;
-import com.fr.bi.stable.report.key.TargetGettingKey;
+import com.fr.bi.report.key.TargetGettingKey;
 import com.fr.general.DateUtils;
 import com.fr.json.JSONObject;
 
@@ -64,10 +64,10 @@ public class ComplexGroupExecutor extends AbstractTableWidgetExecutor {
                 try {
                     FinalInt start = new FinalInt();
                     StreamPagedIterator pagedIterator = iter.getIteratorByPage(start.value);
-                    GroupExecutor.generateTitle(widget, rowData.getDimensionArray(0), usedSumTarget, pagedIterator);
+                    GroupExecutor.generateTitle(widget, rowData.getDimensionArray(0), usedSumTarget, pagedIterator, rowData.getMaxArrayLength());
                     FinalInt rowIdx =new FinalInt();
                     for(int i = 0, j = nodes.length; i < j; i++) {
-                        GroupExecutor.generateCells(nodes[i], widget, rowData.getDimensionArray(i), iter, start, rowIdx);
+                        GroupExecutor.generateCells(nodes[i], widget, rowData.getDimensionArray(i), iter, start, rowIdx, rowData.getMaxArrayLength());
                     }
                 } catch (Exception e) {
                     BILoggerFactory.getLogger().error(e.getMessage(), e);

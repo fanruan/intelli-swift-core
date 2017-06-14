@@ -1,9 +1,9 @@
 package com.fr.bi.field.target.calculator.cal;
 
 import com.fr.bi.field.target.target.cal.BICalculateTarget;
-import com.fr.bi.stable.report.key.TargetGettingKey;
-import com.fr.bi.stable.report.result.BICrossNode;
-import com.fr.bi.stable.report.result.BINode;
+import com.fr.bi.report.key.TargetGettingKey;
+import com.fr.bi.report.result.BICrossNode;
+import com.fr.bi.report.result.BINode;
 import com.fr.bi.stable.utils.BIFormularUtils;
 import com.fr.script.Calculator;
 import com.fr.stable.StringUtils;
@@ -57,7 +57,7 @@ public class FormulaCalculator extends CalCalculator {
     public boolean isAllFieldsReady(Set<TargetGettingKey> targetSet) {
         Iterator<String> it = BIFormularUtils.createColumnIndexMap(expression).values().iterator();
         while (it.hasNext()) {
-            Object key = targetMap.get(it.next());
+            Object key = targetMap.get(it.next()).createTargetGettingKey();
             if (key == null) {
                 return false;
             }

@@ -24,8 +24,21 @@ public class VanCompareBarWidget extends VanCompareColumnWidget{
         return level;
     }
 
+
+    protected JSONObject parseLeftValueAxis(JSONObject settings) throws JSONException {
+        return super.parseLeftValueAxis(settings).put("position", "right");
+    }
+
     public boolean isInverted(){
         return true;
+    }
+
+    protected double cateAxisRotation() {
+        return VERTICAL;
+    }
+
+    protected double valueAxisRotation() {
+        return 0;
     }
 
     //把值轴1的警戒线取负，把值轴2的警戒线放到值轴1里面"
@@ -80,10 +93,11 @@ public class VanCompareBarWidget extends VanCompareColumnWidget{
 
         int index = yAxisIndex(dimension.getValue());
 
-        String format = this.valueFormat(dimension, isTooltip);
+        String format = this.valueFormat(dimension);
+        String unit = this.valueUnit(dimension, isTooltip);
 
-        return index == 0 ? String.format("function(){return BI.contentFormat(-arguments[0], \"%s\")}", format)
-                : String.format("function(){return BI.contentFormat(arguments[0], \"%s\")}", format);
+        return index == 0 ? String.format("function(){return BI.contentFormat(-arguments[0], \"%s\") + \"%s\"}", format, unit)
+                : String.format("function(){return BI.contentFormat(arguments[0], \"%s\") + \"%s\"}", format, unit);
     }
 
     protected String labelString(int yAxis){

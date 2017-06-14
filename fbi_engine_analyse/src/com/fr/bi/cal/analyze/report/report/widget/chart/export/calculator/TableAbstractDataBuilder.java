@@ -7,11 +7,13 @@ import com.fr.bi.cal.analyze.report.report.widget.chart.export.item.ITableItem;
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.utils.BITableDimensionHelper;
 import com.fr.bi.conf.report.widget.IWidgetStyle;
 import com.fr.bi.stable.constant.BIReportConstant;
+import com.fr.bi.stable.constant.BIStyleConstant;
 import com.fr.bi.stable.utils.program.BIJsonUtils;
 import com.fr.general.Inter;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
+import com.fr.stable.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,7 +37,7 @@ public abstract class TableAbstractDataBuilder implements IExcelDataBuilder {
     protected List<String> targetIds;
     protected boolean showColTotal;
     protected boolean showRowTotal;
-    protected static final String EMPTY_VALUE = "--";
+    protected static final String EMPTY_VALUE = StringUtils.EMPTY;
     protected static final String SUMMARY = Inter.getLocText("BI-Summary_Values");
 
     public TableAbstractDataBuilder(Map<Integer, List<JSONObject>> dimAndTar, JSONObject dataJSON, IWidgetStyle styleSettings) throws Exception {
@@ -129,6 +131,7 @@ public abstract class TableAbstractDataBuilder implements IExcelDataBuilder {
             BITableHeader header = new BITableHeader();
             header.setdID(dimId);
             header.setText(BITableDimensionHelper.getDimensionNameByID(dimAndTar, dimId));
+            header.setUsed(BITableDimensionHelper.isDimUsed(dimAndTar, dimId));
             headers.add(header);
         }
     }
@@ -284,6 +287,12 @@ public abstract class TableAbstractDataBuilder implements IExcelDataBuilder {
                 targetIds.add(s.getString("dId"));
             }
         }
+        resetShowTotals();
+    }
+
+    private void resetShowTotals() {
+        showColTotal = showRowTotal && targetIds.size() > 0;
+        showRowTotal = showRowTotal && targetIds.size() > 0;
     }
 
     //仅有列表头和指标 l: {s: {c: [{s: [1, 2]}, {s: [3, 4]}], s: [100, 200]}}
@@ -392,6 +401,7 @@ public abstract class TableAbstractDataBuilder implements IExcelDataBuilder {
                     for (String targetId : targetIds) {
                         BITableHeader header = new BITableHeader();
                         header.setText(SUMMARY + ":" + BITableDimensionHelper.getDimensionNameByID(dimAndTar, targetId));
+                        header.setSum(true);
                         headers.add(header);
                     }
                 }
@@ -409,6 +419,7 @@ public abstract class TableAbstractDataBuilder implements IExcelDataBuilder {
                 if (targetIds.size() == 1) {
                     BITableHeader header = new BITableHeader();
                     header.setText(item.getValue());
+                    header.parseJson(item.createJSON());
                     headers.add(header);
                 } else {
                     List<ITableItem> values = item.getValues();
@@ -546,7 +557,7 @@ public abstract class TableAbstractDataBuilder implements IExcelDataBuilder {
     private void hasChildren(int currentLayer, List<String> dimIds, JSONObject child, BIBasicTableItem item) throws Exception {
         List children = createCommonTableItems(child.getString("c"), currentLayer, dimIds);
         item.setChildren(children);
-        if (showRowTotal) {
+        if (showRowTotal||this.styleSetting.getTableFormGroup()== BIStyleConstant.TABLE_FORM.OPEN_COL) {
             List<ITableItem> vs = new ArrayList<ITableItem>();
             JSONArray summary = getOneRowSummary(child.getString("s"));
             int tartSize = targetIds.size();

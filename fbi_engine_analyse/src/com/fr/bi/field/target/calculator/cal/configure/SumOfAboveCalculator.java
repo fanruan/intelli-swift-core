@@ -3,9 +3,9 @@ package com.fr.bi.field.target.calculator.cal.configure;
 import com.fr.base.FRContext;
 import com.fr.bi.field.target.target.cal.target.configure.BIConfiguredCalculateTarget;
 import com.fr.bi.stable.io.newio.NIOConstant;
-import com.fr.bi.stable.report.key.TargetGettingKey;
-import com.fr.bi.stable.report.result.BICrossNode;
-import com.fr.bi.stable.report.result.BINode;
+import com.fr.bi.report.key.TargetGettingKey;
+import com.fr.bi.report.result.BICrossNode;
+import com.fr.bi.report.result.BINode;
 import com.fr.bi.stable.utils.BICollectionUtils;
 import com.fr.bi.stable.utils.CubeBaseUtils;
 
@@ -36,10 +36,19 @@ public class SumOfAboveCalculator extends AbstractConfigureCalculator {
             }
             tempNode = tempNode.getFirstChild();
         }
+
+        if (node.getDeep() > node.getFrameDeep()) {
+            tempNode = getCalculatedRootNode(node);
+        } else {
+            return;
+        }
+
         List nodeList = new ArrayList();
         BINode cursor_node = tempNode;
         while (cursor_node != null) {
-            nodeList.add(new RankDealWith(cursor_node));
+            if (shouldCalculate(cursor_node)) {
+                nodeList.add(new RankDealWith(cursor_node));
+            }
             cursor_node = cursor_node.getSibling();
         }
         try {
@@ -140,7 +149,7 @@ public class SumOfAboveCalculator extends AbstractConfigureCalculator {
             double sum = 0;
             while (isNotEnd(cursor_node, deep)) {
                 Number value = cursor_node.getSummaryValue(calTargetKey);
-                if (value != null){
+                if (value != null) {
                     sum += value.doubleValue();
                 }
                 cursor_node.setSummaryValue(createTargetGettingKey(), new Double(sum));
