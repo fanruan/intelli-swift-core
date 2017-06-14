@@ -6,6 +6,8 @@ import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
 import com.fr.stable.StringUtils;
 
+import java.awt.*;
+
 /**
  * Created by eason on 2017/3/20.
  */
@@ -77,6 +79,11 @@ public class VanGaugeWidget extends VanCartesianWidget{
 
     protected String dataLabelsKey() {
         return "valueLabel";
+    }
+
+    //仪表盘的标签和数据点提示都要加单位
+    protected boolean showUnit(boolean isTooltip) {
+        return true;
     }
 
     public JSONArray createSeries(JSONObject originData) throws Exception{
