@@ -5,8 +5,8 @@ import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.conf.BICubeConfigureCenter;
 import com.finebi.cube.conf.BISystemPackageConfigurationProvider;
 import com.finebi.cube.conf.BITableRelationConfigurationProvider;
+import com.finebi.cube.conf.CubeGenerationManager;
 import com.fr.base.FRContext;
-import com.fr.bi.cal.generate.TimerRunner;
 import com.fr.bi.cal.report.BIActor;
 import com.fr.bi.cal.report.db.DialectCreatorImpl;
 import com.fr.bi.cal.report.db.HiveDialectCreatorImpl;
@@ -90,8 +90,7 @@ public class BIPlate extends AbstractFSPlate {
 
     private void createTimerTasks() {
     /*载入定时任务*/
-        TimerRunner timerRunner = new TimerRunner(UserControl.getInstance().getSuperManagerID());
-        timerRunner.reGenerateTimeTasks();
+        CubeGenerationManager.getCubeManager().resetCubeGenerationHour(UserControl.getInstance().getSuperManagerID());
     }
 
     public void loadMemoryData() {
