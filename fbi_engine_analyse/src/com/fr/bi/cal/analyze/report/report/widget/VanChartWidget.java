@@ -515,7 +515,7 @@ public abstract class VanChartWidget extends TableWidget {
 
         return JSONObject.create()
                 .put("fontFamily", "Microsoft YaHei")
-                .put("color", "rgb(178, 178, 178)")
+                .put("color", "rgb(26, 26, 26)")
                 .put("fontSize", "12px");
 
     }
