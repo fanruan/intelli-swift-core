@@ -322,10 +322,7 @@ public class BISession extends BIAbstractSession {
     @Override
     public void release() {
         super.release();
-        detailIndexMap.clear();
-        detailValueMap.clear();
-        partPageGroup.clear();
-        pageGroup.clear();
+        clearCachedMaps();
         releaseLock();
         FRLogManager.setSession(null);
         Calculator.putThreadSavedNameSpace(null);

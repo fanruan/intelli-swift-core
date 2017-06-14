@@ -33,6 +33,7 @@ import com.fr.bi.conf.VT4FBI;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.conf.report.widget.field.dimension.filter.DimensionFilter;
 import com.fr.bi.conf.report.widget.field.target.filter.TargetFilter;
+import com.fr.bi.exception.BIMemoryDataOutOfLimitException;
 import com.fr.bi.field.target.calculator.cal.CalCalculator;
 import com.fr.bi.field.target.calculator.cal.FormulaCalculator;
 import com.fr.bi.field.target.calculator.sum.CountCalculator;
@@ -411,6 +412,10 @@ public class CubeIndexLoader {
         }
         NodeAndPageInfo leftInfo = getLeftInfo(rowDimension, page, expander, widget, session, usedTargets, pg);
         NodeAndPageInfo topInfo = getTopInfo(colDimension, page, expander, widget, session, usedTargets, pg);
+        int maxSize =  PerformancePlugManager.getInstance().getMaxStructureSize();
+        if (maxSize > 0 && leftInfo.getNode().getTotalLength() * topInfo.getNode().getTotalLength() > maxSize){
+            throw new BIMemoryDataOutOfLimitException();
+        }
         if (usedTargets.length != 0 && isEmpty(topInfo)) {
             leftInfo.getNode().getChilds().clear();
             leftInfo.setHasNext(false);
@@ -434,6 +439,10 @@ public class CubeIndexLoader {
         NodeAndPageInfo leftInfo = getLeftInfo(rowDimension, page, expander, widget, session, usedTargets, pg);
         NodeAndPageInfo leftAllInfo = getLeftInfo(rowDimension, -1, expander, widget, session, usedTargets, new PageIteratorGroup());
         NodeAndPageInfo topInfo = getTopInfo(colDimension, page, expander, widget, session, usedTargets, pg);
+        int maxSize =  PerformancePlugManager.getInstance().getMaxStructureSize();
+        if (maxSize > 0 && leftAllInfo.getNode().getTotalLength() * topInfo.getNode().getTotalLength() > maxSize){
+            throw new BIMemoryDataOutOfLimitException();
+        }
         if (usedTargets.length != 0 && isEmpty(topInfo)) {
             leftInfo.getNode().getChilds().clear();
             leftInfo.setHasNext(false);
@@ -909,9 +918,13 @@ public class CubeIndexLoader {
                                                       BISession session, List<MetricGroupInfo> metricGroupInfoList, boolean shouldSetIndex,
                                                       boolean isHor, boolean calAllPage, List<TargetFilter> authFilter, BIMultiThreadExecutor executor) {
         boolean showSum = isHor ? widget.showColumnTotal() : widget.showRowToTal();
-        NodeIteratorCreator iteratorCreator = new NodeIteratorCreator(metricGroupInfoList, rowDimension, usedTargets, widget.getTargets().length,
+        int maxSize = PerformancePlugManager.getInstance().getMaxStructureSize();
+        NodeIteratorCreator iteratorCreator = maxSize == 0 ? new NodeIteratorCreator(metricGroupInfoList, rowDimension, usedTargets, widget.getTargets().length,
                 widget.getTargetFilterMap(), widget.isRealData(), session, widget.getTargetSort(), widget.getFilter(), authFilter,
-                showSum, shouldSetIndex, calAllPage, executor);
+                showSum, shouldSetIndex, calAllPage, executor)
+                : new LimitedNodeIteratorCreator(metricGroupInfoList, rowDimension, usedTargets, widget.getTargets().length,
+                widget.getTargetFilterMap(), widget.isRealData(), session, widget.getTargetSort(), widget.getFilter(), authFilter,
+                showSum, shouldSetIndex, calAllPage, executor, maxSize) ;
         return iteratorCreator.createRoot();
     }
 

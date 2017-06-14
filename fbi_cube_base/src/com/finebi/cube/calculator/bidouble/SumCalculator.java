@@ -8,7 +8,6 @@ import com.fr.bi.base.key.BIKey;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.gvi.traversal.CalculatorTraversalAction;
 import com.fr.bi.stable.io.newio.NIOConstant;
-import com.fr.bi.stable.utils.BICollectionUtils;
 
 /**
  * @author Daniel
@@ -59,10 +58,8 @@ public class SumCalculator implements CubeDoubleDataCalculator {
         ss = new CalculatorTraversalAction() {
             @Override
             public void actionPerformed(int row) {
-                long value = g.getValue(row);
-                if (!BICollectionUtils.isCubeNullKey(value)) {
-                    sum += value;
-                }
+                //上面andnot过了，这边不需要判断为null了
+                sum += g.getValue(row);
             }
 
             @Override
@@ -84,13 +81,10 @@ public class SumCalculator implements CubeDoubleDataCalculator {
             return NIOConstant.DOUBLE.NULL_VALUE;
         }
         ss = new CalculatorTraversalAction() {
-
+            //上面andnot过了，这边不需要判断为null了
             @Override
             public void actionPerformed(int row) {
-                double value = g.getValue(row);
-                if (!BICollectionUtils.isCubeNullKey(value)) {
-                    sum += value;
-                }
+                sum += g.getValue(row);
             }
 
             @Override

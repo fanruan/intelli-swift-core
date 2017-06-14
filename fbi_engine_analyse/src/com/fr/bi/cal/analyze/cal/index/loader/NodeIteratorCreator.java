@@ -48,20 +48,20 @@ import java.util.Set;
  */
 public class NodeIteratorCreator {
     private static GroupValueIndex ALL_SHOW = GVIFactory.createAllShowIndexGVI(1);
-    private BISession session;
-    private List<MetricGroupInfo> metricGroupInfoList;
-    private BIDimension[] rowDimension;
+    protected BISession session;
+    protected List<MetricGroupInfo> metricGroupInfoList;
+    protected BIDimension[] rowDimension;
     private BISummaryTarget[] usedTargets;
-    private int sumLength;
-    private boolean isRealData;
+    protected int sumLength;
+    protected boolean isRealData;
     private NameObject targetSort;
-    private NameObject[] dimensionTargetSort;
+    protected NameObject[] dimensionTargetSort;
     private TargetFilter filter;
     private List<TargetFilter> authFilter;
     private final boolean showSum;
-    private final boolean setIndex;
-    private final boolean calAllPage;
-    private BIMultiThreadExecutor executor;
+    protected final boolean setIndex;
+    protected final boolean calAllPage;
+    protected BIMultiThreadExecutor executor;
     private Map<String, BISummaryTarget> targetIdMap;
 
     public NodeIteratorCreator(List<MetricGroupInfo> metricGroupInfoList, BIDimension[] rowDimension, BISummaryTarget[] usedTargets, int sumLength, Map<String, DimensionFilter> targetFilterMap, boolean isRealData, BISession session, NameObject targetSort, TargetFilter filter, List<TargetFilter> authFilter, boolean showSum, boolean setIndex, boolean calAllPage, BIMultiThreadExecutor executor) {
@@ -284,6 +284,10 @@ public class NodeIteratorCreator {
         List<CalCalculator> calCalculators = getRelatedCalMetric(usedTargets);
         fillCalculatedMap(calculatedMap, calCalculators);
         fillMetricsToCalculate(metrics, metricsToCalculate, calculatedMap);
+        createAllNodeCreator(mergeIteratorCreators, index, filter, targetSort, creator, executor, metricsToCalculate, calculatedMap, hasAllConfigureMetricsFilter, calCalculators);
+    }
+
+    protected void createAllNodeCreator(MergeIteratorCreator[] mergeIteratorCreators, int index, DimensionFilter filter, NameObject targetSort, MergeIteratorCreator creator, BIMultiThreadExecutor executor, List<TargetAndKey>[] metricsToCalculate, Map<String, TargetCalculator> calculatedMap, boolean hasAllConfigureMetricsFilter, List<CalCalculator> calCalculators) {
         //如果不过滤配置类计算指标, 就直接过滤, 过滤是配置类计算需要等到全部计算完了才过滤
         mergeIteratorCreators[index] = new AllNodeMergeIteratorCreator(hasAllConfigureMetricsFilter ? null : filter, targetSort, metricsToCalculate, calculatedMap, creator, executor, calCalculators);
     }
@@ -392,7 +396,7 @@ public class NodeIteratorCreator {
         //是否提前计算了维度过滤
         //如果有配置类计算的过滤，则需要构建完node之后再排序，之前的过滤一个都别动，要不然影响配置类计算的。如果维度过滤在最后一个维度上面，也等到全部构建完了再过滤
         boolean canPreFilter = hasDimensionInDirectFilter() && !hasAllNodeIndirectDimensionFilter() && getLastIndirectFilterDimensionIndex() != rowDimension.length - 1;
-        ConstructedRootDimensionGroup constructedRootDimensionGroup = new ConstructedRootDimensionGroup(metricGroupInfoList, createAllNodeMergeIteratorCreator(), sumLength, session, isRealData, dimensionTargetSort, getCalCalculators(), canPreFilter || !hasDimensionInDirectFilter() ? null : rowDimension, setIndex, hasInSumMetric(), executor, calAllPage);
+        ConstructedRootDimensionGroup constructedRootDimensionGroup = createConstructedRootDimensionGroup(canPreFilter);
         //如果没有配置类计算的过滤，并且最后一个维度没有过滤，可以先算一下IndirectFilter
         if (canPreFilter) {
             GroupValueIndex[] inDirectFilterIndexes = getInDirectFilterIndex(constructedRootDimensionGroup.getRoot(), constructedRootDimensionGroup.getGetters(), constructedRootDimensionGroup.getColumns());
@@ -409,6 +413,10 @@ public class NodeIteratorCreator {
         return constructedRootDimensionGroup;
     }
 
+    protected ConstructedRootDimensionGroup createConstructedRootDimensionGroup(boolean canPreFilter) {
+        return new ConstructedRootDimensionGroup(metricGroupInfoList, createAllNodeMergeIteratorCreator(), sumLength, session, isRealData, dimensionTargetSort, getCalCalculators(), canPreFilter || !hasDimensionInDirectFilter() ? null : rowDimension, setIndex, hasInSumMetric(), executor, calAllPage);
+    }
+
     /**
      * 这边不需要排序跟过滤
      * 在全部计算完之后会再排
@@ -416,7 +424,7 @@ public class NodeIteratorCreator {
      *
      * @return
      */
-    private MergeIteratorCreator[] createAllNodeMergeIteratorCreator() {
+    protected MergeIteratorCreator[] createAllNodeMergeIteratorCreator() {
         MergeIteratorCreator[] mergeIteratorCreators = new MergeIteratorCreator[rowDimension.length];
         for (int i = 0; i < rowDimension.length; i++) {
             mergeIteratorCreators[i] = new SimpleMergeIteratorCreator();
@@ -435,7 +443,7 @@ public class NodeIteratorCreator {
         return calCalculators;
     }
 
-    private boolean hasInSumMetric() {
+    protected boolean hasInSumMetric() {
         for (BISummaryTarget target : usedTargets) {
             if (hasInSumMetric(target)) {
                 return true;
@@ -523,7 +531,7 @@ public class NodeIteratorCreator {
         return filters;
     }
 
-    private boolean hasDimensionInDirectFilter() {
+    protected boolean hasDimensionInDirectFilter() {
         for (BIDimension dimension : rowDimension) {
             DimensionFilter filter = dimension.getFilter();
             if (filter != null && !filter.canCreateDirectFilter()) {
