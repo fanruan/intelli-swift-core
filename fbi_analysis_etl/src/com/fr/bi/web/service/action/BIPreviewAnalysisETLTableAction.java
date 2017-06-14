@@ -3,7 +3,6 @@ package com.fr.bi.web.service.action;
 import com.finebi.cube.api.ICubeTableService;
 import com.finebi.cube.common.log.BILogger;
 import com.finebi.cube.common.log.BILoggerFactory;
-import com.fr.bi.cal.stable.cube.memory.DataLimitAnyIndexArray;
 import com.fr.bi.etl.analysis.Constants;
 import com.fr.bi.etl.analysis.data.AnalysisCubeTableSource;
 import com.fr.bi.etl.analysis.data.AnalysisETLSourceFactory;
@@ -29,7 +28,7 @@ import java.util.List;
  * Created by 小灰灰 on 2016/5/16.
  */
 public class BIPreviewAnalysisETLTableAction extends AbstractAnalysisETLAction {
-    private static BILogger LOGGER = BILoggerFactory.getLogger(DataLimitAnyIndexArray.class);
+    private static BILogger LOGGER = BILoggerFactory.getLogger(BIPreviewAnalysisETLTableAction.class);
     @Override
     public void actionCMD(HttpServletRequest req, HttpServletResponse res, String sessionID) throws Exception {
         long userId = ServiceUtils.getCurrentUserID(req);

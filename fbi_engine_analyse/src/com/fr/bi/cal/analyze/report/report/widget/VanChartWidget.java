@@ -79,7 +79,7 @@ public abstract class VanChartWidget extends TableWidget {
 
     private Locale locale;
 
-    //todo:整理一下settings globalstyle plateconfig
+    //todo:@shine 4.1版本整理一下settings globalstyle plateconfig
     private JSONObject globalStyle;
 
     public static final String[] FULL_QUARTER_NAMES = new String[]{
@@ -223,7 +223,7 @@ public abstract class VanChartWidget extends TableWidget {
         try {
             BISummaryTarget target = this.getBITargetByID(dimensionID);
             JSONObject settings = target.getChartSetting().getSettings();
-            int type = settings.optInt("format", BIReportConstant.TARGET_STYLE.FORMAT.NORMAL);//默认为自动
+            int type = settings.optInt("formatDecimal", BIReportConstant.TARGET_STYLE.FORMAT.NORMAL);//默认为自动
             String format;
             switch (type) {
                 case BIReportConstant.TARGET_STYLE.FORMAT.NORMAL:
@@ -609,7 +609,7 @@ public abstract class VanChartWidget extends TableWidget {
 
     protected String decimalFormat(BISummaryTarget dimension, boolean hasSeparator) {
         JSONObject settings = dimension.getChartSetting().getSettings();
-        int type = settings.optInt("format", BIReportConstant.TARGET_STYLE.FORMAT.NORMAL);//默认为自动
+        int type = settings.optInt("formatDecimal", BIReportConstant.TARGET_STYLE.FORMAT.NORMAL);//默认为自动
         String format;
         switch (type) {
             case BIReportConstant.TARGET_STYLE.FORMAT.NORMAL:
