@@ -30,11 +30,12 @@ public class CubeUpdateUtils {
 
     /**
      * 获得配置部分存在，但是在cube中缺少的表
+     * businessTable
      *
      * @param userId 用户ID
      * @return 缺失的表
      */
-    public static Set<CubeTableSource> getCubeAbsentTables(long userId) {
+    public static Set<CubeTableSource> getBusinessCubeAbsentTables(long userId) {
         Set<CubeTableSource> absentTables = new HashSet<CubeTableSource>();
         ICubeConfiguration cubeConfiguration = BICubeConfiguration.getConf(Long.toString(userId));
         for (BusinessTable businessTable : BICubeConfigureCenter.getPackageManager().getAllTables(userId)) {
@@ -49,6 +50,28 @@ public class CubeUpdateUtils {
         }
         return absentTables;
     }
+
+    /**
+     * 获得配置部分存在，但是在cube中缺少的表，包括etl表层级过程中的表。
+     *
+     * @param userId
+     * @return
+     */
+    public static Set<CubeTableSource> getAllCubeAbsentTables(long userId) {
+        Set<CubeTableSource> absentTables = new HashSet<CubeTableSource>();
+        ICubeConfiguration cubeConfiguration = BICubeConfiguration.getConf(Long.toString(userId));
+        for (BusinessTable businessTable : BICubeConfigureCenter.getPackageManager().getAllTables(userId)) {
+            CubeTableSource source = businessTable.getTableSource();
+            Set<CubeTableSource> tableLayers = toSet(source.createGenerateTablesList());
+            for (CubeTableSource layer : tableLayers) {
+                if (!BITableKeyUtils.isTableExisted(layer, cubeConfiguration)) {
+                    absentTables.add(layer);
+                }
+            }
+        }
+        return absentTables;
+    }
+
 
     /**
      * @param userId
