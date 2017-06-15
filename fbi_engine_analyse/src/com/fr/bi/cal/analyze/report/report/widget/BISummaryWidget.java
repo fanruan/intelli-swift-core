@@ -382,7 +382,7 @@ public abstract class BISummaryWidget extends AbstractBIWidget {
                             List<BITableRelation> dimensionRelationList = new ArrayList<BITableRelation>();
                             JSONArray dimensionRelationsJa = dimensionAndTargetPathsJa.getJSONArray(dimensionRelationIndex);
                             for (int j = 0; j < dimensionRelationsJa.length(); j++) {
-                                dimensionRelationList.add(BITableRelationHelper.getRelation(dimensionRelationsJa.optJSONObject(j)));
+                                dimensionRelationList.add(BITableRelationHelper.getAnalysisRelation(dimensionRelationsJa.optJSONObject(j)));
                             }
                             dimensionRelationMap.put(targetId, dimensionRelationList);
                         }
@@ -417,7 +417,7 @@ public abstract class BISummaryWidget extends AbstractBIWidget {
                 relationMap.put(targetId, relationList);
             } else {
                 for (int j = 0; j < targetRelationsJa.length(); j++) {
-                    relationList.add(BITableRelationHelper.getRelation(targetRelationsJa.optJSONObject(j)));
+                    relationList.add(BITableRelationHelper.getAnalysisRelation(targetRelationsJa.optJSONObject(j)));
                 }
                 relationMap.put(targetId, relationList);
             }
@@ -426,7 +426,7 @@ public abstract class BISummaryWidget extends AbstractBIWidget {
                 relationMap.put(targetId, relationList);
             } else {
                 for (int j = 0; j < targetRelationsJa.length(); j++) {
-                    relationList.add(BITableRelationHelper.getRelation(targetRelationsJa.optJSONObject(j)));
+                    relationList.add(BITableRelationHelper.getAnalysisRelation(targetRelationsJa.optJSONObject(j)));
                 }
                 relationMap.put(targetId, relationList);
             }

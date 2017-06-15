@@ -152,7 +152,7 @@ public abstract class VanCartesianWidget extends VanChartWidget {
     }
 
     //todo 坐标轴标题和数量级，单位构成的后缀
-    private String axisTitleUnit(int level, String unit){
+    protected String axisTitleUnit(int level, String unit){
         String result = this.scaleUnit(level);
         result += unit;
         return StringUtils.isEmpty(result) ? StringUtils.EMPTY : "(" + result + ")";
