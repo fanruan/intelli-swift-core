@@ -6,7 +6,9 @@ import com.fr.data.core.db.DBUtils;
 import com.fr.data.core.db.TableProcedure;
 import com.fr.data.core.db.dialect.AbstractDialect;
 import com.fr.data.core.db.dml.Table;
+import com.fr.data.core.db.field.FieldMessage;
 import com.fr.data.impl.Connection;
+import com.fr.stable.StringUtils;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -82,6 +84,28 @@ public class AdsMysqlOdbcDialect extends AbstractDialect {
         } catch (Exception e) {
 
         }
+    }
+
+    @Override
+    public List<FieldMessage> getTableFieldsMessage(java.sql.Connection conn, String tableName, String schema, String dbLink) {
+        List<FieldMessage> list = new ArrayList<FieldMessage>();
+        String query = "select * from " + (schema == null ? "" : (schema + ".")) + tableName;
+        try {
+            ColumnInformation[] columnInformationArray = DBUtils.checkInColumnInformation(conn, this, query);
+            for(ColumnInformation information : columnInformationArray){
+                FieldMessage fieldMessage = createFieldMessage();
+                fieldMessage.setColumnName(information.getColumnName());
+                fieldMessage.setColumnComment(StringUtils.EMPTY);
+                fieldMessage.setColumnType(information.getColumnType());
+                fieldMessage.setColumnSize(information.getColumnSize());
+                fieldMessage.setPrimaryKey(false);
+                list.add(fieldMessage);
+            }
+
+        } catch (SQLException e) {
+            FRContext.getLogger().error(e.getMessage(),e);
+        }
+        return list;
     }
 
     @Override
