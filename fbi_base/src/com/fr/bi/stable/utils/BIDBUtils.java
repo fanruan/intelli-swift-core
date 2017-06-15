@@ -400,19 +400,9 @@ public class BIDBUtils {
         Iterator iterator = columnList.iterator();
         while (iterator.hasNext()) {
             Map item = (Map) iterator.next();
-            String columnName;
-            if (item.containsKey("columnName")) {
-                columnName = (String) item.get("columnName");
-            }else {
-            columnName=(String)item.get("column_name");
-            }
+            String columnName = (String) item.get("column_name");
             String columnNameText = getColumnNameText(connection, item);
-            int columnType;
-            if (item.containsKey("column_type")) {
-                columnType = (Integer) item.get("column_type");
-            }else {
-                columnType=(Integer)item.get("columnType");
-            }
+            int columnType = (Integer) item.get("column_type");
             if (columnType == Types.OTHER && dialect instanceof OracleDialect) {
                 columnType = recheckOracleColumnType(conn, columnName, table, columnType);
             }

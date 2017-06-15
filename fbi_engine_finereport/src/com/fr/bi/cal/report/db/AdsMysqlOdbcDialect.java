@@ -93,7 +93,7 @@ public class AdsMysqlOdbcDialect extends AbstractDialect {
             ColumnInformation[] informations = DBUtils.checkInColumnInformation(conn, this, query);
             for(ColumnInformation information : informations){
                 Map field = new HashMap();
-                field.put("columnName", information.getColumnName());
+                field.put("column_name", information.getColumnName());
                 field.put("column_comment", "");
                 field.put("column_type", information.getColumnType());
                 field.put("column_size", information.getColumnSize());
