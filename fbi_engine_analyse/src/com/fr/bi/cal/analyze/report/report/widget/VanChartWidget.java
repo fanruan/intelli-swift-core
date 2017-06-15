@@ -61,6 +61,7 @@ public abstract class VanChartWidget extends TableWidget {
 
     protected static final String PERCENT_SYMBOL = "%";
     private static final String WHITE = "#ffffff";
+    protected static final String DEFAULT_COLOR = "rgb(178, 178, 178)";
 
     private static final int WEEK_COUNT = 52;
     private static final int MONTH_COUNT = 12;
@@ -515,7 +516,7 @@ public abstract class VanChartWidget extends TableWidget {
 
         return JSONObject.create()
                 .put("fontFamily", "Microsoft YaHei")
-                .put("color", "rgb(26, 26, 26)")
+                .put("color", DEFAULT_COLOR)
                 .put("fontSize", "12px");
 
     }
