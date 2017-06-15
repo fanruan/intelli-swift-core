@@ -40,7 +40,6 @@ import java.util.Iterator;
  */
 public class BIReportExportExcel {
 
-    private String sessionID;
     private BISession session;
     private BIReportNode node;
     private ArrayList<BIWidget> widgets = new ArrayList<BIWidget>();
@@ -53,7 +52,6 @@ public class BIReportExportExcel {
     protected BIReport report = new BIReportor();
 
     public BIReportExportExcel(String sessionID) throws Exception {
-        this.sessionID = sessionID;
         this.session = (BISession) SessionDealWith.getSessionIDInfor(sessionID);
         this.node = session.getReportNode();
         JSONObject widgetsJSON = BIReadReportUtils.getInstance().getBIReportNodeJSON(node).optJSONObject("widgets");
