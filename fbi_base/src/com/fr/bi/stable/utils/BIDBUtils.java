@@ -376,7 +376,7 @@ public class BIDBUtils {
             while (foreignKeyResultSet.next()) {
                 String pkColumnName = foreignKeyResultSet.getString("PKCOLUMN_NAME");
 
-                String fkColumnName = foreignKeyResultSet.getString("FKcolumnName");
+                String fkColumnName = foreignKeyResultSet.getString("FKCOLUMN_NAME");
                 String fkTablenName = foreignKeyResultSet.getString("FKTABLE_NAME");
                 String fkSchemaName = foreignKeyResultSet.getString("FKTABLE_SCHEM");
                 //FIXME 读取的关联怎么存呢
