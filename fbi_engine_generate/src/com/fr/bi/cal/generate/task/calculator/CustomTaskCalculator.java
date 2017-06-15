@@ -55,12 +55,12 @@ public class CustomTaskCalculator implements ITaskCalculator {
             calculateTableSources(tableBaseSourceIdMap, sourceIdUpdateTypeMap);
             relations.addAll(tableSourceRelations);
         } else { //check更新。
-            tableSources = CubeUpdateUtils.getCubeAbsentTables(userId);
+            tableSources = CubeUpdateUtils.getAllCubeAbsentTables(userId);
             relations = CubeUpdateUtils.getCubeAbsentRelations(userId);
             paths = CubeUpdateUtils.getCubeAbsentPaths(userId);
         }
 
-        absentTables = CubeUpdateUtils.getCubeAbsentTables(userId);
+        absentTables = CubeUpdateUtils.getAllCubeAbsentTables(userId);
         absentRelations = CubeUpdateUtils.getCubeAbsentRelations(userId);
         absentPaths = CubeUpdateUtils.getCubeAbsentPaths(userId);
         return new CubeBuildCustomStuff(userId, tableBaseSourceIdMap, sourceIdUpdateTypeMap, tableSources, relations, paths, absentTables, absentRelations, absentPaths);
