@@ -653,12 +653,16 @@ public abstract class VanChartWidget extends TableWidget {
         String scaleUnit = this.scaleUnit(this.numberLevel(dimension.getId()));
         String unit = unitFromSetting(dimension);
 
-        if (isTooltip) {
+        if (showUnit(isTooltip)) {
             return  (scaleUnit + unit);
         } else if(scaleUnit.equals(PERCENT_SYMBOL)){//标签也要把百分号加上
             return scaleUnit;
         }
         return StringUtils.EMPTY;
+    }
+
+    protected boolean showUnit(boolean isTooltip) {
+        return isTooltip;
     }
 
     //小数位数和千分符，即会改变数值的
