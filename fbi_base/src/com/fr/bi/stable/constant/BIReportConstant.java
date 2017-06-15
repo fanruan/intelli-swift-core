@@ -677,12 +677,6 @@ public class BIReportConstant {
 
     }
 
-    public static final class IMAGE_SIZE {
-        public static final String ORIGINAL = "original";
-        public static final String EQUAL = "equal";
-        public static final String WIDGET_SIZE = "widget_size";
-    }
-
     public static final class ENTRY_STATUS {
         public static final int NORMAL = 1;
         public static final int IS_EDITING = 2;
