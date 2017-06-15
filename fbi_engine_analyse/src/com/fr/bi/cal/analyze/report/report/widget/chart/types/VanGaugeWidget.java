@@ -1,9 +1,12 @@
 package com.fr.bi.cal.analyze.report.report.widget.chart.types;
 
+import com.fr.bi.stable.constant.BIChartSettingConstant;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
 import com.fr.stable.StringUtils;
+
+import java.awt.*;
 
 /**
  * Created by eason on 2017/3/20.
@@ -59,8 +62,12 @@ public class VanGaugeWidget extends VanCartesianWidget{
 
         JSONObject valueLabel = JSONObject.create().put("enabled", true).put("backgroundColor", BG_COLOR).put("align", align).put("formatter", formatter);
         JSONObject seriesLabel = JSONObject.create().put("enabled", true).put("formatter", JSONObject.create().put("identifier", CATEGORY)).put("align", "bottom");
+        JSONObject percentageLabel = JSONObject.create()
+                .put("enabled", settings.optInt("showPercentage") == BIChartSettingConstant.PERCENTAGE.SHOW).put("align", align)
+                .put("formatter",  JSONObject.create().put("identifier", PERCENT)
+                        .put("percentFormat", "function(){return BI.contentFormat(arguments[0], \"#.##%\")}"));
 
-        plotOptions.put("valueLabel", valueLabel).put("seriesLabel", seriesLabel);
+        plotOptions.put("valueLabel", valueLabel).put("seriesLabel", seriesLabel).put("percentageLabel", percentageLabel);
 
         if(settings.optInt("styleRadio", AUTO) != AUTO){
             JSONArray dashboardStyles = settings.optJSONArray("dashboardStyles");
@@ -72,6 +79,11 @@ public class VanGaugeWidget extends VanCartesianWidget{
 
     protected String dataLabelsKey() {
         return "valueLabel";
+    }
+
+    //仪表盘的标签和数据点提示都要加单位
+    protected boolean showUnit(boolean isTooltip) {
+        return true;
     }
 
     public JSONArray createSeries(JSONObject originData) throws Exception{
