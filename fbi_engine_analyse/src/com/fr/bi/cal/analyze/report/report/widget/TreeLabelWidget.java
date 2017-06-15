@@ -200,7 +200,7 @@ public class TreeLabelWidget extends AbstractBIWidget {
             JSONArray relationJa = dimensionMap.optJSONObject(it.next().toString()).getJSONArray("targetRelation");
             ArrayList<BITableRelation> relationMap = new ArrayList<BITableRelation>();
             for (int j = 0; j < relationJa.length(); j++) {
-                BITableRelation tableRelation = BITableRelationHelper.getRelation(relationJa.getJSONObject(j));
+                BITableRelation tableRelation = BITableRelationHelper.getAnalysisRelation(relationJa.getJSONObject(j));
                 relationMap.add(tableRelation);
             }
             this.dimensionMap.put(this.dimensions[i], relationMap);
