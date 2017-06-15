@@ -6,8 +6,6 @@ import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
 import com.fr.stable.StringUtils;
 
-import java.awt.*;
-
 /**
  * Created by eason on 2017/3/20.
  */
@@ -60,8 +58,8 @@ public class VanGaugeWidget extends VanCartesianWidget{
 
         JSONObject formatter = JSONObject.create().put("identifier", valueLabelKey);
 
-        JSONObject valueLabel = JSONObject.create().put("enabled", true).put("backgroundColor", BG_COLOR).put("align", align).put("formatter", formatter);
-        JSONObject seriesLabel = JSONObject.create().put("enabled", true).put("formatter", JSONObject.create().put("identifier", CATEGORY)).put("align", "bottom");
+        JSONObject valueLabel = JSONObject.create().put("enabled", true).put("backgroundColor", BG_COLOR).put("align", align).put("formatter", formatter).put("style", defaultFont());
+        JSONObject seriesLabel = JSONObject.create().put("enabled", true).put("formatter", JSONObject.create().put("identifier", CATEGORY)).put("align", "bottom").put("style", defaultFont());
         JSONObject percentageLabel = JSONObject.create()
                 .put("enabled", settings.optInt("showPercentage") == BIChartSettingConstant.PERCENTAGE.SHOW).put("align", align)
                 .put("formatter",  JSONObject.create().put("identifier", PERCENT)
