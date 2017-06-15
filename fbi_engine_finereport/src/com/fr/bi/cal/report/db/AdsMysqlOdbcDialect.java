@@ -26,8 +26,6 @@ import java.util.Map;
  * Created by Administrator on 2015/12/17 0017.
  */
 public class AdsMysqlOdbcDialect extends AbstractDialect {
-
-
     /**
      * 获取列信息的sql
      *
@@ -109,34 +107,7 @@ public class AdsMysqlOdbcDialect extends AbstractDialect {
     }
 
     @Override
-	public List getTableFieldsInfor(java.sql.Connection conn, String tableName, String schema, String dbLink){
-        String query = "select * from " + (schema == null ? "" : (schema + ".")) + tableName;
-        List result = new ArrayList();
-
-        try {
-            ColumnInformation[] informations = DBUtils.checkInColumnInformation(conn, this, query);
-            for(ColumnInformation information : informations){
-                Map field = new HashMap();
-                field.put("column_name", information.getColumnName());
-                field.put("column_comment", "");
-                field.put("column_type", information.getColumnType());
-                field.put("column_size", information.getColumnSize());
-                field.put("column_key", false);
-                result.add(field);
-            }
-
-        } catch (SQLException e) {
-            FRContext.getLogger().error(e.getMessage(),e);
-        }
-
-        return result;
-    }
-
-    @Override
     public String getTopNRowSql(int row, Table table) {
         return "select * from " + this.table2SQL(table)+ " limit 0, " + row;
     }
-
-
-
 }
