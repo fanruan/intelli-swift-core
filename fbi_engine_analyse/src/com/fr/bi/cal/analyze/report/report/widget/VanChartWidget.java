@@ -61,7 +61,7 @@ public abstract class VanChartWidget extends TableWidget {
 
     protected static final String PERCENT_SYMBOL = "%";
     private static final String WHITE = "#ffffff";
-    private static final String DEFAULT_COLOR = "1a1a1a";
+    private static final String DEFAULT_COLOR = "#1a1a1a";
 
     private static final int WEEK_COUNT = 52;
     private static final int MONTH_COUNT = 12;
