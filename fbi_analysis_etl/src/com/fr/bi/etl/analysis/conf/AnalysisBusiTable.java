@@ -19,11 +19,7 @@ import com.fr.general.Inter;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created by 小灰灰 on 2015/12/11.
@@ -34,6 +30,7 @@ public class AnalysisBusiTable extends BIBusinessTable {
     private String describe;
     private String name;
     private long userId;
+    private Date lastModifyTime;
 
     public AnalysisBusiTable(String id, long userId) {
         super(id, "");
@@ -82,7 +79,16 @@ public class AnalysisBusiTable extends BIBusinessTable {
     public JSONObject createJSON() throws Exception {
         JSONObject jo = super.createJSON();
         jo.put("describe", describe);
+        jo.put("lastModifyTime", lastModifyTime.getTime());
         return jo;
+    }
+
+    public Date getLastModifyTime() {
+        return lastModifyTime;
+    }
+
+    public void setLastModifyTime(Date lastModifyTime) {
+        this.lastModifyTime = lastModifyTime;
     }
 
     @Override
