@@ -127,6 +127,7 @@ public class UserBaseTableSource extends AnalysisBaseTableSource implements User
             }
             total += values.size();
         }
+        this.userWidget.clear();
         return total;
     }
 

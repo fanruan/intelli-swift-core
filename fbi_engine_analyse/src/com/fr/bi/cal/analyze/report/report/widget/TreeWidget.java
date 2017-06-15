@@ -333,7 +333,7 @@ public class TreeWidget extends AbstractBIWidget {
             for (int j = 0; j < relationJa.length(); j++) {
 //                BITableRelation viewRelation = new BITableRelation();
 //                viewRelation.parseJSON(relationJa.getJSONObject(j));
-                BITableRelation tableRelation = BITableRelationHelper.getRelation(relationJa.getJSONObject(j));
+                BITableRelation tableRelation = BITableRelationHelper.getAnalysisRelation(relationJa.getJSONObject(j));
                 relationMap.add(tableRelation);
             }
             this.dimensionMap.put(this.dimensions[i], relationMap);

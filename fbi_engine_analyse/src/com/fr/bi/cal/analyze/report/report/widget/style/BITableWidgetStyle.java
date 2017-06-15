@@ -2,7 +2,9 @@ package com.fr.bi.cal.analyze.report.report.widget.style;
 
 import com.fr.bi.conf.report.widget.IWidgetStyle;
 import com.fr.bi.stable.constant.BIStyleConstant;
+import com.fr.general.ComparatorUtils;
 import com.fr.json.JSONObject;
+import com.fr.stable.StringUtils;
 
 /**
  * Created by Kary on 2017/4/27.
@@ -28,7 +30,7 @@ public class BITableWidgetStyle implements IWidgetStyle {
         maxRow = BIStyleConstant.DEFAULT_CHART_SETTING.MAX_ROW;
         showRowTotal = BIStyleConstant.DEFAULT_CHART_SETTING.SHOW_ROW_TOTAL;
         showColTotal = BIStyleConstant.DEFAULT_CHART_SETTING.SHOW_COL_TOTAL;
-        tableFormGroup=BIStyleConstant.TABLE_FORM.OPEN_ROW;
+        tableFormGroup = BIStyleConstant.TABLE_FORM.OPEN_ROW;
     }
 
     @Override
@@ -82,8 +84,12 @@ public class BITableWidgetStyle implements IWidgetStyle {
             showRowTotal = settingJo.optBoolean("showRowTotal", showRowTotal);
             showColTotal = settingJo.optBoolean("showColTotal", showColTotal);
             themeColor = settingJo.optString("themeColor", themeColor);
+            //无色
+            if (StringUtils.isEmpty(themeColor)) {
+                themeColor = BIStyleConstant.DEFAULT_CHART_SETTING.THEME_COLOR;
+            }
             tableStyleGroup = settingJo.optInt("tableStyleGroup", tableStyleGroup);
-            tableFormGroup=settingJo.optInt("tableFormGroup",tableFormGroup);
+            tableFormGroup = settingJo.optInt("tableFormGroup", tableFormGroup);
         }
     }
 

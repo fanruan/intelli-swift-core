@@ -1,9 +1,11 @@
-package com.fr.bi.cal.analyze.report.report;
+package com.fr.bi.cal.analyze.report.report.export;
 
 import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.base.FRContext;
 import com.fr.bi.cal.analyze.cal.result.ComplexAllExpander;
 import com.fr.bi.cal.analyze.report.BIReportor;
+import com.fr.bi.cal.analyze.report.report.BIWidgetFactory;
+import com.fr.bi.cal.analyze.report.report.export.utils.BIReportExportExcelUtils;
 import com.fr.bi.cal.analyze.report.report.widget.*;
 import com.fr.bi.cal.analyze.session.BISession;
 import com.fr.bi.cal.report.main.impl.BIWorkBook;
@@ -15,6 +17,7 @@ import com.fr.bi.fs.BIReportNode;
 import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.stable.constant.BIExcutorConstant;
 import com.fr.bi.stable.constant.BIReportConstant;
+import com.fr.bi.stable.constant.BIStyleConstant;
 import com.fr.bi.util.BIReadReportUtils;
 import com.fr.general.DateUtils;
 import com.fr.general.Inter;
@@ -40,12 +43,11 @@ import java.util.Iterator;
  */
 public class BIReportExportExcel {
 
-    private String sessionID;
     private BISession session;
     private BIReportNode node;
     private ArrayList<BIWidget> widgets = new ArrayList<BIWidget>();
     private JSONArray specialWidgets = JSONArray.create();
-    private int namePosLeft = 21;
+    private int namePosLeft = BIStyleConstant.DASHBOARD_WIDGET_NAME_POS_LEFT;
     private int offSet1 = 1;
     private int offSet3 = 3;
     private int offSet7 = 7;
@@ -53,7 +55,6 @@ public class BIReportExportExcel {
     protected BIReport report = new BIReportor();
 
     public BIReportExportExcel(String sessionID) throws Exception {
-        this.sessionID = sessionID;
         this.session = (BISession) SessionDealWith.getSessionIDInfor(sessionID);
         this.node = session.getReportNode();
         JSONObject widgetsJSON = BIReadReportUtils.getInstance().getBIReportNodeJSON(node).optJSONObject("widgets");
@@ -83,13 +84,9 @@ public class BIReportExportExcel {
             case MONTH:
             case YMD:
             case DATE_PANE:
-//            case QUERY:
-//            case RESET:
             case CONTENT:
             case IMAGE:
             case WEB:
-//            case GENERAL_QUERY:
-//            case TABLE_SHOW:
                 specialWidgets.put(widgetJo);
                 break;
             default:

@@ -7,8 +7,20 @@ import com.fr.bi.conf.base.datasource.BIConnectOptimizationUtils;
 import com.fr.bi.conf.base.datasource.BIConnectOptimizationUtilsFactory;
 import com.fr.bi.conf.base.datasource.BIConnectionManager;
 import com.fr.bi.stable.constant.DBConstant;
-import com.fr.bi.stable.data.db.*;
-import com.fr.bi.stable.dbdealer.*;
+import com.fr.bi.stable.data.db.BIDBTableField;
+import com.fr.bi.stable.data.db.DistinctColumnSelect;
+import com.fr.bi.stable.data.db.ICubeFieldSource;
+import com.fr.bi.stable.data.db.PersistentField;
+import com.fr.bi.stable.data.db.PersistentTable;
+import com.fr.bi.stable.data.db.SQLStatement;
+import com.fr.bi.stable.data.db.ServerLinkInformation;
+import com.fr.bi.stable.data.db.SqlSettedStatement;
+import com.fr.bi.stable.dbdealer.DBDealer;
+import com.fr.bi.stable.dbdealer.DateDealer;
+import com.fr.bi.stable.dbdealer.DoubleDealer;
+import com.fr.bi.stable.dbdealer.LongDealer;
+import com.fr.bi.stable.dbdealer.StringDealer;
+import com.fr.bi.stable.dbdealer.StringDealerWithCharSet;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
 import com.fr.data.core.db.ColumnInformation;
 import com.fr.data.core.db.DBUtils;
@@ -16,6 +28,7 @@ import com.fr.data.core.db.dialect.Dialect;
 import com.fr.data.core.db.dialect.DialectFactory;
 import com.fr.data.core.db.dialect.OracleDialect;
 import com.fr.data.core.db.dml.Table;
+import com.fr.data.core.db.field.FieldMessage;
 import com.fr.data.impl.DBTableData;
 import com.fr.data.impl.EmbeddedTableData;
 import com.fr.data.impl.JDBCDatabaseConnection;
@@ -29,9 +42,20 @@ import com.fr.script.Calculator;
 import com.fr.stable.StringUtils;
 
 import java.io.UnsupportedEncodingException;
-import java.sql.*;
-import java.util.*;
+import java.sql.Connection;
+import java.sql.DatabaseMetaData;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.sql.Types;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Created by GUY on 2015/3/3.
@@ -326,7 +350,7 @@ public class BIDBUtils {
 
         DataModel dm = null;
         try {
-        //    dm = tableData.createDataModel(Calculator.createCalculator(), tableName);
+            //    dm = tableData.createDataModel(Calculator.createCalculator(), tableName);
             /**
              * Modifier: Yee
              * Modify date: 2017-06-05
@@ -394,41 +418,33 @@ public class BIDBUtils {
 
     private static PersistentTable getDBTable(com.fr.data.impl.Connection connection, Connection conn, String schema, String table) throws Exception {
         Dialect dialect = DialectFactory.generateDialect(conn, connection.getDriver());
-        String translatedTableName = getTransCodeText(connection, dialect.getTableCommentName(conn, table, schema, null));
+        String translatedTableName = getTransferColumnComment(connection, dialect.getTableCommentName(conn, table, schema, null));
         PersistentTable dbTable = new PersistentTable(schema, table, translatedTableName);
-        List columnList = dialect.getTableFieldsInfor(conn, table, schema, null);
-        Iterator iterator = columnList.iterator();
-        while (iterator.hasNext()) {
-            Map item = (Map) iterator.next();
-            String columnName = (String) item.get("column_name");
-            String columnNameText = getColumnNameText(connection, item);
-            int columnType = (Integer) item.get("column_type");
+
+        List<FieldMessage> messages = dialect.getTableFieldsMessage(conn, table, schema, null);
+        for (FieldMessage message : messages) {
+            String comment = getTransferColumnComment(connection, message.getColumnComment());
+            message.setColumnComment(comment);
+            int columnType = message.getColumnType();
             if (columnType == Types.OTHER && dialect instanceof OracleDialect) {
-                columnType = recheckOracleColumnType(conn, columnName, table, columnType);
-            }
-            boolean columnKey = (Boolean) item.get("column_key");
-            int columnSize = (Integer) item.get("column_size");
-            int decimal_digits = PersistentField.DEFAULT_SCALE;
-            if (item.containsKey("DECIMAL_DIGITS")) {
-                decimal_digits = (Integer) item.get("DECIMAL_DIGITS");
+                message.setColumnType(recheckOracleColumnType(conn, message.getColumnName(), table, columnType));
             }
             if (!(dialect instanceof OracleDialect)) {
                 if (columnType == DBConstant.CLASS.DECIMAL) {
-                    decimal_digits = PersistentField.DEFAULT_SCALE;
+                    message.setColumnDecimalDigits(PersistentField.DEFAULT_SCALE);
                 }
             }
-
-            dbTable.addColumn(new PersistentField(columnName, columnNameText, columnType, columnKey, columnSize, decimal_digits));
+            dbTable.addColumn(new PersistentField(message.getColumnName(), message.getColumnComment(), columnType, message.isPrimaryKey(), message.getColumnSize(), message.getColumnDecimalDigits()));
         }
         return dbTable;
     }
 
     public static String getColumnNameText(com.fr.data.impl.Connection connection, Map item) throws UnsupportedEncodingException {
         String columnNameText = (String) item.get("column_comment");
-        return getTransCodeText(connection, columnNameText);
+        return getTransferColumnComment(connection, columnNameText);
     }
 
-    public static String getTransCodeText(com.fr.data.impl.Connection connection, String originalCodeText) throws UnsupportedEncodingException {
+    public static String getTransferColumnComment(com.fr.data.impl.Connection connection, String originalCodeText) throws UnsupportedEncodingException {
         String originalCharsetName = connection.getOriginalCharsetName();
         String newCharsetName = connection.getNewCharsetName();
         boolean needCharSetConvert = StringUtils.isNotBlank(originalCharsetName)

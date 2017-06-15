@@ -121,7 +121,10 @@ public class BIDAOUtils implements BIDAOProvider{
         List<BIReportNode> nodes = new ArrayList<BIReportNode>();
         for(int i = 0; i < sharedReports.size(); i++) {
             BISharedReportNode sNode = sharedReports.get(i);
-            nodes.add(findByID(sNode.getReportId(), UserControl.getInstance().getUser(sNode.getCreateByName())));
+            BIReportNode node = findByID(sNode.getReportId(), UserControl.getInstance().getUser(sNode.getCreateByName()));
+            if (node != null) {
+                nodes.add(node);
+            }
         }
         return nodes;
     }
