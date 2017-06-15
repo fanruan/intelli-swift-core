@@ -169,7 +169,7 @@ public class GroupExecutor extends AbstractTableWidgetExecutor<Node> {
                 generateSumCells(temp, widget, pagedIterator, rowIdx, rowDimLength - 1, maxRowDimensionsLength);
             }
             n = n.getSibling();
-            while (n.getFirstChild() != null) {
+            while (n != null && n.getFirstChild() != null){
                 n = n.getFirstChild();
             }
         }
