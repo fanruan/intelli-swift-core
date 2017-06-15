@@ -376,7 +376,7 @@ public class BIDBUtils {
             while (foreignKeyResultSet.next()) {
                 String pkColumnName = foreignKeyResultSet.getString("PKCOLUMN_NAME");
 
-                String fkColumnName = foreignKeyResultSet.getString("FKCOLUMN_NAME");
+                String fkColumnName = foreignKeyResultSet.getString("FKcolumnName");
                 String fkTablenName = foreignKeyResultSet.getString("FKTABLE_NAME");
                 String fkSchemaName = foreignKeyResultSet.getString("FKTABLE_SCHEM");
                 //FIXME 读取的关联怎么存呢
@@ -400,9 +400,19 @@ public class BIDBUtils {
         Iterator iterator = columnList.iterator();
         while (iterator.hasNext()) {
             Map item = (Map) iterator.next();
-            String columnName = (String) item.get("column_name");
+            String columnName;
+            if (item.containsKey("columnName")) {
+                columnName = (String) item.get("columnName");
+            }else {
+            columnName=(String)item.get("column_name");
+            }
             String columnNameText = getColumnNameText(connection, item);
-            int columnType = (Integer) item.get("column_type");
+            int columnType;
+            if (item.containsKey("column_type")) {
+                columnType = (Integer) item.get("column_type");
+            }else {
+                columnType=(Integer)item.get("columnType");
+            }
             if (columnType == Types.OTHER && dialect instanceof OracleDialect) {
                 columnType = recheckOracleColumnType(conn, columnName, table, columnType);
             }

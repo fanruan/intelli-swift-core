@@ -55,18 +55,18 @@ public class ListLabelWidget extends BISummaryWidget {
         DimensionCalculator calculator = dimension.createCalculator(dimension.getStatisticElement(), new ArrayList<BITableSourceRelation>());
         GroupValueIndex gvi = createFilterGVI(new DimensionCalculator[]{calculator}, dimension.getStatisticElement().getTableBelongTo(), session.getLoader(), session.getUserId());
         ICubeColumnIndexReader reader = calculator.createNoneSortGroupValueMapGetter(dimension.getStatisticElement().getTableBelongTo(), session.getLoader());
-        Set<String> selected_value = new HashSet<String>();
+        Set<String> selectedValue = new HashSet<String>();
 
         if (selectedValues != null && StringUtils.isNotEmpty(selectedValues)) {
             JSONArray selectedValueArray = new JSONArray(selectedValues);
-            selected_value.addAll(Arrays.asList(BIJsonUtils.jsonArray2StringArray(selectedValueArray)));
+            selectedValue.addAll(Arrays.asList(BIJsonUtils.jsonArray2StringArray(selectedValueArray)));
         }
         if (dimension.getGroup().getType() != BIReportConstant.GROUP.ID_GROUP && dimension.getGroup().getType() != BIReportConstant.GROUP.NO_GROUP) {
-            return getCustomGroupResult(gvi, reader, selected_value, calculator);
+            return getCustomGroupResult(gvi, reader, selectedValue, calculator);
         } else {
             ICubeTableService ti = session.getLoader().getTableIndex(dimension.getStatisticElement().getTableBelongTo().getTableSource());
             ICubeValueEntryGetter getter = ti.getValueEntryGetter(dimension.createKey(dimension.getStatisticElement()), new ArrayList<BITableSourceRelation>());
-            return createIDGroupIndex(gvi, reader, selected_value, getter, calculator.getComparator());
+            return createIDGroupIndex(gvi, reader, selectedValue, getter, calculator.getComparator());
         }
     }
 
@@ -77,7 +77,7 @@ public class ListLabelWidget extends BISummaryWidget {
     //超过50w只搜索开头是
     private static final int START_WITH_LIMIT = 500000;
 
-    private JSONObject createIDGroupIndex(GroupValueIndex gvi, ICubeColumnIndexReader reader, Set<String> selected_value, final ICubeValueEntryGetter getter, Comparator comparator) throws JSONException{
+    private JSONObject createIDGroupIndex(GroupValueIndex gvi, ICubeColumnIndexReader reader, Set<String> selectedValue, final ICubeValueEntryGetter getter, Comparator comparator) throws JSONException{
         SearchMode mode = SearchMode.PY;
         int start = 0, end = getter.getGroupSize();
         if (getter.getGroupSize() > START_WITH_LIMIT){
@@ -87,16 +87,16 @@ public class ListLabelWidget extends BISummaryWidget {
         }
         SimpleIntArray groupArray = this.createGroupArray(start, end, new int[0], new int[0], getter, gvi);
         if (data_type == DBConstant.REQ_DATA_TYPE.REQ_GET_DATA_LENGTH) {
-            return JSONObject.create().put(BIJSONConstant.JSON_KEYS.VALUE, getSearchCount(reader, selected_value, groupArray, mode));
+            return JSONObject.create().put(BIJSONConstant.JSON_KEYS.VALUE, getSearchCount(reader, selectedValue, groupArray, mode));
         }
         if (data_type == DBConstant.REQ_DATA_TYPE.REQ_GET_ALL_DATA || times < 1) {
-            return getSearchResult(reader, selected_value, 0, groupArray.size(), groupArray, mode);
+            return getSearchResult(reader, selectedValue, 0, groupArray.size(), groupArray, mode);
         } else {
-            return getSearchResult(reader, selected_value, (times - 1) * STEP, times * STEP, groupArray, mode);
+            return getSearchResult(reader, selectedValue, (times - 1) * STEP, times * STEP, groupArray, mode);
         }
     }
 
-    private JSONObject getCustomGroupResult(GroupValueIndex gvi, ICubeColumnIndexReader reader, Set<String> selected_value, DimensionCalculator calculator) throws JSONException {
+    private JSONObject getCustomGroupResult(GroupValueIndex gvi, ICubeColumnIndexReader reader, Set<String> selectedValue, DimensionCalculator calculator) throws JSONException {
         List<Object> list = new ArrayList<Object>();
         Iterator<Map.Entry<Object, GroupValueIndex>> it = reader.iterator();
         while (it.hasNext()) {
@@ -106,12 +106,12 @@ public class ListLabelWidget extends BISummaryWidget {
             }
         }
         if (data_type == DBConstant.REQ_DATA_TYPE.REQ_GET_DATA_LENGTH) {
-            return JSONObject.create().put(BIJSONConstant.JSON_KEYS.VALUE, getSearchCount(selected_value, list));
+            return JSONObject.create().put(BIJSONConstant.JSON_KEYS.VALUE, getSearchCount(selectedValue, list));
         }
         if (data_type == DBConstant.REQ_DATA_TYPE.REQ_GET_ALL_DATA || times < 1) {
-            return getSearchResult(selected_value, 0, list.size(), list, calculator);
+            return getSearchResult(selectedValue, 0, list.size(), list, calculator);
         } else {
-            return getSearchResult(selected_value, (times - 1) * STEP, times * STEP, list, calculator);
+            return getSearchResult(selectedValue, (times - 1) * STEP, times * STEP, list, calculator);
         }
     }
 
