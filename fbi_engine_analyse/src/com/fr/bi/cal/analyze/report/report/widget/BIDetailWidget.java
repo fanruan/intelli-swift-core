@@ -247,7 +247,7 @@ public class BIDetailWidget extends AbstractBIWidget {
             JSONArray relationJa = dimensionMap.optJSONObject(it.next().toString()).getJSONArray("targetRelation");
             List<BITableRelation> relationList = new ArrayList<BITableRelation>();
             for (int j = 0; j < relationJa.length(); j++) {
-                relationList.add(BITableRelationHelper.getRelation(relationJa.getJSONObject(j)));
+                relationList.add(BITableRelationHelper.getAnalysisRelation(relationJa.getJSONObject(j)));
             }
             this.dimensions[i].setRelationList(relationList);
         }
