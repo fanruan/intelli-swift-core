@@ -31,11 +31,12 @@ public class BITableConstructHelper {
     * */
     public static void formatCells(DataConstructor data, Map<String, ITableCellFormatOperation> operations, BITableWidgetStyle style) throws Exception {
         boolean isDetail = data.getWidgetType() == WidgetType.DETAIL.getType();
-        for (ITableHeader header : data.getHeaders()) {
-            header.setStyles(BITableStyleHelper.getHeaderStyles(style.getThemeColor(), style.getTableStyleGroup()));
-            formatHeaderText(operations, header);
+        if (!isDetail) {
+            for (ITableHeader header : data.getHeaders()) {
+                header.setStyles(BITableStyleHelper.getHeaderStyles(style.getThemeColor(), style.getTableStyleGroup()));
+                formatHeaderText(operations, header);
+            }
         }
-
         if (data.getItems().size() != 0) {
             if (isDetail) {
                 for (int i = 0; i < data.getItems().size(); i++) {
