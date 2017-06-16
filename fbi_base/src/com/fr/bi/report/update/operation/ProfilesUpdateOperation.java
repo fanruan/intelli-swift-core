@@ -67,7 +67,7 @@ public class ProfilesUpdateOperation implements ReportUpdateOperation {
             boolean flag = BIJsonUtils.isKeyValueSet(json.get(s).toString());
             if (flag) {
                 if (ComparatorUtils.equals(s, "widgets")) {
-                    //   json = correctDataLabels(json);
+                       json = correctDataLabels(json);
                     json = correctPreviousSrcError(json);
                     json = correctScatterType(json);
                     groupTargetsByType(json);
@@ -93,7 +93,7 @@ public class ProfilesUpdateOperation implements ReportUpdateOperation {
                         int type = dimJson.optInt("type");
 
                         JSONObject dataLabelSettings = JSONObject.create().put("optimizeLabel", true).put("showTractionLine", true)
-                                .put("textStyle", JSONObject.create().put("fontFamily", "Microsoft YaHei").put("fontSize", "12px").put("color", "rgb(178, 178, 178)"));
+                                .put("textStyle", JSONObject.create().put("fontFamily", "Microsoft YaHei").put("fontSize", "12px").put("color", "#1a1a1a"));
 
                         switch (type) {
                             case BIReportConstant.WIDGET.PIE:
