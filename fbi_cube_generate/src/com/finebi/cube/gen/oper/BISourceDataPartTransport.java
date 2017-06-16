@@ -232,13 +232,13 @@ public class BISourceDataPartTransport extends BISourceDataTransport {
         //替换上次更新时间
         if (tableEntityService.isLastExecuteTimeAvailable() && null != tableEntityService.getLastExecuteTime()) {
             Date lastTime = tableEntityService.getLastExecuteTime();
-            Pattern lastTimePat = Pattern.compile("\\$[\\{]__last_update_time__[\\}]");
+            Pattern lastTimePat = Pattern.compile("\\$[\\{]"+DBConstant.LAST_UPDATE_TIME+"[\\}]");
             sql = replacePattern(sql, lastTimePat, lastTime);
         }
 
         //替换当前更新时间
         Date currentTime = tableEntityService.getCurrentExecuteTime();
-        Pattern currentTimePat = Pattern.compile("\\$[\\{]__current_update_time__[\\}]");
+        Pattern currentTimePat = Pattern.compile("\\$[\\{]"+DBConstant.CURRENT_UPDATE_TIME+"[\\}]");
         sql = replacePattern(sql, currentTimePat, currentTime);
         tableEntityService.clear();
         return sql;

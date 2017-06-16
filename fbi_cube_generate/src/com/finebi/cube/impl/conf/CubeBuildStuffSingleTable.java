@@ -162,7 +162,7 @@ public class CubeBuildStuffSingleTable extends AbstractCubeBuildStuff implements
 //            if (tableRelationPath.size() == BIRelationUtils.PATH_NULL || tableRelationPath.size() == BIRelationUtils.PATH_RELATION) {
 //                flag = false;
 //            }
-//            for (BITableRelation tableRelation : tableRelationPath.getAllRelations()) {
+//            for (BITableRelation tableRelation : tableRelationPath.getConfigRelation()) {
 //                if (!generatedRelations.contains(tableRelation)) {
 //                    flag = false;
 //                    break;

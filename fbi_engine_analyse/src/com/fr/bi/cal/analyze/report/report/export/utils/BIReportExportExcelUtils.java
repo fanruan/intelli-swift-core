@@ -1,8 +1,9 @@
-package com.fr.bi.cal.analyze.report.report;
+package com.fr.bi.cal.analyze.report.report.export.utils;
 
 import com.fr.bi.conf.report.BIWidget;
 import com.fr.bi.conf.report.WidgetType;
 import com.fr.bi.manager.PerformancePlugManager;
+import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.constant.DateConstant;
 import com.fr.general.GeneralUtils;
 import com.fr.general.IOUtils;
@@ -48,19 +49,19 @@ public class BIReportExportExcelUtils {
         return formatFloatElement(floatElement, rect);
     }
 
-    static FloatElement createFloatElement(BufferedImage bufferedImage, JSONObject bounds) {
+    public static FloatElement createFloatElement(BufferedImage bufferedImage, JSONObject bounds) {
         return createFloatElement(bufferedImage, getWidgetRect(bounds));
     }
 
-    static FloatElement createFloatElement(String base64, Rectangle rect) {
+    public static FloatElement createFloatElement(String base64, Rectangle rect) {
         return createFloatElement(base64Decoder(base64), rect);
     }
 
-    static FloatElement createFloatElement(String base64, JSONObject bounds) {
+    public static FloatElement createFloatElement(String base64, JSONObject bounds) {
         return createFloatElement(base64, getWidgetRect(bounds));
     }
 
-    static FloatElement createFloatElement4String(String value, JSONObject bounds) {
+    public static FloatElement createFloatElement4String(String value, JSONObject bounds) {
         FloatElement floatElement = new FloatElement(value);
         return formatFloatElement(floatElement, getWidgetRect(bounds));
     }
@@ -120,7 +121,7 @@ public class BIReportExportExcelUtils {
         return img;
     }
 
-    static PolyECBlock createPolyECBlock(String widgetName) {
+    public static PolyECBlock createPolyECBlock(String widgetName) {
         PolyECBlock polyECBlock = new PolyECBlock();
         polyECBlock.setBlockName(CodeUtils.passwordEncode(CodeUtils.passwordEncode(widgetName)));
         polyECBlock.getBlockAttr().setFreezeHeight(true);
@@ -129,7 +130,7 @@ public class BIReportExportExcelUtils {
         return polyECBlock;
     }
 
-    static boolean widgetHasData(BIWidget widget) {
+    public static boolean widgetHasData(BIWidget widget) {
         return (widget.getViewDimensions().length + widget.getViewTargets().length) != 0;
     }
 
@@ -139,7 +140,7 @@ public class BIReportExportExcelUtils {
         return rect;
     }
 
-    static int getQuarterStartMonth(int nowMonth) {
+    public static int getQuarterStartMonth(int nowMonth) {
         int quarterStartMonth = DateConstant.CALENDAR.MONTH.JANUARY;
         if (nowMonth < DateConstant.CALENDAR.MONTH.APRIL) {
             quarterStartMonth = DateConstant.CALENDAR.MONTH.JANUARY;
@@ -156,7 +157,7 @@ public class BIReportExportExcelUtils {
         return quarterStartMonth;
     }
 
-    static int getMonthDays(int year, int month) {
+    public static int getMonthDays(int year, int month) {
         boolean isLeapYear = (0 == (year % year4)) && ((0 != (year % year100)) || (0 == (year % year400)));
         if (isLeapYear && month == 1) {
             return daysOfFebruary;

@@ -43,13 +43,7 @@ import com.fr.json.JSONObject;
 import com.fr.stable.StringUtils;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * 先注释掉普通用户看管理员的部分
@@ -406,6 +400,7 @@ public class AnalysisBusiPackManager extends BISystemDataManager<SingleUserAnaly
             //编辑||新建
             table = new AnalysisBusiTable(tableId, userId);
             table.setDescribe(describe);
+            table.setLastModifyTime(new Date());
             JSONObject jo = new JSONObject(tableJSON);
             JSONArray items = jo.getJSONArray(Constants.ITEMS);
             BIAnalysisETLManagerCenter.getAliasManagerProvider().setAliasName(tableId, tableName, userId);

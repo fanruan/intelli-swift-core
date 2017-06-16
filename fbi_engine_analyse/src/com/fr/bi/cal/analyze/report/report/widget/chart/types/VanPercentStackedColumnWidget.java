@@ -4,6 +4,7 @@ import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
+import com.fr.stable.StringUtils;
 
 /**
  * Created by eason on 2017/3/20.
@@ -33,17 +34,24 @@ public class VanPercentStackedColumnWidget extends VanStackedColumnWidget{
         return 1;
     }
 
+    //数据点提示和标签不带百分号
+    protected String scaleUnit(int level) {
+        return StringUtils.EMPTY;
+    }
+
+    //值轴标题带百分号
+    protected String axisTitleUnit(int level, String unit){
+        String result = PERCENT_SYMBOL;
+        result += unit;
+        return StringUtils.isEmpty(result) ? StringUtils.EMPTY : "(" + result + ")";
+    }
+
     protected JSONObject parseLeftValueAxis(JSONObject settings) throws JSONException{
         JSONObject left = super.parseLeftValueAxis(settings);
 
         left.put("formatter", "function(){return this * 100}");
 
         return left;
-    }
-
-    //百分比堆积的图，所谓的值，是百分比
-    protected String tooltipValueKey(){
-        return "percentFormat";
     }
 
     protected String getTooltipIdentifier() {

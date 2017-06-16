@@ -168,7 +168,7 @@ public class BuildCubeTask implements CubeTask {
                 if (replaceSuccess) {
                     BICubeConfigureCenter.getTableRelationManager().finishGenerateCubes(biUser.getUserId(), CubeUpdateUtils.getCubeAbsentRelations(biUser.getUserId()));
                     BICubeConfigureCenter.getTableRelationManager().persistData(biUser.getUserId());
-                    BICubeConfigureCenter.getPackageManager().finishGenerateCubes(biUser.getUserId(), CubeUpdateUtils.getCubeAbsentTables(biUser.getUserId()));
+                    BICubeConfigureCenter.getPackageManager().finishGenerateCubes(biUser.getUserId(), CubeUpdateUtils.getBusinessCubeAbsentTables(biUser.getUserId()));
                     BICubeConfigureCenter.getPackageManager().persistData(biUser.getUserId());
                     BICubeConfigureCenter.getDataSourceManager().persistData(biUser.getUserId());
                     BIModuleUtils.clearAnalysisETLCache(biUser.getUserId());
