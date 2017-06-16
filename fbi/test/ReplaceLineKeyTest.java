@@ -14,7 +14,7 @@ import java.util.regex.Pattern;
  * Created by Kary on 2017/5/3.
  */
 public class ReplaceLineKeyTest {
-    private static final String OUTPUTDIR = "CamelKeys.json";
+    private static final String OUTPUTDIR = "C:\\Users\\吴凯\\Desktop\\CamelKeys1.json";
 
     public static void main(String[] args) {
         //指定范围
@@ -56,17 +56,13 @@ public class ReplaceLineKeyTest {
     private static Map<String, Set<String>> getAllKeysFromFiles(List<String> allFiles) {
         Map<String, Set<String>> container = new HashMap<String, Set<String>>();
         for (String file : allFiles) {
-//            if (file.endsWith("test.java")){
-//                continue;
-//            }
             List<String> keys = new ArrayList<String>();
-
             keys.addAll(findKey(BIFileUtils.readFile(file)));
             for (String key : keys) {
                 if (!container.containsKey(key)) {
                     container.put(key, new HashSet<String>());
                 }
-                container.get(key).add(new File(file).getName());
+                    container.get(key).add(new File(file).getName());
             }
         }
         return container;
@@ -85,6 +81,13 @@ public class ReplaceLineKeyTest {
         for (String dir : rootDirs) {
             List<String> filesInDir = BIFileUtils.getListFiles(dir, "java", true);
             allFiles.addAll(filesInDir);
+        }
+        Iterator<String> iterator = allFiles.iterator();
+        while (iterator.hasNext()){
+            String name = iterator.next();
+            if (name.endsWith("BICubeFieldSource.java")||name.contains("test")){
+                iterator.remove();
+            }
         }
         return allFiles;
     }

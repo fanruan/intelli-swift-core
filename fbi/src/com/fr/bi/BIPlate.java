@@ -5,10 +5,12 @@ import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.conf.BICubeConfigureCenter;
 import com.finebi.cube.conf.BISystemPackageConfigurationProvider;
 import com.finebi.cube.conf.BITableRelationConfigurationProvider;
+import com.finebi.cube.conf.CubeGenerationManager;
 import com.fr.base.FRContext;
-import com.fr.bi.cal.generate.TimerRunner;
 import com.fr.bi.cal.report.BIActor;
 import com.fr.bi.cal.report.db.DialectCreatorImpl;
+import com.fr.bi.cal.report.db.HiveDialectCreatorImpl;
+import com.fr.bi.cal.report.db.KylinDialectCreatorImpl;
 import com.fr.bi.conf.VT4FBI;
 import com.fr.bi.conf.base.datasource.BIConnectionManager;
 import com.fr.bi.conf.provider.BIConfigureManagerCenter;
@@ -83,13 +85,12 @@ public class BIPlate extends AbstractFSPlate {
         notifyColumnParentIdType();
 
         //启动用于截图的phantom服务
-//        initPhantomServer();
+        initPhantomServer();
     }
 
     private void createTimerTasks() {
     /*载入定时任务*/
-        TimerRunner timerRunner = new TimerRunner(UserControl.getInstance().getSuperManagerID());
-        timerRunner.reGenerateTimeTasks();
+        CubeGenerationManager.getCubeManager().resetCubeGenerationHour(UserControl.getInstance().getSuperManagerID());
     }
 
     public void loadMemoryData() {
@@ -291,6 +292,9 @@ public class BIPlate extends AbstractFSPlate {
     private void initPlugin() {
         try {
             ExtraClassManager.getInstance().addMutable(DialectCreatorImpl.XML_TAG, new DialectCreatorImpl(), PluginSimplify.create("bi", "com.fr.bi.plugin.db.ads"));
+            ExtraClassManager.getInstance().addMutable(KylinDialectCreatorImpl.XML_TAG, new KylinDialectCreatorImpl(), PluginSimplify.create("bi", "com.fr.bi.plugin.db.kylin"));
+            ExtraClassManager.getInstance().addMutable(HiveDialectCreatorImpl.XML_TAG, new HiveDialectCreatorImpl(), PluginSimplify.create("bi", "com.fr.bi.plugin.db.hive"));
+
         } catch (Exception e) {
             FRLogger.getLogger().error(e.getMessage(), e);
         }

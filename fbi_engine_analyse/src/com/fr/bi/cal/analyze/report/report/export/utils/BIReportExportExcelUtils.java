@@ -1,9 +1,11 @@
-package com.fr.bi.cal.analyze.report.report;
+package com.fr.bi.cal.analyze.report.report.export.utils;
 
 import com.fr.bi.conf.report.BIWidget;
 import com.fr.bi.conf.report.WidgetType;
 import com.fr.bi.manager.PerformancePlugManager;
+import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.constant.DateConstant;
+import com.fr.general.GeneralUtils;
 import com.fr.general.IOUtils;
 import com.fr.json.JSONObject;
 import com.fr.report.cell.FloatElement;
@@ -47,19 +49,19 @@ public class BIReportExportExcelUtils {
         return formatFloatElement(floatElement, rect);
     }
 
-    static FloatElement createFloatElement(BufferedImage bufferedImage, JSONObject bounds) {
+    public static FloatElement createFloatElement(BufferedImage bufferedImage, JSONObject bounds) {
         return createFloatElement(bufferedImage, getWidgetRect(bounds));
     }
 
-    static FloatElement createFloatElement(String base64, Rectangle rect) {
+    public static FloatElement createFloatElement(String base64, Rectangle rect) {
         return createFloatElement(base64Decoder(base64), rect);
     }
 
-    static FloatElement createFloatElement(String base64, JSONObject bounds) {
+    public static FloatElement createFloatElement(String base64, JSONObject bounds) {
         return createFloatElement(base64, getWidgetRect(bounds));
     }
 
-    static FloatElement createFloatElement4String(String value, JSONObject bounds) {
+    public static FloatElement createFloatElement4String(String value, JSONObject bounds) {
         FloatElement floatElement = new FloatElement(value);
         return formatFloatElement(floatElement, getWidgetRect(bounds));
     }
@@ -119,7 +121,7 @@ public class BIReportExportExcelUtils {
         return img;
     }
 
-    static PolyECBlock createPolyECBlock(String widgetName) {
+    public static PolyECBlock createPolyECBlock(String widgetName) {
         PolyECBlock polyECBlock = new PolyECBlock();
         polyECBlock.setBlockName(CodeUtils.passwordEncode(CodeUtils.passwordEncode(widgetName)));
         polyECBlock.getBlockAttr().setFreezeHeight(true);
@@ -128,62 +130,8 @@ public class BIReportExportExcelUtils {
         return polyECBlock;
     }
 
-    static boolean widgetHasData(BIWidget widget) {
+    public static boolean widgetHasData(BIWidget widget) {
         return (widget.getViewDimensions().length + widget.getViewTargets().length) != 0;
-    }
-
-    static String getDefaultImage(WidgetType type, String imageFolder) throws IOException {
-        Map<WidgetType, String> map = new HashMap<WidgetType, String>();
-        map.put(WidgetType.STACKED_COLUMN, "/column_accu.png");
-        map.put(WidgetType.STACKED_AREA, "/area_accu.png");
-        map.put(WidgetType.STACKED_RADAR, "/radar_accu.png");
-        map.put(WidgetType.COLUMN, "/column.png");
-        map.put(WidgetType.LINE, "/line.png");
-        map.put(WidgetType.AREA, "/area.png");
-        map.put(WidgetType.PERCENT_STACKED_COLUMN, "/column_percent.png");
-        map.put(WidgetType.PERCENT_STACKED_AREA, "/area_percent.png");
-        map.put(WidgetType.COMPARE_COLUMN, "/column_compare.png");
-        map.put(WidgetType.COMPARE_AREA, "/area_compare.png");
-        map.put(WidgetType.FALL_COLUMN, "/column_fall.png");
-        map.put(WidgetType.RANGE_AREA, "/area_range.png");
-        map.put(WidgetType.BAR, "/bar.png");
-        map.put(WidgetType.STACKED_BAR, "/bar_accu.png");
-        map.put(WidgetType.COMPARE_BAR, "/bar_compare.png");
-        map.put(WidgetType.COMBINE_CHART, "/combine.png");
-        map.put(WidgetType.DONUT, "/donut.png");
-        map.put(WidgetType.RADAR, "/radar.png");
-        map.put(WidgetType.PIE, "/pie.png");
-        map.put(WidgetType.MULTI_AXIS_COMBINE_CHART, "/combine_m.png");
-        map.put(WidgetType.FORCE_BUBBLE, "/bubble_force.png");
-        map.put(WidgetType.GAUGE, "/gauge.png");
-        map.put(WidgetType.DOT, "/bubble.png");
-        map.put(WidgetType.MAP, "/map.png");
-        map.put(WidgetType.GIS_MAP, "/map_gis.png");
-        map.put(WidgetType.TABLE, "/table_group.png");
-        map.put(WidgetType.CROSS_TABLE, "/table_cross.png");
-        map.put(WidgetType.COMPLEX_TABLE, "/table_complex.png");
-        map.put(WidgetType.FUNNEL, "/funnel.png");
-        map.put(WidgetType.MULTI_PIE, "/multi_pie.png");
-        map.put(WidgetType.TREE_MAP, "/tree_map.png");
-        return coderBase64(IOUtils.readImage(imageFolder + map.get(type)));
-    }
-
-    static String coderBase64(Image image) throws IOException {
-        if (image == null) {
-            return StringUtils.EMPTY;
-        }
-        byte[] data = null;
-        // 读取图片字节数组
-        ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        ImageIO.write((RenderedImage) image, "png", bos);
-        data = bos.toByteArray();
-        bos.close();
-
-        // 对字节数组Base64编码
-        BASE64Encoder encoder = new BASE64Encoder();
-        String result = encoder.encode(data);
-        result = result.replace("\r\n", "");
-        return result;// 返回Base64编码过的字节数组字符串
     }
 
     static Rectangle getWidgetRect(JSONObject bounds) {
@@ -192,7 +140,7 @@ public class BIReportExportExcelUtils {
         return rect;
     }
 
-    static int getQuarterStartMonth(int nowMonth) {
+    public static int getQuarterStartMonth(int nowMonth) {
         int quarterStartMonth = DateConstant.CALENDAR.MONTH.JANUARY;
         if (nowMonth < DateConstant.CALENDAR.MONTH.APRIL) {
             quarterStartMonth = DateConstant.CALENDAR.MONTH.JANUARY;
@@ -209,7 +157,7 @@ public class BIReportExportExcelUtils {
         return quarterStartMonth;
     }
 
-    static int getMonthDays(int year, int month) {
+    public static int getMonthDays(int year, int month) {
         boolean isLeapYear = (0 == (year % year4)) && ((0 != (year % year100)) || (0 == (year % year400)));
         if (isLeapYear && month == 1) {
             return daysOfFebruary;

@@ -116,7 +116,7 @@ public abstract class BIAbstractDimension extends BIAbstractTargetAndDimension i
                 JSONArray relationArray = fieldJo.getJSONArray("targetRelation");
                 BITableRelation[] tableRelationArray = new BITableRelation[relationArray.length()];
                 for (int i = 0; i < relationArray.length(); i++) {
-                    tableRelationArray[i] = BITableRelationHelper.getRelation(relationArray.getJSONObject(i));
+                    tableRelationArray[i] = BITableRelationHelper.getAnalysisRelation(relationArray.getJSONObject(i));
                 }
                 this.selfToSelfRelationPath = new BITableRelationPath(tableRelationArray);
             }

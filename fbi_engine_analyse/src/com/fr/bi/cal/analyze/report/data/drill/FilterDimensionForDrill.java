@@ -30,7 +30,7 @@ public class FilterDimensionForDrill implements JSONParser {
             return;
         }
         dimensionMap.clear();
-        JSONArray ja = jo.getJSONArray("widget_value");
+        JSONArray ja = jo.getJSONArray("widgetValue");
         for (int i = 0, len = ja.length(); i < len; i++) {
             JSONObject j = ja.getJSONObject(i);
             JSONArray names = j.names();

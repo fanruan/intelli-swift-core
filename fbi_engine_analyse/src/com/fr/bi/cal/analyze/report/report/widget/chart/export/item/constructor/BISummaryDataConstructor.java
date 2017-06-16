@@ -67,7 +67,6 @@ public class BISummaryDataConstructor implements DataConstructor {
         if (null != settings) {
             jo.put("settings", settings.createJSON());
         }
-        jo.put("widgetType", widgetType);
         return jo;
     }
 

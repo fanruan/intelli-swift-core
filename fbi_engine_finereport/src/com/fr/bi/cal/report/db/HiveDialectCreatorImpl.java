@@ -11,12 +11,12 @@ import java.sql.SQLException;
 /**
  * Created by Administrator on 2015/12/17 0017.
  */
-public class DialectCreatorImpl extends AbstractDialectCreator {
+public class HiveDialectCreatorImpl extends AbstractDialectCreator {
 
     @Override
     public Class<?> generate(UrlDriver driver) {
-        if (ComparatorUtils.equals(driver.getDriver(), "sun.jdbc.odbc.JdbcOdbcDriver")) {
-            return AdsMysqlOdbcDialect.class;
+        if (ComparatorUtils.equals(driver.getDriver(), "org.apache.hive.jdbc.HiveDriver")) {
+            return HiveDialect.class;
         }
         //return null的话, 在外部还能继续从metadata里处理, 从driver获取和从metadata获取是顺序的关系, 不是同级的.
         //driver里获取不到, 再从metadata里找.
@@ -30,7 +30,7 @@ public class DialectCreatorImpl extends AbstractDialectCreator {
                 return HiveDialect.class;
             }
         } catch (SQLException e) {
-            BILoggerFactory.getLogger(DialectCreatorImpl.class).error(e.getMessage(), e);
+            BILoggerFactory.getLogger(HiveDialectCreatorImpl.class).error(e.getMessage(), e);
         }
         return null;
     }

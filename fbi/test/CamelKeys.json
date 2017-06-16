@@ -1,148 +1,34 @@
 {
-  "addColumnType": [
-    "ExpressionValueOperator.java",
-    "RowCalculatorOperator.java",
-    "ETLFormularOperator.java",
-    "AnalysisETLOperatorFactory.java",
-    "ValueConverOperator.java",
-    "GetValueFromDateOperator.java",
-    "DateDiffOperator.java",
-    "SingleValueOperator.java"
-  ],
-  "joinNames": [
-    "TableJoinOperator.java"
-  ],
-  "is_enable": [
-    "BICubeFieldSource.java"
-  ],
-  "field_size": [
-    "BICubeFieldSource.java"
-  ],
-  "pri_array_list": [
-    "ReportSettingCamelOperationTest.java"
-  ],
-  "class_type": [
-    "BICubeFieldSource.java",
-    "BIBusinessField.java",
-    "BIConfUtils.java"
-  ],
-  "primary_b": [
-    "ReportSettingCamelOperationTest.java"
-  ],
-  "title_value": [
-    "TargetTitle.java"
-  ],
-  "used_fields": [
-    "BISystemPackageConfigurationManager.java"
-  ],
-  "primary_a": [
-    "ReportSettingCamelOperationTest.java"
-  ],
-  "column_comment": [
-    "AdsMysqlOdbcDialect.java",
-    "BIDBUtils.java"
-  ],
-  "joinStyle": [
-    "TableJoinOperator.java"
-  ],
-  "loop_err": [
-    "SingleUserBIRecord.java"
-  ],
-  "field_value": [
-    "SummaryNumberFilter.java"
-  ],
-  "statistics_elements": [
-    "TreeColumnFieldsFilter.java"
-  ],
-  "total_time": [
-    "BITableLog.java"
-  ],
-  "condition_string_array": [
-    "BIRoleAccessability.java"
-  ],
-  "field_id": [
-    "BICubeFieldSource.java"
-  ],
-  "lc_values": [
-    "TableColumnRowTransOperator.java"
-  ],
-  "cube_path": [
-    "BICubeConfManager.java"
-  ],
-  "column_name": [
-    "DBFieldInfoExtractorDefault.java",
-    "AdsMysqlOdbcDialect.java",
-    "JoinColumn.java",
-    "BIDBUtils.java"
-  ],
-  "sub_b": [
-    "ReportSettingCamelOperationTest.java"
-  ],
-  "sub_a": [
-    "ReportSettingCamelOperationTest.java"
-  ],
-  "first_list": [
-    "ReportSettingCamelOperationTest.java"
-  ],
-  "lc_name": [
-    "TableColumnRowTransOperator.java"
-  ],
-  "field_name": [
-    "BICubeFieldSource.java"
-  ],
-  "inner_map_info": [
-    "BaseResourceHelper.java"
-  ],
   "column_key": [
     "DBFieldInfoExtractorDefault.java",
     "AdsMysqlOdbcDialect.java",
     "BIDBUtils.java"
   ],
-  "last_update_time": [
-    "BIGetTableUpdateSqlAction.java"
-  ],
-  "table_index": [
-    "TableMergeOperator.java"
-  ],
   "custom_map_info": [
     "BaseResourceHelper.java"
   ],
-  "title_style": [
-    "TargetTitle.java"
+  "class_type": [
+    "BIBusinessField.java",
+    "BIConfUtils.java"
   ],
   "column_size": [
     "DBFieldInfoExtractorDefault.java",
     "AdsMysqlOdbcDialect.java",
     "BIDBUtils.java"
   ],
-  "field_name_text": [
-    "PersistentField.java"
+  "column_name": [
+    "BIDBUtils.java"
   ],
-  "union_array": [
-    "TableUnionOperator.java"
-  ],
-  "widget_value": [
-    "FilterTargetForDrill.java"
-  ],
-  "selected_value": [
-    "BIGetFieldValueByFieldIdAction.java",
-    "BIGetFieldValueAction.java"
-  ],
-  "new_groups": [
-    "OperatorFactory.java"
-  ],
-  "joinFields": [
-    "TableJoinOperator.java"
+  "column_comment": [
+    "AdsMysqlOdbcDialect.java",
+    "BIDBUtils.java"
   ],
   "column_type": [
     "DBFieldInfoExtractorDefault.java",
     "AdsMysqlOdbcDialect.java",
     "BIDBUtils.java"
   ],
-  "is_usable": [
-    "BICubeFieldSource.java"
-  ],
-  "field_type": [
-    "BICubeFieldSource.java"
+  "inner_map_info": [
+    "BaseResourceHelper.java"
   ]
 }

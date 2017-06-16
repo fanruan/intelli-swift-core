@@ -27,7 +27,7 @@ public class FilterTargetForDrill extends FilterDimensionForDrill {
             return;
         }
 
-        JSONObject jsonObject = jo.getJSONObject("widget_value");
+        JSONObject jsonObject = jo.getJSONObject("widgetValue");
         if (jsonObject.has("target")) {
             targetName = jsonObject.getString("target");
         }
