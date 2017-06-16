@@ -1,21 +1,17 @@
 package com.fr.bi.cal.analyze.report.report;
 
-import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.api.UserAnalysisCubeDataLoaderCreator;
+import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.cal.analyze.report.report.widget.*;
 import com.fr.bi.cal.analyze.report.report.widget.chart.types.*;
 import com.fr.bi.conf.report.BIWidget;
 import com.fr.bi.conf.report.WidgetType;
 import com.fr.bi.stable.constant.BIReportConstant;
-import com.fr.general.ComparatorUtils;
 import com.fr.json.JSONArray;
-import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
 
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
 
 /**
  * Widget的静态方法
@@ -68,12 +64,12 @@ public class BIWidgetFactory {
     }
 
 
-    public static BIWidget createVanChartWidget(WidgetType type) {
+    public static BIWidget createVanChartWidget(WidgetType type){
         try {
 
             return vancharts.get(type).newInstance();
 
-        } catch (Exception e) {
+        }catch (Exception e){
 
             BILoggerFactory.getLogger().error("error in create chart widget");
 
@@ -81,6 +77,7 @@ public class BIWidgetFactory {
         }
 
     }
+
 
 
     /**
@@ -91,11 +88,11 @@ public class BIWidgetFactory {
      * @throws Exception
      */
     public static BIWidget parseWidget(JSONObject jo, long userId, ICubeDataLoader loader) throws Exception {
-        boolean isCombineChart = BIReportConstant.WIDGET.COMBINE_CHART == jo.getInt("type");
-        if (isCombineChart) {
-            updateCombineChartView(jo);
+        JSONObject view = jo.optJSONObject("view");
+        if (view == null) {
+            view = new JSONObject();
         }
-        JSONArray viewTargets = getViewTarget(jo);
+        JSONArray viewTargets = getViewTarget(view);
         BIWidget widget = newWidgetByType(WidgetType.parse(jo.optInt("type")), viewTargets);
         widget.parseJSON(jo, userId);
         return widget;
@@ -136,98 +133,19 @@ public class BIWidgetFactory {
 
         return biWidget;
     }
-  /*
-    *  vanChart需要根据chartType对指标进行分组
-    * */
 
-    public static JSONArray getViewTarget(JSONObject jo) throws Exception {
-        JSONObject view = jo.optJSONObject("view");
-        if (view == null) {
-            return new JSONArray();
-        }
+    public static JSONArray getViewTarget(JSONObject view) throws Exception {
         JSONArray ja = new JSONArray();
-//        if (view.optJSONArray(BIReportConstant.REGION.TARGET1) != null) {
-//            ja.put(view.optJSONArray(BIReportConstant.REGION.TARGET1));
-//        }
-//        if (view.optJSONArray(BIReportConstant.REGION.TARGET2) != null) {
-//            ja.put(view.optJSONArray(BIReportConstant.REGION.TARGET2));
-//        }
-//        if (view.optJSONArray(BIReportConstant.REGION.TARGET3) != null) {
-//            ja.put(view.optJSONArray(BIReportConstant.REGION.TARGET3));
-//        }
-        Iterator keys = view.keys();
-        while (keys.hasNext()){
-            String key = keys.next().toString();
-            if (Integer.valueOf(key)>=Integer.valueOf(BIReportConstant.REGION.TARGET1)&&Integer.valueOf(key)<=Integer.valueOf(BIReportConstant.REGION.TARGET3)) {
-                if (view.optJSONArray(key)!=null) {
-                    ja.put(view.getJSONArray(key));
-                }
-            }
-        }
-        return ja;
-    }
-
-    /*
-    * 根据chartType设定分组
-    * */
-    private static void updateCombineChartView(JSONObject jo) throws JSONException {
-        JSONObject view = jo.optJSONObject("view");
-        Integer basicTarget;
         if (view.optJSONArray(BIReportConstant.REGION.TARGET1) != null) {
-            basicTarget = Integer.valueOf(BIReportConstant.REGION.TARGET1);
-            Map<Integer, JSONArray> chartTypeMap = createDimensionChartTypeMap(jo.optJSONObject("dimensions"), view.optJSONArray(BIReportConstant.REGION.TARGET1));
-            Iterator<Integer> iterator = chartTypeMap.keySet().iterator();
-            while (iterator.hasNext()) {
-                Integer type = iterator.next();
-                view.put(String.valueOf(basicTarget), chartTypeMap.get(type));
-                basicTarget++;
-            }
+            ja.put(view.optJSONArray(BIReportConstant.REGION.TARGET1));
         }
         if (view.optJSONArray(BIReportConstant.REGION.TARGET2) != null) {
-            basicTarget = Integer.valueOf(BIReportConstant.REGION.TARGET2);
-            Map<Integer, JSONArray> chartTypeMap = createDimensionChartTypeMap(jo.optJSONObject("dimensions"), view.optJSONArray(BIReportConstant.REGION.TARGET2));
-            Iterator<Integer> iterator = chartTypeMap.keySet().iterator();
-            while (iterator.hasNext()) {
-                Integer type = iterator.next();
-                view.put(String.valueOf(basicTarget), chartTypeMap.get(type));
-                basicTarget++;
-            }
+            ja.put(view.optJSONArray(BIReportConstant.REGION.TARGET1));
         }
-
-    }
-
-    private static Map<Integer, JSONArray> createDimensionChartTypeMap(JSONObject dimensions, JSONArray array) throws JSONException {
-        Map<Integer, JSONArray> typeMap = new HashMap<>();
-        if (null != dimensions) {
-            Iterator keys = dimensions.keys();
-            while (keys.hasNext()) {
-                String dimId = keys.next().toString();
-                if (!includedInArray(dimId, array)) {
-                    continue;
-                }
-                JSONObject dimension = dimensions.getJSONObject(dimId);
-                //默认柱形图
-                int chartType = BIReportConstant.WIDGET.AXIS;
-                if (dimension.has("styleOfChart") && dimension.getJSONObject("styleOfChart").has("type")) {
-                    chartType = dimension.getJSONObject("styleOfChart").getInt("type");
-                }
-                if (typeMap.containsKey(chartType)) {
-                    typeMap.get(chartType).put(dimId);
-                } else {
-                    typeMap.put(chartType, new JSONArray().put(dimId));
-                }
-            }
+        if (view.optJSONArray(BIReportConstant.REGION.TARGET3) != null) {
+            ja.put(view.optJSONArray(BIReportConstant.REGION.TARGET3));
         }
-        return typeMap;
-    }
-
-    private static boolean includedInArray(String dimId, JSONArray array) throws JSONException {
-        for (int i = 0; i < array.length(); i++) {
-            if (ComparatorUtils.equals(array.getString(i), dimId)) {
-                return true;
-            }
-        }
-        return false;
+        return ja;
     }
 
     /**
