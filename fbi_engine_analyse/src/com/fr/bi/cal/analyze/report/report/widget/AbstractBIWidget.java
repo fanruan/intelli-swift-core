@@ -285,4 +285,8 @@ public abstract class AbstractBIWidget implements BIWidget {
     public JSONObject getPostOptions(BISessionProvider session, HttpServletRequest req) throws Exception {
         return new JSONObject();
     }
+
+    public JSONObject createChartConfigWidthData(BISessionProvider session, HttpServletRequest req, JSONObject data) throws Exception{
+        return JSONObject.create();
+    }
 }
