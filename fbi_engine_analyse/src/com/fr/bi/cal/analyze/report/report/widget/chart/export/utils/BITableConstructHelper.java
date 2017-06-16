@@ -33,7 +33,9 @@ public class BITableConstructHelper {
         boolean isDetail = data.getWidgetType() == WidgetType.DETAIL.getType();
         for (ITableHeader header : data.getHeaders()) {
             header.setStyles(BITableStyleHelper.getHeaderStyles(style.getThemeColor(), style.getTableStyleGroup()));
-            formatHeaderText(operations, header);
+            if (!isDetail) {
+                formatHeaderText(operations, header);
+            }
         }
 
         if (data.getItems().size() != 0) {

@@ -24,7 +24,7 @@ public class BITableCellFormatHelper {
     static final String NONE_VALUE = "--";
 
     public static String targetValueFormat(JSONObject settings, String text) throws JSONException {
-        if (BIStringUtils.isEmptyString(text) || StableUtils.isNumber(text)) {
+        if (BIStringUtils.isEmptyString(text) || !StableUtils.isNumber(text)) {
             return text;
         }
         try {
@@ -277,7 +277,7 @@ public class BITableCellFormatHelper {
         int iconStyle = settings.getInt("iconStyle");
         String textColor = "";
         try {
-            textColor= getTextColor(settings, num);
+            textColor = getTextColor(settings, num);
         } catch (JSONException e) {
             BILoggerFactory.getLogger(BITableCellFormatHelper.class).error(e.getMessage(), e);
         }
