@@ -26,7 +26,6 @@ import java.util.regex.Pattern;
  * 驼峰以及自定义key值修改
  * 图片uri修正
  * 散点气泡图type升级成点图的type
-
  */
 public class ProfilesUpdateOperation implements ReportUpdateOperation {
     private static final String DEFAULT_FILE_NAME = "keys.json";
@@ -66,7 +65,7 @@ public class ProfilesUpdateOperation implements ReportUpdateOperation {
                 if (ComparatorUtils.equals(s, "widgets")) {
                     json = correctDataLabels(json);
                     json = correctPreviousSrcError(json);
-                    json=correctScatterType(json);
+                    json = correctScatterType(json);
                 }
                 res.put(updateKey(s), recursionMapUpdate(json.getString(s)));
             } else {
@@ -78,38 +77,43 @@ public class ProfilesUpdateOperation implements ReportUpdateOperation {
 
     //4.0的图表标签默认设置，和402默认有些不一样，所以在这边写。调整标签位置，灰色雅黑12px。
     private JSONObject correctDataLabels(JSONObject json) throws JSONException {
-        if(ReportVersionEnum.VERSION_4_0.getVersion().equals(json.optString("version"))) {
+        if (ReportVersionEnum.VERSION_4_0.getVersion().equals(json.optString("version"))) {
             if (BIJsonUtils.isKeyValueSet(json.getString("widgets"))) {
                 Iterator keys = json.getJSONObject("widgets").keys();
                 while (keys.hasNext()) {
                     String dimId = keys.next().toString();
                     JSONObject dimJson = json.getJSONObject("widgets").getJSONObject(dimId);
-                    if(dimJson.has("type") && dimJson.has("settings")){
+                    if (dimJson.has("type") && dimJson.has("settings")) {
                         JSONObject settings = dimJson.optJSONObject("settings");
                         int type = dimJson.optInt("type");
 
                         JSONObject dataLabelSettings = JSONObject.create().put("optimizeLabel", true).put("showTractionLine", true)
-                                .put("textStyle", JSONObject.create().put("fontFamily", "Microsoft YaHei").put("fontSize", "12px").put("color", "#1a1a1a"));
+                                .put("textStyle", JSONObject.create().put("fontFamily", "Microsoft YaHei").put("fontSize", "12px").put("color", "rgb(178, 178, 178)"));
 
-                        switch (type){
+                        switch (type) {
                             case BIReportConstant.WIDGET.PIE:
                             case BIReportConstant.WIDGET.DONUT:
                                 dataLabelSettings.put("showCategoryName", false).put("showSeriesName", false)
                                         .put("showValue", true).put("showPercentage", true)
-                                        .put("position", BIChartSettingConstant.DATA_LABEL.POSITION_OUTER);break;
+                                        .put("position", BIChartSettingConstant.DATA_LABEL.POSITION_OUTER);
+                                break;
                             case BIReportConstant.WIDGET.FORCE_BUBBLE:
                                 dataLabelSettings.put("showCategoryName", true).put("showSeriesName", false)
-                                        .put("showValue", true).put("showPercentage", false);break;
+                                        .put("showValue", true).put("showPercentage", false);
+                                break;
                             case BIReportConstant.WIDGET.BUBBLE:
                                 dataLabelSettings.put("showCategoryName", false).put("showSeriesName", false)
-                                    .put("showXValue", true).put("showYValue", true).put("showValue", true);break;
+                                        .put("showXValue", true).put("showYValue", true).put("showValue", true);
+                                break;
                             case BIReportConstant.WIDGET.SCATTER:
                                 dataLabelSettings.put("showCategoryName", false).put("showSeriesName", false)
-                                        .put("showXValue", true).put("showYValue", true).put("showValue", false);break;
+                                        .put("showXValue", true).put("showYValue", true).put("showValue", false);
+                                break;
                             default:
                                 dataLabelSettings.put("showCategoryName", false).put("showSeriesName", false)
                                         .put("showValue", true).put("showPercentage", false)
-                                        .put("position", BIChartSettingConstant.DATA_LABEL.POSITION_OUTER);break;
+                                        .put("position", BIChartSettingConstant.DATA_LABEL.POSITION_OUTER);
+                                break;
                         }
 
                         settings.put("dataLabelSetting", dataLabelSettings);
@@ -119,10 +123,11 @@ public class ProfilesUpdateOperation implements ReportUpdateOperation {
         }
         return json;
     }
-/*
-* 散点气泡图type升级
-* type 26，28->67
-* */
+
+    /*
+    * 散点气泡图type升级
+    * type 26，28->67
+    * */
     private JSONObject correctScatterType(JSONObject json) throws JSONException {
         if (BIJsonUtils.isKeyValueSet(json.getString("widgets"))) {
             Iterator keys = json.getJSONObject("widgets").keys();
@@ -130,7 +135,7 @@ public class ProfilesUpdateOperation implements ReportUpdateOperation {
                 String dimId = keys.next().toString();
                 JSONObject dimJson = json.getJSONObject("widgets").getJSONObject(dimId);
                 if (dimJson.has("type")) {
-                    if (dimJson.getInt("type")== BIReportConstant.WIDGET.BUBBLE||dimJson.getInt("type")==BIReportConstant.WIDGET.SCATTER) {
+                    if (dimJson.getInt("type") == BIReportConstant.WIDGET.BUBBLE || dimJson.getInt("type") == BIReportConstant.WIDGET.SCATTER) {
                         dimJson.put("type", BIReportConstant.WIDGET.DOT);
                     }
                 }
