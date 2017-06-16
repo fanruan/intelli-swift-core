@@ -15,7 +15,9 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -31,9 +33,11 @@ public class ProfilesUpdateOperation implements ReportUpdateOperation {
     private static final String DEFAULT_FILE_NAME = "keys.json";
     private JSONObject keys;
     private static Pattern linePattern = Pattern.compile("(?!^)_(\\w)");
+    private static Map<Integer, Integer> chartTypeMap = new HashMap<>();
 
     public ProfilesUpdateOperation() {
         try {
+            createChartTypeMap();
             if (null == keys) {
                 keys = readKeyJson();
                 formatValues();
@@ -63,9 +67,10 @@ public class ProfilesUpdateOperation implements ReportUpdateOperation {
             boolean flag = BIJsonUtils.isKeyValueSet(json.get(s).toString());
             if (flag) {
                 if (ComparatorUtils.equals(s, "widgets")) {
-                    json = correctDataLabels(json);
+                    //   json = correctDataLabels(json);
                     json = correctPreviousSrcError(json);
                     json = correctScatterType(json);
+                    groupTargetsByType(json);
                 }
                 res.put(updateKey(s), recursionMapUpdate(json.getString(s)));
             } else {
@@ -125,18 +130,18 @@ public class ProfilesUpdateOperation implements ReportUpdateOperation {
     }
 
     /*
-    * 散点气泡图type升级
-    * type 26，28->67
-    * */
+   * 散点气泡图type升级
+   * type 26，28->67
+   * */
     private JSONObject correctScatterType(JSONObject json) throws JSONException {
         if (BIJsonUtils.isKeyValueSet(json.getString("widgets"))) {
             Iterator keys = json.getJSONObject("widgets").keys();
             while (keys.hasNext()) {
-                String dimId = keys.next().toString();
-                JSONObject dimJson = json.getJSONObject("widgets").getJSONObject(dimId);
-                if (dimJson.has("type")) {
-                    if (dimJson.getInt("type") == BIReportConstant.WIDGET.BUBBLE || dimJson.getInt("type") == BIReportConstant.WIDGET.SCATTER) {
-                        dimJson.put("type", BIReportConstant.WIDGET.DOT);
+                String widgetId = keys.next().toString();
+                JSONObject widgetJo = json.getJSONObject("widgets").getJSONObject(widgetId);
+                if (widgetJo.has("type")) {
+                    if (widgetJo.getInt("type") == BIReportConstant.WIDGET.BUBBLE || widgetJo.getInt("type") == BIReportConstant.WIDGET.SCATTER) {
+                        widgetJo.put("type", BIReportConstant.WIDGET.DOT);
                     }
                 }
             }
@@ -144,6 +149,122 @@ public class ProfilesUpdateOperation implements ReportUpdateOperation {
         return json;
     }
 
+    /*
+    *  * 组合图里面指标按照type来进行分组
+    * */
+    private void groupTargetsByType(JSONObject jo) {
+        try {
+            if (BIJsonUtils.isKeyValueSet(jo.getString("widgets"))) {
+                Iterator keys = jo.getJSONObject("widgets").keys();
+                while (keys.hasNext()) {
+                    String widgetId = keys.next().toString();
+                    JSONObject widgetJo = jo.getJSONObject("widgets").getJSONObject(widgetId);
+                    boolean isCombineChart = BIReportConstant.WIDGET.COMBINE_CHART == widgetJo.getInt("type");
+                    if (isCombineChart && !jo.has("scopes")) {
+                        updateCombineChartView(widgetJo);
+                    }
+                }
+            }
+        } catch (JSONException e) {
+            BILoggerFactory.getLogger(this.getClass()).error(e.getMessage(), e);
+        }
+    }
+
+    /*
+    * 根据chartType设定分组
+    * */
+    private void updateCombineChartView(JSONObject jo) throws JSONException {
+        JSONObject view = jo.optJSONObject("view");
+        JSONObject scopes = new JSONObject();
+        String[] targets = {BIReportConstant.REGION.TARGET1, BIReportConstant.REGION.TARGET2, BIReportConstant.REGION.TARGET3};
+        for (int i = 0; i < targets.length; i++) {
+            String target = targets[i];
+            if (view.optJSONArray(target) != null) {
+                Integer basicTarget;
+                basicTarget = Integer.valueOf(target);
+                Map<Integer, JSONArray> chartTypeMap = createDimensionChartTypeMap(jo.optJSONObject("dimensions"), view.optJSONArray(target));
+                Iterator<Integer> iterator = chartTypeMap.keySet().iterator();
+                while (iterator.hasNext()) {
+                    Integer type = iterator.next();
+                    scopes.put(String.valueOf(basicTarget), JSONObject.create().put("chartType", type));
+                    view.put(String.valueOf(basicTarget), chartTypeMap.get(type));
+                    basicTarget++;
+                }
+            }
+
+        }
+        jo.put("scopes", scopes);
+    }
+
+    private Map<Integer, JSONArray> createDimensionChartTypeMap(JSONObject dimensions, JSONArray array) throws JSONException {
+        Map<Integer, JSONArray> typeMap = new HashMap<>();
+        if (null != dimensions) {
+            Iterator keys = dimensions.keys();
+            while (keys.hasNext()) {
+                String dimId = keys.next().toString();
+                if (!includedInArray(dimId, array)) {
+                    continue;
+                }
+                JSONObject dimension = dimensions.getJSONObject(dimId);
+                //默认柱形图
+                int chartType = BIChartSettingConstant.ACCUMULATE_TYPE.COLUMN;
+
+                if (dimension.has("styleOfChart") && dimension.getJSONObject("styleOfChart").has("type")) {
+                    chartType = dimension.getJSONObject("styleOfChart").getInt("type");
+                }
+                if (dimension.has("style_of_chart") && dimension.getJSONObject("style_of_chart").has("type")) {
+                    chartType = dimension.getJSONObject("style_of_chart").getInt("type");
+                }
+                chartType = updateChartType(chartType);
+                if (typeMap.containsKey(chartType)) {
+                    typeMap.get(chartType).put(dimId);
+                } else {
+                    typeMap.put(chartType, new JSONArray().put(dimId));
+                }
+            }
+        }
+        return typeMap;
+    }
+
+    /*
+    * 映射图标type
+    * 没有一点点防备，样式就这么偷偷变了
+
+    * */
+    private int updateChartType(int chartType) {
+        if (chartTypeMap.containsKey(chartType)) {
+            return chartTypeMap.get(chartType);
+        } else {
+            BILoggerFactory.getLogger().error("the chartType: " + chartType + " is absent in this version");
+            return BIChartSettingConstant.ACCUMULATE_TYPE.COLUMN;
+        }
+    }
+
+    /* * 规则：
+    柱状图 5 -> 柱状图
+    面积图 14 -> 面积图
+    堆积面积图 15-> 堆积面积图（折线）
+    折线图 3-> （折线）
+    堆积柱状图 6 -> （堆积柱状图）
+    */
+    private void createChartTypeMap() {
+        Map<Integer, Integer> convertMap = new HashMap<>();
+        convertMap.put(BIChartSettingConstant.ACCUMULATE_TYPE.OLD_COLUMN, BIChartSettingConstant.ACCUMULATE_TYPE.COLUMN);
+        convertMap.put(BIChartSettingConstant.ACCUMULATE_TYPE.OLD_AREA_CURVE, BIChartSettingConstant.ACCUMULATE_TYPE.AREA_CURVE);
+        convertMap.put(BIChartSettingConstant.ACCUMULATE_TYPE.OLD_STACKED_AREA, BIChartSettingConstant.ACCUMULATE_TYPE.STACKED_AREA_NORMAL);
+        convertMap.put(BIChartSettingConstant.ACCUMULATE_TYPE.OLD_LINE, BIChartSettingConstant.ACCUMULATE_TYPE.LINE_NORMAL);
+        convertMap.put(BIChartSettingConstant.ACCUMULATE_TYPE.OLD_STACKED_COLUMN, BIChartSettingConstant.ACCUMULATE_TYPE.STACKED_COLUMN);
+        this.chartTypeMap = convertMap;
+    }
+
+    private boolean includedInArray(String dimId, JSONArray array) throws JSONException {
+        for (int i = 0; i < array.length(); i++) {
+            if (ComparatorUtils.equals(array.getString(i), dimId)) {
+                return true;
+            }
+        }
+        return false;
+    }
 
     /*
     * 处理之前stable版本保存图片时把整个url全保存进去了，没有地方拦截了，先在此处修正
