@@ -539,17 +539,22 @@ public abstract class VanChartWidget extends TableWidget {
         return merge(settings, this.populateDefaultSettings());
     }
 
-    public JSONObject createDataJSON(BISessionProvider session, HttpServletRequest req) throws Exception {
+    public JSONObject createChartConfigWidthData(BISessionProvider session, HttpServletRequest req, JSONObject data) throws Exception{
 
         this.locale = WebUtils.getLocale(req);
-
-        JSONObject data = super.createDataJSON(session, req).getJSONObject("data");
 
         //globalStyle从前台传过来的json取，不从.fbi模板取原因：设置全局样式，先刷新图表，后save模板，所以刷新图表取得全局样式不是最新的
         this.globalStyle = this.getChartSetting().getGlobalStyle();
         this.globalStyle = this.globalStyle == null ? JSONObject.create() : this.globalStyle;
 
         return this.createOptions(globalStyle, data).put("data", data);
+    }
+
+    public JSONObject createDataJSON(BISessionProvider session, HttpServletRequest req) throws Exception {
+
+        JSONObject data = super.createDataJSON(session, req).getJSONObject("data");
+
+        return this.createChartConfigWidthData(session, req, data);
     }
 
 /*
