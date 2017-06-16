@@ -647,8 +647,8 @@ public class BICoreModule extends AbstractModule {
     }
 
     private void registerResources() {
-        StableFactory.registerJavaScriptFiles(ResourceConstants.DEFAULT_BIPlatform_JS, BIPlatformResourceHelper.getBIPlatformJS());
-        StableFactory.registerStyleFiles(ResourceConstants.DEFAULT_BIPlatform_CSS, BIPlatformResourceHelper.getBIPlatformCSS());
+        StableFactory.registerJavaScriptFiles(ResourceConstants.DEFAULT_PLATFORM_JS, BIPlatformResourceHelper.getBIPlatformJS());
+        StableFactory.registerStyleFiles(ResourceConstants.DEFAULT_PLATFORM_CSS, BIPlatformResourceHelper.getBIPlatformCSS());
 
         StableFactory.registerJavaScriptFiles(ResourceConstants.DEFAULT_THIRD_JS, BaseResourceHelper.getThirdJs());
         StableFactory.registerJavaScriptFiles(ResourceConstants.DEFAULT_MAP_JS, BaseResourceHelper.getMapJS(), BaseResourceHelper.MapTransmitter);
@@ -675,7 +675,7 @@ public class BICoreModule extends AbstractModule {
     }
 
     public void loadResources(Locale[] locales) {
-        com.fr.web.ResourceHelper.forceInitJSCache(ResourceConstants.DEFAULT_BIPlatform_JS);
+        com.fr.web.ResourceHelper.forceInitJSCache(ResourceConstants.DEFAULT_PLATFORM_JS);
         com.fr.web.ResourceHelper.forceInitJSCache(ResourceConstants.DEFAULT_THIRD_JS);
         com.fr.web.ResourceHelper.forceInitJSCache(ResourceConstants.DEFAULT_BASE_JS);
         com.fr.web.ResourceHelper.forceInitJSCache(ResourceConstants.DEFAULT_DESIGN_JS);
@@ -686,7 +686,7 @@ public class BICoreModule extends AbstractModule {
 
         BaseResourceHelper.FormulaTransmitter.transmit(BaseResourceHelper.getFormulaCollectionJS(), locales);
 
-        com.fr.web.ResourceHelper.forceInitStyleCache(ResourceConstants.DEFAULT_BIPlatform_CSS);
+        com.fr.web.ResourceHelper.forceInitStyleCache(ResourceConstants.DEFAULT_PLATFORM_CSS);
         com.fr.web.ResourceHelper.forceInitStyleCache(ResourceConstants.DEFAULT_THIRD_CSS);
         com.fr.web.ResourceHelper.forceInitStyleCache(ResourceConstants.DEFAULT_BASE_CSS);
         com.fr.web.ResourceHelper.forceInitStyleCache(ResourceConstants.DEFAULT_DESIGN_CSS);
