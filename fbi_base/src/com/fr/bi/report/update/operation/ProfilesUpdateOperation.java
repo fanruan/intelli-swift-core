@@ -33,7 +33,7 @@ public class ProfilesUpdateOperation implements ReportUpdateOperation {
     private static final String DEFAULT_FILE_NAME = "keys.json";
     private JSONObject keys;
     private static Pattern linePattern = Pattern.compile("(?!^)_(\\w)");
-    private static Map<Integer, Integer> chartTypeMap = new HashMap<>();
+    private static Map<Integer, Integer> chartTypeMap = new HashMap<Integer,Integer>();
 
     public ProfilesUpdateOperation() {
         try {
@@ -197,7 +197,7 @@ public class ProfilesUpdateOperation implements ReportUpdateOperation {
     }
 
     private Map<Integer, JSONArray> createDimensionChartTypeMap(JSONObject dimensions, JSONArray array) throws JSONException {
-        Map<Integer, JSONArray> typeMap = new HashMap<>();
+        Map<Integer, JSONArray> typeMap = new HashMap<Integer, JSONArray>();
         if (null != dimensions) {
             Iterator keys = dimensions.keys();
             while (keys.hasNext()) {
@@ -248,7 +248,7 @@ public class ProfilesUpdateOperation implements ReportUpdateOperation {
     堆积柱状图 6 -> （堆积柱状图）
     */
     private void createChartTypeMap() {
-        Map<Integer, Integer> convertMap = new HashMap<>();
+        Map<Integer, Integer> convertMap = new HashMap<Integer, Integer>();
         convertMap.put(BIChartSettingConstant.ACCUMULATE_TYPE.OLD_COLUMN, BIChartSettingConstant.ACCUMULATE_TYPE.COLUMN);
         convertMap.put(BIChartSettingConstant.ACCUMULATE_TYPE.OLD_AREA_CURVE, BIChartSettingConstant.ACCUMULATE_TYPE.AREA_CURVE);
         convertMap.put(BIChartSettingConstant.ACCUMULATE_TYPE.OLD_STACKED_AREA, BIChartSettingConstant.ACCUMULATE_TYPE.STACKED_AREA_NORMAL);
