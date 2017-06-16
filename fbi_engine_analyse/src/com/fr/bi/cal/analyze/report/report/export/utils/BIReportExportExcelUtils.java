@@ -1,9 +1,7 @@
 package com.fr.bi.cal.analyze.report.report.export.utils;
 
 import com.fr.bi.conf.report.BIWidget;
-import com.fr.bi.conf.report.WidgetType;
 import com.fr.bi.manager.PerformancePlugManager;
-import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.constant.DateConstant;
 import com.fr.general.IOUtils;
 import com.fr.json.JSONObject;
@@ -11,21 +9,16 @@ import com.fr.report.cell.FloatElement;
 import com.fr.report.poly.PolyECBlock;
 import com.fr.stable.CodeUtils;
 import com.fr.stable.Constants;
-import com.fr.stable.StringUtils;
 import com.fr.stable.unit.FU;
 import com.fr.stable.unit.UnitRectangle;
 import sun.misc.BASE64Decoder;
-import sun.misc.BASE64Encoder;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.awt.image.RenderedImage;
 import java.io.*;
 import java.net.URL;
 import java.net.URLConnection;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Created by astronaut007 on 2017/4/19.
