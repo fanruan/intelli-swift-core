@@ -225,7 +225,7 @@ public class BITableCellFormatHelper {
 
     private static String decimalFormat(JSONObject setting) {
         boolean hasSeparator = setting.optBoolean("numSeparators", true);
-        int type = setting.optInt("format", BIReportConstant.TARGET_STYLE.FORMAT.NORMAL);//默认为自动
+        int type = setting.optInt("formatDecimal", BIReportConstant.TARGET_STYLE.FORMAT.NORMAL);//默认为自动
         String format;
         switch (type) {
             case BIReportConstant.TARGET_STYLE.FORMAT.NORMAL:
