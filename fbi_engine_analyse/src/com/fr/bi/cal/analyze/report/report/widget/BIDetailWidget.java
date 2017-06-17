@@ -93,23 +93,25 @@ public class BIDetailWidget extends AbstractBIWidget {
 
     @Override
     public BIDetailTarget[] getViewDimensions() {
-        if (usedDimensions != null) {
-            return usedDimensions;
-        }
-        BIDetailTarget[] dims = getDimensions();
-        if (data != null) {
-            String[] array = data.getView();
-            List<BIDetailTarget> usedDimensions = new ArrayList<BIDetailTarget>();
-            for (String anArray : array) {
-                BIDetailTarget dimension = BITravalUtils.getTargetByName(anArray, dimensions);
-                if(dimension.isUsed()) {
-                    usedDimensions.add(dimension);
-                }
-            }
-            dims = usedDimensions.toArray(new BIDetailTarget[usedDimensions.size()]);
-        }
-        usedDimensions = dims;
-        return dims;
+        //后台不判断是不是使用状态，默认就是所有都使用
+        return this.getDimensions();
+//        if (usedDimensions != null) {
+//            return usedDimensions;
+//        }
+//        BIDetailTarget[] dims = getDimensions();
+//        if (data != null) {
+//            String[] array = data.getView();
+//            List<BIDetailTarget> usedDimensions = new ArrayList<BIDetailTarget>();
+//            for (String anArray : array) {
+//                BIDetailTarget dimension = BITravalUtils.getTargetByName(anArray, dimensions);
+//                if(dimension.isUsed()) {
+//                    usedDimensions.add(dimension);
+//                }
+//            }
+//            dims = usedDimensions.toArray(new BIDetailTarget[usedDimensions.size()]);
+//        }
+//        usedDimensions = dims;
+//        return dims;
     }
 
     @Override
@@ -268,6 +270,13 @@ public class BIDetailWidget extends AbstractBIWidget {
         return data.isOrder();
     }
 
+    public String[] getView() {
+        if (data != null) {
+            return data.getView();
+        }
+        return new String[0];
+    }
+
     @Override
     public JSONObject createDataJSON(BISessionProvider session, HttpServletRequest req) throws JSONException {
         JSONObject jo = new JSONObject();
@@ -355,7 +364,7 @@ public class BIDetailWidget extends AbstractBIWidget {
         res.put("items", itemsArray);
         res.put("widgetType", getType().getType());
         res.put("dimensionLength", dimensions.length).put("row", data.optLong("row", 0)).put("size", data.optLong("size", 0));
-        res.put("settings",tableData.getWidgetStyle().createJSON());
+        res.put("settings", tableData.getWidgetStyle().createJSON());
         return res;
         //        return createTestData();
     }
@@ -390,8 +399,8 @@ public class BIDetailWidget extends AbstractBIWidget {
             String text = detailTarget.getText();
             JSONObject jo = JSONObject.create().put("dId", dId).put("text", text).put("used", detailTarget.isUsed());
             //计算指标不一定有type
-            if (null!=detailTarget.createColumnKey()){
-                jo.put("type",detailTarget.createColumnKey().getFieldType());
+            if (null != detailTarget.createColumnKey()) {
+                jo.put("type", detailTarget.createColumnKey().getFieldType());
             }
             dims.add(jo);
         }
@@ -399,19 +408,19 @@ public class BIDetailWidget extends AbstractBIWidget {
         return dimAndTar;
     }
 
-    public TableWidget getLinkWidget(){
+    public TableWidget getLinkWidget() {
         return linkedWidget;
     }
 
-    public void setLinkWidget(TableWidget linkedWidget){
+    public void setLinkWidget(TableWidget linkedWidget) {
         this.linkedWidget = linkedWidget;
     }
 
-    public Map<String, JSONArray> getClicked(){
+    public Map<String, JSONArray> getClicked() {
         return this.clicked;
     }
 
-    public void setClicked(Map<String, JSONArray> clicked){
+    public void setClicked(Map<String, JSONArray> clicked) {
         this.clicked = clicked;
     }
 }
