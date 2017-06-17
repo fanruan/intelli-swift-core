@@ -225,7 +225,7 @@ public class BITableCellFormatHelper {
 
     private static String decimalFormat(JSONObject setting) {
         boolean hasSeparator = setting.optBoolean("numSeparators", true);
-        int type = setting.optInt("format", BIReportConstant.TARGET_STYLE.FORMAT.NORMAL);//默认为自动
+        int type = setting.optInt("formatDecimal", BIReportConstant.TARGET_STYLE.FORMAT.NORMAL);//默认为自动
         String format;
         switch (type) {
             case BIReportConstant.TARGET_STYLE.FORMAT.NORMAL:
@@ -269,7 +269,7 @@ public class BITableCellFormatHelper {
     }
 
     public static JSONObject createTextStyle(JSONObject settings, String text) throws JSONException {
-        if (BIStringUtils.isEmptyString(text) || StableUtils.isNumber(text)) {
+        if (BIStringUtils.isEmptyString(text) || !StableUtils.isNumber(text)) {
             return JSONObject.create();
         }
         Float num = Float.valueOf(text);

@@ -29,7 +29,7 @@ public class BICellFormatSetting implements ICellFormatSetting {
         jo.put("unit", unit);
         jo.put("numSeparators", numSeparators);
         jo.put("numLevel", numberLevel);
-        jo.put("format", format);
+        jo.put("formatDecimal", format);
         jo.put("conditions", conditions);
         jo.put("iconStyle", iconStyle);
         jo.put("mark", mark);
@@ -52,8 +52,8 @@ public class BICellFormatSetting implements ICellFormatSetting {
         if (jo.has("iconStyle")) {
             iconStyle = jo.optInt("iconStyle");
         }
-        if (jo.has("format")) {
-            format = jo.optInt("format");
+        if (jo.has("formatDecimal")) {
+            format = jo.optInt("formatDecimal");
         }
         if (jo.has("conditions")) {
             conditions = jo.optJSONArray("conditions");
