@@ -59,6 +59,7 @@ import com.fr.bi.fs.HSQLBIReportDAO;
 import com.fr.bi.fs.TableDataBIReportDAO;
 import com.fr.bi.fs.BITableDataDAOProvider;
 import com.fr.bi.fs.BITableDataDAOManager;
+import com.fr.bi.resource.BIPlatformResourceHelper;
 import com.fr.bi.resource.BaseResourceHelper;
 import com.fr.bi.resource.CommonResourceHelper;
 import com.fr.bi.resource.ConfResourceHelper;
@@ -71,6 +72,7 @@ import com.fr.bi.util.BIReadReportUtils;
 import com.fr.bi.web.base.Service4BIBase;
 import com.fr.bi.web.conf.Service4BIConfigure;
 import com.fr.bi.web.dezi.web.Service4BIDezi;
+import com.fr.bi.web.platform.Service4BIPlatform;
 import com.fr.bi.web.report.Service4BIReport;
 import com.fr.bi.web.report.services.finecube.Service4FineCube;
 import com.fr.bi.web.report.utils.BIFSReportManager;
@@ -651,6 +653,9 @@ public class BICoreModule extends AbstractModule {
     }
 
     private void registerResources() {
+        StableFactory.registerJavaScriptFiles(ResourceConstants.DEFAULT_PLATFORM_JS, BIPlatformResourceHelper.getBIPlatformJS());
+        StableFactory.registerStyleFiles(ResourceConstants.DEFAULT_PLATFORM_CSS, BIPlatformResourceHelper.getBIPlatformCSS());
+
         StableFactory.registerJavaScriptFiles(ResourceConstants.DEFAULT_THIRD_JS, BaseResourceHelper.getThirdJs());
         StableFactory.registerJavaScriptFiles(ResourceConstants.DEFAULT_MAP_JS, BaseResourceHelper.getMapJS(), BaseResourceHelper.MapTransmitter);
         StableFactory.registerJavaScriptFiles(ResourceConstants.DEFAULT_BASE_JS, BaseResourceHelper.getBaseJs());
@@ -676,6 +681,7 @@ public class BICoreModule extends AbstractModule {
     }
 
     public void loadResources(Locale[] locales) {
+        com.fr.web.ResourceHelper.forceInitJSCache(ResourceConstants.DEFAULT_PLATFORM_JS);
         com.fr.web.ResourceHelper.forceInitJSCache(ResourceConstants.DEFAULT_THIRD_JS);
         com.fr.web.ResourceHelper.forceInitJSCache(ResourceConstants.DEFAULT_BASE_JS);
         com.fr.web.ResourceHelper.forceInitJSCache(ResourceConstants.DEFAULT_DESIGN_JS);
@@ -686,6 +692,7 @@ public class BICoreModule extends AbstractModule {
 
         BaseResourceHelper.FormulaTransmitter.transmit(BaseResourceHelper.getFormulaCollectionJS(), locales);
 
+        com.fr.web.ResourceHelper.forceInitStyleCache(ResourceConstants.DEFAULT_PLATFORM_CSS);
         com.fr.web.ResourceHelper.forceInitStyleCache(ResourceConstants.DEFAULT_THIRD_CSS);
         com.fr.web.ResourceHelper.forceInitStyleCache(ResourceConstants.DEFAULT_BASE_CSS);
         com.fr.web.ResourceHelper.forceInitStyleCache(ResourceConstants.DEFAULT_DESIGN_CSS);
@@ -721,6 +728,7 @@ public class BICoreModule extends AbstractModule {
                 new Service4BIDezi(),
                 new Service4BIBase(),
                 new Service4FineCube(),
+                new Service4BIPlatform()
         };
     }
 
