@@ -1,5 +1,6 @@
 package com.fr.bi.cal.analyze.report.report.widget.chart.export.format.setting;
 
+import com.fr.bi.stable.constant.BIStyleConstant;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;
 
@@ -52,6 +53,7 @@ public class BICellFormatSetting implements ICellFormatSetting {
         if (jo.has("iconStyle")) {
             iconStyle = jo.optInt("iconStyle");
         }
+        format = BIStyleConstant.DECIMAL_POINT_AUTO;
         if (jo.has("formatDecimal")) {
             format = jo.optInt("formatDecimal");
         }

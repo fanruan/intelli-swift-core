@@ -53,4 +53,5 @@ public class BIStyleConstant {
     public static final int DASHBOARD_WIDGET_NAME_POS_LEFT = 20;      //标题位置居左
     public static final int DASHBOARD_WIDGET_NAME_POS_CENTER = 21;     //标题位置居右
 
+    public static final int DECIMAL_POINT_AUTO = -1;
 }
