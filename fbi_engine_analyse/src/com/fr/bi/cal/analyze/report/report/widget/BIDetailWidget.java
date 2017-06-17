@@ -31,14 +31,15 @@ import com.fr.bi.conf.session.BISessionProvider;
 import com.fr.bi.conf.utils.BIModuleUtils;
 import com.fr.bi.field.target.detailtarget.BIDetailTargetFactory;
 import com.fr.bi.field.target.detailtarget.field.BIDateDetailTarget;
+import com.fr.bi.field.target.detailtarget.field.BIStringDetailTarget;
 import com.fr.bi.field.target.detailtarget.formula.BINumberFormulaDetailTarget;
+import com.fr.bi.field.target.detailtarget.formula.BIStringFormulaDetailTarget;
 import com.fr.bi.field.target.filter.TargetFilterFactory;
 import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.stable.constant.BIExcutorConstant;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.data.BITableID;
 import com.fr.bi.stable.data.source.CubeTableSource;
-import com.fr.bi.stable.utils.BITravalUtils;
 import com.fr.bi.stable.utils.file.BIFileUtils;
 import com.fr.bi.stable.utils.program.BIStringUtils;
 import com.fr.json.JSONArray;
@@ -48,12 +49,7 @@ import com.fr.report.poly.TemplateBlock;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class BIDetailWidget extends AbstractBIWidget {
     private static final long serialVersionUID = 3558768164064392671L;
@@ -376,17 +372,27 @@ public class BIDetailWidget extends AbstractBIWidget {
         return new JSONObject(s);
     }
 
-    private Map<String, ITableCellFormatOperation> createChartDimensions() throws Exception {
+    private Map<String, ITableCellFormatOperation> createChartDimensions() {
         Map<String, ITableCellFormatOperation> formatOperationMap = new HashMap<String, ITableCellFormatOperation>();
-        for (BIDetailTarget detailTarget : this.getTargets()) {
-            BICellFormatSetting setting = new BICellFormatSetting();
-            setting.parseJSON(detailTarget.getChartSetting().getSettings());
-            int groupType = 0;
-            if (detailTarget instanceof BIDateDetailTarget) {
-                groupType = ((BIDateDetailTarget) detailTarget).getGroup().getType();
+        try {
+            for (BIDetailTarget detailTarget : this.getTargets()) {
+                //string不参与format
+                boolean isStringColumn = detailTarget instanceof BIStringDetailTarget || detailTarget instanceof BIStringFormulaDetailTarget;
+                if (!detailTarget.isUsed() || isStringColumn) {
+                    continue;
+                }
+                BICellFormatSetting setting = new BICellFormatSetting();
+                setting.parseJSON(detailTarget.getChartSetting().getSettings());
+                int groupType = 0;
+                if (detailTarget instanceof BIDateDetailTarget) {
+                    groupType = ((BIDateDetailTarget) detailTarget).getGroup().getType();
+                }
+//                groupType = detailTarget.createColumnKey().getFieldType();
+                ITableCellFormatOperation op = new BITableCellFormatOperation(groupType, setting);
+                formatOperationMap.put(detailTarget.getId(), op);
             }
-            ITableCellFormatOperation op = new BITableCellFormatOperation(groupType, setting);
-            formatOperationMap.put(detailTarget.getId(), op);
+        } catch (Exception e) {
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
         return formatOperationMap;
     }
@@ -395,9 +401,12 @@ public class BIDetailWidget extends AbstractBIWidget {
         Map<Integer, List<JSONObject>> dimAndTar = new HashMap<Integer, List<JSONObject>>();
         List<JSONObject> dims = new ArrayList<JSONObject>();
         for (BIDetailTarget detailTarget : this.getDimensions()) {
+            if (!detailTarget.isUsed()) {
+                continue;
+            }
             String dId = detailTarget.getId();
             String text = detailTarget.getText();
-            JSONObject jo = JSONObject.create().put("dId", dId).put("text", text).put("used", detailTarget.isUsed());
+            JSONObject jo = JSONObject.create().put("dId", dId).put("text", text);
             //计算指标不一定有type
             if (null != detailTarget.createColumnKey()) {
                 jo.put("type", detailTarget.createColumnKey().getFieldType());
