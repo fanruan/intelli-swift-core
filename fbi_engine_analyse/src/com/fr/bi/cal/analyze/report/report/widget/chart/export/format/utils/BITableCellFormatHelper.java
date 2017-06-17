@@ -269,7 +269,7 @@ public class BITableCellFormatHelper {
     }
 
     public static JSONObject createTextStyle(JSONObject settings, String text) throws JSONException {
-        if (BIStringUtils.isEmptyString(text) || StableUtils.isNumber(text)) {
+        if (BIStringUtils.isEmptyString(text) || !StableUtils.isNumber(text)) {
             return JSONObject.create();
         }
         Float num = Float.valueOf(text);
