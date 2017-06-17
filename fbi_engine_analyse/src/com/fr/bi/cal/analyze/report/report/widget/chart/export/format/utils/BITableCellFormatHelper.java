@@ -303,8 +303,8 @@ public class BITableCellFormatHelper {
         if (null != conditions) {
             for (int i = 0; i < conditions.length(); i++) {
                 JSONObject range = conditions.getJSONObject(i).getJSONObject("range");
-                long min = range.getLong("min");
-                long max = range.getLong("max");
+                long min = range.optLong("min",Long.MIN_VALUE);
+                long max = range.optLong("max",Long.MAX_VALUE);
                 boolean minBoolean = range.optBoolean("closemin", false) ? num >= min : num > min;
                 boolean maxBoolean = range.optBoolean("closemax", false) ? num <= max : num < max;
                 if (minBoolean && maxBoolean) {
