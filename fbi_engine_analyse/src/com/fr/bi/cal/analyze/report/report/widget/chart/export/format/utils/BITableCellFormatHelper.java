@@ -23,6 +23,7 @@ public class BITableCellFormatHelper {
     static final int DEFAULT_SCALE = 1;
     static final String NONE_VALUE = "--";
 
+    //StableUtils.isNumber(text)的问题还在
     public static String targetValueFormat(JSONObject settings, String text) throws JSONException {
         if (BIStringUtils.isEmptyString(text) || !StableUtils.isNumber(text)) {
             return text;
@@ -268,20 +269,25 @@ public class BITableCellFormatHelper {
         return unit;
     }
 
-    public static JSONObject createTextStyle(JSONObject settings, String text) throws JSONException {
+    public static JSONObject createTextStyle(JSONObject settings, String text) {
         if (BIStringUtils.isEmptyString(text) || !StableUtils.isNumber(text)) {
             return JSONObject.create();
         }
-        Float num = Float.valueOf(text);
-        int markResult = getTextCompareResult(settings, num);
-        int iconStyle = settings.getInt("iconStyle");
-        String textColor = "";
         try {
-            textColor = getTextColor(settings, num);
+            Float num = Float.valueOf(text);
+            int markResult = getTextCompareResult(settings, num);
+            int iconStyle = settings.getInt("iconStyle");
+            String textColor = "";
+            try {
+                textColor = getTextColor(settings, num);
+            } catch (JSONException e) {
+                BILoggerFactory.getLogger(BITableCellFormatHelper.class).error(e.getMessage(), e);
+            }
+            return JSONObject.create().put("markResult", markResult).put("iconStyle", iconStyle).put("color", textColor);
         } catch (JSONException e) {
-            BILoggerFactory.getLogger(BITableCellFormatHelper.class).error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
+            return JSONObject.create();
         }
-        return JSONObject.create().put("markResult", markResult).put("iconStyle", iconStyle).put("color", textColor);
     }
 
     private static int getTextCompareResult(JSONObject settings, Float num) throws JSONException {

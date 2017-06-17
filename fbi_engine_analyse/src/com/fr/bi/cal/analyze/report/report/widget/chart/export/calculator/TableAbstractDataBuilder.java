@@ -74,7 +74,9 @@ public abstract class TableAbstractDataBuilder implements IExcelDataBuilder {
         }
         item.setChildren(children);
         //汇总
-        boolean isArrayAvailable = data.has("s") && isValidArray(data.getJSONArray("s"));
+        validArray(data.getJSONArray("s"));
+//        boolean isArrayAvailable = data.has("s") && validArray(data.getJSONArray("s"));
+        boolean isArrayAvailable = data.has("s");
         if (showRowTotal && isArrayAvailable) {
             List<ITableItem> outerValues = new ArrayList<ITableItem>();
             JSONArray s = data.getJSONArray("s");
@@ -112,14 +114,13 @@ public abstract class TableAbstractDataBuilder implements IExcelDataBuilder {
         items.add(item);
     }
 
-    private boolean isValidArray(JSONArray array) throws JSONException {
-
-        try {
-            for (int i = 0; i < array.length(); i++) {
+    private boolean validArray(JSONArray array) throws JSONException {
+        for (int i = 0; i < array.length(); i++) {
+            try {
                 array.get(i);
+            } catch (JSONException e) {
+                array.put(i, "");
             }
-        } catch (JSONException e) {
-            return false;
         }
         return true;
     }
@@ -557,7 +558,7 @@ public abstract class TableAbstractDataBuilder implements IExcelDataBuilder {
     private void hasChildren(int currentLayer, List<String> dimIds, JSONObject child, BIBasicTableItem item) throws Exception {
         List children = createCommonTableItems(child.getString("c"), currentLayer, dimIds);
         item.setChildren(children);
-        if (showRowTotal||this.styleSetting.getTableFormGroup()== BIStyleConstant.TABLE_FORM.OPEN_COL) {
+        if (showRowTotal || this.styleSetting.getTableFormGroup() == BIStyleConstant.TABLE_FORM.OPEN_COL) {
             List<ITableItem> vs = new ArrayList<ITableItem>();
             JSONArray summary = getOneRowSummary(child.getString("s"));
             int tartSize = targetIds.size();
