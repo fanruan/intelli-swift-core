@@ -40,6 +40,7 @@ import com.fr.bi.conf.report.widget.field.BITargetAndDimension;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.conf.report.widget.field.target.BITarget;
 import com.fr.bi.conf.session.BISessionProvider;
+import com.fr.bi.field.dimension.dimension.BIStringDimension;
 import com.fr.bi.field.target.target.BISummaryTarget;
 import com.fr.bi.field.target.target.cal.target.configure.BIConfiguredCalculateTarget;
 import com.fr.bi.field.target.target.cal.target.configure.BIPeriodConfiguredCalculateTarget;
@@ -774,7 +775,7 @@ public class TableWidget extends BISummaryWidget {
         }
         DataConstructor data = BITableConstructHelper.buildTableData(builder);
         BITableConstructHelper.formatCells(data, getITableCellFormatOperationMap(), style);
-        return data.createJSON().put("page", res.getJSONArray("page")).put("dimensionLength", dimensions.length).put("widgetType",this.tableType);
+        return data.createJSON().put("page", res.getJSONArray("page")).put("dimensionLength", dimensions.length).put("widgetType", this.tableType);
     }
 
     /*假数据，测试用*/
@@ -800,11 +801,19 @@ public class TableWidget extends BISummaryWidget {
             operationsMap.put(target.getId(), op);
         }
         for (BIDimension dimension : this.getDimensions()) {
+            if (isStringDimension(dimension)) {
+                continue;
+            }
             ICellFormatSetting setting = new BICellFormatSetting();
             setting.parseJSON(dimension.getChartSetting().getSettings());
             ITableCellFormatOperation op = new BITableCellFormatOperation(dimension.getGroup().getType(), setting);
             operationsMap.put(dimension.getId(), op);
         }
+    }
+
+    //todo 简单处理，之后要提个接口
+    private boolean isStringDimension(BIDimension dimension) {
+        return dimension instanceof BIStringDimension;
     }
 
     public String getDimensionNameByID(String dID) throws Exception {

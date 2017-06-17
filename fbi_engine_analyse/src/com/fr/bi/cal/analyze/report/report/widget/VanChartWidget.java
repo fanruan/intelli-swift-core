@@ -365,10 +365,10 @@ public abstract class VanChartWidget extends TableWidget {
                 regionIdMap.put(key, region);
             }
 
-//            vjo.remove(region);
+            vjo.remove(region);
         }
 
-//        vjo.put(BIReportConstant.REGION.TARGET1, ja);
+        vjo.put(BIReportConstant.REGION.TARGET1, ja);
     }
 
     public JSONObject createPlotOptions(JSONObject globalStyle, JSONObject settings) throws Exception {
