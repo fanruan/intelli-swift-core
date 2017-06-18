@@ -4,26 +4,18 @@ package com.fr.bi.cal.analyze.report.report.widget;
 import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.conf.table.BusinessTable;
 import com.fr.bi.base.annotation.BICoreField;
-import com.fr.bi.cal.analyze.cal.result.BIComplexExecutData;
-import com.fr.bi.cal.analyze.cal.result.ComplexExpander;
-import com.fr.bi.cal.analyze.cal.result.CrossExpander;
-import com.fr.bi.cal.analyze.cal.result.NewCrossRoot;
-import com.fr.bi.cal.analyze.cal.result.Node;
+import com.fr.bi.cal.analyze.cal.result.*;
 import com.fr.bi.cal.analyze.cal.table.PolyCubeECBlock;
 import com.fr.bi.cal.analyze.executor.BIEngineExecutor;
 import com.fr.bi.cal.analyze.executor.paging.PagingFactory;
-import com.fr.bi.cal.analyze.executor.table.ComplexCrossExecutor;
-import com.fr.bi.cal.analyze.executor.table.ComplexGroupExecutor;
-import com.fr.bi.cal.analyze.executor.table.ComplexHorGroupExecutor;
-import com.fr.bi.cal.analyze.executor.table.CrossExecutor;
-import com.fr.bi.cal.analyze.executor.table.GroupExecutor;
-import com.fr.bi.cal.analyze.executor.table.HorGroupExecutor;
+import com.fr.bi.cal.analyze.executor.table.*;
 import com.fr.bi.cal.analyze.report.report.BIWidgetFactory;
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.calculator.IExcelDataBuilder;
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.calculator.SummaryComplexTableBuilder;
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.calculator.SummaryCrossTableDataBuilder;
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.calculator.SummaryGroupTableDataBuilder;
-import com.fr.bi.cal.analyze.report.report.widget.chart.export.format.operation.BITableCellFormatOperation;
+import com.fr.bi.cal.analyze.report.report.widget.chart.export.format.operation.BITableCellDateFormatOperation;
+import com.fr.bi.cal.analyze.report.report.widget.chart.export.format.operation.BITableCellNumberFormatOperation;
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.format.operation.ITableCellFormatOperation;
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.format.setting.BICellFormatSetting;
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.format.setting.ICellFormatSetting;
@@ -40,15 +32,15 @@ import com.fr.bi.conf.report.widget.field.BITargetAndDimension;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.conf.report.widget.field.target.BITarget;
 import com.fr.bi.conf.session.BISessionProvider;
-import com.fr.bi.field.dimension.dimension.BIStringDimension;
 import com.fr.bi.field.target.target.BISummaryTarget;
 import com.fr.bi.field.target.target.cal.target.configure.BIConfiguredCalculateTarget;
 import com.fr.bi.field.target.target.cal.target.configure.BIPeriodConfiguredCalculateTarget;
+import com.fr.bi.report.key.TargetGettingKey;
 import com.fr.bi.stable.constant.BIJSONConstant;
 import com.fr.bi.stable.constant.BIReportConstant;
+import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.gvi.GVIUtils;
 import com.fr.bi.stable.gvi.GroupValueIndex;
-import com.fr.bi.report.key.TargetGettingKey;
 import com.fr.bi.stable.utils.BITravalUtils;
 import com.fr.general.ComparatorUtils;
 import com.fr.json.JSONArray;
@@ -58,14 +50,7 @@ import com.fr.report.poly.TemplateBlock;
 import com.fr.stable.StringUtils;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 
@@ -797,7 +782,7 @@ public class TableWidget extends BISummaryWidget {
         for (BISummaryTarget target : this.getTargets()) {
             ICellFormatSetting setting = new BICellFormatSetting();
             setting.parseJSON(target.getChartSetting().getSettings());
-            ITableCellFormatOperation op = new BITableCellFormatOperation(setting);
+            ITableCellFormatOperation op = new BITableCellNumberFormatOperation(setting);
             operationsMap.put(target.getId(), op);
         }
         for (BIDimension dimension : this.getDimensions()) {
@@ -806,14 +791,19 @@ public class TableWidget extends BISummaryWidget {
             }
             ICellFormatSetting setting = new BICellFormatSetting();
             setting.parseJSON(dimension.getChartSetting().getSettings());
-            ITableCellFormatOperation op = new BITableCellFormatOperation(dimension.getGroup().getType(), setting);
+            ITableCellFormatOperation op;
+            if (dimension.createColumnKey().getFieldType() == DBConstant.COLUMN.NUMBER) {
+                op = new BITableCellNumberFormatOperation(setting);
+            } else {
+                op = new BITableCellDateFormatOperation(dimension.getGroup().getType(), setting);
+            }
             operationsMap.put(dimension.getId(), op);
         }
     }
 
     //todo 简单处理，之后要提个接口
     private boolean isStringDimension(BIDimension dimension) {
-        return dimension instanceof BIStringDimension;
+        return dimension.createColumnKey().getFieldType() == DBConstant.COLUMN.STRING;
     }
 
     public String getDimensionNameByID(String dID) throws Exception {

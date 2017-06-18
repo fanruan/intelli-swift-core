@@ -13,7 +13,8 @@ import com.fr.bi.cal.analyze.executor.paging.PagingFactory;
 import com.fr.bi.cal.analyze.report.report.BIWidgetFactory;
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.calculator.DetailTableBuilder;
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.calculator.IExcelDataBuilder;
-import com.fr.bi.cal.analyze.report.report.widget.chart.export.format.operation.BITableCellFormatOperation;
+import com.fr.bi.cal.analyze.report.report.widget.chart.export.format.operation.BITableCellDateFormatOperation;
+import com.fr.bi.cal.analyze.report.report.widget.chart.export.format.operation.BITableCellNumberFormatOperation;
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.format.operation.ITableCellFormatOperation;
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.format.setting.BICellFormatSetting;
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.item.ITableItem;
@@ -33,11 +34,11 @@ import com.fr.bi.field.target.detailtarget.BIDetailTargetFactory;
 import com.fr.bi.field.target.detailtarget.field.BIDateDetailTarget;
 import com.fr.bi.field.target.detailtarget.field.BIStringDetailTarget;
 import com.fr.bi.field.target.detailtarget.formula.BINumberFormulaDetailTarget;
-import com.fr.bi.field.target.detailtarget.formula.BIStringFormulaDetailTarget;
 import com.fr.bi.field.target.filter.TargetFilterFactory;
 import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.stable.constant.BIExcutorConstant;
 import com.fr.bi.stable.constant.BIReportConstant;
+import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.data.BITableID;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.utils.file.BIFileUtils;
@@ -374,25 +375,33 @@ public class BIDetailWidget extends AbstractBIWidget {
 
     private Map<String, ITableCellFormatOperation> createChartDimensions() {
         Map<String, ITableCellFormatOperation> formatOperationMap = new HashMap<String, ITableCellFormatOperation>();
-        try {
-            for (BIDetailTarget detailTarget : this.getTargets()) {
-                //string不参与format
-                boolean isStringColumn = detailTarget instanceof BIStringDetailTarget || detailTarget instanceof BIStringFormulaDetailTarget;
+        for (BIDetailTarget detailTarget : this.getTargets()) {
+            try {
+//                string不参与format
+                boolean isStringColumn = detailTarget instanceof BIStringDetailTarget && detailTarget.createColumnKey().getFieldType() == DBConstant.COLUMN.STRING;
                 if (!detailTarget.isUsed() || isStringColumn) {
                     continue;
                 }
                 BICellFormatSetting setting = new BICellFormatSetting();
                 setting.parseJSON(detailTarget.getChartSetting().getSettings());
-                int groupType = 0;
-                if (detailTarget instanceof BIDateDetailTarget) {
-                    groupType = ((BIDateDetailTarget) detailTarget).getGroup().getType();
+                if (detailTarget instanceof BINumberFormulaDetailTarget) {
+                    ITableCellFormatOperation op = new BITableCellNumberFormatOperation(setting);
+                    formatOperationMap.put(detailTarget.getId(), op);
+                    continue;
                 }
-//                groupType = detailTarget.createColumnKey().getFieldType();
-                ITableCellFormatOperation op = new BITableCellFormatOperation(groupType, setting);
-                formatOperationMap.put(detailTarget.getId(), op);
+                if (detailTarget.createColumnKey().getFieldType() == DBConstant.COLUMN.DATE) {
+                    int groupType = ((BIDateDetailTarget) detailTarget).getGroup().getType();
+                    ITableCellFormatOperation op = new BITableCellDateFormatOperation(groupType, setting);
+                    formatOperationMap.put(detailTarget.getId(), op);
+                } else {
+                    if (detailTarget.createColumnKey().getFieldType() == DBConstant.COLUMN.NUMBER) {
+                        ITableCellFormatOperation op = new BITableCellNumberFormatOperation(setting);
+                        formatOperationMap.put(detailTarget.getId(), op);
+                    }
+                }
+            } catch (Exception e) {
+                BILoggerFactory.getLogger().error(e.getMessage(), e);
             }
-        } catch (Exception e) {
-            BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
         return formatOperationMap;
     }
