@@ -23,6 +23,7 @@ public class BITableCellFormatHelper {
     static final int DEFAULT_SCALE = 1;
     static final String NONE_VALUE = "--";
 
+    //StableUtils.isNumber(text)的问题还在
     public static String targetValueFormat(JSONObject settings, String text) throws JSONException {
         if (BIStringUtils.isEmptyString(text) || !StableUtils.isNumber(text)) {
             return text;
@@ -225,7 +226,7 @@ public class BITableCellFormatHelper {
 
     private static String decimalFormat(JSONObject setting) {
         boolean hasSeparator = setting.optBoolean("numSeparators", true);
-        int type = setting.optInt("format", BIReportConstant.TARGET_STYLE.FORMAT.NORMAL);//默认为自动
+        int type = setting.optInt("formatDecimal", BIReportConstant.TARGET_STYLE.FORMAT.NORMAL);//默认为自动
         String format;
         switch (type) {
             case BIReportConstant.TARGET_STYLE.FORMAT.NORMAL:
@@ -268,20 +269,25 @@ public class BITableCellFormatHelper {
         return unit;
     }
 
-    public static JSONObject createTextStyle(JSONObject settings, String text) throws JSONException {
-        if (BIStringUtils.isEmptyString(text) || StableUtils.isNumber(text)) {
+    public static JSONObject createTextStyle(JSONObject settings, String text) {
+        if (BIStringUtils.isEmptyString(text) || !StableUtils.isNumber(text)) {
             return JSONObject.create();
         }
-        Float num = Float.valueOf(text);
-        int markResult = getTextCompareResult(settings, num);
-        int iconStyle = settings.getInt("iconStyle");
-        String textColor = "";
         try {
-            textColor = getTextColor(settings, num);
+            Float num = Float.valueOf(text);
+            int markResult = getTextCompareResult(settings, num);
+            int iconStyle = settings.getInt("iconStyle");
+            String textColor = "";
+            try {
+                textColor = getTextColor(settings, num);
+            } catch (JSONException e) {
+                BILoggerFactory.getLogger(BITableCellFormatHelper.class).error(e.getMessage(), e);
+            }
+            return JSONObject.create().put("markResult", markResult).put("iconStyle", iconStyle).put("color", textColor);
         } catch (JSONException e) {
-            BILoggerFactory.getLogger(BITableCellFormatHelper.class).error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
+            return JSONObject.create();
         }
-        return JSONObject.create().put("markResult", markResult).put("iconStyle", iconStyle).put("color", textColor);
     }
 
     private static int getTextCompareResult(JSONObject settings, Float num) throws JSONException {
@@ -297,8 +303,8 @@ public class BITableCellFormatHelper {
         if (null != conditions) {
             for (int i = 0; i < conditions.length(); i++) {
                 JSONObject range = conditions.getJSONObject(i).getJSONObject("range");
-                long min = range.getLong("min");
-                long max = range.getLong("max");
+                long min = range.optLong("min",Long.MIN_VALUE);
+                long max = range.optLong("max",Long.MAX_VALUE);
                 boolean minBoolean = range.optBoolean("closemin", false) ? num >= min : num > min;
                 boolean maxBoolean = range.optBoolean("closemax", false) ? num <= max : num < max;
                 if (minBoolean && maxBoolean) {
