@@ -4,7 +4,14 @@ import com.finebi.cube.conf.table.BusinessTable;
 import com.finebi.cube.relation.BITableSourceRelation;
 import com.fr.bi.cal.analyze.cal.multithread.BIMultiThreadExecutor;
 import com.fr.bi.cal.analyze.cal.multithread.MultiThreadManagerImpl;
-import com.fr.bi.cal.analyze.cal.result.*;
+import com.fr.bi.cal.analyze.cal.result.BIComplexExecutData;
+import com.fr.bi.cal.analyze.cal.result.ComplexExpander;
+import com.fr.bi.cal.analyze.cal.result.CrossExpander;
+import com.fr.bi.cal.analyze.cal.result.CrossHeader;
+import com.fr.bi.cal.analyze.cal.result.NewCrossRoot;
+import com.fr.bi.cal.analyze.cal.result.Node;
+import com.fr.bi.cal.analyze.cal.result.NodeAndPageInfo;
+import com.fr.bi.cal.analyze.cal.result.NodeExpander;
 import com.fr.bi.cal.analyze.cal.result.operator.AllPageOperator;
 import com.fr.bi.cal.analyze.cal.result.operator.LastPageOperator;
 import com.fr.bi.cal.analyze.cal.result.operator.NextPageOperator;
@@ -822,12 +829,8 @@ public class CubeIndexLoader {
             iterator.setExpander(expander);
             if (isAllExpandWholeNodeWithoutIndex(calAllPage)) {
                 MultiThreadManagerImpl.getInstance().awaitExecutor(session, executor);
-                Node n = iterator.getRoot().getConstructedRoot();
-                NodeUtils.setSibling(n);
-                NodeUtils.setSiblingBetweenFirstAndLastChild(n);
-                return new NodeAndPageInfo(n, iterator);
+                return new NodeAndPageInfo(iterator.getRoot().getConstructedRoot(), iterator);
             }
-
             NodeAndPageInfo info = GroupUtils.createNextPageMergeNode(iterator, op, isHor ? widget.showColumnTotal() : widget.showRowToTal(), shouldSetIndex, widget.getTargets().length, executor);
             MultiThreadManagerImpl.getInstance().awaitExecutor(session, executor);
             return info;
