@@ -1,7 +1,5 @@
 package com.finebi.cube.impl.conf.helpers;
 
-import com.finebi.cube.conf.BISystemConfigHelper;
-import com.finebi.cube.relation.BITableRelation;
 import com.finebi.cube.relation.BITableSourceRelation;
 import com.fr.bi.stable.data.source.CubeTableSource;
 
@@ -20,19 +18,15 @@ public class RelationCalculateHelper {
      * 计算和tableInConstruction中所有tableSource有关的relation
      *
      * @param allSourceIds
-     * @param configHelper
+     * @param relations
      * @return
      */
-    public static Set<BITableSourceRelation> calculateRelevantRelation(Set<String> allSourceIds, BISystemConfigHelper configHelper) {
+    public static Set<BITableSourceRelation> calculateRelevantRelation(Set<String> allSourceIds, Set<BITableSourceRelation> relations) {
         Set<BITableSourceRelation> relationsAboutTable = new HashSet<BITableSourceRelation>();
-        for (BITableRelation relation : configHelper.getSystemTableRelations()) {
-            BITableSourceRelation relevantSourceRelation = configHelper.convertRelation(relation);
-            if (relevantSourceRelation == null) {
-                continue;
-            }
-            if (allSourceIds.contains(relation.getPrimaryTable().getTableSource().getSourceID())
-                    || allSourceIds.contains(relation.getForeignTable().getTableSource().getSourceID())) {
-                relationsAboutTable.add(configHelper.convertRelation(relation));
+        for (BITableSourceRelation relation : relations) {
+            if (allSourceIds.contains(relation.getPrimaryTable().getSourceID())
+                    || allSourceIds.contains(relation.getForeignTable().getSourceID())) {
+                relationsAboutTable.add(relation);
             }
         }
         return relationsAboutTable;

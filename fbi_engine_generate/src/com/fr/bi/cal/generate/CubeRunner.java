@@ -3,8 +3,10 @@ package com.fr.bi.cal.generate;
 import com.finebi.cube.api.UserAnalysisCubeDataLoaderCreator;
 import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.conf.BICubeConfigureCenter;
+import com.finebi.cube.conf.BISystemConfigHelper;
 import com.finebi.cube.conf.table.BusinessTable;
 import com.finebi.cube.impl.conf.CubeBuildStuffComplete;
+import com.finebi.cube.relation.BITableSourceRelation;
 import com.finebi.cube.relation.BITableSourceRelationPath;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.cal.stable.loader.CubeReadingTableIndexLoader;
@@ -202,8 +204,11 @@ public class CubeRunner {
 
     public CubeBuildStuffComplete getCubeGeneratingObjects() {
         if (object == null) {
-            object = new CubeBuildStuffComplete(biUser);
-            object.initialCubeStuff();
+            BISystemConfigHelper configHelper = new BISystemConfigHelper();
+            Set<CubeTableSource> allTableSources = configHelper.extractTableSource(configHelper.getSystemBusinessTables());
+            Set<BITableSourceRelation> allRelations = configHelper.convertRelations(configHelper.getSystemTableRelations());
+            Set<BITableSourceRelationPath> allPaths = configHelper.convertPaths(configHelper.getSystemTablePaths());
+            object = new CubeBuildStuffComplete(biUser, allTableSources, allRelations, allPaths);
         }
         return object;
     }

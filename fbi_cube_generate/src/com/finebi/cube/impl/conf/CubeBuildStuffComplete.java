@@ -5,7 +5,6 @@ import com.finebi.cube.common.log.BILogger;
 import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.conf.AbstractCubeBuildStuff;
 import com.finebi.cube.conf.BICubeConfiguration;
-import com.finebi.cube.conf.BICubeConfigureCenter;
 import com.finebi.cube.conf.CalculateDependTool;
 import com.finebi.cube.relation.*;
 import com.finebi.cube.utils.BIDataStructTranUtils;
@@ -55,10 +54,11 @@ public class CubeBuildStuffComplete extends AbstractCubeBuildStuff implements Se
     private Set<List<Set<CubeTableSource>>> dependTableResource;
 
 
-    public CubeBuildStuffComplete(BIUser biUser) {
-        super(biUser.getUserId());
+    public CubeBuildStuffComplete(BIUser biUser, Set<CubeTableSource> allTableSources,
+                                  Set<BITableSourceRelation> allRelations, Set<BITableSourceRelationPath> allPaths) {
+        super(biUser.getUserId(), allTableSources);
         this.biUser = biUser;
-        initialCubeStuff();
+        initialCubeStuff(allRelations, allPaths);
     }
 
 
@@ -70,21 +70,8 @@ public class CubeBuildStuffComplete extends AbstractCubeBuildStuff implements Se
         return this.cubeGenerateRelationSet;
     }
 
-    private Set<BITableRelation> filterRelation(Set<BITableRelation> tableRelationSet) {
-        Iterator<BITableRelation> iterator = tableRelationSet.iterator();
-        Set<BITableRelation> result = new HashSet<BITableRelation>();
-        while (iterator.hasNext()) {
-            BITableRelation tableRelation = iterator.next();
-            if (configHelper.isTableRelationValid(tableRelation)) {
-                result.add(tableRelation);
-            }
-        }
-        return tableRelationSet;
-    }
-
-    public void setTableRelationSet(Set<BITableRelation> tableRelationSet) {
-        this.tableRelationSet = filterRelation(tableRelationSet);
-        this.tableSourceRelationSet = filterRelations(convertRelations(this.tableRelationSet));
+    public void setTableRelationSet(Set<BITableSourceRelation> tableRelationSet) {
+        this.tableSourceRelationSet = filterRelations(tableRelationSet);
     }
 
     public Set<BITableSourceRelationPath> getTableSourceRelationPathSet() {
@@ -93,39 +80,6 @@ public class CubeBuildStuffComplete extends AbstractCubeBuildStuff implements Se
 
     public void setRelationPaths(Set<BITableSourceRelationPath> relationPaths) {
         this.relationPaths = relationPaths;
-    }
-
-    private Set<BITableSourceRelation> convertRelations(Set<BITableRelation> relationSet) {
-        Set<BITableSourceRelation> set = new HashSet<BITableSourceRelation>();
-        for (BITableRelation relation : relationSet) {
-            try {
-                BITableSourceRelation tableSourceRelation = configHelper.convertRelation(relation);
-                if (null != tableSourceRelation) {
-                    set.add(tableSourceRelation);
-                }
-            } catch (Exception e) {
-                LOGGER.error(e.getMessage(), e);
-                continue;
-            }
-        }
-        return set;
-    }
-
-
-    private Set<BITableSourceRelationPath> convertPaths(Set<BITableRelationPath> paths) {
-        Set<BITableSourceRelationPath> set = new HashSet<BITableSourceRelationPath>();
-        for (BITableRelationPath path : paths) {
-            try {
-                BITableSourceRelationPath relationPath = convertPath(path);
-                if (null != relationPath) {
-                    set.add(relationPath);
-                }
-            } catch (Exception e) {
-                LOGGER.error(e.getMessage(), e);
-            }
-        }
-        set = removeDuplicateRelationPaths(set);
-        return set;
     }
 
     @Override
@@ -223,24 +177,23 @@ public class CubeBuildStuffComplete extends AbstractCubeBuildStuff implements Se
         this.foreignKeyMap = foreignKeyMap;
     }
 
-    public void initialCubeStuff() {
+    public void initialCubeStuff(Set<BITableSourceRelation> allRelations, Set<BITableSourceRelationPath> allPaths) {
         try {
             Set<List<Set<CubeTableSource>>> depends = calculateTableSource(getSystemTableSources());
             setDependTableResource(depends);
             setAllSingleSources(BIDataStructTranUtils.set2Set(depends));
-            setTableRelationSet(BICubeConfigureCenter.getTableRelationManager().getAllTableRelation(biUser.getUserId()));
+            setTableRelationSet(allRelations);
             Map<CubeTableSource, Set<BITableSourceRelation>> primaryKeyMap = new HashMap<CubeTableSource, Set<BITableSourceRelation>>();
             setPrimaryKeyMap(primaryKeyMap);
             Map<CubeTableSource, Set<BITableSourceRelation>> foreignKeyMap = new HashMap<CubeTableSource, Set<BITableSourceRelation>>();
             setForeignKeyMap(foreignKeyMap);
-            Set<BITableRelationPath> allPath = BICubeConfigureCenter.getTableRelationManager().getAllTablePath(biUser.getUserId());
-            Set<BITableRelationPath> filteredPath = new HashSet<BITableRelationPath>();
-            for (BITableRelationPath path : allPath) {
+            Set<BITableSourceRelationPath> filteredPath = new HashSet<BITableSourceRelationPath>();
+            for (BITableSourceRelationPath path : allPaths) {
                 if (path.size() > 1) {
                     filteredPath.add(path);
                 }
             }
-            setRelationPaths(convertPaths(filteredPath));
+            setRelationPaths(filteredPath);
             calculateDepend();
         } catch (Exception e) {
             throw BINonValueUtils.beyondControl(e);
