@@ -2,9 +2,7 @@ package com.finebi.cube.impl.conf.helpers;
 
 import com.finebi.cube.common.log.BILogger;
 import com.finebi.cube.common.log.BILoggerFactory;
-import com.finebi.cube.conf.BISystemConfigHelper;
 import com.finebi.cube.gen.oper.BIRelationIDUtils;
-import com.finebi.cube.relation.BITableRelationPath;
 import com.finebi.cube.relation.BITableSourceRelation;
 import com.finebi.cube.relation.BITableSourceRelationPath;
 
@@ -21,22 +19,21 @@ public class PathCalculateHelper {
 
     private static BILogger LOGGER = BILoggerFactory.getLogger(PathCalculateHelper.class);
 
-    public static Set<BITableSourceRelationPath> calculateRelevantPath(BISystemConfigHelper configHelper, Set<BITableSourceRelation> relationInConstruction) {
+    public static Set<BITableSourceRelationPath> calculateRelevantPath(Set<BITableSourceRelation> relationInConstruction, Set<BITableSourceRelationPath> paths) {
         Set<String> relationIDs = new HashSet<String>();
         Set<BITableSourceRelationPath> pathsAboutRelation = new HashSet<BITableSourceRelationPath>();
         for (BITableSourceRelation relation : relationInConstruction) {
             relationIDs.add(BIRelationIDUtils.calculateRelationID(relation));
         }
-        for (BITableRelationPath path : configHelper.getSystemTablePaths()) {
+        for (BITableSourceRelationPath path : paths) {
             /**
              * 等于1的path，实际就是relation了。这部分在relation地方处理了。
              */
             if (path.size() >= 2) {
-                BITableSourceRelationPath sourceRelationPath = configHelper.convertPath(path);
-                if (sourceRelationPath != null) {
-                    for (BITableSourceRelation relation : sourceRelationPath.getAllRelations()) {
+                if (path != null) {
+                    for (BITableSourceRelation relation : path.getAllRelations()) {
                         if (relationIDs.contains(BIRelationIDUtils.calculateRelationID(relation))) {
-                            pathsAboutRelation.add(sourceRelationPath);
+                            pathsAboutRelation.add(path);
                             break;
                         }
                     }
