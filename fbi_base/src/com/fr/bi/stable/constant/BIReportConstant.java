@@ -691,4 +691,12 @@ public class BIReportConstant {
         public static final int EQUAL = 2;
         public static final int MORE = 3;
     }
+
+    public static final class ERROR_CODE{
+        public static final int SQLDATASET_ERR = 61310001;
+    }
+
+    public static final class ERROR_MESSAGE{
+        public static final String SQLDATASET_MSG = "SQL数据集配置错误";
+    }
 }
