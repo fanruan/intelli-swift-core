@@ -78,10 +78,13 @@ public class GetTreeSelectTreeNodeExecutor extends AbstractTreeNodeExecutor {
         System.arraycopy(parent, 0, p, 0, parent.length);
         p[parent.length] = notSelectedValueString;
 
-        //选中的值中存在这个值就把它删掉
+        //存储的值中存在这个值就把它删掉
+        //例如选中了中国-江苏-南京， 取消中国或江苏或南京
         if (canFindKey(selectedValues, p)) {
             //如果搜索的值在父亲链中
             if (isSearchValueInParents(p)) {
+                //例如选中了 中国-江苏， 搜索江苏， 取消江苏
+                //例如选中了 中国-江苏， 搜索江苏， 取消中国
                 deleteNode(selectedValues, p);
             } else {
                 //找到所有搜索到的节点删掉
@@ -91,11 +94,21 @@ public class GetTreeSelectTreeNodeExecutor extends AbstractTreeNodeExecutor {
                 boolean finded = search(parent.length + 1, floors, parent, notSelectedValueString, keyword, result, searched);
                 if (finded && !searched.isEmpty()) {
                     for (String[] arr : searched) {
-                        deleteNode(selectedValues, arr);
+                        JSONObject jo = getNode(selectedValues, arr);
+                        if (jo != null) {
+                            //例如选中了 中国-江苏-南京，搜索南京，取消中国
+                            deleteNode(selectedValues, arr);
+                        } else {
+                            //例如选中了 中国-江苏，搜索南京，取消中国
+                            expandSelectValues(selectedValues, arr, arr[arr.length - 1]);
+                        }
                     }
                 }
             }
         }
+        //存储的值中不存在这个值，但父亲节点是全选的情况
+        //例如选中了中国-江苏，取消南京
+        //important 选中了中国-江苏，取消了江苏，但是搜索的是南京
         if (isChild(selectedValues, p)) {//如果有父亲节点是全选的状态
             List<String[]> result = new ArrayList<String[]>();
             boolean finded;
@@ -108,7 +121,8 @@ public class GetTreeSelectTreeNodeExecutor extends AbstractTreeNodeExecutor {
                 p = parent;
             }
             if (finded) {
-                expandSelectValues(selectedValues, p);
+                //去掉点击的节点之后的结果集
+                expandSelectValues(selectedValues, p, notSelectedValueString);
                 if (!result.isEmpty()) {
                     for (String[] arr : result) {
                         buildTree(selectedValues, arr);
@@ -118,10 +132,11 @@ public class GetTreeSelectTreeNodeExecutor extends AbstractTreeNodeExecutor {
         }
     }
 
-    private void expandSelectValues(JSONObject selectedValues, String[] p) throws JSONException {
+    private void expandSelectValues(JSONObject selectedValues, String[] p, String notSelectedValueString) throws JSONException {
         JSONObject next = selectedValues;
         int i;
 
+        //去掉点击的节点之后的结果集
         for (i = 0; i < p.length; i++) {
             String v = p[i];
             JSONObject t = next.optJSONObject(v);

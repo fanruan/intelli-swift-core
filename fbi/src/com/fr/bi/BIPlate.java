@@ -1,12 +1,13 @@
 package com.fr.bi;
 
 
+import com.finebi.cube.common.log.BILogger;
 import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.conf.BICubeConfigureCenter;
 import com.finebi.cube.conf.BISystemPackageConfigurationProvider;
 import com.finebi.cube.conf.BITableRelationConfigurationProvider;
+import com.finebi.cube.conf.CubeGenerationManager;
 import com.fr.base.FRContext;
-import com.fr.bi.cal.generate.TimerRunner;
 import com.fr.bi.cal.report.BIActor;
 import com.fr.bi.cal.report.db.DialectCreatorImpl;
 import com.fr.bi.cal.report.db.HiveDialectCreatorImpl;
@@ -62,11 +63,12 @@ import java.util.*;
  * BI模块启动时做的一些初始化工作，通过反射调用
  */
 public class BIPlate extends AbstractFSPlate {
+    private static BILogger LOGGER = BILoggerFactory.getLogger(BIPlate.class);
 
     @Override
     public void initData() {
         FRContext.getCurrentEnv().setBuildFilePath("bibuild.txt");
-        BILoggerFactory.getLogger().info("FINE BI :" + GeneralUtils.readBuildNO());
+        LOGGER.info("FINE BI :" + GeneralUtils.readBuildNO());
         initModules();
         super.initData();
         startModules();
@@ -85,13 +87,12 @@ public class BIPlate extends AbstractFSPlate {
         notifyColumnParentIdType();
 
         //启动用于截图的phantom服务
-//        initPhantomServer();
+        initPhantomServer();
     }
 
     private void createTimerTasks() {
     /*载入定时任务*/
-        TimerRunner timerRunner = new TimerRunner(UserControl.getInstance().getSuperManagerID());
-        timerRunner.reGenerateTimeTasks();
+        CubeGenerationManager.getCubeManager().resetCubeGenerationHour(UserControl.getInstance().getSuperManagerID());
     }
 
     public void loadMemoryData() {
@@ -156,7 +157,7 @@ public class BIPlate extends AbstractFSPlate {
                 try {
                     cn.rollback();
                 } catch (SQLException e1) {
-                    BILoggerFactory.getLogger().error(e1.getMessage(), e1);
+                    LOGGER.error(e1.getMessage(), e1);
                 }
             }
         } finally {
@@ -204,7 +205,7 @@ public class BIPlate extends AbstractFSPlate {
             Statement st = cn.createStatement();
             st.execute("ALTER TABLE " + tableName + " DROP BID ");
         } catch (Exception e) {
-            BILoggerFactory.getLogger().info(e.getMessage());
+            LOGGER.info(e.getMessage());
         } finally {
             DBUtils.closeConnection(cn);
         }
@@ -218,7 +219,7 @@ public class BIPlate extends AbstractFSPlate {
             Statement st = cn.createStatement();
             st.execute("ALTER TABLE " + tableName + "  ALTER COLUMN PARENTID VARCHAR (255)");
         } catch (Exception e) {
-            BILoggerFactory.getLogger().info(e.getMessage());
+            LOGGER.info(e.getMessage());
         } finally {
             DBUtils.closeConnection(cn);
         }
@@ -229,23 +230,26 @@ public class BIPlate extends AbstractFSPlate {
             PhantomServer server = new PhantomServer();
             server.start();
         } catch (IOException e) {
-            BILoggerFactory.getLogger().error(e.getMessage());
+            LOGGER.error(e.getMessage());
         }
 
     }
 
     private void initOOMKillerForLinux() {
         String os = System.getProperty("os.name");
-        BILoggerFactory.getLogger().info("OS:" + os);
+        LOGGER.info("OS:" + os);
         if (os.toUpperCase().contains("LINUX")) {
             String name = ManagementFactory.getRuntimeMXBean().getName();
             String pid = name.split("@")[0];
             try {
                 String cmd = "echo -17 > /proc/" + pid + "/oom_adj";
-                BILoggerFactory.getLogger().info("execute command:" + cmd);
+                LOGGER.info("execute command:" + cmd);
                 Runtime.getRuntime().exec(new String[]{"/bin/sh", "-c", cmd});
+                String cmd2 = "echo -1000 > /proc/" + pid + "/oom_score_adj";
+                LOGGER.info("execute command:" + cmd2);
+                Runtime.getRuntime().exec(new String[]{"/bin/sh", "-c", cmd2});
             } catch (IOException e) {
-                BILoggerFactory.getLogger().error(e.getMessage(), e);
+                LOGGER.error(e.getMessage(), e);
             }
 
         }
@@ -267,7 +271,7 @@ public class BIPlate extends AbstractFSPlate {
                     BIModule module = (BIModule) c.newInstance();
                     BIModuleManager.registModule(module);
                 } catch (Exception e) {
-                    BILoggerFactory.getLogger().error(e.getMessage(), e);
+                    LOGGER.error(e.getMessage(), e);
                 }
             }
         }

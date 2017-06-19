@@ -34,8 +34,16 @@ public class VanPercentStackedColumnWidget extends VanStackedColumnWidget{
         return 1;
     }
 
+    //数据点提示和标签不带百分号
     protected String scaleUnit(int level) {
         return StringUtils.EMPTY;
+    }
+
+    //值轴标题带百分号
+    protected String axisTitleUnit(int level, String unit){
+        String result = PERCENT_SYMBOL;
+        result += unit;
+        return StringUtils.isEmpty(result) ? StringUtils.EMPTY : "(" + result + ")";
     }
 
     protected JSONObject parseLeftValueAxis(JSONObject settings) throws JSONException{

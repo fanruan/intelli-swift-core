@@ -16,6 +16,14 @@ public class VanBarWidget extends VanColumnWidget{
         return true;
     }
 
+    protected double cateAxisRotation() {
+        return VERTICAL;
+    }
+
+    protected double valueAxisRotation() {
+        return 0;
+    }
+
     protected JSONObject parseLeftValueAxis(JSONObject settings) throws JSONException {
         return super.parseLeftValueAxis(settings).put("position", "right");
     }

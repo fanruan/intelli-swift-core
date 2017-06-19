@@ -70,7 +70,7 @@ public class BIRoleAccessability implements XMLable {
         jo.put("roleType", this.roleType);
         jo.put("roleId", this.roleId);
         //TODO
-        jo.put("condition_string_array", this.columnFilters);
+        jo.put("conditionStringArray", this.columnFilters);
         return jo;
     }
 
