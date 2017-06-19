@@ -662,7 +662,7 @@ public abstract class VanCartesianWidget extends VanChartWidget {
     //make yaxis maxValue Double
     protected void dealCompareChartYAxis(JSONObject settings) throws JSONException{
 
-        double leftYMax = -Double.MAX_VALUE, rightYMax = -Double.MAX_VALUE;
+        double leftYMax = -Double.MAX_VALUE, rightYMax = -Double.MAX_VALUE, leftYMin = Double.MAX_VALUE, rightYMin = Double.MAX_VALUE;
         String[] ids = this.getUsedTargetID();
 
         for(String id : ids){
@@ -670,13 +670,14 @@ public abstract class VanCartesianWidget extends VanChartWidget {
             Double[] values = this.getValuesByID(id);
 
             int yAxis = this.yAxisIndex(id);
-            if(yAxis == 0){
-                for (int j = 0, count = values.length; j < count; j++) {
-                    leftYMax = Math.max(leftYMax, values[j].doubleValue());
-                }
-            }else{
-                for (int j = 0, count = values.length; j < count; j++) {
-                    rightYMax = Math.max(rightYMax, values[j].doubleValue());
+            for (int j = 0, count = values.length; j < count; j++) {
+                double value = values[j].doubleValue();
+                if(yAxis == 0) {
+                    leftYMax = Math.max(leftYMax, value);
+                    leftYMin = Math.min(leftYMin, value);
+                } else {
+                    rightYMax = Math.max(rightYMax, value);
+                    rightYMin = Math.min(rightYMin, value);
                 }
             }
         }
@@ -689,21 +690,21 @@ public abstract class VanCartesianWidget extends VanChartWidget {
             leftYMax = DEFAULT_MAX;
         }
 
-        leftYMax = calculateValueTimeNiceDomain(0, leftYMax);
-        rightYMax = calculateValueTimeNiceDomain(0, rightYMax);
+        double[] leftDomain = calculateValueTimeNiceDomain(leftYMin, leftYMax);
+        double[] rightDomain = calculateValueTimeNiceDomain(rightYMin, rightYMax);
 
         settings.put("rightYReverse", true);
 
         if(!settings.optBoolean("leftYShowCustomScale")){
             settings
                     .put("leftYShowCustomScale", true)
-                    .put("leftYCustomScale", JSONObject.create().put("maxScale", 2 * leftYMax));
+                    .put("leftYCustomScale", JSONObject.create().put("maxScale", 2 * leftDomain[1]).put("minScale", leftDomain[0]));
         }
 
         if(!settings.optBoolean("rightYShowCustomScale")){
             settings
                     .put("rightYShowCustomScale", true)
-                    .put("rightYCustomScale", JSONObject.create().put("maxScale", 2 * rightYMax));
+                    .put("rightYCustomScale", JSONObject.create().put("maxScale", 2 * rightDomain[1]).put("minScale", rightDomain[0]));
         }
 
     }
@@ -738,7 +739,7 @@ public abstract class VanCartesianWidget extends VanChartWidget {
         return new double[]{min, max};
     }
 
-    protected double calculateValueTimeNiceDomain(double minValue, double maxValue){
+    protected double[] calculateValueTimeNiceDomain(double minValue, double maxValue){
         boolean fromZero = true;
 
         if(fromZero){
@@ -765,7 +766,7 @@ public abstract class VanCartesianWidget extends VanChartWidget {
             maxValue = minValue + DEFAULT_MAX;
         }
 
-        return maxValue;
+        return new double[]{minValue, maxValue};
     }
 
     protected JSONObject createEmptyCategoryAxis(JSONObject settings) throws JSONException{

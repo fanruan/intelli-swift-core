@@ -73,9 +73,11 @@ public class CubeBuildCustomStuff extends AbstractCubeBuildStuff {
                                 Map<String, Integer> sourceIdUpdateTypeMap,
                                 Set<CubeTableSource> tableSources, Set<BITableSourceRelation> relations,
                                 Set<BITableSourceRelationPath> paths, Set<CubeTableSource> absentTables,
-                                Set<BITableSourceRelation> absentRelations, Set<BITableSourceRelationPath> absentPaths) {
+                                Set<BITableSourceRelation> absentRelations, Set<BITableSourceRelationPath> absentPaths,
+                                Set<CubeTableSource> allTableSources,
+                                Set<BITableSourceRelation> allRelations, Set<BITableSourceRelationPath> allPaths) {
 
-        super(userId);
+        super(userId, allTableSources);
         this.tableBaseSourceIdMap = tableBaseSourceIdMap;
         this.sourceIdUpdateTypeMap = sourceIdUpdateTypeMap;
 
@@ -98,10 +100,10 @@ public class CubeBuildCustomStuff extends AbstractCubeBuildStuff {
         this.relationInConstruction = new HashSet<BITableSourceRelation>(relations);
         this.pathInConstruction = new HashSet<BITableSourceRelationPath>(paths);
 
-        relationInConstruction.addAll(RelationCalculateHelper.calculateRelevantRelation(allSourceIds, configHelper));
+        relationInConstruction.addAll(RelationCalculateHelper.calculateRelevantRelation(allSourceIds, allRelations));
         this.relationInConstruction = RelationCalculateHelper.removeRelationAbsentTable(this.tableInConstruction, this.relationInConstruction, absentTables, absentRelations);
 
-        pathInConstruction.addAll(PathCalculateHelper.calculateRelevantPath(configHelper, relationInConstruction));
+        pathInConstruction.addAll(PathCalculateHelper.calculateRelevantPath(relationInConstruction, allPaths));
         this.pathInConstruction = PathCalculateHelper.removePathAbsentRelation(this.relationInConstruction, this.pathInConstruction, absentRelations, absentPaths);
 
         DuplicateFilterHelper.filterAll(tableInConstruction, relationInConstruction, pathInConstruction);
