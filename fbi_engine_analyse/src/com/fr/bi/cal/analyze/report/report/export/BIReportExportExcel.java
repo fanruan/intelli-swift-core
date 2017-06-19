@@ -48,6 +48,7 @@ public class BIReportExportExcel {
     private ArrayList<BIWidget> widgets = new ArrayList<BIWidget>();
     private JSONArray specialWidgets = JSONArray.create();
     private int namePosLeft = BIStyleConstant.DASHBOARD_WIDGET_NAME_POS_LEFT;
+    private int adjustedWidth = 40;
     private int offSet1 = 1;
     private int offSet3 = 3;
     private int offSet7 = 7;
@@ -411,7 +412,7 @@ public class BIReportExportExcel {
             titleParams.put("textAlign", nameTextAlign);
         }
         Rectangle rect = widget.getRect();
-        String postOptions = new JSONObject("{" + key + ":" + options + ", width:" + rect.getWidth() +
+        String postOptions = new JSONObject("{" + key + ":" + options + ", width:" + (rect.getWidth() + adjustedWidth) +
                 ", height:" + rect.getHeight() + ", titleParams:" + titleParams + "}").toString();
         String base64 = null;
         try {
@@ -427,7 +428,7 @@ public class BIReportExportExcel {
         JSONObject jo = JSONObject.create();
         JSONObject bounds = wjo.optJSONObject("bounds");
 
-        jo.put("width", bounds.optInt("width"));
+        jo.put("width", bounds.optInt("width") + adjustedWidth);
         jo.put("height", bounds.optInt("height"));
         jo.put("content", wjo.optString("content"));
         jo.put("style", wjo.optJSONObject("style"));
