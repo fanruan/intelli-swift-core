@@ -1,6 +1,5 @@
 package com.fr.bi.cal.analyze.report.report.export.utils;
 
-import com.fr.base.ScreenResolution;
 import com.fr.bi.conf.report.BIWidget;
 import com.fr.bi.manager.PerformancePlugManager;
 import com.fr.bi.stable.constant.DateConstant;
