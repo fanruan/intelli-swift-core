@@ -45,5 +45,7 @@
   "backgroundLayerInfo": "背景图层信息(background_layer_info)",
   "totalAngle": "饼图总角度(chart_total_angle)",
   "innerRadius": "饼图内径(chart_inner_radius)",
-  "pieChartType": "饼图类型(chart_pie_type)"
+  "pieChartType": "饼图类型(chart_pie_type)",
+  "tableStyleGroup": "饼图类型(table_style/tableStyle)",
+  "tableFormGroup": "饼图类型(tableForm/table_form)"
 }
