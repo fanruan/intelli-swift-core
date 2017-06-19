@@ -22,6 +22,17 @@ public class LimitedAllNodeMergeIterator extends AllNodeMergeIterator {
     public LimitedAllNodeMergeIterator(MergeIterator mergeIterator, int sumLength, DimensionFilter filter, NameObject targetSort, List<TargetAndKey>[] metricsToCalculate, Map<String, TargetCalculator> calculatedMap, ICubeTableService[] tis, ICubeDataLoader loader, BIMultiThreadExecutor executor, List<CalCalculator> formulaCalculator, int maxSize) {
         super(mergeIterator, sumLength, filter, targetSort, metricsToCalculate, calculatedMap, tis, loader, executor, formulaCalculator);
         this.maxSize = maxSize;
+        initIterLater(sumLength);
+    }
+
+    @Override
+    protected void initIter(int sumLength) {
+
+    }
+
+    //要先设置下maxSize
+    protected void initIterLater(int sumLength) {
+        super.initIter(sumLength);
     }
 
     protected void initRoot() {
