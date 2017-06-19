@@ -37,6 +37,9 @@ public class VanGaugeWidget extends VanCartesianWidget{
         settings.put("minScale", StringUtils.EMPTY);
         settings.put("maxScale", StringUtils.EMPTY);
 
+        settings.put("showDataLabel", true);
+        settings.put("showPercentage", BIChartSettingConstant.PERCENTAGE.SHOW);
+
         return settings;
     }
 
@@ -60,7 +63,7 @@ public class VanGaugeWidget extends VanCartesianWidget{
 
     private void addDataLabel(JSONObject settings, JSONObject plotOptions) throws JSONException{
         JSONObject dataLabelSettings = settings.optJSONObject("dataLabelSetting");
-        dataLabelSettings = dataLabelSettings == null ? JSONObject.create().put("showValue", true).put("showSeries", true) : dataLabelSettings;
+        dataLabelSettings = dataLabelSettings == null ? JSONObject.create().put("showValue", true).put("showCategoryName", true) : dataLabelSettings;
 
         int gaugeStyle = settings.optInt("dashboardChartType");
         boolean isPointer = gaugeStyle == NORMAL || gaugeStyle == HALF_DASHBOARD;

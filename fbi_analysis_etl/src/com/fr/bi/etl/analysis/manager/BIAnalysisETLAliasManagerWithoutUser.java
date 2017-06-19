@@ -39,7 +39,10 @@ public class BIAnalysisETLAliasManagerWithoutUser extends BIAnalysisETLAliasMana
     public String getAliasName(String id, long userId) {
         return super.getAliasName(id, usedUserId);
     }
-
+    @Override
+    public boolean containsAliasName(String name, long userId) {
+        return super.containsAliasName(name,usedUserId);
+    }
     @Override
     public void removeAliasName(String id, long userId) {
         super.removeAliasName(id, usedUserId);
