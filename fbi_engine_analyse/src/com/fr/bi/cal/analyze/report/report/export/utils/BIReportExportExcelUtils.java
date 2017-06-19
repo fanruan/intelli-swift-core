@@ -1,7 +1,7 @@
-package com.fr.bi.cal.analyze.report.report;
+package com.fr.bi.cal.analyze.report.report.export.utils;
 
+import com.fr.base.ScreenResolution;
 import com.fr.bi.conf.report.BIWidget;
-import com.fr.bi.conf.report.WidgetType;
 import com.fr.bi.manager.PerformancePlugManager;
 import com.fr.bi.stable.constant.DateConstant;
 import com.fr.general.IOUtils;
@@ -10,21 +10,16 @@ import com.fr.report.cell.FloatElement;
 import com.fr.report.poly.PolyECBlock;
 import com.fr.stable.CodeUtils;
 import com.fr.stable.Constants;
-import com.fr.stable.StringUtils;
 import com.fr.stable.unit.FU;
 import com.fr.stable.unit.UnitRectangle;
 import sun.misc.BASE64Decoder;
-import sun.misc.BASE64Encoder;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.awt.image.RenderedImage;
 import java.io.*;
 import java.net.URL;
 import java.net.URLConnection;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Created by astronaut007 on 2017/4/19.
@@ -47,26 +42,25 @@ public class BIReportExportExcelUtils {
         return formatFloatElement(floatElement, rect);
     }
 
-    static FloatElement createFloatElement(BufferedImage bufferedImage, JSONObject bounds) {
+    public static FloatElement createFloatElement(BufferedImage bufferedImage, JSONObject bounds) {
         return createFloatElement(bufferedImage, getWidgetRect(bounds));
     }
 
-    static FloatElement createFloatElement(String base64, Rectangle rect) {
+    public static FloatElement createFloatElement(String base64, Rectangle rect) {
         return createFloatElement(base64Decoder(base64), rect);
     }
 
-    static FloatElement createFloatElement(String base64, JSONObject bounds) {
+    public static FloatElement createFloatElement(String base64, JSONObject bounds) {
         return createFloatElement(base64, getWidgetRect(bounds));
     }
 
-    static FloatElement createFloatElement4String(String value, JSONObject bounds) {
+    public static FloatElement createFloatElement4String(String value, JSONObject bounds) {
         FloatElement floatElement = new FloatElement(value);
         return formatFloatElement(floatElement, getWidgetRect(bounds));
     }
 
     static FloatElement formatFloatElement(FloatElement floatElement, Rectangle rect) {
-//        int resolution = ScreenResolution.getScreenResolution();
-        int resolution = Constants.DEFAULT_PRINT_AND_EXPORT_RESOLUTION;
+        int resolution = Constants.DEFAULT_WEBWRITE_AND_SCREEN_RESOLUTION;
         floatElement.setWidth(FU.valueOfPix((int) rect.getWidth(), resolution));
         floatElement.setHeight(FU.valueOfPix((int) rect.getHeight(), resolution));
         floatElement.setLeftDistance(FU.valueOfPix((int) rect.getX() + pageMargin, resolution));
@@ -119,7 +113,7 @@ public class BIReportExportExcelUtils {
         return img;
     }
 
-    static PolyECBlock createPolyECBlock(String widgetName) {
+    public static PolyECBlock createPolyECBlock(String widgetName) {
         PolyECBlock polyECBlock = new PolyECBlock();
         polyECBlock.setBlockName(CodeUtils.passwordEncode(CodeUtils.passwordEncode(widgetName)));
         polyECBlock.getBlockAttr().setFreezeHeight(true);
@@ -128,7 +122,7 @@ public class BIReportExportExcelUtils {
         return polyECBlock;
     }
 
-    static boolean widgetHasData(BIWidget widget) {
+    public static boolean widgetHasData(BIWidget widget) {
         return (widget.getViewDimensions().length + widget.getViewTargets().length) != 0;
     }
 
@@ -138,7 +132,7 @@ public class BIReportExportExcelUtils {
         return rect;
     }
 
-    static int getQuarterStartMonth(int nowMonth) {
+    public static int getQuarterStartMonth(int nowMonth) {
         int quarterStartMonth = DateConstant.CALENDAR.MONTH.JANUARY;
         if (nowMonth < DateConstant.CALENDAR.MONTH.APRIL) {
             quarterStartMonth = DateConstant.CALENDAR.MONTH.JANUARY;
@@ -155,7 +149,7 @@ public class BIReportExportExcelUtils {
         return quarterStartMonth;
     }
 
-    static int getMonthDays(int year, int month) {
+    public static int getMonthDays(int year, int month) {
         boolean isLeapYear = (0 == (year % year4)) && ((0 != (year % year100)) || (0 == (year % year400)));
         if (isLeapYear && month == 1) {
             return daysOfFebruary;

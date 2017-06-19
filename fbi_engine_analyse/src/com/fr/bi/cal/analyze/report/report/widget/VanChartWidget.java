@@ -61,6 +61,7 @@ public abstract class VanChartWidget extends TableWidget {
 
     protected static final String PERCENT_SYMBOL = "%";
     private static final String WHITE = "#ffffff";
+    private static final String DEFAULT_COLOR = "#1a1a1a";
 
     private static final int WEEK_COUNT = 52;
     private static final int MONTH_COUNT = 12;
@@ -515,7 +516,7 @@ public abstract class VanChartWidget extends TableWidget {
 
         return JSONObject.create()
                 .put("fontFamily", "Microsoft YaHei")
-                .put("color", "rgb(178, 178, 178)")
+                .put("color", DEFAULT_COLOR)
                 .put("fontSize", "12px");
 
     }
@@ -538,17 +539,22 @@ public abstract class VanChartWidget extends TableWidget {
         return merge(settings, this.populateDefaultSettings());
     }
 
-    public JSONObject createDataJSON(BISessionProvider session, HttpServletRequest req) throws Exception {
+    public JSONObject createChartConfigWidthData(BISessionProvider session, HttpServletRequest req, JSONObject data) throws Exception{
 
         this.locale = WebUtils.getLocale(req);
-
-        JSONObject data = super.createDataJSON(session, req).getJSONObject("data");
 
         //globalStyle从前台传过来的json取，不从.fbi模板取原因：设置全局样式，先刷新图表，后save模板，所以刷新图表取得全局样式不是最新的
         this.globalStyle = this.getChartSetting().getGlobalStyle();
         this.globalStyle = this.globalStyle == null ? JSONObject.create() : this.globalStyle;
 
         return this.createOptions(globalStyle, data).put("data", data);
+    }
+
+    public JSONObject createDataJSON(BISessionProvider session, HttpServletRequest req) throws Exception {
+
+        JSONObject data = super.createDataJSON(session, req).getJSONObject("data");
+
+        return this.createChartConfigWidthData(session, req, data);
     }
 
 /*
@@ -653,12 +659,16 @@ public abstract class VanChartWidget extends TableWidget {
         String scaleUnit = this.scaleUnit(this.numberLevel(dimension.getId()));
         String unit = unitFromSetting(dimension);
 
-        if (isTooltip) {
+        if (showUnit(isTooltip)) {
             return  (scaleUnit + unit);
         } else if(scaleUnit.equals(PERCENT_SYMBOL)){//标签也要把百分号加上
             return scaleUnit;
         }
         return StringUtils.EMPTY;
+    }
+
+    protected boolean showUnit(boolean isTooltip) {
+        return isTooltip;
     }
 
     //小数位数和千分符，即会改变数值的
