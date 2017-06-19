@@ -30,7 +30,7 @@ public class AnalysisBusiTable extends BIBusinessTable {
     private String describe;
     private String name;
     private long userId;
-    private Date lastModifyTime;
+    private Date lastModifyTime = new Date();
 
     public AnalysisBusiTable(String id, long userId) {
         super(id, "");
