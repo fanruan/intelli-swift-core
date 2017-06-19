@@ -649,6 +649,16 @@ public abstract class VanCartesianWidget extends VanChartWidget {
     //=========================about compare chart==========================================================
     private static final double DEFAULT_MAX = 100;
 
+    private static final double TICK_COUNT = 5;
+
+    private static final double STEP10 = 10;
+    private static final double STEP5 = 5;
+    private static final double STEP2 = 2;
+
+    private static final double ERROR15 = .15;
+    private static final double ERROR35 = .35;
+    private static final double ERROR75 = .75;
+
     //make yaxis maxValue Double
     protected void dealCompareChartYAxis(JSONObject settings) throws JSONException{
 
@@ -679,6 +689,9 @@ public abstract class VanCartesianWidget extends VanChartWidget {
             leftYMax = DEFAULT_MAX;
         }
 
+        leftYMax = calculateValueTimeNiceDomain(0, leftYMax);
+        rightYMax = calculateValueTimeNiceDomain(0, rightYMax);
+
         settings.put("rightYReverse", true);
 
         if(!settings.optBoolean("leftYShowCustomScale")){
@@ -693,6 +706,66 @@ public abstract class VanCartesianWidget extends VanChartWidget {
                     .put("rightYCustomScale", JSONObject.create().put("maxScale", 2 * rightYMax));
         }
 
+    }
+
+    private double linearTickInterval(double min, double max, double m){
+
+        if (m == 0) {
+            m = TICK_COUNT;
+        }
+
+        double span = max - min,
+                step = Math.pow(10, Math.floor(Math.log(span / m) / Math.log(10))),
+                err = m / span * step;
+
+        if (err <= ERROR15) {
+            step *= STEP10;
+        } else if (err <= ERROR35) {
+            step *= STEP5;
+        } else if (err <= ERROR75) {
+            step *= STEP2;
+        }
+
+        return step;
+    }
+
+    private double[] linearNiceDomain(double min, double max, double tickInterval){
+
+        min = Math.floor(min / tickInterval) * tickInterval;
+
+        max = Math.ceil(max / tickInterval) * tickInterval;
+
+        return new double[]{min, max};
+    }
+
+    protected double calculateValueTimeNiceDomain(double minValue, double maxValue){
+        boolean fromZero = true;
+
+        if(fromZero){
+            if(minValue > 0){
+                minValue = 0;
+            }else if(maxValue < 0){
+                maxValue = 0;
+            }
+        }
+
+        // if any exceeded min, adjust max to min + 100
+        if(minValue >= maxValue){
+            maxValue = minValue + DEFAULT_MAX;
+        }
+
+        double tickInterval = linearTickInterval(minValue, maxValue, 0);
+
+        double[] domain = linearNiceDomain(minValue, maxValue, tickInterval);
+
+        minValue = domain[0];
+        maxValue = domain[1];
+
+        if(minValue >= maxValue){
+            maxValue = minValue + DEFAULT_MAX;
+        }
+
+        return maxValue;
     }
 
     protected JSONObject createEmptyCategoryAxis(JSONObject settings) throws JSONException{

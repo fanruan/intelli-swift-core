@@ -489,6 +489,10 @@ public abstract class VanChartWidget extends TableWidget {
 
     private boolean isDarkColor(String colorStr) {
 
+        if (StringUtils.isEmpty(colorStr) || ComparatorUtils.equals(colorStr, "transparent")) {
+            return false;
+        }
+
         colorStr = colorStr.substring(1);
 
         Color color = new Color(Integer.parseInt(colorStr, 16));
