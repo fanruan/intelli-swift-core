@@ -50,11 +50,14 @@ public abstract class SummaryOfAllCalculator extends AbstractConfigureCalculator
          * 加1是因为node默认有一个空root
          *
          */
-        if (node.getDeep() > node.getFrameDeep() ) {
-            tempNode = getCalculatedRootNode(node);
-        } else {
-            return;
+        if(calDeep >0) {
+            if (node.getDeep() > node.getFrameDeep()) {
+                tempNode = getCalculatedRootNode(node);
+            } else {
+                return;
+            }
         }
+
         List nodeList = new ArrayList();
         BINode cursor_node = tempNode;
         while (cursor_node != null) {
