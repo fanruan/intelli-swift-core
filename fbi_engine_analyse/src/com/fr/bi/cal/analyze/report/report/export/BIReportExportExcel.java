@@ -297,14 +297,14 @@ public class BIReportExportExcel {
                         calendar.set(calendar.get(Calendar.YEAR), 11, 31);
                         break;
                 }
-                formatData4PMD(type, calendar);
+                _formatData(type, calendar);
                 dateValue = DateUtils.DATEFORMAT2.format(calendar.getTime());
             }
         }
         return dateValue;
     }
 
-    private Calendar formatData4PMD(int type, Calendar calendar) {
+    private Calendar _formatData(int type, Calendar calendar) {
         switch (type) {
             case BIReportConstant.DATE_TYPE.MULTI_DATE_MONTH_PREV:
                 calendar.add(Calendar.MONTH, 0 - offSet1);
