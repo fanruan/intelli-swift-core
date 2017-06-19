@@ -30,6 +30,18 @@ public class NodeUtils {
         return nLine;
     }
 
+    public static void setSibling(BINode root){
+        BINode last = null;
+        for (BINode node : root.getChilds()){
+            if (last != null){
+                last.setSibling(node);
+            }
+            last = node;
+            if (node.getChildLength() != 0){
+                setSibling(root);
+            }
+        }
+    }
 
     public static void setSiblingBetweenFirstAndLastChild(BINode root) {
         BINode siblingOlder = null;
