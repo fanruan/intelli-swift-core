@@ -2,10 +2,12 @@ package com.fr.bi.cal.generate;
 
 import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.conf.BICubeConfigureCenter;
+import com.finebi.cube.conf.BISystemConfigHelper;
 import com.finebi.cube.conf.CubeBuildStuff;
 import com.finebi.cube.impl.conf.CubeBuildStuffComplete;
 import com.finebi.cube.relation.BICubeGenerateRelation;
 import com.finebi.cube.relation.BITableSourceRelation;
+import com.finebi.cube.relation.BITableSourceRelationPath;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.cal.generate.index.IndexGenerator;
 import com.fr.bi.cal.generate.relation.RelationGenerator;
@@ -55,7 +57,11 @@ public abstract class AbstractCubeTask implements CubeTask {
     @Override
     public void start() {
         start = new Date();
-        cubeBuild = new CubeBuildStuffComplete(biUser);
+        BISystemConfigHelper configHelper = new BISystemConfigHelper();
+        Set<CubeTableSource> allTableSources = configHelper.extractTableSource(configHelper.getSystemBusinessTables());
+        Set<BITableSourceRelation> allRelations = configHelper.convertRelations(configHelper.getSystemTableRelations());
+        Set<BITableSourceRelationPath> allPaths = configHelper.convertPaths(configHelper.getSystemTablePaths());
+        cubeBuild = new CubeBuildStuffComplete(biUser, allTableSources, allRelations, allPaths);
         BICubeConfigureCenter.getPackageManager().startBuildingCube(biUser.getUserId());
         BIConfigureManagerCenter.getLogManager().logStart(getUserId());
     }

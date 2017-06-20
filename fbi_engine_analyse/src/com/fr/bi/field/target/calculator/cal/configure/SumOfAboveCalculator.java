@@ -37,10 +37,12 @@ public class SumOfAboveCalculator extends AbstractConfigureCalculator {
             tempNode = tempNode.getFirstChild();
         }
 
-        if (node.getDeep() > node.getFrameDeep()) {
-            tempNode = getCalculatedRootNode(node);
-        } else {
-            return;
+        if (deep > 0) {
+            if (node.getDeep() > node.getFrameDeep()) {
+                tempNode = getCalculatedRootNode(node);
+            } else {
+                return;
+            }
         }
 
         List nodeList = new ArrayList();
