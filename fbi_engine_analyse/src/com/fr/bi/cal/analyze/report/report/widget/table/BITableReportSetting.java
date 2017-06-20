@@ -68,8 +68,8 @@ public class BITableReportSetting extends BIAbstractTableSetting {
         }
         if (jo.has("style")) {
             JSONObject jo1 = jo.optJSONObject("style");
-            if (jo1.has("tableStyle")) {
-                tableStyle = jo1.optInt("tableStyle");
+            if (jo1.has("tableStyleGroup")) {
+                tableStyle = jo1.optInt("tableStyleGroup");
             }
             if (jo1.has("showNumber")) {
                 number = jo1.optBoolean("showNumber", false) ? 1 : 0;
