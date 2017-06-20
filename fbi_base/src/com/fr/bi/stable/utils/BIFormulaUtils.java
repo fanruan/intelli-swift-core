@@ -151,8 +151,10 @@ public class BIFormulaUtils {
         while (iter.hasNext()) {
             Map.Entry<String, TargetGettingKey> entry = iter.next();
             String columnName = entry.getKey();
-            if (values == null || values.length - 1 < entry.getValue().getTargetIndex()) {
-                c.remove(columnName);
+            if (values == null || values[entry.getValue().getTargetIndex()] == null || values.length - 1 < entry.getValue().getTargetIndex()) {
+//                c.remove(columnName);
+                return null;
+
             } else {
                 c.set(columnName, values[entry.getValue().getTargetIndex()]);
             }

@@ -70,6 +70,11 @@ public class BIAnalysisETLAliasManager extends BISystemDataManager<UserAliasMana
     }
 
     @Override
+    public boolean containsAliasName(String name, long userId) {
+        return getTransManager(userId).containsTransName(name);
+    }
+
+    @Override
     public String getAliasName(String id, long userId) {
         return getTransManager(userId).getTransName(id);
     }

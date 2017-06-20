@@ -146,6 +146,7 @@ public class ConstructedRootDimensionGroup extends RootDimensionGroup {
         }
         if (hasTargetSort()) {
             sort(rootNode, 0);
+            NodeUtils.setSibling(rootNode);
             NodeUtils.setSiblingBetweenFirstAndLastChild(rootNode);
         }
         root.setChildren(rootNode.getChilds());
