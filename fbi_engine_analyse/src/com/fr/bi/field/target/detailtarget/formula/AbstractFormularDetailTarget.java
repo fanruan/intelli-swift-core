@@ -4,7 +4,7 @@ import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.conf.table.BusinessTable;
 import com.fr.bi.field.target.detailtarget.BIAbstractDetailTarget;
 import com.fr.bi.stable.structure.collection.CubeIndexGetterWithNullValue;
-import com.fr.bi.stable.utils.BIFormularUtils;
+import com.fr.bi.stable.utils.BIFormulaUtils;
 import com.fr.json.JSONObject;
 import com.fr.script.Calculator;
 import com.fr.stable.StringUtils;
@@ -43,7 +43,7 @@ public abstract class AbstractFormularDetailTarget extends BIAbstractDetailTarge
      */
     @Override
     public Object createDetailValue(Long row, Map<String, Object> values, ICubeDataLoader loader, long userId) {
-        Object ob =  BIFormularUtils.getCalculatorValue(Calculator.createCalculator(), "=" + expression, values);
+        Object ob =  BIFormulaUtils.getCalculatorValue(Calculator.createCalculator(), "=" + expression, values);
         if (ob instanceof Number){
             return ((Number)ob).doubleValue();
         }
@@ -75,7 +75,7 @@ public abstract class AbstractFormularDetailTarget extends BIAbstractDetailTarge
     @Override
     public boolean isReady4Calculate(Map<String, Object> values) {
         boolean isReady = true;
-        Iterator<String> it = BIFormularUtils.createColumnIndexMap(expression).values().iterator();
+        Iterator<String> it = BIFormulaUtils.createColumnIndexMap(expression).values().iterator();
         while (it.hasNext()) {
             if (values.get(it.next()) == null) {
                 isReady = false;

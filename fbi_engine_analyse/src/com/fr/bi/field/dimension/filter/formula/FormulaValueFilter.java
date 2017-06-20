@@ -11,7 +11,7 @@ import com.fr.bi.report.result.BINode;
 import com.fr.bi.report.result.SummaryContainer;
 import com.fr.bi.report.result.TargetCalculator;
 import com.fr.bi.stable.utils.BICollectionUtils;
-import com.fr.bi.stable.utils.BIFormularUtils;
+import com.fr.bi.stable.utils.BIFormulaUtils;
 import com.fr.general.ComparatorUtils;
 import com.fr.json.JSONObject;
 import com.fr.script.Calculator;
@@ -43,7 +43,7 @@ public class FormulaValueFilter extends AbstractDimensionFilter {
     @Override
     public List<String> getUsedTargets() {
         ArrayList<String> list = new ArrayList<String>();
-        list.addAll(BIFormularUtils.createColumnIndexMap(expression).values());
+        list.addAll(BIFormulaUtils.createColumnIndexMap(expression).values());
         return list;
     }
 
@@ -59,7 +59,7 @@ public class FormulaValueFilter extends AbstractDimensionFilter {
 
     public Object calCalculateTarget(SummaryContainer node, Map<String, TargetCalculator> targetsMap) {
         String formula = "=" + expression;
-        return BIFormularUtils.getCalculatorValue(c, formula, BICollectionUtils.createMapByKeyMapValue(targetsMap, node.getSummaryValue()));
+        return BIFormulaUtils.getCalculatorValue(c, formula, BICollectionUtils.createMapByKeyMapValue(targetsMap, node.getSummaryValue()));
     }
 
     @Override
