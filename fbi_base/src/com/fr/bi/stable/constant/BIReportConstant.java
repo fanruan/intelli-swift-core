@@ -697,6 +697,6 @@ public class BIReportConstant {
     }
 
     public static final class ERROR_MESSAGE{
-        public static final String SQLDATASET_MSG = "SQLDATASET_CONFIG_ERROR";
+        public static final String SQLDATASET_MSG = "sqldataset config error";
     }
 }
