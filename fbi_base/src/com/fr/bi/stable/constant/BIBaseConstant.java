@@ -553,7 +553,5 @@ public class BIBaseConstant {
 
         public static final int ONE = 1;
         public static final int TWO = 2;
-        public static final int FIFTY = 50;
-        public static final int ONE_HUNDRED_AND_TEN = 110;
     }
 }
