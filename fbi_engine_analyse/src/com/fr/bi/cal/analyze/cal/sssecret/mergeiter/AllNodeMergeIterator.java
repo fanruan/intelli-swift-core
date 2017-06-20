@@ -61,7 +61,7 @@ public class AllNodeMergeIterator implements Iterator<MetricMergeResult> {
         initIter(sumLength);
     }
 
-    private void initIter(int sumLength) {
+    protected void initIter(int sumLength) {
         root = new Node(sumLength);
         count = new AtomicInteger(0);
         //不是多线程，或者没有指标并且不需要释放索引都表示线程池的计算已经结束
