@@ -141,6 +141,9 @@ public class GetTreeSelectTreeNodeExecutor extends AbstractTreeNodeExecutor {
             String v = p[i];
             JSONObject t = next.optJSONObject(v);
             if (t == null) {
+                if (i == 0) {
+                    break;
+                }
                 if (next.length() == 0) {
                     String[] split = new String[i];
                     System.arraycopy(p, 0, split, 0, i);
@@ -153,7 +156,8 @@ public class GetTreeSelectTreeNodeExecutor extends AbstractTreeNodeExecutor {
                     }
                     next = next.optJSONObject(v);
                 } else {
-                    next.put(v, next = new JSONObject());
+                    break;
+//                    next.put(v, next = new JSONObject());
                 }
             } else {
                 next = t;
