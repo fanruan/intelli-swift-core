@@ -19,7 +19,7 @@ import java.util.regex.Pattern;
 /**
  * Created by 小灰灰 on 2015/9/24.
  */
-public class BIFormularUtils {
+public class BIFormulaUtils {
 
     public static Object getCalculatorValue(Calculator c, String formula, ICubeTableService ti, Map<String, BIKey> columnIndexMap, int row) {
         Iterator<Map.Entry<String, BIKey>> iter = columnIndexMap.entrySet().iterator();
@@ -47,8 +47,8 @@ public class BIFormularUtils {
             Object ob = c.eval(formula);
             return ob == Primitive.NULL ? null : ob;
         } catch (UtilEvalError e) {
-            BILoggerFactory.getLogger(BIFormularUtils.class).error("incorrect formula");
-            BILoggerFactory.getLogger(BIFormularUtils.class).error(BIStringUtils.append("The formula:", formula));
+            BILoggerFactory.getLogger(BIFormulaUtils.class).error("incorrect formula");
+            BILoggerFactory.getLogger(BIFormulaUtils.class).error(BIStringUtils.append("The formula:", formula));
             return null;
         }
     }
@@ -93,10 +93,10 @@ public class BIFormularUtils {
         return names;
     }
 
-    public static Map<String, String> createColumnIndexMap(String formular) {
+    public static Map<String, String> createColumnIndexMap(String formula) {
         Map<String, String> columnIndexMap = new HashMap<String, String>();
         try {
-            String[] parameters = getRelatedParaNames(formular);
+            String[] parameters = getRelatedParaNames(formula);
 
             for (int j = 0; j < parameters.length; j++) {
                 String columnName = parameters[j];
