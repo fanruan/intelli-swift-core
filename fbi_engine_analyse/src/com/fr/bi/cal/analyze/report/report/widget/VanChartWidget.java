@@ -2,6 +2,9 @@ package com.fr.bi.cal.analyze.report.report.widget;
 
 import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.base.FRContext;
+import com.fr.bi.conf.fs.BIChartStyleAttr;
+import com.fr.bi.conf.fs.FBIConfig;
+import com.fr.bi.conf.fs.tablechartstyle.BIChartFontStyleAttr;
 import com.fr.bi.conf.report.WidgetType;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.conf.session.BISessionProvider;
@@ -82,6 +85,7 @@ public abstract class VanChartWidget extends TableWidget {
 
     //todo:@shine 4.1版本整理一下settings globalstyle plateconfig
     private JSONObject globalStyle;
+    private JSONObject defaultFont;
 
     public static final String[] FULL_QUARTER_NAMES = new String[]{
             Inter.getLocText("BI-Quarter_1"),
@@ -512,17 +516,72 @@ public abstract class VanChartWidget extends TableWidget {
         return settings;
     }
 
+    private String checkValidColor(String backgroundColor, String original) {
+        String transparent = "transparent", auto = StringUtils.EMPTY;
+        if(!transparent.equals(backgroundColor) && !auto.equals(backgroundColor)){
+            return isDarkColor(backgroundColor) ? WHITE : DARK;
+        }
+        return original;
+    }
+
+    private String checkTransparent(String color){
+        if(color.equals("transparent")){
+            return "rgba(0,0,0,0)";
+        }
+        return color;
+    }
+
+    //优先级从低到高：plat界面背景，global界面背景，主题，plat组件背景，global组件背景，setting组件背景，plat图表文字， global图表文字，settings图表文字
     protected JSONObject defaultFont() throws JSONException {
-        if(this.globalStyle != null && this.globalStyle.has("chartFont")){
-            JSONObject chartFont = this.globalStyle.optJSONObject("chartFont");
-            return new JSONObject(chartFont.toString()).put("fontFamily", "Microsoft YaHei").put("fontSize", "12px");
+        if(defaultFont == null){
+            BIChartStyleAttr platConfig = FBIConfig.getProviderInstance().getChartStyleAttr();
+            String color = DARK, fontWeight = "normal", fontStyle = "normal";
+
+            if(platConfig.getMainBackground() != null) {
+                color = checkValidColor(platConfig.getMainBackground().getValue(), color);
+            }
+
+            if(globalStyle.has("mainBackground")) {
+                color = checkValidColor(globalStyle.optJSONObject("mainBackground").optString("value"), color);
+            }
+
+            if(globalStyle.optString("theme").equals("bi-theme-dark")){
+                color = WHITE;
+            }
+
+            if(platConfig.getWidgetBackground() != null) {
+                color = checkValidColor(platConfig.getWidgetBackground().getValue(), color);
+            }
+
+            if(globalStyle.has("widgetBackground")) {
+                color = checkValidColor(globalStyle.optJSONObject("widgetBackground").optString("value"), color);
+            }
+
+            BIChartFontStyleAttr fontStyleAttr = platConfig.getChartFont();
+            if(fontStyleAttr != null){
+                String fontColor = fontStyleAttr.getColor();
+                if(StringUtils.isNotEmpty(fontColor)){
+                    color = checkTransparent(fontColor);
+                }
+                fontWeight = fontStyleAttr.getFontWidget();
+                fontStyle = fontStyleAttr.getFontStyle();
+            }
+
+            JSONObject chartFont = globalStyle.optJSONObject("chartFont");
+            if(chartFont != null){
+                String fontColor = chartFont.optString("color");
+                if(StringUtils.isNotEmpty(fontColor)){
+                    color = checkTransparent(fontColor);
+                }
+                fontWeight = chartFont.optString("fontWeight", fontWeight);
+                fontStyle = chartFont.optString("fontStyle", fontStyle);
+            }
+
+            defaultFont = JSONObject.create().put("fontFamily", "Microsoft YaHei").put("fontSize", "12px")
+                    .put("color", color).put("fontWeight", fontWeight).put("fontStyle", fontStyle);
         }
 
-        return JSONObject.create()
-                .put("fontFamily", "Microsoft YaHei")
-                .put("color", DARK)
-                .put("fontSize", "12px");
-
+        return defaultFont;
     }
 
     //todo 不知道有没有实现过，先撸一下
