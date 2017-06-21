@@ -1152,7 +1152,7 @@ public abstract class VanChartWidget extends TableWidget {
 
             ranges.put(
                     JSONObject.create()
-                            .put("from", range.optDouble("min"))
+                            .put("from", range.optDouble("min",Integer.MIN_VALUE))
                             .put("to", range.optDouble("max", Integer.MAX_VALUE))
                             .put("color", config.optString("color"))
             );
