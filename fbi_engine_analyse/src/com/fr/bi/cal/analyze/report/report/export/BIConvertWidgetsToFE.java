@@ -16,14 +16,12 @@ import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.constant.BIStyleConstant;
 import com.fr.bi.util.BIReadReportUtils;
 import com.fr.general.DateUtils;
-import com.fr.general.GeneralUtils;
 import com.fr.general.Inter;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
 import com.fr.report.cell.FloatElement;
 import com.fr.stable.Constants;
-import com.fr.stable.StableUtils;
 import com.fr.stable.unit.FU;
 
 import javax.imageio.ImageIO;
