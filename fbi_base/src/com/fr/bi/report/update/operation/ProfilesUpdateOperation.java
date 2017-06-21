@@ -28,12 +28,13 @@ import java.util.regex.Pattern;
  * 驼峰以及自定义key值修改
  * 图片uri修正
  * 散点气泡图type升级成点图的type
+ * 显示网格拆分成显示纵向和显示横向
  */
 public class ProfilesUpdateOperation implements ReportUpdateOperation {
     private static final String DEFAULT_FILE_NAME = "keys.json";
     private JSONObject keys;
     private static Pattern linePattern = Pattern.compile("(?!^)_(\\w)");
-    private static Map<Integer, Integer> chartTypeMap = new HashMap<Integer,Integer>();
+    private static Map<Integer, Integer> chartTypeMap = new HashMap<Integer, Integer>();
 
     public ProfilesUpdateOperation() {
         try {
@@ -67,10 +68,11 @@ public class ProfilesUpdateOperation implements ReportUpdateOperation {
             boolean flag = BIJsonUtils.isKeyValueSet(json.get(s).toString());
             if (flag) {
                 if (ComparatorUtils.equals(s, "widgets")) {
-                       json = correctDataLabels(json);
+                    json = correctDataLabels(json);
                     json = correctPreviousSrcError(json);
                     json = correctScatterType(json);
                     groupTargetsByType(json);
+                    updateShowGridSettings(json);
                 }
                 res.put(updateKey(s), recursionMapUpdate(json.getString(s)));
             } else {
@@ -78,6 +80,30 @@ public class ProfilesUpdateOperation implements ReportUpdateOperation {
             }
         }
         return res;
+    }
+
+    //  显示网格线拆分成显示纵向和显示横向
+    private void updateShowGridSettings(JSONObject jo) {
+        try {
+            if (BIJsonUtils.isKeyValueSet(jo.getString("widgets"))) {
+                Iterator keys = jo.getJSONObject("widgets").keys();
+                while (keys.hasNext()) {
+                    String widgetId = keys.next().toString();
+                    JSONObject widgetJo = jo.getJSONObject("widgets").getJSONObject(widgetId);
+                    if (widgetJo.has("settings") && widgetJo.getJSONObject("settings").has("show_grid_line")) {
+                        boolean needUpdate = !widgetJo.getJSONObject("settings").has("hShowGridLine") && !widgetJo.getJSONObject("settings").has("xShowGridLine");
+                        if (needUpdate) {
+                            boolean isShowGridLine = widgetJo.getJSONObject("settings").optBoolean("show_grid_line", false);
+                            widgetJo.getJSONObject("settings").put("hShowGridLine", isShowGridLine);
+                            widgetJo.getJSONObject("settings").put("vShowGridLine", isShowGridLine);
+                        }
+                    }
+                }
+            }
+        } catch (JSONException e) {
+            BILoggerFactory.getLogger(this.getClass()).error(e.getMessage(), e);
+        }
+
     }
 
     //4.0的图表标签默认设置，和402默认有些不一样，所以在这边写。调整标签位置，灰色雅黑12px。
