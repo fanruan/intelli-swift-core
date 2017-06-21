@@ -4,6 +4,7 @@ import com.finebi.cube.api.ICubeColumnIndexReader;
 import com.finebi.cube.relation.BITableSourceRelation;
 import com.fr.bi.base.ValueConverter;
 import com.fr.bi.base.key.BIKey;
+import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.stable.engine.index.key.IndexKey;
 import com.fr.bi.stable.file.ColumnFile;
 import com.fr.bi.stable.file.IndexFile;
@@ -18,14 +19,17 @@ import com.fr.bi.stable.io.newio.NIOReader;
 import com.fr.bi.stable.io.newio.NIOWriter;
 import com.fr.bi.stable.io.newio.SingleUserNIOReadManager;
 import com.fr.bi.stable.io.sortlist.ISortNIOReadList;
-import com.fr.bi.stable.operation.sort.comp.ComparatorFacotry;
 import com.fr.bi.stable.structure.collection.CubeIndexGetterWithNullValue;
 import com.fr.bi.stable.structure.collection.map.CubeTreeMap;
 import com.fr.bi.stable.utils.BICollectionUtils;
 import com.fr.stable.StringUtils;
 import com.fr.stable.collections.array.IntArray;
 
-import java.util.*;
+import java.util.Comparator;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 /**
  * Created by 小灰灰 on 2016/1/14.
@@ -123,7 +127,7 @@ public abstract class AbstractSingleMemoryColumn<T> implements MemoryColumnFile<
         if (getter == null) {
             synchronized (getterLock) {
                 if (getter == null) {
-                    getter = createGroupByType(key, ValueConverter.DEFAULT, ComparatorFacotry.createASCComparator());
+                    getter = createGroupByType(key, ValueConverter.DEFAULT, BIBaseConstant.COMPARATOR.COMPARABLE.ASC);
                 }
             }
         }
