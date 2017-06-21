@@ -426,16 +426,13 @@ public abstract class VanCartesianWidget extends VanChartWidget {
         JSONObject category = JSONObject.create();
         boolean enabled = settings.optBoolean("catShowTitle");
 
-        //兼容4.0 settings.textDirection
-        int rotation = settings.has("textDirection") ? settings.optInt("textDirection") : labelStyle.optInt("textDirection");
-
         category
                 .put("maxWidth", COMPONENT_MAX_SIZE).put("maxHeight", COMPONENT_MAX_SIZE)
                 .put("type", "category").put("position", "bottom")
                 .put("title", JSONObject.create().put("rotation", cateAxisRotation()).put("style", settings.optJSONObject("catTitleStyle")).put("text", enabled ?settings.optString("catTitle") : StringUtils.EMPTY))
                 .put("showLabel", settings.optBoolean("catShowLabel") && !settings.optBoolean("showDataTable"))
                 .put("labelStyle", labelStyle.optJSONObject("textStyle"))
-                .put("labelRotation", rotation)
+                .put("labelRotation", labelStyle.optInt("textDirection"))
                 .put("lineColor", settings.optString("catLineColor"))
                 .put("gridLineWidth", settings.optBoolean("vShowGridLine") ? 1 : 0)
                 .put("gridLineColor", settings.optString("vGridLineColor"))

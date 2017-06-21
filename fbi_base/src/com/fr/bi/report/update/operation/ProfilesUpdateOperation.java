@@ -82,7 +82,7 @@ public class ProfilesUpdateOperation implements ReportUpdateOperation {
         return res;
     }
 
-    //  显示网格线拆分成显示纵向和显示横向
+    //  显示网格线拆分成显示纵向和显示横向，settings.textDirection to settings.catLabelStyle.textDirection
     private void updateShowGridSettings(JSONObject jo) {
         try {
             if (BIJsonUtils.isKeyValueSet(jo.getString("widgets"))) {
@@ -90,13 +90,17 @@ public class ProfilesUpdateOperation implements ReportUpdateOperation {
                 while (keys.hasNext()) {
                     String widgetId = keys.next().toString();
                     JSONObject widgetJo = jo.getJSONObject("widgets").getJSONObject(widgetId);
-                    if (widgetJo.has("settings") && widgetJo.getJSONObject("settings").has("show_grid_line")) {
-                        boolean needUpdate = !widgetJo.getJSONObject("settings").has("hShowGridLine") && !widgetJo.getJSONObject("settings").has("xShowGridLine");
+                    JSONObject settings = widgetJo.optJSONObject("settings");
+                    if (settings != null && settings.has("show_grid_line")) {
+                        boolean needUpdate = !settings.has("hShowGridLine") && !settings.has("xShowGridLine");
                         if (needUpdate) {
-                            boolean isShowGridLine = widgetJo.getJSONObject("settings").optBoolean("show_grid_line", false);
+                            boolean isShowGridLine = settings.optBoolean("show_grid_line", false);
                             widgetJo.getJSONObject("settings").put("hShowGridLine", isShowGridLine);
                             widgetJo.getJSONObject("settings").put("vShowGridLine", isShowGridLine);
                         }
+                    }
+                    if(settings != null && settings.has("textDirection")){
+                        settings.put("catLabelStyle", JSONObject.create().put("textDirection", settings.optInt("textDirection")));
                     }
                 }
             }
