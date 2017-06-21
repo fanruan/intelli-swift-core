@@ -48,6 +48,7 @@ public class BIReportExportExcel {
     private ArrayList<BIWidget> widgets = new ArrayList<BIWidget>();
     private JSONArray specialWidgets = JSONArray.create();
     private int namePosLeft = BIStyleConstant.DASHBOARD_WIDGET_NAME_POS_LEFT;
+    private int adjustedWidth = 40;
     private int offSet1 = 1;
     private int offSet3 = 3;
     private int offSet7 = 7;
@@ -297,14 +298,14 @@ public class BIReportExportExcel {
                         calendar.set(calendar.get(Calendar.YEAR), 11, 31);
                         break;
                 }
-                formatData4PMD(type, calendar);
+                _formatData(type, calendar);
                 dateValue = DateUtils.DATEFORMAT2.format(calendar.getTime());
             }
         }
         return dateValue;
     }
 
-    private Calendar formatData4PMD(int type, Calendar calendar) {
+    private Calendar _formatData(int type, Calendar calendar) {
         switch (type) {
             case BIReportConstant.DATE_TYPE.MULTI_DATE_MONTH_PREV:
                 calendar.add(Calendar.MONTH, 0 - offSet1);
@@ -411,7 +412,7 @@ public class BIReportExportExcel {
             titleParams.put("textAlign", nameTextAlign);
         }
         Rectangle rect = widget.getRect();
-        String postOptions = new JSONObject("{" + key + ":" + options + ", width:" + rect.getWidth() +
+        String postOptions = new JSONObject("{" + key + ":" + options + ", width:" + (rect.getWidth() + adjustedWidth) +
                 ", height:" + rect.getHeight() + ", titleParams:" + titleParams + "}").toString();
         String base64 = null;
         try {
@@ -427,7 +428,7 @@ public class BIReportExportExcel {
         JSONObject jo = JSONObject.create();
         JSONObject bounds = wjo.optJSONObject("bounds");
 
-        jo.put("width", bounds.optInt("width"));
+        jo.put("width", bounds.optInt("width") + adjustedWidth);
         jo.put("height", bounds.optInt("height"));
         jo.put("content", wjo.optString("content"));
         jo.put("style", wjo.optJSONObject("style"));
