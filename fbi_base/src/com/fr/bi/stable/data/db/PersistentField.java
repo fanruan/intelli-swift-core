@@ -1,5 +1,6 @@
 package com.fr.bi.stable.data.db;
 
+import com.fr.bi.common.persistent.annotation.PersistNameHistory;
 import com.fr.bi.stable.data.key.IPersistentField;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.utils.BIDBUtils;
@@ -21,8 +22,11 @@ public class PersistentField implements IPersistentField {
     private String columnName;
     private String remark;
     private boolean isPrimaryKey;
+    @PersistNameHistory(historyNames = {"column_size"})
     private int columnSize;
     private int biType;
+    private boolean canSetUsable;
+
     //小数位数
     private int scale = DEFAULT_SCALE;
 
@@ -48,10 +52,12 @@ public class PersistentField implements IPersistentField {
     public PersistentField(String columnName, int type) {
         this(columnName, columnName, type, DEFAULT_COLUMN_SIZE, DEFAULT_SCALE);
     }
+
     public PersistentField(String columnName, int type, int columnSize, int scale) {
         this(columnName, columnName, type, columnSize, scale);
     }
-        public PersistentField() {
+
+    public PersistentField() {
     }
 
     public String getRemark() {
@@ -201,4 +207,9 @@ public class PersistentField implements IPersistentField {
                 && ((PersistentField) o2).getSqlType() == this.getSqlType()
                 && ((PersistentField) o2).isPrimaryKey() == this.isPrimaryKey();
     }
+
+    public boolean canSetUsable() {
+        return canSetUsable;
+    }
+
 }

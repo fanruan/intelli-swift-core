@@ -1,5 +1,6 @@
 package com.fr.bi.cal.analyze.report.report.widget.chart.export.format.setting;
 
+import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;
 
@@ -29,7 +30,7 @@ public class BICellFormatSetting implements ICellFormatSetting {
         jo.put("unit", unit);
         jo.put("numSeparators", numSeparators);
         jo.put("numLevel", numberLevel);
-        jo.put("format", format);
+        jo.put("formatDecimal", format);
         jo.put("conditions", conditions);
         jo.put("iconStyle", iconStyle);
         jo.put("mark", mark);
@@ -52,8 +53,9 @@ public class BICellFormatSetting implements ICellFormatSetting {
         if (jo.has("iconStyle")) {
             iconStyle = jo.optInt("iconStyle");
         }
-        if (jo.has("format")) {
-            format = jo.optInt("format");
+        format = BIReportConstant.TARGET_STYLE.FORMAT.NORMAL;
+        if (jo.has("formatDecimal")) {
+            format = jo.optInt("formatDecimal");
         }
         if (jo.has("conditions")) {
             conditions = jo.optJSONArray("conditions");

@@ -1,11 +1,11 @@
 package com.fr.bi.stable.utils;
 
-import com.fr.bi.stable.constant.BIReportConstant;
-import com.fr.bi.stable.constant.DBConstant;
+import com.finebi.cube.api.ICubeTableService;
 import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.base.key.BIKey;
-import com.finebi.cube.api.ICubeTableService;
 import com.fr.bi.report.key.TargetGettingKey;
+import com.fr.bi.stable.constant.BIReportConstant;
+import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.utils.program.BIStringUtils;
 import com.fr.script.Calculator;
 import com.fr.stable.Primitive;
@@ -37,6 +37,8 @@ public class BIFormularUtils {
                     c.set(columnName, value);
                 } else {
                     c.remove(columnName);
+                    //BI-6107 null + number(非空数值) = null  直接返回null
+                    return null;
                 }
             }
         }
@@ -109,6 +111,7 @@ public class BIFormularUtils {
     private static String toParameterFormat(String name) {
         return "$" + name;
     }
+
     public static Object getCalculatorValue(Calculator c, String formula, Map values) {
         Iterator<Map.Entry<String, String>> iter = createColumnIndexMap(formula).entrySet().iterator();
         String formulaStr = getIncrementParaFormula(formula);
@@ -130,7 +133,7 @@ public class BIFormularUtils {
         }
     }
 
-    public static String getIncrementParaFormula(String expression){
+    public static String getIncrementParaFormula(String expression) {
         String formula = new String(expression);
         Pattern pat = Pattern.compile("\\$[\\{][^\\}]*[\\}]");
         Matcher matcher = pat.matcher(expression);
@@ -148,8 +151,10 @@ public class BIFormularUtils {
         while (iter.hasNext()) {
             Map.Entry<String, TargetGettingKey> entry = iter.next();
             String columnName = entry.getKey();
-            if (values == null || values.length - 1 < entry.getValue().getTargetIndex()){
-                c.remove(columnName);
+            if (values == null || values[entry.getValue().getTargetIndex()] == null || values.length - 1 < entry.getValue().getTargetIndex()) {
+//                c.remove(columnName);
+                return null;
+
             } else {
                 c.set(columnName, values[entry.getValue().getTargetIndex()]);
             }

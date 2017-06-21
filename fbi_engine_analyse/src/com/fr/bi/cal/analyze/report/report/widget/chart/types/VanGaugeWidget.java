@@ -1,5 +1,6 @@
 package com.fr.bi.cal.analyze.report.report.widget.chart.types;
 
+import com.fr.bi.stable.constant.BIChartSettingConstant;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
@@ -36,6 +37,9 @@ public class VanGaugeWidget extends VanCartesianWidget{
         settings.put("minScale", StringUtils.EMPTY);
         settings.put("maxScale", StringUtils.EMPTY);
 
+        settings.put("showDataLabel", true);
+        settings.put("showPercentage", BIChartSettingConstant.PERCENTAGE.SHOW);
+
         return settings;
     }
 
@@ -47,20 +51,7 @@ public class VanGaugeWidget extends VanCartesianWidget{
     public JSONObject createPlotOptions(JSONObject globalSetting, JSONObject settings) throws Exception{
         JSONObject plotOptions = super.createPlotOptions(globalSetting, settings);
 
-        int gaugeStyle = settings.optInt("dashboardChartType");
-        boolean isPointer = gaugeStyle == NORMAL || gaugeStyle == HALF_DASHBOARD;
-        boolean isMultiPointer = (settings.optInt("dashboardPointer") == MULTI_POINTERS) && isPointer;
-
-        String align = gaugeStyle == HORIZONTAL_TUBE ? "top" : "left";
-
-        String valueLabelKey = SERIES + VALUE;
-
-        JSONObject formatter = JSONObject.create().put("identifier", valueLabelKey);
-
-        JSONObject valueLabel = JSONObject.create().put("enabled", true).put("backgroundColor", BG_COLOR).put("align", align).put("formatter", formatter);
-        JSONObject seriesLabel = JSONObject.create().put("enabled", true).put("formatter", JSONObject.create().put("identifier", CATEGORY)).put("align", "bottom");
-
-        plotOptions.put("valueLabel", valueLabel).put("seriesLabel", seriesLabel);
+        addDataLabel(settings, plotOptions);
 
         if(settings.optInt("styleRadio", AUTO) != AUTO){
             JSONArray dashboardStyles = settings.optJSONArray("dashboardStyles");
@@ -70,8 +61,49 @@ public class VanGaugeWidget extends VanCartesianWidget{
         return plotOptions;
     }
 
+    private void addDataLabel(JSONObject settings, JSONObject plotOptions) throws JSONException{
+        JSONObject dataLabelSettings = settings.optJSONObject("dataLabelSetting");
+        dataLabelSettings = dataLabelSettings == null ? JSONObject.create().put("showValue", true).put("showCategoryName", true) : dataLabelSettings;
+
+        int gaugeStyle = settings.optInt("dashboardChartType");
+        boolean isPointer = gaugeStyle == NORMAL || gaugeStyle == HALF_DASHBOARD;
+
+        boolean showCate = dataLabelSettings.optBoolean("showCategoryName");
+
+        String valueID = StringUtils.EMPTY, seriesID = StringUtils.EMPTY;
+        if(dataLabelSettings.optBoolean("showValue")){
+            valueID += VALUE;
+        }
+        if(isPointer){
+            if(dataLabelSettings.optBoolean("showPercentage")){
+                valueID += PERCENT;
+            }
+            if(showCate){
+                seriesID += CATEGORY;
+            }
+        } else {
+            if(showCate){
+                valueID += CATEGORY;
+            }
+        }
+
+        String align = gaugeStyle == HORIZONTAL_TUBE ? "top" : "left";
+        JSONObject font = dataLabelSettings.has("textStyle") ? dataLabelSettings.optJSONObject("textStyle") : defaultFont();
+        JSONObject valueLabel = JSONObject.create().put("enabled", settings.optBoolean("showDataLabel")).put("backgroundColor", BG_COLOR).put("align", align).put("formatter", JSONObject.create().put("identifier", valueID)).put("style", font);
+        JSONObject seriesLabel = JSONObject.create().put("enabled", settings.optBoolean("showDataLabel")).put("formatter", JSONObject.create().put("identifier", seriesID)).put("align", "bottom").put("style", font);
+        JSONObject percentageLabel = JSONObject.create().put("enabled", settings.optInt("showPercentage") == BIChartSettingConstant.PERCENTAGE.SHOW).put("align", align).put("formatter",  JSONObject.create().put("identifier", PERCENT)
+                .put("percentFormat", "function(){return BI.contentFormat(arguments[0], \"#.##%\")}"));
+
+        plotOptions.put("valueLabel", valueLabel).put("seriesLabel", seriesLabel).put("percentageLabel", percentageLabel);
+    }
+
     protected String dataLabelsKey() {
         return "valueLabel";
+    }
+
+    //仪表盘的标签和数据点提示都要加单位
+    protected boolean showUnit(boolean isTooltip) {
+        return true;
     }
 
     public JSONArray createSeries(JSONObject originData) throws Exception{

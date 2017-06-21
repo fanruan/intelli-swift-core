@@ -79,7 +79,7 @@ public class VanRangeAreaWidget extends VanAreaWidget{
                 String tooltipUnit = this.valueUnit(target, true);
 
                 formatter.put("identifier", this.getTooltipIdentifier())
-                        .put(this.tooltipValueKey(), String.format("function(){return BI.contentFormat(arguments[0] + %s , \"%s\") + \"%s\"}", y, format, tooltipUnit));
+                        .put("valueFormat", String.format("function(){return BI.contentFormat(arguments[0] + %s , \"%s\") + \"%s\"}", y, format, tooltipUnit));
                 d.put("tooltip", new JSONObject(tooltip.toString()).put("formatter", formatter));
             }
         }

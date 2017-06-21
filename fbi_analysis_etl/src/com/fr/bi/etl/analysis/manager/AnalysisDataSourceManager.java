@@ -164,6 +164,11 @@ public class AnalysisDataSourceManager extends BISystemDataManager<DataSourceCom
     }
 
     @Override
+    public CubeTableSource getCubeTableSource(String sourceID) {
+        return getInstance().getCubeTableSource(sourceID);
+    }
+
+    @Override
     public BusinessTable getBusinessTable(BITableID id) throws BIKeyAbsentException {
         return getInstance().getBusinessTable(id);
     }

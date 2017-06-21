@@ -255,6 +255,7 @@ public class UserWidget implements Serializable {
         synchronized (lock) {
             maxRow = Integer.MAX_VALUE;
             tempValue.clear();
+            session.clearCachedMaps();
             session = new UserSession();
         }
 

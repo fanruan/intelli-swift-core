@@ -21,17 +21,23 @@ import java.util.Date;
 public class BITableCellFormatHelper {
     static final String PERCENT_SYMBOL = "%";
     static final int DEFAULT_SCALE = 1;
-    static final String NONEVALUE = "--";
+    static final String NONE_VALUE = "--";
 
+    //StableUtils.isNumber(text)的问题还在
     public static String targetValueFormat(JSONObject settings, String text) throws JSONException {
         if (BIStringUtils.isEmptyString(text) || !StableUtils.isNumber(text)) {
             return text;
         }
-        float value = Float.valueOf(text);
-        value = parseNumByLevel(settings, value);
-        text = parseNumByFormat(decimalFormat(settings), value);
-        String tail = createTailUnit(settings);
-        return text + tail;
+        try {
+            float value = Float.valueOf(text);
+            value = parseNumByLevel(settings, value);
+            text = parseNumByFormat(decimalFormat(settings), value);
+            String tail = createTailUnit(settings);
+            return text + tail;
+        } catch (NumberFormatException e) {
+            BILoggerFactory.getLogger(BITableCellFormatHelper.class).error(e.getMessage(), e);
+        }
+        return text;
     }
 
     private static String parseNumByFormat(String format, float value) {
@@ -72,7 +78,7 @@ public class BITableCellFormatHelper {
     }
 
     public static String dateFormat(JSONObject format, int groupType, String text) throws JSONException {
-        if (StringUtils.isBlank(text)||ComparatorUtils.equals(text,NONEVALUE)) {
+        if (StringUtils.isBlank(text) || ComparatorUtils.equals(text, NONE_VALUE)) {
             return text;
         }
         JSONObject dateFormat = format.optJSONObject("dateFormat");
@@ -220,7 +226,7 @@ public class BITableCellFormatHelper {
 
     private static String decimalFormat(JSONObject setting) {
         boolean hasSeparator = setting.optBoolean("numSeparators", true);
-        int type = setting.optInt("format", BIReportConstant.TARGET_STYLE.FORMAT.NORMAL);//默认为自动
+        int type = setting.optInt("formatDecimal", BIReportConstant.TARGET_STYLE.FORMAT.NORMAL);//默认为自动
         String format;
         switch (type) {
             case BIReportConstant.TARGET_STYLE.FORMAT.NORMAL:
@@ -263,17 +269,25 @@ public class BITableCellFormatHelper {
         return unit;
     }
 
-    public static JSONObject createTextStyle(JSONObject settings, String text) throws JSONException {
-        Float num;
-        try {
-            num = Float.valueOf(text);
-        } catch (NumberFormatException e) {
+    public static JSONObject createTextStyle(JSONObject settings, String text) {
+        if (BIStringUtils.isEmptyString(text) || !StableUtils.isNumber(text)) {
             return JSONObject.create();
         }
-        int markResult = getTextCompareResult(settings, num);
-        int iconStyle = settings.getInt("iconStyle");
-        String textColor = getTextColor(settings, num);
-        return JSONObject.create().put("markResult", markResult).put("iconStyle", iconStyle).put("color", textColor);
+        try {
+            Float num = Float.valueOf(text);
+            int markResult = getTextCompareResult(settings, num);
+            int iconStyle = settings.getInt("iconStyle");
+            String textColor = "";
+            try {
+                textColor = getTextColor(settings, num);
+            } catch (JSONException e) {
+                BILoggerFactory.getLogger(BITableCellFormatHelper.class).error(e.getMessage(), e);
+            }
+            return JSONObject.create().put("markResult", markResult).put("iconStyle", iconStyle).put("color", textColor);
+        } catch (JSONException e) {
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
+            return JSONObject.create();
+        }
     }
 
     private static int getTextCompareResult(JSONObject settings, Float num) throws JSONException {
@@ -286,11 +300,11 @@ public class BITableCellFormatHelper {
 
     private static String getTextColor(JSONObject settings, Float num) throws JSONException {
         JSONArray conditions = settings.optJSONArray("conditions");
-        if (null!=conditions) {
+        if (null != conditions) {
             for (int i = 0; i < conditions.length(); i++) {
                 JSONObject range = conditions.getJSONObject(i).getJSONObject("range");
-                long min = range.getLong("min");
-                long max = range.getLong("max");
+                long min = range.optLong("min",Long.MIN_VALUE);
+                long max = range.optLong("max",Long.MAX_VALUE);
                 boolean minBoolean = range.optBoolean("closemin", false) ? num >= min : num > min;
                 boolean maxBoolean = range.optBoolean("closemax", false) ? num <= max : num < max;
                 if (minBoolean && maxBoolean) {

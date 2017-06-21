@@ -32,7 +32,7 @@ public abstract class VanCartesianWidget extends VanChartWidget {
     private static final String FALL_COLUMN = "fallColumn";
     private static final String TRANS = "rgba(0,0,0,0)";
 
-    private static final int VERTICAL = 90;
+    protected static final int VERTICAL = 90;
     private static final String IMG_TMP = "function(){return \"<img src = %s>\"}";
 
     protected JSONObject populateDefaultSettings() throws JSONException{
@@ -152,7 +152,7 @@ public abstract class VanCartesianWidget extends VanChartWidget {
     }
 
     //todo 坐标轴标题和数量级，单位构成的后缀
-    private String axisTitleUnit(int level, String unit){
+    protected String axisTitleUnit(int level, String unit){
         String result = this.scaleUnit(level);
         result += unit;
         return StringUtils.isEmpty(result) ? StringUtils.EMPTY : "(" + result + ")";
@@ -221,7 +221,8 @@ public abstract class VanCartesianWidget extends VanChartWidget {
             plotOptions.put("curve", true);
         }
 
-        plotOptions.put("connectNulls", settings.optBoolean("nullContinuity"));
+        //没配置，默认true
+        plotOptions.put("connectNulls", !settings.has("nullContinuity") || settings.optBoolean("nullContinuity"));
 
         return plotOptions;
     }
@@ -428,15 +429,28 @@ public abstract class VanCartesianWidget extends VanChartWidget {
         category
                 .put("maxWidth", COMPONENT_MAX_SIZE).put("maxHeight", COMPONENT_MAX_SIZE)
                 .put("type", "category").put("position", "bottom")
-                .put("title", JSONObject.create().put("style", settings.optJSONObject("catTitleStyle")).put("text", enabled ?settings.optString("catTitle") : StringUtils.EMPTY))
+                .put("title", JSONObject.create().put("rotation", cateAxisRotation()).put("style", settings.optJSONObject("catTitleStyle")).put("text", enabled ?settings.optString("catTitle") : StringUtils.EMPTY))
                 .put("showLabel", settings.optBoolean("catShowLabel") && !settings.optBoolean("showDataTable"))
                 .put("labelStyle", labelStyle.optJSONObject("textStyle"))
                 .put("labelRotation", labelStyle.optInt("textDirection"))
                 .put("lineColor", settings.optString("catLineColor"))
                 .put("gridLineWidth", settings.optBoolean("vShowGridLine") ? 1 : 0)
-                .put("gridLineColor", settings.optString("vGridLineColor"));
+                .put("gridLineColor", settings.optString("vGridLineColor"))
+                .put("reversed", cateAxisReversed());
 
         return JSONArray.create().put(category);
+    }
+
+    protected double cateAxisRotation() {
+        return 0;
+    }
+
+    protected double valueAxisRotation() {
+        return VERTICAL;
+    }
+
+    protected boolean cateAxisReversed() {
+        return false;
     }
 
     protected JSONArray parseValueAxis(JSONObject settings) throws JSONException{
@@ -464,7 +478,7 @@ public abstract class VanCartesianWidget extends VanChartWidget {
                 .put("title", JSONObject.create()
                         .put("style", settings.optJSONObject("leftYTitleStyle"))
                         .put("text", enabled ? settings.optString("leftYTitle") + axisTitle : axisTitle)
-                        .put("rotation", VERTICAL)
+                        .put("rotation", valueAxisRotation())
                 )
                 .put("showLabel", settings.optBoolean("leftYShowLabel"))
                 .put("formatter", this.tickFormatter(0))
@@ -495,7 +509,7 @@ public abstract class VanCartesianWidget extends VanChartWidget {
                 .put("title", JSONObject.create()
                         .put("style", settings.optJSONObject("rightYTitleStyle"))
                         .put("text", enabled ? settings.optString("rightYTitle") + axisTitle : axisTitle)
-                        .put("rotation", VERTICAL)
+                        .put("rotation", valueAxisRotation())
                 )
                 .put("showLabel", settings.optBoolean("rightYShowLabel"))
                 .put("formatter", this.tickFormatter(1))
@@ -525,7 +539,7 @@ public abstract class VanCartesianWidget extends VanChartWidget {
                 .put("title", JSONObject.create()
                         .put("style", settings.optJSONObject("rightY2TitleStyle"))
                         .put("text", enabled ? settings.optString("rightY2Title") + axisTitle : axisTitle)
-                        .put("rotation", VERTICAL)
+                        .put("rotation", valueAxisRotation())
                 )
                 .put("showLabel", settings.optBoolean("rightY2ShowLabel"))
                 .put("formatter", this.tickFormatter(2))
@@ -635,10 +649,20 @@ public abstract class VanCartesianWidget extends VanChartWidget {
     //=========================about compare chart==========================================================
     private static final double DEFAULT_MAX = 100;
 
+    private static final double TICK_COUNT = 5;
+
+    private static final double STEP10 = 10;
+    private static final double STEP5 = 5;
+    private static final double STEP2 = 2;
+
+    private static final double ERROR15 = .15;
+    private static final double ERROR35 = .35;
+    private static final double ERROR75 = .75;
+
     //make yaxis maxValue Double
     protected void dealCompareChartYAxis(JSONObject settings) throws JSONException{
 
-        double leftYMax = -Double.MAX_VALUE, rightYMax = -Double.MAX_VALUE;
+        double leftYMax = -Double.MAX_VALUE, rightYMax = -Double.MAX_VALUE, leftYMin = Double.MAX_VALUE, rightYMin = Double.MAX_VALUE;
         String[] ids = this.getUsedTargetID();
 
         for(String id : ids){
@@ -646,13 +670,14 @@ public abstract class VanCartesianWidget extends VanChartWidget {
             Double[] values = this.getValuesByID(id);
 
             int yAxis = this.yAxisIndex(id);
-            if(yAxis == 0){
-                for (int j = 0, count = values.length; j < count; j++) {
-                    leftYMax = Math.max(leftYMax, values[j].doubleValue());
-                }
-            }else{
-                for (int j = 0, count = values.length; j < count; j++) {
-                    rightYMax = Math.max(rightYMax, values[j].doubleValue());
+            for (int j = 0, count = values.length; j < count; j++) {
+                double value = values[j].doubleValue();
+                if(yAxis == 0) {
+                    leftYMax = Math.max(leftYMax, value);
+                    leftYMin = Math.min(leftYMin, value);
+                } else {
+                    rightYMax = Math.max(rightYMax, value);
+                    rightYMin = Math.min(rightYMin, value);
                 }
             }
         }
@@ -665,20 +690,83 @@ public abstract class VanCartesianWidget extends VanChartWidget {
             leftYMax = DEFAULT_MAX;
         }
 
+        double[] leftDomain = calculateValueTimeNiceDomain(leftYMin, leftYMax);
+        double[] rightDomain = calculateValueTimeNiceDomain(rightYMin, rightYMax);
+
         settings.put("rightYReverse", true);
 
         if(!settings.optBoolean("leftYShowCustomScale")){
             settings
                     .put("leftYShowCustomScale", true)
-                    .put("leftYCustomScale", JSONObject.create().put("maxScale", 2 * leftYMax));
+                    .put("leftYCustomScale", JSONObject.create().put("maxScale", 2 * leftDomain[1]).put("minScale", leftDomain[0]));
         }
 
         if(!settings.optBoolean("rightYShowCustomScale")){
             settings
                     .put("rightYShowCustomScale", true)
-                    .put("rightYCustomScale", JSONObject.create().put("maxScale", 2 * rightYMax));
+                    .put("rightYCustomScale", JSONObject.create().put("maxScale", 2 * rightDomain[1]).put("minScale", rightDomain[0]));
         }
 
+    }
+
+    private double linearTickInterval(double min, double max, double m){
+
+        if (m == 0) {
+            m = TICK_COUNT;
+        }
+
+        double span = max - min,
+                step = Math.pow(10, Math.floor(Math.log(span / m) / Math.log(10))),
+                err = m / span * step;
+
+        if (err <= ERROR15) {
+            step *= STEP10;
+        } else if (err <= ERROR35) {
+            step *= STEP5;
+        } else if (err <= ERROR75) {
+            step *= STEP2;
+        }
+
+        return step;
+    }
+
+    private double[] linearNiceDomain(double min, double max, double tickInterval){
+
+        min = Math.floor(min / tickInterval) * tickInterval;
+
+        max = Math.ceil(max / tickInterval) * tickInterval;
+
+        return new double[]{min, max};
+    }
+
+    protected double[] calculateValueTimeNiceDomain(double minValue, double maxValue){
+        boolean fromZero = true;
+
+        if(fromZero){
+            if(minValue > 0){
+                minValue = 0;
+            }else if(maxValue < 0){
+                maxValue = 0;
+            }
+        }
+
+        // if any exceeded min, adjust max to min + 100
+        if(minValue >= maxValue){
+            maxValue = minValue + DEFAULT_MAX;
+        }
+
+        double tickInterval = linearTickInterval(minValue, maxValue, 0);
+
+        double[] domain = linearNiceDomain(minValue, maxValue, tickInterval);
+
+        minValue = domain[0];
+        maxValue = domain[1];
+
+        if(minValue >= maxValue){
+            maxValue = minValue + DEFAULT_MAX;
+        }
+
+        return new double[]{minValue, maxValue};
     }
 
     protected JSONObject createEmptyCategoryAxis(JSONObject settings) throws JSONException{

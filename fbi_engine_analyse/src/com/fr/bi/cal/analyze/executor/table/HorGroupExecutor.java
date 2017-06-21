@@ -69,25 +69,48 @@ public class HorGroupExecutor extends AbstractTableWidgetExecutor<Node> {
             CBCell cell = ExecutorUtils.createCell(Inter.getLocText("BI-Number_Index"), 0, colDimension.length, 0, 1, style);
             pagedIterator.addCell(cell);
         }
-        int colDimIdx = 0;
-        while (colDimIdx < colDimension.length) {
-            CBCell cell = ExecutorUtils.createCell(colDimension[colDimIdx].getText(), colDimIdx, 1, widget.isOrder(), 1, style);
+        int rowIdx = 0;
+        while (rowIdx < colDimension.length) {
+            CBCell cell = ExecutorUtils.createCell(colDimension[rowIdx].getText(), rowIdx, 1, widget.isOrder(), 1, style);
             pagedIterator.addCell(cell);
             node = node.getFirstChild();
             Node temp = node;
-            int columnIdx = widget.isOrder() + 1;
-            BIDimension dim = colDimension[colDimIdx];
+            FinalInt columnIdx = new FinalInt();
+            columnIdx.value = widget.isOrder() + 1;
+            BIDimension dim = colDimension[rowIdx];
             while (temp != null) {
                 String v = dim.toString(temp.getData());
                 if (dim.getGroup().getType() == BIReportConstant.GROUP.YMD && GeneralUtils.string2Number(v) != null) {
                     v = DateUtils.DATEFORMAT2.format(new Date(GeneralUtils.string2Number(v).longValue()));
                 }
-                CBCell dimCell = ExecutorUtils.createCell(v, colDimIdx, 1, columnIdx, temp.getTotalLength(), style);
+                CBCell dimCell = ExecutorUtils.createCell(v, rowIdx, 1, columnIdx.value, temp.getTotalLengthWithSummary(), style);
                 pagedIterator.addCell(dimCell);
-                columnIdx += temp.getTotalLength();
+                columnIdx.value += temp.getTotalLengthWithSummary();
+                generateTitleSumCells(temp, pagedIterator, rowIdx, columnIdx, temp.getDeep());
                 temp = temp.getSibling();
             }
-            colDimIdx++;
+            rowIdx++;
+        }
+    }
+
+    protected static void generateTitleSumCells(Node temp, StreamPagedIterator pagedIterator, int rowIdx, FinalInt columnIdx, int lastSumRowSpan) {
+        if (checkIfGenerateSumCell(temp) && temp.getParent().getChildLength() != 1) {
+            Style style = BITableStyle.getInstance().getYSumStringCellStyle();
+            int rowSpan = temp.getSibling() == null ? lastSumRowSpan : temp.getDeep();
+            CBCell cell = ExecutorUtils.createCell(Inter.getLocText("BI-Summary_Values"), rowIdx, rowSpan, columnIdx.value, 1, style);
+            pagedIterator.addCell(cell);
+        }
+        adjustColumnIdx(temp, columnIdx);
+    }
+
+    private static void adjustColumnIdx(Node temp, FinalInt columnIdx) {
+        if (checkIfGenerateSumCell(temp)) {
+            if(temp.getParent().getChildLength() != 1){
+                columnIdx.value++;
+            }
+            if (temp.getParent() != null) {
+                adjustColumnIdx(temp.getParent(), columnIdx);
+            }
         }
     }
 
@@ -99,7 +122,8 @@ public class HorGroupExecutor extends AbstractTableWidgetExecutor<Node> {
         }
 
         for (int i = 0; i < usedSumTarget.length; i++) {
-            int columnIdx = widget.isOrder() + 1;
+            FinalInt columnIdx = new FinalInt();
+            columnIdx.value = widget.isOrder() + 1;
             Style headStyle = BITableStyle.getInstance().getDimensionCellStyle(false, (i + 1) % 2 == 1);
             if (widget.isOrder() == 1) {
                 CBCell orderCell = ExecutorUtils.createCell(i + 1, rowIdx + i, 1, 0, 1, headStyle);
@@ -113,10 +137,23 @@ public class HorGroupExecutor extends AbstractTableWidgetExecutor<Node> {
                 Object data = temp.getSummaryValue(keys[i]);
                 boolean isPercent = widget.getChartSetting().getNumberLevelByTargetId(keys[i].getTargetName()) == BIReportConstant.TARGET_STYLE.NUM_LEVEL.PERCENT;
                 Style style = BITableStyle.getInstance().getNumberCellStyle(data, (i + 1) % 2 == 1, isPercent);
-                CBCell cell = ExecutorUtils.createCell(data, rowIdx + i, 1, columnIdx++, 1, style);
+                CBCell cell = ExecutorUtils.createCell(data, rowIdx + i, 1, columnIdx.value++, 1, style);
                 pagedIterator.addCell(cell);
+                generateTargetSumCell(temp, widget, keys[i], pagedIterator, rowIdx + i, columnIdx, style);
                 temp = temp.getSibling();
             }
+        }
+    }
+
+    public static void generateTargetSumCell(Node temp, TableWidget widget, TargetGettingKey key, StreamPagedIterator pagedIterator, int rowIdx, FinalInt columnIdx, Style style) {
+        if ((widget.getViewTargets().length != 0) && checkIfGenerateSumCell(temp)) {
+            if (temp.getParent().getChildLength() != 1) {
+                Object data = temp.getParent().getSummaryValue(key);
+                CBCell cell = ExecutorUtils.createCell(data, rowIdx, 1, columnIdx.value++, 1, style);
+                pagedIterator.addCell(cell);
+            }
+            Node parent = temp.getParent();
+            generateTargetSumCell(parent, widget, key, pagedIterator, rowIdx, columnIdx, style);
         }
     }
 

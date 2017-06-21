@@ -27,13 +27,15 @@ public class BITableConstructHelper {
     }
 
     /*
-    * 明细表样式特殊处理
+    * header的数据格式是不需要format的
     * */
     public static void formatCells(DataConstructor data, Map<String, ITableCellFormatOperation> operations, BITableWidgetStyle style) throws Exception {
         boolean isDetail = data.getWidgetType() == WidgetType.DETAIL.getType();
         for (ITableHeader header : data.getHeaders()) {
             header.setStyles(BITableStyleHelper.getHeaderStyles(style.getThemeColor(), style.getTableStyleGroup()));
-            formatHeaderText(operations, header);
+//            if (!isDetail) {
+//                formatHeaderText(operations, header);
+//            }
         }
 
         if (data.getItems().size() != 0) {

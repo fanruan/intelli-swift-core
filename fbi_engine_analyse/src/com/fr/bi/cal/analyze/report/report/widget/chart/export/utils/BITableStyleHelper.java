@@ -3,6 +3,7 @@ package com.fr.bi.cal.analyze.report.report.widget.chart.export.utils;
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.style.BITableItemStyle;
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.style.ITableStyle;
 import com.fr.bi.stable.constant.BIStyleConstant;
+import com.fr.general.ComparatorUtils;
 import com.fr.json.JSONException;
 import com.fr.stable.StringUtils;
 
@@ -19,7 +20,7 @@ public class BITableStyleHelper {
     private static double BLUE_PROPORTION = 0.114;
 
     public static ITableStyle getHeaderStyles(String themeColor, int styleType) {
-        switch(styleType) {
+        switch (styleType) {
             case BIStyleConstant.TABLE_STYLE.STYLE_NORMAL:
                 return new BITableItemStyle(themeColor, getContrastColor(themeColor), null);
             case BIStyleConstant.TABLE_STYLE.STYLE_GRADUAL:
@@ -65,12 +66,17 @@ public class BITableStyleHelper {
     }
 
     private static String parseHEXAlpha2HEX(String color, float a) {
+        //无色或透明
+        if (StringUtils.isEmpty(color) || ComparatorUtils.equals(color, "transparent")) {
+            return "";
+        }
         Color rgb = Color.decode(color);
         return "rgba(" + rgb.getRed() + "," + rgb.getGreen() + "," + rgb.getBlue() + "," + Float.toString(a) + ")";
     }
 
     private static String getContrastColor(String color) {
-        if (StringUtils.isEmpty(color)) {
+        //无色或透明
+        if (StringUtils.isEmpty(color) || ComparatorUtils.equals(color, "transparent")) {
             return "";
         }
         if (isDarkColor(color)) {
