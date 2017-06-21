@@ -131,6 +131,7 @@ public abstract class VanChartWidget extends TableWidget {
     public JSONObject createOptions(JSONObject globalStyle, JSONObject data) throws Exception {
         JSONObject options = JSONObject.create();
         JSONObject settings = this.getDetailChartSetting();
+        //todo:@shine 4.1系统整理下platconfig.这边可以直接取，不用转成json
         JSONObject plateConfig = BIConfUtils.getPlateConfig();
 
         options.put("chartType", this.getSeriesType(StringUtils.EMPTY));
