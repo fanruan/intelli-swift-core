@@ -151,7 +151,6 @@ public class ProfilesUpdateOperation implements ReportUpdateOperation {
                                         .put("position", BIChartSettingConstant.DATA_LABEL.POSITION_OUTER);
                                 break;
                         }
-
                         settings.put("dataLabelSetting", dataLabelSettings);
                     }
                 }
