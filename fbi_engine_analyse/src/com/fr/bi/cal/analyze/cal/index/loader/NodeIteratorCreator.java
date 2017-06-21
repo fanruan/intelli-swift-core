@@ -165,7 +165,7 @@ public class NodeIteratorCreator {
 
     //如果参数要求全部计算，或者有需要全部计算的配置类计算，或者最后一个维度上有过滤（此时要计算IndirectFilter已经把整个node都过滤了，就没必要转化为索引过滤，再去分页计算了）
     private boolean isaAllNode() {
-        return calAllPage || hasAllCalculateMetrics(targetIdMap.keySet()) || getLastIndirectFilterDimensionIndex() == rowDimension.length - 1;
+        return calAllPage || hasAllCalculateMetrics(targetIdMap.keySet()) || getLastIndirectFilterDimensionIndex() == rowDimension.length - 1 || hasAllNodeIndirectDimensionFilter();
     }
 
     public IRootDimensionGroup createRoot() {
@@ -306,10 +306,12 @@ public class NodeIteratorCreator {
                 return true;
             }
         }
+
         return false;
     }
 
     //获取相关的基本指标（非计算指标）
+
     private void getRelatedNormalIds(String name, Set<String> ids) {
         BISummaryTarget target = targetIdMap.get(name);
         if (target == null) {
@@ -353,7 +355,7 @@ public class NodeIteratorCreator {
         Collection<String> usedTargets = target.getCalculateUseTargetIDs();
         if (usedTargets != null) {
             for (String usedTarget : usedTargets) {
-                if (!ComparatorUtils.equals(id, target.getName())) {
+                if (!ComparatorUtils.equals(usedTarget, target.getName())) {
                     getRelatedCalMetricIds(calIds, usedTarget);
                 }
             }
@@ -456,7 +458,7 @@ public class NodeIteratorCreator {
             if (filter != null && !filter.canCreateDirectFilter()) {
                 for (String id : filter.getUsedTargets()) {
                     BISummaryTarget target = targetIdMap.get(id);
-                    if (target != null && target.calculateSingleNode(usedTargets)) {
+                    if (target != null) {
                         return true;
                     }
                 }

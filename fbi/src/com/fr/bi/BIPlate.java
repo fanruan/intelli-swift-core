@@ -1,6 +1,8 @@
 package com.fr.bi;
 
 
+import com.finebi.*;
+import com.finebi.ProductConstants;
 import com.finebi.cube.common.log.BILogger;
 import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.conf.BICubeConfigureCenter;
@@ -494,4 +496,13 @@ public class BIPlate extends AbstractFSPlate {
         return daoList;
     }
 
+    @Override
+    public String getBuildNO() {
+        return GeneralUtils.readBuildNO();
+    }
+
+    @Override
+    public String getVersion() {
+        return ProductConstants.RELEASE_VERSION;
+    }
 }

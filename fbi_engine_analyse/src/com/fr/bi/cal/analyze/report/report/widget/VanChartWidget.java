@@ -61,7 +61,7 @@ public abstract class VanChartWidget extends TableWidget {
 
     protected static final String PERCENT_SYMBOL = "%";
     private static final String WHITE = "#ffffff";
-    private static final String DEFAULT_COLOR = "#1a1a1a";
+    private static final String DARK = "#1a1a1a";
 
     private static final int WEEK_COUNT = 52;
     private static final int MONTH_COUNT = 12;
@@ -389,7 +389,7 @@ public abstract class VanChartWidget extends TableWidget {
         tooltip.put("enabled", true).put("animation", true).put("padding", 10).put("backgroundColor", widgetBg)
                 .put("borderRadius", 2).put("borderWidth", 0).put("shadow", true)
                 .put("style", JSONObject.create()
-                        .put("color", this.isDarkColor(widgetBg) ? "#FFFFFF" : "#1A1A1A")
+                        .put("color", this.isDarkColor(widgetBg) ? WHITE : DARK)
                         .put("fontSize", "14px").put("fontFamily", "Verdana"));
 
         plotOptions.put("tooltip", tooltip);
@@ -520,7 +520,7 @@ public abstract class VanChartWidget extends TableWidget {
 
         return JSONObject.create()
                 .put("fontFamily", "Microsoft YaHei")
-                .put("color", DEFAULT_COLOR)
+                .put("color", DARK)
                 .put("fontSize", "12px");
 
     }
@@ -1093,7 +1093,7 @@ public abstract class VanChartWidget extends TableWidget {
 
             ranges.put(
                     JSONObject.create()
-                            .put("from", range.optDouble("min"))
+                            .put("from", range.optDouble("min",Integer.MIN_VALUE))
                             .put("to", range.optDouble("max", Integer.MAX_VALUE))
                             .put("color", config.optString("color"))
             );

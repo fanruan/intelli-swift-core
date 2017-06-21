@@ -24,6 +24,7 @@ import com.fr.bi.cal.analyze.report.report.widget.chart.export.utils.BITableCons
 import com.fr.bi.cal.analyze.report.report.widget.style.BITableWidgetStyle;
 import com.fr.bi.cal.analyze.report.report.widget.table.BITableReportSetting;
 import com.fr.bi.cal.analyze.session.BISession;
+import com.fr.bi.common.persistent.annotation.PersistNameHistory;
 import com.fr.bi.common.persistent.xml.BIIgnoreField;
 import com.fr.bi.conf.report.WidgetType;
 import com.fr.bi.conf.report.style.DetailChartSetting;
@@ -72,7 +73,7 @@ public class TableWidget extends BISummaryWidget {
     private int[] pageSpinner = new int[5];
 
     private int operator = BIReportConstant.TABLE_PAGE_OPERATOR.REFRESH;
-
+    @PersistNameHistory(historyNames = {"table_type"})
     private int tableType = BIReportConstant.TABLE_WIDGET.GROUP_TYPE;
 
     @BIIgnoreField
