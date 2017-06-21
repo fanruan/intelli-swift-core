@@ -21,9 +21,6 @@ public class VanGaugeWidget extends VanCartesianWidget{
     private static final int SINGLE_POINTER = 1;
     private static final int MULTI_POINTERS = 2;
 
-    private static final String BG_COLOR = "rgb(245,245,247)";
-
-
     protected JSONObject populateDefaultSettings() throws JSONException{
         JSONObject settings = super.populateDefaultSettings();
 
@@ -58,6 +55,7 @@ public class VanGaugeWidget extends VanCartesianWidget{
             plotOptions.put("bands", this.mapStyleToRange(dashboardStyles));
         }
 
+        plotOptions.put("paneBackgroundColor", TRANS);
         return plotOptions;
     }
 
@@ -91,7 +89,7 @@ public class VanGaugeWidget extends VanCartesianWidget{
 
         String align = gaugeStyle == HORIZONTAL_TUBE ? "top" : "left";
         JSONObject font = dataLabelSettings.has("textStyle") ? dataLabelSettings.optJSONObject("textStyle") : defaultFont();
-        JSONObject valueLabel = JSONObject.create().put("enabled", settings.optBoolean("showDataLabel")).put("backgroundColor", BG_COLOR).put("align", align).put("formatter", JSONObject.create().put("identifier", valueID)).put("style", font);
+        JSONObject valueLabel = JSONObject.create().put("enabled", settings.optBoolean("showDataLabel")).put("backgroundColor", TRANS).put("align", align).put("formatter", JSONObject.create().put("identifier", valueID)).put("style", font);
         JSONObject seriesLabel = JSONObject.create().put("enabled", settings.optBoolean("showDataLabel")).put("formatter", JSONObject.create().put("identifier", seriesID)).put("align", "bottom").put("style", font);
         JSONObject percentageLabel = JSONObject.create().put("enabled", settings.optInt("showPercentage") == BIChartSettingConstant.PERCENTAGE.SHOW).put("align", align).put("formatter",  JSONObject.create().put("identifier", PERCENT)
                 .put("percentFormat", "function(){return BI.contentFormat(arguments[0], \"#.##%\")}"));

@@ -30,7 +30,7 @@ public abstract class VanCartesianWidget extends VanChartWidget {
 
     //这个是对比柱状图的stackid和transSeries的name，任意string都可以，不会展示到图上，不用国际化什么的。
     private static final String FALL_COLUMN = "fallColumn";
-    private static final String TRANS = "rgba(0,0,0,0)";
+    protected static final String TRANS = "rgba(0,0,0,0)";
 
     protected static final int VERTICAL = 90;
     private static final String IMG_TMP = "function(){return \"<img src = %s>\"}";
