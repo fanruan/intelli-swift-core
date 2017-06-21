@@ -88,7 +88,8 @@ public class VanGaugeWidget extends VanCartesianWidget{
         }
 
         String align = gaugeStyle == HORIZONTAL_TUBE ? "top" : "left";
-        JSONObject font = dataLabelSettings.has("textStyle") ? dataLabelSettings.optJSONObject("textStyle") : defaultFont();
+        JSONObject font = defaultFont();
+        font = dataLabelSettings.has("textStyle") ? merge(dataLabelSettings.optJSONObject("textStyle"), font) : font;
         JSONObject valueLabel = JSONObject.create().put("enabled", settings.optBoolean("showDataLabel")).put("backgroundColor", TRANS).put("align", align).put("formatter", JSONObject.create().put("identifier", valueID)).put("style", font);
         JSONObject seriesLabel = JSONObject.create().put("enabled", settings.optBoolean("showDataLabel")).put("formatter", JSONObject.create().put("identifier", seriesID)).put("align", "bottom").put("style", font);
         JSONObject percentageLabel = JSONObject.create().put("enabled", settings.optInt("showPercentage") == BIChartSettingConstant.PERCENTAGE.SHOW).put("align", align).put("formatter",  JSONObject.create().put("identifier", PERCENT)

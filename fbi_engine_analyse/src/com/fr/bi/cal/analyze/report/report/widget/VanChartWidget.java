@@ -129,6 +129,7 @@ public abstract class VanChartWidget extends TableWidget {
     }
 
     public JSONObject createOptions(JSONObject globalStyle, JSONObject data) throws Exception {
+        //todo:@shine 4.1版本整理下populatedefaultsetting和createplotoptions.原因：默认属性尽量放到一起，不要分开两处
         JSONObject options = JSONObject.create();
         JSONObject settings = this.getDetailChartSetting();
         //todo:@shine 4.1系统整理下platconfig.这边可以直接取，不用转成json
@@ -424,7 +425,8 @@ public abstract class VanChartWidget extends TableWidget {
         JSONObject dataLabels = JSONObject.create().put("enabled", showDataLabel).put("autoAdjust", true);
 
         if (showDataLabel) {
-            JSONObject dataLabelSetting = settings.has("dataLabelSetting") ? settings.optJSONObject("dataLabelSetting") : this.defaultDataLabelSetting();
+            JSONObject dataLabelSetting = this.defaultDataLabelSetting();
+            dataLabelSetting = settings.has("dataLabelSetting") ? merge(settings.optJSONObject("dataLabelSetting"), dataLabelSetting) : dataLabelSetting;
 
             JSONObject formatter = JSONObject.create();
 
@@ -585,18 +587,30 @@ public abstract class VanChartWidget extends TableWidget {
         return defaultFont;
     }
 
+    //颜色自动，则use default color
+    private boolean autoColor(JSONObject target, String key) {
+        return ComparatorUtils.equals("color", key) && StringUtils.isEmpty(target.optString(key));
+    }
+
     //todo 不知道有没有实现过，先撸一下
-    private JSONObject merge(JSONObject target, JSONObject source) throws JSONException {
+    protected JSONObject merge(JSONObject target, JSONObject source) throws JSONException {
         Iterator it = source.keys();
         while (it.hasNext()) {
             String key = it.next().toString();
-            if (!target.has(key)) {
+            if (!target.has(key) || autoColor(target, key)) {
                 target.put(key, source.get(key));
+            } else {//主要是想把style里面的颜色需要merge一下，自动的话用defaultColor
+                JSONObject targetObject = target.optJSONObject(key);
+                JSONObject sourceObject = source.optJSONObject(key);
+                if(targetObject != null && sourceObject != null){
+                    merge(targetObject, sourceObject);
+                }
             }
         }
         return target;
     }
 
+    //todo:@shine 每次get都populate and merge一遍
     protected JSONObject getDetailChartSetting() throws JSONException {
         JSONObject settings = this.getChartSetting().getDetailChartSetting();
 

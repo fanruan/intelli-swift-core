@@ -110,7 +110,7 @@ public class ProfilesUpdateOperation implements ReportUpdateOperation {
 
     }
 
-    //4.0的图表标签默认设置，和402默认有些不一样，所以在这边写。调整标签位置，灰色雅黑12px。
+    //4.0的图表标签默认设置，和402默认有些不一样，所以在这边写。调整标签位置，雅黑12px, 颜色自动。
     private JSONObject correctDataLabels(JSONObject json) throws JSONException {
         if (ReportVersionEnum.VERSION_4_0.getVersion().equals(json.optString("version"))) {
             if (BIJsonUtils.isKeyValueSet(json.getString("widgets"))) {
@@ -123,7 +123,7 @@ public class ProfilesUpdateOperation implements ReportUpdateOperation {
                         int type = dimJson.optInt("type");
 
                         JSONObject dataLabelSettings = JSONObject.create().put("optimizeLabel", true).put("showTractionLine", true)
-                                .put("textStyle", JSONObject.create().put("fontFamily", "Microsoft YaHei").put("fontSize", "12px").put("color", "#1a1a1a"));
+                                .put("textStyle", JSONObject.create().put("fontFamily", "Microsoft YaHei").put("fontSize", "12px").put("color", ""));
 
                         switch (type) {
                             case BIReportConstant.WIDGET.PIE:
