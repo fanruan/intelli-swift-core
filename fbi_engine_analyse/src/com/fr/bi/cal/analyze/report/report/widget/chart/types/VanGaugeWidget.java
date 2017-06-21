@@ -67,8 +67,10 @@ public class VanGaugeWidget extends VanCartesianWidget{
 
         int gaugeStyle = settings.optInt("dashboardChartType");
         boolean isPointer = gaugeStyle == NORMAL || gaugeStyle == HALF_DASHBOARD;
+        boolean hasCategory = getCategoryDimension() != null;
 
         boolean showCate = dataLabelSettings.optBoolean("showCategoryName");
+        String key = hasCategory ? SERIES : CATEGORY;
 
         String valueID = StringUtils.EMPTY, seriesID = StringUtils.EMPTY;
         if(dataLabelSettings.optBoolean("showValue")){
@@ -79,11 +81,11 @@ public class VanGaugeWidget extends VanCartesianWidget{
                 valueID += PERCENT;
             }
             if(showCate){
-                seriesID += CATEGORY;
+                valueID += key;
             }
         } else {
             if(showCate){
-                valueID += CATEGORY;
+                valueID += key;
             }
         }
 

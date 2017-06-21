@@ -3,12 +3,9 @@ package com.finebi.cube.conf;
 import com.finebi.cube.ICubeConfiguration;
 import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.impl.conf.CalculateDependManager;
-import com.finebi.cube.relation.BITableRelation;
-import com.finebi.cube.relation.BITableRelationPath;
 import com.finebi.cube.relation.BITableSourceRelation;
 import com.finebi.cube.relation.BITableSourceRelationPath;
 import com.finebi.cube.utils.BIDataStructTranUtils;
-import com.finebi.cube.utils.BITableRelationUtils;
 import com.finebi.cube.utils.CubePreConditionsCheck;
 import com.finebi.cube.utils.CubePreConditionsCheckManager;
 import com.fr.bi.conf.data.source.DBTableSource;
@@ -17,7 +14,6 @@ import com.fr.bi.conf.provider.BIConfigureManagerCenter;
 import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.data.source.CubeTableSource;
-import com.fr.bi.stable.exception.BITablePathConfusionException;
 import com.fr.bi.stable.utils.file.BIFileUtils;
 import com.fr.data.impl.Connection;
 import com.fr.general.ComparatorUtils;
@@ -25,12 +21,7 @@ import com.fr.stable.ArrayUtils;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -42,13 +33,11 @@ public abstract class AbstractCubeBuildStuff implements CubeBuildStuff {
     protected long userId;
     protected Set<CubeTableSource> allTableSources = new HashSet<CubeTableSource>();
     protected CalculateDependTool calculateDependTool;
-    protected BISystemConfigHelper configHelper;
     protected Set<String> taskTableSourceIDs;
 
-    public AbstractCubeBuildStuff(long userId) {
+    public AbstractCubeBuildStuff(long userId, Set<CubeTableSource> allTableSources) {
         this.userId = userId;
-        configHelper = new BISystemConfigHelper(userId);
-        allTableSources.addAll(configHelper.extractTableSource(configHelper.getSystemBusinessTables()));
+        this.allTableSources.addAll(allTableSources);
         calculateDependTool = new CalculateDependManager();
     }
 
@@ -203,19 +192,6 @@ public abstract class AbstractCubeBuildStuff implements CubeBuildStuff {
         return updateSettingSource;
     }
 
-
-    protected boolean isTableRelationAvailable(BITableRelation relation, ICubeConfiguration cubeConfiguration) {
-        if (configHelper.isTableRelationValid(relation)) {
-            return BITableRelationUtils.isRelationAvailable(relation, cubeConfiguration);
-        } else {
-            return false;
-        }
-    }
-
-    protected BITableSourceRelationPath convertPath(BITableRelationPath path) throws BITablePathConfusionException {
-        return configHelper.convertPath(path);
-    }
-
     protected Set<BITableSourceRelation> filterRelations(Set<BITableSourceRelation> tableRelations) {
         Set<BITableSourceRelation> relations = removeDuplicateRelations(tableRelations);
         return removeSelfRelations(relations);
@@ -298,7 +274,7 @@ public abstract class AbstractCubeBuildStuff implements CubeBuildStuff {
         return check.HDSpaceCheck(new File(conf.getRootURI().getPath()));
     }
 
-    protected Set<String>  getDependTableSourceIdSet(Set<List<Set<CubeTableSource>>> dependTableSource) {
+    protected Set<String> getDependTableSourceIdSet(Set<List<Set<CubeTableSource>>> dependTableSource) {
         Set<String> tableSourceIDSet = new HashSet<String>();
         for (CubeTableSource tableSource : BIDataStructTranUtils.set2Set(dependTableSource)) {
             if (tableSource != null) {
