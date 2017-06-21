@@ -1,9 +1,11 @@
-package com.fr.bi.cal.analyze.report.report;
+package com.fr.bi.cal.analyze.report.report.export;
 
 import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.base.FRContext;
 import com.fr.bi.cal.analyze.cal.result.ComplexAllExpander;
 import com.fr.bi.cal.analyze.report.BIReportor;
+import com.fr.bi.cal.analyze.report.report.BIWidgetFactory;
+import com.fr.bi.cal.analyze.report.report.export.utils.BIReportExportExcelUtils;
 import com.fr.bi.cal.analyze.report.report.widget.*;
 import com.fr.bi.cal.analyze.session.BISession;
 import com.fr.bi.cal.report.main.impl.BIWorkBook;
@@ -15,6 +17,7 @@ import com.fr.bi.fs.BIReportNode;
 import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.stable.constant.BIExcutorConstant;
 import com.fr.bi.stable.constant.BIReportConstant;
+import com.fr.bi.stable.constant.BIStyleConstant;
 import com.fr.bi.util.BIReadReportUtils;
 import com.fr.general.DateUtils;
 import com.fr.general.Inter;
@@ -40,12 +43,12 @@ import java.util.Iterator;
  */
 public class BIReportExportExcel {
 
-    private String sessionID;
     private BISession session;
     private BIReportNode node;
     private ArrayList<BIWidget> widgets = new ArrayList<BIWidget>();
     private JSONArray specialWidgets = JSONArray.create();
-    private int namePosLeft = 21;
+    private int namePosLeft = BIStyleConstant.DASHBOARD_WIDGET_NAME_POS_LEFT;
+    private int adjustedWidth = 40;
     private int offSet1 = 1;
     private int offSet3 = 3;
     private int offSet7 = 7;
@@ -53,7 +56,6 @@ public class BIReportExportExcel {
     protected BIReport report = new BIReportor();
 
     public BIReportExportExcel(String sessionID) throws Exception {
-        this.sessionID = sessionID;
         this.session = (BISession) SessionDealWith.getSessionIDInfor(sessionID);
         this.node = session.getReportNode();
         JSONObject widgetsJSON = BIReadReportUtils.getInstance().getBIReportNodeJSON(node).optJSONObject("widgets");
@@ -83,13 +85,9 @@ public class BIReportExportExcel {
             case MONTH:
             case YMD:
             case DATE_PANE:
-//            case QUERY:
-//            case RESET:
             case CONTENT:
             case IMAGE:
             case WEB:
-//            case GENERAL_QUERY:
-//            case TABLE_SHOW:
                 specialWidgets.put(widgetJo);
                 break;
             default:
@@ -300,14 +298,14 @@ public class BIReportExportExcel {
                         calendar.set(calendar.get(Calendar.YEAR), 11, 31);
                         break;
                 }
-                formatData4PMD(type, calendar);
+                _formatData(type, calendar);
                 dateValue = DateUtils.DATEFORMAT2.format(calendar.getTime());
             }
         }
         return dateValue;
     }
 
-    private Calendar formatData4PMD(int type, Calendar calendar) {
+    private Calendar _formatData(int type, Calendar calendar) {
         switch (type) {
             case BIReportConstant.DATE_TYPE.MULTI_DATE_MONTH_PREV:
                 calendar.add(Calendar.MONTH, 0 - offSet1);
@@ -414,7 +412,7 @@ public class BIReportExportExcel {
             titleParams.put("textAlign", nameTextAlign);
         }
         Rectangle rect = widget.getRect();
-        String postOptions = new JSONObject("{" + key + ":" + options + ", width:" + rect.getWidth() +
+        String postOptions = new JSONObject("{" + key + ":" + options + ", width:" + (rect.getWidth() + adjustedWidth) +
                 ", height:" + rect.getHeight() + ", titleParams:" + titleParams + "}").toString();
         String base64 = null;
         try {
@@ -430,7 +428,7 @@ public class BIReportExportExcel {
         JSONObject jo = JSONObject.create();
         JSONObject bounds = wjo.optJSONObject("bounds");
 
-        jo.put("width", bounds.optInt("width"));
+        jo.put("width", bounds.optInt("width") + adjustedWidth);
         jo.put("height", bounds.optInt("height"));
         jo.put("content", wjo.optString("content"));
         jo.put("style", wjo.optJSONObject("style"));

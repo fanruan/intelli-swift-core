@@ -18,6 +18,7 @@ import com.fr.bi.stable.data.db.BIRowValue;
 import com.fr.bi.stable.gvi.GVIUtils;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.utils.BICollectionUtils;
+import com.fr.bi.stable.utils.BITravalUtils;
 import com.fr.general.DateUtils;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONException;
@@ -25,8 +26,7 @@ import com.fr.json.JSONObject;
 import com.fr.stable.ExportConstants;
 
 import java.awt.*;
-import java.util.ArrayList;
-import java.util.Iterator;
+import java.util.*;
 import java.util.List;
 
 /**
@@ -97,19 +97,28 @@ public class DetailExecutor extends AbstractDetailExecutor {
     public JSONObject getCubeNode() throws JSONException {
         long start = System.currentTimeMillis();
         GroupValueIndex gvi = createDetailViewGvi();
-        if(widget.getLinkWidget() != null && widget.getLinkWidget() instanceof TableWidget){
-            TableWidget linkWidget = ((TableWidget)widget.getLinkWidget());
+        if (widget.getLinkWidget() != null && widget.getLinkWidget() instanceof TableWidget) {
+            TableWidget linkWidget = ((TableWidget) widget.getLinkWidget());
             // 其联动组件的父联动gvi
-            GroupValueIndex pLinkGvi = linkWidget.createLinkedFilterGVI(null,session);
+            GroupValueIndex pLinkGvi = linkWidget.createLinkedFilterGVI(null, session);
             // 其联动组件的点击过滤gvi
-            GroupValueIndex linkGvi = linkWidget.getLinkFilter(linkWidget,widget.getClicked(),session);
-            gvi = GVIUtils.AND(gvi,GVIUtils.AND(pLinkGvi,linkGvi));
+            GroupValueIndex linkGvi = linkWidget.getLinkFilter(linkWidget, widget.getClicked(), session);
+            gvi = GVIUtils.AND(gvi, GVIUtils.AND(pLinkGvi, linkGvi));
         }
         paging.setTotalSize(gvi.getRowsCountWithData());
         final JSONArray ja = new JSONArray();
         JSONObject jo = new JSONObject();
         jo.put("value", ja);
+        //返回前台的时候再去掉不使用的字段
         final BIDetailTarget[] dimensions = widget.getViewDimensions();
+        String[] array = widget.getView();
+        final Set<Integer> usedDimensionIndexes = new HashSet<Integer>();
+        for (int i = 0; i < array.length; i++) {
+            BIDetailTarget dimension = BITravalUtils.getTargetByName(array[i], dimensions);
+            if (dimension.isUsed()) {
+                usedDimensionIndexes.add(i);
+            }
+        }
         TableRowTraversal action = new TableRowTraversal() {
             @Override
             public boolean actionPerformed(BIRowValue row) {
@@ -119,7 +128,9 @@ public class DetailExecutor extends AbstractDetailExecutor {
                 }
                 JSONArray jsonArray = new JSONArray();
                 for (int i = 0; i < row.getValues().length; i++) {
-                    jsonArray.put(BICollectionUtils.cubeValueToWebDisplay(dimensions[i].createShowValue(row.getValues()[i])));
+                    if (usedDimensionIndexes.contains(i)) {
+                        jsonArray.put(BICollectionUtils.cubeValueToWebDisplay(dimensions[i].createShowValue(row.getValues()[i])));
+                    }
                 }
                 ja.put(jsonArray);
                 return false;
