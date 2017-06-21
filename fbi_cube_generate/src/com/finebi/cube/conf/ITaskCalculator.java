@@ -1,5 +1,11 @@
 package com.finebi.cube.conf;
 
+import com.finebi.cube.relation.BITableSourceRelation;
+import com.finebi.cube.relation.BITableSourceRelationPath;
+import com.fr.bi.stable.data.source.CubeTableSource;
+
+import java.util.Set;
+
 /**
  * Created by Lucifer on 2017-5-24.
  *
@@ -7,5 +13,6 @@ package com.finebi.cube.conf;
  * @since Advanced FineBI Analysis 1.0
  */
 public interface ITaskCalculator {
-    CubeBuildStuff generateCubeBuildStuff();
+    CubeBuildStuff generateCubeBuildStuff(Set<CubeTableSource> allTableSources,
+                                          Set<BITableSourceRelation> allRelations, Set<BITableSourceRelationPath> allPaths);
 }
