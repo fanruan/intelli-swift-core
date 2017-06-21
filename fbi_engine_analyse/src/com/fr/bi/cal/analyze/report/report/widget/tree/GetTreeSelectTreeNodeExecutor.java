@@ -122,9 +122,11 @@ public class GetTreeSelectTreeNodeExecutor extends AbstractTreeNodeExecutor {
             }
             if (finded) {
                 //去掉点击的节点之后的结果集
+                //处理 选中了 中国， 取消南京， 搜索江苏
                 expandSelectValues(selectedValues, p, notSelectedValueString);
 
                 //填充去掉notSelectedValue之后的所有值
+                //处理 选中了 中国， 取消江苏， 搜索南京
                 if (!result.isEmpty()) {
                     for (String[] arr : result) {
                         buildTree(selectedValues, arr);
