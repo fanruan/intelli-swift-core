@@ -51,7 +51,14 @@ import com.fr.report.poly.TemplateBlock;
 import com.fr.stable.StringUtils;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 
@@ -539,22 +546,20 @@ public class TableWidget extends BISummaryWidget {
         }
     }
 
+    /**
+     * 生成联动过滤gvi
+     *
+     * @param targetKey 被联动组件的基础表
+     * @param session
+     * @return
+     */
     public GroupValueIndex createLinkedFilterGVI(BusinessTable targetKey, BISession session) {
 
         if (linkedWidget != null) {
             GroupValueIndex fatherWidgetLinkedFilterGVI = linkedWidget.createLinkedFilterGVI(targetKey, session);
             try {
-                GroupValueIndex linkFilter = getLinkFilter(this.linkedWidget, this.clicked, session);
+                GroupValueIndex linkFilter = getLinkFilter(this.linkedWidget, targetKey, this.clicked, session);
                 return GVIUtils.AND(fatherWidgetLinkedFilterGVI, linkFilter);
-                //List<MetricGroupInfo> metricGroupInfoList = linkedWidget.getExecutor(session).getLinkedWidgetFilterGVIList();
-                //if (metricGroupInfoList == null) {
-                //    return null;
-                //}
-                //for (MetricGroupInfo mergerInfo : metricGroupInfoList) {
-                //    if (ComparatorUtils.equals(mergerInfo.getMetric(), (targetKey))) {
-                //        return GVIUtils.AND(fatherWidgetLinkedFilterGVI, GVIUtils.AND(mergerInfo.getFilterIndex(), mergerInfo.getFilterIndex()));
-                //    }
-                //}
             } catch (Exception e) {
                 BILoggerFactory.getLogger(this.getClass()).error(e.getMessage(), e);
             }
@@ -562,18 +567,35 @@ public class TableWidget extends BISummaryWidget {
         return null;
     }
 
+    /**
+     * 获取联动过滤器
+     *
+     * @param linkedWidget 联动的组件
+     * @param targetKey    被联动组件的基础表
+     * @param clicked      联动组件被点击的值
+     * @param session
+     * @return
+     * @throws Exception
+     */
+    public GroupValueIndex getLinkFilter(TableWidget linkedWidget, BusinessTable targetKey, Map<String, JSONArray> clicked, BISession session) throws Exception {
 
-    public GroupValueIndex getLinkFilter(TableWidget linkedWidget, Map<String, JSONArray> clicked, BISession session) {
+        // 相同基础表的时候才进行联动计算要不然直接进行返回
+        String linkTarget = clicked.keySet().toArray(new String[]{})[0];
+        BISummaryTarget summaryTarget = linkedWidget.getBITargetByID(linkTarget);
+        BusinessTable linkTargetTable = summaryTarget.createTableKey();
+        if (!targetKey.equals(linkTargetTable)) {
+            return null;
+        }
 
         BIEngineExecutor linkExecutor = linkedWidget.getExecutor(session);
         GroupValueIndex linkGvi = null;
         try {
-            Object[] rowData = getLinkRowData(clicked);
-            // 在点击行的地方进行停止构建树
             // 交叉表的情况
             if (linkExecutor instanceof CrossExecutor) {
                 return getCrossWidgetLinkFilter(linkedWidget, clicked, session, (CrossExecutor) linkExecutor);
             }
+            Object[] rowData = getLinkRowData(clicked);
+            // 在点击行的地方进行停止构建树
             Node linkNode = linkExecutor.getStopOnRowNode(rowData);
             // 总汇总值
             if (rowData == null || rowData.length == 0) {
@@ -652,7 +674,14 @@ public class TableWidget extends BISummaryWidget {
             Node parent = n;
             for (int i = 0; i < data.size(); i++) {
                 Object cv = data.get(i);
-                Node child = parent.getChild(cv);
+                Node child = null;
+                for (Node pn : parent.getChilds()) {
+                    if (pn.getShowValue().equals(cv)) {
+                        child = pn;
+                        break;
+                    }
+                }
+
                 parent = child;
             }
             return getTargetIndex(target, parent.getTargetIndexValueMap());
@@ -660,6 +689,13 @@ public class TableWidget extends BISummaryWidget {
         return null;
     }
 
+    /**
+     * 获取联动点击行的数据(针对分组表)
+     *
+     * @param clicked 前台传过来的点击值
+     * @return
+     * @throws Exception
+     */
     private Object[] getLinkRowData(Map<String, JSONArray> clicked) throws Exception {
 
         try {
@@ -684,6 +720,16 @@ public class TableWidget extends BISummaryWidget {
         return new Object[0];
     }
 
+
+    /**
+     * 获取联动点击行的数据(针对交叉表)
+     *
+     * @param clicked      前台传过来的点击值
+     * @param linkedWidget 联动组件
+     * @param row          存放行的点击值
+     * @param col          存放列的点击值
+     * @return
+     */
     private String getLinkRowAndColData(Map<String, JSONArray> clicked, TableWidget linkedWidget, List row, List col) {
 
         String target = null;
@@ -721,20 +767,6 @@ public class TableWidget extends BISummaryWidget {
         }
         return target;
     }
-
-    private boolean isDimensionContain(String did, BIDimension[] dims) {
-
-        if (dims == null || dims.length == 0) {
-            return false;
-        }
-        for (BIDimension d : dims) {
-            if (d.getId().equals(did)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
 
     @Override
     public void reSetDetailTarget() {
@@ -837,7 +869,7 @@ public class TableWidget extends BISummaryWidget {
         return this.getBITargetByID(dID);
     }
 
-    protected BISummaryTarget getBITargetByID(String id) throws Exception {
+    public BISummaryTarget getBITargetByID(String id) throws Exception {
 
         for (BISummaryTarget target : getTargets()) {
             if (ComparatorUtils.equals(target.getId(), id)) {
