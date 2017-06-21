@@ -96,6 +96,10 @@ public class VanGaugeWidget extends VanCartesianWidget{
         JSONObject percentageLabel = JSONObject.create().put("enabled", settings.optInt("showPercentage") == BIChartSettingConstant.PERCENTAGE.SHOW).put("align", align).put("formatter",  JSONObject.create().put("identifier", PERCENT)
                 .put("percentFormat", "function(){return BI.contentFormat(arguments[0], \"#.##%\")}"));
 
+        if(gaugeStyle == PERCENT_SCALE_SLOT){
+            percentageLabel.put("style", JSONObject.create().put("fontSize", "24px"));
+        }
+
         plotOptions.put("valueLabel", valueLabel).put("seriesLabel", seriesLabel).put("percentageLabel", percentageLabel);
     }
 
