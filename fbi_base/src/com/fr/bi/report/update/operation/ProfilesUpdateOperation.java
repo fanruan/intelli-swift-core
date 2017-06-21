@@ -114,6 +114,11 @@ public class ProfilesUpdateOperation implements ReportUpdateOperation {
                                 dataLabelSettings.put("showCategoryName", false).put("showSeriesName", false)
                                         .put("showXValue", true).put("showYValue", true).put("showValue", false);
                                 break;
+                            case BIReportConstant.WIDGET.DASHBOARD:
+                                settings.put("showDataLabel", true);
+                                dataLabelSettings.put("showCategoryName", true).put("showSeriesName", false)
+                                        .put("showValue", true).put("showPercentage", false);
+                                break;
                             default:
                                 dataLabelSettings.put("showCategoryName", false).put("showSeriesName", false)
                                         .put("showValue", true).put("showPercentage", false)
