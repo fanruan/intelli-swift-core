@@ -1,11 +1,16 @@
 package com.fr.bi.cal.analyze.report.report.export;
 
+import com.fr.base.Margin;
+import com.fr.base.PaperSize;
 import com.fr.bi.cal.analyze.report.BIReportor;
 import com.fr.bi.cal.analyze.session.BISession;
 import com.fr.bi.conf.report.BIReport;
 import com.fr.main.workbook.PageRWorkBook;
+import com.fr.main.workbook.ResultWorkBook;
 import com.fr.report.cell.FloatElement;
+import com.fr.report.report.ResultReport;
 import com.fr.report.worksheet.PageRWorkSheet;
+import com.fr.stable.unit.MM;
 import com.fr.web.core.SessionDealWith;
 
 import javax.servlet.http.HttpServletRequest;
@@ -25,7 +30,7 @@ public class BIReportExportPDF {
     }
 
     public PageRWorkBook getPDFExportBook (HttpServletRequest req) throws Exception {
-        BIConvertWidgetsToFL biConvertWidgetsToFL = new BIConvertWidgetsToFL(session, req);
+        BIConvertWidgetsToFE biConvertWidgetsToFL = new BIConvertWidgetsToFE(session, req);
         ArrayList<FloatElement> floatElements = biConvertWidgetsToFL.getFloatElements();
 
         PageRWorkBook pageRWorkBook = new PageRWorkBook();
@@ -38,6 +43,15 @@ public class BIReportExportPDF {
         }
 
         pageRWorkBook.addReport("Dashboard", pageRWorkSheet);
+        setPageSize(pageRWorkBook, biConvertWidgetsToFL.getPaperSize());
         return pageRWorkBook;
+    }
+
+    private void setPageSize(ResultWorkBook resultWorkBook, PaperSize paperSize) {
+        for (int i = 0; i < resultWorkBook.getReportCount(); i++) {
+            ResultReport report = resultWorkBook.getResultReport(i);
+            report.getReportSettings().getPaperSetting().setPaperSize(paperSize);
+            report.getReportSettings().getPaperSetting().setMargin(new Margin(new MM(0), new MM(0), new MM(0), new MM(0)));
+        }
     }
 }

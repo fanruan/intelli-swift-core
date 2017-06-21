@@ -11,7 +11,6 @@ import com.fr.bi.conf.report.BIReport;
 import com.fr.bi.conf.report.BIWidget;
 import com.fr.bi.stable.constant.BIExcutorConstant;
 import com.fr.bi.stable.constant.BIReportConstant;
-import com.fr.function.FLOOR;
 import com.fr.main.workbook.ResultWorkBook;
 import com.fr.report.cell.FloatElement;
 import com.fr.report.poly.PolyECBlock;
@@ -34,7 +33,7 @@ public class BIReportExportExcel {
     }
 
     public ResultWorkBook getExcelExportBook(HttpServletRequest req) throws Exception {
-        BIConvertWidgetsToFL biConvertWidgetsToFL = new BIConvertWidgetsToFL(session, req);
+        BIConvertWidgetsToFE biConvertWidgetsToFL = new BIConvertWidgetsToFE(session, req);
 
         if (biConvertWidgetsToFL.isReportEmpty()) {
             return null;
@@ -60,7 +59,7 @@ public class BIReportExportExcel {
         return wb.execute4BI(session.getParameterMap4Execute());
     }
 
-    private void createOtherSheets(BIConvertWidgetsToFL biConvertWidgetsToFL, BIWorkBook wb) throws CloneNotSupportedException {
+    private void createOtherSheets(BIConvertWidgetsToFE biConvertWidgetsToFL, BIWorkBook wb) throws CloneNotSupportedException {
         ArrayList<BIWidget> widgets = biConvertWidgetsToFL.getCommonWidgets();
         //other sheets
         if (widgets.size() == 0) {

@@ -2,6 +2,7 @@ package com.fr.bi.cal.analyze.report.report.export;
 
 import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.base.FRContext;
+import com.fr.base.PaperSize;
 import com.fr.bi.cal.analyze.report.report.BIWidgetFactory;
 import com.fr.bi.cal.analyze.report.report.export.utils.BIReportExportExcelUtils;
 import com.fr.bi.cal.analyze.report.report.widget.TableWidget;
@@ -15,11 +16,15 @@ import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.constant.BIStyleConstant;
 import com.fr.bi.util.BIReadReportUtils;
 import com.fr.general.DateUtils;
+import com.fr.general.GeneralUtils;
 import com.fr.general.Inter;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
 import com.fr.report.cell.FloatElement;
+import com.fr.stable.Constants;
+import com.fr.stable.StableUtils;
+import com.fr.stable.unit.FU;
 
 import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
@@ -36,20 +41,21 @@ import java.util.Iterator;
  * 通过phantomjs将report上的widgets转化成floatElement
  * Created by astronaut007 on 2017/6/21.
  */
-public class BIConvertWidgetsToFL {
+public class BIConvertWidgetsToFE {
 
     private BISession session;
     private BIReportNode node;
     private ArrayList<BIWidget> widgets = new ArrayList<BIWidget>();
     private JSONArray specialWidgets = JSONArray.create();
     private ArrayList<FloatElement> floatElements = new ArrayList<FloatElement>();
+    private JSONObject paperSize = JSONObject.create();
     private int namePosLeft = BIStyleConstant.DASHBOARD_WIDGET_NAME_POS_LEFT;
-    private int adjustedWidth = 0;
+    private int adjustedPix = 55;
     private int offSet1 = 1;
     private int offSet3 = 3;
     private int offSet7 = 7;
 
-    public BIConvertWidgetsToFL(BISession session, HttpServletRequest req) throws Exception {
+    public BIConvertWidgetsToFE(BISession session, HttpServletRequest req) throws Exception {
         this.session = session;
         this.node = session.getReportNode();
         JSONObject widgetsJSON = BIReadReportUtils.getInstance().getBIReportNodeJSON(node).optJSONObject("widgets");
@@ -58,6 +64,7 @@ public class BIConvertWidgetsToFL {
         while (it.hasNext()) {
             JSONObject widgetJSON = widgetsJSON.getJSONObject((String) it.next());
             int type = widgetJSON.optInt("type");
+            setPaperSize(widgetJSON);
             parseWidget(type, widgetJSON);
         }
 
@@ -73,8 +80,24 @@ public class BIConvertWidgetsToFL {
         return floatElements;
     }
 
-    public boolean isReportEmpty () {
+    public boolean isReportEmpty() {
         return widgets.size() == 0 && specialWidgets.length() == 0;
+    }
+
+    public PaperSize getPaperSize() {
+        int resolution = Constants.DEFAULT_WEBWRITE_AND_SCREEN_RESOLUTION;
+        return new PaperSize(FU.valueOfPix(paperSize.optInt("width") + adjustedPix, resolution), FU.valueOfPix(paperSize.optInt("height") + adjustedPix, resolution));
+    }
+
+    private void setPaperSize(JSONObject widgetJSON) throws JSONException {
+        long paperWidth = paperSize.optLong("width", 0);
+        long paperHeight = paperSize.optLong("height", 0);
+
+        JSONObject rect = widgetJSON.optJSONObject("bounds");
+        long width = rect.getLong("width") + rect.optLong("left");
+        long height = rect.optLong("height") + rect.optLong("top");
+        paperSize.put("width", paperWidth < width ? width : paperWidth);
+        paperSize.put("height", paperHeight < height ? height : paperHeight);
     }
 
     private void parseWidget(int type, JSONObject widgetJo) throws Exception {
@@ -109,9 +132,10 @@ public class BIConvertWidgetsToFL {
 
     //fixme wiget缺乏一个统一入口
     private void renderCommonWidgetsFL(HttpServletRequest req) throws Exception {
-        for(BIWidget widget : widgets) {
+        for (BIWidget widget : widgets) {
             if (!BIReportExportExcelUtils.widgetHasData(widget)) {
                 floatElements.add(BIReportExportExcelUtils.createFloatElement("", widget.getRect()));
+                return;
             }
             JSONObject options;
             String key;
@@ -137,7 +161,7 @@ public class BIConvertWidgetsToFL {
                 titleParams.put("textAlign", nameTextAlign);
             }
             Rectangle rect = widget.getRect();
-            String postOptions = new JSONObject("{" + key + ":" + options + ", width:" + (rect.getWidth() + adjustedWidth) +
+            String postOptions = new JSONObject("{" + key + ":" + options + ", width:" + rect.getWidth() +
                     ", height:" + rect.getHeight() + ", titleParams:" + titleParams + "}").toString();
             String base64 = null;
             try {
@@ -206,7 +230,7 @@ public class BIConvertWidgetsToFL {
         JSONObject jo = JSONObject.create();
         JSONObject bounds = wjo.optJSONObject("bounds");
 
-        jo.put("width", bounds.optInt("width") + adjustedWidth);
+        jo.put("width", bounds.optInt("width"));
         jo.put("height", bounds.optInt("height"));
         jo.put("content", wjo.optString("content"));
         jo.put("style", wjo.optJSONObject("style"));

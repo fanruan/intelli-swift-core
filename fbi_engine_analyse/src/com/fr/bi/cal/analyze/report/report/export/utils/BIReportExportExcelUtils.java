@@ -59,7 +59,7 @@ public class BIReportExportExcelUtils {
     }
 
     private static FloatElement formatFloatElement(FloatElement floatElement, Rectangle rect) {
-        int resolution = Constants.DEFAULT_PRINT_AND_EXPORT_RESOLUTION;
+        int resolution = Constants.DEFAULT_WEBWRITE_AND_SCREEN_RESOLUTION;
         floatElement.setWidth(FU.valueOfPix((int) rect.getWidth(), resolution));
         floatElement.setHeight(FU.valueOfPix((int) rect.getHeight(), resolution));
         floatElement.setLeftDistance(FU.valueOfPix((int) rect.getX() + pageMargin, resolution));
