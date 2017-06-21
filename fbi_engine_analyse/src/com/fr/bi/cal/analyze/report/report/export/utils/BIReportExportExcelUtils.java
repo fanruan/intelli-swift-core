@@ -36,7 +36,7 @@ public class BIReportExportExcelUtils {
     private static String phantomIp = PerformancePlugManager.getInstance().getPhantomServerIP();
     private static int phantomPort = PerformancePlugManager.getInstance().getPhantomServerPort();
 
-    static FloatElement createFloatElement(BufferedImage bufferedImage, Rectangle rect) {
+    public static FloatElement createFloatElement(BufferedImage bufferedImage, Rectangle rect) {
         FloatElement floatElement = new FloatElement(bufferedImage);
         return formatFloatElement(floatElement, rect);
     }
@@ -58,8 +58,8 @@ public class BIReportExportExcelUtils {
         return formatFloatElement(floatElement, getWidgetRect(bounds));
     }
 
-    static FloatElement formatFloatElement(FloatElement floatElement, Rectangle rect) {
-        int resolution = Constants.DEFAULT_WEBWRITE_AND_SCREEN_RESOLUTION;
+    private static FloatElement formatFloatElement(FloatElement floatElement, Rectangle rect) {
+        int resolution = Constants.DEFAULT_PRINT_AND_EXPORT_RESOLUTION;
         floatElement.setWidth(FU.valueOfPix((int) rect.getWidth(), resolution));
         floatElement.setHeight(FU.valueOfPix((int) rect.getHeight(), resolution));
         floatElement.setLeftDistance(FU.valueOfPix((int) rect.getX() + pageMargin, resolution));
@@ -92,7 +92,7 @@ public class BIReportExportExcelUtils {
         }
     }
 
-    static BufferedImage base64Decoder(String base64) {
+    private static BufferedImage base64Decoder(String base64) {
         BASE64Decoder decoder = new BASE64Decoder();
         BufferedImage img = null;
         try {
