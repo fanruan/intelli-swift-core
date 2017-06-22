@@ -237,8 +237,9 @@ public class BISession extends BIAbstractSession {
             widget = (BIWidget) widget.clone();
             switch (widget.getType()) {
                 case TABLE:
-                case CROSS_TABLE:
-                case COMPLEX_TABLE:
+                    ((TableWidget) widget).addColumn2Row();
+                    ((TableWidget) widget).setGroupTableType();
+                    ((TableWidget) widget).getExecutor(this);
                     ((TableWidget) widget).setComplexExpander(new ComplexAllExpander());
                     ((TableWidget) widget).setOperator(BIReportConstant.TABLE_PAGE_OPERATOR.ALL_PAGE);
                     break;
