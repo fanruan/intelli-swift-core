@@ -47,5 +47,8 @@
   "innerRadius": "饼图内径(chart_inner_radius)",
   "pieChartType": "饼图类型(chart_pie_type)",
   "tableStyleGroup": "表格风格(table_style/tableStyle)",
-  "tableFormGroup": "表格类型(tableForm/table_form)"
+  "tableFormGroup": "表格类型(tableForm/table_form)",
+  "fontStyle":"样式(font-style)",
+  "textAlign":"样式(text-style)",
+  "fontWeight":"样式(font-weight)"
 }
