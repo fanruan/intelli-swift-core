@@ -76,7 +76,7 @@ public final class PositionCalculator {
 
     private void sortBaseLine() {
         List<BITablePosition> biTablePositions = levelHelper.get(0);
-        biTablePositions.sort(new Comparator<BITablePosition>() {
+        Collections.sort(biTablePositions, new Comparator<BITablePosition>() {
             public int compare(BITablePosition o1, BITablePosition o2) {
                 Set<SimpleTable> t1 = topHelper.get(o1.getTable());
                 Set<SimpleTable> t2 = topHelper.get(o2.getTable());
