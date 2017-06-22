@@ -129,7 +129,7 @@ public class BIFormularUtils {
             Map.Entry<String, String> entry = iter.next();
             String columnName = entry.getKey();
             Object value = values.get(entry.getValue());
-            if (value != null) {
+            if (BICollectionUtils.isNotCubeNullKey(value)) {
                 c.set(columnName, value);
             } else {
                 c.remove(columnName);
@@ -166,7 +166,12 @@ public class BIFormularUtils {
             if (values == null || values.length - 1 < entry.getValue().getTargetIndex()) {
                 c.remove(columnName);
             } else {
-                c.set(columnName, values[entry.getValue().getTargetIndex()]);
+                Object v = values[entry.getValue().getTargetIndex()];
+                if(BICollectionUtils.isCubeNullKey(v)){
+                   c.remove(columnName);
+                }else {
+                    c.set(columnName, v);
+                }
             }
         }
         try {
