@@ -61,7 +61,7 @@ public class VanMapWidget extends VanChartWidget{
 
         JSONObject settings = this.getDetailChartSetting();
 
-        if(settings.optBoolean("isShowBackgroundLayer")){
+        if(settings.optBoolean("isShowBackgroundLayer") && settings.has("backgroundLayerInfo")){
             JSONObject config = BIWMSManager.getInstance().getWMSInfo(settings.optString("backgroundLayerInfo"));
             geo.put("tileLayer", config.optString("url"));
         }
