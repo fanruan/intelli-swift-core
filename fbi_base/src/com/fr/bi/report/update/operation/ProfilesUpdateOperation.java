@@ -29,6 +29,7 @@ import java.util.regex.Pattern;
  * 图片uri修正
  * 散点气泡图type升级成点图的type
  * 显示网格拆分成显示纵向和显示横向
+ * 处理脏数据
  */
 public class ProfilesUpdateOperation implements ReportUpdateOperation {
     private static final String DEFAULT_FILE_NAME = "keys.json";
@@ -73,6 +74,7 @@ public class ProfilesUpdateOperation implements ReportUpdateOperation {
                     json = correctScatterType(json);
                     groupTargetsByType(json);
                     updateShowGridSettings(json);
+                    updateSrcFieldId(json);
                 }
                 res.put(updateKey(s), recursionMapUpdate(json.getString(s)));
             } else {
@@ -80,6 +82,45 @@ public class ProfilesUpdateOperation implements ReportUpdateOperation {
             }
         }
         return res;
+    }
+
+    /*4.0里面出现如下脏数据
+     "_src": {
+            "tableId": "16e9dc63df807d33",
+            "fieldId": [
+              "16e9dc63df807d33生产入库实际与预算记录数"
+            ]
+          },
+    */
+    private void updateSrcFieldId(JSONObject json) {
+        try {
+            if (BIJsonUtils.isKeyValueSet(json.getString("widgets"))) {
+                Iterator keys = json.getJSONObject("widgets").keys();
+                while (keys.hasNext()) {
+                    String widgetId = keys.next().toString();
+                    JSONObject dimensions = json.getJSONObject("widgets").getJSONObject(widgetId).getJSONObject("dimensions");
+                    Iterator dimKeys = dimensions.keys();
+                    while (dimKeys.hasNext()) {
+                        String dimId = dimKeys.next().toString();
+                        JSONObject dimJo = dimensions.getJSONObject(dimId);
+                        if (dimJo.has("_src")) {
+                            JSONObject srcJo=dimJo.getJSONObject("_src");
+                            if (srcJo.has("fieldId") && BIJsonUtils.isArray(srcJo.getString("fieldId"))) {
+                                JSONArray fieldIds = srcJo.getJSONArray("fieldId");
+                                srcJo.put("fieldId", fieldIds.length() > 0 ? fieldIds.get(0) : "");
+                            }
+                            if (srcJo.has("field_id") && BIJsonUtils.isArray(srcJo.getString("field_id"))) {
+                                JSONArray fieldIds = srcJo.getJSONArray("field_id");
+                                srcJo.put("field_id", fieldIds.length() > 0 ? fieldIds.get(0) : "");
+                            }
+                        }
+                    }
+                }
+            }
+        } catch (JSONException e) {
+            BILoggerFactory.getLogger(this.getClass()).error(e.getMessage(), e);
+        }
+
     }
 
     //  显示网格线拆分成显示纵向和显示横向，settings.textDirection to settings.catLabelStyle.textDirection
