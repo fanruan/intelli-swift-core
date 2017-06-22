@@ -99,9 +99,7 @@ public abstract class AbstractBIWidget implements BIWidget {
     @Override
     public WorkBook createWorkBook(BISessionProvider session) {
         BIWorkBook wb = new BIWorkBook();
-        BIPolyWorkSheet ws = new BIPolyWorkSheet();
-        ws.addBlock(this.createTemplateBlock((BISession) session));
-        wb.addReport(ws);
+        wb.addReport(createWorkSheet(session));
         return wb;
     }
 
