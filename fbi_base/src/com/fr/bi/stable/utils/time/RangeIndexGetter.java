@@ -4,8 +4,12 @@ import com.finebi.cube.api.ICubeColumnIndexReader;
 import com.fr.bi.stable.data.key.date.BIDay;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.gvi.GroupValueIndexOrHelper;
+import com.fr.bi.stable.utils.BICollectionUtils;
 import com.fr.bi.stable.utils.DateUtils;
 import com.fr.general.GeneralUtils;
+
+import java.util.Iterator;
+import java.util.Map;
 
 /**
  * Created by daniel on 2016/6/8.
@@ -46,8 +50,19 @@ public class RangeIndexGetter {
 
     //算两个区间之间的index
     private void createRangeIndex(GroupValueIndexOrHelper helper, BIDay start, BIDay end) {
+
         if (start == null) {
-            Integer firstYear = GeneralUtils.objectToNumber(yearMap.firstKey()).intValue();
+            Integer firstYear ;
+            Iterator<Map.Entry<Object, GroupValueIndex>> iter = yearMap.iterator();
+            Object v = null;
+            //BI-6381 时间字段的最早时间要这样进行获取...
+            while (iter.hasNext()){
+                v = iter.next().getKey();
+                if(BICollectionUtils.isNotCubeNullKey(v)){
+                    break;
+                }
+            }
+            firstYear  = GeneralUtils.objectToNumber(v).intValue();
             start = new BIDay(firstYear, 0, 0);
         }
         if (end == null) {
