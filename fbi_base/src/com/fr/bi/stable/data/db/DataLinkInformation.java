@@ -29,7 +29,6 @@ public class DataLinkInformation implements JSONParser {
     }
 
 
-
     /**
      * 通过当前数据获取连接
      *
@@ -49,7 +48,6 @@ public class DataLinkInformation implements JSONParser {
     }
 
 
-
     /**
      * parse对象
      *
@@ -58,7 +56,7 @@ public class DataLinkInformation implements JSONParser {
      */
     @Override
     public void parseJSON(JSONObject jo) throws Exception {
-        if(jo.has("name")) {
+        if (jo.has("name")) {
             databaseName = jo.getString("name");
         }
         if (jo.has("driver")) {
@@ -82,6 +80,6 @@ public class DataLinkInformation implements JSONParser {
     }
 
     public Connection createDatabaseConnection() {
-            return createJDBCDatabaseConnection();
+        return createJDBCDatabaseConnection();
     }
 }
