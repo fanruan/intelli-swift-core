@@ -79,6 +79,18 @@ public class BITableReportSetting extends BIAbstractTableSetting {
 
     }
 
+    public void addColumn2Row () {
+        ArrayList<String> mergedDims = new ArrayList<>();
+        if(row != null) {
+            Collections.addAll(mergedDims, row);
+        }
+        if(column != null) {
+            Collections.addAll(mergedDims, column);
+        }
+        row = mergedDims.toArray(new String[mergedDims.size()]);
+        column = new String[0];
+    }
+
     public int getTableStyle() {
         return this.tableStyle;
     }

@@ -344,7 +344,7 @@ public class NodeIteratorCreator {
         Collection<String> usedTargets = target.getCalculateUseTargetIDs();
         if (usedTargets != null) {
             for (String usedTarget : usedTargets) {
-                if (!ComparatorUtils.equals(id, target.getName())) {
+                if (!ComparatorUtils.equals(usedTarget, target.getName())) {
                     getRelatedCalMetricIds(calIds, usedTarget);
                 }
             }
