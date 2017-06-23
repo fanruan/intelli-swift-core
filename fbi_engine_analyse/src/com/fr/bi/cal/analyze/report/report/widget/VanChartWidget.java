@@ -2,6 +2,9 @@ package com.fr.bi.cal.analyze.report.report.widget;
 
 import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.base.FRContext;
+import com.fr.bi.conf.fs.BIChartStyleAttr;
+import com.fr.bi.conf.fs.FBIConfig;
+import com.fr.bi.conf.fs.tablechartstyle.BIChartFontStyleAttr;
 import com.fr.bi.conf.report.WidgetType;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.conf.session.BISessionProvider;
@@ -61,7 +64,7 @@ public abstract class VanChartWidget extends TableWidget {
 
     protected static final String PERCENT_SYMBOL = "%";
     private static final String WHITE = "#ffffff";
-    private static final String DEFAULT_COLOR = "#1a1a1a";
+    private static final String DARK = "#1a1a1a";
 
     private static final int WEEK_COUNT = 52;
     private static final int MONTH_COUNT = 12;
@@ -82,6 +85,7 @@ public abstract class VanChartWidget extends TableWidget {
 
     //todo:@shine 4.1版本整理一下settings globalstyle plateconfig
     private JSONObject globalStyle;
+    private JSONObject defaultFont;
 
     public static final String[] FULL_QUARTER_NAMES = new String[]{
             Inter.getLocText("BI-Quarter_1"),
@@ -125,8 +129,10 @@ public abstract class VanChartWidget extends TableWidget {
     }
 
     public JSONObject createOptions(JSONObject globalStyle, JSONObject data) throws Exception {
+        //todo:@shine 4.1版本整理下populatedefaultsetting和createplotoptions.原因：默认属性尽量放到一起，不要分开两处
         JSONObject options = JSONObject.create();
         JSONObject settings = this.getDetailChartSetting();
+        //todo:@shine 4.1系统整理下platconfig.这边可以直接取，不用转成json
         JSONObject plateConfig = BIConfUtils.getPlateConfig();
 
         options.put("chartType", this.getSeriesType(StringUtils.EMPTY));
@@ -389,7 +395,7 @@ public abstract class VanChartWidget extends TableWidget {
         tooltip.put("enabled", true).put("animation", true).put("padding", 10).put("backgroundColor", widgetBg)
                 .put("borderRadius", 2).put("borderWidth", 0).put("shadow", true)
                 .put("style", JSONObject.create()
-                        .put("color", this.isDarkColor(widgetBg) ? "#FFFFFF" : "#1A1A1A")
+                        .put("color", this.isDarkColor(widgetBg) ? WHITE : DARK)
                         .put("fontSize", "14px").put("fontFamily", "Verdana"));
 
         plotOptions.put("tooltip", tooltip);
@@ -419,7 +425,8 @@ public abstract class VanChartWidget extends TableWidget {
         JSONObject dataLabels = JSONObject.create().put("enabled", showDataLabel).put("autoAdjust", true);
 
         if (showDataLabel) {
-            JSONObject dataLabelSetting = settings.has("dataLabelSetting") ? settings.optJSONObject("dataLabelSetting") : this.defaultDataLabelSetting();
+            JSONObject dataLabelSetting = this.defaultDataLabelSetting();
+            dataLabelSetting = settings.has("dataLabelSetting") ? merge(settings.optJSONObject("dataLabelSetting"), dataLabelSetting) : dataLabelSetting;
 
             JSONObject formatter = JSONObject.create();
 
@@ -489,6 +496,10 @@ public abstract class VanChartWidget extends TableWidget {
 
     private boolean isDarkColor(String colorStr) {
 
+        if (StringUtils.isEmpty(colorStr) || ComparatorUtils.equals(colorStr, "transparent")) {
+            return false;
+        }
+
         colorStr = colorStr.substring(1);
 
         Color color = new Color(Integer.parseInt(colorStr, 16));
@@ -508,48 +519,120 @@ public abstract class VanChartWidget extends TableWidget {
         return settings;
     }
 
+    private String checkValidColor(String backgroundColor, String original) {
+        String transparent = "transparent", auto = StringUtils.EMPTY;
+        if(!transparent.equals(backgroundColor) && !auto.equals(backgroundColor)){
+            return isDarkColor(backgroundColor) ? WHITE : DARK;
+        }
+        return original;
+    }
+
+    private String checkTransparent(String color){
+        if(color.equals("transparent")){
+            return "rgba(0,0,0,0)";
+        }
+        return color;
+    }
+
+    //优先级从低到高：plat界面背景，global界面背景，主题，plat组件背景，global组件背景，setting组件背景，plat图表文字， global图表文字，settings图表文字
     protected JSONObject defaultFont() throws JSONException {
-        if(this.globalStyle != null && this.globalStyle.has("chartFont")){
-            JSONObject chartFont = this.globalStyle.optJSONObject("chartFont");
-            return new JSONObject(chartFont.toString()).put("fontFamily", "Microsoft YaHei").put("fontSize", "12px");
+        if(defaultFont == null){
+            BIChartStyleAttr platConfig = FBIConfig.getProviderInstance().getChartStyleAttr();
+            String color = DARK, fontWeight = "normal", fontStyle = "normal";
+
+            if(platConfig.getMainBackground() != null) {
+                color = checkValidColor(platConfig.getMainBackground().getValue(), color);
+            }
+
+            if(globalStyle.has("mainBackground")) {
+                color = checkValidColor(globalStyle.optJSONObject("mainBackground").optString("value"), color);
+            }
+
+            if(globalStyle.optString("theme").equals("bi-theme-dark")){
+                color = WHITE;
+            }
+
+            if(platConfig.getWidgetBackground() != null) {
+                color = checkValidColor(platConfig.getWidgetBackground().getValue(), color);
+            }
+
+            if(globalStyle.has("widgetBackground")) {
+                color = checkValidColor(globalStyle.optJSONObject("widgetBackground").optString("value"), color);
+            }
+
+            BIChartFontStyleAttr fontStyleAttr = platConfig.getChartFont();
+            if(fontStyleAttr != null){
+                String fontColor = fontStyleAttr.getColor();
+                if(StringUtils.isNotEmpty(fontColor)){
+                    color = checkTransparent(fontColor);
+                }
+                fontWeight = fontStyleAttr.getFontWidget();
+                fontStyle = fontStyleAttr.getFontStyle();
+            }
+
+            JSONObject chartFont = globalStyle.optJSONObject("chartFont");
+            if(chartFont != null){
+                String fontColor = chartFont.optString("color");
+                if(StringUtils.isNotEmpty(fontColor)){
+                    color = checkTransparent(fontColor);
+                }
+                fontWeight = chartFont.optString("fontWeight", fontWeight);
+                fontStyle = chartFont.optString("fontStyle", fontStyle);
+            }
+
+            defaultFont = JSONObject.create().put("fontFamily", "Microsoft YaHei").put("fontSize", "12px")
+                    .put("color", color).put("fontWeight", fontWeight).put("fontStyle", fontStyle);
         }
 
-        return JSONObject.create()
-                .put("fontFamily", "Microsoft YaHei")
-                .put("color", DEFAULT_COLOR)
-                .put("fontSize", "12px");
+        return defaultFont;
+    }
 
+    //颜色自动，则use default color
+    private boolean autoColor(JSONObject target, String key) {
+        return ComparatorUtils.equals("color", key) && StringUtils.isEmpty(target.optString(key));
     }
 
     //todo 不知道有没有实现过，先撸一下
-    private JSONObject merge(JSONObject target, JSONObject source) throws JSONException {
+    protected JSONObject merge(JSONObject target, JSONObject source) throws JSONException {
         Iterator it = source.keys();
         while (it.hasNext()) {
             String key = it.next().toString();
-            if (!target.has(key)) {
+            if (!target.has(key) || autoColor(target, key)) {
                 target.put(key, source.get(key));
+            } else {//主要是想把style里面的颜色需要merge一下，自动的话用defaultColor
+                JSONObject targetObject = target.optJSONObject(key);
+                JSONObject sourceObject = source.optJSONObject(key);
+                if(targetObject != null && sourceObject != null){
+                    merge(targetObject, sourceObject);
+                }
             }
         }
         return target;
     }
 
+    //todo:@shine 每次get都populate and merge一遍
     protected JSONObject getDetailChartSetting() throws JSONException {
         JSONObject settings = this.getChartSetting().getDetailChartSetting();
 
         return merge(settings, this.populateDefaultSettings());
     }
 
-    public JSONObject createDataJSON(BISessionProvider session, HttpServletRequest req) throws Exception {
+    public JSONObject createChartConfigWidthData(BISessionProvider session, HttpServletRequest req, JSONObject data) throws Exception{
 
         this.locale = WebUtils.getLocale(req);
-
-        JSONObject data = super.createDataJSON(session, req).getJSONObject("data");
 
         //globalStyle从前台传过来的json取，不从.fbi模板取原因：设置全局样式，先刷新图表，后save模板，所以刷新图表取得全局样式不是最新的
         this.globalStyle = this.getChartSetting().getGlobalStyle();
         this.globalStyle = this.globalStyle == null ? JSONObject.create() : this.globalStyle;
 
         return this.createOptions(globalStyle, data).put("data", data);
+    }
+
+    public JSONObject createDataJSON(BISessionProvider session, HttpServletRequest req) throws Exception {
+
+        JSONObject data = super.createDataJSON(session, req).getJSONObject("data");
+
+        return this.createChartConfigWidthData(session, req, data);
     }
 
 /*
@@ -1084,7 +1167,7 @@ public abstract class VanChartWidget extends TableWidget {
 
             ranges.put(
                     JSONObject.create()
-                            .put("from", range.optDouble("min"))
+                            .put("from", range.optDouble("min",Integer.MIN_VALUE))
                             .put("to", range.optDouble("max", Integer.MAX_VALUE))
                             .put("color", config.optString("color"))
             );

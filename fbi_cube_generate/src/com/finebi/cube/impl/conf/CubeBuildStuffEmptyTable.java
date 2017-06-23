@@ -25,8 +25,8 @@ import java.util.*;
 public class CubeBuildStuffEmptyTable extends AbstractCubeBuildStuff {
     private static BILogger logger = BILoggerFactory.getLogger(CubeBuildStuffEmptyTable.class);
 
-    public CubeBuildStuffEmptyTable(long userId) {
-        super(userId);
+    public CubeBuildStuffEmptyTable(long userId, Set<CubeTableSource> allTableSources) {
+        super(userId, allTableSources);
     }
 
     @Override

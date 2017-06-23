@@ -1,9 +1,7 @@
 package com.fr.bi.cal.analyze.report.report.export.utils;
 
 import com.fr.bi.conf.report.BIWidget;
-import com.fr.bi.conf.report.WidgetType;
 import com.fr.bi.manager.PerformancePlugManager;
-import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.constant.DateConstant;
 import com.fr.general.GeneralUtils;
 import com.fr.general.IOUtils;
@@ -12,21 +10,16 @@ import com.fr.report.cell.FloatElement;
 import com.fr.report.poly.PolyECBlock;
 import com.fr.stable.CodeUtils;
 import com.fr.stable.Constants;
-import com.fr.stable.StringUtils;
 import com.fr.stable.unit.FU;
 import com.fr.stable.unit.UnitRectangle;
 import sun.misc.BASE64Decoder;
-import sun.misc.BASE64Encoder;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.awt.image.RenderedImage;
 import java.io.*;
 import java.net.URL;
 import java.net.URLConnection;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Created by astronaut007 on 2017/4/19.
@@ -44,7 +37,7 @@ public class BIReportExportExcelUtils {
     private static String phantomIp = PerformancePlugManager.getInstance().getPhantomServerIP();
     private static int phantomPort = PerformancePlugManager.getInstance().getPhantomServerPort();
 
-    static FloatElement createFloatElement(BufferedImage bufferedImage, Rectangle rect) {
+    public static FloatElement createFloatElement(BufferedImage bufferedImage, Rectangle rect) {
         FloatElement floatElement = new FloatElement(bufferedImage);
         return formatFloatElement(floatElement, rect);
     }
@@ -66,9 +59,8 @@ public class BIReportExportExcelUtils {
         return formatFloatElement(floatElement, getWidgetRect(bounds));
     }
 
-    static FloatElement formatFloatElement(FloatElement floatElement, Rectangle rect) {
-//        int resolution = ScreenResolution.getScreenResolution();
-        int resolution = Constants.DEFAULT_PRINT_AND_EXPORT_RESOLUTION;
+    private static FloatElement formatFloatElement(FloatElement floatElement, Rectangle rect) {
+        int resolution = Constants.DEFAULT_WEBWRITE_AND_SCREEN_RESOLUTION;
         floatElement.setWidth(FU.valueOfPix((int) rect.getWidth(), resolution));
         floatElement.setHeight(FU.valueOfPix((int) rect.getHeight(), resolution));
         floatElement.setLeftDistance(FU.valueOfPix((int) rect.getX() + pageMargin, resolution));
@@ -101,7 +93,7 @@ public class BIReportExportExcelUtils {
         }
     }
 
-    static BufferedImage base64Decoder(String base64) {
+    private static BufferedImage base64Decoder(String base64) {
         BASE64Decoder decoder = new BASE64Decoder();
         BufferedImage img = null;
         try {

@@ -1,8 +1,6 @@
 package com.fr.bi.cal.analyze.report.report.widget.chart.types;
 
 import com.finebi.cube.common.log.BILoggerFactory;
-import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
-import com.fr.general.ComparatorUtils;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;
 import com.fr.stable.StringUtils;
@@ -15,6 +13,10 @@ public class VanCombinationWidget extends VanCartesianWidget{
     private static final int STACK_COLUMN = 1;
     private static final int STACK_AREA_CURVE = 4;
     private static final int STACK_AREA_STEP = 5;
+
+    public JSONObject createPlotOptions(JSONObject globalSetting, JSONObject settings) throws Exception {
+        return super.createPlotOptions(globalSetting, settings).put("marker", JSONObject.create().put("symbol", "circle").put("enabled", true).put("radius", 4.5));
+    }
 
     public JSONArray createSeries(JSONObject data) throws Exception{
         JSONArray series = super.createSeries(data);
