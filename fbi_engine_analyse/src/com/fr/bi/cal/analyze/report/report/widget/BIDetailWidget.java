@@ -50,7 +50,12 @@ import com.fr.report.poly.TemplateBlock;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 public class BIDetailWidget extends AbstractBIWidget {
     private static final long serialVersionUID = 3558768164064392671L;
@@ -275,7 +280,7 @@ public class BIDetailWidget extends AbstractBIWidget {
     }
 
     @Override
-    public JSONObject createDataJSON(BISessionProvider session, HttpServletRequest req) throws JSONException {
+    public JSONObject createDataJSON(BISessionProvider session, HttpServletRequest req) throws Exception {
         JSONObject jo = new JSONObject();
         Paging paging = PagingFactory.createPaging(BIExcutorConstant.PAGINGTYPE.GROUP100);
         paging.setCurrentPage(page);
