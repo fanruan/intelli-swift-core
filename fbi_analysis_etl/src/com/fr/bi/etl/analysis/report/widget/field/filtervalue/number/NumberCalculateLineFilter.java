@@ -148,4 +148,9 @@ public abstract class NumberCalculateLineFilter extends AbstractFilterValue<Numb
         return super.clone();
     }
 
+    @Override
+    public boolean isSingleNodeFilter() {
+        return true;
+    }
+
 }

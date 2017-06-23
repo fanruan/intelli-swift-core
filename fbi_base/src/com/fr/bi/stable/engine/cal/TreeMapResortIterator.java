@@ -77,6 +77,11 @@ public class TreeMapResortIterator implements DimensionIterator{
     }
 
     @Override
+    public boolean isReturnFinalGroupValueIndex() {
+        return true;
+    }
+
+    @Override
     public GroupValueIndex getGroupValueIndexByGroupIndex(int groupIndex) {
         return GVIFactory.createGroupValueIndexBySimpleIndex(indexArrayMap.get(groupIndex));
     }

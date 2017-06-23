@@ -6,16 +6,18 @@ import com.fr.bi.cal.analyze.session.BISession;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Created by 小灰灰 on 2016/8/8.
  */
 public class BIMultiThreadExecutor {
-    private static final int SIZE = 1 << 4;
+    private static final int SIZE = Runtime.getRuntime().availableProcessors();
     private static final int MOD = SIZE - 1;
     private MergeSummaryCallList[] lists = new MergeSummaryCallList[SIZE];
     private int index = 0;
     private ExecutorService executorService;
+    public static AtomicInteger count =new AtomicInteger(0);
 
     public BIMultiThreadExecutor() {
         executorService = Executors.newFixedThreadPool(SIZE);

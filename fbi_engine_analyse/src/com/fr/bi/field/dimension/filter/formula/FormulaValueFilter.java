@@ -80,6 +80,10 @@ public class FormulaValueFilter extends AbstractDimensionFilter {
         return true;
     }
 
+    public boolean isSingleNodeFilter(){
+        return false;
+    }
+
     @Override
     public int hashCode() {
         return expression != null ? expression.hashCode() : 0;

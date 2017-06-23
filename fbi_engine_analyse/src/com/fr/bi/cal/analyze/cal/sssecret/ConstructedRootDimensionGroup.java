@@ -5,9 +5,7 @@ import com.finebi.cube.api.ICubeTableService;
 import com.fr.bi.cal.analyze.cal.index.loader.CubeIndexLoader;
 import com.fr.bi.cal.analyze.cal.index.loader.MetricGroupInfo;
 import com.fr.bi.cal.analyze.cal.index.loader.TargetAndKey;
-import com.fr.bi.cal.analyze.cal.multithread.BIMultiThreadExecutor;
-import com.fr.bi.cal.analyze.cal.multithread.BISingleThreadCal;
-import com.fr.bi.cal.analyze.cal.multithread.SummaryCall;
+import com.fr.bi.cal.analyze.cal.multithread.*;
 import com.fr.bi.cal.analyze.cal.result.Node;
 import com.fr.bi.cal.analyze.cal.result.NodeUtils;
 import com.fr.bi.cal.analyze.cal.sssecret.diminfo.MergeIteratorCreator;
@@ -20,15 +18,11 @@ import com.fr.bi.stable.gvi.GVIUtils;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.report.key.TargetGettingKey;
 import com.fr.bi.report.result.TargetCalculator;
+import com.fr.bi.stable.operation.sort.BISortUtils;
 import com.fr.general.ComparatorUtils;
 import com.fr.general.NameObject;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -91,7 +85,7 @@ public class ConstructedRootDimensionGroup extends RootDimensionGroup {
         sortTargetKey = new TargetGettingKey[dimensionTargetSort.length];
         for (int i = 0; i < dimensionTargetSort.length; i++) {
             NameObject targetSort = dimensionTargetSort[i];
-            if (targetSort != null) {
+            if (BISortUtils.hasTargetSort(targetSort)) {
                 sortType[i] = (Integer) targetSort.getObject();
                 boolean find = false;
                 for (int j = 0; j < metricGroupInfoList.size(); j++) {
@@ -162,7 +156,7 @@ public class ConstructedRootDimensionGroup extends RootDimensionGroup {
     private boolean hasTargetSort() {
 
         for (NameObject object : dimensionTargetSort) {
-            if (object != null) {
+            if (BISortUtils.hasTargetSort(object)) {
                 return true;
             }
         }
@@ -279,7 +273,7 @@ public class ConstructedRootDimensionGroup extends RootDimensionGroup {
     private void sort(MetricMergeResult node, int deep) {
 
         if (deep < rowSize) {
-            if (dimensionTargetSort[deep] != null) {
+            if (BISortUtils.hasTargetSort(dimensionTargetSort[deep])) {
                 final int fDeep = deep;
                 Collections.sort(node.getChilds(), new Comparator<Node>() {
 
@@ -446,7 +440,6 @@ public class ConstructedRootDimensionGroup extends RootDimensionGroup {
         }
 
         private void checkComplete(int level) {
-
             if (currentLevelAllAdded(level)) {
                 //完成了一个维度必须唤醒下线程，要不肯能会wait住死掉。
                 executor.wakeUp();

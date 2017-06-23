@@ -90,6 +90,11 @@ public class DimensionIteratorCreator {
         }
 
         @Override
+        public boolean isReturnFinalGroupValueIndex() {
+            return false;
+        }
+
+        @Override
         public GroupValueIndex getGroupValueIndexByGroupIndex(int groupIndex) {
             return null;
         }
@@ -158,6 +163,11 @@ public class DimensionIteratorCreator {
             }
 
             @Override
+            public boolean isReturnFinalGroupValueIndex() {
+                return false;
+            }
+
+            @Override
             public GroupValueIndex getGroupValueIndexByGroupIndex(int groupIndex) {
                 return getter.getIndexByGroupRow(groupIndex);
             }
@@ -217,6 +227,11 @@ public class DimensionIteratorCreator {
             @Override
             public boolean canReGainGroupValueIndex(){
                 return true;
+            }
+
+            @Override
+            public boolean isReturnFinalGroupValueIndex() {
+                return false;
             }
 
             @Override
@@ -303,6 +318,11 @@ public class DimensionIteratorCreator {
             }
 
             @Override
+            public boolean isReturnFinalGroupValueIndex() {
+                return false;
+            }
+
+            @Override
             public GroupValueIndex getGroupValueIndexByGroupIndex(int groupIndex) {
                 return getter.getIndexByGroupRow(groupIndex);
             }
@@ -367,6 +387,11 @@ public class DimensionIteratorCreator {
             @Override
             public boolean canReGainGroupValueIndex(){
                 return true;
+            }
+
+            @Override
+            public boolean isReturnFinalGroupValueIndex() {
+                return false;
             }
 
             @Override
@@ -445,6 +470,11 @@ public class DimensionIteratorCreator {
             }
 
             @Override
+            public boolean isReturnFinalGroupValueIndex() {
+                return true;
+            }
+
+            @Override
             public GroupValueIndex getGroupValueIndexByGroupIndex(int groupIndex) {
                 return GVIFactory.createGroupValueIndexBySimpleIndex(row);
             }
@@ -518,6 +548,11 @@ public class DimensionIteratorCreator {
             @Override
             public boolean canReGainGroupValueIndex(){
                 return true;
+            }
+
+            @Override
+            public boolean isReturnFinalGroupValueIndex() {
+                return false;
             }
             @Override
             public GroupValueIndex getGroupValueIndexByGroupIndex(int groupIndex) {
@@ -637,6 +672,11 @@ public class DimensionIteratorCreator {
             }
 
             @Override
+            public boolean isReturnFinalGroupValueIndex() {
+                return true;
+            }
+
+            @Override
             public GroupValueIndex getGroupValueIndexByGroupIndex(int groupIndex) {
                 return GVIFactory.createGroupValueIndexBySimpleIndex(groupArray[groupIndex]);
             }
@@ -703,6 +743,11 @@ public class DimensionIteratorCreator {
             @Override
             public boolean canReGainGroupValueIndex(){
                 return false;
+            }
+
+            @Override
+            public boolean isReturnFinalGroupValueIndex() {
+                return true;
             }
 
             @Override

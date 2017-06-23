@@ -1,6 +1,7 @@
 package com.fr.bi.stable.operation.sort;
 
 import com.fr.bi.stable.constant.BIReportConstant;
+import com.fr.general.NameObject;
 
 /**
  * Created by Root on 2016/8/10.
@@ -16,5 +17,14 @@ public class BISortUtils {
             }
         }
         return sortType;
+    }
+
+    /**
+     * 是否设置了指标排序
+     * @param targetSort
+     * @return
+     */
+    public static boolean hasTargetSort(NameObject targetSort){
+        return  targetSort != null && (Integer)(targetSort.getObject()) != BIReportConstant.SORT.NONE;
     }
 }

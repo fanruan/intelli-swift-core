@@ -46,6 +46,8 @@ public class AllNodeMergeIterator implements Iterator<MetricMergeResult> {
 
     protected MergeIterator mergeIterator;
 
+    private boolean canPreFilter;
+
     public AllNodeMergeIterator(MergeIterator mergeIterator, int sumLength, DimensionFilter filter, NameObject targetSort, List<TargetAndKey>[] metricsToCalculate, Map<String, TargetCalculator> calculatedMap, ICubeTableService[] tis, ICubeDataLoader loader, BIMultiThreadExecutor executor, List<CalCalculator> formulaCalculator) {
         this.mergeIterator = mergeIterator;
         this.filter = filter;
@@ -57,6 +59,7 @@ public class AllNodeMergeIterator implements Iterator<MetricMergeResult> {
         this.executor = executor;
         this.formulaCalculator = formulaCalculator;
         this.releaseGVI = mergeIterator.canRelease();
+        this.canPreFilter = formulaCalculator.isEmpty() && filter.isSingleNodeFilter();
         mergeIterator.setReturnResultWithGroupIndex(this.releaseGVI);
         initIter(sumLength);
     }
@@ -87,8 +90,14 @@ public class AllNodeMergeIterator implements Iterator<MetricMergeResult> {
         checkFormulaMetrics();
         List<MetricMergeResult> resultList = new ArrayList<MetricMergeResult>();
         //需要全部构建好才能处理的过滤，比如前2个或者后5个这种，不能在汇总值算完就过滤
-        for (Node node : root.getChilds()) {
-            if (filter == null || filter.showNode(node, calculatedMap, loader)) {
+        if (!canPreFilter){
+            for (Node node : root.getChilds()) {
+                if (filter == null || filter.showNode(node, calculatedMap, loader)) {
+                    resultList.add((MetricMergeResult) node);
+                }
+            }
+        } else {
+            for (Node node : root.getChilds()) {
                 resultList.add((MetricMergeResult) node);
             }
         }
@@ -99,9 +108,10 @@ public class AllNodeMergeIterator implements Iterator<MetricMergeResult> {
     protected void initRoot() {
         while (mergeIterator.hasNext()) {
             MetricMergeResult result = mergeIterator.next();
-            checkSum(result);
-            root.addChild(result);
-            ++size;
+            if (checkSum(result)){
+                root.addChild(result);
+                ++size;
+            }
         }
     }
 
@@ -116,7 +126,6 @@ public class AllNodeMergeIterator implements Iterator<MetricMergeResult> {
                         }
                     }
                 }
-
             }
             List<CalCalculator> formulaCalculator = new ArrayList<CalCalculator>();
             formulaCalculator.addAll(this.formulaCalculator);
@@ -144,12 +153,16 @@ public class AllNodeMergeIterator implements Iterator<MetricMergeResult> {
         return size;
     }
 
-    protected void checkSum(MetricMergeResult result) {
+    protected boolean checkSum(MetricMergeResult result) {
         if (executor != null && metricsToCalculate != null) {
             executor.add(new SummaryCountCal(result));
         } else {
             calculate(result);
+            if (canPreFilter){
+                return filter.showNode(result, calculatedMap, loader);
+            }
         }
+        return true;
     }
 
     private void calculate(MetricMergeResult result) {

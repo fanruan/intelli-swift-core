@@ -1,21 +1,21 @@
 package com.fr.bi.cal.analyze.cal.multithread;
 
-import com.fr.bi.cal.analyze.executor.iterator.StreamPagedIterator;
-
 import java.util.concurrent.Callable;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Created by 小灰灰 on 2016/8/5.
  */
 public class MergeSummaryCallList implements Callable {
-    private StreamPagedIterator<BISingleThreadCal> iterator;
+    private TwinBufferStreamIterator<BISingleThreadCal> iterator;
+    public static final AtomicInteger count = new AtomicInteger(0);
 
     public MergeSummaryCallList() {
-        iterator = new StreamPagedIterator<BISingleThreadCal>(Integer.MAX_VALUE, 1<< 9, 1<< 10);
+        iterator = new TwinBufferStreamIterator<BISingleThreadCal>(1<<10);
     }
 
     public void add(BISingleThreadCal cal){
-        iterator.addCell(cal);
+        iterator.add(cal);
     }
 
     public void finish(){
@@ -26,6 +26,7 @@ public class MergeSummaryCallList implements Callable {
     public Object call() throws Exception {
         while (iterator.hasNext()){
             iterator.next().cal();
+            count.getAndIncrement();
         }
         return null;
     }

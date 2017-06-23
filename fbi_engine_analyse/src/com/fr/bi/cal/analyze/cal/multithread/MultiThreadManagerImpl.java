@@ -31,7 +31,7 @@ public class MultiThreadManagerImpl {
         //小于3个才进行多线程计算，并发高的时候多线程反而是累赘
         if (isMultiCall() && count.get() < 3) {
             count.incrementAndGet();
-            return createNewExecutorServer();
+           return createNewExecutorServer();
         }
         return null;
     }
