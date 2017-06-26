@@ -392,7 +392,7 @@ public abstract class VanChartWidget extends TableWidget {
             widgetBg = StringUtils.isBlank(widgetBg) ? WHITE : widgetBg;
         }
 
-        tooltip.put("enabled", true).put("animation", true).put("padding", 10).put("backgroundColor", widgetBg)
+        tooltip.put("enabled", !settings.optBoolean("bigDataMode", false)).put("animation", true).put("padding", 10).put("backgroundColor", widgetBg)
                 .put("borderRadius", 2).put("borderWidth", 0).put("shadow", true)
                 .put("style", JSONObject.create()
                         .put("color", this.isDarkColor(widgetBg) ? WHITE : DARK)
@@ -420,8 +420,10 @@ public abstract class VanChartWidget extends TableWidget {
 
     //默认是分类，系列，值的配置
     protected JSONObject createDataLabels(JSONObject settings) throws JSONException {
-        boolean miniMode = settings.optBoolean("miniMode", false);
+        boolean miniMode = settings.optBoolean("miniMode", false);//极简
+        boolean largeMode = settings.optBoolean("bigDataMode", false);//大数据
         boolean showDataLabel = settings.optBoolean("showDataLabel", false) || miniMode;
+        showDataLabel = showDataLabel && !largeMode;
         JSONObject dataLabels = JSONObject.create().put("enabled", showDataLabel).put("autoAdjust", true);
 
         if (showDataLabel) {
