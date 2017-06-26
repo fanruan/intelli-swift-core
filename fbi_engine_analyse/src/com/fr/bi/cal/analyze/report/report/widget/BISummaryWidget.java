@@ -569,18 +569,15 @@ public abstract class BISummaryWidget extends AbstractBIWidget {
                     end = limitEnds[i];
                     if (start != -1) {
                         for (int j = start; j < end; j++) {
-                            if (groupIndex[j] != NIOConstant.INTEGER.NULL_VALUE) {
-                                array.add(j);
-                            }
+                            // 不需要限制了,限制反而会少一个分组,上层函数调用的时候会有边界异常 BI-6383 BI-6361
+                            array.add(j);
                         }
                     }
                 }
             } else {
                 if (start != -1) {
                     for (int j = start; j < end; j++) {
-                        if (groupIndex[j] != NIOConstant.INTEGER.NULL_VALUE) {
-                            array.add(j);
-                        }
+                        array.add(j);
                     }
                 }
             }
