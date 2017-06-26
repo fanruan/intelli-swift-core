@@ -114,6 +114,9 @@ public class DateUtils {
      */
     public static int differentDaysByMillisecond(Date date1, Date date2) {
 
+        if (date1 == null || date2 == null) {
+            return Integer.MAX_VALUE;
+        }
         int days = (int) ((date1.getTime() - date2.getTime()) / (1000 * 3600 * 24));
         return days;
     }
@@ -455,44 +458,6 @@ public class DateUtils {
         return c1.get(Calendar.YEAR) == c2.get(Calendar.YEAR)
                 && c1.get(Calendar.MONTH) == c2.get(Calendar.MONTH)
                 && c1.get(Calendar.DAY_OF_MONTH) == c2.get(Calendar.DAY_OF_MONTH);
-    }
-
-    public Object preCubeDate(Object time, int type) {
-
-        if (BICollectionUtils.isCubeNullKey(time)) {
-            return null;
-        }
-        Calendar c = Calendar.getInstance();
-        switch (type) {
-            case Calendar.DAY_OF_YEAR:
-            case Calendar.DAY_OF_MONTH:
-                c.setTimeInMillis((Long) time);
-                c.add(type, -1);
-                break;
-            default:
-                return time;
-
-        }
-        return c.getTime();
-    }
-
-    public Object nextCubeDate(Object time, int type) {
-
-        if (BICollectionUtils.isCubeNullKey(time)) {
-            return null;
-        }
-        Calendar c = Calendar.getInstance();
-        switch (type) {
-            case Calendar.DAY_OF_YEAR:
-            case Calendar.DAY_OF_MONTH:
-                c.setTimeInMillis((Long) time);
-                c.add(type, 1);
-                break;
-            default:
-                return time;
-
-        }
-        return c.getTime();
     }
 
     /**
