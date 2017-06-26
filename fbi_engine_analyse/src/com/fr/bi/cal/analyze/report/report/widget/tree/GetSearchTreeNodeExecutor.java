@@ -138,11 +138,12 @@ public class GetSearchTreeNodeExecutor extends AbstractTreeNodeExecutor {
 
             if (isMatch(value)) {
                 boolean checked = isAllSelected || isSelected(parents, value);
-                createOneJson(parents, getHTMLName(value), value, getPID(id), id, deep != this.deep, false, checked, !isAllSelected && isHalf(parents, value), true);
-                return new Status(true, checked);
+                boolean halfChecked = !isAllSelected && isHalf(parents, value);
+                createOneJson(parents, getHTMLName(value), value, getPID(id), id, deep != this.deep, false, checked, halfChecked,halfChecked, true);
+                return new Status(true, checked,halfChecked);
             }
             if (deep >= this.deep) {
-                return new Status(false, false);
+                return new Status(false, false,false);
             }
             String[] newParents = new String[parents.length + 1];
             for (int i = 0; i < parents.length; i++) {
@@ -153,6 +154,7 @@ public class GetSearchTreeNodeExecutor extends AbstractTreeNodeExecutor {
 
             boolean can = false;
             boolean checked = false;
+            boolean halfChecked = false;
 
             boolean isCurAllSelected = isAllSelected || isAllSelected(parents, value);
             for (int i = 0, len = vl.size(); i < len; i++) {
@@ -162,13 +164,16 @@ public class GetSearchTreeNodeExecutor extends AbstractTreeNodeExecutor {
                 }
                 if (status.finded) {
                     can = true;
+                    if((!status.checked ||status.halfChecked)){
+                        halfChecked = true;
+                    }
                 }
             }
             if (can) {
                 checked = isCurAllSelected || (isSelected(parents, value) && checked);
-                createOneJson(parents, value, value, getPID(id), id, true, true, checked, false, false);
+                createOneJson(parents, value, value, getPID(id), id, true, true, checked, false, halfChecked,false);
             }
-            return new Status(can, checked);
+            return new Status(can, checked,halfChecked);
         }
 
         public String getPID(String id) {
@@ -303,7 +308,7 @@ public class GetSearchTreeNodeExecutor extends AbstractTreeNodeExecutor {
          */
         //flag标记是否是搜到的点
         public void createOneJson(String[] parents, String name, String title, String pId, String id,
-                                  boolean isParent, boolean isOpen, boolean checked, boolean half, boolean flag) throws JSONException {
+                                  boolean isParent, boolean isOpen, boolean checked, boolean half, boolean halfChecked, boolean flag) throws JSONException {
             if (result != null) {
                 synchronized (result) {
                     JSONArray parentJson = new JSONArray();
@@ -319,6 +324,7 @@ public class GetSearchTreeNodeExecutor extends AbstractTreeNodeExecutor {
                     obj.put("isParent", isParent);
                     obj.put("open", isOpen);
                     obj.put("checked", checked);
+                    obj.put("half",halfChecked);
                     obj.put("halfCheck", half);
                     obj.put("flag", flag);
                     result.put(obj);
@@ -330,10 +336,12 @@ public class GetSearchTreeNodeExecutor extends AbstractTreeNodeExecutor {
     private class Status {
         public boolean finded = false;
         public boolean checked = false;
+        public boolean halfChecked = false;
 
-        public Status(boolean finded, boolean checked) {
+        public Status(boolean finded, boolean checked,boolean halfChecked) {
             this.finded = finded;
             this.checked = checked;
+            this.halfChecked = halfChecked;
         }
     }
 
