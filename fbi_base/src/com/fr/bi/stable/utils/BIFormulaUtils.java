@@ -22,6 +22,7 @@ import java.util.regex.Pattern;
 public class BIFormulaUtils {
 
     public static Object getCalculatorValue(Calculator c, String formula, ICubeTableService ti, Map<String, BIKey> columnIndexMap, int row) {
+
         Iterator<Map.Entry<String, BIKey>> iter = columnIndexMap.entrySet().iterator();
         while (iter.hasNext()) {
             Map.Entry<String, BIKey> entry = iter.next();
@@ -36,9 +37,13 @@ public class BIFormulaUtils {
                     }
                     c.set(columnName, value);
                 } else {
+                    // BI-6107 null + number(非空数值) = null  直接返回null 以前的做法是直接返回.
+                    // 但是因为这边是调用的是fr的公式处理,如果这样处理就会引发if(isNull)/if(a=null)(BI-5447 BI-5893 BI-5992 BI-6281)这样的的公式有问题
+                    // 又因为fr中null+2 = 2
+                    // 这种两难的情况
+                    // .....所以对于这种情况,产品宁可选择接受null+2=2这种方法(同时和fr那边保持一致),所以还是改回来......
+                    //
                     c.remove(columnName);
-                    //BI-6107 null + number(非空数值) = null  直接返回null
-                    return null;
                 }
             }
         }
@@ -54,6 +59,7 @@ public class BIFormulaUtils {
     }
 
     public static Map<String, BIKey> createColumnIndexMap(String formular, ICubeTableService ti) {
+
         Map<String, BIKey> columnIndexMap = new HashMap<String, BIKey>();
         try {
             String[] parameters = getRelatedParaNames(formular);
@@ -79,6 +85,7 @@ public class BIFormulaUtils {
     }
 
     private static String[] getRelatedParaNames(String formular) throws ANTLRException {
+
         ArrayList<String> nameList = new ArrayList<String>();
         Pattern pat = Pattern.compile("\\$[\\{][^\\}]*[\\}]");
         Matcher matcher = pat.matcher(formular);
@@ -94,6 +101,7 @@ public class BIFormulaUtils {
     }
 
     public static Map<String, String> createColumnIndexMap(String formula) {
+
         Map<String, String> columnIndexMap = new HashMap<String, String>();
         try {
             String[] parameters = getRelatedParaNames(formula);
@@ -109,17 +117,19 @@ public class BIFormulaUtils {
     }
 
     private static String toParameterFormat(String name) {
+
         return "$" + name;
     }
 
     public static Object getCalculatorValue(Calculator c, String formula, Map values) {
+
         Iterator<Map.Entry<String, String>> iter = createColumnIndexMap(formula).entrySet().iterator();
         String formulaStr = getIncrementParaFormula(formula);
         while (iter.hasNext()) {
             Map.Entry<String, String> entry = iter.next();
             String columnName = entry.getKey();
             Object value = values.get(entry.getValue());
-            if (value != null) {
+            if (BICollectionUtils.isNotCubeNullKey(value)) {
                 c.set(columnName, value);
             } else {
                 c.remove(columnName);
@@ -134,6 +144,7 @@ public class BIFormulaUtils {
     }
 
     public static String getIncrementParaFormula(String expression) {
+
         String formula = new String(expression);
         Pattern pat = Pattern.compile("\\$[\\{][^\\}]*[\\}]");
         Matcher matcher = pat.matcher(expression);
@@ -147,16 +158,20 @@ public class BIFormulaUtils {
     }
 
     public static Object getCalculatorValue(Calculator c, String formula, Map<String, TargetGettingKey> paraTargetMap, Number[] values) {
+
         Iterator<Map.Entry<String, TargetGettingKey>> iter = paraTargetMap.entrySet().iterator();
         while (iter.hasNext()) {
             Map.Entry<String, TargetGettingKey> entry = iter.next();
             String columnName = entry.getKey();
-            if (values == null || values[entry.getValue().getTargetIndex()] == null || values.length - 1 < entry.getValue().getTargetIndex()) {
-//                c.remove(columnName);
-                return null;
-
+            if (values == null || values.length - 1 < entry.getValue().getTargetIndex()) {
+                c.remove(columnName);
             } else {
-                c.set(columnName, values[entry.getValue().getTargetIndex()]);
+                Object v = values[entry.getValue().getTargetIndex()];
+                if(BICollectionUtils.isCubeNullKey(v)){
+                   c.remove(columnName);
+                }else {
+                    c.set(columnName, v);
+                }
             }
         }
         try {

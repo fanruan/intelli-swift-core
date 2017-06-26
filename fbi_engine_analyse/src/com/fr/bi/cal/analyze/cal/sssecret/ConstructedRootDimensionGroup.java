@@ -515,9 +515,11 @@ public class ConstructedRootDimensionGroup extends RootDimensionGroup {
 
             @Override
             public void cal() {
-
-                super.cal();
-                count[rowSize].incrementAndGet();
+                try{
+                    super.cal();
+                } finally {
+                    count[rowSize].incrementAndGet();
+                }
                 checkComplete(rowSize);
             }
         }

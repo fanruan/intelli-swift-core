@@ -110,23 +110,31 @@ public class GetTreeSelectTreeNodeExecutor extends AbstractTreeNodeExecutor {
         //例如选中了中国-江苏，取消南京
         //important 选中了中国-江苏，取消了江苏，但是搜索的是南京
         if (isChild(selectedValues, p)) {//如果有父亲节点是全选的状态
-            List<String[]> result = new ArrayList<String[]>();
-            boolean finded;
-            //如果parentValues中有匹配的值，说明搜索结果不在当前值下
-            if (isSearchValueInParents(p)) {
-                finded = true;
-            } else {
-                //从当前值开始搜
-                finded = search(parent.length + 1, floors, parent, notSelectedValueString, keyword, result, new ArrayList<String[]>());
-                p = parent;
-            }
-            if (finded) {
-                //去掉点击的节点之后的结果集
-                expandSelectValues(selectedValues, p, notSelectedValueString);
-                if (!result.isEmpty()) {
-                    for (String[] arr : result) {
-                        buildTree(selectedValues, arr);
-                    }
+            parentAllSelected(selectedValues, notSelectedValueString, parent, floors, keyword, p);
+        }
+    }
+
+    private void parentAllSelected(JSONObject selectedValues, String notSelectedValueString, String[] parent, int floors, String keyword, String[] p) throws JSONException {
+        List<String[]> result = new ArrayList<String[]>();
+        boolean finded;
+        //如果parentValues中有匹配的值，说明搜索结果不在当前值下
+        if (isSearchValueInParents(p)) {
+            finded = true;
+        } else {
+            //从当前值开始搜
+            finded = search(parent.length + 1, floors, parent, notSelectedValueString, keyword, result, new ArrayList<String[]>());
+            p = parent;
+        }
+        if (finded) {
+            //去掉点击的节点之后的结果集
+            //处理 选中了 中国， 取消南京， 搜索江苏
+            expandSelectValues(selectedValues, p, notSelectedValueString);
+
+            //填充去掉notSelectedValue之后的所有值
+            //处理 选中了 中国， 取消江苏， 搜索南京
+            if (!result.isEmpty()) {
+                for (String[] arr : result) {
+                    buildTree(selectedValues, arr);
                 }
             }
         }
@@ -134,6 +142,8 @@ public class GetTreeSelectTreeNodeExecutor extends AbstractTreeNodeExecutor {
 
     private void expandSelectValues(JSONObject selectedValues, String[] p, String notSelectedValueString) throws JSONException {
         JSONObject next = selectedValues;
+        List<Integer> childrenCount = new ArrayList<Integer>();
+        List<String[]> path = new ArrayList<String[]>();
         int i;
 
         //去掉点击的节点之后的结果集
@@ -148,11 +158,24 @@ public class GetTreeSelectTreeNodeExecutor extends AbstractTreeNodeExecutor {
                     String[] split = new String[i];
                     System.arraycopy(p, 0, split, 0, i);
                     List<String> expanded = createData(split, -1);
-                    for (String ex : expanded) {
-                        if (i == p.length - 1 && ComparatorUtils.equals(ex, notSelectedValueString)) {
-                            continue;
+                    path.add(split);
+                    childrenCount.add(expanded.size());
+                    //如果只有一个值且取消的就是这个值
+                    if (i == p.length - 1 && expanded.size() == 1 && ComparatorUtils.equals(expanded.get(0), notSelectedValueString)) {
+                        for (int j = childrenCount.size() - 1; j >= 0; j--) {
+                            if (childrenCount.get(j) == 1) {
+                                deleteNode(selectedValues, path.get(j));
+                            } else {
+                                break;
+                            }
                         }
-                        next.put(ex, new JSONObject());
+                    } else {
+                        for (String ex : expanded) {
+                            if (i == p.length - 1 && ComparatorUtils.equals(ex, notSelectedValueString)) {
+                                continue;
+                            }
+                            next.put(ex, new JSONObject());
+                        }
                     }
                     next = next.optJSONObject(v);
                 } else {

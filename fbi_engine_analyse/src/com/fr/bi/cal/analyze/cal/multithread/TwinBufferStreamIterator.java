@@ -167,7 +167,10 @@ public class TwinBufferStreamIterator<T> implements Iterator{
         }
 
         T next() {
-            return (T) array[index++];
+            int i = index++;
+            T t = (T) array[i];
+            array[i] = null;
+            return t;
         }
 
         public boolean isPlenty() {
