@@ -99,6 +99,8 @@ public class VanGaugeWidget extends VanCartesianWidget{
             percentageLabel.put("style", JSONObject.create().put("fontSize", "24px"));
         } else if(gaugeStyle == PERCENT_DASHBOARD){
             valueLabel.optJSONObject("style").put("color", DARK);
+        } else if(!isPointer){
+            percentageLabel.put("style", font);
         }
 
         plotOptions.put("valueLabel", valueLabel).put("seriesLabel", seriesLabel).put("percentageLabel", percentageLabel);
