@@ -115,11 +115,12 @@ public class SingleDimensionGroup extends ExecutorPartner implements ILazyExecut
         }
         //自循环处理同自定义分组
         if (!urd || hasSpecialGroup(columns[index]) || isCirCle(columns[index])) {
-            final Iterator it = columns[index].createValueMapIterator(metricTables[index], loader, urd, groupLimit);
+            final Iterator it = columns[index].createValueMapIterator(metricTables[index], loader, urd, groupLimit, gvis[index]);
             return new DimensionIterator() {
                 @Override
                 public void remove() {
                 }
+
                 @Override
                 public int getCurrentGroup() {
                     return 0;
