@@ -122,7 +122,11 @@ public class GetTreeSelectTreeNodeExecutor extends AbstractTreeNodeExecutor {
             }
             if (finded) {
                 //去掉点击的节点之后的结果集
+                //处理 选中了 中国， 取消南京， 搜索江苏
                 expandSelectValues(selectedValues, p, notSelectedValueString);
+
+                //填充去掉notSelectedValue之后的所有值
+                //处理 选中了 中国， 取消江苏， 搜索南京
                 if (!result.isEmpty()) {
                     for (String[] arr : result) {
                         buildTree(selectedValues, arr);
@@ -134,6 +138,8 @@ public class GetTreeSelectTreeNodeExecutor extends AbstractTreeNodeExecutor {
 
     private void expandSelectValues(JSONObject selectedValues, String[] p, String notSelectedValueString) throws JSONException {
         JSONObject next = selectedValues;
+        List<Integer> childrenCount = new ArrayList<Integer>();
+        List<String[]> path = new ArrayList<String[]>();
         int i;
 
         //去掉点击的节点之后的结果集
@@ -141,19 +147,36 @@ public class GetTreeSelectTreeNodeExecutor extends AbstractTreeNodeExecutor {
             String v = p[i];
             JSONObject t = next.optJSONObject(v);
             if (t == null) {
+                if (i == 0) {
+                    break;
+                }
                 if (next.length() == 0) {
                     String[] split = new String[i];
                     System.arraycopy(p, 0, split, 0, i);
                     List<String> expanded = createData(split, -1);
-                    for (String ex : expanded) {
-                        if (i == p.length - 1 && ComparatorUtils.equals(ex, notSelectedValueString)) {
-                            continue;
+                    path.add(split);
+                    childrenCount.add(expanded.size());
+                    //如果只有一个值且取消的就是这个值
+                    if (i == p.length - 1 && expanded.size() == 1 && ComparatorUtils.equals(expanded.get(0), notSelectedValueString)) {
+                        for (int j = childrenCount.size() - 1; j >= 0; j--) {
+                            if (childrenCount.get(j) == 1) {
+                                deleteNode(selectedValues, path.get(j));
+                            } else {
+                                break;
+                            }
                         }
-                        next.put(ex, new JSONObject());
+                    } else {
+                        for (String ex : expanded) {
+                            if (i == p.length - 1 && ComparatorUtils.equals(ex, notSelectedValueString)) {
+                                continue;
+                            }
+                            next.put(ex, new JSONObject());
+                        }
                     }
                     next = next.optJSONObject(v);
                 } else {
-                    next.put(v, next = new JSONObject());
+                    break;
+//                    next.put(v, next = new JSONObject());
                 }
             } else {
                 next = t;

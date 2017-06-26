@@ -28,12 +28,14 @@ import java.util.regex.Pattern;
  * 驼峰以及自定义key值修改
  * 图片uri修正
  * 散点气泡图type升级成点图的type
+ * 显示网格拆分成显示纵向和显示横向
+ * 处理脏数据
  */
 public class ProfilesUpdateOperation implements ReportUpdateOperation {
     private static final String DEFAULT_FILE_NAME = "keys.json";
     private JSONObject keys;
     private static Pattern linePattern = Pattern.compile("(?!^)_(\\w)");
-    private static Map<Integer, Integer> chartTypeMap = new HashMap<Integer,Integer>();
+    private static Map<Integer, Integer> chartTypeMap = new HashMap<Integer, Integer>();
 
     public ProfilesUpdateOperation() {
         try {
@@ -67,10 +69,12 @@ public class ProfilesUpdateOperation implements ReportUpdateOperation {
             boolean flag = BIJsonUtils.isKeyValueSet(json.get(s).toString());
             if (flag) {
                 if (ComparatorUtils.equals(s, "widgets")) {
-                       json = correctDataLabels(json);
+                    json = correctDataLabels(json);
                     json = correctPreviousSrcError(json);
                     json = correctScatterType(json);
                     groupTargetsByType(json);
+                    updateShowGridSettings(json);
+                    updateSrcFieldId(json);
                 }
                 res.put(updateKey(s), recursionMapUpdate(json.getString(s)));
             } else {
@@ -80,7 +84,74 @@ public class ProfilesUpdateOperation implements ReportUpdateOperation {
         return res;
     }
 
-    //4.0的图表标签默认设置，和402默认有些不一样，所以在这边写。调整标签位置，灰色雅黑12px。
+    /*4.0里面出现如下脏数据
+     "_src": {
+            "tableId": "16e9dc63df807d33",
+            "fieldId": [
+              "16e9dc63df807d33生产入库实际与预算记录数"
+            ]
+          },
+    */
+    private void updateSrcFieldId(JSONObject json) {
+        try {
+            if (BIJsonUtils.isKeyValueSet(json.getString("widgets"))) {
+                Iterator keys = json.getJSONObject("widgets").keys();
+                while (keys.hasNext()) {
+                    String widgetId = keys.next().toString();
+                    JSONObject dimensions = json.getJSONObject("widgets").getJSONObject(widgetId).getJSONObject("dimensions");
+                    Iterator dimKeys = dimensions.keys();
+                    while (dimKeys.hasNext()) {
+                        String dimId = dimKeys.next().toString();
+                        JSONObject dimJo = dimensions.getJSONObject(dimId);
+                        if (dimJo.has("_src")) {
+                            JSONObject srcJo=dimJo.getJSONObject("_src");
+                            if (srcJo.has("fieldId") && BIJsonUtils.isArray(srcJo.getString("fieldId"))) {
+                                JSONArray fieldIds = srcJo.getJSONArray("fieldId");
+                                srcJo.put("fieldId", fieldIds.length() > 0 ? fieldIds.get(0) : "");
+                            }
+                            if (srcJo.has("field_id") && BIJsonUtils.isArray(srcJo.getString("field_id"))) {
+                                JSONArray fieldIds = srcJo.getJSONArray("field_id");
+                                srcJo.put("field_id", fieldIds.length() > 0 ? fieldIds.get(0) : "");
+                            }
+                        }
+                    }
+                }
+            }
+        } catch (JSONException e) {
+            BILoggerFactory.getLogger(this.getClass()).error(e.getMessage(), e);
+        }
+
+    }
+
+    //  显示网格线拆分成显示纵向和显示横向，settings.textDirection to settings.catLabelStyle.textDirection
+    private void updateShowGridSettings(JSONObject jo) {
+        try {
+            if (BIJsonUtils.isKeyValueSet(jo.getString("widgets"))) {
+                Iterator keys = jo.getJSONObject("widgets").keys();
+                while (keys.hasNext()) {
+                    String widgetId = keys.next().toString();
+                    JSONObject widgetJo = jo.getJSONObject("widgets").getJSONObject(widgetId);
+                    JSONObject settings = widgetJo.optJSONObject("settings");
+                    if (settings != null && settings.has("show_grid_line")) {
+                        boolean needUpdate = !settings.has("hShowGridLine") && !settings.has("xShowGridLine");
+                        if (needUpdate) {
+                            boolean isShowGridLine = settings.optBoolean("show_grid_line", false);
+                            widgetJo.getJSONObject("settings").put("hShowGridLine", isShowGridLine);
+                            widgetJo.getJSONObject("settings").put("vShowGridLine", isShowGridLine);
+                        }
+                    }
+                    if(settings != null && settings.has("textDirection")){
+                        settings.put("catLabelStyle", JSONObject.create().put("textDirection", settings.optInt("textDirection")));
+                    }
+                }
+            }
+        } catch (JSONException e) {
+            BILoggerFactory.getLogger(this.getClass()).error(e.getMessage(), e);
+        }
+
+    }
+
+    //4.0的图表标签默认设置，和402默认有些不一样，所以在这边写。调整标签位置，雅黑12px, 颜色自动。
     private JSONObject correctDataLabels(JSONObject json) throws JSONException {
         if (ReportVersionEnum.VERSION_4_0.getVersion().equals(json.optString("version"))) {
             if (BIJsonUtils.isKeyValueSet(json.getString("widgets"))) {
@@ -93,7 +164,7 @@ public class ProfilesUpdateOperation implements ReportUpdateOperation {
                         int type = dimJson.optInt("type");
 
                         JSONObject dataLabelSettings = JSONObject.create().put("optimizeLabel", true).put("showTractionLine", true)
-                                .put("textStyle", JSONObject.create().put("fontFamily", "Microsoft YaHei").put("fontSize", "12px").put("color", "#1a1a1a"));
+                                .put("textStyle", JSONObject.create().put("fontFamily", "Microsoft YaHei").put("fontSize", "12px").put("color", ""));
 
                         switch (type) {
                             case BIReportConstant.WIDGET.PIE:
@@ -114,13 +185,17 @@ public class ProfilesUpdateOperation implements ReportUpdateOperation {
                                 dataLabelSettings.put("showCategoryName", false).put("showSeriesName", false)
                                         .put("showXValue", true).put("showYValue", true).put("showValue", false);
                                 break;
+                            case BIReportConstant.WIDGET.DASHBOARD:
+                                settings.put("showDataLabel", true);
+                                dataLabelSettings.put("showCategoryName", true).put("showSeriesName", false)
+                                        .put("showValue", true).put("showPercentage", false);
+                                break;
                             default:
                                 dataLabelSettings.put("showCategoryName", false).put("showSeriesName", false)
                                         .put("showValue", true).put("showPercentage", false)
                                         .put("position", BIChartSettingConstant.DATA_LABEL.POSITION_OUTER);
                                 break;
                         }
-
                         settings.put("dataLabelSetting", dataLabelSettings);
                     }
                 }
@@ -244,7 +319,7 @@ public class ProfilesUpdateOperation implements ReportUpdateOperation {
     柱状图 5 -> 柱状图
     面积图 14 -> 面积图
     堆积面积图 15-> 堆积面积图（折线）
-    折线图 3-> （折线）
+    折线图 13-> （折线）
     堆积柱状图 6 -> （堆积柱状图）
     */
     private void createChartTypeMap() {

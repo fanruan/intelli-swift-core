@@ -21,9 +21,6 @@ public class VanGaugeWidget extends VanCartesianWidget{
     private static final int SINGLE_POINTER = 1;
     private static final int MULTI_POINTERS = 2;
 
-    private static final String BG_COLOR = "rgb(245,245,247)";
-
-
     protected JSONObject populateDefaultSettings() throws JSONException{
         JSONObject settings = super.populateDefaultSettings();
 
@@ -36,6 +33,9 @@ public class VanGaugeWidget extends VanCartesianWidget{
 
         settings.put("minScale", StringUtils.EMPTY);
         settings.put("maxScale", StringUtils.EMPTY);
+
+        settings.put("showDataLabel", true);
+        settings.put("showPercentage", BIChartSettingConstant.PERCENTAGE.SHOW);
 
         return settings;
     }
@@ -55,17 +55,20 @@ public class VanGaugeWidget extends VanCartesianWidget{
             plotOptions.put("bands", this.mapStyleToRange(dashboardStyles));
         }
 
+        plotOptions.put("paneBackgroundColor", TRANS);
         return plotOptions;
     }
 
     private void addDataLabel(JSONObject settings, JSONObject plotOptions) throws JSONException{
         JSONObject dataLabelSettings = settings.optJSONObject("dataLabelSetting");
-        dataLabelSettings = dataLabelSettings == null ? JSONObject.create().put("showValue", true).put("showSeries", true) : dataLabelSettings;
+        dataLabelSettings = dataLabelSettings == null ? JSONObject.create().put("showValue", true).put("showCategoryName", true) : dataLabelSettings;
 
         int gaugeStyle = settings.optInt("dashboardChartType");
         boolean isPointer = gaugeStyle == NORMAL || gaugeStyle == HALF_DASHBOARD;
+        boolean hasCategory = getCategoryDimension() != null;
 
         boolean showCate = dataLabelSettings.optBoolean("showCategoryName");
+        String key = hasCategory ? SERIES : CATEGORY;
 
         String valueID = StringUtils.EMPTY, seriesID = StringUtils.EMPTY;
         if(dataLabelSettings.optBoolean("showValue")){
@@ -76,20 +79,25 @@ public class VanGaugeWidget extends VanCartesianWidget{
                 valueID += PERCENT;
             }
             if(showCate){
-                seriesID += CATEGORY;
+                valueID += key;
             }
         } else {
             if(showCate){
-                valueID += CATEGORY;
+                valueID += key;
             }
         }
 
         String align = gaugeStyle == HORIZONTAL_TUBE ? "top" : "left";
-        JSONObject font = dataLabelSettings.has("textStyle") ? dataLabelSettings.optJSONObject("textStyle") : defaultFont();
-        JSONObject valueLabel = JSONObject.create().put("enabled", settings.optBoolean("showDataLabel")).put("backgroundColor", BG_COLOR).put("align", align).put("formatter", JSONObject.create().put("identifier", valueID)).put("style", font);
+        JSONObject font = defaultFont();
+        font = dataLabelSettings.has("textStyle") ? merge(dataLabelSettings.optJSONObject("textStyle"), font) : font;
+        JSONObject valueLabel = JSONObject.create().put("enabled", settings.optBoolean("showDataLabel")).put("backgroundColor", TRANS).put("align", align).put("formatter", JSONObject.create().put("identifier", valueID)).put("style", font);
         JSONObject seriesLabel = JSONObject.create().put("enabled", settings.optBoolean("showDataLabel")).put("formatter", JSONObject.create().put("identifier", seriesID)).put("align", "bottom").put("style", font);
         JSONObject percentageLabel = JSONObject.create().put("enabled", settings.optInt("showPercentage") == BIChartSettingConstant.PERCENTAGE.SHOW).put("align", align).put("formatter",  JSONObject.create().put("identifier", PERCENT)
                 .put("percentFormat", "function(){return BI.contentFormat(arguments[0], \"#.##%\")}"));
+
+        if(gaugeStyle == PERCENT_SCALE_SLOT){
+            percentageLabel.put("style", JSONObject.create().put("fontSize", "24px"));
+        }
 
         plotOptions.put("valueLabel", valueLabel).put("seriesLabel", seriesLabel).put("percentageLabel", percentageLabel);
     }

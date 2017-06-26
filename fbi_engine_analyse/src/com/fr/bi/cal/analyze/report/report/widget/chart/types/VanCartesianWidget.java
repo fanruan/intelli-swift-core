@@ -30,7 +30,7 @@ public abstract class VanCartesianWidget extends VanChartWidget {
 
     //这个是对比柱状图的stackid和transSeries的name，任意string都可以，不会展示到图上，不用国际化什么的。
     private static final String FALL_COLUMN = "fallColumn";
-    private static final String TRANS = "rgba(0,0,0,0)";
+    protected static final String TRANS = "rgba(0,0,0,0)";
 
     protected static final int VERTICAL = 90;
     private static final String IMG_TMP = "function(){return \"<img src = %s>\"}";
@@ -649,10 +649,20 @@ public abstract class VanCartesianWidget extends VanChartWidget {
     //=========================about compare chart==========================================================
     private static final double DEFAULT_MAX = 100;
 
+    private static final double TICK_COUNT = 5;
+
+    private static final double STEP10 = 10;
+    private static final double STEP5 = 5;
+    private static final double STEP2 = 2;
+
+    private static final double ERROR15 = .15;
+    private static final double ERROR35 = .35;
+    private static final double ERROR75 = .75;
+
     //make yaxis maxValue Double
     protected void dealCompareChartYAxis(JSONObject settings) throws JSONException{
 
-        double leftYMax = -Double.MAX_VALUE, rightYMax = -Double.MAX_VALUE;
+        double leftYMax = -Double.MAX_VALUE, rightYMax = -Double.MAX_VALUE, leftYMin = Double.MAX_VALUE, rightYMin = Double.MAX_VALUE;
         String[] ids = this.getUsedTargetID();
 
         for(String id : ids){
@@ -660,13 +670,14 @@ public abstract class VanCartesianWidget extends VanChartWidget {
             Double[] values = this.getValuesByID(id);
 
             int yAxis = this.yAxisIndex(id);
-            if(yAxis == 0){
-                for (int j = 0, count = values.length; j < count; j++) {
-                    leftYMax = Math.max(leftYMax, values[j].doubleValue());
-                }
-            }else{
-                for (int j = 0, count = values.length; j < count; j++) {
-                    rightYMax = Math.max(rightYMax, values[j].doubleValue());
+            for (int j = 0, count = values.length; j < count; j++) {
+                double value = values[j].doubleValue();
+                if(yAxis == 0) {
+                    leftYMax = Math.max(leftYMax, value);
+                    leftYMin = Math.min(leftYMin, value);
+                } else {
+                    rightYMax = Math.max(rightYMax, value);
+                    rightYMin = Math.min(rightYMin, value);
                 }
             }
         }
@@ -679,20 +690,83 @@ public abstract class VanCartesianWidget extends VanChartWidget {
             leftYMax = DEFAULT_MAX;
         }
 
+        double[] leftDomain = calculateValueTimeNiceDomain(leftYMin, leftYMax);
+        double[] rightDomain = calculateValueTimeNiceDomain(rightYMin, rightYMax);
+
         settings.put("rightYReverse", true);
 
         if(!settings.optBoolean("leftYShowCustomScale")){
             settings
                     .put("leftYShowCustomScale", true)
-                    .put("leftYCustomScale", JSONObject.create().put("maxScale", 2 * leftYMax));
+                    .put("leftYCustomScale", JSONObject.create().put("maxScale", 2 * leftDomain[1]).put("minScale", leftDomain[0]));
         }
 
         if(!settings.optBoolean("rightYShowCustomScale")){
             settings
                     .put("rightYShowCustomScale", true)
-                    .put("rightYCustomScale", JSONObject.create().put("maxScale", 2 * rightYMax));
+                    .put("rightYCustomScale", JSONObject.create().put("maxScale", 2 * rightDomain[1]).put("minScale", rightDomain[0]));
         }
 
+    }
+
+    private double linearTickInterval(double min, double max, double m){
+
+        if (m == 0) {
+            m = TICK_COUNT;
+        }
+
+        double span = max - min,
+                step = Math.pow(10, Math.floor(Math.log(span / m) / Math.log(10))),
+                err = m / span * step;
+
+        if (err <= ERROR15) {
+            step *= STEP10;
+        } else if (err <= ERROR35) {
+            step *= STEP5;
+        } else if (err <= ERROR75) {
+            step *= STEP2;
+        }
+
+        return step;
+    }
+
+    private double[] linearNiceDomain(double min, double max, double tickInterval){
+
+        min = Math.floor(min / tickInterval) * tickInterval;
+
+        max = Math.ceil(max / tickInterval) * tickInterval;
+
+        return new double[]{min, max};
+    }
+
+    protected double[] calculateValueTimeNiceDomain(double minValue, double maxValue){
+        boolean fromZero = true;
+
+        if(fromZero){
+            if(minValue > 0){
+                minValue = 0;
+            }else if(maxValue < 0){
+                maxValue = 0;
+            }
+        }
+
+        // if any exceeded min, adjust max to min + 100
+        if(minValue >= maxValue){
+            maxValue = minValue + DEFAULT_MAX;
+        }
+
+        double tickInterval = linearTickInterval(minValue, maxValue, 0);
+
+        double[] domain = linearNiceDomain(minValue, maxValue, tickInterval);
+
+        minValue = domain[0];
+        maxValue = domain[1];
+
+        if(minValue >= maxValue){
+            maxValue = minValue + DEFAULT_MAX;
+        }
+
+        return new double[]{minValue, maxValue};
     }
 
     protected JSONObject createEmptyCategoryAxis(JSONObject settings) throws JSONException{

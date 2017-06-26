@@ -68,8 +68,8 @@ public class BITableReportSetting extends BIAbstractTableSetting {
         }
         if (jo.has("style")) {
             JSONObject jo1 = jo.optJSONObject("style");
-            if (jo1.has("tableStyle")) {
-                tableStyle = jo1.optInt("tableStyle");
+            if (jo1.has("tableStyleGroup")) {
+                tableStyle = jo1.optInt("tableStyleGroup");
             }
             if (jo1.has("showNumber")) {
                 number = jo1.optBoolean("showNumber", false) ? 1 : 0;
@@ -77,6 +77,18 @@ public class BITableReportSetting extends BIAbstractTableSetting {
         }
         JSONObject settings = jo.has("settings") ? jo.getJSONObject("settings") : new JSONObject();
 
+    }
+
+    public void addColumn2Row () {
+        ArrayList<String> mergedDims = new ArrayList<String>();
+        if(row != null) {
+            Collections.addAll(mergedDims, row);
+        }
+        if(column != null) {
+            Collections.addAll(mergedDims, column);
+        }
+        row = mergedDims.toArray(new String[mergedDims.size()]);
+        column = new String[0];
     }
 
     public int getTableStyle() {

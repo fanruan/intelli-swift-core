@@ -45,7 +45,8 @@ public class CustomTaskCalculator implements ITaskCalculator {
     }
 
     @Override
-    public CubeBuildStuff generateCubeBuildStuff() {
+    public CubeBuildStuff generateCubeBuildStuff(Set<CubeTableSource> allTableSources,
+                                                 Set<BITableSourceRelation> allRelations, Set<BITableSourceRelationPath> allPaths) {
         //所有tablesource和基础表sourceId对应关系。
         Map<CubeTableSource, Set<String>> tableBaseSourceIdMap = new HashMap<CubeTableSource, Set<String>>();
         //所有sourceId和updateType对应关系
@@ -63,7 +64,9 @@ public class CustomTaskCalculator implements ITaskCalculator {
         absentTables = CubeUpdateUtils.getAllCubeAbsentTables(userId);
         absentRelations = CubeUpdateUtils.getCubeAbsentRelations(userId);
         absentPaths = CubeUpdateUtils.getCubeAbsentPaths(userId);
-        return new CubeBuildCustomStuff(userId, tableBaseSourceIdMap, sourceIdUpdateTypeMap, tableSources, relations, paths, absentTables, absentRelations, absentPaths);
+        return new CubeBuildCustomStuff(userId, tableBaseSourceIdMap, sourceIdUpdateTypeMap, tableSources,
+                relations, paths, absentTables, absentRelations, absentPaths,
+                allTableSources, allRelations, allPaths);
     }
 
     /**
