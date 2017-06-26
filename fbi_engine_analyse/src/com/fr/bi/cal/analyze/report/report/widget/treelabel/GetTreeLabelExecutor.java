@@ -61,12 +61,8 @@ public class GetTreeLabelExecutor extends AbstractTreeLabelExecutor {
         if(floor >= values.size()) {
             return;
         }
-        List<List<String>> filter = new ArrayList<List<String>>();
-        for (int i =0;i < floor; i++) {
-            filter.add(values.get(i));
-        }
 
-        List<String> vl = createData( filter, 0, 1);
+        List<String> vl = createData(values, floor);
         if (result.size() > floor) {
             concatSetAndList(result.get(floor), vl);
         } else {
