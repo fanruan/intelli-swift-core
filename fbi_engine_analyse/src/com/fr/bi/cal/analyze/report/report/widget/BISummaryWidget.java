@@ -595,4 +595,12 @@ public abstract class BISummaryWidget extends AbstractBIWidget {
         }
 
     }
+
+    /**
+     * 是否可以进行补全缺失时间
+     * @return
+     */
+    public boolean canCompleteMissTime(){
+        return false;
+    }
 }
