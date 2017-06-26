@@ -11,6 +11,7 @@ import com.fr.bi.cal.analyze.cal.result.operator.Operator;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class GroupUtils {
 
@@ -25,7 +26,9 @@ public class GroupUtils {
         if (gc == null) {
             return new NodeAndPageInfo(node, iterator);
         }
-        addSummaryValue(node, gc, showSum, shouldSetIndex, executor);
+        AtomicInteger count = new AtomicInteger(0);
+        AtomicInteger size = new AtomicInteger(0);
+        addSummaryValue(node, gc, showSum, shouldSetIndex, executor, count, size);
         // 判断分页是否停止的时候应该放入一行的信息进去 这样能让operator提供更多的功能,比如说构建到某一行的时候就停止构建
         while (!op.isPageEnd(gc) && gc != null && gc.getChild() != null) {
             GroupConnectionValue gcvChild = gc.getChild();
@@ -38,12 +41,25 @@ public class GroupUtils {
                     parent.addChild(child);
                 }
                 parent = child;
-                addSummaryValue(child, gcvChild, showSum, shouldSetIndex, executor);
+                addSummaryValue(child, gcvChild, showSum, shouldSetIndex, executor, count, size);
                 gcvChild = gcvChild.getChild();
             }
             op.addRow();
             iterator.moveNext();
             gc = iterator.next();
+        }
+        boolean completed = executor == null || count.get() == size.get();
+        if (!completed) {
+            //没完成的话要唤醒下executor，以防有加到executor里wait住的。
+            executor.wakeUp();
+            synchronized (count) {
+                if (!completed) {
+                    try {
+                        count.wait();
+                    } catch (InterruptedException e) {
+                    }
+                }
+            }
         }
         iterator.pageEnd();
         NodeUtils.setSiblingBetweenFirstAndLastChild(node);
@@ -56,7 +72,7 @@ public class GroupUtils {
      * @param node
      * @param shouldSetIndex
      */
-    private static void addSummaryValue(Node node, GroupConnectionValue gcv, boolean showSum, boolean shouldSetIndex, BIMultiThreadExecutor executor) {
+    private static void addSummaryValue(Node node, GroupConnectionValue gcv, boolean showSum, boolean shouldSetIndex, BIMultiThreadExecutor executor,  AtomicInteger count, AtomicInteger size) {
         if (showSum || gcv.getChild() == null) {
             NoneDimensionGroup group = gcv.getCurrentValue();
             if (group != null) {
@@ -71,9 +87,10 @@ public class GroupUtils {
                     List<TargetAndKey> targetAndKeys = summaryLists[i];
                     for (TargetAndKey targetAndKey : targetAndKeys) {
                         if (node.getSummaryValue(targetAndKey.getTargetGettingKey()) == null) {
-                            BISingleThreadCal singleThreadCal = createSingleThreadCal(tis[i], node, targetAndKey, gvis[i], group.getLoader(), shouldSetIndex);
+                            BISingleThreadCal singleThreadCal = createSingleThreadCal(tis[i], node, targetAndKey, gvis[i], group.getLoader(), shouldSetIndex, count, size);
                             if (executor != null) {
                                 executor.add(singleThreadCal);
+                                size.incrementAndGet();
                             } else {
                                 singleThreadCal.cal();
                             }
@@ -88,12 +105,51 @@ public class GroupUtils {
         }
     }
 
-    private static BISingleThreadCal createSingleThreadCal(ICubeTableService ti, Node node, TargetAndKey targetAndKey, GroupValueIndex gvi, ICubeDataLoader loader, boolean shouldSetIndex) {
+    private static BISingleThreadCal createSingleThreadCal(ICubeTableService ti, Node node, TargetAndKey targetAndKey, GroupValueIndex gvi, ICubeDataLoader loader, boolean shouldSetIndex, AtomicInteger count, AtomicInteger size) {
         if (shouldSetIndex) {
-            return new SummaryIndexCal(ti, node, targetAndKey, gvi, loader);
+            return new SummaryIndexCal(ti, node, targetAndKey, gvi, loader, count, size);
         } else {
-            return new SummaryCall(ti, node, targetAndKey, gvi, loader);
+            return new SummaryCountCall(ti, node, targetAndKey, gvi, loader, count, size);
         }
     }
 
+
+    static class SummaryCountCall  extends SummaryCall {
+        AtomicInteger count;
+        AtomicInteger size;
+        public SummaryCountCall(ICubeTableService ti, Node node, TargetAndKey targetAndKey, GroupValueIndex gvi, ICubeDataLoader loader, AtomicInteger count, AtomicInteger size) {
+            super(ti, node, targetAndKey, gvi, loader);
+            this.count = count;
+            this.size = size;
+        }
+
+        @Override
+        public void cal() {
+            try{
+                super.cal();
+            } finally {
+                checkComplete();
+            }
+        }
+
+        void checkComplete() {
+            if (count.incrementAndGet() == size.get()) {
+                synchronized (count) {
+                    count.notify();
+                }
+            }
+        }
+    }
+
+    static class SummaryIndexCal  extends SummaryCountCall {
+        public SummaryIndexCal(ICubeTableService ti, Node node, TargetAndKey targetAndKey, GroupValueIndex gvi, ICubeDataLoader loader, AtomicInteger count, AtomicInteger size) {
+            super(ti, node, targetAndKey, gvi, loader, count, size);
+        }
+
+        @Override
+        public void cal() {
+            node.setTargetIndex(targetAndKey.getTargetGettingKey(), gvi);
+            super.cal();
+        }
+    }
 }

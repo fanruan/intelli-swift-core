@@ -820,29 +820,32 @@ public class CubeIndexLoader {
         @Override
         public NodeAndPageInfo create() {
             BIMultiThreadExecutor executor = MultiThreadManagerImpl.getInstance().getExecutorService();
-            int summaryLength = usedTargets.length;
-            int rowLength = rowDimension.length;
-            boolean calAllPage = page == -1;
-            if (iterator.getRoot() == null) {
-                IRootDimensionGroup root;
-                if (rowLength != 0 && summaryLength == 0) {
-                    root = createPageGroupNodeWithNoSummary(widget, usedTargets, rowDimension, shouldSetIndex, isHor, session, rowLength, calAllPage, authFilter, executor);
+            try {
+
+                int summaryLength = usedTargets.length;
+                int rowLength = rowDimension.length;
+                boolean calAllPage = page == -1;
+                if (iterator.getRoot() == null) {
+                    IRootDimensionGroup root;
+                    if (rowLength != 0 && summaryLength == 0) {
+                        root = createPageGroupNodeWithNoSummary(widget, usedTargets, rowDimension, shouldSetIndex, isHor, session, rowLength, calAllPage, authFilter, executor);
+                    } else {
+                        root = createPageGroupNodeWithSummary(widget, usedTargets, rowDimension, session, shouldSetIndex, isHor, summaryLength, rowLength, calAllPage, authFilter, executor);
+                    }
+                    iterator.setRoot(root);
                 } else {
-                    root = createPageGroupNodeWithSummary(widget, usedTargets, rowDimension, session, shouldSetIndex, isHor, summaryLength, rowLength, calAllPage, authFilter, executor);
+                    iterator = iterator.createClonedIterator();
+                    iterator.getRoot().checkStatus(executor);
                 }
-                iterator.setRoot(root);
-            } else {
-                iterator = iterator.createClonedIterator();
-                iterator.getRoot().checkStatus(executor);
+                iterator.setExpander(expander);
+                if (isAllExpandWholeNodeWithoutIndex(calAllPage)) {
+                    return new NodeAndPageInfo(iterator.getRoot().getConstructedRoot(), iterator);
+                }
+                NodeAndPageInfo info = GroupUtils.createNextPageMergeNode(iterator, op, isHor ? widget.showColumnTotal() : widget.showRowToTal(), shouldSetIndex, widget.getTargets().length, executor);
+                return info;
+            } finally {
+                MultiThreadManagerImpl.getInstance().releaseCurrentThread(session, executor);
             }
-            iterator.setExpander(expander);
-            if (isAllExpandWholeNodeWithoutIndex(calAllPage)) {
-                MultiThreadManagerImpl.getInstance().awaitExecutor(session, executor);
-                return new NodeAndPageInfo(iterator.getRoot().getConstructedRoot(), iterator);
-            }
-            NodeAndPageInfo info = GroupUtils.createNextPageMergeNode(iterator, op, isHor ? widget.showColumnTotal() : widget.showRowToTal(), shouldSetIndex, widget.getTargets().length, executor);
-            MultiThreadManagerImpl.getInstance().awaitExecutor(session, executor);
-            return info;
         }
 
         //全部展开所有节点并且不需要索引的情况直接返回node，不用再走下面的分页

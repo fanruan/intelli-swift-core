@@ -59,7 +59,9 @@ public class AllNodeMergeIterator implements Iterator<MetricMergeResult> {
         this.executor = executor;
         this.formulaCalculator = formulaCalculator;
         this.releaseGVI = mergeIterator.canRelease();
-        this.canPreFilter = formulaCalculator.isEmpty() && filter.isSingleNodeFilter();
+        if (filter != null){
+            this.canPreFilter = formulaCalculator.isEmpty() && filter.isSingleNodeFilter();
+        }
         mergeIterator.setReturnResultWithGroupIndex(this.releaseGVI);
         initIter(sumLength);
     }

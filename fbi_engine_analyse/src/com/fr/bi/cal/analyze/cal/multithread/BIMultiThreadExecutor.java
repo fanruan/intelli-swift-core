@@ -1,11 +1,7 @@
 package com.fr.bi.cal.analyze.cal.multithread;
 
-import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.cal.analyze.session.BISession;
 
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -16,14 +12,12 @@ public class BIMultiThreadExecutor {
     private static final int MOD = SIZE - 1;
     private MergeSummaryCallList[] lists = new MergeSummaryCallList[SIZE];
     private int index = 0;
-    private ExecutorService executorService;
     public static AtomicInteger count =new AtomicInteger(0);
 
     public BIMultiThreadExecutor() {
-        executorService = Executors.newFixedThreadPool(SIZE);
         for (int i = 0; i < SIZE; i++) {
-            MergeSummaryCallList list = new MergeSummaryCallList();
-            executorService.submit(list);
+            MergeSummaryCallList list = new MergeSummaryCallList("BIMultiThreadExecutor" + i);
+            list.start();
             lists[i] = list;
         }
     }
@@ -42,29 +36,15 @@ public class BIMultiThreadExecutor {
         }
     }
 
-    protected void awaitExecutor(final BISession session) {
-        if (!isShutDown()) {
-            for (MergeSummaryCallList list : lists) {
-                list.add(new BISingleThreadCal() {
-                    @Override
-                    public void cal() {
-                        session.getLoader().releaseCurrentThread();
-                    }
-                });
-                list.finish();
-            }
-            lists = null;
-            executorService.shutdown();
-            try {
-                executorService.awaitTermination(Long.MAX_VALUE, TimeUnit.DAYS);
-            } catch (InterruptedException e) {
-                BILoggerFactory.getLogger().error(e.getMessage(), e);
-            }
-            executorService = null;
+    protected void releaseCurrentThread(final BISession session) {
+        for (MergeSummaryCallList list : lists) {
+            list.add(new BISingleThreadCal() {
+                @Override
+                public void cal() {
+                    session.getLoader().releaseCurrentThread();
+                }
+            });
         }
     }
 
-    protected boolean isShutDown(){
-        return executorService == null;
-    }
 }
