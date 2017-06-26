@@ -174,7 +174,7 @@ public class BIChartSettingConstant {
         public static final int OLD_COLUMN=5;
         public static final int OLD_AREA_CURVE=14;
         public static final int OLD_STACKED_AREA=15;
-        public static final int OLD_LINE=3;
+        public static final int OLD_LINE=13;
         public static final int OLD_STACKED_COLUMN=6;
         public static final int COLUMN = 1;
         public static final int STACKED_COLUMN = 2;

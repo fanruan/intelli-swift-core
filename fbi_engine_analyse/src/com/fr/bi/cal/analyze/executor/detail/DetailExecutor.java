@@ -1,6 +1,7 @@
 package com.fr.bi.cal.analyze.executor.detail;
 
 import com.finebi.cube.common.log.BILoggerFactory;
+import com.finebi.cube.conf.table.BusinessTable;
 import com.fr.bi.base.FinalInt;
 import com.fr.bi.cal.analyze.executor.GVIRunner;
 import com.fr.bi.cal.analyze.executor.TableRowTraversal;
@@ -13,6 +14,7 @@ import com.fr.bi.cal.analyze.report.report.widget.TableWidget;
 import com.fr.bi.cal.analyze.session.BISession;
 import com.fr.bi.cal.report.engine.CBCell;
 import com.fr.bi.conf.report.widget.field.target.detailtarget.BIDetailTarget;
+import com.fr.bi.field.target.target.BISummaryTarget;
 import com.fr.bi.stable.constant.CellConstant;
 import com.fr.bi.stable.data.db.BIRowValue;
 import com.fr.bi.stable.gvi.GVIUtils;
@@ -21,13 +23,16 @@ import com.fr.bi.stable.utils.BICollectionUtils;
 import com.fr.bi.stable.utils.BITravalUtils;
 import com.fr.general.DateUtils;
 import com.fr.json.JSONArray;
-import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
 import com.fr.stable.ExportConstants;
 
-import java.awt.*;
-import java.util.*;
+import java.awt.Rectangle;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * TODO 分页机制待优化
@@ -94,17 +99,11 @@ public class DetailExecutor extends AbstractDetailExecutor {
     }
 
     @Override
-    public JSONObject getCubeNode() throws JSONException {
+    public JSONObject getCubeNode() throws Exception {
+
         long start = System.currentTimeMillis();
         GroupValueIndex gvi = createDetailViewGvi();
-        if (widget.getLinkWidget() != null && widget.getLinkWidget() instanceof TableWidget) {
-            TableWidget linkWidget = ((TableWidget) widget.getLinkWidget());
-            // 其联动组件的父联动gvi
-            GroupValueIndex pLinkGvi = linkWidget.createLinkedFilterGVI(null, session);
-            // 其联动组件的点击过滤gvi
-            GroupValueIndex linkGvi = linkWidget.getLinkFilter(linkWidget, widget.getClicked(), session);
-            gvi = GVIUtils.AND(gvi, GVIUtils.AND(pLinkGvi, linkGvi));
-        }
+        gvi = getLinkFiter(gvi);
         paging.setTotalSize(gvi.getRowsCountWithData());
         final JSONArray ja = new JSONArray();
         JSONObject jo = new JSONObject();
@@ -139,6 +138,27 @@ public class DetailExecutor extends AbstractDetailExecutor {
         travel(action, gvi);
         BILoggerFactory.getLogger().info(DateUtils.timeCostFrom(start) + ": cal time");
         return jo;
+    }
+
+    private GroupValueIndex getLinkFiter(GroupValueIndex gvi) throws Exception{
+        if (widget.getLinkWidget() != null && widget.getLinkWidget() instanceof TableWidget) {
+            // 判断两个表格的基础表是否相同
+            BusinessTable widgetTargetTable = widget.getTargetDimension();
+            TableWidget linkWidget = ((TableWidget) widget.getLinkWidget());
+            Map<String, JSONArray> clicked = widget.getClicked();
+            String linkTarget = clicked.keySet().toArray(new String[]{})[0];
+            BISummaryTarget summaryTarget = linkWidget.getBITargetByID(linkTarget);
+            BusinessTable linkTargetTable = summaryTarget.createTableKey();
+            // 基础表相同的时候才有联动的意义
+            if (widgetTargetTable.equals(linkTargetTable)) {
+                // 其联动组件的父联动gvi
+                GroupValueIndex pLinkGvi = linkWidget.createLinkedFilterGVI(widgetTargetTable, session);
+                // 其联动组件的点击过滤gvi
+                GroupValueIndex linkGvi = linkWidget.getLinkFilter(linkWidget,widgetTargetTable, clicked, session);
+                gvi = GVIUtils.AND(gvi, GVIUtils.AND(pLinkGvi, linkGvi));
+            }
+        }
+        return gvi;
     }
 
     public List<List> getData() {
@@ -190,7 +210,8 @@ public class DetailExecutor extends AbstractDetailExecutor {
     }
 
     @Override
-    public JSONObject createJSONObject() throws JSONException {
+    public JSONObject createJSONObject() throws Exception {
+
         return getCubeNode();
     }
 }

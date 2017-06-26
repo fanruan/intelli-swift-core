@@ -80,7 +80,7 @@ public class BITableReportSetting extends BIAbstractTableSetting {
     }
 
     public void addColumn2Row () {
-        ArrayList<String> mergedDims = new ArrayList<>();
+        ArrayList<String> mergedDims = new ArrayList<String>();
         if(row != null) {
             Collections.addAll(mergedDims, row);
         }
