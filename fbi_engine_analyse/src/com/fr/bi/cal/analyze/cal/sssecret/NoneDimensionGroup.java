@@ -45,17 +45,6 @@ public class NoneDimensionGroup implements Release {
 
     }
 
-    public NoneDimensionGroup clone() {
-
-        NoneDimensionGroup n = new NoneDimensionGroup(metrics, summaryLists, sumLength, tis, gvis, loader);
-        if (this.summaryValue != null) {
-            Number[] numbers = new Number[this.summaryValue.length];
-            System.arraycopy(this.summaryValue, 0, numbers, 0, this.summaryValue.length);
-            n.setSummaryValue(numbers);
-        }
-        return n;
-    }
-
     public NoneDimensionGroup cloneNoSummaryValue() {
 
         NoneDimensionGroup n = new NoneDimensionGroup(metrics, summaryLists, sumLength, tis, gvis, loader);
