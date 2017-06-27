@@ -121,7 +121,7 @@ public class VanGaugeWidget extends VanCartesianWidget{
 
         JSONObject settings = this.getDetailChartSetting();
         int gaugeStyle = settings.optInt("dashboardChartType");
-        String style = StringUtils.EMPTY, layout = StringUtils.EMPTY;
+        String style = StringUtils.EMPTY, layout = "vertical";
         if(gaugeStyle == NORMAL){
             style = "pointer";
         }else if(gaugeStyle == HALF_DASHBOARD){
@@ -132,7 +132,6 @@ public class VanGaugeWidget extends VanCartesianWidget{
             style = "slot";
         }else if(gaugeStyle == VERTICAL_TUBE){
             style = "thermometer";
-            layout = "vertical";
         }else if(gaugeStyle == HORIZONTAL_TUBE){
             style = "thermometer";
             layout = "horizontal";
