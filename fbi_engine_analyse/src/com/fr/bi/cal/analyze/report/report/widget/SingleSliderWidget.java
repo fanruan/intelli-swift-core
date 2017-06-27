@@ -127,11 +127,6 @@ public class SingleSliderWidget extends TableWidget {
     }
 
     @Override
-    protected TemplateBlock createBIBlock(BISession session) {
-        return new PolyECBlock();
-    }
-
-    @Override
     public int isOrder() {
         return 0;
     }
