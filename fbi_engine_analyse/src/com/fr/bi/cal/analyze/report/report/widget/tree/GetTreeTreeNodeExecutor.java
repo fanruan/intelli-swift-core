@@ -180,6 +180,7 @@ public class GetTreeTreeNodeExecutor extends AbstractTreeNodeExecutor {
 
                     nodeJa.put("checked", state.isCheck());
                     nodeJa.put("halfCheck", state.isHalf());
+                    nodeJa.put("half",state.isHalf());
 
                 } catch (JSONException e) {
                     BILoggerFactory.getLogger().error(e.getMessage(), e);

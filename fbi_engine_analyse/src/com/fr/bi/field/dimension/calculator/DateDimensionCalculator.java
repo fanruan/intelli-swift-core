@@ -8,6 +8,7 @@ import com.finebi.cube.relation.BITableSourceRelation;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.stable.constant.BIReportConstant;
+import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.io.newio.NIOConstant;
 import com.fr.bi.stable.operation.sort.comp.ComparatorFacotry;
 import com.fr.bi.stable.structure.collection.map.CubeTreeMap;
@@ -33,8 +34,11 @@ public class DateDimensionCalculator extends AbstractDimensionCalculator {
     }
 
     @Override
-    public Iterator createValueMapIterator(BusinessTable table, ICubeDataLoader loader, boolean useRealData, int groupLimit) {
+    public Iterator createValueMapIterator(BusinessTable table, ICubeDataLoader loader, boolean useRealData, int groupLimit, GroupValueIndex filterGvi) {
         ICubeColumnIndexReader getter = loader.getTableIndex(field.getTableBelongTo().getTableSource()).loadGroup(dimension.createKey(field), getRelationList(), useRealData, groupLimit);
+        if (!useRealData) {
+            applyFilterForNotRealData(getter, filterGvi);
+        }
         Comparator comparator;
 //        if(getGroupDate() == BIReportConstant.GROUP.M){
 //            comparator = ComparatorFacotry.getComparator(BIReportConstant.SORT.NUMBER_ASC);

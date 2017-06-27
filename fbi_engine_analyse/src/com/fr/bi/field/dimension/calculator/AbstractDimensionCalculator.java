@@ -18,8 +18,10 @@ import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.engine.index.key.IndexKey;
+import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.operation.group.IGroup;
 import com.fr.bi.report.result.DimensionCalculator;
+import com.fr.bi.stable.structure.collection.map.CubeColumnIndexPartReader;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -144,7 +146,7 @@ public abstract class AbstractDimensionCalculator implements DimensionCalculator
     }
 
     @Override
-    public Iterator createValueMapIterator(BusinessTable table, ICubeDataLoader loader, boolean useRealData, int groupLimit) {
+    public Iterator createValueMapIterator(BusinessTable table, ICubeDataLoader loader, boolean useRealData, int groupLimit, GroupValueIndex filterGvi) {
         //默认设置field本身为关联主键
         CubeTableSource usedTableSource = getTableSourceFromField();
         BIKey usedColumnKey = dimension.createKey(field);
@@ -156,6 +158,11 @@ public abstract class AbstractDimensionCalculator implements DimensionCalculator
             usedColumnKey = new IndexKey(primaryField.getFieldName());
         }
         ICubeColumnIndexReader getter = loader.getTableIndex(usedTableSource).loadGroup(usedColumnKey, getRelationList(), useRealData, groupLimit);
+
+        if (!useRealData) {
+            applyFilterForNotRealData(getter, filterGvi);
+        }
+
 //        GroupValueIndex nullGroupValueIndex = loader.getTableIndex(usedTableSource).getNullGroupValueIndex(usedColumnKey);
 //        CubeLinkedHashMap newGetter = new CubeLinkedHashMap();
 //        newGetter.put("", nullGroupValueIndex);
@@ -173,6 +180,12 @@ public abstract class AbstractDimensionCalculator implements DimensionCalculator
             return getSortType() != BIReportConstant.SORT.DESC ? getter.iterator() : getter.previousIterator();
         }
         return dimension.getSort().createGroupedMap(getter).iterator();
+    }
+
+    protected void applyFilterForNotRealData(ICubeColumnIndexReader getter, GroupValueIndex filterGvi) {
+        if (getter instanceof CubeColumnIndexPartReader) {
+            ((CubeColumnIndexPartReader) getter).applyFilter(filterGvi);
+        }
     }
 
     protected boolean isNoGroup() {
@@ -212,7 +225,7 @@ public abstract class AbstractDimensionCalculator implements DimensionCalculator
         if (relations != null ? !relations.equals(that.relations) : that.relations != null) {
             return false;
         }
-        if (directToDimenRelations != null ? !directToDimenRelations.equals(that.directToDimenRelations) : that.directToDimenRelations != null){
+        if (directToDimenRelations != null ? !directToDimenRelations.equals(that.directToDimenRelations) : that.directToDimenRelations != null) {
             return false;
         }
         if (dimension != null ? !dimension.equals(that.dimension) : that.dimension != null) {
