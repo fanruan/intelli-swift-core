@@ -1,7 +1,6 @@
 package com.fr.bi;
 
 
-import com.finebi.*;
 import com.finebi.ProductConstants;
 import com.finebi.cube.common.log.BILogger;
 import com.finebi.cube.common.log.BILoggerFactory;
