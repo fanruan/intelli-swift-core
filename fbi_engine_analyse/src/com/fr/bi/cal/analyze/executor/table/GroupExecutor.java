@@ -176,7 +176,7 @@ public class GroupExecutor extends AbstractTableWidgetExecutor<Node> {
                 data = DateUtils.DATEFORMAT2.format(new Date(GeneralUtils.string2Number(data).longValue()));
             }
             Object v = dim.getValueByType(data);
-            CBCell cell = ExecutorUtils.createCell(v, rowIdx, 1, i + widget.isOrder(), 1, Style.getInstance().deriveTextStyle(Style.TEXTSTYLE_SINGLELINE));
+            CBCell cell = ExecutorUtils.createCell(v, rowIdx, 1, i, 1, Style.getInstance().deriveTextStyle(Style.TEXTSTYLE_SINGLELINE));
             pagedIterator.addCell(cell);
             temp = temp.getParent();
         }
