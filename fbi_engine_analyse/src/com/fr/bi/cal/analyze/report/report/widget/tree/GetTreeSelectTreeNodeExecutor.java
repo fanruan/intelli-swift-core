@@ -210,6 +210,8 @@ public class GetTreeSelectTreeNodeExecutor extends AbstractTreeNodeExecutor {
 
     private boolean dealWithIsSelectedAll(JSONObject selectedValues, String[] strs, String str, String preStr) {
         JSONObject preSelectedValue = new JSONObject();
+        String[] newParents = new String[strs.length -1];
+        System.arraycopy(strs, 0, newParents, 0, strs.length-1);
         for (String thisStr : strs) {
             if (thisStr == preStr) {
                 preSelectedValue = selectedValues;
@@ -224,10 +226,9 @@ public class GetTreeSelectTreeNodeExecutor extends AbstractTreeNodeExecutor {
                 break;
             }
         }
-        String[] p = {preStr};
         int childsLength = 0;
         try {
-            childsLength = getChildCount(p);
+            childsLength = getChildCount(newParents);
         } catch (JSONException e) {
             BILoggerFactory.getLogger().error(e.getMessage(), e);
         }

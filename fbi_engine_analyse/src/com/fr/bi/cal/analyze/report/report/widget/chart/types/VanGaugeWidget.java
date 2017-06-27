@@ -97,6 +97,10 @@ public class VanGaugeWidget extends VanCartesianWidget{
 
         if(gaugeStyle == PERCENT_SCALE_SLOT){
             percentageLabel.put("style", JSONObject.create().put("fontSize", "24px"));
+        } else if(gaugeStyle == PERCENT_DASHBOARD){
+            valueLabel.optJSONObject("style").put("color", DARK);
+        } else if(!isPointer){
+            percentageLabel.put("style", font);
         }
 
         plotOptions.put("valueLabel", valueLabel).put("seriesLabel", seriesLabel).put("percentageLabel", percentageLabel);
@@ -144,7 +148,7 @@ public class VanGaugeWidget extends VanCartesianWidget{
         JSONArray newSeries = JSONArray.create();
         for(int i = 0, len = series.length(); i < len; i++){
             JSONObject ser = series.getJSONObject(i);
-            ser.put("style", style).put("thermometerLayout", layout);
+            ser.put("style", style).put("thermometerLayout", layout).put("layout", layout.equals("vertical") ? "horizontal" : "vertical");
 
             if(multi){
                 JSONObject combineSer = newSeries.optJSONObject(0);
