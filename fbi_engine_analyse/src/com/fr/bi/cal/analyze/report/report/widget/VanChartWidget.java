@@ -85,7 +85,6 @@ public abstract class VanChartWidget extends TableWidget {
 
     //todo:@shine 4.1版本整理一下settings globalstyle plateconfig
     private JSONObject globalStyle;
-    private JSONObject defaultFont;
 
     public static final String[] FULL_QUARTER_NAMES = new String[]{
             Inter.getLocText("BI-Quarter_1"),
@@ -538,55 +537,51 @@ public abstract class VanChartWidget extends TableWidget {
 
     //优先级从低到高：plat界面背景，global界面背景，主题，plat组件背景，global组件背景，setting组件背景，plat图表文字， global图表文字，settings图表文字
     protected JSONObject defaultFont() throws JSONException {
-        if(defaultFont == null){
-            BIChartStyleAttr platConfig = FBIConfig.getProviderInstance().getChartStyleAttr();
-            String color = DARK, fontWeight = "normal", fontStyle = "normal";
+        BIChartStyleAttr platConfig = FBIConfig.getProviderInstance().getChartStyleAttr();
+        String color = DARK, fontWeight = "normal", fontStyle = "normal";
 
-            if(platConfig.getMainBackground() != null) {
-                color = checkValidColor(platConfig.getMainBackground().getValue(), color);
-            }
-
-            if(globalStyle.has("mainBackground")) {
-                color = checkValidColor(globalStyle.optJSONObject("mainBackground").optString("value"), color);
-            }
-
-            if(globalStyle.optString("theme").equals("bi-theme-dark")){
-                color = WHITE;
-            }
-
-            if(platConfig.getWidgetBackground() != null) {
-                color = checkValidColor(platConfig.getWidgetBackground().getValue(), color);
-            }
-
-            if(globalStyle.has("widgetBackground")) {
-                color = checkValidColor(globalStyle.optJSONObject("widgetBackground").optString("value"), color);
-            }
-
-            BIChartFontStyleAttr fontStyleAttr = platConfig.getChartFont();
-            if(fontStyleAttr != null){
-                String fontColor = fontStyleAttr.getColor();
-                if(StringUtils.isNotEmpty(fontColor)){
-                    color = checkTransparent(fontColor);
-                }
-                fontWeight = fontStyleAttr.getFontWidget();
-                fontStyle = fontStyleAttr.getFontStyle();
-            }
-
-            JSONObject chartFont = globalStyle.optJSONObject("chartFont");
-            if(chartFont != null){
-                String fontColor = chartFont.optString("color");
-                if(StringUtils.isNotEmpty(fontColor)){
-                    color = checkTransparent(fontColor);
-                }
-                fontWeight = chartFont.optString("fontWeight", fontWeight);
-                fontStyle = chartFont.optString("fontStyle", fontStyle);
-            }
-
-            defaultFont = JSONObject.create().put("fontFamily", "Microsoft YaHei").put("fontSize", "12px")
-                    .put("color", color).put("fontWeight", fontWeight).put("fontStyle", fontStyle);
+        if(platConfig.getMainBackground() != null) {
+            color = checkValidColor(platConfig.getMainBackground().getValue(), color);
         }
 
-        return defaultFont;
+        if(globalStyle.has("mainBackground")) {
+            color = checkValidColor(globalStyle.optJSONObject("mainBackground").optString("value"), color);
+        }
+
+        if(globalStyle.optString("theme").equals("bi-theme-dark")){
+            color = WHITE;
+        }
+
+        if(platConfig.getWidgetBackground() != null) {
+            color = checkValidColor(platConfig.getWidgetBackground().getValue(), color);
+        }
+
+        if(globalStyle.has("widgetBackground")) {
+            color = checkValidColor(globalStyle.optJSONObject("widgetBackground").optString("value"), color);
+        }
+
+        BIChartFontStyleAttr fontStyleAttr = platConfig.getChartFont();
+        if(fontStyleAttr != null){
+            String fontColor = fontStyleAttr.getColor();
+            if(StringUtils.isNotEmpty(fontColor)){
+                color = checkTransparent(fontColor);
+            }
+            fontWeight = fontStyleAttr.getFontWidget();
+            fontStyle = fontStyleAttr.getFontStyle();
+        }
+
+        JSONObject chartFont = globalStyle.optJSONObject("chartFont");
+        if(chartFont != null){
+            String fontColor = chartFont.optString("color");
+            if(StringUtils.isNotEmpty(fontColor)){
+                color = checkTransparent(fontColor);
+            }
+            fontWeight = chartFont.optString("fontWeight", fontWeight);
+            fontStyle = chartFont.optString("fontStyle", fontStyle);
+        }
+
+        return JSONObject.create().put("fontFamily", "Microsoft YaHei").put("fontSize", "12px")
+                .put("color", color).put("fontWeight", fontWeight).put("fontStyle", fontStyle);
     }
 
     //颜色自动，则use default color
