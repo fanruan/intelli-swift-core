@@ -15,6 +15,7 @@ import com.finebi.cube.structure.column.BIColumnKey;
 import com.finebi.cube.structure.column.ICubeColumnEntityService;
 import com.finebi.cube.utils.BIRelationHelper;
 import com.fr.bi.conf.log.BILogManager;
+import com.fr.bi.conf.provider.BIConfigureManagerCenter;
 import com.fr.bi.conf.provider.BILogManagerProvider;
 import com.fr.bi.conf.report.widget.RelationColumnKey;
 import com.fr.bi.stable.constant.BILogConstant;
@@ -81,7 +82,7 @@ public class BIRelationIndexGenerator extends BIProcessor {
     @Override
     public Object mainTask(IMessage lastReceiveMessage) {
 
-        BILogManager biLogManager = StableFactory.getMarkedObject(BILogManagerProvider.XML_TAG, BILogManager.class);
+        BILogManagerProvider biLogManager = BIConfigureManagerCenter.getLogManager();
         biLogManager.logRelationStart(UserControl.getInstance().getSuperManagerID());
         Stopwatch stopwatch = Stopwatch.createStarted();
         RelationColumnKey relationColumnKeyInfo = null;
