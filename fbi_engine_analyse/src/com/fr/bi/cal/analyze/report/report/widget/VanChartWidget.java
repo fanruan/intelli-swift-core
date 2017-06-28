@@ -2,10 +2,12 @@ package com.fr.bi.cal.analyze.report.report.widget;
 
 import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.base.FRContext;
+import com.fr.bi.cal.analyze.cal.result.operator.BigDataChartOperator;
 import com.fr.bi.conf.fs.BIChartStyleAttr;
 import com.fr.bi.conf.fs.FBIConfig;
 import com.fr.bi.conf.fs.tablechartstyle.BIChartFontStyleAttr;
 import com.fr.bi.conf.report.WidgetType;
+import com.fr.bi.conf.report.style.DetailChartSetting;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.conf.session.BISessionProvider;
 import com.fr.bi.field.target.target.BISummaryTarget;
@@ -29,8 +31,15 @@ import java.awt.*;
 import java.io.File;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Created by User on 2016/4/25.
@@ -153,6 +162,7 @@ public abstract class VanChartWidget extends TableWidget {
         this.formatSeriesDataLabelFormat(options);
 
         options.put("tools", toolsJSON());
+
 
         return options;
     }
@@ -632,9 +642,36 @@ public abstract class VanChartWidget extends TableWidget {
 
     public JSONObject createDataJSON(BISessionProvider session, HttpServletRequest req) throws Exception {
 
+        // 如果是实时数据
+        if(needOpenBigDateModel()){
+            setOperator(BIReportConstant.TABLE_PAGE_OPERATOR.BIGDATACHART);
+        }
         JSONObject data = super.createDataJSON(session, req).getJSONObject("data");
 
-        return this.createChartConfigWidthData(session, req, data);
+        JSONObject options = this.createChartConfigWidthData(session, req, data);
+
+        if(isRealData() && data!=null && ((data.has("c") && data.getJSONArray("c").length()> BigDataChartOperator.MAXROW)
+                || (data.has("t") && data.getJSONObject("t").has("c") && data.getJSONObject("t").getJSONArray("c").length()> BigDataChartOperator.MAXROW) )){
+            options.put("chartBigDataModel",true);
+        }
+        return options;
+    }
+
+    /**
+     * 是否需要打开大数据模式
+     * @return
+     */
+    protected boolean needOpenBigDateModel(){
+
+        DetailChartSetting cs = getChartSetting();
+        JSONObject setting = cs.getDetailChartSetting();
+        if(setting.has("bigDataMode") && setting.optBoolean("bigDataMode",false)){
+            return false;
+        }
+        if(isRealData()){
+            return true;
+        }
+        return false;
     }
 
 /*
