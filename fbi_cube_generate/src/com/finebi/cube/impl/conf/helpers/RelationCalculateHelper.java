@@ -67,7 +67,15 @@ public class RelationCalculateHelper {
      */
     private static boolean isTableExistOrGenerating(CubeTableSource tableSource, Set<CubeTableSource> generatingTables,
                                                     Set<CubeTableSource> absentTables) {
-        if (generatingTables.contains(tableSource) || !absentTables.contains(tableSource)) {
+        Set<String> generatingTableIds = new HashSet<String>();
+        for (CubeTableSource generatingTable : generatingTables) {
+            generatingTableIds.add(generatingTable.getSourceID());
+        }
+        Set<String> absentTableIds = new HashSet<String>();
+        for (CubeTableSource absentTable : absentTables) {
+            absentTableIds.add(absentTable.getSourceID());
+        }
+        if (generatingTableIds.contains(tableSource.getSourceID()) || !absentTableIds.contains(tableSource.getSourceID())) {
             return true;
         }
         return false;
