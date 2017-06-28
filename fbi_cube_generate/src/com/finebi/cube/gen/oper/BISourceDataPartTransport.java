@@ -24,6 +24,7 @@ import com.fr.bi.conf.data.source.DBTableSource;
 import com.fr.bi.conf.data.source.SQLTableSource;
 import com.fr.bi.conf.log.BILogManager;
 import com.fr.bi.conf.manager.update.source.UpdateSettingSource;
+import com.fr.bi.conf.provider.BIConfigureManagerCenter;
 import com.fr.bi.conf.provider.BILogManagerProvider;
 import com.fr.bi.data.DBQueryExecutor;
 import com.fr.bi.stable.constant.BIBaseConstant;
@@ -79,7 +80,7 @@ public class BISourceDataPartTransport extends BISourceDataTransport {
 
     @Override
     public Object mainTask(IMessage lastReceiveMessage) {
-        BILogManager biLogManager = StableFactory.getMarkedObject(BILogManagerProvider.XML_TAG, BILogManager.class);
+        BILogManagerProvider biLogManager = BIConfigureManagerCenter.getLogManager();
         LOGGER.info(BIStringUtils.append("The table:", fetchTableInfo(), " start transport task",
                 BILogHelper.logCubeLogTableSourceInfo(tableSource.getSourceID())));
         BILogHelper.cacheCubeLogTableNormalInfo(tableSource.getSourceID(), BILogConstant.LOG_CACHE_TIME_TYPE.TRANSPORT_EXECUTE_START, System.currentTimeMillis());
