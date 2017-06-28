@@ -53,43 +53,59 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 public abstract class BISummaryWidget extends AbstractBIWidget {
+
     private static final long serialVersionUID = -4264115812022703958L;
+
     @BICoreField
     protected BISummaryTarget[] targets;
+
     @BICoreField
     protected BIDimension[] dimensions;
+
     @BICoreField
     protected TargetSort targetSort;
+
     @BICoreField
     protected Map<String, DimensionFilter> targetFilterMap = new LinkedHashMap<String, DimensionFilter>();
+
     @BICoreField
     protected Map<String, Map<String, BusinessField>> dimensionsMap = new LinkedHashMap<String, Map<String, BusinessField>>();
+
     @BICoreField
     protected Map<String, Map<String, List<BITableRelation>>> relationsMap = new LinkedHashMap<String, Map<String, List<BITableRelation>>>();
+
     @BICoreField
     protected Map<String, Map<String, List<BITableRelation>>> directToDimensionRelationsMap = new LinkedHashMap<String, Map<String, List<BITableRelation>>>();
+
     protected Object[] clickValue;
 
     protected ComplexExpander complexExpander = new ComplexExpander();
+
     private int maxCol = 7;     //单页最大列数
+
     private int maxRow = PagingFactory.PAGE_PER_GROUP_20;    //单页最大行数
+
     private int dimensionRelationIndex = 1;
+
     private int targetRelationIndex = 0;
 
 
     @Override
     public BIDimension[] getDimensions() {
+
         return dimensions == null ? new BIDimension[0] : dimensions;
     }
 
     @Override
     public BISummaryTarget[] getTargets() {
+
         return targets == null ? new BISummaryTarget[0] : targets;
     }
 
 
     @Override
     public List<BusinessTable> getUsedTableDefine() {
+
         List<BusinessTable> result = new ArrayList<BusinessTable>();
         BIDimension[] dimensions = getDimensions();
         for (int i = 0; i < dimensions.length; i++) {
@@ -108,10 +124,12 @@ public abstract class BISummaryWidget extends AbstractBIWidget {
     }
 
     public void setPageSpinner(int index, int value) {
+
     }
 
     @Override
     public List<BusinessField> getUsedFieldDefine() {
+
         List<BusinessField> result = new ArrayList<BusinessField>();
         BIDimension[] dimensions = getDimensions();
         for (int i = 0; i < dimensions.length; i++) {
@@ -126,6 +144,7 @@ public abstract class BISummaryWidget extends AbstractBIWidget {
     }
 
     private List<BITableSourceRelation> getDimRelations(String dimId, String tarId) {
+
         Map<String, List<BITableRelation>> relMap = relationsMap.get(dimId);
         if (relMap == null) {
             return new ArrayList<BITableSourceRelation>();
@@ -136,6 +155,7 @@ public abstract class BISummaryWidget extends AbstractBIWidget {
     }
 
     private List<BITableSourceRelation> getDimDirectToDimensionRelations(String dimId, String tarId) {
+
         Map<String, List<BITableRelation>> relMap = directToDimensionRelationsMap.get(dimId);
         if (relMap == null) {
             return new ArrayList<BITableSourceRelation>();
@@ -146,6 +166,7 @@ public abstract class BISummaryWidget extends AbstractBIWidget {
 
 
     private void checkRelationExist(List<BITableRelation> relationList, String did, String tarId) {
+
         BITarget target = BITravalUtils.getTargetByName(tarId, targets);
         if (relationList != null && !relationList.isEmpty()) {
             for (int i = 0; i < relationList.size(); i++) {
@@ -155,7 +176,7 @@ public abstract class BISummaryWidget extends AbstractBIWidget {
                 }
                 if (!BICubeConfigureCenter.getTableRelationManager().containTableRelationship(getUserId(), r)) {
                     throw BINonValueUtils.beyondControl(BIStringUtils.append("relation not exist \n",
-                            "the relation: ", logRelation(r)));
+                                                                             "the relation: ", logRelation(r)));
                 }
             }
         } else {
@@ -171,6 +192,7 @@ public abstract class BISummaryWidget extends AbstractBIWidget {
     }
 
     private String logRelation(BITableRelation relation) {
+
         try {
             CubeTableSource primaryTableSource = BusinessTableHelper.getAnalysisBusinessTable(relation.getPrimaryTable().getID()).getTableSource();
             CubeTableSource foreignTableSource = BusinessTableHelper.getAnalysisBusinessTable(relation.getForeignTable().getID()).getTableSource();
@@ -183,10 +205,10 @@ public abstract class BISummaryWidget extends AbstractBIWidget {
             BILoggerFactory.getLogger(BITableRelation.class).error(e.getMessage(), e);
             try {
                 return BIStringUtils.append("relation not exist,",
-                        "the relation:Primary Table:" + relation.getPrimaryTable().getTableName(),
-                        ",primary field :" + relation.getPrimaryField().getFieldName(),
-                        ",foreign table:" + relation.getForeignTable().getTableName(),
-                        ",foreign filed:" + relation.getForeignField().getFieldName());
+                                            "the relation:Primary Table:" + relation.getPrimaryTable().getTableName(),
+                                            ",primary field :" + relation.getPrimaryField().getFieldName(),
+                                            ",foreign table:" + relation.getForeignTable().getTableName(),
+                                            ",foreign filed:" + relation.getForeignField().getFieldName());
             } catch (Exception innerException) {
                 BILoggerFactory.getLogger(BITableRelation.class).error(innerException.getMessage(), innerException);
 
@@ -197,6 +219,7 @@ public abstract class BISummaryWidget extends AbstractBIWidget {
     }
 
     private BusinessField getDimDataColumn(BIDimension dim, String tarId) {
+
         String dimId = dim.getValue();
         Map<String, BusinessField> dimMap = dimensionsMap.get(dimId);
         if (dimMap == null) {
@@ -215,6 +238,7 @@ public abstract class BISummaryWidget extends AbstractBIWidget {
     }
 
     public NameObject getTargetSort() {
+
         return targetSort;
     }
 
@@ -224,10 +248,12 @@ public abstract class BISummaryWidget extends AbstractBIWidget {
      * @return true或false
      */
     public boolean useTargetSort() {
+
         return getTargetSort() != null;
     }
 
     public Map<String, DimensionFilter> getTargetFilterMap() {
+
         return targetFilterMap;
     }
 
@@ -240,6 +266,7 @@ public abstract class BISummaryWidget extends AbstractBIWidget {
      */
     @Override
     public void parseJSON(JSONObject jo, long userId) throws Exception {
+
         super.parseJSON(jo, userId);
         JSONObject dimAndTar = jo.optJSONObject("dimensions");
         if (dimAndTar == null) {
@@ -288,6 +315,7 @@ public abstract class BISummaryWidget extends AbstractBIWidget {
     }
 
     private void initTargets(List<BISummaryTarget> tars) {
+
         this.targets = tars.toArray(new BISummaryTarget[tars.size()]);
         Map<String, BITarget> targetMap = new ConcurrentHashMap<String, BITarget>();
         for (int i = 0; i < targets.length; i++) {
@@ -299,6 +327,7 @@ public abstract class BISummaryWidget extends AbstractBIWidget {
 
     @Override
     public GroupValueIndex createFilterGVI(DimensionCalculator[] row, BusinessTable targetKey, ICubeDataLoader loader, long userId) {
+
         GroupValueIndex gvi = super.createFilterGVI(row, targetKey, loader, userId);
         for (DimensionCalculator r : row) {
             if (r.getDirectToDimensionRelationList().isEmpty() && !r.getRelationList().isEmpty()) {
@@ -316,6 +345,7 @@ public abstract class BISummaryWidget extends AbstractBIWidget {
     }
 
     private void parseSettingMap(JSONObject jo) throws Exception {
+
         if (jo.has("settings")) {
             JSONObject settings = jo.getJSONObject("settings");
             if (settings.has("maxRow")) {
@@ -328,6 +358,7 @@ public abstract class BISummaryWidget extends AbstractBIWidget {
     }
 
     private void parseSortFilter(JSONObject jo, long userId) throws Exception {
+
         if (jo.has("sort")) {
             JSONObject targetSort = (JSONObject) jo.get("sort");
             if (targetSort.has("type") && targetSort.has("sortTarget")) {
@@ -350,6 +381,7 @@ public abstract class BISummaryWidget extends AbstractBIWidget {
     }
 
     private void parseDimensionMap(JSONObject jo, long userId) throws Exception {
+
         Iterator it = jo.keys();
         while (it.hasNext()) {
             String dimensionId = (String) it.next();
@@ -395,6 +427,7 @@ public abstract class BISummaryWidget extends AbstractBIWidget {
     }
 
     private JSONArray createDimensionAndTargetPathsJa(String dimensionId, String targetId, JSONObject dims, JSONObject targetRelationJo) throws JSONException {
+
         Map<String, List<BITableRelation>> relationMap = relationsMap.get(dimensionId);
         if (relationMap == null) {
             relationMap = new LinkedHashMap<String, List<BITableRelation>>();
@@ -441,6 +474,7 @@ public abstract class BISummaryWidget extends AbstractBIWidget {
      * @return 注释
      */
     public TargetGettingKey[] getTargetsKey() {
+
         BISummaryTarget[] targets = getViewTargets();
         TargetGettingKey[] keys = new TargetGettingKey[targets.length];
         for (int i = 0; i < targets.length; i++) {
@@ -450,26 +484,32 @@ public abstract class BISummaryWidget extends AbstractBIWidget {
     }
 
     public Object[] getClickValue() {
+
         return clickValue;
     }
 
     public int getMaxCol() {
+
         return this.maxCol;
     }
 
     public int getMaxRow() {
+
         return this.maxRow;
     }
 
     private class TargetSort extends NameObject {
+
         private static final long serialVersionUID = -3319190000338485415L;
 
         public TargetSort(String s, Object o) {
+
             super(s, o);
         }
 
         @Override
         public String toString() {
+
             return "TargetSort{" +
                     "name='" + getName() + '\'' +
                     ", ob=" + getObject() +
@@ -482,6 +522,7 @@ public abstract class BISummaryWidget extends AbstractBIWidget {
      */
     @Override
     public void refreshColumns() {
+
         super.refreshColumns();
 
         Iterator<Map.Entry<String, Map<String, BusinessField>>> it = dimensionsMap.entrySet().iterator();
@@ -505,6 +546,7 @@ public abstract class BISummaryWidget extends AbstractBIWidget {
     }
 
     public abstract class SimpleIntArray {
+
         public abstract int get(int index);
 
         public abstract int size();
@@ -520,6 +562,7 @@ public abstract class BISummaryWidget extends AbstractBIWidget {
      * @return
      */
     protected SimpleIntArray createGroupArray(int start, int end, final int[] limitStarts, final int[] limitEnds, final ICubeValueEntryGetter getter, GroupValueIndex gvi) {
+
         if (gvi instanceof AllShowRoaringGroupValueIndex) {
             int size = 0;
             if (limitStarts.length == 0) {
@@ -532,8 +575,10 @@ public abstract class BISummaryWidget extends AbstractBIWidget {
             }
             final int fsize = size, fstart = start;
             return new SimpleIntArray() {
+
                 @Override
                 public int get(int index) {
+
                     for (int i = intevals.length - 1; i >= 0; i--) {
                         if (i == 0) {
                             return index + limitStarts[0];
@@ -547,6 +592,7 @@ public abstract class BISummaryWidget extends AbstractBIWidget {
 
                 @Override
                 public int size() {
+
                     return fsize;
                 }
             };
@@ -554,8 +600,10 @@ public abstract class BISummaryWidget extends AbstractBIWidget {
             final int[] groupIndex = new int[getter.getGroupSize()];
             Arrays.fill(groupIndex, NIOConstant.INTEGER.NULL_VALUE);
             gvi.Traversal(new SingleRowTraversalAction() {
+
                 @Override
                 public void actionPerformed(int row) {
+
                     int groupRow = getter.getPositionOfGroupByRow(row);
                     if (groupRow != NIOConstant.INTEGER.NULL_VALUE) {
                         groupIndex[groupRow] = groupRow;
@@ -569,8 +617,10 @@ public abstract class BISummaryWidget extends AbstractBIWidget {
                     end = limitEnds[i];
                     if (start != -1) {
                         for (int j = start; j < end; j++) {
+                            // BI-6383 BI-6361的问题已在SingleSliderWidget 中做处理,没有影响
                             if (groupIndex[j] != NIOConstant.INTEGER.NULL_VALUE) {
-                                array.add(j);
+                                // 这里需要加的是分组的值...
+                                array.add(groupIndex[j]);
                             }
                         }
                     }
@@ -579,23 +629,36 @@ public abstract class BISummaryWidget extends AbstractBIWidget {
                 if (start != -1) {
                     for (int j = start; j < end; j++) {
                         if (groupIndex[j] != NIOConstant.INTEGER.NULL_VALUE) {
-                            array.add(j);
+                            array.add(groupIndex[j]);
                         }
                     }
                 }
             }
             return new SimpleIntArray() {
+
                 @Override
                 public int get(int index) {
+
                     return array.get(index);
                 }
 
                 @Override
                 public int size() {
+
                     return array.size;
                 }
             };
         }
 
+    }
+
+    /**
+     * 是否可以进行补全缺失时间
+     *
+     * @return
+     */
+    public boolean canCompleteMissTime() {
+
+        return false;
     }
 }
