@@ -12,6 +12,7 @@ import java.util.Map;
 public class CubeColumnIndexPartReader implements ICubeColumnIndexReader {
     private ICubeColumnIndexReader reader;
     private int size;
+    private GroupValueIndex filterGvi;
 
     public CubeColumnIndexPartReader(ICubeColumnIndexReader reader, int size) {
         this.reader = reader;
@@ -58,22 +59,52 @@ public class CubeColumnIndexPartReader implements ICubeColumnIndexReader {
         return new SizeIterator(reader.previousIterator(start));
     }
 
-    private class SizeIterator implements Iterator<Map.Entry>{
+    private class SizeIterator implements Iterator<Map.Entry> {
         private Iterator<Map.Entry> iterator;
         private int index = 0;
+        private Map.Entry next;
+        private Map.Entry current;
+
         public SizeIterator(Iterator<Map.Entry> iterator) {
             this.iterator = iterator;
+            moveToNext();
         }
 
         @Override
         public boolean hasNext() {
-            return index < size;
+            return next != null;
         }
 
         @Override
         public Map.Entry next() {
-            index++;
-            return iterator.next();
+            current = next;
+            moveToNext();
+            return current;
+        }
+
+        private void moveToNext() {
+            Map.Entry<Object, GroupValueIndex> entry = null;
+
+            if (filterGvi != null && !filterGvi.isAllEmpty()) {
+                while (index < Math.min(size, filterGvi.getRowsCountWithData())) {
+                    if (entry != null && (entry.getValue().and(filterGvi)).getRowsCountWithData() > 0) {
+                        index++;
+                        next = entry;
+                        return;
+                    } else if (iterator.hasNext()) {
+                        entry = iterator.next();
+                    } else {
+                        next = null;
+                        return;
+                    }
+                }
+            } else {
+                if (index < size) {
+                    index++;
+                    next = iterator.next();
+                }
+            }
+            next = null;
         }
 
         @Override
@@ -120,5 +151,9 @@ public class CubeColumnIndexPartReader implements ICubeColumnIndexReader {
     @Override
     public GroupValueIndex getNULLIndex() {
         return reader.getNULLIndex();
+    }
+
+    public void applyFilter(GroupValueIndex gvi) {
+        filterGvi = gvi;
     }
 }

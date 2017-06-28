@@ -76,7 +76,7 @@ public class SumCalculator implements CubeDoubleDataCalculator {
         GroupValueIndex nullIndex = g.getNullIndex();
         CalculatorTraversalAction ss;
         // 如果全部为空值则直接返回空值的表示就行了
-        range = range.andnot(nullIndex);
+        range = range.ANDNOT(nullIndex);
         if (range.isAllEmpty()) {
             return NIOConstant.DOUBLE.NULL_VALUE;
         }

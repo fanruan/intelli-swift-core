@@ -4,6 +4,7 @@ import com.finebi.cube.conf.field.BusinessField;
 import com.finebi.cube.conf.table.BusinessTable;
 import com.fr.bi.base.key.BIKey;
 import com.finebi.cube.api.ICubeDataLoader;
+import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.operation.group.IGroup;
 import com.finebi.cube.relation.BITableSourceRelation;
 import com.finebi.cube.api.ICubeColumnIndexReader;
@@ -48,7 +49,7 @@ public interface DimensionCalculator extends FCloneable,Serializable {
 
     Iterator createValueMapIterator(BusinessTable table, ICubeDataLoader loader);
 
-    Iterator createValueMapIterator(BusinessTable table, ICubeDataLoader loader, boolean useReallData, int groupLimit);
+    Iterator createValueMapIterator(BusinessTable table, ICubeDataLoader loader, boolean useReallData, int groupLimit, GroupValueIndex filterGvi);
 
     IGroup getGroup();
 

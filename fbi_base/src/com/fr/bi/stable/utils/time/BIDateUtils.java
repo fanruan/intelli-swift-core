@@ -8,10 +8,12 @@ import com.fr.bi.stable.constant.DateConstant;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.bi.stable.data.key.date.BIDay;
 import com.fr.bi.stable.gvi.GroupValueIndex;
+import com.fr.bi.stable.utils.BICollectionUtils;
 import com.fr.general.DateUtils;
 
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.Map;
 
 /**
@@ -30,6 +32,7 @@ public class BIDateUtils {
      * @return Date日期
      */
     public static Date createStartDate(int hour, int frequency) {
+
         if (frequency == DBConstant.UPDATE_FREQUENCY.EVER_MONTH) {
             return createMonthStartDate(hour);
         }
@@ -56,6 +59,7 @@ public class BIDateUtils {
      * @return long值
      */
     public static long createScheduleTime(int time, int frequency) {
+
         if (frequency == DBConstant.UPDATE_FREQUENCY.EVER_DAY) {
             return DateConstant.DATEDELTRA.DAY;
         } else if (frequency == DBConstant.UPDATE_FREQUENCY.EVER_MONTH) {
@@ -65,10 +69,12 @@ public class BIDateUtils {
     }
 
     private static long createMonthPeriod(int day) {
+
         return createMonthStartDate(day).getTime() - new Date().getTime();
     }
 
     private static Date createMonthStartDate(int day) {
+
         Calendar c = Calendar.getInstance();
         c.set(Calendar.HOUR_OF_DAY, 0);
         c.set(Calendar.MINUTE, 0);
@@ -96,10 +102,12 @@ public class BIDateUtils {
     }
 
     public static long toSimpleDay(long t) {
+
         return toSimpleDay(t, Calendar.getInstance());
     }
 
     public static long toSimpleDay(long t, Calendar c) {
+
         c.setTimeInMillis(t);
         c.set(Calendar.HOUR_OF_DAY, 0);
         c.set(Calendar.MINUTE, 0);
@@ -109,10 +117,12 @@ public class BIDateUtils {
     }
 
     public static long toYearMonthDayHour(long t) {
+
         return toYearMonthDayHour(t, Calendar.getInstance());
     }
 
     public static long toYearMonthDayHour(long t, Calendar c) {
+
         c.setTimeInMillis(t);
         c.set(Calendar.MINUTE, 0);
         c.set(Calendar.SECOND, 0);
@@ -121,10 +131,12 @@ public class BIDateUtils {
     }
 
     public static long toYearMonthDayHourMinute(long t) {
+
         return toYearMonthDayHourMinute(t, Calendar.getInstance());
     }
 
     public static long toYearMonthDayHourMinute(long t, Calendar c) {
+
         c.setTimeInMillis(t);
         c.set(Calendar.SECOND, 0);
         c.set(Calendar.MILLISECOND, 0);
@@ -132,10 +144,12 @@ public class BIDateUtils {
     }
 
     public static long toYearMonthDayHourMinuteSecond(long t) {
+
         return toYearMonthDayHourMinuteSecond(t, Calendar.getInstance());
     }
 
     public static long toYearMonthDayHourMinuteSecond(long t, Calendar c) {
+
         c.setTimeInMillis(t);
         c.set(Calendar.MILLISECOND, 0);
         return c.getTimeInMillis();
@@ -143,11 +157,13 @@ public class BIDateUtils {
 
     //year-month 统一设置为该月份第一天
     public static long toYearMonth(long t) {
+
         return toYearMonth(t, Calendar.getInstance());
     }
 
     //year-month 统一设置为该月份第一天
     public static long toYearMonth(long t, Calendar c) {
+
         c.setTimeInMillis(t);
         c.set(Calendar.DAY_OF_MONTH, 1);
         c.set(Calendar.HOUR_OF_DAY, 0);
@@ -159,11 +175,13 @@ public class BIDateUtils {
 
     //    year-weeknumber 统一设置为该周的第一天
     public static long toYearWeekNumber(long t) {
+
         return toYearWeekNumber(t, Calendar.getInstance());
     }
 
     //    year-weeknumber 统一设置为该周的第一天
     public static long toYearWeekNumber(long t, Calendar c) {
+
         c.setTimeInMillis(t);
         int year = c.get(Calendar.YEAR);
         c.set(Calendar.DAY_OF_WEEK, 1);
@@ -180,14 +198,16 @@ public class BIDateUtils {
     }
 
     public static int toWeekNumber(long t) {
+
         return toWeekNumber(t, Calendar.getInstance());
     }
 
     public static int toWeekNumber(long t, Calendar c) {
+
         c.setTimeInMillis(t);
         int resultWeekNumber = c.get(Calendar.WEEK_OF_YEAR);
         int year = c.get(Calendar.YEAR);
-        c.add(Calendar.DAY_OF_MONTH, (-1*DateConstant.CALENDAR.WEEK.SUNDAY_7 ));
+        c.add(Calendar.DAY_OF_MONTH, (-1 * DateConstant.CALENDAR.WEEK.SUNDAY_7));
         if (resultWeekNumber < c.get(Calendar.WEEK_OF_YEAR) && (c.get(Calendar.YEAR) == year)) {
             resultWeekNumber = c.get(Calendar.WEEK_OF_YEAR) + 1;
         }
@@ -195,11 +215,13 @@ public class BIDateUtils {
     }
 
     public static long toYearSeason(long t) {
+
         return toYearSeason(t, Calendar.getInstance());
     }
 
     //    year-season 统一设置为该季度的第一个月的第一天
     public static long toYearSeason(long t, Calendar c) {
+
         c.setTimeInMillis(t);
         c.set(Calendar.DAY_OF_MONTH, 1);
         c.set(Calendar.HOUR_OF_DAY, 0);
@@ -217,10 +239,12 @@ public class BIDateUtils {
      * @return
      */
     public static String getCurrentDateTime() {
+
         return DateUtils.DATETIMEFORMAT2.format(new Date());
     }
 
     public static void checkDateFieldType(Map<BIKey, ? extends ICubeFieldSource> map, BIKey key) {
+
         ICubeFieldSource field = map.get(key);
         if (field == null || field.getFieldType() != DBConstant.COLUMN.DATE) {
             throw NOT_DATE_FIELD_EXCEPTION;
@@ -230,10 +254,12 @@ public class BIDateUtils {
     public static final RuntimeException NOT_DATE_FIELD_EXCEPTION = new RuntimeException("not date field");
 
     public static GroupValueIndex createFilterIndex(ICubeColumnIndexReader yearMap, ICubeColumnIndexReader monthMap, ICubeColumnIndexReader dayMap, BIDay start, BIDay end) {
+
         return new RangeIndexGetter(yearMap, monthMap, dayMap).createRangeIndex(start, end);
     }
 
     public static String getScheduleTime(int time, int frequency) {
+
         String scheduleTime;
         switch (frequency) {
             case DBConstant.UPDATE_FREQUENCY.EVER_MONTH:
@@ -247,5 +273,35 @@ public class BIDateUtils {
                 scheduleTime = "0 0 " + time + " ? * " + frequency;
         }
         return scheduleTime;
+    }
+
+    public static Object firstDate(ICubeColumnIndexReader column) {
+
+        if (column != null) {
+            Iterator<Map.Entry<Object, GroupValueIndex>> iter = column.iterator();
+            Object v = null;
+            while (iter.hasNext()) {
+                v = iter.next().getKey();
+                if (BICollectionUtils.isNotCubeNullKey(v)) {
+                    return v;
+                }
+            }
+        }
+        return null;
+    }
+
+    public static Object lastDate(ICubeColumnIndexReader column) {
+
+        if (column != null) {
+            Iterator<Map.Entry<Object, GroupValueIndex>> iter = column.previousIterator();
+            Object v = null;
+            while (iter.hasNext()) {
+                v = iter.next().getKey();
+                if (BICollectionUtils.isNotCubeNullKey(v)) {
+                    return v;
+                }
+            }
+        }
+        return null;
     }
 }
