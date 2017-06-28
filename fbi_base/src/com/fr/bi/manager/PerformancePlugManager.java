@@ -406,26 +406,6 @@ public class PerformancePlugManager implements PerformancePlugManagerInterface {
     }
 
     @Override
-    public void setPhantomServerIP(String ip) {
-        PhantomServerIP = ip;
-    }
-
-    @Override
-    public String getPhantomServerIP() {
-        return PhantomServerIP;
-    }
-
-    @Override
-    public void setPhantomServerPort(int port) {
-        PhantomServerPort = port;
-    }
-
-    @Override
-    public int getPhantomServerPort() {
-        return PhantomServerPort;
-    }
-
-    @Override
     public boolean isExtremeConcurrency() {
         return extremeConcurrency;
     }
