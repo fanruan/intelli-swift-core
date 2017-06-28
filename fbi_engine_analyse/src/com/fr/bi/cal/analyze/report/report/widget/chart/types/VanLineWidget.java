@@ -16,5 +16,9 @@ public class VanLineWidget extends VanCartesianWidget{
         return super.createPlotOptions(globalSetting, settings).put("marker", JSONObject.create().put("symbol", "circle").put("enabled", true).put("radius", 4.5));
     }
 
+    @Override
+    public boolean canCompleteMissTime(){
+        return true;
+    }
 }
 

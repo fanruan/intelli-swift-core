@@ -8,8 +8,8 @@ import com.fr.bi.cal.analyze.cal.index.loader.TargetAndKey;
 import com.fr.bi.cal.analyze.cal.result.Node;
 import com.fr.bi.cal.analyze.cal.sssecret.diminfo.MergeIteratorCreator;
 import com.fr.bi.common.inter.Release;
-import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.report.result.DimensionCalculator;
+import com.fr.bi.stable.gvi.GroupValueIndex;
 
 import java.util.List;
 
@@ -26,15 +26,29 @@ public class NoneDimensionGroup implements Release {
     public final static NoneDimensionGroup NULL = new NoneDimensionGroup();
 
     private BusinessTable[] metrics;
+
     private List<TargetAndKey>[] summaryLists;
+
     private int sumLength;
+
     private GroupValueIndex[] gvis;
+
     private ICubeTableService[] tis;
+
     private Number[] summaryValue;
+
     private ICubeDataLoader loader;
+
     private List<Node> children;
 
     protected NoneDimensionGroup() {
+
+    }
+
+    public NoneDimensionGroup cloneNoSummaryValue() {
+
+        NoneDimensionGroup n = new NoneDimensionGroup(metrics, summaryLists, sumLength, tis, gvis, loader);
+        return n;
     }
 
 
@@ -42,11 +56,13 @@ public class NoneDimensionGroup implements Release {
      * Group计算的构造函数
      */
     protected NoneDimensionGroup(BusinessTable[] metrics, List<TargetAndKey>[] summaryLists, int sumLength, ICubeTableService[] tis, GroupValueIndex[] gvis, ICubeDataLoader loader, Number[] summaryValue) {
+
         this(metrics, summaryLists, sumLength, tis, gvis, loader);
         this.summaryValue = summaryValue;
     }
 
     protected NoneDimensionGroup(BusinessTable[] metrics, List<TargetAndKey>[] summaryLists, int sumLength, ICubeTableService[] tis, GroupValueIndex[] gvis, ICubeDataLoader loader) {
+
         this.metrics = metrics;
         this.summaryLists = summaryLists;
         this.sumLength = sumLength;
@@ -58,24 +74,29 @@ public class NoneDimensionGroup implements Release {
 
 
     public static NoneDimensionGroup createDimensionGroup(BusinessTable[] metrics, List<TargetAndKey>[] summaryLists, int sumLength, ICubeTableService[] tis, GroupValueIndex[] gvis, ICubeDataLoader loader) {
+
         return new NoneDimensionGroup(metrics, summaryLists, sumLength, tis, gvis, loader);
     }
 
     public static NoneDimensionGroup createDimensionGroup(BusinessTable[] metrics, List<TargetAndKey>[] summaryLists, int sumLength, ICubeTableService[] tis, GroupValueIndex[] gvis, Number[] summaryValue, ICubeDataLoader loader) {
+
         return new NoneDimensionGroup(metrics, summaryLists, sumLength, tis, gvis, loader, summaryValue);
     }
 
 
     public SingleDimensionGroup createSingleDimensionGroup(DimensionCalculator[] columns, ICubeValueEntryGetter[] getters, Object[] data, MergeIteratorCreator mergeIteratorCreator, boolean useRealData) {
+
         return SingleDimensionGroup.createDimensionGroup(metrics, summaryLists, sumLength, tis, columns, getters, data, gvis, mergeIteratorCreator, loader, useRealData);
     }
 
 
     public SingleDimensionGroup createSingleDimensionGroup(DimensionCalculator[] columns, ICubeValueEntryGetter[] getters, Object[] data, MergeIteratorCreator mergeIteratorCreator, GroupValueIndex[] gvis, boolean useRealData) {
+
         return SingleDimensionGroup.createDimensionGroup(metrics, summaryLists, sumLength, tis, columns, getters, data, gvis, mergeIteratorCreator, loader, useRealData);
     }
 
     public ISingleDimensionGroup createNodeSingleDimensionGroup(DimensionCalculator[] columns, ICubeValueEntryGetter[] getters, Object[] data, MergeIteratorCreator mergeIteratorCreator, List<Node> metricMergeResultList) {
+
         return NodeSingleDimensionGroup.createDimensionGroup(metrics, summaryLists, sumLength, tis, columns, getters, data, gvis, mergeIteratorCreator, loader, metricMergeResultList);
     }
 
@@ -88,38 +109,47 @@ public class NoneDimensionGroup implements Release {
     }
 
     public List<TargetAndKey>[] getSummaryLists() {
+
         return summaryLists;
     }
 
     public GroupValueIndex[] getGvis() {
+
         return gvis;
     }
 
     public ICubeTableService[] getTis() {
+
         return tis;
     }
 
     public ICubeDataLoader getLoader() {
+
         return loader;
     }
 
     public Number[] getSummaryValue() {
+
         return summaryValue;
     }
 
     public List<Node> getChildren() {
+
         return children;
     }
 
     public void setChildren(List<Node> children) {
+
         this.children = children;
     }
 
     public void setGvis(GroupValueIndex[] gvis) {
+
         this.gvis = gvis;
     }
 
     public void setSummaryValue(Number[] summaryValue) {
+
         this.summaryValue = summaryValue;
     }
 }

@@ -61,12 +61,8 @@ public class GetTreeLabelExecutor extends AbstractTreeLabelExecutor {
         if(floor >= values.size()) {
             return;
         }
-        List<List<String>> filter = new ArrayList<List<String>>();
-        for (int i =0;i < floor; i++) {
-            filter.add(values.get(i));
-        }
 
-        List<String> vl = createData( filter, 0, 1);
+        List<String> vl = createData(values, floor);
         if (result.size() > floor) {
             concatSetAndList(result.get(floor), vl);
         } else {
@@ -76,6 +72,7 @@ public class GetTreeLabelExecutor extends AbstractTreeLabelExecutor {
         if(floor > floors && (values.size() > floor)) {
             values.set(floor, checkSelectedValues(vl, values.get(floor)));
         }
+        dealSelectValues(result, values);
         getAllData(result, values, floor + 1);
     }
 
@@ -100,5 +97,17 @@ public class GetTreeLabelExecutor extends AbstractTreeLabelExecutor {
             set.add(str);
         }
         return set;
+    }
+
+    private void dealSelectValues(ArrayList<LinkedHashSet<String>> items,List<List<String>> values) {
+        for (int i = 0; i < values.size(); i++) {
+            if(items.size() > i) {
+                for (int j = 0; j < values.get(i).size(); j++) {
+                    if (!(items.get(i).contains(values.get(i).get(j)) || "_*_".equals(values.get(i).get(j)))) {
+                        values.get(i).remove(j);
+                    }
+                }
+            }
+        }
     }
 }

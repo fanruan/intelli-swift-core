@@ -1,14 +1,13 @@
 package com.finebi.cube.data.disk;
 
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.data.ICubePrimitiveResourceDiscovery;
-import com.finebi.cube.data.disk.writer.primitive.BIPrimitiveNIOWriterManager;
 import com.finebi.cube.data.input.primitive.ICubePrimitiveReader;
 import com.finebi.cube.data.output.primitive.ICubePrimitiveWriter;
 import com.finebi.cube.exception.BIBuildReaderException;
 import com.finebi.cube.exception.BIBuildWriterException;
 import com.finebi.cube.exception.IllegalCubeResourceLocationException;
 import com.finebi.cube.location.ICubeResourceLocation;
-import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
 
 import java.util.ArrayList;
@@ -154,6 +153,9 @@ public class BICubeDiskPrimitiveDiscovery implements ICubePrimitiveResourceDisco
         synchronized (this) {
             releasingResource = true;
             try {
+                for (NIOResourceManager nioManager : fileResourceMap.values()) {
+                    nioManager.inValidReader();
+                }
                 for (NIOResourceManager nioManager : fileResourceMap.values()) {
                     nioManager.forceRelease();
                 }

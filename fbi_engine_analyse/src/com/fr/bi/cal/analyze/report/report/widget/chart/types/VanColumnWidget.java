@@ -8,4 +8,9 @@ public class VanColumnWidget extends VanCartesianWidget{
     public String getSeriesType(String dimensionID){
         return "column";
     }
+
+    @Override
+    public boolean canCompleteMissTime(){
+        return true;
+    }
 }

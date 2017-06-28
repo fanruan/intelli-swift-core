@@ -115,43 +115,48 @@ public class SingleDimensionGroup extends ExecutorPartner implements ILazyExecut
         }
         //自循环处理同自定义分组
         if (!urd || hasSpecialGroup(columns[index]) || isCirCle(columns[index])) {
-            final Iterator it = columns[index].createValueMapIterator(metricTables[index], loader, urd, groupLimit);
-            return new DimensionIterator() {
-                @Override
-                public void remove() {
-                }
-                @Override
-                public int getCurrentGroup() {
-                    return 0;
-                }
-
-                @Override
-                public boolean canReGainGroupValueIndex() {
-                    return false;
-                }
-
-                @Override
-                public boolean isReturnFinalGroupValueIndex() {
-                    return false;
-                }
-
-                @Override
-                public GroupValueIndex getGroupValueIndexByGroupIndex(int groupIndex) {
-                    return null;
-                }
-
-                @Override
-                public boolean hasNext() {
-                    return it.hasNext();
-                }
-
-                @Override
-                public Map.Entry<Object, GroupValueIndex> next() {
-                    return (Map.Entry<Object, GroupValueIndex>) it.next();
-                }
-            };
+            return dealWithSpecialGroupOrNotRealData(index, urd, groupLimit);
         }
         return getIterByAllCal(index);
+    }
+
+    private DimensionIterator dealWithSpecialGroupOrNotRealData(int index, boolean urd, int groupLimit) {
+        final Iterator it = columns[index].createValueMapIterator(metricTables[index], loader, urd, groupLimit, gvis[index]);
+        return new DimensionIterator() {
+            @Override
+            public void remove() {
+            }
+
+            @Override
+            public boolean isReturnFinalGroupValueIndex() {
+                return false;
+            }
+
+            @Override
+            public int getCurrentGroup() {
+                return 0;
+            }
+
+            @Override
+            public boolean canReGainGroupValueIndex() {
+                return false;
+            }
+
+            @Override
+            public GroupValueIndex getGroupValueIndexByGroupIndex(int groupIndex) {
+                return null;
+            }
+
+            @Override
+            public boolean hasNext() {
+                return it.hasNext();
+            }
+
+            @Override
+            public Map.Entry<Object, GroupValueIndex> next() {
+                return (Map.Entry<Object, GroupValueIndex>) it.next();
+            }
+        };
     }
 
     private boolean isCirCle(DimensionCalculator column) {
