@@ -606,7 +606,7 @@ public class TableWidget extends BISummaryWidget {
         for (String target : clicked.keySet()) {
             try {
                 summaryTarget = linkedWidget.getBITargetByID(target);
-                Map<String, JSONArray> t = new HashMap<>();
+                Map<String, JSONArray> t = new HashMap<String, JSONArray>();
                 t.put(target, clicked.get(target));
                 clicked = t;
                 break;
