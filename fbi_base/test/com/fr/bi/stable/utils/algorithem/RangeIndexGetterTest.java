@@ -52,7 +52,7 @@ public class RangeIndexGetterTest extends TestCase {
     private static final int RANDOM_TEST_COUNT = 10^5;
     private static final int RANDOM_TEST_STEP = 10;
     public void testRandomTestGetter () {
-        for( int i = RANDOM_TEST_STEP; i <= (10^5); i *=RANDOM_TEST_STEP) {
+        for( int i = RANDOM_TEST_STEP; i <= (RANDOM_TEST_COUNT); i *=RANDOM_TEST_STEP) {
             testRangeGetter(i);
         }
     }
