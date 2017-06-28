@@ -34,6 +34,26 @@ public class GroupUtils {
         AtomicInteger count = new AtomicInteger(0);
         AtomicInteger size = new AtomicInteger(0);
         addSummaryValue(node, gc, showSum, shouldSetIndex, executor, count, size);
+        addChild(iterator, op, showSum, shouldSetIndex, sumLength, executor, node, gc, count, size);
+        boolean completed = executor == null || count.get() == size.get();
+        if (!completed) {
+            //没完成的话要唤醒下executor，以防有加到executor里wait住的。
+            executor.wakeUp();
+            synchronized (count) {
+                if (!completed) {
+                    try {
+                        count.wait();
+                    } catch (InterruptedException e) {
+                    }
+                }
+            }
+        }
+        iterator.pageEnd();
+        NodeUtils.setSiblingBetweenFirstAndLastChild(node);
+        return new NodeAndPageInfo(node, iterator);
+    }
+
+    private static void addChild(NodeDimensionIterator iterator, Operator op, boolean showSum, boolean shouldSetIndex, int sumLength, BIMultiThreadExecutor executor, Node node, GroupConnectionValue gc, AtomicInteger count, AtomicInteger size) {
         List<GroupConnectionValue> display = gc.getDisplayGroupConnectionValue();
         Iterator<GroupConnectionValue> displayIter = display.iterator();
         if (displayIter.hasNext()) {
@@ -72,22 +92,6 @@ public class GroupUtils {
                 }
             }
         }
-        boolean completed = executor == null || count.get() == size.get();
-        if (!completed) {
-            //没完成的话要唤醒下executor，以防有加到executor里wait住的。
-            executor.wakeUp();
-            synchronized (count) {
-                if (!completed) {
-                    try {
-                        count.wait();
-                    } catch (InterruptedException e) {
-                    }
-                }
-            }
-        }
-        iterator.pageEnd();
-        NodeUtils.setSiblingBetweenFirstAndLastChild(node);
-        return new NodeAndPageInfo(node, iterator);
     }
 
     /**

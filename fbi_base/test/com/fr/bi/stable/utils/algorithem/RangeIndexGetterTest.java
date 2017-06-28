@@ -21,12 +21,12 @@ import java.util.TreeMap;
  */
 public class RangeIndexGetterTest extends TestCase {
 
-
+    private static final long ONE_DAY = 1000 * 60 * 1000* 60 *24;
     private long[] createDate(int len) {
         long[] d = new long[len];
         long t = System.currentTimeMillis();
         for(int i = 0; i < len; i++) {
-            d[i] = t - (long)(Math.random()*1000 * 60 * 1000* 60 *24);
+            d[i] = t - (long)(Math.random()*ONE_DAY);
         }
         return d;
     }
@@ -49,20 +49,23 @@ public class RangeIndexGetterTest extends TestCase {
         return getter;
     }
 
+    private static final int RANDOM_TEST_COUNT = 10^5;
+    private static final int RANDOM_TEST_STEP = 10;
     public void testRandomTestGetter () {
-        for( int i = 10; i <= (10^5); i *=10) {
+        for( int i = RANDOM_TEST_STEP; i <= (10^5); i *=RANDOM_TEST_STEP) {
             testRangeGetter(i);
         }
     }
 
 
+    private static final int TEST_COUNT = 3000;
     private  void testRangeGetter (int len) {
         long[] dates = createDate(len);
         CubeTreeMap<Integer> year = buildMap(dates, ValueConverterFactory.createDateValueConverter(DateConstant.DATE.YEAR));
         CubeTreeMap<Long> month = buildMap(dates, ValueConverterFactory.createDateValueConverter(DateConstant.DATE.YEAR_MONTH));
         CubeTreeMap<Long> day = buildMap(dates, ValueConverterFactory.createDateValueConverter(DateConstant.DATE.YMD));
         RangeIndexGetter getter = new RangeIndexGetter(year, month, day);
-       for(int i = 0; i < 3000; i++) {
+       for(int i = 0; i < TEST_COUNT; i++) {
            testRange(getter, dates);
        }
     }
@@ -94,11 +97,15 @@ public class RangeIndexGetterTest extends TestCase {
         int count = 0;
         for(int i = 0; i < dates.length; i++) {
             long d = createDay(dates[i]).getTime();
-            if((s== null || d >= s.getTime() )&& (e== null || d <= e.getTime())) {
+            if(isInRange(s, e, d)) {
                 count++;
             }
         }
         assertEquals(gvi.getRowsCountWithData(), count);
+    }
+
+    private boolean isInRange(BIDay s, BIDay e, long d) {
+        return (s== null || d >= s.getTime() )&& (e== null || d <= e.getTime());
     }
 
 
@@ -118,8 +125,8 @@ public class RangeIndexGetterTest extends TestCase {
         CubeTreeMap year = buildMap(dates,ValueConverterFactory.createDateValueConverter(DateConstant.DATE.YEAR));
         CubeTreeMap month = buildMap(dates, ValueConverterFactory.createDateValueConverter(DateConstant.DATE.YEAR_MONTH));
         CubeTreeMap day = buildMap(dates, ValueConverterFactory.createDateValueConverter(DateConstant.DATE.YMD));
-        int start = 5;
-        int end = 6;
+        int start = 1;
+        int end = 3;
         RangeIndexGetter getter = new RangeIndexGetter(year, month, day);
         testResult(getter, dates, start, end);
     }
@@ -132,8 +139,8 @@ public class RangeIndexGetterTest extends TestCase {
         CubeTreeMap year = buildMap(dates, ValueConverterFactory.createDateValueConverter(DateConstant.DATE.YEAR));
         CubeTreeMap month = buildMap(dates, ValueConverterFactory.createDateValueConverter(DateConstant.DATE.YEAR_MONTH));
         CubeTreeMap day = buildMap(dates, ValueConverterFactory.createDateValueConverter(DateConstant.DATE.YMD));
-        int start = 5;
-        int end = 5;
+        int start = 3;
+        int end = 3;
         RangeIndexGetter getter = new RangeIndexGetter(year, month, day);
         testResult(getter, dates, start, end);
     }
