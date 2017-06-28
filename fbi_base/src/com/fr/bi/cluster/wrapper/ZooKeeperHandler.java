@@ -5,6 +5,7 @@ import org.apache.zookeeper.Watcher;
 import org.apache.zookeeper.ZooKeeper;
 
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created by FineSoft on 2015/5/7.
@@ -47,7 +48,7 @@ public class ZooKeeperHandler {
         zooKeeper.register(watcher);
         if (ZooKeeper.States.CONNECTING == zooKeeper.getState()) {
             try {
-                connectedLatch.await();
+                connectedLatch.await(10, TimeUnit.SECONDS);
             } catch (InterruptedException e) {
                 throw new IllegalStateException(e);
             }
@@ -64,12 +65,7 @@ public class ZooKeeperHandler {
 
         @Override
         public void process(WatchedEvent event) {
-            if (event.getState() == Event.KeeperState.SyncConnected) {
-                connectedLatch.countDown();
-            }
-            if (event.getState() == Event.KeeperState.Disconnected){
-
-            }
+            connectedLatch.countDown();
         }
     }
 
