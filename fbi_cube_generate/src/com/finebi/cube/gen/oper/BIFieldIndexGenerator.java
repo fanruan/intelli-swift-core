@@ -108,7 +108,7 @@ public class BIFieldIndexGenerator<T> extends BIProcessor {
         biLogManager.logIndexStart(UserControl.getInstance().getSuperManagerID());
         try {
             initial();
-            if (PerformancePlugManager.getInstance().isDiskSort()) {
+            if (PerformancePlugManager.getInstance().isUseDiskSort()) {
                 buildTableIndexExternal();
             } else {
                 buildTableIndex();

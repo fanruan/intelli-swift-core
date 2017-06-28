@@ -1,5 +1,7 @@
 package com.fr.bi.manager;
 
+import java.util.Map;
+
 /**
  * Created by Hiram on 2015/3/18.
  */
@@ -21,7 +23,7 @@ public interface PerformancePlugManagerInterface {
 
     boolean isSearchPinYin();
 
-    boolean isDiskSort();
+    boolean isUseDiskSort();
 
     /**
      * dump的阀值，超过阀值后数据导出到硬盘
@@ -120,4 +122,8 @@ public interface PerformancePlugManagerInterface {
      * @return
      */
     int getMaxSPADetailSize();
+
+    Map<String, Object> getAllConf();
+
+    boolean resetConf(Map<String, Object> configs);
 }
