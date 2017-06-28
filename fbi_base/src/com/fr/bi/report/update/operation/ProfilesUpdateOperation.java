@@ -319,7 +319,7 @@ public class ProfilesUpdateOperation implements ReportUpdateOperation {
     柱状图 5 -> 柱状图
     面积图 14 -> 面积图
     堆积面积图 15-> 堆积面积图（折线）
-    折线图 3-> （折线）
+    折线图 13-> （折线）
     堆积柱状图 6 -> （堆积柱状图）
     */
     private void createChartTypeMap() {
