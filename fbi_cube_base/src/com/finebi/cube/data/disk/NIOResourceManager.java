@@ -110,4 +110,10 @@ public class NIOResourceManager implements ICubePrimitiveResourceDiscovery {
             readerHandlerManager.reValidHandler();
         }
     }
+
+    public void inValidReader(){
+        if (isAvailable(readerHandlerManager)) {
+            readerHandlerManager.inValidHandler();
+        }
+    }
 }

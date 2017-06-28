@@ -129,6 +129,34 @@ public class ArrayLookupHelper {
     }
 
 
+    /**
+     * 返回2分查找的结果，如果不存在，就返回false与上一个的位置
+     * @param reader
+     * @param value
+     * @param comparator
+     * @return
+     */
+    public static MatchAndIndex binarySearch(ICubeColumnIndexReader reader, Object value, Comparator comparator){
+        return binarySearch(reader, 0, reader.sizeOfGroup(), value, comparator);
+    }
+
+    private static MatchAndIndex binarySearch(ICubeColumnIndexReader reader, int start, int end, Object value, Comparator comparator){
+        int mid = ((start + end)>>1);
+        int result = comparator.compare(reader.getGroupValue(mid), value);
+        if (result == 0){
+            return new MatchAndIndex(true, mid);
+        }
+        //如果开始与结尾只相等，判断下start的位置即可。
+        if (end == start){
+            return new MatchAndIndex(false, result < 0 ? start : start - 1);
+        }
+        if (result > 0){
+            return binarySearch(reader, start, mid, value, comparator);
+        } else {
+            return binarySearch(reader, mid + 1, end, value, comparator);
+        }
+    }
+
     public static interface Lookup<T> {
         public int minIndex();
 

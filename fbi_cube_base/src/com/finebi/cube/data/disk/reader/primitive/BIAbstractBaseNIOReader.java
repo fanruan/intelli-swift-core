@@ -67,8 +67,10 @@ public abstract class BIAbstractBaseNIOReader implements ICubePrimitiveReader {
     public void destroySource() {
         try {
             readWriteLock.writeLock().lock();
-            //先改变isValid状态再判断canClear
-            isValid = false;
+            //再destroy之前必须在manager里面吧isvalid设置成false
+            if ( isValid == true){
+                BILoggerFactory.getLogger(this.getClass()).error("can not destroy valid reader");
+            }
             setBufferInValid();
             try {
                 //但愿10ms能 执行完get方法否则可能导致jvm崩溃
@@ -96,11 +98,14 @@ public abstract class BIAbstractBaseNIOReader implements ICubePrimitiveReader {
     }
 
     public void releaseSource() {
+        //如果isValid已经是false就不执行，并且不把isValid设成true
+        readWriteLock.writeLock().lock();
+        if (!isValid) {
+            return;
+        }
+        readWriteLock.writeLock().unlock();
         try {
             readWriteLock.writeLock().lock();
-            if (!isValid) {
-                return;
-            }
             //先改变isValid状态再判断canClear
             isValid = false;
             setBufferInValid();
