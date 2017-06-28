@@ -22,6 +22,7 @@ import com.finebi.cube.structure.ICubeRelationEntityService;
 import com.finebi.cube.structure.ITableKey;
 import com.finebi.cube.utils.BIRelationHelper;
 import com.fr.bi.conf.log.BILogManager;
+import com.fr.bi.conf.provider.BIConfigureManagerCenter;
 import com.fr.bi.conf.provider.BILogManagerProvider;
 import com.fr.bi.conf.report.widget.RelationColumnKey;
 import com.fr.bi.stable.constant.BILogConstant;
@@ -133,7 +134,7 @@ public class BITablePathIndexBuilder extends BIProcessor {
 
     private void buildRelationPathIndex() {
         if (relationPath.size() >= 2) {
-            BILogManager biLogManager = StableFactory.getMarkedObject(BILogManagerProvider.XML_TAG, BILogManager.class);
+            BILogManagerProvider biLogManager = BIConfigureManagerCenter.getLogManager();
             biLogManager.logRelationStart(UserControl.getInstance().getSuperManagerID());
             long t = System.currentTimeMillis();
             CubeRelationEntityGetterService lastRelationEntity = null;

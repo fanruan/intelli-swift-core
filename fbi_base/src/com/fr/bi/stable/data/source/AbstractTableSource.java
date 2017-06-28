@@ -40,7 +40,7 @@ public abstract class AbstractTableSource implements CubeTableSource {
     //表的唯一标识
     protected Map<String, ICubeFieldSource> fields = new LinkedHashMap<String, ICubeFieldSource>();
     @BIIgnoreField
-    protected transient PersistentTable dbTable;
+    protected PersistentTable dbTable;
     @BIIgnoreField
     private transient BICore core;
 

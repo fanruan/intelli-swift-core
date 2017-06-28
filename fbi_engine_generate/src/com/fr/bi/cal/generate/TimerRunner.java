@@ -54,7 +54,7 @@ public class TimerRunner {
 
     private List<TimerTaskSchedule> getTimerTaskSchedules() {
         //子节点不添加定时任务。
-        if (ClusterEnv.isCluster() && !ClusterAdapter.getManager().getHostManager().isSelf()) {
+        if (ClusterEnv.isCluster() && !ClusterAdapter.getManager().getHostManager().isBuildCube()) {
             return new ArrayList<TimerTaskSchedule>();
         } else {
             Map<String, UpdateSettingSource> allTimeTaskMap = BIConfigureManagerCenter.getUpdateFrequencyManager().getUpdateSettings(biUser.getUserId());
