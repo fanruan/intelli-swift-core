@@ -59,10 +59,6 @@ public class PerformancePlugManager implements PerformancePlugManagerInterface {
 
     private boolean useDereplication = true;
 
-    private String PhantomServerIP = "127.0.0.1";
-    private int PhantomServerPort = 60810;
-
-
     private boolean extremeConcurrency = true;
     private int reIndexRowCount = 1 << 12;
 
