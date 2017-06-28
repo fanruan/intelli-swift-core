@@ -40,8 +40,7 @@ public class ZooKeeperHandler {
             zkHandler = new ZooKeeper(config.getConnectString(), config.getTickTime(), watcher);
             this.config = config;
         } catch (Exception ex) {
-            ex.printStackTrace();
-        }
+            BILoggerFactory.getLogger(ZooKeeperHandler.class).error(ex.getMessage(), ex);        }
     }
 
     private void waitUntilConnected(ZooKeeper zooKeeper) {
