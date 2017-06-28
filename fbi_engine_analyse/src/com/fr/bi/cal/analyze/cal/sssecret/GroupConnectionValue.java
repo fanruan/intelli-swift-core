@@ -132,7 +132,7 @@ public class GroupConnectionValue {
      */
     public List<GroupConnectionValue> getDisplayGroupConnectionValue() {
 
-        List<GroupConnectionValue> disp = new ArrayList<>();
+        List<GroupConnectionValue> disp = new ArrayList<GroupConnectionValue>();
         disp.addAll(getCompleteLine());
         disp.add(this);
         return disp;
@@ -140,7 +140,7 @@ public class GroupConnectionValue {
 
     private List<GroupConnectionValue> getCompleteLine() {
 
-        List<GroupConnectionValue> r = new ArrayList<>();
+        List<GroupConnectionValue> r = new ArrayList<GroupConnectionValue>();
         GroupConnectionValue p = this;
         // 如果第一个维度就进行补全
         if (p.shouldComplete) {
