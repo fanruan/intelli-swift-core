@@ -1,5 +1,6 @@
 package com.fr.bi.cluster.wrapper;
 
+import com.finebi.cube.common.log.BILoggerFactory;
 import org.apache.zookeeper.WatchedEvent;
 import org.apache.zookeeper.Watcher;
 import org.apache.zookeeper.ZooKeeper;
@@ -14,6 +15,7 @@ public class ZooKeeperHandler {
     private ZooKeeper zkHandler;
     private ZooKeeperConfig config;
     private Watcher watcher;
+    private final static int TIME_OUT = 10;
 
     public synchronized ZooKeeper getZooKeeper() {
         if (zkHandler.getState() == ZooKeeper.States.CLOSED) {
@@ -48,9 +50,9 @@ public class ZooKeeperHandler {
         zooKeeper.register(watcher);
         if (ZooKeeper.States.CONNECTING == zooKeeper.getState()) {
             try {
-                connectedLatch.await(10, TimeUnit.SECONDS);
+                connectedLatch.await(TIME_OUT, TimeUnit.SECONDS);
             } catch (InterruptedException e) {
-                throw new IllegalStateException(e);
+                BILoggerFactory.getLogger(ZooKeeperHandler.class).error("connectedLatch.await errot "+ e);
             }
         }
     }
