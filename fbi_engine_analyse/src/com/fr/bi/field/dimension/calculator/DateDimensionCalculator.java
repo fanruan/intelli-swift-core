@@ -17,6 +17,7 @@ import com.fr.bi.stable.structure.collection.map.CubeTreeMap;
 import com.fr.bi.stable.utils.BICollectionUtils;
 import com.fr.bi.stable.utils.DateUtils;
 import com.fr.bi.stable.utils.time.BIDateUtils;
+import com.fr.general.GeneralUtils;
 import com.fr.stable.StringUtils;
 
 import java.util.Comparator;
@@ -269,19 +270,19 @@ public class DateDimensionCalculator extends AbstractDimensionCalculator {
             // 年|月|季度|星期
             if (sortType == BIReportConstant.SORT.NUMBER_DESC) {
                 // 如果降序的情况下是上一个年份的上一年
-                if (((Number) org).intValue() == ((Number) last).intValue() - 1) {
+                if (GeneralUtils.objectToNumber(org).intValue() == GeneralUtils.objectToNumber(last).intValue() - 1) {
                     n = org;
                 } else {
                     // 要不然就返回上一年
-                    n = ((Number) last).intValue() - 1;
+                    n = GeneralUtils.objectToNumber(last).intValue() - 1;
                 }
             } else {
                 // 如果是生序的情况下是上一个年份的下一年
-                if (((Number) org).intValue() == ((Number) last).intValue() + 1) {
+                if (GeneralUtils.objectToNumber(org).intValue() == GeneralUtils.objectToNumber(last).intValue() + 1) {
                     n = org;
                 } else {
                     // 下一年
-                    n = ((Number) last).intValue() + 1;
+                    n = GeneralUtils.objectToNumber(last).intValue() + 1;
                 }
             }
         } else if (groupType == BIReportConstant.GROUP.YMD) {
@@ -369,9 +370,9 @@ public class DateDimensionCalculator extends AbstractDimensionCalculator {
         if (DateUtils.isCubeIntegerTimeGroup(groupType)) {
 
             if (sortType == BIReportConstant.SORT.NUMBER_DESC) {
-                return ((Number) n).intValue() + 1;
+                return GeneralUtils.objectToNumber(n).intValue() + 1;
             } else {
-                return ((Number) n).intValue() - 1;
+                return GeneralUtils.objectToNumber(n).intValue() - 1;
             }
         } else if (groupType == BIReportConstant.GROUP.YMD) {
             // 年月日类型的...
