@@ -52,7 +52,7 @@ public class ZooKeeperHandler {
             try {
                 connectedLatch.await(TIME_OUT, TimeUnit.SECONDS);
             } catch (InterruptedException e) {
-                BILoggerFactory.getLogger(ZooKeeperHandler.class).error("connectedLatch.await errot "+ e);
+                BILoggerFactory.getLogger(ZooKeeperHandler.class).error("connectedLatch.await errot "+e.getMessage(), e);
             }
         }
     }
