@@ -6,7 +6,6 @@ import com.fr.bi.cal.analyze.cal.index.loader.TargetAndKey;
 import com.fr.bi.cal.analyze.cal.multithread.BIMultiThreadExecutor;
 import com.fr.bi.cal.analyze.cal.multithread.BISingleThreadCal;
 import com.fr.bi.cal.analyze.cal.multithread.SummaryCall;
-import com.fr.bi.cal.analyze.cal.multithread.SummaryIndexCal;
 import com.fr.bi.cal.analyze.cal.result.Node;
 import com.fr.bi.cal.analyze.cal.result.NodeAndPageInfo;
 import com.fr.bi.cal.analyze.cal.result.NodeUtils;
@@ -40,7 +39,7 @@ public class GroupUtils {
         if (displayIter.hasNext()) {
             gc = displayIter.next();
         }
-        addSummaryValue(node, gc, showSum, shouldSetIndex, executor);
+        addSummaryValue(node, gc, showSum, shouldSetIndex, executor, count, size);
         while (!op.isPageEnd(gc) && gc != null && gc.getChild() != null) {
             GroupConnectionValue gcvChild = gc.getChild();
             Node parent = node;

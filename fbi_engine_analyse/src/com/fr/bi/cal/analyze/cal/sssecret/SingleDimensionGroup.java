@@ -127,15 +127,11 @@ public class SingleDimensionGroup extends ExecutorPartner implements ILazyExecut
             public void remove() {
             }
 
-                @Override
-                public boolean isReturnFinalGroupValueIndex() {
-                    return false;
-                }
+            @Override
+            public boolean isReturnFinalGroupValueIndex() {
+                return false;
+            }
 
-                @Override
-                public GroupValueIndex getGroupValueIndexByGroupIndex(int groupIndex) {
-                    return null;
-                }
             @Override
             public int getCurrentGroup() {
                 return 0;
