@@ -8,6 +8,7 @@ import com.finebi.cube.conf.table.BusinessTable;
 import com.finebi.cube.impl.conf.CubeBuildStuffComplete;
 import com.finebi.cube.relation.BITableSourceRelation;
 import com.finebi.cube.relation.BITableSourceRelationPath;
+import com.finebi.cube.utils.CubeUpdateUtils;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.cal.stable.loader.CubeReadingTableIndexLoader;
 import com.fr.bi.common.inter.BrokenTraversal;
@@ -172,7 +173,7 @@ public class CubeRunner {
         } catch (Exception e) {
             LOGGER.error(e.getMessage(), e);
         } finally {
-            BICubeConfigureCenter.getPackageManager().endBuildingCube(biUser.getUserId());
+            BICubeConfigureCenter.getPackageManager().endBuildingCube(biUser.getUserId(), CubeUpdateUtils.getBusinessCubeAbsentTables(biUser.getUserId()));
         }
         UserAnalysisCubeDataLoaderCreator.getInstance().fetchCubeLoader(biUser.getUserId()).clear();
         /* 前台进度条完成进度最多到90%，当cube文件替换完成后传入调用logEnd，进度条直接到100%*/
