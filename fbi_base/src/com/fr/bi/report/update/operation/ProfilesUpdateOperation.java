@@ -29,6 +29,8 @@ import java.util.regex.Pattern;
  * 图片uri修正
  * 散点气泡图type升级成点图的type
  * 显示网格拆分成显示纵向和显示横向
+ * 组合图重新分组
+ * BI-6515 4.0->4.0.2的散点、气泡图兼容到点图样式不一致
  * 处理脏数据
  */
 public class ProfilesUpdateOperation implements ReportUpdateOperation {
@@ -104,7 +106,7 @@ public class ProfilesUpdateOperation implements ReportUpdateOperation {
                         String dimId = dimKeys.next().toString();
                         JSONObject dimJo = dimensions.getJSONObject(dimId);
                         if (dimJo.has("_src")) {
-                            JSONObject srcJo=dimJo.getJSONObject("_src");
+                            JSONObject srcJo = dimJo.getJSONObject("_src");
                             if (srcJo.has("fieldId") && BIJsonUtils.isArray(srcJo.getString("fieldId"))) {
                                 JSONArray fieldIds = srcJo.getJSONArray("fieldId");
                                 srcJo.put("fieldId", fieldIds.length() > 0 ? fieldIds.get(0) : "");
@@ -140,7 +142,7 @@ public class ProfilesUpdateOperation implements ReportUpdateOperation {
                             widgetJo.getJSONObject("settings").put("vShowGridLine", isShowGridLine);
                         }
                     }
-                    if(settings != null && settings.has("textDirection")){
+                    if (settings != null && settings.has("textDirection")) {
                         settings.put("catLabelStyle", JSONObject.create().put("textDirection", settings.optInt("textDirection")));
                     }
                 }
@@ -216,6 +218,10 @@ public class ProfilesUpdateOperation implements ReportUpdateOperation {
                 JSONObject widgetJo = json.getJSONObject("widgets").getJSONObject(widgetId);
                 if (widgetJo.has("type")) {
                     if (widgetJo.getInt("type") == BIReportConstant.WIDGET.BUBBLE || widgetJo.getInt("type") == BIReportConstant.WIDGET.SCATTER) {
+                        if (widgetJo.has("view") && widgetJo.getJSONObject("view").has(BIReportConstant.REGION.DIMENSION1)) {
+                            widgetJo.getJSONObject("view").put(BIReportConstant.REGION.DIMENSION2, widgetJo.getJSONObject("view").get(BIReportConstant.REGION.DIMENSION1));
+                            widgetJo.getJSONObject("view").remove(BIReportConstant.REGION.DIMENSION1);
+                        }
                         widgetJo.put("type", BIReportConstant.WIDGET.DOT);
                     }
                 }
@@ -303,8 +309,6 @@ public class ProfilesUpdateOperation implements ReportUpdateOperation {
 
     /*
     * 映射图标type
-    * 没有一点点防备，样式就这么偷偷变了
-
     * */
     private int updateChartType(int chartType) {
         if (chartTypeMap.containsKey(chartType)) {
@@ -329,6 +333,8 @@ public class ProfilesUpdateOperation implements ReportUpdateOperation {
         convertMap.put(BIChartSettingConstant.ACCUMULATE_TYPE.OLD_STACKED_AREA, BIChartSettingConstant.ACCUMULATE_TYPE.STACKED_AREA_NORMAL);
         convertMap.put(BIChartSettingConstant.ACCUMULATE_TYPE.OLD_LINE, BIChartSettingConstant.ACCUMULATE_TYPE.LINE_NORMAL);
         convertMap.put(BIChartSettingConstant.ACCUMULATE_TYPE.OLD_STACKED_COLUMN, BIChartSettingConstant.ACCUMULATE_TYPE.STACKED_COLUMN);
+        //default type=1
+        convertMap.put(BIChartSettingConstant.ACCUMULATE_TYPE.COLUMN, BIChartSettingConstant.ACCUMULATE_TYPE.COLUMN);
         this.chartTypeMap = convertMap;
     }
 
