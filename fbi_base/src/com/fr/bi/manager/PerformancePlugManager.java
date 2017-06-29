@@ -7,8 +7,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -36,6 +39,12 @@ public class PerformancePlugManager implements PerformancePlugManagerInterface {
     private boolean isSearchPinYin = true;
     private boolean useMultiThreadCal = false;
     private double minCubeFreeHDSpaceRate = 2;
+    private String filePath = FRContext.getCurrentEnv().getPath();
+    private static final String oldFileName = "plugs.properties";
+    private static final String newFileName = "plugsUpdate.properties";
+    private File oldFile = new File(filePath + File.separator + ProjectConstants.RESOURCES_NAME + File.separator + oldFileName);
+    private boolean isControlMaxMemory = false;
+    private BIPerformanceParamConfig config = new BIPerformanceParamConfig();
 
     //	private String message = "当前模板计算量大或服务器繁忙，请点击上面清除按钮清除条件或稍后再试";
     private boolean diskSort = false;
@@ -78,6 +87,8 @@ public class PerformancePlugManager implements PerformancePlugManagerInterface {
     private int maxStructureSize = 0;
 
     private int maxSPADetailSize = 0;
+
+    private int maxNodeCount = Integer.MAX_VALUE;
 
     private PerformancePlugManager() {
         init();
@@ -128,6 +139,103 @@ public class PerformancePlugManager implements PerformancePlugManagerInterface {
         } catch (Exception e) {
             BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
+    }
+
+    /**
+     * 先整理需要更新的数据，然后更新参数配置信息
+     *
+     * @param resultMap
+     * @return
+     */
+    @Override
+    public boolean updateParam(Map<String, String> resultMap) {
+        try {
+            Map<String, String> doUpdateMap = new HashMap<String, String>();
+            Map<String, String> runMap = getExtraParam("run");
+            Map<String, String> newMap = getExtraParam("new");
+            Map<String, String> deafultMap = PerformanceParamTools.convertParamKey(getDefaultConfig());
+            resultMap = PerformanceParamTools.convertParamKey(resultMap);
+            resultMap = config.beforeDoWrite(runMap, newMap, resultMap);
+            Iterator<String> it = resultMap.keySet().iterator();
+            while (it.hasNext()) {
+                String paramKey = it.next();
+                String defaultValue = deafultMap.get(paramKey);
+                String newValue = resultMap.get(paramKey);
+                if (!defaultValue.equals(newValue)) {
+                    doUpdateMap.put(paramKey, newValue);
+                    continue;
+                }
+            }
+            return config.writeConfig(doUpdateMap, FRContext.getCurrentEnv().writeBean(newFileName, ProjectConstants.RESOURCES_NAME));
+        } catch (Exception e) {
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
+        }
+        return false;
+    }
+
+    /**
+     * 获取系统默认配置
+     *
+     * @return
+     */
+    @Override
+    public Map<String, String> getDefaultConfig() {
+        Map<String, String> defaultMap = new HashMap<String, String>();
+        defaultMap.put("returnEmptyIndex", String.valueOf(false));
+        defaultMap.put("isSearchPinYin", String.valueOf(true));
+        defaultMap.put("isGetTemplateScreenCapture", String.valueOf(true));
+        defaultMap.put("isControlMaxMemory", String.valueOf(false));
+        defaultMap.put("useMultiThreadCal", String.valueOf(false));
+        defaultMap.put("maxNodeCount", String.valueOf(Integer.MAX_VALUE));
+        defaultMap.put("diskSortDumpThreshold", String.valueOf(11 << 15));
+        defaultMap.put("diskSort", String.valueOf(false));
+        defaultMap.put("biThreadPoolSize", String.valueOf(1));
+        defaultMap.put("biTransportThreadPoolSize", String.valueOf(2));
+        defaultMap.put("useStandardOutError", String.valueOf(false));
+        defaultMap.put("verboseLog", String.valueOf(true));
+        defaultMap.put("useLog4JPropertiesFile", String.valueOf(false));
+        defaultMap.put("serverJarLocation", String.valueOf(""));
+        defaultMap.put("deployModeSelectSize", String.valueOf(DEFAULT_DEPLOY_MODE_OFF));
+        defaultMap.put("retryMaxTimes", String.valueOf(3));
+        defaultMap.put("retryMaxSleepTime", String.valueOf(100));
+        defaultMap.put("minCubeFreeHDSpaceRate", String.valueOf(2));
+        defaultMap.put("cubeReaderReleaseSleepTime", String.valueOf(1L));
+        return defaultMap;
+    }
+
+    /**
+     * 通过参数类型，获取额外的参数配置信息
+     *
+     * @param paramType
+     * @return
+     */
+    @Override
+    public Map<String, String> getExtraParam(String paramType) {
+        String readFileName = null;
+        if ("run".equals(paramType)) {
+            readFileName = oldFileName;
+        }
+        if ("new".equals(paramType)) {
+            readFileName = newFileName;
+        }
+        Map<String, String> paramConfig = new HashMap<String, String>();
+        try {
+            paramConfig = config.readConfig(FRContext.getCurrentEnv().readBean(readFileName, ProjectConstants.RESOURCES_NAME));
+        } catch (Exception e) {
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
+        }
+        return paramConfig;
+    }
+
+    /**
+     * 判断参数是否属于字段信息
+     *
+     * @param resultMap
+     * @return
+     */
+    @Override
+    public boolean isBelongTo(Map<String, String> resultMap) {
+        return PerformanceParamTools.isBelongConfig(this, resultMap);
     }
 
     private InputStream emptyInputStream() {
@@ -354,6 +462,56 @@ public class PerformancePlugManager implements PerformancePlugManagerInterface {
 //		throw new RuntimeException("同时只能进行一次分析计算");
     }
 
+    /**
+     * 通过不同的paramType，可以获取配置
+     * paramType == "new"  更新成功后，系统重启的参数配置
+     * paramType == "run"  本次系统启动时，额外的参数配置
+     *
+     * @param paramType
+     * @return
+     */
+    @Override
+    public Map<String, String> getConfigByType(String paramType) {
+        String fileName = null;
+        Map<String, String> newMap = new HashMap<String, String>();
+        if ("run".equals(paramType)) {
+            fileName = oldFileName;
+        }
+        if ("new".equals(paramType)) {
+            fileName = newFileName;
+        }
+        try {
+            InputStream in = FRContext.getCurrentEnv().readBean(fileName, ProjectConstants.RESOURCES_NAME);
+            if (in != null) {
+                properties = new Properties();
+                properties.load(in);
+                setTimeoutConfig(properties);
+                newMap.put("returnEmptyIndex", getString(PERFORMANCE + ".emptyWhenNotSelect", String.valueOf(false)));
+                newMap.put("isSearchPinYin", getString(PERFORMANCE + ".isSearchPinYin", String.valueOf(true)));
+                newMap.put("isGetTemplateScreenCapture", getString(PERFORMANCE + ".isGetTemplateScreenCapture", String.valueOf(true)));
+                newMap.put("isControlMaxMemory", getString(PERFORMANCE + ".isControlMaxMemory", String.valueOf(isControlMaxMemory)));
+                newMap.put("useMultiThreadCal", getString(PERFORMANCE + ".useMultiThreadCal", String.valueOf(useMultiThreadCal)));
+                newMap.put("maxNodeCount", getString(PERFORMANCE + ".maxNodeCount", String.valueOf(maxNodeCount)));
+                newMap.put("diskSortDumpThreshold", getString(PERFORMANCE + ".diskSortDumpThreshold", String.valueOf(diskSortDumpThreshold)));
+                newMap.put("diskSort", getString(PERFORMANCE + ".useDiskSort", String.valueOf(false)));
+                newMap.put("biThreadPoolSize", getString(PERFORMANCE + ".biThreadPoolSize", String.valueOf(biThreadPoolSize)));
+                newMap.put("biTransportThreadPoolSize", getString(PERFORMANCE + ".biTransportThreadPoolSize", String.valueOf(biTransportThreadPoolSize)));
+                newMap.put("useStandardOutError", getString(PERFORMANCE + ".useStandardOutError", String.valueOf(useStandardOutError)));
+                newMap.put("verboseLog", getString(PERFORMANCE + ".verboseLog", String.valueOf(verboseLog)));
+                newMap.put("useLog4JPropertiesFile", getString(PERFORMANCE + ".useLog4JPropertiesFile", String.valueOf(useLog4JPropertiesFile)));
+                newMap.put("serverJarLocation", getString(PERFORMANCE + ".serverJarLocation", String.valueOf(serverJarLocation)));
+                newMap.put("deployModeSelectSize", getString(PERFORMANCE + ".deployModeSelectSize", String.valueOf(deployModeSelectSize)));
+                newMap.put("retryMaxTimes", getString(PERFORMANCE + ".retryMaxTimes", String.valueOf(retryMaxTimes)));
+                newMap.put("retryMaxSleepTime", getString(PERFORMANCE + ".retryMaxSleepTime", String.valueOf(retryMaxSleepTime)));
+                newMap.put("minCubeFreeHDSpaceRate", getString(PERFORMANCE + ".minCubeFreeHDSpaceRate", String.valueOf(minCubeFreeHDSpaceRate)));
+                newMap.put("cubeReaderReleaseSleepTime", getString(PERFORMANCE + ".cubeReaderReleaseSleepTime", String.valueOf(cubeReaderReleaseSleepTime)));
+            }
+        } catch (Exception e) {
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
+        }
+        return newMap;
+    }
+
     @Override
     public boolean isReturnEmptyIndex() {
         return returnEmptyIndex;
@@ -449,8 +607,9 @@ public class PerformancePlugManager implements PerformancePlugManagerInterface {
     public long getCubeReaderReleaseSleepTime() {
         return cubeReaderReleaseSleepTime;
     }
+
     @Override
-    public boolean isDirectGenerating (){
+    public boolean isDirectGenerating() {
         return isDirectGenerating;
     }
 

@@ -366,4 +366,11 @@ public class BIFileUtils {
         }
         return src.renameTo(dest);
     }
+
+    public static boolean renameFile(File oldName, File newName) throws IOException {
+        if (!oldName.isFile() || !oldName.exists()) {
+            return false;
+        }
+        return oldName.renameTo(newName);
+    }
 }
