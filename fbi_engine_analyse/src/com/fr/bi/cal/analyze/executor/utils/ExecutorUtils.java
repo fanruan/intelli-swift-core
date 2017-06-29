@@ -83,9 +83,9 @@ public class ExecutorUtils {
             case BIReportConstant.TARGET_STYLE.FORMAT.ONE2POINT:
                 result = new StringBuilder(separator ? "#,###" : "#0");
             default:
-                result.append(separator ? "#,###." : "#.");
+                result.append(separator ? "#,###" : "#");
                 for (int i = 0; i < decimal; i++) {
-                    result.append("0");
+                    result.append(i == 0 ? ".0" : "0");
                 }
                 break;
         }
