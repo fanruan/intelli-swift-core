@@ -59,10 +59,6 @@ public class PerformancePlugManager implements PerformancePlugManagerInterface {
 
     private boolean useDereplication = true;
 
-    private String PhantomServerIP = "127.0.0.1";
-    private int PhantomServerPort = 60810;
-
-
     private boolean extremeConcurrency = true;
     private int reIndexRowCount = 1 << 12;
 
@@ -403,26 +399,6 @@ public class PerformancePlugManager implements PerformancePlugManagerInterface {
 
     public long getRetryMaxSleepTime() {
         return retryMaxSleepTime;
-    }
-
-    @Override
-    public void setPhantomServerIP(String ip) {
-        PhantomServerIP = ip;
-    }
-
-    @Override
-    public String getPhantomServerIP() {
-        return PhantomServerIP;
-    }
-
-    @Override
-    public void setPhantomServerPort(int port) {
-        PhantomServerPort = port;
-    }
-
-    @Override
-    public int getPhantomServerPort() {
-        return PhantomServerPort;
     }
 
     @Override
