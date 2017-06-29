@@ -38,7 +38,7 @@ public class ComplexGroupExecutor extends AbstractTableWidgetExecutor {
     @Override
     public TableCellIterator createCellIterator4Excel() throws Exception {
         Map<Integer, Node> nodeMap = getCubeNodes();
-        if(nodeMap == null) {
+        if (nodeMap == null) {
             return new TableCellIterator(0, 0);
         }
 
@@ -59,14 +59,14 @@ public class ComplexGroupExecutor extends AbstractTableWidgetExecutor {
         int rowLen = getNodesTotalLength(nodes);
         final TableCellIterator iter = new TableCellIterator(columnLen, rowLen);
 
-        new Thread () {
+        new Thread() {
             public void run() {
                 try {
                     FinalInt start = new FinalInt();
                     StreamPagedIterator pagedIterator = iter.getIteratorByPage(start.value);
-                    GroupExecutor.generateTitle(rowData.getDimensionArray(0), usedSumTarget, pagedIterator);
-                    FinalInt rowIdx =new FinalInt();
-                    for(int i = 0, j = nodes.length; i < j; i++) {
+                    GroupExecutor.generateTitle(widget, rowData.getDimensionArray(0), usedSumTarget, pagedIterator);
+                    FinalInt rowIdx = new FinalInt();
+                    for (int i = 0, j = nodes.length; i < j; i++) {
                         GroupExecutor.generateCells(nodes[i], widget, rowData.getDimensionArray(i), iter, start, rowIdx, rowData.getMaxArrayLength());
                     }
                 } catch (Exception e) {
@@ -106,7 +106,7 @@ public class ComplexGroupExecutor extends AbstractTableWidgetExecutor {
      *
      * @return
      */
-    public Map<Integer, Node> getCubeNodes() throws Exception{
+    public Map<Integer, Node> getCubeNodes() throws Exception {
 
         long start = System.currentTimeMillis();
         if (getSession() == null) {
@@ -115,7 +115,7 @@ public class ComplexGroupExecutor extends AbstractTableWidgetExecutor {
         int summaryLength = usedSumTarget.length;
         TargetGettingKey[] keys = new TargetGettingKey[summaryLength];
         for (int i = 0; i < summaryLength; i++) {
-            keys[i] =usedSumTarget[i].createTargetGettingKey();
+            keys[i] = usedSumTarget[i].createTargetGettingKey();
         }
         Map<Integer, Node> nodeMap = CubeIndexLoader.getInstance(session.getUserId()).loadComplexPageGroup(false, widget, createTarget4Calculate(), rowData, allDimensions,
                 allSumTarget, keys, paging.getOperator(), widget.useRealData(), session, complexExpander, true);
@@ -131,7 +131,7 @@ public class ComplexGroupExecutor extends AbstractTableWidgetExecutor {
     public JSONObject createJSONObject() throws Exception {
         Iterator<Map.Entry<Integer, Node>> it = getCubeNodes().entrySet().iterator();
         JSONObject jo = new JSONObject();
-        while (it.hasNext()){
+        while (it.hasNext()) {
             Map.Entry<Integer, Node> entry = it.next();
             jo.put(String.valueOf(entry.getKey()), entry.getValue().toJSONObject(rowData.getDimensionArray(entry.getKey()), widget.getTargetsKey(), -1));
         }
