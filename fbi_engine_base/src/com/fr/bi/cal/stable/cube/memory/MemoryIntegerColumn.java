@@ -16,7 +16,7 @@ public class MemoryIntegerColumn extends AbstractSingleMemoryColumn<Integer> {
 
     @Override
     protected void initDetail() {
-        detail = new AnyIndexArray<Integer>();
+        detail = new AnyIndexArrayCreator<Integer>().create();
     }
 
 }

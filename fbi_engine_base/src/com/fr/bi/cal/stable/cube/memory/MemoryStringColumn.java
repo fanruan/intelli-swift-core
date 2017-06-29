@@ -34,6 +34,6 @@ public class MemoryStringColumn extends AbstractSingleMemoryColumn<String> {
 
     @Override
     protected void initDetail() {
-        detail = new AnyIndexArray<String>();
+        detail = new AnyIndexArrayCreator<String>().create();
     }
 }
