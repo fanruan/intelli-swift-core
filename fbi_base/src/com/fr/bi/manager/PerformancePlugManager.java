@@ -181,25 +181,25 @@ public class PerformancePlugManager implements PerformancePlugManagerInterface {
     @Override
     public Map<String, String> getDefaultConfig() {
         Map<String, String> defaultMap = new HashMap<String, String>();
-//        defaultMap.put("returnEmptyIndex", String.valueOf(false));
-//        defaultMap.put("isSearchPinYin", String.valueOf(true));
-//        defaultMap.put("isGetTemplateScreenCapture", String.valueOf(true));
-//        defaultMap.put("isControlMaxMemory", String.valueOf(false));
-//        defaultMap.put("useMultiThreadCal", String.valueOf(false));
-//        defaultMap.put("maxNodeCount", String.valueOf(Integer.MAX_VALUE));
-//        defaultMap.put("diskSortDumpThreshold", String.valueOf(11 << 15));
-//        defaultMap.put("diskSort", String.valueOf(false));
-//        defaultMap.put("biThreadPoolSize", String.valueOf(1));
-//        defaultMap.put("biTransportThreadPoolSize", String.valueOf(2));
-//        defaultMap.put("useStandardOutError", String.valueOf(false));
-//        defaultMap.put("verboseLog", String.valueOf(true));
-//        defaultMap.put("useLog4JPropertiesFile", String.valueOf(false));
-//        defaultMap.put("serverJarLocation", String.valueOf(""));
-//        defaultMap.put("deployModeSelectSize", String.valueOf(DEFAULT_DEPLOY_MODE_OFF));
-//        defaultMap.put("retryMaxTimes", String.valueOf(3));
-//        defaultMap.put("retryMaxSleepTime", String.valueOf(100));
-//        defaultMap.put("minCubeFreeHDSpaceRate", String.valueOf(2));
-//        defaultMap.put("cubeReaderReleaseSleepTime", String.valueOf(1L));
+        defaultMap.put("returnEmptyIndex", String.valueOf(false));
+        defaultMap.put("isSearchPinYin", String.valueOf(true));
+        defaultMap.put("isGetTemplateScreenCapture", String.valueOf(true));
+        defaultMap.put("isControlMaxMemory", String.valueOf(false));
+        defaultMap.put("useMultiThreadCal", String.valueOf(false));
+        defaultMap.put("maxNodeCount", String.valueOf(Integer.MAX_VALUE));
+        defaultMap.put("diskSortDumpThreshold", String.valueOf(11 << 15));
+        defaultMap.put("diskSort", String.valueOf(false));
+        defaultMap.put("biThreadPoolSize", String.valueOf(1));
+        defaultMap.put("biTransportThreadPoolSize", String.valueOf(2));
+        defaultMap.put("useStandardOutError", String.valueOf(false));
+        defaultMap.put("verboseLog", String.valueOf(true));
+        defaultMap.put("useLog4JPropertiesFile", String.valueOf(false));
+        defaultMap.put("serverJarLocation", String.valueOf(""));
+        defaultMap.put("deployModeSelectSize", String.valueOf(DEFAULT_DEPLOY_MODE_OFF));
+        defaultMap.put("retryMaxTimes", String.valueOf(3));
+        defaultMap.put("retryMaxSleepTime", String.valueOf(100));
+        defaultMap.put("minCubeFreeHDSpaceRate", String.valueOf(2));
+        defaultMap.put("cubeReaderReleaseSleepTime", String.valueOf(1L));
         return defaultMap;
     }
 
