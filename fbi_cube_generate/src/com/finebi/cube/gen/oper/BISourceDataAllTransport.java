@@ -9,6 +9,7 @@ import com.finebi.cube.message.IMessage;
 import com.finebi.cube.structure.Cube;
 import com.fr.bi.common.inter.Traversal;
 import com.fr.bi.conf.log.BILogManager;
+import com.fr.bi.conf.provider.BIConfigureManagerCenter;
 import com.fr.bi.conf.provider.BILogManagerProvider;
 import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.stable.constant.BILogConstant;
@@ -39,7 +40,7 @@ public class BISourceDataAllTransport extends BISourceDataTransport {
 
     @Override
     public Object mainTask(IMessage lastReceiveMessage) {
-        BILogManager biLogManager = StableFactory.getMarkedObject(BILogManagerProvider.XML_TAG, BILogManager.class);
+        BILogManagerProvider biLogManager = BIConfigureManagerCenter.getLogManager();
         LOGGER.info(BIStringUtils.append("The table:", fetchTableInfo(), " start transport task",
                 BILogHelper.logCubeLogTableSourceInfo(tableSource.getSourceID())));
         tableEntityService.recordCurrentExecuteTime();
