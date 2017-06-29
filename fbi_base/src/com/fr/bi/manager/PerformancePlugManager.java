@@ -40,9 +40,9 @@ public class PerformancePlugManager implements PerformancePlugManagerInterface {
     private boolean useMultiThreadCal = false;
     private double minCubeFreeHDSpaceRate = 2;
     private String filePath = FRContext.getCurrentEnv().getPath();
-    private static final String oldFileName = "plugs.properties";
-    private static final String newFileName = "plugsUpdate.properties";
-    private File oldFile = new File(filePath + File.separator + ProjectConstants.RESOURCES_NAME + File.separator + oldFileName);
+    private static final String OLD_FILE_NAME = "plugs.properties";
+    private static final String NEW_FILE_NAME = "plugsUpdate.properties";
+    private File oldFile = new File(filePath + File.separator + ProjectConstants.RESOURCES_NAME + File.separator + OLD_FILE_NAME);
     private boolean isControlMaxMemory = false;
     private BIPerformanceParamConfig config = new BIPerformanceParamConfig();
 
@@ -166,7 +166,7 @@ public class PerformancePlugManager implements PerformancePlugManagerInterface {
                     continue;
                 }
             }
-            return config.writeConfig(doUpdateMap, FRContext.getCurrentEnv().writeBean(newFileName, ProjectConstants.RESOURCES_NAME));
+            return config.writeConfig(doUpdateMap, FRContext.getCurrentEnv().writeBean(NEW_FILE_NAME, ProjectConstants.RESOURCES_NAME));
         } catch (Exception e) {
             BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
@@ -181,25 +181,25 @@ public class PerformancePlugManager implements PerformancePlugManagerInterface {
     @Override
     public Map<String, String> getDefaultConfig() {
         Map<String, String> defaultMap = new HashMap<String, String>();
-        defaultMap.put("returnEmptyIndex", String.valueOf(false));
-        defaultMap.put("isSearchPinYin", String.valueOf(true));
-        defaultMap.put("isGetTemplateScreenCapture", String.valueOf(true));
-        defaultMap.put("isControlMaxMemory", String.valueOf(false));
-        defaultMap.put("useMultiThreadCal", String.valueOf(false));
-        defaultMap.put("maxNodeCount", String.valueOf(Integer.MAX_VALUE));
-        defaultMap.put("diskSortDumpThreshold", String.valueOf(11 << 15));
-        defaultMap.put("diskSort", String.valueOf(false));
-        defaultMap.put("biThreadPoolSize", String.valueOf(1));
-        defaultMap.put("biTransportThreadPoolSize", String.valueOf(2));
-        defaultMap.put("useStandardOutError", String.valueOf(false));
-        defaultMap.put("verboseLog", String.valueOf(true));
-        defaultMap.put("useLog4JPropertiesFile", String.valueOf(false));
-        defaultMap.put("serverJarLocation", String.valueOf(""));
-        defaultMap.put("deployModeSelectSize", String.valueOf(DEFAULT_DEPLOY_MODE_OFF));
-        defaultMap.put("retryMaxTimes", String.valueOf(3));
-        defaultMap.put("retryMaxSleepTime", String.valueOf(100));
-        defaultMap.put("minCubeFreeHDSpaceRate", String.valueOf(2));
-        defaultMap.put("cubeReaderReleaseSleepTime", String.valueOf(1L));
+//        defaultMap.put("returnEmptyIndex", String.valueOf(false));
+//        defaultMap.put("isSearchPinYin", String.valueOf(true));
+//        defaultMap.put("isGetTemplateScreenCapture", String.valueOf(true));
+//        defaultMap.put("isControlMaxMemory", String.valueOf(false));
+//        defaultMap.put("useMultiThreadCal", String.valueOf(false));
+//        defaultMap.put("maxNodeCount", String.valueOf(Integer.MAX_VALUE));
+//        defaultMap.put("diskSortDumpThreshold", String.valueOf(11 << 15));
+//        defaultMap.put("diskSort", String.valueOf(false));
+//        defaultMap.put("biThreadPoolSize", String.valueOf(1));
+//        defaultMap.put("biTransportThreadPoolSize", String.valueOf(2));
+//        defaultMap.put("useStandardOutError", String.valueOf(false));
+//        defaultMap.put("verboseLog", String.valueOf(true));
+//        defaultMap.put("useLog4JPropertiesFile", String.valueOf(false));
+//        defaultMap.put("serverJarLocation", String.valueOf(""));
+//        defaultMap.put("deployModeSelectSize", String.valueOf(DEFAULT_DEPLOY_MODE_OFF));
+//        defaultMap.put("retryMaxTimes", String.valueOf(3));
+//        defaultMap.put("retryMaxSleepTime", String.valueOf(100));
+//        defaultMap.put("minCubeFreeHDSpaceRate", String.valueOf(2));
+//        defaultMap.put("cubeReaderReleaseSleepTime", String.valueOf(1L));
         return defaultMap;
     }
 
@@ -213,10 +213,10 @@ public class PerformancePlugManager implements PerformancePlugManagerInterface {
     public Map<String, String> getExtraParam(String paramType) {
         String readFileName = null;
         if ("run".equals(paramType)) {
-            readFileName = oldFileName;
+            readFileName = OLD_FILE_NAME;
         }
         if ("new".equals(paramType)) {
-            readFileName = newFileName;
+            readFileName = NEW_FILE_NAME;
         }
         Map<String, String> paramConfig = new HashMap<String, String>();
         try {
@@ -475,10 +475,10 @@ public class PerformancePlugManager implements PerformancePlugManagerInterface {
         String fileName = null;
         Map<String, String> newMap = new HashMap<String, String>();
         if ("run".equals(paramType)) {
-            fileName = oldFileName;
+            fileName = OLD_FILE_NAME;
         }
         if ("new".equals(paramType)) {
-            fileName = newFileName;
+            fileName = NEW_FILE_NAME;
         }
         try {
             InputStream in = FRContext.getCurrentEnv().readBean(fileName, ProjectConstants.RESOURCES_NAME);
