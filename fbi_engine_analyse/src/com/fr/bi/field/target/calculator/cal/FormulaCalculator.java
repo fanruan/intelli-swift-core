@@ -4,7 +4,7 @@ import com.fr.bi.field.target.target.cal.BICalculateTarget;
 import com.fr.bi.report.key.TargetGettingKey;
 import com.fr.bi.report.result.BICrossNode;
 import com.fr.bi.report.result.BINode;
-import com.fr.bi.stable.utils.BIFormularUtils;
+import com.fr.bi.stable.utils.BIFormulaUtils;
 import com.fr.script.Calculator;
 import com.fr.stable.StringUtils;
 
@@ -30,16 +30,16 @@ public class FormulaCalculator extends CalCalculator {
         super(target);
         this.expression = expression;
         //构造的时候就转化成自增长id的公式，省得每次计算结果都算一下
-        incrementParaFormula = "=" + BIFormularUtils.getIncrementParaFormula(expression);
+        incrementParaFormula = "=" + BIFormulaUtils.getIncrementParaFormula(expression);
         initParaTargetMap();
     }
 
     //构建的时候把全部指标都塞过来了，造成没必要的遍历，取下用到的指标，转化成公式的$1->TargetGettingKey的map
     private void initParaTargetMap() {
-        Map<String, String> map = BIFormularUtils.createColumnIndexMap(expression);
+        Map<String, String> map = BIFormulaUtils.createColumnIndexMap(expression);
         paraTargetMap = new HashMap<String, TargetGettingKey>();
         if (targetMap != null){
-            for (Map.Entry<String, String> entry :  BIFormularUtils.createColumnIndexMap(expression).entrySet()){
+            for (Map.Entry<String, String> entry :  BIFormulaUtils.createColumnIndexMap(expression).entrySet()){
                 if (targetMap.containsKey(entry.getValue())){
                     paraTargetMap.put(entry.getKey(), targetMap.get(entry.getValue()).createTargetGettingKey());
                 }
@@ -55,7 +55,7 @@ public class FormulaCalculator extends CalCalculator {
      */
     @Override
     public boolean isAllFieldsReady(Set<TargetGettingKey> targetSet) {
-        Iterator<String> it = BIFormularUtils.createColumnIndexMap(expression).values().iterator();
+        Iterator<String> it = BIFormulaUtils.createColumnIndexMap(expression).values().iterator();
         while (it.hasNext()) {
             Object key = targetMap.get(it.next()).createTargetGettingKey();
             if (key == null) {
@@ -78,10 +78,12 @@ public class FormulaCalculator extends CalCalculator {
     @Override
     public void calCalculateTarget(BINode node) {
         try {
-            Object value = BIFormularUtils.getCalculatorValue(c, incrementParaFormula, paraTargetMap, node.getSummaryValue());
+            Object value = BIFormulaUtils.getCalculatorValue(c, incrementParaFormula, paraTargetMap, node.getSummaryValue());
             //抛错就是没有值啦
             //pony 这边都存double吧，汇总在汇总要写cube，类型要统一
-            node.setSummaryValue(createTargetGettingKey(), ((Number) value).doubleValue());
+            if (value != null){
+                node.setSummaryValue(createTargetGettingKey(), ((Number) value).doubleValue());
+            }
         } catch (Throwable e) {
         }
         for (int i = 0, len = node.getChildLength(); i < len; i++) {
@@ -98,7 +100,7 @@ public class FormulaCalculator extends CalCalculator {
     @Override
     public void calCalculateTarget(BICrossNode node, TargetGettingKey key) {
         try {
-            Object value = BIFormularUtils.getCalculatorValue(c, incrementParaFormula, paraTargetMap, node.getSummaryValue());
+            Object value = BIFormulaUtils.getCalculatorValue(c, incrementParaFormula, paraTargetMap, node.getSummaryValue());
             //抛错就是没有值啦
             node.setSummaryValue(createTargetGettingKey(),((Number) value).doubleValue());
         } catch (Throwable e) {

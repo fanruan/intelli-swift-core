@@ -15,7 +15,7 @@ public class MemoryDoubleColumn extends AbstractSingleMemoryColumn<Double> {
 
     @Override
     protected void initDetail() {
-        detail = new AnyIndexArray<Double>();
+        detail = new AnyIndexArrayCreator<Double>().create();
     }
 
 

@@ -113,6 +113,11 @@ public class DotChartAndFilter implements FilterValue<JSONObject> {
     }
 
     @Override
+    public boolean isSingleNodeFilter() {
+        return false;
+    }
+
+    @Override
     public Object clone() throws CloneNotSupportedException {
         return null;
     }

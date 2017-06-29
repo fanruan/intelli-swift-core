@@ -50,7 +50,7 @@ public abstract class AbstractSingleMemoryColumn<T> implements MemoryColumnFile<
     protected abstract void initDetail();
 
     protected void initGroupPosition(CubeTreeMap map) {
-        groupPosition = new AnyIndexArray<Integer>();
+        groupPosition = new AnyIndexArrayCreator<Integer>().create();
         Iterator<GroupValueIndex> it = map.values().iterator();
         int position = 0;
         while (it.hasNext()) {
