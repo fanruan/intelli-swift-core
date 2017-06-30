@@ -154,18 +154,20 @@ public class DetailExecutor extends AbstractDetailExecutor {
                     summaryTarget = linkWidget.getBITargetByID(linkTarget);
                     break;
                 } catch (Exception e) {
-                    BILoggerFactory.getLogger(TableWidget.class).warn("Target id " + linkTarget + " is absent in widget " + linkWidget.getWidgetName());
+                    BILoggerFactory.getLogger(TableWidget.class).warn("Target id " + linkTarget + " is absent in linked widget " + linkWidget.getWidgetName());
                 }
             }
 
-            BusinessTable linkTargetTable = summaryTarget.createTableKey();
-            // 基础表相同的时候才有联动的意义
-            if (widgetTargetTable.equals(linkTargetTable)) {
-                // 其联动组件的父联动gvi
-                GroupValueIndex pLinkGvi = linkWidget.createLinkedFilterGVI(widgetTargetTable, session);
-                // 其联动组件的点击过滤gvi
-                GroupValueIndex linkGvi = linkWidget.getLinkFilter(linkWidget, widgetTargetTable, clicked, session);
-                gvi = GVIUtils.AND(gvi, GVIUtils.AND(pLinkGvi, linkGvi));
+            if (summaryTarget != null) {
+                BusinessTable linkTargetTable = summaryTarget.createTableKey();
+                // 基础表相同的时候才有联动的意义
+                if (widgetTargetTable.equals(linkTargetTable)) {
+                    // 其联动组件的父联动gvi
+                    GroupValueIndex pLinkGvi = linkWidget.createLinkedFilterGVI(widgetTargetTable, session);
+                    // 其联动组件的点击过滤gvi
+                    GroupValueIndex linkGvi = linkWidget.getLinkFilter(linkWidget, widgetTargetTable, clicked, session);
+                    gvi = GVIUtils.AND(gvi, GVIUtils.AND(pLinkGvi, linkGvi));
+                }
             }
         }
         return gvi;
