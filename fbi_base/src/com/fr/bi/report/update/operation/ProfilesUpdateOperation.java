@@ -100,6 +100,9 @@ public class ProfilesUpdateOperation implements ReportUpdateOperation {
                 Iterator keys = json.getJSONObject("widgets").keys();
                 while (keys.hasNext()) {
                     String widgetId = keys.next().toString();
+                    if (!json.getJSONObject("widgets").getJSONObject(widgetId).has("dimensions")) {
+                        continue;
+                    }
                     JSONObject dimensions = json.getJSONObject("widgets").getJSONObject(widgetId).getJSONObject("dimensions");
                     Iterator dimKeys = dimensions.keys();
                     while (dimKeys.hasNext()) {
@@ -240,7 +243,7 @@ public class ProfilesUpdateOperation implements ReportUpdateOperation {
                 while (keys.hasNext()) {
                     String widgetId = keys.next().toString();
                     JSONObject widgetJo = jo.getJSONObject("widgets").getJSONObject(widgetId);
-                    boolean isCombineChart = BIReportConstant.WIDGET.COMBINE_CHART == widgetJo.getInt("type");
+                    boolean isCombineChart = BIReportConstant.WIDGET.COMBINE_CHART == widgetJo.getInt("type") || BIReportConstant.WIDGET.MULTI_AXIS_COMBINE_CHART == widgetJo.getInt("type");
                     if (isCombineChart && !jo.has("scopes")) {
                         updateCombineChartView(widgetJo);
                     }
