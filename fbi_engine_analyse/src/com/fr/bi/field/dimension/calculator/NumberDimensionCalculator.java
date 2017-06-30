@@ -42,7 +42,7 @@ public class NumberDimensionCalculator extends AbstractDimensionCalculator {
     }
 
     @Override
-    public Iterator createValueMapIterator(BusinessTable table, ICubeDataLoader loader, boolean useRealData, int groupLimit) {
+    public Iterator createValueMapIterator(BusinessTable table, ICubeDataLoader loader, boolean useRealData, int groupLimit, GroupValueIndex filterGvi) {
         if (isNoGroup() && !isCustomSort()) {
             //默认设置field本身为关联主键
             CubeTableSource usedTableSource = getTableSourceFromField();
@@ -55,6 +55,11 @@ public class NumberDimensionCalculator extends AbstractDimensionCalculator {
                 usedColumnKey = new IndexKey(primaryField.getFieldName());
             }
             ICubeColumnIndexReader getter = loader.getTableIndex(usedTableSource).loadGroup(usedColumnKey, getRelationList(), useRealData, groupLimit);
+
+            if (!useRealData) {
+                applyFilterForNotRealData(getter, filterGvi);
+            }
+
             //数值类型计算空值索引start
             final GroupValueIndex nullGroupValueIndex = loader.getTableIndex(usedTableSource).getNullGroupValueIndex(usedColumnKey);
             getter = dimension.getGroup().createGroupedMap(getter);

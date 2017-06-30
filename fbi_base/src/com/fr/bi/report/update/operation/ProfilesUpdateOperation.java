@@ -123,7 +123,7 @@ public class ProfilesUpdateOperation implements ReportUpdateOperation {
 
     }
 
-    //  显示网格线拆分成显示纵向和显示横向
+    //  显示网格线拆分成显示纵向和显示横向，settings.textDirection to settings.catLabelStyle.textDirection
     private void updateShowGridSettings(JSONObject jo) {
         try {
             if (BIJsonUtils.isKeyValueSet(jo.getString("widgets"))) {
@@ -131,13 +131,17 @@ public class ProfilesUpdateOperation implements ReportUpdateOperation {
                 while (keys.hasNext()) {
                     String widgetId = keys.next().toString();
                     JSONObject widgetJo = jo.getJSONObject("widgets").getJSONObject(widgetId);
-                    if (widgetJo.has("settings") && widgetJo.getJSONObject("settings").has("show_grid_line")) {
-                        boolean needUpdate = !widgetJo.getJSONObject("settings").has("hShowGridLine") && !widgetJo.getJSONObject("settings").has("xShowGridLine");
+                    JSONObject settings = widgetJo.optJSONObject("settings");
+                    if (settings != null && settings.has("show_grid_line")) {
+                        boolean needUpdate = !settings.has("hShowGridLine") && !settings.has("xShowGridLine");
                         if (needUpdate) {
-                            boolean isShowGridLine = widgetJo.getJSONObject("settings").optBoolean("show_grid_line", false);
+                            boolean isShowGridLine = settings.optBoolean("show_grid_line", false);
                             widgetJo.getJSONObject("settings").put("hShowGridLine", isShowGridLine);
                             widgetJo.getJSONObject("settings").put("vShowGridLine", isShowGridLine);
                         }
+                    }
+                    if(settings != null && settings.has("textDirection")){
+                        settings.put("catLabelStyle", JSONObject.create().put("textDirection", settings.optInt("textDirection")));
                     }
                 }
             }
@@ -147,7 +151,7 @@ public class ProfilesUpdateOperation implements ReportUpdateOperation {
 
     }
 
-    //4.0的图表标签默认设置，和402默认有些不一样，所以在这边写。调整标签位置，灰色雅黑12px。
+    //4.0的图表标签默认设置，和402默认有些不一样，所以在这边写。调整标签位置，雅黑12px, 颜色自动。
     private JSONObject correctDataLabels(JSONObject json) throws JSONException {
         if (ReportVersionEnum.VERSION_4_0.getVersion().equals(json.optString("version"))) {
             if (BIJsonUtils.isKeyValueSet(json.getString("widgets"))) {
@@ -160,7 +164,7 @@ public class ProfilesUpdateOperation implements ReportUpdateOperation {
                         int type = dimJson.optInt("type");
 
                         JSONObject dataLabelSettings = JSONObject.create().put("optimizeLabel", true).put("showTractionLine", true)
-                                .put("textStyle", JSONObject.create().put("fontFamily", "Microsoft YaHei").put("fontSize", "12px").put("color", "#1a1a1a"));
+                                .put("textStyle", JSONObject.create().put("fontFamily", "Microsoft YaHei").put("fontSize", "12px").put("color", ""));
 
                         switch (type) {
                             case BIReportConstant.WIDGET.PIE:
@@ -181,13 +185,17 @@ public class ProfilesUpdateOperation implements ReportUpdateOperation {
                                 dataLabelSettings.put("showCategoryName", false).put("showSeriesName", false)
                                         .put("showXValue", true).put("showYValue", true).put("showValue", false);
                                 break;
+                            case BIReportConstant.WIDGET.DASHBOARD:
+                                settings.put("showDataLabel", true);
+                                dataLabelSettings.put("showCategoryName", true).put("showSeriesName", false)
+                                        .put("showValue", true).put("showPercentage", false);
+                                break;
                             default:
                                 dataLabelSettings.put("showCategoryName", false).put("showSeriesName", false)
                                         .put("showValue", true).put("showPercentage", false)
                                         .put("position", BIChartSettingConstant.DATA_LABEL.POSITION_OUTER);
                                 break;
                         }
-
                         settings.put("dataLabelSetting", dataLabelSettings);
                     }
                 }
@@ -311,7 +319,7 @@ public class ProfilesUpdateOperation implements ReportUpdateOperation {
     柱状图 5 -> 柱状图
     面积图 14 -> 面积图
     堆积面积图 15-> 堆积面积图（折线）
-    折线图 3-> （折线）
+    折线图 13-> （折线）
     堆积柱状图 6 -> （堆积柱状图）
     */
     private void createChartTypeMap() {

@@ -4,17 +4,14 @@ import com.finebi.cube.api.ICubeColumnIndexReader;
 import com.finebi.cube.api.ICubeTableService;
 import com.finebi.cube.api.ICubeValueEntryGetter;
 import com.finebi.cube.relation.BITableSourceRelation;
-import com.fr.bi.cal.analyze.session.BISession;
 import com.fr.bi.conf.report.WidgetType;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.conf.session.BISessionProvider;
-import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.report.result.DimensionCalculator;
+import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.utils.BICollectionUtils;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
-import com.fr.report.poly.PolyECBlock;
-import com.fr.report.poly.TemplateBlock;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
@@ -24,14 +21,20 @@ import java.util.Comparator;
  * Created by zcf on 2017/1/20.
  */
 public class SingleSliderWidget extends TableWidget {
+
     private WidgetType type;
+
     private double minMin;
+
     private double maxMax;
+
     private double filterMinMin;
+
     private double filterMaxMax;
 
     @Override
     public void parseJSON(JSONObject jo, long userId) throws Exception {
+
         super.parseJSON(jo, userId);
         if (jo.has("type")) {
             type = WidgetType.parse(jo.getInt("type"));
@@ -39,6 +42,7 @@ public class SingleSliderWidget extends TableWidget {
     }
 
     public JSONObject createDataJSON(BISessionProvider session, HttpServletRequest req) throws JSONException {
+
         updateMinMax(true, session);
         updateMinMax(false, session);
         JSONObject jo = JSONObject.create();
@@ -49,8 +53,9 @@ public class SingleSliderWidget extends TableWidget {
         return jo;
     }
 
-    private void updateMinMax(boolean needFilter, BISessionProvider session) throws JSONException{
-        if(needFilter == false){
+    private void updateMinMax(boolean needFilter, BISessionProvider session) throws JSONException {
+
+        if (needFilter == false) {
             this.setFilter(null);
         }
         BIDimension[] dimensions = getDimensions();
@@ -62,15 +67,16 @@ public class SingleSliderWidget extends TableWidget {
             ICubeTableService ti = session.getLoader().getTableIndex(dimension.getStatisticElement().getTableBelongTo().getTableSource());
             ICubeValueEntryGetter getter = ti.getValueEntryGetter(dimension.createKey(dimension.getStatisticElement()), new ArrayList<BITableSourceRelation>());
             MaxAndMin maxAndMin = createIDGroupIndex(gvi, reader, getter, calculator.getComparator());
-            if(needFilter) {
+            if (needFilter) {
                 updateMaxAndMinWithFilter(i, maxAndMin);
-            } else{
+            } else {
                 updateMaxAndMin(i, maxAndMin);
             }
         }
     }
 
     private void updateMaxAndMin(int i, MaxAndMin maxAndMin) {
+
         if (i == 0) {
             minMin = maxAndMin.getMin();
             maxMax = maxAndMin.getMax();
@@ -85,6 +91,7 @@ public class SingleSliderWidget extends TableWidget {
     }
 
     private void updateMaxAndMinWithFilter(int i, MaxAndMin maxAndMin) {
+
         if (i == 0) {
             filterMinMin = maxAndMin.getMin();
             filterMaxMax = maxAndMin.getMax();
@@ -99,9 +106,11 @@ public class SingleSliderWidget extends TableWidget {
     }
 
     private MaxAndMin createIDGroupIndex(GroupValueIndex gvi, ICubeColumnIndexReader reader, final ICubeValueEntryGetter getter, Comparator comparator) throws JSONException {
+
         int start = 0, end = getter.getGroupSize();
         SimpleIntArray groupArray = this.createGroupArray(start, end, new int[0], new int[0], getter, gvi);
-
+        // 因为存在过滤gvi,会导致分组大小并不是groupSize,所以end需要返回的分组的大小
+        end = groupArray.size();
         Object min = null;
         Object max = null;
         for (int i = 0; i < end; i++) {
@@ -127,34 +136,36 @@ public class SingleSliderWidget extends TableWidget {
     }
 
     @Override
-    protected TemplateBlock createBIBlock(BISession session) {
-        return new PolyECBlock();
-    }
-
-    @Override
     public int isOrder() {
+
         return 0;
     }
 
     @Override
     public WidgetType getType() {
+
         return this.type;
     }
 
     private class MaxAndMin {
+
         double min;
+
         double max;
 
         MaxAndMin(double max, double min) {
+
             this.max = max;
             this.min = min;
         }
 
         public double getMin() {
+
             return this.min;
         }
 
         public double getMax() {
+
             return this.max;
         }
     }

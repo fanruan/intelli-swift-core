@@ -13,6 +13,7 @@ import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.engine.index.key.IndexKey;
+import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.operation.sort.comp.ComparatorFacotry;
 import com.fr.bi.stable.operation.sort.comp.CustomComparator;
 import com.fr.bi.stable.structure.collection.map.CubeTreeMap;
@@ -62,9 +63,9 @@ public class StringDimensionCalculator extends AbstractDimensionCalculator {
     }
 
     @Override
-    public Iterator createValueMapIterator(BusinessTable table, ICubeDataLoader loader, boolean useRealData, int groupLimit) {
+    public Iterator createValueMapIterator(BusinessTable table, ICubeDataLoader loader, boolean useRealData, int groupLimit, GroupValueIndex filterGvi) {
         if (isNoGroup() && !isCustomSort()) {
-            return super.createValueMapIterator(table, loader, useRealData, groupLimit);
+            return super.createValueMapIterator(table, loader, useRealData, groupLimit, filterGvi);
         }
         if (customMap == null) {
             initCustomMap(loader, useRealData, groupLimit);

@@ -131,6 +131,7 @@ public class VanDotWidget extends VanCartesianWidget{
         plotOptions.put("sizeBy", "width");
         plotOptions.put("minSize", settings.optInt("bubbleSizeFrom"));
         plotOptions.put("maxSize", settings.optInt("bubbleSizeTo"));
+        plotOptions.put("large", settings.optBoolean("bigDataMode"));
 
         plotOptions.put("shadow", settings.optInt("bubbleStyle") == SHADOW);
 

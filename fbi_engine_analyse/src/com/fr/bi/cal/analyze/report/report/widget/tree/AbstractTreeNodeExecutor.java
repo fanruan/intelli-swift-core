@@ -14,6 +14,7 @@ import com.fr.bi.stable.engine.cal.DimensionIteratorCreator;
 import com.fr.bi.stable.engine.index.key.IndexKey;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.report.result.DimensionCalculator;
+import com.fr.bi.stable.utils.BICollectionUtils;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
 
@@ -62,12 +63,16 @@ public class AbstractTreeNodeExecutor extends TreeExecutor {
             List<BITableSourceRelation> list = widget.getTableSourceRelationList(dimension, session.getUserId());
             ICubeColumnIndexReader dataReader = ti.loadGroup(new IndexKey(dimension.createColumnKey().getFieldName()), list);
             ICubeValueEntryGetter getter = ti.getValueEntryGetter(new IndexKey(dimension.createColumnKey().getFieldName()), list);
+
             if (times == -1) {
                 Iterator<Map.Entry<Object, GroupValueIndex>> it = DimensionIteratorCreator.createValueMapIterator(getter, filterGvi, dimension.getSortType() != BIReportConstant.SORT.DESC);
                 while (it.hasNext()) {
                     Map.Entry<Object, GroupValueIndex> e = it.next();
-                    String k = e.getKey().toString();
-                    dataList.add(k);
+                    Object k = e.getKey();
+                    // BI-6180 TODO 尚需要一套统一的逻辑...
+                    if(BICollectionUtils.isNotCubeNullKey(k)){
+                        dataList.add(k.toString());
+                    }
                 }
             }
             if (times > 0 && (times - 1) * BIReportConstant.TREE.TREE_ITEM_COUNT_PER_PAGE < dataReader.sizeOfGroup()) {
@@ -81,7 +86,11 @@ public class AbstractTreeNodeExecutor extends TreeExecutor {
                     Map.Entry<Object, GroupValueIndex> e = it.next();
                     count++;
                     if (count > start) {
-                        dataList.add(e.getKey().toString());
+                        Object k = e.getKey();
+                        // BI-6180
+                        if(BICollectionUtils.isNotCubeNullKey(k)){
+                            dataList.add(k.toString());
+                        }
                     }
                 }
             }
