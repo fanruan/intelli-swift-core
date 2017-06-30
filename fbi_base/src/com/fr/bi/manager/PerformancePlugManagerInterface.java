@@ -1,5 +1,7 @@
 package com.fr.bi.manager;
 
+import java.util.Map;
+
 /**
  * Created by Hiram on 2015/3/18.
  */
@@ -16,6 +18,8 @@ public interface PerformancePlugManagerInterface {
     boolean controlUniqueThread();
 
     void checkExit();
+
+    Map<String, String> getConfigByType(String paramType);
 
     boolean isReturnEmptyIndex();
 
@@ -50,6 +54,14 @@ public interface PerformancePlugManagerInterface {
     void setBiTransportThreadPoolSize(int size);
 
     int getBiTransportThreadPoolSize();
+
+    boolean updateParam(Map<String, String> resultMap);
+
+    Map<String, String> getDefaultConfig();
+
+    Map<String, String> getExtraParam(String paramType);
+
+    boolean isBelongTo(Map<String, String> resultMap);
 
     void printSystemParameters();
 

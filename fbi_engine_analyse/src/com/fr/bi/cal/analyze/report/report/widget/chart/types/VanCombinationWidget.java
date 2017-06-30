@@ -113,4 +113,9 @@ public class VanCombinationWidget extends VanCartesianWidget{
 
         return item.optInt("type") == STACK_AREA_STEP;
     }
+
+    @Override
+    public boolean canCompleteMissTime(){
+        return true;
+    }
 }

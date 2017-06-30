@@ -97,6 +97,10 @@ public class VanGaugeWidget extends VanCartesianWidget{
 
         if(gaugeStyle == PERCENT_SCALE_SLOT){
             percentageLabel.put("style", JSONObject.create().put("fontSize", "24px"));
+        } else if(gaugeStyle == PERCENT_DASHBOARD){
+            valueLabel.optJSONObject("style").put("color", DARK);
+        } else if(!isPointer){
+            percentageLabel.put("style", font);
         }
 
         plotOptions.put("valueLabel", valueLabel).put("seriesLabel", seriesLabel).put("percentageLabel", percentageLabel);
@@ -117,7 +121,7 @@ public class VanGaugeWidget extends VanCartesianWidget{
 
         JSONObject settings = this.getDetailChartSetting();
         int gaugeStyle = settings.optInt("dashboardChartType");
-        String style = StringUtils.EMPTY, layout = StringUtils.EMPTY;
+        String style = StringUtils.EMPTY, layout = "vertical";
         if(gaugeStyle == NORMAL){
             style = "pointer";
         }else if(gaugeStyle == HALF_DASHBOARD){
@@ -128,7 +132,6 @@ public class VanGaugeWidget extends VanCartesianWidget{
             style = "slot";
         }else if(gaugeStyle == VERTICAL_TUBE){
             style = "thermometer";
-            layout = "vertical";
         }else if(gaugeStyle == HORIZONTAL_TUBE){
             style = "thermometer";
             layout = "horizontal";
@@ -144,7 +147,7 @@ public class VanGaugeWidget extends VanCartesianWidget{
         JSONArray newSeries = JSONArray.create();
         for(int i = 0, len = series.length(); i < len; i++){
             JSONObject ser = series.getJSONObject(i);
-            ser.put("style", style).put("thermometerLayout", layout);
+            ser.put("style", style).put("thermometerLayout", layout).put("layout", layout.equals("vertical") ? "horizontal" : "vertical");
 
             if(multi){
                 JSONObject combineSer = newSeries.optJSONObject(0);
