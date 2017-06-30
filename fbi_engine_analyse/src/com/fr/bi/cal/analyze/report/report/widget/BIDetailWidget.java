@@ -365,7 +365,7 @@ public class BIDetailWidget extends AbstractBIWidget {
         }
         res.put("items", itemsArray);
         res.put("widgetType", getType().getType());
-        res.put("dimensionLength", dimensions.length).put("row", data.optLong("row", 0)).put("size", data.optLong("size", 0));
+        res.put("dimensionLength", getViewDimensions().length).put("row", data.optLong("row", 0)).put("size", data.optLong("size", 0));
         res.put("settings", tableData.getWidgetStyle().createJSON());
         return res;
         //        return createTestData();
