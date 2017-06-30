@@ -23,6 +23,13 @@ public interface DimensionIterator extends Iterator<Map.Entry<Object, GroupValue
     boolean canReGainGroupValueIndex();
 
     /**
+     * 是否是直接算出来的索引，如果是从cube取的返回false，根据上一个索引的行号算出来的返回true
+     * 算出来的索引不需要再and一次
+     * @return
+     */
+    boolean isReturnFinalGroupValueIndex();
+
+    /**
      * 根据分组序号来取索引
      * @param groupIndex
      * @return

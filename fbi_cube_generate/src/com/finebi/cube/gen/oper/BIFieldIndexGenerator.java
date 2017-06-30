@@ -15,6 +15,7 @@ import com.finebi.cube.structure.column.BIColumnKey;
 import com.finebi.cube.structure.column.ICubeColumnEntityService;
 import com.finebi.cube.structure.column.date.BICubeDateSubColumn;
 import com.fr.bi.conf.log.BILogManager;
+import com.fr.bi.conf.provider.BIConfigureManagerCenter;
 import com.fr.bi.conf.provider.BILogManagerProvider;
 import com.fr.bi.manager.PerformancePlugManager;
 import com.fr.bi.stable.constant.BILogConstant;
@@ -100,7 +101,7 @@ public class BIFieldIndexGenerator<T> extends BIProcessor {
 
     @Override
     public Object mainTask(IMessage lastReceiveMessage) {
-        BILogManager biLogManager = StableFactory.getMarkedObject(BILogManagerProvider.XML_TAG, BILogManager.class);
+        BILogManagerProvider biLogManager = BIConfigureManagerCenter.getLogManager();
         LOGGER.info(BIStringUtils.append(logFileInfo(), " start building field index main task") +
                 BILogHelper.logCubeLogTableSourceInfo(tableSource.getSourceID()));
         BILogHelper.cacheCubeLogFieldNormalInfo(tableSource.getSourceID(), hostBICubeFieldSource.getFieldName(), BILogConstant.LOG_CACHE_TIME_TYPE.FIELD_INDEX_EXECUTE_START, System.currentTimeMillis());

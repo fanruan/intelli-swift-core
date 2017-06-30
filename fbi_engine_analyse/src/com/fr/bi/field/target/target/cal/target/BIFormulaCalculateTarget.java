@@ -6,7 +6,7 @@ import com.fr.bi.field.target.target.BISummaryTarget;
 import com.fr.bi.field.target.target.TargetType;
 import com.fr.bi.field.target.target.cal.BICalculateTarget;
 import com.fr.bi.report.result.TargetCalculator;
-import com.fr.bi.stable.utils.BIFormularUtils;
+import com.fr.bi.stable.utils.BIFormulaUtils;
 import com.fr.bi.stable.utils.BITravalUtils;
 import com.fr.json.JSONObject;
 import com.fr.stable.StringUtils;
@@ -35,7 +35,7 @@ public class BIFormulaCalculateTarget extends BICalculateTarget {
     @Override
     public List<BISummaryTarget> createCalculateUseTarget(BISummaryTarget[] targets) {
         List<BISummaryTarget> list = new ArrayList<BISummaryTarget>();
-        Iterator<String> it = BIFormularUtils.createColumnIndexMap(expression).values().iterator();
+        Iterator<String> it = BIFormulaUtils.createColumnIndexMap(expression).values().iterator();
         while (it.hasNext()) {
             BISummaryTarget target = BITravalUtils.getTargetByName(it.next(), targets);
             if (target != null) {
@@ -47,7 +47,7 @@ public class BIFormulaCalculateTarget extends BICalculateTarget {
 
     @Override
     public Collection<String> getCalculateUseTargetIDs() {
-        return BIFormularUtils.createColumnIndexMap(expression).values();
+        return BIFormulaUtils.createColumnIndexMap(expression).values();
     }
 
     public TargetType getType(){
