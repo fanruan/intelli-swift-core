@@ -303,4 +303,14 @@ public class CubeBuildCustomStuff extends AbstractCubeBuildStuff {
             BIFileUtils.copyFolder(new File(from.getAbsolutePath()), new File(to.getAbsolutePath()));
         }
     }
+
+    @Override
+    public boolean isNeed2Update() {
+        if (this.getDependTableResource().isEmpty() && this.getCubeGenerateRelationSet().isEmpty()) {
+            if (this.getCubeGenerateRelationPathSet().isEmpty()) {
+                return false;
+            }
+        }
+        return true;
+    }
 }
