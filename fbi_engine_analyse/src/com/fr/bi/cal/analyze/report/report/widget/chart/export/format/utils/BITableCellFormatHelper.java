@@ -28,6 +28,12 @@ public class BITableCellFormatHelper {
         if (BIStringUtils.isEmptyString(text) || !StableUtils.isNumber(text)) {
             return text;
         }
+        if (Double.valueOf(text).isNaN()) {
+            return text;
+        }
+        if (Double.valueOf(text).isInfinite()) {
+            return "N/0";
+        }
         try {
             float value = Float.valueOf(text);
             value = parseNumByLevel(settings, value);
@@ -45,8 +51,8 @@ public class BITableCellFormatHelper {
             String tail = createTailUnit(settings);
             if (StringUtils.isEmpty(tail)) {
                 return text;
-            }else {
-                return text + BIStringUtils.append("(",tail,")");
+            } else {
+                return text + BIStringUtils.append("(", tail, ")");
             }
         } catch (NumberFormatException e) {
             BILoggerFactory.getLogger(BITableCellFormatHelper.class).error(e.getMessage(), e);
