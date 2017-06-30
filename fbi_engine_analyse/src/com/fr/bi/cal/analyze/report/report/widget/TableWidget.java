@@ -348,12 +348,6 @@ public class TableWidget extends BISummaryWidget {
     private void createWidgetStyles(JSONObject jo) throws Exception {
 
         style = new BITableWidgetStyle();
-        JSONArray dimColWidths = new JSONArray();
-        for (int i = 0; i < getViewDimensions().length; i++) {
-            dimColWidths.put(20);
-        }
-        jo.put("mergeCols", dimColWidths);
-        jo.put("columnSize", dimColWidths);
         style.parseJSON(jo);
     }
 

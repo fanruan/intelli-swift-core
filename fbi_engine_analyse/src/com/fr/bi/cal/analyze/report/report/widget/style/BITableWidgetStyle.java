@@ -3,6 +3,7 @@ package com.fr.bi.cal.analyze.report.report.widget.style;
 import com.fr.bi.conf.report.widget.IWidgetStyle;
 import com.fr.bi.stable.constant.BIStyleConstant;
 import com.fr.general.ComparatorUtils;
+import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;
 import com.fr.stable.StringUtils;
 
@@ -20,6 +21,7 @@ public class BITableWidgetStyle implements IWidgetStyle {
     private int tableStyleGroup;
     private boolean showColTotal;
     private int tableFormGroup;
+    private JSONArray columnSize;
 
     public BITableWidgetStyle() {
         themeColor = BIStyleConstant.DEFAULT_CHART_SETTING.THEME_COLOR;
@@ -31,6 +33,7 @@ public class BITableWidgetStyle implements IWidgetStyle {
         showRowTotal = BIStyleConstant.DEFAULT_CHART_SETTING.SHOW_ROW_TOTAL;
         showColTotal = BIStyleConstant.DEFAULT_CHART_SETTING.SHOW_COL_TOTAL;
         tableFormGroup = BIStyleConstant.TABLE_FORM.OPEN_ROW;
+        columnSize = new JSONArray();
     }
 
     @Override
@@ -90,6 +93,7 @@ public class BITableWidgetStyle implements IWidgetStyle {
             }
             tableStyleGroup = settingJo.optInt("tableStyleGroup", tableStyleGroup);
             tableFormGroup = settingJo.optInt("tableFormGroup", tableFormGroup);
+            columnSize = settingJo.optJSONArray("columnSize");
         }
     }
 
@@ -104,6 +108,7 @@ public class BITableWidgetStyle implements IWidgetStyle {
         jo.put("showColTotal", showColTotal);
         jo.put("themeColor", themeColor);
         jo.put("tableStyleGroup", tableStyleGroup);
+        jo.put("columnSize", columnSize);
         return jo;
     }
 }
