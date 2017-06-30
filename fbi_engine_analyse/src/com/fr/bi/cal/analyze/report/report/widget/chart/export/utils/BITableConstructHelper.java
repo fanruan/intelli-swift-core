@@ -118,9 +118,9 @@ public class BITableConstructHelper {
 
     private static void formatItemText(Map<String, ITableCellFormatOperation> ops, ITableItem it) throws Exception {
         if (null != ops.get(it.getDId())) {
-            it.setText(ops.get(it.getDId()).formatItemTextValues(it.getValue()));
+            it.setText(ops.get(it.getDId()).formatItemTextValues(String.valueOf(it.getValue())));
         } else {
-            it.setText(it.getValue());
+            it.setText(String.valueOf(it.getValue()));
         }
     }
 
@@ -132,7 +132,7 @@ public class BITableConstructHelper {
 
     private static void setItemTextStyle(Map<String, ITableCellFormatOperation> ops, ITableItem it) throws Exception {
         if (null != ops.get(it.getDId())) {
-            it.setTextStyles(ops.get(it.getDId()).createItemTextStyle(it.getValue()));
+            it.setTextStyles(ops.get(it.getDId()).createItemTextStyle(String.valueOf(it.getValue())));
         }
     }
 }
