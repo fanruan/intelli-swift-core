@@ -16,8 +16,13 @@ public class BITableCellDateFormatOperation extends BITableCellFormatOperation {
     }
 
     @Override
-    public String formatTextValues(String text) throws Exception {
+    public String formatItemTextValues(String text) throws Exception {
          JSONObject format = null != iCellFormatSetting ? iCellFormatSetting.createJSON() : new JSONObject();
             return BITableCellFormatHelper.dateFormat(format, typeGroup, text);
+    }
+
+    @Override
+    public String formatHeaderText(String headerText) throws Exception {
+        return headerText;
     }
 }
