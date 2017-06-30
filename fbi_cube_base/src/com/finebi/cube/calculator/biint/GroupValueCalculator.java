@@ -53,16 +53,16 @@ public class GroupValueCalculator {
     }
 
     private int getByIntArray(GroupValueIndex range, final ICubeValueEntryGetter getter) {
-        final int[] groups = new int[getter.getGroupSize()];
+        final boolean[] groups = new boolean[getter.getGroupSize()];
         range.Traversal(new SingleRowTraversalAction() {
             @Override
             public void actionPerformed(int row) {
-                groups[getter.getPositionOfGroupByRow(row)] = 1;
+                groups[getter.getPositionOfGroupByRow(row)] = true;
             }
         });
         int size = 0;
         for (int i = 0; i < groups.length; i++){
-            if (groups[i] == 1){
+            if (groups[i] == true){
                 size ++;
             }
         }

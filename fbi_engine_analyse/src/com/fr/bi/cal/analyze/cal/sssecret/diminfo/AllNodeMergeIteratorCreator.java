@@ -23,13 +23,13 @@ import java.util.Map;
  * Created by 小灰灰 on 2017/1/12.
  */
 public class AllNodeMergeIteratorCreator implements MergeIteratorCreator {
-    private DimensionFilter filter;
-    private NameObject targetSort;
-    private List<TargetAndKey>[] metricsToCalculate;
-    private Map<String, TargetCalculator> calculatedMap;
-    private MergeIteratorCreator creator;
-    private BIMultiThreadExecutor executor;
-    private List<CalCalculator> calCalculator;
+    protected DimensionFilter filter;
+    protected NameObject targetSort;
+    protected List<TargetAndKey>[] metricsToCalculate;
+    protected Map<String, TargetCalculator> calculatedMap;
+    protected MergeIteratorCreator creator;
+    protected BIMultiThreadExecutor executor;
+    protected List<CalCalculator> calCalculator;
 
     public AllNodeMergeIteratorCreator(DimensionFilter filter, NameObject targetSort, List<TargetAndKey>[] metricsToCalculate, Map<String, TargetCalculator> calculatedMap, MergeIteratorCreator creator, BIMultiThreadExecutor executor, List<CalCalculator> calCalculator) {
         this.filter = filter;

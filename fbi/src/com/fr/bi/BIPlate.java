@@ -351,7 +351,7 @@ public class BIPlate extends AbstractFSPlate {
 
     @Override
     public String[] getLocaleFile() {
-        return new String[]{"com/fr/bi/stable/locale/fbi"};
+        return new String[]{"com/fr/bi/web/locale/fbi"};
     }
 
     static {

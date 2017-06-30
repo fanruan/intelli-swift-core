@@ -35,6 +35,7 @@ import com.fr.bi.conf.VT4FBI;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.conf.report.widget.field.dimension.filter.DimensionFilter;
 import com.fr.bi.conf.report.widget.field.target.filter.TargetFilter;
+import com.fr.bi.exception.BIMemoryDataOutOfLimitException;
 import com.fr.bi.field.dimension.calculator.DateDimensionCalculator;
 import com.fr.bi.field.dimension.dimension.BIDateDimension;
 import com.fr.bi.field.target.calculator.cal.CalCalculator;
@@ -437,6 +438,10 @@ public class CubeIndexLoader {
         }
         NodeAndPageInfo leftInfo = getLeftInfo(rowDimension, page, expander, widget, session, usedTargets, pg);
         NodeAndPageInfo topInfo = getTopInfo(colDimension, page, expander, widget, session, usedTargets, pg);
+        int maxSize =  PerformancePlugManager.getInstance().getMaxStructureSize();
+        if (maxSize > 0 && leftInfo.getNode().getTotalLength() * topInfo.getNode().getTotalLength() > maxSize){
+            throw new BIMemoryDataOutOfLimitException();
+        }
         if (usedTargets.length != 0 && isEmpty(topInfo)) {
             leftInfo.getNode().getChilds().clear();
             leftInfo.setHasNext(false);
@@ -461,6 +466,10 @@ public class CubeIndexLoader {
         NodeAndPageInfo leftInfo = getLeftInfo(rowDimension, page, expander, widget, session, usedTargets, pg);
         NodeAndPageInfo leftAllInfo = getLeftInfo(rowDimension, -1, expander, widget, session, usedTargets, new PageIteratorGroup());
         NodeAndPageInfo topInfo = getTopInfo(colDimension, page, expander, widget, session, usedTargets, pg);
+        int maxSize =  PerformancePlugManager.getInstance().getMaxStructureSize();
+        if (maxSize > 0 && leftAllInfo.getNode().getTotalLength() * topInfo.getNode().getTotalLength() > maxSize){
+            throw new BIMemoryDataOutOfLimitException();
+        }
         if (usedTargets.length != 0 && isEmpty(topInfo)) {
             leftInfo.getNode().getChilds().clear();
             leftInfo.setHasNext(false);
@@ -871,29 +880,32 @@ public class CubeIndexLoader {
         public NodeAndPageInfo create() {
 
             BIMultiThreadExecutor executor = MultiThreadManagerImpl.getInstance().getExecutorService();
-            int summaryLength = usedTargets.length;
-            int rowLength = rowDimension.length;
-            boolean calAllPage = page == -1;
-            if (iterator.getRoot() == null) {
-                IRootDimensionGroup root;
-                if (rowLength != 0 && summaryLength == 0) {
-                    root = createPageGroupNodeWithNoSummary(widget, usedTargets, rowDimension, shouldSetIndex, isHor, session, rowLength, calAllPage, authFilter, executor);
+            try {
+
+                int summaryLength = usedTargets.length;
+                int rowLength = rowDimension.length;
+                boolean calAllPage = page == -1;
+                if (iterator.getRoot() == null) {
+                    IRootDimensionGroup root;
+                    if (rowLength != 0 && summaryLength == 0) {
+                        root = createPageGroupNodeWithNoSummary(widget, usedTargets, rowDimension, shouldSetIndex, isHor, session, rowLength, calAllPage, authFilter, executor);
+                    } else {
+                        root = createPageGroupNodeWithSummary(widget, usedTargets, rowDimension, session, shouldSetIndex, isHor, summaryLength, rowLength, calAllPage, authFilter, executor);
+                    }
+                    iterator.setRoot(root);
                 } else {
-                    root = createPageGroupNodeWithSummary(widget, usedTargets, rowDimension, session, shouldSetIndex, isHor, summaryLength, rowLength, calAllPage, authFilter, executor);
+                    iterator = iterator.createClonedIterator();
+                    iterator.getRoot().checkStatus(executor);
                 }
-                iterator.setRoot(root);
-            } else {
-                iterator = iterator.createClonedIterator();
-                iterator.getRoot().checkStatus(executor);
+                iterator.setExpander(expander);
+                if (isAllExpandWholeNodeWithoutIndex(calAllPage)) {
+                    return new NodeAndPageInfo(iterator.getRoot().getConstructedRoot(), iterator);
+                }
+                NodeAndPageInfo info = GroupUtils.createNextPageMergeNode(iterator, op, isHor ? widget.showColumnTotal() : widget.showRowToTal(), shouldSetIndex, widget.getTargets().length, executor);
+                return info;
+            } finally {
+                MultiThreadManagerImpl.getInstance().releaseCurrentThread(session, executor);
             }
-            iterator.setExpander(expander);
-            if (isAllExpandWholeNodeWithoutIndex(calAllPage)) {
-                MultiThreadManagerImpl.getInstance().awaitExecutor(session, executor);
-                return new NodeAndPageInfo(iterator.getRoot().getConstructedRoot(), iterator);
-            }
-            NodeAndPageInfo info = GroupUtils.createNextPageMergeNode(iterator, op, isHor ? widget.showColumnTotal() : widget.showRowToTal(), shouldSetIndex, widget.getTargets().length, executor);
-            MultiThreadManagerImpl.getInstance().awaitExecutor(session, executor);
-            return info;
         }
 
         //全部展开所有节点并且不需要索引的情况直接返回node，不用再走下面的分页
@@ -976,9 +988,13 @@ public class CubeIndexLoader {
                                                       boolean isHor, boolean calAllPage, List<TargetFilter> authFilter, BIMultiThreadExecutor executor) {
 
         boolean showSum = isHor ? widget.showColumnTotal() : widget.showRowToTal();
-        NodeIteratorCreator iteratorCreator = new NodeIteratorCreator(metricGroupInfoList, rowDimension, usedTargets, widget.getTargets().length,
-                                                                      widget.getTargetFilterMap(), widget.isRealData(), session, widget.getTargetSort(), widget.getFilter(), authFilter,
-                                                                      showSum, shouldSetIndex, calAllPage, executor);
+        int maxSize = PerformancePlugManager.getInstance().getMaxStructureSize();
+        NodeIteratorCreator iteratorCreator = maxSize == 0 ? new NodeIteratorCreator(metricGroupInfoList, rowDimension, usedTargets, widget.getTargets().length,
+                widget.getTargetFilterMap(), widget.isRealData(), session, widget.getTargetSort(), widget.getFilter(), authFilter,
+                showSum, shouldSetIndex, calAllPage, executor)
+                : new LimitedNodeIteratorCreator(metricGroupInfoList, rowDimension, usedTargets, widget.getTargets().length,
+                widget.getTargetFilterMap(), widget.isRealData(), session, widget.getTargetSort(), widget.getFilter(), authFilter,
+                showSum, shouldSetIndex, calAllPage, executor, maxSize) ;
         return iteratorCreator.createRoot();
     }
 

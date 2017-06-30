@@ -12,6 +12,7 @@ public class MultiThreadManagerImpl {
     //同时进行的多线程计算数量，
     private AtomicInteger count;
     private static MultiThreadManagerImpl ourInstance = new MultiThreadManagerImpl();
+    private static BIMultiThreadExecutor executor = new BIMultiThreadExecutor();
 
     private MultiThreadManagerImpl() {
         count = new AtomicInteger(0);
@@ -31,20 +32,16 @@ public class MultiThreadManagerImpl {
         //小于3个才进行多线程计算，并发高的时候多线程反而是累赘
         if (isMultiCall() && count.get() < 3) {
             count.incrementAndGet();
-            return createNewExecutorServer();
+            return executor;
         }
         return null;
     }
 
 
-    private BIMultiThreadExecutor createNewExecutorServer() {
-        return new BIMultiThreadExecutor();
-    }
 
-
-    public void awaitExecutor(BISession session, BIMultiThreadExecutor executor) {
-        if (executor != null && !executor.isShutDown()){
-            executor.awaitExecutor(session);
+    public void releaseCurrentThread(BISession session, BIMultiThreadExecutor executor) {
+        if (executor != null){
+            executor.releaseCurrentThread(session);
             count.decrementAndGet();
         }
     }

@@ -1,5 +1,6 @@
 package com.fr.bi.cal.analyze.executor.utils;
 
+import com.fr.base.CoreDecimalFormat;
 import com.fr.base.Style;
 import com.fr.bi.cal.report.engine.CBCell;
 import com.fr.bi.conf.report.style.BITableStyle;
@@ -7,6 +8,8 @@ import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.general.GeneralUtils;
 import com.fr.general.Inter;
 import com.fr.stable.StringUtils;
+
+import java.text.DecimalFormat;
 
 /**
  * Created by Young's on 2016/9/21.
@@ -24,9 +27,9 @@ public class ExecutorUtils {
             Number v = GeneralUtils.objectToNumber(value);
             value = v.doubleValue();
             if (Double.isInfinite((Double) value)) {
-                value = "N/0";
+                return "N/0";
             } else if (Double.isNaN((Double) value)) {
-                value = "NAN";
+                return "NAN";
             } else {
                 switch (numLevel) {
                     case BIReportConstant.TARGET_STYLE.NUM_LEVEL.TEN_THOUSAND:
@@ -39,7 +42,7 @@ public class ExecutorUtils {
                         value = (Double) value / YI;
                         break;
                     case BIReportConstant.TARGET_STYLE.NUM_LEVEL.PERCENT:
-//                        value = (Double) value * 100;     //在excel单元格格式中设置
+                        //在excel单元格格式中设置
                         break;
                 }
             }
@@ -54,16 +57,16 @@ public class ExecutorUtils {
                 levelAndUnit = unit;
                 break;
             case BIReportConstant.TARGET_STYLE.NUM_LEVEL.TEN_THOUSAND:
-                levelAndUnit = Inter.getLocText("BI-Basic_Wan") +  unit;
+                levelAndUnit = Inter.getLocText("BI-Basic_Wan") + unit;
                 break;
             case BIReportConstant.TARGET_STYLE.NUM_LEVEL.MILLION:
-                levelAndUnit = Inter.getLocText("BI-Basic_Million") +  unit;
+                levelAndUnit = Inter.getLocText("BI-Basic_Million") + unit;
                 break;
             case BIReportConstant.TARGET_STYLE.NUM_LEVEL.YI:
-                levelAndUnit = Inter.getLocText("BI-Basic_Yi") +  unit;
+                levelAndUnit = Inter.getLocText("BI-Basic_Yi") + unit;
                 break;
             case BIReportConstant.TARGET_STYLE.NUM_LEVEL.PERCENT:
-                levelAndUnit = "%" +  unit;
+                levelAndUnit = "%" + unit;
                 break;
             default:
                 levelAndUnit = unit;
@@ -71,7 +74,28 @@ public class ExecutorUtils {
         return levelAndUnit;
     }
 
-    public static CBCell createCellWithOutStyle (Object v, int rowIdx, int rowSpan, int columnIdx, int columnSpan) {
+    public static DecimalFormat formatDecimalAndSeparator(int numLevel, int decimal, boolean separator) {
+        StringBuilder result = new StringBuilder();
+        switch (decimal) {
+            case BIReportConstant.TARGET_STYLE.FORMAT.NORMAL:
+                result = new StringBuilder(separator ? "#,###.##" : "#.##");
+                break;
+            case BIReportConstant.TARGET_STYLE.FORMAT.ONE2POINT:
+                result = new StringBuilder(separator ? "#,###" : "#0");
+            default:
+                result.append(separator ? "#,###" : "#");
+                for (int i = 0; i < decimal; i++) {
+                    result.append(i == 0 ? ".0" : "0");
+                }
+                break;
+        }
+        if (numLevel == BIReportConstant.TARGET_STYLE.NUM_LEVEL.PERCENT) {
+            result.append("%");
+        }
+        return new CoreDecimalFormat(new DecimalFormat(result.toString()), result.toString());
+    }
+
+    public static CBCell createCellWithOutStyle(Object v, int rowIdx, int rowSpan, int columnIdx, int columnSpan) {
         CBCell cell = new CBCell(v);
         cell.setRow(rowIdx);
         cell.setRowSpan(rowSpan);
@@ -84,7 +108,7 @@ public class ExecutorUtils {
 
     public static CBCell createCell(Object v, int rowIdx, int rowSpan, int columnIdx, int columnSpan, Style style) {
         CBCell cell = createCellWithOutStyle(v, rowIdx, rowSpan, columnIdx, columnSpan);
-        cell.setStyle(style);
+        cell.setStyle(style.deriveTextStyle(Style.TEXTSTYLE_SINGLELINE));
         //默认CellGUIAttr
         return cell;
     }
