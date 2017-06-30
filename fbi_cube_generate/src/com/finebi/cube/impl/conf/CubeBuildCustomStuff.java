@@ -306,10 +306,11 @@ public class CubeBuildCustomStuff extends AbstractCubeBuildStuff {
 
     @Override
     public boolean isNeed2Update() {
-        if (this.getDependTableResource().isEmpty() && this.getCubeGenerateRelationSet().isEmpty() && this.getCubeGenerateRelationPathSet().isEmpty()) {
-            return false;
-        } else {
-            return true;
+        if (this.getDependTableResource().isEmpty() && this.getCubeGenerateRelationSet().isEmpty()) {
+            if (this.getCubeGenerateRelationPathSet().isEmpty()) {
+                return false;
+            }
         }
+        return true;
     }
 }
