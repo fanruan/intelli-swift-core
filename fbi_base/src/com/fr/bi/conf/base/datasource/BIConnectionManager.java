@@ -170,7 +170,7 @@ public class BIConnectionManager extends XMLFileManager implements BIConnectionP
                         reader.getAttrAsString("schema", null),
                         reader.getAttrAsLong("createBy", UserControl.getInstance().getSuperManagerID()),
                         reader.getAttrAsLong("initTime", 0));
-                connMap.put(connection.getName(), connection);
+                connMap.put(connection.getConnectionName(), connection);
             }
         }
     }
@@ -180,7 +180,7 @@ public class BIConnectionManager extends XMLFileManager implements BIConnectionP
         writer.startTAG(XML_TAG);
         for (BIConnection connection : connMap.values()) {
             writer.startTAG("conn");
-            writer.attr("name", connection.getName());
+            writer.attr("name", connection.getConnectionName());
             if (connection.getSchema() != null) {
                 writer.attr("schema", connection.getSchema());
             }
