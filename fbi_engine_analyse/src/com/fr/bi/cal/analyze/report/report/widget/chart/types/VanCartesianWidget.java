@@ -502,6 +502,7 @@ public abstract class VanCartesianWidget extends VanChartWidget {
 
         String axisTitle = this.axisTitleUnit(settings.optInt("rightYNumberLevel"), settings.optString("rightYUnit"));
         boolean enabled = settings.optBoolean("rightYShowTitle");
+        boolean showGridLine = settings.optBoolean("hShowGridLine") && !hasData(BIReportConstant.REGION.TARGET1);
         JSONObject labelStyle = settings.optJSONObject("rightYLabelStyle");
         JSONObject right = JSONObject.create()
                 .put("maxWidth", COMPONENT_MAX_SIZE).put("maxHeight", COMPONENT_MAX_SIZE)
@@ -517,8 +518,8 @@ public abstract class VanCartesianWidget extends VanChartWidget {
                 .put("labelRotation", labelStyle.optInt("textDirection"))
                 .put("lineColor", settings.optString("rightYLineColor")).put("lineWidth", 1)
                 .put("position", "right").put("reversed", settings.optBoolean("rightYReverse", false))
-                .put("gridLineWidth", settings.optBoolean("hShowGridLine") ? 1 : 0)
-                .put("gridLineColor", hasData(BIReportConstant.REGION.TARGET1) ? "" : settings.optString("hGridLineColor"));
+                .put("gridLineWidth", showGridLine ? 1 : 0)
+                .put("gridLineColor", settings.optString("hGridLineColor"));
 
         if(settings.optBoolean("rightYShowCustomScale")){
             this.putMinMaxInterval(right, settings.optJSONObject("rightYCustomScale"));
@@ -532,6 +533,7 @@ public abstract class VanCartesianWidget extends VanChartWidget {
     protected JSONObject parseThirdValueAxis(JSONObject settings) throws JSONException{
         String axisTitle = this.axisTitleUnit(settings.optInt("rightY2NumberLevel"), settings.optString("rightY2Unit"));
         boolean enabled = settings.optBoolean("rightY2ShowTitle");
+        boolean showGridLine = settings.optBoolean("hShowGridLine") && !hasData(BIReportConstant.REGION.TARGET1) && !hasData(BIReportConstant.REGION.TARGET2);
         JSONObject labelStyle = settings.optJSONObject("rightY2LabelStyle");
         JSONObject right2 = JSONObject.create()
                 .put("maxWidth", COMPONENT_MAX_SIZE).put("maxHeight", COMPONENT_MAX_SIZE)
@@ -547,8 +549,8 @@ public abstract class VanCartesianWidget extends VanChartWidget {
                 .put("labelRotation", labelStyle.optInt("textDirection"))
                 .put("lineColor", settings.optString("rightY2LineColor")).put("lineWidth", 1)
                 .put("position", "right").put("reversed", settings.optBoolean("rightY2Reverse", false))
-                .put("gridLineWidth", settings.optBoolean("hShowGridLine") ? 1 : 0)
-                .put("gridLineColor", (hasData(BIReportConstant.REGION.TARGET1) ||  hasData(BIReportConstant.REGION.TARGET2)) ? "" : settings.optString("hGridLineColor"));
+                .put("gridLineWidth", showGridLine ? 1 : 0)
+                .put("gridLineColor", settings.optString("hGridLineColor"));
 
         if(settings.optBoolean("rightY2ShowCustomScale")){
             this.putMinMaxInterval(right2, settings.optJSONObject("rightY2CustomScale"));
