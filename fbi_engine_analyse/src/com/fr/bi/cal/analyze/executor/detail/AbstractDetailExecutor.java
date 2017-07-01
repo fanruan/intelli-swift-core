@@ -15,13 +15,10 @@ import com.fr.bi.cal.analyze.report.report.widget.BIDetailWidget;
 import com.fr.bi.cal.analyze.session.BISession;
 import com.fr.bi.cal.report.engine.CBBoxElement;
 import com.fr.bi.cal.report.engine.CBCell;
-import com.fr.bi.conf.report.style.BITableStyle;
 import com.fr.bi.conf.report.style.ChartSetting;
-import com.fr.bi.conf.report.style.TargetStyle;
 import com.fr.bi.conf.report.widget.field.target.detailtarget.BIDetailTarget;
 import com.fr.bi.conf.report.widget.field.target.filter.TargetFilter;
 import com.fr.bi.field.BIAbstractTargetAndDimension;
-import com.fr.bi.field.BIStyleTarget;
 import com.fr.bi.field.dimension.calculator.NoneDimensionCalculator;
 import com.fr.bi.field.target.detailtarget.BIAbstractDetailTarget;
 import com.fr.bi.field.target.detailtarget.field.BINumberDetailTarget;
@@ -126,13 +123,13 @@ public abstract class AbstractDetailExecutor extends BIAbstractExecutor<JSONObje
             BIDetailTarget t = viewDimension[i];
             Object v = ob[i];
             v = viewDimension[i].createShowValue(v);
-            if(t instanceof BIAbstractDetailTarget &&  v != null) {
+            if (t instanceof BIAbstractDetailTarget && v != null) {
                 if (((BIAbstractDetailTarget) t).getGroup().getType() == BIReportConstant.GROUP.YMD && GeneralUtils.string2Number(v.toString()) != null) {
                     v = DateUtils.DATEFORMAT2.format(new Date(GeneralUtils.string2Number(v.toString()).longValue()));
                 }
             }
             ChartSetting chartSetting = null;
-            int numLevel = BIReportConstant.TARGET_STYLE.NUM_LEVEL.NORMAL;
+            Style cellStyle = Style.getInstance();
             if (t instanceof BINumberDetailTarget) {
                 chartSetting = ((BINumberDetailTarget) viewDimension[i]).getChartSetting();
             }
@@ -141,27 +138,19 @@ public abstract class AbstractDetailExecutor extends BIAbstractExecutor<JSONObje
             }
             if (chartSetting != null) {
                 JSONObject settings = chartSetting.getSettings();
-                numLevel = settings.optInt("numLevel", BIReportConstant.TARGET_STYLE.NUM_LEVEL.NORMAL);
+                int numLevel = settings.optInt("numLevel", BIReportConstant.TARGET_STYLE.NUM_LEVEL.NORMAL);
+                boolean separator = settings.optBoolean("numSeparators", true);
+                int formatDecimal = settings.optInt("formatDecimal", BIReportConstant.TARGET_STYLE.FORMAT.ZERO2POINT);
                 v = ExecutorUtils.formatExtremeSumValue(v, numLevel);
+                cellStyle = Style.getInstance().deriveFormat(ExecutorUtils.formatDecimalAndSeparator(numLevel, formatDecimal, separator));
             }
-
-            CBCell cell = ExecutorUtils.createCellWithOutStyle(v == null ? NONEVALUE : v, row, 1, i + widget.isOrder(), 1);
+            CBCell cell = ExecutorUtils.createCell(v == null ? NONEVALUE : v, row, 1, i + widget.isOrder(), 1, cellStyle);
             List cellList = new ArrayList();
             cellList.add(cell);
             //TODO CBBoxElement需要整合减少内存
             CBBoxElement cbox = new CBBoxElement(cellList);
             if (t.useHyperLink()) {
                 cell.setNameHyperlinkGroup(t.createHyperLinkNameJavaScriptGroup(v));
-            }
-            if (t instanceof BINumberDetailTarget || t instanceof BINumberFormulaDetailTarget) {
-                cell.setStyle(Style.getInstance());
-                BIStyleTarget sumCol = (BIStyleTarget) t;
-                TargetStyle style = sumCol.getStyle();
-                if (style != null) {
-                    style.changeCellStyle(cell);
-                }
-            } else {
-                cell.setStyle(Style.getInstance());
             }
             cbox.setType(CellConstant.CBCELL.ROWFIELD);
             cell.setBoxElement(cbox);

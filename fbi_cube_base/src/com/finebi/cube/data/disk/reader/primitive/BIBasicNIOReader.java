@@ -1,7 +1,6 @@
 package com.finebi.cube.data.disk.reader.primitive;
 
 import com.finebi.cube.common.log.BILoggerFactory;
-import com.finebi.cube.data.disk.BICubeDiskPrimitiveDiscovery;
 import com.finebi.cube.exception.BIResourceInvalidException;
 import com.fr.bi.stable.io.newio.NIOConstant;
 import com.fr.bi.stable.utils.mem.BIReleaseUtils;
@@ -41,7 +40,7 @@ public abstract class BIBasicNIOReader extends BIAbstractBaseNIOReader {
         if (filePosition < 0) {
             throw BINonValueUtils.illegalArgument("The value of argument must be positive,but it's " + filePosition + " now");
         }
-        if (isValid && (!BICubeDiskPrimitiveDiscovery.getInstance().isReleasingResource())) {
+        if (isValid) {
             int index = (int) (filePosition >> getPageStep() >> NIOConstant.MAX_SINGLE_FILE_PART_SIZE);
             initBuffer(index);
             return index;

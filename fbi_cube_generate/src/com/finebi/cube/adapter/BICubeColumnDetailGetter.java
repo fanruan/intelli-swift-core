@@ -45,7 +45,7 @@ public class BICubeColumnDetailGetter implements ICubeColumnDetailGetter {
 
                 public GroupValueIndex getNullIndex() {
                     try {
-                        return service.getIndexByGroupValue(NIOConstant.DOUBLE.NULL_VALUE);
+                        return (Double)(service.getGroupObjectValue(0)) == NIOConstant.DOUBLE.NULL_VALUE ? service.getBitmapIndex(0) : GVIFactory.createAllEmptyIndexGVI();
                     } catch (Exception e) {
                     }
                     return GVIFactory.createAllEmptyIndexGVI();
@@ -63,7 +63,7 @@ public class BICubeColumnDetailGetter implements ICubeColumnDetailGetter {
 
                 public GroupValueIndex getNullIndex() {
                     try {
-                        return service.getIndexByGroupValue(NIOConstant.LONG.NULL_VALUE);
+                        return (Long)(service.getGroupObjectValue(0)) == NIOConstant.LONG.NULL_VALUE ? service.getBitmapIndex(0) : GVIFactory.createAllEmptyIndexGVI();
                     } catch (Exception e) {
                     }
                     return GVIFactory.createAllEmptyIndexGVI();

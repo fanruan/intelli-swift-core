@@ -48,7 +48,7 @@ public class GVIUtils {
     }
 
     public static boolean isAllEmptyRoaringGroupValueIndex(GroupValueIndex valueIndex) {
-        return valueIndex.getRowsCountWithData() == 0;
+        return valueIndex.isAllEmpty();
     }
 
     public static boolean isIDGroupValueIndex(GroupValueIndex valueIndex) {

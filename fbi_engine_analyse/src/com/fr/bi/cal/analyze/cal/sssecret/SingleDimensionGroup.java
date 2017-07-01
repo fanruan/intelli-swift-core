@@ -128,6 +128,11 @@ public class SingleDimensionGroup extends ExecutorPartner implements ILazyExecut
             }
 
             @Override
+            public boolean isReturnFinalGroupValueIndex() {
+                return false;
+            }
+
+            @Override
             public int getCurrentGroup() {
                 return 0;
             }

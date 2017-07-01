@@ -74,6 +74,15 @@ public abstract class GeneralDimensionFilter extends AbstractDimensionFilter {
         return true;
     }
 
+    public boolean isSingleNodeFilter(){
+        for (DimensionFilter filter : childs){
+            if (!filter.isSingleNodeFilter()){
+                return false;
+            }
+        }
+        return true;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {

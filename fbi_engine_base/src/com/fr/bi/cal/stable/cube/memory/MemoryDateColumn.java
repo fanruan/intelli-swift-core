@@ -31,7 +31,7 @@ public class MemoryDateColumn extends AbstractSingleMemoryColumn<Long> {
 
     @Override
     protected void initDetail() {
-        detail = new AnyIndexArray<Long>();
+        detail = new AnyIndexArrayCreator<Long>().create();
     }
 
     @Override

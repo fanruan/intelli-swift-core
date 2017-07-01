@@ -32,6 +32,12 @@ public class EmptyDimensionTargetValueFilter extends AbstractDimensionFilter {
     }
 
     @Override
+    public boolean isSingleNodeFilter() {
+        return true;
+    }
+
+
+    @Override
     public boolean canCreateDirectFilter() {
         return true;
     }

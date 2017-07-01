@@ -230,14 +230,14 @@ public class BICoreModule extends AbstractModule {
 
     public BILogManagerProvider getBILogManager() {
         if (ClusterEnv.isCluster()) {
-            if (ClusterAdapter.getManager().getHostManager().isSelf()) {
+            if (ClusterAdapter.getManager().getHostManager().isBuildCube()) {
                 BILogManagerWithoutUser provider = new BILogManagerWithoutUser();
-                RPC.registerSkeleton(provider, ClusterAdapter.getManager().getHostManager().getPort());
+                RPC.registerSkeleton(provider, ClusterAdapter.getManager().getHostManager().getBuildCubePort());
                 return provider;
             } else {
                 return (BILogManagerProvider) RPC.getProxy(BILogManagerWithoutUser.class,
-                        ClusterAdapter.getManager().getHostManager().getIp(),
-                        ClusterAdapter.getManager().getHostManager().getPort());
+                        ClusterAdapter.getManager().getHostManager().getBuildCubeIp(),
+                        ClusterAdapter.getManager().getHostManager().getBuildCubePort());
             }
         } else {
             return new BILogManagerWithoutUser();
@@ -426,14 +426,14 @@ public class BICoreModule extends AbstractModule {
 
     private BICubeManagerProvider generateCubeManager() {
         if (ClusterEnv.isCluster()) {
-            if (ClusterAdapter.getManager().getHostManager().isSelf()) {
+            if (ClusterAdapter.getManager().getHostManager().isBuildCube()) {
                 BICubeManager provider = new BICubeManager();
-                RPC.registerSkeleton(provider, ClusterAdapter.getManager().getHostManager().getPort());
+                RPC.registerSkeleton(provider, ClusterAdapter.getManager().getHostManager().getBuildCubePort());
                 return provider;
             } else {
                 return (BICubeManagerProvider) RPC.getProxy(BICubeManager.class,
-                        ClusterAdapter.getManager().getHostManager().getIp(),
-                        ClusterAdapter.getManager().getHostManager().getPort());
+                        ClusterAdapter.getManager().getHostManager().getBuildCubeIp(),
+                        ClusterAdapter.getManager().getHostManager().getBuildCubePort());
             }
         } else {
             return new BICubeManager();
