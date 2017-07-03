@@ -9,6 +9,11 @@ public class PersonOld1 {
     private String nameOld;
     private int age;
     private Boolean male;
+    private String ignoredString;
+
+    public void setIgnoredString(String ignoredString) {
+        this.ignoredString = ignoredString;
+    }
 
     public String getNameOld() {
         return nameOld;
@@ -74,6 +79,7 @@ public class PersonOld1 {
         person.setAge(35);
         person.setMale(false);
         person.setNameOld("ChenHe");
+        person.setIgnoredString("ignore");
         return person;
     }
 
@@ -82,6 +88,7 @@ public class PersonOld1 {
         PersonOld1 denchao = getDenChao();
         ab.setIdol(denchao);
         denchao.setIdol(ab);
+        denchao.setIgnoredString("ignore");
         return ab;
     }
 }
