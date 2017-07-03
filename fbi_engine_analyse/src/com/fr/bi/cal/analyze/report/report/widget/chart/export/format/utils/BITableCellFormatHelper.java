@@ -28,12 +28,32 @@ public class BITableCellFormatHelper {
         if (BIStringUtils.isEmptyString(text) || !StableUtils.isNumber(text)) {
             return text;
         }
+        if (Double.valueOf(text).isNaN()) {
+            return text;
+        }
+        if (Double.valueOf(text).isInfinite()) {
+            return "N/0";
+        }
         try {
             float value = Float.valueOf(text);
             value = parseNumByLevel(settings, value);
             text = parseNumByFormat(decimalFormat(settings), value);
+            String unit = scaleUnit(settings.optInt("numLevel"));
+            return text + unit;
+        } catch (NumberFormatException e) {
+            BILoggerFactory.getLogger(BITableCellFormatHelper.class).error(e.getMessage(), e);
+        }
+        return text;
+    }
+
+    public static String headerTextFormat(JSONObject settings, String text) throws JSONException {
+        try {
             String tail = createTailUnit(settings);
-            return text + tail;
+            if (StringUtils.isEmpty(tail)) {
+                return text;
+            } else {
+                return text + BIStringUtils.append("(", tail, ")");
+            }
         } catch (NumberFormatException e) {
             BILoggerFactory.getLogger(BITableCellFormatHelper.class).error(e.getMessage(), e);
         }
@@ -303,8 +323,8 @@ public class BITableCellFormatHelper {
         if (null != conditions) {
             for (int i = 0; i < conditions.length(); i++) {
                 JSONObject range = conditions.getJSONObject(i).getJSONObject("range");
-                long min = range.optLong("min",Long.MIN_VALUE);
-                long max = range.optLong("max",Long.MAX_VALUE);
+                long min = range.optLong("min", Long.MIN_VALUE);
+                long max = range.optLong("max", Long.MAX_VALUE);
                 boolean minBoolean = range.optBoolean("closemin", false) ? num >= min : num > min;
                 boolean maxBoolean = range.optBoolean("closemax", false) ? num <= max : num < max;
                 if (minBoolean && maxBoolean) {

@@ -6,6 +6,7 @@ import com.fr.json.JSONObject;
  * Created by Kary on 2017/5/12.
  */
 public interface ITableCellFormatOperation {
-    String formatTextValues(String text) throws Exception;
-    JSONObject createTextStyle(String text) throws Exception;
+    String formatItemTextValues(String text) throws Exception;
+    JSONObject createItemTextStyle(String text) throws Exception;
+    String formatHeaderText(String headerText) throws Exception;
 }
