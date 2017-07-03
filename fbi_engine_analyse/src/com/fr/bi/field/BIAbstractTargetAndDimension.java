@@ -57,23 +57,13 @@ public abstract class BIAbstractTargetAndDimension extends BIID implements BITar
         return new IndexKey(column.getFieldName());
     }
 
-    private String getHyperLink(Object v) {
-        String link = StringUtils.EMPTY;
-        try {
-            link = link.replace("${" + Calculator.relatedParameters(hyperLinkExpression)[0] + "}", URLEncoder.encode(v.toString()));
-        } catch (Exception e) {
-            BILoggerFactory.getLogger().error(e.getMessage(), e);
-        }
-        return link;
-    }
-
     @Override
     public NameJavaScriptGroup createHyperLinkNameJavaScriptGroup(Object v) {
         if (!useHyperLink() || v == null) {
             return null;
         }
 
-        WebHyperlink wl = new WebHyperlink(getHyperLink(v));
+        WebHyperlink wl = new WebHyperlink(hyperLinkExpression);
         ParameterProvider[] parameters = new ParameterProvider[]{};
         wl.setParameters(parameters);
         wl.setExtendParameters(false);
