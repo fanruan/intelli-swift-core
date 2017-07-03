@@ -1248,12 +1248,12 @@ public abstract class VanChartWidget extends TableWidget {
         return null;
     }
 
-    public JSONObject getPostOptions(String sessionId, HttpServletRequest req) throws Exception {
-        JSONObject chartOptions = this.createDataJSON((BISessionProvider) SessionDealWith.getSessionIDInfor(sessionId), req);
-        JSONObject plotOptions = chartOptions.optJSONObject("plotOptions");
-        plotOptions.put("animation", false);
-        chartOptions.put("plotOptions", plotOptions);
-        return chartOptions;
+    public JSONObject createPhantomJSONConfig(BISessionProvider session, HttpServletRequest req) throws Exception {
+        JSONObject options = this.createDataJSON(session, req);
+
+        options.optJSONObject("plotOptions").put("animation", false);
+
+        return options;
     }
 
     protected String getRequestURL() {
