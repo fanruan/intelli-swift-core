@@ -16,7 +16,7 @@ public interface ITableItem extends JSONCreator {
 
     String getDId();
 
-    String getValue();
+    Object getValue();
 
     List<ITableItem> getValues();
 
@@ -28,7 +28,7 @@ public interface ITableItem extends JSONCreator {
 
     void setDId(String dId);
 
-    void setValue(String text);
+    void setValue(Object text);
 
     void setValues(List<ITableItem> values);
 
