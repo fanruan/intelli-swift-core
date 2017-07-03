@@ -646,8 +646,9 @@ public abstract class VanChartWidget extends TableWidget {
         JSONObject options = this.createChartConfigWidthData(session, req, data);
 
         // 如果是大数据模式,而且分组数大于BigDataChartOperator.MAXROW 或者是图表是交叉表类型且top分组大于BigDataChartOperator.MAXROW
-        if(needOpenBigDateModel()  && ((data.has("c") && data.getJSONArray("c").length()> BigDataChartOperator.MAXROW)
-                || (data.has("t") && data.getJSONObject("t").has("c") && data.getJSONObject("t").getJSONArray("c").length()> BigDataChartOperator.MAXROW) )){
+        boolean isLarge = (data.has("c") && data.getJSONArray("c").length()> BigDataChartOperator.MAXROW)
+                || (data.has("t") && data.getJSONObject("t").has("c") && data.getJSONObject("t").getJSONArray("c").length()> BigDataChartOperator.MAXROW);
+        if(needOpenBigDateModel() && isLarge){
             options.put("chartBigDataModel",true);
         }
         return options;
