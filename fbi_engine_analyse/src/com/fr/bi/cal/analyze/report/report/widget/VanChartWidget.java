@@ -1251,9 +1251,9 @@ public abstract class VanChartWidget extends TableWidget {
     public JSONObject createPhantomJSONConfig(BISessionProvider session, HttpServletRequest req) throws Exception {
         JSONObject options = this.createDataJSON(session, req);
 
-        options.optJSONObject("plotOptions").put("animation", false);
+        JSONObject plotOptions = options.optJSONObject("plotOptions").put("animation", false);
 
-        return options;
+        return options.put("plotOptions", plotOptions);
     }
 
     protected String getRequestURL() {
