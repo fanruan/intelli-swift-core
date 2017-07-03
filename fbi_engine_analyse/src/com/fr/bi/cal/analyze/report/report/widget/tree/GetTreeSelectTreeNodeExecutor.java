@@ -110,27 +110,31 @@ public class GetTreeSelectTreeNodeExecutor extends AbstractTreeNodeExecutor {
         //例如选中了中国-江苏，取消南京
         //important 选中了中国-江苏，取消了江苏，但是搜索的是南京
         if (isChild(selectedValues, p)) {//如果有父亲节点是全选的状态
-            List<String[]> result = new ArrayList<String[]>();
-            boolean finded;
-            //如果parentValues中有匹配的值，说明搜索结果不在当前值下
-            if (isSearchValueInParents(p)) {
-                finded = true;
-            } else {
-                //从当前值开始搜
-                finded = search(parent.length + 1, floors, parent, notSelectedValueString, keyword, result, new ArrayList<String[]>());
-                p = parent;
-            }
-            if (finded) {
-                //去掉点击的节点之后的结果集
-                //处理 选中了 中国， 取消南京， 搜索江苏
-                expandSelectValues(selectedValues, p, notSelectedValueString);
+            parentAllSelected(selectedValues, notSelectedValueString, parent, floors, keyword, p);
+        }
+    }
 
-                //填充去掉notSelectedValue之后的所有值
-                //处理 选中了 中国， 取消江苏， 搜索南京
-                if (!result.isEmpty()) {
-                    for (String[] arr : result) {
-                        buildTree(selectedValues, arr);
-                    }
+    private void parentAllSelected(JSONObject selectedValues, String notSelectedValueString, String[] parent, int floors, String keyword, String[] p) throws JSONException {
+        List<String[]> result = new ArrayList<String[]>();
+        boolean finded;
+        //如果parentValues中有匹配的值，说明搜索结果不在当前值下
+        if (isSearchValueInParents(p)) {
+            finded = true;
+        } else {
+            //从当前值开始搜
+            finded = search(parent.length + 1, floors, parent, notSelectedValueString, keyword, result, new ArrayList<String[]>());
+            p = parent;
+        }
+        if (finded) {
+            //去掉点击的节点之后的结果集
+            //处理 选中了 中国， 取消南京， 搜索江苏
+            expandSelectValues(selectedValues, p, notSelectedValueString);
+
+            //填充去掉notSelectedValue之后的所有值
+            //处理 选中了 中国， 取消江苏， 搜索南京
+            if (!result.isEmpty()) {
+                for (String[] arr : result) {
+                    buildTree(selectedValues, arr);
                 }
             }
         }

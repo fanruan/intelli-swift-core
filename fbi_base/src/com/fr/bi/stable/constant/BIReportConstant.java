@@ -498,6 +498,11 @@ public class BIReportConstant {
         public static final int ROW_PRE = 3;
         public static final int ROW_NEXT = 4;
         public static final int EXPAND = 5;
+
+        /**
+         * 大数据图表
+         */
+        public static final int BIGDATACHART =6;
     }
 
     /**
