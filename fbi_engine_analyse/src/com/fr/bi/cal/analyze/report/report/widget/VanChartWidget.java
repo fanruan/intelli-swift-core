@@ -513,9 +513,15 @@ public abstract class VanChartWidget extends TableWidget {
 
         colorStr = colorStr.substring(1);
 
-        Color color = new Color(Integer.parseInt(colorStr, 16));
+        Number number = StableUtils.string2Number(colorStr);
 
-        return color.getRed() * RED_DET + color.getGreen() * GREEN_DET + color.getBlue() * BLUE_DET < GRAY;
+        if(number != null){
+            Color color = new Color(Integer.parseInt(colorStr, 16));
+            return color.getRed() * RED_DET + color.getGreen() * GREEN_DET + color.getBlue() * BLUE_DET < GRAY;
+        }
+
+        //产品规定图片背景为浅色
+        return false;
     }
 
     protected JSONObject populateDefaultSettings() throws JSONException {
