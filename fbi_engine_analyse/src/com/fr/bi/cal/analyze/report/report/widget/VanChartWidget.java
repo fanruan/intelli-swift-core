@@ -412,6 +412,8 @@ public abstract class VanChartWidget extends TableWidget {
 
         plotOptions.put("dataLabels", this.createDataLabels(settings));
 
+        plotOptions.put("borderWidth", 0);//bi的配置默认没有边框
+
         return plotOptions;
     }
 
@@ -1196,7 +1198,8 @@ public abstract class VanChartWidget extends TableWidget {
         return JSONObject.create()
                 .put("maxHeight", COMPONENT_MAX_SIZE)
                 .put("maxWidth", COMPONENT_MAX_SIZE)
-                .put("enabled", legend >= BIChartSettingConstant.CHART_LEGENDS.TOP)
+                .put("visible", legend >= BIChartSettingConstant.CHART_LEGENDS.TOP)
+                .put("enabled", true)
                 .put("position", position)
                 .put("style", settings.optJSONObject("legendStyle"));
     }
