@@ -348,12 +348,6 @@ public class TableWidget extends BISummaryWidget {
     private void createWidgetStyles(JSONObject jo) throws Exception {
 
         style = new BITableWidgetStyle();
-        JSONArray dimColWidths = new JSONArray();
-        for (int i = 0; i < getViewDimensions().length; i++) {
-            dimColWidths.put(20);
-        }
-        jo.put("mergeCols", dimColWidths);
-        jo.put("columnSize", dimColWidths);
         style.parseJSON(jo);
     }
 
@@ -829,7 +823,7 @@ public class TableWidget extends BISummaryWidget {
         }
         DataConstructor data = BITableConstructHelper.buildTableData(builder);
         BITableConstructHelper.formatCells(data, getITableCellFormatOperationMap(), style);
-        return data.createJSON().put("page", res.getJSONArray("page")).put("dimensionLength", dimensions.length).put("widgetType", this.tableType);
+        return data.createJSON().put("page", res.getJSONArray("page")).put("dimensionLength", getViewDimensions().length).put("widgetType", this.tableType);
     }
 
     /*假数据，测试用*/
