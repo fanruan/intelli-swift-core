@@ -412,6 +412,8 @@ public abstract class VanChartWidget extends TableWidget {
 
         plotOptions.put("dataLabels", this.createDataLabels(settings));
 
+        plotOptions.put("borderWidth", 0);//bi的配置默认没有边框
+
         return plotOptions;
     }
 
