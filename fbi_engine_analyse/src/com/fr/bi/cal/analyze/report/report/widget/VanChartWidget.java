@@ -1198,7 +1198,7 @@ public abstract class VanChartWidget extends TableWidget {
         return JSONObject.create()
                 .put("maxHeight", COMPONENT_MAX_SIZE)
                 .put("maxWidth", COMPONENT_MAX_SIZE)
-                .put("enabled", legend >= BIChartSettingConstant.CHART_LEGENDS.TOP)
+                .put("visible", legend >= BIChartSettingConstant.CHART_LEGENDS.TOP)
                 .put("position", position)
                 .put("style", settings.optJSONObject("legendStyle"));
     }
