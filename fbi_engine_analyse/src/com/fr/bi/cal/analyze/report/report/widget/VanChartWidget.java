@@ -1199,6 +1199,7 @@ public abstract class VanChartWidget extends TableWidget {
                 .put("maxHeight", COMPONENT_MAX_SIZE)
                 .put("maxWidth", COMPONENT_MAX_SIZE)
                 .put("visible", legend >= BIChartSettingConstant.CHART_LEGENDS.TOP)
+                .put("enabled", true)
                 .put("position", position)
                 .put("style", settings.optJSONObject("legendStyle"));
     }
