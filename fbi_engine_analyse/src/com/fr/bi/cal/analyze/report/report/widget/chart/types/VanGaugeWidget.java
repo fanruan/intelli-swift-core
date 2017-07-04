@@ -1,9 +1,11 @@
 package com.fr.bi.cal.analyze.report.report.widget.chart.types;
 
 import com.fr.bi.stable.constant.BIChartSettingConstant;
+import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
+import com.fr.stable.StableUtils;
 import com.fr.stable.StringUtils;
 
 /**
@@ -24,6 +26,8 @@ public class VanGaugeWidget extends VanCartesianWidget{
     protected JSONObject populateDefaultSettings() throws JSONException{
         JSONObject settings = super.populateDefaultSettings();
 
+        settings.put("leftYShowCustomScale", true);
+
         settings.put("dashboardChartType", NORMAL);
 
         settings.put("dashboardPointer", SINGLE_POINTER);
@@ -38,6 +42,29 @@ public class VanGaugeWidget extends VanCartesianWidget{
         settings.put("showPercentage", BIChartSettingConstant.PERCENTAGE.SHOW);
 
         return settings;
+    }
+
+    protected JSONObject parseLeftValueAxis(JSONObject settings) throws JSONException{
+        JSONObject left = super.parseLeftValueAxis(settings);
+        String min = StringUtils.EMPTY, max = StringUtils.EMPTY;
+
+        if(settings.has("minScale")) {
+            min = settings.optString("minScale");
+        }
+
+        if(settings.has("maxScale")) {
+            max = settings.optString("maxScale");
+        }
+
+        if(StringUtils.isNotBlank(min)){
+            left.put("min", StableUtils.string2Number(min).doubleValue());
+        }
+
+        if(StringUtils.isNotBlank(max)){
+            left.put("max", StableUtils.string2Number(max).doubleValue());
+        }
+
+        return left;
     }
 
     protected String getCoordYKey(){
