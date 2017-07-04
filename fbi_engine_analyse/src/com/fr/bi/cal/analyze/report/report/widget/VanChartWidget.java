@@ -513,9 +513,15 @@ public abstract class VanChartWidget extends TableWidget {
 
         colorStr = colorStr.substring(1);
 
-        Color color = new Color(Integer.parseInt(colorStr, 16));
+        Number number = StableUtils.string2Number(colorStr);
 
-        return color.getRed() * RED_DET + color.getGreen() * GREEN_DET + color.getBlue() * BLUE_DET < GRAY;
+        if(number != null){
+            Color color = new Color(Integer.parseInt(colorStr, 16));
+            return color.getRed() * RED_DET + color.getGreen() * GREEN_DET + color.getBlue() * BLUE_DET < GRAY;
+        }
+
+        //产品规定图片背景为浅色
+        return false;
     }
 
     protected JSONObject populateDefaultSettings() throws JSONException {
@@ -646,8 +652,9 @@ public abstract class VanChartWidget extends TableWidget {
         JSONObject options = this.createChartConfigWidthData(session, req, data);
 
         // 如果是大数据模式,而且分组数大于BigDataChartOperator.MAXROW 或者是图表是交叉表类型且top分组大于BigDataChartOperator.MAXROW
-        if(needOpenBigDateModel()  && ((data.has("c") && data.getJSONArray("c").length()> BigDataChartOperator.MAXROW)
-                || (data.has("t") && data.getJSONObject("t").has("c") && data.getJSONObject("t").getJSONArray("c").length()> BigDataChartOperator.MAXROW) )){
+        boolean isLarge = (data.has("c") && data.getJSONArray("c").length()> BigDataChartOperator.MAXROW)
+                || (data.has("t") && data.getJSONObject("t").has("c") && data.getJSONObject("t").getJSONArray("c").length()> BigDataChartOperator.MAXROW);
+        if(needOpenBigDateModel() && isLarge){
             options.put("chartBigDataModel",true);
         }
         return options;
@@ -1251,9 +1258,9 @@ public abstract class VanChartWidget extends TableWidget {
     public JSONObject createPhantomJSONConfig(BISessionProvider session, HttpServletRequest req) throws Exception {
         JSONObject options = this.createDataJSON(session, req);
 
-        options.optJSONObject("plotOptions").put("animation", false);
+        JSONObject plotOptions = options.optJSONObject("plotOptions").put("animation", false);
 
-        return options;
+        return options.put("plotOptions", plotOptions);
     }
 
     protected String getRequestURL() {

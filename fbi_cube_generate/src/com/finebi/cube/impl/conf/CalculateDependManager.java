@@ -20,9 +20,9 @@ public class CalculateDependManager implements CalculateDependTool {
 
     @Override
     public BICubeGenerateRelation calRelations(BITableSourceRelation biTableSourceRelation, Set<CubeTableSource> cubeTableSources) {
-        Set<CubeTableSource> cubeTableSourceSet = new HashSet<>();
+        Set<CubeTableSource> cubeTableSourceSet = new HashSet<CubeTableSource>();
 
-        Set<String> generatingTableIds = new HashSet<>();
+        Set<String> generatingTableIds = new HashSet<String>();
         for (CubeTableSource tableSource : cubeTableSources) {
             generatingTableIds.add(tableSource.getSourceID());
         }

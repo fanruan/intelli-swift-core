@@ -29,7 +29,6 @@ public class VanMapWidget extends VanChartWidget{
     private String subType = StringUtils.EMPTY;
 
     private static final String THEME = "#04b1c2";
-    private static final String JSON_SUFFIX = ".json";
 
     public void parseJSON(JSONObject jo, long userId) throws Exception {
 
