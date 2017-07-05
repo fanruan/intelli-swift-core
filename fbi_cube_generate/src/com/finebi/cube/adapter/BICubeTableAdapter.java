@@ -310,54 +310,54 @@ public class BICubeTableAdapter implements ICubeTableService {
             case BIReportConstant.GROUP.Y:
                 columnSubType = BIColumnKey.DATA_SUB_TYPE_YEAR;
                 break;
-            case BIReportConstant.GROUP.M:
-                columnSubType = BIColumnKey.DATA_SUB_TYPE_MONTH;
-                break;
-            case BIReportConstant.GROUP.S:
-                columnSubType = BIColumnKey.DATA_SUB_TYPE_SEASON;
-                break;
-            case BIReportConstant.GROUP.W:
-                columnSubType = BIColumnKey.DATA_SUB_TYPE_WEEK;
-                break;
-            case BIReportConstant.GROUP.D:
-                columnSubType = BIColumnKey.DATA_SUB_TYPE_DAY;
-                break;
-            case BIReportConstant.GROUP.YMD:
-                columnSubType = BIColumnKey.DATA_SUB_TYPE_YEAR_MONTH_DAY;
-                break;
-            case BIReportConstant.GROUP.MD:
-                columnSubType = BIColumnKey.DATA_SUB_TYPE_DAY;
-                break;
-            case BIReportConstant.GROUP.WEEK_COUNT:
-                columnSubType = BIColumnKey.DATA_SUB_TYPE_WEEKNUMBER;
-                break;
-            case BIReportConstant.GROUP.HOUR:
-                columnSubType = BIColumnKey.DATA_SUB_TYPE_HOUR;
-                break;
-            case BIReportConstant.GROUP.MINUTE:
-                columnSubType = BIColumnKey.DATA_SUB_TYPE_MINUTE;
-                break;
-            case BIReportConstant.GROUP.SECOND:
-                columnSubType = BIColumnKey.DATA_SUB_TYPE_SECOND;
-                break;
-            case BIReportConstant.GROUP.YS:
-                columnSubType = BIColumnKey.DATA_SUB_TYPE_YEAR_SEASON;
-                break;
-            case BIReportConstant.GROUP.YM:
-                columnSubType = BIColumnKey.DATA_SUB_TYPE_YEAR_MONTH;
-                break;
-            case BIReportConstant.GROUP.YW:
-                columnSubType = BIColumnKey.DATA_SUB_TYPE_YEAR_WEEK_NUMBER;
-                break;
-            case BIReportConstant.GROUP.YMDH:
-                columnSubType = BIColumnKey.DATA_SUB_TYPE_YEAR_MONTH_DAY_HOUR;
-                break;
-            case BIReportConstant.GROUP.YMDHM:
-                columnSubType = BIColumnKey.DATA_SUB_TYPE_YEAR_MONTH_DAY_HOUR_MINUTE;
-                break;
-            case BIReportConstant.GROUP.YMDHMS:
-                columnSubType = BIColumnKey.DATA_SUB_TYPE_YEAR_MONTH_DAY_HOUR_MINUTE_SECOND;
-                break;
+//            case BIReportConstant.GROUP.M:
+//                columnSubType = BIColumnKey.DATA_SUB_TYPE_MONTH;
+//                break;
+//            case BIReportConstant.GROUP.S:
+//                columnSubType = BIColumnKey.DATA_SUB_TYPE_SEASON;
+//                break;
+//            case BIReportConstant.GROUP.W:
+//                columnSubType = BIColumnKey.DATA_SUB_TYPE_WEEK;
+//                break;
+//            case BIReportConstant.GROUP.D:
+//                columnSubType = BIColumnKey.DATA_SUB_TYPE_DAY;
+//                break;
+//            case BIReportConstant.GROUP.YMD:
+//                columnSubType = BIColumnKey.DATA_SUB_TYPE_YEAR_MONTH_DAY;
+//                break;
+//            case BIReportConstant.GROUP.MD:
+//                columnSubType = BIColumnKey.DATA_SUB_TYPE_DAY;
+//                break;
+//            case BIReportConstant.GROUP.WEEK_COUNT:
+//                columnSubType = BIColumnKey.DATA_SUB_TYPE_WEEKNUMBER;
+//                break;
+//            case BIReportConstant.GROUP.HOUR:
+//                columnSubType = BIColumnKey.DATA_SUB_TYPE_HOUR;
+//                break;
+//            case BIReportConstant.GROUP.MINUTE:
+//                columnSubType = BIColumnKey.DATA_SUB_TYPE_MINUTE;
+//                break;
+//            case BIReportConstant.GROUP.SECOND:
+//                columnSubType = BIColumnKey.DATA_SUB_TYPE_SECOND;
+//                break;
+//            case BIReportConstant.GROUP.YS:
+//                columnSubType = BIColumnKey.DATA_SUB_TYPE_YEAR_SEASON;
+//                break;
+//            case BIReportConstant.GROUP.YM:
+//                columnSubType = BIColumnKey.DATA_SUB_TYPE_YEAR_MONTH;
+//                break;
+//            case BIReportConstant.GROUP.YW:
+//                columnSubType = BIColumnKey.DATA_SUB_TYPE_YEAR_WEEK_NUMBER;
+//                break;
+//            case BIReportConstant.GROUP.YMDH:
+//                columnSubType = BIColumnKey.DATA_SUB_TYPE_YEAR_MONTH_DAY_HOUR;
+//                break;
+//            case BIReportConstant.GROUP.YMDHM:
+//                columnSubType = BIColumnKey.DATA_SUB_TYPE_YEAR_MONTH_DAY_HOUR_MINUTE;
+//                break;
+//            case BIReportConstant.GROUP.YMDHMS:
+//                columnSubType = BIColumnKey.DATA_SUB_TYPE_YEAR_MONTH_DAY_HOUR_MINUTE_SECOND;
+//                break;
             default:
                 throw BINonValueUtils.beyondControl();
         }
