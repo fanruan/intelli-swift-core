@@ -419,6 +419,10 @@ public class TableWidget extends BISummaryWidget {
         }
     }
 
+    public BITableWidgetStyle getWidgetStyle () {
+        return style;
+    }
+
     public String getDimensionName(String id) {
 
         BISummaryTarget target = this.targetsIdMap.get(id);
