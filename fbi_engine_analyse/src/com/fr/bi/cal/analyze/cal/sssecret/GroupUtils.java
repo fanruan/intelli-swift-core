@@ -43,6 +43,7 @@ public class GroupUtils {
             //没完成的话要唤醒下executor，以防有加到executor里wait住的。
             executor.wakeUp();
             synchronized (size) {
+                //这边需要再判断一次，全部完成会把状态设置成true，之前内部变量不能申明volitile，就把这个判断取消了- -！
                 if (!status.isCompleted()) {
                     try {
                         size.wait();
