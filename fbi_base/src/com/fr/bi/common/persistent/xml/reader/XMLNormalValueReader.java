@@ -95,11 +95,16 @@ public class XMLNormalValueReader extends XMLValueReader {
         return !isIgnore(field);
     }
 
+    /*
+    * author Kary
+    * BI-6550 4.0升级至4.02bug
+    * field被删除时应该直接ignore
+    * */
     private boolean isIgnore(Field field) {
         if (field != null) {
             return IS_IGNORED_FIELD_USABLE && field.isAnnotationPresent(BIIgnoreField.class);
         } else {
-            return false;
+            return true;
         }
     }
 }

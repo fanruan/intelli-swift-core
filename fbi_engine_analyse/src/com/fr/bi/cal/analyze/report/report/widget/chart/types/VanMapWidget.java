@@ -1,17 +1,24 @@
 package com.fr.bi.cal.analyze.report.report.widget.chart.types;
 
+import com.fr.base.FRContext;
 import com.fr.bi.cal.analyze.report.report.widget.VanChartWidget;
 import com.fr.bi.conf.report.map.BIMapInfoManager;
 import com.fr.bi.conf.report.map.BIWMSManager;
+import com.fr.bi.conf.session.BISessionProvider;
 import com.fr.bi.field.target.target.BISummaryTarget;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.general.ComparatorUtils;
+import com.fr.general.IOUtils;
 import com.fr.general.Inter;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
+import com.fr.stable.CodeUtils;
+import com.fr.stable.StableUtils;
 import com.fr.stable.StringUtils;
 
+import javax.servlet.http.HttpServletRequest;
+import java.io.InputStream;
 import java.util.Map;
 
 /**
@@ -185,5 +192,20 @@ public class VanMapWidget extends VanChartWidget{
                 .put("showValue", true).put("showPercentage", false)
                 .put("textStyle", defaultFont());
 
+    }
+
+    public JSONObject createPhantomJSONConfig(BISessionProvider session, HttpServletRequest req) throws Exception {
+        JSONObject options = super.createPhantomJSONConfig(session, req);
+
+        if(options.has("geo")){
+            JSONObject geo = options.optJSONObject("geo");
+            String path = geo.optString("data", StringUtils.EMPTY).replace(BIMapInfoManager.ACTION_PREFIX, StringUtils.EMPTY);
+            InputStream in = FRContext.getCurrentEnv().readResource(StableUtils.pathJoin(new String[]{BIMapInfoManager.JSON_FOLDER, CodeUtils.cjkDecode(path)}));
+            String string = IOUtils.inputStream2String(in);
+            geo.put("data", new JSONObject(string.replace('\uFEFF',' ')));
+            options.put("geo", geo);
+        }
+
+        return options;
     }
 }

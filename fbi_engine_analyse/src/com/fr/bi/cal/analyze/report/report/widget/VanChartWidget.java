@@ -412,6 +412,8 @@ public abstract class VanChartWidget extends TableWidget {
 
         plotOptions.put("dataLabels", this.createDataLabels(settings));
 
+        plotOptions.put("borderWidth", 0);//bi的配置默认没有边框
+
         return plotOptions;
     }
 
@@ -513,9 +515,15 @@ public abstract class VanChartWidget extends TableWidget {
 
         colorStr = colorStr.substring(1);
 
-        Color color = new Color(Integer.parseInt(colorStr, 16));
+        Number number = StableUtils.string2Number(colorStr);
 
-        return color.getRed() * RED_DET + color.getGreen() * GREEN_DET + color.getBlue() * BLUE_DET < GRAY;
+        if(number != null){
+            Color color = new Color(Integer.parseInt(colorStr, 16));
+            return color.getRed() * RED_DET + color.getGreen() * GREEN_DET + color.getBlue() * BLUE_DET < GRAY;
+        }
+
+        //产品规定图片背景为浅色
+        return false;
     }
 
     protected JSONObject populateDefaultSettings() throws JSONException {
@@ -646,8 +654,9 @@ public abstract class VanChartWidget extends TableWidget {
         JSONObject options = this.createChartConfigWidthData(session, req, data);
 
         // 如果是大数据模式,而且分组数大于BigDataChartOperator.MAXROW 或者是图表是交叉表类型且top分组大于BigDataChartOperator.MAXROW
-        if(needOpenBigDateModel()  && ((data.has("c") && data.getJSONArray("c").length()> BigDataChartOperator.MAXROW)
-                || (data.has("t") && data.getJSONObject("t").has("c") && data.getJSONObject("t").getJSONArray("c").length()> BigDataChartOperator.MAXROW) )){
+        boolean isLarge = (data.has("c") && data.getJSONArray("c").length()> BigDataChartOperator.MAXROW)
+                || (data.has("t") && data.getJSONObject("t").has("c") && data.getJSONObject("t").getJSONArray("c").length()> BigDataChartOperator.MAXROW);
+        if(needOpenBigDateModel() && isLarge){
             options.put("chartBigDataModel",true);
         }
         return options;
@@ -1189,7 +1198,8 @@ public abstract class VanChartWidget extends TableWidget {
         return JSONObject.create()
                 .put("maxHeight", COMPONENT_MAX_SIZE)
                 .put("maxWidth", COMPONENT_MAX_SIZE)
-                .put("enabled", legend >= BIChartSettingConstant.CHART_LEGENDS.TOP)
+                .put("visible", legend >= BIChartSettingConstant.CHART_LEGENDS.TOP)
+                .put("enabled", true)
                 .put("position", position)
                 .put("style", settings.optJSONObject("legendStyle"));
     }
@@ -1248,12 +1258,12 @@ public abstract class VanChartWidget extends TableWidget {
         return null;
     }
 
-    public JSONObject getPostOptions(String sessionId, HttpServletRequest req) throws Exception {
-        JSONObject chartOptions = this.createDataJSON((BISessionProvider) SessionDealWith.getSessionIDInfor(sessionId), req);
-        JSONObject plotOptions = chartOptions.optJSONObject("plotOptions");
-        plotOptions.put("animation", false);
-        chartOptions.put("plotOptions", plotOptions);
-        return chartOptions;
+    public JSONObject createPhantomJSONConfig(BISessionProvider session, HttpServletRequest req) throws Exception {
+        JSONObject options = this.createDataJSON(session, req);
+
+        JSONObject plotOptions = options.optJSONObject("plotOptions").put("animation", false);
+
+        return options.put("plotOptions", plotOptions);
     }
 
     protected String getRequestURL() {

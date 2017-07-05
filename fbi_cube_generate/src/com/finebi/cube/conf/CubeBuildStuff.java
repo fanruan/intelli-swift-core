@@ -1,7 +1,10 @@
 package com.finebi.cube.conf;
 
 import com.finebi.cube.ICubeConfiguration;
-import com.finebi.cube.relation.*;
+import com.finebi.cube.relation.BICubeGenerateRelation;
+import com.finebi.cube.relation.BICubeGenerateRelationPath;
+import com.finebi.cube.relation.BITableSourceRelation;
+import com.finebi.cube.relation.BITableSourceRelationPath;
 import com.fr.bi.conf.manager.update.source.UpdateSettingSource;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.engine.CubeTaskType;
@@ -48,4 +51,6 @@ public interface CubeBuildStuff {
     CubeTaskType getTaskType();
 
     Set<String> getTaskTableSourceIds();
+
+    boolean isNeed2Update();
 }
