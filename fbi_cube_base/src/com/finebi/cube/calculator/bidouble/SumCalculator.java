@@ -5,10 +5,10 @@ package com.finebi.cube.calculator.bidouble;
 
 import com.finebi.cube.api.*;
 import com.fr.bi.base.key.BIKey;
+import com.fr.bi.stable.gvi.GVIUtils;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.gvi.traversal.CalculatorTraversalAction;
 import com.fr.bi.stable.io.newio.NIOConstant;
-import com.fr.bi.stable.utils.BICollectionUtils;
 
 /**
  * @author Daniel
@@ -50,7 +50,9 @@ public class SumCalculator implements CubeDoubleDataCalculator {
         final PrimitiveLongGetter g = (PrimitiveLongGetter) getter.createPrimitiveDetailGetter();
         GroupValueIndex nullIndex = g.getNullIndex();
         CalculatorTraversalAction ss;
-        range = range.andnot(nullIndex);
+        if (!GVIUtils.isAllEmptyRoaringGroupValueIndex(nullIndex)){
+            range = range.ANDNOT(nullIndex);
+        }
         // 过滤掉空值的gvi
         if (range.isAllEmpty()) {
             // 如果全部为空直接返回最小值的表示
@@ -59,10 +61,8 @@ public class SumCalculator implements CubeDoubleDataCalculator {
         ss = new CalculatorTraversalAction() {
             @Override
             public void actionPerformed(int row) {
-                long value = g.getValue(row);
-                if (!BICollectionUtils.isCubeNullKey(value)) {
-                    sum += value;
-                }
+                //上面andnot过了，这边不需要判断为null了
+                sum += g.getValue(row);
             }
 
             @Override
@@ -78,19 +78,19 @@ public class SumCalculator implements CubeDoubleDataCalculator {
         final PrimitiveDoubleGetter g = (PrimitiveDoubleGetter) getter.createPrimitiveDetailGetter();
         GroupValueIndex nullIndex = g.getNullIndex();
         CalculatorTraversalAction ss;
+        if (!GVIUtils.isAllEmptyRoaringGroupValueIndex(nullIndex)){
+            range = range.ANDNOT(nullIndex);
+        }
         // 如果全部为空值则直接返回空值的表示就行了
-        range = range.andnot(nullIndex);
+        range = range.ANDNOT(nullIndex);
         if (range.isAllEmpty()) {
             return NIOConstant.DOUBLE.NULL_VALUE;
         }
         ss = new CalculatorTraversalAction() {
-
+            //上面andnot过了，这边不需要判断为null了
             @Override
             public void actionPerformed(int row) {
-                double value = g.getValue(row);
-                if (!BICollectionUtils.isCubeNullKey(value)) {
-                    sum += value;
-                }
+                sum += g.getValue(row);
             }
 
             @Override

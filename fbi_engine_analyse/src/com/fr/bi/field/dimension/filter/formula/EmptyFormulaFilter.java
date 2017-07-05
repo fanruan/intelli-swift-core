@@ -26,6 +26,12 @@ public class EmptyFormulaFilter extends AbstractDimensionFilter {
         return true;
     }
 
+
+    @Override
+    public boolean isSingleNodeFilter() {
+        return true;
+    }
+
     @Override
     public void parseJSON(JSONObject jo, long userId) throws Exception {
 

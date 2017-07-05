@@ -1,12 +1,14 @@
-package com.fr.bi.stable.utils.algorithem;
+package com.fr.bi.stable.utils.time;
 
+import com.fr.bi.base.ValueConverter;
+import com.fr.bi.base.ValueConverterFactory;
+import com.fr.bi.stable.constant.BIBaseConstant;
+import com.fr.bi.stable.constant.DateConstant;
 import com.fr.bi.stable.data.key.date.BIDay;
 import com.fr.bi.stable.gvi.GVIFactory;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.gvi.traversal.SingleRowTraversalAction;
-import com.fr.bi.stable.operation.sort.comp.ComparatorFacotry;
 import com.fr.bi.stable.structure.collection.map.CubeTreeMap;
-import com.fr.bi.stable.utils.time.RangeIndexGetter;
 import com.fr.stable.collections.array.IntArray;
 import junit.framework.TestCase;
 
@@ -19,22 +21,20 @@ import java.util.TreeMap;
  */
 public class RangeIndexGetterTest extends TestCase {
 
-
+    private static final long ONE_DAY = 1000 * 60 * 1000* 60 *24;
     private long[] createDate(int len) {
         long[] d = new long[len];
         long t = System.currentTimeMillis();
         for(int i = 0; i < len; i++) {
-            d[i] = t - (long)(Math.random()*1000 * 60 * 1000* 60 *24);
+            d[i] = t - (long)(Math.random()*ONE_DAY);
         }
         return d;
     }
 
-    private CubeTreeMap<Integer> buildMap(long[] d, int Type) {
-        Map<Integer, IntArray> treeMap = new TreeMap<Integer, IntArray>();
+    private CubeTreeMap buildMap(long[] d, ValueConverter converter) {
+        Map<Object, IntArray> treeMap = new TreeMap<Object, IntArray>();
         for (int i = 0; i < d.length; i ++){
-            Calendar date = Calendar.getInstance();
-            date.setTimeInMillis(d[i]);
-            int value = date.get(Type);
+            Object value = converter.result2Value(d[i]);
             IntArray list = treeMap.get(value);
             if (list == null) {
                 list = new IntArray();
@@ -42,27 +42,30 @@ public class RangeIndexGetterTest extends TestCase {
             }
             list.add(i);
         }
-        CubeTreeMap<Integer> getter = new CubeTreeMap<Integer>(ComparatorFacotry.INTEGER_ASC);
-        for (Map.Entry<Integer, IntArray> entry : treeMap.entrySet()){
+        CubeTreeMap getter = new CubeTreeMap(BIBaseConstant.COMPARATOR.COMPARABLE.ASC);
+        for (Map.Entry<Object, IntArray> entry : treeMap.entrySet()){
             getter.put(entry.getKey(), GVIFactory.createGroupValueIndexBySimpleIndex(entry.getValue()));
         }
         return getter;
     }
 
+    private static final int RANDOM_TEST_COUNT = 10^5;
+    private static final int RANDOM_TEST_STEP = 10;
     public void testRandomTestGetter () {
-        for( int i = 10; i <= (10^5); i *=10) {
+        for( int i = RANDOM_TEST_STEP; i <= (RANDOM_TEST_COUNT); i *=RANDOM_TEST_STEP) {
             testRangeGetter(i);
         }
     }
 
 
+    private static final int TEST_COUNT = 3000;
     private  void testRangeGetter (int len) {
         long[] dates = createDate(len);
-        CubeTreeMap<Integer> year = buildMap(dates, Calendar.YEAR);
-        CubeTreeMap<Integer> month = buildMap(dates, Calendar.MONTH);
-        CubeTreeMap<Integer> day = buildMap(dates, Calendar.DAY_OF_MONTH);
+        CubeTreeMap<Integer> year = buildMap(dates, ValueConverterFactory.createDateValueConverter(DateConstant.DATE.YEAR));
+        CubeTreeMap<Long> month = buildMap(dates, ValueConverterFactory.createDateValueConverter(DateConstant.DATE.YEAR_MONTH));
+        CubeTreeMap<Long> day = buildMap(dates, ValueConverterFactory.createDateValueConverter(DateConstant.DATE.YMD));
         RangeIndexGetter getter = new RangeIndexGetter(year, month, day);
-       for(int i = 0; i < 3000; i++) {
+       for(int i = 0; i < TEST_COUNT; i++) {
            testRange(getter, dates);
        }
     }
@@ -77,6 +80,9 @@ public class RangeIndexGetterTest extends TestCase {
         final BIDay s = start >= dates.length ? null : createDay(dates[start]);
         final BIDay e = end >= dates.length ? null : createDay(dates[end]);
         GroupValueIndex gvi = getter.createRangeIndex(s, e);
+        if (gvi == null){
+            gvi = GVIFactory.createAllShowIndexGVI(dates.length);
+        }
         gvi.Traversal(new SingleRowTraversalAction() {
             @Override
             public void actionPerformed(int row) {
@@ -91,11 +97,15 @@ public class RangeIndexGetterTest extends TestCase {
         int count = 0;
         for(int i = 0; i < dates.length; i++) {
             long d = createDay(dates[i]).getTime();
-            if((s== null || d >= s.getTime() )&& (e== null || d <= e.getTime())) {
+            if(isInRange(s, e, d)) {
                 count++;
             }
         }
         assertEquals(gvi.getRowsCountWithData(), count);
+    }
+
+    private boolean isInRange(BIDay s, BIDay e, long d) {
+        return (s== null || d >= s.getTime() )&& (e== null || d <= e.getTime());
     }
 
 
@@ -112,26 +122,25 @@ public class RangeIndexGetterTest extends TestCase {
                 1379916772666L, 1407824913203L, 1458362238604L,
                 1380025029390L, 1423088932354L, 1465132082249L,
                 1385897551991L, 1384982841078L};
-        CubeTreeMap<Integer> year = buildMap(dates, Calendar.YEAR);
-        CubeTreeMap<Integer> month = buildMap(dates, Calendar.MONTH);
-        CubeTreeMap<Integer> day = buildMap(dates, Calendar.DAY_OF_MONTH);
-        int start = 5;
-        int end = 6;
+        CubeTreeMap year = buildMap(dates,ValueConverterFactory.createDateValueConverter(DateConstant.DATE.YEAR));
+        CubeTreeMap month = buildMap(dates, ValueConverterFactory.createDateValueConverter(DateConstant.DATE.YEAR_MONTH));
+        CubeTreeMap day = buildMap(dates, ValueConverterFactory.createDateValueConverter(DateConstant.DATE.YMD));
+        int start = 1;
+        int end = 3;
         RangeIndexGetter getter = new RangeIndexGetter(year, month, day);
         testResult(getter, dates, start, end);
     }
-
 
     public void testSameDay() {
         long[] dates = new long[]{1428439009380L, 1443466793195L,
                 1379916772666L, 1407824913203L, 1458362238604L,
                 1380025029390L, 1423088932354L, 1465132082249L,
                 1385897551991L, 1384982841078L};
-        CubeTreeMap<Integer> year = buildMap(dates, Calendar.YEAR);
-        CubeTreeMap<Integer> month = buildMap(dates, Calendar.MONTH);
-        CubeTreeMap<Integer> day = buildMap(dates, Calendar.DAY_OF_MONTH);
-        int start = 5;
-        int end = 5;
+        CubeTreeMap year = buildMap(dates, ValueConverterFactory.createDateValueConverter(DateConstant.DATE.YEAR));
+        CubeTreeMap month = buildMap(dates, ValueConverterFactory.createDateValueConverter(DateConstant.DATE.YEAR_MONTH));
+        CubeTreeMap day = buildMap(dates, ValueConverterFactory.createDateValueConverter(DateConstant.DATE.YMD));
+        int start = 3;
+        int end = 3;
         RangeIndexGetter getter = new RangeIndexGetter(year, month, day);
         testResult(getter, dates, start, end);
     }

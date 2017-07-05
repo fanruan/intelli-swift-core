@@ -1,7 +1,6 @@
 package com.finebi.cube.data.disk.reader;
 
 import com.finebi.cube.common.log.BILoggerFactory;
-import com.finebi.cube.data.BICubeReleaseRecorder;
 import com.finebi.cube.data.disk.BICubeDiskPrimitiveDiscovery;
 import com.finebi.cube.data.disk.NIOHandlerManager;
 import com.finebi.cube.data.input.primitive.ICubePrimitiveReader;
@@ -145,6 +144,16 @@ public class ReaderHandlerManager implements NIOHandlerManager<ICubePrimitiveRea
             readWriteLock.writeLock().lock();
             isForceReleased = false;
             reader.reSetValid(true);
+        } finally {
+            readWriteLock.writeLock().unlock();
+        }
+    }
+
+    @Override
+    public void inValidHandler() {
+        try {
+            readWriteLock.writeLock().lock();
+            reader.reSetValid(false);
         } finally {
             readWriteLock.writeLock().unlock();
         }

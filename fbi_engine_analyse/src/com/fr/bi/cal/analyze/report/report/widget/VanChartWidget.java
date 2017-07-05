@@ -2,10 +2,12 @@ package com.fr.bi.cal.analyze.report.report.widget;
 
 import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.base.FRContext;
+import com.fr.bi.cal.analyze.cal.result.operator.BigDataChartOperator;
 import com.fr.bi.conf.fs.BIChartStyleAttr;
 import com.fr.bi.conf.fs.FBIConfig;
 import com.fr.bi.conf.fs.tablechartstyle.BIChartFontStyleAttr;
 import com.fr.bi.conf.report.WidgetType;
+import com.fr.bi.conf.report.style.DetailChartSetting;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.conf.session.BISessionProvider;
 import com.fr.bi.field.target.target.BISummaryTarget;
@@ -29,8 +31,15 @@ import java.awt.*;
 import java.io.File;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Created by User on 2016/4/25.
@@ -85,7 +94,6 @@ public abstract class VanChartWidget extends TableWidget {
 
     //todo:@shine 4.1版本整理一下settings globalstyle plateconfig
     private JSONObject globalStyle;
-    private JSONObject defaultFont;
 
     public static final String[] FULL_QUARTER_NAMES = new String[]{
             Inter.getLocText("BI-Quarter_1"),
@@ -153,6 +161,7 @@ public abstract class VanChartWidget extends TableWidget {
         this.formatSeriesDataLabelFormat(options);
 
         options.put("tools", toolsJSON());
+
 
         return options;
     }
@@ -403,6 +412,8 @@ public abstract class VanChartWidget extends TableWidget {
 
         plotOptions.put("dataLabels", this.createDataLabels(settings));
 
+        plotOptions.put("borderWidth", 0);//bi的配置默认没有边框
+
         return plotOptions;
     }
 
@@ -504,9 +515,15 @@ public abstract class VanChartWidget extends TableWidget {
 
         colorStr = colorStr.substring(1);
 
-        Color color = new Color(Integer.parseInt(colorStr, 16));
+        Number number = StableUtils.string2Number(colorStr);
 
-        return color.getRed() * RED_DET + color.getGreen() * GREEN_DET + color.getBlue() * BLUE_DET < GRAY;
+        if(number != null){
+            Color color = new Color(Integer.parseInt(colorStr, 16));
+            return color.getRed() * RED_DET + color.getGreen() * GREEN_DET + color.getBlue() * BLUE_DET < GRAY;
+        }
+
+        //产品规定图片背景为浅色
+        return false;
     }
 
     protected JSONObject populateDefaultSettings() throws JSONException {
@@ -538,55 +555,51 @@ public abstract class VanChartWidget extends TableWidget {
 
     //优先级从低到高：plat界面背景，global界面背景，主题，plat组件背景，global组件背景，setting组件背景，plat图表文字， global图表文字，settings图表文字
     protected JSONObject defaultFont() throws JSONException {
-        if(defaultFont == null){
-            BIChartStyleAttr platConfig = FBIConfig.getProviderInstance().getChartStyleAttr();
-            String color = DARK, fontWeight = "normal", fontStyle = "normal";
+        BIChartStyleAttr platConfig = FBIConfig.getProviderInstance().getChartStyleAttr();
+        String color = DARK, fontWeight = "normal", fontStyle = "normal";
 
-            if(platConfig.getMainBackground() != null) {
-                color = checkValidColor(platConfig.getMainBackground().getValue(), color);
-            }
-
-            if(globalStyle.has("mainBackground")) {
-                color = checkValidColor(globalStyle.optJSONObject("mainBackground").optString("value"), color);
-            }
-
-            if(globalStyle.optString("theme").equals("bi-theme-dark")){
-                color = WHITE;
-            }
-
-            if(platConfig.getWidgetBackground() != null) {
-                color = checkValidColor(platConfig.getWidgetBackground().getValue(), color);
-            }
-
-            if(globalStyle.has("widgetBackground")) {
-                color = checkValidColor(globalStyle.optJSONObject("widgetBackground").optString("value"), color);
-            }
-
-            BIChartFontStyleAttr fontStyleAttr = platConfig.getChartFont();
-            if(fontStyleAttr != null){
-                String fontColor = fontStyleAttr.getColor();
-                if(StringUtils.isNotEmpty(fontColor)){
-                    color = checkTransparent(fontColor);
-                }
-                fontWeight = fontStyleAttr.getFontWidget();
-                fontStyle = fontStyleAttr.getFontStyle();
-            }
-
-            JSONObject chartFont = globalStyle.optJSONObject("chartFont");
-            if(chartFont != null){
-                String fontColor = chartFont.optString("color");
-                if(StringUtils.isNotEmpty(fontColor)){
-                    color = checkTransparent(fontColor);
-                }
-                fontWeight = chartFont.optString("fontWeight", fontWeight);
-                fontStyle = chartFont.optString("fontStyle", fontStyle);
-            }
-
-            defaultFont = JSONObject.create().put("fontFamily", "Microsoft YaHei").put("fontSize", "12px")
-                    .put("color", color).put("fontWeight", fontWeight).put("fontStyle", fontStyle);
+        if(platConfig.getMainBackground() != null) {
+            color = checkValidColor(platConfig.getMainBackground().getValue(), color);
         }
 
-        return defaultFont;
+        if(globalStyle.has("mainBackground")) {
+            color = checkValidColor(globalStyle.optJSONObject("mainBackground").optString("value"), color);
+        }
+
+        if(globalStyle.optString("theme").equals("bi-theme-dark")){
+            color = WHITE;
+        }
+
+        if(platConfig.getWidgetBackground() != null) {
+            color = checkValidColor(platConfig.getWidgetBackground().getValue(), color);
+        }
+
+        if(globalStyle.has("widgetBackground")) {
+            color = checkValidColor(globalStyle.optJSONObject("widgetBackground").optString("value"), color);
+        }
+
+        BIChartFontStyleAttr fontStyleAttr = platConfig.getChartFont();
+        if(fontStyleAttr != null){
+            String fontColor = fontStyleAttr.getColor();
+            if(StringUtils.isNotEmpty(fontColor)){
+                color = checkTransparent(fontColor);
+            }
+            fontWeight = fontStyleAttr.getFontWidget();
+            fontStyle = fontStyleAttr.getFontStyle();
+        }
+
+        JSONObject chartFont = globalStyle.optJSONObject("chartFont");
+        if(chartFont != null){
+            String fontColor = chartFont.optString("color");
+            if(StringUtils.isNotEmpty(fontColor)){
+                color = checkTransparent(fontColor);
+            }
+            fontWeight = chartFont.optString("fontWeight", fontWeight);
+            fontStyle = chartFont.optString("fontStyle", fontStyle);
+        }
+
+        return JSONObject.create().put("fontFamily", "Microsoft YaHei").put("fontSize", "12px")
+                .put("color", color).put("fontWeight", fontWeight).put("fontStyle", fontStyle);
     }
 
     //颜色自动，则use default color
@@ -632,9 +645,38 @@ public abstract class VanChartWidget extends TableWidget {
 
     public JSONObject createDataJSON(BISessionProvider session, HttpServletRequest req) throws Exception {
 
+        // 如果是实时数据
+        if(needOpenBigDateModel()){
+            setOperator(BIReportConstant.TABLE_PAGE_OPERATOR.BIGDATACHART);
+        }
         JSONObject data = super.createDataJSON(session, req).getJSONObject("data");
 
-        return this.createChartConfigWidthData(session, req, data);
+        JSONObject options = this.createChartConfigWidthData(session, req, data);
+
+        // 如果是大数据模式,而且分组数大于BigDataChartOperator.MAXROW 或者是图表是交叉表类型且top分组大于BigDataChartOperator.MAXROW
+        boolean isLarge = (data.has("c") && data.getJSONArray("c").length()> BigDataChartOperator.MAXROW)
+                || (data.has("t") && data.getJSONObject("t").has("c") && data.getJSONObject("t").getJSONArray("c").length()> BigDataChartOperator.MAXROW);
+        if(needOpenBigDateModel() && isLarge){
+            options.put("chartBigDataModel",true);
+        }
+        return options;
+    }
+
+    /**
+     * 是否需要打开大数据模式
+     * @return
+     */
+    protected boolean needOpenBigDateModel(){
+
+        DetailChartSetting cs = getChartSetting();
+        JSONObject setting = cs.getDetailChartSetting();
+        if(setting.has("bigDataMode") && setting.optBoolean("bigDataMode",false)){
+            return false;
+        }
+        if(isRealData()){
+            return true;
+        }
+        return false;
     }
 
 /*
@@ -1156,7 +1198,8 @@ public abstract class VanChartWidget extends TableWidget {
         return JSONObject.create()
                 .put("maxHeight", COMPONENT_MAX_SIZE)
                 .put("maxWidth", COMPONENT_MAX_SIZE)
-                .put("enabled", legend >= BIChartSettingConstant.CHART_LEGENDS.TOP)
+                .put("visible", legend >= BIChartSettingConstant.CHART_LEGENDS.TOP)
+                .put("enabled", true)
                 .put("position", position)
                 .put("style", settings.optJSONObject("legendStyle"));
     }
@@ -1215,12 +1258,12 @@ public abstract class VanChartWidget extends TableWidget {
         return null;
     }
 
-    public JSONObject getPostOptions(String sessionId, HttpServletRequest req) throws Exception {
-        JSONObject chartOptions = this.createDataJSON((BISessionProvider) SessionDealWith.getSessionIDInfor(sessionId), req);
-        JSONObject plotOptions = chartOptions.optJSONObject("plotOptions");
-        plotOptions.put("animation", false);
-        chartOptions.put("plotOptions", plotOptions);
-        return chartOptions;
+    public JSONObject createPhantomJSONConfig(BISessionProvider session, HttpServletRequest req) throws Exception {
+        JSONObject options = this.createDataJSON(session, req);
+
+        JSONObject plotOptions = options.optJSONObject("plotOptions").put("animation", false);
+
+        return options.put("plotOptions", plotOptions);
     }
 
     protected String getRequestURL() {

@@ -58,12 +58,14 @@ public class DetailExecutor extends AbstractDetailExecutor {
         final GroupValueIndex gvi = createDetailViewGvi();
         int count = gvi.getRowsCountWithData();
         paging.setTotalSize(count);
-        final TableCellIterator iter = new TableCellIterator(widget.getViewDimensions().length, count + 1);
+        //返回前台的时候再去掉不使用的字段
+        final Set<Integer> usedDimensionIndexes = getUsedDimensionIndexes();
+        final TableCellIterator iter = new TableCellIterator(usedDimensionIndexes.size(), count + 1);
         new Thread() {
             public void run() {
                 try {
                     final FinalInt start = new FinalInt();
-                    List<CBCell> cells = createCellTitle(CellConstant.CBCELL.TARGETTITLE_Y);
+                    List<CBCell> cells = createCellTitle(CellConstant.CBCELL.TARGETTITLE_Y, usedDimensionIndexes);
                     Iterator<CBCell> it = cells.iterator();
                     while (it.hasNext()) {
                         iter.getIteratorByPage(start.value).addCell(it.next());
@@ -78,7 +80,7 @@ public class DetailExecutor extends AbstractDetailExecutor {
                                 start.value++;
                             }
                             //row + 1 ? 不然覆盖掉了列名
-                            fillOneLine(iter.getIteratorByPage(start.value), newRow, row.getValues(), currentRow);
+                            fillOneLine(iter.getIteratorByPage(start.value), newRow, row.getValues(), currentRow, usedDimensionIndexes);
                             return false;
                         }
                     };
@@ -110,14 +112,7 @@ public class DetailExecutor extends AbstractDetailExecutor {
         jo.put("value", ja);
         //返回前台的时候再去掉不使用的字段
         final BIDetailTarget[] dimensions = widget.getViewDimensions();
-        String[] array = widget.getView();
-        final Set<Integer> usedDimensionIndexes = new HashSet<Integer>();
-        for (int i = 0; i < array.length; i++) {
-            BIDetailTarget dimension = BITravalUtils.getTargetByName(array[i], dimensions);
-            if (dimension.isUsed()) {
-                usedDimensionIndexes.add(i);
-            }
-        }
+        final Set<Integer> usedDimensionIndexes = getUsedDimensionIndexes();
         TableRowTraversal action = new TableRowTraversal() {
             @Override
             public boolean actionPerformed(BIRowValue row) {
@@ -140,22 +135,47 @@ public class DetailExecutor extends AbstractDetailExecutor {
         return jo;
     }
 
+    private Set<Integer> getUsedDimensionIndexes () {
+        final BIDetailTarget[] dimensions = widget.getViewDimensions();
+        String[] array = widget.getView();
+        final Set<Integer> usedDimensionIndexes = new HashSet<Integer>();
+        for (int i = 0; i < array.length; i++) {
+            BIDetailTarget dimension = BITravalUtils.getTargetByName(array[i], dimensions);
+            if (dimension.isUsed()) {
+                usedDimensionIndexes.add(i);
+            }
+        }
+        return usedDimensionIndexes;
+    }
+
     private GroupValueIndex getLinkFiter(GroupValueIndex gvi) throws Exception{
         if (widget.getLinkWidget() != null && widget.getLinkWidget() instanceof TableWidget) {
             // 判断两个表格的基础表是否相同
             BusinessTable widgetTargetTable = widget.getTargetDimension();
-            TableWidget linkWidget = ((TableWidget) widget.getLinkWidget());
+            TableWidget linkWidget = widget.getLinkWidget();
             Map<String, JSONArray> clicked = widget.getClicked();
-            String linkTarget = clicked.keySet().toArray(new String[]{})[0];
-            BISummaryTarget summaryTarget = linkWidget.getBITargetByID(linkTarget);
-            BusinessTable linkTargetTable = summaryTarget.createTableKey();
-            // 基础表相同的时候才有联动的意义
-            if (widgetTargetTable.equals(linkTargetTable)) {
-                // 其联动组件的父联动gvi
-                GroupValueIndex pLinkGvi = linkWidget.createLinkedFilterGVI(widgetTargetTable, session);
-                // 其联动组件的点击过滤gvi
-                GroupValueIndex linkGvi = linkWidget.getLinkFilter(linkWidget,widgetTargetTable, clicked, session);
-                gvi = GVIUtils.AND(gvi, GVIUtils.AND(pLinkGvi, linkGvi));
+
+            BISummaryTarget summaryTarget = null;
+            String[] ids = clicked.keySet().toArray(new String[]{});
+            for (String linkTarget : ids) {
+                try {
+                    summaryTarget = linkWidget.getBITargetByID(linkTarget);
+                    break;
+                } catch (Exception e) {
+                    BILoggerFactory.getLogger(TableWidget.class).warn("Target id " + linkTarget + " is absent in linked widget " + linkWidget.getWidgetName());
+                }
+            }
+
+            if (summaryTarget != null) {
+                BusinessTable linkTargetTable = summaryTarget.createTableKey();
+                // 基础表相同的时候才有联动的意义
+                if (widgetTargetTable.equals(linkTargetTable)) {
+                    // 其联动组件的父联动gvi
+                    GroupValueIndex pLinkGvi = linkWidget.createLinkedFilterGVI(widgetTargetTable, session);
+                    // 其联动组件的点击过滤gvi
+                    GroupValueIndex linkGvi = linkWidget.getLinkFilter(linkWidget, widgetTargetTable, clicked, session);
+                    gvi = GVIUtils.AND(gvi, GVIUtils.AND(pLinkGvi, linkGvi));
+                }
             }
         }
         return gvi;

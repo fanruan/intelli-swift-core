@@ -11,11 +11,12 @@ import com.fr.bi.cal.analyze.cal.result.Node;
 import com.fr.bi.cal.analyze.cal.result.NodeExpander;
 import com.fr.bi.cal.analyze.cal.sssecret.diminfo.MergeIteratorCreator;
 import com.fr.bi.cal.analyze.session.BISession;
+import com.fr.bi.field.dimension.calculator.DateDimensionCalculator;
+import com.fr.bi.report.result.DimensionCalculator;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.engine.index.key.IndexKey;
 import com.fr.bi.stable.gvi.GroupValueIndex;
-import com.fr.bi.report.result.DimensionCalculator;
 import com.fr.cache.list.IntList;
 import com.fr.general.ComparatorUtils;
 
@@ -31,18 +32,29 @@ import java.util.List;
 public class RootDimensionGroup implements IRootDimensionGroup {
 
     protected List<MetricGroupInfo> metricGroupInfoList;
+
     protected MergeIteratorCreator[] mergeIteratorCreators;
+
     protected int sumLength;
+
     protected BISession session;
+
     protected boolean useRealData;
 
     protected ICubeValueEntryGetter[][] getters;
+
     protected DimensionCalculator[][] columns;
+
     protected ICubeTableService[] tis;
+
     private ISingleDimensionGroup[] singleDimensionGroupCache;
+
     protected BusinessTable[] metrics;
+
     protected List<TargetAndKey>[] summaryLists;
+
     protected NoneDimensionGroup root;
+
     protected int rowSize;
 
     protected RootDimensionGroup() {
@@ -50,6 +62,7 @@ public class RootDimensionGroup implements IRootDimensionGroup {
     }
 
     public RootDimensionGroup(List<MetricGroupInfo> metricGroupInfoList, MergeIteratorCreator[] mergeIteratorCreators, int sumLength, BISession session, boolean useRealData) {
+
         this.metricGroupInfoList = metricGroupInfoList;
         this.mergeIteratorCreators = mergeIteratorCreators;
         this.sumLength = sumLength;
@@ -59,12 +72,14 @@ public class RootDimensionGroup implements IRootDimensionGroup {
     }
 
     protected void init() {
+
         initIterator();
         initGetterAndRows();
         initRoot();
     }
 
     private void initIterator() {
+
         if (metricGroupInfoList == null || metricGroupInfoList.isEmpty()) {
             return;
         }
@@ -78,6 +93,7 @@ public class RootDimensionGroup implements IRootDimensionGroup {
     }
 
     protected void initGetterAndRows() {
+
         getters = new ICubeValueEntryGetter[rowSize][metricGroupInfoList.size()];
         columns = new DimensionCalculator[rowSize][metricGroupInfoList.size()];
         tis = new ICubeTableService[metricGroupInfoList.size()];
@@ -95,6 +111,7 @@ public class RootDimensionGroup implements IRootDimensionGroup {
     }
 
     protected void initRoot() {
+
         metrics = new BusinessTable[metricGroupInfoList.size()];
         summaryLists = new ArrayList[metricGroupInfoList.size()];
         GroupValueIndex[] gvis = new GroupValueIndex[metricGroupInfoList.size()];
@@ -125,28 +142,34 @@ public class RootDimensionGroup implements IRootDimensionGroup {
     }
 
     public List<MetricGroupInfo> getMetricGroupInfoList() {
+
         return metricGroupInfoList;
     }
 
     @Override
     public Node getConstructedRoot() {
+
         return new Node(sumLength);
     }
 
     @Override
     public NoneDimensionGroup getRoot() {
+
         return root;
     }
 
     public ICubeValueEntryGetter[][] getGetters() {
+
         return getters;
     }
 
     public DimensionCalculator[][] getColumns() {
+
         return columns;
     }
 
     public int[] getValueStartRow(Object[] value) {
+
         IntList result = new IntList();
         getValueStartRow(root, value, 0, result);
         for (int i = value.length; i < rowSize; i++) {
@@ -156,6 +179,7 @@ public class RootDimensionGroup implements IRootDimensionGroup {
     }
 
     private void getValueStartRow(NoneDimensionGroup ng, Object[] value, int deep, IntList list) {
+
         if (deep >= value.length) {
             return;
         }
@@ -173,6 +197,7 @@ public class RootDimensionGroup implements IRootDimensionGroup {
     }
 
     private ISingleDimensionGroup getSingleDimensionGroupCache(Object[] value, NoneDimensionGroup ng, int deep) {
+
         return createSingleDimensionGroup(value, ng, deep);
     }
 
@@ -188,6 +213,7 @@ public class RootDimensionGroup implements IRootDimensionGroup {
                                 int deep,
                                 NodeExpander expander,
                                 IntList list) {
+
         if (expander == null) {
             return ReturnStatus.GroupEnd;
         }
@@ -195,6 +221,7 @@ public class RootDimensionGroup implements IRootDimensionGroup {
             return ReturnStatus.Success;
         }
         ISingleDimensionGroup sg = getCacheDimensionGroup(gv, deep);
+
         //如果往下移动，行数就加1
         if (notNextChild(index, deep, expander, sg)) {
             index[deep]++;
@@ -215,6 +242,8 @@ public class RootDimensionGroup implements IRootDimensionGroup {
             expander = expander.getParent();
             returnStatus = findCurrentValue(sg, gv, list, ++index[deep]);
         }
+        // 补全缺失的行
+        completeMissValue(index, deep, sg, gv);
         //如果往下展开，就继续往下
         NodeExpander ex = expander.getChildExpander(sg.getChildShowName(index[deep]));
         if (ex != null && deep + 1 < index.length) {
@@ -225,8 +254,53 @@ public class RootDimensionGroup implements IRootDimensionGroup {
         return ReturnStatus.Success;
     }
 
+    private void completeMissValue(int[] index, int deep, ISingleDimensionGroup sg, GroupConnectionValue gv) {
+
+        if (shouldCompleteDimesionMissValue(deep)) {
+            // 上一个日期
+            Object lastDate;
+            //
+            int columnIndex = index[deep];
+            if (columnIndex == 0) {
+                lastDate = null;
+            } else {
+                lastDate = sg.getChildData(index[deep] - 1);
+            }
+            // 当前日期
+            Object date = sg.getChildData(index[deep]);
+            // TODO 获取时间获取获取器 仍然需要进一步的获取判断
+            DateDimensionCalculator dc = (DateDimensionCalculator) columns[deep][0];
+            // 新的日期
+            Object n = dc.getCompleteObject(date, lastDate, columnIndex++);
+            // 如果返回的日期为一个新的日期,即补全的日期,则
+            if (!date.equals(n)) {
+                // 构建虚假的行,并进行标识,返回
+                do {
+                    GroupConnectionValue ngv = gv.clone();
+                    GroupConnectionValue ngvc = ngv.getChild();
+                    GroupConnectionValue pgvc = ngv;
+                    // 最后一个儿子就代表当前行的当前维度的节点
+                    while (ngvc.getChild() != null) {
+                        pgvc = ngvc;
+                        ngvc = ngvc.getChild();
+                    }
+                    // 设置显示值
+                    ngvc.setData(n);
+                    NoneDimensionGroup nd = ngvc.getCurrentValue().cloneNoSummaryValue();
+                    nd.setGvis(null);
+                    ngvc.setCurrentValue(nd);
+                    pgvc.setChild(ngvc);
+                    gv.addCompleteGroupConnectionValue(ngv);
+                    lastDate = n;
+                    n = dc.getCompleteObject(date, lastDate, columnIndex++);
+                } while (!date.equals(n));
+            }
+        }
+    }
+
     //最后一个维度或者初始化的情况或者没有展开的情况必定是往下的
     private boolean notNextChild(int[] index, int deep, NodeExpander expander, ISingleDimensionGroup sg) {
+
         if (index.length == deep + 1 || index[deep] == -1) {
             return true;
         }
@@ -243,14 +317,17 @@ public class RootDimensionGroup implements IRootDimensionGroup {
     }
 
     protected ISingleDimensionGroup createSingleDimensionGroup(GroupConnectionValue gv, int deep) {
+
         return createSingleDimensionGroup(getParentsValuesByGv(gv, deep), gv.getCurrentValue(), deep);
     }
 
     protected ISingleDimensionGroup createSingleDimensionGroup(Object[] data, NoneDimensionGroup ng, int deep) {
+
         return ng.createSingleDimensionGroup(columns[deep], getters[deep], data, mergeIteratorCreators[deep], useRealData);
     }
 
     protected Object[] getParentsValuesByGv(GroupConnectionValue groupConnectionValue, int deep) {
+
         ArrayList al = new ArrayList();
         GroupConnectionValue gv = groupConnectionValue;
         while (deep-- > 0) {
@@ -266,6 +343,7 @@ public class RootDimensionGroup implements IRootDimensionGroup {
     }
 
     private ReturnStatus findCurrentValue(ISingleDimensionGroup sg, GroupConnectionValue gv, IntList list, int row) {
+
         NoneDimensionGroup nds = sg.getChildDimensionGroup(row);
         if (nds == NoneDimensionGroup.NULL) {
             return ReturnStatus.GroupOutOfBounds;
@@ -277,12 +355,14 @@ public class RootDimensionGroup implements IRootDimensionGroup {
     }
 
     protected GroupConnectionValue createGroupConnectionValue(ISingleDimensionGroup sg, int row, NoneDimensionGroup nds) {
+
         GroupConnectionValue ngv = new GroupConnectionValue(sg.getChildData(row), nds);
         return ngv;
     }
 
     @Override
     public IRootDimensionGroup createClonedRoot() {
+
         RootDimensionGroup rootDimensionGroup = (RootDimensionGroup) createNew();
         rootDimensionGroup.metricGroupInfoList = metricGroupInfoList;
         rootDimensionGroup.mergeIteratorCreators = mergeIteratorCreators;
@@ -302,16 +382,37 @@ public class RootDimensionGroup implements IRootDimensionGroup {
 
     @Override
     public void checkStatus(BIMultiThreadExecutor executor) {
+
         checkThreadPool(executor);
     }
 
     private void checkThreadPool(BIMultiThreadExecutor executor) {
+
         for (MergeIteratorCreator creator : mergeIteratorCreators) {
             creator.setExecutor(executor);
         }
     }
 
     protected IRootDimensionGroup createNew() {
+
         return new RootDimensionGroup();
     }
+
+    /**
+     * 是否应该时间补全
+     *
+     * @param deep
+     * @return
+     */
+    private boolean shouldCompleteDimesionMissValue(int deep) {
+        // TODO 需要进一步的判断 需要判断是哪个计算指标
+        DimensionCalculator dc = getColumns()[deep][0];
+        if (dc instanceof DateDimensionCalculator && ((DateDimensionCalculator) dc).isNeedComplete()) {
+            // 是时间维度,而且还有进行设置了需要进行时间补全的设定则
+            return true;
+        }
+        return false;
+    }
+
+
 }

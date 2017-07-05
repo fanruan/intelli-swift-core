@@ -4,6 +4,7 @@ import com.fr.bi.stable.constant.BIChartSettingConstant;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
+import com.fr.stable.StableUtils;
 import com.fr.stable.StringUtils;
 
 /**
@@ -24,6 +25,8 @@ public class VanGaugeWidget extends VanCartesianWidget{
     protected JSONObject populateDefaultSettings() throws JSONException{
         JSONObject settings = super.populateDefaultSettings();
 
+        settings.put("leftYShowCustomScale", true);
+
         settings.put("dashboardChartType", NORMAL);
 
         settings.put("dashboardPointer", SINGLE_POINTER);
@@ -38,6 +41,29 @@ public class VanGaugeWidget extends VanCartesianWidget{
         settings.put("showPercentage", BIChartSettingConstant.PERCENTAGE.SHOW);
 
         return settings;
+    }
+
+    protected JSONObject parseLeftValueAxis(JSONObject settings) throws JSONException{
+        JSONObject left = super.parseLeftValueAxis(settings);
+        String min = StringUtils.EMPTY, max = StringUtils.EMPTY;
+
+        if(settings.has("minScale")) {
+            min = settings.optString("minScale");
+        }
+
+        if(settings.has("maxScale")) {
+            max = settings.optString("maxScale");
+        }
+
+        if(StringUtils.isNotBlank(min)){
+            left.put("min", StableUtils.string2Number(min).doubleValue());
+        }
+
+        if(StringUtils.isNotBlank(max)){
+            left.put("max", StableUtils.string2Number(max).doubleValue());
+        }
+
+        return left;
     }
 
     protected String getCoordYKey(){
@@ -121,7 +147,7 @@ public class VanGaugeWidget extends VanCartesianWidget{
 
         JSONObject settings = this.getDetailChartSetting();
         int gaugeStyle = settings.optInt("dashboardChartType");
-        String style = StringUtils.EMPTY, layout = StringUtils.EMPTY;
+        String style = StringUtils.EMPTY, layout = "vertical";
         if(gaugeStyle == NORMAL){
             style = "pointer";
         }else if(gaugeStyle == HALF_DASHBOARD){
@@ -132,7 +158,6 @@ public class VanGaugeWidget extends VanCartesianWidget{
             style = "slot";
         }else if(gaugeStyle == VERTICAL_TUBE){
             style = "thermometer";
-            layout = "vertical";
         }else if(gaugeStyle == HORIZONTAL_TUBE){
             style = "thermometer";
             layout = "horizontal";

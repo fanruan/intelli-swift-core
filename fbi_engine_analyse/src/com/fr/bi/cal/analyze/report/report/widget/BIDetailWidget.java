@@ -349,7 +349,7 @@ public class BIDetailWidget extends AbstractBIWidget {
         JSONObject data = this.createDataJSON(session, req);
         JSONObject dataJSON = data.getJSONObject("data");
         Map<Integer, List<JSONObject>> viewMap = createViewMap();
-        IExcelDataBuilder builder = new DetailTableBuilder(viewMap, dataJSON, new BITableWidgetStyle());
+        IExcelDataBuilder builder = new DetailTableBuilder(viewMap, dataJSON, widgetStyle);
         DataConstructor tableData = BITableConstructHelper.buildTableData(builder);
         BITableConstructHelper.formatCells(tableData, createChartDimensions(), widgetStyle);
         JSONObject res = new JSONObject();
@@ -365,7 +365,7 @@ public class BIDetailWidget extends AbstractBIWidget {
         }
         res.put("items", itemsArray);
         res.put("widgetType", getType().getType());
-        res.put("dimensionLength", dimensions.length).put("row", data.optLong("row", 0)).put("size", data.optLong("size", 0));
+        res.put("dimensionLength", getViewDimensions().length).put("row", data.optLong("row", 0)).put("size", data.optLong("size", 0));
         res.put("settings", tableData.getWidgetStyle().createJSON());
         return res;
         //        return createTestData();

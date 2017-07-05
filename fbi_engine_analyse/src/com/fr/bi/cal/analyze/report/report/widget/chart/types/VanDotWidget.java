@@ -102,6 +102,8 @@ public class VanDotWidget extends VanCartesianWidget{
     protected JSONObject populateDefaultSettings() throws JSONException {
         JSONObject settings = super.populateDefaultSettings();
 
+        settings.put("displayRules", SERIES_RULE);
+
         settings.put("bubbleStyle", NO_SHADOW);
         settings.put("dotStyle", BIChartSettingConstant.DOT_STYLE.SQUARE);
 
@@ -248,6 +250,11 @@ public class VanDotWidget extends VanCartesianWidget{
     }
 
     private void dealChildren(boolean noSeries, List<String> longDateDesc, JSONArray children,  HashMap<String, JSONArray> seriesMap) throws JSONException{
+
+        if(children == null){
+            return;
+        }
+
         for(int i = 0, len = children.length(); i < len; i++){
             JSONObject child = children.getJSONObject(i);
             List<String> childDescription = new ArrayList<String>(longDateDesc);
@@ -366,7 +373,10 @@ public class VanDotWidget extends VanCartesianWidget{
 
     protected JSONArray parseCategoryAxis(JSONObject settings) throws JSONException{
 
-        JSONObject baseAxis = this.parseRightValueAxis(settings).put("position", "bottom").put("type", "value");
+        JSONObject baseAxis = this.parseRightValueAxis(settings)
+                .put("position", "bottom").put("type", "value")
+                .put("gridLineWidth", settings.optBoolean("vShowGridLine") ? 1 : 0)
+                .put("gridLineColor", settings.optString("vGridLineColor"));
 
         if (baseAxis.has("title")) {
             baseAxis.optJSONObject("title").put("rotation", 0);

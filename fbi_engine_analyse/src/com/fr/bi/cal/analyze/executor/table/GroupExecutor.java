@@ -15,22 +15,20 @@ import com.fr.bi.cal.analyze.executor.utils.ExecutorUtils;
 import com.fr.bi.cal.analyze.report.report.widget.TableWidget;
 import com.fr.bi.cal.analyze.session.BISession;
 import com.fr.bi.cal.report.engine.CBCell;
-import com.fr.bi.conf.report.style.BITableStyle;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.field.target.target.BICounterTarget;
 import com.fr.bi.field.target.target.BINumberTarget;
 import com.fr.bi.field.target.target.BISummaryTarget;
 import com.fr.bi.report.key.TargetGettingKey;
-import com.fr.general.ComparatorUtils;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.io.newio.NIOConstant;
 import com.fr.bi.stable.utils.BICollectionUtils;
+import com.fr.general.ComparatorUtils;
 import com.fr.general.DateUtils;
 import com.fr.general.GeneralUtils;
-import com.fr.general.Inter;
 import com.fr.json.JSONObject;
 import com.fr.stable.ExportConstants;
-import com.fr.stable.StableUtils;
+import com.fr.stable.StringUtils;
 
 import java.awt.*;
 import java.util.*;
@@ -82,7 +80,7 @@ public class GroupExecutor extends AbstractTableWidgetExecutor<Node> {
             public void run() {
                 try {
                     FinalInt start = new FinalInt();
-                    generateTitle(usedDimensions, usedSumTarget, iter.getIteratorByPage(start.value));
+                    generateTitle(widget, usedDimensions, usedSumTarget, iter.getIteratorByPage(start.value));
                     generateCells(tree, widget, widget.getViewDimensions(), iter, start, new FinalInt(), usedDimensions.length);
                 } catch (Exception e) {
                     BILoggerFactory.getLogger().error(e.getMessage(), e);
@@ -100,7 +98,7 @@ public class GroupExecutor extends AbstractTableWidgetExecutor<Node> {
      * @param pagedIterator
      * @throws Exception
      */
-    public static void generateTitle(BIDimension[] usedDimensions, BISummaryTarget[] usedSumTarget, StreamPagedIterator pagedIterator) throws Exception {
+    public static void generateTitle(TableWidget widget, BIDimension[] usedDimensions, BISummaryTarget[] usedSumTarget, StreamPagedIterator pagedIterator) throws Exception {
         Style style = Style.getInstance().deriveTextStyle(Style.TEXTSTYLE_SINGLELINE);
         int columnIdx = 0;
         for (BIDimension usedDimension : usedDimensions) {
@@ -108,7 +106,13 @@ public class GroupExecutor extends AbstractTableWidgetExecutor<Node> {
             pagedIterator.addCell(cell);
         }
         for (BISummaryTarget anUsedSumTarget : usedSumTarget) {
-            CBCell cell = ExecutorUtils.createCell(anUsedSumTarget.getText(), 0, 1, columnIdx++, 1, style);
+            int numLevel = widget.getChartSetting().getNumberLevelByTargetId(anUsedSumTarget.getId());
+            String unit = widget.getChartSetting().getUnitByTargetId(anUsedSumTarget.getId());
+            String levelAndUnit = ExecutorUtils.formatLevelAndUnit(numLevel, unit);
+
+            String dimensionUnit = ComparatorUtils.equals(levelAndUnit, StringUtils.EMPTY) ? "" : "(" + levelAndUnit + ")";
+
+            CBCell cell = ExecutorUtils.createCell(anUsedSumTarget.getText() + dimensionUnit, 0, 1, columnIdx++, 1, style);
             pagedIterator.addCell(cell);
         }
     }
@@ -163,7 +167,13 @@ public class GroupExecutor extends AbstractTableWidgetExecutor<Node> {
         for (TargetGettingKey key : widget.getTargetsKey()) {
             int columnIdx = targetsKeyIndex + dimensionsLength;
             Object data = temp.getSummaryValue(key);
-            CBCell cell = ExecutorUtils.createCell(data, rowIdx, 1, columnIdx, 1, Style.getInstance().deriveTextStyle(Style.TEXTSTYLE_SINGLELINE));
+            int numLevel = widget.getChartSetting().getNumberLevelByTargetId(key.getTargetName());
+            int formatDecimal = widget.getChartSetting().getFormatDecimalByTargetId(key.getTargetName());
+            boolean separator = widget.getChartSetting().getSeparatorByTargetId(key.getTargetName());
+            data = ExecutorUtils.formatExtremeSumValue(data, numLevel);
+            Style style = Style.getInstance();
+            style = style.deriveFormat(ExecutorUtils.formatDecimalAndSeparator(numLevel, formatDecimal, separator));
+            CBCell cell = ExecutorUtils.createCell(data, rowIdx, 1, columnIdx, 1, style);
             pagedIterator.addCell(cell);
             targetsKeyIndex++;
         }
@@ -180,7 +190,7 @@ public class GroupExecutor extends AbstractTableWidgetExecutor<Node> {
                 data = DateUtils.DATEFORMAT2.format(new Date(GeneralUtils.string2Number(data).longValue()));
             }
             Object v = dim.getValueByType(data);
-            CBCell cell = ExecutorUtils.createCell(v, rowIdx, 1, i + widget.isOrder(), 1, Style.getInstance().deriveTextStyle(Style.TEXTSTYLE_SINGLELINE));
+            CBCell cell = ExecutorUtils.createCell(v, rowIdx, 1, i, 1, Style.getInstance().deriveTextStyle(Style.TEXTSTYLE_SINGLELINE));
             pagedIterator.addCell(cell);
             temp = temp.getParent();
         }

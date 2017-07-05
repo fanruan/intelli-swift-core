@@ -80,6 +80,7 @@ public class TableWidget extends BISummaryWidget {
     private int[] pageSpinner = new int[5];
 
     private int operator = BIReportConstant.TABLE_PAGE_OPERATOR.REFRESH;
+
     @PersistNameHistory(historyNames = {"table_type"})
     private int tableType = BIReportConstant.TABLE_WIDGET.GROUP_TYPE;
 
@@ -198,11 +199,13 @@ public class TableWidget extends BISummaryWidget {
         }
     }
 
-    public void setGroupTableType () {
+    public void setGroupTableType() {
+
         tableType = BIReportConstant.TABLE_WIDGET.GROUP_TYPE;
     }
 
     public void addColumn2Row() {
+
         if (data != null) {
             data.addColumn2Row();
             String[] array = data.getRow();
@@ -345,12 +348,6 @@ public class TableWidget extends BISummaryWidget {
     private void createWidgetStyles(JSONObject jo) throws Exception {
 
         style = new BITableWidgetStyle();
-        JSONArray dimColWidths = new JSONArray();
-        for (int i = 0; i < getViewDimensions().length; i++) {
-            dimColWidths.put(20);
-        }
-        jo.put("mergeCols", dimColWidths);
-        jo.put("columnSize", dimColWidths);
         style.parseJSON(jo);
     }
 
@@ -599,8 +596,22 @@ public class TableWidget extends BISummaryWidget {
     public GroupValueIndex getLinkFilter(TableWidget linkedWidget, BusinessTable targetKey, Map<String, JSONArray> clicked, BISession session) throws Exception {
 
         // 相同基础表的时候才进行联动计算要不然直接进行返回
-        String linkTarget = clicked.keySet().toArray(new String[]{})[0];
-        BISummaryTarget summaryTarget = linkedWidget.getBITargetByID(linkTarget);
+        BISummaryTarget summaryTarget = null;
+        for (String target : clicked.keySet()) {
+            try {
+                summaryTarget = linkedWidget.getBITargetByID(target);
+                Map<String, JSONArray> t = new HashMap<String, JSONArray>();
+                t.put(target, clicked.get(target));
+                clicked = t;
+                break;
+            } catch (Exception e) {
+
+            }
+        }
+        // 连联动计算指标都没有就没有所谓的联动了,直接返回
+        if (summaryTarget == null) {
+            return null;
+        }
         BusinessTable linkTargetTable = summaryTarget.createTableKey();
         if (!targetKey.equals(linkTargetTable)) {
             return null;
@@ -812,7 +823,7 @@ public class TableWidget extends BISummaryWidget {
         }
         DataConstructor data = BITableConstructHelper.buildTableData(builder);
         BITableConstructHelper.formatCells(data, getITableCellFormatOperationMap(), style);
-        return data.createJSON().put("page", res.getJSONArray("page")).put("dimensionLength", dimensions.length).put("widgetType", this.tableType);
+        return data.createJSON().put("page", res.getJSONArray("page")).put("dimensionLength", getViewDimensions().length).put("widgetType", this.tableType);
     }
 
     /*假数据，测试用*/
@@ -855,6 +866,7 @@ public class TableWidget extends BISummaryWidget {
 
     //todo 简单处理，之后要提个接口
     private boolean isStringDimension(BIDimension dimension) {
+
         return dimension.createColumnKey().getFieldType() == DBConstant.COLUMN.STRING;
     }
 

@@ -43,6 +43,11 @@ public abstract class AbstractDimensionFilter implements DimensionFilter {
     }
 
     @Override
+    public boolean isSingleNodeFilter() {
+        return false;
+    }
+
+    @Override
     public BICore fetchObjectCore() {
         return new BICoreGenerator(this).fetchObjectCore();
     }
