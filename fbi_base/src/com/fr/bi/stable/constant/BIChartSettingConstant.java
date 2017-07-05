@@ -1,5 +1,7 @@
 package com.fr.bi.stable.constant;
 
+import java.io.File;
+
 /**
  * Created by User on 2016/8/31.
  */
@@ -171,11 +173,11 @@ public class BIChartSettingConstant {
     }
 
     public static final class ACCUMULATE_TYPE {
-        public static final int OLD_COLUMN=5;
-        public static final int OLD_AREA_CURVE=14;
-        public static final int OLD_STACKED_AREA=15;
-        public static final int OLD_LINE=13;
-        public static final int OLD_STACKED_COLUMN=6;
+        public static final int OLD_COLUMN = 5;
+        public static final int OLD_AREA_CURVE = 14;
+        public static final int OLD_STACKED_AREA = 15;
+        public static final int OLD_LINE = 13;
+        public static final int OLD_ACCUMULATE_AXIS = 6;
         public static final int COLUMN = 1;
         public static final int STACKED_COLUMN = 2;
         public static final int AREA_NORMAL = 3;
@@ -256,5 +258,11 @@ public class BIChartSettingConstant {
         public static final String NUMSEPARATORS = "(window.BH ? BH.contentFormat(this.value, '#,###.##') : this.value)";
         public static final String PERCENTNUMSEPARATORS = "(window.BH ? BH.contentFormat(this.value, '#,##0%') : this.value)";
         public static final String THISPERCENTNUMSEPARATORS = "(window.BH ? BH.contentFormat(this, '#,##0%') : this)";
+    }
+
+    public static void main(String[] args) {
+        String filePath = "C:\\code\\FineBI\\env\\WebReport\\WEB-INF\\resources\\cubes\\-999\\Advanced\\71013f70\\9f56ac2e\\_fineBI_sub_year_month_column_\\size.fbi";
+        File file = new File(filePath);
+file.exists();
     }
 }
