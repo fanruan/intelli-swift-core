@@ -79,8 +79,7 @@ public abstract class AbstractBIWidget implements BIWidget {
         return blockName;
     }
 
-    @Override
-    public String getWidgetId(){
+    public String getWidgetId() {
         return widgetId;
     }
 
@@ -177,7 +176,7 @@ public abstract class AbstractBIWidget implements BIWidget {
         if (jo.has("name")) {
             this.blockName = jo.getString("name");
         }
-        if (jo.has("wId")) {
+        if(jo.has("wId")) {
             this.widgetId = jo.getString("wId");
         }
         if (jo.has("filter")) {
