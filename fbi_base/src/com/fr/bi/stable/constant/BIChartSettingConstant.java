@@ -1,7 +1,5 @@
 package com.fr.bi.stable.constant;
 
-import java.io.File;
-
 /**
  * Created by User on 2016/8/31.
  */
@@ -258,11 +256,5 @@ public class BIChartSettingConstant {
         public static final String NUMSEPARATORS = "(window.BH ? BH.contentFormat(this.value, '#,###.##') : this.value)";
         public static final String PERCENTNUMSEPARATORS = "(window.BH ? BH.contentFormat(this.value, '#,##0%') : this.value)";
         public static final String THISPERCENTNUMSEPARATORS = "(window.BH ? BH.contentFormat(this, '#,##0%') : this)";
-    }
-
-    public static void main(String[] args) {
-        String filePath = "C:\\code\\FineBI\\env\\WebReport\\WEB-INF\\resources\\cubes\\-999\\Advanced\\71013f70\\9f56ac2e\\_fineBI_sub_year_month_column_\\size.fbi";
-        File file = new File(filePath);
-file.exists();
     }
 }
