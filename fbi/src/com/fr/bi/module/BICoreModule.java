@@ -48,6 +48,8 @@ import com.fr.bi.conf.records.BICubeTaskRecordManagerWithoutUser;
 import com.fr.bi.conf.report.BIFSReportProvider;
 import com.fr.bi.conf.tablelock.BIConfTableLock;
 import com.fr.bi.conf.tablelock.BIConfTableLockDAO;
+import com.fr.bi.conf.template.TemplateConfig;
+import com.fr.bi.conf.template.TemplateConfigProvider;
 import com.fr.bi.fs.BIDAOProvider;
 import com.fr.bi.fs.BIDAOUtils;
 import com.fr.bi.fs.BIReportDAO;
@@ -176,6 +178,8 @@ public class BICoreModule extends AbstractModule {
         StableFactory.registerMarkedObject(FBIConfigProvider.XML_TAG, getFBIConfigManager());
         StableFactory.registerMarkedObject(BITableDataDAOProvider.XML_TAG, getBITableDataDAOManager());
 
+        //模版配置属性
+        StableFactory.registerMarkedObject(TemplateConfigProvider.XML_TAG, TemplateConfig.getInstance());
     }
 
     public FBIConfigProvider getFBIConfigManager() {
