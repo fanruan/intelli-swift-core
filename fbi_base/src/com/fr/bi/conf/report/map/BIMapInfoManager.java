@@ -55,8 +55,8 @@ public class BIMapInfoManager {
             customMapTypeName = new HashMap<String, String>();
             customMapLayer = new HashMap<String, Integer>();
             customMapParentChildrenRelation = new HashMap<String, List<String>>();
-            String innerMapPath = new File(GeneralContext.getEnvProvider().getPath(), "resources/geojson/map").getAbsolutePath();
-            String customMapPath = new File(GeneralContext.getEnvProvider().getPath(), "resources/geojson/image").getAbsolutePath();
+            String innerMapPath = new File(GeneralContext.getEnvProvider().getPath(), "assets/geojson/map").getAbsolutePath();
+            String customMapPath = new File(GeneralContext.getEnvProvider().getPath(), "assets/geojson/image").getAbsolutePath();
             editFileNames(innerMapPath, "map", "map", "MAP_", 0, true);
             editFileNames(customMapPath, "image", "image", "MAP_", 0, false);
         } catch (JSONException e) {
