@@ -47,6 +47,7 @@ public abstract class AbstractBIWidget implements BIWidget {
 
     private static final long serialVersionUID = 1959074307747827366L;
     private String blockName;
+    private String widgetId;
     private Rectangle rect = new Rectangle();
     @BICoreField
     private TargetFilter filter;
@@ -76,6 +77,11 @@ public abstract class AbstractBIWidget implements BIWidget {
     @Override
     public String getWidgetName() {
         return blockName;
+    }
+
+    @Override
+    public String getWidgetId(){
+        return widgetId;
     }
 
     @Override
@@ -170,6 +176,9 @@ public abstract class AbstractBIWidget implements BIWidget {
         rect.setBounds(x, y, width, height);
         if (jo.has("name")) {
             this.blockName = jo.getString("name");
+        }
+        if (jo.has("wId")) {
+            this.widgetId = jo.getString("wId");
         }
         if (jo.has("filter")) {
             JSONObject filterJo = jo.getJSONObject("filter");
