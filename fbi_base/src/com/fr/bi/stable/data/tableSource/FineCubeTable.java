@@ -12,7 +12,6 @@ package com.fr.bi.stable.data.tableSource;
  * Created by Roy on 2017/6/16.
  */
 public interface FineCubeTable extends ResourceItem, CubeTableSource {
-    Element buildTableElement(Document document);
 
     void initFields(List<FineCubeField> fieldList);
 
