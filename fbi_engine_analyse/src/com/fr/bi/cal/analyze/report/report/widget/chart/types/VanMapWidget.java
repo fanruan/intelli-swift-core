@@ -193,19 +193,4 @@ public class VanMapWidget extends VanChartWidget{
                 .put("textStyle", defaultFont());
 
     }
-
-    public JSONObject createPhantomJSONConfig(BISessionProvider session, HttpServletRequest req) throws Exception {
-        JSONObject options = super.createPhantomJSONConfig(session, req);
-
-        if(options.has("geo")){
-            JSONObject geo = options.optJSONObject("geo");
-            String path = geo.optString("data", StringUtils.EMPTY).replace(BIMapInfoManager.ACTION_PREFIX, StringUtils.EMPTY);
-            InputStream in = FRContext.getCurrentEnv().readResource(StableUtils.pathJoin(new String[]{BIMapInfoManager.JSON_FOLDER, CodeUtils.cjkDecode(path)}));
-            String string = IOUtils.inputStream2String(in);
-            geo.put("data", new JSONObject(string.replace('\uFEFF',' ')));
-            options.put("geo", geo);
-        }
-
-        return options;
-    }
 }
