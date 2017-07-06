@@ -1,6 +1,7 @@
 package com.fr.bi.cal.analyze.executor.table;
 
 import com.finebi.cube.common.log.BILoggerFactory;
+import com.finebi.cube.conf.table.BusinessTable;
 import com.fr.base.Style;
 import com.fr.bi.base.FinalInt;
 import com.fr.bi.cal.analyze.cal.index.loader.CubeIndexLoader;
@@ -21,18 +22,24 @@ import com.fr.bi.field.target.target.BINumberTarget;
 import com.fr.bi.field.target.target.BISummaryTarget;
 import com.fr.bi.report.key.TargetGettingKey;
 import com.fr.bi.stable.constant.BIReportConstant;
+import com.fr.bi.stable.gvi.GVIUtils;
+import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.io.newio.NIOConstant;
 import com.fr.bi.stable.utils.BICollectionUtils;
 import com.fr.general.ComparatorUtils;
 import com.fr.general.DateUtils;
 import com.fr.general.GeneralUtils;
+import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;
 import com.fr.stable.ExportConstants;
 import com.fr.stable.StringUtils;
 
 import java.awt.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by 小灰灰 on 2015/6/30.
@@ -78,6 +85,7 @@ public class GroupExecutor extends AbstractTableWidgetExecutor<Node> {
         new Thread() {
 
             public void run() {
+
                 try {
                     FinalInt start = new FinalInt();
                     generateTitle(widget, usedDimensions, usedSumTarget, iter.getIteratorByPage(start.value));
@@ -99,6 +107,7 @@ public class GroupExecutor extends AbstractTableWidgetExecutor<Node> {
      * @throws Exception
      */
     public static void generateTitle(TableWidget widget, BIDimension[] usedDimensions, BISummaryTarget[] usedSumTarget, StreamPagedIterator pagedIterator) throws Exception {
+
         Style style = Style.getInstance().deriveTextStyle(Style.TEXTSTYLE_SINGLELINE);
         int columnIdx = 0;
         for (BIDimension usedDimension : usedDimensions) {
@@ -127,6 +136,7 @@ public class GroupExecutor extends AbstractTableWidgetExecutor<Node> {
      * @param maxRowDimensionsLength ComplexGroupExecutor复用时需要的参数,
      */
     public static void generateCells(Node n, TableWidget widget, BIDimension[] rowDimensions, TableCellIterator iter, FinalInt start, FinalInt rowIdx, int maxRowDimensionsLength) {
+
         while (n.getFirstChild() != null) {
             n = n.getFirstChild();
         }
@@ -152,6 +162,7 @@ public class GroupExecutor extends AbstractTableWidgetExecutor<Node> {
     }
 
     private static boolean checkNull(Node n, int length) {
+
         Node temp = n;
         for (int i = 0; i < length; i++) {
             if (temp.getParent() == null) {
@@ -163,6 +174,7 @@ public class GroupExecutor extends AbstractTableWidgetExecutor<Node> {
     }
 
     private static void generateTargetCells(Node temp, TableWidget widget, StreamPagedIterator pagedIterator, int rowIdx, boolean isSum, int dimensionsLength) {
+
         int targetsKeyIndex = 0;
         for (TargetGettingKey key : widget.getTargetsKey()) {
             int columnIdx = targetsKeyIndex + dimensionsLength;
@@ -198,6 +210,7 @@ public class GroupExecutor extends AbstractTableWidgetExecutor<Node> {
 
     @Override
     public Node getCubeNode() throws Exception {
+
         if (session == null) {
             return null;
         }
@@ -211,7 +224,7 @@ public class GroupExecutor extends AbstractTableWidgetExecutor<Node> {
         int calpage = paging.getOperator();
         CubeIndexLoader cubeIndexLoader = CubeIndexLoader.getInstance(session.getUserId());
         Node tree = cubeIndexLoader.loadPageGroup(false, widget, createTarget4Calculate(), usedDimensions,
-                allDimensions, allSumTarget, calpage, widget.isRealData(), session, expander.getYExpander());
+                                                  allDimensions, allSumTarget, calpage, widget.isRealData(), session, expander.getYExpander());
         if (tree == null) {
             tree = new Node(allSumTarget.length);
         }
@@ -229,11 +242,13 @@ public class GroupExecutor extends AbstractTableWidgetExecutor<Node> {
 
     @Override
     public JSONObject createJSONObject() throws Exception {
+
         return getCubeNode().toJSONObject(usedDimensions, widget.getTargetsKey(), -1);
     }
 
     @Override
     public List<MetricGroupInfo> getLinkedWidgetFilterGVIList() throws Exception {
+
         if (session == null) {
             return null;
         }
@@ -246,7 +261,7 @@ public class GroupExecutor extends AbstractTableWidgetExecutor<Node> {
         int calPage = paging.getOperator();
         CubeIndexLoader cubeIndexLoader = CubeIndexLoader.getInstance(session.getUserId());
         List<NodeAndPageInfo> infoList = cubeIndexLoader.getPageGroupInfoList(false, widget, createTarget4Calculate(), usedDimensions,
-                allDimensions, allSumTarget, calPage, widget.isRealData(), session, expander.getYExpander());
+                                                                              allDimensions, allSumTarget, calPage, widget.isRealData(), session, expander.getYExpander());
         ArrayList<MetricGroupInfo> gviList = new ArrayList<MetricGroupInfo>();
         for (NodeAndPageInfo info : infoList) {
             gviList.addAll(info.getIterator().getRoot().getMetricGroupInfoList());
@@ -255,6 +270,7 @@ public class GroupExecutor extends AbstractTableWidgetExecutor<Node> {
     }
 
     public Node getStopOnRowNode(Object[] stopRow) throws Exception {
+
         if (session == null) {
             return null;
         }
@@ -266,13 +282,8 @@ public class GroupExecutor extends AbstractTableWidgetExecutor<Node> {
         }
         int calPage = paging.getOperator();
         CubeIndexLoader cubeIndexLoader = CubeIndexLoader.getInstance(session.getUserId());
-        String oldName = widget.getWidgetName();
-        widget.setWidgetName(getRandWidgetName());
-        //cubeIndexLoader.getGroupNodeWidthGvi(widget,);
         Node n = cubeIndexLoader.getStopWhenGetRowNode(stopRow, widget, createTarget4Calculate(), usedDimensions,
-                allDimensions, allSumTarget, calPage, session, CrossExpander.ALL_EXPANDER.getYExpander());
-        // TODO 这一步是否有必要
-        widget.setWidgetName(oldName);
+                                                       allDimensions, allSumTarget, calPage, session, CrossExpander.ALL_EXPANDER.getYExpander());
         return n;
     }
 
@@ -485,4 +496,33 @@ public class GroupExecutor extends AbstractTableWidgetExecutor<Node> {
         }
     }
 
+    public GroupValueIndex getClieckGvi(Map<String, JSONArray> clicked, BusinessTable targetKey) {
+
+        GroupValueIndex linkGvi = null;
+        try {
+            String target = getClieckTarget(clicked);
+            // 连联动计算指标都没有就没有所谓的联动了,直接返回
+            if (target == null) {
+                return null;
+            }
+            BISummaryTarget summaryTarget = widget.getBITargetByID(target);
+            BusinessTable linkTargetTable = summaryTarget.createTableKey();
+            if (!targetKey.equals(linkTargetTable)) {
+                return null;
+            }
+            List<Object> rowData = getLinkRowData(clicked, target,false);
+            Node linkNode = getStopOnRowNode(rowData.toArray(),widget.getViewDimensions());
+            // 总汇总值
+            if (rowData == null || rowData.size() == 0) {
+                for (String key : clicked.keySet()) {
+                    linkGvi = GVIUtils.AND(linkGvi, getTargetIndex(key, linkNode.getTargetIndexValueMap()));
+                }
+                return linkGvi;
+            }
+            linkGvi = GVIUtils.AND(linkGvi, getLinkNodeFilter(linkNode, target, rowData));
+        } catch (Exception e) {
+            BILoggerFactory.getLogger(GroupExecutor.class).info("error in get link filter",e);
+        }
+        return linkGvi;
+    }
 }

@@ -1,11 +1,16 @@
 package com.fr.bi.cal.analyze.executor.table;
 
 import com.finebi.cube.common.log.BILoggerFactory;
+import com.finebi.cube.conf.table.BusinessTable;
 import com.fr.bi.base.FinalInt;
 import com.fr.bi.cal.analyze.cal.index.loader.CubeIndexLoader;
-import com.fr.bi.cal.analyze.cal.result.*;
-import com.fr.bi.cal.analyze.executor.iterator.TableCellIterator;
+import com.fr.bi.cal.analyze.cal.result.BIComplexExecutData;
+import com.fr.bi.cal.analyze.cal.result.ComplexExpander;
+import com.fr.bi.cal.analyze.cal.result.CrossExpander;
+import com.fr.bi.cal.analyze.cal.result.NewCrossRoot;
+import com.fr.bi.cal.analyze.cal.result.Node;
 import com.fr.bi.cal.analyze.executor.iterator.StreamPagedIterator;
+import com.fr.bi.cal.analyze.executor.iterator.TableCellIterator;
 import com.fr.bi.cal.analyze.executor.paging.Paging;
 import com.fr.bi.cal.analyze.report.report.widget.TableWidget;
 import com.fr.bi.cal.analyze.session.BISession;
@@ -13,11 +18,17 @@ import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.field.target.target.BISummaryTarget;
 import com.fr.bi.report.key.TargetGettingKey;
 import com.fr.bi.report.result.TargetCalculator;
+import com.fr.bi.stable.gvi.GVIUtils;
+import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.general.DateUtils;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by sheldon on 14-9-2.
@@ -25,7 +36,9 @@ import java.util.*;
 public class ComplexCrossExecutor extends AbstractTableWidgetExecutor<NewCrossRoot> {
 
     private BIComplexExecutData rowData;
+
     private BIComplexExecutData columnData;
+
     private ComplexExpander complexExpander;
 
     public ComplexCrossExecutor(TableWidget widget, Paging page,
@@ -40,6 +53,7 @@ public class ComplexCrossExecutor extends AbstractTableWidgetExecutor<NewCrossRo
 
     @Override
     public TableCellIterator createCellIterator4Excel() throws Exception {
+
         final Map<Integer, NewCrossRoot[]> nodesMap = getCubeCrossNodes();
         if (nodesMap.isEmpty() || nodesMap == null) {
             return new TableCellIterator(0, 0);
@@ -47,7 +61,9 @@ public class ComplexCrossExecutor extends AbstractTableWidgetExecutor<NewCrossRo
         int[] lens = calculateRowAndColumnLen(nodesMap);
         final TableCellIterator iter = new TableCellIterator(lens[0], lens[1]);
         new Thread() {
+
             public void run() {
+
                 try {
                     FinalInt rowIdx = new FinalInt();
                     FinalInt start = new FinalInt();
@@ -59,14 +75,14 @@ public class ComplexCrossExecutor extends AbstractTableWidgetExecutor<NewCrossRo
                         Map.Entry<Integer, NewCrossRoot[]> entry = iterator.next();
                         NewCrossRoot[] roots = entry.getValue();
                         //生成标题
-                        if(rowDataIdx == 0) {
+                        if (rowDataIdx == 0) {
                             CrossExecutor.generateTitle(roots, widget, columnData.getDimensionArray(0),
-                                    rowData.getDimensionArray(0), usedSumTarget, pagedIterator, rowIdx);
+                                                        rowData.getDimensionArray(0), usedSumTarget, pagedIterator, rowIdx);
                             rowIdx.value++;
                         }
                         CrossExecutor.generateCells(roots, widget, rowData.getDimensionArray(rowDataIdx),
-                                rowData.getMaxArrayLength(), iter, start, rowIdx, order);
-                        if(rowDataIdx > 0) {
+                                                    rowData.getMaxArrayLength(), iter, start, rowIdx, order);
+                        if (rowDataIdx > 0) {
                             order += nodesMap.get(rowDataIdx - 1)[0].getLeft().getChildLength();
                         }
                         rowDataIdx++;
@@ -84,10 +100,12 @@ public class ComplexCrossExecutor extends AbstractTableWidgetExecutor<NewCrossRo
 
     @Override
     public NewCrossRoot getCubeNode() throws Exception {
+
         return null;
     }
 
     private int[] calculateRowAndColumnLen(Map<Integer, NewCrossRoot[]> nodesMap) {
+
         int len = usedSumTarget.length;
         TargetGettingKey[] keys = new TargetGettingKey[len];
         for (int i = 0; i < len; i++) {
@@ -114,6 +132,7 @@ public class ComplexCrossExecutor extends AbstractTableWidgetExecutor<NewCrossRo
 
     @Override
     public JSONObject createJSONObject() throws Exception {
+
         Iterator<Map.Entry<Integer, NewCrossRoot[]>> it = getCubeCrossNodes().entrySet().iterator();
         JSONObject jo = new JSONObject();
         while (it.hasNext()) {
@@ -128,6 +147,7 @@ public class ComplexCrossExecutor extends AbstractTableWidgetExecutor<NewCrossRo
     }
 
     private int getTotalNodeRowLength(ArrayList<NewCrossRoot> roots, boolean hasTarget, ArrayList<Integer> integers) {
+
         int count = 0;
         int columnRegionLength = this.columnData.getDimensionArrayLength();
 
@@ -146,6 +166,7 @@ public class ComplexCrossExecutor extends AbstractTableWidgetExecutor<NewCrossRo
     }
 
     private int getTotalNodeColumnLength(ArrayList<NewCrossRoot> roots, boolean hasTarget) {
+
         int count = 0;
         int columnRegionLength = this.columnData.getDimensionArrayLength();
 
@@ -164,12 +185,11 @@ public class ComplexCrossExecutor extends AbstractTableWidgetExecutor<NewCrossRo
     }
 
 
-
-
     /* (non-Javadoc)
      * @see com.fr.bi.cube.engine.report.summary.BIEngineExecutor#getCubeNode()
      */
     private Map<Integer, NewCrossRoot[]> getCubeCrossNodes() throws Exception {
+
         long start = System.currentTimeMillis();
         if (getSession() == null) {
             return null;
@@ -188,6 +208,7 @@ public class ComplexCrossExecutor extends AbstractTableWidgetExecutor<NewCrossRo
 
     //通过交叉表的provide，创建nodeMap
     private Map<Integer, NewCrossRoot[]> getCubeCrossNodesFromProvide(Map<String, TargetCalculator> targetsMap) throws Exception {
+
         BISummaryTarget[] usedTarget = createTarget4Calculate();
         Map<Integer, NewCrossRoot[]> nodeMap = new HashMap<Integer, NewCrossRoot[]>();
         int columnRegionLen = columnData.getDimensionArrayLength();
@@ -209,5 +230,51 @@ public class ComplexCrossExecutor extends AbstractTableWidgetExecutor<NewCrossRo
             nodeMap.put(i, nodes);
         }
         return nodeMap;
+    }
+
+    public GroupValueIndex getClieckGvi(Map<String, JSONArray> clicked, BusinessTable targetKey) {
+
+        GroupValueIndex linkGvi = null;
+        try {
+            String target = getClieckTarget(clicked);
+            // 连联动计算指标都没有就没有所谓的联动了,直接返回
+            if (target == null) {
+                return null;
+            }
+            BISummaryTarget summaryTarget = widget.getBITargetByID(target);
+            BusinessTable linkTargetTable = summaryTarget.createTableKey();
+            // 基础表相同才进行比较
+            if (!targetKey.equals(linkTargetTable)) {
+                return null;
+            }
+            // 区分哪些是行数据,哪些是列数据
+            List<Object> row = new ArrayList<Object>();
+            List<Object> col = new ArrayList<Object>();
+            List<String> rowsId = new ArrayList<String>();
+            List<String> colsId = new ArrayList<String>();
+            getLinkRowAndColData(clicked, target, row, col, rowsId, colsId);
+            int columnRegionLen = columnData.getDimensionArrayLength();
+            for (int i = 0; i < rowData.getRegionIndex(); i++) {
+                BIDimension[] rowDimension = rowData.getDimensionArray(i);
+                for (int j = 0; j < columnRegionLen; j++) {
+                    BIDimension[] colDimension = columnData.getDimensionArray(j);
+                    if (isClieckRegin(rowsId, rowDimension, colsId, colDimension)) {
+                        CubeIndexLoader cubeIndexLoader = CubeIndexLoader.getInstance(session.getUserId());
+                        int calPage = paging.getOperator();
+                        Node l = cubeIndexLoader.getStopWhenGetRowNode(row.toArray(), widget, createTarget4Calculate(), rowDimension,
+                                                                       allDimensions, allSumTarget, calPage, session, CrossExpander.ALL_EXPANDER.getYExpander());
+                        Node t = cubeIndexLoader.getStopWhenGetRowNode(col.toArray(), widget, createTarget4Calculate(), colDimension,
+                                                                       allDimensions, allSumTarget, calPage, session, CrossExpander.ALL_EXPANDER.getYExpander());
+                        linkGvi = GVIUtils.AND(getLinkNodeFilter(l, target, row), linkGvi);
+                        linkGvi = GVIUtils.AND(getLinkNodeFilter(t, target, col), linkGvi);
+                        return linkGvi;
+                    }
+                }
+            }
+            return linkGvi;
+        } catch (Exception e) {
+            BILoggerFactory.getLogger(ComplexCrossExecutor.class).info("error in get link filter",e);
+        }
+        return linkGvi;
     }
 }
