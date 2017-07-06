@@ -1,41 +1,39 @@
 package com.fr.bi.stable.data.db;
 
+import com.finebi.common.name.Name;
+import com.finebi.common.name.NameImp;
+import com.finebi.common.resource.ResourceName;
+import com.finebi.common.resource.ResourceNameImpl;
 import com.fr.bi.stable.constant.DBConstant;
-import com.fr.bi.stable.data.BIFieldID;
 import com.fr.bi.stable.data.source.CubeTableSource;
+import com.fr.bi.stable.data.tableSource.FineCubeTable;
 import com.fr.bi.stable.utils.BIDBUtils;
 import com.fr.json.JSONObject;
-import com.fr.stable.StringUtils;
-
 
 /**
- * 数据库列转成的基础列, 表示生成cube时的字段信息
- * Created by GUY on 2015/4/10.
+ * Created by Roy on 2017/6/16.
  */
-public class BICubeFieldSource implements ICubeFieldSource {
-
+public class BIFineCubeField implements FineCubeField {
     private int classType;
     protected int fieldType;
     protected int fieldSize;
-    protected BIFieldID fieldID;
-    protected String fieldName = StringUtils.EMPTY;
-    protected CubeTableSource tableBelongTo;
+    protected ResourceName fieldName;
+    protected FineCubeTable tableBelongTo;
     protected boolean usable = true;
     private boolean canSetUsable = true;
 
 
-    public BICubeFieldSource(CubeTableSource tableBelongTo, String fieldName, int classType, int fieldSize) {
+    public BIFineCubeField(FineCubeTable tableBelongTo, String fieldName, int classType, int fieldSize) {
         this.tableBelongTo = tableBelongTo;
-        this.fieldName = fieldName;
+        this.fieldName = new ResourceNameImpl(new NameImp(fieldName, tableBelongTo));
         this.fieldType = BIDBUtils.checkColumnTypeFromClass(classType);
         this.fieldSize = fieldSize;
-        this.fieldID = new BIFieldID(fieldName);
         this.classType = classType;
     }
 
     @Override
     public String getFieldName() {
-        return fieldName;
+        return fieldName.value();
     }
 
     @Override
@@ -43,15 +41,13 @@ public class BICubeFieldSource implements ICubeFieldSource {
         return fieldType;
     }
 
+    @Override
     public void setTableBelongTo(CubeTableSource tableBelongTo) {
-        this.tableBelongTo = tableBelongTo;
+        this.tableBelongTo = (FineCubeTable) tableBelongTo;
     }
 
-    public BIFieldID getFieldID() {
-        return fieldID;
-    }
 
-    public CubeTableSource getTableBelongTo() {
+    public FineCubeTable getTableBelongTo() {
         return tableBelongTo;
     }
 
@@ -78,18 +74,6 @@ public class BICubeFieldSource implements ICubeFieldSource {
         return (getFieldType() == DBConstant.COLUMN.DATE);
     }
 
-    @Override
-    public boolean canSetUsable() {
-        return canSetUsable;
-    }
-
-    @Override
-    public void setCanSetUsable(boolean canSetUsable) {
-        this.canSetUsable = canSetUsable;
-    }
-
-
-    @Override
     public void setUsable(boolean usable) {
         this.usable = usable;
     }
@@ -107,7 +91,8 @@ public class BICubeFieldSource implements ICubeFieldSource {
     }
 
     public void setFieldName(String fieldName) {
-        this.fieldName = fieldName;
+        this.fieldName = new ResourceNameImpl(new NameImp(fieldName, tableBelongTo));
+
     }
 
     /**
@@ -120,10 +105,6 @@ public class BICubeFieldSource implements ICubeFieldSource {
     public void parseJSON(JSONObject jo) throws Exception {
         if (jo.has("fieldName")) {
             this.setFieldName(jo.getString("fieldName"));
-        }
-        if (jo.has("fieldId")) {
-            String fieldId = jo.getString("fieldId");
-            this.fieldID = new BIFieldID(fieldId);
         }
         if (jo.has("fieldType")) {
             fieldType = jo.optInt("fieldType", 0);
@@ -143,11 +124,8 @@ public class BICubeFieldSource implements ICubeFieldSource {
         }
         //兼容之前的cube
         if (jo.has("field_name")) {
+
             this.setFieldName(jo.getString("field_name"));
-        }
-        if (jo.has("field_id")) {
-            String fieldId = jo.getString("field_id");
-            this.fieldID = new BIFieldID(fieldId);
         }
         if (jo.has("field_type")) {
             fieldType = jo.optInt("field_type", 0);
@@ -177,10 +155,6 @@ public class BICubeFieldSource implements ICubeFieldSource {
     public JSONObject createJSON() throws Exception {
         JSONObject jo = new JSONObject();
         jo.put("fieldName", getFieldName());
-        jo.put("id", fieldID.getIdentityValue());
-        if (getTableBelongTo() != null) {
-            jo.put("tableId", getTableBelongTo().getSourceID());
-        }
         jo.put("fieldType", fieldType)
                 .put("fieldSize", fieldSize)
                 .put("isUsable", isUsable())
@@ -213,5 +187,29 @@ public class BICubeFieldSource implements ICubeFieldSource {
         int result = fieldName != null ? fieldName.hashCode() : 0;
         result = 31 * result + (tableBelongTo != null ? tableBelongTo.hashCode() : 0);
         return result;
+    }
+
+    @Override
+    public Name getName() {
+        return fieldName;
+    }
+
+    @Override
+    public ResourceName getResourceName() {
+        return fieldName;
+    }
+
+    @Override
+    public String getFieldUniqueName() {
+        return fieldName.uniqueValue();
+    }
+
+    public boolean canSetUsable() {
+        return canSetUsable;
+    }
+
+    @Override
+    public void setCanSetUsable(boolean canSetUsable) {
+        this.canSetUsable = canSetUsable;
     }
 }
