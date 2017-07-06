@@ -559,7 +559,7 @@ public abstract class VanChartWidget extends TableWidget {
 
     //优先级从低到高：plat界面背景，global界面背景，主题，plat组件背景，global组件背景，setting组件背景，plat图表文字， global图表文字，settings图表文字
     protected JSONObject defaultFont() throws JSONException {
-        BIChartStyleAttr platConfig = FBIConfig.getProviderInstance().getChartStyleAttr();
+        BIChartStyleAttr platConfig = FBIConfig.getInstance().getChartStyleAttr();
         String color = DARK, fontWeight = "normal", fontStyle = "normal";
 
         if(platConfig.getMainBackground() != null) {
