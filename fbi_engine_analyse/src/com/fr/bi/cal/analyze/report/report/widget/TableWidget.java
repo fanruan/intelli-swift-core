@@ -598,30 +598,8 @@ public class TableWidget extends BISummaryWidget {
      * @throws Exception
      */
     public GroupValueIndex getLinkFilter(TableWidget linkedWidget, BusinessTable targetKey, Map<String, JSONArray> clicked, BISession session) throws Exception {
+        BIEngineExecutor linkExecutor = getLinkExecutor(targetKey, session);
 
-        // 相同基础表的时候才进行联动计算要不然直接进行返回
-        BISummaryTarget summaryTarget = null;
-        for (String target : clicked.keySet()) {
-            try {
-                summaryTarget = linkedWidget.getBITargetByID(target);
-                Map<String, JSONArray> t = new HashMap<String, JSONArray>();
-                t.put(target, clicked.get(target));
-                clicked = t;
-                break;
-            } catch (Exception e) {
-
-            }
-        }
-        // 连联动计算指标都没有就没有所谓的联动了,直接返回
-        if (summaryTarget == null) {
-            return null;
-        }
-        BusinessTable linkTargetTable = summaryTarget.createTableKey();
-        if (!targetKey.equals(linkTargetTable)) {
-            return null;
-        }
-
-        BIEngineExecutor linkExecutor = linkedWidget.getExecutor(session);
         GroupValueIndex linkGvi = null;
         try {
             // 交叉表的情况
@@ -658,6 +636,33 @@ public class TableWidget extends BISummaryWidget {
 
         }
         return linkGvi;
+    }
+
+    private BIEngineExecutor getLinkExecutor (BusinessTable targetKey, BISession session) {
+        // 相同基础表的时候才进行联动计算要不然直接进行返回
+        BISummaryTarget summaryTarget = null;
+        for (String target : clicked.keySet()) {
+            try {
+                summaryTarget = linkedWidget.getBITargetByID(target);
+                Map<String, JSONArray> t = new HashMap<String, JSONArray>();
+                t.put(target, clicked.get(target));
+                clicked = t;
+                break;
+            } catch (Exception e) {
+
+            }
+        }
+        // 连联动计算指标都没有就没有所谓的联动了,直接返回
+        if (summaryTarget == null) {
+            return null;
+        }
+        BusinessTable linkTargetTable = summaryTarget.createTableKey();
+        if (!targetKey.equals(linkTargetTable)) {
+            return null;
+        }
+
+        BIEngineExecutor linkExecutor = linkedWidget.getExecutor(session);
+        return linkExecutor;
     }
 
     /**
