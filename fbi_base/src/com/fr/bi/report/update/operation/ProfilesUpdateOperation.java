@@ -292,14 +292,15 @@ public class ProfilesUpdateOperation implements ReportUpdateOperation {
                 JSONObject dimension = dimensions.getJSONObject(dimId);
                 //默认柱形图
                 int chartType = BIChartSettingConstant.ACCUMULATE_TYPE.COLUMN;
-
                 if (dimension.has("styleOfChart") && dimension.getJSONObject("styleOfChart").has("type")) {
-                    chartType = dimension.getJSONObject("styleOfChart").getInt("type");
+                    chartType = updateChartType(dimension.getJSONObject("styleOfChart").getInt("type"));
+                    dimension.getJSONObject("styleOfChart").put("type", chartType);
+                } else {
+                    if (dimension.has("style_of_chart") && dimension.getJSONObject("style_of_chart").has("type")) {
+                        chartType = updateChartType(dimension.getJSONObject("style_of_chart").getInt("type"));
+                        dimension.getJSONObject("style_of_chart").put("type", chartType);
+                    }
                 }
-                if (dimension.has("style_of_chart") && dimension.getJSONObject("style_of_chart").has("type")) {
-                    chartType = dimension.getJSONObject("style_of_chart").getInt("type");
-                }
-                chartType = updateChartType(chartType);
                 if (typeMap.containsKey(chartType)) {
                     typeMap.get(chartType).put(dimId);
                 } else {
@@ -327,7 +328,7 @@ public class ProfilesUpdateOperation implements ReportUpdateOperation {
     面积图 14 -> 面积图
     堆积面积图 15-> 堆积面积图（折线）
     折线图 13-> （折线）
-    堆积柱状图 6 -> （堆积柱状图）
+     堆积柱状图 6 -> （堆积柱状图）
     */
     private void createChartTypeMap() {
         Map<Integer, Integer> convertMap = new HashMap<Integer, Integer>();
@@ -335,7 +336,7 @@ public class ProfilesUpdateOperation implements ReportUpdateOperation {
         convertMap.put(BIChartSettingConstant.ACCUMULATE_TYPE.OLD_AREA_CURVE, BIChartSettingConstant.ACCUMULATE_TYPE.AREA_CURVE);
         convertMap.put(BIChartSettingConstant.ACCUMULATE_TYPE.OLD_STACKED_AREA, BIChartSettingConstant.ACCUMULATE_TYPE.STACKED_AREA_NORMAL);
         convertMap.put(BIChartSettingConstant.ACCUMULATE_TYPE.OLD_LINE, BIChartSettingConstant.ACCUMULATE_TYPE.LINE_NORMAL);
-        convertMap.put(BIChartSettingConstant.ACCUMULATE_TYPE.OLD_STACKED_COLUMN, BIChartSettingConstant.ACCUMULATE_TYPE.STACKED_COLUMN);
+        convertMap.put(BIChartSettingConstant.ACCUMULATE_TYPE.OLD_ACCUMULATE_AXIS, BIChartSettingConstant.ACCUMULATE_TYPE.STACKED_COLUMN);
         //default type=1
         convertMap.put(BIChartSettingConstant.ACCUMULATE_TYPE.COLUMN, BIChartSettingConstant.ACCUMULATE_TYPE.COLUMN);
         this.chartTypeMap = convertMap;
