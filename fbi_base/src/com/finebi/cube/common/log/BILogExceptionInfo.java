@@ -12,9 +12,9 @@ public class BILogExceptionInfo {
     private long occurTime;
     private String exceptionMessage;
     private String operation;
-    private Exception exception;
+    private Throwable exception;
 
-    public BILogExceptionInfo(long occurTime, String operation, String exceptionMessage, Exception exception) {
+    public BILogExceptionInfo(long occurTime, String operation, String exceptionMessage, Throwable exception) {
         this.occurTime = occurTime;
         this.exceptionMessage = exceptionMessage;
         this.operation = operation;
