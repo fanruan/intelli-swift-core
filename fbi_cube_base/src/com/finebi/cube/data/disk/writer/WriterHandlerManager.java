@@ -108,4 +108,9 @@ public class WriterHandlerManager implements NIOHandlerManager<ICubePrimitiveWri
     public void reValidHandler() {
 
     }
+
+    @Override
+    public void inValidHandler() {
+
+    }
 }

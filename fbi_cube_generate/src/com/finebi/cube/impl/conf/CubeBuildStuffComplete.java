@@ -210,4 +210,7 @@ public class CubeBuildStuffComplete extends AbstractCubeBuildStuff implements Se
         cubeGenerateRelationPathSet = cal.calRelationPath(this.getTableSourceRelationPathSet(), this.tableSourceRelationSet);
     }
 
+    public boolean isNeed2Update() {
+        return true;
+    }
 }

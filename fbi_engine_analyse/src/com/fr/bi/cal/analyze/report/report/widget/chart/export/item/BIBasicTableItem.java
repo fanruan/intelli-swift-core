@@ -20,7 +20,7 @@ public class BIBasicTableItem implements ITableItem {
     private boolean isExpanded;
     protected List<ITableItem> children;
     private ITableStyle styles;
-    private String value;
+    private Object value;
     private boolean isSum;
     //text样式，简单处理
     private JSONObject textStyles;
@@ -103,12 +103,12 @@ public class BIBasicTableItem implements ITableItem {
         this.dId = dId;
     }
 
-    public String getValue() {
+    public Object getValue() {
         return value;
     }
 
     @Override
-    public void setValue(String value) {
+    public void setValue(Object value) {
         this.value = value;
     }
 
@@ -169,7 +169,7 @@ public class BIBasicTableItem implements ITableItem {
         }
 
         if (jo.has("value")) {
-            value = jo.optString("value");
+            value = jo.opt("value");
         }
 
         if (jo.has("children")) {
@@ -209,7 +209,7 @@ public class BIBasicTableItem implements ITableItem {
         }
 
         jo.put("value", value);
-            jo.put("isSum", isSum);
+        jo.put("isSum", isSum);
         if (textStyles != null) {
             jo.put("textStyle", textStyles);
         }

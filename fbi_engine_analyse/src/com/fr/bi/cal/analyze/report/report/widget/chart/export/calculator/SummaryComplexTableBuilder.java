@@ -164,7 +164,7 @@ public class SummaryComplexTableBuilder extends TableAbstractDataBuilder {
                     }
                     BIBasicTableItem itemNode = new BIBasicTableItem();
                     itemNode.setDId(targetIds.get(0));
-                    itemNode.setValue(s.getString(0));
+                    itemNode.setValue(s.get(0));
                     itemNode.setValues(outerValues);
                     item.getChildren().add(itemNode);
                     List<ITableItem> values = new ArrayList<ITableItem>();
@@ -180,7 +180,7 @@ public class SummaryComplexTableBuilder extends TableAbstractDataBuilder {
     private void createItem(List<ITableItem> outerValues, JSONArray s, int j) throws JSONException {
         BIBasicTableItem itemNode = new BIBasicTableItem();
         itemNode.setDId(targetIds.get(j));
-        itemNode.setValue(s.getString(j));
+        itemNode.setValue(s.get(j));
         outerValues.add(itemNode);
     }
 
@@ -408,7 +408,7 @@ public class SummaryComplexTableBuilder extends TableAbstractDataBuilder {
                 for (int i = 0; i < targetIds.size(); i++) {
                     BIBasicTableItem item = new BIBasicTableItem();
                     item.setDId(targetIds.get(i));
-                    item.setValue("summary");
+                    item.setValue(SUMMARY);
                     item.setStyles(BITableStyleHelper.getHeaderStyles(styleSetting.getThemeColor(), styleSetting.getTableStyleGroup()));
                     children.add(item);
                 }
@@ -416,7 +416,7 @@ public class SummaryComplexTableBuilder extends TableAbstractDataBuilder {
             } else {
                 for (String targetId : targetIds) {
                     BIBasicTableItem item = new BIBasicTableItem();
-                    item.setValue("summary");
+                    item.setValue(SUMMARY);
                     item.setStyles(BITableStyleHelper.getHeaderStyles(styleSetting.getThemeColor(), styleSetting.getTableStyleGroup()));
                     item.setDId(targetId);
                     crossItem.getChildren().add(item);

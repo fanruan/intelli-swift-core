@@ -101,6 +101,11 @@ public class DirectToDimensionRelationIterator implements DimensionIterator {
     }
 
     @Override
+    public boolean isReturnFinalGroupValueIndex() {
+        return false;
+    }
+
+    @Override
     public GroupValueIndex getGroupValueIndexByGroupIndex(int groupIndex) {
         return null;
     }

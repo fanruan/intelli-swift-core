@@ -65,7 +65,7 @@ public class NIOResourceManager implements ICubePrimitiveResourceDiscovery {
     @Override
     public ICubePrimitiveWriter getCubeWriter(ICubeResourceLocation resourceLocation) throws IllegalCubeResourceLocationException, BIBuildWriterException {
         synchronized (this) {
-            if (!isAvailable(writerHandlerManager) || (isAvailable(writerHandlerManager) && writerHandlerManager.isForceReleased())) {
+            if (isWriterInvalid()) {
                 ICubePrimitiveWriter writer = writerManager.buildCubeWriter(resourceLocation);
                 writerHandlerManager = new WriterHandlerManager(writer, resourceLocation);
                 writer.setHandlerReleaseHelper(writerHandlerManager);
@@ -79,6 +79,10 @@ public class NIOResourceManager implements ICubePrimitiveResourceDiscovery {
                 return writerHandlerManager.queryHandler();
             }
         }
+    }
+
+    private boolean isWriterInvalid() {
+        return !isAvailable(writerHandlerManager) || (isAvailable(writerHandlerManager) && writerHandlerManager.isForceReleased());
     }
 
     private boolean isAvailable(NIOHandlerManager nioHandler) {
@@ -108,6 +112,12 @@ public class NIOResourceManager implements ICubePrimitiveResourceDiscovery {
     public void reValidReader(){
         if (isAvailable(readerHandlerManager)) {
             readerHandlerManager.reValidHandler();
+        }
+    }
+
+    public void inValidReader(){
+        if (isAvailable(readerHandlerManager)) {
+            readerHandlerManager.inValidHandler();
         }
     }
 }

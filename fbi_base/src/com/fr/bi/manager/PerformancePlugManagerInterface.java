@@ -65,14 +65,6 @@ public interface PerformancePlugManagerInterface {
 
     void printSystemParameters();
 
-    void setPhantomServerIP(String ip);
-
-    String getPhantomServerIP();
-
-    void setPhantomServerPort(int port);
-
-    int getPhantomServerPort();
-
     /**
      * 是否高并发模式
      *

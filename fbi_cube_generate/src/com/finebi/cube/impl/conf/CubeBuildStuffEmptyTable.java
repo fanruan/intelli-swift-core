@@ -106,4 +106,9 @@ public class CubeBuildStuffEmptyTable extends AbstractCubeBuildStuff {
     public Set<String> getTaskTableSourceIds() {
         return new HashSet<String>();
     }
+
+    @Override
+    public boolean isNeed2Update() {
+        return true;
+    }
 }
