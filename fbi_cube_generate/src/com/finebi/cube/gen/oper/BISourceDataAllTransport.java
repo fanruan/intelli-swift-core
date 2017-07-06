@@ -8,7 +8,6 @@ import com.finebi.cube.exception.BICubeColumnAbsentException;
 import com.finebi.cube.message.IMessage;
 import com.finebi.cube.structure.Cube;
 import com.fr.bi.common.inter.Traversal;
-import com.fr.bi.conf.log.BILogManager;
 import com.fr.bi.conf.provider.BIConfigureManagerCenter;
 import com.fr.bi.conf.provider.BILogManagerProvider;
 import com.fr.bi.stable.constant.BIBaseConstant;
@@ -19,7 +18,6 @@ import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
 import com.fr.bi.stable.utils.program.BIStringUtils;
 import com.fr.fs.control.UserControl;
-import com.fr.stable.bridge.StableFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -71,7 +69,7 @@ public class BISourceDataAllTransport extends BISourceDataTransport {
                 BILoggerFactory.getLogger().error(tableSource.getTableName() + e.getMessage(), e);
             }
             return null;
-        } catch (Exception e) {
+        } catch (Throwable e) {
             try {
                 biLogManager.errorTable(tableSource.getPersistentTable(), e.getMessage(), UserControl.getInstance().getSuperManagerID());
             } catch (Exception e1) {
