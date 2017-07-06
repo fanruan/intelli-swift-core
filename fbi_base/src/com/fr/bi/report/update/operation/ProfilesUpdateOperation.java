@@ -27,7 +27,7 @@ import java.util.regex.Pattern;
  * 此处的升级内容：
  * 驼峰以及自定义key值修改
  * 图片uri修正
- * 散点气泡图type升级成点图的type
+ * 散点气泡图type升级成点图的type，并使用特殊映射
  * 显示网格拆分成显示纵向和显示横向
  * 组合图重新分组
  * BI-6515 4.0->4.0.2的散点、气泡图兼容到点图样式不一致
@@ -37,11 +37,15 @@ public class ProfilesUpdateOperation implements ReportUpdateOperation {
     private static final String DEFAULT_FILE_NAME = "keys.json";
     private JSONObject keys;
     private static Pattern linePattern = Pattern.compile("(?!^)_(\\w)");
+    //类型映射
     private static Map<Integer, Integer> chartTypeMap = new HashMap<Integer, Integer>();
+    //点图key值映射
+    private static Map<String, String> dotWidgetKeysMap = new HashMap<String, String>();
 
     public ProfilesUpdateOperation() {
         try {
             createChartTypeMap();
+            createDotWidgetKeysMap();
             if (null == keys) {
                 keys = readKeyJson();
                 formatValues();
@@ -52,14 +56,33 @@ public class ProfilesUpdateOperation implements ReportUpdateOperation {
 
     }
 
+    //  "rightYTitle": "(catTitle)",
+//  "rightYTitle": "(x_axis_title)",
+//          "rightYNumberLevel": "(x_axis_number_level)",
+//          "rightYShowTitle": "(show_x_axis_title)",
+//          "rightYUnit": "(x_axis_unit)"
+    private void createDotWidgetKeysMap() {
+        dotWidgetKeysMap.put("catTitle", "rightYTitle");
+        dotWidgetKeysMap.put("x_axis_title", "rightYTitle");
+        dotWidgetKeysMap.put("x_axis_number_level", "rightYNumberLevel");
+        dotWidgetKeysMap.put("show_x_axis_title", "rightYShowTitle");
+        dotWidgetKeysMap.put("x_axis_unit", "rightYUnit");
+    }
+
     @Override
     public JSONObject update(JSONObject reportSetting) throws JSONException {
-        if (BIJsonUtils.isKeyValueSet(reportSetting.toString())) {
-            reportSetting = recursionMapUpdate(reportSetting.toString());
-            return reportSetting;
-        } else {
-            return reportSetting;
+        reportSetting = recursionMapUpdate(reportSetting.toString());
+        if (reportSetting.has("widgets")) {
+            JSONObject widgets = reportSetting.getJSONObject("widgets");
+            Iterator keys = widgets.keys();
+            while (keys.hasNext()) {
+                String widgetId = keys.next().toString();
+                JSONObject widgetJo = widgets.getJSONObject(widgetId);
+                if (widgetJo.has("type")) {
+                }
+            }
         }
+        return reportSetting;
     }
 
     //map 结构的递归
@@ -212,6 +235,8 @@ public class ProfilesUpdateOperation implements ReportUpdateOperation {
     /*
    * 散点气泡图type升级
    * type 26，28->67
+   * view中region变动
+    *  BI-6852 散点图点图的升级需要单独的映射
    * */
     private JSONObject correctScatterType(JSONObject json) throws JSONException {
         if (BIJsonUtils.isKeyValueSet(json.getString("widgets"))) {
@@ -226,6 +251,15 @@ public class ProfilesUpdateOperation implements ReportUpdateOperation {
                             widgetJo.getJSONObject("view").remove(BIReportConstant.REGION.DIMENSION1);
                         }
                         widgetJo.put("type", BIReportConstant.WIDGET.DOT);
+                        if (widgetJo.has("settings")) {
+                            JSONObject settingsJo = widgetJo.getJSONObject("settings");
+                            for (String s : dotWidgetKeysMap.keySet()) {
+                                if (settingsJo.has(s)){
+                                    settingsJo.put(dotWidgetKeysMap.get(s).toString(),settingsJo.get(s));
+                                    settingsJo.remove(s);
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -406,18 +440,18 @@ public class ProfilesUpdateOperation implements ReportUpdateOperation {
     public String updateKey(String str) {
         String res;
         if (keys.has(str)) {
-            res = mactchKeysJson(str);
+            res = matchKeysJson(str);
         } else {
             res = lineToCamels(str);
         }
         return res;
     }
 
-    private String mactchKeysJson(String str) {
+    private String matchKeysJson(String str) {
         try {
             String updatedKeys = null != keys ? keys.optString(str, str) : str;
             if (!ComparatorUtils.equals(updatedKeys, str)) {
-                BILoggerFactory.getLogger(this.getClass()).debug(BIStringUtils.append("compatibility warning! the parameter whose name is ", str, " should be transfered"));
+                BILoggerFactory.getLogger(this.getClass()).debug(BIStringUtils.append("compatibility warning! the parameter whose name is ", str, " should be transferred"));
             }
             return updatedKeys;
         } catch (Exception e) {
