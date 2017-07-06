@@ -91,8 +91,8 @@ public class AllNodeMergeIterator implements Iterator<MetricMergeResult> {
         }
         checkFormulaMetrics();
         List<MetricMergeResult> resultList = new ArrayList<MetricMergeResult>();
-        //需要全部构建好才能处理的过滤，比如前2个或者后5个这种，不能在汇总值算完就过滤
-        if (!canPreFilter){
+        //需要全部构建好才能处理的过滤，比如前2个或者后5个这种，不能在汇总值算完就过滤。多线程计算的情况下无法预先过滤，这边也要再过滤下
+        if (!canPreFilter || useMultiThread()){
             for (Node node : root.getChilds()) {
                 if (filter == null || filter.showNode(node, calculatedMap, loader)) {
                     resultList.add((MetricMergeResult) node);
@@ -156,7 +156,7 @@ public class AllNodeMergeIterator implements Iterator<MetricMergeResult> {
     }
 
     protected boolean checkSum(MetricMergeResult result) {
-        if (executor != null && metricsToCalculate != null) {
+        if (useMultiThread()) {
             executor.add(new SummaryCountCal(result));
         } else {
             calculate(result);
@@ -165,6 +165,10 @@ public class AllNodeMergeIterator implements Iterator<MetricMergeResult> {
             }
         }
         return true;
+    }
+
+    private boolean useMultiThread() {
+        return executor != null && metricsToCalculate != null;
     }
 
     private void calculate(MetricMergeResult result) {

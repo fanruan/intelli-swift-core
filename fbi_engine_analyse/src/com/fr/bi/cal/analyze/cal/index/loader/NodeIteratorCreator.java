@@ -199,15 +199,22 @@ public class NodeIteratorCreator {
     private MergeIteratorCreator[] createNormalMergeIteratorCreator() {
         MergeIteratorCreator[] mergeIteratorCreators = new MergeIteratorCreator[rowDimension.length];
         boolean hasSingleNodeCalMetrics = hasSingleNodeCalMetrics();
+        boolean calIndirectFilter = shouldCalIndirectDimensionFilterGVI();
         for (int i = 0; i < rowDimension.length; i++) {
-            if (BISortUtils.hasTargetSort(dimensionTargetSort[i]) || hasSingleNodeCalMetrics) {
-                //只有最后一层才算配置类计算
-                createAllNodeCreator(mergeIteratorCreators, i, null, dimensionTargetSort[i], new SimpleMergeIteratorCreator(), executor, hasSingleNodeCalMetrics && i == rowDimension.length - 1);
+            //只有最后一层才算配置类计算
+            boolean calSingleNodeMetrics = hasSingleNodeCalMetrics && i == rowDimension.length - 1;
+            if (calAllNode(calIndirectFilter, i, calSingleNodeMetrics)) {
+                createAllNodeCreator(mergeIteratorCreators, i, calIndirectFilter ? null : rowDimension[i].getFilter(), dimensionTargetSort[i], new SimpleMergeIteratorCreator(), executor, calSingleNodeMetrics);
             } else {
                 mergeIteratorCreators[i] = new SimpleMergeIteratorCreator();
             }
         }
         return mergeIteratorCreators;
+    }
+
+    private boolean calAllNode(boolean calIndirectFilter, int i, boolean calSingleNodeMetrics) {
+        //没有计算不能转化为索引的维度过滤，或者有指标排序，或者计算需要整个节点的配置类计算，就计算单个节点
+        return !calIndirectFilter || BISortUtils.hasTargetSort(dimensionTargetSort[i]) || calSingleNodeMetrics;
     }
 
     //IndirectFilter的MergeIteratorCreator, 不需要处理排序, 同时, 只有第一个维度可以多线程计算, 如果第二个维度用多线程, 当构建当前节点的任务跟计算当前子节点的任务排在一个队列时会死锁
