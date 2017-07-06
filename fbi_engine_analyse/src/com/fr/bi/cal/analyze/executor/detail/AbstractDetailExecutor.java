@@ -1,6 +1,7 @@
 package com.fr.bi.cal.analyze.executor.detail;
 
 import com.finebi.cube.api.ICubeTableService;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.conf.field.BIBusinessField;
 import com.finebi.cube.conf.field.BusinessField;
 import com.finebi.cube.conf.table.BusinessTable;
@@ -12,6 +13,7 @@ import com.fr.bi.cal.analyze.executor.iterator.StreamPagedIterator;
 import com.fr.bi.cal.analyze.executor.paging.Paging;
 import com.fr.bi.cal.analyze.executor.utils.ExecutorUtils;
 import com.fr.bi.cal.analyze.report.report.widget.BIDetailWidget;
+import com.fr.bi.cal.analyze.report.report.widget.TableWidget;
 import com.fr.bi.cal.analyze.session.BISession;
 import com.fr.bi.cal.report.engine.CBBoxElement;
 import com.fr.bi.cal.report.engine.CBCell;
@@ -23,6 +25,7 @@ import com.fr.bi.field.dimension.calculator.NoneDimensionCalculator;
 import com.fr.bi.field.target.detailtarget.BIAbstractDetailTarget;
 import com.fr.bi.field.target.detailtarget.field.BINumberDetailTarget;
 import com.fr.bi.field.target.detailtarget.formula.BINumberFormulaDetailTarget;
+import com.fr.bi.field.target.target.BISummaryTarget;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.constant.CellConstant;
 import com.fr.bi.stable.gvi.GVIUtils;
@@ -34,6 +37,7 @@ import com.fr.general.ComparatorUtils;
 import com.fr.general.DateUtils;
 import com.fr.general.GeneralUtils;
 import com.fr.general.Inter;
+import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;
 import com.fr.stable.StringUtils;
 
@@ -92,7 +96,45 @@ public abstract class AbstractDetailExecutor extends BIAbstractExecutor<JSONObje
                             new ArrayList<BITableSourceRelation>())}, this.target, getLoader(), this.userId));
             currentGvi = gvi;
         }
+        try {
+            currentGvi = getLinkFilter(currentGvi);
+        } catch (Exception e) {
+            BILoggerFactory.getLogger().error(e.getMessage());
+        }
         return currentGvi;
+    }
+
+    private GroupValueIndex getLinkFilter(GroupValueIndex gvi) throws Exception{
+        if (widget.getLinkWidget() != null && widget.getLinkWidget() instanceof TableWidget) {
+            // 判断两个表格的基础表是否相同
+            BusinessTable widgetTargetTable = widget.getTargetDimension();
+            TableWidget linkWidget = widget.getLinkWidget();
+            Map<String, JSONArray> clicked = widget.getClicked();
+
+            BISummaryTarget summaryTarget = null;
+            String[] ids = clicked.keySet().toArray(new String[]{});
+            for (String linkTarget : ids) {
+                try {
+                    summaryTarget = linkWidget.getBITargetByID(linkTarget);
+                    break;
+                } catch (Exception e) {
+                    BILoggerFactory.getLogger(TableWidget.class).warn("Target id " + linkTarget + " is absent in linked widget " + linkWidget.getWidgetName());
+                }
+            }
+
+            if (summaryTarget != null) {
+                BusinessTable linkTargetTable = summaryTarget.createTableKey();
+                // 基础表相同的时候才有联动的意义
+                if (widgetTargetTable.equals(linkTargetTable)) {
+                    // 其联动组件的父联动gvi
+                    GroupValueIndex pLinkGvi = linkWidget.createLinkedFilterGVI(widgetTargetTable, session);
+                    // 其联动组件的点击过滤gvi
+                    GroupValueIndex linkGvi = linkWidget.getLinkFilter(linkWidget, widgetTargetTable, clicked, session);
+                    gvi = GVIUtils.AND(gvi, GVIUtils.AND(pLinkGvi, linkGvi));
+                }
+            }
+        }
+        return gvi;
     }
 
     private BIDetailTarget getTargetById(String id) {
