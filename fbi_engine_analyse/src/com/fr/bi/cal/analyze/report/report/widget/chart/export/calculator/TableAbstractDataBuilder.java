@@ -84,7 +84,7 @@ public abstract class TableAbstractDataBuilder implements IExcelDataBuilder {
                 List<ITableItem> values = new ArrayList<ITableItem>();
                 for (int i = 0; i < s.length(); i++) {
                     ITableItem temp = new BIBasicTableItem();
-                    temp.setValue(s.optString(i));
+                    temp.setValue(s.opt(i));
                     temp.setDId(targetIds.get(i));
                     values.add(temp);
                 }
@@ -100,12 +100,12 @@ public abstract class TableAbstractDataBuilder implements IExcelDataBuilder {
                         continue;
                     }
                     BIBasicTableItem value = new BIBasicTableItem();
-                    value.setValue(s.getString(i));
+                    value.setValue(s.get(i));
                     value.setDId(targetIds.get(i));
                     outerValues.add(value);
                 }
                 ITableItem tempChildren = new BIBasicTableItem();
-                tempChildren.setValue(data.getJSONArray("s").getString(0));
+                tempChildren.setValue(data.getJSONArray("s").get(0));
                 tempChildren.setDId(targetIds.get(0));
                 tempChildren.setValues(outerValues);
                 item.getChildren().add(tempChildren);
@@ -235,7 +235,7 @@ public abstract class TableAbstractDataBuilder implements IExcelDataBuilder {
                     if (targetIds.size() > 0) {
                         String tId = targetIds.get(i);
                         BIBasicTableItem tempItem = new BIBasicTableItem();
-                        tempItem.setValue(ss.optString(i));
+                        tempItem.setValue(ss.opt(i));
                         tempItem.setDId(tId);
 //                        tempItem.setStyles(SummaryTableStyleHelper.getLastSummaryStyles(styleSetting.getThemeColor(), styleSetting.getTableStyleGroup()));
                         sums.add(tempItem);
@@ -329,7 +329,7 @@ public abstract class TableAbstractDataBuilder implements IExcelDataBuilder {
                         }
                         BIBasicTableItem ob = new BIBasicTableItem();
                         ob.setDId(targetIds.get(j));
-                        ob.setValue(child.getJSONArray("s").getString(j));
+                        ob.setValue(child.getJSONArray("s").get(j));
 //                        ob.setStyles(SummaryTableStyleHelper.getBodyStyles(styleSetting.getThemeColor(), styleSetting.getTableStyleGroup(), j));
                         List<ITableItem> values = null == children.getValues() ? new ArrayList<ITableItem>() : children.getValues();
                         values.add(ob);
@@ -346,7 +346,7 @@ public abstract class TableAbstractDataBuilder implements IExcelDataBuilder {
                         items.get(j).getChildren().get(0).setValues(new ArrayList<ITableItem>());
                     }
                     BIBasicTableItem ob = new BIBasicTableItem();
-                    ob.setValue(s.getString(j));
+                    ob.setValue(s.get(j));
 //                    ob.setStyles(SummaryTableStyleHelper.getBodyStyles(styleSetting.getThemeColor(), styleSetting.getTableStyleGroup(), j));
                     ob.setDId(targetIds.get(j));
                     items.get(j).getChildren().get(0).getValues().add(ob);
@@ -419,7 +419,7 @@ public abstract class TableAbstractDataBuilder implements IExcelDataBuilder {
                 //单指标情况下，指标不显示，合并到上面
                 if (targetIds.size() == 1) {
                     BITableHeader header = new BITableHeader();
-                    header.setText(item.getValue());
+                    header.setText(String.valueOf(item.getValue()));
                     header.parseJson(item.createJSON());
                     headers.add(header);
                 } else {
@@ -537,7 +537,7 @@ public abstract class TableAbstractDataBuilder implements IExcelDataBuilder {
                 //考虑到空字符串问题
                 String currDid = dimIds.get(currentLayer - 1);
                 BIBasicTableItem item = new BIBasicTableItem();
-                item.setValue(child.getString("n"));
+                item.setValue(child.get("n"));
                 item.setDId(currDid);
 //                item.setStyles(SummaryTableStyleHelper.getBodyStyles(styleSetting.getThemeColor(), styleSetting.getTableStyleGroup(), i));
                 //展开情况——最后一层没有这个展开按钮
@@ -564,7 +564,7 @@ public abstract class TableAbstractDataBuilder implements IExcelDataBuilder {
             int tartSize = targetIds.size();
             for (int j = 0; j < summary.length(); j++) {
                 BIBasicTableItem tarItem = new BIBasicTableItem();
-                tarItem.setValue(summary.getString(j));
+                tarItem.setValue(summary.get(j));
                 tarItem.setDId(targetIds.get(j % tartSize));
 //                tarItem.setStyles(item.getStyles());
                 vs.add(tarItem);
@@ -591,7 +591,7 @@ public abstract class TableAbstractDataBuilder implements IExcelDataBuilder {
                 for (int j = 0; j < array.length(); j++) {
                     String tId = targetIds.get(j);
                     BIBasicTableItem tarItem = new BIBasicTableItem();
-                    tarItem.setValue(array.getString(j));
+                    tarItem.setValue(array.get(j));
                     tarItem.setDId(tId);
 //                    tarItem.setStyles(item.getStyles());
                     values.add(tarItem);

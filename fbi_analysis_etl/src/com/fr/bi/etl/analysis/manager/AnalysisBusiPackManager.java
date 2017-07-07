@@ -468,7 +468,7 @@ public class AnalysisBusiPackManager extends BISystemDataManager<SingleUserAnaly
         JSONObject packages = BIAnalysisETLManagerCenter.getBusiPackManager().createPackageJSON(userId);
         JSONObject translations = new JSONObject();
         translations.put(table.getID().getIdentity(), tableName);
-        JSONObject tableJSONWithFieldsInfo = table.createJSONWithFieldsInfo(userId);
+        JSONObject tableJSONWithFieldsInfo = table.toFieldJSONObject(userId);
         JSONObject tableFields = tableJSONWithFieldsInfo.getJSONObject("tableFields");
         JSONObject tables = new JSONObject();
         tables.put(table.getID().getIdentity(), tableFields);

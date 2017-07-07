@@ -318,8 +318,10 @@ public class BICubeManager implements BICubeManagerProvider {
                     Set<BITableSourceRelation> allRelations = configHelper.convertRelations(configHelper.getSystemTableRelations());
                     Set<BITableSourceRelationPath> allPaths = configHelper.convertPaths(configHelper.getSystemTablePaths());
                     CubeBuildStuff cubeBuildStuff = taskCalculator.generateCubeBuildStuff(allTableSources, allRelations, allPaths);
-                    CubeTask cubeTask = new BuildCubeTask(new BIUser(userId), cubeBuildStuff);
-                    addTask(cubeTask, userId);
+                    if (cubeBuildStuff.isNeed2Update()) {
+                        CubeTask cubeTask = new BuildCubeTask(new BIUser(userId), cubeBuildStuff);
+                        addTask(cubeTask, userId);
+                    }
 
                     finishCubeBuilding(userId);
                 } catch (Exception e) {

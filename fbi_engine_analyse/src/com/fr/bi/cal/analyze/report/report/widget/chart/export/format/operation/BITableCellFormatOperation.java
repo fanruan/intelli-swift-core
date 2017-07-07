@@ -12,7 +12,7 @@ public abstract class BITableCellFormatOperation implements ITableCellFormatOper
      ICellFormatSetting iCellFormatSetting;
 
     @Override
-    public JSONObject createTextStyle(String text) throws Exception {
+    public JSONObject createItemTextStyle(String text) throws Exception {
         try {
             return BITableCellFormatHelper.createTextStyle(iCellFormatSetting.createJSON(), text);
         } catch (Exception e) {

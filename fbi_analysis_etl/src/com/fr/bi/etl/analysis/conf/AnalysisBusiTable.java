@@ -19,7 +19,11 @@ import com.fr.general.Inter;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Created by 小灰灰 on 2015/12/11.
@@ -76,13 +80,6 @@ public class AnalysisBusiTable extends BIBusinessTable {
         return describe;
     }
 
-    public JSONObject createJSON() throws Exception {
-        JSONObject jo = super.createJSON();
-        jo.put("describe", describe);
-        jo.put("lastModifyTime", lastModifyTime.getTime());
-        return jo;
-    }
-
     public Date getLastModifyTime() {
         return lastModifyTime;
     }
@@ -104,40 +101,45 @@ public class AnalysisBusiTable extends BIBusinessTable {
         return Constants.BUSINESS_TABLE_TYPE.ANALYSIS_TYPE;
     }
 
+    public JSONObject createJSON() throws Exception {
+        JSONObject jo = super.createJSON();
+        jo.put("describe", describe);
+        jo.put("lastModifyTime", lastModifyTime.getTime());
+        return jo;
+    }
+
     @Override
-    public JSONObject createJSONWithFieldsInfo(long userId) throws Exception {
+    public JSONObject toFieldJSONObject(long userId) throws Exception {
         JSONObject jo = createJSON();
-        JSONArray ja = new JSONArray();
+        JSONArray ja = JSONArray.create();
         jo.put("fields", ja);
 
         List<JSONObject> stringList = new ArrayList<JSONObject>();
         List<JSONObject> numberList = new ArrayList<JSONObject>();
         List<JSONObject> dateList = new ArrayList<JSONObject>();
         List<JSONObject> countList = new ArrayList<JSONObject>();
-        JSONObject fields = new JSONObject();
+        JSONObject fields = JSONObject.create();
 
-        Iterator<BusinessField> it = getFields().iterator();
-        while (it.hasNext()) {
-            BusinessField field = it.next();
+        for (BusinessField field : getFields()) {
             JSONObject filedJson = field.createJSON();
             fields.put(field.getFieldID().getIdentityValue(), filedJson);
             stringList.add(filedJson);
         }
         //兼容以前老的记录数ID，包含表转义名的
-        fields.put(getID().getIdentity() + BIAnalysisETLManagerCenter.getAliasManagerProvider().getAliasNameFromAllUsers(getID().getIdentityValue()) + Inter.getLocText("BI-Basic_Records"), createCountField(userId));
+        fields.put(getID().getIdentity() + BIAnalysisETLManagerCenter.getAliasManagerProvider().getAliasNameFromAllUsers(getID().getIdentityValue()) + Inter.getLocText("BI-Basic_Records"), createCountField());
         //真正使用的记录数ID
-        fields.put(getID().getIdentity() + Inter.getLocText("BI-Basic_Records"), createCountField(userId));
-        countList.add(createCountField(userId));
+        fields.put(getID().getIdentity() + Inter.getLocText("BI-Basic_Records"), createCountField());
+        countList.add(createCountField());
         ja.put(stringList).put(numberList).put(dateList).put(countList);
-        JSONObject result = new JSONObject();
+        JSONObject result = JSONObject.create();
         result.put("tableFields", jo);
         result.put("fieldsInfo", fields);
         jo.put(BIJSONConstant.JSON_KEYS.TABLE_TYPE, getTableType());
         return result;
     }
 
-    private JSONObject createCountField(long userId) throws Exception {
-        JSONObject jo = new JSONObject();
+    private JSONObject createCountField() throws Exception {
+        JSONObject jo = JSONObject.create();
         jo.put("fieldType", DBConstant.COLUMN.COUNTER);
         jo.put("fieldName", BIAnalysisETLManagerCenter.getAliasManagerProvider().getAliasNameFromAllUsers(getID().getIdentityValue()) + Inter.getLocText("BI-Basic_Records"));
         jo.put("tableId", getID().getIdentity());

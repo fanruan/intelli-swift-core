@@ -33,9 +33,7 @@ public class BITableConstructHelper {
         boolean isDetail = data.getWidgetType() == WidgetType.DETAIL.getType();
         for (ITableHeader header : data.getHeaders()) {
             header.setStyles(BITableStyleHelper.getHeaderStyles(style.getThemeColor(), style.getTableStyleGroup()));
-//            if (!isDetail) {
-//                formatHeaderText(operations, header);
-//            }
+                formatHeaderText(operations, header);
         }
 
         if (data.getItems().size() != 0) {
@@ -120,21 +118,21 @@ public class BITableConstructHelper {
 
     private static void formatItemText(Map<String, ITableCellFormatOperation> ops, ITableItem it) throws Exception {
         if (null != ops.get(it.getDId())) {
-            it.setText(ops.get(it.getDId()).formatTextValues(it.getValue()));
+            it.setText(ops.get(it.getDId()).formatItemTextValues(String.valueOf(it.getValue())));
         } else {
-            it.setText(it.getValue());
+            it.setText(String.valueOf(it.getValue()));
         }
     }
 
     private static void formatHeaderText(Map<String, ITableCellFormatOperation> ops, ITableHeader header) throws Exception {
         if (null != ops.get(header.getdID())) {
-            header.setText(ops.get(header.getdID()).formatTextValues(header.getText()));
+            header.setText(ops.get(header.getdID()).formatHeaderText(header.getText()));
         }
     }
 
     private static void setItemTextStyle(Map<String, ITableCellFormatOperation> ops, ITableItem it) throws Exception {
         if (null != ops.get(it.getDId())) {
-            it.setTextStyles(ops.get(it.getDId()).createTextStyle(it.getValue()));
+            it.setTextStyles(ops.get(it.getDId()).createItemTextStyle(String.valueOf(it.getValue())));
         }
     }
 }
