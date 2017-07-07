@@ -71,18 +71,12 @@ public class ProfilesUpdateOperation implements ReportUpdateOperation {
 
     @Override
     public JSONObject update(JSONObject reportSetting) throws JSONException {
-        reportSetting = recursionMapUpdate(reportSetting.toString());
-        if (reportSetting.has("widgets")) {
-            JSONObject widgets = reportSetting.getJSONObject("widgets");
-            Iterator keys = widgets.keys();
-            while (keys.hasNext()) {
-                String widgetId = keys.next().toString();
-                JSONObject widgetJo = widgets.getJSONObject(widgetId);
-                if (widgetJo.has("type")) {
-                }
-            }
+        if (BIJsonUtils.isKeyValueSet(reportSetting.toString())) {
+            reportSetting = recursionMapUpdate(reportSetting.toString());
+            return reportSetting;
+        } else {
+            return reportSetting;
         }
-        return reportSetting;
     }
 
     //map 结构的递归
@@ -254,8 +248,8 @@ public class ProfilesUpdateOperation implements ReportUpdateOperation {
                         if (widgetJo.has("settings")) {
                             JSONObject settingsJo = widgetJo.getJSONObject("settings");
                             for (String s : dotWidgetKeysMap.keySet()) {
-                                if (settingsJo.has(s)){
-                                    settingsJo.put(dotWidgetKeysMap.get(s).toString(),settingsJo.get(s));
+                                if (settingsJo.has(s)) {
+                                    settingsJo.put(dotWidgetKeysMap.get(s).toString(), settingsJo.get(s));
                                     settingsJo.remove(s);
                                 }
                             }
