@@ -179,6 +179,12 @@ public class BICubeFieldSource implements ICubeFieldSource {
     }
 
     @Override
+    public Object clone() throws CloneNotSupportedException {
+        BICubeFieldSource cloned = (BICubeFieldSource) super.clone();
+        return cloned;
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;

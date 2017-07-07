@@ -2,6 +2,7 @@ package com.fr.bi.stable.data.db;
 
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.json.JSONTransform;
+import com.fr.stable.FCloneable;
 
 import java.io.Serializable;
 
@@ -11,7 +12,7 @@ import java.io.Serializable;
  * @author Connery
  * @since 4.0
  */
-public interface ICubeFieldSource extends Cloneable, Serializable, JSONTransform {
+public interface ICubeFieldSource extends FCloneable, Serializable, JSONTransform {
     String getFieldName();
 
     int getFieldType();
