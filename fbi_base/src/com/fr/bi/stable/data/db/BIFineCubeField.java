@@ -8,6 +8,7 @@ import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.data.tableSource.FineCubeTable;
 import com.fr.bi.stable.utils.BIDBUtils;
+import com.fr.general.ComparatorUtils;
 import com.fr.json.JSONObject;
 
 /**
@@ -164,30 +165,6 @@ public class BIFineCubeField implements FineCubeField {
         return jo;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-
-        BICubeFieldSource that = (BICubeFieldSource) o;
-
-        if (fieldName != null ? !fieldName.equals(that.fieldName) : that.fieldName != null) {
-            return false;
-        }
-        return tableBelongTo != null ? tableBelongTo.equals(that.tableBelongTo) : that.tableBelongTo == null;
-
-    }
-
-    @Override
-    public int hashCode() {
-        int result = fieldName != null ? fieldName.hashCode() : 0;
-        result = 31 * result + (tableBelongTo != null ? tableBelongTo.hashCode() : 0);
-        return result;
-    }
 
     @Override
     public Name getName() {
@@ -211,5 +188,31 @@ public class BIFineCubeField implements FineCubeField {
     @Override
     public void setCanSetUsable(boolean canSetUsable) {
         this.canSetUsable = canSetUsable;
+    }
+
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        BIFineCubeField cloned = (BIFineCubeField) super.clone();
+        if (fieldName != null) {
+            cloned.fieldName = fieldName;
+        }
+        if (tableBelongTo != null) {
+            cloned.tableBelongTo = (FineCubeTable) tableBelongTo.clone();
+        }
+        return cloned;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        return o instanceof BIFineCubeField
+                && ComparatorUtils.equals(fieldName, ((BIFineCubeField) o).fieldName)
+                && ComparatorUtils.equals(tableBelongTo, ((BIFineCubeField) o).tableBelongTo);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = fieldName != null ? fieldName.hashCode() : 0;
+        result = 31 * result + (tableBelongTo != null ? tableBelongTo.hashCode() : 0);
+        return result;
     }
 }
