@@ -54,7 +54,7 @@ public class DetailExecutor extends AbstractDetailExecutor {
 
     }
 
-    public TableCellIterator createCellIterator4Excel() {
+    public TableCellIterator createCellIterator4Excel() throws Exception {
         final GroupValueIndex gvi = createDetailViewGvi();
         int count = gvi.getRowsCountWithData();
         paging.setTotalSize(count);
@@ -105,7 +105,6 @@ public class DetailExecutor extends AbstractDetailExecutor {
 
         long start = System.currentTimeMillis();
         GroupValueIndex gvi = createDetailViewGvi();
-        gvi = getLinkFiter(gvi);
         paging.setTotalSize(gvi.getRowsCountWithData());
         final JSONArray ja = new JSONArray();
         JSONObject jo = new JSONObject();
@@ -148,38 +147,7 @@ public class DetailExecutor extends AbstractDetailExecutor {
         return usedDimensionIndexes;
     }
 
-    private GroupValueIndex getLinkFiter(GroupValueIndex gvi) throws Exception{
-        if (widget.getLinkWidget() != null && widget.getLinkWidget() instanceof TableWidget) {
-            // 判断两个表格的基础表是否相同
-            BusinessTable widgetTargetTable = widget.getTargetDimension();
-            TableWidget linkWidget = widget.getLinkWidget();
-            Map<String, JSONArray> clicked = widget.getClicked();
 
-            BISummaryTarget summaryTarget = null;
-            String[] ids = clicked.keySet().toArray(new String[]{});
-            for (String linkTarget : ids) {
-                try {
-                    summaryTarget = linkWidget.getBITargetByID(linkTarget);
-                    break;
-                } catch (Exception e) {
-                    BILoggerFactory.getLogger(TableWidget.class).warn("Target id " + linkTarget + " is absent in linked widget " + linkWidget.getWidgetName());
-                }
-            }
-
-            if (summaryTarget != null) {
-                BusinessTable linkTargetTable = summaryTarget.createTableKey();
-                // 基础表相同的时候才有联动的意义
-                if (widgetTargetTable.equals(linkTargetTable)) {
-                    // 其联动组件的父联动gvi
-                    GroupValueIndex pLinkGvi = linkWidget.createLinkedFilterGVI(widgetTargetTable, session);
-                    // 其联动组件的点击过滤gvi
-                    GroupValueIndex linkGvi = linkWidget.getLinkFilter(linkWidget, widgetTargetTable, clicked, session);
-                    gvi = GVIUtils.AND(gvi, GVIUtils.AND(pLinkGvi, linkGvi));
-                }
-            }
-        }
-        return gvi;
-    }
 
     public List<List> getData() {
         if (target == null) {

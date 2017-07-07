@@ -436,7 +436,7 @@ public abstract class VanCartesianWidget extends VanChartWidget {
                 .put("lineColor", settings.optString("catLineColor"))
                 .put("gridLineWidth", settings.optBoolean("vShowGridLine") ? 1 : 0)
                 .put("gridLineColor", settings.optString("vGridLineColor"))
-                .put("reversed", cateAxisReversed());
+                .put("reversed", false);
 
         return JSONArray.create().put(category);
     }
@@ -447,10 +447,6 @@ public abstract class VanCartesianWidget extends VanChartWidget {
 
     protected double valueAxisRotation() {
         return VERTICAL;
-    }
-
-    protected boolean cateAxisReversed() {
-        return false;
     }
 
     protected JSONArray parseValueAxis(JSONObject settings) throws JSONException{

@@ -26,6 +26,7 @@ import com.fr.bi.cal.analyze.report.report.widget.style.BITableWidgetStyle;
 import com.fr.bi.cal.analyze.session.BISession;
 import com.fr.bi.common.persistent.xml.BIIgnoreField;
 import com.fr.bi.conf.report.WidgetType;
+import com.fr.bi.conf.report.style.DetailChartSetting;
 import com.fr.bi.conf.report.widget.field.target.detailtarget.BIDetailTarget;
 import com.fr.bi.conf.report.widget.field.target.filter.TargetFilter;
 import com.fr.bi.conf.session.BISessionProvider;
@@ -258,6 +259,9 @@ public class BIDetailWidget extends AbstractBIWidget {
         setTargetTable(userId);
     }
 
+    public BITableWidgetStyle getWidgetStyle () {
+        return widgetStyle;
+    }
 
     public BusinessTable getTargetDimension() {
         return target;

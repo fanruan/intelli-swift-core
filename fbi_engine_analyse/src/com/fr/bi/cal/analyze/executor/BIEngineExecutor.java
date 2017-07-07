@@ -1,8 +1,6 @@
 package com.fr.bi.cal.analyze.executor;
 
 import com.fr.bi.cal.analyze.cal.index.loader.MetricGroupInfo;
-import com.fr.bi.cal.analyze.cal.result.NewCrossRoot;
-import com.fr.bi.cal.analyze.cal.result.Node;
 import com.fr.bi.cal.analyze.executor.iterator.TableCellIterator;
 import com.fr.json.JSONObject;
 
@@ -34,20 +32,4 @@ public interface BIEngineExecutor<T> {
 
     public List<MetricGroupInfo> getLinkedWidgetFilterGVIList() throws Exception;
 
-    /**
-     * 获取到某一行就停止构建的Node节点树
-     * @param rowData
-     * @return
-     * @throws Exception
-     */
-    public Node getStopOnRowNode(Object[] rowData) throws Exception;
-
-    /**
-     *
-     * @param rowData       行值
-     * @param colData       列值
-     * @return
-     * @throws Exception
-     */
-    public NewCrossRoot getStopOnRowNode(Object[] rowData, Object[] colData) throws Exception;
 }
