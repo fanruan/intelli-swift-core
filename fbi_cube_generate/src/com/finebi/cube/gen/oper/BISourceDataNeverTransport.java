@@ -5,7 +5,6 @@ import com.finebi.cube.conf.utils.BICubeLogExceptionInfo;
 import com.finebi.cube.conf.utils.BILogHelper;
 import com.finebi.cube.message.IMessage;
 import com.finebi.cube.structure.Cube;
-import com.fr.bi.conf.log.BILogManager;
 import com.fr.bi.conf.provider.BIConfigureManagerCenter;
 import com.fr.bi.conf.provider.BILogManagerProvider;
 import com.fr.bi.stable.constant.BILogConstant;
@@ -13,7 +12,6 @@ import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
 import com.fr.bi.stable.utils.program.BIStringUtils;
 import com.fr.fs.control.UserControl;
-import com.fr.stable.bridge.StableFactory;
 
 import java.util.Set;
 
@@ -49,7 +47,7 @@ public class BISourceDataNeverTransport extends BISourceDataTransport {
             }
             BILogHelper.cacheCubeLogTableNormalInfo(tableSource.getSourceID(), BILogConstant.LOG_CACHE_TIME_TYPE.TRANSPORT_EXECUTE_END, System.currentTimeMillis());
             return null;
-        } catch (Exception e) {
+        } catch (Throwable e) {
             BILogHelper.cacheCubeLogTableNormalInfo(tableSource.getSourceID(), BILogConstant.LOG_CACHE_TIME_TYPE.TRANSPORT_EXECUTE_END, System.currentTimeMillis());
             BICubeLogExceptionInfo exceptionInfo = new BICubeLogExceptionInfo(System.currentTimeMillis(), "Transport Exception", e.getMessage(), e, tableSource.getSourceID());
             BILogHelper.cacheCubeLogTableException(tableSource.getSourceID(), exceptionInfo);

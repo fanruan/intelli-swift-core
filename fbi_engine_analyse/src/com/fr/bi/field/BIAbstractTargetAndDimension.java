@@ -14,11 +14,11 @@ import com.fr.bi.conf.utils.BIModuleUtils;
 import com.fr.bi.stable.constant.BIJSONConstant;
 import com.fr.bi.stable.data.BIFieldID;
 import com.fr.bi.stable.engine.index.key.IndexKey;
+import com.fr.bi.stable.utils.BIFormulaUtils;
 import com.fr.general.ComparatorUtils;
 import com.fr.js.NameJavaScriptGroup;
 import com.fr.js.WebHyperlink;
 import com.fr.json.JSONObject;
-import com.fr.script.Calculator;
 import com.fr.stable.ParameterProvider;
 import com.fr.stable.StringUtils;
 
@@ -57,16 +57,6 @@ public abstract class BIAbstractTargetAndDimension extends BIID implements BITar
         return new IndexKey(column.getFieldName());
     }
 
-    private String getHyperLink(Object v) {
-        String link = StringUtils.EMPTY;
-        try {
-            link = link.replace("${" + Calculator.relatedParameters(hyperLinkExpression)[0] + "}", URLEncoder.encode(v.toString()));
-        } catch (Exception e) {
-            BILoggerFactory.getLogger().error(e.getMessage(), e);
-        }
-        return link;
-    }
-
     @Override
     public NameJavaScriptGroup createHyperLinkNameJavaScriptGroup(Object v) {
         if (!useHyperLink() || v == null) {
@@ -84,6 +74,21 @@ public abstract class BIAbstractTargetAndDimension extends BIID implements BITar
     public boolean useHyperLink() {
         boolean expressEmpty = StringUtils.isEmpty(hyperLinkExpression);
         return !expressEmpty && useHyperLink;
+    }
+
+    private String getHyperLink(Object v) {
+        String link = hyperLinkExpression;
+        if (hyperLinkExpression != null && !hyperLinkExpression.isEmpty()) {
+            try {
+                String[] relatedParaNames = BIFormulaUtils.getRelatedParaNames(hyperLinkExpression);
+                for (String relatedParaName : relatedParaNames) {
+                    link = link.replace("${" + relatedParaNames[0] + "}", URLEncoder.encode(v.toString()));
+                }
+            } catch (Exception e) {
+                BILoggerFactory.getLogger(this.getClass()).error(e.getMessage(), e);
+            }
+        }
+        return link;
     }
 
     @Override

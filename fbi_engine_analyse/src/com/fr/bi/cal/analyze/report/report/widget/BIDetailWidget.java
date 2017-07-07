@@ -26,6 +26,7 @@ import com.fr.bi.cal.analyze.report.report.widget.style.BITableWidgetStyle;
 import com.fr.bi.cal.analyze.session.BISession;
 import com.fr.bi.common.persistent.xml.BIIgnoreField;
 import com.fr.bi.conf.report.WidgetType;
+import com.fr.bi.conf.report.style.DetailChartSetting;
 import com.fr.bi.conf.report.widget.field.target.detailtarget.BIDetailTarget;
 import com.fr.bi.conf.report.widget.field.target.filter.TargetFilter;
 import com.fr.bi.conf.session.BISessionProvider;
@@ -258,6 +259,9 @@ public class BIDetailWidget extends AbstractBIWidget {
         setTargetTable(userId);
     }
 
+    public BITableWidgetStyle getWidgetStyle () {
+        return widgetStyle;
+    }
 
     public BusinessTable getTargetDimension() {
         return target;
@@ -349,7 +353,7 @@ public class BIDetailWidget extends AbstractBIWidget {
         JSONObject data = this.createDataJSON(session, req);
         JSONObject dataJSON = data.getJSONObject("data");
         Map<Integer, List<JSONObject>> viewMap = createViewMap();
-        IExcelDataBuilder builder = new DetailTableBuilder(viewMap, dataJSON, new BITableWidgetStyle());
+        IExcelDataBuilder builder = new DetailTableBuilder(viewMap, dataJSON, widgetStyle);
         DataConstructor tableData = BITableConstructHelper.buildTableData(builder);
         BITableConstructHelper.formatCells(tableData, createChartDimensions(), widgetStyle);
         JSONObject res = new JSONObject();
@@ -365,7 +369,7 @@ public class BIDetailWidget extends AbstractBIWidget {
         }
         res.put("items", itemsArray);
         res.put("widgetType", getType().getType());
-        res.put("dimensionLength", dimensions.length).put("row", data.optLong("row", 0)).put("size", data.optLong("size", 0));
+        res.put("dimensionLength", getViewDimensions().length).put("row", data.optLong("row", 0)).put("size", data.optLong("size", 0));
         res.put("settings", tableData.getWidgetStyle().createJSON());
         return res;
         //        return createTestData();

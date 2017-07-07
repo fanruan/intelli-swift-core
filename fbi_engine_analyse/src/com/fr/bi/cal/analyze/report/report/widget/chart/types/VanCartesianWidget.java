@@ -593,6 +593,7 @@ public abstract class VanCartesianWidget extends VanChartWidget {
         for(int i = 0, len = dIDs.length(); i < len; i++){
             try {
                 BISummaryTarget dimension = this.getBITargetByID(dIDs.optString(i));
+                double scale = this.numberScale(dIDs.optString(i));
                 if(dimension.isUsed()) {
                     JSONArray cordons = dimension.getChartSetting().getCordon();
 
@@ -600,7 +601,7 @@ public abstract class VanCartesianWidget extends VanChartWidget {
                         JSONObject config = cordons.optJSONObject(j);
 
                         plotLines.put(
-                                JSONObject.create().put("value", config.optDouble("cordonValue"))
+                                JSONObject.create().put("value", config.optDouble("cordonValue") / scale)
                                         .put("color", config.optString("cordonColor"))
                                         .put("label", JSONObject.create().put("text", config.optString("cordonName")).put("style", defaultFont()).put("align", "right"))
                         );
