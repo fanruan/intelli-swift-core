@@ -22,6 +22,8 @@ public class BITableWidgetStyle implements IWidgetStyle {
     private boolean showColTotal;
     private int tableFormGroup;
     private JSONArray columnSize;
+    private boolean showName;
+    private int namePos;
 
     public BITableWidgetStyle() {
         themeColor = BIStyleConstant.DEFAULT_CHART_SETTING.THEME_COLOR;
@@ -34,6 +36,8 @@ public class BITableWidgetStyle implements IWidgetStyle {
         showColTotal = BIStyleConstant.DEFAULT_CHART_SETTING.SHOW_COL_TOTAL;
         tableFormGroup = BIStyleConstant.TABLE_FORM.OPEN_ROW;
         columnSize = new JSONArray();
+        showName =  BIStyleConstant.DEFAULT_CHART_SETTING.SHOW_NAME;
+        namePos = BIStyleConstant.DEFAULT_CHART_SETTING.NAME_POS;
     }
 
     @Override
@@ -77,6 +81,16 @@ public class BITableWidgetStyle implements IWidgetStyle {
     }
 
     @Override
+    public boolean isShowName() {
+        return showName;
+    }
+
+    @Override
+    public int getNamePos() {
+        return namePos;
+    }
+
+    @Override
     public void parseJSON(JSONObject jo) throws Exception {
         if (jo.has("settings")) {
             JSONObject settingJo = jo.getJSONObject("settings");
@@ -94,6 +108,8 @@ public class BITableWidgetStyle implements IWidgetStyle {
             tableStyleGroup = settingJo.optInt("tableStyleGroup", tableStyleGroup);
             tableFormGroup = settingJo.optInt("tableFormGroup", tableFormGroup);
             columnSize = settingJo.optJSONArray("columnSize");
+            showName = settingJo.optBoolean("showName", showName);
+            namePos = settingJo.optInt("namePos", namePos);
         }
     }
 
