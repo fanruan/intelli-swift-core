@@ -7,6 +7,7 @@ import com.fr.bi.conf.fs.BIChartStyleAttr;
 import com.fr.bi.conf.fs.FBIConfig;
 import com.fr.bi.conf.fs.tablechartstyle.BIChartFontStyleAttr;
 import com.fr.bi.conf.report.WidgetType;
+import com.fr.bi.conf.report.map.BIMapInfoManager;
 import com.fr.bi.conf.report.style.DetailChartSetting;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.conf.session.BISessionProvider;
@@ -17,10 +18,12 @@ import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.constant.BIStyleConstant;
 import com.fr.bi.util.BIConfUtils;
 import com.fr.general.ComparatorUtils;
+import com.fr.general.IOUtils;
 import com.fr.general.Inter;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
+import com.fr.stable.CodeUtils;
 import com.fr.stable.StableUtils;
 import com.fr.stable.StringUtils;
 import com.fr.web.core.SessionDealWith;
@@ -29,6 +32,7 @@ import com.fr.web.utils.WebUtils;
 import javax.servlet.http.HttpServletRequest;
 import java.awt.*;
 import java.io.File;
+import java.io.InputStream;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -555,7 +559,7 @@ public abstract class VanChartWidget extends TableWidget {
 
     //优先级从低到高：plat界面背景，global界面背景，主题，plat组件背景，global组件背景，setting组件背景，plat图表文字， global图表文字，settings图表文字
     protected JSONObject defaultFont() throws JSONException {
-        BIChartStyleAttr platConfig = FBIConfig.getProviderInstance().getChartStyleAttr();
+        BIChartStyleAttr platConfig = FBIConfig.getInstance().getChartStyleAttr();
         String color = DARK, fontWeight = "normal", fontStyle = "normal";
 
         if(platConfig.getMainBackground() != null) {
@@ -1261,9 +1265,21 @@ public abstract class VanChartWidget extends TableWidget {
     public JSONObject createPhantomJSONConfig(BISessionProvider session, HttpServletRequest req) throws Exception {
         JSONObject options = this.createDataJSON(session, req);
 
-        JSONObject plotOptions = options.optJSONObject("plotOptions").put("animation", false);
+        if(options.has("geo")){
+            JSONObject geo = options.optJSONObject("geo");
+            String path = geo.optString("data", StringUtils.EMPTY).replace(BIMapInfoManager.ACTION_PREFIX, StringUtils.EMPTY);
+            InputStream in = FRContext.getCurrentEnv().readResource(StableUtils.pathJoin(new String[]{BIMapInfoManager.JSON_FOLDER, CodeUtils.cjkDecode(path)}));
+            String string = IOUtils.inputStream2String(in);
+            geo.put("data", new JSONObject(string.replace('\uFEFF',' ')));
+            options.put("geo", geo);
+        }
 
-        return options.put("plotOptions", plotOptions);
+        options.remove("zoom");
+
+        JSONObject plotOptions = options.optJSONObject("plotOptions");
+        options.put("plotOptions", plotOptions.put("animation", false));
+
+        return options;
     }
 
     protected String getRequestURL() {

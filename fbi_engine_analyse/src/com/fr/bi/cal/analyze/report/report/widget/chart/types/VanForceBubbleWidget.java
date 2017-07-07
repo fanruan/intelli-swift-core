@@ -9,11 +9,10 @@ import com.fr.json.JSONObject;
  */
 public class VanForceBubbleWidget extends VanDotWidget{
 
-    protected JSONObject createDataLabels(JSONObject settings) throws JSONException {
-        JSONObject dataLabels = JSONObject.create().put("enabled", true)
-                .put("formatter", JSONObject.create().put("identifier", VALUE));
-
-        return dataLabels;
+    protected JSONObject defaultDataLabelSetting() throws JSONException {
+        return JSONObject.create().put("showCategoryName", false)
+                .put("showSeriesName", false).put("showValue", true).put("showPercentage", false)
+                .put("textStyle", defaultFont());
     }
 
     public JSONArray createSeries(JSONObject data) throws Exception {
