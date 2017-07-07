@@ -23,9 +23,16 @@ public interface ICubeFieldSource extends FCloneable, Serializable, JSONTransfor
 
     boolean isUsable();
 
+    void setUsable(boolean usable);
+
     int getFieldSize();
 
     CubeTableSource getTableBelongTo();
 
     boolean hasSubField();
+
+    boolean canSetUsable();
+
+    void setCanSetUsable(boolean canSetUsable);
+
 }
