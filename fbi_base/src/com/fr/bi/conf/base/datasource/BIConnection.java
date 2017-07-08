@@ -23,7 +23,7 @@ public class BIConnection{
         this.initTime = initTime;
     }
 
-    public String getName() {
+    public String getConnectionName() {
         return name;
     }
 
