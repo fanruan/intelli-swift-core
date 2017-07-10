@@ -21,4 +21,7 @@ public class BITableCellNumberFormatOperation extends BITableCellFormatOperation
     public String formatHeaderText(String headerText) throws Exception {
         return BITableCellFormatHelper.headerTextFormat(iCellFormatSetting.createJSON(), headerText);
     }
+    protected String getTextAlign(){
+        return "right";
+    }
 }
