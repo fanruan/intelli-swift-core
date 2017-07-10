@@ -33,7 +33,7 @@ public class BITableConstructHelper {
         boolean isDetail = data.getWidgetType() == WidgetType.DETAIL.getType();
         for (ITableHeader header : data.getHeaders()) {
             header.setStyles(BITableStyleHelper.getHeaderStyles(style.getThemeColor(), style.getTableStyleGroup()));
-                formatHeaderText(operations, header);
+            formatHeaderText(operations, header);
         }
 
         if (data.getItems().size() != 0) {
@@ -45,6 +45,7 @@ public class BITableConstructHelper {
                     for (ITableItem child : item.getChildren()) {
                         child.setStyles(BITableStyleHelper.getBodyStyles(style.getThemeColor(), style.getTableStyleGroup(), i));
                         formatItemText(operations, child);
+                        setItemTextStyle(operations, child);
                     }
                 }
             } else {

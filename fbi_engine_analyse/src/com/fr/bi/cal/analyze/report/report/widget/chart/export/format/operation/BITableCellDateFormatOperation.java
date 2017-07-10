@@ -25,4 +25,9 @@ public class BITableCellDateFormatOperation extends BITableCellFormatOperation {
     public String formatHeaderText(String headerText) throws Exception {
         return headerText;
     }
+
+    @Override
+    protected String getTextAlign() {
+        return "left";
+    }
 }
