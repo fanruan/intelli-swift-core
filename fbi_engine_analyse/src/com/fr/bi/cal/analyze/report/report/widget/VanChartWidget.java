@@ -857,6 +857,8 @@ public abstract class VanChartWidget extends TableWidget {
         this.defaultFormatSeriesDataLabelFormat(options);
     }
 
+    //todo: @shine 4.1版本现在的label是遍历series和point，每个都plotoptions。labeljaon。tostring。不好。
+    //todo: @shine 4.1版本所有涉及到遍历point和series看看能不能归到一起。
     protected void defaultFormatSeriesDataLabelFormat(JSONObject options) throws Exception {
         JSONObject dataLabels = options.optJSONObject("plotOptions").optJSONObject(dataLabelsKey());
 
