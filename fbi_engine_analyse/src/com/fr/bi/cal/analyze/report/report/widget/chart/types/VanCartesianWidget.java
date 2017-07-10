@@ -9,7 +9,6 @@ import com.fr.bi.field.target.target.BISummaryTarget;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.general.ComparatorUtils;
 import com.fr.general.IOUtils;
-import com.fr.general.Inter;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
@@ -237,7 +236,7 @@ public abstract class VanCartesianWidget extends VanChartWidget {
         boolean isInverted = this.isInverted();//bar
 
         options.put("dataSheet", JSONObject.create().put("enabled", settings.optBoolean("showDataTable") && !isInverted)
-                .put("style", this.defaultFont()).put("borderColor", "#000000").put("borderWidth", 1));
+                .put("style", this.defaultFont()).put("borderColor", "#dddddd").put("borderWidth", 1));
 
         if(settings.optBoolean("showZoom") && !settings.optBoolean("miniMode")){
             options.put("zoom", JSONObject.create().put("zoomTool", JSONObject.create().put("enabled", !isInverted)).put("zoomType", ""));
@@ -598,6 +597,7 @@ public abstract class VanCartesianWidget extends VanChartWidget {
 
                         plotLines.put(
                                 JSONObject.create().put("value", config.optDouble("cordonValue") / scale)
+                                        .put("width", 1)
                                         .put("color", config.optString("cordonColor"))
                                         .put("label", JSONObject.create().put("text", config.optString("cordonName")).put("style", defaultFont()).put("align", "right"))
                         );
