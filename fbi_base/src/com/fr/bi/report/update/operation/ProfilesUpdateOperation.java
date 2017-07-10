@@ -179,12 +179,8 @@ public class ProfilesUpdateOperation implements ReportUpdateOperation {
                             widgetJo.getJSONObject("settings").put("vShowGridLine", isShowGridLine);
                         }
                     }
-                    if (settings != null && settings.has("textDirection")) {
-                        JSONObject catLabelStyleJo = JSONObject.create();
-                        if (settings.has("text_direction")) {
-                            catLabelStyleJo.put("text_direction", settings.opt("text_direction"));
-                        }
-                        settings.put("catLabelStyle", catLabelStyleJo.put("textDirection", settings.optInt("textDirection")));
+                    if (settings != null && settings.has("text_direction")) {
+                        settings.put("catLabelStyle", JSONObject.create().put("text_direction", settings.optInt("text_direction")));
                     }
                 }
             }
