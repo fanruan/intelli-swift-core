@@ -181,7 +181,7 @@ public class VanMapWidget extends VanChartWidget{
 
     protected JSONObject defaultDataLabelSetting() throws JSONException {
 
-        return JSONObject.create().put("showBlockName", true).put("showTargetName", true)
+        return JSONObject.create().put("showBlockName", false).put("showTargetName", false)
                 .put("showValue", true).put("showPercentage", false)
                 .put("textStyle", defaultFont());
 
