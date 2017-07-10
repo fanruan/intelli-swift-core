@@ -88,6 +88,7 @@ public class ProfilesUpdateOperation implements ReportUpdateOperation {
             boolean flag = BIJsonUtils.isKeyValueSet(json.get(s).toString());
             if (flag) {
                 if (ComparatorUtils.equals(s, "widgets")) {
+                    addWId(json);
                     json = correctDataLabels(json);
                     json = correctPreviousSrcError(json);
                     json = correctScatterType(json);
@@ -101,6 +102,22 @@ public class ProfilesUpdateOperation implements ReportUpdateOperation {
             }
         }
         return res;
+    }
+
+    private void addWId(JSONObject jo) {
+        try {
+            if (BIJsonUtils.isKeyValueSet(jo.getString("widgets"))) {
+                Iterator keys = jo.getJSONObject("widgets").keys();
+                while (keys.hasNext()) {
+                    String widgetId = keys.next().toString();
+                    JSONObject widgetJo = jo.getJSONObject("widgets").getJSONObject(widgetId);
+                    widgetJo.put("wId", widgetId);
+                }
+            }
+        } catch (JSONException e) {
+            BILoggerFactory.getLogger(this.getClass()).error(e.getMessage(), e);
+        }
+
     }
 
     /*4.0里面出现如下脏数据
@@ -163,7 +180,11 @@ public class ProfilesUpdateOperation implements ReportUpdateOperation {
                         }
                     }
                     if (settings != null && settings.has("textDirection")) {
-                        settings.put("catLabelStyle", JSONObject.create().put("textDirection", settings.optInt("textDirection")));
+                        JSONObject catLabelStyleJo = JSONObject.create();
+                        if (settings.has("text_direction")) {
+                            catLabelStyleJo.put("text_direction", settings.opt("text_direction"));
+                        }
+                        settings.put("catLabelStyle", catLabelStyleJo.put("textDirection", settings.optInt("textDirection")));
                     }
                 }
             }
