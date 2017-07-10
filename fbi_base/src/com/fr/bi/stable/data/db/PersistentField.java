@@ -3,6 +3,7 @@ package com.fr.bi.stable.data.db;
 import com.fr.bi.common.persistent.annotation.PersistNameHistory;
 import com.fr.bi.stable.data.key.IPersistentField;
 import com.fr.bi.stable.data.source.CubeTableSource;
+import com.fr.bi.stable.data.tableSource.FineCubeTable;
 import com.fr.bi.stable.utils.BIDBUtils;
 import com.fr.general.ComparatorUtils;
 import com.fr.json.JSONObject;
@@ -187,6 +188,10 @@ public class PersistentField implements IPersistentField {
 
     public BICubeFieldSource toDBField(CubeTableSource tableBelongTo) {
         return new BICubeFieldSource(tableBelongTo, getFieldName(), BIDBUtils.checkColumnClassTypeFromSQL(getSqlType(), getColumnSize(), getScale()), getColumnSize());
+    }
+
+    public FineCubeField toDBField(FineCubeTable tableBelongTo) {
+        return new BIFineCubeField(tableBelongTo, getFieldName(), BIDBUtils.checkColumnClassTypeFromSQL(getSqlType(), getColumnSize(), getScale()), getColumnSize());
     }
 
     /**

@@ -416,7 +416,7 @@ public class BIDBUtils {
         return result;
     }
 
-    private static PersistentTable getDBTable(com.fr.data.impl.Connection connection, Connection conn, String schema, String table) throws Exception {
+    public static PersistentTable getDBTable(com.fr.data.impl.Connection connection, Connection conn, String schema, String table) throws Exception {
         Dialect dialect = DialectFactory.generateDialect(conn, connection.getDriver());
         String translatedTableName = getTransferColumnComment(connection, dialect.getTableCommentName(conn, table, schema, null));
         PersistentTable dbTable = new PersistentTable(schema, table, translatedTableName);
@@ -564,6 +564,26 @@ public class BIDBUtils {
         return sql;
     }
 
+    public static SQLStatement getSQLStatement(com.fr.data.impl.Connection frConnection, String schema, String tableName) {
+        com.fr.data.impl.Connection connection = frConnection;
+        if (connection instanceof JDBCDatabaseConnection) {
+            BIConnectOptimizationUtils utils = BIConnectOptimizationUtilsFactory.getOptimizationUtils((JDBCDatabaseConnection) (connection));
+            connection = utils.optimizeConnection((JDBCDatabaseConnection) (connection));
+        }
+        SQLStatement sql = new SQLStatement(connection);
+        try {
+            Connection conn = sql.getSqlConn();
+            Dialect dialect = DialectFactory.generateDialect(conn, connection.getDriver());
+            Table table = new Table(schema, tableName);
+            sql.setFrom(dialect.table2SQL(table));
+            sql.setSchema(table.getSchema());
+            sql.setTableName(table.getName());
+        } catch (Throwable e) {
+            throw new RuntimeException(e);
+        }
+        return sql;
+    }
+
     public static SQLStatement getSQLStatementByConditions(String dbName, String tableName, String where) {
         com.fr.data.impl.Connection connection = BIConnectionManager.getBIConnectionManager().getConnection(dbName);
         SQLStatement sql = new SQLStatement(connection);
@@ -587,6 +607,20 @@ public class BIDBUtils {
             Connection conn = sql.getSqlConn();
             Dialect dialect = DialectFactory.generateDialect(conn, connection.getDriver());
             Table table = new Table(BIConnectionManager.getBIConnectionManager().getSchema(dbName), tableName);
+            DistinctColumnSelect select = new DistinctColumnSelect(table, fieldName, dialect);
+            sql.setSql(select.toSQL());
+        } catch (Throwable e) {
+            throw new RuntimeException(e);
+        }
+        return sql;
+    }
+
+    public static SQLStatement getDistinctSQLStatement(com.fr.data.impl.Connection connection, String schema, String tableName, String fieldName) {
+        SqlSettedStatement sql = new SqlSettedStatement(connection);
+        try {
+            Connection conn = sql.getSqlConn();
+            Dialect dialect = DialectFactory.generateDialect(conn, connection.getDriver());
+            Table table = new Table(schema, tableName);
             DistinctColumnSelect select = new DistinctColumnSelect(table, fieldName, dialect);
             sql.setSql(select.toSQL());
         } catch (Throwable e) {
