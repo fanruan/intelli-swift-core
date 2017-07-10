@@ -91,6 +91,12 @@ public class DimensionTargetValueFilter extends AbstractDimensionFilter {
     }
 
     @Override
+    public boolean isSingleNodeFilter() {
+        return filterValue == null ? true : filterValue.isSingleNodeFilter();
+    }
+
+
+    @Override
     public boolean showNode(BINode node, Map<String, TargetCalculator> targetsMap, ICubeDataLoader loader) {
         TargetCalculator targetCalculator = targetsMap.get(target_id);
         if (targetCalculator != null) {

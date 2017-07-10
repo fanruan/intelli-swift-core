@@ -21,10 +21,15 @@ public class CalculateDependManager implements CalculateDependTool {
     @Override
     public BICubeGenerateRelation calRelations(BITableSourceRelation biTableSourceRelation, Set<CubeTableSource> cubeTableSources) {
         Set<CubeTableSource> cubeTableSourceSet = new HashSet<CubeTableSource>();
-        if (cubeTableSources.contains(biTableSourceRelation.getForeignTable())) {
+
+        Set<String> generatingTableIds = new HashSet<String>();
+        for (CubeTableSource tableSource : cubeTableSources) {
+            generatingTableIds.add(tableSource.getSourceID());
+        }
+        if (generatingTableIds.contains(biTableSourceRelation.getForeignTable().getSourceID())) {
             cubeTableSourceSet.add(biTableSourceRelation.getForeignTable());
         }
-        if (cubeTableSources.contains(biTableSourceRelation.getPrimaryTable())) {
+        if (generatingTableIds.contains(biTableSourceRelation.getPrimaryTable().getSourceID())) {
             cubeTableSourceSet.add(biTableSourceRelation.getPrimaryTable());
         }
         return new BICubeGenerateRelation(biTableSourceRelation, cubeTableSourceSet);
@@ -65,7 +70,7 @@ public class CalculateDependManager implements CalculateDependTool {
                     }
                 }
             } catch (BITablePathEmptyException e) {
-                BILoggerFactory.getLogger().error(e.getMessage(),e);
+                BILoggerFactory.getLogger().error(e.getMessage(), e);
             }
             BICubeGenerateRelationPath biCubeGenerateRelationPath = new BICubeGenerateRelationPath(path, pathDepends);
             cubeGenerateRelationPathSet.add(biCubeGenerateRelationPath);

@@ -54,7 +54,10 @@ public class MergeIterator implements Iterator<MetricMergeResult> {
         GroupValueIndex[] groupValueIndices = new GroupValueIndex[group.length];
         for (int i = 0; i < group.length; i++) {
             if (group[i] != NIOConstant.INTEGER.NULL_VALUE) {
-                groupValueIndices[i] = iterators[i].getGroupValueIndexByGroupIndex(group[i]).and(this.gvis[i]);
+                groupValueIndices[i] = iterators[i].getGroupValueIndexByGroupIndex(group[i]);
+                if (!iterators[i].isReturnFinalGroupValueIndex()){
+                    groupValueIndices[i] = groupValueIndices[i].and(this.gvis[i]);
+                }
             }
         }
         result.setGvis(groupValueIndices);
@@ -112,10 +115,12 @@ public class MergeIterator implements Iterator<MetricMergeResult> {
                         groupIndex[i] = NIOConstant.INTEGER.NULL_VALUE;
                     }
                 } else {
-                    if (iterators[i].canReGainGroupValueIndex()){
-                        gvis[i] = gvis[i].and(this.gvis[i]);
-                    } else {
-                        gvis[i] = gvis[i].AND(this.gvis[i]);
+                    if (!iterators[i].isReturnFinalGroupValueIndex()){
+                        if (iterators[i].canReGainGroupValueIndex()){
+                            gvis[i] = gvis[i].and(this.gvis[i]);
+                        } else {
+                            gvis[i] = gvis[i].AND(this.gvis[i]);
+                        }
                     }
                     if (returnResultWithGroupIndex) {
                         groupIndex[i] = iterators[i].getCurrentGroup();
@@ -165,6 +170,11 @@ public class MergeIterator implements Iterator<MetricMergeResult> {
 
         @Override
         public boolean canReGainGroupValueIndex() {
+            return false;
+        }
+
+        @Override
+        public boolean isReturnFinalGroupValueIndex() {
             return false;
         }
 

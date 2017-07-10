@@ -6,6 +6,7 @@ import com.finebi.cube.conf.utils.BILogHelper;
 import com.finebi.cube.message.IMessage;
 import com.finebi.cube.structure.Cube;
 import com.fr.bi.conf.log.BILogManager;
+import com.fr.bi.conf.provider.BIConfigureManagerCenter;
 import com.fr.bi.conf.provider.BILogManagerProvider;
 import com.fr.bi.stable.constant.BILogConstant;
 import com.fr.bi.stable.data.source.CubeTableSource;
@@ -32,7 +33,7 @@ public class BISourceDataNeverTransport extends BISourceDataTransport {
      */
     @Override
     public Object mainTask(IMessage lastReceiveMessage) {
-        BILogManager biLogManager = StableFactory.getMarkedObject(BILogManagerProvider.XML_TAG, BILogManager.class);
+        BILogManagerProvider biLogManager = BIConfigureManagerCenter.getLogManager();
         try {
             BILoggerFactory.getLogger(BISourceDataNeverTransport.class).info(BIStringUtils.append("The table:", fetchTableInfo(), " start transport task",
                     BILogHelper.logCubeLogTableSourceInfo(tableSource.getSourceID())));

@@ -28,6 +28,9 @@ public class BIMapInfoManager {
     private Map<String, Integer> customMapLayer;
     private Map<String, List<String>> customMapParentChildrenRelation;
 
+    public static final String ACTION_PREFIX = "?op=fr_bi_base&cmd=get_map_json&file_path=";
+    public static final String JSON_FOLDER = "geojson";
+
     private static BIMapInfoManager manager;
 
     public static BIMapInfoManager getInstance() {
@@ -85,12 +88,12 @@ public class BIMapInfoManager {
             if(isInner){
                 innerMapName.put(fileName, prev + currentName);
                 innerMapTypeName.put(prev + currentName, fileName);
-                innerMapPath.put(prev + currentName, "?op=fr_bi_base&cmd=get_map_json&file_path=" + CodeUtils.cjkEncode(currentName) + ".json");
+                innerMapPath.put(prev + currentName, ACTION_PREFIX + CodeUtils.cjkEncode(currentName) + ".json");
                 innerMapLayer.put(prev + currentName, layer);
             }else{
                 customMapName.put(fileName, prev + currentName);
                 customMapTypeName.put(prev + currentName, fileName);
-                customMapPath.put(prev + currentName, "?op=fr_bi_base&cmd=get_map_json&file_path=" + CodeUtils.cjkEncode(currentName) + ".json");
+                customMapPath.put(prev + currentName, ACTION_PREFIX + CodeUtils.cjkEncode(currentName) + ".json");
                 customMapLayer.put(prev + currentName, layer);
             }
             children.add(prev + currentName);

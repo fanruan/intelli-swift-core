@@ -64,14 +64,6 @@ public abstract class BIBasicRelation<T, F> implements Serializable{
     }
 
 
-    /**
-     * 克隆
-     */
-    @Override
-    public Object clone() throws CloneNotSupportedException {
-        return super.clone();
-    }
-
 
     public F getPrimaryKey() {
         return getPrimaryField();
@@ -100,6 +92,26 @@ public abstract class BIBasicRelation<T, F> implements Serializable{
         return sb.toString();
     }
 
+    /**
+     * 克隆
+     */
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        BIBasicRelation cloned = (BIBasicRelation) super.clone();
+
+        return cloned;
+    }
+
+
+    @Override
+    public boolean equals(Object o) {
+        return o instanceof BIBasicRelation
+                && ComparatorUtils.equals(primaryField, ((BIBasicRelation) o).primaryField)
+                && ComparatorUtils.equals(foreignField, ((BIBasicRelation) o).foreignField)
+                && ComparatorUtils.equals(primaryTable, ((BIBasicRelation) o).primaryTable)
+                && ComparatorUtils.equals(foreignTable, ((BIBasicRelation) o).foreignTable);
+    }
+
     @Override
     public int hashCode() {
         int result = primaryField != null ? primaryField.hashCode() : 0;
@@ -107,28 +119,5 @@ public abstract class BIBasicRelation<T, F> implements Serializable{
         result = 31 * result + (primaryTable != null ? primaryTable.hashCode() : 0);
         result = 31 * result + (foreignTable != null ? foreignTable.hashCode() : 0);
         return result;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (!(o instanceof BIBasicRelation)) {
-            return false;
-        }
-
-        BIBasicRelation that = (BIBasicRelation) o;
-
-        if (primaryField != null ? !ComparatorUtils.equals(primaryField, that.primaryField) : that.primaryField != null) {
-            return false;
-        }
-        if (foreignField != null ? !ComparatorUtils.equals(foreignField, that.foreignField) : that.foreignField != null) {
-            return false;
-        }
-        if (primaryTable != null ? !ComparatorUtils.equals(primaryTable, that.primaryTable) : that.primaryTable != null) {
-            return false;
-        }
-        return !(foreignTable != null ? !ComparatorUtils.equals(foreignTable, that.foreignTable) : that.foreignTable != null);
     }
 }

@@ -275,7 +275,7 @@ public class BIConnectionManager extends XMLFileManager implements BIConnectionP
                 }
                 jsonObject.put("link" + index++, jo);
             } catch (UnsupportedOperationException e) {
-                logger.warn("the connection: " + c.toString() + " does not implement the toJSONObject method");
+                logger.warn("the connection: " + c.toString() + " does not implement the toFieldJSONObject method");
             }
         }
 

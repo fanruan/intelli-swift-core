@@ -13,7 +13,12 @@ public class BITableCellNumberFormatOperation extends BITableCellFormatOperation
     }
 
     @Override
-    public String formatTextValues(String text) throws Exception {
+    public String formatItemTextValues(String text) throws Exception {
         return BITableCellFormatHelper.targetValueFormat(iCellFormatSetting.createJSON(), text);
+    }
+
+    @Override
+    public String formatHeaderText(String headerText) throws Exception {
+        return BITableCellFormatHelper.headerTextFormat(iCellFormatSetting.createJSON(), headerText);
     }
 }

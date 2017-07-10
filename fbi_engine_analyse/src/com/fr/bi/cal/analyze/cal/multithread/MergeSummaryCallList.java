@@ -1,33 +1,29 @@
 package com.fr.bi.cal.analyze.cal.multithread;
 
-import com.fr.bi.cal.analyze.executor.iterator.StreamPagedIterator;
-
-import java.util.concurrent.Callable;
-
 /**
  * Created by 小灰灰 on 2016/8/5.
  */
-public class MergeSummaryCallList implements Callable {
-    private StreamPagedIterator<BISingleThreadCal> iterator;
+public class MergeSummaryCallList extends Thread {
+    private TwinBufferStreamIterator<BISingleThreadCal> iterator;
 
     public MergeSummaryCallList() {
-        iterator = new StreamPagedIterator<BISingleThreadCal>(Integer.MAX_VALUE, 1<< 9, 1<< 10);
+        iterator = new TwinBufferStreamIterator<BISingleThreadCal>(1<<10);
+    }
+
+    public MergeSummaryCallList(String name) {
+        super(name);
+        iterator = new TwinBufferStreamIterator<BISingleThreadCal>(1<<10);
     }
 
     public void add(BISingleThreadCal cal){
-        iterator.addCell(cal);
-    }
-
-    public void finish(){
-        iterator.finish();
+        iterator.add(cal);
     }
 
     @Override
-    public Object call() throws Exception {
+    public void run() {
         while (iterator.hasNext()){
             iterator.next().cal();
         }
-        return null;
     }
 
     protected void wakeUp() {

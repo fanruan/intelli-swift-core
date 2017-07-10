@@ -510,8 +510,10 @@ public abstract class AbstractFineCubeTable implements FineCubeTable {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        CubeTableSource that = (CubeTableSource) o;
-        return ComparatorUtils.equals(that.getSourceID(), this.getSourceID());
+
+        FineCubeTable that = (FineCubeTable) o;
+        return ComparatorUtils.equals(that.getResourceName(), this.getResourceName());
+
 
     }
 
