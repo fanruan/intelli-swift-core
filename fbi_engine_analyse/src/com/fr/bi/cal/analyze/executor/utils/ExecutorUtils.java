@@ -74,11 +74,14 @@ public class ExecutorUtils {
         return levelAndUnit;
     }
 
-    public static DecimalFormat formatDecimalAndSeparator(int numLevel, int decimal, boolean separator) {
+    public static DecimalFormat formatDecimalAndSeparator(Object v, int numLevel, int decimal, boolean separator) {
         StringBuilder result = new StringBuilder();
         switch (decimal) {
             case BIReportConstant.TARGET_STYLE.FORMAT.NORMAL:
                 result = new StringBuilder(separator ? "#,##0.##" : "0.##");
+                if(v.toString().endsWith(".0")) {
+                    result = new StringBuilder(separator ? "#,##0" : "#0");
+                }
                 break;
             default:
                 result.append(separator ? "#,##0" : "0");
