@@ -775,6 +775,7 @@ public abstract class VanCartesianWidget extends VanChartWidget {
                 .put("showLabel", false)
                 .put("lineWidth", 0)
                 .put("enableTick", false)
+                .put("gridLineWidth", 0)
                 .put("labelStyle", settings.optJSONObject("catLabelStyle"));
     }
 
