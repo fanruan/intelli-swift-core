@@ -1,10 +1,9 @@
 package com.fr.bi.common.factory;
 
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.base.ClassUtils;
 import com.fr.bi.common.factory.annotation.BIMandatedObject;
 import com.fr.bi.stable.utils.code.BILogDelegate;
-import com.finebi.cube.common.log.BILoggerFactory;
-import com.fr.bi.stable.utils.program.BIClassUtils;
 import com.fr.general.ComparatorUtils;
 
 import java.util.Iterator;

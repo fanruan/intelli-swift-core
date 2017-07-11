@@ -1,7 +1,6 @@
 package com.fr.bi.tool;
 
 import com.fr.base.ClassUtils;
-import com.fr.bi.stable.utils.program.BIClassUtils;
 
 import java.io.File;
 import java.io.FilenameFilter;
