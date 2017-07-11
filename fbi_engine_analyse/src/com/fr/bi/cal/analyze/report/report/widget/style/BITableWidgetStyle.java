@@ -24,6 +24,7 @@ public class BITableWidgetStyle implements IWidgetStyle {
     private JSONArray columnSize;
     private boolean showName;
     private int namePos;
+    private JSONArray regionColumnSize;
 
     public BITableWidgetStyle() {
         themeColor = BIStyleConstant.DEFAULT_CHART_SETTING.THEME_COLOR;
@@ -38,6 +39,7 @@ public class BITableWidgetStyle implements IWidgetStyle {
         columnSize = new JSONArray();
         showName =  BIStyleConstant.DEFAULT_CHART_SETTING.SHOW_NAME;
         namePos = BIStyleConstant.DEFAULT_CHART_SETTING.NAME_POS;
+        regionColumnSize = new JSONArray();
     }
 
     @Override
@@ -110,6 +112,7 @@ public class BITableWidgetStyle implements IWidgetStyle {
             columnSize = settingJo.optJSONArray("columnSize");
             showName = settingJo.optBoolean("showName", showName);
             namePos = settingJo.optInt("namePos", namePos);
+            regionColumnSize = settingJo.optJSONArray("regionColumnSize");
         }
     }
 
@@ -125,6 +128,7 @@ public class BITableWidgetStyle implements IWidgetStyle {
         jo.put("themeColor", themeColor);
         jo.put("tableStyleGroup", tableStyleGroup);
         jo.put("columnSize", columnSize);
+        jo.put("regionColumnSize", regionColumnSize);
         return jo;
     }
 }

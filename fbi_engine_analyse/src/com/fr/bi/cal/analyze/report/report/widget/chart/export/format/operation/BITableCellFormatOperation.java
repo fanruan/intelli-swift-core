@@ -9,15 +9,19 @@ import com.fr.json.JSONObject;
  * Created by Kary on 2017/4/10.
  */
 public abstract class BITableCellFormatOperation implements ITableCellFormatOperation {
-     ICellFormatSetting iCellFormatSetting;
+    ICellFormatSetting iCellFormatSetting;
 
     @Override
     public JSONObject createItemTextStyle(String text) throws Exception {
+        JSONObject textStyle = JSONObject.create();
         try {
-            return BITableCellFormatHelper.createTextStyle(iCellFormatSetting.createJSON(), text);
+            textStyle = BITableCellFormatHelper.createTextStyle(iCellFormatSetting.createJSON(), text);
+            textStyle.put("textAlign", getTextAlign());
         } catch (Exception e) {
             BILoggerFactory.getLogger(this.getClass()).error(e.getMessage(), e);
         }
-        return new JSONObject();
+        return textStyle;
     }
+
+    protected abstract String getTextAlign();
 }

@@ -43,4 +43,16 @@ public class VanForceBubbleWidget extends VanDotWidget{
     public String getSeriesType(String dimensionID){
         return "forceBubble";
     }
+
+    protected String valueLabelKey() {
+        return VALUE;
+    }
+
+    protected String categoryLabelKey() {
+        return CATEGORY;
+    }
+
+    protected String seriesLabelKey() {
+        return SERIES;
+    }
 }
