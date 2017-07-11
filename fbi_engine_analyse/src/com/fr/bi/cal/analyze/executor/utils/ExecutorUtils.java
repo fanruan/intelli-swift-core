@@ -78,12 +78,10 @@ public class ExecutorUtils {
         StringBuilder result = new StringBuilder();
         switch (decimal) {
             case BIReportConstant.TARGET_STYLE.FORMAT.NORMAL:
-                result = new StringBuilder(separator ? "#,###.##" : "#.##");
+                result = new StringBuilder(separator ? "#,##0.##" : "0.##");
                 break;
-            case BIReportConstant.TARGET_STYLE.FORMAT.ONE2POINT:
-                result = new StringBuilder(separator ? "#,###" : "#0");
             default:
-                result.append(separator ? "#,###" : "#");
+                result.append(separator ? "#,##0" : "0");
                 for (int i = 0; i < decimal; i++) {
                     result.append(i == 0 ? ".0" : "0");
                 }

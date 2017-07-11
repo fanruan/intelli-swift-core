@@ -48,6 +48,8 @@ import com.fr.bi.conf.records.BICubeTaskRecordManagerWithoutUser;
 import com.fr.bi.conf.report.BIFSReportProvider;
 import com.fr.bi.conf.tablelock.BIConfTableLock;
 import com.fr.bi.conf.tablelock.BIConfTableLockDAO;
+import com.fr.bi.conf.template.TemplateConfig;
+import com.fr.bi.conf.template.TemplateConfigProvider;
 import com.fr.bi.fs.BIDAOProvider;
 import com.fr.bi.fs.BIDAOUtils;
 import com.fr.bi.fs.BIReportDAO;
@@ -178,6 +180,24 @@ public class BICoreModule extends AbstractModule {
         StableFactory.registerMarkedObject(FBIConfigProvider.XML_TAG, getFBIConfigManager());
         StableFactory.registerMarkedObject(BITableDataDAOProvider.XML_TAG, getBITableDataDAOManager());
 
+        //模版配置属性
+        StableFactory.registerMarkedObject(TemplateConfigProvider.XML_TAG, getTemplateConfigManager());
+    }
+
+    public TemplateConfigProvider getTemplateConfigManager() {
+        if (ClusterEnv.isCluster()) {
+            if (ClusterAdapter.getManager().getHostManager().isSelf()) {
+                TemplateConfig provider = TemplateConfig.getInstance();
+                RPC.registerSkeleton(provider, ClusterAdapter.getManager().getHostManager().getPort());
+                return provider;
+            } else {
+                return (TemplateConfigProvider) RPC.getProxy(TemplateConfig.class,
+                        ClusterAdapter.getManager().getHostManager().getIp(),
+                        ClusterAdapter.getManager().getHostManager().getPort());
+            }
+        } else {
+            return TemplateConfig.getInstance();
+        }
     }
 
     public FBIConfigProvider getFBIConfigManager() {

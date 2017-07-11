@@ -12,10 +12,6 @@ public class VanBarWidget extends VanColumnWidget{
         return true;
     }
 
-    protected boolean cateAxisReversed() {
-        return true;
-    }
-
     protected double cateAxisRotation() {
         return VERTICAL;
     }

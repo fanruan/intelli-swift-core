@@ -27,7 +27,7 @@ import java.util.regex.Pattern;
  * 此处的升级内容：
  * 驼峰以及自定义key值修改
  * 图片uri修正
- * 散点气泡图type升级成点图的type
+ * 散点气泡图type升级成点图的type，并使用特殊映射
  * 显示网格拆分成显示纵向和显示横向
  * 组合图重新分组
  * BI-6515 4.0->4.0.2的散点、气泡图兼容到点图样式不一致
@@ -37,11 +37,15 @@ public class ProfilesUpdateOperation implements ReportUpdateOperation {
     private static final String DEFAULT_FILE_NAME = "keys.json";
     private JSONObject keys;
     private static Pattern linePattern = Pattern.compile("(?!^)_(\\w)");
+    //类型映射
     private static Map<Integer, Integer> chartTypeMap = new HashMap<Integer, Integer>();
+    //点图key值映射
+    private static Map<String, String> dotWidgetKeysMap = new HashMap<String, String>();
 
     public ProfilesUpdateOperation() {
         try {
             createChartTypeMap();
+            createDotWidgetKeysMap();
             if (null == keys) {
                 keys = readKeyJson();
                 formatValues();
@@ -50,6 +54,19 @@ public class ProfilesUpdateOperation implements ReportUpdateOperation {
             BILoggerFactory.getLogger(this.getClass()).error(e.getMessage(), e);
         }
 
+    }
+
+    //  "rightYTitle": "(catTitle)",
+//  "rightYTitle": "(x_axis_title)",
+//          "rightYNumberLevel": "(x_axis_number_level)",
+//          "rightYShowTitle": "(show_x_axis_title)",
+//          "rightYUnit": "(x_axis_unit)"
+    private void createDotWidgetKeysMap() {
+        dotWidgetKeysMap.put("catTitle", "rightYTitle");
+        dotWidgetKeysMap.put("x_axis_title", "rightYTitle");
+        dotWidgetKeysMap.put("x_axis_number_level", "rightYNumberLevel");
+        dotWidgetKeysMap.put("show_x_axis_title", "rightYShowTitle");
+        dotWidgetKeysMap.put("x_axis_unit", "rightYUnit");
     }
 
     @Override
@@ -71,6 +88,7 @@ public class ProfilesUpdateOperation implements ReportUpdateOperation {
             boolean flag = BIJsonUtils.isKeyValueSet(json.get(s).toString());
             if (flag) {
                 if (ComparatorUtils.equals(s, "widgets")) {
+                    addWId(json);
                     json = correctDataLabels(json);
                     json = correctPreviousSrcError(json);
                     json = correctScatterType(json);
@@ -84,6 +102,22 @@ public class ProfilesUpdateOperation implements ReportUpdateOperation {
             }
         }
         return res;
+    }
+
+    private void addWId(JSONObject jo) {
+        try {
+            if (BIJsonUtils.isKeyValueSet(jo.getString("widgets"))) {
+                Iterator keys = jo.getJSONObject("widgets").keys();
+                while (keys.hasNext()) {
+                    String widgetId = keys.next().toString();
+                    JSONObject widgetJo = jo.getJSONObject("widgets").getJSONObject(widgetId);
+                    widgetJo.put("wId", widgetId);
+                }
+            }
+        } catch (JSONException e) {
+            BILoggerFactory.getLogger(this.getClass()).error(e.getMessage(), e);
+        }
+
     }
 
     /*4.0里面出现如下脏数据
@@ -145,8 +179,8 @@ public class ProfilesUpdateOperation implements ReportUpdateOperation {
                             widgetJo.getJSONObject("settings").put("vShowGridLine", isShowGridLine);
                         }
                     }
-                    if (settings != null && settings.has("textDirection")) {
-                        settings.put("catLabelStyle", JSONObject.create().put("textDirection", settings.optInt("textDirection")));
+                    if (settings != null && settings.has("text_direction")) {
+                        settings.put("catLabelStyle", JSONObject.create().put("text_direction", settings.optInt("text_direction")));
                     }
                 }
             }
@@ -212,6 +246,8 @@ public class ProfilesUpdateOperation implements ReportUpdateOperation {
     /*
    * 散点气泡图type升级
    * type 26，28->67
+   * view中region变动
+    *  BI-6852 散点图点图的升级需要单独的映射
    * */
     private JSONObject correctScatterType(JSONObject json) throws JSONException {
         if (BIJsonUtils.isKeyValueSet(json.getString("widgets"))) {
@@ -226,6 +262,15 @@ public class ProfilesUpdateOperation implements ReportUpdateOperation {
                             widgetJo.getJSONObject("view").remove(BIReportConstant.REGION.DIMENSION1);
                         }
                         widgetJo.put("type", BIReportConstant.WIDGET.DOT);
+                        if (widgetJo.has("settings")) {
+                            JSONObject settingsJo = widgetJo.getJSONObject("settings");
+                            for (String s : dotWidgetKeysMap.keySet()) {
+                                if (settingsJo.has(s)) {
+                                    settingsJo.put(dotWidgetKeysMap.get(s).toString(), settingsJo.get(s));
+                                    settingsJo.remove(s);
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -292,14 +337,15 @@ public class ProfilesUpdateOperation implements ReportUpdateOperation {
                 JSONObject dimension = dimensions.getJSONObject(dimId);
                 //默认柱形图
                 int chartType = BIChartSettingConstant.ACCUMULATE_TYPE.COLUMN;
-
                 if (dimension.has("styleOfChart") && dimension.getJSONObject("styleOfChart").has("type")) {
-                    chartType = dimension.getJSONObject("styleOfChart").getInt("type");
+                    chartType = updateChartType(dimension.getJSONObject("styleOfChart").getInt("type"));
+                    dimension.getJSONObject("styleOfChart").put("type", chartType);
+                } else {
+                    if (dimension.has("style_of_chart") && dimension.getJSONObject("style_of_chart").has("type")) {
+                        chartType = updateChartType(dimension.getJSONObject("style_of_chart").getInt("type"));
+                        dimension.getJSONObject("style_of_chart").put("type", chartType);
+                    }
                 }
-                if (dimension.has("style_of_chart") && dimension.getJSONObject("style_of_chart").has("type")) {
-                    chartType = dimension.getJSONObject("style_of_chart").getInt("type");
-                }
-                chartType = updateChartType(chartType);
                 if (typeMap.containsKey(chartType)) {
                     typeMap.get(chartType).put(dimId);
                 } else {
@@ -327,7 +373,7 @@ public class ProfilesUpdateOperation implements ReportUpdateOperation {
     面积图 14 -> 面积图
     堆积面积图 15-> 堆积面积图（折线）
     折线图 13-> （折线）
-    堆积柱状图 6 -> （堆积柱状图）
+     堆积柱状图 6 -> （堆积柱状图）
     */
     private void createChartTypeMap() {
         Map<Integer, Integer> convertMap = new HashMap<Integer, Integer>();
@@ -335,7 +381,7 @@ public class ProfilesUpdateOperation implements ReportUpdateOperation {
         convertMap.put(BIChartSettingConstant.ACCUMULATE_TYPE.OLD_AREA_CURVE, BIChartSettingConstant.ACCUMULATE_TYPE.AREA_CURVE);
         convertMap.put(BIChartSettingConstant.ACCUMULATE_TYPE.OLD_STACKED_AREA, BIChartSettingConstant.ACCUMULATE_TYPE.STACKED_AREA_NORMAL);
         convertMap.put(BIChartSettingConstant.ACCUMULATE_TYPE.OLD_LINE, BIChartSettingConstant.ACCUMULATE_TYPE.LINE_NORMAL);
-        convertMap.put(BIChartSettingConstant.ACCUMULATE_TYPE.OLD_STACKED_COLUMN, BIChartSettingConstant.ACCUMULATE_TYPE.STACKED_COLUMN);
+        convertMap.put(BIChartSettingConstant.ACCUMULATE_TYPE.OLD_ACCUMULATE_AXIS, BIChartSettingConstant.ACCUMULATE_TYPE.STACKED_COLUMN);
         //default type=1
         convertMap.put(BIChartSettingConstant.ACCUMULATE_TYPE.COLUMN, BIChartSettingConstant.ACCUMULATE_TYPE.COLUMN);
         this.chartTypeMap = convertMap;
@@ -405,18 +451,18 @@ public class ProfilesUpdateOperation implements ReportUpdateOperation {
     public String updateKey(String str) {
         String res;
         if (keys.has(str)) {
-            res = mactchKeysJson(str);
+            res = matchKeysJson(str);
         } else {
             res = lineToCamels(str);
         }
         return res;
     }
 
-    private String mactchKeysJson(String str) {
+    private String matchKeysJson(String str) {
         try {
             String updatedKeys = null != keys ? keys.optString(str, str) : str;
             if (!ComparatorUtils.equals(updatedKeys, str)) {
-                BILoggerFactory.getLogger(this.getClass()).debug(BIStringUtils.append("compatibility warning! the parameter whose name is ", str, " should be transfered"));
+                BILoggerFactory.getLogger(this.getClass()).debug(BIStringUtils.append("compatibility warning! the parameter whose name is ", str, " should be transferred"));
             }
             return updatedKeys;
         } catch (Exception e) {

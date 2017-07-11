@@ -7,6 +7,7 @@ import com.fr.bi.conf.fs.BIChartStyleAttr;
 import com.fr.bi.conf.fs.FBIConfig;
 import com.fr.bi.conf.fs.tablechartstyle.BIChartFontStyleAttr;
 import com.fr.bi.conf.report.WidgetType;
+import com.fr.bi.conf.report.map.BIMapInfoManager;
 import com.fr.bi.conf.report.style.DetailChartSetting;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.conf.session.BISessionProvider;
@@ -17,18 +18,20 @@ import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.constant.BIStyleConstant;
 import com.fr.bi.util.BIConfUtils;
 import com.fr.general.ComparatorUtils;
+import com.fr.general.IOUtils;
 import com.fr.general.Inter;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
+import com.fr.stable.CodeUtils;
 import com.fr.stable.StableUtils;
 import com.fr.stable.StringUtils;
-import com.fr.web.core.SessionDealWith;
 import com.fr.web.utils.WebUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import java.awt.*;
 import java.io.File;
+import java.io.InputStream;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -38,6 +41,7 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
+
 import java.util.List;
 import java.util.Locale;
 
@@ -412,6 +416,8 @@ public abstract class VanChartWidget extends TableWidget {
 
         plotOptions.put("dataLabels", this.createDataLabels(settings));
 
+        plotOptions.put("borderWidth", 0);//bi的配置默认没有边框
+
         return plotOptions;
     }
 
@@ -513,9 +519,15 @@ public abstract class VanChartWidget extends TableWidget {
 
         colorStr = colorStr.substring(1);
 
-        Color color = new Color(Integer.parseInt(colorStr, 16));
+        Number number = StableUtils.string2Number(colorStr);
 
-        return color.getRed() * RED_DET + color.getGreen() * GREEN_DET + color.getBlue() * BLUE_DET < GRAY;
+        if(number != null){
+            Color color = new Color(Integer.parseInt(colorStr, 16));
+            return color.getRed() * RED_DET + color.getGreen() * GREEN_DET + color.getBlue() * BLUE_DET < GRAY;
+        }
+
+        //产品规定图片背景为浅色
+        return false;
     }
 
     protected JSONObject populateDefaultSettings() throws JSONException {
@@ -547,7 +559,7 @@ public abstract class VanChartWidget extends TableWidget {
 
     //优先级从低到高：plat界面背景，global界面背景，主题，plat组件背景，global组件背景，setting组件背景，plat图表文字， global图表文字，settings图表文字
     protected JSONObject defaultFont() throws JSONException {
-        BIChartStyleAttr platConfig = FBIConfig.getProviderInstance().getChartStyleAttr();
+        BIChartStyleAttr platConfig = FBIConfig.getInstance().getChartStyleAttr();
         String color = DARK, fontWeight = "normal", fontStyle = "normal";
 
         if(platConfig.getMainBackground() != null) {
@@ -570,6 +582,11 @@ public abstract class VanChartWidget extends TableWidget {
             color = checkValidColor(globalStyle.optJSONObject("widgetBackground").optString("value"), color);
         }
 
+        JSONObject settings = this.getChartSetting().getDetailChartSetting();
+        if(settings.has("widgetBG")){
+            color = checkValidColor(settings.optJSONObject("widgetBG").optString("value"), color);
+        }
+
         BIChartFontStyleAttr fontStyleAttr = platConfig.getChartFont();
         if(fontStyleAttr != null){
             String fontColor = fontStyleAttr.getColor();
@@ -589,7 +606,6 @@ public abstract class VanChartWidget extends TableWidget {
             fontWeight = chartFont.optString("fontWeight", fontWeight);
             fontStyle = chartFont.optString("fontStyle", fontStyle);
         }
-
         return JSONObject.create().put("fontFamily", "Microsoft YaHei").put("fontSize", "12px")
                 .put("color", color).put("fontWeight", fontWeight).put("fontStyle", fontStyle);
     }
@@ -646,8 +662,9 @@ public abstract class VanChartWidget extends TableWidget {
         JSONObject options = this.createChartConfigWidthData(session, req, data);
 
         // 如果是大数据模式,而且分组数大于BigDataChartOperator.MAXROW 或者是图表是交叉表类型且top分组大于BigDataChartOperator.MAXROW
-        if(needOpenBigDateModel()  && ((data.has("c") && data.getJSONArray("c").length()> BigDataChartOperator.MAXROW)
-                || (data.has("t") && data.getJSONObject("t").has("c") && data.getJSONObject("t").getJSONArray("c").length()> BigDataChartOperator.MAXROW) )){
+        boolean isLarge = (data.has("c") && data.getJSONArray("c").length()> BigDataChartOperator.MAXROW)
+                || (data.has("t") && data.getJSONObject("t").has("c") && data.getJSONObject("t").getJSONArray("c").length()> BigDataChartOperator.MAXROW);
+        if(needOpenBigDateModel() && isLarge){
             options.put("chartBigDataModel",true);
         }
         return options;
@@ -844,6 +861,8 @@ public abstract class VanChartWidget extends TableWidget {
         this.defaultFormatSeriesDataLabelFormat(options);
     }
 
+    //todo: @shine 4.1版本现在的label是遍历series和point，每个都plotoptions。labeljaon。tostring。不好。
+    //todo: @shine 4.1版本所有涉及到遍历point和series看看能不能归到一起。
     protected void defaultFormatSeriesDataLabelFormat(JSONObject options) throws Exception {
         JSONObject dataLabels = options.optJSONObject("plotOptions").optJSONObject(dataLabelsKey());
 
@@ -1189,7 +1208,8 @@ public abstract class VanChartWidget extends TableWidget {
         return JSONObject.create()
                 .put("maxHeight", COMPONENT_MAX_SIZE)
                 .put("maxWidth", COMPONENT_MAX_SIZE)
-                .put("enabled", legend >= BIChartSettingConstant.CHART_LEGENDS.TOP)
+                .put("visible", legend >= BIChartSettingConstant.CHART_LEGENDS.TOP)
+                .put("enabled", true)
                 .put("position", position)
                 .put("style", settings.optJSONObject("legendStyle"));
     }
@@ -1251,7 +1271,19 @@ public abstract class VanChartWidget extends TableWidget {
     public JSONObject createPhantomJSONConfig(BISessionProvider session, HttpServletRequest req) throws Exception {
         JSONObject options = this.createDataJSON(session, req);
 
-        options.optJSONObject("plotOptions").put("animation", false);
+        if(options.has("geo")){
+            JSONObject geo = options.optJSONObject("geo");
+            String path = geo.optString("data", StringUtils.EMPTY).replace(BIMapInfoManager.ACTION_PREFIX, StringUtils.EMPTY);
+            InputStream in = FRContext.getCurrentEnv().readResource(StableUtils.pathJoin(new String[]{BIMapInfoManager.JSON_FOLDER, CodeUtils.cjkDecode(path)}));
+            String string = IOUtils.inputStream2String(in);
+            geo.put("data", new JSONObject(string.replace('\uFEFF',' ')));
+            options.put("geo", geo);
+        }
+
+        options.remove("zoom");
+
+        JSONObject plotOptions = options.optJSONObject("plotOptions");
+        options.put("plotOptions", plotOptions.put("animation", false));
 
         return options;
     }
