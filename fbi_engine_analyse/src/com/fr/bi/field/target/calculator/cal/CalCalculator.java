@@ -5,10 +5,7 @@ import com.finebi.cube.api.ICubeTableService;
 import com.finebi.cube.conf.table.BusinessTable;
 import com.fr.bi.conf.report.widget.field.target.BITarget;
 import com.fr.bi.field.target.target.cal.BICalculateTarget;
-import com.fr.bi.report.result.BICrossNode;
-import com.fr.bi.report.result.BINode;
-import com.fr.bi.report.result.SummaryContainer;
-import com.fr.bi.report.result.TargetCalculator;
+import com.fr.bi.report.result.*;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.report.key.TargetGettingKey;
 
@@ -95,6 +92,11 @@ public abstract class CalCalculator implements TargetCalculator {
     @Override
     public String getName() {
         return target.getName();
+    }
+
+    @Override
+    public CalculatorType getCalculatorType() {
+        return CalculatorType.CAL_SUM;
     }
 
 }

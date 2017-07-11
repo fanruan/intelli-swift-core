@@ -5,10 +5,8 @@ import com.finebi.cube.conf.table.BusinessTable;
 import com.fr.base.Style;
 import com.fr.bi.base.FinalInt;
 import com.fr.bi.cal.analyze.cal.index.loader.CubeIndexLoader;
-import com.fr.bi.cal.analyze.cal.index.loader.MetricGroupInfo;
 import com.fr.bi.cal.analyze.cal.result.CrossExpander;
 import com.fr.bi.cal.analyze.cal.result.Node;
-import com.fr.bi.cal.analyze.cal.result.NodeAndPageInfo;
 import com.fr.bi.cal.analyze.executor.iterator.StreamPagedIterator;
 import com.fr.bi.cal.analyze.executor.iterator.TableCellIterator;
 import com.fr.bi.cal.analyze.executor.paging.Paging;
@@ -35,11 +33,8 @@ import com.fr.stable.ExportConstants;
 import com.fr.stable.StringUtils;
 
 import java.awt.*;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
+import java.util.*;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by 小灰灰 on 2015/6/30.
@@ -244,29 +239,6 @@ public class GroupExecutor extends AbstractTableWidgetExecutor<Node> {
     public JSONObject createJSONObject() throws Exception {
 
         return getCubeNode().toJSONObject(usedDimensions, widget.getTargetsKey(), -1);
-    }
-
-    @Override
-    public List<MetricGroupInfo> getLinkedWidgetFilterGVIList() throws Exception {
-
-        if (session == null) {
-            return null;
-        }
-        int rowLength = usedDimensions.length;
-        int summaryLength = usedSumTarget.length;
-        int columnLen = rowLength + summaryLength;
-        if (columnLen == 0) {
-            return null;
-        }
-        int calPage = paging.getOperator();
-        CubeIndexLoader cubeIndexLoader = CubeIndexLoader.getInstance(session.getUserId());
-        List<NodeAndPageInfo> infoList = cubeIndexLoader.getPageGroupInfoList(false, widget, createTarget4Calculate(), usedDimensions,
-                                                                              allDimensions, allSumTarget, calPage, widget.isRealData(), session, expander.getYExpander());
-        ArrayList<MetricGroupInfo> gviList = new ArrayList<MetricGroupInfo>();
-        for (NodeAndPageInfo info : infoList) {
-            gviList.addAll(info.getIterator().getRoot().getMetricGroupInfoList());
-        }
-        return gviList;
     }
 
     public Node getStopOnRowNode(Object[] stopRow) throws Exception {
@@ -515,7 +487,7 @@ public class GroupExecutor extends AbstractTableWidgetExecutor<Node> {
             // 总汇总值
             if (rowData == null || rowData.size() == 0) {
                 for (String key : clicked.keySet()) {
-                    linkGvi = GVIUtils.AND(linkGvi, getTargetIndex(key, linkNode.getTargetIndexValueMap()));
+                    linkGvi = GVIUtils.AND(linkGvi, getTargetIndex(key, linkNode));
                 }
                 return linkGvi;
             }

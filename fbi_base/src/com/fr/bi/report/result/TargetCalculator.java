@@ -32,4 +32,6 @@ public interface TargetCalculator extends Serializable {
     String getName();
 
     TargetGettingKey createTargetGettingKey();
+
+    CalculatorType getCalculatorType();
 }

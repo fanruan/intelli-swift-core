@@ -4,6 +4,7 @@ import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.api.ICubeTableService;
 import com.finebi.cube.conf.table.BusinessTable;
 import com.fr.bi.field.target.target.BISummaryTarget;
+import com.fr.bi.report.result.CalculatorType;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.report.key.TargetGettingKey;
 import com.fr.bi.report.result.SummaryContainer;
@@ -84,4 +85,12 @@ public abstract class AbstractSummaryCalculator implements TargetCalculator {
      */
     public abstract double createSumValue(GroupValueIndex gvi, ICubeTableService ti);
 
+    @Override
+    public CalculatorType getCalculatorType() {
+        return CalculatorType.SUM_DETAIL;
+    }
+
+    public GroupValueIndex getFilterIndex() {
+        return filterIndex;
+    }
 }
