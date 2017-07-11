@@ -8,6 +8,9 @@ import com.fr.json.JSONObject;
  * Created by eason on 2017/3/20.
  */
 public class VanForceBubbleWidget extends VanDotWidget{
+    protected JSONObject populateDefaultSettings() throws JSONException {
+        return super.populateDefaultSettings().put("showDataLabel", true);
+    }
 
     protected JSONObject defaultDataLabelSetting() throws JSONException {
         return JSONObject.create().put("showCategoryName", false)
