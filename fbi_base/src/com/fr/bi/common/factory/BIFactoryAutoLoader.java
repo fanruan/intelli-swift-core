@@ -1,5 +1,6 @@
 package com.fr.bi.common.factory;
 
+import com.fr.base.ClassUtils;
 import com.fr.bi.common.factory.annotation.BIMandatedObject;
 import com.fr.bi.stable.utils.code.BILogDelegate;
 import com.finebi.cube.common.log.BILoggerFactory;
@@ -18,8 +19,8 @@ class BIFactoryAutoLoader {
     public static void load() {
         synchronized (BIFactoryAutoLoader.class) {
             if (!loadFlag) {
-                Set<Class<?>> set = BIClassUtils.getClasses("com.fr.bi");
-                set.addAll(BIClassUtils.getClasses("com.finebi"));
+                Set<Class<?>> set = ClassUtils.getClasses("com.fr.bi");
+                set.addAll(ClassUtils.getClasses("com.finebi"));
                 Iterator<Class<?>> it = set.iterator();
                 while (it.hasNext()) {
                     try {

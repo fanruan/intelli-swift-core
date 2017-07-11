@@ -8,6 +8,7 @@ import com.finebi.cube.conf.BICubeConfigureCenter;
 import com.finebi.cube.conf.BISystemPackageConfigurationProvider;
 import com.finebi.cube.conf.BITableRelationConfigurationProvider;
 import com.finebi.cube.conf.CubeGenerationManager;
+import com.fr.base.ClassUtils;
 import com.fr.base.FRContext;
 import com.fr.bi.cal.report.BIActor;
 import com.fr.bi.cal.report.db.DialectCreatorImpl;
@@ -264,8 +265,8 @@ public class BIPlate extends AbstractFSPlate {
 
     private void initModules() {
         BIModuleManager.registModule(new BICoreModule());
-        Set<Class<?>> set = BIClassUtils.getClasses("com.fr.bi.module");
-        set.addAll(BIClassUtils.getClasses("com.fr.bi.test"));
+        Set<Class<?>> set = ClassUtils.getClasses("com.fr.bi.module");
+        set.addAll(ClassUtils.getClasses("com.fr.bi.test"));
         for (Class c : set) {
             if (BIModule.class.isAssignableFrom(c) && !Modifier.isAbstract(c.getModifiers())) {
                 try {

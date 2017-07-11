@@ -1,5 +1,6 @@
 package com.fr.bi.tool;
 
+import com.fr.base.ClassUtils;
 import com.fr.bi.stable.utils.program.BIClassUtils;
 
 import java.io.File;
@@ -39,7 +40,7 @@ public class BIFactoryAutoRegisterCode {
                 return name.startsWith("fbi_") && !BLACK_FILE_NAME.contains(name);
             }
         });
-        Set<Class<?>> set = BIClassUtils.getClasses("com.fr.bi");
+        Set<Class<?>> set = ClassUtils.getClasses("com.fr.bi");
         for (int i = 0; i < files.length; i++) {
             modules.add(new BIModuleFolder(files[i].getName(), files[i].getAbsolutePath(), set));
         }
