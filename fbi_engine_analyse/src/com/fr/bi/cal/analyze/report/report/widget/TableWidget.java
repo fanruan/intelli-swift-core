@@ -649,13 +649,6 @@ public class TableWidget extends BISummaryWidget {
         return data.createJSON().put("page", res.getJSONArray("page")).put("viewDimensionsLength", getViewDimensions().length).put("viewTopDimensionsLength", getViewTopDimensions().length).put("widgetType", this.tableType);
     }
 
-    /*假数据，测试用*/
-    //    private JSONObject createTestData() throws IOException, JSONException {
-    //        StringBuffer keysStr = new StringBuffer();
-    //        String s = BIFileUtils.readFile("C:\\data.json");
-    //        return data.createJSON().put("page", res.getJSONArray("page")).put("dimensionLength",dimensions.length).put("header",createTestData().get("header")).put("crossHeader",createTestData().get("crossHeader")).put("items",createTestData().get("items")).put("crossItems",createTestData().get("crossItems"));
-    //    }
-
     private Map<String, ITableCellFormatOperation> getITableCellFormatOperationMap() throws Exception {
 
         Map<String, ITableCellFormatOperation> formOperationsMap = new HashMap<String, ITableCellFormatOperation>();
