@@ -41,13 +41,18 @@ public class BILogExceptionInfo {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
 
         BILogExceptionInfo that = (BILogExceptionInfo) o;
 
-        if (exceptionMessage != null ? !exceptionMessage.equals(that.exceptionMessage) : that.exceptionMessage != null)
+        if (exceptionMessage != null ? !exceptionMessage.equals(that.exceptionMessage) : that.exceptionMessage != null) {
             return false;
+        }
         return operation != null ? operation.equals(that.operation) : that.operation == null;
 
     }
