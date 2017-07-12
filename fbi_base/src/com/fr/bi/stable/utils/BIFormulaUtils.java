@@ -84,7 +84,7 @@ public class BIFormulaUtils {
         return columnIndexMap;
     }
 
-    private static String[] getRelatedParaNames(String formular) throws ANTLRException {
+    public static String[] getRelatedParaNames(String formular) throws ANTLRException {
 
         ArrayList<String> nameList = new ArrayList<String>();
         Pattern pat = Pattern.compile("\\$[\\{][^\\}]*[\\}]");

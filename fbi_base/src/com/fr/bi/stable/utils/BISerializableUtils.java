@@ -2,7 +2,6 @@ package com.fr.bi.stable.utils;
 
 import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.stable.utils.program.BIBeanUtils;
-import com.fr.bi.stable.utils.program.BIClassUtils;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
 import com.fr.bi.stable.utils.program.BITypeUtils;
 import com.fr.general.ComparatorUtils;
@@ -101,10 +100,15 @@ public class BISerializableUtils {
 
     private static boolean reachLimit(Class fieldClass, String[] packageLimit) {
         for (String limit : packageLimit) {
-            if (BIClassUtils.checkClassPackage(fieldClass, limit)) {
+            if (checkClassPackage(fieldClass, limit)) {
                 return false;
             }
         }
         return true;
+    }
+
+    public static boolean checkClassPackage(Class clazz, String packagePrefix) {
+        BINonValueUtils.checkNull(clazz, packagePrefix);
+        return clazz.getName().startsWith(packagePrefix);
     }
 }

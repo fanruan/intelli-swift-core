@@ -425,7 +425,7 @@ public class CubeIndexLoader {
         LinkedList noneCalculateTargets = new LinkedList();
         NewCrossRoot n = null;
         classifyTargets(usedTargets, summaryLength, calculateTargets, noneCalculateTargets);
-        String widgetName = widget.getWidgetName();
+        String widgetName = widget.getWidgetId();
         PageIteratorGroup pg = null;
         if (!needCreateNewIterator(page)) {
             pg = session.getPageIteratorGroup(useRealData, widgetName);
@@ -661,7 +661,7 @@ public class CubeIndexLoader {
         checkRegisteration(allSumTarget, allDimension);
         BISummaryTarget[] usedTargets = createUsedSummaryTargets(rowDimension, usedTarget, allSumTarget);
         PageIteratorGroup pg = null;
-        String widgetName = widget.getWidgetName();
+        String widgetName = widget.getWidgetId();
         if (needCreateNewIterator(page)) {
             pg = new PageIteratorGroup();
             session.setPageIteratorGroup(useRealData, widgetName, pg);
@@ -732,11 +732,11 @@ public class CubeIndexLoader {
         BIDimension[] rowDimension = dimensionArray;
         NodeExpander nodeExpander = nodeExpanderPara;
         PageIteratorGroup pg;
-        if (!needCreateNewIterator(calPage) && session.getPageIteratorGroup(useRealData, widget.getWidgetName(), i) != null) {
-            pg = session.getPageIteratorGroup(useRealData, widget.getWidgetName(), i);
+        if (!needCreateNewIterator(calPage) && session.getPageIteratorGroup(useRealData, widget.getWidgetId(), i) != null) {
+            pg = session.getPageIteratorGroup(useRealData, widget.getWidgetId(), i);
         } else {
             pg = new PageIteratorGroup();
-            session.setPageIteratorGroup(useRealData, widget.getWidgetName(), pg, i);
+            session.setPageIteratorGroup(useRealData, widget.getWidgetId(), pg, i);
         }
         BISummaryTarget[] usedTargets = createUsedSummaryTargets(rowDimension, usedTarget, allSumTarget);
         NodeAndPageInfo nodeInfo = createPageGroupNode(widget, usedTargets, rowDimension, calPage, nodeExpander, session, isHor ? createColumnOperator(calPage, widget) : createRowOperator(calPage, widget), pg, false, isHor);
@@ -1077,7 +1077,7 @@ public class CubeIndexLoader {
         LinkedList calculateTargets = new LinkedList();
         LinkedList noneCalculateTargets = new LinkedList();
         classifyTargets(usedTargets, summaryLength, calculateTargets, noneCalculateTargets);
-        String widgetName = widget.getWidgetName();
+        String widgetName = widget.getWidgetId();
         PageIteratorGroup pg;
         if (!needCreateNewIterator(page)) {
             pg = session.getPageIteratorGroup(useRealData, widgetName);

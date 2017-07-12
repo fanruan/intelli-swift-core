@@ -41,10 +41,12 @@ public class RankConfigureCalculator extends AbstractConfigureCalculator {
             }
         }
 
-        if (node.getDeep() > node.getFrameDeep()) {
-            tempNode = getCalculatedRootNode(node);
-        } else {
-            return;
+        if (deep > 0) {
+            if (node.getDeep() > node.getFrameDeep()) {
+                tempNode = getCalculatedRootNode(node);
+            } else {
+                return;
+            }
         }
 
         List nodeList = new ArrayList();

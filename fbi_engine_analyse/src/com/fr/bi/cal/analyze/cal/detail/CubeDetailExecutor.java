@@ -96,7 +96,11 @@ public class CubeDetailExecutor extends SheetExecutor {
         paging.setCurrentPage(page);
 
         DetailExecutor exe = new DetailExecutor(widget, paging, session);
-        iter = exe.createCellIterator4Excel();
+        try {
+            iter = exe.createCellIterator4Excel();
+        } catch (Exception e) {
+            BILoggerFactory.getLogger().error(e.getMessage());
+        }
     }
 
     /**
