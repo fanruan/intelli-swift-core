@@ -31,18 +31,24 @@ public class GroupUtils {
         if (gc == null) {
             return new NodeAndPageInfo(node, iterator);
         }
+        Status calculated = new Status();
         AtomicInteger count = new AtomicInteger(0);
         AtomicInteger size = new AtomicInteger(0);
-        addSummaryValue(node, gc, showSum, shouldSetIndex, executor, count, size);
-        addChild(iterator, op, showSum, shouldSetIndex, sumLength, executor, node, gc, count, size);
-        boolean completed = executor == null || count.get() == size.get();
-        if (!completed) {
+        Status allAdded = new Status();
+        addSummaryValue(node, gc, showSum, shouldSetIndex, executor, count, size, calculated, allAdded);
+        addChild(iterator, op, showSum, shouldSetIndex, sumLength, executor, node, gc, count, size, calculated, allAdded);
+        allAdded.setCompleted();
+        if (executor == null || count.get() == size.get()){
+            calculated.setCompleted();
+        }
+        if (!calculated.isCompleted()) {
             //没完成的话要唤醒下executor，以防有加到executor里wait住的。
             executor.wakeUp();
-            synchronized (count) {
-                if (!completed) {
+            synchronized (size) {
+                //这边需要再判断一次，全部完成会把状态设置成true，之前内部变量不能申明volitile，就把这个判断取消了- -！
+                if (!calculated.isCompleted()) {
                     try {
-                        count.wait();
+                        size.wait();
                     } catch (InterruptedException e) {
                     }
                 }
@@ -53,13 +59,13 @@ public class GroupUtils {
         return new NodeAndPageInfo(node, iterator);
     }
 
-    private static void addChild(NodeDimensionIterator iterator, Operator op, boolean showSum, boolean shouldSetIndex, int sumLength, BIMultiThreadExecutor executor, Node node, GroupConnectionValue gc, AtomicInteger count, AtomicInteger size) {
+    private static void addChild(NodeDimensionIterator iterator, Operator op, boolean showSum, boolean shouldSetIndex, int sumLength, BIMultiThreadExecutor executor, Node node, GroupConnectionValue gc, AtomicInteger count, AtomicInteger size,  Status status, Status allAdded) {
         List<GroupConnectionValue> display = gc.getDisplayGroupConnectionValue();
         Iterator<GroupConnectionValue> displayIter = display.iterator();
         if (displayIter.hasNext()) {
             gc = displayIter.next();
         }
-        addSummaryValue(node, gc, showSum, shouldSetIndex, executor, count, size);
+        addSummaryValue(node, gc, showSum, shouldSetIndex, executor, count, size, status, allAdded);
         while (!op.isPageEnd(gc) && gc != null && gc.getChild() != null) {
             GroupConnectionValue gcvChild = gc.getChild();
             Node parent = node;
@@ -71,7 +77,7 @@ public class GroupUtils {
                     parent.addChild(child);
                 }
                 parent = child;
-                addSummaryValue(child, gcvChild, showSum, shouldSetIndex, executor, count, size);
+                addSummaryValue(child, gcvChild, showSum, shouldSetIndex, executor, count, size, status, allAdded);
                 gcvChild = gcvChild.getChild();
             }
             op.addRow();
@@ -100,7 +106,7 @@ public class GroupUtils {
      * @param node
      * @param shouldSetIndex
      */
-    private static void addSummaryValue(Node node, GroupConnectionValue gcv, boolean showSum, boolean shouldSetIndex, BIMultiThreadExecutor executor,  AtomicInteger count, AtomicInteger size) {
+    private static void addSummaryValue(Node node, GroupConnectionValue gcv, boolean showSum, boolean shouldSetIndex, BIMultiThreadExecutor executor,  AtomicInteger count, AtomicInteger size,  Status calculated, Status allAdded) {
 
         if (showSum || gcv.getChild() == null) {
             NoneDimensionGroup group = gcv.getCurrentValue();
@@ -116,7 +122,7 @@ public class GroupUtils {
                     List<TargetAndKey> targetAndKeys = summaryLists[i];
                     for (TargetAndKey targetAndKey : targetAndKeys) {
                         if (node.getSummaryValue(targetAndKey.getTargetGettingKey()) == null) {
-                            BISingleThreadCal singleThreadCal = createSingleThreadCal(tis[i], node, targetAndKey, gvis[i], group.getLoader(), shouldSetIndex, count, size);
+                            BISingleThreadCal singleThreadCal = createSingleThreadCal(tis[i], node, targetAndKey, gvis[i], group.getLoader(), shouldSetIndex, count, size, calculated, allAdded);
                             if (executor != null) {
                                 executor.add(singleThreadCal);
                                 size.incrementAndGet();
@@ -134,23 +140,42 @@ public class GroupUtils {
         }
     }
 
-    private static BISingleThreadCal createSingleThreadCal(ICubeTableService ti, Node node, TargetAndKey targetAndKey, GroupValueIndex gvi, ICubeDataLoader loader, boolean shouldSetIndex, AtomicInteger count, AtomicInteger size) {
+    private static BISingleThreadCal createSingleThreadCal(ICubeTableService ti, Node node, TargetAndKey targetAndKey, GroupValueIndex gvi, ICubeDataLoader loader, boolean shouldSetIndex, AtomicInteger count, AtomicInteger size,  Status calculated, Status allAdded) {
 
         if (shouldSetIndex) {
-            return new SummaryIndexCal(ti, node, targetAndKey, gvi, loader, count, size);
+            return new SummaryIndexCal(ti, node, targetAndKey, gvi, loader, count, size, calculated, allAdded);
         } else {
-            return new SummaryCountCall(ti, node, targetAndKey, gvi, loader, count, size);
+            return new SummaryCountCall(ti, node, targetAndKey, gvi, loader, count, size, calculated, allAdded);
         }
     }
 
+    static class Status{
+        private volatile boolean completed = false;
+
+
+        public Status() {
+        }
+
+        public boolean isCompleted() {
+            return completed;
+        }
+
+        public void setCompleted() {
+            completed = true;
+        }
+    }
 
     static class SummaryCountCall  extends SummaryCall {
         AtomicInteger count;
         AtomicInteger size;
-        public SummaryCountCall(ICubeTableService ti, Node node, TargetAndKey targetAndKey, GroupValueIndex gvi, ICubeDataLoader loader, AtomicInteger count, AtomicInteger size) {
+        Status calculated;
+        Status allAdded;
+        public SummaryCountCall(ICubeTableService ti, Node node, TargetAndKey targetAndKey, GroupValueIndex gvi, ICubeDataLoader loader, AtomicInteger count, AtomicInteger size, Status calculated, Status allAdded) {
             super(ti, node, targetAndKey, gvi, loader);
             this.count = count;
             this.size = size;
+            this.calculated = calculated;
+            this.allAdded = allAdded;
         }
 
         @Override
@@ -163,17 +188,18 @@ public class GroupUtils {
         }
 
         void checkComplete() {
-            if (count.incrementAndGet() == size.get()) {
-                synchronized (count) {
-                    count.notify();
+            if (count.incrementAndGet() == size.get() && allAdded.isCompleted()) {
+                calculated.setCompleted();
+                synchronized (size) {
+                    size.notify();
                 }
             }
         }
     }
 
     static class SummaryIndexCal  extends SummaryCountCall {
-        public SummaryIndexCal(ICubeTableService ti, Node node, TargetAndKey targetAndKey, GroupValueIndex gvi, ICubeDataLoader loader, AtomicInteger count, AtomicInteger size) {
-            super(ti, node, targetAndKey, gvi, loader, count, size);
+        public SummaryIndexCal(ICubeTableService ti, Node node, TargetAndKey targetAndKey, GroupValueIndex gvi, ICubeDataLoader loader, AtomicInteger count, AtomicInteger size,  Status calculated, Status allAdded) {
+            super(ti, node, targetAndKey, gvi, loader, count, size, calculated, allAdded);
         }
 
         @Override

@@ -9,7 +9,6 @@ import com.fr.bi.field.target.target.BISummaryTarget;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.general.ComparatorUtils;
 import com.fr.general.IOUtils;
-import com.fr.general.Inter;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
@@ -237,7 +236,7 @@ public abstract class VanCartesianWidget extends VanChartWidget {
         boolean isInverted = this.isInverted();//bar
 
         options.put("dataSheet", JSONObject.create().put("enabled", settings.optBoolean("showDataTable") && !isInverted)
-                .put("style", this.defaultFont()).put("borderColor", "#000000").put("borderWidth", 1));
+                .put("style", this.defaultFont()).put("borderColor", "#dddddd").put("borderWidth", 1));
 
         if(settings.optBoolean("showZoom") && !settings.optBoolean("miniMode")){
             options.put("zoom", JSONObject.create().put("zoomTool", JSONObject.create().put("enabled", !isInverted)).put("zoomType", ""));
@@ -436,7 +435,7 @@ public abstract class VanCartesianWidget extends VanChartWidget {
                 .put("lineColor", settings.optString("catLineColor"))
                 .put("gridLineWidth", settings.optBoolean("vShowGridLine") ? 1 : 0)
                 .put("gridLineColor", settings.optString("vGridLineColor"))
-                .put("reversed", cateAxisReversed());
+                .put("reversed", false);
 
         return JSONArray.create().put(category);
     }
@@ -447,10 +446,6 @@ public abstract class VanCartesianWidget extends VanChartWidget {
 
     protected double valueAxisRotation() {
         return VERTICAL;
-    }
-
-    protected boolean cateAxisReversed() {
-        return false;
     }
 
     protected JSONArray parseValueAxis(JSONObject settings) throws JSONException{
@@ -593,6 +588,7 @@ public abstract class VanCartesianWidget extends VanChartWidget {
         for(int i = 0, len = dIDs.length(); i < len; i++){
             try {
                 BISummaryTarget dimension = this.getBITargetByID(dIDs.optString(i));
+                double scale = this.numberScale(dIDs.optString(i));
                 if(dimension.isUsed()) {
                     JSONArray cordons = dimension.getChartSetting().getCordon();
 
@@ -600,7 +596,8 @@ public abstract class VanCartesianWidget extends VanChartWidget {
                         JSONObject config = cordons.optJSONObject(j);
 
                         plotLines.put(
-                                JSONObject.create().put("value", config.optDouble("cordonValue"))
+                                JSONObject.create().put("value", config.optDouble("cordonValue") / scale)
+                                        .put("width", 1)
                                         .put("color", config.optString("cordonColor"))
                                         .put("label", JSONObject.create().put("text", config.optString("cordonName")).put("style", defaultFont()).put("align", "right"))
                         );
@@ -778,6 +775,7 @@ public abstract class VanCartesianWidget extends VanChartWidget {
                 .put("showLabel", false)
                 .put("lineWidth", 0)
                 .put("enableTick", false)
+                .put("gridLineWidth", 0)
                 .put("labelStyle", settings.optJSONObject("catLabelStyle"));
     }
 

@@ -348,12 +348,6 @@ public class TableWidget extends BISummaryWidget {
     private void createWidgetStyles(JSONObject jo) throws Exception {
 
         style = new BITableWidgetStyle();
-        JSONArray dimColWidths = new JSONArray();
-        for (int i = 0; i < getViewDimensions().length; i++) {
-            dimColWidths.put(20);
-        }
-        jo.put("mergeCols", dimColWidths);
-        jo.put("columnSize", dimColWidths);
         style.parseJSON(jo);
     }
 
@@ -423,6 +417,10 @@ public class TableWidget extends BISummaryWidget {
                 clickValue[i] = ja.getString(i);
             }
         }
+    }
+
+    public BITableWidgetStyle getWidgetStyle () {
+        return style;
     }
 
     public String getDimensionName(String id) {
@@ -600,96 +598,15 @@ public class TableWidget extends BISummaryWidget {
      * @throws Exception
      */
     public GroupValueIndex getLinkFilter(TableWidget linkedWidget, BusinessTable targetKey, Map<String, JSONArray> clicked, BISession session) throws Exception {
-
-        // 相同基础表的时候才进行联动计算要不然直接进行返回
-        BISummaryTarget summaryTarget = null;
-        for (String target : clicked.keySet()) {
-            try {
-                summaryTarget = linkedWidget.getBITargetByID(target);
-                Map<String, JSONArray> t = new HashMap<String, JSONArray>();
-                t.put(target, clicked.get(target));
-                clicked = t;
-                break;
-            } catch (Exception e) {
-
-            }
-        }
-        // 连联动计算指标都没有就没有所谓的联动了,直接返回
-        if (summaryTarget == null) {
-            return null;
-        }
-        BusinessTable linkTargetTable = summaryTarget.createTableKey();
-        if (!targetKey.equals(linkTargetTable)) {
-            return null;
-        }
-
         BIEngineExecutor linkExecutor = linkedWidget.getExecutor(session);
         GroupValueIndex linkGvi = null;
-        try {
-            // 交叉表的情况
-            if (linkExecutor instanceof CrossExecutor) {
-                return getCrossWidgetLinkFilter(linkedWidget, clicked, session, (CrossExecutor) linkExecutor);
-            }
-            Object[] rowData = getLinkRowData(clicked);
-            // 在点击行的地方进行停止构建树
-            Node linkNode = linkExecutor.getStopOnRowNode(rowData);
-            // 总汇总值
-            if (rowData == null || rowData.length == 0) {
-                for (String key : clicked.keySet()) {
-                    linkGvi = GVIUtils.AND(linkGvi, getTargetIndex(key, linkNode.getTargetIndexValueMap()));
-                }
-                return linkGvi;
-            }
-            Node p = linkNode;
-            for (String key : clicked.keySet()) {
-                JSONArray keyJson = clicked.get(key);
-                for (int i = keyJson.length() - 1; i >= 0; i--) {
-                    JSONObject object = keyJson.getJSONObject(i);
-                    Object clickValue = object.getJSONArray("value").getString(0);
-                    String did = object.getString("dId");
-                    for (Node n : p.getChilds()) {
-                        if (n.getShowValue().equals(clickValue)) {
-                            p = n;
-                            break;
-                        }
-                    }
-                }
-                linkGvi = GVIUtils.AND(linkGvi, getTargetIndex(key, p.getTargetIndexValueMap()));
-            }
-        } catch (Exception e) {
-
+        // 分组表,交叉表,复杂表的时候才有联动的必要
+        if (linkExecutor instanceof AbstractTableWidgetExecutor) {
+            return ((AbstractTableWidgetExecutor) linkExecutor).getClieckGvi(clicked, targetKey);
         }
         return linkGvi;
     }
 
-    /**
-     * 交叉表联动条件
-     *
-     * @param linkedWidget
-     * @param clicked
-     * @param session
-     * @return
-     */
-    public GroupValueIndex getCrossWidgetLinkFilter(TableWidget linkedWidget, Map<String, JSONArray> clicked, BISession session, CrossExecutor executor) throws Exception {
-        // 区分哪些是行数据,哪些是列数据
-        List<Object> row = new ArrayList<Object>();
-        List<Object> col = new ArrayList<Object>();
-        GroupValueIndex linkGvi = null;
-        String target = getLinkRowAndColData(clicked, linkedWidget, row, col);
-        NewCrossRoot c = executor.getStopOnRowNode(row.toArray(), col.toArray());
-        Node left = c.getLeft();
-        Node top = c.getTop();
-        if (row.size() == 0 && col.size() == 0) {
-            // 总汇总值得时候
-            linkGvi = GVIUtils.AND(linkGvi, getTargetIndex(target, left.getTargetIndexValueMap()));
-            linkGvi = GVIUtils.AND(linkGvi, getTargetIndex(target, top.getTargetIndexValueMap()));
-            return linkGvi;
-        }
-
-        linkGvi = GVIUtils.AND(getLinkNodeFilter(left, target, row), linkGvi);
-        linkGvi = GVIUtils.AND(getLinkNodeFilter(top, target, col), linkGvi);
-        return linkGvi;
-    }
 
     private GroupValueIndex getTargetIndex(String target, Map<TargetGettingKey, GroupValueIndex> targetIndexs) {
 
@@ -701,108 +618,8 @@ public class TableWidget extends BISummaryWidget {
         return null;
     }
 
-    private GroupValueIndex getLinkNodeFilter(Node n, String target, List<Object> data) {
-
-        if (n != null) {
-            if (data.size() == 0) {
-                return getTargetIndex(target, n.getTargetIndexValueMap());
-            }
-            Node parent = n;
-            for (int i = 0; i < data.size(); i++) {
-                Object cv = data.get(i);
-                Node child = null;
-                for (Node pn : parent.getChilds()) {
-                    if (pn.getShowValue().equals(cv)) {
-                        child = pn;
-                        break;
-                    }
-                }
-
-                parent = child;
-            }
-            return getTargetIndex(target, parent.getTargetIndexValueMap());
-        }
-        return null;
-    }
-
-    /**
-     * 获取联动点击行的数据(针对分组表)
-     *
-     * @param clicked 前台传过来的点击值
-     * @return
-     * @throws Exception
-     */
-    private Object[] getLinkRowData(Map<String, JSONArray> clicked) throws Exception {
-
-        try {
-            if (clicked != null) {
-                for (String key : clicked.keySet()) {
-                    JSONArray keyJson = clicked.get(key);
-                    Object rowData[] = new Object[keyJson.length()];
-                    int j = 0;
-                    for (int i = keyJson.length() - 1; i >= 0; i--) {
-                        // 每个维度根据指标来选出点击的值得gvi
-                        JSONObject object = keyJson.getJSONObject(i);
-                        String click = object.getJSONArray("value").getString(0);
-                        String did = object.getString("dId");
-                        rowData[j++] = click;
-                    }
-                    return rowData;
-                }
-            }
-        } catch (Exception e) {
-
-        }
-        return new Object[0];
-    }
 
 
-    /**
-     * 获取联动点击行的数据(针对交叉表)
-     *
-     * @param clicked      前台传过来的点击值
-     * @param linkedWidget 联动组件
-     * @param row          存放行的点击值
-     * @param col          存放列的点击值
-     * @return
-     */
-    private String getLinkRowAndColData(Map<String, JSONArray> clicked, TableWidget linkedWidget, List row, List col) {
-
-        String target = null;
-        try {
-            if (clicked != null) {
-                Map<String, String> m = new HashMap<String, String>();
-                for (String key : clicked.keySet()) {
-                    target = key;
-                    JSONArray keyJson = clicked.get(key);
-                    for (int i = keyJson.length() - 1; i >= 0; i--) {
-                        // 每个维度根据指标来选出点击的值得gvi
-                        JSONObject object = keyJson.getJSONObject(i);
-                        String click = object.getJSONArray("value").getString(0);
-                        String did = object.getString("dId");
-                        m.put(did, click);
-                    }
-                }
-                // 传过来的顺序不一定就是正确的为确保万一还是采用这样的做法.
-                for (BIDimension dimension : linkedWidget.getViewDimensions()) {
-                    String c = m.get(dimension.getId());
-                    // 点击某一个汇总值得时候不一定有
-                    if (c != null) {
-                        row.add(c);
-                    }
-                }
-                for (BIDimension dimension : linkedWidget.getViewTopDimensions()) {
-                    String c = m.get(dimension.getId());
-                    if (c != null) {
-                        col.add(c);
-                    }
-                }
-            }
-        } catch (Exception e) {
-
-        }
-        return target;
-    }
 
     @Override
     public void reSetDetailTarget() {
@@ -829,7 +646,7 @@ public class TableWidget extends BISummaryWidget {
         }
         DataConstructor data = BITableConstructHelper.buildTableData(builder);
         BITableConstructHelper.formatCells(data, getITableCellFormatOperationMap(), style);
-        return data.createJSON().put("page", res.getJSONArray("page")).put("dimensionLength", dimensions.length).put("widgetType", this.tableType);
+        return data.createJSON().put("page", res.getJSONArray("page")).put("viewDimensionsLength", getViewDimensions().length).put("viewTopDimensionsLength", getViewTopDimensions().length).put("widgetType", this.tableType);
     }
 
     /*假数据，测试用*/

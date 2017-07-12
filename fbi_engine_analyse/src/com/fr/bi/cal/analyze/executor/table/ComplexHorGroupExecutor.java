@@ -1,37 +1,47 @@
 package com.fr.bi.cal.analyze.executor.table;
 
 import com.finebi.cube.common.log.BILoggerFactory;
+import com.finebi.cube.conf.table.BusinessTable;
 import com.fr.base.Style;
 import com.fr.bi.base.FinalInt;
 import com.fr.bi.cal.analyze.cal.index.loader.CubeIndexLoader;
 import com.fr.bi.cal.analyze.cal.result.BIComplexExecutData;
 import com.fr.bi.cal.analyze.cal.result.ComplexExpander;
 import com.fr.bi.cal.analyze.cal.result.Node;
-import com.fr.bi.cal.analyze.executor.iterator.TableCellIterator;
 import com.fr.bi.cal.analyze.executor.iterator.StreamPagedIterator;
+import com.fr.bi.cal.analyze.executor.iterator.TableCellIterator;
 import com.fr.bi.cal.analyze.executor.paging.Paging;
 import com.fr.bi.cal.analyze.executor.utils.ExecutorUtils;
 import com.fr.bi.cal.analyze.report.report.widget.TableWidget;
-import com.fr.bi.field.target.target.BISummaryTarget;
 import com.fr.bi.cal.analyze.session.BISession;
 import com.fr.bi.cal.report.engine.CBCell;
 import com.fr.bi.conf.report.style.BITableStyle;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
-import com.fr.bi.stable.constant.BIReportConstant;
+import com.fr.bi.field.target.target.BISummaryTarget;
 import com.fr.bi.report.key.TargetGettingKey;
+import com.fr.bi.stable.constant.BIReportConstant;
+import com.fr.bi.stable.gvi.GVIUtils;
+import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.general.DateUtils;
 import com.fr.general.GeneralUtils;
 import com.fr.general.Inter;
+import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;
 
 import java.awt.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 /**
  * Created by sheldon on 14-9-2.
  */
 public class ComplexHorGroupExecutor extends AbstractTableWidgetExecutor {
+
     protected BIComplexExecutData rowData;
+
     protected ComplexExpander complexExpander;
 
     public ComplexHorGroupExecutor(TableWidget widget, Paging page,
@@ -46,6 +56,7 @@ public class ComplexHorGroupExecutor extends AbstractTableWidgetExecutor {
 
     @Override
     public TableCellIterator createCellIterator4Excel() throws Exception {
+
         Map<Integer, Node> nodeMap = getCubeNodes();
         if (nodeMap == null || nodeMap.isEmpty()) {
             return new TableCellIterator(0, 0);
@@ -63,7 +74,9 @@ public class ComplexHorGroupExecutor extends AbstractTableWidgetExecutor {
 
         final TableCellIterator iter = new TableCellIterator(rowLen, columnLen);
         new Thread() {
+
             public void run() {
+
                 try {
                     //水平分组表行数随指标的行数增加而增加，故用第一页就行了
                     StreamPagedIterator pagedIterator = iter.getIteratorByPage(0);
@@ -80,6 +93,7 @@ public class ComplexHorGroupExecutor extends AbstractTableWidgetExecutor {
     }
 
     private void generateTitle(Node[] nodes, TableWidget widget, BIComplexExecutData rowData, StreamPagedIterator pagedIterator) {
+
         int maxRowDimLen = rowData.getMaxArrayLength();
         Style style = BITableStyle.getInstance().getTitleDimensionCellStyle(0);
         if (widget.isOrder() == 1) {
@@ -96,7 +110,7 @@ public class ComplexHorGroupExecutor extends AbstractTableWidgetExecutor {
             if (firstColumnDimLen > colDimIdx) {
                 int rowSpan = firstColumnDimLen - 1 == colDimIdx ? maxRowDimLen - colDimIdx : 1;
                 CBCell cell = ExecutorUtils.createCell(rowData.getDimensionArray(0)[colDimIdx].getText(), colDimIdx,
-                        rowSpan, columnIdx.value, 1, style);
+                                                       rowSpan, columnIdx.value, 1, style);
                 pagedIterator.addCell(cell);
             }
             columnIdx.value++;
@@ -106,6 +120,7 @@ public class ComplexHorGroupExecutor extends AbstractTableWidgetExecutor {
     }
 
     private void generateDimCell(Node[] nodes, StreamPagedIterator pagedIterator, Style style, int colDimIdx, FinalInt columnIdx, int maxRowDimLen) {
+
         for (int i = 0, j = rowData.getDimensionArrayLength(); i < j; i++) {
             BIDimension[] dimensions = rowData.getDimensionArray(i);
             //列表头不同区域中的维度个数可能不同
@@ -133,6 +148,7 @@ public class ComplexHorGroupExecutor extends AbstractTableWidgetExecutor {
     }
 
     private void generateCells(Node[] nodes, TableWidget widget, BIComplexExecutData rowData, BISummaryTarget[] usedSumTarget, StreamPagedIterator pagedIterator) {
+
         int rowIdx = rowData.getMaxArrayLength();
         TargetGettingKey[] keys = widget.getTargetsKey();
         for (int i = 0, j = nodes.length; i < j; i++) {
@@ -174,6 +190,7 @@ public class ComplexHorGroupExecutor extends AbstractTableWidgetExecutor {
      * @return
      */
     public int getNodesTotalLength(Node[] nodes) {
+
         int count = 0;
 
         for (int i = 0; i < nodes.length; i++) {
@@ -185,11 +202,13 @@ public class ComplexHorGroupExecutor extends AbstractTableWidgetExecutor {
 
     @Override
     public Rectangle getSouthEastRectangle() {
+
         return super.getSouthEastRectangle();
     }
 
     @Override
     public Object getCubeNode() throws Exception {
+
         return null;
     }
 
@@ -197,6 +216,7 @@ public class ComplexHorGroupExecutor extends AbstractTableWidgetExecutor {
      * @see com.fr.bi.cube.engine.report.summary.BIEngineExecutor#getCubeNode()
      */
     public Map<Integer, Node> getCubeNodes() throws Exception {
+
         if (getSession() == null) {
             return null;
         }
@@ -211,7 +231,7 @@ public class ComplexHorGroupExecutor extends AbstractTableWidgetExecutor {
             keys[s] = usedSumTarget[s].createTargetGettingKey();
         }
         Map<Integer, Node> nodeMap = CubeIndexLoader.getInstance(session.getUserId()).loadComplexPageGroup(true, widget, createTarget4Calculate(), rowData, allDimensions,
-                allSumTarget, keys, paging.getOperator(), widget.useRealData(), session, complexExpander, false);
+                                                                                                           allSumTarget, keys, paging.getOperator(), widget.useRealData(), session, complexExpander, false);
 
 
         BILoggerFactory.getLogger().info(DateUtils.timeCostFrom(start) + ": cal time");
@@ -220,6 +240,7 @@ public class ComplexHorGroupExecutor extends AbstractTableWidgetExecutor {
 
     @Override
     public JSONObject createJSONObject() throws Exception {
+
         Iterator<Map.Entry<Integer, Node>> it = getCubeNodes().entrySet().iterator();
         JSONObject jo = new JSONObject();
         while (it.hasNext()) {
@@ -227,5 +248,51 @@ public class ComplexHorGroupExecutor extends AbstractTableWidgetExecutor {
             jo.put(String.valueOf(entry.getKey()), entry.getValue().toJSONObject(rowData.getDimensionArray(entry.getKey()), widget.getTargetsKey(), -1));
         }
         return jo;
+    }
+
+    @Override
+    public GroupValueIndex getClieckGvi(Map clicked, BusinessTable targetKey) {
+
+        GroupValueIndex filterGvi = null;
+        try {
+            if (clicked != null) {
+                String target = null;
+                BISummaryTarget biSummaryTarget = null;
+                for (String t : ((Map<String, JSONArray>) clicked).keySet()) {
+                    try {
+                        biSummaryTarget = widget.getBITargetByID(t);
+                        target = t;
+                        break;
+                    } catch (Exception e) {
+
+                    }
+                }
+                if (biSummaryTarget == null || !biSummaryTarget.createTableKey().equals(targetKey)) {
+                    return null;
+                }
+                JSONArray c = ((Map<String, JSONArray>) clicked).get(target);
+                if (c == null) {
+                    return null;
+                }
+                java.util.List<String> dids = new ArrayList<String>();
+                java.util.List<Object> cs = new ArrayList<Object>();
+                for (int i = 0; i < c.length(); i++) {
+                    JSONObject object = c.getJSONObject(i);
+                    cs.add(object.getJSONArray("value").getString(0));
+                    dids.add(object.getString("dId"));
+                }
+                for (int i = 0; i < rowData.getRegionIndex(); i++) {
+                    BIDimension[] dimensions = rowData.getDimensionArray(i);
+                    if (isClieckRegion(dids, dimensions)) {
+                        Node n = getStopOnRowNode(cs.toArray(), dimensions);
+                        filterGvi = GVIUtils.AND(filterGvi, getLinkNodeFilter(n, target, cs));
+                        return filterGvi;
+                    }
+                }
+            }
+        } catch (Exception e) {
+            BILoggerFactory.getLogger(ComplexHorGroupExecutor.class).info("error in get link filter",e);
+        }
+        return filterGvi;
     }
 }

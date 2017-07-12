@@ -208,7 +208,7 @@ public class BIBasicTableItem implements ITableItem {
             jo.put("values", TempValues);
         }
 
-        jo.put("value", value);
+        jo.put("value", String.valueOf(value));
         jo.put("isSum", isSum);
         if (textStyles != null) {
             jo.put("textStyle", textStyles);
