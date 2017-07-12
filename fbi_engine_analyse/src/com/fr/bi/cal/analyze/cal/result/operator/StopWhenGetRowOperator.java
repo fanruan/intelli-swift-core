@@ -58,12 +58,13 @@ public class StopWhenGetRowOperator implements Operator {
 
     //BI-6973 客户工程有可能出现空指针
     private boolean checkEquals(GroupConnectionValue gcv, Object o) {
-        if (gcv.getData() == null && gcv.getData() == null) {
+        Object gcvData = gcv.getData();
+        if (gcvData == null && gcvData == null) {
             return true;
-        } else if (o == null || gcv.getData() == null) {
+        } else if (o == null || gcvData == null) {
             return false;
         } else {
-            return gcv.getData().toString().equals(o);
+            return gcvData.toString().equals(o);
         }
     }
 
