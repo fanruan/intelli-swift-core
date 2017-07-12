@@ -20,8 +20,6 @@ public class VanGisWidget extends VanChartWidget{
     protected JSONObject populateDefaultSettings() throws JSONException {
         JSONObject settings = super.populateDefaultSettings();
 
-        settings.put("isShowBackgroundLayer", true);
-
         settings.put("backgroundLayerInfo", Inter.getLocText("BI-GAO_DE_MAP"));
 
         return settings;
@@ -33,10 +31,8 @@ public class VanGisWidget extends VanChartWidget{
         JSONObject settings = this.getDetailChartSetting();
 
         JSONObject geo = JSONObject.create();
-        if(settings.optBoolean("isShowBackgroundLayer")){
-            JSONObject config = BIWMSManager.getInstance().getWMSInfo(settings.optString("backgroundLayerInfo"));
-            geo.put("tileLayer", config.optString("url"));
-        }
+        JSONObject config = BIWMSManager.getInstance().getWMSInfo(settings.optString("backgroundLayerInfo"));
+        geo.put("tileLayer", config.optString("url"));
         options.put("geo", geo);
 
         return options;

@@ -63,7 +63,7 @@ public class BIWidgetFactory {
         vancharts.put(WidgetType.GIS_MAP, VanGisWidget.class);
         vancharts.put(WidgetType.WORD_CLOUD, VanWordCloudWidget.class);
         vancharts.put(WidgetType.HEAT_MAP, VanHeatMapWidget.class);
-        vancharts.put(WidgetType.LINE_MAP, VanLineMapWIdget.class);
+        vancharts.put(WidgetType.LINE_MAP, VanLineMapWidget.class);
     }
 
 
