@@ -82,20 +82,24 @@ public class VanLineMapWidget extends VanGisWidget{
                     .put("targetIDs", JSONArray.create().put(targetIDs[0]))
                     .put("dimensionIDs", dimensionIDs));
 
-            JSONArray points = JSONArray.create();
-            Iterator iterator = map.entrySet().iterator();
-            while(iterator.hasNext()) {
-                Map.Entry entry = (Map.Entry) iterator.next();
-
-                points.put(JSONObject.create().put("size", entry.getValue()).put("lnglat", entry.getKey()));
-            }
-
-            series.put(JSONObject.create().put("data", points).put("type", "bubble")
-                    .put("targetIDs", JSONArray.create().put(targetIDs[0]))
-                    .put("dimensionIDs", dimensionIDs));
+            addBubbleSeries(series, map, targetIDs, dimensionIDs);
         }
 
         return series;
+    }
+
+    private void addBubbleSeries(JSONArray series, Map<String[], Double> map, String[] targetIDs, String[] dimensionIDs) throws JSONException {
+        JSONArray points = JSONArray.create();
+        Iterator iterator = map.entrySet().iterator();
+        while(iterator.hasNext()) {
+            Map.Entry entry = (Map.Entry) iterator.next();
+
+            points.put(JSONObject.create().put("size", entry.getValue()).put("lnglat", entry.getKey()));
+        }
+
+        series.put(JSONObject.create().put("data", points).put("type", "bubble")
+                .put("targetIDs", JSONArray.create().put(targetIDs[0]))
+                .put("dimensionIDs", dimensionIDs));
     }
 
     private NameLngLat calculateNameLngLat(JSONObject jsonObject) throws JSONException{
