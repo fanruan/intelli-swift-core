@@ -1214,6 +1214,25 @@ public abstract class VanChartWidget extends TableWidget {
                 .put("style", settings.optJSONObject("legendStyle"));
     }
 
+    protected JSONObject revertMapLegend(JSONObject settings, JSONObject legend) throws JSONException {
+        JSONArray mapStyle;
+        if(settings.optInt("styleRadio", AUTO) == AUTO){
+            legend.put("range", JSONObject.create().put("color", settings.optString("themeColor")));
+        }else{
+            mapStyle = settings.optJSONArray("mapStyles");
+            legend.put("range", this.mapStyleToRange(mapStyle));
+        }
+
+        legend.put("continuous", false);
+
+        BISummaryTarget[] targets = this.getTargets();
+        if(targets.length > 0){
+            legend.put("formatter", this.intervalLegendFormatter(this.valueFormat(targets[0]), this.valueUnit(targets[0], true)));
+        }
+
+        return legend;
+    }
+
     protected JSONArray mapStyleToRange(JSONArray mapStyle) throws JSONException {
         JSONArray ranges = JSONArray.create();
 

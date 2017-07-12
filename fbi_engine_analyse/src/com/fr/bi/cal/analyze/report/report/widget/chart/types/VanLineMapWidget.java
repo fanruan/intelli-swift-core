@@ -102,23 +102,8 @@ public class VanLineMapWidget extends VanGisWidget{
                 .put("dimensionIDs", dimensionIDs));
     }
 
-    private NameLngLat calculateNameLngLat(JSONObject jsonObject) throws JSONException{
-        NameLngLat nameLngLat = new NameLngLat();
-
-        nameLngLat.name = jsonObject.optString("n");
-        JSONObject lnglat = jsonObject.optJSONArray("c").optJSONObject(0);
-        if(lnglat.has("c")){
-            nameLngLat.lnglat[0] = lnglat.optString("n");
-            nameLngLat.lnglat[1] = lnglat.optJSONArray("c").optJSONObject(0).optString("n");
-        } else {//todo: @shine search lng lat from json
-
-        }
-
-        if(jsonObject.has("s")){
-            nameLngLat.value = jsonObject.optJSONObject("s").optJSONArray("s").optString(0);
-        }
-
-        return nameLngLat;
+    protected String getJSONValue(JSONObject jsonObject) throws JSONException {
+        return jsonObject.optJSONObject("s").optJSONArray("s").optString(0);
     }
 
     @Override
@@ -126,9 +111,4 @@ public class VanLineMapWidget extends VanGisWidget{
         return "lineMap";
     }
 
-    private class NameLngLat {
-        private String name;
-        private String[] lnglat = new String[2];
-        private String value;
-    }
 }
