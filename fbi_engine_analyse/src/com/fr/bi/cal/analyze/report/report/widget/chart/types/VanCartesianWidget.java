@@ -685,14 +685,6 @@ public abstract class VanCartesianWidget extends VanChartWidget {
             }
         }
 
-        if(leftYMax == -Double.MAX_VALUE){
-            leftYMax = DEFAULT_MAX;
-        }
-
-        if(rightYMax == -Double.MAX_VALUE){
-            leftYMax = DEFAULT_MAX;
-        }
-
         double[] leftDomain = calculateValueTimeNiceDomain(leftYMin, leftYMax);
         double[] rightDomain = calculateValueTimeNiceDomain(rightYMin, rightYMax);
 
@@ -743,14 +735,11 @@ public abstract class VanCartesianWidget extends VanChartWidget {
     }
 
     protected double[] calculateValueTimeNiceDomain(double minValue, double maxValue){
-        boolean fromZero = true;
 
-        if(fromZero){
-            if(minValue > 0){
-                minValue = 0;
-            }else if(maxValue < 0){
-                maxValue = 0;
-            }
+        if(minValue > 0){
+            minValue = 0;
+        } else if(maxValue < 0){
+            maxValue = 0;
         }
 
         // if any exceeded min, adjust max to min + 100
