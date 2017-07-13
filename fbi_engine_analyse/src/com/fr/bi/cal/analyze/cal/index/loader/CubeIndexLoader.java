@@ -921,6 +921,8 @@ public class CubeIndexLoader {
 
         List<MetricGroupInfo> mergerInfoList = new ArrayList<MetricGroupInfo>();
         Map<GroupKey, MetricGroupInfo> map = new HashMap<GroupKey, MetricGroupInfo>();
+        // 跳转的gvi,因为跳转的gvi只是没有多路经过,多关联的情况才会这样
+        GroupValueIndex jgvi = widget.getJumpLinkFilter(widget.getBaseTable(),  userId,session);
         for (int i = 0; i < summaryLength; i++) {
             DimensionCalculator[] row = new DimensionCalculator[rowLength];
             BISummaryTarget target = usedTargets[i];
@@ -937,6 +939,8 @@ public class CubeIndexLoader {
             MetricGroupInfo metricGroupInfo = map.get(groupKey);
             if (metricGroupInfo == null) {
                 GroupValueIndex gvi = widget.createFilterGVI(row, targetKey, session.getLoader(), session.getUserId()).AND(session.createFilterGvi(targetKey));
+                // 跳转
+                gvi = GVIUtils.AND(gvi, jgvi);
                 //联动过滤条件
                 if (widget instanceof TableWidget) {
                     gvi = GVIUtils.AND(gvi, ((TableWidget) widget).createLinkedFilterGVI(targetKey, session));
