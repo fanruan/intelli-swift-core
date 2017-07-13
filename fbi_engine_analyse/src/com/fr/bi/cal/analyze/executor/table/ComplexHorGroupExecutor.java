@@ -251,7 +251,7 @@ public class ComplexHorGroupExecutor extends AbstractTableWidgetExecutor {
     }
 
     @Override
-    public GroupValueIndex getClieckGvi(Map clicked, BusinessTable targetKey) {
+    public GroupValueIndex getClickGvi(Map clicked, BusinessTable targetKey) {
 
         GroupValueIndex filterGvi = null;
         try {

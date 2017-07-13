@@ -479,7 +479,7 @@ public class CrossExecutor extends AbstractTableWidgetExecutor<NewCrossRoot> {
         }
     }
 
-    public GroupValueIndex getClieckGvi(Map<String, JSONArray> clicked, BusinessTable targetKey) {
+    public GroupValueIndex getClickGvi(Map<String, JSONArray> clicked, BusinessTable targetKey) {
 
         GroupValueIndex linkGvi = null;
         try {
@@ -490,7 +490,7 @@ public class CrossExecutor extends AbstractTableWidgetExecutor<NewCrossRoot> {
             }
             BISummaryTarget summaryTarget = widget.getBITargetByID(target);
             BusinessTable linkTargetTable = summaryTarget.createTableKey();
-            // 基础表相同才进行比较
+            // 需要判断且具有相同基础表才进行比较
             if (!targetKey.equals(linkTargetTable)) {
                 return null;
             }

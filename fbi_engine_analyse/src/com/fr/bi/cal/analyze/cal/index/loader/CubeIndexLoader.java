@@ -438,8 +438,8 @@ public class CubeIndexLoader {
         }
         NodeAndPageInfo leftInfo = getLeftInfo(rowDimension, page, expander, widget, session, usedTargets, pg);
         NodeAndPageInfo topInfo = getTopInfo(colDimension, page, expander, widget, session, usedTargets, pg);
-        int maxSize =  PerformancePlugManager.getInstance().getMaxStructureSize();
-        if (maxSize > 0 && leftInfo.getNode().getTotalLength() * topInfo.getNode().getTotalLength() > maxSize){
+        int maxSize = PerformancePlugManager.getInstance().getMaxStructureSize();
+        if (maxSize > 0 && leftInfo.getNode().getTotalLength() * topInfo.getNode().getTotalLength() > maxSize) {
             throw new BIMemoryDataOutOfLimitException();
         }
         if (usedTargets.length != 0 && isEmpty(topInfo)) {
@@ -466,8 +466,8 @@ public class CubeIndexLoader {
         NodeAndPageInfo leftInfo = getLeftInfo(rowDimension, page, expander, widget, session, usedTargets, pg);
         NodeAndPageInfo leftAllInfo = getLeftInfo(rowDimension, -1, expander, widget, session, usedTargets, new PageIteratorGroup());
         NodeAndPageInfo topInfo = getTopInfo(colDimension, page, expander, widget, session, usedTargets, pg);
-        int maxSize =  PerformancePlugManager.getInstance().getMaxStructureSize();
-        if (maxSize > 0 && leftAllInfo.getNode().getTotalLength() * topInfo.getNode().getTotalLength() > maxSize){
+        int maxSize = PerformancePlugManager.getInstance().getMaxStructureSize();
+        if (maxSize > 0 && leftAllInfo.getNode().getTotalLength() * topInfo.getNode().getTotalLength() > maxSize) {
             throw new BIMemoryDataOutOfLimitException();
         }
         if (usedTargets.length != 0 && isEmpty(topInfo)) {
@@ -990,11 +990,11 @@ public class CubeIndexLoader {
         boolean showSum = isHor ? widget.showColumnTotal() : widget.showRowToTal();
         int maxSize = PerformancePlugManager.getInstance().getMaxStructureSize();
         NodeIteratorCreator iteratorCreator = maxSize == 0 ? new NodeIteratorCreator(metricGroupInfoList, rowDimension, usedTargets, widget.getTargets().length,
-                widget.getTargetFilterMap(), widget.isRealData(), session, widget.getTargetSort(), widget.getFilter(), authFilter,
-                showSum, shouldSetIndex, calAllPage, executor)
+                                                                                     widget.getTargetFilterMap(), widget.isRealData(), session, widget.getTargetSort(), widget.getFilter(), authFilter,
+                                                                                     showSum, shouldSetIndex, calAllPage, executor)
                 : new LimitedNodeIteratorCreator(metricGroupInfoList, rowDimension, usedTargets, widget.getTargets().length,
-                widget.getTargetFilterMap(), widget.isRealData(), session, widget.getTargetSort(), widget.getFilter(), authFilter,
-                showSum, shouldSetIndex, calAllPage, executor, maxSize) ;
+                                                 widget.getTargetFilterMap(), widget.isRealData(), session, widget.getTargetSort(), widget.getFilter(), authFilter,
+                                                 showSum, shouldSetIndex, calAllPage, executor, maxSize);
         return iteratorCreator.createRoot();
     }
 

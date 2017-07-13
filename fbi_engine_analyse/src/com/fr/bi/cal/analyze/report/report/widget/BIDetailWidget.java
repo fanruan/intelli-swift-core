@@ -42,12 +42,15 @@ import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.data.BITableID;
 import com.fr.bi.stable.data.source.CubeTableSource;
+import com.fr.bi.stable.utils.file.BIFileUtils;
 import com.fr.bi.stable.utils.program.BIStringUtils;
 import com.fr.json.JSONArray;
+import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
 import com.fr.report.poly.TemplateBlock;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -95,23 +98,23 @@ public class BIDetailWidget extends AbstractBIWidget {
     public BIDetailTarget[] getViewDimensions() {
         //后台不判断是不是使用状态，默认就是所有都使用
         return this.getDimensions();
-//        if (usedDimensions != null) {
-//            return usedDimensions;
-//        }
-//        BIDetailTarget[] dims = getDimensions();
-//        if (data != null) {
-//            String[] array = data.getView();
-//            List<BIDetailTarget> usedDimensions = new ArrayList<BIDetailTarget>();
-//            for (String anArray : array) {
-//                BIDetailTarget dimension = BITravalUtils.getTargetByName(anArray, dimensions);
-//                if(dimension.isUsed()) {
-//                    usedDimensions.add(dimension);
-//                }
-//            }
-//            dims = usedDimensions.toArray(new BIDetailTarget[usedDimensions.size()]);
-//        }
-//        usedDimensions = dims;
-//        return dims;
+        //        if (usedDimensions != null) {
+        //            return usedDimensions;
+        //        }
+        //        BIDetailTarget[] dims = getDimensions();
+        //        if (data != null) {
+        //            String[] array = data.getView();
+        //            List<BIDetailTarget> usedDimensions = new ArrayList<BIDetailTarget>();
+        //            for (String anArray : array) {
+        //                BIDetailTarget dimension = BITravalUtils.getTargetByName(anArray, dimensions);
+        //                if(dimension.isUsed()) {
+        //                    usedDimensions.add(dimension);
+        //                }
+        //            }
+        //            dims = usedDimensions.toArray(new BIDetailTarget[usedDimensions.size()]);
+        //        }
+        //        usedDimensions = dims;
+        //        return dims;
     }
 
     @Override
@@ -443,5 +446,10 @@ public class BIDetailWidget extends AbstractBIWidget {
 
     public void setClicked(Map<String, JSONArray> clicked) {
         this.clicked = clicked;
+    }
+
+    public BusinessTable getBaseTable() {
+
+        return target;
     }
 }
