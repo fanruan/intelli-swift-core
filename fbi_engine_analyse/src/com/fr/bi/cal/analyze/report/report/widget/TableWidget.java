@@ -646,7 +646,11 @@ public class TableWidget extends BISummaryWidget {
         }
         DataConstructor data = BITableConstructHelper.buildTableData(builder);
         BITableConstructHelper.formatCells(data, getITableCellFormatOperationMap(), style);
-        return data.createJSON().put("page", res.getJSONArray("page")).put("viewDimensionsLength", getViewDimensions().length).put("viewTopDimensionsLength", getViewTopDimensions().length).put("widgetType", this.tableType);
+        JSONObject resultJSON = data.createJSON().put("page", res.getJSONArray("page")).put("widgetType", this.tableType);
+        resultJSON.put("viewDimensionsLength", getViewDimensions().length);
+        resultJSON.put("viewTopDimensionsLength", getViewTopDimensions().length);
+        resultJSON.put("viewTargetsLength", getViewTargets().length);
+        return resultJSON;
     }
 
     private Map<String, ITableCellFormatOperation> getITableCellFormatOperationMap() throws Exception {
