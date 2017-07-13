@@ -9,6 +9,7 @@ import com.finebi.cube.conf.BISystemPackageConfigurationProvider;
 import com.finebi.cube.conf.BITableRelationConfigurationProvider;
 import com.finebi.cube.conf.CubeGenerationManager;
 import com.fr.base.FRContext;
+import com.fr.bi.cal.generate.BackUpUtils;
 import com.fr.bi.cal.report.BIActor;
 import com.fr.bi.cal.report.db.DialectCreatorImpl;
 import com.fr.bi.cal.report.db.HiveDialectCreatorImpl;
@@ -23,6 +24,7 @@ import com.fr.bi.fs.BITableMapper;
 import com.fr.bi.fs.entry.BIReportEntry;
 import com.fr.bi.fs.entry.BIReportEntryDAO;
 import com.fr.bi.fs.entry.EntryConstants;
+import com.fr.bi.manager.PerformancePlugManager;
 import com.fr.bi.module.BICoreModule;
 import com.fr.bi.module.BIModule;
 import com.fr.bi.resource.FsResourceHelper;
@@ -78,7 +80,7 @@ public class BIPlate extends AbstractFSPlate {
         initOOMKillerForLinux();
         loadMemoryData();
         createTimerTasks();
-
+        backupWhenStart();
         addBITableColumn4NewConnection();
         addSharedTableColumn4NewConnection();
 
@@ -94,6 +96,12 @@ public class BIPlate extends AbstractFSPlate {
     private void createTimerTasks() {
     /*载入定时任务*/
         CubeGenerationManager.getCubeManager().resetCubeGenerationHour(UserControl.getInstance().getSuperManagerID());
+    }
+
+    private void backupWhenStart(){
+        if(PerformancePlugManager.getInstance().isBackupWhenStart()){
+            BackUpUtils.backup();
+        }
     }
 
     public void loadMemoryData() {
