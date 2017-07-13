@@ -269,8 +269,8 @@ public class DetailExecutor extends AbstractDetailExecutor {
         // 如果是跳转打开的才需要进行设置
         if (bw.getGlobalFilterWidget() != null) {
             // 如果已经设置了源字段和目标字段
-            if (bw.getGlobalFilterWidget().settingSourceAndTargetField()) {
-                g = GVIUtils.AND(g, GolbalFilterUtils.getSettingSourceAndTargetJumpFilter(widget, userId, session, target, bw.getGlobalFilterWidget().getBaseTable()));
+            if (((AbstractBIWidget) bw.getGlobalFilterWidget()).getGlobalSourceAndTargetFieldList().size() > 0) {
+                g = GVIUtils.AND(g, GolbalFilterUtils.getSettingSourceAndTargetJumpFilter(widget, userId, session, target, ((AbstractBIWidget)bw.getGlobalFilterWidget()).getBaseTable()));
             } else {
                 g = GVIUtils.AND(g, GolbalFilterUtils.getNotSettingSourceAndTargetJumpFilter(session, target, widget, false));
             }

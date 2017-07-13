@@ -339,18 +339,6 @@ public abstract class AbstractBIWidget implements BIWidget {
         return data;
     }
 
-    public boolean settingSourceAndTargetField() {
-
-        try {
-            // 有该字段且该字段里面的sourceTargetFields长度>0 即进行了设置
-            return globalFilterSourceAndTargetField != null && globalFilterSourceAndTargetField.length() > 0
-                    && globalFilterSourceAndTargetField.getJSONObject(0).getJSONArray("sourceTargetFields").length() > 0;
-        } catch (Exception e) {
-
-        }
-        return false;
-    }
-
     /**
      * 获取跳转源字段以及目标字段设置
      *
@@ -359,7 +347,7 @@ public abstract class AbstractBIWidget implements BIWidget {
     public List<Map> getGlobalSourceAndTargetFieldList() {
 
         List<Map> r = new ArrayList<Map>();
-        if (settingSourceAndTargetField()) {
+        if (globalFilterSourceAndTargetField != null && globalFilterSourceAndTargetField.length() > 0) {
             try {
                 JSONArray sf = globalFilterSourceAndTargetField.getJSONObject(0).getJSONArray("sourceTargetFields");
                 for (int i = 0; i < sf.length(); i++) {
