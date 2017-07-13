@@ -339,16 +339,6 @@ public abstract class AbstractBIWidget implements BIWidget {
         return data;
     }
 
-    /**
-     * 是否是直接打开模板进行请求的组件
-     *
-     * @return
-     */
-    public boolean directOpen() {
-
-        return globalFilterClick == null || globalFilterWidget == null;
-    }
-
     public boolean settingSourceAndTargetField() {
 
         try {

@@ -61,11 +61,13 @@ public class DetailExecutor extends AbstractDetailExecutor {
                           //前台传过来的从1开始;
                           Paging paging,
                           BISession session) {
+
         super(widget, paging, session);
 
     }
 
     public TableCellIterator createCellIterator4Excel() throws Exception {
+
         final GroupValueIndex gvi = createDetailViewGvi();
         int count = gvi.getRowsCountWithData();
         paging.setTotalSize(count);
@@ -73,7 +75,9 @@ public class DetailExecutor extends AbstractDetailExecutor {
         final Set<Integer> usedDimensionIndexes = getUsedDimensionIndexes();
         final TableCellIterator iter = new TableCellIterator(usedDimensionIndexes.size(), count + 1);
         new Thread() {
+
             public void run() {
+
                 try {
                     final FinalInt start = new FinalInt();
                     List<CBCell> cells = createCellTitle(CellConstant.CBCELL.TARGETTITLE_Y, usedDimensionIndexes);
@@ -82,8 +86,10 @@ public class DetailExecutor extends AbstractDetailExecutor {
                         iter.getIteratorByPage(start.value).addCell(it.next());
                     }
                     TableRowTraversal action = new TableRowTraversal() {
+
                         @Override
                         public boolean actionPerformed(BIRowValue row) {
+
                             int currentRow = (int) row.getRow() + 1;
                             int newRow = currentRow & EXCEL_ROW_MODE_VALUE;
                             if (newRow == 0) {
@@ -108,6 +114,7 @@ public class DetailExecutor extends AbstractDetailExecutor {
 
     @Override
     public Rectangle getSouthEastRectangle() {
+
         return null;
     }
 
@@ -124,8 +131,10 @@ public class DetailExecutor extends AbstractDetailExecutor {
         final BIDetailTarget[] dimensions = widget.getViewDimensions();
         final Set<Integer> usedDimensionIndexes = getUsedDimensionIndexes();
         TableRowTraversal action = new TableRowTraversal() {
+
             @Override
             public boolean actionPerformed(BIRowValue row) {
+
                 Boolean x = checkPage(row);
                 if (x != null) {
                     return x;
@@ -145,7 +154,8 @@ public class DetailExecutor extends AbstractDetailExecutor {
         return jo;
     }
 
-    private Set<Integer> getUsedDimensionIndexes () {
+    private Set<Integer> getUsedDimensionIndexes() {
+
         final BIDetailTarget[] dimensions = widget.getViewDimensions();
         String[] array = widget.getView();
         final Set<Integer> usedDimensionIndexes = new HashSet<Integer>();
@@ -195,6 +205,7 @@ public class DetailExecutor extends AbstractDetailExecutor {
     }
 
     public List<List> getData() {
+
         if (target == null) {
             return new ArrayList<List>();
         }
@@ -202,8 +213,10 @@ public class DetailExecutor extends AbstractDetailExecutor {
         paging.setTotalSize(gvi.getRowsCountWithData());
         final List<List> data = new ArrayList<List>();
         TableRowTraversal action = new TableRowTraversal() {
+
             @Override
             public boolean actionPerformed(BIRowValue row) {
+
                 Boolean x = checkPage(row);
                 if (x != null) {
                     return x;
@@ -223,6 +236,7 @@ public class DetailExecutor extends AbstractDetailExecutor {
     }
 
     private Boolean checkPage(BIRowValue row) {
+
         if (paging.getStartRow() > row.getRow()) {
             return false;
         }
@@ -233,6 +247,7 @@ public class DetailExecutor extends AbstractDetailExecutor {
     }
 
     private void travel(TableRowTraversal action, GroupValueIndex gvi) {
+
         if (gvi.getRowsCountWithData() < MEMORY_LIMIT) {
             GVIRunner runner = new DetailAllGVIRunner(gvi, widget, getLoader(), userId);
             runner.Traversal(action);
@@ -252,7 +267,7 @@ public class DetailExecutor extends AbstractDetailExecutor {
 
         BIDetailWidget bw = (BIDetailWidget) widget;
         // 如果是跳转打开的才需要进行设置
-        if (!bw.directOpen()) {
+        if (bw.getGlobalFilterWidget() != null) {
             // 如果已经设置了源字段和目标字段
             if (bw.getGlobalFilterWidget().settingSourceAndTargetField()) {
                 g = GVIUtils.AND(g, GolbalFilterUtils.getSettingSourceAndTargetJumpFilter(widget, userId, session, target, bw.getGlobalFilterWidget().getBaseTable()));

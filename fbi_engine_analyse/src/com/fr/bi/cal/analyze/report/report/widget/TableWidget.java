@@ -422,7 +422,8 @@ public class TableWidget extends BISummaryWidget {
         }
     }
 
-    public BITableWidgetStyle getWidgetStyle () {
+    public BITableWidgetStyle getWidgetStyle() {
+
         return style;
     }
 
@@ -623,8 +624,6 @@ public class TableWidget extends BISummaryWidget {
     }
 
 
-
-
     @Override
     public void reSetDetailTarget() {
 
@@ -795,7 +794,7 @@ public class TableWidget extends BISummaryWidget {
         }
 
         // 如果是跳转打开的才需要进行设置
-        if (!directOpen()) {
+        if (getGlobalFilterWidget() != null) {
             // 如果已经设置了源字段和目标字段
             if (getGlobalFilterWidget().settingSourceAndTargetField()) {
                 return GolbalFilterUtils.getSettingSourceAndTargetJumpFilter(this, userId, session, targetKey, getGlobalFilterWidget().getBaseTable());
