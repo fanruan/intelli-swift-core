@@ -47,6 +47,10 @@ public interface PerformancePlugManagerInterface {
 
     int getThreadPoolSize();
 
+    void setBackupWhenStart(boolean backupWhenStart);
+
+    boolean isBackupWhenStart();
+
     void setBiTransportThreadPoolSize(int size);
 
     int getBiTransportThreadPoolSize();

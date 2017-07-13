@@ -36,6 +36,7 @@ public class PerformancePlugManager implements PerformancePlugManagerInterface {
     private boolean isSearchPinYin = true;
     private boolean useMultiThreadCal = false;
     private double minCubeFreeHDSpaceRate = 2;
+    private boolean backupWhenStart = false;
 
     //	private String message = "当前模板计算量大或服务器繁忙，请点击上面清除按钮清除条件或稍后再试";
     private boolean diskSort = false;
@@ -120,6 +121,7 @@ public class PerformancePlugManager implements PerformancePlugManagerInterface {
             maxCubeFileSize = getLong(PERFORMANCE + ".maxCubeFileSize", maxCubeFileSize);
             maxStructureSize = getInt(LIMIT + ".maxStructureSize", maxStructureSize);
             maxSPADetailSize = getInt(LIMIT + ".maxSPADetailSize", maxSPADetailSize);
+            backupWhenStart = getBoolean(PERFORMANCE + ".backupWhenStart", backupWhenStart);
 //            logConfiguration();
         } catch (Exception e) {
             BILoggerFactory.getLogger().error(e.getMessage(), e);
@@ -154,6 +156,7 @@ public class PerformancePlugManager implements PerformancePlugManagerInterface {
         LOGGER.info("The value of {}.isDirectGenerating is {}", PERFORMANCE, isDirectGenerating);
         LOGGER.info("The value of {}.isForceWriter is {}", PERFORMANCE, isForceWriter);
         LOGGER.info("The value of {}.maxCubeFileSize is {}", PERFORMANCE, maxCubeFileSize);
+        LOGGER.info("The value of {}.backupWhenStart is {}", PERFORMANCE, backupWhenStart);
         LOGGER.info("");
         LOGGER.info("");
     }
@@ -192,6 +195,16 @@ public class PerformancePlugManager implements PerformancePlugManagerInterface {
     @Override
     public int getThreadPoolSize() {
         return biThreadPoolSize;
+    }
+
+    @Override
+    public void setBackupWhenStart(boolean backupWhenStart) {
+        this.backupWhenStart = backupWhenStart;
+    }
+
+    @Override
+    public boolean isBackupWhenStart() {
+        return backupWhenStart;
     }
 
     @Override
@@ -425,8 +438,9 @@ public class PerformancePlugManager implements PerformancePlugManagerInterface {
     public long getCubeReaderReleaseSleepTime() {
         return cubeReaderReleaseSleepTime;
     }
+
     @Override
-    public boolean isDirectGenerating (){
+    public boolean isDirectGenerating() {
         return isDirectGenerating;
     }
 
