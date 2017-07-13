@@ -461,6 +461,191 @@ public class DateUtils {
     }
 
     /**
+     * 相同的年月日时
+     *
+     * @param time1
+     * @param time2
+     * @return
+     */
+    public static boolean sameYearMonthDayHour(long time1, long time2) {
+
+        Calendar c1 = Calendar.getInstance();
+        Calendar c2 = Calendar.getInstance();
+        c1.setTimeInMillis(time1);
+        c2.setTimeInMillis(time2);
+        return c1.get(Calendar.YEAR) == c2.get(Calendar.YEAR)
+                && c1.get(Calendar.MONTH) == c2.get(Calendar.MONTH)
+                && c1.get(Calendar.DAY_OF_MONTH) == c2.get(Calendar.DAY_OF_MONTH)
+                && c1.get(Calendar.HOUR_OF_DAY) == c2.get(Calendar.HOUR_OF_DAY);
+    }
+
+    /**
+     * 上一个年月日时
+     *
+     * @param st
+     * @return
+     */
+    public static Date lastYearMonthDayHour(long st) {
+
+        Calendar c = Calendar.getInstance();
+        c.setTimeInMillis(st);
+        c.add(Calendar.HOUR_OF_DAY, -1);
+        return c.getTime();
+    }
+
+    /**
+     * 下一个年月日时
+     *
+     * @param st
+     * @return
+     */
+    public static Date nextYearMonthDayHour(long st) {
+
+        Calendar c = Calendar.getInstance();
+        c.setTimeInMillis(st);
+        c.add(Calendar.HOUR_OF_DAY, 1);
+        return c.getTime();
+    }
+
+    /**
+     * time1的年月日时晚于time2的年月日时
+     * time1>time2
+     *
+     * @param time1
+     * @param time2
+     * @return
+     */
+    public static boolean afterYearMonthDayHour(long time1, long time2) {
+
+        return compareDate(time1, time2) > 0;
+    }
+
+
+    /**
+     * 相同的年月日时分
+     *
+     * @param time1
+     * @param time2
+     * @return
+     */
+    public static boolean sameYearMonthDayHourMinute(long time1, long time2) {
+
+        Calendar c1 = Calendar.getInstance();
+        Calendar c2 = Calendar.getInstance();
+        c1.setTimeInMillis(time1);
+        c2.setTimeInMillis(time2);
+        return c1.get(Calendar.YEAR) == c2.get(Calendar.YEAR)
+                && c1.get(Calendar.MONTH) == c2.get(Calendar.MONTH)
+                && c1.get(Calendar.DAY_OF_MONTH) == c2.get(Calendar.DAY_OF_MONTH)
+                && c1.get(Calendar.HOUR_OF_DAY) == c2.get(Calendar.HOUR_OF_DAY)
+                && c1.get(Calendar.MINUTE) == c2.get(Calendar.MINUTE);
+    }
+
+    /**
+     * 上一个年月日时分
+     *
+     * @param st
+     * @return
+     */
+    public static Date lastYearMonthDayHourMinute(long st) {
+
+        Calendar c = Calendar.getInstance();
+        c.setTimeInMillis(st);
+        c.add(Calendar.MINUTE, -1);
+        return c.getTime();
+    }
+
+    /**
+     * 下一个年月日时分
+     *
+     * @param st
+     * @return
+     */
+    public static Date nextYearMonthDayHourMinute(long st) {
+
+        Calendar c = Calendar.getInstance();
+        c.setTimeInMillis(st);
+        c.add(Calendar.MINUTE, 1);
+        return c.getTime();
+    }
+
+    /**
+     * time1的年月日时分晚于time2的年月日时分
+     * time1>time2
+     *
+     * @param time1
+     * @param time2
+     * @return
+     */
+    public static boolean afterYearMonthDayHourMinute(long time1, long time2) {
+
+        return compareDate(time1, time2) > 0;
+    }
+
+    /**
+     * 相同的年月日时分秒
+     *
+     * @param time1
+     * @param time2
+     * @return
+     */
+    public static boolean sameYearMonthDayHourMinuteSecond(long time1, long time2) {
+
+        Calendar c1 = Calendar.getInstance();
+        Calendar c2 = Calendar.getInstance();
+        c1.setTimeInMillis(time1);
+        c2.setTimeInMillis(time2);
+        return c1.get(Calendar.YEAR) == c2.get(Calendar.YEAR)
+                && c1.get(Calendar.MONTH) == c2.get(Calendar.MONTH)
+                && c1.get(Calendar.DAY_OF_MONTH) == c2.get(Calendar.DAY_OF_MONTH)
+                && c1.get(Calendar.HOUR_OF_DAY) == c2.get(Calendar.HOUR_OF_DAY)
+                && c1.get(Calendar.MINUTE) == c2.get(Calendar.MINUTE)
+                && c1.get(Calendar.SECOND) == c2.get(Calendar.SECOND);
+    }
+
+    /**
+     * 上一个年月日时分秒
+     *
+     * @param st
+     * @return
+     */
+    public static Date lastYearMonthDayHourMinuteSecond(long st) {
+
+        Calendar c = Calendar.getInstance();
+        c.setTimeInMillis(st);
+        c.add(Calendar.SECOND, -1);
+        return c.getTime();
+    }
+
+    /**
+     * 下一个年月日时分秒
+     *
+     * @param st
+     * @return
+     */
+    public static Date nextYearMonthDayHourMinuteSecond(long st) {
+
+        Calendar c = Calendar.getInstance();
+        c.setTimeInMillis(st);
+        c.add(Calendar.SECOND, 1);
+        return c.getTime();
+    }
+
+    /**
+     * time1的年月日时分秒晚于time2的年月日时分秒
+     * time1>time2
+     *
+     * @param time1
+     * @param time2
+     * @return
+     */
+    public static boolean afterYearMonthDayHourMinuteSecond(long time1, long time2) {
+
+        return compareDate(time1, time2) > 0;
+    }
+
+
+    /**
      * CUBE类型的integer时间类型
      *
      * @param groupType
