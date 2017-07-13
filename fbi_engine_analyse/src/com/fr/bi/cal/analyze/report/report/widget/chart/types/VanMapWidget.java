@@ -77,25 +77,7 @@ public class VanMapWidget extends VanChartWidget{
     }
 
     protected JSONObject parseLegend(JSONObject settings) throws JSONException{
-
-        JSONObject legend = super.parseLegend(settings);
-
-        JSONArray mapStyle;
-        if(settings.optInt("styleRadio", AUTO) == AUTO){
-            legend.put("range", JSONObject.create().put("color", settings.optString("themeColor")));
-        }else{
-            mapStyle = settings.optJSONArray("mapStyles");
-            legend.put("range", this.mapStyleToRange(mapStyle));
-        }
-
-        legend.put("continuous", false);
-
-        BISummaryTarget[] targets = this.getTargets();
-        if(targets.length > 0){
-            legend.put("formatter", this.intervalLegendFormatter(this.valueFormat(targets[0]), this.valueUnit(targets[0], true)));
-        }
-
-        return legend;
+        return revertMapLegend(settings, super.parseLegend(settings));
     }
 
     protected JSONObject populateDefaultSettings() throws JSONException {

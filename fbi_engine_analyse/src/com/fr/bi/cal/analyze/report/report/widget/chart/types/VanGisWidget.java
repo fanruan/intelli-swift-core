@@ -20,8 +20,6 @@ public class VanGisWidget extends VanChartWidget{
     protected JSONObject populateDefaultSettings() throws JSONException {
         JSONObject settings = super.populateDefaultSettings();
 
-        settings.put("isShowBackgroundLayer", true);
-
         settings.put("backgroundLayerInfo", Inter.getLocText("BI-GAO_DE_MAP"));
 
         return settings;
@@ -33,10 +31,8 @@ public class VanGisWidget extends VanChartWidget{
         JSONObject settings = this.getDetailChartSetting();
 
         JSONObject geo = JSONObject.create();
-        if(settings.optBoolean("isShowBackgroundLayer")){
-            JSONObject config = BIWMSManager.getInstance().getWMSInfo(settings.optString("backgroundLayerInfo"));
-            geo.put("tileLayer", config.optString("url"));
-        }
+        JSONObject config = BIWMSManager.getInstance().getWMSInfo(settings.optString("backgroundLayerInfo"));
+        geo.put("tileLayer", config.optString("url"));
         options.put("geo", geo);
 
         return options;
@@ -103,8 +99,41 @@ public class VanGisWidget extends VanChartWidget{
         options.put("rangeLegend", JSONObject.create().put("enabled", false));
     }
 
+    protected JSONObject parseLegend(JSONObject settings) throws JSONException{
+        return revertMapLegend(settings, super.parseLegend(settings));
+    }
+
     //地图因为gis背景，不自适应颜色
     protected JSONObject defaultFont() throws JSONException {
         return JSONObject.create().put("fontFamily", "Microsoft YaHei").put("fontSize", "12px").put("color", "#666666");
+    }
+
+    protected NameLngLat calculateNameLngLat(JSONObject jsonObject) throws JSONException{
+        NameLngLat nameLngLat = new NameLngLat();
+
+        nameLngLat.name = jsonObject.optString("n");
+        JSONObject lnglat = jsonObject.optJSONArray("c").optJSONObject(0);
+        if(lnglat.has("c")){
+            nameLngLat.lnglat[0] = lnglat.optString("n");
+            nameLngLat.lnglat[1] = lnglat.optJSONArray("c").optJSONObject(0).optString("n");
+        } else {
+            //todo: @shine search lng lat from json
+        }
+
+        if(jsonObject.has("s")){
+            nameLngLat.value = getJSONValue(jsonObject);
+        }
+
+        return nameLngLat;
+    }
+
+    protected String getJSONValue(JSONObject jsonObject) throws JSONException {
+        return jsonObject.optJSONArray("s").optString(0);
+    }
+
+    protected class NameLngLat {
+        String name;
+        String[] lnglat = new String[2];
+        String value;
     }
 }
