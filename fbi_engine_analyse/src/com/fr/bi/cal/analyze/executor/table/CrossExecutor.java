@@ -451,22 +451,6 @@ public class CrossExecutor extends AbstractTableWidgetExecutor<NewCrossRoot> {
         return getCubeNode().toJSONObject(rowDimension, colDimension, widget.getTargetsKey());
     }
 
-    @Override
-    public List<MetricGroupInfo> getLinkedWidgetFilterGVIList() throws Exception {
-
-        if (getSession() == null) {
-            return null;
-        }
-        int calPage = paging.getOperator();
-        List<NodeAndPageInfo> infoList = CubeIndexLoader.getInstance(session.getUserId()).getPageCrossGroupInfoList(createTarget4Calculate(), rowDimension, colDimension, allSumTarget, calPage, widget.useRealData(), session, expander, widget);
-        ArrayList<MetricGroupInfo> gviList = new ArrayList<MetricGroupInfo>();
-        for (NodeAndPageInfo info : infoList) {
-            gviList.addAll(info.getIterator().getRoot().getMetricGroupInfoList());
-        }
-        return gviList;
-
-    }
-
     private void clearNullSummary(CrossHeader left, TargetGettingKey[] keys) {
 
         for (TargetGettingKey key : keys) {

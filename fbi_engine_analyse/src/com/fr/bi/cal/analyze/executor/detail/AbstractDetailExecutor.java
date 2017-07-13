@@ -46,13 +46,19 @@ public abstract class AbstractDetailExecutor extends BIAbstractExecutor<JSONObje
 
 
     protected transient BusinessTable target;
+
     protected transient BIDetailTarget[] viewDimension;
+
     protected transient String[] sortTargets;
+
     private transient GroupValueIndex currentGvi;
+
     protected transient long userId;
+
     protected BIDetailWidget widget;
 
     public AbstractDetailExecutor(BIDetailWidget widget, Paging paging, BISession session) {
+
         super(widget, paging, session);
         this.target = widget.getTargetDimension();
         this.widget = widget;
@@ -64,7 +70,8 @@ public abstract class AbstractDetailExecutor extends BIAbstractExecutor<JSONObje
     }
 
 
-    protected GroupValueIndex createDetailViewGvi() {
+    public GroupValueIndex createDetailViewGvi() {
+
         if (currentGvi == null) {
             ICubeTableService ti = getLoader().getTableIndex(target.getTableSource());
             GroupValueIndex gvi = ti.getAllShowIndex();
@@ -104,6 +111,7 @@ public abstract class AbstractDetailExecutor extends BIAbstractExecutor<JSONObje
     abstract protected GroupValueIndex getJumpLinkFilter(GroupValueIndex g);
 
     private BIDetailTarget getTargetById(String id) {
+
         BIDetailTarget target = null;
         for (int i = 0; i < viewDimension.length; i++) {
             if (BIComparatorUtils.isExactlyEquals(viewDimension[i].getValue(), id)) {
@@ -116,6 +124,7 @@ public abstract class AbstractDetailExecutor extends BIAbstractExecutor<JSONObje
 
     //创建一个数字格
     private void createNumberCellElement(StreamPagedIterator iter, int rowIndex, int row) {
+
         CBCell cell = ExecutorUtils.createCell(rowIndex, row, 1, 0, 1, Style.getInstance());
         List tcellList = new ArrayList();
         tcellList.add(cell);
@@ -169,6 +178,7 @@ public abstract class AbstractDetailExecutor extends BIAbstractExecutor<JSONObje
     }
 
     protected List<CBCell> createCellTitle(int cellType, Set<Integer> usedDimensionIndexes) {
+
         List<CBCell> cells = new LinkedList<CBCell>();
         BIDetailTarget[] viewDimension = widget.getViewDimensions();
         int columnIndex = 0;

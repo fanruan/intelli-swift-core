@@ -265,7 +265,7 @@ public class DetailExecutor extends AbstractDetailExecutor {
 
     protected GroupValueIndex getJumpLinkFilter(GroupValueIndex g) {
 
-        BIDetailWidget bw = (BIDetailWidget) widget;
+        BIDetailWidget bw = widget;
         // 如果是跳转打开的才需要进行设置
         if (bw.getGlobalFilterWidget() != null) {
             // 如果已经设置了源字段和目标字段

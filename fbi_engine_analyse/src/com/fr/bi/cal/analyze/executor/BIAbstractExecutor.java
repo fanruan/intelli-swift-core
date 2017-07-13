@@ -36,11 +36,6 @@ public abstract class BIAbstractExecutor<T> implements BIEngineExecutor<T> {
         return session.getLoader();
     }
 
-    @Override
-    public List<MetricGroupInfo> getLinkedWidgetFilterGVIList() throws Exception {
-        return new ArrayList<MetricGroupInfo>();
-    }
-
     /**
      * 获取点击节点代表的gvi
      *

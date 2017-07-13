@@ -247,28 +247,6 @@ public class GroupExecutor extends AbstractTableWidgetExecutor<Node> {
         return getCubeNode().toJSONObject(usedDimensions, widget.getTargetsKey(), -1);
     }
 
-    @Override
-    public List<MetricGroupInfo> getLinkedWidgetFilterGVIList() throws Exception {
-
-        if (session == null) {
-            return null;
-        }
-        int rowLength = usedDimensions.length;
-        int summaryLength = usedSumTarget.length;
-        int columnLen = rowLength + summaryLength;
-        if (columnLen == 0) {
-            return null;
-        }
-        int calPage = paging.getOperator();
-        CubeIndexLoader cubeIndexLoader = CubeIndexLoader.getInstance(session.getUserId());
-        List<NodeAndPageInfo> infoList = cubeIndexLoader.getPageGroupInfoList(false, widget, createTarget4Calculate(), usedDimensions,
-                                                                              allDimensions, allSumTarget, calPage, widget.isRealData(), session, expander.getYExpander());
-        ArrayList<MetricGroupInfo> gviList = new ArrayList<MetricGroupInfo>();
-        for (NodeAndPageInfo info : infoList) {
-            gviList.addAll(info.getIterator().getRoot().getMetricGroupInfoList());
-        }
-        return gviList;
-    }
 
     public Node getStopOnRowNode(Object[] stopRow) throws Exception {
 
