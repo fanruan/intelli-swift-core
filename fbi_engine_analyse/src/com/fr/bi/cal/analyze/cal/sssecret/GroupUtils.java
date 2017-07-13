@@ -36,7 +36,7 @@ public class GroupUtils {
         AtomicInteger size = new AtomicInteger(0);
         Status allAdded = new Status();
         addSummaryValue(node, gc, showSum, shouldSetIndex, executor, count, size, calculated, allAdded);
-        addChild(iterator, op, showSum, shouldSetIndex, sumLength, executor, node, gc, count, size, calculated, allAdded);
+        addChild(iterator, op, true, shouldSetIndex, sumLength, executor, node, gc, count, size, calculated, allAdded);
         allAdded.setCompleted();
         if (executor == null || count.get() == size.get()){
             calculated.setCompleted();
