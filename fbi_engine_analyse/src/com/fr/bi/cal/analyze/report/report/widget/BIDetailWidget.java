@@ -74,27 +74,22 @@ public class BIDetailWidget extends AbstractBIWidget {
 
     private Map<String, JSONArray> clicked = new HashMap<String, JSONArray>();
 
-    @Override
     public BIDetailTarget[] getDimensions() {
         return dimensions;
     }
 
-    @Override
     public BIDetailTarget[] getViewDimensions() {
         return this.getDimensions();
     }
 
-    @Override
     public BIDetailTarget[] getTargets() {
         return getDimensions();
     }
 
-    @Override
     public BIDetailTarget[] getViewTargets() {
         return getViewDimensions();
     }
 
-    @Override
     public List<BusinessTable> getUsedTableDefine() {
         List<BusinessTable> result = new ArrayList<BusinessTable>();
         BIDetailTarget[] dm = this.getDimensions();
@@ -109,7 +104,6 @@ public class BIDetailWidget extends AbstractBIWidget {
         return result;
     }
 
-    @Override
     public List<BusinessField> getUsedFieldDefine() {
         List<BusinessField> result = new ArrayList<BusinessField>();
         BIDetailTarget[] dm = this.getDimensions();
@@ -122,19 +116,10 @@ public class BIDetailWidget extends AbstractBIWidget {
         return result;
     }
 
-    @Override
     public int isOrder() {
         return data.isOrder();
     }
 
-    public String[] getView() {
-        if (data != null) {
-            return data.getView();
-        }
-        return new String[0];
-    }
-
-    @Override
     public JSONObject createDataJSON(BISessionProvider session, HttpServletRequest req) throws Exception {
         JSONObject jo = new JSONObject();
         Paging paging = PagingFactory.createPaging(BIExcutorConstant.PAGINGTYPE.GROUP100);
@@ -146,17 +131,14 @@ public class BIDetailWidget extends AbstractBIWidget {
         return jo;
     }
 
-    @Override
     public WidgetType getType() {
         return WidgetType.DETAIL;
     }
 
-    @Override
     protected TemplateBlock createBIBlock(BISession session) {
         return new PolyCubeDetailECBlock(this, session, page);
     }
 
-    @Override
     public void reSetDetailTarget() {
         for (BIDetailTarget ele : getDimensions()) {
             if (ele != null) {
@@ -286,6 +268,7 @@ public class BIDetailWidget extends AbstractBIWidget {
         }
     }
 
+    @Override
     public JSONObject getPostOptions(BISessionProvider session, HttpServletRequest req) throws Exception {
         JSONObject data = this.createDataJSON(session, req);
         JSONObject dataJSON = data.getJSONObject("data");
@@ -369,6 +352,23 @@ public class BIDetailWidget extends AbstractBIWidget {
         return dimAndTar;
     }
 
+    private boolean isAnalysisSource(CubeTableSource newSource) {
+        List analysisTypes = new ArrayList();
+        analysisTypes.add(BIBaseConstant.TABLE_TYPE.BASE);
+        analysisTypes.add(BIBaseConstant.TABLE_TYPE.ETL);
+        analysisTypes.add(BIBaseConstant.TABLE_TYPE.TEMP);
+        analysisTypes.add(BIBaseConstant.TABLE_TYPE.USER_BASE);
+        analysisTypes.add(BIBaseConstant.TABLE_TYPE.USER_ETL);
+        return analysisTypes.contains(newSource.getType());
+    }
+
+    public String[] getView() {
+        if (data != null) {
+            return data.getView();
+        }
+        return new String[0];
+    }
+
     public TableWidget getLinkWidget() {
         return linkedWidget;
     }
@@ -391,16 +391,6 @@ public class BIDetailWidget extends AbstractBIWidget {
 
     public void setPage(int page) {
         this.page = page;
-    }
-
-    private boolean isAnalysisSource(CubeTableSource newSource) {
-        List analysisTypes = new ArrayList();
-        analysisTypes.add(BIBaseConstant.TABLE_TYPE.BASE);
-        analysisTypes.add(BIBaseConstant.TABLE_TYPE.ETL);
-        analysisTypes.add(BIBaseConstant.TABLE_TYPE.TEMP);
-        analysisTypes.add(BIBaseConstant.TABLE_TYPE.USER_BASE);
-        analysisTypes.add(BIBaseConstant.TABLE_TYPE.USER_ETL);
-        return analysisTypes.contains(newSource.getType());
     }
 
     public Map<String, TargetFilter> getTargetFilterMap() {
