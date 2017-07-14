@@ -23,7 +23,7 @@ import com.fr.bi.cal.analyze.report.report.widget.chart.export.item.constructor.
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.utils.BITableConstructHelper;
 import com.fr.bi.cal.analyze.report.report.widget.detail.BIDetailReportSetting;
 import com.fr.bi.cal.analyze.report.report.widget.detail.BIDetailSetting;
-import com.fr.bi.cal.analyze.report.report.widget.style.BITableWidgetStyle;
+import com.fr.bi.conf.report.conf.BIWidgetSettings;
 import com.fr.bi.cal.analyze.session.BISession;
 import com.fr.bi.common.persistent.xml.BIIgnoreField;
 import com.fr.bi.conf.report.WidgetType;
@@ -61,30 +61,18 @@ public class BIDetailWidget extends AbstractBIWidget {
     private BIDetailSetting data;
     @BICoreField
     private BIDetailTarget[] dimensions = new BIDetailTarget[0];
-    @BIIgnoreField
-    private /*transient*/ BIDetailTarget[] usedDimensions;
     @BICoreField
     private Map<String, TargetFilter> targetFilterMap = new LinkedHashMap<String, TargetFilter>();
 
     @BICoreField
     private BusinessTable target;//目标表
-    private List<String> parent_widget = new ArrayList<String>();
     private String[] sortTargets = new String[0];
-    private BITableWidgetStyle widgetStyle;
     //page from 1~ max
     private int page = 1;
 
     private TableWidget linkedWidget;
 
     private Map<String, JSONArray> clicked = new HashMap<String, JSONArray>();
-
-    public int getPage() {
-        return page;
-    }
-
-    public void setPage(int page) {
-        this.page = page;
-    }
 
     @Override
     public BIDetailTarget[] getDimensions() {
@@ -93,25 +81,7 @@ public class BIDetailWidget extends AbstractBIWidget {
 
     @Override
     public BIDetailTarget[] getViewDimensions() {
-        //后台不判断是不是使用状态，默认就是所有都使用
         return this.getDimensions();
-//        if (usedDimensions != null) {
-//            return usedDimensions;
-//        }
-//        BIDetailTarget[] dims = getDimensions();
-//        if (data != null) {
-//            String[] array = data.getView();
-//            List<BIDetailTarget> usedDimensions = new ArrayList<BIDetailTarget>();
-//            for (String anArray : array) {
-//                BIDetailTarget dimension = BITravalUtils.getTargetByName(anArray, dimensions);
-//                if(dimension.isUsed()) {
-//                    usedDimensions.add(dimension);
-//                }
-//            }
-//            dims = usedDimensions.toArray(new BIDetailTarget[usedDimensions.size()]);
-//        }
-//        usedDimensions = dims;
-//        return dims;
     }
 
     @Override
@@ -152,26 +122,51 @@ public class BIDetailWidget extends AbstractBIWidget {
         return result;
     }
 
+    @Override
+    public int isOrder() {
+        return data.isOrder();
+    }
 
-    public Map<String, TargetFilter> getTargetFilterMap() {
-        return targetFilterMap;
+    public String[] getView() {
+        if (data != null) {
+            return data.getView();
+        }
+        return new String[0];
+    }
+
+    @Override
+    public JSONObject createDataJSON(BISessionProvider session, HttpServletRequest req) throws Exception {
+        JSONObject jo = new JSONObject();
+        Paging paging = PagingFactory.createPaging(BIExcutorConstant.PAGINGTYPE.GROUP100);
+        paging.setCurrentPage(page);
+        DetailExecutor exe = new DetailExecutor(this, paging, (BISession) session);
+        jo.put("data", exe.getCubeNode());
+        jo.put("row", paging.getTotalSize());
+        jo.put("size", paging.getPageSize());
+        return jo;
+    }
+
+    @Override
+    public WidgetType getType() {
+        return WidgetType.DETAIL;
+    }
+
+    @Override
+    protected TemplateBlock createBIBlock(BISession session) {
+        return new PolyCubeDetailECBlock(this, session, page);
     }
 
 
-    public void setTargetTable(long userID) {
-        BITableID targetTableID = new BITableID();
-        for (BIDetailTarget target : dimensions) {
-            if (!(target instanceof BINumberFormulaDetailTarget)) {
-                targetTableID = target.createTableKey().getID();
-                break;
+    @Override
+    public void reSetDetailTarget() {
+        for (BIDetailTarget ele : getDimensions()) {
+            if (ele != null) {
+                ele.reSetDetailGetter();
             }
         }
-        target = BIModuleUtils.getAnalysisBusinessTableById(new BITableID(targetTableID));
-        for (int i = 0; i < dimensions.length; i++) {
-            List<BITableRelation> relations = dimensions[i].getRelationList(null, userID);
-            if (!relations.isEmpty()) {
-                target = relations.get(relations.size() - 1).getForeignTable();
-                break;
+        for (BIDetailTarget ele : getViewDimensions()) {
+            if (ele != null) {
+                ele.reSetDetailGetter();
             }
         }
     }
@@ -184,7 +179,6 @@ public class BIDetailWidget extends AbstractBIWidget {
             data = new BIDetailReportSetting();
             data.parseJSON(jo);
         }
-        parseWidgetStyle(jo);
         if (jo.has("sortSequence")) {
             JSONArray ja = jo.getJSONArray("sortSequence");
             int len = ja.length();
@@ -229,13 +223,6 @@ public class BIDetailWidget extends AbstractBIWidget {
         }
     }
 
-    private void parseWidgetStyle(JSONObject jo) throws Exception {
-        widgetStyle = new BITableWidgetStyle();
-        if (jo.has("settings")) {
-            widgetStyle.parseJSON(jo);
-        }
-    }
-
     private void parseDimensions(JSONObject jo, long userId) throws Exception {
         JSONObject dims = jo.getJSONObject("dimensions");
         JSONArray view = jo.getJSONObject("view").getJSONArray(BIReportConstant.REGION.DIMENSION1);
@@ -256,40 +243,12 @@ public class BIDetailWidget extends AbstractBIWidget {
         setTargetTable(userId);
     }
 
-    public BITableWidgetStyle getWidgetStyle() {
-        return widgetStyle;
-    }
-
     public BusinessTable getTargetDimension() {
         return target;
     }
 
     public String[] getSortTargets() {
         return sortTargets;
-    }
-
-    @Override
-    public int isOrder() {
-        return data.isOrder();
-    }
-
-    public String[] getView() {
-        if (data != null) {
-            return data.getView();
-        }
-        return new String[0];
-    }
-
-    @Override
-    public JSONObject createDataJSON(BISessionProvider session, HttpServletRequest req) throws Exception {
-        JSONObject jo = new JSONObject();
-        Paging paging = PagingFactory.createPaging(BIExcutorConstant.PAGINGTYPE.GROUP100);
-        paging.setCurrentPage(page);
-        DetailExecutor exe = new DetailExecutor(this, paging, (BISession) session);
-        jo.put("data", exe.getCubeNode());
-        jo.put("row", paging.getTotalSize());
-        jo.put("size", paging.getPageSize());
-        return jo;
     }
 
     @Override
@@ -311,37 +270,20 @@ public class BIDetailWidget extends AbstractBIWidget {
         }
     }
 
-    private boolean isAnalysisSource(CubeTableSource newSource) {
-        List analysisTypes = new ArrayList();
-        analysisTypes.add(BIBaseConstant.TABLE_TYPE.BASE);
-        analysisTypes.add(BIBaseConstant.TABLE_TYPE.ETL);
-        analysisTypes.add(BIBaseConstant.TABLE_TYPE.TEMP);
-        analysisTypes.add(BIBaseConstant.TABLE_TYPE.USER_BASE);
-        analysisTypes.add(BIBaseConstant.TABLE_TYPE.USER_ETL);
-        return analysisTypes.contains(newSource.getType());
-    }
-
-    @Override
-    public WidgetType getType() {
-        return WidgetType.DETAIL;
-    }
-
-    @Override
-    protected TemplateBlock createBIBlock(BISession session) {
-        return new PolyCubeDetailECBlock(this, session, page);
-    }
-
-
-    @Override
-    public void reSetDetailTarget() {
-        for (BIDetailTarget ele : getDimensions()) {
-            if (ele != null) {
-                ele.reSetDetailGetter();
+    public void setTargetTable(long userID) {
+        BITableID targetTableID = new BITableID();
+        for (BIDetailTarget target : dimensions) {
+            if (!(target instanceof BINumberFormulaDetailTarget)) {
+                targetTableID = target.createTableKey().getID();
+                break;
             }
         }
-        for (BIDetailTarget ele : getViewDimensions()) {
-            if (ele != null) {
-                ele.reSetDetailGetter();
+        target = BIModuleUtils.getAnalysisBusinessTableById(new BITableID(targetTableID));
+        for (int i = 0; i < dimensions.length; i++) {
+            List<BITableRelation> relations = dimensions[i].getRelationList(null, userID);
+            if (!relations.isEmpty()) {
+                target = relations.get(relations.size() - 1).getForeignTable();
+                break;
             }
         }
     }
@@ -350,9 +292,9 @@ public class BIDetailWidget extends AbstractBIWidget {
         JSONObject data = this.createDataJSON(session, req);
         JSONObject dataJSON = data.getJSONObject("data");
         Map<Integer, List<JSONObject>> viewMap = createViewMap();
-        IExcelDataBuilder builder = new DetailTableBuilder(viewMap, dataJSON, widgetStyle);
+        IExcelDataBuilder builder = new DetailTableBuilder(viewMap, dataJSON, getWidgetSettings());
         DataConstructor tableData = BITableConstructHelper.buildTableData(builder);
-        BITableConstructHelper.formatCells(tableData, createChartDimensions(), widgetStyle);
+        BITableConstructHelper.formatCells(tableData, createChartDimensions(), getWidgetSettings());
         JSONObject res = new JSONObject();
         res.put("row", data.optLong("row", 0));
         res.put("header", tableData.createJSON().get("header"));
@@ -367,7 +309,7 @@ public class BIDetailWidget extends AbstractBIWidget {
         res.put("items", itemsArray);
         res.put("widgetType", getType().getType());
         res.put("dimensionLength", getViewDimensions().length).put("row", data.optLong("row", 0)).put("size", data.optLong("size", 0));
-        res.put("settings", tableData.getWidgetStyle().createJSON());
+        res.put("settings", tableData.getWidgetSettings().createJSON());
         return res;
     }
 
@@ -443,5 +385,27 @@ public class BIDetailWidget extends AbstractBIWidget {
 
     public void setClicked(Map<String, JSONArray> clicked) {
         this.clicked = clicked;
+    }
+
+    public int getPage() {
+        return page;
+    }
+
+    public void setPage(int page) {
+        this.page = page;
+    }
+
+    private boolean isAnalysisSource(CubeTableSource newSource) {
+        List analysisTypes = new ArrayList();
+        analysisTypes.add(BIBaseConstant.TABLE_TYPE.BASE);
+        analysisTypes.add(BIBaseConstant.TABLE_TYPE.ETL);
+        analysisTypes.add(BIBaseConstant.TABLE_TYPE.TEMP);
+        analysisTypes.add(BIBaseConstant.TABLE_TYPE.USER_BASE);
+        analysisTypes.add(BIBaseConstant.TABLE_TYPE.USER_ETL);
+        return analysisTypes.contains(newSource.getType());
+    }
+
+    public Map<String, TargetFilter> getTargetFilterMap() {
+        return targetFilterMap;
     }
 }

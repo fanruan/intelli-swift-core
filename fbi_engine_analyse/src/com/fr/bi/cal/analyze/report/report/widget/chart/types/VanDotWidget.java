@@ -394,7 +394,7 @@ public class VanDotWidget extends VanCartesianWidget{
 
         WidgetType chartType = this.getChartType();
         if(chartType == WidgetType.DOT){
-            JSONObject scopes = this.getChartSetting().getScopes();
+            JSONObject scopes = this.getWidgetConf().getScopes();
 
             int type = BUBBLE;
             try {

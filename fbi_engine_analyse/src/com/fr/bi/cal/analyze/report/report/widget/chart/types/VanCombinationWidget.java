@@ -35,7 +35,7 @@ public class VanCombinationWidget extends VanCartesianWidget{
 
     private VanCombineType getVanCombineType(String dimensionID){
 
-        JSONObject scopes = this.getChartSetting().getScopes();
+        JSONObject scopes = this.getWidgetConf().getScopes();
 
         String regionID = this.getRegionID(dimensionID);
 

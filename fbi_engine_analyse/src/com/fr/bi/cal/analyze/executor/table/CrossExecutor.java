@@ -67,8 +67,8 @@ public class CrossExecutor extends AbstractTableWidgetExecutor<NewCrossRoot> {
 
         int len = usedSumTarget.length;
         TargetGettingKey[] keys = new TargetGettingKey[len];
-        boolean isWholeCol = keys.length == 0 || !widget.getChartSetting().showColTotal();
-        boolean isWholeRow = keys.length == 0 || !widget.getChartSetting().showRowTotal();
+        boolean isWholeCol = keys.length == 0 || !widget.getWidgetSettings().isShowColTotal();
+        boolean isWholeRow = keys.length == 0 || !widget.getWidgetSettings().isShowRowTotal();
         int columnLen = (isWholeCol ? node.getTop().getTotalLength() :
                 node.getTop().getTotalLengthWithSummary()) * Math.max(1, keys.length) + rowDimension.length + widget.isOrder();
         int rowLen = (isWholeRow ? node.getLeft().getTotalLength() :
@@ -383,7 +383,7 @@ public class CrossExecutor extends AbstractTableWidgetExecutor<NewCrossRoot> {
             Style style = Style.getInstance();
             for (TargetGettingKey key : widget.getTargetsKey()) {
                 Object v = temp.getSummaryValue(key);
-                boolean isPercent = widget.getChartSetting().getNumberLevelByTargetId(key.getTargetName()) == BIReportConstant.TARGET_STYLE.NUM_LEVEL.PERCENT;
+                boolean isPercent = widget.getWidgetConf().getNumberLevelByTargetId(key.getTargetName()) == BIReportConstant.TARGET_STYLE.NUM_LEVEL.PERCENT;
                 style = BITableStyle.getInstance().getNumberCellStyle(v, (rowIdx - titleRowSpan + 1) % 2 == 1, isPercent);
                 CBCell cell = ExecutorUtils.createCell(v, rowIdx, 1, columnIdx.value, 1, style);
                 pagedIterator.addCell(cell);

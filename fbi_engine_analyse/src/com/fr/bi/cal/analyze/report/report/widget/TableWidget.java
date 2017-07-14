@@ -21,14 +21,14 @@ import com.fr.bi.cal.analyze.report.report.widget.chart.export.format.setting.BI
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.format.setting.ICellFormatSetting;
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.item.constructor.DataConstructor;
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.utils.BITableConstructHelper;
-import com.fr.bi.cal.analyze.report.report.widget.style.BITableWidgetStyle;
+import com.fr.bi.conf.report.conf.BIWidgetSettings;
 import com.fr.bi.cal.analyze.report.report.widget.table.BITableReportSetting;
 import com.fr.bi.cal.analyze.session.BISession;
 import com.fr.bi.common.persistent.annotation.PersistNameHistory;
 import com.fr.bi.common.persistent.xml.BIIgnoreField;
 import com.fr.bi.conf.report.WidgetType;
-import com.fr.bi.conf.report.style.DetailChartSetting;
-import com.fr.bi.conf.report.widget.IWidgetStyle;
+import com.fr.bi.conf.report.conf.BIWidgetConf;
+import com.fr.bi.conf.report.widget.BIWidgetStyle;
 import com.fr.bi.conf.report.widget.field.BITargetAndDimension;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.conf.report.widget.field.target.BITarget;
@@ -90,7 +90,8 @@ public class TableWidget extends BISummaryWidget {
     @BIIgnoreField
     private transient BISummaryTarget[] usedTargets;
 
-    private DetailChartSetting settings = new DetailChartSetting();
+    @BIIgnoreField
+    private BIWidgetConf widgetConf = new BIWidgetConf();
 
     protected Map<String, JSONArray> clicked = new HashMap<String, JSONArray>();
 
@@ -100,17 +101,8 @@ public class TableWidget extends BISummaryWidget {
 
     protected Map<Integer, List<String>> view = new HashMap<Integer, List<String>>();
 
-    private BITableWidgetStyle style;
-
-    @Override
-    public void setPageSpinner(int index, int value) {
-
-        this.pageSpinner[index] = value;
-    }
-
     private TableWidget linkedWidget;
 
-    @Override
     public BIDimension[] getViewDimensions() {
 
         if (usedDimension != null) {
@@ -132,7 +124,6 @@ public class TableWidget extends BISummaryWidget {
         return dimensions;
     }
 
-    @Override
     public BISummaryTarget[] getViewTargets() {
 
         if (usedTargets != null) {
@@ -154,26 +145,52 @@ public class TableWidget extends BISummaryWidget {
         return targets;
     }
 
-    public BIDimension[] getViewTopDimensions() {
+    public void reSetDetailTarget() {
 
-        BIDimension[] dimensions = getDimensions();
-        if (data != null) {
-            String[] array = data.getColumn();
-            ArrayList<BIDimension> usedDimensions = new ArrayList<BIDimension>();
-            for (int i = 0; i < array.length; i++) {
-                BIDimension dimension = BITravalUtils.getTargetByName(array[i], dimensions);
-                if (dimension.isUsed()) {
-                    usedDimensions.add(dimension);
-                }
-            }
-            return usedDimensions.toArray(new BIDimension[usedDimensions.size()]);
-        }
-        return dimensions;
     }
 
-    public boolean useRealData() {
+    @Override
+    public void setPageSpinner(int index, int value) {
+        this.pageSpinner[index] = value;
+    }
 
-        return data.useRealData();
+    @Override
+    public boolean showRowToTal() {
+        return getWidgetSettings().isShowRowTotal();
+    }
+
+    @Override
+    public boolean showColumnTotal() {
+        return getWidgetSettings().isShowColTotal();
+    }
+
+    @Override
+    public JSONObject getPostOptions(BISessionProvider session, HttpServletRequest req) throws Exception {
+
+        JSONObject res = this.createDataJSON(session, req);
+        JSONObject dataJSON = res.getJSONObject("data");
+        Map<Integer, List<JSONObject>> viewMap = this.createViewMap();
+        IExcelDataBuilder builder = null;
+        switch (this.tableType) {
+            case BIReportConstant.TABLE_WIDGET.CROSS_TYPE:
+                builder = new SummaryCrossTableDataBuilder(viewMap, dataJSON, getWidgetSettings());
+                break;
+            case BIReportConstant.TABLE_WIDGET.GROUP_TYPE:
+                builder = new SummaryGroupTableDataBuilder(viewMap, dataJSON, getWidgetSettings());
+                break;
+            case BIReportConstant.TABLE_WIDGET.COMPLEX_TYPE:
+                builder = new SummaryComplexTableBuilder(viewMap, dataJSON, getWidgetSettings());
+                break;
+        }
+        DataConstructor data = BITableConstructHelper.buildTableData(builder);
+        BITableConstructHelper.formatCells(data, getITableCellFormatOperationMap(), getWidgetSettings());
+        return data.createJSON().put("page", res.getJSONArray("page")).put("viewDimensionsLength", getViewDimensions().length).put("viewTopDimensionsLength", getViewTopDimensions().length).put("widgetType", this.tableType);
+    }
+
+    @Override
+    public WidgetType getType() {
+
+        return WidgetType.TABLE;
     }
 
     /**
@@ -183,101 +200,7 @@ public class TableWidget extends BISummaryWidget {
      */
     @Override
     public int isOrder() {
-
-        return settings.isOrder();
-    }
-
-    public BIEngineExecutor getExecutor(BISession session) {
-
-        boolean calculateTarget = targetSort != null || !targetFilterMap.isEmpty();
-        CrossExpander expander = new CrossExpander(complexExpander.getXExpander(0), complexExpander.getYExpander(0));
-        boolean hasTarget = calculateTarget || getViewTargets().length > 0;
-        if (this.tableType == BIReportConstant.TABLE_WIDGET.COMPLEX_TYPE || this.tableType == BIReportConstant.WIDGET.DOT) {
-            return createComplexExecutor(session, hasTarget, complexExpander, expander);
-        } else {
-            return createNormalExecutor(session, hasTarget, getViewDimensions(), getViewTopDimensions(), expander);
-        }
-    }
-
-    public void setGroupTableType() {
-
-        tableType = BIReportConstant.TABLE_WIDGET.GROUP_TYPE;
-    }
-
-    public void addColumn2Row() {
-
-        if (data != null) {
-            data.addColumn2Row();
-            String[] array = data.getRow();
-            ArrayList<BIDimension> usedDimensions = new ArrayList<BIDimension>();
-            for (String anArray : array) {
-                BIDimension dimension = BITravalUtils.getTargetByName(anArray, dimensions);
-                if (dimension.isUsed()) {
-                    usedDimensions.add(dimension);
-                }
-            }
-            usedDimension = usedDimensions.toArray(new BIDimension[usedDimensions.size()]);
-        }
-    }
-
-    /**
-     * 返回费复杂报表时的excute
-     *
-     * @param hasTarget 是否需要指标
-     * @return 表格处理excute
-     */
-    public BIEngineExecutor createComplexExecutor(BISession session, boolean hasTarget, ComplexExpander complexExpander, CrossExpander expander) {
-
-        BIEngineExecutor executor;
-        int summaryLen = getViewTargets().length;
-        ArrayList<ArrayList<String>> row = data.getComplex_x_dimension();
-        ArrayList<ArrayList<String>> column = data.getComplex_y_dimension();
-        BIComplexExecutData rowData = new BIComplexExecutData(row, dimensions);
-        BIComplexExecutData columnData = new BIComplexExecutData(column, dimensions);
-        int columnLen = columnData.getDimensionArrayLength();
-        int rowLen = rowData.getDimensionArrayLength();
-        if (rowData.getDimensionArrayLength() <= 1 && columnData.getDimensionArrayLength() <= 1) {
-            return this.createNormalExecutor(session, hasTarget, rowData.getDimensionArray(0), columnData.getDimensionArray(0), expander);
-        }
-        //行表头区域里没有维度
-        boolean b0 = !column.isEmpty() && rowLen == 0 && hasTarget;
-        boolean b1 = !column.isEmpty() && rowLen == 0 && summaryLen == 0;
-        //列表头区域里没有维度
-        boolean b2 = !row.isEmpty() && columnLen == 0 && hasTarget;
-        boolean b3 = !row.isEmpty() && columnLen == 0 && summaryLen == 0;
-        if (b0) {
-            executor = new ComplexHorGroupExecutor(this, PagingFactory.createPaging(PagingFactory.PAGE_PER_GROUP_20, operator), column, session, complexExpander);
-        } else if (b1) {
-            //原来是ComplexHorGroupNoneExecutor, 先改成ComplexHorGroupExecutor，有问题再改回来
-            executor = new ComplexHorGroupExecutor(this, PagingFactory.createPaging(PagingFactory.PAGE_PER_GROUP_20, operator), column, session, complexExpander);
-        } else if (b2) {
-            executor = new ComplexGroupExecutor(this, PagingFactory.createPaging(PagingFactory.PAGE_PER_GROUP_20, operator), row, session, complexExpander);
-        } else if (b3) {
-            //同b1
-            executor = new ComplexGroupExecutor(this, PagingFactory.createPaging(PagingFactory.PAGE_PER_GROUP_20, operator), row, session, complexExpander);
-        } else {
-            executor = new ComplexCrossExecutor(this, PagingFactory.createPaging(PagingFactory.PAGE_PER_GROUP_20, operator), row, column, session, complexExpander);
-        }
-        return executor;
-    }
-
-    private BIEngineExecutor createNormalExecutor(BISession session, boolean hasTarget, BIDimension[] usedRows, BIDimension[] usedColumn, CrossExpander expander) {
-
-        BIEngineExecutor executor;
-        int summaryLen = getViewTargets().length;
-        //有列表头和指标 horGroupExecutor 垂直的分组表
-        boolean b0 = usedColumn.length > 0 && usedRows.length == 0 && hasTarget;
-        //有表头没有指标
-        boolean b2 = usedRows.length >= 0 && usedColumn.length == 0;
-        if (b0) {
-            executor = new HorGroupExecutor(this, PagingFactory.createPaging(PagingFactory.PAGE_PER_GROUP_20, operator), session, expander);
-        } else if (b2) {
-            executor = new GroupExecutor(this, PagingFactory.createPaging(PagingFactory.PAGE_PER_GROUP_20, operator), session, expander);
-        } else {
-            executor = new CrossExecutor(this, usedRows, usedColumn, PagingFactory.createPaging(PagingFactory.PAGE_PER_GROUP_20, operator), session, expander);
-        }
-
-        return executor;
+        return getWidgetConf().isOrder();
     }
 
     @Override
@@ -328,10 +251,6 @@ public class TableWidget extends BISummaryWidget {
         if (jo.has(BIJSONConstant.JSON_KEYS.EXPANDER)) {
             parsExpander(jo);
         }
-        if (jo.has("settings")) {
-            settings = new DetailChartSetting();
-            settings.parseJSON(jo);
-        }
         if (jo.has("clicked")) {
             JSONObject c = jo.getJSONObject("clicked");
             Iterator it = c.keys();
@@ -342,13 +261,6 @@ public class TableWidget extends BISummaryWidget {
         }
         changeCalculateTargetStartGroup();
         createDimensionAndTargetMap();
-        createWidgetStyles(jo);
-    }
-
-    private void createWidgetStyles(JSONObject jo) throws Exception {
-
-        style = new BITableWidgetStyle();
-        style.parseJSON(jo);
     }
 
     private void createDimAndTars(JSONObject jo) throws Exception {
@@ -419,10 +331,6 @@ public class TableWidget extends BISummaryWidget {
         }
     }
 
-    public BITableWidgetStyle getWidgetStyle () {
-        return style;
-    }
-
     public String getDimensionName(String id) {
 
         BISummaryTarget target = this.targetsIdMap.get(id);
@@ -439,11 +347,6 @@ public class TableWidget extends BISummaryWidget {
 
         }
         return dimensionIds.toArray(new String[0]);
-    }
-
-    public DetailChartSetting getChartSetting() {
-
-        return settings;
     }
 
     public String[] getAllDimensionIds() {
@@ -497,23 +400,6 @@ public class TableWidget extends BISummaryWidget {
         }
         String id = drill.getJSONObject(drill.length() - 1).getString("dId");
         return dimensionsIdMap.get(id);
-    }
-
-    public boolean showRowToTal() {
-
-        return settings.showRowTotal();
-    }
-
-    @Override
-    public boolean showColumnTotal() {
-
-        return settings.showColTotal();
-    }
-
-    @Override
-    public WidgetType getType() {
-
-        return WidgetType.TABLE;
     }
 
     public void setOperator(int operator) {
@@ -616,37 +502,6 @@ public class TableWidget extends BISummaryWidget {
             }
         }
         return null;
-    }
-
-
-
-
-    @Override
-    public void reSetDetailTarget() {
-
-    }
-
-    /*todo 想办法把数据和样式格式分离出来*/
-    public JSONObject getPostOptions(BISessionProvider session, HttpServletRequest req) throws Exception {
-
-        JSONObject res = this.createDataJSON(session, req);
-        JSONObject dataJSON = res.getJSONObject("data");
-        Map<Integer, List<JSONObject>> viewMap = this.createViewMap();
-        IExcelDataBuilder builder = null;
-        switch (this.tableType) {
-            case BIReportConstant.TABLE_WIDGET.CROSS_TYPE:
-                builder = new SummaryCrossTableDataBuilder(viewMap, dataJSON, style);
-                break;
-            case BIReportConstant.TABLE_WIDGET.GROUP_TYPE:
-                builder = new SummaryGroupTableDataBuilder(viewMap, dataJSON, style);
-                break;
-            case BIReportConstant.TABLE_WIDGET.COMPLEX_TYPE:
-                builder = new SummaryComplexTableBuilder(viewMap, dataJSON, style);
-                break;
-        }
-        DataConstructor data = BITableConstructHelper.buildTableData(builder);
-        BITableConstructHelper.formatCells(data, getITableCellFormatOperationMap(), style);
-        return data.createJSON().put("page", res.getJSONArray("page")).put("viewDimensionsLength", getViewDimensions().length).put("viewTopDimensionsLength", getViewTopDimensions().length).put("widgetType", this.tableType);
     }
 
     /*假数据，测试用*/
@@ -752,8 +607,118 @@ public class TableWidget extends BISummaryWidget {
         return dimAndTar;
     }
 
-    public IWidgetStyle getStyle() {
+    public BIDimension[] getViewTopDimensions() {
 
-        return style;
+        BIDimension[] dimensions = getDimensions();
+        if (data != null) {
+            String[] array = data.getColumn();
+            ArrayList<BIDimension> usedDimensions = new ArrayList<BIDimension>();
+            for (int i = 0; i < array.length; i++) {
+                BIDimension dimension = BITravalUtils.getTargetByName(array[i], dimensions);
+                if (dimension.isUsed()) {
+                    usedDimensions.add(dimension);
+                }
+            }
+            return usedDimensions.toArray(new BIDimension[usedDimensions.size()]);
+        }
+        return dimensions;
+    }
+
+    public boolean useRealData() {
+
+        return data.useRealData();
+    }
+
+    public BIEngineExecutor getExecutor(BISession session) {
+
+        boolean calculateTarget = targetSort != null || !targetFilterMap.isEmpty();
+        CrossExpander expander = new CrossExpander(complexExpander.getXExpander(0), complexExpander.getYExpander(0));
+        boolean hasTarget = calculateTarget || getViewTargets().length > 0;
+        if (this.tableType == BIReportConstant.TABLE_WIDGET.COMPLEX_TYPE || this.tableType == BIReportConstant.WIDGET.DOT) {
+            return createComplexExecutor(session, hasTarget, complexExpander, expander);
+        } else {
+            return createNormalExecutor(session, hasTarget, getViewDimensions(), getViewTopDimensions(), expander);
+        }
+    }
+
+    public void setGroupTableType() {
+
+        tableType = BIReportConstant.TABLE_WIDGET.GROUP_TYPE;
+    }
+
+    public void addColumn2Row() {
+
+        if (data != null) {
+            data.addColumn2Row();
+            String[] array = data.getRow();
+            ArrayList<BIDimension> usedDimensions = new ArrayList<BIDimension>();
+            for (String anArray : array) {
+                BIDimension dimension = BITravalUtils.getTargetByName(anArray, dimensions);
+                if (dimension.isUsed()) {
+                    usedDimensions.add(dimension);
+                }
+            }
+            usedDimension = usedDimensions.toArray(new BIDimension[usedDimensions.size()]);
+        }
+    }
+
+    /**
+     * 返回费复杂报表时的excute
+     *
+     * @param hasTarget 是否需要指标
+     * @return 表格处理excute
+     */
+    public BIEngineExecutor createComplexExecutor(BISession session, boolean hasTarget, ComplexExpander complexExpander, CrossExpander expander) {
+
+        BIEngineExecutor executor;
+        int summaryLen = getViewTargets().length;
+        ArrayList<ArrayList<String>> row = data.getComplex_x_dimension();
+        ArrayList<ArrayList<String>> column = data.getComplex_y_dimension();
+        BIComplexExecutData rowData = new BIComplexExecutData(row, dimensions);
+        BIComplexExecutData columnData = new BIComplexExecutData(column, dimensions);
+        int columnLen = columnData.getDimensionArrayLength();
+        int rowLen = rowData.getDimensionArrayLength();
+        if (rowData.getDimensionArrayLength() <= 1 && columnData.getDimensionArrayLength() <= 1) {
+            return this.createNormalExecutor(session, hasTarget, rowData.getDimensionArray(0), columnData.getDimensionArray(0), expander);
+        }
+        //行表头区域里没有维度
+        boolean b0 = !column.isEmpty() && rowLen == 0 && hasTarget;
+        boolean b1 = !column.isEmpty() && rowLen == 0 && summaryLen == 0;
+        //列表头区域里没有维度
+        boolean b2 = !row.isEmpty() && columnLen == 0 && hasTarget;
+        boolean b3 = !row.isEmpty() && columnLen == 0 && summaryLen == 0;
+        if (b0) {
+            executor = new ComplexHorGroupExecutor(this, PagingFactory.createPaging(PagingFactory.PAGE_PER_GROUP_20, operator), column, session, complexExpander);
+        } else if (b1) {
+            //原来是ComplexHorGroupNoneExecutor, 先改成ComplexHorGroupExecutor，有问题再改回来
+            executor = new ComplexHorGroupExecutor(this, PagingFactory.createPaging(PagingFactory.PAGE_PER_GROUP_20, operator), column, session, complexExpander);
+        } else if (b2) {
+            executor = new ComplexGroupExecutor(this, PagingFactory.createPaging(PagingFactory.PAGE_PER_GROUP_20, operator), row, session, complexExpander);
+        } else if (b3) {
+            //同b1
+            executor = new ComplexGroupExecutor(this, PagingFactory.createPaging(PagingFactory.PAGE_PER_GROUP_20, operator), row, session, complexExpander);
+        } else {
+            executor = new ComplexCrossExecutor(this, PagingFactory.createPaging(PagingFactory.PAGE_PER_GROUP_20, operator), row, column, session, complexExpander);
+        }
+        return executor;
+    }
+
+    private BIEngineExecutor createNormalExecutor(BISession session, boolean hasTarget, BIDimension[] usedRows, BIDimension[] usedColumn, CrossExpander expander) {
+
+        BIEngineExecutor executor;
+        int summaryLen = getViewTargets().length;
+        //有列表头和指标 horGroupExecutor 垂直的分组表
+        boolean b0 = usedColumn.length > 0 && usedRows.length == 0 && hasTarget;
+        //有表头没有指标
+        boolean b2 = usedRows.length >= 0 && usedColumn.length == 0;
+        if (b0) {
+            executor = new HorGroupExecutor(this, PagingFactory.createPaging(PagingFactory.PAGE_PER_GROUP_20, operator), session, expander);
+        } else if (b2) {
+            executor = new GroupExecutor(this, PagingFactory.createPaging(PagingFactory.PAGE_PER_GROUP_20, operator), session, expander);
+        } else {
+            executor = new CrossExecutor(this, usedRows, usedColumn, PagingFactory.createPaging(PagingFactory.PAGE_PER_GROUP_20, operator), session, expander);
+        }
+
+        return executor;
     }
 }

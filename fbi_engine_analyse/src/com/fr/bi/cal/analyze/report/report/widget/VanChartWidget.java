@@ -8,7 +8,7 @@ import com.fr.bi.conf.fs.FBIConfig;
 import com.fr.bi.conf.fs.tablechartstyle.BIChartFontStyleAttr;
 import com.fr.bi.conf.report.WidgetType;
 import com.fr.bi.conf.report.map.BIMapInfoManager;
-import com.fr.bi.conf.report.style.DetailChartSetting;
+import com.fr.bi.conf.report.conf.BIWidgetConf;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.conf.session.BISessionProvider;
 import com.fr.bi.field.target.target.BISummaryTarget;
@@ -581,8 +581,8 @@ public abstract class VanChartWidget extends TableWidget {
         if(globalStyle.has("widgetBackground")) {
             color = checkValidColor(globalStyle.optJSONObject("widgetBackground").optString("value"), color);
         }
-
-        JSONObject settings = this.getChartSetting().getDetailChartSetting();
+        //马上改
+        JSONObject settings = this.getWidgetConf().getDetailWidgetSetting();
         if(settings.has("widgetBG")){
             color = checkValidColor(settings.optJSONObject("widgetBG").optString("value"), color);
         }
@@ -635,7 +635,7 @@ public abstract class VanChartWidget extends TableWidget {
 
     //todo:@shine 每次get都populate and merge一遍
     protected JSONObject getDetailChartSetting() throws JSONException {
-        JSONObject settings = this.getChartSetting().getDetailChartSetting();
+        JSONObject settings = this.getWidgetConf().getDetailWidgetSetting();
 
         return merge(settings, this.populateDefaultSettings());
     }
@@ -645,7 +645,7 @@ public abstract class VanChartWidget extends TableWidget {
         this.locale = WebUtils.getLocale(req);
 
         //globalStyle从前台传过来的json取，不从.fbi模板取原因：设置全局样式，先刷新图表，后save模板，所以刷新图表取得全局样式不是最新的
-        this.globalStyle = this.getChartSetting().getGlobalStyle();
+        this.globalStyle = this.getWidgetConf().getGlobalStyle();
         this.globalStyle = this.globalStyle == null ? JSONObject.create() : this.globalStyle;
 
         return this.createOptions(globalStyle, data).put("data", data);
@@ -675,9 +675,8 @@ public abstract class VanChartWidget extends TableWidget {
      * @return
      */
     protected boolean needOpenBigDateModel(){
-
-        DetailChartSetting cs = getChartSetting();
-        JSONObject setting = cs.getDetailChartSetting();
+        BIWidgetConf cs = getWidgetConf();
+        JSONObject setting = cs.getDetailWidgetSetting();
         if(setting.has("bigDataMode") && setting.optBoolean("bigDataMode",false)){
             return false;
         }

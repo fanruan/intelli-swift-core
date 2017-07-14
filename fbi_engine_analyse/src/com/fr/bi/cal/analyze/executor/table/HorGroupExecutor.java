@@ -56,7 +56,7 @@ public class HorGroupExecutor extends AbstractTableWidgetExecutor<Node> {
         int rowLength = colDimension.length + usedSumTarget.length;
         int columnLength = node.getTotalLength() + widget.isOrder() + 1;
         //显示不显示汇总行
-        int rowLen = widget.getChartSetting().showRowTotal() ? node.getTotalLengthWithSummary() : node.getTotalLength();
+        int rowLen = widget.getWidgetSettings().isShowRowTotal() ? node.getTotalLengthWithSummary() : node.getTotalLength();
         rectangle = new Rectangle(rowLength + widget.isOrder(), 1, columnLength + widget.isOrder() - 1, rowLen);
         final TableCellIterator iter = new TableCellIterator(columnLength, rowLength);
         new Thread() {
@@ -154,7 +154,7 @@ public class HorGroupExecutor extends AbstractTableWidgetExecutor<Node> {
             Node temp = node;
             while (temp != null) {
                 Object data = temp.getSummaryValue(keys[i]);
-                boolean isPercent = widget.getChartSetting().getNumberLevelByTargetId(keys[i].getTargetName()) == BIReportConstant.TARGET_STYLE.NUM_LEVEL.PERCENT;
+                boolean isPercent = widget.getWidgetConf().getNumberLevelByTargetId(keys[i].getTargetName()) == BIReportConstant.TARGET_STYLE.NUM_LEVEL.PERCENT;
                 Style style = BITableStyle.getInstance().getNumberCellStyle(data, (i + 1) % 2 == 1, isPercent);
                 CBCell cell = ExecutorUtils.createCell(data, rowIdx + i, 1, columnIdx.value++, 1, style);
                 pagedIterator.addCell(cell);
