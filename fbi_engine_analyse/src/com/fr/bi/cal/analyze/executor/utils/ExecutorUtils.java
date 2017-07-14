@@ -79,7 +79,7 @@ public class ExecutorUtils {
         switch (decimal) {
             case BIReportConstant.TARGET_STYLE.FORMAT.NORMAL:
                 result = new StringBuilder(separator ? "#,##0.##" : "0.##");
-                if (v.toString().endsWith(".0") || checkValueWithOutDot(v)) {
+                if(v.toString().endsWith(".0")) {
                     result = new StringBuilder(separator ? "#,##0" : "#0");
                 }
                 break;
@@ -94,16 +94,6 @@ public class ExecutorUtils {
             result.append("%");
         }
         return new CoreDecimalFormat(new DecimalFormat(result.toString()), result.toString());
-    }
-
-    private static boolean checkValueWithOutDot(Object v) {
-        String str = v.toString();
-        if (str.contains("E")) {
-            int len1 = str.indexOf("E") - str.indexOf(".");
-            int len2 = Integer.valueOf(str.substring(str.indexOf("E") + 1, str.length()));
-            return len1 <= len2;
-        }
-        return !str.contains(".");
     }
 
     public static CBCell createCellWithOutStyle(Object v, int rowIdx, int rowSpan, int columnIdx, int columnSpan) {
