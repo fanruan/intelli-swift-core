@@ -27,8 +27,8 @@ import com.fr.bi.cal.analyze.session.BISession;
 import com.fr.bi.common.persistent.annotation.PersistNameHistory;
 import com.fr.bi.common.persistent.xml.BIIgnoreField;
 import com.fr.bi.conf.report.WidgetType;
-import com.fr.bi.conf.report.style.DetailChartSetting;
-import com.fr.bi.conf.report.widget.IWidgetStyle;
+import com.fr.bi.conf.report.style.BIWidgetConfig;
+import com.fr.bi.conf.report.widget.BIWidgetStyle;
 import com.fr.bi.conf.report.widget.field.BITargetAndDimension;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.conf.report.widget.field.target.BITarget;
@@ -90,7 +90,7 @@ public class TableWidget extends BISummaryWidget {
     @BIIgnoreField
     private transient BISummaryTarget[] usedTargets;
 
-    private DetailChartSetting settings = new DetailChartSetting();
+    private BIWidgetConfig detailSettings = new BIWidgetConfig();
 
     protected Map<String, JSONArray> clicked = new HashMap<String, JSONArray>();
 
@@ -184,7 +184,7 @@ public class TableWidget extends BISummaryWidget {
     @Override
     public int isOrder() {
 
-        return settings.isOrder();
+        return detailSettings.isOrder();
     }
 
     public BIEngineExecutor getExecutor(BISession session) {
@@ -329,8 +329,8 @@ public class TableWidget extends BISummaryWidget {
             parsExpander(jo);
         }
         if (jo.has("settings")) {
-            settings = new DetailChartSetting();
-            settings.parseJSON(jo);
+            detailSettings = new BIWidgetConfig();
+            detailSettings.parseJSON(jo);
         }
         if (jo.has("clicked")) {
             JSONObject c = jo.getJSONObject("clicked");
@@ -441,9 +441,9 @@ public class TableWidget extends BISummaryWidget {
         return dimensionIds.toArray(new String[0]);
     }
 
-    public DetailChartSetting getChartSetting() {
+    public BIWidgetConfig getChartSetting() {
 
-        return settings;
+        return detailSettings;
     }
 
     public String[] getAllDimensionIds() {
@@ -501,13 +501,13 @@ public class TableWidget extends BISummaryWidget {
 
     public boolean showRowToTal() {
 
-        return settings.showRowTotal();
+        return detailSettings.showRowTotal();
     }
 
     @Override
     public boolean showColumnTotal() {
 
-        return settings.showColTotal();
+        return detailSettings.showColTotal();
     }
 
     @Override
@@ -749,7 +749,7 @@ public class TableWidget extends BISummaryWidget {
         return dimAndTar;
     }
 
-    public IWidgetStyle getStyle() {
+    public BIWidgetStyle getStyle() {
 
         return style;
     }
