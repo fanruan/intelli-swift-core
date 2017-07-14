@@ -175,7 +175,7 @@ public abstract class AbstractBIWidget implements BIWidget {
         return new JSONObject();
     }
 
-    public JSONObject createChartConfigWidthData(JSONObject data) throws Exception{
+    public JSONObject generateResult(BIWidgetConf widgetConf, JSONObject data) throws Exception{
         return data;
     }
 
