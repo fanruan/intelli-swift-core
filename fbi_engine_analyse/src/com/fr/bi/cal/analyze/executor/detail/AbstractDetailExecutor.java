@@ -183,7 +183,7 @@ public abstract class AbstractDetailExecutor extends BIAbstractExecutor<JSONObje
                     JSONObject settings = chartSetting.getSettings();
                     int numLevel = settings.optInt("numLevel", BIReportConstant.TARGET_STYLE.NUM_LEVEL.NORMAL);
                     boolean separator = settings.optBoolean("numSeparators", true);
-                    int formatDecimal = settings.optInt("formatDecimal", BIReportConstant.TARGET_STYLE.FORMAT.ZERO2POINT);
+                    int formatDecimal = settings.optInt("formatDecimal", BIReportConstant.TARGET_STYLE.FORMAT.NORMAL);
                     v = ExecutorUtils.formatExtremeSumValue(v, numLevel);
                     cellStyle = Style.getInstance().deriveFormat(ExecutorUtils.formatDecimalAndSeparator(v, numLevel, formatDecimal, separator));
                 }
