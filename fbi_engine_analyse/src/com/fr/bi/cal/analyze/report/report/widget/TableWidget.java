@@ -646,15 +646,12 @@ public class TableWidget extends BISummaryWidget {
         }
         DataConstructor data = BITableConstructHelper.buildTableData(builder);
         BITableConstructHelper.formatCells(data, getITableCellFormatOperationMap(), style);
-        return data.createJSON().put("page", res.getJSONArray("page")).put("dimensionLength", getViewDimensions().length).put("widgetType", this.tableType);
+        JSONObject resultJSON = data.createJSON().put("page", res.getJSONArray("page")).put("widgetType", this.tableType);
+        resultJSON.put("viewDimensionsLength", getViewDimensions().length);
+        resultJSON.put("viewTopDimensionsLength", getViewTopDimensions().length);
+        resultJSON.put("viewTargetsLength", getViewTargets().length);
+        return resultJSON;
     }
-
-    /*假数据，测试用*/
-    //    private JSONObject createTestData() throws IOException, JSONException {
-    //        StringBuffer keysStr = new StringBuffer();
-    //        String s = BIFileUtils.readFile("C:\\data.json");
-    //        return data.createJSON().put("page", res.getJSONArray("page")).put("dimensionLength",dimensions.length).put("header",createTestData().get("header")).put("crossHeader",createTestData().get("crossHeader")).put("items",createTestData().get("items")).put("crossItems",createTestData().get("crossItems"));
-    //    }
 
     private Map<String, ITableCellFormatOperation> getITableCellFormatOperationMap() throws Exception {
 

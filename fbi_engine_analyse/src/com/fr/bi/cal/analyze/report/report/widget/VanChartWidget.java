@@ -26,7 +26,6 @@ import com.fr.json.JSONObject;
 import com.fr.stable.CodeUtils;
 import com.fr.stable.StableUtils;
 import com.fr.stable.StringUtils;
-import com.fr.web.core.SessionDealWith;
 import com.fr.web.utils.WebUtils;
 
 import javax.servlet.http.HttpServletRequest;
@@ -42,6 +41,7 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
+
 import java.util.List;
 import java.util.Locale;
 
@@ -358,7 +358,7 @@ public abstract class VanChartWidget extends TableWidget {
     }
 
     protected String getCompleteImageUrl (String url) {
-        return requestURL + "?op=fr_bi&cmd=get_uploaded_image&image_id=" + url;
+        return requestURL + "?op=fr_bi&cmd=get_uploaded_image&imageId=" + url;
     }
 
     protected String getLocalImagePath(String url){
@@ -582,6 +582,11 @@ public abstract class VanChartWidget extends TableWidget {
             color = checkValidColor(globalStyle.optJSONObject("widgetBackground").optString("value"), color);
         }
 
+        JSONObject settings = this.getChartSetting().getDetailChartSetting();
+        if(settings.has("widgetBG")){
+            color = checkValidColor(settings.optJSONObject("widgetBG").optString("value"), color);
+        }
+
         BIChartFontStyleAttr fontStyleAttr = platConfig.getChartFont();
         if(fontStyleAttr != null){
             String fontColor = fontStyleAttr.getColor();
@@ -601,7 +606,6 @@ public abstract class VanChartWidget extends TableWidget {
             fontWeight = chartFont.optString("fontWeight", fontWeight);
             fontStyle = chartFont.optString("fontStyle", fontStyle);
         }
-
         return JSONObject.create().put("fontFamily", "Microsoft YaHei").put("fontSize", "12px")
                 .put("color", color).put("fontWeight", fontWeight).put("fontStyle", fontStyle);
     }
@@ -677,10 +681,7 @@ public abstract class VanChartWidget extends TableWidget {
         if(setting.has("bigDataMode") && setting.optBoolean("bigDataMode",false)){
             return false;
         }
-        if(isRealData()){
-            return true;
-        }
-        return false;
+        return isRealData();
     }
 
 /*
@@ -857,6 +858,8 @@ public abstract class VanChartWidget extends TableWidget {
         this.defaultFormatSeriesDataLabelFormat(options);
     }
 
+    //todo: @shine 4.1版本现在的label是遍历series和point，每个都plotoptions。labeljaon。tostring。不好。
+    //todo: @shine 4.1版本所有涉及到遍历point和series看看能不能归到一起。
     protected void defaultFormatSeriesDataLabelFormat(JSONObject options) throws Exception {
         JSONObject dataLabels = options.optJSONObject("plotOptions").optJSONObject(dataLabelsKey());
 

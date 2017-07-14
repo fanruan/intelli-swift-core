@@ -150,7 +150,7 @@ public class NodeIteratorCreator {
 
     //如果参数要求全部计算，或者有需要全部计算的配置类计算
     private boolean isaAllNode() {
-        return calAllPage || hasAllCalculateMetrics(targetIdMap.keySet());
+        return calAllPage || hasAllCalculateMetrics(targetIdMap.keySet()) || (hasDimensionRelation() && hasAllNodeDimensionFilter());
     }
 
     public IRootDimensionGroup createRoot() {
@@ -203,7 +203,7 @@ public class NodeIteratorCreator {
         for (int i = 0; i < rowDimension.length; i++) {
             //只有最后一层才算配置类计算
             boolean calSingleNodeMetrics = hasSingleNodeCalMetrics && i == rowDimension.length - 1;
-            if (calAllNode(calIndirectFilter, i, calSingleNodeMetrics)) {
+            if (calAllNode(calIndirectFilter, rowDimension[i].getFilter(), i, calSingleNodeMetrics)) {
                 createAllNodeCreator(mergeIteratorCreators, i, calIndirectFilter ? null : rowDimension[i].getFilter(), dimensionTargetSort[i], new SimpleMergeIteratorCreator(), executor, calSingleNodeMetrics);
             } else {
                 mergeIteratorCreators[i] = new SimpleMergeIteratorCreator();
@@ -212,9 +212,9 @@ public class NodeIteratorCreator {
         return mergeIteratorCreators;
     }
 
-    private boolean calAllNode(boolean calIndirectFilter, int i, boolean calSingleNodeMetrics) {
+    private boolean calAllNode(boolean calIndirectFilter, DimensionFilter filter, int i, boolean calSingleNodeMetrics) {
         //没有计算不能转化为索引的维度过滤，或者有指标排序，或者计算需要整个节点的配置类计算，就计算单个节点
-        return !calIndirectFilter || BISortUtils.hasTargetSort(dimensionTargetSort[i]) || calSingleNodeMetrics;
+        return (!calIndirectFilter && filter != null && !filter.canCreateDirectFilter()) || BISortUtils.hasTargetSort(dimensionTargetSort[i]) || calSingleNodeMetrics;
     }
 
     //IndirectFilter的MergeIteratorCreator, 不需要处理排序, 同时, 只有第一个维度可以多线程计算, 如果第二个维度用多线程, 当构建当前节点的任务跟计算当前子节点的任务排在一个队列时会死锁
@@ -306,6 +306,28 @@ public class NodeIteratorCreator {
         return false;
     }
 
+    //BI-6715,如果有关联计算，则需要全部计算
+    private boolean hasDimensionRelation() {
+        for (MetricGroupInfo metricGroupInfo : metricGroupInfoList) {
+            for (DimensionCalculator calculator : metricGroupInfo.getRows()) {
+                if (calculator.getRelationList().size() > 0) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    private boolean hasAllNodeDimensionFilter() {
+        boolean hasAllNodeFilter = false;
+        for (BIDimension dimension : rowDimension) {
+            if (dimension.getFilter() != null) {
+                hasAllNodeFilter = hasAllNodeFilter || !dimension.getFilter().isSingleNodeFilter();
+            }
+        }
+        return hasAllNodeFilter;
+    }
+
     //获取相关的基本指标（非计算指标）
 
     private void getRelatedNormalIds(String name, Set<String> ids) {
@@ -389,7 +411,7 @@ public class NodeIteratorCreator {
         }
         //是否提前计算了维度过滤
         //如果有配置类计算的过滤，则需要构建完node之后再计算，之前的过滤一个都别动，要不然影响配置类计算的。
-        boolean canPreFilter = hasDimensionInDirectFilter() && !hasAllNodeIndirectDimensionFilter();
+        boolean canPreFilter = hasDimensionInDirectFilter() && !hasAllNodeIndirectDimensionFilter() && !(hasDimensionRelation() && hasAllNodeDimensionFilter());
         ConstructedRootDimensionGroup constructedRootDimensionGroup = createConstructedRootDimensionGroup(canPreFilter);
         //如果没有配置类计算的过滤，并且最后一个维度没有过滤，可以先算一下IndirectFilter
         if (canPreFilter) {

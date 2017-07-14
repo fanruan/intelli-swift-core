@@ -73,10 +73,7 @@ public class GroupExecutor extends AbstractTableWidgetExecutor<Node> {
         int rowLength = usedDimensions.length;
         int summaryLength = usedSumTarget.length;
         int columnLen = rowLength + summaryLength;
-        TargetGettingKey[] keys = new TargetGettingKey[summaryLength];
-        for (int i = 0; i < summaryLength; i++) {
-            keys[i] = usedSumTarget[i].createTargetGettingKey();
-        }
+
         //显示不显示汇总行
         int rowLen = tree.getTotalLengthWithSummary();
         //        final boolean useTargetSort = widget.useTargetSort() || BITargetAndDimensionUtils.isTargetSort(usedDimensions);
@@ -184,7 +181,7 @@ public class GroupExecutor extends AbstractTableWidgetExecutor<Node> {
             boolean separator = widget.getChartSetting().getSeparatorByTargetId(key.getTargetName());
             data = ExecutorUtils.formatExtremeSumValue(data, numLevel);
             Style style = Style.getInstance();
-            style = style.deriveFormat(ExecutorUtils.formatDecimalAndSeparator(numLevel, formatDecimal, separator));
+            style = style.deriveFormat(ExecutorUtils.formatDecimalAndSeparator(data, numLevel, formatDecimal, separator));
             CBCell cell = ExecutorUtils.createCell(data, rowIdx, 1, columnIdx, 1, style);
             pagedIterator.addCell(cell);
             targetsKeyIndex++;

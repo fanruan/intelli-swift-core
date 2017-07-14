@@ -1,24 +1,17 @@
 package com.fr.bi.cal.analyze.report.report.widget.chart.types;
 
-import com.fr.base.FRContext;
 import com.fr.bi.cal.analyze.report.report.widget.VanChartWidget;
 import com.fr.bi.conf.report.map.BIMapInfoManager;
 import com.fr.bi.conf.report.map.BIWMSManager;
-import com.fr.bi.conf.session.BISessionProvider;
 import com.fr.bi.field.target.target.BISummaryTarget;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.general.ComparatorUtils;
-import com.fr.general.IOUtils;
 import com.fr.general.Inter;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
-import com.fr.stable.CodeUtils;
-import com.fr.stable.StableUtils;
 import com.fr.stable.StringUtils;
 
-import javax.servlet.http.HttpServletRequest;
-import java.io.InputStream;
 import java.util.Map;
 
 /**
@@ -64,7 +57,7 @@ public class VanMapWidget extends VanChartWidget{
             n = manager.getCustomMapTypeName().get(subType);
         }
 
-        JSONObject geo = JSONObject.create().put("data", d).put("name", n);
+        JSONObject geo = JSONObject.create().put("data", d).put("name", n).put("zoom", true);
 
         JSONObject settings = this.getDetailChartSetting();
 
@@ -188,9 +181,15 @@ public class VanMapWidget extends VanChartWidget{
 
     protected JSONObject defaultDataLabelSetting() throws JSONException {
 
-        return JSONObject.create().put("showBlockName", true).put("showTargetName", true)
+        return JSONObject.create().put("showBlockName", false).put("showTargetName", false)
                 .put("showValue", true).put("showPercentage", false)
                 .put("textStyle", defaultFont());
 
     }
+
+    //地图因为gis背景，不自适应颜色
+    protected JSONObject defaultFont() throws JSONException {
+        return JSONObject.create().put("fontFamily", "Microsoft YaHei").put("fontSize", "12px").put("color", "#666666");
+    }
+
 }

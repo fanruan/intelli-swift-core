@@ -15,6 +15,7 @@ import com.fr.bi.cal.analyze.report.report.widget.chart.export.calculator.Detail
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.calculator.IExcelDataBuilder;
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.format.operation.BITableCellDateFormatOperation;
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.format.operation.BITableCellNumberFormatOperation;
+import com.fr.bi.cal.analyze.report.report.widget.chart.export.format.operation.BITableCellStringOperation;
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.format.operation.ITableCellFormatOperation;
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.format.setting.BICellFormatSetting;
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.item.ITableItem;
@@ -26,7 +27,7 @@ import com.fr.bi.cal.analyze.report.report.widget.style.BITableWidgetStyle;
 import com.fr.bi.cal.analyze.session.BISession;
 import com.fr.bi.common.persistent.xml.BIIgnoreField;
 import com.fr.bi.conf.report.WidgetType;
-import com.fr.bi.conf.report.style.DetailChartSetting;
+import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.conf.report.widget.field.target.detailtarget.BIDetailTarget;
 import com.fr.bi.conf.report.widget.field.target.filter.TargetFilter;
 import com.fr.bi.conf.session.BISessionProvider;
@@ -42,15 +43,12 @@ import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.data.BITableID;
 import com.fr.bi.stable.data.source.CubeTableSource;
-import com.fr.bi.stable.utils.file.BIFileUtils;
 import com.fr.bi.stable.utils.program.BIStringUtils;
 import com.fr.json.JSONArray;
-import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
 import com.fr.report.poly.TemplateBlock;
 
 import javax.servlet.http.HttpServletRequest;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -173,10 +171,22 @@ public class BIDetailWidget extends AbstractBIWidget {
         for (int i = 0; i < dimensions.length; i++) {
             List<BITableRelation> relations = dimensions[i].getRelationList(null, userID);
             if (!relations.isEmpty()) {
-                target = relations.get(relations.size() - 1).getForeignTable();
-                break;
+                BusinessTable table = relations.get(relations.size() - 1).getForeignTable();
+                if (isTableUsedInDimensions(table)) {
+                    target = table;
+                    break;
+                }
             }
         }
+    }
+
+    private boolean isTableUsedInDimensions(BusinessTable target) {
+        for (BIDetailTarget dimension : dimensions) {
+            if (dimension.createTableKey().getID().equals(target.getID())) {
+                return true;
+            }
+        }
+        return false;
     }
 
 
@@ -259,7 +269,7 @@ public class BIDetailWidget extends AbstractBIWidget {
         setTargetTable(userId);
     }
 
-    public BITableWidgetStyle getWidgetStyle () {
+    public BITableWidgetStyle getWidgetStyle() {
         return widgetStyle;
     }
 
@@ -372,30 +382,27 @@ public class BIDetailWidget extends AbstractBIWidget {
         res.put("dimensionLength", getViewDimensions().length).put("row", data.optLong("row", 0)).put("size", data.optLong("size", 0));
         res.put("settings", tableData.getWidgetStyle().createJSON());
         return res;
-        //        return createTestData();
-    }
-
-    /*假数据，测试用*/
-    private JSONObject createTestData() throws IOException, JSONException {
-        StringBuffer keysStr = new StringBuffer();
-        String s = BIFileUtils.readFile("C:\\data.txt");
-        return new JSONObject(s);
     }
 
     private Map<String, ITableCellFormatOperation> createChartDimensions() {
         Map<String, ITableCellFormatOperation> formatOperationMap = new HashMap<String, ITableCellFormatOperation>();
         for (BIDetailTarget detailTarget : this.getTargets()) {
             try {
-//                string不参与format
-                boolean isStringColumn = detailTarget instanceof BIStringDetailTarget && detailTarget.createColumnKey().getFieldType() == DBConstant.COLUMN.STRING;
-                if (!detailTarget.isUsed() || isStringColumn) {
+                if (!detailTarget.isUsed()) {
                     continue;
                 }
+
+
                 BICellFormatSetting setting = new BICellFormatSetting();
                 setting.parseJSON(detailTarget.getChartSetting().getSettings());
                 if (detailTarget instanceof BINumberFormulaDetailTarget) {
                     ITableCellFormatOperation op = new BITableCellNumberFormatOperation(setting);
                     formatOperationMap.put(detailTarget.getId(), op);
+                    continue;
+                }
+                boolean isStringColumn = detailTarget instanceof BIStringDetailTarget && detailTarget.createColumnKey().getFieldType() == DBConstant.COLUMN.STRING;
+                if (isStringColumn) {
+                    formatOperationMap.put(detailTarget.getId(), new BITableCellStringOperation(setting));
                     continue;
                 }
                 if (detailTarget.createColumnKey().getFieldType() == DBConstant.COLUMN.DATE) {

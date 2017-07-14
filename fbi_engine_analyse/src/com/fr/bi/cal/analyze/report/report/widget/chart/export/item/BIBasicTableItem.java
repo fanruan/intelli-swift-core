@@ -7,6 +7,7 @@ import com.fr.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * Created by Kary on 2017/2/13.
@@ -24,8 +25,11 @@ public class BIBasicTableItem implements ITableItem {
     private boolean isSum;
     //text样式，简单处理
     private JSONObject textStyles;
+    //通过tag来标识是否需要合并
+    private String tag;
 
     public BIBasicTableItem() {
+        tag= String.valueOf(UUID.randomUUID());
     }
 
     @Override
@@ -127,6 +131,7 @@ public class BIBasicTableItem implements ITableItem {
         this.textStyles = textStyles;
     }
 
+
     @Override
     public void mergeItems(ITableItem newItem) throws Exception {
         if (newItem == null) {
@@ -166,6 +171,9 @@ public class BIBasicTableItem implements ITableItem {
                 }
                 values.add(item);
             }
+        }
+        if (jo.has("tag")) {
+            value = jo.getString("tag");
         }
 
         if (jo.has("value")) {
@@ -208,8 +216,9 @@ public class BIBasicTableItem implements ITableItem {
             jo.put("values", TempValues);
         }
 
-        jo.put("value", value);
+        jo.put("value", String.valueOf(value));
         jo.put("isSum", isSum);
+        jo.put("tag", tag);
         if (textStyles != null) {
             jo.put("textStyle", textStyles);
         }
