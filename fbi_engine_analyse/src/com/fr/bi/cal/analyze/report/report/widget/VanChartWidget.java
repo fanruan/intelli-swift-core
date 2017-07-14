@@ -136,7 +136,7 @@ public abstract class VanChartWidget extends TableWidget {
 
     public abstract String getSeriesType(String dimensionID);
 
-    public String getSeriesType(String dimensionID, String seriesName){
+    public String getSeriesType(String dimensionID, String seriesName) {
         return this.getSeriesType(dimensionID);
     }
 
@@ -175,7 +175,7 @@ public abstract class VanChartWidget extends TableWidget {
                 .put("hidden", false)
                 .put("toImage", falseEnabledJSONObject())
                 .put("sort", falseEnabledJSONObject())
-                .put("fullScreen",falseEnabledJSONObject())
+                .put("fullScreen", falseEnabledJSONObject())
                 .put("refresh", falseEnabledJSONObject());
     }
 
@@ -183,8 +183,8 @@ public abstract class VanChartWidget extends TableWidget {
         return JSONObject.create().put("enabled", false);
     }
 
-    protected void toLegendJSON(JSONObject options, JSONObject settings) throws JSONException{
-        if(settings.optBoolean("miniMode", false)){
+    protected void toLegendJSON(JSONObject options, JSONObject settings) throws JSONException {
+        if (settings.optBoolean("miniMode", false)) {
             options.put("legend", JSONObject.create().put("enabled", false));
             options.put("rangeLegend", JSONObject.create().put("enabled", false));
         } else {
@@ -204,7 +204,7 @@ public abstract class VanChartWidget extends TableWidget {
         return false;
     }
 
-    protected boolean isStacked(String dimensionID, String seriesName){
+    protected boolean isStacked(String dimensionID, String seriesName) {
         return this.isStacked(dimensionID);
     }
 
@@ -212,7 +212,7 @@ public abstract class VanChartWidget extends TableWidget {
         return dimensionID;
     }
 
-    protected String getStackedKey(String dimensionID, String seriesName){
+    protected String getStackedKey(String dimensionID, String seriesName) {
         return this.getStackedKey(dimensionID);
     }
 
@@ -224,7 +224,7 @@ public abstract class VanChartWidget extends TableWidget {
 
     //@shine todo:4.1版本整理下value的处理。所有图表value的 null infinity scale format 等统一在这边处理。
     // 处理原始数据。数量级和小数位数。
-    private String numberScaleAndFormat(String dimensionID, double value){
+    private String numberScaleAndFormat(String dimensionID, double value) {
         double scale = numberScale(dimensionID);
         value = value / scale;
         return numberFormat(dimensionID, value);
@@ -260,7 +260,7 @@ public abstract class VanChartWidget extends TableWidget {
             }
             DecimalFormat decimalFormat = new DecimalFormat(format);
             return decimalFormat.format(y);
-        } catch (Exception e){
+        } catch (Exception e) {
             BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
         return y + "";
@@ -348,7 +348,7 @@ public abstract class VanChartWidget extends TableWidget {
                 }
             });
 
-           dealView(sorted, vjo);
+            dealView(sorted, vjo);
         }
 
         this.requestURL = jo.optString("requestURL");
@@ -357,15 +357,15 @@ public abstract class VanChartWidget extends TableWidget {
         super.parseJSON(jo, userId);
     }
 
-    protected String getCompleteImageUrl (String url) {
-        return requestURL + "?op=fr_bi&cmd=get_uploaded_image&imageId=" + url;
+    protected String getCompleteImageUrl(String attachId) {
+        return requestURL + "?op=fr_attach&cmd=ah_image&id=" + attachId + "&isAdjust=false";
     }
 
-    protected String getLocalImagePath(String url){
+    protected String getLocalImagePath(String url) {
         return FRContext.getCurrentEnv().getPath() + BIBaseConstant.UPLOAD_IMAGE.IMAGE_PATH + File.separator + url;
     }
 
-    protected void dealView(List<String> sorted, JSONObject vjo) throws JSONException{
+    protected void dealView(List<String> sorted, JSONObject vjo) throws JSONException {
         JSONArray ja = JSONArray.create();
 
         for (String region : sorted) {
@@ -475,7 +475,7 @@ public abstract class VanChartWidget extends TableWidget {
         if (dataLabelSetting.optBoolean("showPercentage") || dataLabelSetting.optBoolean("showConversionRate")) {
             identifier += PERCENT;
         }
-        if (dataLabelSetting.optBoolean("showArrivalRate")){
+        if (dataLabelSetting.optBoolean("showArrivalRate")) {
             identifier += ARRIVALRATE;
         }
         if (dataLabelSetting.optBoolean("showXValue")) {
@@ -484,10 +484,10 @@ public abstract class VanChartWidget extends TableWidget {
         if (dataLabelSetting.optBoolean("showYValue")) {
             identifier += Y;
         }
-        if(dataLabelSetting.optBoolean("showBlockName")){
+        if (dataLabelSetting.optBoolean("showBlockName")) {
             identifier += NAME;
         }
-        if(dataLabelSetting.optBoolean("showTargetName")){
+        if (dataLabelSetting.optBoolean("showTargetName")) {
             identifier += SERIES;
         }
         return identifier;
@@ -521,7 +521,7 @@ public abstract class VanChartWidget extends TableWidget {
 
         Number number = StableUtils.string2Number(colorStr);
 
-        if(number != null){
+        if (number != null) {
             Color color = new Color(Integer.parseInt(colorStr, 16));
             return color.getRed() * RED_DET + color.getGreen() * GREEN_DET + color.getBlue() * BLUE_DET < GRAY;
         }
@@ -544,14 +544,14 @@ public abstract class VanChartWidget extends TableWidget {
 
     private String checkValidColor(String backgroundColor, String original) {
         String transparent = "transparent", auto = StringUtils.EMPTY;
-        if(!transparent.equals(backgroundColor) && !auto.equals(backgroundColor)){
+        if (!transparent.equals(backgroundColor) && !auto.equals(backgroundColor)) {
             return isDarkColor(backgroundColor) ? WHITE : DARK;
         }
         return original;
     }
 
-    private String checkTransparent(String color){
-        if(color.equals("transparent")){
+    private String checkTransparent(String color) {
+        if (color.equals("transparent")) {
             return "rgba(0,0,0,0)";
         }
         return color;
@@ -562,35 +562,35 @@ public abstract class VanChartWidget extends TableWidget {
         BIChartStyleAttr platConfig = FBIConfig.getInstance().getChartStyleAttr();
         String color = DARK, fontWeight = "normal", fontStyle = "normal";
 
-        if(platConfig.getMainBackground() != null) {
+        if (platConfig.getMainBackground() != null) {
             color = checkValidColor(platConfig.getMainBackground().getValue(), color);
         }
 
-        if(globalStyle.has("mainBackground")) {
+        if (globalStyle.has("mainBackground")) {
             color = checkValidColor(globalStyle.optJSONObject("mainBackground").optString("value"), color);
         }
 
-        if(globalStyle.optString("theme").equals("bi-theme-dark")){
+        if (globalStyle.optString("theme").equals("bi-theme-dark")) {
             color = WHITE;
         }
 
-        if(platConfig.getWidgetBackground() != null) {
+        if (platConfig.getWidgetBackground() != null) {
             color = checkValidColor(platConfig.getWidgetBackground().getValue(), color);
         }
 
-        if(globalStyle.has("widgetBackground")) {
+        if (globalStyle.has("widgetBackground")) {
             color = checkValidColor(globalStyle.optJSONObject("widgetBackground").optString("value"), color);
         }
 
         JSONObject settings = this.getChartSetting().getDetailChartSetting();
-        if(settings.has("widgetBG")){
+        if (settings.has("widgetBG")) {
             color = checkValidColor(settings.optJSONObject("widgetBG").optString("value"), color);
         }
 
         BIChartFontStyleAttr fontStyleAttr = platConfig.getChartFont();
-        if(fontStyleAttr != null){
+        if (fontStyleAttr != null) {
             String fontColor = fontStyleAttr.getColor();
-            if(StringUtils.isNotEmpty(fontColor)){
+            if (StringUtils.isNotEmpty(fontColor)) {
                 color = checkTransparent(fontColor);
             }
             fontWeight = fontStyleAttr.getFontWidget();
@@ -598,9 +598,9 @@ public abstract class VanChartWidget extends TableWidget {
         }
 
         JSONObject chartFont = globalStyle.optJSONObject("chartFont");
-        if(chartFont != null){
+        if (chartFont != null) {
             String fontColor = chartFont.optString("color");
-            if(StringUtils.isNotEmpty(fontColor)){
+            if (StringUtils.isNotEmpty(fontColor)) {
                 color = checkTransparent(fontColor);
             }
             fontWeight = chartFont.optString("fontWeight", fontWeight);
@@ -625,7 +625,7 @@ public abstract class VanChartWidget extends TableWidget {
             } else {//主要是想把style里面的颜色需要merge一下，自动的话用defaultColor
                 JSONObject targetObject = target.optJSONObject(key);
                 JSONObject sourceObject = source.optJSONObject(key);
-                if(targetObject != null && sourceObject != null){
+                if (targetObject != null && sourceObject != null) {
                     merge(targetObject, sourceObject);
                 }
             }
@@ -640,7 +640,7 @@ public abstract class VanChartWidget extends TableWidget {
         return merge(settings, this.populateDefaultSettings());
     }
 
-    public JSONObject createChartConfigWidthData(BISessionProvider session, HttpServletRequest req, JSONObject data) throws Exception{
+    public JSONObject createChartConfigWidthData(BISessionProvider session, HttpServletRequest req, JSONObject data) throws Exception {
 
         this.locale = WebUtils.getLocale(req);
 
@@ -654,7 +654,7 @@ public abstract class VanChartWidget extends TableWidget {
     public JSONObject createDataJSON(BISessionProvider session, HttpServletRequest req) throws Exception {
 
         // 如果是实时数据
-        if(needOpenBigDateModel()){
+        if (needOpenBigDateModel()) {
             setOperator(BIReportConstant.TABLE_PAGE_OPERATOR.BIGDATACHART);
         }
         JSONObject data = super.createDataJSON(session, req).getJSONObject("data");
@@ -662,34 +662,35 @@ public abstract class VanChartWidget extends TableWidget {
         JSONObject options = this.createChartConfigWidthData(session, req, data);
 
         // 如果是大数据模式,而且分组数大于BigDataChartOperator.MAXROW 或者是图表是交叉表类型且top分组大于BigDataChartOperator.MAXROW
-        boolean isLarge = (data.has("c") && data.getJSONArray("c").length()> BigDataChartOperator.MAXROW)
-                || (data.has("t") && data.getJSONObject("t").has("c") && data.getJSONObject("t").getJSONArray("c").length()> BigDataChartOperator.MAXROW);
-        if(needOpenBigDateModel() && isLarge){
-            options.put("chartBigDataModel",true);
+        boolean isLarge = (data.has("c") && data.getJSONArray("c").length() > BigDataChartOperator.MAXROW)
+                || (data.has("t") && data.getJSONObject("t").has("c") && data.getJSONObject("t").getJSONArray("c").length() > BigDataChartOperator.MAXROW);
+        if (needOpenBigDateModel() && isLarge) {
+            options.put("chartBigDataModel", true);
         }
         return options;
     }
 
     /**
      * 是否需要打开大数据模式
+     *
      * @return
      */
-    protected boolean needOpenBigDateModel(){
+    protected boolean needOpenBigDateModel() {
 
         DetailChartSetting cs = getChartSetting();
         JSONObject setting = cs.getDetailChartSetting();
-        if(setting.has("bigDataMode") && setting.optBoolean("bigDataMode",false)){
+        if (setting.has("bigDataMode") && setting.optBoolean("bigDataMode", false)) {
             return false;
         }
-        if(isRealData()){
+        if (isRealData()) {
             return true;
         }
         return false;
     }
 
-/*
-* 如果没有的话，使用默认值
-* */
+    /*
+    * 如果没有的话，使用默认值
+    * */
     protected JSONArray parseColors(JSONObject settings, JSONObject globalStyle, JSONObject plateConfig) throws Exception {
 
         if (settings.has("chartColor")) {
@@ -779,7 +780,7 @@ public abstract class VanChartWidget extends TableWidget {
         return settings.optString("unit", StringUtils.EMPTY);
     }
 
-    protected boolean hasSeparatorFromSetting(BISummaryTarget dimension){
+    protected boolean hasSeparatorFromSetting(BISummaryTarget dimension) {
         JSONObject settings = dimension.getChartSetting().getSettings();
         return settings.optBoolean("numSeparators", true);
     }
@@ -790,8 +791,8 @@ public abstract class VanChartWidget extends TableWidget {
         String unit = unitFromSetting(dimension);
 
         if (showUnit(isTooltip)) {
-            return  (scaleUnit + unit);
-        } else if(scaleUnit.equals(PERCENT_SYMBOL)){//标签也要把百分号加上
+            return (scaleUnit + unit);
+        } else if (scaleUnit.equals(PERCENT_SYMBOL)) {//标签也要把百分号加上
             return scaleUnit;
         }
         return StringUtils.EMPTY;
@@ -816,7 +817,7 @@ public abstract class VanChartWidget extends TableWidget {
         return String.format("function(){return BI.contentFormat(arguments[0], \"%s\")}", format);
     }
 
-    protected BISummaryTarget getSerBITarget(JSONObject ser) throws Exception{
+    protected BISummaryTarget getSerBITarget(JSONObject ser) throws Exception {
         JSONArray ids = ser.optJSONArray("targetIDs");
         return ids == null ? null : getBITargetByID(ids.optString(0));
     }
@@ -833,7 +834,7 @@ public abstract class VanChartWidget extends TableWidget {
         for (int i = 0, len = series.length(); i < len; i++) {
             JSONObject ser = series.getJSONObject(i);
 
-            if(ser.optBoolean(TRANS_SERIES)){
+            if (ser.optBoolean(TRANS_SERIES)) {
                 continue;
             }
 
@@ -872,7 +873,7 @@ public abstract class VanChartWidget extends TableWidget {
             for (int i = 0, len = series.length(); i < len; i++) {
                 JSONObject ser = series.getJSONObject(i);
 
-                if(ser.optBoolean(TRANS_SERIES)){
+                if (ser.optBoolean(TRANS_SERIES)) {
                     continue;
                 }
 
@@ -908,7 +909,7 @@ public abstract class VanChartWidget extends TableWidget {
         String categoryKey = this.categoryKey(), valueKey = this.valueKey();
         ArrayList<Double> valueList = new ArrayList<Double>();
         JSONObject top = originData.optJSONObject("t"), left = originData.optJSONObject("l");
-        if(targetIDs.length == 0 || !top.has("c") || !left.has("c")){
+        if (targetIDs.length == 0 || !top.has("c") || !left.has("c")) {
             return series;
         }
         JSONArray topC = top.getJSONArray("c"), leftC = left.getJSONArray("c");
@@ -924,7 +925,7 @@ public abstract class VanChartWidget extends TableWidget {
                 JSONObject lObj = leftC.getJSONObject(j);
                 String x = lObj.getString("n");
                 JSONArray s = lObj.getJSONObject("s").getJSONArray("c").getJSONObject(i).getJSONArray("s");
-                boolean isNull =  s.isNull(0) || Double.isNaN(s.getDouble(0));
+                boolean isNull = s.isNull(0) || Double.isNaN(s.getDouble(0));
                 double y = (isNull ? 0 : s.getDouble(0)) / numberScale;
                 String formattedCategory = this.formatDimension(category, x);
                 data.put(
@@ -947,14 +948,14 @@ public abstract class VanChartWidget extends TableWidget {
         return series;
     }
 
-    protected double checkInfinity(double y){
+    protected double checkInfinity(double y) {
         return (y == Double.POSITIVE_INFINITY || y == Double.NEGATIVE_INFINITY) ? 0 : y;
     }
 
     protected JSONArray createSeriesWithChildren(JSONObject originData) throws Exception {
         BIDimension category = this.getCategoryDimension(), seriesDim = this.getSeriesDimension();
 
-        if(seriesDim != null){
+        if (seriesDim != null) {
             return this.createSeriesWithSeriesDimension(originData, seriesDim);
         }
 
@@ -969,7 +970,7 @@ public abstract class VanChartWidget extends TableWidget {
             ArrayList<Double> valueList = new ArrayList<Double>();
             double numberScale = this.numberScale(id);
             JSONArray data = JSONArray.create();
-            if(children != null) {
+            if (children != null) {
                 for (int j = 0, count = children.length(); j < count; j++) {
                     JSONObject lObj = children.getJSONObject(j);
                     String x = lObj.getString("n");
@@ -1001,7 +1002,7 @@ public abstract class VanChartWidget extends TableWidget {
     }
 
     //系列指标不为空的时候创建多个系列
-    protected JSONArray createSeriesWithSeriesDimension(JSONObject originData, BIDimension seriesDim) throws Exception{
+    protected JSONArray createSeriesWithSeriesDimension(JSONObject originData, BIDimension seriesDim) throws Exception {
         JSONArray series = JSONArray.create();
         String[] targetIDs = this.getUsedTargetID();
         String[] dimensionIDs = this.getUsedDimensionID();
@@ -1012,7 +1013,7 @@ public abstract class VanChartWidget extends TableWidget {
             int yAxis = this.yAxisIndex(id);
             ArrayList<Double> valueList = new ArrayList<Double>();
             double numberScale = this.numberScale(id);
-            if(children != null) {
+            if (children != null) {
                 for (int j = 0, count = children.length(); j < count; j++) {
                     JSONObject lObj = children.getJSONObject(j);
                     String seriesName = lObj.getString("n");
@@ -1038,8 +1039,8 @@ public abstract class VanChartWidget extends TableWidget {
         return series;
     }
 
-    protected String formatDimension(BIDimension dimension, String dimensionName){
-        if(dimension == null || StringUtils.isBlank(dimensionName)){
+    protected String formatDimension(BIDimension dimension, String dimensionName) {
+        if (dimension == null || StringUtils.isBlank(dimensionName)) {
             return dimensionName;
         }
 
@@ -1053,16 +1054,16 @@ public abstract class VanChartWidget extends TableWidget {
 
         switch (groupType) {
             case BIReportConstant.GROUP.S:
-                dimensionName = FULL_QUARTER_NAMES[(int)dateValue];
+                dimensionName = FULL_QUARTER_NAMES[(int) dateValue];
                 break;
             case BIReportConstant.GROUP.M:
-                dimensionName = FULL_MONTH_NAMES[(int)dateValue];
+                dimensionName = FULL_MONTH_NAMES[(int) dateValue];
                 break;
             case BIReportConstant.GROUP.W:
-                dimensionName = FULL_WEEK_NAMES[(int)dateValue];
+                dimensionName = FULL_WEEK_NAMES[(int) dateValue];
                 break;
             case BIReportConstant.GROUP.YMD:
-                dimensionName =  this.formatYMDByDateFormat(dateValue, dateFormatType);
+                dimensionName = this.formatYMDByDateFormat(dateValue, dateFormatType);
                 break;
             case BIReportConstant.GROUP.YMDHMS:
                 dimensionName = this.formatYMDHMSByDateFormat(dateValue, dateFormatType);
@@ -1087,63 +1088,63 @@ public abstract class VanChartWidget extends TableWidget {
         return dimensionName;
     }
 
-    private String formatYMDByDateFormat(long dateValue, int dateFormatType){
+    private String formatYMDByDateFormat(long dateValue, int dateFormatType) {
         Date date = new Date(dateValue);
         SimpleDateFormat formatter;
-        if(dateFormatType == BIReportConstant.DATE_FORMAT.CHINESE){
+        if (dateFormatType == BIReportConstant.DATE_FORMAT.CHINESE) {
             formatter = new SimpleDateFormat(String.format("yyyy%sMM%sdd%s", getLocText("BI-Basic_Year"), getLocText("BI-Basic_Month"), getLocText("BI-Date_Day")));
-        }else{
+        } else {
             formatter = new SimpleDateFormat("yyyy-MM-dd");
         }
         return formatter.format(date);
     }
 
-    private String formatYMDHMSByDateFormat(long dateValue, int dateFormatType){
+    private String formatYMDHMSByDateFormat(long dateValue, int dateFormatType) {
         Date date = new Date(dateValue);
         SimpleDateFormat formatter;
 
-        if(dateFormatType == BIReportConstant.DATE_FORMAT.CHINESE){
+        if (dateFormatType == BIReportConstant.DATE_FORMAT.CHINESE) {
             formatter = new SimpleDateFormat(String.format("yyyy%sMM%sdd%s H%sm%ss%s", getLocText("BI-Basic_Year"), getLocText("BI-Basic_Month"), getLocText("BI-Date_Day"),
                     getLocText("BI-Hour_Sin"), getLocText("BI-Basic_Minute"), getLocText("BI-Basic_Seconds")));
-        }else{
+        } else {
             formatter = new SimpleDateFormat("yyyy-MM-dd H:m:s");
         }
         return formatter.format(date);
     }
 
-    private String formatYMDHByDateFormat(long dateValue, int dateFormatType){
+    private String formatYMDHByDateFormat(long dateValue, int dateFormatType) {
         Date date = new Date(dateValue);
         SimpleDateFormat formatter;
 
-        if(dateFormatType == BIReportConstant.DATE_FORMAT.CHINESE){
+        if (dateFormatType == BIReportConstant.DATE_FORMAT.CHINESE) {
             formatter = new SimpleDateFormat(String.format("yyyy%sMM%sdd%s H%s", getLocText("BI-Basic_Year"), getLocText("BI-Basic_Month"),
                     getLocText("BI-Date_Day"), getLocText("BI-Hour_Sin")));
-        }else{
+        } else {
             formatter = new SimpleDateFormat("yyyy-MM-dd H");
         }
         return formatter.format(date);
     }
 
-    private String formatYMDHMByDateFormat(long dateValue, int dateFormatType){
+    private String formatYMDHMByDateFormat(long dateValue, int dateFormatType) {
         Date date = new Date(dateValue);
         SimpleDateFormat formatter;
 
-        if(dateFormatType == BIReportConstant.DATE_FORMAT.CHINESE){
+        if (dateFormatType == BIReportConstant.DATE_FORMAT.CHINESE) {
             formatter = new SimpleDateFormat(String.format("yyyy%sMM%sdd%s H%sm%s", getLocText("BI-Basic_Year"), getLocText("BI-Basic_Month"), getLocText("BI-Date_Day"),
                     getLocText("BI-Hour_Sin"), getLocText("BI-Basic_Minute")));
-        }else{
+        } else {
             formatter = new SimpleDateFormat("yyyy-MM-dd H:m");
         }
         return formatter.format(date);
     }
 
-    private String formatYMByDateFormat(long dateValue, int dateFormatType){
+    private String formatYMByDateFormat(long dateValue, int dateFormatType) {
         Date date = new Date(dateValue);
         SimpleDateFormat formatter;
 
-        if(dateFormatType == BIReportConstant.DATE_FORMAT.CHINESE){
+        if (dateFormatType == BIReportConstant.DATE_FORMAT.CHINESE) {
             formatter = new SimpleDateFormat(String.format("yyyy%sMM%s", getLocText("BI-Basic_Year"), getLocText("BI-Basic_Month")));
-        }else{
+        } else {
             formatter = new SimpleDateFormat("yyyy-MM");
         }
         return formatter.format(date);
@@ -1161,13 +1162,13 @@ public abstract class VanChartWidget extends TableWidget {
         return weekOfYear;
     }
 
-    private String formatYWByDateFormat(long dateValue, int dateFormatType){
+    private String formatYWByDateFormat(long dateValue, int dateFormatType) {
         Date date = new Date(dateValue);
         SimpleDateFormat formatter;
         int week = getWeekOfYear(date);
-        if(dateFormatType == BIReportConstant.DATE_FORMAT.CHINESE){
+        if (dateFormatType == BIReportConstant.DATE_FORMAT.CHINESE) {
             formatter = new SimpleDateFormat(String.format("yyyy%s" + week + "%s", getLocText("BI-Basic_Year"), getLocText("BI-Week_Simple")));
-        }else{
+        } else {
             formatter = new SimpleDateFormat("yyyy-" + week);
         }
         return formatter.format(date);
@@ -1180,13 +1181,13 @@ public abstract class VanChartWidget extends TableWidget {
         return month / 3 + 1;
     }
 
-    private String formatYSByDateFormat(long dateValue, int dateFormatType){
+    private String formatYSByDateFormat(long dateValue, int dateFormatType) {
         Date date = new Date(dateValue);
         SimpleDateFormat formatter;
         int season = getSeason(date);
-        if(dateFormatType == BIReportConstant.DATE_FORMAT.CHINESE){
+        if (dateFormatType == BIReportConstant.DATE_FORMAT.CHINESE) {
             formatter = new SimpleDateFormat(String.format("yyyy%s" + season + "%s", getLocText("BI-Basic_Year"), getLocText("BI-Basic_Quarter")));
-        }else{
+        } else {
             formatter = new SimpleDateFormat("yyyy-" + season);
         }
         return formatter.format(date);
@@ -1222,7 +1223,7 @@ public abstract class VanChartWidget extends TableWidget {
 
             ranges.put(
                     JSONObject.create()
-                            .put("from", range.optDouble("min",Integer.MIN_VALUE))
+                            .put("from", range.optDouble("min", Integer.MIN_VALUE))
                             .put("to", range.optDouble("max", Integer.MAX_VALUE))
                             .put("color", config.optString("color"))
             );
@@ -1242,7 +1243,7 @@ public abstract class VanChartWidget extends TableWidget {
         int dIndex = 0;
         for (BIDimension dimension : this.getDimensions()) {
             if (dimensionIds.contains(dimension.getValue()) && dimension.isUsed()) {
-                if(dIndex == index){
+                if (dIndex == index) {
                     return dimension;
                 }
                 dIndex++;
@@ -1271,12 +1272,12 @@ public abstract class VanChartWidget extends TableWidget {
     public JSONObject createPhantomJSONConfig(BISessionProvider session, HttpServletRequest req) throws Exception {
         JSONObject options = this.createDataJSON(session, req);
 
-        if(options.has("geo")){
+        if (options.has("geo")) {
             JSONObject geo = options.optJSONObject("geo");
             String path = geo.optString("data", StringUtils.EMPTY).replace(BIMapInfoManager.ACTION_PREFIX, StringUtils.EMPTY);
             InputStream in = FRContext.getCurrentEnv().readResource(StableUtils.pathJoin(new String[]{BIMapInfoManager.JSON_FOLDER, CodeUtils.cjkDecode(path)}));
             String string = IOUtils.inputStream2String(in);
-            geo.put("data", new JSONObject(string.replace('\uFEFF',' ')));
+            geo.put("data", new JSONObject(string.replace('\uFEFF', ' ')));
             options.put("geo", geo);
         }
 
@@ -1299,11 +1300,11 @@ public abstract class VanChartWidget extends TableWidget {
         return new Double[0];
     }
 
-    protected WidgetType getChartType(){
+    protected WidgetType getChartType() {
         return this.chartType;
     }
 
-    protected String getLocText(String key){
+    protected String getLocText(String key) {
         return Inter.getLocText(key, this.locale);
     }
 
