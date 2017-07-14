@@ -171,10 +171,6 @@ public abstract class AbstractBIWidget implements BIWidget {
         this.userId = userId;
     }
 
-    public BIWidgetStyle getStyle() {
-        return null;
-    }
-
     public JSONObject getPostOptions(BISessionProvider session, HttpServletRequest req) throws Exception {
         return new JSONObject();
     }
