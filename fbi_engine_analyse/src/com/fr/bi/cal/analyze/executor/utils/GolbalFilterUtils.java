@@ -1,5 +1,6 @@
 package com.fr.bi.cal.analyze.executor.utils;
 
+import apple.laf.JRSUIConstants;
 import com.finebi.cube.api.ICubeColumnDetailGetter;
 import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.api.ICubeTableService;
@@ -24,8 +25,10 @@ import com.fr.bi.cal.analyze.report.report.widget.TableWidget;
 import com.fr.bi.cal.analyze.session.BISession;
 import com.fr.bi.conf.report.BIWidget;
 import com.fr.bi.conf.report.WidgetType;
+import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.stable.constant.BIExcutorConstant;
 import com.fr.bi.stable.data.BIFieldID;
+import com.fr.bi.stable.data.Table;
 import com.fr.bi.stable.engine.cal.DimensionIterator;
 import com.fr.bi.stable.engine.cal.DimensionIteratorCreator;
 import com.fr.bi.stable.engine.index.key.IndexKey;
@@ -41,6 +44,7 @@ import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;
 import com.fr.web.core.A.OB;
 
+import java.io.OptionalDataException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -237,6 +241,10 @@ public class GolbalFilterUtils {
                     }
                 }
             }
+            // 如果过滤没有说明全部被过滤完了
+            if (rgvi == null) {
+                rgvi = GVIFactory.createAllEmptyIndexGVI();
+            }
         } catch (Exception e) {
             BILoggerFactory.getLogger(GolbalFilterUtils.class).info(e.getMessage(), e);
         }
@@ -278,6 +286,10 @@ public class GolbalFilterUtils {
         if (fieldIds == null || fieldIds.length() == 0 || clicked == null) {
             return ret;
         }
+        List<String> fIds = new ArrayList<String>();
+        for (int i = 0; i < fieldIds.length(); i++) {
+            fIds.add(fieldIds.optString(i, ""));
+        }
         try {
             if (widget.getType().equals(WidgetType.DETAIL)) {
                 Paging paging = PagingFactory.createPaging(BIExcutorConstant.PAGINGTYPE.GROUP100);
@@ -304,10 +316,65 @@ public class GolbalFilterUtils {
                 }
                 if (r[0] >= 0) {
                     GroupValueIndex tarFiledGvi = GVIFactory.createGroupValueIndexBySimpleIndex(r[0]);
-                    BusinessTable baseTable = ((BIDetailWidget) widget).getBaseTable();
+                    return getOneLineValue(tarFiledGvi, ((BIDetailWidget) widget).getBaseTable(), fIds, userId, session, ret);
+                }
+            } else if (widget.getType().equals(WidgetType.TABLE)) {
+                // 分组表
+                TableWidget targetWidget = (TableWidget) widget;
+                BIEngineExecutor executor = targetWidget.getExecutor(session);
+                Iterator<String> iter = clicked.keys();
+                Map<String, JSONArray> click = new HashMap<String, JSONArray>();
+                List<String> fieldKeys = new ArrayList<String>();
+                if (iter.hasNext()) {
+                    String k = iter.next();
+                    JSONArray a = clicked.getJSONArray(k);
+                    JSONArray n = JSONArray.create();
+                    for (int i = 0; i < a.length(); i++) {
+                        JSONObject o = a.getJSONObject(i);
+                        JSONArray v = o.optJSONArray("value");
+                        String did = o.optString("dId", "");
+                        BIDimension dimension = targetWidget.getDimensionBydId(did);
+                        String fk = dimension.createColumnKey().getFieldID().getIdentity();
+                        if (dimension != null && fIds.contains(fk)) {
+                            ret.put(fk, v.optString(0, ""));
+                            fIds.remove(fk);
+                        }
+                    }
+                    click.put(k, clicked.getJSONArray(k));
+                }
+                if (fIds.size() > 0) {
+
+                    click = combineClick(click, targetWidget);
+                    GroupValueIndex clickGvi = ((AbstractTableWidgetExecutor) executor).getClickGvi(click);
+                    ret = getOneLineValue(clickGvi, targetWidget.getBaseTable(), fIds, userId, session, ret);
+                }
+            }
+        } catch (Exception e) {
+            BILoggerFactory.getLogger(GolbalFilterUtils.class).info(e.getMessage(), e);
+        }
+        return ret;
+    }
+
+    public static JSONObject getOneLineValue(GroupValueIndex gvi, BusinessTable baseTable, List<String> fieldIds, long userId, BISession session, JSONObject ret) {
+
+        try {
+            final int[] r = {-1};
+            ICubeDataLoader loader = session.getLoader();
+            if (gvi != null && gvi.getRowsCountWithData() == 1) {
+                gvi.BrokenableTraversal(new BrokenTraversalAction() {
+
+                    @Override
+                    public boolean actionPerformed(int row) {
+
+                        r[0] = row;
+                        return true;
+                    }
+                });
+                if (r[0] >= 0) {
+                    GroupValueIndex tarFiledGvi = GVIFactory.createGroupValueIndexBySimpleIndex(r[0]);
                     ICubeTableService baseTableService = loader.getTableIndex(baseTable.getTableSource());
-                    for (int i = 0; i < fieldIds.length(); i++) {
-                        String fieldId = fieldIds.optString(i, "");
+                    for (int i = 0; i < fieldIds.size(); i++) {
+                        String fieldId = fieldIds.get(i);
                         BusinessField targetField = BusinessFieldHelper.getAnalysisBusinessFieldSource(new BIFieldID(fieldId));
                         FieldTableRelation targetFieldRelation = isRelationField(userId, baseTable, targetField);
                         BusinessTable targetTable = targetField.getTableBelongTo();

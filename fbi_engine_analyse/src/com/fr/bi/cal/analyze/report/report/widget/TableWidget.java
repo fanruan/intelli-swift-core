@@ -797,13 +797,20 @@ public class TableWidget extends BISummaryWidget {
         if (getGlobalFilterWidget() != null) {
             // 如果已经设置了源字段和目标字段
             if (((AbstractBIWidget) getGlobalFilterWidget()).getGlobalSourceAndTargetFieldList().size() > 0) {
-                return GolbalFilterUtils.getSettingSourceAndTargetJumpFilter(this, userId, session, targetKey, ((AbstractBIWidget)getGlobalFilterWidget()).getBaseTable());
+                return GolbalFilterUtils.getSettingSourceAndTargetJumpFilter(this, userId, session, targetKey, ((AbstractBIWidget) getGlobalFilterWidget()).getBaseTable());
             } else {
                 return GolbalFilterUtils.getNotSettingSourceAndTargetJumpFilter(session, targetKey, this, false);
             }
         }
         return null;
-
-
     }
+
+    public BIDimension getDimensionBydId(String dId) {
+
+        if (dimensionsIdMap.containsKey(dId)) {
+            return dimensionsIdMap.get(dId);
+        }
+        return null;
+    }
+
 }
