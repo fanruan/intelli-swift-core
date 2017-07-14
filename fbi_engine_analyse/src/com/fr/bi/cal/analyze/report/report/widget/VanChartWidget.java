@@ -642,8 +642,7 @@ public abstract class VanChartWidget extends TableWidget {
 
     public JSONObject createChartConfigWidthData(JSONObject data) throws Exception{
         //globalStyle从前台传过来的json取，不从.fbi模板取原因：设置全局样式，先刷新图表，后save模板，所以刷新图表取得全局样式不是最新的
-        this.globalStyle = this.getWidgetConf().getGlobalStyle();
-        this.globalStyle = this.globalStyle == null ? JSONObject.create() : this.globalStyle;
+        this.globalStyle = this.globalStyle == null ? JSONObject.create() : this.getWidgetConf().getGlobalStyle();
 
         return this.createOptions(globalStyle, data).put("data", data);
     }
