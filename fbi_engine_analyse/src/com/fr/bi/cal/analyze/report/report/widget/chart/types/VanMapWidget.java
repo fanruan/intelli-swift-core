@@ -57,7 +57,7 @@ public class VanMapWidget extends VanChartWidget{
             n = manager.getCustomMapTypeName().get(subType);
         }
 
-        JSONObject geo = JSONObject.create().put("data", d).put("name", n);
+        JSONObject geo = JSONObject.create().put("data", d).put("name", n).put("zoom", true);
 
         JSONObject settings = this.getDetailChartSetting();
 
