@@ -358,7 +358,7 @@ public abstract class VanChartWidget extends TableWidget {
     }
 
     protected String getCompleteImageUrl (String url) {
-        return requestURL + "?op=fr_bi&cmd=get_uploaded_image&image_id=" + url;
+        return requestURL + "?op=fr_bi&cmd=get_uploaded_image&imageId=" + url;
     }
 
     protected String getLocalImagePath(String url){
