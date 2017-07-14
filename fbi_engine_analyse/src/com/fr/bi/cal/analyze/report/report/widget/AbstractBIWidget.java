@@ -73,7 +73,6 @@ public abstract class AbstractBIWidget implements BIWidget {
 
     /**
      */
-    @Override
     public String getWidgetName() {
         return blockName;
     }
@@ -82,17 +81,8 @@ public abstract class AbstractBIWidget implements BIWidget {
         return widgetId;
     }
 
-    @Override
     public void setWidgetName(String name) {
         this.blockName = name;
-    }
-
-    public TargetFilter getFilter() {
-        return filter;
-    }
-
-    public void setFilter(TargetFilter filter){
-        this.filter = filter;
     }
 
     /**
@@ -100,41 +90,34 @@ public abstract class AbstractBIWidget implements BIWidget {
      *
      * @return 工作簿
      */
-    @Override
     public WorkBook createWorkBook(BISessionProvider session) {
         BIWorkBook wb = new BIWorkBook();
         wb.addReport(createWorkSheet(session));
         return wb;
     }
 
-    @Override
     public BIPolyWorkSheet createWorkSheet(BISessionProvider session) {
         BIPolyWorkSheet ws = new BIPolyWorkSheet();
         ws.addBlock(this.createTemplateBlock((BISession) session));
         return ws;
     }
 
-    @Override
     public BICore fetchObjectCore() {
         return new BICoreGenerator(this).fetchObjectCore();
     }
 
-    @Override
     public Rectangle getRect() {
         return widgetConf.getRect();
     }
 
-    @Override
     public boolean showRowToTal() {
         return true;
     }
 
-    @Override
     public boolean showColumnTotal() {
         return true;
     }
 
-    @Override
     public void refreshColumns() {
         for (BITargetAndDimension td : getTargets()) {
             td.refreshColumn();
@@ -151,7 +134,6 @@ public abstract class AbstractBIWidget implements BIWidget {
      * @param userId 用户id
      * @throws Exception
      */
-    @Override
     public void parseJSON(JSONObject jo, long userId) throws Exception {
         widgetConf.parseJSON(jo);
 
@@ -191,7 +173,6 @@ public abstract class AbstractBIWidget implements BIWidget {
         return block;
     }
 
-    @Override
     public void refreshSources() {
 
     }
@@ -237,6 +218,14 @@ public abstract class AbstractBIWidget implements BIWidget {
             BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
         return null;
+    }
+
+    public TargetFilter getFilter() {
+        return filter;
+    }
+
+    public void setFilter(TargetFilter filter){
+        this.filter = filter;
     }
 
     public List<TargetFilter> getAuthFilter(long userId) {
