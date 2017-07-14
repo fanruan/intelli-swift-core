@@ -640,10 +640,7 @@ public abstract class VanChartWidget extends TableWidget {
         return merge(settings, this.populateDefaultSettings());
     }
 
-    public JSONObject createChartConfigWidthData(BISessionProvider session, HttpServletRequest req, JSONObject data) throws Exception{
-
-        this.locale = WebUtils.getLocale(req);
-
+    public JSONObject createChartConfigWidthData(JSONObject data) throws Exception{
         //globalStyle从前台传过来的json取，不从.fbi模板取原因：设置全局样式，先刷新图表，后save模板，所以刷新图表取得全局样式不是最新的
         this.globalStyle = this.getWidgetConf().getGlobalStyle();
         this.globalStyle = this.globalStyle == null ? JSONObject.create() : this.globalStyle;
@@ -659,7 +656,9 @@ public abstract class VanChartWidget extends TableWidget {
         }
         JSONObject data = super.createDataJSON(session, req).getJSONObject("data");
 
-        JSONObject options = this.createChartConfigWidthData(session, req, data);
+        this.locale = WebUtils.getLocale(req);
+
+        JSONObject options = this.createChartConfigWidthData(data);
 
         // 如果是大数据模式,而且分组数大于BigDataChartOperator.MAXROW 或者是图表是交叉表类型且top分组大于BigDataChartOperator.MAXROW
         boolean isLarge = (data.has("c") && data.getJSONArray("c").length()> BigDataChartOperator.MAXROW)
