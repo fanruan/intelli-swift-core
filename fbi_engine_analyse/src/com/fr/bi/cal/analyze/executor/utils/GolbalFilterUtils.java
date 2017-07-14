@@ -1,5 +1,6 @@
 package com.fr.bi.cal.analyze.executor.utils;
 
+import com.finebi.cube.api.ICubeColumnDetailGetter;
 import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.api.ICubeTableService;
 import com.finebi.cube.api.ICubeValueEntryGetter;
@@ -13,19 +14,32 @@ import com.finebi.cube.relation.BITableRelationPath;
 import com.finebi.cube.relation.BITableSourceRelation;
 import com.fr.bi.base.key.BIKey;
 import com.fr.bi.cal.analyze.executor.BIEngineExecutor;
+import com.fr.bi.cal.analyze.executor.detail.DetailExecutor;
+import com.fr.bi.cal.analyze.executor.paging.Paging;
+import com.fr.bi.cal.analyze.executor.paging.PagingFactory;
 import com.fr.bi.cal.analyze.executor.table.AbstractTableWidgetExecutor;
 import com.fr.bi.cal.analyze.report.report.widget.AbstractBIWidget;
+import com.fr.bi.cal.analyze.report.report.widget.BIDetailWidget;
 import com.fr.bi.cal.analyze.report.report.widget.TableWidget;
 import com.fr.bi.cal.analyze.session.BISession;
 import com.fr.bi.conf.report.BIWidget;
+import com.fr.bi.conf.report.WidgetType;
+import com.fr.bi.stable.constant.BIExcutorConstant;
 import com.fr.bi.stable.data.BIFieldID;
 import com.fr.bi.stable.engine.cal.DimensionIterator;
 import com.fr.bi.stable.engine.cal.DimensionIteratorCreator;
 import com.fr.bi.stable.engine.index.key.IndexKey;
+import com.fr.bi.stable.gvi.GVIFactory;
 import com.fr.bi.stable.gvi.GVIUtils;
 import com.fr.bi.stable.gvi.GroupValueIndex;
+import com.fr.bi.stable.gvi.IDGroupValueIndex;
+import com.fr.bi.stable.gvi.array.ICubeTableIndexReader;
+import com.fr.bi.stable.gvi.traversal.BrokenTraversalAction;
+import com.fr.bi.stable.utils.BICollectionUtils;
 import com.fr.bi.util.BIConfUtils;
 import com.fr.json.JSONArray;
+import com.fr.json.JSONObject;
+import com.fr.web.core.A.OB;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -197,7 +211,7 @@ public class GolbalFilterUtils {
         GroupValueIndex rgvi = null;
         try {
             FieldTableRelation sorceFieldRelation = isRelationField(userId, source, sourceField);
-            FieldTableRelation targetFieldRelation = isRelationField(userId, source, sourceField);
+            FieldTableRelation targetFieldRelation = isRelationField(userId, target, targetField);
             // 如果源字段,源表之间或目标字段,目标表之间没有关系
             if (sorceFieldRelation.equals(FieldTableRelation.NONE) || targetFieldRelation.equals(FieldTableRelation.NONE)) {
                 return null;
@@ -245,5 +259,93 @@ public class GolbalFilterUtils {
             }
         }
         return rl;
+    }
+
+    /**
+     * 获取点击节点映射字段的值
+     *
+     * @param widget   点击的区域
+     * @param userId   用户id
+     * @param session
+     * @param clicked  点击的值
+     * @param fieldIds 需要获取的值
+     * @return
+     */
+    public static JSONObject getClickFieldMappingValue(BIWidget widget, long userId, BISession session, JSONObject clicked, JSONArray fieldIds) {
+
+        JSONObject ret = JSONObject.create();
+        ICubeDataLoader loader = session.getLoader();
+        if (fieldIds == null || fieldIds.length() == 0 || clicked == null) {
+            return ret;
+        }
+        try {
+            if (widget.getType().equals(WidgetType.DETAIL)) {
+                Paging paging = PagingFactory.createPaging(BIExcutorConstant.PAGINGTYPE.GROUP100);
+                int page = clicked.optInt("pageCount", 1);
+                final long[] rIndex = {clicked.optLong("rowIndex", 0) + (page - 1) * BIExcutorConstant.PAGINGTYPE.GROUP100};
+                final int[] r = {-1};
+                paging.setCurrentPage(page);
+                DetailExecutor exe = new DetailExecutor((BIDetailWidget) widget, paging, session);
+                GroupValueIndex viewGvi = exe.createDetailViewGvi();
+                if (viewGvi != null) {
+                    viewGvi.BrokenableTraversal(new BrokenTraversalAction() {
+
+                        @Override
+                        public boolean actionPerformed(int row) {
+
+                            if (rIndex[0] == 0) {
+                                r[0] = row;
+                                return true;
+                            }
+                            rIndex[0]--;
+                            return false;
+                        }
+                    });
+                }
+                if (r[0] >= 0) {
+                    GroupValueIndex tarFiledGvi = GVIFactory.createGroupValueIndexBySimpleIndex(r[0]);
+                    BusinessTable baseTable = ((BIDetailWidget) widget).getBaseTable();
+                    ICubeTableService baseTableService = loader.getTableIndex(baseTable.getTableSource());
+                    for (int i = 0; i < fieldIds.length(); i++) {
+                        String fieldId = fieldIds.optString(i, "");
+                        BusinessField targetField = BusinessFieldHelper.getAnalysisBusinessFieldSource(new BIFieldID(fieldId));
+                        FieldTableRelation targetFieldRelation = isRelationField(userId, baseTable, targetField);
+                        BusinessTable targetTable = targetField.getTableBelongTo();
+                        if (!targetFieldRelation.equals(FieldTableRelation.NONE)) {
+                            // 如果是主表的字段
+                            Set<BITableRelationPath> sourcePaths;
+                            BIKey targetFieldKey = new IndexKey(targetField.getFieldName());
+                            Object g = null;
+                            if (targetFieldRelation.equals(FieldTableRelation.PRIMARYTABLEFIELD)) {
+                                sourcePaths = BICubeConfigureCenter.getTableRelationManager().getAllPath(userId, baseTable, targetTable);
+                                List<BITableSourceRelation> targetRelation = getRelation(sourcePaths);
+                                ICubeTableIndexReader indexReader = loader.getTableIndex(targetRelation.get(0).getPrimaryTable()).ensureBasicIndex(targetRelation);
+                                int row = indexReader.getReverse(r[0]);
+                                ICubeTableService targetBaseTable = loader.getTableIndex(targetTable.getTableSource());
+                                ICubeColumnDetailGetter targetColumnDetail = targetBaseTable.getColumnDetailReader(targetFieldKey);
+                                g = targetColumnDetail.getValue(row);
+                            } else {
+                                sourcePaths = BICubeConfigureCenter.getTableRelationManager().getAllPath(userId, targetTable, baseTable);
+                                List<BITableSourceRelation> targetRelation = getRelation(sourcePaths);
+                                ICubeValueEntryGetter targetFieldEntryGetter = baseTableService.getValueEntryGetter(targetFieldKey, targetRelation);
+                                DimensionIterator sourceItemIter = DimensionIteratorCreator.createValueMapIterator(targetFieldEntryGetter, tarFiledGvi, true);
+                                if (sourceItemIter.hasNext()) {
+                                    Map.Entry<Object, GroupValueIndex> item = sourceItemIter.next();
+                                    if (sourceItemIter.hasNext()) {
+                                        continue;
+                                    }
+                                    g = item.getKey();
+                                }
+                            }
+                            g = BICollectionUtils.cubeValueToWebDisplay(g);
+                            ret.put(fieldId, g);
+                        }
+                    }
+                }
+            }
+        } catch (Exception e) {
+            BILoggerFactory.getLogger(GolbalFilterUtils.class).info(e.getMessage(), e);
+        }
+        return ret;
     }
 }
