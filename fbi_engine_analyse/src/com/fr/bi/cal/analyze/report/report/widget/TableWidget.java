@@ -90,7 +90,7 @@ public class TableWidget extends BISummaryWidget {
     @BIIgnoreField
     private transient BISummaryTarget[] usedTargets;
 
-    private DetailChartSetting detailSettings = new DetailChartSetting();
+    private DetailChartSetting settings = new DetailChartSetting();
 
     protected Map<String, JSONArray> clicked = new HashMap<String, JSONArray>();
 
@@ -184,7 +184,7 @@ public class TableWidget extends BISummaryWidget {
     @Override
     public int isOrder() {
 
-        return detailSettings.isOrder();
+        return settings.isOrder();
     }
 
     public BIEngineExecutor getExecutor(BISession session) {
@@ -329,8 +329,8 @@ public class TableWidget extends BISummaryWidget {
             parsExpander(jo);
         }
         if (jo.has("settings")) {
-            detailSettings = new DetailChartSetting();
-            detailSettings.parseJSON(jo);
+            settings = new DetailChartSetting();
+            settings.parseJSON(jo);
         }
         if (jo.has("clicked")) {
             JSONObject c = jo.getJSONObject("clicked");
@@ -443,7 +443,7 @@ public class TableWidget extends BISummaryWidget {
 
     public DetailChartSetting getChartSetting() {
 
-        return detailSettings;
+        return settings;
     }
 
     public String[] getAllDimensionIds() {
@@ -501,13 +501,13 @@ public class TableWidget extends BISummaryWidget {
 
     public boolean showRowToTal() {
 
-        return detailSettings.showRowTotal();
+        return settings.showRowTotal();
     }
 
     @Override
     public boolean showColumnTotal() {
 
-        return detailSettings.showColTotal();
+        return settings.showColTotal();
     }
 
     @Override
