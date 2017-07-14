@@ -583,7 +583,6 @@ public abstract class VanChartWidget extends TableWidget {
         if(globalStyle.has("widgetBackground")) {
             color = checkValidColor(globalStyle.optJSONObject("widgetBackground").optString("value"), color);
         }
-        //马上改
         JSONObject settings = this.getWidgetConf().getDetailWidgetSetting();
         if(settings.has("widgetBG")){
             color = checkValidColor(settings.optJSONObject("widgetBG").optString("value"), color);
