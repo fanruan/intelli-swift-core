@@ -39,6 +39,15 @@ public class BITableStyleHelper {
         return new BITableItemStyle(null, null, null);
     }
 
+    public static ITableStyle getInnerSumStyles(String themeColor, int styleType) throws JSONException {
+        switch (styleType) {
+            case BIStyleConstant.TABLE_STYLE.STYLE_NORMAL:
+                String background = getInnerSumThemeColor(themeColor);
+                return new BITableItemStyle(background, null, "bold");
+        }
+        return new BITableItemStyle(null, null, null);
+    }
+
     public static ITableStyle getLastSummaryStyles(String themeColor, int styleType) {
         switch (styleType) {
             case BIStyleConstant.TABLE_STYLE.STYLE_NORMAL:
@@ -63,6 +72,10 @@ public class BITableStyleHelper {
 
     private static String getOddColorByThemeColor(String color) {
         return parseHEXAlpha2HEX(color, (float) 0.2);
+    }
+
+    private static String getInnerSumThemeColor(String color) {
+        return parseHEXAlpha2HEX(color, (float) 0.4);
     }
 
     private static String parseHEXAlpha2HEX(String color, float a) {

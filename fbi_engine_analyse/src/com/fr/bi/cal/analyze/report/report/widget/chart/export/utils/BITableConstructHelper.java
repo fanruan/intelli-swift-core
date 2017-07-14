@@ -40,9 +40,10 @@ public class BITableConstructHelper {
             if (isDetail) {
                 for (int i = 0; i < data.getItems().size(); i++) {
                     ITableItem item = data.getItems().get(i);
-                    formatItemCell(operations, i, 0, style, item);
                     for (ITableItem child : item.getChildren()) {
-                        formatItemCell(operations, i, 0, style, child);
+                        formatText(operations, child);
+                        setTextStyle(operations, child);
+                        setDetailCellStyle(i, 1, style, child);
                     }
                 }
             } else {
@@ -68,30 +69,43 @@ public class BITableConstructHelper {
     * 首行汇总为深色
     * */
     private static void traversalItems(List<ITableItem> items, Map<String, ITableCellFormatOperation> ops, int rowIndex, int layer, BITableWidgetStyle style) throws Exception {
+        rowIndex++;
         for (ITableItem item : items) {
             rowIndex++;
-            formatItemCell(ops, rowIndex, layer, style, item);
-            if (item.getChildren() != null) {
-                traversalItems(item.getChildren(), ops, rowIndex, layer + 1, style);
-            }
-
+            boolean isInnerSum = item.getChildren() != null && !item.getChildren().isEmpty();
+            boolean isLastSum = item.isSum() || layer == 0;
+            formatItemCell(ops, rowIndex, style, item, false, isLastSum);
             if (item.getValues() != null) {
                 for (ITableItem it : item.getValues()) {
-                    formatItemCell(ops, rowIndex, layer, style, it);
+                    formatItemCell(ops, rowIndex, style, it, isInnerSum, isLastSum);
                 }
+            }
+
+            if (item.getChildren() != null) {
+                traversalItems(item.getChildren(), ops, rowIndex, layer + 1, style);
             }
         }
     }
 
-    private static void formatItemCell(Map<String, ITableCellFormatOperation> ops, int rowIndex, int layer, BITableWidgetStyle style, ITableItem item) throws Exception {
+    private static void formatItemCell(Map<String, ITableCellFormatOperation> ops, int rowIndex, BITableWidgetStyle style, ITableItem item, boolean isInnerSum, boolean isLastSum) throws Exception {
         formatText(ops, item);
         setTextStyle(ops, item);
-        setCellStyle(rowIndex, layer, style, item);
+        setCellStyle(rowIndex, style, item, isInnerSum, isLastSum);
     }
 
-    private static void setCellStyle(int rowIndex, int layer, BITableWidgetStyle style, ITableItem item) throws JSONException {
-        boolean isOutSummary = layer == 0 && item.getValues() != null;
-        if (isOutSummary || item.isSum()) {
+    private static void setCellStyle(int rowIndex, BITableWidgetStyle style, ITableItem item, boolean isInnerSum, boolean isLastSum) throws JSONException {
+        if (isLastSum) {
+            item.setStyles(BITableStyleHelper.getLastSummaryStyles(style.getThemeColor(), style.getTableStyleGroup()));
+        } else if (isInnerSum) {
+            item.setStyles(BITableStyleHelper.getInnerSumStyles(style.getThemeColor(), style.getTableStyleGroup()));
+        } else {
+            item.setStyles(BITableStyleHelper.getBodyStyles(style.getThemeColor(), style.getTableStyleGroup(), rowIndex));
+        }
+    }
+
+    private static void setDetailCellStyle(int rowIndex, int layer, BITableWidgetStyle style, ITableItem item) throws JSONException {
+        boolean isLastSum = layer == 0 && item.getValues() == null;
+        if (isLastSum || item.isSum()) {
             item.setStyles(BITableStyleHelper.getLastSummaryStyles(style.getThemeColor(), style.getTableStyleGroup()));
         } else {
             item.setStyles(BITableStyleHelper.getBodyStyles(style.getThemeColor(), style.getTableStyleGroup(), rowIndex));
