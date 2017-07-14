@@ -682,10 +682,7 @@ public abstract class VanChartWidget extends TableWidget {
         if (setting.has("bigDataMode") && setting.optBoolean("bigDataMode", false)) {
             return false;
         }
-        if (isRealData()) {
-            return true;
-        }
-        return false;
+        return isRealData();
     }
 
     /*

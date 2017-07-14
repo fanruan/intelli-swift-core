@@ -73,10 +73,7 @@ public class GroupExecutor extends AbstractTableWidgetExecutor<Node> {
         int rowLength = usedDimensions.length;
         int summaryLength = usedSumTarget.length;
         int columnLen = rowLength + summaryLength;
-        TargetGettingKey[] keys = new TargetGettingKey[summaryLength];
-        for (int i = 0; i < summaryLength; i++) {
-            keys[i] = usedSumTarget[i].createTargetGettingKey();
-        }
+
         //显示不显示汇总行
         int rowLen = tree.getTotalLengthWithSummary();
         //        final boolean useTargetSort = widget.useTargetSort() || BITargetAndDimensionUtils.isTargetSort(usedDimensions);
