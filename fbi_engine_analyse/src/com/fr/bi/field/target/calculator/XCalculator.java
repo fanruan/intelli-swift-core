@@ -3,7 +3,7 @@ package com.fr.bi.field.target.calculator;
 import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.api.ICubeTableService;
 import com.finebi.cube.conf.table.BusinessTable;
-import com.fr.bi.cal.analyze.cal.result.XLeftNode;
+import com.fr.bi.cal.analyze.cal.result.BIXLeftNode;
 import com.fr.bi.field.target.calculator.sum.AbstractSummaryCalculator;
 import com.fr.bi.report.key.TargetGettingKey;
 import com.fr.bi.report.key.XTargetGettingKey;
@@ -12,6 +12,7 @@ import com.fr.bi.report.result.SummaryContainer;
 import com.fr.bi.report.result.TargetCalculator;
 import com.fr.bi.stable.gvi.GVIUtils;
 import com.fr.bi.stable.gvi.GroupValueIndex;
+import com.fr.general.ComparatorUtils;
 
 /**
  * Created by 小灰灰 on 2017/7/7.
@@ -27,21 +28,26 @@ public class XCalculator implements TargetCalculator{
         this.topIndex = topIndex;
     }
 
+    public GroupValueIndex getRootFilterIndex(){
+        return topIndex[topIndex.length - 1];
+    }
+
     @Override
     public void doCalculator(ICubeTableService cr, SummaryContainer node, GroupValueIndex gvi, TargetGettingKey key) {
         if (key instanceof XTargetGettingKey && calculator.getCalculatorType() == CalculatorType.SUM_DETAIL){
-            XLeftNode xLeftNode = (XLeftNode) node;
+            BIXLeftNode xLeftNode = (BIXLeftNode) node;
             AbstractSummaryCalculator summaryCalculator = (AbstractSummaryCalculator) calculator;
             if (gvi != null) {
                 int index = ((XTargetGettingKey) key).getSubIndex();
-                GroupValueIndex groupValueIndex = null;
-                if (filterIndex[index] != null) {
-                    groupValueIndex = gvi.AND(filterIndex[index]);
+                if (filterIndex[index] != null && !GVIUtils.isAllShowRoaringGroupValueIndex(filterIndex[index])) {
+                    gvi = gvi.AND(filterIndex[index]);
                 }
-                if (groupValueIndex != null && !groupValueIndex.isAllEmpty()) {
-                    xLeftNode.setXValue((XTargetGettingKey)key, summaryCalculator.createSumValue(groupValueIndex, cr));
+                if (gvi != null && !gvi.isAllEmpty()) {
+                    xLeftNode.setXValue((XTargetGettingKey)key, summaryCalculator.createSumValue(gvi, cr));
                 }
             }
+        } else {
+            calculator.doCalculator(cr, node, gvi, key);
         }
     }
 
@@ -84,4 +90,17 @@ public class XCalculator implements TargetCalculator{
     public CalculatorType getCalculatorType() {
         return CalculatorType.X_SUM;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        XCalculator that = (XCalculator) o;
+        if (!ComparatorUtils.equals(calculator, that.calculator)) {
+            return false;
+        }
+        return ComparatorUtils.equals(topIndex, that.topIndex);
+    }
+
 }

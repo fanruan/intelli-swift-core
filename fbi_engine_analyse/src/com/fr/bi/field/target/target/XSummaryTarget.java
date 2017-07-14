@@ -23,6 +23,16 @@ public class XSummaryTarget extends BISummaryTarget {
     }
 
     @Override
+    public String getName() {
+        return target.getName();
+    }
+
+    @Override
+    public String getValue() {
+        return target.getValue();
+    }
+
+    @Override
     public TargetCalculator createSummaryCalculator() {
         return new XCalculator(target.createSummaryCalculator(), filterIndex);
     }

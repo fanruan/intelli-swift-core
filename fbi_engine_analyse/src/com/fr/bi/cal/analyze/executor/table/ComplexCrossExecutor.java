@@ -60,7 +60,7 @@ public class ComplexCrossExecutor extends AbstractTableWidgetExecutor<XNode> {
             Map.Entry<Integer, XNode[]> entry = it.next();
             JSONArray ja = new JSONArray();
             for (int i = 0; i < entry.getValue().length; i++) {
-                ja.put(entry.getValue()[i].toJSONObject(rowData.getDimensionArray(entry.getKey()), columnData.getDimensionArray(i), widget.getTargetsKey()));
+                ja.put(entry.getValue()[i].toJSONObject(rowData.getDimensionArray(entry.getKey()), columnData.getDimensionArray(i), widget.getTargetsKey(), widget.showColumnTotal()));
             }
             jo.put(String.valueOf(entry.getKey()), ja);
         }

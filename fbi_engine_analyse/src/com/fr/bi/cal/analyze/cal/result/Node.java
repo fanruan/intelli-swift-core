@@ -801,20 +801,21 @@ public class Node implements BINode {
         }
         int childSize = childs.size();
         if (childSize > 0) {
-            JSONArray children = new JSONArray();
+            JSONArray children = JSONArray.create();
             for (int i = 0; i < childSize; i++) {
                 children.put(childs.get(i).toTopJSONObject(dimensions, keys, index + 1));
             }
             jo.put("c", children);
-        }
-        JSONArray children = JSONArray.create();
-        for (int i = 0; i < keys.length; i++) {
-            JSONObject target =JSONObject.create();
-            target.put("n", keys[i].getTargetName());
-            children.put(target);
-        }
-        if (children.length() > 0) {
-            jo.put("c", children);
+        } else {
+            JSONArray children = JSONArray.create();
+            for (int i = 0; i < keys.length; i++) {
+                JSONObject target =JSONObject.create();
+                target.put("n", keys[i].getTargetName());
+                children.put(target);
+            }
+            if (children.length() > 0) {
+                jo.put("c", children);
+            }
         }
         return jo;
     }

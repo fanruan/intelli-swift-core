@@ -72,7 +72,7 @@ public class CrossExecutor extends AbstractTableWidgetExecutor<XNode> {
     @Override
     public JSONObject createJSONObject() throws Exception {
 
-        return getCubeNode().toJSONObject(rowDimension, colDimension, widget.getTargetsKey());
+        return getCubeNode().toJSONObject(rowDimension, colDimension, widget.getTargetsKey(), widget.showColumnTotal());
     }
 
 

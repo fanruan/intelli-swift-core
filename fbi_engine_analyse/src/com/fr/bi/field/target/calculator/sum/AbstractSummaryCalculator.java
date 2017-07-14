@@ -9,6 +9,7 @@ import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.report.key.TargetGettingKey;
 import com.fr.bi.report.result.SummaryContainer;
 import com.fr.bi.report.result.TargetCalculator;
+import com.fr.general.ComparatorUtils;
 
 /**
  * Created by 小灰灰 on 2015/6/30.
@@ -93,4 +94,15 @@ public abstract class AbstractSummaryCalculator implements TargetCalculator {
     public GroupValueIndex getFilterIndex() {
         return filterIndex;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        AbstractSummaryCalculator that = (AbstractSummaryCalculator) o;
+        return ComparatorUtils.equals(target, that.target);
+    }
+
 }

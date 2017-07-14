@@ -112,7 +112,7 @@ public class GroupUtils {
             NoneDimensionGroup group = gcv.getCurrentValue();
             if (group != null) {
                 List<TargetAndKey>[] summaryLists = group.getSummaryLists();
-                node.setSummaryValue(group.getSummaryValue());
+                creator.copySumValue(node, group.getMergeResult());
                 GroupValueIndex[] gvis = group.getGvis();
                 if (gvis == null) {
                     return;

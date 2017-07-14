@@ -20,6 +20,7 @@ import com.fr.bi.conf.report.widget.field.target.filter.TargetFilter;
 import com.fr.bi.exception.BIMemoryDataOutOfLimitException;
 import com.fr.bi.field.dimension.calculator.DateDimensionCalculator;
 import com.fr.bi.field.dimension.dimension.BIDateDimension;
+import com.fr.bi.field.target.calculator.XCalculator;
 import com.fr.bi.field.target.calculator.cal.CalCalculator;
 import com.fr.bi.field.target.calculator.cal.FormulaCalculator;
 import com.fr.bi.field.target.calculator.sum.CountCalculator;
@@ -29,6 +30,7 @@ import com.fr.bi.field.target.target.XSummaryTarget;
 import com.fr.bi.field.target.target.cal.BICalculateTarget;
 import com.fr.bi.manager.PerformancePlugManager;
 import com.fr.bi.report.key.TargetGettingKey;
+import com.fr.bi.report.key.XTargetGettingKey;
 import com.fr.bi.report.result.BINode;
 import com.fr.bi.report.result.DimensionCalculator;
 import com.fr.bi.report.result.TargetCalculator;
@@ -446,8 +448,11 @@ public class CubeIndexLoader {
     private NodeAndPageInfo getLeftInfo(Node node, BIDimension[] rowDimension, int page, CrossExpander expander, BISummaryWidget widget,
                                         BISession session, BISummaryTarget[] usedTargets, PageIteratorGroup pg) throws Exception {
 
-        NodeAndPageInfo leftInfo = createPageGroupNode(widget, extendTargets(usedTargets, node, widget.showColumnTotal()), rowDimension, new XLeftNodeCreator(getTopSumLen(node, widget.showColumnTotal())), page, expander.getYExpander(),
+        int topLen = getTopSumLen(node, widget.showColumnTotal());
+        XLeftNodeCreator creator = new XLeftNodeCreator(topLen);
+        NodeAndPageInfo leftInfo = createPageGroupNode(widget, extendTargets(usedTargets, node, widget.showColumnTotal()), rowDimension, creator, page, expander.getYExpander(),
                 session, createRowOperator(page, widget), pg, true, false);
+        calXCalculateMetrics(usedTargets, (XLeftNode) leftInfo.getNode(), topLen);
         if (usedTargets.length != 0 && isEmpty(leftInfo)) {
             leftInfo.getNode().getChilds().clear();
             leftInfo.setHasNext(false);
@@ -455,15 +460,82 @@ public class CubeIndexLoader {
         return leftInfo;
     }
 
-    private BISummaryTarget[] extendTargets(BISummaryTarget[] usedTargets, Node node, boolean showSum) {
-        XSummaryTarget[] targets = new XSummaryTarget[usedTargets.length];
+    public void calXCalculateMetrics(BISummaryTarget[] usedTargets, XLeftNode node, int topLen) {
+        List<TargetCalculator> targetCalculators = new ArrayList<TargetCalculator>();
+        List<CalCalculator> calculateTargets = new ArrayList<CalCalculator>();
+        addXCalCalculators(usedTargets, calculateTargets, node);
+        for (int j = 0; j < usedTargets.length; j++) {
+            addTargetCalculator(usedTargets[j], targetCalculators);
+        }
+        calculateXTargets(targetCalculators, calculateTargets, node, topLen);
+    }
+
+    private static void addXCalCalculators(BISummaryTarget[] usedTargets, List<CalCalculator> calCalculateTargets, XLeftNode node) {
+
         for (int i = 0; i < usedTargets.length; i++) {
-            TargetGettingKey key = usedTargets[i].createTargetGettingKey();
-            List<GroupValueIndex> filterIndexList = new ArrayList<GroupValueIndex>();
-            List<Node> nodeList = new ArrayList<Node>();
-            nodeList.add(node);
-            createFilterIndexByNode(filterIndexList, nodeList, showSum, key);
-            targets[i] = new XSummaryTarget(usedTargets[i], filterIndexList.toArray(new GroupValueIndex[filterIndexList.size()]));
+            BISummaryTarget target = usedTargets[i];
+            if (target == null) {
+                continue;
+            }
+            TargetCalculator calculator = target.createSummaryCalculator();
+            if (isPartNodeCalculateTarget(target, calculator)) {
+                calCalculateTargets.add((CalCalculator) calculator);
+            }
+        }
+    }
+
+    public static void calculateXTargets(List<TargetCalculator> targetCalculator, List<? extends CalCalculator> calculateTargets, BIXLeftNode n, int topLen) {
+
+        int size = calculateTargets.size();
+        Set<TargetGettingKey> set = new HashSet<TargetGettingKey>();
+        Iterator<TargetCalculator> cit = targetCalculator.iterator();
+        while (cit.hasNext()) {
+            set.add(cit.next().createTargetGettingKey());
+        }
+        while (!calculateTargets.isEmpty() && n != null) {
+            Iterator<? extends CalCalculator> iter = calculateTargets.iterator();
+            while (iter.hasNext()) {
+                CalCalculator calCalculator = iter.next();
+                if (calCalculator.isAllFieldsReady(set)) {
+                    TargetGettingKey key = calCalculator.createTargetGettingKey();
+                    for (int i = 0; i < topLen; i++) {
+                        calCalculator.calCalculateTarget(n, new XTargetGettingKey(key.getTargetIndex(), i, key.getTargetName()));
+                    }
+                    set.add(calCalculator.createTargetGettingKey());
+                    iter.remove();
+                }
+            }
+            int newSize = calculateTargets.size();
+            //没有可以计算的值了 说明有值被删除了，强制计算 将值设置为0
+            if (size == newSize) {
+                iter = calculateTargets.iterator();
+                while (iter.hasNext()) {
+                    CalCalculator calCalculator = iter.next();
+                    TargetGettingKey key = calCalculator.createTargetGettingKey();
+                    for (int i = 0; i < topLen - 1; i++) {
+                        calCalculator.calCalculateTarget(n, new XTargetGettingKey(key.getTargetIndex(), i, key.getTargetName()));
+                    }
+                    set.add(calCalculator.createTargetGettingKey());
+                    iter.remove();
+                }
+            } else {
+                size = newSize;
+            }
+        }
+    }
+
+
+    private BISummaryTarget[] extendTargets(BISummaryTarget[] usedTargets, Node node, boolean showSum) {
+        BISummaryTarget[] targets = new BISummaryTarget[usedTargets.length];
+        for (int i = 0; i < usedTargets.length; i++) {
+            if (usedTargets[i].getType() == TargetType.NORMAL) {
+                TargetGettingKey key = usedTargets[i].createTargetGettingKey();
+                List<GroupValueIndex> filterIndexList = new ArrayList<GroupValueIndex>();
+                createFilterIndexByNode(filterIndexList, node, showSum, key);
+                targets[i] = new XSummaryTarget(usedTargets[i], filterIndexList.toArray(new GroupValueIndex[filterIndexList.size()]));
+            } else {
+                targets[i] = usedTargets[i];
+            }
         }
         return targets;
     }
@@ -477,16 +549,12 @@ public class CubeIndexLoader {
         return length.value;
     }
 
-    private void createFilterIndexByNode(List<GroupValueIndex> filterIndexList, List<Node> nodeList, boolean showSum, TargetGettingKey key) {
-        List<Node> list = new ArrayList<Node>();
-        for (Node n : nodeList) {
-            list.addAll(n.getChilds());
-            if ((n.getChildLength() == 0 || showSum)) {
-                filterIndexList.add(n.getTargetIndex(key));
-            }
+    private void createFilterIndexByNode(List<GroupValueIndex> filterIndexList, Node node, boolean showSum, TargetGettingKey key) {
+        for (Node n : node.getChilds()) {
+            createFilterIndexByNode(filterIndexList, n, showSum, key);
         }
-        if (!list.isEmpty()) {
-            createFilterIndexByNode(filterIndexList, list, showSum, key);
+        if ((node.getChildLength() == 0 || (showSum && node.getTotalLength() != 1))) {
+            filterIndexList.add(node.getTargetIndex(key));
         }
     }
 
@@ -494,7 +562,7 @@ public class CubeIndexLoader {
         List<Node> list = new ArrayList<Node>();
         for (Node n : nodeList) {
             list.addAll(n.getChilds());
-            if ((n.getChildLength() == 0 || showSum)) {
+            if ((n.getChildLength() == 0 || (showSum && n.getTotalLength() != 1))) {
                 length.value++;
             }
         }
@@ -759,6 +827,8 @@ public class CubeIndexLoader {
 
         private NodeCreator nodeCreator;
 
+        private boolean isCross;
+
         private boolean shouldSetIndex;
 
         private boolean isHor;
@@ -780,6 +850,7 @@ public class CubeIndexLoader {
             this.usedTargets = usedTargets;
             this.rowDimension = rowDimension;
             this.nodeCreator = nodeCreator;
+            this.isCross = isCross;
             this.shouldSetIndex = isCross && isHor;
             this.isHor = isHor;
             this.session = session;
@@ -799,20 +870,23 @@ public class CubeIndexLoader {
                 if (iterator.getRoot() == null) {
                     IRootDimensionGroup root;
                     if (rowLength != 0 && summaryLength == 0) {
-                        root = createPageGroupNodeWithNoSummary(widget, usedTargets, rowDimension, shouldSetIndex, isHor, session, rowLength, calAllPage, authFilter, executor);
+                        root = createPageGroupNodeWithNoSummary(widget, usedTargets, rowDimension, shouldSetIndex, isHor, session, rowLength, calAllPage, authFilter, executor, nodeCreator);
                     } else {
-                        root = createPageGroupNodeWithSummary(widget, usedTargets, rowDimension, session, shouldSetIndex, isHor, summaryLength, rowLength, calAllPage, authFilter, executor);
+                        root = createPageGroupNodeWithSummary(widget, usedTargets, rowDimension, session, shouldSetIndex, isHor, summaryLength, rowLength, calAllPage, authFilter, executor, nodeCreator);
                     }
                     iterator.setRoot(root);
                 } else {
                     iterator = iterator.createClonedIterator();
                     iterator.getRoot().checkStatus(executor);
+                    if (isCross && !isHor && summaryLength != 0) {
+                        iterator.getRoot().checkMetricGroupInfo(nodeCreator, getMetricGroupInfos(widget, usedTargets, rowDimension, session, summaryLength, rowLength));
+                    }
                 }
                 iterator.setExpander(expander);
                 if (isAllExpandWholeNodeWithoutIndex(calAllPage)) {
                     return new NodeAndPageInfo(iterator.getRoot().getConstructedRoot(), iterator);
                 }
-                NodeAndPageInfo info = GroupUtils.createNextPageMergeNode(iterator, op, isHor ? widget.showColumnTotal() : widget.showRowToTal(), shouldSetIndex, !isHor, nodeCreator, widget.getTargets().length, executor);
+                NodeAndPageInfo info = GroupUtils.createNextPageMergeNode(iterator, op, isHor ? widget.showColumnTotal() : widget.showRowToTal(), shouldSetIndex, !isCross || !isHor, nodeCreator, widget.getTargets().length, executor);
                 return info;
             } finally {
                 MultiThreadManagerImpl.getInstance().releaseCurrentThread(session, executor);
@@ -827,9 +901,15 @@ public class CubeIndexLoader {
     }
 
     private IRootDimensionGroup createPageGroupNodeWithSummary(BISummaryWidget widget, BISummaryTarget[] usedTargets,
-                                                               BIDimension[] rowDimension, BISession session, boolean isCross,
-                                                               boolean isHor, int summaryLength, int rowLength, boolean calAllPage, List<TargetFilter> authFilter, BIMultiThreadExecutor executor) {
+                                                               BIDimension[] rowDimension, BISession session, boolean shouldSetIndex,
+                                                               boolean isHor, int summaryLength, int rowLength, boolean calAllPage,
+                                                               List<TargetFilter> authFilter, BIMultiThreadExecutor executor, NodeCreator nodeCreator) {
 
+        List<MetricGroupInfo> mergerInfoList = getMetricGroupInfos(widget, usedTargets, rowDimension, session, summaryLength, rowLength);
+        return getRootDimensionGroup(widget, usedTargets, rowDimension, session, mergerInfoList, shouldSetIndex, isHor, calAllPage, authFilter, executor, nodeCreator);
+    }
+
+    private List<MetricGroupInfo> getMetricGroupInfos(BISummaryWidget widget, BISummaryTarget[] usedTargets, BIDimension[] rowDimension, BISession session, int summaryLength, int rowLength) {
         List<MetricGroupInfo> mergerInfoList = new ArrayList<MetricGroupInfo>();
         Map<GroupKey, MetricGroupInfo> map = new HashMap<GroupKey, MetricGroupInfo>();
         for (int i = 0; i < summaryLength; i++) {
@@ -852,6 +932,9 @@ public class CubeIndexLoader {
                 if (widget instanceof TableWidget) {
                     gvi = GVIUtils.AND(gvi, ((TableWidget) widget).createLinkedFilterGVI(targetKey, session));
                 }
+                if (summary instanceof XCalculator) {
+                    gvi = GVIUtils.AND(gvi, ((XCalculator) summary).getRootFilterIndex());
+                }
                 metricGroupInfo = new MetricGroupInfo(row, gvi, summary.createTableKey());
                 metricGroupInfo.addTargetAndKey(new TargetAndKey(target.getName(), summary, summary.createTargetGettingKey()));
                 map.put(groupKey, metricGroupInfo);
@@ -861,7 +944,7 @@ public class CubeIndexLoader {
                 metricGroupInfo.addTargetAndKey(new TargetAndKey(target.getName(), summary, summary.createTargetGettingKey()));
             }
         }
-        return getRootDimensionGroup(widget, usedTargets, rowDimension, session, mergerInfoList, isCross, isHor, calAllPage, authFilter, executor);
+        return mergerInfoList;
     }
 
     public static void fillRowDimension(BISummaryWidget widget, DimensionCalculator[] row, BIDimension[] rowDimension, int rowLength, BISummaryTarget bdt) {
@@ -876,7 +959,8 @@ public class CubeIndexLoader {
 
     private IRootDimensionGroup createPageGroupNodeWithNoSummary(BISummaryWidget widget, BISummaryTarget[] usedTargets,
                                                                  BIDimension[] rowDimension, boolean shouldSetIndex, boolean isHor,
-                                                                 BISession session, int rowLength, boolean calAllPage, List<TargetFilter> authFilter, BIMultiThreadExecutor executor) {
+                                                                 BISession session, int rowLength, boolean calAllPage, List<TargetFilter> authFilter,
+                                                                 BIMultiThreadExecutor executor, NodeCreator nodeCreator) {
 
         DimensionCalculator[] row = new DimensionCalculator[rowLength];
         for (int i = 0; i < rowLength; i++) {
@@ -890,22 +974,22 @@ public class CubeIndexLoader {
         metricGroupInfo.addTargetAndKey(new TargetAndKey(summary.getName(), summary, summary.createTargetGettingKey()));
         List<MetricGroupInfo> list = new ArrayList<MetricGroupInfo>();
         list.add(metricGroupInfo);
-        return getRootDimensionGroup(widget, usedTargets, rowDimension, session, list, shouldSetIndex, isHor, calAllPage, authFilter, executor);
+        return getRootDimensionGroup(widget, usedTargets, rowDimension, session, list, shouldSetIndex, isHor, calAllPage, authFilter, executor, nodeCreator);
     }
 
 
     private IRootDimensionGroup getRootDimensionGroup(BISummaryWidget widget, BISummaryTarget[] usedTargets, BIDimension[] rowDimension,
                                                       BISession session, List<MetricGroupInfo> metricGroupInfoList, boolean shouldSetIndex,
-                                                      boolean isHor, boolean calAllPage, List<TargetFilter> authFilter, BIMultiThreadExecutor executor) {
+                                                      boolean isHor, boolean calAllPage, List<TargetFilter> authFilter, BIMultiThreadExecutor executor, NodeCreator nodeCreator) {
 
         boolean showSum = isHor ? widget.showColumnTotal() : widget.showRowToTal();
         int maxSize = PerformancePlugManager.getInstance().getMaxStructureSize();
         NodeIteratorCreator iteratorCreator = maxSize == 0 ? new NodeIteratorCreator(metricGroupInfoList, rowDimension, usedTargets, widget.getTargets().length,
                 widget.getTargetFilterMap(), widget.isRealData(), session, widget.getTargetSort(), widget.getFilter(), authFilter,
-                showSum, shouldSetIndex, calAllPage, executor)
+                showSum, shouldSetIndex, calAllPage, executor, nodeCreator)
                 : new LimitedNodeIteratorCreator(metricGroupInfoList, rowDimension, usedTargets, widget.getTargets().length,
                 widget.getTargetFilterMap(), widget.isRealData(), session, widget.getTargetSort(), widget.getFilter(), authFilter,
-                showSum, shouldSetIndex, calAllPage, executor, maxSize);
+                showSum, shouldSetIndex, calAllPage, executor, nodeCreator, maxSize);
         return iteratorCreator.createRoot();
     }
 

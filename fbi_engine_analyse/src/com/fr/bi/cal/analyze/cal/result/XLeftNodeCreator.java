@@ -1,8 +1,14 @@
 package com.fr.bi.cal.analyze.cal.result;
 
+import com.fr.bi.cal.analyze.cal.index.loader.CubeIndexLoader;
 import com.fr.bi.cal.analyze.cal.index.loader.TargetAndKey;
+import com.fr.bi.cal.analyze.cal.sssecret.MetricMergeResult;
+import com.fr.bi.cal.analyze.cal.sssecret.XMetricMergeResult;
+import com.fr.bi.field.target.calculator.cal.CalCalculator;
 import com.fr.bi.report.key.TargetGettingKey;
 import com.fr.bi.report.key.XTargetGettingKey;
+import com.fr.bi.report.result.TargetCalculator;
+import com.fr.bi.stable.gvi.GroupValueIndex;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,5 +41,31 @@ public class XLeftNodeCreator implements NodeCreator {
             list.add(new TargetAndKey(targetAndKey.getTargetId(), targetAndKey.getCalculator(), new XTargetGettingKey(key.getTargetIndex(), i, key.getTargetName())));
         }
         return list;
+    }
+
+    @Override
+    public MetricMergeResult createMetricMergeResult(Object data, int sumLen, GroupValueIndex[] gvis) {
+        return new XMetricMergeResult(data, sumLen, gvis, topLen);
+    }
+
+    @Override
+    public MetricMergeResult convertMetricMergeResult(MetricMergeResult node) {
+        return new XMetricMergeResult(node.getData(), node.getSummaryValue().length, node.getGvis(), topLen);
+    }
+
+    @Override
+    public void sumCalculateMetrics(List<TargetCalculator> calculatorList, List<CalCalculator> calCalculators, MetricMergeResult rootNode) {
+        CubeIndexLoader.calculateXTargets(calculatorList, calCalculators, (XMetricMergeResult)rootNode, topLen);
+
+    }
+
+    @Override
+    public void copySumValue(Node node, MetricMergeResult mergeResult) {
+        if (mergeResult != null){
+            node.setSummaryValue(mergeResult.getSummaryValue());
+            if (mergeResult instanceof XMetricMergeResult){
+                ((XLeftNode)node).setXValue(((XMetricMergeResult)mergeResult).getXValue());
+            }
+        }
     }
 }

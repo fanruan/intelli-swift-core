@@ -34,4 +34,5 @@ public interface TargetCalculator extends Serializable {
     TargetGettingKey createTargetGettingKey();
 
     CalculatorType getCalculatorType();
+
 }
