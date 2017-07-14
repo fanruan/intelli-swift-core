@@ -429,7 +429,7 @@ public abstract class VanCartesianWidget extends VanChartWidget {
                 .put("maxWidth", COMPONENT_MAX_SIZE).put("maxHeight", COMPONENT_MAX_SIZE)
                 .put("type", "category").put("position", "bottom")
                 .put("title", JSONObject.create().put("rotation", cateAxisRotation()).put("style", settings.optJSONObject("catTitleStyle")).put("text", enabled ?settings.optString("catTitle") : StringUtils.EMPTY))
-                .put("showLabel", settings.optBoolean("catShowLabel") && !settings.optBoolean("showDataTable"))
+                .put("showLabel", settings.optBoolean("catShowLabel") && !hasDataSheet(settings))
                 .put("labelStyle", labelStyle.optJSONObject("textStyle"))
                 .put("labelRotation", labelStyle.optInt("textDirection"))
                 .put("lineColor", settings.optString("catLineColor"))
@@ -438,6 +438,10 @@ public abstract class VanCartesianWidget extends VanChartWidget {
                 .put("reversed", false);
 
         return JSONArray.create().put(category);
+    }
+
+    protected boolean hasDataSheet(JSONObject settings) {
+        return settings.optBoolean("showDataTable");
     }
 
     protected double cateAxisRotation() {
@@ -681,14 +685,6 @@ public abstract class VanCartesianWidget extends VanChartWidget {
             }
         }
 
-        if(leftYMax == -Double.MAX_VALUE){
-            leftYMax = DEFAULT_MAX;
-        }
-
-        if(rightYMax == -Double.MAX_VALUE){
-            leftYMax = DEFAULT_MAX;
-        }
-
         double[] leftDomain = calculateValueTimeNiceDomain(leftYMin, leftYMax);
         double[] rightDomain = calculateValueTimeNiceDomain(rightYMin, rightYMax);
 
@@ -739,14 +735,11 @@ public abstract class VanCartesianWidget extends VanChartWidget {
     }
 
     protected double[] calculateValueTimeNiceDomain(double minValue, double maxValue){
-        boolean fromZero = true;
 
-        if(fromZero){
-            if(minValue > 0){
-                minValue = 0;
-            }else if(maxValue < 0){
-                maxValue = 0;
-            }
+        if(minValue > 0){
+            minValue = 0;
+        } else if(maxValue < 0){
+            maxValue = 0;
         }
 
         // if any exceeded min, adjust max to min + 100
@@ -775,6 +768,7 @@ public abstract class VanCartesianWidget extends VanChartWidget {
                 .put("showLabel", false)
                 .put("lineWidth", 0)
                 .put("enableTick", false)
+                .put("gridLineWidth", 0)
                 .put("labelStyle", settings.optJSONObject("catLabelStyle"));
     }
 

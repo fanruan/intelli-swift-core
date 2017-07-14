@@ -179,7 +179,7 @@ public class GroupExecutor extends AbstractTableWidgetExecutor<Node> {
             boolean separator = widget.getChartSetting().getSeparatorByTargetId(key.getTargetName());
             data = ExecutorUtils.formatExtremeSumValue(data, numLevel);
             Style style = Style.getInstance();
-            style = style.deriveFormat(ExecutorUtils.formatDecimalAndSeparator(numLevel, formatDecimal, separator));
+            style = style.deriveFormat(ExecutorUtils.formatDecimalAndSeparator(data, numLevel, formatDecimal, separator));
             CBCell cell = ExecutorUtils.createCell(data, rowIdx, 1, columnIdx, 1, style);
             pagedIterator.addCell(cell);
             targetsKeyIndex++;

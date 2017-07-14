@@ -24,4 +24,8 @@ public class VanBarWidget extends VanColumnWidget{
         return super.parseLeftValueAxis(settings).put("position", "right");
     }
 
+    @Override
+    protected boolean hasDataSheet(JSONObject settings) {
+        return false;
+    }
 }

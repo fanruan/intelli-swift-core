@@ -4,6 +4,7 @@ import com.fr.bi.cal.analyze.report.report.widget.chart.export.style.BITableItem
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.style.ITableStyle;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
+import java.util.UUID;
 
 /**
  * Created by Kary on 2017/2/13.
@@ -14,8 +15,11 @@ public class BITableHeader implements ITableHeader {
     private ITableStyle styles;
     private boolean isUsed;
     private boolean isSum;
+    //通过tag来标识是否需要合并
+    private String tag;
 
     public BITableHeader() {
+        tag= String.valueOf(UUID.randomUUID());
     }
 
     @Override
@@ -61,6 +65,7 @@ public class BITableHeader implements ITableHeader {
         jo.put("styles", null != getStyles() ? getStyles().createJSON() : "");
         jo.put("text", getText());
         jo.put("isSum", isSum);
+        jo.put("tag", tag);
         return jo;
     }
 
@@ -86,6 +91,9 @@ public class BITableHeader implements ITableHeader {
         }
         if (json.has("text")) {
             setText(json.getString("text"));
+        }
+        if (json.has("tag")) {
+            tag = json.getString("tag");
         }
         isSum = json.optBoolean("isSum", false);
     }
