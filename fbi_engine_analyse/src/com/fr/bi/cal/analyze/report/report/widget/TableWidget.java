@@ -166,6 +166,9 @@ public class TableWidget extends BISummaryWidget {
 
         JSONObject res = this.createDataJSON(session, req);
         JSONObject dataJSON = res.getJSONObject("data");
+
+        //generateResult(getWidgetConf(), dataJSON);
+        //通过getWidgetConf().getDimensions 得到这个viewMap
         Map<Integer, List<JSONObject>> viewMap = this.createViewMap();
         IExcelDataBuilder builder = null;
         switch (this.tableType) {
@@ -190,14 +193,21 @@ public class TableWidget extends BISummaryWidget {
     }
 
     /**
-     * 有无编号
+     * 有无序号
      *
-     * @return 编号
+     * @return 序号
      */
     public int isOrder() {
         return getWidgetConf().isOrder();
     }
 
+    /**
+     * 返回给前台的数据
+     * @param session
+     * @param req
+     * @return
+     * @throws Exception
+     */
     public JSONObject createDataJSON(BISessionProvider session, HttpServletRequest req) throws Exception {
 
         BIEngineExecutor executor = getExecutor((BISession) session);
