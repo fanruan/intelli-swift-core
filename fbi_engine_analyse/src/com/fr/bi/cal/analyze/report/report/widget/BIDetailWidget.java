@@ -156,7 +156,6 @@ public class BIDetailWidget extends AbstractBIWidget {
         return new PolyCubeDetailECBlock(this, session, page);
     }
 
-
     @Override
     public void reSetDetailTarget() {
         for (BIDetailTarget ele : getDimensions()) {
@@ -170,7 +169,6 @@ public class BIDetailWidget extends AbstractBIWidget {
             }
         }
     }
-
 
     @Override
     public void parseJSON(JSONObject jo, long userId) throws Exception {
