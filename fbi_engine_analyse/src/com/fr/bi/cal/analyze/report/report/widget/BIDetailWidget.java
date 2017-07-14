@@ -23,6 +23,7 @@ import com.fr.bi.cal.analyze.report.report.widget.chart.export.item.constructor.
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.utils.BITableConstructHelper;
 import com.fr.bi.cal.analyze.report.report.widget.detail.BIDetailReportSetting;
 import com.fr.bi.cal.analyze.report.report.widget.detail.BIDetailSetting;
+import com.fr.bi.conf.report.conf.BIWidgetConf;
 import com.fr.bi.conf.report.conf.BIWidgetSettings;
 import com.fr.bi.cal.analyze.session.BISession;
 import com.fr.bi.common.persistent.xml.BIIgnoreField;
@@ -152,6 +153,11 @@ public class BIDetailWidget extends AbstractBIWidget {
         }
     }
 
+    public JSONObject generateResult (BIWidgetConf widgetConf, JSONObject data) {
+        //TODO 明细表数据样式分离
+        return data;
+    }
+
     @Override
     public void parseJSON(JSONObject jo, long userId) throws Exception {
         super.parseJSON(jo, userId);
@@ -203,34 +209,6 @@ public class BIDetailWidget extends AbstractBIWidget {
         }
     }
 
-    private void parseDimensions(JSONObject jo, long userId) throws Exception {
-        JSONObject dims = jo.getJSONObject("dimensions");
-        JSONArray view = jo.getJSONObject("view").getJSONArray(BIReportConstant.REGION.DIMENSION1);
-        this.dimensions = new BIDetailTarget[view.length()];
-        for (int i = 0; i < view.length(); i++) {
-            JSONObject dimObject = dims.getJSONObject(view.getString(i));
-            dimObject.put("dId", view.getString(i));
-            this.dimensions[i] = BIDetailTargetFactory.parseTarget(dimObject, userId);
-            JSONObject dimensionMap = dimObject.getJSONObject("dimensionMap");
-            Iterator it = dimensionMap.keys();
-            JSONArray relationJa = dimensionMap.optJSONObject(it.next().toString()).getJSONArray("targetRelation");
-            List<BITableRelation> relationList = new ArrayList<BITableRelation>();
-            for (int j = 0; j < relationJa.length(); j++) {
-                relationList.add(BITableRelationHelper.getAnalysisRelation(relationJa.getJSONObject(j)));
-            }
-            this.dimensions[i].setRelationList(relationList);
-        }
-        setTargetTable(userId);
-    }
-
-    public BusinessTable getTargetDimension() {
-        return target;
-    }
-
-    public String[] getSortTargets() {
-        return sortTargets;
-    }
-
     @Override
     public void refreshSources() {
         if (target == null) {
@@ -247,24 +225,6 @@ public class BIDetailWidget extends AbstractBIWidget {
             }
         } catch (Exception e) {
             BILoggerFactory.getLogger(this.getClass()).error(BIStringUtils.append("error: the analysisTable " + target.getID().getIdentityValue() + " is absent", "\n", e.getMessage()), e);
-        }
-    }
-
-    public void setTargetTable(long userID) {
-        BITableID targetTableID = new BITableID();
-        for (BIDetailTarget target : dimensions) {
-            if (!(target instanceof BINumberFormulaDetailTarget)) {
-                targetTableID = target.createTableKey().getID();
-                break;
-            }
-        }
-        target = BIModuleUtils.getAnalysisBusinessTableById(new BITableID(targetTableID));
-        for (int i = 0; i < dimensions.length; i++) {
-            List<BITableRelation> relations = dimensions[i].getRelationList(null, userID);
-            if (!relations.isEmpty()) {
-                target = relations.get(relations.size() - 1).getForeignTable();
-                break;
-            }
         }
     }
 
@@ -360,6 +320,52 @@ public class BIDetailWidget extends AbstractBIWidget {
         analysisTypes.add(BIBaseConstant.TABLE_TYPE.USER_BASE);
         analysisTypes.add(BIBaseConstant.TABLE_TYPE.USER_ETL);
         return analysisTypes.contains(newSource.getType());
+    }
+
+    private void parseDimensions(JSONObject jo, long userId) throws Exception {
+        JSONObject dims = jo.getJSONObject("dimensions");
+        JSONArray view = jo.getJSONObject("view").getJSONArray(BIReportConstant.REGION.DIMENSION1);
+        this.dimensions = new BIDetailTarget[view.length()];
+        for (int i = 0; i < view.length(); i++) {
+            JSONObject dimObject = dims.getJSONObject(view.getString(i));
+            dimObject.put("dId", view.getString(i));
+            this.dimensions[i] = BIDetailTargetFactory.parseTarget(dimObject, userId);
+            JSONObject dimensionMap = dimObject.getJSONObject("dimensionMap");
+            Iterator it = dimensionMap.keys();
+            JSONArray relationJa = dimensionMap.optJSONObject(it.next().toString()).getJSONArray("targetRelation");
+            List<BITableRelation> relationList = new ArrayList<BITableRelation>();
+            for (int j = 0; j < relationJa.length(); j++) {
+                relationList.add(BITableRelationHelper.getAnalysisRelation(relationJa.getJSONObject(j)));
+            }
+            this.dimensions[i].setRelationList(relationList);
+        }
+        setTargetTable(userId);
+    }
+
+    public void setTargetTable(long userID) {
+        BITableID targetTableID = new BITableID();
+        for (BIDetailTarget target : dimensions) {
+            if (!(target instanceof BINumberFormulaDetailTarget)) {
+                targetTableID = target.createTableKey().getID();
+                break;
+            }
+        }
+        target = BIModuleUtils.getAnalysisBusinessTableById(new BITableID(targetTableID));
+        for (int i = 0; i < dimensions.length; i++) {
+            List<BITableRelation> relations = dimensions[i].getRelationList(null, userID);
+            if (!relations.isEmpty()) {
+                target = relations.get(relations.size() - 1).getForeignTable();
+                break;
+            }
+        }
+    }
+
+    public BusinessTable getTargetDimension() {
+        return target;
+    }
+
+    public String[] getSortTargets() {
+        return sortTargets;
     }
 
     public String[] getView() {

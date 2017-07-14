@@ -90,9 +90,6 @@ public class TableWidget extends BISummaryWidget {
     @BIIgnoreField
     private transient BISummaryTarget[] usedTargets;
 
-    @BIIgnoreField
-    private BIWidgetConf widgetConf = new BIWidgetConf();
-
     protected Map<String, JSONArray> clicked = new HashMap<String, JSONArray>();
 
     protected Map<String, BIDimension> dimensionsIdMap = new HashMap<String, BIDimension>();
@@ -187,7 +184,6 @@ public class TableWidget extends BISummaryWidget {
         return data.createJSON().put("page", res.getJSONArray("page")).put("viewDimensionsLength", getViewDimensions().length).put("viewTopDimensionsLength", getViewTopDimensions().length).put("widgetType", this.tableType);
     }
 
-    @Override
     public WidgetType getType() {
 
         return WidgetType.TABLE;
@@ -198,12 +194,10 @@ public class TableWidget extends BISummaryWidget {
      *
      * @return 编号
      */
-    @Override
     public int isOrder() {
         return getWidgetConf().isOrder();
     }
 
-    @Override
     public JSONObject createDataJSON(BISessionProvider session, HttpServletRequest req) throws Exception {
 
         BIEngineExecutor executor = getExecutor((BISession) session);
@@ -222,10 +216,15 @@ public class TableWidget extends BISummaryWidget {
     /**
      * 创建表格的Block
      */
-    @Override
     protected TemplateBlock createBIBlock(BISession session) {
 
         return new PolyCubeECBlock(this, session, operator);
+    }
+
+    @Override
+    public JSONObject generateResult (BIWidgetConf widgetConf, JSONObject data) throws Exception {
+        //TODO
+        return data;
     }
 
     @Override
