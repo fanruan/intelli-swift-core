@@ -3,7 +3,7 @@ package com.fr.bi.cal.analyze.report.report.widget.chart.export.item.constructor
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.item.ITableHeader;
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.item.ITableItem;
 import com.fr.bi.conf.report.WidgetType;
-import com.fr.bi.conf.report.widget.BIWidgetStyle;
+import com.fr.bi.conf.report.widget.IWidgetStyle;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;
 
@@ -19,9 +19,9 @@ public class BISummaryDataConstructor implements DataConstructor {
     protected List<ITableItem> items;
     private List<ITableHeader> crossHeaders;
     private List<ITableItem> crossItems;
-    private BIWidgetStyle settings;
+    private IWidgetStyle settings;
 
-    public BISummaryDataConstructor(List<ITableHeader> headers, List<ITableItem> items, List<ITableHeader> crossHeaders, List<ITableItem> crossItems, BIWidgetStyle widgetStyle) {
+    public BISummaryDataConstructor(List<ITableHeader> headers, List<ITableItem> items, List<ITableHeader> crossHeaders, List<ITableItem> crossItems, IWidgetStyle widgetStyle) {
         this.headers = headers;
         this.items = items;
         this.crossHeaders = crossHeaders;
@@ -29,7 +29,7 @@ public class BISummaryDataConstructor implements DataConstructor {
         this.settings = widgetStyle;
     }
 
-    public BISummaryDataConstructor(List<ITableHeader> headers, List<ITableItem> items, BIWidgetStyle widgetStyle) {
+    public BISummaryDataConstructor(List<ITableHeader> headers, List<ITableItem> items, IWidgetStyle widgetStyle) {
         this.headers = headers;
         this.items = items;
         this.settings = widgetStyle;
@@ -96,7 +96,7 @@ public class BISummaryDataConstructor implements DataConstructor {
     }
 
     @Override
-    public BIWidgetStyle getWidgetStyle() {
+    public IWidgetStyle getWidgetStyle() {
         return settings;
     }
 }

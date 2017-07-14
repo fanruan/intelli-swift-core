@@ -1,6 +1,6 @@
 package com.fr.bi.cal.analyze.report.report.widget.style;
 
-import com.fr.bi.conf.report.widget.BIWidgetStyle;
+import com.fr.bi.conf.report.widget.IWidgetStyle;
 import com.fr.bi.stable.constant.BIStyleConstant;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;
@@ -9,7 +9,7 @@ import com.fr.stable.StringUtils;
 /**
  * Created by Kary on 2017/4/27.
  */
-public class BITableWidgetStyle implements BIWidgetStyle {
+public class BITableWidgetStyle implements IWidgetStyle {
 
     private boolean freezeDim;
     private boolean showNumber;

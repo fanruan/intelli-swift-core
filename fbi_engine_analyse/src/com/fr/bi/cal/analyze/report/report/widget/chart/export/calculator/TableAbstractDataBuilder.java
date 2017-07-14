@@ -5,7 +5,7 @@ import com.fr.bi.cal.analyze.report.report.widget.chart.export.item.BITableHeade
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.item.ITableHeader;
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.item.ITableItem;
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.utils.BITableDimensionHelper;
-import com.fr.bi.conf.report.widget.BIWidgetStyle;
+import com.fr.bi.conf.report.widget.IWidgetStyle;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.constant.BIStyleConstant;
 import com.fr.bi.stable.utils.program.BIJsonUtils;
@@ -32,7 +32,7 @@ public abstract class TableAbstractDataBuilder implements IExcelDataBuilder {
     protected List<ITableHeader> headers;
     protected JSONObject data;
     Map<Integer, List<JSONObject>> dimAndTar;
-    protected BIWidgetStyle styleSetting;
+    protected IWidgetStyle styleSetting;
     protected List<String> dimIds;
     protected List<String> targetIds;
     protected boolean showColTotal;
@@ -40,7 +40,7 @@ public abstract class TableAbstractDataBuilder implements IExcelDataBuilder {
     protected static final String EMPTY_VALUE = StringUtils.EMPTY;
     protected static final String SUMMARY = Inter.getLocText("BI-Summary_Values");
 
-    public TableAbstractDataBuilder(Map<Integer, List<JSONObject>> dimAndTar, JSONObject dataJSON, BIWidgetStyle styleSettings) throws Exception {
+    public TableAbstractDataBuilder(Map<Integer, List<JSONObject>> dimAndTar, JSONObject dataJSON, IWidgetStyle styleSettings) throws Exception {
         this.data = dataJSON;
         this.dimAndTar = dimAndTar;
         this.styleSetting = styleSettings;

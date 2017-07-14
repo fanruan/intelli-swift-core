@@ -2,7 +2,7 @@ package com.fr.bi.cal.analyze.report.report.widget.chart.export.calculator;
 
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.item.constructor.BISummaryDataConstructor;
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.item.constructor.DataConstructor;
-import com.fr.bi.conf.report.widget.BIWidgetStyle;
+import com.fr.bi.conf.report.widget.IWidgetStyle;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
 
@@ -14,7 +14,7 @@ import java.util.Map;
  */
 public class SummaryGroupTableDataBuilder extends SummaryCrossTableDataBuilder {
 
-    public SummaryGroupTableDataBuilder(Map<Integer, List<JSONObject>> dimAndTar, JSONObject dataJSON, BIWidgetStyle styleSetting) throws Exception {
+    public SummaryGroupTableDataBuilder(Map<Integer, List<JSONObject>> dimAndTar, JSONObject dataJSON, IWidgetStyle styleSetting) throws Exception {
         super(dimAndTar, dataJSON, styleSetting);
     }
 

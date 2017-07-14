@@ -8,7 +8,7 @@ import com.fr.bi.cal.analyze.report.report.widget.chart.export.item.constructor.
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.item.constructor.DataConstructor;
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.utils.BITableDimensionHelper;
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.utils.BITableStyleHelper;
-import com.fr.bi.conf.report.widget.BIWidgetStyle;
+import com.fr.bi.conf.report.widget.IWidgetStyle;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.utils.program.BIJsonUtils;
 import com.fr.json.JSONArray;
@@ -26,7 +26,7 @@ import java.util.Map;
 public class SummaryComplexTableBuilder extends TableAbstractDataBuilder {
     private String data;
 
-    public SummaryComplexTableBuilder(Map<Integer, List<JSONObject>> dimAndTar, JSONObject dataJSON, BIWidgetStyle styleSettings) throws Exception {
+    public SummaryComplexTableBuilder(Map<Integer, List<JSONObject>> dimAndTar, JSONObject dataJSON, IWidgetStyle styleSettings) throws Exception {
         super(dimAndTar, dataJSON, styleSettings);
         this.data = dataJSON.toString();
     }

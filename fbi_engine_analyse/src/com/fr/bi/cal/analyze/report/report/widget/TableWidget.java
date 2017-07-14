@@ -27,8 +27,8 @@ import com.fr.bi.cal.analyze.session.BISession;
 import com.fr.bi.common.persistent.annotation.PersistNameHistory;
 import com.fr.bi.common.persistent.xml.BIIgnoreField;
 import com.fr.bi.conf.report.WidgetType;
-import com.fr.bi.conf.report.style.BIWidgetConfig;
-import com.fr.bi.conf.report.widget.BIWidgetStyle;
+import com.fr.bi.conf.report.style.DetailChartSetting;
+import com.fr.bi.conf.report.widget.IWidgetStyle;
 import com.fr.bi.conf.report.widget.field.BITargetAndDimension;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.conf.report.widget.field.target.BITarget;
@@ -90,7 +90,7 @@ public class TableWidget extends BISummaryWidget {
     @BIIgnoreField
     private transient BISummaryTarget[] usedTargets;
 
-    private BIWidgetConfig detailSettings = new BIWidgetConfig();
+    private DetailChartSetting detailSettings = new DetailChartSetting();
 
     protected Map<String, JSONArray> clicked = new HashMap<String, JSONArray>();
 
@@ -329,7 +329,7 @@ public class TableWidget extends BISummaryWidget {
             parsExpander(jo);
         }
         if (jo.has("settings")) {
-            detailSettings = new BIWidgetConfig();
+            detailSettings = new DetailChartSetting();
             detailSettings.parseJSON(jo);
         }
         if (jo.has("clicked")) {
@@ -441,7 +441,7 @@ public class TableWidget extends BISummaryWidget {
         return dimensionIds.toArray(new String[0]);
     }
 
-    public BIWidgetConfig getChartSetting() {
+    public DetailChartSetting getChartSetting() {
 
         return detailSettings;
     }
@@ -749,7 +749,7 @@ public class TableWidget extends BISummaryWidget {
         return dimAndTar;
     }
 
-    public BIWidgetStyle getStyle() {
+    public IWidgetStyle getStyle() {
 
         return style;
     }

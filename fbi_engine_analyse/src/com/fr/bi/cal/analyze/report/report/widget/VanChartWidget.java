@@ -8,7 +8,7 @@ import com.fr.bi.conf.fs.FBIConfig;
 import com.fr.bi.conf.fs.tablechartstyle.BIChartFontStyleAttr;
 import com.fr.bi.conf.report.WidgetType;
 import com.fr.bi.conf.report.map.BIMapInfoManager;
-import com.fr.bi.conf.report.style.BIWidgetConfig;
+import com.fr.bi.conf.report.style.DetailChartSetting;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.conf.session.BISessionProvider;
 import com.fr.bi.field.target.target.BISummaryTarget;
@@ -676,7 +676,7 @@ public abstract class VanChartWidget extends TableWidget {
      */
     protected boolean needOpenBigDateModel(){
 
-        BIWidgetConfig cs = getChartSetting();
+        DetailChartSetting cs = getChartSetting();
         JSONObject setting = cs.getDetailChartSetting();
         if(setting.has("bigDataMode") && setting.optBoolean("bigDataMode",false)){
             return false;

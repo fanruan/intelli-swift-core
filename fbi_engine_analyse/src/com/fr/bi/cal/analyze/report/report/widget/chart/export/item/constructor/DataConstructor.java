@@ -2,7 +2,7 @@ package com.fr.bi.cal.analyze.report.report.widget.chart.export.item.constructor
 
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.item.ITableHeader;
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.item.ITableItem;
-import com.fr.bi.conf.report.widget.BIWidgetStyle;
+import com.fr.bi.conf.report.widget.IWidgetStyle;
 import com.fr.json.JSONCreator;
 
 import java.util.List;
@@ -21,5 +21,5 @@ public interface DataConstructor extends JSONCreator{
 
     List<ITableItem> getCrossItems();
 
-    BIWidgetStyle getWidgetStyle();
+    IWidgetStyle getWidgetStyle();
 }

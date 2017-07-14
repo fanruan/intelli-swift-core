@@ -14,7 +14,7 @@ import com.fr.bi.cal.report.report.poly.BIPolyWorkSheet;
 import com.fr.bi.conf.base.auth.data.BIPackageAuthority;
 import com.fr.bi.conf.provider.BIConfigureManagerCenter;
 import com.fr.bi.conf.report.BIWidget;
-import com.fr.bi.conf.report.widget.BIWidgetStyle;
+import com.fr.bi.conf.report.widget.IWidgetStyle;
 import com.fr.bi.conf.report.widget.field.BITargetAndDimension;
 import com.fr.bi.conf.report.widget.field.target.filter.TargetFilter;
 import com.fr.bi.conf.session.BISessionProvider;
@@ -284,7 +284,7 @@ public abstract class AbstractBIWidget implements BIWidget {
 
 
 
-    public BIWidgetStyle getStyle() {
+    public IWidgetStyle getStyle() {
         return null;
     }
 
