@@ -1244,7 +1244,7 @@ public abstract class AbstractVanChartWidget {
         List<String> targetIDs = new ArrayList<String>();
 
         for (Integer key : view.keySet()) {
-            if (key > Integer.parseInt(BIReportConstant.REGION.TARGET1)) {
+            if (key >= Integer.parseInt(BIReportConstant.REGION.TARGET1)) {
                 List<String> region = view.get(key);
                 for (String id : region) {
                     if (getDimensions().get(id).optBoolean("used")) {
