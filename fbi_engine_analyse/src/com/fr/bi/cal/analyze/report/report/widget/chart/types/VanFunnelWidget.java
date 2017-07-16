@@ -1,6 +1,5 @@
 package com.fr.bi.cal.analyze.report.report.widget.chart.types;
 
-import com.fr.bi.cal.analyze.report.report.widget.VanChartWidget;
 import com.fr.bi.stable.constant.BIChartSettingConstant;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
@@ -8,7 +7,7 @@ import com.fr.json.JSONObject;
 /**
  * Created by eason on 2017/2/27.
  */
-public class VanFunnelWidget extends VanChartWidget{
+public class VanFunnelWidget extends AbstractVanChartWidget {
 
     private static final int SAME_ANGLE = 1;
 

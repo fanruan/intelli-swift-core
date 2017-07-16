@@ -54,7 +54,7 @@ public class VanMultiPieWidget extends VanPieWidget{
             data = JSONArray.create().put(JSONObject.create().put("value", numberFormat(targetIDs[0],y)));
         }
 
-        series.put(JSONObject.create().put("data", data).put("name", this.getDimensionNameByID(targetIDs[0]))
+        series.put(JSONObject.create().put("data", data).put("name", widgetConf.getDimensionNameByDimensionID(targetIDs[0]))
                 .put("dimensionIDs", dimensionIDs).put("targetIDs", JSONArray.create().put(targetIDs[0])));
 
         return series;
@@ -68,13 +68,13 @@ public class VanMultiPieWidget extends VanPieWidget{
         }
 
         JSONArray rawChildren = originData.optJSONArray("c");
-        BIDimension categoryDim = this.getCategoryDimension(level);
+        String categoryDimID = this.getCategoryDimensionID(level);
         for(int i = 0, dataCount = rawChildren.length(); i < dataCount; i++){
             JSONObject item = rawChildren.getJSONObject(i);
             JSONArray s = item.getJSONArray("s");
             double value = s.isNull(0) ? 0 : s.getDouble(0);
             String name =  item.optString("n");
-            String formattedName = this.formatDimension(categoryDim, name);
+            String formattedName = this.formatDimension(categoryDimID, name);
             JSONObject datum = JSONObject.create().put("name", formattedName).put("value", numberFormat(id,value/scale)).put(LONG_DATE, name);
             if(item.has("c")){
                 datum.put("children", this.createChildren(item, scale, level + 1, id));

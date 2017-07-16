@@ -231,8 +231,8 @@ public class VanDotWidget extends VanCartesianWidget{
 
         boolean noSeries = true;
         for(String id : this.seriesIDs){
-            for (BIDimension dimension : getDimensions()) {
-                if (ComparatorUtils.equals(dimension.getId(), id) && dimension.isUsed()) {
+            for (String dimensionID : getDimensions().keySet()) {
+                if (ComparatorUtils.equals(dimensionID, id) && getDimensions().get(id).optBoolean("used")) {
                     noSeries = false;
                 }
             }
@@ -273,9 +273,9 @@ public class VanDotWidget extends VanCartesianWidget{
 
                 for(int index = 0, count = childDescription.size(); index < count; index++){
                     String childDesc = childDescription.get(index);
-                    BIDimension categoryDim = this.getCategoryDimension(index);
+                    String categoryDimID = this.getCategoryDimensionID(index);
 
-                    desc.add(this.formatDimension(categoryDim, childDesc));
+                    desc.add(this.formatDimension(categoryDimID, childDesc));
                     longDesc.add(childDesc);
                 }
                 child.put("longDateDescription", longDesc);
@@ -288,7 +288,7 @@ public class VanDotWidget extends VanCartesianWidget{
 
     private JSONArray dealSeriesMap(boolean noSeries, String[] ids, HashMap<String, JSONArray> seriesMap) throws JSONException{
         JSONArray series = JSONArray.create();
-        BIDimension seriesDim = this.getSeriesDimension();
+        String seriesDimID = this.getSeriesDimensionID();
         String[] dimensionIDs = this.getUsedDimensionID();
 
         double yScale = this.numberScale(ids[0]), xScale = this.numberScale(ids[1]);
@@ -320,7 +320,7 @@ public class VanDotWidget extends VanCartesianWidget{
             }
 
             if(!noSeries) {
-                String formattedName = this.formatDimension(seriesDim, seriesName);
+                String formattedName = this.formatDimension(seriesDimID, seriesName);
                 ser.put("data", data).put("name", formattedName).put(LONG_DATE, seriesName).put("dimensionIDs", dimensionIDs).put("targetIDs", new JSONArray(ids));
                 series.put(ser);
             }
@@ -336,7 +336,7 @@ public class VanDotWidget extends VanCartesianWidget{
 
     //老的气泡图、散点图。原来的分类---->新点图的系列
     private JSONArray createBubbleScatterSeries(JSONObject originData) throws Exception{
-        BIDimension category = this.getCategoryDimension();
+        String categoryID = this.getCategoryDimensionID();
         String[] ids = this.getUsedTargetID();
 
         JSONArray series = JSONArray.create();
@@ -361,8 +361,8 @@ public class VanDotWidget extends VanCartesianWidget{
             JSONObject ser = JSONObject.create().put("data", JSONArray.create().put(point))
                     .put("name", obj.optString("n")).put("targetIDs", new JSONArray(ids));
 
-            if(category != null){
-                ser.put("dimensionIDs", JSONArray.create().put(category.getValue()));
+            if(categoryID != null){
+                ser.put("dimensionIDs", JSONArray.create().put(categoryID));
             }
             series.put(ser);
 
@@ -394,7 +394,7 @@ public class VanDotWidget extends VanCartesianWidget{
 
         WidgetType chartType = this.getChartType();
         if(chartType == WidgetType.DOT){
-            JSONObject scopes = this.getWidgetConf().getScopes();
+            JSONObject scopes = widgetConf.getScopes();
 
             int type = BUBBLE;
             try {
@@ -424,7 +424,7 @@ public class VanDotWidget extends VanCartesianWidget{
 
     private void addFormat2Map(Map<String, String> tplRenderMap, String[] ids, int index, String formatKey, String unitKey) throws Exception{
         if(ids.length > index){
-            BISummaryTarget target = this.getBITargetByID(ids[index]);
+            String target = ids[index];
             String format = this.valueFormat(target);
             String unit = this.valueUnit(target, true);
             tplRenderMap.put(formatKey, format);
@@ -483,7 +483,7 @@ public class VanDotWidget extends VanCartesianWidget{
                 JSONObject formatter = labels.optJSONObject("formatter");
 
                 for(int j = size; j > 0; j--){
-                    formatter.put(keys[size - j], this.dataLabelValueFormat(this.getBITargetByID(ids[j - 1])));
+                    formatter.put(keys[size - j], this.dataLabelValueFormat(ids[j - 1]));
                 }
 
                 ser.put("dataLabels", labels);

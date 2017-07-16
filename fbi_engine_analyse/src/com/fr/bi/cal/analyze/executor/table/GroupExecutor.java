@@ -115,8 +115,8 @@ public class GroupExecutor extends AbstractTableWidgetExecutor<Node> {
             pagedIterator.addCell(cell);
         }
         for (BISummaryTarget anUsedSumTarget : usedSumTarget) {
-            int numLevel = widget.getWidgetConf().getNumberLevelByTargetId(anUsedSumTarget.getId());
-            String unit = widget.getWidgetConf().getUnitByTargetId(anUsedSumTarget.getId());
+            int numLevel = widget.getWidgetConf().getNumberLevelByTargetID(anUsedSumTarget.getId());
+            String unit = widget.getWidgetConf().getUnitByTargetID(anUsedSumTarget.getId());
             String levelAndUnit = ExecutorUtils.formatLevelAndUnit(numLevel, unit);
 
             String dimensionUnit = ComparatorUtils.equals(levelAndUnit, StringUtils.EMPTY) ? "" : "(" + levelAndUnit + ")";
@@ -179,9 +179,9 @@ public class GroupExecutor extends AbstractTableWidgetExecutor<Node> {
         for (TargetGettingKey key : widget.getTargetsKey()) {
             int columnIdx = targetsKeyIndex + dimensionsLength;
             Object data = temp.getSummaryValue(key);
-            int numLevel = widget.getWidgetConf().getNumberLevelByTargetId(key.getTargetName());
-            int formatDecimal = widget.getWidgetConf().getFormatDecimalByTargetId(key.getTargetName());
-            boolean separator = widget.getWidgetConf().getSeparatorByTargetId(key.getTargetName());
+            int numLevel = widget.getWidgetConf().getNumberLevelByTargetID(key.getTargetName());
+            int formatDecimal = widget.getWidgetConf().getFormatDecimalByTargetID(key.getTargetName());
+            boolean separator = widget.getWidgetConf().getSeparatorByTargetID(key.getTargetName());
             data = ExecutorUtils.formatExtremeSumValue(data, numLevel);
             Style style = Style.getInstance();
             style = style.deriveFormat(ExecutorUtils.formatDecimalAndSeparator(numLevel, formatDecimal, separator));

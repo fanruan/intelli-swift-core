@@ -89,12 +89,12 @@ public class VanCompareBarWidget extends VanCompareColumnWidget{
         return series;
     }
 
-    protected String valueFormatFunc(BISummaryTarget dimension, boolean isTooltip) {
+    protected String valueFormatFunc(String dimensionID, boolean isTooltip) {
 
-        int index = yAxisIndex(dimension.getValue());
+        int index = yAxisIndex(dimensionID);
 
-        String format = this.valueFormat(dimension);
-        String unit = this.valueUnit(dimension, isTooltip);
+        String format = this.valueFormat(dimensionID);
+        String unit = this.valueUnit(dimensionID, isTooltip);
 
         return index == 0 ? String.format("function(){return BI.contentFormat(-arguments[0], \"%s\") + \"%s\"}", format, unit)
                 : String.format("function(){return BI.contentFormat(arguments[0], \"%s\") + \"%s\"}", format, unit);
