@@ -126,9 +126,30 @@ public abstract class AbstractVanChartWidget {
             Inter.getLocText("BI-Basic_Sunday")
     };
 
-    public void init(BIWidgetConf widgetConf, long userID) {
+    public void init(BIWidgetConf widgetConf, long userID) throws JSONException {
         this.widgetConf = widgetConf;
         this.userID = userID;
+        //原来的parseJSON
+        JSONObject vjo = widgetConf.getViewJSON();
+
+        Iterator it = vjo.keys();
+        List<String> sorted = new ArrayList<String>();
+        while (it.hasNext()) {
+            sorted.add(it.next().toString());
+        }
+        Collections.sort(sorted, new Comparator<String>() {
+            @Override
+            public int compare(String o1, String o2) {
+                return Integer.parseInt(o1) - Integer.parseInt(o2);
+            }
+        });
+
+        dealView(sorted, vjo);
+
+        this.requestURL = widgetConf.getRequestURL();
+        this.chartType = WidgetType.parse(widgetConf.getType());
+
+//        super.parseJSON(jo, userId);
     }
 
     public abstract String getSeriesType(String dimensionID);
@@ -324,31 +345,6 @@ public abstract class AbstractVanChartWidget {
     protected String getRegionID(String dimensionID) {
         return regionIdMap.get(dimensionID);
     }
-//待改
-//    public void parseJSON(JSONObject jo, long userId) throws Exception {
-//        if (jo.has("view")) {
-//            JSONObject vjo = jo.optJSONObject("view");
-//
-//            Iterator it = vjo.keys();
-//            List<String> sorted = new ArrayList<String>();
-//            while (it.hasNext()) {
-//                sorted.add(it.next().toString());
-//            }
-//            Collections.sort(sorted, new Comparator<String>() {
-//                @Override
-//                public int compare(String o1, String o2) {
-//                    return Integer.parseInt(o1) - Integer.parseInt(o2);
-//                }
-//            });
-//
-//            dealView(sorted, vjo);
-//        }
-//
-//        this.requestURL = jo.optString("requestURL");
-//        this.chartType = WidgetType.parse(jo.optInt("type"));
-//
-//        super.parseJSON(jo, userId);
-//    }
 
     protected String getCompleteImageUrl(String url) {
         return requestURL + "?op=fr_bi&cmd=get_uploaded_image&image_id=" + url;
@@ -1295,7 +1291,8 @@ public abstract class AbstractVanChartWidget {
         Map<String, JSONObject> dims = new HashMap<String, JSONObject>();
         Iterator it = dimensions.keys();
         while (it.hasNext()) {
-            dims.put(it.next().toString(), dimensions.optJSONObject(it.next().toString()));
+            String dId = it.next().toString();
+            dims.put(dId, dimensions.optJSONObject(dId));
         }
 
         return dims;
