@@ -491,31 +491,4 @@ public class BIDetailWidget extends AbstractBIWidget {
 
         return target;
     }
-
-    public Map<String, JSONArray> getGlobalFilterClick() {
-
-        Map<String, JSONArray> r = new HashMap<String, JSONArray>();
-        try {
-            // 明细表的click值和分组表的不相同
-            if (globalFilterClick != null) {
-                //
-                Iterator<String> iterator = (Iterator<String>) globalFilterClick.keys();
-                while (iterator.hasNext()) {
-                    String k = iterator.next();
-                    if (k.equals("pageCount") || k.equals("rowIndex") || k.equals("value") || k.equals("dId")) {
-                        JSONArray v = JSONArray.create();
-                        v.put(globalFilterClick.optString(k, ""));
-                        r.put(k, v);
-                    } else {
-                        r.put(k, globalFilterClick.getJSONArray(k));
-                    }
-                }
-            }
-        } catch (Exception e) {
-            BILoggerFactory.getLogger(this.getClass()).info("error in get jump link filter click value");
-        }
-        return r;
-    }
-
-
 }
