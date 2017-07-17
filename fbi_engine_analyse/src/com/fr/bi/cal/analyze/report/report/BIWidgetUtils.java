@@ -1,7 +1,7 @@
 package com.fr.bi.cal.analyze.report.report;
 
+import com.fr.bi.conf.report.widget.chart.*;
 import com.finebi.cube.common.log.BILoggerFactory;
-import com.fr.bi.cal.analyze.report.report.widget.chart.types.*;
 import com.fr.bi.conf.report.WidgetType;
 import com.fr.bi.conf.report.conf.BIWidgetConf;
 import com.fr.json.JSONObject;
