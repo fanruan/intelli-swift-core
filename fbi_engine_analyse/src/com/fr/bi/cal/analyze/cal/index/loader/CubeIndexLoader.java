@@ -978,7 +978,8 @@ public class CubeIndexLoader {
         TargetCalculator summary = CountCalculator.NONE_TARGET_COUNT_CAL;
         BusinessTable tableBelongTo = row[0].getField().getTableBelongTo();
         GroupValueIndex gvi = widget.createFilterGVI(row, tableBelongTo, session.getLoader(), session.getUserId()).AND(session.createFilterGvi(tableBelongTo));
-
+        GroupValueIndex jgvi = widget.getJumpLinkFilter(widget.getBaseTable(),  userId,session);
+        gvi = GVIUtils.AND(gvi,jgvi);
         MetricGroupInfo metricGroupInfo = new MetricGroupInfo(row, gvi, summary.createTableKey());
         metricGroupInfo.addTargetAndKey(new TargetAndKey(summary.getName(), summary, summary.createTargetGettingKey()));
         List<MetricGroupInfo> list = new ArrayList<MetricGroupInfo>();

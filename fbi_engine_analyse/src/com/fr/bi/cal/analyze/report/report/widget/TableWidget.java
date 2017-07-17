@@ -779,6 +779,10 @@ public class TableWidget extends BISummaryWidget {
             return targetKey;
         }
         // TODO 维度上面的
+        BIDimension[] dimension = getDimensions();
+        for (BIDimension dim : dimension) {
+            return dim.createColumnKey().getTableBelongTo();
+        }
         return null;
     }
 

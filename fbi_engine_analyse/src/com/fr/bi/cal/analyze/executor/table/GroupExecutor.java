@@ -518,7 +518,9 @@ public class GroupExecutor extends AbstractTableWidgetExecutor<Node> {
                     Node cn = getClickNode(linkNode, rowData);
                     Map<TargetGettingKey, GroupValueIndex> m = cn.getTargetIndexValueMap();
                     for (TargetGettingKey key : m.keySet()) {
-                        r = GVIUtils.OR(r, m.get(key));
+                        r = m.get(key);
+                        break;
+                        //r = GVIUtils.OR(r, m.get(key));
                     }
                 }
             }

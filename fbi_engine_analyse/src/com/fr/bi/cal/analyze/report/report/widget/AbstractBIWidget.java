@@ -54,14 +54,22 @@ import java.util.Map;
 public abstract class AbstractBIWidget implements BIWidget {
 
     private static final long serialVersionUID = 1959074307747827366L;
+
     private String blockName;
+
     private String widgetId;
+
     private Rectangle rect = new Rectangle();
+
     @BICoreField
     private TargetFilter filter;
+
     private long initTime;
+
     private long userId;
+
     private boolean realData = true;
+
     private String sessionId;
 
     /**
@@ -80,18 +88,22 @@ public abstract class AbstractBIWidget implements BIWidget {
     protected JSONArray globalFilterSourceAndTargetField;
 
     public long getUserId() {
+
         return userId;
     }
 
     public boolean isRealData() {
+
         return realData;
     }
 
     public void setRealData(boolean realData) {
+
         this.realData = realData;
     }
 
     private UnitRectangle getBlockBounds() {
+
         return new UnitRectangle(rect, Constants.DEFAULT_WEBWRITE_AND_SCREEN_RESOLUTION);
     }
 
@@ -99,23 +111,28 @@ public abstract class AbstractBIWidget implements BIWidget {
      */
     @Override
     public String getWidgetName() {
+
         return blockName;
     }
 
     public String getWidgetId() {
+
         return widgetId;
     }
 
     @Override
     public void setWidgetName(String name) {
+
         this.blockName = name;
     }
 
     public TargetFilter getFilter() {
+
         return filter;
     }
 
-    public void setFilter(TargetFilter filter){
+    public void setFilter(TargetFilter filter) {
+
         this.filter = filter;
     }
 
@@ -126,6 +143,7 @@ public abstract class AbstractBIWidget implements BIWidget {
      */
     @Override
     public WorkBook createWorkBook(BISessionProvider session) {
+
         BIWorkBook wb = new BIWorkBook();
         wb.addReport(createWorkSheet(session));
         return wb;
@@ -133,6 +151,7 @@ public abstract class AbstractBIWidget implements BIWidget {
 
     @Override
     public BIPolyWorkSheet createWorkSheet(BISessionProvider session) {
+
         BIPolyWorkSheet ws = new BIPolyWorkSheet();
         ws.addBlock(this.createTemplateBlock((BISession) session));
         return ws;
@@ -140,16 +159,19 @@ public abstract class AbstractBIWidget implements BIWidget {
 
     @Override
     public boolean showRowToTal() {
+
         return true;
     }
 
     @Override
     public boolean showColumnTotal() {
+
         return true;
     }
 
     @Override
     public void refreshColumns() {
+
         for (BITargetAndDimension td : getTargets()) {
             td.refreshColumn();
         }
@@ -162,6 +184,7 @@ public abstract class AbstractBIWidget implements BIWidget {
      * 根据widget创建TemplateBlock
      */
     protected TemplateBlock createTemplateBlock(BISession session) {
+
         TemplateBlock block = createBIBlock(session);
         block.setBlockName(CodeUtils.passwordEncode(blockName));
         block.getBlockAttr().setFreezeHeight(true);
@@ -187,6 +210,7 @@ public abstract class AbstractBIWidget implements BIWidget {
      */
     @Override
     public void parseJSON(JSONObject jo, long userId) throws Exception {
+
         int x = 0, y = 0, width = 0, height = 0;
         if (jo.has("bounds")) {
             JSONObject bounds = jo.getJSONObject("bounds");
@@ -199,7 +223,7 @@ public abstract class AbstractBIWidget implements BIWidget {
         if (jo.has("name")) {
             this.blockName = jo.getString("name");
         }
-        if(jo.has("wId")) {
+        if (jo.has("wId")) {
             this.widgetId = jo.getString("wId");
         }
         if (jo.has("filter")) {
@@ -224,10 +248,10 @@ public abstract class AbstractBIWidget implements BIWidget {
             JSONObject glf = jo.getJSONObject("globalFilter");
             if (glf.has("linkedWidget")) {
                 globalFilterWidget = BIWidgetFactory.parseWidget(glf.getJSONObject("linkedWidget"), userId);
-            }
-            // 跳转过来的组件有clieck属性
-            if (glf.has("clicked")) {
-                globalFilterClick = glf.getJSONObject("clicked");
+                // 跳转过来的组件有clieck属性
+                if (glf.has("clicked")) {
+                    globalFilterClick = glf.getJSONObject("clicked");
+                }
             }
         }
         // 跳转过来的组件上面有jump属性
@@ -238,6 +262,7 @@ public abstract class AbstractBIWidget implements BIWidget {
 
     @Override
     public Object clone() {
+
         try {
             return super.clone();
         } catch (Exception e) {
@@ -275,6 +300,7 @@ public abstract class AbstractBIWidget implements BIWidget {
     }
 
     public List<TargetFilter> getAuthFilter(long userId) {
+
         List<TargetFilter> filters = new ArrayList<TargetFilter>();
         //管理员用户没有权限的过滤条件
         if (userId == UserControl.getInstance().getSuperManagerID()) {
@@ -312,6 +338,7 @@ public abstract class AbstractBIWidget implements BIWidget {
 
     @Override
     public BICore fetchObjectCore() {
+
         return new BICoreGenerator(this).fetchObjectCore();
     }
 
@@ -322,20 +349,23 @@ public abstract class AbstractBIWidget implements BIWidget {
 
     @Override
     public Rectangle getRect() {
+
         return rect;
     }
 
 
-
     public IWidgetStyle getStyle() {
+
         return null;
     }
 
     public JSONObject getPostOptions(BISessionProvider session, HttpServletRequest req) throws Exception {
+
         return new JSONObject();
     }
 
-    public JSONObject createChartConfigWidthData(BISessionProvider session, HttpServletRequest req, JSONObject data) throws Exception{
+    public JSONObject createChartConfigWidthData(BISessionProvider session, HttpServletRequest req, JSONObject data) throws Exception {
+
         return data;
     }
 
@@ -396,7 +426,7 @@ public abstract class AbstractBIWidget implements BIWidget {
      *
      * @return
      */
-    public GroupValueIndex getJumpLinkFilter(BusinessTable targetKey,long userId, BISession session) {
+    public GroupValueIndex getJumpLinkFilter(BusinessTable targetKey, long userId, BISession session) {
 
         return null;
     }
