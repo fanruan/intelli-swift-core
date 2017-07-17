@@ -35,7 +35,7 @@ public class VanCombinationWidget extends VanCartesianWidget{
 
     private VanCombineType getVanCombineType(String dimensionID){
 
-        JSONObject scopes = this.getChartSetting().getScopes();
+        JSONObject scopes = widgetConf.getScopes();
 
         String regionID = this.getRegionID(dimensionID);
 
@@ -114,7 +114,7 @@ public class VanCombinationWidget extends VanCartesianWidget{
         return item.optInt("type") == STACK_AREA_STEP;
     }
 
-    @Override
+//    @Override
     public boolean canCompleteMissTime(){
         return true;
     }

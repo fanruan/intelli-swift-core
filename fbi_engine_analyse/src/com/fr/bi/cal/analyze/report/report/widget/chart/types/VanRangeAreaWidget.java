@@ -65,10 +65,10 @@ public class VanRangeAreaWidget extends VanAreaWidget{
                 double y = firstDatas.optJSONObject(dataIndex).optDouble("y", 0);
 
                 JSONObject labels = new JSONObject(dataLabels.toString());
-                BISummaryTarget target = this.getSerBITarget(ser);
-                String format = this.valueFormat(target);
+                String targetID = this.getSerBITarget(ser);
+                String format = this.valueFormat(targetID);
                 if(labels.has("formatter")) {
-                    String unit = this.valueUnit(target, false);
+                    String unit = this.valueUnit(targetID, false);
                     labels.optJSONObject("formatter")
                             .put("valueFormat", String.format("function(){return BI.contentFormat(arguments[0] + %s , \"%s\") + \"%s\"}", y, format, unit))
                             .put("percentFormat", "function(){return BI.contentFormat(arguments[0], \"#.##%\")}");
@@ -76,7 +76,7 @@ public class VanRangeAreaWidget extends VanAreaWidget{
                 d.put(dataLabelsKey(), labels);
 
                 JSONObject formatter = JSONObject.create();
-                String tooltipUnit = this.valueUnit(target, true);
+                String tooltipUnit = this.valueUnit(targetID, true);
 
                 formatter.put("identifier", this.getTooltipIdentifier())
                         .put("valueFormat", String.format("function(){return BI.contentFormat(arguments[0] + %s , \"%s\") + \"%s\"}", y, format, tooltipUnit));

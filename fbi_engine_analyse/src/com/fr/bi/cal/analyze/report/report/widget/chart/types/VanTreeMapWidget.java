@@ -1,6 +1,5 @@
 package com.fr.bi.cal.analyze.report.report.widget.chart.types;
 
-import com.fr.bi.cal.analyze.report.report.widget.VanChartWidget;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.general.ComparatorUtils;
@@ -13,7 +12,7 @@ import java.util.List;
 /**
  * Created by eason on 2017/2/27.
  */
-public class VanTreeMapWidget extends VanChartWidget{
+public class VanTreeMapWidget extends AbstractVanChartWidget {
     private JSONArray firstRegionArray = JSONArray.create();
     private JSONArray secondRegionArray = JSONArray.create();
 
@@ -44,8 +43,8 @@ public class VanTreeMapWidget extends VanChartWidget{
         }
         for(int i = 0, len = array.length(); i < len; i++){
             String id = array.optString(i);
-            for (BIDimension dimension : getDimensions()) {
-                if (ComparatorUtils.equals(dimension.getId(), id) && dimension.isUsed()) {
+            for (String dimensionID : getDimensions().keySet()) {
+                if (ComparatorUtils.equals(dimensionID, id) && getDimensions().get(dimensionID).optBoolean("used")) {
                     return true;
                 }
             }
@@ -87,7 +86,7 @@ public class VanTreeMapWidget extends VanChartWidget{
 
         JSONObject sery = JSONObject.create();
         if(hasSecondLevel){
-            sery.put("name", getDimensionNameByID(targetIDs[0]));
+            sery.put("name", widgetConf.getDimensionNameByDimensionID(targetIDs[0]));
         }
         return series.put(sery.put("data", data)
                 .put("dimensionIDs", dimensionIDs).put("targetIDs", JSONArray.create().put(targetIDs[0])));
@@ -96,7 +95,7 @@ public class VanTreeMapWidget extends VanChartWidget{
     private void createTopLeftSeries(JSONObject originData, double scale, JSONArray data, String id) throws JSONException{
         JSONObject top = originData.getJSONObject("t"), left = originData.getJSONObject("l");
         JSONArray topC = top.getJSONArray("c"), leftC = left.getJSONArray("c");
-        BIDimension seriesDim = this.getSeriesDimension(), categoryDim = this.getCategoryDimension();
+        String seriesDimID = this.getSeriesDimensionID(), categoryDimID = this.getCategoryDimensionID();
 
         for (int i = 0; i < topC.length(); i++) {
             JSONArray children = JSONArray.create();
@@ -105,7 +104,7 @@ public class VanTreeMapWidget extends VanChartWidget{
             double sum = 0;
             for (int j = 0; j < leftC.length(); j++) {
                 JSONObject lObj = leftC.getJSONObject(j);
-                String name = lObj.getString("n"), formattedName = this.formatDimension(categoryDim, name);
+                String name = lObj.getString("n"), formattedName = this.formatDimension(categoryDimID, name);
                 JSONArray s = lObj.getJSONObject("s").getJSONArray("c").getJSONObject(i).getJSONArray("s");
                 double value = (s.isNull(0) ? 0 : s.getDouble(0)) / scale;
 
@@ -114,7 +113,7 @@ public class VanTreeMapWidget extends VanChartWidget{
                 children.put(JSONObject.create().put("name", formattedName).put(LONG_DATE, name).put("value", numberFormat(id, value)));
             }
 
-            String name = tObj.getString("n"), formattedName = this.formatDimension(seriesDim, name);
+            String name = tObj.getString("n"), formattedName = this.formatDimension(seriesDimID, name);
 
             data.put(JSONObject.create().put("name", formattedName).put(LONG_DATE, name).put("value", sum).put("children", children));
         }
@@ -130,8 +129,8 @@ public class VanTreeMapWidget extends VanChartWidget{
 
         for (int j = 0; j < childrenC.length(); j++) {
             JSONObject lObj = childrenC.getJSONObject(j);
-            BIDimension dimension = hasFirstLevel ? this.getCategoryDimension() : this.getSeriesDimension();
-            String name = lObj.getString("n"), formattedName = this.formatDimension(dimension, name);
+            String dimensionID = hasFirstLevel ? this.getCategoryDimensionID() : this.getSeriesDimensionID();
+            String name = lObj.getString("n"), formattedName = this.formatDimension(dimensionID, name);
 
             JSONArray s = lObj.getJSONArray("s");
             double value = (s.isNull(0) ? 0 : s.getDouble(0)) / scale;

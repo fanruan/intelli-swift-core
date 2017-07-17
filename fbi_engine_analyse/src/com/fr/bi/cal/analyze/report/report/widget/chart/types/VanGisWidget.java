@@ -1,6 +1,5 @@
 package com.fr.bi.cal.analyze.report.report.widget.chart.types;
 
-import com.fr.bi.cal.analyze.report.report.widget.VanChartWidget;
 import com.fr.bi.conf.report.map.BIWMSManager;
 import com.fr.general.Inter;
 import com.fr.json.JSONArray;
@@ -11,7 +10,7 @@ import com.fr.stable.StableUtils;
 /**
  * Created by eason on 2017/2/27.
  */
-public class VanGisWidget extends VanChartWidget{
+public class VanGisWidget extends AbstractVanChartWidget {
 
     private static final String TILE_LAYER = "http://webrd01.is.autonavi.com/appmaptile?lang=zh_cn&size=1&scale=1&style=8&x={x}&y={y}&z={z}";
     private static final String ATTRIBUTION = "<a><img src=\"http://webapi.amap.com/theme/v1.3/mapinfo_05.png\">&copy; 2016 AutoNavi</a>";
@@ -78,7 +77,7 @@ public class VanGisWidget extends VanChartWidget{
                     data.put(d);
                 }
             }
-            JSONObject ser = JSONObject.create().put("data", data).put("name", this.getDimensionNameByID(id))
+            JSONObject ser = JSONObject.create().put("data", data).put("name", widgetConf.getDimensionNameByDimensionID(id))
                     .put("targetIDs", JSONArray.create().put(id))
                     .put("dimensionIDs", dimensionIDs);            series.put(ser);
         }
