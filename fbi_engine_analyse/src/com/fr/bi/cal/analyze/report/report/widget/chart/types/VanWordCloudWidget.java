@@ -1,12 +1,21 @@
 package com.fr.bi.cal.analyze.report.report.widget.chart.types;
 
-import com.fr.bi.cal.analyze.report.report.widget.VanChartWidget;
+import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
 
 /**
  * Created by shine on 2017/7/10.
  */
-public class VanWordCloudWidget extends VanChartWidget {
+public class VanWordCloudWidget extends AbstractVanChartWidget {
+
+    protected JSONObject populateDefaultSettings() throws JSONException {
+        JSONObject settings = super.populateDefaultSettings();
+
+        settings.put("minFontSize", 10);
+        settings.put("maxFontSize", 60);
+
+        return settings;
+    }
 
     public JSONObject createPlotOptions(JSONObject globalStyle, JSONObject settings) throws Exception {
 

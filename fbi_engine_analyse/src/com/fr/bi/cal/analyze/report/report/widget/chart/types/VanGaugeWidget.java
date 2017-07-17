@@ -91,7 +91,7 @@ public class VanGaugeWidget extends VanCartesianWidget{
 
         int gaugeStyle = settings.optInt("dashboardChartType");
         boolean isPointer = gaugeStyle == NORMAL || gaugeStyle == HALF_DASHBOARD;
-        boolean hasCategory = getCategoryDimension() != null;
+        boolean hasCategory = getCategoryDimensionID() != null;
 
         boolean showCate = dataLabelSettings.optBoolean("showCategoryName");
         String key = hasCategory ? SERIES : CATEGORY;

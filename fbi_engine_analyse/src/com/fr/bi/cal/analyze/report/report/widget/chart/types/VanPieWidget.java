@@ -1,6 +1,5 @@
 package com.fr.bi.cal.analyze.report.report.widget.chart.types;
 
-import com.fr.bi.cal.analyze.report.report.widget.VanChartWidget;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.stable.constant.BIChartSettingConstant;
 import com.fr.json.JSONArray;
@@ -11,7 +10,7 @@ import com.fr.stable.StringUtils;
 /**
  * Created by eason on 2017/2/27.
  */
-public class VanPieWidget extends VanChartWidget{
+public class VanPieWidget extends AbstractVanChartWidget {
 
     private static final int NORMAL = 1;      //普通形态
     private static final int EQUAL_ARC_ROSE = 4; //等弧玫瑰图
@@ -60,10 +59,10 @@ public class VanPieWidget extends VanChartWidget{
     }
 
     protected JSONArray createSeriesWithChildren(JSONObject originData) throws Exception {
-        BIDimension category = this.getCategoryDimension();
+        String categoryID = this.getCategoryDimensionID();
         JSONArray children = originData.optJSONArray("c");
 
-        if(category == null && children == null){//没有分类，只有指标，显示一个饼
+        if(categoryID == null && children == null){//没有分类，只有指标，显示一个饼
             String[] targetIDs = this.getUsedTargetID();
             JSONArray datas = JSONArray.create();
             JSONArray targets = JSONArray.create();
@@ -71,7 +70,7 @@ public class VanPieWidget extends VanChartWidget{
                 String id = targetIDs[i];
                 JSONArray targetValues = originData.optJSONArray("s");
                 double y = targetValues.isNull(i) ? 0 : targetValues.getDouble(i) / numberScale(id);
-                datas.put(JSONObject.create().put("y", numberFormat(id, y)).put("x", getDimensionNameByID(id)));
+                datas.put(JSONObject.create().put("y", numberFormat(id, y)).put("x", widgetConf.getDimensionNameByDimensionID(id)));
                 targets.put(id);
             }
 

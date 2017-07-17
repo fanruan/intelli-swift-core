@@ -6,7 +6,7 @@ import com.fr.bi.cal.analyze.report.report.widget.chart.export.item.ITableItem;
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.item.constructor.BIDetailDataConstructor;
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.item.constructor.DataConstructor;
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.utils.BITableDimensionHelper;
-import com.fr.bi.conf.report.widget.IWidgetStyle;
+import com.fr.bi.conf.report.widget.BIWidgetStyle;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
@@ -21,7 +21,7 @@ import java.util.Map;
  */
 public class DetailTableBuilder extends TableAbstractDataBuilder {
 
-    public DetailTableBuilder(Map<Integer, List<JSONObject>> viewMap , JSONObject dataJSON, IWidgetStyle styleSettings) throws Exception {
+    public DetailTableBuilder(Map<Integer, List<JSONObject>> viewMap , JSONObject dataJSON, BIWidgetStyle styleSettings) throws Exception {
         super(viewMap, dataJSON, styleSettings);
     }
 

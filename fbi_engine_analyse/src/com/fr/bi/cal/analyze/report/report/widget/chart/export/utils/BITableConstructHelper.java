@@ -5,7 +5,7 @@ import com.fr.bi.cal.analyze.report.report.widget.chart.export.format.operation.
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.item.ITableHeader;
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.item.ITableItem;
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.item.constructor.DataConstructor;
-import com.fr.bi.cal.analyze.report.report.widget.style.BITableWidgetStyle;
+import com.fr.bi.conf.report.conf.BIWidgetSettings;
 import com.fr.bi.conf.report.WidgetType;
 import com.fr.json.JSONException;
 
@@ -29,7 +29,7 @@ public class BITableConstructHelper {
     /*
     * header的数据格式是不需要format的
     * */
-    public static void formatCells(DataConstructor data, Map<String, ITableCellFormatOperation> operations, BITableWidgetStyle style) throws Exception {
+    public static void formatCells(DataConstructor data, Map<String, ITableCellFormatOperation> operations, BIWidgetSettings style) throws Exception {
         boolean isDetail = data.getWidgetType() == WidgetType.DETAIL.getType();
         for (ITableHeader header : data.getHeaders()) {
             header.setStyles(BITableStyleHelper.getHeaderStyles(style.getThemeColor(), style.getTableStyleGroup()));
@@ -70,7 +70,7 @@ public class BITableConstructHelper {
     /*
     * 首行汇总为深色
     * */
-    private static void traversalItems(List<ITableItem> items, Map<String, ITableCellFormatOperation> ops, int rowIndex, int layer, BITableWidgetStyle style) throws Exception {
+    private static void traversalItems(List<ITableItem> items, Map<String, ITableCellFormatOperation> ops, int rowIndex, int layer, BIWidgetSettings style) throws Exception {
         for (ITableItem item : items) {
             rowIndex++;
             if (item.getChildren() != null) {
@@ -93,7 +93,7 @@ public class BITableConstructHelper {
         }
     }
 
-    private static void setStyle(int rowIndex, int layer, BITableWidgetStyle style, ITableItem item) throws JSONException {
+    private static void setStyle(int rowIndex, int layer, BIWidgetSettings style, ITableItem item) throws JSONException {
         boolean isOutSummary = layer == 0 && item.getValues() != null;
         if (isOutSummary || item.isSum()) {
             item.setStyles(BITableStyleHelper.getLastSummaryStyles(style.getThemeColor(), style.getTableStyleGroup()));
@@ -102,7 +102,7 @@ public class BITableConstructHelper {
         }
     }
 
-    private static void traversalCrossItems(ITableItem item, Map<String, ITableCellFormatOperation> ops, BITableWidgetStyle style) throws Exception {
+    private static void traversalCrossItems(ITableItem item, Map<String, ITableCellFormatOperation> ops, BIWidgetSettings style) throws Exception {
         if (item.getChildren() != null) {
             for (ITableItem childItem : item.getChildren()) {
                 traversalCrossItems(childItem, ops, style);

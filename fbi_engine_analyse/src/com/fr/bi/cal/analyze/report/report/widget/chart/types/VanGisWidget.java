@@ -1,6 +1,5 @@
 package com.fr.bi.cal.analyze.report.report.widget.chart.types;
 
-import com.fr.bi.cal.analyze.report.report.widget.VanChartWidget;
 import com.fr.bi.conf.report.map.BIWMSManager;
 import com.fr.general.Inter;
 import com.fr.json.JSONArray;
@@ -11,7 +10,7 @@ import com.fr.stable.StableUtils;
 /**
  * Created by eason on 2017/2/27.
  */
-public class VanGisWidget extends VanChartWidget{
+public class VanGisWidget extends AbstractVanChartWidget {
 
     private static final String TILE_LAYER = "http://webrd01.is.autonavi.com/appmaptile?lang=zh_cn&size=1&scale=1&style=8&x={x}&y={y}&z={z}";
     private static final String ATTRIBUTION = "<a><img src=\"http://webapi.amap.com/theme/v1.3/mapinfo_05.png\">&copy; 2016 AutoNavi</a>";
@@ -19,8 +18,6 @@ public class VanGisWidget extends VanChartWidget{
 
     protected JSONObject populateDefaultSettings() throws JSONException {
         JSONObject settings = super.populateDefaultSettings();
-
-        settings.put("isShowBackgroundLayer", true);
 
         settings.put("backgroundLayerInfo", Inter.getLocText("BI-GAO_DE_MAP"));
 
@@ -33,10 +30,8 @@ public class VanGisWidget extends VanChartWidget{
         JSONObject settings = this.getDetailChartSetting();
 
         JSONObject geo = JSONObject.create();
-        if(settings.optBoolean("isShowBackgroundLayer")){
-            JSONObject config = BIWMSManager.getInstance().getWMSInfo(settings.optString("backgroundLayerInfo"));
-            geo.put("tileLayer", config.optString("url"));
-        }
+        JSONObject config = BIWMSManager.getInstance().getWMSInfo(settings.optString("backgroundLayerInfo"));
+        geo.put("tileLayer", config.optString("url"));
         options.put("geo", geo);
 
         return options;
@@ -82,7 +77,7 @@ public class VanGisWidget extends VanChartWidget{
                     data.put(d);
                 }
             }
-            JSONObject ser = JSONObject.create().put("data", data).put("name", this.getDimensionNameByID(id))
+            JSONObject ser = JSONObject.create().put("data", data).put("name", widgetConf.getDimensionNameByDimensionID(id))
                     .put("targetIDs", JSONArray.create().put(id))
                     .put("dimensionIDs", dimensionIDs);            series.put(ser);
         }
@@ -103,8 +98,41 @@ public class VanGisWidget extends VanChartWidget{
         options.put("rangeLegend", JSONObject.create().put("enabled", false));
     }
 
+    protected JSONObject parseLegend(JSONObject settings) throws JSONException{
+        return revertMapLegend(settings, super.parseLegend(settings));
+    }
+
     //地图因为gis背景，不自适应颜色
     protected JSONObject defaultFont() throws JSONException {
         return JSONObject.create().put("fontFamily", "Microsoft YaHei").put("fontSize", "12px").put("color", "#666666");
+    }
+
+    protected NameLngLat calculateNameLngLat(JSONObject jsonObject) throws JSONException{
+        NameLngLat nameLngLat = new NameLngLat();
+
+        nameLngLat.name = jsonObject.optString("n");
+        JSONObject lnglat = jsonObject.optJSONArray("c").optJSONObject(0);
+        if(lnglat.has("c")){
+            nameLngLat.lnglat[0] = lnglat.optString("n");
+            nameLngLat.lnglat[1] = lnglat.optJSONArray("c").optJSONObject(0).optString("n");
+        } else {
+            //todo: @shine search lng lat from json
+        }
+
+        if(jsonObject.has("s")){
+            nameLngLat.value = getJSONValue(jsonObject);
+        }
+
+        return nameLngLat;
+    }
+
+    protected String getJSONValue(JSONObject jsonObject) throws JSONException {
+        return jsonObject.optJSONArray("s").optString(0);
+    }
+
+    protected class NameLngLat {
+        String name;
+        String[] lnglat = new String[2];
+        String value;
     }
 }

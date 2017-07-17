@@ -9,7 +9,7 @@ public class VanColumnWidget extends VanCartesianWidget{
         return "column";
     }
 
-    @Override
+//    @Override
     public boolean canCompleteMissTime(){
         return true;
     }
