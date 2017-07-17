@@ -235,8 +235,19 @@ public class GolbalFilterUtils {
                 return null;
             }
             ICubeDataLoader loader = session.getLoader();
-            ICubeTableService sourceTableService = loader.getTableIndex(source.getTableSource());
-            ICubeTableService targetTableService = loader.getTableIndex(target.getTableSource());
+            ICubeTableService sourceTableService = null;
+            ICubeTableService targetTableService = null;
+            // 源字段是主表的字段
+            if (sorceFieldRelation.equals(FieldTableRelation.PRIMARYTABLEFIELD)) {
+                sourceTableService = loader.getTableIndex(sourceField.getTableBelongTo().getTableSource());
+            } else {
+                sourceTableService = loader.getTableIndex(source.getTableSource());
+            }
+            if (targetFieldRelation.equals(FieldTableRelation.PRIMARYTABLEFIELD)) {
+                targetTableService = loader.getTableIndex(targetField.getTableBelongTo().getTableSource());
+            } else {
+                targetTableService = loader.getTableIndex(target.getTableSource());
+            }
             Set<BITableRelationPath> sourcePaths = BICubeConfigureCenter.getTableRelationManager().getAllPath(userId, source, sourceField.getTableBelongTo());
             Set<BITableRelationPath> targetPaths = BICubeConfigureCenter.getTableRelationManager().getAllPath(userId, target, targetField.getTableBelongTo());
             List<BITableSourceRelation> sourceRelation = getRelation(sourcePaths);
