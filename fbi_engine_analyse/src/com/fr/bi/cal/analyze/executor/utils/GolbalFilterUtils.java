@@ -101,22 +101,36 @@ public class GolbalFilterUtils {
      */
     public static GroupValueIndex getNotSettingSourceAndTargetJumpFilter(BISession session, BusinessTable target, BIWidget widget, boolean isSetSourceAndTargetField) {
 
+        GroupValueIndex ret = null;
         try {
-            TableWidget globalFilterWidget = (TableWidget) ((AbstractBIWidget) widget).getGlobalFilterWidget();
-            BIEngineExecutor linkExecutor = globalFilterWidget.getExecutor(session);
             Map<String, JSONArray> click = ((AbstractBIWidget) widget).getGlobalFilterClick();
-            Map<String, JSONArray> r = GolbalFilterUtils.combineClick(click, globalFilterWidget);
-            if (linkExecutor instanceof AbstractTableWidgetExecutor) {
-                if (isSetSourceAndTargetField) {
-                    return ((AbstractTableWidgetExecutor) linkExecutor).getClickGvi(r);
-                } else {
-                    return ((AbstractTableWidgetExecutor) linkExecutor).getClickGvi(r, target);
+            if (((AbstractBIWidget) widget).getGlobalFilterWidget().getType().equals(WidgetType.TABLE)) {
+                // 分组表的跳转
+                TableWidget globalFilterWidget = (TableWidget) ((AbstractBIWidget) widget).getGlobalFilterWidget();
+                BIEngineExecutor linkExecutor = globalFilterWidget.getExecutor(session);
+                Map<String, JSONArray> r = GolbalFilterUtils.combineClick(click, globalFilterWidget);
+                if (linkExecutor instanceof AbstractTableWidgetExecutor) {
+                    if (isSetSourceAndTargetField) {
+                        ret = ((AbstractTableWidgetExecutor) linkExecutor).getClickGvi(r);
+                    } else {
+                        ret = ((AbstractTableWidgetExecutor) linkExecutor).getClickGvi(r, target);
+                    }
+                }
+            } else if (((AbstractBIWidget) widget).getGlobalFilterWidget().getType().equals(WidgetType.DETAIL)) {
+                // 明细表的跳转
+                BIDetailWidget globalFilterWidget = (BIDetailWidget) ((AbstractBIWidget) widget).getGlobalFilterWidget();
+                // 返回点击行的gvi
+                // 不需要判断是否有相同的基础表|相同基础表的时候才需要有跳转效果
+                if (isSetSourceAndTargetField || ((AbstractBIWidget) widget).getBaseTable().equals(globalFilterWidget.getBaseTable())) {
+                    int page = click.get("pageCount").optInt(0, 0);
+                    int rIndex = click.get("rowIndex").optInt(0, 0);
+                    ret = getDetailLineGvi(globalFilterWidget, page, rIndex, session);
                 }
             }
         } catch (Exception e) {
             BILoggerFactory.getLogger(GolbalFilterUtils.class).info("error in get jump link filter gvi", e);
         }
-        return null;
+        return ret;
     }
 
     public static Map<String, JSONArray> combineClick(Map<String, JSONArray> click, TableWidget widget) {
@@ -282,7 +296,6 @@ public class GolbalFilterUtils {
     public static JSONObject getClickFieldMappingValue(BIWidget widget, long userId, BISession session, JSONObject clicked, JSONArray fieldIds) {
 
         JSONObject ret = JSONObject.create();
-        ICubeDataLoader loader = session.getLoader();
         if (fieldIds == null || fieldIds.length() == 0 || clicked == null) {
             return ret;
         }
@@ -292,43 +305,19 @@ public class GolbalFilterUtils {
         }
         try {
             if (widget.getType().equals(WidgetType.DETAIL)) {
-                Paging paging = PagingFactory.createPaging(BIExcutorConstant.PAGINGTYPE.GROUP100);
                 int page = clicked.optInt("pageCount", 1);
-                final long[] rIndex = {clicked.optLong("rowIndex", 0) + (page - 1) * BIExcutorConstant.PAGINGTYPE.GROUP100};
-                final int[] r = {-1};
-                paging.setCurrentPage(page);
-                DetailExecutor exe = new DetailExecutor((BIDetailWidget) widget, paging, session);
-                GroupValueIndex viewGvi = exe.createDetailViewGvi();
-                if (viewGvi != null) {
-                    viewGvi.BrokenableTraversal(new BrokenTraversalAction() {
-
-                        @Override
-                        public boolean actionPerformed(int row) {
-
-                            if (rIndex[0] == 0) {
-                                r[0] = row;
-                                return true;
-                            }
-                            rIndex[0]--;
-                            return false;
-                        }
-                    });
-                }
-                if (r[0] >= 0) {
-                    GroupValueIndex tarFiledGvi = GVIFactory.createGroupValueIndexBySimpleIndex(r[0]);
-                    return getOneLineValue(tarFiledGvi, ((BIDetailWidget) widget).getBaseTable(), fIds, userId, session, ret);
-                }
+                int rIndex = clicked.optInt("rowIndex", 0);
+                GroupValueIndex tarFiledGvi = getDetailLineGvi((BIDetailWidget) widget, page, rIndex, session);
+                return getOneLineValue(tarFiledGvi, ((BIDetailWidget) widget).getBaseTable(), fIds, userId, session, ret);
             } else if (widget.getType().equals(WidgetType.TABLE)) {
                 // 分组表
                 TableWidget targetWidget = (TableWidget) widget;
                 BIEngineExecutor executor = targetWidget.getExecutor(session);
                 Iterator<String> iter = clicked.keys();
                 Map<String, JSONArray> click = new HashMap<String, JSONArray>();
-                List<String> fieldKeys = new ArrayList<String>();
                 if (iter.hasNext()) {
                     String k = iter.next();
                     JSONArray a = clicked.getJSONArray(k);
-                    JSONArray n = JSONArray.create();
                     for (int i = 0; i < a.length(); i++) {
                         JSONObject o = a.getJSONObject(i);
                         JSONArray v = o.optJSONArray("value");
@@ -353,6 +342,56 @@ public class GolbalFilterUtils {
             BILoggerFactory.getLogger(GolbalFilterUtils.class).info(e.getMessage(), e);
         }
         return ret;
+    }
+
+    /**
+     * 获取明细表指定行代表的gvi
+     *
+     * @param widget
+     * @param page
+     * @param rowIndex
+     * @param session
+     * @return
+     */
+    public static GroupValueIndex getDetailLineGvi(BIDetailWidget widget, int page, int rowIndex, BISession session) {
+
+        GroupValueIndex ret = null;
+        Paging paging = PagingFactory.createPaging(BIExcutorConstant.PAGINGTYPE.GROUP100);
+        int rIndex = rowIndex + (page - 1) * PagingFactory.PAGE_PER_GROUP_100;
+        paging.setCurrentPage(page);
+        DetailExecutor exe = new DetailExecutor(widget, paging, session);
+        GroupValueIndex viewGvi = exe.createDetailViewGvi();
+        // 具体行
+        int r = getLineFromGvi(viewGvi, rIndex);
+        if (r >= 0) {
+            ret = GVIFactory.createGroupValueIndexBySimpleIndex(r);
+        } else {
+            ret = GVIFactory.createAllEmptyIndexGVI();
+        }
+        return ret;
+    }
+
+    private static int getLineFromGvi(GroupValueIndex gvi, int line) {
+
+        if (gvi == null || line > gvi.getRowsCountWithData()) {
+            return -1;
+        }
+        final int[] rIndex = {line};
+        final int[] r = {-1};
+        gvi.BrokenableTraversal(new BrokenTraversalAction() {
+
+            @Override
+            public boolean actionPerformed(int row) {
+
+                if (rIndex[0] == 0) {
+                    r[0] = row;
+                    return true;
+                }
+                rIndex[0]--;
+                return false;
+            }
+        });
+        return r[0];
     }
 
     public static JSONObject getOneLineValue(GroupValueIndex gvi, BusinessTable baseTable, List<String> fieldIds, long userId, BISession session, JSONObject ret) {

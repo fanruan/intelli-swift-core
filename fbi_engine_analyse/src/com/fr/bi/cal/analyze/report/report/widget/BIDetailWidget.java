@@ -59,21 +59,30 @@ import java.util.List;
 import java.util.Map;
 
 public class BIDetailWidget extends AbstractBIWidget {
+
     private static final long serialVersionUID = 3558768164064392671L;
+
     @BICoreField
     private BIDetailSetting data;
+
     @BICoreField
     private BIDetailTarget[] dimensions = new BIDetailTarget[0];
+
     @BIIgnoreField
     private /*transient*/ BIDetailTarget[] usedDimensions;
+
     @BICoreField
     private Map<String, TargetFilter> targetFilterMap = new LinkedHashMap<String, TargetFilter>();
 
     @BICoreField
     private BusinessTable target;//目标表
+
     private List<String> parent_widget = new ArrayList<String>();
+
     private String[] sortTargets = new String[0];
+
     private BITableWidgetStyle widgetStyle;
+
     //page from 1~ max
     private int page = 1;
 
@@ -82,15 +91,18 @@ public class BIDetailWidget extends AbstractBIWidget {
     private Map<String, JSONArray> clicked = new HashMap<String, JSONArray>();
 
     public int getPage() {
+
         return page;
     }
 
     public void setPage(int page) {
+
         this.page = page;
     }
 
     @Override
     public BIDetailTarget[] getDimensions() {
+
         return dimensions;
     }
 
@@ -119,16 +131,19 @@ public class BIDetailWidget extends AbstractBIWidget {
 
     @Override
     public BIDetailTarget[] getTargets() {
+
         return getDimensions();
     }
 
     @Override
     public BIDetailTarget[] getViewTargets() {
+
         return getViewDimensions();
     }
 
     @Override
     public List<BusinessTable> getUsedTableDefine() {
+
         List<BusinessTable> result = new ArrayList<BusinessTable>();
         BIDetailTarget[] dm = this.getDimensions();
         if (dm != null) {
@@ -144,6 +159,7 @@ public class BIDetailWidget extends AbstractBIWidget {
 
     @Override
     public List<BusinessField> getUsedFieldDefine() {
+
         List<BusinessField> result = new ArrayList<BusinessField>();
         BIDetailTarget[] dm = this.getDimensions();
         if (dm != null) {
@@ -157,11 +173,13 @@ public class BIDetailWidget extends AbstractBIWidget {
 
 
     public Map<String, TargetFilter> getTargetFilterMap() {
+
         return targetFilterMap;
     }
 
 
     public void setTargetTable(long userID) {
+
         BITableID targetTableID = new BITableID();
         for (BIDetailTarget target : dimensions) {
             if (!(target instanceof BINumberFormulaDetailTarget)) {
@@ -182,6 +200,7 @@ public class BIDetailWidget extends AbstractBIWidget {
 
     @Override
     public void parseJSON(JSONObject jo, long userId) throws Exception {
+
         super.parseJSON(jo, userId);
         if (jo.has("view")) {
             data = new BIDetailReportSetting();
@@ -233,6 +252,7 @@ public class BIDetailWidget extends AbstractBIWidget {
     }
 
     private void parseWidgetStyle(JSONObject jo) throws Exception {
+
         widgetStyle = new BITableWidgetStyle();
         if (jo.has("settings")) {
             widgetStyle.parseJSON(jo);
@@ -240,6 +260,7 @@ public class BIDetailWidget extends AbstractBIWidget {
     }
 
     private void parseDimensions(JSONObject jo, long userId) throws Exception {
+
         JSONObject dims = jo.getJSONObject("dimensions");
         JSONArray view = jo.getJSONObject("view").getJSONArray(BIReportConstant.REGION.DIMENSION1);
         this.dimensions = new BIDetailTarget[view.length()];
@@ -260,23 +281,28 @@ public class BIDetailWidget extends AbstractBIWidget {
     }
 
     public BITableWidgetStyle getWidgetStyle() {
+
         return widgetStyle;
     }
 
     public BusinessTable getTargetDimension() {
+
         return target;
     }
 
     public String[] getSortTargets() {
+
         return sortTargets;
     }
 
     @Override
     public int isOrder() {
+
         return data.isOrder();
     }
 
     public String[] getView() {
+
         if (data != null) {
             return data.getView();
         }
@@ -285,6 +311,7 @@ public class BIDetailWidget extends AbstractBIWidget {
 
     @Override
     public JSONObject createDataJSON(BISessionProvider session, HttpServletRequest req) throws Exception {
+
         JSONObject jo = new JSONObject();
         Paging paging = PagingFactory.createPaging(BIExcutorConstant.PAGINGTYPE.GROUP100);
         paging.setCurrentPage(page);
@@ -297,6 +324,7 @@ public class BIDetailWidget extends AbstractBIWidget {
 
     @Override
     public void refreshSources() {
+
         if (target == null) {
             return;
         }
@@ -315,6 +343,7 @@ public class BIDetailWidget extends AbstractBIWidget {
     }
 
     private boolean isAnalysisSource(CubeTableSource newSource) {
+
         List analysisTypes = new ArrayList();
         analysisTypes.add(BIBaseConstant.TABLE_TYPE.BASE);
         analysisTypes.add(BIBaseConstant.TABLE_TYPE.ETL);
@@ -326,17 +355,20 @@ public class BIDetailWidget extends AbstractBIWidget {
 
     @Override
     public WidgetType getType() {
+
         return WidgetType.DETAIL;
     }
 
     @Override
     protected TemplateBlock createBIBlock(BISession session) {
+
         return new PolyCubeDetailECBlock(this, session, page);
     }
 
 
     @Override
     public void reSetDetailTarget() {
+
         for (BIDetailTarget ele : getDimensions()) {
             if (ele != null) {
                 ele.reSetDetailGetter();
@@ -350,6 +382,7 @@ public class BIDetailWidget extends AbstractBIWidget {
     }
 
     public JSONObject getPostOptions(BISessionProvider session, HttpServletRequest req) throws Exception {
+
         JSONObject data = this.createDataJSON(session, req);
         JSONObject dataJSON = data.getJSONObject("data");
         Map<Integer, List<JSONObject>> viewMap = createViewMap();
@@ -375,6 +408,7 @@ public class BIDetailWidget extends AbstractBIWidget {
     }
 
     private Map<String, ITableCellFormatOperation> createChartDimensions() {
+
         Map<String, ITableCellFormatOperation> formatOperationMap = new HashMap<String, ITableCellFormatOperation>();
         for (BIDetailTarget detailTarget : this.getTargets()) {
             try {
@@ -413,6 +447,7 @@ public class BIDetailWidget extends AbstractBIWidget {
     }
 
     private Map<Integer, List<JSONObject>> createViewMap() throws Exception {
+
         Map<Integer, List<JSONObject>> dimAndTar = new HashMap<Integer, List<JSONObject>>();
         List<JSONObject> dims = new ArrayList<JSONObject>();
         for (BIDetailTarget detailTarget : this.getDimensions()) {
@@ -433,23 +468,47 @@ public class BIDetailWidget extends AbstractBIWidget {
     }
 
     public TableWidget getLinkWidget() {
+
         return linkedWidget;
     }
 
     public void setLinkWidget(TableWidget linkedWidget) {
+
         this.linkedWidget = linkedWidget;
     }
 
     public Map<String, JSONArray> getClicked() {
+
         return this.clicked;
     }
 
     public void setClicked(Map<String, JSONArray> clicked) {
+
         this.clicked = clicked;
     }
 
     public BusinessTable getBaseTable() {
 
         return target;
+    }
+
+    public Map<String, JSONArray> getGlobalFilterClick() {
+
+        Map<String, JSONArray> r = new HashMap<String, JSONArray>();
+        try {
+            // 明细表的click值和分组表的不相同
+            if (globalFilterClick != null) {
+                Iterator<String> iterator = (Iterator<String>) globalFilterClick.keys();
+                while (iterator.hasNext()) {
+                    String k = iterator.next();
+                    JSONArray v = JSONArray.create();
+                    v.put(globalFilterClick.optString(k, ""));
+                    r.put(k, v);
+                }
+            }
+        } catch (Exception e) {
+            BILoggerFactory.getLogger(this.getClass()).info("error in get jump link filter click value");
+        }
+        return r;
     }
 }
