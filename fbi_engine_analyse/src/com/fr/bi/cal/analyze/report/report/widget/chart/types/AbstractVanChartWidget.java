@@ -38,9 +38,6 @@ public abstract class AbstractVanChartWidget {
 
     protected BIWidgetConf widgetConf;
 
-    //userID这个属性不应该出现在这里，等待被删除
-    protected long userID;
-
     private static final double RED_DET = 0.299;
     private static final double GREEN_DET = 0.587;
     private static final double BLUE_DET = 0.114;
@@ -128,7 +125,6 @@ public abstract class AbstractVanChartWidget {
 
     public void init(BIWidgetConf widgetConf, long userID) throws JSONException {
         this.widgetConf = widgetConf;
-        this.userID = userID;
         //原来的parseJSON
         JSONObject vjo = widgetConf.getViewJSON();
 

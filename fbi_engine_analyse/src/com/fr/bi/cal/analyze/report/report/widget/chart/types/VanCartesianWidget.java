@@ -2,10 +2,10 @@ package com.fr.bi.cal.analyze.report.report.widget.chart.types;
 
 import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.cal.analyze.report.report.widget.chart.filter.ChartFilterFactory;
-import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.conf.report.widget.field.filtervalue.FilterValue;
 import com.fr.bi.field.target.target.BISummaryTarget;
 import com.fr.bi.stable.constant.BIReportConstant;
+import com.fr.fs.control.UserControl;
 import com.fr.general.ComparatorUtils;
 import com.fr.general.IOUtils;
 import com.fr.json.JSONArray;
@@ -327,7 +327,7 @@ public abstract class VanCartesianWidget extends AbstractVanChartWidget {
         FilterValue[] filterValues = new FilterValue[filterCount];
         for (int filterIndex = 0; filterIndex < filterCount; filterIndex++) {
             try {
-                filterValues[filterIndex] = ChartFilterFactory.parseFilterValue(config.optJSONObject(filterIndex), userID, data);
+                filterValues[filterIndex] = ChartFilterFactory.parseFilterValue(config.optJSONObject(filterIndex), UserControl.getInstance().getSuperManagerID(), data);
             }catch (Exception e){
                 BILoggerFactory.getLogger().error(e.getMessage(),e);
             }
