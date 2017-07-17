@@ -2,16 +2,12 @@ package com.fr.bi.cal.analyze.report.report;
 
 import com.finebi.cube.api.UserAnalysisCubeDataLoaderCreator;
 import com.finebi.cube.api.ICubeDataLoader;
-import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.cal.analyze.report.report.widget.*;
-import com.fr.bi.cal.analyze.report.report.widget.chart.types.*;
 import com.fr.bi.conf.report.BIWidget;
 import com.fr.bi.conf.report.WidgetType;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;
-
-import java.util.HashMap;
 
 /**
  * Widget的静态方法
