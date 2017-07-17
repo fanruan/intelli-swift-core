@@ -18,6 +18,8 @@ import java.util.List;
  * @since 4.0
  */
 public class BITableSourceRelationPath extends BIBasicRelationPath<CubeTableSource, ICubeFieldSource, BITableSourceRelation> implements ICubeSource {
+    private static final long serialVersionUID = -7079918444114325493L;
+
     public BITableSourceRelationPath() {
         super();
     }
