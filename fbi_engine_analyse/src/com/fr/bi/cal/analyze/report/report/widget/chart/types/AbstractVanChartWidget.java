@@ -123,7 +123,7 @@ public abstract class AbstractVanChartWidget {
             Inter.getLocText("BI-Basic_Sunday")
     };
 
-    public void init(BIWidgetConf widgetConf, long userID) throws JSONException {
+    public void init(BIWidgetConf widgetConf) throws JSONException {
         this.widgetConf = widgetConf;
         //原来的parseJSON
         JSONObject vjo = widgetConf.getViewJSON();

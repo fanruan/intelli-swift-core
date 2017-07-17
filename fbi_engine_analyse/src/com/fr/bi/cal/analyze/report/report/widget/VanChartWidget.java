@@ -24,7 +24,7 @@ public class VanChartWidget extends TableWidget {
         }
         JSONObject data = super.createDataJSON(session, req).getJSONObject("data");
 
-        return BIWidgetUtils.generateResult4View(getWidgetConf(), data, this.getUserId());
+        return BIWidgetUtils.generateResult4View(getWidgetConf(), data);
     }
 
 }

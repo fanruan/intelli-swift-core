@@ -70,9 +70,9 @@ public class BIWidgetUtils {
         }
     }
 
-    public static JSONObject generateResult4View (BIWidgetConf widgetConf, JSONObject data, long userID) throws Exception {
+    public static JSONObject generateResult4View (BIWidgetConf widgetConf, JSONObject data) throws Exception {
         AbstractVanChartWidget vanChartWidget = createVanChartWidget(WidgetType.parse(widgetConf.getType()));
-        vanChartWidget.init(widgetConf, userID);
+        vanChartWidget.init(widgetConf);
         return vanChartWidget.generateResult(widgetConf, data);
     }
 }
