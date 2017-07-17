@@ -175,6 +175,8 @@ public class BIDetailWidget extends AbstractBIWidget {
                 if (isTableUsedInDimensions(table)) {
                     target = table;
                     break;
+                } else {
+                    relations.remove(relations.size() - 1);
                 }
             }
         }
