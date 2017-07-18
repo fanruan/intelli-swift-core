@@ -23,8 +23,9 @@ import com.fr.bi.cal.analyze.report.report.widget.chart.export.item.constructor.
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.utils.BITableConstructHelper;
 import com.fr.bi.cal.analyze.report.report.widget.detail.BIDetailReportSetting;
 import com.fr.bi.cal.analyze.report.report.widget.detail.BIDetailSetting;
-import com.fr.bi.cal.analyze.report.report.widget.style.BITableWidgetStyle;
 import com.fr.bi.cal.analyze.session.BISession;
+import com.fr.bi.conf.report.conf.BIWidgetConf;
+import com.fr.bi.conf.report.conf.BIWidgetSettings;
 import com.fr.bi.common.persistent.xml.BIIgnoreField;
 import com.fr.bi.conf.report.WidgetType;
 import com.fr.bi.conf.report.widget.field.target.detailtarget.BIDetailTarget;
@@ -80,8 +81,6 @@ public class BIDetailWidget extends AbstractBIWidget {
     private List<String> parent_widget = new ArrayList<String>();
 
     private String[] sortTargets = new String[0];
-
-    private BITableWidgetStyle widgetStyle;
 
     //page from 1~ max
     private int page = 1;
@@ -206,7 +205,7 @@ public class BIDetailWidget extends AbstractBIWidget {
             data = new BIDetailReportSetting();
             data.parseJSON(jo);
         }
-        parseWidgetStyle(jo);
+
         if (jo.has("sortSequence")) {
             JSONArray ja = jo.getJSONArray("sortSequence");
             int len = ja.length();
@@ -251,14 +250,6 @@ public class BIDetailWidget extends AbstractBIWidget {
         }
     }
 
-    private void parseWidgetStyle(JSONObject jo) throws Exception {
-
-        widgetStyle = new BITableWidgetStyle();
-        if (jo.has("settings")) {
-            widgetStyle.parseJSON(jo);
-        }
-    }
-
     private void parseDimensions(JSONObject jo, long userId) throws Exception {
 
         JSONObject dims = jo.getJSONObject("dimensions");
@@ -278,11 +269,6 @@ public class BIDetailWidget extends AbstractBIWidget {
             this.dimensions[i].setRelationList(relationList);
         }
         setTargetTable(userId);
-    }
-
-    public BITableWidgetStyle getWidgetStyle() {
-
-        return widgetStyle;
     }
 
     public BusinessTable getTargetDimension() {
@@ -386,9 +372,9 @@ public class BIDetailWidget extends AbstractBIWidget {
         JSONObject data = this.createDataJSON(session, req);
         JSONObject dataJSON = data.getJSONObject("data");
         Map<Integer, List<JSONObject>> viewMap = createViewMap();
-        IExcelDataBuilder builder = new DetailTableBuilder(viewMap, dataJSON, widgetStyle);
+        IExcelDataBuilder builder = new DetailTableBuilder(viewMap, dataJSON, getWidgetSettings());
         DataConstructor tableData = BITableConstructHelper.buildTableData(builder);
-        BITableConstructHelper.formatCells(tableData, createChartDimensions(), widgetStyle);
+        BITableConstructHelper.formatCells(tableData, createChartDimensions(), getWidgetSettings());
         JSONObject res = new JSONObject();
         res.put("row", data.optLong("row", 0));
         res.put("header", tableData.createJSON().get("header"));
@@ -403,7 +389,7 @@ public class BIDetailWidget extends AbstractBIWidget {
         res.put("items", itemsArray);
         res.put("widgetType", getType().getType());
         res.put("dimensionLength", getViewDimensions().length).put("row", data.optLong("row", 0)).put("size", data.optLong("size", 0));
-        res.put("settings", tableData.getWidgetStyle().createJSON());
+        res.put("settings", tableData.getWidgetSettings().createJSON());
         return res;
     }
 
