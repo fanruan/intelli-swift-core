@@ -172,7 +172,7 @@ public class ComplexHorGroupExecutor extends AbstractTableWidgetExecutor {
                 Node temp = nodes[k];
                 while (temp != null) {
                     Object data = temp.getSummaryValue(keys[i]);
-                    boolean isPercent = widget.getChartSetting().getNumberLevelByTargetId(keys[i].getTargetName()) == BIReportConstant.TARGET_STYLE.NUM_LEVEL.PERCENT;
+                    boolean isPercent = widget.getWidgetConf().getNumberLevelByTargetID(keys[i].getTargetName()) == BIReportConstant.TARGET_STYLE.NUM_LEVEL.PERCENT;
                     Style style = BITableStyle.getInstance().getNumberCellStyle(data, (i + 1) % 2 == 1, isPercent);
                     CBCell cell = ExecutorUtils.createCell(data, rowIdx + i, 1, columnIdx.value++, 1, style);
                     pagedIterator.addCell(cell);
@@ -251,7 +251,7 @@ public class ComplexHorGroupExecutor extends AbstractTableWidgetExecutor {
     }
 
     @Override
-    public GroupValueIndex getClieckGvi(Map clicked, BusinessTable targetKey) {
+    public GroupValueIndex getClickGvi(Map clicked, BusinessTable targetKey) {
 
         GroupValueIndex filterGvi = null;
         try {

@@ -67,8 +67,8 @@ public class CrossExecutor extends AbstractTableWidgetExecutor<NewCrossRoot> {
 
         int len = usedSumTarget.length;
         TargetGettingKey[] keys = new TargetGettingKey[len];
-        boolean isWholeCol = keys.length == 0 || !widget.getChartSetting().showColTotal();
-        boolean isWholeRow = keys.length == 0 || !widget.getChartSetting().showRowTotal();
+        boolean isWholeCol = keys.length == 0 || !widget.getWidgetSettings().isShowColTotal();
+        boolean isWholeRow = keys.length == 0 || !widget.getWidgetSettings().isShowRowTotal();
         int columnLen = (isWholeCol ? node.getTop().getTotalLength() :
                 node.getTop().getTotalLengthWithSummary()) * Math.max(1, keys.length) + rowDimension.length + widget.isOrder();
         int rowLen = (isWholeRow ? node.getLeft().getTotalLength() :
@@ -383,7 +383,7 @@ public class CrossExecutor extends AbstractTableWidgetExecutor<NewCrossRoot> {
             Style style = Style.getInstance();
             for (TargetGettingKey key : widget.getTargetsKey()) {
                 Object v = temp.getSummaryValue(key);
-                boolean isPercent = widget.getChartSetting().getNumberLevelByTargetId(key.getTargetName()) == BIReportConstant.TARGET_STYLE.NUM_LEVEL.PERCENT;
+                boolean isPercent = widget.getWidgetConf().getNumberLevelByTargetID(key.getTargetName()) == BIReportConstant.TARGET_STYLE.NUM_LEVEL.PERCENT;
                 style = BITableStyle.getInstance().getNumberCellStyle(v, (rowIdx - titleRowSpan + 1) % 2 == 1, isPercent);
                 CBCell cell = ExecutorUtils.createCell(v, rowIdx, 1, columnIdx.value, 1, style);
                 pagedIterator.addCell(cell);
@@ -451,22 +451,6 @@ public class CrossExecutor extends AbstractTableWidgetExecutor<NewCrossRoot> {
         return getCubeNode().toJSONObject(rowDimension, colDimension, widget.getTargetsKey());
     }
 
-    @Override
-    public List<MetricGroupInfo> getLinkedWidgetFilterGVIList() throws Exception {
-
-        if (getSession() == null) {
-            return null;
-        }
-        int calPage = paging.getOperator();
-        List<NodeAndPageInfo> infoList = CubeIndexLoader.getInstance(session.getUserId()).getPageCrossGroupInfoList(createTarget4Calculate(), rowDimension, colDimension, allSumTarget, calPage, widget.useRealData(), session, expander, widget);
-        ArrayList<MetricGroupInfo> gviList = new ArrayList<MetricGroupInfo>();
-        for (NodeAndPageInfo info : infoList) {
-            gviList.addAll(info.getIterator().getRoot().getMetricGroupInfoList());
-        }
-        return gviList;
-
-    }
-
     private void clearNullSummary(CrossHeader left, TargetGettingKey[] keys) {
 
         for (TargetGettingKey key : keys) {
@@ -479,7 +463,7 @@ public class CrossExecutor extends AbstractTableWidgetExecutor<NewCrossRoot> {
         }
     }
 
-    public GroupValueIndex getClieckGvi(Map<String, JSONArray> clicked, BusinessTable targetKey) {
+    public GroupValueIndex getClickGvi(Map<String, JSONArray> clicked, BusinessTable targetKey) {
 
         GroupValueIndex linkGvi = null;
         try {
@@ -490,7 +474,7 @@ public class CrossExecutor extends AbstractTableWidgetExecutor<NewCrossRoot> {
             }
             BISummaryTarget summaryTarget = widget.getBITargetByID(target);
             BusinessTable linkTargetTable = summaryTarget.createTableKey();
-            // 基础表相同才进行比较
+            // 需要判断且具有相同基础表才进行比较
             if (!targetKey.equals(linkTargetTable)) {
                 return null;
             }

@@ -1,21 +1,32 @@
 package com.fr.bi.cal.analyze.executor.detail;
 
+import com.finebi.cube.api.ICubeDataLoader;
+import com.finebi.cube.api.ICubeTableService;
+import com.finebi.cube.api.ICubeValueEntryGetter;
 import com.finebi.cube.common.log.BILoggerFactory;
+import com.finebi.cube.conf.field.BusinessField;
+import com.finebi.cube.conf.field.BusinessFieldHelper;
 import com.finebi.cube.conf.table.BusinessTable;
 import com.fr.bi.base.FinalInt;
+import com.fr.bi.cal.analyze.executor.BIEngineExecutor;
 import com.fr.bi.cal.analyze.executor.GVIRunner;
 import com.fr.bi.cal.analyze.executor.TableRowTraversal;
 import com.fr.bi.cal.analyze.executor.detail.execute.DetailAllGVIRunner;
 import com.fr.bi.cal.analyze.executor.detail.execute.DetailPartGVIRunner;
 import com.fr.bi.cal.analyze.executor.iterator.TableCellIterator;
 import com.fr.bi.cal.analyze.executor.paging.Paging;
+import com.fr.bi.cal.analyze.executor.table.AbstractTableWidgetExecutor;
+import com.fr.bi.cal.analyze.executor.utils.GolbalFilterUtils;
+import com.fr.bi.cal.analyze.report.report.widget.AbstractBIWidget;
 import com.fr.bi.cal.analyze.report.report.widget.BIDetailWidget;
 import com.fr.bi.cal.analyze.report.report.widget.TableWidget;
 import com.fr.bi.cal.analyze.session.BISession;
 import com.fr.bi.cal.report.engine.CBCell;
+import com.fr.bi.conf.report.BIWidget;
 import com.fr.bi.conf.report.widget.field.target.detailtarget.BIDetailTarget;
 import com.fr.bi.field.target.target.BISummaryTarget;
 import com.fr.bi.stable.constant.CellConstant;
+import com.fr.bi.stable.data.BIFieldID;
 import com.fr.bi.stable.data.db.BIRowValue;
 import com.fr.bi.stable.gvi.GVIUtils;
 import com.fr.bi.stable.gvi.GroupValueIndex;
@@ -50,11 +61,13 @@ public class DetailExecutor extends AbstractDetailExecutor {
                           //前台传过来的从1开始;
                           Paging paging,
                           BISession session) {
+
         super(widget, paging, session);
 
     }
 
     public TableCellIterator createCellIterator4Excel() throws Exception {
+
         final GroupValueIndex gvi = createDetailViewGvi();
         int count = gvi.getRowsCountWithData();
         paging.setTotalSize(count);
@@ -62,7 +75,9 @@ public class DetailExecutor extends AbstractDetailExecutor {
         final Set<Integer> usedDimensionIndexes = getUsedDimensionIndexes();
         final TableCellIterator iter = new TableCellIterator(usedDimensionIndexes.size(), count + 1);
         new Thread() {
+
             public void run() {
+
                 try {
                     final FinalInt start = new FinalInt();
                     List<CBCell> cells = createCellTitle(CellConstant.CBCELL.TARGETTITLE_Y, usedDimensionIndexes);
@@ -71,8 +86,10 @@ public class DetailExecutor extends AbstractDetailExecutor {
                         iter.getIteratorByPage(start.value).addCell(it.next());
                     }
                     TableRowTraversal action = new TableRowTraversal() {
+
                         @Override
                         public boolean actionPerformed(BIRowValue row) {
+
                             int currentRow = (int) row.getRow() + 1;
                             int newRow = currentRow & EXCEL_ROW_MODE_VALUE;
                             if (newRow == 0) {
@@ -97,6 +114,7 @@ public class DetailExecutor extends AbstractDetailExecutor {
 
     @Override
     public Rectangle getSouthEastRectangle() {
+
         return null;
     }
 
@@ -113,8 +131,10 @@ public class DetailExecutor extends AbstractDetailExecutor {
         final BIDetailTarget[] dimensions = widget.getViewDimensions();
         final Set<Integer> usedDimensionIndexes = getUsedDimensionIndexes();
         TableRowTraversal action = new TableRowTraversal() {
+
             @Override
             public boolean actionPerformed(BIRowValue row) {
+
                 Boolean x = checkPage(row);
                 if (x != null) {
                     return x;
@@ -134,7 +154,8 @@ public class DetailExecutor extends AbstractDetailExecutor {
         return jo;
     }
 
-    private Set<Integer> getUsedDimensionIndexes () {
+    private Set<Integer> getUsedDimensionIndexes() {
+
         final BIDetailTarget[] dimensions = widget.getViewDimensions();
         String[] array = widget.getView();
         final Set<Integer> usedDimensionIndexes = new HashSet<Integer>();
@@ -147,9 +168,44 @@ public class DetailExecutor extends AbstractDetailExecutor {
         return usedDimensionIndexes;
     }
 
+    protected GroupValueIndex getLinkFilter(GroupValueIndex gvi) {
 
+        try {
+            if (widget.getLinkWidget() != null && widget.getLinkWidget() instanceof TableWidget) {
+                // 判断两个表格的基础表是否相同
+                BusinessTable widgetTargetTable = widget.getTargetDimension();
+                TableWidget linkWidget = widget.getLinkWidget();
+                Map<String, JSONArray> clicked = widget.getClicked();
+                BISummaryTarget summaryTarget = null;
+                String[] ids = clicked.keySet().toArray(new String[]{});
+                for (String linkTarget : ids) {
+                    try {
+                        summaryTarget = linkWidget.getBITargetByID(linkTarget);
+                        break;
+                    } catch (Exception e) {
+                        BILoggerFactory.getLogger(TableWidget.class).warn("Target id " + linkTarget + " is absent in linked widget " + linkWidget.getWidgetName());
+                    }
+                }
+                if (summaryTarget != null) {
+                    BusinessTable linkTargetTable = summaryTarget.createTableKey();
+                    // 基础表相同的时候才有联动的意义
+                    if (widgetTargetTable.equals(linkTargetTable)) {
+                        // 其联动组件的父联动gvi
+                        GroupValueIndex pLinkGvi = linkWidget.createLinkedFilterGVI(widgetTargetTable, session);
+                        // 其联动组件的点击过滤gvi
+                        GroupValueIndex linkGvi = linkWidget.getLinkFilter(linkWidget, widgetTargetTable, clicked, session);
+                        gvi = GVIUtils.AND(gvi, GVIUtils.AND(pLinkGvi, linkGvi));
+                    }
+                }
+            }
+        } catch (Exception e) {
+
+        }
+        return gvi;
+    }
 
     public List<List> getData() {
+
         if (target == null) {
             return new ArrayList<List>();
         }
@@ -157,8 +213,10 @@ public class DetailExecutor extends AbstractDetailExecutor {
         paging.setTotalSize(gvi.getRowsCountWithData());
         final List<List> data = new ArrayList<List>();
         TableRowTraversal action = new TableRowTraversal() {
+
             @Override
             public boolean actionPerformed(BIRowValue row) {
+
                 Boolean x = checkPage(row);
                 if (x != null) {
                     return x;
@@ -178,6 +236,7 @@ public class DetailExecutor extends AbstractDetailExecutor {
     }
 
     private Boolean checkPage(BIRowValue row) {
+
         if (paging.getStartRow() > row.getRow()) {
             return false;
         }
@@ -188,6 +247,7 @@ public class DetailExecutor extends AbstractDetailExecutor {
     }
 
     private void travel(TableRowTraversal action, GroupValueIndex gvi) {
+
         if (gvi.getRowsCountWithData() < MEMORY_LIMIT) {
             GVIRunner runner = new DetailAllGVIRunner(gvi, widget, getLoader(), userId);
             runner.Traversal(action);
@@ -201,5 +261,20 @@ public class DetailExecutor extends AbstractDetailExecutor {
     public JSONObject createJSONObject() throws Exception {
 
         return getCubeNode();
+    }
+
+    protected GroupValueIndex getJumpLinkFilter(GroupValueIndex g) {
+
+        BIDetailWidget bw = widget;
+        // 如果是跳转打开的才需要进行设置
+        if (bw.getGlobalFilterWidget() != null) {
+            // 如果已经设置了源字段和目标字段
+            if (((AbstractBIWidget) bw.getGlobalFilterWidget()).getGlobalSourceAndTargetFieldList().size() > 0) {
+                g = GVIUtils.AND(g, GolbalFilterUtils.getSettingSourceAndTargetJumpFilter(widget, userId, session, target, ((AbstractBIWidget) bw.getGlobalFilterWidget()).getBaseTable()));
+            } else {
+                g = GVIUtils.AND(g, GolbalFilterUtils.getNotSettingSourceAndTargetJumpFilter(session, target, widget, false));
+            }
+        }
+        return g;
     }
 }

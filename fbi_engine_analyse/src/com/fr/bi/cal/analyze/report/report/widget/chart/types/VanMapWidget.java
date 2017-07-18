@@ -1,9 +1,7 @@
 package com.fr.bi.cal.analyze.report.report.widget.chart.types;
 
-import com.fr.bi.cal.analyze.report.report.widget.VanChartWidget;
 import com.fr.bi.conf.report.map.BIMapInfoManager;
 import com.fr.bi.conf.report.map.BIWMSManager;
-import com.fr.bi.field.target.target.BISummaryTarget;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.general.ComparatorUtils;
 import com.fr.general.Inter;
@@ -17,20 +15,21 @@ import java.util.Map;
 /**
  * Created by eason on 2017/2/27.
  */
-public class VanMapWidget extends VanChartWidget{
+public class VanMapWidget extends AbstractVanChartWidget {
 
     private String subType = StringUtils.EMPTY;
 
     private static final String THEME = "#04b1c2";
 
-    public void parseJSON(JSONObject jo, long userId) throws Exception {
-
-        super.parseJSON(jo, userId);
-
-        if(jo.has("subType")){
-            subType = jo.optString("subType");
-        }
-    }
+    //待改
+//    public void parseJSON(JSONObject jo, long userId) throws Exception {
+//
+//        super.parseJSON(jo, userId);
+//
+//        if(jo.has("subType")){
+//            subType = jo.optString("subType");
+//        }
+//    }
 
     public JSONObject createOptions(JSONObject globalStyle, JSONObject data) throws Exception{
         JSONObject options = super.createOptions(globalStyle, data);
@@ -77,25 +76,7 @@ public class VanMapWidget extends VanChartWidget{
     }
 
     protected JSONObject parseLegend(JSONObject settings) throws JSONException{
-
-        JSONObject legend = super.parseLegend(settings);
-
-        JSONArray mapStyle;
-        if(settings.optInt("styleRadio", AUTO) == AUTO){
-            legend.put("range", JSONObject.create().put("color", settings.optString("themeColor")));
-        }else{
-            mapStyle = settings.optJSONArray("mapStyles");
-            legend.put("range", this.mapStyleToRange(mapStyle));
-        }
-
-        legend.put("continuous", false);
-
-        BISummaryTarget[] targets = this.getTargets();
-        if(targets.length > 0){
-            legend.put("formatter", this.intervalLegendFormatter(this.valueFormat(targets[0]), this.valueUnit(targets[0], true)));
-        }
-
-        return legend;
+        return revertMapLegend(settings, super.parseLegend(settings));
     }
 
     protected JSONObject populateDefaultSettings() throws JSONException {
@@ -155,7 +136,7 @@ public class VanMapWidget extends VanChartWidget{
             }
 
             series.put(JSONObject.create().put("data", data).put("type", type)
-                    .put("name", this.getDimensionNameByID(id))
+                    .put("name", widgetConf.getDimensionNameByDimensionID(id))
                     .put("targetIDs", JSONArray.create().put(id))
                     .put("dimensionIDs", dimensionIDs));
         }

@@ -1,7 +1,6 @@
 package com.fr.bi.cal.analyze.report.report.widget.chart.types;
 
 import com.finebi.cube.common.log.BILoggerFactory;
-import com.fr.bi.cal.analyze.report.report.widget.VanChartWidget;
 import com.fr.bi.cal.analyze.report.report.widget.chart.filter.ChartFilterFactory;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.conf.report.widget.field.filtervalue.FilterValue;
@@ -20,7 +19,7 @@ import java.awt.image.BufferedImage;
 /**
  * Created by eason on 2017/3/2.
  */
-public abstract class VanCartesianWidget extends VanChartWidget {
+public abstract class VanCartesianWidget extends AbstractVanChartWidget {
 
     //面积图的三种形态
     private static final int NORMAL = 1;
@@ -157,8 +156,8 @@ public abstract class VanCartesianWidget extends VanChartWidget {
         return StringUtils.isEmpty(result) ? StringUtils.EMPTY : "(" + result + ")";
     }
 
-    protected String dataLabelValueFormat(BISummaryTarget dimension){
-        return this.valueFormatFunc(dimension, false);
+    protected String dataLabelValueFormat(String dimensionID){
+        return this.valueFormatFunc(dimensionID, false);
     }
 
     protected int numberLevel(String dimensionID){
@@ -286,8 +285,8 @@ public abstract class VanCartesianWidget extends VanChartWidget {
             }
             try{
                 String targetID = targetIDs.optString(0);
-                BISummaryTarget target = this.getBITargetByID(targetID);
-                JSONArray dataImage = target.getChartSetting().getDataImage();
+
+                JSONArray dataImage = widgetConf.getDataImageByDimensionID(targetID);
                 if(dataImage != null) {
                     int filterCount = dataImage.length();
                     JSONArray data = ser.optJSONArray("data");
@@ -328,7 +327,7 @@ public abstract class VanCartesianWidget extends VanChartWidget {
         FilterValue[] filterValues = new FilterValue[filterCount];
         for (int filterIndex = 0; filterIndex < filterCount; filterIndex++) {
             try {
-                filterValues[filterIndex] = ChartFilterFactory.parseFilterValue(config.optJSONObject(filterIndex), this.getUserId(), data);
+                filterValues[filterIndex] = ChartFilterFactory.parseFilterValue(config.optJSONObject(filterIndex), userID, data);
             }catch (Exception e){
                 BILoggerFactory.getLogger().error(e.getMessage(),e);
             }
@@ -339,14 +338,14 @@ public abstract class VanCartesianWidget extends VanChartWidget {
 
     protected Object findTarget(String id, JSONObject datum, JSONObject ser){
 
-        BIDimension categoryDim = this.getCategoryDimension();
-        BIDimension seriesDim = this.getSeriesDimension();
+        String categoryDimID = this.getCategoryDimensionID();
+        String seriesDimID = this.getSeriesDimensionID();
 
-        if(categoryDim != null && ComparatorUtils.equals(categoryDim.getId(), id)){
+        if(categoryDimID != null && ComparatorUtils.equals(categoryDimID, id)){
             return datum.optString(LONG_DATE);
         }
 
-        if(seriesDim != null && ComparatorUtils.equals(seriesDim.getId(), id)){
+        if(seriesDimID != null && ComparatorUtils.equals(seriesDimID, id)){
             return ser.optString(LONG_DATE);
         }
 
@@ -371,10 +370,10 @@ public abstract class VanCartesianWidget extends VanChartWidget {
             }
             try {
                 String targetID = targetIDs.optString(0);
-                BISummaryTarget target = this.getBITargetByID(targetID);
+//                BISummaryTarget target = this.getBITargetByID(targetID);
                 //标签的条件属性
                 JSONObject dataLabels = ser.optJSONObject("dataLabels");
-                JSONArray labelCondition = this.getDataLabelConditions(target);
+                JSONArray labelCondition = widgetConf.getDataLabelByDimensionID(targetID);
                 if (labelCondition != null && dataLabels != null && dataLabels.optBoolean("enabled") == true) {
                     int filterCount = labelCondition.length();
                     JSONArray data = ser.optJSONArray("data");
@@ -386,7 +385,7 @@ public abstract class VanCartesianWidget extends VanChartWidget {
                             JSONObject config = labelCondition.optJSONObject(filterIndex);
                             String id = config.optString("targetId");
                             Object matchTarget = this.findTarget(id, config, datum, ser);
-                            if (target != null && filter.isMatchValue(matchTarget)){
+                            if (targetID != null && filter.isMatchValue(matchTarget)){
                                 JSONObject styleSetting = config.optJSONObject("styleSetting");
                                 JSONObject textStyle = styleSetting.optJSONObject("textStyle");
                                 JSONObject imgStyle = styleSetting.optJSONObject("imgStyle");
@@ -565,8 +564,8 @@ public abstract class VanCartesianWidget extends VanChartWidget {
 
         for(int i = 0, len = dIDs.length(); i < len; i++){
             try {
-                BISummaryTarget dimension = this.getBITargetByID(dIDs.optString(i));
-                if(dimension.isUsed()) {
+                String dimensionID = dIDs.optString(i);
+                if(widgetConf.getDimensionUsedByDimensionID(dimensionID)) {
                     return true;
                 }
             }catch (Exception ex){
@@ -587,10 +586,10 @@ public abstract class VanCartesianWidget extends VanChartWidget {
 
         for(int i = 0, len = dIDs.length(); i < len; i++){
             try {
-                BISummaryTarget dimension = this.getBITargetByID(dIDs.optString(i));
+                String dimensionID = dIDs.optString(i);
                 double scale = this.numberScale(dIDs.optString(i));
-                if(dimension.isUsed()) {
-                    JSONArray cordons = dimension.getChartSetting().getCordon();
+                if(widgetConf.getDimensionUsedByDimensionID(dimensionID)) {
+                    JSONArray cordons = widgetConf.getCordonByDimensionID(dimensionID);
 
                     for (int j = 0, count = cordons.length(); j < count; j++) {
                         JSONObject config = cordons.optJSONObject(j);
@@ -793,10 +792,11 @@ public abstract class VanCartesianWidget extends VanChartWidget {
     }
 
     protected JSONObject getSeriesAccumulationItem(String seriesName){
-        BIDimension seriesDim = this.getSeriesDimension();
+        String seriesDimID = this.getSeriesDimensionID();
+        JSONArray items = widgetConf.getSeriesAccumulationByDimensionID(seriesDimID);
 
-        if(seriesDim != null && seriesDim.getChartSetting().hasSeriesAccumulation()){
-            JSONArray items = seriesDim.getChartSetting().getSeriesAccumulation();
+        if(seriesDimID != null && items.length() > 0){
+
             for(int i = 0, count = items.length(); i < count; i++){
                 JSONObject obj = items.optJSONObject(i);
                 JSONArray objItems = obj.optJSONArray("items");

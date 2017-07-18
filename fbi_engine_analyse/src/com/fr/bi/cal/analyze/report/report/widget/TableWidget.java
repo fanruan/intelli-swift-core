@@ -9,6 +9,7 @@ import com.fr.bi.cal.analyze.cal.table.PolyCubeECBlock;
 import com.fr.bi.cal.analyze.executor.BIEngineExecutor;
 import com.fr.bi.cal.analyze.executor.paging.PagingFactory;
 import com.fr.bi.cal.analyze.executor.table.*;
+import com.fr.bi.cal.analyze.executor.utils.GolbalFilterUtils;
 import com.fr.bi.cal.analyze.report.report.BIWidgetFactory;
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.calculator.IExcelDataBuilder;
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.calculator.SummaryComplexTableBuilder;
@@ -34,9 +35,11 @@ import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.conf.report.widget.field.target.BITarget;
 import com.fr.bi.conf.session.BISessionProvider;
 import com.fr.bi.field.target.target.BISummaryTarget;
+import com.fr.bi.field.target.target.TargetType;
 import com.fr.bi.field.target.target.cal.target.configure.BIConfiguredCalculateTarget;
 import com.fr.bi.field.target.target.cal.target.configure.BIPeriodConfiguredCalculateTarget;
 import com.fr.bi.report.key.TargetGettingKey;
+import com.fr.bi.report.result.TargetCalculator;
 import com.fr.bi.stable.constant.BIJSONConstant;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.constant.DBConstant;
@@ -419,7 +422,8 @@ public class TableWidget extends BISummaryWidget {
         }
     }
 
-    public BITableWidgetStyle getWidgetStyle () {
+    public BITableWidgetStyle getWidgetStyle() {
+
         return style;
     }
 
@@ -598,11 +602,12 @@ public class TableWidget extends BISummaryWidget {
      * @throws Exception
      */
     public GroupValueIndex getLinkFilter(TableWidget linkedWidget, BusinessTable targetKey, Map<String, JSONArray> clicked, BISession session) throws Exception {
+
         BIEngineExecutor linkExecutor = linkedWidget.getExecutor(session);
         GroupValueIndex linkGvi = null;
         // 分组表,交叉表,复杂表的时候才有联动的必要
         if (linkExecutor instanceof AbstractTableWidgetExecutor) {
-            return ((AbstractTableWidgetExecutor) linkExecutor).getClieckGvi(clicked, targetKey);
+            return ((AbstractTableWidgetExecutor) linkExecutor).getClickGvi(clicked, targetKey);
         }
         return linkGvi;
     }
@@ -617,8 +622,6 @@ public class TableWidget extends BISummaryWidget {
         }
         return null;
     }
-
-
 
 
     @Override
@@ -756,4 +759,62 @@ public class TableWidget extends BISummaryWidget {
 
         return style;
     }
+
+    /**
+     * 组件的基础表
+     * 只处理那种指标在同一个基础表里面的,取其中的一个指标进行获取其中关联的计算指标.
+     *
+     * @return
+     */
+    public BusinessTable getBaseTable() {
+
+        BISummaryTarget[] targets = getTargets();
+        for (BISummaryTarget target : targets) {
+            //这边只加普通指标，计算指标在其他地方处理
+            if (target == null || target.getType() != TargetType.NORMAL) {
+                continue;
+            }
+            TargetCalculator summary = target.createSummaryCalculator();
+            BusinessTable targetKey = summary.createTableKey();
+            return targetKey;
+        }
+        // TODO 维度上面的
+        BIDimension[] dimension = getDimensions();
+        for (BIDimension dim : dimension) {
+            return dim.createColumnKey().getTableBelongTo();
+        }
+        return null;
+    }
+
+    /**
+     * 跳转过滤
+     *
+     * @return
+     */
+    public GroupValueIndex getJumpLinkFilter(BusinessTable targetKey, long userId, BISession session) {
+
+        if (targetKey == null) {
+            return null;
+        }
+
+        // 如果是跳转打开的才需要进行设置
+        if (getGlobalFilterWidget() != null) {
+            // 如果已经设置了源字段和目标字段
+            if (((AbstractBIWidget) getGlobalFilterWidget()).getGlobalSourceAndTargetFieldList().size() > 0) {
+                return GolbalFilterUtils.getSettingSourceAndTargetJumpFilter(this, userId, session, targetKey, ((AbstractBIWidget) getGlobalFilterWidget()).getBaseTable());
+            } else {
+                return GolbalFilterUtils.getNotSettingSourceAndTargetJumpFilter(session, targetKey, this, false);
+            }
+        }
+        return null;
+    }
+
+    public BIDimension getDimensionBydId(String dId) {
+
+        if (dimensionsIdMap.containsKey(dId)) {
+            return dimensionsIdMap.get(dId);
+        }
+        return null;
+    }
+
 }

@@ -38,6 +38,7 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -115,8 +116,8 @@ public class GroupExecutor extends AbstractTableWidgetExecutor<Node> {
             pagedIterator.addCell(cell);
         }
         for (BISummaryTarget anUsedSumTarget : usedSumTarget) {
-            int numLevel = widget.getChartSetting().getNumberLevelByTargetId(anUsedSumTarget.getId());
-            String unit = widget.getChartSetting().getUnitByTargetId(anUsedSumTarget.getId());
+            int numLevel = widget.getWidgetConf().getNumberLevelByTargetID(anUsedSumTarget.getId());
+            String unit = widget.getWidgetConf().getUnitByTargetID(anUsedSumTarget.getId());
             String levelAndUnit = ExecutorUtils.formatLevelAndUnit(numLevel, unit);
 
             String dimensionUnit = ComparatorUtils.equals(levelAndUnit, StringUtils.EMPTY) ? "" : "(" + levelAndUnit + ")";
@@ -179,9 +180,9 @@ public class GroupExecutor extends AbstractTableWidgetExecutor<Node> {
         for (TargetGettingKey key : widget.getTargetsKey()) {
             int columnIdx = targetsKeyIndex + dimensionsLength;
             Object data = temp.getSummaryValue(key);
-            int numLevel = widget.getChartSetting().getNumberLevelByTargetId(key.getTargetName());
-            int formatDecimal = widget.getChartSetting().getFormatDecimalByTargetId(key.getTargetName());
-            boolean separator = widget.getChartSetting().getSeparatorByTargetId(key.getTargetName());
+            int numLevel = widget.getWidgetConf().getNumberLevelByTargetID(key.getTargetName());
+            int formatDecimal = widget.getWidgetConf().getFormatDecimalByTargetID(key.getTargetName());
+            boolean separator = widget.getWidgetConf().getSeparatorByTargetID(key.getTargetName());
             data = ExecutorUtils.formatExtremeSumValue(data, numLevel);
             Style style = Style.getInstance();
             style = style.deriveFormat(ExecutorUtils.formatDecimalAndSeparator(numLevel, formatDecimal, separator));
@@ -246,28 +247,6 @@ public class GroupExecutor extends AbstractTableWidgetExecutor<Node> {
         return getCubeNode().toJSONObject(usedDimensions, widget.getTargetsKey(), -1);
     }
 
-    @Override
-    public List<MetricGroupInfo> getLinkedWidgetFilterGVIList() throws Exception {
-
-        if (session == null) {
-            return null;
-        }
-        int rowLength = usedDimensions.length;
-        int summaryLength = usedSumTarget.length;
-        int columnLen = rowLength + summaryLength;
-        if (columnLen == 0) {
-            return null;
-        }
-        int calPage = paging.getOperator();
-        CubeIndexLoader cubeIndexLoader = CubeIndexLoader.getInstance(session.getUserId());
-        List<NodeAndPageInfo> infoList = cubeIndexLoader.getPageGroupInfoList(false, widget, createTarget4Calculate(), usedDimensions,
-                                                                              allDimensions, allSumTarget, calPage, widget.isRealData(), session, expander.getYExpander());
-        ArrayList<MetricGroupInfo> gviList = new ArrayList<MetricGroupInfo>();
-        for (NodeAndPageInfo info : infoList) {
-            gviList.addAll(info.getIterator().getRoot().getMetricGroupInfoList());
-        }
-        return gviList;
-    }
 
     public Node getStopOnRowNode(Object[] stopRow) throws Exception {
 
@@ -496,7 +475,7 @@ public class GroupExecutor extends AbstractTableWidgetExecutor<Node> {
         }
     }
 
-    public GroupValueIndex getClieckGvi(Map<String, JSONArray> clicked, BusinessTable targetKey) {
+    public GroupValueIndex getClickGvi(Map<String, JSONArray> clicked, BusinessTable targetKey) {
 
         GroupValueIndex linkGvi = null;
         try {
@@ -525,4 +504,30 @@ public class GroupExecutor extends AbstractTableWidgetExecutor<Node> {
         }
         return linkGvi;
     }
+
+    public GroupValueIndex getClickGvi(Map<String, JSONArray> click) {
+
+        GroupValueIndex r = null;
+        try {
+            if (click != null && click.size() > 0) {
+                Iterator<String> iter = click.keySet().iterator();
+                if (iter.hasNext()) {
+                    String k = iter.next();
+                    List<Object> rowData = getLinkRowData(click, k, false);
+                    Node linkNode = getStopOnRowNode(rowData.toArray(), widget.getViewDimensions());
+                    Node cn = getClickNode(linkNode, rowData);
+                    Map<TargetGettingKey, GroupValueIndex> m = cn.getTargetIndexValueMap();
+                    for (TargetGettingKey key : m.keySet()) {
+                        r = m.get(key);
+                        break;
+                        //r = GVIUtils.OR(r, m.get(key));
+                    }
+                }
+            }
+        } catch (Exception e) {
+
+        }
+        return r;
+    }
+
 }

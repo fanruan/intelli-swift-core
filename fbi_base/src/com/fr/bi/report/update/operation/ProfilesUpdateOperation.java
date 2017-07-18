@@ -95,6 +95,7 @@ public class ProfilesUpdateOperation implements ReportUpdateOperation {
                     groupTargetsByType(json);
                     updateShowGridSettings(json);
                     updateSrcFieldId(json);
+                    changeHyperLinkToJump(json);
                 }
                 res.put(updateKey(s), recursionMapUpdate(json.getString(s)));
             } else {
@@ -102,6 +103,43 @@ public class ProfilesUpdateOperation implements ReportUpdateOperation {
             }
         }
         return res;
+    }
+
+    public void changeHyperLinkToJump(JSONObject json) throws JSONException{
+        JSONArray jumps = JSONArray.create();
+        if (BIJsonUtils.isKeyValueSet(json.getString("widgets"))) {
+            Iterator keys = json.getJSONObject("widgets").keys();
+            while (keys.hasNext()) {
+                String widgetId = keys.next().toString();
+                JSONObject widgetJo = json.getJSONObject("widgets").getJSONObject(widgetId);
+                if (widgetJo.has("type") && widgetJo.getInt("type") == BIReportConstant.WIDGET.DETAIL) {
+                    JSONObject dimensions = widgetJo.optJSONObject("dimensions");
+                    JSONObject view = widgetJo.optJSONObject("view");
+                    JSONArray region = view.optJSONArray(BIReportConstant.REGION.DIMENSION1);
+                    for (int i = 0; i < region.length(); i++) {
+                        JSONObject dimension = dimensions.optJSONObject(region.getString(i));
+                        int type = dimension.optInt("type", BIReportConstant.TARGET_TYPE.STRING);
+                        if(dimension.has("hyperlink")){
+                            JSONObject hyperlink = dimension.getJSONObject("hyperlink");
+                            if(hyperlink.optBoolean("used", true)){
+                                if(type == BIReportConstant.TARGET_TYPE.STRING || type == BIReportConstant.TARGET_TYPE.NUMBER || type == BIReportConstant.TARGET_TYPE.DATE){
+                                    JSONObject jump = JSONObject.create();
+                                    JSONObject srcJo = dimension.getJSONObject("_src");
+                                    String fieldId = srcJo.optString("fi eldId");
+                                    String url = hyperlink.optString("expression", "");
+                                    String targetUrl = url.replaceAll("\\$\\{.*\\}", "\\$\\{" + fieldId +"\\}");
+                                    jump.put("targetUrl", targetUrl);
+                                    jump.put("openPosition", 1);
+                                    jumps.put(jump);
+                                }
+                            }
+                            dimension.remove("hyperlink");
+                        }
+                    }
+                }
+                widgetJo.put("jump", jumps);
+            }
+        }
     }
 
     private void addWId(JSONObject jo) {

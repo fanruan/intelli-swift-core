@@ -3,7 +3,7 @@ package com.fr.bi.cal.analyze.report.report.widget.chart.export.item.constructor
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.item.ITableHeader;
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.item.ITableItem;
 import com.fr.bi.conf.report.WidgetType;
-import com.fr.bi.conf.report.widget.IWidgetStyle;
+import com.fr.bi.conf.report.widget.BIWidgetStyle;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;
 
@@ -15,7 +15,7 @@ import java.util.List;
  */
 public class BIDetailDataConstructor extends BISummaryDataConstructor {
 
-    public BIDetailDataConstructor(List<ITableHeader> headers, List<ITableItem> items, IWidgetStyle widgetStyle) {
+    public BIDetailDataConstructor(List<ITableHeader> headers, List<ITableItem> items, BIWidgetStyle widgetStyle) {
         super(headers, items, widgetStyle);
         super.widgetType=WidgetType.DETAIL.getType();
     }
