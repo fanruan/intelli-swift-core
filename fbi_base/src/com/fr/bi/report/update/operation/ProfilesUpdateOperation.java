@@ -406,7 +406,7 @@ public class ProfilesUpdateOperation implements ReportUpdateOperation {
                 String dimId = keys.next().toString();
                 JSONObject dimJson = json.getJSONObject("widgets").getJSONObject(dimId);
                 if (dimJson.has("src")) {
-                    dimJson.put("src", correctImgSrc(dimJson.getString("src")));
+                    dimJson.put("src", correctImgSrc(dimJson.getString("src")).toLowerCase());
                 }
             }
         }

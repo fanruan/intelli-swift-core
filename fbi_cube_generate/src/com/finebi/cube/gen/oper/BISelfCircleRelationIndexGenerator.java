@@ -31,7 +31,7 @@ public class BISelfCircleRelationIndexGenerator extends BIRelationIndexGenerator
 
     private List<ICubeFieldSource> getSelfCircleParentFields() throws Exception {
         BITableSourceRelation relation = BIRelationHelper.getTableRelation(this.relation);
-        List<ICubeFieldSource> fieldsList = TableSourceUtils.createCircleFieldsList(relation.getForeignTable(), relation.getForeignField());
+        List<ICubeFieldSource> fieldsList = TableSourceUtils.createCircleFieldsList(relation.getForeignField());
         return fieldsList;
     }
 
