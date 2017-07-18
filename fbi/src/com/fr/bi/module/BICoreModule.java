@@ -172,7 +172,7 @@ public class BICoreModule extends AbstractModule {
         StableFactory.registerMarkedObject(BICubeConfManagerProvider.XML_TAG, getBICubeConfManager());
         StableFactory.registerMarkedObject(SingleTableUpdateManager.XML_TAG, new SingleTableUpdateManager());
         StableFactory.registerMarkedObject(BICubeTimeTaskCreatorProvider.XML_TAG, new BICubeTimeTaskCreatorManager());
-        StableFactory.registerMarkedObject(BICubeTaskRecordProvider.XML_TAG, new BICubeTaskRecordManagerWithoutUser());
+        StableFactory.registerMarkedObject(BICubeTaskRecordProvider.XML_TAG, getBICubeTaskRecordManagerWithoutUser());
 
         StableFactory.registerMarkedObject(BIDataConfigAuthorityProvider.XML_TAG, new BISystemDataConfigAuthorityManager());
         StableFactory.registerMarkedObject(FBIConfigProvider.XML_TAG, getFBIConfigManager());
@@ -181,7 +181,21 @@ public class BICoreModule extends AbstractModule {
         //模版配置属性
         StableFactory.registerMarkedObject(TemplateConfigProvider.XML_TAG, getTemplateConfigManager());
     }
-
+    public BICubeTaskRecordProvider getBICubeTaskRecordManagerWithoutUser() {
+        if (ClusterEnv.isCluster()) {
+            if (ClusterAdapter.getManager().getHostManager().isSelf()) {
+                BICubeTaskRecordManagerWithoutUser provider = new BICubeTaskRecordManagerWithoutUser();
+                RPC.registerSkeleton(provider, ClusterAdapter.getManager().getHostManager().getPort());
+                return provider;
+            } else {
+                return (BICubeTaskRecordProvider) RPC.getProxy(BICubeTaskRecordManagerWithoutUser.class,
+                        ClusterAdapter.getManager().getHostManager().getIp(),
+                        ClusterAdapter.getManager().getHostManager().getPort());
+            }
+        } else {
+            return new BICubeTaskRecordManagerWithoutUser();
+        }
+    }
     public TemplateConfigProvider getTemplateConfigManager() {
         if (ClusterEnv.isCluster()) {
             if (ClusterAdapter.getManager().getHostManager().isSelf()) {

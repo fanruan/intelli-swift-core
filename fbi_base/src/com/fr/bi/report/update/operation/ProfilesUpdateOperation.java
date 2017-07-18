@@ -398,7 +398,6 @@ public class ProfilesUpdateOperation implements ReportUpdateOperation {
 
     /*
     * 处理之前stable版本保存图片时把整个url全保存进去了，没有地方拦截了，先在此处修正
-    * /WebReport/ReportServer?op=fr_bi&cmd=get_uploaded_image&imageId=47a49db9-6a37-46ab-96a3-d615c46ccecc_表样.jpg" -> 47a49db9-6a37-46ab-96a3-d615c46ccecc_表样.jpg"
     * */
     private JSONObject correctPreviousSrcError(JSONObject json) throws JSONException {
         if (BIJsonUtils.isKeyValueSet(json.getString("widgets"))) {
