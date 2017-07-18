@@ -1283,6 +1283,8 @@ public abstract class VanChartWidget extends TableWidget {
         JSONObject plotOptions = options.optJSONObject("plotOptions");
         options.put("plotOptions", plotOptions.put("animation", false));
 
+        options.put("toPhantom", true);
+
         return options;
     }
 
