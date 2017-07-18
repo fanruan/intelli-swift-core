@@ -1,6 +1,5 @@
 package com.fr.bi.cal.analyze.report.report.widget.chart.types;
 
-import com.fr.bi.stable.constant.BIChartSettingConstant;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
