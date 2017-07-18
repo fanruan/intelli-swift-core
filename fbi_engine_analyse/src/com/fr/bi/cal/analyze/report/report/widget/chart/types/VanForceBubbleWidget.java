@@ -58,4 +58,8 @@ public class VanForceBubbleWidget extends VanDotWidget{
     protected String seriesLabelKey() {
         return SERIES;
     }
+
+    protected boolean checkValid(){
+        return this.getDim1Size() > 0 && this.hasTarget();
+    }
 }

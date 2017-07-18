@@ -43,4 +43,8 @@ public class VanRadarWidget extends VanCartesianWidget{
     public String getSeriesType(String dimensionID){
         return "radar";
     }
+
+    protected boolean checkValid(){
+        return this.getDim1Size() > 0 && this.hasTarget();
+    }
 }
