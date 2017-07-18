@@ -682,10 +682,6 @@ public abstract class VanChartWidget extends TableWidget {
 
     public JSONObject createDataJSON(BISessionProvider session, HttpServletRequest req) throws Exception {
 
-        if(!this.checkValid()){
-            return JSONObject.create().put("errorCode", BIReportConstant.RES_STATUS.DATA_MISS);
-        }
-
         // 如果是实时数据
         if (needOpenBigDateModel()) {
             setOperator(BIReportConstant.TABLE_PAGE_OPERATOR.BIGDATACHART);

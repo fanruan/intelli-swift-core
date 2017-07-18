@@ -543,6 +543,6 @@ public class VanDotWidget extends VanCartesianWidget{
     }
 
     protected boolean checkValid(){
-        return this.getTar1Size() > 0 && this.getTar2Size() > 0;
+        return this.getTar1Size() >= 2;
     }
 }
