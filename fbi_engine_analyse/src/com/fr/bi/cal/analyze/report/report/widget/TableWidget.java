@@ -199,11 +199,6 @@ public class TableWidget extends BISummaryWidget {
         }
     }
 
-    public void setGroupTableType() {
-
-        tableType = BIReportConstant.TABLE_WIDGET.GROUP_TYPE;
-    }
-
     public void addColumn2Row() {
 
         if (data != null) {
@@ -602,7 +597,7 @@ public class TableWidget extends BISummaryWidget {
         GroupValueIndex linkGvi = null;
         // 分组表,交叉表,复杂表的时候才有联动的必要
         if (linkExecutor instanceof AbstractTableWidgetExecutor) {
-            return ((AbstractTableWidgetExecutor) linkExecutor).getClieckGvi(clicked, targetKey);
+            return ((AbstractTableWidgetExecutor) linkExecutor).getClickGvi(clicked, targetKey);
         }
         return linkGvi;
     }

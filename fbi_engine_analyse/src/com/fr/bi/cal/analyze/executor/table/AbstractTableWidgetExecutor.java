@@ -112,7 +112,7 @@ public abstract class AbstractTableWidgetExecutor<T> extends BIAbstractExecutor<
      * @param targetKey
      * @return
      */
-    abstract public GroupValueIndex getClieckGvi(Map<String, JSONArray> clicked, BusinessTable targetKey);
+    abstract public GroupValueIndex getClickGvi(Map<String, JSONArray> clicked, BusinessTable targetKey);
 
 
     /**

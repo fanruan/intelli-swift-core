@@ -147,8 +147,6 @@ public class DetailExecutor extends AbstractDetailExecutor {
         return usedDimensionIndexes;
     }
 
-
-
     public List<List> getData() {
         if (target == null) {
             return new ArrayList<List>();

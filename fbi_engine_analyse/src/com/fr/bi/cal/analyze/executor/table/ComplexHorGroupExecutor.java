@@ -95,9 +95,8 @@ public class ComplexHorGroupExecutor extends AbstractTableWidgetExecutor {
     private void generateTitle(Node[] nodes, TableWidget widget, BIComplexExecutData rowData, StreamPagedIterator pagedIterator) {
 
         int maxRowDimLen = rowData.getMaxArrayLength();
-        Style style = BITableStyle.getInstance().getTitleDimensionCellStyle(0);
         if (widget.isOrder() == 1) {
-            CBCell cell = ExecutorUtils.createCell(Inter.getLocText("BI-Number_Index"), 0, maxRowDimLen, 0, 1, style);
+            CBCell cell = ExecutorUtils.createTitleCell(Inter.getLocText("BI-Number_Index"), 0, maxRowDimLen, 0, 1);
             pagedIterator.addCell(cell);
         }
         int colDimIdx = 0;
@@ -109,17 +108,17 @@ public class ComplexHorGroupExecutor extends AbstractTableWidgetExecutor {
             //列表头中第一个维度的维度名显示在行的开头
             if (firstColumnDimLen > colDimIdx) {
                 int rowSpan = firstColumnDimLen - 1 == colDimIdx ? maxRowDimLen - colDimIdx : 1;
-                CBCell cell = ExecutorUtils.createCell(rowData.getDimensionArray(0)[colDimIdx].getText(), colDimIdx,
-                                                       rowSpan, columnIdx.value, 1, style);
+                CBCell cell = ExecutorUtils.createTitleCell(rowData.getDimensionArray(0)[colDimIdx].getText(), colDimIdx,
+                                                       rowSpan, columnIdx.value, 1);
                 pagedIterator.addCell(cell);
             }
             columnIdx.value++;
-            generateDimCell(nodes, pagedIterator, style, colDimIdx, columnIdx, maxRowDimLen);
+            generateDimCell(nodes, pagedIterator, colDimIdx, columnIdx, maxRowDimLen);
             colDimIdx++;
         }
     }
 
-    private void generateDimCell(Node[] nodes, StreamPagedIterator pagedIterator, Style style, int colDimIdx, FinalInt columnIdx, int maxRowDimLen) {
+    private void generateDimCell(Node[] nodes, StreamPagedIterator pagedIterator, int colDimIdx, FinalInt columnIdx, int maxRowDimLen) {
 
         for (int i = 0, j = rowData.getDimensionArrayLength(); i < j; i++) {
             BIDimension[] dimensions = rowData.getDimensionArray(i);
@@ -135,7 +134,7 @@ public class ComplexHorGroupExecutor extends AbstractTableWidgetExecutor {
                         v = DateUtils.DATEFORMAT2.format(new Date(GeneralUtils.string2Number(v.toString()).longValue()));
                     }
                     int rowSpan = (dimensions.length == colDimIdx + 1) ? (maxRowDimLen - colDimIdx) : temp.getDeep();
-                    CBCell dimCell = ExecutorUtils.createCell(v, colDimIdx, rowSpan, columnIdx.value, temp.getTotalLengthWithSummary(), style);
+                    CBCell dimCell = ExecutorUtils.createTitleCell(v, colDimIdx, rowSpan, columnIdx.value, temp.getTotalLengthWithSummary());
                     pagedIterator.addCell(dimCell);
                     columnIdx.value += temp.getTotalLengthWithSummary();
                     HorGroupExecutor.generateTitleSumCells(temp, pagedIterator, colDimIdx, columnIdx, rowSpan);
@@ -162,11 +161,11 @@ public class ComplexHorGroupExecutor extends AbstractTableWidgetExecutor {
             columnIdx.value += widget.isOrder() + 1;
             Style headStyle = BITableStyle.getInstance().getDimensionCellStyle(false, (i + 1) % 2 == 1);
             if (widget.isOrder() == 1) {
-                CBCell orderCell = ExecutorUtils.createCell(i + 1, rowIdx + i, 1, 0, 1, headStyle);
+                CBCell orderCell = ExecutorUtils.createValueCell(i + 1, rowIdx + i, 1, 0, 1, headStyle, rowIdx + i % 2 == 1);
                 pagedIterator.addCell(orderCell);
             }
             Object targetName = usedSumTarget[i].getText();
-            CBCell targetNameCell = ExecutorUtils.createCell(targetName, rowIdx + i, 1, widget.isOrder(), 1, headStyle);
+            CBCell targetNameCell = ExecutorUtils.createValueCell(targetName, rowIdx + i, 1, widget.isOrder(), 1, headStyle, rowIdx + i % 2 == 1);
             pagedIterator.addCell(targetNameCell);
             for (int k = 0, j = nodes.length; k < j; k++) {
                 Node temp = nodes[k];
@@ -174,9 +173,9 @@ public class ComplexHorGroupExecutor extends AbstractTableWidgetExecutor {
                     Object data = temp.getSummaryValue(keys[i]);
                     boolean isPercent = widget.getChartSetting().getNumberLevelByTargetId(keys[i].getTargetName()) == BIReportConstant.TARGET_STYLE.NUM_LEVEL.PERCENT;
                     Style style = BITableStyle.getInstance().getNumberCellStyle(data, (i + 1) % 2 == 1, isPercent);
-                    CBCell cell = ExecutorUtils.createCell(data, rowIdx + i, 1, columnIdx.value++, 1, style);
+                    CBCell cell = ExecutorUtils.createValueCell(data, rowIdx + i, 1, columnIdx.value++, 1, style, rowIdx + i % 2 == 1);
                     pagedIterator.addCell(cell);
-                    HorGroupExecutor.generateTargetSumCell(temp, widget, keys[i], pagedIterator, rowIdx + i, columnIdx, style);
+                    HorGroupExecutor.generateTargetSumCell(temp, widget, keys[i], pagedIterator, rowIdx, columnIdx, i);
                     temp = temp.getSibling();
                 }
             }
@@ -251,7 +250,7 @@ public class ComplexHorGroupExecutor extends AbstractTableWidgetExecutor {
     }
 
     @Override
-    public GroupValueIndex getClieckGvi(Map clicked, BusinessTable targetKey) {
+    public GroupValueIndex getClickGvi(Map clicked, BusinessTable targetKey) {
 
         GroupValueIndex filterGvi = null;
         try {

@@ -231,30 +231,6 @@ public class BISession extends BIAbstractSession {
         return tempTableId;
     }
 
-    public ResultWorkBook getExportBookByName(String name) throws CloneNotSupportedException {
-        BIWidget widget = report.getWidgetByName(name);
-        if (widget != null) {
-            widget = (BIWidget) widget.clone();
-            switch (widget.getType()) {
-                case TABLE:
-                    ((TableWidget) widget).addColumn2Row();
-                    ((TableWidget) widget).setGroupTableType();
-                    ((TableWidget) widget).getExecutor(this);
-                    ((TableWidget) widget).setComplexExpander(new ComplexAllExpander());
-                    ((TableWidget) widget).setOperator(BIReportConstant.TABLE_PAGE_OPERATOR.ALL_PAGE);
-                    break;
-                case DETAIL:
-                    ((BIDetailWidget) widget).setPage(BIExcutorConstant.PAGINGTYPE.NONE);
-                    break;
-            }
-
-            widget.setWidgetName(widget.getWidgetName() + Math.random());
-            TemplateWorkBook workBook = widget.createWorkBook(this);
-            return ((BIWorkBook) workBook).execute4BI(getParameterMap4Execute());
-        }
-        return null;
-    }
-
     @Override
     public String getDurationPrefix() {
         return null;
