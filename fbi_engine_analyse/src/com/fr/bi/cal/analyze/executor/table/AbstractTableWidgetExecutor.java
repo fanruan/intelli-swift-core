@@ -1,5 +1,6 @@
 package com.fr.bi.cal.analyze.executor.table;
 
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.conf.table.BusinessTable;
 import com.fr.bi.cal.analyze.cal.index.loader.CubeIndexLoader;
 import com.fr.bi.cal.analyze.cal.result.CrossExpander;
@@ -112,11 +113,12 @@ public abstract class AbstractTableWidgetExecutor<T> extends BIAbstractExecutor<
      * @param targetKey
      * @return
      */
-    abstract public GroupValueIndex getClieckGvi(Map<String, JSONArray> clicked, BusinessTable targetKey);
+    abstract public GroupValueIndex getClickGvi(Map<String, JSONArray> clicked, BusinessTable targetKey);
 
 
     /**
      * 获取点击的指标
+     *
      * @param clicked
      * @return
      */
@@ -135,6 +137,7 @@ public abstract class AbstractTableWidgetExecutor<T> extends BIAbstractExecutor<
 
     /**
      * 获取目标的gvi
+     *
      * @param target
      * @param targetIndexs
      * @return
@@ -155,6 +158,15 @@ public abstract class AbstractTableWidgetExecutor<T> extends BIAbstractExecutor<
             if (data.size() == 0) {
                 return getTargetIndex(target, n.getTargetIndexValueMap());
             }
+            Node parent = getClickNode(n, data);
+            return getTargetIndex(target, parent.getTargetIndexValueMap());
+        }
+        return null;
+    }
+
+    protected Node getClickNode(Node n, List<Object> data) {
+
+        if (n != null) {
             Node parent = n;
             for (int i = 0; i < data.size(); i++) {
                 Object cv = data.get(i);
@@ -167,13 +179,14 @@ public abstract class AbstractTableWidgetExecutor<T> extends BIAbstractExecutor<
                 }
                 parent = child;
             }
-            return getTargetIndex(target, parent.getTargetIndexValueMap());
+            return parent;
         }
         return null;
     }
 
     /**
      * 把以前放在BIEngineExecutor中的接口移到这边来,因为只可能需要表格才可能停在某一行
+     *
      * @param stopRow
      * @param dimensions
      * @return
@@ -271,6 +284,7 @@ public abstract class AbstractTableWidgetExecutor<T> extends BIAbstractExecutor<
      * @throws Exception
      */
     protected List<Object> getLinkRowData(Map<String, JSONArray> clicked, String target, boolean isHor) throws Exception {
+
         List r = new ArrayList<Object>();
         try {
             if (clicked != null) {
@@ -290,13 +304,14 @@ public abstract class AbstractTableWidgetExecutor<T> extends BIAbstractExecutor<
                         JSONObject object = keyJson.getJSONObject(i);
                         String click = object.getJSONArray("value").getString(0);
                         String did = object.getString("dId");
-                        rowData[j++] = click;r.add(click);
+                        rowData[j++] = click;
+                        r.add(click);
                     }
                 }
 
             }
         } catch (Exception e) {
-
+            BILoggerFactory.getLogger(this.getClass()).info(e.getMessage(), e);
         }
         return r;
     }
@@ -348,7 +363,7 @@ public abstract class AbstractTableWidgetExecutor<T> extends BIAbstractExecutor<
                 }
             }
         } catch (Exception e) {
-
+            BILoggerFactory.getLogger(this.getClass()).info(e.getMessage(), e);
         }
     }
 }
