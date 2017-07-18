@@ -356,16 +356,9 @@ public abstract class VanChartWidget extends TableWidget {
     }
 
     public void parseJSON(JSONObject jo, long userId) throws Exception {
-
+        JSONObject vjo = JSONObject.create();
         if (jo.has("view")) {
-            JSONObject vjo = jo.optJSONObject("view");
-
-            this.dim1Size = this.getDimSize(vjo, BIReportConstant.REGION.DIMENSION1);
-            this.dim2Size = this.getDimSize(vjo, BIReportConstant.REGION.DIMENSION2);
-            this.tar1Size = this.getDimSize(vjo, BIReportConstant.REGION.TARGET1);
-            this.tar2Size = this.getDimSize(vjo, BIReportConstant.REGION.TARGET2);
-            this.tar3Size = this.getDimSize(vjo, BIReportConstant.REGION.TARGET3);
-
+            vjo = jo.optJSONObject("view");
             Iterator it = vjo.keys();
             List<String> sorted = new ArrayList<String>();
             while (it.hasNext()) {
@@ -385,6 +378,12 @@ public abstract class VanChartWidget extends TableWidget {
         this.chartType = WidgetType.parse(jo.optInt("type"));
 
         super.parseJSON(jo, userId);
+
+        this.dim1Size = this.getDimSize(vjo, BIReportConstant.REGION.DIMENSION1);
+        this.dim2Size = this.getDimSize(vjo, BIReportConstant.REGION.DIMENSION2);
+        this.tar1Size = this.getDimSize(vjo, BIReportConstant.REGION.TARGET1);
+        this.tar2Size = this.getDimSize(vjo, BIReportConstant.REGION.TARGET2);
+        this.tar3Size = this.getDimSize(vjo, BIReportConstant.REGION.TARGET3);
     }
 
     protected String getCompleteImageUrl(String imageId) {
