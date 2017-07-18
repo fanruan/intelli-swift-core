@@ -20,6 +20,18 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class GroupUtils {
 
 
+    /**
+     *
+     * @param iterator
+     * @param op
+     * @param showSum 是否显示汇总（只控制是否计算索引）
+     * @param shouldSetIndex
+     * @param shouldSum 是否需要计算汇总值（控制是否算指标的值）
+     * @param nodeCreator
+     * @param sumLength
+     * @param executor
+     * @return
+     */
     public static NodeAndPageInfo createNextPageMergeNode(NodeDimensionIterator iterator, Operator op, boolean showSum, boolean shouldSetIndex, boolean shouldSum, NodeCreator nodeCreator, int sumLength, BIMultiThreadExecutor executor) {
 
         return createMergePageNode(iterator, op, showSum, shouldSetIndex, shouldSum, nodeCreator, sumLength, executor);
@@ -37,6 +49,8 @@ public class GroupUtils {
         AtomicInteger size = new AtomicInteger(0);
         Status allAdded = new Status();
         addSummaryValue(node, gc, nodeCreator, showSum, shouldSetIndex, shouldSum, executor, count, size, calculated, allAdded);
+        // BI-6991 根节点才需要依靠showSum属性进行显示汇总,子节点需要一直进行显示
+        // pony 这边问了交互了，说一开始不好做，就定了都展示了，现在能做出来不展示了，就不展示了
         addChild(iterator, op, showSum, shouldSetIndex, shouldSum, nodeCreator, sumLength, executor, node, gc, count, size, calculated, allAdded);
         allAdded.setCompleted();
         if (executor == null || count.get() == size.get()){

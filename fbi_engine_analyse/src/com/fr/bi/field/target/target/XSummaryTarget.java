@@ -16,10 +16,12 @@ import java.util.Map;
 public class XSummaryTarget extends BISummaryTarget {
     private BISummaryTarget target;
     private GroupValueIndex[] filterIndex;
+    private GroupValueIndex rootIndex;
 
-    public XSummaryTarget(BISummaryTarget target, GroupValueIndex[] filterIndex) {
+    public XSummaryTarget(BISummaryTarget target, GroupValueIndex rootIndex, GroupValueIndex[] filterIndex) {
         this.target = target;
         this.filterIndex = filterIndex;
+        this.rootIndex = rootIndex;
     }
 
     @Override
@@ -35,6 +37,10 @@ public class XSummaryTarget extends BISummaryTarget {
     @Override
     public TargetCalculator createSummaryCalculator() {
         return new XCalculator(target.createSummaryCalculator(), filterIndex);
+    }
+
+    public GroupValueIndex getRootIndex() {
+        return rootIndex;
     }
 
     @Override

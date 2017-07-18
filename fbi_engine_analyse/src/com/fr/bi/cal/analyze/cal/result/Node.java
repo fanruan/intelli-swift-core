@@ -293,12 +293,18 @@ public class Node implements BINode {
 
 
     public void setTargetIndex(TargetGettingKey key, GroupValueIndex gvi) {
+        if (summaryValue == null || summaryValue.length - 1 < key.getTargetIndex()) {
+            return;
+        }
         if (gvi != null) {
             getIndexValue()[key.getTargetIndex()] = gvi;
         }
     }
 
     public GroupValueIndex getTargetIndex(TargetGettingKey key) {
+        if (summaryValue == null || summaryValue.length - 1 < key.getTargetIndex()) {
+            return null;
+        }
         return getIndexValue()[key.getTargetIndex()];
     }
 

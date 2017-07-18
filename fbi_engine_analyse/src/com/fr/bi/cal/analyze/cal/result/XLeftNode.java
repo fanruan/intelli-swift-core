@@ -52,6 +52,9 @@ public class XLeftNode extends Node implements BIXLeftNode {
     }
 
     private Number getRootValue(TargetGettingKey key) {
+        if (xValue == null || xValue.length - 1 < key.getTargetIndex()) {
+            return null;
+        }
         Number[] xv = xValue[key.getTargetIndex()];
         return xv[xv.length - 1];
     }
@@ -100,14 +103,6 @@ public class XLeftNode extends Node implements BIXLeftNode {
             }
         }
         return jo;
-    }
-
-    public void copyValue(int summaryIndex) {
-        Number[] v = xValue[summaryIndex];
-        v[v.length - 1] = summaryValue[summaryIndex];
-        for (Node c : getChilds()){
-            ((XLeftNode)c).copyValue(summaryIndex);
-        }
     }
 
     public Number[] getSubValues(XTargetGettingKey key) {

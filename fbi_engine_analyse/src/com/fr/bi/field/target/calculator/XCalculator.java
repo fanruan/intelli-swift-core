@@ -28,10 +28,6 @@ public class XCalculator implements TargetCalculator{
         this.topIndex = topIndex;
     }
 
-    public GroupValueIndex getRootFilterIndex(){
-        return topIndex[topIndex.length - 1];
-    }
-
     @Override
     public void doCalculator(ICubeTableService cr, SummaryContainer node, GroupValueIndex gvi, TargetGettingKey key) {
         if (key instanceof XTargetGettingKey && calculator.getCalculatorType() == CalculatorType.SUM_DETAIL){

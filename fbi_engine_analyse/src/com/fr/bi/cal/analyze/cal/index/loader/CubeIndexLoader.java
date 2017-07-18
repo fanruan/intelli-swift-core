@@ -20,7 +20,6 @@ import com.fr.bi.conf.report.widget.field.target.filter.TargetFilter;
 import com.fr.bi.exception.BIMemoryDataOutOfLimitException;
 import com.fr.bi.field.dimension.calculator.DateDimensionCalculator;
 import com.fr.bi.field.dimension.dimension.BIDateDimension;
-import com.fr.bi.field.target.calculator.XCalculator;
 import com.fr.bi.field.target.calculator.cal.CalCalculator;
 import com.fr.bi.field.target.calculator.cal.FormulaCalculator;
 import com.fr.bi.field.target.calculator.sum.CountCalculator;
@@ -532,7 +531,7 @@ public class CubeIndexLoader {
                 TargetGettingKey key = usedTargets[i].createTargetGettingKey();
                 List<GroupValueIndex> filterIndexList = new ArrayList<GroupValueIndex>();
                 createFilterIndexByNode(filterIndexList, node, showSum, key);
-                targets[i] = new XSummaryTarget(usedTargets[i], filterIndexList.toArray(new GroupValueIndex[filterIndexList.size()]));
+                targets[i] = new XSummaryTarget(usedTargets[i], node.getTargetIndex(key), filterIndexList.toArray(new GroupValueIndex[filterIndexList.size()]));
             } else {
                 targets[i] = usedTargets[i];
             }
@@ -553,6 +552,7 @@ public class CubeIndexLoader {
         for (Node n : node.getChilds()) {
             createFilterIndexByNode(filterIndexList, n, showSum, key);
         }
+        //如果是最后一层的节点，或者是超过一个子节点并且显示汇总的就要计算
         if ((node.getChildLength() == 0 || (showSum && node.getTotalLength() != 1))) {
             filterIndexList.add(node.getTargetIndex(key));
         }
@@ -932,8 +932,8 @@ public class CubeIndexLoader {
                 if (widget instanceof TableWidget) {
                     gvi = GVIUtils.AND(gvi, ((TableWidget) widget).createLinkedFilterGVI(targetKey, session));
                 }
-                if (summary instanceof XCalculator) {
-                    gvi = GVIUtils.AND(gvi, ((XCalculator) summary).getRootFilterIndex());
+                if (target instanceof XSummaryTarget) {
+                    gvi = GVIUtils.AND(gvi, ((XSummaryTarget)target).getRootIndex());
                 }
                 metricGroupInfo = new MetricGroupInfo(row, gvi, summary.createTableKey());
                 metricGroupInfo.addTargetAndKey(new TargetAndKey(target.getName(), summary, summary.createTargetGettingKey()));
