@@ -1,6 +1,6 @@
 package com.fr.bi.cal.analyze.report.report.widget;
 
-import com.fr.bi.cal.analyze.report.report.BIWidgetUtils;
+import com.fr.bi.conf.report.widget.BIWidgetUtils;
 import com.fr.bi.conf.report.conf.BIWidgetConfUtils;
 import com.fr.bi.conf.session.BISessionProvider;
 import com.fr.bi.stable.constant.BIReportConstant;
@@ -24,7 +24,7 @@ public class VanChartWidget extends TableWidget {
         }
         JSONObject data = super.createDataJSON(session, req).getJSONObject("data");
 
-        return BIWidgetUtils.generateResult4View(getWidgetConf(), data, this.getUserId());
+        return BIWidgetUtils.generateResult4View(getWidgetConf(), data);
     }
 
 }

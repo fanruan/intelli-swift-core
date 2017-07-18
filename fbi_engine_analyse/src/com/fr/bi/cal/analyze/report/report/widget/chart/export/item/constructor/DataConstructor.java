@@ -2,7 +2,6 @@ package com.fr.bi.cal.analyze.report.report.widget.chart.export.item.constructor
 
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.item.ITableHeader;
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.item.ITableItem;
-import com.fr.bi.conf.report.conf.BIWidgetSettings;
 import com.fr.bi.conf.report.widget.BIWidgetStyle;
 import com.fr.json.JSONCreator;
 
