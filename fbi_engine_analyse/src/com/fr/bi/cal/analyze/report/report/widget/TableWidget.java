@@ -22,14 +22,14 @@ import com.fr.bi.cal.analyze.report.report.widget.chart.export.format.setting.BI
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.format.setting.ICellFormatSetting;
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.item.constructor.DataConstructor;
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.utils.BITableConstructHelper;
-import com.fr.bi.cal.analyze.report.report.widget.style.BITableWidgetStyle;
+import com.fr.bi.conf.report.conf.BIWidgetSettings;
 import com.fr.bi.cal.analyze.report.report.widget.table.BITableReportSetting;
 import com.fr.bi.cal.analyze.session.BISession;
 import com.fr.bi.common.persistent.annotation.PersistNameHistory;
 import com.fr.bi.common.persistent.xml.BIIgnoreField;
 import com.fr.bi.conf.report.WidgetType;
-import com.fr.bi.conf.report.style.DetailChartSetting;
-import com.fr.bi.conf.report.widget.IWidgetStyle;
+import com.fr.bi.conf.report.conf.BIWidgetConf;
+import com.fr.bi.conf.report.widget.BIWidgetStyle;
 import com.fr.bi.conf.report.widget.field.BITargetAndDimension;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.conf.report.widget.field.target.BITarget;
@@ -93,8 +93,6 @@ public class TableWidget extends BISummaryWidget {
     @BIIgnoreField
     private transient BISummaryTarget[] usedTargets;
 
-    private DetailChartSetting settings = new DetailChartSetting();
-
     protected Map<String, JSONArray> clicked = new HashMap<String, JSONArray>();
 
     protected Map<String, BIDimension> dimensionsIdMap = new HashMap<String, BIDimension>();
@@ -102,8 +100,6 @@ public class TableWidget extends BISummaryWidget {
     private Map<String, BISummaryTarget> targetsIdMap = new HashMap<String, BISummaryTarget>();
 
     protected Map<Integer, List<String>> view = new HashMap<Integer, List<String>>();
-
-    private BITableWidgetStyle style;
 
     @Override
     public void setPageSpinner(int index, int value) {
@@ -186,8 +182,7 @@ public class TableWidget extends BISummaryWidget {
      */
     @Override
     public int isOrder() {
-
-        return settings.isOrder();
+        return getWidgetConf().isOrder();
     }
 
     public BIEngineExecutor getExecutor(BISession session) {
@@ -331,10 +326,6 @@ public class TableWidget extends BISummaryWidget {
         if (jo.has(BIJSONConstant.JSON_KEYS.EXPANDER)) {
             parsExpander(jo);
         }
-        if (jo.has("settings")) {
-            settings = new DetailChartSetting();
-            settings.parseJSON(jo);
-        }
         if (jo.has("clicked")) {
             JSONObject c = jo.getJSONObject("clicked");
             Iterator it = c.keys();
@@ -345,13 +336,6 @@ public class TableWidget extends BISummaryWidget {
         }
         changeCalculateTargetStartGroup();
         createDimensionAndTargetMap();
-        createWidgetStyles(jo);
-    }
-
-    private void createWidgetStyles(JSONObject jo) throws Exception {
-
-        style = new BITableWidgetStyle();
-        style.parseJSON(jo);
     }
 
     private void createDimAndTars(JSONObject jo) throws Exception {
@@ -422,11 +406,6 @@ public class TableWidget extends BISummaryWidget {
         }
     }
 
-    public BITableWidgetStyle getWidgetStyle() {
-
-        return style;
-    }
-
     public String getDimensionName(String id) {
 
         BISummaryTarget target = this.targetsIdMap.get(id);
@@ -443,11 +422,6 @@ public class TableWidget extends BISummaryWidget {
 
         }
         return dimensionIds.toArray(new String[0]);
-    }
-
-    public DetailChartSetting getChartSetting() {
-
-        return settings;
     }
 
     public String[] getAllDimensionIds() {
@@ -505,13 +479,13 @@ public class TableWidget extends BISummaryWidget {
 
     public boolean showRowToTal() {
 
-        return settings.showRowTotal();
+        return getWidgetSettings().isShowRowTotal();
     }
 
     @Override
     public boolean showColumnTotal() {
 
-        return settings.showColTotal();
+        return getWidgetSettings().isShowColTotal();
     }
 
     @Override
@@ -638,17 +612,17 @@ public class TableWidget extends BISummaryWidget {
         IExcelDataBuilder builder = null;
         switch (this.tableType) {
             case BIReportConstant.TABLE_WIDGET.CROSS_TYPE:
-                builder = new SummaryCrossTableDataBuilder(viewMap, dataJSON, style);
+                builder = new SummaryCrossTableDataBuilder(viewMap, dataJSON, getWidgetSettings());
                 break;
             case BIReportConstant.TABLE_WIDGET.GROUP_TYPE:
-                builder = new SummaryGroupTableDataBuilder(viewMap, dataJSON, style);
+                builder = new SummaryGroupTableDataBuilder(viewMap, dataJSON, getWidgetSettings());
                 break;
             case BIReportConstant.TABLE_WIDGET.COMPLEX_TYPE:
-                builder = new SummaryComplexTableBuilder(viewMap, dataJSON, style);
+                builder = new SummaryComplexTableBuilder(viewMap, dataJSON, getWidgetSettings());
                 break;
         }
         DataConstructor data = BITableConstructHelper.buildTableData(builder);
-        BITableConstructHelper.formatCells(data, getITableCellFormatOperationMap(), style);
+        BITableConstructHelper.formatCells(data, getITableCellFormatOperationMap(), getWidgetSettings());
         return data.createJSON().put("page", res.getJSONArray("page")).put("viewDimensionsLength", getViewDimensions().length).put("viewTopDimensionsLength", getViewTopDimensions().length).put("widgetType", this.tableType);
     }
 
@@ -753,11 +727,6 @@ public class TableWidget extends BISummaryWidget {
             dimAndTar.put(next, list);
         }
         return dimAndTar;
-    }
-
-    public IWidgetStyle getStyle() {
-
-        return style;
     }
 
     /**

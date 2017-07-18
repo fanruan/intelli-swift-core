@@ -8,8 +8,6 @@ import com.finebi.cube.relation.BITableSourceRelation;
 import com.fr.bi.base.BICore;
 import com.fr.bi.base.BICoreGenerator;
 import com.fr.bi.base.annotation.BICoreField;
-import com.fr.bi.cal.analyze.executor.BIEngineExecutor;
-import com.fr.bi.cal.analyze.executor.table.AbstractTableWidgetExecutor;
 import com.fr.bi.cal.analyze.report.report.BIWidgetFactory;
 import com.fr.bi.cal.analyze.session.BISession;
 import com.fr.bi.cal.report.main.impl.BIWorkBook;
@@ -17,7 +15,8 @@ import com.fr.bi.cal.report.report.poly.BIPolyWorkSheet;
 import com.fr.bi.conf.base.auth.data.BIPackageAuthority;
 import com.fr.bi.conf.provider.BIConfigureManagerCenter;
 import com.fr.bi.conf.report.BIWidget;
-import com.fr.bi.conf.report.widget.IWidgetStyle;
+import com.fr.bi.conf.report.conf.BIWidgetConf;
+import com.fr.bi.conf.report.conf.BIWidgetSettings;
 import com.fr.bi.conf.report.widget.field.BITargetAndDimension;
 import com.fr.bi.conf.report.widget.field.target.filter.TargetFilter;
 import com.fr.bi.conf.session.BISessionProvider;
@@ -28,7 +27,6 @@ import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.report.result.DimensionCalculator;
 import com.fr.fs.control.UserControl;
 import com.fr.json.JSONArray;
-import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
 import com.fr.main.impl.WorkBook;
 import com.fr.report.poly.TemplateBlock;
@@ -71,6 +69,9 @@ public abstract class AbstractBIWidget implements BIWidget {
     private boolean realData = true;
 
     private String sessionId;
+
+    @BICoreField
+    private BIWidgetConf widgetConf = new BIWidgetConf();
 
     /**
      * 跳转组件
@@ -211,21 +212,11 @@ public abstract class AbstractBIWidget implements BIWidget {
     @Override
     public void parseJSON(JSONObject jo, long userId) throws Exception {
 
-        int x = 0, y = 0, width = 0, height = 0;
-        if (jo.has("bounds")) {
-            JSONObject bounds = jo.getJSONObject("bounds");
-            x = bounds.optInt("left", 0);
-            y = bounds.optInt("top", 0);
-            width = bounds.optInt("width", 0);
-            height = bounds.optInt("height", 0);
-        }
-        rect.setBounds(x, y, width, height);
-        if (jo.has("name")) {
-            this.blockName = jo.getString("name");
-        }
-        if (jo.has("wId")) {
-            this.widgetId = jo.getString("wId");
-        }
+        widgetConf.parseJSON(jo);
+
+        blockName = widgetConf.getWidgetName();
+        widgetId = widgetConf.getWId();
+
         if (jo.has("filter")) {
             JSONObject filterJo = jo.getJSONObject("filter");
             filter = TargetFilterFactory.parseFilter(filterJo, userId);
@@ -349,14 +340,7 @@ public abstract class AbstractBIWidget implements BIWidget {
 
     @Override
     public Rectangle getRect() {
-
-        return rect;
-    }
-
-
-    public IWidgetStyle getStyle() {
-
-        return null;
+        return widgetConf.getRect();
     }
 
     public JSONObject getPostOptions(BISessionProvider session, HttpServletRequest req) throws Exception {
@@ -445,5 +429,17 @@ public abstract class AbstractBIWidget implements BIWidget {
         return null;
     }
 
+    public BIWidgetConf getWidgetConf() {
+        return widgetConf;
+    }
 
+
+    public BIWidgetSettings getWidgetSettings () {
+        return widgetConf.getWidgetSettings();
+    }
+
+    @Override
+    public JSONObject generateResult(BIWidgetConf widgetConf, JSONObject data) throws Exception {
+        return null;
+    }
 }
