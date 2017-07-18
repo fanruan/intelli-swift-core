@@ -451,22 +451,6 @@ public class CrossExecutor extends AbstractTableWidgetExecutor<NewCrossRoot> {
         return getCubeNode().toJSONObject(rowDimension, colDimension, widget.getTargetsKey());
     }
 
-    @Override
-    public List<MetricGroupInfo> getLinkedWidgetFilterGVIList() throws Exception {
-
-        if (getSession() == null) {
-            return null;
-        }
-        int calPage = paging.getOperator();
-        List<NodeAndPageInfo> infoList = CubeIndexLoader.getInstance(session.getUserId()).getPageCrossGroupInfoList(createTarget4Calculate(), rowDimension, colDimension, allSumTarget, calPage, widget.useRealData(), session, expander, widget);
-        ArrayList<MetricGroupInfo> gviList = new ArrayList<MetricGroupInfo>();
-        for (NodeAndPageInfo info : infoList) {
-            gviList.addAll(info.getIterator().getRoot().getMetricGroupInfoList());
-        }
-        return gviList;
-
-    }
-
     private void clearNullSummary(CrossHeader left, TargetGettingKey[] keys) {
 
         for (TargetGettingKey key : keys) {
@@ -479,7 +463,7 @@ public class CrossExecutor extends AbstractTableWidgetExecutor<NewCrossRoot> {
         }
     }
 
-    public GroupValueIndex getClieckGvi(Map<String, JSONArray> clicked, BusinessTable targetKey) {
+    public GroupValueIndex getClickGvi(Map<String, JSONArray> clicked, BusinessTable targetKey) {
 
         GroupValueIndex linkGvi = null;
         try {
@@ -490,7 +474,7 @@ public class CrossExecutor extends AbstractTableWidgetExecutor<NewCrossRoot> {
             }
             BISummaryTarget summaryTarget = widget.getBITargetByID(target);
             BusinessTable linkTargetTable = summaryTarget.createTableKey();
-            // 基础表相同才进行比较
+            // 需要判断且具有相同基础表才进行比较
             if (!targetKey.equals(linkTargetTable)) {
                 return null;
             }

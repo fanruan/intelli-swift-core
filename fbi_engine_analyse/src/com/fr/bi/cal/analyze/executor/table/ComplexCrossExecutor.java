@@ -232,7 +232,7 @@ public class ComplexCrossExecutor extends AbstractTableWidgetExecutor<NewCrossRo
         return nodeMap;
     }
 
-    public GroupValueIndex getClieckGvi(Map<String, JSONArray> clicked, BusinessTable targetKey) {
+    public GroupValueIndex getClickGvi(Map<String, JSONArray> clicked, BusinessTable targetKey) {
 
         GroupValueIndex linkGvi = null;
         try {
