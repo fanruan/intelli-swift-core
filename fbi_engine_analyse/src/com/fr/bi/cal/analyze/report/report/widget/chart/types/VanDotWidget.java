@@ -237,16 +237,7 @@ public class VanDotWidget extends VanCartesianWidget{
             return JSONArray.create();
         }
 
-        boolean noSeries = true;
-        for(String id : this.seriesIDs){
-            for (BIDimension dimension : getDimensions()) {
-                if (ComparatorUtils.equals(dimension.getId(), id) && dimension.isUsed()) {
-                    noSeries = false;
-                }
-            }
-        }
-
-        return createDotSeries(noSeries, originData);
+        return createDotSeries(getSeriesDimension() == null, originData);
     }
 
     private JSONArray createDotSeries(boolean noSeries, JSONObject originData) throws JSONException{
@@ -540,6 +531,17 @@ public class VanDotWidget extends VanCartesianWidget{
         }
 
         return datum;
+    }
+
+    public BIDimension getSeriesDimension() {
+        for(String id : this.seriesIDs){
+            for (BIDimension dimension : getDimensions()) {
+                if (ComparatorUtils.equals(dimension.getId(), id) && dimension.isUsed()) {
+                    return dimension;
+                }
+            }
+        }
+        return null;
     }
 
     protected JSONObject defaultDataLabelSetting() throws JSONException {
