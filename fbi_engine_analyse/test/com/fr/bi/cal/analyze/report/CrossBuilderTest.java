@@ -2,7 +2,6 @@ import com.fr.bi.cal.analyze.report.report.widget.chart.export.calculator.IExcel
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.calculator.SummaryCrossTableDataBuilder;
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.item.constructor.DataConstructor;
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.utils.BITableConstructHelper;
-import com.fr.bi.cal.analyze.report.report.widget.style.BITableWidgetStyle;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.json.JSONObject;
 import junit.framework.TestCase;
