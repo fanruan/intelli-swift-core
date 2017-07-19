@@ -95,16 +95,16 @@ public class ComplexHorGroupExecutor extends AbstractTableWidgetExecutor {
     private void generateTitle(Node[] nodes, TableWidget widget, BIComplexExecutData rowData, StreamPagedIterator pagedIterator) {
 
         int maxRowDimLen = rowData.getMaxArrayLength();
-        if (widget.isOrder() == 1) {
-            CBCell cell = ExecutorUtils.createTitleCell(Inter.getLocText("BI-Number_Index"), 0, maxRowDimLen, 0, 1);
-            pagedIterator.addCell(cell);
-        }
+//        if (widget.isOrder() == 1) {
+//            CBCell cell = ExecutorUtils.createTitleCell(Inter.getLocText("BI-Number_Index"), 0, maxRowDimLen, 0, 1);
+//            pagedIterator.addCell(cell);
+//        }
         int colDimIdx = 0;
         int firstColumnDimLen = rowData.getDimensionArray(0).length;
         //一行一行的生成单元格，按列表头区域维度最多的个数来确定行数
         while (colDimIdx < maxRowDimLen) {
             FinalInt columnIdx = new FinalInt();
-            columnIdx.value += widget.isOrder();
+//            columnIdx.value += widget.isOrder();
             //列表头中第一个维度的维度名显示在行的开头
             if (firstColumnDimLen > colDimIdx) {
                 int rowSpan = firstColumnDimLen - 1 == colDimIdx ? maxRowDimLen - colDimIdx : 1;
@@ -158,14 +158,15 @@ public class ComplexHorGroupExecutor extends AbstractTableWidgetExecutor {
 
         for (int i = 0; i < usedSumTarget.length; i++) {
             FinalInt columnIdx = new FinalInt();
-            columnIdx.value += widget.isOrder() + 1;
+//            columnIdx.value += widget.isOrder() + 1;
+            columnIdx.value ++;
             Style headStyle = BITableStyle.getInstance().getDimensionCellStyle(false, (i + 1) % 2 == 1);
-            if (widget.isOrder() == 1) {
-                CBCell orderCell = ExecutorUtils.createValueCell(i + 1, rowIdx + i, 1, 0, 1, headStyle, rowIdx + i % 2 == 1);
-                pagedIterator.addCell(orderCell);
-            }
+//            if (widget.isOrder() == 1) {
+//                CBCell orderCell = ExecutorUtils.createValueCell(i + 1, rowIdx + i, 1, 0, 1, headStyle, rowIdx + i % 2 == 1);
+//                pagedIterator.addCell(orderCell);
+//            }
             Object targetName = usedSumTarget[i].getText();
-            CBCell targetNameCell = ExecutorUtils.createValueCell(targetName, rowIdx + i, 1, widget.isOrder(), 1, headStyle, rowIdx + i % 2 == 1);
+            CBCell targetNameCell = ExecutorUtils.createValueCell(targetName, rowIdx + i, 1, 0, 1, headStyle, rowIdx + i % 2 == 1);
             pagedIterator.addCell(targetNameCell);
             for (int k = 0, j = nodes.length; k < j; k++) {
                 Node temp = nodes[k];

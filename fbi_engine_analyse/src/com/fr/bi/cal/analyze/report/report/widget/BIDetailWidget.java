@@ -285,7 +285,7 @@ public class BIDetailWidget extends AbstractBIWidget {
 
     @Override
     public int isOrder() {
-        return data.isOrder();
+        return widgetStyle.isShowNumber() ? 1 : 0;
     }
 
     public String[] getView() {

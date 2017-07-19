@@ -16,7 +16,6 @@ import com.fr.bi.cal.analyze.executor.utils.ExecutorUtils;
 import com.fr.bi.cal.analyze.report.report.widget.TableWidget;
 import com.fr.bi.cal.analyze.session.BISession;
 import com.fr.bi.cal.report.engine.CBCell;
-import com.fr.bi.conf.report.style.BITableStyle;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.field.target.target.BICounterTarget;
 import com.fr.bi.field.target.target.BINumberTarget;
@@ -88,7 +87,7 @@ public class GroupExecutor extends AbstractTableWidgetExecutor<Node> {
                 try {
                     //start 存页码信息
                     FinalInt start = new FinalInt();
-                    generateTitle(widget, usedDimensions, usedSumTarget, iter.getIteratorByPage(start.value));
+                    generateHeader(widget, usedDimensions, usedSumTarget, iter.getIteratorByPage(start.value), usedDimensions.length);
                     generateCells(tree, widget, widget.getViewDimensions(), iter, start, new FinalInt(), usedDimensions.length);
                 } catch (Exception e) {
                     BILoggerFactory.getLogger().error(e.getMessage(), e);
@@ -106,16 +105,20 @@ public class GroupExecutor extends AbstractTableWidgetExecutor<Node> {
      * @param pagedIterator
      * @throws Exception
      */
-    public static void generateTitle(TableWidget widget, BIDimension[] usedDimensions, BISummaryTarget[] usedSumTarget, StreamPagedIterator pagedIterator) throws Exception {
+    public static void generateHeader(TableWidget widget, BIDimension[] usedDimensions, BISummaryTarget[] usedSumTarget, StreamPagedIterator pagedIterator, int maxRowDimensionsLength) throws Exception {
 
         int columnIdx = 0;
-        if(widget.isOrder() == 1) {
-            CBCell cell = ExecutorUtils.createTitleCell(Inter.getLocText("BI-Number_Index"), 0, 1, columnIdx++, 1);
+//        if (widget.isOrder() == 1) {
+//            CBCell cell = ExecutorUtils.createTitleCell(Inter.getLocText("BI-Number_Index"), 0, 1, columnIdx++, 1);
+//            pagedIterator.addCell(cell);
+//        }
+        for (int i = 0; i < usedDimensions.length; i++) {
+            //复杂表 行表头 区域1有2两个维度、区域2有3个维度，区域1里最后一个维度的columnSpan需要特殊处理
+            int columnSpanOffSet = i == usedDimensions.length - 1 ? maxRowDimensionsLength - usedDimensions.length : 0;
+            CBCell cell = ExecutorUtils.createTitleCell(usedDimensions[i].getText(), 0, 1, columnIdx++, columnSpanOffSet + 1);
             pagedIterator.addCell(cell);
-        }
-        for (BIDimension usedDimension : usedDimensions) {
-            CBCell cell = ExecutorUtils.createTitleCell(usedDimension.getText(), 0, 1, columnIdx++, 1);
-            pagedIterator.addCell(cell);
+            //指标标题偏移
+            columnIdx += columnSpanOffSet;
         }
         for (BISummaryTarget anUsedSumTarget : usedSumTarget) {
             int numLevel = widget.getChartSetting().getNumberLevelByTargetId(anUsedSumTarget.getId());
@@ -137,7 +140,7 @@ public class GroupExecutor extends AbstractTableWidgetExecutor<Node> {
      * @param rowIdx                 ComplexGroupExecutor复用时需要的参数
      * @param maxRowDimensionsLength ComplexGroupExecutor复用时需要的参数,
      */
-    public static void generateCells(Node n, TableWidget widget, BIDimension[] rowDimensions, TableCellIterator iter,FinalInt start, FinalInt rowIdx, int maxRowDimensionsLength) {
+    public static void generateCells(Node n, TableWidget widget, BIDimension[] rowDimensions, TableCellIterator iter, FinalInt start, FinalInt rowIdx, int maxRowDimensionsLength) {
 
         while (n.getFirstChild() != null) {
             n = n.getFirstChild();
@@ -153,11 +156,13 @@ public class GroupExecutor extends AbstractTableWidgetExecutor<Node> {
                     iter.getIteratorByPage(start.value).finish();
                     start.value++;
                 }
-                StreamPagedIterator pagedIterator = iter.getIteratorByPage(rowIdx.value);
+                StreamPagedIterator pagedIterator = iter.getIteratorByPage(start.value);
+                //分组表维度需要合并单元格
                 generateDimNames(temp, widget, rowDimensions, dimensionNames, oddEven, pagedIterator, rowIdx.value, maxRowDimensionsLength);
                 generateTargetCells(temp, widget, pagedIterator, rowIdx.value, false, maxRowDimensionsLength);
-                if(widget.showRowToTal()) {
-                    generateSumCells(temp, widget, pagedIterator, rowIdx, maxRowDimensionsLength - 1, maxRowDimensionsLength);
+                if (widget.showRowToTal()) {
+                    int columnSpanOffSet = maxRowDimensionsLength - rowDimensions.length + 1;
+                    generateSumCells(temp, widget, pagedIterator, rowIdx, maxRowDimensionsLength - columnSpanOffSet, maxRowDimensionsLength);
                 }
             }
             n = n.getSibling();
@@ -172,11 +177,11 @@ public class GroupExecutor extends AbstractTableWidgetExecutor<Node> {
         if ((widget.getViewTargets().length != 0) && checkIfGenerateSumCell(temp)) {
             if (temp.getParent().getChildLength() != 1) {
                 rowIdx.value++;
-                if (widget.isOrder() == 1 && temp.getSibling() == null) {
-                    CBCell cell = ExecutorUtils.createTitleCell(Inter.getLocText("BI-Summary_Values"), rowIdx.value, 1, 0, 1);
-                    pagedIterator.addCell(cell);
-                }
-                CBCell cell = ExecutorUtils.createTitleCell(Inter.getLocText("BI-Summary_Values"), rowIdx.value, 1, columnIdx + widget.isOrder(), maxRowDimensionsLength - columnIdx);
+//                if (widget.isOrder() == 1 && temp.getSibling() == null) {
+//                    CBCell cell = ExecutorUtils.createTitleCell(Inter.getLocText("BI-Summary_Values"), rowIdx.value, 1, 0, 1);
+//                    pagedIterator.addCell(cell);
+//                }
+                CBCell cell = ExecutorUtils.createTitleCell(Inter.getLocText("BI-Summary_Values"), rowIdx.value, 1, columnIdx, maxRowDimensionsLength - columnIdx);
                 pagedIterator.addCell(cell);
                 generateTargetCells(temp.getParent(), widget, pagedIterator, rowIdx.value, true, maxRowDimensionsLength);
             }
@@ -220,7 +225,7 @@ public class GroupExecutor extends AbstractTableWidgetExecutor<Node> {
         //维度第一次出现即addCell
         int i = rowDimensions.length;
         while (temp.getParent() != null) {
-            int rowSpan = widget.showRowToTal() ? temp.getTotalLengthWithSummary() : temp.getTotalLength();
+            int rowSpan = widget.showRowToTal() ? temp.getTotalLengthWithSummary() : temp.getTotalLength() + maxRowDimensionsLength;
             BIDimension dim = rowDimensions[--i];
             String data = dim.toString(temp.getData());
             //年月日字段格式化
@@ -230,7 +235,8 @@ public class GroupExecutor extends AbstractTableWidgetExecutor<Node> {
             Object v = dim.getValueByType(data);
             if (v != dimensionNames[i] || (i == rowDimensions.length - 1)) {
                 oddEven[i]++;
-                CBCell cell = ExecutorUtils.createValueCell(v, rowIdx, rowSpan, i, 1, Style.getInstance(), rowIdx % 2 == 1);
+                int columnSpanOffSet = i == rowDimensions.length - 1 ? maxRowDimensionsLength - rowDimensions.length : 0;
+                CBCell cell = ExecutorUtils.createValueCell(v, rowIdx, rowSpan, i, 1 + columnSpanOffSet, Style.getInstance(), rowIdx % 2 == 1);
                 pagedIterator.addCell(cell);
                 dimensionNames[i] = v;
             }

@@ -40,6 +40,7 @@ import com.fr.general.GeneralUtils;
 import com.fr.general.Inter;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;
+import com.fr.stable.Constants;
 import com.fr.stable.StringUtils;
 
 import java.util.*;
@@ -105,7 +106,7 @@ public abstract class AbstractDetailExecutor extends BIAbstractExecutor<JSONObje
         return currentGvi;
     }
 
-    private GroupValueIndex getLinkFilter(GroupValueIndex gvi) throws Exception{
+    private GroupValueIndex getLinkFilter(GroupValueIndex gvi) throws Exception {
         if (widget.getLinkWidget() != null && widget.getLinkWidget() instanceof TableWidget) {
             // 判断两个表格的基础表是否相同
             BusinessTable widgetTargetTable = widget.getTargetDimension();
@@ -150,20 +151,21 @@ public abstract class AbstractDetailExecutor extends BIAbstractExecutor<JSONObje
 
 
     //创建一个数字格
-    private void createNumberCellElement(StreamPagedIterator iter, int rowIndex, int row) {
-        CBCell cell = ExecutorUtils.createValueCell(rowIndex, row, 1, 0, 1, Style.getInstance(), rowIndex % 2 == 1);
+    private CBCell createNumberCellElement(int rowIndex, int row) {
+        CBCell cell = ExecutorUtils.createValueCell(rowIndex, row, 1, 0, 1, Style.getInstance().deriveHorizontalAlignment(Constants.LEFT), rowIndex % 2 == 1);
         List tcellList = new ArrayList();
         tcellList.add(cell);
         CBBoxElement cbox = new CBBoxElement(tcellList);
         cell.setBoxElement(cbox);
-        iter.addCell(cell);
+        return cell;
     }
 
     protected void fillOneLine(StreamPagedIterator iter, int row, Object[] ob, int rowNumber, Set<Integer> usedDimensionIndexes) {
-        if (widget.isOrder() > 0) {
-            createNumberCellElement(iter, rowNumber, row);
-        }
+//        if (widget.isOrder() > 0) {
+//            iter.addCell(createNumberCellElement(rowNumber, row));
+//        }
 
+//        int columnIndex = widget.isOrder();
         int columnIndex = 0;
         for (int i = 0; i < viewDimension.length; i++) {
             if (usedDimensionIndexes.contains(i)) {
@@ -206,19 +208,14 @@ public abstract class AbstractDetailExecutor extends BIAbstractExecutor<JSONObje
         }
     }
 
-    protected List<CBCell> createCellTitle(int cellType, Set<Integer> usedDimensionIndexes) {
+    protected List<CBCell> createHeader(int cellType, Set<Integer> usedDimensionIndexes) {
         List<CBCell> cells = new LinkedList<CBCell>();
         BIDetailTarget[] viewDimension = widget.getViewDimensions();
+        int columnIdx = 0;
 //        if (widget.isOrder() > 0) {
-//            CBCell cell = ExecutorUtils.createCell(Inter.getLocText("BI-Number_Index"), 0, 1, 0, 1, Style.getInstance());
-//            List cellList = new ArrayList();
-//            cellList.add(cell);
-//            CBBoxElement cbox = new CBBoxElement(cellList);
-//            cbox.setType(cellType);
-//            cell.setBoxElement(cbox);
+//            CBCell cell = ExecutorUtils.createTitleCell(Inter.getLocText("BI-Number_Index"), 0, 1, columnIdx++, 1);
 //            cells.add(cell);
 //        }
-        int columnIndex = 0;
         for (int i = 0; i < viewDimension.length; i++) {
             if (usedDimensionIndexes.contains(i)) {
                 BIDetailTarget dimension = viewDimension[i];
@@ -239,7 +236,7 @@ public abstract class AbstractDetailExecutor extends BIAbstractExecutor<JSONObje
                         dimensionName = dimensionName + "(" + levelAndUnit + ")";
                     }
                 }
-                CBCell cell = ExecutorUtils.createTitleCell(dimensionName, 0, 1, columnIndex++, 1);
+                CBCell cell = ExecutorUtils.createTitleCell(dimensionName, 0, 1, columnIdx++, 1);
                 List cellList = new ArrayList();
                 cellList.add(cell);
                 CBBoxElement cbox = new CBBoxElement(cellList);

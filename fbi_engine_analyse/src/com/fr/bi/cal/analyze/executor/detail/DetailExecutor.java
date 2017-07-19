@@ -65,7 +65,7 @@ public class DetailExecutor extends AbstractDetailExecutor {
             public void run() {
                 try {
                     final FinalInt start = new FinalInt();
-                    List<CBCell> cells = createCellTitle(CellConstant.CBCELL.TARGETTITLE_Y, usedDimensionIndexes);
+                    List<CBCell> cells = createHeader(CellConstant.CBCELL.TARGETTITLE_Y, usedDimensionIndexes);
                     Iterator<CBCell> it = cells.iterator();
                     while (it.hasNext()) {
                         iter.getIteratorByPage(start.value).addCell(it.next());
