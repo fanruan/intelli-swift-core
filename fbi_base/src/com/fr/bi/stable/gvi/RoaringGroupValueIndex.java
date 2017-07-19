@@ -174,8 +174,13 @@ public class RoaringGroupValueIndex extends AbstractGroupValueIndex {
 
 	@Override
 	//TODOiteartor 需要改成非iterator 模板
-	public void Traversal(SingleRowTraversalAction action) {
-        bitmap.forEach((IntConsumer) i -> action.actionPerformed(i));
+	public void Traversal(final SingleRowTraversalAction action) {
+        bitmap.forEach(new IntConsumer() {
+			@Override
+			public void accept(int i) {
+				action.actionPerformed(i);
+			}
+		});
 	}
 
 	@Override
