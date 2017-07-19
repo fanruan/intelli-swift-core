@@ -25,9 +25,9 @@ public class ExecutorUtils {
     static final int MILLION = 1000000;
     static final int YI = 100000000;
     static final Color BORDER_COLOR = new Color(0xeaeaea);
-    static final Color ODD_Color = new Color(0xe0f1fa);
-    static final Color EVEN_Color = new Color(0xf7fbfd);
-    static final Color TITLE_BGColor = new Color(101, 188, 231);
+    static final Color ODD_COLOR = new Color(0xe0f1fa);
+    static final Color EVEN_COLOR = new Color(0xf7fbfd);
+    static final Color TITLE_BGCOLOR = new Color(101, 188, 231);
     static final Color TITLE_COLOR = new Color(255, 255, 255);
 
 
@@ -120,7 +120,7 @@ public class ExecutorUtils {
 
     public static CBCell createValueCell(Object v, int rowIdx, int rowSpan, int columnIdx, int columnSpan, Style style, boolean isOdd) {
         CBCell cell = createCell(v, rowIdx, rowSpan, columnIdx, columnSpan);
-        cell.setStyle(getStyle(style).deriveBackground(ColorBackground.getInstance(isOdd ? ODD_Color : EVEN_Color)));
+        cell.setStyle(getStyle(style).deriveBackground(ColorBackground.getInstance(isOdd ? ODD_COLOR : EVEN_COLOR)));
         return cell;
     }
 
@@ -128,7 +128,7 @@ public class ExecutorUtils {
         CBCell cell = createCell(v, rowIdx, rowSpan, columnIdx, columnSpan);
         FRFont font = FRFont.getInstance("MicroSoft Yahei", 100, 10);
         font.setForeground(TITLE_COLOR);
-        cell.setStyle(getStyle(Style.getInstance()).deriveBackground(ColorBackground.getInstance(TITLE_BGColor)).deriveFRFont(font));
+        cell.setStyle(getStyle(Style.getInstance()).deriveBackground(ColorBackground.getInstance(TITLE_BGCOLOR)).deriveFRFont(font));
         return cell;
     }
 

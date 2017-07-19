@@ -24,6 +24,7 @@ import com.fr.bi.stable.gvi.GVIUtils;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.io.newio.NIOConstant;
 import com.fr.bi.stable.utils.BICollectionUtils;
+import com.fr.engine.compare.CompareUtils;
 import com.fr.general.ComparatorUtils;
 import com.fr.general.DateUtils;
 import com.fr.general.GeneralUtils;
@@ -218,7 +219,7 @@ public class GroupExecutor extends AbstractTableWidgetExecutor<Node> {
         //维度第一次出现即addCell
         int i = rowDimensions.length;
         while (temp.getParent() != null) {
-            int rowSpan = widget.showRowToTal() ? temp.getTotalLengthWithSummary() : temp.getTotalLength() + maxRowDimensionsLength;
+            int rowSpan = widget.showRowToTal() ? temp.getTotalLengthWithSummary() : temp.getTotalLength();
             BIDimension dim = rowDimensions[--i];
             String data = dim.toString(temp.getData());
             //年月日字段格式化
@@ -226,7 +227,7 @@ public class GroupExecutor extends AbstractTableWidgetExecutor<Node> {
                 data = DateUtils.DATEFORMAT2.format(new Date(GeneralUtils.string2Number(data).longValue()));
             }
             Object v = dim.getValueByType(data);
-            if (v != dimensionNames[i] || (i == rowDimensions.length - 1)) {
+            if (CompareUtils.isEqual(v, dimensionNames[i]) || (i == rowDimensions.length - 1)) {
                 oddEven[i]++;
                 int columnSpanOffSet = i == rowDimensions.length - 1 ? maxRowDimensionsLength - rowDimensions.length : 0;
                 CBCell cell = ExecutorUtils.createValueCell(v, rowIdx, rowSpan, i, 1 + columnSpanOffSet, Style.getInstance(), rowIdx % 2 == 1);
