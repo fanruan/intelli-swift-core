@@ -1,5 +1,6 @@
 package com.fr.bi.stable.gvi;
 
+import com.fr.bi.stable.gvi.roaringbitmap.IntConsumer;
 import com.fr.bi.stable.gvi.roaringbitmap.IntIterator;
 import com.fr.bi.stable.gvi.roaringbitmap.RoaringBitmap;
 import com.fr.bi.stable.gvi.traversal.BrokenTraversalAction;
@@ -174,10 +175,7 @@ public class RoaringGroupValueIndex extends AbstractGroupValueIndex {
 	@Override
 	//TODOiteartor 需要改成非iterator 模板
 	public void Traversal(SingleRowTraversalAction action) {
-		IntIterator iterator = bitmap.getIntIterator();
-		while (iterator.hasNext()) {
-			action.actionPerformed(iterator.next());
-		}
+        bitmap.forEach((IntConsumer) i -> action.actionPerformed(i));
 	}
 
 	@Override
