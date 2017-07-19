@@ -110,7 +110,7 @@ public class FormulaCalculator extends CalCalculator {
         } catch (Throwable e) {
         }
         for (int i = 0, len = node.getChildLength(); i < len; i++) {
-            calCalculateTarget((XLeftNode) node.getChild(i), key);
+            calCalculateTarget((BIXLeftNode) node.getChild(i), key);
         }
     }
 }

@@ -451,7 +451,7 @@ public class CubeIndexLoader {
         XLeftNodeCreator creator = new XLeftNodeCreator(topLen);
         NodeAndPageInfo leftInfo = createPageGroupNode(widget, extendTargets(usedTargets, node, widget.showColumnTotal()), rowDimension, creator, page, expander.getYExpander(),
                 session, createRowOperator(page, widget), pg, true, false);
-        calXCalculateMetrics(usedTargets, (XLeftNode) leftInfo.getNode(), topLen);
+        calXCalculateMetrics(usedTargets, (BIXLeftNode) leftInfo.getNode(), topLen);
         if (usedTargets.length != 0 && isEmpty(leftInfo)) {
             leftInfo.getNode().getChilds().clear();
             leftInfo.setHasNext(false);
@@ -459,7 +459,7 @@ public class CubeIndexLoader {
         return leftInfo;
     }
 
-    public void calXCalculateMetrics(BISummaryTarget[] usedTargets, XLeftNode node, int topLen) {
+    public void calXCalculateMetrics(BISummaryTarget[] usedTargets, BIXLeftNode node, int topLen) {
         List<TargetCalculator> targetCalculators = new ArrayList<TargetCalculator>();
         List<CalCalculator> calculateTargets = new ArrayList<CalCalculator>();
         addXCalCalculators(usedTargets, calculateTargets, node);
@@ -469,7 +469,7 @@ public class CubeIndexLoader {
         calculateXTargets(targetCalculators, calculateTargets, node, topLen);
     }
 
-    private static void addXCalCalculators(BISummaryTarget[] usedTargets, List<CalCalculator> calCalculateTargets, XLeftNode node) {
+    private static void addXCalCalculators(BISummaryTarget[] usedTargets, List<CalCalculator> calCalculateTargets, BIXLeftNode node) {
 
         for (int i = 0; i < usedTargets.length; i++) {
             BISummaryTarget target = usedTargets[i];
