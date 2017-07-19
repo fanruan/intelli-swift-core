@@ -162,7 +162,7 @@ public class SingleDimensionGroup extends ExecutorPartner implements ILazyExecut
     private boolean isCirCle(DimensionCalculator column) {
         List<BITableSourceRelation> relations = column.getRelationList();
         for (BITableSourceRelation relation : relations) {
-            if (TableSourceUtils.isSelfCirCleSource(relation.getForeignTable()) && TableSourceUtils.isSelfCircleParentField(relation.getForeignTable(), relation.getForeignField())) {
+            if (TableSourceUtils.isSelfCirCleSource(relation.getForeignTable()) && TableSourceUtils.isSelfCircleParentField(relation.getForeignField())) {
                 return true;
             }
         }

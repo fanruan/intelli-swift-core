@@ -549,4 +549,8 @@ public class VanDotWidget extends VanCartesianWidget{
                 .put("textStyle", defaultFont());
 
     }
+
+    protected boolean checkValid(){
+        return this.getTar1Size() >= 2;
+    }
 }

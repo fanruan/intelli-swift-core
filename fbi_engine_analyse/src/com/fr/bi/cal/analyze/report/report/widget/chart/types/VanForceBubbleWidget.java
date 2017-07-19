@@ -66,4 +66,8 @@ public class VanForceBubbleWidget extends VanDotWidget{
     protected boolean customGradientStyleRadio(JSONObject settings) throws JSONException {
         return true;
     }
+
+    protected boolean checkValid(){
+        return this.getDim1Size() > 0 && this.hasTarget();
+    }
 }
