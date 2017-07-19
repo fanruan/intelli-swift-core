@@ -192,4 +192,8 @@ public class VanMapWidget extends VanChartWidget{
         return JSONObject.create().put("fontFamily", "Microsoft YaHei").put("fontSize", "12px").put("color", "#666666");
     }
 
+    protected boolean checkValid(){
+        return this.getDim1Size() > 0 && this.hasTarget();
+    }
+
 }
