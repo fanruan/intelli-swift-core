@@ -5,7 +5,6 @@ import com.finebi.cube.conf.pack.data.IBusinessPackageGetterService;
 import com.finebi.cube.conf.table.BIBusinessTable;
 import com.finebi.cube.relation.BITableSourceRelation;
 import com.finebi.cube.structure.BICubeRelation;
-import com.finebi.cube.structure.BICubeTablePath;
 import com.fr.bi.conf.data.source.TableSourceUtils;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.bi.stable.data.source.CubeTableSource;
@@ -69,19 +68,9 @@ public class BIRelationHelper {
         return cubeTableSourceSet;
     }
 
-    public static boolean isPathContainsSelfCircle(BICubeTablePath path) {
-        for (BICubeRelation relation : path.getAllRelations()) {
-            BITableSourceRelation tableRelation = getTableRelation(relation);
-            boolean isParentField = TableSourceUtils.isSelfCircleParentField(tableRelation.getForeignTable(), tableRelation.getForeignField());
-            if (isParentField) {
-                return true;
-            }
-        }
-        return false;
-    }
     public static boolean isRelationContainsSelfCircle(BICubeRelation relation ) {
             BITableSourceRelation tableRelation = getTableRelation(relation);
-            boolean isParentField = TableSourceUtils.isSelfCircleParentField(tableRelation.getForeignTable(), tableRelation.getForeignField());
+            boolean isParentField = TableSourceUtils.isSelfCircleParentField(tableRelation.getForeignField());
             if (isParentField) {
                 return true;
             }

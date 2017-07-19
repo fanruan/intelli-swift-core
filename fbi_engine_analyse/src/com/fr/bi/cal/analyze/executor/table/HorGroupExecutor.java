@@ -232,7 +232,7 @@ public class HorGroupExecutor extends AbstractTableWidgetExecutor<Node> {
             // 总汇总值
             if (col == null || col.size() == 0) {
                 for (String key : clicked.keySet()) {
-                    linkGvi = GVIUtils.AND(linkGvi, getTargetIndex(key, linkNode.getTargetIndexValueMap()));
+                    linkGvi = GVIUtils.AND(linkGvi, getTargetIndex(key, linkNode));
                 }
                 return linkGvi;
             }

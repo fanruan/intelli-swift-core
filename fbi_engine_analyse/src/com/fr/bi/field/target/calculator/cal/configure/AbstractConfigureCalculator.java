@@ -2,10 +2,10 @@ package com.fr.bi.field.target.calculator.cal.configure;
 
 import com.fr.bi.field.target.calculator.cal.CalCalculator;
 import com.fr.bi.field.target.target.cal.target.configure.BIConfiguredCalculateTarget;
-import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.report.key.TargetGettingKey;
-import com.fr.bi.report.result.BICrossNode;
+import com.fr.bi.report.key.XTargetGettingKey;
 import com.fr.bi.report.result.BINode;
+import com.fr.bi.stable.constant.BIReportConstant;
 
 import java.util.Set;
 
@@ -49,21 +49,7 @@ public abstract class AbstractConfigureCalculator extends CalCalculator {
     }
 
 
-    protected int getCalDeep(BICrossNode rank_node) {
-        int deep = 0;
-        BICrossNode node = rank_node;
-        while (node.getLeftFirstChild() != null) {
-            deep++;
-            node = node.getLeftFirstChild();
-        }
-        return deep;
-    }
-
     protected int getActualStart_Group(int start_group, BINode rank_node) {
-        return start_group == 0 ? 0 : getCalDeep(rank_node) - 1;
-    }
-
-    protected int getActualStart_Group(int start_group, BICrossNode rank_node) {
         return start_group == 0 ? 0 : getCalDeep(rank_node) - 1;
     }
 
@@ -101,5 +87,24 @@ public abstract class AbstractConfigureCalculator extends CalCalculator {
     public boolean shouldCalculate(BINode cursor_node) {
         return !cursor_node.getChilds().isEmpty();
     }
+
+    /**
+     * 获取要计算的指标的key
+     * @param key
+     * @return
+     */
+    protected TargetGettingKey getTargetGettingKey(XTargetGettingKey key) {
+        return key == null ? createTargetGettingKey() : key;
+    }
+
+    /**
+     * 获取参数的指标的key
+     * @param key
+     * @return
+     */
+    protected TargetGettingKey getCalTargetGettingKey(XTargetGettingKey key) {
+        return key == null ? calTargetKey : new XTargetGettingKey(calTargetKey.getTargetIndex(), key.getSubIndex(), calTargetKey.getTargetName());
+    }
+
 
 }

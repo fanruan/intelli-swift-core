@@ -2,6 +2,7 @@ package com.fr.bi.cal.analyze.cal.sssecret.mergeiter;
 
 import com.fr.bi.cal.analyze.cal.sssecret.MetricMergeResult;
 import com.fr.bi.cal.analyze.cal.sssecret.MetricMergeResultWithGroupIndex;
+import com.fr.bi.cal.analyze.exception.TerminateExecutorException;
 import com.fr.bi.stable.engine.cal.DimensionIterator;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.io.newio.NIOConstant;
@@ -130,8 +131,23 @@ public class MergeIterator implements Iterator<MetricMergeResult> {
             next = returnResultWithGroupIndex ? new MetricMergeResultWithGroupIndex(c, minValue, sumLength, gvis, groupIndex) : new MetricMergeResult(c, minValue, sumLength, gvis);
         }
         moveEntries(array);
+        if (isAllEmpty(gvis) && next != null){
+            moveNext();
+        }
     }
 
+    private boolean isAllEmpty(GroupValueIndex[] para) throws TerminateExecutorException {
+        for (GroupValueIndex gvi : para) {
+            if (!indexIsAllEmpty(gvi)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private boolean indexIsAllEmpty(GroupValueIndex gvi) {
+        return gvi == null || gvi.isAllEmpty();
+    }
     //获取最小值，对应的索引，以及迭代器的序号
     private Object getMinValuePositions(IntArray array, GroupValueIndex[] gvis) {
         Object minValue = null;

@@ -3,6 +3,7 @@ package com.fr.bi.cal.analyze.cal.index.loader;
 import com.finebi.cube.api.ICubeValueEntryGetter;
 import com.finebi.cube.conf.table.BusinessTable;
 import com.fr.bi.cal.analyze.cal.multithread.BIMultiThreadExecutor;
+import com.fr.bi.cal.analyze.cal.result.NodeCreator;
 import com.fr.bi.cal.analyze.cal.sssecret.*;
 import com.fr.bi.cal.analyze.cal.sssecret.diminfo.*;
 import com.fr.bi.cal.analyze.session.BISession;
@@ -47,9 +48,10 @@ public class NodeIteratorCreator {
     protected final boolean setIndex;
     protected final boolean calAllPage;
     protected BIMultiThreadExecutor executor;
+    protected NodeCreator nodeCreator;
     private Map<String, BISummaryTarget> targetIdMap;
 
-    public NodeIteratorCreator(List<MetricGroupInfo> metricGroupInfoList, BIDimension[] rowDimension, BISummaryTarget[] usedTargets, int sumLength, Map<String, DimensionFilter> targetFilterMap, boolean isRealData, BISession session, NameObject targetSort, TargetFilter filter, List<TargetFilter> authFilter, boolean showSum, boolean setIndex, boolean calAllPage, BIMultiThreadExecutor executor) {
+    public NodeIteratorCreator(List<MetricGroupInfo> metricGroupInfoList, BIDimension[] rowDimension, BISummaryTarget[] usedTargets, int sumLength, Map<String, DimensionFilter> targetFilterMap, boolean isRealData, BISession session, NameObject targetSort, TargetFilter filter, List<TargetFilter> authFilter, boolean showSum, boolean setIndex, boolean calAllPage, BIMultiThreadExecutor executor, NodeCreator nodeCreator) {
         this.metricGroupInfoList = metricGroupInfoList;
         this.rowDimension = rowDimension;
         this.usedTargets = usedTargets;
@@ -63,6 +65,7 @@ public class NodeIteratorCreator {
         this.setIndex = setIndex;
         this.calAllPage = calAllPage;
         this.executor = executor;
+        this.nodeCreator = nodeCreator;
         initTargetIdMap();
         checkTargetSort();
         checkTargetFilterMap(targetFilterMap);
@@ -150,7 +153,7 @@ public class NodeIteratorCreator {
 
     //如果参数要求全部计算，或者有需要全部计算的配置类计算
     private boolean isaAllNode() {
-        return calAllPage || hasAllCalculateMetrics(targetIdMap.keySet()) || (hasDimensionRelation() && hasAllNodeDimensionFilter());
+        return calAllPage || hasAllCalculateMetrics(targetIdMap.keySet());
     }
 
     public IRootDimensionGroup createRoot() {
@@ -306,28 +309,6 @@ public class NodeIteratorCreator {
         return false;
     }
 
-    //BI-6715,如果有关联计算，则需要全部计算
-    private boolean hasDimensionRelation() {
-        for (MetricGroupInfo metricGroupInfo : metricGroupInfoList) {
-            for (DimensionCalculator calculator : metricGroupInfo.getRows()) {
-                if (calculator.getRelationList().size() > 0) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
-    private boolean hasAllNodeDimensionFilter() {
-        boolean hasAllNodeFilter = false;
-        for (BIDimension dimension : rowDimension) {
-            if (dimension.getFilter() != null) {
-                hasAllNodeFilter = hasAllNodeFilter || !dimension.getFilter().isSingleNodeFilter();
-            }
-        }
-        return hasAllNodeFilter;
-    }
-
     //获取相关的基本指标（非计算指标）
 
     private void getRelatedNormalIds(String name, Set<String> ids) {
@@ -411,7 +392,7 @@ public class NodeIteratorCreator {
         }
         //是否提前计算了维度过滤
         //如果有配置类计算的过滤，则需要构建完node之后再计算，之前的过滤一个都别动，要不然影响配置类计算的。
-        boolean canPreFilter = hasDimensionInDirectFilter() && !hasAllNodeIndirectDimensionFilter() && !(hasDimensionRelation() && hasAllNodeDimensionFilter());
+        boolean canPreFilter = hasDimensionInDirectFilter() && !hasAllNodeIndirectDimensionFilter();
         ConstructedRootDimensionGroup constructedRootDimensionGroup = createConstructedRootDimensionGroup(canPreFilter);
         //如果没有配置类计算的过滤，并且最后一个维度没有过滤，可以先算一下IndirectFilter
         if (canPreFilter) {
@@ -430,7 +411,7 @@ public class NodeIteratorCreator {
     }
 
     protected ConstructedRootDimensionGroup createConstructedRootDimensionGroup(boolean canPreFilter) {
-        return new ConstructedRootDimensionGroup(metricGroupInfoList, createAllNodeMergeIteratorCreator(), sumLength, session, isRealData, dimensionTargetSort, getCalCalculators(), canPreFilter || !hasDimensionInDirectFilter() ? null : rowDimension, setIndex, hasInSumMetric(), executor, calAllPage);
+        return new ConstructedRootDimensionGroup(metricGroupInfoList, createAllNodeMergeIteratorCreator(), sumLength, session, isRealData, dimensionTargetSort, getCalCalculators(), canPreFilter || !hasDimensionInDirectFilter() ? null : rowDimension, setIndex, hasInSumMetric(), executor, nodeCreator, calAllPage);
     }
 
     /**

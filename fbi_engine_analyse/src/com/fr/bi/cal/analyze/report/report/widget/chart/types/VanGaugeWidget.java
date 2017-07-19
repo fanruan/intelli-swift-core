@@ -210,6 +210,7 @@ public class VanGaugeWidget extends VanCartesianWidget{
             return;
         }
         String name = ser.optString("name");
+        ser.put("name", "");
         JSONArray datas = ser.optJSONArray("data");
         for(int dataIndex = 0, dataCount = datas.length(); dataIndex < dataCount; dataIndex ++) {
             JSONObject point = datas.optJSONObject(dataIndex);
@@ -223,5 +224,9 @@ public class VanGaugeWidget extends VanCartesianWidget{
 
     public String getSeriesType(String dimensionID){
         return "gauge";
+    }
+
+    protected boolean checkValid(){
+        return this.getTar1Size() > 0;
     }
 }
