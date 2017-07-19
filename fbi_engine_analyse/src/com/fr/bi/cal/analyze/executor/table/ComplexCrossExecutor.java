@@ -2,14 +2,17 @@ package com.fr.bi.cal.analyze.executor.table;
 
 import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.conf.table.BusinessTable;
+import com.fr.bi.base.FinalInt;
 import com.fr.bi.cal.analyze.cal.index.loader.CubeIndexLoader;
 import com.fr.bi.cal.analyze.cal.result.*;
+import com.fr.bi.cal.analyze.executor.iterator.StreamPagedIterator;
 import com.fr.bi.cal.analyze.executor.iterator.TableCellIterator;
 import com.fr.bi.cal.analyze.executor.paging.Paging;
 import com.fr.bi.cal.analyze.report.report.widget.TableWidget;
 import com.fr.bi.cal.analyze.session.BISession;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.field.target.target.BISummaryTarget;
+import com.fr.bi.report.key.TargetGettingKey;
 import com.fr.bi.report.result.TargetCalculator;
 import com.fr.bi.stable.gvi.GVIUtils;
 import com.fr.bi.stable.gvi.GroupValueIndex;
@@ -42,7 +45,113 @@ public class ComplexCrossExecutor extends AbstractTableWidgetExecutor<XNode> {
 
     @Override
     public TableCellIterator createCellIterator4Excel() throws Exception {
-        throw new UnsupportedOperationException();
+
+        final Map<Integer, XNode[]> nodesMap = getCubeCrossNodes();
+        if (nodesMap.isEmpty() || nodesMap == null) {
+            return new TableCellIterator(0, 0);
+        }
+        int[] lens = calculateRowAndColumnLen(nodesMap);
+        final TableCellIterator iter = new TableCellIterator(lens[0], lens[1]);
+        new Thread() {
+
+            public void run() {
+
+                try {
+                    FinalInt rowIdx = new FinalInt();
+                    FinalInt start = new FinalInt();
+                    StreamPagedIterator pagedIterator = iter.getIteratorByPage(start.value);
+                    int order = 0;
+                    Iterator<Map.Entry<Integer, XNode[]>> iterator = nodesMap.entrySet().iterator();
+                    int rowDataIdx = 0;
+                    while (iterator.hasNext()) {
+                        Map.Entry<Integer, XNode[]> entry = iterator.next();
+                        XNode[] roots = entry.getValue();
+                        //生成标题
+                        if (rowDataIdx == 0) {
+                            CrossExecutor.generateTitle(roots, widget, columnData.getDimensionArray(0),
+                                    rowData.getDimensionArray(0), usedSumTarget, pagedIterator, rowIdx);
+                            rowIdx.value++;
+                        }
+                        CrossExecutor.generateCells(roots, widget, rowData.getDimensionArray(rowDataIdx),
+                                rowData.getMaxArrayLength(), iter, start, rowIdx, order);
+                        if (rowDataIdx > 0) {
+                            order += nodesMap.get(rowDataIdx - 1)[0].getLeft().getChildLength();
+                        }
+                        rowDataIdx++;
+                    }
+                } catch (Exception e) {
+                    BILoggerFactory.getLogger().error(e.getMessage(), e);
+                } finally {
+                    iter.finish();
+                }
+            }
+        }.start();
+
+        return iter;
+    }
+
+    private int[] calculateRowAndColumnLen(Map<Integer, XNode[]> nodesMap) {
+
+        int len = usedSumTarget.length;
+        TargetGettingKey[] keys = new TargetGettingKey[len];
+        for (int i = 0; i < len; i++) {
+            keys[i] = usedSumTarget[i].createTargetGettingKey();
+        }
+        boolean hasTarget = keys.length != 0;
+        ArrayList<XNode> nodes = new ArrayList<XNode>();
+        Iterator<Map.Entry<Integer, XNode[]>> iterator = nodesMap.entrySet().iterator();
+        ArrayList<Integer> integers = new ArrayList<Integer>();
+        while (iterator.hasNext()) {
+            Map.Entry<Integer, XNode[]> entry = iterator.next();
+            XNode[] roots = entry.getValue();
+            integers.add(entry.getKey());
+            for (int i = 0; i < roots.length; i++) {
+                nodes.add(roots[i]);
+            }
+        }
+        int[] lens = new int[2];
+
+        lens[0] = getTotalNodeColumnLength(nodes, hasTarget) * (Math.max(1, keys.length)) + rowData.getMaxArrayLength();
+        lens[1] = getTotalNodeRowLength(nodes, hasTarget, integers) + columnData.getMaxArrayLength() + 1;
+        return lens;
+    }
+
+    private int getTotalNodeRowLength(ArrayList<XNode> roots, boolean hasTarget, ArrayList<Integer> integers) {
+
+        int count = 0;
+        int columnRegionLength = this.columnData.getDimensionArrayLength();
+
+        for (int i = 0; i < integers.size(); i++) {
+            if (hasTarget) {
+
+                count += roots.get(i * columnRegionLength).getLeft().getTotalLengthWithSummary();
+            } else {
+
+                count += roots.get(i * columnRegionLength).getLeft().getTotalLength();
+            }
+        }
+
+        return count;
+
+    }
+
+    private int getTotalNodeColumnLength(ArrayList<XNode> roots, boolean hasTarget) {
+
+        int count = 0;
+        int columnRegionLength = this.columnData.getDimensionArrayLength();
+
+        for (int i = 0; i < columnRegionLength; i++) {
+            if (hasTarget) {
+
+                count += roots.get(i).getTop().getTotalLengthWithSummary();
+            } else {
+
+                count += roots.get(i).getTop().getTotalLength();
+            }
+        }
+
+        return count;
+
     }
 
     @Override

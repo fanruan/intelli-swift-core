@@ -435,7 +435,7 @@ public class CubeIndexLoader {
         topWidget.getTargetFilterMap().clear();
         List<BISummaryTarget> topTargetList = new ArrayList<BISummaryTarget>();
         for (BISummaryTarget target : usedTargets) {
-            if (target.getType() == TargetType.NORMAL) {
+            if (target.getType() != TargetType.CONFIGURE) {
                 topTargetList.add(target);
             }
         }

@@ -63,6 +63,10 @@ public class XLeftNode extends Node implements BIXLeftNode {
         return xValue[key.getTargetIndex()][key.getSubIndex()];
     }
 
+    public Number[][] getXValue() {
+        return xValue;
+    }
+
     public JSONObject toJSONObject(BIDimension[] dimensions, TargetGettingKey[] keys, Node topIndex, int index) throws JSONException {
         JSONObject jo = JSONObject.create();
         if (index > -1) {
