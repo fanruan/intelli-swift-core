@@ -331,7 +331,7 @@ FIELDS: "fields",
 FIELD: "field",
 ETL_TYPE: "etlType",
 ETL_VALUE: "etlValue",
-TABLE_TYPE: "table_type",
+TABLE_TYPE: "tableType",
 HAS_NEXT: "hasNext"
 }
 
