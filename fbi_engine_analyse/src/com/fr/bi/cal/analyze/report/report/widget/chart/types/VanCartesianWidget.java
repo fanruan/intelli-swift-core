@@ -235,9 +235,10 @@ public abstract class VanCartesianWidget extends VanChartWidget {
         JSONObject options = super.createOptions(globalStyle, data);
         boolean isInverted = this.isInverted();//bar
 
-        options.put("dataSheet", JSONObject.create().put("enabled", settings.optBoolean("showDataTable") && !isInverted)
-                .put("style", this.defaultFont()).put("borderColor", "#dddddd").put("borderWidth", 1));
-
+        if(supportDataSheet()) {
+            options.put("dataSheet", JSONObject.create().put("enabled", settings.optBoolean("showDataTable") && !isInverted)
+                    .put("style", this.defaultFont()).put("borderColor", "#dddddd").put("borderWidth", 1));
+        }
         if(settings.optBoolean("showZoom") && !settings.optBoolean("miniMode")){
             options.put("zoom", JSONObject.create().put("zoomTool", JSONObject.create().put("enabled", !isInverted)).put("zoomType", ""));
         }
@@ -255,6 +256,10 @@ public abstract class VanCartesianWidget extends VanChartWidget {
         this.dealImageFillConditions(options);
 
         return options;
+    }
+
+    protected boolean supportDataSheet() throws Exception{
+        return true;
     }
 
     private void checkMIniMode(JSONArray array, boolean cate) throws JSONException{
