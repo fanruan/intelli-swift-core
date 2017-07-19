@@ -149,17 +149,25 @@ public class VanDotWidget extends VanCartesianWidget{
         int rule = settings.optInt("displayRules");
         if(rule == INTERVAL_RULE){
             legend.put("continuous", false);
-            if(settings.optInt("fixedStyleRadio") == BIChartSettingConstant.SCALE_SETTING.CUSTOM){
+            if(customFixedStyleRadio(settings)){
                 legend.put("range", this.mapStyleToRange(settings.optJSONArray("fixedStyle")));
             }
         }else if(rule != SERIES_RULE){//只能是普通图例的，前台处理好了。如果是可选择的，默认什么都没传过来，默认是渐变色
             legend.put("continuous", true);
-            if(settings.optInt("gradientStyleRadio") == BIChartSettingConstant.SCALE_SETTING.CUSTOM){
+            if(customGradientStyleRadio(settings)){
                 legend.put("range", this.gradualStyleToRange(settings.optJSONArray("gradientStyle")));
             }
         }
 
         return legend;
+    }
+
+    protected boolean customFixedStyleRadio(JSONObject settings) throws JSONException {
+        return settings.optInt("fixedStyleRadio") == BIChartSettingConstant.SCALE_SETTING.CUSTOM;
+    }
+
+    protected boolean customGradientStyleRadio(JSONObject settings) throws JSONException {
+        return settings.optInt("gradientStyleRadio") == BIChartSettingConstant.SCALE_SETTING.CUSTOM;
     }
 
 
