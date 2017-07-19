@@ -39,7 +39,7 @@ public class PeriodConfigureCalculator extends AbstractConfigureCalculator {
 
         if (start_group == 0) {
             //从第几个纬度开始计算
-            int calDeep = deep - 1;
+            int calDeep = (deep == 1 ? deep : deep - 1);
             for (int i = 0; i < calDeep; i++) {
                 if (tempNode.getFirstChild() == null) {
                     break;
