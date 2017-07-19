@@ -11,18 +11,14 @@ import com.fr.bi.cal.analyze.session.BISession;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.conf.report.widget.field.target.BITarget;
 import com.fr.bi.field.target.target.BISummaryTarget;
-import com.fr.bi.report.key.TargetGettingKey;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.general.ComparatorUtils;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;
 
 import java.awt.*;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
+import java.util.*;
 import java.util.List;
-import java.util.Map;
 
 public abstract class AbstractTableWidgetExecutor<T> extends BIAbstractExecutor<T> {
 
@@ -136,14 +132,13 @@ public abstract class AbstractTableWidgetExecutor<T> extends BIAbstractExecutor<
     /**
      * 获取目标的gvi
      * @param target
-     * @param targetIndexs
+     * @param n
      * @return
      */
-    protected GroupValueIndex getTargetIndex(String target, Map<TargetGettingKey, GroupValueIndex> targetIndexs) {
-
-        for (TargetGettingKey k : targetIndexs.keySet()) {
-            if (k.getTargetName().equals(target)) {
-                return targetIndexs.get(k);
+    protected GroupValueIndex getTargetIndex(String target, Node n) {
+        for (BISummaryTarget t : allSumTarget){
+            if (ComparatorUtils.equals(t.getName(), target)){
+                return n.getTargetIndex(t.createTargetGettingKey());
             }
         }
         return null;
@@ -153,7 +148,7 @@ public abstract class AbstractTableWidgetExecutor<T> extends BIAbstractExecutor<
 
         if (n != null) {
             if (data.size() == 0) {
-                return getTargetIndex(target, n.getTargetIndexValueMap());
+                return getTargetIndex(target, n);
             }
             Node parent = n;
             for (int i = 0; i < data.size(); i++) {
@@ -167,7 +162,7 @@ public abstract class AbstractTableWidgetExecutor<T> extends BIAbstractExecutor<
                 }
                 parent = child;
             }
-            return getTargetIndex(target, parent.getTargetIndexValueMap());
+            return getTargetIndex(target, parent);
         }
         return null;
     }
