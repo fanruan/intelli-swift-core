@@ -9,6 +9,7 @@ import com.fr.bi.conf.fs.tablechartstyle.BIChartFontStyleAttr;
 import com.fr.bi.conf.report.WidgetType;
 import com.fr.bi.conf.report.map.BIMapInfoManager;
 import com.fr.bi.conf.report.style.DetailChartSetting;
+import com.fr.bi.conf.report.widget.field.BITargetAndDimension;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.conf.session.BISessionProvider;
 import com.fr.bi.field.target.target.BISummaryTarget;
@@ -95,6 +96,8 @@ public abstract class VanChartWidget extends TableWidget {
     private HashMap<String, ArrayList<Double>> idValueMap = new HashMap<String, ArrayList<Double>>();
 
     private Locale locale;
+
+    private int dim1Size, dim2Size, tar1Size, tar2Size, tar3Size;
 
     //todo:@shine 4.1版本整理一下settings globalstyle plateconfig
     private JSONObject globalStyle;
@@ -332,10 +335,29 @@ public abstract class VanChartWidget extends TableWidget {
         return regionIdMap.get(dimensionID);
     }
 
+    private int getDimSize(JSONObject view, String regionID){
+
+        int used = 0;
+        try {
+            if(view.has(regionID)){
+                JSONArray ids = view.optJSONArray(regionID);
+                for(int i = 0, length = ids.length(); i < length; i++){
+                    BITargetAndDimension dimension = this.getBITargetAndDimension(ids.optString(i));
+                    if(dimension != null && dimension.isUsed()){
+                        used++;
+                    }
+                }
+            }
+        }catch (Exception e){
+            BILoggerFactory.getLogger(this.getClass()).error(e.getMessage(), e);
+        }
+
+        return used;
+    }
+
     public void parseJSON(JSONObject jo, long userId) throws Exception {
         if (jo.has("view")) {
             JSONObject vjo = jo.optJSONObject("view");
-
             Iterator it = vjo.keys();
             List<String> sorted = new ArrayList<String>();
             while (it.hasNext()) {
@@ -1283,6 +1305,8 @@ public abstract class VanChartWidget extends TableWidget {
         JSONObject plotOptions = options.optJSONObject("plotOptions");
         options.put("plotOptions", plotOptions.put("animation", false));
 
+        options.put("toPhantom", true);
+
         return options;
     }
 
@@ -1305,4 +1329,31 @@ public abstract class VanChartWidget extends TableWidget {
         return Inter.getLocText(key, this.locale);
     }
 
+    public int getDim1Size() {
+        return dim1Size;
+    }
+
+    public int getDim2Size() {
+        return dim2Size;
+    }
+
+    public int getTar1Size() {
+        return tar1Size;
+    }
+
+    public int getTar2Size() {
+        return tar2Size;
+    }
+
+    public int getTar3Size() {
+        return tar3Size;
+    }
+
+    protected boolean checkValid(){
+        return this.getTar1Size() > 0;
+    }
+
+    protected boolean hasTarget(){
+        return this.tar1Size > 0 || this.tar2Size > 0 || this.tar3Size > 0;
+    }
 }

@@ -2,11 +2,14 @@ package com.fr.bi.cal.analyze.report.report.widget.chart.types;
 
 import com.fr.bi.cal.analyze.report.report.widget.VanChartWidget;
 import com.fr.bi.conf.report.map.BIWMSManager;
+import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.general.Inter;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
 import com.fr.stable.StableUtils;
+
+import java.util.List;
 
 /**
  * Created by eason on 2017/2/27.
@@ -90,6 +93,32 @@ public class VanGisWidget extends VanChartWidget{
         return series;
     }
 
+    protected void dealView(List<String> sorted, JSONObject vjo) throws JSONException{
+        super.dealView(sorted, vjo);
+
+        JSONArray ja = JSONArray.create();
+
+        int seriesRegion = Integer.parseInt(BIReportConstant.REGION.DIMENSION2);
+
+        for (String region : sorted) {
+
+            if (Integer.parseInt(region) > seriesRegion) {
+                continue;
+            }
+
+            JSONArray tmp = vjo.getJSONArray(region);
+
+            for (int j = 0; j < tmp.length(); j++) {
+                String key = tmp.getString(j);
+                ja.put(key);
+            }
+
+            vjo.remove(region);
+        }
+
+        vjo.put(BIReportConstant.REGION.DIMENSION1, ja);
+    }
+
     protected String getTooltipIdentifier(){
         return NAME + SERIES + VALUE;
     }
@@ -106,5 +135,9 @@ public class VanGisWidget extends VanChartWidget{
     //地图因为gis背景，不自适应颜色
     protected JSONObject defaultFont() throws JSONException {
         return JSONObject.create().put("fontFamily", "Microsoft YaHei").put("fontSize", "12px").put("color", "#666666");
+    }
+
+    protected boolean checkValid(){
+        return this.getDim1Size() > 0 && this.hasTarget();
     }
 }

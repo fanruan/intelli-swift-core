@@ -802,4 +802,8 @@ public abstract class VanCartesianWidget extends VanChartWidget {
         }
         return null;
     }
+
+    protected boolean checkValid(){
+        return this.hasTarget();
+    }
 }

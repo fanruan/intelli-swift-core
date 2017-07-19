@@ -224,4 +224,8 @@ public class VanGaugeWidget extends VanCartesianWidget{
     public String getSeriesType(String dimensionID){
         return "gauge";
     }
+
+    protected boolean checkValid(){
+        return this.getTar1Size() > 0;
+    }
 }
