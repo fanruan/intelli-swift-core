@@ -531,6 +531,10 @@ public class CubeIndexLoader {
                 TargetGettingKey key = usedTargets[i].createTargetGettingKey();
                 List<GroupValueIndex> filterIndexList = new ArrayList<GroupValueIndex>();
                 createFilterIndexByNode(filterIndexList, node, showSum, key);
+                //只有一个节点的时候居然要显示汇总，这边判断不符合常理，再加上汇总值
+                if (node.getTotalLength() == 1){
+                    filterIndexList.add(node.getTargetIndex(key));
+                }
                 targets[i] = new XSummaryTarget(usedTargets[i], node.getTargetIndex(key), filterIndexList.toArray(new GroupValueIndex[filterIndexList.size()]));
             } else {
                 targets[i] = usedTargets[i];
@@ -540,6 +544,10 @@ public class CubeIndexLoader {
     }
 
     private int getTopSumLen(Node node, boolean showSum) {
+        //只有一个节点的时候居然要显示汇总，这边判断不符合常理
+        if (node.getTotalLength() == 1){
+            return 2;
+        }
         FinalInt length = new FinalInt();
         length.value = 0;
         List<Node> nodeList = new ArrayList<Node>();

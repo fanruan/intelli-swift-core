@@ -32,9 +32,9 @@ public class XNode {
         FinalInt finalInt = new FinalInt();
         finalInt.value = 0;
         buildTopIndexNode(topIndex, top, showTopSum, finalInt);
-        //只有一个节点的时候居然要显示汇总，就取唯一子节点的值
+        //只有一个节点的时候居然要显示汇总，这边判断不符合常理，cubeindexloader里处理了，放再第二个位置上
         if (topIndex.getTotalLength() == 1){
-            topIndex.setData(0);
+            topIndex.setData(1);
         }
         jo.put("l", ((XLeftNode)left).toJSONObject(rowDimension, keys, topIndex, -1));
         jo.put("t", top.toTopJSONObject(colDimension, keys, -1));
