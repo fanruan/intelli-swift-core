@@ -8,7 +8,6 @@ import com.fr.bi.cal.analyze.cal.index.loader.CubeIndexLoader;
 import com.fr.bi.cal.analyze.cal.result.BIXLeftNode;
 import com.fr.bi.cal.analyze.cal.result.CrossExpander;
 import com.fr.bi.cal.analyze.cal.result.Node;
-import com.fr.bi.cal.analyze.cal.result.BIXLeftNode;
 import com.fr.bi.cal.analyze.cal.result.XNode;
 import com.fr.bi.cal.analyze.executor.iterator.StreamPagedIterator;
 import com.fr.bi.cal.analyze.executor.iterator.TableCellIterator;
@@ -17,7 +16,6 @@ import com.fr.bi.cal.analyze.executor.utils.ExecutorUtils;
 import com.fr.bi.cal.analyze.report.report.widget.TableWidget;
 import com.fr.bi.cal.analyze.session.BISession;
 import com.fr.bi.cal.report.engine.CBCell;
-import com.fr.bi.conf.report.style.BITableStyle;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.field.target.target.BISummaryTarget;
 import com.fr.bi.report.key.TargetGettingKey;
@@ -77,11 +75,9 @@ public class CrossExecutor extends AbstractTableWidgetExecutor<XNode> {
                     FinalInt start = new FinalInt();
                     FinalInt rowIdx = new FinalInt();
                     StreamPagedIterator pagedIterator = iter.getIteratorByPage(start.value);
-                    XNode[] xNodes = new XNode[1];
-                    xNodes[0] = getCubeNode();
-                    generateTitle(xNodes, widget, colDimension, rowDimension, usedSumTarget, pagedIterator, rowIdx);
+                    generateTitle(getCubeNode(), widget, colDimension, rowDimension, usedSumTarget, pagedIterator, rowIdx);
                     rowIdx.value++;
-                    generateCells(xNodes, widget, rowDimension, rowDimension.length, iter, start, rowIdx, 0);
+                    generateCells(getCubeNode(), widget, rowDimension, rowDimension.length, iter, start, rowIdx, 0);
                 } catch (Exception e) {
                     BILoggerFactory.getLogger().error(e.getMessage(), e);
                 } finally {
@@ -92,24 +88,10 @@ public class CrossExecutor extends AbstractTableWidgetExecutor<XNode> {
         return iter;
     }
 
-    /**
-     * @param roots         ComplexCrossExecutor复用此方法时需要的参数
-     * @param widget        ComplexCrossExecutor复用此方法时需要的参数
-     * @param colDimension  ComplexCrossExecutor复用此方法时需要的参数
-     * @param rowDimension  ComplexCrossExecutor复用此方法时需要的参数
-     * @param usedSumTarget ComplexCrossExecutor复用此方法时需要的参数
-     * @param pagedIterator
-     * @param rowIdx
-     * @throws Exception
-     */
-    public static void generateTitle(XNode[] roots, TableWidget widget, BIDimension[] colDimension, BIDimension[] rowDimension,
-                                     BISummaryTarget[] usedSumTarget, StreamPagedIterator pagedIterator, FinalInt rowIdx) throws Exception {
+    private static void generateTitle(XNode root, TableWidget widget, BIDimension[] colDimension, BIDimension[] rowDimension,
+                                      BISummaryTarget[] usedSumTarget, StreamPagedIterator pagedIterator, FinalInt rowIdx) throws Exception {
 
-        int rootsLen = roots.length;
-        Node[] tops = new Node[rootsLen];
-        for (int i = 0; i < rootsLen; i++) {
-            tops[i] = roots[i].getTop();
-        }
+        Node top = root.getTop();
 
         int colDimLen = 0;
         while (colDimLen < colDimension.length) {
@@ -117,11 +99,9 @@ public class CrossExecutor extends AbstractTableWidgetExecutor<XNode> {
             pagedIterator.addCell(cell);
             FinalInt columnIdx = new FinalInt();
             columnIdx.value = rowDimension.length;
-            for (int i = 0; i < rootsLen; i++) {
-                tops[i] = tops[i].getFirstChild();
-                //列表头
-                getColDimensionsTitle(widget, usedSumTarget, pagedIterator, tops[i], rowIdx.value, columnIdx);
-            }
+            top = top.getFirstChild();
+            //列表头
+            getColDimensionsTitle(widget, usedSumTarget, pagedIterator, top, rowIdx.value, columnIdx);
             rowIdx.value++;
             colDimLen++;
         }
@@ -133,9 +113,7 @@ public class CrossExecutor extends AbstractTableWidgetExecutor<XNode> {
         if (widget.getViewTargets().length > 1) {
             FinalInt targetsTitleColumnIdx = new FinalInt();
             targetsTitleColumnIdx.value = rowDimension.length;
-            for (int i = 0; i < rootsLen; i++) {
-                getTargetsTitle(widget, usedSumTarget, pagedIterator, tops[i], rowIdx.value, targetsTitleColumnIdx);
-            }
+            getTargetsTitle(widget, usedSumTarget, pagedIterator, top, rowIdx.value, targetsTitleColumnIdx);
         }
     }
 
@@ -230,23 +208,12 @@ public class CrossExecutor extends AbstractTableWidgetExecutor<XNode> {
         }
     }
 
-    /**
-     * @param roots         ComplexCrossExecutor复用此方法时需要的参数
-     * @param widget        ComplexCrossExecutor复用此方法时需要的参数
-     * @param rowDimensions ComplexCrossExecutor复用此方法时需要的参数
-     * @param maxDimLen     ComplexCrossExecutor复用此方法时需要的参数 列表头中维度最多区域中维度的长度
-     * @param iter
-     * @param start
-     * @param rowIdx        ComplexCrossExecutor复用此方法时需要的参数 记录行数
-     * @param order         ComplexCrossExecutor复用此方法时需要的参数 记录序号
-     * @throws Exception
-     */
-    public static void generateCells(XNode[] roots, TableWidget widget, BIDimension[] rowDimensions, int maxDimLen,
-                                     TableCellIterator iter, FinalInt start, FinalInt rowIdx, int order) throws Exception {
+    private static void generateCells(XNode root, TableWidget widget, BIDimension[] rowDimensions, int maxDimLen,
+                                      TableCellIterator iter, FinalInt start, FinalInt rowIdx, int order) throws Exception {
         //判断奇偶行需要用到标题的行数
         int titleRowSpan = rowIdx.value;
-        BIXLeftNode[] xLeftNode = createTempRoots(roots);
-        BIXLeftNode[] tempRoots = createTempRoots(roots);
+        BIXLeftNode xLeftNode = createTempRoot(root);
+        BIXLeftNode tempRoots = createTempRoot(root);
         int rowDimensionsLen = rowDimensions.length;
         int[] oddEven = new int[rowDimensionsLen];
         int[] sumRowNum = new int[rowDimensionsLen];
@@ -258,49 +225,35 @@ public class CrossExecutor extends AbstractTableWidgetExecutor<XNode> {
             start.value++;
         }
         StreamPagedIterator pagedIterator = iter.getIteratorByPage(start.value);
-        while (xLeftNode[0] != null) {
+        while (xLeftNode != null) {
             FinalInt columnIdx = new FinalInt();
             columnIdx.value = rowDimensionsLen;
-            BIXLeftNode[] tempFirstNode = new BIXLeftNode[xLeftNode.length];
-            for (int i = 0, j = xLeftNode.length; i < j; i++) {
-                BIXLeftNode temp = xLeftNode[i];
-                //第一次出现表头时创建cell
-                BIXLeftNode parent = xLeftNode[i];
-                if (i == 0) {
-                    generateDimensionName(widget, parent, rowDimensions, pagedIterator, dimensionNames, oddEven, sumRowNum, rowIdx, columnIdx, maxDimLen);
-                }
-                generateTopChildren(widget, temp, pagedIterator, rowIdx.value, columnIdx, titleRowSpan);
-                if (i == 0) {
-                    for (int k = 0; k < xLeftNode.length; k++) {
-                        tempFirstNode[k] = xLeftNode[k];
-                    }
-                }
-                xLeftNode[i] = (BIXLeftNode) xLeftNode[i].getSibling();
-            }
+            BIXLeftNode tempFirstNode = xLeftNode;
+            //第一次出现表头时创建cell
+            BIXLeftNode parent = xLeftNode;
+            generateDimensionName(widget, parent, rowDimensions, pagedIterator, dimensionNames, oddEven, sumRowNum, rowIdx, columnIdx, titleRowSpan);
+            generateTopChildren(widget, tempFirstNode, pagedIterator, rowIdx.value, columnIdx, titleRowSpan);
+            xLeftNode = (BIXLeftNode) xLeftNode.getSibling();
             rowIdx.value++;
             if (widget.showRowToTal()) {
-                generateSumRow(tempFirstNode, widget, pagedIterator, rowIdx, sumRowNum, maxDimLen);
+                generateSumRow(tempFirstNode, widget, pagedIterator, rowIdx, sumRowNum, maxDimLen, titleRowSpan);
             }
         }
-        if(widget.showRowToTal()) {
-            generateLastSumRow(widget, tempRoots, pagedIterator, rowIdx.value, rowDimensionsLen, maxDimLen);
+        if (widget.showRowToTal()) {
+            generateLastSumRow(widget, tempRoots, pagedIterator, rowIdx.value, rowDimensionsLen, maxDimLen, titleRowSpan);
         }
     }
 
-    private static BIXLeftNode[] createTempRoots (XNode[] roots) {
-        BIXLeftNode[] xLeftNode = new BIXLeftNode[roots.length];
-        for (int i = 0, j = roots.length; i < j; i++) {
-            BIXLeftNode node = (BIXLeftNode) roots[i].getLeft();
-            while (node.getChildLength() != 0) {
-                node = (BIXLeftNode) node.getFirstChild();
-            }
-            xLeftNode[i] = node;
+    private static BIXLeftNode createTempRoot(XNode root) {
+        BIXLeftNode node = (BIXLeftNode) root.getLeft();
+        while (node.getChildLength() != 0) {
+            node = (BIXLeftNode) node.getFirstChild();
         }
-        return xLeftNode;
+        return node;
     }
 
     private static void generateDimensionName(TableWidget widget, BIXLeftNode parent, BIDimension[] rowDimension, StreamPagedIterator pagedIterator,
-                                              Object[] dimensionNames, int[] oddEven, int[] sumRowNum, FinalInt rowIdx, FinalInt columnIdx, int maxDimLen) {
+                                              Object[] dimensionNames, int[] oddEven, int[] sumRowNum, FinalInt rowIdx, FinalInt columnIdx, int titleRowSpan) {
 
         int i = rowDimension.length;
         while (parent.getParent() != null) {
@@ -313,12 +266,12 @@ public class CrossExecutor extends AbstractTableWidgetExecutor<XNode> {
             }
             if (v != dimensionNames[i] || (i == dimensionNames.length - 1)) {
                 oddEven[i]++;
-                CBCell cell = ExecutorUtils.createValueCell(v, rowIdx.value, rowSpan, i, 1, Style.getInstance(), (rowIdx.value - maxDimLen) % 2 == 1);
+                CBCell cell = ExecutorUtils.createValueCell(v, rowIdx.value, rowSpan, i, 1, Style.getInstance(), (rowIdx.value - titleRowSpan + 1) % 2 == 1);
                 pagedIterator.addCell(cell);
                 sumRowNum[i] = rowIdx.value + parent.getTotalLengthWithSummary() - 1;
                 //复杂表两个区域的维度的情况下 需要设置最后一个维度单元格columnSpan
                 if (i == dimensionNames.length - 1) {
-                    int diff = maxDimLen - rowDimension.length;
+                    int diff = titleRowSpan - rowDimension.length;
                     cell.setColumnSpan(diff + 1);
                     //后面指标的位置需要向右偏移
                     columnIdx.value += diff;
@@ -342,7 +295,7 @@ public class CrossExecutor extends AbstractTableWidgetExecutor<XNode> {
         }
     }
 
-    private static void generateSumRow(BIXLeftNode[] nodes, TableWidget widget, StreamPagedIterator pagedIterator, FinalInt rowIdx, int[] sumRowSum, int maxColumnDimensionsLength) {
+    private static void generateSumRow(BIXLeftNode node, TableWidget widget, StreamPagedIterator pagedIterator, FinalInt rowIdx, int[] sumRowSum, int maxColumnDimensionsLength, int titleRowSpan) {
 
         for (int i = sumRowSum.length - 1; i >= 0; i--) {
             //最后一个维度汇总行是本身
@@ -351,29 +304,22 @@ public class CrossExecutor extends AbstractTableWidgetExecutor<XNode> {
                 pagedIterator.addCell(cell);
                 FinalInt sumIdx = new FinalInt();
                 sumIdx.value = maxColumnDimensionsLength;
-                for (BIXLeftNode node : nodes) {
-                    generateTopChildren(widget, node, pagedIterator, rowIdx.value, sumIdx, 1);
-                }
+                generateTopChildren(widget, node, pagedIterator, rowIdx.value, sumIdx, titleRowSpan);
                 rowIdx.value++;
             }
-            //开辟新内存，不对temp进行修改
-            for (int j = 0; j < nodes.length; j++) {
-                nodes[j] = (BIXLeftNode) nodes[j].getParent();
-            }
+            node = (BIXLeftNode) node.getParent();
         }
     }
 
-    private static void generateLastSumRow (TableWidget widget, BIXLeftNode[] xLeftNodes, StreamPagedIterator pagedIterator, int rowIdx, int rowDimensionLen, int maxColumnDimensionsLength) {
-        for(int i = 0; i < xLeftNodes.length; i++) {
-            while(xLeftNodes[i].getParent() != null) {
-                xLeftNodes[i] = (BIXLeftNode) xLeftNodes[i].getParent();
-            }
-            CBCell cell = ExecutorUtils.createTitleCell(Inter.getLocText("BI-Summary_Values"), rowIdx, 1, 0, rowDimensionLen);
-            pagedIterator.addCell(cell);
-            FinalInt sumIdx = new FinalInt();
-            sumIdx.value = maxColumnDimensionsLength;
-            generateTopChildren(widget, xLeftNodes[i], pagedIterator, rowIdx, sumIdx, 1);
+    private static void generateLastSumRow(TableWidget widget, BIXLeftNode xLeftNodes, StreamPagedIterator pagedIterator, int rowIdx, int rowDimensionLen, int maxColumnDimensionsLength, int titleRowSpan) {
+        while (xLeftNodes.getParent() != null) {
+            xLeftNodes = (BIXLeftNode) xLeftNodes.getParent();
         }
+        CBCell cell = ExecutorUtils.createTitleCell(Inter.getLocText("BI-Summary_Values"), rowIdx, 1, 0, rowDimensionLen);
+        pagedIterator.addCell(cell);
+        FinalInt sumIdx = new FinalInt();
+        sumIdx.value = maxColumnDimensionsLength;
+        generateTopChildren(widget, xLeftNodes, pagedIterator, rowIdx, sumIdx, titleRowSpan);
     }
 
     private static boolean checkIfGenerateRowSumCell(int sumRowSum, int currentRow) {
