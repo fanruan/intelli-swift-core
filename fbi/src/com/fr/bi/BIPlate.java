@@ -70,27 +70,31 @@ public class BIPlate extends AbstractFSPlate {
 
     @Override
     public void initData() {
-        FRContext.getCurrentEnv().setBuildFilePath("bibuild.txt");
-        LOGGER.info("FINE BI :" + GeneralUtils.readBuildNO());
-        initModules();
-        super.initData();
-        startModules();
-        initPlugin();
-        registerEntrySomething();
-        initOOMKillerForLinux();
-        loadMemoryData();
-        createTimerTasks();
-        backupWhenStart();
-        addBITableColumn4NewConnection();
-        addSharedTableColumn4NewConnection();
+        try {
+            FRContext.getCurrentEnv().setBuildFilePath("bibuild.txt");
+            LOGGER.info("FINE BI :" + GeneralUtils.readBuildNO());
+            initModules();
+            super.initData();
+            startModules();
+            initPlugin();
+            registerEntrySomething();
+            initOOMKillerForLinux();
+            loadMemoryData();
+            createTimerTasks();
+            backupWhenStart();
+            addBITableColumn4NewConnection();
+            addSharedTableColumn4NewConnection();
 
-        //兼容FR工程中可能存在BID这一列的情况
-        dropColumnBID();
-        //兼容FR工程中可能存在PARENTID类型是整型的情况
-        notifyColumnParentIdType();
+            //兼容FR工程中可能存在BID这一列的情况
+            dropColumnBID();
+            //兼容FR工程中可能存在PARENTID类型是整型的情况
+            notifyColumnParentIdType();
 
-        //启动用于截图的phantom服务
-        initPhantomServer();
+            //启动用于截图的phantom服务
+            initPhantomServer();
+        } catch (Throwable e) {
+            LOGGER.error(e.getMessage(), e);
+        }
     }
 
     private void createTimerTasks() {
