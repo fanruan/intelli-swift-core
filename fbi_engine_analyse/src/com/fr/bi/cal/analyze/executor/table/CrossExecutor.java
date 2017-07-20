@@ -77,7 +77,7 @@ public class CrossExecutor extends AbstractTableWidgetExecutor<XNode> {
                     StreamPagedIterator pagedIterator = iter.getIteratorByPage(start.value);
                     generateTitle(getCubeNode(), widget, colDimension, rowDimension, usedSumTarget, pagedIterator, rowIdx);
                     rowIdx.value++;
-                    generateCells(getCubeNode(), widget, rowDimension, rowDimension.length, iter, start, rowIdx, 0);
+                    generateCells(getCubeNode(), widget, rowDimension, rowDimension.length, iter, start, rowIdx);
                 } catch (Exception e) {
                     BILoggerFactory.getLogger().error(e.getMessage(), e);
                 } finally {
@@ -209,7 +209,7 @@ public class CrossExecutor extends AbstractTableWidgetExecutor<XNode> {
     }
 
     private static void generateCells(XNode root, TableWidget widget, BIDimension[] rowDimensions, int maxDimLen,
-                                      TableCellIterator iter, FinalInt start, FinalInt rowIdx, int order) throws Exception {
+                                      TableCellIterator iter, FinalInt start, FinalInt rowIdx) throws Exception {
         //判断奇偶行需要用到标题的行数
         int titleRowSpan = rowIdx.value;
         BIXLeftNode xLeftNode = createTempRoot(root);
@@ -217,7 +217,7 @@ public class CrossExecutor extends AbstractTableWidgetExecutor<XNode> {
         int rowDimensionsLen = rowDimensions.length;
         int[] oddEven = new int[rowDimensionsLen];
         int[] sumRowNum = new int[rowDimensionsLen];
-        oddEven[0] = order;
+        oddEven[0] = 0;
         Object[] dimensionNames = new Object[rowDimensionsLen];
         int newRow = rowIdx.value & ExportConstants.MAX_ROWS_2007 - 1;
         if (newRow == 0) {
