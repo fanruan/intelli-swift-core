@@ -110,17 +110,12 @@ public class CrossExecutor extends AbstractTableWidgetExecutor<XNode> {
         for (int i = 0; i < rootsLen; i++) {
             tops[i] = roots[i].getTop();
         }
-//        if (widget.isOrder() == 1) {
-//            CBCell cell = ExecutorUtils.createTitleCell(Inter.getLocText("BI-Number_Index"), 0, colDimension.length + 1, 0, 1);
-//            pagedIterator.addCell(cell);
-//        }
 
         int colDimLen = 0;
         while (colDimLen < colDimension.length) {
             CBCell cell = ExecutorUtils.createTitleCell(colDimension[colDimLen].getText(), rowIdx.value, 1, 0, rowDimension.length);
             pagedIterator.addCell(cell);
             FinalInt columnIdx = new FinalInt();
-//            columnIdx.value = rowDimension.length + widget.isOrder();
             columnIdx.value = rowDimension.length;
             for (int i = 0; i < rootsLen; i++) {
                 tops[i] = tops[i].getFirstChild();
@@ -137,7 +132,6 @@ public class CrossExecutor extends AbstractTableWidgetExecutor<XNode> {
         }
         if (widget.getViewTargets().length > 1) {
             FinalInt targetsTitleColumnIdx = new FinalInt();
-//            targetsTitleColumnIdx.value = rowDimension.length + widget.isOrder();
             targetsTitleColumnIdx.value = rowDimension.length;
             for (int i = 0; i < rootsLen; i++) {
                 getTargetsTitle(widget, usedSumTarget, pagedIterator, tops[i], rowIdx.value, targetsTitleColumnIdx);
