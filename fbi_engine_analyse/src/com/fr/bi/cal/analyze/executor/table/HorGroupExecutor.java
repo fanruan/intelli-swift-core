@@ -159,16 +159,16 @@ public class HorGroupExecutor extends AbstractTableWidgetExecutor<Node> {
         }
     }
 
-    public static void generateTargetSumCell(Node temp, TableWidget widget, TargetGettingKey key, StreamPagedIterator pagedIterator, int colDimensionLen, FinalInt columnIdx, int rowIdx) {
+    public static void generateTargetSumCell(Node temp, TableWidget widget, TargetGettingKey key, StreamPagedIterator pagedIterator, int colDimensionLen, FinalInt columnIdx, int targetRowIdx) {
 
         if ((widget.getViewTargets().length != 0) && checkIfGenerateSumCell(temp)) {
             if (temp.getParent().getChildLength() != 1) {
                 Object data = temp.getParent().getSummaryValue(key);
-                CBCell cell = formatTargetCell(data, widget.getChartSetting(), key, rowIdx + colDimensionLen, columnIdx.value++, (rowIdx + 1) % 2 == 1);
+                CBCell cell = formatTargetCell(data, widget.getChartSetting(), key, targetRowIdx + colDimensionLen, columnIdx.value++, (targetRowIdx + 1) % 2 == 1);
                 pagedIterator.addCell(cell);
             }
             Node parent = temp.getParent();
-            generateTargetSumCell(parent, widget, key, pagedIterator, colDimensionLen, columnIdx, rowIdx);
+            generateTargetSumCell(parent, widget, key, pagedIterator, colDimensionLen, columnIdx, targetRowIdx);
         }
     }
 
