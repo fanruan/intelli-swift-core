@@ -142,19 +142,14 @@ public class HorGroupExecutor extends AbstractTableWidgetExecutor<Node> {
 
         for (int i = 0; i < usedSumTarget.length; i++) {
             FinalInt columnIdx = new FinalInt();
-//            columnIdx.value = widget.isOrder() + 1;
             columnIdx.value = 1;
-//            if (widget.isOrder() == 1) {
-//                CBCell orderCell = ExecutorUtils.createValueCell(i + 1, colDimensionLen + i, 1, 0, 1, Style.getInstance(), (i + 1) % 2 == 1);
-//                pagedIterator.addCell(orderCell);
-//            }
             Object targetName = usedSumTarget[i].getText();
             CBCell targetNameCell = ExecutorUtils.createValueCell(targetName, colDimensionLen + i, 1, 0, 1, Style.getInstance(), (i + 1) % 2 == 1);
             pagedIterator.addCell(targetNameCell);
             Node temp = node;
             while (temp != null) {
                 Object data = temp.getSummaryValue(keys[i]);
-                CBCell cell = ExecutorUtils.createValueCell(data, colDimensionLen + i, 1, columnIdx.value++, 1, Style.getInstance(), (i + 1) % 2 == 1);
+                CBCell cell = formatTargetCell(data, widget.getChartSetting(), keys[i], colDimensionLen + i, columnIdx.value++, (i + 1) % 2 == 1);
                 pagedIterator.addCell(cell);
                 if (widget.showColumnTotal()) {
                     generateTargetSumCell(temp, widget, keys[i], pagedIterator, colDimensionLen, columnIdx, i);
@@ -169,7 +164,7 @@ public class HorGroupExecutor extends AbstractTableWidgetExecutor<Node> {
         if ((widget.getViewTargets().length != 0) && checkIfGenerateSumCell(temp)) {
             if (temp.getParent().getChildLength() != 1) {
                 Object data = temp.getParent().getSummaryValue(key);
-                CBCell cell = ExecutorUtils.createValueCell(data, rowIdx + colDimensionLen, 1, columnIdx.value++, 1, Style.getInstance(), (rowIdx + 1) % 2 == 1);
+                CBCell cell = formatTargetCell(data, widget.getChartSetting(), key, rowIdx + colDimensionLen, columnIdx.value++, (rowIdx + 1) % 2 == 1);
                 pagedIterator.addCell(cell);
             }
             Node parent = temp.getParent();

@@ -203,13 +203,7 @@ public class GroupExecutor extends AbstractTableWidgetExecutor<Node> {
         for (TargetGettingKey key : widget.getTargetsKey()) {
             int columnIdx = targetsKeyIndex + dimensionsLength;
             Object data = temp.getSummaryValue(key);
-            int numLevel = widget.getChartSetting().getNumberLevelByTargetId(key.getTargetName());
-            int formatDecimal = widget.getChartSetting().getFormatDecimalByTargetId(key.getTargetName());
-            boolean separator = widget.getChartSetting().getSeparatorByTargetId(key.getTargetName());
-            data = ExecutorUtils.formatExtremeSumValue(data, numLevel);
-            Style style = Style.getInstance();
-            style = style.deriveFormat(ExecutorUtils.formatDecimalAndSeparator(data, numLevel, formatDecimal, separator));
-            CBCell cell = ExecutorUtils.createValueCell(data, rowIdx, 1, columnIdx, 1, style, rowIdx % 2 == 1);
+            CBCell cell = formatTargetCell(data, widget.getChartSetting(), key, rowIdx, columnIdx, rowIdx % 2 == 1);
             pagedIterator.addCell(cell);
             targetsKeyIndex++;
         }
@@ -227,7 +221,7 @@ public class GroupExecutor extends AbstractTableWidgetExecutor<Node> {
                 data = DateUtils.DATEFORMAT2.format(new Date(GeneralUtils.string2Number(data).longValue()));
             }
             Object v = dim.getValueByType(data);
-            if (!CompareUtils.isEqual(v, dimensionNames[i]) || (i == rowDimensions.length - 1)) {
+            if (!CompareUtils.isEqual(v, dimensionNames[i]) || (i == rowDimensions.length - 1) || temp.getParent().getTotalLength() == 1 ) {
                 oddEven[i]++;
                 int columnSpanOffSet = i == rowDimensions.length - 1 ? maxRowDimensionsLength - rowDimensions.length : 0;
                 CBCell cell = ExecutorUtils.createValueCell(v, rowIdx, rowSpan, i, 1 + columnSpanOffSet, Style.getInstance(), rowIdx % 2 == 1);

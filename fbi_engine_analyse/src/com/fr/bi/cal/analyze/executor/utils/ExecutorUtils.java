@@ -6,7 +6,6 @@ import com.fr.base.background.ColorBackground;
 import com.fr.bi.cal.report.engine.CBCell;
 import com.fr.bi.conf.report.style.BITableStyle;
 import com.fr.bi.stable.constant.BIReportConstant;
-import com.fr.general.Background;
 import com.fr.general.FRFont;
 import com.fr.general.GeneralUtils;
 import com.fr.general.Inter;
@@ -90,7 +89,7 @@ public class ExecutorUtils {
         switch (decimal) {
             case BIReportConstant.TARGET_STYLE.FORMAT.NORMAL:
                 result = new StringBuilder(separator ? "#,##0.##" : "0.##");
-                if (v.toString().endsWith(".0")) {
+                if((v instanceof  Double) && ((Double) v == ((Double) v).longValue())) {
                     result = new StringBuilder(separator ? "#,##0" : "#0");
                 }
                 break;
@@ -108,7 +107,7 @@ public class ExecutorUtils {
     }
 
     private static CBCell createCell(Object v, int rowIdx, int rowSpan, int columnIdx, int columnSpan) {
-        CBCell cell = new CBCell(v);
+        CBCell cell = new CBCell((v instanceof  Double) && ((Double) v == ((Double) v).longValue()) ? ((Double) v).longValue() : v);
         cell.setRow(rowIdx);
         cell.setRowSpan(rowSpan);
         cell.setColumn(columnIdx);
@@ -124,7 +123,7 @@ public class ExecutorUtils {
         return cell;
     }
 
-    public static CBCell createTitleCell (Object v, int rowIdx, int rowSpan, int columnIdx, int columnSpan) {
+    public static CBCell createTitleCell(Object v, int rowIdx, int rowSpan, int columnIdx, int columnSpan) {
         CBCell cell = createCell(v, rowIdx, rowSpan, columnIdx, columnSpan);
         FRFont font = FRFont.getInstance("MicroSoft Yahei", 100, 10);
         font.setForeground(TITLE_COLOR);
@@ -132,7 +131,7 @@ public class ExecutorUtils {
         return cell;
     }
 
-    public static Style getStyle (Style style) {
+    public static Style getStyle(Style style) {
         style = style.deriveBorder(Constants.LINE_THIN, BORDER_COLOR, Constants.LINE_THIN, BORDER_COLOR, Constants.LINE_THIN, BORDER_COLOR, Constants.LINE_THIN, BORDER_COLOR);
         return style.deriveTextStyle(Style.TEXTSTYLE_SINGLELINE);
     }

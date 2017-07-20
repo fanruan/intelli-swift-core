@@ -313,7 +313,7 @@ public class CrossExecutor extends AbstractTableWidgetExecutor<XNode> {
             }
             if (v != dimensionNames[i] || (i == dimensionNames.length - 1)) {
                 oddEven[i]++;
-                CBCell cell = ExecutorUtils.createValueCell(v, rowIdx.value, rowSpan, i, 1, Style.getInstance(), (rowIdx.value - maxDimLen + 1) % 2 == 1);
+                CBCell cell = ExecutorUtils.createValueCell(v, rowIdx.value, rowSpan, i, 1, Style.getInstance(), (rowIdx.value - maxDimLen) % 2 == 1);
                 pagedIterator.addCell(cell);
                 sumRowNum[i] = rowIdx.value + parent.getTotalLengthWithSummary() - 1;
                 //复杂表两个区域的维度的情况下 需要设置最后一个维度单元格columnSpan
@@ -335,7 +335,7 @@ public class CrossExecutor extends AbstractTableWidgetExecutor<XNode> {
         Number[][] values = temp.getXValue();
         for (int j = 0; j < values[0].length; j++) {
             for (int i = 0; i < widget.getUsedTargetID().length; i++) {
-                CBCell cell = ExecutorUtils.createValueCell(values[i][j], rowIdx, 1, columnIdx.value, 1, Style.getInstance(), (rowIdx - titleRowSpan + 1) % 2 == 1);
+                CBCell cell = formatTargetCell(values[i][j], widget.getChartSetting(), widget.getTargetsKey()[i], rowIdx, columnIdx.value, (rowIdx - titleRowSpan + 1) % 2 == 1);
                 pagedIterator.addCell(cell);
                 columnIdx.value++;
             }
