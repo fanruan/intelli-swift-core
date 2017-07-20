@@ -282,7 +282,9 @@ public class CrossExecutor extends AbstractTableWidgetExecutor<XNode> {
                 generateSumRow(tempFirstNode, widget, pagedIterator, rowIdx, sumRowNum, maxDimLen);
             }
         }
-        generateLastSumRow(widget, tempRoots, pagedIterator, rowIdx.value, rowDimensionsLen, maxDimLen);
+        if(widget.showRowToTal()) {
+            generateLastSumRow(widget, tempRoots, pagedIterator, rowIdx.value, rowDimensionsLen, maxDimLen);
+        }
     }
 
     private static BIXLeftNode[] createTempRoots (XNode[] roots) {
