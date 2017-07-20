@@ -30,6 +30,9 @@ import com.fr.bi.conf.base.dataconfig.BISystemDataConfigAuthorityManager;
 import com.fr.bi.conf.base.datasource.BIConnectionManager;
 import com.fr.bi.conf.base.datasource.BIConnectionProvider;
 import com.fr.bi.conf.base.login.BISystemUserLoginInformationManager;
+import com.fr.bi.conf.base.scheduler.BITimeScheduleService;
+import com.fr.bi.conf.base.scheduler.BITimeSchedulerManager;
+import com.fr.bi.conf.base.scheduler.ScheduleEntityPoolReader;
 import com.fr.bi.conf.fs.FBIConfig;
 import com.fr.bi.conf.fs.FBIConfigProvider;
 import com.fr.bi.conf.log.BILogManagerWithoutUser;
@@ -70,6 +73,7 @@ import com.fr.bi.resource.ResourceConstants;
 import com.fr.bi.resource.ShowResourceHelper;
 import com.fr.bi.stable.utils.BIDBUtils;
 import com.fr.bi.tool.BIReadReportProvider;
+import com.fr.bi.util.BIConfigurePathUtils;
 import com.fr.bi.util.BIReadReportUtils;
 import com.fr.bi.web.base.Service4BIBase;
 import com.fr.bi.web.conf.Service4BIConfigure;
@@ -96,6 +100,7 @@ import com.fr.stable.bridge.StableFactory;
 import com.fr.stable.fun.Service;
 import com.fr.web.core.db.PlatformDB;
 
+import java.io.File;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -174,6 +179,7 @@ public class BICoreModule extends AbstractModule {
         StableFactory.registerMarkedObject(SingleTableUpdateManager.XML_TAG, new SingleTableUpdateManager());
         StableFactory.registerMarkedObject(BICubeTimeTaskCreatorProvider.XML_TAG, new BICubeTimeTaskCreatorManager());
         StableFactory.registerMarkedObject(BICubeTaskRecordProvider.XML_TAG, new BICubeTaskRecordManagerWithoutUser());
+        StableFactory.registerMarkedObject(BITimeScheduleService.XML_TAG, getBITimeScheduleManager());
 
         StableFactory.registerMarkedObject(BIDataConfigAuthorityProvider.XML_TAG, new BISystemDataConfigAuthorityManager());
         StableFactory.registerMarkedObject(FBIConfigProvider.XML_TAG, getFBIConfigManager());
@@ -212,6 +218,22 @@ public class BICoreModule extends AbstractModule {
             }
         } else {
             return FBIConfig.getInstance();
+        }
+    }
+
+    public BITimeSchedulerManager getBITimeScheduleManager() {
+        if (ClusterEnv.isCluster()) {
+            if (ClusterAdapter.getManager().getHostManager().isSelf()) {
+                BITimeSchedulerManager provider = new ScheduleEntityPoolReader(BIConfigurePathUtils.createResourceBasePath() + File.separator + "scheduleEntityPool.xml").read();
+                RPC.registerSkeleton(provider, ClusterAdapter.getManager().getHostManager().getPort());
+                return provider;
+            } else {
+                return (BITimeSchedulerManager) RPC.getProxy(BITimeSchedulerManager.class,
+                        ClusterAdapter.getManager().getHostManager().getIp(),
+                        ClusterAdapter.getManager().getHostManager().getPort());
+            }
+        } else {
+            return new ScheduleEntityPoolReader(BIConfigurePathUtils.createResourceBasePath() + File.separator + "scheduleEntityPool.xml").read();
         }
     }
 
