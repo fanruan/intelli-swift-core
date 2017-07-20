@@ -231,8 +231,8 @@ public class CrossExecutor extends AbstractTableWidgetExecutor<XNode> {
             BIXLeftNode tempFirstNode = xLeftNode;
             //第一次出现表头时创建cell
             BIXLeftNode parent = xLeftNode;
-            generateDimensionName(widget, parent, rowDimensions, pagedIterator, dimensionNames, oddEven, sumRowNum, rowIdx, columnIdx, titleRowSpan);
-            generateTopChildren(widget, tempFirstNode, pagedIterator, rowIdx.value, columnIdx, titleRowSpan);
+            generateTopChildren(widget, tempFirstNode, pagedIterator, rowIdx.value, rowDimensionsLen, titleRowSpan);
+            generateDimensionName(widget, parent, rowDimensions, pagedIterator, dimensionNames, oddEven, sumRowNum, rowIdx, titleRowSpan);
             xLeftNode = (BIXLeftNode) xLeftNode.getSibling();
             rowIdx.value++;
             if (widget.showRowToTal()) {
@@ -240,7 +240,7 @@ public class CrossExecutor extends AbstractTableWidgetExecutor<XNode> {
             }
         }
         if (widget.showRowToTal()) {
-            generateLastSumRow(widget, tempRoots, pagedIterator, rowIdx.value, rowDimensionsLen, maxDimLen, titleRowSpan);
+            generateLastSumRow(widget, tempRoots, pagedIterator, rowIdx.value, rowDimensionsLen, titleRowSpan);
         }
     }
 
@@ -253,7 +253,7 @@ public class CrossExecutor extends AbstractTableWidgetExecutor<XNode> {
     }
 
     private static void generateDimensionName(TableWidget widget, BIXLeftNode parent, BIDimension[] rowDimension, StreamPagedIterator pagedIterator,
-                                              Object[] dimensionNames, int[] oddEven, int[] sumRowNum, FinalInt rowIdx, FinalInt columnIdx, int titleRowSpan) {
+                                              Object[] dimensionNames, int[] oddEven, int[] sumRowNum, FinalInt rowIdx, int titleRowSpan) {
 
         int i = rowDimension.length;
         while (parent.getParent() != null) {
@@ -264,18 +264,11 @@ public class CrossExecutor extends AbstractTableWidgetExecutor<XNode> {
             if (dim.getGroup().getType() == BIReportConstant.GROUP.YMD && GeneralUtils.string2Number(v.toString()) != null) {
                 v = DateUtils.DATEFORMAT2.format(new Date(GeneralUtils.string2Number(v.toString()).longValue()));
             }
-            if (v != dimensionNames[i] || (i == dimensionNames.length - 1)) {
+            if (v != dimensionNames[i] || (i == dimensionNames.length - 1) || parent.getParent().getTotalLength() == 1) {
                 oddEven[i]++;
                 CBCell cell = ExecutorUtils.createValueCell(v, rowIdx.value, rowSpan, i, 1, Style.getInstance(), (rowIdx.value - titleRowSpan + 1) % 2 == 1);
                 pagedIterator.addCell(cell);
                 sumRowNum[i] = rowIdx.value + parent.getTotalLengthWithSummary() - 1;
-                //复杂表两个区域的维度的情况下 需要设置最后一个维度单元格columnSpan
-                if (i == dimensionNames.length - 1) {
-                    int diff = titleRowSpan - rowDimension.length;
-                    cell.setColumnSpan(diff + 1);
-                    //后面指标的位置需要向右偏移
-                    columnIdx.value += diff;
-                }
                 dimensionNames[i] = v;
             }
             parent = (BIXLeftNode) parent.getParent();
@@ -284,42 +277,38 @@ public class CrossExecutor extends AbstractTableWidgetExecutor<XNode> {
 
 
     private static void generateTopChildren(TableWidget widget, BIXLeftNode temp, StreamPagedIterator pagedIterator,
-                                            int rowIdx, FinalInt columnIdx, int titleRowSpan) {
+                                            int rowIdx, int columnIdx, int titleRowSpan) {
         Number[][] values = temp.getXValue();
         for (int j = 0; j < values[0].length; j++) {
             for (int i = 0; i < widget.getUsedTargetID().length; i++) {
-                CBCell cell = formatTargetCell(values[i][j], widget.getChartSetting(), widget.getTargetsKey()[i], rowIdx, columnIdx.value, (rowIdx - titleRowSpan + 1) % 2 == 1);
+                CBCell cell = formatTargetCell(values[i][j], widget.getChartSetting(), widget.getTargetsKey()[i], rowIdx, columnIdx, (rowIdx - titleRowSpan + 1) % 2 == 1);
                 pagedIterator.addCell(cell);
-                columnIdx.value++;
+                columnIdx++;
             }
         }
     }
 
-    private static void generateSumRow(BIXLeftNode node, TableWidget widget, StreamPagedIterator pagedIterator, FinalInt rowIdx, int[] sumRowSum, int maxColumnDimensionsLength, int titleRowSpan) {
+    private static void generateSumRow(BIXLeftNode node, TableWidget widget, StreamPagedIterator pagedIterator, FinalInt rowIdx, int[] sumRowSum, int rowDimensionLen, int titleRowSpan) {
 
         for (int i = sumRowSum.length - 1; i >= 0; i--) {
             //最后一个维度汇总行是本身
             if (i != sumRowSum.length - 1 && (widget.getViewTargets().length != 0) && checkIfGenerateRowSumCell(sumRowSum[i], rowIdx.value)) {
-                CBCell cell = ExecutorUtils.createTitleCell(Inter.getLocText("BI-Summary_Values"), rowIdx.value, 1, i + 1, maxColumnDimensionsLength - (i + 1));
+                CBCell cell = ExecutorUtils.createTitleCell(Inter.getLocText("BI-Summary_Values"), rowIdx.value, 1, i + 1, rowDimensionLen - (i + 1));
                 pagedIterator.addCell(cell);
-                FinalInt sumIdx = new FinalInt();
-                sumIdx.value = maxColumnDimensionsLength;
-                generateTopChildren(widget, node, pagedIterator, rowIdx.value, sumIdx, titleRowSpan);
+                generateTopChildren(widget, node, pagedIterator, rowIdx.value, rowDimensionLen, titleRowSpan);
                 rowIdx.value++;
             }
             node = (BIXLeftNode) node.getParent();
         }
     }
 
-    private static void generateLastSumRow(TableWidget widget, BIXLeftNode xLeftNodes, StreamPagedIterator pagedIterator, int rowIdx, int rowDimensionLen, int maxColumnDimensionsLength, int titleRowSpan) {
+    private static void generateLastSumRow(TableWidget widget, BIXLeftNode xLeftNodes, StreamPagedIterator pagedIterator, int rowIdx, int rowDimensionLen, int titleRowSpan) {
         while (xLeftNodes.getParent() != null) {
             xLeftNodes = (BIXLeftNode) xLeftNodes.getParent();
         }
         CBCell cell = ExecutorUtils.createTitleCell(Inter.getLocText("BI-Summary_Values"), rowIdx, 1, 0, rowDimensionLen);
         pagedIterator.addCell(cell);
-        FinalInt sumIdx = new FinalInt();
-        sumIdx.value = maxColumnDimensionsLength;
-        generateTopChildren(widget, xLeftNodes, pagedIterator, rowIdx, sumIdx, titleRowSpan);
+        generateTopChildren(widget, xLeftNodes, pagedIterator, rowIdx, rowDimensionLen, titleRowSpan);
     }
 
     private static boolean checkIfGenerateRowSumCell(int sumRowSum, int currentRow) {

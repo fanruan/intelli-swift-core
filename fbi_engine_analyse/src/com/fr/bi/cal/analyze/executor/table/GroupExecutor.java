@@ -216,11 +216,11 @@ public class GroupExecutor extends AbstractTableWidgetExecutor<Node> {
             int rowSpan = widget.showRowToTal() ? temp.getTotalLengthWithSummary() : temp.getTotalLength();
             BIDimension dim = rowDimensions[--i];
             String data = dim.toString(temp.getData());
+            Object v = dim.getValueByType(data);
             //年月日字段格式化
             if (dim.getGroup().getType() == BIReportConstant.GROUP.YMD && GeneralUtils.string2Number(data) != null) {
-                data = DateUtils.DATEFORMAT2.format(new Date(GeneralUtils.string2Number(data).longValue()));
+                v = DateUtils.DATEFORMAT2.format(new Date(GeneralUtils.string2Number(data).longValue()));
             }
-            Object v = dim.getValueByType(data);
             if (!CompareUtils.isEqual(v, dimensionNames[i]) || (i == rowDimensions.length - 1) || temp.getParent().getTotalLength() == 1 ) {
                 oddEven[i]++;
                 int columnSpanOffSet = i == rowDimensions.length - 1 ? maxRowDimensionsLength - rowDimensions.length : 0;
