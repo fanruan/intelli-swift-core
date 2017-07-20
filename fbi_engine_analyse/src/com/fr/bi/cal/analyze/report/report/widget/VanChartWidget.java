@@ -954,10 +954,10 @@ public abstract class VanChartWidget extends TableWidget {
         String categoryKey = this.categoryKey(), valueKey = this.valueKey();
         ArrayList<Double> valueList = new ArrayList<Double>();
         JSONObject top = originData.optJSONObject("t"), left = originData.optJSONObject("l");
-        if (targetIDs.length == 0 || !top.has("c") || !left.has("c")) {
+        if (targetIDs.length == 0 || !top.has("c")) {
             return series;
         }
-        JSONArray topC = top.getJSONArray("c"), leftC = left.getJSONArray("c");
+        JSONArray topC = top.getJSONArray("c"), leftC = left.optJSONArray("c");
         String id = targetIDs[0];
         double numberScale = this.numberScale(targetIDs[0]);
         for (int i = 0; i < topC.length(); i++) {
@@ -966,17 +966,21 @@ public abstract class VanChartWidget extends TableWidget {
             String stackedKey = this.getStackedKey(id, formattedName);
             boolean isStacked = this.isStacked(id, formattedName);
             JSONArray data = JSONArray.create();
-            for (int j = 0; j < leftC.length(); j++) {
-                JSONObject lObj = leftC.getJSONObject(j);
-                String x = lObj.getString("n");
-                JSONArray s = lObj.getJSONObject("s").getJSONArray("c").getJSONObject(i).getJSONArray("s");
-                boolean isNull = s.isNull(0) || Double.isNaN(s.getDouble(0));
-                double y = (isNull ? 0 : s.getDouble(0)) / numberScale;
-                String formattedCategory = this.formatDimension(category, x);
-                data.put(
-                        JSONObject.create().put(categoryKey, formattedCategory).put(valueKey, isNull ? "-" : numberFormat(id, y)).put(LONG_DATE, x)
-                );
-                valueList.add(y);
+            if(leftC != null) {
+                for (int j = 0; j < leftC.length(); j++) {
+                    JSONObject lObj = leftC.getJSONObject(j);
+                    String x = lObj.getString("n");
+                    JSONArray array = lObj.getJSONObject("s").optJSONArray("c");
+                    if (array == null) {
+                        continue;
+                    }
+                    JSONArray s = array.getJSONObject(i).getJSONArray("s");
+                    boolean isNull = s.isNull(0) || Double.isNaN(s.getDouble(0));
+                    double y = (isNull ? 0 : s.getDouble(0)) / numberScale;
+                    String formattedCategory = this.formatDimension(category, x);
+                    data.put(JSONObject.create().put(categoryKey, formattedCategory).put(valueKey, isNull ? "-" : numberFormat(id, y)).put(LONG_DATE, x));
+                    valueList.add(y);
+                }
             }
             JSONObject ser = JSONObject.create().put("data", data).put("name", formattedName).put(LONG_DATE, name)
                     .put("type", this.getSeriesType(id, formattedName))
