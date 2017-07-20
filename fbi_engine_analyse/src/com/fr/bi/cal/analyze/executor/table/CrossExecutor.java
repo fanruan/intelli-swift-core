@@ -245,33 +245,29 @@ public class CrossExecutor extends AbstractTableWidgetExecutor<XNode> {
                                      TableCellIterator iter, FinalInt start, FinalInt rowIdx, int order) throws Exception {
         //判断奇偶行需要用到标题的行数
         int titleRowSpan = rowIdx.value;
-        BIXLeftNode[] xLeftNode = new BIXLeftNode[roots.length];
-        for (int i = 0, j = roots.length; i < j; i++) {
-            BIXLeftNode node = (BIXLeftNode) roots[i].getLeft();
-            while (node.getChildLength() != 0) {
-                node = (BIXLeftNode) node.getFirstChild();
-            }
-            xLeftNode[i] = node;
-        }
-        int[] oddEven = new int[rowDimensions.length];
+        BIXLeftNode[] xLeftNode = createTempRoots(roots);
+        BIXLeftNode[] tempRoots = createTempRoots(roots);
+        int rowDimensionsLen = rowDimensions.length;
+        int[] oddEven = new int[rowDimensionsLen];
+        int[] sumRowNum = new int[rowDimensionsLen];
         oddEven[0] = order;
-        Object[] dimensionNames = new Object[rowDimensions.length];
+        Object[] dimensionNames = new Object[rowDimensionsLen];
+        int newRow = rowIdx.value & ExportConstants.MAX_ROWS_2007 - 1;
+        if (newRow == 0) {
+            iter.getIteratorByPage(start.value).finish();
+            start.value++;
+        }
+        StreamPagedIterator pagedIterator = iter.getIteratorByPage(start.value);
         while (xLeftNode[0] != null) {
             FinalInt columnIdx = new FinalInt();
-            columnIdx.value = rowDimensions.length;
-            int newRow = rowIdx.value & ExportConstants.MAX_ROWS_2007 - 1;
-            if (newRow == 0) {
-                iter.getIteratorByPage(start.value).finish();
-                start.value++;
-            }
-            StreamPagedIterator pagedIterator = iter.getIteratorByPage(start.value);
+            columnIdx.value = rowDimensionsLen;
             BIXLeftNode[] tempFirstNode = new BIXLeftNode[xLeftNode.length];
             for (int i = 0, j = xLeftNode.length; i < j; i++) {
                 BIXLeftNode temp = xLeftNode[i];
                 //第一次出现表头时创建cell
                 BIXLeftNode parent = xLeftNode[i];
                 if (i == 0) {
-                    generateDimensionName(widget, parent, rowDimensions, pagedIterator, dimensionNames, oddEven, rowIdx, columnIdx, maxDimLen);
+                    generateDimensionName(widget, parent, rowDimensions, pagedIterator, dimensionNames, oddEven, sumRowNum, rowIdx, columnIdx, maxDimLen);
                 }
                 generateTopChildren(widget, temp, pagedIterator, rowIdx.value, columnIdx, titleRowSpan);
                 if (i == 0) {
@@ -283,13 +279,26 @@ public class CrossExecutor extends AbstractTableWidgetExecutor<XNode> {
             }
             rowIdx.value++;
             if (widget.showRowToTal()) {
-                generateRowSumCells(tempFirstNode, widget, pagedIterator, rowIdx, rowDimensions.length - 1, maxDimLen);
+                generateSumRow(tempFirstNode, widget, pagedIterator, rowIdx, sumRowNum, maxDimLen);
             }
         }
+        generateLastSumRow(widget, tempRoots, pagedIterator, rowIdx.value, rowDimensionsLen, maxDimLen);
+    }
+
+    private static BIXLeftNode[] createTempRoots (XNode[] roots) {
+        BIXLeftNode[] xLeftNode = new BIXLeftNode[roots.length];
+        for (int i = 0, j = roots.length; i < j; i++) {
+            BIXLeftNode node = (BIXLeftNode) roots[i].getLeft();
+            while (node.getChildLength() != 0) {
+                node = (BIXLeftNode) node.getFirstChild();
+            }
+            xLeftNode[i] = node;
+        }
+        return xLeftNode;
     }
 
     private static void generateDimensionName(TableWidget widget, BIXLeftNode parent, BIDimension[] rowDimension, StreamPagedIterator pagedIterator,
-                                              Object[] dimensionNames, int[] oddEven, FinalInt rowIdx, FinalInt columnIdx, int maxDimLen) {
+                                              Object[] dimensionNames, int[] oddEven, int[] sumRowNum, FinalInt rowIdx, FinalInt columnIdx, int maxDimLen) {
 
         int i = rowDimension.length;
         while (parent.getParent() != null) {
@@ -304,6 +313,7 @@ public class CrossExecutor extends AbstractTableWidgetExecutor<XNode> {
                 oddEven[i]++;
                 CBCell cell = ExecutorUtils.createValueCell(v, rowIdx.value, rowSpan, i, 1, Style.getInstance(), (rowIdx.value - maxDimLen + 1) % 2 == 1);
                 pagedIterator.addCell(cell);
+                sumRowNum[i] = rowIdx.value + parent.getTotalLengthWithSummary() - 1;
                 //复杂表两个区域的维度的情况下 需要设置最后一个维度单元格columnSpan
                 if (i == dimensionNames.length - 1) {
                     int diff = maxDimLen - rowDimension.length;
@@ -330,42 +340,42 @@ public class CrossExecutor extends AbstractTableWidgetExecutor<XNode> {
         }
     }
 
-    private static void generateRowSumCells(BIXLeftNode[] nodes, TableWidget widget, StreamPagedIterator pagedIterator, FinalInt rowIdx, int columnIdx, int maxColumnDimensionsLength) {
+    private static void generateSumRow(BIXLeftNode[] nodes, TableWidget widget, StreamPagedIterator pagedIterator, FinalInt rowIdx, int[] sumRowSum, int maxColumnDimensionsLength) {
 
-        BIXLeftNode temp = nodes[0];
-        if ((widget.getViewTargets().length != 0) && checkIfGenerateRowSumCell(temp)) {
-            if (temp.getChildLength() != 1) {
-                CBCell cell = ExecutorUtils.createTitleCell(Inter.getLocText("BI-Summary_Values"), rowIdx.value, 1, columnIdx, maxColumnDimensionsLength - columnIdx);
+        for (int i = sumRowSum.length - 1; i >= 0; i--) {
+            //最后一个维度汇总行是本身
+            if (i != sumRowSum.length - 1 && (widget.getViewTargets().length != 0) && checkIfGenerateRowSumCell(sumRowSum[i], rowIdx.value)) {
+                CBCell cell = ExecutorUtils.createTitleCell(Inter.getLocText("BI-Summary_Values"), rowIdx.value, 1, i + 1, maxColumnDimensionsLength - (i + 1));
                 pagedIterator.addCell(cell);
                 FinalInt sumIdx = new FinalInt();
                 sumIdx.value = maxColumnDimensionsLength;
                 for (BIXLeftNode node : nodes) {
-                    generateTopChildren(widget, (BIXLeftNode) node.getParent(), pagedIterator, rowIdx.value, sumIdx, 1);
+                    generateTopChildren(widget, node, pagedIterator, rowIdx.value, sumIdx, 1);
                 }
                 rowIdx.value++;
             }
             //开辟新内存，不对temp进行修改
-            BIXLeftNode[] parents = new BIXLeftNode[nodes.length];
-            for (int i = 0; i < nodes.length; i++) {
-                parents[i] = (BIXLeftNode) nodes[i].getParent();
+            for (int j = 0; j < nodes.length; j++) {
+                nodes[j] = (BIXLeftNode) nodes[j].getParent();
             }
-            generateRowSumCells(parents, widget, pagedIterator, rowIdx, columnIdx - 1, maxColumnDimensionsLength);
         }
     }
 
-    private static boolean checkIfGenerateRowSumCell(BIXLeftNode temp) {
-        //到根节点停止
-        boolean isNotRoot = temp.getParent() != null;
-        //isLastSum 是否是最后一行汇总行
-        boolean isLastSum = temp.getSibling() == null;
-        //判断空值 比较当前节点和下一个兄弟节点是否有同一个父亲节点
-        boolean needSumCell = isNotRoot && needSumCell(temp);
-        return isNotRoot && (isLastSum || needSumCell);
+    private static void generateLastSumRow (TableWidget widget, BIXLeftNode[] xLeftNodes, StreamPagedIterator pagedIterator, int rowIdx, int rowDimensionLen, int maxColumnDimensionsLength) {
+        for(int i = 0; i < xLeftNodes.length; i++) {
+            while(xLeftNodes[i].getParent() != null) {
+                xLeftNodes[i] = (BIXLeftNode) xLeftNodes[i].getParent();
+            }
+            CBCell cell = ExecutorUtils.createTitleCell(Inter.getLocText("BI-Summary_Values"), rowIdx, 1, 0, rowDimensionLen);
+            pagedIterator.addCell(cell);
+            FinalInt sumIdx = new FinalInt();
+            sumIdx.value = maxColumnDimensionsLength;
+            generateTopChildren(widget, xLeftNodes[i], pagedIterator, rowIdx, sumIdx, 1);
+        }
     }
 
-    private static boolean needSumCell (BIXLeftNode node) {
-        BIXLeftNode temp = node;
-        return temp.getSibling() != null && temp.getSibling().getParent() != null && (temp.getParent() != temp.getSibling().getParent());
+    private static boolean checkIfGenerateRowSumCell(int sumRowSum, int currentRow) {
+        return sumRowSum == currentRow;
     }
 
     @Override
