@@ -80,10 +80,6 @@ public class HorGroupExecutor extends AbstractTableWidgetExecutor<Node> {
 
     private void generateTitle(Node node, TableWidget widget, BIDimension[] colDimension, StreamPagedIterator pagedIterator) {
 
-//        if (widget.isOrder() == 1) {
-//            CBCell cell = ExecutorUtils.createTitleCell(Inter.getLocText("BI-Number_Index"), 0, colDimension.length, 0, 1);
-//            pagedIterator.addCell(cell);
-//        }
         int rowIdx = 0;
         while (rowIdx < colDimension.length) {
             CBCell cell = ExecutorUtils.createTitleCell(colDimension[rowIdx].getText(), rowIdx, 1, 0, 1);
@@ -102,7 +98,7 @@ public class HorGroupExecutor extends AbstractTableWidgetExecutor<Node> {
                 pagedIterator.addCell(dimCell);
                 columnIdx.value += widget.showColumnTotal() ? temp.getTotalLengthWithSummary() : temp.getTotalLength();
                 if (widget.showColumnTotal()) {
-                    generateTitleSumCells(temp, pagedIterator, rowIdx, columnIdx, temp.getDeep());
+                    generateTitleSumCells(temp, pagedIterator, rowIdx, columnIdx, colDimension.length);
                 }
                 temp = temp.getSibling();
             }
@@ -110,11 +106,10 @@ public class HorGroupExecutor extends AbstractTableWidgetExecutor<Node> {
         }
     }
 
-    protected static void generateTitleSumCells(Node temp, StreamPagedIterator pagedIterator, int rowIdx, FinalInt columnIdx, int lastSumRowSpan) {
+    protected static void generateTitleSumCells(Node temp, StreamPagedIterator pagedIterator, int rowIdx, FinalInt columnIdx, int maxColumnDimLen) {
 
         if (checkIfGenerateSumCell(temp) && temp.getParent().getChildLength() != 1) {
-            int rowSpan = temp.getSibling() == null ? lastSumRowSpan : temp.getDeep();
-            CBCell cell = ExecutorUtils.createTitleCell(Inter.getLocText("BI-Summary_Values"), rowIdx, rowSpan, columnIdx.value, 1);
+            CBCell cell = ExecutorUtils.createTitleCell(Inter.getLocText("BI-Summary_Values"), rowIdx, maxColumnDimLen - rowIdx, columnIdx.value, 1);
             pagedIterator.addCell(cell);
         }
         adjustColumnIdx(temp, columnIdx);

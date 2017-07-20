@@ -137,11 +137,11 @@ public class ComplexHorGroupExecutor extends AbstractTableWidgetExecutor {
                     diff = widget.showColumnTotal() ? temp.getTotalLengthWithSummary() : temp.getTotalLength();
                     columnIdx.value += diff;
                     if (widget.showColumnTotal()) {
-                        HorGroupExecutor.generateTitleSumCells(temp, pagedIterator, colDimensionIdx, columnIdx, rowSpan);
+                        HorGroupExecutor.generateTitleSumCells(temp, pagedIterator, colDimensionIdx, columnIdx, maxColumnDimLen);
                     }
                     temp = temp.getSibling();
                 }
-                lastAreaColumnIdx[i] = columnIdx.value + diff;
+                lastAreaColumnIdx[i] = columnIdx.value;
             } else {
                 columnIdx.value = lastAreaColumnIdx[i];
             }
