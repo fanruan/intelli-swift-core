@@ -2,11 +2,14 @@ package com.fr.bi.cal.analyze.report.report.widget.chart.types;
 
 import com.fr.bi.cal.analyze.report.report.widget.VanChartWidget;
 import com.fr.bi.conf.report.map.BIWMSManager;
+import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.general.Inter;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
 import com.fr.stable.StableUtils;
+
+import java.util.List;
 
 /**
  * Created by eason on 2017/2/27.
@@ -25,6 +28,32 @@ public class VanGisWidget extends VanChartWidget{
         settings.put("backgroundLayerInfo", Inter.getLocText("BI-GAO_DE_MAP"));
 
         return settings;
+    }
+
+    protected void dealView(List<String> sorted, JSONObject vjo) throws JSONException{
+        super.dealView(sorted, vjo);
+
+        JSONArray ja = JSONArray.create();
+
+        int seriesRegion = Integer.parseInt(BIReportConstant.REGION.DIMENSION2);
+
+        for (String region : sorted) {
+
+            if (Integer.parseInt(region) > seriesRegion) {
+                continue;
+            }
+
+            JSONArray tmp = vjo.getJSONArray(region);
+
+            for (int j = 0; j < tmp.length(); j++) {
+                String key = tmp.getString(j);
+                ja.put(key);
+            }
+
+            vjo.remove(region);
+        }
+
+        vjo.put(BIReportConstant.REGION.DIMENSION1, ja);
     }
 
     public JSONObject createOptions(JSONObject globalStyle, JSONObject data) throws Exception{
