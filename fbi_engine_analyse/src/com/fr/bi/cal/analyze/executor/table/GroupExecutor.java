@@ -171,10 +171,6 @@ public class GroupExecutor extends AbstractTableWidgetExecutor<Node> {
         if ((widget.getViewTargets().length != 0) && checkIfGenerateSumCell(temp)) {
             if (temp.getParent().getChildLength() != 1) {
                 rowIdx.value++;
-//                if (widget.isOrder() == 1 && temp.getSibling() == null) {
-//                    CBCell cell = ExecutorUtils.createTitleCell(Inter.getLocText("BI-Summary_Values"), rowIdx.value, 1, 0, 1);
-//                    pagedIterator.addCell(cell);
-//                }
                 CBCell cell = ExecutorUtils.createTitleCell(Inter.getLocText("BI-Summary_Values"), rowIdx.value, 1, columnIdx, maxRowDimensionsLength - columnIdx);
                 pagedIterator.addCell(cell);
                 generateTargetCells(temp.getParent(), widget, pagedIterator, rowIdx.value, true, maxRowDimensionsLength);
@@ -221,7 +217,7 @@ public class GroupExecutor extends AbstractTableWidgetExecutor<Node> {
             if (dim.getGroup().getType() == BIReportConstant.GROUP.YMD && GeneralUtils.string2Number(data) != null) {
                 v = DateUtils.DATEFORMAT2.format(new Date(GeneralUtils.string2Number(data).longValue()));
             }
-            if (!CompareUtils.isEqual(v, dimensionNames[i]) || (i == rowDimensions.length - 1) || temp.getParent().getTotalLength() == 1 ) {
+            if (dimensionNames[i] != v || (i == rowDimensions.length - 1) || temp.getParent().getTotalLength() == 1 ) {
                 oddEven[i]++;
                 int columnSpanOffSet = i == rowDimensions.length - 1 ? maxRowDimensionsLength - rowDimensions.length : 0;
                 CBCell cell = ExecutorUtils.createValueCell(v, rowIdx, rowSpan, i, 1 + columnSpanOffSet, Style.getInstance(), rowIdx % 2 == 1);
