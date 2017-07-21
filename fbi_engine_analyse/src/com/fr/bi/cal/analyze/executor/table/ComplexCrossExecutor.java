@@ -154,18 +154,21 @@ public class ComplexCrossExecutor extends AbstractTableWidgetExecutor<XNode> {
                 tempNodes[nodeIdx] = getFirstChildOfCurrentRow(tempNodes[nodeIdx], rowIdx);
                 BIDimension dim = colDimensions[rowIdx];
                 Node node = tempNodes[nodeIdx];
-                while (node != null && ((nodeIdx != tempNodes.length - 1 && columnIdx.value < colTitleStartIdx[nodeIdx + 1]) || nodeIdx == tempNodes.length - 1)) {
-                    Object data = node.getData();
-                    String v = dim.toString(data);
-                    if (dim.getGroup().getType() == BIReportConstant.GROUP.YMD && GeneralUtils.string2Number(v) != null) {
-                        v = DateUtils.DATEFORMAT2.format(new Date(GeneralUtils.string2Number(v).longValue()));
+                boolean thisNodeIsEnd = nodeIdx != tempNodes.length - 1 && columnIdx.value < colTitleStartIdx[nodeIdx + 1];
+                if (nodeIdx == tempNodes.length - 1 || thisNodeIsEnd) {
+                    while (node != null) {
+                        Object data = node.getData();
+                        String v = dim.toString(data);
+                        if (dim.getGroup().getType() == BIReportConstant.GROUP.YMD && GeneralUtils.string2Number(v) != null) {
+                            v = DateUtils.DATEFORMAT2.format(new Date(GeneralUtils.string2Number(v).longValue()));
+                        }
+                        int rowSpan = (rowIdx == colDimLen - 1) ? (rowTitleSpan - colDimLen + 1) : 1;
+                        int colSpan = (widget.showColumnTotal() ? node.getTotalLengthWithSummary() : node.getTotalLength()) * usedSumTarget.length;
+                        CBCell cell = ExecutorUtils.createTitleCell(v, rowIdx, rowSpan, columnIdx.value, colSpan);
+                        pagedIterator.addCell(cell);
+                        columnIdx.value += colSpan;
+                        node = node.getSibling();
                     }
-                    int rowSpan = (rowIdx == colDimLen - 1) ? (rowTitleSpan - colDimLen + 1) : 1;
-                    int colSpan = (widget.showColumnTotal() ? node.getTotalLengthWithSummary() : node.getTotalLength()) * usedSumTarget.length;
-                    CBCell cell = ExecutorUtils.createTitleCell(v, rowIdx, rowSpan, columnIdx.value, colSpan);
-                    pagedIterator.addCell(cell);
-                    columnIdx.value += colSpan;
-                    node = node.getSibling();
                 }
             }
         }
