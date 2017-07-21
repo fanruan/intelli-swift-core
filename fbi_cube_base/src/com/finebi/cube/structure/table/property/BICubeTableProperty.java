@@ -501,7 +501,7 @@ public class BICubeTableProperty implements ICubeTablePropertyService {
             }
             removedList.add(removedListReader.getSpecificValue(i));
         } catch (BIResourceInvalidException e) {
-            BILoggerFactory.getLogger().error(e.getMessage(),e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
         return removedList;
     }
@@ -669,63 +669,8 @@ public class BICubeTableProperty implements ICubeTablePropertyService {
     }
 
     public void forceRelease() {
-        if (isFieldWriterAvailable()) {
-            fieldInfoWriter.forceRelease();
-            fieldInfoWriter = null;
-        }
-        if (isFieldReaderAvailable()) {
-            fieldInfoReader.forceRelease();
-            fieldInfoReader = null;
-        }
-
-        if (isRowCountReaderAvailable()) {
-            rowCountReader.forceRelease();
-            rowCountReader = null;
-        }
-        if (isRowCountWriterAvailable()) {
-            rowCountWriter.forceRelease();
-            rowCountWriter = null;
-        }
-        if (isLastExecuteTimeReaderAvailable()) {
-            lastExecuteTimeReader.forceRelease();
-            lastExecuteTimeReader = null;
-        }
-        if (isLastExecuteTimeWriterAvailable()) {
-            lastExecuteTimeWriter.forceRelease();
-            lastExecuteTimeWriter = null;
-        }
-        if (isCurrentExecuteTimeReaderAvailable()) {
-            currentExecuteTimeReader.forceRelease();
-            currentExecuteTimeReader = null;
-        }
-        if (isCurrentExecuteTimeWriterAvailable()) {
-            currentExecuteTimeWriter.forceRelease();
-            currentExecuteTimeWriter = null;
-        }
-        if (isParentWriterAvailable()) {
-            parentsWriter.forceRelease();
-            parentsWriter = null;
-        }
-        if (isParentReaderAvailable()) {
-            parentsReader.forceRelease();
-            parentsReader = null;
-        }
-        if (isRemoveListWriterAvailable()) {
-            removeListWriter.clear();
-            removeListWriter = null;
-        }
-        if (isRemoveListReaderAvailable()) {
-            removeListReader.clear();
-            removeListReader = null;
-        }
-        if (parentFieldProperty != null) {
-            parentFieldProperty.forceReleaseWriter();
-            parentFieldProperty = null;
-        }
-        if (version != null) {
-            (version).forceReleaseWriter();
-            version = null;
-        }
+        forceReleaseReader();
+        forceReleaseWriter();
     }
 
     @Override
