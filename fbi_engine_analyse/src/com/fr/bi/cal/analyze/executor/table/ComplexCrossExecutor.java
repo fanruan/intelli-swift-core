@@ -327,7 +327,7 @@ public class ComplexCrossExecutor extends AbstractTableWidgetExecutor<XNode> {
 
     private void generateTopChildren(TableWidget widget, BIXLeftNode temp, StreamPagedIterator pagedIterator,
                                      int rowIdx, int titleRowSpan) {
-        int columnIdx = rowData.getMaxArrayLength() + 1;
+        int columnIdx = rowData.getMaxArrayLength();
         Number[][] values = temp.getXValue();
         for (int j = 0; j < values[0].length; j++) {
             for (int i = 0; i < widget.getUsedTargetID().length; i++) {
