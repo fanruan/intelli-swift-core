@@ -81,7 +81,7 @@ public class BIReportor implements BIReport {
      * @return widget对象
      */
     @Override
-    public BIWidget getWidgetByName(String name) {
+    public BIWidget getWidgetById(String name) {
         for (int i = 0, len = getWidgetsCount(); i < len; i++) {
             if (ComparatorUtils.equals(widgets.get(i).getWidgetName(), name)) {
                 return widgets.get(i);

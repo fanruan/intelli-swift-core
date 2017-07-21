@@ -232,7 +232,7 @@ public class BISession extends BIAbstractSession {
     }
 
     public ResultWorkBook getExportBookByName(String name) throws CloneNotSupportedException {
-        BIWidget widget = report.getWidgetByName(name);
+        BIWidget widget = report.getWidgetById(name);
         if (widget != null) {
             widget = (BIWidget) widget.clone();
             switch (widget.getType()) {

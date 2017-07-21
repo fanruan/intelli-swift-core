@@ -42,7 +42,7 @@ public class BIReportNodeLockDAO extends PlatformDataAccessObject {
                 return list.get(0);
             }
         } catch (Exception e) {
-            BILoggerFactory.getLogger().info(e.getMessage());
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
             return null;
         }
     }
