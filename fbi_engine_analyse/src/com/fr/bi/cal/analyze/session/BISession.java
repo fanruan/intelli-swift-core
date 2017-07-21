@@ -165,7 +165,9 @@ public class BISession extends BIAbstractSession {
                     } else {
                         //                    集群模式下，无法获得远程机器的session，将时间和锁绑定
                         SessionIDInfor ss = SessionDealWith.getSessionIDInfor(l.getSessionId());
-                        t = ((BISession) ss).lastTime;
+                        if (ss != null) {
+                            t = ((BISession) ss).lastTime;
+                        }
                     }
                     //45- 30 超过15-45秒还没反應可能是没有心跳
                     if (System.currentTimeMillis() - t < EDIT_TIME) {
