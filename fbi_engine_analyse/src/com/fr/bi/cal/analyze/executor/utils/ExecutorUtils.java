@@ -4,7 +4,6 @@ import com.fr.base.CoreDecimalFormat;
 import com.fr.base.Style;
 import com.fr.base.background.ColorBackground;
 import com.fr.bi.cal.report.engine.CBCell;
-import com.fr.bi.conf.report.style.BITableStyle;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.general.FRFont;
 import com.fr.general.GeneralUtils;
@@ -112,8 +111,6 @@ public class ExecutorUtils {
         cell.setRowSpan(rowSpan);
         cell.setColumn(columnIdx);
         cell.setColumnSpan(columnSpan);
-        //默认CellGUIAttr
-        cell.setCellGUIAttr(BITableStyle.getInstance().getCellAttr());
         return cell;
     }
 

@@ -7,7 +7,7 @@ import com.fr.bi.cal.analyze.report.report.widget.chart.export.item.ITableItem;
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.item.constructor.BISummaryDataConstructor;
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.item.constructor.DataConstructor;
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.utils.BITableDimensionHelper;
-import com.fr.bi.cal.analyze.report.report.widget.chart.export.utils.BITableStyleHelper;
+import com.fr.bi.conf.report.style.table.BITableStyleHelper;
 import com.fr.bi.conf.report.widget.IWidgetStyle;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.utils.program.BIJsonUtils;
