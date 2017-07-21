@@ -452,8 +452,6 @@ public class CubeIndexLoader {
         NodeAndPageInfo leftInfo = createPageGroupNode(widget, extendTargets(usedTargets, node, widget.showColumnTotal()), rowDimension, creator, page, expander.getYExpander(),
                 session, createRowOperator(page, widget), pg, true, false, false, true);
         calXCalculateMetrics(usedTargets, (BIXLeftNode) leftInfo.getNode(), topLen);
-
-        calXCalculateMetrics(usedTargets, (XLeftNode) leftInfo.getNode(), topLen);
         if (usedTargets.length != 0 && isEmpty(leftInfo)) {
             leftInfo.getNode().getChilds().clear();
             leftInfo.setHasNext(false);
