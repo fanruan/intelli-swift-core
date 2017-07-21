@@ -262,7 +262,7 @@ public class ComplexCrossExecutor extends AbstractTableWidgetExecutor<XNode> {
                 //第一次出现表头时创建cell
                 BIXLeftNode parent = xLeftNode[i];
                 if (i == 0) {
-                    generateDimensionName(widget, parent, rowDimensions, pagedIterator, dimensionNames, oddEven, sumRowNum, rowIdx, columnIdx, maxColDimLen, titleRowSpan);
+                    generateDimensionName(parent, rowDimensions, pagedIterator, dimensionNames, oddEven, sumRowNum, rowIdx.value, columnIdx, maxColDimLen, titleRowSpan);
                 }
                 generateTopChildren(widget, temp, pagedIterator, rowIdx.value, titleRowSpan);
                 if (i == 0) {
@@ -294,12 +294,13 @@ public class ComplexCrossExecutor extends AbstractTableWidgetExecutor<XNode> {
         return xLeftNode;
     }
 
-    private void generateDimensionName(TableWidget widget, BIXLeftNode parent, BIDimension[] rowDimension, StreamPagedIterator pagedIterator,
-                                       Object[] dimensionNames, int[] oddEven, int[] sumRowNum, FinalInt rowIdx, FinalInt columnIdx, int maxDimLen, int titleRowSpan) {
+    private void generateDimensionName(BIXLeftNode parent, BIDimension[] rowDimension, StreamPagedIterator pagedIterator,
+                                       Object[] dimensionNames, int[] oddEven, int[] sumRowNum, int rowIdx, FinalInt columnIdx, int maxDimLen, int titleRowSpan) {
 
         int i = rowDimension.length;
         while (parent.getParent() != null) {
-            int rowSpan = widget.showRowToTal() ? parent.getTotalLengthWithSummary() : parent.getTotalLength();
+//            int rowSpan = widget.showRowToTal() ? parent.getTotalLengthWithSummary() : parent.getTotalLength();
+            int rowSpan = parent.getTotalLength();
             Object data = parent.getData();
             BIDimension dim = rowDimension[--i];
             Object v = dim.getValueByType(data);
@@ -308,9 +309,9 @@ public class ComplexCrossExecutor extends AbstractTableWidgetExecutor<XNode> {
             }
             if (v != dimensionNames[i] || (i == dimensionNames.length - 1)) {
                 oddEven[i]++;
-                CBCell cell = ExecutorUtils.createValueCell(v, rowIdx.value, rowSpan, i, 1, Style.getInstance(), (rowIdx.value - titleRowSpan + 1) % 2 == 1);
+                CBCell cell = ExecutorUtils.createValueCell(v, rowIdx, rowSpan, i, 1, Style.getInstance(), (rowIdx - titleRowSpan + 1) % 2 == 1);
                 pagedIterator.addCell(cell);
-                sumRowNum[i] = rowIdx.value + parent.getTotalLengthWithSummary() - 1;
+                sumRowNum[i] = rowIdx + parent.getTotalLengthWithSummary() - 1;
                 //复杂表两个区域的维度的情况下 需要设置最后一个维度单元格columnSpan
                 if (i == dimensionNames.length - 1) {
                     int diff = maxDimLen - rowDimension.length;
