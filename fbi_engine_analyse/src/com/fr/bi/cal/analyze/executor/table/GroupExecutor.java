@@ -217,7 +217,7 @@ public class GroupExecutor extends AbstractTableWidgetExecutor<Node> {
             if (dim.getGroup().getType() == BIReportConstant.GROUP.YMD && GeneralUtils.string2Number(data) != null) {
                 v = DateUtils.DATEFORMAT2.format(new Date(GeneralUtils.string2Number(data).longValue()));
             }
-            if (dimensionNames[i] != v || (i == rowDimensions.length - 1) || temp.getParent().getTotalLength() == 1 ) {
+            if (dimensionNames[i] != v || (i == rowDimensions.length - 1) || temp.getParent().getTotalLength() == 1) {
                 oddEven[i]++;
                 int columnSpanOffSet = i == rowDimensions.length - 1 ? maxRowDimensionsLength - rowDimensions.length : 0;
                 CBCell cell = ExecutorUtils.createValueCell(v, rowIdx, rowSpan, i, 1 + columnSpanOffSet, Style.getInstance(), rowIdx % 2 == 1);
@@ -244,7 +244,7 @@ public class GroupExecutor extends AbstractTableWidgetExecutor<Node> {
         int calpage = paging.getOperator();
         CubeIndexLoader cubeIndexLoader = CubeIndexLoader.getInstance(session.getUserId());
         Node tree = cubeIndexLoader.loadPageGroup(false, widget, createTarget4Calculate(), usedDimensions,
-                                                  allDimensions, allSumTarget, calpage, widget.isRealData(), session, expander.getYExpander());
+                allDimensions, allSumTarget, calpage, widget.isRealData(), session, expander.getYExpander());
         if (tree == null) {
             tree = new Node(allSumTarget.length);
         }
@@ -280,7 +280,7 @@ public class GroupExecutor extends AbstractTableWidgetExecutor<Node> {
         int calPage = paging.getOperator();
         CubeIndexLoader cubeIndexLoader = CubeIndexLoader.getInstance(session.getUserId());
         Node n = cubeIndexLoader.getStopWhenGetRowNode(stopRow, widget, createTarget4Calculate(), usedDimensions,
-                                                       allDimensions, allSumTarget, calPage, session, CrossExpander.ALL_EXPANDER.getYExpander());
+                allDimensions, allSumTarget, calPage, session, CrossExpander.ALL_EXPANDER.getYExpander());
         return n;
     }
 
@@ -507,8 +507,8 @@ public class GroupExecutor extends AbstractTableWidgetExecutor<Node> {
             if (!targetKey.equals(linkTargetTable)) {
                 return null;
             }
-            List<Object> rowData = getLinkRowData(clicked, target,false);
-            Node linkNode = getStopOnRowNode(rowData.toArray(),widget.getViewDimensions());
+            List<Object> rowData = getLinkRowData(clicked, target, false);
+            Node linkNode = getStopOnRowNode(rowData.toArray(), widget.getViewDimensions());
             // 总汇总值
             if (rowData == null || rowData.size() == 0) {
                 for (String key : clicked.keySet()) {
@@ -518,7 +518,7 @@ public class GroupExecutor extends AbstractTableWidgetExecutor<Node> {
             }
             linkGvi = GVIUtils.AND(linkGvi, getLinkNodeFilter(linkNode, target, rowData));
         } catch (Exception e) {
-            BILoggerFactory.getLogger(GroupExecutor.class).info("error in get link filter",e);
+            BILoggerFactory.getLogger(GroupExecutor.class).info("error in get link filter", e);
         }
         return linkGvi;
     }
