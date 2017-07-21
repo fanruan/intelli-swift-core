@@ -566,7 +566,7 @@ public class BICubeTableProperty implements ICubeTablePropertyService {
     protected void resetFieldReader() {
         if (isFieldReaderAvailable()) {
             fieldInfoReader.clear();
-            fieldInfoReader = null;
+//            fieldInfoReader = null;
         }
     }
 
@@ -591,7 +591,7 @@ public class BICubeTableProperty implements ICubeTablePropertyService {
     protected void resetRowCountReader() {
         if (isRowCountReaderAvailable()) {
             rowCountReader.clear();
-            rowCountReader = null;
+//            rowCountReader = null;
         }
     }
 
@@ -605,7 +605,7 @@ public class BICubeTableProperty implements ICubeTablePropertyService {
     protected void resetLastExecuteTimeReader() {
         if (isLastExecuteTimeReaderAvailable()) {
             lastExecuteTimeReader.clear();
-            lastExecuteTimeReader = null;
+//            lastExecuteTimeReader = null;
         }
     }
 
@@ -619,7 +619,7 @@ public class BICubeTableProperty implements ICubeTablePropertyService {
     protected void resetCurrentExecuteTimeReader() {
         if (isCurrentExecuteTimeReaderAvailable()) {
             currentExecuteTimeReader.clear();
-            currentExecuteTimeReader = null;
+//            currentExecuteTimeReader = null;
         }
     }
 
@@ -633,14 +633,14 @@ public class BICubeTableProperty implements ICubeTablePropertyService {
     protected void resetParentReader() {
         if (isParentReaderAvailable()) {
             parentsReader.clear();
-            parentsReader = null;
+//            parentsReader = null;
         }
     }
 
     protected void resetRemoveListReader() {
         if (isRemoveListReaderAvailable()) {
             removeListReader.clear();
-            removeListReader = null;
+//            removeListReader = null;
         }
     }
 
