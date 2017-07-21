@@ -10,4 +10,6 @@ public interface BIXLeftNode extends BINode {
     Number[] getSubValues(XTargetGettingKey key);
 
     void setXValue(XTargetGettingKey key, Number sumValue);
+
+    Number[][] getXValue();
 }

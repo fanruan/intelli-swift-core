@@ -199,27 +199,6 @@ public class TableWidget extends BISummaryWidget {
         }
     }
 
-    public void setGroupTableType() {
-
-        tableType = BIReportConstant.TABLE_WIDGET.GROUP_TYPE;
-    }
-
-    public void addColumn2Row() {
-
-        if (data != null) {
-            data.addColumn2Row();
-            String[] array = data.getRow();
-            ArrayList<BIDimension> usedDimensions = new ArrayList<BIDimension>();
-            for (String anArray : array) {
-                BIDimension dimension = BITravalUtils.getTargetByName(anArray, dimensions);
-                if (dimension.isUsed()) {
-                    usedDimensions.add(dimension);
-                }
-            }
-            usedDimension = usedDimensions.toArray(new BIDimension[usedDimensions.size()]);
-        }
-    }
-
     /**
      * 返回费复杂报表时的excute
      *
@@ -602,7 +581,7 @@ public class TableWidget extends BISummaryWidget {
         GroupValueIndex linkGvi = null;
         // 分组表,交叉表,复杂表的时候才有联动的必要
         if (linkExecutor instanceof AbstractTableWidgetExecutor) {
-            return ((AbstractTableWidgetExecutor) linkExecutor).getClieckGvi(clicked, targetKey);
+            return ((AbstractTableWidgetExecutor) linkExecutor).getClickGvi(clicked, targetKey);
         }
         return linkGvi;
     }

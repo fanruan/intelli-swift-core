@@ -1,16 +1,21 @@
 package com.fr.bi.cal.analyze.executor.table;
 
 import com.finebi.cube.conf.table.BusinessTable;
+import com.fr.base.Style;
 import com.fr.bi.cal.analyze.cal.index.loader.CubeIndexLoader;
 import com.fr.bi.cal.analyze.cal.result.CrossExpander;
 import com.fr.bi.cal.analyze.cal.result.Node;
 import com.fr.bi.cal.analyze.executor.BIAbstractExecutor;
 import com.fr.bi.cal.analyze.executor.paging.Paging;
+import com.fr.bi.cal.analyze.executor.utils.ExecutorUtils;
 import com.fr.bi.cal.analyze.report.report.widget.TableWidget;
 import com.fr.bi.cal.analyze.session.BISession;
+import com.fr.bi.cal.report.engine.CBCell;
+import com.fr.bi.conf.report.style.DetailChartSetting;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.conf.report.widget.field.target.BITarget;
 import com.fr.bi.field.target.target.BISummaryTarget;
+import com.fr.bi.report.key.TargetGettingKey;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.general.ComparatorUtils;
 import com.fr.json.JSONArray;
@@ -54,6 +59,16 @@ public abstract class AbstractTableWidgetExecutor<T> extends BIAbstractExecutor<
     public Rectangle getSouthEastRectangle() {
 
         return null;
+    }
+
+    protected static CBCell formatTargetCell(Object data, DetailChartSetting setting, TargetGettingKey key, int rowIdx, int columnIdx, boolean isOdd) {
+        int numLevel = setting.getNumberLevelByTargetId(key.getTargetName());
+        int formatDecimal = setting.getFormatDecimalByTargetId(key.getTargetName());
+        boolean separator = setting.getSeparatorByTargetId(key.getTargetName());
+        data = ExecutorUtils.formatExtremeSumValue(data, numLevel);
+        Style style = Style.getInstance();
+        style = style.deriveFormat(ExecutorUtils.formatDecimalAndSeparator(data, numLevel, formatDecimal, separator));
+        return ExecutorUtils.createValueCell(data, rowIdx, 1, columnIdx, 1, style, isOdd);
     }
 
     public BISummaryTarget[] createTarget4Calculate() {
@@ -108,7 +123,7 @@ public abstract class AbstractTableWidgetExecutor<T> extends BIAbstractExecutor<
      * @param targetKey
      * @return
      */
-    abstract public GroupValueIndex getClieckGvi(Map<String, JSONArray> clicked, BusinessTable targetKey);
+    abstract public GroupValueIndex getClickGvi(Map<String, JSONArray> clicked, BusinessTable targetKey);
 
 
     /**
