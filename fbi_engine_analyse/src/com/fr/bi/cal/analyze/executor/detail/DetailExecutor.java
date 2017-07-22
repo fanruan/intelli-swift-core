@@ -80,7 +80,7 @@ public class DetailExecutor extends AbstractDetailExecutor {
                                 start.value++;
                             }
                             //row + 1 ? 不然覆盖掉了列名
-                            fillOneLine(iter.getIteratorByPage(start.value), newRow, row.getValues(), currentRow, usedDimensionIndexes);
+                            fillOneLine(iter.getIteratorByPage(start.value), newRow, row.getValues(), usedDimensionIndexes);
                             return false;
                         }
                     };

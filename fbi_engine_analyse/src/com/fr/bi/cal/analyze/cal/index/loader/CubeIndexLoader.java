@@ -561,7 +561,7 @@ public class CubeIndexLoader {
             createFilterIndexByNode(filterIndexList, n, showSum, key);
         }
         //如果是最后一层的节点，或者是超过一个子节点并且显示汇总的就要计算
-        if ((node.getChildLength() == 0 || (showSum && node.getTotalLength() != 1))) {
+        if ((node.getChildLength() == 0 || (showSum && node.getChildLength() != 1))) {
             filterIndexList.add(node.getTargetIndex(key));
         }
     }
@@ -570,7 +570,7 @@ public class CubeIndexLoader {
         List<Node> list = new ArrayList<Node>();
         for (Node n : nodeList) {
             list.addAll(n.getChilds());
-            if ((n.getChildLength() == 0 || (showSum && n.getTotalLength() != 1))) {
+            if ((n.getChildLength() == 0 || (showSum && n.getChildLength() != 1))) {
                 length.value++;
             }
         }

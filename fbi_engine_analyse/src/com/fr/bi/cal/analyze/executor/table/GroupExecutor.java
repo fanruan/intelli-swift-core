@@ -104,13 +104,13 @@ public class GroupExecutor extends AbstractTableWidgetExecutor<Node> {
 
         int columnIdx = 0;
 //        if (widget.isOrder() == 1) {
-//            CBCell cell = ExecutorUtils.createTitleCell(Inter.getLocText("BI-Number_Index"), 0, 1, columnIdx++, 1);
+//            CBCell cell = ExecutorUtils.createCBCell(Inter.getLocText("BI-Number_Index"), 0, 1, columnIdx++, 1);
 //            pagedIterator.addCell(cell);
 //        }
         for (int i = 0; i < usedDimensions.length; i++) {
             //复杂表 行表头 区域1有2两个维度、区域2有3个维度，区域1里最后一个维度的columnSpan需要特殊处理
             int columnSpanOffSet = i == usedDimensions.length - 1 ? maxRowDimensionsLength - usedDimensions.length : 0;
-            CBCell cell = ExecutorUtils.createTitleCell(usedDimensions[i].getText(), 0, 1, columnIdx++, columnSpanOffSet + 1);
+            CBCell cell = ExecutorUtils.createCBCell(usedDimensions[i].getText(), 0, 1, columnIdx++, columnSpanOffSet + 1, tableStyle.getHeaderStyle(Style.getInstance()));
             pagedIterator.addCell(cell);
         }
         for (BISummaryTarget anUsedSumTarget : usedSumTarget) {
@@ -120,7 +120,7 @@ public class GroupExecutor extends AbstractTableWidgetExecutor<Node> {
 
             String dimensionUnit = ComparatorUtils.equals(levelAndUnit, StringUtils.EMPTY) ? "" : "(" + levelAndUnit + ")";
 
-            CBCell cell = ExecutorUtils.createTitleCell(anUsedSumTarget.getText() + dimensionUnit, 0, 1, columnIdx++, 1);
+            CBCell cell = ExecutorUtils.createCBCell(anUsedSumTarget.getText() + dimensionUnit, 0, 1, columnIdx++, 1, tableStyle.getHeaderStyle(Style.getInstance()));
             pagedIterator.addCell(cell);
         }
     }
@@ -171,7 +171,7 @@ public class GroupExecutor extends AbstractTableWidgetExecutor<Node> {
         if ((widget.getViewTargets().length != 0) && checkIfGenerateSumCell(temp)) {
             if (temp.getParent().getChildLength() != 1) {
                 rowIdx.value++;
-                CBCell cell = ExecutorUtils.createTitleCell(Inter.getLocText("BI-Summary_Values"), rowIdx.value, 1, columnIdx, maxRowDimensionsLength - columnIdx);
+                CBCell cell = ExecutorUtils.createCBCell(Inter.getLocText("BI-Summary_Values"), rowIdx.value, 1, columnIdx, maxRowDimensionsLength - columnIdx, tableStyle.getSumRowStyle(Style.getInstance()));
                 pagedIterator.addCell(cell);
                 generateTargetCells(temp.getParent(), widget, pagedIterator, rowIdx.value, true, maxRowDimensionsLength);
             }
@@ -220,7 +220,8 @@ public class GroupExecutor extends AbstractTableWidgetExecutor<Node> {
             if (!ComparatorUtils.equals(dimensionNames[i], v) || (i == rowDimensions.length - 1) || temp.getParent().getTotalLength() == 1) {
                 oddEven[i]++;
                 int columnSpanOffSet = i == rowDimensions.length - 1 ? maxRowDimensionsLength - rowDimensions.length : 0;
-                CBCell cell = ExecutorUtils.createValueCell(v, rowIdx, rowSpan, i, 1 + columnSpanOffSet, Style.getInstance(), rowIdx % 2 == 1);
+                Style style = rowIdx % 2 == 1 ? tableStyle.getOddRowStyle(Style.getInstance()) : tableStyle.getEvenRowStyle(Style.getInstance());
+                CBCell cell = ExecutorUtils.createCBCell(v, rowIdx, rowSpan, i, 1 + columnSpanOffSet, style);
                 pagedIterator.addCell(cell);
                 dimensionNames[i] = v;
             }

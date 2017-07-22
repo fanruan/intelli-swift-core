@@ -103,8 +103,8 @@ public class ComplexHorGroupExecutor extends AbstractTableWidgetExecutor {
             if (firstColumnDimLen > columnDimIdx) {
                 //区域1 最后一个维度rowSpan根据最大区域的维度个数确定
                 int rowSpan = firstColumnDimLen - 1 == columnDimIdx ? maxColumnDimLen - columnDimIdx : 1;
-                CBCell cell = ExecutorUtils.createTitleCell(rowData.getDimensionArray(0)[columnDimIdx].getText(), columnDimIdx,
-                        rowSpan, columnIdx.value, 1);
+                CBCell cell = ExecutorUtils.createCBCell(rowData.getDimensionArray(0)[columnDimIdx].getText(), columnDimIdx,
+                        rowSpan, columnIdx.value, 1, tableStyle.getHeaderStyle(Style.getInstance()));
                 pagedIterator.addCell(cell);
             }
             columnIdx.value++;
@@ -130,7 +130,7 @@ public class ComplexHorGroupExecutor extends AbstractTableWidgetExecutor {
                         v = DateUtils.DATEFORMAT2.format(new Date(GeneralUtils.string2Number(v.toString()).longValue()));
                     }
                     int rowSpan = colDimensionIdx < (dimensions.length - 1) ? 1 : maxColumnDimLen - colDimensionIdx;
-                    CBCell dimCell = ExecutorUtils.createTitleCell(v, colDimensionIdx, rowSpan, columnIdx.value, widget.showColumnTotal() ? temp.getTotalLengthWithSummary() : temp.getTotalLength());
+                    CBCell dimCell = ExecutorUtils.createCBCell(v, colDimensionIdx, rowSpan, columnIdx.value, widget.showColumnTotal() ? temp.getTotalLengthWithSummary() : temp.getTotalLength(), tableStyle.getHeaderStyle(Style.getInstance()));
                     pagedIterator.addCell(dimCell);
                     diff = widget.showColumnTotal() ? temp.getTotalLengthWithSummary() : temp.getTotalLength();
                     columnIdx.value += diff;
@@ -160,7 +160,8 @@ public class ComplexHorGroupExecutor extends AbstractTableWidgetExecutor {
             FinalInt columnIdx = new FinalInt();
             columnIdx.value++;
             Object targetName = usedSumTarget[i].getText();
-            CBCell targetNameCell = ExecutorUtils.createValueCell(targetName, rowIdx + i, 1, 0, 1, Style.getInstance(),  (i + 1) % 2 == 1);
+            Style style = (i + 1) % 2 == 1 ? tableStyle.getOddRowStyle(Style.getInstance()) : tableStyle.getEvenRowStyle(Style.getInstance());
+                    CBCell targetNameCell = ExecutorUtils.createCBCell(targetName, rowIdx + i, 1, 0, 1, style);
             pagedIterator.addCell(targetNameCell);
             for (Node node : nodes) {
                 Node temp = node;

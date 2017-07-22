@@ -122,7 +122,7 @@ public class ComplexCrossExecutor extends AbstractTableWidgetExecutor<XNode> {
         while (colDimIdx < columnData.getMaxArrayLength()) {
             if (colDimIdx < firstColDims.length) {
                 int rowSpan = colDimIdx == firstColDims.length - 1 ? columnData.getMaxArrayLength() - colDimIdx : 1;
-                CBCell cell = ExecutorUtils.createTitleCell(firstColDims[colDimIdx].getText(), rowIdx.value, rowSpan, 0, rowData.getMaxArrayLength());
+                CBCell cell = ExecutorUtils.createCBCell(firstColDims[colDimIdx].getText(), rowIdx.value, rowSpan, 0, rowData.getMaxArrayLength(), tableStyle.getHeaderStyle(Style.getInstance()));
                 pagedIterator.addCell(cell);
             }
             getColDimensionsTitle(pagedIterator, tops, rowIdx.value, colTitleStartIdx);
@@ -132,7 +132,7 @@ public class ComplexCrossExecutor extends AbstractTableWidgetExecutor<XNode> {
         BIDimension[] firstRowDims = rowData.getDimensionArray(0);
         for (int i = 0; i < firstRowDims.length; i++) {
             int columnSpan = i == firstColDims.length - 1 ? rowData.getMaxArrayLength() - i : 1;
-            CBCell cell = ExecutorUtils.createTitleCell(firstRowDims[i].getText(), rowIdx.value, 1, i, columnSpan);
+            CBCell cell = ExecutorUtils.createCBCell(firstRowDims[i].getText(), rowIdx.value, 1, i, columnSpan, tableStyle.getHeaderStyle(Style.getInstance()));
             pagedIterator.addCell(cell);
         }
         if (widget.getViewTargets().length > 1) {
@@ -164,7 +164,7 @@ public class ComplexCrossExecutor extends AbstractTableWidgetExecutor<XNode> {
                         }
                         int rowSpan = (rowIdx == colDimLen - 1) ? (rowTitleSpan - colDimLen + 1) : 1;
                         int colSpan = (widget.showColumnTotal() ? node.getTotalLengthWithSummary() : node.getTotalLength()) * usedSumTarget.length;
-                        CBCell cell = ExecutorUtils.createTitleCell(v, rowIdx, rowSpan, columnIdx.value, colSpan);
+                        CBCell cell = ExecutorUtils.createCBCell(v, rowIdx, rowSpan, columnIdx.value, colSpan, tableStyle.getHeaderStyle(Style.getInstance()));
                         pagedIterator.addCell(cell);
                         columnIdx.value += colSpan;
                         node = node.getSibling();
@@ -184,7 +184,7 @@ public class ComplexCrossExecutor extends AbstractTableWidgetExecutor<XNode> {
     private void generateTitleSumCells(Node temp, TableWidget widget, StreamPagedIterator pagedIterator, int rowIdx, FinalInt columnIdx) {
 
         if (checkIfGenerateTitleSumCells(temp) && temp.getParent().getChildLength() != 1) {
-            CBCell cell = ExecutorUtils.createTitleCell(Inter.getLocText("BI-Summary_Values"), rowIdx, temp.getDeep(), columnIdx.value, widget.getViewTargets().length);
+            CBCell cell = ExecutorUtils.createCBCell(Inter.getLocText("BI-Summary_Values"), rowIdx, temp.getDeep(), columnIdx.value, widget.getViewTargets().length, tableStyle.getHeaderStyle(Style.getInstance()));
             pagedIterator.addCell(cell);
         }
         adjustColumnIdx(temp, widget, columnIdx);
@@ -238,7 +238,7 @@ public class ComplexCrossExecutor extends AbstractTableWidgetExecutor<XNode> {
     private void generateTargetTitleWithSum(String text, StreamPagedIterator pagedIterator, FinalInt columnIdx) {
         int rowIdx = columnData.getMaxArrayLength();
         for (BISummaryTarget anUsedSumTarget : usedSumTarget) {
-            CBCell cell = ExecutorUtils.createTitleCell(text + anUsedSumTarget.getText(), rowIdx, 1, columnIdx.value++, 1);
+            CBCell cell = ExecutorUtils.createCBCell(text + anUsedSumTarget.getText(), rowIdx, 1, columnIdx.value++, 1, tableStyle.getHeaderStyle(Style.getInstance()));
             pagedIterator.addCell(cell);
         }
     }
@@ -316,7 +316,8 @@ public class ComplexCrossExecutor extends AbstractTableWidgetExecutor<XNode> {
             }
             if (v != dimensionNames[i] || (i == dimensionNames.length - 1)) {
                 oddEven[i]++;
-                CBCell cell = ExecutorUtils.createValueCell(v, rowIdx, rowSpan, i, 1, Style.getInstance(), (rowIdx - titleRowSpan + 1) % 2 == 1);
+                Style style = (rowIdx - titleRowSpan + 1) % 2 == 1 ? tableStyle.getOddRowStyle(Style.getInstance()) : tableStyle.getEvenRowStyle(Style.getInstance());
+                CBCell cell = ExecutorUtils.createCBCell(v, rowIdx, rowSpan, i, 1, style);
                 pagedIterator.addCell(cell);
                 sumRowNum[i] = rowIdx + parent.getTotalLengthWithSummary() - 1;
                 //复杂表两个区域的维度的情况下 需要设置最后一个维度单元格columnSpan
@@ -349,7 +350,7 @@ public class ComplexCrossExecutor extends AbstractTableWidgetExecutor<XNode> {
         for (int i = sumRowSum.length - 1; i >= 0; i--) {
             //最后一个维度汇总行是本身
             if (i != sumRowSum.length - 1 && (widget.getViewTargets().length != 0) && checkIfGenerateRowSumCell(sumRowSum[i], rowIdx.value)) {
-                CBCell cell = ExecutorUtils.createTitleCell(Inter.getLocText("BI-Summary_Values"), rowIdx.value, 1, i + 1, maxColumnDimensionsLength - (i + 1));
+                CBCell cell = ExecutorUtils.createCBCell(Inter.getLocText("BI-Summary_Values"), rowIdx.value, 1, i + 1, maxColumnDimensionsLength - (i + 1), tableStyle.getSumRowStyle(Style.getInstance()));
                 pagedIterator.addCell(cell);
                 FinalInt sumIdx = new FinalInt();
                 sumIdx.value = maxColumnDimensionsLength;
@@ -371,7 +372,7 @@ public class ComplexCrossExecutor extends AbstractTableWidgetExecutor<XNode> {
                 xLeftNodes[i] = (BIXLeftNode) xLeftNodes[i].getParent();
             }
             if (i == 0) {
-                CBCell cell = ExecutorUtils.createTitleCell(Inter.getLocText("BI-Summary_Values"), rowIdx, 1, 0, rowData.getMaxArrayLength());
+                CBCell cell = ExecutorUtils.createCBCell(Inter.getLocText("BI-Summary_Values"), rowIdx, 1, 0, rowData.getMaxArrayLength(), tableStyle.getHeaderStyle(Style.getInstance()));
                 pagedIterator.addCell(cell);
             }
             FinalInt sumIdx = new FinalInt();

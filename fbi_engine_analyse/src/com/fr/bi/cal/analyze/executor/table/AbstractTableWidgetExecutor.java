@@ -11,6 +11,7 @@ import com.fr.bi.cal.analyze.executor.utils.ExecutorUtils;
 import com.fr.bi.cal.analyze.report.report.widget.TableWidget;
 import com.fr.bi.cal.analyze.session.BISession;
 import com.fr.bi.cal.report.engine.CBCell;
+import com.fr.bi.conf.report.style.BITableStyle;
 import com.fr.bi.conf.report.style.DetailChartSetting;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.conf.report.widget.field.target.BITarget;
@@ -35,6 +36,8 @@ public abstract class AbstractTableWidgetExecutor<T> extends BIAbstractExecutor<
 
     protected TableWidget widget;
 
+    protected static BITableStyle tableStyle;
+
     protected AbstractTableWidgetExecutor(TableWidget widget, Paging paging, BISession session) {
 
         super(widget, paging, session);
@@ -42,6 +45,9 @@ public abstract class AbstractTableWidgetExecutor<T> extends BIAbstractExecutor<
         usedSumTarget = widget.getViewTargets();
         allSumTarget = widget.getTargets();
         allDimensions = widget.getDimensions();
+
+        tableStyle= new BITableStyle(widget.getWidgetStyle().getThemeColor());
+
         //        this.expander = CrossExpander.ALL_EXPANDER;
     }
 
@@ -68,7 +74,8 @@ public abstract class AbstractTableWidgetExecutor<T> extends BIAbstractExecutor<
         data = ExecutorUtils.formatExtremeSumValue(data, numLevel);
         Style style = Style.getInstance();
         style = style.deriveFormat(ExecutorUtils.formatDecimalAndSeparator(data, numLevel, formatDecimal, separator));
-        return ExecutorUtils.createValueCell(data, rowIdx, 1, columnIdx, 1, style, isOdd);
+        style = isOdd ? tableStyle.getOddRowStyle(style) : tableStyle.getEvenRowStyle(style);
+        return ExecutorUtils.createCBCell(data, rowIdx, 1, columnIdx, 1, style);
     }
 
     public BISummaryTarget[] createTarget4Calculate() {
