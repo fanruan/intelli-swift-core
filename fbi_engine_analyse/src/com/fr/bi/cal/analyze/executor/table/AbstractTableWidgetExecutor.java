@@ -46,7 +46,7 @@ public abstract class AbstractTableWidgetExecutor<T> extends BIAbstractExecutor<
         allSumTarget = widget.getTargets();
         allDimensions = widget.getDimensions();
 
-        tableStyle= new BITableStyle(widget.getWidgetStyle().getThemeColor());
+        tableStyle= new BITableStyle(widget.getThemeColor());
 
         //        this.expander = CrossExpander.ALL_EXPANDER;
     }

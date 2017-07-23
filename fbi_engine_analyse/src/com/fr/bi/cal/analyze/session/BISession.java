@@ -317,8 +317,8 @@ public class BISession extends BIAbstractSession {
         this.lastTime = System.currentTimeMillis();
     }
 
-    public PageIteratorGroup getPageIteratorGroup(boolean useRealData, String widgetName) {
-        return getPageIteratorGroup(useRealData, widgetName, 0);
+    public PageIteratorGroup getPageIteratorGroup(boolean useRealData, String widgetID) {
+        return getPageIteratorGroup(useRealData, widgetID, 0);
     }
 
     @Override
@@ -327,25 +327,25 @@ public class BISession extends BIAbstractSession {
     }
 
 
-    public PageIteratorGroup getPageIteratorGroup(boolean useRealData, String widgetName, int i) {
+    public PageIteratorGroup getPageIteratorGroup(boolean useRealData, String widgetID, int i) {
         Map<String, ConcurrentHashMap<Object, PageIteratorGroup>> pmap = useRealData ? pageGroup : partPageGroup;
-        if (!pmap.containsKey(widgetName)) {
+        if (!pmap.containsKey(widgetID)) {
             throw new RuntimeException("error! page not found");
         }
-        ConcurrentHashMap<Object, PageIteratorGroup> map = pmap.get(widgetName);
+        ConcurrentHashMap<Object, PageIteratorGroup> map = pmap.get(widgetID);
         return map.get(i);
     }
 
-    public void setPageIteratorGroup(boolean useRealData, String widgetName, PageIteratorGroup pg) {
-        setPageIteratorGroup(useRealData, widgetName, pg, 0);
+    public void setPageIteratorGroup(boolean useRealData, String widgetID, PageIteratorGroup pg) {
+        setPageIteratorGroup(useRealData, widgetID, pg, 0);
     }
 
-    public void setPageIteratorGroup(boolean useRealData, String widgetName, PageIteratorGroup pg, int i) {
+    public void setPageIteratorGroup(boolean useRealData, String widgetID, PageIteratorGroup pg, int i) {
         Map<String, ConcurrentHashMap<Object, PageIteratorGroup>> pmap = useRealData ? pageGroup : partPageGroup;
-        ConcurrentHashMap<Object, PageIteratorGroup> map = pmap.get(widgetName);
+        ConcurrentHashMap<Object, PageIteratorGroup> map = pmap.get(widgetID);
         if (map == null) {
-            pmap.put(widgetName, new ConcurrentHashMap<Object, PageIteratorGroup>());
-            map = pmap.get(widgetName);
+            pmap.put(widgetID, new ConcurrentHashMap<Object, PageIteratorGroup>());
+            map = pmap.get(widgetID);
         }
         map.put(i, pg);
     }
