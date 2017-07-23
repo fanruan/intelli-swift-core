@@ -272,7 +272,8 @@ public class ComplexCrossExecutor extends AbstractTableWidgetExecutor<XNode> {
                 if (i == 0) {
                     generateDimensionName(parent, rowDimensions, pagedIterator, dimensionNames, oddEven, sumRowNum, rowIdx.value, columnIdx, maxColDimLen, titleRowSpan);
                 }
-                generateTopChildren(temp, pagedIterator, rowIdx.value, titleRowSpan, colTitleStartIdx[i]);
+                Style style = (rowIdx.value - titleRowSpan + 1) % 2 == 1 ? tableStyle.getOddRowStyle(Style.getInstance()) : tableStyle.getEvenRowStyle(Style.getInstance());
+                generateTopChildren(temp, pagedIterator, rowIdx.value, style, colTitleStartIdx[i]);
                 if (i == 0) {
                     for (int k = 0; k < xLeftNode.length; k++) {
                         tempFirstNode[k] = xLeftNode[k];
@@ -335,11 +336,11 @@ public class ComplexCrossExecutor extends AbstractTableWidgetExecutor<XNode> {
 
 
     private void generateTopChildren(BIXLeftNode temp, StreamPagedIterator pagedIterator,
-                                     int rowIdx, int titleRowSpan, int colIdxStart) {
+                                     int rowIdx, Style style, int colIdxStart) {
         Number[][] values = temp.getXValue();
         for (int j = 0; j < values[0].length; j++) {
             for (int i = 0; i < widget.getUsedTargetID().length; i++) {
-                CBCell cell = formatTargetCell(values[i][j], widget.getChartSetting(), widget.getTargetsKey()[i], rowIdx, colIdxStart++, (rowIdx - titleRowSpan + 1) % 2 == 1);
+                CBCell cell = formatTargetCell(values[i][j], widget.getChartSetting(), widget.getTargetsKey()[i], rowIdx, colIdxStart++, style);
                 pagedIterator.addCell(cell);
             }
         }
@@ -355,7 +356,7 @@ public class ComplexCrossExecutor extends AbstractTableWidgetExecutor<XNode> {
                 FinalInt sumIdx = new FinalInt();
                 sumIdx.value = maxColumnDimensionsLength;
                 for (int j = 0; j < nodes.length; j++) {
-                    generateTopChildren(nodes[j], pagedIterator, rowIdx.value, 1, colTitleStartIdx[j]);
+                    generateTopChildren(nodes[j], pagedIterator, rowIdx.value, tableStyle.getSumRowStyle(Style.getInstance()), colTitleStartIdx[j]);
                 }
                 rowIdx.value++;
             }
@@ -377,7 +378,7 @@ public class ComplexCrossExecutor extends AbstractTableWidgetExecutor<XNode> {
             }
             FinalInt sumIdx = new FinalInt();
             sumIdx.value = titleRowSpan;
-            generateTopChildren(xLeftNodes[i], pagedIterator, rowIdx, 1, colTitleStartIdx[i]);
+            generateTopChildren(xLeftNodes[i], pagedIterator, rowIdx, tableStyle.getHeaderStyle(Style.getInstance()), colTitleStartIdx[i]);
         }
     }
 

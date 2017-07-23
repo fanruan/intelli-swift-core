@@ -67,14 +67,12 @@ public abstract class AbstractTableWidgetExecutor<T> extends BIAbstractExecutor<
         return null;
     }
 
-    protected static CBCell formatTargetCell(Object data, DetailChartSetting setting, TargetGettingKey key, int rowIdx, int columnIdx, boolean isOdd) {
+    protected static CBCell formatTargetCell(Object data, DetailChartSetting setting, TargetGettingKey key, int rowIdx, int columnIdx, Style style) {
         int numLevel = setting.getNumberLevelByTargetId(key.getTargetName());
         int formatDecimal = setting.getFormatDecimalByTargetId(key.getTargetName());
         boolean separator = setting.getSeparatorByTargetId(key.getTargetName());
         data = ExecutorUtils.formatExtremeSumValue(data, numLevel);
-        Style style = Style.getInstance();
         style = style.deriveFormat(ExecutorUtils.formatDecimalAndSeparator(data, numLevel, formatDecimal, separator));
-        style = isOdd ? tableStyle.getOddRowStyle(style) : tableStyle.getEvenRowStyle(style);
         return ExecutorUtils.createCBCell(data, rowIdx, 1, columnIdx, 1, style);
     }
 

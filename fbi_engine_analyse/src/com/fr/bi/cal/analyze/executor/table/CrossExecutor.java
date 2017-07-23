@@ -229,7 +229,8 @@ public class CrossExecutor extends AbstractTableWidgetExecutor<XNode> {
             BIXLeftNode tempFirstNode = xLeftNode;
             //第一次出现表头时创建cell
             BIXLeftNode parent = xLeftNode;
-            generateTopChildren(tempFirstNode, pagedIterator, rowIdx.value, rowDimensionsLen, rowTitleSpan);
+            Style style = (rowIdx.value - rowTitleSpan + 1) % 2 == 1 ? tableStyle.getOddRowStyle(Style.getInstance()) : tableStyle.getEvenRowStyle(Style.getInstance());
+            generateTopChildren(tempFirstNode, pagedIterator, rowIdx.value, rowDimensionsLen, style);
             generateDimensionName(parent, rowDimension, pagedIterator, dimensionNames, oddEven, sumRowNum, rowIdx, rowTitleSpan);
             xLeftNode = (BIXLeftNode) xLeftNode.getSibling();
             rowIdx.value++;
@@ -274,11 +275,11 @@ public class CrossExecutor extends AbstractTableWidgetExecutor<XNode> {
     }
 
 
-    private void generateTopChildren(BIXLeftNode temp, StreamPagedIterator pagedIterator, int rowIdx, int columnIdx, int titleRowSpan) {
+    private void generateTopChildren(BIXLeftNode temp, StreamPagedIterator pagedIterator, int rowIdx, int columnIdx, Style style) {
         Number[][] values = temp.getXValue();
         for (int j = 0; j < values[0].length; j++) {
             for (int i = 0; i < widget.getUsedTargetID().length; i++) {
-                CBCell cell = formatTargetCell(values[i][j], widget.getChartSetting(), widget.getTargetsKey()[i], rowIdx, columnIdx, (rowIdx - titleRowSpan + 1) % 2 == 1);
+                CBCell cell = formatTargetCell(values[i][j], widget.getChartSetting(), widget.getTargetsKey()[i], rowIdx, columnIdx, style);
                 pagedIterator.addCell(cell);
                 columnIdx++;
             }
@@ -292,7 +293,7 @@ public class CrossExecutor extends AbstractTableWidgetExecutor<XNode> {
             if (i != sumRowSum.length - 1 && (widget.getViewTargets().length != 0) && checkIfGenerateRowSumCell(sumRowSum[i], rowIdx.value)) {
                 CBCell cell = ExecutorUtils.createCBCell(Inter.getLocText("BI-Summary_Values"), rowIdx.value, 1, i + 1, rowDimensionLen - (i + 1), tableStyle.getSumRowStyle(Style.getInstance()));
                 pagedIterator.addCell(cell);
-                generateTopChildren(node, pagedIterator, rowIdx.value, rowDimensionLen, titleRowSpan);
+                generateTopChildren(node, pagedIterator, rowIdx.value, rowDimensionLen, tableStyle.getSumRowStyle(Style.getInstance()));
                 rowIdx.value++;
             }
             node = (BIXLeftNode) node.getParent();
@@ -305,7 +306,7 @@ public class CrossExecutor extends AbstractTableWidgetExecutor<XNode> {
         }
         CBCell cell = ExecutorUtils.createCBCell(Inter.getLocText("BI-Summary_Values"), rowIdx, 1, 0, rowDimensionLen, tableStyle.getHeaderStyle(Style.getInstance()));
         pagedIterator.addCell(cell);
-        generateTopChildren(xLeftNodes, pagedIterator, rowIdx, rowDimensionLen, titleRowSpan);
+        generateTopChildren(xLeftNodes, pagedIterator, rowIdx, rowDimensionLen, tableStyle.getHeaderStyle(Style.getInstance()));
     }
 
     private static boolean checkIfGenerateRowSumCell(int sumRowSum, int currentRow) {

@@ -161,13 +161,13 @@ public class ComplexHorGroupExecutor extends AbstractTableWidgetExecutor {
             columnIdx.value++;
             Object targetName = usedSumTarget[i].getText();
             Style style = (i + 1) % 2 == 1 ? tableStyle.getOddRowStyle(Style.getInstance()) : tableStyle.getEvenRowStyle(Style.getInstance());
-                    CBCell targetNameCell = ExecutorUtils.createCBCell(targetName, rowIdx + i, 1, 0, 1, style);
+            CBCell targetNameCell = ExecutorUtils.createCBCell(targetName, rowIdx + i, 1, 0, 1, style);
             pagedIterator.addCell(targetNameCell);
             for (Node node : nodes) {
                 Node temp = node;
                 while (temp != null) {
                     Object data = temp.getSummaryValue(keys[i]);
-                    CBCell cell = formatTargetCell(data, widget.getChartSetting(), keys[i], rowIdx + i, columnIdx.value++, (i + 1) % 2 == 1);
+                    CBCell cell = formatTargetCell(data, widget.getChartSetting(), keys[i], rowIdx + i, columnIdx.value++, style);
                     pagedIterator.addCell(cell);
                     if (widget.showColumnTotal()) {
                         HorGroupExecutor.generateTargetSumCell(temp, widget, keys[i], pagedIterator, rowIdx, columnIdx, i);
