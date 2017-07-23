@@ -108,11 +108,9 @@ public class CrossExecutor extends AbstractTableWidgetExecutor<XNode> {
             CBCell cell = ExecutorUtils.createCBCell(rowDimension[i].getText(), rowIdx.value, 1, i, 1, tableStyle.getHeaderStyle(Style.getInstance()));
             pagedIterator.addCell(cell);
         }
-        if (widget.getViewTargets().length > 1) {
-            FinalInt targetsTitleColumnIdx = new FinalInt();
-            targetsTitleColumnIdx.value = columnTitleSpan;
-            getTargetsTitle(pagedIterator, top, rowIdx.value, targetsTitleColumnIdx, columnEndIdx);
-        }
+        FinalInt targetsTitleColumnIdx = new FinalInt();
+        targetsTitleColumnIdx.value = columnTitleSpan;
+        getTargetsTitle(pagedIterator, top, rowIdx.value, targetsTitleColumnIdx, columnEndIdx);
     }
 
     private void getColDimensionsTitle(TableWidget widget, BISummaryTarget[] usedSumTarget, StreamPagedIterator pagedIterator,
@@ -145,7 +143,7 @@ public class CrossExecutor extends AbstractTableWidgetExecutor<XNode> {
 
         if (checkIfGenerateTitleSumCells(temp) && temp.getParent().getChildLength() != 1) {
             if (rowIdx > 0) {
-                CBCell cell = ExecutorUtils.createCBCell(Inter.getLocText("BI-Summary_Values"), rowIdx, temp.getDeep(), columnIdx.value, widget.getViewTargets().length, tableStyle.getSumRowStyle(Style.getInstance()));
+                CBCell cell = ExecutorUtils.createCBCell(Inter.getLocText("BI-Summary_Values"), rowIdx, temp.getDeep(), columnIdx.value, widget.getViewTargets().length, tableStyle.getHeaderStyle(Style.getInstance()));
                 pagedIterator.addCell(cell);
             } else {
                 generateTargetTitleWithSum(Inter.getLocText("BI-Summary_Values") + ":", pagedIterator, rowIdx, columnIdx, temp.getDeep() + 1);
