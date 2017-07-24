@@ -20,6 +20,8 @@ import java.text.DecimalFormat;
  */
 public class ExecutorUtils {
     static final String NONE_VALUE = StringUtils.EMPTY;
+    static final String POSITIVE_INFINITY = "N/0";
+    static final String NAN = "NaN";
     static final int TEN_THOUSAND = 10000;
     static final int MILLION = 1000000;
     static final int YI = 100000000;
@@ -34,9 +36,9 @@ public class ExecutorUtils {
             if (((Double) value) == Double.NEGATIVE_INFINITY) {
                 return NONE_VALUE;
             } else if (((Double) value) == Double.POSITIVE_INFINITY) {
-                return "N/0";
+                return POSITIVE_INFINITY;
             } else if (Double.isNaN((Double) value)) {
-                return "NAN";
+                return NAN;
             } else {
                 switch (numLevel) {
                     case BIReportConstant.TARGET_STYLE.NUM_LEVEL.TEN_THOUSAND:
@@ -104,7 +106,7 @@ public class ExecutorUtils {
     }
 
     public static CBCell createCBCell(Object v, int rowIdx, int rowSpan, int columnIdx, int columnSpan, Style style) {
-        if(ComparatorUtils.equals(v, "N/0")) {
+        if(ComparatorUtils.equals(v, POSITIVE_INFINITY)) {
             style = style.deriveHorizontalAlignment(Constants.RIGHT);
         }
         CBCell cell = new CBCell((v instanceof Double) && ((Double) v == ((Double) v).longValue()) ? ((Double) v).longValue() : v);
