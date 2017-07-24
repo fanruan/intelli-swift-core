@@ -109,7 +109,7 @@ public class GroupExecutor extends AbstractTableWidgetExecutor<Node> {
         for (int i = 0; i < usedDimensions.length; i++) {
             //复杂表 行表头 区域1有2两个维度、区域2有3个维度，区域1里最后一个维度的columnSpan需要特殊处理
             int columnSpanOffSet = i == usedDimensions.length - 1 ? maxRowDimensionsLength - usedDimensions.length : 0;
-            CBCell cell = ExecutorUtils.createCBCell(usedDimensions[i].getText(), 0, 1, columnIdx++, columnSpanOffSet + 1, tableStyle.getHeaderStyle(Style.getInstance()));
+            CBCell cell = ExecutorUtils.createCBCell(usedDimensions[i].getText(), 0, 1, columnIdx++, columnSpanOffSet + 1, widget.getTableStyle().getHeaderStyle(Style.getInstance()));
             pagedIterator.addCell(cell);
         }
         for (BISummaryTarget anUsedSumTarget : usedSumTarget) {
@@ -119,7 +119,7 @@ public class GroupExecutor extends AbstractTableWidgetExecutor<Node> {
 
             String dimensionUnit = ComparatorUtils.equals(levelAndUnit, StringUtils.EMPTY) ? "" : "(" + levelAndUnit + ")";
 
-            CBCell cell = ExecutorUtils.createCBCell(anUsedSumTarget.getText() + dimensionUnit, 0, 1, columnIdx++, 1, tableStyle.getHeaderStyle(Style.getInstance()));
+            CBCell cell = ExecutorUtils.createCBCell(anUsedSumTarget.getText() + dimensionUnit, 0, 1, columnIdx++, 1, widget.getTableStyle().getHeaderStyle(Style.getInstance()));
             pagedIterator.addCell(cell);
         }
     }
@@ -152,7 +152,7 @@ public class GroupExecutor extends AbstractTableWidgetExecutor<Node> {
                 StreamPagedIterator pagedIterator = iter.getIteratorByPage(start.value);
                 //分组表维度需要合并单元格
                 generateDimNames(temp, widget, rowDimensions, dimensionNames, oddEven, pagedIterator, rowIdx.value, maxRowDimensionsLength);
-                generateTargetCells(temp, widget, pagedIterator, rowIdx.value, maxRowDimensionsLength, rowIdx.value % 2 == 1 ? tableStyle.getOddRowStyle(Style.getInstance()) : tableStyle.getEvenRowStyle(Style.getInstance()));
+                generateTargetCells(temp, widget, pagedIterator, rowIdx.value, maxRowDimensionsLength, rowIdx.value % 2 == 1 ? widget.getTableStyle().getOddRowStyle(Style.getInstance()) : widget.getTableStyle().getEvenRowStyle(Style.getInstance()));
                 if (widget.showRowToTal()) {
                     int columnSpanOffSet = maxRowDimensionsLength - rowDimensions.length + 1;
                     generateSumCells(temp, widget, pagedIterator, rowIdx, maxRowDimensionsLength - columnSpanOffSet, maxRowDimensionsLength);
@@ -171,7 +171,7 @@ public class GroupExecutor extends AbstractTableWidgetExecutor<Node> {
             if (temp.getParent().getChildLength() != 1) {
                 rowIdx.value++;
                 boolean isLastSumRow = temp.getSibling() == null && columnIdx == 0;
-                Style style = isLastSumRow ? tableStyle.getHeaderStyle(Style.getInstance()): tableStyle.getSumRowStyle(Style.getInstance());
+                Style style = isLastSumRow ? widget.getTableStyle().getHeaderStyle(Style.getInstance()): widget.getTableStyle().getSumRowStyle(Style.getInstance());
                 CBCell cell = ExecutorUtils.createCBCell(Inter.getLocText("BI-Summary_Values"), rowIdx.value, 1, columnIdx, maxRowDimensionsLength - columnIdx, style);
                 pagedIterator.addCell(cell);
                 generateTargetCells(temp.getParent(), widget, pagedIterator, rowIdx.value, maxRowDimensionsLength, style);
@@ -221,7 +221,7 @@ public class GroupExecutor extends AbstractTableWidgetExecutor<Node> {
             if (!ComparatorUtils.equals(dimensionNames[i], v) || (i == rowDimensions.length - 1) || temp.getParent().getTotalLength() == 1) {
                 oddEven[i]++;
                 int columnSpanOffSet = i == rowDimensions.length - 1 ? maxRowDimensionsLength - rowDimensions.length : 0;
-                Style style = rowIdx % 2 == 1 ? tableStyle.getOddRowStyle(Style.getInstance()) : tableStyle.getEvenRowStyle(Style.getInstance());
+                Style style = rowIdx % 2 == 1 ? widget.getTableStyle().getOddRowStyle(Style.getInstance()) : widget.getTableStyle().getEvenRowStyle(Style.getInstance());
                 CBCell cell = ExecutorUtils.createCBCell(v, rowIdx, rowSpan, i, 1 + columnSpanOffSet, style);
                 pagedIterator.addCell(cell);
                 dimensionNames[i] = v;

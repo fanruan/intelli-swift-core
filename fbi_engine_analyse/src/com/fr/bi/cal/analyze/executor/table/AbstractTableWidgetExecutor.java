@@ -36,8 +36,6 @@ public abstract class AbstractTableWidgetExecutor<T> extends BIAbstractExecutor<
 
     protected TableWidget widget;
 
-    protected static BITableStyle tableStyle;
-
     protected AbstractTableWidgetExecutor(TableWidget widget, Paging paging, BISession session) {
 
         super(widget, paging, session);
@@ -45,8 +43,6 @@ public abstract class AbstractTableWidgetExecutor<T> extends BIAbstractExecutor<
         usedSumTarget = widget.getViewTargets();
         allSumTarget = widget.getTargets();
         allDimensions = widget.getDimensions();
-
-        tableStyle= new BITableStyle(widget.getThemeColor());
 
         //        this.expander = CrossExpander.ALL_EXPANDER;
     }
