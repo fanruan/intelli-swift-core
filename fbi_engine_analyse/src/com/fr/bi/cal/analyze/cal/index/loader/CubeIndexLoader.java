@@ -400,13 +400,13 @@ public class CubeIndexLoader {
         LinkedList calculateTargets = new LinkedList();
         LinkedList noneCalculateTargets = new LinkedList();
         classifyTargets(usedTargets, summaryLength, calculateTargets, noneCalculateTargets);
-        String widgetName = widget.getWidgetName();
+        String widgetID = widget.getWidgetId();
         PageIteratorGroup pg = null;
         if (!needCreateNewIterator(page)) {
-            pg = session.getPageIteratorGroup(useRealData, widgetName);
+            pg = session.getPageIteratorGroup(useRealData, widgetID);
         } else {
             pg = new PageIteratorGroup();
-            session.setPageIteratorGroup(useRealData, widgetName, pg);
+            session.setPageIteratorGroup(useRealData, widgetID, pg);
         }
         NodeAndPageInfo topInfo = getTopInfo(colDimension, page, expander, widget, session, usedTargets, pg);
         NodeAndPageInfo leftInfo = getLeftInfo(topInfo.getNode(), rowDimension, page, expander, widget, session, usedTargets, pg);
@@ -561,7 +561,7 @@ public class CubeIndexLoader {
             createFilterIndexByNode(filterIndexList, n, showSum, key);
         }
         //如果是最后一层的节点，或者是超过一个子节点并且显示汇总的就要计算
-        if ((node.getChildLength() == 0 || (showSum && node.getTotalLength() != 1))) {
+        if ((node.getChildLength() == 0 || (showSum && node.getChildLength() != 1))) {
             filterIndexList.add(node.getTargetIndex(key));
         }
     }
@@ -570,7 +570,7 @@ public class CubeIndexLoader {
         List<Node> list = new ArrayList<Node>();
         for (Node n : nodeList) {
             list.addAll(n.getChilds());
-            if ((n.getChildLength() == 0 || (showSum && n.getTotalLength() != 1))) {
+            if ((n.getChildLength() == 0 || (showSum && n.getChildLength() != 1))) {
                 length.value++;
             }
         }
@@ -646,12 +646,12 @@ public class CubeIndexLoader {
         checkRegisteration(allSumTarget, allDimension);
         BISummaryTarget[] usedTargets = createUsedSummaryTargets(rowDimension, usedTarget, allSumTarget);
         PageIteratorGroup pg = null;
-        String widgetName = widget.getWidgetName();
+        String widgetID = widget.getWidgetId();
         if (needCreateNewIterator(page)) {
             pg = new PageIteratorGroup();
-            session.setPageIteratorGroup(useRealData, widgetName, pg);
+            session.setPageIteratorGroup(useRealData, widgetID, pg);
         } else {
-            pg = session.getPageIteratorGroup(useRealData, widgetName);
+            pg = session.getPageIteratorGroup(useRealData, widgetID);
         }
         NodeAndPageInfo info = createPageGroupNode(widget, usedTargets, rowDimension, new GroupNodeCreator(), page, expander, session,
                 isHor ? createColumnOperator(page, widget) : createRowOperator(page, widget), pg, false, isHor, false, true);
@@ -717,11 +717,11 @@ public class CubeIndexLoader {
         BIDimension[] rowDimension = dimensionArray;
         NodeExpander nodeExpander = nodeExpanderPara;
         PageIteratorGroup pg;
-        if (!needCreateNewIterator(calPage) && session.getPageIteratorGroup(useRealData, widget.getWidgetName(), i) != null) {
-            pg = session.getPageIteratorGroup(useRealData, widget.getWidgetName(), i);
+        if (!needCreateNewIterator(calPage) && session.getPageIteratorGroup(useRealData, widget.getWidgetId(), i) != null) {
+            pg = session.getPageIteratorGroup(useRealData, widget.getWidgetId(), i);
         } else {
             pg = new PageIteratorGroup();
-            session.setPageIteratorGroup(useRealData, widget.getWidgetName(), pg, i);
+            session.setPageIteratorGroup(useRealData, widget.getWidgetId(), pg, i);
         }
         BISummaryTarget[] usedTargets = createUsedSummaryTargets(rowDimension, usedTarget, allSumTarget);
         NodeAndPageInfo nodeInfo = createPageGroupNode(widget, usedTargets, rowDimension, new GroupNodeCreator(), calPage, nodeExpander, session, isHor ? createColumnOperator(calPage, widget) : createRowOperator(calPage, widget), pg, false, isHor, false, true);

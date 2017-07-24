@@ -39,6 +39,7 @@ import com.fr.bi.field.target.target.cal.target.configure.BIPeriodConfiguredCalc
 import com.fr.bi.report.key.TargetGettingKey;
 import com.fr.bi.stable.constant.BIJSONConstant;
 import com.fr.bi.stable.constant.BIReportConstant;
+import com.fr.bi.stable.constant.BIStyleConstant;
 import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.gvi.GVIUtils;
 import com.fr.bi.stable.gvi.GroupValueIndex;
@@ -398,7 +399,7 @@ public class TableWidget extends BISummaryWidget {
         }
     }
 
-    public BITableWidgetStyle getWidgetStyle () {
+    public BITableWidgetStyle getWidgetStyle() {
         return style;
     }
 
@@ -500,6 +501,17 @@ public class TableWidget extends BISummaryWidget {
         this.operator = operator;
     }
 
+    public String getThemeColor() {
+        switch (tableType) {
+            case BIReportConstant.WIDGET.TABLE:
+            case BIReportConstant.WIDGET.CROSS_TABLE:
+            case BIReportConstant.WIDGET.COMPLEX_TABLE:
+                return getWidgetStyle().getThemeColor();
+            default:
+                return BIStyleConstant.DEFAULT_CHART_SETTING.THEME_COLOR;
+        }
+    }
+
     public boolean hasVerticalPrePage() {
 
         return pageSpinner[BIReportConstant.TABLE_PAGE.VERTICAL_PRE] > 0;
@@ -596,8 +608,6 @@ public class TableWidget extends BISummaryWidget {
         }
         return null;
     }
-
-
 
 
     @Override

@@ -80,7 +80,6 @@ public class BIPlate extends AbstractFSPlate {
             registerEntrySomething();
             initOOMKillerForLinux();
             loadMemoryData();
-            createTimerTasks();
             backupWhenStart();
             addBITableColumn4NewConnection();
             addSharedTableColumn4NewConnection();
@@ -95,11 +94,6 @@ public class BIPlate extends AbstractFSPlate {
         } catch (Throwable e) {
             LOGGER.error(e.getMessage(), e);
         }
-    }
-
-    private void createTimerTasks() {
-    /*载入定时任务*/
-        CubeGenerationManager.getCubeManager().resetCubeGenerationHour(UserControl.getInstance().getSuperManagerID());
     }
 
     private void backupWhenStart(){
