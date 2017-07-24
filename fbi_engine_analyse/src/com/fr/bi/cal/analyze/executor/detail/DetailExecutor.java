@@ -1,7 +1,6 @@
 package com.fr.bi.cal.analyze.executor.detail;
 
 import com.finebi.cube.common.log.BILoggerFactory;
-import com.finebi.cube.conf.table.BusinessTable;
 import com.fr.bi.base.FinalInt;
 import com.fr.bi.cal.analyze.executor.GVIRunner;
 import com.fr.bi.cal.analyze.executor.TableRowTraversal;
@@ -10,14 +9,11 @@ import com.fr.bi.cal.analyze.executor.detail.execute.DetailPartGVIRunner;
 import com.fr.bi.cal.analyze.executor.iterator.TableCellIterator;
 import com.fr.bi.cal.analyze.executor.paging.Paging;
 import com.fr.bi.cal.analyze.report.report.widget.BIDetailWidget;
-import com.fr.bi.cal.analyze.report.report.widget.TableWidget;
 import com.fr.bi.cal.analyze.session.BISession;
 import com.fr.bi.cal.report.engine.CBCell;
 import com.fr.bi.conf.report.widget.field.target.detailtarget.BIDetailTarget;
-import com.fr.bi.field.target.target.BISummaryTarget;
 import com.fr.bi.stable.constant.CellConstant;
 import com.fr.bi.stable.data.db.BIRowValue;
-import com.fr.bi.stable.gvi.GVIUtils;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.utils.BICollectionUtils;
 import com.fr.bi.stable.utils.BITravalUtils;
@@ -31,7 +27,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 /**
