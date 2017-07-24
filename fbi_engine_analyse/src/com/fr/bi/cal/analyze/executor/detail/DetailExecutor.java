@@ -65,7 +65,7 @@ public class DetailExecutor extends AbstractDetailExecutor {
             public void run() {
                 try {
                     final FinalInt start = new FinalInt();
-                    List<CBCell> cells = createCellTitle(CellConstant.CBCELL.TARGETTITLE_Y, usedDimensionIndexes);
+                    List<CBCell> cells = createHeader(CellConstant.CBCELL.TARGETTITLE_Y, usedDimensionIndexes);
                     Iterator<CBCell> it = cells.iterator();
                     while (it.hasNext()) {
                         iter.getIteratorByPage(start.value).addCell(it.next());
@@ -80,7 +80,7 @@ public class DetailExecutor extends AbstractDetailExecutor {
                                 start.value++;
                             }
                             //row + 1 ? 不然覆盖掉了列名
-                            fillOneLine(iter.getIteratorByPage(start.value), newRow, row.getValues(), currentRow, usedDimensionIndexes);
+                            fillOneLine(iter.getIteratorByPage(start.value), newRow, row.getValues(), usedDimensionIndexes);
                             return false;
                         }
                     };
@@ -146,8 +146,6 @@ public class DetailExecutor extends AbstractDetailExecutor {
         }
         return usedDimensionIndexes;
     }
-
-
 
     public List<List> getData() {
         if (target == null) {

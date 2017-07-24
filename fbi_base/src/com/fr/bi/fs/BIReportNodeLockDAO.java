@@ -33,7 +33,7 @@ public class BIReportNodeLockDAO extends PlatformDataAccessObject {
         fvMap.put(BITableMapper.BI_REPORT_NODE_LOCK.REPORT_ID, reportId);
         fvMap.put(BITableMapper.BI_REPORT_NODE_LOCK.FIELD_USERID, userId);
         fvMap.put(BITableMapper.BI_REPORT_NODE_LOCK.SESSIONID, sessionId);
-        //BI-7529 lock表不存在不让抛错
+        //表不存在会报错，防止报错
         try {
             List<BIReportNodeLock> list = createSession().listByFieldValues(BIReportNodeLock.class, fvMap);
             if (list.isEmpty()) {
@@ -45,6 +45,7 @@ public class BIReportNodeLockDAO extends PlatformDataAccessObject {
             BILoggerFactory.getLogger().error(e.getMessage(), e);
             return null;
         }
+
     }
 
     private void lock(BIReportNodeLock lock) {
@@ -79,13 +80,7 @@ public class BIReportNodeLockDAO extends PlatformDataAccessObject {
     public List<BIReportNodeLock> getLock(long reportId) {
         Map<String, Object> fvMap = new HashMap<String, Object>();
         fvMap.put(BITableMapper.BI_REPORT_NODE_LOCK.REPORT_ID, reportId);
-        //BI-7529 lock表不存在不让抛错
-        try {
-            return createSession().listByFieldValues(BIReportNodeLock.class, fvMap);
-        } catch (Exception e) {
-            BILoggerFactory.getLogger().error(e.getMessage(), e);
-            return null;
-        }
+        return createSession().listByFieldValues(BIReportNodeLock.class, fvMap);
     }
 
 

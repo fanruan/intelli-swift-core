@@ -77,7 +77,7 @@ public class BIReportor implements BIReport {
     /**
      * 返回Widget名字所对应的widget
      *
-     * @param wId 名字
+     * @param wId 组件id
      * @return widget对象
      */
     @Override

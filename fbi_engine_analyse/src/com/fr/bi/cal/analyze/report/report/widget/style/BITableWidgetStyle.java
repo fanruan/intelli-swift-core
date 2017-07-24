@@ -43,7 +43,7 @@ public class BITableWidgetStyle implements IWidgetStyle {
 
     @Override
     public boolean isShowNumber() {
-        return false;
+        return showNumber;
     }
 
     @Override

@@ -39,6 +39,7 @@ import com.fr.bi.field.target.target.cal.target.configure.BIPeriodConfiguredCalc
 import com.fr.bi.report.key.TargetGettingKey;
 import com.fr.bi.stable.constant.BIJSONConstant;
 import com.fr.bi.stable.constant.BIReportConstant;
+import com.fr.bi.stable.constant.BIStyleConstant;
 import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.gvi.GVIUtils;
 import com.fr.bi.stable.gvi.GroupValueIndex;
@@ -196,27 +197,6 @@ public class TableWidget extends BISummaryWidget {
             return createComplexExecutor(session, hasTarget, complexExpander, expander);
         } else {
             return createNormalExecutor(session, hasTarget, getViewDimensions(), getViewTopDimensions(), expander);
-        }
-    }
-
-    public void setGroupTableType() {
-
-        tableType = BIReportConstant.TABLE_WIDGET.GROUP_TYPE;
-    }
-
-    public void addColumn2Row() {
-
-        if (data != null) {
-            data.addColumn2Row();
-            String[] array = data.getRow();
-            ArrayList<BIDimension> usedDimensions = new ArrayList<BIDimension>();
-            for (String anArray : array) {
-                BIDimension dimension = BITravalUtils.getTargetByName(anArray, dimensions);
-                if (dimension.isUsed()) {
-                    usedDimensions.add(dimension);
-                }
-            }
-            usedDimension = usedDimensions.toArray(new BIDimension[usedDimensions.size()]);
         }
     }
 
@@ -419,7 +399,7 @@ public class TableWidget extends BISummaryWidget {
         }
     }
 
-    public BITableWidgetStyle getWidgetStyle () {
+    public BITableWidgetStyle getWidgetStyle() {
         return style;
     }
 
@@ -521,6 +501,17 @@ public class TableWidget extends BISummaryWidget {
         this.operator = operator;
     }
 
+    public String getThemeColor() {
+        switch (tableType) {
+            case BIReportConstant.WIDGET.TABLE:
+            case BIReportConstant.WIDGET.CROSS_TABLE:
+            case BIReportConstant.WIDGET.COMPLEX_TABLE:
+                return getWidgetStyle().getThemeColor();
+            default:
+                return BIStyleConstant.DEFAULT_CHART_SETTING.THEME_COLOR;
+        }
+    }
+
     public boolean hasVerticalPrePage() {
 
         return pageSpinner[BIReportConstant.TABLE_PAGE.VERTICAL_PRE] > 0;
@@ -602,7 +593,7 @@ public class TableWidget extends BISummaryWidget {
         GroupValueIndex linkGvi = null;
         // 分组表,交叉表,复杂表的时候才有联动的必要
         if (linkExecutor instanceof AbstractTableWidgetExecutor) {
-            return ((AbstractTableWidgetExecutor) linkExecutor).getClieckGvi(clicked, targetKey);
+            return ((AbstractTableWidgetExecutor) linkExecutor).getClickGvi(clicked, targetKey);
         }
         return linkGvi;
     }
@@ -617,8 +608,6 @@ public class TableWidget extends BISummaryWidget {
         }
         return null;
     }
-
-
 
 
     @Override
