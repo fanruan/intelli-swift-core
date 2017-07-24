@@ -36,8 +36,4 @@ public interface BIEngineExecutor<T> {
 
     public JSONObject createJSONObject() throws Exception;
 
-<<<<<<< HEAD
-
-=======
->>>>>>> origin/release/4.0.2
 }
