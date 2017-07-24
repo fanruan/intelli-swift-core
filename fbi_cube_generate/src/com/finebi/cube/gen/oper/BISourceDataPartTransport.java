@@ -284,7 +284,7 @@ public class BISourceDataPartTransport extends BISourceDataTransport {
                 finalSql = sql;
             }
             if (columnNum == 1) {
-                String columnName = BICubeDBUtils.getColumnName(connection, sqlStatement, sql);
+                String columnName = BICubeDBUtils.getFirstColumnName(connection, sqlStatement, sql);
                 ICubeFieldSource f = getCubeFieldSource(fields, columnName);
                 if (f == null) {
                     return null;
@@ -492,7 +492,7 @@ public class BISourceDataPartTransport extends BISourceDataTransport {
             SqlSettedStatement sqlStatement = new SqlSettedStatement(connection);
             sqlConn = sqlStatement.getSqlConn();
             sqlStatement.setSql(sql);
-            name = BICubeDBUtils.getColumnName(connection, sqlStatement, sql);
+            name = BICubeDBUtils.getFirstColumnName(connection, sqlStatement, sql);
         } catch (Exception e) {
             throw BINonValueUtils.beyondControl(e.getMessage(), e);
         } finally {
