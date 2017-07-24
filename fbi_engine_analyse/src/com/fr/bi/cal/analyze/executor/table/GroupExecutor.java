@@ -24,7 +24,6 @@ import com.fr.bi.stable.gvi.GVIUtils;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.io.newio.NIOConstant;
 import com.fr.bi.stable.utils.BICollectionUtils;
-import com.fr.engine.compare.CompareUtils;
 import com.fr.general.ComparatorUtils;
 import com.fr.general.DateUtils;
 import com.fr.general.GeneralUtils;
@@ -35,14 +34,11 @@ import com.fr.stable.ExportConstants;
 import com.fr.stable.StringUtils;
 
 import java.awt.*;
-<<<<<<< HEAD
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
-=======
 import java.util.*;
->>>>>>> origin/release/4.0.2
 import java.util.List;
 
 /**
@@ -286,10 +282,6 @@ public class GroupExecutor extends AbstractTableWidgetExecutor<Node> {
         return getCubeNode().toJSONObject(usedDimensions, widget.getTargetsKey(), -1);
     }
 
-<<<<<<< HEAD
-
-=======
->>>>>>> origin/release/4.0.2
     public Node getStopOnRowNode(Object[] stopRow) throws Exception {
 
         if (session == null) {
