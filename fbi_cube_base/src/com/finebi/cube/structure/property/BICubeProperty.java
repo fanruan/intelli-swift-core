@@ -88,7 +88,6 @@ public abstract class BICubeProperty<R extends ICubeReader, W extends ICubeWrite
     protected void resetReader() {
         if (isReaderAvailable()) {
             reader.clear();
-            reader = null;
         }
     }
 
