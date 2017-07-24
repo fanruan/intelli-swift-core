@@ -3,8 +3,10 @@ package com.fr.bi.cal.analyze.executor.utils;
 import com.fr.base.CoreDecimalFormat;
 import com.fr.base.Style;
 import com.fr.base.background.ColorBackground;
+import com.fr.base.core.StyleUtils;
 import com.fr.bi.cal.report.engine.CBCell;
 import com.fr.bi.stable.constant.BIReportConstant;
+import com.fr.general.ComparatorUtils;
 import com.fr.general.FRFont;
 import com.fr.general.GeneralUtils;
 import com.fr.general.Inter;
@@ -28,7 +30,10 @@ public class ExecutorUtils {
         } else if (value instanceof Double || value instanceof Long) {
             Number v = GeneralUtils.objectToNumber(value);
             value = v.doubleValue();
-            if (Double.isInfinite((Double) value)) {
+            //负无穷显示空 正无穷显示N/0
+            if (((Double) value) == Double.NEGATIVE_INFINITY) {
+                return "";
+            } else if (((Double) value) == Double.POSITIVE_INFINITY) {
                 return "N/0";
             } else if (Double.isNaN((Double) value)) {
                 return "NAN";
@@ -81,7 +86,7 @@ public class ExecutorUtils {
         switch (decimal) {
             case BIReportConstant.TARGET_STYLE.FORMAT.NORMAL:
                 result = new StringBuilder(separator ? "#,##0.##" : "0.##");
-                if((v instanceof  Double) && ((Double) v == ((Double) v).longValue())) {
+                if ((v instanceof Double) && ((Double) v == ((Double) v).longValue())) {
                     result = new StringBuilder(separator ? "#,##0" : "#0");
                 }
                 break;
@@ -99,7 +104,10 @@ public class ExecutorUtils {
     }
 
     public static CBCell createCBCell(Object v, int rowIdx, int rowSpan, int columnIdx, int columnSpan, Style style) {
-        CBCell cell = new CBCell((v instanceof  Double) && ((Double) v == ((Double) v).longValue()) ? ((Double) v).longValue() : v);
+        if(ComparatorUtils.equals(v, "N/0")) {
+            style = style.deriveHorizontalAlignment(Constants.RIGHT);
+        }
+        CBCell cell = new CBCell((v instanceof Double) && ((Double) v == ((Double) v).longValue()) ? ((Double) v).longValue() : v);
         cell.setRow(rowIdx);
         cell.setRowSpan(rowSpan);
         cell.setColumn(columnIdx);
