@@ -275,26 +275,11 @@ public class CrossExecutor extends AbstractTableWidgetExecutor<XNode> {
     }
 
 
-<<<<<<< HEAD
-        if (temp.getTopFirstChild() != null) {
-            int topChildrenLen = temp.getTopChildLength();
-            for (int i = 0; i < topChildrenLen; i++) {
-                generateTopChildren(widget, temp.getTopChild(i), pagedIterator, rowIdx, columnIdx, titleRowSpan);
-            }
-        } else {
-            Style style = Style.getInstance();
-            for (TargetGettingKey key : widget.getTargetsKey()) {
-                Object v = temp.getSummaryValue(key);
-                boolean isPercent = widget.getWidgetConf().getNumberLevelByTargetID(key.getTargetName()) == BIReportConstant.TARGET_STYLE.NUM_LEVEL.PERCENT;
-                style = BITableStyle.getInstance().getNumberCellStyle(v, (rowIdx - titleRowSpan + 1) % 2 == 1, isPercent);
-                CBCell cell = ExecutorUtils.createCell(v, rowIdx, 1, columnIdx.value, 1, style);
-=======
     private void generateTopChildren(BIXLeftNode temp, StreamPagedIterator pagedIterator, int rowIdx, int columnIdx, Style style) {
         Number[][] values = temp.getXValue();
         for (int j = 0; j < values[0].length; j++) {
             for (int i = 0; i < widget.getUsedTargetID().length; i++) {
-                CBCell cell = formatTargetCell(values[i][j], widget.getChartSetting(), widget.getTargetsKey()[i], rowIdx, columnIdx, style);
->>>>>>> origin/release/4.0.2
+                CBCell cell = formatTargetCell(values[i][j], widget.getWidgetConf(), widget.getTargetsKey()[i], rowIdx, columnIdx, style);
                 pagedIterator.addCell(cell);
                 columnIdx++;
             }
@@ -353,11 +338,10 @@ public class CrossExecutor extends AbstractTableWidgetExecutor<XNode> {
     @Override
     public JSONObject createJSONObject() throws Exception {
 
-<<<<<<< HEAD
-        return getCubeNode().toJSONObject(rowDimension, colDimension, widget.getTargetsKey());
+        return getCubeNode().toJSONObject(rowDimension, colDimension, widget.getTargetsKey(), widget.showColumnTotal());
     }
 
-    private void clearNullSummary(CrossHeader left, TargetGettingKey[] keys) {
+    private void clearNullSummary(BIXLeftNode left, TargetGettingKey[] keys) {
 
         for (TargetGettingKey key : keys) {
             if (left.getSummaryValue(key) == null) {
@@ -365,14 +349,9 @@ public class CrossExecutor extends AbstractTableWidgetExecutor<XNode> {
             }
         }
         for (int i = 0; i < left.getChildLength(); i++) {
-            clearNullSummary((CrossHeader) left.getChild(i), keys);
+            clearNullSummary((BIXLeftNode) left.getChild(i), keys);
         }
     }
-=======
-        return getCubeNode().toJSONObject(rowDimension, colDimension, widget.getTargetsKey(), widget.showColumnTotal());
-    }
-
->>>>>>> origin/release/4.0.2
 
     public GroupValueIndex getClickGvi(Map<String, JSONArray> clicked, BusinessTable targetKey) {
 

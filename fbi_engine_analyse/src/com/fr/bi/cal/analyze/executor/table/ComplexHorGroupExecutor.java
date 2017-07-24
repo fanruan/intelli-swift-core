@@ -167,13 +167,7 @@ public class ComplexHorGroupExecutor extends AbstractTableWidgetExecutor {
                 Node temp = node;
                 while (temp != null) {
                     Object data = temp.getSummaryValue(keys[i]);
-<<<<<<< HEAD
-                    boolean isPercent = widget.getWidgetConf().getNumberLevelByTargetID(keys[i].getTargetName()) == BIReportConstant.TARGET_STYLE.NUM_LEVEL.PERCENT;
-                    Style style = BITableStyle.getInstance().getNumberCellStyle(data, (i + 1) % 2 == 1, isPercent);
-                    CBCell cell = ExecutorUtils.createCell(data, rowIdx + i, 1, columnIdx.value++, 1, style);
-=======
-                    CBCell cell = formatTargetCell(data, widget.getChartSetting(), keys[i], rowIdx + i, columnIdx.value++, style);
->>>>>>> origin/release/4.0.2
+                    CBCell cell = formatTargetCell(data, widget.getWidgetConf(), keys[i], rowIdx + i, columnIdx.value++, style);
                     pagedIterator.addCell(cell);
                     if (widget.showColumnTotal()) {
                         HorGroupExecutor.generateTargetSumCell(temp, widget, keys[i], pagedIterator, rowIdx, columnIdx, i);

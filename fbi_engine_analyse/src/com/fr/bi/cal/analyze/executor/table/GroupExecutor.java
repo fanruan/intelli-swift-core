@@ -35,14 +35,10 @@ import com.fr.stable.ExportConstants;
 import com.fr.stable.StringUtils;
 
 import java.awt.*;
-<<<<<<< HEAD
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
-=======
-import java.util.*;
->>>>>>> origin/release/4.0.2
 import java.util.List;
 
 /**
@@ -208,17 +204,7 @@ public class GroupExecutor extends AbstractTableWidgetExecutor<Node> {
         for (TargetGettingKey key : widget.getTargetsKey()) {
             int columnIdx = targetsKeyIndex + dimensionsLength;
             Object data = temp.getSummaryValue(key);
-<<<<<<< HEAD
-            int numLevel = widget.getWidgetConf().getNumberLevelByTargetID(key.getTargetName());
-            int formatDecimal = widget.getWidgetConf().getFormatDecimalByTargetID(key.getTargetName());
-            boolean separator = widget.getWidgetConf().getSeparatorByTargetID(key.getTargetName());
-            data = ExecutorUtils.formatExtremeSumValue(data, numLevel);
-            Style style = Style.getInstance();
-            style = style.deriveFormat(ExecutorUtils.formatDecimalAndSeparator(numLevel, formatDecimal, separator));
-            CBCell cell = ExecutorUtils.createCell(data, rowIdx, 1, columnIdx, 1, style);
-=======
-            CBCell cell = formatTargetCell(data, widget.getChartSetting(), key, rowIdx, columnIdx, style);
->>>>>>> origin/release/4.0.2
+            CBCell cell = formatTargetCell(data, widget.getWidgetConf(), key, rowIdx, columnIdx, style);
             pagedIterator.addCell(cell);
             targetsKeyIndex++;
         }
@@ -286,10 +272,6 @@ public class GroupExecutor extends AbstractTableWidgetExecutor<Node> {
         return getCubeNode().toJSONObject(usedDimensions, widget.getTargetsKey(), -1);
     }
 
-<<<<<<< HEAD
-
-=======
->>>>>>> origin/release/4.0.2
     public Node getStopOnRowNode(Object[] stopRow) throws Exception {
 
         if (session == null) {
