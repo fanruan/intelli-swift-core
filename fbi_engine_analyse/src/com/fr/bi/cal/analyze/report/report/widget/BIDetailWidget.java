@@ -28,6 +28,7 @@ import com.fr.bi.conf.report.conf.BIWidgetConf;
 import com.fr.bi.conf.report.conf.BIWidgetSettings;
 import com.fr.bi.common.persistent.xml.BIIgnoreField;
 import com.fr.bi.conf.report.WidgetType;
+import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.conf.report.widget.field.target.detailtarget.BIDetailTarget;
 import com.fr.bi.conf.report.widget.field.target.filter.TargetFilter;
 import com.fr.bi.conf.session.BISessionProvider;
@@ -190,10 +191,24 @@ public class BIDetailWidget extends AbstractBIWidget {
         for (int i = 0; i < dimensions.length; i++) {
             List<BITableRelation> relations = dimensions[i].getRelationList(null, userID);
             if (!relations.isEmpty()) {
-                target = relations.get(relations.size() - 1).getForeignTable();
-                break;
+                BusinessTable table = relations.get(relations.size() - 1).getForeignTable();
+                if (isTableUsedInDimensions(table)) {
+                    target = table;
+                    break;
+                } else {
+                    relations.remove(relations.size() - 1);
+                }
             }
         }
+    }
+
+    private boolean isTableUsedInDimensions(BusinessTable target) {
+        for (BIDetailTarget dimension : dimensions) {
+            if (dimension.createTableKey().getID().equals(target.getID())) {
+                return true;
+            }
+        }
+        return false;
     }
 
 
@@ -283,8 +298,12 @@ public class BIDetailWidget extends AbstractBIWidget {
 
     @Override
     public int isOrder() {
+<<<<<<< HEAD
 
         return data.isOrder();
+=======
+        return widgetStyle.isShowNumber() ? 1 : 0;
+>>>>>>> origin/release/4.0.2
     }
 
     public String[] getView() {

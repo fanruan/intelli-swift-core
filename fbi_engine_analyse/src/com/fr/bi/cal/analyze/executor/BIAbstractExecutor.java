@@ -1,7 +1,6 @@
 package com.fr.bi.cal.analyze.executor;
 
 import com.finebi.cube.api.ICubeDataLoader;
-import com.fr.bi.cal.analyze.cal.index.loader.MetricGroupInfo;
 import com.fr.bi.cal.analyze.executor.paging.Paging;
 import com.fr.bi.cal.analyze.session.BISession;
 import com.fr.bi.conf.report.BIWidget;
@@ -9,10 +8,13 @@ import com.fr.bi.conf.session.BISessionProvider;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.json.JSONArray;
 
+<<<<<<< HEAD
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+=======
+>>>>>>> origin/release/4.0.2
 /**
  * Created by GUY on 2015/4/16.
  */
@@ -36,6 +38,7 @@ public abstract class BIAbstractExecutor<T> implements BIEngineExecutor<T> {
         return session.getLoader();
     }
 
+<<<<<<< HEAD
     /**
      * 获取点击节点代表的gvi
      *
@@ -46,4 +49,6 @@ public abstract class BIAbstractExecutor<T> implements BIEngineExecutor<T> {
 
         return null;
     }
+=======
+>>>>>>> origin/release/4.0.2
 }

@@ -10,6 +10,7 @@ import com.finebi.cube.conf.BITableRelationConfigurationProvider;
 import com.finebi.cube.conf.CubeGenerationManager;
 import com.fr.base.ClassUtils;
 import com.fr.base.FRContext;
+import com.fr.bi.cal.generate.BackUpUtils;
 import com.fr.bi.cal.report.BIActor;
 import com.fr.bi.cal.report.db.DialectCreatorImpl;
 import com.fr.bi.cal.report.db.HiveDialectCreatorImpl;
@@ -24,6 +25,7 @@ import com.fr.bi.fs.BITableMapper;
 import com.fr.bi.fs.entry.BIReportEntry;
 import com.fr.bi.fs.entry.BIReportEntryDAO;
 import com.fr.bi.fs.entry.EntryConstants;
+import com.fr.bi.manager.PerformancePlugManager;
 import com.fr.bi.module.BICoreModule;
 import com.fr.bi.module.BIModule;
 import com.fr.bi.resource.FsResourceHelper;
@@ -80,32 +82,36 @@ public class BIPlate extends AbstractFSPlate {
 
     @Override
     public void initData() {
-        FRContext.getCurrentEnv().setBuildFilePath("bibuild.txt");
-        LOGGER.info("FINE BI :" + GeneralUtils.readBuildNO());
-        initModules();
-        super.initData();
-        startModules();
-        initPlugin();
-        registerEntrySomething();
-        initOOMKillerForLinux();
-        loadMemoryData();
-        createTimerTasks();
+        try {
+            FRContext.getCurrentEnv().setBuildFilePath("bibuild.txt");
+            LOGGER.info("FINE BI :" + GeneralUtils.readBuildNO());
+            initModules();
+            super.initData();
+            startModules();
+            initPlugin();
+            registerEntrySomething();
+            initOOMKillerForLinux();
+            loadMemoryData();
+            backupWhenStart();
+            addBITableColumn4NewConnection();
+            addSharedTableColumn4NewConnection();
 
-        addBITableColumn4NewConnection();
-        addSharedTableColumn4NewConnection();
+            //兼容FR工程中可能存在BID这一列的情况
+            dropColumnBID();
+            //兼容FR工程中可能存在PARENTID类型是整型的情况
+            notifyColumnParentIdType();
 
-        //兼容FR工程中可能存在BID这一列的情况
-        dropColumnBID();
-        //兼容FR工程中可能存在PARENTID类型是整型的情况
-        notifyColumnParentIdType();
-
-        //启动用于截图的phantom服务
-        initPhantomServer();
+            //启动用于截图的phantom服务
+            initPhantomServer();
+        } catch (Throwable e) {
+            LOGGER.error(e.getMessage(), e);
+        }
     }
 
-    private void createTimerTasks() {
-    /*载入定时任务*/
-        CubeGenerationManager.getCubeManager().resetCubeGenerationHour(UserControl.getInstance().getSuperManagerID());
+    private void backupWhenStart(){
+        if(PerformancePlugManager.getInstance().isBackupWhenStart()){
+            BackUpUtils.backup();
+        }
     }
 
     public void loadMemoryData() {

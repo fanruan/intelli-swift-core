@@ -251,22 +251,14 @@ public class BIDBUtils {
     public static int resloveValue(Object value) {
         if (value instanceof String) {
             return java.sql.Types.VARCHAR;
-        } else if (value instanceof Integer) {
-            return java.sql.Types.INTEGER;
-        } else if (value instanceof Double) {
-            return java.sql.Types.DECIMAL;
-        } else if (value instanceof Float) {
-            return java.sql.Types.FLOAT;
         } else if (value instanceof Date || value instanceof java.sql.Date) {
             return java.sql.Types.DATE;
-        } else if (value instanceof Long) {
-            return java.sql.Types.BIGINT;
         } else if (value instanceof Boolean) {
             return java.sql.Types.BOOLEAN;
         }
-        // alex:防止有其他类型的Number
+        //所有NUMBER类型全部转换成DOUBLE
         else if (value instanceof Number) {
-            return java.sql.Types.DECIMAL;
+            return java.sql.Types.DOUBLE;
         } else {
             return java.sql.Types.BINARY;
         }

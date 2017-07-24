@@ -3,12 +3,12 @@ package com.fr.bi.cal.analyze.cal.result;
 import com.fr.bi.cal.analyze.cal.utils.CubeReadingUtils;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.conf.report.widget.field.dimension.filter.DimensionFilter;
-import com.fr.bi.stable.constant.BIBaseConstant;
-import com.fr.bi.stable.constant.BIReportConstant;
-import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.report.key.TargetGettingKey;
 import com.fr.bi.report.result.BINode;
 import com.fr.bi.report.result.TargetCalculator;
+import com.fr.bi.stable.constant.BIBaseConstant;
+import com.fr.bi.stable.constant.BIReportConstant;
+import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.structure.collection.map.ChildsMap;
 import com.fr.bi.stable.utils.BICollectionUtils;
 import com.fr.general.ComparatorUtils;
@@ -55,7 +55,7 @@ public class Node implements BINode {
     private Node sibling;
     protected Number[] summaryValue;
     //ConcurrentHashMap需要支持高并发访问，不一定是该map高并发,当node过多时也需要高并发
-    private volatile Map<TargetGettingKey, GroupValueIndex> targetIndexValueMap;
+    private GroupValueIndex[] indexValue;
     private String showValue;
     private transient Map<TargetGettingKey, Double> childAVG;
     //TODO 低效的算法， 放在result无所谓
@@ -162,16 +162,15 @@ public class Node implements BINode {
         return childs.getLastValue();
     }
 
-    @Override
-    public Map<TargetGettingKey, GroupValueIndex> getTargetIndexValueMap() {
-        if (targetIndexValueMap == null) {
+    private GroupValueIndex[] getIndexValue() {
+        if (indexValue == null) {
             synchronized (this) {
-                if (targetIndexValueMap == null) {
-                    targetIndexValueMap = new ConcurrentHashMap<TargetGettingKey, GroupValueIndex>(1);
+                if (indexValue == null) {
+                    indexValue = new GroupValueIndex[summaryValue.length];
                 }
             }
         }
-        return targetIndexValueMap;
+        return indexValue;
     }
 
 
@@ -294,13 +293,19 @@ public class Node implements BINode {
 
 
     public void setTargetIndex(TargetGettingKey key, GroupValueIndex gvi) {
+        if (summaryValue == null || summaryValue.length - 1 < key.getTargetIndex()) {
+            return;
+        }
         if (gvi != null) {
-            getTargetIndexValueMap().put(key, gvi);
+            getIndexValue()[key.getTargetIndex()] = gvi;
         }
     }
 
     public GroupValueIndex getTargetIndex(TargetGettingKey key) {
-        return getTargetIndexValueMap().get(key);
+        if (summaryValue == null || summaryValue.length - 1 < key.getTargetIndex()) {
+            return null;
+        }
+        return getIndexValue()[key.getTargetIndex()];
     }
 
     public boolean needSummary() {
@@ -310,12 +315,12 @@ public class Node implements BINode {
         if (getChildLength() == 0) {
             return false;
         }
-        Node child = getChild(0);
-        for (int i = 0; i < summaryValue.length; i++) {
-            if (!ComparatorUtils.equals(summaryValue[i], child.summaryValue[i])) {
-                return true;
-            }
-        }
+//        Node child = getChild(0);
+//        for (int i = 0; i < summaryValue.length; i++) {
+//            if (!ComparatorUtils.equals(summaryValue[i], child.summaryValue[i])) {
+//                return true;
+//            }
+//        }
         return false;
 
     }
@@ -455,30 +460,6 @@ public class Node implements BINode {
         for (int i = 0; i < childs.size(); i++) {
             Node temp_node = childs.get(i);
             Node child = temp_node.createCloneNodeWithValue();
-            if (tempNode != null) {
-                CubeReadingUtils.setSibling(tempNode, child);
-            }
-            newnode.addChild(child);
-            tempNode = child;
-        }
-        return newnode;
-    }
-
-    /**
-     * 创建交叉表head的节点
-     *
-     * @return 交叉表head的节点
-     */
-    public CrossHeader createCrossHeader() {
-        CrossHeader newnode = new CrossHeader(comparator, data, summaryValue.length);
-        newnode.setShowValue(getShowValue());
-        newnode.getTargetIndexValueMap().putAll(this.getTargetIndexValueMap());
-        newnode.summaryValue = this.summaryValue;
-        ChildsMap<Node> childs = this.childs;
-        Node tempNode = null;
-        for (int i = 0; i < childs.size(); i++) {
-            Node temp_node = childs.get(i);
-            Node child = temp_node.createCrossHeader();
             if (tempNode != null) {
                 CubeReadingUtils.setSibling(tempNode, child);
             }
@@ -815,6 +796,32 @@ public class Node implements BINode {
                 children.put(childs.get(i).toJSONObject(dimensions, keys, index + 1));
             }
             jo.put("c", children);
+        }
+        return jo;
+    }
+
+    public JSONObject toTopJSONObject(BIDimension[] dimensions, TargetGettingKey[] keys, int index) throws JSONException {
+        JSONObject jo = JSONObject.create();
+        if(index > -1){
+            jo.put("n", dimensions[index].toString(getData()));
+        }
+        int childSize = childs.size();
+        if (childSize > 0) {
+            JSONArray children = JSONArray.create();
+            for (int i = 0; i < childSize; i++) {
+                children.put(childs.get(i).toTopJSONObject(dimensions, keys, index + 1));
+            }
+            jo.put("c", children);
+        } else {
+            JSONArray children = JSONArray.create();
+            for (int i = 0; i < keys.length; i++) {
+                JSONObject target =JSONObject.create();
+                target.put("n", keys[i].getTargetName());
+                children.put(target);
+            }
+            if (children.length() > 0) {
+                jo.put("c", children);
+            }
         }
         return jo;
     }

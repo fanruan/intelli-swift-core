@@ -2,22 +2,24 @@ package com.fr.bi.cal.analyze.cal.sssecret;
 
 import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.api.ICubeTableService;
-import com.fr.bi.cal.analyze.cal.index.loader.CubeIndexLoader;
 import com.fr.bi.cal.analyze.cal.index.loader.MetricGroupInfo;
 import com.fr.bi.cal.analyze.cal.index.loader.TargetAndKey;
-import com.fr.bi.cal.analyze.cal.multithread.*;
+import com.fr.bi.cal.analyze.cal.multithread.BIMultiThreadExecutor;
+import com.fr.bi.cal.analyze.cal.multithread.BISingleThreadCal;
+import com.fr.bi.cal.analyze.cal.multithread.SummaryCall;
 import com.fr.bi.cal.analyze.cal.result.Node;
+import com.fr.bi.cal.analyze.cal.result.NodeCreator;
 import com.fr.bi.cal.analyze.cal.result.NodeUtils;
 import com.fr.bi.cal.analyze.cal.sssecret.diminfo.MergeIteratorCreator;
 import com.fr.bi.cal.analyze.session.BISession;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.conf.report.widget.field.dimension.filter.DimensionFilter;
 import com.fr.bi.field.target.calculator.cal.CalCalculator;
+import com.fr.bi.report.key.TargetGettingKey;
+import com.fr.bi.report.result.TargetCalculator;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.gvi.GVIUtils;
 import com.fr.bi.stable.gvi.GroupValueIndex;
-import com.fr.bi.report.key.TargetGettingKey;
-import com.fr.bi.report.result.TargetCalculator;
 import com.fr.bi.stable.operation.sort.BISortUtils;
 import com.fr.general.ComparatorUtils;
 import com.fr.general.NameObject;
@@ -38,11 +40,13 @@ public class ConstructedRootDimensionGroup extends RootDimensionGroup {
 
     private BIDimension[] filterDimension;
 
-    private boolean setIndex;
+    protected boolean setIndex;
 
     private boolean hasInSumMetric;
 
     protected BIMultiThreadExecutor executor;
+
+    private NodeCreator nodeCreator;
 
     private boolean calAllPage;
 
@@ -55,7 +59,7 @@ public class ConstructedRootDimensionGroup extends RootDimensionGroup {
     }
 
     public ConstructedRootDimensionGroup(List<MetricGroupInfo> metricGroupInfoList, MergeIteratorCreator[] mergeIteratorCreators, int sumLength, BISession session, boolean useRealData,
-                                         NameObject[] dimensionTargetSort, List<CalCalculator> calCalculators, BIDimension[] filterDimension, boolean setIndex, boolean hasInSumMetric, BIMultiThreadExecutor executor, boolean calAllPage) {
+                                         NameObject[] dimensionTargetSort, List<CalCalculator> calCalculators, BIDimension[] filterDimension, boolean setIndex, boolean hasInSumMetric, BIMultiThreadExecutor executor, NodeCreator nodeCreator, boolean calAllPage) {
 
         super(metricGroupInfoList, mergeIteratorCreators, sumLength, session, useRealData);
         this.calCalculators = calCalculators;
@@ -65,6 +69,7 @@ public class ConstructedRootDimensionGroup extends RootDimensionGroup {
         this.dimensionTargetSort = dimensionTargetSort;
         this.hasInSumMetric = hasInSumMetric;
         this.executor = executor;
+        this.nodeCreator = nodeCreator;
         this.calAllPage = calAllPage;
     }
 
@@ -116,7 +121,7 @@ public class ConstructedRootDimensionGroup extends RootDimensionGroup {
 
     private void initRootNode() {
 
-        rootNode = new MetricMergeResult(null, sumLength, root.getGvis());
+        rootNode = createNode(null, sumLength, root.getGvis());
         if (executor != null) {
             multiThreadBuild();
         } else {
@@ -144,13 +149,22 @@ public class ConstructedRootDimensionGroup extends RootDimensionGroup {
             NodeUtils.setSiblingBetweenFirstAndLastChild(rootNode);
         }
         root.setChildren(rootNode.getChilds());
-        root.setSummaryValue(rootNode.getSummaryValue());
+        root.setMergeResult(rootNode);
         if (setIndex) {
             root.setGvis(rootNode.getGvis());
             for (int i = 0; i < metricGroupInfoList.size(); i++) {
                 metricGroupInfoList.get(i).setFilterIndex(root.getGvis()[i]);
             }
         }
+    }
+
+    protected MetricMergeResult createNode(Object data, int sumLen, GroupValueIndex[] gvis){
+        return nodeCreator.createMetricMergeResult(data, sumLen, gvis);
+    }
+
+
+    protected MetricMergeResult convertNode(MetricMergeResult node){
+        return nodeCreator.convertMetricMergeResult(node);
     }
 
     private boolean hasTargetSort() {
@@ -322,6 +336,7 @@ public class ConstructedRootDimensionGroup extends RootDimensionGroup {
         int index = 0;
         MetricMergeResult result = rootGroup.getMetricMergeResultByWait(index);
         while (result != MetricMergeResult.NULL) {
+            result = convertNode(result);
             node.addChild(result);
             if (level < rowSize - 1) {
                 cal(result, rootGroup.getChildDimensionGroup(index), level + 1);
@@ -350,7 +365,7 @@ public class ConstructedRootDimensionGroup extends RootDimensionGroup {
             }
             List<CalCalculator> calCalculators = new ArrayList<CalCalculator>();
             calCalculators.addAll(this.calCalculators);
-            CubeIndexLoader.calculateTargets(calculatorList, calCalculators, rootNode);
+            nodeCreator.sumCalculateMetrics(calculatorList, calCalculators, rootNode);
         }
     }
 
@@ -360,7 +375,9 @@ public class ConstructedRootDimensionGroup extends RootDimensionGroup {
         for (int i = 0; i < summaryLists.length; i++) {
             List<TargetAndKey> targetAndKeys = summaryLists[i];
             for (TargetAndKey targetAndKey : targetAndKeys) {
-                new SummaryCall(tis[i], node, targetAndKey, gvis[i], session.getLoader()).cal();
+                for (TargetAndKey key : nodeCreator.createTargetAndKeyList(targetAndKey)){
+                    new SummaryCall(tis[i], node, key, gvis[i], session.getLoader()).cal();
+                }
             }
         }
         if (!setIndex) {
@@ -394,6 +411,7 @@ public class ConstructedRootDimensionGroup extends RootDimensionGroup {
                 int index = 0;
                 MetricMergeResult result = rootGroup.getMetricMergeResultByWait(index);
                 while (result != MetricMergeResult.NULL) {
+                    result = convertNode(result);
                     rootNode.addChild(result);
                     size[0].incrementAndGet();
                     addTask(new SingleChildCal(result, rootGroup.getChildDimensionGroup(index), 0));
@@ -481,7 +499,6 @@ public class ConstructedRootDimensionGroup extends RootDimensionGroup {
             public void cal() {
 
                 cal(node, childDimensionGroup, level);
-                checkComplete(level);
             }
 
             private void cal(MetricMergeResult node, NoneDimensionGroup childDimensionGroup, int level) {
@@ -492,6 +509,7 @@ public class ConstructedRootDimensionGroup extends RootDimensionGroup {
                         int index = 0;
                         MetricMergeResult result = rootGroup.getMetricMergeResultByWait(index);
                         while (result != MetricMergeResult.NULL) {
+                            result = convertNode(result);
                             node.addChild(result);
                             addTask(new SingleChildCal(result, rootGroup.getChildDimensionGroup(index), level + 1));
                             size[level + 1].incrementAndGet();
@@ -502,6 +520,7 @@ public class ConstructedRootDimensionGroup extends RootDimensionGroup {
                     multiThreadSum(node);
                 } finally {
                     count[level].incrementAndGet();
+                    checkComplete(level);
                 }
             }
         }
@@ -519,19 +538,21 @@ public class ConstructedRootDimensionGroup extends RootDimensionGroup {
                     super.cal();
                 } finally {
                     count[rowSize].incrementAndGet();
+                    checkComplete(rowSize);
                 }
-                checkComplete(rowSize);
             }
         }
 
-        private void multiThreadSum(MetricMergeResult node) {
+        protected void multiThreadSum(MetricMergeResult node) {
 
             GroupValueIndex[] gvis = node.getGvis();
             for (int i = 0; i < summaryLists.length; i++) {
                 List<TargetAndKey> targetAndKeys = summaryLists[i];
                 for (TargetAndKey targetAndKey : targetAndKeys) {
-                    size[rowSize].incrementAndGet();
-                    executor.add(new SingleSummaryCall(tis[i], node, targetAndKey, gvis[i], session.getLoader()));
+                    for (TargetAndKey key : nodeCreator.createTargetAndKeyList(targetAndKey)){
+                        size[rowSize].incrementAndGet();
+                        executor.add(new SingleSummaryCall(tis[i], node, key, gvis[i], session.getLoader()));
+                    }
                 }
             }
             if (!setIndex) {
@@ -550,7 +571,17 @@ public class ConstructedRootDimensionGroup extends RootDimensionGroup {
         root.dimensionTargetSort = dimensionTargetSort;
         root.calCalculators = calCalculators;
         root.filterDimension = filterDimension;
+        root.nodeCreator = nodeCreator;
         return root;
+    }
+
+    @Override
+    public void checkMetricGroupInfo(NodeCreator creator, List<MetricGroupInfo> metricGroupInfoList) {
+        this.nodeCreator = creator;
+        if (!ComparatorUtils.equals(this.metricGroupInfoList, metricGroupInfoList)){
+            super.checkMetricGroupInfo(creator, metricGroupInfoList);
+            construct();
+        }
     }
 
     @Override

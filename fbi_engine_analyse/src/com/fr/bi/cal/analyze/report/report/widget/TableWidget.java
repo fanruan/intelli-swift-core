@@ -42,6 +42,7 @@ import com.fr.bi.report.key.TargetGettingKey;
 import com.fr.bi.report.result.TargetCalculator;
 import com.fr.bi.stable.constant.BIJSONConstant;
 import com.fr.bi.stable.constant.BIReportConstant;
+import com.fr.bi.stable.constant.BIStyleConstant;
 import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.gvi.GVIUtils;
 import com.fr.bi.stable.gvi.GroupValueIndex;
@@ -194,27 +195,6 @@ public class TableWidget extends BISummaryWidget {
             return createComplexExecutor(session, hasTarget, complexExpander, expander);
         } else {
             return createNormalExecutor(session, hasTarget, getViewDimensions(), getViewTopDimensions(), expander);
-        }
-    }
-
-    public void setGroupTableType() {
-
-        tableType = BIReportConstant.TABLE_WIDGET.GROUP_TYPE;
-    }
-
-    public void addColumn2Row() {
-
-        if (data != null) {
-            data.addColumn2Row();
-            String[] array = data.getRow();
-            ArrayList<BIDimension> usedDimensions = new ArrayList<BIDimension>();
-            for (String anArray : array) {
-                BIDimension dimension = BITravalUtils.getTargetByName(anArray, dimensions);
-                if (dimension.isUsed()) {
-                    usedDimensions.add(dimension);
-                }
-            }
-            usedDimension = usedDimensions.toArray(new BIDimension[usedDimensions.size()]);
         }
     }
 
@@ -406,6 +386,13 @@ public class TableWidget extends BISummaryWidget {
         }
     }
 
+<<<<<<< HEAD
+=======
+    public BITableWidgetStyle getWidgetStyle() {
+        return style;
+    }
+
+>>>>>>> origin/release/4.0.2
     public String getDimensionName(String id) {
 
         BISummaryTarget target = this.targetsIdMap.get(id);
@@ -497,6 +484,17 @@ public class TableWidget extends BISummaryWidget {
     public void setOperator(int operator) {
 
         this.operator = operator;
+    }
+
+    public String getThemeColor() {
+        switch (tableType) {
+            case BIReportConstant.WIDGET.TABLE:
+            case BIReportConstant.WIDGET.CROSS_TABLE:
+            case BIReportConstant.WIDGET.COMPLEX_TABLE:
+                return getWidgetStyle().getThemeColor();
+            default:
+                return BIStyleConstant.DEFAULT_CHART_SETTING.THEME_COLOR;
+        }
     }
 
     public boolean hasVerticalPrePage() {
@@ -622,16 +620,18 @@ public class TableWidget extends BISummaryWidget {
                 break;
         }
         DataConstructor data = BITableConstructHelper.buildTableData(builder);
+<<<<<<< HEAD
         BITableConstructHelper.formatCells(data, getITableCellFormatOperationMap(), getWidgetSettings());
         return data.createJSON().put("page", res.getJSONArray("page")).put("viewDimensionsLength", getViewDimensions().length).put("viewTopDimensionsLength", getViewTopDimensions().length).put("widgetType", this.tableType);
+=======
+        BITableConstructHelper.formatCells(data, getITableCellFormatOperationMap(), style);
+        JSONObject resultJSON = data.createJSON().put("page", res.getJSONArray("page")).put("widgetType", this.tableType);
+        resultJSON.put("viewDimensionsLength", getViewDimensions().length);
+        resultJSON.put("viewTopDimensionsLength", getViewTopDimensions().length);
+        resultJSON.put("viewTargetsLength", getViewTargets().length);
+        return resultJSON;
+>>>>>>> origin/release/4.0.2
     }
-
-    /*假数据，测试用*/
-    //    private JSONObject createTestData() throws IOException, JSONException {
-    //        StringBuffer keysStr = new StringBuffer();
-    //        String s = BIFileUtils.readFile("C:\\data.json");
-    //        return data.createJSON().put("page", res.getJSONArray("page")).put("dimensionLength",dimensions.length).put("header",createTestData().get("header")).put("crossHeader",createTestData().get("crossHeader")).put("items",createTestData().get("items")).put("crossItems",createTestData().get("crossItems"));
-    //    }
 
     private Map<String, ITableCellFormatOperation> getITableCellFormatOperationMap() throws Exception {
 
