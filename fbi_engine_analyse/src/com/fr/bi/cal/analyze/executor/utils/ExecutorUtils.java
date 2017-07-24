@@ -32,7 +32,7 @@ public class ExecutorUtils {
             value = v.doubleValue();
             //负无穷显示空 正无穷显示N/0
             if (((Double) value) == Double.NEGATIVE_INFINITY) {
-                return "";
+                return NONE_VALUE;
             } else if (((Double) value) == Double.POSITIVE_INFINITY) {
                 return "N/0";
             } else if (Double.isNaN((Double) value)) {
