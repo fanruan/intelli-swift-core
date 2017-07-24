@@ -151,7 +151,7 @@ public class NumberDimensionCalculator extends AbstractDimensionCalculator {
         };
     }
 
-    private void initCustomMap(ICubeDataLoader loader, boolean useRealData, int groupLimit, GroupValueIndex filterGvi) {
+    private synchronized void initCustomMap(ICubeDataLoader loader, boolean useRealData, int groupLimit, GroupValueIndex filterGvi) {
 
         ICubeColumnIndexReader getter = loader.getTableIndex(field.getTableBelongTo().getTableSource()).loadGroup(dimension.createKey(field), getRelationList(), useRealData, groupLimit);
         //BI-5055 这边空分组取得不对，应该取得是主表空分组对应字表的gvi，而不是取出主表自己的gvi
