@@ -215,7 +215,7 @@ public class ComplexCrossExecutor extends AbstractTableWidgetExecutor<XNode> {
             int colSumIdx = columnData.getDimensionArray(i).length == 1 ? 0 : calculateNextColSumIdx(parent, columnIdx.value);
             boolean thisNodeIsNotEnd = i != tops.length - 1 && columnIdx.value < colTitleStartIdx[i + 1];
             while (tops[i].getSibling() != null && (i == tops.length - 1 || thisNodeIsNotEnd)) {
-                if (colSumIdx == columnIdx.value) {
+                if (colSumIdx == columnIdx.value && widget.showColumnTotal()) {
                     generateColSumCell(Inter.getLocText("BI-Summary_Values") + ":", pagedIterator, columnIdx, columnData.getMaxArrayLength(), 1);
                     colSumIdx = calculateNextColSumIdx(parent, columnIdx.value);
                 }
@@ -223,7 +223,7 @@ public class ComplexCrossExecutor extends AbstractTableWidgetExecutor<XNode> {
                 tops[i] = tops[i].getSibling();
             }
             generateColSumCell("", pagedIterator, columnIdx, columnData.getMaxArrayLength(), 1);
-            if (colSumIdx == columnIdx.value) {
+            if (colSumIdx == columnIdx.value && widget.showColumnTotal()) {
                 generateColSumCell(Inter.getLocText("BI-Summary_Values" + ":"), pagedIterator, columnIdx, columnData.getMaxArrayLength(), 1);
             }
         }
