@@ -20,13 +20,16 @@ import com.fr.bi.report.result.TargetCalculator;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.gvi.GVIUtils;
 import com.fr.bi.stable.gvi.GroupValueIndex;
+import com.fr.general.ComparatorUtils;
 import com.fr.general.DateUtils;
 import com.fr.general.GeneralUtils;
 import com.fr.general.Inter;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;
 import com.fr.stable.ExportConstants;
+import com.fr.stable.StringUtils;
 
+import java.lang.annotation.Target;
 import java.util.*;
 
 /**
@@ -231,7 +234,11 @@ public class ComplexCrossExecutor extends AbstractTableWidgetExecutor<XNode> {
 
     private void generateColSumCell(String text, StreamPagedIterator pagedIterator, FinalInt columnIdx, int rowIdx, int rowSpan) {
         for (BISummaryTarget anUsedSumTarget : usedSumTarget) {
-            CBCell cell = ExecutorUtils.createCBCell(text + anUsedSumTarget.getText(), rowIdx, rowSpan, columnIdx.value++, 1, tableStyle.getHeaderStyle(Style.getInstance()));
+            int numLevel = widget.getChartSetting().getNumberLevelByTargetId(anUsedSumTarget.getId());
+            String unit = widget.getChartSetting().getUnitByTargetId(anUsedSumTarget.getId());
+            String levelAndUnit = ExecutorUtils.formatLevelAndUnit(numLevel, unit);
+            String dimensionUnit = ComparatorUtils.equals(levelAndUnit, StringUtils.EMPTY) ? "" : "(" + levelAndUnit + ")";
+            CBCell cell = ExecutorUtils.createCBCell(text + anUsedSumTarget.getText() + dimensionUnit, rowIdx, rowSpan, columnIdx.value++, 1, tableStyle.getHeaderStyle(Style.getInstance()));
             pagedIterator.addCell(cell);
         }
     }
@@ -332,8 +339,8 @@ public class ComplexCrossExecutor extends AbstractTableWidgetExecutor<XNode> {
                                      int rowIdx, Style style, int colIdxStart) {
         Number[][] values = temp.getXValue();
         for (int j = 0; j < values[0].length; j++) {
-            for (int i = 0; i < widget.getUsedTargetID().length; i++) {
-                CBCell cell = formatTargetCell(values[i][j], widget.getChartSetting(), widget.getTargetsKey()[i], rowIdx, colIdxStart++, style);
+            for (TargetGettingKey key : widget.getTargetsKey()) {
+                CBCell cell = formatTargetCell(values[key.getTargetIndex()][j], widget.getChartSetting(), key, rowIdx, colIdxStart++, style);
                 pagedIterator.addCell(cell);
             }
         }
