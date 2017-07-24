@@ -1,7 +1,7 @@
 package com.fr.bi.cal.analyze.report.report.widget.chart.export.item;
 
-import com.fr.bi.cal.analyze.report.report.widget.chart.export.style.BITableItemStyle;
-import com.fr.bi.cal.analyze.report.report.widget.chart.export.style.ITableStyle;
+import com.fr.bi.conf.report.style.table.BITableItemStyle;
+import com.fr.bi.conf.report.style.table.ITableStyle;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
 import java.util.UUID;

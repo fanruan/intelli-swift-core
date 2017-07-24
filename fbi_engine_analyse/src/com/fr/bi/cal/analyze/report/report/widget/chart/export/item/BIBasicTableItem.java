@@ -1,6 +1,6 @@
 package com.fr.bi.cal.analyze.report.report.widget.chart.export.item;
 
-import com.fr.bi.cal.analyze.report.report.widget.chart.export.style.ITableStyle;
+import com.fr.bi.conf.report.style.table.ITableStyle;
 import com.fr.bi.stable.utils.program.BIJsonUtils;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;

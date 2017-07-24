@@ -14,7 +14,6 @@ import com.fr.bi.cal.analyze.executor.utils.ExecutorUtils;
 import com.fr.bi.cal.analyze.report.report.widget.TableWidget;
 import com.fr.bi.cal.analyze.session.BISession;
 import com.fr.bi.cal.report.engine.CBCell;
-import com.fr.bi.conf.report.style.BITableStyle;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.field.target.target.BISummaryTarget;
 import com.fr.bi.report.key.TargetGettingKey;
@@ -82,7 +81,7 @@ public class HorGroupExecutor extends AbstractTableWidgetExecutor<Node> {
 
         int rowIdx = 0;
         while (rowIdx < colDimension.length) {
-            CBCell cell = ExecutorUtils.createTitleCell(colDimension[rowIdx].getText(), rowIdx, 1, 0, 1);
+            CBCell cell = ExecutorUtils.createCBCell(colDimension[rowIdx].getText(), rowIdx, 1, 0, 1, tableStyle.getHeaderStyle(Style.getInstance()));
             pagedIterator.addCell(cell);
             node = node.getFirstChild();
             Node temp = node;
@@ -94,7 +93,7 @@ public class HorGroupExecutor extends AbstractTableWidgetExecutor<Node> {
                 if (dim.getGroup().getType() == BIReportConstant.GROUP.YMD && GeneralUtils.string2Number(v) != null) {
                     v = DateUtils.DATEFORMAT2.format(new Date(GeneralUtils.string2Number(v).longValue()));
                 }
-                CBCell dimCell = ExecutorUtils.createTitleCell(v, rowIdx, 1, columnIdx.value, widget.showColumnTotal() ? temp.getTotalLengthWithSummary() : temp.getTotalLength());
+                CBCell dimCell = ExecutorUtils.createCBCell(v, rowIdx, 1, columnIdx.value, widget.showColumnTotal() ? temp.getTotalLengthWithSummary() : temp.getTotalLength(), tableStyle.getHeaderStyle(Style.getInstance()));
                 pagedIterator.addCell(dimCell);
                 columnIdx.value += widget.showColumnTotal() ? temp.getTotalLengthWithSummary() : temp.getTotalLength();
                 if (widget.showColumnTotal()) {
@@ -109,7 +108,7 @@ public class HorGroupExecutor extends AbstractTableWidgetExecutor<Node> {
     protected static void generateTitleSumCells(Node temp, StreamPagedIterator pagedIterator, int rowIdx, FinalInt columnIdx, int maxColumnDimLen) {
 
         if (checkIfGenerateSumCell(temp) && temp.getParent().getChildLength() != 1) {
-            CBCell cell = ExecutorUtils.createTitleCell(Inter.getLocText("BI-Summary_Values"), rowIdx, maxColumnDimLen - rowIdx, columnIdx.value, 1);
+            CBCell cell = ExecutorUtils.createCBCell(Inter.getLocText("BI-Summary_Values"), rowIdx, maxColumnDimLen - rowIdx, columnIdx.value, 1, tableStyle.getHeaderStyle(Style.getInstance()));
             pagedIterator.addCell(cell);
         }
         adjustColumnIdx(temp, columnIdx);
@@ -139,12 +138,13 @@ public class HorGroupExecutor extends AbstractTableWidgetExecutor<Node> {
             FinalInt columnIdx = new FinalInt();
             columnIdx.value = 1;
             Object targetName = usedSumTarget[i].getText();
-            CBCell targetNameCell = ExecutorUtils.createValueCell(targetName, colDimensionLen + i, 1, 0, 1, Style.getInstance(), (i + 1) % 2 == 1);
+            Style style = (i + 1) % 2 == 1 ? tableStyle.getOddRowStyle(Style.getInstance()) : tableStyle.getEvenRowStyle(Style.getInstance());
+            CBCell targetNameCell = ExecutorUtils.createCBCell(targetName, colDimensionLen + i, 1, 0, 1, style);
             pagedIterator.addCell(targetNameCell);
             Node temp = node;
             while (temp != null) {
                 Object data = temp.getSummaryValue(keys[i]);
-                CBCell cell = formatTargetCell(data, widget.getChartSetting(), keys[i], colDimensionLen + i, columnIdx.value++, (i + 1) % 2 == 1);
+                CBCell cell = formatTargetCell(data, widget.getChartSetting(), keys[i], colDimensionLen + i, columnIdx.value++, style);
                 pagedIterator.addCell(cell);
                 if (widget.showColumnTotal()) {
                     generateTargetSumCell(temp, widget, keys[i], pagedIterator, colDimensionLen, columnIdx, i);
@@ -159,7 +159,8 @@ public class HorGroupExecutor extends AbstractTableWidgetExecutor<Node> {
         if ((widget.getViewTargets().length != 0) && checkIfGenerateSumCell(temp)) {
             if (temp.getParent().getChildLength() != 1) {
                 Object data = temp.getParent().getSummaryValue(key);
-                CBCell cell = formatTargetCell(data, widget.getChartSetting(), key, targetRowIdx + colDimensionLen, columnIdx.value++, (targetRowIdx + 1) % 2 == 1);
+                Style style = (targetRowIdx + 1) % 2 == 1 ? tableStyle.getOddRowStyle(Style.getInstance()) : tableStyle.getEvenRowStyle(Style.getInstance());
+                CBCell cell = formatTargetCell(data, widget.getChartSetting(), key, targetRowIdx + colDimensionLen, columnIdx.value++, style);
                 pagedIterator.addCell(cell);
             }
             Node parent = temp.getParent();

@@ -315,12 +315,12 @@ public class Node implements BINode {
         if (getChildLength() == 0) {
             return false;
         }
-        Node child = getChild(0);
-        for (int i = 0; i < summaryValue.length; i++) {
-            if (!ComparatorUtils.equals(summaryValue[i], child.summaryValue[i])) {
-                return true;
-            }
-        }
+//        Node child = getChild(0);
+//        for (int i = 0; i < summaryValue.length; i++) {
+//            if (!ComparatorUtils.equals(summaryValue[i], child.summaryValue[i])) {
+//                return true;
+//            }
+//        }
         return false;
 
     }

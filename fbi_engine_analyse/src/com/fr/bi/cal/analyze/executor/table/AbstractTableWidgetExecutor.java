@@ -11,6 +11,7 @@ import com.fr.bi.cal.analyze.executor.utils.ExecutorUtils;
 import com.fr.bi.cal.analyze.report.report.widget.TableWidget;
 import com.fr.bi.cal.analyze.session.BISession;
 import com.fr.bi.cal.report.engine.CBCell;
+import com.fr.bi.conf.report.style.BITableStyle;
 import com.fr.bi.conf.report.style.DetailChartSetting;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.conf.report.widget.field.target.BITarget;
@@ -35,6 +36,8 @@ public abstract class AbstractTableWidgetExecutor<T> extends BIAbstractExecutor<
 
     protected TableWidget widget;
 
+    protected static BITableStyle tableStyle;
+
     protected AbstractTableWidgetExecutor(TableWidget widget, Paging paging, BISession session) {
 
         super(widget, paging, session);
@@ -42,6 +45,9 @@ public abstract class AbstractTableWidgetExecutor<T> extends BIAbstractExecutor<
         usedSumTarget = widget.getViewTargets();
         allSumTarget = widget.getTargets();
         allDimensions = widget.getDimensions();
+
+        tableStyle= new BITableStyle(widget.getThemeColor());
+
         //        this.expander = CrossExpander.ALL_EXPANDER;
     }
 
@@ -61,14 +67,13 @@ public abstract class AbstractTableWidgetExecutor<T> extends BIAbstractExecutor<
         return null;
     }
 
-    protected static CBCell formatTargetCell(Object data, DetailChartSetting setting, TargetGettingKey key, int rowIdx, int columnIdx, boolean isOdd) {
+    protected static CBCell formatTargetCell(Object data, DetailChartSetting setting, TargetGettingKey key, int rowIdx, int columnIdx, Style style) {
         int numLevel = setting.getNumberLevelByTargetId(key.getTargetName());
         int formatDecimal = setting.getFormatDecimalByTargetId(key.getTargetName());
         boolean separator = setting.getSeparatorByTargetId(key.getTargetName());
         data = ExecutorUtils.formatExtremeSumValue(data, numLevel);
-        Style style = Style.getInstance();
         style = style.deriveFormat(ExecutorUtils.formatDecimalAndSeparator(data, numLevel, formatDecimal, separator));
-        return ExecutorUtils.createValueCell(data, rowIdx, 1, columnIdx, 1, style, isOdd);
+        return ExecutorUtils.createCBCell(data, rowIdx, 1, columnIdx, 1, style);
     }
 
     public BISummaryTarget[] createTarget4Calculate() {

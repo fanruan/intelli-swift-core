@@ -48,7 +48,7 @@ public class XNode {
             topIndex.addChild(child);
             buildTopIndexNode(child, n, showSum ,finalInt);
         }
-        if ((top.getChildLength() == 0 || (showSum && top.getTotalLength() != 1))) {
+        if ((top.getChildLength() == 0 || (showSum && top.getChildLength() != 1))) {
             topIndex.setData(finalInt.value);
             finalInt.value++;
         }
