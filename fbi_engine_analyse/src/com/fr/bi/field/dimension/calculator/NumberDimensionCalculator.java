@@ -73,9 +73,9 @@ public class NumberDimensionCalculator extends AbstractDimensionCalculator {
             }
             return dimension.getSort().createGroupedMap(getter).iterator();
         }
-        initCustomMap(loader, useRealData, groupLimit, filterGvi);
-        //if (customMap == null) {
-        //}
+        if (customMap == null || !useRealData) {
+            initCustomMap(loader, useRealData, groupLimit, filterGvi);
+        }
         if (isCustomSort()) {
             return customMap.iterator();
         }

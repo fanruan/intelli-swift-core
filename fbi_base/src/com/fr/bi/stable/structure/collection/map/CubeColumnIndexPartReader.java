@@ -110,7 +110,7 @@ public class CubeColumnIndexPartReader implements ICubeColumnIndexReader {
 
             if (filterGvi != null && !filterGvi.isAllEmpty()) {
                 while (index < size) {
-                    if (entry != null && (entry.getValue().and(filterGvi)).getRowsCountWithData() > 0) {
+                    if (entry != null && (entry.getValue().AND(filterGvi)).getRowsCountWithData() > 0) {
                         index++;
                         next = entry;
                         return;
@@ -121,13 +121,12 @@ public class CubeColumnIndexPartReader implements ICubeColumnIndexReader {
                         return;
                     }
                 }
-                //
                 next = null;
             } else {
                 if (index < size) {
                     index++;
                     next = iterator.next();
-                }else {
+                } else {
                     next = null;
                 }
             }
