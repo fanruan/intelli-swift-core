@@ -1,8 +1,8 @@
 package com.fr.bi.cal.analyze.session;
 
 import com.fr.base.FRContext;
+import com.fr.bi.cluster.utils.BIUserAuthUtils;
 import com.fr.bi.fs.BIReportNode;
-import com.fr.fs.web.service.ServiceUtils;
 import com.fr.general.ComparatorUtils;
 import com.fr.general.Inter;
 import com.fr.general.web.ParameterConsts;
@@ -53,7 +53,7 @@ public class BIWeblet implements Weblet {
     public SessionProvider createSessionIDInfor(HttpServletRequest req,
                                                 String remoteAddress, Map parameterMap4Execute) throws Exception {
         if(userId == null) {
-            userId = ServiceUtils.getCurrentUserID(req);
+            userId = BIUserAuthUtils.getCurrentUserID(req);
         }
         return new BISession(remoteAddress, this, userId, req.getLocale(), node);
     }

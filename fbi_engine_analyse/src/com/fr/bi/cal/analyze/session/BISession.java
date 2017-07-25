@@ -4,22 +4,16 @@ import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.conf.table.BusinessTable;
 import com.fr.bi.cal.analyze.cal.index.loader.MetricGroupInfo;
-import com.fr.bi.cal.analyze.cal.result.ComplexAllExpander;
 import com.fr.bi.cal.analyze.cal.sssecret.PageIteratorGroup;
 import com.fr.bi.cal.analyze.executor.detail.key.DetailSortKey;
-import com.fr.bi.cal.analyze.report.report.widget.BIDetailWidget;
-import com.fr.bi.cal.analyze.report.report.widget.TableWidget;
-import com.fr.bi.cal.report.main.impl.BIWorkBook;
 import com.fr.bi.cal.stable.loader.CubeReadingTableIndexLoader;
+import com.fr.bi.cluster.utils.BIUserAuthUtils;
 import com.fr.bi.cluster.utils.ClusterEnv;
 import com.fr.bi.conf.report.BIReport;
-import com.fr.bi.conf.report.BIWidget;
 import com.fr.bi.fs.BIFineDBConfigLockDAO;
 import com.fr.bi.fs.BIReportNode;
 import com.fr.bi.fs.BIReportNodeLock;
 import com.fr.bi.fs.BIReportNodeLockDAO;
-import com.fr.bi.stable.constant.BIExcutorConstant;
-import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.log.CubeGenerateStatusProvider;
 import com.fr.data.TableDataSource;
@@ -28,12 +22,10 @@ import com.fr.fs.base.entity.CustomRole;
 import com.fr.fs.control.CompanyRoleControl;
 import com.fr.fs.control.CustomRoleControl;
 import com.fr.fs.control.UserControl;
-import com.fr.fs.web.service.ServiceUtils;
 import com.fr.general.FRLogManager;
 import com.fr.general.GeneralContext;
 import com.fr.main.FineBook;
 import com.fr.main.TemplateWorkBook;
-import com.fr.main.workbook.ResultWorkBook;
 import com.fr.report.report.ResultReport;
 import com.fr.report.stable.fun.Actor;
 import com.fr.script.Calculator;
@@ -99,7 +91,7 @@ public class BISession extends BIAbstractSession {
         if (isShareReq) {
             return accessUserId;
         } else {
-            return ServiceUtils.getCurrentUserID(req);
+            return BIUserAuthUtils.getCurrentUserID(req);
         }
     }
 
