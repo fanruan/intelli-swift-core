@@ -60,7 +60,6 @@ public class CrossExecutor extends AbstractTableWidgetExecutor<XNode> {
         int len = usedSumTarget.length;
         TargetGettingKey[] keys = new TargetGettingKey[len];
         boolean isWholeCol = keys.length == 0 || !widget.getWidgetConf().getWidgetSettings().isShowColTotal();
-
         boolean isWholeRow = keys.length == 0 || !widget.getWidgetConf().getWidgetSettings().isShowRowTotal();
         int columnLen = (isWholeCol ? node.getTop().getTotalLength() :
                 node.getTop().getTotalLengthWithSummary()) * Math.max(1, keys.length) + rowDimension.length + widget.isOrder();

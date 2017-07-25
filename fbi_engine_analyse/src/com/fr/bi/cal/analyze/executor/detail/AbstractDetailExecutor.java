@@ -73,7 +73,7 @@ public abstract class AbstractDetailExecutor extends BIAbstractExecutor<JSONObje
         this.viewDimension = widget.getViewDimensions();
         this.sortTargets = widget.getSortTargets();
         this.userId = session.getUserId();
-        this.tableStyle = new BITableStyle(widget.getWidgetSettings(widget.getWidgetConf()).getThemeColor());
+        this.tableStyle = new BITableStyle(widget.getWidgetSettings().getThemeColor());
     }
 
 

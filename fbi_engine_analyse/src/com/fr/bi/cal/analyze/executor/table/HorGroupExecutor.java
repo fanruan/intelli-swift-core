@@ -55,7 +55,7 @@ public class HorGroupExecutor extends AbstractTableWidgetExecutor<Node> {
         int rowLength = colDimension.length + usedSumTarget.length;
         int columnLength = node.getTotalLength() + widget.isOrder() + 1;
         //显示不显示汇总行
-        int rowLen = widget.getWidgetSettings(widget.getWidgetConf()).isShowRowTotal() ? node.getTotalLengthWithSummary() : node.getTotalLength();
+        int rowLen = widget.getWidgetSettings().isShowRowTotal() ? node.getTotalLengthWithSummary() : node.getTotalLength();
         rectangle = new Rectangle(rowLength + widget.isOrder(), 1, columnLength + widget.isOrder() - 1, rowLen);
         final TableCellIterator iter = new TableCellIterator(columnLength, rowLength);
         new Thread() {
