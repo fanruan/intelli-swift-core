@@ -34,7 +34,7 @@ import com.fr.bi.cal.analyze.report.report.widget.util.BIWidgetFactory;
 import com.fr.bi.cal.analyze.session.BISession;
 import com.fr.bi.common.persistent.annotation.PersistNameHistory;
 import com.fr.bi.common.persistent.xml.BIIgnoreField;
-import com.fr.bi.conf.report.BIWidgetScResult;
+import com.fr.bi.conf.report.SclCalculator;
 import com.fr.bi.conf.report.WidgetType;
 import com.fr.bi.conf.report.conf.BIWidgetConf;
 import com.fr.bi.conf.report.conf.BIWidgetSettings;
@@ -79,7 +79,7 @@ import java.util.concurrent.ConcurrentHashMap;
  *
  * @author Daniel-pc
  */
-public class TableWidget extends BISummaryWidget implements BIWidgetScResult {
+public class TableWidget extends SummaryWidget implements SclCalculator {
 
     private static final long serialVersionUID = -4736577206434772688L;
 

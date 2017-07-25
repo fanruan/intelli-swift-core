@@ -52,7 +52,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-public abstract class BISummaryWidget extends AbstractBIWidget {
+public abstract class SummaryWidget extends AbstractBIWidget {
 
     private static final long serialVersionUID = -4264115812022703958L;
 
@@ -502,7 +502,7 @@ public abstract class BISummaryWidget extends AbstractBIWidget {
 
     @Override
     public Object clone() {
-        BISummaryWidget widget = (BISummaryWidget) super.clone();
+        SummaryWidget widget = (SummaryWidget) super.clone();
         widget.targetFilterMap = new LinkedHashMap<String, DimensionFilter>();
         widget.targetFilterMap.putAll(targetFilterMap);
         return widget;

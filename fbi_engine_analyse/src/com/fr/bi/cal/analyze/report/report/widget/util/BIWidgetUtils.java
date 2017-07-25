@@ -1,8 +1,8 @@
 package com.fr.bi.cal.analyze.report.report.widget.util;
 
-import com.fr.bi.cal.analyze.report.report.widget.imp.BIDetailWidget;
+import com.fr.bi.cal.analyze.report.report.widget.imp.DetailWidget;
 import com.fr.bi.cal.analyze.report.report.widget.imp.TableWidget;
-import com.fr.bi.conf.report.BIWidgetScResult;
+import com.fr.bi.conf.report.SclCalculator;
 import com.fr.bi.conf.report.WidgetType;
 import com.fr.bi.conf.report.conf.BIWidgetConf;
 import com.fr.json.JSONObject;
@@ -22,7 +22,7 @@ public class BIWidgetUtils {
         return getWidget(widgetConf).calculateSCData(widgetConf, data);
     }
 
-    private static BIWidgetScResult getWidget(BIWidgetConf widgetConf) throws Exception {
+    private static SclCalculator getWidget(BIWidgetConf widgetConf) throws Exception {
         if (isTableWidget(widgetConf.getType())) {
             return getTableWidget(widgetConf);
         } else {
@@ -34,12 +34,12 @@ public class BIWidgetUtils {
         return Arrays.asList(TABLE, CROSS_TABLE, COMPLEX_TABLE, DETAIL).contains(type);
     }
 
-    private static BIWidgetScResult getVanWidget(BIWidgetConf widgetConf) throws Exception {
+    private static SclCalculator getVanWidget(BIWidgetConf widgetConf) throws Exception {
         return BIWidgetFactory.createVanWidgetByType(WidgetType.parse(widgetConf.getType()));
     }
 
-    private static BIWidgetScResult getTableWidget(BIWidgetConf widgetConf) throws Exception {
-        BIWidgetScResult res = null;
+    private static SclCalculator getTableWidget(BIWidgetConf widgetConf) throws Exception {
+        SclCalculator res = null;
         switch (WidgetType.parse(widgetConf.getType())) {
             case TABLE:
             case CROSS_TABLE:
@@ -47,7 +47,7 @@ public class BIWidgetUtils {
                 res = new TableWidget();
                 break;
             case DETAIL:
-                res = new BIDetailWidget();
+                res = new DetailWidget();
                 break;
             default:
                 res = new TableWidget();

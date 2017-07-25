@@ -1,7 +1,7 @@
 package com.fr.bi.cal.analyze.report.report.widget.util;
 
 import com.finebi.cube.common.log.BILoggerFactory;
-import com.fr.bi.cal.analyze.report.report.widget.imp.BIDetailWidget;
+import com.fr.bi.cal.analyze.report.report.widget.imp.DetailWidget;
 import com.fr.bi.cal.analyze.report.report.widget.imp.ListLabelWidget;
 import com.fr.bi.cal.analyze.report.report.widget.imp.MonthControlWidget;
 import com.fr.bi.cal.analyze.report.report.widget.imp.QuarterControlWidget;
@@ -140,7 +140,7 @@ public class BIWidgetFactory {
                 biWidget = new TableWidget();
                 break;
             case DETAIL:
-                biWidget = new BIDetailWidget();
+                biWidget = new DetailWidget();
                 break;
             case STRING:
             case STRING_LIST:

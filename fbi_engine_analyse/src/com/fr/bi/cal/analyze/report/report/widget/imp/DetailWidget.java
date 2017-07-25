@@ -25,7 +25,7 @@ import com.fr.bi.cal.analyze.report.report.widget.detail.BIDetailSetting;
 import com.fr.bi.cal.analyze.report.report.widget.util.BIWidgetFactory;
 import com.fr.bi.cal.analyze.session.BISession;
 import com.fr.bi.common.persistent.xml.BIIgnoreField;
-import com.fr.bi.conf.report.BIWidgetScResult;
+import com.fr.bi.conf.report.SclCalculator;
 import com.fr.bi.conf.report.WidgetType;
 import com.fr.bi.conf.report.conf.BIWidgetConf;
 import com.fr.bi.conf.report.widget.field.target.detailtarget.BIDetailTarget;
@@ -56,7 +56,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-public class BIDetailWidget extends AbstractBIWidget implements BIWidgetScResult {
+public class DetailWidget extends AbstractBIWidget implements SclCalculator {
 
     private static final long serialVersionUID = 3558768164064392671L;
 

@@ -19,7 +19,7 @@ import com.fr.bi.cal.analyze.executor.paging.Paging;
 import com.fr.bi.cal.analyze.executor.paging.PagingFactory;
 import com.fr.bi.cal.analyze.executor.table.AbstractTableWidgetExecutor;
 import com.fr.bi.cal.analyze.report.report.widget.imp.AbstractBIWidget;
-import com.fr.bi.cal.analyze.report.report.widget.imp.BIDetailWidget;
+import com.fr.bi.cal.analyze.report.report.widget.imp.DetailWidget;
 import com.fr.bi.cal.analyze.report.report.widget.imp.TableWidget;
 import com.fr.bi.cal.analyze.session.BISession;
 import com.fr.bi.conf.report.BIWidget;
@@ -113,7 +113,7 @@ public class GolbalFilterUtils {
                 }
             } else if (((AbstractBIWidget) widget).getGlobalFilterWidget().getType().equals(WidgetType.DETAIL)) {
                 // 明细表的跳转
-                BIDetailWidget globalFilterWidget = (BIDetailWidget) ((AbstractBIWidget) widget).getGlobalFilterWidget();
+                DetailWidget globalFilterWidget = (DetailWidget) ((AbstractBIWidget) widget).getGlobalFilterWidget();
                 // 返回点击行的gvi
                 // 不需要判断是否有相同的基础表|相同基础表的时候才需要有跳转效果
                 if (isSetSourceAndTargetField || ((AbstractBIWidget) widget).getBaseTable().equals(globalFilterWidget.getBaseTable())) {
@@ -313,8 +313,8 @@ public class GolbalFilterUtils {
             if (widget.getType().equals(WidgetType.DETAIL)) {
                 int page = clicked.optInt("pageCount", 1);
                 int rIndex = clicked.optInt("rowIndex", 0);
-                GroupValueIndex tarFiledGvi = getDetailLineGvi((BIDetailWidget) widget, page, rIndex, session);
-                return getOneLineValue(tarFiledGvi, ((BIDetailWidget) widget).getBaseTable(), fIds, userId, session, ret);
+                GroupValueIndex tarFiledGvi = getDetailLineGvi((DetailWidget) widget, page, rIndex, session);
+                return getOneLineValue(tarFiledGvi, ((DetailWidget) widget).getBaseTable(), fIds, userId, session, ret);
             } else if (widget.getType().equals(WidgetType.TABLE)) {
                 // 分组表
                 TableWidget targetWidget = (TableWidget) widget;
@@ -359,7 +359,7 @@ public class GolbalFilterUtils {
      * @param session
      * @return
      */
-    public static GroupValueIndex getDetailLineGvi(BIDetailWidget widget, int page, int rowIndex, BISession session) {
+    public static GroupValueIndex getDetailLineGvi(DetailWidget widget, int page, int rowIndex, BISession session) {
 
         GroupValueIndex ret = null;
         Paging paging = PagingFactory.createPaging(BIExcutorConstant.PAGINGTYPE.GROUP100);
