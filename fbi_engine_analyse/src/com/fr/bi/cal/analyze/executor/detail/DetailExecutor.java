@@ -168,7 +168,6 @@ public class DetailExecutor extends AbstractDetailExecutor {
         return usedDimensionIndexes;
     }
 
-<<<<<<< HEAD
     protected GroupValueIndex getLinkFilter(GroupValueIndex gvi) {
 
         try {
@@ -205,8 +204,6 @@ public class DetailExecutor extends AbstractDetailExecutor {
         return gvi;
     }
 
-=======
->>>>>>> origin/release/4.0.2
     public List<List> getData() {
 
         if (target == null) {

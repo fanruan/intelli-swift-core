@@ -386,13 +386,6 @@ public class TableWidget extends BISummaryWidget {
         }
     }
 
-<<<<<<< HEAD
-=======
-    public BITableWidgetStyle getWidgetStyle() {
-        return style;
-    }
-
->>>>>>> origin/release/4.0.2
     public String getDimensionName(String id) {
 
         BISummaryTarget target = this.targetsIdMap.get(id);
@@ -491,7 +484,7 @@ public class TableWidget extends BISummaryWidget {
             case BIReportConstant.WIDGET.TABLE:
             case BIReportConstant.WIDGET.CROSS_TABLE:
             case BIReportConstant.WIDGET.COMPLEX_TABLE:
-                return getWidgetStyle().getThemeColor();
+                return getWidgetSettings().getThemeColor();
             default:
                 return BIStyleConstant.DEFAULT_CHART_SETTING.THEME_COLOR;
         }
@@ -620,17 +613,12 @@ public class TableWidget extends BISummaryWidget {
                 break;
         }
         DataConstructor data = BITableConstructHelper.buildTableData(builder);
-<<<<<<< HEAD
         BITableConstructHelper.formatCells(data, getITableCellFormatOperationMap(), getWidgetSettings());
-        return data.createJSON().put("page", res.getJSONArray("page")).put("viewDimensionsLength", getViewDimensions().length).put("viewTopDimensionsLength", getViewTopDimensions().length).put("widgetType", this.tableType);
-=======
-        BITableConstructHelper.formatCells(data, getITableCellFormatOperationMap(), style);
         JSONObject resultJSON = data.createJSON().put("page", res.getJSONArray("page")).put("widgetType", this.tableType);
         resultJSON.put("viewDimensionsLength", getViewDimensions().length);
         resultJSON.put("viewTopDimensionsLength", getViewTopDimensions().length);
         resultJSON.put("viewTargetsLength", getViewTargets().length);
         return resultJSON;
->>>>>>> origin/release/4.0.2
     }
 
     private Map<String, ITableCellFormatOperation> getITableCellFormatOperationMap() throws Exception {

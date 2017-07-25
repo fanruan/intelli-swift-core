@@ -333,7 +333,7 @@ public class ComplexCrossExecutor extends AbstractTableWidgetExecutor<XNode> {
         Number[][] values = temp.getXValue();
         for (int j = 0; j < values[0].length; j++) {
             for (int i = 0; i < widget.getUsedTargetID().length; i++) {
-                CBCell cell = formatTargetCell(values[i][j], widget.getChartSetting(), widget.getTargetsKey()[i], rowIdx, colIdxStart++, style);
+                CBCell cell = formatTargetCell(values[i][j], widget.getWidgetConf(), widget.getTargetsKey()[i], rowIdx, colIdxStart++, style);
                 pagedIterator.addCell(cell);
             }
         }
