@@ -30,19 +30,24 @@ import java.util.Map;
  * Created by 小灰灰 on 2015/6/30.
  */
 public class NumberDimensionCalculator extends AbstractDimensionCalculator {
+
     private transient ICubeColumnIndexReader customMap;
+
     private static final long serialVersionUID = -1047271246017361490L;
 
     public NumberDimensionCalculator(BIDimension dimension, BusinessField column, List<BITableSourceRelation> relations) {
+
         super(dimension, column, relations);
     }
 
     public NumberDimensionCalculator(BIDimension dimension, BusinessField field, List<BITableSourceRelation> relations, List<BITableSourceRelation> directToDimensionRelations) {
+
         super(dimension, field, relations, directToDimensionRelations);
     }
 
     @Override
     public Iterator createValueMapIterator(BusinessTable table, ICubeDataLoader loader, boolean useRealData, int groupLimit, GroupValueIndex filterGvi) {
+
         if (isNoGroup() && !isCustomSort()) {
             //默认设置field本身为关联主键
             CubeTableSource usedTableSource = getTableSourceFromField();
@@ -68,8 +73,8 @@ public class NumberDimensionCalculator extends AbstractDimensionCalculator {
             }
             return dimension.getSort().createGroupedMap(getter).iterator();
         }
-        if (customMap == null) {
-            initCustomMap(loader, useRealData, groupLimit);
+        if (customMap == null || !useRealData) {
+            initCustomMap(loader, useRealData, groupLimit, filterGvi);
         }
         if (isCustomSort()) {
             return customMap.iterator();
@@ -79,13 +84,16 @@ public class NumberDimensionCalculator extends AbstractDimensionCalculator {
     }
 
     private Iterator getIterator(ICubeColumnIndexReader getter, final GroupValueIndex nullGroupValueIndex) {
+
         final Iterator iterator = (getSortType() != BIReportConstant.SORT.DESC
                 && getSortType() != BIReportConstant.SORT.NUMBER_DESC) ? getter.iterator() : getter.previousIterator();
         final FinalBoolean usedNullIndex = new FinalBoolean();
         usedNullIndex.flag = false;
         return new Iterator() {
+
             @Override
             public boolean hasNext() {
+
                 if (iterator.hasNext()) {
                     return true;
                 }
@@ -95,47 +103,65 @@ public class NumberDimensionCalculator extends AbstractDimensionCalculator {
                 }
                 return false;
             }
+
             @Override
             public Object next() {
+
                 if (usedNullIndex.flag) {
                     return new Map.Entry() {
+
                         @Override
                         public Object getKey() {
+
                             return null;
                         }
+
                         @Override
                         public Object getValue() {
+
                             return nullGroupValueIndex;
                         }
+
                         @Override
                         public Object setValue(Object value) {
+
                             return null;
                         }
+
                         @Override
                         public boolean equals(Object o) {
+
                             return false;
                         }
+
                         @Override
                         public int hashCode() {
+
                             return 0;
                         }
                     };
                 }
                 return iterator.next();
             }
+
             @Override
             public void remove() {
+
             }
         };
     }
 
-    private void initCustomMap(ICubeDataLoader loader, boolean useRealData, int groupLimit) {
+    private synchronized void initCustomMap(ICubeDataLoader loader, boolean useRealData, int groupLimit, GroupValueIndex filterGvi) {
+
         ICubeColumnIndexReader getter = loader.getTableIndex(field.getTableBelongTo().getTableSource()).loadGroup(dimension.createKey(field), getRelationList(), useRealData, groupLimit);
         //BI-5055 这边空分组取得不对，应该取得是主表空分组对应字表的gvi，而不是取出主表自己的gvi
-//        GroupValueIndex nullGroupValueIndex = loader.getTableIndex(field.getTableBelongTo().getTableSource()).getNullGroupValueIndex(dimension.createKey(field));
-//        if (!nullGroupValueIndex.isAllEmpty()) {
-//            getter = new CubeIndexGetterWithNullValue(getter, null, nullGroupValueIndex);
-//        }
+        //        GroupValueIndex nullGroupValueIndex = loader.getTableIndex(field.getTableBelongTo().getTableSource()).getNullGroupValueIndex(dimension.createKey(field));
+        //        if (!nullGroupValueIndex.isAllEmpty()) {
+        //            getter = new CubeIndexGetterWithNullValue(getter, null, nullGroupValueIndex);
+        //        }
+        if (!useRealData) {
+            applyFilterForNotRealData(getter, filterGvi);
+        }
         getter = dimension.getGroup().createGroupedMap(getter);
 
         if (isCustomSort()) {
@@ -159,6 +185,7 @@ public class NumberDimensionCalculator extends AbstractDimensionCalculator {
 
     @Override
     public Comparator getComparator() {
+
         if (getSortType() == BIReportConstant.SORT.ASC || getSortType() == BIReportConstant.SORT.NUMBER_ASC || getSortType() == BIReportConstant.SORT.NONE) {
             return getGroup().getType() == BIReportConstant.GROUP.ID_GROUP ? BIBaseConstant.COMPARATOR.NUMBER.ASC : BIBaseConstant.COMPARATOR.STRING.ASC_STRING_CC;
         } else if (getSortType() == BIReportConstant.SORT.DESC || getSortType() == BIReportConstant.SORT.NUMBER_DESC) {
@@ -169,11 +196,13 @@ public class NumberDimensionCalculator extends AbstractDimensionCalculator {
     }
 
     public boolean isCustomSort() {
+
         return getSortType() == BIReportConstant.SORT.CUSTOM;
     }
 
     @Override
     public Object convertToOriginValue(String stringValue) {
+
         try {
             if (BIGroupUtils.isCustomGroup(getGroup())) {
                 return super.convertToOriginValue(stringValue);
@@ -186,6 +215,7 @@ public class NumberDimensionCalculator extends AbstractDimensionCalculator {
     }
 
     protected Object convertNumber(String value) {
+
         switch (field.getClassType()) {
             case DBConstant.CLASS.LONG:
                 return Long.parseLong(value);
