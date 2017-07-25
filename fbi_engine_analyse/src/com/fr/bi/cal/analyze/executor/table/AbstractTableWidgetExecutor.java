@@ -9,7 +9,7 @@ import com.fr.bi.cal.analyze.cal.result.Node;
 import com.fr.bi.cal.analyze.executor.BIAbstractExecutor;
 import com.fr.bi.cal.analyze.executor.paging.Paging;
 import com.fr.bi.cal.analyze.executor.utils.ExecutorUtils;
-import com.fr.bi.cal.analyze.report.report.widget.TableWidget;
+import com.fr.bi.cal.analyze.report.report.widget.imp.TableWidget;
 import com.fr.bi.cal.analyze.session.BISession;
 import com.fr.bi.cal.report.engine.CBCell;
 import com.fr.bi.conf.report.conf.BIWidgetConf;

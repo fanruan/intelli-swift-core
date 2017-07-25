@@ -1,7 +1,7 @@
 package com.fr.bi.cal.analyze.executor.detail.execute;
 
 import com.fr.bi.cal.analyze.executor.TableRowTraversal;
-import com.fr.bi.cal.analyze.report.report.widget.BIDetailWidget;
+import com.fr.bi.cal.analyze.report.report.widget.imp.BIDetailWidget;
 import com.fr.bi.conf.report.widget.field.target.detailtarget.BIDetailTarget;
 import com.fr.bi.stable.connection.ConnectionRowGetter;
 import com.fr.bi.stable.data.db.BIRowValue;

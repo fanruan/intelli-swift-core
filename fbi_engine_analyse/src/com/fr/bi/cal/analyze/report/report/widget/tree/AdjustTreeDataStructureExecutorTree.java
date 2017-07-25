@@ -1,7 +1,7 @@
 package com.fr.bi.cal.analyze.report.report.widget.tree;
 
 import com.fr.bi.cal.analyze.executor.paging.Paging;
-import com.fr.bi.cal.analyze.report.report.widget.TreeWidget;
+import com.fr.bi.cal.analyze.report.report.widget.imp.TreeWidget;
 import com.fr.bi.cal.analyze.session.BISession;
 import com.fr.bi.stable.utils.program.BIJsonUtils;
 import com.fr.json.JSONArray;

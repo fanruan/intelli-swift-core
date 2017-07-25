@@ -5,7 +5,7 @@ import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.conf.field.BIBusinessField;
 import com.finebi.cube.conf.field.BusinessField;
 import com.finebi.cube.conf.table.BusinessTable;
-import com.fr.bi.cal.analyze.report.report.BIWidgetFactory;
+import com.fr.bi.cal.analyze.report.report.widget.util.BIWidgetFactory;
 import com.fr.bi.conf.report.BIReport;
 import com.fr.bi.conf.report.BIWidget;
 import com.fr.bi.conf.session.BISessionProvider;
@@ -175,14 +175,14 @@ public class BIReportor implements BIReport {
         if (jo.has("widget")) {
             JSONArray ja = jo.getJSONArray("widget");
             for (int i = 0, len = ja.length(); i < len; i++) {
-                BIWidget widget = BIWidgetFactory.parseWidget(ja.getJSONObject(i), userId, loader);
+                BIWidget widget = BIWidgetFactory.parseWidget(ja.getJSONObject(i), userId);
                 widgets.add(widget);
             }
         }
         if (jo.has("detail")) {
             JSONArray ja = jo.getJSONArray("detail");
             for (int i = 0, len = ja.length(); i < len; i++) {
-                BIWidget widget = BIWidgetFactory.parseWidget(ja.getJSONObject(i), userId, loader);
+                BIWidget widget = BIWidgetFactory.parseWidget(ja.getJSONObject(i), userId);
                 widgets.add(widget);
             }
         }
