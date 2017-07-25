@@ -7,6 +7,7 @@ import com.fr.bi.cal.analyze.report.report.widget.chart.export.item.ITableItem;
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.item.constructor.DataConstructor;
 import com.fr.bi.conf.report.conf.BIWidgetSettings;
 import com.fr.bi.conf.report.WidgetType;
+import com.fr.bi.conf.report.style.table.BITableStyleHelper;
 import com.fr.json.JSONException;
 
 import java.util.List;
@@ -40,12 +41,10 @@ public class BITableConstructHelper {
             if (isDetail) {
                 for (int i = 0; i < data.getItems().size(); i++) {
                     ITableItem item = data.getItems().get(i);
-                    formatItemText(operations, item);
-                    item.setStyles(BITableStyleHelper.getBodyStyles(style.getThemeColor(), style.getTableStyleGroup(), i));
                     for (ITableItem child : item.getChildren()) {
-                        child.setStyles(BITableStyleHelper.getBodyStyles(style.getThemeColor(), style.getTableStyleGroup(), i));
-                        formatItemText(operations, child);
-                        setItemTextStyle(operations, child);
+                        formatText(operations, child);
+                        setTextStyle(operations, child);
+                        setDetailCellStyle(i, 1, style, child);
                     }
                 }
             } else {
@@ -70,32 +69,54 @@ public class BITableConstructHelper {
     /*
     * 首行汇总为深色
     * */
+<<<<<<< HEAD
     private static void traversalItems(List<ITableItem> items, Map<String, ITableCellFormatOperation> ops, int rowIndex, int layer, BIWidgetSettings style) throws Exception {
+=======
+    private static void traversalItems(List<ITableItem> items, Map<String, ITableCellFormatOperation> ops, int rowIndex, int layer, BITableWidgetStyle style) throws Exception {
+        rowIndex++;
+>>>>>>> origin/release/4.0.2
         for (ITableItem item : items) {
             rowIndex++;
-            if (item.getChildren() != null) {
-                traversalItems(item.getChildren(), ops, rowIndex, layer + 1, style);
-            }
-            formatItemText(ops, item);
-            setItemTextStyle(ops, item);
-            setStyle(rowIndex, layer, style, item);
+            boolean isInnerSum = item.getChildren() != null && !item.getChildren().isEmpty();
+            boolean isLastSum = item.isSum() || layer == 0;
+            formatItemCell(ops, rowIndex, style, item, false, isLastSum);
             if (item.getValues() != null) {
                 for (ITableItem it : item.getValues()) {
-                    formatItemText(ops, it);
-                    setItemTextStyle(ops, it);
-                    if ((layer == 0 && item.getValues() != null) || item.isSum()) {
-                        it.setStyles(BITableStyleHelper.getLastSummaryStyles(style.getThemeColor(), style.getTableStyleGroup()));
-                    } else {
-                        it.setStyles(BITableStyleHelper.getBodyStyles(style.getThemeColor(), style.getTableStyleGroup(), rowIndex));
-                    }
+                    formatItemCell(ops, rowIndex, style, it, isInnerSum, isLastSum);
                 }
+            }
+
+            if (item.getChildren() != null) {
+                traversalItems(item.getChildren(), ops, rowIndex, layer + 1, style);
             }
         }
     }
 
+    private static void formatItemCell(Map<String, ITableCellFormatOperation> ops, int rowIndex, BITableWidgetStyle style, ITableItem item, boolean isInnerSum, boolean isLastSum) throws Exception {
+        formatText(ops, item);
+        setTextStyle(ops, item);
+        setCellStyle(rowIndex, style, item, isInnerSum, isLastSum);
+    }
+
+    private static void setCellStyle(int rowIndex, BITableWidgetStyle style, ITableItem item, boolean isInnerSum, boolean isLastSum) throws JSONException {
+        if (isLastSum) {
+            item.setStyles(BITableStyleHelper.getLastSummaryStyles(style.getThemeColor(), style.getTableStyleGroup()));
+        } else if (isInnerSum) {
+            item.setStyles(BITableStyleHelper.getInnerSumStyles(style.getThemeColor(), style.getTableStyleGroup()));
+        } else {
+            item.setStyles(BITableStyleHelper.getBodyStyles(style.getThemeColor(), style.getTableStyleGroup(), rowIndex));
+        }
+    }
+
+<<<<<<< HEAD
     private static void setStyle(int rowIndex, int layer, BIWidgetSettings style, ITableItem item) throws JSONException {
         boolean isOutSummary = layer == 0 && item.getValues() != null;
         if (isOutSummary || item.isSum()) {
+=======
+    private static void setDetailCellStyle(int rowIndex, int layer, BITableWidgetStyle style, ITableItem item) throws JSONException {
+        boolean isLastSum = layer == 0 && item.getValues() == null;
+        if (isLastSum || item.isSum()) {
+>>>>>>> origin/release/4.0.2
             item.setStyles(BITableStyleHelper.getLastSummaryStyles(style.getThemeColor(), style.getTableStyleGroup()));
         } else {
             item.setStyles(BITableStyleHelper.getBodyStyles(style.getThemeColor(), style.getTableStyleGroup(), rowIndex));
@@ -110,14 +131,14 @@ public class BITableConstructHelper {
         }
         if (item.getValues() != null) {
             for (ITableItem it : item.getValues()) {
-                formatItemText(ops, it);
+                formatText(ops, it);
             }
         }
         item.setStyles(BITableStyleHelper.getHeaderStyles(style.getThemeColor(), style.getTableStyleGroup()));
-        formatItemText(ops, item);
+        formatText(ops, item);
     }
 
-    private static void formatItemText(Map<String, ITableCellFormatOperation> ops, ITableItem it) throws Exception {
+    private static void formatText(Map<String, ITableCellFormatOperation> ops, ITableItem it) throws Exception {
         if (null != ops.get(it.getDId())) {
             it.setText(ops.get(it.getDId()).formatItemTextValues(String.valueOf(it.getValue())));
         } else {
@@ -131,7 +152,7 @@ public class BITableConstructHelper {
         }
     }
 
-    private static void setItemTextStyle(Map<String, ITableCellFormatOperation> ops, ITableItem it) throws Exception {
+    private static void setTextStyle(Map<String, ITableCellFormatOperation> ops, ITableItem it) throws Exception {
         if (null != ops.get(it.getDId())) {
             it.setTextStyles(ops.get(it.getDId()).createItemTextStyle(String.valueOf(it.getValue())));
         }

@@ -4,6 +4,7 @@ package com.fr.bi.cal.analyze.cal.sssecret;
 import com.fr.bi.cal.analyze.cal.index.loader.MetricGroupInfo;
 import com.fr.bi.cal.analyze.cal.multithread.BIMultiThreadExecutor;
 import com.fr.bi.cal.analyze.cal.result.Node;
+import com.fr.bi.cal.analyze.cal.result.NodeCreator;
 import com.fr.bi.cal.analyze.cal.result.NodeExpander;
 import com.fr.cache.list.IntList;
 
@@ -30,11 +31,11 @@ public interface IRootDimensionGroup {
 
     int[] getValueStartRow(Object[] value);
 
-    List<MetricGroupInfo> getMetricGroupInfoList();
-
     Node getConstructedRoot();
 
     IRootDimensionGroup createClonedRoot();
 
     void checkStatus(BIMultiThreadExecutor executor);
+
+    void checkMetricGroupInfo(NodeCreator nodeCreator, List<MetricGroupInfo> metricGroupInfos);
 }

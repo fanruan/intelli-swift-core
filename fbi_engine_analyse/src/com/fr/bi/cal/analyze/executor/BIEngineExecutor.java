@@ -1,11 +1,9 @@
 package com.fr.bi.cal.analyze.executor;
 
-import com.fr.bi.cal.analyze.cal.index.loader.MetricGroupInfo;
 import com.fr.bi.cal.analyze.executor.iterator.TableCellIterator;
 import com.fr.json.JSONObject;
 
 import java.awt.*;
-import java.util.List;
 
 
 /**
@@ -37,6 +35,5 @@ public interface BIEngineExecutor<T> {
     public T getCubeNode() throws Exception;
 
     public JSONObject createJSONObject() throws Exception;
-
 
 }

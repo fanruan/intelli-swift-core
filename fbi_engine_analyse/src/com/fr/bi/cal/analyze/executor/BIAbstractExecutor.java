@@ -1,7 +1,6 @@
 package com.fr.bi.cal.analyze.executor;
 
 import com.finebi.cube.api.ICubeDataLoader;
-import com.fr.bi.cal.analyze.cal.index.loader.MetricGroupInfo;
 import com.fr.bi.cal.analyze.executor.paging.Paging;
 import com.fr.bi.cal.analyze.session.BISession;
 import com.fr.bi.conf.report.BIWidget;
@@ -9,8 +8,6 @@ import com.fr.bi.conf.session.BISessionProvider;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.json.JSONArray;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
 /**
