@@ -409,91 +409,13 @@ public class CubeIndexLoader {
             session.setPageIteratorGroup(useRealData, widgetID, pg);
         }
         NodeAndPageInfo topInfo = getTopInfo(colDimension, page, expander, widget, session, usedTargets, pg);
-<<<<<<< HEAD
-=======
         NodeAndPageInfo leftInfo = getLeftInfo(topInfo.getNode(), rowDimension, page, expander, widget, session, usedTargets, pg);
->>>>>>> origin/release/4.0.2
         int maxSize = PerformancePlugManager.getInstance().getMaxStructureSize();
         if (maxSize > 0 && leftInfo.getNode().getTotalLength() * topInfo.getNode().getTotalLength() > maxSize) {
             throw new BIMemoryDataOutOfLimitException();
         }
         setPageSpiner(widget, leftInfo, topInfo);
-<<<<<<< HEAD
-        n = new NewCrossRoot(leftInfo.getNode().createCrossHeader(), topInfo.getNode().createCrossHeader());
-        new CrossCalculator(session.getLoader()).execute(n, targetGettingKey, expander);
-        int size = calculateTargets.size();
-        Set set = new HashSet(targetGettingKey);
-        dealCalculateTarget(calculateTargets, n, size, set);
-        if (n == null) {
-            n = new NewCrossRoot(new CrossHeader(allSumTarget.length), new CrossHeader(allSumTarget.length));
-        }
-        return n;
-    }
-
-    private NewCrossRoot getAllCalCrossRoot(BIDimension[] rowDimension, BIDimension[] colDimension, int page, BISession session,
-                                            CrossExpander expander, BISummaryWidget widget, BISummaryTarget[] usedTargets,
-                                            List targetGettingKey, LinkedList calculateTargets, PageIteratorGroup pg) throws Exception {
-
-        NewCrossRoot n;
-        NodeAndPageInfo leftInfo = getLeftInfo(rowDimension, page, expander, widget, session, usedTargets, pg);
-        NodeAndPageInfo leftAllInfo = getLeftInfo(rowDimension, -1, expander, widget, session, usedTargets, new PageIteratorGroup());
-        NodeAndPageInfo topInfo = getTopInfo(colDimension, page, expander, widget, session, usedTargets, pg);
-        int maxSize = PerformancePlugManager.getInstance().getMaxStructureSize();
-        if (maxSize > 0 && leftAllInfo.getNode().getTotalLength() * topInfo.getNode().getTotalLength() > maxSize) {
-            throw new BIMemoryDataOutOfLimitException();
-        }
-        if (usedTargets.length != 0 && isEmpty(topInfo)) {
-            leftInfo.getNode().getChilds().clear();
-            leftInfo.setHasNext(false);
-        }
-        setPageSpiner(widget, leftInfo, topInfo);
-        n = new NewCrossRoot(leftAllInfo.getNode().createCrossHeader(), topInfo.getNode().createCrossHeader());
-        new CrossCalculator(session.getLoader()).execute(n, targetGettingKey, expander);
-        int size = calculateTargets.size();
-        Set set = new HashSet(targetGettingKey);
-        dealCalculateTarget(calculateTargets, n, size, set);
-        if (n == null) {
-            n = new NewCrossRoot(new CrossHeader(widget.getTargets().length), new CrossHeader(widget.getTargets().length));
-        }
-        cutChilds(n.getLeft().getChilds(), leftInfo.getNode().getChilds());
-        return n;
-    }
-
-    private void cutChilds(List<Node> childs, List<Node> childs1) {
-
-        if (!childs1.isEmpty()) {
-            Node start = childs1.get(0);
-            Node end = childs1.get(childs1.size() - 1);
-            Iterator<Node> it = childs.iterator();
-            boolean shouldDelete = true;
-            while (it.hasNext()) {
-                Node n = it.next();
-                if (ComparatorUtils.equals(n.getData(), start.getData())) {
-                    shouldDelete = false;
-                    cutChilds(n.getChilds(), start.getChilds());
-                }
-                if (shouldDelete) {
-                    it.remove();
-                }
-                if (ComparatorUtils.equals(n.getData(), end.getData())) {
-                    shouldDelete = true;
-                    cutChilds(n.getChilds(), end.getChilds());
-                }
-            }
-        }
-    }
-
-    private boolean hasAllCalCalculatorTargets(BISummaryTarget[] calculateTargets) {
-
-        for (BISummaryTarget target : calculateTargets) {
-            if (target.calculateAllNode()) {
-                return true;
-            }
-        }
-        return false;
-=======
         return new XNode(topInfo.getNode(), leftInfo.getNode());
->>>>>>> origin/release/4.0.2
     }
 
     private void setPageSpiner(BISummaryWidget widget, NodeAndPageInfo leftInfo, NodeAndPageInfo topInfo) {
@@ -1062,8 +984,7 @@ public class CubeIndexLoader {
         TargetCalculator summary = CountCalculator.NONE_TARGET_COUNT_CAL;
         BusinessTable tableBelongTo = row[0].getField().getTableBelongTo();
         GroupValueIndex gvi = widget.createFilterGVI(row, tableBelongTo, session.getLoader(), session.getUserId()).AND(session.createFilterGvi(tableBelongTo));
-        GroupValueIndex jgvi = widget.getJumpLinkFilter(widget.getBaseTable(),  userId,session);
-        gvi = GVIUtils.AND(gvi,jgvi);
+
         MetricGroupInfo metricGroupInfo = new MetricGroupInfo(row, gvi, summary.createTableKey());
         metricGroupInfo.addTargetAndKey(new TargetAndKey(summary.getName(), summary, summary.createTargetGettingKey()));
         List<MetricGroupInfo> list = new ArrayList<MetricGroupInfo>();
@@ -1079,19 +1000,11 @@ public class CubeIndexLoader {
         boolean showSum = isHor ? widget.showColumnTotal() : widget.showRowToTal();
         int maxSize = PerformancePlugManager.getInstance().getMaxStructureSize();
         NodeIteratorCreator iteratorCreator = maxSize == 0 ? new NodeIteratorCreator(metricGroupInfoList, rowDimension, usedTargets, widget.getTargets().length,
-<<<<<<< HEAD
-                                                                                     widget.getTargetFilterMap(), widget.isRealData(), session, widget.getTargetSort(), widget.getFilter(), authFilter,
-                                                                                     showSum, shouldSetIndex, calAllPage, executor)
-                : new LimitedNodeIteratorCreator(metricGroupInfoList, rowDimension, usedTargets, widget.getTargets().length,
-                                                 widget.getTargetFilterMap(), widget.isRealData(), session, widget.getTargetSort(), widget.getFilter(), authFilter,
-                                                 showSum, shouldSetIndex, calAllPage, executor, maxSize);
-=======
                 widget.getTargetFilterMap(), widget.isRealData(), session, widget.getTargetSort(), widget.getFilter(), authFilter,
                 showSum, shouldSetIndex, calAllPage, executor, nodeCreator)
                 : new LimitedNodeIteratorCreator(metricGroupInfoList, rowDimension, usedTargets, widget.getTargets().length,
                 widget.getTargetFilterMap(), widget.isRealData(), session, widget.getTargetSort(), widget.getFilter(), authFilter,
                 showSum, shouldSetIndex, calAllPage, executor, nodeCreator, maxSize);
->>>>>>> origin/release/4.0.2
         return iteratorCreator.createRoot();
     }
 
