@@ -959,6 +959,7 @@ public abstract class VanChartWidget extends TableWidget {
         }
         JSONArray topC = top.getJSONArray("c"), leftC = left.optJSONArray("c");
         String id = targetIDs[0];
+        int yAxis = this.yAxisIndex(id);
         double numberScale = this.numberScale(targetIDs[0]);
         for (int i = 0; i < topC.length(); i++) {
             JSONObject tObj = topC.getJSONObject(i);
@@ -983,7 +984,7 @@ public abstract class VanChartWidget extends TableWidget {
                 }
             }
             JSONObject ser = JSONObject.create().put("data", data).put("name", formattedName).put(LONG_DATE, name)
-                    .put("type", this.getSeriesType(id, formattedName))
+                    .put("type", this.getSeriesType(id, formattedName)).put("yAxis", yAxis)
                     .put("dimensionIDs", dimensionIDs)
                     .put("targetIDs", JSONArray.create().put(id));
 
