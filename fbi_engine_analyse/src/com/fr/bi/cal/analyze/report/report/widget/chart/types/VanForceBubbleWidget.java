@@ -39,6 +39,11 @@ public class VanForceBubbleWidget extends VanDotWidget{
         return options;
     }
 
+    //气泡图不是target3颜色，强制normallegend
+    protected boolean dotChartUseNormalLegend() {
+        return false;
+    }
+
     protected String getTooltipIdentifier() {
         return CATEGORY + SERIES + VALUE;
     }

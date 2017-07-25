@@ -3,6 +3,7 @@ package com.fr.bi.cal.analyze.report.report.widget.chart.types;
 import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.base.TemplateUtils;
 import com.fr.bi.conf.report.WidgetType;
+import com.fr.bi.conf.report.style.DetailChartSetting;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.field.target.target.BISummaryTarget;
 import com.fr.bi.stable.constant.BIChartSettingConstant;
@@ -142,6 +143,46 @@ public class VanDotWidget extends VanCartesianWidget{
         return plotOptions;
     }
 
+    protected boolean dotChartUseNormalLegend() {
+        int idCount = this.getUsedTargetID().length;
+
+        if(idCount < 3){
+            return true;
+        }
+
+        JSONObject scopes = this.getChartSetting().getScopes();
+        JSONObject target3 = scopes.optJSONObject(BIReportConstant.REGION.TARGET3);
+
+        return target3 == null || target3.optInt("valueType") == BIChartSettingConstant.DOT_VALUE_TYPE.SIZE;
+    }
+
+    protected void toLegendJSON(JSONObject options, JSONObject settings) throws JSONException {
+        if(dotChartUseNormalLegend()){
+            settings.put("disPlayRules", SERIES_RULE);
+        }
+        super.toLegendJSON(options, settings);
+    }
+
+    protected String getLegendType(){
+
+        String legend = "legend";
+
+        try {
+            JSONObject settings = this.getDetailChartSetting();
+            int rule = settings.optInt("displayRules");
+
+            if(rule != SERIES_RULE){
+                legend = "rangeLegend";
+            }
+
+        }catch (JSONException e){
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
+        }
+
+
+        return legend;
+    }
+
     protected JSONObject parseLegend(JSONObject settings) throws JSONException{
 
         JSONObject legend = super.parseLegend(settings);
@@ -204,27 +245,6 @@ public class VanDotWidget extends VanCartesianWidget{
     protected String valueLabelKey() {
         return "{SIZE}";
     }
-
-    protected String getLegendType(){
-
-        String legend = "legend";
-
-        try {
-            JSONObject settings = this.getDetailChartSetting();
-            int rule = settings.optInt("displayRules");
-
-            if(rule != SERIES_RULE){
-                legend = "rangeLegend";
-            }
-
-        }catch (JSONException e){
-            BILoggerFactory.getLogger().error(e.getMessage(), e);
-        }
-
-
-        return legend;
-    }
-
 
     //新的点图。系列无字段，所有点在一个name=vancharts中默认给的一个系列名 的系列里面
     public JSONArray createSeries(JSONObject originData) throws Exception{
