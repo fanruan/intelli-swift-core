@@ -12,8 +12,8 @@ import com.fr.bi.cal.analyze.executor.utils.ExecutorUtils;
 import com.fr.bi.cal.analyze.report.report.widget.TableWidget;
 import com.fr.bi.cal.analyze.session.BISession;
 import com.fr.bi.cal.report.engine.CBCell;
+import com.fr.bi.conf.report.conf.BIWidgetConf;
 import com.fr.bi.conf.report.style.BITableStyle;
-import com.fr.bi.conf.report.style.DetailChartSetting;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.conf.report.widget.field.target.BITarget;
 import com.fr.bi.field.target.target.BISummaryTarget;
@@ -68,10 +68,10 @@ public abstract class AbstractTableWidgetExecutor<T> extends BIAbstractExecutor<
         return null;
     }
 
-    protected static CBCell formatTargetCell(Object data, DetailChartSetting setting, TargetGettingKey key, int rowIdx, int columnIdx, Style style) {
-        int numLevel = setting.getNumberLevelByTargetId(key.getTargetName());
-        int formatDecimal = setting.getFormatDecimalByTargetId(key.getTargetName());
-        boolean separator = setting.getSeparatorByTargetId(key.getTargetName());
+    protected static CBCell formatTargetCell(Object data, BIWidgetConf setting, TargetGettingKey key, int rowIdx, int columnIdx, Style style) {
+        int numLevel = setting.getNumberLevelByTargetID(key.getTargetName());
+        int formatDecimal = setting.getFormatDecimalByTargetID(key.getTargetName());
+        boolean separator = setting.getSeparatorByTargetID(key.getTargetName());
         data = ExecutorUtils.formatExtremeSumValue(data, numLevel);
         style = style.deriveFormat(ExecutorUtils.formatDecimalAndSeparator(data, numLevel, formatDecimal, separator));
         return ExecutorUtils.createCBCell(data, rowIdx, 1, columnIdx, 1, style);
@@ -174,7 +174,7 @@ public abstract class AbstractTableWidgetExecutor<T> extends BIAbstractExecutor<
                 return getTargetIndex(target, n);
             }
             Node parent = getClickNode(n, data);
-            return getTargetIndex(target, parent.getTargetIndexValueMap());
+//            return getTargetIndex(target, parent.getTargetIndexValueMap());
         }
         return null;
     }
@@ -194,11 +194,7 @@ public abstract class AbstractTableWidgetExecutor<T> extends BIAbstractExecutor<
                 }
                 parent = child;
             }
-<<<<<<< HEAD
             return parent;
-=======
-            return getTargetIndex(target, parent);
->>>>>>> origin/release/4.0.2
         }
         return null;
     }

@@ -144,13 +144,7 @@ public class HorGroupExecutor extends AbstractTableWidgetExecutor<Node> {
             Node temp = node;
             while (temp != null) {
                 Object data = temp.getSummaryValue(keys[i]);
-<<<<<<< HEAD
-                boolean isPercent = widget.getWidgetConf().getNumberLevelByTargetID(keys[i].getTargetName()) == BIReportConstant.TARGET_STYLE.NUM_LEVEL.PERCENT;
-                Style style = BITableStyle.getInstance().getNumberCellStyle(data, (i + 1) % 2 == 1, isPercent);
-                CBCell cell = ExecutorUtils.createCell(data, rowIdx + i, 1, columnIdx.value++, 1, style);
-=======
-                CBCell cell = formatTargetCell(data, widget.getChartSetting(), keys[i], colDimensionLen + i, columnIdx.value++, style);
->>>>>>> origin/release/4.0.2
+                CBCell cell = formatTargetCell(data, widget.getWidgetConf(), keys[i], colDimensionLen + i, columnIdx.value++, style);
                 pagedIterator.addCell(cell);
                 if (widget.showColumnTotal()) {
                     generateTargetSumCell(temp, widget, keys[i], pagedIterator, colDimensionLen, columnIdx, i);
@@ -166,7 +160,7 @@ public class HorGroupExecutor extends AbstractTableWidgetExecutor<Node> {
             if (temp.getParent().getChildLength() != 1) {
                 Object data = temp.getParent().getSummaryValue(key);
                 Style style = (targetRowIdx + 1) % 2 == 1 ? tableStyle.getOddRowStyle(Style.getInstance()) : tableStyle.getEvenRowStyle(Style.getInstance());
-                CBCell cell = formatTargetCell(data, widget.getChartSetting(), key, targetRowIdx + colDimensionLen, columnIdx.value++, style);
+                CBCell cell = formatTargetCell(data, widget.getWidgetConf(), key, targetRowIdx + colDimensionLen, columnIdx.value++, style);
                 pagedIterator.addCell(cell);
             }
             Node parent = temp.getParent();

@@ -69,12 +69,8 @@ public class BITableConstructHelper {
     /*
     * 首行汇总为深色
     * */
-<<<<<<< HEAD
     private static void traversalItems(List<ITableItem> items, Map<String, ITableCellFormatOperation> ops, int rowIndex, int layer, BIWidgetSettings style) throws Exception {
-=======
-    private static void traversalItems(List<ITableItem> items, Map<String, ITableCellFormatOperation> ops, int rowIndex, int layer, BITableWidgetStyle style) throws Exception {
         rowIndex++;
->>>>>>> origin/release/4.0.2
         for (ITableItem item : items) {
             rowIndex++;
             boolean isInnerSum = item.getChildren() != null && !item.getChildren().isEmpty();
@@ -92,13 +88,13 @@ public class BITableConstructHelper {
         }
     }
 
-    private static void formatItemCell(Map<String, ITableCellFormatOperation> ops, int rowIndex, BITableWidgetStyle style, ITableItem item, boolean isInnerSum, boolean isLastSum) throws Exception {
+    private static void formatItemCell(Map<String, ITableCellFormatOperation> ops, int rowIndex, BIWidgetSettings style, ITableItem item, boolean isInnerSum, boolean isLastSum) throws Exception {
         formatText(ops, item);
         setTextStyle(ops, item);
         setCellStyle(rowIndex, style, item, isInnerSum, isLastSum);
     }
 
-    private static void setCellStyle(int rowIndex, BITableWidgetStyle style, ITableItem item, boolean isInnerSum, boolean isLastSum) throws JSONException {
+    private static void setCellStyle(int rowIndex, BIWidgetSettings style, ITableItem item, boolean isInnerSum, boolean isLastSum) throws JSONException {
         if (isLastSum) {
             item.setStyles(BITableStyleHelper.getLastSummaryStyles(style.getThemeColor(), style.getTableStyleGroup()));
         } else if (isInnerSum) {
@@ -108,15 +104,9 @@ public class BITableConstructHelper {
         }
     }
 
-<<<<<<< HEAD
-    private static void setStyle(int rowIndex, int layer, BIWidgetSettings style, ITableItem item) throws JSONException {
-        boolean isOutSummary = layer == 0 && item.getValues() != null;
-        if (isOutSummary || item.isSum()) {
-=======
-    private static void setDetailCellStyle(int rowIndex, int layer, BITableWidgetStyle style, ITableItem item) throws JSONException {
+    private static void setDetailCellStyle(int rowIndex, int layer, BIWidgetSettings style, ITableItem item) throws JSONException {
         boolean isLastSum = layer == 0 && item.getValues() == null;
         if (isLastSum || item.isSum()) {
->>>>>>> origin/release/4.0.2
             item.setStyles(BITableStyleHelper.getLastSummaryStyles(style.getThemeColor(), style.getTableStyleGroup()));
         } else {
             item.setStyles(BITableStyleHelper.getBodyStyles(style.getThemeColor(), style.getTableStyleGroup(), rowIndex));
