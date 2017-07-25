@@ -71,7 +71,7 @@ public abstract class AbstractBIWidget implements BIWidget {
     private String sessionId;
 
     @BICoreField
-    private BIWidgetConf widgetConf = new BIWidgetConf();
+    protected BIWidgetConf widgetConf = new BIWidgetConf();
 
     /**
      * 跳转组件
@@ -434,7 +434,15 @@ public abstract class AbstractBIWidget implements BIWidget {
     }
 
 
-    public BIWidgetSettings getWidgetSettings () {
+    public BIWidgetSettings getWidgetSettings(BIWidgetConf widgetConf) {
+        if (null != widgetConf) {
+            return widgetConf.getWidgetSettings();
+        } else {
+            return getWidgetConf().getWidgetSettings();
+        }
+    }
+
+    public BIWidgetSettings getWidgetSettings() {
         return widgetConf.getWidgetSettings();
     }
 

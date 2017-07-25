@@ -296,6 +296,7 @@ public abstract class BISummaryWidget extends AbstractBIWidget {
         for (int i = 0; i < dimensionIds.length(); i++) {
             JSONObject dimJo = dimAndTar.getJSONObject(dimensionIds.getString(i));
             dimJo.put("did", dimensionIds.getString(i));
+            dimJo.put("dId", dimensionIds.getString(i));
             dims.add(BIDimensionFactory.parseDimension(dimJo, userId));
         }
         this.dimensions = dims.toArray(new BIDimension[dims.size()]);
@@ -303,6 +304,7 @@ public abstract class BISummaryWidget extends AbstractBIWidget {
         for (int j = 0; j < targetIds.length(); j++) {
             JSONObject tarJo = dimAndTar.getJSONObject(targetIds.getString(j));
             tarJo.put("did", targetIds.getString(j));
+            tarJo.put("dId", targetIds.getString(j));
             BISummaryTarget target = BITargetFactory.parseTarget(tarJo, userId);
             if (target != null) {
                 tars.add(target);

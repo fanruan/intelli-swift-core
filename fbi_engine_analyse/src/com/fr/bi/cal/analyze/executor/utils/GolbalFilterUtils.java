@@ -1,6 +1,5 @@
 package com.fr.bi.cal.analyze.executor.utils;
 
-import apple.laf.JRSUIConstants;
 import com.finebi.cube.api.ICubeColumnDetailGetter;
 import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.api.ICubeTableService;
@@ -28,23 +27,19 @@ import com.fr.bi.conf.report.WidgetType;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.stable.constant.BIExcutorConstant;
 import com.fr.bi.stable.data.BIFieldID;
-import com.fr.bi.stable.data.Table;
 import com.fr.bi.stable.engine.cal.DimensionIterator;
 import com.fr.bi.stable.engine.cal.DimensionIteratorCreator;
 import com.fr.bi.stable.engine.index.key.IndexKey;
 import com.fr.bi.stable.gvi.GVIFactory;
 import com.fr.bi.stable.gvi.GVIUtils;
 import com.fr.bi.stable.gvi.GroupValueIndex;
-import com.fr.bi.stable.gvi.IDGroupValueIndex;
 import com.fr.bi.stable.gvi.array.ICubeTableIndexReader;
 import com.fr.bi.stable.gvi.traversal.BrokenTraversalAction;
 import com.fr.bi.stable.utils.BICollectionUtils;
 import com.fr.bi.util.BIConfUtils;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;
-import com.fr.web.core.A.OB;
 
-import java.io.OptionalDataException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;

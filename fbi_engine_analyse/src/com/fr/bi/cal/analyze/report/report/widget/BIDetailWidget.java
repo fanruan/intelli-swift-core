@@ -115,7 +115,7 @@ public class BIDetailWidget extends AbstractBIWidget {
         //        }
         //        BIDetailTarget[] dims = getDimensions();
         //        if (data != null) {
-        //            String[] array = data.getView();
+        //            String[] array = data.getViewMap();
         //            List<BIDetailTarget> usedDimensions = new ArrayList<BIDetailTarget>();
         //            for (String anArray : array) {
         //                BIDetailTarget dimension = BITravalUtils.getTargetByName(anArray, dimensions);
