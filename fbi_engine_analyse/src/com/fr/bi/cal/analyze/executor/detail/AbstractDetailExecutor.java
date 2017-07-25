@@ -24,23 +24,25 @@ import com.fr.bi.field.dimension.calculator.NoneDimensionCalculator;
 import com.fr.bi.field.target.detailtarget.BIAbstractDetailTarget;
 import com.fr.bi.field.target.detailtarget.field.BINumberDetailTarget;
 import com.fr.bi.field.target.detailtarget.formula.BINumberFormulaDetailTarget;
+import com.fr.bi.report.result.DimensionCalculator;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.constant.CellConstant;
-import com.fr.bi.stable.data.BITable;
 import com.fr.bi.stable.gvi.GVIUtils;
 import com.fr.bi.stable.gvi.GroupValueIndex;
-import com.fr.bi.report.result.DimensionCalculator;
 import com.fr.bi.stable.utils.algorithem.BIComparatorUtils;
 import com.fr.bi.util.BIConfUtils;
 import com.fr.general.ComparatorUtils;
 import com.fr.general.DateUtils;
 import com.fr.general.GeneralUtils;
-import com.fr.general.Inter;
-import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;
 import com.fr.stable.StringUtils;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Created by GUY on 2015/4/16.
@@ -71,7 +73,7 @@ public abstract class AbstractDetailExecutor extends BIAbstractExecutor<JSONObje
         this.viewDimension = widget.getViewDimensions();
         this.sortTargets = widget.getSortTargets();
         this.userId = session.getUserId();
-        this.tableStyle = new BITableStyle(widget.getWidgetSettings().getThemeColor());
+        this.tableStyle = new BITableStyle(widget.getWidgetSettings(widget.getWidgetConf()).getThemeColor());
     }
 
 
