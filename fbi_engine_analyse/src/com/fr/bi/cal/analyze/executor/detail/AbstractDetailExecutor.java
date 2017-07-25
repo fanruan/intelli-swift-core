@@ -35,11 +35,8 @@ import com.fr.bi.util.BIConfUtils;
 import com.fr.general.ComparatorUtils;
 import com.fr.general.DateUtils;
 import com.fr.general.GeneralUtils;
-<<<<<<< HEAD
 import com.fr.general.Inter;
-=======
 import com.fr.json.JSONArray;
->>>>>>> origin/release/4.0.2
 import com.fr.json.JSONObject;
 import com.fr.stable.StringUtils;
 
@@ -74,7 +71,7 @@ public abstract class AbstractDetailExecutor extends BIAbstractExecutor<JSONObje
         this.viewDimension = widget.getViewDimensions();
         this.sortTargets = widget.getSortTargets();
         this.userId = session.getUserId();
-        this.tableStyle = new BITableStyle(widget.getWidgetStyle().getThemeColor());
+        this.tableStyle = new BITableStyle(widget.getWidgetSettings().getThemeColor());
     }
 
 
@@ -114,27 +111,7 @@ public abstract class AbstractDetailExecutor extends BIAbstractExecutor<JSONObje
         return currentGvi;
     }
 
-<<<<<<< HEAD
     abstract protected GroupValueIndex getLinkFilter(GroupValueIndex g);
-=======
-    private GroupValueIndex getLinkFilter(GroupValueIndex gvi) throws Exception {
-        if (widget.getLinkWidget() != null && widget.getLinkWidget() instanceof TableWidget) {
-            // 判断两个表格的基础表是否相同
-            BusinessTable widgetTargetTable = widget.getTargetDimension();
-            TableWidget linkWidget = widget.getLinkWidget();
-            Map<String, JSONArray> clicked = widget.getClicked();
-
-            BISummaryTarget summaryTarget = null;
-            String[] ids = clicked.keySet().toArray(new String[]{});
-            for (String linkTarget : ids) {
-                try {
-                    summaryTarget = linkWidget.getBITargetByID(linkTarget);
-                    break;
-                } catch (Exception e) {
-                    BILoggerFactory.getLogger(TableWidget.class).warn("Target id " + linkTarget + " is absent in linked widget " + linkWidget.getWidgetName());
-                }
-            }
->>>>>>> origin/release/4.0.2
 
     abstract protected GroupValueIndex getJumpLinkFilter(GroupValueIndex g);
 
@@ -151,15 +128,9 @@ public abstract class AbstractDetailExecutor extends BIAbstractExecutor<JSONObje
 
 
     //创建一个数字格
-<<<<<<< HEAD
-    private void createNumberCellElement(StreamPagedIterator iter, int rowIndex, int row) {
-
-        CBCell cell = ExecutorUtils.createCell(rowIndex, row, 1, 0, 1, Style.getInstance());
-=======
     private CBCell createNumberCellElement(int rowIndex, int row) {
         Style style = rowIndex % 2 == 1 ? tableStyle.getOddRowStyle(Style.getInstance()) : tableStyle.getEvenRowStyle(Style.getInstance());
         CBCell cell = ExecutorUtils.createCBCell(rowIndex, row, 1, 0, 1, style);
->>>>>>> origin/release/4.0.2
         List tcellList = new ArrayList();
         tcellList.add(cell);
         CBBoxElement cbox = new CBBoxElement(tcellList);
@@ -216,12 +187,7 @@ public abstract class AbstractDetailExecutor extends BIAbstractExecutor<JSONObje
         }
     }
 
-<<<<<<< HEAD
-    protected List<CBCell> createCellTitle(int cellType, Set<Integer> usedDimensionIndexes) {
-
-=======
     protected List<CBCell> createHeader(int cellType, Set<Integer> usedDimensionIndexes) {
->>>>>>> origin/release/4.0.2
         List<CBCell> cells = new LinkedList<CBCell>();
         BIDetailTarget[] viewDimension = widget.getViewDimensions();
         int columnIdx = 0;

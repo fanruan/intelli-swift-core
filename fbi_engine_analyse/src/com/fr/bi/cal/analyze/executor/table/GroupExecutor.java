@@ -32,14 +32,11 @@ import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;
 import com.fr.stable.ExportConstants;
 import com.fr.stable.StringUtils;
-import com.sun.tools.javac.util.List;
 
 import java.awt.*;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.*;
+import java.util.List;
+
 
 /**
  * Created by 小灰灰 on 2015/6/30.
@@ -513,7 +510,7 @@ public class GroupExecutor extends AbstractTableWidgetExecutor<Node> {
             if (!targetKey.equals(linkTargetTable)) {
                 return null;
             }
-            List<Object> rowData = getLinkRowData(clicked, target, false);
+            java.util.List<Object> rowData = getLinkRowData(clicked, target, false);
             Node linkNode = getStopOnRowNode(rowData.toArray(), widget.getViewDimensions());
             // 总汇总值
             if (rowData == null || rowData.size() == 0) {
@@ -537,15 +534,15 @@ public class GroupExecutor extends AbstractTableWidgetExecutor<Node> {
                 Iterator<String> iter = click.keySet().iterator();
                 if (iter.hasNext()) {
                     String k = iter.next();
-                    List<Object> rowData = getLinkRowData(click, k, false);
+                    java.util.List<Object> rowData = getLinkRowData(click, k, false);
                     Node linkNode = getStopOnRowNode(rowData.toArray(), widget.getViewDimensions());
                     Node cn = getClickNode(linkNode, rowData);
-                    Map<TargetGettingKey, GroupValueIndex> m = cn.getTargetIndexValueMap();
-                    for (TargetGettingKey key : m.keySet()) {
-                        r = m.get(key);
-                        break;
-                        //r = GVIUtils.OR(r, m.get(key));
-                    }
+//                    Map<TargetGettingKey, GroupValueIndex> m = cn.getTargetIndexValueMap();
+//                    for (TargetGettingKey key : m.keySet()) {
+//                        r = m.get(key);
+//                        break;
+//                        //r = GVIUtils.OR(r, m.get(key));
+//                    }
                 }
             }
         } catch (Exception e) {

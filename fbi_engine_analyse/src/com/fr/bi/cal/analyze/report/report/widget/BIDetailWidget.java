@@ -298,12 +298,7 @@ public class BIDetailWidget extends AbstractBIWidget {
 
     @Override
     public int isOrder() {
-<<<<<<< HEAD
-
-        return data.isOrder();
-=======
-        return widgetStyle.isShowNumber() ? 1 : 0;
->>>>>>> origin/release/4.0.2
+        return getWidgetSettings().isShowNumber() ? 1 : 0;
     }
 
     public String[] getView() {

@@ -341,17 +341,17 @@ public class CrossExecutor extends AbstractTableWidgetExecutor<XNode> {
         return getCubeNode().toJSONObject(rowDimension, colDimension, widget.getTargetsKey(), widget.showColumnTotal());
     }
 
-    private void clearNullSummary(BIXLeftNode left, TargetGettingKey[] keys) {
-
-        for (TargetGettingKey key : keys) {
-            if (left.getSummaryValue(key) == null) {
-                left.getValue().setSummaryValue(key, null);
-            }
-        }
-        for (int i = 0; i < left.getChildLength(); i++) {
-            clearNullSummary((BIXLeftNode) left.getChild(i), keys);
-        }
-    }
+//    private void clearNullSummary(BIXLeftNode left, TargetGettingKey[] keys) {
+//
+//        for (TargetGettingKey key : keys) {
+//            if (left.getSummaryValue(key) == null) {
+//                left.getValue().setSummaryValue(key, null);
+//            }
+//        }
+//        for (int i = 0; i < left.getChildLength(); i++) {
+//            clearNullSummary((BIXLeftNode) left.getChild(i), keys);
+//        }
+//    }
 
     public GroupValueIndex getClickGvi(Map<String, JSONArray> clicked, BusinessTable targetKey) {
 
