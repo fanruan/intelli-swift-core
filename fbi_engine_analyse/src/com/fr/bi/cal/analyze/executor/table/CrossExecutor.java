@@ -16,6 +16,7 @@ import com.fr.bi.cal.analyze.executor.utils.ExecutorUtils;
 import com.fr.bi.cal.analyze.report.report.widget.TableWidget;
 import com.fr.bi.cal.analyze.session.BISession;
 import com.fr.bi.cal.report.engine.CBCell;
+import com.fr.bi.conf.report.style.DetailChartSetting;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.field.target.target.BISummaryTarget;
 import com.fr.bi.report.key.TargetGettingKey;
@@ -61,8 +62,9 @@ public class CrossExecutor extends AbstractTableWidgetExecutor<XNode> {
 
         int len = usedSumTarget.length;
         TargetGettingKey[] keys = new TargetGettingKey[len];
-        boolean isWholeCol = keys.length == 0 || !widget.getChartSetting().showColTotal();
-        boolean isWholeRow = keys.length == 0 || !widget.getChartSetting().showRowTotal();
+        DetailChartSetting setting = widget.getChartSetting();
+        boolean isWholeCol = keys.length == 0 || !setting.showColTotal();
+        boolean isWholeRow = keys.length == 0 || !setting.showRowTotal();
         int columnLen = (isWholeCol ? node.getTop().getTotalLength() :
                 node.getTop().getTotalLengthWithSummary()) * Math.max(1, keys.length) + rowDimension.length + widget.isOrder();
         int rowLen = (isWholeRow ? node.getLeft().getTotalLength() :
@@ -201,10 +203,11 @@ public class CrossExecutor extends AbstractTableWidgetExecutor<XNode> {
     private void generateTargetTitleWithSum(String text, StreamPagedIterator pagedIterator, int rowIdx, FinalInt columnIdx, int rowSpan) {
 
         for (BISummaryTarget anUsedSumTarget : usedSumTarget) {
-            int numLevel = widget.getChartSetting().getNumberLevelByTargetId(anUsedSumTarget.getId());
-            String unit = widget.getChartSetting().getUnitByTargetId(anUsedSumTarget.getId());
+            DetailChartSetting setting = widget.getChartSetting();
+            int numLevel = setting.getNumberLevelByTargetId(anUsedSumTarget.getId());
+            String unit = setting.getUnitByTargetId(anUsedSumTarget.getId());
             String levelAndUnit = ExecutorUtils.formatLevelAndUnit(numLevel, unit);
-            String dimensionUnit = ComparatorUtils.equals(levelAndUnit, StringUtils.EMPTY) ? "" : "(" + levelAndUnit + ")";
+            String dimensionUnit = StringUtils.isEmpty(levelAndUnit) ? "" : "(" + levelAndUnit + ")";
             CBCell cell = ExecutorUtils.createCBCell(text + anUsedSumTarget.getText() + dimensionUnit, rowIdx, rowSpan, columnIdx.value++, 1, widget.getTableStyle().getHeaderStyle(Style.getInstance()));
             pagedIterator.addCell(cell);
         }

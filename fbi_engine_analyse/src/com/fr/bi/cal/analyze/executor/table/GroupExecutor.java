@@ -14,6 +14,7 @@ import com.fr.bi.cal.analyze.executor.utils.ExecutorUtils;
 import com.fr.bi.cal.analyze.report.report.widget.TableWidget;
 import com.fr.bi.cal.analyze.session.BISession;
 import com.fr.bi.cal.report.engine.CBCell;
+import com.fr.bi.conf.report.style.DetailChartSetting;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.field.target.target.BICounterTarget;
 import com.fr.bi.field.target.target.BINumberTarget;
@@ -26,7 +27,6 @@ import com.fr.bi.stable.io.newio.NIOConstant;
 import com.fr.bi.stable.utils.BICollectionUtils;
 import com.fr.general.ComparatorUtils;
 import com.fr.general.DateUtils;
-import com.fr.general.GeneralUtils;
 import com.fr.general.Inter;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;
@@ -113,11 +113,12 @@ public class GroupExecutor extends AbstractTableWidgetExecutor<Node> {
             pagedIterator.addCell(cell);
         }
         for (BISummaryTarget anUsedSumTarget : usedSumTarget) {
-            int numLevel = widget.getChartSetting().getNumberLevelByTargetId(anUsedSumTarget.getId());
-            String unit = widget.getChartSetting().getUnitByTargetId(anUsedSumTarget.getId());
+            DetailChartSetting setting = widget.getChartSetting();
+            int numLevel = setting.getNumberLevelByTargetId(anUsedSumTarget.getId());
+            String unit = setting.getUnitByTargetId(anUsedSumTarget.getId());
             String levelAndUnit = ExecutorUtils.formatLevelAndUnit(numLevel, unit);
 
-            String dimensionUnit = ComparatorUtils.equals(levelAndUnit, StringUtils.EMPTY) ? "" : "(" + levelAndUnit + ")";
+            String dimensionUnit = StringUtils.isEmpty(levelAndUnit) ? "" : "(" + levelAndUnit + ")";
 
             CBCell cell = ExecutorUtils.createCBCell(anUsedSumTarget.getText() + dimensionUnit, 0, 1, columnIdx++, 1, widget.getTableStyle().getHeaderStyle(Style.getInstance()));
             pagedIterator.addCell(cell);
