@@ -993,6 +993,8 @@ public abstract class VanChartWidget extends TableWidget {
                     data.put(JSONObject.create().put(categoryKey, formattedCategory).put(valueKey, isNull ? "-" : numberFormat(id, y)).put(LONG_DATE, x));
                     valueList.add(y);
                 }
+            } else {
+                formattedName = StringUtils.EMPTY;
             }
             JSONObject ser = JSONObject.create().put("data", data).put("name", formattedName).put(LONG_DATE, name)
                     .put("type", this.getSeriesType(id, formattedName)).put("yAxis", yAxis)
