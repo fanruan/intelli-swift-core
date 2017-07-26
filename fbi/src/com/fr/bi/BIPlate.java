@@ -7,11 +7,11 @@ import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.conf.BICubeConfigureCenter;
 import com.finebi.cube.conf.BISystemPackageConfigurationProvider;
 import com.finebi.cube.conf.BITableRelationConfigurationProvider;
-import com.finebi.cube.conf.CubeGenerationManager;
 import com.fr.base.FRContext;
 import com.fr.bi.cal.generate.BackUpUtils;
 import com.fr.bi.cal.report.BIActor;
 import com.fr.bi.cal.report.db.DialectCreatorImpl;
+import com.fr.bi.cal.report.db.HanaDialectCreatorImpl;
 import com.fr.bi.cal.report.db.HiveDialectCreatorImpl;
 import com.fr.bi.cal.report.db.KylinDialectCreatorImpl;
 import com.fr.bi.conf.VT4FBI;
@@ -36,7 +36,11 @@ import com.fr.data.core.db.dialect.Dialect;
 import com.fr.data.core.db.dialect.DialectFactory;
 import com.fr.data.core.db.tableObject.Column;
 import com.fr.data.core.db.tableObject.ColumnSize;
-import com.fr.data.dao.*;
+import com.fr.data.dao.DAOUtils;
+import com.fr.data.dao.FieldColumnMapper;
+import com.fr.data.dao.MToMRelationFCMapper;
+import com.fr.data.dao.ObjectTableMapper;
+import com.fr.data.dao.RelationFCMapper;
 import com.fr.fs.AbstractFSPlate;
 import com.fr.fs.control.EntryPoolFactory;
 import com.fr.fs.control.UserControl;
@@ -47,7 +51,11 @@ import com.fr.general.FRLogger;
 import com.fr.general.GeneralContext;
 import com.fr.general.GeneralUtils;
 import com.fr.plugin.ExtraClassManager;
-import com.fr.stable.*;
+import com.fr.stable.ActorConstants;
+import com.fr.stable.ActorFactory;
+import com.fr.stable.ArrayUtils;
+import com.fr.stable.EnvChangedListener;
+import com.fr.stable.StableUtils;
 import com.fr.stable.bridge.StableFactory;
 import com.fr.stable.fun.Service;
 import com.fr.stable.plugin.PluginSimplify;
@@ -60,7 +68,11 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Types;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Locale;
+import java.util.Set;
 
 /**
  * BI模块启动时做的一些初始化工作，通过反射调用
@@ -306,6 +318,7 @@ public class BIPlate extends AbstractFSPlate {
             ExtraClassManager.getInstance().addMutable(DialectCreatorImpl.XML_TAG, new DialectCreatorImpl(), PluginSimplify.create("bi", "com.fr.bi.plugin.db.ads"));
             ExtraClassManager.getInstance().addMutable(KylinDialectCreatorImpl.XML_TAG, new KylinDialectCreatorImpl(), PluginSimplify.create("bi", "com.fr.bi.plugin.db.kylin"));
             ExtraClassManager.getInstance().addMutable(HiveDialectCreatorImpl.XML_TAG, new HiveDialectCreatorImpl(), PluginSimplify.create("bi", "com.fr.bi.plugin.db.hive"));
+            ExtraClassManager.getInstance().addMutable(HanaDialectCreatorImpl.XML_TAG, new HanaDialectCreatorImpl(), PluginSimplify.create("bi", "com.sap.db.jdbc.Driver"));
 
         } catch (Exception e) {
             FRLogger.getLogger().error(e.getMessage(), e);
