@@ -175,7 +175,6 @@ public class BICoreModule extends AbstractModule {
         StableFactory.registerMarkedObject(BICubeTaskRecordProvider.XML_TAG, getBICubeTaskRecordManagerWithoutUser());
 
         StableFactory.registerMarkedObject(BIDataConfigAuthorityProvider.XML_TAG, new BISystemDataConfigAuthorityManager());
-        StableFactory.registerMarkedObject(FBIConfigProvider.XML_TAG, getFBIConfigManager());
         StableFactory.registerMarkedObject(BITableDataDAOProvider.XML_TAG, getBITableDataDAOManager());
 
         //模版配置属性
@@ -209,22 +208,6 @@ public class BICoreModule extends AbstractModule {
             }
         } else {
             return TemplateConfig.getInstance();
-        }
-    }
-
-    public FBIConfigProvider getFBIConfigManager() {
-        if (ClusterEnv.isCluster()) {
-            if (ClusterAdapter.getManager().getHostManager().isSelf()) {
-                FBIConfig provider = FBIConfig.getInstance();
-                RPC.registerSkeleton(provider, ClusterAdapter.getManager().getHostManager().getPort());
-                return provider;
-            } else {
-                return (FBIConfigProvider) RPC.getProxy(FBIConfig.class,
-                        ClusterAdapter.getManager().getHostManager().getIp(),
-                        ClusterAdapter.getManager().getHostManager().getPort());
-            }
-        } else {
-            return FBIConfig.getInstance();
         }
     }
 
