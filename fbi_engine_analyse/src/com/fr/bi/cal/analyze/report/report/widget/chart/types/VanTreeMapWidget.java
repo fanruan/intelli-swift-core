@@ -57,6 +57,7 @@ public class VanTreeMapWidget extends VanChartWidget{
         JSONObject plotOptions = super.createPlotOptions(globalStyle, settings);
 
         plotOptions.put("zoom", settings.optBoolean("clickZoom"));
+        plotOptions.put("borderWidth", 1);
 
         return plotOptions;
     }
