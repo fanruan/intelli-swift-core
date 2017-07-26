@@ -1,9 +1,9 @@
 package com.fr.bi.web.service.action;
 
+import com.fr.bi.cluster.utils.BIUserAuthUtils;
 import com.fr.bi.fs.BIDAOUtils;
 import com.fr.bi.fs.BIReportNode;
 import com.fr.bi.util.BIReadReportUtils;
-import com.fr.fs.web.service.ServiceUtils;
 import com.fr.general.ComparatorUtils;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;
@@ -29,7 +29,7 @@ public class BIAnalysisETLCheckTableInUseAction extends AbstractAnalysisETLActio
         JSONArray usedList = new JSONArray();
 
         //暂时先检查管理员的模板了
-        List<BIReportNode> nodeList = BIDAOUtils.getBIDAOManager().findByUserID(ServiceUtils.getCurrentUserID(req));
+        List<BIReportNode> nodeList = BIDAOUtils.getBIDAOManager().findByUserID(BIUserAuthUtils.getCurrentUserID(req));
         boolean isInUse = false;
         for (BIReportNode reportNode : nodeList) {
             JSONObject reportSetting = BIReadReportUtils.getBIReadReportManager().getBIReportNodeJSON(reportNode);

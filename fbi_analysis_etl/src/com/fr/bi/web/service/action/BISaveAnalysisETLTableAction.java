@@ -1,36 +1,12 @@
 package com.fr.bi.web.service.action;
 
-import com.finebi.cube.common.log.BILoggerFactory;
-import com.finebi.cube.conf.pack.data.BIBusinessPackage;
-import com.finebi.cube.conf.table.BusinessTable;
-import com.finebi.cube.conf.utils.BILogHelper;
-import com.fr.bi.base.BIBusinessPackagePersistThread;
-import com.fr.bi.base.BIUser;
-import com.fr.bi.conf.provider.BIConfigureManagerCenter;
-import com.fr.bi.conf.utils.BIModuleUtils;
-import com.fr.bi.etl.analysis.Constants;
-import com.fr.bi.etl.analysis.conf.AnalysisBusiTable;
-import com.fr.bi.etl.analysis.data.AnalysisCubeTableSource;
-import com.fr.bi.etl.analysis.data.AnalysisETLSourceFactory;
+import com.fr.bi.cluster.utils.BIUserAuthUtils;
 import com.fr.bi.etl.analysis.manager.BIAnalysisETLManagerCenter;
-import com.fr.bi.exception.BIKeyAbsentException;
-import com.fr.bi.exception.BIKeyDuplicateException;
-import com.fr.bi.stable.data.BITableID;
-import com.fr.bi.stable.data.source.CubeTableSource;
-import com.fr.bi.stable.utils.program.BIStringUtils;
-import com.fr.fs.web.service.ServiceUtils;
-import com.fr.general.ComparatorUtils;
-import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;
-import com.fr.stable.StringUtils;
 import com.fr.web.utils.WebUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
 
 /**
  * Created by 小灰灰 on 2016/4/7.
@@ -38,7 +14,7 @@ import java.util.Set;
 public class BISaveAnalysisETLTableAction extends AbstractAnalysisETLAction {
     @Override
     public void actionCMD(HttpServletRequest req, HttpServletResponse res, String sessionID) throws Exception {
-        final long userId = ServiceUtils.getCurrentUserID(req);
+        final long userId = BIUserAuthUtils.getCurrentUserID(req);
         String tableId = WebUtils.getHTTPRequestParameter(req, "id");
         String newId = WebUtils.getHTTPRequestParameter(req, "new_id");
         String tableName = WebUtils.getHTTPRequestParameter(req, "name");
