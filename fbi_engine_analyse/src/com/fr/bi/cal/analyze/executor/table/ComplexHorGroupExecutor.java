@@ -124,11 +124,7 @@ public class ComplexHorGroupExecutor extends AbstractTableWidgetExecutor {
                 BIDimension dim = dimensions[colDimensionIdx];
                 int diff = 0;
                 while (temp != null) {
-                    Object data = temp.getData();
-                    Object v = dim.getValueByType(data);
-                    if (dim.getGroup().getType() == BIReportConstant.GROUP.YMD && GeneralUtils.string2Number(v.toString()) != null) {
-                        v = DateUtils.DATEFORMAT2.format(new Date(GeneralUtils.string2Number(v.toString()).longValue()));
-                    }
+                    Object v = ExecutorUtils.formatDateGroup(dim.getGroup().getType(), dim.toString(temp.getData()));
                     int rowSpan = colDimensionIdx < (dimensions.length - 1) ? 1 : maxColumnDimLen - colDimensionIdx;
                     CBCell dimCell = ExecutorUtils.createCBCell(v, colDimensionIdx, rowSpan, columnIdx.value, widget.showColumnTotal() ? temp.getTotalLengthWithSummary() : temp.getTotalLength(), widget.getTableStyle().getHeaderStyle(Style.getInstance()));
                     pagedIterator.addCell(dimCell);

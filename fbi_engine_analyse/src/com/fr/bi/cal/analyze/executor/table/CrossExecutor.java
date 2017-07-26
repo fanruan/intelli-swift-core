@@ -126,10 +126,7 @@ public class CrossExecutor extends AbstractTableWidgetExecutor<XNode> {
             Object data = temp.getData();
             BIDimension[] dims = widget.getViewTopDimensions();
             BIDimension dim = dims[rowIdx];
-            String v = dim.toString(dim.getValueByType(data));
-            if (dim.getGroup().getType() == BIReportConstant.GROUP.YMD && GeneralUtils.string2Number(v) != null) {
-                v = DateUtils.DATEFORMAT2.format(new Date(GeneralUtils.string2Number(v).longValue()));
-            }
+            Object v = ExecutorUtils.formatDateGroup(dim.getGroup().getType(), dim.toString(dim.getValueByType(data)));
             int rowSpan = (rowIdx == dims.length - 1) ? (usedSumTarget.length == 1 ? 2 : 1) : 1;
             CBCell cell = ExecutorUtils.createCBCell(v, rowIdx, rowSpan, columnIdx.value, columnSpan, widget.getTableStyle().getHeaderStyle(Style.getInstance()));
             pagedIterator.addCell(cell);
@@ -264,10 +261,7 @@ public class CrossExecutor extends AbstractTableWidgetExecutor<XNode> {
             int rowSpan = widget.showRowToTal() ? parent.getTotalLengthWithSummary() : parent.getTotalLength();
             Object data = parent.getData();
             BIDimension dim = rowDimension[--i];
-            Object v = dim.getValueByType(data);
-            if (dim.getGroup().getType() == BIReportConstant.GROUP.YMD && GeneralUtils.string2Number(v.toString()) != null) {
-                v = DateUtils.DATEFORMAT2.format(new Date(GeneralUtils.string2Number(v.toString()).longValue()));
-            }
+            Object v = ExecutorUtils.formatDateGroup(dim.getGroup().getType(), dim.toString(data));
             if (v != dimensionNames[i] || (i == dimensionNames.length - 1) || parent.getParent().getTotalLength() == 1) {
                 oddEven[i]++;
                 Style style = (rowIdx.value - titleRowSpan + 1) % 2 == 1 ? widget.getTableStyle().getOddRowStyle(Style.getInstance()) : widget.getTableStyle().getEvenRowStyle(Style.getInstance());

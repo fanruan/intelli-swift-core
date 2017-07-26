@@ -171,7 +171,7 @@ public class GroupExecutor extends AbstractTableWidgetExecutor<Node> {
             if (temp.getParent().getChildLength() != 1) {
                 rowIdx.value++;
                 boolean isLastSumRow = temp.getSibling() == null && columnIdx == 0;
-                Style style = isLastSumRow ? widget.getTableStyle().getHeaderStyle(Style.getInstance()): widget.getTableStyle().getSumRowStyle(Style.getInstance());
+                Style style = isLastSumRow ? widget.getTableStyle().getHeaderStyle(Style.getInstance()) : widget.getTableStyle().getSumRowStyle(Style.getInstance());
                 CBCell cell = ExecutorUtils.createCBCell(Inter.getLocText("BI-Summary_Values"), rowIdx.value, 1, columnIdx, maxRowDimensionsLength - columnIdx, style);
                 pagedIterator.addCell(cell);
                 generateTargetCells(temp.getParent(), widget, pagedIterator, rowIdx.value, maxRowDimensionsLength, style);
@@ -212,12 +212,8 @@ public class GroupExecutor extends AbstractTableWidgetExecutor<Node> {
         while (temp.getParent() != null) {
             int rowSpan = widget.showRowToTal() ? temp.getTotalLengthWithSummary() : temp.getTotalLength();
             BIDimension dim = rowDimensions[--i];
-            String data = dim.toString(temp.getData());
-            Object v = dim.getValueByType(data);
             //年月日字段格式化
-            if (dim.getGroup().getType() == BIReportConstant.GROUP.YMD && GeneralUtils.string2Number(data) != null) {
-                v = DateUtils.DATEFORMAT2.format(new Date(GeneralUtils.string2Number(data).longValue()));
-            }
+            Object v = ExecutorUtils.formatDateGroup(dim.getGroup().getType(), dim.toString(temp.getData()));
             if (!ComparatorUtils.equals(dimensionNames[i], v) || (i == rowDimensions.length - 1) || temp.getParent().getTotalLength() == 1) {
                 oddEven[i]++;
                 int columnSpanOffSet = i == rowDimensions.length - 1 ? maxRowDimensionsLength - rowDimensions.length : 0;

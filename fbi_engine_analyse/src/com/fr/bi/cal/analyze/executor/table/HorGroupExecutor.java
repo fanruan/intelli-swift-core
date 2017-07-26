@@ -89,10 +89,7 @@ public class HorGroupExecutor extends AbstractTableWidgetExecutor<Node> {
             columnIdx.value = 1;
             BIDimension dim = colDimension[rowIdx];
             while (temp != null) {
-                String v = dim.toString(temp.getData());
-                if (dim.getGroup().getType() == BIReportConstant.GROUP.YMD && GeneralUtils.string2Number(v) != null) {
-                    v = DateUtils.DATEFORMAT2.format(new Date(GeneralUtils.string2Number(v).longValue()));
-                }
+                Object v = ExecutorUtils.formatDateGroup(dim.getGroup().getType(), dim.toString(temp.getData()));
                 CBCell dimCell = ExecutorUtils.createCBCell(v, rowIdx, 1, columnIdx.value, widget.showColumnTotal() ? temp.getTotalLengthWithSummary() : temp.getTotalLength(), widget.getTableStyle().getHeaderStyle(Style.getInstance()));
                 pagedIterator.addCell(dimCell);
                 columnIdx.value += widget.showColumnTotal() ? temp.getTotalLengthWithSummary() : temp.getTotalLength();

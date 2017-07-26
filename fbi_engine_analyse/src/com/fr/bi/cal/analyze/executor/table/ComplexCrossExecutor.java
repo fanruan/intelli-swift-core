@@ -166,10 +166,8 @@ public class ComplexCrossExecutor extends AbstractTableWidgetExecutor<XNode> {
                             colSumIdx = calculateNextColSumIdx(parent, columnIdx.value);
                         }
                         Object data = node.getData();
-                        String v = dim.toString(data);
-                        if (dim.getGroup().getType() == BIReportConstant.GROUP.YMD && GeneralUtils.string2Number(v) != null) {
-                            v = DateUtils.DATEFORMAT2.format(new Date(GeneralUtils.string2Number(v).longValue()));
-                        }//最后一个列表头跨行
+                        Object v = ExecutorUtils.formatDateGroup(dim.getGroup().getType(), dim.toString(data));
+                        //最后一个列表头跨行
                         int lastRowSpan = rowTitleSpan - colDimLen + (widget.getViewTargets().length == 1 ? 1 : 0);
                         int rowSpan = (rowIdx == colDimLen - 1) ? lastRowSpan : 1;
                         int colSpan = (widget.showColumnTotal() ? node.getTotalLengthWithSummary() : node.getTotalLength()) * usedSumTarget.length;
@@ -308,12 +306,8 @@ public class ComplexCrossExecutor extends AbstractTableWidgetExecutor<XNode> {
         int i = rowDimension.length;
         while (parent.getParent() != null) {
             int rowSpan = widget.showRowToTal() ? parent.getTotalLengthWithSummary() : parent.getTotalLength();
-            Object data = parent.getData();
             BIDimension dim = rowDimension[--i];
-            Object v = dim.getValueByType(data);
-            if (dim.getGroup().getType() == BIReportConstant.GROUP.YMD && GeneralUtils.string2Number(v.toString()) != null) {
-                v = DateUtils.DATEFORMAT2.format(new Date(GeneralUtils.string2Number(v.toString()).longValue()));
-            }
+            Object v = ExecutorUtils.formatDateGroup(dim.getGroup().getType(), dim.toString(parent.getData()));
             if (v != dimensionNames[i] || (i == dimensionNames.length - 1)) {
                 oddEven[i]++;
                 Style style = (rowIdx - titleRowSpan + 1) % 2 == 1 ? widget.getTableStyle().getOddRowStyle(Style.getInstance()) : widget.getTableStyle().getEvenRowStyle(Style.getInstance());
