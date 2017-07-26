@@ -596,7 +596,7 @@ public abstract class VanChartWidget extends TableWidget {
             transparent = isTransparent(widgetBG);
         }
 
-        BIChartStyleAttr platConfig = FBIConfig.getInstance().getChartStyleAttr();
+        BIChartStyleAttr platConfig = FBIConfig.getProviderInstance().getChartStyleAttr();
         if (!transparent && platConfig.getWidgetBackground() != null) {
             String widgetBG = platConfig.getWidgetBackground().getValue();
             if(hasValidColor(widgetBG)){
@@ -627,7 +627,7 @@ public abstract class VanChartWidget extends TableWidget {
 
     //优先级从低到高：plat界面背景，global界面背景，主题，plat组件背景，global组件背景，setting组件背景，plat图表文字， global图表文字，settings图表文字
     protected JSONObject defaultFont() throws JSONException {
-        BIChartStyleAttr platConfig = FBIConfig.getInstance().getChartStyleAttr();
+        BIChartStyleAttr platConfig = FBIConfig.getProviderInstance().getChartStyleAttr();
         String color = DARK, fontWeight = "normal", fontStyle = "normal";
 
         String back = backgroundColor();
@@ -959,6 +959,7 @@ public abstract class VanChartWidget extends TableWidget {
         }
         JSONArray topC = top.getJSONArray("c"), leftC = left.optJSONArray("c");
         String id = targetIDs[0];
+        int yAxis = this.yAxisIndex(id);
         double numberScale = this.numberScale(targetIDs[0]);
         for (int i = 0; i < topC.length(); i++) {
             JSONObject tObj = topC.getJSONObject(i);
@@ -983,7 +984,7 @@ public abstract class VanChartWidget extends TableWidget {
                 }
             }
             JSONObject ser = JSONObject.create().put("data", data).put("name", formattedName).put(LONG_DATE, name)
-                    .put("type", this.getSeriesType(id, formattedName))
+                    .put("type", this.getSeriesType(id, formattedName)).put("yAxis", yAxis)
                     .put("dimensionIDs", dimensionIDs)
                     .put("targetIDs", JSONArray.create().put(id));
 

@@ -3,6 +3,7 @@ package com.fr.bi.web.service.action;
 import com.finebi.cube.api.ICubeColumnDetailGetter;
 import com.finebi.cube.api.ICubeTableService;
 import com.fr.bi.base.key.BIKey;
+import com.fr.bi.cluster.utils.BIUserAuthUtils;
 import com.fr.bi.etl.analysis.Constants;
 import com.fr.bi.etl.analysis.data.AnalysisETLSourceFactory;
 import com.fr.bi.etl.analysis.data.UserCubeTableSource;
@@ -11,7 +12,6 @@ import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.engine.index.key.IndexKey;
 import com.fr.bi.stable.utils.BICollectionUtils;
 import com.fr.bi.stable.utils.DateUtils;
-import com.fr.fs.web.service.ServiceUtils;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;
 import com.fr.stable.StringUtils;
@@ -36,7 +36,7 @@ public class BIAnalysisETLGetFieldValueAction extends AbstractAnalysisETLAction{
             WebUtils.printAsJSON(res, new JSONObject());
             return;
         }
-        long userId = ServiceUtils.getCurrentUserID(req);
+        long userId = BIUserAuthUtils.getCurrentUserID(req);
         String tableJSON = WebUtils.getHTTPRequestParameter(req, "table");
         JSONObject jo = new JSONObject(tableJSON);
         JSONArray items = jo.getJSONArray(Constants.ITEMS);
