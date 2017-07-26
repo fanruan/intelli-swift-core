@@ -92,9 +92,10 @@ public class VanGaugeWidget extends VanCartesianWidget{
         int gaugeStyle = settings.optInt("dashboardChartType");
         boolean isPointer = gaugeStyle == NORMAL || gaugeStyle == HALF_DASHBOARD;
         boolean hasCategory = getCategoryDimension() != null;
+        boolean multi = isPointer && (settings.optInt("dashboardPointer") == MULTI_POINTERS);
 
         boolean showCate = dataLabelSettings.optBoolean("showCategoryName");
-        String key = hasCategory ? SERIES : CATEGORY;
+        String key = hasCategory || multi ? SERIES : CATEGORY;
 
         String valueID = StringUtils.EMPTY, seriesID = StringUtils.EMPTY;
         if(dataLabelSettings.optBoolean("showValue")){
@@ -179,9 +180,11 @@ public class VanGaugeWidget extends VanCartesianWidget{
                 JSONObject combineSer = newSeries.optJSONObject(0);
                 if(combineSer == null){
                     combineSer = ser;
+                    seriesToCate(ser);
                     newSeries.put(combineSer);
                 } else {//将多个指标的点放到一个系列里
                     JSONArray combineData = combineSer.optJSONArray("data");
+                    seriesToCate(ser);
                     JSONArray datas = ser.optJSONArray("data");
                     for(int dataIndex = 0, dataCount = datas.length(); dataIndex < dataCount; dataIndex ++) {
                         combineData.put(datas.opt(dataIndex));
@@ -202,11 +205,33 @@ public class VanGaugeWidget extends VanCartesianWidget{
         return newSeries;
     }
 
+    private void seriesToCate(JSONObject ser) throws JSONException {
+        if(getCategoryDimension() != null){
+            return;
+        }
+        String name = ser.optString("name");
+        ser.put("name", "");
+        JSONArray datas = ser.optJSONArray("data");
+        for(int dataIndex = 0, dataCount = datas.length(); dataIndex < dataCount; dataIndex ++) {
+            JSONObject point = datas.optJSONObject(dataIndex);
+            point.put("x", name);
+        }
+    }
+
     protected JSONObject createDataLabels(JSONObject settings) throws JSONException{
         return JSONObject.EMPTY;
     }
 
+    @Override
+    protected boolean supportDataSheet() throws Exception {
+        return false;
+    }
+
     public String getSeriesType(String dimensionID){
         return "gauge";
+    }
+
+    protected boolean checkValid(){
+        return this.getTar1Size() > 0;
     }
 }

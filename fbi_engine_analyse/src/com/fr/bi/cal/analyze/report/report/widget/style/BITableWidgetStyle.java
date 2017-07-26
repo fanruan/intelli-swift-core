@@ -2,7 +2,6 @@ package com.fr.bi.cal.analyze.report.report.widget.style;
 
 import com.fr.bi.conf.report.widget.IWidgetStyle;
 import com.fr.bi.stable.constant.BIStyleConstant;
-import com.fr.general.ComparatorUtils;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;
 import com.fr.stable.StringUtils;
@@ -44,7 +43,7 @@ public class BITableWidgetStyle implements IWidgetStyle {
 
     @Override
     public boolean isShowNumber() {
-        return false;
+        return showNumber;
     }
 
     @Override

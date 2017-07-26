@@ -40,7 +40,16 @@ public class VanRadarWidget extends VanCartesianWidget{
         return "radiusAxis";
     }
 
+    @Override
+    protected boolean supportDataSheet() throws Exception {
+        return false;
+    }
+
     public String getSeriesType(String dimensionID){
         return "radar";
+    }
+
+    protected boolean checkValid(){
+        return this.getDim1Size() > 0 && this.hasTarget();
     }
 }

@@ -121,6 +121,9 @@ public class TreeIterator implements NodeDimensionIterator {
 
     private void moveCurrentStart() {
         int pos = pageIndex.size() - 2;
+        if (pos < 0){
+            return;
+        }
         this.index = pageIndex.get(pos);
         this.pageIndex = this.pageIndex.subList(0, pos + 1);
     }

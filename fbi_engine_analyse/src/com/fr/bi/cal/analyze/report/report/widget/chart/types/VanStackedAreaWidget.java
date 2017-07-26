@@ -9,4 +9,8 @@ public class VanStackedAreaWidget extends VanStackedColumnWidget{
         return "area";
     }
 
+    protected boolean checkValid(){
+        return this.getDim1Size() > 0 && this.hasTarget();
+    }
+
 }

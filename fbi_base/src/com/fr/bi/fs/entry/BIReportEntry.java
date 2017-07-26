@@ -67,23 +67,24 @@ public class BIReportEntry extends MobileBaseEntry implements Entry {
     public String getMobileCoverId() {
         return mobileCoverId;
     }
+
     @Override
     public void setMobileCoverId(String mobileCoverId) {
         this.mobileCoverId = mobileCoverId;
     }
 
-    public void setSystemReport(boolean systemReport){
-        this.systemReport=systemReport;
+    public void setSystemReport(boolean systemReport) {
+        this.systemReport = systemReport;
     }
 
-    public boolean isSystemReport(){
+    public boolean isSystemReport() {
         return systemReport;
     }
 
 
     public static final ObjectTableMapper TABLE_MAPPER = new ObjectTableMapper(
             BIReportEntry.class, new Table(TABLE_NAME),
-            new FieldColumnMapper[] {
+            new FieldColumnMapper[]{
                     new PrimaryKeyFCMapper("id", BaseEntry.IDTYPE, new ColumnSize(COLUMNSIZE_ID)),
                     new CommonFieldColumnMapper("parentId", BaseEntry.PARENTIDTYPE,
                             BaseEntry.PARENTID, new ColumnSize(COLUMNSIZE_ID), false),
@@ -108,13 +109,13 @@ public class BIReportEntry extends MobileBaseEntry implements Entry {
 
     public void parseJSON(JSONObject jo) throws JSONException {
         super.parseJSON(jo);
-        if(jo.has("reportId")){
+        if (jo.has("reportId")) {
             this.reportId = jo.getLong("reportId");
         }
-        if(jo.has("reportName")){
+        if (jo.has("reportName")) {
             this.reportName = jo.getString("reportName");
         }
-        if(jo.has("createBy")) {
+        if (jo.has("createBy")) {
             this.createBy = jo.getLong("createBy");
         }
     }
@@ -125,9 +126,9 @@ public class BIReportEntry extends MobileBaseEntry implements Entry {
         String reportName = this.reportName;
         try {
             List<BIReportNode> nodeList = BIDAOUtils.getBIDAOManager().findByUserID(this.createBy);
-            for(int i = 0; i < nodeList.size(); i++){
+            for (int i = 0; i < nodeList.size(); i++) {
                 BIReportNode node = nodeList.get(i);
-                if(node.getId() == this.reportId) {
+                if (node.getId() == this.reportId) {
                     reportName = node.getReportName();
                     break;
                 }
@@ -147,6 +148,8 @@ public class BIReportEntry extends MobileBaseEntry implements Entry {
         jo.put("createBy", this.getCreateBy());
         jo.put("bilink", "?op=fr_bi&cmd=bi_init&id=" + this.getReportId()
                 + "&show=_bi_show_&createBy=" + this.getCreateBy());
+        jo.put("bih5link", "?op=fr_bi_h5&cmd=h5_init&id=" + this.getReportId()
+                + "&createBy=" + this.getCreateBy());
         return jo;
     }
 

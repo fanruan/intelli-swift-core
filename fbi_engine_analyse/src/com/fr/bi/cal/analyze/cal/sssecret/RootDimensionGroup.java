@@ -8,6 +8,7 @@ import com.fr.bi.cal.analyze.cal.index.loader.MetricGroupInfo;
 import com.fr.bi.cal.analyze.cal.index.loader.TargetAndKey;
 import com.fr.bi.cal.analyze.cal.multithread.BIMultiThreadExecutor;
 import com.fr.bi.cal.analyze.cal.result.Node;
+import com.fr.bi.cal.analyze.cal.result.NodeCreator;
 import com.fr.bi.cal.analyze.cal.result.NodeExpander;
 import com.fr.bi.cal.analyze.cal.sssecret.diminfo.MergeIteratorCreator;
 import com.fr.bi.cal.analyze.session.BISession;
@@ -141,10 +142,6 @@ public class RootDimensionGroup implements IRootDimensionGroup {
         return column.createKey();
     }
 
-    public List<MetricGroupInfo> getMetricGroupInfoList() {
-
-        return metricGroupInfoList;
-    }
 
     @Override
     public Node getConstructedRoot() {
@@ -391,6 +388,12 @@ public class RootDimensionGroup implements IRootDimensionGroup {
         for (MergeIteratorCreator creator : mergeIteratorCreators) {
             creator.setExecutor(executor);
         }
+    }
+
+    @Override
+    public void checkMetricGroupInfo(NodeCreator creator, List<MetricGroupInfo> metricGroupInfoList) {
+        this.metricGroupInfoList = metricGroupInfoList;
+        init();
     }
 
     protected IRootDimensionGroup createNew() {

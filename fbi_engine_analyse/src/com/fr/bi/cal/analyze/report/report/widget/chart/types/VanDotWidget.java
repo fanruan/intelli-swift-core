@@ -149,17 +149,25 @@ public class VanDotWidget extends VanCartesianWidget{
         int rule = settings.optInt("displayRules");
         if(rule == INTERVAL_RULE){
             legend.put("continuous", false);
-            if(settings.optInt("fixedStyleRadio") == BIChartSettingConstant.SCALE_SETTING.CUSTOM){
+            if(customFixedStyleRadio(settings)){
                 legend.put("range", this.mapStyleToRange(settings.optJSONArray("fixedStyle")));
             }
         }else if(rule != SERIES_RULE){//只能是普通图例的，前台处理好了。如果是可选择的，默认什么都没传过来，默认是渐变色
             legend.put("continuous", true);
-            if(settings.optInt("gradientStyleRadio") == BIChartSettingConstant.SCALE_SETTING.CUSTOM){
+            if(customGradientStyleRadio(settings)){
                 legend.put("range", this.gradualStyleToRange(settings.optJSONArray("gradientStyle")));
             }
         }
 
         return legend;
+    }
+
+    protected boolean customFixedStyleRadio(JSONObject settings) throws JSONException {
+        return settings.optInt("fixedStyleRadio") == BIChartSettingConstant.SCALE_SETTING.CUSTOM;
+    }
+
+    protected boolean customGradientStyleRadio(JSONObject settings) throws JSONException {
+        return settings.optInt("gradientStyleRadio") == BIChartSettingConstant.SCALE_SETTING.CUSTOM;
     }
 
 
@@ -229,16 +237,7 @@ public class VanDotWidget extends VanCartesianWidget{
             return JSONArray.create();
         }
 
-        boolean noSeries = true;
-        for(String id : this.seriesIDs){
-            for (BIDimension dimension : getDimensions()) {
-                if (ComparatorUtils.equals(dimension.getId(), id) && dimension.isUsed()) {
-                    noSeries = false;
-                }
-            }
-        }
-
-        return createDotSeries(noSeries, originData);
+        return createDotSeries(getSeriesDimension() == null, originData);
     }
 
     private JSONArray createDotSeries(boolean noSeries, JSONObject originData) throws JSONException{
@@ -534,11 +533,26 @@ public class VanDotWidget extends VanCartesianWidget{
         return datum;
     }
 
+    public BIDimension getSeriesDimension() {
+        for(String id : this.seriesIDs){
+            for (BIDimension dimension : getDimensions()) {
+                if (ComparatorUtils.equals(dimension.getId(), id) && dimension.isUsed()) {
+                    return dimension;
+                }
+            }
+        }
+        return null;
+    }
+
     protected JSONObject defaultDataLabelSetting() throws JSONException {
 
         return JSONObject.create().put("showCategoryName", false).put("showSeriesName", false)
                 .put("showXValue", true).put("showYValue", true).put("showValue", true)
                 .put("textStyle", defaultFont());
 
+    }
+
+    protected boolean checkValid(){
+        return this.getTar1Size() >= 2;
     }
 }

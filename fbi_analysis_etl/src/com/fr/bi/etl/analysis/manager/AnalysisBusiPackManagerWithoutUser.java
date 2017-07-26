@@ -17,7 +17,7 @@ import java.util.Set;
  * @author Lucifer
  * @since Advanced FineBI Analysis 1.0
  */
-public class AnalysisBusiPackManagerWithoutUser extends AnalysisBusiPackManager {
+public class AnalysisBusiPackManagerWithoutUser extends AnalysisBusiPackManager implements BIAnalysisBusiPackManagerProvider{
     private static final String TAG = "AnalysisBusiPackManager";
     private static final long serialVersionUID = -2729584433712015294L;
     private final long usedUserID = UserControl.getInstance().getSuperManagerID();

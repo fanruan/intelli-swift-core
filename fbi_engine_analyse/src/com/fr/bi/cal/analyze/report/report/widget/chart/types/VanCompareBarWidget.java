@@ -79,7 +79,7 @@ public class VanCompareBarWidget extends VanCompareColumnWidget{
                 String valueKey = this.valueKey();
                 for (int j = 0, size = datas.length(); j < size; j++) {
                     JSONObject point = datas.getJSONObject(j);
-                    point.put(valueKey, -point.optDouble(valueKey));
+                    point.put(valueKey, -checkInfinity(point.optDouble(valueKey)));
                 }
             }
 

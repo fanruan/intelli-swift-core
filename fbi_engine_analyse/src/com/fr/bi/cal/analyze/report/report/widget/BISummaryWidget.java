@@ -498,6 +498,14 @@ public abstract class BISummaryWidget extends AbstractBIWidget {
         return this.maxRow;
     }
 
+    @Override
+    public Object clone() {
+        BISummaryWidget widget = (BISummaryWidget) super.clone();
+        widget.targetFilterMap = new LinkedHashMap<String, DimensionFilter>();
+        widget.targetFilterMap.putAll(targetFilterMap);
+        return widget;
+    }
+
     private class TargetSort extends NameObject {
 
         private static final long serialVersionUID = -3319190000338485415L;

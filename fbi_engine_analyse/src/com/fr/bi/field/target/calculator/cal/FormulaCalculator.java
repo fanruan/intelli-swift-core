@@ -1,8 +1,9 @@
 package com.fr.bi.field.target.calculator.cal;
 
+import com.fr.bi.cal.analyze.cal.result.BIXLeftNode;
 import com.fr.bi.field.target.target.cal.BICalculateTarget;
 import com.fr.bi.report.key.TargetGettingKey;
-import com.fr.bi.report.result.BICrossNode;
+import com.fr.bi.report.key.XTargetGettingKey;
 import com.fr.bi.report.result.BINode;
 import com.fr.bi.stable.utils.BIFormulaUtils;
 import com.fr.script.Calculator;
@@ -98,15 +99,17 @@ public class FormulaCalculator extends CalCalculator {
      * @param key  关键字
      */
     @Override
-    public void calCalculateTarget(BICrossNode node, TargetGettingKey key) {
+    public void calCalculateTarget(BIXLeftNode node, XTargetGettingKey key) {
         try {
-            Object value = BIFormulaUtils.getCalculatorValue(c, incrementParaFormula, paraTargetMap, node.getSummaryValue());
+            Object value = BIFormulaUtils.getCalculatorValue(c, incrementParaFormula, paraTargetMap, node.getSubValues(key));
             //抛错就是没有值啦
-            node.setSummaryValue(createTargetGettingKey(),((Number) value).doubleValue());
+            if (value != null){
+                node.setSummaryValue(key,((Number) value).doubleValue());
+            }
         } catch (Throwable e) {
         }
-        for (int i = 0, len = node.getLeftChildLength(); i < len; i++) {
-            calCalculateTarget(node.getLeftChild(i), key);
+        for (int i = 0, len = node.getChildLength(); i < len; i++) {
+            calCalculateTarget((BIXLeftNode) node.getChild(i), key);
         }
     }
 }
