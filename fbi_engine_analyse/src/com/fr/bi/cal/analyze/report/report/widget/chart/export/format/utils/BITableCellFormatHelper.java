@@ -33,6 +33,11 @@ public class BITableCellFormatHelper {
         }
         if (Double.valueOf(text).isInfinite()) {
             return "N/0";
+//            if (Double.valueOf(text)==Double.POSITIVE_INFINITY){
+//                return "∞";
+//            }else {
+//                return "-∞";
+//            }
         }
         try {
             float value = Float.valueOf(text);
