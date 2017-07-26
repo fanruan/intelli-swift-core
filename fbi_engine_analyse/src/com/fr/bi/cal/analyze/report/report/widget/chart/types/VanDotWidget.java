@@ -219,8 +219,8 @@ public class VanDotWidget extends VanCartesianWidget{
         if(count == 0){//把条件全删了
             return JSONObject.create();
         }
-        double max = style.getJSONObject(count - 1).optJSONObject("range").optDouble("max");
-        double min = style.getJSONObject(0).optJSONObject("range").optDouble("min");
+        double max = style.getJSONObject(count - 1).optJSONObject("range").optDouble("max", Integer.MAX_VALUE);
+        double min = style.getJSONObject(0).optJSONObject("range").optDouble("min", Integer.MIN_VALUE);
 
         boolean first = true;
         for(int i = 0, len = style.length(); i < len; i++){
@@ -230,11 +230,11 @@ public class VanDotWidget extends VanCartesianWidget{
                 continue;
             }
             if(first) {
-                double from = range.optDouble("min") / max;
+                double from = range.optDouble("min", Integer.MIN_VALUE) / max;
                 colors.put(JSONArray.create().put(from).put(colorRange.optString("fromColor")));
                 first = false;
             }
-            double to = range.optDouble("max") / max;
+            double to = range.optDouble("max", Integer.MAX_VALUE) / max;
             colors.put(JSONArray.create().put(to).put(colorRange.optString("toColor")));
 
         }
