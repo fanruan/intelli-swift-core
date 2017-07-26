@@ -1,7 +1,7 @@
 package com.fr.bi.etl.analysis.data;
 
 import com.finebi.cube.conf.table.BusinessTable;
-import com.fr.bi.cal.analyze.report.report.BIWidgetFactory;
+import com.fr.bi.cal.analyze.report.report.widget.util.BIWidgetFactory;
 import com.fr.bi.conf.report.BIWidget;
 import com.fr.bi.etl.analysis.Constants;
 import com.fr.bi.etl.analysis.conf.AnalysisBusiTable;

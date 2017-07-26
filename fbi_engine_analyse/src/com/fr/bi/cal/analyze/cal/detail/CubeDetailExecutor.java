@@ -6,7 +6,7 @@ import com.fr.bi.cal.analyze.executor.detail.DetailExecutor;
 import com.fr.bi.cal.analyze.executor.iterator.StreamCellCase;
 import com.fr.bi.cal.analyze.executor.paging.Paging;
 import com.fr.bi.cal.analyze.executor.paging.PagingFactory;
-import com.fr.bi.cal.analyze.report.report.widget.BIDetailWidget;
+import com.fr.bi.cal.analyze.report.report.widget.imp.DetailWidget;
 import com.fr.bi.cal.analyze.session.BISession;
 import com.fr.bi.cal.report.report.poly.BIPolyAnalyECBlock;
 import com.fr.bi.conf.session.BISessionProvider;
@@ -38,7 +38,7 @@ public class CubeDetailExecutor extends SheetExecutor {
 
 
     private TemplateElementCase elementCase;
-    private BIDetailWidget widget;
+    private DetailWidget widget;
     private Calculator cal;
     private TableCellIterator iter;
     private Report report;
@@ -46,7 +46,7 @@ public class CubeDetailExecutor extends SheetExecutor {
     // page from 1 ~ max
     private int page = 1;
 
-    public CubeDetailExecutor(TemplateReport report, BIDetailWidget widget,
+    public CubeDetailExecutor(TemplateReport report, DetailWidget widget,
                               BISession session, AbstractPolyECBlock tplBlock, Map<String, Object> parameterMap, int page) {
         super(parameterMap);
         this.report = report;

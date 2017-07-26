@@ -7,9 +7,9 @@ import com.fr.bi.cal.analyze.cal.result.Node;
 import com.fr.bi.cal.analyze.executor.detail.DetailExecutor;
 import com.fr.bi.cal.analyze.executor.paging.Paging;
 import com.fr.bi.cal.analyze.executor.paging.PagingFactory;
-import com.fr.bi.cal.analyze.report.report.widget.BIDetailWidget;
-import com.fr.bi.cal.analyze.report.report.widget.BISummaryWidget;
-import com.fr.bi.cal.analyze.report.report.widget.TableWidget;
+import com.fr.bi.cal.analyze.report.report.widget.imp.DetailWidget;
+import com.fr.bi.cal.analyze.report.report.widget.imp.SummaryWidget;
+import com.fr.bi.cal.analyze.report.report.widget.imp.TableWidget;
 import com.fr.bi.cal.analyze.session.BISession;
 import com.fr.bi.cal.analyze.session.BIWeblet;
 import com.fr.bi.cluster.utils.ClusterLockObject;
@@ -94,7 +94,7 @@ public class UserWidget implements Serializable {
     }
 
     private int getPageSize() {
-        return ((BISummaryWidget) widget).getMaxRow();
+        return ((SummaryWidget) widget).getMaxRow();
     }
 
     private void createTableData(int end) {
@@ -191,7 +191,7 @@ public class UserWidget implements Serializable {
         paging.setPageSize(step);
         int page = start / step;
         paging.setCurrentPage(page + 1);
-        DetailExecutor exe = new DetailExecutor((BIDetailWidget) widget, paging, session);
+        DetailExecutor exe = new DetailExecutor((DetailWidget) widget, paging, session);
         List<List> data = exe.getData();
         int row = page * step;
         for (int i = 0; i < data.size(); i++) {
@@ -199,7 +199,7 @@ public class UserWidget implements Serializable {
         }
         maxRow = (int) paging.getTotalSize();
         paging.setCurrentPage(page + 2);
-        exe = new DetailExecutor((BIDetailWidget) widget, paging, session);
+        exe = new DetailExecutor((DetailWidget) widget, paging, session);
         data = exe.getData();
         row = (page + 1) * step;
         for (int i = 0; i < data.size(); i++) {
@@ -242,7 +242,7 @@ public class UserWidget implements Serializable {
         paging.setPageSize(step);
         int page = start / step;
         paging.setCurrentPage(page + 1);
-        DetailExecutor exe = new DetailExecutor((BIDetailWidget) widget, paging, session);
+        DetailExecutor exe = new DetailExecutor((DetailWidget) widget, paging, session);
         List<List> data =  exe.getData();
         if (paging.getTotalSize() > start){
             return data;

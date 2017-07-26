@@ -1,32 +1,23 @@
 package com.fr.bi.cal.analyze.executor.detail;
 
-import com.finebi.cube.api.ICubeDataLoader;
-import com.finebi.cube.api.ICubeTableService;
-import com.finebi.cube.api.ICubeValueEntryGetter;
 import com.finebi.cube.common.log.BILoggerFactory;
-import com.finebi.cube.conf.field.BusinessField;
-import com.finebi.cube.conf.field.BusinessFieldHelper;
 import com.finebi.cube.conf.table.BusinessTable;
 import com.fr.bi.base.FinalInt;
-import com.fr.bi.cal.analyze.executor.BIEngineExecutor;
 import com.fr.bi.cal.analyze.executor.GVIRunner;
 import com.fr.bi.cal.analyze.executor.TableRowTraversal;
 import com.fr.bi.cal.analyze.executor.detail.execute.DetailAllGVIRunner;
 import com.fr.bi.cal.analyze.executor.detail.execute.DetailPartGVIRunner;
 import com.fr.bi.cal.analyze.executor.iterator.TableCellIterator;
 import com.fr.bi.cal.analyze.executor.paging.Paging;
-import com.fr.bi.cal.analyze.executor.table.AbstractTableWidgetExecutor;
 import com.fr.bi.cal.analyze.executor.utils.GolbalFilterUtils;
-import com.fr.bi.cal.analyze.report.report.widget.AbstractBIWidget;
-import com.fr.bi.cal.analyze.report.report.widget.BIDetailWidget;
-import com.fr.bi.cal.analyze.report.report.widget.TableWidget;
+import com.fr.bi.cal.analyze.report.report.widget.imp.AbstractBIWidget;
+import com.fr.bi.cal.analyze.report.report.widget.imp.DetailWidget;
+import com.fr.bi.cal.analyze.report.report.widget.imp.TableWidget;
 import com.fr.bi.cal.analyze.session.BISession;
 import com.fr.bi.cal.report.engine.CBCell;
-import com.fr.bi.conf.report.BIWidget;
 import com.fr.bi.conf.report.widget.field.target.detailtarget.BIDetailTarget;
 import com.fr.bi.field.target.target.BISummaryTarget;
 import com.fr.bi.stable.constant.CellConstant;
-import com.fr.bi.stable.data.BIFieldID;
 import com.fr.bi.stable.data.db.BIRowValue;
 import com.fr.bi.stable.gvi.GVIUtils;
 import com.fr.bi.stable.gvi.GroupValueIndex;
@@ -57,7 +48,7 @@ public class DetailExecutor extends AbstractDetailExecutor {
 
     private final static int EXCEL_ROW_MODE_VALUE = ExportConstants.MAX_ROWS_2007 - 1;
 
-    public DetailExecutor(BIDetailWidget widget,
+    public DetailExecutor(DetailWidget widget,
                           //前台传过来的从1开始;
                           Paging paging,
                           BISession session) {
@@ -265,7 +256,7 @@ public class DetailExecutor extends AbstractDetailExecutor {
 
     protected GroupValueIndex getJumpLinkFilter(GroupValueIndex g) {
 
-        BIDetailWidget bw = widget;
+        DetailWidget bw = widget;
         // 如果是跳转打开的才需要进行设置
         if (bw.getGlobalFilterWidget() != null) {
             // 如果已经设置了源字段和目标字段

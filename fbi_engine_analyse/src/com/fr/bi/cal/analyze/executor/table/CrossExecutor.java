@@ -13,7 +13,7 @@ import com.fr.bi.cal.analyze.executor.iterator.StreamPagedIterator;
 import com.fr.bi.cal.analyze.executor.iterator.TableCellIterator;
 import com.fr.bi.cal.analyze.executor.paging.Paging;
 import com.fr.bi.cal.analyze.executor.utils.ExecutorUtils;
-import com.fr.bi.cal.analyze.report.report.widget.TableWidget;
+import com.fr.bi.cal.analyze.report.report.widget.imp.TableWidget;
 import com.fr.bi.cal.analyze.session.BISession;
 import com.fr.bi.cal.report.engine.CBCell;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
@@ -59,8 +59,8 @@ public class CrossExecutor extends AbstractTableWidgetExecutor<XNode> {
 
         int len = usedSumTarget.length;
         TargetGettingKey[] keys = new TargetGettingKey[len];
-        boolean isWholeCol = keys.length == 0 || !widget.getWidgetSettings().isShowColTotal();
-        boolean isWholeRow = keys.length == 0 || !widget.getWidgetSettings().isShowRowTotal();
+        boolean isWholeCol = keys.length == 0 || !widget.getWidgetConf().getWidgetSettings().isShowColTotal();
+        boolean isWholeRow = keys.length == 0 || !widget.getWidgetConf().getWidgetSettings().isShowRowTotal();
         int columnLen = (isWholeCol ? node.getTop().getTotalLength() :
                 node.getTop().getTotalLengthWithSummary()) * Math.max(1, keys.length) + rowDimension.length + widget.isOrder();
         int rowLen = (isWholeRow ? node.getLeft().getTotalLength() :
