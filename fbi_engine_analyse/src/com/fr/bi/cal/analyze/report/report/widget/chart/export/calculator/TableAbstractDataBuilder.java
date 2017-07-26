@@ -248,6 +248,7 @@ public abstract class TableAbstractDataBuilder implements IExcelDataBuilder {
         items.add(item);
     }
 
+    // BI-7636 isSum 判断问题
     protected List<ITableItem> createCrossItems(JSONObject top) throws Exception {
         ITableItem crossItem = new BIBasicTableItem();
         List<ITableItem> children = createCrossPartItems(top.getJSONArray("c"), 0);
@@ -257,6 +258,7 @@ public abstract class TableAbstractDataBuilder implements IExcelDataBuilder {
                 BIBasicTableItem item = new BIBasicTableItem();
                 item.setValue(SUMMARY);
                 crossItem.getChildren().add(item);
+                item.setSum(true);
             } else {
                 for (String targetId : targetIds) {
                     BIBasicTableItem item = new BIBasicTableItem();
