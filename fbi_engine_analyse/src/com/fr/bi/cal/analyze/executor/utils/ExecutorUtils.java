@@ -30,7 +30,7 @@ public class ExecutorUtils {
     static final int MONTH_COUNT = 12;
 
     public static Object formatExtremeSumValue(Object value, int numLevel) {
-        //数据库空值处理 负无穷转null
+        //数据库空值处理 负无穷转null bug编号BI-7508
         value = BICollectionUtils.cubeValueToWebDisplay(value);
         if (value == null) {
             value = NONE_VALUE;
