@@ -155,6 +155,7 @@ public class BIChartSettingConstant {
     }
 
     public static final class DOT_STYLE {
+        public static final String LOCATION = "location";
         public static final String SQUARE = "square";
         public static final String TRIANGLE = "triangle";
         public static final String CIRCLE = "circle";
