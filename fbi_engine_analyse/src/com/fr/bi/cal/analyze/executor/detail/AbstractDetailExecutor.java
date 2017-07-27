@@ -29,7 +29,6 @@ import com.fr.bi.field.target.detailtarget.formula.BINumberFormulaDetailTarget;
 import com.fr.bi.field.target.target.BISummaryTarget;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.constant.CellConstant;
-import com.fr.bi.stable.data.BITable;
 import com.fr.bi.stable.gvi.GVIUtils;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.report.result.DimensionCalculator;

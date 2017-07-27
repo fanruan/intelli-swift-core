@@ -11,7 +11,6 @@ import com.fr.bi.cal.analyze.executor.utils.ExecutorUtils;
 import com.fr.bi.cal.analyze.report.report.widget.TableWidget;
 import com.fr.bi.cal.analyze.session.BISession;
 import com.fr.bi.cal.report.engine.CBCell;
-import com.fr.bi.conf.report.style.BITableStyle;
 import com.fr.bi.conf.report.style.DetailChartSetting;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.conf.report.widget.field.target.BITarget;
@@ -36,8 +35,6 @@ public abstract class AbstractTableWidgetExecutor<T> extends BIAbstractExecutor<
 
     protected TableWidget widget;
 
-    protected static BITableStyle tableStyle;
-
     protected AbstractTableWidgetExecutor(TableWidget widget, Paging paging, BISession session) {
 
         super(widget, paging, session);
@@ -45,8 +42,6 @@ public abstract class AbstractTableWidgetExecutor<T> extends BIAbstractExecutor<
         usedSumTarget = widget.getViewTargets();
         allSumTarget = widget.getTargets();
         allDimensions = widget.getDimensions();
-
-        tableStyle= new BITableStyle(widget.getThemeColor());
 
         //        this.expander = CrossExpander.ALL_EXPANDER;
     }

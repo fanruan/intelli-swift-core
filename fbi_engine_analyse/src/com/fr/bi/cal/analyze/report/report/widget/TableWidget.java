@@ -27,6 +27,7 @@ import com.fr.bi.cal.analyze.session.BISession;
 import com.fr.bi.common.persistent.annotation.PersistNameHistory;
 import com.fr.bi.common.persistent.xml.BIIgnoreField;
 import com.fr.bi.conf.report.WidgetType;
+import com.fr.bi.conf.report.style.BITableStyle;
 import com.fr.bi.conf.report.style.DetailChartSetting;
 import com.fr.bi.conf.report.widget.IWidgetStyle;
 import com.fr.bi.conf.report.widget.field.BITargetAndDimension;
@@ -50,6 +51,7 @@ import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
 import com.fr.report.poly.TemplateBlock;
 import com.fr.stable.StringUtils;
+import com.taobao.top.link.embedded.websocket.util.StringUtil;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
@@ -501,17 +503,6 @@ public class TableWidget extends BISummaryWidget {
         this.operator = operator;
     }
 
-    public String getThemeColor() {
-        switch (tableType) {
-            case BIReportConstant.WIDGET.TABLE:
-            case BIReportConstant.WIDGET.CROSS_TABLE:
-            case BIReportConstant.WIDGET.COMPLEX_TABLE:
-                return getWidgetStyle().getThemeColor();
-            default:
-                return BIStyleConstant.DEFAULT_CHART_SETTING.THEME_COLOR;
-        }
-    }
-
     public boolean hasVerticalPrePage() {
 
         return pageSpinner[BIReportConstant.TABLE_PAGE.VERTICAL_PRE] > 0;
@@ -741,5 +732,19 @@ public class TableWidget extends BISummaryWidget {
     public IWidgetStyle getStyle() {
 
         return style;
+    }
+
+    public BITableStyle getTableStyle () {
+        String themeColor;
+        switch (tableType) {
+            case BIReportConstant.WIDGET.TABLE:
+            case BIReportConstant.WIDGET.CROSS_TABLE:
+            case BIReportConstant.WIDGET.COMPLEX_TABLE:
+                themeColor = getWidgetStyle().getThemeColor();
+                break;
+            default:
+                themeColor = BIStyleConstant.DEFAULT_CHART_SETTING.THEME_COLOR;
+        }
+        return new BITableStyle(themeColor);
     }
 }
