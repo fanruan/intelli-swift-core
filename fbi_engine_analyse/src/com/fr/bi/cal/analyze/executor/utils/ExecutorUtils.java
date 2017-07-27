@@ -6,6 +6,7 @@ import com.fr.base.background.ColorBackground;
 import com.fr.base.core.StyleUtils;
 import com.fr.bi.cal.report.engine.CBCell;
 import com.fr.bi.stable.constant.BIReportConstant;
+import com.fr.bi.stable.utils.BICollectionUtils;
 import com.fr.general.*;
 import com.fr.stable.Constants;
 import com.fr.stable.StringUtils;
@@ -29,15 +30,14 @@ public class ExecutorUtils {
     static final int MONTH_COUNT = 12;
 
     public static Object formatExtremeSumValue(Object value, int numLevel) {
+        //数据库空值处理 负无穷转null
+        value = BICollectionUtils.cubeValueToWebDisplay(value);
         if (value == null) {
             value = NONE_VALUE;
         } else if (value instanceof Double || value instanceof Long) {
             Number v = GeneralUtils.objectToNumber(value);
             value = v.doubleValue();
-            //负无穷显示空 正无穷显示N/0
-            if (((Double) value) == Double.NEGATIVE_INFINITY) {
-                return NONE_VALUE;
-            } else if (((Double) value) == Double.POSITIVE_INFINITY) {
+            if (((Double) value) == Double.POSITIVE_INFINITY) {
                 return POSITIVE_INFINITY;
             } else if (Double.isNaN((Double) value)) {
                 return NAN;
