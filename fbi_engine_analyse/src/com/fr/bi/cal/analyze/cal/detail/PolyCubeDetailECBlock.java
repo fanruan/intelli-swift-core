@@ -1,6 +1,6 @@
 package com.fr.bi.cal.analyze.cal.detail;
 
-import com.fr.bi.cal.analyze.report.report.widget.BIDetailWidget;
+import com.fr.bi.cal.analyze.report.report.widget.imp.DetailWidget;
 import com.fr.bi.cal.analyze.session.BISession;
 import com.fr.general.ComparatorUtils;
 import com.fr.report.core.block.BlockSequenceExecutor;
@@ -17,10 +17,10 @@ public class PolyCubeDetailECBlock extends AbstractPolyECBlock {
      */
     private static final long serialVersionUID = -7295150813914967051L;
     private BISession session;
-    private BIDetailWidget widget;
+    private DetailWidget widget;
     private int page;
 
-    public PolyCubeDetailECBlock(BIDetailWidget widget, BISession session, int page) {
+    public PolyCubeDetailECBlock(DetailWidget widget, BISession session, int page) {
         super();
         this.widget = widget;
         this.session = session;

@@ -4,7 +4,7 @@ import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.conf.table.BusinessTable;
 import com.fr.bi.base.annotation.BICoreField;
-import com.fr.bi.cal.analyze.report.report.widget.BISummaryWidget;
+import com.fr.bi.cal.analyze.report.report.widget.imp.SummaryWidget;
 import com.fr.bi.common.inter.Traversal;
 import com.fr.bi.common.persistent.xml.BIIgnoreField;
 import com.fr.bi.conf.report.BIWidget;
@@ -230,8 +230,8 @@ AnalysisBaseTableSource extends AbstractCubeTableSource implements AnalysisCubeT
     }
 
     public void resetTargetsMap(){
-        if (widget instanceof BISummaryWidget){
-            BISummaryTarget[] targets = ((BISummaryWidget) widget).getTargets();
+        if (widget instanceof SummaryWidget){
+            BISummaryTarget[] targets = ((SummaryWidget) widget).getTargets();
             Map<String, BITarget> targetMap = new ConcurrentHashMap<String, BITarget>();
             for (int i = 0; i < targets.length; i++) {
                 targets[i].setSummaryIndex(i);

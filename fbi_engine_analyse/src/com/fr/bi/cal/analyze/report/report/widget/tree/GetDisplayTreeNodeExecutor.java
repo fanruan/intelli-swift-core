@@ -1,9 +1,8 @@
 package com.fr.bi.cal.analyze.report.report.widget.tree;
 
 import com.fr.bi.cal.analyze.executor.paging.Paging;
-import com.fr.bi.cal.analyze.report.report.widget.TreeWidget;
+import com.fr.bi.cal.analyze.report.report.widget.imp.TreeWidget;
 import com.fr.bi.cal.analyze.session.BISession;
-import com.fr.general.Inter;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
