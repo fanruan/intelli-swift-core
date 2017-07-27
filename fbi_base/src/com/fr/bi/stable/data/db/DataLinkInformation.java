@@ -3,6 +3,8 @@ package com.fr.bi.stable.data.db;
 import com.fr.bi.stable.utils.BIDBUtils;
 import com.fr.data.impl.Connection;
 import com.fr.data.impl.JDBCDatabaseConnection;
+import com.fr.data.pool.DBCPConnectionPoolAttr;
+import com.fr.general.ComparatorUtils;
 import com.fr.json.JSONObject;
 import com.fr.json.JSONParser;
 import com.fr.stable.StringUtils;
@@ -29,7 +31,6 @@ public class DataLinkInformation implements JSONParser {
     }
 
 
-
     /**
      * 通过当前数据获取连接
      *
@@ -44,11 +45,18 @@ public class DataLinkInformation implements JSONParser {
         if (StringUtils.isNotBlank(newCharsetName)) {
             jdbcDatabaseConnection.setNewCharsetName(newCharsetName);
         }
+        if (isHana(driver)) {
+            DBCPConnectionPoolAttr att = new DBCPConnectionPoolAttr();
+            att.setTestOnBorrow(false);
+            jdbcDatabaseConnection.setDbcpAttr(att);
+        }
         BIDBUtils.dealWithJDBCConnection(jdbcDatabaseConnection);
         return jdbcDatabaseConnection;
     }
 
-
+    private boolean isHana(String driver) {
+        return ComparatorUtils.equals(driver, "com.sap.db.jdbc.Driver");
+    }
 
     /**
      * parse对象
@@ -58,7 +66,7 @@ public class DataLinkInformation implements JSONParser {
      */
     @Override
     public void parseJSON(JSONObject jo) throws Exception {
-        if(jo.has("name")) {
+        if (jo.has("name")) {
             databaseName = jo.getString("name");
         }
         if (jo.has("driver")) {
@@ -82,6 +90,6 @@ public class DataLinkInformation implements JSONParser {
     }
 
     public Connection createDatabaseConnection() {
-            return createJDBCDatabaseConnection();
+        return createJDBCDatabaseConnection();
     }
 }

@@ -11,7 +11,6 @@ import com.fr.base.FRContext;
 import com.fr.bi.cal.generate.BackUpUtils;
 import com.fr.bi.cal.report.BIActor;
 import com.fr.bi.cal.report.db.DialectCreatorImpl;
-import com.fr.bi.cal.report.db.HanaDialectCreatorImpl;
 import com.fr.bi.cal.report.db.HiveDialectCreatorImpl;
 import com.fr.bi.cal.report.db.KylinDialectCreatorImpl;
 import com.fr.bi.conf.VT4FBI;
@@ -318,7 +317,6 @@ public class BIPlate extends AbstractFSPlate {
             ExtraClassManager.getInstance().addMutable(DialectCreatorImpl.XML_TAG, new DialectCreatorImpl(), PluginSimplify.create("bi", "com.fr.bi.plugin.db.ads"));
             ExtraClassManager.getInstance().addMutable(KylinDialectCreatorImpl.XML_TAG, new KylinDialectCreatorImpl(), PluginSimplify.create("bi", "com.fr.bi.plugin.db.kylin"));
             ExtraClassManager.getInstance().addMutable(HiveDialectCreatorImpl.XML_TAG, new HiveDialectCreatorImpl(), PluginSimplify.create("bi", "com.fr.bi.plugin.db.hive"));
-            ExtraClassManager.getInstance().addMutable(HanaDialectCreatorImpl.XML_TAG, new HanaDialectCreatorImpl(), PluginSimplify.create("bi", "com.sap.db.jdbc.Driver"));
 
         } catch (Exception e) {
             FRLogger.getLogger().error(e.getMessage(), e);
