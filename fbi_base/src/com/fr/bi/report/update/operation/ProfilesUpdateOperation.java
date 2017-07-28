@@ -90,6 +90,7 @@ public class ProfilesUpdateOperation implements ReportUpdateOperation {
                 if (ComparatorUtils.equals(s, "widgets")) {
                     addWId(json);
                     json = correctDataLabels(json);
+                    json = correctGaugeAxisScale(json);
                     json = correctPreviousSrcError(json);
                     json = correctScatterType(json);
                     groupTargetsByType(json);
@@ -226,6 +227,34 @@ public class ProfilesUpdateOperation implements ReportUpdateOperation {
             BILoggerFactory.getLogger(this.getClass()).error(e.getMessage(), e);
         }
 
+    }
+
+    //settings.minScale ---> settings.leftYCustomScale.minScale + settings.leftYShowCustomScale = true
+    private JSONObject correctGaugeAxisScale(JSONObject json) throws JSONException {
+            if (BIJsonUtils.isKeyValueSet(json.getString("widgets"))) {
+                Iterator keys = json.getJSONObject("widgets").keys();
+                while (keys.hasNext()) {
+                    String dimId = keys.next().toString();
+                    JSONObject dimJson = json.getJSONObject("widgets").getJSONObject(dimId);
+                    if (dimJson.has("type") && dimJson.has("settings")) {
+
+                        if(dimJson.optInt("type") == BIReportConstant.WIDGET.DASHBOARD){
+                            JSONObject settings = dimJson.optJSONObject("settings");
+
+                            if(settings.has("minScale") || settings.has("maxScale")) {
+                                settings.put("leftYShowCustomScale", true)
+                                        .put("leftYCustomScale", JSONObject.create()
+                                        .put("minScale", settings.optString("minScale"))
+                                        .put("maxScale", settings.optString("maxScale")));
+
+                                settings.remove("minScale");
+                                settings.remove("maxScale");
+                            }
+                        }
+                    }
+                }
+            }
+        return json;
     }
 
     //4.0的图表标签默认设置，和402默认有些不一样，所以在这边写。调整标签位置，雅黑12px, 颜色自动。

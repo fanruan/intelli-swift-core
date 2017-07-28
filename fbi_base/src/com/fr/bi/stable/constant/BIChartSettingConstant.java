@@ -91,6 +91,7 @@ public class BIChartSettingConstant {
         public static final int THREE_FOURTHS = 270;
         public static final int HALF = 180;
         public static final int TOTAL = 360;
+        public static final int CUSTOM = 0;
     }
 
     public static final class MULTI_PIE_GRADIENT_STYLE {
@@ -154,6 +155,7 @@ public class BIChartSettingConstant {
     }
 
     public static final class DOT_STYLE {
+        public static final String LOCATION = "location";
         public static final String SQUARE = "square";
         public static final String TRIANGLE = "triangle";
         public static final String CIRCLE = "circle";
