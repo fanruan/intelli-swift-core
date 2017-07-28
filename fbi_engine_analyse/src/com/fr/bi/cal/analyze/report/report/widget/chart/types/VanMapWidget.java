@@ -172,7 +172,7 @@ public class VanMapWidget extends VanChartWidget{
     }
 
     protected String getTooltipIdentifier(){
-        return NAME + SERIES + VALUE;
+        return NAME + SERIES + VALUE + SIZE;
     }
 
     protected JSONArray parseColors(JSONObject settings, JSONObject globalStyle, JSONObject plateConfig) throws Exception {
