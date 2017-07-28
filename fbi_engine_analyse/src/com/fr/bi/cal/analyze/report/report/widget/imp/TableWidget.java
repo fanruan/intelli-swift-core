@@ -17,7 +17,7 @@ import com.fr.bi.cal.analyze.executor.table.ComplexHorGroupExecutor;
 import com.fr.bi.cal.analyze.executor.table.CrossExecutor;
 import com.fr.bi.cal.analyze.executor.table.GroupExecutor;
 import com.fr.bi.cal.analyze.executor.table.HorGroupExecutor;
-import com.fr.bi.cal.analyze.executor.utils.GolbalFilterUtils;
+import com.fr.bi.cal.analyze.executor.utils.GlobalFilterUtils;
 import com.fr.bi.cal.analyze.report.report.widget.calculator.builder.IExcelDataBuilder;
 import com.fr.bi.cal.analyze.report.report.widget.calculator.builder.SummaryComplexTableBuilder;
 import com.fr.bi.cal.analyze.report.report.widget.calculator.builder.SummaryCrossTableDataBuilder;
@@ -756,9 +756,9 @@ public class TableWidget extends SummaryWidget implements SclCalculator {
         if (getGlobalFilterWidget() != null) {
             // 如果已经设置了源字段和目标字段
             if (((AbstractBIWidget) getGlobalFilterWidget()).getGlobalSourceAndTargetFieldList().size() > 0) {
-                return GolbalFilterUtils.getSettingSourceAndTargetJumpFilter(this, userId, session, targetKey, ((AbstractBIWidget) getGlobalFilterWidget()).getBaseTable());
+                return GlobalFilterUtils.getSettingSourceAndTargetJumpFilter(this, userId, session, targetKey, ((AbstractBIWidget) getGlobalFilterWidget()).getBaseTable());
             } else {
-                return GolbalFilterUtils.getNotSettingSourceAndTargetJumpFilter(session, targetKey, this, false);
+                return GlobalFilterUtils.getNotSettingSourceAndTargetJumpFilter(session, targetKey, this, false);
             }
         }
         return null;
