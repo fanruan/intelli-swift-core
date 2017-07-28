@@ -177,9 +177,6 @@ public class BICoreModule extends AbstractModule {
         StableFactory.registerMarkedObject(BIDataConfigAuthorityProvider.XML_TAG, new BISystemDataConfigAuthorityManager());
         StableFactory.registerMarkedObject(BITableDataDAOProvider.XML_TAG, getBITableDataDAOManager());
 
-//       注册Config对象
-        TemplateConfig.getProviderInstance();
-        FBIConfig.getProviderInstance();
     }
     public BICubeTaskRecordProvider getBICubeTaskRecordManagerWithoutUser() {
         if (ClusterEnv.isCluster()) {
