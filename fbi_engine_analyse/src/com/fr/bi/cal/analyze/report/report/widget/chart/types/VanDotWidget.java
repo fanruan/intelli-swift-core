@@ -3,6 +3,7 @@ package com.fr.bi.cal.analyze.report.report.widget.chart.types;
 import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.base.TemplateUtils;
 import com.fr.bi.conf.report.WidgetType;
+import com.fr.bi.conf.report.style.DetailChartSetting;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.field.target.target.BISummaryTarget;
 import com.fr.bi.stable.constant.BIChartSettingConstant;
@@ -142,59 +143,24 @@ public class VanDotWidget extends VanCartesianWidget{
         return plotOptions;
     }
 
-    protected JSONObject parseLegend(JSONObject settings) throws JSONException{
+    protected boolean dotChartUseNormalLegend() {
+        int idCount = this.getUsedTargetID().length;
 
-        JSONObject legend = super.parseLegend(settings);
-
-        int rule = settings.optInt("displayRules");
-        if(rule == INTERVAL_RULE){
-            legend.put("continuous", false);
-            if(settings.optInt("fixedStyleRadio") == BIChartSettingConstant.SCALE_SETTING.CUSTOM){
-                legend.put("range", this.mapStyleToRange(settings.optJSONArray("fixedStyle")));
-            }
-        }else if(rule != SERIES_RULE){//只能是普通图例的，前台处理好了。如果是可选择的，默认什么都没传过来，默认是渐变色
-            legend.put("continuous", true);
-            if(settings.optInt("gradientStyleRadio") == BIChartSettingConstant.SCALE_SETTING.CUSTOM){
-                legend.put("range", this.gradualStyleToRange(settings.optJSONArray("gradientStyle")));
-            }
+        if(idCount < 3){
+            return true;
         }
 
-        return legend;
+        JSONObject scopes = this.getChartSetting().getScopes();
+        JSONObject target3 = scopes.optJSONObject(BIReportConstant.REGION.TARGET3);
+
+        return target3 == null || target3.optInt("valueType") == BIChartSettingConstant.DOT_VALUE_TYPE.SIZE;
     }
 
-
-    private JSONObject gradualStyleToRange(JSONArray style) throws JSONException{
-        JSONArray colors = JSONArray.create();
-
-        int count = style.length();
-        if(count == 0){//把条件全删了
-            return JSONObject.create();
+    protected void toLegendJSON(JSONObject options, JSONObject settings) throws JSONException {
+        if(dotChartUseNormalLegend()){
+            settings.put("disPlayRules", SERIES_RULE);
         }
-        double max = style.getJSONObject(count - 1).optJSONObject("range").optDouble("max");
-        double min = style.getJSONObject(0).optJSONObject("range").optDouble("min");
-
-        boolean first = true;
-        for(int i = 0, len = style.length(); i < len; i++){
-            JSONObject config = style.getJSONObject(i);
-            JSONObject range = config.optJSONObject("range"), colorRange = config.optJSONObject("colorRange");
-            if(colorRange == null){
-                continue;
-            }
-            if(first) {
-                double from = range.optDouble("min") / max;
-                colors.put(JSONArray.create().put(from).put(colorRange.optString("fromColor")));
-                first = false;
-            }
-            double to = range.optDouble("max") / max;
-            colors.put(JSONArray.create().put(to).put(colorRange.optString("toColor")));
-
-        }
-
-        return JSONObject.create().put("color", colors).put("min", min).put("max", max);
-    }
-
-    protected String valueLabelKey() {
-        return "{SIZE}";
+        super.toLegendJSON(options, settings);
     }
 
     protected String getLegendType(){
@@ -217,6 +183,68 @@ public class VanDotWidget extends VanCartesianWidget{
         return legend;
     }
 
+    protected JSONObject parseLegend(JSONObject settings) throws JSONException{
+
+        JSONObject legend = super.parseLegend(settings);
+
+        int rule = settings.optInt("displayRules");
+        if(rule == INTERVAL_RULE){
+            legend.put("continuous", false);
+            if(customFixedStyleRadio(settings)){
+                legend.put("range", this.mapStyleToRange(settings.optJSONArray("fixedStyle")));
+            }
+        }else if(rule != SERIES_RULE){//只能是普通图例的，前台处理好了。如果是可选择的，默认什么都没传过来，默认是渐变色
+            legend.put("continuous", true);
+            if(customGradientStyleRadio(settings)){
+                legend.put("range", this.gradualStyleToRange(settings.optJSONArray("gradientStyle")));
+            }
+        }
+
+        return legend;
+    }
+
+    protected boolean customFixedStyleRadio(JSONObject settings) throws JSONException {
+        return settings.optInt("fixedStyleRadio") == BIChartSettingConstant.SCALE_SETTING.CUSTOM;
+    }
+
+    protected boolean customGradientStyleRadio(JSONObject settings) throws JSONException {
+        return settings.optInt("gradientStyleRadio") == BIChartSettingConstant.SCALE_SETTING.CUSTOM;
+    }
+
+
+    private JSONObject gradualStyleToRange(JSONArray style) throws JSONException{
+        JSONArray colors = JSONArray.create();
+
+        int count = style.length();
+        if(count == 0){//把条件全删了
+            return JSONObject.create();
+        }
+        double max = style.getJSONObject(count - 1).optJSONObject("range").optDouble("max", Integer.MAX_VALUE);
+        double min = style.getJSONObject(0).optJSONObject("range").optDouble("min", Integer.MIN_VALUE);
+
+        boolean first = true;
+        for(int i = 0, len = style.length(); i < len; i++){
+            JSONObject config = style.getJSONObject(i);
+            JSONObject range = config.optJSONObject("range"), colorRange = config.optJSONObject("colorRange");
+            if(colorRange == null){
+                continue;
+            }
+            if(first) {
+                double from = range.optDouble("min", Integer.MIN_VALUE) / max;
+                colors.put(JSONArray.create().put(from).put(colorRange.optString("fromColor")));
+                first = false;
+            }
+            double to = range.optDouble("max", Integer.MAX_VALUE) / max;
+            colors.put(JSONArray.create().put(to).put(colorRange.optString("toColor")));
+
+        }
+
+        return JSONObject.create().put("color", colors).put("min", min).put("max", max);
+    }
+
+    protected String valueLabelKey() {
+        return "{SIZE}";
+    }
 
     //新的点图。系列无字段，所有点在一个name=vancharts中默认给的一个系列名 的系列里面
     public JSONArray createSeries(JSONObject originData) throws Exception{
@@ -229,16 +257,7 @@ public class VanDotWidget extends VanCartesianWidget{
             return JSONArray.create();
         }
 
-        boolean noSeries = true;
-        for(String id : this.seriesIDs){
-            for (BIDimension dimension : getDimensions()) {
-                if (ComparatorUtils.equals(dimension.getId(), id) && dimension.isUsed()) {
-                    noSeries = false;
-                }
-            }
-        }
-
-        return createDotSeries(noSeries, originData);
+        return createDotSeries(getSeriesDimension() == null, originData);
     }
 
     private JSONArray createDotSeries(boolean noSeries, JSONObject originData) throws JSONException{
@@ -534,11 +553,26 @@ public class VanDotWidget extends VanCartesianWidget{
         return datum;
     }
 
+    public BIDimension getSeriesDimension() {
+        for(String id : this.seriesIDs){
+            for (BIDimension dimension : getDimensions()) {
+                if (ComparatorUtils.equals(dimension.getId(), id) && dimension.isUsed()) {
+                    return dimension;
+                }
+            }
+        }
+        return null;
+    }
+
     protected JSONObject defaultDataLabelSetting() throws JSONException {
 
         return JSONObject.create().put("showCategoryName", false).put("showSeriesName", false)
                 .put("showXValue", true).put("showYValue", true).put("showValue", true)
                 .put("textStyle", defaultFont());
 
+    }
+
+    protected boolean checkValid(){
+        return this.getTar1Size() >= 2;
     }
 }

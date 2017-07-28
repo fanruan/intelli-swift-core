@@ -1,13 +1,17 @@
 package com.fr.bi.cal.analyze.executor.table;
 
 import com.finebi.cube.conf.table.BusinessTable;
+import com.fr.base.Style;
 import com.fr.bi.cal.analyze.cal.index.loader.CubeIndexLoader;
 import com.fr.bi.cal.analyze.cal.result.CrossExpander;
 import com.fr.bi.cal.analyze.cal.result.Node;
 import com.fr.bi.cal.analyze.executor.BIAbstractExecutor;
 import com.fr.bi.cal.analyze.executor.paging.Paging;
+import com.fr.bi.cal.analyze.executor.utils.ExecutorUtils;
 import com.fr.bi.cal.analyze.report.report.widget.TableWidget;
 import com.fr.bi.cal.analyze.session.BISession;
+import com.fr.bi.cal.report.engine.CBCell;
+import com.fr.bi.conf.report.style.DetailChartSetting;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.conf.report.widget.field.target.BITarget;
 import com.fr.bi.field.target.target.BISummaryTarget;
@@ -18,11 +22,8 @@ import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;
 
 import java.awt.*;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
+import java.util.*;
 import java.util.List;
-import java.util.Map;
 
 public abstract class AbstractTableWidgetExecutor<T> extends BIAbstractExecutor<T> {
 
@@ -41,6 +42,7 @@ public abstract class AbstractTableWidgetExecutor<T> extends BIAbstractExecutor<
         usedSumTarget = widget.getViewTargets();
         allSumTarget = widget.getTargets();
         allDimensions = widget.getDimensions();
+
         //        this.expander = CrossExpander.ALL_EXPANDER;
     }
 
@@ -58,6 +60,15 @@ public abstract class AbstractTableWidgetExecutor<T> extends BIAbstractExecutor<
     public Rectangle getSouthEastRectangle() {
 
         return null;
+    }
+
+    protected static CBCell formatTargetCell(Object data, DetailChartSetting setting, TargetGettingKey key, int rowIdx, int columnIdx, Style style) {
+        int numLevel = setting.getNumberLevelByTargetId(key.getTargetName());
+        int formatDecimal = setting.getFormatDecimalByTargetId(key.getTargetName());
+        boolean separator = setting.getSeparatorByTargetId(key.getTargetName());
+        data = ExecutorUtils.formatExtremeSumValue(data, numLevel);
+        style = style.deriveFormat(ExecutorUtils.formatDecimalAndSeparator(data, numLevel, formatDecimal, separator));
+        return ExecutorUtils.createCBCell(data, rowIdx, 1, columnIdx, 1, style);
     }
 
     public BISummaryTarget[] createTarget4Calculate() {
@@ -112,7 +123,7 @@ public abstract class AbstractTableWidgetExecutor<T> extends BIAbstractExecutor<
      * @param targetKey
      * @return
      */
-    abstract public GroupValueIndex getClieckGvi(Map<String, JSONArray> clicked, BusinessTable targetKey);
+    abstract public GroupValueIndex getClickGvi(Map<String, JSONArray> clicked, BusinessTable targetKey);
 
 
     /**
@@ -136,14 +147,13 @@ public abstract class AbstractTableWidgetExecutor<T> extends BIAbstractExecutor<
     /**
      * 获取目标的gvi
      * @param target
-     * @param targetIndexs
+     * @param n
      * @return
      */
-    protected GroupValueIndex getTargetIndex(String target, Map<TargetGettingKey, GroupValueIndex> targetIndexs) {
-
-        for (TargetGettingKey k : targetIndexs.keySet()) {
-            if (k.getTargetName().equals(target)) {
-                return targetIndexs.get(k);
+    protected GroupValueIndex getTargetIndex(String target, Node n) {
+        for (BISummaryTarget t : allSumTarget){
+            if (ComparatorUtils.equals(t.getName(), target)){
+                return n.getTargetIndex(t.createTargetGettingKey());
             }
         }
         return null;
@@ -153,7 +163,7 @@ public abstract class AbstractTableWidgetExecutor<T> extends BIAbstractExecutor<
 
         if (n != null) {
             if (data.size() == 0) {
-                return getTargetIndex(target, n.getTargetIndexValueMap());
+                return getTargetIndex(target, n);
             }
             Node parent = n;
             for (int i = 0; i < data.size(); i++) {
@@ -167,7 +177,7 @@ public abstract class AbstractTableWidgetExecutor<T> extends BIAbstractExecutor<
                 }
                 parent = child;
             }
-            return getTargetIndex(target, parent.getTargetIndexValueMap());
+            return getTargetIndex(target, parent);
         }
         return null;
     }

@@ -1,7 +1,6 @@
 package com.fr.bi.report.result;
 
 import com.fr.bi.report.key.TargetGettingKey;
-import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.general.NameObject;
 
 import java.util.Comparator;
@@ -46,8 +45,6 @@ public interface BINode extends SummaryContainer {
 
     BINode getLastChild();
 
-    Map<TargetGettingKey, GroupValueIndex> getTargetIndexValueMap();
-
     BINode createSortedNode(NameObject targetSort,
                             Map<String, TargetGettingKey> targetsMap);
 
@@ -58,6 +55,8 @@ public interface BINode extends SummaryContainer {
     <T extends BINode> List<T> getChilds();
 
     int getTotalLength();
+
+    int getTotalLengthWithSummary();
 
     int getDeep();
 

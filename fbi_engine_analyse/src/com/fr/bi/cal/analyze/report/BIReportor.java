@@ -77,13 +77,13 @@ public class BIReportor implements BIReport {
     /**
      * 返回Widget名字所对应的widget
      *
-     * @param name 名字
+     * @param wId 组件id
      * @return widget对象
      */
     @Override
-    public BIWidget getWidgetByName(String name) {
+    public BIWidget getWidgetById(String wId) {
         for (int i = 0, len = getWidgetsCount(); i < len; i++) {
-            if (ComparatorUtils.equals(widgets.get(i).getWidgetName(), name)) {
+            if (ComparatorUtils.equals(widgets.get(i).getWidgetId(), wId)) {
                 return widgets.get(i);
             }
         }

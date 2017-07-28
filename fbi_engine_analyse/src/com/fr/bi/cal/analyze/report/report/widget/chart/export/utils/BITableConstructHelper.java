@@ -7,6 +7,7 @@ import com.fr.bi.cal.analyze.report.report.widget.chart.export.item.ITableItem;
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.item.constructor.DataConstructor;
 import com.fr.bi.cal.analyze.report.report.widget.style.BITableWidgetStyle;
 import com.fr.bi.conf.report.WidgetType;
+import com.fr.bi.conf.report.style.table.BITableStyleHelper;
 import com.fr.json.JSONException;
 
 import java.util.List;

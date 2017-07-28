@@ -17,6 +17,8 @@ import java.util.List;
  * @since 4.0
  */
 public class BIBasicRelationPath<T, F, R extends BIBasicRelation<T, F>> extends BIListContainer<R> {
+    private static final long serialVersionUID = -8774217185899006329L;
+
     public BIBasicRelationPath() {
         super();
     }

@@ -2,8 +2,8 @@ package com.fr.bi.cal.generate.queue;
 
 import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.conf.CubeGenerationManager;
-import com.fr.bi.cal.generate.task.CustomCubeGenerateTask;
 import com.finebi.cube.conf.ICubeGenerateTask;
+import com.fr.bi.cal.generate.task.CustomCubeGenerateTask;
 import com.fr.bi.stable.structure.queue.CubeTaskCondition;
 
 import java.util.ArrayList;
@@ -39,10 +39,12 @@ public class CubeGenerateTaskQueue {
             public void run() {
                 while (true) {
                     try {
-                        if (!CubeGenerationManager.getCubeManager().hasTask()) {
-                            CubeTaskCondition.getInstance().signalAll();
+                        if (CubeGenerationManager.getCubeManager() != null) {
+                            if (!CubeGenerationManager.getCubeManager().hasTask()) {
+                                CubeTaskCondition.getInstance().signalAll();
+                            }
+                            Thread.sleep(SLEEP_TIME);
                         }
-                        Thread.sleep(SLEEP_TIME);
                     } catch (InterruptedException e) {
                         BILoggerFactory.getLogger(CubeTaskCondition.class).error(e.getMessage(), e);
                     }

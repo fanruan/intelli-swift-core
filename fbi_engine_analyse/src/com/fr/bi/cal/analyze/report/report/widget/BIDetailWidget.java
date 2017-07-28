@@ -175,6 +175,8 @@ public class BIDetailWidget extends AbstractBIWidget {
                 if (isTableUsedInDimensions(table)) {
                     target = table;
                     break;
+                } else {
+                    relations.remove(relations.size() - 1);
                 }
             }
         }
@@ -283,7 +285,7 @@ public class BIDetailWidget extends AbstractBIWidget {
 
     @Override
     public int isOrder() {
-        return data.isOrder();
+        return widgetStyle.isShowNumber() ? 1 : 0;
     }
 
     public String[] getView() {

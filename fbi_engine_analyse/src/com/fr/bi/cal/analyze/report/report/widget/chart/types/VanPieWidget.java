@@ -91,4 +91,5 @@ public class VanPieWidget extends VanChartWidget{
                 .put("textStyle", defaultFont());
 
     }
+
 }

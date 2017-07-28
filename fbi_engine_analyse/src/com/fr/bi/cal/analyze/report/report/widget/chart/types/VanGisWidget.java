@@ -18,7 +18,7 @@ public class VanGisWidget extends VanChartWidget{
 
     private static final String TILE_LAYER = "http://webrd01.is.autonavi.com/appmaptile?lang=zh_cn&size=1&scale=1&style=8&x={x}&y={y}&z={z}";
     private static final String ATTRIBUTION = "<a><img src=\"http://webapi.amap.com/theme/v1.3/mapinfo_05.png\">&copy; 2016 AutoNavi</a>";
-    private static final String GIS_ICON_PATH =  "?op=resource&resource=/com/fr/bi/web/images/icon/chartsetting/address_marker_big.png";
+    private static final String GIS_ICON_PATH =  "?op=resource&resource=/com/fr/bi/web/images/1x/icon/chartsetting/address_marker_big.png";
 
     protected JSONObject populateDefaultSettings() throws JSONException {
         JSONObject settings = super.populateDefaultSettings();
@@ -119,6 +119,32 @@ public class VanGisWidget extends VanChartWidget{
         return series;
     }
 
+    protected void dealView(List<String> sorted, JSONObject vjo) throws JSONException{
+        super.dealView(sorted, vjo);
+
+        JSONArray ja = JSONArray.create();
+
+        int seriesRegion = Integer.parseInt(BIReportConstant.REGION.DIMENSION2);
+
+        for (String region : sorted) {
+
+            if (Integer.parseInt(region) > seriesRegion) {
+                continue;
+            }
+
+            JSONArray tmp = vjo.getJSONArray(region);
+
+            for (int j = 0; j < tmp.length(); j++) {
+                String key = tmp.getString(j);
+                ja.put(key);
+            }
+
+            vjo.remove(region);
+        }
+
+        vjo.put(BIReportConstant.REGION.DIMENSION1, ja);
+    }
+
     protected String getTooltipIdentifier(){
         return NAME + SERIES + VALUE;
     }
@@ -135,5 +161,9 @@ public class VanGisWidget extends VanChartWidget{
     //地图因为gis背景，不自适应颜色
     protected JSONObject defaultFont() throws JSONException {
         return JSONObject.create().put("fontFamily", "Microsoft YaHei").put("fontSize", "12px").put("color", "#666666");
+    }
+
+    protected boolean checkValid(){
+        return this.getDim1Size() > 0 && this.hasTarget();
     }
 }

@@ -35,7 +35,7 @@ public class NoneDimensionGroup implements Release {
 
     private ICubeTableService[] tis;
 
-    private Number[] summaryValue;
+    private MetricMergeResult result;
 
     private ICubeDataLoader loader;
 
@@ -55,10 +55,10 @@ public class NoneDimensionGroup implements Release {
     /**
      * Group计算的构造函数
      */
-    protected NoneDimensionGroup(BusinessTable[] metrics, List<TargetAndKey>[] summaryLists, int sumLength, ICubeTableService[] tis, GroupValueIndex[] gvis, ICubeDataLoader loader, Number[] summaryValue) {
+    protected NoneDimensionGroup(BusinessTable[] metrics, List<TargetAndKey>[] summaryLists, int sumLength, ICubeTableService[] tis, GroupValueIndex[] gvis, ICubeDataLoader loader, MetricMergeResult result) {
 
         this(metrics, summaryLists, sumLength, tis, gvis, loader);
-        this.summaryValue = summaryValue;
+        this.result = result;
     }
 
     protected NoneDimensionGroup(BusinessTable[] metrics, List<TargetAndKey>[] summaryLists, int sumLength, ICubeTableService[] tis, GroupValueIndex[] gvis, ICubeDataLoader loader) {
@@ -66,7 +66,6 @@ public class NoneDimensionGroup implements Release {
         this.metrics = metrics;
         this.summaryLists = summaryLists;
         this.sumLength = sumLength;
-        this.summaryValue = new Number[sumLength];
         this.tis = tis;
         this.gvis = gvis;
         this.loader = loader;
@@ -78,9 +77,9 @@ public class NoneDimensionGroup implements Release {
         return new NoneDimensionGroup(metrics, summaryLists, sumLength, tis, gvis, loader);
     }
 
-    public static NoneDimensionGroup createDimensionGroup(BusinessTable[] metrics, List<TargetAndKey>[] summaryLists, int sumLength, ICubeTableService[] tis, GroupValueIndex[] gvis, Number[] summaryValue, ICubeDataLoader loader) {
+    public static NoneDimensionGroup createDimensionGroup(BusinessTable[] metrics, List<TargetAndKey>[] summaryLists, int sumLength, ICubeTableService[] tis, MetricMergeResult result, ICubeDataLoader loader) {
 
-        return new NoneDimensionGroup(metrics, summaryLists, sumLength, tis, gvis, loader, summaryValue);
+        return new NoneDimensionGroup(metrics, summaryLists, sumLength, tis, result.getGvis(), loader, result);
     }
 
 
@@ -128,9 +127,9 @@ public class NoneDimensionGroup implements Release {
         return loader;
     }
 
-    public Number[] getSummaryValue() {
+    public MetricMergeResult getMergeResult() {
 
-        return summaryValue;
+        return result;
     }
 
     public List<Node> getChildren() {
@@ -148,8 +147,8 @@ public class NoneDimensionGroup implements Release {
         this.gvis = gvis;
     }
 
-    public void setSummaryValue(Number[] summaryValue) {
+    public void setMergeResult(MetricMergeResult result) {
 
-        this.summaryValue = summaryValue;
+        this.result = result;
     }
 }

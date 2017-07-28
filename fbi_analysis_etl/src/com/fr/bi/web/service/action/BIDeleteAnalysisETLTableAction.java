@@ -5,11 +5,11 @@ import com.finebi.cube.conf.pack.data.BIBusinessPackage;
 import com.finebi.cube.conf.table.BusinessTable;
 import com.finebi.cube.conf.utils.BILogHelper;
 import com.fr.bi.base.BIBusinessPackagePersistThread;
+import com.fr.bi.cluster.utils.BIUserAuthUtils;
 import com.fr.bi.conf.provider.BIConfigureManagerCenter;
 import com.fr.bi.etl.analysis.manager.BIAnalysisETLManagerCenter;
 import com.fr.bi.exception.BIKeyAbsentException;
 import com.fr.bi.stable.data.source.CubeTableSource;
-import com.fr.fs.web.service.ServiceUtils;
 import com.fr.general.ComparatorUtils;
 import com.fr.web.utils.WebUtils;
 
@@ -29,7 +29,7 @@ public class BIDeleteAnalysisETLTableAction extends AbstractAnalysisETLAction {
     }
     @Override
     public void actionCMD(HttpServletRequest req, HttpServletResponse res, String sessionID) throws Exception {
-        final long userId = ServiceUtils.getCurrentUserID(req);
+        final long userId = BIUserAuthUtils.getCurrentUserID(req);
         String tableId = WebUtils.getHTTPRequestParameter(req, "id");
         BusinessTable table = BIAnalysisETLManagerCenter.getBusiPackManager().getTable(tableId, userId);
         BILoggerFactory.getLogger(BISaveAnalysisETLTableAction.class).info("*********Remove AnalysisETL table*******");

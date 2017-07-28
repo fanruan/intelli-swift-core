@@ -24,7 +24,6 @@ import com.fr.bi.cluster.ClusterManager;
 import com.fr.bi.cluster.manager.EmptyClusterManager;
 import com.fr.bi.cluster.utils.ClusterEnv;
 import com.fr.bi.conf.base.auth.BISystemAuthorityManager;
-import com.fr.bi.conf.base.cube.BISystemCubeConfManager;
 import com.fr.bi.conf.base.cube.BISystemCubeConfManagerWithoutUser;
 import com.fr.bi.conf.base.dataconfig.BISystemDataConfigAuthorityManager;
 import com.fr.bi.conf.base.datasource.BIConnectionManager;
@@ -88,6 +87,7 @@ import com.fr.data.dao.ObjectTableMapper;
 import com.fr.data.impl.JDBCDatabaseConnection;
 import com.fr.data.pool.MemoryConnection;
 import com.fr.file.DatasourceManager;
+import com.fr.fs.control.UserControl;
 import com.fr.fs.control.dao.hsqldb.HSQLDBDAOControl;
 import com.fr.fs.control.dao.tabledata.TableDataDAOControl;
 import com.fr.fs.dao.FSDAOManager;
@@ -163,6 +163,7 @@ public class BICoreModule extends AbstractModule {
         StableFactory.registerMarkedObject(BIDataSourceManagerProvider.XML_TAG, getSourceManagerProvider());
         StableFactory.registerMarkedObject(BIAliasManagerProvider.XML_TAG, getTransManagerProvider());
         StableFactory.registerMarkedObject(BITableRelationConfigurationProvider.XML_TAG, getConnectionManagerProvider());
+        StableFactory.registerMarkedObject(BICubeTimeTaskCreatorProvider.XML_TAG, new BICubeTimeTaskCreatorManager());
         StableFactory.registerMarkedObject(BICubeManagerProvider.XML_TAG, getCubeManagerProvider());
         StableFactory.registerMarkedObject(BILogManagerProvider.XML_TAG, getBILogManager());
         StableFactory.registerMarkedObject(BIUserLoginInformationProvider.XML_TAG, new BISystemUserLoginInformationManager());
@@ -171,46 +172,25 @@ public class BICoreModule extends AbstractModule {
         StableFactory.registerMarkedObject(BIExcelViewManagerProvider.XML_TAG, getExcelViewManager());
         StableFactory.registerMarkedObject(BICubeConfManagerProvider.XML_TAG, getBICubeConfManager());
         StableFactory.registerMarkedObject(SingleTableUpdateManager.XML_TAG, new SingleTableUpdateManager());
-        StableFactory.registerMarkedObject(BICubeTimeTaskCreatorProvider.XML_TAG, new BICubeTimeTaskCreatorManager());
-        StableFactory.registerMarkedObject(BICubeTaskRecordProvider.XML_TAG, new BICubeTaskRecordManagerWithoutUser());
+        StableFactory.registerMarkedObject(BICubeTaskRecordProvider.XML_TAG, getBICubeTaskRecordManagerWithoutUser());
 
         StableFactory.registerMarkedObject(BIDataConfigAuthorityProvider.XML_TAG, new BISystemDataConfigAuthorityManager());
-        StableFactory.registerMarkedObject(FBIConfigProvider.XML_TAG, getFBIConfigManager());
         StableFactory.registerMarkedObject(BITableDataDAOProvider.XML_TAG, getBITableDataDAOManager());
 
-        //模版配置属性
-        StableFactory.registerMarkedObject(TemplateConfigProvider.XML_TAG, getTemplateConfigManager());
     }
-
-    public TemplateConfigProvider getTemplateConfigManager() {
+    public BICubeTaskRecordProvider getBICubeTaskRecordManagerWithoutUser() {
         if (ClusterEnv.isCluster()) {
             if (ClusterAdapter.getManager().getHostManager().isSelf()) {
-                TemplateConfig provider = TemplateConfig.getInstance();
+                BICubeTaskRecordManagerWithoutUser provider = new BICubeTaskRecordManagerWithoutUser();
                 RPC.registerSkeleton(provider, ClusterAdapter.getManager().getHostManager().getPort());
                 return provider;
             } else {
-                return (TemplateConfigProvider) RPC.getProxy(TemplateConfig.class,
+                return (BICubeTaskRecordProvider) RPC.getProxy(BICubeTaskRecordManagerWithoutUser.class,
                         ClusterAdapter.getManager().getHostManager().getIp(),
                         ClusterAdapter.getManager().getHostManager().getPort());
             }
         } else {
-            return TemplateConfig.getInstance();
-        }
-    }
-
-    public FBIConfigProvider getFBIConfigManager() {
-        if (ClusterEnv.isCluster()) {
-            if (ClusterAdapter.getManager().getHostManager().isSelf()) {
-                FBIConfig provider = FBIConfig.getInstance();
-                RPC.registerSkeleton(provider, ClusterAdapter.getManager().getHostManager().getPort());
-                return provider;
-            } else {
-                return (FBIConfigProvider) RPC.getProxy(FBIConfig.class,
-                        ClusterAdapter.getManager().getHostManager().getIp(),
-                        ClusterAdapter.getManager().getHostManager().getPort());
-            }
-        } else {
-            return FBIConfig.getInstance();
+            return new BICubeTaskRecordManagerWithoutUser();
         }
     }
 
@@ -393,7 +373,7 @@ public class BICoreModule extends AbstractModule {
     protected BICubeConfManagerProvider getBICubeConfManager() {
         if (ClusterEnv.isCluster()) {
             if (ClusterAdapter.getManager().getHostManager().isSelf()) {
-                BISystemCubeConfManager provider = new BISystemCubeConfManager();
+                BISystemCubeConfManagerWithoutUser provider = new BISystemCubeConfManagerWithoutUser();
                 RPC.registerSkeleton(provider, ClusterAdapter.getManager().getHostManager().getPort());
                 return provider;
             } else {
@@ -402,7 +382,7 @@ public class BICoreModule extends AbstractModule {
                         ClusterAdapter.getManager().getHostManager().getPort());
             }
         } else {
-            return new BISystemCubeConfManager();
+            return new BISystemCubeConfManagerWithoutUser();
         }
     }
 
@@ -446,6 +426,7 @@ public class BICoreModule extends AbstractModule {
         if (ClusterEnv.isCluster()) {
             if (ClusterAdapter.getManager().getHostManager().isBuildCube()) {
                 BICubeManager provider = new BICubeManager();
+                provider.resetCubeGenerationHour(UserControl.getInstance().getSuperManagerID());
                 RPC.registerSkeleton(provider, ClusterAdapter.getManager().getHostManager().getBuildCubePort());
                 return provider;
             } else {
@@ -488,7 +469,6 @@ public class BICoreModule extends AbstractModule {
                         ClusterAdapter.getManager().getHostManager().getIp(),
                         ClusterAdapter.getManager().getHostManager().getPort());
             }
-//            return null;
         } else {
             return new BISystemPackageConfigurationManagerWithoutUser();
         }

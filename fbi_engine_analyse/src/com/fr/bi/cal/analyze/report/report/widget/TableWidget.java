@@ -27,6 +27,7 @@ import com.fr.bi.cal.analyze.session.BISession;
 import com.fr.bi.common.persistent.annotation.PersistNameHistory;
 import com.fr.bi.common.persistent.xml.BIIgnoreField;
 import com.fr.bi.conf.report.WidgetType;
+import com.fr.bi.conf.report.style.BITableStyle;
 import com.fr.bi.conf.report.style.DetailChartSetting;
 import com.fr.bi.conf.report.widget.IWidgetStyle;
 import com.fr.bi.conf.report.widget.field.BITargetAndDimension;
@@ -39,6 +40,7 @@ import com.fr.bi.field.target.target.cal.target.configure.BIPeriodConfiguredCalc
 import com.fr.bi.report.key.TargetGettingKey;
 import com.fr.bi.stable.constant.BIJSONConstant;
 import com.fr.bi.stable.constant.BIReportConstant;
+import com.fr.bi.stable.constant.BIStyleConstant;
 import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.gvi.GVIUtils;
 import com.fr.bi.stable.gvi.GroupValueIndex;
@@ -49,6 +51,7 @@ import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
 import com.fr.report.poly.TemplateBlock;
 import com.fr.stable.StringUtils;
+import com.taobao.top.link.embedded.websocket.util.StringUtil;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
@@ -196,27 +199,6 @@ public class TableWidget extends BISummaryWidget {
             return createComplexExecutor(session, hasTarget, complexExpander, expander);
         } else {
             return createNormalExecutor(session, hasTarget, getViewDimensions(), getViewTopDimensions(), expander);
-        }
-    }
-
-    public void setGroupTableType() {
-
-        tableType = BIReportConstant.TABLE_WIDGET.GROUP_TYPE;
-    }
-
-    public void addColumn2Row() {
-
-        if (data != null) {
-            data.addColumn2Row();
-            String[] array = data.getRow();
-            ArrayList<BIDimension> usedDimensions = new ArrayList<BIDimension>();
-            for (String anArray : array) {
-                BIDimension dimension = BITravalUtils.getTargetByName(anArray, dimensions);
-                if (dimension.isUsed()) {
-                    usedDimensions.add(dimension);
-                }
-            }
-            usedDimension = usedDimensions.toArray(new BIDimension[usedDimensions.size()]);
         }
     }
 
@@ -419,7 +401,7 @@ public class TableWidget extends BISummaryWidget {
         }
     }
 
-    public BITableWidgetStyle getWidgetStyle () {
+    public BITableWidgetStyle getWidgetStyle() {
         return style;
     }
 
@@ -602,7 +584,7 @@ public class TableWidget extends BISummaryWidget {
         GroupValueIndex linkGvi = null;
         // 分组表,交叉表,复杂表的时候才有联动的必要
         if (linkExecutor instanceof AbstractTableWidgetExecutor) {
-            return ((AbstractTableWidgetExecutor) linkExecutor).getClieckGvi(clicked, targetKey);
+            return ((AbstractTableWidgetExecutor) linkExecutor).getClickGvi(clicked, targetKey);
         }
         return linkGvi;
     }
@@ -617,8 +599,6 @@ public class TableWidget extends BISummaryWidget {
         }
         return null;
     }
-
-
 
 
     @Override
@@ -752,5 +732,19 @@ public class TableWidget extends BISummaryWidget {
     public IWidgetStyle getStyle() {
 
         return style;
+    }
+
+    public BITableStyle getTableStyle () {
+        String themeColor;
+        switch (tableType) {
+            case BIReportConstant.WIDGET.TABLE:
+            case BIReportConstant.WIDGET.CROSS_TABLE:
+            case BIReportConstant.WIDGET.COMPLEX_TABLE:
+                themeColor = getWidgetStyle().getThemeColor();
+                break;
+            default:
+                themeColor = BIStyleConstant.DEFAULT_CHART_SETTING.THEME_COLOR;
+        }
+        return new BITableStyle(themeColor);
     }
 }

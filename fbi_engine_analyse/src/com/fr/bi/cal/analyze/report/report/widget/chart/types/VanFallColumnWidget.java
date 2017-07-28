@@ -17,4 +17,8 @@ public class VanFallColumnWidget extends VanColumnWidget{
         options.put("legend", JSONObject.create().put("enabled", false));
     }
 
+    protected boolean checkValid(){
+        return this.getDim1Size() > 0 && this.hasTarget();
+    }
+
 }

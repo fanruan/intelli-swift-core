@@ -172,7 +172,7 @@ public class VanMapWidget extends VanChartWidget{
     }
 
     protected String getTooltipIdentifier(){
-        return NAME + SERIES + VALUE;
+        return NAME + SERIES + VALUE + SIZE;
     }
 
     protected JSONArray parseColors(JSONObject settings, JSONObject globalStyle, JSONObject plateConfig) throws Exception {
@@ -190,6 +190,10 @@ public class VanMapWidget extends VanChartWidget{
     //地图因为gis背景，不自适应颜色
     protected JSONObject defaultFont() throws JSONException {
         return JSONObject.create().put("fontFamily", "Microsoft YaHei").put("fontSize", "12px").put("color", "#666666");
+    }
+
+    protected boolean checkValid(){
+        return this.getDim1Size() > 0 && this.hasTarget();
     }
 
 }

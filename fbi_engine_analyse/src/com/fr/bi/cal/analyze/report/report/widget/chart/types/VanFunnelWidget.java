@@ -51,4 +51,5 @@ public class VanFunnelWidget extends VanChartWidget{
                 .put("textStyle", defaultFont());
 
     }
+
 }
