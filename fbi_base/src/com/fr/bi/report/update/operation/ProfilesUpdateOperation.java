@@ -125,7 +125,7 @@ public class ProfilesUpdateOperation implements ReportUpdateOperation {
                                 if(type == BIReportConstant.TARGET_TYPE.STRING || type == BIReportConstant.TARGET_TYPE.NUMBER || type == BIReportConstant.TARGET_TYPE.DATE){
                                     JSONObject jump = JSONObject.create();
                                     JSONObject srcJo = dimension.getJSONObject("_src");
-                                    String fieldId = srcJo.optString("fi eldId");
+                                    String fieldId = srcJo.optString("fieldId");
                                     String url = hyperlink.optString("expression", "");
                                     String targetUrl = url.replaceAll("\\$\\{.*\\}", "\\$\\{" + fieldId +"\\}");
                                     jump.put("targetUrl", targetUrl);
