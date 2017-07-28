@@ -423,7 +423,7 @@ public abstract class VanChartWidget extends TableWidget {
 
         String widgetBg = backgroundColor();
 
-        tooltip.put("enabled", !settings.optBoolean("bigDataMode", false)).put("animation", true).put("padding", 10).put("backgroundColor", widgetBg)
+        tooltip.put("enabled", !settings.optBoolean("bigDataMode", false)).put("animation", true).put("padding", 10).put("backgroundColor", imageBack(widgetBg) ? DARK : widgetBg)
                 .put("borderRadius", 2).put("borderWidth", 0).put("shadow", true)
                 .put("style", JSONObject.create()
                         .put("color", this.isDarkColor(widgetBg) ? WHITE : DARK)
@@ -437,6 +437,17 @@ public abstract class VanChartWidget extends TableWidget {
         plotOptions.put("borderWidth", 0);//bi的配置默认没有边框
 
         return plotOptions;
+    }
+
+    private boolean imageBack(String bg) {
+        bg = bg.substring(1);
+
+        try {
+            new Color(Integer.parseInt(bg, 16));
+            return false;
+        }catch (Exception e){
+            return true;
+        }
     }
 
     protected String valueLabelKey() {
@@ -541,8 +552,8 @@ public abstract class VanChartWidget extends TableWidget {
             Color color = new Color(Integer.parseInt(colorStr, 16));
             return color.getRed() * RED_DET + color.getGreen() * GREEN_DET + color.getBlue() * BLUE_DET < GRAY;
         }catch (Exception e){
-            //产品规定图片背景为浅色
-            return false;
+            //产品规定图片背景为深色
+            return true;
         }
     }
 
@@ -982,6 +993,8 @@ public abstract class VanChartWidget extends TableWidget {
                     data.put(JSONObject.create().put(categoryKey, formattedCategory).put(valueKey, isNull ? "-" : numberFormat(id, y)).put(LONG_DATE, x));
                     valueList.add(y);
                 }
+            } else {
+                formattedName = StringUtils.EMPTY;
             }
             JSONObject ser = JSONObject.create().put("data", data).put("name", formattedName).put(LONG_DATE, name)
                     .put("type", this.getSeriesType(id, formattedName)).put("yAxis", yAxis)
