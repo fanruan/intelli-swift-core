@@ -1,8 +1,7 @@
 package com.fr.bi.test.etl.analysis.manager;
 
-import com.finebi.cube.common.log.BILoggerFactory;
-import com.fr.bi.cal.BICubeManager;
 import com.finebi.cube.conf.BICubeManagerProvider;
+import com.fr.bi.cal.BICubeManager;
 import com.fr.bi.cal.generate.EmptyCubeTask;
 import com.fr.bi.conf.base.auth.BISystemAuthorityManager;
 import com.fr.bi.conf.base.datasource.BIConnectionManager;
@@ -13,17 +12,12 @@ import com.fr.bi.conf.provider.BIUpdateFrequencyManagerProvider;
 import com.fr.bi.etl.analysis.manager.BIAnalysisETLManagerCenter;
 import com.fr.bi.etl.analysis.manager.UserETLCubeManager;
 import com.fr.bi.etl.analysis.manager.UserETLCubeManagerProvider;
-import com.fr.bi.stable.utils.BIDBUtils;
 import com.fr.cluster.rpc.RPC;
-import com.fr.data.impl.JDBCDatabaseConnection;
-import com.fr.data.pool.MemoryConnection;
-import com.fr.file.DatasourceManager;
 import com.fr.json.JSONException;
 import com.fr.stable.bridge.StableFactory;
 import junit.framework.TestCase;
 
 import java.io.*;
-import java.util.Iterator;
 
 /**
  * Created by wang on 2016/11/22.
