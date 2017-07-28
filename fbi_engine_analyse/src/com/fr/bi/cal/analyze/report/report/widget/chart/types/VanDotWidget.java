@@ -3,6 +3,7 @@ package com.fr.bi.cal.analyze.report.report.widget.chart.types;
 import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.base.TemplateUtils;
 import com.fr.bi.conf.report.WidgetType;
+import com.fr.bi.conf.report.style.DetailChartSetting;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.field.target.target.BISummaryTarget;
 import com.fr.bi.stable.constant.BIChartSettingConstant;
@@ -142,6 +143,46 @@ public class VanDotWidget extends VanCartesianWidget{
         return plotOptions;
     }
 
+    protected boolean dotChartUseNormalLegend() {
+        int idCount = this.getUsedTargetID().length;
+
+        if(idCount < 3){
+            return true;
+        }
+
+        JSONObject scopes = this.getChartSetting().getScopes();
+        JSONObject target3 = scopes.optJSONObject(BIReportConstant.REGION.TARGET3);
+
+        return target3 == null || target3.optInt("valueType") == BIChartSettingConstant.DOT_VALUE_TYPE.SIZE;
+    }
+
+    protected void toLegendJSON(JSONObject options, JSONObject settings) throws JSONException {
+        if(dotChartUseNormalLegend()){
+            settings.put("disPlayRules", SERIES_RULE);
+        }
+        super.toLegendJSON(options, settings);
+    }
+
+    protected String getLegendType(){
+
+        String legend = "legend";
+
+        try {
+            JSONObject settings = this.getDetailChartSetting();
+            int rule = settings.optInt("displayRules");
+
+            if(rule != SERIES_RULE){
+                legend = "rangeLegend";
+            }
+
+        }catch (JSONException e){
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
+        }
+
+
+        return legend;
+    }
+
     protected JSONObject parseLegend(JSONObject settings) throws JSONException{
 
         JSONObject legend = super.parseLegend(settings);
@@ -178,8 +219,8 @@ public class VanDotWidget extends VanCartesianWidget{
         if(count == 0){//把条件全删了
             return JSONObject.create();
         }
-        double max = style.getJSONObject(count - 1).optJSONObject("range").optDouble("max");
-        double min = style.getJSONObject(0).optJSONObject("range").optDouble("min");
+        double max = style.getJSONObject(count - 1).optJSONObject("range").optDouble("max", Integer.MAX_VALUE);
+        double min = style.getJSONObject(0).optJSONObject("range").optDouble("min", Integer.MIN_VALUE);
 
         boolean first = true;
         for(int i = 0, len = style.length(); i < len; i++){
@@ -189,11 +230,11 @@ public class VanDotWidget extends VanCartesianWidget{
                 continue;
             }
             if(first) {
-                double from = range.optDouble("min") / max;
+                double from = range.optDouble("min", Integer.MIN_VALUE) / max;
                 colors.put(JSONArray.create().put(from).put(colorRange.optString("fromColor")));
                 first = false;
             }
-            double to = range.optDouble("max") / max;
+            double to = range.optDouble("max", Integer.MAX_VALUE) / max;
             colors.put(JSONArray.create().put(to).put(colorRange.optString("toColor")));
 
         }
@@ -204,27 +245,6 @@ public class VanDotWidget extends VanCartesianWidget{
     protected String valueLabelKey() {
         return "{SIZE}";
     }
-
-    protected String getLegendType(){
-
-        String legend = "legend";
-
-        try {
-            JSONObject settings = this.getDetailChartSetting();
-            int rule = settings.optInt("displayRules");
-
-            if(rule != SERIES_RULE){
-                legend = "rangeLegend";
-            }
-
-        }catch (JSONException e){
-            BILoggerFactory.getLogger().error(e.getMessage(), e);
-        }
-
-
-        return legend;
-    }
-
 
     //新的点图。系列无字段，所有点在一个name=vancharts中默认给的一个系列名 的系列里面
     public JSONArray createSeries(JSONObject originData) throws Exception{
