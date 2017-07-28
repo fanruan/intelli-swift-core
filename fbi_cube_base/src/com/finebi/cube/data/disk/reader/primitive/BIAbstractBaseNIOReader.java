@@ -68,7 +68,7 @@ public abstract class BIAbstractBaseNIOReader implements ICubePrimitiveReader {
         try {
             readWriteLock.writeLock().lock();
             //再destroy之前必须在manager里面吧isvalid设置成false
-            if ( isValid == true){
+            if (isValid == true) {
                 BILoggerFactory.getLogger(this.getClass()).error("can not destroy valid reader");
             }
             setBufferInValid();
@@ -98,21 +98,12 @@ public abstract class BIAbstractBaseNIOReader implements ICubePrimitiveReader {
     }
 
     public void releaseSource() {
-        //如果isValid已经是false就不执行，并且不把isValid设成true
-        try {
-            readWriteLock.writeLock().lock();
-            if (!isValid) {
-                return;
-            }
-        } finally {
-            readWriteLock.writeLock().unlock();
-        }
-        try {
-            readWriteLock.writeLock().lock();
-            //先改变isValid状态再判断canClear
-            isValid = false;
-            setBufferInValid();
-            if(PerformancePlugManager.getInstance().isUnmapReader()) {
+        if (PerformancePlugManager.getInstance().isUnmapReader()) {
+            try {
+                readWriteLock.writeLock().lock();
+                //先改变isValid状态再判断canClear
+                isValid = false;
+                setBufferInValid();
                 try {
                     //但愿10ms能 执行完get方法否则可能导致jvm崩溃
                     //锁太浪费资源了，10ms目前并没有遇到问题
@@ -122,12 +113,13 @@ public abstract class BIAbstractBaseNIOReader implements ICubePrimitiveReader {
                     BILoggerFactory.getLogger().error(e.getMessage(), e);
                 }
                 unMap();
+
+            } catch (IOException e) {
+                BILoggerFactory.getLogger().error(e.getMessage(), e);
+            } finally {
+                isValid = true;
+                readWriteLock.writeLock().unlock();
             }
-        } catch (IOException e) {
-            BILoggerFactory.getLogger().error(e.getMessage(), e);
-        } finally {
-            isValid = true;
-            readWriteLock.writeLock().unlock();
         }
     }
 
