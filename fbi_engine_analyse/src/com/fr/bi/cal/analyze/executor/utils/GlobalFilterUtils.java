@@ -51,7 +51,7 @@ import java.util.Set;
  * Created by andrew_asa on 2017/7/12.
  * 跳转相关工具类
  */
-public class GolbalFilterUtils {
+public class GlobalFilterUtils {
 
     /**
      * 设置了源字段和目标字段的跳转
@@ -78,7 +78,7 @@ public class GolbalFilterUtils {
                 String sourceFieldId = item.get("sourceFieldId");
                 BusinessField targetField = BusinessFieldHelper.getAnalysisBusinessFieldSource(new BIFieldID(targetFieldId));
                 BusinessField sourceField = BusinessFieldHelper.getAnalysisBusinessFieldSource(new BIFieldID(sourceFieldId));
-                GroupValueIndex r = GolbalFilterUtils.relationFieldFilter(userId, session, target, source, sourceField, targetField, g);
+                GroupValueIndex r = GlobalFilterUtils.relationFieldFilter(userId, session, target, source, sourceField, targetField, g);
                 ret = GVIUtils.AND(ret, r);
             }
         }
@@ -103,7 +103,7 @@ public class GolbalFilterUtils {
                 // 分组表的跳转
                 TableWidget globalFilterWidget = (TableWidget) ((AbstractBIWidget) widget).getGlobalFilterWidget();
                 BIEngineExecutor linkExecutor = globalFilterWidget.getExecutor(session);
-                Map<String, JSONArray> r = GolbalFilterUtils.combineClick(click, globalFilterWidget);
+                Map<String, JSONArray> r = GlobalFilterUtils.combineClick(click, globalFilterWidget);
                 if (linkExecutor instanceof AbstractTableWidgetExecutor) {
                     if (isSetSourceAndTargetField) {
                         ret = ((AbstractTableWidgetExecutor) linkExecutor).getClickGvi(r);
@@ -123,7 +123,7 @@ public class GolbalFilterUtils {
                 }
             }
         } catch (Exception e) {
-            BILoggerFactory.getLogger(GolbalFilterUtils.class).info("error in get jump link filter gvi", e);
+            BILoggerFactory.getLogger(GlobalFilterUtils.class).info("error in get jump link filter gvi", e);
         }
         return ret;
     }
@@ -266,7 +266,7 @@ public class GolbalFilterUtils {
                 rgvi = GVIFactory.createAllEmptyIndexGVI();
             }
         } catch (Exception e) {
-            BILoggerFactory.getLogger(GolbalFilterUtils.class).info(e.getMessage(), e);
+            BILoggerFactory.getLogger(GlobalFilterUtils.class).info(e.getMessage(), e);
         }
         return rgvi;
     }
@@ -345,7 +345,7 @@ public class GolbalFilterUtils {
                 }
             }
         } catch (Exception e) {
-            BILoggerFactory.getLogger(GolbalFilterUtils.class).info(e.getMessage(), e);
+            BILoggerFactory.getLogger(GlobalFilterUtils.class).info(e.getMessage(), e);
         }
         return ret;
     }
@@ -456,7 +456,7 @@ public class GolbalFilterUtils {
                 }
             }
         } catch (Exception e) {
-            BILoggerFactory.getLogger(GolbalFilterUtils.class).info(e.getMessage(), e);
+            BILoggerFactory.getLogger(GlobalFilterUtils.class).info(e.getMessage(), e);
         }
         return ret;
     }

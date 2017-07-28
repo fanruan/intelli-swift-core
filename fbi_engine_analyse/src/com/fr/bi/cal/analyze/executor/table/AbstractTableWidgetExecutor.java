@@ -174,7 +174,7 @@ public abstract class AbstractTableWidgetExecutor<T> extends BIAbstractExecutor<
                 return getTargetIndex(target, n);
             }
             Node parent = getClickNode(n, data);
-//            return getTargetIndex(target, parent.getTargetIndexValueMap());
+            return getTargetIndex(target, parent);
         }
         return null;
     }
