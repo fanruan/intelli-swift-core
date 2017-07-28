@@ -99,6 +99,15 @@ public abstract class BIAbstractBaseNIOReader implements ICubePrimitiveReader {
 
     public void releaseSource() {
         if (PerformancePlugManager.getInstance().isUnmapReader()) {
+            //如果isValid已经是false就不执行，并且不把isValid设成true
+            try {
+                readWriteLock.writeLock().lock();
+                if (!isValid) {
+                    return;
+                }
+            } finally {
+                readWriteLock.writeLock().unlock();
+            }
             try {
                 readWriteLock.writeLock().lock();
                 //先改变isValid状态再判断canClear
