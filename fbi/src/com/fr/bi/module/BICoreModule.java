@@ -177,8 +177,6 @@ public class BICoreModule extends AbstractModule {
         StableFactory.registerMarkedObject(BIDataConfigAuthorityProvider.XML_TAG, new BISystemDataConfigAuthorityManager());
         StableFactory.registerMarkedObject(BITableDataDAOProvider.XML_TAG, getBITableDataDAOManager());
 
-        //模版配置属性
-        StableFactory.registerMarkedObject(TemplateConfigProvider.XML_TAG, getTemplateConfigManager());
     }
     public BICubeTaskRecordProvider getBICubeTaskRecordManagerWithoutUser() {
         if (ClusterEnv.isCluster()) {
@@ -193,21 +191,6 @@ public class BICoreModule extends AbstractModule {
             }
         } else {
             return new BICubeTaskRecordManagerWithoutUser();
-        }
-    }
-    public TemplateConfigProvider getTemplateConfigManager() {
-        if (ClusterEnv.isCluster()) {
-            if (ClusterAdapter.getManager().getHostManager().isSelf()) {
-                TemplateConfig provider = TemplateConfig.getInstance();
-                RPC.registerSkeleton(provider, ClusterAdapter.getManager().getHostManager().getPort());
-                return provider;
-            } else {
-                return (TemplateConfigProvider) RPC.getProxy(TemplateConfig.class,
-                        ClusterAdapter.getManager().getHostManager().getIp(),
-                        ClusterAdapter.getManager().getHostManager().getPort());
-            }
-        } else {
-            return TemplateConfig.getInstance();
         }
     }
 
