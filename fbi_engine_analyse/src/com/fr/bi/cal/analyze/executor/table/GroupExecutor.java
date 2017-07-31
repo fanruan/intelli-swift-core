@@ -537,12 +537,10 @@ public class GroupExecutor extends AbstractTableWidgetExecutor<Node> {
                     java.util.List<Object> rowData = getLinkRowData(click, k, false);
                     Node linkNode = getStopOnRowNode(rowData.toArray(), widget.getViewDimensions());
                     Node cn = getClickNode(linkNode, rowData);
-//                    Map<TargetGettingKey, GroupValueIndex> m = cn.getTargetIndexValueMap();
-//                    for (TargetGettingKey key : m.keySet()) {
-//                        r = m.get(key);
-//                        break;
-//                        //r = GVIUtils.OR(r, m.get(key));
-//                    }
+                    for (BISummaryTarget t : allSumTarget) {
+                        r = cn.getTargetIndex(t.createTargetGettingKey());
+                        break;
+                    }
                 }
             }
         } catch (Exception e) {

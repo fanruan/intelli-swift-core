@@ -8,7 +8,7 @@ import com.finebi.cube.conf.table.BusinessTable;
 import com.finebi.cube.relation.BITableSourceRelation;
 import com.fr.bi.cal.analyze.cal.index.loader.CubeIndexLoader;
 import com.fr.bi.cal.analyze.cal.result.Node;
-import com.fr.bi.cal.analyze.executor.utils.GolbalFilterUtils;
+import com.fr.bi.cal.analyze.executor.utils.GlobalFilterUtils;
 import com.fr.bi.cal.analyze.session.BISession;
 import com.fr.bi.conf.report.WidgetType;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
@@ -97,9 +97,9 @@ public class StringControlWidget extends TableWidget {
         if (getGlobalFilterWidget() != null) {
             // 如果已经设置了源字段和目标字段
             if (((AbstractBIWidget) getGlobalFilterWidget()).getGlobalSourceAndTargetFieldList().size() > 0) {
-                gvi = GVIUtils.AND(gvi, GolbalFilterUtils.getSettingSourceAndTargetJumpFilter(this, userId, session, target, ((AbstractBIWidget) getGlobalFilterWidget()).getBaseTable()));
+                gvi = GVIUtils.AND(gvi, GlobalFilterUtils.getSettingSourceAndTargetJumpFilter(this, userId, session, target, ((AbstractBIWidget) getGlobalFilterWidget()).getBaseTable()));
             } else {
-                gvi = GVIUtils.AND(gvi, GolbalFilterUtils.getNotSettingSourceAndTargetJumpFilter(session, target, this, false));
+                gvi = GVIUtils.AND(gvi, GlobalFilterUtils.getNotSettingSourceAndTargetJumpFilter(session, target, this, false));
             }
         }
         return gvi;
