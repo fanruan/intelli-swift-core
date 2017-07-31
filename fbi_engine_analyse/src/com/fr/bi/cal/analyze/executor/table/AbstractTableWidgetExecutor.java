@@ -47,7 +47,7 @@ public abstract class AbstractTableWidgetExecutor<T> extends BIAbstractExecutor<
         allSumTarget = widget.getTargets();
         allDimensions = widget.getDimensions();
 
-        tableStyle= new BITableStyle(widget.getThemeColor());
+        tableStyle = new BITableStyle(widget.getThemeColor());
 
         //        this.expander = CrossExpander.ALL_EXPANDER;
     }
@@ -69,6 +69,7 @@ public abstract class AbstractTableWidgetExecutor<T> extends BIAbstractExecutor<
     }
 
     protected static CBCell formatTargetCell(Object data, BIWidgetConf setting, TargetGettingKey key, int rowIdx, int columnIdx, Style style) {
+
         int numLevel = setting.getNumberLevelByTargetID(key.getTargetName());
         int formatDecimal = setting.getFormatDecimalByTargetID(key.getTargetName());
         boolean separator = setting.getSeparatorByTargetID(key.getTargetName());
@@ -159,9 +160,12 @@ public abstract class AbstractTableWidgetExecutor<T> extends BIAbstractExecutor<
      * @return
      */
     protected GroupValueIndex getTargetIndex(String target, Node n) {
-        for (BISummaryTarget t : allSumTarget){
-            if (ComparatorUtils.equals(t.getName(), target)){
-                return n.getTargetIndex(t.createTargetGettingKey());
+
+        if (n != null && target != null) {
+            for (BISummaryTarget t : allSumTarget) {
+                if (ComparatorUtils.equals(t.getName(), target)) {
+                    return n.getTargetIndex(t.createTargetGettingKey());
+                }
             }
         }
         return null;
