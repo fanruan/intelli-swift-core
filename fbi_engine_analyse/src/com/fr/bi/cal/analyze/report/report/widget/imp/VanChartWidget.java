@@ -25,7 +25,7 @@ public class VanChartWidget extends TableWidget {
     public JSONObject createDataJSON(BISessionProvider session, HttpServletRequest req) throws Exception {
 
         // 如果是实时数据
-        if(BIWidgetConfUtils.needOpenBigDateModel(getWidgetConf())){
+        if(BIWidgetConfUtils.needUseBigDataOperator(getWidgetConf())){
             setOperator(BIReportConstant.TABLE_PAGE_OPERATOR.BIGDATACHART);
         }
         JSONObject data = super.createDataJSON(session, req).getJSONObject("data");
