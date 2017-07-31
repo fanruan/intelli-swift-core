@@ -16,21 +16,26 @@ public class TimerTaskScheduleTool {
 
     public static TimerTaskSchedule getFirstDayOfMonthTask() {
         String firstDayOfMonth = BIDateUtils.getScheduleTime(DBConstant.UPDATE_FREQUENCY.EVER_MONTH, 1);
-        return new TimerTaskSchedule(firstDayOfMonth, null, jobName, -999, 0);
+//        return new TimerTaskSchedule(firstDayOfMonth, null, jobName, -999, 0);
+        return null;
     }
 
     public static TimerTaskSchedule getFirstHourOfDayTask() {
         String firstHourOfDay = BIDateUtils.getScheduleTime(DBConstant.UPDATE_FREQUENCY.EVER_DAY, 1);
-        return new TimerTaskSchedule(firstHourOfDay, null, jobName, -999, 0);
+//        return new TimerTaskSchedule(firstHourOfDay, null, jobName, -999, 0);
+        return null;
     }
 
     public static TimerTaskSchedule getEveryMondayTask() {
         String firstDayOfMonth = BIDateUtils.getScheduleTime(Calendar.MONDAY, 1);
-        return new TimerTaskSchedule(firstDayOfMonth, null, jobName, -999, 0);
+//        return new TimerTaskSchedule(firstDayOfMonth, null, jobName, -999, 0);
+        return null;
     }
+
     public static TimerTaskSchedule getSecondsTask() {
-        TimerTaskSchedule schedule=new TimerTaskSchedule("0/2 * * * * ?",null,jobName,-999,0);
-        return schedule;
+//        TimerTaskSchedule schedule=new TimerTaskSchedule("0/2 * * * * ?",null,jobName,-999,0);
+//        return schedule;
+        return null;
     }
 
     public static String getJobName() {
