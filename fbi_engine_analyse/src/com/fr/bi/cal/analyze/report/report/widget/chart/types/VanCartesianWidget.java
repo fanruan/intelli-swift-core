@@ -799,7 +799,8 @@ public abstract class VanCartesianWidget extends VanChartWidget {
                 JSONObject obj = items.optJSONObject(i);
                 JSONArray objItems = obj.optJSONArray("items");
                 for(int j = objItems.length() - 1; j >=0; j--){
-                    if(ComparatorUtils.equals(objItems.optString(j), seriesName)){
+                    String formattedName = this.formatDimension(seriesDim, objItems.optString(j));
+                    if(ComparatorUtils.equals(formattedName, seriesName)){
                         return obj;
                     }
                 }
