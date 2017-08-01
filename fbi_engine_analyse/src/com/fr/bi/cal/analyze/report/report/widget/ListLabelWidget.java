@@ -27,7 +27,7 @@ import com.fr.stable.StringUtils;
 import javax.servlet.http.HttpServletRequest;
 import java.util.*;
 
-public class ListLabelWidget extends BISummaryWidget {
+public class ListLabelWidget extends SummaryWidget {
 
     private static final int STEP = 100;
     private int data_type = -2;

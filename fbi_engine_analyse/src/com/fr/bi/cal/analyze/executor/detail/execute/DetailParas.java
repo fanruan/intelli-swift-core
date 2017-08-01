@@ -5,7 +5,7 @@ import com.finebi.cube.conf.table.BusinessTable;
 import com.finebi.cube.relation.BITableSourceRelation;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.cal.analyze.executor.detail.key.DetailSortKey;
-import com.fr.bi.cal.analyze.report.report.widget.BIDetailWidget;
+import com.fr.bi.cal.analyze.report.report.widget.DetailWidget;
 import com.fr.bi.conf.report.widget.field.target.detailtarget.BIDetailTarget;
 import com.fr.bi.field.target.detailtarget.field.BIEmptyDetailTarget;
 import com.fr.bi.stable.connection.ConnectionRowGetter;
@@ -46,7 +46,7 @@ public class DetailParas {
     }
 
     private ConnectionRowGetter[] connectionRowGetters;
-    public DetailParas(BIDetailWidget widget, GroupValueIndex gvi, ICubeDataLoader loader) {
+    public DetailParas(DetailWidget widget, GroupValueIndex gvi, ICubeDataLoader loader) {
         this.loader = loader;
 
         this.target = widget.getTargetDimension();
