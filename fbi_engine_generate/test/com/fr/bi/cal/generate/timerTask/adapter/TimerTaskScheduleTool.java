@@ -28,6 +28,7 @@ public class TimerTaskScheduleTool {
         String firstDayOfMonth = BIDateUtils.getScheduleTime(Calendar.MONDAY, 1);
         return new TimerTaskSchedule(firstDayOfMonth, null, jobName, -999, 0);
     }
+
     public static TimerTaskSchedule getSecondsTask() {
         TimerTaskSchedule schedule=new TimerTaskSchedule("0/2 * * * * ?",null,jobName,-999,0);
         return schedule;
