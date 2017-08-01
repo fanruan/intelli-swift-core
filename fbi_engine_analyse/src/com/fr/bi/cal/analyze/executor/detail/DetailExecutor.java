@@ -79,7 +79,8 @@ public class DetailExecutor extends AbstractDetailExecutor {
                             return false;
                         }
                     };
-                    travel(action, gvi);
+                    GVIRunner runner = new DetailAllGVIRunner(gvi, widget, getLoader(), userId);
+                    runner.Traversal(action);
                 } catch (Exception e) {
                     BILoggerFactory.getLogger().error(e.getMessage(), e);
                 } finally {
