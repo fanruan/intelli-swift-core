@@ -21,8 +21,13 @@ public class MergeSummaryCallList extends Thread {
 
     @Override
     public void run() {
-        while (iterator.hasNext()){
-            iterator.next().cal();
+        while (true){
+            try {
+                while (iterator.hasNext()){
+                    iterator.next().cal();
+                }
+            } catch (Exception e){
+            }
         }
     }
 

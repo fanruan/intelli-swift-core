@@ -7,7 +7,7 @@ import com.fr.bi.cal.analyze.report.report.widget.chart.export.item.ITableItem;
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.item.constructor.BISummaryDataConstructor;
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.item.constructor.DataConstructor;
 import com.fr.bi.cal.analyze.report.report.widget.chart.export.utils.BITableDimensionHelper;
-import com.fr.bi.cal.analyze.report.report.widget.chart.export.utils.BITableStyleHelper;
+import com.fr.bi.conf.report.style.table.BITableStyleHelper;
 import com.fr.bi.conf.report.widget.IWidgetStyle;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.utils.program.BIJsonUtils;
@@ -216,6 +216,7 @@ public class SummaryComplexTableBuilder extends TableAbstractDataBuilder {
      * 有几个维度的分组表示就有几个表
      * view: {10000: [a, b], 10001: [c, d]}, 20000: [e, f], 20001: [g, h], 20002: [i, j], 30000: [k]}
      * 表示横向（类似与交叉表）会有三个表，纵向会有两个表
+     *  // BI-7636 行数缺失
      */
     private void createComplexTableItems() throws Exception {
         JSONArray dataArray = new JSONArray();
@@ -247,7 +248,9 @@ public class SummaryComplexTableBuilder extends TableAbstractDataBuilder {
                     tempCrossItems.addAll(singleTable.getCrossItems());
                 }
                 if (tempItems.size() <= i) {
-                    tempItems.add(singleTable.getItems().get(0));
+                    // BI-7636 行数缺失
+//                    tempItems.add(singleTable.getItems().get(0));
+                    tempItems.addAll(singleTable.getItems());
                 } else {
                     tempItems.get(i).mergeItems(singleTable.getItems().get(0));
                 }

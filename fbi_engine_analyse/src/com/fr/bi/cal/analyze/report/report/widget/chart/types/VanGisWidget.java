@@ -18,7 +18,7 @@ public class VanGisWidget extends VanChartWidget{
 
     private static final String TILE_LAYER = "http://webrd01.is.autonavi.com/appmaptile?lang=zh_cn&size=1&scale=1&style=8&x={x}&y={y}&z={z}";
     private static final String ATTRIBUTION = "<a><img src=\"http://webapi.amap.com/theme/v1.3/mapinfo_05.png\">&copy; 2016 AutoNavi</a>";
-    private static final String GIS_ICON_PATH =  "?op=resource&resource=/com/fr/bi/web/images/icon/chartsetting/address_marker_big.png";
+    private static final String GIS_ICON_PATH =  "?op=resource&resource=/com/fr/bi/web/images/1x/icon/chartsetting/address_marker_big.png";
 
     protected JSONObject populateDefaultSettings() throws JSONException {
         JSONObject settings = super.populateDefaultSettings();

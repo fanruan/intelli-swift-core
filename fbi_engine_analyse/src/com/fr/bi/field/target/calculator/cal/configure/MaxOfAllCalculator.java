@@ -2,7 +2,7 @@ package com.fr.bi.field.target.calculator.cal.configure;
 
 import com.fr.bi.field.target.target.cal.target.configure.BIConfiguredCalculateTarget;
 import com.fr.bi.report.key.TargetGettingKey;
-import com.fr.bi.report.result.BICrossNode;
+import com.fr.bi.report.key.XTargetGettingKey;
 import com.fr.bi.report.result.BINode;
 
 import java.util.concurrent.Callable;
@@ -18,22 +18,18 @@ public class MaxOfAllCalculator extends SummaryOfAllCalculator {
     }
 
     @Override
-    public Callable createNodeDealWith(BINode node) {
-        return new RankDealWith(node);
-    }
-
-    @Override
-    public Callable createNodeDealWith(BICrossNode node) {
-        return new RankDealWithCrossNode(node);
+    public Callable createNodeDealWith(BINode node, XTargetGettingKey key) {
+        return new RankDealWith(node, key);
     }
 
     private class RankDealWith implements Callable {
         private BINode rank_node;
+        private XTargetGettingKey key;
 
-        private RankDealWith(BINode rank_node) {
-            this.rank_node = rank_node;
+        private RankDealWith(BINode node, XTargetGettingKey key) {
+            this.rank_node = node;
+            this.key = key;
         }
-
 
         @Override
         public Object call() throws Exception {
@@ -42,7 +38,7 @@ public class MaxOfAllCalculator extends SummaryOfAllCalculator {
             BINode cursor_node = temp_node;
             Number max = null;
             while (isNotEnd(cursor_node, deep)) {
-                Number value = cursor_node.getSummaryValue(calTargetKey);
+                Number value = cursor_node.getSummaryValue(getCalTargetGettingKey(key));
                 if (max == null) {
                     max = value;
                 } else if (value != null) {
@@ -53,7 +49,7 @@ public class MaxOfAllCalculator extends SummaryOfAllCalculator {
             cursor_node = temp_node;
             if (max != null) {
                 while (isNotEnd(cursor_node, deep)) {
-                    cursor_node.setSummaryValue(createTargetGettingKey(), max);
+                    cursor_node.setSummaryValue(getTargetGettingKey(key), max);
                     cursor_node = cursor_node.getSibling();
                 }
             }
@@ -67,52 +63,6 @@ public class MaxOfAllCalculator extends SummaryOfAllCalculator {
             BINode temp = node;
             for (int i = 0; i < deep; i++) {
                 temp = temp.getParent();
-            }
-            return temp == rank_node;
-        }
-
-    }
-
-    private class RankDealWithCrossNode implements Callable {
-        private BICrossNode rank_node;
-
-        private RankDealWithCrossNode(BICrossNode rank_node) {
-            this.rank_node = rank_node;
-        }
-
-
-        @Override
-        public Object call() throws Exception {
-            int deep = getCalDeep(rank_node);
-            BICrossNode temp_node = getFirstCalCrossNode(rank_node);
-            BICrossNode cursor_node = temp_node;
-            Number max = null;
-            while (isNotEnd(cursor_node, deep)) {
-                Number value = cursor_node.getSummaryValue(calTargetKey);
-                if (max == null) {
-                    max = value;
-                } else if (value != null) {
-                    max = new Double(Math.max(max.doubleValue(), value.doubleValue()));
-                }
-                cursor_node = cursor_node.getBottomSibling();
-            }
-            cursor_node = temp_node;
-            if (max != null) {
-                while (isNotEnd(cursor_node, deep)) {
-                    cursor_node.setSummaryValue(createTargetGettingKey(), max);
-                    cursor_node = cursor_node.getBottomSibling();
-                }
-            }
-            return null;
-        }
-
-        private boolean isNotEnd(BICrossNode node, int deep) {
-            if (node == null) {
-                return false;
-            }
-            BICrossNode temp = node;
-            for (int i = 0; i < deep; i++) {
-                temp = temp.getLeftParent();
             }
             return temp == rank_node;
         }

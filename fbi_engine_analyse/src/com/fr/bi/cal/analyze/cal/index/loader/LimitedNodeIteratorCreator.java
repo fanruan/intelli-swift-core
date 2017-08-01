@@ -1,6 +1,7 @@
 package com.fr.bi.cal.analyze.cal.index.loader;
 
 import com.fr.bi.cal.analyze.cal.multithread.BIMultiThreadExecutor;
+import com.fr.bi.cal.analyze.cal.result.NodeCreator;
 import com.fr.bi.cal.analyze.cal.sssecret.ConstructedRootDimensionGroup;
 import com.fr.bi.cal.analyze.cal.sssecret.PartConstructedRootDimensionGroup;
 import com.fr.bi.cal.analyze.cal.sssecret.diminfo.LimitedAllNodeMergeIteratorCreator;
@@ -20,11 +21,11 @@ import java.util.Map;
 /**
  * Created by 小灰灰 on 2017/6/13.
  */
-public class LimitedNodeIteratorCreator extends NodeIteratorCreator{
+public class LimitedNodeIteratorCreator extends NodeIteratorCreator {
     private int maxSize;
 
-    public LimitedNodeIteratorCreator(List<MetricGroupInfo> metricGroupInfoList, BIDimension[] rowDimension, BISummaryTarget[] usedTargets, int sumLength, Map<String, DimensionFilter> targetFilterMap, boolean isRealData, BISession session, NameObject targetSort, TargetFilter filter, List<TargetFilter> authFilter, boolean showSum, boolean setIndex, boolean calAllPage, BIMultiThreadExecutor executor, int maxSize) {
-        super(metricGroupInfoList, rowDimension, usedTargets, sumLength, targetFilterMap, isRealData, session, targetSort, filter, authFilter, showSum, setIndex, calAllPage, executor);
+    public LimitedNodeIteratorCreator(List<MetricGroupInfo> metricGroupInfoList, BIDimension[] rowDimension, BISummaryTarget[] usedTargets, int sumLength, Map<String, DimensionFilter> targetFilterMap, boolean isRealData, BISession session, NameObject targetSort, TargetFilter filter, List<TargetFilter> authFilter, boolean showSum, boolean setIndex, boolean calAllPage, BIMultiThreadExecutor executor, NodeCreator nodeCreator, int maxSize) {
+        super(metricGroupInfoList, rowDimension, usedTargets, sumLength, targetFilterMap, isRealData, session, targetSort, filter, authFilter, showSum, setIndex, calAllPage, executor, nodeCreator);
         this.maxSize = maxSize;
     }
 
@@ -34,6 +35,6 @@ public class LimitedNodeIteratorCreator extends NodeIteratorCreator{
     }
 
     protected ConstructedRootDimensionGroup createConstructedRootDimensionGroup(boolean canPreFilter) {
-        return new PartConstructedRootDimensionGroup(metricGroupInfoList, createAllNodeMergeIteratorCreator(), sumLength, session, isRealData, dimensionTargetSort, getCalCalculators(), canPreFilter || !hasDimensionInDirectFilter() ? null : rowDimension, setIndex, hasInSumMetric(), executor, calAllPage, maxSize);
+        return new PartConstructedRootDimensionGroup(metricGroupInfoList, createAllNodeMergeIteratorCreator(), sumLength, session, isRealData, dimensionTargetSort, getCalCalculators(), canPreFilter || !hasDimensionInDirectFilter() ? null : rowDimension, setIndex, hasInSumMetric(), executor, calAllPage, nodeCreator, maxSize);
     }
 }

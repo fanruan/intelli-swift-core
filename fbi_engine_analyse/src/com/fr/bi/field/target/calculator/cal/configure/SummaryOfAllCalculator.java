@@ -1,9 +1,10 @@
 package com.fr.bi.field.target.calculator.cal.configure;
 
-import com.fr.base.FRContext;
+import com.finebi.cube.common.log.BILoggerFactory;
+import com.fr.bi.cal.analyze.cal.result.BIXLeftNode;
 import com.fr.bi.field.target.target.cal.target.configure.BIConfiguredCalculateTarget;
 import com.fr.bi.report.key.TargetGettingKey;
-import com.fr.bi.report.result.BICrossNode;
+import com.fr.bi.report.key.XTargetGettingKey;
 import com.fr.bi.report.result.BINode;
 import com.fr.bi.stable.utils.CubeBaseUtils;
 
@@ -23,6 +24,10 @@ public abstract class SummaryOfAllCalculator extends AbstractConfigureCalculator
 
     @Override
     public void calCalculateTarget(BINode node) {
+        cal(node, null);
+    }
+
+    private void cal(BINode node, XTargetGettingKey key) {
         if (calTargetKey == null) {
             return;
         }
@@ -50,7 +55,7 @@ public abstract class SummaryOfAllCalculator extends AbstractConfigureCalculator
          * 加1是因为node默认有一个空root
          *
          */
-        if(calDeep >0) {
+        if (calDeep > 0) {
             if (node.getDeep() > node.getFrameDeep()) {
                 tempNode = getCalculatedRootNode(node);
             } else {
@@ -62,46 +67,23 @@ public abstract class SummaryOfAllCalculator extends AbstractConfigureCalculator
         BINode cursor_node = tempNode;
         while (cursor_node != null) {
             if (shouldCalculate(cursor_node)) {
-                nodeList.add(createNodeDealWith(cursor_node));
+                nodeList.add(createNodeDealWith(cursor_node, key));
             }
             cursor_node = cursor_node.getSibling();
         }
         try {
             CubeBaseUtils.invokeCalculatorThreads(nodeList);
         } catch (InterruptedException e) {
-            FRContext.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
     }
-
-    public abstract Callable createNodeDealWith(BINode node);
 
     @Override
-    public void calCalculateTarget(BICrossNode node, TargetGettingKey key1) {
-        if (calTargetKey == null) {
-            return;
-        }
-        BICrossNode tempNode = node;
-        for (int i = 0; i < start_group; i++) {
-            if (tempNode.getLeftFirstChild() == null) {
-                break;
-            }
-            tempNode = tempNode.getLeftFirstChild();
-        }
-        List nodeList = new ArrayList();
-        BICrossNode cursor_node = tempNode;
-        while (cursor_node != null) {
-            nodeList.add(createNodeDealWith(cursor_node));
-            cursor_node = cursor_node.getBottomSibling();
-        }
-        try {
-            CubeBaseUtils.invokeCalculatorThreads(nodeList);
-        } catch (InterruptedException e) {
-            FRContext.getLogger().error(e.getMessage(), e);
-        }
+    public void calCalculateTarget(BIXLeftNode node, XTargetGettingKey key) {
+        cal(node, key);
     }
 
-    public abstract Callable createNodeDealWith(BICrossNode node);
-
+    public abstract Callable createNodeDealWith(BINode node, XTargetGettingKey key);
 
     protected BINode getFirstCalNode(BINode rank_node) {
         BINode temp_node = rank_node;
@@ -111,13 +93,6 @@ public abstract class SummaryOfAllCalculator extends AbstractConfigureCalculator
         return temp_node;
     }
 
-    protected BICrossNode getFirstCalCrossNode(BICrossNode rank_node) {
-        BICrossNode temp_node = rank_node;
-        while (temp_node.getLeftFirstChild() != null) {
-            temp_node = temp_node.getLeftFirstChild();
-        }
-        return temp_node;
-    }
 
     protected BINode getDeepCalNode(BINode rank_node) {
         BINode temp_node = rank_node;

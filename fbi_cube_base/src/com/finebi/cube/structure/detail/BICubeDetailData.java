@@ -144,7 +144,6 @@ public abstract class BICubeDetailData<T> implements ICubeDetailDataService<T> {
     protected void resetCubeReader() {
         if (isCubeReaderAvailable()) {
             cubeReader.clear();
-            cubeReader = null;
         }
     }
 

@@ -1,10 +1,12 @@
 package com.fr.bi.field.target.calculator.cal.configure;
 
 import com.fr.base.FRContext;
+import com.fr.bi.cal.analyze.cal.result.BIXLeftNode;
+import com.fr.bi.cal.analyze.cal.result.XLeftNode;
 import com.fr.bi.field.target.target.cal.target.configure.BIConfiguredCalculateTarget;
+import com.fr.bi.report.key.XTargetGettingKey;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.report.key.TargetGettingKey;
-import com.fr.bi.report.result.BICrossNode;
 import com.fr.bi.report.result.BINode;
 import com.fr.bi.stable.utils.CubeBaseUtils;
 import com.fr.general.ComparatorUtils;
@@ -31,6 +33,10 @@ public class PeriodConfigureCalculator extends AbstractConfigureCalculator {
      */
     @Override
     public void calCalculateTarget(BINode node) {
+        cal(node, null);
+    }
+
+    private void cal(BINode node, XTargetGettingKey key) {
         if (calTargetKey == null) {
             return;
         }
@@ -39,7 +45,7 @@ public class PeriodConfigureCalculator extends AbstractConfigureCalculator {
 
         if (start_group == 0) {
             //从第几个纬度开始计算
-            int calDeep = deep - 1;
+            int calDeep = (deep == 1 ? deep : deep - 1);
             for (int i = 0; i < calDeep; i++) {
                 if (tempNode.getFirstChild() == null) {
                     break;
@@ -57,7 +63,7 @@ public class PeriodConfigureCalculator extends AbstractConfigureCalculator {
         BINode cursor_node = tempNode;
         BINode last_node = null;
         while (cursor_node != null) {
-            nodeList.add(new RankDealWith(last_node, cursor_node));
+            nodeList.add(new RankDealWith(last_node, cursor_node, key));
             last_node = cursor_node;
             cursor_node = cursor_node.getSibling();
             if (cursor_node != null && start_group == 0 && !ComparatorUtils.equals(last_node.getParent(), cursor_node.getParent())) {
@@ -79,39 +85,19 @@ public class PeriodConfigureCalculator extends AbstractConfigureCalculator {
      * @param key1 target的key
      */
     @Override
-    public void calCalculateTarget(BICrossNode node, TargetGettingKey key1) {
-        if (calTargetKey == null) {
-            return;
-        }
-        BICrossNode tempNode = node;
-        for (int i = 0; i < start_group + 1; i++) {
-            if (tempNode.getLeftFirstChild() == null) {
-                break;
-            }
-            tempNode = tempNode.getLeftFirstChild();
-        }
-        List nodeList = new ArrayList();
-        BICrossNode cursor_node = tempNode;
-        BICrossNode last_node = null;
-        while (cursor_node != null) {
-            nodeList.add(new RankDealWithCrossNode(last_node, cursor_node));
-            last_node = cursor_node;
-            cursor_node = cursor_node.getBottomSibling();
-        }
-        try {
-            CubeBaseUtils.invokeCalculatorThreads(nodeList);
-        } catch (InterruptedException e) {
-            FRContext.getLogger().error(e.getMessage(), e);
-        }
+    public void calCalculateTarget(BIXLeftNode node, XTargetGettingKey key) {
+        cal(node, key);
     }
 
     private class RankDealWith implements java.util.concurrent.Callable {
         private BINode last_node;
         private BINode current_node;
+        private XTargetGettingKey key;
 
-        private RankDealWith(BINode last_node, BINode current_node) {
+        private RankDealWith(BINode last_node, BINode current_node, XTargetGettingKey key) {
             this.last_node = last_node;
             this.current_node = current_node;
+            this.key = key;
         }
 
 
@@ -133,11 +119,11 @@ public class PeriodConfigureCalculator extends AbstractConfigureCalculator {
                 }
                 Number value = getValueFromLast(way);
                 if (value != null && type == BIReportConstant.TARGET_TYPE.CAL_VALUE.PERIOD_TYPE.RATE) {
-                    Number v = cursor_node.getSummaryValue(calTargetKey);
+                    Number v = cursor_node.getSummaryValue(getCalTargetGettingKey(key));
                     double currentValue = v == null ? 0 : v.doubleValue();
-                    cursor_node.setSummaryValue(createTargetGettingKey(), (currentValue - (Double) value) / (Double) value);
+                    cursor_node.setSummaryValue(getTargetGettingKey(key), (currentValue - (Double) value) / (Double) value);
                 } else {
-                    cursor_node.setSummaryValue(createTargetGettingKey(), value);
+                    cursor_node.setSummaryValue(getTargetGettingKey(key), value);
                 }
 
                 cursor_node = cursor_node.getSibling();
@@ -160,7 +146,7 @@ public class PeriodConfigureCalculator extends AbstractConfigureCalculator {
             if (n == null) {
                 return null;
             } else {
-                return n.getSummaryValue(calTargetKey);
+                return n.getSummaryValue(getCalTargetGettingKey(key));
             }
         }
 
@@ -178,78 +164,4 @@ public class PeriodConfigureCalculator extends AbstractConfigureCalculator {
 
     }
 
-    private class RankDealWithCrossNode implements java.util.concurrent.Callable {
-        private BICrossNode last_node;
-        private BICrossNode current_node;
-
-        private RankDealWithCrossNode(BICrossNode last_node, BICrossNode current_node) {
-            this.last_node = last_node;
-            this.current_node = current_node;
-        }
-
-
-        @Override
-        public Object call() throws Exception {
-            int deep = 0;
-            BICrossNode temp_node = current_node;
-            while (temp_node.getLeftFirstChild() != null) {
-                temp_node = temp_node.getLeftFirstChild();
-                deep++;
-            }
-            BICrossNode cursor_node = temp_node;
-            while (isNotEnd(cursor_node, deep)) {
-                BICrossNode n = cursor_node;
-                Object[] way = new Object[deep];
-                for (int i = way.length; i > 0; i--) {
-                    way[i - 1] = n.getLeft().getData();
-                    n = n.getLeftParent();
-                }
-                Number value = getValueFromLast(way);
-                if (value != null) {
-                    if (type == BIReportConstant.TARGET_TYPE.CAL_VALUE.PERIOD_TYPE.RATE) {
-                        Number v = cursor_node.getSummaryValue(calTargetKey);
-                        double currentValue = v == null ? 0 : v.doubleValue();
-                        cursor_node.setSummaryValue(createTargetGettingKey(), (currentValue - (Double) value) / (Double) value);
-                    } else {
-                        cursor_node.setSummaryValue(createTargetGettingKey(), value);
-                    }
-                }
-                cursor_node = cursor_node.getBottomSibling();
-            }
-            return null;
-        }
-
-        private Number getValueFromLast(Object[] way) {
-            if (last_node == null) {
-                return null;
-            }
-            int i = 0;
-            BICrossNode n = last_node;
-            while (i < way.length) {
-                n = n.getLeftChildByKey(way[i++]);
-                if (n == null) {
-                    break;
-                }
-            }
-            if (n == null) {
-                return null;
-            } else {
-                return n.getSummaryValue(calTargetKey);
-            }
-        }
-
-
-        private boolean isNotEnd(BICrossNode node, int deep) {
-            if (node == null) {
-                return false;
-            }
-            BICrossNode temp = node;
-            for (int i = 0; i < deep; i++) {
-                temp = temp.getLeftParent();
-            }
-            return temp == current_node;
-        }
-
-
-    }
 }

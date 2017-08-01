@@ -4,22 +4,16 @@ import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.conf.table.BusinessTable;
 import com.fr.bi.cal.analyze.cal.index.loader.MetricGroupInfo;
-import com.fr.bi.cal.analyze.cal.result.ComplexAllExpander;
 import com.fr.bi.cal.analyze.cal.sssecret.PageIteratorGroup;
 import com.fr.bi.cal.analyze.executor.detail.key.DetailSortKey;
-import com.fr.bi.cal.analyze.report.report.widget.BIDetailWidget;
-import com.fr.bi.cal.analyze.report.report.widget.TableWidget;
-import com.fr.bi.cal.report.main.impl.BIWorkBook;
 import com.fr.bi.cal.stable.loader.CubeReadingTableIndexLoader;
+import com.fr.bi.cluster.utils.BIUserAuthUtils;
 import com.fr.bi.cluster.utils.ClusterEnv;
 import com.fr.bi.conf.report.BIReport;
-import com.fr.bi.conf.report.BIWidget;
 import com.fr.bi.fs.BIFineDBConfigLockDAO;
 import com.fr.bi.fs.BIReportNode;
 import com.fr.bi.fs.BIReportNodeLock;
 import com.fr.bi.fs.BIReportNodeLockDAO;
-import com.fr.bi.stable.constant.BIExcutorConstant;
-import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.log.CubeGenerateStatusProvider;
 import com.fr.data.TableDataSource;
@@ -28,12 +22,10 @@ import com.fr.fs.base.entity.CustomRole;
 import com.fr.fs.control.CompanyRoleControl;
 import com.fr.fs.control.CustomRoleControl;
 import com.fr.fs.control.UserControl;
-import com.fr.fs.web.service.ServiceUtils;
 import com.fr.general.FRLogManager;
 import com.fr.general.GeneralContext;
 import com.fr.main.FineBook;
 import com.fr.main.TemplateWorkBook;
-import com.fr.main.workbook.ResultWorkBook;
 import com.fr.report.report.ResultReport;
 import com.fr.report.stable.fun.Actor;
 import com.fr.script.Calculator;
@@ -99,7 +91,7 @@ public class BISession extends BIAbstractSession {
         if (isShareReq) {
             return accessUserId;
         } else {
-            return ServiceUtils.getCurrentUserID(req);
+            return BIUserAuthUtils.getCurrentUserID(req);
         }
     }
 
@@ -165,7 +157,9 @@ public class BISession extends BIAbstractSession {
                     } else {
                         //                    集群模式下，无法获得远程机器的session，将时间和锁绑定
                         SessionIDInfor ss = SessionDealWith.getSessionIDInfor(l.getSessionId());
-                        t = ((BISession) ss).lastTime;
+                        if (ss != null) {
+                            t = ((BISession) ss).lastTime;
+                        }
                     }
                     //45- 30 超过15-45秒还没反應可能是没有心跳
                     if (System.currentTimeMillis() - t < EDIT_TIME) {
@@ -229,30 +223,6 @@ public class BISession extends BIAbstractSession {
 
     public String getTempTableId() {
         return tempTableId;
-    }
-
-    public ResultWorkBook getExportBookByName(String name) throws CloneNotSupportedException {
-        BIWidget widget = report.getWidgetByName(name);
-        if (widget != null) {
-            widget = (BIWidget) widget.clone();
-            switch (widget.getType()) {
-                case TABLE:
-                    ((TableWidget) widget).addColumn2Row();
-                    ((TableWidget) widget).setGroupTableType();
-                    ((TableWidget) widget).getExecutor(this);
-                    ((TableWidget) widget).setComplexExpander(new ComplexAllExpander());
-                    ((TableWidget) widget).setOperator(BIReportConstant.TABLE_PAGE_OPERATOR.ALL_PAGE);
-                    break;
-                case DETAIL:
-                    ((BIDetailWidget) widget).setPage(BIExcutorConstant.PAGINGTYPE.NONE);
-                    break;
-            }
-
-            widget.setWidgetName(widget.getWidgetName() + Math.random());
-            TemplateWorkBook workBook = widget.createWorkBook(this);
-            return ((BIWorkBook) workBook).execute4BI(getParameterMap4Execute());
-        }
-        return null;
     }
 
     @Override
@@ -341,8 +311,8 @@ public class BISession extends BIAbstractSession {
         this.lastTime = System.currentTimeMillis();
     }
 
-    public PageIteratorGroup getPageIteratorGroup(boolean useRealData, String widgetName) {
-        return getPageIteratorGroup(useRealData, widgetName, 0);
+    public PageIteratorGroup getPageIteratorGroup(boolean useRealData, String widgetID) {
+        return getPageIteratorGroup(useRealData, widgetID, 0);
     }
 
     @Override
@@ -351,25 +321,25 @@ public class BISession extends BIAbstractSession {
     }
 
 
-    public PageIteratorGroup getPageIteratorGroup(boolean useRealData, String widgetName, int i) {
+    public PageIteratorGroup getPageIteratorGroup(boolean useRealData, String widgetID, int i) {
         Map<String, ConcurrentHashMap<Object, PageIteratorGroup>> pmap = useRealData ? pageGroup : partPageGroup;
-        if (!pmap.containsKey(widgetName)) {
+        if (!pmap.containsKey(widgetID)) {
             throw new RuntimeException("error! page not found");
         }
-        ConcurrentHashMap<Object, PageIteratorGroup> map = pmap.get(widgetName);
+        ConcurrentHashMap<Object, PageIteratorGroup> map = pmap.get(widgetID);
         return map.get(i);
     }
 
-    public void setPageIteratorGroup(boolean useRealData, String widgetName, PageIteratorGroup pg) {
-        setPageIteratorGroup(useRealData, widgetName, pg, 0);
+    public void setPageIteratorGroup(boolean useRealData, String widgetID, PageIteratorGroup pg) {
+        setPageIteratorGroup(useRealData, widgetID, pg, 0);
     }
 
-    public void setPageIteratorGroup(boolean useRealData, String widgetName, PageIteratorGroup pg, int i) {
+    public void setPageIteratorGroup(boolean useRealData, String widgetID, PageIteratorGroup pg, int i) {
         Map<String, ConcurrentHashMap<Object, PageIteratorGroup>> pmap = useRealData ? pageGroup : partPageGroup;
-        ConcurrentHashMap<Object, PageIteratorGroup> map = pmap.get(widgetName);
+        ConcurrentHashMap<Object, PageIteratorGroup> map = pmap.get(widgetID);
         if (map == null) {
-            pmap.put(widgetName, new ConcurrentHashMap<Object, PageIteratorGroup>());
-            map = pmap.get(widgetName);
+            pmap.put(widgetID, new ConcurrentHashMap<Object, PageIteratorGroup>());
+            map = pmap.get(widgetID);
         }
         map.put(i, pg);
     }

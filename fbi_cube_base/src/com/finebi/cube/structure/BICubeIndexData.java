@@ -37,7 +37,7 @@ public class BICubeIndexData implements ICubeIndexDataService {
             nullIndexLocation = currentLocation.buildChildLocation("fbi_null");
         } catch (URISyntaxException e) {
             BINonValueUtils.beyondControl(e);
-            BILoggerFactory.getLogger().error(e.getMessage(),e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
     }
 
@@ -184,7 +184,6 @@ public class BICubeIndexData implements ICubeIndexDataService {
     protected void resetIndexReader() {
         if (isIndexReaderAvailable()) {
             indexReader.clear();
-            indexReader = null;
         }
     }
 
@@ -198,7 +197,6 @@ public class BICubeIndexData implements ICubeIndexDataService {
     protected void resetNullReader() {
         if (isNullReaderAvailable()) {
             nullReader.clear();
-            nullReader = null;
         }
     }
 

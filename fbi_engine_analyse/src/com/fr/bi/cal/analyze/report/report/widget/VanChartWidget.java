@@ -423,7 +423,7 @@ public abstract class VanChartWidget extends TableWidget {
 
         String widgetBg = backgroundColor();
 
-        tooltip.put("enabled", !settings.optBoolean("bigDataMode", false)).put("animation", true).put("padding", 10).put("backgroundColor", widgetBg)
+        tooltip.put("enabled", !settings.optBoolean("bigDataMode", false)).put("animation", true).put("padding", 10).put("backgroundColor", imageBack(widgetBg) ? DARK : widgetBg)
                 .put("borderRadius", 2).put("borderWidth", 0).put("shadow", true)
                 .put("style", JSONObject.create()
                         .put("color", this.isDarkColor(widgetBg) ? WHITE : DARK)
@@ -437,6 +437,17 @@ public abstract class VanChartWidget extends TableWidget {
         plotOptions.put("borderWidth", 0);//bi的配置默认没有边框
 
         return plotOptions;
+    }
+
+    private boolean imageBack(String bg) {
+        bg = bg.substring(1);
+
+        try {
+            new Color(Integer.parseInt(bg, 16));
+            return false;
+        }catch (Exception e){
+            return true;
+        }
     }
 
     protected String valueLabelKey() {
@@ -541,8 +552,8 @@ public abstract class VanChartWidget extends TableWidget {
             Color color = new Color(Integer.parseInt(colorStr, 16));
             return color.getRed() * RED_DET + color.getGreen() * GREEN_DET + color.getBlue() * BLUE_DET < GRAY;
         }catch (Exception e){
-            //产品规定图片背景为浅色
-            return false;
+            //产品规定图片背景为深色
+            return true;
         }
     }
 
@@ -596,7 +607,7 @@ public abstract class VanChartWidget extends TableWidget {
             transparent = isTransparent(widgetBG);
         }
 
-        BIChartStyleAttr platConfig = FBIConfig.getInstance().getChartStyleAttr();
+        BIChartStyleAttr platConfig = FBIConfig.getProviderInstance().getChartStyleAttr();
         if (!transparent && platConfig.getWidgetBackground() != null) {
             String widgetBG = platConfig.getWidgetBackground().getValue();
             if(hasValidColor(widgetBG)){
@@ -627,7 +638,7 @@ public abstract class VanChartWidget extends TableWidget {
 
     //优先级从低到高：plat界面背景，global界面背景，主题，plat组件背景，global组件背景，setting组件背景，plat图表文字， global图表文字，settings图表文字
     protected JSONObject defaultFont() throws JSONException {
-        BIChartStyleAttr platConfig = FBIConfig.getInstance().getChartStyleAttr();
+        BIChartStyleAttr platConfig = FBIConfig.getProviderInstance().getChartStyleAttr();
         String color = DARK, fontWeight = "normal", fontStyle = "normal";
 
         String back = backgroundColor();
@@ -954,11 +965,12 @@ public abstract class VanChartWidget extends TableWidget {
         String categoryKey = this.categoryKey(), valueKey = this.valueKey();
         ArrayList<Double> valueList = new ArrayList<Double>();
         JSONObject top = originData.optJSONObject("t"), left = originData.optJSONObject("l");
-        if (targetIDs.length == 0 || !top.has("c") || !left.has("c")) {
+        if (targetIDs.length == 0 || !top.has("c")) {
             return series;
         }
-        JSONArray topC = top.getJSONArray("c"), leftC = left.getJSONArray("c");
+        JSONArray topC = top.getJSONArray("c"), leftC = left.optJSONArray("c");
         String id = targetIDs[0];
+        int yAxis = this.yAxisIndex(id);
         double numberScale = this.numberScale(targetIDs[0]);
         for (int i = 0; i < topC.length(); i++) {
             JSONObject tObj = topC.getJSONObject(i);
@@ -966,20 +978,26 @@ public abstract class VanChartWidget extends TableWidget {
             String stackedKey = this.getStackedKey(id, formattedName);
             boolean isStacked = this.isStacked(id, formattedName);
             JSONArray data = JSONArray.create();
-            for (int j = 0; j < leftC.length(); j++) {
-                JSONObject lObj = leftC.getJSONObject(j);
-                String x = lObj.getString("n");
-                JSONArray s = lObj.getJSONObject("s").getJSONArray("c").getJSONObject(i).getJSONArray("s");
-                boolean isNull = s.isNull(0) || Double.isNaN(s.getDouble(0));
-                double y = (isNull ? 0 : s.getDouble(0)) / numberScale;
-                String formattedCategory = this.formatDimension(category, x);
-                data.put(
-                        JSONObject.create().put(categoryKey, formattedCategory).put(valueKey, isNull ? "-" : numberFormat(id, y)).put(LONG_DATE, x)
-                );
-                valueList.add(y);
+            if(leftC != null) {
+                for (int j = 0; j < leftC.length(); j++) {
+                    JSONObject lObj = leftC.getJSONObject(j);
+                    String x = lObj.getString("n");
+                    JSONArray array = lObj.getJSONObject("s").optJSONArray("c");
+                    if (array == null) {
+                        continue;
+                    }
+                    JSONArray s = array.getJSONObject(i).getJSONArray("s");
+                    boolean isNull = s.isNull(0) || Double.isNaN(s.getDouble(0));
+                    double y = (isNull ? 0 : s.getDouble(0)) / numberScale;
+                    String formattedCategory = this.formatDimension(category, x);
+                    data.put(JSONObject.create().put(categoryKey, formattedCategory).put(valueKey, isNull ? "-" : numberFormat(id, y)).put(LONG_DATE, x));
+                    valueList.add(y);
+                }
+            } else {
+                formattedName = StringUtils.EMPTY;
             }
             JSONObject ser = JSONObject.create().put("data", data).put("name", formattedName).put(LONG_DATE, name)
-                    .put("type", this.getSeriesType(id, formattedName))
+                    .put("type", this.getSeriesType(id, formattedName)).put("yAxis", yAxis)
                     .put("dimensionIDs", dimensionIDs)
                     .put("targetIDs", JSONArray.create().put(id));
 

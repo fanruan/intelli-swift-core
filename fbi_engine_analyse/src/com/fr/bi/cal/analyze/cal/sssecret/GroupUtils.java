@@ -6,6 +6,7 @@ import com.fr.bi.cal.analyze.cal.index.loader.TargetAndKey;
 import com.fr.bi.cal.analyze.cal.multithread.BIMultiThreadExecutor;
 import com.fr.bi.cal.analyze.cal.multithread.BISingleThreadCal;
 import com.fr.bi.cal.analyze.cal.multithread.SummaryCall;
+import com.fr.bi.cal.analyze.cal.result.NodeCreator;
 import com.fr.bi.cal.analyze.cal.result.Node;
 import com.fr.bi.cal.analyze.cal.result.NodeAndPageInfo;
 import com.fr.bi.cal.analyze.cal.result.NodeUtils;
@@ -19,14 +20,26 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class GroupUtils {
 
 
-    public static NodeAndPageInfo createNextPageMergeNode(NodeDimensionIterator iterator, Operator op, boolean showSum, boolean shouldSetIndex, int sumLength, BIMultiThreadExecutor executor) {
+    /**
+     *
+     * @param iterator
+     * @param op
+     * @param showSum 是否显示汇总（只控制是否计算索引）
+     * @param shouldSetIndex
+     * @param shouldSum 是否需要计算汇总值（控制是否算指标的值）
+     * @param nodeCreator
+     * @param sumLength
+     * @param executor
+     * @return
+     */
+    public static NodeAndPageInfo createNextPageMergeNode(NodeDimensionIterator iterator, Operator op, boolean showSum, boolean shouldSetIndex, boolean shouldSum, NodeCreator nodeCreator, int sumLength, BIMultiThreadExecutor executor) {
 
-        return createMergePageNode(iterator, op, showSum, shouldSetIndex, sumLength, executor);
+        return createMergePageNode(iterator, op, showSum, shouldSetIndex, shouldSum, nodeCreator, sumLength, executor);
     }
 
-    private static NodeAndPageInfo createMergePageNode(NodeDimensionIterator iterator, Operator op, boolean showSum, boolean shouldSetIndex, int sumLength, BIMultiThreadExecutor executor) {
+    private static NodeAndPageInfo createMergePageNode(NodeDimensionIterator iterator, Operator op, boolean showSum, boolean shouldSetIndex, boolean shouldSum, NodeCreator nodeCreator, int sumLength, BIMultiThreadExecutor executor) {
 
-        Node node = new Node(sumLength);
+        Node node = nodeCreator.createNode(sumLength);
         GroupConnectionValue gc = iterator.next();
         if (gc == null) {
             return new NodeAndPageInfo(node, iterator);
@@ -35,14 +48,15 @@ public class GroupUtils {
         AtomicInteger count = new AtomicInteger(0);
         AtomicInteger size = new AtomicInteger(0);
         Status allAdded = new Status();
-        addSummaryValue(node, gc, showSum, shouldSetIndex, executor, count, size, calculated, allAdded);
+        addSummaryValue(node, gc, nodeCreator, showSum, shouldSetIndex, shouldSum, executor, count, size, calculated, allAdded);
         // BI-6991 根节点才需要依靠showSum属性进行显示汇总,子节点需要一直进行显示
-        addChild(iterator, op, true, shouldSetIndex, sumLength, executor, node, gc, count, size, calculated, allAdded);
+        // pony 这边问了交互了，说一开始不好做，就定了都展示了，现在能做出来不展示了，就不展示了
+        addChild(iterator, op, showSum, shouldSetIndex, shouldSum, nodeCreator, sumLength, executor, node, gc, count, size, calculated, allAdded);
         allAdded.setCompleted();
         if (executor == null || count.get() == size.get()){
             calculated.setCompleted();
         }
-        if (!calculated.isCompleted()) {
+        if (!calculated.isCompleted() && shouldSum) {
             //没完成的话要唤醒下executor，以防有加到executor里wait住的。
             executor.wakeUp();
             synchronized (size) {
@@ -60,13 +74,12 @@ public class GroupUtils {
         return new NodeAndPageInfo(node, iterator);
     }
 
-    private static void addChild(NodeDimensionIterator iterator, Operator op, boolean showSum, boolean shouldSetIndex, int sumLength, BIMultiThreadExecutor executor, Node node, GroupConnectionValue gc, AtomicInteger count, AtomicInteger size,  Status status, Status allAdded) {
+    private static void addChild(NodeDimensionIterator iterator, Operator op, boolean showSum, boolean shouldSetIndex, boolean shouldSum, NodeCreator nodeCreator, int sumLength, BIMultiThreadExecutor executor, Node node, GroupConnectionValue gc, AtomicInteger count, AtomicInteger size, Status status, Status allAdded) {
         List<GroupConnectionValue> display = gc.getDisplayGroupConnectionValue();
         Iterator<GroupConnectionValue> displayIter = display.iterator();
         if (displayIter.hasNext()) {
             gc = displayIter.next();
         }
-        addSummaryValue(node, gc, showSum, shouldSetIndex, executor, count, size, status, allAdded);
         while (!op.isPageEnd(gc) && gc != null && gc.getChild() != null) {
             GroupConnectionValue gcvChild = gc.getChild();
             Node parent = node;
@@ -74,11 +87,11 @@ public class GroupUtils {
                 Object data = gcvChild.getData();
                 Node child = parent.getChild(data);
                 if (child == null) {
-                    child = new Node(data, sumLength);
+                    child = nodeCreator.createNode(data, sumLength);
                     parent.addChild(child);
                 }
                 parent = child;
-                addSummaryValue(child, gcvChild, showSum, shouldSetIndex, executor, count, size, status, allAdded);
+                addSummaryValue(child, gcvChild, nodeCreator, showSum, shouldSetIndex, shouldSum, executor, count, size, status, allAdded);
                 gcvChild = gcvChild.getChild();
             }
             op.addRow();
@@ -107,13 +120,13 @@ public class GroupUtils {
      * @param node
      * @param shouldSetIndex
      */
-    private static void addSummaryValue(Node node, GroupConnectionValue gcv, boolean showSum, boolean shouldSetIndex, BIMultiThreadExecutor executor,  AtomicInteger count, AtomicInteger size,  Status calculated, Status allAdded) {
+    private static void addSummaryValue(Node node, GroupConnectionValue gcv, NodeCreator creator, boolean showSum, boolean shouldSetIndex, boolean shouldSum, BIMultiThreadExecutor executor,  AtomicInteger count, AtomicInteger size,  Status calculated, Status allAdded) {
 
         if (showSum || gcv.getChild() == null) {
             NoneDimensionGroup group = gcv.getCurrentValue();
             if (group != null) {
                 List<TargetAndKey>[] summaryLists = group.getSummaryLists();
-                node.setSummaryValue(group.getSummaryValue());
+                creator.copySumValue(node, group.getMergeResult());
                 GroupValueIndex[] gvis = group.getGvis();
                 if (gvis == null) {
                     return;
@@ -122,13 +135,15 @@ public class GroupUtils {
                 for (int i = 0; i < summaryLists.length; i++) {
                     List<TargetAndKey> targetAndKeys = summaryLists[i];
                     for (TargetAndKey targetAndKey : targetAndKeys) {
-                        if (node.getSummaryValue(targetAndKey.getTargetGettingKey()) == null) {
-                            BISingleThreadCal singleThreadCal = createSingleThreadCal(tis[i], node, targetAndKey, gvis[i], group.getLoader(), shouldSetIndex, count, size, calculated, allAdded);
-                            if (executor != null) {
-                                executor.add(singleThreadCal);
-                                size.incrementAndGet();
-                            } else {
-                                singleThreadCal.cal();
+                        if (node.getSummaryValue(targetAndKey.getTargetGettingKey()) == null && shouldSum) {
+                            for (TargetAndKey tk : creator.createTargetAndKeyList(targetAndKey)){
+                                BISingleThreadCal singleThreadCal = createSingleThreadCal(tis[i], node, tk, gvis[i], group.getLoader(), shouldSetIndex, count, size, calculated, allAdded);
+                                if (executor != null) {
+                                    executor.add(singleThreadCal);
+                                    size.incrementAndGet();
+                                } else {
+                                    singleThreadCal.cal();
+                                }
                             }
                         }
                         if (shouldSetIndex && node.getTargetIndex(targetAndKey.getTargetGettingKey()) == null) {

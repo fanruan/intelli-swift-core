@@ -222,6 +222,11 @@ public class VanGaugeWidget extends VanCartesianWidget{
         return JSONObject.EMPTY;
     }
 
+    @Override
+    protected boolean supportDataSheet() throws Exception {
+        return false;
+    }
+
     public String getSeriesType(String dimensionID){
         return "gauge";
     }

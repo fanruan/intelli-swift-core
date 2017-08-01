@@ -217,7 +217,7 @@ public class SingleDimensionGroup extends ExecutorPartner implements ILazyExecut
         if (isNull(metricMergeResult)) {
             return NoneDimensionGroup.NULL;
         }
-        return NoneDimensionGroup.createDimensionGroup(metricTables, summaryLists, sumLength, tis, metricMergeResult.getGvis(), metricMergeResult.getSummaryValue(), loader);
+        return NoneDimensionGroup.createDimensionGroup(metricTables, summaryLists, sumLength, tis, metricMergeResult, loader);
     }
 
     private boolean isNull(MetricMergeResult node) {
