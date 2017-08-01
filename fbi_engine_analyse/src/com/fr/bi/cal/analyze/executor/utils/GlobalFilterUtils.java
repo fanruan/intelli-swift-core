@@ -33,10 +33,13 @@ import com.fr.bi.stable.engine.index.key.IndexKey;
 import com.fr.bi.stable.gvi.GVIFactory;
 import com.fr.bi.stable.gvi.GVIUtils;
 import com.fr.bi.stable.gvi.GroupValueIndex;
+import com.fr.bi.stable.gvi.GroupValueIndexOrHelper;
 import com.fr.bi.stable.gvi.array.ICubeTableIndexReader;
 import com.fr.bi.stable.gvi.traversal.BrokenTraversalAction;
+import com.fr.bi.stable.gvi.traversal.SingleRowTraversalAction;
 import com.fr.bi.stable.utils.BICollectionUtils;
 import com.fr.bi.util.BIConfUtils;
+import com.fr.fs.control.UserControl;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;
 
@@ -459,5 +462,64 @@ public class GlobalFilterUtils {
             BILoggerFactory.getLogger(GlobalFilterUtils.class).info(e.getMessage(), e);
         }
         return ret;
+    }
+
+    /**
+     * p 是否是 c的主表
+     *
+     * @param p
+     * @param c
+     * @return
+     */
+    public static boolean isPrimaryTable(BusinessTable p, BusinessTable c) {
+
+        try {
+            Set<BITableRelationPath> set = BICubeConfigureCenter.getTableRelationManager().getAllPath(UserControl.getInstance().getSuperManagerID(), c, p);
+            if (set != null && set.size() > 0) {
+                return true;
+            }
+        } catch (Exception e) {
+            return false;
+        }
+        return false;
+    }
+
+    /**
+     * 根据主表的gvi获取字表的gvi如果不给路径则默认用第一条路径
+     *
+     * @param p
+     * @param c
+     * @param pgvi
+     * @param session
+     * @param relations
+     * @return
+     */
+    public static GroupValueIndex getGviFromPrimaryTable(BusinessTable p, BusinessTable c, GroupValueIndex pgvi, BISession session, List<BITableSourceRelation> relations) {
+
+        if (pgvi == null) {
+            return null;
+        }
+        // 关系为空默认选第一条
+        if (relations == null) {
+            try {
+                Set<BITableRelationPath> set = BICubeConfigureCenter.getTableRelationManager().getAllPath(UserControl.getInstance().getSuperManagerID(), c, p);
+                if (set != null && set.size() > 0) {
+                    relations = getRelation(set);
+                }
+            } catch (Exception e) {
+            }
+        }
+        ICubeTableService targetBaseTable = session.getLoader().getTableIndex(p.getTableSource());
+        final ICubeTableIndexReader indexReader = targetBaseTable.ensureBasicIndex(relations);
+        final GroupValueIndexOrHelper helper = new GroupValueIndexOrHelper();
+        pgvi.Traversal(new SingleRowTraversalAction() {
+
+            @Override
+            public void actionPerformed(int rowIndices) {
+
+                helper.add(indexReader.get(rowIndices));
+            }
+        });
+        return helper.compute();
     }
 }
