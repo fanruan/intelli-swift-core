@@ -33,16 +33,9 @@ import com.fr.bi.conf.fs.FBIConfig;
 import com.fr.bi.conf.fs.FBIConfigProvider;
 import com.fr.bi.conf.log.BILogManagerWithoutUser;
 import com.fr.bi.conf.manager.excelview.BIExcelViewManagerWithoutUser;
+import com.fr.bi.conf.manager.publicreport.BIPublicReportManager;
 import com.fr.bi.conf.manager.update.BIUpdateSettingManagerWithoutUser;
-import com.fr.bi.conf.provider.BIAuthorityManageProvider;
-import com.fr.bi.conf.provider.BIConfigureManagerCenter;
-import com.fr.bi.conf.provider.BICubeConfManagerProvider;
-import com.fr.bi.conf.provider.BICubeTaskRecordProvider;
-import com.fr.bi.conf.provider.BIDataConfigAuthorityProvider;
-import com.fr.bi.conf.provider.BIExcelViewManagerProvider;
-import com.fr.bi.conf.provider.BILogManagerProvider;
-import com.fr.bi.conf.provider.BIUpdateFrequencyManagerProvider;
-import com.fr.bi.conf.provider.BIUserLoginInformationProvider;
+import com.fr.bi.conf.provider.*;
 import com.fr.bi.conf.records.BICubeTaskRecordManagerWithoutUser;
 import com.fr.bi.conf.report.BIFSReportProvider;
 import com.fr.bi.conf.tablelock.BIConfTableLock;
@@ -72,6 +65,7 @@ import com.fr.bi.util.BIReadReportUtils;
 import com.fr.bi.web.base.Service4BIBase;
 import com.fr.bi.web.conf.Service4BIConfigure;
 import com.fr.bi.web.dezi.web.Service4BIDezi;
+import com.fr.bi.web.report.Service4BIPublic;
 import com.fr.bi.web.report.Service4BIReport;
 import com.fr.bi.web.report.services.finecube.Service4FineCube;
 import com.fr.bi.web.report.utils.BIFSReportManager;
@@ -176,6 +170,8 @@ public class BICoreModule extends AbstractModule {
 
         StableFactory.registerMarkedObject(BIDataConfigAuthorityProvider.XML_TAG, new BISystemDataConfigAuthorityManager());
         StableFactory.registerMarkedObject(BITableDataDAOProvider.XML_TAG, getBITableDataDAOManager());
+
+        StableFactory.registerMarkedObject(BIPublicReportMangerProvider.XML_TAG, new BIPublicReportManager());
 
     }
     public BICubeTaskRecordProvider getBICubeTaskRecordManagerWithoutUser() {
@@ -721,6 +717,7 @@ public class BICoreModule extends AbstractModule {
                 new Service4BIDezi(),
                 new Service4BIBase(),
                 new Service4FineCube(),
+                new Service4BIPublic(),
         };
     }
 
