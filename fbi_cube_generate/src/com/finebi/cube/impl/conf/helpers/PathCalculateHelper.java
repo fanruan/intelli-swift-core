@@ -45,17 +45,17 @@ public class PathCalculateHelper {
     }
 
     public static Set<BITableSourceRelationPath> removePathAbsentRelation(Set<BITableSourceRelation> generatingRelations, Set<BITableSourceRelationPath> pathInConstruction,
-                                                                          Set<BITableSourceRelation> absentRelations, Set<BITableSourceRelationPath> absentPaths) {
-        Set<BITableSourceRelationPath> result = new HashSet<BITableSourceRelationPath>();
-        for (BITableSourceRelationPath path : pathInConstruction) {
-            boolean isNeed2Generate = true;
-            for (BITableSourceRelation relation : path.getAllRelations()) {
-                if (!isRelationExistOrGenerating(relation, generatingRelations, absentRelations)) {
-                    isNeed2Generate = false;
-                    break;
-                }
+                        Set<BITableSourceRelation> absentRelations, Set<BITableSourceRelationPath> absentPaths) {
+                    Set<BITableSourceRelationPath> result = new HashSet<BITableSourceRelationPath>();
+                    for (BITableSourceRelationPath path : pathInConstruction) {
+                        boolean isNeed2Generate = true;
+                        for (BITableSourceRelation relation : path.getAllRelations()) {
+                            if (!isRelationExistOrGenerating(relation, generatingRelations, absentRelations)) {
+                                isNeed2Generate = false;
+                                break;
+                            }
             }
-            if (isNeed2Generate && absentPaths.contains(path)) {
+            if (isNeed2Generate) {
                 result.add(path);
             }
         }

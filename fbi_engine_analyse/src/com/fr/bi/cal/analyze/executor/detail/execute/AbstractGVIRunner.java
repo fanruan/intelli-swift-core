@@ -3,7 +3,7 @@ package com.fr.bi.cal.analyze.executor.detail.execute;
 import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.conf.table.BusinessTable;
 import com.fr.bi.cal.analyze.executor.GVIRunner;
-import com.fr.bi.cal.analyze.report.report.widget.BIDetailWidget;
+import com.fr.bi.cal.analyze.report.report.widget.DetailWidget;
 import com.fr.bi.conf.report.widget.field.target.detailtarget.BIDetailTarget;
 import com.fr.bi.conf.report.widget.field.target.filter.TargetFilter;
 import com.fr.bi.stable.data.db.BIRowValue;
@@ -24,7 +24,7 @@ public abstract class AbstractGVIRunner implements GVIRunner {
 
     protected GroupValueIndex gvi;
 
-    protected BIDetailWidget widget;
+    protected DetailWidget widget;
     protected ICubeDataLoader loader;
     protected transient BIDetailTarget[] viewDimension;
     protected transient String[] sortTargets;
@@ -32,7 +32,7 @@ public abstract class AbstractGVIRunner implements GVIRunner {
     protected transient Map<String, TargetFilter> filterMap;
     protected long userId;
 
-    public AbstractGVIRunner(GroupValueIndex gvi, BIDetailWidget widget, ICubeDataLoader loader, long userId) {
+    public AbstractGVIRunner(GroupValueIndex gvi, DetailWidget widget, ICubeDataLoader loader, long userId) {
         this.userId = userId;
         this.gvi = gvi;
         this.widget = widget;
