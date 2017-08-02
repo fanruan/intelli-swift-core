@@ -105,6 +105,7 @@ public class PerformancePlugManager implements PerformancePlugManagerInterface {
             diskSortDumpThreshold = getLong(PERFORMANCE + ".diskSortDumpThreshold", diskSortDumpThreshold);
             diskSort = getBoolean(PERFORMANCE + ".useDiskSort", false);
             biThreadPoolSize = getInt(PERFORMANCE + ".biThreadPoolSize", biThreadPoolSize);
+            biTransportThreadPoolSize = getInt(PERFORMANCE + ".biTransportThreadPoolSize", biTransportThreadPoolSize);
             useStandardOutError = getBoolean(PERFORMANCE + ".useStandardOutError", useStandardOutError);
             verboseLog = getBoolean(PERFORMANCE + ".verboseLog", verboseLog);
             useLog4JPropertiesFile = getBoolean(PERFORMANCE + ".useLog4JPropertiesFile", useLog4JPropertiesFile);
@@ -144,6 +145,7 @@ public class PerformancePlugManager implements PerformancePlugManagerInterface {
         LOGGER.info("The value of {}.diskSortDumpThreshold is {}", PERFORMANCE, diskSortDumpThreshold);
         LOGGER.info("The value of {}.useDiskSort is {}", PERFORMANCE, diskSort);
         LOGGER.info("The value of {}.biThreadPoolSize is {}", PERFORMANCE, biThreadPoolSize);
+        LOGGER.info("The value of {}.biTransportThreadPoolSize is {}", PERFORMANCE, biTransportThreadPoolSize);
         LOGGER.info("The value of {}.useStandardOutError is {}", PERFORMANCE, useStandardOutError);
         LOGGER.info("The value of {}.verboseLog is {}", PERFORMANCE, verboseLog);
         LOGGER.info("The value of {}.useLog4JPropertiesFile is {}", PERFORMANCE, useLog4JPropertiesFile);
