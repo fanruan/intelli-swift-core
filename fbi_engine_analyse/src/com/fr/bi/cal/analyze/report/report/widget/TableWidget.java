@@ -4,7 +4,9 @@ package com.fr.bi.cal.analyze.report.report.widget;
 import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.conf.table.BusinessTable;
 import com.fr.bi.base.annotation.BICoreField;
-import com.fr.bi.cal.analyze.cal.result.*;
+import com.fr.bi.cal.analyze.cal.result.BIComplexExecutData;
+import com.fr.bi.cal.analyze.cal.result.ComplexExpander;
+import com.fr.bi.cal.analyze.cal.result.CrossExpander;
 import com.fr.bi.cal.analyze.cal.table.PolyCubeECBlock;
 import com.fr.bi.cal.analyze.executor.BIEngineExecutor;
 import com.fr.bi.cal.analyze.executor.paging.PagingFactory;
@@ -51,17 +53,9 @@ import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
 import com.fr.report.poly.TemplateBlock;
 import com.fr.stable.StringUtils;
-import com.taobao.top.link.embedded.websocket.util.StringUtil;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 
@@ -92,7 +86,7 @@ public class TableWidget extends BISummaryWidget {
 
     @BIIgnoreField
     private transient BISummaryTarget[] usedTargets;
-
+    @BICoreField
     private DetailChartSetting settings = new DetailChartSetting();
 
     protected Map<String, JSONArray> clicked = new HashMap<String, JSONArray>();
@@ -264,7 +258,6 @@ public class TableWidget extends BISummaryWidget {
 
     @Override
     public JSONObject createDataJSON(BISessionProvider session, HttpServletRequest req) throws Exception {
-
         BIEngineExecutor executor = getExecutor((BISession) session);
         JSONObject jo = new JSONObject();
         if (executor != null) {
