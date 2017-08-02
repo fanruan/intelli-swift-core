@@ -1,6 +1,6 @@
 package com.fr.bi.cal.analyze.cal.table;
 
-import com.fr.bi.cal.analyze.report.report.widget.imp.TableWidget;
+import com.fr.bi.cal.analyze.report.report.widget.TableWidget;
 import com.fr.bi.cal.analyze.session.BISession;
 import com.fr.general.ComparatorUtils;
 import com.fr.report.core.block.BlockSequenceExecutor;

@@ -11,7 +11,8 @@ import com.fr.bi.cal.analyze.executor.utils.ExecutorUtils;
 import com.fr.bi.cal.analyze.report.report.widget.TableWidget;
 import com.fr.bi.cal.analyze.session.BISession;
 import com.fr.bi.cal.report.engine.CBCell;
-import com.fr.bi.conf.report.style.DetailChartSetting;
+import com.fr.bi.conf.report.conf.BIWidgetConf;
+import com.fr.bi.conf.report.style.BITableStyle;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.conf.report.widget.field.target.BITarget;
 import com.fr.bi.field.target.target.BISummaryTarget;
@@ -22,8 +23,11 @@ import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;
 
 import java.awt.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 public abstract class AbstractTableWidgetExecutor<T> extends BIAbstractExecutor<T> {
 
@@ -35,6 +39,8 @@ public abstract class AbstractTableWidgetExecutor<T> extends BIAbstractExecutor<
 
     protected TableWidget widget;
 
+    protected static BITableStyle tableStyle;
+
     protected AbstractTableWidgetExecutor(TableWidget widget, Paging paging, BISession session) {
 
         super(widget, paging, session);
@@ -42,6 +48,8 @@ public abstract class AbstractTableWidgetExecutor<T> extends BIAbstractExecutor<
         usedSumTarget = widget.getViewTargets();
         allSumTarget = widget.getTargets();
         allDimensions = widget.getDimensions();
+
+        tableStyle= new BITableStyle(widget.getThemeColor());
 
         //        this.expander = CrossExpander.ALL_EXPANDER;
     }
@@ -62,10 +70,10 @@ public abstract class AbstractTableWidgetExecutor<T> extends BIAbstractExecutor<
         return null;
     }
 
-    protected static CBCell formatTargetCell(Object data, DetailChartSetting setting, TargetGettingKey key, int rowIdx, int columnIdx, Style style) {
-        int numLevel = setting.getNumberLevelByTargetId(key.getTargetName());
-        int formatDecimal = setting.getFormatDecimalByTargetId(key.getTargetName());
-        boolean separator = setting.getSeparatorByTargetId(key.getTargetName());
+    protected static CBCell formatTargetCell(Object data, BIWidgetConf setting, TargetGettingKey key, int rowIdx, int columnIdx, Style style) {
+        int numLevel = setting.getNumberLevelByTargetID(key.getTargetName());
+        int formatDecimal = setting.getFormatDecimalByTargetID(key.getTargetName());
+        boolean separator = setting.getSeparatorByTargetID(key.getTargetName());
         data = ExecutorUtils.formatExtremeSumValue(data, numLevel);
         style = style.deriveFormat(ExecutorUtils.formatDecimalAndSeparator(data, numLevel, formatDecimal, separator));
         return ExecutorUtils.createCBCell(data, rowIdx, 1, columnIdx, 1, style);

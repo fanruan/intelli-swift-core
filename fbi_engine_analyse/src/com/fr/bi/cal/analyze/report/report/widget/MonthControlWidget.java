@@ -1,4 +1,4 @@
-package com.fr.bi.cal.analyze.report.report.widget.imp;
+package com.fr.bi.cal.analyze.report.report.widget;
 
 import com.finebi.cube.api.ICubeColumnIndexReader;
 import com.finebi.cube.relation.BITableSourceRelation;
@@ -8,7 +8,7 @@ import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.conf.session.BISessionProvider;
 import com.fr.bi.report.result.DimensionCalculator;
 import com.fr.bi.stable.constant.BIReportConstant;
-import com.fr.bi.stable.operation.group.group.date.SeasonGroup;
+import com.fr.bi.stable.operation.group.group.date.MonthGroup;
 import com.fr.bi.stable.operation.group.group.date.YearGroup;
 import com.fr.json.JSONObject;
 import com.fr.report.poly.PolyECBlock;
@@ -18,7 +18,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
 
-public class QuarterControlWidget extends TableWidget {
+public class MonthControlWidget extends TableWidget {
 
     @Override
     public int isOrder() {
@@ -34,17 +34,17 @@ public class QuarterControlWidget extends TableWidget {
         YearGroup group = new YearGroup();
         group.setType(BIReportConstant.GROUP.Y);
         dimension.setGroup(group);
-        jo.put("year", createYearOrQuarterData(dimension, session));
+        jo.put("year", createYearOrMonthData(dimension, session));
 
-        //算季度
-        SeasonGroup season = new SeasonGroup();
-        season.setType(BIReportConstant.GROUP.S);
-        dimension.setGroup(season);
-        jo.put("quarter", createYearOrQuarterData(dimension, session));
+        //算月份
+        MonthGroup month = new MonthGroup();
+        month.setType(BIReportConstant.GROUP.M);
+        dimension.setGroup(month);
+        jo.put("month", createYearOrMonthData(dimension, session));
         return jo;
     }
 
-    private List<Integer> createYearOrQuarterData(BIDimension dimension, BISessionProvider session) {
+    private List<Integer> createYearOrMonthData(BIDimension dimension, BISessionProvider session) {
         DimensionCalculator calculator = dimension.createCalculator(dimension.getStatisticElement(), new ArrayList<BITableSourceRelation>());
 
         ICubeColumnIndexReader reader = calculator.createNoneSortGroupValueMapGetter(dimension.getStatisticElement().getTableBelongTo(), session.getLoader());

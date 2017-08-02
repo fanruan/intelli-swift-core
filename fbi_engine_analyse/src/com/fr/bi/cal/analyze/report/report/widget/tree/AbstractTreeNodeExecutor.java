@@ -6,7 +6,7 @@ import com.finebi.cube.api.ICubeValueEntryGetter;
 import com.finebi.cube.relation.BITableSourceRelation;
 import com.fr.bi.cal.analyze.executor.paging.Paging;
 import com.fr.bi.cal.analyze.executor.tree.TreeExecutor;
-import com.fr.bi.cal.analyze.report.report.widget.imp.TreeWidget;
+import com.fr.bi.cal.analyze.report.report.widget.TreeWidget;
 import com.fr.bi.cal.analyze.session.BISession;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.stable.constant.BIReportConstant;
