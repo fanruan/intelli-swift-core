@@ -3,11 +3,7 @@ package com.fr.bi.module;
 import com.finebi.cube.api.ICubeDataLoaderCreator;
 import com.finebi.cube.api.UserAnalysisCubeDataLoaderCreator;
 import com.finebi.cube.common.log.BILoggerFactory;
-import com.finebi.cube.conf.BIAliasManagerProvider;
-import com.finebi.cube.conf.BICubeManagerProvider;
-import com.finebi.cube.conf.BIDataSourceManagerProvider;
-import com.finebi.cube.conf.BISystemPackageConfigurationProvider;
-import com.finebi.cube.conf.BITableRelationConfigurationProvider;
+import com.finebi.cube.conf.*;
 import com.finebi.cube.conf.datasource.BIDataSourceManagerWithoutUser;
 import com.finebi.cube.conf.pack.data.BIPackageID;
 import com.finebi.cube.conf.pack.imp.BISystemPackageConfigurationManagerWithoutUser;
@@ -17,6 +13,7 @@ import com.finebi.cube.conf.timer.UpdateFrequencyManager;
 import com.finebi.cube.conf.trans.BIAliasManagerWithoutUser;
 import com.fr.base.FRContext;
 import com.fr.bi.cal.BICubeManager;
+import com.fr.bi.cal.analyze.cal.index.loader.cache.WidgetDataCacheManager;
 import com.fr.bi.cal.generate.timerTask.BICubeTimeTaskCreatorManager;
 import com.fr.bi.cal.generate.timerTask.BICubeTimeTaskCreatorProvider;
 import com.fr.bi.cluster.ClusterAdapter;
@@ -29,43 +26,16 @@ import com.fr.bi.conf.base.dataconfig.BISystemDataConfigAuthorityManager;
 import com.fr.bi.conf.base.datasource.BIConnectionManager;
 import com.fr.bi.conf.base.datasource.BIConnectionProvider;
 import com.fr.bi.conf.base.login.BISystemUserLoginInformationManager;
-import com.fr.bi.conf.fs.FBIConfig;
-import com.fr.bi.conf.fs.FBIConfigProvider;
 import com.fr.bi.conf.log.BILogManagerWithoutUser;
 import com.fr.bi.conf.manager.excelview.BIExcelViewManagerWithoutUser;
 import com.fr.bi.conf.manager.update.BIUpdateSettingManagerWithoutUser;
-import com.fr.bi.conf.provider.BIAuthorityManageProvider;
-import com.fr.bi.conf.provider.BIConfigureManagerCenter;
-import com.fr.bi.conf.provider.BICubeConfManagerProvider;
-import com.fr.bi.conf.provider.BICubeTaskRecordProvider;
-import com.fr.bi.conf.provider.BIDataConfigAuthorityProvider;
-import com.fr.bi.conf.provider.BIExcelViewManagerProvider;
-import com.fr.bi.conf.provider.BILogManagerProvider;
-import com.fr.bi.conf.provider.BIUpdateFrequencyManagerProvider;
-import com.fr.bi.conf.provider.BIUserLoginInformationProvider;
+import com.fr.bi.conf.provider.*;
 import com.fr.bi.conf.records.BICubeTaskRecordManagerWithoutUser;
 import com.fr.bi.conf.report.BIFSReportProvider;
 import com.fr.bi.conf.tablelock.BIConfTableLock;
 import com.fr.bi.conf.tablelock.BIConfTableLockDAO;
-import com.fr.bi.conf.template.TemplateConfig;
-import com.fr.bi.conf.template.TemplateConfigProvider;
-import com.fr.bi.fs.BIDAOProvider;
-import com.fr.bi.fs.BIDAOUtils;
-import com.fr.bi.fs.BIReportDAO;
-import com.fr.bi.fs.BIReportNodeLock;
-import com.fr.bi.fs.BIReportNodeLockDAO;
-import com.fr.bi.fs.BISuperManagetDAOManager;
-import com.fr.bi.fs.BITableMapper;
-import com.fr.bi.fs.HSQLBIReportDAO;
-import com.fr.bi.fs.TableDataBIReportDAO;
-import com.fr.bi.fs.BITableDataDAOProvider;
-import com.fr.bi.fs.BITableDataDAOManager;
-import com.fr.bi.resource.BaseResourceHelper;
-import com.fr.bi.resource.CommonResourceHelper;
-import com.fr.bi.resource.ConfResourceHelper;
-import com.fr.bi.resource.DeziResourceHelper;
-import com.fr.bi.resource.ResourceConstants;
-import com.fr.bi.resource.ShowResourceHelper;
+import com.fr.bi.fs.*;
+import com.fr.bi.resource.*;
 import com.fr.bi.stable.utils.BIDBUtils;
 import com.fr.bi.tool.BIReadReportProvider;
 import com.fr.bi.util.BIReadReportUtils;
@@ -95,12 +65,7 @@ import com.fr.stable.bridge.StableFactory;
 import com.fr.stable.fun.Service;
 import com.fr.web.core.db.PlatformDB;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
-import java.sql.SQLException;
-import java.sql.Types;
+import java.sql.*;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Locale;
@@ -706,8 +671,8 @@ public class BICoreModule extends AbstractModule {
     }
 
     @Override
-    public void clearAnalysisETLCache(long userId) {
-
+    public void clearCacheAfterBuildCubeTask(long userId) {
+        WidgetDataCacheManager.getInstance().clear();
     }
 
     private void registerSystemManager() {

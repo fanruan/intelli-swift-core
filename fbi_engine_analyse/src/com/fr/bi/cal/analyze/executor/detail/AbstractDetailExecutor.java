@@ -12,7 +12,7 @@ import com.fr.bi.cal.analyze.executor.BIAbstractExecutor;
 import com.fr.bi.cal.analyze.executor.iterator.StreamPagedIterator;
 import com.fr.bi.cal.analyze.executor.paging.Paging;
 import com.fr.bi.cal.analyze.executor.utils.ExecutorUtils;
-import com.fr.bi.cal.analyze.report.report.widget.BIDetailWidget;
+import com.fr.bi.cal.analyze.report.report.widget.DetailWidget;
 import com.fr.bi.cal.analyze.report.report.widget.TableWidget;
 import com.fr.bi.cal.analyze.session.BISession;
 import com.fr.bi.cal.report.engine.CBBoxElement;
@@ -54,10 +54,10 @@ public abstract class AbstractDetailExecutor extends BIAbstractExecutor<JSONObje
     protected transient String[] sortTargets;
     private transient GroupValueIndex currentGvi;
     protected transient long userId;
-    protected BIDetailWidget widget;
+    protected DetailWidget widget;
     protected BITableStyle tableStyle;
 
-    public AbstractDetailExecutor(BIDetailWidget widget, Paging paging, BISession session) {
+    public AbstractDetailExecutor(DetailWidget widget, Paging paging, BISession session) {
         super(widget, paging, session);
         this.target = widget.getTargetDimension();
         this.widget = widget;

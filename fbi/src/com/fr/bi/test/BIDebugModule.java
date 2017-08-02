@@ -73,7 +73,7 @@ public class BIDebugModule extends AbstractModule {
     }
 
     @Override
-    public void clearAnalysisETLCache(long userId) {
+    public void clearCacheAfterBuildCubeTask(long userId) {
 
     }
 }
