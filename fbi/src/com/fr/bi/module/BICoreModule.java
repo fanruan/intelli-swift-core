@@ -29,8 +29,6 @@ import com.fr.bi.conf.base.dataconfig.BISystemDataConfigAuthorityManager;
 import com.fr.bi.conf.base.datasource.BIConnectionManager;
 import com.fr.bi.conf.base.datasource.BIConnectionProvider;
 import com.fr.bi.conf.base.login.BISystemUserLoginInformationManager;
-import com.fr.bi.conf.fs.FBIConfig;
-import com.fr.bi.conf.fs.FBIConfigProvider;
 import com.fr.bi.conf.log.BILogManagerWithoutUser;
 import com.fr.bi.conf.manager.excelview.BIExcelViewManagerWithoutUser;
 import com.fr.bi.conf.manager.update.BIUpdateSettingManagerWithoutUser;
@@ -47,8 +45,6 @@ import com.fr.bi.conf.records.BICubeTaskRecordManagerWithoutUser;
 import com.fr.bi.conf.report.BIFSReportProvider;
 import com.fr.bi.conf.tablelock.BIConfTableLock;
 import com.fr.bi.conf.tablelock.BIConfTableLockDAO;
-import com.fr.bi.conf.template.TemplateConfig;
-import com.fr.bi.conf.template.TemplateConfigProvider;
 import com.fr.bi.fs.BIDAOProvider;
 import com.fr.bi.fs.BIDAOUtils;
 import com.fr.bi.fs.BIReportDAO;
@@ -706,7 +702,7 @@ public class BICoreModule extends AbstractModule {
     }
 
     @Override
-    public void clearAnalysisETLCache(long userId) {
+    public void clearCacheAfterBuildCubeTask(long userId) {
 
     }
 
