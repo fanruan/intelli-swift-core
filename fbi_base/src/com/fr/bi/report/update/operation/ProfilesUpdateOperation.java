@@ -44,7 +44,6 @@ public class ProfilesUpdateOperation implements ReportUpdateOperation {
 
     public ProfilesUpdateOperation() {
         try {
-            createChartTypeMap();
             createDotWidgetKeysMap();
             if (null == keys) {
                 keys = readKeyJson();
@@ -72,6 +71,7 @@ public class ProfilesUpdateOperation implements ReportUpdateOperation {
     @Override
     public JSONObject update(JSONObject reportSetting) throws JSONException {
         if (BIJsonUtils.isKeyValueSet(reportSetting.toString())) {
+            initChartTypeMap(reportSetting);
             reportSetting = recursionMapUpdate(reportSetting.toString());
             return reportSetting;
         } else {
@@ -356,7 +356,7 @@ public class ProfilesUpdateOperation implements ReportUpdateOperation {
                     String widgetId = keys.next().toString();
                     JSONObject widgetJo = jo.getJSONObject("widgets").getJSONObject(widgetId);
                     boolean isCombineChart = BIReportConstant.WIDGET.COMBINE_CHART == widgetJo.getInt("type") || BIReportConstant.WIDGET.MULTI_AXIS_COMBINE_CHART == widgetJo.getInt("type");
-                    if (isCombineChart && !jo.has("scopes")) {
+                    if (isCombineChart && !widgetJo.has("scopes")) {
                         updateCombineChartView(widgetJo);
                     }
                 }
@@ -427,30 +427,35 @@ public class ProfilesUpdateOperation implements ReportUpdateOperation {
     * 映射图标type
     * */
     private int updateChartType(int chartType) {
-        if (chartTypeMap.containsKey(chartType)) {
-            return chartTypeMap.get(chartType);
-        } else {
-            BILoggerFactory.getLogger().error("the chartType: " + chartType + " is absent in this version");
-            return BIChartSettingConstant.ACCUMULATE_TYPE.COLUMN;
-        }
+//        if (chartTypeMap.containsKey(chartType)) {
+//            return chartTypeMap.get(chartType);
+//        } else {
+//            BILoggerFactory.getLogger().error("the chartType: " + chartType + " is absent in this version");
+//            return BIChartSettingConstant.ACCUMULATE_TYPE.COLUMN;
+//        }
+        return chartTypeMap.containsKey(chartType) ? chartTypeMap.get(chartType) : chartType;
     }
 
     /* * 规则：
     柱状图 5 -> 柱状图
     面积图 14 -> 面积图
-    堆积面积图 15-> 堆积面积图（折线）
-    折线图 13-> （折线）
-     堆积柱状图 6 -> （堆积柱状图）
+    堆积面积图 15-> 堆积面积图（折线）15
+    折线图 13-> （折线）9
+     堆积柱状图 6 -> （堆积柱状图）2
+    * BI-6186  存在同一版本下重复升级的情况，若当前version相同的话，直接返回原值就可以了
     */
-    private void createChartTypeMap() {
+    private void initChartTypeMap(JSONObject reportSetting) {
         Map<Integer, Integer> convertMap = new HashMap<Integer, Integer>();
-        convertMap.put(BIChartSettingConstant.ACCUMULATE_TYPE.OLD_COLUMN, BIChartSettingConstant.ACCUMULATE_TYPE.COLUMN);
-        convertMap.put(BIChartSettingConstant.ACCUMULATE_TYPE.OLD_AREA_CURVE, BIChartSettingConstant.ACCUMULATE_TYPE.AREA_CURVE);
-        convertMap.put(BIChartSettingConstant.ACCUMULATE_TYPE.OLD_STACKED_AREA, BIChartSettingConstant.ACCUMULATE_TYPE.STACKED_AREA_NORMAL);
-        convertMap.put(BIChartSettingConstant.ACCUMULATE_TYPE.OLD_LINE, BIChartSettingConstant.ACCUMULATE_TYPE.LINE_NORMAL);
-        convertMap.put(BIChartSettingConstant.ACCUMULATE_TYPE.OLD_ACCUMULATE_AXIS, BIChartSettingConstant.ACCUMULATE_TYPE.STACKED_COLUMN);
-        //default type=1
-        convertMap.put(BIChartSettingConstant.ACCUMULATE_TYPE.COLUMN, BIChartSettingConstant.ACCUMULATE_TYPE.COLUMN);
+        boolean isVersion402 = ReportVersionEnum.VERSION_4_0_2.getVersion().equals(reportSetting.optString("version"));
+        if (!isVersion402) {
+            convertMap.put(BIChartSettingConstant.ACCUMULATE_TYPE.OLD_COLUMN, BIChartSettingConstant.ACCUMULATE_TYPE.COLUMN);
+            convertMap.put(BIChartSettingConstant.ACCUMULATE_TYPE.OLD_AREA_CURVE, BIChartSettingConstant.ACCUMULATE_TYPE.AREA_CURVE);
+            convertMap.put(BIChartSettingConstant.ACCUMULATE_TYPE.OLD_STACKED_AREA, BIChartSettingConstant.ACCUMULATE_TYPE.STACKED_AREA_NORMAL);
+            convertMap.put(BIChartSettingConstant.ACCUMULATE_TYPE.OLD_LINE, BIChartSettingConstant.ACCUMULATE_TYPE.LINE_NORMAL);
+            convertMap.put(BIChartSettingConstant.ACCUMULATE_TYPE.OLD_ACCUMULATE_AXIS, BIChartSettingConstant.ACCUMULATE_TYPE.STACKED_COLUMN);
+            //default type=1
+            convertMap.put(BIChartSettingConstant.ACCUMULATE_TYPE.COLUMN, BIChartSettingConstant.ACCUMULATE_TYPE.COLUMN);
+        }
         this.chartTypeMap = convertMap;
     }
 

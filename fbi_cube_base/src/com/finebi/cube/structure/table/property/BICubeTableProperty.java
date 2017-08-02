@@ -466,7 +466,6 @@ public class BICubeTableProperty implements ICubeTablePropertyService {
     @Override
     public List<ITableKey> getParentsTable() {
         initialParentsTable();
-        resetParentReader();
         return parentTable;
     }
 
@@ -474,7 +473,6 @@ public class BICubeTableProperty implements ICubeTablePropertyService {
     public int getRowCount() {
         try {
             String rowCount = String.valueOf(getRowCountReader().getSpecificValue(0));
-            resetRowCountReader();
             return Integer.parseInt(rowCount);
         } catch (BIResourceInvalidException e) {
             BILoggerFactory.getLogger().error(e.getMessage(), e);
@@ -540,21 +538,18 @@ public class BICubeTableProperty implements ICubeTablePropertyService {
     @Override
     public List<ICubeFieldSource> getFieldInfo() {
         initialField();
-        resetFieldReader();
         return tableFields;
     }
 
     @Override
     public Boolean isPropertyExist() {
         boolean isPropertyExist = getFieldInfoReader().canRead();
-        resetFieldReader();
         return isPropertyExist;
     }
 
     @Override
     public Boolean isRowCountAvailable() {
         boolean isRowCountAvailable = getRowCountReader().canRead();
-        resetRowCountReader();
         return isRowCountAvailable;
     }
 
@@ -748,21 +743,18 @@ public class BICubeTableProperty implements ICubeTablePropertyService {
     @Override
     public boolean isRemovedListAvailable() {
         boolean isRemovedListAvailable = getRemovedListReader().canRead();
-        resetRemoveListReader();
         return isRemovedListAvailable;
     }
 
     @Override
     public boolean isLastExecuteTimeAvailable() {
         boolean isLastExecuteTimeAvailable = getLastExecuteTimeReader().canRead();
-        resetLastExecuteTimeReader();
         return isLastExecuteTimeAvailable;
     }
 
     @Override
     public boolean isCurrentExecuteTimeAvailable() {
         boolean isCurrentExecuteTimeAvailable = getCurrentExecuteTimeReader().canRead();
-        resetCurrentExecuteTimeReader();
         return isCurrentExecuteTimeAvailable;
     }
 

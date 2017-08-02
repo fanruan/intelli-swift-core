@@ -1,4 +1,4 @@
-package com.fr.bi.cal.analyze.report.report.widget.imp;
+package com.fr.bi.cal.analyze.report.report.widget;
 
 
 import com.finebi.cube.common.log.BILoggerFactory;
@@ -17,18 +17,17 @@ import com.fr.bi.cal.analyze.executor.table.ComplexHorGroupExecutor;
 import com.fr.bi.cal.analyze.executor.table.CrossExecutor;
 import com.fr.bi.cal.analyze.executor.table.GroupExecutor;
 import com.fr.bi.cal.analyze.executor.table.HorGroupExecutor;
-import com.fr.bi.cal.analyze.executor.utils.GlobalFilterUtils;
-import com.fr.bi.cal.analyze.report.report.widget.calculator.builder.IExcelDataBuilder;
-import com.fr.bi.cal.analyze.report.report.widget.calculator.builder.SummaryComplexTableBuilder;
-import com.fr.bi.cal.analyze.report.report.widget.calculator.builder.SummaryCrossTableDataBuilder;
-import com.fr.bi.cal.analyze.report.report.widget.calculator.builder.SummaryGroupTableDataBuilder;
-import com.fr.bi.cal.analyze.report.report.widget.calculator.format.operation.BITableCellDateFormatOperation;
-import com.fr.bi.cal.analyze.report.report.widget.calculator.format.operation.BITableCellNumberFormatOperation;
-import com.fr.bi.cal.analyze.report.report.widget.calculator.format.operation.ITableCellFormatOperation;
-import com.fr.bi.cal.analyze.report.report.widget.calculator.format.setting.BICellFormatSetting;
-import com.fr.bi.cal.analyze.report.report.widget.calculator.format.setting.ICellFormatSetting;
-import com.fr.bi.cal.analyze.report.report.widget.calculator.item.constructor.DataConstructor;
-import com.fr.bi.cal.analyze.report.report.widget.calculator.format.utils.BITableConstructHelper;
+import com.fr.bi.cal.analyze.report.report.widget.chart.calculator.builder.IExcelDataBuilder;
+import com.fr.bi.cal.analyze.report.report.widget.chart.calculator.builder.SummaryComplexTableBuilder;
+import com.fr.bi.cal.analyze.report.report.widget.chart.calculator.builder.SummaryCrossTableDataBuilder;
+import com.fr.bi.cal.analyze.report.report.widget.chart.calculator.builder.SummaryGroupTableDataBuilder;
+import com.fr.bi.cal.analyze.report.report.widget.chart.calculator.format.operation.BITableCellDateFormatOperation;
+import com.fr.bi.cal.analyze.report.report.widget.chart.calculator.format.operation.BITableCellNumberFormatOperation;
+import com.fr.bi.cal.analyze.report.report.widget.chart.calculator.format.operation.ITableCellFormatOperation;
+import com.fr.bi.cal.analyze.report.report.widget.chart.calculator.format.setting.BICellFormatSetting;
+import com.fr.bi.cal.analyze.report.report.widget.chart.calculator.format.setting.ICellFormatSetting;
+import com.fr.bi.cal.analyze.report.report.widget.chart.calculator.item.constructor.DataConstructor;
+import com.fr.bi.cal.analyze.report.report.widget.chart.calculator.format.utils.BITableConstructHelper;
 import com.fr.bi.cal.analyze.report.report.widget.table.BITableReportSetting;
 import com.fr.bi.cal.analyze.report.report.widget.util.BIWidgetFactory;
 import com.fr.bi.cal.analyze.session.BISession;
@@ -38,16 +37,16 @@ import com.fr.bi.conf.report.SclCalculator;
 import com.fr.bi.conf.report.WidgetType;
 import com.fr.bi.conf.report.conf.BIWidgetConf;
 import com.fr.bi.conf.report.conf.BIWidgetSettings;
+import com.fr.bi.conf.report.style.BITableStyle;
+import com.fr.bi.conf.report.style.DetailChartSetting;
 import com.fr.bi.conf.report.widget.field.BITargetAndDimension;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.conf.report.widget.field.target.BITarget;
 import com.fr.bi.conf.session.BISessionProvider;
 import com.fr.bi.field.target.target.BISummaryTarget;
-import com.fr.bi.field.target.target.TargetType;
 import com.fr.bi.field.target.target.cal.target.configure.BIConfiguredCalculateTarget;
 import com.fr.bi.field.target.target.cal.target.configure.BIPeriodConfiguredCalculateTarget;
 import com.fr.bi.report.key.TargetGettingKey;
-import com.fr.bi.report.result.TargetCalculator;
 import com.fr.bi.stable.constant.BIJSONConstant;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.constant.BIStyleConstant;
@@ -101,6 +100,8 @@ public class TableWidget extends SummaryWidget implements SclCalculator {
 
     @BIIgnoreField
     private transient BISummaryTarget[] usedTargets;
+
+    private DetailChartSetting settings = new DetailChartSetting();
 
     protected Map<String, JSONArray> clicked = new HashMap<String, JSONArray>();
 
@@ -191,7 +192,8 @@ public class TableWidget extends SummaryWidget implements SclCalculator {
      */
     @Override
     public int isOrder() {
-        return getWidgetConf().isOrder();
+
+        return settings.isOrder();
     }
 
     public BIEngineExecutor getExecutor(BISession session) {
@@ -314,6 +316,10 @@ public class TableWidget extends SummaryWidget implements SclCalculator {
         if (jo.has(BIJSONConstant.JSON_KEYS.EXPANDER)) {
             parsExpander(jo);
         }
+        if (jo.has("settings")) {
+            settings = new DetailChartSetting();
+            settings.parseJSON(jo);
+        }
         if (jo.has("clicked")) {
             JSONObject c = jo.getJSONObject("clicked");
             Iterator it = c.keys();
@@ -412,6 +418,11 @@ public class TableWidget extends SummaryWidget implements SclCalculator {
         return dimensionIds.toArray(new String[0]);
     }
 
+    public DetailChartSetting getChartSetting() {
+
+        return settings;
+    }
+
     public String[] getAllDimensionIds() {
 
         Set<String> dimensionIds = new HashSet<String>();
@@ -467,13 +478,13 @@ public class TableWidget extends SummaryWidget implements SclCalculator {
 
     public boolean showRowToTal() {
 
-        return getWidgetSettings(widgetConf).isShowRowTotal();
+        return settings.showRowTotal();
     }
 
     @Override
     public boolean showColumnTotal() {
 
-        return getWidgetSettings(widgetConf).isShowColTotal();
+        return settings.showColTotal();
     }
 
     @Override
@@ -485,17 +496,6 @@ public class TableWidget extends SummaryWidget implements SclCalculator {
     public void setOperator(int operator) {
 
         this.operator = operator;
-    }
-
-    public String getThemeColor() {
-        switch (tableType) {
-            case BIReportConstant.WIDGET.TABLE:
-            case BIReportConstant.WIDGET.CROSS_TABLE:
-            case BIReportConstant.WIDGET.COMPLEX_TABLE:
-                return getWidgetSettings().getThemeColor();
-            default:
-                return BIStyleConstant.DEFAULT_CHART_SETTING.THEME_COLOR;
-        }
     }
 
     public boolean hasVerticalPrePage() {
@@ -575,7 +575,6 @@ public class TableWidget extends SummaryWidget implements SclCalculator {
      * @throws Exception
      */
     public GroupValueIndex getLinkFilter(TableWidget linkedWidget, BusinessTable targetKey, Map<String, JSONArray> clicked, BISession session) throws Exception {
-
         BIEngineExecutor linkExecutor = linkedWidget.getExecutor(session);
         GroupValueIndex linkGvi = null;
         // 分组表,交叉表,复杂表的时候才有联动的必要
@@ -715,61 +714,17 @@ public class TableWidget extends SummaryWidget implements SclCalculator {
         }
     }
 
-    /**
-     * 组件的基础表
-     * 只处理那种指标在同一个基础表里面的,取其中的一个指标进行获取其中关联的计算指标.
-     *
-     * @return
-     */
-    public BusinessTable getBaseTable() {
-
-        BISummaryTarget[] targets = getTargets();
-        for (BISummaryTarget target : targets) {
-            //这边只加普通指标，计算指标在其他地方处理
-            if (target == null || target.getType() != TargetType.NORMAL) {
-                continue;
-            }
-            TargetCalculator summary = target.createSummaryCalculator();
-            BusinessTable targetKey = summary.createTableKey();
-            return targetKey;
+    public BITableStyle getTableStyle() {
+        String themeColor;
+        switch (tableType) {
+            case BIReportConstant.WIDGET.TABLE:
+            case BIReportConstant.WIDGET.CROSS_TABLE:
+            case BIReportConstant.WIDGET.COMPLEX_TABLE:
+                themeColor = getWidgetSettings().getThemeColor();
+                break;
+            default:
+                themeColor = BIStyleConstant.DEFAULT_CHART_SETTING.THEME_COLOR;
         }
-        // TODO 维度上面的
-        BIDimension[] dimension = getDimensions();
-        for (BIDimension dim : dimension) {
-            return dim.createColumnKey().getTableBelongTo();
-        }
-        return null;
+        return new BITableStyle(themeColor);
     }
-
-    /**
-     * 跳转过滤
-     *
-     * @return
-     */
-    public GroupValueIndex getJumpLinkFilter(BusinessTable targetKey, long userId, BISession session) {
-
-        if (targetKey == null) {
-            return null;
-        }
-
-        // 如果是跳转打开的才需要进行设置
-        if (getGlobalFilterWidget() != null) {
-            // 如果已经设置了源字段和目标字段
-            if (((AbstractBIWidget) getGlobalFilterWidget()).getGlobalSourceAndTargetFieldList().size() > 0) {
-                return GlobalFilterUtils.getSettingSourceAndTargetJumpFilter(this, userId, session, targetKey, ((AbstractBIWidget) getGlobalFilterWidget()).getBaseTable());
-            } else {
-                return GlobalFilterUtils.getNotSettingSourceAndTargetJumpFilter(session, targetKey, this, false);
-            }
-        }
-        return null;
-    }
-
-    public BIDimension getDimensionBydId(String dId) {
-
-        if (dimensionsIdMap.containsKey(dId)) {
-            return dimensionsIdMap.get(dId);
-        }
-        return null;
-    }
-
 }

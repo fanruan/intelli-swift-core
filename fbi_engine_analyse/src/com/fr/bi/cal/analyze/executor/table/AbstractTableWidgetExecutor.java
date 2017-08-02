@@ -1,6 +1,5 @@
 package com.fr.bi.cal.analyze.executor.table;
 
-import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.conf.table.BusinessTable;
 import com.fr.base.Style;
 import com.fr.bi.cal.analyze.cal.index.loader.CubeIndexLoader;
@@ -9,11 +8,10 @@ import com.fr.bi.cal.analyze.cal.result.Node;
 import com.fr.bi.cal.analyze.executor.BIAbstractExecutor;
 import com.fr.bi.cal.analyze.executor.paging.Paging;
 import com.fr.bi.cal.analyze.executor.utils.ExecutorUtils;
-import com.fr.bi.cal.analyze.report.report.widget.imp.TableWidget;
+import com.fr.bi.cal.analyze.report.report.widget.TableWidget;
 import com.fr.bi.cal.analyze.session.BISession;
 import com.fr.bi.cal.report.engine.CBCell;
-import com.fr.bi.conf.report.conf.BIWidgetConf;
-import com.fr.bi.conf.report.style.BITableStyle;
+import com.fr.bi.conf.report.style.DetailChartSetting;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.conf.report.widget.field.target.BITarget;
 import com.fr.bi.field.target.target.BISummaryTarget;
@@ -37,8 +35,6 @@ public abstract class AbstractTableWidgetExecutor<T> extends BIAbstractExecutor<
 
     protected TableWidget widget;
 
-    protected static BITableStyle tableStyle;
-
     protected AbstractTableWidgetExecutor(TableWidget widget, Paging paging, BISession session) {
 
         super(widget, paging, session);
@@ -46,8 +42,6 @@ public abstract class AbstractTableWidgetExecutor<T> extends BIAbstractExecutor<
         usedSumTarget = widget.getViewTargets();
         allSumTarget = widget.getTargets();
         allDimensions = widget.getDimensions();
-
-        tableStyle = new BITableStyle(widget.getThemeColor());
 
         //        this.expander = CrossExpander.ALL_EXPANDER;
     }
@@ -68,11 +62,10 @@ public abstract class AbstractTableWidgetExecutor<T> extends BIAbstractExecutor<
         return null;
     }
 
-    protected static CBCell formatTargetCell(Object data, BIWidgetConf setting, TargetGettingKey key, int rowIdx, int columnIdx, Style style) {
-
-        int numLevel = setting.getNumberLevelByTargetID(key.getTargetName());
-        int formatDecimal = setting.getFormatDecimalByTargetID(key.getTargetName());
-        boolean separator = setting.getSeparatorByTargetID(key.getTargetName());
+    protected static CBCell formatTargetCell(Object data, DetailChartSetting setting, TargetGettingKey key, int rowIdx, int columnIdx, Style style) {
+        int numLevel = setting.getNumberLevelByTargetId(key.getTargetName());
+        int formatDecimal = setting.getFormatDecimalByTargetId(key.getTargetName());
+        boolean separator = setting.getSeparatorByTargetId(key.getTargetName());
         data = ExecutorUtils.formatExtremeSumValue(data, numLevel);
         style = style.deriveFormat(ExecutorUtils.formatDecimalAndSeparator(data, numLevel, formatDecimal, separator));
         return ExecutorUtils.createCBCell(data, rowIdx, 1, columnIdx, 1, style);
@@ -135,7 +128,6 @@ public abstract class AbstractTableWidgetExecutor<T> extends BIAbstractExecutor<
 
     /**
      * 获取点击的指标
-     *
      * @param clicked
      * @return
      */
@@ -154,18 +146,14 @@ public abstract class AbstractTableWidgetExecutor<T> extends BIAbstractExecutor<
 
     /**
      * 获取目标的gvi
-     *
      * @param target
      * @param n
      * @return
      */
     protected GroupValueIndex getTargetIndex(String target, Node n) {
-
-        if (n != null && target != null) {
-            for (BISummaryTarget t : allSumTarget) {
-                if (ComparatorUtils.equals(t.getName(), target)) {
-                    return n.getTargetIndex(t.createTargetGettingKey());
-                }
+        for (BISummaryTarget t : allSumTarget){
+            if (ComparatorUtils.equals(t.getName(), target)){
+                return n.getTargetIndex(t.createTargetGettingKey());
             }
         }
         return null;
@@ -177,15 +165,6 @@ public abstract class AbstractTableWidgetExecutor<T> extends BIAbstractExecutor<
             if (data.size() == 0) {
                 return getTargetIndex(target, n);
             }
-            Node parent = getClickNode(n, data);
-            return getTargetIndex(target, parent);
-        }
-        return null;
-    }
-
-    protected Node getClickNode(Node n, List<Object> data) {
-
-        if (n != null) {
             Node parent = n;
             for (int i = 0; i < data.size(); i++) {
                 Object cv = data.get(i);
@@ -198,14 +177,13 @@ public abstract class AbstractTableWidgetExecutor<T> extends BIAbstractExecutor<
                 }
                 parent = child;
             }
-            return parent;
+            return getTargetIndex(target, parent);
         }
         return null;
     }
 
     /**
      * 把以前放在BIEngineExecutor中的接口移到这边来,因为只可能需要表格才可能停在某一行
-     *
      * @param stopRow
      * @param dimensions
      * @return
@@ -303,7 +281,6 @@ public abstract class AbstractTableWidgetExecutor<T> extends BIAbstractExecutor<
      * @throws Exception
      */
     protected List<Object> getLinkRowData(Map<String, JSONArray> clicked, String target, boolean isHor) throws Exception {
-
         List r = new ArrayList<Object>();
         try {
             if (clicked != null) {
@@ -323,14 +300,13 @@ public abstract class AbstractTableWidgetExecutor<T> extends BIAbstractExecutor<
                         JSONObject object = keyJson.getJSONObject(i);
                         String click = object.getJSONArray("value").getString(0);
                         String did = object.getString("dId");
-                        rowData[j++] = click;
-                        r.add(click);
+                        rowData[j++] = click;r.add(click);
                     }
                 }
 
             }
         } catch (Exception e) {
-            BILoggerFactory.getLogger(this.getClass()).info(e.getMessage(), e);
+
         }
         return r;
     }
@@ -382,7 +358,7 @@ public abstract class AbstractTableWidgetExecutor<T> extends BIAbstractExecutor<
                 }
             }
         } catch (Exception e) {
-            BILoggerFactory.getLogger(this.getClass()).info(e.getMessage(), e);
+
         }
     }
 }
