@@ -1,0 +1,33 @@
+package com.fr.bi.cal.analyze.cal.index.loader.cache;
+
+import com.fr.bi.cal.analyze.cal.index.loader.WidgetKey;
+import com.fr.bi.stable.structure.collection.map.lru.LRUWithKConcurrentHashMap;
+
+/**
+ * Created by 小灰灰 on 2017/8/1.
+ */
+public class WidgetDataCacheManager {
+    private static WidgetDataCacheManager instance = new WidgetDataCacheManager();
+    private LRUWithKConcurrentHashMap<WidgetKey, WidgetCache> cache = new LRUWithKConcurrentHashMap<WidgetKey, WidgetCache>(1000);
+
+    public static WidgetDataCacheManager getInstance(){
+        return instance;
+    }
+
+    public boolean contains(WidgetKey key){
+        return cache.FIFOcontain(key) || cache.LRUcontain(key);
+    }
+
+    public void put(WidgetKey key, WidgetCache widgetCache){
+        cache.putWeakValue(key, widgetCache);
+    }
+
+    public WidgetCache get(WidgetKey key){
+        return cache.getWeakHashMapValue(key);
+    }
+
+
+    public void clear() {
+        cache.clear();
+    }
+}

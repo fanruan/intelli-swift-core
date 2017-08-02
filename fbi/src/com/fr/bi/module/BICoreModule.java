@@ -17,6 +17,7 @@ import com.finebi.cube.conf.timer.UpdateFrequencyManager;
 import com.finebi.cube.conf.trans.BIAliasManagerWithoutUser;
 import com.fr.base.FRContext;
 import com.fr.bi.cal.BICubeManager;
+import com.fr.bi.cal.analyze.cal.index.loader.cache.WidgetDataCacheManager;
 import com.fr.bi.cal.generate.timerTask.BICubeTimeTaskCreatorManager;
 import com.fr.bi.cal.generate.timerTask.BICubeTimeTaskCreatorProvider;
 import com.fr.bi.cluster.ClusterAdapter;
@@ -703,7 +704,7 @@ public class BICoreModule extends AbstractModule {
 
     @Override
     public void clearCacheAfterBuildCubeTask(long userId) {
-
+        WidgetDataCacheManager.getInstance().clear();
     }
 
     private void registerSystemManager() {
