@@ -48,9 +48,7 @@ public class RelationCalculateHelper {
             CubeTableSource foreignTable = relation.getForeignTable();
             if (isTableExistOrGenerating(primaryTable, generatingTables, absentTables)
                     && isTableExistOrGenerating(foreignTable, generatingTables, absentTables)) {
-                if (absentRelations.contains(relation)) {
-                    result.add(relation);
-                }
+                result.add(relation);
             }
         }
         return result;

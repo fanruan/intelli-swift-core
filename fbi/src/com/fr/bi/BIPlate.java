@@ -7,7 +7,6 @@ import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.conf.BICubeConfigureCenter;
 import com.finebi.cube.conf.BISystemPackageConfigurationProvider;
 import com.finebi.cube.conf.BITableRelationConfigurationProvider;
-import com.finebi.cube.conf.CubeGenerationManager;
 import com.fr.base.ClassUtils;
 import com.fr.base.FRContext;
 import com.fr.bi.cal.generate.BackUpUtils;

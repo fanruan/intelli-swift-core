@@ -1,7 +1,7 @@
 package com.fr.bi.cal.analyze.report.report.widget.util;
 
-import com.fr.bi.cal.analyze.report.report.widget.imp.DetailWidget;
-import com.fr.bi.cal.analyze.report.report.widget.imp.TableWidget;
+import com.fr.bi.cal.analyze.report.report.widget.DetailWidget;
+import com.fr.bi.cal.analyze.report.report.widget.TableWidget;
 import com.fr.bi.conf.report.SclCalculator;
 import com.fr.bi.conf.report.WidgetType;
 import com.fr.bi.conf.report.conf.BIWidgetConf;

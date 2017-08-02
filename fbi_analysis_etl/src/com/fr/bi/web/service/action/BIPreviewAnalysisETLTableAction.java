@@ -3,6 +3,7 @@ package com.fr.bi.web.service.action;
 import com.finebi.cube.api.ICubeTableService;
 import com.finebi.cube.common.log.BILogger;
 import com.finebi.cube.common.log.BILoggerFactory;
+import com.fr.bi.cluster.utils.BIUserAuthUtils;
 import com.fr.bi.etl.analysis.Constants;
 import com.fr.bi.etl.analysis.data.AnalysisCubeTableSource;
 import com.fr.bi.etl.analysis.data.AnalysisETLSourceFactory;
@@ -14,7 +15,6 @@ import com.fr.bi.stable.engine.index.key.IndexKey;
 import com.fr.bi.stable.utils.BICollectionUtils;
 import com.fr.fs.base.entity.User;
 import com.fr.fs.control.UserControl;
-import com.fr.fs.web.service.ServiceUtils;
 import com.fr.general.Inter;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;
@@ -31,7 +31,7 @@ public class BIPreviewAnalysisETLTableAction extends AbstractAnalysisETLAction {
     private static BILogger LOGGER = BILoggerFactory.getLogger(BIPreviewAnalysisETLTableAction.class);
     @Override
     public void actionCMD(HttpServletRequest req, HttpServletResponse res, String sessionID) throws Exception {
-        long userId = ServiceUtils.getCurrentUserID(req);
+        long userId = BIUserAuthUtils.getCurrentUserID(req);
         String itemArray = WebUtils.getHTTPRequestParameter(req, Constants.ITEMS);
         JSONArray items = new JSONArray(itemArray);
 
