@@ -26,20 +26,20 @@ public class BITableCellFormatHelper {
     //StableUtils.isNumber(text)的问题还在
     public static String targetValueFormat(JSONObject settings, String text) throws JSONException {
         try {
-        if (BIStringUtils.isEmptyString(text) || !StableUtils.isNumber(text)) {
-            return text;
-        }
-        if (Double.valueOf(text).isNaN()) {
-            return text;
-        }
-        if (Double.valueOf(text).isInfinite()) {
-            return "N/0";
+            if (BIStringUtils.isEmptyString(text) || !StableUtils.isNumber(text)) {
+                return text;
+            }
+            if (Double.valueOf(text).isNaN()) {
+                return text;
+            }
+            if (Double.valueOf(text).isInfinite()) {
+                return "N/0";
 //            if (Double.valueOf(text)==Double.POSITIVE_INFINITY){
 //                return "∞";
 //            }else {
 //                return "-∞";
 //            }
-        }
+            }
             float value = Float.valueOf(text);
             value = parseNumByLevel(settings, value);
             text = parseNumByFormat(decimalFormat(settings), value);
@@ -47,7 +47,6 @@ public class BITableCellFormatHelper {
 //            return text + unit;
             return text;
         } catch (NumberFormatException e) {
-            BILoggerFactory.getLogger(BITableCellFormatHelper.class).error(e.getMessage(), e);
             return text;
         }
     }
@@ -303,15 +302,9 @@ public class BITableCellFormatHelper {
             Float num = Float.valueOf(text);
             int markResult = getTextCompareResult(settings, num);
             int iconStyle = settings.getInt("iconStyle");
-            String textColor = "";
-            try {
-                textColor = getTextColor(settings, num);
-            } catch (JSONException e) {
-                BILoggerFactory.getLogger(BITableCellFormatHelper.class).error(e.getMessage(), e);
-            }
+            String textColor = getTextColor(settings, num);
             return JSONObject.create().put("markResult", markResult).put("iconStyle", iconStyle).put("color", textColor);
-        } catch (JSONException e) {
-            BILoggerFactory.getLogger().error(e.getMessage(), e);
+        } catch (Exception e) {
             return JSONObject.create();
         }
     }
