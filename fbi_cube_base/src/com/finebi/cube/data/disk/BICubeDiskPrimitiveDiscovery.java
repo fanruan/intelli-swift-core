@@ -10,6 +10,7 @@ import com.finebi.cube.exception.IllegalCubeResourceLocationException;
 import com.finebi.cube.location.ICubeResourceLocation;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -145,6 +146,16 @@ public class BICubeDiskPrimitiveDiscovery implements ICubePrimitiveResourceDisco
                 BILoggerFactory.getLogger().error(e.getMessage(), e);
             } finally {
                 releasingResource = false;
+            }
+        }
+    }
+
+
+    public void clearFileNotExist(String fileKey){
+        if(fileResourceMap.containsKey(fileKey)){
+            if(!new File(fileKey).exists()){
+                fileResourceMap.get(fileKey).forceRelease();
+                fileResourceMap.remove(fileKey);
             }
         }
     }

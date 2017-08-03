@@ -9,6 +9,7 @@ import com.finebi.cube.api.ICubeTableService;
 import com.finebi.cube.common.log.BILogger;
 import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.data.ICubeResourceDiscovery;
+import com.finebi.cube.data.disk.BICubeDiskPrimitiveDiscovery;
 import com.finebi.cube.location.BICubeLocation;
 import com.finebi.cube.location.BICubeResourceRetrieval;
 import com.finebi.cube.structure.BICube;
@@ -83,6 +84,7 @@ public class ETLTableObject implements Release, Delete {
      */
     @Override
     public void delete() {
+        List<String> files2Clear = BIFileUtils.findAllFiles(new File(this.path).getParentFile());
         boolean success = BIFileUtils.delete(new File(this.path).getParentFile());
         if(!success) {
             LOGGER.error("delete failed" + this.path);
@@ -90,6 +92,9 @@ public class ETLTableObject implements Release, Delete {
             for(String s : fileList) {
                 new File(s).deleteOnExit();
             }
+        }
+        for (String fileName : files2Clear) {
+            BICubeDiskPrimitiveDiscovery.getInstance().clearFileNotExist(new File(fileName).toURI().getRawPath());
         }
     }
 
