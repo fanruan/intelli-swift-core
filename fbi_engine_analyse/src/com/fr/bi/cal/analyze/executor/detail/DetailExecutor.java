@@ -11,6 +11,7 @@ import com.fr.bi.cal.analyze.executor.paging.Paging;
 import com.fr.bi.cal.analyze.report.report.widget.DetailWidget;
 import com.fr.bi.cal.analyze.session.BISession;
 import com.fr.bi.cal.report.engine.CBCell;
+import com.fr.bi.conf.report.style.BITableStyle;
 import com.fr.bi.conf.report.widget.field.target.detailtarget.BIDetailTarget;
 import com.fr.bi.stable.constant.CellConstant;
 import com.fr.bi.stable.data.db.BIRowValue;
@@ -50,6 +51,8 @@ public class DetailExecutor extends AbstractDetailExecutor {
     }
 
     public TableCellIterator createCellIterator4Excel() throws Exception {
+        this.tableStyle = new BITableStyle(widget.getWidgetStyle().getThemeColor());
+
         final GroupValueIndex gvi = createDetailViewGvi();
         int count = gvi.getRowsCountWithData();
         paging.setTotalSize(count);

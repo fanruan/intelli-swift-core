@@ -23,11 +23,12 @@ import com.fr.bi.cal.analyze.report.report.widget.chart.calculator.builder.Summa
 import com.fr.bi.cal.analyze.report.report.widget.chart.calculator.builder.SummaryGroupTableDataBuilder;
 import com.fr.bi.cal.analyze.report.report.widget.chart.calculator.format.operation.BITableCellDateFormatOperation;
 import com.fr.bi.cal.analyze.report.report.widget.chart.calculator.format.operation.BITableCellNumberFormatOperation;
+import com.fr.bi.cal.analyze.report.report.widget.chart.calculator.format.operation.BITableCellStringOperation;
 import com.fr.bi.cal.analyze.report.report.widget.chart.calculator.format.operation.ITableCellFormatOperation;
 import com.fr.bi.cal.analyze.report.report.widget.chart.calculator.format.setting.BICellFormatSetting;
 import com.fr.bi.cal.analyze.report.report.widget.chart.calculator.format.setting.ICellFormatSetting;
-import com.fr.bi.cal.analyze.report.report.widget.chart.calculator.item.constructor.DataConstructor;
 import com.fr.bi.cal.analyze.report.report.widget.chart.calculator.format.utils.BITableConstructHelper;
+import com.fr.bi.cal.analyze.report.report.widget.chart.calculator.item.constructor.DataConstructor;
 import com.fr.bi.cal.analyze.report.report.widget.table.BITableReportSetting;
 import com.fr.bi.cal.analyze.report.report.widget.util.BIWidgetFactory;
 import com.fr.bi.cal.analyze.session.BISession;
@@ -603,7 +604,8 @@ public class TableWidget extends SummaryWidget implements SclCalculator {
     public JSONObject calculateSCData(BIWidgetConf widgetConf, JSONObject data) throws Exception {
         Map<Integer, List<JSONObject>> viewMap = this.createViewMap(widgetConf);
         BIWidgetSettings widgetSettings = getWidgetSettings(widgetConf);
-        Map<String, ITableCellFormatOperation> operationMap = getITableCellFormatOperationMap();
+//        Map<String, ITableCellFormatOperation> operationMap = getITableCellFormatOperationMap();
+        Map<String, ITableCellFormatOperation> operationMap = createOperationMap(widgetConf);
         IExcelDataBuilder builder = null;
         switch (this.tableType) {
             case BIReportConstant.TABLE_WIDGET.CROSS_TYPE:
@@ -621,42 +623,80 @@ public class TableWidget extends SummaryWidget implements SclCalculator {
         return res.createJSON();
     }
 
-    private Map<String, ITableCellFormatOperation> getITableCellFormatOperationMap() throws Exception {
 
+    private Map<String, ITableCellFormatOperation> createOperationMap(BIWidgetConf config) throws Exception {
         Map<String, ITableCellFormatOperation> formOperationsMap = new HashMap<String, ITableCellFormatOperation>();
-        createFormatOperations(formOperationsMap);
+        Map<Integer, List<JSONObject>> viewMap = config.getDetailViewMap();
+        for (Integer integer : viewMap.keySet()) {
+            if (integer > Integer.valueOf(BIReportConstant.REGION.TARGET1)) {
+                List<JSONObject> dimJo = viewMap.get(integer);
+                for (JSONObject jo : dimJo) {
+                    if (jo.optBoolean("used")) {
+                        String dId = jo.getString("dId");
+                        ICellFormatSetting setting = new BICellFormatSetting();
+                        setting.parseJSON(config.getDimensions().getJSONObject(dId).getJSONObject("settings"));
+                        ITableCellFormatOperation op = new BITableCellNumberFormatOperation(setting);
+                        formOperationsMap.put(dId, op);
+                    }
+                }
+            } else {
+                List<JSONObject> dimJo = viewMap.get(integer);
+                for (JSONObject jo : dimJo) {
+                    if (jo.optBoolean("used")) {
+                        String dId = jo.getString("dId");
+                        int type = jo.getInt("type");
+                        ICellFormatSetting setting = new BICellFormatSetting();
+                        setting.parseJSON(config.getDimensions().getJSONObject(dId).optJSONObject("settings"));
+                        ITableCellFormatOperation op;
+                        if (type==DBConstant.COLUMN.DATE){
+                            op = new BITableCellDateFormatOperation(config.getDimensions().getJSONObject(dId).getInt("type"), setting);
+                        }else {
+                            op = new BITableCellStringOperation(setting);
+                        }
+                        formOperationsMap.put(dId, op);
+                    }
+                }
+
+            }
+        }
         return formOperationsMap;
     }
 
-    private void createFormatOperations(Map<String, ITableCellFormatOperation> operationsMap) throws Exception {
+//    private Map<String, ITableCellFormatOperation> getITableCellFormatOperationMap() throws Exception {
+//        Map<String, ITableCellFormatOperation> formOperationsMap = new HashMap<String, ITableCellFormatOperation>();
+//        createFormatOperations(formOperationsMap);
+//        return formOperationsMap;
+//    }
 
-        for (BISummaryTarget target : this.getTargets()) {
-            ICellFormatSetting setting = new BICellFormatSetting();
-            setting.parseJSON(target.getChartSetting().getSettings());
-            ITableCellFormatOperation op = new BITableCellNumberFormatOperation(setting);
-            operationsMap.put(target.getId(), op);
-        }
-        for (BIDimension dimension : this.getDimensions()) {
-            if (isStringDimension(dimension)) {
-                continue;
-            }
-            ICellFormatSetting setting = new BICellFormatSetting();
-            setting.parseJSON(dimension.getChartSetting().getSettings());
-            ITableCellFormatOperation op;
-            if (dimension.createColumnKey().getFieldType() == DBConstant.COLUMN.NUMBER) {
-                op = new BITableCellNumberFormatOperation(setting);
-            } else {
-                op = new BITableCellDateFormatOperation(dimension.getGroup().getType(), setting);
-            }
-            operationsMap.put(dimension.getId(), op);
-        }
-    }
+//    private void createFormatOperations(Map<String, ITableCellFormatOperation> operationsMap) throws Exception {
+//
+//        for (BISummaryTarget target : this.getTargets()) {
+//            ICellFormatSetting setting = new BICellFormatSetting();
+//            setting.parseJSON(target.getChartSetting().getSettings());
+//            ITableCellFormatOperation op = new BITableCellNumberFormatOperation(setting);
+//            operationsMap.put(target.getId(), op);
+//        }
+//        for (BIDimension dimension : this.getDimensions()) {
+//            if (isStringDimension(dimension)) {
+//                continue;
+//            }
+//            ICellFormatSetting setting = new BICellFormatSetting();
+//            setting.parseJSON(dimension.getChartSetting().getSettings());
+//            ITableCellFormatOperation op;
+//            if (dimension.createColumnKey().getFieldType() == DBConstant.COLUMN.DATE) {
+//                op = new BITableCellDateFormatOperation(dimension.getGroup().getType(), setting);
+//            } else {
+//                op = new BITableCellStringOperation(setting);
+//            }
+//            operationsMap.put(dimension.getId(), op);
+//        }
+//    }
 
     //todo 简单处理，之后要提个接口
-    private boolean isStringDimension(BIDimension dimension) {
-
-        return dimension.createColumnKey().getFieldType() == DBConstant.COLUMN.STRING;
-    }
+//    private boolean isStringDimension(BIDimension dimension) {
+//
+//        return dimension.createColumnKey().getFieldType() == DBConstant.COLUMN.STRING;
+//    }
 
     public String getDimensionNameByID(String dID) throws Exception {
 
@@ -699,7 +739,7 @@ public class TableWidget extends SummaryWidget implements SclCalculator {
     }
 
     private Map<Integer, List<JSONObject>> createViewMap(BIWidgetConf widgetConf) throws Exception {
-        if (widgetConf == null) {
+        if (widgetConf != null) {
             return widgetConf.getDetailViewMap();
         } else {
             return this.widgetConf.getDetailViewMap();

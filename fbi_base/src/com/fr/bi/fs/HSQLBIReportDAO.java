@@ -150,9 +150,15 @@ public class HSQLBIReportDAO extends PlatformDataAccessObject implements BIRepor
 
     @Override
     public List<BISharedReportNode> findReportsByShare2User(long userId) throws Exception {
-        String userName = UserControl.getInstance().getUser(userId).getUsername();
-        List<BISharedReportNode> sReports = createSession().listByFieldValue(BISharedReportNode.class, BITableMapper.BI_SHARED_REPORT_NODE.FIELD_SHARE_TO_NAME, userName);
-        return sReports;
+        User user = UserControl.getInstance().getUser(userId);
+        if (user != null) {
+            String userName = user.getUsername();
+            List<BISharedReportNode> sReports = createSession().listByFieldValue(BISharedReportNode.class, BITableMapper.BI_SHARED_REPORT_NODE.FIELD_SHARE_TO_NAME, userName);
+            if (sReports != null) {
+                return sReports;
+            }
+        }
+        return new ArrayList<BISharedReportNode>();
     }
 
     @Override

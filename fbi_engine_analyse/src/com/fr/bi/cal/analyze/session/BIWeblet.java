@@ -46,6 +46,11 @@ public class BIWeblet implements Weblet {
         this.userId = userId;
     }
 
+    public BIWeblet(BIReportNode node, long userId) {
+        this.node = node;
+        this.userId = userId;
+    }
+
     /**
      * 创建Session
      */
