@@ -196,7 +196,7 @@ public class DBConstant {
         public static final int FINSIH = 0x3;
         public static final int FAIL = 0x4;
     }
-    public static final class timerTask {
-        public static final String cube_task = "cube_task";
+    public static final class TIMER_TASK {
+        public static final String CUBE_TASK = "CUBE_TASK";
     }
 }

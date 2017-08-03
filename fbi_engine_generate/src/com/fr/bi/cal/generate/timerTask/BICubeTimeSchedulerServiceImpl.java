@@ -47,6 +47,6 @@ public class BICubeTimeSchedulerServiceImpl implements BICubeTimeSchedulerServic
 
     @Override
     public void persistData() {
-        timeSchedulerManager.writeFIle();
+        timeSchedulerManager.writeFile();
     }
 }

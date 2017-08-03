@@ -25,7 +25,7 @@ public class CubeTimerTaskUtils {
     }
 
     private static void clear() {
-//        service.removeTimeScheduler(DBConstant.timerTask.cube_task);
+//        service.removeTimeScheduler(DBConstant.timerTask.CUBE_TASK);
         BICubeTimeSchedulerService service = new BICubeTimeSchedulerServiceImpl();
         service.removeAllTimeSchedulers();
     }
