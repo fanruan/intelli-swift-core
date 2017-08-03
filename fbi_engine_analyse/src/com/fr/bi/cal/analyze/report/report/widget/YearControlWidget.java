@@ -1,4 +1,4 @@
-package com.fr.bi.cal.analyze.report.report.widget.imp;
+package com.fr.bi.cal.analyze.report.report.widget;
 
 import com.finebi.cube.api.ICubeColumnIndexReader;
 import com.finebi.cube.relation.BITableSourceRelation;

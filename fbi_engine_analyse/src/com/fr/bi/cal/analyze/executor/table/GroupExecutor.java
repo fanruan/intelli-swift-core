@@ -14,7 +14,7 @@ import com.fr.bi.cal.analyze.executor.utils.ExecutorUtils;
 import com.fr.bi.cal.analyze.report.report.widget.TableWidget;
 import com.fr.bi.cal.analyze.session.BISession;
 import com.fr.bi.cal.report.engine.CBCell;
-import com.fr.bi.conf.report.style.DetailChartSetting;
+import com.fr.bi.conf.report.conf.BIWidgetConf;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.field.target.target.BICounterTarget;
 import com.fr.bi.field.target.target.BINumberTarget;
@@ -113,9 +113,9 @@ public class GroupExecutor extends AbstractTableWidgetExecutor<Node> {
             pagedIterator.addCell(cell);
         }
         for (BISummaryTarget anUsedSumTarget : usedSumTarget) {
-            DetailChartSetting setting = widget.getChartSetting();
-            int numLevel = setting.getNumberLevelByTargetId(anUsedSumTarget.getId());
-            String unit = setting.getUnitByTargetId(anUsedSumTarget.getId());
+            BIWidgetConf setting=widget.getWidgetConf();
+            int numLevel = setting.getNumberLevelByTargetID(anUsedSumTarget.getId());
+            String unit = setting.getUnitByTargetID(anUsedSumTarget.getId());
             String levelAndUnit = ExecutorUtils.formatLevelAndUnit(numLevel, unit);
 
             String dimensionUnit = StringUtils.isEmpty(levelAndUnit) ? "" : "(" + levelAndUnit + ")";
@@ -201,7 +201,7 @@ public class GroupExecutor extends AbstractTableWidgetExecutor<Node> {
         for (TargetGettingKey key : widget.getTargetsKey()) {
             int columnIdx = targetsKeyIndex + dimensionsLength;
             Object data = temp.getSummaryValue(key);
-            CBCell cell = formatTargetCell(data, widget.getChartSetting(), key, rowIdx, columnIdx, style);
+            CBCell cell = formatTargetCell(data, widget.getWidgetConf(), key, rowIdx, columnIdx, style);
             pagedIterator.addCell(cell);
             targetsKeyIndex++;
         }

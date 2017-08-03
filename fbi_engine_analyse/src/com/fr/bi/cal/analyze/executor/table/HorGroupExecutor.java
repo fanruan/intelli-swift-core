@@ -17,17 +17,14 @@ import com.fr.bi.cal.report.engine.CBCell;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.field.target.target.BISummaryTarget;
 import com.fr.bi.report.key.TargetGettingKey;
-import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.gvi.GVIUtils;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.general.DateUtils;
-import com.fr.general.GeneralUtils;
 import com.fr.general.Inter;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;
 
 import java.awt.*;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -55,7 +52,7 @@ public class HorGroupExecutor extends AbstractTableWidgetExecutor<Node> {
         int rowLength = colDimension.length + usedSumTarget.length;
         int columnLength = node.getTotalLength() + widget.isOrder() + 1;
         //显示不显示汇总行
-        int rowLen = widget.getChartSetting().showRowTotal() ? node.getTotalLengthWithSummary() : node.getTotalLength();
+        int rowLen = widget.getWidgetSettings().isShowRowTotal() ? node.getTotalLengthWithSummary() : node.getTotalLength();
         rectangle = new Rectangle(rowLength + widget.isOrder(), 1, columnLength + widget.isOrder() - 1, rowLen);
         final TableCellIterator iter = new TableCellIterator(columnLength, rowLength);
         new Thread() {
@@ -81,7 +78,7 @@ public class HorGroupExecutor extends AbstractTableWidgetExecutor<Node> {
 
         int rowIdx = 0;
         while (rowIdx < colDimension.length) {
-            CBCell cell = ExecutorUtils.createCBCell(colDimension[rowIdx].getText(), rowIdx, 1, 0, 1, widget.getTableStyle().getHeaderStyle(Style.getInstance()));
+            CBCell cell = ExecutorUtils.createCBCell(colDimension[rowIdx].getText(), rowIdx, 1, 0, 1, tableStyle.getHeaderStyle(Style.getInstance()));
             pagedIterator.addCell(cell);
             node = node.getFirstChild();
             Node temp = node;
@@ -141,7 +138,7 @@ public class HorGroupExecutor extends AbstractTableWidgetExecutor<Node> {
             Node temp = node;
             while (temp != null) {
                 Object data = temp.getSummaryValue(keys[i]);
-                CBCell cell = formatTargetCell(data, widget.getChartSetting(), keys[i], colDimensionLen + i, columnIdx.value++, style);
+                CBCell cell = formatTargetCell(data, widget.getWidgetConf(), keys[i], colDimensionLen + i, columnIdx.value++, style);
                 pagedIterator.addCell(cell);
                 if (widget.showColumnTotal()) {
                     generateTargetSumCell(temp, widget, keys[i], pagedIterator, colDimensionLen, columnIdx, i);
@@ -157,7 +154,7 @@ public class HorGroupExecutor extends AbstractTableWidgetExecutor<Node> {
             if (temp.getParent().getChildLength() != 1) {
                 Object data = temp.getParent().getSummaryValue(key);
                 Style style = (targetRowIdx + 1) % 2 == 1 ? widget.getTableStyle().getOddRowStyle(Style.getInstance()) : widget.getTableStyle().getEvenRowStyle(Style.getInstance());
-                CBCell cell = formatTargetCell(data, widget.getChartSetting(), key, targetRowIdx + colDimensionLen, columnIdx.value++, style);
+                CBCell cell = formatTargetCell(data, widget.getWidgetConf(), key, targetRowIdx + colDimensionLen, columnIdx.value++, style);
                 pagedIterator.addCell(cell);
             }
             Node parent = temp.getParent();
