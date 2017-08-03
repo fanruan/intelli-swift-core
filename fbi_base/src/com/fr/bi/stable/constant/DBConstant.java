@@ -194,10 +194,24 @@ public class DBConstant {
         public static final int FAIL = 0x4;
     }
 
-    //业务包类型
-    public static final class PACKAGE_TYPE {
-        public static final int FINE_INDEX = 1;
-        public static final int FINE_DIRECT = 2;
+    public enum PACKAGE_TYPE {
+        FINE_INDEX(1),
+        FINE_DIRECT(2);
+
+        private int type;
+
+        PACKAGE_TYPE(int type) {
+            this.type = type;
+        }
+
+        public int getStatus() {
+            return this.type;
+        }
+
+        @Override
+        public String toString() {
+            return String.valueOf(this.type);
+        }
     }
 
 }
