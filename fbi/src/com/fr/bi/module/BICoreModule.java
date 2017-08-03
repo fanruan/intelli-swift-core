@@ -773,7 +773,7 @@ public class BICoreModule extends AbstractModule {
                 new Service4BIReport(),
                 new Service4BIDezi(),
                 new Service4BIBase(),
-                new Service4FineCube()
+                new Service4FineCube(),
                 new Service4BIPublic(),
         };
     }
