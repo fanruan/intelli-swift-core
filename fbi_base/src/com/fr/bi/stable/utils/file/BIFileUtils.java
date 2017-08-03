@@ -62,10 +62,11 @@ public class BIFileUtils {
 
     /**
      * 查找出路径下的所有文件路径
+     *
      * @param folder 文件夹
      * @return
      */
-    public static List findAllFiles(File folder){
+    public static List findAllFiles(File folder) {
         List realFiles = new ArrayList();
         File[] files = folder.listFiles();
         if (null != files) {

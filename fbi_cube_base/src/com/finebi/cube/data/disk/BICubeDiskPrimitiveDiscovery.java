@@ -34,7 +34,7 @@ public class BICubeDiskPrimitiveDiscovery implements ICubePrimitiveResourceDisco
         return releasingResource;
     }
 
-    public static  BICubeDiskPrimitiveDiscovery getInstance() {
+    public static BICubeDiskPrimitiveDiscovery getInstance() {
         return instance;
     }
 
@@ -151,17 +151,17 @@ public class BICubeDiskPrimitiveDiscovery implements ICubePrimitiveResourceDisco
     }
 
 
-    public void clearFileNotExist(String fileKey){
-        if(fileResourceMap.containsKey(fileKey)){
-            if(!new File(fileKey).exists()){
+    public void clearFileNotExist(String fileKey) {
+        if (fileResourceMap.containsKey(fileKey)) {
+            if (!new File(fileKey).exists()) {
                 fileResourceMap.get(fileKey).forceRelease();
                 fileResourceMap.remove(fileKey);
             }
         }
     }
 
-//    更改cube路径时候将旧的nioManager清除
-    public void clearResourceMap(){
+    //    更改cube路径时候将旧的nioManager清除
+    public void clearResourceMap() {
         synchronized (this) {
             fileResourceMap.clear();
         }

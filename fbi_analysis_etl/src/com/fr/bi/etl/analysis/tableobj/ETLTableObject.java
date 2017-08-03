@@ -72,7 +72,7 @@ public class ETLTableObject implements Release, Delete {
      */
     @Override
     public void clear() {
-        synchronized (this){
+        synchronized (this) {
             isClear = true;
             ti.clear();
             manager.clear();
@@ -86,10 +86,10 @@ public class ETLTableObject implements Release, Delete {
     public void delete() {
         List<String> files2Clear = BIFileUtils.findAllFiles(new File(this.path).getParentFile());
         boolean success = BIFileUtils.delete(new File(this.path).getParentFile());
-        if(!success) {
+        if (!success) {
             LOGGER.error("delete failed" + this.path);
             List<String> fileList = BIFileUtils.deleteFiles(new File(this.path).getParentFile());
-            for(String s : fileList) {
+            for (String s : fileList) {
                 new File(s).deleteOnExit();
             }
         }
