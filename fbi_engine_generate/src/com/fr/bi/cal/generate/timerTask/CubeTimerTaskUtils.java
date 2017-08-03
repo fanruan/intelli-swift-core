@@ -1,8 +1,10 @@
 package com.fr.bi.cal.generate.timerTask;
 
 
+import com.fr.bi.cal.generate.timerTask.quartz.JobTask;
 import com.fr.bi.cluster.ClusterAdapter;
 import com.fr.bi.cluster.utils.ClusterEnv;
+import com.fr.bi.conf.base.scheduler.ScheduleEntity;
 import com.fr.bi.conf.manager.update.source.UpdateSettingSource;
 import com.fr.bi.conf.provider.BIConfigureManagerCenter;
 import com.fr.fs.control.UserControl;
@@ -11,6 +13,7 @@ import com.fr.third.org.quartz.JobDetail;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -31,19 +34,19 @@ public class CubeTimerTaskUtils {
     }
 
     public static void resetTimeTasks() {
-        synchronized (CubeTimerTaskUtils.class) {
-            BICubeTimeSchedulerService service = new BICubeTimeSchedulerServiceImpl();
-            List<JobDetail> scheduleList = getTimerTaskSchedules();
-            //        LOGGER.info("***************timer task settings start*****************");
-            for (JobDetail detail : scheduleList) {
-                JobDataMap jobDataMap = detail.getJobDataMap();
-                service.addTimeScheduler(jobDataMap.getString("cronExpression"), jobDataMap.getString("tableKey"), UserControl.getInstance().getSuperManagerID(), jobDataMap.getInt("updateType"), new Date(jobDataMap.getLongValue("startTime")), new Date(jobDataMap.getLongValue("endTime")));
-            }
-            service.persistData();
+        //        LOGGER.info("***************timer task settings start*****************");
+        List<ScheduleEntity> list = new ArrayList<ScheduleEntity>();
+        BICubeTimeSchedulerService service = new BICubeTimeSchedulerServiceImpl();
+        List<JobDetail> scheduleList = getTimerTaskSchedules();
+        for (JobDetail detail : scheduleList) {
+//                JobDataMap jobDataMap = detail.getJobDataMap();
+//                service.addTimeScheduler(jobDataMap.getString("cronExpression"), jobDataMap.getString("tableKey"), UserControl.getInstance().getSuperManagerID(), jobDataMap.getInt("updateType"), new Date(jobDataMap.getLongValue("startTime")), new Date(jobDataMap.getLongValue("endTime")));
+            ScheduleEntity scheduleEntity = createScheduleEntity(detail);
+            list.add(scheduleEntity);
+        }
+        service.addTimeSchedulerList(list);
 //        LOGGER.info("***************timer task settings end:*****************");
 
-
-        }
     }
 
     private static List<JobDetail> getTimerTaskSchedules() {
@@ -60,5 +63,14 @@ public class CubeTimerTaskUtils {
             return jobDetails;
         }
 
+    }
+
+    private static ScheduleEntity createScheduleEntity(JobDetail detail) {
+        JobDataMap jobDataMap = detail.getJobDataMap();
+        Map<String, String> params = new HashMap<String, String>();
+        params.put("tableKey", jobDataMap.getString("tableKey"));
+        params.put("userId", String.valueOf(UserControl.getInstance().getSuperManagerID()));
+        params.put("updateTye", String.valueOf(jobDataMap.getInt("updateType")));
+        return new ScheduleEntity(jobDataMap.getString("taskName"), JobTask.class, jobDataMap.getString("cronExpression"), params, new Date(jobDataMap.getLongValue("startTime")), new Date(jobDataMap.getLongValue("endTime")));
     }
 }
