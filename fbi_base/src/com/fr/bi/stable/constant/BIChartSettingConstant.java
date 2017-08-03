@@ -91,6 +91,7 @@ public class BIChartSettingConstant {
         public static final int THREE_FOURTHS = 270;
         public static final int HALF = 180;
         public static final int TOTAL = 360;
+        public static final int CUSTOM = 0;
     }
 
     public static final class MULTI_PIE_GRADIENT_STYLE {
@@ -154,6 +155,7 @@ public class BIChartSettingConstant {
     }
 
     public static final class DOT_STYLE {
+        public static final String LOCATION = "location";
         public static final String SQUARE = "square";
         public static final String TRIANGLE = "triangle";
         public static final String CIRCLE = "circle";
@@ -171,11 +173,11 @@ public class BIChartSettingConstant {
     }
 
     public static final class ACCUMULATE_TYPE {
-        public static final int OLD_COLUMN=5;
-        public static final int OLD_AREA_CURVE=14;
-        public static final int OLD_STACKED_AREA=15;
-        public static final int OLD_LINE=13;
-        public static final int OLD_STACKED_COLUMN=6;
+        public static final int OLD_COLUMN = 5;
+        public static final int OLD_AREA_CURVE = 14;
+        public static final int OLD_STACKED_AREA = 15;
+        public static final int OLD_LINE = 13;
+        public static final int OLD_ACCUMULATE_AXIS = 6;
         public static final int COLUMN = 1;
         public static final int STACKED_COLUMN = 2;
         public static final int AREA_NORMAL = 3;

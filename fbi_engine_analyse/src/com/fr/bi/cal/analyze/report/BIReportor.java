@@ -5,7 +5,7 @@ import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.conf.field.BIBusinessField;
 import com.finebi.cube.conf.field.BusinessField;
 import com.finebi.cube.conf.table.BusinessTable;
-import com.fr.bi.cal.analyze.report.report.BIWidgetFactory;
+import com.fr.bi.cal.analyze.report.report.widget.util.BIWidgetFactory;
 import com.fr.bi.conf.report.BIReport;
 import com.fr.bi.conf.report.BIWidget;
 import com.fr.bi.conf.session.BISessionProvider;
@@ -77,13 +77,13 @@ public class BIReportor implements BIReport {
     /**
      * 返回Widget名字所对应的widget
      *
-     * @param name 名字
+     * @param wId 组件id
      * @return widget对象
      */
     @Override
-    public BIWidget getWidgetByName(String name) {
+    public BIWidget getWidgetById(String wId) {
         for (int i = 0, len = getWidgetsCount(); i < len; i++) {
-            if (ComparatorUtils.equals(widgets.get(i).getWidgetName(), name)) {
+            if (ComparatorUtils.equals(widgets.get(i).getWidgetId(), wId)) {
                 return widgets.get(i);
             }
         }
@@ -175,14 +175,14 @@ public class BIReportor implements BIReport {
         if (jo.has("widget")) {
             JSONArray ja = jo.getJSONArray("widget");
             for (int i = 0, len = ja.length(); i < len; i++) {
-                BIWidget widget = BIWidgetFactory.parseWidget(ja.getJSONObject(i), userId, loader);
+                BIWidget widget = BIWidgetFactory.parseWidget(ja.getJSONObject(i), userId);
                 widgets.add(widget);
             }
         }
         if (jo.has("detail")) {
             JSONArray ja = jo.getJSONArray("detail");
             for (int i = 0, len = ja.length(); i < len; i++) {
-                BIWidget widget = BIWidgetFactory.parseWidget(ja.getJSONObject(i), userId, loader);
+                BIWidget widget = BIWidgetFactory.parseWidget(ja.getJSONObject(i), userId);
                 widgets.add(widget);
             }
         }

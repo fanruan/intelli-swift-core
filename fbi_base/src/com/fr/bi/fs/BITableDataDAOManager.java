@@ -113,10 +113,12 @@ public class BITableDataDAOManager extends XMLFileManager implements BITableData
     @Override
     public BIReportNode findBIReportNodeById(long id) throws Exception {
         BIReportNode tdNode = tdBIReport_idMap.get(id);
-        User tdUser = TableDataSyncDB.getInstance().findUserByUserName(tdNode.getUsername());
-        if (tdUser != null) {
-            tdNode.setUserId(tdUser.getId());
-            return tdNode;
+        if (tdNode != null) {
+            User tdUser = TableDataSyncDB.getInstance().findUserByUserName(tdNode.getUsername());
+            if (tdUser != null) {
+                tdNode.setUserId(tdUser.getId());
+                return tdNode;
+            }
         }
         return null;
     }

@@ -22,7 +22,6 @@ import com.fr.bi.common.inter.Traversal;
 import com.fr.bi.conf.base.datasource.BIConnectionManager;
 import com.fr.bi.conf.data.source.DBTableSource;
 import com.fr.bi.conf.data.source.SQLTableSource;
-import com.fr.bi.conf.log.BILogManager;
 import com.fr.bi.conf.manager.update.source.UpdateSettingSource;
 import com.fr.bi.conf.provider.BIConfigureManagerCenter;
 import com.fr.bi.conf.provider.BILogManagerProvider;
@@ -46,7 +45,6 @@ import com.fr.data.core.db.dml.Table;
 import com.fr.fs.control.UserControl;
 import com.fr.general.ComparatorUtils;
 import com.fr.general.DateUtils;
-import com.fr.stable.bridge.StableFactory;
 import com.fr.stable.collections.array.IntArray;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -113,7 +111,7 @@ public class BISourceDataPartTransport extends BISourceDataTransport {
                 BILoggerFactory.getLogger().error(e.getMessage(), e);
             }
             return null;
-        } catch (Exception e) {
+        } catch (Throwable e) {
             try {
                 biLogManager.errorTable(tableSource.getPersistentTable(), e.getMessage(), UserControl.getInstance().getSuperManagerID());
             } catch (Exception e1) {
@@ -286,7 +284,7 @@ public class BISourceDataPartTransport extends BISourceDataTransport {
                 finalSql = sql;
             }
             if (columnNum == 1) {
-                String columnName = BICubeDBUtils.getColumnName(connection, sqlStatement, sql);
+                String columnName = BICubeDBUtils.getFirstColumnName(connection, sqlStatement, sql);
                 ICubeFieldSource f = getCubeFieldSource(fields, columnName);
                 if (f == null) {
                     return null;
@@ -494,7 +492,7 @@ public class BISourceDataPartTransport extends BISourceDataTransport {
             SqlSettedStatement sqlStatement = new SqlSettedStatement(connection);
             sqlConn = sqlStatement.getSqlConn();
             sqlStatement.setSql(sql);
-            name = BICubeDBUtils.getColumnName(connection, sqlStatement, sql);
+            name = BICubeDBUtils.getFirstColumnName(connection, sqlStatement, sql);
         } catch (Exception e) {
             throw BINonValueUtils.beyondControl(e.getMessage(), e);
         } finally {

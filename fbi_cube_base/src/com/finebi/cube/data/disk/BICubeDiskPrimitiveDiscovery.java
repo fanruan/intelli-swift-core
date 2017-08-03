@@ -149,6 +149,14 @@ public class BICubeDiskPrimitiveDiscovery implements ICubePrimitiveResourceDisco
         }
     }
 
+//    更改cube路径时候将旧的nioManager清除
+    public void clearResourceMap(){
+        synchronized (this) {
+            fileResourceMap.clear();
+        }
+    }
+
+
     public void forceRelease() {
         synchronized (this) {
             releasingResource = true;

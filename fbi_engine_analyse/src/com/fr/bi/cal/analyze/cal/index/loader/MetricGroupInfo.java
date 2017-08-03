@@ -1,8 +1,9 @@
 package com.fr.bi.cal.analyze.cal.index.loader;
 
 import com.finebi.cube.conf.table.BusinessTable;
-import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.report.result.DimensionCalculator;
+import com.fr.bi.stable.gvi.GroupValueIndex;
+import com.fr.general.ComparatorUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,4 +46,28 @@ public class MetricGroupInfo {
     public void addTargetAndKey(TargetAndKey calculator) {
         summaryList.add(calculator);
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        MetricGroupInfo info = (MetricGroupInfo) o;
+
+        if (!ComparatorUtils.equals(rows, info.rows)) {
+            return false;
+        }
+        if (!ComparatorUtils.equals(filterIndex, info.filterIndex)) {
+            return false;
+        }
+        if (!ComparatorUtils.equals(metric, info.metric)) {
+            return false;
+        }
+        return ComparatorUtils.equals(summaryList, info.summaryList);
+    }
+
 }

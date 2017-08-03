@@ -9,7 +9,9 @@ import com.fr.bi.cal.analyze.executor.detail.execute.DetailAllGVIRunner;
 import com.fr.bi.cal.analyze.executor.detail.execute.DetailPartGVIRunner;
 import com.fr.bi.cal.analyze.executor.iterator.TableCellIterator;
 import com.fr.bi.cal.analyze.executor.paging.Paging;
-import com.fr.bi.cal.analyze.report.report.widget.BIDetailWidget;
+import com.fr.bi.cal.analyze.executor.utils.GlobalFilterUtils;
+import com.fr.bi.cal.analyze.report.report.widget.AbstractBIWidget;
+import com.fr.bi.cal.analyze.report.report.widget.DetailWidget;
 import com.fr.bi.cal.analyze.report.report.widget.TableWidget;
 import com.fr.bi.cal.analyze.session.BISession;
 import com.fr.bi.cal.report.engine.CBCell;
@@ -26,7 +28,7 @@ import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;
 import com.fr.stable.ExportConstants;
 
-import java.awt.Rectangle;
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -46,31 +48,39 @@ public class DetailExecutor extends AbstractDetailExecutor {
 
     private final static int EXCEL_ROW_MODE_VALUE = ExportConstants.MAX_ROWS_2007 - 1;
 
-    public DetailExecutor(BIDetailWidget widget,
+    public DetailExecutor(DetailWidget widget,
                           //前台传过来的从1开始;
                           Paging paging,
                           BISession session) {
+
         super(widget, paging, session);
 
     }
 
-    public TableCellIterator createCellIterator4Excel() {
+    public TableCellIterator createCellIterator4Excel() throws Exception {
+
         final GroupValueIndex gvi = createDetailViewGvi();
         int count = gvi.getRowsCountWithData();
         paging.setTotalSize(count);
-        final TableCellIterator iter = new TableCellIterator(widget.getViewDimensions().length, count + 1);
+        //返回前台的时候再去掉不使用的字段
+        final Set<Integer> usedDimensionIndexes = getUsedDimensionIndexes();
+        final TableCellIterator iter = new TableCellIterator(usedDimensionIndexes.size(), count + 1);
         new Thread() {
+
             public void run() {
+
                 try {
                     final FinalInt start = new FinalInt();
-                    List<CBCell> cells = createCellTitle(CellConstant.CBCELL.TARGETTITLE_Y);
+                    List<CBCell> cells = createHeader(CellConstant.CBCELL.TARGETTITLE_Y, usedDimensionIndexes);
                     Iterator<CBCell> it = cells.iterator();
                     while (it.hasNext()) {
                         iter.getIteratorByPage(start.value).addCell(it.next());
                     }
                     TableRowTraversal action = new TableRowTraversal() {
+
                         @Override
                         public boolean actionPerformed(BIRowValue row) {
+
                             int currentRow = (int) row.getRow() + 1;
                             int newRow = currentRow & EXCEL_ROW_MODE_VALUE;
                             if (newRow == 0) {
@@ -78,7 +88,7 @@ public class DetailExecutor extends AbstractDetailExecutor {
                                 start.value++;
                             }
                             //row + 1 ? 不然覆盖掉了列名
-                            fillOneLine(iter.getIteratorByPage(start.value), newRow, row.getValues(), currentRow);
+                            fillOneLine(iter.getIteratorByPage(start.value), newRow, row.getValues(), usedDimensionIndexes);
                             return false;
                         }
                     };
@@ -95,6 +105,7 @@ public class DetailExecutor extends AbstractDetailExecutor {
 
     @Override
     public Rectangle getSouthEastRectangle() {
+
         return null;
     }
 
@@ -103,24 +114,18 @@ public class DetailExecutor extends AbstractDetailExecutor {
 
         long start = System.currentTimeMillis();
         GroupValueIndex gvi = createDetailViewGvi();
-        gvi = getLinkFiter(gvi);
         paging.setTotalSize(gvi.getRowsCountWithData());
         final JSONArray ja = new JSONArray();
         JSONObject jo = new JSONObject();
         jo.put("value", ja);
         //返回前台的时候再去掉不使用的字段
         final BIDetailTarget[] dimensions = widget.getViewDimensions();
-        String[] array = widget.getView();
-        final Set<Integer> usedDimensionIndexes = new HashSet<Integer>();
-        for (int i = 0; i < array.length; i++) {
-            BIDetailTarget dimension = BITravalUtils.getTargetByName(array[i], dimensions);
-            if (dimension.isUsed()) {
-                usedDimensionIndexes.add(i);
-            }
-        }
+        final Set<Integer> usedDimensionIndexes = getUsedDimensionIndexes();
         TableRowTraversal action = new TableRowTraversal() {
+
             @Override
             public boolean actionPerformed(BIRowValue row) {
+
                 Boolean x = checkPage(row);
                 if (x != null) {
                     return x;
@@ -140,40 +145,58 @@ public class DetailExecutor extends AbstractDetailExecutor {
         return jo;
     }
 
-    private GroupValueIndex getLinkFiter(GroupValueIndex gvi) throws Exception {
-        if (widget.getLinkWidget() != null && widget.getLinkWidget() instanceof TableWidget) {
-            // 判断两个表格的基础表是否相同
-            BusinessTable widgetTargetTable = widget.getTargetDimension();
-            TableWidget linkWidget = widget.getLinkWidget();
-            Map<String, JSONArray> clicked = widget.getClicked();
+    private Set<Integer> getUsedDimensionIndexes() {
 
-            BISummaryTarget summaryTarget = null;
-            String[] ids = clicked.keySet().toArray(new String[]{});
-            for (String linkTarget : ids) {
-                try {
-                    summaryTarget = linkWidget.getBITargetByID(linkTarget);
-                    break;
-                } catch (Exception e) {
-                    BILoggerFactory.getLogger(TableWidget.class).warn("Target id " + linkTarget + " is absent in linked widget " + linkWidget.getWidgetName());
+        final BIDetailTarget[] dimensions = widget.getViewDimensions();
+        String[] array = widget.getView();
+        final Set<Integer> usedDimensionIndexes = new HashSet<Integer>();
+        for (int i = 0; i < array.length; i++) {
+            BIDetailTarget dimension = BITravalUtils.getTargetByName(array[i], dimensions);
+            if (dimension.isUsed()) {
+                usedDimensionIndexes.add(i);
+            }
+        }
+        return usedDimensionIndexes;
+    }
+
+    protected GroupValueIndex getLinkFilter(GroupValueIndex gvi) {
+
+        try {
+            if (widget.getLinkWidget() != null && widget.getLinkWidget() instanceof TableWidget) {
+                // 判断两个表格的基础表是否相同
+                BusinessTable widgetTargetTable = widget.getTargetDimension();
+                TableWidget linkWidget = widget.getLinkWidget();
+                Map<String, JSONArray> clicked = widget.getClicked();
+                BISummaryTarget summaryTarget = null;
+                String[] ids = clicked.keySet().toArray(new String[]{});
+                for (String linkTarget : ids) {
+                    try {
+                        summaryTarget = linkWidget.getBITargetByID(linkTarget);
+                        break;
+                    } catch (Exception e) {
+                        BILoggerFactory.getLogger(TableWidget.class).warn("Target id " + linkTarget + " is absent in linked widget " + linkWidget.getWidgetName());
+                    }
+                }
+                if (summaryTarget != null) {
+                    BusinessTable linkTargetTable = summaryTarget.createTableKey();
+                    // 基础表相同的时候才有联动的意义
+                    if (widgetTargetTable.equals(linkTargetTable)) {
+                        // 其联动组件的父联动gvi
+                        GroupValueIndex pLinkGvi = linkWidget.createLinkedFilterGVI(widgetTargetTable, session);
+                        // 其联动组件的点击过滤gvi
+                        GroupValueIndex linkGvi = linkWidget.getLinkFilter(linkWidget, widgetTargetTable, clicked, session);
+                        gvi = GVIUtils.AND(gvi, GVIUtils.AND(pLinkGvi, linkGvi));
+                    }
                 }
             }
+        } catch (Exception e) {
 
-            if (summaryTarget != null) {
-                BusinessTable linkTargetTable = summaryTarget.createTableKey();
-                // 基础表相同的时候才有联动的意义
-                if (widgetTargetTable.equals(linkTargetTable)) {
-                    // 其联动组件的父联动gvi
-                    GroupValueIndex pLinkGvi = linkWidget.createLinkedFilterGVI(widgetTargetTable, session);
-                    // 其联动组件的点击过滤gvi
-                    GroupValueIndex linkGvi = linkWidget.getLinkFilter(linkWidget, widgetTargetTable, clicked, session);
-                    gvi = GVIUtils.AND(gvi, GVIUtils.AND(pLinkGvi, linkGvi));
-                }
-            }
         }
         return gvi;
     }
 
     public List<List> getData() {
+
         if (target == null) {
             return new ArrayList<List>();
         }
@@ -181,8 +204,10 @@ public class DetailExecutor extends AbstractDetailExecutor {
         paging.setTotalSize(gvi.getRowsCountWithData());
         final List<List> data = new ArrayList<List>();
         TableRowTraversal action = new TableRowTraversal() {
+
             @Override
             public boolean actionPerformed(BIRowValue row) {
+
                 Boolean x = checkPage(row);
                 if (x != null) {
                     return x;
@@ -202,6 +227,7 @@ public class DetailExecutor extends AbstractDetailExecutor {
     }
 
     private Boolean checkPage(BIRowValue row) {
+
         if (paging.getStartRow() > row.getRow()) {
             return false;
         }
@@ -212,6 +238,7 @@ public class DetailExecutor extends AbstractDetailExecutor {
     }
 
     private void travel(TableRowTraversal action, GroupValueIndex gvi) {
+
         if (gvi.getRowsCountWithData() < MEMORY_LIMIT) {
             GVIRunner runner = new DetailAllGVIRunner(gvi, widget, getLoader(), userId);
             runner.Traversal(action);
@@ -225,5 +252,20 @@ public class DetailExecutor extends AbstractDetailExecutor {
     public JSONObject createJSONObject() throws Exception {
 
         return getCubeNode();
+    }
+
+    protected GroupValueIndex getJumpLinkFilter(GroupValueIndex g) {
+
+        DetailWidget bw = widget;
+        // 如果是跳转打开的才需要进行设置
+        if (bw.getGlobalFilterWidget() != null) {
+            // 如果已经设置了源字段和目标字段
+            if (((AbstractBIWidget) bw.getGlobalFilterWidget()).getGlobalSourceAndTargetFieldList().size() > 0) {
+                g = GVIUtils.AND(g, GlobalFilterUtils.getSettingSourceAndTargetJumpFilter(widget, userId, session, target, ((AbstractBIWidget) bw.getGlobalFilterWidget()).getBaseTable()));
+            } else {
+                g = GVIUtils.AND(g, GlobalFilterUtils.getNotSettingSourceAndTargetJumpFilter(session, target, widget, false));
+            }
+        }
+        return g;
     }
 }

@@ -1,5 +1,6 @@
 package com.fr.bi.etl.analysis.manager;
 
+import com.finebi.cube.conf.BIAliasManagerProvider;
 import com.finebi.cube.conf.trans.UserAliasManager;
 import com.fr.fs.control.UserControl;
 import com.fr.json.JSONObject;
@@ -10,7 +11,7 @@ import com.fr.json.JSONObject;
  * @author Lucifer
  * @since Advanced FineBI Analysis 1.0
  */
-public class BIAnalysisETLAliasManagerWithoutUser extends BIAnalysisETLAliasManager {
+public class BIAnalysisETLAliasManagerWithoutUser extends BIAnalysisETLAliasManager implements BIAliasManagerProvider {
 
     private static final long serialVersionUID = -7447205168677215248L;
     private final long usedUserId = UserControl.getInstance().getSuperManagerID();

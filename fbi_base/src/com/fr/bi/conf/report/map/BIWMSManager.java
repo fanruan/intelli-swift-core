@@ -81,6 +81,7 @@ public class BIWMSManager extends XMLFileManager {
     }
 
     public JSONObject getWMSInfo(String key){
-        return nameMap.get(key).toJSON();
+        MapInfo info = nameMap.get(key);
+        return info == null ? JSONObject.create() : info.toJSON();
     }
 }

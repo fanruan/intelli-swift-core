@@ -323,6 +323,7 @@ public class BIReportNode extends DAOBean implements Entry {
         JSONObject jo = new JSONObject();
 
         jo.put("buildUrl", this.buildUrl());
+        jo.put("bih5link", this.getH5Link());
         jo.put("id", id);
         jo.put("pId", this.parentid);
         jo.put("text", this.reportname);
@@ -345,6 +346,13 @@ public class BIReportNode extends DAOBean implements Entry {
     protected String buildUrl() {
         StringBuffer sb = new StringBuffer();
         sb.append("?op=fr_bi&cmd=bi_init&id=").append(this.id);
+        sb.append("&createBy=").append(this.getUserId());
+        return sb.toString();
+    }
+
+    private String getH5Link() {
+        StringBuffer sb = new StringBuffer();
+        sb.append("?op=fr_bi_h5&cmd=h5_init&id=").append(this.id);
         sb.append("&createBy=").append(this.getUserId());
         return sb.toString();
     }

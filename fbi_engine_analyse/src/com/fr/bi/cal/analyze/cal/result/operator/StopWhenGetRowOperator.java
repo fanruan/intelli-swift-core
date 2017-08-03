@@ -37,7 +37,7 @@ public class StopWhenGetRowOperator implements Operator {
     // 判断当前页是否结束
     @Override
     public boolean isPageEnd(GroupConnectionValue gc) {
-        if(shouldEnd){
+        if (shouldEnd) {
             return true;
         }
         // 没能获取到值得时候表明已经结束了
@@ -47,13 +47,25 @@ public class StopWhenGetRowOperator implements Operator {
         }
         for (Object o : stopRow) {
             GroupConnectionValue c = p.getChild();
-            if (!c.getData().toString().equals(o)) {
+            if (!checkEquals(c, o)) {
                 return false;
             }
             p = c;
         }
         shouldEnd = true;
         return false;
+    }
+
+    //BI-6973 客户工程有可能出现空指针
+    private boolean checkEquals(GroupConnectionValue gcv, Object o) {
+        Object gcvData = gcv.getData();
+        if (gcvData == null && gcvData == null) {
+            return true;
+        } else if (o == null || gcvData == null) {
+            return false;
+        } else {
+            return gcvData.toString().equals(o);
+        }
     }
 
     @Override

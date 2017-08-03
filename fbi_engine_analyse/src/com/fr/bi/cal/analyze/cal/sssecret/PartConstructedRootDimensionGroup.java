@@ -2,6 +2,7 @@ package com.fr.bi.cal.analyze.cal.sssecret;
 
 import com.fr.bi.cal.analyze.cal.index.loader.MetricGroupInfo;
 import com.fr.bi.cal.analyze.cal.multithread.BIMultiThreadExecutor;
+import com.fr.bi.cal.analyze.cal.result.NodeCreator;
 import com.fr.bi.cal.analyze.cal.sssecret.diminfo.MergeIteratorCreator;
 import com.fr.bi.cal.analyze.session.BISession;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
@@ -22,8 +23,8 @@ public class PartConstructedRootDimensionGroup extends ConstructedRootDimensionG
     private PartConstructedRootDimensionGroup() {
     }
 
-    public PartConstructedRootDimensionGroup(List<MetricGroupInfo> metricGroupInfoList, MergeIteratorCreator[] mergeIteratorCreators, int sumLength, BISession session, boolean useRealData, NameObject[] dimensionTargetSort, List<CalCalculator> calCalculators, BIDimension[] filterDimension, boolean setIndex, boolean hasInSumMetric, BIMultiThreadExecutor executor, boolean calAllPage, int maxSize) {
-        super(metricGroupInfoList, mergeIteratorCreators, sumLength, session, useRealData, dimensionTargetSort, calCalculators, filterDimension, setIndex, hasInSumMetric, executor, calAllPage);
+    public PartConstructedRootDimensionGroup(List<MetricGroupInfo> metricGroupInfoList, MergeIteratorCreator[] mergeIteratorCreators, int sumLength, BISession session, boolean useRealData, NameObject[] dimensionTargetSort, List<CalCalculator> calCalculators, BIDimension[] filterDimension, boolean setIndex, boolean hasInSumMetric, BIMultiThreadExecutor executor, boolean calAllPage, NodeCreator nodeCreator, int maxSize) {
+        super(metricGroupInfoList, mergeIteratorCreators, sumLength, session, useRealData, dimensionTargetSort, calCalculators, filterDimension, setIndex, hasInSumMetric, executor, nodeCreator, calAllPage);
         this.maxSize = maxSize;
     }
 

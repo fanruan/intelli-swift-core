@@ -3,6 +3,7 @@ package com.fr.bi.stable.data.source;
 import com.finebi.cube.api.ICubeColumnIndexReader;
 import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.api.ICubeTableService;
+import com.finebi.cube.common.log.BILogger;
 import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.base.TableData;
 import com.fr.bi.base.BIBasicCore;
@@ -13,9 +14,12 @@ import com.fr.bi.common.inter.Traversal;
 import com.fr.bi.common.persistent.xml.BIIgnoreField;
 import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.stable.constant.BIJSONConstant;
-import com.fr.bi.stable.data.db.*;
+import com.fr.bi.stable.data.db.BIDataValue;
+import com.fr.bi.stable.data.db.ICubeFieldSource;
+import com.fr.bi.stable.data.db.IPersistentTable;
+import com.fr.bi.stable.data.db.PersistentField;
+import com.fr.bi.stable.data.db.PersistentTable;
 import com.fr.bi.stable.engine.index.key.IndexKey;
-import com.fr.bi.stable.exception.FieldNameDuplicateException;
 import com.fr.bi.stable.utils.BICollectionUtils;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
 import com.fr.general.ComparatorUtils;
@@ -25,14 +29,22 @@ import com.fr.stable.collections.array.IntArray;
 import com.fr.stable.xml.XMLPrintWriter;
 import com.fr.stable.xml.XMLableReader;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Created by GUY on 2015/3/3.
  */
 public abstract class AbstractTableSource implements CubeTableSource {
-
+    private static BILogger LOGGER = BILoggerFactory.getLogger(AbstractTableSource.class);
     /**
      *
      */
@@ -337,9 +349,11 @@ public abstract class AbstractTableSource implements CubeTableSource {
             ICubeFieldSource old = this.fields.get(fieldName);
             boolean isUsable = old == null || old.isUsable();
             if (fields.containsKey(fieldName)) {
-                throw new FieldNameDuplicateException("The field name:" + fieldName + " is duplicated");
+                LOGGER.warn("The field name:" + fieldName + " is duplicated");
+//                throw new FieldNameDuplicateException("The field name:" + fieldName + " is duplicated");
+            } else {
+                fields.put(fieldName, field);
             }
-            fields.put(fieldName, field);
         }
 
         return fields;

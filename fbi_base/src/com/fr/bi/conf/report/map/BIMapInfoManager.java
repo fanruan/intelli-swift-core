@@ -1,6 +1,8 @@
 package com.fr.bi.conf.report.map;
 
 import com.finebi.cube.common.log.BILoggerFactory;
+import com.fr.base.FRContext;
+import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.general.GeneralContext;
 import com.fr.json.JSONException;
 import com.fr.stable.CodeUtils;
@@ -55,42 +57,42 @@ public class BIMapInfoManager {
             customMapTypeName = new HashMap<String, String>();
             customMapLayer = new HashMap<String, Integer>();
             customMapParentChildrenRelation = new HashMap<String, List<String>>();
-            String innerMapPath = new File(GeneralContext.getEnvProvider().getPath(), "resources/geojson/map").getAbsolutePath();
-            String customMapPath = new File(GeneralContext.getEnvProvider().getPath(), "resources/geojson/image").getAbsolutePath();
+            String innerMapPath = new File(FRContext.getCurrentEnv().getPath() + BIBaseConstant.MAP_JSON.MAP_PATH + File.separator + "map").getAbsolutePath();
+            String customMapPath = new File(FRContext.getCurrentEnv().getPath() + BIBaseConstant.MAP_JSON.MAP_PATH + File.separator + "image").getAbsolutePath();
             editFileNames(innerMapPath, "map", "map", "MAP_", 0, true);
             editFileNames(customMapPath, "image", "image", "MAP_", 0, false);
         } catch (JSONException e) {
-            BILoggerFactory.getLogger().error(e.getMessage(),e);
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
     }
 
     private void editFileNames(String path, String parentPath, String parentName, String prev, int layer, boolean isInner) throws JSONException {
         File file = new File(path);
         File[] array = file.listFiles();
-        if(array == null){
+        if (array == null) {
             return;
         }
         List<File> dirs = new ArrayList<File>();
         List<File> files = new ArrayList<File>();
-        for(File f : array){
-            if(f.isFile()){
+        for (File f : array) {
+            if (f.isFile()) {
                 files.add(f);
-            }else{
-                if (f.isDirectory()){
+            } else {
+                if (f.isDirectory()) {
                     dirs.add(f);
                 }
             }
         }
         List<String> children = new ArrayList<String>();
-        for(File f : files){
+        for (File f : files) {
             String fileName = f.getName().substring(0, f.getName().lastIndexOf("."));
             String currentName = StringUtils.isEmpty(parentName) ? fileName : parentName + "/" + fileName;
-            if(isInner){
+            if (isInner) {
                 innerMapName.put(fileName, prev + currentName);
                 innerMapTypeName.put(prev + currentName, fileName);
                 innerMapPath.put(prev + currentName, ACTION_PREFIX + CodeUtils.cjkEncode(currentName) + ".json");
                 innerMapLayer.put(prev + currentName, layer);
-            }else{
+            } else {
                 customMapName.put(fileName, prev + currentName);
                 customMapTypeName.put(prev + currentName, fileName);
                 customMapPath.put(prev + currentName, ACTION_PREFIX + CodeUtils.cjkEncode(currentName) + ".json");
@@ -98,12 +100,12 @@ public class BIMapInfoManager {
             }
             children.add(prev + currentName);
         }
-        if(isInner){
+        if (isInner) {
             innerMapParentChildrenRelation.put(parentName, children);
-        }else{
+        } else {
             customMapParentChildrenRelation.put(parentName, children);
         }
-        for(File f : dirs){
+        for (File f : dirs) {
             String currentName = StringUtils.isEmpty(parentName) ? f.getName() : parentName + "/" + f.getName();
             String currentPath = StringUtils.isEmpty(parentPath) ? f.getName() : parentPath + "/" + f.getName();
             editFileNames(f.getAbsolutePath(), currentPath, currentName, prev, layer + 1, isInner);
@@ -111,44 +113,44 @@ public class BIMapInfoManager {
         }
     }
 
-    public Map<String, String> getinnerMapPath(){
+    public Map<String, String> getinnerMapPath() {
         return innerMapPath;
     }
 
-    public Map<String, String> getinnerMapName(){
+    public Map<String, String> getinnerMapName() {
         return innerMapName;
     }
 
-    public Map<String, Integer> getinnerMapLayer(){
+    public Map<String, Integer> getinnerMapLayer() {
         return innerMapLayer;
     }
 
-    public Map<String, List<String>> getinnerMapParentChildrenRelation(){
+    public Map<String, List<String>> getinnerMapParentChildrenRelation() {
         return innerMapParentChildrenRelation;
     }
 
-    public Map<String, String> getinnerMapTypeName(){
+    public Map<String, String> getinnerMapTypeName() {
         return innerMapTypeName;
     }
 
 
-    public Map<String, String> getCustomMapPath(){
+    public Map<String, String> getCustomMapPath() {
         return customMapPath;
     }
 
-    public Map<String, String> getCustomMapName(){
+    public Map<String, String> getCustomMapName() {
         return customMapName;
     }
 
-    public Map<String, Integer> getCustomMapLayer(){
+    public Map<String, Integer> getCustomMapLayer() {
         return customMapLayer;
     }
 
-    public Map<String, List<String>> getCustomMapParentChildrenRelation(){
+    public Map<String, List<String>> getCustomMapParentChildrenRelation() {
         return customMapParentChildrenRelation;
     }
 
-    public Map<String, String> getCustomMapTypeName(){
+    public Map<String, String> getCustomMapTypeName() {
         return customMapTypeName;
     }
 }

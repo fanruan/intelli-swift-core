@@ -1,13 +1,14 @@
 package com.fr.bi.field.target.calculator.cal.configure;
 
 import com.fr.base.FRContext;
+import com.fr.bi.cal.analyze.cal.result.BIXLeftNode;
 import com.fr.bi.field.target.target.cal.target.configure.BIConfiguredCalculateTarget;
+import com.fr.bi.report.key.TargetGettingKey;
+import com.fr.bi.report.key.XTargetGettingKey;
+import com.fr.bi.report.result.BINode;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.operation.sort.comp.RankConfASCComparator;
 import com.fr.bi.stable.operation.sort.comp.RankConfDSCComparator;
-import com.fr.bi.report.key.TargetGettingKey;
-import com.fr.bi.report.result.BICrossNode;
-import com.fr.bi.report.result.BINode;
 import com.fr.bi.stable.utils.BICollectionUtils;
 import com.fr.bi.stable.utils.CubeBaseUtils;
 
@@ -27,6 +28,10 @@ public class RankConfigureCalculator extends AbstractConfigureCalculator {
 
     @Override
     public void calCalculateTarget(BINode node) {
+        cal(node, null);
+    }
+
+    private void cal(BINode node, XTargetGettingKey key) {
         if (calTargetKey == null) {
             return;
         }
@@ -41,17 +46,19 @@ public class RankConfigureCalculator extends AbstractConfigureCalculator {
             }
         }
 
-        if (node.getDeep() > node.getFrameDeep()) {
-            tempNode = getCalculatedRootNode(node);
-        } else {
-            return;
+        if (deep > 0) {
+            if (node.getDeep() > node.getFrameDeep()) {
+                tempNode = getCalculatedRootNode(node);
+            } else {
+                return;
+            }
         }
 
         List nodeList = new ArrayList();
         BINode cursor_node = tempNode;
         while (cursor_node != null) {
             if (shouldCalculate(cursor_node)) {
-                nodeList.add(new RankDealWith(cursor_node));
+                nodeList.add(new RankDealWith(cursor_node, key));
             }
             cursor_node = cursor_node.getSibling();
         }
@@ -63,36 +70,17 @@ public class RankConfigureCalculator extends AbstractConfigureCalculator {
     }
 
     @Override
-    public void calCalculateTarget(BICrossNode node, TargetGettingKey key1) {
-        if (calTargetKey == null) {
-            return;
-        }
-        BICrossNode tempNode = node;
-        int deep = getActualStart_Group(start_group, tempNode);
-        for (int i = 0; i < deep; i++) {
-            if (tempNode.getLeftFirstChild() == null) {
-                break;
-            }
-            tempNode = tempNode.getLeftFirstChild();
-        }
-        List nodeList = new ArrayList();
-        BICrossNode cursor_node = tempNode;
-        while (cursor_node != null) {
-            nodeList.add(new RankDealWithCrossNode(cursor_node));
-            cursor_node = cursor_node.getBottomSibling();
-        }
-        try {
-            CubeBaseUtils.invokeCalculatorThreads(nodeList);
-        } catch (InterruptedException e) {
-            FRContext.getLogger().error(e.getMessage(), e);
-        }
+    public void calCalculateTarget(BIXLeftNode node, XTargetGettingKey key) {
+        cal(node, key);
     }
 
     private class RankDealWith implements java.util.concurrent.Callable {
         private BINode rank_node;
+        private XTargetGettingKey key;
 
-        private RankDealWith(BINode rank_node) {
+        private RankDealWith(BINode rank_node, XTargetGettingKey key) {
             this.rank_node = rank_node;
+            this.key = key;
         }
 
 
@@ -109,7 +97,7 @@ public class RankConfigureCalculator extends AbstractConfigureCalculator {
             TreeMap sortMap = new TreeMap(c);
             BINode cursor_node = temp_node;
             while (isNotEnd(cursor_node, deep)) {
-                Comparable value = (Comparable) cursor_node.getSummaryValue(calTargetKey);
+                Comparable value = (Comparable) cursor_node.getSummaryValue(getCalTargetGettingKey(key));
                 Integer time = (Integer) sortMap.get(value);
                 if (time == null) {
                     time = new Integer(1);
@@ -134,8 +122,8 @@ public class RankConfigureCalculator extends AbstractConfigureCalculator {
             }
             cursor_node = temp_node;
             while (isNotEnd(cursor_node, deep)) {
-                Object value = cursor_node.getSummaryValue(calTargetKey);
-                cursor_node.setSummaryValue(createTargetGettingKey(), result.get(value));
+                Object value = cursor_node.getSummaryValue(getCalTargetGettingKey(key));
+                cursor_node.setSummaryValue(getTargetGettingKey(key), result.get(value));
                 cursor_node = cursor_node.getSibling();
             }
             return null;
@@ -153,66 +141,4 @@ public class RankConfigureCalculator extends AbstractConfigureCalculator {
         }
 
     }
-
-    private class RankDealWithCrossNode implements java.util.concurrent.Callable {
-        private BICrossNode rank_node;
-
-        private RankDealWithCrossNode(BICrossNode rank_node) {
-            this.rank_node = rank_node;
-        }
-
-
-        @Override
-        public Object call() throws Exception {
-            int deep = 0;
-            BICrossNode temp_node = rank_node;
-            while (temp_node.getLeftFirstChild() != null) {
-                temp_node = temp_node.getLeftFirstChild();
-                deep++;
-            }
-            Comparator c = type == BIReportConstant.TARGET_TYPE.CAL_VALUE.RANK_TPYE.ASC ?
-                    new RankConfASCComparator() : new RankConfDSCComparator();
-            TreeMap sortMap = new TreeMap(c);
-            BICrossNode cursor_node = temp_node;
-            while (isNotEnd(cursor_node, deep)) {
-                Comparable value = (Comparable) cursor_node.getSummaryValue(calTargetKey);
-                Integer time = (Integer) sortMap.get(value);
-                if (time == null) {
-                    time = new Integer(1);
-                } else {
-                    time = new Integer(time.intValue() + 1);
-                }
-                sortMap.put(value, time);
-                cursor_node = cursor_node.getBottomSibling();
-            }
-            Map<Object, Number> result = new HashMap();
-            int rank = 1;
-            Iterator iter = sortMap.entrySet().iterator();
-            while (iter.hasNext()) {
-                Map.Entry entry = (Map.Entry) iter.next();
-                result.put(entry.getKey(), new Integer(rank));
-                rank += ((Integer) entry.getValue()).intValue();
-            }
-            cursor_node = temp_node;
-            while (isNotEnd(cursor_node, deep)) {
-                Object value = cursor_node.getSummaryValue(calTargetKey);
-                cursor_node.setSummaryValue(createTargetGettingKey(), result.get(value));
-                cursor_node = cursor_node.getBottomSibling();
-            }
-            return null;
-        }
-
-        private boolean isNotEnd(BICrossNode node, int deep) {
-            if (node == null) {
-                return false;
-            }
-            BICrossNode temp = node;
-            for (int i = 0; i < deep; i++) {
-                temp = temp.getLeftParent();
-            }
-            return temp == rank_node;
-        }
-
-    }
-
 }

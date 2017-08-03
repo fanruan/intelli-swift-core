@@ -4,41 +4,55 @@ package com.fr.bi.cal.analyze.report.report.widget;
 import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.conf.table.BusinessTable;
 import com.fr.bi.base.annotation.BICoreField;
-import com.fr.bi.cal.analyze.cal.result.*;
+import com.fr.bi.cal.analyze.cal.result.BIComplexExecutData;
+import com.fr.bi.cal.analyze.cal.result.ComplexExpander;
+import com.fr.bi.cal.analyze.cal.result.CrossExpander;
 import com.fr.bi.cal.analyze.cal.table.PolyCubeECBlock;
 import com.fr.bi.cal.analyze.executor.BIEngineExecutor;
 import com.fr.bi.cal.analyze.executor.paging.PagingFactory;
-import com.fr.bi.cal.analyze.executor.table.*;
-import com.fr.bi.cal.analyze.report.report.BIWidgetFactory;
-import com.fr.bi.cal.analyze.report.report.widget.chart.export.calculator.IExcelDataBuilder;
-import com.fr.bi.cal.analyze.report.report.widget.chart.export.calculator.SummaryComplexTableBuilder;
-import com.fr.bi.cal.analyze.report.report.widget.chart.export.calculator.SummaryCrossTableDataBuilder;
-import com.fr.bi.cal.analyze.report.report.widget.chart.export.calculator.SummaryGroupTableDataBuilder;
-import com.fr.bi.cal.analyze.report.report.widget.chart.export.format.operation.BITableCellDateFormatOperation;
-import com.fr.bi.cal.analyze.report.report.widget.chart.export.format.operation.BITableCellNumberFormatOperation;
-import com.fr.bi.cal.analyze.report.report.widget.chart.export.format.operation.ITableCellFormatOperation;
-import com.fr.bi.cal.analyze.report.report.widget.chart.export.format.setting.BICellFormatSetting;
-import com.fr.bi.cal.analyze.report.report.widget.chart.export.format.setting.ICellFormatSetting;
-import com.fr.bi.cal.analyze.report.report.widget.chart.export.item.constructor.DataConstructor;
-import com.fr.bi.cal.analyze.report.report.widget.chart.export.utils.BITableConstructHelper;
-import com.fr.bi.cal.analyze.report.report.widget.style.BITableWidgetStyle;
+import com.fr.bi.cal.analyze.executor.table.AbstractTableWidgetExecutor;
+import com.fr.bi.cal.analyze.executor.table.ComplexCrossExecutor;
+import com.fr.bi.cal.analyze.executor.table.ComplexGroupExecutor;
+import com.fr.bi.cal.analyze.executor.table.ComplexHorGroupExecutor;
+import com.fr.bi.cal.analyze.executor.table.CrossExecutor;
+import com.fr.bi.cal.analyze.executor.table.GroupExecutor;
+import com.fr.bi.cal.analyze.executor.table.HorGroupExecutor;
+import com.fr.bi.cal.analyze.executor.utils.GlobalFilterUtils;
+import com.fr.bi.cal.analyze.report.report.widget.chart.calculator.builder.IExcelDataBuilder;
+import com.fr.bi.cal.analyze.report.report.widget.chart.calculator.builder.SummaryComplexTableBuilder;
+import com.fr.bi.cal.analyze.report.report.widget.chart.calculator.builder.SummaryCrossTableDataBuilder;
+import com.fr.bi.cal.analyze.report.report.widget.chart.calculator.builder.SummaryGroupTableDataBuilder;
+import com.fr.bi.cal.analyze.report.report.widget.chart.calculator.format.operation.BITableCellDateFormatOperation;
+import com.fr.bi.cal.analyze.report.report.widget.chart.calculator.format.operation.BITableCellNumberFormatOperation;
+import com.fr.bi.cal.analyze.report.report.widget.chart.calculator.format.operation.ITableCellFormatOperation;
+import com.fr.bi.cal.analyze.report.report.widget.chart.calculator.format.setting.BICellFormatSetting;
+import com.fr.bi.cal.analyze.report.report.widget.chart.calculator.format.setting.ICellFormatSetting;
+import com.fr.bi.cal.analyze.report.report.widget.chart.calculator.format.utils.BITableConstructHelper;
+import com.fr.bi.cal.analyze.report.report.widget.chart.calculator.item.constructor.DataConstructor;
 import com.fr.bi.cal.analyze.report.report.widget.table.BITableReportSetting;
+import com.fr.bi.cal.analyze.report.report.widget.util.BIWidgetFactory;
 import com.fr.bi.cal.analyze.session.BISession;
 import com.fr.bi.common.persistent.annotation.PersistNameHistory;
 import com.fr.bi.common.persistent.xml.BIIgnoreField;
+import com.fr.bi.conf.report.SclCalculator;
 import com.fr.bi.conf.report.WidgetType;
-import com.fr.bi.conf.report.style.DetailChartSetting;
-import com.fr.bi.conf.report.widget.IWidgetStyle;
+import com.fr.bi.conf.report.conf.BIWidgetConf;
+import com.fr.bi.conf.report.conf.BIWidgetSettings;
+import com.fr.bi.conf.report.style.BITableStyle;
+import com.fr.bi.conf.report.widget.BIWidgetStyle;
 import com.fr.bi.conf.report.widget.field.BITargetAndDimension;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.conf.report.widget.field.target.BITarget;
 import com.fr.bi.conf.session.BISessionProvider;
 import com.fr.bi.field.target.target.BISummaryTarget;
+import com.fr.bi.field.target.target.TargetType;
 import com.fr.bi.field.target.target.cal.target.configure.BIConfiguredCalculateTarget;
 import com.fr.bi.field.target.target.cal.target.configure.BIPeriodConfiguredCalculateTarget;
 import com.fr.bi.report.key.TargetGettingKey;
+import com.fr.bi.report.result.TargetCalculator;
 import com.fr.bi.stable.constant.BIJSONConstant;
 import com.fr.bi.stable.constant.BIReportConstant;
+import com.fr.bi.stable.constant.BIStyleConstant;
 import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.gvi.GVIUtils;
 import com.fr.bi.stable.gvi.GroupValueIndex;
@@ -67,7 +81,7 @@ import java.util.concurrent.ConcurrentHashMap;
  *
  * @author Daniel-pc
  */
-public class TableWidget extends BISummaryWidget {
+public class TableWidget extends SummaryWidget implements SclCalculator {
 
     private static final long serialVersionUID = -4736577206434772688L;
 
@@ -90,8 +104,6 @@ public class TableWidget extends BISummaryWidget {
     @BIIgnoreField
     private transient BISummaryTarget[] usedTargets;
 
-    private DetailChartSetting settings = new DetailChartSetting();
-
     protected Map<String, JSONArray> clicked = new HashMap<String, JSONArray>();
 
     protected Map<String, BIDimension> dimensionsIdMap = new HashMap<String, BIDimension>();
@@ -99,8 +111,7 @@ public class TableWidget extends BISummaryWidget {
     private Map<String, BISummaryTarget> targetsIdMap = new HashMap<String, BISummaryTarget>();
 
     protected Map<Integer, List<String>> view = new HashMap<Integer, List<String>>();
-
-    private BITableWidgetStyle style;
+    private BIWidgetStyle style;
 
     @Override
     public void setPageSpinner(int index, int value) {
@@ -183,8 +194,7 @@ public class TableWidget extends BISummaryWidget {
      */
     @Override
     public int isOrder() {
-
-        return settings.isOrder();
+        return getWidgetConf().isOrder();
     }
 
     public BIEngineExecutor getExecutor(BISession session) {
@@ -196,27 +206,6 @@ public class TableWidget extends BISummaryWidget {
             return createComplexExecutor(session, hasTarget, complexExpander, expander);
         } else {
             return createNormalExecutor(session, hasTarget, getViewDimensions(), getViewTopDimensions(), expander);
-        }
-    }
-
-    public void setGroupTableType() {
-
-        tableType = BIReportConstant.TABLE_WIDGET.GROUP_TYPE;
-    }
-
-    public void addColumn2Row() {
-
-        if (data != null) {
-            data.addColumn2Row();
-            String[] array = data.getRow();
-            ArrayList<BIDimension> usedDimensions = new ArrayList<BIDimension>();
-            for (String anArray : array) {
-                BIDimension dimension = BITravalUtils.getTargetByName(anArray, dimensions);
-                if (dimension.isUsed()) {
-                    usedDimensions.add(dimension);
-                }
-            }
-            usedDimension = usedDimensions.toArray(new BIDimension[usedDimensions.size()]);
         }
     }
 
@@ -328,10 +317,6 @@ public class TableWidget extends BISummaryWidget {
         if (jo.has(BIJSONConstant.JSON_KEYS.EXPANDER)) {
             parsExpander(jo);
         }
-        if (jo.has("settings")) {
-            settings = new DetailChartSetting();
-            settings.parseJSON(jo);
-        }
         if (jo.has("clicked")) {
             JSONObject c = jo.getJSONObject("clicked");
             Iterator it = c.keys();
@@ -342,19 +327,6 @@ public class TableWidget extends BISummaryWidget {
         }
         changeCalculateTargetStartGroup();
         createDimensionAndTargetMap();
-        createWidgetStyles(jo);
-    }
-
-    private void createWidgetStyles(JSONObject jo) throws Exception {
-
-        style = new BITableWidgetStyle();
-        JSONArray dimColWidths = new JSONArray();
-        for (int i = 0; i < getViewDimensions().length; i++) {
-            dimColWidths.put(20);
-        }
-        jo.put("mergeCols", dimColWidths);
-        jo.put("columnSize", dimColWidths);
-        style.parseJSON(jo);
     }
 
     private void createDimAndTars(JSONObject jo) throws Exception {
@@ -443,11 +415,6 @@ public class TableWidget extends BISummaryWidget {
         return dimensionIds.toArray(new String[0]);
     }
 
-    public DetailChartSetting getChartSetting() {
-
-        return settings;
-    }
-
     public String[] getAllDimensionIds() {
 
         Set<String> dimensionIds = new HashSet<String>();
@@ -503,13 +470,13 @@ public class TableWidget extends BISummaryWidget {
 
     public boolean showRowToTal() {
 
-        return settings.showRowTotal();
+        return getWidgetSettings(widgetConf).isShowRowTotal();
     }
 
     @Override
     public boolean showColumnTotal() {
 
-        return settings.showColTotal();
+        return getWidgetSettings(widgetConf).isShowColTotal();
     }
 
     @Override
@@ -521,6 +488,17 @@ public class TableWidget extends BISummaryWidget {
     public void setOperator(int operator) {
 
         this.operator = operator;
+    }
+
+    public String getThemeColor() {
+        switch (tableType) {
+            case BIReportConstant.WIDGET.TABLE:
+            case BIReportConstant.WIDGET.CROSS_TABLE:
+            case BIReportConstant.WIDGET.COMPLEX_TABLE:
+                return getWidgetSettings().getThemeColor();
+            default:
+                return BIStyleConstant.DEFAULT_CHART_SETTING.THEME_COLOR;
+        }
     }
 
     public boolean hasVerticalPrePage() {
@@ -600,96 +578,15 @@ public class TableWidget extends BISummaryWidget {
      * @throws Exception
      */
     public GroupValueIndex getLinkFilter(TableWidget linkedWidget, BusinessTable targetKey, Map<String, JSONArray> clicked, BISession session) throws Exception {
-
-        // 相同基础表的时候才进行联动计算要不然直接进行返回
-        BISummaryTarget summaryTarget = null;
-        for (String target : clicked.keySet()) {
-            try {
-                summaryTarget = linkedWidget.getBITargetByID(target);
-                Map<String, JSONArray> t = new HashMap<String, JSONArray>();
-                t.put(target, clicked.get(target));
-                clicked = t;
-                break;
-            } catch (Exception e) {
-
-            }
-        }
-        // 连联动计算指标都没有就没有所谓的联动了,直接返回
-        if (summaryTarget == null) {
-            return null;
-        }
-        BusinessTable linkTargetTable = summaryTarget.createTableKey();
-        if (!targetKey.equals(linkTargetTable)) {
-            return null;
-        }
-
         BIEngineExecutor linkExecutor = linkedWidget.getExecutor(session);
         GroupValueIndex linkGvi = null;
-        try {
-            // 交叉表的情况
-            if (linkExecutor instanceof CrossExecutor) {
-                return getCrossWidgetLinkFilter(linkedWidget, clicked, session, (CrossExecutor) linkExecutor);
-            }
-            Object[] rowData = getLinkRowData(clicked);
-            // 在点击行的地方进行停止构建树
-            Node linkNode = linkExecutor.getStopOnRowNode(rowData);
-            // 总汇总值
-            if (rowData == null || rowData.length == 0) {
-                for (String key : clicked.keySet()) {
-                    linkGvi = GVIUtils.AND(linkGvi, getTargetIndex(key, linkNode.getTargetIndexValueMap()));
-                }
-                return linkGvi;
-            }
-            Node p = linkNode;
-            for (String key : clicked.keySet()) {
-                JSONArray keyJson = clicked.get(key);
-                for (int i = keyJson.length() - 1; i >= 0; i--) {
-                    JSONObject object = keyJson.getJSONObject(i);
-                    Object clickValue = object.getJSONArray("value").getString(0);
-                    String did = object.getString("dId");
-                    for (Node n : p.getChilds()) {
-                        if (n.getShowValue().equals(clickValue)) {
-                            p = n;
-                            break;
-                        }
-                    }
-                }
-                linkGvi = GVIUtils.AND(linkGvi, getTargetIndex(key, p.getTargetIndexValueMap()));
-            }
-        } catch (Exception e) {
-
+        // 分组表,交叉表,复杂表的时候才有联动的必要
+        if (linkExecutor instanceof AbstractTableWidgetExecutor) {
+            return ((AbstractTableWidgetExecutor) linkExecutor).getClickGvi(clicked, targetKey);
         }
         return linkGvi;
     }
 
-    /**
-     * 交叉表联动条件
-     *
-     * @param linkedWidget
-     * @param clicked
-     * @param session
-     * @return
-     */
-    public GroupValueIndex getCrossWidgetLinkFilter(TableWidget linkedWidget, Map<String, JSONArray> clicked, BISession session, CrossExecutor executor) throws Exception {
-        // 区分哪些是行数据,哪些是列数据
-        List<Object> row = new ArrayList<Object>();
-        List<Object> col = new ArrayList<Object>();
-        GroupValueIndex linkGvi = null;
-        String target = getLinkRowAndColData(clicked, linkedWidget, row, col);
-        NewCrossRoot c = executor.getStopOnRowNode(row.toArray(), col.toArray());
-        Node left = c.getLeft();
-        Node top = c.getTop();
-        if (row.size() == 0 && col.size() == 0) {
-            // 总汇总值得时候
-            linkGvi = GVIUtils.AND(linkGvi, getTargetIndex(target, left.getTargetIndexValueMap()));
-            linkGvi = GVIUtils.AND(linkGvi, getTargetIndex(target, top.getTargetIndexValueMap()));
-            return linkGvi;
-        }
-
-        linkGvi = GVIUtils.AND(getLinkNodeFilter(left, target, row), linkGvi);
-        linkGvi = GVIUtils.AND(getLinkNodeFilter(top, target, col), linkGvi);
-        return linkGvi;
-    }
 
     private GroupValueIndex getTargetIndex(String target, Map<TargetGettingKey, GroupValueIndex> targetIndexs) {
 
@@ -701,108 +598,6 @@ public class TableWidget extends BISummaryWidget {
         return null;
     }
 
-    private GroupValueIndex getLinkNodeFilter(Node n, String target, List<Object> data) {
-
-        if (n != null) {
-            if (data.size() == 0) {
-                return getTargetIndex(target, n.getTargetIndexValueMap());
-            }
-            Node parent = n;
-            for (int i = 0; i < data.size(); i++) {
-                Object cv = data.get(i);
-                Node child = null;
-                for (Node pn : parent.getChilds()) {
-                    if (pn.getShowValue().equals(cv)) {
-                        child = pn;
-                        break;
-                    }
-                }
-
-                parent = child;
-            }
-            return getTargetIndex(target, parent.getTargetIndexValueMap());
-        }
-        return null;
-    }
-
-    /**
-     * 获取联动点击行的数据(针对分组表)
-     *
-     * @param clicked 前台传过来的点击值
-     * @return
-     * @throws Exception
-     */
-    private Object[] getLinkRowData(Map<String, JSONArray> clicked) throws Exception {
-
-        try {
-            if (clicked != null) {
-                for (String key : clicked.keySet()) {
-                    JSONArray keyJson = clicked.get(key);
-                    Object rowData[] = new Object[keyJson.length()];
-                    int j = 0;
-                    for (int i = keyJson.length() - 1; i >= 0; i--) {
-                        // 每个维度根据指标来选出点击的值得gvi
-                        JSONObject object = keyJson.getJSONObject(i);
-                        String click = object.getJSONArray("value").getString(0);
-                        String did = object.getString("dId");
-                        rowData[j++] = click;
-                    }
-                    return rowData;
-                }
-            }
-        } catch (Exception e) {
-
-        }
-        return new Object[0];
-    }
-
-
-    /**
-     * 获取联动点击行的数据(针对交叉表)
-     *
-     * @param clicked      前台传过来的点击值
-     * @param linkedWidget 联动组件
-     * @param row          存放行的点击值
-     * @param col          存放列的点击值
-     * @return
-     */
-    private String getLinkRowAndColData(Map<String, JSONArray> clicked, TableWidget linkedWidget, List row, List col) {
-
-        String target = null;
-        try {
-            if (clicked != null) {
-                Map<String, String> m = new HashMap<String, String>();
-                for (String key : clicked.keySet()) {
-                    target = key;
-                    JSONArray keyJson = clicked.get(key);
-                    for (int i = keyJson.length() - 1; i >= 0; i--) {
-                        // 每个维度根据指标来选出点击的值得gvi
-                        JSONObject object = keyJson.getJSONObject(i);
-                        String click = object.getJSONArray("value").getString(0);
-                        String did = object.getString("dId");
-                        m.put(did, click);
-                    }
-                }
-                // 传过来的顺序不一定就是正确的为确保万一还是采用这样的做法.
-                for (BIDimension dimension : linkedWidget.getViewDimensions()) {
-                    String c = m.get(dimension.getId());
-                    // 点击某一个汇总值得时候不一定有
-                    if (c != null) {
-                        row.add(c);
-                    }
-                }
-                for (BIDimension dimension : linkedWidget.getViewTopDimensions()) {
-                    String c = m.get(dimension.getId());
-                    if (c != null) {
-                        col.add(c);
-                    }
-                }
-            }
-        } catch (Exception e) {
-
-        }
-        return target;
-    }
 
     @Override
     public void reSetDetailTarget() {
@@ -811,33 +606,31 @@ public class TableWidget extends BISummaryWidget {
 
     /*todo 想办法把数据和样式格式分离出来*/
     public JSONObject getPostOptions(BISessionProvider session, HttpServletRequest req) throws Exception {
-
         JSONObject res = this.createDataJSON(session, req);
-        JSONObject dataJSON = res.getJSONObject("data");
-        Map<Integer, List<JSONObject>> viewMap = this.createViewMap();
+        return calculateSCData(widgetConf, res.getJSONObject("data")).put("page", res.getJSONArray("page")).put("viewDimensionsLength", getViewDimensions().length).put("viewTopDimensionsLength", getViewTopDimensions().length).put("widgetType", this.tableType);
+    }
+
+    @Override
+    public JSONObject calculateSCData(BIWidgetConf widgetConf, JSONObject data) throws Exception {
+        Map<Integer, List<JSONObject>> viewMap = this.createViewMap(widgetConf);
+        BIWidgetSettings widgetSettings = getWidgetSettings(widgetConf);
+        Map<String, ITableCellFormatOperation> operationMap = getITableCellFormatOperationMap();
         IExcelDataBuilder builder = null;
         switch (this.tableType) {
             case BIReportConstant.TABLE_WIDGET.CROSS_TYPE:
-                builder = new SummaryCrossTableDataBuilder(viewMap, dataJSON, style);
+                builder = new SummaryCrossTableDataBuilder(viewMap, data, widgetSettings);
                 break;
             case BIReportConstant.TABLE_WIDGET.GROUP_TYPE:
-                builder = new SummaryGroupTableDataBuilder(viewMap, dataJSON, style);
+                builder = new SummaryGroupTableDataBuilder(viewMap, data, widgetSettings);
                 break;
             case BIReportConstant.TABLE_WIDGET.COMPLEX_TYPE:
-                builder = new SummaryComplexTableBuilder(viewMap, dataJSON, style);
+                builder = new SummaryComplexTableBuilder(viewMap, data, widgetSettings);
                 break;
         }
-        DataConstructor data = BITableConstructHelper.buildTableData(builder);
-        BITableConstructHelper.formatCells(data, getITableCellFormatOperationMap(), style);
-        return data.createJSON().put("page", res.getJSONArray("page")).put("dimensionLength", dimensions.length).put("widgetType", this.tableType);
+        DataConstructor res = BITableConstructHelper.buildTableData(builder);
+        BITableConstructHelper.formatCells(res, operationMap, widgetSettings);
+        return res.createJSON();
     }
-
-    /*假数据，测试用*/
-    //    private JSONObject createTestData() throws IOException, JSONException {
-    //        StringBuffer keysStr = new StringBuffer();
-    //        String s = BIFileUtils.readFile("C:\\data.json");
-    //        return data.createJSON().put("page", res.getJSONArray("page")).put("dimensionLength",dimensions.length).put("header",createTestData().get("header")).put("crossHeader",createTestData().get("crossHeader")).put("items",createTestData().get("items")).put("crossItems",createTestData().get("crossItems"));
-    //    }
 
     private Map<String, ITableCellFormatOperation> getITableCellFormatOperationMap() throws Exception {
 
@@ -916,27 +709,87 @@ public class TableWidget extends BISummaryWidget {
         throw new Exception();
     }
 
-    public Map<Integer, List<JSONObject>> createViewMap() throws Exception {
-
-        Map<Integer, List<JSONObject>> dimAndTar = new HashMap<Integer, List<JSONObject>>();
-        Iterator<Integer> iterator = view.keySet().iterator();
-        while (iterator.hasNext()) {
-            Integer next = iterator.next();
-            List<JSONObject> list = new ArrayList<JSONObject>();
-            List<String> ids = view.get(next);
-            for (String dId : ids) {
-                String text = getDimensionNameByID(dId);
-                if (isUsedById(dId)) {
-                    list.add(new JSONObject().put("dId", dId).put("text", text).put("used", isUsedById(dId)));
-                }
-            }
-            dimAndTar.put(next, list);
+    private Map<Integer, List<JSONObject>> createViewMap(BIWidgetConf widgetConf) throws Exception {
+        if (widgetConf == null) {
+            return widgetConf.getDetailViewMap();
+        } else {
+            return this.widgetConf.getDetailViewMap();
         }
-        return dimAndTar;
     }
 
-    public IWidgetStyle getStyle() {
+    public BITableStyle getTableStyle() {
+        String themeColor;
+        switch (tableType) {
+            case BIReportConstant.WIDGET.TABLE:
+            case BIReportConstant.WIDGET.CROSS_TABLE:
+            case BIReportConstant.WIDGET.COMPLEX_TABLE:
+                themeColor = getWidgetSettings().getThemeColor();
+                break;
+            default:
+                themeColor = BIStyleConstant.DEFAULT_CHART_SETTING.THEME_COLOR;
+        }
+        return new BITableStyle(themeColor);
+    }
 
+    public BIWidgetStyle getStyle() {
         return style;
     }
+
+    /**
+     * 组件的基础表
+     * 只处理那种指标在同一个基础表里面的,取其中的一个指标进行获取其中关联的计算指标.
+     *
+     * @return
+     */
+    public BusinessTable getBaseTable() {
+
+        BISummaryTarget[] targets = getTargets();
+        for (BISummaryTarget target : targets) {
+            //这边只加普通指标，计算指标在其他地方处理
+            if (target == null || target.getType() != TargetType.NORMAL) {
+                continue;
+            }
+            TargetCalculator summary = target.createSummaryCalculator();
+            BusinessTable targetKey = summary.createTableKey();
+            return targetKey;
+        }
+        // TODO 维度上面的
+        BIDimension[] dimension = getDimensions();
+        for (BIDimension dim : dimension) {
+            return dim.createColumnKey().getTableBelongTo();
+        }
+        return null;
+    }
+
+    /**
+     * 跳转过滤
+     *
+     * @return
+     */
+    public GroupValueIndex getJumpLinkFilter(BusinessTable targetKey, long userId, BISession session) {
+
+        if (targetKey == null) {
+            return null;
+        }
+
+        // 如果是跳转打开的才需要进行设置
+        if (getGlobalFilterWidget() != null) {
+            // 如果已经设置了源字段和目标字段
+            if (((AbstractBIWidget) getGlobalFilterWidget()).getGlobalSourceAndTargetFieldList().size() > 0) {
+                return GlobalFilterUtils.getSettingSourceAndTargetJumpFilter(this, userId, session, targetKey, ((AbstractBIWidget) getGlobalFilterWidget()).getBaseTable());
+            } else {
+                return GlobalFilterUtils.getNotSettingSourceAndTargetJumpFilter(session, targetKey, this, false);
+            }
+        }
+        return null;
+    }
+
+    public BIDimension getDimensionBydId(String dId) {
+
+        if (dimensionsIdMap.containsKey(dId)) {
+            return dimensionsIdMap.get(dId);
+        }
+        return null;
+    }
+
 }

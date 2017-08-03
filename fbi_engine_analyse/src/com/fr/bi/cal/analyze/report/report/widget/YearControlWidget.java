@@ -1,11 +1,7 @@
 package com.fr.bi.cal.analyze.report.report.widget;
 
 import com.finebi.cube.api.ICubeColumnIndexReader;
-import com.finebi.cube.api.ICubeTableService;
-import com.finebi.cube.api.ICubeValueEntryGetter;
 import com.finebi.cube.relation.BITableSourceRelation;
-import com.fr.bi.cal.analyze.cal.index.loader.CubeIndexLoader;
-import com.fr.bi.cal.analyze.cal.result.Node;
 import com.fr.bi.cal.analyze.session.BISession;
 import com.fr.bi.conf.report.WidgetType;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
@@ -13,20 +9,10 @@ import com.fr.bi.conf.session.BISessionProvider;
 import com.fr.bi.report.result.DimensionCalculator;
 import com.fr.bi.stable.constant.BIJSONConstant;
 import com.fr.bi.stable.constant.BIReportConstant;
-import com.fr.bi.stable.constant.DBConstant;
-import com.fr.bi.stable.gvi.GroupValueIndex;
-import com.fr.bi.stable.io.sortlist.ArrayLookupHelper;
 import com.fr.bi.stable.operation.group.group.date.YearGroup;
-import com.fr.bi.stable.utils.BICollectionUtils;
-import com.fr.bi.stable.utils.program.BIJsonUtils;
-import com.fr.bi.stable.utils.program.BIPhoneticismUtils;
-import com.fr.general.ComparatorUtils;
-import com.fr.json.JSONArray;
-import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
 import com.fr.report.poly.PolyECBlock;
 import com.fr.report.poly.TemplateBlock;
-import com.fr.stable.StringUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.*;

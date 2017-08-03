@@ -3,6 +3,7 @@ package com.fr.bi.cal.analyze.cal.index.loader;
 import com.finebi.cube.api.ICubeValueEntryGetter;
 import com.finebi.cube.conf.table.BusinessTable;
 import com.fr.bi.cal.analyze.cal.multithread.BIMultiThreadExecutor;
+import com.fr.bi.cal.analyze.cal.result.NodeCreator;
 import com.fr.bi.cal.analyze.cal.sssecret.*;
 import com.fr.bi.cal.analyze.cal.sssecret.diminfo.*;
 import com.fr.bi.cal.analyze.session.BISession;
@@ -47,9 +48,10 @@ public class NodeIteratorCreator {
     protected final boolean setIndex;
     protected final boolean calAllPage;
     protected BIMultiThreadExecutor executor;
+    protected NodeCreator nodeCreator;
     private Map<String, BISummaryTarget> targetIdMap;
 
-    public NodeIteratorCreator(List<MetricGroupInfo> metricGroupInfoList, BIDimension[] rowDimension, BISummaryTarget[] usedTargets, int sumLength, Map<String, DimensionFilter> targetFilterMap, boolean isRealData, BISession session, NameObject targetSort, TargetFilter filter, List<TargetFilter> authFilter, boolean showSum, boolean setIndex, boolean calAllPage, BIMultiThreadExecutor executor) {
+    public NodeIteratorCreator(List<MetricGroupInfo> metricGroupInfoList, BIDimension[] rowDimension, BISummaryTarget[] usedTargets, int sumLength, Map<String, DimensionFilter> targetFilterMap, boolean isRealData, BISession session, NameObject targetSort, TargetFilter filter, List<TargetFilter> authFilter, boolean showSum, boolean setIndex, boolean calAllPage, BIMultiThreadExecutor executor, NodeCreator nodeCreator) {
         this.metricGroupInfoList = metricGroupInfoList;
         this.rowDimension = rowDimension;
         this.usedTargets = usedTargets;
@@ -63,6 +65,7 @@ public class NodeIteratorCreator {
         this.setIndex = setIndex;
         this.calAllPage = calAllPage;
         this.executor = executor;
+        this.nodeCreator = nodeCreator;
         initTargetIdMap();
         checkTargetSort();
         checkTargetFilterMap(targetFilterMap);
@@ -199,15 +202,22 @@ public class NodeIteratorCreator {
     private MergeIteratorCreator[] createNormalMergeIteratorCreator() {
         MergeIteratorCreator[] mergeIteratorCreators = new MergeIteratorCreator[rowDimension.length];
         boolean hasSingleNodeCalMetrics = hasSingleNodeCalMetrics();
+        boolean calIndirectFilter = shouldCalIndirectDimensionFilterGVI();
         for (int i = 0; i < rowDimension.length; i++) {
-            if (BISortUtils.hasTargetSort(dimensionTargetSort[i]) || hasSingleNodeCalMetrics) {
-                //只有最后一层才算配置类计算
-                createAllNodeCreator(mergeIteratorCreators, i, null, dimensionTargetSort[i], new SimpleMergeIteratorCreator(), executor, hasSingleNodeCalMetrics && i == rowDimension.length - 1);
+            //只有最后一层才算配置类计算
+            boolean calSingleNodeMetrics = hasSingleNodeCalMetrics && i == rowDimension.length - 1;
+            if (calAllNode(calIndirectFilter, rowDimension[i].getFilter(), i, calSingleNodeMetrics)) {
+                createAllNodeCreator(mergeIteratorCreators, i, calIndirectFilter ? null : rowDimension[i].getFilter(), dimensionTargetSort[i], new SimpleMergeIteratorCreator(), executor, calSingleNodeMetrics);
             } else {
                 mergeIteratorCreators[i] = new SimpleMergeIteratorCreator();
             }
         }
         return mergeIteratorCreators;
+    }
+
+    private boolean calAllNode(boolean calIndirectFilter, DimensionFilter filter, int i, boolean calSingleNodeMetrics) {
+        //没有计算不能转化为索引的维度过滤，或者有指标排序，或者计算需要整个节点的配置类计算，就计算单个节点
+        return (!calIndirectFilter && filter != null && !filter.canCreateDirectFilter()) || BISortUtils.hasTargetSort(dimensionTargetSort[i]) || calSingleNodeMetrics;
     }
 
     //IndirectFilter的MergeIteratorCreator, 不需要处理排序, 同时, 只有第一个维度可以多线程计算, 如果第二个维度用多线程, 当构建当前节点的任务跟计算当前子节点的任务排在一个队列时会死锁
@@ -401,7 +411,7 @@ public class NodeIteratorCreator {
     }
 
     protected ConstructedRootDimensionGroup createConstructedRootDimensionGroup(boolean canPreFilter) {
-        return new ConstructedRootDimensionGroup(metricGroupInfoList, createAllNodeMergeIteratorCreator(), sumLength, session, isRealData, dimensionTargetSort, getCalCalculators(), canPreFilter || !hasDimensionInDirectFilter() ? null : rowDimension, setIndex, hasInSumMetric(), executor, calAllPage);
+        return new ConstructedRootDimensionGroup(metricGroupInfoList, createAllNodeMergeIteratorCreator(), sumLength, session, isRealData, dimensionTargetSort, getCalCalculators(), canPreFilter || !hasDimensionInDirectFilter() ? null : rowDimension, setIndex, hasInSumMetric(), executor, nodeCreator, calAllPage);
     }
 
     /**

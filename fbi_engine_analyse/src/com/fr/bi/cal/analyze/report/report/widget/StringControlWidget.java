@@ -1,11 +1,14 @@
 package com.fr.bi.cal.analyze.report.report.widget;
 
 import com.finebi.cube.api.ICubeColumnIndexReader;
+import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.api.ICubeTableService;
 import com.finebi.cube.api.ICubeValueEntryGetter;
+import com.finebi.cube.conf.table.BusinessTable;
 import com.finebi.cube.relation.BITableSourceRelation;
 import com.fr.bi.cal.analyze.cal.index.loader.CubeIndexLoader;
 import com.fr.bi.cal.analyze.cal.result.Node;
+import com.fr.bi.cal.analyze.executor.utils.GlobalFilterUtils;
 import com.fr.bi.cal.analyze.session.BISession;
 import com.fr.bi.conf.report.WidgetType;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
@@ -14,6 +17,7 @@ import com.fr.bi.report.result.DimensionCalculator;
 import com.fr.bi.stable.constant.BIJSONConstant;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.constant.DBConstant;
+import com.fr.bi.stable.gvi.GVIUtils;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.io.sortlist.ArrayLookupHelper;
 import com.fr.bi.stable.utils.BICollectionUtils;
@@ -31,19 +35,30 @@ import java.util.*;
 public class StringControlWidget extends TableWidget {
 
     private static final int STEP = 100;
+
     private static final long serialVersionUID = 8869194713947245611L;
+
     private int data_type = -2;
+
     private int times = -1;
+
     private String selectedValues;
+
     private String[] keywords = new String[0];
+
     private boolean needDoLoadGroup = false;
+
+    private BISession session = null;
 
     @Override
     public int isOrder() {
+
         return 0;
     }
 
     public JSONObject createDataJSON(BISessionProvider session, HttpServletRequest req) throws Exception {
+
+        this.session = (BISession) session;
         BIDimension dimension = getDimensions()[0];
         DimensionCalculator calculator = dimension.createCalculator(dimension.getStatisticElement(), new ArrayList<BITableSourceRelation>());
         Set<String> selectedValue = new HashSet<String>();
@@ -74,11 +89,28 @@ public class StringControlWidget extends TableWidget {
         }
     }
 
+    public GroupValueIndex createFilterGVI(DimensionCalculator[] row, BusinessTable targetKey, ICubeDataLoader loader, long userId) {
+
+        GroupValueIndex gvi = super.createFilterGVI(row, targetKey, loader, userId);
+        // 跳转的
+        BusinessTable target = getBaseTable();
+        if (getGlobalFilterWidget() != null) {
+            // 如果已经设置了源字段和目标字段
+            if (((AbstractBIWidget) getGlobalFilterWidget()).getGlobalSourceAndTargetFieldList().size() > 0) {
+                gvi = GVIUtils.AND(gvi, GlobalFilterUtils.getSettingSourceAndTargetJumpFilter(this, userId, session, target, ((AbstractBIWidget) getGlobalFilterWidget()).getBaseTable()));
+            } else {
+                gvi = GVIUtils.AND(gvi, GlobalFilterUtils.getNotSettingSourceAndTargetJumpFilter(session, target, this, false));
+            }
+        }
+        return gvi;
+    }
+
     private enum SearchMode {
         PY, START_WITH
     }
 
     private JSONObject switchGetResultMethod(ICubeColumnIndexReader reader, Set<String> selectedValue, SimpleIntArray groupArray, SearchMode mode) throws JSONException {
+
         if (data_type == DBConstant.REQ_DATA_TYPE.REQ_GET_DATA_LENGTH) {
             return JSONObject.create().put(BIJSONConstant.JSON_KEYS.VALUE, getSearchCount(reader, selectedValue, groupArray, mode));
         }
@@ -93,6 +125,7 @@ public class StringControlWidget extends TableWidget {
     private static final int START_WITH_LIMIT = 500000;
 
     private JSONObject createIDGroupIndex(GroupValueIndex gvi, ICubeColumnIndexReader reader, Set<String> selectedValue, final ICubeValueEntryGetter getter, Comparator comparator) throws JSONException {
+
         SearchMode mode = SearchMode.PY;
         int start = 0, end = getter.getGroupSize();
         final int[] limitStarts = new int[keywords.length];
@@ -118,6 +151,7 @@ public class StringControlWidget extends TableWidget {
     }
 
     private JSONObject getCustomGroupResult(GroupValueIndex gvi, ICubeColumnIndexReader reader, Set<String> selectedValue, DimensionCalculator calculator) throws JSONException {
+
         List<Object> list = new ArrayList<Object>();
         Iterator<Map.Entry<Object, GroupValueIndex>> it = reader.iterator();
         while (it.hasNext()) {
@@ -137,6 +171,7 @@ public class StringControlWidget extends TableWidget {
     }
 
     private JSONObject getCustomGroupResult(List<Object> list, Set<String> selectedValue, DimensionCalculator calculator) throws JSONException {
+
         if (data_type == DBConstant.REQ_DATA_TYPE.REQ_GET_DATA_LENGTH) {
             return JSONObject.create().put(BIJSONConstant.JSON_KEYS.VALUE, getSearchCount(selectedValue, list));
         }
@@ -148,6 +183,7 @@ public class StringControlWidget extends TableWidget {
     }
 
     private int getSearchCount(ICubeColumnIndexReader reader, Set selectedValue, SimpleIntArray array, SearchMode mode) {
+
         if (selectedValue.isEmpty() && mode == SearchMode.START_WITH) {
             return array.size();
         }
@@ -173,6 +209,7 @@ public class StringControlWidget extends TableWidget {
     }
 
     private int getSearchCount(Set selectedValue, List<Object> list) {
+
         int count = 0;
         String[] keys = keywords;
         if (keys.length == 0) {
@@ -193,6 +230,7 @@ public class StringControlWidget extends TableWidget {
     }
 
     private boolean match(String value, String keyword, Set selectedValue, SearchMode mode) {
+
         keyword = keyword.toLowerCase();
         if (selectedValue.contains(value)) {
             return false;
@@ -209,6 +247,7 @@ public class StringControlWidget extends TableWidget {
 
     @Override
     public void parseJSON(JSONObject jo, long userId) throws Exception {
+
         super.parseJSON(jo, userId);
         if (jo.has("textOptions")) {
             JSONObject treeJo = jo.getJSONObject("textOptions");
@@ -241,6 +280,7 @@ public class StringControlWidget extends TableWidget {
     }
 
     private boolean getReserveList(List<Object> list, Set selectedValue, int matched, int start, int end, List<String> find, List<String> match) {
+
         boolean hasNext = false;
         String[] keys = keywords;
         if (keys.length == 0) {
@@ -274,6 +314,7 @@ public class StringControlWidget extends TableWidget {
     }
 
     private boolean getList(List<Object> list, Set selectedValue, int matched, int start, int end, List<String> find, List<String> match) {
+
         boolean hasNext = false;
         String[] keys = keywords;
         if (keys.length == 0) {
@@ -306,6 +347,7 @@ public class StringControlWidget extends TableWidget {
     }
 
     private JSONObject getSearchResult(Set selectedValue, int start, int end, List<Object> list, DimensionCalculator calculator) throws JSONException {
+
         JSONArray ja = JSONArray.create();
         JSONObject jo = JSONObject.create();
         boolean hasNext = false;
@@ -329,6 +371,7 @@ public class StringControlWidget extends TableWidget {
     }
 
     private boolean getReserveListWithArray(ICubeColumnIndexReader reader, SimpleIntArray array, Set selectedValue, int matched, int start, int end, List<String> find, List<String> match, SearchMode mode) {
+
         boolean hasNext = false;
         String[] keys = keywords;
         if (keys.length == 0) {
@@ -337,7 +380,7 @@ public class StringControlWidget extends TableWidget {
         outer:
         for (int i = array.size() - 1; i > -1; i--) {
             Object ob = reader.getGroupValue(array.get(i));
-            String str  = BICollectionUtils.isCubeNullKey(ob) ? StringUtils.EMPTY : ob.toString();
+            String str = BICollectionUtils.isCubeNullKey(ob) ? StringUtils.EMPTY : ob.toString();
             for (String keyword : keys) {
                 if (match(str, keyword, selectedValue, mode)) {
                     if (matched >= start && matched < end) {
@@ -359,6 +402,7 @@ public class StringControlWidget extends TableWidget {
     }
 
     private boolean getListWithArray(ICubeColumnIndexReader reader, SimpleIntArray array, Set selectedValue, int matched, int start, int end, List<String> find, List<String> match, SearchMode mode) {
+
         boolean hasNext = false;
         String[] keys = keywords;
         if (keys.length == 0) {
@@ -368,9 +412,9 @@ public class StringControlWidget extends TableWidget {
         for (int i = 0; i < array.size(); i++) {
             Object ob = reader.getGroupValue(array.get(i));
             String str = null;
-            if(BICollectionUtils.isCubeNullKey(ob)){
+            if (BICollectionUtils.isCubeNullKey(ob)) {
                 str = StringUtils.EMPTY;
-            }else {
+            } else {
                 str = ob.toString();
             }
             for (String keyword : keys) {
@@ -395,6 +439,7 @@ public class StringControlWidget extends TableWidget {
 
 
     private JSONObject getSearchResult(ICubeColumnIndexReader reader, Set selectedValue, int start, int end, SimpleIntArray array, SearchMode mode) throws JSONException {
+
         JSONArray ja = JSONArray.create();
         JSONObject jo = JSONObject.create();
         boolean hasNext = false;
@@ -419,6 +464,7 @@ public class StringControlWidget extends TableWidget {
 
     @Override
     public WidgetType getType() {
+
         return WidgetType.STRING;
     }
 

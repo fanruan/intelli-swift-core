@@ -21,7 +21,6 @@ import com.finebi.cube.structure.ICubeIndexDataGetterService;
 import com.finebi.cube.structure.ICubeRelationEntityService;
 import com.finebi.cube.structure.ITableKey;
 import com.finebi.cube.utils.BIRelationHelper;
-import com.fr.bi.conf.log.BILogManager;
 import com.fr.bi.conf.provider.BIConfigureManagerCenter;
 import com.fr.bi.conf.provider.BILogManagerProvider;
 import com.fr.bi.conf.report.widget.RelationColumnKey;
@@ -39,7 +38,6 @@ import com.fr.bi.stable.utils.program.BINonValueUtils;
 import com.fr.bi.stable.utils.program.BIStringUtils;
 import com.fr.fs.control.UserControl;
 import com.fr.general.ComparatorUtils;
-import com.fr.stable.bridge.StableFactory;
 import com.google.common.base.Stopwatch;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -171,7 +169,7 @@ public class BITablePathIndexBuilder extends BIProcessor {
                 } catch (Exception e) {
                     BILoggerFactory.getLogger().error(e.getMessage(), e);
                 }
-            } catch (Exception e) {
+            } catch (Throwable e) {
                 try {
                     BILoggerFactory.getLogger(BITablePathIndexBuilder.class).error(BIStringUtils.append("TablePathIndex Error", getTablePathInfo()), e);
                     biLogManager.errorRelation(columnKeyInfo, e.getMessage(), UserControl.getInstance().getSuperManagerID());

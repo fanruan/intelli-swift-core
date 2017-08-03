@@ -4,7 +4,6 @@ import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.api.ICubeTableService;
 import com.finebi.cube.relation.BITableSourceRelation;
 import com.fr.base.TableData;
-import com.fr.bi.cal.analyze.cal.result.CrossNode;
 import com.fr.bi.cal.analyze.cal.result.Node;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.field.target.target.BISummaryTarget;
@@ -46,21 +45,6 @@ public class CubeReadingUtils {
                 setSibling(temp, n);
             }
             temp = n;
-        }
-    }
-
-    public static void setSibling(CrossNode last, CrossNode first) {
-        CrossNode lastChild = last.getLeftLastChild();
-        CrossNode firstChild = first.getLeftFirstChild();
-        if (lastChild != null && firstChild != null) {
-            lastChild.setBottomSibling(firstChild);
-            setSibling(lastChild, firstChild);
-        }
-        lastChild = last.getTopLastChild();
-        firstChild = first.getTopFirstChild();
-        if (lastChild != null && firstChild != null) {
-            lastChild.setRightSibling(firstChild);
-            setSibling(lastChild, firstChild);
         }
     }
 

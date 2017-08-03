@@ -16,6 +16,7 @@ public class BackUpUtils {
     private static final String FOLDER = "backup";
     private static final String BIREPORT_NAME = "biReport";
     private static final String USER_ANALYSIS_ETL_CONFIG = "sue";
+    private static final String DIRECT_CONFIG = "direct";
     private static final FileFilter FILTER = new FileFilter() {
 
         @Override
@@ -45,14 +46,19 @@ public class BackUpUtils {
             BIFileUtils.copyFile(f.getName(), currentFolder, targetFolder);
         }
         backupBIReport(currentFolder, targetFolder);
-        backupUserAnalysisETLConfig(currentFolder,targetFolder);
+        backupUserAnalysisETLConfig(currentFolder, targetFolder);
+        backupDirectConfig(currentFolder, targetFolder);
     }
 
     private static void backupBIReport(File currentFolder, File targetFolder) {
         backupFolder(currentFolder, targetFolder, BIREPORT_NAME);
     }
 
-    private static void backupUserAnalysisETLConfig(File currentFolder, File targetFolder){
+    private static void backupDirectConfig(File currentFolder, File targetFolder) {
+        backupFolder(currentFolder, targetFolder, DIRECT_CONFIG);
+    }
+
+    private static void backupUserAnalysisETLConfig(File currentFolder, File targetFolder) {
         backupFolder(currentFolder, targetFolder, USER_ANALYSIS_ETL_CONFIG);
     }
 

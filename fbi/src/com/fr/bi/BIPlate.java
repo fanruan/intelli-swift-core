@@ -7,8 +7,9 @@ import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.conf.BICubeConfigureCenter;
 import com.finebi.cube.conf.BISystemPackageConfigurationProvider;
 import com.finebi.cube.conf.BITableRelationConfigurationProvider;
-import com.finebi.cube.conf.CubeGenerationManager;
+import com.fr.base.ClassUtils;
 import com.fr.base.FRContext;
+import com.fr.bi.cal.generate.BackUpUtils;
 import com.fr.bi.cal.report.BIActor;
 import com.fr.bi.cal.report.db.DialectCreatorImpl;
 import com.fr.bi.cal.report.db.HiveDialectCreatorImpl;
@@ -23,10 +24,10 @@ import com.fr.bi.fs.BITableMapper;
 import com.fr.bi.fs.entry.BIReportEntry;
 import com.fr.bi.fs.entry.BIReportEntryDAO;
 import com.fr.bi.fs.entry.EntryConstants;
+import com.fr.bi.manager.PerformancePlugManager;
 import com.fr.bi.module.BICoreModule;
 import com.fr.bi.module.BIModule;
 import com.fr.bi.resource.FsResourceHelper;
-import com.fr.bi.stable.utils.program.BIClassUtils;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
 import com.fr.bi.web.dezi.phantom.PhantomServer;
 import com.fr.data.core.db.DBUtils;
@@ -34,7 +35,11 @@ import com.fr.data.core.db.dialect.Dialect;
 import com.fr.data.core.db.dialect.DialectFactory;
 import com.fr.data.core.db.tableObject.Column;
 import com.fr.data.core.db.tableObject.ColumnSize;
-import com.fr.data.dao.*;
+import com.fr.data.dao.DAOUtils;
+import com.fr.data.dao.FieldColumnMapper;
+import com.fr.data.dao.MToMRelationFCMapper;
+import com.fr.data.dao.ObjectTableMapper;
+import com.fr.data.dao.RelationFCMapper;
 import com.fr.fs.AbstractFSPlate;
 import com.fr.fs.control.EntryPoolFactory;
 import com.fr.fs.control.UserControl;
@@ -45,7 +50,11 @@ import com.fr.general.FRLogger;
 import com.fr.general.GeneralContext;
 import com.fr.general.GeneralUtils;
 import com.fr.plugin.ExtraClassManager;
-import com.fr.stable.*;
+import com.fr.stable.ActorConstants;
+import com.fr.stable.ActorFactory;
+import com.fr.stable.ArrayUtils;
+import com.fr.stable.EnvChangedListener;
+import com.fr.stable.StableUtils;
 import com.fr.stable.bridge.StableFactory;
 import com.fr.stable.fun.Service;
 import com.fr.stable.plugin.PluginSimplify;
@@ -58,7 +67,11 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Types;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Locale;
+import java.util.Set;
 
 /**
  * BI模块启动时做的一些初始化工作，通过反射调用
@@ -68,32 +81,36 @@ public class BIPlate extends AbstractFSPlate {
 
     @Override
     public void initData() {
-        FRContext.getCurrentEnv().setBuildFilePath("bibuild.txt");
-        LOGGER.info("FINE BI :" + GeneralUtils.readBuildNO());
-        initModules();
-        super.initData();
-        startModules();
-        initPlugin();
-        registerEntrySomething();
-        initOOMKillerForLinux();
-        loadMemoryData();
-        createTimerTasks();
+        try {
+            FRContext.getCurrentEnv().setBuildFilePath("bibuild.txt");
+            LOGGER.info("FINE BI :" + GeneralUtils.readBuildNO());
+            initModules();
+            super.initData();
+            startModules();
+            initPlugin();
+            registerEntrySomething();
+            initOOMKillerForLinux();
+            loadMemoryData();
+            backupWhenStart();
+            addBITableColumn4NewConnection();
+            addSharedTableColumn4NewConnection();
 
-        addBITableColumn4NewConnection();
-        addSharedTableColumn4NewConnection();
+            //兼容FR工程中可能存在BID这一列的情况
+            dropColumnBID();
+            //兼容FR工程中可能存在PARENTID类型是整型的情况
+            notifyColumnParentIdType();
 
-        //兼容FR工程中可能存在BID这一列的情况
-        dropColumnBID();
-        //兼容FR工程中可能存在PARENTID类型是整型的情况
-        notifyColumnParentIdType();
-
-        //启动用于截图的phantom服务
-        initPhantomServer();
+            //启动用于截图的phantom服务
+            initPhantomServer();
+        } catch (Throwable e) {
+            LOGGER.error(e.getMessage(), e);
+        }
     }
 
-    private void createTimerTasks() {
-    /*载入定时任务*/
-        CubeGenerationManager.getCubeManager().resetCubeGenerationHour(UserControl.getInstance().getSuperManagerID());
+    private void backupWhenStart(){
+        if(PerformancePlugManager.getInstance().isBackupWhenStart()){
+            BackUpUtils.backup();
+        }
     }
 
     public void loadMemoryData() {
@@ -264,8 +281,8 @@ public class BIPlate extends AbstractFSPlate {
 
     private void initModules() {
         BIModuleManager.registModule(new BICoreModule());
-        Set<Class<?>> set = BIClassUtils.getClasses("com.fr.bi.module");
-        set.addAll(BIClassUtils.getClasses("com.fr.bi.test"));
+        Set<Class<?>> set = ClassUtils.getClasses("com.fr.bi.module");
+        set.addAll(ClassUtils.getClasses("com.fr.bi.test"));
         for (Class c : set) {
             if (BIModule.class.isAssignableFrom(c) && !Modifier.isAbstract(c.getModifiers())) {
                 try {

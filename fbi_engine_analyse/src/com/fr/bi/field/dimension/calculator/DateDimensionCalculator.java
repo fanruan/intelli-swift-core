@@ -48,25 +48,28 @@ public class DateDimensionCalculator extends AbstractDimensionCalculator {
     private Object maxTime;
 
     public DateDimensionCalculator(BIDimension dimension, BusinessField column, List<BITableSourceRelation> relations) {
+
         super(dimension, column, relations);
     }
 
     public DateDimensionCalculator(BIDimension dimension, BusinessField field, List<BITableSourceRelation> relations, List<BITableSourceRelation> directToDimensionRelations) {
+
         super(dimension, field, relations, directToDimensionRelations);
     }
 
     @Override
     public Iterator createValueMapIterator(BusinessTable table, ICubeDataLoader loader, boolean useRealData, int groupLimit, GroupValueIndex filterGvi) {
+
         ICubeColumnIndexReader getter = loader.getTableIndex(field.getTableBelongTo().getTableSource()).loadGroup(dimension.createKey(field), getRelationList(), useRealData, groupLimit);
         if (!useRealData) {
             applyFilterForNotRealData(getter, filterGvi);
         }
         Comparator comparator;
-//        if(getGroupDate() == BIReportConstant.GROUP.M){
-//            comparator = ComparatorFacotry.getComparator(BIReportConstant.SORT.NUMBER_ASC);
-//        }else{
-//            comparator = getComparator();
-//        }
+        //        if(getGroupDate() == BIReportConstant.GROUP.M){
+        //            comparator = ComparatorFacotry.getComparator(BIReportConstant.SORT.NUMBER_ASC);
+        //        }else{
+        //            comparator = getComparator();
+        //        }
         comparator = ComparatorFacotry.getComparator(BIReportConstant.SORT.NUMBER_ASC);
         CubeTreeMap treeMap = new CubeTreeMap(comparator);
         Iterator it = getter.iterator();
@@ -78,14 +81,16 @@ public class DateDimensionCalculator extends AbstractDimensionCalculator {
     }
 
     public int getGroupDate() {
+
         return getGroup().getType();
     }
 
     @Override
     public Comparator getComparator() {
+
         if (getSortType() == BIReportConstant.SORT.NUMBER_DESC) {
             return BIBaseConstant.COMPARATOR.COMPARABLE.DESC;
-        } else{
+        } else {
             return BIBaseConstant.COMPARATOR.COMPARABLE.ASC;
         }
     }
@@ -124,10 +129,10 @@ public class DateDimensionCalculator extends AbstractDimensionCalculator {
         int groupType = getGroup().getType();
         Integer fy = (Integer) BIDateUtils.firstDate(yearMap);
         Integer ly = (Integer) BIDateUtils.lastDate(yearMap);
-        if (groupType == BIReportConstant.GROUP.Y) {
+        if (groupType == BIReportConstant.GROUP.Y) { // 年
             minTime = fy;
             maxTime = ly;
-        } else if (groupType == BIReportConstant.GROUP.S) {
+        } else if (groupType == BIReportConstant.GROUP.S) { // 季度
             // 季度,如果年份跨度超过一年,需要补全1~4季度
             if (fy != null && !fy.equals(ly)) {
                 if (fy.intValue() < ly.intValue()) {
@@ -137,7 +142,7 @@ public class DateDimensionCalculator extends AbstractDimensionCalculator {
             } else {
                 initFirstNeedJudge(groupType, dateTableService, fieldName);
             }
-        } else if (groupType == BIReportConstant.GROUP.M) {
+        } else if (groupType == BIReportConstant.GROUP.M) { // 月
             // 月份,如果年份跨度超过一年,需要补全1~12月份
             if (fy != null && !fy.equals(ly)) {
                 if (fy.intValue() < ly.intValue()) {
@@ -147,7 +152,7 @@ public class DateDimensionCalculator extends AbstractDimensionCalculator {
             } else {
                 initFirstNeedJudge(groupType, dateTableService, fieldName);
             }
-        } else if (groupType == BIReportConstant.GROUP.W) {
+        } else if (groupType == BIReportConstant.GROUP.W) { // 星期
             // 星期,如果年月日时间跨度大于7需要补全周一到周日
             Long f = (Long) BIDateUtils.firstDate(dayMapMap);
             Long l = (Long) BIDateUtils.lastDate(dayMapMap);
@@ -158,7 +163,7 @@ public class DateDimensionCalculator extends AbstractDimensionCalculator {
             } else {
                 initFirstNeedJudge(groupType, dateTableService, fieldName);
             }
-        } else if (groupType == BIReportConstant.GROUP.D) {
+        } else if (groupType == BIReportConstant.GROUP.D) { // 天
             // 一个月中的第几天
             Integer fm = (Integer) BIDateUtils.firstDate(monthMap);
             Integer lm = (Integer) BIDateUtils.lastDate(monthMap);
@@ -169,7 +174,7 @@ public class DateDimensionCalculator extends AbstractDimensionCalculator {
             } else {
                 initFirstNeedJudge(groupType, dateTableService, fieldName);
             }
-        } else if (groupType == BIReportConstant.GROUP.WEEK_COUNT) {
+        } else if (groupType == BIReportConstant.GROUP.WEEK_COUNT) {   // 周数
             // 周数,如果年份跨度超过一年则直接赋值为52周
             if (fy != null && !fy.equals(ly)) {
                 if (fy.intValue() < ly.intValue()) {
@@ -179,7 +184,7 @@ public class DateDimensionCalculator extends AbstractDimensionCalculator {
             } else {
                 initFirstNeedJudge(groupType, dateTableService, fieldName);
             }
-        } else if (groupType == BIReportConstant.GROUP.HOUR) {
+        } else if (groupType == BIReportConstant.GROUP.HOUR) {  // 时
             // 如果年月日日期超过一天,则需补全1~24小时
             Long f = (Long) BIDateUtils.firstDate(dayMapMap);
             Long l = (Long) BIDateUtils.lastDate(dayMapMap);
@@ -191,12 +196,9 @@ public class DateDimensionCalculator extends AbstractDimensionCalculator {
             } else {
                 initFirstNeedJudge(groupType, dateTableService, fieldName);
             }
-        } else if (groupType == BIReportConstant.GROUP.YMD
-                || groupType == BIReportConstant.GROUP.MINUTE
+        } else if (groupType == BIReportConstant.GROUP.MINUTE
                 || groupType == BIReportConstant.GROUP.SECOND
-                || groupType == BIReportConstant.GROUP.YS
-                || groupType == BIReportConstant.GROUP.YM
-                || groupType == BIReportConstant.GROUP.YW) {
+                || DateUtils.isCubeLongTimeGroup(groupType)) {
             // 日 直接进行最小最大的补全
             initFirstNeedJudge(groupType, dateTableService, fieldName);
         }
@@ -352,6 +354,48 @@ public class DateDimensionCalculator extends AbstractDimensionCalculator {
                     n = DateUtils.nextYearWeek((Long) last).getTime();
                 }
             }
+        } else if (groupType == BIReportConstant.GROUP.YMDH) {
+            if (sortType == BIReportConstant.SORT.NUMBER_DESC) {
+                if (DateUtils.sameYearMonthDayHour(DateUtils.lastYearMonthDayHour((Long) last).getTime(), (Long) org) || DateUtils.afterYearMonthDayHour((Long) org, (Long) last)) {
+                    n = org;
+                } else {
+                    n = DateUtils.lastYearMonthDayHour((Long) last).getTime();
+                }
+            } else {
+                if (DateUtils.sameYearMonthDayHour(DateUtils.nextYearMonthDayHour((Long) last).getTime(), (Long) org) || DateUtils.afterYearMonthDayHour((Long) last, (Long) org)) {
+                    n = org;
+                } else {
+                    n = DateUtils.nextYearMonthDayHour((Long) last).getTime();
+                }
+            }
+        } else if (groupType == BIReportConstant.GROUP.YMDHM) {
+            if (sortType == BIReportConstant.SORT.NUMBER_DESC) {
+                if (DateUtils.sameYearMonthDayHourMinute(DateUtils.lastYearMonthDayHourMinute((Long) last).getTime(), (Long) org) || DateUtils.afterYearMonthDayHourMinute((Long) org, (Long) last)) {
+                    n = org;
+                } else {
+                    n = DateUtils.lastYearMonthDayHourMinute((Long) last).getTime();
+                }
+            } else {
+                if (DateUtils.sameYearMonthDayHourMinute(DateUtils.nextYearMonthDayHourMinute((Long) last).getTime(), (Long) org) || DateUtils.afterYearMonthDayHourMinute((Long) last, (Long) org)) {
+                    n = org;
+                } else {
+                    n = DateUtils.nextYearMonthDayHourMinute((Long) last).getTime();
+                }
+            }
+        } else if (groupType == BIReportConstant.GROUP.YMDHMS) {
+            if (sortType == BIReportConstant.SORT.NUMBER_DESC) {
+                if (DateUtils.sameYearMonthDayHourMinuteSecond(DateUtils.lastYearMonthDayHourMinuteSecond((Long) last).getTime(), (Long) org) || DateUtils.afterYearMonthDayHourMinuteSecond((Long) org, (Long) last)) {
+                    n = org;
+                } else {
+                    n = DateUtils.lastYearMonthDayHourMinuteSecond((Long) last).getTime();
+                }
+            } else {
+                if (DateUtils.sameYearMonthDayHourMinuteSecond(DateUtils.nextYearMonthDayHourMinuteSecond((Long) last).getTime(), (Long) org) || DateUtils.afterYearMonthDayHourMinuteSecond((Long) last, (Long) org)) {
+                    n = org;
+                } else {
+                    n = DateUtils.nextYearMonthDayHourMinuteSecond((Long) last).getTime();
+                }
+            }
         }
         return n;
     }
@@ -406,6 +450,24 @@ public class DateDimensionCalculator extends AbstractDimensionCalculator {
                 return DateUtils.nextYearWeek((Long) n).getTime();
             } else {
                 return DateUtils.lastYearWeek((Long) n).getTime();
+            }
+        } else if (groupType == BIReportConstant.GROUP.YMDH) {
+            if (sortType == BIReportConstant.SORT.NUMBER_DESC) {
+                return DateUtils.nextYearMonthDayHour((Long) n).getTime();
+            } else {
+                return DateUtils.lastYearMonthDayHour((Long) n).getTime();
+            }
+        } else if (groupType == BIReportConstant.GROUP.YMDHM) {
+            if (sortType == BIReportConstant.SORT.NUMBER_DESC) {
+                return DateUtils.nextYearMonthDayHourMinute((Long) n).getTime();
+            } else {
+                return DateUtils.lastYearMonthDayHourMinute((Long) n).getTime();
+            }
+        } else if (groupType == BIReportConstant.GROUP.YMDHMS) {
+            if (sortType == BIReportConstant.SORT.NUMBER_DESC) {
+                return DateUtils.nextYearMonthDayHourMinuteSecond((Long) n).getTime();
+            } else {
+                return DateUtils.lastYearMonthDayHourMinuteSecond((Long) n).getTime();
             }
         }
         return r;

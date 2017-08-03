@@ -187,7 +187,6 @@ public class NodeIndirectFilterIndexCalculator {
             @Override
             public void cal() {
                 calculate();
-                checkComplete(level);
             }
 
             private void calculate() {
@@ -209,6 +208,7 @@ public class NodeIndirectFilterIndexCalculator {
                     }
                 } finally {
                     count[level].incrementAndGet();
+                    checkComplete(level);
                 }
             }
         }

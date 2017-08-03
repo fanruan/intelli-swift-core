@@ -36,7 +36,7 @@ public class BIJSONConstant {
         public static final String ETL_TYPE = "etlType";
         public static final String ETL_VALUE = "etlValue";
 
-        public static final String TABLE_TYPE = "table_type";
+        public static final String TABLE_TYPE = "tableType";
 
         public static final String HAS_NEXT = "hasNext";
 

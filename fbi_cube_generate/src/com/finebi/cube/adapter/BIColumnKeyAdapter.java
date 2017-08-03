@@ -16,37 +16,37 @@ public class BIColumnKeyAdapter {
             case BIReportConstant.GROUP.Y:
                 columnKey = BIDateColumnTool.generateYear(field); break;
             case BIReportConstant.GROUP.M:
-                columnKey = BIDateColumnTool.generateMonth(field);break;
+                columnKey = BIDateColumnTool.generateMonth(field); break;
             case BIReportConstant.GROUP.MD:
-                columnKey = BIDateColumnTool.generateDay(field);break;
+                columnKey = BIDateColumnTool.generateDay(field); break;
             case BIReportConstant.GROUP.D:
-                columnKey = BIDateColumnTool.generateDay(field);break;
+                columnKey = BIDateColumnTool.generateDay(field); break;
             case BIReportConstant.GROUP.S:
-                columnKey = BIDateColumnTool.generateSeason(field);break;
+                columnKey = BIDateColumnTool.generateSeason(field); break;
             case BIReportConstant.GROUP.W:
-                columnKey = BIDateColumnTool.generateWeek(field);break;
+                columnKey = BIDateColumnTool.generateWeek(field); break;
             case BIReportConstant.GROUP.YMD:
-                columnKey = BIDateColumnTool.generateYearMonthDay(field);break;
+                columnKey = BIDateColumnTool.generateYearMonthDay(field); break;
             case BIReportConstant.GROUP.YMDHMS:
-                columnKey = BIColumnKey.covertColumnKey(field);break;
+                columnKey = BIDateColumnTool.generateYearMonthDayHourMinuteSecond(field); break;
             case BIReportConstant.GROUP.YM:
-                columnKey = BIDateColumnTool.generateYearMonth(field);break;
+                columnKey = BIDateColumnTool.generateYearMonth(field); break;
             case BIReportConstant.GROUP.YS:
-                columnKey = BIDateColumnTool.generateYearSeason(field);break;
+                columnKey = BIDateColumnTool.generateYearSeason(field); break;
             case BIReportConstant.GROUP.YW:
-                columnKey = BIDateColumnTool.generateYearWeekNumber(field);break;
+                columnKey = BIDateColumnTool.generateYearWeekNumber(field); break;
             case BIReportConstant.GROUP.HOUR:
-                columnKey = BIDateColumnTool.generateHour(field);break;
+                columnKey = BIDateColumnTool.generateHour(field); break;
             case BIReportConstant.GROUP.SECOND:
-                columnKey = BIDateColumnTool.generateSecond(field);break;
+                columnKey = BIDateColumnTool.generateSecond(field); break;
             case BIReportConstant.GROUP.MINUTE:
-                columnKey = BIDateColumnTool.generateMinute(field);break;
+                columnKey = BIDateColumnTool.generateMinute(field); break;
             case BIReportConstant.GROUP.YMDH:
-                columnKey = BIDateColumnTool.generateYearMonthDayHour(field);break;
+                columnKey = BIDateColumnTool.generateYearMonthDayHour(field); break;
             case BIReportConstant.GROUP.YMDHM:
-                columnKey = BIDateColumnTool.generateYearMonthDayHourMinute(field);break;
+                columnKey = BIDateColumnTool.generateYearMonthDayHourMinute(field); break;
             case BIReportConstant.GROUP.WEEK_COUNT:
-                columnKey = BIDateColumnTool.generateWeekNumber(field);break;
+                columnKey = BIDateColumnTool.generateWeekNumber(field); break;
             default:
                 throw BINonValueUtils.beyondControl();
         }

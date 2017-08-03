@@ -3,14 +3,17 @@ package com.fr.bi.field.target.calculator.cal;
 import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.api.ICubeTableService;
 import com.finebi.cube.conf.table.BusinessTable;
+import com.fr.bi.cal.analyze.cal.result.BIXLeftNode;
 import com.fr.bi.conf.report.widget.field.target.BITarget;
 import com.fr.bi.field.target.target.cal.BICalculateTarget;
-import com.fr.bi.report.result.BICrossNode;
+import com.fr.bi.report.key.TargetGettingKey;
+import com.fr.bi.report.key.XTargetGettingKey;
 import com.fr.bi.report.result.BINode;
+import com.fr.bi.report.result.CalculatorType;
 import com.fr.bi.report.result.SummaryContainer;
 import com.fr.bi.report.result.TargetCalculator;
 import com.fr.bi.stable.gvi.GroupValueIndex;
-import com.fr.bi.report.key.TargetGettingKey;
+import com.fr.general.ComparatorUtils;
 
 import java.util.Map;
 import java.util.Set;
@@ -56,7 +59,7 @@ public abstract class CalCalculator implements TargetCalculator {
      * @param node 节点
      * @param key  关键字
      */
-    public abstract void calCalculateTarget(BICrossNode node, TargetGettingKey key);
+    public abstract void calCalculateTarget(BIXLeftNode node, XTargetGettingKey key);
 
     /**
      * 计算
@@ -68,8 +71,6 @@ public abstract class CalCalculator implements TargetCalculator {
     public void doCalculator(ICubeTableService cr, SummaryContainer node, GroupValueIndex gvi, TargetGettingKey key) {
         if (node instanceof BINode) {
             calCalculateTarget((BINode) node);
-        } else {
-            calCalculateTarget((BICrossNode) node, key);
         }
     }
 
@@ -97,4 +98,21 @@ public abstract class CalCalculator implements TargetCalculator {
         return target.getName();
     }
 
+    @Override
+    public CalculatorType getCalculatorType() {
+        return CalculatorType.CAL_SUM;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        CalCalculator that = (CalCalculator) o;
+        return ComparatorUtils.equals(target, that.target);
+    }
 }

@@ -1,16 +1,20 @@
 package com.fr.bi.cal.analyze.executor;
 
-import com.fr.bi.cal.analyze.cal.index.loader.MetricGroupInfo;
-import com.fr.bi.cal.analyze.cal.result.NewCrossRoot;
-import com.fr.bi.cal.analyze.cal.result.Node;
 import com.fr.bi.cal.analyze.executor.iterator.TableCellIterator;
 import com.fr.json.JSONObject;
 
 import java.awt.*;
-import java.util.List;
 
 
+/**
+ * 定义executor接口的目的就应该是操作组件从不同角度来获取组件各种
+ * 包括:
+ * 前端显示的值 getCubeNode,
+ * 所以能够进行显示的gvi
+ * 点击区域代表的节点的gvi
+ */
 public interface BIEngineExecutor<T> {
+
     static final String NONEVALUE = "--";
 
     /**
@@ -32,22 +36,4 @@ public interface BIEngineExecutor<T> {
 
     public JSONObject createJSONObject() throws Exception;
 
-    public List<MetricGroupInfo> getLinkedWidgetFilterGVIList() throws Exception;
-
-    /**
-     * 获取到某一行就停止构建的Node节点树
-     * @param rowData
-     * @return
-     * @throws Exception
-     */
-    public Node getStopOnRowNode(Object[] rowData) throws Exception;
-
-    /**
-     *
-     * @param rowData       行值
-     * @param colData       列值
-     * @return
-     * @throws Exception
-     */
-    public NewCrossRoot getStopOnRowNode(Object[] rowData, Object[] colData) throws Exception;
 }

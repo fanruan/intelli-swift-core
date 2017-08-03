@@ -3,7 +3,7 @@ package com.fr.bi.cal.analyze.executor.detail.execute;
 import com.fr.bi.base.FinalBoolean;
 import com.fr.bi.cal.analyze.executor.TableRowTraversal;
 import com.fr.bi.cal.analyze.executor.paging.Paging;
-import com.fr.bi.cal.analyze.report.report.widget.BIDetailWidget;
+import com.fr.bi.cal.analyze.report.report.widget.DetailWidget;
 import com.fr.bi.cal.analyze.session.BISession;
 import com.fr.bi.conf.report.widget.field.target.detailtarget.BIDetailTarget;
 import com.fr.bi.stable.connection.ConnectionRowGetter;
@@ -33,7 +33,7 @@ public class DetailPartGVIRunner extends AbstractGVIRunner {
     private transient int currentIndex = -1;
 
 
-    public DetailPartGVIRunner(GroupValueIndex gvi, BISession session, BIDetailWidget widget, Paging paging, ICubeDataLoader loader) {
+    public DetailPartGVIRunner(GroupValueIndex gvi, BISession session, DetailWidget widget, Paging paging, ICubeDataLoader loader) {
         super(gvi, widget, loader, session.getUserId());
         this.paging = paging;
         this.session = session;

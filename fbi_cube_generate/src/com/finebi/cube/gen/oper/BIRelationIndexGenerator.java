@@ -10,11 +10,15 @@ import com.finebi.cube.impl.pubsub.BIProcessorThreadManager;
 import com.finebi.cube.message.IMessage;
 import com.finebi.cube.message.IMessageBody;
 import com.finebi.cube.relation.BITableSourceRelation;
-import com.finebi.cube.structure.*;
+import com.finebi.cube.structure.BICubeRelation;
+import com.finebi.cube.structure.BICubeRelationEntity;
+import com.finebi.cube.structure.Cube;
+import com.finebi.cube.structure.CubeTableEntityGetterService;
+import com.finebi.cube.structure.ICubeRelationEntityService;
+import com.finebi.cube.structure.ITableKey;
 import com.finebi.cube.structure.column.BIColumnKey;
 import com.finebi.cube.structure.column.ICubeColumnEntityService;
 import com.finebi.cube.utils.BIRelationHelper;
-import com.fr.bi.conf.log.BILogManager;
 import com.fr.bi.conf.provider.BIConfigureManagerCenter;
 import com.fr.bi.conf.provider.BILogManagerProvider;
 import com.fr.bi.conf.report.widget.RelationColumnKey;
@@ -39,7 +43,6 @@ import com.fr.bi.stable.utils.program.BINonValueUtils;
 import com.fr.bi.stable.utils.program.BIStringUtils;
 import com.fr.fs.control.UserControl;
 import com.fr.stable.StringUtils;
-import com.fr.stable.bridge.StableFactory;
 import com.google.common.base.Stopwatch;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -105,7 +108,7 @@ public class BIRelationIndexGenerator extends BIProcessor {
             LOGGER.info(BIStringUtils.append("\n finish building relation index ,elapse {} second", logRelation()), stopwatch.elapsed(TimeUnit.SECONDS));
             BILogHelper.cacheCubeLogRelationNormalInfo(relationID, BILogConstant.LOG_CACHE_TIME_TYPE.RELATION_INDEX_EXECUTE_END, System.currentTimeMillis());
             return null;
-        } catch (Exception e) {
+        } catch (Throwable e) {
             try {
                 biLogManager.errorRelation(relationColumnKeyInfo, e.getMessage(), UserControl.getInstance().getSuperManagerID());
             } catch (Exception e1) {

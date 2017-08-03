@@ -3,7 +3,6 @@ package com.fr.bi.cal.analyze.report.report.widget.tree;
 import com.fr.bi.cal.analyze.executor.paging.Paging;
 import com.fr.bi.cal.analyze.report.report.widget.TreeWidget;
 import com.fr.bi.cal.analyze.session.BISession;
-import com.fr.general.Inter;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
@@ -88,18 +87,13 @@ public class GetDisplayTreeNodeExecutor extends AbstractTreeNodeExecutor {
         return pId;
     }
 
-    public void createOneJson(JSONArray result, String name, String pId, String id, int children) throws JSONException {
+    public void createOneJson(JSONArray result, String name, String pId, String id, int count) throws JSONException {
         JSONObject obj = new JSONObject();
-        String str1 = Inter.getLocText("BI-Basic_Altogether");
-        String str2 = Inter.getLocText("BI-Basic_Count");
         obj.put("id", id);
         obj.put("pId", pId);
         obj.put("value", name);
-        if (children == 0) {
-            obj.put("text", name);
-        } else {
-            obj.put("text", name + "( " + str1 + children + str2 + " )");
-        }
+        obj.put("count", count);
+        obj.put("text", name);
         obj.put("open", true);
         result.put(obj);
     }

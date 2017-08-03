@@ -14,7 +14,6 @@ import com.finebi.cube.structure.CubeTableEntityGetterService;
 import com.finebi.cube.structure.column.BIColumnKey;
 import com.finebi.cube.structure.column.ICubeColumnEntityService;
 import com.finebi.cube.structure.column.date.BICubeDateSubColumn;
-import com.fr.bi.conf.log.BILogManager;
 import com.fr.bi.conf.provider.BIConfigureManagerCenter;
 import com.fr.bi.conf.provider.BILogManagerProvider;
 import com.fr.bi.manager.PerformancePlugManager;
@@ -34,7 +33,6 @@ import com.fr.bi.stable.utils.program.BINonValueUtils;
 import com.fr.bi.stable.utils.program.BIStringUtils;
 import com.fr.bi.util.BIConfigurePathUtils;
 import com.fr.fs.control.UserControl;
-import com.fr.stable.bridge.StableFactory;
 import com.google.common.base.Stopwatch;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -66,7 +64,8 @@ public class BIFieldIndexGenerator<T> extends BIProcessor {
     protected Cube cube;
     protected long rowCount;
     private static final String CACHE = "caches";
-    private static final String BASEPATH = File.separator  + CACHE;
+    private static final String BASEPATH = File.separator + CACHE;
+
     public BIFieldIndexGenerator(Cube cube, CubeTableSource tableSource, ICubeFieldSource hostBICubeFieldSource, BIColumnKey targetColumnKey) {
         this.tableSource = tableSource;
         this.hostBICubeFieldSource = hostBICubeFieldSource;
@@ -122,7 +121,7 @@ public class BIFieldIndexGenerator<T> extends BIProcessor {
                 BILoggerFactory.getLogger().error(e.getMessage(), e);
             }
             return null;
-        } catch (Exception e) {
+        } catch (Throwable e) {
             try {
                 biLogManager.errorTable(tableSource.getPersistentTable(), e.getMessage(), UserControl.getInstance().getSuperManagerID());
             } catch (Exception e1) {
@@ -171,7 +170,7 @@ public class BIFieldIndexGenerator<T> extends BIProcessor {
     private IntArray doBuildTableIndex(Iterator<Map.Entry<T, IntList>> group2rowNumberIt) {
         int groupPosition = 0;
         LOGGER.info(BIStringUtils.append(logFileInfo(), " start building field index"));
-        IntArray positionOfGroup = IntListFactory.createIntArray((int)rowCount, NIOConstant.INTEGER.NULL_VALUE);
+        IntArray positionOfGroup = IntListFactory.createIntArray((int) rowCount, NIOConstant.INTEGER.NULL_VALUE);
         Stopwatch stopwatch = Stopwatch.createStarted();
         GroupTraversalAction groupTraversalAction = new GroupTraversalAction(positionOfGroup);
         while (group2rowNumberIt.hasNext()) {
@@ -202,7 +201,7 @@ public class BIFieldIndexGenerator<T> extends BIProcessor {
     }
 
     private GroupValueIndex buildGroupValueIndex(IntList groupRowNumbers) {
-        GroupValueIndex groupValueIndex =  GVIFactory.createGroupValueIndexBySimpleIndex(groupRowNumbers);
+        GroupValueIndex groupValueIndex = GVIFactory.createGroupValueIndexBySimpleIndex(groupRowNumbers);
         groupRowNumbers.clear();
         return groupValueIndex;
     }
@@ -211,10 +210,11 @@ public class BIFieldIndexGenerator<T> extends BIProcessor {
         LOGGER.info(BIStringUtils.append(logFileInfo(), " read detail data ,the row count:", String.valueOf(rowCount)));
         Stopwatch stopwatch = Stopwatch.createStarted();
         OriginValueGetter<T> getter;
-        if (columnEntityService instanceof BICubeDateSubColumn){
+        if (columnEntityService instanceof BICubeDateSubColumn) {
             getter = new OriginValueGetter<T>() {
                 Calendar calendar = Calendar.getInstance();
                 BICubeDateSubColumn cubeDateSubColumn = (BICubeDateSubColumn) columnEntityService;
+
                 @Override
                 public T getOriginalObjectValueByRow(int row) {
                     return (T) cubeDateSubColumn.getOriginalValueByRow(row, calendar);
@@ -266,7 +266,7 @@ public class BIFieldIndexGenerator<T> extends BIProcessor {
 
     }
 
-    private interface OriginValueGetter<T>{
+    private interface OriginValueGetter<T> {
         T getOriginalObjectValueByRow(int row);
     }
 

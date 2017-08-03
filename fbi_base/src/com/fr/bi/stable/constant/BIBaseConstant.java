@@ -167,29 +167,16 @@ public class BIBaseConstant {
         public static final int SUMARY = 2;
     }
 
-    public static final class TABLEEXCEL {
-        public final static String EXCELPATH = File.separator + ProjectConstants.RESOURCES_NAME + File.separator + "bi_excel";
-    }
-
     public static final class EXCELDATA {
-        public final static String EXCEL_DATA_PATH = File.separator + ProjectConstants.RESOURCES_NAME + File.separator + "excel_data";
+        public final static String EXCEL_DATA_PATH = File.separator + "assets" + File.separator + "excel_data";
     }
 
     public static final class UPLOAD_IMAGE {
-        public final static String IMAGE_PATH = File.separator + ProjectConstants.RESOURCES_NAME + File.separator + "images";
+        public final static String IMAGE_PATH = File.separator + "assets" + File.separator + "images";
     }
 
     public static final class MAP_JSON {
-        public final static String MAP_PATH = File.separator + ProjectConstants.RESOURCES_NAME + File.separator + "geojson";
-    }
-
-    public static final class PHANTOM {
-        public final static String PHANTOM_PATH = File.separator + ProjectConstants.RESOURCES_NAME + File.separator + "phantom";
-    }
-
-    public static final class CUBEINDEX {
-
-
+        public final static String MAP_PATH = File.separator + "assets" + File.separator + "geojson";
     }
 
     public static final class TABLETYPE {

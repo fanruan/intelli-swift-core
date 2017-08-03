@@ -62,7 +62,7 @@ public abstract class BIProcessor<T> implements IProcessor<Future<T>> {
                             release();
                             messagePublish.publicFinishMessage(getFinishMess());
                             return result;
-                        } catch (Exception e) {
+                        } catch (Throwable e) {
                             messagePublish.publicStopMessage(getStopMess());
                             BILoggerFactory.getLogger().error(e.getMessage(), e);
                             release();

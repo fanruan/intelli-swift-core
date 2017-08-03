@@ -426,7 +426,8 @@ public class BIReportConstant {
         public static final int HEAT_MAP = 0x41;             //热力地图
         public static final int PARETO = 0x42;           //帕累托图
         public static final int DOT = 0x43; //点图
-
+        public static final int WORD_CLOUD = 0x44; //词云
+        public static final int LINE_MAP = 0x45; //流向地图
 
         public static final int STRING = 0x20;            //文本控件
         public static final int NUMBER = 0x21;            //数值控件
