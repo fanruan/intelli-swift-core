@@ -1,6 +1,5 @@
 package com.fr.bi.cal.analyze.cal.index.loader.cache;
 
-import com.fr.bi.cal.analyze.cal.index.loader.WidgetKey;
 import com.fr.bi.stable.structure.collection.map.lru.LRUWithKConcurrentHashMap;
 
 /**
@@ -8,21 +7,17 @@ import com.fr.bi.stable.structure.collection.map.lru.LRUWithKConcurrentHashMap;
  */
 public class WidgetDataCacheManager {
     private static WidgetDataCacheManager instance = new WidgetDataCacheManager();
-    private LRUWithKConcurrentHashMap<WidgetKey, WidgetCache> cache = new LRUWithKConcurrentHashMap<WidgetKey, WidgetCache>(1000);
+    private LRUWithKConcurrentHashMap<WidgetCacheKey, WidgetCache> cache = new LRUWithKConcurrentHashMap<WidgetCacheKey, WidgetCache>(1000);
 
     public static WidgetDataCacheManager getInstance(){
         return instance;
     }
 
-    public boolean contains(WidgetKey key){
-        return cache.FIFOcontain(key) || cache.LRUcontain(key);
-    }
-
-    public void put(WidgetKey key, WidgetCache widgetCache){
+    public void put(WidgetCacheKey key, WidgetCache widgetCache){
         cache.putWeakValue(key, widgetCache);
     }
 
-    public WidgetCache get(WidgetKey key){
+    public WidgetCache get(WidgetCacheKey key){
         return cache.getWeakHashMapValue(key);
     }
 

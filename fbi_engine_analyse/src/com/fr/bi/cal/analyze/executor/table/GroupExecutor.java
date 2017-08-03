@@ -5,11 +5,17 @@ import com.finebi.cube.conf.table.BusinessTable;
 import com.fr.base.Style;
 import com.fr.bi.base.FinalInt;
 import com.fr.bi.cal.analyze.cal.index.loader.CubeIndexLoader;
+import com.fr.bi.cal.analyze.cal.index.loader.cache.WidgetCache;
+import com.fr.bi.cal.analyze.cal.index.loader.cache.WidgetCacheKey;
 import com.fr.bi.cal.analyze.cal.result.CrossExpander;
 import com.fr.bi.cal.analyze.cal.result.Node;
+import com.fr.bi.cal.analyze.cal.result.operator.Operator;
+import com.fr.bi.cal.analyze.cal.sssecret.NodeDimensionIterator;
+import com.fr.bi.cal.analyze.cal.sssecret.PageIteratorGroup;
 import com.fr.bi.cal.analyze.executor.iterator.StreamPagedIterator;
 import com.fr.bi.cal.analyze.executor.iterator.TableCellIterator;
 import com.fr.bi.cal.analyze.executor.paging.Paging;
+import com.fr.bi.cal.analyze.executor.paging.PagingFactory;
 import com.fr.bi.cal.analyze.executor.utils.ExecutorUtils;
 import com.fr.bi.cal.analyze.report.report.widget.TableWidget;
 import com.fr.bi.cal.analyze.session.BISession;
@@ -34,8 +40,10 @@ import com.fr.stable.ExportConstants;
 import com.fr.stable.StringUtils;
 
 import java.awt.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by 小灰灰 on 2015/6/30.
@@ -227,6 +235,15 @@ public class GroupExecutor extends AbstractTableWidgetExecutor<Node> {
         }
     }
 
+
+    protected WidgetCacheKey createWidgetCacheKey() {
+        PageIteratorGroup iteratorGroup = getPageIterator();
+        Operator rowOp = PagingFactory.createRowOperator(paging.getOperator(), widget);
+        return WidgetCacheKey.createKey(widget.fetchObjectCore(), expander.getXExpander(), expander.getXExpander(),
+                rowOp, getStartIndex(rowOp, iteratorGroup == null ? null : iteratorGroup.getRowIterator(), usedDimensions.length),
+                null, null, widget.getAuthFilter(session.getUserId()));
+    }
+
     @Override
     public Node getCubeNode() throws Exception {
 
@@ -261,8 +278,32 @@ public class GroupExecutor extends AbstractTableWidgetExecutor<Node> {
 
     @Override
     public JSONObject createJSONObject() throws Exception {
+        WidgetCacheKey key = createWidgetCacheKey();
+        WidgetCache widgetCache = getWidgetCache(key);
+        if (widgetCache != null){
+            updateByCache(widgetCache);
+            return widgetCache.getData();
+        }
+        JSONObject jo =  getCubeNode().toJSONObject(usedDimensions, widget.getTargetsKey(), -1);
+        PageIteratorGroup pg = session.getPageIteratorGroup(true, widget.getWidgetId());
+        NodeDimensionIterator rowIter = pg.getRowIterator().createClonedIterator();
+        rowIter.setRoot(null);
+        updateCache(key, new WidgetCache(jo, rowIter, null, widget.getPageSpinner()));
+        return jo;
+    }
 
-        return getCubeNode().toJSONObject(usedDimensions, widget.getTargetsKey(), -1);
+    private void updateByCache(WidgetCache widgetCache) {
+        widget.setPageSpinner(widgetCache.getPageSpinner());
+        PageIteratorGroup pg = session.getPageIteratorGroup(true, widget.getWidgetId());
+        if (pg == null){
+            pg = new PageIteratorGroup();
+            pg.setRowIterator(widgetCache.getRowIterator());
+            session.setPageIteratorGroup(true, widget.getWidgetId(), pg);
+        } else {
+            NodeDimensionIterator rowIterator = widgetCache.getRowIterator().createClonedIterator();
+            rowIterator.setRoot(pg.getRowIterator().getRoot());
+            pg.setRowIterator(rowIterator);
+        }
     }
 
     public Node getStopOnRowNode(Object[] stopRow) throws Exception {
@@ -346,6 +387,7 @@ public class GroupExecutor extends AbstractTableWidgetExecutor<Node> {
         }
         return result;
     }
+
 
     /**
      * 返回结果之前进行对node进行操作的管道
