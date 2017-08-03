@@ -168,18 +168,21 @@ public class DBConstant {
         public static final int IMMEDIATE = 0x1;
         public static final int SET = 0x2;
     }
+
     public static final class SINGLE_TABLE_UPDATE_FREQUENCY {
         public static final int ONCE = 0x1;
         public static final int REPEAT = 0x2;
         public static final int SET = 0x3;
         public static final int FORMULA = 0x4;
     }
+
     public static final class UPDATE_FREQUENCY_REPEAT {
         public static final int MINUTE = 0x1;
         public static final int HOUR = 0x2;
         public static final int DAY = 0x3;
         public static final int WEEK = 0x4;
     }
+
     public static final class SINGLE_TABLE_UPDATE_END_TIME {
         public static final int ONCE = 0x1;
         public static final int UNLIMITED = 0x2;
@@ -193,5 +196,7 @@ public class DBConstant {
         public static final int FINSIH = 0x3;
         public static final int FAIL = 0x4;
     }
-
+    public static final class timerTask {
+        public static final String cube_task = "cube_task";
+    }
 }

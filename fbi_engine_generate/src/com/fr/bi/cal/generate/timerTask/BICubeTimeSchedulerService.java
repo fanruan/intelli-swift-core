@@ -14,4 +14,5 @@ public interface BICubeTimeSchedulerService {
 
     void removeTimeScheduler(String taskName);
 
+    void persistData();
 }

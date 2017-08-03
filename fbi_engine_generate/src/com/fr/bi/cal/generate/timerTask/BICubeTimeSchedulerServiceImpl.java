@@ -44,4 +44,9 @@ public class BICubeTimeSchedulerServiceImpl implements BICubeTimeSchedulerServic
     public void removeTimeScheduler(String taskName) {
         timeSchedulerManager.removeScheduledTimeTask(taskName);
     }
+
+    @Override
+    public void persistData() {
+        timeSchedulerManager.writeFIle();
+    }
 }

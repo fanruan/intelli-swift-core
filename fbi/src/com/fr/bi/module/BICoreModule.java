@@ -17,8 +17,6 @@ import com.finebi.cube.conf.timer.UpdateFrequencyManager;
 import com.finebi.cube.conf.trans.BIAliasManagerWithoutUser;
 import com.fr.base.FRContext;
 import com.fr.bi.cal.BICubeManager;
-import com.fr.bi.cal.generate.timerTask.BICubeTimeTaskCreatorManager;
-import com.fr.bi.cal.generate.timerTask.BICubeTimeTaskCreatorProvider;
 import com.fr.bi.cluster.ClusterAdapter;
 import com.fr.bi.cluster.ClusterManager;
 import com.fr.bi.cluster.manager.EmptyClusterManager;
@@ -32,8 +30,6 @@ import com.fr.bi.conf.base.login.BISystemUserLoginInformationManager;
 import com.fr.bi.conf.base.scheduler.BITimeScheduleService;
 import com.fr.bi.conf.base.scheduler.BITimeSchedulerManager;
 import com.fr.bi.conf.base.scheduler.ScheduleEntityPoolReader;
-import com.fr.bi.conf.fs.FBIConfig;
-import com.fr.bi.conf.fs.FBIConfigProvider;
 import com.fr.bi.conf.log.BILogManagerWithoutUser;
 import com.fr.bi.conf.manager.excelview.BIExcelViewManagerWithoutUser;
 import com.fr.bi.conf.manager.update.BIUpdateSettingManagerWithoutUser;
@@ -50,8 +46,6 @@ import com.fr.bi.conf.records.BICubeTaskRecordManagerWithoutUser;
 import com.fr.bi.conf.report.BIFSReportProvider;
 import com.fr.bi.conf.tablelock.BIConfTableLock;
 import com.fr.bi.conf.tablelock.BIConfTableLockDAO;
-import com.fr.bi.conf.template.TemplateConfig;
-import com.fr.bi.conf.template.TemplateConfigProvider;
 import com.fr.bi.fs.BIDAOProvider;
 import com.fr.bi.fs.BIDAOUtils;
 import com.fr.bi.fs.BIReportDAO;
@@ -92,7 +86,6 @@ import com.fr.data.dao.ObjectTableMapper;
 import com.fr.data.impl.JDBCDatabaseConnection;
 import com.fr.data.pool.MemoryConnection;
 import com.fr.file.DatasourceManager;
-import com.fr.fs.control.UserControl;
 import com.fr.fs.control.dao.hsqldb.HSQLDBDAOControl;
 import com.fr.fs.control.dao.tabledata.TableDataDAOControl;
 import com.fr.fs.dao.FSDAOManager;
@@ -169,7 +162,6 @@ public class BICoreModule extends AbstractModule {
         StableFactory.registerMarkedObject(BIDataSourceManagerProvider.XML_TAG, getSourceManagerProvider());
         StableFactory.registerMarkedObject(BIAliasManagerProvider.XML_TAG, getTransManagerProvider());
         StableFactory.registerMarkedObject(BITableRelationConfigurationProvider.XML_TAG, getConnectionManagerProvider());
-        StableFactory.registerMarkedObject(BICubeTimeTaskCreatorProvider.XML_TAG, new BICubeTimeTaskCreatorManager());
         StableFactory.registerMarkedObject(BICubeManagerProvider.XML_TAG, getCubeManagerProvider());
         StableFactory.registerMarkedObject(BILogManagerProvider.XML_TAG, getBILogManager());
         StableFactory.registerMarkedObject(BIUserLoginInformationProvider.XML_TAG, new BISystemUserLoginInformationManager());
@@ -179,7 +171,6 @@ public class BICoreModule extends AbstractModule {
         StableFactory.registerMarkedObject(BICubeConfManagerProvider.XML_TAG, getBICubeConfManager());
         StableFactory.registerMarkedObject(SingleTableUpdateManager.XML_TAG, new SingleTableUpdateManager());
         
-        StableFactory.registerMarkedObject(BICubeTimeTaskCreatorProvider.XML_TAG, new BICubeTimeTaskCreatorManager());
         StableFactory.registerMarkedObject(BICubeTaskRecordProvider.XML_TAG, new BICubeTaskRecordManagerWithoutUser());
         StableFactory.registerMarkedObject(BITimeScheduleService.XML_TAG, getBITimeScheduleManager());
 
@@ -452,7 +443,7 @@ public class BICoreModule extends AbstractModule {
         if (ClusterEnv.isCluster()) {
             if (ClusterAdapter.getManager().getHostManager().isBuildCube()) {
                 BICubeManager provider = new BICubeManager();
-                provider.resetCubeGenerationHour(UserControl.getInstance().getSuperManagerID());
+//                provider.resetCubeGenerationHour(UserControl.getInstance().getSuperManagerID());
                 RPC.registerSkeleton(provider, ClusterAdapter.getManager().getHostManager().getBuildCubePort());
                 return provider;
             } else {
