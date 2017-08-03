@@ -31,7 +31,7 @@ import com.fr.bi.conf.base.datasource.BIConnectionProvider;
 import com.fr.bi.conf.base.login.BISystemUserLoginInformationManager;
 import com.fr.bi.conf.log.BILogManagerWithoutUser;
 import com.fr.bi.conf.manager.excelview.BIExcelViewManagerWithoutUser;
-import com.fr.bi.conf.manager.publicreport.BIPublicReportManager;
+import com.fr.bi.conf.manager.report.BIPublicReportManager;
 import com.fr.bi.conf.manager.update.BIUpdateSettingManagerWithoutUser;
 import com.fr.bi.conf.provider.BIAuthorityManageProvider;
 import com.fr.bi.conf.provider.BIConfigureManagerCenter;
@@ -40,7 +40,7 @@ import com.fr.bi.conf.provider.BICubeTaskRecordProvider;
 import com.fr.bi.conf.provider.BIDataConfigAuthorityProvider;
 import com.fr.bi.conf.provider.BIExcelViewManagerProvider;
 import com.fr.bi.conf.provider.BILogManagerProvider;
-import com.fr.bi.conf.provider.BIPublicReportMangerProvider;
+import com.fr.bi.conf.provider.BIPublicReportManagerProvider;
 import com.fr.bi.conf.provider.BIUpdateFrequencyManagerProvider;
 import com.fr.bi.conf.provider.BIUserLoginInformationProvider;
 import com.fr.bi.conf.records.BICubeTaskRecordManagerWithoutUser;
@@ -176,9 +176,26 @@ public class BICoreModule extends AbstractModule {
         StableFactory.registerMarkedObject(BIDataConfigAuthorityProvider.XML_TAG, new BISystemDataConfigAuthorityManager());
         StableFactory.registerMarkedObject(BITableDataDAOProvider.XML_TAG, getBITableDataDAOManager());
 
-        StableFactory.registerMarkedObject(BIPublicReportMangerProvider.XML_TAG, new BIPublicReportManager());
+        StableFactory.registerMarkedObject(BIPublicReportManagerProvider.XML_TAG, getBIPublicReportManger());
 
     }
+
+    private BIPublicReportManagerProvider getBIPublicReportManger() {
+        if (ClusterEnv.isCluster()) {
+            if (ClusterAdapter.getManager().getHostManager().isSelf()) {
+                BIPublicReportManager provider = new BIPublicReportManager();
+                RPC.registerSkeleton(provider, ClusterAdapter.getManager().getHostManager().getPort());
+                return provider;
+            } else {
+                return (BIPublicReportManagerProvider) RPC.getProxy(BIPublicReportManager.class,
+                        ClusterAdapter.getManager().getHostManager().getIp(),
+                        ClusterAdapter.getManager().getHostManager().getPort());
+            }
+        } else {
+            return new BIPublicReportManager();
+        }
+    }
+
     public BICubeTaskRecordProvider getBICubeTaskRecordManagerWithoutUser() {
         if (ClusterEnv.isCluster()) {
             if (ClusterAdapter.getManager().getHostManager().isSelf()) {
