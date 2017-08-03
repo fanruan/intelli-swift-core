@@ -17,6 +17,7 @@ import com.fr.bi.cal.analyze.report.report.widget.chart.calculator.format.operat
 import com.fr.bi.cal.analyze.report.report.widget.chart.calculator.format.operation.BITableCellStringOperation;
 import com.fr.bi.cal.analyze.report.report.widget.chart.calculator.format.operation.ITableCellFormatOperation;
 import com.fr.bi.cal.analyze.report.report.widget.chart.calculator.format.setting.BICellFormatSetting;
+import com.fr.bi.cal.analyze.report.report.widget.chart.calculator.format.setting.ICellFormatSetting;
 import com.fr.bi.cal.analyze.report.report.widget.chart.calculator.item.ITableItem;
 import com.fr.bi.cal.analyze.report.report.widget.chart.calculator.item.constructor.DataConstructor;
 import com.fr.bi.cal.analyze.report.report.widget.chart.calculator.format.utils.BITableConstructHelper;
@@ -348,7 +349,7 @@ public class DetailWidget extends AbstractBIWidget implements SclCalculator {
 
     public JSONObject getPostOptions(BISessionProvider session, HttpServletRequest req) throws Exception {
         JSONObject data = this.createDataJSON(session, req);
-        JSONObject res= calculateSCData(this.getWidgetConf(),data.getJSONObject("data"));
+        JSONObject res = calculateSCData(this.getWidgetConf(), data.getJSONObject("data"));
         res.put("row", data.optLong("row", 0));
         res.put("dimensionLength", getViewDimensions().length).put("row", data.optLong("row", 0)).put("size", data.optLong("size", 0));
         res.put("settings", this.getWidgetConf().getWidgetSettings().createJSON());
@@ -360,7 +361,8 @@ public class DetailWidget extends AbstractBIWidget implements SclCalculator {
         Map<Integer, List<JSONObject>> viewMap = widgetConf.getDetailViewMap();
         IExcelDataBuilder builder = new DetailTableBuilder(viewMap, data, getWidgetSettings(widgetConf));
         DataConstructor tableData = BITableConstructHelper.buildTableData(builder);
-        BITableConstructHelper.formatCells(tableData, createChartDimensions(), getWidgetSettings(widgetConf));
+//        BITableConstructHelper.formatCells(tableData, createChartDimensions(), getWidgetSettings(widgetConf));
+        BITableConstructHelper.formatCells(tableData, createOperationMap(widgetConf), getWidgetSettings(widgetConf));
         JSONObject res = new JSONObject();
         res.put("header", tableData.createJSON().get("header"));
         JSONArray itemsArray = new JSONArray();
@@ -375,6 +377,34 @@ public class DetailWidget extends AbstractBIWidget implements SclCalculator {
         return res;
     }
 
+    private Map<String, ITableCellFormatOperation> createOperationMap(BIWidgetConf config) throws Exception {
+        Map<String, ITableCellFormatOperation> formOperationsMap = new HashMap<String, ITableCellFormatOperation>();
+        Map<Integer, List<JSONObject>> viewMap = config.getDetailViewMap();
+        for (Integer integer : viewMap.keySet()) {
+            List<JSONObject> dimJo = viewMap.get(integer);
+            for (JSONObject jo : dimJo) {
+                if (jo.optBoolean("used")) {
+                    String dId = jo.getString("dId");
+                    int type = jo.getInt("type");
+                    ICellFormatSetting setting = new BICellFormatSetting();
+                    if (config.getDimensions().getJSONObject(dId).has("settings")) {
+                        setting.parseJSON(config.getDimensions().getJSONObject(dId).optJSONObject("settings"));
+                    }
+                    ITableCellFormatOperation op;
+                    if (type == DBConstant.COLUMN.DATE) {
+                        op = new BITableCellDateFormatOperation(config.getDimensions().getJSONObject(dId).getInt("type"), setting);
+                    } else if (type == DBConstant.COLUMN.NUMBER) {
+                        op = new BITableCellNumberFormatOperation(setting);
+                    } else {
+                        op = new BITableCellStringOperation(setting);
+                    }
+                    formOperationsMap.put(dId, op);
+                }
+            }
+        }
+        return formOperationsMap;
+    }
+
     private Map<String, ITableCellFormatOperation> createChartDimensions() {
         Map<String, ITableCellFormatOperation> formatOperationMap = new HashMap<String, ITableCellFormatOperation>();
         for (BIDetailTarget detailTarget : this.getTargets()) {
@@ -382,7 +412,6 @@ public class DetailWidget extends AbstractBIWidget implements SclCalculator {
                 if (!detailTarget.isUsed()) {
                     continue;
                 }
-
 
                 BICellFormatSetting setting = new BICellFormatSetting();
                 setting.parseJSON(detailTarget.getChartSetting().getSettings());
