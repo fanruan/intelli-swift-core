@@ -196,6 +196,36 @@ public class DBConstant {
         public static final int FINSIH = 0x3;
         public static final int FAIL = 0x4;
     }
+
+    public enum BusinessPackageType {
+        FINE_INDEX(1),
+        FINE_DIRECT(2);
+
+        private int type;
+
+        BusinessPackageType(int type) {
+            this.type = type;
+        }
+
+        public int getType() {
+            return this.type;
+        }
+
+        @Override
+        public String toString() {
+            return String.valueOf(this.type);
+        }
+
+        public static BusinessPackageType parse(int type){
+            for(BusinessPackageType packageType : BusinessPackageType.values()){
+                if(packageType.type == type){
+                    return packageType;
+                }
+            }
+            return BusinessPackageType.FINE_INDEX;
+        }
+    }
+
     public static final class TIMER_TASK_TYPE {
         public static final String CUBE_TASK = "CUBE_TASK";
     }
