@@ -1,0 +1,15 @@
+apply plugin: 'java'
+def webName="nuclear-web"
+def branchName = "feature%2F4.1"
+def buildDir="../../${webName}/${branchName}"
+
+task copyModel{
+	ant{
+		mkdir(dir:"${buildDir}")
+		copy(todir:"${buildDir}"){
+			fileset(dir:"./"){
+				include(name:"**/**")
+			}
+		}
+	}
+}
