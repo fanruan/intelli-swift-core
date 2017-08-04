@@ -30,32 +30,6 @@ public class VanGisWidget extends VanChartWidget{
         return settings;
     }
 
-    protected void dealView(List<String> sorted, JSONObject vjo) throws JSONException{
-        super.dealView(sorted, vjo);
-
-        JSONArray ja = JSONArray.create();
-
-        int seriesRegion = Integer.parseInt(BIReportConstant.REGION.DIMENSION2);
-
-        for (String region : sorted) {
-
-            if (Integer.parseInt(region) > seriesRegion) {
-                continue;
-            }
-
-            JSONArray tmp = vjo.getJSONArray(region);
-
-            for (int j = 0; j < tmp.length(); j++) {
-                String key = tmp.getString(j);
-                ja.put(key);
-            }
-
-            vjo.remove(region);
-        }
-
-        vjo.put(BIReportConstant.REGION.DIMENSION1, ja);
-    }
-
     public JSONObject createOptions(JSONObject globalStyle, JSONObject data) throws Exception{
         JSONObject options = super.createOptions(globalStyle, data);
 
