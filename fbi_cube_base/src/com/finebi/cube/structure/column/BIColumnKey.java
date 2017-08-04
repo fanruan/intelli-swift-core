@@ -200,7 +200,6 @@ public final class BIColumnKey implements BIKey {
         result.add(BIDateColumnTool.generateSecond(field));
         result.add(BIDateColumnTool.generateMinute(field));
         result.add(BIDateColumnTool.generateWeekNumber(field));
-        result.add(BIDateColumnTool.generateYearWeekNumber(field));
         result.add(BIDateColumnTool.generateYearMonthDayHourMinute(field));
         result.add(BIDateColumnTool.generateYearMonthDayHour(field));
         result.add(BIDateColumnTool.generateYearMonthDayHourMinuteSecond(field));

@@ -1,6 +1,5 @@
 package com.fr.bi.cal.generate.timerTask.adapter;
 
-import com.fr.bi.cal.generate.timerTask.TimerTaskSchedule;
 import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.utils.time.BIDateUtils;
 
