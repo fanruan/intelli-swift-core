@@ -51,7 +51,8 @@ public class BackUpUtils {
     }
 
     private static void backupBIReport(File currentFolder, File targetFolder) {
-        backupFolder(currentFolder, targetFolder, BIREPORT_NAME);
+        File biReportFile = currentFolder.getParentFile();
+        backupFolder(biReportFile, targetFolder, BIREPORT_NAME);
     }
 
     private static void backupDirectConfig(File currentFolder, File targetFolder) {
