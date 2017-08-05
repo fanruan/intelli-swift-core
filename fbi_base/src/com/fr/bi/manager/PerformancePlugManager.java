@@ -44,6 +44,8 @@ public class PerformancePlugManager implements PerformancePlugManagerInterface {
     private String filePath = FRContext.getCurrentEnv().getPath();
     private static final String OLD_FILE_NAME = "plugs.properties";
     private static final String NEW_FILE_NAME = "plugsUpdate.properties";
+    private static final String RUNTIME_TYPE = "RuntimeParamsType";
+    private static final String UPDATED_TYPE = "UpdateParamsType";
     private File oldFile = new File(filePath + File.separator + ProjectConstants.RESOURCES_NAME + File.separator + OLD_FILE_NAME);
     private boolean isControlMaxMemory = false;
     private BIPerformanceParamConfig config = new BIPerformanceParamConfig();
@@ -89,7 +91,7 @@ public class PerformancePlugManager implements PerformancePlugManagerInterface {
 
     private int maxNodeCount = Integer.MAX_VALUE;
 
-    private Map<String, String> defaultMap = new HashMap<String, String>();
+    public static Map<String, String> defaultMap = new HashMap<String, String>();
 
     private PerformancePlugManager() {
         init();
@@ -101,7 +103,7 @@ public class PerformancePlugManager implements PerformancePlugManagerInterface {
 
     private void init() {
         try {
-            defaultMap = getDefaultConfig(this);
+            saveDefaultConfig(this);
             File newFile = new File(filePath + File.separator + ProjectConstants.RESOURCES_NAME + File.separator + NEW_FILE_NAME);
             if (newFile.exists()) {
                 if (oldFile.exists()) {
@@ -114,7 +116,7 @@ public class PerformancePlugManager implements PerformancePlugManagerInterface {
             if (in == null) {
                 in = FRContext.getCurrentEnv().readBean("plugs.properties.temp", ProjectConstants.RESOURCES_NAME);
                 if (in == null) {
-                    return;
+                    in = emptyInputStream();
                 }
             }
             properties = new Properties();
@@ -161,7 +163,7 @@ public class PerformancePlugManager implements PerformancePlugManagerInterface {
             Map<String, String> doUpdateMap = new HashMap<String, String>();
             Map<String, String> runMap = getExtraParam("run");
             Map<String, String> newMap = getExtraParam("new");
-            Map<String, String> deafultMap = PerformanceParamTools.convertParamKey(getDefaultConfig(this));
+            Map<String, String> deafultMap = PerformanceParamTools.convertParamKey(defaultMap);
             resultMap = PerformanceParamTools.convertParamKey(resultMap);
             resultMap = config.beforeDoWrite(runMap, newMap, resultMap);
             Iterator<String> it = resultMap.keySet().iterator();
@@ -187,9 +189,9 @@ public class PerformancePlugManager implements PerformancePlugManagerInterface {
      * @return
      */
     @Override
-    public Map<String, String> getDefaultConfig(Object obj) {
-        Map<String, String> map = new HashMap<String, String>();
+    public void saveDefaultConfig(Object obj) {
         Field[] fields = obj.getClass().getDeclaredFields();
+
         String fieldName;
         String fieldValue;
         for (Field field : fields) {
@@ -198,12 +200,11 @@ public class PerformancePlugManager implements PerformancePlugManagerInterface {
                 //属性名
                 fieldName = field.getName();
                 fieldValue = String.valueOf(field.get(obj));
-                map.put(fieldName ,fieldValue);
+                defaultMap.put(fieldName ,fieldValue);
             } catch (IllegalAccessException e) {
                 BILoggerFactory.getLogger().error(e.getMessage() ,e);
             }
-        }
-        return map;
+    }
     }
 
     /**
@@ -215,10 +216,10 @@ public class PerformancePlugManager implements PerformancePlugManagerInterface {
     @Override
     public Map<String, String> getExtraParam(String paramType) {
         String readFileName = null;
-        if ("run".equals(paramType)) {
+        if (ComparatorUtils.equals(RUNTIME_TYPE,paramType)) {
             readFileName = OLD_FILE_NAME;
         }
-        if ("new".equals(paramType)) {
+        if (ComparatorUtils.equals(UPDATED_TYPE,paramType)) {
             readFileName = NEW_FILE_NAME;
         }
         Map<String, String> paramConfig = new HashMap<String, String>();
@@ -478,8 +479,8 @@ public class PerformancePlugManager implements PerformancePlugManagerInterface {
 
     /**
      * 通过不同的paramType，可以获取配置
-     * paramType == "new"  更新成功后，系统重启的参数配置
-     * paramType == "run"  本次系统启动时，额外的参数配置
+     * paramType == "UpdateParamsType"  更新成功后，系统重启的参数配置
+     * paramType == "RuntimeParamsType"  本次系统启动时，额外的参数配置
      *
      * @param paramType
      * @return
@@ -488,16 +489,16 @@ public class PerformancePlugManager implements PerformancePlugManagerInterface {
     public Map<String, String> getConfigByType(String paramType) {
         String fileName = null;
         Map<String, String> newMap = new HashMap<String, String>();
-        if (ComparatorUtils.equals("run",paramType)) {
+        if (ComparatorUtils.equals(RUNTIME_TYPE,paramType)) {
             fileName = OLD_FILE_NAME;
         }
-        if (ComparatorUtils.equals("new",paramType)) {
+        if (ComparatorUtils.equals(UPDATED_TYPE,paramType)) {
             fileName = NEW_FILE_NAME;
         }
         try {
             InputStream in = FRContext.getCurrentEnv().readBean(fileName, ProjectConstants.RESOURCES_NAME);
-            if (in == null && ComparatorUtils.equals("run",paramType)) {
-                newMap = getDefaultConfig(this);
+            if (in == null && ComparatorUtils.equals(RUNTIME_TYPE,paramType)) {
+                return defaultMap;
             } else {
                 properties = new Properties();
                 properties.load(in);
