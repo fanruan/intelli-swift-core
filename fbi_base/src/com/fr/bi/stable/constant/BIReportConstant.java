@@ -601,6 +601,8 @@ public class BIReportConstant {
     }
 
     public static final class TARGET_STYLE {
+        public static final boolean NUM_SEPARATORS = true;
+
         public static final class FORMAT {
             public static final int NORMAL = -1;
             public static final int ZERO2POINT = 0;
