@@ -204,7 +204,7 @@ public class HorGroupExecutor extends AbstractTableWidgetExecutor<Node> {
     @Override
     public JSONObject createJSONObject() throws Exception {
         WidgetCacheKey key = createWidgetCacheKey();
-        WidgetCache widgetCache = getWidgetCache(key);
+        WidgetCache<JSONObject> widgetCache = getWidgetCache(key);
         if (widgetCache != null) {
             updateByCache(widgetCache);
             return widgetCache.getData();

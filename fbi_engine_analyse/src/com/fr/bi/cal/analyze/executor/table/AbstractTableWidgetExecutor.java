@@ -294,7 +294,7 @@ public abstract class AbstractTableWidgetExecutor<T> extends BIAbstractExecutor<
         return clonedIter.getStartIndex();
     }
 
-    protected WidgetCache getWidgetCache(WidgetCacheKey key){
+    protected WidgetCache<JSONObject> getWidgetCache(WidgetCacheKey key){
         if (!widget.useRealData() || !PerformancePlugManager.getInstance().isExtremeConcurrency()){
             return null;
         }
