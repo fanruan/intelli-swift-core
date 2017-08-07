@@ -132,7 +132,7 @@ public class DetailExecutor extends AbstractDetailExecutor {
         return jo;
     }
 
-    private Set<Integer> getUsedDimensionIndexes () {
+    private Set<Integer> getUsedDimensionIndexes() {
         final BIDetailTarget[] dimensions = widget.getViewDimensions();
         String[] array = widget.getView();
         final Set<Integer> usedDimensionIndexes = new HashSet<Integer>();

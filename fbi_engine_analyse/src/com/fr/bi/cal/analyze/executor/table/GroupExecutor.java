@@ -107,7 +107,7 @@ public class GroupExecutor extends AbstractTableWidgetExecutor<Node> {
      * @param pagedIterator
      * @throws Exception
      */
-    public static void generateHeader(TableWidget widget, BIDimension[] usedDimensions, BISummaryTarget[] usedSumTarget, StreamPagedIterator pagedIterator, int maxRowDimensionsLength) throws Exception {
+    public static void generateHeader(TableWidget widget, BIDimension[] usedDimensions, BISummaryTarget[] usedSumTarget, StreamPagedIterator pagedIterator, int maxRowDimensionsLength) throws Exception{
 
         int columnIdx = 0;
 //        if (widget.isOrder() == 1) {
@@ -119,6 +119,7 @@ public class GroupExecutor extends AbstractTableWidgetExecutor<Node> {
             int columnSpanOffSet = i == usedDimensions.length - 1 ? maxRowDimensionsLength - usedDimensions.length : 0;
             CBCell cell = ExecutorUtils.createCBCell(usedDimensions[i].getText(), 0, 1, columnIdx++, columnSpanOffSet + 1, widget.getTableStyle().getHeaderStyle(Style.getInstance()));
             pagedIterator.addCell(cell);
+            columnIdx += columnSpanOffSet;
         }
         for (BISummaryTarget anUsedSumTarget : usedSumTarget) {
             DetailChartSetting setting = widget.getChartSetting();
