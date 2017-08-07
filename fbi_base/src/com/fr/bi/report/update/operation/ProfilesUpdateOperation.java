@@ -44,7 +44,6 @@ public class ProfilesUpdateOperation implements ReportUpdateOperation {
 
     public ProfilesUpdateOperation() {
         try {
-            createChartTypeMap();
             createDotWidgetKeysMap();
             if (null == keys) {
                 keys = readKeyJson();
@@ -72,6 +71,7 @@ public class ProfilesUpdateOperation implements ReportUpdateOperation {
     @Override
     public JSONObject update(JSONObject reportSetting) throws JSONException {
         if (BIJsonUtils.isKeyValueSet(reportSetting.toString())) {
+            initChartTypeMap(reportSetting);
             reportSetting = recursionMapUpdate(reportSetting.toString());
             return reportSetting;
         } else {
@@ -90,6 +90,7 @@ public class ProfilesUpdateOperation implements ReportUpdateOperation {
                 if (ComparatorUtils.equals(s, "widgets")) {
                     addWId(json);
                     json = correctDataLabels(json);
+                    json = correctGaugeAxisScale(json);
                     json = correctPreviousSrcError(json);
                     json = correctScatterType(json);
                     groupTargetsByType(json);
@@ -125,7 +126,7 @@ public class ProfilesUpdateOperation implements ReportUpdateOperation {
                                 if(type == BIReportConstant.TARGET_TYPE.STRING || type == BIReportConstant.TARGET_TYPE.NUMBER || type == BIReportConstant.TARGET_TYPE.DATE){
                                     JSONObject jump = JSONObject.create();
                                     JSONObject srcJo = dimension.getJSONObject("_src");
-                                    String fieldId = srcJo.optString("fi eldId");
+                                    String fieldId = srcJo.optString("fieldId");
                                     String url = hyperlink.optString("expression", "");
                                     String targetUrl = url.replaceAll("\\$\\{.*\\}", "\\$\\{" + fieldId +"\\}");
                                     jump.put("targetUrl", targetUrl);
@@ -228,6 +229,34 @@ public class ProfilesUpdateOperation implements ReportUpdateOperation {
 
     }
 
+    //settings.minScale ---> settings.leftYCustomScale.minScale + settings.leftYShowCustomScale = true
+    private JSONObject correctGaugeAxisScale(JSONObject json) throws JSONException {
+            if (BIJsonUtils.isKeyValueSet(json.getString("widgets"))) {
+                Iterator keys = json.getJSONObject("widgets").keys();
+                while (keys.hasNext()) {
+                    String dimId = keys.next().toString();
+                    JSONObject dimJson = json.getJSONObject("widgets").getJSONObject(dimId);
+                    if (dimJson.has("type") && dimJson.has("settings")) {
+
+                        if(dimJson.optInt("type") == BIReportConstant.WIDGET.DASHBOARD){
+                            JSONObject settings = dimJson.optJSONObject("settings");
+
+                            if(settings.has("minScale") || settings.has("maxScale")) {
+                                settings.put("leftYShowCustomScale", true)
+                                        .put("leftYCustomScale", JSONObject.create()
+                                        .put("minScale", settings.optString("minScale"))
+                                        .put("maxScale", settings.optString("maxScale")));
+
+                                settings.remove("minScale");
+                                settings.remove("maxScale");
+                            }
+                        }
+                    }
+                }
+            }
+        return json;
+    }
+
     //4.0的图表标签默认设置，和402默认有些不一样，所以在这边写。调整标签位置，雅黑12px, 颜色自动。
     private JSONObject correctDataLabels(JSONObject json) throws JSONException {
         if (ReportVersionEnum.VERSION_4_0.getVersion().equals(json.optString("version"))) {
@@ -327,7 +356,7 @@ public class ProfilesUpdateOperation implements ReportUpdateOperation {
                     String widgetId = keys.next().toString();
                     JSONObject widgetJo = jo.getJSONObject("widgets").getJSONObject(widgetId);
                     boolean isCombineChart = BIReportConstant.WIDGET.COMBINE_CHART == widgetJo.getInt("type") || BIReportConstant.WIDGET.MULTI_AXIS_COMBINE_CHART == widgetJo.getInt("type");
-                    if (isCombineChart && !jo.has("scopes")) {
+                    if (isCombineChart && !widgetJo.has("scopes")) {
                         updateCombineChartView(widgetJo);
                     }
                 }
@@ -398,30 +427,35 @@ public class ProfilesUpdateOperation implements ReportUpdateOperation {
     * 映射图标type
     * */
     private int updateChartType(int chartType) {
-        if (chartTypeMap.containsKey(chartType)) {
-            return chartTypeMap.get(chartType);
-        } else {
-            BILoggerFactory.getLogger().error("the chartType: " + chartType + " is absent in this version");
-            return BIChartSettingConstant.ACCUMULATE_TYPE.COLUMN;
-        }
+//        if (chartTypeMap.containsKey(chartType)) {
+//            return chartTypeMap.get(chartType);
+//        } else {
+//            BILoggerFactory.getLogger().error("the chartType: " + chartType + " is absent in this version");
+//            return BIChartSettingConstant.ACCUMULATE_TYPE.COLUMN;
+//        }
+        return chartTypeMap.containsKey(chartType) ? chartTypeMap.get(chartType) : chartType;
     }
 
     /* * 规则：
     柱状图 5 -> 柱状图
     面积图 14 -> 面积图
-    堆积面积图 15-> 堆积面积图（折线）
-    折线图 13-> （折线）
-     堆积柱状图 6 -> （堆积柱状图）
+    堆积面积图 15-> 堆积面积图（折线）15
+    折线图 13-> （折线）9
+     堆积柱状图 6 -> （堆积柱状图）2
+    * BI-6186  存在同一版本下重复升级的情况，若当前version相同的话，直接返回原值就可以了
     */
-    private void createChartTypeMap() {
+    private void initChartTypeMap(JSONObject reportSetting) {
         Map<Integer, Integer> convertMap = new HashMap<Integer, Integer>();
-        convertMap.put(BIChartSettingConstant.ACCUMULATE_TYPE.OLD_COLUMN, BIChartSettingConstant.ACCUMULATE_TYPE.COLUMN);
-        convertMap.put(BIChartSettingConstant.ACCUMULATE_TYPE.OLD_AREA_CURVE, BIChartSettingConstant.ACCUMULATE_TYPE.AREA_CURVE);
-        convertMap.put(BIChartSettingConstant.ACCUMULATE_TYPE.OLD_STACKED_AREA, BIChartSettingConstant.ACCUMULATE_TYPE.STACKED_AREA_NORMAL);
-        convertMap.put(BIChartSettingConstant.ACCUMULATE_TYPE.OLD_LINE, BIChartSettingConstant.ACCUMULATE_TYPE.LINE_NORMAL);
-        convertMap.put(BIChartSettingConstant.ACCUMULATE_TYPE.OLD_ACCUMULATE_AXIS, BIChartSettingConstant.ACCUMULATE_TYPE.STACKED_COLUMN);
-        //default type=1
-        convertMap.put(BIChartSettingConstant.ACCUMULATE_TYPE.COLUMN, BIChartSettingConstant.ACCUMULATE_TYPE.COLUMN);
+        boolean isVersion402 = ReportVersionEnum.VERSION_4_0_2.getVersion().equals(reportSetting.optString("version"));
+        if (!isVersion402) {
+            convertMap.put(BIChartSettingConstant.ACCUMULATE_TYPE.OLD_COLUMN, BIChartSettingConstant.ACCUMULATE_TYPE.COLUMN);
+            convertMap.put(BIChartSettingConstant.ACCUMULATE_TYPE.OLD_AREA_CURVE, BIChartSettingConstant.ACCUMULATE_TYPE.AREA_CURVE);
+            convertMap.put(BIChartSettingConstant.ACCUMULATE_TYPE.OLD_STACKED_AREA, BIChartSettingConstant.ACCUMULATE_TYPE.STACKED_AREA_NORMAL);
+            convertMap.put(BIChartSettingConstant.ACCUMULATE_TYPE.OLD_LINE, BIChartSettingConstant.ACCUMULATE_TYPE.LINE_NORMAL);
+            convertMap.put(BIChartSettingConstant.ACCUMULATE_TYPE.OLD_ACCUMULATE_AXIS, BIChartSettingConstant.ACCUMULATE_TYPE.STACKED_COLUMN);
+            //default type=1
+            convertMap.put(BIChartSettingConstant.ACCUMULATE_TYPE.COLUMN, BIChartSettingConstant.ACCUMULATE_TYPE.COLUMN);
+        }
         this.chartTypeMap = convertMap;
     }
 

@@ -7,7 +7,7 @@ import com.fr.bi.cal.analyze.exception.TooManySummaryException;
 import com.fr.bi.cal.analyze.executor.BIEngineExecutor;
 import com.fr.bi.cal.analyze.executor.iterator.TableCellIterator;
 import com.fr.bi.cal.analyze.executor.iterator.StreamCellCase;
-import com.fr.bi.cal.analyze.report.report.widget.imp.TableWidget;
+import com.fr.bi.cal.analyze.report.report.widget.TableWidget;
 import com.fr.bi.cal.analyze.session.BISession;
 import com.fr.bi.cal.report.report.poly.BIPolyAnalyECBlock;
 import com.fr.general.DateUtils;

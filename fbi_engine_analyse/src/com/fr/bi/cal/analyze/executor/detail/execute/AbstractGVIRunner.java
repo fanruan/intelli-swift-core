@@ -3,7 +3,7 @@ package com.fr.bi.cal.analyze.executor.detail.execute;
 import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.conf.table.BusinessTable;
 import com.fr.bi.cal.analyze.executor.GVIRunner;
-import com.fr.bi.cal.analyze.report.report.widget.imp.DetailWidget;
+import com.fr.bi.cal.analyze.report.report.widget.DetailWidget;
 import com.fr.bi.conf.report.widget.field.target.detailtarget.BIDetailTarget;
 import com.fr.bi.conf.report.widget.field.target.filter.TargetFilter;
 import com.fr.bi.stable.data.db.BIRowValue;

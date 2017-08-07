@@ -1,17 +1,17 @@
 package com.fr.bi.cal.analyze.report.report.widget.util;
 
 import com.finebi.cube.common.log.BILoggerFactory;
-import com.fr.bi.cal.analyze.report.report.widget.imp.DetailWidget;
-import com.fr.bi.cal.analyze.report.report.widget.imp.ListLabelWidget;
-import com.fr.bi.cal.analyze.report.report.widget.imp.MonthControlWidget;
-import com.fr.bi.cal.analyze.report.report.widget.imp.QuarterControlWidget;
-import com.fr.bi.cal.analyze.report.report.widget.imp.SingleSliderWidget;
-import com.fr.bi.cal.analyze.report.report.widget.imp.StringControlWidget;
-import com.fr.bi.cal.analyze.report.report.widget.imp.TableWidget;
-import com.fr.bi.cal.analyze.report.report.widget.imp.TreeLabelWidget;
-import com.fr.bi.cal.analyze.report.report.widget.imp.TreeWidget;
-import com.fr.bi.cal.analyze.report.report.widget.imp.VanChartWidget;
-import com.fr.bi.cal.analyze.report.report.widget.imp.YearControlWidget;
+import com.fr.bi.cal.analyze.report.report.VanChartWidget;
+import com.fr.bi.cal.analyze.report.report.widget.DetailWidget;
+import com.fr.bi.cal.analyze.report.report.widget.ListLabelWidget;
+import com.fr.bi.cal.analyze.report.report.widget.MonthControlWidget;
+import com.fr.bi.cal.analyze.report.report.widget.QuarterControlWidget;
+import com.fr.bi.cal.analyze.report.report.widget.SingleSliderWidget;
+import com.fr.bi.cal.analyze.report.report.widget.StringControlWidget;
+import com.fr.bi.cal.analyze.report.report.widget.TableWidget;
+import com.fr.bi.cal.analyze.report.report.widget.TreeLabelWidget;
+import com.fr.bi.cal.analyze.report.report.widget.TreeWidget;
+import com.fr.bi.cal.analyze.report.report.widget.YearControlWidget;
 import com.fr.bi.conf.report.BIWidget;
 import com.fr.bi.conf.report.WidgetType;
 import com.fr.bi.conf.report.widget.chart.AbstractVanChartWidget;
@@ -29,8 +29,6 @@ import com.fr.bi.conf.report.widget.chart.VanForceBubbleWidget;
 import com.fr.bi.conf.report.widget.chart.VanFunnelWidget;
 import com.fr.bi.conf.report.widget.chart.VanGaugeWidget;
 import com.fr.bi.conf.report.widget.chart.VanGisWidget;
-import com.fr.bi.conf.report.widget.chart.VanHeatMapWidget;
-import com.fr.bi.conf.report.widget.chart.VanLineMapWidget;
 import com.fr.bi.conf.report.widget.chart.VanLineWidget;
 import com.fr.bi.conf.report.widget.chart.VanMapWidget;
 import com.fr.bi.conf.report.widget.chart.VanMultiAxisCombinationWidget;
@@ -45,7 +43,6 @@ import com.fr.bi.conf.report.widget.chart.VanStackedBarWidget;
 import com.fr.bi.conf.report.widget.chart.VanStackedColumnWidget;
 import com.fr.bi.conf.report.widget.chart.VanStackedRadarWidget;
 import com.fr.bi.conf.report.widget.chart.VanTreeMapWidget;
-import com.fr.bi.conf.report.widget.chart.VanWordCloudWidget;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;
@@ -98,10 +95,17 @@ public class BIWidgetFactory {
         vancharts.put(WidgetType.MULTI_PIE, VanMultiPieWidget.class);
 
         vancharts.put(WidgetType.MAP, VanMapWidget.class);
-        vancharts.put(WidgetType.GIS_MAP, VanGisWidget.class);
-        vancharts.put(WidgetType.WORD_CLOUD, VanWordCloudWidget.class);
-        vancharts.put(WidgetType.HEAT_MAP, VanHeatMapWidget.class);
-        vancharts.put(WidgetType.LINE_MAP, VanLineMapWidget.class);
+        vancharts.put(WidgetType.GIS_MAP, VanGisWidget.class);    }
+
+
+//todo 交给图表组处理
+    public static AbstractVanChartWidget createVanWidgetByType(WidgetType type) {
+        try {
+            return vancharts.get(type).newInstance();
+        } catch (Exception e) {
+            BILoggerFactory.getLogger().error("error in create chart widget");
+            return null;
+        }
     }
 
     /**
@@ -120,15 +124,6 @@ public class BIWidgetFactory {
         BIWidget widget = createWidgetByType(WidgetType.parse(jo.optInt("type")));
         widget.parseJSON(jo, userId);
         return widget;
-    }
-
-    public static AbstractVanChartWidget createVanWidgetByType(WidgetType type) {
-        try {
-            return vancharts.get(type).newInstance();
-        } catch (Exception e) {
-            BILoggerFactory.getLogger().error("error in create chart widget");
-            return null;
-        }
     }
 
     public static BIWidget createWidgetByType(WidgetType type) throws Exception {
@@ -176,7 +171,7 @@ public class BIWidgetFactory {
         return biWidget;
     }
 
-    private static JSONArray getViewTarget(JSONObject view) throws Exception {
+    public static JSONArray getViewTarget(JSONObject view) throws Exception {
         JSONArray ja = new JSONArray();
         if (view.optJSONArray(BIReportConstant.REGION.TARGET1) != null) {
             ja.put(view.optJSONArray(BIReportConstant.REGION.TARGET1));
@@ -189,4 +184,15 @@ public class BIWidgetFactory {
         }
         return ja;
     }
+
+//    /**
+//     * 根据属性选择生成不同的widget
+//     *
+//     * @param jo JSONObject 对象
+//     * @return BIWidget
+//     * @throws Exception
+//     */
+//    public static BIWidget parseWidget(JSONObject jo, long userId) throws Exception {
+//        return parseWidget(jo, userId, UserAnalysisCubeDataLoaderCreator.getInstance().fetchCubeLoader(userId));
+//    }
 }

@@ -9,12 +9,13 @@ import com.fr.bi.cal.analyze.executor.detail.execute.DetailAllGVIRunner;
 import com.fr.bi.cal.analyze.executor.detail.execute.DetailPartGVIRunner;
 import com.fr.bi.cal.analyze.executor.iterator.TableCellIterator;
 import com.fr.bi.cal.analyze.executor.paging.Paging;
-import com.fr.bi.cal.analyze.executor.utils.GolbalFilterUtils;
-import com.fr.bi.cal.analyze.report.report.widget.imp.AbstractBIWidget;
-import com.fr.bi.cal.analyze.report.report.widget.imp.DetailWidget;
-import com.fr.bi.cal.analyze.report.report.widget.imp.TableWidget;
+import com.fr.bi.cal.analyze.executor.utils.GlobalFilterUtils;
+import com.fr.bi.cal.analyze.report.report.widget.AbstractBIWidget;
+import com.fr.bi.cal.analyze.report.report.widget.DetailWidget;
+import com.fr.bi.cal.analyze.report.report.widget.TableWidget;
 import com.fr.bi.cal.analyze.session.BISession;
 import com.fr.bi.cal.report.engine.CBCell;
+import com.fr.bi.conf.report.style.BITableStyle;
 import com.fr.bi.conf.report.widget.field.target.detailtarget.BIDetailTarget;
 import com.fr.bi.field.target.target.BISummaryTarget;
 import com.fr.bi.stable.constant.CellConstant;
@@ -28,7 +29,7 @@ import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;
 import com.fr.stable.ExportConstants;
 
-import java.awt.Rectangle;
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -261,9 +262,9 @@ public class DetailExecutor extends AbstractDetailExecutor {
         if (bw.getGlobalFilterWidget() != null) {
             // 如果已经设置了源字段和目标字段
             if (((AbstractBIWidget) bw.getGlobalFilterWidget()).getGlobalSourceAndTargetFieldList().size() > 0) {
-                g = GVIUtils.AND(g, GolbalFilterUtils.getSettingSourceAndTargetJumpFilter(widget, userId, session, target, ((AbstractBIWidget) bw.getGlobalFilterWidget()).getBaseTable()));
+                g = GVIUtils.AND(g, GlobalFilterUtils.getSettingSourceAndTargetJumpFilter(widget, userId, session, target, ((AbstractBIWidget) bw.getGlobalFilterWidget()).getBaseTable()));
             } else {
-                g = GVIUtils.AND(g, GolbalFilterUtils.getNotSettingSourceAndTargetJumpFilter(session, target, widget, false));
+                g = GVIUtils.AND(g, GlobalFilterUtils.getNotSettingSourceAndTargetJumpFilter(session, target, widget, false));
             }
         }
         return g;

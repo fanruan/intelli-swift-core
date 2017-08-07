@@ -1,6 +1,5 @@
 package com.fr.bi.cal.generate.timerTask.adapter;
 
-import com.fr.bi.cal.generate.timerTask.TimerTaskSchedule;
 import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.utils.time.BIDateUtils;
 
@@ -28,6 +27,7 @@ public class TimerTaskScheduleTool {
         String firstDayOfMonth = BIDateUtils.getScheduleTime(Calendar.MONDAY, 1);
         return new TimerTaskSchedule(firstDayOfMonth, null, jobName, -999, 0);
     }
+
     public static TimerTaskSchedule getSecondsTask() {
         TimerTaskSchedule schedule=new TimerTaskSchedule("0/2 * * * * ?",null,jobName,-999,0);
         return schedule;

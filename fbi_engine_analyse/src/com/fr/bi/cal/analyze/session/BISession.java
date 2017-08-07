@@ -7,6 +7,7 @@ import com.fr.bi.cal.analyze.cal.index.loader.MetricGroupInfo;
 import com.fr.bi.cal.analyze.cal.sssecret.PageIteratorGroup;
 import com.fr.bi.cal.analyze.executor.detail.key.DetailSortKey;
 import com.fr.bi.cal.stable.loader.CubeReadingTableIndexLoader;
+import com.fr.bi.cluster.utils.BIUserAuthUtils;
 import com.fr.bi.cluster.utils.ClusterEnv;
 import com.fr.bi.conf.report.BIReport;
 import com.fr.bi.fs.BIFineDBConfigLockDAO;
@@ -21,7 +22,6 @@ import com.fr.fs.base.entity.CustomRole;
 import com.fr.fs.control.CompanyRoleControl;
 import com.fr.fs.control.CustomRoleControl;
 import com.fr.fs.control.UserControl;
-import com.fr.fs.web.service.ServiceUtils;
 import com.fr.general.FRLogManager;
 import com.fr.general.GeneralContext;
 import com.fr.main.FineBook;
@@ -91,7 +91,7 @@ public class BISession extends BIAbstractSession {
         if (isShareReq) {
             return accessUserId;
         } else {
-            return ServiceUtils.getCurrentUserID(req);
+            return BIUserAuthUtils.getCurrentUserID(req);
         }
     }
 
@@ -157,7 +157,9 @@ public class BISession extends BIAbstractSession {
                     } else {
                         //                    集群模式下，无法获得远程机器的session，将时间和锁绑定
                         SessionIDInfor ss = SessionDealWith.getSessionIDInfor(l.getSessionId());
-                        t = ((BISession) ss).lastTime;
+                        if (ss != null) {
+                            t = ((BISession) ss).lastTime;
+                        }
                     }
                     //45- 30 超过15-45秒还没反應可能是没有心跳
                     if (System.currentTimeMillis() - t < EDIT_TIME) {

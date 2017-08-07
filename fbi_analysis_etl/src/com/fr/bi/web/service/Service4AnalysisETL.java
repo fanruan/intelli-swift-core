@@ -1,11 +1,10 @@
 package com.fr.bi.web.service;
 
 import com.fr.bi.cal.analyze.session.BISession;
+import com.fr.bi.cluster.utils.BIUserAuthUtils;
 import com.fr.bi.web.service.action.*;
 import com.fr.fs.base.FSManager;
 import com.fr.fs.privilege.auth.FSAuthentication;
-import com.fr.fs.privilege.auth.FSAuthenticationManager;
-import com.fr.fs.web.service.AbstractFSAuthService;
 import com.fr.privilege.base.PrivilegeVote;
 import com.fr.stable.fun.Service;
 import com.fr.stable.web.RequestCMDReceiver;
@@ -47,8 +46,8 @@ public class Service4AnalysisETL implements Service {
         if (biSessionInfor != null) {
             WebActionsDispatcher.dealForActionCMD(req, res, sessionID, actions);
         } else {
-            PrivilegeVote vote = getFSVote(req, res);
-            FSAuthentication authentication = FSAuthenticationManager.exAuth4FineServer(req);
+            FSAuthentication authentication = BIUserAuthUtils.getFSAuthentication(req);
+            PrivilegeVote vote = FSManager.getFSKeeper().access(authentication);
             if (!vote.isPermitted() && (authentication == null || !authentication.isRoot())) {
                 vote.action(req, res);
             } else {
@@ -57,12 +56,4 @@ public class Service4AnalysisETL implements Service {
         }
     }
 
-    private PrivilegeVote getFSVote(HttpServletRequest req, HttpServletResponse res) throws Exception {
-        FSAuthentication authen = FSAuthenticationManager.exAuth4FineServer(req);
-        if (authen == null) {
-            AbstractFSAuthService.dealCookie(req, res);
-            authen = FSAuthenticationManager.exAuth4FineServer(req);
-        }
-        return FSManager.getFSKeeper().access(authen);
-    }
 }

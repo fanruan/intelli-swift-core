@@ -1,6 +1,6 @@
 package com.fr.bi.cal.analyze.report.report.widget.treelabel;
 import com.fr.bi.cal.analyze.executor.paging.Paging;
-import com.fr.bi.cal.analyze.report.report.widget.imp.TreeLabelWidget;
+import com.fr.bi.cal.analyze.report.report.widget.TreeLabelWidget;
 import com.fr.bi.cal.analyze.session.BISession;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONException;

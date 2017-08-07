@@ -4,7 +4,7 @@ import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.conf.table.BusinessTable;
 import com.fr.bi.base.annotation.BICoreField;
-import com.fr.bi.cal.analyze.report.report.widget.imp.SummaryWidget;
+import com.fr.bi.cal.analyze.report.report.widget.SummaryWidget;
 import com.fr.bi.common.inter.Traversal;
 import com.fr.bi.common.persistent.xml.BIIgnoreField;
 import com.fr.bi.conf.report.BIWidget;

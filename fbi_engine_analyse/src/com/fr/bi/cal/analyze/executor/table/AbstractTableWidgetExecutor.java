@@ -1,6 +1,5 @@
 package com.fr.bi.cal.analyze.executor.table;
 
-import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.conf.table.BusinessTable;
 import com.fr.base.Style;
 import com.fr.bi.cal.analyze.cal.index.loader.CubeIndexLoader;
@@ -9,7 +8,7 @@ import com.fr.bi.cal.analyze.cal.result.Node;
 import com.fr.bi.cal.analyze.executor.BIAbstractExecutor;
 import com.fr.bi.cal.analyze.executor.paging.Paging;
 import com.fr.bi.cal.analyze.executor.utils.ExecutorUtils;
-import com.fr.bi.cal.analyze.report.report.widget.imp.TableWidget;
+import com.fr.bi.cal.analyze.report.report.widget.TableWidget;
 import com.fr.bi.cal.analyze.session.BISession;
 import com.fr.bi.cal.report.engine.CBCell;
 import com.fr.bi.conf.report.conf.BIWidgetConf;
@@ -24,8 +23,11 @@ import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;
 
 import java.awt.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 public abstract class AbstractTableWidgetExecutor<T> extends BIAbstractExecutor<T> {
 
@@ -134,7 +136,6 @@ public abstract class AbstractTableWidgetExecutor<T> extends BIAbstractExecutor<
 
     /**
      * 获取点击的指标
-     *
      * @param clicked
      * @return
      */
@@ -153,7 +154,6 @@ public abstract class AbstractTableWidgetExecutor<T> extends BIAbstractExecutor<
 
     /**
      * 获取目标的gvi
-     *
      * @param target
      * @param n
      * @return
@@ -173,15 +173,6 @@ public abstract class AbstractTableWidgetExecutor<T> extends BIAbstractExecutor<
             if (data.size() == 0) {
                 return getTargetIndex(target, n);
             }
-            Node parent = getClickNode(n, data);
-//            return getTargetIndex(target, parent.getTargetIndexValueMap());
-        }
-        return null;
-    }
-
-    protected Node getClickNode(Node n, List<Object> data) {
-
-        if (n != null) {
             Node parent = n;
             for (int i = 0; i < data.size(); i++) {
                 Object cv = data.get(i);
@@ -194,14 +185,13 @@ public abstract class AbstractTableWidgetExecutor<T> extends BIAbstractExecutor<
                 }
                 parent = child;
             }
-            return parent;
+            return getTargetIndex(target, parent);
         }
         return null;
     }
 
     /**
      * 把以前放在BIEngineExecutor中的接口移到这边来,因为只可能需要表格才可能停在某一行
-     *
      * @param stopRow
      * @param dimensions
      * @return
@@ -299,7 +289,6 @@ public abstract class AbstractTableWidgetExecutor<T> extends BIAbstractExecutor<
      * @throws Exception
      */
     protected List<Object> getLinkRowData(Map<String, JSONArray> clicked, String target, boolean isHor) throws Exception {
-
         List r = new ArrayList<Object>();
         try {
             if (clicked != null) {
@@ -319,14 +308,13 @@ public abstract class AbstractTableWidgetExecutor<T> extends BIAbstractExecutor<
                         JSONObject object = keyJson.getJSONObject(i);
                         String click = object.getJSONArray("value").getString(0);
                         String did = object.getString("dId");
-                        rowData[j++] = click;
-                        r.add(click);
+                        rowData[j++] = click;r.add(click);
                     }
                 }
 
             }
         } catch (Exception e) {
-            BILoggerFactory.getLogger(this.getClass()).info(e.getMessage(), e);
+
         }
         return r;
     }
@@ -378,7 +366,7 @@ public abstract class AbstractTableWidgetExecutor<T> extends BIAbstractExecutor<
                 }
             }
         } catch (Exception e) {
-            BILoggerFactory.getLogger(this.getClass()).info(e.getMessage(), e);
+
         }
     }
 }

@@ -5,7 +5,6 @@ import com.fr.base.FRContext;
 import com.fr.fs.FSConfig;
 import com.fr.fs.control.UserControl;
 import com.fr.fs.web.FSConstants;
-import com.fr.stable.project.ProjectConstants;
 
 import java.io.File;
 
@@ -20,8 +19,6 @@ public class BIFileRepository {
 
     public BIFileRepository() {
         this.setPath(FRContext.getCurrentEnv().getPath()
-                + File.separator
-                + ProjectConstants.RESOURCES_NAME
                 + File.separator + "biReport");
     }
 
