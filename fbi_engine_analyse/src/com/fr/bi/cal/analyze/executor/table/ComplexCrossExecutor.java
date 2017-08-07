@@ -521,7 +521,7 @@ public class ComplexCrossExecutor extends AbstractTableWidgetExecutor<XNode> {
 
         GroupValueIndex linkGvi = null;
         try {
-            String target = getClieckTarget(clicked);
+            String target = getClickTarget(clicked);
             // 连联动计算指标都没有就没有所谓的联动了,直接返回
             if (target == null) {
                 return null;
@@ -543,7 +543,7 @@ public class ComplexCrossExecutor extends AbstractTableWidgetExecutor<XNode> {
                 BIDimension[] rowDimension = rowData.getDimensionArray(i);
                 for (int j = 0; j < columnRegionLen; j++) {
                     BIDimension[] colDimension = columnData.getDimensionArray(j);
-                    if (isClieckRegin(rowsId, rowDimension, colsId, colDimension)) {
+                    if (isClickRegion(rowsId, rowDimension, colsId, colDimension)) {
                         CubeIndexLoader cubeIndexLoader = CubeIndexLoader.getInstance(session.getUserId());
                         int calPage = paging.getOperator();
                         Node l = cubeIndexLoader.getStopWhenGetRowNode(row.toArray(), widget, createTarget4Calculate(), rowDimension,

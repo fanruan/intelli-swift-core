@@ -11,6 +11,7 @@ import com.fr.bi.cal.analyze.executor.iterator.StreamPagedIterator;
 import com.fr.bi.cal.analyze.executor.iterator.TableCellIterator;
 import com.fr.bi.cal.analyze.executor.paging.Paging;
 import com.fr.bi.cal.analyze.executor.utils.ExecutorUtils;
+import com.fr.bi.cal.analyze.executor.utils.GlobalFilterUtils;
 import com.fr.bi.cal.analyze.report.report.widget.TableWidget;
 import com.fr.bi.cal.analyze.session.BISession;
 import com.fr.bi.cal.report.engine.CBCell;
@@ -33,9 +34,12 @@ import com.fr.json.JSONObject;
 import com.fr.stable.ExportConstants;
 import com.fr.stable.StringUtils;
 
-import java.awt.*;
-import java.util.*;
+import java.awt.Rectangle;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by 小灰灰 on 2015/6/30.
@@ -102,10 +106,10 @@ public class GroupExecutor extends AbstractTableWidgetExecutor<Node> {
     public static void generateHeader(TableWidget widget, BIDimension[] usedDimensions, BISummaryTarget[] usedSumTarget, StreamPagedIterator pagedIterator, int maxRowDimensionsLength) throws Exception {
 
         int columnIdx = 0;
-//        if (widget.isOrder() == 1) {
-//            CBCell cell = ExecutorUtils.createCBCell(Inter.getLocText("BI-Number_Index"), 0, 1, columnIdx++, 1);
-//            pagedIterator.addCell(cell);
-//        }
+        //        if (widget.isOrder() == 1) {
+        //            CBCell cell = ExecutorUtils.createCBCell(Inter.getLocText("BI-Number_Index"), 0, 1, columnIdx++, 1);
+        //            pagedIterator.addCell(cell);
+        //        }
         for (int i = 0; i < usedDimensions.length; i++) {
             //复杂表 行表头 区域1有2两个维度、区域2有3个维度，区域1里最后一个维度的columnSpan需要特殊处理
             int columnSpanOffSet = i == usedDimensions.length - 1 ? maxRowDimensionsLength - usedDimensions.length : 0;
@@ -113,7 +117,7 @@ public class GroupExecutor extends AbstractTableWidgetExecutor<Node> {
             pagedIterator.addCell(cell);
         }
         for (BISummaryTarget anUsedSumTarget : usedSumTarget) {
-            BIWidgetConf setting=widget.getWidgetConf();
+            BIWidgetConf setting = widget.getWidgetConf();
             int numLevel = setting.getNumberLevelByTargetID(anUsedSumTarget.getId());
             String unit = setting.getUnitByTargetID(anUsedSumTarget.getId());
             String levelAndUnit = ExecutorUtils.formatLevelAndUnit(numLevel, unit);
@@ -243,7 +247,7 @@ public class GroupExecutor extends AbstractTableWidgetExecutor<Node> {
         int calpage = paging.getOperator();
         CubeIndexLoader cubeIndexLoader = CubeIndexLoader.getInstance(session.getUserId());
         Node tree = cubeIndexLoader.loadPageGroup(false, widget, createTarget4Calculate(), usedDimensions,
-                allDimensions, allSumTarget, calpage, widget.isRealData(), session, expander.getYExpander());
+                                                  allDimensions, allSumTarget, calpage, widget.isRealData(), session, expander.getYExpander());
         if (tree == null) {
             tree = new Node(allSumTarget.length);
         }
@@ -279,7 +283,7 @@ public class GroupExecutor extends AbstractTableWidgetExecutor<Node> {
         int calPage = paging.getOperator();
         CubeIndexLoader cubeIndexLoader = CubeIndexLoader.getInstance(session.getUserId());
         Node n = cubeIndexLoader.getStopWhenGetRowNode(stopRow, widget, createTarget4Calculate(), usedDimensions,
-                allDimensions, allSumTarget, calPage, session, CrossExpander.ALL_EXPANDER.getYExpander());
+                                                       allDimensions, allSumTarget, calPage, session, CrossExpander.ALL_EXPANDER.getYExpander());
         return n;
     }
 
@@ -496,29 +500,62 @@ public class GroupExecutor extends AbstractTableWidgetExecutor<Node> {
 
         GroupValueIndex linkGvi = null;
         try {
-            String target = getClieckTarget(clicked);
+            String target = getClickTarget(clicked);
             // 连联动计算指标都没有就没有所谓的联动了,直接返回
             if (target == null) {
                 return null;
             }
             BISummaryTarget summaryTarget = widget.getBITargetByID(target);
             BusinessTable linkTargetTable = summaryTarget.createTableKey();
-            if (!targetKey.equals(linkTargetTable)) {
-                return null;
-            }
-            List<Object> rowData = getLinkRowData(clicked, target, false);
-            Node linkNode = getStopOnRowNode(rowData.toArray(), widget.getViewDimensions());
-            // 总汇总值
-            if (rowData == null || rowData.size() == 0) {
-                for (String key : clicked.keySet()) {
-                    linkGvi = GVIUtils.AND(linkGvi, getTargetIndex(key, linkNode));
+            boolean isPc = false;
+            // 相同的表
+            if (targetKey.equals(linkTargetTable) || (isPc = GlobalFilterUtils.isPrimaryTable(linkTargetTable, targetKey))) {
+                java.util.List<Object> rowData = getLinkRowData(clicked, target, false);
+                BIDimension[] dimensions = getUserDimension(clicked, target);
+                Node linkNode = getStopOnRowNode(rowData.toArray(), dimensions);
+                // 总汇总值
+                if (rowData == null || rowData.size() == 0) {
+                    for (String key : clicked.keySet()) {
+                        linkGvi = GVIUtils.AND(linkGvi, getTargetIndex(key, linkNode));
+                    }
+                    return linkGvi;
                 }
-                return linkGvi;
+                linkGvi = GVIUtils.AND(linkGvi, getLinkNodeFilter(linkNode, target, rowData));
+                if (!isPc) {
+                    // 如果基础表相同直接进行返回
+                    return linkGvi;
+                } else {
+                    // 主表过滤子表
+                    GlobalFilterUtils.getGviFromPrimaryTable(linkTargetTable, targetKey, linkGvi, session, null);
+                }
             }
-            linkGvi = GVIUtils.AND(linkGvi, getLinkNodeFilter(linkNode, target, rowData));
         } catch (Exception e) {
             BILoggerFactory.getLogger(GroupExecutor.class).info("error in get link filter", e);
         }
         return linkGvi;
     }
+
+    public GroupValueIndex getClickGvi(Map<String, JSONArray> click) {
+
+        GroupValueIndex r = null;
+        try {
+            if (click != null && click.size() > 0) {
+                Iterator<String> iter = click.keySet().iterator();
+                if (iter.hasNext()) {
+                    String k = iter.next();
+                    java.util.List<Object> rowData = getLinkRowData(click, k, false);
+                    Node linkNode = getStopOnRowNode(rowData.toArray(), widget.getViewDimensions());
+                    Node cn = getClickNode(linkNode, rowData);
+                    for (BISummaryTarget t : allSumTarget) {
+                        r = cn.getTargetIndex(t.createTargetGettingKey());
+                        break;
+                    }
+                }
+            }
+        } catch (Exception e) {
+
+        }
+        return r;
+    }
+
 }
