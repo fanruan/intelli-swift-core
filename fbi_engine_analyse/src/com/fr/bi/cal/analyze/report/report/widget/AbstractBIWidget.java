@@ -59,6 +59,8 @@ public abstract class AbstractBIWidget implements BIWidget {
     private boolean realData = true;
     @BIIgnoreField
     private String sessionId;
+    @BIIgnoreField
+    private BICore widgetCore;
 
     @BICoreField
     protected BIWidgetConf widgetConf = new BIWidgetConf();
@@ -277,7 +279,10 @@ public abstract class AbstractBIWidget implements BIWidget {
 
     @Override
     public BICore fetchObjectCore() {
-        return new BICoreGenerator(this).fetchObjectCore();
+        if (widgetCore == null){
+            widgetCore = new BICoreGenerator(this).fetchObjectCore();
+        }
+        return widgetCore;
     }
 
     @Override

@@ -127,6 +127,8 @@ public abstract class SummaryWidget extends AbstractBIWidget {
 
     }
 
+
+
     @Override
     public List<BusinessField> getUsedFieldDefine() {
 

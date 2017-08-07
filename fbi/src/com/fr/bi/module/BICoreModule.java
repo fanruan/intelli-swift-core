@@ -17,6 +17,7 @@ import com.finebi.cube.conf.timer.UpdateFrequencyManager;
 import com.finebi.cube.conf.trans.BIAliasManagerWithoutUser;
 import com.fr.base.FRContext;
 import com.fr.bi.cal.BICubeManager;
+import com.fr.bi.cal.analyze.cal.index.loader.cache.WidgetDataCacheManager;
 import com.fr.bi.cal.generate.timerTask.BICubeTimeTaskCreatorManager;
 import com.fr.bi.cal.generate.timerTask.BICubeTimeTaskCreatorProvider;
 import com.fr.bi.cluster.ClusterAdapter;
@@ -675,7 +676,7 @@ public class BICoreModule extends AbstractModule {
         StableFactory.registerStyleFiles(ResourceConstants.DEFAULT_THIRD_CSS, BaseResourceHelper.getThirdCss());
         StableFactory.registerStyleFiles(ResourceConstants.DEFAULT_BASE_CSS, BaseResourceHelper.getBaseCss());
 
-        StableFactory.registerJavaScriptFiles(ResourceConstants.DEFAULT_EXPORT_JS, BaseResourceHelper.getExportJS());
+       // StableFactory.registerJavaScriptFiles(ResourceConstants.DEFAULT_EXPORT_JS, BaseResourceHelper.getExportJS());
 
         StableFactory.registerJavaScriptFiles(ResourceConstants.DEFAULT_DATA_JS, BaseResourceHelper.getDataJS(), BaseResourceHelper.DataTransmitter);
 
@@ -727,7 +728,7 @@ public class BICoreModule extends AbstractModule {
 
     @Override
     public void clearCacheAfterBuildCubeTask(long userId) {
-
+        WidgetDataCacheManager.getInstance().clear();
     }
 
     private void registerSystemManager() {

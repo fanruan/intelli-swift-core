@@ -214,7 +214,9 @@ public class TreeIterator implements NodeDimensionIterator {
             iterator.tempIndex = tempIndex.clone();
         }
         iterator.pageIndex.addAll(pageIndex);
-        iterator.root = root.createClonedRoot();
+        if (root != null){
+            iterator.root = root.createClonedRoot();
+        }
         return iterator;
     }
 

@@ -111,6 +111,14 @@ public class TableWidget extends SummaryWidget implements SclCalculator {
         this.pageSpinner[index] = value;
     }
 
+    public int[] getPageSpinner() {
+        return pageSpinner;
+    }
+
+    public void setPageSpinner(int[] pageSpinner) {
+        this.pageSpinner = pageSpinner;
+    }
+
     private TableWidget linkedWidget;
 
     @Override

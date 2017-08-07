@@ -36,7 +36,7 @@ public class AllShowRoaringGroupValueIndex extends AbstractGroupValueIndex {
 
 	@Override
 	public GroupValueIndex ANDNOT(GroupValueIndex valueIndex) {
-		if(valueIndex.isAllEmpty()){
+		if (valueIndex.isAllEmpty()){
 			return new AllShowRoaringGroupValueIndex(rowCount);
 		}
 		return valueIndex.NOT(rowCount);
