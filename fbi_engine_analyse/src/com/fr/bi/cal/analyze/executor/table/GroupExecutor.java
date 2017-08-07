@@ -107,7 +107,7 @@ public class GroupExecutor extends AbstractTableWidgetExecutor<Node> {
      * @param pagedIterator
      * @throws Exception
      */
-    public static void generateHeader(TableWidget widget, BIDimension[] usedDimensions, BISummaryTarget[] usedSumTarget, StreamPagedIterator pagedIterator, int maxRowDimensionsLength) throws Exception{
+    public static void generateHeader(TableWidget widget, BIDimension[] usedDimensions, BISummaryTarget[] usedSumTarget, StreamPagedIterator pagedIterator, int maxRowDimensionsLength) throws Exception {
 
         int columnIdx = 0;
 //        if (widget.isOrder() == 1) {
@@ -281,22 +281,24 @@ public class GroupExecutor extends AbstractTableWidgetExecutor<Node> {
     public JSONObject createJSONObject() throws Exception {
         WidgetCacheKey key = createWidgetCacheKey();
         WidgetCache<JSONObject> widgetCache = getWidgetCache(key);
-        if (widgetCache != null){
+        if (widgetCache != null) {
             updateByCache(widgetCache);
             return widgetCache.getData();
         }
-        JSONObject jo =  getCubeNode().toJSONObject(usedDimensions, widget.getTargetsKey(), -1);
-        PageIteratorGroup pg = session.getPageIteratorGroup(true, widget.getWidgetId());
-        NodeDimensionIterator rowIter = pg.getRowIterator().createClonedIterator();
-        rowIter.setRoot(null);
-        updateCache(key, new WidgetCache(jo, rowIter, null, widget.getPageSpinner()));
+        JSONObject jo = getCubeNode().toJSONObject(usedDimensions, widget.getTargetsKey(), -1);
+        if (isUseWidgetDataCache()) {
+            PageIteratorGroup pg = session.getPageIteratorGroup(true, widget.getWidgetId());
+            NodeDimensionIterator rowIter = pg.getRowIterator().createClonedIterator();
+            rowIter.setRoot(null);
+            updateCache(key, new WidgetCache(jo, rowIter, null, widget.getPageSpinner()));
+        }
         return jo;
     }
 
     private void updateByCache(WidgetCache widgetCache) {
         widget.setPageSpinner(widgetCache.getPageSpinner());
         PageIteratorGroup pg = session.getPageIteratorGroup(true, widget.getWidgetId());
-        if (pg == null){
+        if (pg == null) {
             pg = new PageIteratorGroup();
             pg.setRowIterator(widgetCache.getRowIterator());
             session.setPageIteratorGroup(true, widget.getWidgetId(), pg);

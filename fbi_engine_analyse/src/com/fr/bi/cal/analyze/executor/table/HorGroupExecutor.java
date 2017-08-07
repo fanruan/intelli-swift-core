@@ -210,10 +210,12 @@ public class HorGroupExecutor extends AbstractTableWidgetExecutor<Node> {
             return widgetCache.getData();
         }
         JSONObject jo = getCubeNode().toJSONObject(usedDimensions, widget.getTargetsKey(), -1);
-        PageIteratorGroup pg = session.getPageIteratorGroup(true, widget.getWidgetId());
-        NodeDimensionIterator colIter = pg.getColumnIterator().createClonedIterator();
-        colIter.setRoot(null);
-        updateCache(key, new WidgetCache(jo, null, colIter, widget.getPageSpinner()));
+        if (isUseWidgetDataCache()){
+            PageIteratorGroup pg = session.getPageIteratorGroup(true, widget.getWidgetId());
+            NodeDimensionIterator colIter = pg.getColumnIterator().createClonedIterator();
+            colIter.setRoot(null);
+            updateCache(key, new WidgetCache(jo, null, colIter, widget.getPageSpinner()));
+        }
         return jo;
     }
 

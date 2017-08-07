@@ -363,12 +363,14 @@ public class CrossExecutor extends AbstractTableWidgetExecutor<XNode> {
             return widgetCache.getData();
         }
         JSONObject jo = getCubeNode().toJSONObject(rowDimension, colDimension, widget.getTargetsKey(), widget.showColumnTotal());
-        PageIteratorGroup pg = session.getPageIteratorGroup(true, widget.getWidgetId());
-        NodeDimensionIterator rowIter = pg.getRowIterator().createClonedIterator();
-        rowIter.setRoot(null);
-        NodeDimensionIterator colIter = pg.getColumnIterator().createClonedIterator();
-        colIter.setRoot(null);
-        updateCache(key, new WidgetCache(jo, rowIter, colIter, widget.getPageSpinner()));
+        if (isUseWidgetDataCache()){
+            PageIteratorGroup pg = session.getPageIteratorGroup(true, widget.getWidgetId());
+            NodeDimensionIterator rowIter = pg.getRowIterator().createClonedIterator();
+            rowIter.setRoot(null);
+            NodeDimensionIterator colIter = pg.getColumnIterator().createClonedIterator();
+            colIter.setRoot(null);
+            updateCache(key, new WidgetCache(jo, rowIter, colIter, widget.getPageSpinner()));
+        }
         return jo;
     }
 

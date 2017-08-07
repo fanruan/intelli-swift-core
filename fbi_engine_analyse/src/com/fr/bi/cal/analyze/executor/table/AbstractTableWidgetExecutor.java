@@ -295,16 +295,19 @@ public abstract class AbstractTableWidgetExecutor<T> extends BIAbstractExecutor<
     }
 
     protected WidgetCache<JSONObject> getWidgetCache(WidgetCacheKey key){
-        if (!widget.useRealData() || !PerformancePlugManager.getInstance().isExtremeConcurrency()){
-            return null;
+        if (isUseWidgetDataCache()){
+            return WidgetDataCacheManager.getInstance().get(key);
         }
-        return WidgetDataCacheManager.getInstance().get(key);
+        return null;
     }
 
     protected void updateCache(WidgetCacheKey key, WidgetCache widgetCache){
-        if (PerformancePlugManager.getInstance().isExtremeConcurrency()){
-            WidgetDataCacheManager.getInstance().put(key, widgetCache);
-        }
+        WidgetDataCacheManager.getInstance().put(key, widgetCache);
+    }
+
+    //isRealData,并且配置文件开关开启的情况才计算缓存
+    protected boolean isUseWidgetDataCache(){
+        return widget.isRealData() && PerformancePlugManager.getInstance().isExtremeConcurrency();
     }
 
     protected PageIteratorGroup getPageIterator() {
