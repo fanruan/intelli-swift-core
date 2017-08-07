@@ -91,7 +91,7 @@ public class PerformancePlugManager implements PerformancePlugManagerInterface {
 
     private int maxNodeCount = Integer.MAX_VALUE;
 
-    public static Map<String, String> defaultMap = new HashMap<String, String>();
+    public Map<String, String> defaultMap = new HashMap<String, String>();
 
     private PerformancePlugManager() {
         init();
@@ -103,7 +103,7 @@ public class PerformancePlugManager implements PerformancePlugManagerInterface {
 
     private void init() {
         try {
-            saveDefaultConfig(this);
+            saveDefaultConfig();
             File newFile = new File(filePath + File.separator + ProjectConstants.RESOURCES_NAME + File.separator + NEW_FILE_NAME);
             if (newFile.exists()) {
                 if (oldFile.exists()) {
@@ -153,7 +153,6 @@ public class PerformancePlugManager implements PerformancePlugManagerInterface {
 
     /**
      * 先整理需要更新的数据，然后更新参数配置信息
-     *
      * @param resultMap
      * @return
      */
@@ -161,15 +160,14 @@ public class PerformancePlugManager implements PerformancePlugManagerInterface {
     public boolean updateParam(Map<String, String> resultMap) {
         try {
             Map<String, String> doUpdateMap = new HashMap<String, String>();
-            Map<String, String> runMap = getExtraParam("run");
-            Map<String, String> newMap = getExtraParam("new");
-            Map<String, String> deafultMap = PerformanceParamTools.convertParamKey(defaultMap);
+            Map<String, String> runMap = getExtraParam(RUNTIME_TYPE);
+            Map<String, String> newMap = getExtraParam(UPDATED_TYPE);
             resultMap = PerformanceParamTools.convertParamKey(resultMap);
             resultMap = config.beforeDoWrite(runMap, newMap, resultMap);
             Iterator<String> it = resultMap.keySet().iterator();
             while (it.hasNext()) {
                 String paramKey = it.next();
-                String defaultValue = deafultMap.get(paramKey);
+                String defaultValue = defaultMap.get(paramKey);
                 String newValue = resultMap.get(paramKey);
                 if (!defaultValue.equals(newValue)) {
                     doUpdateMap.put(paramKey, newValue);
@@ -189,9 +187,8 @@ public class PerformancePlugManager implements PerformancePlugManagerInterface {
      * @return
      */
     @Override
-    public void saveDefaultConfig(Object obj) {
-        Field[] fields = obj.getClass().getDeclaredFields();
-
+    public void saveDefaultConfig() {
+        Field[] fields = this.getClass().getDeclaredFields();
         String fieldName;
         String fieldValue;
         for (Field field : fields) {
@@ -199,12 +196,16 @@ public class PerformancePlugManager implements PerformancePlugManagerInterface {
             try {
                 //属性名
                 fieldName = field.getName();
-                fieldValue = String.valueOf(field.get(obj));
+                Object tempObj = field.get(this);
+                if (!(tempObj instanceof String) && !((tempObj instanceof Number)) && !((tempObj instanceof Boolean))) {
+                    continue;
+                }
+                fieldValue = String.valueOf(field.get(this));
                 defaultMap.put(fieldName ,fieldValue);
             } catch (IllegalAccessException e) {
                 BILoggerFactory.getLogger().error(e.getMessage() ,e);
             }
-    }
+        }
     }
 
     /**
