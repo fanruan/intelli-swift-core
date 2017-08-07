@@ -168,18 +168,21 @@ public class DBConstant {
         public static final int IMMEDIATE = 0x1;
         public static final int SET = 0x2;
     }
+
     public static final class SINGLE_TABLE_UPDATE_FREQUENCY {
         public static final int ONCE = 0x1;
         public static final int REPEAT = 0x2;
         public static final int SET = 0x3;
         public static final int FORMULA = 0x4;
     }
+
     public static final class UPDATE_FREQUENCY_REPEAT {
         public static final int MINUTE = 0x1;
         public static final int HOUR = 0x2;
         public static final int DAY = 0x3;
         public static final int WEEK = 0x4;
     }
+
     public static final class SINGLE_TABLE_UPDATE_END_TIME {
         public static final int ONCE = 0x1;
         public static final int UNLIMITED = 0x2;
@@ -194,4 +197,36 @@ public class DBConstant {
         public static final int FAIL = 0x4;
     }
 
+    public enum BusinessPackageType {
+        FINE_INDEX(1),
+        FINE_DIRECT(2);
+
+        private int type;
+
+        BusinessPackageType(int type) {
+            this.type = type;
+        }
+
+        public int getType() {
+            return this.type;
+        }
+
+        @Override
+        public String toString() {
+            return String.valueOf(this.type);
+        }
+
+        public static BusinessPackageType parse(int type){
+            for(BusinessPackageType packageType : BusinessPackageType.values()){
+                if(packageType.type == type){
+                    return packageType;
+                }
+            }
+            return BusinessPackageType.FINE_INDEX;
+        }
+    }
+
+    public static final class TIMER_TASK_TYPE {
+        public static final String CUBE_TASK = "CUBE_TASK";
+    }
 }
