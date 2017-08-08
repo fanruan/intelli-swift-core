@@ -21,7 +21,6 @@ import com.fr.bi.conf.report.style.DetailChartSetting;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.conf.report.widget.field.target.BITarget;
 import com.fr.bi.field.target.target.BISummaryTarget;
-import com.fr.bi.manager.PerformancePlugManager;
 import com.fr.bi.report.key.TargetGettingKey;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.general.ComparatorUtils;
@@ -307,7 +306,7 @@ public abstract class AbstractTableWidgetExecutor<T> extends BIAbstractExecutor<
 
     //isRealData,并且配置文件开关开启的情况才计算缓存
     protected boolean isUseWidgetDataCache(){
-        return widget.isRealData() && PerformancePlugManager.getInstance().isExtremeConcurrency();
+        return false;
     }
 
     protected PageIteratorGroup getPageIterator() {

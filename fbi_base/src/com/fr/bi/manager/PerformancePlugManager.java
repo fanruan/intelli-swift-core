@@ -68,6 +68,7 @@ public class PerformancePlugManager implements PerformancePlugManagerInterface {
 
     private boolean unmapReader = false;
     private boolean isForceWriter = false;
+    private boolean useSingleReader = false;
 
     //cube单个文件的最大的size
     private long maxCubeFileSize = 8;
@@ -119,6 +120,7 @@ public class PerformancePlugManager implements PerformancePlugManagerInterface {
             cubeReaderReleaseSleepTime = getLong(PERFORMANCE + ".cubeReaderReleaseSleepTime", cubeReaderReleaseSleepTime);
             isDirectGenerating = getBoolean(PERFORMANCE + ".isDirectGenerating", isDirectGenerating);
             isForceWriter = getBoolean(PERFORMANCE + ".isForceWriter", isForceWriter);
+            useSingleReader = getBoolean(PERFORMANCE + ".useSingleReader", useSingleReader);
             maxCubeFileSize = getLong(PERFORMANCE + ".maxCubeFileSize", maxCubeFileSize);
             maxStructureSize = getInt(LIMIT + ".maxStructureSize", maxStructureSize);
             maxSPADetailSize = getInt(LIMIT + ".maxSPADetailSize", maxSPADetailSize);
@@ -449,6 +451,11 @@ public class PerformancePlugManager implements PerformancePlugManagerInterface {
     @Override
     public boolean isForceWriter() {
         return isForceWriter;
+    }
+
+    @Override
+    public boolean isUseSingleReader() {
+        return useSingleReader;
     }
 
 

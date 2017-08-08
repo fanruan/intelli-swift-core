@@ -73,11 +73,6 @@ public class NoneDimensionGroup implements Release {
     }
 
 
-    public static NoneDimensionGroup createDimensionGroup(BusinessTable[] metrics, List<TargetAndKey>[] summaryLists, int sumLength, ICubeTableService[] tis, GroupValueIndex[] gvis, ICubeDataLoader loader) {
-
-        return new NoneDimensionGroup(metrics, summaryLists, sumLength, tis, gvis, loader);
-    }
-
     public static NoneDimensionGroup createDimensionGroup(BusinessTable[] metrics, List<TargetAndKey>[] summaryLists, int sumLength, ICubeTableService[] tis, MetricMergeResult result, ICubeDataLoader loader) {
 
         return new NoneDimensionGroup(metrics, summaryLists, sumLength, tis, result.getGvis(), loader, result);

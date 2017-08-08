@@ -1,6 +1,7 @@
 package com.fr.bi.cal.generate;
 
 import com.finebi.cube.ICubeConfiguration;
+import com.finebi.cube.api.UserAnalysisCubeDataLoaderCreator;
 import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.conf.BICubeConfiguration;
 import com.finebi.cube.conf.BICubeConfigureCenter;
@@ -173,6 +174,9 @@ public class BuildCubeTask implements CubeTask {
                     BICubeConfigureCenter.getDataSourceManager().persistData(biUser.getUserId());
                     BIModuleUtils.clearCacheAfterBuildCubeTask(biUser.getUserId());
                     BILoggerFactory.getLogger().info("Replace successful! Cost :" + DateUtils.timeCostFrom(start));
+                    if (PerformancePlugManager.getInstance().isUseSingleReader()){
+                        releaseCube();
+                    }
                 } else {
                     message = "FineIndex replace failed ,the FineIndex files will not be replaced ";
                     BILoggerFactory.getLogger().error(message);
@@ -193,6 +197,15 @@ public class BuildCubeTask implements CubeTask {
         } catch (Exception e) {
             BILoggerFactory.getLogger().error(e.getMessage(), e);
         } finally {
+        }
+    }
+
+    private void releaseCube() {
+        try {
+            UserAnalysisCubeDataLoaderCreator.getInstance().clear(biUser.getUserId());
+            BICubeDiskPrimitiveDiscovery.getInstance().clearResourceMap();
+        } finally {
+            BICubeDiskPrimitiveDiscovery.getInstance().finishRelease();
         }
     }
 
