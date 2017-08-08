@@ -615,7 +615,7 @@ public class TableWidget extends SummaryWidget implements SclCalculator {
 //        Map<String, ITableCellFormatOperation> operationMap = getITableCellFormatOperationMap();
         Map<String, ITableCellFormatOperation> operationMap = createOperationMap(widgetConf);
         IExcelDataBuilder builder = null;
-        switch (this.tableType) {
+        switch (widgetConf.getType()) {
             case BIReportConstant.TABLE_WIDGET.CROSS_TYPE:
                 builder = new SummaryCrossTableDataBuilder(viewMap, data, widgetSettings);
                 break;

@@ -74,7 +74,7 @@ public abstract class TableAbstractDataBuilder implements IExcelDataBuilder {
         }
         item.setChildren(children);
         //汇总
-        validArray(data.getJSONArray("s"));
+        validArray(data.optJSONArray("s"));
 //        boolean isArrayAvailable = data.has("s") && validArray(data.getJSONArray("s"));
         boolean isArrayAvailable = data.has("s");
         if (showRowTotal && isArrayAvailable) {
@@ -114,15 +114,14 @@ public abstract class TableAbstractDataBuilder implements IExcelDataBuilder {
         items.add(item);
     }
 
-    private boolean validArray(JSONArray array) throws JSONException {
-        for (int i = 0; i < array.length(); i++) {
-            try {
-                array.get(i);
-            } catch (JSONException e) {
-                array.put(i, "");
+    private void validArray(JSONArray array) throws JSONException {
+        if (null!=array) {
+            for (int i = 0; i < array.length(); i++) {
+                if (null==array.get(i)){
+                    array.put(i, "");
+                }
             }
         }
-        return true;
     }
 
     protected void createTableHeader() throws Exception {
