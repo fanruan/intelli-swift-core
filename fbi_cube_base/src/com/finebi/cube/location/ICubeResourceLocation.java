@@ -1,5 +1,7 @@
 package com.finebi.cube.location;
 
+import com.finebi.common.name.Name;
+
 import java.net.URI;
 import java.net.URISyntaxException;
 
@@ -24,6 +26,7 @@ public interface ICubeResourceLocation {
     String getAbsolutePath();
 
     ICubeResourceLocation buildChildLocation(String childPath) throws URISyntaxException;
+    ICubeResourceLocation getRealLocation() throws URISyntaxException;
 
     String getFragment();
 

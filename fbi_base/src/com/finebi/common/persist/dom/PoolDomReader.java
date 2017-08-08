@@ -2,6 +2,11 @@ package com.finebi.common.persist.dom;
 
 import com.finebi.common.persist.PoolPersistentReader;
 import com.finebi.common.resource.ResourcePool;
+import com.fr.bi.stable.utils.program.BINonValueUtils;
+import org.w3c.dom.Document;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
 
 /**
  * This class created on 2017/4/11.
@@ -11,11 +16,36 @@ import com.finebi.common.resource.ResourcePool;
  */
 public abstract class PoolDomReader<Pool extends ResourcePool> implements PoolPersistentReader<Pool> {
     protected String targetPath;
+    protected Document doc;
+    protected DomSpecifiedReader<Pool> reader;
+    protected DomReaderFactory<Pool> factory = new DomReaderFactory<Pool>();
+    protected String xmlPatternVersion;
 
     public PoolDomReader(String targetPath) {
         this.targetPath = targetPath;
+        try {
+            DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder dbBuilder = dbFactory.newDocumentBuilder();
+            doc = dbBuilder.parse(targetPath);
+            xmlPatternVersion = readVersion();
+        } catch (Exception e) {
+            BINonValueUtils.beyondControl(e.getMessage(), e);
+        }
     }
 
+    public void register(String xmlPatternVersion, DomSpecifiedReader<Pool> reader) {
+        factory.register(xmlPatternVersion, reader);
+    }
+
+    private String readVersion() {
+        return doc.getDocumentElement().getAttribute(DomConstants.PERSISTENT_VERSION);
+    }
+
+    @Override
+    public Pool read() {
+        reader = factory.getDomReader(xmlPatternVersion);
+        return reader.read(doc);
+    }
     //    @Override
 //    public ResourcePool read() {
 //        DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();

@@ -33,21 +33,21 @@ public class BIByteArrayNIOWriterBuilder extends BINIOWriterBuilder<ICubeByteArr
             /**
              * 获得内容部分的Byte类型Writer
              */
-            ICubeResourceLocation contentLocation = location.copy();
+            ICubeResourceLocation contentLocation = location.copy().getRealLocation();
             contentLocation.setWriterSourceLocation();
             contentLocation.setByteType();
             ICubeByteWriter contentWriter = (ICubeByteWriter) cubeDiscovery.getCubeWriter(contentLocation);
             /**
              * 获得位置部分的Long类型Writer
              */
-            ICubeResourceLocation startPositionPath = location.generateWithSuffix(BICubeFileConstant.arrayPositionSuffix);
+            ICubeResourceLocation startPositionPath = location.generateWithSuffix(BICubeFileConstant.arrayPositionSuffix).getRealLocation();
             startPositionPath.setWriterSourceLocation();
             startPositionPath.setLongType();
             ICubeLongWriter positionWriter = (ICubeLongWriter) cubeDiscovery.getCubeWriter(startPositionPath);
             /**
              * 获得长度部分的Integer类型Writer
              */
-            ICubeResourceLocation lengthPath = location.generateWithSuffix(BICubeFileConstant.arrayLengthSuffix);
+            ICubeResourceLocation lengthPath = location.generateWithSuffix(BICubeFileConstant.arrayLengthSuffix).getRealLocation();
             lengthPath.setWriterSourceLocation();
             lengthPath.setIntegerType();
             ICubeIntegerWriter lengthWriter = (ICubeIntegerWriter) cubeDiscovery.getCubeWriter(lengthPath);
