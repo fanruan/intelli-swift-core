@@ -3,6 +3,8 @@
  */
 package com.fr.bi.etl.analysis.tableobj;
 
+import com.finebi.common.name.Name;
+import com.finebi.common.name.NameImp;
 import com.finebi.cube.ICubeConfiguration;
 import com.finebi.cube.adapter.BICubeTableAdapter;
 import com.finebi.cube.api.ICubeTableService;
@@ -11,6 +13,9 @@ import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.data.ICubeResourceDiscovery;
 import com.finebi.cube.location.BICubeLocation;
 import com.finebi.cube.location.BICubeResourceRetrieval;
+import com.finebi.cube.location.ICubeResourceLocation;
+import com.finebi.cube.location.manager.BILocationProvider;
+import com.finebi.cube.location.manager.ILocationConverter;
 import com.finebi.cube.structure.BICube;
 import com.fr.bi.common.factory.BIFactoryHelper;
 import com.fr.bi.common.inter.Delete;
@@ -48,12 +53,23 @@ public class ETLTableObject implements Release, Delete {
             @Override
             public URI getRootURI() {
                 try {
-                    File file = new File(new BICubeLocation(BIConfigurePathUtils.createUserETLTableBasePath(source.fetchObjectCore().getID().getIdentityValue()), id).getAbsolutePath());
+                    File file = new File(new BICubeLocation(BIConfigurePathUtils.createUserETLTableBasePath(source.fetchObjectCore().getID().getIdentityValue()), id, new ILocationConverter() {
+                        @Override
+                        public ICubeResourceLocation getRealLocation(String path, String child) throws URISyntaxException {
+                            return new BICubeLocation(path, child, this);
+                        }
+                    }).getAbsolutePath());
                     return URI.create(file.toURI().getRawPath());
                 } catch (URISyntaxException e) {
                     throw BINonValueUtils.beyondControl(e);
                 }
             }
+
+            @Override
+            public BILocationProvider getLocationProvider() {
+                return null;
+            }
+
         }), BIFactoryHelper.getObject(ICubeResourceDiscovery.class)), source);
     }
 

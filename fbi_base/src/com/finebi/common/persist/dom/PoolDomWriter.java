@@ -5,6 +5,7 @@ import com.finebi.common.resource.ResourcePool;
 import com.finebi.cube.common.log.BILogger;
 import com.finebi.cube.common.log.BILoggerFactory;
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -35,17 +36,25 @@ public abstract class PoolDomWriter<Pool extends ResourcePool> implements PoolPe
         try {
             DocumentBuilder documentBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
             document = documentBuilder.newDocument();
-            writeFile(buildDocument(pool));
+            Element documentElement = document.createElement("Pool");
+            document.appendChild(documentElement);
+            writeVersion(document);
+            writeFile(buildDocument(pool,documentElement));
+            renameFile();
         } catch (Exception e) {
             LOGGER.error(e.getMessage(), e);
         }
     }
 
-    public abstract Document buildDocument(Pool pool);
+    private void writeVersion(Document document) {
+        document.getDocumentElement().setAttribute(DomConstants.PERSISTENT_VERSION, DomConstants.CURRENT_VERSION);
+    }
+
+    public abstract Document buildDocument(Pool pool, Element documentElement);
 
     protected void writeFile(Document document) {
         try {
-            File file = new File(targetPath);
+            File file = new File(targetPath + ".tmp");
             Transformer transformer = TransformerFactory.newInstance().newTransformer();
             DOMSource source = new DOMSource(document);
             StreamResult result = new StreamResult(file);
@@ -56,5 +65,13 @@ public abstract class PoolDomWriter<Pool extends ResourcePool> implements PoolPe
             LOGGER.error(e.getMessage(), e);
 
         }
+    }
+
+    private void renameFile(){
+        File dest = new File(targetPath);
+        if(dest.exists()){
+            dest.delete();
+        }
+        new File(targetPath+".tmp").renameTo(dest);
     }
 }

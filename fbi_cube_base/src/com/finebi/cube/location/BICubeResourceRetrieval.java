@@ -1,8 +1,10 @@
 package com.finebi.cube.location;
 
+import com.finebi.common.name.Name;
 import com.finebi.cube.ICubeConfiguration;
 import com.finebi.cube.exception.BICubeResourceAbsentException;
 import com.finebi.cube.exception.BICubeResourceDuplicateException;
+import com.finebi.cube.location.manager.BILocationProvider;
 import com.finebi.cube.structure.BICubeTablePath;
 import com.finebi.cube.structure.ITableKey;
 import com.finebi.cube.structure.column.BIColumnKey;
@@ -23,18 +25,20 @@ import java.util.Map;
  */
 public class BICubeResourceRetrieval implements ICubeResourceRetrievalService {
     private ICubeConfiguration cubeConfiguration;
-    private Map<String, ICubeResourceLocation> locationMap;
+    private Map<String, ICubeResourceLocation> logicLocationMap;
+    private BILocationProvider locationProxy;
 
     public BICubeResourceRetrieval(ICubeConfiguration cubeConfiguration) {
         this.cubeConfiguration = cubeConfiguration;
-        locationMap = new HashMap<String, ICubeResourceLocation>();
+        logicLocationMap = new HashMap<String, ICubeResourceLocation>();
+        locationProxy = cubeConfiguration.getLocationProvider();
     }
 
     @Override
     public ICubeResourceLocation retrieveResource(String sourceID) throws BICubeResourceAbsentException {
-        synchronized (locationMap) {
-            if (locationMap.containsKey(sourceID)) {
-                return locationMap.get(sourceID);
+        synchronized (logicLocationMap) {
+            if (logicLocationMap.containsKey(sourceID)) {
+                return logicLocationMap.get(sourceID);
             } else {
                 throw new BICubeResourceAbsentException();
             }
@@ -43,7 +47,7 @@ public class BICubeResourceRetrieval implements ICubeResourceRetrievalService {
 
     @Override
     public ICubeResourceLocation retrieveRootResource(String sourceID) throws BICubeResourceAbsentException {
-        synchronized (locationMap) {
+        synchronized (logicLocationMap) {
             try {
                 return retrieveResource(sourceID);
             } catch (BICubeResourceAbsentException ignore) {
@@ -64,13 +68,13 @@ public class BICubeResourceRetrieval implements ICubeResourceRetrievalService {
     }
 
     private ICubeResourceLocation buildLocation(String rootURI, String child) throws URISyntaxException {
-        return new BICubeLocation(rootURI, child);
+        return new BICubeLocation(rootURI, child, locationProxy);
     }
 
     @Override
     public ICubeResourceLocation retrieveResource(ITableKey table) throws BICubeResourceAbsentException {
         String tableSourceID = calculateTableSourceID(table);
-        synchronized (locationMap) {
+        synchronized (logicLocationMap) {
             try {
                 return retrieveResource(tableSourceID);
             } catch (BICubeResourceAbsentException ignore) {
@@ -111,7 +115,7 @@ public class BICubeResourceRetrieval implements ICubeResourceRetrievalService {
     void checkParentLocation(ITableKey table, BIColumnKey field) {
         checkParentLocation(table);
         String fieldSourceID = calculateFieldSourceID(table, field);
-        if (!locationMap.containsKey(fieldSourceID)) {
+        if (!logicLocationMap.containsKey(fieldSourceID)) {
             try {
                 retrieveResource(table, field);
             } catch (Exception e) {
@@ -122,7 +126,7 @@ public class BICubeResourceRetrieval implements ICubeResourceRetrievalService {
 
     void checkParentLocation(ITableKey table) {
         String tableSourceID = calculateTableSourceID(table);
-        if (!locationMap.containsKey(tableSourceID)) {
+        if (!logicLocationMap.containsKey(tableSourceID)) {
             try {
                 retrieveResource(table);
             } catch (Exception e) {
@@ -142,7 +146,7 @@ public class BICubeResourceRetrieval implements ICubeResourceRetrievalService {
     @Override
     public ICubeResourceLocation retrieveResource(ITableKey table, BIColumnKey field) throws BICubeResourceAbsentException, URISyntaxException {
         String sourceID = calculateFieldSourceID(table, field);
-        synchronized (locationMap) {
+        synchronized (logicLocationMap) {
             try {
                 return retrieveResource(sourceID);
             } catch (BICubeResourceAbsentException ignore) {
@@ -170,7 +174,7 @@ public class BICubeResourceRetrieval implements ICubeResourceRetrievalService {
     @Override
     public ICubeResourceLocation retrieveResource(ITableKey table, BIColumnKey field, BICubeTablePath tableRelationPath) throws BICubeResourceAbsentException, URISyntaxException {
         String sourceID = calculateFieldRelationSourceID(table, field, tableRelationPath);
-        synchronized (locationMap) {
+        synchronized (logicLocationMap) {
             try {
                 return retrieveResource(sourceID);
             } catch (BICubeResourceAbsentException ignore) {
@@ -201,7 +205,7 @@ public class BICubeResourceRetrieval implements ICubeResourceRetrievalService {
     public ICubeResourceLocation retrieveResource(ITableKey tableSource, BICubeTablePath tableRelationPath) throws BICubeResourceAbsentException, BITablePathEmptyException {
 
         String sourceID = calculateTableRelationSourceID(tableSource, tableRelationPath);
-        synchronized (locationMap) {
+        synchronized (logicLocationMap) {
             try {
                 return retrieveResource(sourceID);
             } catch (BICubeResourceAbsentException ignore) {
@@ -232,9 +236,9 @@ public class BICubeResourceRetrieval implements ICubeResourceRetrievalService {
     }
 
     protected void registerResource(String sourceID, ICubeResourceLocation resourceLocation) throws BICubeResourceDuplicateException {
-        synchronized (locationMap) {
-            if (!locationMap.containsKey(sourceID)) {
-                locationMap.put(sourceID, resourceLocation);
+        synchronized (logicLocationMap) {
+            if (!logicLocationMap.containsKey(sourceID)) {
+                logicLocationMap.put(sourceID, resourceLocation);
             } else {
                 throw new BICubeResourceDuplicateException();
             }

@@ -13,6 +13,7 @@ import com.fr.bi.stable.utils.program.BINonValueUtils;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -170,6 +171,16 @@ public class BICubeDiskPrimitiveDiscovery implements ICubePrimitiveResourceDisco
             } catch (Exception e) {
                 BILoggerFactory.getLogger().error(e.getMessage(), e);
             } finally {
+            }
+        }
+    }
+    public void moveDirtyNIOResourceManager(Set<String> filePaths) {
+
+        for (String file : filePaths){
+            if(fileResourceMap.containsKey(file)) {
+                fileResourceMap.get(file).inValidReader();
+                fileResourceMap.get(file).forceRelease();
+                fileResourceMap.remove(file);
             }
         }
     }

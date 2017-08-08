@@ -203,6 +203,11 @@ public class BIFineCubeField implements FineCubeField {
     }
 
     @Override
+    public long version() {
+        return 0;
+    }
+
+    @Override
     public boolean equals(Object o) {
         return o instanceof BIFineCubeField
                 && ComparatorUtils.equals(fieldName, ((BIFineCubeField) o).fieldName)

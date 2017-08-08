@@ -1,7 +1,6 @@
 package com.finebi.integration.cube.custom.stuff;
 
 import com.finebi.cube.impl.conf.CubeBuildCustomStuff;
-import com.finebi.cube.utils.BIDataStructTranUtils;
 import com.finebi.integration.cube.custom.stuff.creater.TableSourceCreater;
 import com.finebi.integration.cube.custom.stuff.creater.WholeCreater;
 import com.fr.bi.conf.manager.update.source.UpdateSettingSource;

@@ -14,7 +14,6 @@ import com.finebi.cube.tools.BIMemoryDataSourceFactory;
 import com.finebi.cube.tools.BITableSourceRelationPathTestTool;
 import com.finebi.cube.tools.BITableSourceTestTool;
 import com.finebi.cube.tools.DBFieldTestTool;
-import com.finebi.cube.utils.BICubePathUtils;
 import com.fr.bi.base.ValueConverterFactory;
 import com.fr.bi.common.factory.BIFactoryHelper;
 import com.fr.bi.stable.constant.DateConstant;

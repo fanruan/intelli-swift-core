@@ -7,6 +7,7 @@ import com.finebi.cube.conf.utils.BILogHelper;
 import com.finebi.cube.impl.pubsub.BIProcessor;
 import com.finebi.cube.impl.pubsub.BIProcessorThreadManager;
 import com.finebi.cube.location.BICubeLocation;
+import com.finebi.cube.location.ICubeResourceLocation;
 import com.finebi.cube.message.IMessage;
 import com.finebi.cube.structure.BITableKey;
 import com.finebi.cube.structure.Cube;
@@ -123,9 +124,9 @@ public abstract class BISourceDataTransport extends BIProcessor {
         ICubeConfiguration tempConf = BICubeConfiguration.getTempConf(String.valueOf(UserControl.getInstance().getSuperManagerID()));
         ICubeConfiguration advancedConf = BICubeConfiguration.getConf(String.valueOf(UserControl.getInstance().getSuperManagerID()));
         try {
-            BICubeLocation from = new BICubeLocation(advancedConf.getRootURI().getPath().toString(), tableSource.getSourceID());
-            BICubeLocation to = new BICubeLocation(tempConf.getRootURI().getPath().toString(), tableSource.getSourceID());
-            BIFileUtils.copyFolder(new File(from.getAbsolutePath()), new File(to.getAbsolutePath()));
+            ICubeResourceLocation from = new BICubeLocation(advancedConf.getRootURI().getPath().toString(), tableSource.getSourceID(), advancedConf.getLocationProvider());
+            ICubeResourceLocation to = new BICubeLocation(tempConf.getRootURI().getPath().toString(), tableSource.getSourceID(), advancedConf.getLocationProvider());
+            BIFileUtils.copyFolder(new File(from.getRealLocation().getAbsolutePath()), new File(to.getRealLocation().getAbsolutePath()));
         } catch (IOException e) {
             BILoggerFactory.getLogger(BISourceDataTransport.class).error(e.getMessage(), e);
         } catch (URISyntaxException e) {

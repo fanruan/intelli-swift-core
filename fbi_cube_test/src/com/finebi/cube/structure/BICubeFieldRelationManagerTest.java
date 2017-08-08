@@ -10,8 +10,6 @@ import com.finebi.cube.tools.BITableSourceRelationPathTestTool;
 import com.finebi.cube.tools.BITableSourceTestTool;
 import com.finebi.cube.tools.DBFieldTestTool;
 import com.finebi.cube.tools.GroupValueIndexTestTool;
-import com.finebi.cube.utils.BICubePathUtils;
-import com.finebi.cube.utils.BITableKeyUtils;
 import com.fr.bi.common.factory.BIFactoryHelper;
 import com.finebi.cube.common.log.BILoggerFactory;
 import junit.framework.TestCase;

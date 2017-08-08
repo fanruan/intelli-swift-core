@@ -9,7 +9,7 @@ import java.util.Set;
  * @author Connery
  * @since Advanced FineBI Analysis 1.0
  */
-public interface ResourcePool<Name extends ResourceName, Item extends ResourceItem> {
+public interface ResourcePool<Name extends ResourceName, Item extends ResourceItem> extends ResourceItem {
     Item getResourceItem(Name name);
 
     Item getResourceItem(String name);
@@ -24,7 +24,11 @@ public interface ResourcePool<Name extends ResourceName, Item extends ResourceIt
 
     boolean contain(Name name);
 
+    boolean contain(Item item);
+
     boolean contain(String name);
+
+    boolean isEmpty();
 
     Set<Name> getAllNames();
 

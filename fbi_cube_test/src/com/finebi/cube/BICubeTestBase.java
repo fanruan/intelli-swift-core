@@ -7,7 +7,6 @@ import com.finebi.cube.structure.BICube;
 import com.finebi.cube.structure.table.BICubeTableEntity;
 import com.finebi.cube.tools.BICubeConfigurationTool;
 import com.finebi.cube.tools.BITableSourceTestTool;
-import com.finebi.cube.utils.BITableKeyUtils;
 import com.fr.bi.common.factory.BIFactoryHelper;
 import junit.framework.TestCase;
 
