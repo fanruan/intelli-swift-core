@@ -3,6 +3,8 @@
  */
 package com.fr.bi.etl.analysis.manager;
 
+import com.finebi.common.name.Name;
+import com.finebi.common.name.NameImp;
 import com.finebi.cube.ICubeConfiguration;
 import com.finebi.cube.api.ICubeTableService;
 import com.finebi.cube.common.log.BILogger;
@@ -11,6 +13,9 @@ import com.finebi.cube.exception.BICubeColumnAbsentException;
 import com.finebi.cube.gen.oper.BIFieldIndexGenerator;
 import com.finebi.cube.location.BICubeLocation;
 import com.finebi.cube.location.BICubeResourceRetrieval;
+import com.finebi.cube.location.ICubeResourceLocation;
+import com.finebi.cube.location.manager.BILocationProvider;
+import com.finebi.cube.location.manager.ILocationConverter;
 import com.finebi.cube.structure.BICube;
 import com.finebi.cube.structure.CubeTableEntityService;
 import com.finebi.cube.structure.column.BIColumnKey;
@@ -82,11 +87,22 @@ public class UserETLUpdateTask implements CubeTask, AV {
             @Override
             public URI getRootURI() {
                 try {
-                    File file = new File(new BICubeLocation(BIConfigurePathUtils.createUserETLTableBasePath(UserETLUpdateTask.this.source.fetchObjectCore().getID().getIdentityValue()), path).getAbsolutePath());
+                    File file = new File(new BICubeLocation(BIConfigurePathUtils.createUserETLTableBasePath(UserETLUpdateTask.this.source.fetchObjectCore().getID().getIdentityValue()),
+                            path, new ILocationConverter() {
+                        @Override
+                        public ICubeResourceLocation getRealLocation(String path, String child) throws URISyntaxException {
+                            return new BICubeLocation(path, child, this);
+                        }
+                    }).getAbsolutePath());
                     return URI.create(file.toURI().getRawPath());
                 } catch (URISyntaxException e) {
                     throw BINonValueUtils.beyondControl(e);
                 }
+            }
+
+            @Override
+            public BILocationProvider getLocationProvider() {
+                return null;
             }
         }), BIFactoryHelper.getObject(ICubeResourceDiscovery.class));
     }

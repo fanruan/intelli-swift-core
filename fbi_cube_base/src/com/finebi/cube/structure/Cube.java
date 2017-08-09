@@ -35,7 +35,7 @@ import java.io.Serializable;
  * @see ICubeResourceRetrievalService 数据位置检索
  * @since 4.0
  */
-public interface Cube extends ICubeVersion, Serializable {
+public interface Cube extends ICubeVersion, Serializable, Cloneable {
     /**
      * 获得表的操作接口
      *

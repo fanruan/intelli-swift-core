@@ -1,8 +1,10 @@
 package com.finebi.common.resource;
 
+import com.finebi.common.name.BlankName;
 import com.finebi.common.name.Name;
 import com.finebi.common.name.NameImp;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
+import com.fr.bi.stable.utils.program.BIStringUtils;
 
 /**
  * This class created on 2017/4/11.
@@ -11,15 +13,30 @@ import com.fr.bi.stable.utils.program.BINonValueUtils;
  * @since Advanced FineBI Analysis 1.0
  */
 public class ResourceNameImpl implements ResourceName {
+    private static Name BLANK_TYPE = new BlankName();
     private Name name;
+    private Name type;
 
-    public ResourceNameImpl(Name name) {
+    public ResourceNameImpl(Name name, Name type) {
         BINonValueUtils.checkNull(name);
         this.name = name;
+        this.type = type;
+    }
+
+    public ResourceNameImpl(Name name, String type){
+        this(name, new NameImp(type));
+    }
+
+    public ResourceNameImpl(String name, String type){
+        this(new NameImp(name), new NameImp(type));
     }
 
     public ResourceNameImpl(String name) {
-        this(new NameImp(name));
+        this(new NameImp(name), BLANK_TYPE);
+    }
+
+    public ResourceNameImpl(Name name){
+        this(name, BLANK_TYPE);
     }
 
     @Override
@@ -53,7 +70,12 @@ public class ResourceNameImpl implements ResourceName {
 
     @Override
     public String toString() {
-
-        return name.toString();
+        StringBuffer sb = new StringBuffer("[");
+        if (type == BLANK_TYPE) {
+            sb.append(name.toString()).append("]");
+        } else {
+            sb.append(BIStringUtils.append(type.toString(), ":", name.toString())).append("]");
+        }
+        return sb.toString();
     }
 }

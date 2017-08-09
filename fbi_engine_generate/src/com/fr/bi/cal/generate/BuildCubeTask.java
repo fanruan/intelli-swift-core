@@ -20,6 +20,7 @@ import com.finebi.cube.impl.message.BIMessageTopic;
 import com.finebi.cube.impl.pubsub.BIProcessorThreadManager;
 import com.finebi.cube.location.BICubeResourceRetrieval;
 import com.finebi.cube.location.ICubeResourceRetrievalService;
+import com.finebi.cube.location.manager.BILocationManager;
 import com.finebi.cube.message.IMessage;
 import com.finebi.cube.message.IMessageTopic;
 import com.finebi.cube.relation.BICubeGenerateRelation;
@@ -172,6 +173,7 @@ public class BuildCubeTask implements CubeTask {
                     BICubeConfigureCenter.getPackageManager().persistData(biUser.getUserId());
                     BICubeConfigureCenter.getDataSourceManager().persistData(biUser.getUserId());
                     BIModuleUtils.clearAnalysisETLCache(biUser.getUserId());
+                    BILocationManager.getInstance().persistResourceAsync();
                     BILoggerFactory.getLogger().info("Replace successful! Cost :" + DateUtils.timeCostFrom(start));
                 } else {
                     message = "FineIndex replace failed ,the FineIndex files will not be replaced ";
@@ -235,19 +237,26 @@ public class BuildCubeTask implements CubeTask {
                     Thread.sleep(100);
                 }
                 BICubeDiskPrimitiveDiscovery.getInstance().forceRelease();
-                replaceSuccess = cubeBuildStuff.replaceOldCubes();
+//                replaceSuccess = cubeBuildStuff.replaceOldCubes();
+
+                Set<String> dirtyFiles = BILocationManager.getInstance().getAccessLocationProvider()
+                        .updateLocationPool(cubeConfiguration.getLocationProvider().getAccessLocationPool());
+                // TODO: 2017/7/6 删除旧的文件
+                BILocationManager.getInstance().removeOldFiles(dirtyFiles);
+
                 for (String location : BICubeDiskPrimitiveDiscovery.getInstance().getUnReleasedLocation()) {
                     BILoggerFactory.getLogger().error("error: the filePath is : " + location);
                 }
-                CubeReadingTableIndexLoader.envChanged();
-                if (!replaceSuccess) {
-                    LOGGER.error("FineIndex replace failed after " + i + " times try!It will try again in 5s");
-                    Thread.sleep(5000);
-                } else {
-                    break;
-                }
+//                CubeReadingTableIndexLoader.envChanged();
+//                if (!replaceSuccess) {
+//                    LOGGER.error("FineIndex replace failed after " + i + " times try!It will try again in 5s");
+//                    Thread.sleep(5000);
+//                } else {
+//                    break;
+//                }
+                break;
             }
-            return replaceSuccess;
+            return true;
         } catch (Exception e) {
             String message = " FineIndex build failed ! caused by \n" + e.getMessage();
             LOGGER.error(message, e);

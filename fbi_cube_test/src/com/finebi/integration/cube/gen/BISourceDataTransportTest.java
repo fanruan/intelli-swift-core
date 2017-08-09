@@ -31,8 +31,6 @@ import com.finebi.cube.tools.BITableSourceTestTool;
 import com.finebi.cube.tools.DBFieldTestTool;
 import com.finebi.cube.tools.subset.BISourceDataNeverTransportTestTool;
 import com.finebi.cube.tools.subset.BISourceDataPartTransportTestTool;
-import com.finebi.cube.utils.BICubePathUtils;
-import com.finebi.cube.utils.BITableKeyUtils;
 import com.fr.bi.common.factory.BIFactoryHelper;
 import com.fr.bi.stable.data.db.BICubeFieldSource;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
