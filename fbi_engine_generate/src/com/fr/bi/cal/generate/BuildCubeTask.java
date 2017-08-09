@@ -174,9 +174,6 @@ public class BuildCubeTask implements CubeTask {
                     BICubeConfigureCenter.getDataSourceManager().persistData(biUser.getUserId());
                     BIModuleUtils.clearCacheAfterBuildCubeTask(biUser.getUserId());
                     BILoggerFactory.getLogger().info("Replace successful! Cost :" + DateUtils.timeCostFrom(start));
-                    if (PerformancePlugManager.getInstance().isUseSingleReader()){
-                        releaseCube();
-                    }
                 } else {
                     message = "FineIndex replace failed ,the FineIndex files will not be replaced ";
                     BILoggerFactory.getLogger().error(message);
@@ -200,13 +197,9 @@ public class BuildCubeTask implements CubeTask {
         }
     }
 
-    private void releaseCube() {
-        try {
-            UserAnalysisCubeDataLoaderCreator.getInstance().clear(biUser.getUserId());
-            BICubeDiskPrimitiveDiscovery.getInstance().clearResourceMap();
-        } finally {
-            BICubeDiskPrimitiveDiscovery.getInstance().finishRelease();
-        }
+    private void releaseCubeResource() {
+        UserAnalysisCubeDataLoaderCreator.getInstance().clear(biUser.getUserId());
+        BICubeDiskPrimitiveDiscovery.getInstance().clearResourceMap();
     }
 
     protected void checkTaskFinish() {
@@ -257,6 +250,9 @@ public class BuildCubeTask implements CubeTask {
                     LOGGER.error("FineIndex replace failed after " + i + " times try!It will try again in 5s");
                     Thread.sleep(5000);
                 } else {
+                    if (PerformancePlugManager.getInstance().isUseSingleReader()){
+                        releaseCubeResource();
+                    }
                     break;
                 }
             }
