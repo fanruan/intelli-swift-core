@@ -41,7 +41,7 @@ public abstract class BIBasicNIOReader extends BIAbstractBaseNIOReader {
         if (filePosition < 0) {
             throw BINonValueUtils.illegalArgument("The value of argument must be positive,but it's " + filePosition + " now");
         }
-        if (isValid && (!BICubeDiskPrimitiveDiscovery.getInstance().isReleasingResource())) {
+        if (isValid) {
             int index = (int) (filePosition >> getPageStep() >> NIOConstant.MAX_SINGLE_FILE_PART_SIZE);
             initBuffer(index);
             return index;
