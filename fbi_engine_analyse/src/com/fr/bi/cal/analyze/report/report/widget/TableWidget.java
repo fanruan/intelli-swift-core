@@ -96,6 +96,7 @@ public class TableWidget extends SummaryWidget implements SclCalculator {
     @BICoreField
     private DetailChartSetting settings = new DetailChartSetting();
 
+    @BICoreField
     protected Map<String, JSONArray> clicked = new HashMap<String, JSONArray>();
 
     protected Map<String, BIDimension> dimensionsIdMap = new HashMap<String, BIDimension>();
@@ -117,7 +118,7 @@ public class TableWidget extends SummaryWidget implements SclCalculator {
     public void setPageSpinner(int[] pageSpinner) {
         this.pageSpinner = pageSpinner;
     }
-
+    @BICoreField
     private TableWidget linkedWidget;
 
     @Override
