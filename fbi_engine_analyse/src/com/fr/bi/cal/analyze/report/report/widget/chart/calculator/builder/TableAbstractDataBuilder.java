@@ -115,9 +115,9 @@ public abstract class TableAbstractDataBuilder implements IExcelDataBuilder {
     }
 
     private void validArray(JSONArray array) throws JSONException {
-        if (null!=array) {
+        if (null != array) {
             for (int i = 0; i < array.length(); i++) {
-                if (null==array.opt(i)){
+                if (null    == array.opt(i)) {
                     array.put(i, StringUtils.EMPTY);
                 }
             }
