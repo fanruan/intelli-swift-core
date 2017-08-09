@@ -388,10 +388,19 @@ public class DetailWidget extends AbstractBIWidget implements SclCalculator {
                     }
                     ITableCellFormatOperation op;
                     switch (type) {
-
                         case BIReportConstant.TARGET_TYPE.NUMBER:
                         case BIReportConstant.TARGET_TYPE.COUNTER:
                         case BIReportConstant.TARGET_TYPE.FORMULA:
+                        case BIReportConstant.TARGET_TYPE.SUM_OF_ABOVE:
+                        case BIReportConstant.TARGET_TYPE.SUM_OF_ABOVE_IN_GROUP:
+                        case BIReportConstant.TARGET_TYPE.SUM_OF_ALL:
+                        case BIReportConstant.TARGET_TYPE.SUM_OF_ALL_IN_GROUP:
+                        case BIReportConstant.TARGET_TYPE.RANK:
+                        case BIReportConstant.TARGET_TYPE.RANK_IN_GROUP:
+                        case BIReportConstant.TARGET_TYPE.YEAR_ON_YEAR_RATE:
+                        case BIReportConstant.TARGET_TYPE.MONTH_ON_MONTH_RATE:
+                        case BIReportConstant.TARGET_TYPE.YEAR_ON_YEAR_VALUE:
+                        case BIReportConstant.TARGET_TYPE.MONTH_ON_MONTH_VALUE:
                             op = new BITableCellNumberFormatOperation(setting);
                             break;
                         case BIReportConstant.TARGET_TYPE.STRING:
