@@ -34,21 +34,23 @@ public class PartNodeSummarizing {
             Node child = node.getChild(i);
             sum(child);
             List<GroupUtils.SummaryCountCal> list = partNodeMap.get(new GroupUtils.NodeKey(node));
-            for (GroupUtils.SummaryCountCal cal: list) {
-                TargetAndKey targetAndKey = cal.getTargetAndKey();
-                Number value = node.getSummaryValue(targetAndKey.getTargetGettingKey());
-                if (value == null) {
-                    node.setSummaryValue(targetAndKey.getTargetGettingKey(), child.getSummaryValue(targetAndKey.getTargetGettingKey()));
-                } else {
-                    Number childValue = child.getSummaryValue(targetAndKey.getTargetGettingKey());
-                    if (childValue != null) {
-                        TargetCalculator calculator = targetAndKey.getCalculator();
-                        if (calculator.getCalculatorType() == CalculatorType.SUM_DETAIL){
-                            node.setSummaryValue(targetAndKey.getTargetGettingKey(), ((AbstractSummaryCalculator)calculator).createSumValue(value.doubleValue(), childValue.doubleValue()));
+            if (list != null){
+                for (GroupUtils.SummaryCountCal cal: list) {
+                    TargetAndKey targetAndKey = cal.getTargetAndKey();
+                    Number value = node.getSummaryValue(targetAndKey.getTargetGettingKey());
+                    if (value == null) {
+                        node.setSummaryValue(targetAndKey.getTargetGettingKey(), child.getSummaryValue(targetAndKey.getTargetGettingKey()));
+                    } else {
+                        Number childValue = child.getSummaryValue(targetAndKey.getTargetGettingKey());
+                        if (childValue != null) {
+                            TargetCalculator calculator = targetAndKey.getCalculator();
+                            if (calculator.getCalculatorType() == CalculatorType.SUM_DETAIL){
+                                node.setSummaryValue(targetAndKey.getTargetGettingKey(), ((AbstractSummaryCalculator)calculator).createSumValue(value.doubleValue(), childValue.doubleValue()));
+                            }
                         }
                     }
-                }
 
+                }
             }
         }
     }
