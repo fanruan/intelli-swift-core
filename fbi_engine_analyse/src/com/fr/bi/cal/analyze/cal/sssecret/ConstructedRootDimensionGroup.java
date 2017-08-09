@@ -6,7 +6,7 @@ import com.fr.bi.cal.analyze.cal.index.loader.MetricGroupInfo;
 import com.fr.bi.cal.analyze.cal.index.loader.TargetAndKey;
 import com.fr.bi.cal.analyze.cal.multithread.BIMultiThreadExecutor;
 import com.fr.bi.cal.analyze.cal.multithread.BISingleThreadCal;
-import com.fr.bi.cal.analyze.cal.multithread.SummaryCall;
+import com.fr.bi.cal.analyze.cal.multithread.SummaryCal;
 import com.fr.bi.cal.analyze.cal.result.Node;
 import com.fr.bi.cal.analyze.cal.result.NodeCreator;
 import com.fr.bi.cal.analyze.cal.result.NodeUtils;
@@ -46,8 +46,6 @@ public class ConstructedRootDimensionGroup extends RootDimensionGroup {
 
     protected BIMultiThreadExecutor executor;
 
-    private NodeCreator nodeCreator;
-
     private boolean calAllPage;
 
     private int[] sortType;
@@ -61,7 +59,7 @@ public class ConstructedRootDimensionGroup extends RootDimensionGroup {
     public ConstructedRootDimensionGroup(List<MetricGroupInfo> metricGroupInfoList, MergeIteratorCreator[] mergeIteratorCreators, int sumLength, BISession session, boolean useRealData,
                                          NameObject[] dimensionTargetSort, List<CalCalculator> calCalculators, BIDimension[] filterDimension, boolean setIndex, boolean hasInSumMetric, BIMultiThreadExecutor executor, NodeCreator nodeCreator, boolean calAllPage) {
 
-        super(metricGroupInfoList, mergeIteratorCreators, sumLength, session, useRealData);
+        super(metricGroupInfoList, mergeIteratorCreators, nodeCreator, sumLength, session, useRealData);
         this.calCalculators = calCalculators;
         this.filterDimension = filterDimension;
         //需要返回带索引的node或者需要使用gvisum的情况
@@ -69,7 +67,6 @@ public class ConstructedRootDimensionGroup extends RootDimensionGroup {
         this.dimensionTargetSort = dimensionTargetSort;
         this.hasInSumMetric = hasInSumMetric;
         this.executor = executor;
-        this.nodeCreator = nodeCreator;
         this.calAllPage = calAllPage;
     }
 
@@ -126,6 +123,18 @@ public class ConstructedRootDimensionGroup extends RootDimensionGroup {
             multiThreadBuild();
         } else {
             singleThreadBuild();
+        }
+        //只计算了子节点的情况要加一下
+        if (!hasInSumMetric){
+            List<TargetAndKey> keys = new ArrayList<TargetAndKey>();
+            for (List<TargetAndKey> list : summaryLists) {
+                for (TargetAndKey key : list) {
+                    keys.addAll(nodeCreator.createTargetAndKeyList(key));
+                }
+            }
+
+            NodeSummarizing summarizing = new NodeSummarizing(rootNode, keys.toArray(new TargetAndKey[keys.size()]));
+            summarizing.sum();
         }
         //先计算一遍配置类计算与计算指标，过滤排序完还要再计算一次
         sumCalculateMetrics();
@@ -256,13 +265,13 @@ public class ConstructedRootDimensionGroup extends RootDimensionGroup {
     //有过滤要重新汇总下
     private void reSum() {
 
-        List<TargetGettingKey> keys = new ArrayList<TargetGettingKey>();
+        List<TargetAndKey> keys = new ArrayList<TargetAndKey>();
         for (List<TargetAndKey> list : summaryLists) {
             for (TargetAndKey key : list) {
-                keys.add(key.getTargetGettingKey());
+                keys.addAll(nodeCreator.createTargetAndKeyList(key));
             }
         }
-        NodeSummarizing summarizing = hasInSumMetric ? new NodeGVISummarizing(rootNode, keys.toArray(new TargetGettingKey[keys.size()])) : new NodeSummarizing(rootNode, keys.toArray(new TargetGettingKey[keys.size()]));
+        NodeSummarizing summarizing = hasInSumMetric ? new NodeGVISummarizing(rootNode, keys.toArray(new TargetAndKey[keys.size()])) : new NodeSummarizing(rootNode,  keys.toArray(new TargetAndKey[keys.size()]));
         summarizing.sum();
         //gvi汇总之后如果需要用到全部结果，或者需要排序，就对node再汇总一次，最后一层不需要汇总
         if (hasInSumMetric) {
@@ -274,7 +283,7 @@ public class ConstructedRootDimensionGroup extends RootDimensionGroup {
 
     private void sumAfterGVISummarizing(MetricMergeResult node, int deep) {
 
-        sum(node);
+        sum(node, -1);
         //最后一层不需要resum
         if (deep < rowSize - 1) {
             for (Node n : node.getChilds()) {
@@ -324,7 +333,7 @@ public class ConstructedRootDimensionGroup extends RootDimensionGroup {
     protected void singleThreadBuild() {
 
         cal(rootNode, root, 0);
-        sum(rootNode);
+        sum(rootNode, -1);
     }
 
     private void cal(MetricMergeResult node, NoneDimensionGroup childDimensionGroup, int level) {
@@ -342,7 +351,7 @@ public class ConstructedRootDimensionGroup extends RootDimensionGroup {
                 cal(result, rootGroup.getChildDimensionGroup(index), level + 1);
             }
             //计算child之后才能sum，因为sum可能会cleargvi
-            sum(result);
+            sum(result, level);
             index++;
             result = rootGroup.getMetricMergeResultByWait(index);
         }
@@ -369,14 +378,15 @@ public class ConstructedRootDimensionGroup extends RootDimensionGroup {
         }
     }
 
-    protected void sum(MetricMergeResult node) {
-
-        GroupValueIndex[] gvis = node.getGvis();
-        for (int i = 0; i < summaryLists.length; i++) {
-            List<TargetAndKey> targetAndKeys = summaryLists[i];
-            for (TargetAndKey targetAndKey : targetAndKeys) {
-                for (TargetAndKey key : nodeCreator.createTargetAndKeyList(targetAndKey)){
-                    new SummaryCall(tis[i], node, key, gvis[i], session.getLoader()).cal();
+    protected void sum(MetricMergeResult node, int deep) {
+        if (hasInSumMetric || deep == rowSize - 1){
+            GroupValueIndex[] gvis = node.getGvis();
+            for (int i = 0; i < summaryLists.length; i++) {
+                List<TargetAndKey> targetAndKeys = summaryLists[i];
+                for (TargetAndKey targetAndKey : targetAndKeys) {
+                    for (TargetAndKey key : nodeCreator.createTargetAndKeyList(targetAndKey)){
+                        new SummaryCal(tis[i], node, key, gvis[i], session.getLoader()).cal();
+                    }
                 }
             }
         }
@@ -420,7 +430,7 @@ public class ConstructedRootDimensionGroup extends RootDimensionGroup {
                 }
             }
             //如果多线程计算没有结束，就等结束
-            multiThreadSum(rootNode);
+            multiThreadSum(rootNode, -1);
             if (!allCompleted()) {
                 executor.wakeUp();
                 synchronized (this) {
@@ -517,7 +527,7 @@ public class ConstructedRootDimensionGroup extends RootDimensionGroup {
                             result = rootGroup.getMetricMergeResultByWait(index);
                         }
                     }
-                    multiThreadSum(node);
+                    multiThreadSum(node ,level);
                 } finally {
                     count[level].incrementAndGet();
                     checkComplete(level);
@@ -525,9 +535,9 @@ public class ConstructedRootDimensionGroup extends RootDimensionGroup {
             }
         }
 
-        private class SingleSummaryCall extends SummaryCall {
+        private class SingleSummaryCal extends SummaryCal {
 
-            public SingleSummaryCall(ICubeTableService ti, Node node, TargetAndKey targetAndKey, GroupValueIndex gvi, ICubeDataLoader loader) {
+            public SingleSummaryCal(ICubeTableService ti, Node node, TargetAndKey targetAndKey, GroupValueIndex gvi, ICubeDataLoader loader) {
 
                 super(ti, node, targetAndKey, gvi, loader);
             }
@@ -543,15 +553,17 @@ public class ConstructedRootDimensionGroup extends RootDimensionGroup {
             }
         }
 
-        protected void multiThreadSum(MetricMergeResult node) {
-
-            GroupValueIndex[] gvis = node.getGvis();
-            for (int i = 0; i < summaryLists.length; i++) {
-                List<TargetAndKey> targetAndKeys = summaryLists[i];
-                for (TargetAndKey targetAndKey : targetAndKeys) {
-                    for (TargetAndKey key : nodeCreator.createTargetAndKeyList(targetAndKey)){
-                        size[rowSize].incrementAndGet();
-                        executor.add(new SingleSummaryCall(tis[i], node, key, gvis[i], session.getLoader()));
+        protected void multiThreadSum(MetricMergeResult node, int deep) {
+            //不能直接相加的汇总或者是子节点才需要汇总
+            if (hasInSumMetric || deep == rowSize - 1){
+                GroupValueIndex[] gvis = node.getGvis();
+                for (int i = 0; i < summaryLists.length; i++) {
+                    List<TargetAndKey> targetAndKeys = summaryLists[i];
+                    for (TargetAndKey targetAndKey : targetAndKeys) {
+                        for (TargetAndKey key : nodeCreator.createTargetAndKeyList(targetAndKey)){
+                            size[rowSize].incrementAndGet();
+                            executor.add(new SingleSummaryCal(tis[i], node, key, gvis[i], session.getLoader()));
+                        }
                     }
                 }
             }

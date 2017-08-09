@@ -56,7 +56,6 @@ public class XLeftNodeCreator implements NodeCreator {
     @Override
     public void sumCalculateMetrics(List<TargetCalculator> calculatorList, List<CalCalculator> calCalculators, MetricMergeResult rootNode) {
         CubeIndexLoader.calculateXTargets(calculatorList, calCalculators, (XMetricMergeResult)rootNode, topLen);
-
     }
 
     @Override
@@ -64,8 +63,9 @@ public class XLeftNodeCreator implements NodeCreator {
         if (mergeResult != null){
             node.setSummaryValue(mergeResult.getSummaryValue());
             if (mergeResult instanceof XMetricMergeResult){
-                ((XLeftNode)node).setXValue(((XMetricMergeResult)mergeResult).getXValue());
+                ((BIXLeftNode)node).setXValue(((BIXLeftNode)mergeResult).getXValue());
             }
         }
     }
+
 }

@@ -2,6 +2,7 @@ package com.fr.bi.field.target.calculator.sum;
 
 import com.finebi.cube.api.ICubeTableService;
 import com.fr.bi.field.target.target.BISummaryTarget;
+import com.fr.bi.field.target.target.SumType;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 
 /**
@@ -22,6 +23,16 @@ public class StringAppendCalculator extends AbstractSummaryCalculator {
     @Override
     public double createSumValue(GroupValueIndex gvi, ICubeTableService ti) {
         return 0;
+    }
+
+    @Override
+    public SumType getSumType() {
+        return SumType.GVI;
+    }
+
+    @Override
+    public double createSumValue(double v1, double v2) {
+        throw new RuntimeException("not SumType.GVI");
     }
 
 }

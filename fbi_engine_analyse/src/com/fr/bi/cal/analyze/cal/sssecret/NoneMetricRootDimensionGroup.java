@@ -8,6 +8,7 @@ import com.finebi.cube.conf.table.BusinessTable;
 import com.finebi.cube.relation.BITableRelationPath;
 import com.finebi.cube.relation.BITableSourceRelation;
 import com.fr.bi.cal.analyze.cal.index.loader.MetricGroupInfo;
+import com.fr.bi.cal.analyze.cal.result.NodeCreator;
 import com.fr.bi.cal.analyze.cal.sssecret.diminfo.MergeIteratorCreator;
 import com.fr.bi.cal.analyze.session.BISession;
 import com.fr.bi.conf.report.widget.field.dimension.filter.DimensionFilter;
@@ -43,8 +44,8 @@ public class NoneMetricRootDimensionGroup extends RootDimensionGroup {
 
     }
 
-    public NoneMetricRootDimensionGroup(List<MetricGroupInfo> metricGroupInfoList, MergeIteratorCreator[] mergeIteratorCreators, int sumLength, BISession session, boolean useRealData, TargetFilter filter, List<TargetFilter> authFilter, DimensionFilter[] directDimensionFilters) {
-        super(metricGroupInfoList, mergeIteratorCreators, sumLength, session, useRealData);
+    public NoneMetricRootDimensionGroup(List<MetricGroupInfo> metricGroupInfoList, MergeIteratorCreator[] mergeIteratorCreators, NodeCreator nodeCreator, int sumLength, BISession session, boolean useRealData, TargetFilter filter, List<TargetFilter> authFilter, DimensionFilter[] directDimensionFilters) {
+        super(metricGroupInfoList, mergeIteratorCreators, nodeCreator, sumLength, session, useRealData);
         this.filter = filter;
         this.authFilter = authFilter;
         this.directDimensionFilters = directDimensionFilters;
@@ -66,7 +67,7 @@ public class NoneMetricRootDimensionGroup extends RootDimensionGroup {
             metrics[i] = dimensionCalculators[0].getField().getTableBelongTo();
             gvis[i] = metricGroupInfoList.get(i).getFilterIndex();
         }
-        root = NoneDimensionGroup.createDimensionGroup(metrics, summaryLists, sumLength, tis, gvis, session.getLoader());
+        root = NoneDimensionGroup.createDimensionGroup(metrics, summaryLists, sumLength, tis, nodeCreator.createMetricMergeResult(null, sumLength, gvis), session.getLoader());
     }
 
 

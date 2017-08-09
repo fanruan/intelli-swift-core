@@ -1,6 +1,7 @@
 package com.fr.bi.cal.generate;
 
 import com.finebi.cube.ICubeConfiguration;
+import com.finebi.cube.api.UserAnalysisCubeDataLoaderCreator;
 import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.conf.BICubeConfiguration;
 import com.finebi.cube.conf.BICubeConfigureCenter;
@@ -196,6 +197,11 @@ public class BuildCubeTask implements CubeTask {
         }
     }
 
+    private void releaseCubeResource() {
+        UserAnalysisCubeDataLoaderCreator.getInstance().clear(biUser.getUserId());
+        BICubeDiskPrimitiveDiscovery.getInstance().clearResourceMap();
+    }
+
     protected void checkTaskFinish() {
         /**
          * Cube生成任务失败。但是Cube的局部可能还在继续生成。
@@ -244,6 +250,9 @@ public class BuildCubeTask implements CubeTask {
                     LOGGER.error("FineIndex replace failed after " + i + " times try!It will try again in 5s");
                     Thread.sleep(5000);
                 } else {
+                    if (PerformancePlugManager.getInstance().isUseSingleReader()){
+                        releaseCubeResource();
+                    }
                     break;
                 }
             }
