@@ -172,7 +172,7 @@ public class HorGroupExecutor extends AbstractTableWidgetExecutor<Node> {
     protected WidgetCacheKey createWidgetCacheKey() {
         PageIteratorGroup iteratorGroup = getPageIterator();
         Operator colOp = PagingFactory.createColumnOperator(paging.getOperator(), widget);
-        return WidgetCacheKey.createKey(widget.fetchObjectCore(), expander.getXExpander(), expander.getXExpander(),
+        return WidgetCacheKey.createKey(widget.fetchObjectCore(), expander.getYExpander(), expander.getXExpander(),
                 null, null, colOp, getStartIndex(colOp, iteratorGroup == null ? null : iteratorGroup.getColumnIterator(), usedDimensions.length),
                 widget.getAuthFilter(session.getUserId()));
     }
