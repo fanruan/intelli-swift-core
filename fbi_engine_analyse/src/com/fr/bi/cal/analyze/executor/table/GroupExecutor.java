@@ -240,7 +240,7 @@ public class GroupExecutor extends AbstractTableWidgetExecutor<Node> {
     protected WidgetCacheKey createWidgetCacheKey() {
         PageIteratorGroup iteratorGroup = getPageIterator();
         Operator rowOp = PagingFactory.createRowOperator(paging.getOperator(), widget);
-        return WidgetCacheKey.createKey(widget.fetchObjectCore(), expander.getXExpander(), expander.getXExpander(),
+        return WidgetCacheKey.createKey(widget.fetchObjectCore(), expander.getYExpander(), expander.getXExpander(),
                 rowOp, getStartIndex(rowOp, iteratorGroup == null ? null : iteratorGroup.getRowIterator(), usedDimensions.length),
                 null, null, widget.getAuthFilter(session.getUserId()));
     }
