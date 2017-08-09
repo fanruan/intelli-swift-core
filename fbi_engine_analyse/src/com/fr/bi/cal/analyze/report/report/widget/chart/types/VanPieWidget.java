@@ -40,6 +40,9 @@ public class VanPieWidget extends VanChartWidget{
         plotOptions.put("endAngle", settings.optInt("totalAngle"));
         plotOptions.put("roseType", type == NORMAL ? StringUtils.EMPTY : (type == EQUAL_ARC_ROSE ? "sameArc":"differentArc"));
 
+        // 饼图也添加border width
+        plotOptions.put("borderWidth", 1);
+
         return plotOptions;
     }
 

@@ -29,7 +29,7 @@ public class BIBasicTableItem implements ITableItem {
     private String tag;
 
     public BIBasicTableItem() {
-        tag= String.valueOf(UUID.randomUUID());
+        tag = String.valueOf(UUID.randomUUID());
     }
 
     @Override
@@ -85,22 +85,8 @@ public class BIBasicTableItem implements ITableItem {
     }
 
     @Override
-    public boolean isNeedExpand() {
-        return needExpand;
-    }
-
-    @Override
-    public boolean isExpanded() {
-        return isExpanded;
-    }
-
     public List<ITableItem> getChildren() {
         return children;
-    }
-
-    @Override
-    public ITableStyle getStyles() {
-        return styles;
     }
 
     public void setdId(String dId) {
@@ -130,7 +116,6 @@ public class BIBasicTableItem implements ITableItem {
     public void setTextStyles(JSONObject textStyles) {
         this.textStyles = textStyles;
     }
-
 
     @Override
     public void mergeItems(ITableItem newItem) throws Exception {
@@ -190,6 +175,7 @@ public class BIBasicTableItem implements ITableItem {
         }
 
     }
+
 
     @Override
     public JSONObject createJSON() throws Exception {

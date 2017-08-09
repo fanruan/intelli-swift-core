@@ -29,6 +29,8 @@ public class VanMultiPieWidget extends VanPieWidget{
 
         plotOptions.put("drilldown", settings.optBoolean("clickZoom"));
 
+        plotOptions.put("borderWidth", 1);
+
         return plotOptions;
     }
 
