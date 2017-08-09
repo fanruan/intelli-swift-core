@@ -50,6 +50,7 @@
   "tableFormGroup": "表格类型(tableForm/table_form)",
   "fontStyle":"样式(font-style)",
   "textAlign":"样式(text-style)",
+  "textAlign":"样式(text-align)",
   "fontWeight":"样式(font-weight)",
   "backgroundColor": "样式(background-color)",
   "fontSize": "样式(font-size)",

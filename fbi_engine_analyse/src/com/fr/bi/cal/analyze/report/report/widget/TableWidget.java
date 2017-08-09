@@ -51,7 +51,6 @@ import com.fr.bi.report.key.TargetGettingKey;
 import com.fr.bi.stable.constant.BIJSONConstant;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.constant.BIStyleConstant;
-import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.gvi.GVIUtils;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.utils.BITravalUtils;
@@ -612,8 +611,8 @@ public class TableWidget extends SummaryWidget implements SclCalculator {
     public JSONObject calculateSCData(BIWidgetConf widgetConf, JSONObject data) throws Exception {
         Map<Integer, List<JSONObject>> viewMap = this.createViewMap(widgetConf);
         BIWidgetSettings widgetSettings = getWidgetSettings(widgetConf);
-//        Map<String, ITableCellFormatOperation> operationMap = getITableCellFormatOperationMap();
         Map<String, ITableCellFormatOperation> operationMap = createOperationMap(widgetConf);
+//        Map<String, ITableCellFormatOperation> operationMap = new HashMap<String, ITableCellFormatOperation>();
         IExcelDataBuilder builder = null;
         switch (widgetConf.getType()) {
             case BIReportConstant.TABLE_WIDGET.CROSS_TYPE:
@@ -636,75 +635,39 @@ public class TableWidget extends SummaryWidget implements SclCalculator {
         Map<String, ITableCellFormatOperation> formOperationsMap = new HashMap<String, ITableCellFormatOperation>();
         Map<Integer, List<JSONObject>> viewMap = config.getDetailViewMap();
         for (Integer integer : viewMap.keySet()) {
-            if (integer > Integer.valueOf(BIReportConstant.REGION.TARGET1)) {
-                List<JSONObject> dimJo = viewMap.get(integer);
-                for (JSONObject jo : dimJo) {
-                    if (jo.optBoolean("used")) {
-                        String dId = jo.getString("dId");
-                        ICellFormatSetting setting = new BICellFormatSetting();
-                        setting.parseJSON(config.getDimensions().getJSONObject(dId).getJSONObject("settings"));
-                        ITableCellFormatOperation op = new BITableCellNumberFormatOperation(setting);
-                        formOperationsMap.put(dId, op);
-                    }
-                }
-            } else {
-                List<JSONObject> dimJo = viewMap.get(integer);
-                for (JSONObject jo : dimJo) {
-                    if (jo.optBoolean("used")) {
-                        String dId = jo.getString("dId");
-                        int type = jo.getInt("type");
-                        ICellFormatSetting setting = new BICellFormatSetting();
+            List<JSONObject> dimJo = viewMap.get(integer);
+            for (JSONObject jo : dimJo) {
+                if (jo.optBoolean("used")) {
+                    String dId = jo.getString("dId");
+                    int type = jo.getInt("type");
+                    ICellFormatSetting setting = new BICellFormatSetting();
+                    if (config.getDimensions().getJSONObject(dId).has("settings")) {
                         setting.parseJSON(config.getDimensions().getJSONObject(dId).optJSONObject("settings"));
-                        ITableCellFormatOperation op;
-                        if (type==DBConstant.COLUMN.DATE){
-                            op = new BITableCellDateFormatOperation(config.getDimensions().getJSONObject(dId).getInt("type"), setting);
-                        }else {
-                            op = new BITableCellStringOperation(setting);
-                        }
-                        formOperationsMap.put(dId, op);
                     }
-                }
+                    ITableCellFormatOperation op = null;
+                    switch (type) {
+                        case BIReportConstant.TARGET_TYPE.STRING:
+                            op = new BITableCellStringOperation(setting);
+                            break;
+                        case BIReportConstant.TARGET_TYPE.NUMBER:
+                        case BIReportConstant.TARGET_TYPE.COUNTER:
+                        case BIReportConstant.TARGET_TYPE.FORMULA:
+                            op = new BITableCellNumberFormatOperation(setting);
+                            break;
+                        case BIReportConstant.TARGET_TYPE.DATE:
+                            op = new BITableCellDateFormatOperation(config.getDimensions().getJSONObject(dId).getJSONObject("group").getInt("type"), setting);
+                            break;
 
+                        default:
+                            op = new BITableCellStringOperation(setting);
+                    }
+                    formOperationsMap.put(dId, op);
+                }
             }
+
         }
         return formOperationsMap;
     }
-
-//    private Map<String, ITableCellFormatOperation> getITableCellFormatOperationMap() throws Exception {
-//        Map<String, ITableCellFormatOperation> formOperationsMap = new HashMap<String, ITableCellFormatOperation>();
-//        createFormatOperations(formOperationsMap);
-//        return formOperationsMap;
-//    }
-
-//    private void createFormatOperations(Map<String, ITableCellFormatOperation> operationsMap) throws Exception {
-//
-//        for (BISummaryTarget target : this.getTargets()) {
-//            ICellFormatSetting setting = new BICellFormatSetting();
-//            setting.parseJSON(target.getChartSetting().getSettings());
-//            ITableCellFormatOperation op = new BITableCellNumberFormatOperation(setting);
-//            operationsMap.put(target.getId(), op);
-//        }
-//        for (BIDimension dimension : this.getDimensions()) {
-//            if (isStringDimension(dimension)) {
-//                continue;
-//            }
-//            ICellFormatSetting setting = new BICellFormatSetting();
-//            setting.parseJSON(dimension.getChartSetting().getSettings());
-//            ITableCellFormatOperation op;
-//            if (dimension.createColumnKey().getFieldType() == DBConstant.COLUMN.DATE) {
-//                op = new BITableCellDateFormatOperation(dimension.getGroup().getType(), setting);
-//            } else {
-//                op = new BITableCellStringOperation(setting);
-//            }
-//            operationsMap.put(dimension.getId(), op);
-//        }
-//    }
-
-    //todo 简单处理，之后要提个接口
-//    private boolean isStringDimension(BIDimension dimension) {
-//
-//        return dimension.createColumnKey().getFieldType() == DBConstant.COLUMN.STRING;
-//    }
 
     public String getDimensionNameByID(String dID) throws Exception {
 
