@@ -118,7 +118,7 @@ public abstract class TableAbstractDataBuilder implements IExcelDataBuilder {
         if (null!=array) {
             for (int i = 0; i < array.length(); i++) {
                 if (null==array.opt(i)){
-                    array.put(i, "");
+                    array.put(i, StringUtils.EMPTY);
                 }
             }
         }
