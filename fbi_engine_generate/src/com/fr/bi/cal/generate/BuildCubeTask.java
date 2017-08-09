@@ -171,7 +171,7 @@ public class BuildCubeTask implements CubeTask {
                     BICubeConfigureCenter.getPackageManager().finishGenerateCubes(biUser.getUserId(), CubeUpdateUtils.getBusinessCubeAbsentTables(biUser.getUserId()));
                     BICubeConfigureCenter.getPackageManager().persistData(biUser.getUserId());
                     BICubeConfigureCenter.getDataSourceManager().persistData(biUser.getUserId());
-                    BIModuleUtils.clearAnalysisETLCache(biUser.getUserId());
+                    BIModuleUtils.clearCacheAfterBuildCubeTask(biUser.getUserId());
                     BILoggerFactory.getLogger().info("Replace successful! Cost :" + DateUtils.timeCostFrom(start));
                 } else {
                     message = "FineIndex replace failed ,the FineIndex files will not be replaced ";

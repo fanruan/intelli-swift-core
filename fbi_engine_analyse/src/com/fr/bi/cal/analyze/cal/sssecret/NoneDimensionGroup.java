@@ -24,6 +24,7 @@ import java.util.List;
 public class NoneDimensionGroup implements Release {
 
     public final static NoneDimensionGroup NULL = new NoneDimensionGroup();
+    public final static NoneDimensionGroup EMPTY = new NoneDimensionGroup();
 
     private BusinessTable[] metrics;
 
