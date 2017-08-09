@@ -686,6 +686,9 @@ public class BICoreModule extends AbstractModule {
         StableFactory.registerJavaScriptFiles(ResourceConstants.DEFAULT_DESIGN_JS, DeziResourceHelper.getDeziJs());
         StableFactory.registerStyleFiles(ResourceConstants.DEFAULT_DESIGN_CSS, DeziResourceHelper.getDeziCss());
 
+        StableFactory.registerJavaScriptFiles(ResourceConstants.DEFAULT_DESIGN_CONFIG_JS, DeziResourceHelper.getDeziConfigJs());
+        StableFactory.registerStyleFiles(ResourceConstants.DEFAULT_DESIGN_CONFIG_CSS, DeziResourceHelper.getDeziConfigCss());
+
         StableFactory.registerJavaScriptFiles(ResourceConstants.DEFAULT_SHOW_JS, ShowResourceHelper.getShowJs());
         StableFactory.registerStyleFiles(ResourceConstants.DEFAULT_SHOW_CSS, ShowResourceHelper.getShowCss());
 
