@@ -62,14 +62,7 @@ import com.fr.report.poly.TemplateBlock;
 import com.fr.stable.StringUtils;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 
@@ -100,7 +93,7 @@ public class TableWidget extends SummaryWidget implements SclCalculator {
 
     @BIIgnoreField
     private transient BISummaryTarget[] usedTargets;
-
+    @BICoreField
     private DetailChartSetting settings = new DetailChartSetting();
 
     protected Map<String, JSONArray> clicked = new HashMap<String, JSONArray>();
@@ -115,6 +108,14 @@ public class TableWidget extends SummaryWidget implements SclCalculator {
     public void setPageSpinner(int index, int value) {
 
         this.pageSpinner[index] = value;
+    }
+
+    public int[] getPageSpinner() {
+        return pageSpinner;
+    }
+
+    public void setPageSpinner(int[] pageSpinner) {
+        this.pageSpinner = pageSpinner;
     }
 
     private TableWidget linkedWidget;
@@ -270,7 +271,6 @@ public class TableWidget extends SummaryWidget implements SclCalculator {
 
     @Override
     public JSONObject createDataJSON(BISessionProvider session, HttpServletRequest req) throws Exception {
-
         BIEngineExecutor executor = getExecutor((BISession) session);
         JSONObject jo = new JSONObject();
         if (executor != null) {

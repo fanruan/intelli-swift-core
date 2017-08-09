@@ -3,8 +3,14 @@ package com.fr.bi.cal.analyze.executor.table;
 import com.finebi.cube.conf.table.BusinessTable;
 import com.fr.base.Style;
 import com.fr.bi.cal.analyze.cal.index.loader.CubeIndexLoader;
+import com.fr.bi.cal.analyze.cal.index.loader.cache.WidgetCache;
+import com.fr.bi.cal.analyze.cal.index.loader.cache.WidgetCacheKey;
+import com.fr.bi.cal.analyze.cal.index.loader.cache.WidgetDataCacheManager;
 import com.fr.bi.cal.analyze.cal.result.CrossExpander;
 import com.fr.bi.cal.analyze.cal.result.Node;
+import com.fr.bi.cal.analyze.cal.result.operator.Operator;
+import com.fr.bi.cal.analyze.cal.sssecret.NodeDimensionIterator;
+import com.fr.bi.cal.analyze.cal.sssecret.PageIteratorGroup;
 import com.fr.bi.cal.analyze.executor.BIAbstractExecutor;
 import com.fr.bi.cal.analyze.executor.paging.Paging;
 import com.fr.bi.cal.analyze.executor.utils.ExecutorUtils;
@@ -15,6 +21,7 @@ import com.fr.bi.conf.report.style.DetailChartSetting;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.conf.report.widget.field.target.BITarget;
 import com.fr.bi.field.target.target.BISummaryTarget;
+import com.fr.bi.manager.PerformancePlugManager;
 import com.fr.bi.report.key.TargetGettingKey;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.general.ComparatorUtils;
@@ -22,8 +29,12 @@ import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;
 
 import java.awt.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 public abstract class AbstractTableWidgetExecutor<T> extends BIAbstractExecutor<T> {
 
@@ -269,6 +280,38 @@ public abstract class AbstractTableWidgetExecutor<T> extends BIAbstractExecutor<
             }
         }
         return true;
+    }
+
+
+    protected int[] getStartIndex(Operator op, NodeDimensionIterator iterator, int size){
+        if (iterator == null){
+            int[] indexes =  new int[size];
+            Arrays.fill(indexes, -1);
+            return indexes;
+        }
+        NodeDimensionIterator clonedIter = iterator.createClonedIterator();
+        op.moveIterator(clonedIter);
+        return clonedIter.getStartIndex();
+    }
+
+    protected WidgetCache<JSONObject> getWidgetCache(WidgetCacheKey key){
+        if (isUseWidgetDataCache()){
+            return WidgetDataCacheManager.getInstance().get(key);
+        }
+        return null;
+    }
+
+    protected void updateCache(WidgetCacheKey key, WidgetCache widgetCache){
+        WidgetDataCacheManager.getInstance().put(key, widgetCache);
+    }
+
+    //isRealData,并且配置文件开关开启的情况才计算缓存
+    protected boolean isUseWidgetDataCache(){
+        return widget.isRealData() && PerformancePlugManager.getInstance().isExtremeConcurrency();
+    }
+
+    protected PageIteratorGroup getPageIterator() {
+        return CubeIndexLoader.getInstance(session.getUserId()).needCreateNewIterator(paging.getOperator()) ? null : session.getPageIteratorGroup(true ,widget.getWidgetId());
     }
 
     /**
