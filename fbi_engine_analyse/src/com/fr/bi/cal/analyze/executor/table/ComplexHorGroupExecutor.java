@@ -271,7 +271,7 @@ public class ComplexHorGroupExecutor extends AbstractTableWidgetExecutor {
                 }
                 for (int i = 0; i < rowData.getRegionIndex(); i++) {
                     BIDimension[] dimensions = rowData.getDimensionArray(i);
-                    if (isClieckRegion(dids, dimensions)) {
+                    if (isClickRegion(dids, dimensions)) {
                         Node n = getStopOnRowNode(cs.toArray(), dimensions);
                         filterGvi = GVIUtils.AND(filterGvi, getLinkNodeFilter(n, target, cs));
                         return filterGvi;

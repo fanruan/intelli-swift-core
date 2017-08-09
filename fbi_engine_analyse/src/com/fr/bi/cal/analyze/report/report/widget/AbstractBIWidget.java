@@ -446,7 +446,7 @@ public abstract class AbstractBIWidget implements BIWidget {
     public BIWidgetSettings getWidgetSettings() {
         return widgetConf.getWidgetSettings();
     }
-
+    
     @Override
     public JSONObject generateResult(BIWidgetConf widgetConf, JSONObject data) throws Exception {
         return null;
