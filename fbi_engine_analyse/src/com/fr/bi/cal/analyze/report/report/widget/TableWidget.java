@@ -667,7 +667,6 @@ public class TableWidget extends SummaryWidget implements SclCalculator {
                         case BIReportConstant.TARGET_TYPE.MONTH_ON_MONTH_VALUE:
                             op = new BITableCellDateFormatOperation(config.getDimensions().getJSONObject(dId).getJSONObject("group").getInt("type"), setting);
                             break;
-
                         default:
                             op = new BITableCellStringOperation(setting);
                     }
