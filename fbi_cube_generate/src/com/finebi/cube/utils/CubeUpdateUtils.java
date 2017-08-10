@@ -219,7 +219,8 @@ public class CubeUpdateUtils {
     }
 
     public static boolean isNeed2GenerateCube(long userId) {
-        return isPart(userId) || isUpdateMeta(userId);
+        boolean isCHanged = !BICubeConfigureCenter.getTableRelationManager().isRelationNoChange(userId) || !BICubeConfigureCenter.getPackageManager().isTableNoChange(userId);
+        return isCHanged||isPart(userId);
     }
 
 
