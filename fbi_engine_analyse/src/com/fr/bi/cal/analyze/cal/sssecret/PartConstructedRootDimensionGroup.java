@@ -31,7 +31,7 @@ public class PartConstructedRootDimensionGroup extends ConstructedRootDimensionG
     protected void singleThreadBuild() {
 
         cal(rootNode, root, 0);
-        sum(rootNode);
+        sum(rootNode, -1);
     }
 
     private void cal(MetricMergeResult node, NoneDimensionGroup childDimensionGroup, int level) {
@@ -51,7 +51,7 @@ public class PartConstructedRootDimensionGroup extends ConstructedRootDimensionG
                 cal(result, rootGroup.getChildDimensionGroup(index), level + 1);
             }
             //计算child之后才能sum，因为sum可能会cleargvi
-            sum(result);
+            sum(result, level);
             index++;
             result = rootGroup.getMetricMergeResultByWait(index);
         }

@@ -328,7 +328,7 @@ public class CrossExecutor extends AbstractTableWidgetExecutor<XNode> {
         Operator colOp = PagingFactory.createColumnOperator(paging.getOperator(), widget);
         int[] rowStartIndex = getStartIndex(rowOp, iteratorGroup == null ? null : iteratorGroup.getRowIterator(), rowDimension.length);
         int[] colStartIndex = getStartIndex(colOp, iteratorGroup == null ? null : iteratorGroup.getColumnIterator(), colDimension.length);
-        return WidgetCacheKey.createKey(widget.fetchObjectCore(), expander.getXExpander(), expander.getXExpander(),
+        return WidgetCacheKey.createKey(widget.fetchObjectCore(), expander.getYExpander(), expander.getXExpander(),
                 rowOp, rowStartIndex, colOp, colStartIndex, widget.getAuthFilter(session.getUserId()));
     }
 

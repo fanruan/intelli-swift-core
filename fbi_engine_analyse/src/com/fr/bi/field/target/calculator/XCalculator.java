@@ -88,6 +88,11 @@ public class XCalculator implements TargetCalculator{
     }
 
     @Override
+    public boolean isSumTypePlus() {
+        return calculator.isSumTypePlus();
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
