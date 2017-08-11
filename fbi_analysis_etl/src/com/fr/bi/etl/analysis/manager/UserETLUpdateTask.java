@@ -54,7 +54,7 @@ import java.util.*;
  * @author Daniel
  */
 public class UserETLUpdateTask implements CubeTask, AV {
-    private static BILogger logger = BILoggerFactory.getLogger(BICube.class);
+    private static BILogger LOGGER = BILoggerFactory.getLogger(BICube.class);
 
     /**
      *
@@ -127,7 +127,7 @@ public class UserETLUpdateTask implements CubeTask, AV {
                 try {
                     tableEntityService.addDataValue(v);
                 } catch (BICubeColumnAbsentException e) {
-                    logger.warn(e.getMessage(),e);
+                    LOGGER.warn(e.getMessage(),e);
                 }
             }
         }, cubeFieldSources, UserETLCubeTILoader.getInstance(biUser.getUserId())));
@@ -166,7 +166,7 @@ public class UserETLUpdateTask implements CubeTask, AV {
     @Override
     public void start() {
         start = new Date();
-        BILoggerFactory.getLogger().info("started in file path:" + path);
+        LOGGER.info("started in file path:" + path);
     }
 
 
@@ -272,7 +272,7 @@ public class UserETLUpdateTask implements CubeTask, AV {
             try {
                 this.cube.clear();
             } catch (Throwable e) {
-                BILoggerFactory.getLogger().error(e.getMessage(), e);
+                LOGGER.error(e.getMessage(), e);
             }
         }
         BIFileUtils.delete(new File(this.path).getParentFile());

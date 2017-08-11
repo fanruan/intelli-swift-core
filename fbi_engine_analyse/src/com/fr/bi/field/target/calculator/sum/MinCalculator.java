@@ -27,4 +27,9 @@ public class MinCalculator extends AbstractSummaryCalculator {
         return ti.getMINValue(gvi, target.createKey(target.getStatisticElement()));
     }
 
+    @Override
+    public double createSumValue(double v1, double v2) {
+        return Math.min(v1, v2);
+    }
+
 }

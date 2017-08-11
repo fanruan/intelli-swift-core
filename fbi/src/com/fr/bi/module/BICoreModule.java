@@ -17,6 +17,9 @@ import com.finebi.cube.conf.timer.UpdateFrequencyManager;
 import com.finebi.cube.conf.trans.BIAliasManagerWithoutUser;
 import com.fr.base.FRContext;
 import com.fr.bi.cal.BICubeManager;
+import com.fr.bi.cal.analyze.cal.index.loader.cache.WidgetDataCacheManager;
+import com.fr.bi.cal.generate.timerTask.BICubeTimeTaskCreatorManager;
+import com.fr.bi.cal.generate.timerTask.BICubeTimeTaskCreatorProvider;
 import com.fr.bi.cluster.ClusterAdapter;
 import com.fr.bi.cluster.ClusterManager;
 import com.fr.bi.cluster.manager.EmptyClusterManager;
@@ -709,6 +712,9 @@ public class BICoreModule extends AbstractModule {
         StableFactory.registerJavaScriptFiles(ResourceConstants.DEFAULT_DESIGN_JS, DeziResourceHelper.getDeziJs());
         StableFactory.registerStyleFiles(ResourceConstants.DEFAULT_DESIGN_CSS, DeziResourceHelper.getDeziCss());
 
+        StableFactory.registerJavaScriptFiles(ResourceConstants.DEFAULT_DESIGN_CONFIG_JS, DeziResourceHelper.getDeziConfigJs());
+        StableFactory.registerStyleFiles(ResourceConstants.DEFAULT_DESIGN_CONFIG_CSS, DeziResourceHelper.getDeziConfigCss());
+
         StableFactory.registerJavaScriptFiles(ResourceConstants.DEFAULT_SHOW_JS, ShowResourceHelper.getShowJs());
         StableFactory.registerStyleFiles(ResourceConstants.DEFAULT_SHOW_CSS, ShowResourceHelper.getShowCss());
 
@@ -752,8 +758,8 @@ public class BICoreModule extends AbstractModule {
     }
 
     @Override
-    public void clearAnalysisETLCache(long userId) {
-
+    public void clearCacheAfterBuildCubeTask(long userId) {
+        WidgetDataCacheManager.getInstance().clear();
     }
 
     private void registerSystemManager() {

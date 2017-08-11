@@ -1,5 +1,6 @@
 package com.fr.bi.etl.analysis.conf;
 
+import com.finebi.cube.common.log.BILogger;
 import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.conf.field.BIBusinessField;
 import com.finebi.cube.conf.field.BusinessField;
@@ -29,7 +30,7 @@ import java.util.Set;
  * Created by 小灰灰 on 2015/12/11.
  */
 public class AnalysisBusiTable extends BIBusinessTable {
-
+    private static BILogger LOGGER = BILoggerFactory.getLogger(AnalysisBusiTable.class);
     private static final long serialVersionUID = 5081075157518418589L;
     private String describe;
     private String name;
@@ -66,11 +67,11 @@ public class AnalysisBusiTable extends BIBusinessTable {
             try {
                 source = BIAnalysisETLManagerCenter.getDataSourceManager().getTableSource(this);
             } catch (Exception e) {
-                BILoggerFactory.getLogger().error(e.getMessage(), e);
+                LOGGER.error(e.getMessage(), e);
             }
         }
         if (source == null) {
-            BILoggerFactory.getLogger().info("UserEtl source missed");
+            LOGGER.info("UserEtl source missed");
         }
         return source;
     }
