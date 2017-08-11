@@ -254,15 +254,11 @@ public class BuildCubeTask implements CubeTask {
                     BILoggerFactory.getLogger().error("error: the filePath is : " + location);
                 }
                 CubeReadingTableIndexLoader.envChanged();
-                if (!replaceSuccess) {
-                    LOGGER.error("FineIndex replace failed after " + i + " times try!It will try again in 5s");
-                    Thread.sleep(5000);
-                } else {
-                    if (PerformancePlugManager.getInstance().isUseSingleReader()){
-                        releaseCubeResource();
-                    }
-                    break;
+
+                if (PerformancePlugManager.getInstance().isUseSingleReader()) {
+                    releaseCubeResource();
                 }
+                break;
             }
             return true;
         } catch (Exception e) {

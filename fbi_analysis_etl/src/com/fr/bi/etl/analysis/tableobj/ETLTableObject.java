@@ -19,6 +19,7 @@ import com.finebi.cube.structure.BICube;
 import com.fr.bi.common.factory.BIFactoryHelper;
 import com.fr.bi.common.inter.Delete;
 import com.fr.bi.common.inter.Release;
+import com.fr.bi.conf.manager.location.BIDefaultConvertor;
 import com.fr.bi.etl.analysis.data.UserCubeTableSource;
 import com.fr.bi.stable.engine.index.NullTableIndexException;
 import com.fr.bi.stable.io.newio.SingleUserNIOReadManager;
@@ -48,25 +49,20 @@ public class ETLTableObject implements Release, Delete {
 
     public ETLTableObject(final UserCubeTableSource source, final String id) {
         this.path = BIConfigurePathUtils.createUserETLCubePath(source.fetchObjectCore().getIDValue(), id);
+        final BILocationProvider convertor = new BIDefaultConvertor();
         ti = new BICubeTableAdapter(new BICube(new BICubeResourceRetrieval(new ICubeConfiguration() {
             @Override
             public URI getRootURI() {
                 try {
-                    File file = new File(new BICubeLocation(BIConfigurePathUtils.createUserETLTableBasePath(source.fetchObjectCore().getID().getIdentityValue()), id, new ILocationConverter() {
-                        @Override
-                        public ICubeResourceLocation getRealLocation(String path, String child) throws URISyntaxException {
-                            return new BICubeLocation(path, child, this);
-                        }
-                    }).getAbsolutePath());
+                    File file = new File(new BICubeLocation(BIConfigurePathUtils.createUserETLTableBasePath(source.fetchObjectCore().getID().getIdentityValue()), id, convertor).getAbsolutePath());
                     return URI.create(file.toURI().getRawPath());
                 } catch (URISyntaxException e) {
                     throw BINonValueUtils.beyondControl(e);
                 }
             }
-
             @Override
             public BILocationProvider getLocationProvider() {
-                return null;
+                return convertor;
             }
 
         }), BIFactoryHelper.getObject(ICubeResourceDiscovery.class)), source);

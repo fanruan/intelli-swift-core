@@ -24,6 +24,7 @@ import com.fr.bi.cal.stable.loader.CubeReadingTableIndexLoader;
 import com.fr.bi.common.factory.BIFactoryHelper;
 import com.fr.bi.common.inter.Traversal;
 import com.fr.bi.common.persistent.xml.BIIgnoreField;
+import com.fr.bi.conf.manager.location.BIDefaultConvertor;
 import com.fr.bi.etl.analysis.data.AnalysisCubeTableSource;
 import com.fr.bi.etl.analysis.data.UserCubeTableSource;
 import com.fr.bi.module.UserETLCubeTILoader;
@@ -81,26 +82,21 @@ public class UserETLUpdateTask implements CubeTask, AV {
     public UserETLUpdateTask(UserCubeTableSource source) {
         this.source = source;
         this.biUser = new BIUser(source.getUserId());
+        final BILocationProvider convertor = new BIDefaultConvertor();
         this.cube = new BICube(new BICubeResourceRetrieval(new ICubeConfiguration() {
             @Override
             public URI getRootURI() {
                 try {
                     File file = new File(new BICubeLocation(BIConfigurePathUtils.createUserETLTableBasePath(UserETLUpdateTask.this.source.fetchObjectCore().getID().getIdentityValue()),
-                            path, new ILocationConverter() {
-                        @Override
-                        public ICubeResourceLocation getRealLocation(String path, String child) throws URISyntaxException {
-                            return new BICubeLocation(path, child, this);
-                        }
-                    }).getAbsolutePath());
+                            path, convertor).getAbsolutePath());
                     return URI.create(file.toURI().getRawPath());
                 } catch (URISyntaxException e) {
                     throw BINonValueUtils.beyondControl(e);
                 }
             }
-
             @Override
             public BILocationProvider getLocationProvider() {
-                return null;
+                return convertor;
             }
         }), BIFactoryHelper.getObject(ICubeResourceDiscovery.class));
     }
