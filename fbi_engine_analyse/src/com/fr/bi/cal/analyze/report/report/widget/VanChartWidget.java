@@ -191,7 +191,7 @@ public abstract class VanChartWidget extends TableWidget {
             options.put("legend", JSONObject.create().put("enabled", false));
             options.put("rangeLegend", JSONObject.create().put("enabled", false));
         } else {
-            options.put(this.getLegendType(), this.parseLegend(settings));
+            options.put(this.getLegendType(settings), this.parseLegend(settings));
         }
     }
 
@@ -199,7 +199,7 @@ public abstract class VanChartWidget extends TableWidget {
         return this.createXYSeries(data);
     }
 
-    protected String getLegendType() {
+    protected String getLegendType(JSONObject settings) {
         return "legend";
     }
 
