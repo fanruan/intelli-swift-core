@@ -1,12 +1,13 @@
 package com.finebi.cube.common.log;
 
-import com.fr.general.FRLogger;
+import com.fr.base.FRContext;
+import com.fr.bi.stable.utils.code.BIPrintUtils;
+import com.fr.general.ComparatorUtils;
 import org.apache.log4j.PropertyConfigurator;
 import org.apache.log4j.helpers.Loader;
 import org.slf4j.LoggerFactory;
 
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
+import java.io.*;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
@@ -20,14 +21,69 @@ public class BILoggerFactory {
         /**
          * 添加默认Log配置
          */
-        PropertyConfigurator.configure(defaultProperties());
+
 //        if (PerformancePlugManager.getInstance().useLog4JPropertiesFile()) {
-        URL resource = Loader.getResource("log4j.properties");
-        if (resource != null) {
-            PropertyConfigurator.configure(resource);
-            FRLogger.getLogger().info("The log properties url:" + resource.toString());
+        File logFile = getLibLogFile();
+        if (logFile != null) {
+            try {
+                PropertyConfigurator.configure(new FileInputStream(logFile));
+            } catch (Exception e) {
+                System.err.print("Can't get the log file in lib folder and use default log.The error info:\n" + BIPrintUtils.outputException(e));
+                useDefaultLog();
+            }
+        } else {
+            useOriginalLog();
         }
 //        }
+    }
+
+    private static void useOriginalLog() {
+        URL original = Loader.getResource("log4j.properties");
+        if (original != null) {
+            PropertyConfigurator.configure(original);
+            System.out.println("The log properties url:" + original.toString());
+        } else {
+            useDefaultLog();
+        }
+    }
+
+    private static void useDefaultLog() {
+        System.out.println("The default log properties");
+        PropertyConfigurator.configure(defaultProperties());
+    }
+
+    private static File getLibLogFile() {
+        String webInfoPath = FRContext.getCurrentEnv().getPath();
+        File webInfFile = new File(webInfoPath);
+        if (webInfFile.exists()) {
+            File[] childFiles = webInfFile.listFiles(new FilenameFilter() {
+                @Override
+                public boolean accept(File dir, String name) {
+                    return ComparatorUtils.equals("lib", name);
+                }
+            });
+            if (childFiles.length == 1) {
+                File[] configs = childFiles[0].listFiles(new FilenameFilter() {
+                    @Override
+                    public boolean accept(File dir, String name) {
+                        return ComparatorUtils.equals("FineLog.properties", name);
+                    }
+                });
+                if (configs.length == 1) {
+                    return configs[0];
+                }else {
+                    System.out.println("The property file not found");
+
+                }
+            }else {
+                System.out.println("The lib folder not found");
+
+            }
+
+        }else {
+            System.out.println("The basic WEB-INF not found");
+        }
+        return null;
     }
 
     public static Map<Class, BILogger> loggerMap = new HashMap<Class, BILogger>();
