@@ -11,6 +11,7 @@ import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.cal.analyze.session.BISession;
 import com.fr.bi.cal.report.main.impl.BIWorkBook;
 import com.fr.bi.cal.report.report.poly.BIPolyWorkSheet;
+import com.fr.bi.common.persistent.xml.BIIgnoreField;
 import com.fr.bi.conf.base.auth.data.BIPackageAuthority;
 import com.fr.bi.conf.provider.BIConfigureManagerCenter;
 import com.fr.bi.conf.report.BIWidget;
@@ -57,7 +58,10 @@ public abstract class AbstractBIWidget implements BIWidget {
     private long initTime;
     private long userId;
     private boolean realData = true;
+    @BIIgnoreField
     private String sessionId;
+    @BIIgnoreField
+    private BICore widgetCore;
 
     @BICoreField
     protected BIWidgetConf widgetConf = new BIWidgetConf();
@@ -282,7 +286,10 @@ public abstract class AbstractBIWidget implements BIWidget {
 
     @Override
     public BICore fetchObjectCore() {
-        return new BICoreGenerator(this).fetchObjectCore();
+        if (widgetCore == null){
+            widgetCore = new BICoreGenerator(this).fetchObjectCore();
+        }
+        return widgetCore;
     }
 
     @Override

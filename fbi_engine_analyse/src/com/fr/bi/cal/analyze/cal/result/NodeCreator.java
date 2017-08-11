@@ -25,4 +25,5 @@ public interface NodeCreator {
     void sumCalculateMetrics(List<TargetCalculator> calculatorList, List<CalCalculator> calCalculators, MetricMergeResult rootNode);
 
     void copySumValue(Node node, MetricMergeResult mergeResult);
+
 }
