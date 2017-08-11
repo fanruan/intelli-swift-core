@@ -18,6 +18,11 @@ import java.util.concurrent.ConcurrentHashMap;
  * BI日志输出
  */
 public class BILoggerFactory {
+
+    private static final String LOG_PROPERTIES_URL = "FineLog.properties";
+    private static final String LIB_FOLDER = "lib";
+    private static final String LOAD_RESOURCE_NAME = "log4j.properties";
+
     static {
         /**
          * 添加默认Log配置
@@ -39,7 +44,7 @@ public class BILoggerFactory {
     }
 
     private static void useOriginalLog() {
-        URL original = Loader.getResource("log4j.properties");
+        URL original = Loader.getResource(LOAD_RESOURCE_NAME);
         if (original != null) {
             PropertyConfigurator.configure(original);
             FRContext.getLogger().info("The log properties url:" + original.toString());
@@ -60,14 +65,14 @@ public class BILoggerFactory {
             File[] childFiles = webInfFile.listFiles(new FilenameFilter() {
                 @Override
                 public boolean accept(File dir, String name) {
-                    return ComparatorUtils.equals("lib", name);
+                    return ComparatorUtils.equals(LIB_FOLDER, name);
                 }
             });
             if (childFiles.length == 1) {
                 File[] configs = childFiles[0].listFiles(new FilenameFilter() {
                     @Override
                     public boolean accept(File dir, String name) {
-                        return ComparatorUtils.equals("FineLog.properties", name);
+                        return ComparatorUtils.equals(LOG_PROPERTIES_URL, name);
                     }
                 });
                 if (configs.length == 1) {
