@@ -202,7 +202,7 @@ public class HorGroupExecutor extends AbstractTableWidgetExecutor<Node> {
 
         GroupValueIndex linkGvi = null;
         try {
-            String target = getClieckTarget(clicked);
+            String target = getClickTarget(clicked);
             // 连联动计算指标都没有就没有所谓的联动了,直接返回
             if (target == null) {
                 return null;
@@ -213,7 +213,8 @@ public class HorGroupExecutor extends AbstractTableWidgetExecutor<Node> {
                 return null;
             }
             List<Object> col = getLinkRowData(clicked, target, true);
-            Node linkNode = getStopOnRowNode(col.toArray(), widget.getViewTopDimensions());
+            BIDimension[] dimensions = getUserDimension(clicked, target);
+            Node linkNode = getStopOnRowNode(col.toArray(), dimensions);
             // 总汇总值
             if (col == null || col.size() == 0) {
                 for (String key : clicked.keySet()) {

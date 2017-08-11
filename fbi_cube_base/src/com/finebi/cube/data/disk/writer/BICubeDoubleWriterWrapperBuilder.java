@@ -21,10 +21,10 @@ public class BICubeDoubleWriterWrapperBuilder extends BINIOWriterBuilder<ICubeDo
 
     @Override
     protected ICubeDoubleWriterWrapper createNIOWriter(File target, ICubeResourceLocation location) {
-        ICubeResourceLocation contentLocation = location.copy();
-        contentLocation.setWriterSourceLocation();
-        contentLocation.setDoubleType();
         try {
+            ICubeResourceLocation contentLocation = location.copy().getRealLocation();
+            contentLocation.setWriterSourceLocation();
+            contentLocation.setDoubleType();
             return new BICubeDoubleWriterWrapper(BICubeDiskPrimitiveDiscovery.getInstance().getCubeWriter(contentLocation));
         } catch (Exception ignore) {
             throw new RuntimeException(ignore.getMessage(), ignore);

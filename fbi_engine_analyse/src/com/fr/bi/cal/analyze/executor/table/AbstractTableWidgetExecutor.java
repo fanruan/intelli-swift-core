@@ -1,5 +1,6 @@
 package com.fr.bi.cal.analyze.executor.table;
 
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.conf.table.BusinessTable;
 import com.fr.base.Style;
 import com.fr.bi.cal.analyze.cal.index.loader.CubeIndexLoader;
@@ -22,7 +23,7 @@ import com.fr.general.ComparatorUtils;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;
 
-import java.awt.*;
+import java.awt.Rectangle;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -49,7 +50,7 @@ public abstract class AbstractTableWidgetExecutor<T> extends BIAbstractExecutor<
         allSumTarget = widget.getTargets();
         allDimensions = widget.getDimensions();
 
-        tableStyle= new BITableStyle(widget.getThemeColor());
+        tableStyle = new BITableStyle(widget.getThemeColor());
 
         //        this.expander = CrossExpander.ALL_EXPANDER;
     }
@@ -71,6 +72,7 @@ public abstract class AbstractTableWidgetExecutor<T> extends BIAbstractExecutor<
     }
 
     protected static CBCell formatTargetCell(Object data, BIWidgetConf setting, TargetGettingKey key, int rowIdx, int columnIdx, Style style) {
+
         int numLevel = setting.getNumberLevelByTargetID(key.getTargetName());
         int formatDecimal = setting.getFormatDecimalByTargetID(key.getTargetName());
         boolean separator = setting.getSeparatorByTargetID(key.getTargetName());
@@ -136,10 +138,11 @@ public abstract class AbstractTableWidgetExecutor<T> extends BIAbstractExecutor<
 
     /**
      * 获取点击的指标
+     *
      * @param clicked
      * @return
      */
-    protected String getClieckTarget(Map<String, JSONArray> clicked) {
+    protected String getClickTarget(Map<String, JSONArray> clicked) {
 
         for (String target : clicked.keySet()) {
             try {
@@ -154,14 +157,18 @@ public abstract class AbstractTableWidgetExecutor<T> extends BIAbstractExecutor<
 
     /**
      * 获取目标的gvi
+     *
      * @param target
      * @param n
      * @return
      */
     protected GroupValueIndex getTargetIndex(String target, Node n) {
-        for (BISummaryTarget t : allSumTarget){
-            if (ComparatorUtils.equals(t.getName(), target)){
-                return n.getTargetIndex(t.createTargetGettingKey());
+
+        if (n != null && target != null) {
+            for (BISummaryTarget t : allSumTarget) {
+                if (ComparatorUtils.equals(t.getName(), target)) {
+                    return n.getTargetIndex(t.createTargetGettingKey());
+                }
             }
         }
         return null;
@@ -173,6 +180,15 @@ public abstract class AbstractTableWidgetExecutor<T> extends BIAbstractExecutor<
             if (data.size() == 0) {
                 return getTargetIndex(target, n);
             }
+            Node parent = getClickNode(n, data);
+            return getTargetIndex(target, parent);
+        }
+        return null;
+    }
+
+    protected Node getClickNode(Node n, List<Object> data) {
+
+        if (n != null) {
             Node parent = n;
             for (int i = 0; i < data.size(); i++) {
                 Object cv = data.get(i);
@@ -185,13 +201,14 @@ public abstract class AbstractTableWidgetExecutor<T> extends BIAbstractExecutor<
                 }
                 parent = child;
             }
-            return getTargetIndex(target, parent);
+            return parent;
         }
         return null;
     }
 
     /**
      * 把以前放在BIEngineExecutor中的接口移到这边来,因为只可能需要表格才可能停在某一行
+     *
      * @param stopRow
      * @param dimensions
      * @return
@@ -239,7 +256,7 @@ public abstract class AbstractTableWidgetExecutor<T> extends BIAbstractExecutor<
      * @param dimensions
      * @return
      */
-    protected boolean isClieckRegion(List<String> dids, BIDimension[] dimensions) {
+    protected boolean isClickRegion(List<String> dids, BIDimension[] dimensions) {
 
         if (dids == null || dids.size() == 0) {
             return false;
@@ -261,7 +278,7 @@ public abstract class AbstractTableWidgetExecutor<T> extends BIAbstractExecutor<
      * @param colDimension
      * @return
      */
-    protected boolean isClieckRegin(List<String> rowsDid, BIDimension[] rowDimension, List<String> colsDid, BIDimension[] colDimension) {
+    protected boolean isClickRegion(List<String> rowsDid, BIDimension[] rowDimension, List<String> colsDid, BIDimension[] colDimension) {
 
         if (rowsDid == null || colsDid == null) {
             return false;
@@ -289,6 +306,7 @@ public abstract class AbstractTableWidgetExecutor<T> extends BIAbstractExecutor<
      * @throws Exception
      */
     protected List<Object> getLinkRowData(Map<String, JSONArray> clicked, String target, boolean isHor) throws Exception {
+
         List r = new ArrayList<Object>();
         try {
             if (clicked != null) {
@@ -308,15 +326,42 @@ public abstract class AbstractTableWidgetExecutor<T> extends BIAbstractExecutor<
                         JSONObject object = keyJson.getJSONObject(i);
                         String click = object.getJSONArray("value").getString(0);
                         String did = object.getString("dId");
-                        rowData[j++] = click;r.add(click);
+                        rowData[j++] = click;
+                        r.add(click);
                     }
                 }
 
             }
         } catch (Exception e) {
-
+            BILoggerFactory.getLogger(this.getClass()).info(e.getMessage(), e);
         }
         return r;
+    }
+
+    /**
+     * 去掉没有用到的维度，现在联动以单个维度为联动的时候不跟上一个维度有关系。
+     * 所以之前的维度是没有用的，只有再click里面的维度才是有用的。
+     *
+     * @param clicked
+     * @param target
+     * @return
+     */
+    protected BIDimension[] getUserDimension(Map<String, JSONArray> clicked, String target) {
+
+        List<BIDimension> ret = new ArrayList<BIDimension>();
+        try {
+
+            JSONArray keyJson = clicked.get(target);
+            for (int i = keyJson.length() - 1; i >= 0; i--) {
+                // 每个维度根据指标来选出点击的值得gvi
+                JSONObject object = keyJson.getJSONObject(i);
+                String did = object.getString("dId");
+                ret.add(widget.getDimensionBydId(did));
+            }
+        } catch (Exception e) {
+
+        }
+        return ret.toArray(new BIDimension[ret.size()]);
     }
 
     /**
@@ -366,7 +411,7 @@ public abstract class AbstractTableWidgetExecutor<T> extends BIAbstractExecutor<
                 }
             }
         } catch (Exception e) {
-
+            BILoggerFactory.getLogger(this.getClass()).info(e.getMessage(), e);
         }
     }
 }

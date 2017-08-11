@@ -4,12 +4,23 @@ import com.finebi.cube.structure.*;
 import com.finebi.cube.structure.column.BIColumnKey;
 import com.finebi.cube.structure.column.CubeColumnReaderService;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
+import com.fr.general.ComparatorUtils;
+
+import java.util.UUID;
 
 /**
  * Created by neil wang on 17/5/7.
  */
 
 public class BICubeUtils {
+
+    public static boolean equals(Object o1, Object o2) {
+        return ComparatorUtils.equals(o1, o2);
+    }
+
+    public static String UUID() {
+        return UUID.randomUUID().toString();
+    }
 
     public static boolean tableExist(ITableKey tableKey, CubeTableEntityGetterService tableEntityGetterService, Cube cube) {
         if (cube.isResourceExist(tableKey)) {
@@ -35,7 +46,7 @@ public class BICubeUtils {
             columnReaderService = tableEntityGetterService.getColumnDataGetter(columnKey);
             basicTableRelation = tableEntityGetterService.getRelationIndexGetter(relationPath);
 
-            if (tableRelationExist(tableKey, relationPath,tableEntityGetterService,cube)) {
+            if (tableRelationExist(tableKey, relationPath, tableEntityGetterService, cube)) {
                 /**
                  * 如果基础关联存在，那么需要判断版本。字段版本，必须晚于基础关联版本
                  */

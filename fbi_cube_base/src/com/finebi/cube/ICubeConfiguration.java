@@ -1,5 +1,8 @@
 package com.finebi.cube;
 
+import com.finebi.common.name.Name;
+import com.finebi.cube.location.manager.BILocationProvider;
+
 import java.net.URI;
 
 /**
@@ -10,5 +13,5 @@ import java.net.URI;
  */
 public interface ICubeConfiguration {
     URI getRootURI();
-    
+    BILocationProvider getLocationProvider();
 }

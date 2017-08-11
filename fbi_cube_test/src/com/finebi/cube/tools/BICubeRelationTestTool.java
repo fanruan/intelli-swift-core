@@ -2,7 +2,6 @@ package com.finebi.cube.tools;
 
 import com.finebi.cube.structure.BICubeRelation;
 import com.finebi.cube.structure.column.BIColumnKey;
-import com.finebi.cube.utils.BITableKeyUtils;
 import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.data.db.BICubeFieldSource;
 import com.fr.bi.stable.data.source.CubeTableSource;

@@ -8,7 +8,6 @@ import com.finebi.integration.cube.gen.BISourceDataTransportTest;
 import com.finebi.cube.structure.ICubeRelationEntityService;
 import com.finebi.cube.tools.BICubeRelationTestTool;
 import com.finebi.cube.tools.BIMemoryDataSourceFactory;
-import com.finebi.cube.utils.BITableKeyUtils;
 import com.fr.fs.control.UserControl;
 
 /**

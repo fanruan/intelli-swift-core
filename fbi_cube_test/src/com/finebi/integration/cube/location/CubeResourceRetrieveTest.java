@@ -8,8 +8,6 @@ import com.finebi.cube.location.ICubeResourceRetrievalService;
 import com.finebi.cube.relation.BITableSourceRelationPath;
 import com.finebi.cube.structure.column.BIColumnKey;
 import com.finebi.cube.tools.*;
-import com.finebi.cube.utils.BICubePathUtils;
-import com.finebi.cube.utils.BITableKeyUtils;
 import com.fr.bi.stable.utils.algorithem.BIMD5Utils;
 import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.stable.StableUtils;

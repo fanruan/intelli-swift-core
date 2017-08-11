@@ -350,7 +350,7 @@ public class CrossExecutor extends AbstractTableWidgetExecutor<XNode> {
 
         GroupValueIndex linkGvi = null;
         try {
-            String target = getClieckTarget(clicked);
+            String target = getClickTarget(clicked);
             // 连联动计算指标都没有就没有所谓的联动了,直接返回
             if (target == null) {
                 return null;
