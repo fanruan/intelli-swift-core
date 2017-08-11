@@ -97,7 +97,6 @@ public class TableWidget extends SummaryWidget implements SclCalculator {
     @BIIgnoreField
     private transient BISummaryTarget[] usedTargets;
     @BICoreField
-    @BICoreField
     protected Map<String, JSONArray> clicked = new HashMap<String, JSONArray>();
 
     protected Map<String, BIDimension> dimensionsIdMap = new HashMap<String, BIDimension>();

@@ -276,11 +276,6 @@ public class BISession extends BIAbstractSession {
     }
 
     @Override
-    public Object initCellElementValue(HttpServletRequest httpServletRequest, String s) {
-        return null;
-    }
-
-    @Override
     public String getWebTitle() {
         return null;
     }

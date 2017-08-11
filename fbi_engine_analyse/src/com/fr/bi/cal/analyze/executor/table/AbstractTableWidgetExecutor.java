@@ -31,11 +31,7 @@ import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;
 
 import java.awt.Rectangle;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public abstract class AbstractTableWidgetExecutor<T> extends BIAbstractExecutor<T> {
 

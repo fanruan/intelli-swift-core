@@ -18,8 +18,6 @@ import com.finebi.cube.conf.trans.BIAliasManagerWithoutUser;
 import com.fr.base.FRContext;
 import com.fr.bi.cal.BICubeManager;
 import com.fr.bi.cal.analyze.cal.index.loader.cache.WidgetDataCacheManager;
-import com.fr.bi.cal.generate.timerTask.BICubeTimeTaskCreatorManager;
-import com.fr.bi.cal.generate.timerTask.BICubeTimeTaskCreatorProvider;
 import com.fr.bi.cluster.ClusterAdapter;
 import com.fr.bi.cluster.ClusterManager;
 import com.fr.bi.cluster.manager.EmptyClusterManager;
