@@ -28,7 +28,7 @@ public class JobTask implements Job {
         JobDataMap data = jobExecutionContext.getJobDetail().getJobDataMap();
         long userId = Long.valueOf(data.get("userId").toString());
         String tableKey = data.getString("tableKey");
-        int updateType = data.getInt("updateType");
+        int updateType = Integer.valueOf(data.getString("updateType"));
         if (ComparatorUtils.equals(tableKey, DBConstant.CUBE_UPDATE_TYPE.GLOBAL_UPDATE)) {
             CubeGenerationManager.getCubeManager().addCubeGenerateTask2Queue(userId, null, null, true);
         } else {

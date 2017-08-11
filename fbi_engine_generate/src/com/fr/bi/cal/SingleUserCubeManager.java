@@ -4,7 +4,7 @@ import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.impl.conf.CubeBuildStuffComplete;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.cal.generate.CubeRunner;
-import com.fr.bi.cal.generate.timerTask.CubeTimerTaskUtils;
+import com.fr.bi.cal.generate.timerTask.CubeTimerTaskHelper;
 import com.fr.bi.stable.constant.Status;
 import com.fr.bi.stable.engine.CubeTask;
 import com.fr.bi.stable.engine.CubeTaskType;
@@ -111,8 +111,8 @@ public class SingleUserCubeManager {
         return true;
     }
 
-    public void resetCubeGenerationHour() {
-        CubeTimerTaskUtils.reGenerateTimeTasks();
+    public void resetCubeTimerTasks() {
+        CubeTimerTaskHelper.reGenerateTimeTasks();
     }
 
     /**
