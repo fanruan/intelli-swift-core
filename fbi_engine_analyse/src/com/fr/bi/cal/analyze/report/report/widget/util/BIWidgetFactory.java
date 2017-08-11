@@ -45,6 +45,7 @@ import com.fr.bi.conf.report.widget.chart.VanStackedBarWidget;
 import com.fr.bi.conf.report.widget.chart.VanStackedColumnWidget;
 import com.fr.bi.conf.report.widget.chart.VanStackedRadarWidget;
 import com.fr.bi.conf.report.widget.chart.VanTreeMapWidget;
+import com.fr.bi.conf.report.widget.chart.VanWordCloudWidget;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;
@@ -100,6 +101,7 @@ public class BIWidgetFactory {
         vancharts.put(WidgetType.GIS_MAP, VanGisWidget.class);
         vancharts.put(WidgetType.HEAT_MAP, VanHeatMapWidget.class);
         vancharts.put(WidgetType.LINE_MAP, VanLineMapWidget.class);
+        vancharts.put(WidgetType.WORD_CLOUD, VanWordCloudWidget.class);
     }
 
 
