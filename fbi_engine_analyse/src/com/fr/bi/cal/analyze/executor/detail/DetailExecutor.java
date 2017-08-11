@@ -163,7 +163,7 @@ public class DetailExecutor extends AbstractDetailExecutor {
                 List list = new ArrayList();
                 for (int i = 0; i < row.getValues().length; i++) {
                     if (viewDimension[i].isUsed()) {
-                        if (viewDimension[i] instanceof BIDateDetailTarget && !BICollectionUtils.isCubeNullKey(row.getValues()[i])) {
+                        if (viewDimension[i] instanceof BIDateDetailTarget && row.getValues()[i] != null) {
                             list.add(Long.valueOf(String.valueOf(row.getValues()[i])));
                         } else {
                             list.add(row.getValues()[i]);
