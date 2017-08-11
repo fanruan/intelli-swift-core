@@ -167,7 +167,7 @@ public class VanMapWidget extends VanChartWidget{
         return "areaMap";
     }
 
-    protected String getLegendType(){
+    protected String getLegendType(JSONObject settings){
         return "rangeLegend";
     }
 
