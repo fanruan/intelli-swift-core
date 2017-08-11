@@ -42,23 +42,54 @@ public class VanChartWidget extends TableWidget {
                 }
             });
 
-            //通过改变view来控制生成的表结构，分组表or交叉表or复杂表
-            JSONObject settings = jo.optJSONObject("settings");
-            int type = jo.optInt("type");
-            switch (type){
-                case BIReportConstant.WIDGET.DOT:
-                    changeDotView(sorted, vjo, settings);
-                    break;
-                case BIReportConstant.WIDGET.LINE_MAP:
-                    changeLineMapView(sorted, vjo);
-                    break;
-                case BIReportConstant.WIDGET.RECT_TREE:
-                    changeTreeMapView(sorted, vjo);
-                    break;
-            }
+            changeView(jo, sorted, vjo);
         }
 
         super.parseJSON(jo, userId);
+    }
+
+    private void changeView(JSONObject jo, List<String> sorted, JSONObject vjo) throws JSONException {
+        JSONObject dimensionIds = JSONObject.create();
+        JSONObject regionIds = JSONObject.create();
+        JSONArray ja = JSONArray.create();
+        for (String region : sorted) {
+
+            if (Integer.parseInt(region) < Integer.parseInt(BIReportConstant.REGION.TARGET1)) {
+                continue;
+            }
+
+            JSONArray tmp = vjo.getJSONArray(region);
+
+            dimensionIds.put(region, tmp);
+
+            for (int j = 0; j < tmp.length(); j++) {
+                String key = tmp.getString(j);
+                ja.put(key);
+                regionIds.put(key, region);
+            }
+
+            vjo.remove(region);
+        }
+        //所有图表都把30000以上的指标放到30000上，因为所有的表结构只有一个指标
+        vjo.put(BIReportConstant.REGION.TARGET1, ja);
+        JSONObject settings = jo.optJSONObject("settings");
+        settings.put("dimensionIds", dimensionIds);
+        settings.put("regionIds", regionIds);
+
+        //通过改变view来控制生成的表结构，分组表or交叉表or复杂表
+        int type = jo.optInt("type");
+        switch (type){
+            case BIReportConstant.WIDGET.DOT:
+                changeDotView(sorted, vjo, settings);
+                break;
+            case BIReportConstant.WIDGET.LINE_MAP:
+                changeLineMapView(sorted, vjo);
+                break;
+            case BIReportConstant.WIDGET.RECT_TREE:
+                changeTreeMapView(sorted, vjo);
+                break;
+        }
+
     }
 
     //点图的分类系列全部放到10000，因为要生成只有行表头的复杂表。
