@@ -69,7 +69,7 @@ public abstract class BIAbstractBaseNIOReader implements ICubePrimitiveReader {
             readWriteLock.writeLock().lock();
             //再destroy之前必须在manager里面吧isvalid设置成false
             if (isValid == true) {
-                BILoggerFactory.getLogger(this.getClass()).error("can not destroy valid reader");
+                BILoggerFactory.getLogger(this.getClass()).info("can not destroy valid reader");
             }
             setBufferInValid();
             try {
