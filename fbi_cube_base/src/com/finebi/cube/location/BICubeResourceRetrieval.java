@@ -1,10 +1,9 @@
 package com.finebi.cube.location;
 
-import com.finebi.common.name.Name;
 import com.finebi.cube.ICubeConfiguration;
 import com.finebi.cube.exception.BICubeResourceAbsentException;
 import com.finebi.cube.exception.BICubeResourceDuplicateException;
-import com.finebi.cube.location.manager.BILocationProvider;
+import com.finebi.cube.location.provider.BILocationProvider;
 import com.finebi.cube.structure.BICubeTablePath;
 import com.finebi.cube.structure.ITableKey;
 import com.finebi.cube.structure.column.BIColumnKey;

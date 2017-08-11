@@ -9,6 +9,7 @@ import org.w3c.dom.NodeList;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import java.io.FileNotFoundException;
 
 /**
  * Created by wang on 2017/6/20.
@@ -34,7 +35,10 @@ public class BILocationDomReader extends PoolDomReader<BILocationPool> {
                 BILocationInfo biLocationInfo = readLocationInfo(infoNode) ;
                 pool.addResourceItem(biLocationInfo.getResourceName(), biLocationInfo);
             }
-        } catch (Exception e) {
+        }catch (FileNotFoundException ignore){
+            LOGGER.warn(ignore.getMessage(),targetPath+" not found");
+        }
+        catch (Exception e) {
             LOGGER.error(e.getMessage(), e);
         }
         return pool;

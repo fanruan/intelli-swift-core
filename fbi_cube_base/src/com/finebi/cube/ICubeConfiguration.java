@@ -1,7 +1,7 @@
 package com.finebi.cube;
 
-import com.finebi.common.name.Name;
-import com.finebi.cube.location.manager.BILocationProvider;
+
+import com.finebi.cube.location.provider.BILocationProvider;
 
 import java.net.URI;
 

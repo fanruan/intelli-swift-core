@@ -3,8 +3,6 @@
  */
 package com.fr.bi.etl.analysis.tableobj;
 
-import com.finebi.common.name.Name;
-import com.finebi.common.name.NameImp;
 import com.finebi.cube.ICubeConfiguration;
 import com.finebi.cube.adapter.BICubeTableAdapter;
 import com.finebi.cube.api.ICubeTableService;
@@ -15,8 +13,8 @@ import com.finebi.cube.data.disk.BICubeDiskPrimitiveDiscovery;
 import com.finebi.cube.location.BICubeLocation;
 import com.finebi.cube.location.BICubeResourceRetrieval;
 import com.finebi.cube.location.ICubeResourceLocation;
-import com.finebi.cube.location.manager.BILocationProvider;
-import com.finebi.cube.location.manager.ILocationConverter;
+import com.finebi.cube.location.provider.BILocationProvider;
+import com.finebi.cube.location.provider.ILocationConverter;
 import com.finebi.cube.structure.BICube;
 import com.fr.bi.common.factory.BIFactoryHelper;
 import com.fr.bi.common.inter.Delete;
