@@ -44,6 +44,7 @@ public class BIMultiThreadExecutor {
                     session.getLoader().releaseCurrentThread();
                 }
             });
+            list.wakeUp();
         }
     }
 

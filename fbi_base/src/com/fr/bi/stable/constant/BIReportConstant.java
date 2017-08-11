@@ -503,7 +503,7 @@ public class BIReportConstant {
         /**
          * 大数据图表
          */
-        public static final int BIGDATACHART =6;
+        public static final int BIGDATACHART = 6;
     }
 
     /**
@@ -602,6 +602,8 @@ public class BIReportConstant {
     }
 
     public static final class TARGET_STYLE {
+        public static final boolean NUM_SEPARATORS = true;
+
         public static final class FORMAT {
             public static final int NORMAL = -1;
             public static final int ZERO2POINT = 0;
@@ -621,6 +623,12 @@ public class BIReportConstant {
             public static final int NONE = 1;
             public static final int POINT = 2;
             public static final int ARROW = 3;
+        }
+
+        public static final class AXIS_FORMAT {
+            public static final int AUTO = 0;
+            public static final int DIGIT = 1;
+            public static final int PERCENT = 2;
         }
     }
 
@@ -698,11 +706,11 @@ public class BIReportConstant {
         public static final int MORE = 3;
     }
 
-    public static final class ERROR_CODE{
+    public static final class ERROR_CODE {
         public static final int SQLDATASET_ERR = 61310001;
     }
 
-    public static final class ERROR_MESSAGE{
+    public static final class ERROR_MESSAGE {
         public static final String SQLDATASET_MSG = "sqldataset config error";
     }
 }

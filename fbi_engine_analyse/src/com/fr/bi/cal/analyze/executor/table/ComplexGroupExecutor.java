@@ -132,7 +132,7 @@ public class ComplexGroupExecutor extends AbstractTableWidgetExecutor {
             keys[i] = usedSumTarget[i].createTargetGettingKey();
         }
         Map<Integer, Node> nodeMap = CubeIndexLoader.getInstance(session.getUserId()).loadComplexPageGroup(false, widget, createTarget4Calculate(), rowData, allDimensions,
-                                                                                                           allSumTarget, keys, paging.getOperator(), widget.useRealData(), session, complexExpander, true);
+                allSumTarget, keys, paging.getOperator(), widget.useRealData(), session, complexExpander, true);
         if (nodeMap.isEmpty()) {
             return null;
         }
@@ -198,7 +198,7 @@ public class ComplexGroupExecutor extends AbstractTableWidgetExecutor {
                 }
             }
         } catch (Exception e) {
-            BILoggerFactory.getLogger(ComplexGroupExecutor.class).info("error in get link filter",e);
+            BILoggerFactory.getLogger(ComplexGroupExecutor.class).info("error in get link filter", e);
         }
         return filterGvi;
     }
