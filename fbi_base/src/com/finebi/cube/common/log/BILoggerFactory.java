@@ -3,6 +3,7 @@ package com.finebi.cube.common.log;
 import com.fr.base.FRContext;
 import com.fr.bi.stable.utils.code.BIPrintUtils;
 import com.fr.general.ComparatorUtils;
+import com.fr.general.FRLogger;
 import org.apache.log4j.PropertyConfigurator;
 import org.apache.log4j.helpers.Loader;
 import org.slf4j.LoggerFactory;
@@ -28,7 +29,7 @@ public class BILoggerFactory {
             try {
                 PropertyConfigurator.configure(new FileInputStream(logFile));
             } catch (Exception e) {
-                System.err.print("Can't get the log file in lib folder and use default log.The error info:\n" + BIPrintUtils.outputException(e));
+                FRLogger.getLogger().info("Can't get the log file in lib folder and use default log.The error info:\n" + BIPrintUtils.outputException(e));
                 useDefaultLog();
             }
         } else {
@@ -41,14 +42,14 @@ public class BILoggerFactory {
         URL original = Loader.getResource("log4j.properties");
         if (original != null) {
             PropertyConfigurator.configure(original);
-            System.out.println("The log properties url:" + original.toString());
+            FRContext.getLogger().info("The log properties url:" + original.toString());
         } else {
             useDefaultLog();
         }
     }
 
     private static void useDefaultLog() {
-        System.out.println("The default log properties");
+        FRContext.getLogger().info("The default log properties");
         PropertyConfigurator.configure(defaultProperties());
     }
 
@@ -72,16 +73,17 @@ public class BILoggerFactory {
                 if (configs.length == 1) {
                     return configs[0];
                 }else {
-                    System.out.println("The property file not found");
-
+                    FRContext.getLogger().info("The property file not found");
+                    //System.out.println("The property file not found");
                 }
             }else {
-                System.out.println("The lib folder not found");
-
+                FRContext.getLogger().info("The lib folder not found");
+//                System.out.println("The lib folder not found");
             }
 
         }else {
-            System.out.println("The basic WEB-INF not found");
+            FRContext.getLogger().info("The basic WEB-INF not found");
+//            System.out.println("The basic WEB-INF not found");
         }
         return null;
     }
