@@ -29,6 +29,8 @@ import com.fr.bi.conf.report.widget.chart.VanForceBubbleWidget;
 import com.fr.bi.conf.report.widget.chart.VanFunnelWidget;
 import com.fr.bi.conf.report.widget.chart.VanGaugeWidget;
 import com.fr.bi.conf.report.widget.chart.VanGisWidget;
+import com.fr.bi.conf.report.widget.chart.VanHeatMapWidget;
+import com.fr.bi.conf.report.widget.chart.VanLineMapWidget;
 import com.fr.bi.conf.report.widget.chart.VanLineWidget;
 import com.fr.bi.conf.report.widget.chart.VanMapWidget;
 import com.fr.bi.conf.report.widget.chart.VanMultiAxisCombinationWidget;
@@ -95,7 +97,10 @@ public class BIWidgetFactory {
         vancharts.put(WidgetType.MULTI_PIE, VanMultiPieWidget.class);
 
         vancharts.put(WidgetType.MAP, VanMapWidget.class);
-        vancharts.put(WidgetType.GIS_MAP, VanGisWidget.class);    }
+        vancharts.put(WidgetType.GIS_MAP, VanGisWidget.class);
+        vancharts.put(WidgetType.HEAT_MAP, VanHeatMapWidget.class);
+        vancharts.put(WidgetType.LINE_MAP, VanLineMapWidget.class);
+    }
 
 
 //todo 交给图表组处理
