@@ -1,6 +1,5 @@
 package com.finebi.cube.gen.oper;
 
-import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.conf.utils.BILogHelper;
 import com.finebi.cube.map.map2.ExternalIntArrayMapFactory;
 import com.finebi.cube.map.map2.IntArrayListExternalMap;
@@ -99,7 +98,7 @@ public class BIFieldIndexGenerator<T> extends AbstractFieldIndexGenerator {
             try {
                 biLogManager.infoColumn(tableSource.getPersistentTable(), hostBICubeFieldSource.getFieldName(), stopwatch.elapsed(TimeUnit.SECONDS), Long.valueOf(UserControl.getInstance().getSuperManagerID()));
             } catch (Exception e) {
-                BILoggerFactory.getLogger().error(e.getMessage(), e);
+                LOGGER.error(e.getMessage(), e);
             }
             return null;
         } catch (Throwable e) {
