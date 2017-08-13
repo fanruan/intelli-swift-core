@@ -33,67 +33,88 @@ import java.util.Map;
 public abstract class BIAbstractDimension extends BIAbstractTargetAndDimension implements BIDimension {
 
     private static final long serialVersionUID = -1049362619688281145L;
+
     @BICoreField
     protected DimensionFilter filter;
+
     @BICoreField
     protected ISort sort = new NoSort();
+
     @BICoreField
     protected IGroup group = new NoGroup();
+
     private String sortTarget;
+
     private BITableRelationPath selfToSelfRelationPath;
+
+    /**
+     * 是否显示空值
+     */
+    private boolean notShowNull = false;
 
     @Override
     public IGroup getGroup() {
+
         return group;
     }
 
     @Override
     public void setGroup(IGroup group) {
+
         this.group = group;
     }
 
     @Override
     public ISort getSort() {
+
         return sort;
     }
 
     @Override
     public int getSortType() {
+
         return getSort().getSortType();
     }
 
     @Override
     public void setSortType(int sortType) {
+
         this.sort.setSortType(sortType);
     }
 
     public int getGroupType() {
+
         return getGroup().getType();
     }
 
 
     @Override
     public String getSortTarget() {
+
         return sortTarget;
     }
 
     @Override
     public Object toFilterObject(Object data) {
+
         return data;
     }
 
     @Override
     public DimensionFilter getFilter() {
+
         return filter;
     }
 
     @Override
     public void setFilter(DimensionFilter filter) {
+
         this.filter = filter;
     }
 
     @Override
     public void parseJSON(JSONObject jo, long userId) throws Exception {
+
         super.parseJSON(jo, userId);
         if (jo.has("sort")) {
             JSONObject sortJo = jo.optJSONObject("sort");
@@ -121,7 +142,12 @@ public abstract class BIAbstractDimension extends BIAbstractTargetAndDimension i
                 this.selfToSelfRelationPath = new BITableRelationPath(tableRelationArray);
             }
         }
-
+        /**
+         * 是否显示空值
+         */
+        if (jo.has("notShowNull")) {
+            notShowNull = jo.optBoolean("notShowNull", false);
+        }
     }
 
     @Override
@@ -132,6 +158,7 @@ public abstract class BIAbstractDimension extends BIAbstractTargetAndDimension i
 
     @Override
     public boolean equals(Object o) {
+
         if (this == o) {
             return true;
         }
@@ -161,6 +188,7 @@ public abstract class BIAbstractDimension extends BIAbstractTargetAndDimension i
 
     @Override
     public int hashCode() {
+
         int result = super.hashCode();
         result = 31 * result + (sortTarget != null ? sortTarget.hashCode() : 0);
         result = 31 * result + (column != null ? column.hashCode() : 0);
@@ -172,6 +200,7 @@ public abstract class BIAbstractDimension extends BIAbstractTargetAndDimension i
 
     @Override
     public List<String> getUsedTargets() {
+
         List<String> res = new ArrayList<String>();
         if (this.filter != null) {
             res.addAll(this.filter.getUsedTargets());
@@ -186,6 +215,7 @@ public abstract class BIAbstractDimension extends BIAbstractTargetAndDimension i
 
     @Override
     public boolean useTargetSort() {
+
         return (getSortType() == BIReportConstant.SORT.ASC || getSortType() == BIReportConstant.SORT.DESC
                 || getSortType() == BIReportConstant.SORT.NUMBER_ASC || getSortType() == BIReportConstant.SORT.NUMBER_DESC) && sortTarget != null && !ComparatorUtils.equals(sortTarget, id);
     }
@@ -193,6 +223,7 @@ public abstract class BIAbstractDimension extends BIAbstractTargetAndDimension i
 
     @Override
     public boolean showNode(BINode node, Map<String, TargetCalculator> targetsMap) {
+
         if (filter != null) {
             return filter.showNode(node, targetsMap, null);
         }
@@ -202,10 +233,22 @@ public abstract class BIAbstractDimension extends BIAbstractTargetAndDimension i
 
     @Override
     public Object getValueByType(Object data) {
+
         return data == null ? StringUtils.EMPTY : data.toString();
     }
 
     public BITableRelationPath getSelfToSelfRelationPath() {
+
         return selfToSelfRelationPath;
+    }
+
+    /**
+     * 是否显示空值
+     *
+     * @return
+     */
+    public boolean showNullValue() {
+
+        return !notShowNull;
     }
 }
