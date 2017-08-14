@@ -1,5 +1,7 @@
 package com.fr.bi.cal.analyze.cal.sssecret;
 
+import com.fr.stable.StringUtils;
+
 /**
  * Created by 小灰灰 on 2017/7/31.
  */
@@ -29,7 +31,7 @@ public class EmptySingleDimensionGroup implements ISingleDimensionGroup {
 
     @Override
     public String getChildShowName(int row) {
-        return null;
+        return StringUtils.EMPTY;
     }
 
     @Override
