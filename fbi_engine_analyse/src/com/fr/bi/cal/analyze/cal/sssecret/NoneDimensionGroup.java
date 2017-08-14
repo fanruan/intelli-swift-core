@@ -24,6 +24,7 @@ import java.util.List;
 public class NoneDimensionGroup implements Release {
 
     public final static NoneDimensionGroup NULL = new NoneDimensionGroup();
+    public final static NoneDimensionGroup EMPTY = new NoneDimensionGroup();
 
     private BusinessTable[] metrics;
 
@@ -71,11 +72,6 @@ public class NoneDimensionGroup implements Release {
         this.loader = loader;
     }
 
-
-    public static NoneDimensionGroup createDimensionGroup(BusinessTable[] metrics, List<TargetAndKey>[] summaryLists, int sumLength, ICubeTableService[] tis, GroupValueIndex[] gvis, ICubeDataLoader loader) {
-
-        return new NoneDimensionGroup(metrics, summaryLists, sumLength, tis, gvis, loader);
-    }
 
     public static NoneDimensionGroup createDimensionGroup(BusinessTable[] metrics, List<TargetAndKey>[] summaryLists, int sumLength, ICubeTableService[] tis, MetricMergeResult result, ICubeDataLoader loader) {
 

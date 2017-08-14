@@ -3,18 +3,19 @@ package com.fr.bi.cal.analyze.report.report.widget.chart.calculator.format.setti
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;
+import com.fr.stable.StringUtils;
 
 /**
  * Created by Kary on 2017/5/11.
  */
 public class BICellFormatSetting implements ICellFormatSetting {
 
-    private String unit;
-    private boolean numSeparators;
-    private int numberLevel;
-    private int format;
-    private JSONArray conditions;
-    private int iconStyle;
+    private String unit = StringUtils.EMPTY;
+    private boolean numSeparators = BIReportConstant.TARGET_STYLE.NUM_SEPARATORS;
+    private int numberLevel = BIReportConstant.TARGET_STYLE.NUM_LEVEL.NORMAL;
+    private int format = BIReportConstant.TARGET_STYLE.FORMAT.NORMAL;
+    private JSONArray conditions = JSONArray.create();
+    private int iconStyle = BIReportConstant.TARGET_STYLE.ICON_STYLE.NONE;
     private int mark;
     private int dateFormatType;
     private boolean hasSeparator;
@@ -41,6 +42,7 @@ public class BICellFormatSetting implements ICellFormatSetting {
 
     @Override
     public void parseJSON(JSONObject jo) throws Exception {
+        jo = jo == null ? JSONObject.create() : jo;
         if (jo.has("unit")) {
             unit = jo.optString("unit");
         }
@@ -53,7 +55,6 @@ public class BICellFormatSetting implements ICellFormatSetting {
         if (jo.has("iconStyle")) {
             iconStyle = jo.optInt("iconStyle");
         }
-        format = BIReportConstant.TARGET_STYLE.FORMAT.NORMAL;
         if (jo.has("formatDecimal")) {
             format = jo.optInt("formatDecimal");
         }

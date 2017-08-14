@@ -1,4 +1,4 @@
-package com.finebi.cube.location.manager;
+package com.finebi.cube.location.provider;
 
 import com.finebi.cube.location.ICubeResourceLocation;
 

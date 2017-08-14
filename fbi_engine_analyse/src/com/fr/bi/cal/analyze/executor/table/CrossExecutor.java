@@ -5,13 +5,19 @@ import com.finebi.cube.conf.table.BusinessTable;
 import com.fr.base.Style;
 import com.fr.bi.base.FinalInt;
 import com.fr.bi.cal.analyze.cal.index.loader.CubeIndexLoader;
+import com.fr.bi.cal.analyze.cal.index.loader.cache.WidgetCache;
+import com.fr.bi.cal.analyze.cal.index.loader.cache.WidgetCacheKey;
 import com.fr.bi.cal.analyze.cal.result.BIXLeftNode;
 import com.fr.bi.cal.analyze.cal.result.CrossExpander;
 import com.fr.bi.cal.analyze.cal.result.Node;
 import com.fr.bi.cal.analyze.cal.result.XNode;
+import com.fr.bi.cal.analyze.cal.result.operator.Operator;
+import com.fr.bi.cal.analyze.cal.sssecret.NodeDimensionIterator;
+import com.fr.bi.cal.analyze.cal.sssecret.PageIteratorGroup;
 import com.fr.bi.cal.analyze.executor.iterator.StreamPagedIterator;
 import com.fr.bi.cal.analyze.executor.iterator.TableCellIterator;
 import com.fr.bi.cal.analyze.executor.paging.Paging;
+import com.fr.bi.cal.analyze.executor.paging.PagingFactory;
 import com.fr.bi.cal.analyze.executor.utils.ExecutorUtils;
 import com.fr.bi.cal.analyze.report.report.widget.TableWidget;
 import com.fr.bi.cal.analyze.session.BISession;
@@ -317,6 +323,16 @@ public class CrossExecutor extends AbstractTableWidgetExecutor<XNode> {
         return sumRowSum == currentRow;
     }
 
+    protected WidgetCacheKey createWidgetCacheKey() {
+        PageIteratorGroup iteratorGroup = getPageIterator();
+        Operator rowOp = PagingFactory.createRowOperator(paging.getOperator(), widget);
+        Operator colOp = PagingFactory.createColumnOperator(paging.getOperator(), widget);
+        int[] rowStartIndex = getStartIndex(rowOp, iteratorGroup == null ? null : iteratorGroup.getRowIterator(), rowDimension.length);
+        int[] colStartIndex = getStartIndex(colOp, iteratorGroup == null ? null : iteratorGroup.getColumnIterator(), colDimension.length);
+        return WidgetCacheKey.createKey(widget.fetchObjectCore(), expander.getYExpander(), expander.getXExpander(),
+                rowOp, rowStartIndex, colOp, colStartIndex, widget.getAuthFilter(session.getUserId()));
+    }
+
     @Override
     public XNode getCubeNode() throws Exception {
 
@@ -341,10 +357,41 @@ public class CrossExecutor extends AbstractTableWidgetExecutor<XNode> {
 
     @Override
     public JSONObject createJSONObject() throws Exception {
-
-        return getCubeNode().toJSONObject(rowDimension, colDimension, widget.getTargetsKey(), widget.showColumnTotal());
+        WidgetCacheKey key = createWidgetCacheKey();
+        WidgetCache<JSONObject> widgetCache = getWidgetCache(key);
+        if (widgetCache != null) {
+            updateByCache(widgetCache);
+            return widgetCache.getData();
+        }
+        JSONObject jo = getCubeNode().toJSONObject(rowDimension, colDimension, widget.getTargetsKey(), widget.showColumnTotal());
+        if (isUseWidgetDataCache()){
+            PageIteratorGroup pg = session.getPageIteratorGroup(true, widget.getWidgetId());
+            NodeDimensionIterator rowIter = pg.getRowIterator().createClonedIterator();
+            rowIter.setRoot(null);
+            NodeDimensionIterator colIter = pg.getColumnIterator().createClonedIterator();
+            colIter.setRoot(null);
+            updateCache(key, new WidgetCache(jo, rowIter, colIter, widget.getPageSpinner()));
+        }
+        return jo;
     }
 
+    private void updateByCache(WidgetCache widgetCache) {
+        widget.setPageSpinner(widgetCache.getPageSpinner());
+        PageIteratorGroup pg = session.getPageIteratorGroup(true, widget.getWidgetId());
+        if (pg == null) {
+            pg = new PageIteratorGroup();
+            pg.setRowIterator(widgetCache.getRowIterator());
+            pg.setColumnIterator(widgetCache.getColumnIterator());
+            session.setPageIteratorGroup(true, widget.getWidgetId(), pg);
+        } else {
+            NodeDimensionIterator rowIterator = widgetCache.getRowIterator().createClonedIterator();
+            rowIterator.setRoot(pg.getRowIterator().getRoot());
+            pg.setRowIterator(rowIterator);
+            NodeDimensionIterator colIterator = widgetCache.getColumnIterator().createClonedIterator();
+            colIterator.setRoot(pg.getColumnIterator().getRoot());
+            pg.setColumnIterator(colIterator);
+        }
+    }
 
     public GroupValueIndex getClickGvi(Map<String, JSONArray> clicked, BusinessTable targetKey) {
 

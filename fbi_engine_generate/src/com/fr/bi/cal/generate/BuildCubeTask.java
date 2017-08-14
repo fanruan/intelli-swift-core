@@ -1,6 +1,7 @@
 package com.fr.bi.cal.generate;
 
 import com.finebi.cube.ICubeConfiguration;
+import com.finebi.cube.api.UserAnalysisCubeDataLoaderCreator;
 import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.conf.BICubeConfiguration;
 import com.finebi.cube.conf.BICubeConfigureCenter;
@@ -20,7 +21,6 @@ import com.finebi.cube.impl.message.BIMessageTopic;
 import com.finebi.cube.impl.pubsub.BIProcessorThreadManager;
 import com.finebi.cube.location.BICubeResourceRetrieval;
 import com.finebi.cube.location.ICubeResourceRetrievalService;
-import com.finebi.cube.location.manager.BILocationManager;
 import com.finebi.cube.message.IMessage;
 import com.finebi.cube.message.IMessageTopic;
 import com.finebi.cube.relation.BICubeGenerateRelation;
@@ -39,6 +39,7 @@ import com.fr.bi.cluster.utils.ClusterEnv;
 import com.fr.bi.cluster.zookeeper.ZooKeeperManager;
 import com.fr.bi.cluster.zookeeper.watcher.BICubeStatusWatcher;
 import com.fr.bi.common.factory.BIFactoryHelper;
+import com.fr.bi.conf.manager.location.BILocationManager;
 import com.fr.bi.conf.manager.update.source.UpdateSettingSource;
 import com.fr.bi.conf.provider.BIConfigureManagerCenter;
 import com.fr.bi.conf.utils.BIModuleUtils;
@@ -172,7 +173,7 @@ public class BuildCubeTask implements CubeTask {
                     BICubeConfigureCenter.getPackageManager().finishGenerateCubes(biUser.getUserId(), CubeUpdateUtils.getBusinessCubeAbsentTables(biUser.getUserId()));
                     BICubeConfigureCenter.getPackageManager().persistData(biUser.getUserId());
                     BICubeConfigureCenter.getDataSourceManager().persistData(biUser.getUserId());
-                    BIModuleUtils.clearAnalysisETLCache(biUser.getUserId());
+                    BIModuleUtils.clearCacheAfterBuildCubeTask(biUser.getUserId());
                     BILocationManager.getInstance().persistResourceAsync();
                     BILoggerFactory.getLogger().info("Replace successful! Cost :" + DateUtils.timeCostFrom(start));
                 } else {
@@ -196,6 +197,11 @@ public class BuildCubeTask implements CubeTask {
             BILoggerFactory.getLogger().error(e.getMessage(), e);
         } finally {
         }
+    }
+
+    private void releaseCubeResource() {
+        UserAnalysisCubeDataLoaderCreator.getInstance().clear(biUser.getUserId());
+        BICubeDiskPrimitiveDiscovery.getInstance().clearResourceMap();
     }
 
     protected void checkTaskFinish() {
@@ -247,13 +253,11 @@ public class BuildCubeTask implements CubeTask {
                 for (String location : BICubeDiskPrimitiveDiscovery.getInstance().getUnReleasedLocation()) {
                     BILoggerFactory.getLogger().error("error: the filePath is : " + location);
                 }
-//                CubeReadingTableIndexLoader.envChanged();
-//                if (!replaceSuccess) {
-//                    LOGGER.error("FineIndex replace failed after " + i + " times try!It will try again in 5s");
-//                    Thread.sleep(5000);
-//                } else {
-//                    break;
-//                }
+                CubeReadingTableIndexLoader.envChanged();
+
+                if (PerformancePlugManager.getInstance().isUseSingleReader()) {
+                    releaseCubeResource();
+                }
                 break;
             }
             return true;
