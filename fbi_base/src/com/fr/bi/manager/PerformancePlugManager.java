@@ -44,6 +44,7 @@ public class PerformancePlugManager implements PerformancePlugManagerInterface {
     private String filePath = FRContext.getCurrentEnv().getPath();
     private static final String OLD_FILE_NAME = "plugs.properties";
     private static final String NEW_FILE_NAME = "plugsUpdate.properties";
+    private static final String TEMP_FILE_NAME = "plugs.properties.temp";
     private static final String RUNTIME_TYPE = "RuntimeParamsType";
     private static final String UPDATED_TYPE = "UpdateParamsType";
     private File oldFile = new File(filePath + File.separator + ProjectConstants.RESOURCES_NAME + File.separator + OLD_FILE_NAME);
@@ -109,14 +110,14 @@ public class PerformancePlugManager implements PerformancePlugManagerInterface {
             File newFile = new File(filePath + File.separator + ProjectConstants.RESOURCES_NAME + File.separator + NEW_FILE_NAME);
             if (newFile.exists()) {
                 if (oldFile.exists()) {
-                    BIFileUtils.delete(new File(filePath + File.separator + ProjectConstants.RESOURCES_NAME + File.separator + "plugs.properties.temp"));
-                    BIFileUtils.renameFile(oldFile,new File(filePath + File.separator + ProjectConstants.RESOURCES_NAME + File.separator + "plugs.properties.temp"));
+                    BIFileUtils.delete(new File(filePath + File.separator + ProjectConstants.RESOURCES_NAME + File.separator + TEMP_FILE_NAME));
+                    BIFileUtils.renameFile(oldFile,new File(filePath + File.separator + ProjectConstants.RESOURCES_NAME + File.separator + TEMP_FILE_NAME));
                 }
                 BIFileUtils.renameFile(newFile, oldFile);
             }
             InputStream in = new FileInputStream(oldFile);
             if (in == null) {
-                in = FRContext.getCurrentEnv().readBean("plugs.properties.temp", ProjectConstants.RESOURCES_NAME);
+                in = FRContext.getCurrentEnv().readBean(TEMP_FILE_NAME, ProjectConstants.RESOURCES_NAME);
                 if (in == null) {
                     in = emptyInputStream();
                 }
