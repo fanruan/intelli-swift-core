@@ -2,6 +2,7 @@ package com.fr.bi.manager;
 
 import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.base.FRContext;
+import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.utils.file.BIFileUtils;
 import com.fr.general.ComparatorUtils;
 import com.fr.stable.project.ProjectConstants;
@@ -42,12 +43,7 @@ public class PerformancePlugManager implements PerformancePlugManagerInterface {
     private boolean useMultiThreadCal = false;
     private double minCubeFreeHDSpaceRate = 2;
     private String filePath = FRContext.getCurrentEnv().getPath();
-    private static final String OLD_FILE_NAME = "plugs.properties";
-    private static final String NEW_FILE_NAME = "plugsUpdate.properties";
-    private static final String TEMP_FILE_NAME = "plugs.properties.temp";
-    private static final String RUNTIME_TYPE = "RuntimeParamsType";
-    private static final String UPDATED_TYPE = "UpdateParamsType";
-    private File oldFile = new File(filePath + File.separator + ProjectConstants.RESOURCES_NAME + File.separator + OLD_FILE_NAME);
+    private File oldFile = new File(filePath + File.separator + ProjectConstants.RESOURCES_NAME + File.separator + DBConstant.PERFORMANCE_FILE_NAME.OLD_FILE_NAME);
     private boolean isControlMaxMemory = false;
     private BIPerformanceParamConfig config = new BIPerformanceParamConfig();
     private boolean backupWhenStart = false;
@@ -107,17 +103,17 @@ public class PerformancePlugManager implements PerformancePlugManagerInterface {
     private void init() {
         try {
             saveDefaultConfig();
-            File newFile = new File(filePath + File.separator + ProjectConstants.RESOURCES_NAME + File.separator + NEW_FILE_NAME);
+            File newFile = new File(filePath + File.separator + ProjectConstants.RESOURCES_NAME + File.separator + DBConstant.PERFORMANCE_FILE_NAME.NEW_FILE_NAME);
             if (newFile.exists()) {
                 if (oldFile.exists()) {
-                    BIFileUtils.delete(new File(filePath + File.separator + ProjectConstants.RESOURCES_NAME + File.separator + TEMP_FILE_NAME));
-                    BIFileUtils.renameFile(oldFile,new File(filePath + File.separator + ProjectConstants.RESOURCES_NAME + File.separator + TEMP_FILE_NAME));
+                    BIFileUtils.delete(new File(filePath + File.separator + ProjectConstants.RESOURCES_NAME + File.separator + DBConstant.PERFORMANCE_FILE_NAME.TEMP_FILE_NAME));
+                    BIFileUtils.renameFile(oldFile,new File(filePath + File.separator + ProjectConstants.RESOURCES_NAME + File.separator + DBConstant.PERFORMANCE_FILE_NAME.TEMP_FILE_NAME));
                 }
                 BIFileUtils.renameFile(newFile, oldFile);
             }
             InputStream in = new FileInputStream(oldFile);
             if (in == null) {
-                in = FRContext.getCurrentEnv().readBean(TEMP_FILE_NAME, ProjectConstants.RESOURCES_NAME);
+                in = FRContext.getCurrentEnv().readBean(DBConstant.PERFORMANCE_FILE_NAME.TEMP_FILE_NAME, ProjectConstants.RESOURCES_NAME);
                 if (in == null) {
                     in = emptyInputStream();
                 }
@@ -163,8 +159,8 @@ public class PerformancePlugManager implements PerformancePlugManagerInterface {
     public boolean updateParam(Map<String, String> resultMap) {
         try {
             Map<String, String> doUpdateMap = new HashMap<String, String>();
-            Map<String, String> runMap = getExtraParam(RUNTIME_TYPE);
-            Map<String, String> newMap = getExtraParam(UPDATED_TYPE);
+            Map<String, String> runMap = getExtraParam(DBConstant.PARAM_TYPE.RUNTIME_TYPE);
+            Map<String, String> newMap = getExtraParam(DBConstant.PARAM_TYPE.UPDATED_TYPE);
             resultMap = PerformanceParamTools.convertParamKey(resultMap);
             resultMap = config.beforeDoWrite(runMap, newMap, resultMap);
             resultMap = tools.convert2File(resultMap);
@@ -178,7 +174,7 @@ public class PerformancePlugManager implements PerformancePlugManagerInterface {
                     continue;
                 }
             }
-            return config.writeConfig(doUpdateMap, FRContext.getCurrentEnv().writeBean(NEW_FILE_NAME, ProjectConstants.RESOURCES_NAME));
+            return config.writeConfig(doUpdateMap, FRContext.getCurrentEnv().writeBean(DBConstant.PERFORMANCE_FILE_NAME.NEW_FILE_NAME, ProjectConstants.RESOURCES_NAME));
         } catch (Exception e) {
             BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
@@ -221,11 +217,11 @@ public class PerformancePlugManager implements PerformancePlugManagerInterface {
     @Override
     public Map<String, String> getExtraParam(String paramType) {
         String readFileName = null;
-        if (ComparatorUtils.equals(RUNTIME_TYPE,paramType)) {
-            readFileName = OLD_FILE_NAME;
+        if (ComparatorUtils.equals(DBConstant.PARAM_TYPE.RUNTIME_TYPE,paramType)) {
+            readFileName = DBConstant.PERFORMANCE_FILE_NAME.OLD_FILE_NAME;
         }
-        if (ComparatorUtils.equals(UPDATED_TYPE,paramType)) {
-            readFileName = NEW_FILE_NAME;
+        if (ComparatorUtils.equals(DBConstant.PARAM_TYPE.UPDATED_TYPE,paramType)) {
+            readFileName = DBConstant.PERFORMANCE_FILE_NAME.NEW_FILE_NAME;
         }
         Map<String, String> paramConfig = new HashMap<String, String>();
         try {
@@ -494,15 +490,15 @@ public class PerformancePlugManager implements PerformancePlugManagerInterface {
     public Map<String, String> getConfigByType(String paramType) {
         String fileName = null;
         Map<String, String> newMap = new HashMap<String, String>();
-        if (ComparatorUtils.equals(RUNTIME_TYPE,paramType)) {
-            fileName = OLD_FILE_NAME;
+        if (ComparatorUtils.equals(DBConstant.PARAM_TYPE.RUNTIME_TYPE,paramType)) {
+            fileName = DBConstant.PERFORMANCE_FILE_NAME.OLD_FILE_NAME;
         }
-        if (ComparatorUtils.equals(UPDATED_TYPE,paramType)) {
-            fileName = NEW_FILE_NAME;
+        if (ComparatorUtils.equals(DBConstant.PARAM_TYPE.UPDATED_TYPE,paramType)) {
+            fileName = DBConstant.PERFORMANCE_FILE_NAME.NEW_FILE_NAME;
         }
         try {
             InputStream in = FRContext.getCurrentEnv().readBean(fileName, ProjectConstants.RESOURCES_NAME);
-            if (in == null && ComparatorUtils.equals(RUNTIME_TYPE,paramType)) {
+            if (in == null && ComparatorUtils.equals(DBConstant.PARAM_TYPE.RUNTIME_TYPE,paramType)) {
                 return defaultMap;
             } else {
                 properties = new Properties();
