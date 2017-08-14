@@ -3,9 +3,8 @@ package com.finebi.cube.utils;
 
 
 
-import com.fr.base.FRContext;
+import com.fr.stable.StringUtils;
 import com.fr.stable.project.ProjectConstants;
-
 import java.io.File;
 
 /**
@@ -15,8 +14,6 @@ public class BILocationUtils {
     public static String CUBE_FOLDER_NAME = "/Advanced";
     public static String CUBE_TEMP_FOLDER_NAME = "/tCube";
     public static String LOCATION_SEPERATOR = "/";
-    private static final String CUBE = "cubes";
-    private final static String BASEPATH = File.separator + ProjectConstants.RESOURCES_NAME + File.separator + CUBE;
     /**
      * 去掉Advanced（tCube）作为资源的logicPath
      *
@@ -24,14 +21,9 @@ public class BILocationUtils {
      * @return /-999/5e705d22/26fc5472
      */
     public static String getLogicPath(String absolutePath) {
-        return absolutePath.replace(CUBE_FOLDER_NAME, "").replace(CUBE_TEMP_FOLDER_NAME, "").replace(getLocationPrefix(), "");
+        return absolutePath.replace(CUBE_FOLDER_NAME, StringUtils.EMPTY).replace(CUBE_TEMP_FOLDER_NAME, StringUtils.EMPTY);
     }
 
-    public static String getLocationPrefix() {
-        String basePath = (FRContext.getCurrentEnv() != null) ? (FRContext.getCurrentEnv().getPath() + BASEPATH) :
-                (WebInfPathUtil.getWebInfUrl(BILocationUtils.class) + BASEPATH);
-        return replaceSlash(basePath);
-    }
 
     public static String replaceSlash(String location) {
         if (location != null) {

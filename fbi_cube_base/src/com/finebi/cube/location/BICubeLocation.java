@@ -1,7 +1,5 @@
 package com.finebi.cube.location;
 
-import com.finebi.common.name.Name;
-import com.finebi.common.name.NameImp;
 import com.finebi.cube.data.input.*;
 import com.finebi.cube.data.input.primitive.ICubeByteReaderBuilder;
 import com.finebi.cube.data.input.primitive.ICubeDoubleReaderBuilder;
@@ -10,12 +8,10 @@ import com.finebi.cube.data.input.primitive.ICubeLongReaderBuilder;
 import com.finebi.cube.data.output.ICubeByteArrayWriterIncreaseBuilder;
 import com.finebi.cube.data.output.ICubeStringWriterIncreaseBuilder;
 import com.finebi.cube.data.output.ICubeWriterBuilder;
-import com.finebi.cube.location.manager.BILocationManager;
-import com.finebi.cube.location.manager.ILocationConverter;
+import com.finebi.cube.location.provider.ILocationConverter;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
 import com.fr.bi.stable.utils.program.BIStringUtils;
 
-import java.io.File;
 import java.net.URI;
 import java.net.URISyntaxException;
 
@@ -33,8 +29,9 @@ public class BICubeLocation implements ICubeResourceLocation, Cloneable {
 
     public BICubeLocation(String baseLocation, String childLocation, ILocationConverter locationProxy) throws URISyntaxException {
         BINonValueUtils.checkNull(baseLocation);
-        File file = new File(attachFirstSlash(attachLastSlash(replaceSlash(baseLocation))));
-        this.baseLocation = new URI(attachLastSlash(file.toURI().getRawPath()));
+//        File file = new File(attachFirstSlash(attachLastSlash(replaceSlash(baseLocation))));
+//        this.baseLocation = new URI(attachLastSlash(file.toURI().getRawPath()));
+        this.baseLocation = new URI(attachLastSlash(attachFirstSlash(attachLastSlash(replaceSlash(baseLocation)))));
         if (childLocation != null) {
             this.childLocation = new URI(BIStringUtils.cutStartSlash(replaceSlash(childLocation)));
         } else {
@@ -105,7 +102,7 @@ public class BICubeLocation implements ICubeResourceLocation, Cloneable {
 
     @Override
     public ICubeResourceLocation buildChildLocation(String childPath) throws URISyntaxException {
-        return new BICubeLocation(getAbsolutePath(), childPath, locationProxy);
+        return new BICubeLocation(getAbsolutePath(), childPath,locationProxy);
     }
 
     @Override

@@ -3,8 +3,6 @@
  */
 package com.fr.bi.etl.analysis.tableobj;
 
-import com.finebi.common.name.Name;
-import com.finebi.common.name.NameImp;
 import com.finebi.cube.ICubeConfiguration;
 import com.finebi.cube.adapter.BICubeTableAdapter;
 import com.finebi.cube.api.ICubeTableService;
@@ -15,12 +13,13 @@ import com.finebi.cube.data.disk.BICubeDiskPrimitiveDiscovery;
 import com.finebi.cube.location.BICubeLocation;
 import com.finebi.cube.location.BICubeResourceRetrieval;
 import com.finebi.cube.location.ICubeResourceLocation;
-import com.finebi.cube.location.manager.BILocationProvider;
-import com.finebi.cube.location.manager.ILocationConverter;
+import com.finebi.cube.location.provider.BILocationProvider;
+import com.finebi.cube.location.provider.ILocationConverter;
 import com.finebi.cube.structure.BICube;
 import com.fr.bi.common.factory.BIFactoryHelper;
 import com.fr.bi.common.inter.Delete;
 import com.fr.bi.common.inter.Release;
+import com.fr.bi.conf.manager.location.BIDefaultConvertor;
 import com.fr.bi.etl.analysis.data.UserCubeTableSource;
 import com.fr.bi.stable.engine.index.NullTableIndexException;
 import com.fr.bi.stable.io.newio.SingleUserNIOReadManager;
@@ -50,25 +49,20 @@ public class ETLTableObject implements Release, Delete {
 
     public ETLTableObject(final UserCubeTableSource source, final String id) {
         this.path = BIConfigurePathUtils.createUserETLCubePath(source.fetchObjectCore().getIDValue(), id);
+        final BILocationProvider convertor = new BIDefaultConvertor();
         ti = new BICubeTableAdapter(new BICube(new BICubeResourceRetrieval(new ICubeConfiguration() {
             @Override
             public URI getRootURI() {
                 try {
-                    File file = new File(new BICubeLocation(BIConfigurePathUtils.createUserETLTableBasePath(source.fetchObjectCore().getID().getIdentityValue()), id, new ILocationConverter() {
-                        @Override
-                        public ICubeResourceLocation getRealLocation(String path, String child) throws URISyntaxException {
-                            return new BICubeLocation(path, child, this);
-                        }
-                    }).getAbsolutePath());
+                    File file = new File(new BICubeLocation(BIConfigurePathUtils.createUserETLTableBasePath(source.fetchObjectCore().getID().getIdentityValue()), id, convertor).getAbsolutePath());
                     return URI.create(file.toURI().getRawPath());
                 } catch (URISyntaxException e) {
                     throw BINonValueUtils.beyondControl(e);
                 }
             }
-
             @Override
             public BILocationProvider getLocationProvider() {
-                return null;
+                return convertor;
             }
 
         }), BIFactoryHelper.getObject(ICubeResourceDiscovery.class)), source);

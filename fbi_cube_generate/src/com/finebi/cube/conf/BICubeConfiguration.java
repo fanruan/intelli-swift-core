@@ -1,15 +1,13 @@
 package com.finebi.cube.conf;
 
-import com.finebi.common.name.Name;
-import com.finebi.common.resource.ResourceNameImpl;
 import com.finebi.cube.ICubeConfiguration;
-import com.finebi.cube.location.manager.BILocationManager;
-import com.finebi.cube.location.manager.BILocationProvider;
-import com.finebi.cube.location.manager.BISingleLocationManager;
-import com.fr.bi.util.BIConfigurePathUtils;
 import com.finebi.cube.location.BICubeLocation;
+import com.finebi.cube.location.provider.BILocationProvider;
+import com.fr.bi.conf.manager.location.BILocationManager;
+import com.fr.bi.conf.manager.location.BISingleLocationManager;
 import com.fr.bi.stable.utils.BIParameterUtils;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
+import com.fr.stable.StringUtils;
 
 import java.io.File;
 import java.net.URI;
@@ -59,8 +57,10 @@ public class BICubeConfiguration implements ICubeConfiguration {
     @Override
     public URI getRootURI() {
         try {
-            File file = new File(new BICubeLocation(BIConfigurePathUtils.createBasePath(), buildPath(), locationProxy).getAbsolutePath());
-            return URI.create(file.toURI().getRawPath());
+//            File file = new File(new BICubeLocation(BIConfigurePathUtils.createBasePath(), buildPath(), locationProxy).getAbsolutePath());
+//            return URI.create(file.toURI().getRawPath());
+            return URI.create(new BICubeLocation(range, StringUtils.EMPTY, locationProxy).getAbsolutePath());
+
         } catch (URISyntaxException e) {
             throw BINonValueUtils.beyondControl(e);
         }
