@@ -33,15 +33,10 @@ import java.util.*;
  * Created by 小灰灰 on 2016/12/26.
  */
 public class NoneMetricRootDimensionGroup extends RootDimensionGroup {
-
     private TargetFilter filter;
-
     private List<TargetFilter> authFilter;
-
     private DimensionCalculator[] dimensionCalculators;
-
     private DimensionFilter[] directDimensionFilters;
-
     //过滤的地方缓存下NoneDimensionCalculator，要不loadgroup次数太多了，硬盘渣的情况下判断cube exist 太卡。
     private Map<CachedNoneDimensionCalculatorKey, DimensionCalculator> noneDimensionCalculatorMap = new HashMap<CachedNoneDimensionCalculatorKey, DimensionCalculator>();
 
@@ -50,7 +45,6 @@ public class NoneMetricRootDimensionGroup extends RootDimensionGroup {
     }
 
     public NoneMetricRootDimensionGroup(List<MetricGroupInfo> metricGroupInfoList, MergeIteratorCreator[] mergeIteratorCreators, NodeCreator nodeCreator, int sumLength, BISession session, boolean useRealData, TargetFilter filter, List<TargetFilter> authFilter, DimensionFilter[] directDimensionFilters) {
-
         super(metricGroupInfoList, mergeIteratorCreators, nodeCreator, sumLength, session, useRealData);
         this.filter = filter;
         this.authFilter = authFilter;
@@ -58,7 +52,6 @@ public class NoneMetricRootDimensionGroup extends RootDimensionGroup {
     }
 
     protected void initGetterAndRows() {
-
         super.initGetterAndRows();
         this.dimensionCalculators = new DimensionCalculator[rowSize];
         for (int i = 0; i < rowSize; i++) {
@@ -67,7 +60,6 @@ public class NoneMetricRootDimensionGroup extends RootDimensionGroup {
     }
 
     protected void initRoot() {
-
         metrics = new BusinessTable[metricGroupInfoList.size()];
         summaryLists = new ArrayList[0];
         GroupValueIndex[] gvis = new GroupValueIndex[metricGroupInfoList.size()];
@@ -81,17 +73,15 @@ public class NoneMetricRootDimensionGroup extends RootDimensionGroup {
 
     @Override
     protected ISingleDimensionGroup createSingleDimensionGroup(Object[] data, NoneDimensionGroup ng, int deep) {
-
         GroupValueIndex[] gvis = new GroupValueIndex[1];
         gvis[0] = getFilterIndex(data, deep);
-        if (gvis[0].isAllEmpty() || ng == NoneDimensionGroup.EMPTY) {
-            return new EmptySingleDimensionGroup(data, deep);
+        if (gvis[0].isAllEmpty()){
+            return new EmptySingleDimensionGroup(data);
         }
         return ng.createSingleDimensionGroup(columns[deep], getters[deep], data, mergeIteratorCreators[deep], gvis, useRealData);
     }
 
     private GroupValueIndex getFilterIndex(Object[] values, int deep) {
-
         DimensionCalculator ck = dimensionCalculators[deep];
         GroupValueIndex gvi = session.createFilterGvi(ck.getField().getTableBelongTo());
         if (directDimensionFilters[deep] != null) {
@@ -115,7 +105,7 @@ public class NoneMetricRootDimensionGroup extends RootDimensionGroup {
                     continue;
                 }
                 GroupValueIndex pgvi = stf.createFilterIndex(getCachedNoneDimensionCalculator(i, deep, ckp.getField(), BIConfUtils.convert2TableSourceRelation(firstPath.getAllRelations())),
-                                                             ck.getField().getTableBelongTo(), session.getLoader(), session.getUserId());
+                        ck.getField().getTableBelongTo(), session.getLoader(), session.getUserId());
                 gvi = gvi.AND(pgvi);
             } else if (ckp instanceof NumberDimensionCalculator) {
                 BITableRelationPath firstPath = getBiTableRelationPath(ck, ckp);
@@ -144,7 +134,6 @@ public class NoneMetricRootDimensionGroup extends RootDimensionGroup {
     }
 
     private BITableRelationPath getBiTableRelationPath(DimensionCalculator ck, DimensionCalculator ckp) {
-
         BITableRelationPath firstPath = null;
         try {
             firstPath = BICubeConfigureCenter.getTableRelationManager().getFirstPath(session.getLoader().getUserId(), ck.getField().getTableBelongTo(), ckp.getField().getTableBelongTo());
@@ -158,14 +147,13 @@ public class NoneMetricRootDimensionGroup extends RootDimensionGroup {
     }
 
     private GroupValueIndex getDateFilterIndex(DimensionCalculator ck, GroupValueIndex gvi, DimensionCalculator ckp, Object value) {
-
         Set<BIDateValue> currentSet = new HashSet<BIDateValue>();
         /**
          * 螺旋分析这里会出现空字符串
          */
         if (value instanceof Number) {
             currentSet.add(BIDateValueFactory.createDateValue(ckp.getGroup().getType(), (Number) value));
-        } else {
+        }else {
             currentSet.add(null);
         }
 
@@ -179,7 +167,6 @@ public class NoneMetricRootDimensionGroup extends RootDimensionGroup {
 
     @Override
     public IRootDimensionGroup createClonedRoot() {
-
         NoneMetricRootDimensionGroup root = (NoneMetricRootDimensionGroup) super.createClonedRoot();
         root.filter = filter;
         root.dimensionCalculators = dimensionCalculators;
@@ -189,13 +176,11 @@ public class NoneMetricRootDimensionGroup extends RootDimensionGroup {
 
     @Override
     protected IRootDimensionGroup createNew() {
-
         return new NoneMetricRootDimensionGroup();
     }
 
     //这个是单线程执行的
     private DimensionCalculator getCachedNoneDimensionCalculator(int pIndex, int index, BusinessField field, List<BITableSourceRelation> relation) {
-
         CachedNoneDimensionCalculatorKey key = new CachedNoneDimensionCalculatorKey(pIndex, index);
         if (!noneDimensionCalculatorMap.containsKey(key)) {
             noneDimensionCalculatorMap.put(key, new CachedNoneDimensionCalculator(field, relation));
@@ -205,7 +190,6 @@ public class NoneMetricRootDimensionGroup extends RootDimensionGroup {
 
     //这个是单线程执行的
     private DimensionCalculator getCachedNumberDimensionCalculator(int pIndex, int index, NumberDimensionCalculator numberDimensionCalculator, List<BITableSourceRelation> relation) {
-
         CachedNoneDimensionCalculatorKey key = new CachedNoneDimensionCalculatorKey(pIndex, index);
         if (!noneDimensionCalculatorMap.containsKey(key)) {
             noneDimensionCalculatorMap.put(key, new CachedNumberDimensionCalculator(numberDimensionCalculator, relation));
@@ -214,20 +198,16 @@ public class NoneMetricRootDimensionGroup extends RootDimensionGroup {
     }
 
     private class CachedNoneDimensionCalculatorKey {
-
         private int pIndex;
-
         private int index;
 
         public CachedNoneDimensionCalculatorKey(int pIndex, int index) {
-
             this.pIndex = pIndex;
             this.index = index;
         }
 
         @Override
         public boolean equals(Object o) {
-
             if (this == o) {
                 return true;
             }
@@ -245,7 +225,6 @@ public class NoneMetricRootDimensionGroup extends RootDimensionGroup {
 
         @Override
         public int hashCode() {
-
             int result = pIndex;
             result = 31 * result + index;
             return result;
