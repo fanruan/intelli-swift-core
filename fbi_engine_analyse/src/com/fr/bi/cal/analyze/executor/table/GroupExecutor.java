@@ -27,6 +27,7 @@ import com.fr.bi.field.target.target.BICounterTarget;
 import com.fr.bi.field.target.target.BINumberTarget;
 import com.fr.bi.field.target.target.BISummaryTarget;
 import com.fr.bi.report.key.TargetGettingKey;
+import com.fr.bi.report.result.BIGroupNode;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.gvi.GVIUtils;
 import com.fr.bi.stable.gvi.GroupValueIndex;
@@ -240,11 +241,12 @@ public class GroupExecutor extends AbstractTableWidgetExecutor<Node> {
 
 
     protected WidgetCacheKey createWidgetCacheKey() {
+
         PageIteratorGroup iteratorGroup = getPageIterator();
         Operator rowOp = PagingFactory.createRowOperator(paging.getOperator(), widget);
         return WidgetCacheKey.createKey(widget.fetchObjectCore(), expander.getYExpander(), expander.getXExpander(),
-                rowOp, getStartIndex(rowOp, iteratorGroup == null ? null : iteratorGroup.getRowIterator(), usedDimensions.length),
-                null, null, widget.getAuthFilter(session.getUserId()));
+                                        rowOp, getStartIndex(rowOp, iteratorGroup == null ? null : iteratorGroup.getRowIterator(), usedDimensions.length),
+                                        null, null, widget.getAuthFilter(session.getUserId()));
     }
 
     @Override
@@ -281,6 +283,7 @@ public class GroupExecutor extends AbstractTableWidgetExecutor<Node> {
 
     @Override
     public JSONObject createJSONObject() throws Exception {
+
         WidgetCacheKey key = createWidgetCacheKey();
         WidgetCache<JSONObject> widgetCache = getWidgetCache(key);
         if (widgetCache != null) {
@@ -298,6 +301,7 @@ public class GroupExecutor extends AbstractTableWidgetExecutor<Node> {
     }
 
     private void updateByCache(WidgetCache widgetCache) {
+
         widget.setPageSpinner(widgetCache.getPageSpinner());
         PageIteratorGroup pg = session.getPageIteratorGroup(true, widget.getWidgetId());
         if (pg == null) {
@@ -601,4 +605,8 @@ public class GroupExecutor extends AbstractTableWidgetExecutor<Node> {
         return r;
     }
 
+    public BIGroupNode getResult() throws Exception {
+
+        return getCubeNode();
+    }
 }
