@@ -91,6 +91,8 @@ public class PerformancePlugManager implements PerformancePlugManagerInterface {
 
     private int maxNodeCount = Integer.MAX_VALUE;
 
+    private PerformanceParamTools tools = new PerformanceParamTools();
+
     public Map<String, String> defaultMap = new HashMap<String, String>();
 
     private PerformancePlugManager() {
@@ -164,6 +166,7 @@ public class PerformancePlugManager implements PerformancePlugManagerInterface {
             Map<String, String> newMap = getExtraParam(UPDATED_TYPE);
             resultMap = PerformanceParamTools.convertParamKey(resultMap);
             resultMap = config.beforeDoWrite(runMap, newMap, resultMap);
+            resultMap = tools.convert2File(resultMap);
             Iterator<String> it = resultMap.keySet().iterator();
             while (it.hasNext()) {
                 String paramKey = it.next();

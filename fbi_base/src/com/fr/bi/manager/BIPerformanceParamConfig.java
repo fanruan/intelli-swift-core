@@ -60,6 +60,8 @@ public class BIPerformanceParamConfig implements BIParamConfig {
                 return false;
             }
             properties = new Properties();
+            PerformanceParamTools tools = new PerformanceParamTools();
+            newParam = tools.convertParamKey(newParam);
             Iterator<String> it = newParam.keySet().iterator();
             while (it.hasNext()) {
                 String paramKey = it.next();
