@@ -223,7 +223,7 @@ public class RootDimensionGroup implements IRootDimensionGroup {
         ISingleDimensionGroup sg = getCacheDimensionGroup(gv, deep);
 
         //如果往下移动，行数就加1
-        if (notNextChild(index, deep, expander, sg)) {
+        if (notNextChild(index, deep, expander, sg, index[deep])) {
             index[deep]++;
         }
         ReturnStatus returnStatus = findCurrentValue(sg, gv, list, index[deep]);
@@ -299,9 +299,9 @@ public class RootDimensionGroup implements IRootDimensionGroup {
     }
 
     //最后一个维度或者初始化的情况或者没有展开的情况必定是往下的
-    private boolean notNextChild(int[] index, int deep, NodeExpander expander, ISingleDimensionGroup sg) {
+    private boolean notNextChild(int[] index, int deep, NodeExpander expander, ISingleDimensionGroup sg, int row) {
 
-        if (index.length == deep + 1 || index[deep] == -1) {
+        if (index.length == deep + 1 || index[deep] == -1 || sg.getChildDimensionGroup(row) == NoneDimensionGroup.NONECHILD) {
             return true;
         }
         String showValue = sg.getChildShowName(index[deep]);
@@ -396,6 +396,7 @@ public class RootDimensionGroup implements IRootDimensionGroup {
 
     @Override
     public void checkMetricGroupInfo(NodeCreator creator, List<MetricGroupInfo> metricGroupInfoList) {
+
         this.metricGroupInfoList = metricGroupInfoList;
         init();
     }

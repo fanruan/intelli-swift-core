@@ -24,7 +24,14 @@ import java.util.List;
 public class NoneDimensionGroup implements Release {
 
     public final static NoneDimensionGroup NULL = new NoneDimensionGroup();
+
     public final static NoneDimensionGroup EMPTY = new NoneDimensionGroup();
+
+    /**
+     * 没有子节点
+     * 主子表之间 主表的记录没有对应的子表记录
+     */
+    public final static NoneDimensionGroup NONECHILD = new NoneDimensionGroup();
 
     private BusinessTable[] metrics;
 
