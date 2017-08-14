@@ -2,6 +2,7 @@ package com.fr.bi.cal.analyze.cal.sssecret;
 
 import com.fr.bi.cal.analyze.cal.index.loader.TargetAndKey;
 import com.fr.bi.cal.analyze.cal.result.Node;
+import com.fr.bi.field.target.calculator.XCalculator;
 import com.fr.bi.field.target.calculator.sum.AbstractSummaryCalculator;
 import com.fr.bi.report.result.CalculatorType;
 import com.fr.bi.report.result.TargetCalculator;
@@ -44,6 +45,9 @@ public class PartNodeSummarizing {
                         Number childValue = child.getSummaryValue(targetAndKey.getTargetGettingKey());
                         if (childValue != null) {
                             TargetCalculator calculator = targetAndKey.getCalculator();
+                            if (calculator.getCalculatorType() == CalculatorType.X_SUM){
+                                calculator = ((XCalculator)calculator).getCalculator();
+                            }
                             if (calculator.getCalculatorType() == CalculatorType.SUM_DETAIL){
                                 node.setSummaryValue(targetAndKey.getTargetGettingKey(), ((AbstractSummaryCalculator)calculator).createSumValue(value.doubleValue(), childValue.doubleValue()));
                             }
