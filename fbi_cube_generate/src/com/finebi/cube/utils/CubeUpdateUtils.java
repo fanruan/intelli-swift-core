@@ -220,7 +220,7 @@ public class CubeUpdateUtils {
     }
 
     public static boolean isNeed2GenerateCube(long userId) {
-        return isPart(userId) || isUpdateMeta(userId);
+        return isUpdateMeta(userId)||isPart(userId);
     }
 
 
