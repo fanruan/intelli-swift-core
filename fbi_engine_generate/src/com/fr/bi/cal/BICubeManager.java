@@ -171,8 +171,8 @@ public class BICubeManager implements BICubeManagerProvider {
      * @param userId 用户id
      */
     @Override
-    public void resetCubeGenerationHour(final long userId) {
-        getCubeManager(userId).resetCubeGenerationHour();
+    public void resetCubeTimerTasks(final long userId) {
+        getCubeManager(userId).resetCubeTimerTasks();
     }
 
 

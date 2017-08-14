@@ -466,7 +466,7 @@ public class BICoreModule extends AbstractModule {
         if (ClusterEnv.isCluster()) {
             if (ClusterAdapter.getManager().getHostManager().isBuildCube()) {
                 BICubeManager provider = new BICubeManager();
-//                provider.resetCubeGenerationHour(UserControl.getInstance().getSuperManagerID());
+//                provider.resetCubeTimerTasks(UserControl.getInstance().getSuperManagerID());
                 RPC.registerSkeleton(provider, ClusterAdapter.getManager().getHostManager().getBuildCubePort());
                 return provider;
             } else {
