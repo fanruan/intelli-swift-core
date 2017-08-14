@@ -143,7 +143,7 @@ public class VanMapWidget extends VanChartWidget{
 
                 JSONObject datum = JSONObject.create().put("name", areaName).put(key, numberFormat(id,value / scale));
 
-                if(item.has("c")){
+                if(item.has("c") && manager.getinnerMapName().containsKey(areaName)){
                     JSONObject drillDown = JSONObject.create();
                     String mapPath = manager.getinnerMapName().get(areaName);
                     drillDown.put("series", this.createSeries(item));
