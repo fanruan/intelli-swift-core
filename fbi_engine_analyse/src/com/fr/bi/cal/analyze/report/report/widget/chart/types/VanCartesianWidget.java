@@ -694,6 +694,7 @@ public abstract class VanCartesianWidget extends VanChartWidget {
         double[] rightDomain = calculateValueTimeNiceDomain(rightYMin, rightYMax);
 
         settings.put("rightYReverse", true);
+        settings.put("leftYReverse", false);
 
         if(!settings.optBoolean("leftYShowCustomScale")){
             settings
