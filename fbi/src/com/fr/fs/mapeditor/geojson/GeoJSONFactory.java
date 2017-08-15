@@ -80,7 +80,7 @@ public class GeoJSONFactory {
     }
     
     private static Geometry readGeometry(JsonNode node, String type) throws IOException, ClassNotFoundException {
-        return  (Geometry) MAPPER.readValue(node.traverse(), Class.forName("com.fr.fs.plugin.mapeditor.geojson." + type));
+        return  (Geometry) MAPPER.readValue(node.traverse(), Class.forName("com.fr.fs.mapeditor.geojson." + type));
     }
 
     public static String toString(Object o) {

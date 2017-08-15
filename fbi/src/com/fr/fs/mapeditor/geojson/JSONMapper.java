@@ -10,7 +10,6 @@ import com.fr.plugin.chart.vanchart.imgevent.ImageUtils;
 import com.fr.stable.ArrayUtils;
 import com.fr.stable.StringUtils;
 
-import javax.swing.*;
 import java.awt.*;
 import java.util.List;
 import java.util.Map;

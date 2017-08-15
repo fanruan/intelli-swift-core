@@ -23,12 +23,12 @@
 }
 
 .leaflet-draw-toolbar a {
-    background-image: url('${remoteServletURL}?op=resource&resource=/com/fr/fs/plugin/mapeditor/server/css/images/spritesheet.png');
+    background-image: url('${remoteServletURL}?op=resource&resource=/com/fr/fs/mapeditor/server/css/images/spritesheet.png');
     background-repeat: no-repeat;
 }
 
 .leaflet-retina .leaflet-draw-toolbar a {
-    background-image: url('${remoteServletURL}?op=resource&resource=/com/fr/fs/plugin/mapeditor/server/css/images/spritesheet.png');
+    background-image: url('${remoteServletURL}?op=resource&resource=/com/fr/fs/mapeditor/server/css/images/spritesheet.png');
     background-size: 270px 30px;
 }
 

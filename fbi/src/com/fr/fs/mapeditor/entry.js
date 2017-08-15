@@ -1,5 +1,5 @@
 $.extend(FS.Design.op, {
-    1103: function(container) {
+    20: function(container) {
         FS.FontEndMapEditorOperator.init(container)
     }
 });

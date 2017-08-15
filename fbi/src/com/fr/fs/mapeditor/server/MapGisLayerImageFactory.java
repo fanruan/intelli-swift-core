@@ -17,9 +17,9 @@ import java.util.*;
  * Created by Mitisky on 16/6/24.
  */
 public class MapGisLayerImageFactory {
-    private static final String PATH2X = "com/fr/fs/plugin/mapeditor/images/marker-iconx2.png";
+    private static final String PATH2X = "com/fr/fs/mapeditor/images/marker-iconx2.png";
     private static Image image2x;
-    private static final String PATH = "com/fr/fs/plugin/mapeditor/images/marker-icon.png";
+    private static final String PATH = "com/fr/fs/mapeditor/images/marker-icon.png";
     private static Image image;
 
     public static Image getPointMapImage() {

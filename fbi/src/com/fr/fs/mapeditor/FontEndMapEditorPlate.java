@@ -97,7 +97,8 @@ public class FontEndMapEditorPlate extends AbstractFSPlate  {
     @Override
     public PlatformManageModule[] supportPlatformManageModules() {
         return new PlatformManageModule[]{
-                new PlatformManageModule("BI-FS-Module_Map_Editor", "", 1103, 1, true)
+                // todo 这个platformManageModuleId不知道写多少，先写一个20用着
+                new PlatformManageModule("BI-FS-Module_Map_Editor", "", 20, 1, true)
         };
     }
 }
