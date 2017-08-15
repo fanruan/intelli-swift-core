@@ -1,4 +1,4 @@
-package com.fr.bi.report.result.imp;
+package com.fr.bi.cal.analyze.cal.result;
 
 /**
  * Created by andrew_asa on 2017/8/4.
