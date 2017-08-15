@@ -15,6 +15,8 @@ import com.fr.bi.cal.analyze.session.BISession;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.field.target.target.BISummaryTarget;
 import com.fr.bi.report.key.TargetGettingKey;
+import com.fr.bi.report.result.BIComplexGroupResult;
+import com.fr.bi.report.result.imp.ComplexGroupResult;
 import com.fr.bi.stable.gvi.GVIUtils;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.general.DateUtils;
@@ -132,7 +134,7 @@ public class ComplexGroupExecutor extends AbstractTableWidgetExecutor {
             keys[i] = usedSumTarget[i].createTargetGettingKey();
         }
         Map<Integer, Node> nodeMap = CubeIndexLoader.getInstance(session.getUserId()).loadComplexPageGroup(false, widget, createTarget4Calculate(), rowData, allDimensions,
-                allSumTarget, keys, paging.getOperator(), widget.useRealData(), session, complexExpander, true);
+                                                                                                           allSumTarget, keys, paging.getOperator(), widget.useRealData(), session, complexExpander, true);
         if (nodeMap.isEmpty()) {
             return null;
         }
@@ -201,5 +203,10 @@ public class ComplexGroupExecutor extends AbstractTableWidgetExecutor {
             BILoggerFactory.getLogger(ComplexGroupExecutor.class).info("error in get link filter", e);
         }
         return filterGvi;
+    }
+
+    public BIComplexGroupResult getResult() throws Exception {
+
+        return new ComplexGroupResult(getCubeNodes());
     }
 }
