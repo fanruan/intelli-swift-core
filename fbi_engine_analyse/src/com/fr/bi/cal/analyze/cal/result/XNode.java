@@ -3,13 +3,14 @@ package com.fr.bi.cal.analyze.cal.result;
 import com.fr.bi.base.FinalInt;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.report.key.TargetGettingKey;
+import com.fr.bi.report.result.BICrossNode;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
 
 /**
  * Created by 小灰灰 on 2017/7/6.
  */
-public class XNode {
+public class XNode implements BICrossNode {
     private Node top;
     private Node left;
 

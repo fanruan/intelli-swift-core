@@ -10,10 +10,11 @@ import java.util.Map;
 /**
  * Created by Hiram on 2015/1/26.
  */
-public interface BINode extends SummaryContainer {
-    Object getData();
+public interface BINode extends SummaryContainer, BIGroupNode {
 
-    int getChildLength();
+    //Object getData();
+
+    //int getChildLength();
 
     BINode getChild(int i);
 

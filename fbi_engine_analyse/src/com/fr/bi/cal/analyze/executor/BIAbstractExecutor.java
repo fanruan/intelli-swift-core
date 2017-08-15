@@ -16,20 +16,25 @@ import java.util.Map;
 public abstract class BIAbstractExecutor<T> implements BIEngineExecutor<T> {
 
     protected Paging paging; //分页信息
+
     protected transient BISession session;
+
     private BIWidget widget;
 
     public BIAbstractExecutor(BIWidget widget, Paging paging, BISession session) {
+
         this.paging = paging;
         this.widget = widget;
         this.session = session;
     }
 
     public BISessionProvider getSession() {
+
         return session;
     }
 
     public ICubeDataLoader getLoader() {
+
         return session.getLoader();
     }
 
@@ -40,6 +45,11 @@ public abstract class BIAbstractExecutor<T> implements BIEngineExecutor<T> {
      * @return
      */
     public GroupValueIndex getClickGvi(Map<String, JSONArray> click) {
+
+        return null;
+    }
+
+    public Object getResult() throws Exception{
 
         return null;
     }

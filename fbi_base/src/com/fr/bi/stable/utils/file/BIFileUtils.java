@@ -387,4 +387,18 @@ public class BIFileUtils {
         }
         return src.renameTo(dest);
     }
+
+    /**
+     * 重命名文件
+     * @param oldName
+     * @param newName
+     * @return
+     * @throws IOException
+     */
+    public static boolean renameFile(File oldName, File newName) throws IOException {
+        if (!oldName.isFile() || !oldName.exists()) {
+            return false;
+        }
+        return oldName.renameTo(newName);
+    }
 }

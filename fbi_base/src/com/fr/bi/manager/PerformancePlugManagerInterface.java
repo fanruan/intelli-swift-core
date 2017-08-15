@@ -61,7 +61,7 @@ public interface PerformancePlugManagerInterface {
 
     boolean updateParam(Map<String, String> resultMap);
 
-    Map<String, String> getDefaultConfig();
+    void saveDefaultConfig();
 
     Map<String, String> getExtraParam(String paramType);
 
