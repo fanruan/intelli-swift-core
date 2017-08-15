@@ -81,6 +81,9 @@ public abstract class VanCartesianWidget extends VanChartWidget {
                 .put("rightY2LineColor", "#dddddd")
                 .put("rightY2Separator", true);
 
+        //图例
+        settings.put("dataSheetStyle", this.defaultFont());
+
         return settings;
     }
 
@@ -237,7 +240,7 @@ public abstract class VanCartesianWidget extends VanChartWidget {
 
         if(supportDataSheet()) {
             options.put("dataSheet", JSONObject.create().put("enabled", settings.optBoolean("showDataTable") && !isInverted)
-                    .put("style", this.defaultFont()).put("borderColor", "#dddddd").put("borderWidth", 1));
+                    .put("style", settings.optJSONObject("dataSheetStyle")).put("borderColor", "#dddddd").put("borderWidth", 1));
         }
         if(settings.optBoolean("showZoom") && !settings.optBoolean("miniMode")){
             options.put("zoom", JSONObject.create().put("zoomTool", JSONObject.create().put("enabled", !isInverted)).put("zoomType", ""));
