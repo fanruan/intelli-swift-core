@@ -37,7 +37,6 @@ public class EmptySingleDimensionGroup implements ISingleDimensionGroup {
 
     @Override
     public String getChildShowName(int row) {
-
         return StringUtils.EMPTY;
     }
 
