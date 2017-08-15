@@ -6,19 +6,24 @@ import com.fr.stable.StringUtils;
  * Created by 小灰灰 on 2017/7/31.
  */
 public class EmptySingleDimensionGroup implements ISingleDimensionGroup {
+
     private Object[] data;
+
     public EmptySingleDimensionGroup(Object[] data) {
-        this.data =data;
+
+        this.data = data;
     }
 
     @Override
     public int getChildIndexByValue(Object value) {
+
         return 0;
     }
 
     @Override
     public NoneDimensionGroup getChildDimensionGroup(int row) {
-        if (row == 0){
+
+        if (row == 0) {
             return NoneDimensionGroup.EMPTY;
         }
         return NoneDimensionGroup.NULL;
@@ -26,6 +31,7 @@ public class EmptySingleDimensionGroup implements ISingleDimensionGroup {
 
     @Override
     public Object getChildData(int row) {
+
         return null;
     }
 
@@ -41,6 +47,7 @@ public class EmptySingleDimensionGroup implements ISingleDimensionGroup {
 
     @Override
     public Object[] getData() {
+
         return data;
     }
 }
