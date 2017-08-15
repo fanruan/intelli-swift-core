@@ -23,7 +23,7 @@ import com.fr.bi.field.target.target.BISummaryTarget;
 import com.fr.bi.report.key.TargetGettingKey;
 import com.fr.bi.report.result.BIComplexCrossResult;
 import com.fr.bi.report.result.TargetCalculator;
-import com.fr.bi.report.result.imp.ComplexCrossResult;
+import com.fr.bi.cal.analyze.cal.result.ComplexCrossResult;
 import com.fr.bi.stable.gvi.GVIUtils;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.general.ComparatorUtils;

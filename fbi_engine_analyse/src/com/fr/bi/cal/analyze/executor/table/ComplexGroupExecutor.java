@@ -16,7 +16,7 @@ import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.field.target.target.BISummaryTarget;
 import com.fr.bi.report.key.TargetGettingKey;
 import com.fr.bi.report.result.BIComplexGroupResult;
-import com.fr.bi.report.result.imp.ComplexGroupResult;
+import com.fr.bi.cal.analyze.cal.result.ComplexGroupResult;
 import com.fr.bi.stable.gvi.GVIUtils;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.general.DateUtils;

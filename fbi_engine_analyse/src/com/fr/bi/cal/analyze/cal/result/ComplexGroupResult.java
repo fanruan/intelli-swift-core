@@ -1,6 +1,5 @@
-package com.fr.bi.report.result.imp;
+package com.fr.bi.cal.analyze.cal.result;
 
-import com.fr.bi.cal.analyze.cal.result.Node;
 import com.fr.bi.report.result.BIComplexGroupResult;
 import com.fr.bi.report.result.BIGroupNode;
 

@@ -1,6 +1,5 @@
-package com.fr.bi.report.result.imp;
+package com.fr.bi.cal.analyze.cal.result;
 
-import com.fr.bi.cal.analyze.cal.result.XNode;
 import com.fr.bi.report.result.BIComplexCrossResult;
 import com.fr.bi.report.result.BICrossNode;
 
