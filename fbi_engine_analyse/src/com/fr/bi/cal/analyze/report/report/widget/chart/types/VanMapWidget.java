@@ -1,5 +1,6 @@
 package com.fr.bi.cal.analyze.report.report.widget.chart.types;
 
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.cal.analyze.report.report.widget.VanChartWidget;
 import com.fr.bi.conf.report.map.BIMapInfoManager;
 import com.fr.bi.conf.report.map.BIWMSManager;
@@ -90,11 +91,13 @@ public class VanMapWidget extends VanChartWidget{
 
         legend.put("continuous", false);
 
-        BISummaryTarget[] targets = this.getTargets();
-        if(targets.length > 0){
-            legend.put("formatter", this.intervalLegendFormatter(this.valueFormat(targets[0]), this.valueUnit(targets[0], true)));
+        String[] targetsID = this.getUsedTargetID();
+        try {
+            BISummaryTarget target = getBITargetByID(targetsID[0]);
+            legend.put("formatter", this.intervalLegendFormatter(this.valueFormat(target), this.valueUnit(target, true)));
+        }catch (Exception e){
+            BILoggerFactory.getLogger().info(e.getMessage(), e);
         }
-
         return legend;
     }
 
