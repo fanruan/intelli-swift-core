@@ -113,7 +113,7 @@ public class BIConnectionManager extends XMLFileManager implements BIConnectionP
         return System.currentTimeMillis();
     }
 
-    public void ensureInitTimeExist() {
+    private void ensureInitTimeExist() {
         Set<String> names = connMap.keySet();
         long initTime = System.currentTimeMillis();
         int index = 0;
@@ -133,6 +133,7 @@ public class BIConnectionManager extends XMLFileManager implements BIConnectionP
         }
     }
 
+    @Override
     public BIConnection getBIConnection(String name) {
         ensureInitTimeExist();
         return connMap.get(name);
