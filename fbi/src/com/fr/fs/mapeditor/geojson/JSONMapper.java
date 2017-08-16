@@ -6,7 +6,7 @@ import com.fr.cache.AttachmentSource;
 import com.fr.chart.base.ChartBaseUtils;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
-import com.fr.plugin.chart.vanchart.imgevent.ImageUtils;
+import com.fr.fs.mapeditor.vanchart.imgevent.ImageUtils;
 import com.fr.stable.ArrayUtils;
 import com.fr.stable.StringUtils;
 

@@ -7,7 +7,6 @@ import com.fr.general.FRLogger;
 import com.fr.general.GeneralContext;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;
-import com.fr.plugin.chart.map.GISLayerType;
 import com.fr.stable.EnvChangedListener;
 import com.fr.stable.StringUtils;
 import com.fr.stable.file.RemoteXMLFileManagerProvider;
@@ -153,43 +152,4 @@ public class MapLayerConfigManager extends XMLFileManager implements RemoteXMLFi
             FRLogger.getLogger().error(ex.getMessage());
         }
     }
-
-    public String[] getLayerItems(){
-
-        ArrayList<String> names = new ArrayList<String>(layerMap.keySet());
-
-        names.add(GISLayerType.getLocString(GISLayerType.CUSTOM_TILE_LAYER));
-        names.add(GISLayerType.getLocString(GISLayerType.CUSTOM_WMS_LAYER));
-        names.add(GISLayerType.getLocString(GISLayerType.LAYER_NULL));
-
-
-        return names.toArray(new String[0]);
-    }
-
-    public GISLayerType getGisLayerType(String showItemName){
-        GISLayerType type = GISLayerType.PREDEFINED_LAYER;
-
-        if(isCustomLayer(showItemName)){
-            type = GISLayerType.CUSTOM_TILE_LAYER;
-        }else if(isCustomWmsLayer(showItemName)){
-            type = GISLayerType.CUSTOM_WMS_LAYER;
-        }else if(isLayerNull(showItemName)){
-            type = GISLayerType.LAYER_NULL;
-        }
-
-        return type;
-    }
-
-    public boolean isCustomLayer(String showItemName){
-        return ComparatorUtils.equals(showItemName, GISLayerType.getLocString(GISLayerType.CUSTOM_TILE_LAYER));
-    }
-
-    public boolean isCustomWmsLayer(String showItemName){
-        return ComparatorUtils.equals(showItemName, GISLayerType.getLocString(GISLayerType.CUSTOM_WMS_LAYER));
-    }
-
-    public boolean isLayerNull(String showItemName){
-        return ComparatorUtils.equals(showItemName, GISLayerType.getLocString(GISLayerType.LAYER_NULL));
-    }
-
 }

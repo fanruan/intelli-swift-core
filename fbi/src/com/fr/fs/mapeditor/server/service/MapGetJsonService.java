@@ -1,7 +1,7 @@
 package com.fr.fs.mapeditor.server.service;
 
-import com.fr.plugin.chart.map.geojson.JSONMapper;
-import com.fr.plugin.chart.map.server.CompatibleGEOJSONHelper;
+import com.fr.fs.mapeditor.geojson.JSONMapper;
+import com.fr.fs.mapeditor.server.CompatibleGEOJSONHelper;
 import com.fr.stable.CodeUtils;
 import com.fr.stable.fun.Service;
 import com.fr.web.utils.WebUtils;

@@ -1,8 +1,8 @@
 package com.fr.fs.mapeditor.server.service;
 
 import com.fr.general.http.HttpClient;
-import com.fr.plugin.chart.map.designer.type.WMSFactory;
-import com.fr.plugin.chart.map.layer.WMSLayer;
+import com.fr.fs.mapeditor.vanchart.map.designer.WMSFactory;
+import com.fr.fs.mapeditor.vanchart.map.layer.WMSLayer;
 import com.fr.fs.mapeditor.server.MapLayerConfigManager;
 import com.fr.fs.mapeditor.server.MapTileLayer;
 import com.fr.web.core.ActionNoSessionCMD;

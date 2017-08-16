@@ -2,8 +2,9 @@ package com.fr.fs.mapeditor.geojson;
 
 import java.util.ArrayList;
 import java.util.List;
+import com.fr.fs.mapeditor.geojson.Geometry;
 
-public class GeometryCollection extends com.fr.plugin.chart.map.geojson.Geometry {
+public class GeometryCollection extends Geometry {
     private Geometry[] geometries;
 
     public Geometry[] getGeometries() {
