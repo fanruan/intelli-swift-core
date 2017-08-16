@@ -217,8 +217,8 @@ public class CubeUpdateUtils {
         boolean tableRelationReduced = BICubeConfigureCenter.getPackageManager().isTableReduced(userId) &&
                 BICubeConfigureCenter.getTableRelationManager().isRelationReduced(userId);
         /*
-        *      * BI-6199 表数目没减少，但是结构变了
-        *      */
+        *  BI-6199 表数目没减少，但是结构变了
+        */
         boolean isTableStructureChanged = !BICubeConfigureCenter.getPackageManager().isTableNoChange(userId) &&
                 !BICubeConfigureCenter.getPackageManager().isTableReduced(userId);
 
