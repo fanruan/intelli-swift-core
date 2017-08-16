@@ -2,6 +2,7 @@ package com.fr.bi.cal.analyze.report.report.widget.chart.types;
 
 import com.fr.bi.field.target.target.BISummaryTarget;
 import com.fr.json.JSONArray;
+import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
 
 /**
@@ -87,6 +88,11 @@ public class VanRangeAreaWidget extends VanAreaWidget{
 
     //和标签一起处理了
     protected void formatSeriesTooltipFormat(JSONObject options) throws Exception {
+    }
+
+
+    protected JSONObject parseLeftValueAxis(JSONObject settings) throws JSONException {
+        return super.parseLeftValueAxis(settings).put("reversed", false);
     }
 
 }

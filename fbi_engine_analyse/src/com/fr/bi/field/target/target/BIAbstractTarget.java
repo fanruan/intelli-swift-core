@@ -1,39 +1,50 @@
 package com.fr.bi.field.target.target;
 
+import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.conf.report.widget.field.target.BITarget;
 import com.fr.bi.field.BIStyleTarget;
 import com.fr.bi.report.key.TargetGettingKey;
 import com.fr.json.JSONObject;
 
 public abstract class BIAbstractTarget extends BIStyleTarget implements BITarget {
+
     /**
-	 * 
-	 */
-	private static final long serialVersionUID = 2627125367817748430L;
-	private int summaryType;
+     *
+     */
+    private static final long serialVersionUID = 2627125367817748430L;
+
+    @BICoreField
+    private int summaryType;
+
     private int chartType;
+
     private int summaryIndex;
 
 
     public int getSummaryType() {
+
         return summaryType;
     }
 
     public void setSummaryIndex(int summaryIndex) {
+
         this.summaryIndex = summaryIndex;
     }
 
-    public int getSummaryIndex(){
+    public int getSummaryIndex() {
+
         return summaryIndex;
     }
 
     @Override
     public int getChartType() {
+
         return chartType;
     }
 
     @Override
     public TargetGettingKey createTargetGettingKey() {
+
         return new TargetGettingKey(getSummaryIndex(), getName());
     }
 
@@ -46,16 +57,17 @@ public abstract class BIAbstractTarget extends BIStyleTarget implements BITarget
      */
     @Override
     public void parseJSON(JSONObject jo, long userId) throws Exception {
+
         super.parseJSON(jo, userId);
         if (jo.has("group")) {
             JSONObject groupJo = jo.getJSONObject("group");
-            if(groupJo.has("type")) {
+            if (groupJo.has("type")) {
                 summaryType = groupJo.getInt("type");
             }
         }
         if (jo.has("styleOfChart")) {
             JSONObject chartJo = jo.getJSONObject("styleOfChart");
-            if(chartJo.has("type")) {
+            if (chartJo.has("type")) {
                 chartType = chartJo.getInt("type");
             }
         }
@@ -63,6 +75,7 @@ public abstract class BIAbstractTarget extends BIStyleTarget implements BITarget
 
     @Override
     public boolean equals(Object o) {
+
         if (this == o) {
             return true;
         }
@@ -92,6 +105,7 @@ public abstract class BIAbstractTarget extends BIStyleTarget implements BITarget
      */
     @Override
     public int hashCode() {
+
         int result = super.hashCode();
         result = 31 * result + summaryType;
         result = 31 * result + chartType;
