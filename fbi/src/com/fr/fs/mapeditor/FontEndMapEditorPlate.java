@@ -9,9 +9,9 @@ import com.fr.fs.control.dao.tabledata.TableDataDAOControl;
 import com.fr.fs.dao.EntryDAO;
 import com.fr.stable.fun.Service;
 
-import com.fr.fs.mapeditor.server.service.MapEditorOpenEntryService;
-import com.fr.fs.mapeditor.server.service.MapEditorEntryService;
-import com.fr.fs.mapeditor.server.service.MapGetJsonService;
+import com.fr.plugin.chart.map.server.service.MapEditorOpenEntryService;
+import com.fr.plugin.chart.map.server.service.MapEditorEntryService;
+import com.fr.plugin.chart.map.server.service.MapGetJsonService;
 
 import java.util.List;
 
@@ -21,6 +21,7 @@ public class FontEndMapEditorPlate extends AbstractFSPlate  {
 
     public Service[] service4Register() {
         return new Service[]{
+                // 这里直接复用plugin-vanchart的MapEditorService
                 new MapEditorOpenEntryService(),
                 new MapEditorEntryService(),
                 new MapGetJsonService()
@@ -86,7 +87,7 @@ public class FontEndMapEditorPlate extends AbstractFSPlate  {
     @Override
     public String[] getLocaleFile() {
         return new String[]{
-                "com/fr/fs/mapeditor/locale/editor"
+                "com/fr/plugin/chart/locale/vancharts"
         };
     }
 
@@ -98,7 +99,7 @@ public class FontEndMapEditorPlate extends AbstractFSPlate  {
     public PlatformManageModule[] supportPlatformManageModules() {
         return new PlatformManageModule[]{
                 // todo 这个platformManageModuleId不知道写多少，先写一个20用着
-                new PlatformManageModule("BI-FS-Module_Map_Editor", "", 20, 1, true)
+                new PlatformManageModule("Plugin-Chart_Map_Editor", "", 20, 1, true)
         };
     }
 }
