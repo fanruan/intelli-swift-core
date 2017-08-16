@@ -6,6 +6,7 @@ import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
+import com.fr.stable.StableUtils;
 
 /**
  * Created by eason on 2017/2/27.
@@ -79,7 +80,9 @@ public class VanCompareBarWidget extends VanCompareColumnWidget{
                 String valueKey = this.valueKey();
                 for (int j = 0, size = datas.length(); j < size; j++) {
                     JSONObject point = datas.getJSONObject(j);
-                    point.put(valueKey, -checkInfinity(point.optDouble(valueKey)));
+                    if(StableUtils.isNumber(point.optString(valueKey))){
+                        point.put(valueKey, -checkInfinity(point.optDouble(valueKey)));
+                    }
                 }
             }
 
