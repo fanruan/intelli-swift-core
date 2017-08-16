@@ -1,5 +1,6 @@
 package com.fr.bi.etl.analysis.data;
 
+import com.finebi.cube.common.log.BILogger;
 import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.cal.analyze.cal.result.ComplexAllExpander;
@@ -17,8 +18,9 @@ import com.fr.bi.common.persistent.xml.BIIgnoreField;
 import com.fr.bi.conf.report.BIWidget;
 import com.fr.bi.conf.report.WidgetType;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
-import com.fr.bi.stable.constant.BIReportConstant;
+import com.fr.bi.field.dimension.dimension.BIDateDimension;
 import com.fr.bi.report.key.TargetGettingKey;
+import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.stable.StringUtils;
 
 import java.io.Serializable;
@@ -46,6 +48,7 @@ public class UserWidget implements Serializable {
     private transient UserSession session;
     @BIIgnoreField
     private /*transient*/ Map<Integer, List> tempValue = new ConcurrentHashMap<Integer, List>();
+    private static BILogger LOGGER = BILoggerFactory.getLogger(UserWidget.class);
 
     public UserWidget(BIWidget widget, long userId) {
         this.widget = widget;
@@ -70,7 +73,6 @@ public class UserWidget implements Serializable {
         end = Math.min(end, maxRow);
         return getDate(start, end);
     }
-
 
 
     private List<List> getDate(int start, int end) {
@@ -145,6 +147,9 @@ public class UserWidget implements Serializable {
                     Object data = temp.getData();
                     BIDimension dim = rows[--i];
                     Object v = dim.getValueByType(data);
+                    if (dim instanceof BIDateDimension && data != null) {
+                        v = Long.valueOf(String.valueOf(data));
+                    }
                     rowList.add(0, v);
                     temp = temp.getParent();
                 }
@@ -154,7 +159,7 @@ public class UserWidget implements Serializable {
                 n = n.getSibling();
             }
         } catch (Exception e) {
-            BILoggerFactory.getLogger().error(e.getMessage(), e);
+            LOGGER.error(e.getMessage(), e);
         }
         return values;
     }
@@ -162,6 +167,7 @@ public class UserWidget implements Serializable {
     private Iterator<List<List>> createTableDataIterator() {
         return new Iterator<List<List>>() {
             List<List> v = getNextValue(session, BIReportConstant.TABLE_PAGE_OPERATOR.REFRESH);
+
             @Override
             public void remove() {
 
@@ -175,7 +181,7 @@ public class UserWidget implements Serializable {
             @Override
             public List<List> next() {
                 List<List> temp = v;
-                if (((TableWidget) widget).hasVerticalNextPage()){
+                if (((TableWidget) widget).hasVerticalNextPage()) {
                     v = getNextValue(session, BIReportConstant.TABLE_PAGE_OPERATOR.ROW_NEXT);
                 } else {
                     v = null;
@@ -208,18 +214,20 @@ public class UserWidget implements Serializable {
     }
 
     private static final int STEP = 1000;
+
     private Iterator<List<List>> createDetailDataIterator() {
         return new Iterator<List<List>>() {
             int page = 0;
             int step = STEP;
             List<List> data = get();
+
             @Override
             public void remove() {
 
             }
 
-            private List<List> get(){
-                return getDetailData(step * page, step *(++page));
+            private List<List> get() {
+                return getDetailData(step * page, step * (++page));
             }
 
             @Override
@@ -243,8 +251,8 @@ public class UserWidget implements Serializable {
         int page = start / step;
         paging.setCurrentPage(page + 1);
         DetailExecutor exe = new DetailExecutor((DetailWidget) widget, paging, session);
-        List<List> data =  exe.getData();
-        if (paging.getTotalSize() > start){
+        List<List> data = exe.getData();
+        if (paging.getTotalSize() > start) {
             return data;
         }
         return null;

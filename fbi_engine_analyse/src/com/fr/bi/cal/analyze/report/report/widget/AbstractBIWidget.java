@@ -8,7 +8,6 @@ import com.finebi.cube.relation.BITableSourceRelation;
 import com.fr.bi.base.BICore;
 import com.fr.bi.base.BICoreGenerator;
 import com.fr.bi.base.annotation.BICoreField;
-import com.fr.bi.cal.analyze.report.report.widget.util.BIWidgetFactory;
 import com.fr.bi.cal.analyze.session.BISession;
 import com.fr.bi.cal.report.main.impl.BIWorkBook;
 import com.fr.bi.cal.report.report.poly.BIPolyWorkSheet;
@@ -24,11 +23,10 @@ import com.fr.bi.conf.report.widget.field.target.filter.TargetFilter;
 import com.fr.bi.conf.session.BISessionProvider;
 import com.fr.bi.field.dimension.calculator.NoneDimensionCalculator;
 import com.fr.bi.field.target.filter.TargetFilterFactory;
+import com.fr.bi.report.result.DimensionCalculator;
 import com.fr.bi.stable.gvi.GVIUtils;
 import com.fr.bi.stable.gvi.GroupValueIndex;
-import com.fr.bi.report.result.DimensionCalculator;
 import com.fr.fs.control.UserControl;
-import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;
 import com.fr.main.impl.WorkBook;
 import com.fr.report.poly.TemplateBlock;
@@ -40,10 +38,8 @@ import com.fr.web.core.SessionDealWith;
 import javax.servlet.http.HttpServletRequest;
 import java.awt.*;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
+import java.util.UUID;
 
 
 /**
@@ -54,20 +50,13 @@ import java.util.Map;
 public abstract class AbstractBIWidget implements BIWidget {
 
     private static final long serialVersionUID = 1959074307747827366L;
-
     private String blockName;
-
     private String widgetId;
-
     private Rectangle rect = new Rectangle();
-
     @BICoreField
     private TargetFilter filter;
-
     private long initTime;
-
     private long userId;
-
     private boolean realData = true;
     @BIIgnoreField
     private String sessionId;
@@ -77,38 +66,19 @@ public abstract class AbstractBIWidget implements BIWidget {
     @BICoreField
     protected BIWidgetConf widgetConf = new BIWidgetConf();
 
-    /**
-     * 跳转组件
-     */
-    protected BIWidget globalFilterWidget;
-
-    /**
-     * 跳转点击的值
-     */
-    protected JSONObject globalFilterClick;
-
-    /**
-     * 跳转的源字段和目标字段
-     */
-    protected JSONArray globalFilterSourceAndTargetField;
-
     public long getUserId() {
-
         return userId;
     }
 
     public boolean isRealData() {
-
         return realData;
     }
 
     public void setRealData(boolean realData) {
-
         this.realData = realData;
     }
 
     private UnitRectangle getBlockBounds() {
-
         return new UnitRectangle(rect, Constants.DEFAULT_WEBWRITE_AND_SCREEN_RESOLUTION);
     }
 
@@ -116,28 +86,29 @@ public abstract class AbstractBIWidget implements BIWidget {
      */
     @Override
     public String getWidgetName() {
-
         return blockName;
     }
 
     public String getWidgetId() {
-
+        /**
+         * 螺旋分析的组件都没有widgetID
+         */
+        if (widgetId == null) {
+            widgetId = UUID.randomUUID().toString();
+        }
         return widgetId;
     }
 
     @Override
     public void setWidgetName(String name) {
-
         this.blockName = name;
     }
 
     public TargetFilter getFilter() {
-
         return filter;
     }
 
     public void setFilter(TargetFilter filter) {
-
         this.filter = filter;
     }
 
@@ -148,7 +119,6 @@ public abstract class AbstractBIWidget implements BIWidget {
      */
     @Override
     public WorkBook createWorkBook(BISessionProvider session) {
-
         BIWorkBook wb = new BIWorkBook();
         wb.addReport(createWorkSheet(session));
         return wb;
@@ -156,7 +126,6 @@ public abstract class AbstractBIWidget implements BIWidget {
 
     @Override
     public BIPolyWorkSheet createWorkSheet(BISessionProvider session) {
-
         BIPolyWorkSheet ws = new BIPolyWorkSheet();
         ws.addBlock(this.createTemplateBlock((BISession) session));
         return ws;
@@ -164,19 +133,16 @@ public abstract class AbstractBIWidget implements BIWidget {
 
     @Override
     public boolean showRowToTal() {
-
         return true;
     }
 
     @Override
     public boolean showColumnTotal() {
-
         return true;
     }
 
     @Override
     public void refreshColumns() {
-
         for (BITargetAndDimension td : getTargets()) {
             td.refreshColumn();
         }
@@ -189,7 +155,6 @@ public abstract class AbstractBIWidget implements BIWidget {
      * 根据widget创建TemplateBlock
      */
     protected TemplateBlock createTemplateBlock(BISession session) {
-
         TemplateBlock block = createBIBlock(session);
         block.setBlockName(CodeUtils.passwordEncode(blockName));
         block.getBlockAttr().setFreezeHeight(true);
@@ -215,12 +180,22 @@ public abstract class AbstractBIWidget implements BIWidget {
      */
     @Override
     public void parseJSON(JSONObject jo, long userId) throws Exception {
-
         widgetConf.parseJSON(jo);
-
-        blockName = widgetConf.getWidgetName();
-        widgetId = widgetConf.getWId();
-
+        int x = 0, y = 0, width = 0, height = 0;
+        if (jo.has("bounds")) {
+            JSONObject bounds = jo.getJSONObject("bounds");
+            x = bounds.optInt("left", 0);
+            y = bounds.optInt("top", 0);
+            width = bounds.optInt("width", 0);
+            height = bounds.optInt("height", 0);
+        }
+        rect.setBounds(x, y, width, height);
+        if (jo.has("name")) {
+            this.blockName = jo.getString("name");
+        }
+        if (jo.has("wId")) {
+            this.widgetId = jo.getString("wId");
+        }
         if (jo.has("filter")) {
             JSONObject filterJo = jo.getJSONObject("filter");
             filter = TargetFilterFactory.parseFilter(filterJo, userId);
@@ -235,29 +210,10 @@ public abstract class AbstractBIWidget implements BIWidget {
             sessionId = jo.getString("sessionID");
         }
         this.userId = userId;
-
-        /**
-         * 跳转相关解析
-         */
-        if (jo.has("globalFilter")) {
-            JSONObject glf = jo.getJSONObject("globalFilter");
-            if (glf.has("linkedWidget")) {
-                globalFilterWidget = BIWidgetFactory.parseWidget(glf.getJSONObject("linkedWidget"), userId);
-                // 跳转过来的组件有clieck属性
-                if (glf.has("clicked")) {
-                    globalFilterClick = glf.getJSONObject("clicked");
-                }
-            }
-        }
-        // 跳转过来的组件上面有jump属性
-        if (jo.has("jump")) {
-            globalFilterSourceAndTargetField = jo.getJSONArray("jump");
-        }
     }
 
     @Override
     public Object clone() {
-
         try {
             return super.clone();
         } catch (Exception e) {
@@ -267,8 +223,6 @@ public abstract class AbstractBIWidget implements BIWidget {
     }
 
     public GroupValueIndex createFilterGVI(DimensionCalculator[] row, BusinessTable targetKey, ICubeDataLoader loader, long userId) {
-
-        // 自身的过滤
         if (row.length == 0) {
             row = new DimensionCalculator[]{new NoneDimensionCalculator(targetKey.getFields().get(0), new ArrayList<BITableSourceRelation>())};
         }
@@ -295,7 +249,6 @@ public abstract class AbstractBIWidget implements BIWidget {
     }
 
     public List<TargetFilter> getAuthFilter(long userId) {
-
         List<TargetFilter> filters = new ArrayList<TargetFilter>();
         //管理员用户没有权限的过滤条件
         if (userId == UserControl.getInstance().getSuperManagerID()) {
@@ -346,99 +299,16 @@ public abstract class AbstractBIWidget implements BIWidget {
 
     @Override
     public Rectangle getRect() {
-        return widgetConf.getRect();
-    }
-
-    public JSONObject getPostOptions(BISessionProvider session, HttpServletRequest req) throws Exception {
-
-        return new JSONObject();
-    }
-
-    public JSONObject createChartConfigWidthData(BISessionProvider session, HttpServletRequest req, JSONObject data) throws Exception {
-
-        return data;
-    }
-
-    /**
-     * 获取跳转源字段以及目标字段设置
-     *
-     * @return
-     */
-    public List<Map> getGlobalSourceAndTargetFieldList() {
-
-        List<Map> r = new ArrayList<Map>();
-        if (globalFilterSourceAndTargetField != null && globalFilterSourceAndTargetField.length() > 0) {
-            try {
-                JSONArray sf = globalFilterSourceAndTargetField.getJSONObject(0).getJSONArray("sourceTargetFields");
-                for (int i = 0; i < sf.length(); i++) {
-                    JSONObject j = sf.getJSONObject(i);
-                    Map<String, String> s = new HashMap<String, String>();
-                    s.put("sourceFieldId", j.optString("sourceFieldId"));
-                    s.put("targetFieldId", j.optString("targetFieldId"));
-                    r.add(s);
-                }
-            } catch (Exception e) {
-                BILoggerFactory.getLogger(this.getClass()).info("error in get global filter source and target field", e);
-            }
-        }
-        return r;
-    }
-
-    public BIWidget getGlobalFilterWidget() {
-
-        return globalFilterWidget;
-    }
-
-    public Map<String, JSONArray> getGlobalFilterClick() {
-
-        Map<String, JSONArray> r = new HashMap<String, JSONArray>();
-        try {
-            // 明细表的click值和分组表的不相同
-            if (globalFilterClick != null) {
-                //
-                Iterator<String> iterator = (Iterator<String>) globalFilterClick.keys();
-                while (iterator.hasNext()) {
-                    String k = iterator.next();
-                    // 明细表专用
-                    if (k.equals("pageCount") || k.equals("rowIndex") || k.equals("value") || k.equals("dId")) {
-                        JSONArray v = JSONArray.create();
-                        v.put(globalFilterClick.optString(k, ""));
-                        r.put(k, v);
-                    } else {
-                        r.put(k, globalFilterClick.getJSONArray(k));
-                    }
-                }
-            }
-        } catch (Exception e) {
-            BILoggerFactory.getLogger(this.getClass()).info("error in get jump link filter click value");
-        }
-        return r;
-    }
-
-    public JSONArray getGlobalFilterSourceAndTargetField() {
-
-        return globalFilterSourceAndTargetField;
-    }
-
-    /**
-     * 跳转过滤
-     *
-     * @return
-     */
-    public GroupValueIndex getJumpLinkFilter(BusinessTable targetKey, long userId, BISession session) {
-
-        return null;
-    }
-
-    public BusinessTable getBaseTable() {
-
-        return null;
+        return rect;
     }
 
     public BIWidgetConf getWidgetConf() {
         return widgetConf;
     }
 
+    public BIWidgetSettings getWidgetSettings() {
+        return widgetConf.getWidgetSettings();
+    }
 
     public BIWidgetSettings getWidgetSettings(BIWidgetConf widgetConf) {
         if (null != widgetConf) {
@@ -448,16 +318,15 @@ public abstract class AbstractBIWidget implements BIWidget {
         }
     }
 
-    public BIWidgetSettings getWidgetSettings() {
-        return widgetConf.getWidgetSettings();
-    }
-    
-    @Override
-    public JSONObject generateResult(BIWidgetConf widgetConf, JSONObject data) throws Exception {
+    public BIWidgetStyle getStyle() {
         return null;
     }
 
-    public BIWidgetStyle getStyle() {
-        return null;
+    public JSONObject getPostOptions(BISessionProvider session, HttpServletRequest req) throws Exception {
+        return new JSONObject();
+    }
+
+    public JSONObject createChartConfigWidthData(BISessionProvider session, HttpServletRequest req, JSONObject data) throws Exception {
+        return data;
     }
 }

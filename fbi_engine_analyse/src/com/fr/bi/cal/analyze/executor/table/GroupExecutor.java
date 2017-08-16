@@ -147,15 +147,14 @@ public class GroupExecutor extends AbstractTableWidgetExecutor<Node> {
      * @param maxRowDimensionsLength ComplexGroupExecutor复用时需要的参数,
      */
     public static void generateCells(Node n, TableWidget widget, BIDimension[] rowDimensions, TableCellIterator iter, FinalInt start, FinalInt rowIdx, int maxRowDimensionsLength) {
-
+        Node lastSibling = null;//上一个节点
         while (n.getFirstChild() != null) {
             n = n.getFirstChild();
         }
         int[] oddEven = new int[rowDimensions.length];
         Object[] dimensionNames = new Object[rowDimensions.length];
         while (n != null) {
-            if (checkNull(n, rowDimensions.length)) {
-                Node temp = n;
+            if (checkNotNull(n, rowDimensions.length)) {
                 rowIdx.value++;
                 int newRow = rowIdx.value & ExportConstants.MAX_ROWS_2007 - 1;
                 if (newRow == 0) {
@@ -163,14 +162,15 @@ public class GroupExecutor extends AbstractTableWidgetExecutor<Node> {
                     start.value++;
                 }
                 StreamPagedIterator pagedIterator = iter.getIteratorByPage(start.value);
-                //分组表维度需要合并单元格
-                generateDimNames(temp, widget, rowDimensions, dimensionNames, oddEven, pagedIterator, rowIdx.value, maxRowDimensionsLength);
-                generateTargetCells(temp, widget, pagedIterator, rowIdx.value, maxRowDimensionsLength, rowIdx.value % 2 == 1 ? widget.getTableStyle().getOddRowStyle(Style.getInstance()) : widget.getTableStyle().getEvenRowStyle(Style.getInstance()));
+                //通过dimensionNames给行表头合并单元格
+                generateDimNames(n, lastSibling, widget, rowDimensions, dimensionNames, oddEven, pagedIterator, rowIdx.value, maxRowDimensionsLength);
+                generateTargetCells(n, widget, pagedIterator, rowIdx.value, maxRowDimensionsLength, rowIdx.value % 2 == 1 ? widget.getTableStyle().getOddRowStyle(Style.getInstance()) : widget.getTableStyle().getEvenRowStyle(Style.getInstance()));
                 if (widget.showRowToTal()) {
                     int columnSpanOffSet = maxRowDimensionsLength - rowDimensions.length + 1;
-                    generateSumCells(temp, widget, pagedIterator, rowIdx, maxRowDimensionsLength - columnSpanOffSet, maxRowDimensionsLength);
+                    generateSumCells(n, widget, pagedIterator, rowIdx, maxRowDimensionsLength - columnSpanOffSet, maxRowDimensionsLength);
                 }
             }
+            lastSibling = n;
             n = n.getSibling();
             while (n != null && n.getFirstChild() != null) {
                 n = n.getFirstChild();
@@ -195,7 +195,7 @@ public class GroupExecutor extends AbstractTableWidgetExecutor<Node> {
         }
     }
 
-    private static boolean checkNull(Node n, int length) {
+    private static boolean checkNotNull(Node n, int length) {
 
         Node temp = n;
         for (int i = 0; i < length; i++) {
@@ -219,26 +219,29 @@ public class GroupExecutor extends AbstractTableWidgetExecutor<Node> {
         }
     }
 
-    private static void generateDimNames(Node temp, TableWidget widget, BIDimension[] rowDimensions, Object[] dimensionNames, int[] oddEven, StreamPagedIterator pagedIterator, int rowIdx, int maxRowDimensionsLength) {
+    private static void generateDimNames(Node temp, Node lastSibling, TableWidget widget, BIDimension[] rowDimensions, Object[] dimensionNames, int[] oddEven, StreamPagedIterator pagedIterator, int rowIdx, int maxRowDimensionsLength) {
         //维度第一次出现即addCell
-        int i = rowDimensions.length;
+        int rowDimLength = rowDimensions.length;
+        int i = rowDimLength;
         while (temp.getParent() != null) {
-            int rowSpan = widget.showRowToTal() ? temp.getTotalLengthWithSummary() : temp.getTotalLength();
+            boolean hasSameParent = lastSibling != null && lastSibling.getParent() != null && temp.getParent()!= null && lastSibling.getParent() == temp.getParent();
+
+            int rowSpan = widget.showRowToTal() && widget.getTargets().length != 0 ? temp.getTotalLengthWithSummary() : temp.getTotalLength();
             BIDimension dim = rowDimensions[--i];
             //年月日字段格式化
             Object v = ExecutorUtils.formatDateGroup(dim.getGroup().getType(), dim.toString(temp.getData()));
-            if (!ComparatorUtils.equals(dimensionNames[i], v) || (i == rowDimensions.length - 1) || temp.getParent().getTotalLength() == 1) {
+            if (!ComparatorUtils.equals(dimensionNames[i], v) || (i == rowDimensions.length - 1) || !hasSameParent) {
                 oddEven[i]++;
-                int columnSpanOffSet = i == rowDimensions.length - 1 ? maxRowDimensionsLength - rowDimensions.length : 0;
+                int columnSpanOffSet = i == rowDimLength - 1 ? maxRowDimensionsLength - rowDimLength : 0;
                 Style style = rowIdx % 2 == 1 ? widget.getTableStyle().getOddRowStyle(Style.getInstance()) : widget.getTableStyle().getEvenRowStyle(Style.getInstance());
                 CBCell cell = ExecutorUtils.createCBCell(v, rowIdx, rowSpan, i, 1 + columnSpanOffSet, style);
                 pagedIterator.addCell(cell);
                 dimensionNames[i] = v;
             }
             temp = temp.getParent();
+            lastSibling = lastSibling != null ? lastSibling.getParent() : null;
         }
     }
-
 
     protected WidgetCacheKey createWidgetCacheKey() {
 
@@ -287,6 +290,7 @@ public class GroupExecutor extends AbstractTableWidgetExecutor<Node> {
         WidgetCacheKey key = createWidgetCacheKey();
         WidgetCache<JSONObject> widgetCache = getWidgetCache(key);
         if (widgetCache != null) {
+            BILoggerFactory.getLogger(GroupExecutor.class).info("data existed in caches,get data from caches");
             updateByCache(widgetCache);
             return widgetCache.getData();
         }

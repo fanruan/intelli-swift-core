@@ -21,6 +21,7 @@ import com.fr.bi.report.result.BIDetailCell;
 import com.fr.bi.report.result.BIDetailTableResult;
 import com.fr.bi.cal.analyze.cal.result.DetailCell;
 import com.fr.bi.cal.analyze.cal.result.DetailTableResult;
+import com.fr.bi.field.target.detailtarget.field.BIDateDetailTarget;
 import com.fr.bi.stable.constant.CellConstant;
 import com.fr.bi.stable.data.db.BIRowValue;
 import com.fr.bi.stable.gvi.GVIUtils;
@@ -32,7 +33,7 @@ import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;
 import com.fr.stable.ExportConstants;
 
-import java.awt.Rectangle;
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -219,7 +220,11 @@ public class DetailExecutor extends AbstractDetailExecutor {
                 List list = new ArrayList();
                 for (int i = 0; i < row.getValues().length; i++) {
                     if (viewDimension[i].isUsed()) {
-                        list.add(row.getValues()[i]);
+                        if (viewDimension[i] instanceof BIDateDetailTarget && row.getValues()[i] != null) {
+                            list.add(Long.valueOf(String.valueOf(row.getValues()[i])));
+                        } else {
+                            list.add(row.getValues()[i]);
+                        }
                     }
                 }
                 data.add(list);

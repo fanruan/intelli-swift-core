@@ -75,7 +75,7 @@ public class NoneMetricRootDimensionGroup extends RootDimensionGroup {
     protected ISingleDimensionGroup createSingleDimensionGroup(Object[] data, NoneDimensionGroup ng, int deep) {
         GroupValueIndex[] gvis = new GroupValueIndex[1];
         gvis[0] = getFilterIndex(data, deep);
-        if (gvis[0].isAllEmpty()){
+        if (gvis[0].isAllEmpty() || ng == NoneDimensionGroup.EMPTY){
             return new EmptySingleDimensionGroup(data);
         }
         return ng.createSingleDimensionGroup(columns[deep], getters[deep], data, mergeIteratorCreators[deep], gvis, useRealData);

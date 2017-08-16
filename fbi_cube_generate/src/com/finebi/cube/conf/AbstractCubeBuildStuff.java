@@ -1,6 +1,7 @@
 package com.finebi.cube.conf;
 
 import com.finebi.cube.ICubeConfiguration;
+import com.finebi.cube.common.log.BILogger;
 import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.impl.conf.CalculateDependManager;
 import com.finebi.cube.relation.BITableSourceRelation;
@@ -29,7 +30,7 @@ import java.util.concurrent.Executors;
  * Created by kary on 16/7/11.
  */
 public abstract class AbstractCubeBuildStuff implements CubeBuildStuff {
-
+    private static BILogger LOGGER = BILoggerFactory.getLogger(AbstractCubeBuildStuff.class);
     protected long userId;
     protected Set<CubeTableSource> allTableSources = new HashSet<CubeTableSource>();
     protected CalculateDependTool calculateDependTool;
@@ -76,9 +77,9 @@ public abstract class AbstractCubeBuildStuff implements CubeBuildStuff {
      */
     @Override
     public boolean preConditionsCheck() {
-        BILoggerFactory.getLogger().info("***************space check start*****************");
+        LOGGER.info("***************space check start*****************");
         boolean spaceCheck = hasSpace();
-        BILoggerFactory.getLogger().info("***************space check result: " + spaceCheck + " *****************");
+        LOGGER.info("***************space check result: " + spaceCheck + " *****************");
         return spaceCheck;
     }
 
@@ -103,26 +104,29 @@ public abstract class AbstractCubeBuildStuff implements CubeBuildStuff {
         String tempFolderPath = advancedTempConf.getRootURI().getPath();
         try {
             if (new File(advancedPath).exists()) {
+                LOGGER.info("Advanced cube exist, start to rename advanced cube");
                 boolean renameFolder = BIFileUtils.renameFolder(new File(advancedPath), new File(tempFolderPath + System.currentTimeMillis()));
                 if (!renameFolder) {
-                    BILoggerFactory.getLogger().error("rename Advanced to tempFolder failed");
+                    LOGGER.error("rename Advanced to tempFolder failed");
                     return false;
                 }
             }
             if (new File(tCubePath).exists()) {
+                LOGGER.info("Start to rename tCube to advanced");
                 boolean renameFolder = BIFileUtils.renameFolder(new File(tCubePath), new File(advancedPath));
                 if (!renameFolder) {
-                    BILoggerFactory.getLogger().error("rename FineIndex to Advanced failed");
+                    LOGGER.error("rename FineIndex to Advanced failed");
                     return false;
                 }
             }
 
             //删除除了advanced 跟tCube之外的temp文件夹
+            LOGGER.info("Start to delete temp folder");
             deleteTempFolders();
-
+            LOGGER.info("*******Finish replace cube*********");
             return true;
         } catch (IOException e) {
-            BILoggerFactory.getLogger().error(e.getMessage(), e);
+            LOGGER.error(e.getMessage(), e);
             return false;
         }
     }
@@ -217,7 +221,7 @@ public abstract class AbstractCubeBuildStuff implements CubeBuildStuff {
                     sourceIdMap.put(relation.toString(), relation);
                 }
             } catch (NullPointerException e) {
-                BILoggerFactory.getLogger().error(e.getMessage(), e);
+                LOGGER.error(e.getMessage(), e);
                 continue;
             }
         }
@@ -235,7 +239,7 @@ public abstract class AbstractCubeBuildStuff implements CubeBuildStuff {
                     sourceIdMap.put(path.getSourceID(), path);
                 }
             } catch (NullPointerException e) {
-                BILoggerFactory.getLogger().error(e.getMessage(), e);
+                LOGGER.error(e.getMessage(), e);
                 continue;
             }
         }
@@ -251,11 +255,13 @@ public abstract class AbstractCubeBuildStuff implements CubeBuildStuff {
             if (ArrayUtils.contains(SqlSourceTypes, tableSource.getType())) {
                 if (!connectionSet.contains(((DBTableSource) tableSource).getConnection())) {
                     if (!check.ConnectionCheck(((DBTableSource) tableSource).getConnection())) {
-                        BILoggerFactory.getLogger().error("the table:" + tableSource.getTableName() + " connection test failed");
+                        LOGGER.error("the table:" + tableSource.getTableName() + " connection test failed");
                         return false;
                     }
                     connectionSet.add(((DBTableSource) tableSource).getConnection());
                 }
+
+
             }
         }
         return true;
