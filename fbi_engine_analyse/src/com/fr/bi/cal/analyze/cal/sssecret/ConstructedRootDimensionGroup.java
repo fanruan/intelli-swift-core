@@ -125,7 +125,7 @@ public class ConstructedRootDimensionGroup extends RootDimensionGroup {
             singleThreadBuild();
         }
         //只计算了子节点的情况要加一下
-        if (!hasInSumMetric){
+        if (!hasInSumMetric && rowSize > 0){
             List<TargetAndKey> keys = new ArrayList<TargetAndKey>();
             for (List<TargetAndKey> list : summaryLists) {
                 for (TargetAndKey key : list) {
