@@ -216,11 +216,17 @@ public class CubeUpdateUtils {
          */
         boolean tableRelationReduced = BICubeConfigureCenter.getPackageManager().isTableReduced(userId) &&
                 BICubeConfigureCenter.getTableRelationManager().isRelationReduced(userId);
-        return relationReduced || tableReduced || tableRelationReduced;
+        /*
+        *      * BI-6199 表数目没减少，但是结构变了
+        *      */
+        boolean isTableStructureChanged = !BICubeConfigureCenter.getPackageManager().isTableNoChange(userId) &&
+                !BICubeConfigureCenter.getPackageManager().isTableReduced(userId);
+
+        return relationReduced || tableReduced || tableRelationReduced || isTableStructureChanged;
     }
 
     public static boolean isNeed2GenerateCube(long userId) {
-        return isUpdateMeta(userId)||isPart(userId);
+        return isUpdateMeta(userId) || isPart(userId);
     }
 
 
