@@ -80,7 +80,7 @@ public class BIConnectionManager extends XMLFileManager implements BIConnectionP
             return connMap.get(name).getSchema();
         }
         Connection connection = DatasourceManager.getProviderInstance().getConnection(name);
-        if (idNeedSchema(connection)) {
+        if (isNeedSchema(connection)) {
             String[] schemas = DataCoreUtils.getDatabaseSchema(connection);
             connMap.put(name, new BIConnection(name, schemas != null && schemas.length != 0 ? schemas[0] : StringUtils.EMPTY));
         } else {
@@ -287,7 +287,7 @@ public class BIConnectionManager extends XMLFileManager implements BIConnectionP
     }
 
     @Override
-    public boolean idNeedSchema(Connection c) {
+    public boolean isNeedSchema(Connection c) {
         java.sql.Connection conn = null;
         if (isConnectionAvailable()) {
             try {

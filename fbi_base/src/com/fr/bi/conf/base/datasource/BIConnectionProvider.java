@@ -28,5 +28,5 @@ public interface BIConnectionProvider {
 
     boolean isMicrosoftAccessDatabase(String driver, String url);
 
-    boolean idNeedSchema(Connection c);
+    boolean isNeedSchema(Connection c);
 }
