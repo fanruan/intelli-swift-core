@@ -396,6 +396,7 @@ public class RootDimensionGroup implements IRootDimensionGroup {
 
     @Override
     public void checkMetricGroupInfo(NodeCreator creator, List<MetricGroupInfo> metricGroupInfoList) {
+        this.nodeCreator = creator;
         this.metricGroupInfoList = metricGroupInfoList;
         init();
     }
