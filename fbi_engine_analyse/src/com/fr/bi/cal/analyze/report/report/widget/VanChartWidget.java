@@ -42,7 +42,6 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
-
 import java.util.List;
 import java.util.Locale;
 
@@ -425,6 +424,7 @@ public abstract class VanChartWidget extends TableWidget {
 
         tooltip.put("enabled", !settings.optBoolean("bigDataMode", false)).put("animation", true).put("padding", 10).put("backgroundColor", imageBack(widgetBg) ? DARK : widgetBg)
                 .put("borderRadius", 2).put("borderWidth", 0).put("shadow", true)
+                .put("shared", tooltipShared())
                 .put("style", JSONObject.create()
                         .put("color", this.isDarkColor(widgetBg) ? WHITE : DARK)
                         .put("fontSize", "14px").put("fontFamily", "Verdana"));
@@ -437,6 +437,10 @@ public abstract class VanChartWidget extends TableWidget {
         plotOptions.put("borderWidth", 0);//bi的配置默认没有边框
 
         return plotOptions;
+    }
+
+    protected boolean tooltipShared() {
+        return false;
     }
 
     private boolean imageBack(String bg) {
