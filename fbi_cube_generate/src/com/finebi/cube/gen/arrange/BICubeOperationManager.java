@@ -250,7 +250,7 @@ public class BICubeOperationManager {
                             BIColumnKey targetColumnKey = columnKeyIterator.next();
                             BIOperation<Object> operation = new BIOperation<Object>(
                                     tableSource.getSourceID() + "_" + targetColumnKey.getFullName(),
-                                    getFieldIndexBuilder(cube, tableSource, field, targetColumnKey));
+                                    getFieldIndexBuilder(cube, tableSource, field, targetColumnKey, getUpdateSetting(tableSource)));
                             ITopicTag topicTag = BITopicUtils.generateTopicTag(tableSource);
                             operation.setOperationTopicTag(topicTag);
                             operation.setOperationFragmentTag(BIFragmentUtils.generateFragment(topicTag, targetColumnKey.getFullName()));
@@ -456,7 +456,11 @@ public class BICubeOperationManager {
         return BIRelationHelper.isRelationContainsSelfCircle(relation);
     }
 
-    protected BIFieldIndexGenerator getFieldIndexBuilder(Cube cube, CubeTableSource tableSource, ICubeFieldSource BICubeFieldSource, BIColumnKey targetColumnKey) {
+    protected AbstractFieldIndexGenerator getFieldIndexBuilder(Cube cube, CubeTableSource tableSource, ICubeFieldSource BICubeFieldSource, BIColumnKey targetColumnKey, UpdateSettingSource tableUpdateSetting) {
+        if (tableUpdateSetting != null && (BITableKeyUtils.isTableExisted(tableSource, BICubeConfiguration.getConf(String.valueOf(UserControl.getInstance().getSuperManagerID()))))
+                && DBConstant.SINGLE_TABLE_UPDATE_TYPE.NEVER == tableUpdateSetting.getUpdateType()) {
+            return new BIFieldIndexNeverGenerator(cube, tableSource, BICubeFieldSource, targetColumnKey);
+        }
         return new BIFieldIndexGenerator(cube, tableSource, BICubeFieldSource, targetColumnKey);
     }
 

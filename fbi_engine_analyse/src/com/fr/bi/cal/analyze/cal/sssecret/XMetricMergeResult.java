@@ -32,6 +32,11 @@ public class XMetricMergeResult extends MetricMergeResult implements BIXLeftNode
     }
 
     @Override
+    public void setXValue(Number[][] xValue) {
+        this.xValue = xValue;
+    }
+
+    @Override
     public void setSummaryValue(TargetGettingKey key, Number value) {
         if (key instanceof XTargetGettingKey){
             setXValue((XTargetGettingKey) key, value);

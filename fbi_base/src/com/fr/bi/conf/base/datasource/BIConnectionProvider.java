@@ -13,6 +13,8 @@ public interface BIConnectionProvider {
 
     String getSchema(String name);
 
+    BIConnection getBIConnection(String name);
+
     Connection getConnection(String name);
 
     void envChanged();

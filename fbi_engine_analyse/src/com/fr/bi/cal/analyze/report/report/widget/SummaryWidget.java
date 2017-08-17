@@ -2,6 +2,7 @@ package com.fr.bi.cal.analyze.report.report.widget;
 
 import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.api.ICubeValueEntryGetter;
+import com.finebi.cube.common.log.BILogger;
 import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.conf.BICubeConfigureCenter;
 import com.finebi.cube.conf.field.BusinessField;
@@ -53,7 +54,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 public abstract class SummaryWidget extends AbstractBIWidget {
-
+    private static BILogger LOGGER = BILoggerFactory.getLogger(SummaryWidget.class);
     private static final long serialVersionUID = -4264115812022703958L;
 
     @BICoreField
@@ -127,6 +128,7 @@ public abstract class SummaryWidget extends AbstractBIWidget {
 
     }
 
+
     @Override
     public List<BusinessField> getUsedFieldDefine() {
 
@@ -172,11 +174,17 @@ public abstract class SummaryWidget extends AbstractBIWidget {
             for (int i = 0; i < relationList.size(); i++) {
                 BITableRelation r = relationList.get(i);
                 if (i == relationList.size() - 1 && !ComparatorUtils.equals(r.getForeignTable().getTableSource(), target.getStatisticElement().getTableBelongTo().getTableSource())) {
+                    try {
+                        LOGGER.error("the relation foreignTable json is: " + r.getForeignTable().getTableSource().createJSON());
+                        LOGGER.error("the target tableSource json is: " + target.getStatisticElement().getTableBelongTo().getTableSource().createJSON());
+                    } catch (Exception e) {
+                        LOGGER.error(e.getMessage(), e);
+                    }
                     throw new RuntimeException("relation illegal, incorrect foreignTable");
                 }
                 if (!BICubeConfigureCenter.getTableRelationManager().containTableRelationship(getUserId(), r)) {
                     throw BINonValueUtils.beyondControl(BIStringUtils.append("relation not exist \n",
-                                                                             "the relation: ", logRelation(r)));
+                            "the relation: ", logRelation(r)));
                 }
             }
         } else {
@@ -205,10 +213,10 @@ public abstract class SummaryWidget extends AbstractBIWidget {
             BILoggerFactory.getLogger(BITableRelation.class).error(e.getMessage(), e);
             try {
                 return BIStringUtils.append("relation not exist,",
-                                            "the relation:Primary Table:" + relation.getPrimaryTable().getTableName(),
-                                            ",primary field :" + relation.getPrimaryField().getFieldName(),
-                                            ",foreign table:" + relation.getForeignTable().getTableName(),
-                                            ",foreign filed:" + relation.getForeignField().getFieldName());
+                        "the relation:Primary Table:" + relation.getPrimaryTable().getTableName(),
+                        ",primary field :" + relation.getPrimaryField().getFieldName(),
+                        ",foreign table:" + relation.getForeignTable().getTableName(),
+                        ",foreign filed:" + relation.getForeignField().getFieldName());
             } catch (Exception innerException) {
                 BILoggerFactory.getLogger(BITableRelation.class).error(innerException.getMessage(), innerException);
 

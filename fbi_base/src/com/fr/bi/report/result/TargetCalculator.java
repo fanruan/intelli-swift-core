@@ -35,4 +35,10 @@ public interface TargetCalculator extends Serializable {
 
     CalculatorType getCalculatorType();
 
+    /**
+     * 是否为可以根据子节点的值来计算
+     * @return
+     */
+    boolean isSumTypePlus();
+
 }

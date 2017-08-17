@@ -24,15 +24,19 @@ import java.util.*;
  * Created by roy on 16/4/21.
  */
 public class AbstractTreeNodeExecutor extends TreeExecutor {
+
     protected int floors;
+
     protected String selectedValuesString;
 
     public AbstractTreeNodeExecutor(TreeWidget widget, Paging paging, BISession session) {
+
         super(widget, paging, session);
     }
 
 
     public void parseJSON(JSONObject jo) throws JSONException {
+
         if (jo.has("floors")) {
             floors = jo.getInt("floors");
         }
@@ -43,6 +47,7 @@ public class AbstractTreeNodeExecutor extends TreeExecutor {
 
 
     protected List<String> createData(String[] parentValues, int times) throws JSONException {
+
         List<String> dataList = new ArrayList<String>();
         BIDimension[] rowDimension = widget.getViewDimensions();
         DimensionCalculator[] row = new DimensionCalculator[widget.getViewDimensions().length];
@@ -56,6 +61,7 @@ public class AbstractTreeNodeExecutor extends TreeExecutor {
 
 
     private void createGroupValueWithParentValues(final List<String> dataList, String[] parentValues, GroupValueIndex filterGvi, int floors, int times) {
+
         if (floors == parentValues.length) {
             BIDimension[] dimensions = widget.getViewDimensions();
             BIDimension dimension = dimensions[floors];
@@ -69,8 +75,9 @@ public class AbstractTreeNodeExecutor extends TreeExecutor {
                 while (it.hasNext()) {
                     Map.Entry<Object, GroupValueIndex> e = it.next();
                     Object k = e.getKey();
-                    // BI-6180 TODO 尚需要一套统一的逻辑...
-                    if(BICollectionUtils.isNotCubeNullKey(k)){
+                    // BI-6180
+                    // 不为空 或 为空值且需要显示的时候 才进行显示 BI-8179
+                    if (BICollectionUtils.isNotCubeNullKey(k) || dimension.showNullValue()) {
                         dataList.add(k.toString());
                     }
                 }
@@ -79,7 +86,7 @@ public class AbstractTreeNodeExecutor extends TreeExecutor {
                 int start = (times - 1) * BIReportConstant.TREE.TREE_ITEM_COUNT_PER_PAGE;
                 int count = 0;
                 Iterator<Map.Entry<Object, GroupValueIndex>> it = DimensionIteratorCreator.createValueMapIterator(getter, filterGvi, dimension.getSortType() != BIReportConstant.SORT.DESC);
-                while (it.hasNext()){
+                while (it.hasNext()) {
                     if (count >= start + BIReportConstant.TREE.TREE_ITEM_COUNT_PER_PAGE) {
                         break;
                     }
@@ -87,8 +94,8 @@ public class AbstractTreeNodeExecutor extends TreeExecutor {
                     count++;
                     if (count > start) {
                         Object k = e.getKey();
-                        // BI-6180
-                        if(BICollectionUtils.isNotCubeNullKey(k)){
+                        // BI-6180 BI-8179
+                        if (BICollectionUtils.isNotCubeNullKey(k) || dimension.showNullValue()) {
                             dataList.add(k.toString());
                         }
                     }

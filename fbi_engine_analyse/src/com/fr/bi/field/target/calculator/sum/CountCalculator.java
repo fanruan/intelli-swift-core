@@ -3,6 +3,7 @@ package com.fr.bi.field.target.calculator.sum;
 import com.finebi.cube.api.ICubeTableService;
 import com.fr.bi.field.target.target.BISummaryTarget;
 import com.fr.bi.field.target.target.NoneTargetCountTarget;
+import com.fr.bi.field.target.target.SumType;
 import com.fr.bi.stable.engine.index.key.IndexKey;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.stable.StringUtils;
@@ -18,6 +19,19 @@ public class CountCalculator extends AbstractSummaryCalculator {
     public CountCalculator(BISummaryTarget target, String countTarget) {
         super(target);
         this.countTarget = countTarget;
+    }
+
+    @Override
+    public SumType getSumType() {
+        return StringUtils.isNotEmpty(countTarget) && countTarget != NONE_TARGET_COUNT_CAL.countTarget ? SumType.GVI : SumType.PLUS;
+    }
+
+    @Override
+    public double createSumValue(double v1, double v2) {
+        if (StringUtils.isNotEmpty(countTarget) && countTarget != NONE_TARGET_COUNT_CAL.countTarget) {
+            throw new RuntimeException("not SumType.PLUS");
+        }
+        return v1 + v2;
     }
 
     /**

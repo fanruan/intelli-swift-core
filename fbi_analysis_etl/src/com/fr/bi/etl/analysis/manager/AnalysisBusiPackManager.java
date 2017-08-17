@@ -57,8 +57,8 @@ public class AnalysisBusiPackManager extends BISystemDataManager<SingleUserAnaly
 
     public SingleUserAnalysisBusiPackManager getUserAnalysisBusiPackManager(long userId) {
         try {
-            SingleUserAnalysisBusiPackManager manager =  getValue(userId);
-            if (!manager.checkVersion()){
+            SingleUserAnalysisBusiPackManager manager = getValue(userId);
+            if (!manager.checkVersion()) {
                 persistData(userId);
             }
             return manager;
@@ -391,7 +391,7 @@ public class AnalysisBusiPackManager extends BISystemDataManager<SingleUserAnaly
 
     }
 
-//    @Override
+    //    @Override
     public String getPackageNameByTableId(String tableId) {
         return null;
     }
@@ -496,7 +496,7 @@ public class AnalysisBusiPackManager extends BISystemDataManager<SingleUserAnaly
         Set<AnalysisBusiTable> usedTables = new HashSet<AnalysisBusiTable>();
         if (null != oriSource) {
             for (BusinessTable businessTable : BIAnalysisETLManagerCenter.getDataSourceManager().getAllBusinessTable()) {
-                if (ComparatorUtils.equals(businessTable.getTableSource().getSourceID(), oriSource.getSourceID())) {
+                if (businessTable.getTableSource() != null && ComparatorUtils.equals(businessTable.getTableSource().getSourceID(), oriSource.getSourceID())) {
                     usedTables.add((AnalysisBusiTable) businessTable);
                 }
             }

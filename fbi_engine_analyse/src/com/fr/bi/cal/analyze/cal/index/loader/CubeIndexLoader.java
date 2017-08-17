@@ -11,6 +11,7 @@ import com.fr.bi.cal.analyze.cal.result.operator.*;
 import com.fr.bi.cal.analyze.cal.sssecret.*;
 import com.fr.bi.cal.analyze.cal.store.GroupKey;
 import com.fr.bi.cal.analyze.exception.NoneRegisterationException;
+import com.fr.bi.cal.analyze.executor.paging.PagingFactory;
 import com.fr.bi.cal.analyze.report.report.widget.SummaryWidget;
 import com.fr.bi.cal.analyze.report.report.widget.TableWidget;
 import com.fr.bi.cal.analyze.session.BISession;
@@ -160,67 +161,9 @@ public class CubeIndexLoader {
         }
     }
 
-    private static boolean needCreateNewIterator(int type) {
+    public static boolean needCreateNewIterator(int type) {
 
         return type == -1 || type == 0 || type == BIReportConstant.TABLE_PAGE_OPERATOR.BIGDATACHART;
-    }
-
-    private static Operator createRowOperator(int type, SummaryWidget widget) {
-
-        Operator operator;
-        switch (type) {
-            case BIReportConstant.TABLE_PAGE_OPERATOR.ALL_PAGE:
-                operator = new AllPageOperator();
-                break;
-            case BIReportConstant.TABLE_PAGE_OPERATOR.REFRESH:
-                operator = new NextPageOperator(widget.getMaxRow());
-                break;
-            case BIReportConstant.TABLE_PAGE_OPERATOR.ROW_NEXT:
-                operator = new NextPageOperator(widget.getMaxRow());
-                break;
-            case BIReportConstant.TABLE_PAGE_OPERATOR.ROW_PRE:
-                operator = new LastPageOperator(widget.getMaxRow());
-                break;
-            case BIReportConstant.TABLE_PAGE_OPERATOR.EXPAND:
-                operator = new RefreshPageOperator(widget.getClickValue(), widget.getMaxRow());
-                break;
-            case BIReportConstant.TABLE_PAGE_OPERATOR.BIGDATACHART:
-                operator = new BigDataChartOperator();
-                break;
-            default:
-                operator = new RefreshPageOperator(widget.getMaxRow());
-                break;
-        }
-        return operator;
-    }
-
-    private static Operator createColumnOperator(int type, SummaryWidget widget) {
-        //pony 横向的改成全部展示
-        Operator operator;
-        switch (type) {
-            case BIReportConstant.TABLE_PAGE_OPERATOR.ALL_PAGE:
-                operator = new AllPageOperator();
-                break;
-            case BIReportConstant.TABLE_PAGE_OPERATOR.REFRESH:
-                operator = new NextPageOperator(widget.getMaxCol());
-                break;
-            case BIReportConstant.TABLE_PAGE_OPERATOR.COLUMN_NEXT:
-                operator = new NextPageOperator(widget.getMaxCol());
-                break;
-            case BIReportConstant.TABLE_PAGE_OPERATOR.COLUMN_PRE:
-                operator = new LastPageOperator(widget.getMaxCol());
-                break;
-            case BIReportConstant.TABLE_PAGE_OPERATOR.EXPAND:
-                operator = new RefreshPageOperator(widget.getClickValue(), widget.getMaxCol());
-                break;
-            case BIReportConstant.TABLE_PAGE_OPERATOR.BIGDATACHART:
-                operator = new BigDataChartOperator();
-                break;
-            default:
-                operator = new RefreshPageOperator(widget.getMaxCol());
-                break;
-        }
-        return operator;
     }
 
     private static BISummaryTarget[] createUsedSummaryTargets(
@@ -440,7 +383,7 @@ public class CubeIndexLoader {
             }
         }
         NodeAndPageInfo topInfo = createPageGroupNode(topWidget, topTargetList.toArray(new BISummaryTarget[topTargetList.size()]), colDimension, new GroupNodeCreator(), page, expander.getXExpander(),
-                session, createColumnOperator(page, widget), pg, true, true, true, false);
+                session, PagingFactory.createColumnOperator(page, widget), pg, true, true, true, false);
         return topInfo;
     }
 
@@ -450,7 +393,7 @@ public class CubeIndexLoader {
         int topLen = getTopSumLen(node, widget.showColumnTotal());
         XLeftNodeCreator creator = new XLeftNodeCreator(topLen);
         NodeAndPageInfo leftInfo = createPageGroupNode(widget, extendTargets(usedTargets, node, widget.showColumnTotal()), rowDimension, creator, page, expander.getYExpander(),
-                session, createRowOperator(page, widget), pg, true, false, false, true);
+                session, PagingFactory.createRowOperator(page, widget), pg, true, false, false, true);
         calXCalculateMetrics(usedTargets, (BIXLeftNode) leftInfo.getNode(), topLen);
         if (usedTargets.length != 0 && isEmpty(leftInfo)) {
             leftInfo.getNode().getChilds().clear();
@@ -654,7 +597,7 @@ public class CubeIndexLoader {
             pg = session.getPageIteratorGroup(useRealData, widgetID);
         }
         NodeAndPageInfo info = createPageGroupNode(widget, usedTargets, rowDimension, new GroupNodeCreator(), page, expander, session,
-                isHor ? createColumnOperator(page, widget) : createRowOperator(page, widget), pg, false, isHor, false, true);
+                isHor ? PagingFactory.createColumnOperator(page, widget) : PagingFactory.createRowOperator(page, widget), pg, false, isHor, false, true);
         Node n = info.getNode();
         widget.setPageSpinner(isHor ? BIReportConstant.TABLE_PAGE.HORIZON_PRE : BIReportConstant.TABLE_PAGE.VERTICAL_PRE, info.isHasPre());
         widget.setPageSpinner(isHor ? BIReportConstant.TABLE_PAGE.HORIZON_NEXT : BIReportConstant.TABLE_PAGE.VERTICAL_NEXT, info.isHasNext());
@@ -724,7 +667,7 @@ public class CubeIndexLoader {
             session.setPageIteratorGroup(useRealData, widget.getWidgetId(), pg, i);
         }
         BISummaryTarget[] usedTargets = createUsedSummaryTargets(rowDimension, usedTarget, allSumTarget);
-        NodeAndPageInfo nodeInfo = createPageGroupNode(widget, usedTargets, rowDimension, new GroupNodeCreator(), calPage, nodeExpander, session, isHor ? createColumnOperator(calPage, widget) : createRowOperator(calPage, widget), pg, false, isHor, false, true);
+        NodeAndPageInfo nodeInfo = createPageGroupNode(widget, usedTargets, rowDimension, new GroupNodeCreator(), calPage, nodeExpander, session, isHor ? PagingFactory.createColumnOperator(calPage, widget) : PagingFactory.createRowOperator(calPage, widget), pg, false, isHor, false, true);
         Node node = nodeInfo.getNode();
         if (usedTarget.length == 0) {
             node = node.createResultFilterNode(rowDimension, null);

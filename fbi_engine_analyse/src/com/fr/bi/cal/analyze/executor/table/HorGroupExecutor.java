@@ -5,11 +5,17 @@ import com.finebi.cube.conf.table.BusinessTable;
 import com.fr.base.Style;
 import com.fr.bi.base.FinalInt;
 import com.fr.bi.cal.analyze.cal.index.loader.CubeIndexLoader;
+import com.fr.bi.cal.analyze.cal.index.loader.cache.WidgetCache;
+import com.fr.bi.cal.analyze.cal.index.loader.cache.WidgetCacheKey;
 import com.fr.bi.cal.analyze.cal.result.CrossExpander;
 import com.fr.bi.cal.analyze.cal.result.Node;
+import com.fr.bi.cal.analyze.cal.result.operator.Operator;
+import com.fr.bi.cal.analyze.cal.sssecret.NodeDimensionIterator;
+import com.fr.bi.cal.analyze.cal.sssecret.PageIteratorGroup;
 import com.fr.bi.cal.analyze.executor.iterator.StreamPagedIterator;
 import com.fr.bi.cal.analyze.executor.iterator.TableCellIterator;
 import com.fr.bi.cal.analyze.executor.paging.Paging;
+import com.fr.bi.cal.analyze.executor.paging.PagingFactory;
 import com.fr.bi.cal.analyze.executor.utils.ExecutorUtils;
 import com.fr.bi.cal.analyze.report.report.widget.TableWidget;
 import com.fr.bi.cal.analyze.session.BISession;
@@ -162,6 +168,15 @@ public class HorGroupExecutor extends AbstractTableWidgetExecutor<Node> {
         }
     }
 
+
+    protected WidgetCacheKey createWidgetCacheKey() {
+        PageIteratorGroup iteratorGroup = getPageIterator();
+        Operator colOp = PagingFactory.createColumnOperator(paging.getOperator(), widget);
+        return WidgetCacheKey.createKey(widget.fetchObjectCore(), expander.getYExpander(), expander.getXExpander(),
+                null, null, colOp, getStartIndex(colOp, iteratorGroup == null ? null : iteratorGroup.getColumnIterator(), usedDimensions.length),
+                widget.getAuthFilter(session.getUserId()));
+    }
+
     @Override
     public Node getCubeNode() throws Exception {
 
@@ -188,8 +203,35 @@ public class HorGroupExecutor extends AbstractTableWidgetExecutor<Node> {
 
     @Override
     public JSONObject createJSONObject() throws Exception {
+        WidgetCacheKey key = createWidgetCacheKey();
+        WidgetCache<JSONObject> widgetCache = getWidgetCache(key);
+        if (widgetCache != null) {
+            updateByCache(widgetCache);
+            BILoggerFactory.getLogger(GroupExecutor.class).info("data existed in caches,get data from caches");
+            return widgetCache.getData();
+        }
+        JSONObject jo = getCubeNode().toJSONObject(usedDimensions, widget.getTargetsKey(), -1);
+        if (isUseWidgetDataCache()) {
+            PageIteratorGroup pg = session.getPageIteratorGroup(true, widget.getWidgetId());
+            NodeDimensionIterator colIter = pg.getColumnIterator().createClonedIterator();
+            colIter.setRoot(null);
+            updateCache(key, new WidgetCache(jo, null, colIter, widget.getPageSpinner()));
+        }
+        return jo;
+    }
 
-        return getCubeNode().toJSONObject(usedDimensions, widget.getTargetsKey(), -1);
+    private void updateByCache(WidgetCache widgetCache) {
+        widget.setPageSpinner(widgetCache.getPageSpinner());
+        PageIteratorGroup pg = session.getPageIteratorGroup(true, widget.getWidgetId());
+        if (pg == null) {
+            pg = new PageIteratorGroup();
+            pg.setColumnIterator(widgetCache.getColumnIterator());
+            session.setPageIteratorGroup(true, widget.getWidgetId(), pg);
+        } else {
+            NodeDimensionIterator colIterator = widgetCache.getColumnIterator().createClonedIterator();
+            colIterator.setRoot(pg.getColumnIterator().getRoot());
+            pg.setColumnIterator(colIterator);
+        }
     }
 
     @Override

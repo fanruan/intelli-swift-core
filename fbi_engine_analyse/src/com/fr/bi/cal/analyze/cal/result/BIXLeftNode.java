@@ -12,4 +12,6 @@ public interface BIXLeftNode extends BINode {
     void setXValue(XTargetGettingKey key, Number sumValue);
 
     Number[][] getXValue();
+
+    void setXValue(Number[][] xValue);
 }

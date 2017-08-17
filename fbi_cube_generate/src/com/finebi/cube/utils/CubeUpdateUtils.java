@@ -106,6 +106,7 @@ public class CubeUpdateUtils {
      */
     public static Set<BITableSourceRelation> getCubeAbsentRelations(long userId) {
         Set<BITableRelation> currentRelations = BICubeConfigureCenter.getTableRelationManager().getAllTableRelation(userId);
+
         ICubeConfiguration cubeConfiguration = BICubeConfiguration.getConf(Long.toString(userId));
         Set<BITableSourceRelation> absentRelations = new HashSet<BITableSourceRelation>();
         BISystemConfigHelper converter = new BISystemConfigHelper();
@@ -219,7 +220,7 @@ public class CubeUpdateUtils {
     }
 
     public static boolean isNeed2GenerateCube(long userId) {
-        return isPart(userId) || isUpdateMeta(userId);
+        return isUpdateMeta(userId)||isPart(userId);
     }
 
 

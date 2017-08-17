@@ -15,9 +15,13 @@ import com.fr.bi.cal.analyze.report.report.widget.DetailWidget;
 import com.fr.bi.cal.analyze.report.report.widget.TableWidget;
 import com.fr.bi.cal.analyze.session.BISession;
 import com.fr.bi.cal.report.engine.CBCell;
-import com.fr.bi.conf.report.style.BITableStyle;
 import com.fr.bi.conf.report.widget.field.target.detailtarget.BIDetailTarget;
 import com.fr.bi.field.target.target.BISummaryTarget;
+import com.fr.bi.report.result.BIDetailCell;
+import com.fr.bi.report.result.BIDetailTableResult;
+import com.fr.bi.cal.analyze.cal.result.DetailCell;
+import com.fr.bi.cal.analyze.cal.result.DetailTableResult;
+import com.fr.bi.field.target.detailtarget.field.BIDateDetailTarget;
 import com.fr.bi.stable.constant.CellConstant;
 import com.fr.bi.stable.data.db.BIRowValue;
 import com.fr.bi.stable.gvi.GVIUtils;
@@ -216,7 +220,11 @@ public class DetailExecutor extends AbstractDetailExecutor {
                 List list = new ArrayList();
                 for (int i = 0; i < row.getValues().length; i++) {
                     if (viewDimension[i].isUsed()) {
-                        list.add(row.getValues()[i]);
+                        if (viewDimension[i] instanceof BIDateDetailTarget && row.getValues()[i] != null) {
+                            list.add(Long.valueOf(String.valueOf(row.getValues()[i])));
+                        } else {
+                            list.add(row.getValues()[i]);
+                        }
                     }
                 }
                 data.add(list);
@@ -268,5 +276,46 @@ public class DetailExecutor extends AbstractDetailExecutor {
             }
         }
         return g;
+    }
+
+    /**
+     * 返回导出excel的数据结构
+     *
+     * @return
+     * @throws Exception
+     */
+    public BIDetailTableResult getResult() {
+
+        long start = System.currentTimeMillis();
+        GroupValueIndex gvi = createDetailViewGvi();
+        paging.setTotalSize(gvi.getRowsCountWithData());
+        final List<List<BIDetailCell>> result = new ArrayList<List<BIDetailCell>>();
+        //返回前台的时候再去掉不使用的字段
+        final BIDetailTarget[] dimensions = widget.getViewDimensions();
+        final Set<Integer> usedDimensionIndexes = getUsedDimensionIndexes();
+        TableRowTraversal action = new TableRowTraversal() {
+
+            @Override
+            public boolean actionPerformed(BIRowValue row) {
+
+                Boolean x = checkPage(row);
+                if (x != null) {
+                    return x;
+                }
+                List<BIDetailCell> rowData = new ArrayList<BIDetailCell>();
+                for (int i = 0; i < row.getValues().length; i++) {
+                    if (usedDimensionIndexes.contains(i)) {
+                        BIDetailCell cell = new DetailCell();
+                        cell.setData(BICollectionUtils.cubeValueToWebDisplay(dimensions[i].createShowValue(row.getValues()[i])));
+                    }
+                }
+                result.add(rowData);
+                return false;
+            }
+        };
+        travel(action, gvi);
+        BILoggerFactory.getLogger().info(DateUtils.timeCostFrom(start) + ": cal time");
+        BIDetailTableResult r = new DetailTableResult(result);
+        return r;
     }
 }

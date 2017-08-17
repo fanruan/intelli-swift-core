@@ -15,6 +15,8 @@ import com.fr.bi.cal.analyze.session.BISession;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.field.target.target.BISummaryTarget;
 import com.fr.bi.report.key.TargetGettingKey;
+import com.fr.bi.report.result.BIComplexGroupResult;
+import com.fr.bi.cal.analyze.cal.result.ComplexGroupResult;
 import com.fr.bi.stable.gvi.GVIUtils;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.general.DateUtils;
@@ -198,8 +200,13 @@ public class ComplexGroupExecutor extends AbstractTableWidgetExecutor {
                 }
             }
         } catch (Exception e) {
-            BILoggerFactory.getLogger(ComplexGroupExecutor.class).info("error in get link filter",e);
+            BILoggerFactory.getLogger(ComplexGroupExecutor.class).info("error in get link filter", e);
         }
         return filterGvi;
+    }
+
+    public BIComplexGroupResult getResult() throws Exception {
+
+        return new ComplexGroupResult(getCubeNodes());
     }
 }
