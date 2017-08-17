@@ -190,6 +190,10 @@ public class VanMapWidget extends VanChartWidget{
 
     }
 
+    protected boolean tooltipShared() {
+        return true;
+    }
+
     //地图因为gis背景，不自适应颜色
     protected JSONObject defaultFont() throws JSONException {
         return JSONObject.create().put("fontFamily", "Microsoft YaHei").put("fontSize", "12px").put("color", "#666666");
