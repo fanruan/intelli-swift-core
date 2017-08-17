@@ -8,6 +8,7 @@ import com.finebi.cube.relation.BITableSourceRelation;
 import com.fr.bi.base.BICore;
 import com.fr.bi.base.BICoreGenerator;
 import com.fr.bi.base.annotation.BICoreField;
+import com.fr.bi.cal.analyze.report.report.widget.util.BIWidgetFactory;
 import com.fr.bi.cal.analyze.session.BISession;
 import com.fr.bi.cal.report.main.impl.BIWorkBook;
 import com.fr.bi.cal.report.report.poly.BIPolyWorkSheet;
@@ -37,9 +38,13 @@ import com.fr.stable.unit.UnitRectangle;
 import com.fr.web.core.SessionDealWith;
 
 import javax.servlet.http.HttpServletRequest;
-import java.awt.*;
-import java.util.*;
+import java.awt.Rectangle;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 
 /**
@@ -225,6 +230,24 @@ public abstract class AbstractBIWidget implements BIWidget {
             sessionId = jo.getString("sessionID");
         }
         this.userId = userId;
+
+        /**
+         * 跳转相关解析
+         */
+        if (jo.has("globalFilter")) {
+            JSONObject glf = jo.getJSONObject("globalFilter");
+            if (glf.has("linkedWidget")) {
+                globalFilterWidget = BIWidgetFactory.parseWidget(glf.getJSONObject("linkedWidget"), userId);
+                // 跳转过来的组件有clieck属性
+                if (glf.has("clicked")) {
+                    globalFilterClick = glf.getJSONObject("clicked");
+                }
+            }
+        }
+        // 跳转过来的组件上面有jump属性
+        if (jo.has("jump")) {
+            globalFilterSourceAndTargetField = jo.getJSONArray("jump");
+        }
     }
 
     @Override
