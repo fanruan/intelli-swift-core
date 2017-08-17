@@ -72,7 +72,7 @@ public abstract class AbstractDetailExecutor extends BIAbstractExecutor<JSONObje
     }
 
 
-    protected GroupValueIndex createDetailViewGvi() {
+    public GroupValueIndex createDetailViewGvi() {
         if (currentGvi == null) {
             ICubeTableService ti = getLoader().getTableIndex(target.getTableSource());
             GroupValueIndex gvi = ti.getAllShowIndex();
