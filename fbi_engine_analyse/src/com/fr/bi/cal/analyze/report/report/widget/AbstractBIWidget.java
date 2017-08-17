@@ -27,6 +27,7 @@ import com.fr.bi.report.result.DimensionCalculator;
 import com.fr.bi.stable.gvi.GVIUtils;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.fs.control.UserControl;
+import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;
 import com.fr.main.impl.WorkBook;
 import com.fr.report.poly.TemplateBlock;
@@ -37,9 +38,8 @@ import com.fr.web.core.SessionDealWith;
 
 import javax.servlet.http.HttpServletRequest;
 import java.awt.*;
-import java.util.ArrayList;
+import java.util.*;
 import java.util.List;
-import java.util.UUID;
 
 
 /**
@@ -65,6 +65,21 @@ public abstract class AbstractBIWidget implements BIWidget {
 
     @BICoreField
     protected BIWidgetConf widgetConf = new BIWidgetConf();
+
+    /**
+     * 跳转组件
+     */
+    protected BIWidget globalFilterWidget;
+
+    /**
+     * 跳转点击的值
+     */
+    protected JSONObject globalFilterClick;
+
+    /**
+     * 跳转的源字段和目标字段
+     */
+    protected JSONArray globalFilterSourceAndTargetField;
 
     public long getUserId() {
         return userId;
@@ -299,7 +314,83 @@ public abstract class AbstractBIWidget implements BIWidget {
 
     @Override
     public Rectangle getRect() {
-        return rect;
+        return widgetConf.getRect();
+    }
+
+    /**
+     * 获取跳转源字段以及目标字段设置
+     *
+     * @return
+     */
+    public List<Map> getGlobalSourceAndTargetFieldList() {
+
+        List<Map> r = new ArrayList<Map>();
+        if (globalFilterSourceAndTargetField != null && globalFilterSourceAndTargetField.length() > 0) {
+            try {
+                JSONArray sf = globalFilterSourceAndTargetField.getJSONObject(0).getJSONArray("sourceTargetFields");
+                for (int i = 0; i < sf.length(); i++) {
+                    JSONObject j = sf.getJSONObject(i);
+                    Map<String, String> s = new HashMap<String, String>();
+                    s.put("sourceFieldId", j.optString("sourceFieldId"));
+                    s.put("targetFieldId", j.optString("targetFieldId"));
+                    r.add(s);
+                }
+            } catch (Exception e) {
+                BILoggerFactory.getLogger(this.getClass()).info("error in get global filter source and target field", e);
+            }
+        }
+        return r;
+    }
+
+    public BIWidget getGlobalFilterWidget() {
+
+        return globalFilterWidget;
+    }
+
+    public Map<String, JSONArray> getGlobalFilterClick() {
+
+        Map<String, JSONArray> r = new HashMap<String, JSONArray>();
+        try {
+            // 明细表的click值和分组表的不相同
+            if (globalFilterClick != null) {
+                //
+                Iterator<String> iterator = (Iterator<String>) globalFilterClick.keys();
+                while (iterator.hasNext()) {
+                    String k = iterator.next();
+                    // 明细表专用
+                    if (k.equals("pageCount") || k.equals("rowIndex") || k.equals("value") || k.equals("dId")) {
+                        JSONArray v = JSONArray.create();
+                        v.put(globalFilterClick.optString(k, ""));
+                        r.put(k, v);
+                    } else {
+                        r.put(k, globalFilterClick.getJSONArray(k));
+                    }
+                }
+            }
+        } catch (Exception e) {
+            BILoggerFactory.getLogger(this.getClass()).info("error in get jump link filter click value");
+        }
+        return r;
+    }
+
+    public JSONArray getGlobalFilterSourceAndTargetField() {
+
+        return globalFilterSourceAndTargetField;
+    }
+
+    /**
+     * 跳转过滤
+     *
+     * @return
+     */
+    public GroupValueIndex getJumpLinkFilter(BusinessTable targetKey, long userId, BISession session) {
+
+        return null;
+    }
+
+    public BusinessTable getBaseTable() {
+
+        return null;
     }
 
     public BIWidgetConf getWidgetConf() {
