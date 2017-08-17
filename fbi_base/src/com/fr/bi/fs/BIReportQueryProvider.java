@@ -8,7 +8,10 @@ import com.fr.json.JSONObject;
  */
 public interface BIReportQueryProvider {
     String XML_TAG = "BIReportQuery";
+
     JSONObject getAllHangoutReports(long userId, String currentUser);
+
     JSONArray getReportAndFolder(long userId);
+
     JSONObject getAllReportsData(long userId);
 }

@@ -25,9 +25,10 @@ public class BIReportQueryManger implements BIReportQueryProvider {
     public static final String XML_TAG = "BIReportQueryManger";
     private static BIReportQueryManger manager;
 
-    public static BIReportQueryProvider getProviderInstance(){
-        return StableFactory.getMarkedObject(BIReportQueryProvider.XML_TAG,BIReportQueryProvider.class);
+    public static BIReportQueryProvider getProviderInstance() {
+        return StableFactory.getMarkedObject(BIReportQueryProvider.XML_TAG, BIReportQueryProvider.class);
     }
+
     public static BIReportQueryManger getInstance() {
         synchronized (BIReportQueryManger.class) {
             if (manager == null) {
@@ -36,8 +37,9 @@ public class BIReportQueryManger implements BIReportQueryProvider {
             return manager;
         }
     }
+
     @Override
-    public JSONObject getAllHangoutReports(long userId, String currentUser){
+    public JSONObject getAllHangoutReports(long userId, String currentUser) {
         JSONObject resJO = new JSONObject();
         JSONObject jo = new JSONObject();
         try {
@@ -77,10 +79,10 @@ public class BIReportQueryManger implements BIReportQueryProvider {
             }
             resJO.put("all_reports", jo);
             resJO.put("users", usersJO);
-        }catch (Exception e){
-            logger.error("getAllHangoutReports exception :",e);
+        } catch (Exception e) {
+            logger.error("getAllHangoutReports exception :", e);
         }
-        return  resJO;
+        return resJO;
     }
 
     @Override
@@ -111,8 +113,8 @@ public class BIReportQueryManger implements BIReportQueryProvider {
                 nodeJO.put("shared", getSharedUsers(node.getId(), userId));
                 ja.put(nodeJO);
             }
-        }catch (Exception e){
-            logger.error("getReportAndFolder exception :",e);
+        } catch (Exception e) {
+            logger.error("getReportAndFolder exception :", e);
         }
         return ja;
     }
@@ -120,51 +122,52 @@ public class BIReportQueryManger implements BIReportQueryProvider {
     @Override
     public JSONObject getAllReportsData(long userId) {
         JSONObject jo = new JSONObject();
-        try{
-        if (userId == UserControl.getInstance().getSuperManagerID()) {
-            List<User> userHasBIReportNode = new LinkedList<User>();
-            JSONArray users = new JSONArray();
-            JSONArray reports = new JSONArray();
-            List<User> userList = UserControl.getInstance().findAllUser();
-            JSONArray allEntry = EntryControl.getInstance().getRootNode().createAllEntryJSONArray(UserControl.getInstance().getSuperManagerID(), true);
-            for (int i = 0; i < userList.size(); i++) {//管理员查看所有模板，只选择有模板的用户
-                User u = userList.get(i);
-                users.put(u.createEditInfoJSONConfig());
-                List<BIReportNode> singleUserReports = BIDAOUtils.getBIDAOManager().findByUserID(u.getId());
-                if (singleUserReports.size() > 0) {
-                    userHasBIReportNode.add(u);//添加有模板的用户
-                }
-                for (int j = 0; j < singleUserReports.size(); j++) {
-                    BIReportNode node = singleUserReports.get(j);
-                    //TODO 在这里去check status不合适，然而在模板管理的地方删除模板也不好处理bi模板的状态问题
-                    if (node.getStatus() == BIReportConstant.REPORT_STATUS.HANGOUT &&
-                            checkReportStatus(node.getId(), node.getUserId(), allEntry)) {
-                        node.setStatus(BIReportConstant.REPORT_STATUS.NORMAL);
+        try {
+            if (userId == UserControl.getInstance().getSuperManagerID()) {
+                List<User> userHasBIReportNode = new LinkedList<User>();
+                JSONArray users = new JSONArray();
+                JSONArray reports = new JSONArray();
+                List<User> userList = UserControl.getInstance().findAllUser();
+                JSONArray allEntry = EntryControl.getInstance().getRootNode().createAllEntryJSONArray(UserControl.getInstance().getSuperManagerID(), true);
+                for (int i = 0; i < userList.size(); i++) {//管理员查看所有模板，只选择有模板的用户
+                    User u = userList.get(i);
+                    users.put(u.createEditInfoJSONConfig());
+                    List<BIReportNode> singleUserReports = BIDAOUtils.getBIDAOManager().findByUserID(u.getId());
+                    if (singleUserReports.size() > 0) {
+                        userHasBIReportNode.add(u);//添加有模板的用户
                     }
-                    reports.put(node.createJSONConfig());
+                    for (int j = 0; j < singleUserReports.size(); j++) {
+                        BIReportNode node = singleUserReports.get(j);
+                        //TODO 在这里去check status不合适，然而在模板管理的地方删除模板也不好处理bi模板的状态问题
+                        if (node.getStatus() == BIReportConstant.REPORT_STATUS.HANGOUT &&
+                                checkReportStatus(node.getId(), node.getUserId(), allEntry)) {
+                            node.setStatus(BIReportConstant.REPORT_STATUS.NORMAL);
+                        }
+                        reports.put(node.createJSONConfig());
+                    }
                 }
-            }
-            JSONArray departs = new JSONArray();//保存有模板用户对应的部门信息
-            Set<Long> departments = new HashSet<Long>();//保存有模板用户对应的部门id，然后用这个id来查询部门，生成部门的jsonobject，并添加到departs的数值中
-            JSONArray companyRoles = CompanyRoleControl.getInstance().getAllCompanyRoleInfo();//所有部门角色信息
-            JSONArray usefulCompanyRoles = new JSONArray();//这个用来保存有模板用户的所对应的职位角色
-            addUsers2CompanyRoleAndCustomRole(userHasBIReportNode, companyRoles, usefulCompanyRoles, departments);//添加对应角色用户
-            for (Long depId : departments) {
-                Department department = DepartmentControl.getInstance().getDepartment(depId);
-                if (department != null) {
-                    departs.put(department.createJSONConfig());
+                JSONArray departs = new JSONArray();//保存有模板用户对应的部门信息
+                Set<Long> departments = new HashSet<Long>();//保存有模板用户对应的部门id，然后用这个id来查询部门，生成部门的jsonobject，并添加到departs的数值中
+                JSONArray companyRoles = CompanyRoleControl.getInstance().getAllCompanyRoleInfo();//所有部门角色信息
+                JSONArray usefulCompanyRoles = new JSONArray();//这个用来保存有模板用户的所对应的职位角色
+                addUsers2CompanyRoleAndCustomRole(userHasBIReportNode, companyRoles, usefulCompanyRoles, departments);//添加对应角色用户
+                for (Long depId : departments) {
+                    Department department = DepartmentControl.getInstance().getDepartment(depId);
+                    if (department != null) {
+                        departs.put(department.createJSONConfig());
+                    }
                 }
+                jo.put("departs", departs);
+                jo.put("roles", usefulCompanyRoles);
+                jo.put("users", users);
+                jo.put("reports", reports);
             }
-            jo.put("departs", departs);
-            jo.put("roles", usefulCompanyRoles);
-            jo.put("users", users);
-            jo.put("reports", reports);
-        }
-        }catch (Exception e){
-            logger.error("getAllReportsData exception :",e);
+        } catch (Exception e) {
+            logger.error("getAllReportsData exception :", e);
         }
         return jo;
     }
+
     private void addUsers2CompanyRoleAndCustomRole(List<User> userHasBIReportNode, JSONArray companyRoles, JSONArray usefulCompanyRoles, Set<Long> departments) throws Exception {
         Map<Long, JSONObject> jsonCustomRoleArrayIndex = new HashMap<Long, JSONObject>();//保存有模板用户对应的customRole，key为customRole的Id，value是customRole对应的JSONObject
         for (User user : userHasBIReportNode) {
@@ -212,13 +215,13 @@ public class BIReportQueryManger implements BIReportQueryProvider {
         }
     }
 
-    private JSONArray getSharedUsers(long reportId, long createBy) throws Exception{
+    private JSONArray getSharedUsers(long reportId, long createBy) throws Exception {
         List<User> users = BIDAOUtils.getBIDAOManager().getSharedUsersByReport(reportId, createBy);
         JSONArray ja = new JSONArray();
-        if(users != null) {
-            for(int i = 0; i < users.size(); i++){
+        if (users != null) {
+            for (int i = 0; i < users.size(); i++) {
                 User user = users.get(i);
-                if(user.getId() != createBy) {
+                if (user.getId() != createBy) {
                     JSONObject jo = user.createJSON4Share();
                     jo.put("roles", UserControl.getInstance().getAllSRoleNames(user.getId()));
                     ja.put(jo);
@@ -227,6 +230,7 @@ public class BIReportQueryManger implements BIReportQueryProvider {
         }
         return ja;
     }
+
     private boolean checkReportStatus(long reportId, long createBy, JSONArray entries) throws Exception {
         boolean needReset = true;
         for (int i = 0; i < entries.length(); i++) {

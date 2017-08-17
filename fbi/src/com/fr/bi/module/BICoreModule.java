@@ -98,6 +98,7 @@ import com.fr.stable.fun.Service;
 import com.fr.web.core.db.PlatformDB;
 import com.fr.bi.web.conf.services.BIMultiPathManager;
 import com.fr.bi.fs.BIReportQueryManger;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -185,6 +186,7 @@ public class BICoreModule extends AbstractModule {
         StableFactory.registerMarkedObject(BIPublicReportManagerProvider.XML_TAG, getBIPublicReportManger());
 
     }
+
     public BIMultiPathProvider getBIMultiPathManager() {
         if (ClusterEnv.isCluster()) {
             if (ClusterAdapter.getManager().getHostManager().isSelf()) {
@@ -200,6 +202,7 @@ public class BICoreModule extends AbstractModule {
             return BIMultiPathManager.getInstance();
         }
     }
+
     public BIReportQueryProvider getBIQueryReportManager() {
         if (ClusterEnv.isCluster()) {
             if (ClusterAdapter.getManager().getHostManager().isSelf()) {
@@ -215,6 +218,7 @@ public class BICoreModule extends AbstractModule {
             return BIReportQueryManger.getInstance();
         }
     }
+
     private BIPublicReportManagerProvider getBIPublicReportManger() {
         if (ClusterEnv.isCluster()) {
             if (ClusterAdapter.getManager().getHostManager().isSelf()) {
