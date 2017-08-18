@@ -5,6 +5,7 @@ import com.fr.base.FRContext;
 import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.utils.file.BIFileUtils;
 import com.fr.general.ComparatorUtils;
+import com.fr.stable.StringUtils;
 import com.fr.stable.project.ProjectConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -61,7 +62,7 @@ public class PerformancePlugManager implements PerformancePlugManagerInterface {
 
     private boolean verboseLog = true;
     private boolean useLog4JPropertiesFile = false;
-    private String serverJarLocation = "";
+    private String serverJarLocation = StringUtils.EMPTY;
     private int deployModeSelectSize = DEFAULT_DEPLOY_MODE_OFF;
     private int retryMaxTimes = 3;
     private long retryMaxSleepTime = 100;
@@ -250,13 +251,13 @@ public class PerformancePlugManager implements PerformancePlugManagerInterface {
     }
 
     private InputStream emptyInputStream() {
-        return new ByteArrayInputStream("".getBytes());
+        return new ByteArrayInputStream(StringUtils.EMPTY.getBytes());
     }
 
 
     private void logConfiguration() {
-        LOGGER.info("");
-        LOGGER.info("");
+        LOGGER.info(StringUtils.EMPTY);
+        LOGGER.info(StringUtils.EMPTY);
         LOGGER.info("Properties of FineIndex system can be set through editing the plugs.properties file in the resource folder. " +
                 "The current value is displayed  below ");
         LOGGER.info("The value of {}.returnEmptyIndex is {}", PERFORMANCE, returnEmptyIndex);
@@ -281,8 +282,8 @@ public class PerformancePlugManager implements PerformancePlugManagerInterface {
         LOGGER.info("The value of {}.backupWhenStart is {}", PERFORMANCE, backupWhenStart);
         LOGGER.info("The value of {}.useFineIO is {}", PERFORMANCE, useFineIO);
 
-        LOGGER.info("");
-        LOGGER.info("");
+        LOGGER.info(StringUtils.EMPTY);
+        LOGGER.info(StringUtils.EMPTY);
     }
 
     @Override

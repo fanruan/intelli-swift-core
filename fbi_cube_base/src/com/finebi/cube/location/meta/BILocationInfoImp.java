@@ -3,6 +3,7 @@ package com.finebi.cube.location.meta;
 import com.finebi.common.name.Name;
 import com.finebi.common.resource.ResourceName;
 import com.finebi.common.resource.ResourceNameImpl;
+import com.fr.general.ComparatorUtils;
 
 /**
  * Created by wang on 2017/6/20.
@@ -77,16 +78,16 @@ public class BILocationInfoImp implements BILocationInfo {
 
         BILocationInfoImp that = (BILocationInfoImp) o;
 
-        if (name != null ? !name.equals(that.name) : that.name != null) {
+        if (name != null ? !ComparatorUtils.equals(name, that.name) : that.name != null) {
             return false;
         }
-        if (cubeFolder != null ? !cubeFolder.equals(that.cubeFolder) : that.cubeFolder != null) {
+        if (cubeFolder != null ? !ComparatorUtils.equals(cubeFolder, that.cubeFolder) : that.cubeFolder != null) {
             return false;
         }
-        if (logicFolder != null ? !logicFolder.equals(that.logicFolder) : that.logicFolder != null) {
+        if (logicFolder != null ? !ComparatorUtils.equals(logicFolder, that.logicFolder) : that.logicFolder != null) {
             return false;
         }
-        return child != null ? child.equals(that.child) : that.child == null;
+        return child != null ? ComparatorUtils.equals(child, that.child) : that.child == null;
 
     }
 

@@ -147,8 +147,7 @@ public class BISourceDataPartTransport extends BISourceDataTransport {
         if (isLegalSQL(addDateCondition(tableUpdateSetting.getPartDeleteSQL()))) {
             String columnName = getKeyName(addDateCondition(tableUpdateSetting.getPartDeleteSQL()));
             if (getCubeFieldSource(cubeFieldSources, columnName) != null) {
-                sortRemovedList = dealWithRemove(columnName,
-                        resultMap.get(DELETE), sortRemovedList, loader);
+                sortRemovedList = dealWithRemove(columnName, resultMap.get(DELETE), sortRemovedList, loader);
             } else {
                 BILoggerFactory.getLogger().error("can not find field " + columnName);
             }
@@ -162,8 +161,7 @@ public class BISourceDataPartTransport extends BISourceDataTransport {
         /*modify*/
         if (isLegalSQL(addDateCondition(tableUpdateSetting.getPartModifySQL()))) {
             String columnName = getKeyName(addDateCondition(tableUpdateSetting.getPartModifySQL()));
-            sortRemovedList = dealWithRemove(columnName,
-                    resultMap.get(MODIFY), sortRemovedList, loader);
+            sortRemovedList = dealWithRemove(columnName, resultMap.get(MODIFY), sortRemovedList, loader);
             rowCount = dealWidthAdd(resultMap.get(MODIFY), rowCount);
             tableEntityService.forceReleaseWriter();
         }
@@ -206,7 +204,7 @@ public class BISourceDataPartTransport extends BISourceDataTransport {
 
         int columnIndex = 0;
         for (Object object : deleteLists.get(0)) {
-            if (columnName.equals(object)) {
+            if (ComparatorUtils.equals(columnName, object)) {
                 break;
             }
             columnIndex++;
@@ -230,13 +228,13 @@ public class BISourceDataPartTransport extends BISourceDataTransport {
         //替换上次更新时间
         if (tableEntityService.isLastExecuteTimeAvailable() && null != tableEntityService.getLastExecuteTime()) {
             Date lastTime = tableEntityService.getLastExecuteTime();
-            Pattern lastTimePat = Pattern.compile("\\$[\\{]"+DBConstant.LAST_UPDATE_TIME+"[\\}]");
+            Pattern lastTimePat = Pattern.compile("\\$[\\{]" + DBConstant.LAST_UPDATE_TIME + "[\\}]");
             sql = replacePattern(sql, lastTimePat, lastTime);
         }
 
         //替换当前更新时间
         Date currentTime = tableEntityService.getCurrentExecuteTime();
-        Pattern currentTimePat = Pattern.compile("\\$[\\{]"+DBConstant.CURRENT_UPDATE_TIME+"[\\}]");
+        Pattern currentTimePat = Pattern.compile("\\$[\\{]" + DBConstant.CURRENT_UPDATE_TIME + "[\\}]");
         sql = replacePattern(sql, currentTimePat, currentTime);
         tableEntityService.clear();
         return sql;
@@ -406,7 +404,7 @@ public class BISourceDataPartTransport extends BISourceDataTransport {
         if (addList.size() > 1 && deleteList.size() > 1) {
             int columnIndex = 0;
             for (int j = 0; j < addList.get(0).length; j++) {
-                if (addList.get(0)[j].equals(deleteList.get(0)[0])) {
+                if (ComparatorUtils.equals(addList.get(0)[j], deleteList.get(0)[0])) {
                     columnIndex = j;
                     break;
                 }
@@ -442,7 +440,7 @@ public class BISourceDataPartTransport extends BISourceDataTransport {
         if (list.size() > 1 && modifyList.size() > 1) {
             int columnIndex = 0;
             for (int j = 0; j < list.get(0).length; j++) {
-                if (list.get(0)[j].equals(modifyList.get(0)[0])) {
+                if (ComparatorUtils.equals(list.get(0)[j], modifyList.get(0)[0])) {
                     columnIndex = j;
                     break;
                 }
@@ -459,14 +457,14 @@ public class BISourceDataPartTransport extends BISourceDataTransport {
     private boolean removeValueFromList(List<Object[]> list, Object value, String columnName) {
         int column = -1;
         for (int i = 0; i < list.get(0).length; i++) {
-            if (list.get(0)[i].equals(columnName)) {
+            if (ComparatorUtils.equals(list.get(0)[i], columnName)) {
                 column = i;
             }
         }
 
         if (column > -1) {
             for (int i = 1; i < list.size(); i++) {
-                if (list.get(i) != null && list.get(i)[column].equals(value)) {
+                if (list.get(i) != null && ComparatorUtils.equals(list.get(i)[column], value)) {
                     list.set(i, null);
                     return true;
                 }
@@ -477,7 +475,7 @@ public class BISourceDataPartTransport extends BISourceDataTransport {
 
     private void removeDuplicateValue(List<Object[]> list, Object value, int row) {
         for (int i = row; i < list.size(); i++) {
-            if (list.get(i) != null && list.get(i)[0].equals(value)) {
+            if (list.get(i) != null && ComparatorUtils.equals(list.get(i)[0], value)) {
                 list.set(i, null);
             }
         }

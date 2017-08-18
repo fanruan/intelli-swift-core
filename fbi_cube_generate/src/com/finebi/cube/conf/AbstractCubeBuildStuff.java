@@ -143,7 +143,7 @@ public abstract class AbstractCubeBuildStuff implements CubeBuildStuff {
             File[] files = advancedFile.getParentFile().listFiles();
 
             for (final File file : files) {
-                if (!file.getAbsolutePath().equals(advancedFile.getAbsolutePath()) && !file.getAbsolutePath().equals(new File(tCubePath).getAbsolutePath())) {
+                if (!ComparatorUtils.equals(file.getAbsolutePath(), advancedFile.getAbsolutePath()) && !ComparatorUtils.equals(file.getAbsolutePath(), new File(tCubePath).getAbsolutePath())) {
                     executorService.execute(new Runnable() {
                         @Override
                         public void run() {

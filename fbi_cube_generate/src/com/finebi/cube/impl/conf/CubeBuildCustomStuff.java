@@ -30,6 +30,7 @@ import com.fr.bi.stable.engine.CubeTaskType;
 import com.fr.bi.stable.exception.BITablePathEmptyException;
 import com.fr.bi.stable.utils.file.BIFileUtils;
 import com.fr.bi.stable.utils.program.BIStringUtils;
+import com.fr.stable.StringUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -284,13 +285,13 @@ public class CubeBuildCustomStuff extends AbstractCubeBuildStuff {
         Set<CubeTableSource> result = new HashSet<CubeTableSource>();
         Set<String> relationID = new HashSet<String>();
         for (CubeTableSource tableSource : tableInConstruction) {
-            LOGGER.debug(BuildLogHelper.tableLogContent("", tableSource));
+            LOGGER.debug(BuildLogHelper.tableLogContent(StringUtils.EMPTY, tableSource));
             String id = tableSource.getSourceID();
             if (!relationID.contains(id)) {
                 result.add(tableSource);
                 relationID.add(id);
             } else {
-                LOGGER.info("The table source id has present:\n" + BuildLogHelper.tableLogContent("", tableSource));
+                LOGGER.info("The table source id has present:\n" + BuildLogHelper.tableLogContent(StringUtils.EMPTY, tableSource));
             }
         }
         return result;
