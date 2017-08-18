@@ -8,6 +8,7 @@ import com.finebi.cube.conf.field.BusinessField;
 import com.finebi.cube.relation.BITableSourceRelation;
 import com.fr.bi.conf.utils.BIModuleUtils;
 import com.fr.bi.field.dimension.calculator.NumberDimensionCalculator;
+import com.fr.bi.report.result.DimensionCalculator;
 import com.fr.bi.stable.constant.BIJSONConstant;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.data.source.CubeTableSource;
@@ -15,7 +16,6 @@ import com.fr.bi.stable.engine.index.key.IndexKey;
 import com.fr.bi.stable.operation.group.BIGroupFactory;
 import com.fr.bi.stable.operation.group.group.AutoGroup;
 import com.fr.bi.stable.operation.sort.BISortFactory;
-import com.fr.bi.report.result.DimensionCalculator;
 import com.fr.bi.stable.utils.BICollectionUtils;
 import com.fr.general.GeneralUtils;
 import com.fr.json.JSONException;
@@ -66,8 +66,16 @@ public class BINumberDimension extends BIAbstractDimension {
         try {
             ICubeTableService cubeTableService = cubeDataLoader.getTableIndex(belongToTableSource);
             ICubeColumnIndexReader reader = cubeTableService.loadGroup(new IndexKey(this.getStatisticElement().getFieldName()));
-            groupValue.put(BIJSONConstant.JSON_KEYS.FILED_MAX_VALUE, cubeTableService != null ? GeneralUtils.objectToNumber(BICollectionUtils.lastUnNullKey(reader)) : 0);
-            groupValue.put(BIJSONConstant.JSON_KEYS.FIELD_MIN_VALUE, cubeTableService != null ? GeneralUtils.objectToNumber(BICollectionUtils.firstUnNullKey(reader)) : 0);
+             /*
+                        * 全部为空时会获取null,json不支持infinity
+                        * */
+            if (BICollectionUtils.isCubeNullKey(BICollectionUtils.lastUnNullKey(reader)) && BICollectionUtils.isCubeNullKey(BICollectionUtils.firstUnNullKey(reader))) {
+                groupValue.put(BIJSONConstant.JSON_KEYS.FILED_MAX_VALUE, 0);
+                groupValue.put(BIJSONConstant.JSON_KEYS.FIELD_MIN_VALUE, 0);
+            } else {
+                groupValue.put(BIJSONConstant.JSON_KEYS.FILED_MAX_VALUE, cubeTableService != null ? GeneralUtils.objectToNumber(BICollectionUtils.lastUnNullKey(reader)) : 0);
+                groupValue.put(BIJSONConstant.JSON_KEYS.FIELD_MIN_VALUE, cubeTableService != null ? GeneralUtils.objectToNumber(BICollectionUtils.firstUnNullKey(reader)) : 0);
+            }
             group.put("groupValue", groupValue);
         } catch (NullPointerException npe) {
             BILoggerFactory.getLogger(BINumberDimension.class).error("cubeTableService is null ! Tablesource："
