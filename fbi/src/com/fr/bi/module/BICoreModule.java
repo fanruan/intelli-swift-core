@@ -180,11 +180,27 @@ public class BICoreModule extends AbstractModule {
         StableFactory.registerMarkedObject(SingleTableUpdateManager.XML_TAG, new SingleTableUpdateManager());
         StableFactory.registerMarkedObject(BICubeTaskRecordProvider.XML_TAG, getBICubeTaskRecordManagerWithoutUser());
 
-        StableFactory.registerMarkedObject(BIDataConfigAuthorityProvider.XML_TAG, new BISystemDataConfigAuthorityManager());
+        StableFactory.registerMarkedObject(BIDataConfigAuthorityProvider.XML_TAG, getBISystemDataConfigAuthorityManager());
         StableFactory.registerMarkedObject(BITableDataDAOProvider.XML_TAG, getBITableDataDAOManager());
 
         StableFactory.registerMarkedObject(BIPublicReportManagerProvider.XML_TAG, getBIPublicReportManger());
 
+    }
+
+    protected BIDataConfigAuthorityProvider getBISystemDataConfigAuthorityManager() {
+        if (ClusterEnv.isCluster()) {
+            if (ClusterAdapter.getManager().getHostManager().isSelf()) {
+                BISystemDataConfigAuthorityManager provider = new BISystemDataConfigAuthorityManager();
+                RPC.registerSkeleton(provider, ClusterAdapter.getManager().getHostManager().getPort());
+                return provider;
+            } else {
+                return (BIDataConfigAuthorityProvider) RPC.getProxy(BISystemDataConfigAuthorityManager.class,
+                        ClusterAdapter.getManager().getHostManager().getIp(),
+                        ClusterAdapter.getManager().getHostManager().getPort());
+            }
+        } else {
+            return new BISystemDataConfigAuthorityManager();
+        }
     }
 
     public BIMultiPathProvider getBIMultiPathManager() {
