@@ -191,6 +191,11 @@ public class BICube implements Cube {
         }
     }
 
+    @Override
+    public ICubeResourceRetrievalService getCubeResourceRetrievalService() {
+        return resourceRetrievalService;
+    }
+
     private boolean isResourceExist(ICubeResourceLocation location) {
         return discovery.isResourceExist(location);
     }
@@ -215,4 +220,6 @@ public class BICube implements Cube {
     public Boolean isVersionAvailable() {
         return cubeVersion.isVersionAvailable();
     }
+
+
 }

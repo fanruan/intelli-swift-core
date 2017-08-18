@@ -172,7 +172,7 @@ public class CubeBuildCustomStuff extends AbstractCubeBuildStuff {
 
     @Override
     public boolean replaceOldCubes() {
-        ICubeConfiguration tempConf = BICubeConfiguration.getTempConf(String.valueOf(userId));
+        ICubeConfiguration tempConf = getCubeConfiguration();
         ICubeConfiguration advancedConf = BICubeConfiguration.getConf(String.valueOf(userId));
         try {
             BIFileUtils.moveFile(tempConf.getRootURI().getPath().toString(), advancedConf.getRootURI().getPath().toString());
@@ -185,7 +185,7 @@ public class CubeBuildCustomStuff extends AbstractCubeBuildStuff {
     @Override
     public boolean copyFileFromOldCubes() {
         try {
-            ICubeConfiguration tempConf = BICubeConfiguration.getTempConf(String.valueOf(userId));
+            ICubeConfiguration tempConf = getCubeConfiguration();
             ICubeConfiguration advancedConf = BICubeConfiguration.getConf(String.valueOf(userId));
             BICubeResourceRetrieval tempResourceRetrieval = new BICubeResourceRetrieval(tempConf);
             BICubeResourceRetrieval advancedResourceRetrieval = new BICubeResourceRetrieval(advancedConf);

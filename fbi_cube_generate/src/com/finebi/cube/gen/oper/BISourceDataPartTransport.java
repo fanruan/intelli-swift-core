@@ -5,7 +5,6 @@ import com.finebi.cube.api.ICubeColumnIndexReader;
 import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.api.ICubeTableService;
 import com.finebi.cube.common.log.BILoggerFactory;
-import com.finebi.cube.conf.BICubeConfiguration;
 import com.finebi.cube.conf.utils.BICubeLogExceptionInfo;
 import com.finebi.cube.conf.utils.BILogHelper;
 import com.finebi.cube.data.ICubeResourceDiscovery;
@@ -93,7 +92,7 @@ public class BISourceDataPartTransport extends BISourceDataTransport {
             LOGGER.info(BIStringUtils.append("The table:", fetchTableInfo(), " finish transportation operation and record ",
                     String.valueOf(count), " records"));
             ICubeResourceDiscovery discovery = BIFactoryHelper.getObject(ICubeResourceDiscovery.class);
-            ICubeResourceRetrievalService resourceRetrievalService = new BICubeResourceRetrieval(BICubeConfiguration.getTempConf(String.valueOf(UserControl.getInstance().getSuperManagerID())));
+            ICubeResourceRetrievalService resourceRetrievalService = new BICubeResourceRetrieval(cube.getCubeResourceRetrievalService().getCubeConfiguration());
             cube = new BICube(resourceRetrievalService, discovery);
             tableEntityService = cube.getCubeTableWriter(BITableKeyUtils.convert(tableSource));
             if (count >= 0) {

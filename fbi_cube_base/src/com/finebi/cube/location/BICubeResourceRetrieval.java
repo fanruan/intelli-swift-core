@@ -243,4 +243,9 @@ public class BICubeResourceRetrieval implements ICubeResourceRetrievalService {
             }
         }
     }
+
+    @Override
+    public ICubeConfiguration getCubeConfiguration() {
+        return cubeConfiguration;
+    }
 }

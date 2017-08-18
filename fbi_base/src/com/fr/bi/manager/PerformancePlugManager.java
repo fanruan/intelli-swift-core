@@ -79,6 +79,8 @@ public class PerformancePlugManager implements PerformancePlugManagerInterface {
     private boolean unmapReader = false;
     private boolean isForceWriter = false;
     private boolean useSingleReader = false;
+    private boolean useFineIO = false;
+
 
     //cube单个文件的最大的size
     private long maxCubeFileSize = 8;
@@ -147,6 +149,7 @@ public class PerformancePlugManager implements PerformancePlugManagerInterface {
             maxStructureSize = getInt(LIMIT + ".maxStructureSize", maxStructureSize);
             maxSPADetailSize = getInt(LIMIT + ".maxSPADetailSize", maxSPADetailSize);
             backupWhenStart = getBoolean(PERFORMANCE + ".backupWhenStart", backupWhenStart);
+            useFineIO = getBoolean(PERFORMANCE + ".useFineIO", useFineIO);
 //            logConfiguration();
         } catch (Exception e) {
             BILoggerFactory.getLogger().error(e.getMessage(), e);
@@ -276,6 +279,8 @@ public class PerformancePlugManager implements PerformancePlugManagerInterface {
         LOGGER.info("The value of {}.isForceWriter is {}", PERFORMANCE, isForceWriter);
         LOGGER.info("The value of {}.maxCubeFileSize is {}", PERFORMANCE, maxCubeFileSize);
         LOGGER.info("The value of {}.backupWhenStart is {}", PERFORMANCE, backupWhenStart);
+        LOGGER.info("The value of {}.useFineIO is {}", PERFORMANCE, useFineIO);
+
         LOGGER.info("");
         LOGGER.info("");
     }
@@ -531,6 +536,7 @@ public class PerformancePlugManager implements PerformancePlugManagerInterface {
                 newMap.put("maxStructureSize",getString(PERFORMANCE + ".maxStructureSize", defaultMap.get("maxStructureSize")));
                 newMap.put("maxSPADetailSize",getString(PERFORMANCE + ".maxSPADetailSize", defaultMap.get("maxSPADetailSize")));
                 newMap.put("backupWhenStart",getString(PERFORMANCE + ".backupWhenStart", defaultMap.get("backupWhenStart")));
+                newMap.put("useFineIO",getString(PERFORMANCE + ".useFineIO", defaultMap.get("useFineIO")));
             }
         } catch (Exception e) {
             BILoggerFactory.getLogger().error(e.getMessage(), e);
@@ -651,5 +657,9 @@ public class PerformancePlugManager implements PerformancePlugManagerInterface {
     @Override
     public int getMaxSPADetailSize() {
         return maxSPADetailSize;
+    }
+
+    public boolean isUseFineIO() {
+        return useFineIO;
     }
 }

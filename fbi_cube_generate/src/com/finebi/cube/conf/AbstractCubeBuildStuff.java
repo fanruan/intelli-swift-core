@@ -35,16 +35,18 @@ public abstract class AbstractCubeBuildStuff implements CubeBuildStuff {
     protected Set<CubeTableSource> allTableSources = new HashSet<CubeTableSource>();
     protected CalculateDependTool calculateDependTool;
     protected Set<String> taskTableSourceIDs;
+    private final ICubeConfiguration cubeConfiguration;
 
     public AbstractCubeBuildStuff(long userId, Set<CubeTableSource> allTableSources) {
         this.userId = userId;
         this.allTableSources.addAll(allTableSources);
         calculateDependTool = new CalculateDependManager();
+        cubeConfiguration = BICubeConfiguration.getTempConf(Long.toString(userId));
     }
 
     @Override
     public ICubeConfiguration getCubeConfiguration() {
-        return BICubeConfiguration.getTempConf(Long.toString(userId));
+        return cubeConfiguration;
     }
 
     protected Set<List<Set<CubeTableSource>>> calculateTableSource(Set<CubeTableSource> tableSources) {
@@ -96,7 +98,7 @@ public abstract class AbstractCubeBuildStuff implements CubeBuildStuff {
      */
     @Override
     public boolean replaceOldCubes() {
-        ICubeConfiguration tCubeConf = BICubeConfiguration.getTempConf(Long.toString(userId));
+        ICubeConfiguration tCubeConf = cubeConfiguration;
         ICubeConfiguration advancedConf = BICubeConfiguration.getConf(Long.toString(userId));
         ICubeConfiguration advancedTempConf = BICubeConfiguration.getAdvancedTempConf(Long.toString(userId));
         String advancedPath = advancedConf.getRootURI().getPath();
@@ -133,7 +135,7 @@ public abstract class AbstractCubeBuildStuff implements CubeBuildStuff {
 
     protected void deleteTempFolders() {
         ExecutorService executorService = Executors.newSingleThreadExecutor();
-        String tCubePath = BICubeConfiguration.getTempConf(Long.toString(userId)).getRootURI().getPath();
+        String tCubePath = getCubeConfiguration().getRootURI().getPath();
         String advancedPath = BICubeConfiguration.getConf(Long.toString(userId)).getRootURI().getPath();
 
         File advancedFile = new File(advancedPath);
