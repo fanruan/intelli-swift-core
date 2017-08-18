@@ -67,7 +67,7 @@ public class BINumberDimension extends BIAbstractDimension {
             ICubeTableService cubeTableService = cubeDataLoader.getTableIndex(belongToTableSource);
             ICubeColumnIndexReader reader = cubeTableService.loadGroup(new IndexKey(this.getStatisticElement().getFieldName()));
              /*
-                        * 全部为空时会获取null,json不支持infinity
+                        * 该分组全部为空时lastUnNullKey和firstUnNullKey均会获取null,而json是不不支持infinity的
                         * */
             if (BICollectionUtils.isCubeNullKey(BICollectionUtils.lastUnNullKey(reader)) && BICollectionUtils.isCubeNullKey(BICollectionUtils.firstUnNullKey(reader))) {
                 groupValue.put(BIJSONConstant.JSON_KEYS.FILED_MAX_VALUE, 0);
