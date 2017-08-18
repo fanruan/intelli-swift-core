@@ -89,11 +89,13 @@ import com.fr.data.pool.MemoryConnection;
 import com.fr.file.DatasourceManager;
 import com.fr.fs.control.UserControl;
 import com.fr.fs.control.dao.hsqldb.HSQLDBDAOControl;
+import com.fr.fs.control.dao.tabledata.SyncDaoControl;
 import com.fr.fs.control.dao.tabledata.TableDataDAOControl;
 import com.fr.fs.dao.FSDAOManager;
 import com.fr.stable.bridge.StableFactory;
 import com.fr.stable.fun.Service;
 import com.fr.web.core.db.PlatformDB;
+import net.sf.ehcache.concurrent.Sync;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -648,6 +650,7 @@ public class BICoreModule extends AbstractModule {
 
         StableFactory.registerMarkedObject(HSQLDBDAOControl.class.getName(), HSQLBIReportDAO.getInstance());
         StableFactory.registerMarkedObject(TableDataDAOControl.class.getName(), TableDataBIReportDAO.getInstance());
+        StableFactory.registerMarkedObject(SyncDaoControl.class.getName(), TableDataBIReportDAO.getInstance());
         StableFactory.registerMarkedObject(BIReportNodeLockDAO.class.getName(), BIReportNodeLockDAO.getInstance());
         StableFactory.registerMarkedObject(BIConfTableLockDAO.class.getName(), BIConfTableLockDAO.getInstance());
     }
