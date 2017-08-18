@@ -21,7 +21,7 @@ public class VanBarWidget extends VanColumnWidget{
     }
 
     protected JSONObject parseLeftValueAxis(JSONObject settings) throws JSONException {
-        return super.parseLeftValueAxis(settings).put("position", "right");
+        return super.parseLeftValueAxis(settings).put("position", "right").put("reversed", false);
     }
 
     @Override

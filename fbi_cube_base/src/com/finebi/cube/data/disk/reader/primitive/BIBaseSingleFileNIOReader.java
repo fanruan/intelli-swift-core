@@ -62,6 +62,7 @@ public abstract class BIBaseSingleFileNIOReader extends BIAbstractBaseNIOReader 
     public void releaseBuffer() {
         if (buffer != null) {
             BIReleaseUtils.doClean(buffer);
+            buffer.clear();
             buffer = null;
         }
     }

@@ -2,12 +2,13 @@ package com.fr.bi.cal.analyze.executor;
 
 import com.fr.bi.cal.analyze.executor.iterator.TableCellIterator;
 import com.fr.json.JSONObject;
+import com.fr.stable.StringUtils;
 
 import java.awt.*;
 
 
 public interface BIEngineExecutor<T> {
-    static final String NONEVALUE = "--";
+    static final String NONEVALUE = StringUtils.EMPTY;
 
     /**
      * 创建excel单元格迭代器

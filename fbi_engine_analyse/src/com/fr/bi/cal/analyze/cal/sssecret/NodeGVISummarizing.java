@@ -1,16 +1,16 @@
 package com.fr.bi.cal.analyze.cal.sssecret;
 
+import com.fr.bi.cal.analyze.cal.index.loader.TargetAndKey;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.gvi.GroupValueIndexOrHelper;
-import com.fr.bi.report.key.TargetGettingKey;
 
 /**
  * Created by 小灰灰 on 2017/2/20.
  */
 public class NodeGVISummarizing extends NodeSummarizing {
 
-    public NodeGVISummarizing(MetricMergeResult node, TargetGettingKey[] targetGettingKeys) {
-        super(node, targetGettingKeys);
+    public NodeGVISummarizing(MetricMergeResult node, TargetAndKey[] targetAndKeys) {
+        super(node, targetAndKeys);
     }
 
     protected void sum(MetricMergeResult node) {

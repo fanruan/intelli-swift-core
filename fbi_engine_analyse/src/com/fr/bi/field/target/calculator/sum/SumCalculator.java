@@ -27,4 +27,9 @@ public class SumCalculator extends AbstractSummaryCalculator {
         return ti.getSUMValue(gvi, target.createKey(target.getStatisticElement()));
     }
 
+    @Override
+    public double createSumValue(double v1, double v2) {
+        return v1 + v2;
+    }
+
 }
