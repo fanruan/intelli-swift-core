@@ -201,33 +201,27 @@ public class GetTreeSelectTreeNodeExecutor extends AbstractTreeNodeExecutor {
                 String[] strs = result.get(i);
                 buildTree(selectedValues, strs);
                 boolean isSelectedAll = true;
-                int j = strs.length - 1;
-                while (isSelectedAll && j > 0) {
-                    String str = strs[j];
-                    String preStr = strs[j - 1];
-                    isSelectedAll = dealWithIsSelectedAll(selectedValues, strs, str, preStr);
+                int removeItemLength = 0;
+                while (isSelectedAll && strs.length-1 > removeItemLength ) {
+                    removeItemLength++;
+                    isSelectedAll = dealWithIsSelectedAll(selectedValues, strs, removeItemLength);
                 }
             }
         }
 
     }
 
-    private boolean dealWithIsSelectedAll(JSONObject selectedValues, String[] strs, String str, String preStr) {
+    private boolean dealWithIsSelectedAll(JSONObject selectedValues, String[] strs, int removeItemLength) {
+        String[] newParents = new String[strs.length-removeItemLength];
+        System.arraycopy(strs, 0, newParents, 0, strs.length-removeItemLength);
         JSONObject preSelectedValue = new JSONObject();
-        String[] newParents = new String[strs.length -1];
-        System.arraycopy(strs, 0, newParents, 0, strs.length-1);
-        for (String thisStr : strs) {
-            if (thisStr == preStr) {
+        String parentValue = newParents[newParents.length -1];
+        for (String thisStr : newParents) {
+            try {
                 preSelectedValue = selectedValues;
-            }
-            if (thisStr != str) {
-                try {
-                    selectedValues = selectedValues.getJSONObject(thisStr);
-                } catch (JSONException e) {
-                    BILoggerFactory.getLogger().error(e.getMessage(), e);
-                }
-            } else {
-                break;
+                selectedValues = selectedValues.getJSONObject(thisStr);
+            } catch (JSONException e) {
+                e.printStackTrace();
             }
         }
         int childsLength = 0;
@@ -238,9 +232,9 @@ public class GetTreeSelectTreeNodeExecutor extends AbstractTreeNodeExecutor {
         }
         if (selectedValues.length() == childsLength) {
             try {
-                preSelectedValue.put(preStr, new JSONObject());
+                preSelectedValue.put(parentValue,new JSONObject());
             } catch (JSONException e) {
-                BILoggerFactory.getLogger().error(e.getMessage(), e);
+                e.printStackTrace();
             }
             return true;
         } else {
