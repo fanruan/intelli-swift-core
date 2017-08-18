@@ -5,6 +5,7 @@ import com.finebi.cube.data.output.ICubeByteArrayWriter;
 import com.finebi.cube.data.output.ICubeStringWriter;
 import com.fr.bi.stable.constant.CubeConstant;
 import com.finebi.cube.common.log.BILoggerFactory;
+import com.fr.stable.StringUtils;
 
 import java.io.UnsupportedEncodingException;
 
@@ -20,14 +21,18 @@ public class BIStringNIOWriter implements ICubeStringWriter {
 
     @Override
     public void recordSpecificValue(int specificPosition, String v) {
+        /*
+        * edit by kary 2017/08/18
+        * 若传入value为null，需处理为StringUtils.EMPTY
+        * */
+        if (v == null) {
+            v = StringUtils.EMPTY;
+        }
         byte[] b = null;
-        if (v != null) {
-            String value = v;
-            try {
-                b = value.getBytes(CubeConstant.CODE);
-            } catch (UnsupportedEncodingException e) {
-                BILoggerFactory.getLogger().error(e.getMessage(), e);
-            }
+        try {
+            b = v.getBytes(CubeConstant.CODE);
+        } catch (UnsupportedEncodingException e) {
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
         byteWriteMappedList.recordSpecificValue(specificPosition, b);
     }
