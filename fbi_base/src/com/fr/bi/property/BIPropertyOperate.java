@@ -14,7 +14,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.lang.reflect.Field;
 import java.util.*;
 
 /**
@@ -24,10 +23,13 @@ import java.util.*;
  */
 public class BIPropertyOperate implements PropertyOperate {
 
-    private static final File PROPERTY_FILE = new File(FRContext.getCurrentEnv().getPath() + File.separator + ProjectConstants.RESOURCES_NAME + File.separator + "systemconfig.xml");
+    private static final String FILE_NAME = "systemconfig.xml";
+    private static final String XML_FILE_TAG = "Properties";
+    private static final File PROPERTY_FILE = new File(FRContext.getCurrentEnv().getPath() + File.separator + ProjectConstants.RESOURCES_NAME + File.separator + FILE_NAME);
 
     /**
      * 读取配置文件，获取到一个集合
+     *
      * @return
      */
     @Override
@@ -45,13 +47,14 @@ public class BIPropertyOperate implements PropertyOperate {
 
     /**
      * 调用write方法的时候，传递需要写入的文件中的内容，然后进行写入操作。
+     *
      * @return
      */
     @Override
     public void write(List<PropertiesConfig> propertiesConfigList) {
         try {
             BIBeanXMLWriterWrapper writerWrapper = new BIBeanXMLWriterWrapper(propertiesConfigList);
-            writerWrapper.setTag("Properties");
+            writerWrapper.setTag(XML_FILE_TAG);
             writerWrapper.setTagAvailable(true);
             writerWrapper.setProperty(false);
             XMLPersistentWriter persistentWriter = new XMLPersistentWriter(writerWrapper);

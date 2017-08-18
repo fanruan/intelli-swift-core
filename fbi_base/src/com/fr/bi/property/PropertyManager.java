@@ -9,6 +9,6 @@ import java.util.Map;
  */
 public interface PropertyManager {
 
-    Map getProperties (String paramType);
+    Map getProperties(String paramType);
 
 }
