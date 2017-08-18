@@ -39,6 +39,7 @@ import com.fr.general.Inter;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;
 import com.fr.stable.ExportConstants;
+import com.fr.stable.StableUtils;
 import com.fr.stable.StringUtils;
 
 import java.awt.Rectangle;
@@ -289,7 +290,7 @@ public class GroupExecutor extends AbstractTableWidgetExecutor<Node> {
 
         WidgetCacheKey key = createWidgetCacheKey();
         WidgetCache<JSONObject> widgetCache = getWidgetCache(key);
-        if (widgetCache != null) {
+        if (widgetCache != null&& !StableUtils.isDebug()) {
             BILoggerFactory.getLogger(GroupExecutor.class).info("data existed in caches,get data from caches");
             updateByCache(widgetCache);
             return widgetCache.getData();

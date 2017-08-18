@@ -37,4 +37,9 @@ public class ComplexCrossResult implements BIComplexCrossResult {
         return null;
     }
 
+    @Override
+    public ResultType getResultType() {
+
+        return ResultType.BICOMPLEXCROSS;
+    }
 }

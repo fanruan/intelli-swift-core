@@ -38,6 +38,7 @@ import com.fr.bi.conf.utils.BIModuleUtils;
 import com.fr.bi.field.target.detailtarget.BIDetailTargetFactory;
 import com.fr.bi.field.target.detailtarget.formula.BINumberFormulaDetailTarget;
 import com.fr.bi.field.target.filter.TargetFilterFactory;
+import com.fr.bi.report.result.BIResult;
 import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.stable.constant.BIExcutorConstant;
 import com.fr.bi.stable.constant.BIReportConstant;
@@ -453,5 +454,13 @@ public class DetailWidget extends AbstractBIWidget implements SclCalculator {
 
     public void setClicked(Map<String, JSONArray> clicked) {
         this.clicked = clicked;
+    }
+
+    public BIResult getExportData(BISessionProvider session) {
+
+        Paging paging = PagingFactory.createPaging(-1);
+        paging.setCurrentPage(page);
+        DetailExecutor exe = new DetailExecutor(this, paging, (BISession) session);
+        return exe.getResult();
     }
 }

@@ -55,4 +55,9 @@ public class XNode implements BICrossNode {
         }
     }
 
+    @Override
+    public ResultType getResultType() {
+
+        return ResultType.BICROSS;
+    }
 }

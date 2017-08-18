@@ -5,6 +5,7 @@ import com.fr.bi.cal.analyze.executor.paging.Paging;
 import com.fr.bi.cal.analyze.session.BISession;
 import com.fr.bi.conf.report.BIWidget;
 import com.fr.bi.conf.session.BISessionProvider;
+import com.fr.bi.report.result.BIResult;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.json.JSONArray;
 
@@ -49,7 +50,7 @@ public abstract class BIAbstractExecutor<T> implements BIEngineExecutor<T> {
         return null;
     }
 
-    public Object getResult() throws Exception{
+    public BIResult getResult() throws Exception{
 
         return null;
     }
