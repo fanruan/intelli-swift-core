@@ -101,16 +101,16 @@ public class BIConnectionManager extends XMLFileManager implements BIConnectionP
         return userId;
     }
 
-    private long getInitTime(String name) {
+    private long getInitTime(String name, int index) {
+        long initTime = System.currentTimeMillis() + index;
         if (connMap.containsKey(name)) {
-            long initTime = connMap.get(name).getInitTime();
+            initTime = connMap.get(name).getInitTime();
             if (ComparatorUtils.equals(initTime, 0)) {
                 ensureInitTimeExist();
-                return getInitTime(name);
+                initTime = getInitTime(name, index);
             }
-            return initTime;
         }
-        return System.currentTimeMillis();
+        return initTime;
     }
 
     private void ensureInitTimeExist() {
@@ -206,7 +206,7 @@ public class BIConnectionManager extends XMLFileManager implements BIConnectionP
         datasourceManager.putConnection(newName, databaseConnection);
 
         long createBy = getCreateBy(oldName, userId);
-        long initTime = getInitTime(oldName);
+        long initTime = getInitTime(oldName, 0);
         connMap.remove(oldName);
         connMap.put(newName, new BIConnection(newName, linkDataJo.optString("schema", null), createBy, initTime));
         try {
@@ -265,7 +265,7 @@ public class BIConnectionManager extends XMLFileManager implements BIConnectionP
                 jo.put("name", name);
 
                 jo.put("createBy", getCreateBy(name, UserControl.getInstance().getSuperManagerID()));
-                jo.put("initTime", getInitTime(name));
+                jo.put("initTime", getInitTime(name, index));
                 if (isMicrosoftAccessDatabase(jo.optString("driver"), jo.optString("url"))) {
                     continue;
                 }

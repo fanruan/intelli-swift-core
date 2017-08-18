@@ -442,9 +442,9 @@ public class BICoreModule extends AbstractModule {
     }
 
     private BICubeManagerProvider generateCubeManager() {
+        BICubeManager provider = new BICubeManager();
         if (ClusterEnv.isCluster()) {
             if (ClusterAdapter.getManager().getHostManager().isBuildCube()) {
-                BICubeManager provider = new BICubeManager();
                 provider.resetCubeGenerationHour(UserControl.getInstance().getSuperManagerID());
                 RPC.registerSkeleton(provider, ClusterAdapter.getManager().getHostManager().getBuildCubePort());
                 return provider;
@@ -454,7 +454,8 @@ public class BICoreModule extends AbstractModule {
                         ClusterAdapter.getManager().getHostManager().getBuildCubePort());
             }
         } else {
-            return new BICubeManager();
+            provider.resetCubeGenerationHour(UserControl.getInstance().getSuperManagerID());
+            return provider;
         }
 
     }
