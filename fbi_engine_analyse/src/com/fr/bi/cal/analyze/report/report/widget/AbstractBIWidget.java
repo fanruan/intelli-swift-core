@@ -24,6 +24,7 @@ import com.fr.bi.conf.report.widget.field.target.filter.TargetFilter;
 import com.fr.bi.conf.session.BISessionProvider;
 import com.fr.bi.field.dimension.calculator.NoneDimensionCalculator;
 import com.fr.bi.field.target.filter.TargetFilterFactory;
+import com.fr.bi.report.result.BIResult;
 import com.fr.bi.report.result.DimensionCalculator;
 import com.fr.bi.stable.gvi.GVIUtils;
 import com.fr.bi.stable.gvi.GroupValueIndex;
@@ -479,7 +480,7 @@ public abstract class AbstractBIWidget implements BIWidget {
         return data;
     }
 
-    public Object getExportData(BISessionProvider session) {
+    public BIResult getExportData(BISessionProvider session) {
 
         return null;
     }
