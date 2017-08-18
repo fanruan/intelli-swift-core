@@ -47,6 +47,7 @@ import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.data.BITableID;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.utils.program.BIStringUtils;
+import com.fr.general.ComparatorUtils;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;
 import com.fr.report.poly.TemplateBlock;
@@ -145,7 +146,7 @@ public class DetailWidget extends AbstractBIWidget implements SclCalculator {
     }
 
 
-    public void setTargetTable(long userID) {
+    public void setTargetTable(long userId) {
         BITableID targetTableID = new BITableID();
         for (BIDetailTarget target : dimensions) {
             if (!(target instanceof BINumberFormulaDetailTarget)) {
@@ -155,10 +156,10 @@ public class DetailWidget extends AbstractBIWidget implements SclCalculator {
         }
         target = BIModuleUtils.getAnalysisBusinessTableById(new BITableID(targetTableID));
         for (int i = 0; i < dimensions.length; i++) {
-            List<BITableRelation> relations = dimensions[i].getRelationList(null, userID);
+            List<BITableRelation> relations = dimensions[i].getRelationList(null, userId);
             if (!relations.isEmpty()) {
                 BusinessTable table = relations.get(relations.size() - 1).getForeignTable();
-                if (isTableUsedInDimensions(table)) {
+                if (isTableUsedInDimensions(table, userId)) {
                     target = table;
                     break;
                 } else {
@@ -168,10 +169,17 @@ public class DetailWidget extends AbstractBIWidget implements SclCalculator {
         }
     }
 
-    private boolean isTableUsedInDimensions(BusinessTable target) {
+    private boolean isTableUsedInDimensions(BusinessTable target, long userId) {
         for (BIDetailTarget dimension : dimensions) {
-            if (dimension.createTableKey().getID().equals(target.getID())) {
+            if (ComparatorUtils.equals(dimension.createTableKey().getID(), target.getID())) {
                 return true;
+            } else {
+                List<BITableRelation> relations = dimension.getRelationList(null, userId);
+                for (BITableRelation relation : relations) {
+                    if (ComparatorUtils.equals(relation.getForeignTable().getID(), target.getID())) {
+                        return true;
+                    }
+                }
             }
         }
         return false;
