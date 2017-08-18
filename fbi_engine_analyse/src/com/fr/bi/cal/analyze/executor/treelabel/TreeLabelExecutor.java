@@ -2,7 +2,7 @@ package com.fr.bi.cal.analyze.executor.treelabel;
 
 import com.finebi.cube.conf.table.BusinessTable;
 import com.fr.bi.cal.analyze.executor.BIAbstractExecutor;
-import com.fr.bi.cal.analyze.executor.iterator.TableCellIterator;
+import com.fr.bi.export.iterator.TableCellIterator;
 import com.fr.bi.cal.analyze.executor.paging.Paging;
 import com.fr.bi.cal.analyze.report.report.widget.TreeLabelWidget;
 import com.fr.bi.cal.analyze.session.BISession;
