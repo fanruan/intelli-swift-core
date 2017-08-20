@@ -11,9 +11,11 @@ public class PropertiesConfig {
     //属性名
     private String propertyName;
     //值类型
-    private String valueType;
+    //private String valueType;
+    private ValueType valueType;
     //值生效类型，是否需要重启
-    private String availableType;
+    //private String availableType;
+    private AvaliableType avaliableType;
     //属性的标题
     private String title;
     //该属性的作用描述
@@ -22,11 +24,45 @@ public class PropertiesConfig {
     public PropertiesConfig() {
     }
 
-    public PropertiesConfig(String propertyKey, String propertyName, String valueType, String availableType, String title, String description) {
+//    public PropertiesConfig(String propertyKey, String propertyName, String valueType, String availableType, String title, String description) {
+//        this.propertyKey = propertyKey;
+//        this.propertyName = propertyName;
+//        this.valueType = valueType;
+//        this.availableType = availableType;
+//        this.title = title;
+//        this.description = description;
+//    }
+//
+//    public String getPropertyKey() {
+//        return propertyKey;
+//    }
+//
+//    public String getPropertyName() {
+//        return propertyName;
+//    }
+//
+//    public String getValueType() {
+//        return valueType;
+//    }
+//
+//    public String getAvailableType() {
+//        return availableType;
+//    }
+//
+//    public String getTitle() {
+//        return title;
+//    }
+//
+//    public String getDescription() {
+//        return description;
+//    }
+
+
+    public PropertiesConfig(String propertyKey, String propertyName, ValueType valueType, AvaliableType avaliableType, String title, String description) {
         this.propertyKey = propertyKey;
         this.propertyName = propertyName;
         this.valueType = valueType;
-        this.availableType = availableType;
+        this.avaliableType = avaliableType;
         this.title = title;
         this.description = description;
     }
@@ -39,12 +75,12 @@ public class PropertiesConfig {
         return propertyName;
     }
 
-    public String getValueType() {
+    public ValueType getValueType() {
         return valueType;
     }
 
-    public String getAvailableType() {
-        return availableType;
+    public AvaliableType getAvaliableType() {
+        return avaliableType;
     }
 
     public String getTitle() {
