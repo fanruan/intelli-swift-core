@@ -28,7 +28,9 @@ import com.fr.bi.manager.PerformancePlugManager;
 import com.fr.bi.module.BICoreModule;
 import com.fr.bi.module.BIModule;
 import com.fr.bi.resource.FsResourceHelper;
+import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
+import com.fr.bi.web.base.utils.BIWebUtils;
 import com.fr.bi.web.dezi.phantom.PhantomServer;
 import com.fr.data.core.db.DBUtils;
 import com.fr.data.core.db.dialect.Dialect;
@@ -41,14 +43,23 @@ import com.fr.data.dao.MToMRelationFCMapper;
 import com.fr.data.dao.ObjectTableMapper;
 import com.fr.data.dao.RelationFCMapper;
 import com.fr.fs.AbstractFSPlate;
+import com.fr.fs.FSConfig;
+import com.fr.fs.basic.SystemAttr;
+import com.fr.fs.basic.SystemStyle;
+import com.fr.fs.control.EntryControl;
 import com.fr.fs.control.EntryPoolFactory;
 import com.fr.fs.control.UserControl;
 import com.fr.fs.control.dao.tabledata.TableDataDAOControl.ColumnColumn;
 import com.fr.fs.dao.EntryDAO;
 import com.fr.fs.dao.FSDAOManager;
+import com.fr.fs.schedule.entry.FolderEntry;
+import com.fr.fs.web.service.ServiceUtils;
+import com.fr.general.ComparatorUtils;
 import com.fr.general.FRLogger;
 import com.fr.general.GeneralContext;
 import com.fr.general.GeneralUtils;
+import com.fr.json.JSONArray;
+import com.fr.json.JSONObject;
 import com.fr.plugin.ExtraClassManager;
 import com.fr.stable.ActorConstants;
 import com.fr.stable.ActorFactory;
@@ -59,7 +70,10 @@ import com.fr.stable.bridge.StableFactory;
 import com.fr.stable.fun.Service;
 import com.fr.stable.plugin.PluginSimplify;
 import com.fr.web.core.db.PlatformDB;
+import com.fr.web.utils.WebUtils;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.lang.management.ManagementFactory;
 import java.lang.reflect.Modifier;
@@ -520,5 +534,85 @@ public class BIPlate extends AbstractFSPlate {
     @Override
     public String getVersion() {
         return ProductConstants.RELEASE_VERSION;
+    }
+
+    @Override
+    public boolean shouldOverrideEntrance() {
+        return true;
+    }
+
+    /**
+     * 重写平台页面入口
+     *
+     * @param req
+     * @param res
+     * @param map
+     * @throws Exception
+     */
+    @Override
+    public void overrideOperate(HttpServletRequest req, HttpServletResponse res, Map<String, Object> map) throws Exception {
+        long userId = ServiceUtils.getCurrentUserID(req);
+        loadStyleSettings(map);
+        loadIcons(map, userId);
+        loadFavoriteReports(map, userId);
+        initAnalysisConfigAuth(map, userId);
+        WebUtils.writeOutTemplate(searchTemplatePath(req), res, map);
+    }
+
+    private void loadStyleSettings(Map<String, Object> map) throws Exception {
+        JSONObject styleSettings = JSONObject.create();
+        SystemAttr systemAttr = FSConfig.getProviderInstance().getSystemAttr();
+        SystemStyle systemStyle = FSConfig.getProviderInstance().getSystemStyle();
+        boolean isLoginImg = systemAttr.isLoginPageImg();
+        styleSettings.put("isLoginImg", isLoginImg);
+        if (isLoginImg) {
+            styleSettings.put("loginImg", systemAttr.getLoginImageID4FS());
+        } else {
+            styleSettings.put("loginUrl", systemAttr.getLoginUrl4FS());
+        }
+        styleSettings.put("loginTitle", systemAttr.getLoginTitle4FS());
+        styleSettings.put("logoType", systemAttr.getBannerType().toInt());
+        styleSettings.put("logoImg", systemAttr.getLogoImageID4FS());
+        boolean isBackgroundImg = systemAttr.isBackgroundImg();
+        styleSettings.put("isBackgroundImg", isBackgroundImg);
+        styleSettings.put("backgroundImg", systemAttr.getBgImageID4FS());
+        styleSettings.put("customBackgroundColor", systemAttr.getCustomBackgroundColor());
+        if (!isBackgroundImg) {
+            styleSettings.put("backgroundColorIndex", systemAttr.getBackgroundColor());
+        }
+        styleSettings.put("colorSchema", systemStyle.getColorScheme());
+        styleSettings.put("customColors", systemStyle.getCustomColorsAsArray());
+        map.put("styleSettings", styleSettings);
+    }
+
+    private void loadIcons(Map<String, Object> result, long userId) throws Exception {
+        FolderEntry[] folders = EntryControl.getInstance().getRootNode().getShowFolderEntrys(userId);
+        JSONArray iconInfo = JSONArray.create();
+        for (FolderEntry folder : folders) {
+            JSONObject f = JSONObject.create();
+            f.put("text", folder.getDisplayName());
+            f.put("id", folder.getId());
+            f.put("value", FSConfig.getProviderInstance().getSystemStyle().getFolderIconById(folder.getId()));
+            iconInfo.put(f);
+        }
+        result.put("icons", iconInfo);
+    }
+
+    private void initAnalysisConfigAuth(Map<String, Object> map, long userId) throws Exception {
+        int auth = BIWebUtils.getUserEditViewAuth(userId);
+        map.put("analysisAuth", ComparatorUtils.equals(auth, BIReportConstant.REPORT_AUTH.EDIT));
+        map.put("configAuth", BIWebUtils.showDataConfig(userId));
+    }
+
+    private void loadFavoriteReports(Map<String, Object> result, long userId) throws Exception {
+        result.put("favoriteReports", UserControl.getInstance().getFavoriteNodesInfo(userId, com.fr.fs.web.platform.entry.EntryConstants.MOBILECONFIG.PC));
+    }
+
+    private String searchTemplatePath(HttpServletRequest req) {
+        if ("true".equals(WebUtils.getHTTPRequestParameter(req, "debug"))) {
+            return "/com/fr/bi/web/html/index_debug.html";
+        } else {
+            return "/com/fr/bi/web/html/index.html";
+        }
     }
 }
