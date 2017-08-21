@@ -1,6 +1,5 @@
 package com.fr.bi.cal.analyze.report.report.widget.tree;
 
-import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.cal.analyze.executor.paging.Paging;
 import com.fr.bi.cal.analyze.report.report.widget.TreeWidget;
 import com.fr.bi.cal.analyze.session.BISession;
@@ -211,31 +210,19 @@ public class GetTreeSelectTreeNodeExecutor extends AbstractTreeNodeExecutor {
 
     }
 
-    private boolean dealWithIsSelectedAll(JSONObject selectedValues, String[] strs, int removeItemLength) {
+    private boolean dealWithIsSelectedAll(JSONObject selectedValues, String[] strs, int removeItemLength) throws JSONException {
         String[] newParents = new String[strs.length-removeItemLength];
         System.arraycopy(strs, 0, newParents, 0, strs.length-removeItemLength);
         JSONObject preSelectedValue = new JSONObject();
         String parentValue = newParents[newParents.length -1];
         for (String thisStr : newParents) {
-            try {
-                preSelectedValue = selectedValues;
-                selectedValues = selectedValues.getJSONObject(thisStr);
-            } catch (JSONException e) {
-                BILoggerFactory.getLogger().error(e.getMessage(), e);
-            }
+            preSelectedValue = selectedValues;
+            selectedValues = selectedValues.getJSONObject(thisStr);
         }
         int childsLength = 0;
-        try {
-            childsLength = getChildCount(newParents);
-        } catch (JSONException e) {
-            BILoggerFactory.getLogger().error(e.getMessage(), e);
-        }
+        childsLength = getChildCount(newParents);
         if (selectedValues.length() == childsLength) {
-            try {
-                preSelectedValue.put(parentValue,new JSONObject());
-            } catch (JSONException e) {
-                BILoggerFactory.getLogger().error(e.getMessage(), e);
-            }
+            preSelectedValue.put(parentValue,JSONObject.create());
             return true;
         } else {
             return false;
