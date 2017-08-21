@@ -78,7 +78,7 @@ public class BINumberDimension extends BIAbstractDimension {
             }
             group.put("groupValue", groupValue);
         } catch (NullPointerException npe) {
-            BILoggerFactory.getLogger(BINumberDimension.class).error("cubeTableService is null ! Tablesource："
+            BILoggerFactory.getLogger(BINumberDimension.class).error("cubeTableService is null ! TableSource："
                     + this.getStatisticElement().getTableBelongTo().getTableSource() + " is not exist！", npe);
         }
     }
