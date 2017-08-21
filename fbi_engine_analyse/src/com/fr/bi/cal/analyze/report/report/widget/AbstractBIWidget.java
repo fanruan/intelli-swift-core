@@ -22,6 +22,7 @@ import com.fr.bi.conf.report.widget.BIWidgetStyle;
 import com.fr.bi.conf.report.widget.field.BITargetAndDimension;
 import com.fr.bi.conf.report.widget.field.target.filter.TargetFilter;
 import com.fr.bi.conf.session.BISessionProvider;
+import com.fr.bi.export.block.BIPolyECBlock;
 import com.fr.bi.field.dimension.calculator.NoneDimensionCalculator;
 import com.fr.bi.field.target.filter.TargetFilterFactory;
 import com.fr.bi.report.result.BIResult;
@@ -167,7 +168,12 @@ public abstract class AbstractBIWidget implements BIWidget {
     public BIPolyWorkSheet createWorkSheet(BISessionProvider session) {
 
         BIPolyWorkSheet ws = new BIPolyWorkSheet();
-        ws.addBlock(this.createTemplateBlock((BISession) session));
+        TemplateBlock block = createBIBlock((BISession) session);
+        block.setBlockName(CodeUtils.passwordEncode(blockName));
+        block.getBlockAttr().setFreezeHeight(true);
+        block.getBlockAttr().setFreezeWidth(true);
+        block.setBounds(getBlockBounds());
+        ws.addBlock(block);
         return ws;
     }
 
@@ -212,7 +218,9 @@ public abstract class AbstractBIWidget implements BIWidget {
      *
      * @return
      */
-    protected abstract TemplateBlock createBIBlock(BISession session);
+    protected TemplateBlock createBIBlock(BISession session) {
+        return new BIPolyECBlock();
+    };
 
 
     /**
