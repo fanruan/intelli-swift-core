@@ -12,11 +12,11 @@ import com.fr.bi.cal.analyze.cal.result.Node;
 import com.fr.bi.cal.analyze.cal.result.operator.Operator;
 import com.fr.bi.cal.analyze.cal.sssecret.NodeDimensionIterator;
 import com.fr.bi.cal.analyze.cal.sssecret.PageIteratorGroup;
-import com.fr.bi.cal.analyze.executor.iterator.StreamPagedIterator;
-import com.fr.bi.cal.analyze.executor.iterator.TableCellIterator;
+import com.fr.bi.export.iterator.StreamPagedIterator;
+import com.fr.bi.export.iterator.TableCellIterator;
 import com.fr.bi.cal.analyze.executor.paging.Paging;
 import com.fr.bi.cal.analyze.executor.paging.PagingFactory;
-import com.fr.bi.cal.analyze.executor.utils.ExecutorUtils;
+import com.fr.bi.export.utils.GeneratorUtils;
 import com.fr.bi.cal.analyze.report.report.widget.TableWidget;
 import com.fr.bi.cal.analyze.session.BISession;
 import com.fr.bi.cal.report.engine.CBCell;
@@ -84,7 +84,7 @@ public class HorGroupExecutor extends AbstractTableWidgetExecutor<Node> {
 
         int rowIdx = 0;
         while (rowIdx < colDimension.length) {
-            CBCell cell = ExecutorUtils.createCBCell(colDimension[rowIdx].getText(), rowIdx, 1, 0, 1, tableStyle.getHeaderStyle(Style.getInstance()));
+            CBCell cell = GeneratorUtils.createCBCell(colDimension[rowIdx].getText(), rowIdx, 1, 0, 1, tableStyle.getHeaderStyle(Style.getInstance()));
             pagedIterator.addCell(cell);
             node = node.getFirstChild();
             Node temp = node;
@@ -92,8 +92,8 @@ public class HorGroupExecutor extends AbstractTableWidgetExecutor<Node> {
             columnIdx.value = 1;
             BIDimension dim = colDimension[rowIdx];
             while (temp != null) {
-                Object v = ExecutorUtils.formatDateGroup(dim.getGroup().getType(), dim.toString(temp.getData()));
-                CBCell dimCell = ExecutorUtils.createCBCell(v, rowIdx, 1, columnIdx.value, widget.showColumnTotal() ? temp.getTotalLengthWithSummary() : temp.getTotalLength(), widget.getTableStyle().getHeaderStyle(Style.getInstance()));
+                Object v = GeneratorUtils.formatDateGroup(dim.getGroup().getType(), dim.toString(temp.getData()));
+                CBCell dimCell = GeneratorUtils.createCBCell(v, rowIdx, 1, columnIdx.value, widget.showColumnTotal() ? temp.getTotalLengthWithSummary() : temp.getTotalLength(), widget.getTableStyle().getHeaderStyle(Style.getInstance()));
                 pagedIterator.addCell(dimCell);
                 columnIdx.value += widget.showColumnTotal() ? temp.getTotalLengthWithSummary() : temp.getTotalLength();
                 if (widget.showColumnTotal()) {
@@ -108,7 +108,7 @@ public class HorGroupExecutor extends AbstractTableWidgetExecutor<Node> {
     protected static void generateTitleSumCells(TableWidget widget, Node temp, StreamPagedIterator pagedIterator, int rowIdx, FinalInt columnIdx, int maxColumnDimLen) {
 
         if (checkIfGenerateSumCell(temp) && temp.getParent().getChildLength() != 1) {
-            CBCell cell = ExecutorUtils.createCBCell(Inter.getLocText("BI-Summary_Values"), rowIdx, maxColumnDimLen - rowIdx, columnIdx.value, 1, widget.getTableStyle().getHeaderStyle(Style.getInstance()));
+            CBCell cell = GeneratorUtils.createCBCell(Inter.getLocText("BI-Summary_Values"), rowIdx, maxColumnDimLen - rowIdx, columnIdx.value, 1, widget.getTableStyle().getHeaderStyle(Style.getInstance()));
             pagedIterator.addCell(cell);
         }
         adjustColumnIdx(temp, columnIdx);
@@ -139,7 +139,7 @@ public class HorGroupExecutor extends AbstractTableWidgetExecutor<Node> {
             columnIdx.value = 1;
             Object targetName = usedSumTarget[i].getText();
             Style style = (i + 1) % 2 == 1 ? widget.getTableStyle().getOddRowStyle(Style.getInstance()) : widget.getTableStyle().getEvenRowStyle(Style.getInstance());
-            CBCell targetNameCell = ExecutorUtils.createCBCell(targetName, colDimensionLen + i, 1, 0, 1, style);
+            CBCell targetNameCell = GeneratorUtils.createCBCell(targetName, colDimensionLen + i, 1, 0, 1, style);
             pagedIterator.addCell(targetNameCell);
             Node temp = node;
             while (temp != null) {

@@ -8,10 +8,10 @@ import com.fr.bi.cal.analyze.cal.index.loader.CubeIndexLoader;
 import com.fr.bi.cal.analyze.cal.result.BIComplexExecutData;
 import com.fr.bi.cal.analyze.cal.result.ComplexExpander;
 import com.fr.bi.cal.analyze.cal.result.Node;
-import com.fr.bi.cal.analyze.executor.iterator.StreamPagedIterator;
-import com.fr.bi.cal.analyze.executor.iterator.TableCellIterator;
+import com.fr.bi.export.iterator.StreamPagedIterator;
+import com.fr.bi.export.iterator.TableCellIterator;
 import com.fr.bi.cal.analyze.executor.paging.Paging;
-import com.fr.bi.cal.analyze.executor.utils.ExecutorUtils;
+import com.fr.bi.export.utils.GeneratorUtils;
 import com.fr.bi.cal.analyze.report.report.widget.TableWidget;
 import com.fr.bi.cal.analyze.session.BISession;
 import com.fr.bi.cal.report.engine.CBCell;
@@ -100,7 +100,7 @@ public class ComplexHorGroupExecutor extends AbstractTableWidgetExecutor {
             if (firstColumnDimLen > columnDimIdx) {
                 //区域1 最后一个维度rowSpan根据最大区域的维度个数确定
                 int rowSpan = firstColumnDimLen - 1 == columnDimIdx ? maxColumnDimLen - columnDimIdx : 1;
-                CBCell cell = ExecutorUtils.createCBCell(rowData.getDimensionArray(0)[columnDimIdx].getText(), columnDimIdx,
+                CBCell cell = GeneratorUtils.createCBCell(rowData.getDimensionArray(0)[columnDimIdx].getText(), columnDimIdx,
                         rowSpan, columnIdx.value, 1, widget.getTableStyle().getHeaderStyle(Style.getInstance()));
                 pagedIterator.addCell(cell);
             }
@@ -121,9 +121,9 @@ public class ComplexHorGroupExecutor extends AbstractTableWidgetExecutor {
                 BIDimension dim = dimensions[colDimensionIdx];
                 int diff = 0;
                 while (temp != null) {
-                    Object v = ExecutorUtils.formatDateGroup(dim.getGroup().getType(), dim.toString(temp.getData()));
+                    Object v = GeneratorUtils.formatDateGroup(dim.getGroup().getType(), dim.toString(temp.getData()));
                     int rowSpan = colDimensionIdx < (dimensions.length - 1) ? 1 : maxColumnDimLen - colDimensionIdx;
-                    CBCell dimCell = ExecutorUtils.createCBCell(v, colDimensionIdx, rowSpan, columnIdx.value, widget.showColumnTotal() ? temp.getTotalLengthWithSummary() : temp.getTotalLength(), widget.getTableStyle().getHeaderStyle(Style.getInstance()));
+                    CBCell dimCell = GeneratorUtils.createCBCell(v, colDimensionIdx, rowSpan, columnIdx.value, widget.showColumnTotal() ? temp.getTotalLengthWithSummary() : temp.getTotalLength(), widget.getTableStyle().getHeaderStyle(Style.getInstance()));
                     pagedIterator.addCell(dimCell);
                     diff = widget.showColumnTotal() ? temp.getTotalLengthWithSummary() : temp.getTotalLength();
                     columnIdx.value += diff;
@@ -154,7 +154,7 @@ public class ComplexHorGroupExecutor extends AbstractTableWidgetExecutor {
             columnIdx.value++;
             Object targetName = usedSumTarget[i].getText();
             Style style = (i + 1) % 2 == 1 ? widget.getTableStyle().getOddRowStyle(Style.getInstance()) : widget.getTableStyle().getEvenRowStyle(Style.getInstance());
-            CBCell targetNameCell = ExecutorUtils.createCBCell(targetName, rowIdx + i, 1, 0, 1, style);
+            CBCell targetNameCell = GeneratorUtils.createCBCell(targetName, rowIdx + i, 1, 0, 1, style);
             pagedIterator.addCell(targetNameCell);
             for (Node node : nodes) {
                 Node temp = node;
