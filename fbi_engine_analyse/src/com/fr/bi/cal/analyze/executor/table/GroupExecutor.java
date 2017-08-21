@@ -578,7 +578,7 @@ public class GroupExecutor extends AbstractTableWidgetExecutor<Node> {
                     return linkGvi;
                 } else {
                     // 主表过滤子表
-                    GlobalFilterUtils.getGviFromPrimaryTable(linkTargetTable, targetKey, linkGvi, session, null);
+                   return GlobalFilterUtils.getGviFromPrimaryTable(linkTargetTable, targetKey, linkGvi, session, null);
                 }
             }
         } catch (Exception e) {
