@@ -7,8 +7,8 @@ import java.util.Map;
  *
  * @author Each.Zhang
  */
-public interface PropertyManager {
+public interface PropertyManager<T> {
 
-    Map getProperties(String paramType);
+    Map<T, T> getProperties(String paramType);
 
 }

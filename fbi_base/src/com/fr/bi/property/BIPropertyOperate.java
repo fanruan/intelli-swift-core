@@ -51,7 +51,7 @@ public class BIPropertyOperate implements PropertyOperate {
      * @return
      */
     @Override
-    public void write(List<PropertiesConfig> propertiesConfigList) {
+    public void write(List propertiesConfigList) {
         try {
             BIBeanXMLWriterWrapper writerWrapper = new BIBeanXMLWriterWrapper(propertiesConfigList);
             writerWrapper.setTag(XML_FILE_TAG);

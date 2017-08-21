@@ -7,9 +7,9 @@ import java.util.*;
  *
  * @author Each.Zhang
  */
-public interface PropertyOperate {
+public interface PropertyOperate<T> {
 
-    List read();
+    List<T> read();
 
-    void write(List<PropertiesConfig> propertiesConfigList);
+    void write(List<T> propertiesConfigList);
 }

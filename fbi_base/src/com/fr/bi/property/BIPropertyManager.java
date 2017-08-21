@@ -27,9 +27,9 @@ public class BIPropertyManager implements PropertyManager {
     @Override
     public Map<String, Map<String, String>> getProperties(String paramType) {
         List<PropertiesConfig> propertiesList = propertyOperate.read();
-        Map<String, Map<String, String>> propertiesMap = convert2Map(propertiesList);
+        Map<String, Map<String, String>> propertiesMap = decode(propertiesList);
         Map<String, String> paramsMap = manager.getConfigByType(paramType);
-        return mergeProperties(propertiesMap, paramsMap);
+        return mergePropertiesValue(propertiesMap, paramsMap);
     }
 
     /**
@@ -39,7 +39,7 @@ public class BIPropertyManager implements PropertyManager {
      * @param paramValueMap
      * @return
      */
-    private Map<String, Map<String, String>> mergeProperties(Map<String, Map<String, String>> propertiesMap, Map<String, String> paramValueMap) {
+    private Map<String, Map<String, String>> mergePropertiesValue(Map<String, Map<String, String>> propertiesMap, Map<String, String> paramValueMap) {
         paramValueMap = PerformanceParamTools.convert2File(paramValueMap);
         Iterator<String> propertyIterator = propertiesMap.keySet().iterator();
         String propertyKey;
@@ -57,11 +57,11 @@ public class BIPropertyManager implements PropertyManager {
     }
 
     /**
-     * 将获取到的List<Property>转换成Map
+     * 将获取到的List<Property>进行遍历，然后将获取到的对象解码成Map
      *
      * @return
      */
-    private Map<String, Map<String, String>> convert2Map(List<PropertiesConfig> propertiesConfigList) {
+    private Map<String, Map<String, String>> decode(List<PropertiesConfig> propertiesConfigList) {
         Map<String, Map<String, String>> convertMap = new HashMap<String, Map<String, String>>();
         String propertyKey;
         String fieldName;
