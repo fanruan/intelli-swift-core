@@ -2,10 +2,13 @@ package com.fr.bi.conf.base.datasource;
 
 import com.fr.fs.control.UserControl;
 
+import java.io.Serializable;
+
 /**
  * Created by 小灰灰 on 2016/3/18.
  */
-public class BIConnection{
+public class BIConnection implements Serializable {
+    private static final long serialVersionUID = 7790477263598447784L;
     private String name;
     private String schema;
     private long createBy = UserControl.getInstance().getSuperManagerID();  //默认admin
