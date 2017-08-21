@@ -6,16 +6,5 @@ package com.fr.bi.property;
  * @author Each.Zhang
  */
 public enum AvaliableType {
-    TRUE("是"),FASLE("否");
-
-    private String value;
-
-    private AvaliableType (String value) {
-        this.value = value;
-    }
-
-    @Override
-    public String toString(){
-        return value;
-    }
+    TRUE,FASLE;
 }
