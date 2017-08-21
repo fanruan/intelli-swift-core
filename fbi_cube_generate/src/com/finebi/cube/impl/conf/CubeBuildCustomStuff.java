@@ -30,6 +30,7 @@ import com.fr.bi.stable.engine.CubeTaskType;
 import com.fr.bi.stable.exception.BITablePathEmptyException;
 import com.fr.bi.stable.utils.file.BIFileUtils;
 import com.fr.bi.stable.utils.program.BIStringUtils;
+import com.fr.stable.StringUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -172,7 +173,7 @@ public class CubeBuildCustomStuff extends AbstractCubeBuildStuff {
 
     @Override
     public boolean replaceOldCubes() {
-        ICubeConfiguration tempConf = BICubeConfiguration.getTempConf(String.valueOf(userId));
+        ICubeConfiguration tempConf = getCubeConfiguration();
         ICubeConfiguration advancedConf = BICubeConfiguration.getConf(String.valueOf(userId));
         try {
             BIFileUtils.moveFile(tempConf.getRootURI().getPath().toString(), advancedConf.getRootURI().getPath().toString());
@@ -185,7 +186,7 @@ public class CubeBuildCustomStuff extends AbstractCubeBuildStuff {
     @Override
     public boolean copyFileFromOldCubes() {
         try {
-            ICubeConfiguration tempConf = BICubeConfiguration.getTempConf(String.valueOf(userId));
+            ICubeConfiguration tempConf = getCubeConfiguration();
             ICubeConfiguration advancedConf = BICubeConfiguration.getConf(String.valueOf(userId));
             BICubeResourceRetrieval tempResourceRetrieval = new BICubeResourceRetrieval(tempConf);
             BICubeResourceRetrieval advancedResourceRetrieval = new BICubeResourceRetrieval(advancedConf);
@@ -284,13 +285,13 @@ public class CubeBuildCustomStuff extends AbstractCubeBuildStuff {
         Set<CubeTableSource> result = new HashSet<CubeTableSource>();
         Set<String> relationID = new HashSet<String>();
         for (CubeTableSource tableSource : tableInConstruction) {
-            LOGGER.debug(BuildLogHelper.tableLogContent("", tableSource));
+            LOGGER.debug(BuildLogHelper.tableLogContent(StringUtils.EMPTY, tableSource));
             String id = tableSource.getSourceID();
             if (!relationID.contains(id)) {
                 result.add(tableSource);
                 relationID.add(id);
             } else {
-                LOGGER.info("The table source id has present:\n" + BuildLogHelper.tableLogContent("", tableSource));
+                LOGGER.info("The table source id has present:\n" + BuildLogHelper.tableLogContent(StringUtils.EMPTY, tableSource));
             }
         }
         return result;
