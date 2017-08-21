@@ -8,7 +8,10 @@ import com.finebi.common.name.NameProvider;
  * @author Connery
  * @since Advanced FineBI Analysis 1.0
  */
-public interface ResourceItem extends NameProvider{
+public interface ResourceItem extends NameProvider, Cloneable{
     ResourceName getResourceName();
 
+    Object clone() throws CloneNotSupportedException;
+
+    long version();
 }

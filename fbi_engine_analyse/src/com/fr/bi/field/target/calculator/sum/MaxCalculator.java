@@ -26,4 +26,8 @@ public class MaxCalculator extends AbstractSummaryCalculator {
         return ti.getMAXValue(gvi, target.createKey(target.getStatisticElement()));
     }
 
+    @Override
+    public double createSumValue(double v1, double v2) {
+        return Math.max(v1, v2);
+    }
 }

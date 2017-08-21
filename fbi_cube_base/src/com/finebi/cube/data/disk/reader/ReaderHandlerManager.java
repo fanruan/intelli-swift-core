@@ -97,6 +97,7 @@ public class ReaderHandlerManager implements NIOHandlerManager<ICubePrimitiveRea
         try {
             readWriteLock.writeLock().lock();
             isForceReleased = true;
+            reader.reSetValid(false);
             reader.destroySource();
             countOfReaders.set(0);
             queryRecorder.clear();

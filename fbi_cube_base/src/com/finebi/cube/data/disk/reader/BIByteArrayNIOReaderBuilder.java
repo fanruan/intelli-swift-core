@@ -33,21 +33,21 @@ public class BIByteArrayNIOReaderBuilder extends BINIOReaderBuilder<ICubeByteArr
             /**
              * 获得内容部分的Byte类型reader
              */
-            ICubeResourceLocation contentLocation = targetLocation.copy();
+            ICubeResourceLocation contentLocation = targetLocation.copy().getRealLocation();
             contentLocation.setReaderSourceLocation();
             contentLocation.setByteType();
             ICubeByteReader contentReader = (ICubeByteReader) cubeDiscovery.getCubeReader(contentLocation);
             /**
              * 获得位置部分的Long类型reader
              */
-            ICubeResourceLocation startPositionPath = targetLocation.generateWithSuffix(BICubeFileConstant.arrayPositionSuffix);
+            ICubeResourceLocation startPositionPath = targetLocation.generateWithSuffix(BICubeFileConstant.arrayPositionSuffix).getRealLocation();
             startPositionPath.setReaderSourceLocation();
             startPositionPath.setLongType();
             ICubeLongReader positionReader = (ICubeLongReader) cubeDiscovery.getCubeReader(startPositionPath);
             /**
              * 获得长度部分的Integer类型reader
              */
-            ICubeResourceLocation lengthPath = targetLocation.generateWithSuffix(BICubeFileConstant.arrayLengthSuffix);
+            ICubeResourceLocation lengthPath = targetLocation.generateWithSuffix(BICubeFileConstant.arrayLengthSuffix).getRealLocation();
             lengthPath.setReaderSourceLocation();
             lengthPath.setIntegerType();
             ICubeIntegerReader lengthReader = (ICubeIntegerReader) cubeDiscovery.getCubeReader(lengthPath);

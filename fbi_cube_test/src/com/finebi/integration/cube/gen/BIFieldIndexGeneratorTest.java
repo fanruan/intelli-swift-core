@@ -11,7 +11,6 @@ import com.finebi.cube.tools.BIMemDataSourceTestToolCube;
 import com.finebi.cube.tools.BIMemoryDataSource;
 import com.finebi.cube.tools.BIMemoryDataSourceFactory;
 import com.finebi.cube.tools.GroupValueIndexTestTool;
-import com.finebi.cube.utils.BITableKeyUtils;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.gvi.GroupValueIndex;

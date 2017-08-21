@@ -17,6 +17,7 @@ import com.fr.bi.stable.exception.BITablePathConfusionException;
 import com.fr.bi.stable.exception.BITablePathEmptyException;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
 
+import java.net.URISyntaxException;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -112,12 +113,12 @@ public class BICube implements Cube {
 
     @Override
     public boolean exist(ITableKey tableKey) {
-        if(isResourceExist(tableKey)) {
+        if (isResourceExist(tableKey)) {
             CubeTableEntityGetterService tableEntityGetterService = getCubeTable(tableKey);
             boolean result = BICubeUtils.tableExist(tableKey, tableEntityGetterService, this);
             tableEntityGetterService.clear();
             return result;
-        }else {
+        } else {
             return false;
         }
     }
@@ -135,24 +136,24 @@ public class BICube implements Cube {
 
     @Override
     public boolean exist(ITableKey tableKey, BICubeTablePath relationPath) {
-        if(isResourceExist(tableKey)) {
+        if (isResourceExist(tableKey)) {
             CubeTableEntityGetterService tableEntityGetterService = getCubeTable(tableKey);
             boolean result = BICubeUtils.tableRelationExist(tableKey, relationPath, tableEntityGetterService, this);
             tableEntityGetterService.clear();
             return result;
-        }else{
+        } else {
             return false;
         }
     }
 
     @Override
     public boolean exist(ITableKey tableKey, BIColumnKey field, BICubeTablePath relationPath) {
-        if(isResourceExist(tableKey)) {
+        if (isResourceExist(tableKey)) {
             CubeTableEntityGetterService tableEntityGetterService = getCubeTable(tableKey);
             boolean result = BICubeUtils.tableFieldRelationExist(tableKey, field, relationPath, tableEntityGetterService, this);
             tableEntityGetterService.clear();
             return result;
-        }else {
+        } else {
             return false;
         }
     }
@@ -161,8 +162,12 @@ public class BICube implements Cube {
     public boolean isResourceExist(ITableKey tableKey) {
         try {
             ICubeResourceLocation location = resourceRetrievalService.retrieveResource(tableKey);
-            return isResourceExist(location);
+            ICubeResourceLocation versionLocation = location.buildChildLocation("version");
+            return isResourceExist(versionLocation.getRealLocation());
         } catch (BICubeResourceAbsentException e) {
+            logger.warn(e.getMessage(), e);
+            return false;
+        } catch (URISyntaxException e) {
             logger.warn(e.getMessage(), e);
             return false;
         }
@@ -172,14 +177,23 @@ public class BICube implements Cube {
     public boolean isResourceExist(ITableKey tableKey, BICubeTablePath relationPath) {
         try {
             ICubeResourceLocation location = resourceRetrievalService.retrieveResource(tableKey, relationPath);
-            return isResourceExist(location);
+            ICubeResourceLocation versionLocation = location.buildChildLocation("version");
+            return isResourceExist(versionLocation.getRealLocation());
         } catch (BICubeResourceAbsentException e) {
             logger.warn(e.getMessage(), e);
             return false;
         } catch (BITablePathEmptyException e) {
             logger.warn(e.getMessage(), e);
             return false;
+        }catch (URISyntaxException e) {
+            logger.warn(e.getMessage(), e);
+            return false;
         }
+    }
+
+    @Override
+    public ICubeResourceRetrievalService getCubeResourceRetrievalService() {
+        return resourceRetrievalService;
     }
 
     private boolean isResourceExist(ICubeResourceLocation location) {
@@ -206,4 +220,6 @@ public class BICube implements Cube {
     public Boolean isVersionAvailable() {
         return cubeVersion.isVersionAvailable();
     }
+
+
 }

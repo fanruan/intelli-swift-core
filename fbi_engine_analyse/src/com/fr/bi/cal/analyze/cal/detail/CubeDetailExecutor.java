@@ -1,9 +1,9 @@
 package com.fr.bi.cal.analyze.cal.detail;
 
 import com.fr.bi.cal.analyze.exception.NoneAccessablePrivilegeException;
-import com.fr.bi.cal.analyze.executor.iterator.TableCellIterator;
+import com.fr.bi.export.iterator.TableCellIterator;
 import com.fr.bi.cal.analyze.executor.detail.DetailExecutor;
-import com.fr.bi.cal.analyze.executor.iterator.StreamCellCase;
+import com.fr.bi.export.iterator.StreamCellCase;
 import com.fr.bi.cal.analyze.executor.paging.Paging;
 import com.fr.bi.cal.analyze.executor.paging.PagingFactory;
 import com.fr.bi.cal.analyze.report.report.widget.DetailWidget;
@@ -47,7 +47,7 @@ public class CubeDetailExecutor extends SheetExecutor {
     private int page = 1;
 
     public CubeDetailExecutor(TemplateReport report, DetailWidget widget,
-                              BISession session, AbstractPolyECBlock tplBlock, Map<String, Object> parameterMap, int page) {
+                              BISession session, AbstractPolyECBlock tplBlock, Map parameterMap, int page) {
         super(parameterMap);
         this.report = report;
         this.widget = widget;
@@ -122,16 +122,6 @@ public class CubeDetailExecutor extends SheetExecutor {
         block.setCellCase(new StreamCellCase(iter));
         release();
         return block;
-    }
-
-    @Override
-    protected ResultECReport execute4ECReport(com.fr.report.stable.fun.Actor actor, long startTime) {
-        long s = System.currentTimeMillis();
-        ResultECReport result = getResultReport((WorkSheet) this.report);
-        BILoggerFactory.getLogger().info(DateUtils.timeCostFrom(s) + " p2");
-
-        release();
-        return result;
     }
 
     private void release() {

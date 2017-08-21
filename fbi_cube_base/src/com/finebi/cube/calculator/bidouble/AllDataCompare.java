@@ -13,21 +13,25 @@ import com.fr.bi.stable.io.newio.NIOConstant;
  * @since 4.0
  */
 public abstract class AllDataCompare implements CubeDoubleDataCalculator {
+
     @Override
     public double calculate(final ICubeTableService tableGetterService, final BIKey key, GroupValueIndex range) {
+
         final ICubeColumnDetailGetter getter = tableGetterService.getColumnDetailReader(key);
         PrimitiveType type = getter.getPrimitiveType();
         CalculatorTraversalAction ss;
-        if (type == PrimitiveType.LONG){
+        if (type == PrimitiveType.LONG) {
             return calculateLongSum(getter, range);
-        } else if (type == PrimitiveType.DOUBLE){
+        } else if (type == PrimitiveType.DOUBLE) {
             return calculateDoubleSum(getter, range);
         } else {
             ss = new CalculatorTraversalAction() {
+
                 boolean firstValue = true;
 
                 @Override
                 public void actionPerformed(int row) {
+
                     Object v = getter.getValue(row);
                     if (v != null) {
                         double temp = ((Number) v).doubleValue();
@@ -39,8 +43,10 @@ public abstract class AllDataCompare implements CubeDoubleDataCalculator {
                         }
                     }
                 }
+
                 @Override
                 public double getCalculatorValue() {
+
                     return sum;
                 }
             };
@@ -53,11 +59,13 @@ public abstract class AllDataCompare implements CubeDoubleDataCalculator {
 
     /**
      * PMD对方法连贯是魔鬼啊。。。。
+     *
      * @param getter
      * @param range
      * @return
      */
     private double calculateLongSum(final ICubeColumnDetailGetter getter, GroupValueIndex range) {
+
         final PrimitiveLongGetter g = (PrimitiveLongGetter) getter.createPrimitiveDetailGetter();
         GroupValueIndex nullIndex = g.getNullIndex();
         CalculatorTraversalAction ss;
@@ -66,16 +74,22 @@ public abstract class AllDataCompare implements CubeDoubleDataCalculator {
             range = range.andnot(nullIndex);
         }
         ss = new CalculatorTraversalAction() {
+
             long sum = NIOConstant.LONG.NULL_VALUE;
 
             @Override
             public void actionPerformed(int row) {
+
                 long value = g.getValue(row);
                 sum = compare(value, sum);
             }
 
             @Override
             public double getCalculatorValue() {
+
+                if (sum == NIOConstant.LONG.NULL_VALUE) {
+                    return NIOConstant.DOUBLE.NULL_VALUE;
+                }
                 return sum;
             }
         };
@@ -84,6 +98,7 @@ public abstract class AllDataCompare implements CubeDoubleDataCalculator {
     }
 
     private double calculateDoubleSum(final ICubeColumnDetailGetter getter, GroupValueIndex range) {
+
         final PrimitiveDoubleGetter g = (PrimitiveDoubleGetter) getter.createPrimitiveDetailGetter();
         GroupValueIndex nullIndex = g.getNullIndex();
         CalculatorTraversalAction ss;
@@ -92,16 +107,19 @@ public abstract class AllDataCompare implements CubeDoubleDataCalculator {
             range = range.andnot(nullIndex);
         }
         ss = new CalculatorTraversalAction() {
+
             double sum = NIOConstant.DOUBLE.NULL_VALUE;
 
             @Override
             public void actionPerformed(int row) {
+
                 double value = g.getValue(row);
                 sum = compare(value, sum);
             }
 
             @Override
             public double getCalculatorValue() {
+
                 return sum;
             }
         };

@@ -8,10 +8,10 @@ import com.finebi.cube.data.input.primitive.ICubeLongReaderBuilder;
 import com.finebi.cube.data.output.ICubeByteArrayWriterIncreaseBuilder;
 import com.finebi.cube.data.output.ICubeStringWriterIncreaseBuilder;
 import com.finebi.cube.data.output.ICubeWriterBuilder;
+import com.finebi.cube.location.provider.ILocationConverter;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
 import com.fr.bi.stable.utils.program.BIStringUtils;
 
-import java.io.File;
 import java.net.URI;
 import java.net.URISyntaxException;
 
@@ -22,20 +22,23 @@ import java.net.URISyntaxException;
  * @since 4.0
  */
 public class BICubeLocation implements ICubeResourceLocation, Cloneable {
+
     private URI baseLocation;
     private URI childLocation;
+    private ILocationConverter locationProxy;
 
-    public BICubeLocation(String baseLocation, String childLocation) throws URISyntaxException {
+    public BICubeLocation(String baseLocation, String childLocation, ILocationConverter locationProxy) throws URISyntaxException {
         BINonValueUtils.checkNull(baseLocation);
-        File file = new File(attachFirstSlash(attachLastSlash(replaceSlash(baseLocation))));
-        this.baseLocation = new URI(attachLastSlash(file.toURI().getRawPath()));
+//        File file = new File(attachFirstSlash(attachLastSlash(replaceSlash(baseLocation))));
+//        this.baseLocation = new URI(attachLastSlash(file.toURI().getRawPath()));
+        this.baseLocation = new URI(attachLastSlash(attachFirstSlash(attachLastSlash(replaceSlash(baseLocation)))));
         if (childLocation != null) {
             this.childLocation = new URI(BIStringUtils.cutStartSlash(replaceSlash(childLocation)));
         } else {
             this.childLocation = null;
         }
+        this.locationProxy = locationProxy;
     }
-
 
     @Override
     public URI getBaseLocation() {
@@ -59,6 +62,13 @@ public class BICubeLocation implements ICubeResourceLocation, Cloneable {
     @Override
     public void setChildLocation(URI childLocation) {
         this.childLocation = childLocation;
+    }
+
+    @Override
+//  在创建nioresouce时进行路径转换
+    public ICubeResourceLocation getRealLocation() throws URISyntaxException {
+
+        return locationProxy.getRealLocation(getBaseLocation().getPath(), getChildLocation().getPath());
     }
 
     @Override
@@ -92,7 +102,7 @@ public class BICubeLocation implements ICubeResourceLocation, Cloneable {
 
     @Override
     public ICubeResourceLocation buildChildLocation(String childPath) throws URISyntaxException {
-        return new BICubeLocation(getAbsolutePath(), childPath);
+        return new BICubeLocation(getAbsolutePath(), childPath,locationProxy);
     }
 
     @Override
@@ -258,12 +268,18 @@ public class BICubeLocation implements ICubeResourceLocation, Cloneable {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof BICubeLocation)) return false;
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof BICubeLocation)) {
+            return false;
+        }
 
         BICubeLocation that = (BICubeLocation) o;
 
-        if (baseLocation != null ? !baseLocation.equals(that.baseLocation) : that.baseLocation != null) return false;
+        if (baseLocation != null ? !baseLocation.equals(that.baseLocation) : that.baseLocation != null) {
+            return false;
+        }
         return !(childLocation != null ? !childLocation.equals(that.childLocation) : that.childLocation != null);
 
     }

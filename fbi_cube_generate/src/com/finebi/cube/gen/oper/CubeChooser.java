@@ -4,7 +4,15 @@ import com.finebi.cube.conf.utils.BILogHelper;
 import com.finebi.cube.exception.BICubeColumnAbsentException;
 import com.finebi.cube.exception.BICubeRelationAbsentException;
 import com.finebi.cube.exception.IllegalRelationPathException;
-import com.finebi.cube.structure.*;
+import com.finebi.cube.location.ICubeResourceRetrievalService;
+import com.finebi.cube.structure.Cube;
+import com.finebi.cube.structure.CubeTableEntityGetterService;
+import com.finebi.cube.structure.ITableKey;
+import com.finebi.cube.structure.CubeTableEntityService;
+import com.finebi.cube.structure.CubeRelationEntityGetterService;
+import com.finebi.cube.structure.BICubeTablePath;
+import com.finebi.cube.structure.ICubeRelationEntityService;
+import com.finebi.cube.structure.BICubeRelation;
 import com.finebi.cube.structure.column.BIColumnKey;
 import com.finebi.cube.structure.column.CubeColumnReaderService;
 import com.fr.bi.stable.data.source.CubeTableSource;
@@ -161,6 +169,11 @@ public class CubeChooser implements Cube {
 
     @Override
     public boolean isResourceExist(ITableKey tableKey, BICubeTablePath relationPath) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public ICubeResourceRetrievalService getCubeResourceRetrievalService() {
         throw new UnsupportedOperationException();
     }
 

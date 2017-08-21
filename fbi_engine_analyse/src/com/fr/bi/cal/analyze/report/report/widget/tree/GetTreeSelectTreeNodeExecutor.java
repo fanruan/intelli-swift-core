@@ -1,6 +1,5 @@
 package com.fr.bi.cal.analyze.report.report.widget.tree;
 
-import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.cal.analyze.executor.paging.Paging;
 import com.fr.bi.cal.analyze.report.report.widget.TreeWidget;
 import com.fr.bi.cal.analyze.session.BISession;
@@ -201,47 +200,29 @@ public class GetTreeSelectTreeNodeExecutor extends AbstractTreeNodeExecutor {
                 String[] strs = result.get(i);
                 buildTree(selectedValues, strs);
                 boolean isSelectedAll = true;
-                int j = strs.length - 1;
-                while (isSelectedAll && j > 0) {
-                    String str = strs[j];
-                    String preStr = strs[j - 1];
-                    isSelectedAll = dealWithIsSelectedAll(selectedValues, strs, str, preStr);
+                int removeItemLength = 0;
+                while (isSelectedAll && strs.length - 1 > removeItemLength) {
+                    removeItemLength++;
+                    isSelectedAll = dealWithIsSelectedAll(selectedValues, strs, removeItemLength);
                 }
             }
         }
 
     }
 
-    private boolean dealWithIsSelectedAll(JSONObject selectedValues, String[] strs, String str, String preStr) {
+    private boolean dealWithIsSelectedAll(JSONObject selectedValues, String[] strs, int removeItemLength) throws JSONException {
+        String[] newParents = new String[strs.length - removeItemLength];
+        System.arraycopy(strs, 0, newParents, 0, strs.length - removeItemLength);
         JSONObject preSelectedValue = new JSONObject();
-        String[] newParents = new String[strs.length -1];
-        System.arraycopy(strs, 0, newParents, 0, strs.length-1);
-        for (String thisStr : strs) {
-            if (thisStr == preStr) {
-                preSelectedValue = selectedValues;
-            }
-            if (thisStr != str) {
-                try {
-                    selectedValues = selectedValues.getJSONObject(thisStr);
-                } catch (JSONException e) {
-                    BILoggerFactory.getLogger().error(e.getMessage(), e);
-                }
-            } else {
-                break;
-            }
+        String parentValue = newParents[newParents.length - 1];
+        for (String thisStr : newParents) {
+            preSelectedValue = selectedValues;
+            selectedValues = selectedValues.getJSONObject(thisStr);
         }
         int childsLength = 0;
-        try {
-            childsLength = getChildCount(newParents);
-        } catch (JSONException e) {
-            BILoggerFactory.getLogger().error(e.getMessage(), e);
-        }
+        childsLength = getChildCount(newParents);
         if (selectedValues.length() == childsLength) {
-            try {
-                preSelectedValue.put(preStr, new JSONObject());
-            } catch (JSONException e) {
-                BILoggerFactory.getLogger().error(e.getMessage(), e);
-            }
+            preSelectedValue.put(parentValue, JSONObject.create());
             return true;
         } else {
             return false;

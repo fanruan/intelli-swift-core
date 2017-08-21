@@ -5,12 +5,18 @@ import com.finebi.cube.conf.table.BusinessTable;
 import com.fr.base.Style;
 import com.fr.bi.base.FinalInt;
 import com.fr.bi.cal.analyze.cal.index.loader.CubeIndexLoader;
+import com.fr.bi.cal.analyze.cal.index.loader.cache.WidgetCache;
+import com.fr.bi.cal.analyze.cal.index.loader.cache.WidgetCacheKey;
 import com.fr.bi.cal.analyze.cal.result.CrossExpander;
 import com.fr.bi.cal.analyze.cal.result.Node;
-import com.fr.bi.cal.analyze.executor.iterator.StreamPagedIterator;
-import com.fr.bi.cal.analyze.executor.iterator.TableCellIterator;
+import com.fr.bi.cal.analyze.cal.result.operator.Operator;
+import com.fr.bi.cal.analyze.cal.sssecret.NodeDimensionIterator;
+import com.fr.bi.cal.analyze.cal.sssecret.PageIteratorGroup;
+import com.fr.bi.export.iterator.StreamPagedIterator;
+import com.fr.bi.export.iterator.TableCellIterator;
 import com.fr.bi.cal.analyze.executor.paging.Paging;
-import com.fr.bi.cal.analyze.executor.utils.ExecutorUtils;
+import com.fr.bi.cal.analyze.executor.paging.PagingFactory;
+import com.fr.bi.export.utils.GeneratorUtils;
 import com.fr.bi.cal.analyze.report.report.widget.TableWidget;
 import com.fr.bi.cal.analyze.session.BISession;
 import com.fr.bi.cal.report.engine.CBCell;
@@ -78,7 +84,7 @@ public class HorGroupExecutor extends AbstractTableWidgetExecutor<Node> {
 
         int rowIdx = 0;
         while (rowIdx < colDimension.length) {
-            CBCell cell = ExecutorUtils.createCBCell(colDimension[rowIdx].getText(), rowIdx, 1, 0, 1, tableStyle.getHeaderStyle(Style.getInstance()));
+            CBCell cell = GeneratorUtils.createCBCell(colDimension[rowIdx].getText(), rowIdx, 1, 0, 1, tableStyle.getHeaderStyle(Style.getInstance()));
             pagedIterator.addCell(cell);
             node = node.getFirstChild();
             Node temp = node;
@@ -86,8 +92,8 @@ public class HorGroupExecutor extends AbstractTableWidgetExecutor<Node> {
             columnIdx.value = 1;
             BIDimension dim = colDimension[rowIdx];
             while (temp != null) {
-                Object v = ExecutorUtils.formatDateGroup(dim.getGroup().getType(), dim.toString(temp.getData()));
-                CBCell dimCell = ExecutorUtils.createCBCell(v, rowIdx, 1, columnIdx.value, widget.showColumnTotal() ? temp.getTotalLengthWithSummary() : temp.getTotalLength(), widget.getTableStyle().getHeaderStyle(Style.getInstance()));
+                Object v = GeneratorUtils.formatDateGroup(dim.getGroup().getType(), dim.toString(temp.getData()));
+                CBCell dimCell = GeneratorUtils.createCBCell(v, rowIdx, 1, columnIdx.value, widget.showColumnTotal() ? temp.getTotalLengthWithSummary() : temp.getTotalLength(), widget.getTableStyle().getHeaderStyle(Style.getInstance()));
                 pagedIterator.addCell(dimCell);
                 columnIdx.value += widget.showColumnTotal() ? temp.getTotalLengthWithSummary() : temp.getTotalLength();
                 if (widget.showColumnTotal()) {
@@ -102,7 +108,7 @@ public class HorGroupExecutor extends AbstractTableWidgetExecutor<Node> {
     protected static void generateTitleSumCells(TableWidget widget, Node temp, StreamPagedIterator pagedIterator, int rowIdx, FinalInt columnIdx, int maxColumnDimLen) {
 
         if (checkIfGenerateSumCell(temp) && temp.getParent().getChildLength() != 1) {
-            CBCell cell = ExecutorUtils.createCBCell(Inter.getLocText("BI-Summary_Values"), rowIdx, maxColumnDimLen - rowIdx, columnIdx.value, 1, widget.getTableStyle().getHeaderStyle(Style.getInstance()));
+            CBCell cell = GeneratorUtils.createCBCell(Inter.getLocText("BI-Summary_Values"), rowIdx, maxColumnDimLen - rowIdx, columnIdx.value, 1, widget.getTableStyle().getHeaderStyle(Style.getInstance()));
             pagedIterator.addCell(cell);
         }
         adjustColumnIdx(temp, columnIdx);
@@ -133,7 +139,7 @@ public class HorGroupExecutor extends AbstractTableWidgetExecutor<Node> {
             columnIdx.value = 1;
             Object targetName = usedSumTarget[i].getText();
             Style style = (i + 1) % 2 == 1 ? widget.getTableStyle().getOddRowStyle(Style.getInstance()) : widget.getTableStyle().getEvenRowStyle(Style.getInstance());
-            CBCell targetNameCell = ExecutorUtils.createCBCell(targetName, colDimensionLen + i, 1, 0, 1, style);
+            CBCell targetNameCell = GeneratorUtils.createCBCell(targetName, colDimensionLen + i, 1, 0, 1, style);
             pagedIterator.addCell(targetNameCell);
             Node temp = node;
             while (temp != null) {
@@ -162,6 +168,15 @@ public class HorGroupExecutor extends AbstractTableWidgetExecutor<Node> {
         }
     }
 
+
+    protected WidgetCacheKey createWidgetCacheKey() {
+        PageIteratorGroup iteratorGroup = getPageIterator();
+        Operator colOp = PagingFactory.createColumnOperator(paging.getOperator(), widget);
+        return WidgetCacheKey.createKey(widget.fetchObjectCore(), expander.getYExpander(), expander.getXExpander(),
+                null, null, colOp, getStartIndex(colOp, iteratorGroup == null ? null : iteratorGroup.getColumnIterator(), usedDimensions.length),
+                widget.getAuthFilter(session.getUserId()));
+    }
+
     @Override
     public Node getCubeNode() throws Exception {
 
@@ -188,8 +203,35 @@ public class HorGroupExecutor extends AbstractTableWidgetExecutor<Node> {
 
     @Override
     public JSONObject createJSONObject() throws Exception {
+        WidgetCacheKey key = createWidgetCacheKey();
+        WidgetCache<JSONObject> widgetCache = getWidgetCache(key);
+        if (widgetCache != null) {
+            updateByCache(widgetCache);
+            BILoggerFactory.getLogger(GroupExecutor.class).info("data existed in caches,get data from caches");
+            return widgetCache.getData();
+        }
+        JSONObject jo = getCubeNode().toJSONObject(usedDimensions, widget.getTargetsKey(), -1);
+        if (isUseWidgetDataCache()) {
+            PageIteratorGroup pg = session.getPageIteratorGroup(true, widget.getWidgetId());
+            NodeDimensionIterator colIter = pg.getColumnIterator().createClonedIterator();
+            colIter.setRoot(null);
+            updateCache(key, new WidgetCache(jo, null, colIter, widget.getPageSpinner()));
+        }
+        return jo;
+    }
 
-        return getCubeNode().toJSONObject(usedDimensions, widget.getTargetsKey(), -1);
+    private void updateByCache(WidgetCache widgetCache) {
+        widget.setPageSpinner(widgetCache.getPageSpinner());
+        PageIteratorGroup pg = session.getPageIteratorGroup(true, widget.getWidgetId());
+        if (pg == null) {
+            pg = new PageIteratorGroup();
+            pg.setColumnIterator(widgetCache.getColumnIterator());
+            session.setPageIteratorGroup(true, widget.getWidgetId(), pg);
+        } else {
+            NodeDimensionIterator colIterator = widgetCache.getColumnIterator().createClonedIterator();
+            colIterator.setRoot(pg.getColumnIterator().getRoot());
+            pg.setColumnIterator(colIterator);
+        }
     }
 
     @Override
@@ -202,7 +244,7 @@ public class HorGroupExecutor extends AbstractTableWidgetExecutor<Node> {
 
         GroupValueIndex linkGvi = null;
         try {
-            String target = getClieckTarget(clicked);
+            String target = getClickTarget(clicked);
             // 连联动计算指标都没有就没有所谓的联动了,直接返回
             if (target == null) {
                 return null;
@@ -213,7 +255,8 @@ public class HorGroupExecutor extends AbstractTableWidgetExecutor<Node> {
                 return null;
             }
             List<Object> col = getLinkRowData(clicked, target, true);
-            Node linkNode = getStopOnRowNode(col.toArray(), widget.getViewTopDimensions());
+            BIDimension[] dimensions = getUserDimension(clicked, target);
+            Node linkNode = getStopOnRowNode(col.toArray(), dimensions);
             // 总汇总值
             if (col == null || col.size() == 0) {
                 for (String key : clicked.keySet()) {

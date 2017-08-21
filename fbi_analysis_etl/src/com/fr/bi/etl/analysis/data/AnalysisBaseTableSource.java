@@ -4,6 +4,7 @@ import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.conf.table.BusinessTable;
 import com.fr.bi.base.annotation.BICoreField;
+import com.fr.bi.cal.analyze.report.report.widget.AbstractBIWidget;
 import com.fr.bi.cal.analyze.report.report.widget.SummaryWidget;
 import com.fr.bi.common.inter.Traversal;
 import com.fr.bi.common.persistent.xml.BIIgnoreField;
@@ -12,6 +13,7 @@ import com.fr.bi.conf.report.WidgetType;
 import com.fr.bi.conf.report.widget.field.BITargetAndDimension;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.conf.report.widget.field.target.BITarget;
+import com.fr.bi.conf.report.widget.field.target.filter.TargetFilter;
 import com.fr.bi.etl.analysis.Constants;
 import com.fr.bi.etl.analysis.manager.BIAnalysisETLManagerCenter;
 import com.fr.bi.etl.analysis.monitor.*;
@@ -27,11 +29,15 @@ import com.fr.bi.stable.data.source.AbstractCubeTableSource;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.operation.group.IGroup;
 import com.fr.bi.stable.utils.BIDBUtils;
+import com.fr.general.ComparatorUtils;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;
 
 import java.sql.Types;
-import java.util.*;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 
@@ -42,7 +48,7 @@ public class
 AnalysisBaseTableSource extends AbstractCubeTableSource implements AnalysisCubeTableSource {
     private static final long serialVersionUID = 2465659786011088351L;
     @BIIgnoreField
-    private /*transient*/ Map<Long, UserCubeTableSource> userBaseTableMap = new ConcurrentHashMap<Long, UserCubeTableSource>();
+    private Map<SourceKey, UserCubeTableSource> userBaseTableMap = new ConcurrentHashMap<SourceKey, UserCubeTableSource>();
     @BICoreField
     protected BIWidget widget;
     protected int etlType;
@@ -158,13 +164,15 @@ AnalysisBaseTableSource extends AbstractCubeTableSource implements AnalysisCubeT
 
     @Override
     public UserCubeTableSource createUserTableSource(long userId) {
-        UserCubeTableSource source = userBaseTableMap.get(userId);
+        List<TargetFilter> filters = ((AbstractBIWidget)widget).getAuthFilter(userId);
+        SourceKey key = new SourceKey(filters);
+        UserCubeTableSource source = userBaseTableMap.get(key);
         if (source == null) {
             synchronized (userBaseTableMap) {
-                UserCubeTableSource tmp = userBaseTableMap.get(userId);
+                UserCubeTableSource tmp = userBaseTableMap.get(key);
                 if (tmp == null) {
                     source = new UserBaseTableSource(this, userId);
-                    userBaseTableMap.put(userId, source);
+                    userBaseTableMap.put(key, source);
                 } else {
                     source = tmp;
                 }
@@ -359,6 +367,32 @@ AnalysisBaseTableSource extends AbstractCubeTableSource implements AnalysisCubeT
     public void clearUserBaseTableMap() {
         userBaseTableMap.clear();
         widget.refreshColumns();
+    }
+
+    private class SourceKey{
+        private List<TargetFilter> targetFilterList;
+
+        public SourceKey(List<TargetFilter> targetFilterList) {
+            this.targetFilterList = targetFilterList;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) {
+                return true;
+            }
+            if (o == null || getClass() != o.getClass()) {
+                return false;
+            }
+            SourceKey widgetKey = (SourceKey) o;
+            return targetFilterList != null ? ComparatorUtils.equals(targetFilterList, widgetKey.targetFilterList) : widgetKey.targetFilterList == null;
+
+        }
+
+        @Override
+        public int hashCode() {
+            return targetFilterList != null ? targetFilterList.hashCode() : 0;
+        }
     }
 
 }

@@ -229,4 +229,21 @@ public class DBConstant {
     public static final class TIMER_TASK_TYPE {
         public static final String CUBE_TASK = "CUBE_TASK";
     }
+
+    /**
+     * 参数配置文件的类型
+     */
+    public static final class PERFORMANCE_FILE_NAME {
+        public static final String OLD_FILE_NAME = "plugs.properties";
+        public static final String NEW_FILE_NAME = "plugsUpdate.properties";
+        public  static final String TEMP_FILE_NAME = "plugs.properties.temp";
+    }
+
+    /**
+     * 参数的状态类型
+     */
+    public static final class PARAM_TYPE {
+        public static final String RUNTIME_TYPE = "RuntimeParamsType";
+        public static final String UPDATED_TYPE = "UpdateParamsType";
+    }
 }

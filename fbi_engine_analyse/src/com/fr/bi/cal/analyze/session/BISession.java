@@ -276,6 +276,11 @@ public class BISession extends BIAbstractSession {
     }
 
     @Override
+    public Object initCellElementValue(HttpServletRequest httpServletRequest, String s) {
+        return null;
+    }
+
+    @Override
     public String getWebTitle() {
         return null;
     }
@@ -324,7 +329,7 @@ public class BISession extends BIAbstractSession {
     public PageIteratorGroup getPageIteratorGroup(boolean useRealData, String widgetID, int i) {
         Map<String, ConcurrentHashMap<Object, PageIteratorGroup>> pmap = useRealData ? pageGroup : partPageGroup;
         if (!pmap.containsKey(widgetID)) {
-            throw new RuntimeException("error! page not found");
+            return null;
         }
         ConcurrentHashMap<Object, PageIteratorGroup> map = pmap.get(widgetID);
         return map.get(i);

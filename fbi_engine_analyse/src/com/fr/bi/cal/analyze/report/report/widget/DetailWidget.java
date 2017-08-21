@@ -18,9 +18,9 @@ import com.fr.bi.cal.analyze.report.report.widget.chart.calculator.format.operat
 import com.fr.bi.cal.analyze.report.report.widget.chart.calculator.format.operation.ITableCellFormatOperation;
 import com.fr.bi.cal.analyze.report.report.widget.chart.calculator.format.setting.BICellFormatSetting;
 import com.fr.bi.cal.analyze.report.report.widget.chart.calculator.format.setting.ICellFormatSetting;
+import com.fr.bi.cal.analyze.report.report.widget.chart.calculator.format.utils.BITableConstructHelper;
 import com.fr.bi.cal.analyze.report.report.widget.chart.calculator.item.ITableItem;
 import com.fr.bi.cal.analyze.report.report.widget.chart.calculator.item.constructor.DataConstructor;
-import com.fr.bi.cal.analyze.report.report.widget.chart.calculator.format.utils.BITableConstructHelper;
 import com.fr.bi.cal.analyze.report.report.widget.detail.BIDetailReportSetting;
 import com.fr.bi.cal.analyze.report.report.widget.detail.BIDetailSetting;
 import com.fr.bi.cal.analyze.report.report.widget.util.BIWidgetFactory;
@@ -30,20 +30,20 @@ import com.fr.bi.conf.report.SclCalculator;
 import com.fr.bi.conf.report.WidgetType;
 import com.fr.bi.conf.report.conf.BIWidgetConf;
 import com.fr.bi.conf.report.conf.BIWidgetSettings;
+import com.fr.bi.conf.report.conf.dimension.BIDimensionConf;
 import com.fr.bi.conf.report.widget.BIWidgetStyle;
+import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.conf.report.widget.field.target.detailtarget.BIDetailTarget;
 import com.fr.bi.conf.report.widget.field.target.filter.TargetFilter;
 import com.fr.bi.conf.session.BISessionProvider;
 import com.fr.bi.conf.utils.BIModuleUtils;
 import com.fr.bi.field.target.detailtarget.BIDetailTargetFactory;
-import com.fr.bi.field.target.detailtarget.field.BIDateDetailTarget;
-import com.fr.bi.field.target.detailtarget.field.BIStringDetailTarget;
 import com.fr.bi.field.target.detailtarget.formula.BINumberFormulaDetailTarget;
 import com.fr.bi.field.target.filter.TargetFilterFactory;
+import com.fr.bi.report.result.BIDetailTableResult;
 import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.stable.constant.BIExcutorConstant;
 import com.fr.bi.stable.constant.BIReportConstant;
-import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.data.BITableID;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.utils.program.BIStringUtils;
@@ -327,10 +327,10 @@ public class DetailWidget extends AbstractBIWidget implements SclCalculator {
         return WidgetType.DETAIL;
     }
 
-    @Override
-    protected TemplateBlock createBIBlock(BISession session) {
-        return new PolyCubeDetailECBlock(this, session, page);
-    }
+//    @Override
+//    protected TemplateBlock createBIBlock(BISession session) {
+//        return new PolyCubeDetailECBlock(this, session, page);
+//    }
 
 
     @Override
@@ -358,88 +358,68 @@ public class DetailWidget extends AbstractBIWidget implements SclCalculator {
 
     @Override
     public JSONObject calculateSCData(BIWidgetConf widgetConf, JSONObject data) throws Exception {
-        Map<Integer, List<JSONObject>> viewMap = widgetConf.getDetailViewMap();
-        IExcelDataBuilder builder = new DetailTableBuilder(viewMap, data, getWidgetSettings(widgetConf));
-        DataConstructor tableData = BITableConstructHelper.buildTableData(builder);
-//        BITableConstructHelper.formatCells(tableData, createChartDimensions(), getWidgetSettings(widgetConf));
-        BITableConstructHelper.formatCells(tableData, createOperationMap(widgetConf), getWidgetSettings(widgetConf));
+        Map<Integer, List<BIDimensionConf>> viewMap = widgetConf.getDetailViewMap();
+//        IExcelDataBuilder builder = new DetailTableBuilder(viewMap, data, getWidgetSettings(widgetConf));
+//        DataConstructor tableData = BITableConstructHelper.buildTableData(builder);
+//        BITableConstructHelper.formatCells(tableData, createOperationMap(widgetConf), getWidgetSettings(widgetConf));
         JSONObject res = new JSONObject();
-        res.put("header", tableData.createJSON().get("header"));
-        JSONArray itemsArray = new JSONArray();
-        for (ITableItem item : tableData.getItems()) {
-            JSONArray itemArray = new JSONArray();
-            for (ITableItem tableItem : item.getChildren()) {
-                itemArray.put(tableItem.createJSON());
-            }
-            itemsArray.put(itemArray);
-        }
-        res.put("items", itemsArray);
+//        res.put("header", tableData.createJSON().get("header"));
+//        JSONArray itemsArray = new JSONArray();
+//        for (ITableItem item : tableData.getItems()) {
+//            JSONArray itemArray = new JSONArray();
+//            for (ITableItem tableItem : item.getChildren()) {
+//                itemArray.put(tableItem.createJSON());
+//            }
+//            itemsArray.put(itemArray);
+//        }
+//        res.put("items", itemsArray);
         return res;
     }
 
     private Map<String, ITableCellFormatOperation> createOperationMap(BIWidgetConf config) throws Exception {
         Map<String, ITableCellFormatOperation> formOperationsMap = new HashMap<String, ITableCellFormatOperation>();
-        Map<Integer, List<JSONObject>> viewMap = config.getDetailViewMap();
+        Map<Integer, List<BIDimensionConf>> viewMap = config.getDetailViewMap();
         for (Integer integer : viewMap.keySet()) {
-            List<JSONObject> dimJo = viewMap.get(integer);
-            for (JSONObject jo : dimJo) {
-                if (jo.optBoolean("used")) {
-                    String dId = jo.getString("dId");
-                    int type = jo.getInt("type");
+            List<BIDimensionConf> dimJo = viewMap.get(integer);
+            for (BIDimensionConf dimConf : dimJo) {
+                if (dimConf.isDimensionUsed()) {
+                    String dId = dimConf.getDimensionID();
+                    int type = dimConf.getDimensionType();
                     ICellFormatSetting setting = new BICellFormatSetting();
                     if (config.getDimensions().getJSONObject(dId).has("settings")) {
                         setting.parseJSON(config.getDimensions().getJSONObject(dId).optJSONObject("settings"));
                     }
                     ITableCellFormatOperation op;
-                    if (type == DBConstant.COLUMN.DATE) {
-                        op = new BITableCellDateFormatOperation(config.getDimensions().getJSONObject(dId).getInt("type"), setting);
-                    } else if (type == DBConstant.COLUMN.NUMBER) {
-                        op = new BITableCellNumberFormatOperation(setting);
-                    } else {
-                        op = new BITableCellStringOperation(setting);
+                    switch (type) {
+                        case BIReportConstant.TARGET_TYPE.NUMBER:
+                        case BIReportConstant.TARGET_TYPE.COUNTER:
+                        case BIReportConstant.TARGET_TYPE.FORMULA:
+                        case BIReportConstant.TARGET_TYPE.SUM_OF_ABOVE:
+                        case BIReportConstant.TARGET_TYPE.SUM_OF_ABOVE_IN_GROUP:
+                        case BIReportConstant.TARGET_TYPE.SUM_OF_ALL:
+                        case BIReportConstant.TARGET_TYPE.SUM_OF_ALL_IN_GROUP:
+                        case BIReportConstant.TARGET_TYPE.RANK:
+                        case BIReportConstant.TARGET_TYPE.RANK_IN_GROUP:
+                        case BIReportConstant.TARGET_TYPE.YEAR_ON_YEAR_RATE:
+                        case BIReportConstant.TARGET_TYPE.MONTH_ON_MONTH_RATE:
+                        case BIReportConstant.TARGET_TYPE.YEAR_ON_YEAR_VALUE:
+                        case BIReportConstant.TARGET_TYPE.MONTH_ON_MONTH_VALUE:
+                            op = new BITableCellNumberFormatOperation(setting);
+                            break;
+                        case BIReportConstant.TARGET_TYPE.STRING:
+                            op = new BITableCellStringOperation(setting);
+                            break;
+                        case BIReportConstant.TARGET_TYPE.DATE:
+                            op = new BITableCellDateFormatOperation(config.getDimensions().getJSONObject(dId).getJSONObject("group").getInt("type"), setting);
+                            break;
+                        default:
+                            op = new BITableCellStringOperation(setting);
                     }
                     formOperationsMap.put(dId, op);
                 }
             }
         }
         return formOperationsMap;
-    }
-
-    private Map<String, ITableCellFormatOperation> createChartDimensions() {
-        Map<String, ITableCellFormatOperation> formatOperationMap = new HashMap<String, ITableCellFormatOperation>();
-        for (BIDetailTarget detailTarget : this.getTargets()) {
-            try {
-                if (!detailTarget.isUsed()) {
-                    continue;
-                }
-
-                BICellFormatSetting setting = new BICellFormatSetting();
-                setting.parseJSON(detailTarget.getChartSetting().getSettings());
-                if (detailTarget instanceof BINumberFormulaDetailTarget) {
-                    ITableCellFormatOperation op = new BITableCellNumberFormatOperation(setting);
-                    formatOperationMap.put(detailTarget.getId(), op);
-                    continue;
-                }
-                boolean isStringColumn = detailTarget instanceof BIStringDetailTarget && detailTarget.createColumnKey().getFieldType() == DBConstant.COLUMN.STRING;
-                if (isStringColumn) {
-                    formatOperationMap.put(detailTarget.getId(), new BITableCellStringOperation(setting));
-                    continue;
-                }
-                if (detailTarget.createColumnKey().getFieldType() == DBConstant.COLUMN.DATE) {
-                    int groupType = ((BIDateDetailTarget) detailTarget).getGroup().getType();
-                    ITableCellFormatOperation op = new BITableCellDateFormatOperation(groupType, setting);
-                    formatOperationMap.put(detailTarget.getId(), op);
-                } else {
-                    if (detailTarget.createColumnKey().getFieldType() == DBConstant.COLUMN.NUMBER) {
-                        ITableCellFormatOperation op = new BITableCellNumberFormatOperation(setting);
-                        formatOperationMap.put(detailTarget.getId(), op);
-                    }
-                }
-            } catch (Exception e) {
-                BILoggerFactory.getLogger().error(e.getMessage(), e);
-            }
-        }
-        return formatOperationMap;
     }
 
     private Map<Integer, List<JSONObject>> createViewMap() throws Exception {
@@ -476,5 +456,13 @@ public class DetailWidget extends AbstractBIWidget implements SclCalculator {
 
     public void setClicked(Map<String, JSONArray> clicked) {
         this.clicked = clicked;
+    }
+
+    public BIDetailTableResult getExportData(BISessionProvider session) {
+
+        Paging paging = PagingFactory.createPaging(-1);
+        paging.setCurrentPage(page);
+        DetailExecutor exe = new DetailExecutor(this, paging, (BISession) session);
+        return exe.getResult();
     }
 }

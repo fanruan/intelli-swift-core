@@ -55,13 +55,6 @@ public class CubeBuildStuffEmptyTable extends AbstractCubeBuildStuff {
     }
 
     @Override
-    public ICubeConfiguration getCubeConfiguration() {
-        return BICubeConfiguration.getTempConf(Long.toString(userId));
-
-    }
-
-
-    @Override
     public Set<BICubeGenerateRelationPath> getCubeGenerateRelationPathSet() {
         return new HashSet<BICubeGenerateRelationPath>();
     }

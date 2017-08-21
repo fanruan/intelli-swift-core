@@ -111,7 +111,7 @@ public class TreeIterator implements NodeDimensionIterator {
      */
     @Override
     public void moveToShrinkStartValue(Object[] value) {
-        if (value != null) {
+        if (value != null && root != null) {
             int[] shrinkPos = root.getValueStartRow(value);
             travelToPositionPage(shrinkPos);
         } else {
@@ -214,7 +214,9 @@ public class TreeIterator implements NodeDimensionIterator {
             iterator.tempIndex = tempIndex.clone();
         }
         iterator.pageIndex.addAll(pageIndex);
-        iterator.root = root.createClonedRoot();
+        if (root != null){
+            iterator.root = root.createClonedRoot();
+        }
         return iterator;
     }
 

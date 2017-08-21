@@ -130,7 +130,7 @@ public class AnalysisETLModule extends AbstractModule {
     }
 
     @Override
-    public void clearAnalysisETLCache(long userId) {
+    public void clearCacheAfterBuildCubeTask(long userId) {
         Map<BusinessTable, CubeTableSource> refreshTables = new HashMap<BusinessTable, CubeTableSource>();
         for (BusinessTable table : BIAnalysisETLManagerCenter.getDataSourceManager().getAllBusinessTable()) {
             CubeTableSource oriSource = table.getTableSource();

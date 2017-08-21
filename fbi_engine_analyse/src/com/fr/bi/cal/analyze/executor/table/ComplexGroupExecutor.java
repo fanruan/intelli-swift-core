@@ -7,14 +7,16 @@ import com.fr.bi.cal.analyze.cal.index.loader.CubeIndexLoader;
 import com.fr.bi.cal.analyze.cal.result.BIComplexExecutData;
 import com.fr.bi.cal.analyze.cal.result.ComplexExpander;
 import com.fr.bi.cal.analyze.cal.result.Node;
-import com.fr.bi.cal.analyze.executor.iterator.StreamPagedIterator;
-import com.fr.bi.cal.analyze.executor.iterator.TableCellIterator;
+import com.fr.bi.export.iterator.StreamPagedIterator;
+import com.fr.bi.export.iterator.TableCellIterator;
 import com.fr.bi.cal.analyze.executor.paging.Paging;
 import com.fr.bi.cal.analyze.report.report.widget.TableWidget;
 import com.fr.bi.cal.analyze.session.BISession;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.field.target.target.BISummaryTarget;
 import com.fr.bi.report.key.TargetGettingKey;
+import com.fr.bi.report.result.BIComplexGroupResult;
+import com.fr.bi.cal.analyze.cal.result.ComplexGroupResult;
 import com.fr.bi.stable.gvi.GVIUtils;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.general.DateUtils;
@@ -188,7 +190,7 @@ public class ComplexGroupExecutor extends AbstractTableWidgetExecutor {
                 }
                 for (int i = 0; i < rowData.getRegionIndex(); i++) {
                     BIDimension[] dimensions = rowData.getDimensionArray(i);
-                    if (isClieckRegion(dids, dimensions)) {
+                    if (isClickRegion(dids, dimensions)) {
                         Node n = getStopOnRowNode(cs.toArray(), dimensions);
                         if (n != null) {
                             filterGvi = GVIUtils.AND(filterGvi, getLinkNodeFilter(n, target, cs));
@@ -198,8 +200,13 @@ public class ComplexGroupExecutor extends AbstractTableWidgetExecutor {
                 }
             }
         } catch (Exception e) {
-            BILoggerFactory.getLogger(ComplexGroupExecutor.class).info("error in get link filter",e);
+            BILoggerFactory.getLogger(ComplexGroupExecutor.class).info("error in get link filter", e);
         }
         return filterGvi;
+    }
+
+    public BIComplexGroupResult getResult() throws Exception {
+
+        return new ComplexGroupResult(getCubeNodes());
     }
 }

@@ -9,7 +9,6 @@ import com.finebi.cube.relation.BICubeGenerateRelation;
 import com.finebi.cube.relation.BICubeGenerateRelationPath;
 import com.finebi.cube.relation.BITableSourceRelation;
 import com.finebi.cube.relation.BITableSourceRelationPath;
-import com.finebi.cube.utils.BIDataStructTranUtils;
 import com.fr.bi.conf.base.cube.BISystemCubeConfManager;
 import com.fr.bi.conf.manager.update.BIUpdateSettingManager;
 import com.fr.bi.conf.manager.update.source.UpdateSettingSource;

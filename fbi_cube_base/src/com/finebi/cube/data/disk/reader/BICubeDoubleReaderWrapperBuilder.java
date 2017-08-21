@@ -22,10 +22,10 @@ public class BICubeDoubleReaderWrapperBuilder extends BINIOReaderBuilder<ICubeDo
 
     @Override
     protected ICubeDoubleReaderWrapper createNIOReader(File target, ICubeResourceLocation targetLocation) {
-        ICubeResourceLocation contentLocation = targetLocation.copy();
-        contentLocation.setReaderSourceLocation();
-        contentLocation.setDoubleType();
         try {
+            ICubeResourceLocation contentLocation = targetLocation.copy().getRealLocation();
+            contentLocation.setReaderSourceLocation();
+            contentLocation.setDoubleType();
             return new BICubeDoubleReaderWrapper((ICubeDoubleReader) BICubeDiskPrimitiveDiscovery.getInstance().getCubeReader(contentLocation));
         } catch (Exception ignore) {
             throw new RuntimeException(ignore.getMessage(), ignore);

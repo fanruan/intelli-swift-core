@@ -14,7 +14,6 @@ import com.finebi.cube.tools.BICubePathTestTool;
 import com.finebi.cube.tools.BICubeRelationTestTool;
 import com.finebi.cube.tools.BIMemoryDataSource;
 import com.finebi.cube.tools.BIMemoryDataSourceFactory;
-import com.finebi.cube.utils.BITableKeyUtils;
 import com.fr.bi.stable.gvi.RoaringGroupValueIndex;
 import com.fr.stable.bridge.StableFactory;
 
