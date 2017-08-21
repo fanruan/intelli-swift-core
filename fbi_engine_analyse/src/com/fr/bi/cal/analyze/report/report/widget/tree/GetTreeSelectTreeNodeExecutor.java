@@ -201,7 +201,7 @@ public class GetTreeSelectTreeNodeExecutor extends AbstractTreeNodeExecutor {
                 buildTree(selectedValues, strs);
                 boolean isSelectedAll = true;
                 int removeItemLength = 0;
-                while (isSelectedAll && strs.length-1 > removeItemLength ) {
+                while (isSelectedAll && strs.length - 1 > removeItemLength) {
                     removeItemLength++;
                     isSelectedAll = dealWithIsSelectedAll(selectedValues, strs, removeItemLength);
                 }
@@ -211,10 +211,10 @@ public class GetTreeSelectTreeNodeExecutor extends AbstractTreeNodeExecutor {
     }
 
     private boolean dealWithIsSelectedAll(JSONObject selectedValues, String[] strs, int removeItemLength) throws JSONException {
-        String[] newParents = new String[strs.length-removeItemLength];
-        System.arraycopy(strs, 0, newParents, 0, strs.length-removeItemLength);
+        String[] newParents = new String[strs.length - removeItemLength];
+        System.arraycopy(strs, 0, newParents, 0, strs.length - removeItemLength);
         JSONObject preSelectedValue = new JSONObject();
-        String parentValue = newParents[newParents.length -1];
+        String parentValue = newParents[newParents.length - 1];
         for (String thisStr : newParents) {
             preSelectedValue = selectedValues;
             selectedValues = selectedValues.getJSONObject(thisStr);
@@ -222,7 +222,7 @@ public class GetTreeSelectTreeNodeExecutor extends AbstractTreeNodeExecutor {
         int childsLength = 0;
         childsLength = getChildCount(newParents);
         if (selectedValues.length() == childsLength) {
-            preSelectedValue.put(parentValue,JSONObject.create());
+            preSelectedValue.put(parentValue, JSONObject.create());
             return true;
         } else {
             return false;
