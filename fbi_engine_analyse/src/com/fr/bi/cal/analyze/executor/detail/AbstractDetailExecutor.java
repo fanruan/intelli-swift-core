@@ -189,7 +189,7 @@ public abstract class AbstractDetailExecutor extends BIAbstractExecutor<JSONObje
                 }
 
                 cellStyle = row % 2 == 1 ? tableStyle.getOddRowStyle(cellStyle) : tableStyle.getEvenRowStyle(cellStyle);
-                CBCell cell = GeneratorUtils.createCBCell(v == null ? NONEVALUE : v, row, 1, columnIndex++, 1, cellStyle);
+                CBCell cell = GeneratorUtils.createCBCell(v == null ? StringUtils.EMPTY : v, row, 1, columnIndex++, 1, cellStyle);
                 List cellList = new ArrayList();
                 cellList.add(cell);
                 //TODO CBBoxElement需要整合减少内存

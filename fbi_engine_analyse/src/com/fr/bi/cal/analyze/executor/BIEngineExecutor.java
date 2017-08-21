@@ -9,7 +9,6 @@ import java.awt.*;
 
 
 public interface BIEngineExecutor<T> {
-    static final String NONEVALUE = StringUtils.EMPTY;
 
     /**
      * 创建excel单元格迭代器
