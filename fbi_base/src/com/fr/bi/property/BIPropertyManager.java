@@ -27,7 +27,7 @@ public class BIPropertyManager implements PropertyManager {
     @Override
     public Map<String, Map<String, String>> getProperties(String paramType) {
         List<PropertiesConfig> propertiesList = propertyOperate.read();
-        Map<String, Map<String, String>> propertiesMap = decode(propertiesList);
+        Map<String, Map<String, String>> propertiesMap = trimResult(propertiesList);
         Map<String, String> paramsMap = manager.getConfigByType(paramType);
         return mergePropertiesValue(propertiesMap, paramsMap);
     }
@@ -57,11 +57,13 @@ public class BIPropertyManager implements PropertyManager {
     }
 
     /**
-     * 将获取到的List<Property>进行遍历，然后将获取到的对象解码成Map
+     * 将获取到的List<PropertiesConfig>进行整理
+     * PropertiesConfig的属性PropertyKey作为Key， 然后再将对象的属性和对应的值作为valueMap中对应的key-value
      *
+     * @param propertiesConfigList
      * @return
      */
-    private Map<String, Map<String, String>> decode(List<PropertiesConfig> propertiesConfigList) {
+    private Map<String, Map<String, String>> trimResult(List<PropertiesConfig> propertiesConfigList) {
         Map<String, Map<String, String>> convertMap = new HashMap<String, Map<String, String>>();
         String propertyKey;
         String fieldName;

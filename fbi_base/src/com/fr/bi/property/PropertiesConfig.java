@@ -24,40 +24,6 @@ public class PropertiesConfig {
     public PropertiesConfig() {
     }
 
-//    public PropertiesConfig(String propertyKey, String propertyName, String valueType, String availableType, String title, String description) {
-//        this.propertyKey = propertyKey;
-//        this.propertyName = propertyName;
-//        this.valueType = valueType;
-//        this.availableType = availableType;
-//        this.title = title;
-//        this.description = description;
-//    }
-//
-//    public String getPropertyKey() {
-//        return propertyKey;
-//    }
-//
-//    public String getPropertyName() {
-//        return propertyName;
-//    }
-//
-//    public String getValueType() {
-//        return valueType;
-//    }
-//
-//    public String getAvailableType() {
-//        return availableType;
-//    }
-//
-//    public String getTitle() {
-//        return title;
-//    }
-//
-//    public String getDescription() {
-//        return description;
-//    }
-
-
     public PropertiesConfig(String propertyKey, String propertyName, ValueType valueType, AvaliableType avaliableType, String title, String description) {
         this.propertyKey = propertyKey;
         this.propertyName = propertyName;
