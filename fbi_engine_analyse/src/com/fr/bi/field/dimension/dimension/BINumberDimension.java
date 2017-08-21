@@ -70,16 +70,16 @@ public class BINumberDimension extends BIAbstractDimension {
                         * 该分组全部为空时lastUnNullKey和firstUnNullKey均会获取null,而json是不不支持infinity的
                         * */
             if (BICollectionUtils.isCubeNullKey(BICollectionUtils.lastUnNullKey(reader)) && BICollectionUtils.isCubeNullKey(BICollectionUtils.firstUnNullKey(reader))) {
-                groupValue.put(BIJSONConstant.JSON_KEYS.FILED_MAX_VALUE, 0);
-                groupValue.put(BIJSONConstant.JSON_KEYS.FIELD_MIN_VALUE, 0);
+                groupValue.put(BIJSONConstant.JSON_KEYS.FILED_MAX_VALUE,0);
+                groupValue.put(BIJSONConstant.JSON_KEYS.FIELD_MIN_VALUE,0);
             } else {
-                groupValue.put(BIJSONConstant.JSON_KEYS.FILED_MAX_VALUE, cubeTableService != null ? GeneralUtils.objectToNumber(BICollectionUtils.lastUnNullKey(reader)) : 0);
-                groupValue.put(BIJSONConstant.JSON_KEYS.FIELD_MIN_VALUE, cubeTableService != null ? GeneralUtils.objectToNumber(BICollectionUtils.firstUnNullKey(reader)) : 0);
+                groupValue.put(BIJSONConstant.JSON_KEYS.FILED_MAX_VALUE, cubeTableService != null?GeneralUtils.objectToNumber(BICollectionUtils.lastUnNullKey(reader)):0);
+                groupValue.put(BIJSONConstant.JSON_KEYS.FIELD_MIN_VALUE, cubeTableService != null?GeneralUtils.objectToNumber(BICollectionUtils.firstUnNullKey(reader)):0);
             }
             group.put("groupValue", groupValue);
         } catch (NullPointerException npe) {
             BILoggerFactory.getLogger(BINumberDimension.class).error("cubeTableService is null ! TableSource："
-                    + this.getStatisticElement().getTableBelongTo().getTableSource() + " is not exist！", npe);
+                    + this.getStatisticElement().getTableBelongTo().getTableSource() + " is not exist！",npe);
         }
     }
 

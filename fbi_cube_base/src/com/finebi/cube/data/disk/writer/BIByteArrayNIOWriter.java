@@ -1,10 +1,10 @@
 package com.finebi.cube.data.disk.writer;
 
 import com.finebi.cube.BICubeLongTypePosition;
-import com.finebi.cube.data.output.ICubeByteArrayWriter;
 import com.finebi.cube.data.output.primitive.ICubeByteWriter;
-import com.finebi.cube.data.output.primitive.ICubeIntegerWriter;
 import com.finebi.cube.data.output.primitive.ICubeLongWriter;
+import com.finebi.cube.data.output.ICubeByteArrayWriter;
+import com.finebi.cube.data.output.primitive.ICubeIntegerWriter;
 import com.fr.bi.stable.constant.CubeConstant;
 
 import java.util.UUID;
