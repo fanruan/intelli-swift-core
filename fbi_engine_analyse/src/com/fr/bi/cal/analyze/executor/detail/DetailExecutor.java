@@ -196,7 +196,7 @@ public class DetailExecutor extends AbstractDetailExecutor {
                 }
             }
         } catch (Exception e) {
-
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
         return gvi;
     }
@@ -324,7 +324,7 @@ public class DetailExecutor extends AbstractDetailExecutor {
             BILoggerFactory.getLogger().info(DateUtils.timeCostFrom(start) + ": cal time");
             r = new DetailTableResult(result);
         } catch (Exception e) {
-
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
         } finally {
             paging = old;
         }

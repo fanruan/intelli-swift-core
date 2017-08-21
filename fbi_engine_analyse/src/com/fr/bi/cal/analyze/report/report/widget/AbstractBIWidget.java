@@ -201,26 +201,16 @@ public abstract class AbstractBIWidget implements BIWidget {
     }
 
     /**
-     * 根据widget创建TemplateBlock
-     */
-    protected TemplateBlock createTemplateBlock(BISession session) {
-
-        TemplateBlock block = createBIBlock(session);
-        block.setBlockName(CodeUtils.passwordEncode(blockName));
-        block.getBlockAttr().setFreezeHeight(true);
-        block.getBlockAttr().setFreezeWidth(true);
-        block.setBounds(getBlockBounds());
-        return block;
-    }
-
-    /**
      * 根据计算好的属性创建block
      *
      * @return
      */
     protected TemplateBlock createBIBlock(BISession session) {
-        return new BIPolyECBlock();
-    };
+
+        BIResult result = getExportData(session);
+        return new BIPolyECBlock(result, widgetConf);
+
+    }
 
 
     /**

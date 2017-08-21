@@ -177,12 +177,6 @@ public class ListLabelWidget extends SummaryWidget {
     }
 
     @Override
-    protected TemplateBlock createBIBlock(BISession session) {
-
-        return new PolyECBlock();
-    }
-
-    @Override
     public void parseJSON(JSONObject jo, long userId) throws Exception {
 
         super.parseJSON(jo, userId);

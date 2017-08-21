@@ -294,15 +294,6 @@ public class TableWidget extends SummaryWidget implements SclCalculator {
         return jo;
     }
 
-    /**
-     * 创建表格的Block
-     */
-    @Override
-    protected TemplateBlock createBIBlock(BISession session) {
-
-        return new PolyCubeECBlock(this, session, operator);
-    }
-
     @Override
     public void parseJSON(JSONObject jo, long userId) throws Exception {
 
