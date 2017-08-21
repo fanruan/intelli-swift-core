@@ -1,6 +1,5 @@
 package com.finebi.cube.gen.oper;
 
-import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.conf.utils.BICubeLogExceptionInfo;
 import com.finebi.cube.conf.utils.BILogHelper;
 import com.finebi.cube.impl.pubsub.BIProcessor;
@@ -66,11 +65,11 @@ public abstract class AbstractFieldIndexGenerator extends BIProcessor {
         try {
             biLogManager.errorTable(tableSource.getPersistentTable(), e.getMessage(), UserControl.getInstance().getSuperManagerID());
         } catch (Exception e1) {
-            BILoggerFactory.getLogger().error(e.getMessage(), e);
+            LOGGER.error(e.getMessage(), e);
         }
         BILogHelper.cacheCubeLogFieldNormalInfo(tableSource.getSourceID(), hostBICubeFieldSource.getFieldName(), BILogConstant.LOG_CACHE_TIME_TYPE.FIELD_INDEX_EXECUTE_END, System.currentTimeMillis());
         BICubeLogExceptionInfo exceptionInfo = new BICubeLogExceptionInfo(System.currentTimeMillis(), "Field Index Build", e.getMessage(), e, tableSource.getSourceID(), hostBICubeFieldSource.getFieldName());
         BILogHelper.cacheCubeLogTableException(tableSource.getSourceID(), exceptionInfo);
-        BILoggerFactory.getLogger().error(e.getMessage(), e);
+        LOGGER.error(e.getMessage(), e);
     }
 }

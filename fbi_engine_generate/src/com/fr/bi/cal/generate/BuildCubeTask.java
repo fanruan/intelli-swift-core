@@ -231,6 +231,7 @@ public class BuildCubeTask implements CubeTask {
                 }
 //                集群模式通过zookeeper通知slaver释放资源
                 if (ClusterEnv.isCluster()) {
+                    LOGGER.info("******Cluster Mode******");
                     try {
                         ZooKeeperManager.getInstance().getZooKeeper().setData(BICubeStatusWatcher.CUBE_STATUS, "finish".getBytes(), -1);
                     } catch (Exception e) {
@@ -240,8 +241,12 @@ public class BuildCubeTask implements CubeTask {
 //                等待所有机器释放nio资源
                     Thread.sleep(100);
                 }
+                LOGGER.info("*********Start ForceRelease**********");
                 BICubeDiskPrimitiveDiscovery.getInstance().forceRelease();
+                LOGGER.info("**********Finish ForceRelease**********");
+                LOGGER.info("**********Start Replace Cubes**********");
                 replaceSuccess = cubeBuildStuff.replaceOldCubes();
+                LOGGER.info("********** End Replace Cubes**********");
                 for (String location : BICubeDiskPrimitiveDiscovery.getInstance().getUnReleasedLocation()) {
                     BILoggerFactory.getLogger().error("error: the filePath is : " + location);
                 }

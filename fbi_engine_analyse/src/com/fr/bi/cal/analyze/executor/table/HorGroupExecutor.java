@@ -207,10 +207,11 @@ public class HorGroupExecutor extends AbstractTableWidgetExecutor<Node> {
         WidgetCache<JSONObject> widgetCache = getWidgetCache(key);
         if (widgetCache != null) {
             updateByCache(widgetCache);
+            BILoggerFactory.getLogger(GroupExecutor.class).info("data existed in caches,get data from caches");
             return widgetCache.getData();
         }
         JSONObject jo = getCubeNode().toJSONObject(usedDimensions, widget.getTargetsKey(), -1);
-        if (isUseWidgetDataCache()){
+        if (isUseWidgetDataCache()) {
             PageIteratorGroup pg = session.getPageIteratorGroup(true, widget.getWidgetId());
             NodeDimensionIterator colIter = pg.getColumnIterator().createClonedIterator();
             colIter.setRoot(null);

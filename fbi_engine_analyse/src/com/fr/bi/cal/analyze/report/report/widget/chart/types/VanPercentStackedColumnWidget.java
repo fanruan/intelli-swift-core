@@ -49,6 +49,7 @@ public class VanPercentStackedColumnWidget extends VanStackedColumnWidget{
     protected JSONObject parseLeftValueAxis(JSONObject settings) throws JSONException{
         JSONObject left = super.parseLeftValueAxis(settings);
 
+        left.put("reversed", false);
         left.put("formatter", "function(){return this * 100}");
 
         return left;

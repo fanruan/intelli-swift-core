@@ -2,6 +2,7 @@ package com.fr.bi.cal.analyze.report.report.widget.chart.types;
 
 import com.fr.bi.cal.analyze.report.report.widget.VanChartWidget;
 import com.fr.bi.conf.report.map.BIWMSManager;
+import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.general.Inter;
 import com.fr.json.JSONArray;
@@ -58,11 +59,21 @@ public class VanGisWidget extends VanChartWidget{
         return plotOptions;
     }
 
+    private boolean latFirst() {
+        BIDimension dimension = getCategoryDimension();
+        JSONObject posJSON = dimension.getChartSetting().getPosition();
+        if(posJSON != null){
+            return posJSON.optInt("position") != 4;
+        }
+        return false;
+    }
+
     public JSONArray createSeries(JSONObject originData) throws Exception {
 
         JSONArray series = JSONArray.create();
         String[] targetIDs = this.getUsedTargetID();
         String[] dimensionIDs = this.getUsedDimensionID();
+        boolean latFirst = latFirst();//纬度在前
 
         JSONArray children = originData.getJSONArray("c");
         for(int i = 0, len = targetIDs.length; i < len; i++){
@@ -75,6 +86,11 @@ public class VanGisWidget extends VanChartWidget{
                 String[] tmp = lnglat.split(",");
 
                 if(tmp.length == 2 && StableUtils.string2Number(tmp[0]) != null){
+                    if(latFirst) {
+                        String lat = tmp[1];
+                        tmp[1] = tmp[0];
+                        tmp[0] = lat;
+                    }
                     JSONArray s = lObj.getJSONArray("s");
                     double value = s.isNull(i) ? 0 : s.getDouble(i);
                     JSONObject d = JSONObject.create().put("lnglat", tmp).put("value", numberFormat(id,value / scale));

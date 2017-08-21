@@ -9,9 +9,12 @@ import com.fr.json.JSONObject;
  */
 public interface BIConnectionProvider {
     String XML_TAG = "BIConnection";
+
     void updateAvailableConnection();
 
     String getSchema(String name);
+
+    BIConnection getBIConnection(String name);
 
     Connection getConnection(String name);
 
@@ -23,7 +26,7 @@ public interface BIConnectionProvider {
 
     JSONObject createJSON() throws JSONException;
 
-    boolean isMicrosoftAccessDatabase(String driver,String url);
+    boolean isMicrosoftAccessDatabase(String driver, String url);
 
-    boolean needSchema(Connection c);
+    boolean isNeedSchema(Connection c);
 }

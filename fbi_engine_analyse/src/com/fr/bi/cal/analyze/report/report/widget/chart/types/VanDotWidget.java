@@ -158,27 +158,19 @@ public class VanDotWidget extends VanCartesianWidget{
 
     protected void toLegendJSON(JSONObject options, JSONObject settings) throws JSONException {
         if(dotChartUseNormalLegend()){
-            settings.put("disPlayRules", SERIES_RULE);
+            settings.put("displayRules", SERIES_RULE);
         }
         super.toLegendJSON(options, settings);
     }
 
-    protected String getLegendType(){
-
+    protected String getLegendType(JSONObject settings){
         String legend = "legend";
 
-        try {
-            JSONObject settings = this.getDetailChartSetting();
-            int rule = settings.optInt("displayRules");
+        int rule = settings.optInt("displayRules");
 
-            if(rule != SERIES_RULE){
-                legend = "rangeLegend";
-            }
-
-        }catch (JSONException e){
-            BILoggerFactory.getLogger().error(e.getMessage(), e);
+        if(rule != SERIES_RULE){
+            legend = "rangeLegend";
         }
-
 
         return legend;
     }

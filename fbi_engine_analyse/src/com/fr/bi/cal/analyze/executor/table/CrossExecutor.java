@@ -359,6 +359,7 @@ public class CrossExecutor extends AbstractTableWidgetExecutor<XNode> {
         WidgetCacheKey key = createWidgetCacheKey();
         WidgetCache<JSONObject> widgetCache = getWidgetCache(key);
         if (widgetCache != null) {
+            BILoggerFactory.getLogger(GroupExecutor.class).info("data existed in caches,get data from caches");
             updateByCache(widgetCache);
             return widgetCache.getData();
         }

@@ -39,6 +39,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 
 /**
@@ -89,6 +90,12 @@ public abstract class AbstractBIWidget implements BIWidget {
     }
 
     public String getWidgetId() {
+        /**
+         * 螺旋分析的组件都没有widgetID
+         */
+        if (widgetId == null) {
+            widgetId = UUID.randomUUID().toString();
+        }
         return widgetId;
     }
 
