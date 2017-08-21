@@ -30,7 +30,9 @@ import com.fr.bi.conf.report.SclCalculator;
 import com.fr.bi.conf.report.WidgetType;
 import com.fr.bi.conf.report.conf.BIWidgetConf;
 import com.fr.bi.conf.report.conf.BIWidgetSettings;
+import com.fr.bi.conf.report.conf.dimension.BIDimensionConf;
 import com.fr.bi.conf.report.widget.BIWidgetStyle;
+import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.conf.report.widget.field.target.detailtarget.BIDetailTarget;
 import com.fr.bi.conf.report.widget.field.target.filter.TargetFilter;
 import com.fr.bi.conf.session.BISessionProvider;
@@ -325,10 +327,10 @@ public class DetailWidget extends AbstractBIWidget implements SclCalculator {
         return WidgetType.DETAIL;
     }
 
-    @Override
-    protected TemplateBlock createBIBlock(BISession session) {
-        return new PolyCubeDetailECBlock(this, session, page);
-    }
+//    @Override
+//    protected TemplateBlock createBIBlock(BISession session) {
+//        return new PolyCubeDetailECBlock(this, session, page);
+//    }
 
 
     @Override
@@ -356,33 +358,33 @@ public class DetailWidget extends AbstractBIWidget implements SclCalculator {
 
     @Override
     public JSONObject calculateSCData(BIWidgetConf widgetConf, JSONObject data) throws Exception {
-        Map<Integer, List<JSONObject>> viewMap = widgetConf.getDetailViewMap();
-        IExcelDataBuilder builder = new DetailTableBuilder(viewMap, data, getWidgetSettings(widgetConf));
-        DataConstructor tableData = BITableConstructHelper.buildTableData(builder);
-        BITableConstructHelper.formatCells(tableData, createOperationMap(widgetConf), getWidgetSettings(widgetConf));
+        Map<Integer, List<BIDimensionConf>> viewMap = widgetConf.getDetailViewMap();
+//        IExcelDataBuilder builder = new DetailTableBuilder(viewMap, data, getWidgetSettings(widgetConf));
+//        DataConstructor tableData = BITableConstructHelper.buildTableData(builder);
+//        BITableConstructHelper.formatCells(tableData, createOperationMap(widgetConf), getWidgetSettings(widgetConf));
         JSONObject res = new JSONObject();
-        res.put("header", tableData.createJSON().get("header"));
-        JSONArray itemsArray = new JSONArray();
-        for (ITableItem item : tableData.getItems()) {
-            JSONArray itemArray = new JSONArray();
-            for (ITableItem tableItem : item.getChildren()) {
-                itemArray.put(tableItem.createJSON());
-            }
-            itemsArray.put(itemArray);
-        }
-        res.put("items", itemsArray);
+//        res.put("header", tableData.createJSON().get("header"));
+//        JSONArray itemsArray = new JSONArray();
+//        for (ITableItem item : tableData.getItems()) {
+//            JSONArray itemArray = new JSONArray();
+//            for (ITableItem tableItem : item.getChildren()) {
+//                itemArray.put(tableItem.createJSON());
+//            }
+//            itemsArray.put(itemArray);
+//        }
+//        res.put("items", itemsArray);
         return res;
     }
 
     private Map<String, ITableCellFormatOperation> createOperationMap(BIWidgetConf config) throws Exception {
         Map<String, ITableCellFormatOperation> formOperationsMap = new HashMap<String, ITableCellFormatOperation>();
-        Map<Integer, List<JSONObject>> viewMap = config.getDetailViewMap();
+        Map<Integer, List<BIDimensionConf>> viewMap = config.getDetailViewMap();
         for (Integer integer : viewMap.keySet()) {
-            List<JSONObject> dimJo = viewMap.get(integer);
-            for (JSONObject jo : dimJo) {
-                if (jo.optBoolean("used")) {
-                    String dId = jo.getString("dId");
-                    int type = jo.getInt("type");
+            List<BIDimensionConf> dimJo = viewMap.get(integer);
+            for (BIDimensionConf dimConf : dimJo) {
+                if (dimConf.isDimensionUsed()) {
+                    String dId = dimConf.getDimensionID();
+                    int type = dimConf.getDimensionType();
                     ICellFormatSetting setting = new BICellFormatSetting();
                     if (config.getDimensions().getJSONObject(dId).has("settings")) {
                         setting.parseJSON(config.getDimensions().getJSONObject(dId).optJSONObject("settings"));

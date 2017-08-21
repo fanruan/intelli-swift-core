@@ -14,7 +14,7 @@ import com.fr.bi.cal.analyze.cal.sssecret.NodeDimensionIterator;
 import com.fr.bi.cal.analyze.cal.sssecret.PageIteratorGroup;
 import com.fr.bi.cal.analyze.executor.BIAbstractExecutor;
 import com.fr.bi.cal.analyze.executor.paging.Paging;
-import com.fr.bi.cal.analyze.executor.utils.ExecutorUtils;
+import com.fr.bi.export.utils.GeneratorUtils;
 import com.fr.bi.cal.analyze.report.report.widget.TableWidget;
 import com.fr.bi.cal.analyze.session.BISession;
 import com.fr.bi.cal.report.engine.CBCell;
@@ -79,9 +79,9 @@ public abstract class AbstractTableWidgetExecutor<T> extends BIAbstractExecutor<
         int numLevel = setting.getNumberLevelByTargetID(key.getTargetName());
         int formatDecimal = setting.getFormatDecimalByTargetID(key.getTargetName());
         boolean separator = setting.getSeparatorByTargetID(key.getTargetName());
-        data = ExecutorUtils.formatExtremeSumValue(data, numLevel);
-        style = style.deriveFormat(ExecutorUtils.formatDecimalAndSeparator(data, numLevel, formatDecimal, separator));
-        return ExecutorUtils.createCBCell(data, rowIdx, 1, columnIdx, 1, style);
+        data = GeneratorUtils.formatExtremeSumValue(data, numLevel);
+        style = style.deriveFormat(GeneratorUtils.formatDecimalAndSeparator(data, numLevel, formatDecimal, separator));
+        return GeneratorUtils.createCBCell(data, rowIdx, 1, columnIdx, 1, style);
     }
 
     public BISummaryTarget[] createTarget4Calculate() {
