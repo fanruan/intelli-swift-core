@@ -12,11 +12,8 @@ import com.fr.bi.cal.analyze.cal.result.Node;
 import com.fr.bi.cal.analyze.cal.result.operator.Operator;
 import com.fr.bi.cal.analyze.cal.sssecret.NodeDimensionIterator;
 import com.fr.bi.cal.analyze.cal.sssecret.PageIteratorGroup;
-import com.fr.bi.export.iterator.StreamPagedIterator;
-import com.fr.bi.export.iterator.TableCellIterator;
 import com.fr.bi.cal.analyze.executor.paging.Paging;
 import com.fr.bi.cal.analyze.executor.paging.PagingFactory;
-import com.fr.bi.export.utils.GeneratorUtils;
 import com.fr.bi.cal.analyze.executor.utils.GlobalFilterUtils;
 import com.fr.bi.cal.analyze.report.report.widget.TableWidget;
 import com.fr.bi.cal.analyze.session.BISession;
@@ -39,6 +36,7 @@ import com.fr.general.Inter;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;
 import com.fr.stable.ExportConstants;
+import com.fr.stable.StableUtils;
 import com.fr.stable.StringUtils;
 
 import java.awt.Rectangle;
@@ -289,7 +287,7 @@ public class GroupExecutor extends AbstractTableWidgetExecutor<Node> {
 
         WidgetCacheKey key = createWidgetCacheKey();
         WidgetCache<JSONObject> widgetCache = getWidgetCache(key);
-        if (widgetCache != null) {
+        if (widgetCache != null&& !StableUtils.isDebug()) {
             BILoggerFactory.getLogger(GroupExecutor.class).info("data existed in caches,get data from caches");
             updateByCache(widgetCache);
             return widgetCache.getData();
@@ -577,7 +575,7 @@ public class GroupExecutor extends AbstractTableWidgetExecutor<Node> {
                     return linkGvi;
                 } else {
                     // 主表过滤子表
-                    GlobalFilterUtils.getGviFromPrimaryTable(linkTargetTable, targetKey, linkGvi, session, null);
+                   return GlobalFilterUtils.getGviFromPrimaryTable(linkTargetTable, targetKey, linkGvi, session, null);
                 }
             }
         } catch (Exception e) {

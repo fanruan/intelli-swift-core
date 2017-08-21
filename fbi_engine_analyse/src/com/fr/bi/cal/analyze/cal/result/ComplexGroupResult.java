@@ -38,4 +38,9 @@ public class ComplexGroupResult implements BIComplexGroupResult {
         return null;
     }
 
+    @Override
+    public ResultType getResultType() {
+
+        return ResultType.BICOMPLEXGROUP;
+    }
 }

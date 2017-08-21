@@ -19,7 +19,11 @@ import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
 import com.fr.stable.StringUtils;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -922,6 +926,12 @@ public class Node implements BINode ,GviContainer{
             topNLineMap = new ConcurrentHashMap<TopNKey, Double>(1);
         }
         return topNLineMap;
+    }
+
+    @Override
+    public ResultType getResultType() {
+
+        return ResultType.BIGROUP;
     }
 
     private class TopNKey {

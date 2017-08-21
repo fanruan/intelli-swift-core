@@ -84,4 +84,10 @@ public class DetailTableResult implements BIDetailTableResult {
 
         this.columnSize = columnSize;
     }
+
+    @Override
+    public ResultType getResultType() {
+
+        return ResultType.DETAIL;
+    }
 }
