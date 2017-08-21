@@ -221,7 +221,7 @@ public class GetTreeSelectTreeNodeExecutor extends AbstractTreeNodeExecutor {
                 preSelectedValue = selectedValues;
                 selectedValues = selectedValues.getJSONObject(thisStr);
             } catch (JSONException e) {
-                e.printStackTrace();
+                BILoggerFactory.getLogger().error(e.getMessage(), e);
             }
         }
         int childsLength = 0;
@@ -234,7 +234,7 @@ public class GetTreeSelectTreeNodeExecutor extends AbstractTreeNodeExecutor {
             try {
                 preSelectedValue.put(parentValue,new JSONObject());
             } catch (JSONException e) {
-                e.printStackTrace();
+                BILoggerFactory.getLogger().error(e.getMessage(), e);
             }
             return true;
         } else {
