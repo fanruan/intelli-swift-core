@@ -177,7 +177,6 @@ public class DetailWidget extends AbstractBIWidget implements SclCalculator {
         return false;
     }
 
-
     @Override
     public void parseJSON(JSONObject jo, long userId) throws Exception {
         super.parseJSON(jo, userId);
@@ -326,12 +325,6 @@ public class DetailWidget extends AbstractBIWidget implements SclCalculator {
     public WidgetType getType() {
         return WidgetType.DETAIL;
     }
-
-//    @Override
-//    protected TemplateBlock createBIBlock(BISession session) {
-//        return new PolyCubeDetailECBlock(this, session, page);
-//    }
-
 
     @Override
     public void reSetDetailTarget() {

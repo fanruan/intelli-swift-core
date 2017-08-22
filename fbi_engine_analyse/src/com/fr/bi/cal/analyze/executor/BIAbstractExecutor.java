@@ -8,6 +8,7 @@ import com.fr.bi.conf.session.BISessionProvider;
 import com.fr.bi.report.result.BIResult;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.json.JSONArray;
+import com.fr.stable.StringUtils;
 
 import java.util.Map;
 
