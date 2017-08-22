@@ -286,49 +286,37 @@ public class DetailExecutor extends AbstractDetailExecutor {
      * @throws Exception
      */
     public BIDetailTableResult getResult() {
-        Paging old = paging;
 
         long start = System.currentTimeMillis();
         GroupValueIndex gvi = createDetailViewGvi();
         BIDetailTableResult r = null;
-        try {
-            paging = PagingFactory.createPaging(-1);
-//        paging.setTotalSize(gvi.getRowsCountWithData());
 
 
-            final List<List<BIDetailCell>> result = new ArrayList<List<BIDetailCell>>();
-            //返回前台的时候再去掉不使用的字段
-            final BIDetailTarget[] dimensions = widget.getViewDimensions();
-            final Set<Integer> usedDimensionIndexes = getUsedDimensionIndexes();
-            TableRowTraversal action = new TableRowTraversal() {
+        final List<List<BIDetailCell>> result = new ArrayList<List<BIDetailCell>>();
+        //返回前台的时候再去掉不使用的字段
+        final BIDetailTarget[] dimensions = widget.getViewDimensions();
+        final Set<Integer> usedDimensionIndexes = getUsedDimensionIndexes();
+        TableRowTraversal action = new TableRowTraversal() {
 
-                @Override
-                public boolean actionPerformed(BIRowValue row) {
+            @Override
+            public boolean actionPerformed(BIRowValue row) {
 
-                    Boolean x = checkPage(row);
-                    if (x != null) {
-                        return x;
+                List<BIDetailCell> rowData = new ArrayList<BIDetailCell>();
+                for (int i = 0; i < row.getValues().length; i++) {
+                    if (usedDimensionIndexes.contains(i)) {
+                        BIDetailCell cell = new DetailCell();
+                        cell.setData(BICollectionUtils.cubeValueToWebDisplay(dimensions[i].createShowValue(row.getValues()[i])));
+                        rowData.add(cell);
                     }
-                    List<BIDetailCell> rowData = new ArrayList<BIDetailCell>();
-                    for (int i = 0; i < row.getValues().length; i++) {
-                        if (usedDimensionIndexes.contains(i)) {
-                            BIDetailCell cell = new DetailCell();
-                            cell.setData(BICollectionUtils.cubeValueToWebDisplay(dimensions[i].createShowValue(row.getValues()[i])));
-                        }
-                    }
-                    result.add(rowData);
-                    return false;
                 }
-            };
-            travel(action, gvi);
-            BILoggerFactory.getLogger().info(DateUtils.timeCostFrom(start) + ": cal time");
-            r = new DetailTableResult(result);
-        } catch (Exception e) {
-            BILoggerFactory.getLogger().error(e.getMessage(), e);
-        } finally {
-            paging = old;
-        }
-
+                result.add(rowData);
+                return false;
+            }
+        };
+        GVIRunner runner = new DetailAllGVIRunner(gvi, widget, getLoader(), userId);
+        runner.Traversal(action);
+        BILoggerFactory.getLogger().info(DateUtils.timeCostFrom(start) + ": cal time");
+        r = new DetailTableResult(result);
         return r;
     }
 }

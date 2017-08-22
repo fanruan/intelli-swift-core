@@ -453,9 +453,7 @@ public class DetailWidget extends AbstractBIWidget implements SclCalculator {
 
     public BIDetailTableResult getExportData(BISessionProvider session) {
 
-        Paging paging = PagingFactory.createPaging(-1);
-        paging.setCurrentPage(page);
-        DetailExecutor exe = new DetailExecutor(this, paging, (BISession) session);
+        DetailExecutor exe = new DetailExecutor(this, null, (BISession) session);
         return exe.getResult();
     }
 }
