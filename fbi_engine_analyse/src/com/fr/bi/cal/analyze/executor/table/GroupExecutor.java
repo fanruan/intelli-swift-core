@@ -110,10 +110,10 @@ public class GroupExecutor extends AbstractTableWidgetExecutor<Node> {
     public static void generateHeader(TableWidget widget, BIDimension[] usedDimensions, BISummaryTarget[] usedSumTarget, StreamPagedIterator pagedIterator, int maxRowDimensionsLength) throws Exception {
 
         int columnIdx = 0;
-//        if (widget.isOrder() == 1) {
-//            CBCell cell = ExecutorUtils.createCBCell(Inter.getLocText("BI-Number_Index"), 0, 1, columnIdx++, 1);
-//            pagedIterator.addCell(cell);
-//        }
+        //        if (widget.isOrder() == 1) {
+        //            CBCell cell = ExecutorUtils.createCBCell(Inter.getLocText("BI-Number_Index"), 0, 1, columnIdx++, 1);
+        //            pagedIterator.addCell(cell);
+        //        }
         for (int i = 0; i < usedDimensions.length; i++) {
             //复杂表 行表头 区域1有2两个维度、区域2有3个维度，区域1里最后一个维度的columnSpan需要特殊处理
             int columnSpanOffSet = i == usedDimensions.length - 1 ? maxRowDimensionsLength - usedDimensions.length : 0;
@@ -145,14 +145,14 @@ public class GroupExecutor extends AbstractTableWidgetExecutor<Node> {
      */
     public static void generateCells(Node n, TableWidget widget, BIDimension[] rowDimensions, TableCellIterator iter, FinalInt start, FinalInt rowIdx, int maxRowDimensionsLength) {
 
+        Node lastSibling = null;//上一个节点
         while (n.getFirstChild() != null) {
             n = n.getFirstChild();
         }
         int[] oddEven = new int[rowDimensions.length];
         Object[] dimensionNames = new Object[rowDimensions.length];
         while (n != null) {
-            if (checkNull(n, rowDimensions.length)) {
-                Node temp = n;
+            if (checkNotNull(n, rowDimensions.length)) {
                 rowIdx.value++;
                 int newRow = rowIdx.value & ExportConstants.MAX_ROWS_2007 - 1;
                 if (newRow == 0) {
@@ -160,14 +160,15 @@ public class GroupExecutor extends AbstractTableWidgetExecutor<Node> {
                     start.value++;
                 }
                 StreamPagedIterator pagedIterator = iter.getIteratorByPage(start.value);
-                //分组表维度需要合并单元格
-                generateDimNames(temp, widget, rowDimensions, dimensionNames, oddEven, pagedIterator, rowIdx.value, maxRowDimensionsLength);
-                generateTargetCells(temp, widget, pagedIterator, rowIdx.value, maxRowDimensionsLength, rowIdx.value % 2 == 1 ? widget.getTableStyle().getOddRowStyle(Style.getInstance()) : widget.getTableStyle().getEvenRowStyle(Style.getInstance()));
+                //通过dimensionNames给行表头合并单元格
+                generateDimNames(n, lastSibling, widget, rowDimensions, dimensionNames, oddEven, pagedIterator, rowIdx.value, maxRowDimensionsLength);
+                generateTargetCells(n, widget, pagedIterator, rowIdx.value, maxRowDimensionsLength, rowIdx.value % 2 == 1 ? widget.getTableStyle().getOddRowStyle(Style.getInstance()) : widget.getTableStyle().getEvenRowStyle(Style.getInstance()));
                 if (widget.showRowToTal()) {
                     int columnSpanOffSet = maxRowDimensionsLength - rowDimensions.length + 1;
-                    generateSumCells(temp, widget, pagedIterator, rowIdx, maxRowDimensionsLength - columnSpanOffSet, maxRowDimensionsLength);
+                    generateSumCells(n, widget, pagedIterator, rowIdx, maxRowDimensionsLength - columnSpanOffSet, maxRowDimensionsLength);
                 }
             }
+            lastSibling = n;
             n = n.getSibling();
             while (n != null && n.getFirstChild() != null) {
                 n = n.getFirstChild();
@@ -192,7 +193,7 @@ public class GroupExecutor extends AbstractTableWidgetExecutor<Node> {
         }
     }
 
-    private static boolean checkNull(Node n, int length) {
+    private static boolean checkNotNull(Node n, int length) {
 
         Node temp = n;
         for (int i = 0; i < length; i++) {
@@ -216,33 +217,37 @@ public class GroupExecutor extends AbstractTableWidgetExecutor<Node> {
         }
     }
 
-    private static void generateDimNames(Node temp, TableWidget widget, BIDimension[] rowDimensions, Object[] dimensionNames, int[] oddEven, StreamPagedIterator pagedIterator, int rowIdx, int maxRowDimensionsLength) {
+    private static void generateDimNames(Node temp, Node lastSibling, TableWidget widget, BIDimension[] rowDimensions, Object[] dimensionNames, int[] oddEven, StreamPagedIterator pagedIterator, int rowIdx, int maxRowDimensionsLength) {
         //维度第一次出现即addCell
-        int i = rowDimensions.length;
+        int rowDimLength = rowDimensions.length;
+        int i = rowDimLength;
         while (temp.getParent() != null) {
+            boolean hasSameParent = lastSibling != null && lastSibling.getParent() != null && temp.getParent() != null && lastSibling.getParent() == temp.getParent();
+
             int rowSpan = widget.showRowToTal() && widget.getTargets().length != 0 ? temp.getTotalLengthWithSummary() : temp.getTotalLength();
             BIDimension dim = rowDimensions[--i];
             //年月日字段格式化
             Object v = ExecutorUtils.formatDateGroup(dim.getGroup().getType(), dim.toString(temp.getData()));
-            if (!ComparatorUtils.equals(dimensionNames[i], v) || (i == rowDimensions.length - 1) || temp.getParent().getTotalLength() == 1) {
+            if (!ComparatorUtils.equals(dimensionNames[i], v) || (i == rowDimensions.length - 1) || !hasSameParent) {
                 oddEven[i]++;
-                int columnSpanOffSet = i == rowDimensions.length - 1 ? maxRowDimensionsLength - rowDimensions.length : 0;
+                int columnSpanOffSet = i == rowDimLength - 1 ? maxRowDimensionsLength - rowDimLength : 0;
                 Style style = rowIdx % 2 == 1 ? widget.getTableStyle().getOddRowStyle(Style.getInstance()) : widget.getTableStyle().getEvenRowStyle(Style.getInstance());
                 CBCell cell = ExecutorUtils.createCBCell(v, rowIdx, rowSpan, i, 1 + columnSpanOffSet, style);
                 pagedIterator.addCell(cell);
                 dimensionNames[i] = v;
             }
             temp = temp.getParent();
+            lastSibling = lastSibling != null ? lastSibling.getParent() : null;
         }
     }
 
-
     protected WidgetCacheKey createWidgetCacheKey() {
+
         PageIteratorGroup iteratorGroup = getPageIterator();
         Operator rowOp = PagingFactory.createRowOperator(paging.getOperator(), widget);
         return WidgetCacheKey.createKey(widget.fetchObjectCore(), expander.getYExpander(), expander.getXExpander(),
-                rowOp, getStartIndex(rowOp, iteratorGroup == null ? null : iteratorGroup.getRowIterator(), usedDimensions.length),
-                null, null, widget.getAuthFilter(session.getUserId()));
+                                        rowOp, getStartIndex(rowOp, iteratorGroup == null ? null : iteratorGroup.getRowIterator(), usedDimensions.length),
+                                        null, null, widget.getAuthFilter(session.getUserId()));
     }
 
     @Override
@@ -261,7 +266,7 @@ public class GroupExecutor extends AbstractTableWidgetExecutor<Node> {
         int calpage = paging.getOperator();
         CubeIndexLoader cubeIndexLoader = CubeIndexLoader.getInstance(session.getUserId());
         Node tree = cubeIndexLoader.loadPageGroup(false, widget, createTarget4Calculate(), usedDimensions,
-                allDimensions, allSumTarget, calpage, widget.isRealData(), session, expander.getYExpander());
+                                                  allDimensions, allSumTarget, calpage, widget.isRealData(), session, expander.getYExpander());
         if (tree == null) {
             tree = new Node(allSumTarget.length);
         }
@@ -279,6 +284,7 @@ public class GroupExecutor extends AbstractTableWidgetExecutor<Node> {
 
     @Override
     public JSONObject createJSONObject() throws Exception {
+
         WidgetCacheKey key = createWidgetCacheKey();
         WidgetCache<JSONObject> widgetCache = getWidgetCache(key);
         if (widgetCache != null) {
@@ -297,6 +303,7 @@ public class GroupExecutor extends AbstractTableWidgetExecutor<Node> {
     }
 
     private void updateByCache(WidgetCache widgetCache) {
+
         widget.setPageSpinner(widgetCache.getPageSpinner());
         PageIteratorGroup pg = session.getPageIteratorGroup(true, widget.getWidgetId());
         if (pg == null) {
@@ -324,7 +331,7 @@ public class GroupExecutor extends AbstractTableWidgetExecutor<Node> {
         int calPage = paging.getOperator();
         CubeIndexLoader cubeIndexLoader = CubeIndexLoader.getInstance(session.getUserId());
         Node n = cubeIndexLoader.getStopWhenGetRowNode(stopRow, widget, createTarget4Calculate(), usedDimensions,
-                allDimensions, allSumTarget, calPage, session, CrossExpander.ALL_EXPANDER.getYExpander());
+                                                       allDimensions, allSumTarget, calPage, session, CrossExpander.ALL_EXPANDER.getYExpander());
         return n;
     }
 
@@ -549,19 +556,27 @@ public class GroupExecutor extends AbstractTableWidgetExecutor<Node> {
             }
             BISummaryTarget summaryTarget = widget.getBITargetByID(target);
             BusinessTable linkTargetTable = summaryTarget.createTableKey();
-            if (!targetKey.equals(linkTargetTable)) {
-                return null;
-            }
-            List<Object> rowData = getLinkRowData(clicked, target, false);
-            Node linkNode = getStopOnRowNode(rowData.toArray(), widget.getViewDimensions());
-            // 总汇总值
-            if (rowData == null || rowData.size() == 0) {
-                for (String key : clicked.keySet()) {
-                    linkGvi = GVIUtils.AND(linkGvi, getTargetIndex(key, linkNode));
+            boolean isPc = false;
+            if (targetKey.equals(linkTargetTable) || (isPc = ExecutorUtils.isPrimaryTable(linkTargetTable, targetKey))) {
+                //return null;
+                List<Object> rowData = getLinkRowData(clicked, target, false);
+                Node linkNode = getStopOnRowNode(rowData.toArray(), widget.getViewDimensions());
+                // 总汇总值
+                if (rowData == null || rowData.size() == 0) {
+                    for (String key : clicked.keySet()) {
+                        linkGvi = GVIUtils.AND(linkGvi, getTargetIndex(key, linkNode));
+                    }
+                    return linkGvi;
                 }
-                return linkGvi;
+                linkGvi = GVIUtils.AND(linkGvi, getLinkNodeFilter(linkNode, target, rowData));
+                if (!isPc) {
+                    // 如果基础表相同直接进行返回
+                    return linkGvi;
+                } else {
+                    // 主表过滤子表
+                    return ExecutorUtils.getGviFromPrimaryTable(linkTargetTable, targetKey, linkGvi, session, null);
+                }
             }
-            linkGvi = GVIUtils.AND(linkGvi, getLinkNodeFilter(linkNode, target, rowData));
         } catch (Exception e) {
             BILoggerFactory.getLogger(GroupExecutor.class).info("error in get link filter", e);
         }
