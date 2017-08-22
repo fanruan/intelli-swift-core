@@ -77,7 +77,7 @@ public class BIReportQueryManger implements BIReportQueryProvider {
                     jo.put(String.valueOf(uId), reportsJA);
                 }
             }
-            resJO.put("all_reports", jo);
+            resJO.put("allReports", jo);
             resJO.put("users", usersJO);
         } catch (Exception e) {
             logger.error("getAllHangoutReports exception :", e);
