@@ -26,10 +26,18 @@ public class TwinBufferStreamIterator<T> implements Iterator{
     }
 
     public void add(T t){
+        //把当前的current传过去，避免current发生替换的时候出发了add到当前的tNext
+        add(t, current);
+        //没有在消费，并且consumer有足量的缓冲，就唤醒下
+        if (!isConsuming && consumer.isPlenty()){
+            wakeUp();
+        }
+    }
+
+    private void add(T t, BufferArray current) {
         //第一个数组满了，就放第二个数组，同时触发数组的替换。
         if (!current.add(t)){
-            //执行这里的add之前可能会出现另外一个线程已经再执行addBuffer，这时候如果已经替换完成了，这个next可能会是新创建的next，current是上一个next。这种情况会出现顺序问题。
-            if (next != null && next.add(t)){
+            if (current.next != null && current.next.add(t)){
                 addBuffer();
             } else {
                 //如果第二个也满了，就需要同步的执行下数组的替换，以确保下次递归的时候能add成功。
@@ -39,10 +47,6 @@ public class TwinBufferStreamIterator<T> implements Iterator{
                 }
                 add(t);
             }
-        }
-        //没有在消费，并且consumer有足量的缓冲，就唤醒下
-        if (!isConsuming && consumer.isPlenty()){
-            wakeUp();
         }
     }
 

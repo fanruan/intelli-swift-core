@@ -385,10 +385,14 @@ public class CrossExecutor extends AbstractTableWidgetExecutor<XNode> {
             session.setPageIteratorGroup(true, widget.getWidgetId(), pg);
         } else {
             NodeDimensionIterator rowIterator = widgetCache.getRowIterator().createClonedIterator();
-            rowIterator.setRoot(pg.getRowIterator().getRoot());
+            if (pg.getRowIterator() != null){
+                rowIterator.setRoot(pg.getRowIterator().getRoot());
+            }
             pg.setRowIterator(rowIterator);
             NodeDimensionIterator colIterator = widgetCache.getColumnIterator().createClonedIterator();
-            colIterator.setRoot(pg.getColumnIterator().getRoot());
+            if (pg.getColumnIterator() != null){
+                colIterator.setRoot(pg.getColumnIterator().getRoot());
+            }
             pg.setColumnIterator(colIterator);
         }
     }

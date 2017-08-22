@@ -223,7 +223,7 @@ public class HorGroupExecutor extends AbstractTableWidgetExecutor<Node> {
     private void updateByCache(WidgetCache widgetCache) {
         widget.setPageSpinner(widgetCache.getPageSpinner());
         PageIteratorGroup pg = session.getPageIteratorGroup(true, widget.getWidgetId());
-        if (pg == null) {
+        if (pg == null || pg.getColumnIterator() == null) {
             pg = new PageIteratorGroup();
             pg.setColumnIterator(widgetCache.getColumnIterator());
             session.setPageIteratorGroup(true, widget.getWidgetId(), pg);

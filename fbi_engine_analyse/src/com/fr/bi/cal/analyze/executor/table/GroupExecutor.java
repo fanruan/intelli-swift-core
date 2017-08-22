@@ -306,7 +306,7 @@ public class GroupExecutor extends AbstractTableWidgetExecutor<Node> {
 
         widget.setPageSpinner(widgetCache.getPageSpinner());
         PageIteratorGroup pg = session.getPageIteratorGroup(true, widget.getWidgetId());
-        if (pg == null) {
+        if (pg == null || pg.getRowIterator() == null) {
             pg = new PageIteratorGroup();
             pg.setRowIterator(widgetCache.getRowIterator());
             session.setPageIteratorGroup(true, widget.getWidgetId(), pg);
