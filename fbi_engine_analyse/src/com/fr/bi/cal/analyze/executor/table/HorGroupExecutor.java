@@ -23,6 +23,7 @@ import com.fr.bi.cal.report.engine.CBCell;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.field.target.target.BISummaryTarget;
 import com.fr.bi.report.key.TargetGettingKey;
+import com.fr.bi.report.result.BIGroupNode;
 import com.fr.bi.stable.gvi.GVIUtils;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.general.DateUtils;
@@ -269,5 +270,10 @@ public class HorGroupExecutor extends AbstractTableWidgetExecutor<Node> {
             BILoggerFactory.getLogger(GroupExecutor.class).info("error in get link filter", e);
         }
         return linkGvi;
+    }
+
+    public BIGroupNode getResult() throws Exception {
+
+        return getCubeNode();
     }
 }

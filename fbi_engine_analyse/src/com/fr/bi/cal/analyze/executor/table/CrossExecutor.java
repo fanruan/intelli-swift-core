@@ -26,6 +26,8 @@ import com.fr.bi.conf.report.conf.BIWidgetConf;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.field.target.target.BISummaryTarget;
 import com.fr.bi.report.key.TargetGettingKey;
+import com.fr.bi.report.result.BICrossNode;
+import com.fr.bi.report.result.BIGroupNode;
 import com.fr.bi.stable.gvi.GVIUtils;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.general.DateUtils;
@@ -432,5 +434,10 @@ public class CrossExecutor extends AbstractTableWidgetExecutor<XNode> {
             BILoggerFactory.getLogger(CrossExecutor.class).info("error in get link filter", e);
         }
         return linkGvi;
+    }
+
+    public BICrossNode getResult() throws Exception {
+
+        return getCubeNode();
     }
 }

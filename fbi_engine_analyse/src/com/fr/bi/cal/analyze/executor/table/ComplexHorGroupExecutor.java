@@ -7,6 +7,7 @@ import com.fr.bi.base.FinalInt;
 import com.fr.bi.cal.analyze.cal.index.loader.CubeIndexLoader;
 import com.fr.bi.cal.analyze.cal.result.BIComplexExecutData;
 import com.fr.bi.cal.analyze.cal.result.ComplexExpander;
+import com.fr.bi.cal.analyze.cal.result.ComplexGroupResult;
 import com.fr.bi.cal.analyze.cal.result.Node;
 import com.fr.bi.export.iterator.StreamPagedIterator;
 import com.fr.bi.export.iterator.TableCellIterator;
@@ -18,6 +19,7 @@ import com.fr.bi.cal.report.engine.CBCell;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.field.target.target.BISummaryTarget;
 import com.fr.bi.report.key.TargetGettingKey;
+import com.fr.bi.report.result.BIComplexGroupResult;
 import com.fr.bi.stable.gvi.GVIUtils;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.general.DateUtils;
@@ -282,5 +284,10 @@ public class ComplexHorGroupExecutor extends AbstractTableWidgetExecutor {
             BILoggerFactory.getLogger(ComplexHorGroupExecutor.class).info("error in get link filter", e);
         }
         return filterGvi;
+    }
+
+    public BIComplexGroupResult getResult() throws Exception {
+
+        return new ComplexGroupResult(getCubeNodes());
     }
 }

@@ -211,7 +211,7 @@ public class TableWidget extends SummaryWidget implements SclCalculator {
         boolean calculateTarget = targetSort != null || !targetFilterMap.isEmpty();
         CrossExpander expander = new CrossExpander(complexExpander.getXExpander(0), complexExpander.getYExpander(0));
         boolean hasTarget = calculateTarget || getViewTargets().length > 0;
-        if (this.tableType == BIReportConstant.TABLE_WIDGET.COMPLEX_TYPE || this.tableType == BIReportConstant.WIDGET.DOT) {
+        if (this.tableType == BIReportConstant.TABLE_WIDGET.COMPLEX_TYPE) {
             return createComplexExecutor(session, hasTarget, complexExpander, expander);
         } else {
             return createNormalExecutor(session, hasTarget, getViewDimensions(), getViewTopDimensions(), expander);
@@ -262,7 +262,6 @@ public class TableWidget extends SummaryWidget implements SclCalculator {
     private BIEngineExecutor createNormalExecutor(BISession session, boolean hasTarget, BIDimension[] usedRows, BIDimension[] usedColumn, CrossExpander expander) {
 
         BIEngineExecutor executor;
-        int summaryLen = getViewTargets().length;
         //有列表头和指标 horGroupExecutor 垂直的分组表
         boolean b0 = usedColumn.length > 0 && usedRows.length == 0 && hasTarget;
         //有表头没有指标
