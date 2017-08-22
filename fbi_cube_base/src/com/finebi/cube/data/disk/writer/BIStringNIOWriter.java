@@ -58,6 +58,7 @@ public class BIStringNIOWriter implements ICubeStringWriter {
 
     @Override
     public void saveStatus() {
+        // null
     }
 
     @Override
