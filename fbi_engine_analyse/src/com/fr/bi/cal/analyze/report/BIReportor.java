@@ -37,6 +37,10 @@ public class BIReportor implements BIReport {
         return widgets.get(index);
     }
 
+    public WorkBook createWorkBook(int index, BISessionProvider session) {
+        return null;
+    }
+
     /**
      * @param index 序号
      * @return name 名字
