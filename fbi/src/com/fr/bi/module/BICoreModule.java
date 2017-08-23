@@ -54,7 +54,7 @@ import com.fr.bi.fs.BIReportDAO;
 import com.fr.bi.fs.BIReportNodeLock;
 import com.fr.bi.fs.BIReportNodeLockDAO;
 import com.fr.bi.fs.BISuperManagetDAOManager;
-import com.fr.bi.fs.BIReportQueryProvider;
+import com.fr.bi.web.report.provider.BIReportQueryProvider;
 import com.fr.bi.fs.BITableMapper;
 import com.fr.bi.fs.HSQLBIReportDAO;
 import com.fr.bi.fs.TableDataBIReportDAO;
@@ -98,7 +98,7 @@ import com.fr.stable.bridge.StableFactory;
 import com.fr.stable.fun.Service;
 import com.fr.web.core.db.PlatformDB;
 import com.fr.bi.web.conf.services.BIMultiPathManager;
-import com.fr.bi.fs.BIReportQueryManger;
+import com.fr.bi.web.report.manager.BIReportQueryManger;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
