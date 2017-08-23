@@ -491,7 +491,7 @@ public class BIPlate extends AbstractFSPlate {
      */
     @Override
     public void release() {
-        throw new UnsupportedOperationException();
+        // do nothing
     }
 
     /**
@@ -499,7 +499,7 @@ public class BIPlate extends AbstractFSPlate {
      */
     @Override
     public void refreshManager() {
-        throw new UnsupportedOperationException();
+        // do nothing
     }
 
     /**
