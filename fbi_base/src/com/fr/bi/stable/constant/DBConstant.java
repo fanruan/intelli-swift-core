@@ -251,19 +251,19 @@ public class DBConstant {
      * 参数的KEY
      */
     public static final class PROPERTY_KEY {
-        public static final String USE_MULTI_THREAD_CAL = "BI-UseMultiThreadCal";
-        public static final String MIN_CUBE_FREE_HD_SPACE_RATE = "BI-MinCubeFreeHDSpaceRate";
-        public static final String BACK_UP_WHEN_START = "BI-BackupWhenStart";
-        public static final String BI_THREAD_POOL_SIZE = "BI-BiThreadPoolSize";
-        public static final String BI_TRANSPORT_THREAD_POOL_SIZE = "BI-BiTransportThreadPoolSize";
-        public static final String DISK_SORT = "BI-DiskSort";
-        public static final String DISK_SORT_DUMP_THRESH_HOLD = "BI-DiskSortDumpThreshold";
-        public static final String RETRY_MAX_TIMES = "BI-RetryMaxTimes";
-        public static final String RETRY_MAX_SELLP_TIME = "BI-RetryMaxSleepTime";
-        public static final String CUBE_READER_RELEASE_SLEEP_TIME = "BI-CubeReaderReleaseSleepTime";
-        public static final String UNMAP_READER = "BI-UnmapReader";
-        public static final String IS_FORCE_WRITER = "BI-IsForceWriter";
-        public static final String DEPLOY_MODE_SELECT_SIZE = "BI-DeployModeSelectSize";
-        public static final String EXTREME_CONCURRENCY = "BI-ExtremeConcurrency";
+        public static final String USE_MULTI_THREAD_CAL = "UseMultiThreadCal";
+        public static final String MIN_CUBE_FREE_HD_SPACE_RATE = "MinCubeFreeHDSpaceRate";
+        public static final String BACK_UP_WHEN_START = "BackupWhenStart";
+        public static final String BI_THREAD_POOL_SIZE = "BiThreadPoolSize";
+        public static final String BI_TRANSPORT_THREAD_POOL_SIZE = "BiTransportThreadPoolSize";
+        public static final String DISK_SORT = "DiskSort";
+        public static final String DISK_SORT_DUMP_THRESH_HOLD = "DiskSortDumpThreshold";
+        public static final String RETRY_MAX_TIMES = "RetryMaxTimes";
+        public static final String RETRY_MAX_SELLP_TIME = "RetryMaxSleepTime";
+        public static final String CUBE_READER_RELEASE_SLEEP_TIME = "CubeReaderReleaseSleepTime";
+        public static final String UNMAP_READER = "UnmapReader";
+        public static final String IS_FORCE_WRITER = "IsForceWriter";
+        public static final String DEPLOY_MODE_SELECT_SIZE = "DeployModeSelectSize";
+        public static final String EXTREME_CONCURRENCY = "ExtremeConcurrency";
     }
 }
