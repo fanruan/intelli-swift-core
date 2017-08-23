@@ -291,8 +291,11 @@ public class BITableCellFormatHelper {
     }
 
     public static JSONObject createTextStyle(JSONObject settings, String text) {
+            /*
+    BI-8434 无数据时表格也需要有样式
+    * */
         if (BIStringUtils.isEmptyString(text) || !StableUtils.isNumber(text)) {
-            return JSONObject.create();
+            text = String.valueOf(Float.NEGATIVE_INFINITY);
         }
         try {
             Float num = Float.valueOf(text);
