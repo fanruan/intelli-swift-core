@@ -100,8 +100,6 @@ public class BIPlate extends AbstractFSPlate {
             //兼容FR工程中可能存在PARENTID类型是整型的情况
             notifyColumnParentIdType();
 
-            //启动用于截图的phantom服务
-            initPhantomServer();
         } catch (Throwable e) {
             LOGGER.error(e.getMessage(), e);
         }
