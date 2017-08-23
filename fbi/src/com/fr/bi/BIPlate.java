@@ -122,8 +122,8 @@ public class BIPlate extends AbstractFSPlate {
         }
     }
 
-    private void backupWhenStart(){
-        if(PerformancePlugManager.getInstance().isBackupWhenStart()){
+    private void backupWhenStart() {
+        if (PerformancePlugManager.getInstance().isBackupWhenStart()) {
             BackUpUtils.backup();
         }
     }
@@ -152,6 +152,7 @@ public class BIPlate extends AbstractFSPlate {
                 try {
                     com.fr.web.ResourceHelper.createDefaultJs(locale);
                 } catch (Exception e) {
+                    LOGGER.error(e.getMessage(), e);
                 }
             }
             try {
@@ -179,7 +180,7 @@ public class BIPlate extends AbstractFSPlate {
             try {
                 cn.setAutoCommit(false);
             } catch (Exception e) {
-
+                LOGGER.error(e.getMessage(), e);
             }
             Dialect dialect = DialectFactory.generateDialect(cn, PlatformDB.getDB().getDriver());
             FSDAOManager.addTableColumn(cn, dialect,
@@ -206,7 +207,7 @@ public class BIPlate extends AbstractFSPlate {
             try {
                 cn.setAutoCommit(false);
             } catch (Exception e) {
-
+                LOGGER.error(e.getMessage(), e);
             }
             Dialect dialect = DialectFactory.generateDialect(cn, PlatformDB.getDB().getDriver());
             FSDAOManager.addTableColumn(cn, dialect,
@@ -475,7 +476,7 @@ public class BIPlate extends AbstractFSPlate {
 
     @Override
     public List<String> getAllPrivilegesID() {
-        return null;
+        return new ArrayList<String>();
     }
 
     @Override
@@ -489,7 +490,7 @@ public class BIPlate extends AbstractFSPlate {
      */
     @Override
     public void release() {
-
+        throw new UnsupportedOperationException();
     }
 
     /**
@@ -497,7 +498,7 @@ public class BIPlate extends AbstractFSPlate {
      */
     @Override
     public void refreshManager() {
-
+        throw new UnsupportedOperationException();
     }
 
     /**
