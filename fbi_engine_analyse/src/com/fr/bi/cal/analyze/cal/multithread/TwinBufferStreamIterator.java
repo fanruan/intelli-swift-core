@@ -72,7 +72,7 @@ public class TwinBufferStreamIterator<T> implements Iterator{
                     try {
                         isConsuming = false;
                         this.wait();
-                    } catch (Exception e) {
+                    } catch (Exception ignore) {
                     }
                 }
                 isConsuming = true;
@@ -103,7 +103,7 @@ public class TwinBufferStreamIterator<T> implements Iterator{
 
     @Override
     public void remove() {
-
+        throw new UnsupportedOperationException();
     }
 
     public void wakeUp() {
@@ -150,14 +150,12 @@ public class TwinBufferStreamIterator<T> implements Iterator{
         }
 
         public boolean ifFullThenAddOnce(BufferArray next) {
-            if (isFull()){
+            if (isFull() && addFlag.getAndIncrement() == 0){
                 //不能用count.get()==array.length来判断，因为可能会有多个线程进行add，只有一个add成功了，但是count被加了很多次，导致count超过array.length，造成替换失败
                 //也不能在add失败的时候减少count,
-                if (addFlag.getAndIncrement() == 0){
-                    next.previous = this;
-                    this.next = next;
-                    return true;
-                }
+                next.previous = this;
+                this.next = next;
+                return true;
             }
             return false;
         }
