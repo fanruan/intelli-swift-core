@@ -32,6 +32,7 @@ import com.fr.bi.manager.PerformancePlugManager;
 import com.fr.bi.report.key.TargetGettingKey;
 import com.fr.bi.report.key.XTargetGettingKey;
 import com.fr.bi.report.result.BINode;
+import com.fr.bi.report.result.BIXLeftNode;
 import com.fr.bi.report.result.DimensionCalculator;
 import com.fr.bi.report.result.TargetCalculator;
 import com.fr.bi.stable.constant.BIReportConstant;

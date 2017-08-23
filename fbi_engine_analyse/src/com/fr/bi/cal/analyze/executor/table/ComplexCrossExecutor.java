@@ -6,7 +6,7 @@ import com.fr.base.Style;
 import com.fr.bi.base.FinalInt;
 import com.fr.bi.cal.analyze.cal.index.loader.CubeIndexLoader;
 import com.fr.bi.cal.analyze.cal.result.BIComplexExecutData;
-import com.fr.bi.cal.analyze.cal.result.BIXLeftNode;
+import com.fr.bi.report.result.BIXLeftNode;
 import com.fr.bi.cal.analyze.cal.result.ComplexExpander;
 import com.fr.bi.cal.analyze.cal.result.CrossExpander;
 import com.fr.bi.cal.analyze.cal.result.Node;
