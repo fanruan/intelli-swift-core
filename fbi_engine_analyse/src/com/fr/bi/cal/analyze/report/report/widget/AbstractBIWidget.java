@@ -22,6 +22,7 @@ import com.fr.bi.conf.report.widget.BIWidgetStyle;
 import com.fr.bi.conf.report.widget.field.BITargetAndDimension;
 import com.fr.bi.conf.report.widget.field.target.filter.TargetFilter;
 import com.fr.bi.conf.session.BISessionProvider;
+import com.fr.bi.export.block.BIPolyECBlock;
 import com.fr.bi.field.dimension.calculator.NoneDimensionCalculator;
 import com.fr.bi.field.target.filter.TargetFilterFactory;
 import com.fr.bi.report.result.BIResult;
@@ -39,7 +40,7 @@ import com.fr.stable.unit.UnitRectangle;
 import com.fr.web.core.SessionDealWith;
 
 import javax.servlet.http.HttpServletRequest;
-import java.awt.*;
+import java.awt.Rectangle;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -207,8 +208,8 @@ public abstract class AbstractBIWidget implements BIWidget {
     protected TemplateBlock createBIBlock(BISession session) {
 
         BIResult result = getExportData(session);
-//        return new BIPolyECBlock(result, widgetConf);
-return null;
+        return new BIPolyECBlock(result, widgetConf);
+
     }
 
 
