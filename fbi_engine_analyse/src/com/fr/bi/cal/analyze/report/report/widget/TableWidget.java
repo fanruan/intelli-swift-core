@@ -39,6 +39,7 @@ import com.fr.bi.conf.report.SclCalculator;
 import com.fr.bi.conf.report.WidgetType;
 import com.fr.bi.conf.report.conf.BIWidgetConf;
 import com.fr.bi.conf.report.conf.BIWidgetSettings;
+import com.fr.bi.conf.report.conf.dimension.BIDimensionConf;
 import com.fr.bi.conf.report.style.BITableStyle;
 import com.fr.bi.conf.report.widget.BIWidgetStyle;
 import com.fr.bi.conf.report.widget.field.BITargetAndDimension;
@@ -291,15 +292,6 @@ public class TableWidget extends SummaryWidget implements SclCalculator {
         }
         jo.put("page", ja);
         return jo;
-    }
-
-    /**
-     * 创建表格的Block
-     */
-    @Override
-    protected TemplateBlock createBIBlock(BISession session) {
-
-        return new PolyCubeECBlock(this, session, operator);
     }
 
     @Override
@@ -624,22 +616,22 @@ public class TableWidget extends SummaryWidget implements SclCalculator {
     @Override
     public JSONObject calculateSCData(BIWidgetConf widgetConf, JSONObject data) throws Exception {
 
-        Map<Integer, List<JSONObject>> viewMap = this.createViewMap(widgetConf);
+        Map<Integer, List<BIDimensionConf>> viewMap = this.createViewMap(widgetConf);
         BIWidgetSettings widgetSettings = getWidgetSettings(widgetConf);
         Map<String, ITableCellFormatOperation> operationMap = createOperationMap(widgetConf);
         //        Map<String, ITableCellFormatOperation> operationMap = new HashMap<String, ITableCellFormatOperation>();
         IExcelDataBuilder builder = null;
-        switch (widgetConf.getType()) {
-            case BIReportConstant.TABLE_WIDGET.CROSS_TYPE:
-                builder = new SummaryCrossTableDataBuilder(viewMap, data, widgetSettings);
-                break;
-            case BIReportConstant.TABLE_WIDGET.GROUP_TYPE:
-                builder = new SummaryGroupTableDataBuilder(viewMap, data, widgetSettings);
-                break;
-            case BIReportConstant.TABLE_WIDGET.COMPLEX_TYPE:
-                builder = new SummaryComplexTableBuilder(viewMap, data, widgetSettings);
-                break;
-        }
+//        switch (widgetConf.getType()) {
+//            case BIReportConstant.TABLE_WIDGET.CROSS_TYPE:
+//                builder = new SummaryCrossTableDataBuilder(viewMap, data, widgetSettings);
+//                break;
+//            case BIReportConstant.TABLE_WIDGET.GROUP_TYPE:
+//                builder = new SummaryGroupTableDataBuilder(viewMap, data, widgetSettings);
+//                break;
+//            case BIReportConstant.TABLE_WIDGET.COMPLEX_TYPE:
+//                builder = new SummaryComplexTableBuilder(viewMap, data, widgetSettings);
+//                break;
+//        }
         DataConstructor res = BITableConstructHelper.buildTableData(builder);
         BITableConstructHelper.formatCells(res, operationMap, widgetSettings);
         return res.createJSON();
@@ -649,13 +641,13 @@ public class TableWidget extends SummaryWidget implements SclCalculator {
     private Map<String, ITableCellFormatOperation> createOperationMap(BIWidgetConf config) throws Exception {
 
         Map<String, ITableCellFormatOperation> formOperationsMap = new HashMap<String, ITableCellFormatOperation>();
-        Map<Integer, List<JSONObject>> viewMap = config.getDetailViewMap();
+        Map<Integer, List<BIDimensionConf>> viewMap = config.getDetailViewMap();
         for (Integer integer : viewMap.keySet()) {
-            List<JSONObject> dimJo = viewMap.get(integer);
-            for (JSONObject jo : dimJo) {
-                if (jo.optBoolean("used")) {
-                    String dId = jo.getString("dId");
-                    int type = jo.getInt("type");
+            List<BIDimensionConf> dimJo = viewMap.get(integer);
+            for (BIDimensionConf dimConf : dimJo) {
+                if (dimConf.isDimensionUsed()) {
+                    String dId = dimConf.getDimensionID();
+                    int type = dimConf.getDimensionType();
                     ICellFormatSetting setting = new BICellFormatSetting();
                     if (config.getDimensions().getJSONObject(dId).has("settings")) {
                         setting.parseJSON(config.getDimensions().getJSONObject(dId).optJSONObject("settings"));
@@ -734,7 +726,7 @@ public class TableWidget extends SummaryWidget implements SclCalculator {
         throw new Exception();
     }
 
-    private Map<Integer, List<JSONObject>> createViewMap(BIWidgetConf widgetConf) throws Exception {
+    private Map<Integer, List<BIDimensionConf>> createViewMap(BIWidgetConf widgetConf) throws Exception {
 
         if (widgetConf != null) {
             return widgetConf.getDetailViewMap();
