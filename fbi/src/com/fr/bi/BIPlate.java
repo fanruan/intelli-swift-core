@@ -158,6 +158,7 @@ public class BIPlate extends AbstractFSPlate {
             try {
                 com.fr.web.ResourceHelper.createDefaultCss();
             } catch (Exception e) {
+                LOGGER.error(e.getMessage(), e);
             }
             for (BIModule module : BIModuleManager.getModules()) {
                 module.loadResources(locales);
