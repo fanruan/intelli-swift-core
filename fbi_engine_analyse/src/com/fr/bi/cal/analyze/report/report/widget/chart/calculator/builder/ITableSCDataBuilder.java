@@ -6,7 +6,7 @@ import com.fr.json.JSONException;
 /**
  * Created by Kary on 2017/2/26.
  */
-public interface IExcelDataBuilder {
+public interface ITableSCDataBuilder {
     void initAttrs() throws Exception;
 
     void amendment() throws Exception;
