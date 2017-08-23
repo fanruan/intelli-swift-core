@@ -102,8 +102,7 @@ public class ComplexHorGroupExecutor extends AbstractTableWidgetExecutor {
             if (firstColumnDimLen > columnDimIdx) {
                 //区域1 最后一个维度rowSpan根据最大区域的维度个数确定
                 int rowSpan = firstColumnDimLen - 1 == columnDimIdx ? maxColumnDimLen - columnDimIdx : 1;
-                CBCell cell = GeneratorUtils.createCBCell(rowData.getDimensionArray(0)[columnDimIdx].getText(), columnDimIdx,
-                        rowSpan, columnIdx.value, 1, widget.getTableStyle().getHeaderStyle(Style.getInstance()));
+                CBCell cell = GeneratorUtils.createCBCell(rowData.getDimensionArray(0)[columnDimIdx].getText(), columnDimIdx, rowSpan, columnIdx.value, 1, widget.getTableStyle().getHeaderStyle(Style.getInstance()));
                 pagedIterator.addCell(cell);
             }
             columnIdx.value++;
@@ -220,8 +219,7 @@ public class ComplexHorGroupExecutor extends AbstractTableWidgetExecutor {
         for (int s = 0; s < summaryLength; s++) {
             keys[s] = usedSumTarget[s].createTargetGettingKey();
         }
-        Map<Integer, Node> nodeMap = CubeIndexLoader.getInstance(session.getUserId()).loadComplexPageGroup(true, widget, createTarget4Calculate(), rowData, allDimensions,
-                allSumTarget, keys, paging.getOperator(), widget.useRealData(), session, complexExpander, false);
+        Map<Integer, Node> nodeMap = CubeIndexLoader.getInstance(session.getUserId()).loadComplexPageGroup(true, widget, createTarget4Calculate(), rowData, allDimensions, allSumTarget, keys, paging.getOperator(), widget.useRealData(), session, complexExpander, false);
 
 
         BILoggerFactory.getLogger().info(DateUtils.timeCostFrom(start) + ": cal time");
@@ -254,7 +252,7 @@ public class ComplexHorGroupExecutor extends AbstractTableWidgetExecutor {
                         target = t;
                         break;
                     } catch (Exception e) {
-
+                        BILoggerFactory.getLogger().error(e.getMessage(), e);
                     }
                 }
                 if (biSummaryTarget == null || !biSummaryTarget.createTableKey().equals(targetKey)) {

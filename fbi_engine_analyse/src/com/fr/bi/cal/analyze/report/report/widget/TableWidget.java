@@ -79,6 +79,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class TableWidget extends SummaryWidget implements SclCalculator {
 
     private static final long serialVersionUID = -4736577206434772688L;
+    private int PAGE_SPINNER = 5;
 
     /**
      * 保存列字段等内容
@@ -86,7 +87,7 @@ public class TableWidget extends SummaryWidget implements SclCalculator {
     @BICoreField
     private BITableReportSetting data = new BITableReportSetting();
 
-    private int[] pageSpinner = new int[5];
+    private int[] pageSpinner = new int[PAGE_SPINNER];
 
     private int operator = BIReportConstant.TABLE_PAGE_OPERATOR.REFRESH;
 
@@ -243,17 +244,11 @@ public class TableWidget extends SummaryWidget implements SclCalculator {
         //列表头区域里没有维度
         boolean b2 = !row.isEmpty() && columnLen == 0 && hasTarget;
         boolean b3 = !row.isEmpty() && columnLen == 0 && summaryLen == 0;
-        if (b0) {
+        if (b0 || b1) {
             executor = new ComplexHorGroupExecutor(this, PagingFactory.createPaging(PagingFactory.PAGE_PER_GROUP_20, operator), column, session, complexExpander);
-        } else if (b1) {
-            //原来是ComplexHorGroupNoneExecutor, 先改成ComplexHorGroupExecutor，有问题再改回来
-            executor = new ComplexHorGroupExecutor(this, PagingFactory.createPaging(PagingFactory.PAGE_PER_GROUP_20, operator), column, session, complexExpander);
-        } else if (b2) {
+        }  else if (b2 || b3) {
             executor = new ComplexGroupExecutor(this, PagingFactory.createPaging(PagingFactory.PAGE_PER_GROUP_20, operator), row, session, complexExpander);
-        } else if (b3) {
-            //同b1
-            executor = new ComplexGroupExecutor(this, PagingFactory.createPaging(PagingFactory.PAGE_PER_GROUP_20, operator), row, session, complexExpander);
-        } else {
+        }  else {
             executor = new ComplexCrossExecutor(this, PagingFactory.createPaging(PagingFactory.PAGE_PER_GROUP_20, operator), row, column, session, complexExpander);
         }
         return executor;
@@ -676,6 +671,7 @@ public class TableWidget extends SummaryWidget implements SclCalculator {
                             break;
                         default:
                             op = new BITableCellStringOperation(setting);
+                            break;
                     }
                     formOperationsMap.put(dId, op);
                 }
@@ -745,6 +741,7 @@ public class TableWidget extends SummaryWidget implements SclCalculator {
                 break;
             default:
                 themeColor = BIStyleConstant.DEFAULT_CHART_SETTING.THEME_COLOR;
+                break;
         }
         return new BITableStyle(themeColor);
     }
@@ -789,10 +786,8 @@ public class TableWidget extends SummaryWidget implements SclCalculator {
 
         if (targetKey == null) {
             return null;
-        }
-
-        // 如果是跳转打开的才需要进行设置
-        if (getGlobalFilterWidget() != null) {
+        } else if (getGlobalFilterWidget() != null) {
+            // 如果是跳转打开的才需要进行设置
             // 如果已经设置了源字段和目标字段
             if (((AbstractBIWidget) getGlobalFilterWidget()).getGlobalSourceAndTargetFieldList().size() > 0) {
                 return GlobalFilterUtils.getSettingSourceAndTargetJumpFilter(this, userId, session, targetKey, ((AbstractBIWidget) getGlobalFilterWidget()).getBaseTable());

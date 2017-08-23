@@ -407,6 +407,7 @@ public class DetailWidget extends AbstractBIWidget implements SclCalculator {
                             break;
                         default:
                             op = new BITableCellStringOperation(setting);
+                            break;
                     }
                     formOperationsMap.put(dId, op);
                 }

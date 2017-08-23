@@ -259,7 +259,7 @@ public class HorGroupExecutor extends AbstractTableWidgetExecutor<Node> {
             BIDimension[] dimensions = getUserDimension(clicked, target);
             Node linkNode = getStopOnRowNode(col.toArray(), dimensions);
             // 总汇总值
-            if (col == null || col.size() == 0) {
+            if (col.isEmpty()) {
                 for (String key : clicked.keySet()) {
                     linkGvi = GVIUtils.AND(linkGvi, getTargetIndex(key, linkNode));
                 }
