@@ -127,7 +127,7 @@ public class GroupExecutor extends AbstractTableWidgetExecutor<Node> {
             String unit = setting.getUnitByTargetId(anUsedSumTarget.getId());
             String levelAndUnit = ExecutorUtils.formatLevelAndUnit(numLevel, unit);
 
-            String dimensionUnit = StringUtils.isEmpty(levelAndUnit) ? "" : "(" + levelAndUnit + ")";
+            String dimensionUnit = StringUtils.isEmpty(levelAndUnit) ? StringUtils.EMPTY : "(" + levelAndUnit + ")";
 
             CBCell cell = ExecutorUtils.createCBCell(anUsedSumTarget.getText() + dimensionUnit, 0, 1, columnIdx++, 1, widget.getTableStyle().getHeaderStyle(Style.getInstance()));
             pagedIterator.addCell(cell);
@@ -245,9 +245,7 @@ public class GroupExecutor extends AbstractTableWidgetExecutor<Node> {
 
         PageIteratorGroup iteratorGroup = getPageIterator();
         Operator rowOp = PagingFactory.createRowOperator(paging.getOperator(), widget);
-        return WidgetCacheKey.createKey(widget.fetchObjectCore(), expander.getYExpander(), expander.getXExpander(),
-                                        rowOp, getStartIndex(rowOp, iteratorGroup == null ? null : iteratorGroup.getRowIterator(), usedDimensions.length),
-                                        null, null, widget.getAuthFilter(session.getUserId()));
+        return WidgetCacheKey.createKey(widget.fetchObjectCore(), expander.getYExpander(), expander.getXExpander(), rowOp, getStartIndex(rowOp, iteratorGroup == null ? null : iteratorGroup.getRowIterator(), usedDimensions.length), null, null, widget.getAuthFilter(session.getUserId()));
     }
 
     @Override
@@ -265,8 +263,7 @@ public class GroupExecutor extends AbstractTableWidgetExecutor<Node> {
         long start = System.currentTimeMillis();
         int calpage = paging.getOperator();
         CubeIndexLoader cubeIndexLoader = CubeIndexLoader.getInstance(session.getUserId());
-        Node tree = cubeIndexLoader.loadPageGroup(false, widget, createTarget4Calculate(), usedDimensions,
-                                                  allDimensions, allSumTarget, calpage, widget.isRealData(), session, expander.getYExpander());
+        Node tree = cubeIndexLoader.loadPageGroup(false, widget, createTarget4Calculate(), usedDimensions, allDimensions, allSumTarget, calpage, widget.isRealData(), session, expander.getYExpander());
         if (tree == null) {
             tree = new Node(allSumTarget.length);
         }
@@ -306,7 +303,7 @@ public class GroupExecutor extends AbstractTableWidgetExecutor<Node> {
 
         widget.setPageSpinner(widgetCache.getPageSpinner());
         PageIteratorGroup pg = session.getPageIteratorGroup(true, widget.getWidgetId());
-        if (pg == null) {
+        if (pg == null || pg.getRowIterator() == null) {
             pg = new PageIteratorGroup();
             pg.setRowIterator(widgetCache.getRowIterator());
             session.setPageIteratorGroup(true, widget.getWidgetId(), pg);
@@ -330,8 +327,7 @@ public class GroupExecutor extends AbstractTableWidgetExecutor<Node> {
         }
         int calPage = paging.getOperator();
         CubeIndexLoader cubeIndexLoader = CubeIndexLoader.getInstance(session.getUserId());
-        Node n = cubeIndexLoader.getStopWhenGetRowNode(stopRow, widget, createTarget4Calculate(), usedDimensions,
-                                                       allDimensions, allSumTarget, calPage, session, CrossExpander.ALL_EXPANDER.getYExpander());
+        Node n = cubeIndexLoader.getStopWhenGetRowNode(stopRow, widget, createTarget4Calculate(), usedDimensions, allDimensions, allSumTarget, calPage, session, CrossExpander.ALL_EXPANDER.getYExpander());
         return n;
     }
 
@@ -358,7 +354,7 @@ public class GroupExecutor extends AbstractTableWidgetExecutor<Node> {
      * 注册节点返回之前的操作管道
      */
     private void registerResultNodeDealWithPipline() {
-
+        throw new UnsupportedOperationException();
     }
 
     /**
@@ -560,9 +556,9 @@ public class GroupExecutor extends AbstractTableWidgetExecutor<Node> {
             if (targetKey.equals(linkTargetTable) || (isPc = ExecutorUtils.isPrimaryTable(linkTargetTable, targetKey))) {
                 //return null;
                 List<Object> rowData = getLinkRowData(clicked, target, false);
-                Node linkNode = getStopOnRowNode(rowData.toArray(), widget.getViewDimensions());
+                Node linkNode = getStopOnRowNode(rowData.toArray(new Object[rowData.size()]), widget.getViewDimensions());
                 // 总汇总值
-                if (rowData == null || rowData.size() == 0) {
+                if (rowData == null || rowData.isEmpty()) {
                     for (String key : clicked.keySet()) {
                         linkGvi = GVIUtils.AND(linkGvi, getTargetIndex(key, linkNode));
                     }
