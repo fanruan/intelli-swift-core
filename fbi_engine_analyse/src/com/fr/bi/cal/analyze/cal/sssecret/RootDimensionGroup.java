@@ -372,7 +372,9 @@ public class RootDimensionGroup implements IRootDimensionGroup {
         rootDimensionGroup.getters = getters;
         rootDimensionGroup.columns = columns;
         rootDimensionGroup.tis = tis;
-        rootDimensionGroup.singleDimensionGroupCache = singleDimensionGroupCache.clone();
+        if (singleDimensionGroupCache != null) {
+            rootDimensionGroup.singleDimensionGroupCache = singleDimensionGroupCache.clone();
+        }
         rootDimensionGroup.metrics = metrics;
         rootDimensionGroup.summaryLists = summaryLists;
         rootDimensionGroup.nodeCreator = nodeCreator;

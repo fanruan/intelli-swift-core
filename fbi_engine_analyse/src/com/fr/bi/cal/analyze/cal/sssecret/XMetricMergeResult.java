@@ -24,7 +24,9 @@ public class XMetricMergeResult extends MetricMergeResult implements BIXLeftNode
     }
 
     public void setXValue(XTargetGettingKey key, Number sumValue) {
-        xValue[key.getTargetIndex()][key.getSubIndex()] = sumValue;
+        if (key.getTargetIndex() < xValue.length){
+            xValue[key.getTargetIndex()][key.getSubIndex()] = sumValue;
+        }
     }
 
     public Number[][] getXValue(){
@@ -54,11 +56,17 @@ public class XMetricMergeResult extends MetricMergeResult implements BIXLeftNode
     }
 
     private Number getRootValue(TargetGettingKey key) {
+        if (xValue == null || xValue.length - 1 < key.getTargetIndex()){
+            return null;
+        }
         Number[] xv = xValue[key.getTargetIndex()];
         return xv[xv.length - 1];
     }
 
     public Number getXValue(XTargetGettingKey key) {
+        if (xValue == null || xValue.length - 1 < key.getTargetIndex()){
+            return null;
+        }
         return xValue[key.getTargetIndex()][key.getSubIndex()];
     }
 

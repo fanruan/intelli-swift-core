@@ -172,9 +172,7 @@ public class HorGroupExecutor extends AbstractTableWidgetExecutor<Node> {
     protected WidgetCacheKey createWidgetCacheKey() {
         PageIteratorGroup iteratorGroup = getPageIterator();
         Operator colOp = PagingFactory.createColumnOperator(paging.getOperator(), widget);
-        return WidgetCacheKey.createKey(widget.fetchObjectCore(), expander.getYExpander(), expander.getXExpander(),
-                null, null, colOp, getStartIndex(colOp, iteratorGroup == null ? null : iteratorGroup.getColumnIterator(), usedDimensions.length),
-                widget.getAuthFilter(session.getUserId()));
+        return WidgetCacheKey.createKey(widget.fetchObjectCore(), expander.getYExpander(), expander.getXExpander(), null, null, colOp, getStartIndex(colOp, iteratorGroup == null ? null : iteratorGroup.getColumnIterator(), usedDimensions.length), widget.getAuthFilter(session.getUserId()));
     }
 
     @Override
@@ -223,7 +221,7 @@ public class HorGroupExecutor extends AbstractTableWidgetExecutor<Node> {
     private void updateByCache(WidgetCache widgetCache) {
         widget.setPageSpinner(widgetCache.getPageSpinner());
         PageIteratorGroup pg = session.getPageIteratorGroup(true, widget.getWidgetId());
-        if (pg == null) {
+        if (pg == null || pg.getColumnIterator() == null) {
             pg = new PageIteratorGroup();
             pg.setColumnIterator(widgetCache.getColumnIterator());
             session.setPageIteratorGroup(true, widget.getWidgetId(), pg);
@@ -255,9 +253,9 @@ public class HorGroupExecutor extends AbstractTableWidgetExecutor<Node> {
                 return null;
             }
             List<Object> col = getLinkRowData(clicked, target, true);
-            Node linkNode = getStopOnRowNode(col.toArray(), widget.getViewTopDimensions());
+            Node linkNode = getStopOnRowNode(col.toArray(new Object[col.size()]), widget.getViewTopDimensions());
             // 总汇总值
-            if (col == null || col.size() == 0) {
+            if (col == null || col.isEmpty()) {
                 for (String key : clicked.keySet()) {
                     linkGvi = GVIUtils.AND(linkGvi, getTargetIndex(key, linkNode));
                 }

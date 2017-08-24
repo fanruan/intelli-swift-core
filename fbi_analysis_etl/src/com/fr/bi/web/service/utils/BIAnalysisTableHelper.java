@@ -1,9 +1,12 @@
 package com.fr.bi.web.service.utils;
 
+import com.finebi.cube.common.log.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.conf.table.BusinessTable;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.etl.analysis.data.AnalysisCubeTableSource;
 import com.fr.bi.etl.analysis.manager.BIAnalysisETLManagerCenter;
+import com.fr.bi.stable.exception.BITableAbsentException;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -12,13 +15,20 @@ import java.util.Set;
  * Created by kary on 17-1-11.
  */
 public class BIAnalysisTableHelper {
+    private static BILogger LOGGER = BILoggerFactory.getLogger(BIAnalysisTableHelper.class);
 
     public static double getTableGeneratingProcessById(String tableId, long userId) {
         double percent;
+        BusinessTable table = null;
         try {
-            BusinessTable table = BIAnalysisETLManagerCenter.getBusiPackManager().getTable(tableId, userId);
+            table = BIAnalysisETLManagerCenter.getBusiPackManager().getTable(tableId, userId);
+        } catch (BITableAbsentException e) {
+            LOGGER.error("Get Analysis ETL Table error.The table id is: " + tableId);
+        }
+        try {
             percent = getPercent((AnalysisCubeTableSource) table.getTableSource(), userId);
         } catch (Exception e) {
+            LOGGER.error("Generate Analysis ETL Table Cube error. The table is: " + BIAnalysisETLManagerCenter.getAliasManagerProvider().getAliasName(tableId, userId));
             percent = -1;
         }
         return percent;
@@ -31,7 +41,7 @@ public class BIAnalysisTableHelper {
         source.getSourceNeedCheckSource(sources);
         int generated = 0;
         for (AnalysisCubeTableSource s : sources) {
-            if(BIAnalysisETLManagerCenter.getUserETLCubeManagerProvider().isError(s,new BIUser(userId))){
+            if (BIAnalysisETLManagerCenter.getUserETLCubeManagerProvider().isError(s, new BIUser(userId))) {
                 return -1;
             }
             //BILoggerFactory.getLogger(BIAnalysisETLGetGeneratingStatusAction.class).info(" check Version Of " + s.createUserTableSource(userId).fetchObjectCore().getIDValue());
@@ -45,18 +55,17 @@ public class BIAnalysisTableHelper {
         return percent;
     }
 
-    public static boolean isError(AnalysisCubeTableSource source, long userId){
+    public static boolean isError(AnalysisCubeTableSource source, long userId) {
         Set<AnalysisCubeTableSource> sources = new HashSet<AnalysisCubeTableSource>();
         // 判断Version只需判断自身,如果是AnalysisETLTableSource，则需要同时check自己的parents即AnalysisBaseTableSource
         source.getSourceNeedCheckSource(sources);
         for (AnalysisCubeTableSource s : sources) {
-            if(BIAnalysisETLManagerCenter.getUserETLCubeManagerProvider().isError(s, new BIUser(userId))){
+            if (BIAnalysisETLManagerCenter.getUserETLCubeManagerProvider().isError(s, new BIUser(userId))) {
                 return true;
             }
         }
         return false;
     }
-
 
 
     public static boolean getTableHealthById(String tableId, long userId) {

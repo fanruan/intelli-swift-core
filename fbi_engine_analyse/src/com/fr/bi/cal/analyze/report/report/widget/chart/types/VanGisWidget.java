@@ -153,6 +153,17 @@ public class VanGisWidget extends VanChartWidget{
         return JSONObject.create().put("fontFamily", "Microsoft YaHei").put("fontSize", "12px").put("color", "#666666");
     }
 
+    protected JSONObject defaultDataLabelSetting() throws JSONException {
+        return JSONObject.create()
+                .put("showBlockName", true)
+                .put("showTargetName", true)
+                .put("showValue", true)
+                .put("showPercentage", false)
+                .put("showTractionLine", false)
+                .put("position", BIChartSettingConstant.DATA_LABEL.POSITION_OUTER)
+                .put("textStyle", defaultFont());
+    }
+
     protected boolean checkValid(){
         return this.getDim1Size() > 0 && this.hasTarget();
     }
