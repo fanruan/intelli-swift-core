@@ -3,6 +3,7 @@ package com.fr.bi.cal.analyze.report.report.widget.chart.types;
 import com.fr.bi.cal.analyze.report.report.widget.VanChartWidget;
 import com.fr.bi.conf.report.map.BIWMSManager;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
+import com.fr.bi.stable.constant.BIChartSettingConstant;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.general.Inter;
 import com.fr.json.JSONArray;
