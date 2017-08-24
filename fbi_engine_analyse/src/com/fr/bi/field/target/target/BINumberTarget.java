@@ -12,7 +12,7 @@ public class BINumberTarget extends BISummaryTarget {
     private static final long serialVersionUID = -3265242640054177730L;
 
 	public SumType getSumType(){
-		return getSummaryType() == BIReportConstant.SUMMARY_TYPE.SUM ? SumType.PLUS : SumType.GVI;
+		return getSummaryType() == BIReportConstant.SUMMARY_TYPE.AVG ? SumType.GVI : SumType.PLUS;
 	}
 
     @Override

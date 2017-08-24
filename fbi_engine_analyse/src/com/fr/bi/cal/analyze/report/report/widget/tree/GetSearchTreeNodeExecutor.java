@@ -66,7 +66,7 @@ public class GetSearchTreeNodeExecutor extends AbstractTreeNodeExecutor {
         if (lastSearchValue != null) {
             for (int j = 0, len = vl.size(); j < len; j++) {
                 if (ComparatorUtils.equals(vl.get(j), lastSearchValue)) {
-                    start = j + 1;
+                    start = j;
                 }
             }
         } else {

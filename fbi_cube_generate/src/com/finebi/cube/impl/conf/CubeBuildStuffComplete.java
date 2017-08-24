@@ -90,7 +90,7 @@ public class CubeBuildStuffComplete extends AbstractCubeBuildStuff implements Se
 
     @Override
     public boolean copyFileFromOldCubes() {
-        ICubeConfiguration tempConf = BICubeConfiguration.getTempConf(String.valueOf(biUser.getUserId()));
+        ICubeConfiguration tempConf = getCubeConfiguration();
         if (new File(tempConf.getRootURI().getPath()).exists()) {
             BIFileUtils.delete(new File(tempConf.getRootURI().getPath()));
         }

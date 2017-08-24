@@ -60,6 +60,27 @@ public class BIFileUtils {
         return StableUtils.deleteFile(f);
     }
 
+    /**
+     * 查找出路径下的所有文件路径
+     *
+     * @param folder 文件夹
+     * @return
+     */
+    public static List findAllFiles(File folder) {
+        List realFiles = new ArrayList();
+        File[] files = folder.listFiles();
+        if (null != files) {
+            for (int i = 0; i < files.length; i++) {
+                if (files[i].isDirectory()) {
+                    realFiles.addAll(findAllFiles(files[i]));
+                } else {
+                    realFiles.add(files[i].getAbsolutePath());
+                }
+            }
+        }
+        return realFiles;
+    }
+
     public static List deleteFiles(File f) {
         List removedFailedFiles = new ArrayList();
         File[] files = f.listFiles();
@@ -365,5 +386,19 @@ public class BIFileUtils {
             return false;
         }
         return src.renameTo(dest);
+    }
+
+    /**
+     * 重命名文件
+     * @param oldName
+     * @param newName
+     * @return
+     * @throws IOException
+     */
+    public static boolean renameFile(File oldName, File newName) throws IOException {
+        if (!oldName.isFile() || !oldName.exists()) {
+            return false;
+        }
+        return oldName.renameTo(newName);
     }
 }

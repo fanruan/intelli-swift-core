@@ -1,6 +1,7 @@
 package com.fr.bi.cal.generate;
 
 import com.finebi.cube.ICubeConfiguration;
+import com.finebi.cube.api.UserAnalysisCubeDataLoaderCreator;
 import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.conf.BICubeConfiguration;
 import com.finebi.cube.conf.BICubeConfigureCenter;
@@ -38,6 +39,7 @@ import com.fr.bi.cluster.utils.ClusterEnv;
 import com.fr.bi.cluster.zookeeper.ZooKeeperManager;
 import com.fr.bi.cluster.zookeeper.watcher.BICubeStatusWatcher;
 import com.fr.bi.common.factory.BIFactoryHelper;
+import com.fr.bi.conf.manager.location.BILocationManager;
 import com.fr.bi.conf.manager.update.source.UpdateSettingSource;
 import com.fr.bi.conf.provider.BIConfigureManagerCenter;
 import com.fr.bi.conf.utils.BIModuleUtils;
@@ -171,7 +173,8 @@ public class BuildCubeTask implements CubeTask {
                     BICubeConfigureCenter.getPackageManager().finishGenerateCubes(biUser.getUserId(), CubeUpdateUtils.getBusinessCubeAbsentTables(biUser.getUserId()));
                     BICubeConfigureCenter.getPackageManager().persistData(biUser.getUserId());
                     BICubeConfigureCenter.getDataSourceManager().persistData(biUser.getUserId());
-                    BIModuleUtils.clearAnalysisETLCache(biUser.getUserId());
+                    BIModuleUtils.clearCacheAfterBuildCubeTask(biUser.getUserId());
+                    BILocationManager.getInstance().persistResourceAsync();
                     BILoggerFactory.getLogger().info("Replace successful! Cost :" + DateUtils.timeCostFrom(start));
                 } else {
                     message = "FineIndex replace failed ,the FineIndex files will not be replaced ";
@@ -194,6 +197,11 @@ public class BuildCubeTask implements CubeTask {
             BILoggerFactory.getLogger().error(e.getMessage(), e);
         } finally {
         }
+    }
+
+    private void releaseCubeResource() {
+        UserAnalysisCubeDataLoaderCreator.getInstance().clear(biUser.getUserId());
+        BICubeDiskPrimitiveDiscovery.getInstance().clearResourceMap();
     }
 
     protected void checkTaskFinish() {
@@ -225,6 +233,7 @@ public class BuildCubeTask implements CubeTask {
                 }
 //                集群模式通过zookeeper通知slaver释放资源
                 if (ClusterEnv.isCluster()) {
+                    LOGGER.info("******Cluster Mode******");
                     try {
                         ZooKeeperManager.getInstance().getZooKeeper().setData(BICubeStatusWatcher.CUBE_STATUS, "finish".getBytes(), -1);
                     } catch (Exception e) {
@@ -234,20 +243,26 @@ public class BuildCubeTask implements CubeTask {
 //                等待所有机器释放nio资源
                     Thread.sleep(100);
                 }
+                LOGGER.info("*********Start ForceRelease**********");
                 BICubeDiskPrimitiveDiscovery.getInstance().forceRelease();
-                replaceSuccess = cubeBuildStuff.replaceOldCubes();
+//                replaceSuccess = cubeBuildStuff.replaceOldCubes();
+
+                Set<String> dirtyFiles = BILocationManager.getInstance().getAccessLocationProvider()
+                        .updateLocationPool(cubeConfiguration.getLocationProvider().getAccessLocationPool());
+                // TODO: 2017/7/6 删除旧的文件
+                BILocationManager.getInstance().removeOldFiles(dirtyFiles);
+
                 for (String location : BICubeDiskPrimitiveDiscovery.getInstance().getUnReleasedLocation()) {
                     BILoggerFactory.getLogger().error("error: the filePath is : " + location);
                 }
                 CubeReadingTableIndexLoader.envChanged();
-                if (!replaceSuccess) {
-                    LOGGER.error("FineIndex replace failed after " + i + " times try!It will try again in 5s");
-                    Thread.sleep(5000);
-                } else {
-                    break;
+
+                if (PerformancePlugManager.getInstance().isUseSingleReader()) {
+                    releaseCubeResource();
                 }
+                break;
             }
-            return replaceSuccess;
+            return true;
         } catch (Exception e) {
             String message = " FineIndex build failed ! caused by \n" + e.getMessage();
             LOGGER.error(message, e);

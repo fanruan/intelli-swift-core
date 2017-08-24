@@ -3,7 +3,7 @@ package com.fr.bi.field.target.calculator;
 import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.api.ICubeTableService;
 import com.finebi.cube.conf.table.BusinessTable;
-import com.fr.bi.cal.analyze.cal.result.BIXLeftNode;
+import com.fr.bi.report.result.BIXLeftNode;
 import com.fr.bi.field.target.calculator.sum.AbstractSummaryCalculator;
 import com.fr.bi.report.key.TargetGettingKey;
 import com.fr.bi.report.key.XTargetGettingKey;
@@ -26,6 +26,10 @@ public class XCalculator implements TargetCalculator{
     public XCalculator(TargetCalculator calculator, GroupValueIndex[] topIndex) {
         this.calculator = calculator;
         this.topIndex = topIndex;
+    }
+
+    public TargetCalculator getCalculator() {
+        return calculator;
     }
 
     @Override
@@ -85,6 +89,11 @@ public class XCalculator implements TargetCalculator{
     @Override
     public CalculatorType getCalculatorType() {
         return CalculatorType.X_SUM;
+    }
+
+    @Override
+    public boolean isSumTypePlus() {
+        return calculator.isSumTypePlus();
     }
 
     @Override

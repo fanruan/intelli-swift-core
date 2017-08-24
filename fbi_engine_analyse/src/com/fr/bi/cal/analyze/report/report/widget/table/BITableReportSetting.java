@@ -21,10 +21,6 @@ public class BITableReportSetting extends BIAbstractTableSetting {
     protected String[] column;
     @BICoreField
     protected String[] row;
-    private int number;
-    private int tableStyle;
-    private ArrayList<ArrayList<String>> complex_x_dimension;
-    private ArrayList<ArrayList<String>> complex_y_dimension;
 
     /**
      * 组
@@ -66,33 +62,6 @@ public class BITableReportSetting extends BIAbstractTableSetting {
             column = dimensionList.toArray(new String[dimensionList.size()]);
 
         }
-        if (jo.has("style")) {
-            JSONObject jo1 = jo.optJSONObject("style");
-            if (jo1.has("tableStyleGroup")) {
-                tableStyle = jo1.optInt("tableStyleGroup");
-            }
-            if (jo1.has("showNumber")) {
-                number = jo1.optBoolean("showNumber", false) ? 1 : 0;
-            }
-        }
-        JSONObject settings = jo.has("settings") ? jo.getJSONObject("settings") : new JSONObject();
-
-    }
-
-    public void addColumn2Row () {
-        ArrayList<String> mergedDims = new ArrayList<String>();
-        if(row != null) {
-            Collections.addAll(mergedDims, row);
-        }
-        if(column != null) {
-            Collections.addAll(mergedDims, column);
-        }
-        row = mergedDims.toArray(new String[mergedDims.size()]);
-        column = new String[0];
-    }
-
-    public int getTableStyle() {
-        return this.tableStyle;
     }
 
     @Override

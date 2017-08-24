@@ -22,10 +22,10 @@ public class BICubeByteWriterWrapperBuilder extends BINIOWriterBuilder<ICubeByte
 
     @Override
     protected ICubeByteWriterWrapper createNIOWriter(File target, ICubeResourceLocation location) {
-        ICubeResourceLocation contentLocation = location.copy();
-        contentLocation.setWriterSourceLocation();
-        contentLocation.setByteType();
         try {
+            ICubeResourceLocation contentLocation = location.copy().getRealLocation();
+            contentLocation.setWriterSourceLocation();
+            contentLocation.setByteType();
             return new BICubeByteWriterWrapper(BICubeDiskPrimitiveDiscovery.getInstance().getCubeWriter(contentLocation));
         } catch (Exception ignore) {
             throw new RuntimeException(ignore.getMessage(), ignore);

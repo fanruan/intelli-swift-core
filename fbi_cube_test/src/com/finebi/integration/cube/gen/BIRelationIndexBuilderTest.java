@@ -6,7 +6,6 @@ import com.finebi.cube.structure.BICubeRelation;
 import com.finebi.cube.structure.CubeRelationEntityGetterService;
 import com.finebi.cube.tools.BICubeRelationTestTool;
 import com.finebi.cube.tools.BIMemoryDataSourceFactory;
-import com.finebi.cube.utils.BITableKeyUtils;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.gvi.GVIFactory;
 import com.fr.bi.stable.gvi.RoaringGroupValueIndex;

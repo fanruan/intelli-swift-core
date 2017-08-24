@@ -61,7 +61,7 @@ public interface PerformancePlugManagerInterface {
 
     boolean updateParam(Map<String, String> resultMap);
 
-    Map<String, String> getDefaultConfig();
+    void saveDefaultConfig();
 
     Map<String, String> getExtraParam(String paramType);
 
@@ -107,6 +107,12 @@ public interface PerformancePlugManagerInterface {
      * @return
      */
     boolean isForceWriter();
+
+    /**
+     * 是否开启单文件模式
+     * @return
+     */
+    boolean isUseSingleReader();
 
     /**
      * cube文件的大小

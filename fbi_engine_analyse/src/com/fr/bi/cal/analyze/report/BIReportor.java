@@ -38,18 +38,6 @@ public class BIReportor implements BIReport {
     }
 
     /**
-     * 生成BI所展示的报表定义
-     *
-     * @param index 序号
-     * @return 报表定义
-     */
-    @Override
-    public WorkBook createWorkBook(int index, BISessionProvider session) {
-        BIWidget widget = widgets.get(index);
-        return widget.createWorkBook(session);
-    }
-
-    /**
      * @param index 序号
      * @return name 名字
      */

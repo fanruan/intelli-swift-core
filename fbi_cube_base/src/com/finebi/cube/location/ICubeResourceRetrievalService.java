@@ -1,5 +1,6 @@
 package com.finebi.cube.location;
 
+import com.finebi.cube.ICubeConfiguration;
 import com.finebi.cube.exception.BICubeResourceAbsentException;
 import com.finebi.cube.exception.IllegalCubeResourceLocationException;
 import com.finebi.cube.structure.BICubeTablePath;
@@ -50,4 +51,6 @@ public interface ICubeResourceRetrievalService {
     ICubeResourceLocation retrieveResource(ITableKey table, BIColumnKey field) throws BICubeResourceAbsentException, URISyntaxException;
 
     ICubeResourceLocation retrieveResource(ITableKey table, BIColumnKey field, BICubeTablePath tableRelationPath) throws BICubeResourceAbsentException, URISyntaxException;
+
+    ICubeConfiguration getCubeConfiguration();
 }

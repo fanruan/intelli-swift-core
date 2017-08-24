@@ -1,6 +1,6 @@
 package com.fr.bi.cal.analyze.cal.sssecret;
 
-import com.fr.bi.cal.analyze.cal.result.BIXLeftNode;
+import com.fr.bi.report.result.BIXLeftNode;
 import com.fr.bi.report.key.TargetGettingKey;
 import com.fr.bi.report.key.XTargetGettingKey;
 import com.fr.bi.stable.gvi.GroupValueIndex;
@@ -29,6 +29,11 @@ public class XMetricMergeResult extends MetricMergeResult implements BIXLeftNode
 
     public Number[][] getXValue(){
         return xValue;
+    }
+
+    @Override
+    public void setXValue(Number[][] xValue) {
+        this.xValue = xValue;
     }
 
     @Override

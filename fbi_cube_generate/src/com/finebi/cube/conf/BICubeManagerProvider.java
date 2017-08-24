@@ -29,7 +29,7 @@ public interface BICubeManagerProvider {
     /**
      * 重置cube生成时间
      */
-    void resetCubeGenerationHour(long userId);
+    void resetCubeTimerTasks(long userId);
 
     /**
      * 增加任务

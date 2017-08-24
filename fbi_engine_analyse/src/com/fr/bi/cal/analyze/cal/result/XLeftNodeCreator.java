@@ -7,6 +7,7 @@ import com.fr.bi.cal.analyze.cal.sssecret.XMetricMergeResult;
 import com.fr.bi.field.target.calculator.cal.CalCalculator;
 import com.fr.bi.report.key.TargetGettingKey;
 import com.fr.bi.report.key.XTargetGettingKey;
+import com.fr.bi.report.result.BIXLeftNode;
 import com.fr.bi.report.result.TargetCalculator;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 
@@ -56,7 +57,6 @@ public class XLeftNodeCreator implements NodeCreator {
     @Override
     public void sumCalculateMetrics(List<TargetCalculator> calculatorList, List<CalCalculator> calCalculators, MetricMergeResult rootNode) {
         CubeIndexLoader.calculateXTargets(calculatorList, calCalculators, (XMetricMergeResult)rootNode, topLen);
-
     }
 
     @Override
@@ -64,8 +64,9 @@ public class XLeftNodeCreator implements NodeCreator {
         if (mergeResult != null){
             node.setSummaryValue(mergeResult.getSummaryValue());
             if (mergeResult instanceof XMetricMergeResult){
-                ((XLeftNode)node).setXValue(((XMetricMergeResult)mergeResult).getXValue());
+                ((BIXLeftNode)node).setXValue(((BIXLeftNode)mergeResult).getXValue());
             }
         }
     }
+
 }

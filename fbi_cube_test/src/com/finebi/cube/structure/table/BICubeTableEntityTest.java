@@ -8,7 +8,6 @@ import com.finebi.cube.ICubeConfiguration;
 import com.finebi.cube.location.*;
 import com.finebi.cube.structure.column.CubeColumnReaderService;
 import com.finebi.cube.structure.column.date.BIDateColumnTool;
-import com.finebi.cube.utils.BITableKeyUtils;
 import com.fr.bi.common.factory.BIFactoryHelper;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.finebi.cube.common.log.BILoggerFactory;

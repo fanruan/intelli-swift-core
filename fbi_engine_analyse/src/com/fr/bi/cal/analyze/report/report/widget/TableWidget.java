@@ -7,7 +7,6 @@ import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.cal.analyze.cal.result.BIComplexExecutData;
 import com.fr.bi.cal.analyze.cal.result.ComplexExpander;
 import com.fr.bi.cal.analyze.cal.result.CrossExpander;
-import com.fr.bi.cal.analyze.cal.table.PolyCubeECBlock;
 import com.fr.bi.cal.analyze.executor.BIEngineExecutor;
 import com.fr.bi.cal.analyze.executor.paging.PagingFactory;
 import com.fr.bi.cal.analyze.executor.table.AbstractTableWidgetExecutor;
@@ -18,12 +17,13 @@ import com.fr.bi.cal.analyze.executor.table.CrossExecutor;
 import com.fr.bi.cal.analyze.executor.table.GroupExecutor;
 import com.fr.bi.cal.analyze.executor.table.HorGroupExecutor;
 import com.fr.bi.cal.analyze.executor.utils.GlobalFilterUtils;
-import com.fr.bi.cal.analyze.report.report.widget.chart.calculator.builder.IExcelDataBuilder;
+import com.fr.bi.cal.analyze.report.report.widget.chart.calculator.builder.ITableSCDataBuilder;
 import com.fr.bi.cal.analyze.report.report.widget.chart.calculator.builder.SummaryComplexTableBuilder;
 import com.fr.bi.cal.analyze.report.report.widget.chart.calculator.builder.SummaryCrossTableDataBuilder;
 import com.fr.bi.cal.analyze.report.report.widget.chart.calculator.builder.SummaryGroupTableDataBuilder;
 import com.fr.bi.cal.analyze.report.report.widget.chart.calculator.format.operation.BITableCellDateFormatOperation;
 import com.fr.bi.cal.analyze.report.report.widget.chart.calculator.format.operation.BITableCellNumberFormatOperation;
+import com.fr.bi.cal.analyze.report.report.widget.chart.calculator.format.operation.BITableCellStringOperation;
 import com.fr.bi.cal.analyze.report.report.widget.chart.calculator.format.operation.ITableCellFormatOperation;
 import com.fr.bi.cal.analyze.report.report.widget.chart.calculator.format.setting.BICellFormatSetting;
 import com.fr.bi.cal.analyze.report.report.widget.chart.calculator.format.setting.ICellFormatSetting;
@@ -34,10 +34,14 @@ import com.fr.bi.cal.analyze.report.report.widget.util.BIWidgetFactory;
 import com.fr.bi.cal.analyze.session.BISession;
 import com.fr.bi.common.persistent.annotation.PersistNameHistory;
 import com.fr.bi.common.persistent.xml.BIIgnoreField;
+import com.fr.bi.conf.fs.BIChartStyleAttr;
+import com.fr.bi.conf.fs.FBIConfig;
+import com.fr.bi.conf.fs.tablechartstyle.BIWidgetBackgroundAttr;
 import com.fr.bi.conf.report.SclCalculator;
 import com.fr.bi.conf.report.WidgetType;
 import com.fr.bi.conf.report.conf.BIWidgetConf;
 import com.fr.bi.conf.report.conf.BIWidgetSettings;
+import com.fr.bi.conf.report.conf.dimension.BIDimensionConf;
 import com.fr.bi.conf.report.style.BITableStyle;
 import com.fr.bi.conf.report.widget.BIWidgetStyle;
 import com.fr.bi.conf.report.widget.field.BITargetAndDimension;
@@ -49,11 +53,11 @@ import com.fr.bi.field.target.target.TargetType;
 import com.fr.bi.field.target.target.cal.target.configure.BIConfiguredCalculateTarget;
 import com.fr.bi.field.target.target.cal.target.configure.BIPeriodConfiguredCalculateTarget;
 import com.fr.bi.report.key.TargetGettingKey;
+import com.fr.bi.report.result.BIResult;
 import com.fr.bi.report.result.TargetCalculator;
 import com.fr.bi.stable.constant.BIJSONConstant;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.constant.BIStyleConstant;
-import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.gvi.GVIUtils;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.utils.BITravalUtils;
@@ -61,7 +65,6 @@ import com.fr.general.ComparatorUtils;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
-import com.fr.report.poly.TemplateBlock;
 import com.fr.stable.StringUtils;
 
 import javax.servlet.http.HttpServletRequest;
@@ -84,6 +87,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class TableWidget extends SummaryWidget implements SclCalculator {
 
     private static final long serialVersionUID = -4736577206434772688L;
+    private int PAGE_SPINNER = 5;
 
     /**
      * 保存列字段等内容
@@ -91,7 +95,7 @@ public class TableWidget extends SummaryWidget implements SclCalculator {
     @BICoreField
     private BITableReportSetting data = new BITableReportSetting();
 
-    private int[] pageSpinner = new int[5];
+    private int[] pageSpinner = new int[PAGE_SPINNER];
 
     private int operator = BIReportConstant.TABLE_PAGE_OPERATOR.REFRESH;
 
@@ -104,6 +108,7 @@ public class TableWidget extends SummaryWidget implements SclCalculator {
     @BIIgnoreField
     private transient BISummaryTarget[] usedTargets;
 
+    @BICoreField
     protected Map<String, JSONArray> clicked = new HashMap<String, JSONArray>();
 
     protected Map<String, BIDimension> dimensionsIdMap = new HashMap<String, BIDimension>();
@@ -111,6 +116,7 @@ public class TableWidget extends SummaryWidget implements SclCalculator {
     private Map<String, BISummaryTarget> targetsIdMap = new HashMap<String, BISummaryTarget>();
 
     protected Map<Integer, List<String>> view = new HashMap<Integer, List<String>>();
+
     private BIWidgetStyle style;
 
     @Override
@@ -119,6 +125,17 @@ public class TableWidget extends SummaryWidget implements SclCalculator {
         this.pageSpinner[index] = value;
     }
 
+    public int[] getPageSpinner() {
+
+        return pageSpinner;
+    }
+
+    public void setPageSpinner(int[] pageSpinner) {
+
+        this.pageSpinner = pageSpinner;
+    }
+
+    @BICoreField
     private TableWidget linkedWidget;
 
     @Override
@@ -194,6 +211,7 @@ public class TableWidget extends SummaryWidget implements SclCalculator {
      */
     @Override
     public int isOrder() {
+
         return getWidgetConf().isOrder();
     }
 
@@ -202,7 +220,7 @@ public class TableWidget extends SummaryWidget implements SclCalculator {
         boolean calculateTarget = targetSort != null || !targetFilterMap.isEmpty();
         CrossExpander expander = new CrossExpander(complexExpander.getXExpander(0), complexExpander.getYExpander(0));
         boolean hasTarget = calculateTarget || getViewTargets().length > 0;
-        if (this.tableType == BIReportConstant.TABLE_WIDGET.COMPLEX_TYPE || this.tableType == BIReportConstant.WIDGET.DOT) {
+        if (this.tableType == BIReportConstant.TABLE_WIDGET.COMPLEX_TYPE) {
             return createComplexExecutor(session, hasTarget, complexExpander, expander);
         } else {
             return createNormalExecutor(session, hasTarget, getViewDimensions(), getViewTopDimensions(), expander);
@@ -234,17 +252,11 @@ public class TableWidget extends SummaryWidget implements SclCalculator {
         //列表头区域里没有维度
         boolean b2 = !row.isEmpty() && columnLen == 0 && hasTarget;
         boolean b3 = !row.isEmpty() && columnLen == 0 && summaryLen == 0;
-        if (b0) {
+        if (b0 || b1) {
             executor = new ComplexHorGroupExecutor(this, PagingFactory.createPaging(PagingFactory.PAGE_PER_GROUP_20, operator), column, session, complexExpander);
-        } else if (b1) {
-            //原来是ComplexHorGroupNoneExecutor, 先改成ComplexHorGroupExecutor，有问题再改回来
-            executor = new ComplexHorGroupExecutor(this, PagingFactory.createPaging(PagingFactory.PAGE_PER_GROUP_20, operator), column, session, complexExpander);
-        } else if (b2) {
+        }  else if (b2 || b3) {
             executor = new ComplexGroupExecutor(this, PagingFactory.createPaging(PagingFactory.PAGE_PER_GROUP_20, operator), row, session, complexExpander);
-        } else if (b3) {
-            //同b1
-            executor = new ComplexGroupExecutor(this, PagingFactory.createPaging(PagingFactory.PAGE_PER_GROUP_20, operator), row, session, complexExpander);
-        } else {
+        }  else {
             executor = new ComplexCrossExecutor(this, PagingFactory.createPaging(PagingFactory.PAGE_PER_GROUP_20, operator), row, column, session, complexExpander);
         }
         return executor;
@@ -253,7 +265,6 @@ public class TableWidget extends SummaryWidget implements SclCalculator {
     private BIEngineExecutor createNormalExecutor(BISession session, boolean hasTarget, BIDimension[] usedRows, BIDimension[] usedColumn, CrossExpander expander) {
 
         BIEngineExecutor executor;
-        int summaryLen = getViewTargets().length;
         //有列表头和指标 horGroupExecutor 垂直的分组表
         boolean b0 = usedColumn.length > 0 && usedRows.length == 0 && hasTarget;
         //有表头没有指标
@@ -283,15 +294,6 @@ public class TableWidget extends SummaryWidget implements SclCalculator {
         }
         jo.put("page", ja);
         return jo;
-    }
-
-    /**
-     * 创建表格的Block
-     */
-    @Override
-    protected TemplateBlock createBIBlock(BISession session) {
-
-        return new PolyCubeECBlock(this, session, operator);
     }
 
     @Override
@@ -491,6 +493,7 @@ public class TableWidget extends SummaryWidget implements SclCalculator {
     }
 
     public String getThemeColor() {
+
         switch (tableType) {
             case BIReportConstant.WIDGET.TABLE:
             case BIReportConstant.WIDGET.CROSS_TABLE:
@@ -578,6 +581,7 @@ public class TableWidget extends SummaryWidget implements SclCalculator {
      * @throws Exception
      */
     public GroupValueIndex getLinkFilter(TableWidget linkedWidget, BusinessTable targetKey, Map<String, JSONArray> clicked, BISession session) throws Exception {
+
         BIEngineExecutor linkExecutor = linkedWidget.getExecutor(session);
         GroupValueIndex linkGvi = null;
         // 分组表,交叉表,复杂表的时候才有联动的必要
@@ -606,17 +610,19 @@ public class TableWidget extends SummaryWidget implements SclCalculator {
 
     /*todo 想办法把数据和样式格式分离出来*/
     public JSONObject getPostOptions(BISessionProvider session, HttpServletRequest req) throws Exception {
+
         JSONObject res = this.createDataJSON(session, req);
         return calculateSCData(widgetConf, res.getJSONObject("data")).put("page", res.getJSONArray("page")).put("viewDimensionsLength", getViewDimensions().length).put("viewTopDimensionsLength", getViewTopDimensions().length).put("widgetType", this.tableType);
     }
 
     @Override
     public JSONObject calculateSCData(BIWidgetConf widgetConf, JSONObject data) throws Exception {
-        Map<Integer, List<JSONObject>> viewMap = this.createViewMap(widgetConf);
+
+        Map<Integer, List<BIDimensionConf>> viewMap = this.createViewMap(widgetConf);
         BIWidgetSettings widgetSettings = getWidgetSettings(widgetConf);
-        Map<String, ITableCellFormatOperation> operationMap = getITableCellFormatOperationMap();
-        IExcelDataBuilder builder = null;
-        switch (this.tableType) {
+        Map<String, ITableCellFormatOperation> operationMap = createOperationMap(widgetConf);
+        ITableSCDataBuilder builder = null;
+        switch (widgetConf.getType()) {
             case BIReportConstant.TABLE_WIDGET.CROSS_TYPE:
                 builder = new SummaryCrossTableDataBuilder(viewMap, data, widgetSettings);
                 break;
@@ -627,46 +633,81 @@ public class TableWidget extends SummaryWidget implements SclCalculator {
                 builder = new SummaryComplexTableBuilder(viewMap, data, widgetSettings);
                 break;
         }
+
         DataConstructor res = BITableConstructHelper.buildTableData(builder);
-        BITableConstructHelper.formatCells(res, operationMap, widgetSettings);
+        BITableConstructHelper.formatCells(res, operationMap, widgetSettings, getBackgroundColor(widgetConf));
         return res.createJSON();
     }
 
-    private Map<String, ITableCellFormatOperation> getITableCellFormatOperationMap() throws Exception {
+    /*
+    * 此处仅需要考虑widget背景颜色,其他内容在他处计算
+    * 基本逻辑如下：
+    * 样式共四层，优先级由低到高依次为：系统设置样式，该模板全局样式，widget样式，指标样式，此处处理前三个
+    * 当样式不一致时，优先级高的覆盖低的，选择纯色背景切设置为自动或透明时，展示效果同次一级的样式
+    * */
+    private BIWidgetBackgroundAttr getBackgroundColor(BIWidgetConf widgetConf) throws Exception {
+        BIChartStyleAttr systemStyle = FBIConfig.getInstance().getChartStyleAttr();
+        BIChartStyleAttr globalStyle = widgetConf.getGlobalStyleAttr();
+        BIChartStyleAttr widgetStyle = getWidgetSettings(widgetConf).getWidgetStyle();
+        BIWidgetBackgroundAttr finalBackgroundStyle = new BIWidgetBackgroundAttr();
+        if (!widgetStyle.getWidgetBackground().isUseSuperiorStyle()) {
+            finalBackgroundStyle = widgetStyle.getWidgetBackground();
+        } else if (!globalStyle.getWidgetBackground().isUseSuperiorStyle()) {
+            finalBackgroundStyle = globalStyle.getWidgetBackground();
+        } else {
+            finalBackgroundStyle = systemStyle.getWidgetBackground();
+        }
+        return finalBackgroundStyle;
+    }
+
+
+    private Map<String, ITableCellFormatOperation> createOperationMap(BIWidgetConf config) throws Exception {
 
         Map<String, ITableCellFormatOperation> formOperationsMap = new HashMap<String, ITableCellFormatOperation>();
-        createFormatOperations(formOperationsMap);
+        Map<Integer, List<BIDimensionConf>> viewMap = config.getDetailViewMap();
+        for (Integer integer : viewMap.keySet()) {
+            List<BIDimensionConf> dimJo = viewMap.get(integer);
+            for (BIDimensionConf dimConf : dimJo) {
+                if (dimConf.isDimensionUsed()) {
+                    String dId = dimConf.getDimensionID();
+                    int type = dimConf.getDimensionType();
+                    ICellFormatSetting setting = new BICellFormatSetting();
+                    if (config.getDimensions().getJSONObject(dId).has("settings")) {
+                        setting.parseJSON(config.getDimensions().getJSONObject(dId).optJSONObject("settings"));
+                    }
+                    ITableCellFormatOperation op = null;
+                    switch (type) {
+                        case BIReportConstant.TARGET_TYPE.STRING:
+                            op = new BITableCellStringOperation(setting);
+                            break;
+                        case BIReportConstant.TARGET_TYPE.NUMBER:
+                        case BIReportConstant.TARGET_TYPE.COUNTER:
+                        case BIReportConstant.TARGET_TYPE.FORMULA:
+                        case BIReportConstant.TARGET_TYPE.SUM_OF_ABOVE:
+                        case BIReportConstant.TARGET_TYPE.SUM_OF_ABOVE_IN_GROUP:
+                        case BIReportConstant.TARGET_TYPE.SUM_OF_ALL:
+                        case BIReportConstant.TARGET_TYPE.SUM_OF_ALL_IN_GROUP:
+                        case BIReportConstant.TARGET_TYPE.RANK:
+                        case BIReportConstant.TARGET_TYPE.RANK_IN_GROUP:
+                        case BIReportConstant.TARGET_TYPE.YEAR_ON_YEAR_RATE:
+                        case BIReportConstant.TARGET_TYPE.MONTH_ON_MONTH_RATE:
+                        case BIReportConstant.TARGET_TYPE.YEAR_ON_YEAR_VALUE:
+                        case BIReportConstant.TARGET_TYPE.MONTH_ON_MONTH_VALUE:
+                            op = new BITableCellNumberFormatOperation(setting);
+                            break;
+                        case BIReportConstant.TARGET_TYPE.DATE:
+                            op = new BITableCellDateFormatOperation(config.getDimensions().getJSONObject(dId).getJSONObject("group").getInt("type"), setting);
+                            break;
+                        default:
+                            op = new BITableCellStringOperation(setting);
+                            break;
+                    }
+                    formOperationsMap.put(dId, op);
+                }
+            }
+
+        }
         return formOperationsMap;
-    }
-
-    private void createFormatOperations(Map<String, ITableCellFormatOperation> operationsMap) throws Exception {
-
-        for (BISummaryTarget target : this.getTargets()) {
-            ICellFormatSetting setting = new BICellFormatSetting();
-            setting.parseJSON(target.getChartSetting().getSettings());
-            ITableCellFormatOperation op = new BITableCellNumberFormatOperation(setting);
-            operationsMap.put(target.getId(), op);
-        }
-        for (BIDimension dimension : this.getDimensions()) {
-            if (isStringDimension(dimension)) {
-                continue;
-            }
-            ICellFormatSetting setting = new BICellFormatSetting();
-            setting.parseJSON(dimension.getChartSetting().getSettings());
-            ITableCellFormatOperation op;
-            if (dimension.createColumnKey().getFieldType() == DBConstant.COLUMN.NUMBER) {
-                op = new BITableCellNumberFormatOperation(setting);
-            } else {
-                op = new BITableCellDateFormatOperation(dimension.getGroup().getType(), setting);
-            }
-            operationsMap.put(dimension.getId(), op);
-        }
-    }
-
-    //todo 简单处理，之后要提个接口
-    private boolean isStringDimension(BIDimension dimension) {
-
-        return dimension.createColumnKey().getFieldType() == DBConstant.COLUMN.STRING;
     }
 
     public String getDimensionNameByID(String dID) throws Exception {
@@ -709,8 +750,9 @@ public class TableWidget extends SummaryWidget implements SclCalculator {
         throw new Exception();
     }
 
-    private Map<Integer, List<JSONObject>> createViewMap(BIWidgetConf widgetConf) throws Exception {
-        if (widgetConf == null) {
+    private Map<Integer, List<BIDimensionConf>> createViewMap(BIWidgetConf widgetConf) throws Exception {
+
+        if (widgetConf != null) {
             return widgetConf.getDetailViewMap();
         } else {
             return this.widgetConf.getDetailViewMap();
@@ -718,6 +760,7 @@ public class TableWidget extends SummaryWidget implements SclCalculator {
     }
 
     public BITableStyle getTableStyle() {
+
         String themeColor;
         switch (tableType) {
             case BIReportConstant.WIDGET.TABLE:
@@ -727,11 +770,13 @@ public class TableWidget extends SummaryWidget implements SclCalculator {
                 break;
             default:
                 themeColor = BIStyleConstant.DEFAULT_CHART_SETTING.THEME_COLOR;
+                break;
         }
         return new BITableStyle(themeColor);
     }
 
     public BIWidgetStyle getStyle() {
+
         return style;
     }
 
@@ -770,10 +815,8 @@ public class TableWidget extends SummaryWidget implements SclCalculator {
 
         if (targetKey == null) {
             return null;
-        }
-
-        // 如果是跳转打开的才需要进行设置
-        if (getGlobalFilterWidget() != null) {
+        } else if (getGlobalFilterWidget() != null) {
+            // 如果是跳转打开的才需要进行设置
             // 如果已经设置了源字段和目标字段
             if (((AbstractBIWidget) getGlobalFilterWidget()).getGlobalSourceAndTargetFieldList().size() > 0) {
                 return GlobalFilterUtils.getSettingSourceAndTargetJumpFilter(this, userId, session, targetKey, ((AbstractBIWidget) getGlobalFilterWidget()).getBaseTable());
@@ -792,4 +835,16 @@ public class TableWidget extends SummaryWidget implements SclCalculator {
         return null;
     }
 
+    public BIResult getExportData(BISessionProvider session) {
+
+        BIEngineExecutor executor = getExecutor((BISession) session);
+        try {
+            if (executor != null) {
+                return executor.getResult();
+            }
+        } catch (Exception e) {
+            BILoggerFactory.getLogger(this.getClass()).info("error in get result data");
+        }
+        return null;
+    }
 }

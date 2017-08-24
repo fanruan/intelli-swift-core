@@ -3,7 +3,7 @@ package com.fr.bi.field.target.calculator.cal;
 import com.finebi.cube.api.ICubeDataLoader;
 import com.finebi.cube.api.ICubeTableService;
 import com.finebi.cube.conf.table.BusinessTable;
-import com.fr.bi.cal.analyze.cal.result.BIXLeftNode;
+import com.fr.bi.report.result.BIXLeftNode;
 import com.fr.bi.conf.report.widget.field.target.BITarget;
 import com.fr.bi.field.target.target.cal.BICalculateTarget;
 import com.fr.bi.report.key.TargetGettingKey;
@@ -101,6 +101,11 @@ public abstract class CalCalculator implements TargetCalculator {
     @Override
     public CalculatorType getCalculatorType() {
         return CalculatorType.CAL_SUM;
+    }
+
+    @Override
+    public boolean isSumTypePlus() {
+        return false;
     }
 
     @Override

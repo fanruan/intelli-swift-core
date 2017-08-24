@@ -5,14 +5,20 @@ import com.finebi.cube.conf.table.BusinessTable;
 import com.fr.base.Style;
 import com.fr.bi.base.FinalInt;
 import com.fr.bi.cal.analyze.cal.index.loader.CubeIndexLoader;
-import com.fr.bi.cal.analyze.cal.result.BIXLeftNode;
+import com.fr.bi.cal.analyze.cal.index.loader.cache.WidgetCache;
+import com.fr.bi.cal.analyze.cal.index.loader.cache.WidgetCacheKey;
+import com.fr.bi.report.result.BIXLeftNode;
 import com.fr.bi.cal.analyze.cal.result.CrossExpander;
 import com.fr.bi.cal.analyze.cal.result.Node;
 import com.fr.bi.cal.analyze.cal.result.XNode;
-import com.fr.bi.cal.analyze.executor.iterator.StreamPagedIterator;
-import com.fr.bi.cal.analyze.executor.iterator.TableCellIterator;
+import com.fr.bi.cal.analyze.cal.result.operator.Operator;
+import com.fr.bi.cal.analyze.cal.sssecret.NodeDimensionIterator;
+import com.fr.bi.cal.analyze.cal.sssecret.PageIteratorGroup;
+import com.fr.bi.export.iterator.StreamPagedIterator;
+import com.fr.bi.export.iterator.TableCellIterator;
 import com.fr.bi.cal.analyze.executor.paging.Paging;
-import com.fr.bi.cal.analyze.executor.utils.ExecutorUtils;
+import com.fr.bi.cal.analyze.executor.paging.PagingFactory;
+import com.fr.bi.export.utils.GeneratorUtils;
 import com.fr.bi.cal.analyze.report.report.widget.TableWidget;
 import com.fr.bi.cal.analyze.session.BISession;
 import com.fr.bi.cal.report.engine.CBCell;
@@ -20,6 +26,7 @@ import com.fr.bi.conf.report.conf.BIWidgetConf;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.field.target.target.BISummaryTarget;
 import com.fr.bi.report.key.TargetGettingKey;
+import com.fr.bi.report.result.BICrossNode;
 import com.fr.bi.stable.gvi.GVIUtils;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.general.DateUtils;
@@ -97,7 +104,7 @@ public class CrossExecutor extends AbstractTableWidgetExecutor<XNode> {
         int columnEndIdx = top.getTotalLengthWithSummary() * usedSumTarget.length + columnTitleSpan;
         int colDimLen = 0;
         while (colDimLen < colDimension.length) {
-            CBCell cell = ExecutorUtils.createCBCell(colDimension[colDimLen].getText(), rowIdx.value, 1, 0, rowDimension.length, widget.getTableStyle().getHeaderStyle(Style.getInstance()));
+            CBCell cell = GeneratorUtils.createCBCell(colDimension[colDimLen].getText(), rowIdx.value, 1, 0, rowDimension.length, widget.getTableStyle().getHeaderStyle(Style.getInstance()));
             pagedIterator.addCell(cell);
             FinalInt columnIdx = new FinalInt();
             columnIdx.value = columnTitleSpan;
@@ -108,7 +115,7 @@ public class CrossExecutor extends AbstractTableWidgetExecutor<XNode> {
         }
 
         for (int i = 0; i < columnTitleSpan; i++) {
-            CBCell cell = ExecutorUtils.createCBCell(rowDimension[i].getText(), rowIdx.value, 1, i, 1, widget.getTableStyle().getHeaderStyle(Style.getInstance()));
+            CBCell cell = GeneratorUtils.createCBCell(rowDimension[i].getText(), rowIdx.value, 1, i, 1, widget.getTableStyle().getHeaderStyle(Style.getInstance()));
             pagedIterator.addCell(cell);
         }
         FinalInt targetsTitleColumnIdx = new FinalInt();
@@ -127,9 +134,9 @@ public class CrossExecutor extends AbstractTableWidgetExecutor<XNode> {
             Object data = temp.getData();
             BIDimension[] dims = widget.getViewTopDimensions();
             BIDimension dim = dims[rowIdx];
-            Object v = ExecutorUtils.formatDateGroup(dim.getGroup().getType(), dim.toString(dim.getValueByType(data)));
+            Object v = GeneratorUtils.formatDateGroup(dim.getGroup().getType(), dim.toString(dim.getValueByType(data)));
             int rowSpan = (rowIdx == dims.length - 1) ? (usedSumTarget.length == 1 ? 2 : 1) : 1;
-            CBCell cell = ExecutorUtils.createCBCell(v, rowIdx, rowSpan, columnIdx.value, columnSpan, widget.getTableStyle().getHeaderStyle(Style.getInstance()));
+            CBCell cell = GeneratorUtils.createCBCell(v, rowIdx, rowSpan, columnIdx.value, columnSpan, widget.getTableStyle().getHeaderStyle(Style.getInstance()));
             pagedIterator.addCell(cell);
             columnIdx.value += columnSpan;
             if (widget.showColumnTotal()) {
@@ -143,7 +150,7 @@ public class CrossExecutor extends AbstractTableWidgetExecutor<XNode> {
 
         if (checkIfGenerateTitleSumCells(temp) && temp.getParent().getChildLength() != 1) {
             if (rowIdx > 0) {
-                CBCell cell = ExecutorUtils.createCBCell(Inter.getLocText("BI-Summary_Values"), rowIdx, temp.getDeep(), columnIdx.value, widget.getViewTargets().length, widget.getTableStyle().getHeaderStyle(Style.getInstance()));
+                CBCell cell = GeneratorUtils.createCBCell(Inter.getLocText("BI-Summary_Values"), rowIdx, temp.getDeep(), columnIdx.value, widget.getViewTargets().length, widget.getTableStyle().getHeaderStyle(Style.getInstance()));
                 pagedIterator.addCell(cell);
             } else {
                 generateTargetTitleWithSum(Inter.getLocText("BI-Summary_Values") + ":", pagedIterator, rowIdx, columnIdx, temp.getDeep() + 1);
@@ -180,7 +187,7 @@ public class CrossExecutor extends AbstractTableWidgetExecutor<XNode> {
         int lengthWithSum = top.getTotalLength();
         while (temp != null && columnIdx.value < colEndIdx) {
             for (int i = 0; i < lengthWithSum; i++) {
-                generateTargetTitleWithSum("", pagedIterator, rowIdx, columnIdx, 1);
+                generateTargetTitleWithSum(StringUtils.EMPTY, pagedIterator, rowIdx, columnIdx, 1);
             }
             if (widget.showColumnTotal()) {
                 generateTargetTitleSum(temp, pagedIterator, rowIdx, columnIdx);
@@ -205,9 +212,9 @@ public class CrossExecutor extends AbstractTableWidgetExecutor<XNode> {
             BIWidgetConf setting = widget.getWidgetConf();
             int numLevel = setting.getNumberLevelByTargetID(anUsedSumTarget.getId());
             String unit = setting.getUnitByTargetID(anUsedSumTarget.getId());
-            String levelAndUnit = ExecutorUtils.formatLevelAndUnit(numLevel, unit);
+            String levelAndUnit = GeneratorUtils.formatLevelAndUnit(numLevel, unit);
             String dimensionUnit = StringUtils.isEmpty(levelAndUnit) ? "" : "(" + levelAndUnit + ")";
-            CBCell cell = ExecutorUtils.createCBCell(text + anUsedSumTarget.getText() + dimensionUnit, rowIdx, rowSpan, columnIdx.value++, 1, widget.getTableStyle().getHeaderStyle(Style.getInstance()));
+            CBCell cell = GeneratorUtils.createCBCell(text + anUsedSumTarget.getText() + dimensionUnit, rowIdx, rowSpan, columnIdx.value++, 1, widget.getTableStyle().getHeaderStyle(Style.getInstance()));
             pagedIterator.addCell(cell);
         }
     }
@@ -263,11 +270,11 @@ public class CrossExecutor extends AbstractTableWidgetExecutor<XNode> {
             int rowSpan = widget.showRowToTal() ? parent.getTotalLengthWithSummary() : parent.getTotalLength();
             Object data = parent.getData();
             BIDimension dim = rowDimension[--i];
-            Object v = ExecutorUtils.formatDateGroup(dim.getGroup().getType(), dim.toString(data));
+            Object v = GeneratorUtils.formatDateGroup(dim.getGroup().getType(), dim.toString(data));
             if (v != dimensionNames[i] || (i == dimensionNames.length - 1) || parent.getParent().getTotalLength() == 1) {
                 oddEven[i]++;
                 Style style = (rowIdx.value - titleRowSpan + 1) % 2 == 1 ? widget.getTableStyle().getOddRowStyle(Style.getInstance()) : widget.getTableStyle().getEvenRowStyle(Style.getInstance());
-                CBCell cell = ExecutorUtils.createCBCell(v, rowIdx.value, rowSpan, i, 1, style);
+                CBCell cell = GeneratorUtils.createCBCell(v, rowIdx.value, rowSpan, i, 1, style);
                 pagedIterator.addCell(cell);
                 sumRowNum[i] = rowIdx.value + parent.getTotalLengthWithSummary() - 1;
                 dimensionNames[i] = v;
@@ -295,7 +302,7 @@ public class CrossExecutor extends AbstractTableWidgetExecutor<XNode> {
         for (int i = sumRowSum.length - 1; i >= 0; i--) {
             //最后一个行表头汇总行是本身
             if (i != sumRowSum.length - 1 && (widget.getViewTargets().length != 0) && checkIfGenerateRowSumCell(sumRowSum[i], rowIdx.value)) {
-                CBCell cell = ExecutorUtils.createCBCell(Inter.getLocText("BI-Summary_Values"), rowIdx.value, 1, i + 1, rowDimensionLen - (i + 1), widget.getTableStyle().getSumRowStyle(Style.getInstance()));
+                CBCell cell = GeneratorUtils.createCBCell(Inter.getLocText("BI-Summary_Values"), rowIdx.value, 1, i + 1, rowDimensionLen - (i + 1), widget.getTableStyle().getSumRowStyle(Style.getInstance()));
                 pagedIterator.addCell(cell);
                 generateTopChildren(node, pagedIterator, rowIdx.value, rowDimensionLen, widget.getTableStyle().getSumRowStyle(Style.getInstance()));
                 rowIdx.value++;
@@ -308,13 +315,22 @@ public class CrossExecutor extends AbstractTableWidgetExecutor<XNode> {
         while (xLeftNodes.getParent() != null) {
             xLeftNodes = (BIXLeftNode) xLeftNodes.getParent();
         }
-        CBCell cell = ExecutorUtils.createCBCell(Inter.getLocText("BI-Summary_Values"), rowIdx, 1, 0, rowDimensionLen, widget.getTableStyle().getHeaderStyle(Style.getInstance()));
+        CBCell cell = GeneratorUtils.createCBCell(Inter.getLocText("BI-Summary_Values"), rowIdx, 1, 0, rowDimensionLen, widget.getTableStyle().getHeaderStyle(Style.getInstance()));
         pagedIterator.addCell(cell);
         generateTopChildren(xLeftNodes, pagedIterator, rowIdx, rowDimensionLen, widget.getTableStyle().getHeaderStyle(Style.getInstance()));
     }
 
     private static boolean checkIfGenerateRowSumCell(int sumRowSum, int currentRow) {
         return sumRowSum == currentRow;
+    }
+
+    protected WidgetCacheKey createWidgetCacheKey() {
+        PageIteratorGroup iteratorGroup = getPageIterator();
+        Operator rowOp = PagingFactory.createRowOperator(paging.getOperator(), widget);
+        Operator colOp = PagingFactory.createColumnOperator(paging.getOperator(), widget);
+        int[] rowStartIndex = getStartIndex(rowOp, iteratorGroup == null ? null : iteratorGroup.getRowIterator(), rowDimension.length);
+        int[] colStartIndex = getStartIndex(colOp, iteratorGroup == null ? null : iteratorGroup.getColumnIterator(), colDimension.length);
+        return WidgetCacheKey.createKey(widget.fetchObjectCore(), expander.getYExpander(), expander.getXExpander(), rowOp, rowStartIndex, colOp, colStartIndex, widget.getAuthFilter(session.getUserId()));
     }
 
     @Override
@@ -341,16 +357,48 @@ public class CrossExecutor extends AbstractTableWidgetExecutor<XNode> {
 
     @Override
     public JSONObject createJSONObject() throws Exception {
-
-        return getCubeNode().toJSONObject(rowDimension, colDimension, widget.getTargetsKey(), widget.showColumnTotal());
+        WidgetCacheKey key = createWidgetCacheKey();
+        WidgetCache<JSONObject> widgetCache = getWidgetCache(key);
+        if (widgetCache != null) {
+            BILoggerFactory.getLogger(GroupExecutor.class).info("data existed in caches,get data from caches");
+            updateByCache(widgetCache);
+            return widgetCache.getData();
+        }
+        JSONObject jo = getCubeNode().toJSONObject(rowDimension, colDimension, widget.getTargetsKey(), widget.showColumnTotal());
+        if (isUseWidgetDataCache()){
+            PageIteratorGroup pg = session.getPageIteratorGroup(true, widget.getWidgetId());
+            NodeDimensionIterator rowIter = pg.getRowIterator().createClonedIterator();
+            rowIter.setRoot(null);
+            NodeDimensionIterator colIter = pg.getColumnIterator().createClonedIterator();
+            colIter.setRoot(null);
+            updateCache(key, new WidgetCache(jo, rowIter, colIter, widget.getPageSpinner()));
+        }
+        return jo;
     }
 
+    private void updateByCache(WidgetCache widgetCache) {
+        widget.setPageSpinner(widgetCache.getPageSpinner());
+        PageIteratorGroup pg = session.getPageIteratorGroup(true, widget.getWidgetId());
+        if (pg == null) {
+            pg = new PageIteratorGroup();
+            pg.setRowIterator(widgetCache.getRowIterator());
+            pg.setColumnIterator(widgetCache.getColumnIterator());
+            session.setPageIteratorGroup(true, widget.getWidgetId(), pg);
+        } else {
+            NodeDimensionIterator rowIterator = widgetCache.getRowIterator().createClonedIterator();
+            rowIterator.setRoot(pg.getRowIterator().getRoot());
+            pg.setRowIterator(rowIterator);
+            NodeDimensionIterator colIterator = widgetCache.getColumnIterator().createClonedIterator();
+            colIterator.setRoot(pg.getColumnIterator().getRoot());
+            pg.setColumnIterator(colIterator);
+        }
+    }
 
     public GroupValueIndex getClickGvi(Map<String, JSONArray> clicked, BusinessTable targetKey) {
 
         GroupValueIndex linkGvi = null;
         try {
-            String target = getClieckTarget(clicked);
+            String target = getClickTarget(clicked);
             // 连联动计算指标都没有就没有所谓的联动了,直接返回
             if (target == null) {
                 return null;
@@ -367,10 +415,8 @@ public class CrossExecutor extends AbstractTableWidgetExecutor<XNode> {
             getLinkRowAndColData(clicked, target, row, col, null, null);
             CubeIndexLoader cubeIndexLoader = CubeIndexLoader.getInstance(session.getUserId());
             int calPage = paging.getOperator();
-            Node left = cubeIndexLoader.getStopWhenGetRowNode(row.toArray(), widget, createTarget4Calculate(), rowDimension,
-                    allDimensions, allSumTarget, calPage, session, CrossExpander.ALL_EXPANDER.getYExpander());
-            Node top = cubeIndexLoader.getStopWhenGetRowNode(col.toArray(), widget, createTarget4Calculate(), colDimension,
-                    allDimensions, allSumTarget, calPage, session, CrossExpander.ALL_EXPANDER.getYExpander());
+            Node left = cubeIndexLoader.getStopWhenGetRowNode(row.toArray(), widget, createTarget4Calculate(), rowDimension, allDimensions, allSumTarget, calPage, session, CrossExpander.ALL_EXPANDER.getYExpander());
+            Node top = cubeIndexLoader.getStopWhenGetRowNode(col.toArray(), widget, createTarget4Calculate(), colDimension, allDimensions, allSumTarget, calPage, session, CrossExpander.ALL_EXPANDER.getYExpander());
             if (row.size() == 0 && col.size() == 0) {
                 // 总汇总值得时候
                 linkGvi = GVIUtils.AND(linkGvi, getTargetIndex(target, left));
@@ -384,5 +430,10 @@ public class CrossExecutor extends AbstractTableWidgetExecutor<XNode> {
             BILoggerFactory.getLogger(CrossExecutor.class).info("error in get link filter", e);
         }
         return linkGvi;
+    }
+
+    public BICrossNode getResult() throws Exception {
+
+        return getCubeNode();
     }
 }

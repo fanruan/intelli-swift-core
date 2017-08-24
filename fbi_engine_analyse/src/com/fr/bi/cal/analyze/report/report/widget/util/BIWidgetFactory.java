@@ -1,17 +1,7 @@
 package com.fr.bi.cal.analyze.report.report.widget.util;
 
 import com.finebi.cube.common.log.BILoggerFactory;
-import com.fr.bi.cal.analyze.report.report.VanChartWidget;
-import com.fr.bi.cal.analyze.report.report.widget.DetailWidget;
-import com.fr.bi.cal.analyze.report.report.widget.ListLabelWidget;
-import com.fr.bi.cal.analyze.report.report.widget.MonthControlWidget;
-import com.fr.bi.cal.analyze.report.report.widget.QuarterControlWidget;
-import com.fr.bi.cal.analyze.report.report.widget.SingleSliderWidget;
-import com.fr.bi.cal.analyze.report.report.widget.StringControlWidget;
-import com.fr.bi.cal.analyze.report.report.widget.TableWidget;
-import com.fr.bi.cal.analyze.report.report.widget.TreeLabelWidget;
-import com.fr.bi.cal.analyze.report.report.widget.TreeWidget;
-import com.fr.bi.cal.analyze.report.report.widget.YearControlWidget;
+import com.fr.bi.cal.analyze.report.report.widget.*;
 import com.fr.bi.conf.report.BIWidget;
 import com.fr.bi.conf.report.WidgetType;
 import com.fr.bi.conf.report.widget.chart.AbstractVanChartWidget;
@@ -29,6 +19,8 @@ import com.fr.bi.conf.report.widget.chart.VanForceBubbleWidget;
 import com.fr.bi.conf.report.widget.chart.VanFunnelWidget;
 import com.fr.bi.conf.report.widget.chart.VanGaugeWidget;
 import com.fr.bi.conf.report.widget.chart.VanGisWidget;
+import com.fr.bi.conf.report.widget.chart.VanHeatMapWidget;
+import com.fr.bi.conf.report.widget.chart.VanLineMapWidget;
 import com.fr.bi.conf.report.widget.chart.VanLineWidget;
 import com.fr.bi.conf.report.widget.chart.VanMapWidget;
 import com.fr.bi.conf.report.widget.chart.VanMultiAxisCombinationWidget;
@@ -43,6 +35,7 @@ import com.fr.bi.conf.report.widget.chart.VanStackedBarWidget;
 import com.fr.bi.conf.report.widget.chart.VanStackedColumnWidget;
 import com.fr.bi.conf.report.widget.chart.VanStackedRadarWidget;
 import com.fr.bi.conf.report.widget.chart.VanTreeMapWidget;
+import com.fr.bi.conf.report.widget.chart.VanWordCloudWidget;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;
@@ -95,7 +88,11 @@ public class BIWidgetFactory {
         vancharts.put(WidgetType.MULTI_PIE, VanMultiPieWidget.class);
 
         vancharts.put(WidgetType.MAP, VanMapWidget.class);
-        vancharts.put(WidgetType.GIS_MAP, VanGisWidget.class);    }
+        vancharts.put(WidgetType.GIS_MAP, VanGisWidget.class);
+        vancharts.put(WidgetType.HEAT_MAP, VanHeatMapWidget.class);
+        vancharts.put(WidgetType.LINE_MAP, VanLineMapWidget.class);
+        vancharts.put(WidgetType.WORD_CLOUD, VanWordCloudWidget.class);
+    }
 
 
 //todo 交给图表组处理

@@ -4,9 +4,14 @@ import com.finebi.cube.ICubeConfiguration;
 import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.conf.BICubeConfiguration;
 import com.finebi.cube.conf.utils.BILogHelper;
+import com.finebi.cube.exception.BICubeResourceAbsentException;
 import com.finebi.cube.impl.pubsub.BIProcessor;
 import com.finebi.cube.impl.pubsub.BIProcessorThreadManager;
-import com.finebi.cube.location.BICubeLocation;
+import com.finebi.cube.location.BICubeResourceRetrieval;
+import com.finebi.cube.location.ICubeResourceLocation;
+import com.finebi.cube.location.meta.BILocationInfo;
+import com.finebi.cube.location.meta.BILocationPool;
+import com.finebi.cube.location.provider.BILocationProvider;
 import com.finebi.cube.message.IMessage;
 import com.finebi.cube.structure.BITableKey;
 import com.finebi.cube.structure.Cube;
@@ -15,6 +20,7 @@ import com.finebi.cube.structure.ITableKey;
 import com.finebi.cube.utils.BITableKeyUtils;
 import com.fr.bi.conf.data.source.BIOccupiedCubeTableSource;
 import com.fr.bi.conf.data.source.ETLTableSource;
+import com.fr.bi.manager.PerformancePlugManager;
 import com.fr.bi.stable.data.db.BICubeFieldSource;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.bi.stable.data.source.CubeTableSource;
@@ -26,8 +32,13 @@ import com.fr.general.DateUtils;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * This class created on 2016/4/5.
@@ -118,18 +129,86 @@ public abstract class BISourceDataTransport extends BIProcessor {
         return parents;
     }
 
-    protected void copyFromOldCubes() {
-        long t = System.currentTimeMillis();
-        ICubeConfiguration tempConf = BICubeConfiguration.getTempConf(String.valueOf(UserControl.getInstance().getSuperManagerID()));
-        ICubeConfiguration advancedConf = BICubeConfiguration.getConf(String.valueOf(UserControl.getInstance().getSuperManagerID()));
+    /**
+     * @param tempRetrieval
+     * @param advancedRetrieval
+     */
+    private void copyWithFileUtils(BICubeResourceRetrieval tempRetrieval, BICubeResourceRetrieval advancedRetrieval) {
         try {
-            BICubeLocation from = new BICubeLocation(advancedConf.getRootURI().getPath().toString(), tableSource.getSourceID());
-            BICubeLocation to = new BICubeLocation(tempConf.getRootURI().getPath().toString(), tableSource.getSourceID());
-            BIFileUtils.copyFolder(new File(from.getAbsolutePath()), new File(to.getAbsolutePath()));
+            ICubeResourceLocation from = advancedRetrieval.retrieveResource(new BITableKey(tableSource.getSourceID()));
+            from = from.buildChildLocation("version");
+            ICubeResourceLocation to = tempRetrieval.retrieveResource(new BITableKey(tableSource.getSourceID()));
+            to = to.buildChildLocation("version");
+            BIFileUtils.copyFolder(new File(from.getRealLocation().getAbsolutePath()).getParentFile(), new File(to.getRealLocation().getAbsolutePath()).getParentFile());
         } catch (IOException e) {
             BILoggerFactory.getLogger(BISourceDataTransport.class).error(e.getMessage(), e);
         } catch (URISyntaxException e) {
             BILoggerFactory.getLogger(BISourceDataTransport.class).error(e.getMessage(), e);
+        } catch (BICubeResourceAbsentException e) {
+            BILoggerFactory.getLogger(BISourceDataTransport.class).error(e.getMessage(), e);
+        }
+        updateCubeLocationManager();
+    }
+
+    /**
+     * copy的uri在当前cube的locationManager中注册
+     * 避免替换cube路径时无法更新新路径（nevertansport）
+     */
+    private void updateCubeLocationManager() {
+        ICubeConfiguration advancedConf = BICubeConfiguration.getConf(String.valueOf(UserControl.getInstance().getSuperManagerID()));
+        ArrayList<String> searchParas = new ArrayList<String>();
+        searchParas.add(String.valueOf(UserControl.getInstance().getSuperManagerID()));
+        searchParas.add(tableSource.getSourceID());
+//        table对应的所有文件资源
+        BILocationPool srcLocations = advancedConf.getLocationProvider().getAccessLocationPool(searchParas, new ArrayList<String>());
+//      目标cube的folder
+        BILocationProvider cubeLocationManager = cube.getCubeResourceRetrievalService().getCubeConfiguration().getLocationProvider();
+        for (BILocationInfo info : srcLocations.getAllItems()) {
+            try {
+//                将copy路径注册进当前cube的路径管理器中
+                cubeLocationManager.getRealLocation(info.getLogicFolder(), info.getChild());
+            } catch (URISyntaxException e) {
+                BILoggerFactory.getLogger(this.getClass()).error(e.getMessage(),e);
+            }
+        }
+    }
+
+    /**
+     *
+     */
+    private void copyWithFineIO() {
+        ICubeConfiguration advancedConf = BICubeConfiguration.getConf(String.valueOf(UserControl.getInstance().getSuperManagerID()));
+        ArrayList<String> searchParas = new ArrayList<String>();
+        searchParas.add(String.valueOf(UserControl.getInstance().getSuperManagerID()));
+        searchParas.add(tableSource.getSourceID());
+//        table对应的所有文件资源
+        BILocationPool srcLocations = advancedConf.getLocationProvider().getAccessLocationPool(searchParas, new ArrayList<String>());
+        updateCubeLocationManager();
+        BILocationPool dstLocations = cube.getCubeResourceRetrievalService().getCubeConfiguration().getLocationProvider().getAccessLocationPool(searchParas, new ArrayList<String>());
+        for (BILocationInfo info : srcLocations.getAllItems()) {
+            try {
+                //          src 路径  /cubeFolder/userid/tableid/.../fileName
+                URI srcURI = new URI(info.getRealPath());
+                //            dst 路径
+                URI dstURI = new URI(dstLocations.getResourceItem(info.getName().value()).getRealPath());
+                // TODO: 2017/8/17
+//                FineIO.copy(srcURI,dstURI);
+            } catch (URISyntaxException e) {
+                BILoggerFactory.getLogger(this.getClass()).error(e.getMessage(),e);
+            }
+        }
+    }
+
+    protected void copyFromOldCubes() {
+        long t = System.currentTimeMillis();
+        ICubeConfiguration tempConf = cube.getCubeResourceRetrievalService().getCubeConfiguration();
+        ICubeConfiguration advancedConf = BICubeConfiguration.getConf(String.valueOf(UserControl.getInstance().getSuperManagerID()));
+        BICubeResourceRetrieval tempRetrieval = new BICubeResourceRetrieval(tempConf);
+        BICubeResourceRetrieval advancedRetrieval = new BICubeResourceRetrieval(advancedConf);
+        if (PerformancePlugManager.getInstance().isUseFineIO()) {
+            copyWithFineIO();
+        } else {
+            copyWithFileUtils(tempRetrieval, advancedRetrieval);
         }
         BILoggerFactory.getLogger().info("table name: " + tableSource.getTableName() + " update copy files cost time:" + DateUtils.timeCostFrom(t));
     }

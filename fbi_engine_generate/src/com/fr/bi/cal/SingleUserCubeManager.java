@@ -4,7 +4,7 @@ import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.impl.conf.CubeBuildStuffComplete;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.cal.generate.CubeRunner;
-import com.fr.bi.cal.generate.TimerRunner;
+import com.fr.bi.cal.generate.timerTask.CubeTimerTaskHelper;
 import com.fr.bi.stable.constant.Status;
 import com.fr.bi.stable.engine.CubeTask;
 import com.fr.bi.stable.engine.CubeTaskType;
@@ -24,13 +24,11 @@ public class SingleUserCubeManager {
     private static final long serialVersionUID = 6187369933206388925L;
     private CubeRunner runner;
     protected BIUser biUser;
-    private TimerRunner timerRunner;
 
 
     public SingleUserCubeManager(long userId) {
         biUser = new BIUser(userId);
         runner = new CubeRunner(userId);
-        timerRunner = new TimerRunner(userId);
 
         User user;
         try {
@@ -113,8 +111,8 @@ public class SingleUserCubeManager {
         return true;
     }
 
-    public void resetCubeGenerationHour() {
-        timerRunner.reGenerateTimeTasks();
+    public void resetCubeTimerTasks() {
+        CubeTimerTaskHelper.reGenerateTimeTasks();
     }
 
     /**
@@ -144,7 +142,6 @@ public class SingleUserCubeManager {
      */
     public void envChanged() {
         runner.envChanged();
-        timerRunner.envChanged();
     }
 
     public Set<String> getCubeGeneratingTableSourceIds() {

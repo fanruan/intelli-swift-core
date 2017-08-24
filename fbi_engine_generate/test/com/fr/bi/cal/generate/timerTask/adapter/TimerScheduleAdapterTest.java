@@ -1,9 +1,5 @@
 package com.fr.bi.cal.generate.timerTask.adapter;
 
-import com.fr.bi.cal.generate.timerTask.BICubeTimeTaskCreatorManager;
-import com.fr.bi.cal.generate.timerTask.BICubeTimeTaskCreatorProvider;
-import com.fr.bi.cal.generate.timerTask.TimerTaskSchedule;
-import com.fr.bi.cal.generate.timerTask.quartz.QuartzManager;
 import com.fr.third.org.quartz.SchedulerException;
 import junit.framework.TestCase;
 

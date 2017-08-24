@@ -3,6 +3,7 @@ package com.fr.bi.manager;
 import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.json.JSONObject;
 
+import java.io.File;
 import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -16,6 +17,7 @@ import java.util.Map;
 public class PerformanceParamTools {
 
     private final static String PERFORMANCE = "performance.";
+    private final static String POINT = ".";
 
     /**
      * 获取传递的字段是否和对象的某个属性相同
@@ -100,6 +102,28 @@ public class PerformanceParamTools {
                 returnMap.put(PERFORMANCE + "useDiskSort", resultParamValue);
             } else {
                 returnMap.put(PERFORMANCE + resultParamKey, resultParamValue);
+            }
+        }
+        return returnMap;
+    }
+
+    /**
+     * 将获取到配置文件的参数，进行转化
+     * @param tempMap
+     * @return
+     */
+    public static Map<String, String> convert2File (Map<String, String> tempMap) {
+        Map<String, String> returnMap = new HashMap<String, String>();
+        Iterator<String> it = tempMap.keySet().iterator();
+        while (it.hasNext()) {
+            String resultParamKey = it.next();
+            String resultParamValue = tempMap.get(resultParamKey);
+            if (resultParamKey.equals(PERFORMANCE + "returnEmptyIndex")) {
+                returnMap.put("emptyWhenNotSelect", resultParamValue);
+            } else if (resultParamKey.equals(PERFORMANCE + "useDiskSort")) {
+                returnMap.put("diskSort", resultParamValue);
+            } else {
+                returnMap.put(resultParamKey.substring(resultParamKey.indexOf(POINT) + 1), resultParamValue);
             }
         }
         return returnMap;

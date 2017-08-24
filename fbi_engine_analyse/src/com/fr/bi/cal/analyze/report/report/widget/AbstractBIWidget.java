@@ -12,6 +12,7 @@ import com.fr.bi.cal.analyze.report.report.widget.util.BIWidgetFactory;
 import com.fr.bi.cal.analyze.session.BISession;
 import com.fr.bi.cal.report.main.impl.BIWorkBook;
 import com.fr.bi.cal.report.report.poly.BIPolyWorkSheet;
+import com.fr.bi.common.persistent.xml.BIIgnoreField;
 import com.fr.bi.conf.base.auth.data.BIPackageAuthority;
 import com.fr.bi.conf.provider.BIConfigureManagerCenter;
 import com.fr.bi.conf.report.BIWidget;
@@ -21,11 +22,13 @@ import com.fr.bi.conf.report.widget.BIWidgetStyle;
 import com.fr.bi.conf.report.widget.field.BITargetAndDimension;
 import com.fr.bi.conf.report.widget.field.target.filter.TargetFilter;
 import com.fr.bi.conf.session.BISessionProvider;
+import com.fr.bi.export.block.BIPolyECBlock;
 import com.fr.bi.field.dimension.calculator.NoneDimensionCalculator;
 import com.fr.bi.field.target.filter.TargetFilterFactory;
+import com.fr.bi.report.result.BIResult;
+import com.fr.bi.report.result.DimensionCalculator;
 import com.fr.bi.stable.gvi.GVIUtils;
 import com.fr.bi.stable.gvi.GroupValueIndex;
-import com.fr.bi.report.result.DimensionCalculator;
 import com.fr.fs.control.UserControl;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;
@@ -37,12 +40,13 @@ import com.fr.stable.unit.UnitRectangle;
 import com.fr.web.core.SessionDealWith;
 
 import javax.servlet.http.HttpServletRequest;
-import java.awt.*;
+import java.awt.Rectangle;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 
 /**
@@ -69,7 +73,11 @@ public abstract class AbstractBIWidget implements BIWidget {
 
     private boolean realData = true;
 
+    @BIIgnoreField
     private String sessionId;
+
+    @BIIgnoreField
+    private BICore widgetCore;
 
     @BICoreField
     protected BIWidgetConf widgetConf = new BIWidgetConf();
@@ -118,7 +126,12 @@ public abstract class AbstractBIWidget implements BIWidget {
     }
 
     public String getWidgetId() {
-
+        /**
+         * 螺旋分析的组件都没有widgetID
+         */
+        if (widgetId == null) {
+            widgetId = UUID.randomUUID().toString();
+        }
         return widgetId;
     }
 
@@ -155,7 +168,12 @@ public abstract class AbstractBIWidget implements BIWidget {
     public BIPolyWorkSheet createWorkSheet(BISessionProvider session) {
 
         BIPolyWorkSheet ws = new BIPolyWorkSheet();
-        ws.addBlock(this.createTemplateBlock((BISession) session));
+        TemplateBlock block = createBIBlock((BISession) session);
+        block.setBlockName(CodeUtils.passwordEncode(blockName));
+        block.getBlockAttr().setFreezeHeight(true);
+        block.getBlockAttr().setFreezeWidth(true);
+        block.setBounds(getBlockBounds());
+        ws.addBlock(block);
         return ws;
     }
 
@@ -183,24 +201,16 @@ public abstract class AbstractBIWidget implements BIWidget {
     }
 
     /**
-     * 根据widget创建TemplateBlock
-     */
-    protected TemplateBlock createTemplateBlock(BISession session) {
-
-        TemplateBlock block = createBIBlock(session);
-        block.setBlockName(CodeUtils.passwordEncode(blockName));
-        block.getBlockAttr().setFreezeHeight(true);
-        block.getBlockAttr().setFreezeWidth(true);
-        block.setBounds(getBlockBounds());
-        return block;
-    }
-
-    /**
      * 根据计算好的属性创建block
      *
      * @return
      */
-    protected abstract TemplateBlock createBIBlock(BISession session);
+    protected TemplateBlock createBIBlock(BISession session) {
+
+        BIResult result = getExportData(session);
+        return new BIPolyECBlock(result, widgetConf);
+
+    }
 
 
     /**
@@ -214,10 +224,21 @@ public abstract class AbstractBIWidget implements BIWidget {
     public void parseJSON(JSONObject jo, long userId) throws Exception {
 
         widgetConf.parseJSON(jo);
-
-        blockName = widgetConf.getWidgetName();
-        widgetId = widgetConf.getWId();
-
+        int x = 0, y = 0, width = 0, height = 0;
+        if (jo.has("bounds")) {
+            JSONObject bounds = jo.getJSONObject("bounds");
+            x = bounds.optInt("left", 0);
+            y = bounds.optInt("top", 0);
+            width = bounds.optInt("width", 0);
+            height = bounds.optInt("height", 0);
+        }
+        rect.setBounds(x, y, width, height);
+        if (jo.has("name")) {
+            this.blockName = jo.getString("name");
+        }
+        if (jo.has("wId")) {
+            this.widgetId = jo.getString("wId");
+        }
         if (jo.has("filter")) {
             JSONObject filterJo = jo.getJSONObject("filter");
             filter = TargetFilterFactory.parseFilter(filterJo, userId);
@@ -265,7 +286,6 @@ public abstract class AbstractBIWidget implements BIWidget {
 
     public GroupValueIndex createFilterGVI(DimensionCalculator[] row, BusinessTable targetKey, ICubeDataLoader loader, long userId) {
 
-        // 自身的过滤
         if (row.length == 0) {
             row = new DimensionCalculator[]{new NoneDimensionCalculator(targetKey.getFields().get(0), new ArrayList<BITableSourceRelation>())};
         }
@@ -331,7 +351,10 @@ public abstract class AbstractBIWidget implements BIWidget {
     @Override
     public BICore fetchObjectCore() {
 
-        return new BICoreGenerator(this).fetchObjectCore();
+        if (widgetCore == null) {
+            widgetCore = new BICoreGenerator(this).fetchObjectCore();
+        }
+        return widgetCore;
     }
 
     @Override
@@ -341,17 +364,8 @@ public abstract class AbstractBIWidget implements BIWidget {
 
     @Override
     public Rectangle getRect() {
+
         return widgetConf.getRect();
-    }
-
-    public JSONObject getPostOptions(BISessionProvider session, HttpServletRequest req) throws Exception {
-
-        return new JSONObject();
-    }
-
-    public JSONObject createChartConfigWidthData(BISessionProvider session, HttpServletRequest req, JSONObject data) throws Exception {
-
-        return data;
     }
 
     /**
@@ -431,11 +445,17 @@ public abstract class AbstractBIWidget implements BIWidget {
     }
 
     public BIWidgetConf getWidgetConf() {
+
         return widgetConf;
     }
 
+    public BIWidgetSettings getWidgetSettings() {
+
+        return widgetConf.getWidgetSettings();
+    }
 
     public BIWidgetSettings getWidgetSettings(BIWidgetConf widgetConf) {
+
         if (null != widgetConf) {
             return widgetConf.getWidgetSettings();
         } else {
@@ -443,16 +463,23 @@ public abstract class AbstractBIWidget implements BIWidget {
         }
     }
 
-    public BIWidgetSettings getWidgetSettings() {
-        return widgetConf.getWidgetSettings();
-    }
+    public BIWidgetStyle getStyle() {
 
-    @Override
-    public JSONObject generateResult(BIWidgetConf widgetConf, JSONObject data) throws Exception {
         return null;
     }
 
-    public BIWidgetStyle getStyle() {
+    public JSONObject getPostOptions(BISessionProvider session, HttpServletRequest req) throws Exception {
+
+        return new JSONObject();
+    }
+
+    public JSONObject createChartConfigWidthData(BISessionProvider session, HttpServletRequest req, JSONObject data) throws Exception {
+
+        return data;
+    }
+
+    public BIResult getExportData(BISessionProvider session) {
+
         return null;
     }
 }

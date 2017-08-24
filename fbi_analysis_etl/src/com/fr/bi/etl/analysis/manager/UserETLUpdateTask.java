@@ -11,6 +11,9 @@ import com.finebi.cube.exception.BICubeColumnAbsentException;
 import com.finebi.cube.gen.oper.BIFieldIndexGenerator;
 import com.finebi.cube.location.BICubeLocation;
 import com.finebi.cube.location.BICubeResourceRetrieval;
+import com.finebi.cube.location.ICubeResourceLocation;
+import com.finebi.cube.location.provider.BILocationProvider;
+import com.finebi.cube.location.provider.ILocationConverter;
 import com.finebi.cube.structure.BICube;
 import com.finebi.cube.structure.CubeTableEntityService;
 import com.finebi.cube.structure.column.BIColumnKey;
@@ -21,6 +24,7 @@ import com.fr.bi.cal.stable.loader.CubeReadingTableIndexLoader;
 import com.fr.bi.common.factory.BIFactoryHelper;
 import com.fr.bi.common.inter.Traversal;
 import com.fr.bi.common.persistent.xml.BIIgnoreField;
+import com.fr.bi.conf.manager.location.BIDefaultConvertor;
 import com.fr.bi.etl.analysis.data.AnalysisCubeTableSource;
 import com.fr.bi.etl.analysis.data.UserCubeTableSource;
 import com.fr.bi.module.UserETLCubeTILoader;
@@ -49,7 +53,7 @@ import java.util.*;
  * @author Daniel
  */
 public class UserETLUpdateTask implements CubeTask, AV {
-    private static BILogger logger = BILoggerFactory.getLogger(BICube.class);
+    private static BILogger LOGGER = BILoggerFactory.getLogger(BICube.class);
 
     /**
      *
@@ -78,15 +82,21 @@ public class UserETLUpdateTask implements CubeTask, AV {
     public UserETLUpdateTask(UserCubeTableSource source) {
         this.source = source;
         this.biUser = new BIUser(source.getUserId());
+        final BILocationProvider convertor = new BIDefaultConvertor();
         this.cube = new BICube(new BICubeResourceRetrieval(new ICubeConfiguration() {
             @Override
             public URI getRootURI() {
                 try {
-                    File file = new File(new BICubeLocation(BIConfigurePathUtils.createUserETLTableBasePath(UserETLUpdateTask.this.source.fetchObjectCore().getID().getIdentityValue()), path).getAbsolutePath());
+                    File file = new File(new BICubeLocation(BIConfigurePathUtils.createUserETLTableBasePath(UserETLUpdateTask.this.source.fetchObjectCore().getID().getIdentityValue()),
+                            path, convertor).getAbsolutePath());
                     return URI.create(file.toURI().getRawPath());
                 } catch (URISyntaxException e) {
                     throw BINonValueUtils.beyondControl(e);
                 }
+            }
+            @Override
+            public BILocationProvider getLocationProvider() {
+                return convertor;
             }
         }), BIFactoryHelper.getObject(ICubeResourceDiscovery.class));
     }
@@ -111,7 +121,7 @@ public class UserETLUpdateTask implements CubeTask, AV {
                 try {
                     tableEntityService.addDataValue(v);
                 } catch (BICubeColumnAbsentException e) {
-                    logger.warn(e.getMessage(),e);
+                    LOGGER.warn(e.getMessage(),e);
                 }
             }
         }, cubeFieldSources, UserETLCubeTILoader.getInstance(biUser.getUserId())));
@@ -150,7 +160,7 @@ public class UserETLUpdateTask implements CubeTask, AV {
     @Override
     public void start() {
         start = new Date();
-        BILoggerFactory.getLogger().info("started in file path:" + path);
+        LOGGER.info("started in file path:" + path);
     }
 
 
@@ -256,7 +266,7 @@ public class UserETLUpdateTask implements CubeTask, AV {
             try {
                 this.cube.clear();
             } catch (Throwable e) {
-                BILoggerFactory.getLogger().error(e.getMessage(), e);
+                LOGGER.error(e.getMessage(), e);
             }
         }
         BIFileUtils.delete(new File(this.path).getParentFile());

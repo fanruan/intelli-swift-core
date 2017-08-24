@@ -29,14 +29,19 @@ public class BICubeTimeSchedulerServiceImpl implements BICubeTimeSchedulerServic
     }
 
     @Override
+    public void addTimeSchedulerList(List<ScheduleEntity> entities) {
+        timeSchedulerManager.scheduleTimeTasks(entities);
+    }
+
+    @Override
     public void removeAllTimeSchedulers() {
         Collection<ScheduleEntity> scheduleEntities = timeSchedulerManager.getAllScheduleEntity();
         if (scheduleEntities != null) {
-            Iterator<ScheduleEntity> iterator = scheduleEntities.iterator();
-            while (iterator.hasNext()) {
-                ScheduleEntity scheduleEntity = iterator.next();
-                timeSchedulerManager.removeScheduledTimeTask(scheduleEntity.getTaskName());
+            List<String> taskNames = new ArrayList<String>();
+            for (ScheduleEntity entity : scheduleEntities) {
+                taskNames.add(entity.getTaskName());
             }
+            timeSchedulerManager.removeScheduledTimeTasks(taskNames);
         }
     }
 
@@ -44,4 +49,5 @@ public class BICubeTimeSchedulerServiceImpl implements BICubeTimeSchedulerServic
     public void removeTimeScheduler(String taskName) {
         timeSchedulerManager.removeScheduledTimeTask(taskName);
     }
+
 }

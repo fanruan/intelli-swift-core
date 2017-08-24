@@ -1,6 +1,7 @@
 package com.finebi.cube.data.disk.reader.primitive;
 
 import com.finebi.cube.common.log.BILoggerFactory;
+import com.finebi.cube.data.disk.BICubeDiskPrimitiveDiscovery;
 import com.finebi.cube.exception.BIResourceInvalidException;
 import com.fr.bi.stable.io.newio.NIOConstant;
 import com.fr.bi.stable.utils.mem.BIReleaseUtils;

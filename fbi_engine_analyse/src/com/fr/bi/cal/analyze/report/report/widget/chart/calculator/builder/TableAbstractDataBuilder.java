@@ -5,6 +5,7 @@ import com.fr.bi.cal.analyze.report.report.widget.chart.calculator.item.BITableH
 import com.fr.bi.cal.analyze.report.report.widget.chart.calculator.item.ITableHeader;
 import com.fr.bi.cal.analyze.report.report.widget.chart.calculator.item.ITableItem;
 import com.fr.bi.cal.analyze.report.report.widget.chart.calculator.format.utils.BITableDimensionHelper;
+import com.fr.bi.conf.report.conf.dimension.BIDimensionConf;
 import com.fr.bi.conf.report.widget.BIWidgetStyle;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.constant.BIStyleConstant;
@@ -23,7 +24,7 @@ import java.util.Map;
 /**
  * Created by Kary on 2017/2/16.
  */
-public abstract class TableAbstractDataBuilder implements IExcelDataBuilder {
+public abstract class TableAbstractDataBuilder implements ITableSCDataBuilder {
     List<ITableHeader> crossHeaders;
     List<ITableItem> crossItems;
     List<String> crossDimIds;
@@ -31,7 +32,7 @@ public abstract class TableAbstractDataBuilder implements IExcelDataBuilder {
     protected List<ITableItem> items;
     protected List<ITableHeader> headers;
     protected JSONObject data;
-    Map<Integer, List<JSONObject>> dimAndTar;
+    Map<Integer, List<BIDimensionConf>> dimAndTar;
     protected BIWidgetStyle styleSetting;
     protected List<String> dimIds;
     protected List<String> targetIds;
@@ -40,7 +41,7 @@ public abstract class TableAbstractDataBuilder implements IExcelDataBuilder {
     protected static final String EMPTY_VALUE = StringUtils.EMPTY;
     protected static final String SUMMARY = Inter.getLocText("BI-Summary_Values");
 
-    public TableAbstractDataBuilder(Map<Integer, List<JSONObject>> dimAndTar, JSONObject dataJSON, BIWidgetStyle styleSettings) throws Exception {
+    public TableAbstractDataBuilder(Map<Integer, List<BIDimensionConf>> dimAndTar, JSONObject dataJSON, BIWidgetStyle styleSettings) throws Exception {
         this.data = dataJSON;
         this.dimAndTar = dimAndTar;
         this.styleSetting = styleSettings;
@@ -74,7 +75,7 @@ public abstract class TableAbstractDataBuilder implements IExcelDataBuilder {
         }
         item.setChildren(children);
         //汇总
-        validArray(data.getJSONArray("s"));
+        validArray(data.optJSONArray("s"));
 //        boolean isArrayAvailable = data.has("s") && validArray(data.getJSONArray("s"));
         boolean isArrayAvailable = data.has("s");
         if (showRowTotal && isArrayAvailable) {
@@ -114,15 +115,14 @@ public abstract class TableAbstractDataBuilder implements IExcelDataBuilder {
         items.add(item);
     }
 
-    private boolean validArray(JSONArray array) throws JSONException {
-        for (int i = 0; i < array.length(); i++) {
-            try {
-                array.get(i);
-            } catch (JSONException e) {
-                array.put(i, "");
+    private void validArray(JSONArray array) throws JSONException {
+        if (null != array) {
+            for (int i = 0; i < array.length(); i++) {
+                if (null == array.opt(i)) {
+                    array.put(i, StringUtils.EMPTY);
+                }
             }
         }
-        return true;
     }
 
     protected void createTableHeader() throws Exception {
@@ -276,18 +276,18 @@ public abstract class TableAbstractDataBuilder implements IExcelDataBuilder {
 
     protected void refreshDimsInfo() throws Exception {
         if (dimAndTar.containsKey(Integer.valueOf(BIReportConstant.REGION.DIMENSION1))) {
-            for (JSONObject s : dimAndTar.get(Integer.valueOf(BIReportConstant.REGION.DIMENSION1))) {
-                dimIds.add(s.getString("dId"));
+            for (BIDimensionConf conf : dimAndTar.get(Integer.valueOf(BIReportConstant.REGION.DIMENSION1))) {
+                dimIds.add(conf.getDimensionID());
             }
         }
         if (dimAndTar.containsKey(Integer.valueOf(BIReportConstant.REGION.DIMENSION2))) {
-            for (JSONObject s : dimAndTar.get(Integer.valueOf(BIReportConstant.REGION.DIMENSION2))) {
-                crossDimIds.add(s.getString("dId"));
+            for (BIDimensionConf conf : dimAndTar.get(Integer.valueOf(BIReportConstant.REGION.DIMENSION2))) {
+                crossDimIds.add(conf.getDimensionID());
             }
         }
         if (dimAndTar.containsKey(Integer.valueOf(BIReportConstant.REGION.TARGET1))) {
-            for (JSONObject s : dimAndTar.get(Integer.valueOf(BIReportConstant.REGION.TARGET1))) {
-                targetIds.add(s.getString("dId"));
+            for (BIDimensionConf conf : dimAndTar.get(Integer.valueOf(BIReportConstant.REGION.TARGET1))) {
+                targetIds.add(conf.getDimensionID());
             }
         }
         resetShowTotals();

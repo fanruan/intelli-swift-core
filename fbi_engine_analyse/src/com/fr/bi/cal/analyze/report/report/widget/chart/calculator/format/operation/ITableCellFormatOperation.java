@@ -7,6 +7,8 @@ import com.fr.json.JSONObject;
  */
 public interface ITableCellFormatOperation {
     String formatItemTextValues(String text) throws Exception;
+
     JSONObject createItemTextStyle(String text) throws Exception;
+
     String formatHeaderText(String headerText) throws Exception;
 }
