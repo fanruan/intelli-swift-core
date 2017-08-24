@@ -28,17 +28,6 @@ public class TreeLabelExecutor extends BIAbstractExecutor<JSONObject> {
 
     }
 
-
-    @Override
-    public TableCellIterator createCellIterator4Excel() throws Exception {
-        return null;
-    }
-
-    @Override
-    public Rectangle getSouthEastRectangle() {
-        return null;
-    }
-
     @Override
     public JSONObject getCubeNode() throws Exception {
         return null;

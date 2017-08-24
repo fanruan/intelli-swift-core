@@ -52,8 +52,6 @@ public class DetailExecutor extends AbstractDetailExecutor {
 
     private final static int MEMORY_LIMIT = 3000;
 
-    private final static int EXCEL_ROW_MODE_VALUE = ExportConstants.MAX_ROWS_2007 - 1;
-
     public DetailExecutor(DetailWidget widget,
                           //前台传过来的从1开始;
                           Paging paging,
@@ -61,58 +59,6 @@ public class DetailExecutor extends AbstractDetailExecutor {
 
         super(widget, paging, session);
 
-    }
-
-    public TableCellIterator createCellIterator4Excel() throws Exception {
-
-        final GroupValueIndex gvi = createDetailViewGvi();
-        int count = gvi.getRowsCountWithData();
-        paging.setTotalSize(count);
-        //返回前台的时候再去掉不使用的字段
-        final Set<Integer> usedDimensionIndexes = getUsedDimensionIndexes();
-        final TableCellIterator iter = new TableCellIterator(usedDimensionIndexes.size(), count + 1);
-        new Thread() {
-
-            public void run() {
-
-                try {
-                    final FinalInt start = new FinalInt();
-                    List<CBCell> cells = createHeader(CellConstant.CBCELL.TARGETTITLE_Y, usedDimensionIndexes);
-                    Iterator<CBCell> it = cells.iterator();
-                    while (it.hasNext()) {
-                        iter.getIteratorByPage(start.value).addCell(it.next());
-                    }
-                    TableRowTraversal action = new TableRowTraversal() {
-
-                        @Override
-                        public boolean actionPerformed(BIRowValue row) {
-
-                            int currentRow = (int) row.getRow() + 1;
-                            int newRow = currentRow & EXCEL_ROW_MODE_VALUE;
-                            if (newRow == 0) {
-                                iter.getIteratorByPage(start.value).finish();
-                                start.value++;
-                            }
-                            //row + 1 ? 不然覆盖掉了列名
-                            fillOneLine(iter.getIteratorByPage(start.value), newRow, row.getValues(), usedDimensionIndexes);
-                            return false;
-                        }
-                    };
-                    travel(action, gvi);
-                } catch (Exception e) {
-                    BILoggerFactory.getLogger().error(e.getMessage(), e);
-                } finally {
-                    iter.finish();
-                }
-            }
-        }.start();
-        return iter;
-    }
-
-    @Override
-    public Rectangle getSouthEastRectangle() {
-
-        return null;
     }
 
     @Override
