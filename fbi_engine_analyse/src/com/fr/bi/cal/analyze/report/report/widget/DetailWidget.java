@@ -6,12 +6,11 @@ import com.finebi.cube.conf.relation.BITableRelationHelper;
 import com.finebi.cube.conf.table.BusinessTable;
 import com.finebi.cube.relation.BITableRelation;
 import com.fr.bi.base.annotation.BICoreField;
-import com.fr.bi.cal.analyze.cal.detail.PolyCubeDetailECBlock;
 import com.fr.bi.cal.analyze.executor.detail.DetailExecutor;
 import com.fr.bi.cal.analyze.executor.paging.Paging;
 import com.fr.bi.cal.analyze.executor.paging.PagingFactory;
 import com.fr.bi.cal.analyze.report.report.widget.chart.calculator.builder.DetailTableBuilder;
-import com.fr.bi.cal.analyze.report.report.widget.chart.calculator.builder.IExcelDataBuilder;
+import com.fr.bi.cal.analyze.report.report.widget.chart.calculator.builder.ITableSCDataBuilder;
 import com.fr.bi.cal.analyze.report.report.widget.chart.calculator.format.operation.BITableCellDateFormatOperation;
 import com.fr.bi.cal.analyze.report.report.widget.chart.calculator.format.operation.BITableCellNumberFormatOperation;
 import com.fr.bi.cal.analyze.report.report.widget.chart.calculator.format.operation.BITableCellStringOperation;
@@ -26,13 +25,15 @@ import com.fr.bi.cal.analyze.report.report.widget.detail.BIDetailSetting;
 import com.fr.bi.cal.analyze.report.report.widget.util.BIWidgetFactory;
 import com.fr.bi.cal.analyze.session.BISession;
 import com.fr.bi.common.persistent.xml.BIIgnoreField;
+import com.fr.bi.conf.fs.BIChartStyleAttr;
+import com.fr.bi.conf.fs.FBIConfig;
+import com.fr.bi.conf.fs.tablechartstyle.BIWidgetBackgroundAttr;
 import com.fr.bi.conf.report.SclCalculator;
 import com.fr.bi.conf.report.WidgetType;
 import com.fr.bi.conf.report.conf.BIWidgetConf;
 import com.fr.bi.conf.report.conf.BIWidgetSettings;
 import com.fr.bi.conf.report.conf.dimension.BIDimensionConf;
 import com.fr.bi.conf.report.widget.BIWidgetStyle;
-import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.conf.report.widget.field.target.detailtarget.BIDetailTarget;
 import com.fr.bi.conf.report.widget.field.target.filter.TargetFilter;
 import com.fr.bi.conf.session.BISessionProvider;
@@ -49,7 +50,6 @@ import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.utils.program.BIStringUtils;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;
-import com.fr.report.poly.TemplateBlock;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
@@ -352,21 +352,42 @@ public class DetailWidget extends AbstractBIWidget implements SclCalculator {
     @Override
     public JSONObject calculateSCData(BIWidgetConf widgetConf, JSONObject data) throws Exception {
         Map<Integer, List<BIDimensionConf>> viewMap = widgetConf.getDetailViewMap();
-//        IExcelDataBuilder builder = new DetailTableBuilder(viewMap, data, getWidgetSettings(widgetConf));
-//        DataConstructor tableData = BITableConstructHelper.buildTableData(builder);
-//        BITableConstructHelper.formatCells(tableData, createOperationMap(widgetConf), getWidgetSettings(widgetConf));
+        ITableSCDataBuilder builder = new DetailTableBuilder(viewMap, data, getWidgetSettings(widgetConf));
+        DataConstructor tableData = BITableConstructHelper.buildTableData(builder);
+        BITableConstructHelper.formatCells(tableData, createOperationMap(widgetConf), getWidgetSettings(widgetConf), getBackgroundColor(widgetConf));
         JSONObject res = new JSONObject();
-//        res.put("header", tableData.createJSON().get("header"));
-//        JSONArray itemsArray = new JSONArray();
-//        for (ITableItem item : tableData.getItems()) {
-//            JSONArray itemArray = new JSONArray();
-//            for (ITableItem tableItem : item.getChildren()) {
-//                itemArray.put(tableItem.createJSON());
-//            }
-//            itemsArray.put(itemArray);
-//        }
-//        res.put("items", itemsArray);
+        res.put("header", tableData.createJSON().get("header"));
+        JSONArray itemsArray = new JSONArray();
+        for (ITableItem item : tableData.getItems()) {
+            JSONArray itemArray = new JSONArray();
+            for (ITableItem tableItem : item.getChildren()) {
+                itemArray.put(tableItem.createJSON());
+            }
+            itemsArray.put(itemArray);
+        }
+        res.put("items", itemsArray);
         return res;
+    }
+
+    /*
+    * 此处仅需要考虑widget背景颜色,其他内容在他处计算
+    * 基本逻辑如下：
+    * 样式共四层，优先级由低到高依次为：系统设置样式，该模板全局样式，widget样式，指标样式，此处处理前三个
+    * 当样式不一致时，优先级高的覆盖低的，选择纯色背景切设置为自动或透明时，展示效果同次一级的样式
+    * */
+    private BIWidgetBackgroundAttr getBackgroundColor(BIWidgetConf widgetConf) throws Exception {
+        BIChartStyleAttr systemStyle = FBIConfig.getInstance().getChartStyleAttr();
+        BIChartStyleAttr globalStyle = widgetConf.getGlobalStyleAttr();
+        BIChartStyleAttr widgetStyle = getWidgetSettings(widgetConf).getWidgetStyle();
+        BIWidgetBackgroundAttr finalBackgroundStyle = new BIWidgetBackgroundAttr();
+        if (!widgetStyle.getWidgetBackground().isUseSuperiorStyle()) {
+            finalBackgroundStyle = widgetStyle.getWidgetBackground();
+        } else if (!globalStyle.getWidgetBackground().isUseSuperiorStyle()) {
+            finalBackgroundStyle = globalStyle.getWidgetBackground();
+        } else {
+            finalBackgroundStyle = systemStyle.getWidgetBackground();
+        }
+        return finalBackgroundStyle;
     }
 
     private Map<String, ITableCellFormatOperation> createOperationMap(BIWidgetConf config) throws Exception {

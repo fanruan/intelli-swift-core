@@ -7,7 +7,6 @@ import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.cal.analyze.cal.result.BIComplexExecutData;
 import com.fr.bi.cal.analyze.cal.result.ComplexExpander;
 import com.fr.bi.cal.analyze.cal.result.CrossExpander;
-import com.fr.bi.cal.analyze.cal.table.PolyCubeECBlock;
 import com.fr.bi.cal.analyze.executor.BIEngineExecutor;
 import com.fr.bi.cal.analyze.executor.paging.PagingFactory;
 import com.fr.bi.cal.analyze.executor.table.AbstractTableWidgetExecutor;
@@ -18,7 +17,7 @@ import com.fr.bi.cal.analyze.executor.table.CrossExecutor;
 import com.fr.bi.cal.analyze.executor.table.GroupExecutor;
 import com.fr.bi.cal.analyze.executor.table.HorGroupExecutor;
 import com.fr.bi.cal.analyze.executor.utils.GlobalFilterUtils;
-import com.fr.bi.cal.analyze.report.report.widget.chart.calculator.builder.IExcelDataBuilder;
+import com.fr.bi.cal.analyze.report.report.widget.chart.calculator.builder.ITableSCDataBuilder;
 import com.fr.bi.cal.analyze.report.report.widget.chart.calculator.builder.SummaryComplexTableBuilder;
 import com.fr.bi.cal.analyze.report.report.widget.chart.calculator.builder.SummaryCrossTableDataBuilder;
 import com.fr.bi.cal.analyze.report.report.widget.chart.calculator.builder.SummaryGroupTableDataBuilder;
@@ -35,6 +34,9 @@ import com.fr.bi.cal.analyze.report.report.widget.util.BIWidgetFactory;
 import com.fr.bi.cal.analyze.session.BISession;
 import com.fr.bi.common.persistent.annotation.PersistNameHistory;
 import com.fr.bi.common.persistent.xml.BIIgnoreField;
+import com.fr.bi.conf.fs.BIChartStyleAttr;
+import com.fr.bi.conf.fs.FBIConfig;
+import com.fr.bi.conf.fs.tablechartstyle.BIWidgetBackgroundAttr;
 import com.fr.bi.conf.report.SclCalculator;
 import com.fr.bi.conf.report.WidgetType;
 import com.fr.bi.conf.report.conf.BIWidgetConf;
@@ -63,11 +65,17 @@ import com.fr.general.ComparatorUtils;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
-import com.fr.report.poly.TemplateBlock;
 import com.fr.stable.StringUtils;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 
@@ -613,22 +621,43 @@ public class TableWidget extends SummaryWidget implements SclCalculator {
         Map<Integer, List<BIDimensionConf>> viewMap = this.createViewMap(widgetConf);
         BIWidgetSettings widgetSettings = getWidgetSettings(widgetConf);
         Map<String, ITableCellFormatOperation> operationMap = createOperationMap(widgetConf);
-        //        Map<String, ITableCellFormatOperation> operationMap = new HashMap<String, ITableCellFormatOperation>();
-        IExcelDataBuilder builder = null;
-//        switch (widgetConf.getType()) {
-//            case BIReportConstant.TABLE_WIDGET.CROSS_TYPE:
-//                builder = new SummaryCrossTableDataBuilder(viewMap, data, widgetSettings);
-//                break;
-//            case BIReportConstant.TABLE_WIDGET.GROUP_TYPE:
-//                builder = new SummaryGroupTableDataBuilder(viewMap, data, widgetSettings);
-//                break;
-//            case BIReportConstant.TABLE_WIDGET.COMPLEX_TYPE:
-//                builder = new SummaryComplexTableBuilder(viewMap, data, widgetSettings);
-//                break;
-//        }
+        ITableSCDataBuilder builder = null;
+        switch (widgetConf.getType()) {
+            case BIReportConstant.TABLE_WIDGET.CROSS_TYPE:
+                builder = new SummaryCrossTableDataBuilder(viewMap, data, widgetSettings);
+                break;
+            case BIReportConstant.TABLE_WIDGET.GROUP_TYPE:
+                builder = new SummaryGroupTableDataBuilder(viewMap, data, widgetSettings);
+                break;
+            case BIReportConstant.TABLE_WIDGET.COMPLEX_TYPE:
+                builder = new SummaryComplexTableBuilder(viewMap, data, widgetSettings);
+                break;
+        }
+
         DataConstructor res = BITableConstructHelper.buildTableData(builder);
-        BITableConstructHelper.formatCells(res, operationMap, widgetSettings);
+        BITableConstructHelper.formatCells(res, operationMap, widgetSettings, getBackgroundColor(widgetConf));
         return res.createJSON();
+    }
+
+    /*
+    * 此处仅需要考虑widget背景颜色,其他内容在他处计算
+    * 基本逻辑如下：
+    * 样式共四层，优先级由低到高依次为：系统设置样式，该模板全局样式，widget样式，指标样式，此处处理前三个
+    * 当样式不一致时，优先级高的覆盖低的，选择纯色背景切设置为自动或透明时，展示效果同次一级的样式
+    * */
+    private BIWidgetBackgroundAttr getBackgroundColor(BIWidgetConf widgetConf) throws Exception {
+        BIChartStyleAttr systemStyle = FBIConfig.getInstance().getChartStyleAttr();
+        BIChartStyleAttr globalStyle = widgetConf.getGlobalStyleAttr();
+        BIChartStyleAttr widgetStyle = getWidgetSettings(widgetConf).getWidgetStyle();
+        BIWidgetBackgroundAttr finalBackgroundStyle = new BIWidgetBackgroundAttr();
+        if (!widgetStyle.getWidgetBackground().isUseSuperiorStyle()) {
+            finalBackgroundStyle = widgetStyle.getWidgetBackground();
+        } else if (!globalStyle.getWidgetBackground().isUseSuperiorStyle()) {
+            finalBackgroundStyle = globalStyle.getWidgetBackground();
+        } else {
+            finalBackgroundStyle = systemStyle.getWidgetBackground();
+        }
+        return finalBackgroundStyle;
     }
 
 
