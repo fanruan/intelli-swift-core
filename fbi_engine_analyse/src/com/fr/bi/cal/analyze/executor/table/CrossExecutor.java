@@ -7,7 +7,7 @@ import com.fr.bi.base.FinalInt;
 import com.fr.bi.cal.analyze.cal.index.loader.CubeIndexLoader;
 import com.fr.bi.cal.analyze.cal.index.loader.cache.WidgetCache;
 import com.fr.bi.cal.analyze.cal.index.loader.cache.WidgetCacheKey;
-import com.fr.bi.cal.analyze.cal.result.BIXLeftNode;
+import com.fr.bi.report.result.BIXLeftNode;
 import com.fr.bi.cal.analyze.cal.result.CrossExpander;
 import com.fr.bi.cal.analyze.cal.result.Node;
 import com.fr.bi.cal.analyze.cal.result.XNode;
@@ -26,6 +26,7 @@ import com.fr.bi.conf.report.conf.BIWidgetConf;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.field.target.target.BISummaryTarget;
 import com.fr.bi.report.key.TargetGettingKey;
+import com.fr.bi.report.result.BICrossNode;
 import com.fr.bi.stable.gvi.GVIUtils;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.general.DateUtils;
@@ -186,7 +187,7 @@ public class CrossExecutor extends AbstractTableWidgetExecutor<XNode> {
         int lengthWithSum = top.getTotalLength();
         while (temp != null && columnIdx.value < colEndIdx) {
             for (int i = 0; i < lengthWithSum; i++) {
-                generateTargetTitleWithSum("", pagedIterator, rowIdx, columnIdx, 1);
+                generateTargetTitleWithSum(StringUtils.EMPTY, pagedIterator, rowIdx, columnIdx, 1);
             }
             if (widget.showColumnTotal()) {
                 generateTargetTitleSum(temp, pagedIterator, rowIdx, columnIdx);
@@ -329,8 +330,7 @@ public class CrossExecutor extends AbstractTableWidgetExecutor<XNode> {
         Operator colOp = PagingFactory.createColumnOperator(paging.getOperator(), widget);
         int[] rowStartIndex = getStartIndex(rowOp, iteratorGroup == null ? null : iteratorGroup.getRowIterator(), rowDimension.length);
         int[] colStartIndex = getStartIndex(colOp, iteratorGroup == null ? null : iteratorGroup.getColumnIterator(), colDimension.length);
-        return WidgetCacheKey.createKey(widget.fetchObjectCore(), expander.getYExpander(), expander.getXExpander(),
-                rowOp, rowStartIndex, colOp, colStartIndex, widget.getAuthFilter(session.getUserId()));
+        return WidgetCacheKey.createKey(widget.fetchObjectCore(), expander.getYExpander(), expander.getXExpander(), rowOp, rowStartIndex, colOp, colStartIndex, widget.getAuthFilter(session.getUserId()));
     }
 
     @Override
@@ -415,10 +415,8 @@ public class CrossExecutor extends AbstractTableWidgetExecutor<XNode> {
             getLinkRowAndColData(clicked, target, row, col, null, null);
             CubeIndexLoader cubeIndexLoader = CubeIndexLoader.getInstance(session.getUserId());
             int calPage = paging.getOperator();
-            Node left = cubeIndexLoader.getStopWhenGetRowNode(row.toArray(), widget, createTarget4Calculate(), rowDimension,
-                    allDimensions, allSumTarget, calPage, session, CrossExpander.ALL_EXPANDER.getYExpander());
-            Node top = cubeIndexLoader.getStopWhenGetRowNode(col.toArray(), widget, createTarget4Calculate(), colDimension,
-                    allDimensions, allSumTarget, calPage, session, CrossExpander.ALL_EXPANDER.getYExpander());
+            Node left = cubeIndexLoader.getStopWhenGetRowNode(row.toArray(), widget, createTarget4Calculate(), rowDimension, allDimensions, allSumTarget, calPage, session, CrossExpander.ALL_EXPANDER.getYExpander());
+            Node top = cubeIndexLoader.getStopWhenGetRowNode(col.toArray(), widget, createTarget4Calculate(), colDimension, allDimensions, allSumTarget, calPage, session, CrossExpander.ALL_EXPANDER.getYExpander());
             if (row.size() == 0 && col.size() == 0) {
                 // 总汇总值得时候
                 linkGvi = GVIUtils.AND(linkGvi, getTargetIndex(target, left));
@@ -432,5 +430,10 @@ public class CrossExecutor extends AbstractTableWidgetExecutor<XNode> {
             BILoggerFactory.getLogger(CrossExecutor.class).info("error in get link filter", e);
         }
         return linkGvi;
+    }
+
+    public BICrossNode getResult() throws Exception {
+
+        return getCubeNode();
     }
 }

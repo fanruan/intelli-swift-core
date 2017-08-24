@@ -52,4 +52,10 @@ public class BIStyleConstant {
     public static final int DASHBOARD_WIDGET_NAME_POS = 19;           //标题位置
     public static final int DASHBOARD_WIDGET_NAME_POS_LEFT = 20;      //标题位置居左
     public static final int DASHBOARD_WIDGET_NAME_POS_CENTER = 21;     //标题位置居右
+
+    public static final class BACKGROUND_STYLE_TYPE {
+        public static final int COLOR = 1;
+        public static final int PIC = 2;
+    }
+
 }

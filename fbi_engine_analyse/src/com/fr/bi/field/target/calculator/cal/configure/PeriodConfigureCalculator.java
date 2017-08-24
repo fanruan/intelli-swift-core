@@ -1,8 +1,7 @@
 package com.fr.bi.field.target.calculator.cal.configure;
 
 import com.fr.base.FRContext;
-import com.fr.bi.cal.analyze.cal.result.BIXLeftNode;
-import com.fr.bi.cal.analyze.cal.result.XLeftNode;
+import com.fr.bi.report.result.BIXLeftNode;
 import com.fr.bi.field.target.target.cal.target.configure.BIConfiguredCalculateTarget;
 import com.fr.bi.report.key.XTargetGettingKey;
 import com.fr.bi.stable.constant.BIReportConstant;
