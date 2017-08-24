@@ -177,6 +177,7 @@ public abstract class SummaryWidget extends AbstractBIWidget {
                     try {
                         LOGGER.error("the relation foreignTable json is: " + r.getForeignTable().getTableSource().createJSON());
                         LOGGER.error("the target tableSource json is: " + target.getStatisticElement().getTableBelongTo().getTableSource().createJSON());
+                        LOGGER.error("the relation json is: " + r.createJSON());
                     } catch (Exception e) {
                         LOGGER.error(e.getMessage(), e);
                     }

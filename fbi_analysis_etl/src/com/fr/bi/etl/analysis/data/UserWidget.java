@@ -21,6 +21,7 @@ import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.field.dimension.dimension.BIDateDimension;
 import com.fr.bi.report.key.TargetGettingKey;
 import com.fr.bi.stable.constant.BIReportConstant;
+import com.fr.bi.stable.utils.BICollectionUtils;
 import com.fr.stable.StringUtils;
 
 import java.io.Serializable;
@@ -146,9 +147,14 @@ public class UserWidget implements Serializable {
                 while (temp.getParent() != null) {
                     Object data = temp.getData();
                     BIDimension dim = rows[--i];
+                    LOGGER.info("the dimension is: " + dim.createColumnKey().getFieldName() + " the dimensionType is: " + dim.getClass());
                     Object v = dim.getValueByType(data);
-                    if (dim instanceof BIDateDimension && data != null) {
-                        v = Long.valueOf(String.valueOf(data));
+                    if (dim instanceof BIDateDimension) {
+                        if (BICollectionUtils.isCubeNullKey(data)) {
+                            v = null;
+                        } else {
+                            v = Long.valueOf(String.valueOf(data));
+                        }
                     }
                     rowList.add(0, v);
                     temp = temp.getParent();
