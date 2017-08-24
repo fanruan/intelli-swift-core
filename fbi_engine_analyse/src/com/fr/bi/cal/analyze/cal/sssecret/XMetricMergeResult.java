@@ -1,6 +1,6 @@
 package com.fr.bi.cal.analyze.cal.sssecret;
 
-import com.fr.bi.cal.analyze.cal.result.BIXLeftNode;
+import com.fr.bi.report.result.BIXLeftNode;
 import com.fr.bi.report.key.TargetGettingKey;
 import com.fr.bi.report.key.XTargetGettingKey;
 import com.fr.bi.stable.gvi.GroupValueIndex;

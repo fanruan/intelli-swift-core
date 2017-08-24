@@ -3,6 +3,7 @@ package com.fr.bi.cal.analyze.cal.result;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.report.key.TargetGettingKey;
 import com.fr.bi.report.key.XTargetGettingKey;
+import com.fr.bi.report.result.BIXLeftNode;
 import com.fr.bi.stable.utils.BICollectionUtils;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONException;

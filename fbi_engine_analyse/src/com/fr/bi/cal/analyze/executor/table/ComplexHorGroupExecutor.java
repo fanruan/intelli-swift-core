@@ -7,6 +7,7 @@ import com.fr.bi.base.FinalInt;
 import com.fr.bi.cal.analyze.cal.index.loader.CubeIndexLoader;
 import com.fr.bi.cal.analyze.cal.result.BIComplexExecutData;
 import com.fr.bi.cal.analyze.cal.result.ComplexExpander;
+import com.fr.bi.cal.analyze.cal.result.ComplexGroupResult;
 import com.fr.bi.cal.analyze.cal.result.Node;
 import com.fr.bi.export.iterator.StreamPagedIterator;
 import com.fr.bi.export.iterator.TableCellIterator;
@@ -18,6 +19,7 @@ import com.fr.bi.cal.report.engine.CBCell;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.field.target.target.BISummaryTarget;
 import com.fr.bi.report.key.TargetGettingKey;
+import com.fr.bi.report.result.BIComplexGroupResult;
 import com.fr.bi.stable.gvi.GVIUtils;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.general.DateUtils;
@@ -100,8 +102,7 @@ public class ComplexHorGroupExecutor extends AbstractTableWidgetExecutor {
             if (firstColumnDimLen > columnDimIdx) {
                 //区域1 最后一个维度rowSpan根据最大区域的维度个数确定
                 int rowSpan = firstColumnDimLen - 1 == columnDimIdx ? maxColumnDimLen - columnDimIdx : 1;
-                CBCell cell = GeneratorUtils.createCBCell(rowData.getDimensionArray(0)[columnDimIdx].getText(), columnDimIdx,
-                        rowSpan, columnIdx.value, 1, widget.getTableStyle().getHeaderStyle(Style.getInstance()));
+                CBCell cell = GeneratorUtils.createCBCell(rowData.getDimensionArray(0)[columnDimIdx].getText(), columnDimIdx, rowSpan, columnIdx.value, 1, widget.getTableStyle().getHeaderStyle(Style.getInstance()));
                 pagedIterator.addCell(cell);
             }
             columnIdx.value++;
@@ -218,8 +219,7 @@ public class ComplexHorGroupExecutor extends AbstractTableWidgetExecutor {
         for (int s = 0; s < summaryLength; s++) {
             keys[s] = usedSumTarget[s].createTargetGettingKey();
         }
-        Map<Integer, Node> nodeMap = CubeIndexLoader.getInstance(session.getUserId()).loadComplexPageGroup(true, widget, createTarget4Calculate(), rowData, allDimensions,
-                allSumTarget, keys, paging.getOperator(), widget.useRealData(), session, complexExpander, false);
+        Map<Integer, Node> nodeMap = CubeIndexLoader.getInstance(session.getUserId()).loadComplexPageGroup(true, widget, createTarget4Calculate(), rowData, allDimensions, allSumTarget, keys, paging.getOperator(), widget.useRealData(), session, complexExpander, false);
 
 
         BILoggerFactory.getLogger().info(DateUtils.timeCostFrom(start) + ": cal time");
@@ -252,7 +252,7 @@ public class ComplexHorGroupExecutor extends AbstractTableWidgetExecutor {
                         target = t;
                         break;
                     } catch (Exception e) {
-
+                        BILoggerFactory.getLogger().error(e.getMessage(), e);
                     }
                 }
                 if (biSummaryTarget == null || !biSummaryTarget.createTableKey().equals(targetKey)) {
@@ -282,5 +282,10 @@ public class ComplexHorGroupExecutor extends AbstractTableWidgetExecutor {
             BILoggerFactory.getLogger(ComplexHorGroupExecutor.class).info("error in get link filter", e);
         }
         return filterGvi;
+    }
+
+    public BIComplexGroupResult getResult() throws Exception {
+
+        return new ComplexGroupResult(getCubeNodes());
     }
 }

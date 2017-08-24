@@ -31,7 +31,6 @@ import com.fr.bi.resource.FsResourceHelper;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
 import com.fr.bi.web.base.utils.BIWebUtils;
-import com.fr.bi.web.dezi.phantom.PhantomServer;
 import com.fr.data.core.db.DBUtils;
 import com.fr.data.core.db.dialect.Dialect;
 import com.fr.data.core.db.dialect.DialectFactory;
@@ -115,8 +114,6 @@ public class BIPlate extends AbstractFSPlate {
             //兼容FR工程中可能存在PARENTID类型是整型的情况
             notifyColumnParentIdType();
 
-            //启动用于截图的phantom服务
-            initPhantomServer();
         } catch (Throwable e) {
             LOGGER.error(e.getMessage(), e);
         }
@@ -258,16 +255,6 @@ public class BIPlate extends AbstractFSPlate {
         } finally {
             DBUtils.closeConnection(cn);
         }
-    }
-
-    private static void initPhantomServer() {
-        try {
-            PhantomServer server = new PhantomServer();
-            server.start();
-        } catch (IOException e) {
-            LOGGER.error(e.getMessage());
-        }
-
     }
 
     private void initOOMKillerForLinux() {
