@@ -28,17 +28,22 @@ public class BITableDataDAOManager extends XMLFileManager implements BITableData
     private EmbeddedTableData biReportTableData;
     private EmbeddedTableData biSharedReportTableData;
 
-    private static final int FIELD_ZERO = 0;
-    private static final int FIELD_ONE = 1;
-    private static final int FIELD_TWO = 2;
-    private static final int FIELD_THREE = 3;
-    private static final int FIELD_FOUR = 4;
-    private static final int FIELD_FIVE = 5;
-    private static final int FIELD_SIX = 6;
-    private static final int FIELD_SEVEN = 7;
-    private static final int FIELD_EIGHT = 8;
-    private static final int FIELD_NINE = 9;
-    private static final int FIELD_TEN = 10;
+    //field indexes
+    private static final int REPORT_ID = 0;
+    private static final int REPORT_PID = 1;
+    private static final int REPORT_USERNAME = 2;
+    private static final int REPORT_PATH = 3;
+    private static final int REPORT_NAME = 4;
+    private static final int REPORT_CREATE_TIME = 5;
+    private static final int REPORT_MODIFY_TIME = 6;
+    private static final int REPORT_DESCRIPTION = 8;
+    private static final int REPORT_STATUS = 9;
+    private static final int REPORT_USERID = 10;
+
+    private static final int SHARED_REPORT_ID = 0;
+    private static final int SHARED_REPORT_REPORTID = 1;
+    private static final int SHARED_REPORT_CREATEBYNAME = 4;
+    private static final int SHARED_REPORT_SHARETONAME = 5;
 
     private BITableDataDAOManager() {
         readXMLFile();
@@ -358,20 +363,20 @@ public class BITableDataDAOManager extends XMLFileManager implements BITableData
                     EmbeddedTableData tableData = getBIReportTabledata();
                     for (int i = 0, len = tableData.getRowCount(); i < len; i++) {
                         try {
-                            Long id = new Long(tableData.getValueAt(i, FIELD_ONE).toString());
+                            Long id = new Long(tableData.getValueAt(i, REPORT_ID).toString());
                             BIReportNode tdNode = new BIReportNode(id);
-                            tdNode.setParentid(tableData.getValueAt(i, FIELD_ONE).toString());
-                            tdNode.setUsername(tableData.getValueAt(i, FIELD_TWO).toString());
-                            tdNode.setPath(tableData.getValueAt(i, FIELD_THREE).toString());
-                            tdNode.setReportName(tableData.getValueAt(i, FIELD_FOUR).toString());
-                            tdNode.setCreatetime(new Date(Long.parseLong((String) tableData.getValueAt(i, FIELD_FIVE))));
-                            tdNode.setLastModifyTime(new Date(Long.parseLong((String) tableData.getValueAt(i, FIELD_SIX))));
+                            tdNode.setParentid(tableData.getValueAt(i, REPORT_PID).toString());
+                            tdNode.setUsername(tableData.getValueAt(i, REPORT_USERNAME).toString());
+                            tdNode.setPath(tableData.getValueAt(i, REPORT_PATH).toString());
+                            tdNode.setReportName(tableData.getValueAt(i, REPORT_NAME).toString());
+                            tdNode.setCreatetime(new Date(Long.parseLong((String) tableData.getValueAt(i, REPORT_CREATE_TIME))));
+                            tdNode.setLastModifyTime(new Date(Long.parseLong((String) tableData.getValueAt(i, REPORT_MODIFY_TIME))));
                             //中间有删除的属性所以空掉一个
 
-                            tdNode.setDescription(tableData.getValueAt(i, FIELD_EIGHT).toString());
-                            long userId = Long.valueOf(tableData.getValueAt(i, FIELD_TEN).toString());
+                            tdNode.setDescription(tableData.getValueAt(i, REPORT_DESCRIPTION).toString());
+                            long userId = Long.valueOf(tableData.getValueAt(i, REPORT_USERID).toString());
                             //挂出状态还要检查是否是存在于挂出目录结构
-                            int status = Integer.valueOf(tableData.getValueAt(i, FIELD_NINE).toString());
+                            int status = Integer.valueOf(tableData.getValueAt(i, REPORT_STATUS).toString());
                             tdNode.setStatus(status);
                             tdNode.setUserId(userId);
                             tdBIReport_idMap.put(id, tdNode);
@@ -394,11 +399,11 @@ public class BITableDataDAOManager extends XMLFileManager implements BITableData
                     EmbeddedTableData tableData = getBISharedReportTableData();
                     for (int i = 0, len = tableData.getRowCount(); i < len; i++) {
                         try {
-                            Long id = new Long(tableData.getValueAt(i, FIELD_ZERO).toString());
+                            Long id = new Long(tableData.getValueAt(i, SHARED_REPORT_ID).toString());
                             BISharedReportNode tdNode = new BISharedReportNode(id);
-                            tdNode.setReportId(new Long(tableData.getValueAt(i, FIELD_ONE).toString()));
-                            tdNode.setCreateByName(tableData.getValueAt(i, FIELD_FOUR).toString());
-                            tdNode.setShareToName(tableData.getValueAt(i, FIELD_FIVE).toString());
+                            tdNode.setReportId(new Long(tableData.getValueAt(i, SHARED_REPORT_REPORTID).toString()));
+                            tdNode.setCreateByName(tableData.getValueAt(i, SHARED_REPORT_CREATEBYNAME).toString());
+                            tdNode.setShareToName(tableData.getValueAt(i, SHARED_REPORT_SHARETONAME).toString());
                             tdBISharedReport_idMap.put(id, tdNode);
                         } catch (Exception e) {
                             FRContext.getLogger().error(e.getMessage(), e);
