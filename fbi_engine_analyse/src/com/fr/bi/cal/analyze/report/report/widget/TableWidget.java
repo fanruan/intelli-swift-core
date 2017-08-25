@@ -203,7 +203,7 @@ public class TableWidget extends SummaryWidget implements SclCalculator {
         boolean calculateTarget = targetSort != null || !targetFilterMap.isEmpty();
         CrossExpander expander = new CrossExpander(complexExpander.getXExpander(0), complexExpander.getYExpander(0));
         boolean hasTarget = calculateTarget || getViewTargets().length > 0;
-        if (this.tableType == BIReportConstant.TABLE_WIDGET.COMPLEX_TYPE || this.tableType == BIReportConstant.WIDGET.DOT) {
+        if (this.tableType == BIReportConstant.TABLE_WIDGET.COMPLEX_TYPE) {
             return createComplexExecutor(session, hasTarget, complexExpander, expander);
         } else {
             return createNormalExecutor(session, hasTarget, getViewDimensions(), getViewTopDimensions(), expander);

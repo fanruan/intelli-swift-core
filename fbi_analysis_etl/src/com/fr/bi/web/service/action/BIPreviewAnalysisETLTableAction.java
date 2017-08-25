@@ -29,6 +29,7 @@ import java.util.List;
  */
 public class BIPreviewAnalysisETLTableAction extends AbstractAnalysisETLAction {
     private static BILogger LOGGER = BILoggerFactory.getLogger(BIPreviewAnalysisETLTableAction.class);
+
     @Override
     public void actionCMD(HttpServletRequest req, HttpServletResponse res, String sessionID) throws Exception {
         long userId = BIUserAuthUtils.getCurrentUserID(req);
@@ -36,8 +37,10 @@ public class BIPreviewAnalysisETLTableAction extends AbstractAnalysisETLAction {
         JSONArray items = new JSONArray(itemArray);
 
         AnalysisCubeTableSource source = AnalysisETLSourceFactory.createTableSource(items, userId);
+        LOGGER.info("the table source info is: " + source.createJSON());
         List<AnalysisETLSourceField> fields = source.getFieldsList();
         UserCubeTableSource userTableSource = source.createUserTableSource(userId);
+
         try {
             ICubeTableService service = PartCubeDataLoader.getInstance(userId, userTableSource).getTableIndex(userTableSource, 0, 20);
             JSONArray values = new JSONArray();
@@ -55,9 +58,9 @@ public class BIPreviewAnalysisETLTableAction extends AbstractAnalysisETLAction {
             JSONObject result = new JSONObject();
             result.put(BIJSONConstant.JSON_KEYS.VALUE, values);
             WebUtils.printAsJSON(res, result);
-        } catch (BIMemoryDataOutOfLimitException e){
+        } catch (BIMemoryDataOutOfLimitException e) {
             User user = UserControl.getInstance().getUser(userId);
-            LOGGER.info("user name "+ user.getUsername() + " password " + user.getPassword() + " SPA detail data out of limit");
+            LOGGER.info("user name " + user.getUsername() + " password " + user.getPassword() + " SPA detail data out of limit");
             JSONArray values = JSONArray.create();
             JSONArray ja = JSONArray.create();
             JSONObject jo = JSONObject.create();
