@@ -605,7 +605,7 @@ public class TableWidget extends SummaryWidget implements SclCalculator {
     /*todo 想办法把数据和样式格式分离出来*/
     public JSONObject getPostOptions(BISessionProvider session, HttpServletRequest req) throws Exception {
         JSONObject res = this.createDataJSON(session, req);
-        return calculateSCData(widgetConf, res.getJSONObject("data")).put("page", res.getJSONArray("page")).put("viewDimensionsLength", getViewDimensions().length).put("viewTopDimensionsLength", getViewTopDimensions().length).put("widgetType", this.tableType);
+        return calculateSCData(widgetConf, res).put("page", res.getJSONArray("page")).put("viewDimensionsLength", getViewDimensions().length).put("viewTopDimensionsLength", getViewTopDimensions().length).put("widgetType", this.tableType);
     }
 
     @Override
@@ -617,18 +617,18 @@ public class TableWidget extends SummaryWidget implements SclCalculator {
         IExcelDataBuilder builder = null;
         switch (widgetConf.getType()) {
             case BIReportConstant.TABLE_WIDGET.CROSS_TYPE:
-                builder = new SummaryCrossTableDataBuilder(viewMap, data, widgetSettings);
+                builder = new SummaryCrossTableDataBuilder(viewMap, data.getJSONObject("data"), widgetSettings);
                 break;
             case BIReportConstant.TABLE_WIDGET.GROUP_TYPE:
-                builder = new SummaryGroupTableDataBuilder(viewMap, data, widgetSettings);
+                builder = new SummaryGroupTableDataBuilder(viewMap, data.getJSONObject("data"), widgetSettings);
                 break;
             case BIReportConstant.TABLE_WIDGET.COMPLEX_TYPE:
-                builder = new SummaryComplexTableBuilder(viewMap, data, widgetSettings);
+                builder = new SummaryComplexTableBuilder(viewMap, data.getJSONObject("data"), widgetSettings);
                 break;
         }
         DataConstructor res = BITableConstructHelper.buildTableData(builder);
         BITableConstructHelper.formatCells(res, operationMap, widgetSettings);
-        return res.createJSON();
+        return res.createJSON().put("row", data.optLong("row", 0)).put("page",data.opt("page"));
     }
 
 
