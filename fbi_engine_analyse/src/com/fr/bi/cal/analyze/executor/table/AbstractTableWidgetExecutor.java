@@ -30,7 +30,6 @@ import com.fr.general.ComparatorUtils;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;
 
-import java.awt.Rectangle;
 import java.util.*;
 
 public abstract class AbstractTableWidgetExecutor<T> extends BIAbstractExecutor<T> {
@@ -66,12 +65,6 @@ public abstract class AbstractTableWidgetExecutor<T> extends BIAbstractExecutor<
         //判断空值 比较当前节点和下一个兄弟节点是否有同一个父亲节点
         boolean needSumCell = isNotRoot && temp.getSibling() != null && temp.getSibling().getParent() != null && (temp.getParent() != temp.getSibling().getParent());
         return isNotRoot && (isLastSum || needSumCell);
-    }
-
-    @Override
-    public Rectangle getSouthEastRectangle() {
-
-        return null;
     }
 
     protected static CBCell formatTargetCell(Object data, BIWidgetConf setting, TargetGettingKey key, int rowIdx, int columnIdx, Style style) {

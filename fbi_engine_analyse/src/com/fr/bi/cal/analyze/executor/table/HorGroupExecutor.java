@@ -37,8 +37,6 @@ import java.util.Map;
 
 public class HorGroupExecutor extends AbstractTableWidgetExecutor<Node> {
 
-    private Rectangle rectangle;
-
     private BIDimension[] colDimension;
 
     private BIDimension[] usedDimensions;
@@ -52,123 +50,6 @@ public class HorGroupExecutor extends AbstractTableWidgetExecutor<Node> {
         colDimension = usedDimensions;
         this.expander = expander;
     }
-
-    public TableCellIterator createCellIterator4Excel() throws Exception {
-
-        final Node node = getCubeNode();
-        int rowLength = colDimension.length + usedSumTarget.length;
-        int columnLength = node.getTotalLength() + widget.isOrder() + 1;
-        //显示不显示汇总行
-        int rowLen = widget.getWidgetSettings().isShowRowTotal() ? node.getTotalLengthWithSummary() : node.getTotalLength();
-        rectangle = new Rectangle(rowLength + widget.isOrder(), 1, columnLength + widget.isOrder() - 1, rowLen);
-        final TableCellIterator iter = new TableCellIterator(columnLength, rowLength);
-        new Thread() {
-
-            public void run() {
-
-                try {
-                    FinalInt start = new FinalInt();
-                    StreamPagedIterator pagedIterator = iter.getIteratorByPage(start.value);
-                    generateTitle(node, widget, colDimension, pagedIterator);
-                    generateCells(node, widget, colDimension, usedSumTarget, pagedIterator);
-                } catch (Exception e) {
-                    BILoggerFactory.getLogger().error(e.getMessage(), e);
-                } finally {
-                    iter.finish();
-                }
-            }
-        }.start();
-        return iter;
-    }
-
-    private void generateTitle(Node node, TableWidget widget, BIDimension[] colDimension, StreamPagedIterator pagedIterator) {
-
-        int rowIdx = 0;
-        while (rowIdx < colDimension.length) {
-            CBCell cell = GeneratorUtils.createCBCell(colDimension[rowIdx].getText(), rowIdx, 1, 0, 1, tableStyle.getHeaderStyle(Style.getInstance()));
-            pagedIterator.addCell(cell);
-            node = node.getFirstChild();
-            Node temp = node;
-            FinalInt columnIdx = new FinalInt();
-            columnIdx.value = 1;
-            BIDimension dim = colDimension[rowIdx];
-            while (temp != null) {
-                Object v = GeneratorUtils.formatDateGroup(dim.getGroup().getType(), dim.toString(temp.getData()));
-                CBCell dimCell = GeneratorUtils.createCBCell(v, rowIdx, 1, columnIdx.value, widget.showColumnTotal() ? temp.getTotalLengthWithSummary() : temp.getTotalLength(), widget.getTableStyle().getHeaderStyle(Style.getInstance()));
-                pagedIterator.addCell(dimCell);
-                columnIdx.value += widget.showColumnTotal() ? temp.getTotalLengthWithSummary() : temp.getTotalLength();
-                if (widget.showColumnTotal()) {
-                    generateTitleSumCells(widget, temp, pagedIterator, rowIdx, columnIdx, colDimension.length);
-                }
-                temp = temp.getSibling();
-            }
-            rowIdx++;
-        }
-    }
-
-    protected static void generateTitleSumCells(TableWidget widget, Node temp, StreamPagedIterator pagedIterator, int rowIdx, FinalInt columnIdx, int maxColumnDimLen) {
-
-        if (checkIfGenerateSumCell(temp) && temp.getParent().getChildLength() != 1) {
-            CBCell cell = GeneratorUtils.createCBCell(Inter.getLocText("BI-Summary_Values"), rowIdx, maxColumnDimLen - rowIdx, columnIdx.value, 1, widget.getTableStyle().getHeaderStyle(Style.getInstance()));
-            pagedIterator.addCell(cell);
-        }
-        adjustColumnIdx(temp, columnIdx);
-    }
-
-    private static void adjustColumnIdx(Node temp, FinalInt columnIdx) {
-
-        if (checkIfGenerateSumCell(temp)) {
-            if (temp.getParent().getChildLength() != 1) {
-                columnIdx.value++;
-            }
-            if (temp.getParent() != null) {
-                adjustColumnIdx(temp.getParent(), columnIdx);
-            }
-        }
-    }
-
-    private void generateCells(Node node, TableWidget widget, BIDimension[] colDimension, BISummaryTarget[] usedSumTarget, StreamPagedIterator pagedIterator) {
-
-        int colDimensionLen = colDimension.length;
-        TargetGettingKey[] keys = widget.getTargetsKey();
-        while (node.getFirstChild() != null) {
-            node = node.getFirstChild();
-        }
-
-        for (int i = 0; i < usedSumTarget.length; i++) {
-            FinalInt columnIdx = new FinalInt();
-            columnIdx.value = 1;
-            Object targetName = usedSumTarget[i].getText();
-            Style style = (i + 1) % 2 == 1 ? widget.getTableStyle().getOddRowStyle(Style.getInstance()) : widget.getTableStyle().getEvenRowStyle(Style.getInstance());
-            CBCell targetNameCell = GeneratorUtils.createCBCell(targetName, colDimensionLen + i, 1, 0, 1, style);
-            pagedIterator.addCell(targetNameCell);
-            Node temp = node;
-            while (temp != null) {
-                Object data = temp.getSummaryValue(keys[i]);
-                CBCell cell = formatTargetCell(data, widget.getWidgetConf(), keys[i], colDimensionLen + i, columnIdx.value++, style);
-                pagedIterator.addCell(cell);
-                if (widget.showColumnTotal()) {
-                    generateTargetSumCell(temp, widget, keys[i], pagedIterator, colDimensionLen, columnIdx, i);
-                }
-                temp = temp.getSibling();
-            }
-        }
-    }
-
-    public static void generateTargetSumCell(Node temp, TableWidget widget, TargetGettingKey key, StreamPagedIterator pagedIterator, int colDimensionLen, FinalInt columnIdx, int targetRowIdx) {
-
-        if ((widget.getViewTargets().length != 0) && checkIfGenerateSumCell(temp)) {
-            if (temp.getParent().getChildLength() != 1) {
-                Object data = temp.getParent().getSummaryValue(key);
-                Style style = (targetRowIdx + 1) % 2 == 1 ? widget.getTableStyle().getOddRowStyle(Style.getInstance()) : widget.getTableStyle().getEvenRowStyle(Style.getInstance());
-                CBCell cell = formatTargetCell(data, widget.getWidgetConf(), key, targetRowIdx + colDimensionLen, columnIdx.value++, style);
-                pagedIterator.addCell(cell);
-            }
-            Node parent = temp.getParent();
-            generateTargetSumCell(parent, widget, key, pagedIterator, colDimensionLen, columnIdx, targetRowIdx);
-        }
-    }
-
 
     protected WidgetCacheKey createWidgetCacheKey() {
         PageIteratorGroup iteratorGroup = getPageIterator();
@@ -233,12 +114,6 @@ public class HorGroupExecutor extends AbstractTableWidgetExecutor<Node> {
             colIterator.setRoot(pg.getColumnIterator().getRoot());
             pg.setColumnIterator(colIterator);
         }
-    }
-
-    @Override
-    public Rectangle getSouthEastRectangle() {
-
-        return rectangle;
     }
 
     public GroupValueIndex getClickGvi(Map<String, JSONArray> clicked, BusinessTable targetKey) {
