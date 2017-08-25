@@ -10,6 +10,7 @@ import com.fr.json.JSONArray;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
 import com.fr.stable.StableUtils;
+import com.fr.bi.stable.constant.BIChartSettingConstant;
 
 import java.util.List;
 
