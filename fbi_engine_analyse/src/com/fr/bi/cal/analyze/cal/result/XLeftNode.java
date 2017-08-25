@@ -3,6 +3,7 @@ package com.fr.bi.cal.analyze.cal.result;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.report.key.TargetGettingKey;
 import com.fr.bi.report.key.XTargetGettingKey;
+import com.fr.bi.report.result.BICrossLeftNode;
 import com.fr.bi.report.result.BIXLeftNode;
 import com.fr.bi.stable.utils.BICollectionUtils;
 import com.fr.json.JSONArray;
@@ -79,6 +80,8 @@ public class XLeftNode extends Node implements BIXLeftNode {
         return xValue;
     }
 
+
+
     public JSONObject toJSONObject(BIDimension[] dimensions, TargetGettingKey[] keys, Node topIndex, int index) throws JSONException {
 
         JSONObject jo = JSONObject.create();
@@ -125,10 +128,22 @@ public class XLeftNode extends Node implements BIXLeftNode {
 
     public Number[] getSubValues(XTargetGettingKey key) {
 
+        return getSubValues(key.getSubIndex());
+    }
+
+    @Override
+    public Number[] getSubValues(int index) {
+
         Number[] v = new Number[xValue.length];
         for (int i = 0; i < v.length; i++) {
-            v[i] = xValue[i][key.getSubIndex()];
+            v[i] = xValue[i][index];
         }
         return v;
+    }
+
+    @Override
+    public BICrossLeftNode getFirstCrossLeftNode() {
+
+        return (BICrossLeftNode)getFirstChild();
     }
 }
