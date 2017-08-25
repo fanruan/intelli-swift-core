@@ -354,7 +354,7 @@ public class DetailWidget extends AbstractBIWidget implements SclCalculator {
 
     public JSONObject getPostOptions(BISessionProvider session, HttpServletRequest req) throws Exception {
         JSONObject data = this.createDataJSON(session, req);
-        JSONObject res = calculateSCData(this.getWidgetConf(), data.getJSONObject("data"));
+        JSONObject res = calculateSCData(this.getWidgetConf(), data);
         res.put("row", data.optLong("row", 0));
         res.put("dimensionLength", getViewDimensions().length).put("row", data.optLong("row", 0)).put("size", data.optLong("size", 0));
         res.put("settings", this.getWidgetConf().getWidgetSettings().createJSON());
@@ -364,7 +364,7 @@ public class DetailWidget extends AbstractBIWidget implements SclCalculator {
     @Override
     public JSONObject calculateSCData(BIWidgetConf widgetConf, JSONObject data) throws Exception {
         Map<Integer, List<JSONObject>> viewMap = widgetConf.getDetailViewMap();
-        IExcelDataBuilder builder = new DetailTableBuilder(viewMap, data, getWidgetSettings(widgetConf));
+        IExcelDataBuilder builder = new DetailTableBuilder(viewMap, data.getJSONObject("data"), getWidgetSettings(widgetConf));
         DataConstructor tableData = BITableConstructHelper.buildTableData(builder);
         BITableConstructHelper.formatCells(tableData, createOperationMap(widgetConf), getWidgetSettings(widgetConf));
         JSONObject res = new JSONObject();
@@ -378,6 +378,8 @@ public class DetailWidget extends AbstractBIWidget implements SclCalculator {
             itemsArray.put(itemArray);
         }
         res.put("items", itemsArray);
+        res.put("row", data.optLong("row", 0));
+        res.put("page",data.opt("page"));
         return res;
     }
 
