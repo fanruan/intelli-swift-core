@@ -3,7 +3,6 @@ package com.fr.bi.cal.analyze.report.report.widget.chart.calculator.format.utils
 import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.utils.program.BIStringUtils;
-import com.fr.general.ComparatorUtils;
 import com.fr.general.Inter;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONException;
@@ -99,7 +98,7 @@ public class BITableCellFormatHelper {
     }
 
     public static String dateFormat(JSONObject format, int groupType, String text) throws JSONException {
-        if (StringUtils.isBlank(text) || ComparatorUtils.equals(text, NONE_VALUE)) {
+        if (StringUtils.isBlank(text) || !StableUtils.isNumber(text)) {
             return text;
         }
         JSONObject dateFormat = format.optJSONObject("dateFormat");
@@ -291,9 +290,6 @@ public class BITableCellFormatHelper {
     }
 
     public static JSONObject createTextStyle(JSONObject settings, String text) {
-        if (BIStringUtils.isEmptyString(text) || !StableUtils.isNumber(text)) {
-            return JSONObject.create();
-        }
         try {
             Float num = Float.valueOf(text);
             int markResult = getTextCompareResult(settings, num);
