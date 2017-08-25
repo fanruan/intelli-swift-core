@@ -2,8 +2,6 @@ package com.fr.bi.cal.analyze.executor.table;
 
 import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.conf.table.BusinessTable;
-import com.fr.base.Style;
-import com.fr.bi.base.FinalInt;
 import com.fr.bi.cal.analyze.cal.index.loader.CubeIndexLoader;
 import com.fr.bi.cal.analyze.cal.index.loader.cache.WidgetCache;
 import com.fr.bi.cal.analyze.cal.index.loader.cache.WidgetCacheKey;
@@ -17,32 +15,21 @@ import com.fr.bi.cal.analyze.executor.paging.PagingFactory;
 import com.fr.bi.cal.analyze.executor.utils.GlobalFilterUtils;
 import com.fr.bi.cal.analyze.report.report.widget.TableWidget;
 import com.fr.bi.cal.analyze.session.BISession;
-import com.fr.bi.cal.report.engine.CBCell;
-import com.fr.bi.conf.report.conf.BIWidgetConf;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
-import com.fr.bi.export.iterator.StreamPagedIterator;
-import com.fr.bi.export.iterator.TableCellIterator;
-import com.fr.bi.export.utils.GeneratorUtils;
 import com.fr.bi.field.target.target.BICounterTarget;
 import com.fr.bi.field.target.target.BINumberTarget;
 import com.fr.bi.field.target.target.BISummaryTarget;
-import com.fr.bi.report.key.TargetGettingKey;
 import com.fr.bi.report.result.BIGroupNode;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.gvi.GVIUtils;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.io.newio.NIOConstant;
 import com.fr.bi.stable.utils.BICollectionUtils;
-import com.fr.general.ComparatorUtils;
 import com.fr.general.DateUtils;
-import com.fr.general.Inter;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;
-import com.fr.stable.ExportConstants;
 import com.fr.stable.StableUtils;
-import com.fr.stable.StringUtils;
 
-import java.awt.Rectangle;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -53,8 +40,6 @@ import java.util.Map;
  * Created by 小灰灰 on 2015/6/30.
  */
 public class GroupExecutor extends AbstractTableWidgetExecutor<Node> {
-
-    private Rectangle rectangle;
 
     private BIDimension[] usedDimensions;
 
@@ -70,178 +55,6 @@ public class GroupExecutor extends AbstractTableWidgetExecutor<Node> {
         super(widget, paging, session);
         usedDimensions = widget.getViewDimensions();
         this.expander = expander;
-    }
-
-    public TableCellIterator createCellIterator4Excel() throws Exception {
-
-        final Node tree = getCubeNode();
-        if (tree == null) {
-            return new TableCellIterator(0, 0);
-        }
-        int rowLength = usedDimensions.length;
-        int summaryLength = usedSumTarget.length;
-        int columnLen = rowLength + summaryLength;
-
-        //显示不显示汇总行
-        int rowLen = tree.getTotalLengthWithSummary();
-        //        final boolean useTargetSort = widget.useTargetSort() || BITargetAndDimensionUtils.isTargetSort(usedDimensions);
-        rectangle = new Rectangle(rowLength + widget.isOrder(), 1, columnLen + widget.isOrder() - 1, rowLen);
-        final TableCellIterator iter = new TableCellIterator(columnLen + widget.isOrder(), rowLen + 1);
-        new Thread() {
-
-            public void run() {
-
-                try {
-                    FinalInt start = new FinalInt();
-                    generateHeader(widget, usedDimensions, usedSumTarget, iter.getIteratorByPage(start.value), usedDimensions.length);
-                    generateCells(tree, widget, widget.getViewDimensions(), iter, start, new FinalInt(), usedDimensions.length);
-                } catch (Exception e) {
-                    BILoggerFactory.getLogger().error(e.getMessage(), e);
-                } finally {
-                    iter.finish();
-                }
-            }
-        }.start();
-        return iter;
-    }
-
-    /**
-     * @param usedDimensions ComplexGroupExecutor复用时需要的参数
-     * @param usedSumTarget  ComplexGroupExecutor复用时需要的参数
-     * @param pagedIterator
-     * @throws Exception
-     */
-    public static void generateHeader(TableWidget widget, BIDimension[] usedDimensions, BISummaryTarget[] usedSumTarget, StreamPagedIterator pagedIterator, int maxRowDimensionsLength) throws Exception {
-
-        int columnIdx = 0;
-        //        if (widget.isOrder() == 1) {
-        //            CBCell cell = GeneratorUtils.createCBCell(Inter.getLocText("BI-Number_Index"), 0, 1, columnIdx++, 1);
-        //            pagedIterator.addCell(cell);
-        //        }
-        for (int i = 0; i < usedDimensions.length; i++) {
-            //复杂表 行表头 区域1有2两个维度、区域2有3个维度，区域1里最后一个维度的columnSpan需要特殊处理
-            int columnSpanOffSet = i == usedDimensions.length - 1 ? maxRowDimensionsLength - usedDimensions.length : 0;
-            CBCell cell = GeneratorUtils.createCBCell(usedDimensions[i].getText(), 0, 1, columnIdx++, columnSpanOffSet + 1, widget.getTableStyle().getHeaderStyle(Style.getInstance()));
-            pagedIterator.addCell(cell);
-            columnIdx += columnSpanOffSet;
-        }
-        for (BISummaryTarget anUsedSumTarget : usedSumTarget) {
-            BIWidgetConf setting = widget.getWidgetConf();
-            int numLevel = setting.getNumberLevelByTargetID(anUsedSumTarget.getId());
-            String unit = setting.getUnitByTargetID(anUsedSumTarget.getId());
-            String levelAndUnit = GeneratorUtils.formatLevelAndUnit(numLevel, unit);
-
-            String dimensionUnit = StringUtils.isEmpty(levelAndUnit) ? "" : "(" + levelAndUnit + ")";
-
-            CBCell cell = GeneratorUtils.createCBCell(anUsedSumTarget.getText() + dimensionUnit, 0, 1, columnIdx++, 1, widget.getTableStyle().getHeaderStyle(Style.getInstance()));
-            pagedIterator.addCell(cell);
-        }
-    }
-
-    /**
-     * @param n                      ComplexGroupExecutor复用时需要的参数
-     * @param widget                 ComplexGroupExecutor复用时需要的参数
-     * @param rowDimensions          ComplexGroupExecutor复用时需要的参数
-     * @param iter
-     * @param start                  ComplexGroupExecutor复用时需要的参数
-     * @param rowIdx                 ComplexGroupExecutor复用时需要的参数
-     * @param maxRowDimensionsLength ComplexGroupExecutor复用时需要的参数,
-     */
-    public static void generateCells(Node n, TableWidget widget, BIDimension[] rowDimensions, TableCellIterator iter, FinalInt start, FinalInt rowIdx, int maxRowDimensionsLength) {
-        Node lastSibling = null;//上一个节点
-        while (n.getFirstChild() != null) {
-            n = n.getFirstChild();
-        }
-        int[] oddEven = new int[rowDimensions.length];
-        Object[] dimensionNames = new Object[rowDimensions.length];
-        while (n != null) {
-            if (checkNotNull(n, rowDimensions.length)) {
-                rowIdx.value++;
-                int newRow = rowIdx.value & ExportConstants.MAX_ROWS_2007 - 1;
-                if (newRow == 0) {
-                    iter.getIteratorByPage(start.value).finish();
-                    start.value++;
-                }
-                StreamPagedIterator pagedIterator = iter.getIteratorByPage(start.value);
-                //通过dimensionNames给行表头合并单元格
-                generateDimNames(n, lastSibling, widget, rowDimensions, dimensionNames, oddEven, pagedIterator, rowIdx.value, maxRowDimensionsLength);
-                generateTargetCells(n, widget, pagedIterator, rowIdx.value, maxRowDimensionsLength, rowIdx.value % 2 == 1 ? widget.getTableStyle().getOddRowStyle(Style.getInstance()) : widget.getTableStyle().getEvenRowStyle(Style.getInstance()));
-                if (widget.showRowToTal()) {
-                    int columnSpanOffSet = maxRowDimensionsLength - rowDimensions.length + 1;
-                    generateSumCells(n, widget, pagedIterator, rowIdx, maxRowDimensionsLength - columnSpanOffSet, maxRowDimensionsLength);
-                }
-            }
-            lastSibling = n;
-            n = n.getSibling();
-            while (n != null && n.getFirstChild() != null) {
-                n = n.getFirstChild();
-            }
-        }
-    }
-
-    private static void generateSumCells(Node temp, TableWidget widget, StreamPagedIterator pagedIterator, FinalInt rowIdx, int columnIdx, int maxRowDimensionsLength) {
-        //isLastSum 是否是最后一行会总行
-        if ((widget.getViewTargets().length != 0) && checkIfGenerateSumCell(temp)) {
-            if (temp.getParent().getChildLength() != 1) {
-                rowIdx.value++;
-                boolean isLastSumRow = temp.getSibling() == null && columnIdx == 0;
-                Style style = isLastSumRow ? widget.getTableStyle().getHeaderStyle(Style.getInstance()) : widget.getTableStyle().getSumRowStyle(Style.getInstance());
-                CBCell cell = GeneratorUtils.createCBCell(Inter.getLocText("BI-Summary_Values"), rowIdx.value, 1, columnIdx, maxRowDimensionsLength - columnIdx, style);
-                pagedIterator.addCell(cell);
-                generateTargetCells(temp.getParent(), widget, pagedIterator, rowIdx.value, maxRowDimensionsLength, style);
-            }
-            //开辟新内存，不对temp进行修改
-            Node parent = temp.getParent();
-            generateSumCells(parent, widget, pagedIterator, rowIdx, columnIdx - 1, maxRowDimensionsLength);
-        }
-    }
-
-    private static boolean checkNotNull(Node n, int length) {
-
-        Node temp = n;
-        for (int i = 0; i < length; i++) {
-            if (temp.getParent() == null) {
-                return false;
-            }
-            temp = temp.getParent();
-        }
-        return true;
-    }
-
-    private static void generateTargetCells(Node temp, TableWidget widget, StreamPagedIterator pagedIterator, int rowIdx, int dimensionsLength, Style style) {
-
-        int targetsKeyIndex = 0;
-        for (TargetGettingKey key : widget.getTargetsKey()) {
-            int columnIdx = targetsKeyIndex + dimensionsLength;
-            Object data = temp.getSummaryValue(key);
-            CBCell cell = formatTargetCell(data, widget.getWidgetConf(), key, rowIdx, columnIdx, style);
-            pagedIterator.addCell(cell);
-            targetsKeyIndex++;
-        }
-    }
-
-    private static void generateDimNames(Node temp, Node lastSibling, TableWidget widget, BIDimension[] rowDimensions, Object[] dimensionNames, int[] oddEven, StreamPagedIterator pagedIterator, int rowIdx, int maxRowDimensionsLength) {
-        //维度第一次出现即addCell
-        int rowDimLength = rowDimensions.length;
-        int i = rowDimLength;
-        while (temp.getParent() != null) {
-            boolean hasSameParent = lastSibling != null && lastSibling.getParent() != null && temp.getParent()!= null && lastSibling.getParent() == temp.getParent();
-
-            int rowSpan = widget.showRowToTal() && widget.getTargets().length != 0 ? temp.getTotalLengthWithSummary() : temp.getTotalLength();
-            BIDimension dim = rowDimensions[--i];
-            //年月日字段格式化
-            Object v = GeneratorUtils.formatDateGroup(dim.getGroup().getType(), dim.toString(temp.getData()));
-            if (!ComparatorUtils.equals(dimensionNames[i], v) || (i == rowDimensions.length - 1) || !hasSameParent) {
-                oddEven[i]++;
-                int columnSpanOffSet = i == rowDimLength - 1 ? maxRowDimensionsLength - rowDimLength : 0;
-                Style style = rowIdx % 2 == 1 ? widget.getTableStyle().getOddRowStyle(Style.getInstance()) : widget.getTableStyle().getEvenRowStyle(Style.getInstance());
-                CBCell cell = GeneratorUtils.createCBCell(v, rowIdx, rowSpan, i, 1 + columnSpanOffSet, style);
-                pagedIterator.addCell(cell);
-                dimensionNames[i] = v;
-            }
-            temp = temp.getParent();
-            lastSibling = lastSibling != null ? lastSibling.getParent() : null;
-        }
     }
 
     protected WidgetCacheKey createWidgetCacheKey() {
@@ -341,12 +154,6 @@ public class GroupExecutor extends AbstractTableWidgetExecutor<Node> {
     private String getRandWidgetName() {
 
         return java.util.UUID.randomUUID().toString();
-    }
-
-    @Override
-    public Rectangle getSouthEastRectangle() {
-
-        return rectangle;
     }
 
     /**
