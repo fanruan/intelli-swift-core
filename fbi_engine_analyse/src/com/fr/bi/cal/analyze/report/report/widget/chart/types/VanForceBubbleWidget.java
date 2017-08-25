@@ -72,6 +72,11 @@ public class VanForceBubbleWidget extends VanDotWidget{
         return true;
     }
 
+    // 使用默认的chartWidget的numberLevel方法
+    protected int numberLevel(String dimensionID) {
+        return this.numberLevelFromSettings(dimensionID);
+    }
+
     protected boolean checkValid(){
         return this.getDim1Size() > 0 && this.hasTarget();
     }

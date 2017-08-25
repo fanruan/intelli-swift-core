@@ -3,12 +3,14 @@ package com.fr.bi.cal.analyze.report.report.widget.chart.types;
 import com.fr.bi.cal.analyze.report.report.widget.VanChartWidget;
 import com.fr.bi.conf.report.map.BIWMSManager;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
+import com.fr.bi.stable.constant.BIChartSettingConstant;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.general.Inter;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
 import com.fr.stable.StableUtils;
+import com.fr.bi.stable.constant.BIChartSettingConstant;
 
 import java.util.List;
 
@@ -151,6 +153,17 @@ public class VanGisWidget extends VanChartWidget{
     //地图因为gis背景，不自适应颜色
     protected JSONObject defaultFont() throws JSONException {
         return JSONObject.create().put("fontFamily", "Microsoft YaHei").put("fontSize", "12px").put("color", "#666666");
+    }
+
+    protected JSONObject defaultDataLabelSetting() throws JSONException {
+        return JSONObject.create()
+                .put("showBlockName", true)
+                .put("showTargetName", true)
+                .put("showValue", true)
+                .put("showPercentage", false)
+                .put("showTractionLine", false)
+                .put("position", BIChartSettingConstant.DATA_LABEL.POSITION_OUTER)
+                .put("textStyle", defaultFont());
     }
 
     protected boolean checkValid(){
