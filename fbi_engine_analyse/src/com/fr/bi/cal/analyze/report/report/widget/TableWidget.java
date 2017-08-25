@@ -628,7 +628,7 @@ public class TableWidget extends SummaryWidget implements SclCalculator {
         }
         DataConstructor res = BITableConstructHelper.buildTableData(builder);
         BITableConstructHelper.formatCells(res, operationMap, widgetSettings);
-        return res.createJSON();
+        return res.createJSON().put("row", data.optLong("row", 0)).put("page",data.opt("page"));
     }
 
 
