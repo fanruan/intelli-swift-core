@@ -16,6 +16,9 @@ public abstract class BITableCellFormatOperation implements ITableCellFormatOper
     @Override
     public JSONObject createItemTextStyle(String text) throws Exception {
         JSONObject textStyle = JSONObject.create();
+            /*
+    BI-8434 空值时样式按负无穷处理
+    * */
         try {
             if (BIStringUtils.isEmptyString(text) || !StableUtils.isNumber(text)) {
                 text = String.valueOf(Float.NEGATIVE_INFINITY);
