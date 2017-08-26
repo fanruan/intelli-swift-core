@@ -1,4 +1,4 @@
-package com.finebi.cube.fineRelation;
+package com.finebi.cube.finerelation;
 
 import com.finebi.common.resource.ResourceItem;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
