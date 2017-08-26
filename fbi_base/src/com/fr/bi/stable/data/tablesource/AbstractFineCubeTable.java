@@ -1,4 +1,4 @@
-package com.fr.bi.stable.data.tableSource;
+package com.fr.bi.stable.data.tablesource;
 
 import com.finebi.common.name.Name;
 import com.finebi.common.resource.ResourceName;

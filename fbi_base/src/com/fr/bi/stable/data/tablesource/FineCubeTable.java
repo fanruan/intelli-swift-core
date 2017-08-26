@@ -1,11 +1,9 @@
-package com.fr.bi.stable.data.tableSource;
+package com.fr.bi.stable.data.tablesource;
 
 
 import com.finebi.common.resource.ResourceItem;
 import com.fr.bi.stable.data.db.FineCubeField;
 import com.fr.bi.stable.data.source.CubeTableSource;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 
 import java.util.List;
 

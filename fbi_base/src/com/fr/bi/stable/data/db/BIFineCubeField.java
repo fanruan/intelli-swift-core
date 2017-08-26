@@ -6,7 +6,7 @@ import com.finebi.common.resource.ResourceName;
 import com.finebi.common.resource.ResourceNameImpl;
 import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.data.source.CubeTableSource;
-import com.fr.bi.stable.data.tableSource.FineCubeTable;
+import com.fr.bi.stable.data.tablesource.FineCubeTable;
 import com.fr.bi.stable.utils.BIDBUtils;
 
 import com.fr.general.ComparatorUtils;

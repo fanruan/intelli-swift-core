@@ -3,7 +3,7 @@ package com.fr.bi.stable.data.db;
 import com.fr.bi.common.persistent.annotation.PersistNameHistory;
 import com.fr.bi.stable.data.key.IPersistentField;
 import com.fr.bi.stable.data.source.CubeTableSource;
-import com.fr.bi.stable.data.tableSource.FineCubeTable;
+import com.fr.bi.stable.data.tablesource.FineCubeTable;
 import com.fr.bi.stable.utils.BIDBUtils;
 import com.fr.general.ComparatorUtils;
 import com.fr.json.JSONObject;
