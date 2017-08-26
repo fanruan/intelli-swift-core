@@ -3,6 +3,8 @@ package com.fr.bi.cal.analyze.report.report.widget.chart.types;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
+import com.fr.bi.field.target.target.BISummaryTarget;
+import com.fr.stable.StringUtils;
 
 /**
  * Created by eason on 2017/3/20.
@@ -75,6 +77,12 @@ public class VanForceBubbleWidget extends VanDotWidget{
     // 使用默认的chartWidget的numberLevel方法
     protected int numberLevel(String dimensionID) {
         return this.numberLevelFromSettings(dimensionID);
+    }
+
+    // 使用默认的chartWidget的unitFromSetting方法
+    protected String unitFromSetting(BISummaryTarget dimension) {
+        JSONObject settings = dimension.getChartSetting().getSettings();
+        return settings.optString("unit", StringUtils.EMPTY);
     }
 
     protected boolean checkValid(){

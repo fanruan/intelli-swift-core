@@ -61,11 +61,15 @@ public class VanGisWidget extends VanChartWidget{
         return plotOptions;
     }
 
+    /**
+     * 是否设置纬度在前
+     * @return
+     */
     private boolean latFirst() {
         BIDimension dimension = getCategoryDimension();
         JSONObject posJSON = dimension.getChartSetting().getPosition();
         if(posJSON != null){
-            return posJSON.optInt("position") != 4;
+            return posJSON.optInt("type") == 4;
         }
         return false;
     }
