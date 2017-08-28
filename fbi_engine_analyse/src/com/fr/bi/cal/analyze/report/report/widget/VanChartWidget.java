@@ -16,7 +16,6 @@ import com.fr.bi.field.target.target.BISummaryTarget;
 import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.stable.constant.BIChartSettingConstant;
 import com.fr.bi.stable.constant.BIReportConstant;
-import com.fr.bi.stable.constant.BIStyleConstant;
 import com.fr.bi.util.BIConfUtils;
 import com.fr.general.ComparatorUtils;
 import com.fr.general.IOUtils;
@@ -756,16 +755,7 @@ public abstract class VanChartWidget extends TableWidget {
         if (settings.has("chartColor")) {
             return settings.getJSONArray("chartColor");
         } else if (globalStyle.has("chartColor")) {
-            if (settings.has("chartColor")) {
-                return settings.getJSONArray("chartColor");
-            } else {
-                String[] defaultColors = BIStyleConstant.DEFAULT_CHART_SETTING.CHART_COLOR;
-                JSONArray array = new JSONArray();
-                for (int i = 0; i < defaultColors.length; i++) {
-                    array.put(defaultColors[i]);
-                }
-                return array;
-            }
+            return globalStyle.getJSONArray("chartColor");
         } else if (plateConfig.has("defaultColor")) {
             String key = plateConfig.optString("defaultColor");
             JSONArray styleList = plateConfig.optJSONArray("styleList");
