@@ -4,32 +4,42 @@ package com.fr.bi.cal.analyze.report.report.widget;
 import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.conf.table.BusinessTable;
 import com.fr.bi.base.annotation.BICoreField;
-import com.fr.bi.cal.analyze.cal.result.*;
+import com.fr.bi.cal.analyze.cal.result.BIComplexExecutData;
+import com.fr.bi.cal.analyze.cal.result.ComplexExpander;
+import com.fr.bi.cal.analyze.cal.result.CrossExpander;
 import com.fr.bi.cal.analyze.cal.table.PolyCubeECBlock;
 import com.fr.bi.cal.analyze.executor.BIEngineExecutor;
 import com.fr.bi.cal.analyze.executor.paging.PagingFactory;
-import com.fr.bi.cal.analyze.executor.table.*;
-import com.fr.bi.cal.analyze.report.report.BIWidgetFactory;
-import com.fr.bi.cal.analyze.report.report.widget.chart.export.calculator.IExcelDataBuilder;
-import com.fr.bi.cal.analyze.report.report.widget.chart.export.calculator.SummaryComplexTableBuilder;
-import com.fr.bi.cal.analyze.report.report.widget.chart.export.calculator.SummaryCrossTableDataBuilder;
-import com.fr.bi.cal.analyze.report.report.widget.chart.export.calculator.SummaryGroupTableDataBuilder;
-import com.fr.bi.cal.analyze.report.report.widget.chart.export.format.operation.BITableCellDateFormatOperation;
-import com.fr.bi.cal.analyze.report.report.widget.chart.export.format.operation.BITableCellNumberFormatOperation;
-import com.fr.bi.cal.analyze.report.report.widget.chart.export.format.operation.ITableCellFormatOperation;
-import com.fr.bi.cal.analyze.report.report.widget.chart.export.format.setting.BICellFormatSetting;
-import com.fr.bi.cal.analyze.report.report.widget.chart.export.format.setting.ICellFormatSetting;
-import com.fr.bi.cal.analyze.report.report.widget.chart.export.item.constructor.DataConstructor;
-import com.fr.bi.cal.analyze.report.report.widget.chart.export.utils.BITableConstructHelper;
-import com.fr.bi.cal.analyze.report.report.widget.style.BITableWidgetStyle;
+import com.fr.bi.cal.analyze.executor.table.AbstractTableWidgetExecutor;
+import com.fr.bi.cal.analyze.executor.table.ComplexCrossExecutor;
+import com.fr.bi.cal.analyze.executor.table.ComplexGroupExecutor;
+import com.fr.bi.cal.analyze.executor.table.ComplexHorGroupExecutor;
+import com.fr.bi.cal.analyze.executor.table.CrossExecutor;
+import com.fr.bi.cal.analyze.executor.table.GroupExecutor;
+import com.fr.bi.cal.analyze.executor.table.HorGroupExecutor;
+import com.fr.bi.cal.analyze.report.report.widget.chart.calculator.builder.IExcelDataBuilder;
+import com.fr.bi.cal.analyze.report.report.widget.chart.calculator.builder.SummaryComplexTableBuilder;
+import com.fr.bi.cal.analyze.report.report.widget.chart.calculator.builder.SummaryCrossTableDataBuilder;
+import com.fr.bi.cal.analyze.report.report.widget.chart.calculator.builder.SummaryGroupTableDataBuilder;
+import com.fr.bi.cal.analyze.report.report.widget.chart.calculator.format.operation.BITableCellDateFormatOperation;
+import com.fr.bi.cal.analyze.report.report.widget.chart.calculator.format.operation.BITableCellNumberFormatOperation;
+import com.fr.bi.cal.analyze.report.report.widget.chart.calculator.format.operation.BITableCellStringOperation;
+import com.fr.bi.cal.analyze.report.report.widget.chart.calculator.format.operation.ITableCellFormatOperation;
+import com.fr.bi.cal.analyze.report.report.widget.chart.calculator.format.setting.BICellFormatSetting;
+import com.fr.bi.cal.analyze.report.report.widget.chart.calculator.format.setting.ICellFormatSetting;
+import com.fr.bi.cal.analyze.report.report.widget.chart.calculator.format.utils.BITableConstructHelper;
+import com.fr.bi.cal.analyze.report.report.widget.chart.calculator.item.constructor.DataConstructor;
 import com.fr.bi.cal.analyze.report.report.widget.table.BITableReportSetting;
+import com.fr.bi.cal.analyze.report.report.widget.util.BIWidgetFactory;
 import com.fr.bi.cal.analyze.session.BISession;
 import com.fr.bi.common.persistent.annotation.PersistNameHistory;
 import com.fr.bi.common.persistent.xml.BIIgnoreField;
+import com.fr.bi.conf.report.SclCalculator;
 import com.fr.bi.conf.report.WidgetType;
+import com.fr.bi.conf.report.conf.BIWidgetConf;
+import com.fr.bi.conf.report.conf.BIWidgetSettings;
 import com.fr.bi.conf.report.style.BITableStyle;
 import com.fr.bi.conf.report.style.DetailChartSetting;
-import com.fr.bi.conf.report.widget.IWidgetStyle;
 import com.fr.bi.conf.report.widget.field.BITargetAndDimension;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.conf.report.widget.field.target.BITarget;
@@ -41,7 +51,6 @@ import com.fr.bi.report.key.TargetGettingKey;
 import com.fr.bi.stable.constant.BIJSONConstant;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.constant.BIStyleConstant;
-import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.gvi.GVIUtils;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.utils.BITravalUtils;
@@ -51,17 +60,9 @@ import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
 import com.fr.report.poly.TemplateBlock;
 import com.fr.stable.StringUtils;
-import com.taobao.top.link.embedded.websocket.util.StringUtil;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 
@@ -70,7 +71,7 @@ import java.util.concurrent.ConcurrentHashMap;
  *
  * @author Daniel-pc
  */
-public class TableWidget extends BISummaryWidget {
+public class TableWidget extends SummaryWidget implements SclCalculator {
 
     private static final long serialVersionUID = -4736577206434772688L;
 
@@ -92,9 +93,10 @@ public class TableWidget extends BISummaryWidget {
 
     @BIIgnoreField
     private transient BISummaryTarget[] usedTargets;
-
+    @BICoreField
     private DetailChartSetting settings = new DetailChartSetting();
 
+    @BICoreField
     protected Map<String, JSONArray> clicked = new HashMap<String, JSONArray>();
 
     protected Map<String, BIDimension> dimensionsIdMap = new HashMap<String, BIDimension>();
@@ -103,14 +105,20 @@ public class TableWidget extends BISummaryWidget {
 
     protected Map<Integer, List<String>> view = new HashMap<Integer, List<String>>();
 
-    private BITableWidgetStyle style;
-
     @Override
     public void setPageSpinner(int index, int value) {
 
         this.pageSpinner[index] = value;
     }
 
+    public int[] getPageSpinner() {
+        return pageSpinner;
+    }
+
+    public void setPageSpinner(int[] pageSpinner) {
+        this.pageSpinner = pageSpinner;
+    }
+    @BICoreField
     private TableWidget linkedWidget;
 
     @Override
@@ -195,7 +203,7 @@ public class TableWidget extends BISummaryWidget {
         boolean calculateTarget = targetSort != null || !targetFilterMap.isEmpty();
         CrossExpander expander = new CrossExpander(complexExpander.getXExpander(0), complexExpander.getYExpander(0));
         boolean hasTarget = calculateTarget || getViewTargets().length > 0;
-        if (this.tableType == BIReportConstant.TABLE_WIDGET.COMPLEX_TYPE || this.tableType == BIReportConstant.WIDGET.DOT) {
+        if (this.tableType == BIReportConstant.TABLE_WIDGET.COMPLEX_TYPE) {
             return createComplexExecutor(session, hasTarget, complexExpander, expander);
         } else {
             return createNormalExecutor(session, hasTarget, getViewDimensions(), getViewTopDimensions(), expander);
@@ -264,7 +272,6 @@ public class TableWidget extends BISummaryWidget {
 
     @Override
     public JSONObject createDataJSON(BISessionProvider session, HttpServletRequest req) throws Exception {
-
         BIEngineExecutor executor = getExecutor((BISession) session);
         JSONObject jo = new JSONObject();
         if (executor != null) {
@@ -324,13 +331,6 @@ public class TableWidget extends BISummaryWidget {
         }
         changeCalculateTargetStartGroup();
         createDimensionAndTargetMap();
-        createWidgetStyles(jo);
-    }
-
-    private void createWidgetStyles(JSONObject jo) throws Exception {
-
-        style = new BITableWidgetStyle();
-        style.parseJSON(jo);
     }
 
     private void createDimAndTars(JSONObject jo) throws Exception {
@@ -399,10 +399,6 @@ public class TableWidget extends BISummaryWidget {
                 clickValue[i] = ja.getString(i);
             }
         }
-    }
-
-    public BITableWidgetStyle getWidgetStyle() {
-        return style;
     }
 
     public String getDimensionName(String id) {
@@ -608,66 +604,79 @@ public class TableWidget extends BISummaryWidget {
 
     /*todo 想办法把数据和样式格式分离出来*/
     public JSONObject getPostOptions(BISessionProvider session, HttpServletRequest req) throws Exception {
-
         JSONObject res = this.createDataJSON(session, req);
-        JSONObject dataJSON = res.getJSONObject("data");
-        Map<Integer, List<JSONObject>> viewMap = this.createViewMap();
+        return calculateSCData(widgetConf, res).put("page", res.getJSONArray("page")).put("viewDimensionsLength", getViewDimensions().length).put("viewTopDimensionsLength", getViewTopDimensions().length).put("widgetType", this.tableType);
+    }
+
+    @Override
+    public JSONObject calculateSCData(BIWidgetConf widgetConf, JSONObject data) throws Exception {
+        Map<Integer, List<JSONObject>> viewMap = this.createViewMap(widgetConf);
+        BIWidgetSettings widgetSettings = getWidgetSettings(widgetConf);
+        Map<String, ITableCellFormatOperation> operationMap = createOperationMap(widgetConf);
+//        Map<String, ITableCellFormatOperation> operationMap = new HashMap<String, ITableCellFormatOperation>();
         IExcelDataBuilder builder = null;
-        switch (this.tableType) {
+        switch (widgetConf.getType()) {
             case BIReportConstant.TABLE_WIDGET.CROSS_TYPE:
-                builder = new SummaryCrossTableDataBuilder(viewMap, dataJSON, style);
+                builder = new SummaryCrossTableDataBuilder(viewMap, data.getJSONObject("data"), widgetSettings);
                 break;
             case BIReportConstant.TABLE_WIDGET.GROUP_TYPE:
-                builder = new SummaryGroupTableDataBuilder(viewMap, dataJSON, style);
+                builder = new SummaryGroupTableDataBuilder(viewMap, data.getJSONObject("data"), widgetSettings);
                 break;
             case BIReportConstant.TABLE_WIDGET.COMPLEX_TYPE:
-                builder = new SummaryComplexTableBuilder(viewMap, dataJSON, style);
+                builder = new SummaryComplexTableBuilder(viewMap, data.getJSONObject("data"), widgetSettings);
                 break;
         }
-        DataConstructor data = BITableConstructHelper.buildTableData(builder);
-        BITableConstructHelper.formatCells(data, getITableCellFormatOperationMap(), style);
-        JSONObject resultJSON = data.createJSON().put("page", res.getJSONArray("page")).put("widgetType", this.tableType);
-        resultJSON.put("viewDimensionsLength", getViewDimensions().length);
-        resultJSON.put("viewTopDimensionsLength", getViewTopDimensions().length);
-        resultJSON.put("viewTargetsLength", getViewTargets().length);
-        return resultJSON;
+        DataConstructor res = BITableConstructHelper.buildTableData(builder);
+        BITableConstructHelper.formatCells(res, operationMap, widgetSettings);
+        return res.createJSON().put("row", data.optLong("row", 0)).put("page",data.opt("page"));
     }
 
-    private Map<String, ITableCellFormatOperation> getITableCellFormatOperationMap() throws Exception {
 
+    private Map<String, ITableCellFormatOperation> createOperationMap(BIWidgetConf config) throws Exception {
         Map<String, ITableCellFormatOperation> formOperationsMap = new HashMap<String, ITableCellFormatOperation>();
-        createFormatOperations(formOperationsMap);
+        Map<Integer, List<JSONObject>> viewMap = config.getDetailViewMap();
+        for (Integer integer : viewMap.keySet()) {
+            List<JSONObject> dimJo = viewMap.get(integer);
+            for (JSONObject jo : dimJo) {
+                if (jo.optBoolean("used")) {
+                    String dId = jo.getString("dId");
+                    int type = jo.getInt("type");
+                    ICellFormatSetting setting = new BICellFormatSetting();
+                    if (config.getDimensions().getJSONObject(dId).has("settings")) {
+                        setting.parseJSON(config.getDimensions().getJSONObject(dId).optJSONObject("settings"));
+                    }
+                    ITableCellFormatOperation op = null;
+                    switch (type) {
+                        case BIReportConstant.TARGET_TYPE.STRING:
+                            op = new BITableCellStringOperation(setting);
+                            break;
+                        case BIReportConstant.TARGET_TYPE.NUMBER:
+                        case BIReportConstant.TARGET_TYPE.COUNTER:
+                        case BIReportConstant.TARGET_TYPE.FORMULA:
+                        case BIReportConstant.TARGET_TYPE.SUM_OF_ABOVE:
+                        case BIReportConstant.TARGET_TYPE.SUM_OF_ABOVE_IN_GROUP:
+                        case BIReportConstant.TARGET_TYPE.SUM_OF_ALL:
+                        case BIReportConstant.TARGET_TYPE.SUM_OF_ALL_IN_GROUP:
+                        case BIReportConstant.TARGET_TYPE.RANK:
+                        case BIReportConstant.TARGET_TYPE.RANK_IN_GROUP:
+                        case BIReportConstant.TARGET_TYPE.YEAR_ON_YEAR_RATE:
+                        case BIReportConstant.TARGET_TYPE.MONTH_ON_MONTH_RATE:
+                        case BIReportConstant.TARGET_TYPE.YEAR_ON_YEAR_VALUE:
+                        case BIReportConstant.TARGET_TYPE.MONTH_ON_MONTH_VALUE:
+                            op = new BITableCellNumberFormatOperation(setting);
+                            break;
+                        case BIReportConstant.TARGET_TYPE.DATE:
+                            op = new BITableCellDateFormatOperation(config.getDimensions().getJSONObject(dId).getJSONObject("group").getInt("type"), setting);
+                            break;
+                        default:
+                            op = new BITableCellStringOperation(setting);
+                    }
+                    formOperationsMap.put(dId, op);
+                }
+            }
+
+        }
         return formOperationsMap;
-    }
-
-    private void createFormatOperations(Map<String, ITableCellFormatOperation> operationsMap) throws Exception {
-
-        for (BISummaryTarget target : this.getTargets()) {
-            ICellFormatSetting setting = new BICellFormatSetting();
-            setting.parseJSON(target.getChartSetting().getSettings());
-            ITableCellFormatOperation op = new BITableCellNumberFormatOperation(setting);
-            operationsMap.put(target.getId(), op);
-        }
-        for (BIDimension dimension : this.getDimensions()) {
-            if (isStringDimension(dimension)) {
-                continue;
-            }
-            ICellFormatSetting setting = new BICellFormatSetting();
-            setting.parseJSON(dimension.getChartSetting().getSettings());
-            ITableCellFormatOperation op;
-            if (dimension.createColumnKey().getFieldType() == DBConstant.COLUMN.NUMBER) {
-                op = new BITableCellNumberFormatOperation(setting);
-            } else {
-                op = new BITableCellDateFormatOperation(dimension.getGroup().getType(), setting);
-            }
-            operationsMap.put(dimension.getId(), op);
-        }
-    }
-
-    //todo 简单处理，之后要提个接口
-    private boolean isStringDimension(BIDimension dimension) {
-
-        return dimension.createColumnKey().getFieldType() == DBConstant.COLUMN.STRING;
     }
 
     public String getDimensionNameByID(String dID) throws Exception {
@@ -710,37 +719,21 @@ public class TableWidget extends BISummaryWidget {
         throw new Exception();
     }
 
-    public Map<Integer, List<JSONObject>> createViewMap() throws Exception {
-
-        Map<Integer, List<JSONObject>> dimAndTar = new HashMap<Integer, List<JSONObject>>();
-        Iterator<Integer> iterator = view.keySet().iterator();
-        while (iterator.hasNext()) {
-            Integer next = iterator.next();
-            List<JSONObject> list = new ArrayList<JSONObject>();
-            List<String> ids = view.get(next);
-            for (String dId : ids) {
-                String text = getDimensionNameByID(dId);
-                if (isUsedById(dId)) {
-                    list.add(new JSONObject().put("dId", dId).put("text", text).put("used", isUsedById(dId)));
-                }
-            }
-            dimAndTar.put(next, list);
+    private Map<Integer, List<JSONObject>> createViewMap(BIWidgetConf widgetConf) throws Exception {
+        if (widgetConf != null) {
+            return widgetConf.getDetailViewMap();
+        } else {
+            return this.widgetConf.getDetailViewMap();
         }
-        return dimAndTar;
     }
 
-    public IWidgetStyle getStyle() {
-
-        return style;
-    }
-
-    public BITableStyle getTableStyle () {
+    public BITableStyle getTableStyle() {
         String themeColor;
         switch (tableType) {
             case BIReportConstant.WIDGET.TABLE:
             case BIReportConstant.WIDGET.CROSS_TABLE:
             case BIReportConstant.WIDGET.COMPLEX_TABLE:
-                themeColor = getWidgetStyle().getThemeColor();
+                themeColor = getWidgetSettings().getThemeColor();
                 break;
             default:
                 themeColor = BIStyleConstant.DEFAULT_CHART_SETTING.THEME_COLOR;

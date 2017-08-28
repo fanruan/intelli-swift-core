@@ -26,10 +26,18 @@ public class TwinBufferStreamIterator<T> implements Iterator{
     }
 
     public void add(T t){
+        //把当前的current传过去，避免current发生替换的时候出发了add到当前的tNext
+        add(t, current);
+        //没有在消费，并且consumer有足量的缓冲，就唤醒下
+        if (!isConsuming && consumer.isPlenty()){
+            wakeUp();
+        }
+    }
+
+    private void add(T t, BufferArray current) {
         //第一个数组满了，就放第二个数组，同时触发数组的替换。
         if (!current.add(t)){
-            //执行这里的add之前可能会出现另外一个线程已经再执行addBuffer，这时候如果已经替换完成了，这个next可能会是新创建的next，current是上一个next。这种情况会出现顺序问题。
-            if (next != null && next.add(t)){
+            if (current.next != null && current.next.add(t)){
                 addBuffer();
             } else {
                 //如果第二个也满了，就需要同步的执行下数组的替换，以确保下次递归的时候能add成功。
@@ -39,10 +47,6 @@ public class TwinBufferStreamIterator<T> implements Iterator{
                 }
                 add(t);
             }
-        }
-        //没有在消费，并且consumer有足量的缓冲，就唤醒下
-        if (!isConsuming && consumer.isPlenty()){
-            wakeUp();
         }
     }
 
@@ -68,7 +72,7 @@ public class TwinBufferStreamIterator<T> implements Iterator{
                     try {
                         isConsuming = false;
                         this.wait();
-                    } catch (Exception e) {
+                    } catch (Exception ignore) {
                     }
                 }
                 isConsuming = true;
@@ -99,7 +103,7 @@ public class TwinBufferStreamIterator<T> implements Iterator{
 
     @Override
     public void remove() {
-
+        throw new UnsupportedOperationException();
     }
 
     public void wakeUp() {
@@ -146,14 +150,12 @@ public class TwinBufferStreamIterator<T> implements Iterator{
         }
 
         public boolean ifFullThenAddOnce(BufferArray next) {
-            if (isFull()){
+            if (isFull() && addFlag.getAndIncrement() == 0){
                 //不能用count.get()==array.length来判断，因为可能会有多个线程进行add，只有一个add成功了，但是count被加了很多次，导致count超过array.length，造成替换失败
                 //也不能在add失败的时候减少count,
-                if (addFlag.getAndIncrement() == 0){
-                    next.previous = this;
-                    this.next = next;
-                    return true;
-                }
+                next.previous = this;
+                this.next = next;
+                return true;
             }
             return false;
         }

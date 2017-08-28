@@ -21,4 +21,8 @@ public class VanFallColumnWidget extends VanColumnWidget{
         return this.getDim1Size() > 0 && this.hasTarget();
     }
 
+    protected JSONObject parseLeftValueAxis(JSONObject settings) throws JSONException{
+        return super.parseLeftValueAxis(settings).put("reversed", false);
+    }
+
 }

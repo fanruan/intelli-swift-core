@@ -54,6 +54,8 @@ public class RootDimensionGroup implements IRootDimensionGroup {
 
     protected List<TargetAndKey>[] summaryLists;
 
+    protected NodeCreator nodeCreator;
+
     protected NoneDimensionGroup root;
 
     protected int rowSize;
@@ -62,11 +64,12 @@ public class RootDimensionGroup implements IRootDimensionGroup {
 
     }
 
-    public RootDimensionGroup(List<MetricGroupInfo> metricGroupInfoList, MergeIteratorCreator[] mergeIteratorCreators, int sumLength, BISession session, boolean useRealData) {
+    public RootDimensionGroup(List<MetricGroupInfo> metricGroupInfoList, MergeIteratorCreator[] mergeIteratorCreators, NodeCreator nodeCreator, int sumLength, BISession session, boolean useRealData) {
 
         this.metricGroupInfoList = metricGroupInfoList;
         this.mergeIteratorCreators = mergeIteratorCreators;
         this.sumLength = sumLength;
+        this.nodeCreator = nodeCreator;
         this.session = session;
         this.useRealData = useRealData;
         init();
@@ -121,7 +124,7 @@ public class RootDimensionGroup implements IRootDimensionGroup {
             summaryLists[i] = metricGroupInfoList.get(i).getSummaryList();
             gvis[i] = metricGroupInfoList.get(i).getFilterIndex();
         }
-        root = NoneDimensionGroup.createDimensionGroup(metrics, summaryLists, sumLength, tis, gvis, session.getLoader());
+        root = NoneDimensionGroup.createDimensionGroup(metrics, summaryLists, sumLength, tis, nodeCreator.createMetricMergeResult(null, sumLength, gvis), session.getLoader());
     }
 
     private CubeTableSource getSource(DimensionCalculator column) {
@@ -369,9 +372,12 @@ public class RootDimensionGroup implements IRootDimensionGroup {
         rootDimensionGroup.getters = getters;
         rootDimensionGroup.columns = columns;
         rootDimensionGroup.tis = tis;
-        rootDimensionGroup.singleDimensionGroupCache = singleDimensionGroupCache.clone();
+        if (singleDimensionGroupCache != null) {
+            rootDimensionGroup.singleDimensionGroupCache = singleDimensionGroupCache.clone();
+        }
         rootDimensionGroup.metrics = metrics;
         rootDimensionGroup.summaryLists = summaryLists;
+        rootDimensionGroup.nodeCreator = nodeCreator;
         rootDimensionGroup.root = root;
         rootDimensionGroup.rowSize = rowSize;
         return rootDimensionGroup;
@@ -392,6 +398,7 @@ public class RootDimensionGroup implements IRootDimensionGroup {
 
     @Override
     public void checkMetricGroupInfo(NodeCreator creator, List<MetricGroupInfo> metricGroupInfoList) {
+        this.nodeCreator = creator;
         this.metricGroupInfoList = metricGroupInfoList;
         init();
     }

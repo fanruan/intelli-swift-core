@@ -104,6 +104,11 @@ public abstract class CalCalculator implements TargetCalculator {
     }
 
     @Override
+    public boolean isSumTypePlus() {
+        return false;
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;

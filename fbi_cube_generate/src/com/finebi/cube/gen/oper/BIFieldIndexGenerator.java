@@ -1,10 +1,6 @@
 package com.finebi.cube.gen.oper;
 
-import com.finebi.cube.common.log.BILoggerFactory;
-import com.finebi.cube.conf.utils.BICubeLogExceptionInfo;
 import com.finebi.cube.conf.utils.BILogHelper;
-import com.finebi.cube.impl.pubsub.BIProcessor;
-import com.finebi.cube.impl.pubsub.BIProcessorThreadManager;
 import com.finebi.cube.map.map2.ExternalIntArrayMapFactory;
 import com.finebi.cube.map.map2.IntArrayListExternalMap;
 import com.finebi.cube.message.IMessage;
@@ -14,8 +10,6 @@ import com.finebi.cube.structure.CubeTableEntityGetterService;
 import com.finebi.cube.structure.column.BIColumnKey;
 import com.finebi.cube.structure.column.ICubeColumnEntityService;
 import com.finebi.cube.structure.column.date.BICubeDateSubColumn;
-import com.fr.bi.conf.provider.BIConfigureManagerCenter;
-import com.fr.bi.conf.provider.BILogManagerProvider;
 import com.fr.bi.manager.PerformancePlugManager;
 import com.fr.bi.stable.constant.BILogConstant;
 import com.fr.bi.stable.constant.CubeConstant;
@@ -50,7 +44,7 @@ import java.util.concurrent.TimeUnit;
  * @author Connery
  * @since 4.0
  */
-public class BIFieldIndexGenerator<T> extends BIProcessor {
+public class BIFieldIndexGenerator<T> extends AbstractFieldIndexGenerator {
     private static final Logger LOGGER = LoggerFactory.getLogger(BIFieldIndexGenerator.class);
 
     protected CubeTableSource tableSource;
@@ -67,6 +61,7 @@ public class BIFieldIndexGenerator<T> extends BIProcessor {
     private static final String BASEPATH = File.separator + CACHE;
 
     public BIFieldIndexGenerator(Cube cube, CubeTableSource tableSource, ICubeFieldSource hostBICubeFieldSource, BIColumnKey targetColumnKey) {
+        super(cube, tableSource, hostBICubeFieldSource, targetColumnKey);
         this.tableSource = tableSource;
         this.hostBICubeFieldSource = hostBICubeFieldSource;
         this.cube = cube;
@@ -84,23 +79,8 @@ public class BIFieldIndexGenerator<T> extends BIProcessor {
         }
     }
 
-    private String logFileInfo() {
-        try {
-            return BIStringUtils.append("The table:" + tableSource.getTableName(), " ", tableSource.getSourceID(), " the field:" + hostBICubeFieldSource.getFieldName());
-        } catch (Exception e) {
-            LOGGER.error(e.getMessage(), e);
-        }
-        return "";
-    }
-
-    @Override
-    protected void initThreadPool() {
-        executorService = BIProcessorThreadManager.getInstance().getExecutorService();
-    }
-
     @Override
     public Object mainTask(IMessage lastReceiveMessage) {
-        BILogManagerProvider biLogManager = BIConfigureManagerCenter.getLogManager();
         LOGGER.info(BIStringUtils.append(logFileInfo(), " start building field index main task") +
                 BILogHelper.logCubeLogTableSourceInfo(tableSource.getSourceID()));
         BILogHelper.cacheCubeLogFieldNormalInfo(tableSource.getSourceID(), hostBICubeFieldSource.getFieldName(), BILogConstant.LOG_CACHE_TIME_TYPE.FIELD_INDEX_EXECUTE_START, System.currentTimeMillis());
@@ -118,19 +98,11 @@ public class BIFieldIndexGenerator<T> extends BIProcessor {
             try {
                 biLogManager.infoColumn(tableSource.getPersistentTable(), hostBICubeFieldSource.getFieldName(), stopwatch.elapsed(TimeUnit.SECONDS), Long.valueOf(UserControl.getInstance().getSuperManagerID()));
             } catch (Exception e) {
-                BILoggerFactory.getLogger().error(e.getMessage(), e);
+                LOGGER.error(e.getMessage(), e);
             }
             return null;
         } catch (Throwable e) {
-            try {
-                biLogManager.errorTable(tableSource.getPersistentTable(), e.getMessage(), UserControl.getInstance().getSuperManagerID());
-            } catch (Exception e1) {
-                BILoggerFactory.getLogger().error(e.getMessage(), e);
-            }
-            BILogHelper.cacheCubeLogFieldNormalInfo(tableSource.getSourceID(), hostBICubeFieldSource.getFieldName(), BILogConstant.LOG_CACHE_TIME_TYPE.FIELD_INDEX_EXECUTE_END, System.currentTimeMillis());
-            BICubeLogExceptionInfo exceptionInfo = new BICubeLogExceptionInfo(System.currentTimeMillis(), "Field Index Build", e.getMessage(), e, tableSource.getSourceID(), hostBICubeFieldSource.getFieldName());
-            BILogHelper.cacheCubeLogTableException(tableSource.getSourceID(), exceptionInfo);
-            BILoggerFactory.getLogger().error(e.getMessage(), e);
+            handleBuildIndexFailed(e);
             throw BINonValueUtils.beyondControl(e.getMessage(), e);
         } finally {
             columnEntityService.forceReleaseWriter();
@@ -259,11 +231,6 @@ public class BIFieldIndexGenerator<T> extends BIProcessor {
         IntArrayListExternalMap<T> group2rowNumber = ExternalIntArrayMapFactory.getIntListExternalMap(columnEntityService.getClassType(), columnEntityService.getGroupComparator(), dataFloder);
         constructMap(group2rowNumber, nullRowNumbers);
         return group2rowNumber;
-    }
-
-    @Override
-    public void handleMessage(IMessage receiveMessage) {
-
     }
 
     private interface OriginValueGetter<T> {

@@ -1,5 +1,6 @@
 package com.fr.bi.etl.analysis.conf;
 
+import com.finebi.cube.common.log.BILogger;
 import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.conf.field.BIBusinessField;
 import com.finebi.cube.conf.field.BusinessField;
@@ -19,17 +20,13 @@ import com.fr.general.Inter;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created by 小灰灰 on 2015/12/11.
  */
 public class AnalysisBusiTable extends BIBusinessTable {
-
+    private static BILogger LOGGER = BILoggerFactory.getLogger(AnalysisBusiTable.class);
     private static final long serialVersionUID = 5081075157518418589L;
     private String describe;
     private String name;
@@ -53,8 +50,15 @@ public class AnalysisBusiTable extends BIBusinessTable {
     private void initFields() {
         String tableId = getID().getIdentity();
         List<BusinessField> fields = new ArrayList<BusinessField>();
+        if (source == null) {
+            return;
+        }
         for (PersistentField f : source.getPersistentTable().getFieldList()) {
-            fields.add(new BIBusinessField(this, new BIFieldID(tableId + f.getFieldName()), f.getFieldName(), BIDBUtils.checkColumnClassTypeFromSQL(f.getSqlType(), f.getColumnSize(), f.getScale()), f.getColumnSize()));
+            try {
+                fields.add(new BIBusinessField(this, new BIFieldID(tableId + f.getFieldName()), f.getFieldName(), BIDBUtils.checkColumnClassTypeFromSQL(f.getSqlType(), f.getColumnSize(), f.getScale()), f.getColumnSize()));
+            } catch (Exception e) {
+                LOGGER.error(e.getMessage(), e);
+            }
         }
         setFields(fields);
     }
@@ -65,11 +69,11 @@ public class AnalysisBusiTable extends BIBusinessTable {
             try {
                 source = BIAnalysisETLManagerCenter.getDataSourceManager().getTableSource(this);
             } catch (Exception e) {
-                BILoggerFactory.getLogger().error(e.getMessage(), e);
+                LOGGER.error(e.getMessage(), e);
             }
         }
         if (source == null) {
-            BILoggerFactory.getLogger().info("UserEtl source missed");
+            LOGGER.info("UserEtl source missed");
         }
         return source;
     }

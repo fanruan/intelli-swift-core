@@ -28,6 +28,10 @@ public class XCalculator implements TargetCalculator{
         this.topIndex = topIndex;
     }
 
+    public TargetCalculator getCalculator() {
+        return calculator;
+    }
+
     @Override
     public void doCalculator(ICubeTableService cr, SummaryContainer node, GroupValueIndex gvi, TargetGettingKey key) {
         if (key instanceof XTargetGettingKey && calculator.getCalculatorType() == CalculatorType.SUM_DETAIL){
@@ -85,6 +89,11 @@ public class XCalculator implements TargetCalculator{
     @Override
     public CalculatorType getCalculatorType() {
         return CalculatorType.X_SUM;
+    }
+
+    @Override
+    public boolean isSumTypePlus() {
+        return calculator.isSumTypePlus();
     }
 
     @Override

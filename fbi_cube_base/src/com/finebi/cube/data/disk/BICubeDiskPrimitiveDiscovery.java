@@ -10,6 +10,7 @@ import com.finebi.cube.exception.IllegalCubeResourceLocationException;
 import com.finebi.cube.location.ICubeResourceLocation;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -33,7 +34,7 @@ public class BICubeDiskPrimitiveDiscovery implements ICubePrimitiveResourceDisco
         return releasingResource;
     }
 
-    public static  BICubeDiskPrimitiveDiscovery getInstance() {
+    public static BICubeDiskPrimitiveDiscovery getInstance() {
         return instance;
     }
 
@@ -149,8 +150,18 @@ public class BICubeDiskPrimitiveDiscovery implements ICubePrimitiveResourceDisco
         }
     }
 
-//    更改cube路径时候将旧的nioManager清除
-    public void clearResourceMap(){
+
+    public void clearFileNotExist(String fileKey) {
+        if (fileResourceMap.containsKey(fileKey)) {
+            if (!new File(fileKey).exists()) {
+                fileResourceMap.get(fileKey).forceRelease();
+                fileResourceMap.remove(fileKey);
+            }
+        }
+    }
+
+    //    更改cube路径时候将旧的nioManager清除
+    public void clearResourceMap() {
         synchronized (this) {
             fileResourceMap.clear();
         }

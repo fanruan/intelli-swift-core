@@ -20,8 +20,6 @@ public class BIFileRepository {
 
     public BIFileRepository() {
         this.setPath(FRContext.getCurrentEnv().getPath()
-                + File.separator
-                + ProjectConstants.RESOURCES_NAME
                 + File.separator + "biReport");
     }
 
@@ -46,6 +44,15 @@ public class BIFileRepository {
     public File getBIDirFile(long id) throws Exception {
         String name = getBIDirName(id);
         return new File(this.path, name);
+    }
+
+
+    public File getOldBIDirFile(long id) throws Exception {
+        String name = getBIDirName(id);
+        return new File(FRContext.getCurrentEnv().getPath()
+                + File.separator
+                + ProjectConstants.RESOURCES_NAME
+                + File.separator + "biReport", name);
     }
 
     /**

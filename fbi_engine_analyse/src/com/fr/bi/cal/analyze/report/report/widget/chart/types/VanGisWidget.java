@@ -2,12 +2,15 @@ package com.fr.bi.cal.analyze.report.report.widget.chart.types;
 
 import com.fr.bi.cal.analyze.report.report.widget.VanChartWidget;
 import com.fr.bi.conf.report.map.BIWMSManager;
+import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
+import com.fr.bi.stable.constant.BIChartSettingConstant;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.general.Inter;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
 import com.fr.stable.StableUtils;
+import com.fr.bi.stable.constant.BIChartSettingConstant;
 
 import java.util.List;
 
@@ -58,11 +61,25 @@ public class VanGisWidget extends VanChartWidget{
         return plotOptions;
     }
 
+    /**
+     * 是否设置纬度在前
+     * @return
+     */
+    private boolean latFirst() {
+        BIDimension dimension = getCategoryDimension();
+        JSONObject posJSON = dimension.getChartSetting().getPosition();
+        if(posJSON != null){
+            return posJSON.optInt("type") == 4;
+        }
+        return false;
+    }
+
     public JSONArray createSeries(JSONObject originData) throws Exception {
 
         JSONArray series = JSONArray.create();
         String[] targetIDs = this.getUsedTargetID();
         String[] dimensionIDs = this.getUsedDimensionID();
+        boolean latFirst = latFirst();//纬度在前
 
         JSONArray children = originData.getJSONArray("c");
         for(int i = 0, len = targetIDs.length; i < len; i++){
@@ -75,6 +92,11 @@ public class VanGisWidget extends VanChartWidget{
                 String[] tmp = lnglat.split(",");
 
                 if(tmp.length == 2 && StableUtils.string2Number(tmp[0]) != null){
+                    if(latFirst) {
+                        String lat = tmp[1];
+                        tmp[1] = tmp[0];
+                        tmp[0] = lat;
+                    }
                     JSONArray s = lObj.getJSONArray("s");
                     double value = s.isNull(i) ? 0 : s.getDouble(i);
                     JSONObject d = JSONObject.create().put("lnglat", tmp).put("value", numberFormat(id,value / scale));
@@ -135,6 +157,17 @@ public class VanGisWidget extends VanChartWidget{
     //地图因为gis背景，不自适应颜色
     protected JSONObject defaultFont() throws JSONException {
         return JSONObject.create().put("fontFamily", "Microsoft YaHei").put("fontSize", "12px").put("color", "#666666");
+    }
+
+    protected JSONObject defaultDataLabelSetting() throws JSONException {
+        return JSONObject.create()
+                .put("showBlockName", true)
+                .put("showTargetName", true)
+                .put("showValue", true)
+                .put("showPercentage", false)
+                .put("showTractionLine", false)
+                .put("position", BIChartSettingConstant.DATA_LABEL.POSITION_OUTER)
+                .put("textStyle", defaultFont());
     }
 
     protected boolean checkValid(){

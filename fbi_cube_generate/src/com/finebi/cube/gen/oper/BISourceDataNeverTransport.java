@@ -1,13 +1,11 @@
 package com.finebi.cube.gen.oper;
 
 import com.finebi.cube.common.log.BILoggerFactory;
-import com.finebi.cube.conf.utils.BICubeLogExceptionInfo;
 import com.finebi.cube.conf.utils.BILogHelper;
 import com.finebi.cube.message.IMessage;
 import com.finebi.cube.structure.Cube;
 import com.fr.bi.conf.provider.BIConfigureManagerCenter;
 import com.fr.bi.conf.provider.BILogManagerProvider;
-import com.fr.bi.stable.constant.BILogConstant;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
 import com.fr.bi.stable.utils.program.BIStringUtils;
@@ -35,7 +33,6 @@ public class BISourceDataNeverTransport extends BISourceDataTransport {
         try {
             BILoggerFactory.getLogger(BISourceDataNeverTransport.class).info(BIStringUtils.append("The table:", fetchTableInfo(), " start transport task",
                     BILogHelper.logCubeLogTableSourceInfo(tableSource.getSourceID())));
-            BILogHelper.cacheCubeLogTableNormalInfo(tableSource.getSourceID(), BILogConstant.LOG_CACHE_TIME_TYPE.TRANSPORT_EXECUTE_START, System.currentTimeMillis());
             copyFromOldCubes();
             recordTableInfo();
             tableEntityService.addVersion(version);
@@ -45,12 +42,8 @@ public class BISourceDataNeverTransport extends BISourceDataTransport {
             } catch (Exception e) {
                 BILoggerFactory.getLogger().error(tableSource.getTableName() + e.getMessage(), e);
             }
-            BILogHelper.cacheCubeLogTableNormalInfo(tableSource.getSourceID(), BILogConstant.LOG_CACHE_TIME_TYPE.TRANSPORT_EXECUTE_END, System.currentTimeMillis());
             return null;
         } catch (Throwable e) {
-            BILogHelper.cacheCubeLogTableNormalInfo(tableSource.getSourceID(), BILogConstant.LOG_CACHE_TIME_TYPE.TRANSPORT_EXECUTE_END, System.currentTimeMillis());
-            BICubeLogExceptionInfo exceptionInfo = new BICubeLogExceptionInfo(System.currentTimeMillis(), "Transport Exception", e.getMessage(), e, tableSource.getSourceID());
-            BILogHelper.cacheCubeLogTableException(tableSource.getSourceID(), exceptionInfo);
             BILoggerFactory.getLogger(BISourceDataNeverTransport.class).error(e.getMessage(), e);
             throw BINonValueUtils.beyondControl(e.getMessage(), e);
         }

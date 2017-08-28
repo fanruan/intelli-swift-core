@@ -1,5 +1,6 @@
 package com.fr.bi.cal.analyze.report.report.widget.chart.types;
 
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.cal.analyze.report.report.widget.VanChartWidget;
 import com.fr.bi.conf.report.map.BIMapInfoManager;
 import com.fr.bi.conf.report.map.BIWMSManager;
@@ -90,11 +91,13 @@ public class VanMapWidget extends VanChartWidget{
 
         legend.put("continuous", false);
 
-        BISummaryTarget[] targets = this.getTargets();
-        if(targets.length > 0){
-            legend.put("formatter", this.intervalLegendFormatter(this.valueFormat(targets[0]), this.valueUnit(targets[0], true)));
+        String[] targetsID = this.getUsedTargetID();
+        try {
+            BISummaryTarget target = getBITargetByID(targetsID[0]);
+            legend.put("formatter", this.intervalLegendFormatter(this.valueFormat(target), this.valueUnit(target, true)));
+        }catch (Exception e){
+            BILoggerFactory.getLogger().info(e.getMessage(), e);
         }
-
         return legend;
     }
 
@@ -143,7 +146,7 @@ public class VanMapWidget extends VanChartWidget{
 
                 JSONObject datum = JSONObject.create().put("name", areaName).put(key, numberFormat(id,value / scale));
 
-                if(item.has("c")){
+                if(item.has("c") && manager.getinnerMapName().containsKey(areaName)){
                     JSONObject drillDown = JSONObject.create();
                     String mapPath = manager.getinnerMapName().get(areaName);
                     drillDown.put("series", this.createSeries(item));
@@ -167,7 +170,7 @@ public class VanMapWidget extends VanChartWidget{
         return "areaMap";
     }
 
-    protected String getLegendType(){
+    protected String getLegendType(JSONObject settings){
         return "rangeLegend";
     }
 
@@ -185,6 +188,10 @@ public class VanMapWidget extends VanChartWidget{
                 .put("showValue", true).put("showPercentage", false)
                 .put("textStyle", defaultFont());
 
+    }
+
+    protected boolean tooltipShared() {
+        return true;
     }
 
     //地图因为gis背景，不自适应颜色

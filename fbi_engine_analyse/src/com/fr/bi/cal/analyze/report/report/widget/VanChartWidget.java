@@ -16,7 +16,6 @@ import com.fr.bi.field.target.target.BISummaryTarget;
 import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.stable.constant.BIChartSettingConstant;
 import com.fr.bi.stable.constant.BIReportConstant;
-import com.fr.bi.stable.constant.BIStyleConstant;
 import com.fr.bi.util.BIConfUtils;
 import com.fr.general.ComparatorUtils;
 import com.fr.general.IOUtils;
@@ -42,7 +41,6 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
-
 import java.util.List;
 import java.util.Locale;
 
@@ -191,7 +189,7 @@ public abstract class VanChartWidget extends TableWidget {
             options.put("legend", JSONObject.create().put("enabled", false));
             options.put("rangeLegend", JSONObject.create().put("enabled", false));
         } else {
-            options.put(this.getLegendType(), this.parseLegend(settings));
+            options.put(this.getLegendType(settings), this.parseLegend(settings));
         }
     }
 
@@ -199,7 +197,7 @@ public abstract class VanChartWidget extends TableWidget {
         return this.createXYSeries(data);
     }
 
-    protected String getLegendType() {
+    protected String getLegendType(JSONObject settings) {
         return "legend";
     }
 
@@ -266,7 +264,7 @@ public abstract class VanChartWidget extends TableWidget {
         } catch (Exception e) {
             BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
-        return y + "";
+        return y + StringUtils.EMPTY;
     }
 
     protected double numberScaleByLevel(int level) {
@@ -335,20 +333,20 @@ public abstract class VanChartWidget extends TableWidget {
         return regionIdMap.get(dimensionID);
     }
 
-    private int getDimSize(JSONObject view, String regionID){
+    private int getDimSize(JSONObject view, String regionID) {
 
         int used = 0;
         try {
-            if(view.has(regionID)){
+            if (view.has(regionID)) {
                 JSONArray ids = view.optJSONArray(regionID);
-                for(int i = 0, length = ids.length(); i < length; i++){
+                for (int i = 0, length = ids.length(); i < length; i++) {
                     BITargetAndDimension dimension = this.getBITargetAndDimension(ids.optString(i));
-                    if(dimension != null && dimension.isUsed()){
+                    if (dimension != null && dimension.isUsed()) {
                         used++;
                     }
                 }
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             BILoggerFactory.getLogger(this.getClass()).error(e.getMessage(), e);
         }
 
@@ -425,6 +423,7 @@ public abstract class VanChartWidget extends TableWidget {
 
         tooltip.put("enabled", !settings.optBoolean("bigDataMode", false)).put("animation", true).put("padding", 10).put("backgroundColor", imageBack(widgetBg) ? DARK : widgetBg)
                 .put("borderRadius", 2).put("borderWidth", 0).put("shadow", true)
+                .put("shared", tooltipShared())
                 .put("style", JSONObject.create()
                         .put("color", this.isDarkColor(widgetBg) ? WHITE : DARK)
                         .put("fontSize", "14px").put("fontFamily", "Verdana"));
@@ -439,13 +438,17 @@ public abstract class VanChartWidget extends TableWidget {
         return plotOptions;
     }
 
+    protected boolean tooltipShared() {
+        return false;
+    }
+
     private boolean imageBack(String bg) {
         bg = bg.substring(1);
 
         try {
             new Color(Integer.parseInt(bg, 16));
             return false;
-        }catch (Exception e){
+        } catch (Exception e) {
             return true;
         }
     }
@@ -490,7 +493,7 @@ public abstract class VanChartWidget extends TableWidget {
     }
 
     private String labelIdentifier(JSONObject dataLabelSetting) {
-        String identifier = "";
+        String identifier = StringUtils.EMPTY;
 
         if (dataLabelSetting.optBoolean("showCategoryName")) {
             identifier += categoryLabelKey();
@@ -551,7 +554,7 @@ public abstract class VanChartWidget extends TableWidget {
         try {
             Color color = new Color(Integer.parseInt(colorStr, 16));
             return color.getRed() * RED_DET + color.getGreen() * GREEN_DET + color.getBlue() * BLUE_DET < GRAY;
-        }catch (Exception e){
+        } catch (Exception e) {
             //产品规定图片背景为深色
             return true;
         }
@@ -570,21 +573,21 @@ public abstract class VanChartWidget extends TableWidget {
     }
 
     private String checkTransparent(String color) {
-        if (color.equals("transparent")) {
+        if (isTransparent(color)) {
             return "rgba(0,0,0,0)";
         }
         return color;
     }
 
     private boolean isTransparent(String backgroundColor) {
-        return backgroundColor.equals("transparent");
+        return ComparatorUtils.equals("transparent", backgroundColor);
     }
 
     private boolean isAuto(String color) {
         return StringUtils.isEmpty(color);
     }
 
-    private boolean hasValidColor(String back){
+    private boolean hasValidColor(String back) {
         return !isAuto(back) && !isTransparent(back);
     }
 
@@ -593,7 +596,7 @@ public abstract class VanChartWidget extends TableWidget {
         JSONObject settings = this.getChartSetting().getDetailChartSetting();
         if (settings.has("widgetBG")) {
             String widgetBG = settings.optJSONObject("widgetBG").optString("value");
-            if(hasValidColor(widgetBG)){
+            if (hasValidColor(widgetBG)) {
                 return widgetBG;
             }
             transparent = isTransparent(widgetBG);
@@ -601,7 +604,7 @@ public abstract class VanChartWidget extends TableWidget {
 
         if (!transparent && globalStyle.has("widgetBackground")) {
             String widgetBG = globalStyle.optJSONObject("widgetBackground").optString("value");
-            if(hasValidColor(widgetBG)){
+            if (hasValidColor(widgetBG)) {
                 return widgetBG;
             }
             transparent = isTransparent(widgetBG);
@@ -610,16 +613,16 @@ public abstract class VanChartWidget extends TableWidget {
         BIChartStyleAttr platConfig = FBIConfig.getProviderInstance().getChartStyleAttr();
         if (!transparent && platConfig.getWidgetBackground() != null) {
             String widgetBG = platConfig.getWidgetBackground().getValue();
-            if(hasValidColor(widgetBG)){
+            if (hasValidColor(widgetBG)) {
                 return widgetBG;
-            } else if(isAuto(widgetBG)){
-                return globalStyle.optString("theme").equals("bi-theme-dark") ? DARK : WHITE;
+            } else if (isAuto(widgetBG)) {
+                return "bi-theme-dark".equals(globalStyle.optString("theme")) ? DARK : WHITE;
             }
         }
 
         if (globalStyle.has("mainBackground")) {
             String widgetBG = globalStyle.optJSONObject("mainBackground").optString("value");
-            if(hasValidColor(widgetBG)){
+            if (hasValidColor(widgetBG)) {
                 return widgetBG;
             }
             transparent = isTransparent(widgetBG);
@@ -627,7 +630,7 @@ public abstract class VanChartWidget extends TableWidget {
 
         if (!transparent && platConfig.getMainBackground() != null) {
             String widgetBG = platConfig.getMainBackground().getValue();
-            if(hasValidColor(widgetBG)){
+            if (hasValidColor(widgetBG)) {
                 return widgetBG;
             }
         }
@@ -752,16 +755,7 @@ public abstract class VanChartWidget extends TableWidget {
         if (settings.has("chartColor")) {
             return settings.getJSONArray("chartColor");
         } else if (globalStyle.has("chartColor")) {
-            if (settings.has("chartColor")) {
-                return settings.getJSONArray("chartColor");
-            } else {
-                String[] defaultColors = BIStyleConstant.DEFAULT_CHART_SETTING.CHART_COLOR;
-                JSONArray array = new JSONArray();
-                for (int i = 0; i < defaultColors.length; i++) {
-                    array.put(defaultColors[i]);
-                }
-                return array;
-            }
+            return globalStyle.getJSONArray("chartColor");
         } else if (plateConfig.has("defaultColor")) {
             String key = plateConfig.optString("defaultColor");
             JSONArray styleList = plateConfig.optJSONArray("styleList");
@@ -978,7 +972,7 @@ public abstract class VanChartWidget extends TableWidget {
             String stackedKey = this.getStackedKey(id, formattedName);
             boolean isStacked = this.isStacked(id, formattedName);
             JSONArray data = JSONArray.create();
-            if(leftC != null) {
+            if (leftC != null) {
                 for (int j = 0; j < leftC.length(); j++) {
                     JSONObject lObj = leftC.getJSONObject(j);
                     String x = lObj.getString("n");
@@ -1007,7 +1001,6 @@ public abstract class VanChartWidget extends TableWidget {
             series.put(ser);
         }
         this.idValueMap.put(targetIDs[0], valueList);
-
         return series;
     }
 
@@ -1041,7 +1034,7 @@ public abstract class VanChartWidget extends TableWidget {
                     double y = targetValues.isNull(i) ? 0 : targetValues.getDouble(i) / numberScale;
                     String formattedCategory = this.formatDimension(category, x);
                     data.put(
-                            JSONObject.create().put(categoryKey, formattedCategory).put(valueKey, targetValues.isNull(i) ? "-" : numberFormat(id, y)).put(LONG_DATE, ComparatorUtils.equals(formattedCategory, x) ? StringUtils.EMPTY : x)
+                            JSONObject.create().put(categoryKey, formattedCategory).put(valueKey, targetValues.isNull(i) ? "-" : numberFormat(id, y)).put(LONG_DATE, x)//lngData为原始值，column fill image condition
                     );
                     valueList.add(y);
                 }
@@ -1145,6 +1138,8 @@ public abstract class VanChartWidget extends TableWidget {
                 break;
             case BIReportConstant.GROUP.YW:
                 dimensionName = this.formatYWByDateFormat(dateValue, dateFormatType);
+                break;
+            default:
                 break;
         }
 
@@ -1393,11 +1388,11 @@ public abstract class VanChartWidget extends TableWidget {
         return tar3Size;
     }
 
-    protected boolean checkValid(){
+    protected boolean checkValid() {
         return this.getTar1Size() > 0;
     }
 
-    protected boolean hasTarget(){
+    protected boolean hasTarget() {
         return this.tar1Size > 0 || this.tar2Size > 0 || this.tar3Size > 0;
     }
 }

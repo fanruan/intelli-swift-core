@@ -17,6 +17,7 @@ import com.finebi.cube.conf.timer.UpdateFrequencyManager;
 import com.finebi.cube.conf.trans.BIAliasManagerWithoutUser;
 import com.fr.base.FRContext;
 import com.fr.bi.cal.BICubeManager;
+import com.fr.bi.cal.analyze.cal.index.loader.cache.WidgetDataCacheManager;
 import com.fr.bi.cal.generate.timerTask.BICubeTimeTaskCreatorManager;
 import com.fr.bi.cal.generate.timerTask.BICubeTimeTaskCreatorProvider;
 import com.fr.bi.cluster.ClusterAdapter;
@@ -29,10 +30,9 @@ import com.fr.bi.conf.base.dataconfig.BISystemDataConfigAuthorityManager;
 import com.fr.bi.conf.base.datasource.BIConnectionManager;
 import com.fr.bi.conf.base.datasource.BIConnectionProvider;
 import com.fr.bi.conf.base.login.BISystemUserLoginInformationManager;
-import com.fr.bi.conf.fs.FBIConfig;
-import com.fr.bi.conf.fs.FBIConfigProvider;
 import com.fr.bi.conf.log.BILogManagerWithoutUser;
 import com.fr.bi.conf.manager.excelview.BIExcelViewManagerWithoutUser;
+import com.fr.bi.conf.manager.report.BIPublicReportManager;
 import com.fr.bi.conf.manager.update.BIUpdateSettingManagerWithoutUser;
 import com.fr.bi.conf.provider.BIAuthorityManageProvider;
 import com.fr.bi.conf.provider.BIConfigureManagerCenter;
@@ -41,25 +41,26 @@ import com.fr.bi.conf.provider.BICubeTaskRecordProvider;
 import com.fr.bi.conf.provider.BIDataConfigAuthorityProvider;
 import com.fr.bi.conf.provider.BIExcelViewManagerProvider;
 import com.fr.bi.conf.provider.BILogManagerProvider;
+import com.fr.bi.conf.provider.BIPublicReportManagerProvider;
 import com.fr.bi.conf.provider.BIUpdateFrequencyManagerProvider;
 import com.fr.bi.conf.provider.BIUserLoginInformationProvider;
 import com.fr.bi.conf.records.BICubeTaskRecordManagerWithoutUser;
 import com.fr.bi.conf.report.BIFSReportProvider;
 import com.fr.bi.conf.tablelock.BIConfTableLock;
 import com.fr.bi.conf.tablelock.BIConfTableLockDAO;
-import com.fr.bi.conf.template.TemplateConfig;
-import com.fr.bi.conf.template.TemplateConfigProvider;
 import com.fr.bi.fs.BIDAOProvider;
 import com.fr.bi.fs.BIDAOUtils;
 import com.fr.bi.fs.BIReportDAO;
 import com.fr.bi.fs.BIReportNodeLock;
 import com.fr.bi.fs.BIReportNodeLockDAO;
 import com.fr.bi.fs.BISuperManagetDAOManager;
+import com.fr.bi.web.report.provider.BIReportQueryProvider;
 import com.fr.bi.fs.BITableMapper;
 import com.fr.bi.fs.HSQLBIReportDAO;
 import com.fr.bi.fs.TableDataBIReportDAO;
 import com.fr.bi.fs.BITableDataDAOProvider;
 import com.fr.bi.fs.BITableDataDAOManager;
+import com.fr.bi.fs.BIMultiPathProvider;
 import com.fr.bi.resource.BaseResourceHelper;
 import com.fr.bi.resource.CommonResourceHelper;
 import com.fr.bi.resource.ConfResourceHelper;
@@ -72,6 +73,7 @@ import com.fr.bi.util.BIReadReportUtils;
 import com.fr.bi.web.base.Service4BIBase;
 import com.fr.bi.web.conf.Service4BIConfigure;
 import com.fr.bi.web.dezi.web.Service4BIDezi;
+import com.fr.bi.web.report.Service4BIPublic;
 import com.fr.bi.web.report.Service4BIReport;
 import com.fr.bi.web.report.services.finecube.Service4FineCube;
 import com.fr.bi.web.report.utils.BIFSReportManager;
@@ -89,11 +91,14 @@ import com.fr.data.pool.MemoryConnection;
 import com.fr.file.DatasourceManager;
 import com.fr.fs.control.UserControl;
 import com.fr.fs.control.dao.hsqldb.HSQLDBDAOControl;
+import com.fr.fs.control.dao.tabledata.SyncDaoControl;
 import com.fr.fs.control.dao.tabledata.TableDataDAOControl;
 import com.fr.fs.dao.FSDAOManager;
 import com.fr.stable.bridge.StableFactory;
 import com.fr.stable.fun.Service;
 import com.fr.web.core.db.PlatformDB;
+import com.fr.bi.web.conf.services.BIMultiPathManager;
+import com.fr.bi.web.report.manager.BIReportQueryManger;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -155,6 +160,8 @@ public class BICoreModule extends AbstractModule {
         StableFactory.registerMarkedObject(BIDAOProvider.XML_TAG, getBIDAO());
         StableFactory.registerMarkedObject(BIReadReportProvider.XML_TAG, getBIReadReport());
         StableFactory.registerMarkedObject(BIReportDAO.class.getName(), getBIReportDAO());
+        StableFactory.registerMarkedObject(BIReportQueryProvider.XML_TAG, getBIQueryReportManager());
+        StableFactory.registerMarkedObject(BIMultiPathProvider.XML_TAG, getBIMultiPathManager());
 
         StableFactory.registerMarkedObject(BIUpdateFrequencyManagerProvider.XML_TAG, getBIUpdateSettingManager());
         StableFactory.registerMarkedObject(BISystemPackageConfigurationProvider.XML_TAG, getPackManagerProvider());
@@ -174,10 +181,77 @@ public class BICoreModule extends AbstractModule {
         StableFactory.registerMarkedObject(SingleTableUpdateManager.XML_TAG, new SingleTableUpdateManager());
         StableFactory.registerMarkedObject(BICubeTaskRecordProvider.XML_TAG, getBICubeTaskRecordManagerWithoutUser());
 
-        StableFactory.registerMarkedObject(BIDataConfigAuthorityProvider.XML_TAG, new BISystemDataConfigAuthorityManager());
+        StableFactory.registerMarkedObject(BIDataConfigAuthorityProvider.XML_TAG, getBISystemDataConfigAuthorityManager());
         StableFactory.registerMarkedObject(BITableDataDAOProvider.XML_TAG, getBITableDataDAOManager());
 
+        StableFactory.registerMarkedObject(BIPublicReportManagerProvider.XML_TAG, getBIPublicReportManger());
+
     }
+
+    protected BIDataConfigAuthorityProvider getBISystemDataConfigAuthorityManager() {
+        if (ClusterEnv.isCluster()) {
+            if (ClusterAdapter.getManager().getHostManager().isSelf()) {
+                BISystemDataConfigAuthorityManager provider = new BISystemDataConfigAuthorityManager();
+                RPC.registerSkeleton(provider, ClusterAdapter.getManager().getHostManager().getPort());
+                return provider;
+            } else {
+                return (BIDataConfigAuthorityProvider) RPC.getProxy(BISystemDataConfigAuthorityManager.class,
+                        ClusterAdapter.getManager().getHostManager().getIp(),
+                        ClusterAdapter.getManager().getHostManager().getPort());
+            }
+        } else {
+            return new BISystemDataConfigAuthorityManager();
+        }
+    }
+
+    public BIMultiPathProvider getBIMultiPathManager() {
+        if (ClusterEnv.isCluster()) {
+            if (ClusterAdapter.getManager().getHostManager().isSelf()) {
+                BIMultiPathManager provider = BIMultiPathManager.getInstance();
+                RPC.registerSkeleton(provider, ClusterAdapter.getManager().getHostManager().getPort());
+                return provider;
+            } else {
+                return (BIMultiPathProvider) RPC.getProxy(BIMultiPathManager.class,
+                        ClusterAdapter.getManager().getHostManager().getIp(),
+                        ClusterAdapter.getManager().getHostManager().getPort());
+            }
+        } else {
+            return BIMultiPathManager.getInstance();
+        }
+    }
+
+    public BIReportQueryProvider getBIQueryReportManager() {
+        if (ClusterEnv.isCluster()) {
+            if (ClusterAdapter.getManager().getHostManager().isSelf()) {
+                BIReportQueryManger provider = BIReportQueryManger.getInstance();
+                RPC.registerSkeleton(provider, ClusterAdapter.getManager().getHostManager().getPort());
+                return provider;
+            } else {
+                return (BIReportQueryProvider) RPC.getProxy(BIReportQueryManger.class,
+                        ClusterAdapter.getManager().getHostManager().getIp(),
+                        ClusterAdapter.getManager().getHostManager().getPort());
+            }
+        } else {
+            return BIReportQueryManger.getInstance();
+        }
+    }
+
+    private BIPublicReportManagerProvider getBIPublicReportManger() {
+        if (ClusterEnv.isCluster()) {
+            if (ClusterAdapter.getManager().getHostManager().isSelf()) {
+                BIPublicReportManager provider = new BIPublicReportManager();
+                RPC.registerSkeleton(provider, ClusterAdapter.getManager().getHostManager().getPort());
+                return provider;
+            } else {
+                return (BIPublicReportManagerProvider) RPC.getProxy(BIPublicReportManager.class,
+                        ClusterAdapter.getManager().getHostManager().getIp(),
+                        ClusterAdapter.getManager().getHostManager().getPort());
+            }
+        } else {
+            return new BIPublicReportManager();
+        }
+    }
+
     public BICubeTaskRecordProvider getBICubeTaskRecordManagerWithoutUser() {
         if (ClusterEnv.isCluster()) {
             if (ClusterAdapter.getManager().getHostManager().isSelf()) {
@@ -423,9 +497,9 @@ public class BICoreModule extends AbstractModule {
     }
 
     private BICubeManagerProvider generateCubeManager() {
+        BICubeManager provider = new BICubeManager();
         if (ClusterEnv.isCluster()) {
             if (ClusterAdapter.getManager().getHostManager().isBuildCube()) {
-                BICubeManager provider = new BICubeManager();
                 provider.resetCubeGenerationHour(UserControl.getInstance().getSuperManagerID());
                 RPC.registerSkeleton(provider, ClusterAdapter.getManager().getHostManager().getBuildCubePort());
                 return provider;
@@ -435,7 +509,8 @@ public class BICoreModule extends AbstractModule {
                         ClusterAdapter.getManager().getHostManager().getBuildCubePort());
             }
         } else {
-            return new BICubeManager();
+            provider.resetCubeGenerationHour(UserControl.getInstance().getSuperManagerID());
+            return provider;
         }
 
     }
@@ -628,6 +703,7 @@ public class BICoreModule extends AbstractModule {
 
         StableFactory.registerMarkedObject(HSQLDBDAOControl.class.getName(), HSQLBIReportDAO.getInstance());
         StableFactory.registerMarkedObject(TableDataDAOControl.class.getName(), TableDataBIReportDAO.getInstance());
+        StableFactory.registerMarkedObject(SyncDaoControl.class.getName(), TableDataBIReportDAO.getInstance());
         StableFactory.registerMarkedObject(BIReportNodeLockDAO.class.getName(), BIReportNodeLockDAO.getInstance());
         StableFactory.registerMarkedObject(BIConfTableLockDAO.class.getName(), BIConfTableLockDAO.getInstance());
     }
@@ -657,6 +733,8 @@ public class BICoreModule extends AbstractModule {
         StableFactory.registerStyleFiles(ResourceConstants.DEFAULT_THIRD_CSS, BaseResourceHelper.getThirdCss());
         StableFactory.registerStyleFiles(ResourceConstants.DEFAULT_BASE_CSS, BaseResourceHelper.getBaseCss());
 
+        StableFactory.registerJavaScriptFiles(ResourceConstants.DEFAULT_EXPORT_JS, BaseResourceHelper.getExportJS());
+
         StableFactory.registerJavaScriptFiles(ResourceConstants.DEFAULT_DATA_JS, BaseResourceHelper.getDataJS(), BaseResourceHelper.DataTransmitter);
 
         StableFactory.registerJavaScriptFiles(ResourceConstants.DEFAULT_CONF_JS, ConfResourceHelper.getConfJs());
@@ -664,6 +742,9 @@ public class BICoreModule extends AbstractModule {
 
         StableFactory.registerJavaScriptFiles(ResourceConstants.DEFAULT_DESIGN_JS, DeziResourceHelper.getDeziJs());
         StableFactory.registerStyleFiles(ResourceConstants.DEFAULT_DESIGN_CSS, DeziResourceHelper.getDeziCss());
+
+        StableFactory.registerJavaScriptFiles(ResourceConstants.DEFAULT_DESIGN_CONFIG_JS, DeziResourceHelper.getDeziConfigJs());
+        StableFactory.registerStyleFiles(ResourceConstants.DEFAULT_DESIGN_CONFIG_CSS, DeziResourceHelper.getDeziConfigCss());
 
         StableFactory.registerJavaScriptFiles(ResourceConstants.DEFAULT_SHOW_JS, ShowResourceHelper.getShowJs());
         StableFactory.registerStyleFiles(ResourceConstants.DEFAULT_SHOW_CSS, ShowResourceHelper.getShowCss());
@@ -706,8 +787,8 @@ public class BICoreModule extends AbstractModule {
     }
 
     @Override
-    public void clearAnalysisETLCache(long userId) {
-
+    public void clearCacheAfterBuildCubeTask(long userId) {
+        WidgetDataCacheManager.getInstance().clear();
     }
 
     private void registerSystemManager() {
@@ -721,6 +802,7 @@ public class BICoreModule extends AbstractModule {
                 new Service4BIDezi(),
                 new Service4BIBase(),
                 new Service4FineCube(),
+                new Service4BIPublic(),
         };
     }
 
