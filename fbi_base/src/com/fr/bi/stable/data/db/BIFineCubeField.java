@@ -6,8 +6,9 @@ import com.finebi.common.resource.ResourceName;
 import com.finebi.common.resource.ResourceNameImpl;
 import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.data.source.CubeTableSource;
-import com.fr.bi.stable.data.tableSource.FineCubeTable;
+import com.fr.bi.stable.data.tablesource.FineCubeTable;
 import com.fr.bi.stable.utils.BIDBUtils;
+
 import com.fr.general.ComparatorUtils;
 import com.fr.json.JSONObject;
 
@@ -190,6 +191,7 @@ public class BIFineCubeField implements FineCubeField {
         this.canSetUsable = canSetUsable;
     }
 
+
     @Override
     public Object clone() throws CloneNotSupportedException {
         BIFineCubeField cloned = (BIFineCubeField) super.clone();
@@ -220,4 +222,5 @@ public class BIFineCubeField implements FineCubeField {
         result = 31 * result + (tableBelongTo != null ? tableBelongTo.hashCode() : 0);
         return result;
     }
+
 }

@@ -10,6 +10,7 @@ import com.finebi.cube.conf.pack.data.BIPackageID;
 import com.finebi.cube.conf.pack.data.BIPackageName;
 import com.finebi.cube.conf.pack.data.IBusinessPackageGetterService;
 import com.finebi.cube.conf.pack.group.BIBusinessGroup;
+import com.finebi.cube.conf.pack.group.IBusinessGroupGetterService;
 import com.finebi.cube.conf.singletable.SingleTableUpdateManager;
 import com.finebi.cube.conf.table.BIBusinessTable;
 import com.finebi.cube.conf.table.BusinessTable;
@@ -393,6 +394,11 @@ public class AnalysisBusiPackManager extends BISystemDataManager<SingleUserAnaly
 
     //    @Override
     public String getPackageNameByTableId(String tableId) {
+        return null;
+    }
+
+    @Override
+    public List<IBusinessGroupGetterService> getAllGroups(long userId) {
         return null;
     }
 

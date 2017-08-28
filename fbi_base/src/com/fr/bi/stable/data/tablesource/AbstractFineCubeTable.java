@@ -1,4 +1,4 @@
-package com.fr.bi.stable.data.tableSource;
+package com.fr.bi.stable.data.tablesource;
 
 import com.finebi.common.name.Name;
 import com.finebi.common.resource.ResourceName;
@@ -510,8 +510,10 @@ public abstract class AbstractFineCubeTable implements FineCubeTable {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
+
         FineCubeTable that = (FineCubeTable) o;
         return ComparatorUtils.equals(that.getResourceName(), this.getResourceName());
+
 
     }
 
