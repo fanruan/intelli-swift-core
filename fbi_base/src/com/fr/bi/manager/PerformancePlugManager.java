@@ -60,7 +60,7 @@ public class PerformancePlugManager implements PerformancePlugManagerInterface {
 
     private boolean useDereplication = true;
 
-    private boolean extremeConcurrency = true;
+    private boolean extremeConcurrency = false;
     private int reIndexRowCount = 1 << 12;
 
     private long cubeReaderReleaseSleepTime = 1L;

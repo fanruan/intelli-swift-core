@@ -43,6 +43,7 @@ public abstract class BIAbstractDimension extends BIAbstractTargetAndDimension i
     @BICoreField
     protected IGroup group = new NoGroup();
 
+    @BICoreField
     private String sortTarget;
 
     private BITableRelationPath selfToSelfRelationPath;
