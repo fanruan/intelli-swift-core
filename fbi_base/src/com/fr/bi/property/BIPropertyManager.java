@@ -23,7 +23,7 @@ public class BIPropertyManager implements PropertyManager {
      * @return
      */
     @Override
-    public List<SystemProperty> getProperties(String paramType) {
+    public List<List<PropertiesConfig>> getProperties(String paramType) {
         List<PropertiesConfig> propertiesList = propertyOperate.read();
         Map<String, String> paramsMap = manager.getConfigByType(paramType);
         propertiesList = mergePropertiesValue(propertiesList, PerformanceParamTools.convert2File(paramsMap));
@@ -50,39 +50,43 @@ public class BIPropertyManager implements PropertyManager {
      * @param propertiesConfigList
      * @return
      */
-    private List<SystemProperty> trimProperties (List<PropertiesConfig> propertiesConfigList) {
+    private List<List<PropertiesConfig>> trimProperties (List<PropertiesConfig> propertiesConfigList) {
+        List<List<PropertiesConfig>> resultList = new ArrayList<List<PropertiesConfig>>();
         Map<String, PropertiesConfig> noRelationPropertiesMap = new HashMap<String, PropertiesConfig>();
-        Map<String, PropertiesConfig> propertiesMap = new HashMap<String, PropertiesConfig>();
+        Map<String, List<PropertiesConfig>> withRelationPropertiesMap = new HashMap<String, List<PropertiesConfig>>();
         for (PropertiesConfig property : propertiesConfigList) {
-            //没有和别的配置存在关联的，放到noRelationProperties中，并且将propertyKey和property作为key-value保存
             if (property.getRelationKey() == null) {
+                //没有和别的配置存在关联的，放到noRelationProperties中，并且将propertyKey和property作为key-value保存
                 noRelationPropertiesMap.put(property.getPropertyKey(), property);
             } else {
-                propertiesMap.put(property.getPropertyKey(), property);
+                //如果存在对应的关联的，放到withRelationPropertiesMap中
+                if (withRelationPropertiesMap.get(property.getRelationKey()) != null) {
+                    withRelationPropertiesMap.get(property.getRelationKey()).add(property);
+                } else {
+                    List<PropertiesConfig> tempList = new ArrayList<PropertiesConfig>();
+                    tempList.add(property);
+                    withRelationPropertiesMap.put(property.getRelationKey(), tempList);
+                }
             }
         }
-        return constructResultObject(noRelationPropertiesMap, propertiesMap);
-    }
 
-    /**
-     * 构建返回响应对象
-     * @return
-     */
-    private List<SystemProperty> constructResultObject (Map<String, PropertiesConfig> noRelationPropertiesMap, Map<String, PropertiesConfig> withRelationPropertiesMap) {
-        String withRelationPropertiesKey;
-        List<SystemProperty> resultList = new ArrayList<SystemProperty>();
-        Iterator<String> withRelationIt = withRelationPropertiesMap.keySet().iterator();
-        while (withRelationIt.hasNext()) {
-            withRelationPropertiesKey = withRelationIt.next();
-            PropertiesConfig withRelationProperty = withRelationPropertiesMap.get(withRelationPropertiesKey);
-            PropertiesConfig noRelationProperty = noRelationPropertiesMap.remove(withRelationProperty.getRelationKey());
-            resultList.add(SystemProperty.construectObject(noRelationProperty, withRelationProperty));
+        Iterator<String> withRelationIterator = withRelationPropertiesMap.keySet().iterator();
+        //将存在relation的property进行整理
+        while (withRelationIterator.hasNext()) {
+            String propertyKey = withRelationIterator.next();
+            List<PropertiesConfig> withRelationList = withRelationPropertiesMap.get(propertyKey);
+            withRelationList.add(0, noRelationPropertiesMap.remove(propertyKey));
+            resultList.add(withRelationList);
         }
-        Iterator<String> noRelationIt = noRelationPropertiesMap.keySet().iterator();
-        while (noRelationIt.hasNext()) {
-            resultList.add(SystemProperty.constructObject(noRelationPropertiesMap.get(noRelationIt.next())));
+        Iterator<String> noRelationIterator = noRelationPropertiesMap.keySet().iterator();
+        //处理没有relation的property
+        while (noRelationIterator.hasNext()) {
+            List<PropertiesConfig> tempList = new ArrayList<PropertiesConfig>();
+            tempList.add(noRelationPropertiesMap.get(noRelationIterator.next()));
+            resultList.add(tempList);
         }
         return resultList;
     }
+
 
 }
