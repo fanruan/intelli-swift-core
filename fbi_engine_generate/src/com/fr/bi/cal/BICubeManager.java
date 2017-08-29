@@ -21,6 +21,7 @@ import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.engine.CubeTask;
 import com.fr.bi.stable.structure.queue.CubeTaskCondition;
 import com.fr.bi.stable.utils.program.BIConstructorUtils;
+import com.fr.fs.control.UserControl;
 import com.fr.general.GeneralContext;
 import com.fr.stable.EnvChangedListener;
 
@@ -255,7 +256,8 @@ public class BICubeManager implements BICubeManagerProvider {
     @Override
     public synchronized boolean addCubeGenerateTask2Queue(long userId, String baseTableSourceId, Integer updateType, boolean isTimedTask) {
         try {
-            //todo  判断添加的任务是否重复。
+            //BI-8384  cube更新，不区分userId了。。都用-999；
+            userId = UserControl.getInstance().getSuperManagerID();
             BILoggerFactory.getLogger(BICubeManager.class).info("Add CubeGenerateTask to taskqueue!" + (isTimedTask ? "(TimedTask)" : "(ManualTask)"));
             ICubeGenerateTask cubeGenerateTask;
             if (baseTableSourceId != null) {
@@ -284,6 +286,8 @@ public class BICubeManager implements BICubeManagerProvider {
     public boolean addCubeGenerateTask2Queue(long userId, boolean isTimedTask,
                                              List<BITableRelation> tableRelations, Map<String, Integer> sourceIdUpdateTypeMap) {
         try {
+            //BI-8384  cube更新，不区分userId了。。都用-999；
+            userId = UserControl.getInstance().getSuperManagerID();
             BILoggerFactory.getLogger(BICubeManager.class).info("Add Custom CubeGenerateTask to taskqueue!" + (isTimedTask ? "(TimedTask)" : "(ManualTask)"));
             Map<String, List<Integer>> sourceIdUpdateTypesMap = new HashMap<String, List<Integer>>();
             for (Map.Entry<String, Integer> entry : sourceIdUpdateTypeMap.entrySet()) {

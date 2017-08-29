@@ -1,5 +1,6 @@
 package com.fr.bi.cal.analyze.executor.detail;
 
+import com.finebi.cube.common.log.BILogger;
 import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.conf.table.BusinessTable;
 import com.fr.bi.base.FinalInt;
@@ -49,7 +50,7 @@ import java.util.Set;
  * @author Daniel
  */
 public class DetailExecutor extends AbstractDetailExecutor {
-
+    private static BILogger LOGGER = BILoggerFactory.getLogger(DetailExecutor.class);
     private final static int MEMORY_LIMIT = 3000;
 
     public DetailExecutor(DetailWidget widget,
@@ -167,8 +168,12 @@ public class DetailExecutor extends AbstractDetailExecutor {
                 List list = new ArrayList();
                 for (int i = 0; i < row.getValues().length; i++) {
                     if (viewDimension[i].isUsed()) {
-                        if (viewDimension[i] instanceof BIDateDetailTarget && row.getValues()[i] != null) {
-                            list.add(Long.valueOf(String.valueOf(row.getValues()[i])));
+                        if (viewDimension[i] instanceof BIDateDetailTarget) {
+                            if (BICollectionUtils.isCubeNullKey(row.getValues()[i])) {
+                                list.add(null);
+                            } else {
+                                list.add(Long.valueOf(String.valueOf(row.getValues()[i])));
+                            }
                         } else {
                             list.add(row.getValues()[i]);
                         }

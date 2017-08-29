@@ -9,6 +9,7 @@ import com.finebi.cube.relation.BICubeGenerateRelationPath;
 import com.finebi.cube.relation.BITableSourceRelation;
 import com.finebi.cube.relation.BITableSourceRelationPath;
 import com.finebi.cube.utils.BIDataStructTranUtils;
+import com.fr.bi.conf.data.source.BIOccupiedCubeTableSource;
 import com.fr.bi.conf.data.source.TableSourceUtils;
 import com.fr.bi.stable.data.source.CubeTableSource;
 
@@ -31,6 +32,10 @@ public class DependsCalculateHelper {
         return calculateTableSource(tableSourcesNeedBuild);
     }
 
+    public static Set<BICubeGenerateRelationPath> calculatePathDepends(CalculateDependTool calculateDependTool, Set<BITableSourceRelationPath> pathInConstruction, Set<BITableSourceRelation> relationInConstruction) {
+        return calculateDependTool.calRelationPath(pathInConstruction, relationInConstruction);
+    }
+
     public static Set<BICubeGenerateRelation> calculateRelationDepends(CalculateDependTool calculateDependTool, Set<BITableSourceRelation> relationInConstruction, Set<CubeTableSource> tableInConsturction) {
         Set<BICubeGenerateRelation> relationDepends = new HashSet<BICubeGenerateRelation>();
         for (BITableSourceRelation biTableSourceRelation : relationInConstruction) {
@@ -41,16 +46,28 @@ public class DependsCalculateHelper {
         return relationDepends;
     }
 
-    public static Set<BICubeGenerateRelationPath> calculatePathDepends(CalculateDependTool calculateDependTool, Set<BITableSourceRelationPath> pathInConstruction, Set<BITableSourceRelation> relationInConstruction) {
-        return calculateDependTool.calRelationPath(pathInConstruction, relationInConstruction);
-    }
-
     public static Set<List<Set<CubeTableSource>>> calculateTableSource(Set<CubeTableSource> tableSources) {
         Iterator<CubeTableSource> it = tableSources.iterator();
         Set<List<Set<CubeTableSource>>> depends = new HashSet<List<Set<CubeTableSource>>>();
         while (it.hasNext()) {
             CubeTableSource tableSource = it.next();
-            depends.add(tableSource.createGenerateTablesList());
+            if (tableSource instanceof BIOccupiedCubeTableSource) {
+                List<Set<CubeTableSource>> dependList = tableSource.createGenerateTablesList();
+                Iterator setIt = dependList.iterator();
+                while (setIt.hasNext()) {
+                    Set<CubeTableSource> set = (Set<CubeTableSource>) setIt.next();
+                    Iterator cubeTableSourceIt = set.iterator();
+                    while (cubeTableSourceIt.hasNext()) {
+                        CubeTableSource cubeTableSource = (CubeTableSource) cubeTableSourceIt.next();
+                        if (!tableSources.contains(cubeTableSource)) {
+                            cubeTableSourceIt.remove();
+                        }
+                    }
+                }
+                depends.add(dependList);
+            } else {
+                depends.add(tableSource.createGenerateTablesList());
+            }
         }
         return depends;
     }
@@ -84,6 +101,7 @@ public class DependsCalculateHelper {
 
     /**
      * depends中的基础表如果不在本次生成的集合中，则剔除。
+     *
      * @param tableSourceLayerDepends
      * @param basicSourceIds
      */
