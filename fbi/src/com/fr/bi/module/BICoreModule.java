@@ -49,18 +49,9 @@ import com.fr.bi.conf.records.BICubeTaskRecordManagerWithoutUser;
 import com.fr.bi.conf.report.BIFSReportProvider;
 import com.fr.bi.conf.tablelock.BIConfTableLock;
 import com.fr.bi.conf.tablelock.BIConfTableLockDAO;
-import com.fr.bi.fs.BIDAOProvider;
-import com.fr.bi.fs.BIDAOUtils;
-import com.fr.bi.fs.BIReportDAO;
-import com.fr.bi.fs.BIReportNodeLock;
-import com.fr.bi.fs.BIReportNodeLockDAO;
-import com.fr.bi.fs.BISuperManagetDAOManager;
+import com.fr.bi.fs.*;
 import com.fr.bi.web.report.provider.BIReportQueryProvider;
-import com.fr.bi.fs.BITableMapper;
-import com.fr.bi.fs.HSQLBIReportDAO;
-import com.fr.bi.fs.TableDataBIReportDAO;
 import com.fr.bi.resource.BIPlatformResourceHelper;
-import com.fr.bi.fs.BIMultiPathProvider;
 import com.fr.bi.resource.BaseResourceHelper;
 import com.fr.bi.resource.CommonResourceHelper;
 import com.fr.bi.resource.ConfResourceHelper;
@@ -90,6 +81,7 @@ import com.fr.data.dao.ObjectTableMapper;
 import com.fr.data.impl.JDBCDatabaseConnection;
 import com.fr.data.pool.MemoryConnection;
 import com.fr.file.DatasourceManager;
+import com.fr.fs.control.UserControl;
 import com.fr.fs.control.dao.hsqldb.HSQLDBDAOControl;
 import com.fr.fs.control.dao.tabledata.SyncDaoControl;
 import com.fr.fs.control.dao.tabledata.TableDataDAOControl;
@@ -515,9 +507,9 @@ public class BICoreModule extends AbstractModule {
     }
 
     private BICubeManagerProvider generateCubeManager() {
-        BICubeManager provider = new BICubeManager();
         if (ClusterEnv.isCluster()) {
             if (ClusterAdapter.getManager().getHostManager().isBuildCube()) {
+                BICubeManager provider = new BICubeManager();
 //                provider.resetCubeTimerTasks(UserControl.getInstance().getSuperManagerID());
                 RPC.registerSkeleton(provider, ClusterAdapter.getManager().getHostManager().getBuildCubePort());
                 return provider;
@@ -527,8 +519,7 @@ public class BICoreModule extends AbstractModule {
                         ClusterAdapter.getManager().getHostManager().getBuildCubePort());
             }
         } else {
-            provider.resetCubeGenerationHour(UserControl.getInstance().getSuperManagerID());
-            return provider;
+            return new BICubeManager();
         }
 
     }
