@@ -16,76 +16,77 @@ public class BIPropertyManager implements PropertyManager {
 
     private PropertyOperate propertyOperate = new BIPropertyOperate();
     private PerformancePlugManager manager = PerformancePlugManager.getInstance();
-    private static final String PROPERTY_NAME = "propertyName";
 
     /**
      * 获取配置信息，包括paramConfig和properties
-     * 将上面两个信息进行合并
      *
      * @return
      */
     @Override
-    public Map<String, Map<String, String>> getProperties(String paramType) {
+    public List<List<PropertiesConfig>> getProperties(String paramType) {
         List<PropertiesConfig> propertiesList = propertyOperate.read();
-        Map<String, Map<String, String>> propertiesMap = trimResult(propertiesList);
         Map<String, String> paramsMap = manager.getConfigByType(paramType);
-        return mergePropertiesValue(propertiesMap, paramsMap);
+        propertiesList = mergePropertiesValue(propertiesList, PerformanceParamTools.convert2File(paramsMap));
+        return trimProperties(propertiesList);
     }
 
     /**
-     * 将获取到的param和property进行合并
-     *
-     * @param propertiesMap
-     * @param paramValueMap
+     * 将获取到的配置信息和对应的参数值进行合并
+     * @param propertiesConfigList
+     * @param paramsMap
      * @return
      */
-    private Map<String, Map<String, String>> mergePropertiesValue(Map<String, Map<String, String>> propertiesMap, Map<String, String> paramValueMap) {
-        paramValueMap = PerformanceParamTools.convert2File(paramValueMap);
-        Iterator<String> propertyIterator = propertiesMap.keySet().iterator();
+    private List<PropertiesConfig> mergePropertiesValue (List<PropertiesConfig> propertiesConfigList, Map<String, String> paramsMap) {
         String propertyKey;
-        String propertyName;
-        String value;
-        while (propertyIterator.hasNext()) {
-            propertyKey = propertyIterator.next();
-            Map<String, String> tempMap = propertiesMap.get(propertyKey);
-            propertyName = tempMap.get(PROPERTY_NAME);
-            value = paramValueMap.get(propertyName);
-            tempMap.put("value", value);
-            propertiesMap.put(propertyKey, tempMap);
+        for (PropertiesConfig property : propertiesConfigList) {
+            propertyKey = property.getPropertyKey();
+            property.setValue(paramsMap.get(propertyKey));
         }
-        return propertiesMap;
+        return propertiesConfigList;
     }
 
     /**
-     * 将获取到的List<PropertiesConfig>进行整理
-     * PropertiesConfig的属性PropertyKey作为Key， 然后再将对象的属性和对应的值作为valueMap中对应的key-value
-     *
+     * 将配置信息进行整理
      * @param propertiesConfigList
      * @return
      */
-    private Map<String, Map<String, String>> trimResult(List<PropertiesConfig> propertiesConfigList) {
-        Map<String, Map<String, String>> convertMap = new HashMap<String, Map<String, String>>();
-        String propertyKey;
-        String fieldName;
-        String fieldValue;
-        try {
-            PropertiesConfig propertiesConfig;
-            for (int i = 0; i < propertiesConfigList.size(); i++) {
-                Map<String, String> propertyMap = new HashMap<String, String>();
-                propertiesConfig = propertiesConfigList.get(i);
-                propertyKey = propertiesConfig.getPropertyKey();
-                Field[] propertiesFields = propertiesConfig.getClass().getDeclaredFields();
-                for (Field field : propertiesFields) {
-                    field.setAccessible(true);
-                    fieldName = field.getName();
-                    fieldValue = String.valueOf(field.get(propertiesConfig));
-                    propertyMap.put(fieldName, fieldValue);
+    private List<List<PropertiesConfig>> trimProperties (List<PropertiesConfig> propertiesConfigList) {
+        List<List<PropertiesConfig>> resultList = new ArrayList<List<PropertiesConfig>>();
+        Map<String, PropertiesConfig> noRelationPropertiesMap = new HashMap<String, PropertiesConfig>();
+        Map<String, List<PropertiesConfig>> withRelationPropertiesMap = new HashMap<String, List<PropertiesConfig>>();
+        for (PropertiesConfig property : propertiesConfigList) {
+            if (property.getRelationKey() == null) {
+                //没有和别的配置存在关联的，放到noRelationProperties中，并且将propertyKey和property作为key-value保存
+                noRelationPropertiesMap.put(property.getPropertyKey(), property);
+            } else {
+                //如果存在对应的关联的，放到withRelationPropertiesMap中
+                if (withRelationPropertiesMap.get(property.getRelationKey()) != null) {
+                    withRelationPropertiesMap.get(property.getRelationKey()).add(property);
+                } else {
+                    List<PropertiesConfig> tempList = new ArrayList<PropertiesConfig>();
+                    tempList.add(property);
+                    withRelationPropertiesMap.put(property.getRelationKey(), tempList);
                 }
-                convertMap.put(propertyKey, propertyMap);
             }
-        } catch (Exception e) {
-            BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
-        return convertMap;
+
+        Iterator<String> withRelationIterator = withRelationPropertiesMap.keySet().iterator();
+        //将存在relation的property进行整理
+        while (withRelationIterator.hasNext()) {
+            String propertyKey = withRelationIterator.next();
+            List<PropertiesConfig> withRelationList = withRelationPropertiesMap.get(propertyKey);
+            withRelationList.add(0, noRelationPropertiesMap.remove(propertyKey));
+            resultList.add(withRelationList);
+        }
+        Iterator<String> noRelationIterator = noRelationPropertiesMap.keySet().iterator();
+        //处理没有relation的property
+        while (noRelationIterator.hasNext()) {
+            List<PropertiesConfig> tempList = new ArrayList<PropertiesConfig>();
+            tempList.add(noRelationPropertiesMap.get(noRelationIterator.next()));
+            resultList.add(tempList);
+        }
+        return resultList;
     }
+
+
 }

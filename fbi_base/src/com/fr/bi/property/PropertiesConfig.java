@@ -11,8 +11,9 @@ public class PropertiesConfig {
     //属性名
     private String propertyName;
     //值类型
-    //private String valueType;
     private ValueType valueType;
+    //值
+    private Object value;
     //值生效类型，是否需要重启
     //private String availableType;
     private AvaliableType avaliableType;
@@ -20,17 +21,21 @@ public class PropertiesConfig {
     private String title;
     //该属性的作用描述
     private String description;
+    //修改配置之后，关联的配置对应的key
+    private String relationKey;
 
     public PropertiesConfig() {
     }
 
-    public PropertiesConfig(String propertyKey, String propertyName, ValueType valueType, AvaliableType avaliableType, String title, String description) {
+    public PropertiesConfig(String propertyKey, String propertyName, ValueType valueType, Object value, AvaliableType avaliableType, String title, String description, String relationKey) {
         this.propertyKey = propertyKey;
         this.propertyName = propertyName;
         this.valueType = valueType;
+        this.value = value;
         this.avaliableType = avaliableType;
         this.title = title;
         this.description = description;
+        this.relationKey = relationKey;
     }
 
     public String getPropertyKey() {
@@ -55,5 +60,17 @@ public class PropertiesConfig {
 
     public String getDescription() {
         return description;
+    }
+
+    public String getRelationKey() {
+        return relationKey;
+    }
+
+    public Object getValue() {
+        return value;
+    }
+
+    public void setValue(Object value) {
+        this.value = value;
     }
 }

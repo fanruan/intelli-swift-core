@@ -1,5 +1,6 @@
 package com.fr.bi.property;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -9,6 +10,6 @@ import java.util.Map;
  */
 public interface PropertyManager<T> {
 
-    Map<T, T> getProperties(String paramType);
+    List<T> getProperties(String paramType);
 
 }
