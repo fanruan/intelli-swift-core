@@ -1,4 +1,4 @@
-package com.fr.bi.cal.analyze.report.report;
+package com.fr.bi.cal.analyze.report.report.widget;
 
 import com.fr.bi.cal.analyze.report.report.widget.TableWidget;
 import com.fr.bi.cal.analyze.report.report.widget.util.BIWidgetUtils;

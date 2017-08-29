@@ -1,10 +1,14 @@
 package com.fr.bi.etl.analysis.data;
 
 import com.finebi.cube.api.ICubeDataLoader;
+import com.fr.bi.base.BICore;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.base.annotation.BICoreField;
+import com.fr.bi.cal.analyze.report.report.widget.AbstractBIWidget;
 import com.fr.bi.common.inter.Traversal;
+import com.fr.bi.common.persistent.xml.BIIgnoreField;
 import com.fr.bi.conf.report.widget.field.BITargetAndDimension;
+import com.fr.bi.conf.report.widget.field.target.filter.TargetFilter;
 import com.fr.bi.etl.analysis.manager.BIAnalysisETLManagerCenter;
 import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.stable.data.db.BIDataValue;
@@ -23,8 +27,10 @@ import java.util.Set;
 public class UserBaseTableSource extends AnalysisBaseTableSource implements UserCubeTableSource {
     private static final long serialVersionUID = 1151614375203260317L;
     private UserWidget userWidget;
-    @BICoreField
     private long userId;
+    @BIIgnoreField
+    @BICoreField
+    private List<TargetFilter> authorFilter;
     private AnalysisBaseTableSource parent;
 
     public UserBaseTableSource(AnalysisBaseTableSource parent, long userId) {
@@ -54,6 +60,12 @@ public class UserBaseTableSource extends AnalysisBaseTableSource implements User
             }
         }
         return ComparatorUtils.equals(this.fetchObjectCore().getIDValue(), md5);
+    }
+
+    @Override
+    public BICore fetchObjectCore() {
+        authorFilter = ((AbstractBIWidget)widget).getAuthFilter(userId);
+        return super.fetchObjectCore();
     }
 
     @Override

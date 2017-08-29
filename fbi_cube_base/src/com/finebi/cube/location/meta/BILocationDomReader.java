@@ -32,34 +32,35 @@ public class BILocationDomReader extends PoolDomReader<BILocationPool> {
             NodeList locationInfo = doc.getDocumentElement().getElementsByTagName("BILocationInfo");
             for (int i = 0; i < locationInfo.getLength(); i++) {
                 Element infoNode = (Element) locationInfo.item(i);
-                BILocationInfo biLocationInfo = readLocationInfo(infoNode) ;
+                BILocationInfo biLocationInfo = readLocationInfo(infoNode);
                 pool.addResourceItem(biLocationInfo.getResourceName(), biLocationInfo);
             }
-        }catch (FileNotFoundException ignore){
-            LOGGER.warn(ignore.getMessage(),targetPath+" not found");
-        }
-        catch (Exception e) {
+        } catch (FileNotFoundException ignore) {
+            LOGGER.warn(ignore.getMessage(), targetPath + " not found");
+        } catch (Exception e) {
             LOGGER.error(e.getMessage(), e);
         }
         return pool;
     }
 
-    private BILocationInfo readLocationInfo(Element infoNode){
-        Element locationNameEle = (Element) infoNode.getElementsByTagName("Name").item(0);
-        String locationName = "emptyName";
-        if (locationNameEle != null) {
-            locationName = locationNameEle.getTextContent();
-        }
-        Element locationPathEle = (Element) infoNode.getElementsByTagName("basePath").item(0);
-        String locationPath = "emptyPath";
+    private BILocationInfo readLocationInfo(Element infoNode) {
+        Element locationPathEle = (Element) infoNode.getElementsByTagName("baseFolder").item(0);
+        String baseFolder = "emptyPath";
         if (locationPathEle != null) {
-            locationPath = locationPathEle.getTextContent();
+            baseFolder = locationPathEle.getTextContent();
         }
+
+        Element logicFolderEle = (Element) infoNode.getElementsByTagName("logicFolder").item(0);
+        String logicFolder = "emptyPath";
+        if (logicFolderEle != null) {
+            logicFolder = logicFolderEle.getTextContent();
+        }
+
         Element childEle = (Element) infoNode.getElementsByTagName("child").item(0);
         String child = "emptyChild";
         if (childEle != null) {
             child = childEle.getTextContent();
         }
-        return new BILocationInfoImp(locationName,locationPath,child);
+        return new BILocationInfoImp(baseFolder, logicFolder, child);
     }
 }

@@ -98,4 +98,6 @@ public interface Cube extends ICubeVersion, Serializable, Cloneable {
     boolean isResourceExist(ITableKey tableKey);
 
     boolean isResourceExist(ITableKey tableKey, BICubeTablePath relationPath);
+
+    ICubeResourceRetrievalService getCubeResourceRetrievalService();
 }

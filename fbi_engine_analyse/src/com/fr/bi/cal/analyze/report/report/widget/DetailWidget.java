@@ -6,12 +6,11 @@ import com.finebi.cube.conf.relation.BITableRelationHelper;
 import com.finebi.cube.conf.table.BusinessTable;
 import com.finebi.cube.relation.BITableRelation;
 import com.fr.bi.base.annotation.BICoreField;
-import com.fr.bi.cal.analyze.cal.detail.PolyCubeDetailECBlock;
 import com.fr.bi.cal.analyze.executor.detail.DetailExecutor;
 import com.fr.bi.cal.analyze.executor.paging.Paging;
 import com.fr.bi.cal.analyze.executor.paging.PagingFactory;
 import com.fr.bi.cal.analyze.report.report.widget.chart.calculator.builder.DetailTableBuilder;
-import com.fr.bi.cal.analyze.report.report.widget.chart.calculator.builder.IExcelDataBuilder;
+import com.fr.bi.cal.analyze.report.report.widget.chart.calculator.builder.ITableSCDataBuilder;
 import com.fr.bi.cal.analyze.report.report.widget.chart.calculator.format.operation.BITableCellDateFormatOperation;
 import com.fr.bi.cal.analyze.report.report.widget.chart.calculator.format.operation.BITableCellNumberFormatOperation;
 import com.fr.bi.cal.analyze.report.report.widget.chart.calculator.format.operation.BITableCellStringOperation;
@@ -26,10 +25,14 @@ import com.fr.bi.cal.analyze.report.report.widget.detail.BIDetailSetting;
 import com.fr.bi.cal.analyze.report.report.widget.util.BIWidgetFactory;
 import com.fr.bi.cal.analyze.session.BISession;
 import com.fr.bi.common.persistent.xml.BIIgnoreField;
+import com.fr.bi.conf.fs.BIChartStyleAttr;
+import com.fr.bi.conf.fs.FBIConfig;
+import com.fr.bi.conf.fs.tablechartstyle.BIWidgetBackgroundAttr;
 import com.fr.bi.conf.report.SclCalculator;
 import com.fr.bi.conf.report.WidgetType;
 import com.fr.bi.conf.report.conf.BIWidgetConf;
 import com.fr.bi.conf.report.conf.BIWidgetSettings;
+import com.fr.bi.conf.report.conf.dimension.BIDimensionConf;
 import com.fr.bi.conf.report.widget.BIWidgetStyle;
 import com.fr.bi.conf.report.widget.field.target.detailtarget.BIDetailTarget;
 import com.fr.bi.conf.report.widget.field.target.filter.TargetFilter;
@@ -38,6 +41,7 @@ import com.fr.bi.conf.utils.BIModuleUtils;
 import com.fr.bi.field.target.detailtarget.BIDetailTargetFactory;
 import com.fr.bi.field.target.detailtarget.formula.BINumberFormulaDetailTarget;
 import com.fr.bi.field.target.filter.TargetFilterFactory;
+import com.fr.bi.report.result.BIDetailTableResult;
 import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.stable.constant.BIExcutorConstant;
 import com.fr.bi.stable.constant.BIReportConstant;
@@ -46,7 +50,6 @@ import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.utils.program.BIStringUtils;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;
-import com.fr.report.poly.TemplateBlock;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
@@ -173,7 +176,6 @@ public class DetailWidget extends AbstractBIWidget implements SclCalculator {
         }
         return false;
     }
-
 
     @Override
     public void parseJSON(JSONObject jo, long userId) throws Exception {
@@ -325,12 +327,6 @@ public class DetailWidget extends AbstractBIWidget implements SclCalculator {
     }
 
     @Override
-    protected TemplateBlock createBIBlock(BISession session) {
-        return new PolyCubeDetailECBlock(this, session, page);
-    }
-
-
-    @Override
     public void reSetDetailTarget() {
         for (BIDetailTarget ele : getDimensions()) {
             if (ele != null) {
@@ -355,10 +351,10 @@ public class DetailWidget extends AbstractBIWidget implements SclCalculator {
 
     @Override
     public JSONObject calculateSCData(BIWidgetConf widgetConf, JSONObject data) throws Exception {
-        Map<Integer, List<JSONObject>> viewMap = widgetConf.getDetailViewMap();
-        IExcelDataBuilder builder = new DetailTableBuilder(viewMap, data, getWidgetSettings(widgetConf));
+        Map<Integer, List<BIDimensionConf>> viewMap = widgetConf.getDetailViewMap();
+        ITableSCDataBuilder builder = new DetailTableBuilder(viewMap, data, getWidgetSettings(widgetConf));
         DataConstructor tableData = BITableConstructHelper.buildTableData(builder);
-        BITableConstructHelper.formatCells(tableData, createOperationMap(widgetConf), getWidgetSettings(widgetConf));
+        BITableConstructHelper.formatCells(tableData, createOperationMap(widgetConf), getWidgetSettings(widgetConf), getBackgroundColor(widgetConf));
         JSONObject res = new JSONObject();
         res.put("header", tableData.createJSON().get("header"));
         JSONArray itemsArray = new JSONArray();
@@ -373,15 +369,36 @@ public class DetailWidget extends AbstractBIWidget implements SclCalculator {
         return res;
     }
 
+    /*
+    * 此处仅需要考虑widget背景颜色,其他内容在他处计算
+    * 基本逻辑如下：
+    * 样式共四层，优先级由低到高依次为：系统设置样式，该模板全局样式，widget样式，指标样式，此处处理前三个
+    * 当样式不一致时，优先级高的覆盖低的，选择纯色背景切设置为自动或透明时，展示效果同次一级的样式
+    * */
+    private BIWidgetBackgroundAttr getBackgroundColor(BIWidgetConf widgetConf) throws Exception {
+        BIChartStyleAttr systemStyle = FBIConfig.getInstance().getChartStyleAttr();
+        BIChartStyleAttr globalStyle = widgetConf.getGlobalStyleAttr();
+        BIChartStyleAttr widgetStyle = getWidgetSettings(widgetConf).getWidgetStyle();
+        BIWidgetBackgroundAttr finalBackgroundStyle = new BIWidgetBackgroundAttr();
+        if (!widgetStyle.getWidgetBackground().isUseSuperiorStyle()) {
+            finalBackgroundStyle = widgetStyle.getWidgetBackground();
+        } else if (!globalStyle.getWidgetBackground().isUseSuperiorStyle()) {
+            finalBackgroundStyle = globalStyle.getWidgetBackground();
+        } else {
+            finalBackgroundStyle = systemStyle.getWidgetBackground();
+        }
+        return finalBackgroundStyle;
+    }
+
     private Map<String, ITableCellFormatOperation> createOperationMap(BIWidgetConf config) throws Exception {
         Map<String, ITableCellFormatOperation> formOperationsMap = new HashMap<String, ITableCellFormatOperation>();
-        Map<Integer, List<JSONObject>> viewMap = config.getDetailViewMap();
+        Map<Integer, List<BIDimensionConf>> viewMap = config.getDetailViewMap();
         for (Integer integer : viewMap.keySet()) {
-            List<JSONObject> dimJo = viewMap.get(integer);
-            for (JSONObject jo : dimJo) {
-                if (jo.optBoolean("used")) {
-                    String dId = jo.getString("dId");
-                    int type = jo.getInt("type");
+            List<BIDimensionConf> dimJo = viewMap.get(integer);
+            for (BIDimensionConf dimConf : dimJo) {
+                if (dimConf.isDimensionUsed()) {
+                    String dId = dimConf.getDimensionID();
+                    int type = dimConf.getDimensionType();
                     ICellFormatSetting setting = new BICellFormatSetting();
                     if (config.getDimensions().getJSONObject(dId).has("settings")) {
                         setting.parseJSON(config.getDimensions().getJSONObject(dId).optJSONObject("settings"));
@@ -411,6 +428,7 @@ public class DetailWidget extends AbstractBIWidget implements SclCalculator {
                             break;
                         default:
                             op = new BITableCellStringOperation(setting);
+                            break;
                     }
                     formOperationsMap.put(dId, op);
                 }
@@ -453,5 +471,11 @@ public class DetailWidget extends AbstractBIWidget implements SclCalculator {
 
     public void setClicked(Map<String, JSONArray> clicked) {
         this.clicked = clicked;
+    }
+
+    public BIDetailTableResult getExportData(BISessionProvider session) {
+
+        DetailExecutor exe = new DetailExecutor(this, null, (BISession) session);
+        return exe.getResult();
     }
 }

@@ -2,7 +2,7 @@ package com.fr.bi.cal.analyze.executor.treelabel;
 
 import com.finebi.cube.conf.table.BusinessTable;
 import com.fr.bi.cal.analyze.executor.BIAbstractExecutor;
-import com.fr.bi.cal.analyze.executor.iterator.TableCellIterator;
+import com.fr.bi.export.iterator.TableCellIterator;
 import com.fr.bi.cal.analyze.executor.paging.Paging;
 import com.fr.bi.cal.analyze.report.report.widget.TreeLabelWidget;
 import com.fr.bi.cal.analyze.session.BISession;
@@ -26,17 +26,6 @@ public class TreeLabelExecutor extends BIAbstractExecutor<JSONObject> {
         this.viewDimension = widget.getViewDimensions();
         this.userId = session.getUserId();
 
-    }
-
-
-    @Override
-    public TableCellIterator createCellIterator4Excel() throws Exception {
-        return null;
-    }
-
-    @Override
-    public Rectangle getSouthEastRectangle() {
-        return null;
     }
 
     @Override

@@ -246,4 +246,24 @@ public class DBConstant {
         public static final String RUNTIME_TYPE = "RuntimeParamsType";
         public static final String UPDATED_TYPE = "UpdateParamsType";
     }
+
+    /**
+     * 参数的KEY
+     */
+    public static final class PROPERTY_KEY {
+        public static final String USE_MULTI_THREAD_CAL = "UseMultiThreadCal";
+        public static final String MIN_CUBE_FREE_HD_SPACE_RATE = "MinCubeFreeHDSpaceRate";
+        public static final String BACK_UP_WHEN_START = "BackupWhenStart";
+        public static final String BI_THREAD_POOL_SIZE = "BiThreadPoolSize";
+        public static final String BI_TRANSPORT_THREAD_POOL_SIZE = "BiTransportThreadPoolSize";
+        public static final String DISK_SORT = "DiskSort";
+        public static final String DISK_SORT_DUMP_THRESH_HOLD = "DiskSortDumpThreshold";
+        public static final String RETRY_MAX_TIMES = "RetryMaxTimes";
+        public static final String RETRY_MAX_SELLP_TIME = "RetryMaxSleepTime";
+        public static final String CUBE_READER_RELEASE_SLEEP_TIME = "CubeReaderReleaseSleepTime";
+        public static final String UNMAP_READER = "UnmapReader";
+        public static final String IS_FORCE_WRITER = "IsForceWriter";
+        public static final String DEPLOY_MODE_SELECT_SIZE = "DeployModeSelectSize";
+        public static final String EXTREME_CONCURRENCY = "ExtremeConcurrency";
+    }
 }

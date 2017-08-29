@@ -7,6 +7,7 @@ import com.fr.bi.cal.analyze.cal.sssecret.XMetricMergeResult;
 import com.fr.bi.field.target.calculator.cal.CalCalculator;
 import com.fr.bi.report.key.TargetGettingKey;
 import com.fr.bi.report.key.XTargetGettingKey;
+import com.fr.bi.report.result.BIXLeftNode;
 import com.fr.bi.report.result.TargetCalculator;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 

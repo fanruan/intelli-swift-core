@@ -6,7 +6,6 @@ import com.finebi.cube.data.input.ICubeReader;
 import com.finebi.cube.data.output.ICubeWriter;
 import com.finebi.cube.location.ICubeResourceLocation;
 import com.finebi.cube.structure.ICubeDetailDataService;
-import com.fr.bi.stable.utils.BICollectionUtils;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
 
 /**
@@ -37,11 +36,11 @@ public abstract class BICubeDetailData<T> implements ICubeDetailDataService<T> {
     @Override
     public void addDetailDataValue(int rowNumber, T originalValue) {
         // 加多一层保障,防止其他像etl-union那样只能是double类型的数据
-        if(BICollectionUtils.isCubeNullKey(originalValue)){
-            getCubeWriter().recordSpecificValue(rowNumber, getCubeNullValue());
-        }else{
-            getCubeWriter().recordSpecificValue(rowNumber, originalValue);
-        }
+        getCubeWriter().recordSpecificValue(rowNumber, originalValue);
+        //if(BICollectionUtils.isCubeNullKey(originalValue)){
+        //    getCubeWriter().recordSpecificValue(rowNumber, getCubeNullValue());
+        //}else{
+        //}
     }
 
     @Override

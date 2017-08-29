@@ -1,6 +1,7 @@
 package com.fr.bi.cal.analyze.cal.sssecret;
 
-import com.fr.bi.cal.analyze.cal.result.BIXLeftNode;
+import com.fr.bi.report.result.BICrossLeftNode;
+import com.fr.bi.report.result.BIXLeftNode;
 import com.fr.bi.report.key.TargetGettingKey;
 import com.fr.bi.report.key.XTargetGettingKey;
 import com.fr.bi.stable.gvi.GroupValueIndex;
@@ -63,10 +64,23 @@ public class XMetricMergeResult extends MetricMergeResult implements BIXLeftNode
     }
 
     public Number[] getSubValues(XTargetGettingKey key) {
+
+        return getSubValues(key.getSubIndex());
+    }
+
+    @Override
+    public Number[] getSubValues(int index) {
+
         Number[] v = new Number[xValue.length];
         for (int i = 0; i < v.length; i++) {
-            v[i] = xValue[i][key.getSubIndex()];
+            v[i] = xValue[i][index];
         }
         return v;
+    }
+
+    @Override
+    public BICrossLeftNode getFirstCrossLeftNode() {
+
+        return (BICrossLeftNode)getFirstChild();
     }
 }
