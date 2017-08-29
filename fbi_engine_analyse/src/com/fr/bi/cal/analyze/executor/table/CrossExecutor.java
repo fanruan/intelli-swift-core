@@ -100,7 +100,7 @@ public class CrossExecutor extends AbstractTableWidgetExecutor<XNode> {
             return widgetCache.getData();
         }
         JSONObject jo = getCubeNode().toJSONObject(rowDimension, colDimension, widget.getTargetsKey(), widget.showColumnTotal());
-        if (isUseWidgetDataCache()){
+        if (isUseWidgetDataCache()) {
             PageIteratorGroup pg = session.getPageIteratorGroup(true, widget.getWidgetId());
             NodeDimensionIterator rowIter = pg.getRowIterator().createClonedIterator();
             rowIter.setRoot(null);
@@ -121,10 +121,14 @@ public class CrossExecutor extends AbstractTableWidgetExecutor<XNode> {
             session.setPageIteratorGroup(true, widget.getWidgetId(), pg);
         } else {
             NodeDimensionIterator rowIterator = widgetCache.getRowIterator().createClonedIterator();
-            rowIterator.setRoot(pg.getRowIterator().getRoot());
+            if (pg.getRowIterator() != null) {
+                rowIterator.setRoot(pg.getRowIterator().getRoot());
+            }
             pg.setRowIterator(rowIterator);
             NodeDimensionIterator colIterator = widgetCache.getColumnIterator().createClonedIterator();
-            colIterator.setRoot(pg.getColumnIterator().getRoot());
+            if (pg.getColumnIterator() != null) {
+                colIterator.setRoot(pg.getColumnIterator().getRoot());
+            }
             pg.setColumnIterator(colIterator);
         }
     }

@@ -8,14 +8,15 @@ import com.finebi.cube.conf.field.BusinessField;
 import com.finebi.cube.relation.BITableSourceRelation;
 import com.fr.bi.conf.utils.BIModuleUtils;
 import com.fr.bi.field.dimension.calculator.NumberDimensionCalculator;
+import com.fr.bi.report.result.DimensionCalculator;
 import com.fr.bi.stable.constant.BIJSONConstant;
 import com.fr.bi.stable.constant.BIReportConstant;
+import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.engine.index.key.IndexKey;
 import com.fr.bi.stable.operation.group.BIGroupFactory;
 import com.fr.bi.stable.operation.group.group.AutoGroup;
 import com.fr.bi.stable.operation.sort.BISortFactory;
-import com.fr.bi.report.result.DimensionCalculator;
 import com.fr.bi.stable.utils.BICollectionUtils;
 import com.fr.general.GeneralUtils;
 import com.fr.json.JSONException;
@@ -108,8 +109,21 @@ public class BINumberDimension extends BIAbstractDimension {
 
     @Override
     public Object getValueByType(Object data) {
+        if (data == null) {
+            return data;
+        }
         if (group.getType() == BIReportConstant.GROUP.CUSTOM_NUMBER_GROUP) {
-            return data == null ? null : data.toString();
+            return data.toString();
+        }
+        //在设置过维度匹配后计算的字段classType可能和原始字段不一致，应该按照原始字段的classType处理
+        switch (this.createColumnKey().getClassType()) {
+            case DBConstant.CLASS.DOUBLE:
+                data = ((Number) data).doubleValue();
+                break;
+            case DBConstant.CLASS.INTEGER:
+            case DBConstant.CLASS.LONG:
+                data = ((Number) data).longValue();
+                break;
         }
         return data;
     }
