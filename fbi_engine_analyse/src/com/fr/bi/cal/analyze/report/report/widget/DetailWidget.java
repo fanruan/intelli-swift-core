@@ -379,6 +379,7 @@ public class DetailWidget extends AbstractBIWidget implements SclCalculator {
         }
         res.put("items", itemsArray);
         res.put("row", data.optLong("row", 0));
+        res.put("size", data.optLong("size", 0));
         res.put("page",data.opt("page"));
         return res;
     }
