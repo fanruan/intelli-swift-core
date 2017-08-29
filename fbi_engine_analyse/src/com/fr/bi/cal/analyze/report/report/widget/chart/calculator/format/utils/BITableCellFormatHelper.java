@@ -250,13 +250,13 @@ public class BITableCellFormatHelper {
         String format;
         switch (type) {
             case BIReportConstant.TARGET_STYLE.FORMAT.NORMAL:
-                format = hasSeparator ? "#,###.##" : "#.##";
+                format = hasSeparator ? "#,##0.##" : "#.##";
                 break;
             case BIReportConstant.TARGET_STYLE.FORMAT.ZERO2POINT:
-                format = hasSeparator ? "#,###" : "#0";
+                format = hasSeparator ? "#,##0" : "#0";
                 break;
             default:
-                format = hasSeparator ? "#,###." : "#0.";
+                format = hasSeparator ? "#,##0." : "#0.";
                 for (int i = 0; i < type; i++) {
                     format += "0";
                 }
