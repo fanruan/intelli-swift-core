@@ -170,7 +170,7 @@ public class BIConnectionManager extends XMLFileManager implements BIConnectionP
                     reader.getAttrAsString("schema", null),
                     reader.getAttrAsLong("createBy", UserControl.getInstance().getSuperManagerID()),
                     reader.getAttrAsLong("initTime", 0));
-            connMap.put(connection.getName(), connection);
+            connMap.put(connection.getConnectionName(), connection);
         }
     }
 

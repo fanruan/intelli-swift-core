@@ -9,6 +9,7 @@ import com.finebi.cube.relation.BITableRelation;
 import com.finebi.cube.relation.BITableSourceRelation;
 import com.fr.base.Style;
 import com.fr.bi.cal.analyze.executor.BIAbstractExecutor;
+import com.fr.bi.cal.analyze.executor.utils.GlobalFilterUtils;
 import com.fr.bi.export.iterator.StreamPagedIterator;
 import com.fr.bi.cal.analyze.executor.paging.Paging;
 import com.fr.bi.export.utils.GeneratorUtils;
@@ -140,7 +141,7 @@ public abstract class AbstractDetailExecutor extends BIAbstractExecutor<JSONObje
             if (summaryTarget != null) {
                 BusinessTable linkTargetTable = summaryTarget.createTableKey();
                 // 基础表相同的时候才有联动的意义 | 是否是主表联动到子表
-                if (widgetTargetTable.equals(linkTargetTable) || ExecutorUtils.isPrimaryTable(linkTargetTable, widgetTargetTable)) {
+                if (widgetTargetTable.equals(linkTargetTable) || GlobalFilterUtils.isPrimaryTable(linkTargetTable, widgetTargetTable)) {
                     // 其联动组件的父联动gvi
                     GroupValueIndex pLinkGvi = linkWidget.createLinkedFilterGVI(widgetTargetTable, session);
                     // 其联动组件的点击过滤gvi
