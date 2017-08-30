@@ -14,15 +14,15 @@ import java.util.Map;
  */
 public class BITableDimensionHelper {
     // FIXME: 2017/2/26 需要抽象出来
-    public static int getFieldTypeByDimensionID(Map<Integer, List<BIDimensionConf>> dimAndTar, String dId) throws Exception {
+    public static int getFieldTypeByDimensionID(Map<Integer, BIDimensionConf[]> dimAndTar, String dId) throws Exception {
         return getDimAndTars(dimAndTar, dId).getDimensionType();
     }
 
-    public static String getDimensionNameByID(Map<Integer, List<BIDimensionConf>> dimAndTar, String dId) throws Exception {
-        return getDimAndTars(dimAndTar,dId).getDimensionName();
+    public static String getDimensionNameByID(Map<Integer, BIDimensionConf[]> dimAndTar, String dId) throws Exception {
+        return getDimAndTars(dimAndTar, dId).getDimensionName();
     }
 
-    private static BIDimensionConf getDimAndTars(Map<Integer, List<BIDimensionConf>> dimAndTar, String dId) throws Exception {
+    private static BIDimensionConf getDimAndTars(Map<Integer, BIDimensionConf[]> dimAndTar, String dId) throws Exception {
         Iterator<Integer> iterator = dimAndTar.keySet().iterator();
         while (iterator.hasNext()) {
             Integer next = iterator.next();
@@ -35,10 +35,8 @@ public class BITableDimensionHelper {
         throw new Exception();
     }
 
-    public static boolean isDimUsed(Map<Integer, List<BIDimensionConf>> dimAndTar, String dId) throws Exception {
-        Iterator<Integer> iterator = dimAndTar.keySet().iterator();
-        while (iterator.hasNext()) {
-            Integer next = iterator.next();
+    public static boolean isDimUsed(Map<Integer, BIDimensionConf[]> dimAndTar, String dId) throws Exception {
+        for (Integer next : dimAndTar.keySet()) {
             for (BIDimensionConf dimConf : dimAndTar.get(next)) {
                 if (ComparatorUtils.equals(dimConf.getDimensionID(), dId)) {
                     if (dimConf.isDimensionUsed()) {

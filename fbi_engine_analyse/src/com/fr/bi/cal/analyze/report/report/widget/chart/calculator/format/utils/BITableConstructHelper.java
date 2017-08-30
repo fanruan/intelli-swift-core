@@ -7,7 +7,7 @@ import com.fr.bi.cal.analyze.report.report.widget.chart.calculator.item.ITableIt
 import com.fr.bi.cal.analyze.report.report.widget.chart.calculator.item.constructor.DataConstructor;
 import com.fr.bi.conf.fs.tablechartstyle.BIWidgetBackgroundAttr;
 import com.fr.bi.conf.report.WidgetType;
-import com.fr.bi.conf.report.conf.BIWidgetSettings;
+import com.fr.bi.conf.report.conf.settings.BIWidgetSettings;
 import com.fr.bi.conf.report.style.table.BITableStyleHelper;
 import com.fr.json.JSONException;
 import com.fr.json.JSONObject;

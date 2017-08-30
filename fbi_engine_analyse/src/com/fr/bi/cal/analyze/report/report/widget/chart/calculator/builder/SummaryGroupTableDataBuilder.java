@@ -15,7 +15,7 @@ import java.util.Map;
  */
 public class SummaryGroupTableDataBuilder extends SummaryCrossTableDataBuilder {
 
-    public SummaryGroupTableDataBuilder(Map<Integer, List<BIDimensionConf>> dimAndTar, JSONObject dataJSON, BIWidgetStyle styleSetting) throws Exception {
+    public SummaryGroupTableDataBuilder(Map<Integer, BIDimensionConf[]> dimAndTar, JSONObject dataJSON, BIWidgetStyle styleSetting) throws Exception {
         super(dimAndTar, dataJSON, styleSetting);
     }
 
