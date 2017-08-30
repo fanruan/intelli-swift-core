@@ -54,6 +54,8 @@ import com.fr.bi.fs.BIReportDAO;
 import com.fr.bi.fs.BIReportNodeLock;
 import com.fr.bi.fs.BIReportNodeLockDAO;
 import com.fr.bi.fs.BISuperManagetDAOManager;
+import com.fr.bi.fs.BIUserEditViewAuthProvider;
+import com.fr.bi.web.base.manager.BIUserEditViewAuthManager;
 import com.fr.bi.web.report.provider.BIReportQueryProvider;
 import com.fr.bi.fs.BITableMapper;
 import com.fr.bi.fs.HSQLBIReportDAO;
@@ -185,9 +187,23 @@ public class BICoreModule extends AbstractModule {
         StableFactory.registerMarkedObject(BITableDataDAOProvider.XML_TAG, getBITableDataDAOManager());
 
         StableFactory.registerMarkedObject(BIPublicReportManagerProvider.XML_TAG, getBIPublicReportManger());
-
+        StableFactory.registerMarkedObject(BIUserEditViewAuthProvider.XML_TAG, getBIUserEditViewAuthManager());
     }
-
+    public BIUserEditViewAuthProvider getBIUserEditViewAuthManager() {
+        if (ClusterEnv.isCluster()) {
+            if (ClusterAdapter.getManager().getHostManager().isSelf()) {
+                BIUserEditViewAuthManager provider = BIUserEditViewAuthManager.getInstance();
+                RPC.registerSkeleton(provider, ClusterAdapter.getManager().getHostManager().getPort());
+                return provider;
+            } else {
+                return (BIUserEditViewAuthProvider) RPC.getProxy(BIUserEditViewAuthManager.class,
+                        ClusterAdapter.getManager().getHostManager().getIp(),
+                        ClusterAdapter.getManager().getHostManager().getPort());
+            }
+        } else {
+            return BIUserEditViewAuthManager.getInstance();
+        }
+    }
     protected BIDataConfigAuthorityProvider getBISystemDataConfigAuthorityManager() {
         if (ClusterEnv.isCluster()) {
             if (ClusterAdapter.getManager().getHostManager().isSelf()) {
