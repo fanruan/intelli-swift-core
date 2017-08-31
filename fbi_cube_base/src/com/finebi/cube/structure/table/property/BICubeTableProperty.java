@@ -1,5 +1,6 @@
 package com.finebi.cube.structure.table.property;
 
+import com.finebi.cube.common.log.BILogger;
 import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.data.ICubeResourceDiscovery;
 import com.finebi.cube.data.input.ICubeIntegerReaderWrapper;
@@ -62,6 +63,7 @@ public class BICubeTableProperty implements ICubeTablePropertyService {
     private ParentFieldProperty parentFieldProperty;
     private ICubeIntegerWriterWrapper removeListWriter;
     private ICubeIntegerReaderWrapper removeListReader;
+    private static BILogger LOGGER = BILoggerFactory.getLogger(BICubeTableProperty.class);
 
     public BICubeTableProperty(ICubeResourceLocation currentLocation, ICubeResourceDiscovery discovery) {
         this.currentLocation = currentLocation.copy();
@@ -354,10 +356,8 @@ public class BICubeTableProperty implements ICubeTablePropertyService {
                                 tableFields.add(field);
                             }
                         } catch (BIResourceInvalidException e) {
-                            BILoggerFactory.getLogger().error(e.getMessage(), e);
                             BINonValueUtils.beyondControl(e.getMessage(), e);
                         } catch (Exception e) {
-                            BILoggerFactory.getLogger().error(e.getMessage(), e);
                             BINonValueUtils.beyondControl(e.getMessage(), e);
                         }
                     }
@@ -376,10 +376,8 @@ public class BICubeTableProperty implements ICubeTablePropertyService {
                     parentTable.add(new BITableKey(parentReader.getSpecificValue(pos)));
                 }
             } catch (BIResourceInvalidException e) {
-                BILoggerFactory.getLogger().error(e.getMessage(), e);
                 BINonValueUtils.beyondControl(e.getMessage(), e);
             } catch (Exception e) {
-                BILoggerFactory.getLogger().error(e.getMessage(), e);
                 BINonValueUtils.beyondControl(e.getMessage(), e);
             }
         }
@@ -475,7 +473,6 @@ public class BICubeTableProperty implements ICubeTablePropertyService {
             String rowCount = String.valueOf(getRowCountReader().getSpecificValue(0));
             return Integer.parseInt(rowCount);
         } catch (BIResourceInvalidException e) {
-            BILoggerFactory.getLogger().error(e.getMessage(), e);
             BINonValueUtils.beyondControl(e.getMessage(), e);
         }
         return -1;
@@ -499,7 +496,7 @@ public class BICubeTableProperty implements ICubeTablePropertyService {
             }
             removedList.add(removedListReader.getSpecificValue(i));
         } catch (BIResourceInvalidException e) {
-            BILoggerFactory.getLogger().error(e.getMessage(), e);
+            LOGGER.errorCache("getRemovedList BIResourceInvalidException ", e);
         }
         return removedList;
     }
@@ -509,7 +506,6 @@ public class BICubeTableProperty implements ICubeTablePropertyService {
         try {
             return new Date(getLastExecuteTimeReader().getSpecificValue(0));
         } catch (BIResourceInvalidException e) {
-            BILoggerFactory.getLogger().error(e.getMessage(), e);
             BINonValueUtils.beyondControl(e.getMessage(), e);
         }
         return null;
@@ -520,7 +516,6 @@ public class BICubeTableProperty implements ICubeTablePropertyService {
         try {
             return new Date(getCurrentExecuteTimeReader().getSpecificValue(0));
         } catch (BIResourceInvalidException e) {
-            BILoggerFactory.getLogger().error(e.getMessage(), e);
             BINonValueUtils.beyondControl(e.getMessage(), e);
         }
         return null;
