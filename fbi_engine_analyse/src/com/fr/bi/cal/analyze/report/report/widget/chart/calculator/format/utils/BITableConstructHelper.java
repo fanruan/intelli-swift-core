@@ -70,17 +70,18 @@ public class BITableConstructHelper {
 
     /*
     * 首行汇总为深色
+    * 内部汇总背景颜色不做特殊处理
     * */
     private static void traversalItems(List<ITableItem> items, Map<String, ITableCellFormatOperation> ops, int rowIndex, int layer, BIWidgetSettings style, BIWidgetBackgroundAttr backgroundColor) throws Exception {
         rowIndex++;
         for (ITableItem item : items) {
             rowIndex++;
-            boolean isInnerSum = item.getChildren() != null && !item.getChildren().isEmpty();
+//            boolean isInnerSum = item.getChildren() != null && !item.getChildren().isEmpty();
             boolean isLastSum = item.isSum() || layer == 0;
-            formatItemCell(ops, rowIndex, style, item, false, isLastSum, backgroundColor);
+            formatItemCell(ops, rowIndex, style, item, isLastSum, backgroundColor);
             if (item.getValues() != null) {
                 for (ITableItem it : item.getValues()) {
-                    formatItemCell(ops, rowIndex, style, it, isInnerSum, isLastSum, backgroundColor);
+                    formatItemCell(ops, rowIndex, style, it, isLastSum, backgroundColor);
                 }
             }
 
@@ -90,20 +91,23 @@ public class BITableConstructHelper {
         }
     }
 
-    private static void formatItemCell(Map<String, ITableCellFormatOperation> ops, int rowIndex, BIWidgetSettings style, ITableItem item, boolean isInnerSum, boolean isLastSum, BIWidgetBackgroundAttr backgroundColor) throws Exception {
+    private static void formatItemCell(Map<String, ITableCellFormatOperation> ops, int rowIndex, BIWidgetSettings style, ITableItem item, boolean isLastSum, BIWidgetBackgroundAttr backgroundColor) throws Exception {
         formatText(ops, item);
         setTextStyle(ops, item, backgroundColor);
-        setCellStyle(rowIndex, style, item, isInnerSum, isLastSum);
+        setCellStyle(rowIndex, style, item, isLastSum);
     }
 
-    private static void setCellStyle(int rowIndex, BIWidgetSettings style, ITableItem item, boolean isInnerSum, boolean isLastSum) throws JSONException {
+    private static void setCellStyle(int rowIndex, BIWidgetSettings style, ITableItem item, boolean isLastSum) throws JSONException {
         if (isLastSum) {
             item.setStyles(BITableStyleHelper.getLastSummaryStyles(style.getThemeColor(), style.getTableStyleGroup()));
-        } else if (isInnerSum) {
-            item.setStyles(BITableStyleHelper.getInnerSumStyles(style.getThemeColor(), style.getTableStyleGroup()));
         } else {
             item.setStyles(BITableStyleHelper.getBodyStyles(style.getThemeColor(), style.getTableStyleGroup(), rowIndex));
         }
+//        } else if (isInnerSum) {
+//            item.setStyles(BITableStyleHelper.getInnerSumStyles(style.getThemeColor(), style.getTableStyleGroup()));
+//        } else {
+//            item.setStyles(BITableStyleHelper.getBodyStyles(style.getThemeColor(), style.getTableStyleGroup(), rowIndex));
+//        }
     }
 
     private static void setDetailCellStyle(int rowIndex, int layer, BIWidgetSettings style, ITableItem item) throws JSONException {
@@ -145,11 +149,11 @@ public class BITableConstructHelper {
     }
 
     private static void setTextStyle(Map<String, ITableCellFormatOperation> ops, ITableItem it, BIWidgetBackgroundAttr backgroundColor) throws Exception {
-        JSONObject style=JSONObject.create();
+        JSONObject style = JSONObject.create();
         if (null != ops.get(it.getDId())) {
             style = ops.get(it.getDId()).createItemTextStyle(String.valueOf(it.getValue()));
         }
-        it.setTextStyles(style.put("color",BITableStyleHelper.getContrastColor(backgroundColor.getValue())));
+        it.setTextStyles(style.put("color", BITableStyleHelper.getContrastColor(backgroundColor.getValue())));
     }
 }
 
