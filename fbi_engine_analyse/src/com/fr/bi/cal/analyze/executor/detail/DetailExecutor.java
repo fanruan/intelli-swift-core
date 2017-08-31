@@ -3,28 +3,21 @@ package com.fr.bi.cal.analyze.executor.detail;
 import com.finebi.cube.common.log.BILogger;
 import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.conf.table.BusinessTable;
-import com.fr.bi.base.FinalInt;
+import com.fr.bi.cal.analyze.cal.result.DetailCell;
+import com.fr.bi.cal.analyze.cal.result.DetailTableResult;
 import com.fr.bi.cal.analyze.executor.GVIRunner;
 import com.fr.bi.cal.analyze.executor.TableRowTraversal;
 import com.fr.bi.cal.analyze.executor.detail.execute.DetailAllGVIRunner;
 import com.fr.bi.cal.analyze.executor.detail.execute.DetailPartGVIRunner;
-import com.fr.bi.cal.analyze.executor.paging.PagingFactory;
-import com.fr.bi.export.iterator.TableCellIterator;
 import com.fr.bi.cal.analyze.executor.paging.Paging;
-import com.fr.bi.cal.analyze.executor.utils.GlobalFilterUtils;
-import com.fr.bi.cal.analyze.report.report.widget.AbstractBIWidget;
 import com.fr.bi.cal.analyze.report.report.widget.DetailWidget;
 import com.fr.bi.cal.analyze.report.report.widget.TableWidget;
 import com.fr.bi.cal.analyze.session.BISession;
-import com.fr.bi.cal.report.engine.CBCell;
 import com.fr.bi.conf.report.widget.field.target.detailtarget.BIDetailTarget;
+import com.fr.bi.field.target.detailtarget.field.BIDateDetailTarget;
 import com.fr.bi.field.target.target.BISummaryTarget;
 import com.fr.bi.report.result.BIDetailCell;
 import com.fr.bi.report.result.BIDetailTableResult;
-import com.fr.bi.cal.analyze.cal.result.DetailCell;
-import com.fr.bi.cal.analyze.cal.result.DetailTableResult;
-import com.fr.bi.field.target.detailtarget.field.BIDateDetailTarget;
-import com.fr.bi.stable.constant.CellConstant;
 import com.fr.bi.stable.data.db.BIRowValue;
 import com.fr.bi.stable.gvi.GVIUtils;
 import com.fr.bi.stable.gvi.GroupValueIndex;
@@ -33,12 +26,9 @@ import com.fr.bi.stable.utils.BITravalUtils;
 import com.fr.general.DateUtils;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;
-import com.fr.stable.ExportConstants;
 
-import java.awt.*;
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -215,20 +205,7 @@ public class DetailExecutor extends AbstractDetailExecutor {
         return getCubeNode();
     }
 
-    protected GroupValueIndex getJumpLinkFilter(GroupValueIndex g) {
 
-        DetailWidget bw = widget;
-        // 如果是跳转打开的才需要进行设置
-        if (bw.getGlobalFilterWidget() != null) {
-            // 如果已经设置了源字段和目标字段
-            if (((AbstractBIWidget) bw.getGlobalFilterWidget()).getGlobalSourceAndTargetFieldList().size() > 0) {
-                g = GVIUtils.AND(g, GlobalFilterUtils.getSettingSourceAndTargetJumpFilter(widget, userId, session, target, ((AbstractBIWidget) bw.getGlobalFilterWidget()).getBaseTable()));
-            } else {
-                g = GVIUtils.AND(g, GlobalFilterUtils.getNotSettingSourceAndTargetJumpFilter(session, target, widget, false));
-            }
-        }
-        return g;
-    }
 
     /**
      * 返回导出excel的数据结构

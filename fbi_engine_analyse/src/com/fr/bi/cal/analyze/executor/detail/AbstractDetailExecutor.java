@@ -9,10 +9,9 @@ import com.finebi.cube.relation.BITableRelation;
 import com.finebi.cube.relation.BITableSourceRelation;
 import com.fr.base.Style;
 import com.fr.bi.cal.analyze.executor.BIAbstractExecutor;
-import com.fr.bi.cal.analyze.executor.utils.GlobalFilterUtils;
-import com.fr.bi.export.iterator.StreamPagedIterator;
 import com.fr.bi.cal.analyze.executor.paging.Paging;
-import com.fr.bi.export.utils.GeneratorUtils;
+import com.fr.bi.cal.analyze.executor.utils.GlobalFilterUtils;
+import com.fr.bi.cal.analyze.report.report.widget.AbstractBIWidget;
 import com.fr.bi.cal.analyze.report.report.widget.DetailWidget;
 import com.fr.bi.cal.analyze.report.report.widget.TableWidget;
 import com.fr.bi.cal.analyze.session.BISession;
@@ -22,6 +21,8 @@ import com.fr.bi.conf.report.style.BITableStyle;
 import com.fr.bi.conf.report.style.ChartSetting;
 import com.fr.bi.conf.report.widget.field.target.detailtarget.BIDetailTarget;
 import com.fr.bi.conf.report.widget.field.target.filter.TargetFilter;
+import com.fr.bi.export.iterator.StreamPagedIterator;
+import com.fr.bi.export.utils.GeneratorUtils;
 import com.fr.bi.field.BIAbstractTargetAndDimension;
 import com.fr.bi.field.dimension.calculator.NoneDimensionCalculator;
 import com.fr.bi.field.target.detailtarget.BIAbstractDetailTarget;
@@ -113,6 +114,8 @@ public abstract class AbstractDetailExecutor extends BIAbstractExecutor<JSONObje
         }
         try {
             currentGvi = getLinkFilter(currentGvi);
+            // 跳转的
+            currentGvi = getJumpLinkFilter(currentGvi);
         } catch (Exception e) {
             BILoggerFactory.getLogger().error(e.getMessage());
         }
@@ -152,6 +155,21 @@ public abstract class AbstractDetailExecutor extends BIAbstractExecutor<JSONObje
             }
         }
         return gvi;
+    }
+
+    protected GroupValueIndex getJumpLinkFilter(GroupValueIndex g) {
+
+        DetailWidget bw = widget;
+        // 如果是跳转打开的才需要进行设置
+        if (bw.getGlobalFilterWidget() != null) {
+            // 如果已经设置了源字段和目标字段
+            if (((AbstractBIWidget) bw.getGlobalFilterWidget()).getGlobalSourceAndTargetFieldList().size() > 0) {
+                g = GVIUtils.AND(g, GlobalFilterUtils.getSettingSourceAndTargetJumpFilter(widget, userId, session, target, ((AbstractBIWidget) bw.getGlobalFilterWidget()).getBaseTable()));
+            } else {
+                g = GVIUtils.AND(g, GlobalFilterUtils.getNotSettingSourceAndTargetJumpFilter(session, target, widget, false));
+            }
+        }
+        return g;
     }
 
     private BIDetailTarget getTargetById(String id) {
