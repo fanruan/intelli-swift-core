@@ -50,16 +50,18 @@ import com.fr.bi.conf.report.BIFSReportProvider;
 import com.fr.bi.conf.tablelock.BIConfTableLock;
 import com.fr.bi.conf.tablelock.BIConfTableLockDAO;
 import com.fr.bi.fs.BIDAOProvider;
-import com.fr.bi.fs.BIDAOUtils;
+import com.fr.bi.fs.BIMultiPathProvider;
 import com.fr.bi.fs.BIReportDAO;
 import com.fr.bi.fs.BIReportNodeLock;
 import com.fr.bi.fs.BIReportNodeLockDAO;
-import com.fr.bi.fs.BISuperManagetDAOManager;
-import com.fr.bi.fs.BITableDataDAOManager;
 import com.fr.bi.fs.BITableDataDAOProvider;
+import com.fr.bi.fs.BITableDataDAOManager;
+import com.fr.bi.fs.BISuperManagetDAOManager;
+import com.fr.bi.fs.BIDAOUtils;
 import com.fr.bi.fs.BITableMapper;
 import com.fr.bi.fs.HSQLBIReportDAO;
 import com.fr.bi.fs.TableDataBIReportDAO;
+import com.fr.bi.web.report.provider.BIReportQueryProvider;
 import com.fr.bi.resource.BIPlatformResourceHelper;
 import com.fr.bi.resource.BaseResourceHelper;
 import com.fr.bi.resource.CommonResourceHelper;
@@ -90,12 +92,16 @@ import com.fr.data.dao.ObjectTableMapper;
 import com.fr.data.impl.JDBCDatabaseConnection;
 import com.fr.data.pool.MemoryConnection;
 import com.fr.file.DatasourceManager;
+import com.fr.fs.control.UserControl;
 import com.fr.fs.control.dao.hsqldb.HSQLDBDAOControl;
+import com.fr.fs.control.dao.tabledata.SyncDaoControl;
 import com.fr.fs.control.dao.tabledata.TableDataDAOControl;
 import com.fr.fs.dao.FSDAOManager;
 import com.fr.stable.bridge.StableFactory;
 import com.fr.stable.fun.Service;
 import com.fr.web.core.db.PlatformDB;
+import com.fr.bi.web.conf.services.BIMultiPathManager;
+import com.fr.bi.web.report.manager.BIReportQueryManger;
 
 import java.io.File;
 import java.sql.Connection;
@@ -158,6 +164,8 @@ public class BICoreModule extends AbstractModule {
         StableFactory.registerMarkedObject(BIDAOProvider.XML_TAG, getBIDAO());
         StableFactory.registerMarkedObject(BIReadReportProvider.XML_TAG, getBIReadReport());
         StableFactory.registerMarkedObject(BIReportDAO.class.getName(), getBIReportDAO());
+        StableFactory.registerMarkedObject(BIReportQueryProvider.XML_TAG, getBIQueryReportManager());
+        StableFactory.registerMarkedObject(BIMultiPathProvider.XML_TAG, getBIMultiPathManager());
 
         StableFactory.registerMarkedObject(BIUpdateFrequencyManagerProvider.XML_TAG, getBIUpdateSettingManager());
         StableFactory.registerMarkedObject(BISystemPackageConfigurationProvider.XML_TAG, getPackManagerProvider());
@@ -178,12 +186,59 @@ public class BICoreModule extends AbstractModule {
         StableFactory.registerMarkedObject(BICubeTaskRecordProvider.XML_TAG, new BICubeTaskRecordManagerWithoutUser());
         StableFactory.registerMarkedObject(BITimeScheduleService.XML_TAG, getBITimeScheduleManager());
 
-
-        StableFactory.registerMarkedObject(BIDataConfigAuthorityProvider.XML_TAG, new BISystemDataConfigAuthorityManager());
+        StableFactory.registerMarkedObject(BIDataConfigAuthorityProvider.XML_TAG, getBISystemDataConfigAuthorityManager());
         StableFactory.registerMarkedObject(BITableDataDAOProvider.XML_TAG, getBITableDataDAOManager());
 
         StableFactory.registerMarkedObject(BIPublicReportManagerProvider.XML_TAG, getBIPublicReportManger());
 
+    }
+
+    protected BIDataConfigAuthorityProvider getBISystemDataConfigAuthorityManager() {
+        if (ClusterEnv.isCluster()) {
+            if (ClusterAdapter.getManager().getHostManager().isSelf()) {
+                BISystemDataConfigAuthorityManager provider = new BISystemDataConfigAuthorityManager();
+                RPC.registerSkeleton(provider, ClusterAdapter.getManager().getHostManager().getPort());
+                return provider;
+            } else {
+                return (BIDataConfigAuthorityProvider) RPC.getProxy(BISystemDataConfigAuthorityManager.class,
+                        ClusterAdapter.getManager().getHostManager().getIp(),
+                        ClusterAdapter.getManager().getHostManager().getPort());
+            }
+        } else {
+            return new BISystemDataConfigAuthorityManager();
+        }
+    }
+
+    public BIMultiPathProvider getBIMultiPathManager() {
+        if (ClusterEnv.isCluster()) {
+            if (ClusterAdapter.getManager().getHostManager().isSelf()) {
+                BIMultiPathManager provider = BIMultiPathManager.getInstance();
+                RPC.registerSkeleton(provider, ClusterAdapter.getManager().getHostManager().getPort());
+                return provider;
+            } else {
+                return (BIMultiPathProvider) RPC.getProxy(BIMultiPathManager.class,
+                        ClusterAdapter.getManager().getHostManager().getIp(),
+                        ClusterAdapter.getManager().getHostManager().getPort());
+            }
+        } else {
+            return BIMultiPathManager.getInstance();
+        }
+    }
+
+    public BIReportQueryProvider getBIQueryReportManager() {
+        if (ClusterEnv.isCluster()) {
+            if (ClusterAdapter.getManager().getHostManager().isSelf()) {
+                BIReportQueryManger provider = BIReportQueryManger.getInstance();
+                RPC.registerSkeleton(provider, ClusterAdapter.getManager().getHostManager().getPort());
+                return provider;
+            } else {
+                return (BIReportQueryProvider) RPC.getProxy(BIReportQueryManger.class,
+                        ClusterAdapter.getManager().getHostManager().getIp(),
+                        ClusterAdapter.getManager().getHostManager().getPort());
+            }
+        } else {
+            return BIReportQueryManger.getInstance();
+        }
     }
 
     private BIPublicReportManagerProvider getBIPublicReportManger() {
@@ -668,6 +723,7 @@ public class BICoreModule extends AbstractModule {
 
         StableFactory.registerMarkedObject(HSQLDBDAOControl.class.getName(), HSQLBIReportDAO.getInstance());
         StableFactory.registerMarkedObject(TableDataDAOControl.class.getName(), TableDataBIReportDAO.getInstance());
+        StableFactory.registerMarkedObject(SyncDaoControl.class.getName(), TableDataBIReportDAO.getInstance());
         StableFactory.registerMarkedObject(BIReportNodeLockDAO.class.getName(), BIReportNodeLockDAO.getInstance());
         StableFactory.registerMarkedObject(BIConfTableLockDAO.class.getName(), BIConfTableLockDAO.getInstance());
     }

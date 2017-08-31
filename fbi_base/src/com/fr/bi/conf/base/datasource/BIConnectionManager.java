@@ -53,7 +53,7 @@ public class BIConnectionManager extends XMLFileManager implements BIConnectionP
         while (nameIt.hasNext()) {
             String name = nameIt.next();
             Connection c = datasourceManager.getConnection(name);
-            if (c != null && testConnection(c)) {
+            if (c != null && isConnectionAvailable()) {
                 availableConnection.put(name, c);
             }
         }
@@ -80,7 +80,7 @@ public class BIConnectionManager extends XMLFileManager implements BIConnectionP
             return connMap.get(name).getSchema();
         }
         Connection connection = DatasourceManager.getProviderInstance().getConnection(name);
-        if (needSchema(connection)) {
+        if (isNeedSchema(connection)) {
             String[] schemas = DataCoreUtils.getDatabaseSchema(connection);
             connMap.put(name, new BIConnection(name, schemas != null && schemas.length != 0 ? schemas[0] : StringUtils.EMPTY));
         } else {
@@ -91,7 +91,7 @@ public class BIConnectionManager extends XMLFileManager implements BIConnectionP
         } catch (Exception e) {
             BILoggerFactory.getLogger().error(e.getMessage());
         }
-        return null;
+        return StringUtils.EMPTY;
     }
 
     private long getCreateBy(String name, long userId) {
@@ -101,19 +101,19 @@ public class BIConnectionManager extends XMLFileManager implements BIConnectionP
         return userId;
     }
 
-    private long getInitTime(String name) {
+    private long getInitTime(String name, int index) {
+        long initTime = System.currentTimeMillis() + index;
         if (connMap.containsKey(name)) {
-            long initTime = connMap.get(name).getInitTime();
+            initTime = connMap.get(name).getInitTime();
             if (ComparatorUtils.equals(initTime, 0)) {
                 ensureInitTimeExist();
-                return getInitTime(name);
+                initTime = getInitTime(name, index);
             }
-            return initTime;
         }
-        return System.currentTimeMillis();
+        return initTime;
     }
 
-    public void ensureInitTimeExist() {
+    private void ensureInitTimeExist() {
         Set<String> names = connMap.keySet();
         long initTime = System.currentTimeMillis();
         int index = 0;
@@ -133,6 +133,7 @@ public class BIConnectionManager extends XMLFileManager implements BIConnectionP
         }
     }
 
+    @Override
     public BIConnection getBIConnection(String name) {
         ensureInitTimeExist();
         return connMap.get(name);
@@ -164,14 +165,12 @@ public class BIConnectionManager extends XMLFileManager implements BIConnectionP
 
     @Override
     public void readXML(XMLableReader reader) {
-        if (reader.isChildNode()) {
-            if (ComparatorUtils.equals(reader.getTagName(), "conn")) {
-                BIConnection connection = new BIConnection(reader.getAttrAsString("name", StringUtils.EMPTY),
-                        reader.getAttrAsString("schema", null),
-                        reader.getAttrAsLong("createBy", UserControl.getInstance().getSuperManagerID()),
-                        reader.getAttrAsLong("initTime", 0));
-                connMap.put(connection.getConnectionName(), connection);
-            }
+        if (reader.isChildNode() && ComparatorUtils.equals(reader.getTagName(), "conn")) {
+            BIConnection connection = new BIConnection(reader.getAttrAsString("name", StringUtils.EMPTY),
+                    reader.getAttrAsString("schema", null),
+                    reader.getAttrAsLong("createBy", UserControl.getInstance().getSuperManagerID()),
+                    reader.getAttrAsLong("initTime", 0));
+            connMap.put(connection.getConnectionName(), connection);
         }
     }
 
@@ -207,7 +206,7 @@ public class BIConnectionManager extends XMLFileManager implements BIConnectionP
         datasourceManager.putConnection(newName, databaseConnection);
 
         long createBy = getCreateBy(oldName, userId);
-        long initTime = getInitTime(oldName);
+        long initTime = getInitTime(oldName, 0);
         connMap.remove(oldName);
         connMap.put(newName, new BIConnection(newName, linkDataJo.optString("schema", null), createBy, initTime));
         try {
@@ -242,9 +241,9 @@ public class BIConnectionManager extends XMLFileManager implements BIConnectionP
         }
     }
 
-    private boolean testConnection(Connection c) {
+    private boolean isConnectionAvailable() {
         try {
-//            c.testConnection();
+//            c.isConnectionAvailable();
             return true;
         } catch (Exception e) {
             return false;
@@ -266,7 +265,7 @@ public class BIConnectionManager extends XMLFileManager implements BIConnectionP
                 jo.put("name", name);
 
                 jo.put("createBy", getCreateBy(name, UserControl.getInstance().getSuperManagerID()));
-                jo.put("initTime", getInitTime(name));
+                jo.put("initTime", getInitTime(name, index));
                 if (isMicrosoftAccessDatabase(jo.optString("driver"), jo.optString("url"))) {
                     continue;
                 }
@@ -284,13 +283,13 @@ public class BIConnectionManager extends XMLFileManager implements BIConnectionP
 
     @Override
     public boolean isMicrosoftAccessDatabase(String driver, String url) {
-        return "sun.jdbc.odbc.JdbcOdbcDriver".equals(driver) && url.indexOf("Microsoft Access Driver") > 0;
+        return ComparatorUtils.equals("sun.jdbc.odbc.JdbcOdbcDriver", driver) && url.indexOf("Microsoft Access Driver") > 0;
     }
 
     @Override
-    public boolean needSchema(Connection c) {
+    public boolean isNeedSchema(Connection c) {
         java.sql.Connection conn = null;
-        if (testConnection(c)) {
+        if (isConnectionAvailable()) {
             try {
                 conn = c.createConnection();
                 Dialect dialect = DialectFactory.generateDialect(conn, c.getDriver());

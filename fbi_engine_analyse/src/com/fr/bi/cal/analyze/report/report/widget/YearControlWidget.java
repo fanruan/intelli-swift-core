@@ -43,11 +43,6 @@ public class YearControlWidget extends TableWidget {
     }
 
     @Override
-    protected TemplateBlock createBIBlock(BISession session) {
-        return new PolyECBlock();
-    }
-
-    @Override
     public void parseJSON(JSONObject jo, long userId) throws Exception {
         super.parseJSON(jo, userId);
     }

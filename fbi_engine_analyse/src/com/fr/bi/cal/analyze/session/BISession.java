@@ -275,7 +275,7 @@ public class BISession extends BIAbstractSession {
         return null;
     }
 
-    @Override
+//    @Override
     public Object initCellElementValue(HttpServletRequest httpServletRequest, String s) {
         return null;
     }

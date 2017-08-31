@@ -32,7 +32,7 @@ public abstract class TableAbstractDataBuilder implements ITableSCDataBuilder {
     protected List<ITableItem> items;
     protected List<ITableHeader> headers;
     protected JSONObject data;
-    Map<Integer, List<BIDimensionConf>> dimAndTar;
+    Map<Integer, BIDimensionConf[]> dimAndTar;
     protected BIWidgetStyle styleSetting;
     protected List<String> dimIds;
     protected List<String> targetIds;
@@ -41,7 +41,7 @@ public abstract class TableAbstractDataBuilder implements ITableSCDataBuilder {
     protected static final String EMPTY_VALUE = StringUtils.EMPTY;
     protected static final String SUMMARY = Inter.getLocText("BI-Summary_Values");
 
-    public TableAbstractDataBuilder(Map<Integer, List<BIDimensionConf>> dimAndTar, JSONObject dataJSON, BIWidgetStyle styleSettings) throws Exception {
+    public TableAbstractDataBuilder(Map<Integer, BIDimensionConf[]> dimAndTar, JSONObject dataJSON, BIWidgetStyle styleSettings) throws Exception {
         this.data = dataJSON;
         this.dimAndTar = dimAndTar;
         this.styleSetting = styleSettings;

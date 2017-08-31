@@ -31,7 +31,7 @@ import com.fr.bi.conf.fs.tablechartstyle.BIWidgetBackgroundAttr;
 import com.fr.bi.conf.report.SclCalculator;
 import com.fr.bi.conf.report.WidgetType;
 import com.fr.bi.conf.report.conf.BIWidgetConf;
-import com.fr.bi.conf.report.conf.BIWidgetSettings;
+import com.fr.bi.conf.report.conf.settings.BIWidgetSettings;
 import com.fr.bi.conf.report.conf.dimension.BIDimensionConf;
 import com.fr.bi.conf.report.widget.BIWidgetStyle;
 import com.fr.bi.conf.report.widget.field.target.detailtarget.BIDetailTarget;
@@ -351,7 +351,7 @@ public class DetailWidget extends AbstractBIWidget implements SclCalculator {
 
     @Override
     public JSONObject calculateSCData(BIWidgetConf widgetConf, JSONObject data) throws Exception {
-        Map<Integer, List<BIDimensionConf>> viewMap = widgetConf.getDetailViewMap();
+        Map<Integer, BIDimensionConf[]> viewMap = widgetConf.getViewMap().getDetailViewMap();
         ITableSCDataBuilder builder = new DetailTableBuilder(viewMap, data, getWidgetSettings(widgetConf));
         DataConstructor tableData = BITableConstructHelper.buildTableData(builder);
         BITableConstructHelper.formatCells(tableData, createOperationMap(widgetConf), getWidgetSettings(widgetConf), getBackgroundColor(widgetConf));
@@ -392,9 +392,9 @@ public class DetailWidget extends AbstractBIWidget implements SclCalculator {
 
     private Map<String, ITableCellFormatOperation> createOperationMap(BIWidgetConf config) throws Exception {
         Map<String, ITableCellFormatOperation> formOperationsMap = new HashMap<String, ITableCellFormatOperation>();
-        Map<Integer, List<BIDimensionConf>> viewMap = config.getDetailViewMap();
+        Map<Integer, BIDimensionConf[]> viewMap = config.getViewMap().getDetailViewMap();
         for (Integer integer : viewMap.keySet()) {
-            List<BIDimensionConf> dimJo = viewMap.get(integer);
+            BIDimensionConf[] dimJo = viewMap.get(integer);
             for (BIDimensionConf dimConf : dimJo) {
                 if (dimConf.isDimensionUsed()) {
                     String dId = dimConf.getDimensionID();

@@ -27,7 +27,7 @@ import java.util.Map;
 public class SummaryComplexTableBuilder extends TableAbstractDataBuilder {
     private String data;
 
-    public SummaryComplexTableBuilder(Map<Integer, List<BIDimensionConf>> dimAndTar, JSONObject dataJSON, BIWidgetStyle styleSettings) throws Exception {
+    public SummaryComplexTableBuilder(Map<Integer, BIDimensionConf[]> dimAndTar, JSONObject dataJSON, BIWidgetStyle styleSettings) throws Exception {
         super(dimAndTar, dataJSON, styleSettings);
         this.data = dataJSON.toString();
     }
@@ -141,8 +141,8 @@ public class SummaryComplexTableBuilder extends TableAbstractDataBuilder {
         List<ITableItem> tempItems = new ArrayList<ITableItem>();
         for (int i = 0; i < dataJson.length(); i++) {
             JSONObject rowTable = dataJson.getJSONObject(String.valueOf(i));
-            Map<Integer, List<BIDimensionConf>> dimOb = getDimsByDataPos(i, 0);
-            List<BIDimensionConf> list = dimOb.get(Integer.valueOf(BIReportConstant.REGION.DIMENSION1));
+            Map<Integer, BIDimensionConf[]> dimOb = getDimsByDataPos(i, 0);
+            BIDimensionConf[] list = dimOb.get(Integer.valueOf(BIReportConstant.REGION.DIMENSION1));
             List<String> dimIds = new ArrayList<String>();
             for (BIDimensionConf conf : list) {
                 dimIds.add(conf.getDimensionID());
@@ -243,7 +243,7 @@ public class SummaryComplexTableBuilder extends TableAbstractDataBuilder {
             JSONArray tableData = dataArray.getJSONArray(i);
             for (int j = 0; j < tableData.length(); j++) {
                 //parse一个表结构
-                Map<Integer, List<BIDimensionConf>> dimAndTar = getDimsByDataPos(i, j);
+                Map<Integer, BIDimensionConf[]> dimAndTar = getDimsByDataPos(i, j);
                 DataConstructor singleTable = createSingleCrossTableItems(tableData.getJSONObject(j), dimAndTar);
                 if (i == 0) {
                     tempCrossItems.addAll(singleTable.getCrossItems());
@@ -309,7 +309,7 @@ public class SummaryComplexTableBuilder extends TableAbstractDataBuilder {
         this.items.add(childItem);
     }
 
-    private Map<Integer, List<BIDimensionConf>> getDimsByDataPos(int row, int col) throws JSONException {
+    private Map<Integer, BIDimensionConf[]> getDimsByDataPos(int row, int col) throws JSONException {
         Map<String, BIDimensionConf> allDims = new HashMap<String, BIDimensionConf>();
         for (Integer integer : this.dimAndTar.keySet()) {
             for (BIDimensionConf conf : this.dimAndTar.get(integer)) {
@@ -334,14 +334,14 @@ public class SummaryComplexTableBuilder extends TableAbstractDataBuilder {
         for (String targetId : targetIds) {
             targetIdObj.add(allDims.get(targetId));
         }
-        Map<Integer, List<BIDimensionConf>> dimAndTars = new HashMap<Integer, List<BIDimensionConf>>();
-        dimAndTars.put(Integer.valueOf(BIReportConstant.REGION.DIMENSION1), dimIdObj);
-        dimAndTars.put(Integer.valueOf(BIReportConstant.REGION.DIMENSION2), crossDimIdObj);
-        dimAndTars.put(Integer.valueOf(BIReportConstant.REGION.TARGET1), targetIdObj);
+        Map<Integer, BIDimensionConf[]> dimAndTars = new HashMap<Integer, BIDimensionConf[]>();
+        dimAndTars.put(Integer.valueOf(BIReportConstant.REGION.DIMENSION1), dimIdObj.toArray(new BIDimensionConf[dimIdObj.size()]));
+        dimAndTars.put(Integer.valueOf(BIReportConstant.REGION.DIMENSION2), crossDimIdObj.toArray(new BIDimensionConf[crossDimIdObj.size()]));
+        dimAndTars.put(Integer.valueOf(BIReportConstant.REGION.TARGET1), targetIdObj.toArray(new BIDimensionConf[targetIdObj.size()]));
         return dimAndTars;
     }
 
-    private DataConstructor createSingleCrossTableItems(JSONObject tableData, Map<Integer, List<BIDimensionConf>> dimsByDataPos) throws Exception {
+    private DataConstructor createSingleCrossTableItems(JSONObject tableData, Map<Integer, BIDimensionConf[]> dimsByDataPos) throws Exception {
         SummaryCrossTableDataBuilder builder = new SummaryCrossTableDataBuilder(dimsByDataPos, tableData, this.styleSetting);
         builder.initAttrs();
         builder.createHeaders();
@@ -388,7 +388,7 @@ public class SummaryComplexTableBuilder extends TableAbstractDataBuilder {
         for (Integer regionId : dimAndTar.keySet()) {
             JSONArray temp = new JSONArray();
             if (BITableDimensionHelper.isDimensionRegion1ByRegionType(regionId)) {
-                List<BIDimensionConf> list = dimAndTar.get(regionId);
+                BIDimensionConf[] list = dimAndTar.get(regionId);
                 for (BIDimensionConf conf : list) {
                     if (conf.isDimensionUsed()) {
                         temp.put(conf.getDimensionID());

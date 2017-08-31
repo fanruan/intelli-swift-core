@@ -32,8 +32,9 @@ public class XLeftNode extends Node implements BIXLeftNode {
     }
 
     public void setXValue(XTargetGettingKey key, Number sumValue) {
-
-        xValue[key.getTargetIndex()][key.getSubIndex()] = sumValue;
+        if (key.getTargetIndex() < xValue.length){
+            xValue[key.getTargetIndex()][key.getSubIndex()] = sumValue;
+        }
     }
 
     public void setXValue(Number[][] xValue) {
@@ -71,7 +72,9 @@ public class XLeftNode extends Node implements BIXLeftNode {
     }
 
     public Number getXValue(XTargetGettingKey key) {
-
+        if (xValue == null || xValue.length - 1 < key.getTargetIndex()){
+            return null;
+        }
         return xValue[key.getTargetIndex()][key.getSubIndex()];
     }
 

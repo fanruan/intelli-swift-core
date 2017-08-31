@@ -589,7 +589,6 @@ public class ConstructedRootDimensionGroup extends RootDimensionGroup {
 
     @Override
     public void checkMetricGroupInfo(NodeCreator creator, List<MetricGroupInfo> metricGroupInfoList) {
-        this.nodeCreator = creator;
         if (!ComparatorUtils.equals(this.metricGroupInfoList, metricGroupInfoList)){
             super.checkMetricGroupInfo(creator, metricGroupInfoList);
             construct();

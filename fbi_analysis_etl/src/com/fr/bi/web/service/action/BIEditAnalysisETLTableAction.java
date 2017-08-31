@@ -1,5 +1,7 @@
 package com.fr.bi.web.service.action;
 
+import com.finebi.cube.common.log.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.conf.table.BIBusinessTable;
 import com.finebi.cube.conf.table.BusinessTable;
 import com.fr.bi.cluster.utils.BIUserAuthUtils;
@@ -26,6 +28,8 @@ import java.util.Set;
  * 当前螺旋分析表是否被其他螺旋分析表使用或者被其它分析使用
  */
 public class BIEditAnalysisETLTableAction extends AbstractAnalysisETLAction {
+    private static BILogger LOGGER = BILoggerFactory.getLogger(BIEditAnalysisETLTableAction.class);
+
     @Override
     public void actionCMD(HttpServletRequest req, HttpServletResponse res, String sessionID) throws Exception {
         long userId = BIUserAuthUtils.getCurrentUserID(req);
@@ -67,33 +71,39 @@ public class BIEditAnalysisETLTableAction extends AbstractAnalysisETLAction {
         WebUtils.printAsJSON(res, jo);
     }
 
-    private JSONObject getUsedTempLateList(String tableId, long userId) throws Exception{
+    private JSONObject getUsedTempLateList(String tableId, long userId) throws Exception {
         JSONObject detailUsedList = new JSONObject();
 
         //暂时先检查管理员的模板了
         List<BIReportNode> nodeList = BIDAOUtils.getBIDAOManager().findByUserID(userId);
         boolean isInUse = false;
         for (BIReportNode reportNode : nodeList) {
-            JSONObject reportSetting = BIReadReportUtils.getBIReadReportManager().getBIReportNodeJSON(reportNode);
-            if (reportSetting.has("widgets")) {
-                JSONObject widgets = reportSetting.getJSONObject("widgets");
-                Iterator<String> widgetIds = widgets.keys();
-                while (widgetIds.hasNext()) {
-                    JSONObject widget = widgets.getJSONObject(widgetIds.next());
-                    if(isWidgetUseTable(tableId, widget)){
-                        String templateName = reportNode.getDisplayName();
-                        JSONArray arr = detailUsedList.optJSONArray(templateName);
-                        if(arr == null){
-                            arr = new JSONArray();
-                            detailUsedList.put(templateName, arr);
+            try {
+                JSONObject reportSetting = BIReadReportUtils.getBIReadReportManager().getBIReportNodeJSON(reportNode);
+                if (reportSetting.has("widgets")) {
+                    JSONObject widgets = reportSetting.getJSONObject("widgets");
+                    Iterator<String> widgetIds = widgets.keys();
+                    while (widgetIds.hasNext()) {
+                        JSONObject widget = widgets.getJSONObject(widgetIds.next());
+                        if (isWidgetUseTable(tableId, widget)) {
+                            String templateName = reportNode.getDisplayName();
+                            JSONArray arr = detailUsedList.optJSONArray(templateName);
+                            if (arr == null) {
+                                arr = new JSONArray();
+                                detailUsedList.put(templateName, arr);
+                            }
+                            arr.put(widget.optString("name"));
                         }
-                        arr.put(widget.optString("name"));
                     }
                 }
+            } catch (Exception e) {
+                LOGGER.warn("The report file was not found when check table used in all reports, skip it");
+                LOGGER.warn(e.getMessage(), e);
             }
+
         }
 
-        return  detailUsedList;
+        return detailUsedList;
     }
 
     private boolean isWidgetUseTable(String tableId, JSONObject widget) throws Exception {

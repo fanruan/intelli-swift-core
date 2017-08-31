@@ -10,14 +10,13 @@ import com.fr.bi.base.BICoreGenerator;
 import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.cal.analyze.report.report.widget.util.BIWidgetFactory;
 import com.fr.bi.cal.analyze.session.BISession;
-import com.fr.bi.cal.report.main.impl.BIWorkBook;
 import com.fr.bi.cal.report.report.poly.BIPolyWorkSheet;
 import com.fr.bi.common.persistent.xml.BIIgnoreField;
 import com.fr.bi.conf.base.auth.data.BIPackageAuthority;
 import com.fr.bi.conf.provider.BIConfigureManagerCenter;
 import com.fr.bi.conf.report.BIWidget;
 import com.fr.bi.conf.report.conf.BIWidgetConf;
-import com.fr.bi.conf.report.conf.BIWidgetSettings;
+import com.fr.bi.conf.report.conf.settings.BIWidgetSettings;
 import com.fr.bi.conf.report.widget.BIWidgetStyle;
 import com.fr.bi.conf.report.widget.field.BITargetAndDimension;
 import com.fr.bi.conf.report.widget.field.target.filter.TargetFilter;
@@ -32,7 +31,6 @@ import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.fs.control.UserControl;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;
-import com.fr.main.impl.WorkBook;
 import com.fr.report.poly.TemplateBlock;
 import com.fr.stable.CodeUtils;
 import com.fr.stable.Constants;
@@ -151,24 +149,13 @@ public abstract class AbstractBIWidget implements BIWidget {
         this.filter = filter;
     }
 
-    /**
-     * 创建workbook
-     *
-     * @return 工作簿
-     */
-    @Override
-    public WorkBook createWorkBook(BISessionProvider session) {
-
-        BIWorkBook wb = new BIWorkBook();
-        wb.addReport(createWorkSheet(session));
-        return wb;
-    }
-
     @Override
     public BIPolyWorkSheet createWorkSheet(BISessionProvider session) {
 
         BIPolyWorkSheet ws = new BIPolyWorkSheet();
-        TemplateBlock block = createBIBlock((BISession) session);
+        BIResult result = getExportData(session);
+
+        TemplateBlock block = new BIPolyECBlock(result, widgetConf);
         block.setBlockName(CodeUtils.passwordEncode(blockName));
         block.getBlockAttr().setFreezeHeight(true);
         block.getBlockAttr().setFreezeWidth(true);
@@ -199,19 +186,6 @@ public abstract class AbstractBIWidget implements BIWidget {
             td.refreshColumn();
         }
     }
-
-    /**
-     * 根据计算好的属性创建block
-     *
-     * @return
-     */
-    protected TemplateBlock createBIBlock(BISession session) {
-
-        BIResult result = getExportData(session);
-        return new BIPolyECBlock(result, widgetConf);
-
-    }
-
 
     /**
      * 将传过来的JSONObject 对象转换成java对象
