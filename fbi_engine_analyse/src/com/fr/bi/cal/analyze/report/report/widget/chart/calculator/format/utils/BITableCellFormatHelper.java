@@ -40,7 +40,8 @@ public class BITableCellFormatHelper {
             value = parseNumByLevel(settings, value);
             text = parseNumByFormat(decimalFormat(settings), value);
             String unit = scaleUnit(settings.optInt("numLevel"));
-            return text + unit;
+//            return text + unit;
+            return text;
         } catch (NumberFormatException e) {
             return text;
         }
