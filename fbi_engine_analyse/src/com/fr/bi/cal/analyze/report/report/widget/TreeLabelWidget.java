@@ -100,12 +100,6 @@ public class TreeLabelWidget extends AbstractBIWidget {
         return getInitDataJSON((BISession) session);
     }
 
-
-    @Override
-    protected TemplateBlock createBIBlock(BISession session) {
-        return new PolyECBlock();
-    }
-
     @Override
     public void parseJSON(JSONObject jo, long userId) throws Exception {
         super.parseJSON(jo, userId);
