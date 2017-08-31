@@ -1,6 +1,7 @@
 package com.fr.bi.etl.analysis.data;
 
 import com.finebi.cube.api.ICubeDataLoader;
+import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.common.inter.Traversal;
 import com.fr.bi.conf.report.BIWidget;
 import com.fr.bi.etl.analysis.Constants;
@@ -28,7 +29,7 @@ public class AnalysisTempTableSource extends AbstractCubeTableSource implements 
 
     private static final String UNSUPPORT = "Temp Source do not support";
     private static final long serialVersionUID = -1685272601094693644L;
-
+    @BICoreField
     private List<AnalysisCubeTableSource> sourceList;
 
     public AnalysisTempTableSource(List<AnalysisCubeTableSource> sourceList) {
