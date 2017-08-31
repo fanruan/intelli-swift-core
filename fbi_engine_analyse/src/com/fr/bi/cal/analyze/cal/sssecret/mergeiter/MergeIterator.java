@@ -47,7 +47,7 @@ public class MergeIterator implements Iterator<MetricMergeResult> {
 
     @Override
     public void remove() {
-
+        //do nothing
     }
 
     protected void reSetGroupValueIndex(MetricMergeResult result) {
@@ -121,11 +121,7 @@ public class MergeIterator implements Iterator<MetricMergeResult> {
                         }
                     } else {
                         if (!iterators[i].isReturnFinalGroupValueIndex()) {
-                            if (iterators[i].canReGainGroupValueIndex()) {
-                                gvis[i] = gvis[i].and(this.gvis[i]);
-                            } else {
-                                gvis[i] = gvis[i].AND(this.gvis[i]);
-                            }
+                            andGVI(gvis, i);
                         }
                         if (returnResultWithGroupIndex) {
                             groupIndex[i] = iterators[i].getCurrentGroup();
@@ -137,6 +133,14 @@ public class MergeIterator implements Iterator<MetricMergeResult> {
             moveEntries(array);
         }
         while (isAllEmpty(gvis) && next != null);
+    }
+
+    private void andGVI(GroupValueIndex[] gvis, int i) {
+        if (iterators[i].canReGainGroupValueIndex()) {
+            gvis[i] = gvis[i].and(this.gvis[i]);
+        } else {
+            gvis[i] = gvis[i].AND(this.gvis[i]);
+        }
     }
 
     private boolean isAllEmpty(GroupValueIndex[] para) throws TerminateExecutorException {
@@ -205,7 +209,7 @@ public class MergeIterator implements Iterator<MetricMergeResult> {
 
         @Override
         public void remove() {
-
+            //do nothing
         }
 
         @Override

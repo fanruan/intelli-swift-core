@@ -503,7 +503,7 @@ public class GroupExecutor extends AbstractTableWidgetExecutor<Node> {
         private Number getMax(List<Number> numberList) {
 
             double max = NIOConstant.DOUBLE.NULL_VALUE;
-            if (numberList.size() == 0) {
+            if (numberList.isEmpty()) {
                 return max;
             }
             for (Number n : numberList) {
@@ -518,7 +518,7 @@ public class GroupExecutor extends AbstractTableWidgetExecutor<Node> {
         private Number getMin(List<Number> numberList) {
 
             double min = NIOConstant.DOUBLE.NULL_VALUE;
-            if (numberList.size() == 0) {
+            if (numberList.isEmpty()) {
                 return min;
             }
             for (Number n : numberList) {
