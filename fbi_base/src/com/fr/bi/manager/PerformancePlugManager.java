@@ -538,6 +538,8 @@ public class PerformancePlugManager implements PerformancePlugManagerInterface {
                 newMap.put("maxSPADetailSize",getString(PERFORMANCE + ".maxSPADetailSize", defaultMap.get("maxSPADetailSize")));
                 newMap.put("backupWhenStart",getString(PERFORMANCE + ".backupWhenStart", defaultMap.get("backupWhenStart")));
                 newMap.put("useFineIO",getString(PERFORMANCE + ".useFineIO", defaultMap.get("useFineIO")));
+                newMap.put("minCubeFreeHDSpaceRate",getString(PERFORMANCE + ".minCubeFreeHDSpaceRate", defaultMap.get("minCubeFreeHDSpaceRate")));
+                newMap.put("biTransportThreadPoolSize",getString(PERFORMANCE + ".biTransportThreadPoolSize", defaultMap.get("biTransportThreadPoolSize")));
             }
         } catch (Exception e) {
             BILoggerFactory.getLogger().error(e.getMessage(), e);
