@@ -62,7 +62,7 @@ public class BITableCellFormatHelper {
 
     private static String parseNumByFormat(String format, double value) {
         // 和web端处理一致，整数情况下不显示小数点位数
-        if (Double.valueOf(value).intValue() == value) {
+        if (value % 1 == 0) {
             if (format.indexOf(".") > 0) {
                 format = format.split("\\.")[0];
             }
