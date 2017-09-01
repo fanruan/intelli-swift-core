@@ -31,7 +31,6 @@ public class RetryLoop {
                 result = proc.call();
                 retryLoop.markComplete();
             } catch (Exception ex) {
-                 BILoggerFactory.getLogger().error(ex.getMessage(), ex);
                 retryLoop.takeException(ex);
             }
         }
@@ -47,7 +46,6 @@ public class RetryLoop {
                 result = proc.call();
                 retryLoop.markComplete();
             } catch (Exception ex) {
-                BILoggerFactory.getLogger(RetryLoop.class).error(ex.getMessage(), ex);
                 retryLoop.takeException(ex);
             }
         }
@@ -106,6 +104,8 @@ public class RetryLoop {
         }
         if (throwException) {
             throw exception;
+        }else {
+            BILoggerFactory.getLogger(RetryLoop.class).errorCache(exception.getMessage(), exception);
         }
     }
 }

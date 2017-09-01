@@ -1,5 +1,6 @@
 package com.finebi.cube.structure.group;
 
+import com.finebi.cube.common.log.BILogger;
 import com.finebi.cube.data.ICubeResourceDiscovery;
 import com.finebi.cube.data.input.ICubeIntegerReaderWrapper;
 import com.finebi.cube.data.input.ICubeReader;
@@ -30,6 +31,7 @@ public abstract class BICubeGroupData<T> implements ICubeGroupDataService<T> {
     protected ICubeResourceLocation superLocation;
     protected ICubeResourceLocation currentLocation;
     private ICubeResourceDiscovery resourceDiscovery;
+    private static BILogger LOGGER = BILoggerFactory.getLogger(BICubeGroupData.class);
 
     public BICubeGroupData(ICubeResourceDiscovery resourceDiscovery, ICubeResourceLocation superLocation) {
         try {
@@ -185,7 +187,7 @@ public abstract class BICubeGroupData<T> implements ICubeGroupDataService<T> {
         try {
             return getGroupLengthReader().getSpecificValue(0);
         } catch (BIResourceInvalidException e) {
-            BILoggerFactory.getLogger().error(e.getMessage(), e);
+            LOGGER.errorCache("sizeOfGroup BIResourceInvalidException", e);
         }
         return -1;
     }

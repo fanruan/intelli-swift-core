@@ -170,6 +170,18 @@ public class BILogger implements Logger {
         poolLogger.info(s, o);
     }
 
+    public void infoCache(String s, Object o) {
+        if (!BILogCache.getInstance().containsKey(s)) {
+            logger.info(s, o);
+        }
+    }
+
+    public void infoCache(String s) {
+        if (!BILogCache.getInstance().containsKey(s)) {
+            logger.info(s);
+        }
+    }
+
     @Override
     public void info(String s, Object o, Object o1) {
         logger.info(s, o, o1);
@@ -239,7 +251,18 @@ public class BILogger implements Logger {
     public void warnSticky(String s, Object o) {
         logger.warn(s, o);
         poolLogger.info(s, o);
+    }
 
+    public void warnCache(String s, Object o) {
+        if (!BILogCache.getInstance().containsKey(s)) {
+            logger.warn(s, o);
+        }
+    }
+
+    public void warnCache(String s) {
+        if (!BILogCache.getInstance().containsKey(s)) {
+            logger.warn(s);
+        }
     }
 
     @Override
@@ -311,6 +334,18 @@ public class BILogger implements Logger {
         logger.error(s, o);
         poolLogger.info(s, o);
 
+    }
+
+    public void errorCache(String s, Object o) {
+        if (!BILogCache.getInstance().containsKey(s)) {
+            logger.error(s, o);
+        }
+    }
+
+    public void errorCache(String s) {
+        if (!BILogCache.getInstance().containsKey(s)) {
+            logger.error(s);
+        }
     }
 
     @Override

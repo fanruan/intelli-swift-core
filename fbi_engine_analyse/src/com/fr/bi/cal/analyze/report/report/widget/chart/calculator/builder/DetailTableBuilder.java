@@ -22,7 +22,7 @@ import java.util.Map;
  */
 public class DetailTableBuilder extends TableAbstractDataBuilder {
 
-    public DetailTableBuilder(Map<Integer, List<BIDimensionConf>> viewMap , JSONObject dataJSON, BIWidgetStyle styleSettings) throws Exception {
+    public DetailTableBuilder(Map<Integer, BIDimensionConf[]> viewMap , JSONObject dataJSON, BIWidgetStyle styleSettings) throws Exception {
         super(viewMap, dataJSON, styleSettings);
     }
 

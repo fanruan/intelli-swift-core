@@ -57,61 +57,37 @@ public abstract class AbstractTableWidgetExecutor<T> extends BIAbstractExecutor<
         //        this.expander = CrossExpander.ALL_EXPANDER;
     }
 
-    static boolean checkIfGenerateSumCell(Node temp) {
-        //到根节点停止
-        boolean isNotRoot = temp.getParent() != null;
-        //isLastSum 是否是最后一行汇总行
-        boolean isLastSum = temp.getSibling() == null;
-        //判断空值 比较当前节点和下一个兄弟节点是否有同一个父亲节点
-        boolean needSumCell = isNotRoot && temp.getSibling() != null && temp.getSibling().getParent() != null && (temp.getParent() != temp.getSibling().getParent());
-        return isNotRoot && (isLastSum || needSumCell);
-    }
-
-    protected static CBCell formatTargetCell(Object data, BIWidgetConf setting, TargetGettingKey key, int rowIdx, int columnIdx, Style style) {
-
-        int numLevel = setting.getNumberLevelByTargetID(key.getTargetName());
-        int formatDecimal = setting.getFormatDecimalByTargetID(key.getTargetName());
-        boolean separator = setting.getSeparatorByTargetID(key.getTargetName());
-        data = GeneratorUtils.formatExtremeSumValue(data, numLevel);
-        style = style.deriveFormat(GeneratorUtils.formatDecimalAndSeparator(data, numLevel, formatDecimal, separator));
-        return GeneratorUtils.createCBCell(data, rowIdx, 1, columnIdx, 1, style);
-    }
-
     public BISummaryTarget[] createTarget4Calculate() {
 
         ArrayList<BITarget> list = new ArrayList<BITarget>();
-        for (int i = 0; i < usedSumTarget.length; i++) {
-            list.add(usedSumTarget[i]);
-        }
+        Collections.addAll(list, usedSumTarget);
         if (widget.getTargetSort() != null) {
             String name = widget.getTargetSort().getName();
             boolean inUsedSumTarget = false;
-            for (int i = 0; i < usedSumTarget.length; i++) {
-                if (ComparatorUtils.equals(usedSumTarget[i].getValue(), name)) {
+            for (BISummaryTarget anUsedSumTarget : usedSumTarget) {
+                if (ComparatorUtils.equals(anUsedSumTarget.getValue(), name)) {
                     inUsedSumTarget = true;
                 }
             }
             if (!inUsedSumTarget) {
-                for (int i = 0; i < allSumTarget.length; i++) {
-                    if (ComparatorUtils.equals(allSumTarget[i].getValue(), name)) {
-                        list.add(allSumTarget[i]);
+                for (BISummaryTarget anAllSumTarget : allSumTarget) {
+                    if (ComparatorUtils.equals(anAllSumTarget.getValue(), name)) {
+                        list.add(anAllSumTarget);
                     }
                 }
             }
         }
-        Iterator<String> it1 = widget.getTargetFilterMap().keySet().iterator();
-        while (it1.hasNext()) {
-            String key = it1.next();
+        for (String key : widget.getTargetFilterMap().keySet()) {
             boolean inUsedSumTarget = false;
-            for (int i = 0; i < usedSumTarget.length; i++) {
-                if (ComparatorUtils.equals(usedSumTarget[i].getValue(), key)) {
+            for (BISummaryTarget anUsedSumTarget : usedSumTarget) {
+                if (ComparatorUtils.equals(anUsedSumTarget.getValue(), key)) {
                     inUsedSumTarget = true;
                 }
             }
             if (!inUsedSumTarget) {
-                for (int i = 0; i < allSumTarget.length; i++) {
-                    if (ComparatorUtils.equals(allSumTarget[i].getValue(), key)) {
-                        list.add(allSumTarget[i]);
+                for (BISummaryTarget anAllSumTarget : allSumTarget) {
+                    if (ComparatorUtils.equals(anAllSumTarget.getValue(), key)) {
+                        list.add(anAllSumTarget);
                     }
                 }
             }
@@ -145,7 +121,7 @@ public abstract class AbstractTableWidgetExecutor<T> extends BIAbstractExecutor<
                 widget.getBITargetByID(target);
                 return target;
             } catch (Exception e) {
-
+                BILoggerFactory.getLogger().error(e.getMessage(), e);
             }
         }
         return null;
@@ -186,8 +162,7 @@ public abstract class AbstractTableWidgetExecutor<T> extends BIAbstractExecutor<
 
         if (n != null) {
             Node parent = n;
-            for (int i = 0; i < data.size(); i++) {
-                Object cv = data.get(i);
+            for (Object cv : data) {
                 Node child = null;
                 for (Node pn : parent.getChilds()) {
                     if (pn.getShowValue().equals(cv)) {

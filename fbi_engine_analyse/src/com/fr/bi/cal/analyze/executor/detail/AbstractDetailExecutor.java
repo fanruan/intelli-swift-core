@@ -9,9 +9,9 @@ import com.finebi.cube.relation.BITableRelation;
 import com.finebi.cube.relation.BITableSourceRelation;
 import com.fr.base.Style;
 import com.fr.bi.cal.analyze.executor.BIAbstractExecutor;
-import com.fr.bi.export.iterator.StreamPagedIterator;
 import com.fr.bi.cal.analyze.executor.paging.Paging;
-import com.fr.bi.export.utils.GeneratorUtils;
+import com.fr.bi.cal.analyze.executor.utils.GlobalFilterUtils;
+import com.fr.bi.cal.analyze.report.report.widget.AbstractBIWidget;
 import com.fr.bi.cal.analyze.report.report.widget.DetailWidget;
 import com.fr.bi.cal.analyze.report.report.widget.TableWidget;
 import com.fr.bi.cal.analyze.session.BISession;
@@ -21,6 +21,8 @@ import com.fr.bi.conf.report.style.BITableStyle;
 import com.fr.bi.conf.report.style.ChartSetting;
 import com.fr.bi.conf.report.widget.field.target.detailtarget.BIDetailTarget;
 import com.fr.bi.conf.report.widget.field.target.filter.TargetFilter;
+import com.fr.bi.export.iterator.StreamPagedIterator;
+import com.fr.bi.export.utils.GeneratorUtils;
 import com.fr.bi.field.BIAbstractTargetAndDimension;
 import com.fr.bi.field.dimension.calculator.NoneDimensionCalculator;
 import com.fr.bi.field.target.detailtarget.BIAbstractDetailTarget;
@@ -112,6 +114,8 @@ public abstract class AbstractDetailExecutor extends BIAbstractExecutor<JSONObje
         }
         try {
             currentGvi = getLinkFilter(currentGvi);
+            // 跳转的
+            currentGvi = getJumpLinkFilter(currentGvi);
         } catch (Exception e) {
             BILoggerFactory.getLogger().error(e.getMessage());
         }
@@ -140,7 +144,7 @@ public abstract class AbstractDetailExecutor extends BIAbstractExecutor<JSONObje
             if (summaryTarget != null) {
                 BusinessTable linkTargetTable = summaryTarget.createTableKey();
                 // 基础表相同的时候才有联动的意义 | 是否是主表联动到子表
-                if (widgetTargetTable.equals(linkTargetTable) || ExecutorUtils.isPrimaryTable(linkTargetTable, widgetTargetTable)) {
+                if (widgetTargetTable.equals(linkTargetTable) || GlobalFilterUtils.isPrimaryTable(linkTargetTable, widgetTargetTable)) {
                     // 其联动组件的父联动gvi
                     GroupValueIndex pLinkGvi = linkWidget.createLinkedFilterGVI(widgetTargetTable, session);
                     // 其联动组件的点击过滤gvi
@@ -153,6 +157,21 @@ public abstract class AbstractDetailExecutor extends BIAbstractExecutor<JSONObje
         return gvi;
     }
 
+    protected GroupValueIndex getJumpLinkFilter(GroupValueIndex g) {
+
+        DetailWidget bw = widget;
+        // 如果是跳转打开的才需要进行设置
+        if (bw.getGlobalFilterWidget() != null) {
+            // 如果已经设置了源字段和目标字段
+            if (((AbstractBIWidget) bw.getGlobalFilterWidget()).getGlobalSourceAndTargetFieldList().size() > 0) {
+                g = GVIUtils.AND(g, GlobalFilterUtils.getSettingSourceAndTargetJumpFilter(widget, userId, session, target, ((AbstractBIWidget) bw.getGlobalFilterWidget()).getBaseTable()));
+            } else {
+                g = GVIUtils.AND(g, GlobalFilterUtils.getNotSettingSourceAndTargetJumpFilter(session, target, widget, false));
+            }
+        }
+        return g;
+    }
+
     private BIDetailTarget getTargetById(String id) {
 
         BIDetailTarget target = null;
@@ -162,102 +181,5 @@ public abstract class AbstractDetailExecutor extends BIAbstractExecutor<JSONObje
             }
         }
         return target;
-    }
-
-
-    //创建一个数字格
-    private CBCell createNumberCellElement(int rowIndex, int row) {
-
-        Style style = rowIndex % 2 == 1 ? tableStyle.getOddRowStyle(Style.getInstance()) : tableStyle.getEvenRowStyle(Style.getInstance());
-        CBCell cell = GeneratorUtils.createCBCell(rowIndex, row, 1, 0, 1, style);
-        List tcellList = new ArrayList();
-        tcellList.add(cell);
-        CBBoxElement cbox = new CBBoxElement(tcellList);
-        cell.setBoxElement(cbox);
-        return cell;
-    }
-
-    protected void fillOneLine(StreamPagedIterator iter, int row, Object[] ob, Set<Integer> usedDimensionIndexes) {
-        //        if (widget.isOrder() > 0) {
-        //            iter.addCell(createNumberCellElement(rowNumber, row));
-        //        }
-
-        //        int columnIndex = widget.isOrder();
-        int columnIndex = 0;
-        for (int i = 0; i < viewDimension.length; i++) {
-            if (usedDimensionIndexes.contains(i)) {
-                BIDetailTarget t = viewDimension[i];
-                Object v = ob[i];
-                v = viewDimension[i].createShowValue(v);
-                if ((t instanceof BIDateDetailTarget || t instanceof BIDateFormulaDetaiTarget) && BICollectionUtils.isNotCubeNullKey(v)) {
-                    v = GeneratorUtils.formatDateGroup(((BIAbstractDetailTarget) t).getGroup().getType(), v.toString());
-                }
-
-                Style cellStyle = Style.getInstance();
-                if (t instanceof BINumberDetailTarget || t instanceof BINumberFormulaDetailTarget) {
-                    ChartSetting chartSetting = viewDimension[i].getChartSetting();
-                    JSONObject settings = chartSetting.getSettings();
-                    int numLevel = settings.optInt("numLevel", BIReportConstant.TARGET_STYLE.NUM_LEVEL.NORMAL);
-                    boolean separator = settings.optBoolean("numSeparators", true);
-                    int formatDecimal = settings.optInt("formatDecimal", BIReportConstant.TARGET_STYLE.FORMAT.NORMAL);
-                    v = GeneratorUtils.formatExtremeSumValue(v, numLevel);
-                    cellStyle = cellStyle.deriveFormat(GeneratorUtils.formatDecimalAndSeparator(v, numLevel, formatDecimal, separator));
-                }
-
-                cellStyle = row % 2 == 1 ? tableStyle.getOddRowStyle(cellStyle) : tableStyle.getEvenRowStyle(cellStyle);
-                CBCell cell = GeneratorUtils.createCBCell(v == null ? StringUtils.EMPTY : v, row, 1, columnIndex++, 1, cellStyle);
-                List cellList = new ArrayList();
-                cellList.add(cell);
-                //TODO CBBoxElement需要整合减少内存
-                CBBoxElement cbox = new CBBoxElement(cellList);
-                if (t.useHyperLink()) {
-                    cell.setNameHyperlinkGroup(t.createHyperLinkNameJavaScriptGroup(v));
-                }
-                cbox.setType(CellConstant.CBCELL.ROWFIELD);
-                cell.setBoxElement(cbox);
-                iter.addCell(cell);
-            }
-        }
-    }
-
-    protected List<CBCell> createHeader(int cellType, Set<Integer> usedDimensionIndexes) {
-
-        List<CBCell> cells = new LinkedList<CBCell>();
-        BIDetailTarget[] viewDimension = widget.getViewDimensions();
-        int columnIdx = 0;
-        //        if (widget.isOrder() > 0) {
-        //            CBCell cell = ExecutorUtils.createCBCell(Inter.getLocText("BI-Number_Index"), 0, 1, columnIdx++, 1);
-        //            cells.add(cell);
-        //        }
-        for (int i = 0; i < viewDimension.length; i++) {
-            if (usedDimensionIndexes.contains(i)) {
-                BIDetailTarget dimension = viewDimension[i];
-                String dimensionName = ((BIAbstractTargetAndDimension) viewDimension[i]).getText();
-                ChartSetting chartSetting = null;
-                if (dimension instanceof BINumberDetailTarget) {
-                    chartSetting = ((BINumberDetailTarget) viewDimension[i]).getChartSetting();
-                }
-                if (dimension instanceof BINumberFormulaDetailTarget) {
-                    chartSetting = ((BINumberFormulaDetailTarget) viewDimension[i]).getChartSetting();
-                }
-                if (chartSetting != null) {
-                    JSONObject settings = chartSetting.getSettings();
-                    int numLevel = settings.optInt("numLevel", 0);
-                    String unit = settings.optString("unit", StringUtils.EMPTY);
-                    String levelAndUnit = GeneratorUtils.formatLevelAndUnit(numLevel, unit);
-                    if (!ComparatorUtils.equals(levelAndUnit, StringUtils.EMPTY)) {
-                        dimensionName = dimensionName + "(" + levelAndUnit + ")";
-                    }
-                }
-                CBCell cell = GeneratorUtils.createCBCell(dimensionName, 0, 1, columnIdx++, 1, tableStyle.getHeaderStyle(Style.getInstance()));
-                List cellList = new ArrayList();
-                cellList.add(cell);
-                CBBoxElement cbox = new CBBoxElement(cellList);
-                cbox.setType(cellType);
-                cell.setBoxElement(cbox);
-                cells.add(cell);
-            }
-        }
-        return cells;
     }
 }

@@ -40,7 +40,7 @@ import com.fr.bi.conf.fs.tablechartstyle.BIWidgetBackgroundAttr;
 import com.fr.bi.conf.report.SclCalculator;
 import com.fr.bi.conf.report.WidgetType;
 import com.fr.bi.conf.report.conf.BIWidgetConf;
-import com.fr.bi.conf.report.conf.BIWidgetSettings;
+import com.fr.bi.conf.report.conf.settings.BIWidgetSettings;
 import com.fr.bi.conf.report.conf.dimension.BIDimensionConf;
 import com.fr.bi.conf.report.style.BITableStyle;
 import com.fr.bi.conf.report.widget.BIWidgetStyle;
@@ -618,7 +618,7 @@ public class TableWidget extends SummaryWidget implements SclCalculator {
     @Override
     public JSONObject calculateSCData(BIWidgetConf widgetConf, JSONObject data) throws Exception {
 
-        Map<Integer, List<BIDimensionConf>> viewMap = this.createViewMap(widgetConf);
+        Map<Integer, BIDimensionConf[]> viewMap = this.createViewMap(widgetConf);
         BIWidgetSettings widgetSettings = getWidgetSettings(widgetConf);
         Map<String, ITableCellFormatOperation> operationMap = createOperationMap(widgetConf);
         ITableSCDataBuilder builder = null;
@@ -664,9 +664,9 @@ public class TableWidget extends SummaryWidget implements SclCalculator {
     private Map<String, ITableCellFormatOperation> createOperationMap(BIWidgetConf config) throws Exception {
 
         Map<String, ITableCellFormatOperation> formOperationsMap = new HashMap<String, ITableCellFormatOperation>();
-        Map<Integer, List<BIDimensionConf>> viewMap = config.getDetailViewMap();
+        Map<Integer, BIDimensionConf[]> viewMap = config.getViewMap().getDetailViewMap();
         for (Integer integer : viewMap.keySet()) {
-            List<BIDimensionConf> dimJo = viewMap.get(integer);
+            BIDimensionConf[] dimJo = viewMap.get(integer);
             for (BIDimensionConf dimConf : dimJo) {
                 if (dimConf.isDimensionUsed()) {
                     String dId = dimConf.getDimensionID();
@@ -750,12 +750,12 @@ public class TableWidget extends SummaryWidget implements SclCalculator {
         throw new Exception();
     }
 
-    private Map<Integer, List<BIDimensionConf>> createViewMap(BIWidgetConf widgetConf) throws Exception {
+    private Map<Integer, BIDimensionConf[]> createViewMap(BIWidgetConf widgetConf) throws Exception {
 
         if (widgetConf != null) {
-            return widgetConf.getDetailViewMap();
+            return widgetConf.getViewMap().getDetailViewMap();
         } else {
-            return this.widgetConf.getDetailViewMap();
+            return this.widgetConf.getViewMap().getDetailViewMap();
         }
     }
 
