@@ -42,6 +42,7 @@ public abstract class AbstractSession extends SessionIDInfor implements ReportSe
         this.remoteAddress = remoteAddress;
         this.parameterMap4Execute = CalculatorMap.createEmptyMap();
         try {
+            this.parameterMap4Execute.put(Constants.P.PRIVILEGE_DEPARTMETN_AND_POST, UserControl.getInstance().getUserDP(userId));
             this.parameterMap4Execute.put(Constants.P.PRIVILEGE_USERNAME, UserControl.getInstance().getUser(userId).getUsername());
         } catch (Exception e) {
             BILoggerFactory.getLogger().error(e.getMessage(),e);
