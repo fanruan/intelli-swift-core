@@ -62,10 +62,8 @@ public class BITableCellFormatHelper {
 
     private static String parseNumByFormat(String format, double value) {
         // 和web端处理一致，整数情况下不显示小数点位数
-        if (value % 1 == 0) {
-            if (format.indexOf(".") > 0) {
-                format = format.split("\\.")[0];
-            }
+        if (Math.floor(value) == value && format.indexOf(".") > 0) {
+            format = format.split("\\.")[0];
         }
         DecimalFormat decimalFormat = new DecimalFormat(format);
         return decimalFormat.format(value);
@@ -90,6 +88,7 @@ public class BITableCellFormatHelper {
                 case BIReportConstant.TARGET_STYLE.NUM_LEVEL.PERCENT:
                     value *= Math.pow(10, 2);
                     break;
+                default:
             }
         } catch (Exception e) {
             BILoggerFactory.getLogger(BITableCellFormatHelper.class).error(e.getMessage(), e);
@@ -142,6 +141,7 @@ public class BITableCellFormatHelper {
             case BIReportConstant.GROUP.YW:
                 text = formatCombineDateByDateFormat(text, dateFormatType, new String[]{getLocText("BI-Basic_Year"), getLocText("BI-Week_Simple")});
                 break;
+            default:
         }
         return text;
     }
@@ -273,25 +273,21 @@ public class BITableCellFormatHelper {
 
     private static String scaleUnit(int level) {
         String unit = StringUtils.EMPTY;
-
-        if (level == BIReportConstant.TARGET_STYLE.NUM_LEVEL.TEN_THOUSAND) {
-
-            unit = getLocText("BI-Basic_Wan");
-
-        } else if (level == BIReportConstant.TARGET_STYLE.NUM_LEVEL.MILLION) {
-
-            unit = getLocText("BI-Basic_Million");
-
-        } else if (level == BIReportConstant.TARGET_STYLE.NUM_LEVEL.YI) {
-
-            unit = getLocText("BI-Basic_Yi");
-
-        } else if (level == BIReportConstant.TARGET_STYLE.NUM_LEVEL.PERCENT) {
-
-            unit = PERCENT_SYMBOL;
-
+        switch (level) {
+            case BIReportConstant.TARGET_STYLE.NUM_LEVEL.TEN_THOUSAND:
+                unit = getLocText("BI-Basic_Wan");
+                break;
+            case BIReportConstant.TARGET_STYLE.NUM_LEVEL.MILLION:
+                unit = getLocText("BI-Basic_Million");
+                break;
+            case BIReportConstant.TARGET_STYLE.NUM_LEVEL.YI:
+                unit = getLocText("BI-Basic_Yi");
+                break;
+            case BIReportConstant.TARGET_STYLE.NUM_LEVEL.PERCENT:
+                unit = PERCENT_SYMBOL;
+                break;
+            default:
         }
-
         return unit;
     }
 
