@@ -1,6 +1,7 @@
 package com.fr.bi.cal.analyze.report.report.widget.chart.calculator.format.utils;
 
 import com.finebi.cube.common.log.BILoggerFactory;
+import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.utils.program.BIStringUtils;
 import com.fr.general.Inter;
@@ -71,22 +72,22 @@ public class BITableCellFormatHelper {
 
     private static double parseNumByLevel(JSONObject setting, double value) {
         try {
-            if (value == 0) {
+            if (value == BIBaseConstant.NUMBER_VALUE.ZONE) {
                 return value;
             }
             int numLevel = setting.optInt("numLevel", DEFAULT_SCALE);
             switch (numLevel) {
                 case BIReportConstant.TARGET_STYLE.NUM_LEVEL.TEN_THOUSAND:
-                    value /= Math.pow(10, 4);
+                    value /= BIBaseConstant.NUMBER_VALUE.TEN_THOUSAND;
                     break;
                 case BIReportConstant.TARGET_STYLE.NUM_LEVEL.MILLION:
-                    value /= Math.pow(10, 6);
+                    value /= BIBaseConstant.NUMBER_VALUE.MILLION;
                     break;
                 case BIReportConstant.TARGET_STYLE.NUM_LEVEL.YI:
-                    value /= Math.pow(10, 8);
+                    value /= BIBaseConstant.NUMBER_VALUE.BILLION;
                     break;
                 case BIReportConstant.TARGET_STYLE.NUM_LEVEL.PERCENT:
-                    value *= Math.pow(10, 2);
+                    value *= BIBaseConstant.NUMBER_VALUE.HUNDRED;
                     break;
                 default:
             }
