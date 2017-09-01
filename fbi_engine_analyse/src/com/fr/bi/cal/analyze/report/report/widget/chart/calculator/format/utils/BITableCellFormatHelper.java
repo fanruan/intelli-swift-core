@@ -36,8 +36,7 @@ public class BITableCellFormatHelper {
 //                return "-∞";
 //            }
             }
-            float value = Float.valueOf(text);
-            value = parseNumByLevel(settings, value);
+            double value = parseNumByLevel(settings, Double.valueOf(text));
             text = parseNumByFormat(decimalFormat(settings), value);
             String unit = scaleUnit(settings.optInt("numLevel"));
 //            return text + unit;
@@ -61,12 +60,18 @@ public class BITableCellFormatHelper {
         return text;
     }
 
-    private static String parseNumByFormat(String format, float value) {
+    private static String parseNumByFormat(String format, double value) {
+        // 和web端处理一致，整数情况下不显示小数点位数
+        if (Double.valueOf(value).intValue() == value) {
+            if (format.indexOf(".") > 0) {
+                format = format.split("\\.")[0];
+            }
+        }
         DecimalFormat decimalFormat = new DecimalFormat(format);
         return decimalFormat.format(value);
     }
 
-    private static float parseNumByLevel(JSONObject setting, float value) {
+    private static double parseNumByLevel(JSONObject setting, double value) {
         try {
             if (value == 0) {
                 return value;
@@ -251,10 +256,10 @@ public class BITableCellFormatHelper {
         String format;
         switch (type) {
             case BIReportConstant.TARGET_STYLE.FORMAT.NORMAL:
-                format = hasSeparator ? "#,##0.##" : "#.##";
+                format = hasSeparator ? "#,##0.00" : "0.00";
                 break;
             case BIReportConstant.TARGET_STYLE.FORMAT.ZERO2POINT:
-                format = hasSeparator ? "#,##0" : "#0";
+                format = hasSeparator ? "#,##0" : "##";
                 break;
             default:
                 format = hasSeparator ? "#,##0." : "#0.";
