@@ -32,6 +32,10 @@ import java.util.regex.Pattern;
  * 组合图重新分组
  * BI-6515 4.0->4.0.2的散点、气泡图兼容到点图样式不一致
  * 处理脏数据
+ * //4.0的图表标签默认设置，和402默认有些不一样，所以在这边写。调整标签位置，雅黑12px, 颜色自动。
+ * //gauge 402 settings.minScale ---> 4.1 settings.leftYCustomScale.minScale + settings.leftYShowCustomScale = true
+ * //gis map version402（10000：lng,lat 20000:name 30000:value) --> version41(10000:name 30000:value)
+ *
  */
 public class ProfilesUpdateOperation implements ReportUpdateOperation {
     private static final String DEFAULT_FILE_NAME = "keys.json";
@@ -91,6 +95,7 @@ public class ProfilesUpdateOperation implements ReportUpdateOperation {
                     addWId(json);
                     json = correctDataLabels(json);
                     json = correctGaugeAxisScale(json);
+                    json = correctGisDimensions(json);
                     json = correctPreviousSrcError(json);
                     json = correctScatterType(json);
                     groupTargetsByType(json);
@@ -229,7 +234,7 @@ public class ProfilesUpdateOperation implements ReportUpdateOperation {
 
     }
 
-    //settings.minScale ---> settings.leftYCustomScale.minScale + settings.leftYShowCustomScale = true
+    //gauge version402 settings.minScale ---> version41 settings.leftYCustomScale.minScale + settings.leftYShowCustomScale = true
     private JSONObject correctGaugeAxisScale(JSONObject json) throws JSONException {
             if (BIJsonUtils.isKeyValueSet(json.getString("widgets"))) {
                 Iterator keys = json.getJSONObject("widgets").keys();
@@ -254,6 +259,34 @@ public class ProfilesUpdateOperation implements ReportUpdateOperation {
                     }
                 }
             }
+        return json;
+    }
+
+    //gis map version402（10000：lng,lat 20000:name 30000:value) --> version41(10000:name 30000:value)
+    private JSONObject correctGisDimensions(JSONObject json) throws JSONException {
+        if (BIJsonUtils.isKeyValueSet(json.getString("widgets"))) {
+            Iterator keys = json.getJSONObject("widgets").keys();
+            while (keys.hasNext()) {
+                String id = keys.next().toString();
+                JSONObject widget = json.getJSONObject("widgets").getJSONObject(id);
+                if (widget.has("type") && widget.optInt("type") == BIReportConstant.WIDGET.GIS_MAP) {
+
+                    if(widget.has("view")){
+                        JSONObject view = widget.optJSONObject("view");
+
+                        JSONArray name = view.optJSONArray(BIReportConstant.REGION.DIMENSION2);
+
+                        if(name != null) {
+                            view.remove(BIReportConstant.REGION.DIMENSION2);
+                            view.remove(BIReportConstant.REGION.DIMENSION1);
+
+                            view.put(BIReportConstant.REGION.DIMENSION1, name);
+                        }
+                    }
+
+                }
+            }
+        }
         return json;
     }
 
