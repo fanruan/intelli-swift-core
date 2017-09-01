@@ -537,11 +537,8 @@ public class BIBaseConstant {
 
     public static final class NUMBER_VALUE {
         public static final int ZONE = 0;
+
         public static final int ONE = 1;
         public static final int TWO = 2;
-        public static final int  HUNDRED= 10000;
-        public static final int  TEN_THOUSAND= 10000;
-        public static final int MILLION = 1000000;
-        public static final int BILLION = 100000000;
     }
 }
