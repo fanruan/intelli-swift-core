@@ -35,7 +35,7 @@ import java.util.regex.Pattern;
  * //4.0的图表标签默认设置，和402默认有些不一样，所以在这边写。调整标签位置，雅黑12px, 颜色自动。
  * //gauge 402 settings.minScale ---> 4.1 settings.leftYCustomScale.minScale + settings.leftYShowCustomScale = true
  * //gis map version402（10000：lng,lat 20000:name 30000:value) --> version41(10000:name 30000:value)
- *
+ * //map version402 subType:MAP_map/中国.json --> version41 subType:MAP_geographic/中国.json
  */
 public class ProfilesUpdateOperation implements ReportUpdateOperation {
     private static final String DEFAULT_FILE_NAME = "keys.json";
@@ -96,6 +96,7 @@ public class ProfilesUpdateOperation implements ReportUpdateOperation {
                     json = correctDataLabels(json);
                     json = correctGaugeAxisScale(json);
                     json = correctGisDimensions(json);
+                    json = correctMapJSONUrl(json);
                     json = correctPreviousSrcError(json);
                     json = correctScatterType(json);
                     groupTargetsByType(json);
@@ -282,6 +283,27 @@ public class ProfilesUpdateOperation implements ReportUpdateOperation {
 
                             view.put(BIReportConstant.REGION.DIMENSION1, name);
                         }
+                    }
+
+                }
+            }
+        }
+        return json;
+    }
+
+    //map version402 subType:MAP_map/中国.json --> version41 subType:MAP_geographic/中国.json
+    private JSONObject correctMapJSONUrl(JSONObject json) throws JSONException {
+        if (BIJsonUtils.isKeyValueSet(json.getString("widgets"))) {
+            Iterator keys = json.getJSONObject("widgets").keys();
+            while (keys.hasNext()) {
+                String id = keys.next().toString();
+                JSONObject widget = json.getJSONObject("widgets").getJSONObject(id);
+                if (widget.has("type") && widget.optInt("type") == BIReportConstant.WIDGET.MAP) {
+
+                    if(widget.has("subType")){
+                        String subType = widget.optString("subType");
+                        subType = subType.replace("MAP_map", "Map_geographic");
+                        widget.put("subType", subType);
                     }
 
                 }
