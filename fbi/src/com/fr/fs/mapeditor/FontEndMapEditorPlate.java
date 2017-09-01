@@ -7,9 +7,9 @@ import com.fr.fs.AbstractFSPlate;
 import com.fr.fs.base.entity.PlatformManageModule;
 import com.fr.fs.control.dao.tabledata.TableDataDAOControl;
 import com.fr.fs.dao.EntryDAO;
-import com.fr.plugin.bichart.map.server.service.MapEditorEntryService;
-import com.fr.plugin.bichart.map.server.service.MapEditorOpenEntryService;
-import com.fr.plugin.bichart.map.server.service.MapGetJsonService;
+import com.fr.plugin.bi.chart.map.server.service.MapEditorEntryService;
+import com.fr.plugin.bi.chart.map.server.service.MapEditorOpenEntryService;
+import com.fr.plugin.bi.chart.map.server.service.MapGetJsonService;
 import com.fr.stable.fun.Service;
 
 import java.util.List;
