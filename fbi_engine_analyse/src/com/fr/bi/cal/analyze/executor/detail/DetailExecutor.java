@@ -153,7 +153,7 @@ public class DetailExecutor extends AbstractDetailExecutor {
     private ChartSetting[] getChartSettings() {
         BIDetailTarget[] dimensions = widget.getViewDimensions();
         ChartSetting[] chartSettings = new ChartSetting[dimensions.length];
-        for(int i = 0; i< dimensions.length; i++) {
+        for (int i = 0; i < dimensions.length; i++) {
             chartSettings[i] = dimensions[i].getChartSetting();
         }
         return chartSettings;

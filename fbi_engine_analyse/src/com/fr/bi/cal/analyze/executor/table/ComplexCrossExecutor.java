@@ -178,7 +178,8 @@ public class ComplexCrossExecutor extends AbstractTableWidgetExecutor<XNode> {
                         lastNode = node;
                         node = node.getSibling();
                     }
-                    if (widget.showColumnTotal() && rowIdx != 0 && lastNode.getParent() != null && lastNode.getParent().getChildLength() != 1) {
+                    boolean isLastNodeSingle = lastNode.getParent() != null && lastNode.getParent().getChildLength() != 1;
+                    if (widget.showColumnTotal() && rowIdx != 0 && isLastNodeSingle) {
                         CBCell cell = ExecutorUtils.createCBCell(Inter.getLocText("BI-Summary_Values"), rowIdx, rowTitleSpan - rowIdx - 1, columnIdx.value, colSumSpan, widget.getTableStyle().getHeaderStyle(Style.getInstance()));
                         pagedIterator.addCell(cell);
                     }
@@ -237,10 +238,10 @@ public class ComplexCrossExecutor extends AbstractTableWidgetExecutor<XNode> {
                     colSumIdx = calculateNextColSumIdx(parent, columnIdx.value, colSumOffset);
                 }
                 adjustTargetSumOffSet(colSumOffset, columnIdx, pagedIterator, columnData.getMaxArrayLength());
-                generateColSumCell("", pagedIterator, columnIdx, columnData.getMaxArrayLength(), 1);
+                generateColSumCell(StringUtils.EMPTY, pagedIterator, columnIdx, columnData.getMaxArrayLength(), 1);
                 tops[i] = tops[i].getSibling();
             }
-            generateColSumCell("", pagedIterator, columnIdx, columnData.getMaxArrayLength(), 1);
+            generateColSumCell(StringUtils.EMPTY, pagedIterator, columnIdx, columnData.getMaxArrayLength(), 1);
             if (colSumIdx == columnIdx.value && widget.showColumnTotal()) {
                 generateColSumCell(Inter.getLocText("BI-Summary_Values" + ":"), pagedIterator, columnIdx, columnData.getMaxArrayLength(), 1);
             }
@@ -261,7 +262,7 @@ public class ComplexCrossExecutor extends AbstractTableWidgetExecutor<XNode> {
             int numLevel = setting.getNumberLevelByTargetId(anUsedSumTarget.getId());
             String unit = setting.getUnitByTargetId(anUsedSumTarget.getId());
             String levelAndUnit = ExecutorUtils.formatLevelAndUnit(numLevel, unit);
-            String dimensionUnit = StringUtils.isEmpty(levelAndUnit) ? "" : "(" + levelAndUnit + ")";
+            String dimensionUnit = StringUtils.isEmpty(levelAndUnit) ? StringUtils.EMPTY : "(" + levelAndUnit + ")";
             CBCell cell = ExecutorUtils.createCBCell(text + anUsedSumTarget.getText() + dimensionUnit, rowIdx, rowSpan, columnIdx.value++, 1, widget.getTableStyle().getHeaderStyle(Style.getInstance()));
             pagedIterator.addCell(cell);
         }
