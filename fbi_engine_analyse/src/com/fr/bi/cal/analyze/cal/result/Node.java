@@ -4,6 +4,7 @@ import com.fr.bi.cal.analyze.cal.utils.CubeReadingUtils;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.conf.report.widget.field.dimension.filter.DimensionFilter;
 import com.fr.bi.report.key.TargetGettingKey;
+import com.fr.bi.report.result.BIGroupNode;
 import com.fr.bi.report.result.BINode;
 import com.fr.bi.report.result.GviContainer;
 import com.fr.bi.report.result.TargetCalculator;
@@ -142,6 +143,13 @@ public class Node implements BINode, GviContainer {
 
         return sibling;
     }
+
+    @Override
+    public BIGroupNode getSiblingGroupNode() {
+
+        return (BIGroupNode)sibling;
+    }
+
 
     @Override
     public void setSibling(BINode sibling) {
@@ -973,5 +981,7 @@ public class Node implements BINode, GviContainer {
             result = 31 * result + (key != null ? key.hashCode() : 0);
             return result;
         }
+
     }
+
 }
