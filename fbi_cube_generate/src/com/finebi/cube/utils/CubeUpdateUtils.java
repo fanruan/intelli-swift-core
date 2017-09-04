@@ -225,7 +225,7 @@ public class CubeUpdateUtils {
 //
 //        return relationReduced || tableReduced || tableRelationReduced || isTableStructureChanged;
         /*
-        * BI-9051 业务包本身也会变化，只考虑表的变化还是不够的的
+        * BI-9051 业务包本身也会变化，只考虑表的变化还是不够的
         * */
         return BICubeConfigureCenter.getTableRelationManager().isChanged(userId) || BICubeConfigureCenter.getPackageManager().isCurrentMetaChanged(userId);
     }
