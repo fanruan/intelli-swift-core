@@ -100,7 +100,7 @@ public class ComplexCrossExecutor extends AbstractTableWidgetExecutor<XNode> {
         int[] result = new int[nodes.length];
         for (int i = 0; i < nodes.length; i++) {
             if (i > 0) {
-                int nodeLen = (widget.showColumnTotal() ? nodes[i - 1].getTop().getTotalLengthWithSummary() : nodes[i - 1].getTop().getTotalLength()) * usedSumTarget.length;
+                int nodeLen = (widget.showColumnTotal() ? nodes[i - 1].getTop().getTotalLengthWithSummary() : nodes[i - 1].getTop().getTotalLength()) * (usedSumTarget.length == 0 ? 1 : usedSumTarget.length);
                 result[i] = nodeLen + result[i - 1];
             } else {
                 result[0] = rowData.getMaxArrayLength();
@@ -122,13 +122,14 @@ public class ComplexCrossExecutor extends AbstractTableWidgetExecutor<XNode> {
         BIDimension[] firstColDims = columnData.getDimensionArray(0);
 
         int colDimIdx = 0;
+        ArrayList<Integer> columnSumOffset = new ArrayList<Integer>(); //存跨列的汇总单元格，给下一行用
         while (colDimIdx < columnData.getMaxArrayLength()) {
             if (colDimIdx < firstColDims.length) {
                 int rowSpan = colDimIdx == firstColDims.length - 1 ? columnData.getMaxArrayLength() - colDimIdx : 1;
                 CBCell cell = ExecutorUtils.createCBCell(firstColDims[colDimIdx].getText(), rowIdx.value, rowSpan, 0, rowData.getMaxArrayLength(), widget.getTableStyle().getHeaderStyle(Style.getInstance()));
                 pagedIterator.addCell(cell);
             }
-            getColDimensionsTitle(pagedIterator, tops.clone(), rowIdx.value, colTitleStartIdx);
+            getColDimensionsTitle(pagedIterator, tops.clone(), rowIdx.value, colTitleStartIdx, columnSumOffset);
             rowIdx.value++;
             colDimIdx++;
         }
@@ -138,64 +139,79 @@ public class ComplexCrossExecutor extends AbstractTableWidgetExecutor<XNode> {
             CBCell cell = ExecutorUtils.createCBCell(firstRowDims[i].getText(), rowIdx.value, 1, i, columnSpan, widget.getTableStyle().getHeaderStyle(Style.getInstance()));
             pagedIterator.addCell(cell);
         }
-        getTargetsTitle(pagedIterator, tempTops, colTitleStartIdx);
+        getTargetsTitle(pagedIterator, tempTops, colTitleStartIdx, columnSumOffset);
     }
 
-    private void getColDimensionsTitle(StreamPagedIterator pagedIterator, Node[] tops, int rowIdx, int[] colTitleStartIdx) {
-        //一行一行生成列表头
-        int rowTitleSpan = columnData.getMaxArrayLength() + 1;
-        int colSumSpan = widget.getViewTargets().length;
+    private void getColDimensionsTitle(StreamPagedIterator pagedIterator, Node[] tops, int rowIdx, int[] colTitleStartIdx, ArrayList<Integer> columnSumOffset) {
+        int rowTitleSpan = columnData.getMaxArrayLength() + 1, colSumSpan = widget.getViewTargets().length;
         FinalInt columnIdx = new FinalInt();
         for (int nodeIdx = 0; nodeIdx < tops.length; nodeIdx++) {
             columnIdx.value = colTitleStartIdx[nodeIdx];
             BIDimension[] colDimensions = columnData.getDimensionArray(nodeIdx);
             int colDimLen = colDimensions.length;
-            //当前区域的列表头 < 最大列表头个数时 画这一行 否则最后一个维度需要跨行
-            if (rowIdx < colDimLen) {
+            if (rowIdx < colDimLen) { //当前区域的列表头 < 最大列表头个数时 画这一行 否则最后一个维度需要跨行
                 tops[nodeIdx] = getFirstChildOfCurrentRow(tops[nodeIdx], rowIdx);
                 BIDimension dim = colDimensions[rowIdx];
-                Node node = tops[nodeIdx];
-                Node parent = tops[nodeIdx].getParent();
-                int colSumIdx = rowIdx == 0 ? 0 : calculateNextColSumIdx(parent, columnIdx.value);
+                Node node = tops[nodeIdx], parent = tops[nodeIdx].getParent();
+                int colSumIdx = rowIdx == 0 ? 0 : calculateNextColSumIdx(parent, columnIdx.value, columnSumOffset);
                 boolean thisNodeIsNotEnd = nodeIdx != tops.length - 1 && columnIdx.value < colTitleStartIdx[nodeIdx + 1];
                 if (nodeIdx == tops.length - 1 || thisNodeIsNotEnd) {
+                    Node lastNode = null;
                     while (node != null) {
+                        parent = node.getParent();
                         if (colSumIdx == columnIdx.value && rowIdx != 0) {
                             CBCell cell = ExecutorUtils.createCBCell(Inter.getLocText("BI-Summary_Values"), rowIdx, rowTitleSpan - rowIdx - 1, columnIdx.value, colSumSpan, widget.getTableStyle().getHeaderStyle(Style.getInstance()));
                             pagedIterator.addCell(cell);
+                            if ((colDimLen - rowIdx) > 1) {
+                                columnSumOffset.add(colSumIdx);
+                            }
                             columnIdx.value += colSumSpan;
-                            colSumIdx = calculateNextColSumIdx(parent, columnIdx.value);
+                            colSumIdx = calculateNextColSumIdx(parent, columnIdx.value, columnSumOffset);
                         }
-                        Object data = node.getData();
-                        Object v = ExecutorUtils.formatDateGroup(dim.getGroup().getType(), dim.toString(data));
+                        columnIdx.value = adjustColumnOffSet(columnSumOffset, columnIdx.value);
+                        Object v = ExecutorUtils.formatDateGroup(dim.getGroup().getType(), dim.toString(node.getData()));
                         //最后一个列表头跨行
-                        int lastRowSpan = rowTitleSpan - colDimLen + (widget.getViewTargets().length == 1 ? 1 : 0);
-                        int rowSpan = (rowIdx == colDimLen - 1) ? lastRowSpan : 1;
-                        int colSpan = (widget.showColumnTotal() ? node.getTotalLengthWithSummary() : node.getTotalLength()) * usedSumTarget.length;
+                        int lastRowSpan = rowTitleSpan - colDimLen + (widget.getViewTargets().length == 1 ? 1 : 0), rowSpan = (rowIdx == colDimLen - 1) ? lastRowSpan : 1, colSpan = (widget.showColumnTotal() ? node.getTotalLengthWithSummary() : node.getTotalLength()) * usedSumTarget.length;
                         CBCell cell = ExecutorUtils.createCBCell(v, rowIdx, rowSpan, columnIdx.value, colSpan, widget.getTableStyle().getHeaderStyle(Style.getInstance()));
                         pagedIterator.addCell(cell);
                         columnIdx.value += colSpan;
+                        lastNode = node;
                         node = node.getSibling();
                     }
-                    if (widget.showColumnTotal() && rowIdx != 0) {
+                    boolean isLastNodeSingle = lastNode.getParent() != null && lastNode.getParent().getChildLength() != 1;
+                    if (widget.showColumnTotal() && rowIdx != 0 && isLastNodeSingle) {
                         CBCell cell = ExecutorUtils.createCBCell(Inter.getLocText("BI-Summary_Values"), rowIdx, rowTitleSpan - rowIdx - 1, columnIdx.value, colSumSpan, widget.getTableStyle().getHeaderStyle(Style.getInstance()));
                         pagedIterator.addCell(cell);
                     }
                 }
-                if (widget.showColumnTotal() && rowIdx == 0) {
+                if (widget.showColumnTotal() && rowIdx == 0 && nodeIdx == tops.length - 1) {
                     generateColSumCell(Inter.getLocText("BI-Summary_Values") + ":", pagedIterator, columnIdx, 0, rowTitleSpan);
                 }
             }
         }
     }
 
-    private int calculateNextColSumIdx(Node parent, int colSumIdx) {
-        while (parent.getTotalLengthWithSummary() == parent.getTotalLength()) {
-            colSumIdx += parent.getTotalLength() * widget.getViewTargets().length;
+    private int adjustColumnOffSet(ArrayList<Integer> colSumOffset, int columnIdx) {
+        for (int parentSumIdx : colSumOffset) {
+            if (columnIdx == parentSumIdx) {
+                columnIdx += widget.getViewTargets().length;
+            }
+        }
+
+        return columnIdx;
+    }
+
+    private int calculateNextColSumIdx(Node parent, int colSumIdx, ArrayList<Integer> colSumOffset) {
+        int targetLen = widget.getViewTargets().length;
+        while (parent != null && parent.getTotalLengthWithSummary() == parent.getTotalLength()) {
+            colSumIdx = adjustColumnOffSet(colSumOffset, colSumIdx);
+            colSumIdx += parent.getTotalLength() * targetLen;
             parent = parent.getSibling();
         }
-        parent = parent.getSibling();
-        return colSumIdx + parent.getTotalLength() * widget.getViewTargets().length;
+
+        int len = parent == null ? 0 : parent.getTotalLength();
+
+        return colSumIdx + len * targetLen;
     }
 
     private Node getFirstChildOfCurrentRow(Node node, int currentRowIdx) {
@@ -205,7 +221,7 @@ public class ComplexCrossExecutor extends AbstractTableWidgetExecutor<XNode> {
         return node;
     }
 
-    private void getTargetsTitle(StreamPagedIterator pagedIterator, Node[] tops, int[] colTitleStartIdx) {
+    private void getTargetsTitle(StreamPagedIterator pagedIterator, Node[] tops, int[] colTitleStartIdx, ArrayList<Integer> colSumOffset) {
         FinalInt columnIdx = new FinalInt();
         for (int i = 0; i < tops.length; i++) {
             columnIdx.value = colTitleStartIdx[i];
@@ -213,19 +229,29 @@ public class ComplexCrossExecutor extends AbstractTableWidgetExecutor<XNode> {
                 tops[i] = tops[i].getFirstChild();
             }
             Node parent = tops[i].getParent();
-            int colSumIdx = columnData.getDimensionArray(i).length == 1 ? 0 : calculateNextColSumIdx(parent, columnIdx.value);
+            int colSumIdx = columnData.getDimensionArray(i).length == 1 ? 0 : calculateNextColSumIdx(parent, columnIdx.value, colSumOffset);
             boolean thisNodeIsNotEnd = i != tops.length - 1 && columnIdx.value < colTitleStartIdx[i + 1];
-            while (tops[i].getSibling() != null && (i == tops.length - 1 || thisNodeIsNotEnd)) {
+            while (tops[i] != null && (i == tops.length - 1 || thisNodeIsNotEnd)) {
+                parent = tops[i].getParent();
                 if (colSumIdx == columnIdx.value && widget.showColumnTotal()) {
                     generateColSumCell(Inter.getLocText("BI-Summary_Values") + ":", pagedIterator, columnIdx, columnData.getMaxArrayLength(), 1);
-                    colSumIdx = calculateNextColSumIdx(parent, columnIdx.value);
+                    colSumIdx = calculateNextColSumIdx(parent, columnIdx.value, colSumOffset);
                 }
-                generateColSumCell("", pagedIterator, columnIdx, columnData.getMaxArrayLength(), 1);
+                adjustTargetSumOffSet(colSumOffset, columnIdx, pagedIterator, columnData.getMaxArrayLength());
+                generateColSumCell(StringUtils.EMPTY, pagedIterator, columnIdx, columnData.getMaxArrayLength(), 1);
                 tops[i] = tops[i].getSibling();
             }
-            generateColSumCell("", pagedIterator, columnIdx, columnData.getMaxArrayLength(), 1);
+            generateColSumCell(StringUtils.EMPTY, pagedIterator, columnIdx, columnData.getMaxArrayLength(), 1);
             if (colSumIdx == columnIdx.value && widget.showColumnTotal()) {
                 generateColSumCell(Inter.getLocText("BI-Summary_Values" + ":"), pagedIterator, columnIdx, columnData.getMaxArrayLength(), 1);
+            }
+        }
+    }
+
+    private void adjustTargetSumOffSet(ArrayList<Integer> colSumOffset, FinalInt columnIdx, StreamPagedIterator pagedIterator, int colMaxArrayLen) {
+        for (int parentSumIdx : colSumOffset) {
+            if (columnIdx.value == parentSumIdx && widget.showColumnTotal()) {
+                generateColSumCell(Inter.getLocText("BI-Summary_Values") + ":", pagedIterator, columnIdx, colMaxArrayLen, 1);
             }
         }
     }
@@ -236,7 +262,7 @@ public class ComplexCrossExecutor extends AbstractTableWidgetExecutor<XNode> {
             int numLevel = setting.getNumberLevelByTargetId(anUsedSumTarget.getId());
             String unit = setting.getUnitByTargetId(anUsedSumTarget.getId());
             String levelAndUnit = ExecutorUtils.formatLevelAndUnit(numLevel, unit);
-            String dimensionUnit = StringUtils.isEmpty(levelAndUnit) ? "" : "(" + levelAndUnit + ")";
+            String dimensionUnit = StringUtils.isEmpty(levelAndUnit) ? StringUtils.EMPTY : "(" + levelAndUnit + ")";
             CBCell cell = ExecutorUtils.createCBCell(text + anUsedSumTarget.getText() + dimensionUnit, rowIdx, rowSpan, columnIdx.value++, 1, widget.getTableStyle().getHeaderStyle(Style.getInstance()));
             pagedIterator.addCell(cell);
         }

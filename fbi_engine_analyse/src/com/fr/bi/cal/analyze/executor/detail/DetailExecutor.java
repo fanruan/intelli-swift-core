@@ -13,6 +13,7 @@ import com.fr.bi.cal.analyze.report.report.widget.DetailWidget;
 import com.fr.bi.cal.analyze.session.BISession;
 import com.fr.bi.cal.report.engine.CBCell;
 import com.fr.bi.conf.report.style.BITableStyle;
+import com.fr.bi.conf.report.style.ChartSetting;
 import com.fr.bi.conf.report.widget.field.target.detailtarget.BIDetailTarget;
 import com.fr.bi.field.target.detailtarget.field.BIDateDetailTarget;
 import com.fr.bi.stable.constant.CellConstant;
@@ -60,6 +61,8 @@ public class DetailExecutor extends AbstractDetailExecutor {
         paging.setTotalSize(count);
         //返回前台的时候再去掉不使用的字段
         final Set<Integer> usedDimensionIndexes = getUsedDimensionIndexes();
+        //BI-9071 考虑性能按指标取样式，不要每个单元格都去取一遍样式
+        ChartSetting[] chartSettings = getChartSettings();
         final TableCellIterator iter = new TableCellIterator(usedDimensionIndexes.size(), count + 1);
         new Thread() {
             public void run() {
@@ -80,7 +83,7 @@ public class DetailExecutor extends AbstractDetailExecutor {
                                 start.value++;
                             }
                             //row + 1 ? 不然覆盖掉了列名
-                            fillOneLine(iter.getIteratorByPage(start.value), newRow, row.getValues(), usedDimensionIndexes);
+                            fillOneLine(iter.getIteratorByPage(start.value), newRow, row.getValues(), usedDimensionIndexes, chartSettings);
                             return false;
                         }
                     };
@@ -147,6 +150,15 @@ public class DetailExecutor extends AbstractDetailExecutor {
         return usedDimensionIndexes;
     }
 
+    private ChartSetting[] getChartSettings() {
+        BIDetailTarget[] dimensions = widget.getViewDimensions();
+        ChartSetting[] chartSettings = new ChartSetting[dimensions.length];
+        for (int i = 0; i < dimensions.length; i++) {
+            chartSettings[i] = dimensions[i].getChartSetting();
+        }
+        return chartSettings;
+    }
+
     public List<List> getData() {
         if (target == null) {
             return new ArrayList<List>();
@@ -208,4 +220,5 @@ public class DetailExecutor extends AbstractDetailExecutor {
 
         return getCubeNode();
     }
+
 }
