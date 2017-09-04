@@ -77,6 +77,10 @@ public class VanMapWidget extends VanChartWidget{
         return options;
     }
 
+    public JSONObject createPlotOptions(JSONObject globalStyle, JSONObject settings) throws Exception{
+        return super.createPlotOptions(globalStyle, settings).put("borderWidth", 1);
+    }
+
     protected JSONObject parseLegend(JSONObject settings) throws JSONException{
 
         JSONObject legend = super.parseLegend(settings);
