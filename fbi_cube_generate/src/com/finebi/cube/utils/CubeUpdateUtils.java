@@ -6,6 +6,7 @@ import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.conf.BICubeConfiguration;
 import com.finebi.cube.conf.BICubeConfigureCenter;
 import com.finebi.cube.conf.BISystemConfigHelper;
+import com.finebi.cube.conf.CubeGenerationManager;
 import com.finebi.cube.conf.table.BusinessTable;
 import com.finebi.cube.data.ICubeResourceDiscovery;
 import com.finebi.cube.location.BICubeResourceRetrieval;
@@ -201,32 +202,45 @@ public class CubeUpdateUtils {
      * @return
      */
     public static boolean isUpdateMeta(long userId) {
-        /**
-         * 关联减少，表没有变化
-         */
-        boolean relationReduced = BICubeConfigureCenter.getTableRelationManager().isRelationReduced(userId) &&
-                BICubeConfigureCenter.getPackageManager().isTableNoChange(userId);
-        /**
-         * 表减少，关联没有变化
-         */
-        boolean tableReduced = BICubeConfigureCenter.getPackageManager().isTableReduced(userId) &&
-                BICubeConfigureCenter.getTableRelationManager().isRelationNoChange(userId);
-        /**
-         * 关联和表都减少了
-         */
-        boolean tableRelationReduced = BICubeConfigureCenter.getPackageManager().isTableReduced(userId) &&
-                BICubeConfigureCenter.getTableRelationManager().isRelationReduced(userId);
+//        /**
+//         * 关联减少，表没有变化
+//         */
+//        boolean relationReduced = BICubeConfigureCenter.getTableRelationManager().isRelationReduced(userId) &&
+//                BICubeConfigureCenter.getPackageManager().isTableNoChange(userId);
+//        /**
+//         * 表减少，关联没有变化
+//         */
+//        boolean tableReduced = BICubeConfigureCenter.getPackageManager().isTableReduced(userId) &&
+//                BICubeConfigureCenter.getTableRelationManager().isRelationNoChange(userId);
+//        /**
+//         * 关联和表都减少了
+//         */
+//        boolean tableRelationReduced = BICubeConfigureCenter.getPackageManager().isTableReduced(userId) &&
+//                BICubeConfigureCenter.getTableRelationManager().isRelationReduced(userId);
+//        /*
+//        *  BI-6199 表数目没变，但是结构变了
+//        */
+//        boolean isTableStructureChanged = !BICubeConfigureCenter.getPackageManager().isTableNoChange(userId) &&
+//                !(BICubeConfigureCenter.getPackageManager().isTableReduced(userId) || BICubeConfigureCenter.getPackageManager().isTableIncreased(userId));
+//
+//        return relationReduced || tableReduced || tableRelationReduced || isTableStructureChanged;
         /*
-        *  BI-6199 表数目没变，但是结构变了
-        */
-        boolean isTableStructureChanged = !BICubeConfigureCenter.getPackageManager().isTableNoChange(userId) &&
-                !(BICubeConfigureCenter.getPackageManager().isTableReduced(userId) || BICubeConfigureCenter.getPackageManager().isTableIncreased(userId));
-
-        return relationReduced || tableReduced || tableRelationReduced || isTableStructureChanged;
+        * BI-9051 业务包本身也会变化，只考虑表的变化还是不够的的
+        * */
+        return BICubeConfigureCenter.getTableRelationManager().isChanged(userId) || BICubeConfigureCenter.getPackageManager().isCurrentMetaChanged(userId);
     }
 
-    public static boolean isNeed2GenerateCube(long userId) {
-        return isUpdateMeta(userId) || isPart(userId);
+    /**
+     * 在两种情况下需要展示cube更新提示:
+     * cube队列为空且需要check更新，更新任务开始后业务包又进行了修改
+     *
+     * @param userId
+     * @return
+     */
+    public static boolean isNeed2showCubeMsg(long userId) {
+        boolean isCheck = !CubeGenerationManager.getCubeManager().hasTask() && isUpdateMeta(userId);
+        boolean isChangedAfterBuilding = CubeGenerationManager.getCubeManager().hasTask() && BICubeConfigureCenter.getPackageManager().isCurrentMetaChangedAfterBuilding(userId);
+        return isCheck || isChangedAfterBuilding;
     }
 
 
