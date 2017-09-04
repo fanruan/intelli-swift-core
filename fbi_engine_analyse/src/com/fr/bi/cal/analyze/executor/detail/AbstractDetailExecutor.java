@@ -177,7 +177,7 @@ public abstract class AbstractDetailExecutor extends BIAbstractExecutor<JSONObje
         return cell;
     }
 
-    protected void fillOneLine(StreamPagedIterator iter, int row, Object[] ob, Set<Integer> usedDimensionIndexes) {
+    protected void fillOneLine(StreamPagedIterator iter, int row, Object[] ob, Set<Integer> usedDimensionIndexes, ChartSetting[] chartSettings) {
         //        if (widget.isOrder() > 0) {
         //            iter.addCell(createNumberCellElement(rowNumber, row));
         //        }
@@ -195,11 +195,10 @@ public abstract class AbstractDetailExecutor extends BIAbstractExecutor<JSONObje
 
                 Style cellStyle = Style.getInstance();
                 if (t instanceof BINumberDetailTarget || t instanceof BINumberFormulaDetailTarget) {
-                    ChartSetting chartSetting = viewDimension[i].getChartSetting();
-                    JSONObject settings = chartSetting.getSettings();
-                    int numLevel = settings.optInt("numLevel", BIReportConstant.TARGET_STYLE.NUM_LEVEL.NORMAL);
-                    boolean separator = settings.optBoolean("numSeparators", true);
-                    int formatDecimal = settings.optInt("formatDecimal", BIReportConstant.TARGET_STYLE.FORMAT.NORMAL);
+                    ChartSetting chartSetting = chartSettings[i];
+                    int numLevel = chartSetting.getNumLevel();
+                    boolean separator = chartSetting.isNumSeparators();
+                    int formatDecimal = chartSetting.getFormatDecimal();
                     v = ExecutorUtils.formatExtremeSumValue(v, numLevel);
                     cellStyle = cellStyle.deriveFormat(ExecutorUtils.formatDecimalAndSeparator(v, numLevel, formatDecimal, separator));
                 }
