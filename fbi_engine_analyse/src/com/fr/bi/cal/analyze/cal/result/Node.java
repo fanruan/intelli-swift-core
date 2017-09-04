@@ -29,7 +29,7 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * @author zhou
  */
-public class Node implements BINode ,GviContainer{
+public class Node implements BINode, GviContainer {
 
     /**
      * 小于1表示不分页
@@ -381,7 +381,7 @@ public class Node implements BINode ,GviContainer{
     public void setSummaryValue(int index, Number value) {
 
         if (value != null) {
-            if (Double.isNaN(value.doubleValue())) {
+            if (BICollectionUtils.isCubeNullKey(value)) {
                 value = null;
             }
         }

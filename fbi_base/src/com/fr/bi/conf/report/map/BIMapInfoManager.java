@@ -3,8 +3,8 @@ package com.fr.bi.conf.report.map;
 import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.base.FRContext;
 import com.fr.bi.stable.constant.BIBaseConstant;
-import com.fr.general.GeneralContext;
 import com.fr.json.JSONException;
+import com.fr.plugin.bi.chart.map.server.GEOJSONHelper;
 import com.fr.stable.CodeUtils;
 import com.fr.stable.StringUtils;
 
@@ -31,7 +31,6 @@ public class BIMapInfoManager {
     private Map<String, List<String>> customMapParentChildrenRelation;
 
     public static final String ACTION_PREFIX = "?op=fr_bi_base&cmd=get_map_json&file_path=";
-    public static final String JSON_FOLDER = "geojson";
 
     private static BIMapInfoManager manager;
 
@@ -57,9 +56,9 @@ public class BIMapInfoManager {
             customMapTypeName = new HashMap<String, String>();
             customMapLayer = new HashMap<String, Integer>();
             customMapParentChildrenRelation = new HashMap<String, List<String>>();
-            String innerMapPath = new File(FRContext.getCurrentEnv().getPath() + BIBaseConstant.MAP_JSON.MAP_PATH + File.separator + "map").getAbsolutePath();
+            String innerMapPath = new File(FRContext.getCurrentEnv().getPath() + BIBaseConstant.MAP_JSON.MAP_PATH + File.separator + "geographic").getAbsolutePath();
             String customMapPath = new File(FRContext.getCurrentEnv().getPath() + BIBaseConstant.MAP_JSON.MAP_PATH + File.separator + "image").getAbsolutePath();
-            editFileNames(innerMapPath, "map", "map", "MAP_", 0, true);
+            editFileNames(innerMapPath, "geographic", "geographic", "MAP_", 0, true);
             editFileNames(customMapPath, "image", "image", "MAP_", 0, false);
         } catch (JSONException e) {
             BILoggerFactory.getLogger().error(e.getMessage(), e);
@@ -86,8 +85,15 @@ public class BIMapInfoManager {
         List<String> children = new ArrayList<String>();
         for (File f : files) {
             String fileName = f.getName().substring(0, f.getName().lastIndexOf("."));
+            if(StringUtils.isEmpty(fileName)){
+                continue;
+            }
+            fileName = fileName.replace(GEOJSONHelper.POINT, StringUtils.EMPTY).replace(GEOJSONHelper.AREA, StringUtils.EMPTY);
             String currentName = StringUtils.isEmpty(parentName) ? fileName : parentName + "/" + fileName;
             if (isInner) {
+                if(innerMapName.containsKey(fileName)){
+                    continue;
+                }
                 innerMapName.put(fileName, prev + currentName);
                 innerMapTypeName.put(prev + currentName, fileName);
                 innerMapPath.put(prev + currentName, ACTION_PREFIX + CodeUtils.cjkEncode(currentName) + ".json");
