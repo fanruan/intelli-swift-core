@@ -1,8 +1,8 @@
 package com.fr.bi.stable.constant;
 
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.base.CoreDecimalFormat;
 import com.fr.base.FRContext;
-import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.stable.operation.sort.comp.ChinesePinyinComparator;
 import com.fr.cache.Status;
 import com.fr.general.ComparatorUtils;
@@ -176,7 +176,7 @@ public class BIBaseConstant {
     }
 
     public static final class MAP_JSON {
-        public final static String MAP_PATH = File.separator + "assets" + File.separator + "geojson";
+        public final static String MAP_PATH = File.separator + "assets" + File.separator + "map";
     }
 
     public static final class TABLETYPE {
