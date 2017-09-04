@@ -84,7 +84,7 @@ public class BITableCellFormatHelper {
                     value /= BIBaseConstant.NUMBER_VALUE.MILLION;
                     break;
                 case BIReportConstant.TARGET_STYLE.NUM_LEVEL.YI:
-                    value /= BIBaseConstant.NUMBER_VALUE.BILLION;
+                    value /= BIBaseConstant.NUMBER_VALUE.ONE_HUNDRED_MILLION;
                     break;
                 case BIReportConstant.TARGET_STYLE.NUM_LEVEL.PERCENT:
                     value *= BIBaseConstant.NUMBER_VALUE.HUNDRED;

@@ -542,6 +542,6 @@ public class BIBaseConstant {
         public static final int  HUNDRED= 10000;
         public static final int  TEN_THOUSAND= 10000;
         public static final int MILLION = 1000000;
-        public static final int BILLION = 100000000;
+        public static final int ONE_HUNDRED_MILLION = 100000000;
     }
 }
