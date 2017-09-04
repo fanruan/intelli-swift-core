@@ -502,11 +502,13 @@ public class GlobalFilterUtils {
         // 关系为空默认选第一条
         if (relations == null) {
             try {
-                Set<BITableRelationPath> set = BICubeConfigureCenter.getTableRelationManager().getAllPath(UserControl.getInstance().getSuperManagerID(), c, p);
-                if (set != null && set.size() > 0) {
-                    relations = getRelation(set);
-                }
+                // 默认拿取第一个有效的路径
+                BITableRelationPath path = BICubeConfigureCenter.getTableRelationManager().getFirstAvailablePath(UserControl.getInstance().getSuperManagerID(), c, p);
+                List<BITableRelation> r = path.getAllRelations();
+                BIConfUtils.convert2TableSourceRelation(r);
+                relations = BIConfUtils.convert2TableSourceRelation(r);
             } catch (Exception e) {
+                BILoggerFactory.getLogger().info("error in get first available path");
             }
         }
         ICubeTableService targetBaseTable = session.getLoader().getTableIndex(p.getTableSource());
