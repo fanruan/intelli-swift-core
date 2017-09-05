@@ -129,7 +129,7 @@ public class BuildCubeTask implements CubeTask {
         logTable(BIDataStructTranUtils.set2Set(cubeBuildStuff.getDependTableResource()), cubeBuildStuff.getUpdateSettingSources());
         logRelation(cubeBuildStuff.getTableSourceRelationSet());
         logPath(filterPath(cubeBuildStuff.getTableSourceRelationPathSet()));
-        copyFilesFromOldCubs();
+//        copyFilesFromOldCubs();
     }
 
     private Set<BITableSourceRelationPath> getAllPathAndRelationSet() {
