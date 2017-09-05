@@ -364,6 +364,16 @@ public class AnalysisBusiPackManager extends BISystemDataManager<SingleUserAnaly
     }
 
     @Override
+    public boolean isCurrentMetaChanged(long userId) {
+        return false;
+    }
+
+    @Override
+    public boolean isCurrentMetaChangedAfterBuilding(long userId) {
+        return false;
+    }
+
+    @Override
     public Set<BusinessTable> getAnalysisAllTables(long userId) {
         return null;
     }
