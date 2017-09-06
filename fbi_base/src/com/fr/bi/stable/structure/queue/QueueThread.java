@@ -31,7 +31,7 @@ public class QueueThread<T> implements BIQueue<T>, BIThread {
 
     private BrokenTraversal<T> check;
 
-//    private static long RETRY_TIME = 10000l;
+    private static long RETRY_TIME = 10000l;
 
     public QueueThread() {
 
