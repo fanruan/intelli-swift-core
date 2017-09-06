@@ -256,6 +256,15 @@ public class ProfilesUpdateOperation implements ReportUpdateOperation {
                                 settings.remove("minScale");
                                 settings.remove("maxScale");
                             }
+
+                            if(settings.has("showPercentage")){
+                                int show = settings.optInt("showPercentage");
+                                if(show == BIChartSettingConstant.PERCENTAGE.SHOW){
+                                    settings.put("showPercentage", true);
+                                } else if(show == BIChartSettingConstant.PERCENTAGE.NOT_SHOW){
+                                    settings.put("showPercentage", false);
+                                }
+                            }
                         }
                     }
                 }
