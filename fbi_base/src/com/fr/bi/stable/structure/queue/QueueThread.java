@@ -152,7 +152,6 @@ public class QueueThread<T> implements BIQueue<T>, BIThread {
                         LOGGER.error("Create cube path failed ! Retry in 10s!");
                         synchronized (this) {
                             try {
-                                //TODO 需要check error 信息
                                 this.wait(RETRY_TIME);
                             } catch (InterruptedException e) {
                                 continue;
