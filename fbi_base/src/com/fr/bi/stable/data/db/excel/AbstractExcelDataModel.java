@@ -164,7 +164,7 @@ public abstract class AbstractExcelDataModel extends AbstractDataModel {
             case EXCEL_TYPE_XLS:
                 initExcel4XLS(false);
                 break;
-            case EXCEL_TYPE_XLSX:
+            default:
                 initExcel4XLSX(false);
                 break;
         }
@@ -185,7 +185,7 @@ public abstract class AbstractExcelDataModel extends AbstractDataModel {
             case EXCEL_TYPE_XLS:
                 initExcel4XLS(true);
                 break;
-            case EXCEL_TYPE_XLSX:
+            default:
                 initExcel4XLSX(true);
                 break;
         }

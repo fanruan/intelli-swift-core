@@ -156,31 +156,7 @@ public class ExcelCSVReader extends AbstractExcelReader {
                 }
                 createDistinctColumnNames();
             } else if (i == 1) {
-                columnTypes = new int[columnCount];
-                for (int j = 0; j < columnCount; j++) {
-                    String v = StringUtils.EMPTY;
-                    if (oneRow.length > j) {
-                        v = oneRow[j].toString().trim();
-                    }
-                    currentRowData.add(v);
-                    boolean dateType = false;
-                    try {
-                        Date date = DateUtils.string2Date(v, true);
-                        if (date != null) {
-                            dateType = true;
-                        }
-                    } catch (Exception e) {
-                        dateType = false;
-                    }
-                    if (v.matches("^[+-]?([1-9][0-9]*|0)(\\.[0-9]+)?%?$")) {
-                        columnTypes[j] = DBConstant.COLUMN.NUMBER;
-                    } else if (dateType) {
-                        columnTypes[j] = DBConstant.COLUMN.DATE;
-                    } else {
-                        columnTypes[j] = DBConstant.COLUMN.STRING;
-                    }
-                }
-                rowDataList.add(currentRowData.toArray());
+                initFieldTypes(oneRow);
             } else {
                 for (int j = 0; j < columnCount; j++) {
                     String v = StringUtils.EMPTY;
@@ -192,6 +168,34 @@ public class ExcelCSVReader extends AbstractExcelReader {
                 rowDataList.add(currentRowData.toArray());
             }
         }
+    }
+
+    private void initFieldTypes(Object[] oneRow) {
+        columnTypes = new int[columnCount];
+        for (int j = 0; j < columnCount; j++) {
+            String v = StringUtils.EMPTY;
+            if (oneRow.length > j) {
+                v = oneRow[j].toString().trim();
+            }
+            currentRowData.add(v);
+            boolean dateType = false;
+            try {
+                Date date = DateUtils.string2Date(v, true);
+                if (date != null) {
+                    dateType = true;
+                }
+            } catch (Exception e) {
+                dateType = false;
+            }
+            if (v.matches("^[+-]?([1-9][0-9]*|0)(\\.[0-9]+)?%?$")) {
+                columnTypes[j] = DBConstant.COLUMN.NUMBER;
+            } else if (dateType) {
+                columnTypes[j] = DBConstant.COLUMN.DATE;
+            } else {
+                columnTypes[j] = DBConstant.COLUMN.STRING;
+            }
+        }
+        rowDataList.add(currentRowData.toArray());
     }
 
     public static String codeString(String filePath) throws Exception {
