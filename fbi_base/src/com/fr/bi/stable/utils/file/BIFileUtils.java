@@ -8,6 +8,7 @@ import com.fr.bi.stable.utils.mem.BIMemoryUtils;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
 import com.fr.general.ComparatorUtils;
 import com.fr.stable.StableUtils;
+import com.fr.stable.StringUtils;
 
 import java.io.*;
 import java.lang.reflect.Constructor;
@@ -58,6 +59,18 @@ public class BIFileUtils {
 
     public static boolean delete(File f) {
         return StableUtils.deleteFile(f);
+    }
+
+    /**
+     * 父路径存在并且文件夹为空则删除
+     *
+     * @param file
+     */
+    public static void deleteParent(File file) {
+        if (file.getParentFile().exists() && file.getParentFile().listFiles().length == 0) {
+            BIFileUtils.delete(file.getParentFile());
+            BIFileUtils.deleteParent(file.getParentFile());
+        }
     }
 
     /**
@@ -284,9 +297,9 @@ public class BIFileUtils {
             }
         } else {
             String filePath = f.getAbsolutePath();
-            if (!ComparatorUtils.equals(suffix, "")) {
+            if (!ComparatorUtils.equals(suffix, StringUtils.EMPTY)) {
                 int begIndex = filePath.lastIndexOf("."); // 最后一个.(即后缀名前面的.)的索引
-                String tempsuffix = "";
+                String tempsuffix = StringUtils.EMPTY;
 
                 if (begIndex != -1) {
                     tempsuffix = filePath.substring(begIndex + 1, filePath.length());
@@ -343,8 +356,9 @@ public class BIFileUtils {
             BufferedReader reader = new BufferedReader(fr);
             String line;
             try {
-                while ((line = reader.readLine()) != null)
+                while ((line = reader.readLine()) != null) {
                     sb.append(line);
+                }
                 return sb.toString();
             } finally {
                 reader.close();
@@ -390,6 +404,7 @@ public class BIFileUtils {
 
     /**
      * 重命名文件
+     *
      * @param oldName
      * @param newName
      * @return
