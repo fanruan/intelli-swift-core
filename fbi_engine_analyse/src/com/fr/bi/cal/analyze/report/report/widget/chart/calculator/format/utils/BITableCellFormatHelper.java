@@ -1,6 +1,7 @@
 package com.fr.bi.cal.analyze.report.report.widget.chart.calculator.format.utils;
 
 import com.finebi.cube.common.log.BILoggerFactory;
+import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.utils.program.BIStringUtils;
 import com.fr.general.Inter;
@@ -36,11 +37,11 @@ public class BITableCellFormatHelper {
 //                return "-∞";
 //            }
             }
-            float value = Float.valueOf(text);
-            value = parseNumByLevel(settings, value);
+            double value = parseNumByLevel(settings, Double.valueOf(text));
             text = parseNumByFormat(decimalFormat(settings), value);
             String unit = scaleUnit(settings.optInt("numLevel"));
-            return text + unit;
+//            return text + unit;
+            return text;
         } catch (NumberFormatException e) {
             return text;
         }
@@ -60,30 +61,35 @@ public class BITableCellFormatHelper {
         return text;
     }
 
-    private static String parseNumByFormat(String format, float value) {
+    private static String parseNumByFormat(String format, double value) {
+        // 和web端处理一致，整数情况下不显示小数点位数
+        if (Math.floor(value) == value && format.indexOf(".") > 0) {
+            format = format.split("\\.")[0];
+        }
         DecimalFormat decimalFormat = new DecimalFormat(format);
         return decimalFormat.format(value);
     }
 
-    private static float parseNumByLevel(JSONObject setting, float value) {
+    private static double parseNumByLevel(JSONObject setting, double value) {
         try {
-            if (value == 0) {
+            if (value == BIBaseConstant.NUMBER_VALUE.ZONE) {
                 return value;
             }
             int numLevel = setting.optInt("numLevel", DEFAULT_SCALE);
             switch (numLevel) {
                 case BIReportConstant.TARGET_STYLE.NUM_LEVEL.TEN_THOUSAND:
-                    value /= Math.pow(10, 4);
+                    value /= BIBaseConstant.NUMBER_VALUE.TEN_THOUSAND;
                     break;
                 case BIReportConstant.TARGET_STYLE.NUM_LEVEL.MILLION:
-                    value /= Math.pow(10, 6);
+                    value /= BIBaseConstant.NUMBER_VALUE.MILLION;
                     break;
                 case BIReportConstant.TARGET_STYLE.NUM_LEVEL.YI:
-                    value /= Math.pow(10, 8);
+                    value /= BIBaseConstant.NUMBER_VALUE.ONE_HUNDRED_MILLION;
                     break;
                 case BIReportConstant.TARGET_STYLE.NUM_LEVEL.PERCENT:
-                    value *= Math.pow(10, 2);
+                    value *= BIBaseConstant.NUMBER_VALUE.HUNDRED;
                     break;
+                default:
             }
         } catch (Exception e) {
             BILoggerFactory.getLogger(BITableCellFormatHelper.class).error(e.getMessage(), e);
@@ -136,6 +142,7 @@ public class BITableCellFormatHelper {
             case BIReportConstant.GROUP.YW:
                 text = formatCombineDateByDateFormat(text, dateFormatType, new String[]{getLocText("BI-Basic_Year"), getLocText("BI-Week_Simple")});
                 break;
+            default:
         }
         return text;
     }
@@ -250,10 +257,10 @@ public class BITableCellFormatHelper {
         String format;
         switch (type) {
             case BIReportConstant.TARGET_STYLE.FORMAT.NORMAL:
-                format = hasSeparator ? "#,##0.##" : "#.##";
+                format = hasSeparator ? "#,##0.00" : "0.00";
                 break;
             case BIReportConstant.TARGET_STYLE.FORMAT.ZERO2POINT:
-                format = hasSeparator ? "#,##0" : "#0";
+                format = hasSeparator ? "#,##0" : "##";
                 break;
             default:
                 format = hasSeparator ? "#,##0." : "#0.";
@@ -267,25 +274,21 @@ public class BITableCellFormatHelper {
 
     private static String scaleUnit(int level) {
         String unit = StringUtils.EMPTY;
-
-        if (level == BIReportConstant.TARGET_STYLE.NUM_LEVEL.TEN_THOUSAND) {
-
-            unit = getLocText("BI-Basic_Wan");
-
-        } else if (level == BIReportConstant.TARGET_STYLE.NUM_LEVEL.MILLION) {
-
-            unit = getLocText("BI-Basic_Million");
-
-        } else if (level == BIReportConstant.TARGET_STYLE.NUM_LEVEL.YI) {
-
-            unit = getLocText("BI-Basic_Yi");
-
-        } else if (level == BIReportConstant.TARGET_STYLE.NUM_LEVEL.PERCENT) {
-
-            unit = PERCENT_SYMBOL;
-
+        switch (level) {
+            case BIReportConstant.TARGET_STYLE.NUM_LEVEL.TEN_THOUSAND:
+                unit = getLocText("BI-Basic_Wan");
+                break;
+            case BIReportConstant.TARGET_STYLE.NUM_LEVEL.MILLION:
+                unit = getLocText("BI-Basic_Million");
+                break;
+            case BIReportConstant.TARGET_STYLE.NUM_LEVEL.YI:
+                unit = getLocText("BI-Basic_Yi");
+                break;
+            case BIReportConstant.TARGET_STYLE.NUM_LEVEL.PERCENT:
+                unit = PERCENT_SYMBOL;
+                break;
+            default:
         }
-
         return unit;
     }
 

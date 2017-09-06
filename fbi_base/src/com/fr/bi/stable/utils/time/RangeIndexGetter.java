@@ -51,6 +51,7 @@ public class RangeIndexGetter {
         createDayRange(helper, start, end);
         return helper.compute();
     }
+
     //如果是空区间，直接返回空索引
     private boolean isEmptyParas(BIDay start, BIDay end, BIDay min, BIDay max) {
         return min == null || max == null || (start != null && end != null && start.getTime() > end.getTime());
@@ -77,19 +78,19 @@ public class RangeIndexGetter {
 
     private void createMonthRange(GroupValueIndexOrHelper helper, BIDay start, BIDay end) {
         //开头结尾是同一年，并且不同时是年初年末
-        if (isSameYear(start, end) && isPartYear(start, end)){
-            int startMonth = isStartMonth(start)? start.getMonth() : start.getMonth() + 1;
+        if (isSameYear(start, end) && isPartYear(start, end)) {
+            int startMonth = isStartMonth(start) ? start.getMonth() : start.getMonth() + 1;
             int endMonth = isEndMonth(end) ? end.getMonth() : end.getMonth() - 1;
-            createIndex(monthMap, new BIDay(start.getYear(), startMonth, 1).getTime(), new BIDay(end.getYear(), endMonth, 1).getTime(),helper);
+            createIndex(monthMap, new BIDay(start.getYear(), startMonth, 1).getTime(), new BIDay(end.getYear(), endMonth, 1).getTime(), helper);
             return;
         }
-        if (start != null && !isStartYear(start)){
-            int startMonth = isStartMonth(start)? start.getMonth() : start.getMonth() + 1;
-            createIndex(monthMap, new BIDay(start.getYear(), startMonth, 1).getTime(), new BIDay(start.getYear(), Calendar.DECEMBER, 1).getTime(),helper);
+        if (start != null && !isStartYear(start)) {
+            int startMonth = isStartMonth(start) ? start.getMonth() : start.getMonth() + 1;
+            createIndex(monthMap, new BIDay(start.getYear(), startMonth, 1).getTime(), new BIDay(start.getYear(), Calendar.DECEMBER, 1).getTime(), helper);
         }
-        if (end != null && !isEndYear(end)){
+        if (end != null && !isEndYear(end)) {
             int endMonth = isEndMonth(end) ? end.getMonth() : end.getMonth() - 1;
-            createIndex(monthMap, new BIDay(end.getYear(), Calendar.JANUARY, 1).getTime(), new BIDay(end.getYear(), endMonth, 1).getTime(),helper);
+            createIndex(monthMap, new BIDay(end.getYear(), Calendar.JANUARY, 1).getTime(), new BIDay(end.getYear(), endMonth, 1).getTime(), helper);
         }
 
     }
@@ -100,7 +101,7 @@ public class RangeIndexGetter {
     }
 
     //开头不是年初或者结尾不是年末
-    private boolean isPartYear(BIDay start, BIDay end){
+    private boolean isPartYear(BIDay start, BIDay end) {
         return !isStartYear(start) || !isEndYear(end);
     }
 
@@ -116,15 +117,15 @@ public class RangeIndexGetter {
 
     private void createDayRange(GroupValueIndexOrHelper helper, BIDay start, BIDay end) {
         //开头结尾是同一月年，并且不同时是月初月末
-        if (isSameMonth(start, end) && isPartMonth(start, end)){
-            createIndex(dayMap, start.getTime(), end.getTime(),helper);
+        if (isSameMonth(start, end) && isPartMonth(start, end)) {
+            createIndex(dayMap, start.getTime(), end.getTime(), helper);
             return;
         }
-        if (start != null && !isStartMonth(start)){
-            createIndex(dayMap, start.getTime(), new BIDay(start.getYear(), start.getMonth(), DateUtils.getLastDayOfMonth(start.getYear(), start.getMonth())).getTime(),helper);
+        if (start != null && !isStartMonth(start)) {
+            createIndex(dayMap, start.getTime(), new BIDay(start.getYear(), start.getMonth(), DateUtils.getLastDayOfMonth(start.getYear(), start.getMonth())).getTime(), helper);
         }
-        if (end != null && !isEndMonth(end)){
-            createIndex(dayMap,  new BIDay(end.getYear(), end.getMonth(), 1).getTime(), end.getTime(), helper);
+        if (end != null && !isEndMonth(end)) {
+            createIndex(dayMap, new BIDay(end.getYear(), end.getMonth(), 1).getTime(), end.getTime(), helper);
         }
     }
 
@@ -134,14 +135,14 @@ public class RangeIndexGetter {
     }
 
     //开头不是年初或者结尾不是年末
-    private boolean isPartMonth(BIDay start, BIDay end){
+    private boolean isPartMonth(BIDay start, BIDay end) {
         return !isStartMonth(start) || !isEndMonth(end);
     }
 
-    private void createIndex(ICubeColumnIndexReader reader, Number start, Number end, GroupValueIndexOrHelper helper){
-        MatchAndIndex startMatchAndIndex = ArrayLookupHelper.binarySearch(reader, start, BIBaseConstant.COMPARATOR.COMPARABLE.ASC);
+    private void createIndex(ICubeColumnIndexReader reader, Number start, Number end, GroupValueIndexOrHelper helper) {
+        MatchAndIndex startMatchAndIndex = ArrayLookupHelper.binarySearch(reader, start, BIBaseConstant.COMPARATOR.NUMBER.ASC);
         int startIndex = startMatchAndIndex.isMatch() ? startMatchAndIndex.getIndex() : startMatchAndIndex.getIndex() + 1;
-        MatchAndIndex endMatchAndIndex = ArrayLookupHelper.binarySearch(reader, end, BIBaseConstant.COMPARATOR.COMPARABLE.ASC);
+        MatchAndIndex endMatchAndIndex = ArrayLookupHelper.binarySearch(reader, end, BIBaseConstant.COMPARATOR.NUMBER.ASC);
         //得到大于end的第一个，不管match不match都要+1。
         int endIndex = endMatchAndIndex.getIndex() + 1;
         for (int i = startIndex; i < endIndex; i++) {

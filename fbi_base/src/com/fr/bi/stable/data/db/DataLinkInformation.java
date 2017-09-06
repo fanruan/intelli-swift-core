@@ -45,17 +45,8 @@ public class DataLinkInformation implements JSONParser {
         if (StringUtils.isNotBlank(newCharsetName)) {
             jdbcDatabaseConnection.setNewCharsetName(newCharsetName);
         }
-        if (isHana(driver)) {
-            DBCPConnectionPoolAttr att = new DBCPConnectionPoolAttr();
-            att.setTestOnBorrow(false);
-            jdbcDatabaseConnection.setDbcpAttr(att);
-        }
         BIDBUtils.dealWithJDBCConnection(jdbcDatabaseConnection);
         return jdbcDatabaseConnection;
-    }
-
-    private boolean isHana(String driver) {
-        return ComparatorUtils.equals(driver, "com.sap.db.jdbc.Driver");
     }
 
     /**

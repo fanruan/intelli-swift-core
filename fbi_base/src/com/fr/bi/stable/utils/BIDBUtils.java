@@ -6,6 +6,8 @@ import com.fr.base.TableData;
 import com.fr.bi.conf.base.datasource.BIConnectOptimizationUtils;
 import com.fr.bi.conf.base.datasource.BIConnectOptimizationUtilsFactory;
 import com.fr.bi.conf.base.datasource.BIConnectionManager;
+import com.fr.bi.manager.DBCPConnectionPlugInterface;
+import com.fr.bi.manager.DBCPConnectionPlugManager;
 import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.data.db.BIDBTableField;
 import com.fr.bi.stable.data.db.DistinctColumnSelect;
@@ -710,6 +712,18 @@ public class BIDBUtils {
             attr.setMinEvictableIdleTimeMillis(BI_MIN_EVICTABLEIDLE_TIME_MILLIS);
         }
 //        attr.setTestOnBorrow(false);
+
+        setDBCPPlugProperties(jdbcDatabaseConnection);
+    }
+
+    private static void setDBCPPlugProperties(JDBCDatabaseConnection jdbcDatabaseConnection) {
+        DBCPConnectionPlugInterface dbcpConnectionPlug = new DBCPConnectionPlugManager();
+        DBCPConnectionPoolAttr att = jdbcDatabaseConnection.getDbcpAttr();
+
+        Set<String> drivers = dbcpConnectionPlug.getDriversNotTestOnBorrow();
+        if (drivers.contains(jdbcDatabaseConnection.getDriver())) {
+            att.setTestOnBorrow(false);
+        }
 
     }
 
