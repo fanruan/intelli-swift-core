@@ -1,5 +1,6 @@
 package com.fr.bi.stable.data.db.excel;
 
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.utils.file.BIPictureUtils;
 import com.fr.general.ComparatorUtils;
@@ -27,7 +28,7 @@ public class Excel2007Reader extends AbstractExcel2007Reader {
         synchronized (lock) {
             File xlsxFile = new File(filePath);
             if (!xlsxFile.exists()) {
-                System.err.println("Not found or not a file: " + xlsxFile.getPath());
+                BILoggerFactory.getLogger().error("Not found or not a file: " + xlsxFile.getPath());
                 return;
             }
             this.xlsxPackage = OPCPackage.open(xlsxFile.getPath(), PackageAccess.READ);
