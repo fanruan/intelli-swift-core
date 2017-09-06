@@ -61,6 +61,17 @@ public class BIFileUtils {
     }
 
     /**
+     * 父路径存在并且文件夹为空则删除
+     * @param file
+     */
+    public static void deleteParent(File file) {
+        if (file.getParentFile().exists() && file.getParentFile().listFiles().length == 0) {
+            BIFileUtils.delete(file.getParentFile());
+            BIFileUtils.deleteParent(file.getParentFile());
+        }
+    }
+
+    /**
      * 查找出路径下的所有文件路径
      *
      * @param folder 文件夹
@@ -390,6 +401,7 @@ public class BIFileUtils {
 
     /**
      * 重命名文件
+     *
      * @param oldName
      * @param newName
      * @return

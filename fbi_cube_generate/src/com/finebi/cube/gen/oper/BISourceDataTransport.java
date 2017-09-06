@@ -166,9 +166,9 @@ public abstract class BISourceDataTransport extends BIProcessor {
         for (BILocationInfo info : srcLocations.getAllItems()) {
             try {
 //                将copy路径注册进当前cube的路径管理器中
-                cubeLocationManager.getRealLocation(info.getLogicFolder(), info.getChild());
+                cubeLocationManager.getRealLocation(info.getLogicFolder(), info.getChild(), true);
             } catch (URISyntaxException e) {
-                BILoggerFactory.getLogger(this.getClass()).error(e.getMessage(),e);
+                BILoggerFactory.getLogger(this.getClass()).error(e.getMessage(), e);
             }
         }
     }
@@ -194,7 +194,7 @@ public abstract class BISourceDataTransport extends BIProcessor {
                 // TODO: 2017/8/17
 //                FineIO.copy(srcURI,dstURI);
             } catch (URISyntaxException e) {
-                BILoggerFactory.getLogger(this.getClass()).error(e.getMessage(),e);
+                BILoggerFactory.getLogger(this.getClass()).error(e.getMessage(), e);
             }
         }
     }

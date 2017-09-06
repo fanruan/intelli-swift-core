@@ -249,7 +249,7 @@ public class BuildCubeTask implements CubeTask {
 
                 Set<String> dirtyFiles = BILocationManager.getInstance().getAccessLocationProvider()
                         .updateLocationPool(cubeConfiguration.getLocationProvider().getAccessLocationPool());
-                // TODO: 2017/7/6 删除旧的文件
+                //删除旧的文件
                 BILocationManager.getInstance().removeOldFiles(dirtyFiles);
 
                 for (String location : BICubeDiskPrimitiveDiscovery.getInstance().getUnReleasedLocation()) {

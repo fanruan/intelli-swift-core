@@ -11,6 +11,7 @@ import com.finebi.cube.data.output.ICubeWriterBuilder;
 import com.finebi.cube.location.provider.ILocationConverter;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
 import com.fr.bi.stable.utils.program.BIStringUtils;
+import com.fr.general.ComparatorUtils;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -67,8 +68,7 @@ public class BICubeLocation implements ICubeResourceLocation, Cloneable {
     @Override
 //  在创建nioresouce时进行路径转换
     public ICubeResourceLocation getRealLocation() throws URISyntaxException {
-
-        return locationProxy.getRealLocation(getBaseLocation().getPath(), getChildLocation().getPath());
+        return locationProxy.getRealLocation(getBaseLocation().getPath(), getChildLocation().getPath(), ComparatorUtils.equals(getQuery(), ICubeWriterBuilder.QUERY_TAG));
     }
 
     @Override
@@ -102,7 +102,7 @@ public class BICubeLocation implements ICubeResourceLocation, Cloneable {
 
     @Override
     public ICubeResourceLocation buildChildLocation(String childPath) throws URISyntaxException {
-        return new BICubeLocation(getAbsolutePath(), childPath,locationProxy);
+        return new BICubeLocation(getAbsolutePath(), childPath, locationProxy);
     }
 
     @Override
