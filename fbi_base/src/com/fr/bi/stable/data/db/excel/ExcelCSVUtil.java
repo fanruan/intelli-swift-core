@@ -8,22 +8,21 @@ import com.fr.bi.stable.utils.file.BIPictureUtils;
 import com.fr.general.ComparatorUtils;
 import com.fr.general.DateUtils;
 import com.fr.general.Inter;
+import com.fr.stable.ColumnRow;
 import com.fr.stable.StringUtils;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedReader;
-import java.io.FileInputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
  * Created by Young's on 2016/7/26.
  */
-public class ExcelCSVUtil {
+public class ExcelCSVUtil extends AbstractExcelUtils {
     private static final int READLENGTH = 8;
 
     private String[] columnNames = new String[0];
@@ -32,6 +31,8 @@ public class ExcelCSVUtil {
     private List<Object> currentRowData = new ArrayList<Object>();
     private List<Object[]> rowDataList = new ArrayList<Object[]>();
     private List<Object[]> tempRowDataList = new ArrayList<Object[]>();
+    private BufferedReader reader;
+    private boolean end = false;
 
     public String[] getColumnNames() {
         return columnNames;
@@ -43,6 +44,15 @@ public class ExcelCSVUtil {
 
     public int[] getColumnTypes() {
         return columnTypes;
+    }
+
+    public boolean isEnd() {
+        return end;
+    }
+
+    @Override
+    Map<ColumnRow, ColumnRow> getMergeInfos() {
+        return null;
     }
 
     public void setColumnTypes(int[] columnTypes) {
@@ -57,7 +67,28 @@ public class ExcelCSVUtil {
         this.rowDataList = rowDataList;
     }
 
+    public Object[] read() throws IOException {
+        String ln = reader.readLine();
+        if (ln == null) {
+            end = true;
+            return new Object[0];
+        }
+        currentRowData.clear();
+        for (CSVTokenizer it = new CSVTokenizer(ln); it.hasMoreTokens(); ) {
+            try {
+                currentRowData.add(it.nextToken());
+            } catch (Exception e) {
+                BILoggerFactory.getLogger().error(e.getMessage());
+            }
+        }
+        return currentRowData.toArray();
+    }
+
     public ExcelCSVUtil(String filePath, boolean isPreview) throws Exception {
+        if (!isPreview) {
+            reader = new BufferedReader(new InputStreamReader(new FileInputStream(filePath), codeString(filePath)));
+            return;
+        }
         Object lock = BIPictureUtils.getImageLock(filePath);
         synchronized (lock) {
             BufferedReader r = null;
@@ -66,20 +97,18 @@ public class ExcelCSVUtil {
                 int row = 0;
                 while (true) {
                     String ln = r.readLine();
-                    boolean preview = isPreview && row > BIBaseConstant.PREVIEW_COUNT;
-                    if (ln == null || preview) {
+                    if (ln == null || row > BIBaseConstant.PREVIEW_COUNT) {
                         break;
                     }
                     for (CSVTokenizer it = new CSVTokenizer(ln); it.hasMoreTokens(); ) {
                         try {
-                            String val = it.nextToken();
-                            currentRowData.add(val);
+                            currentRowData.add(it.nextToken());
                         } catch (Exception e) {
                             BILoggerFactory.getLogger().error(e.getMessage());
                         }
                     }
                     tempRowDataList.add(currentRowData.toArray());
-                    currentRowData = new ArrayList<Object>();
+                    currentRowData.clear();
                     row++;
                 }
             } catch (Exception e) {

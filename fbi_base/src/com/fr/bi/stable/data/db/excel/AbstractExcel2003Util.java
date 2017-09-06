@@ -24,7 +24,7 @@ import java.util.*;
 /**
  * Created by zcf on 2016/11/23.
  */
-public abstract class AbstractExcel2003Util implements HSSFListener {
+public abstract class AbstractExcel2003Util extends AbstractExcelUtils implements HSSFListener {
     protected static String[] columnNames;
     private static int[] columnTypes;
     private static int columnCount;

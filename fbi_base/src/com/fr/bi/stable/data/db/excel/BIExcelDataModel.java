@@ -22,12 +22,12 @@ public class BIExcelDataModel extends AbstractExcelDataModel {
     protected void initExcel4XLSX(boolean isPreview) {
         long start = System.currentTimeMillis();
         try {
-            Excel2007Util excel2007Util = new Excel2007Util(this.filePath, isPreview);
+            excelUtils = new Excel2007Util(this.filePath, isPreview);
             BILoggerFactory.getLogger().info("read excel time : " + DateUtils.timeCostFrom(start));
-            rowDataList = excel2007Util.getRowDataList();
-            columnNames = excel2007Util.getColumnNames();
-            columnTypes = excel2007Util.getColumnTypes();
-            mergeInfos = excel2007Util.getMergeInfos();
+            rowDataList = excelUtils.getRowDataList();
+            columnNames = excelUtils.getColumnNames();
+            columnTypes = excelUtils.getColumnTypes();
+            mergeInfos = excelUtils.getMergeInfos();
         } catch (Exception e) {
             BILoggerFactory.getLogger().error(e.getMessage());
         }

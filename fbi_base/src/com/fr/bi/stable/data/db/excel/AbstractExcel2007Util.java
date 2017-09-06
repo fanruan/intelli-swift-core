@@ -32,7 +32,7 @@ import java.util.*;
 /**
  * Created by zcf on 2016/11/21.
  */
-public abstract class AbstractExcel2007Util {
+public abstract class AbstractExcel2007Util extends AbstractExcelUtils {
     public boolean isEmpty = false;
     protected String[] columnNames = new String[0];
     protected int[] columnTypes = new int[0];
