@@ -31,7 +31,7 @@ public class QueueThread<T> implements BIQueue<T>, BIThread {
 
     private BrokenTraversal<T> check;
 
-    private static long RETRY_TIME = 10000l;
+//    private static long RETRY_TIME = 10000l;
 
     public QueueThread() {
 
@@ -136,9 +136,9 @@ public class QueueThread<T> implements BIQueue<T>, BIThread {
         public void run() {
             p:
             while (!stop) {
-                if (generatorQueue.size() == 0) {
+                if (generatorQueue.isEmpty()) {
                     synchronized (this) {
-                        if (generatorQueue.size() == 0) {
+                        if (generatorQueue.isEmpty()) {
                             try {
                                 this.wait();
                             } catch (InterruptedException e) {
