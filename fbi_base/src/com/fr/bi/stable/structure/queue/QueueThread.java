@@ -4,6 +4,7 @@ import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.common.inter.BrokenTraversal;
 import com.fr.bi.common.inter.Traversal;
 import com.fr.bi.stable.structure.thread.BIThread;
+import org.slf4j.Logger;
 
 import java.util.Iterator;
 import java.util.Queue;
@@ -14,6 +15,9 @@ import java.util.concurrent.LinkedBlockingQueue;
  * Created by GUY on 2015/3/16.
  */
 public class QueueThread<T> implements BIQueue<T>, BIThread {
+
+    private static final Logger LOGGER = BILoggerFactory.getLogger(QueueThread.class);
+
 
     private final QThread qThread = new QThread();
 
@@ -26,6 +30,8 @@ public class QueueThread<T> implements BIQueue<T>, BIThread {
     private Traversal<T> back;
 
     private BrokenTraversal<T> check;
+
+    private static long RETRY_TIME = 10000l;
 
     public QueueThread() {
 
@@ -143,10 +149,11 @@ public class QueueThread<T> implements BIQueue<T>, BIThread {
                 }
                 if (check != null) {
                     while (!check.actionPerformed(null)) {
+                        LOGGER.error("Create cube path failed ! Retry in 10s!");
                         synchronized (this) {
                             try {
                                 //TODO 需要check error 信息
-                                this.wait();
+                                this.wait(RETRY_TIME);
                             } catch (InterruptedException e) {
                                 continue;
                             }
@@ -158,7 +165,6 @@ public class QueueThread<T> implements BIQueue<T>, BIThread {
                 }
 
                 generating = generatorQueue.peek();
-
                 if (back != null) {
                     try {
                         back.actionPerformed(generating);
