@@ -38,7 +38,7 @@ public class DBCPConnectionPlugManager implements DBCPConnectionPlugInterface {
             String[] splitedValues = avoidTestOnBorrow.split(";");
             for (String splitedValue : splitedValues) {
                 String value = splitedValue.trim();
-                if (!StringUtils.isEmpty(value)) {
+                if (StringUtils.isNotEmpty(value)) {
                     values.add(value);
                 }
             }
