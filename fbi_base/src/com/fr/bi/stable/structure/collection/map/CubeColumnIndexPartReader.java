@@ -1,8 +1,6 @@
 package com.fr.bi.stable.structure.collection.map;
 
 import com.finebi.cube.api.ICubeColumnIndexReader;
-import com.fr.bi.stable.gvi.GVIFactory;
-import com.fr.bi.stable.gvi.GVIUtils;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 
 import java.util.Iterator;
@@ -188,7 +186,7 @@ public class CubeColumnIndexPartReader implements ICubeColumnIndexReader {
     }
 
     public void applyFilter(GroupValueIndex gvi) {
-
-        filterGvi = gvi;
+        //pony这个不需要，使用部分字段结果为空也没关系，加了这个如果维度很多的话会非常非常卡
+       // filterGvi = gvi;
     }
 }

@@ -175,6 +175,10 @@ public abstract class AbstractSingleMemoryColumn<T> implements MemoryColumnFile<
             Object value = t;
             if (BICollectionUtils.isNotCubeNullKey(value)) {
                 value = converter.result2Value(t);
+                /**
+                 * 不明白这个地方为什么要把value转成Long，普通表的年份分组是int，
+                 * 但是螺旋分析的却是long，可能会带来一些列类型转换的问题
+                 */
                 if (value instanceof Integer) {
                     value = ((Integer) value).longValue();
                 }

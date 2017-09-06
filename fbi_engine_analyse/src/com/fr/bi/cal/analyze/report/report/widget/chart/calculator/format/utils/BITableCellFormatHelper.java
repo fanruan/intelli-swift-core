@@ -1,6 +1,7 @@
 package com.fr.bi.cal.analyze.report.report.widget.chart.calculator.format.utils;
 
 import com.finebi.cube.common.log.BILoggerFactory;
+import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.utils.program.BIStringUtils;
 import com.fr.bi.util.BIFormatHelper;
@@ -34,11 +35,11 @@ public class BITableCellFormatHelper {
 //                return "-∞";
 //            }
             }
-            float value = Float.valueOf(text);
-            value = parseNumByLevel(settings, value);
+            double value = parseNumByLevel(settings, Double.valueOf(text));
             text = parseNumByFormat(decimalFormat(settings), value);
             String unit = scaleUnit(settings.optInt("numLevel"));
-            return text + unit;
+//            return text + unit;
+            return text;
         } catch (NumberFormatException e) {
             return text;
         }
@@ -58,14 +59,18 @@ public class BITableCellFormatHelper {
         return text;
     }
 
-    private static String parseNumByFormat(String format, float value) {
+    private static String parseNumByFormat(String format, double value) {
+        // 和web端处理一致，整数情况下不显示小数点位数
+        if (Math.floor(value) == value && format.indexOf(".") > 0) {
+            format = format.split("\\.")[0];
+        }
         DecimalFormat decimalFormat = new DecimalFormat(format);
         return decimalFormat.format(value);
     }
 
-    private static float parseNumByLevel(JSONObject setting, float value) {
+    private static double parseNumByLevel(JSONObject setting, double value) {
         try {
-            if (value == 0) {
+            if (value == BIBaseConstant.NUMBER_VALUE.ZONE) {
                 return value;
             }
             int numLevel = setting.optInt("numLevel", DEFAULT_SCALE);
