@@ -5,13 +5,11 @@ import com.fr.general.ComparatorUtils;
 import com.fr.general.DateUtils;
 import com.fr.stable.ColumnRow;
 import com.fr.stable.StringUtils;
-import com.fr.third.v2.org.apache.poi.hssf.record.NumberRecord;
 import com.fr.third.v2.org.apache.poi.hssf.usermodel.HSSFDateUtil;
 import com.fr.third.v2.org.apache.poi.openxml4j.exceptions.OpenXML4JException;
 import com.fr.third.v2.org.apache.poi.openxml4j.opc.OPCPackage;
 import com.fr.third.v2.org.apache.poi.ss.usermodel.BuiltinFormats;
 import com.fr.third.v2.org.apache.poi.ss.usermodel.DataFormatter;
-import com.fr.third.v2.org.apache.poi.ss.usermodel.DateUtil;
 import com.fr.third.v2.org.apache.poi.ss.util.NumberToTextConverter;
 import com.fr.third.v2.org.apache.poi.xssf.eventusermodel.ReadOnlySharedStringsTable;
 import com.fr.third.v2.org.apache.poi.xssf.eventusermodel.XSSFReader;
@@ -26,13 +24,12 @@ import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 import java.io.IOException;
 import java.io.InputStream;
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
  * Created by zcf on 2016/11/21.
  */
-public abstract class AbstractExcel2007Util extends AbstractExcelUtils {
+public abstract class AbstractExcel2007Reader extends AbstractExcelReader {
     public boolean isEmpty = false;
     protected String[] columnNames = new String[0];
     protected int[] columnTypes = new int[0];
@@ -45,7 +42,7 @@ public abstract class AbstractExcel2007Util extends AbstractExcelUtils {
     protected OPCPackage xlsxPackage;
     private List<String> tempData = new ArrayList<String>();
 
-    public AbstractExcel2007Util() {
+    public AbstractExcel2007Reader() {
     }
 
     public String[] getColumnNames() {

@@ -1,8 +1,6 @@
 package com.fr.bi.stable.data.db.excel;
 
 import com.finebi.cube.common.log.BILoggerFactory;
-import com.fr.bi.stable.constant.BIBaseConstant;
-import com.fr.bi.stable.constant.DBConstant;
 import com.fr.data.AbstractDataModel;
 import com.fr.general.DateUtils;
 import com.fr.general.data.TableDataException;
@@ -20,7 +18,7 @@ public abstract class AbstractExcelDataModel extends AbstractDataModel {
     public final static int EXCEL_TYPE_XLSX = 2;
     public final static int EXCEL_TYPE_CSV = 3;
 
-    protected AbstractExcelUtils excelUtils;
+    protected AbstractExcelReader excelUtils;
     //列名
     protected String[] columnNames;
     //表数据
@@ -96,8 +94,8 @@ public abstract class AbstractExcelDataModel extends AbstractDataModel {
                 return csvRow.get(rowIndex)[columnIndex];
             } else {
                 csvRow.clear();
-                Object[] row = ((ExcelCSVUtil) excelUtils).read();
-                end = ((ExcelCSVUtil) excelUtils).isEnd();
+                Object[] row = ((ExcelCSVReader) excelUtils).read();
+                end = ((ExcelCSVReader) excelUtils).isEnd();
                 csvRow.put(rowIndex, row);
                 return row[columnIndex];
             }
@@ -216,7 +214,7 @@ public abstract class AbstractExcelDataModel extends AbstractDataModel {
     private void initExcel4CSV(boolean isPreview) {
         long start = System.currentTimeMillis();
         try {
-            excelUtils = new ExcelCSVUtil(this.filePath, isPreview);
+            excelUtils = new ExcelCSVReader(this.filePath, isPreview);
             BILoggerFactory.getLogger().info("read excel time : " + DateUtils.timeCostFrom(start));
             rowDataList = excelUtils.getRowDataList();
             columnNames = excelUtils.getColumnNames();

@@ -5,7 +5,7 @@ import com.fr.stable.ColumnRow;
 import java.util.List;
 import java.util.Map;
 
-abstract class AbstractExcelUtils {
+abstract class AbstractExcelReader {
     abstract List<Object[]> getRowDataList();
     abstract String[] getColumnNames();
     abstract int[] getColumnTypes();

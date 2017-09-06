@@ -2,10 +2,8 @@ package com.fr.bi.stable.data.db.excel;
 
 import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.utils.file.BIPictureUtils;
-import com.fr.general.ComparatorUtils;
 import com.fr.general.DateUtils;
 import com.fr.general.GeneralUtils;
-import com.fr.general.Inter;
 import com.fr.stable.StringUtils;
 import com.fr.third.v2.org.apache.poi.openxml4j.opc.OPCPackage;
 import com.fr.third.v2.org.apache.poi.openxml4j.opc.PackageAccess;
@@ -19,9 +17,9 @@ import java.util.regex.Pattern;
 /**
  * Created by zcf on 2016/11/21.
  */
-public class ExcelView2007Util extends AbstractExcel2007Util {
+public class ExcelView2007Reader extends AbstractExcel2007Reader {
 
-    public ExcelView2007Util(String filePath, boolean preview) throws Exception {
+    public ExcelView2007Reader(String filePath, boolean preview) throws Exception {
         this.preview = preview;
         Object lock = BIPictureUtils.getImageLock(filePath);
         synchronized (lock) {

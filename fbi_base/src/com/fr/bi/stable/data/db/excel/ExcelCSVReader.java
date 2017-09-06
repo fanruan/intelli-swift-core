@@ -22,7 +22,7 @@ import java.util.regex.Pattern;
 /**
  * Created by Young's on 2016/7/26.
  */
-public class ExcelCSVUtil extends AbstractExcelUtils {
+public class ExcelCSVReader extends AbstractExcelReader {
     private static final int READLENGTH = 8;
 
     private String[] columnNames = new String[0];
@@ -84,7 +84,7 @@ public class ExcelCSVUtil extends AbstractExcelUtils {
         return currentRowData.toArray();
     }
 
-    public ExcelCSVUtil(String filePath, boolean isPreview) throws Exception {
+    public ExcelCSVReader(String filePath, boolean isPreview) throws Exception {
         if (!isPreview) {
             reader = new BufferedReader(new InputStreamReader(new FileInputStream(filePath), codeString(filePath)));
             return;

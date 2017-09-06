@@ -22,7 +22,7 @@ public class BIExcelViewDataModel extends AbstractExcelDataModel {
     protected void initExcel4XLSX(boolean isPreview) {
         long start = System.currentTimeMillis();
         try {
-            ExcelView2007Util excelView2007Util = new ExcelView2007Util(this.filePath, isPreview);
+            ExcelView2007Reader excelView2007Util = new ExcelView2007Reader(this.filePath, isPreview);
             BILoggerFactory.getLogger().info("read excel time : " + DateUtils.timeCostFrom(start));
             rowDataList = excelView2007Util.getRowDataList();
             columnNames = excelView2007Util.getColumnNames();
@@ -39,7 +39,7 @@ public class BIExcelViewDataModel extends AbstractExcelDataModel {
     protected void initExcel4XLS(boolean isPreview) {
         long start = System.currentTimeMillis();
         try {
-            ExcelView2003Util excelView2003Util = new ExcelView2003Util(this.filePath, isPreview);
+            ExcelView2003Reader excelView2003Util = new ExcelView2003Reader(this.filePath, isPreview);
             BILoggerFactory.getLogger().info("read excel time : " + DateUtils.timeCostFrom(start));
             rowDataList = excelView2003Util.getRowDataList();
             columnNames = excelView2003Util.getColumnNames();
