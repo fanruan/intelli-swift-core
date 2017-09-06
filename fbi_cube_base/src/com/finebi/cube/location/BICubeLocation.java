@@ -277,10 +277,10 @@ public class BICubeLocation implements ICubeResourceLocation, Cloneable {
 
         BICubeLocation that = (BICubeLocation) o;
 
-        if (baseLocation != null ? !baseLocation.equals(that.baseLocation) : that.baseLocation != null) {
+        if (baseLocation != null ? !ComparatorUtils.equals(baseLocation, that.baseLocation) : that.baseLocation != null) {
             return false;
         }
-        return !(childLocation != null ? !childLocation.equals(that.childLocation) : that.childLocation != null);
+        return !(childLocation != null ? !ComparatorUtils.equals(childLocation, that.childLocation) : that.childLocation != null);
 
     }
 

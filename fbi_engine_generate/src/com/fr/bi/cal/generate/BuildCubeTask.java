@@ -56,6 +56,7 @@ import com.fr.bi.stable.utils.time.BIDateUtils;
 import com.fr.fs.control.UserControl;
 import com.fr.general.DateUtils;
 import com.fr.json.JSONObject;
+import com.fr.stable.StringUtils;
 import org.slf4j.Logger;
 
 import java.util.HashMap;
@@ -85,9 +86,9 @@ public class BuildCubeTask implements CubeTask {
     protected BICube cube;
     protected BICube integrityCube;
     protected BICubeFinishObserver<Future<String>> finishObserver;
-    private int retryNTimes;
-
-
+    private int retryNTimes = 100;
+    private final long CUBE_CHECK_PERIOD = 5000l;
+    private final long TIME_SLEEP = 100l;
     public BuildCubeTask(BIUser biUser, CubeBuildStuff cubeBuildStuff) {
         this.cubeBuildStuff = cubeBuildStuff;
         this.biUser = biUser;
@@ -96,7 +97,6 @@ public class BuildCubeTask implements CubeTask {
         ICubeConfiguration IntegrityCubeConfiguration = BICubeConfiguration.getConf(Long.toString(biUser.getUserId()));
         this.cube = new BICubeFromMultiSource(retrievalService, new BICubeResourceRetrieval(IntegrityCubeConfiguration), BIFactoryHelper.getObject(ICubeResourceDiscovery.class));
         this.integrityCube = new BICube(new BICubeResourceRetrieval(IntegrityCubeConfiguration), BIFactoryHelper.getObject(ICubeResourceDiscovery.class));
-        retryNTimes = 100;
     }
 
     @Override
@@ -185,7 +185,7 @@ public class BuildCubeTask implements CubeTask {
                 try {
                     BICubeDiskPrimitiveDiscovery.getInstance().forceRelease();
                     message = "FineIndex build failed ,the FineIndex files will not be replaced ";
-                    BIConfigureManagerCenter.getLogManager().errorTable(new PersistentTable("", "", ""), message, biUser.getUserId());
+                    BIConfigureManagerCenter.getLogManager().errorTable(new PersistentTable(StringUtils.EMPTY, StringUtils.EMPTY, StringUtils.EMPTY), message, biUser.getUserId());
                     BILoggerFactory.getLogger().error(message);
                 } catch (Exception e) {
                     BILoggerFactory.getLogger().error(e.getMessage(), e);
@@ -213,7 +213,7 @@ public class BuildCubeTask implements CubeTask {
                 return;
             } else {
                 try {
-                    Thread.sleep(5000);
+                    Thread.sleep(CUBE_CHECK_PERIOD);
                     BILoggerFactory.getLogger().info("FineIndex thread is busy currently.Monitor will check it again after 5s ");
                 } catch (InterruptedException e) {
                     BILoggerFactory.getLogger().error(e.getMessage(), e);
@@ -241,7 +241,7 @@ public class BuildCubeTask implements CubeTask {
                         continue;
                     }
 //                等待所有机器释放nio资源
-                    Thread.sleep(100);
+                    Thread.sleep(TIME_SLEEP);
                 }
                 LOGGER.info("*********Start ForceRelease**********");
                 BICubeDiskPrimitiveDiscovery.getInstance().forceRelease();
@@ -267,7 +267,7 @@ public class BuildCubeTask implements CubeTask {
             String message = " FineIndex build failed ! caused by \n" + e.getMessage();
             LOGGER.error(message, e);
             try {
-                BIConfigureManagerCenter.getLogManager().errorTable(new PersistentTable("", "", ""), message, biUser.getUserId());
+                BIConfigureManagerCenter.getLogManager().errorTable(new PersistentTable(StringUtils.EMPTY, StringUtils.EMPTY, StringUtils.EMPTY), message, biUser.getUserId());
             } catch (Exception e1) {
                 LOGGER.error(e1.getMessage(), e1);
             }
@@ -350,7 +350,7 @@ public class BuildCubeTask implements CubeTask {
                 int updateType = null == updateSettingSources.get(tableSource) ? DBConstant.SINGLE_TABLE_UPDATE_TYPE.ALL : updateSettingSources.get(tableSource).getUpdateType();
                 LOGGER.info(BIStringUtils.append(
                         "\n" + "       table: " + (tableCount++),
-                        BuildLogHelper.tableLogContent("", tableSource),
+                        BuildLogHelper.tableLogContent(StringUtils.EMPTY, tableSource),
                         "\n" + "       update type:", updateTypeMap.get(updateType)
                 ));
             }
@@ -365,7 +365,7 @@ public class BuildCubeTask implements CubeTask {
         if (relationSet != null) {
             for (BITableSourceRelation relation : relationSet) {
                 countRelation++;
-                LOGGER.info("\nRelation " + countRelation + ":" + BuildLogHelper.relationLogContent("", relation));
+                LOGGER.info("\nRelation " + countRelation + ":" + BuildLogHelper.relationLogContent(StringUtils.EMPTY, relation));
             }
         }
         LOGGER.info("***************Relation end*****************\n");
@@ -423,7 +423,7 @@ public class BuildCubeTask implements CubeTask {
                 int cellCount = 0;
                 for (CubeTableSource oneCell : oneLayer) {
                     sb.append("Layer " + layerCount + ", Cell " + cellCount);
-                    sb.append(BuildLogHelper.tableLogContent("", oneCell));
+                    sb.append(BuildLogHelper.tableLogContent(StringUtils.EMPTY, oneCell));
                     sb.append("\n");
                     cellCount++;
                 }
@@ -442,7 +442,7 @@ public class BuildCubeTask implements CubeTask {
             for (BICubeGenerateRelation relationDepend : relationDependSet) {
                 countRelation++;
                 StringBuffer sb = new StringBuffer();
-                sb.append("\nRelation depend" + countRelation + "\n Target:\n" + BuildLogHelper.relationLogContent("", relationDepend.getRelation()))
+                sb.append("\nRelation depend" + countRelation + "\n Target:\n" + BuildLogHelper.relationLogContent(StringUtils.EMPTY, relationDepend.getRelation()))
                         .append("\n").append("Depend:\n");
                 int countDepend = 0;
                 Iterator<CubeTableSource> it = relationDepend.getDependTableSourceSet().iterator();
