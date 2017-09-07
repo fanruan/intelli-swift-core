@@ -6,5 +6,5 @@ package com.fr.bi.property;
  * @author Each.Zhang
  */
 public enum ValueType {
-    Boolean,String,Integer,Double,Long
+    BOOLEAN,STRING,INTEGER,DOUBLE,LONG
 }

@@ -6,5 +6,5 @@ package com.fr.bi.property;
  * @author Each.Zhang
  */
 public enum AvailableType {
-    Instant,Restart
+    INSTANT,RESTART
 }
