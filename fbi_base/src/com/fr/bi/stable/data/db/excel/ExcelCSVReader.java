@@ -8,22 +8,25 @@ import com.fr.bi.stable.utils.file.BIPictureUtils;
 import com.fr.general.ComparatorUtils;
 import com.fr.general.DateUtils;
 import com.fr.general.Inter;
+import com.fr.stable.ColumnRow;
 import com.fr.stable.StringUtils;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
  * Created by Young's on 2016/7/26.
  */
-public class ExcelCSVUtil {
+public class ExcelCSVReader extends AbstractExcelReader {
     private static final int READLENGTH = 8;
 
     private String[] columnNames = new String[0];
@@ -32,6 +35,8 @@ public class ExcelCSVUtil {
     private List<Object> currentRowData = new ArrayList<Object>();
     private List<Object[]> rowDataList = new ArrayList<Object[]>();
     private List<Object[]> tempRowDataList = new ArrayList<Object[]>();
+    private BufferedReader reader;
+    private boolean end = false;
 
     public String[] getColumnNames() {
         return columnNames;
@@ -43,6 +48,15 @@ public class ExcelCSVUtil {
 
     public int[] getColumnTypes() {
         return columnTypes;
+    }
+
+    public boolean isEnd() {
+        return end;
+    }
+
+    @Override
+    Map<ColumnRow, ColumnRow> getMergeInfos() {
+        return null;
     }
 
     public void setColumnTypes(int[] columnTypes) {
@@ -57,7 +71,28 @@ public class ExcelCSVUtil {
         this.rowDataList = rowDataList;
     }
 
-    public ExcelCSVUtil(String filePath, boolean isPreview) throws Exception {
+    public Object[] read() throws IOException {
+        String ln = reader.readLine();
+        if (ln == null) {
+            end = true;
+            return new Object[0];
+        }
+        currentRowData.clear();
+        for (CSVTokenizer it = new CSVTokenizer(ln); it.hasMoreTokens(); ) {
+            try {
+                currentRowData.add(it.nextToken());
+            } catch (Exception e) {
+                BILoggerFactory.getLogger().error(e.getMessage());
+            }
+        }
+        return currentRowData.toArray();
+    }
+
+    public ExcelCSVReader(String filePath, boolean isPreview) throws Exception {
+        if (!isPreview) {
+            reader = new BufferedReader(new InputStreamReader(new FileInputStream(filePath), codeString(filePath)));
+            return;
+        }
         Object lock = BIPictureUtils.getImageLock(filePath);
         synchronized (lock) {
             BufferedReader r = null;
@@ -66,20 +101,18 @@ public class ExcelCSVUtil {
                 int row = 0;
                 while (true) {
                     String ln = r.readLine();
-                    boolean preview = isPreview && row > BIBaseConstant.PREVIEW_COUNT;
-                    if (ln == null || preview) {
+                    if (ln == null || row > BIBaseConstant.PREVIEW_COUNT) {
                         break;
                     }
                     for (CSVTokenizer it = new CSVTokenizer(ln); it.hasMoreTokens(); ) {
                         try {
-                            String val = it.nextToken();
-                            currentRowData.add(val);
+                            currentRowData.add(it.nextToken());
                         } catch (Exception e) {
                             BILoggerFactory.getLogger().error(e.getMessage());
                         }
                     }
                     tempRowDataList.add(currentRowData.toArray());
-                    currentRowData = new ArrayList<Object>();
+                    currentRowData.clear();
                     row++;
                 }
             } catch (Exception e) {
@@ -127,31 +160,7 @@ public class ExcelCSVUtil {
                 }
                 createDistinctColumnNames();
             } else if (i == 1) {
-                columnTypes = new int[columnCount];
-                for (int j = 0; j < columnCount; j++) {
-                    String v = StringUtils.EMPTY;
-                    if (oneRow.length > j) {
-                        v = oneRow[j].toString().trim();
-                    }
-                    currentRowData.add(v);
-                    boolean dateType = false;
-                    try {
-                        Date date = DateUtils.string2Date(v, true);
-                        if (date != null) {
-                            dateType = true;
-                        }
-                    } catch (Exception e) {
-                        dateType = false;
-                    }
-                    if (v.matches("^[+-]?([1-9][0-9]*|0)(\\.[0-9]+)?%?$")) {
-                        columnTypes[j] = DBConstant.COLUMN.NUMBER;
-                    } else if (dateType) {
-                        columnTypes[j] = DBConstant.COLUMN.DATE;
-                    } else {
-                        columnTypes[j] = DBConstant.COLUMN.STRING;
-                    }
-                }
-                rowDataList.add(currentRowData.toArray());
+                initFieldTypes(oneRow);
             } else {
                 for (int j = 0; j < columnCount; j++) {
                     String v = StringUtils.EMPTY;
@@ -163,6 +172,34 @@ public class ExcelCSVUtil {
                 rowDataList.add(currentRowData.toArray());
             }
         }
+    }
+
+    private void initFieldTypes(Object[] oneRow) {
+        columnTypes = new int[columnCount];
+        for (int j = 0; j < columnCount; j++) {
+            String v = StringUtils.EMPTY;
+            if (oneRow.length > j) {
+                v = oneRow[j].toString().trim();
+            }
+            currentRowData.add(v);
+            boolean dateType = false;
+            try {
+                Date date = DateUtils.string2Date(v, true);
+                if (date != null) {
+                    dateType = true;
+                }
+            } catch (Exception e) {
+                dateType = false;
+            }
+            if (v.matches("^[+-]?([1-9][0-9]*|0)(\\.[0-9]+)?%?$")) {
+                columnTypes[j] = DBConstant.COLUMN.NUMBER;
+            } else if (dateType) {
+                columnTypes[j] = DBConstant.COLUMN.DATE;
+            } else {
+                columnTypes[j] = DBConstant.COLUMN.STRING;
+            }
+        }
+        rowDataList.add(currentRowData.toArray());
     }
 
     public static String codeString(String filePath) throws Exception {

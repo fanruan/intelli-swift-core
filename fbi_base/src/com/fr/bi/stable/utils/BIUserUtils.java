@@ -43,9 +43,8 @@ public class BIUserUtils {
         return jo;
     }
 
-    public static JSONArray getUserRoleInfo(long userId) throws Exception {
+    public static JSONArray getUserRoleInfo(Set<CompanyRole> companyRoles, Set<CustomRole> customRoles) throws Exception {
         JSONArray ja = JSONArray.create();
-        Set<CompanyRole> companyRoles = CompanyRoleControl.getInstance().getCompanyRoleSet(userId);
         long departAllId = CompanyRoleControl.getInstance().getDepartmentAllID();
         long postAllId = CompanyRoleControl.getInstance().getPostAllID();
         for (CompanyRole companyRole : companyRoles) {
@@ -58,7 +57,6 @@ public class BIUserUtils {
             }
         }
 
-        Set<CustomRole> customRoles = CustomRoleControl.getInstance().getCustomRoleSet(userId);
         for (CustomRole customRole : customRoles) {
             JSONObject jo = customRole.createJSONConfig();
             jo.put("type", BIBaseConstant.ROLE_TYPE.CUSTOM);
