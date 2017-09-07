@@ -5,6 +5,6 @@ package com.fr.bi.property;
  *
  * @author Each.Zhang
  */
-public enum AvaliableType {
-    TRUE,FASLE;
+public enum AvailableType {
+    Instant,Restart
 }

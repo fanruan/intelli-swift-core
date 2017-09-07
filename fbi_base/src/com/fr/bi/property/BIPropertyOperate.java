@@ -9,11 +9,9 @@ import com.fr.bi.common.persistent.xml.writer.XMLPersistentWriter;
 import com.fr.stable.project.ProjectConstants;
 import com.fr.stable.xml.XMLPrintWriter;
 import com.fr.stable.xml.XMLTools;
+import com.fr.stable.xml.XMLableReader;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
+import java.io.*;
 import java.util.*;
 
 /**
@@ -36,9 +34,10 @@ public class BIPropertyOperate implements PropertyOperate {
     public List<PropertiesConfig> read() {
         List<PropertiesConfig> propertiesConfigList = new ArrayList<PropertiesConfig>();
         try {
-            XMLPersistentReader reader = new XMLPersistentReader(new HashMap<String, BIBeanXMLReaderWrapper>(), new BIBeanXMLReaderWrapper(propertiesConfigList));
-            XMLTools.readInputStreamXML(reader, new FileInputStream(PROPERTY_FILE));
-            propertiesConfigList = (List<PropertiesConfig>) reader.getBeanWrapper().getBean();
+            XMLableReader xmLableReader = XMLableReader.createXMLableReader(new FileReader(PROPERTY_FILE));
+            BIPropertyHelper propertyHelper = BIPropertyHelper.getInstance();
+            propertyHelper.readXML(xmLableReader);
+            propertiesConfigList = propertyHelper.getPropertyList();
         } catch (Exception e) {
             BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
