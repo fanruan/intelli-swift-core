@@ -80,24 +80,24 @@ public class PropertiesConfig implements XMLable{
                 } else if (ComparatorUtils.equals("ValueType", tagName)) {
                     elementValue = reader.getElementValue();
                     if (ComparatorUtils.equals("Integer", elementValue)) {
-                        this.setValueType(ValueType.Integer);
+                        this.setValueType(ValueType.INTEGER);
                     } else if (ComparatorUtils.equals("Double", elementValue)) {
-                        this.setValueType(ValueType.Double);
+                        this.setValueType(ValueType.DOUBLE);
                     } else if (ComparatorUtils.equals("String", elementValue)) {
-                        this.setValueType(ValueType.String);
+                        this.setValueType(ValueType.STRING);
                     } else if (ComparatorUtils.equals("Boolean", elementValue)) {
-                        this.setValueType(ValueType.Boolean);
+                        this.setValueType(ValueType.BOOLEAN);
                     } else {
-                        this.setValueType(ValueType.Long);
+                        this.setValueType(ValueType.LONG);
                     }
                 } else if (ComparatorUtils.equals("Value", tagName)) {
                     this.setValue(reader.getElementValue());
                 } else if (ComparatorUtils.equals("AvailableType", tagName)) {
                     elementValue = reader.getElementValue();
                     if (ComparatorUtils.equals("Instant", elementValue)) {
-                        this.setAvailableType(AvailableType.Instant);
+                        this.setAvailableType(AvailableType.INSTANT);
                     } else {
-                        this.setAvailableType(AvailableType.Restart);
+                        this.setAvailableType(AvailableType.RESTART);
                     }
                 } else if (ComparatorUtils.equals("Title", tagName)) {
                     this.setTitle(reader.getElementValue());
