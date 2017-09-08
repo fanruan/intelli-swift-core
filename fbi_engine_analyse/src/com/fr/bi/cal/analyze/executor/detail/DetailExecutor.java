@@ -62,7 +62,7 @@ public class DetailExecutor extends AbstractDetailExecutor {
         //返回前台的时候再去掉不使用的字段
         final Set<Integer> usedDimensionIndexes = getUsedDimensionIndexes();
         //BI-9071 考虑性能按指标取样式，不要每个单元格都去取一遍样式
-        ChartSetting[] chartSettings = getChartSettings();
+        final ChartSetting[] chartSettings = getChartSettings();
         final TableCellIterator iter = new TableCellIterator(usedDimensionIndexes.size(), count + 1);
         new Thread() {
             public void run() {
