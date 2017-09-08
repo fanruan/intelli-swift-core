@@ -72,6 +72,7 @@ public class PropertiesConfig implements XMLable{
             if (ComparatorUtils.equals(XML_TAG, tagName)) {
                 if (checkNull()) {
                     propertyList.add(new PropertiesConfig(this.propertyKey, this.propertyName, this.valueType, this.value, this.availableType, this.title, this.description, this.relationKey));
+                    this.relationKey = null;
                 }
                 this.setPropertyKey(reader.getAttrAsString("propertyKey", null));
             } else {
