@@ -730,12 +730,12 @@ public class BICoreModule extends AbstractModule {
         String tableName = ObjectTableMapper.PREFIX_NAME + Lock.getSimpleName();
         try {
             cn = PlatformDB.getDB().createConnection();
-            ps = cn.prepareStatement("TRUNCATE TABLE " + DialectFactory.generateDialect(cn).column2SQL(tableName));
+            ps = cn.prepareStatement("DELETE FROM " + DialectFactory.generateDialect(cn).column2SQL(tableName)+" WHERE 1=1");
             ps.execute();
-            BILoggerFactory.getLogger().info("Table " + tableName + " has been deleted successfully");
+            BILoggerFactory.getLogger().info("Table " + tableName + " has been clear successfully");
             cn.commit();
         } catch (Exception e) {
-            //BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger(BICoreModule.class).error(e.getMessage(), e);
         } finally {
             DBUtils.closeStatement(ps);
             DBUtils.closeConnection(cn);
