@@ -184,7 +184,7 @@ public class BICoreModule extends AbstractModule {
         StableFactory.registerMarkedObject(BIExcelViewManagerProvider.XML_TAG, getExcelViewManager());
         StableFactory.registerMarkedObject(BICubeConfManagerProvider.XML_TAG, getBICubeConfManager());
         StableFactory.registerMarkedObject(SingleTableUpdateManager.XML_TAG, new SingleTableUpdateManager());
-        
+
         StableFactory.registerMarkedObject(BICubeTaskRecordProvider.XML_TAG, new BICubeTaskRecordManagerWithoutUser());
         StableFactory.registerMarkedObject(BITimeScheduleService.XML_TAG, getBITimeScheduleManager());
 
@@ -194,6 +194,7 @@ public class BICoreModule extends AbstractModule {
         StableFactory.registerMarkedObject(BIPublicReportManagerProvider.XML_TAG, getBIPublicReportManger());
         StableFactory.registerMarkedObject(BIUserEditViewAuthProvider.XML_TAG, getBIUserEditViewAuthManager());
     }
+
     public BIUserEditViewAuthProvider getBIUserEditViewAuthManager() {
         if (ClusterEnv.isCluster()) {
             if (ClusterAdapter.getManager().getHostManager().isSelf()) {
@@ -303,7 +304,11 @@ public class BICoreModule extends AbstractModule {
                         ClusterAdapter.getManager().getHostManager().getPort());
             }
         } else {
-            return new ScheduleEntityPoolReader(BIConfigurePathUtils.createResourceBasePath() + File.separator + "scheduleEntityPool.xml").read();
+            if (new File(BIConfigurePathUtils.createResourceBasePath() + File.separator + "scheduleEntityPool.xml").exists()) {
+                return new ScheduleEntityPoolReader(BIConfigurePathUtils.createResourceBasePath() + File.separator + "scheduleEntityPool.xml").read();
+            } else {
+                return new BITimeSchedulerManager();
+            }
         }
     }
 
