@@ -30,12 +30,12 @@ public class BITableCellFormatHelper {
                 return text;
             }
             if (Double.valueOf(text).isInfinite()) {
-                return "N/0";
-//            if (Double.valueOf(text)==Double.POSITIVE_INFINITY){
-//                return "∞";
-//            }else {
-//                return "-∞";
-//            }
+                if (Double.valueOf(text) == Double.POSITIVE_INFINITY) {
+                    return "∞";
+                } else {
+                    return "-∞";
+                }
+//                return "N/0";
             }
             double value = parseNumByLevel(settings, Double.valueOf(text));
             text = parseNumByFormat(decimalFormat(settings), value);
