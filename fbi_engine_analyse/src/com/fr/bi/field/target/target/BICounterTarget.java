@@ -28,6 +28,7 @@ import java.util.Set;
 public class BICounterTarget extends BISummaryTarget {
 
     private String distinct_field_name;
+
     private static BILogger LOGGER = BILoggerFactory.getLogger(BICounterTarget.class);
 
     /**
@@ -39,6 +40,7 @@ public class BICounterTarget extends BISummaryTarget {
      */
     @Override
     public void parseJSON(JSONObject jo, long userId) throws Exception {
+
         super.parseJSON(jo, userId);
         if (jo.has("_src")) {
             JSONObject obj = jo.optJSONObject("_src");
@@ -65,6 +67,7 @@ public class BICounterTarget extends BISummaryTarget {
     }
 
     private boolean contain(BusinessField field) {
+
         if (field != null && field.getTableBelongTo() != null) {
             CubeTableSource table = field.getTableBelongTo().getTableSource();
             if (table != null) {
@@ -86,11 +89,13 @@ public class BICounterTarget extends BISummaryTarget {
     //BUG 这里不需要刷新column
     @Override
     public void refreshColumn() {
+
     }
 
 
     @Override
     public boolean equals(Object o) {
+
         if (this == o) {
             return true;
         }
@@ -112,17 +117,20 @@ public class BICounterTarget extends BISummaryTarget {
 
     @Override
     public int hashCode() {
+
         int result = super.hashCode();
         result = 31 * result + (distinct_field_name != null ? distinct_field_name.hashCode() : 0);
         return result;
     }
 
     public SumType getSumType() {
+
         return StringUtils.isNotEmpty(distinct_field_name) ? SumType.GVI : SumType.PLUS;
     }
 
     @Override
     public TargetCalculator createSummaryCalculator() {
+
         return new CountCalculator(this, distinct_field_name);
     }
 
