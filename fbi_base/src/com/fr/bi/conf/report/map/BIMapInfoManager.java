@@ -32,6 +32,10 @@ public class BIMapInfoManager {
 
     public static final String ACTION_PREFIX = "?op=fr_bi_base&cmd=get_map_json&file_path=";
 
+    public static final String PRE = "MAP_";
+    public static final String GEOGRAPHIC = "geographic";
+    public static final String IMAGE = "image";
+
     private static BIMapInfoManager manager;
 
     public static BIMapInfoManager getInstance() {
@@ -58,14 +62,14 @@ public class BIMapInfoManager {
             customMapParentChildrenRelation = new HashMap<String, List<String>>();
             String innerMapPath = new File(FRContext.getCurrentEnv().getPath() + BIBaseConstant.MAP_JSON.MAP_PATH + File.separator + "geographic").getAbsolutePath();
             String customMapPath = new File(FRContext.getCurrentEnv().getPath() + BIBaseConstant.MAP_JSON.MAP_PATH + File.separator + "image").getAbsolutePath();
-            editFileNames(innerMapPath, "geographic", "geographic", "MAP_", 0, true);
-            editFileNames(customMapPath, "image", "image", "MAP_", 0, false);
+            editFileNames(innerMapPath, GEOGRAPHIC, GEOGRAPHIC, 0, true);
+            editFileNames(customMapPath, IMAGE, IMAGE, 0, false);
         } catch (JSONException e) {
             BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
     }
 
-    private void editFileNames(String path, String parentPath, String parentName, String prev, int layer, boolean isInner) throws JSONException {
+    private void editFileNames(String path, String parentPath, String parentName, int layer, boolean isInner) throws JSONException {
         File file = new File(path);
         File[] array = file.listFiles();
         if (array == null) {
@@ -94,17 +98,17 @@ public class BIMapInfoManager {
                 if(innerMapName.containsKey(fileName)){
                     continue;
                 }
-                innerMapName.put(fileName, prev + currentName);
-                innerMapTypeName.put(prev + currentName, fileName);
-                innerMapPath.put(prev + currentName, ACTION_PREFIX + CodeUtils.cjkEncode(currentName) + ".json");
-                innerMapLayer.put(prev + currentName, layer);
+                innerMapName.put(fileName, PRE + currentName);
+                innerMapTypeName.put(PRE + currentName, fileName);
+                innerMapPath.put(PRE + currentName, ACTION_PREFIX + CodeUtils.cjkEncode(currentName) + ".json");
+                innerMapLayer.put(PRE + currentName, layer);
             } else {
-                customMapName.put(fileName, prev + currentName);
-                customMapTypeName.put(prev + currentName, fileName);
-                customMapPath.put(prev + currentName, ACTION_PREFIX + CodeUtils.cjkEncode(currentName) + ".json");
-                customMapLayer.put(prev + currentName, layer);
+                customMapName.put(fileName, PRE + currentName);
+                customMapTypeName.put(PRE + currentName, fileName);
+                customMapPath.put(PRE + currentName, ACTION_PREFIX + CodeUtils.cjkEncode(currentName) + ".json");
+                customMapLayer.put(PRE + currentName, layer);
             }
-            children.add(prev + currentName);
+            children.add(PRE + currentName);
         }
         if (isInner) {
             innerMapParentChildrenRelation.put(parentName, children);
@@ -114,7 +118,7 @@ public class BIMapInfoManager {
         for (File f : dirs) {
             String currentName = StringUtils.isEmpty(parentName) ? f.getName() : parentName + "/" + f.getName();
             String currentPath = StringUtils.isEmpty(parentPath) ? f.getName() : parentPath + "/" + f.getName();
-            editFileNames(f.getAbsolutePath(), currentPath, currentName, prev, layer + 1, isInner);
+            editFileNames(f.getAbsolutePath(), currentPath, currentName, layer + 1, isInner);
 
         }
     }

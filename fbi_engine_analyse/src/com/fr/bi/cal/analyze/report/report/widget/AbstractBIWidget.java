@@ -29,11 +29,13 @@ import com.fr.bi.report.result.DimensionCalculator;
 import com.fr.bi.stable.gvi.GVIUtils;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.fs.control.UserControl;
+import com.fr.general.ComparatorUtils;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;
 import com.fr.report.poly.TemplateBlock;
 import com.fr.stable.CodeUtils;
 import com.fr.stable.Constants;
+import com.fr.stable.StringUtils;
 import com.fr.stable.unit.UnitRectangle;
 import com.fr.web.core.SessionDealWith;
 
@@ -356,9 +358,13 @@ public abstract class AbstractBIWidget implements BIWidget {
                 for (int i = 0; i < sf.length(); i++) {
                     JSONObject j = sf.getJSONObject(i);
                     Map<String, String> s = new HashMap<String, String>();
-                    s.put("sourceFieldId", j.optString("sourceFieldId"));
-                    s.put("targetFieldId", j.optString("targetFieldId"));
-                    r.add(s);
+                    // 源字段和目标字段都不为空字符串的时候才添加进去
+                    if (!ComparatorUtils.equals(StringUtils.EMPTY, j.optString("sourceFieldId")) &&
+                            !ComparatorUtils.equals(StringUtils.EMPTY, j.optString("targetFieldId"))) {
+                        s.put("sourceFieldId", j.optString("sourceFieldId"));
+                        s.put("targetFieldId", j.optString("targetFieldId"));
+                        r.add(s);
+                    }
                 }
             } catch (Exception e) {
                 BILoggerFactory.getLogger(this.getClass()).info("error in get global filter source and target field", e);
