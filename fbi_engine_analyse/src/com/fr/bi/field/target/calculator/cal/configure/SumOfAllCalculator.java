@@ -16,37 +16,43 @@ import java.util.concurrent.Callable;
 public class SumOfAllCalculator extends SummaryOfAllCalculator {
 
     private static final long serialVersionUID = 1511004295587426830L;
+
     private BITarget calTarget;
 
     public SumOfAllCalculator(BIConfiguredCalculateTarget target, BITarget calTarget, int start_group) {
+
         super(target, calTarget.createTargetGettingKey(), start_group);
         this.calTarget = calTarget;
     }
 
 
-
     @Override
     public Callable createNodeDealWith(BINode node, XTargetGettingKey key) {
+
         return new RankDealWith(node, key);
     }
 
     private class RankDealWith implements Callable {
+
         private BINode rank_node;
+
         private XTargetGettingKey key;
 
         public RankDealWith(BINode node, XTargetGettingKey key) {
+
             this.rank_node = node;
             this.key = key;
         }
 
         @Override
         public Object call() throws Exception {
+
             int deep = getCalDeep(rank_node);
             BINode temp_node = getDeepCalNode(rank_node);
             BINode cursor_node = temp_node;
             double sum = 0;
-            if(calTarget.getSummaryType() == BIReportConstant.SUMMARY_TYPE.SUM
-                    || ((calTarget.getSummaryType() == BIReportConstant.SUMMARY_TYPE.COUNT ) && ((BICounterTarget)calTarget).getSumType() == SumType.PLUS)){
+            if (calTarget.getSummaryType() == BIReportConstant.SUMMARY_TYPE.SUM
+                    || ((calTarget.getSummaryType() == BIReportConstant.SUMMARY_TYPE.COUNT) && ((BICounterTarget) calTarget).getSumType() == SumType.PLUS)) {
                 sum = rank_node.getSummaryValue(getCalTargetGettingKey(key)).doubleValue();
             } else {
                 while (isNotEnd(cursor_node, deep)) {
@@ -67,6 +73,7 @@ public class SumOfAllCalculator extends SummaryOfAllCalculator {
         }
 
         private boolean isNotEnd(BINode node, int deep) {
+
             if (node == null) {
                 return false;
             }
