@@ -157,6 +157,7 @@ public class CubeRunner {
         BICubeConfigureCenter.getPackageManager().startBuildingCube(biUser.getUserId());
         BIConfigureManagerCenter.getLogManager().clearLog(biUser.getUserId());
         BIConfigureManagerCenter.getLogManager().logStart(biUser.getUserId());
+        BackUpUtils.backup();
     }
 
     private void finish(final CubeTask cubeTask) {

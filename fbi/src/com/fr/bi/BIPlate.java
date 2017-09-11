@@ -8,6 +8,7 @@ import com.finebi.cube.conf.BICubeConfigureCenter;
 import com.finebi.cube.conf.BISystemPackageConfigurationProvider;
 import com.finebi.cube.conf.BITableRelationConfigurationProvider;
 import com.fr.base.FRContext;
+import com.fr.bi.cal.generate.BackUpUtils;
 import com.fr.bi.cal.report.BIActor;
 import com.fr.bi.cal.report.db.DialectCreatorImpl;
 import com.fr.bi.cal.report.db.HiveDialectCreatorImpl;
@@ -90,8 +91,7 @@ public class BIPlate extends AbstractFSPlate {
             registerEntrySomething();
             initOOMKillerForLinux();
             loadMemoryData();
-            //BI-9278 备份功能删掉，直接用fr的备份
-            //backupWhenStart();
+            backupWhenStart();
             addBITableColumn4NewConnection();
             addSharedTableColumn4NewConnection();
 
@@ -102,6 +102,12 @@ public class BIPlate extends AbstractFSPlate {
 
         } catch (Throwable e) {
             LOGGER.error(e.getMessage(), e);
+        }
+    }
+
+    private void backupWhenStart(){
+        if(PerformancePlugManager.getInstance().isBackupWhenStart()){
+            BackUpUtils.backup();
         }
     }
 
