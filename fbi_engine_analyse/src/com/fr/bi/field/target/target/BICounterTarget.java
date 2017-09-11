@@ -7,6 +7,7 @@ import com.finebi.cube.conf.field.BusinessField;
 import com.finebi.cube.conf.table.BusinessTable;
 import com.fr.bi.conf.utils.BIModuleUtils;
 import com.fr.bi.field.target.calculator.sum.CountCalculator;
+import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.data.BIFieldID;
 import com.fr.bi.stable.data.BITableID;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
@@ -123,5 +124,11 @@ public class BICounterTarget extends BISummaryTarget {
     @Override
     public TargetCalculator createSummaryCalculator() {
         return new CountCalculator(this, distinct_field_name);
+    }
+
+    @Override
+    public int getSummaryType() {
+
+        return BIReportConstant.SUMMARY_TYPE.COUNT;
     }
 }

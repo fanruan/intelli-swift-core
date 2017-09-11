@@ -1,6 +1,8 @@
 package com.fr.bi.field.target.calculator.cal.configure;
 
 import com.fr.bi.conf.report.widget.field.target.BITarget;
+import com.fr.bi.field.target.target.BICounterTarget;
+import com.fr.bi.field.target.target.SumType;
 import com.fr.bi.field.target.target.cal.target.configure.BIConfiguredCalculateTarget;
 import com.fr.bi.report.key.XTargetGettingKey;
 import com.fr.bi.report.result.BINode;
@@ -43,7 +45,8 @@ public class SumOfAllCalculator extends SummaryOfAllCalculator {
             BINode temp_node = getDeepCalNode(rank_node);
             BINode cursor_node = temp_node;
             double sum = 0;
-            if (calTarget.getSummaryType() == BIReportConstant.SUMMARY_TYPE.SUM || calTarget.getSummaryType() == BIReportConstant.SUMMARY_TYPE.COUNT){
+            if(calTarget.getSummaryType() == BIReportConstant.SUMMARY_TYPE.SUM
+                    || ((calTarget.getSummaryType() == BIReportConstant.SUMMARY_TYPE.COUNT ) && ((BICounterTarget)calTarget).getSumType() == SumType.PLUS)){
                 sum = rank_node.getSummaryValue(getCalTargetGettingKey(key)).doubleValue();
             } else {
                 while (isNotEnd(cursor_node, deep)) {
