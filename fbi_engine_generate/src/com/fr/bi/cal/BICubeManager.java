@@ -2,7 +2,12 @@ package com.fr.bi.cal;
 
 import com.finebi.cube.common.log.BILogger;
 import com.finebi.cube.common.log.BILoggerFactory;
-import com.finebi.cube.conf.*;
+import com.finebi.cube.conf.BICubeManagerProvider;
+import com.finebi.cube.conf.BISystemConfigHelper;
+import com.finebi.cube.conf.CubeBuildStuff;
+import com.finebi.cube.conf.CubeGenerationManager;
+import com.finebi.cube.conf.ICubeGenerateTask;
+import com.finebi.cube.conf.ITaskCalculator;
 import com.finebi.cube.impl.conf.CubeBuildStuffComplete;
 import com.finebi.cube.relation.BITableRelation;
 import com.finebi.cube.relation.BITableSourceRelation;
@@ -25,8 +30,14 @@ import com.fr.fs.control.UserControl;
 import com.fr.general.GeneralContext;
 import com.fr.stable.EnvChangedListener;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -222,15 +233,15 @@ public class BICubeManager implements BICubeManagerProvider {
         return cubeGenerateTaskQueue.getSize() > 0 || isCubeBuilding;
     }
 
-    private void startCubeBuilding(long userId) {
-        BIConfigureManagerCenter.getLogManager().logAllCubeBuildingStatus(userId, true);
-        isCubeBuilding = true;
-    }
-
-    private void finishCubeBuilding(long userId) {
-        BIConfigureManagerCenter.getLogManager().logAllCubeBuildingStatus(userId, false);
-        isCubeBuilding = false;
-    }
+//    private void startCubeBuilding(long userId) {
+//        BIConfigureManagerCenter.getLogManager().logAllCubeBuildingStatus(userId, true);
+//        isCubeBuilding = true;
+//    }
+//
+//    private void finishCubeBuilding(long userId) {
+//        BIConfigureManagerCenter.getLogManager().logAllCubeBuildingStatus(userId, false);
+//        isCubeBuilding = false;
+//    }
 
     /**
      * 等待队列中的sourceIds
@@ -256,36 +267,38 @@ public class BICubeManager implements BICubeManagerProvider {
     @Override
     public synchronized boolean addCubeGenerateTask2Queue(long userId, String baseTableSourceId, Integer updateType, boolean isTimedTask) {
         try {
+            setCubeBuildingStart();
             //BI-8384  cube更新，不区分userId了。。都用-999；
             userId = UserControl.getInstance().getSuperManagerID();
             BILoggerFactory.getLogger(BICubeManager.class).info("Add CubeGenerateTask to taskqueue!" + (isTimedTask ? "(TimedTask)" : "(ManualTask)"));
             ICubeGenerateTask cubeGenerateTask;
             if (baseTableSourceId != null) {
                 cubeGenerateTask = new SingleCubeGenerateTask(baseTableSourceId, updateType, userId);
-                cubeGenerateTaskQueue.put(cubeGenerateTask);
+                putCubeGenerateTaskQueue(cubeGenerateTask);
             } else {
                 if (isTimedTask) {
                     cubeGenerateTask = new AllCubeGenerateTask(userId);
-                    cubeGenerateTaskQueue.put(cubeGenerateTask);
+                    putCubeGenerateTaskQueue(cubeGenerateTask);
                 } else {
                     cubeGenerateTask = CustomTaskBuilder.getCubeGenerateTask(userId);
-                    cubeGenerateTaskQueue.put(cubeGenerateTask);
+                    putCubeGenerateTaskQueue(cubeGenerateTask);
                 }
             }
             BILoggerFactory.getLogger(BICubeManager.class).info(cubeGenerateTask.getTaskInfo());
-//            CubeGenerateTaskQueue.getInstance().showTasks();
         } catch (Exception e) {
             BILoggerFactory.getLogger(BICubeManager.class).error("CubeGenerateTask:" +
                     ((baseTableSourceId != null) ? baseTableSourceId : "All") + " add to task queue failed！", e);
+            setCubeBuildingEnd();
             return false;
         }
         return true;
 
     }
 
-    public boolean addCubeGenerateTask2Queue(long userId, boolean isTimedTask,
-                                             List<BITableRelation> tableRelations, Map<String, Integer> sourceIdUpdateTypeMap) {
+    public synchronized boolean addCubeGenerateTask2Queue(long userId, boolean isTimedTask,
+                                                          List<BITableRelation> tableRelations, Map<String, Integer> sourceIdUpdateTypeMap) {
         try {
+            setCubeBuildingStart();
             //BI-8384  cube更新，不区分userId了。。都用-999；
             userId = UserControl.getInstance().getSuperManagerID();
             BILoggerFactory.getLogger(BICubeManager.class).info("Add Custom CubeGenerateTask to taskqueue!" + (isTimedTask ? "(TimedTask)" : "(ManualTask)"));
@@ -295,12 +308,41 @@ public class BICubeManager implements BICubeManagerProvider {
                 sourceIdUpdateTypesMap.get(entry.getKey()).add(entry.getValue());
             }
             ICubeGenerateTask cubeGenerateTask = new CustomCubeGenerateTask(userId, sourceIdUpdateTypesMap, tableRelations);
-            cubeGenerateTaskQueue.put(cubeGenerateTask);
+            putCubeGenerateTaskQueue(cubeGenerateTask);
         } catch (Exception e) {
             BILoggerFactory.getLogger(BICubeManager.class).error(e.getMessage(), e);
+            setCubeBuildingEnd();
             return false;
         }
         return true;
+    }
+
+    private void putCubeGenerateTaskQueue(ICubeGenerateTask cubeGenerateTask) throws InterruptedException {
+        synchronized (object) {
+            cubeGenerateTaskQueue.put(cubeGenerateTask);
+        }
+    }
+
+    private boolean removeCubeGenerateTaskQueue(ICubeGenerateTask cubeGenerateTask) {
+        synchronized (object) {
+            return cubeGenerateTaskQueue.remove(cubeGenerateTask);
+        }
+    }
+
+    private void setCubeBuildingStart() {
+        synchronized (object) {
+            if (!isCubeBuilding) {
+                isCubeBuilding = true;
+            }
+        }
+    }
+
+    private void setCubeBuildingEnd() {
+        synchronized (object) {
+            if (cubeGenerateTaskQueue.isEmpty() && cubeGenerateTask == null) {
+                isCubeBuilding = false;
+            }
+        }
     }
 
     private class CubeBuildRunnable implements Runnable {
@@ -315,9 +357,8 @@ public class BICubeManager implements BICubeManagerProvider {
                     //合并
                     /**BI-8911 在合并过程中，前台来查询cube更新状态可能会是没有更新的，
                      * 把这个start提前避免merge的影响
-                    **/
+                     **/
                     long userId = cubeGenerateTask.getUserId();
-                    startCubeBuilding(userId);
                     cubeGenerateTask = mergeTaskIfNeed(cubeGenerateTask);
                     ITaskCalculator taskCalculator = cubeGenerateTask.getTaskCalculator();
                     BISystemConfigHelper configHelper = new BISystemConfigHelper();
@@ -329,14 +370,13 @@ public class BICubeManager implements BICubeManagerProvider {
                         CubeTask cubeTask = new BuildCubeTask(new BIUser(userId), cubeBuildStuff);
                         addTask(cubeTask, userId);
                     }
-
-                    finishCubeBuilding(userId);
                 } catch (Exception e) {
                     BILoggerFactory.getLogger(BICubeManager.class).error(e.getMessage(), e);
                 } finally {
                     synchronized (object) {
                         cubeGenerateTask = null;
                     }
+                    setCubeBuildingEnd();
                 }
             }
         }
@@ -356,7 +396,9 @@ public class BICubeManager implements BICubeManagerProvider {
                     BILoggerFactory.getLogger(BICubeManager.class).info("nextCubeGenerateTask:" + nextCubeGenerateTask.getTaskInfo());
                     if (nextCubeGenerateTask.isOk2Merge()) {
                         mainCubeGenerateTask = mainCubeGenerateTask.merge(nextCubeGenerateTask);
-                        cubeGenerateTaskQueue.poll();
+                        synchronized (object) {
+                            cubeGenerateTaskQueue.poll();
+                        }
                         continue;
                     }
                     break;
@@ -378,12 +420,12 @@ public class BICubeManager implements BICubeManagerProvider {
     }
 
     public boolean removeCubeGenerateTask(ICubeGenerateTask task) {
-        return cubeGenerateTaskQueue.remove(task);
+        return removeCubeGenerateTaskQueue(task);
     }
 
     public boolean removeCubeGenerateTask(List<ICubeGenerateTask> tasks) {
         for (ICubeGenerateTask task : tasks) {
-            cubeGenerateTaskQueue.remove(task);
+            removeCubeGenerateTaskQueue(task);
         }
         return true;
     }
