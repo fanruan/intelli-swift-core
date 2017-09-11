@@ -55,7 +55,7 @@ public class BICubeManager implements BICubeManagerProvider {
 
     private ICubeGenerateTask cubeGenerateTask;
 
-    private Boolean isCubeBuilding = false;
+    private boolean isCubeBuilding = false;
 
     private Object object = new Object();
 
