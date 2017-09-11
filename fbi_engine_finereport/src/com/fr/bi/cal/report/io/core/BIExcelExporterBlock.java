@@ -462,6 +462,11 @@ public class BIExcelExporterBlock implements ResultReport, ResultElementCase {
     }
 
     @Override
+    public void prepare2ShrinkRealWidthOrHeight4Cell(CellElement cellElement, int i) {
+
+    }
+
+    @Override
     public void addColumnPrivilegeControl(int arg0, String arg1) {
 
 
