@@ -5,6 +5,6 @@ package com.fr.bi.property;
  *
  * @author Each.Zhang
  */
-public enum IsModified {
+public enum Modification {
     SHOW,HIDDEN
 }

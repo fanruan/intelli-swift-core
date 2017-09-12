@@ -35,12 +35,12 @@ public class PropertiesConfig implements XMLable{
     //修改配置之后，关联的配置对应的key
     private String relationKey;
     //是否提供修改
-    private IsModified isModified;
+    private Modification isModified;
 
     public PropertiesConfig() {
     }
 
-    public PropertiesConfig(String propertyKey, String propertyName, ValueType valueType, Object value, AvailableType availableType, String title, String description, String relationKey, IsModified isModified) {
+    public PropertiesConfig(String propertyKey, String propertyName, ValueType valueType, Object value, AvailableType availableType, String title, String description, String relationKey, Modification isModified) {
         this.propertyKey = propertyKey;
         this.propertyName = propertyName;
         this.valueType = valueType;
@@ -113,9 +113,9 @@ public class PropertiesConfig implements XMLable{
                 } else if (ComparatorUtils.equals("IsModified", tagName)) {
                     elementValue = reader.getElementValue();
                     if (ComparatorUtils.equals(elementValue, "Show")) {
-                        this.isModified = IsModified.SHOW;
+                        this.isModified = Modification.SHOW;
                     } else {
-                        this.isModified = IsModified.HIDDEN;
+                        this.isModified = Modification.HIDDEN;
                     }
                 }
             }
@@ -208,7 +208,7 @@ public class PropertiesConfig implements XMLable{
         return this.propertyList;
     }
 
-    public IsModified getIsModified() {
+    public Modification getIsModified() {
         return isModified;
     }
 
