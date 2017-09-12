@@ -1,6 +1,8 @@
 package com.fr.bi.cal.report.io;
 
 import com.fr.bi.cal.report.io.core.BIExcelExporterBlock;
+import com.fr.bi.cal.report.io.iterator.StreamCellCase;
+import com.fr.bi.cal.report.report.poly.BIPolyAnalyECBlock;
 import com.fr.io.exporter.excel.stream.StreamExcel2007Exporter;
 import com.fr.io.exporter.poi.wrapper.POIWorkbookAction;
 import com.fr.main.workbook.ResultWorkBook;
@@ -40,6 +42,10 @@ public class BIExcel2007Exporter extends StreamExcel2007Exporter {
                 ec = new BIChartElementCase((ResultChartBlock) block);
             } else {
                 ec = (ElementCase) block;
+            }
+
+            if(block instanceof BIPolyAnalyECBlock) {
+                StreamCellCase cellCase = (StreamCellCase) ((BIPolyAnalyECBlock) ec).getCellCase();
             }
 
             int columnCount = ec.getColumnCount();
