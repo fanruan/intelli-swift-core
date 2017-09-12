@@ -708,15 +708,15 @@ public class BICoreModule extends AbstractModule {
 
 
     private void registerDAO() {
-        if ((!ClusterEnv.isCluster())) {
-            dropBILockDAOTable(BIReportNodeLock.class);
-            dropBILockDAOTable(BIConfTableLock.class);
+        if (!ClusterEnv.isDirectCluster()) {
+            if ((!ClusterEnv.isCluster())) {
+                clearBILockDAOTable(BIReportNodeLock.class);
+                clearBILockDAOTable(BIConfTableLock.class);
+            } else if (ClusterAdapter.getManager().getHostManager().isSelf() && isFirstTimeInit) {
+                clearBILockDAOTable(BIReportNodeLock.class);
+                clearBILockDAOTable(BIConfTableLock.class);
+            }
         }
-        if (ClusterAdapter.getManager().getHostManager().isSelf() && isFirstTimeInit) {
-            dropBILockDAOTable(BIReportNodeLock.class);
-            dropBILockDAOTable(BIConfTableLock.class);
-        }
-
         StableFactory.registerMarkedObject(HSQLDBDAOControl.class.getName(), HSQLBIReportDAO.getInstance());
         StableFactory.registerMarkedObject(TableDataDAOControl.class.getName(), TableDataBIReportDAO.getInstance());
         StableFactory.registerMarkedObject(SyncDaoControl.class.getName(), TableDataBIReportDAO.getInstance());
@@ -724,18 +724,18 @@ public class BICoreModule extends AbstractModule {
         StableFactory.registerMarkedObject(BIConfTableLockDAO.class.getName(), BIConfTableLockDAO.getInstance());
     }
 
-    private void dropBILockDAOTable(Class Lock) {
+    private void clearBILockDAOTable(Class Lock) {
         Connection cn = null;
         PreparedStatement ps = null;
         String tableName = ObjectTableMapper.PREFIX_NAME + Lock.getSimpleName();
         try {
             cn = PlatformDB.getDB().createConnection();
-            ps = cn.prepareStatement("DROP TABLE " + DialectFactory.generateDialect(cn).column2SQL(tableName));
+            ps = cn.prepareStatement("DELETE FROM " + DialectFactory.generateDialect(cn).column2SQL(tableName)+" WHERE 1=1");
             ps.execute();
-            BILoggerFactory.getLogger().info("Table " + tableName + " has been deleted successfully");
+            BILoggerFactory.getLogger().info("Table " + tableName + " has been clear successfully");
             cn.commit();
         } catch (Exception e) {
-            //BILogger.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger(BICoreModule.class).error(e.getMessage(), e);
         } finally {
             DBUtils.closeStatement(ps);
             DBUtils.closeConnection(cn);
