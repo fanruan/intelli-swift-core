@@ -120,14 +120,6 @@ public class StreamCellCase implements CellCase {
     public void releaseCache() {
     }
 
-    public int getPageSize () {
-        return iterator.getPageSize();
-    }
-
-    public boolean isEnd() {
-        return iterator.isEnd();
-    }
-
     @Override
     public Object clone() {
         return this;

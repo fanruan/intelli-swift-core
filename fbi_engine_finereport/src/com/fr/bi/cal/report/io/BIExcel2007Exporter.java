@@ -1,8 +1,6 @@
 package com.fr.bi.cal.report.io;
 
 import com.fr.bi.cal.report.io.core.BIExcelExporterBlock;
-import com.fr.bi.cal.report.io.iterator.StreamCellCase;
-import com.fr.bi.cal.report.report.poly.BIPolyAnalyECBlock;
 import com.fr.io.exporter.excel.stream.StreamExcel2007Exporter;
 import com.fr.io.exporter.poi.wrapper.POIWorkbookAction;
 import com.fr.main.workbook.ResultWorkBook;

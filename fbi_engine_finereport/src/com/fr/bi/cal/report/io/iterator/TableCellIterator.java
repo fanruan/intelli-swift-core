@@ -53,12 +53,4 @@ public class TableCellIterator {
         isEnd = true;
     }
 
-    public int getPageSize() {
-        return iters.size();
-    }
-
-    public boolean isEnd () {
-        return isEnd;
-    }
-
 }
