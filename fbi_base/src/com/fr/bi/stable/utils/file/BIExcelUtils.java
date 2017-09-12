@@ -71,14 +71,19 @@ public class BIExcelUtils {
                         continue;
                     }
                     Object value = dataModel.getValueAt(row, index);
+                    if (dataModel.isEnd()) {
+                        break;
+                    }
                     if (back != null && row != 0) {
                         back.actionPerformed(new BIDataValue(row - 1, j, value));
                     }
                 }
             }
-            row++;
+            if (!dataModel.isEnd()) {
+                row++;
+            }
         }
-        return row;
+        return row - 1;
     }
 
     private static int findIndex(String[] names, String target) {
