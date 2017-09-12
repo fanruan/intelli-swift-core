@@ -386,8 +386,7 @@ public class SummaryComplexTableBuilder extends TableAbstractDataBuilder {
     //获取有效的行表头区域
     public List<JSONArray> getRowRegions() throws JSONException {
         List<JSONArray> rowRegions = new ArrayList<JSONArray>();
-        Map<Integer, List<JSONObject>> dimAndTarMap = getSortedMap();
-        for (Integer regionId : dimAndTarMap.keySet()) {
+        for (Integer regionId : getSortedMap().keySet()) {
             JSONArray temp = new JSONArray();
             if (BITableDimensionHelper.isDimensionRegion1ByRegionType(regionId)) {
                 List<JSONObject> list = dimAndTar.get(regionId);
@@ -437,8 +436,7 @@ public class SummaryComplexTableBuilder extends TableAbstractDataBuilder {
     //获取有效的列表头区域
     public List<JSONArray> getColRegions() throws JSONException {
         List<JSONArray> colRegions = new ArrayList<JSONArray>();
-        Map<Integer, List<JSONObject>> dimAndTarMap = getSortedMap();
-        for (Integer regionId : dimAndTarMap.keySet()) {
+        for (Integer regionId : getSortedMap().keySet()) {
             if (BITableDimensionHelper.isDimensionRegion2ByRegionType(regionId)) {
                 JSONArray array = new JSONArray();
                 for (JSONObject dIdJson : dimAndTar.get(regionId)) {
@@ -457,16 +455,16 @@ public class SummaryComplexTableBuilder extends TableAbstractDataBuilder {
 * BI-9167 hashMap无序导致的不同环境下数据展示效果不一致
 * */
     private Map<Integer, List<JSONObject>> getSortedMap() {
-        Map<Integer, List<JSONObject>> dimAndTarMap = new TreeMap<Integer, List<JSONObject>>(
+        Map<Integer, List<JSONObject>> dimAndTarTreeMap = new TreeMap<Integer, List<JSONObject>>(
                 new Comparator<Integer>() {
                     public int compare(Integer o1, Integer o2) {
                         return o1 > o2 ? 1 : -1;
                     }
                 });
         for (int key : dimAndTar.keySet()) {
-            dimAndTarMap.put(key, dimAndTar.get(key));
+            dimAndTarTreeMap.put(key, dimAndTar.get(key));
         }
-        return dimAndTarMap;
+        return dimAndTarTreeMap;
     }
 
     protected void refreshDimsInfo() throws Exception {
