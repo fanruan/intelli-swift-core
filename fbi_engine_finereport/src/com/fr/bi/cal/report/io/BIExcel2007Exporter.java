@@ -44,10 +44,6 @@ public class BIExcel2007Exporter extends StreamExcel2007Exporter {
                 ec = (ElementCase) block;
             }
 
-            if(block instanceof BIPolyAnalyECBlock) {
-                StreamCellCase cellCase = (StreamCellCase) ((BIPolyAnalyECBlock) ec).getCellCase();
-            }
-
             int columnCount = ec.getColumnCount();
             int rowCount = ec.getRowCount();
             int c = 1;
