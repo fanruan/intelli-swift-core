@@ -5,13 +5,11 @@ import com.fr.general.ComparatorUtils;
 import com.fr.general.DateUtils;
 import com.fr.stable.ColumnRow;
 import com.fr.stable.StringUtils;
-import com.fr.third.v2.org.apache.poi.hssf.record.NumberRecord;
 import com.fr.third.v2.org.apache.poi.hssf.usermodel.HSSFDateUtil;
 import com.fr.third.v2.org.apache.poi.openxml4j.exceptions.OpenXML4JException;
 import com.fr.third.v2.org.apache.poi.openxml4j.opc.OPCPackage;
 import com.fr.third.v2.org.apache.poi.ss.usermodel.BuiltinFormats;
 import com.fr.third.v2.org.apache.poi.ss.usermodel.DataFormatter;
-import com.fr.third.v2.org.apache.poi.ss.usermodel.DateUtil;
 import com.fr.third.v2.org.apache.poi.ss.util.NumberToTextConverter;
 import com.fr.third.v2.org.apache.poi.xssf.eventusermodel.ReadOnlySharedStringsTable;
 import com.fr.third.v2.org.apache.poi.xssf.eventusermodel.XSSFReader;
@@ -26,13 +24,12 @@ import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 import java.io.IOException;
 import java.io.InputStream;
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
  * Created by zcf on 2016/11/21.
  */
-public abstract class AbstractExcel2007Util {
+public abstract class AbstractExcel2007Reader extends AbstractExcelReader {
     public boolean isEmpty = false;
     protected String[] columnNames = new String[0];
     protected int[] columnTypes = new int[0];
@@ -45,7 +42,7 @@ public abstract class AbstractExcel2007Util {
     protected OPCPackage xlsxPackage;
     private List<String> tempData = new ArrayList<String>();
 
-    public AbstractExcel2007Util() {
+    public AbstractExcel2007Reader() {
     }
 
     public String[] getColumnNames() {
@@ -341,39 +338,7 @@ public abstract class AbstractExcel2007Util {
 //                        int cellType1 = Integer.parseInt(attributes.getValue("r")) - 1;
 //                        this.output.startRow(cellType1);
                     } else if ("c".equals(name)) {
-                        String r = attributes.getValue("r");
-                        int firstDigit = -1;
-                        for (int c = 0; c < r.length(); ++c) {
-                            if (Character.isDigit(r.charAt(c))) {
-                                firstDigit = c;
-                                break;
-                            }
-                        }
-                        thisColumn = nameToColumn(r.substring(0, firstDigit));
-                        this.nextDataType = xssfDataType.NUMBER;
-                        this.formatIndex = -1;
-                        this.formatString = null;
-                        cellType = attributes.getValue("t");
-                        cellStyleStr = attributes.getValue("s");
-                        if ("b".equals(cellType)) {
-                            this.nextDataType = xssfDataType.BOOL;
-                        } else if ("e".equals(cellType)) {
-                            this.nextDataType = xssfDataType.ERROR;
-                        } else if ("inlineStr".equals(cellType)) {
-                            this.nextDataType = xssfDataType.INLINESTR;
-                        } else if ("s".equals(cellType)) {
-                            this.nextDataType = xssfDataType.SSTINDEX;
-                        } else if ("str".equals(cellType)) {
-                            this.nextDataType = xssfDataType.FORMULA;
-                        } else if (cellStyleStr != null) {
-                            int styleIndex1 = Integer.parseInt(cellStyleStr);
-                            XSSFCellStyle style = this.stylesTable.getStyleAt(styleIndex1);
-                            this.formatIndex = style.getDataFormat();
-                            this.formatString = style.getDataFormatString();
-                            if (this.formatString == null) {
-                                this.formatString = BuiltinFormats.getBuiltinFormat(this.formatIndex);
-                            }
-                        }
+                        dealWithCell(attributes);
                     } else if ("mergeCell".equals(name)) {
                         String merge = attributes.getValue("ref");
                         String[] merged = merge.split(":");
@@ -389,6 +354,44 @@ public abstract class AbstractExcel2007Util {
                 }
             }
 
+        }
+
+        private void dealWithCell(Attributes attributes) {
+            String cellType;
+            String cellStyleStr;
+            String r = attributes.getValue("r");
+            int firstDigit = -1;
+            for (int c = 0; c < r.length(); ++c) {
+                if (Character.isDigit(r.charAt(c))) {
+                    firstDigit = c;
+                    break;
+                }
+            }
+            thisColumn = nameToColumn(r.substring(0, firstDigit));
+            this.nextDataType = xssfDataType.NUMBER;
+            this.formatIndex = -1;
+            this.formatString = null;
+            cellType = attributes.getValue("t");
+            cellStyleStr = attributes.getValue("s");
+            if ("b".equals(cellType)) {
+                this.nextDataType = xssfDataType.BOOL;
+            } else if ("e".equals(cellType)) {
+                this.nextDataType = xssfDataType.ERROR;
+            } else if ("inlineStr".equals(cellType)) {
+                this.nextDataType = xssfDataType.INLINESTR;
+            } else if ("s".equals(cellType)) {
+                this.nextDataType = xssfDataType.SSTINDEX;
+            } else if ("str".equals(cellType)) {
+                this.nextDataType = xssfDataType.FORMULA;
+            } else if (cellStyleStr != null) {
+                int styleIndex1 = Integer.parseInt(cellStyleStr);
+                XSSFCellStyle style = this.stylesTable.getStyleAt(styleIndex1);
+                this.formatIndex = style.getDataFormat();
+                this.formatString = style.getDataFormatString();
+                if (this.formatString == null) {
+                    this.formatString = BuiltinFormats.getBuiltinFormat(this.formatIndex);
+                }
+            }
         }
 
         public void endElement(String uri, String localName, String name) throws SAXException {

@@ -44,6 +44,51 @@ public class DetailExecutor extends AbstractDetailExecutor {
 
     }
 
+    public TableCellIterator createCellIterator4Excel() throws Exception {
+        this.tableStyle = new BITableStyle(widget.getWidgetStyle().getThemeColor());
+
+        final GroupValueIndex gvi = createDetailViewGvi();
+        int count = gvi.getRowsCountWithData();
+        paging.setTotalSize(count);
+        //返回前台的时候再去掉不使用的字段
+        final Set<Integer> usedDimensionIndexes = getUsedDimensionIndexes();
+        //BI-9071 考虑性能按指标取样式，不要每个单元格都去取一遍样式
+        final ChartSetting[] chartSettings = getChartSettings();
+        final TableCellIterator iter = new TableCellIterator(usedDimensionIndexes.size(), count + 1);
+        new Thread() {
+            public void run() {
+                try {
+                    final FinalInt start = new FinalInt();
+                    List<CBCell> cells = createHeader(CellConstant.CBCELL.TARGETTITLE_Y, usedDimensionIndexes);
+                    Iterator<CBCell> it = cells.iterator();
+                    while (it.hasNext()) {
+                        iter.getIteratorByPage(start.value).addCell(it.next());
+                    }
+                    TableRowTraversal action = new TableRowTraversal() {
+                        @Override
+                        public boolean actionPerformed(BIRowValue row) {
+                            int currentRow = (int) row.getRow() + 1;
+                            int newRow = currentRow & EXCEL_ROW_MODE_VALUE;
+                            if (newRow == 0) {
+                                iter.getIteratorByPage(start.value).finish();
+                                start.value++;
+                            }
+                            //row + 1 ? 不然覆盖掉了列名
+                            fillOneLine(iter.getIteratorByPage(start.value), newRow, row.getValues(), usedDimensionIndexes, chartSettings);
+                            return false;
+                        }
+                    };
+                    travel(action, gvi);
+                } catch (Exception e) {
+                    BILoggerFactory.getLogger().error(e.getMessage(), e);
+                } finally {
+                    iter.finish();
+                }
+            }
+        }.start();
+        return iter;
+    }
+
     @Override
     public JSONObject getCubeNode() throws Exception {
 

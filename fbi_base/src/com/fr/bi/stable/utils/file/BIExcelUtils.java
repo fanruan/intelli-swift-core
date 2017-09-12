@@ -4,6 +4,7 @@ import com.fr.bi.common.inter.Traversal;
 import com.fr.bi.stable.data.db.BIDataValue;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.finebi.cube.common.log.BILoggerFactory;
+import com.fr.bi.stable.data.db.excel.AbstractExcelDataModel;
 import com.fr.bi.stable.data.db.excel.BIExcelDataModel;
 import com.fr.bi.stable.data.db.excel.BIExcelTableData;
 import com.fr.general.ComparatorUtils;
@@ -22,6 +23,9 @@ public class BIExcelUtils {
 
         try {
             dataModel = excel.createDataModel();
+            if (dataModel.getExcelType() == AbstractExcelDataModel.EXCEL_TYPE_CSV) {
+                return runCSV(dataModel, columns, back);
+            }
             String[] columnNames = dataModel.onlyGetColumnNames();
             for (int i = 0; i < dataModel.getRowCount(); i++) {
                 for (int j = 0; j < columns.length; j++) {
@@ -53,6 +57,28 @@ public class BIExcelUtils {
             }
         }
         return res;
+    }
+
+    private static long runCSV(BIExcelDataModel dataModel, ICubeFieldSource[] columns, Traversal<BIDataValue> back) throws Exception {
+        int row = 0;
+        String[] columnNames = dataModel.onlyGetColumnNames();
+        while (!dataModel.isEnd()) {
+            for (int j = 0; j < columns.length; j++) {
+                ICubeFieldSource field = columns[j];
+                int index = findIndex(columnNames, field.getFieldName());
+                if (index >= 0) {
+                    if (!columns[j].isUsable()) {
+                        continue;
+                    }
+                    Object value = dataModel.getValueAt(row, index);
+                    if (back != null && row != 0) {
+                        back.actionPerformed(new BIDataValue(row - 1, j, value));
+                    }
+                }
+            }
+            row++;
+        }
+        return row;
     }
 
     private static int findIndex(String[] names, String target) {

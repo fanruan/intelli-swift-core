@@ -313,9 +313,12 @@ public class BICubeManager implements BICubeManagerProvider {
                     }
                     cubeGenerateTask = cubeGenerateTaskQueue.take();
                     //合并
-                    cubeGenerateTask = mergeTaskIfNeed(cubeGenerateTask);
+                    /**BI-8911 在合并过程中，前台来查询cube更新状态可能会是没有更新的，
+                     * 把这个start提前避免merge的影响
+                    **/
                     long userId = cubeGenerateTask.getUserId();
                     startCubeBuilding(userId);
+                    cubeGenerateTask = mergeTaskIfNeed(cubeGenerateTask);
                     ITaskCalculator taskCalculator = cubeGenerateTask.getTaskCalculator();
                     BISystemConfigHelper configHelper = new BISystemConfigHelper();
                     Set<CubeTableSource> allTableSources = configHelper.extractTableSource(configHelper.getSystemBusinessTables());
