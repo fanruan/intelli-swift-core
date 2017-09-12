@@ -70,7 +70,7 @@ public class SummaryComplexTableBuilder extends TableAbstractDataBuilder {
 
     @Override
     public void createHeaders() throws Exception {
-
+//null
     }
 
     @Override
@@ -188,6 +188,7 @@ public class SummaryComplexTableBuilder extends TableAbstractDataBuilder {
 
 
     private void setOtherComplexAttrs() {
+        //null
     }
 
     private void createComplexTableHeader() throws Exception {
@@ -218,7 +219,7 @@ public class SummaryComplexTableBuilder extends TableAbstractDataBuilder {
      * 有几个维度的分组表示就有几个表
      * view: {10000: [a, b], 10001: [c, d]}, 20000: [e, f], 20001: [g, h], 20002: [i, j], 30000: [k]}
      * 表示横向（类似与交叉表）会有三个表，纵向会有两个表
-     *  // BI-7636 行数缺失
+     * // BI-7636 行数缺失
      */
     private void createComplexTableItems() throws Exception {
         JSONArray dataArray = new JSONArray();
@@ -288,7 +289,9 @@ public class SummaryComplexTableBuilder extends TableAbstractDataBuilder {
         ITableItem childItem = new BIBasicTableItem();
         for (int i = 0; i < tempItems.size(); i++) {
             List<ITableItem> childrenAddSummaryValue = tempItems.get(i).getChildren();
-            boolean isSummary = showRowTotal && targetIds.size() > 0 && (isColRegionExist() || isRowRegionExist()) && !isOnlyCrossAndTarget();
+            boolean isRegionExisted = isColRegionExist() || isRowRegionExist();
+            boolean isShowTotal = showRowTotal && targetIds.size() > 0;
+            boolean isSummary = isShowTotal && isRegionExisted && !isOnlyCrossAndTarget();
             if (isSummary) {
                 BIBasicTableItem summaryValueItem = new BIBasicTableItem();
                 summaryValueItem.setValue(SUMMARY);
@@ -451,9 +454,10 @@ public class SummaryComplexTableBuilder extends TableAbstractDataBuilder {
         }
         return colRegions;
     }
-/*
-* BI-9167 hashMap无序导致的不同环境下数据展示效果不一致
-* */
+
+    /*
+    * BI-9167 hashMap无序导致的不同环境下数据展示效果不一致
+    * */
     private Map<Integer, List<JSONObject>> getSortedMap() {
         Map<Integer, List<JSONObject>> dimAndTarTreeMap = new TreeMap<Integer, List<JSONObject>>(
                 new Comparator<Integer>() {
