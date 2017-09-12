@@ -1,5 +1,6 @@
 package com.fr.bi.stable.data.db.excel;
 
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.utils.file.BIPictureUtils;
 import com.fr.general.ComparatorUtils;
@@ -19,15 +20,15 @@ import java.util.regex.Pattern;
 /**
  * Created by Young on 2015/7/3.
  */
-public class Excel2007Util extends AbstractExcel2007Util {
+public class Excel2007Reader extends AbstractExcel2007Reader {
 
-    public Excel2007Util(String filePath, boolean preview) throws Exception {
+    public Excel2007Reader(String filePath, boolean preview) throws Exception {
         this.preview = preview;
         Object lock = BIPictureUtils.getImageLock(filePath);
         synchronized (lock) {
             File xlsxFile = new File(filePath);
             if (!xlsxFile.exists()) {
-                System.err.println("Not found or not a file: " + xlsxFile.getPath());
+                BILoggerFactory.getLogger().error("Not found or not a file: " + xlsxFile.getPath());
                 return;
             }
             this.xlsxPackage = OPCPackage.open(xlsxFile.getPath(), PackageAccess.READ);
