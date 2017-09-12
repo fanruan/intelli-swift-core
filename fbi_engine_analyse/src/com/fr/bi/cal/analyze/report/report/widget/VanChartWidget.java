@@ -1,6 +1,5 @@
 package com.fr.bi.cal.analyze.report.report.widget;
 
-import com.fr.bi.cal.analyze.report.report.widget.TableWidget;
 import com.fr.bi.cal.analyze.report.report.widget.util.BIWidgetUtils;
 import com.fr.bi.conf.report.conf.BIWidgetConf;
 import com.fr.bi.conf.report.conf.BIWidgetConfUtils;
@@ -19,6 +18,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+
 /**
  * 这个类后面可能需要删了，合并到TableWidget
  * Created by User on 2016/4/25.
@@ -42,10 +42,56 @@ public class VanChartWidget extends TableWidget {
                 }
             });
 
+            changeDimensions(jo, vjo);
+
             changeView(jo, sorted, vjo);
         }
 
         super.parseJSON(jo, userId);
+    }
+
+    private void changeDimensions(JSONObject jo, JSONObject vjo) throws JSONException {
+        int type = jo.optInt("type");
+        switch (type) {
+            case BIReportConstant.WIDGET.HEAT_MAP:
+            case BIReportConstant.WIDGET.LINE_MAP:
+            case BIReportConstant.WIDGET.GIS_MAP:
+                if (jo.has("dimensions")) {
+                    JSONObject dimensionsJO = jo.optJSONObject("dimensions");
+
+                    JSONArray fromLngIDs = vjo.optJSONArray(String.valueOf(Integer.parseInt(BIReportConstant.REGION.DIMENSION1) + 1));
+                    JSONArray fromLatIDs = vjo.optJSONArray(String.valueOf(Integer.parseInt(BIReportConstant.REGION.DIMENSION1) + 2));
+
+                    JSONArray toLngIDs = vjo.optJSONArray(String.valueOf(Integer.parseInt(BIReportConstant.REGION.DIMENSION2) + 1));
+                    JSONArray toLatIDs = vjo.optJSONArray(String.valueOf(Integer.parseInt(BIReportConstant.REGION.DIMENSION2) + 2));
+
+                    changeLngLatDimension(fromLatIDs, dimensionsJO);
+                    changeLngLatDimension(fromLngIDs, dimensionsJO);
+                    changeLngLatDimension(toLatIDs, dimensionsJO);
+                    changeLngLatDimension(toLngIDs, dimensionsJO);
+                }
+                break;
+            default:
+                break;
+        }
+    }
+
+    private void changeLngLatDimension(JSONArray dimensionArray, JSONObject dimensionsJO) throws JSONException {
+        if (dimensionArray == null) {
+            return;
+        }
+
+        for (int j = 0, len = dimensionArray.length(); j < len; j++) {
+            String id = dimensionArray.getString(j);
+            JSONObject dimension = dimensionsJO.optJSONObject(id);
+
+            if (!dimension.has("group")) {
+                dimension.put("group", JSONObject.create().put("type", BIReportConstant.GROUP.ID_GROUP).put("details", JSONArray.create()));
+            }
+            if (!dimension.has("sort")) {
+                dimension.put("sort", JSONObject.create().put("type", BIReportConstant.SORT.NONE));
+            }
+        }
     }
 
     private void changeView(JSONObject jo, List<String> sorted, JSONObject vjo) throws JSONException {
@@ -78,7 +124,7 @@ public class VanChartWidget extends TableWidget {
 
         //通过改变view来控制生成的表结构，分组表or交叉表or复杂表
         int type = jo.optInt("type");
-        switch (type){
+        switch (type) {
             case BIReportConstant.WIDGET.DOT:
                 changeDotView(sorted, vjo, settings);
                 break;
@@ -93,7 +139,7 @@ public class VanChartWidget extends TableWidget {
     }
 
     //点图的分类系列全部放到10000，因为要生成只有行表头的复杂表。
-    private void changeDotView(List<String> sorted, JSONObject vjo, JSONObject settings) throws JSONException{
+    private void changeDotView(List<String> sorted, JSONObject vjo, JSONObject settings) throws JSONException {
         JSONArray ja = JSONArray.create();
         JSONArray seriesIDs = JSONArray.create();
         JSONArray categoryIDs = JSONArray.create();
@@ -112,9 +158,9 @@ public class VanChartWidget extends TableWidget {
                 String key = tmp.getString(j);
                 ja.put(key);
 
-                if(Integer.parseInt(region) == seriesRegion){
+                if (Integer.parseInt(region) == seriesRegion) {
                     seriesIDs.put(key);
-                }else{
+                } else {
                     categoryIDs.put(key);
                 }
             }
@@ -129,7 +175,7 @@ public class VanChartWidget extends TableWidget {
 
     // 流向地图的from10000、fromlng10001、fromlat10002、to20000、tolng20001、tolat20002 全部放到10000
     // 因为想要分组表。
-    private void changeLineMapView(List<String> sorted, JSONObject vjo) throws JSONException{
+    private void changeLineMapView(List<String> sorted, JSONObject vjo) throws JSONException {
         JSONArray ja = JSONArray.create();
 
         int target1 = Integer.parseInt(BIReportConstant.REGION.TARGET1);
@@ -153,7 +199,7 @@ public class VanChartWidget extends TableWidget {
         vjo.put(BIReportConstant.REGION.DIMENSION1, ja);
     }
 
-    private void changeTreeMapView(List<String> sorted, JSONObject vjo) throws JSONException{
+    private void changeTreeMapView(List<String> sorted, JSONObject vjo) throws JSONException {
         JSONArray firstRegionArray = JSONArray.create();
         JSONArray secondRegionArray = JSONArray.create();
 
@@ -182,7 +228,7 @@ public class VanChartWidget extends TableWidget {
     public JSONObject createDataJSON(BISessionProvider session, HttpServletRequest req) throws Exception {
 
         // 如果是实时数据
-        if(BIWidgetConfUtils.needUseBigDataOperator(getWidgetConf())){
+        if (BIWidgetConfUtils.needUseBigDataOperator(getWidgetConf())) {
             setOperator(BIReportConstant.TABLE_PAGE_OPERATOR.BIGDATACHART);
         }
         JSONObject data = super.createDataJSON(session, req).getJSONObject("data");
@@ -201,6 +247,7 @@ public class VanChartWidget extends TableWidget {
     private static final String[] rightY2 = {"rightY2LabelStyle", "textStyle"};
 
     private static Map<String[], Integer> checkMap = new HashMap<String[], Integer>();
+
     static {
         checkMap.put(legend, 28);
         checkMap.put(label, 24);
@@ -211,22 +258,22 @@ public class VanChartWidget extends TableWidget {
         checkMap.put(rightY2, 24);
     }
 
-    private static void updateConfigForPhone(HttpServletRequest req, BIWidgetConf conf) throws JSONException{
-        if(WebUtils.getDevice(req).isPhone()){
+    private static void updateConfigForPhone(HttpServletRequest req, BIWidgetConf conf) throws JSONException {
+        if (WebUtils.getDevice(req).isPhone()) {
             JSONObject settings = conf.getWidgetSettings().getDetailSettings();
 
             Iterator<String[]> iterator = checkMap.keySet().iterator();
-            while (iterator.hasNext()){
+            while (iterator.hasNext()) {
                 String[] keys = iterator.next();
 
                 JSONObject o = settings;
-                for(String key : keys){
-                    if(o != null) {
+                for (String key : keys) {
+                    if (o != null) {
                         o = o.optJSONObject(key);
                     }
                 }
 
-                if(o != null && o.optInt("fontSize") > checkMap.get(keys)){
+                if (o != null && o.optInt("fontSize") > checkMap.get(keys)) {
                     o.put("fontSize", checkMap.get(keys));
                 }
             }
