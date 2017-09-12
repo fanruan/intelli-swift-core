@@ -99,14 +99,13 @@ public class VanChartWidget extends TableWidget {
         JSONObject regionIds = JSONObject.create();
         JSONArray ja = JSONArray.create();
         for (String region : sorted) {
+            JSONArray tmp = vjo.getJSONArray(region);
+
+            dimensionIds.put(region, tmp);
 
             if (Integer.parseInt(region) < Integer.parseInt(BIReportConstant.REGION.TARGET1)) {
                 continue;
             }
-
-            JSONArray tmp = vjo.getJSONArray(region);
-
-            dimensionIds.put(region, tmp);
 
             for (int j = 0; j < tmp.length(); j++) {
                 String key = tmp.getString(j);
