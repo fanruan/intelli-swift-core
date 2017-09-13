@@ -6,6 +6,7 @@ import com.fr.general.DateUtils;
 import com.fr.general.data.TableDataException;
 import com.fr.stable.ColumnRow;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -13,10 +14,11 @@ import java.util.Map;
  * Created by zcf on 2016/11/21.
  */
 public abstract class AbstractExcelDataModel extends AbstractDataModel {
-    private final static int EXCEL_TYPE_XLS = 1;
-    private final static int EXCEL_TYPE_XLSX = 2;
-    private final static int EXCEL_TYPE_CSV = 3;
+    public final static int EXCEL_TYPE_XLS = 1;
+    public final static int EXCEL_TYPE_XLSX = 2;
+    public final static int EXCEL_TYPE_CSV = 3;
 
+    protected AbstractExcelReader excelUtils;
     //列名
     protected String[] columnNames;
     //表数据
@@ -30,6 +32,10 @@ public abstract class AbstractExcelDataModel extends AbstractDataModel {
 
     private boolean isDataInit = false;
 
+    private boolean end = false;
+
+    private Map<Integer, Object[]> csvRow = new HashMap<Integer, Object[]>();
+
     public AbstractExcelDataModel(String filePath, String[] columnNames, int[] columnTypes) {
         this.filePath = filePath;
         this.columnNames = columnNames;
@@ -38,6 +44,10 @@ public abstract class AbstractExcelDataModel extends AbstractDataModel {
 
     public AbstractExcelDataModel(String filePath) {
         this.filePath = filePath;
+    }
+
+    public boolean isEnd() {
+        return end;
     }
 
     @Override
@@ -68,10 +78,31 @@ public abstract class AbstractExcelDataModel extends AbstractDataModel {
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) throws TableDataException {
         initData();
-        if (rowIndex > rowDataList.size() - 1 || columnIndex > rowDataList.get(rowIndex).length - 1) {
-            return null;
+        if (getExcelType() == EXCEL_TYPE_CSV) {
+            return getValueAt4CSV(rowIndex, columnIndex);
+        } else {
+            if (rowIndex > rowDataList.size() - 1 || columnIndex > rowDataList.get(rowIndex).length - 1) {
+                return null;
+            }
+            return rowDataList.get(rowIndex)[columnIndex];
         }
-        return rowDataList.get(rowIndex)[columnIndex];
+    }
+
+    private Object getValueAt4CSV(int rowIndex, int columnIndex) {
+        try {
+            if (csvRow.containsKey(rowIndex)) {
+                return csvRow.get(rowIndex)[columnIndex];
+            } else {
+                csvRow.clear();
+                Object[] row = ((ExcelCSVReader) excelUtils).read();
+                end = ((ExcelCSVReader) excelUtils).isEnd();
+                csvRow.put(rowIndex, row);
+                return row[columnIndex];
+            }
+        } catch (Exception e) {
+            BILoggerFactory.getLogger().error(e.getMessage(), e);
+        }
+        return null;
     }
 
     public Object getValueAt4Preview(int rowIndex, int columnIndex) throws Exception {
@@ -103,7 +134,7 @@ public abstract class AbstractExcelDataModel extends AbstractDataModel {
     }
 
     public Map<ColumnRow, ColumnRow> getMergeInfos() {
-        if (this.mergeInfos == null) {
+        if (this.mergeInfos == null && this.getExcelType() != EXCEL_TYPE_CSV) {
             initData();
         }
         return mergeInfos;
@@ -133,7 +164,7 @@ public abstract class AbstractExcelDataModel extends AbstractDataModel {
             case EXCEL_TYPE_XLS:
                 initExcel4XLS(false);
                 break;
-            case EXCEL_TYPE_XLSX:
+            default:
                 initExcel4XLSX(false);
                 break;
         }
@@ -154,13 +185,13 @@ public abstract class AbstractExcelDataModel extends AbstractDataModel {
             case EXCEL_TYPE_XLS:
                 initExcel4XLS(true);
                 break;
-            case EXCEL_TYPE_XLSX:
+            default:
                 initExcel4XLSX(true);
                 break;
         }
     }
 
-    private int getExcelType() {
+    public int getExcelType() {
         if (this.filePath.endsWith(".xls")) {
             return EXCEL_TYPE_XLS;
         }
@@ -183,11 +214,11 @@ public abstract class AbstractExcelDataModel extends AbstractDataModel {
     private void initExcel4CSV(boolean isPreview) {
         long start = System.currentTimeMillis();
         try {
-            ExcelCSVUtil excelCSVUtil = new ExcelCSVUtil(this.filePath, isPreview);
+            excelUtils = new ExcelCSVReader(this.filePath, isPreview);
             BILoggerFactory.getLogger().info("read excel time : " + DateUtils.timeCostFrom(start));
-            rowDataList = excelCSVUtil.getRowDataList();
-            columnNames = excelCSVUtil.getColumnNames();
-            columnTypes = excelCSVUtil.getColumnTypes();
+            rowDataList = excelUtils.getRowDataList();
+            columnNames = excelUtils.getColumnNames();
+            columnTypes = excelUtils.getColumnTypes();
         } catch (Exception e) {
             BILoggerFactory.getLogger().error(e.getMessage());
         }

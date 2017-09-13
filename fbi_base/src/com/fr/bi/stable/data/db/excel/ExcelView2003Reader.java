@@ -1,7 +1,5 @@
 package com.fr.bi.stable.data.db.excel;
 
-import com.fr.general.ComparatorUtils;
-import com.fr.general.Inter;
 import com.fr.stable.StringUtils;
 
 import java.io.IOException;
@@ -9,15 +7,14 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * Created by Young's on 2015/7/3.
+ * Created by zcf on 2016/11/23.
  */
-public class Excel2003Util extends AbstractExcel2003Util {
-
-    public Excel2003Util(String filename) throws IOException {
+public class ExcelView2003Reader extends AbstractExcel2003Reader {
+    public ExcelView2003Reader(String filename) throws IOException {
         super(filename);
     }
 
-    public Excel2003Util(String filePath, boolean preview) throws Exception {
+    public ExcelView2003Reader(String filePath, boolean preview) throws Exception {
         super(filePath, preview);
     }
 
@@ -31,9 +28,6 @@ public class Excel2003Util extends AbstractExcel2003Util {
             Pattern p = Pattern.compile(regEx);
             Matcher m = p.matcher(firstRow[i].toString());
             columnNames[i] = m.replaceAll(StringUtils.EMPTY).trim();
-            if (ComparatorUtils.equals(StringUtils.EMPTY, columnNames[i])) {
-                columnNames[i] = Inter.getLocText("BI-Basic_Field") + (i + 1);
-            }
         }
     }
 }

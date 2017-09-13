@@ -1,6 +1,7 @@
 package com.fr.bi.report.update.operation;
 
 import com.finebi.cube.common.log.BILoggerFactory;
+import com.fr.bi.conf.report.map.BIMapInfoManager;
 import com.fr.bi.report.update.ReportVersionEnum;
 import com.fr.bi.stable.constant.BIChartSettingConstant;
 import com.fr.bi.stable.constant.BIReportConstant;
@@ -311,7 +312,7 @@ public class ProfilesUpdateOperation implements ReportUpdateOperation {
 
                     if(widget.has("subType")){
                         String subType = widget.optString("subType");
-                        subType = subType.replace("MAP_map", "Map_geographic");
+                        subType = subType.replace("MAP_map", BIMapInfoManager.PRE + BIMapInfoManager.GEOGRAPHIC);
                         widget.put("subType", subType);
                     }
 

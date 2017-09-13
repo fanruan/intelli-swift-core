@@ -18,13 +18,12 @@ import com.fr.third.v2.org.apache.poi.poifs.filesystem.POIFSFileSystem;
 
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
  * Created by zcf on 2016/11/23.
  */
-public abstract class AbstractExcel2003Util implements HSSFListener {
+public abstract class AbstractExcel2003Reader extends AbstractExcelReader implements HSSFListener {
     protected static String[] columnNames;
     private static int[] columnTypes;
     private static int columnCount;
@@ -49,11 +48,11 @@ public abstract class AbstractExcel2003Util implements HSSFListener {
 
     private static final int SPECIAL_DATE_TYPE = 31;//poi中没有处理“XXXX年XX月XX日”，这种中文日期，单独提出来处理吧。
 
-    public AbstractExcel2003Util(String filename) throws IOException {
+    public AbstractExcel2003Reader(String filename) throws IOException {
         this.fs = new POIFSFileSystem(new FileInputStream(filename));
     }
 
-    public AbstractExcel2003Util(String filePath, boolean preview) throws Exception {
+    public AbstractExcel2003Reader(String filePath, boolean preview) throws Exception {
         this.preview = preview;
         resetValues();
         Object lock = BIPictureUtils.getImageLock(filePath);
