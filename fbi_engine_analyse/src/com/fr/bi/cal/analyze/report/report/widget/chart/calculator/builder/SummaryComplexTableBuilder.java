@@ -1,12 +1,12 @@
 package com.fr.bi.cal.analyze.report.report.widget.chart.calculator.builder;
 
+import com.fr.bi.cal.analyze.report.report.widget.chart.calculator.format.utils.BITableDimensionHelper;
 import com.fr.bi.cal.analyze.report.report.widget.chart.calculator.item.BIBasicTableItem;
 import com.fr.bi.cal.analyze.report.report.widget.chart.calculator.item.BITableHeader;
 import com.fr.bi.cal.analyze.report.report.widget.chart.calculator.item.ITableHeader;
 import com.fr.bi.cal.analyze.report.report.widget.chart.calculator.item.ITableItem;
 import com.fr.bi.cal.analyze.report.report.widget.chart.calculator.item.constructor.BISummaryDataConstructor;
 import com.fr.bi.cal.analyze.report.report.widget.chart.calculator.item.constructor.DataConstructor;
-import com.fr.bi.cal.analyze.report.report.widget.chart.calculator.format.utils.BITableDimensionHelper;
 import com.fr.bi.conf.report.style.table.BITableStyleHelper;
 import com.fr.bi.conf.report.widget.BIWidgetStyle;
 import com.fr.bi.stable.constant.BIReportConstant;
@@ -16,6 +16,8 @@ import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -68,7 +70,7 @@ public class SummaryComplexTableBuilder extends TableAbstractDataBuilder {
 
     @Override
     public void createHeaders() throws Exception {
-
+//null
     }
 
     @Override
@@ -186,6 +188,7 @@ public class SummaryComplexTableBuilder extends TableAbstractDataBuilder {
 
 
     private void setOtherComplexAttrs() {
+        //null
     }
 
     private void createComplexTableHeader() throws Exception {
@@ -216,7 +219,7 @@ public class SummaryComplexTableBuilder extends TableAbstractDataBuilder {
      * 有几个维度的分组表示就有几个表
      * view: {10000: [a, b], 10001: [c, d]}, 20000: [e, f], 20001: [g, h], 20002: [i, j], 30000: [k]}
      * 表示横向（类似与交叉表）会有三个表，纵向会有两个表
-     *  // BI-7636 行数缺失
+     * // BI-7636 行数缺失
      */
     private void createComplexTableItems() throws Exception {
         JSONArray dataArray = new JSONArray();
@@ -286,7 +289,9 @@ public class SummaryComplexTableBuilder extends TableAbstractDataBuilder {
         ITableItem childItem = new BIBasicTableItem();
         for (int i = 0; i < tempItems.size(); i++) {
             List<ITableItem> childrenAddSummaryValue = tempItems.get(i).getChildren();
-            boolean isSummary = showRowTotal && targetIds.size() > 0 && (isColRegionExist() || isRowRegionExist()) && !isOnlyCrossAndTarget();
+            boolean isRegionExisted = isColRegionExist() || isRowRegionExist();
+            boolean isShowTotal = showRowTotal && targetIds.size() > 0;
+            boolean isSummary = isShowTotal && isRegionExisted && !isOnlyCrossAndTarget();
             if (isSummary) {
                 BIBasicTableItem summaryValueItem = new BIBasicTableItem();
                 summaryValueItem.setValue(SUMMARY);
@@ -384,7 +389,7 @@ public class SummaryComplexTableBuilder extends TableAbstractDataBuilder {
     //获取有效的行表头区域
     public List<JSONArray> getRowRegions() throws JSONException {
         List<JSONArray> rowRegions = new ArrayList<JSONArray>();
-        for (Integer regionId : dimAndTar.keySet()) {
+        for (Integer regionId : getSortedRegionIds()) {
             JSONArray temp = new JSONArray();
             if (BITableDimensionHelper.isDimensionRegion1ByRegionType(regionId)) {
                 List<JSONObject> list = dimAndTar.get(regionId);
@@ -434,7 +439,7 @@ public class SummaryComplexTableBuilder extends TableAbstractDataBuilder {
     //获取有效的列表头区域
     public List<JSONArray> getColRegions() throws JSONException {
         List<JSONArray> colRegions = new ArrayList<JSONArray>();
-        for (Integer regionId : dimAndTar.keySet()) {
+        for (Integer regionId : getSortedRegionIds()) {
             if (BITableDimensionHelper.isDimensionRegion2ByRegionType(regionId)) {
                 JSONArray array = new JSONArray();
                 for (JSONObject dIdJson : dimAndTar.get(regionId)) {
@@ -448,6 +453,20 @@ public class SummaryComplexTableBuilder extends TableAbstractDataBuilder {
             }
         }
         return colRegions;
+    }
+
+    /*
+    * BI-9167 hashMap无序导致的不同环境下数据展示效果不一致
+    * */
+    private List<Integer> getSortedRegionIds() {
+        List<Integer> sortedRegionList = new ArrayList<Integer>(dimAndTar.keySet());
+        Collections.sort(sortedRegionList, new Comparator<Integer>() {
+            @Override
+            public int compare(Integer o1, Integer o2) {
+                return o1 > o2 ? 1 : -1;
+            }
+        });
+        return sortedRegionList;
     }
 
     protected void refreshDimsInfo() throws Exception {
