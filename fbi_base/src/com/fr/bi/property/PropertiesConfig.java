@@ -34,11 +34,13 @@ public class PropertiesConfig implements XMLable{
     private String description;
     //修改配置之后，关联的配置对应的key
     private String relationKey;
+    //是否提供修改
+    private Modification isModified;
 
     public PropertiesConfig() {
     }
 
-    public PropertiesConfig(String propertyKey, String propertyName, ValueType valueType, Object value, AvailableType availableType, String title, String description, String relationKey) {
+    public PropertiesConfig(String propertyKey, String propertyName, ValueType valueType, Object value, AvailableType availableType, String title, String description, String relationKey, Modification isModified) {
         this.propertyKey = propertyKey;
         this.propertyName = propertyName;
         this.valueType = valueType;
@@ -47,6 +49,7 @@ public class PropertiesConfig implements XMLable{
         this.title = title;
         this.description = description;
         this.relationKey = relationKey;
+        this.isModified = isModified;
     }
 
     @Override
@@ -59,7 +62,8 @@ public class PropertiesConfig implements XMLable{
                 "\"availableType\":\"" + availableType + "\"," +
                 "\"title\":\"" + title + "\"," +
                 "\"description\":\"" + description + "\"," +
-                "\"relationKey\":\"" + relationKey + "\"" +
+                "\"relationKey\":\"" + relationKey + "\"," +
+                "\"isModified\":\"" + isModified + "\"" +
                 "}";
     }
 
@@ -71,7 +75,7 @@ public class PropertiesConfig implements XMLable{
         if (reader.isChildNode()) {
             if (ComparatorUtils.equals(XML_TAG, tagName)) {
                 if (checkNull()) {
-                    propertyList.add(new PropertiesConfig(this.propertyKey, this.propertyName, this.valueType, this.value, this.availableType, this.title, this.description, this.relationKey));
+                    propertyList.add(new PropertiesConfig(this.propertyKey, this.propertyName, this.valueType, this.value, this.availableType, this.title, this.description, this.relationKey, this.isModified));
                     this.relationKey = null;
                 }
                 this.setPropertyKey(reader.getAttrAsString("propertyKey", null));
@@ -106,6 +110,13 @@ public class PropertiesConfig implements XMLable{
                     this.setDescription(reader.getElementValue());
                 } else if (ComparatorUtils.equals("RelationKey", tagName)) {
                     this.setRelationKey(reader.getElementValue());
+                } else if (ComparatorUtils.equals("IsModified", tagName)) {
+                    elementValue = reader.getElementValue();
+                    if (ComparatorUtils.equals(elementValue, "Show")) {
+                        this.isModified = Modification.SHOW;
+                    } else {
+                        this.isModified = Modification.HIDDEN;
+                    }
                 }
             }
         }
@@ -195,6 +206,10 @@ public class PropertiesConfig implements XMLable{
 
     public List<PropertiesConfig> getPropertyList () {
         return this.propertyList;
+    }
+
+    public Modification getIsModified() {
+        return isModified;
     }
 
     public boolean checkNull () {
