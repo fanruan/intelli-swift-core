@@ -43,10 +43,12 @@ public class BIUserUtils {
         return jo;
     }
 
-    public static JSONArray getUserRoleInfo(Set<CompanyRole> companyRoles, Set<CustomRole> customRoles) throws Exception {
+    public static JSONArray getUserRoleInfo(long userId) throws Exception {
         JSONArray ja = JSONArray.create();
         long departAllId = CompanyRoleControl.getInstance().getDepartmentAllID();
         long postAllId = CompanyRoleControl.getInstance().getPostAllID();
+        Set<CustomRole> customRoles = CustomRoleControl.getInstance().getCustomRoleSet(userId);
+        Set<CompanyRole> companyRoles = CompanyRoleControl.getInstance().getCompanyRoleSet(userId);
         for (CompanyRole companyRole : companyRoles) {
             if (companyRole.getDepartmentId() != departAllId && companyRole.getPostId() != postAllId) {
                 JSONObject jo = companyRole.createJSONConfig();
