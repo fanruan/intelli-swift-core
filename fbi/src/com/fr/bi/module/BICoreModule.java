@@ -209,7 +209,9 @@ public class BICoreModule extends AbstractModule {
         StableFactory.registerMarkedObject(BIPublicReportManagerProvider.XML_TAG, getBIPublicReportManger());
         StableFactory.registerMarkedObject(BIUserEditViewAuthProvider.XML_TAG, getBIUserEditViewAuthManager());
     }
+
     public BIUserEditViewAuthProvider getBIUserEditViewAuthManager() {
+
         if (ClusterEnv.isCluster()) {
             if (ClusterAdapter.getManager().getHostManager().isSelf()) {
                 BIUserEditViewAuthManager provider = BIUserEditViewAuthManager.getInstance();
@@ -217,8 +219,8 @@ public class BICoreModule extends AbstractModule {
                 return provider;
             } else {
                 return (BIUserEditViewAuthProvider) RPC.getProxy(BIUserEditViewAuthManager.class,
-                        ClusterAdapter.getManager().getHostManager().getIp(),
-                        ClusterAdapter.getManager().getHostManager().getPort());
+                                                                 ClusterAdapter.getManager().getHostManager().getIp(),
+                                                                 ClusterAdapter.getManager().getHostManager().getPort());
             }
         } else {
             return BIUserEditViewAuthManager.getInstance();
@@ -776,6 +778,7 @@ public class BICoreModule extends AbstractModule {
 
 
     private void registerDAO() {
+
         if (!ClusterEnv.isDirectCluster()) {
             if ((!ClusterEnv.isCluster())) {
                 clearBILockDAOTable(BIReportNodeLock.class);
@@ -794,12 +797,13 @@ public class BICoreModule extends AbstractModule {
 
 
     private void clearBILockDAOTable(Class Lock) {
+
         Connection cn = null;
         PreparedStatement ps = null;
         String tableName = ObjectTableMapper.PREFIX_NAME + Lock.getSimpleName();
         try {
             cn = PlatformDB.getDB().createConnection();
-            ps = cn.prepareStatement("DELETE FROM " + DialectFactory.generateDialect(cn).column2SQL(tableName)+" WHERE 1=1");
+            ps = cn.prepareStatement("DELETE FROM " + DialectFactory.generateDialect(cn).column2SQL(tableName) + " WHERE 1=1");
             ps.execute();
             BILoggerFactory.getLogger().info("Table " + tableName + " has been clear successfully");
             cn.commit();
