@@ -16,11 +16,11 @@ import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
 
 /**
  * Created by Kary on 2017/2/27.
@@ -389,7 +389,7 @@ public class SummaryComplexTableBuilder extends TableAbstractDataBuilder {
     //获取有效的行表头区域
     public List<JSONArray> getRowRegions() throws JSONException {
         List<JSONArray> rowRegions = new ArrayList<JSONArray>();
-        for (Integer regionId : getSortedMap().keySet()) {
+        for (Integer regionId : getSortedRegionIds()) {
             JSONArray temp = new JSONArray();
             if (BITableDimensionHelper.isDimensionRegion1ByRegionType(regionId)) {
                 List<JSONObject> list = dimAndTar.get(regionId);
@@ -439,7 +439,7 @@ public class SummaryComplexTableBuilder extends TableAbstractDataBuilder {
     //获取有效的列表头区域
     public List<JSONArray> getColRegions() throws JSONException {
         List<JSONArray> colRegions = new ArrayList<JSONArray>();
-        for (Integer regionId : getSortedMap().keySet()) {
+        for (Integer regionId : getSortedRegionIds()) {
             if (BITableDimensionHelper.isDimensionRegion2ByRegionType(regionId)) {
                 JSONArray array = new JSONArray();
                 for (JSONObject dIdJson : dimAndTar.get(regionId)) {
@@ -458,17 +458,15 @@ public class SummaryComplexTableBuilder extends TableAbstractDataBuilder {
     /*
     * BI-9167 hashMap无序导致的不同环境下数据展示效果不一致
     * */
-    private Map<Integer, List<JSONObject>> getSortedMap() {
-        Map<Integer, List<JSONObject>> dimAndTarTreeMap = new TreeMap<Integer, List<JSONObject>>(
-                new Comparator<Integer>() {
-                    public int compare(Integer o1, Integer o2) {
-                        return o1 > o2 ? 1 : -1;
-                    }
-                });
-        for (int key : dimAndTar.keySet()) {
-            dimAndTarTreeMap.put(key, dimAndTar.get(key));
-        }
-        return dimAndTarTreeMap;
+    private List<Integer> getSortedRegionIds() {
+        List<Integer> sortedRegionList = new ArrayList<Integer>(dimAndTar.keySet());
+        Collections.sort(sortedRegionList, new Comparator<Integer>() {
+            @Override
+            public int compare(Integer o1, Integer o2) {
+                return o1 > o2 ? 1 : -1;
+            }
+        });
+        return sortedRegionList;
     }
 
     protected void refreshDimsInfo() throws Exception {
