@@ -33,7 +33,7 @@ public class ByteStreamDataInput implements BIByteDataInput {
             try {
                 b[i] = reader.getSpecificValue(index++);
             } catch (BIResourceInvalidException e) {
-                BILoggerFactory.getLogger().error(e.getMessage());
+                BILoggerFactory.getLogger().errorCache("readFully BIResourceInvalidException",e);
             }
         }
     }
@@ -61,7 +61,7 @@ public class ByteStreamDataInput implements BIByteDataInput {
         try {
             return reader.getSpecificValue(index++);
         } catch (BIResourceInvalidException e) {
-            BILoggerFactory.getLogger().error(e.getMessage());
+            BILoggerFactory.getLogger().errorCache("readByte BIResourceInvalidException",e);
         }
         return 0;
     }
@@ -77,7 +77,7 @@ public class ByteStreamDataInput implements BIByteDataInput {
         try {
             return (short)((reader.getSpecificValue(index++) << 8) | (reader.getSpecificValue(index++) & 0xff));
         } catch (BIResourceInvalidException e) {
-            e.printStackTrace();
+            BILoggerFactory.getLogger().errorCache("readShort BIResourceInvalidException",e);
         }
         return Short.MIN_VALUE;
     }
@@ -103,7 +103,7 @@ public class ByteStreamDataInput implements BIByteDataInput {
                     ((reader.getSpecificValue(index++) & 0xff) <<  8) |
                     ((reader.getSpecificValue(index++) & 0xff)      ));
         } catch (BIResourceInvalidException e) {
-            BILoggerFactory.getLogger().error(e.getMessage());
+            BILoggerFactory.getLogger().errorCache("readInt BIResourceInvalidException",e);
         }
         return NIOConstant.INTEGER.NULL_VALUE;
     }
@@ -120,7 +120,7 @@ public class ByteStreamDataInput implements BIByteDataInput {
                     (((long)reader.getSpecificValue(index++) & 0xff) <<  8) |
                     (((long)reader.getSpecificValue(index++) & 0xff)      ));
         } catch (BIResourceInvalidException e) {
-            BILoggerFactory.getLogger().error(e.getMessage());
+            BILoggerFactory.getLogger().errorCache("readLong BIResourceInvalidException ",e);
         }
         return NIOConstant.LONG.NULL_VALUE;
     }
