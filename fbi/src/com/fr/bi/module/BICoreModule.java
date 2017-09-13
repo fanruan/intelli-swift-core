@@ -178,13 +178,17 @@ public class BICoreModule extends AbstractModule {
         StableFactory.registerMarkedObject(BIMultiPathProvider.XML_TAG, getBIMultiPathManager());
 
         StableFactory.registerMarkedObject(BIUpdateFrequencyManagerProvider.XML_TAG, getBIUpdateSettingManager());
-        // cube conf
+
+        // cube 配置相关
         StableFactory.registerMarkedObject(BISystemPackageConfigurationProvider.XML_TAG, getPackManagerProvider());
 
         StableFactory.registerMarkedObject(BIAuthorityManageProvider.XML_TAG, getBISystemAuthorityManager());
         StableFactory.registerMarkedObject(UserAnalysisCubeDataLoaderCreator.XML_TAG, UserAnalysisCubeDataLoaderCreator.getInstance());
         StableFactory.registerMarkedObject(BIDataSourceManagerProvider.XML_TAG, getSourceManagerProvider());
+
+        // 转义相关
         StableFactory.registerMarkedObject(BIAliasManagerProvider.XML_TAG, getTransManagerProvider());
+
         StableFactory.registerMarkedObject(BITableRelationConfigurationProvider.XML_TAG, getConnectionManagerProvider());
         StableFactory.registerMarkedObject(BICubeManagerProvider.XML_TAG, getCubeManagerProvider());
         StableFactory.registerMarkedObject(BILogManagerProvider.XML_TAG, getBILogManager());
