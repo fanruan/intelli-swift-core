@@ -912,6 +912,6 @@ public class BICoreModule extends AbstractModule {
      */
     public void loadEngine() {
 
-        BIRegisterCenter.regBusinessPackageManager(new CubePackageManager(getPackManagerProvider()));
+        BIRegisterCenter.regBusinessPackageManager(new CubePackageManager());
     }
 }
