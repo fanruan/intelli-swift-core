@@ -12,7 +12,7 @@ import com.fr.report.report.ResultReport;
 import com.fr.stable.ExportConstants;
 import com.fr.third.v2.org.apache.poi.xssf.streaming.SXSSFWorkbook;
 
-import java.awt.*;
+import java.awt.Point;
 import java.util.List;
 
 public class BIExcel2007Exporter extends StreamExcel2007Exporter {

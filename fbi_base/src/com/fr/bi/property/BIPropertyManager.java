@@ -3,6 +3,7 @@ package com.fr.bi.property;
 import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.manager.PerformanceParamTools;
 import com.fr.bi.manager.PerformancePlugManager;
+import com.fr.bi.stable.constant.DBConstant;
 
 import java.lang.reflect.Field;
 import java.util.*;
@@ -26,6 +27,9 @@ public class BIPropertyManager implements PropertyManager {
     public List<List<PropertiesConfig>> getProperties(String paramType) {
         List<PropertiesConfig> propertiesList = propertyOperate.read();
         Map<String, String> paramsMap = manager.getConfigByType(paramType);
+        if (paramsMap.size() == 0) {
+            paramsMap = manager.getConfigByType(DBConstant.PARAM_TYPE.RUNTIME_TYPE);
+        }
         propertiesList = mergePropertiesValue(propertiesList, PerformanceParamTools.convert2File(paramsMap));
         return trimProperties(propertiesList);
     }
