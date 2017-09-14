@@ -7,7 +7,6 @@ import com.finebi.cube.conf.field.BusinessField;
 import com.finebi.cube.conf.table.BusinessTable;
 import com.finebi.cube.relation.BITableRelation;
 import com.finebi.cube.relation.BITableSourceRelation;
-import com.fr.base.Style;
 import com.fr.bi.cal.analyze.executor.BIAbstractExecutor;
 import com.fr.bi.cal.analyze.executor.paging.Paging;
 import com.fr.bi.cal.analyze.executor.utils.GlobalFilterUtils;
@@ -15,40 +14,23 @@ import com.fr.bi.cal.analyze.report.report.widget.AbstractBIWidget;
 import com.fr.bi.cal.analyze.report.report.widget.DetailWidget;
 import com.fr.bi.cal.analyze.report.report.widget.TableWidget;
 import com.fr.bi.cal.analyze.session.BISession;
-import com.fr.bi.cal.report.engine.CBBoxElement;
-import com.fr.bi.cal.report.engine.CBCell;
 import com.fr.bi.conf.report.style.BITableStyle;
-import com.fr.bi.conf.report.style.ChartSetting;
 import com.fr.bi.conf.report.widget.field.target.detailtarget.BIDetailTarget;
 import com.fr.bi.conf.report.widget.field.target.filter.TargetFilter;
-import com.fr.bi.export.iterator.StreamPagedIterator;
-import com.fr.bi.export.utils.GeneratorUtils;
-import com.fr.bi.field.BIAbstractTargetAndDimension;
 import com.fr.bi.field.dimension.calculator.NoneDimensionCalculator;
-import com.fr.bi.field.target.detailtarget.BIAbstractDetailTarget;
-import com.fr.bi.field.target.detailtarget.field.BIDateDetailTarget;
-import com.fr.bi.field.target.detailtarget.field.BINumberDetailTarget;
-import com.fr.bi.field.target.detailtarget.formula.BIDateFormulaDetaiTarget;
-import com.fr.bi.field.target.detailtarget.formula.BINumberFormulaDetailTarget;
 import com.fr.bi.field.target.target.BISummaryTarget;
 import com.fr.bi.report.result.DimensionCalculator;
-import com.fr.bi.stable.constant.BIReportConstant;
-import com.fr.bi.stable.constant.CellConstant;
 import com.fr.bi.stable.gvi.GVIUtils;
 import com.fr.bi.stable.gvi.GroupValueIndex;
-import com.fr.bi.stable.utils.BICollectionUtils;
 import com.fr.bi.stable.utils.algorithem.BIComparatorUtils;
 import com.fr.bi.util.BIConfUtils;
-import com.fr.general.ComparatorUtils;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;
 import com.fr.stable.StringUtils;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * Created by GUY on 2015/4/16.

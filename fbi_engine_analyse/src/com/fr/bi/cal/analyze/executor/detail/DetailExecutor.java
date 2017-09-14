@@ -1,9 +1,6 @@
 package com.fr.bi.cal.analyze.executor.detail;
 
-import com.finebi.cube.common.log.BILogger;
 import com.finebi.cube.common.log.BILoggerFactory;
-import com.finebi.cube.conf.table.BusinessTable;
-import com.fr.bi.cal.analyze.cal.result.DetailCell;
 import com.fr.bi.cal.analyze.cal.result.DetailTableResult;
 import com.fr.bi.cal.analyze.executor.GVIRunner;
 import com.fr.bi.cal.analyze.executor.TableRowTraversal;
@@ -11,15 +8,11 @@ import com.fr.bi.cal.analyze.executor.detail.execute.DetailAllGVIRunner;
 import com.fr.bi.cal.analyze.executor.detail.execute.DetailPartGVIRunner;
 import com.fr.bi.cal.analyze.executor.paging.Paging;
 import com.fr.bi.cal.analyze.report.report.widget.DetailWidget;
-import com.fr.bi.cal.analyze.report.report.widget.TableWidget;
 import com.fr.bi.cal.analyze.session.BISession;
 import com.fr.bi.conf.report.widget.field.target.detailtarget.BIDetailTarget;
 import com.fr.bi.field.target.detailtarget.field.BIDateDetailTarget;
-import com.fr.bi.field.target.target.BISummaryTarget;
-import com.fr.bi.report.result.BIDetailCell;
 import com.fr.bi.report.result.BIDetailTableResult;
 import com.fr.bi.stable.data.db.BIRowValue;
-import com.fr.bi.stable.gvi.GVIUtils;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.utils.BICollectionUtils;
 import com.fr.bi.stable.utils.BITravalUtils;
@@ -27,11 +20,7 @@ import com.fr.general.DateUtils;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * TODO 分页机制待优化
@@ -40,7 +29,7 @@ import java.util.Set;
  * @author Daniel
  */
 public class DetailExecutor extends AbstractDetailExecutor {
-    private static BILogger LOGGER = BILoggerFactory.getLogger(DetailExecutor.class);
+
     private final static int MEMORY_LIMIT = 3000;
 
     public DetailExecutor(DetailWidget widget,
@@ -100,42 +89,6 @@ public class DetailExecutor extends AbstractDetailExecutor {
             }
         }
         return usedDimensionIndexes;
-    }
-
-    protected GroupValueIndex getLinkFilter(GroupValueIndex gvi) {
-
-        try {
-            if (widget.getLinkWidget() != null && widget.getLinkWidget() instanceof TableWidget) {
-                // 判断两个表格的基础表是否相同
-                BusinessTable widgetTargetTable = widget.getTargetDimension();
-                TableWidget linkWidget = widget.getLinkWidget();
-                Map<String, JSONArray> clicked = widget.getClicked();
-                BISummaryTarget summaryTarget = null;
-                String[] ids = clicked.keySet().toArray(new String[]{});
-                for (String linkTarget : ids) {
-                    try {
-                        summaryTarget = linkWidget.getBITargetByID(linkTarget);
-                        break;
-                    } catch (Exception e) {
-                        BILoggerFactory.getLogger(TableWidget.class).warn("Target id " + linkTarget + " is absent in linked widget " + linkWidget.getWidgetName());
-                    }
-                }
-                if (summaryTarget != null) {
-                    BusinessTable linkTargetTable = summaryTarget.createTableKey();
-                    // 基础表相同的时候才有联动的意义
-                    if (widgetTargetTable.equals(linkTargetTable)) {
-                        // 其联动组件的父联动gvi
-                        GroupValueIndex pLinkGvi = linkWidget.createLinkedFilterGVI(widgetTargetTable, session);
-                        // 其联动组件的点击过滤gvi
-                        GroupValueIndex linkGvi = linkWidget.getLinkFilter(linkWidget, widgetTargetTable, clicked, session);
-                        gvi = GVIUtils.AND(gvi, GVIUtils.AND(pLinkGvi, linkGvi));
-                    }
-                }
-            }
-        } catch (Exception e) {
-            BILoggerFactory.getLogger().error(e.getMessage(), e);
-        }
-        return gvi;
     }
 
     public List<List> getData() {
@@ -206,7 +159,6 @@ public class DetailExecutor extends AbstractDetailExecutor {
     }
 
 
-
     /**
      * 返回导出excel的数据结构
      *
@@ -215,36 +167,7 @@ public class DetailExecutor extends AbstractDetailExecutor {
      */
     public BIDetailTableResult getResult() {
 
-        long start = System.currentTimeMillis();
         GroupValueIndex gvi = createDetailViewGvi();
-        BIDetailTableResult r = null;
-
-
-        final List<List<BIDetailCell>> result = new ArrayList<List<BIDetailCell>>();
-        //返回前台的时候再去掉不使用的字段
-        final BIDetailTarget[] dimensions = widget.getViewDimensions();
-        final Set<Integer> usedDimensionIndexes = getUsedDimensionIndexes();
-        TableRowTraversal action = new TableRowTraversal() {
-
-            @Override
-            public boolean actionPerformed(BIRowValue row) {
-
-                List<BIDetailCell> rowData = new ArrayList<BIDetailCell>();
-                for (int i = 0; i < row.getValues().length; i++) {
-                    if (usedDimensionIndexes.contains(i)) {
-                        BIDetailCell cell = new DetailCell();
-                        cell.setData(BICollectionUtils.cubeValueToWebDisplay(dimensions[i].createShowValue(row.getValues()[i])));
-                        rowData.add(cell);
-                    }
-                }
-                result.add(rowData);
-                return false;
-            }
-        };
-        GVIRunner runner = new DetailAllGVIRunner(gvi, widget, getLoader(), userId);
-        runner.Traversal(action);
-        BILoggerFactory.getLogger().info(DateUtils.timeCostFrom(start) + ": cal time");
-        r = new DetailTableResult(result);
-        return r;
+        return new DetailTableResult(widget, gvi, getLoader(), userId);
     }
 }
