@@ -130,6 +130,15 @@ public class BIDAOUtils implements BIDAOProvider{
     }
 
     @Override
+    public List<BIReportNode> getAll() throws Exception {
+        BIReportDAO dao = getReportDao(UserControl.getInstance().getSuperManagerID());
+        if (dao == null) {
+            return null;
+        }
+        return dao.listAll();
+    }
+
+    @Override
     public List<User> getSharedUsersByReport(long reportId, long createBy) {
         List<User> users = null;
         try {

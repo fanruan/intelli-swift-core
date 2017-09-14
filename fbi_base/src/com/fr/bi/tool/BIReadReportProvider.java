@@ -8,6 +8,8 @@ import com.fr.json.JSONObject;
  */
 public interface BIReadReportProvider {
     String XML_TAG = "BIReadReport";
+
     JSONObject getBIReportNodeJSON(BIReportNode node) throws Exception;
-//    BIDesignSetting getBIReportNodeSetting(BIReportNode node) throws Exception;
+
+    boolean isNodeValid(BIReportNode node) throws Exception;
 }
