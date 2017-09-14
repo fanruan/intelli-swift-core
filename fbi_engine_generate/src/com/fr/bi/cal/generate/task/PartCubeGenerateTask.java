@@ -4,6 +4,9 @@ import com.finebi.cube.conf.ICubeGenerateTask;
 import com.finebi.cube.conf.ITaskCalculator;
 import com.fr.bi.cal.generate.task.calculator.PartTaskCalculator;
 
+import java.util.HashSet;
+import java.util.Set;
+
 /**
  * Created by Lucifer on 2017-5-19.
  *
@@ -53,5 +56,10 @@ public class PartCubeGenerateTask implements ICubeGenerateTask {
     @Override
     public String getTaskInfo() {
         return taskType;
+    }
+
+    @Override
+    public Set<String> getAllsSourceIds() {
+        return new HashSet<String>();
     }
 }
