@@ -31,6 +31,10 @@ public class XLeftNode extends Node implements BIXLeftNode {
 
     public void setXValue(XTargetGettingKey key, Number sumValue) {
         if (key.getTargetIndex() < xValue.length){
+            if (sumValue!=null) {
+                if(Double.NEGATIVE_INFINITY == sumValue.doubleValue())
+                sumValue = null;
+            }
             xValue[key.getTargetIndex()][key.getSubIndex()] = sumValue;
         }
     }
