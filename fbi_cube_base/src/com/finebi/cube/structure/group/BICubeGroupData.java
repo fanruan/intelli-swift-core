@@ -185,7 +185,7 @@ public abstract class BICubeGroupData<T> implements ICubeGroupDataService<T> {
         try {
             return getGroupLengthReader().getSpecificValue(0);
         } catch (BIResourceInvalidException e) {
-            BILoggerFactory.getLogger().error(e.getMessage(), e);
+            BILoggerFactory.getLogger().errorCache("sizeOfGroup BIResourceInvalidException", e);
         }
         return -1;
     }

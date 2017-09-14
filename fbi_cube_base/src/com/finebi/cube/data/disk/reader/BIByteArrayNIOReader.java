@@ -21,7 +21,7 @@ public class BIByteArrayNIOReader implements ICubeByteArrayReader, Release {
 
     private ICubeByteReader contentReader;
 
-    private static BILogger logger = BILoggerFactory.getLogger(BIByteArrayNIOReader.class);
+    private static BILogger LOGGER = BILoggerFactory.getLogger(BIByteArrayNIOReader.class);
 
     public BIByteArrayNIOReader(ICubeLongReader positionReader, ICubeIntegerReader lengthReader, ICubeByteReader contentReader) {
         this.positionReader = positionReader;
@@ -41,7 +41,7 @@ public class BIByteArrayNIOReader implements ICubeByteArrayReader, Release {
             start = positionReader.getSpecificValue(row);
             size = lengthReader.getSpecificValue(row);
         } catch (Exception e) {
-            BILoggerFactory.getLogger(BIByteArrayNIOReader.class).info(e.getMessage(), e);
+            LOGGER.warnCache(e.getMessage()+" retry again!");
             start = positionReader.getSpecificValue(row);
             size = lengthReader.getSpecificValue(row);
         }
@@ -62,7 +62,7 @@ public class BIByteArrayNIOReader implements ICubeByteArrayReader, Release {
             start = positionReader.getSpecificValue(row);
             size = lengthReader.getSpecificValue(row);
         } catch (Exception e) {
-            logger.info(e.getMessage() + " retry again! The invalid reader is lengthReader or positionReader", e);
+            LOGGER.warnCache(e.getMessage() + " retry again! The invalid reader is lengthReader or positionReader");
             start = positionReader.getSpecificValue(row);
             size = lengthReader.getSpecificValue(row);
         }
@@ -91,12 +91,12 @@ public class BIByteArrayNIOReader implements ICubeByteArrayReader, Release {
         try {
             start = positionReader.getSpecificValue(row - 1);
         } catch (BIResourceInvalidException e) {
-            logger.error(e.getMessage(), e);
+            LOGGER.errorCache("getLastPosition positionReader BIResourceInvalidException", e);
         }
         try {
             size = lengthReader.getSpecificValue(row - 1);
         } catch (BIResourceInvalidException e) {
-            logger.error(e.getMessage(), e);
+            LOGGER.errorCache("getLastPosition lengthReader BIResourceInvalidException", e);
         }
         return start + size;
     }
