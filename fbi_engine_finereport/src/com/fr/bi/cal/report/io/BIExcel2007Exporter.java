@@ -42,29 +42,17 @@ public class BIExcel2007Exporter extends StreamExcel2007Exporter {
                 StreamCellCase streamCellCase = (StreamCellCase) ((BIPolyAnalyECBlock) block).getCellCase();
                 StreamPagedIterator tableCellIter = streamCellCase.getTableIterator().getPageIterator();
 
-                ArrayList<StreamPagedIterator> currentPageIter = new ArrayList<StreamPagedIterator>();
-                while (tableCellIter.hasNext()) {
-                    if ((rowCount & ExportConstants.MAX_ROWS_2007) == 0) {
-                        StreamPagedIterator pagedIterator = new StreamPagedIterator();
-                        currentPageIter.add(pagedIterator);
-                        this.innerExportReport(new BIExcelExporterBlock(innerReport[i], pagedIterator),
-                                book.getReportExportAttr(), book.getReportName(i) + (c == 0 ? "" : "_" + c),
-                                (SXSSFWorkbook) workbookWrapper.getWorkbook(), cellList, cellFormulaList, 0);
-                        offset.y += ExportConstants.MAX_ROWS_2007;
-                        if(c > 0) {
-                            currentPageIter.get(c - 1).finish();
-                        }
-                        c++;
-                    }
-                    rowCount++;
-                    currentPageIter.get(c - 1).addCell(tableCellIter.next());
+                if ((rowCount & ExportConstants.MAX_ROWS_2007) == 0) {
+                    this.innerExportReport(new BIExcelExporterBlock(innerReport[i], tableCellIter),
+                            book.getReportExportAttr(), book.getReportName(i) + (c == 0 ? "" : "_" + c),
+                            (SXSSFWorkbook) workbookWrapper.getWorkbook(), cellList, cellFormulaList, 0);
+                    offset.y += ExportConstants.MAX_ROWS_2007;
+                    c++;
                 }
+                rowCount++;
             }
-
-
         }
 
 
     }
-
 }
