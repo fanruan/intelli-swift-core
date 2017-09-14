@@ -38,19 +38,10 @@ public class CubeTimerTaskHelper {
         List<ScheduleEntity> list = new ArrayList<ScheduleEntity>();
         BICubeTimeSchedulerService service = new BICubeTimeSchedulerServiceImpl();
         for (ScheduleEntity scheduleEntity : getTimerTaskSchedules()) {
-            if (isTaskValid(scheduleEntity)) {
-                list.add(scheduleEntity);
-            } else {
-                LOGGER.warn(BIStringUtils.append("the job: ", scheduleEntity.getTaskName(), "has invalid cronExpression or dateTime: ", scheduleEntity.getCronExpression() + scheduleEntity.getStartTime() + scheduleEntity.getEndTime()));
-            }
+            list.add(scheduleEntity);
         }
         service.addTimeSchedulerList(list);
         LOGGER.info("***************timer task settings end:*****************");
-    }
-
-    private static boolean isTaskValid(ScheduleEntity task) {
-        return task.getStartTime().before(task.getEndTime()) &&
-                CronExpression.isValidExpression(task.getCronExpression());
     }
 
     private static List<ScheduleEntity> getTimerTaskSchedules() {
