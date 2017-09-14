@@ -15,7 +15,6 @@ import com.fr.stable.ExportConstants;
 import com.fr.third.v2.org.apache.poi.xssf.streaming.SXSSFWorkbook;
 
 import java.awt.Point;
-import java.util.ArrayList;
 import java.util.List;
 
 public class BIExcel2007Exporter extends StreamExcel2007Exporter {
@@ -40,7 +39,7 @@ public class BIExcel2007Exporter extends StreamExcel2007Exporter {
 
             if (block instanceof BIPolyAnalyECBlock) {
                 StreamCellCase streamCellCase = (StreamCellCase) ((BIPolyAnalyECBlock) block).getCellCase();
-                StreamPagedIterator tableCellIter = streamCellCase.getTableIterator().getPageIterator();
+                StreamPagedIterator tableCellIter = streamCellCase.getTableIterator().getIteratorByPage(0);
 
                 if ((rowCount & ExportConstants.MAX_ROWS_2007) == 0) {
                     this.innerExportReport(new BIExcelExporterBlock(innerReport[i], tableCellIter),

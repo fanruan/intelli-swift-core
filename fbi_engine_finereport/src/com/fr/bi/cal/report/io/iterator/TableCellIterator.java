@@ -1,5 +1,10 @@
 package com.fr.bi.cal.report.io.iterator;
 
+import com.fr.bi.base.FinalInt;
+
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by daniel on 2016/7/12.
  */
@@ -7,13 +12,13 @@ public class TableCellIterator {
 
     private volatile boolean isEnd = false;
     private int column;
-    private int row;
-    private StreamPagedIterator iter;
+    private volatile FinalInt row = new FinalInt();
+    private List<StreamPagedIterator> iters;
 
     public TableCellIterator(int column, int row) {
         this.column = column;
-        this.row = row;
-        this.iter = new StreamPagedIterator();
+        this.row.value = row;
+        this.iters = new ArrayList<StreamPagedIterator>();
     }
 
     public int getColumn() {
@@ -21,7 +26,9 @@ public class TableCellIterator {
     }
 
     public int getRow() {
-        return row;
+        synchronized (row) {
+            return row.value;
+        }
     }
 
     public void setColumn(int currentColumn) {
@@ -29,15 +36,26 @@ public class TableCellIterator {
     }
 
     public void setRow(int currentRow) {
-        row = currentRow;
+        synchronized (row) {
+            row.value = currentRow;
+        }
     }
 
-    public StreamPagedIterator getPageIterator() {
-        return iter;
+    public StreamPagedIterator getIteratorByPage(int page) {
+        if (iters.size() > page) {
+            return iters.get(page);
+        }
+
+        StreamPagedIterator pagedIterator = new StreamPagedIterator();
+        iters.add(pagedIterator);
+
+        return pagedIterator;
     }
 
     public void finish() {
-        iter.finish();
+        for (StreamPagedIterator iter : iters) {
+            iter.finish();
+        }
         isEnd = true;
     }
 

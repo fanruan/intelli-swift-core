@@ -69,7 +69,7 @@ public class StreamCellCase implements CellCase {
 
     @Override
     public Iterator cellIterator() {
-        return iterator.getPageIterator();
+        return iterator.getIteratorByPage(0);
     }
 
     @Override
@@ -104,7 +104,7 @@ public class StreamCellCase implements CellCase {
 
     @Override
     public Iterator intersect(int column_start, int row_start, int column, int row) {
-        return iterator.getPageIterator();
+        return iterator.getIteratorByPage(0);
     }
 
     @Override
