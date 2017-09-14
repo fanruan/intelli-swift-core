@@ -3,7 +3,6 @@ package com.fr.bi.cal.generate.queue;
 import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.conf.CubeGenerationManager;
 import com.finebi.cube.conf.ICubeGenerateTask;
-import com.fr.bi.cal.generate.task.CustomCubeGenerateTask;
 import com.fr.bi.stable.structure.queue.CubeTaskCondition;
 
 import java.util.ArrayList;
@@ -127,12 +126,7 @@ public class CubeGenerateTaskQueue {
             List<String> tableSourceIdList = new ArrayList<String>();
             while (iterator.hasNext()) {
                 ICubeGenerateTask cubeGenerateTask = iterator.next();
-                if (cubeGenerateTask.getTableSourceId() != null) {
-                    tableSourceIdList.add(cubeGenerateTask.getTableSourceId());
-                }
-                if (cubeGenerateTask instanceof CustomCubeGenerateTask) {
-                    tableSourceIdList.addAll(((CustomCubeGenerateTask) cubeGenerateTask).getSourceIdUpdateTypeMap().keySet());
-                }
+                tableSourceIdList.addAll(cubeGenerateTask.getAllsSourceIds());
             }
             return tableSourceIdList;
         }

@@ -4,6 +4,9 @@ import com.finebi.cube.conf.ICubeGenerateTask;
 import com.finebi.cube.conf.ITaskCalculator;
 import com.fr.bi.cal.generate.task.calculator.SingleTaskCalculator;
 
+import java.util.HashSet;
+import java.util.Set;
+
 /**
  * Created by Lucifer on 2017-5-19.
  *
@@ -67,5 +70,12 @@ public class SingleCubeGenerateTask implements ICubeGenerateTask {
     @Override
     public String getTaskInfo() {
         return taskType + "   sourceId:[" + tableSourceId + "],updateType:[" + updateType + "]";
+    }
+
+    @Override
+    public Set<String> getAllsSourceIds() {
+        Set<String> sourceIds = new HashSet<String>();
+        sourceIds.add(tableSourceId);
+        return sourceIds;
     }
 }

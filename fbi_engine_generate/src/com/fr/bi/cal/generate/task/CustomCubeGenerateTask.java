@@ -1,11 +1,16 @@
 package com.fr.bi.cal.generate.task;
 
 import com.finebi.cube.conf.ICubeGenerateTask;
+import com.finebi.cube.conf.ITaskCalculator;
 import com.finebi.cube.relation.BITableRelation;
 import com.fr.bi.cal.generate.task.calculator.CustomTaskCalculator;
-import com.finebi.cube.conf.ITaskCalculator;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Created by Lucifer on 2017-5-24.
@@ -123,5 +128,12 @@ public class CustomCubeGenerateTask implements ICubeGenerateTask {
         }
         buffer.append("]");
         return buffer.toString();
+    }
+
+    @Override
+    public Set<String> getAllsSourceIds() {
+        Set<String> sourceIds = new HashSet<String>();
+        sourceIds.addAll(sourceIdUpdateTypeMap.keySet());
+        return sourceIds;
     }
 }
