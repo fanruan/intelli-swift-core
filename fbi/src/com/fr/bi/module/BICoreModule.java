@@ -825,6 +825,7 @@ public class BICoreModule extends AbstractModule {
         StableFactory.registerJavaScriptFiles(ResourceConstants.DEFAULT_BASE_JS, BaseResourceHelper.getBaseJs());
         StableFactory.registerStyleFiles(ResourceConstants.DEFAULT_THIRD_CSS, BaseResourceHelper.getThirdCss());
         StableFactory.registerStyleFiles(ResourceConstants.DEFAULT_BASE_CSS, BaseResourceHelper.getBaseCss());
+        StableFactory.registerStyleFiles(ResourceConstants.DEFAULT_CORE_CSS, BaseResourceHelper.getCoreCss());
 
         StableFactory.registerJavaScriptFiles(ResourceConstants.DEFAULT_EXPORT_JS, BaseResourceHelper.getExportJS());
 
@@ -865,6 +866,7 @@ public class BICoreModule extends AbstractModule {
         com.fr.web.ResourceHelper.forceInitStyleCache(ResourceConstants.DEFAULT_PLATFORM_CSS);
         com.fr.web.ResourceHelper.forceInitStyleCache(ResourceConstants.DEFAULT_THIRD_CSS);
         com.fr.web.ResourceHelper.forceInitStyleCache(ResourceConstants.DEFAULT_BASE_CSS);
+        com.fr.web.ResourceHelper.forceInitStyleCache(ResourceConstants.DEFAULT_CORE_CSS);
         com.fr.web.ResourceHelper.forceInitStyleCache(ResourceConstants.DEFAULT_DESIGN_CSS);
         com.fr.web.ResourceHelper.forceInitStyleCache(ResourceConstants.DEFAULT_CONF_CSS);
         com.fr.web.ResourceHelper.forceInitStyleCache(ResourceConstants.DEFAULT_DESIGN_CSS);
