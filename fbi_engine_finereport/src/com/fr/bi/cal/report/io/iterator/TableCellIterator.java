@@ -1,8 +1,5 @@
 package com.fr.bi.cal.report.io.iterator;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * Created by daniel on 2016/7/12.
  */
@@ -11,12 +8,12 @@ public class TableCellIterator {
     private volatile boolean isEnd = false;
     private int column;
     private int row;
-    private List<StreamPagedIterator> iters;
+    private StreamPagedIterator iter;
 
     public TableCellIterator(int column, int row) {
         this.column = column;
         this.row = row;
-        this.iters = new ArrayList<StreamPagedIterator>();
+        this.iter = new StreamPagedIterator();
     }
 
     public int getColumn() {
@@ -35,21 +32,12 @@ public class TableCellIterator {
         row = currentRow;
     }
 
-    public StreamPagedIterator getIteratorByPage(int page) {
-        if (iters.size() > page) {
-            return iters.get(page);
-        }
-
-        StreamPagedIterator pagedIterator = new StreamPagedIterator();
-        iters.add(pagedIterator);
-
-        return pagedIterator;
+    public StreamPagedIterator getPageIterator() {
+        return iter;
     }
 
     public void finish() {
-        for (StreamPagedIterator iter : iters) {
-            iter.finish();
-        }
+        iter.finish();
         isEnd = true;
     }
 

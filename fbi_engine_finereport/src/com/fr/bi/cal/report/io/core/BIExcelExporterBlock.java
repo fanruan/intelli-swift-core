@@ -2,6 +2,7 @@ package com.fr.bi.cal.report.io.core;
 
 import com.fr.base.DynamicUnitList;
 import com.fr.bi.cal.report.io.BIChartElementCase;
+import com.fr.bi.cal.report.io.iterator.StreamPagedIterator;
 import com.fr.data.TableDataSource;
 import com.fr.io.core.ExcelCellIterator;
 import com.fr.io.core.ExcelFloatIterator;
@@ -44,20 +45,13 @@ public class BIExcelExporterBlock implements ResultReport, ResultElementCase {
     private static final long serialVersionUID = 5178446864197075830L;
     //b:TODO poly && resultreport重构，涉及到部分比较多，暂时用恶心的写法
     private ResultReport resultReport = null;
-    //b:TODO excelexporterreport属性重复，不extends
-    private int row;
-    private int column;
-    private int width;
-    private int height;
+    private StreamPagedIterator pagedIterator = null;
     //b:TODO chartresultblock
     private BIChartElementCase ecChart = null;
 
-    public BIExcelExporterBlock(ResultReport resultReport, int column, int row, int width, int height) {
+    public BIExcelExporterBlock(ResultReport resultReport, StreamPagedIterator pagedIterator) {
         this.resultReport = resultReport;
-        this.row = row;
-        this.column = column;
-        this.width = width;
-        this.height = height;
+        this.pagedIterator = pagedIterator;
         dealChartBlock();
     }
 
@@ -136,22 +130,22 @@ public class BIExcelExporterBlock implements ResultReport, ResultElementCase {
 
     @Override
     public Iterator cellIterator() {
-        return getElementCase().intersect(column, row, width, height);
+        return pagedIterator;
     }
 
     @Override
     public int getColumnCount() {
-        return width;
+        return 1;
     }
 
     @Override
     public FU getColumnWidth(int col) {
-        return getElementCase().getColumnWidth(col + column);
+        return getElementCase().getColumnWidth(col + 1);
     }
 
     @Override
     public FU getRowHeight(int r) {
-        return getElementCase().getRowHeight(r + row);
+        return getElementCase().getRowHeight(r + 1);
     }
 
     @Override
@@ -161,12 +155,12 @@ public class BIExcelExporterBlock implements ResultReport, ResultElementCase {
 
     @Override
     public int getRowCount() {
-        return height;
+        return 1;
     }
 
     @Override
     public Iterator floatIterator() {
-        return new ExcelFloatIterator(getElementCase(), column, row, width, height);
+        return new ExcelFloatIterator(getElementCase(), 0, 0, 0, 0);
     }
 
     public void addCellElement(CellElement cell) {
