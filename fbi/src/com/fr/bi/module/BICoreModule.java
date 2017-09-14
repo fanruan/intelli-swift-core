@@ -304,11 +304,7 @@ public class BICoreModule extends AbstractModule {
                         ClusterAdapter.getManager().getHostManager().getPort());
             }
         } else {
-            if (new File(BIConfigurePathUtils.createResourceBasePath() + File.separator + "scheduleEntityPool.xml").exists()) {
-                return new ScheduleEntityPoolReader(BIConfigurePathUtils.createResourceBasePath() + File.separator + "scheduleEntityPool.xml").read();
-            } else {
-                return new BITimeSchedulerManager();
-            }
+            return new ScheduleEntityPoolReader(BIConfigurePathUtils.createResourceBasePath() + File.separator + "scheduleEntityPool.xml").read();
         }
     }
 
