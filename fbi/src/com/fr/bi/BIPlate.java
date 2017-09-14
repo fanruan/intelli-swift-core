@@ -105,7 +105,7 @@ public class BIPlate extends AbstractFSPlate {
             registerEntrySomething();
             initOOMKillerForLinux();
             loadMemoryData();
-            backupWhenStart();
+            //backupWhenStart();
             addBITableColumn4NewConnection();
             addSharedTableColumn4NewConnection();
 

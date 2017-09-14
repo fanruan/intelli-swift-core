@@ -544,4 +544,49 @@ public class BIBaseConstant {
         public static final int MILLION = 1000000;
         public static final int ONE_HUNDRED_MILLION = 100000000;
     }
+
+    public static final class KEYS {
+        public static final String ID = "id";
+        public static final String FIELD_ID = "fieldId";
+        public static final String OLD_FIELD_ID = "field_id";
+        public static final String TABLE_ID = "tableId";
+        public static final String PACKAGE_ID = "packageId";
+        public static final String FIELD_TYPE = "fieldType";
+        public static final String ETL_TYPE = "etlType";
+        public static final String ETL_VALUE = "etlValue";
+        public static final String FILTER_TYPE = "filterType";
+        public static final String OLD_FILTER_TYPE = "filter_type";
+        public static final String FILTER_VALUE = "filterValue";
+        public static final String OLD_FILTER_VALUE = "filter_value";
+        public static final String FIELD_NAME = "fieldName";
+        public static final String TABLE_NAME = "tableName";
+        public static final String TRAN_NAME = "tranName";
+        public static final String TABLE_TRAN_NAME = "tableTranName";
+        public static final String FIELD_TRAN_NAME = "fieldTranName";
+        public static final String PACKAGE_NAME = "packageName";
+        public static final String PACKAGE_TYPE = "packageType";
+        public static final String GROUP_NAME = "groupName";
+        public static final String CONNECTION_NAME = "connectionName";
+        public static final String RELATIONS = "relations";
+        public static final String TRANSLATIONS = "translations";
+        public static final String UPDATE_SETTING = "updateSetting";
+        public static final String EXCEL_VIEW = "excelView";
+        public static final String IS_ENABLE = "isEnable";
+        public static final String IS_USABLE = "isUsable";
+        public static final String ROLE_TYPE = "roleType";
+        public static final String ROLE_NAME = "roleName";
+
+        public static final String TABLE = "table";
+        public static final String FIELD = "field";
+        public static final String FIELDS = "fields";
+        public static final String TABLES = "tables";
+        public static final String FILTER = "filter";
+        public static final String SRC = "_src";
+        public static final String TYPE = "type";
+        public static final String IDS = "ids";
+        public static final String EXPRESSION = "expression";
+
+        public static final String ERRORCODE = "errorCode";
+        public static final String ERRORMSG = "errorMsg";
+    }
 }
