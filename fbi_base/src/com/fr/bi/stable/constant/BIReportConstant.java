@@ -713,4 +713,6 @@ public class BIReportConstant {
     public static final class ERROR_MESSAGE {
         public static final String SQLDATASET_MSG = "sqldataset config error";
     }
+
+    public static final String REPORTS_ROOT_NODE = "-1";    // 我创建的
 }
