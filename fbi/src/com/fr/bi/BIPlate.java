@@ -13,6 +13,7 @@ import com.fr.bi.cal.report.BIActor;
 import com.fr.bi.cal.report.db.DialectCreatorImpl;
 import com.fr.bi.cal.report.db.HiveDialectCreatorImpl;
 import com.fr.bi.cal.report.db.KylinDialectCreatorImpl;
+import com.fr.bi.cal.report.db.PostgreDialectCreatorImpl;
 import com.fr.bi.conf.VT4FBI;
 import com.fr.bi.conf.base.datasource.BIConnectionManager;
 import com.fr.bi.conf.provider.BIConfigureManagerCenter;
@@ -105,8 +106,8 @@ public class BIPlate extends AbstractFSPlate {
         }
     }
 
-    private void backupWhenStart(){
-        if(PerformancePlugManager.getInstance().isBackupWhenStart()){
+    private void backupWhenStart() {
+        if (PerformancePlugManager.getInstance().isBackupWhenStart()) {
             BackUpUtils.backup();
         }
     }
@@ -315,7 +316,7 @@ public class BIPlate extends AbstractFSPlate {
             ExtraClassManager.getInstance().addMutable(DialectCreatorImpl.XML_TAG, new DialectCreatorImpl(), PluginSimplify.create("bi", "com.fr.bi.plugin.db.ads"));
             ExtraClassManager.getInstance().addMutable(KylinDialectCreatorImpl.XML_TAG, new KylinDialectCreatorImpl(), PluginSimplify.create("bi", "com.fr.bi.plugin.db.kylin"));
             ExtraClassManager.getInstance().addMutable(HiveDialectCreatorImpl.XML_TAG, new HiveDialectCreatorImpl(), PluginSimplify.create("bi", "com.fr.bi.plugin.db.hive"));
-
+            ExtraClassManager.getInstance().addMutable(PostgreDialectCreatorImpl.XML_TAG, new PostgreDialectCreatorImpl(), PluginSimplify.create("bi", "com.fr.bi.plugin.db.postgre"));
         } catch (Exception e) {
             FRLogger.getLogger().error(e.getMessage(), e);
         }

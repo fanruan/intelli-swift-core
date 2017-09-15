@@ -743,8 +743,8 @@ public class BIDBUtils {
                     currentStatement = (Statement) statementAndResultSet[0];
                     currentResultSet = (ResultSet) statementAndResultSet[1];
                 } else {
-                    currentStatement = connection.createStatement();
-                    currentStatement.setFetchSize(10000);
+                    currentStatement = dialect.createStatement(connection, query);
+//                    currentStatement = connection.createStatement();
                     try {
                         currentResultSet = currentStatement.executeQuery(dialect.createSQL4Columns(query));
                     } catch (Exception var6) {
