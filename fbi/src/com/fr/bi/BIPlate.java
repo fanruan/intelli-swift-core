@@ -162,7 +162,7 @@ public class BIPlate extends AbstractFSPlate {
                     File migrateFile = new File(basePath, newFile + BI_REPORT_SUFFIX);
                     boolean result = mFile.renameTo(migrateFile);
                     if (result) {
-                        BIReportNode node = new BIReportNode(userId, BIReportConstant.REPORTS_ROOT_NODE, newFile, migrateFile.getAbsolutePath(), null);
+                        BIReportNode node = new BIReportNode(userId, BIReportConstant.REPORTS_ROOT_NODE, newFile, File.separator + newFile + BI_REPORT_SUFFIX, null);
                         BIDAOUtils.getBIDAOManager().saveOrUpDate(node, userId);
                     }
                 }
