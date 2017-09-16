@@ -300,7 +300,7 @@ public class BICubeTableAdapter implements ICubeTableService {
     }
 
     private boolean isFieldRelationExist(BIColumnKey columnKey, BICubeTablePath path) {
-        return BICubeUtils.tableFieldRelationExist(tableKey, columnKey, path, primaryTable, cube);
+        return BICubeUtils.tableFieldRelationExist(tableKey, columnKey, path, primaryTable, cube, false);
     }
 
     private String getColumnSubType(BIKey biKey) {
