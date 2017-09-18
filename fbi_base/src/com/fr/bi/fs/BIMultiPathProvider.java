@@ -8,4 +8,5 @@ import com.fr.json.JSONObject;
 public interface BIMultiPathProvider {
     String XML_TAG = "BIMultiPathProvider";
     JSONObject getMultiPath(long userId) throws Exception;
+    void updteMultiPath(long userId,String relation) throws Exception;
 }
