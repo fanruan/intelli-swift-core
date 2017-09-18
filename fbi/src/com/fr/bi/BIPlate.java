@@ -18,6 +18,7 @@ import com.fr.bi.conf.VT4FBI;
 import com.fr.bi.conf.base.datasource.BIConnectionManager;
 import com.fr.bi.conf.provider.BIConfigureManagerCenter;
 import com.fr.bi.conf.utils.BIModuleManager;
+import com.fr.bi.fs.BIDAOUtils;
 import com.fr.bi.fs.BIReportNode;
 import com.fr.bi.fs.BISharedReportNode;
 import com.fr.bi.fs.BITableMapper;
@@ -43,6 +44,7 @@ import com.fr.data.dao.ObjectTableMapper;
 import com.fr.data.dao.RelationFCMapper;
 import com.fr.fs.AbstractFSPlate;
 import com.fr.fs.FSConfig;
+import com.fr.fs.base.entity.User;
 import com.fr.fs.basic.SystemAttr;
 import com.fr.fs.basic.SystemStyle;
 import com.fr.fs.control.EntryControl;
@@ -54,6 +56,7 @@ import com.fr.fs.dao.FSDAOManager;
 import com.fr.fs.schedule.entry.FolderEntry;
 import com.fr.fs.web.service.ServiceUtils;
 import com.fr.general.ComparatorUtils;
+import com.fr.general.DateUtils;
 import com.fr.general.FRLogger;
 import com.fr.general.GeneralContext;
 import com.fr.general.GeneralUtils;
@@ -73,6 +76,7 @@ import com.fr.web.utils.WebUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.File;
 import java.io.IOException;
 import java.lang.management.ManagementFactory;
 import java.lang.reflect.Modifier;
@@ -82,9 +86,11 @@ import java.sql.Statement;
 import java.sql.Types;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Random;
 import java.util.Set;
 
 /**
@@ -92,6 +98,7 @@ import java.util.Set;
  */
 public class BIPlate extends AbstractFSPlate {
     private static BILogger LOGGER = BILoggerFactory.getLogger(BIPlate.class);
+    private final static String BI_REPORT_SUFFIX = ".fbi";
 
     @Override
     public void initData() {
@@ -114,7 +121,53 @@ public class BIPlate extends AbstractFSPlate {
             //兼容FR工程中可能存在PARENTID类型是整型的情况
             notifyColumnParentIdType();
 
+            migrateBIReport();
         } catch (Throwable e) {
+            LOGGER.error(e.getMessage(), e);
+        }
+    }
+
+    // BI模板迁移
+    private void migrateBIReport() {
+        try {
+            String reportsPath = FRContext.getCurrentEnv().getPath() + File.separator + "biReport";
+            File reportsFile = new File(reportsPath);
+            File[] files = reportsFile.listFiles();
+            if (files == null) {
+                return;
+            }
+            for (int i = 0; i < files.length; i++) {
+                File singleUserFile = files[i];
+                String fileName = singleUserFile.getName();     // 用户id
+                long userId = GeneralUtils.string2Number(fileName).longValue();
+                User user = UserControl.getInstance().getUser(userId);
+                if (user == null) {
+                    continue;
+                }
+                // 读migrate中所有.fbi文件
+                String basePath = singleUserFile.getAbsolutePath();
+                File migrate = new File(basePath + File.separator + "migrate");
+                File[] migrateFiles = migrate.listFiles();
+                if (migrateFiles == null) {
+                    return;
+                }
+                for (int j = 0; j < migrateFiles.length; j++) {
+                    File mFile = migrateFiles[j];
+                    String mFileName = mFile.getName();
+                    if (!mFileName.endsWith(BI_REPORT_SUFFIX)) {
+                        continue;
+                    }
+                    // 复制到biReport 并执行添加模板操作
+                    String newFile = DateUtils.getDate2AllIncludeSSS(new Date()) + "_" + new Random().nextInt(1000);
+                    File migrateFile = new File(basePath, newFile + BI_REPORT_SUFFIX);
+                    boolean result = mFile.renameTo(migrateFile);
+                    if (result) {
+                        BIReportNode node = new BIReportNode(userId, BIReportConstant.REPORTS_ROOT_NODE, newFile, File.separator + newFile + BI_REPORT_SUFFIX, null);
+                        BIDAOUtils.getBIDAOManager().saveOrUpDate(node, userId);
+                    }
+                }
+            }
+        } catch (Exception e) {
             LOGGER.error(e.getMessage(), e);
         }
     }
