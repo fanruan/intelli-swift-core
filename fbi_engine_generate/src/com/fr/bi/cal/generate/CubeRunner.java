@@ -45,7 +45,7 @@ public class CubeRunner {
      */
     private static final long serialVersionUID = -249303913165576913L;
 
-    protected volatile Status statue = Status.NULL;
+    protected volatile Status status = Status.NULL;
     protected BIUser biUser;
     QueueThread<CubeTask> cubeThread = new QueueThread<CubeTask>();
     private CubeBuildStuffComplete object;
@@ -72,23 +72,23 @@ public class CubeRunner {
                 updatingCubeTask = cubeTask;
                 cubeGeneratingTableSourceIDs = cubeTask.getTaskTableSourceIds();
                 long start = System.currentTimeMillis();
-                setStatue(Status.WAITING);
+                setStatus(Status.WAITING);
                 start();
                 try {
-                    setStatue(Status.START);
+                    setStatus(Status.START);
                     cubeTask.start();
-                    setStatue(Status.LOADING);
+                    setStatus(Status.LOADING);
                     cubeTask.run();
-                    setStatue(Status.LOADED);
-                    setStatue(Status.REPLACING);
+                    setStatus(Status.LOADED);
+                    setStatus(Status.REPLACING);
                     cubeTask.end();
-                    setStatue(Status.END);
+                    setStatus(Status.END);
                 } catch (Exception e) {
                     LOGGER.error(e.getMessage(), e);
-                    setStatue(Status.WRONG);
+                    setStatus(Status.WRONG);
                 } finally {
-                    finish(cubeTask);
-                    setStatue(Status.NULL);
+                    finish(cubeTask, getStatus());
+                    setStatus(Status.NULL);
                     LOGGER.info(BIDateUtils.getCurrentDateTime() + " Build OLAP database Cost:" + DateUtils.timeCostFrom(start));
                     cubeGeneratingTableSourceIDs.clear();
                     BIConfigureManagerCenter.getCubeConfManager().updatePackageLastModify();
@@ -136,7 +136,7 @@ public class CubeRunner {
 
     public void addTask(CubeTask task) {
         cubeThread.add(task);
-        setStatue(Status.PREPARED);
+        setStatus(Status.PREPARED);
     }
 
     public void removeTask(String taskId) {
@@ -160,7 +160,7 @@ public class CubeRunner {
         BackUpUtils.backup();
     }
 
-    private void finish(final CubeTask cubeTask) {
+    private void finish(final CubeTask cubeTask, final Status status) {
         long t = System.currentTimeMillis();
         try {
             if (!cubeTask.getTaskType().equals(CubeTaskType.INSTANT)) {
@@ -184,7 +184,7 @@ public class CubeRunner {
             public void run() {
                 try {
                     //持久化log
-                    recordLogs(cubeTask, BIConfigureManagerCenter.getLogManager());
+                    recordLogs(cubeTask, BIConfigureManagerCenter.getLogManager(), status);
                 } catch (Exception e) {
                     LOGGER.error(e.getMessage(), e);
                 }
@@ -214,14 +214,14 @@ public class CubeRunner {
         return object;
     }
 
-    public Status getStatue() {
-        return statue;
+    public Status getStatus() {
+        return status;
     }
 
-    public void setStatue(Status statue) {
-        LOGGER.info("previous FineIndex status :" + getStatue());
-        LOGGER.info("change FineIndex status to :" + statue.name());
-        this.statue = statue;
+    public void setStatus(Status status) {
+        LOGGER.info("previous FineIndex status :" + getStatus());
+        LOGGER.info("change FineIndex status to :" + status.name());
+        this.status = status;
     }
 
     public CubeTask getGeneratingTask() {
@@ -241,9 +241,9 @@ public class CubeRunner {
         return BIFileUtils.checkDir(new File(BIConfigurePathUtils.createBasePath()));
     }
 
-    private void recordLogs(CubeTask cubeTask, BILogManagerProvider logManager) {
+    private void recordLogs(CubeTask cubeTask, BILogManagerProvider logManager, Status status) {
         LOGGER.info("start persist FineIndex task logs……");
-        BICubeTaskRecord record = new BICubeTaskRecord(cubeTask.getTaskType(), logManager.getStart(biUser.getUserId()), logManager.getEndTime(biUser.getUserId()), getStatue());
+        BICubeTaskRecord record = new BICubeTaskRecord(cubeTask.getTaskType(), logManager.getStart(biUser.getUserId()), logManager.getEndTime(biUser.getUserId()), status);
         record.setErrorTableLogs(logManager.getErrorTables(biUser.getUserId()));
         Set<BITableSourceRelationPath> allRelationPathSet = logManager.getAllRelationPathSet(biUser.getUserId());
         record.setAllRelationPaths(allRelationPathSet);
