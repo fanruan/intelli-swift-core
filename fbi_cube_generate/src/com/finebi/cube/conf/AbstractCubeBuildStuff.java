@@ -16,6 +16,7 @@ import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.utils.file.BIFileUtils;
+import com.fr.bi.util.BIConfigurePathUtils;
 import com.fr.data.impl.Connection;
 import com.fr.general.ComparatorUtils;
 import com.fr.stable.ArrayUtils;
@@ -279,7 +280,7 @@ public abstract class AbstractCubeBuildStuff implements CubeBuildStuff {
     private boolean hasSpace() {
         CubePreConditionsCheck check = new CubePreConditionsCheckManager();
         ICubeConfiguration conf = BICubeConfiguration.getConf(String.valueOf(userId));
-        return check.HDSpaceCheck(new File(conf.getRootURI().getPath()));
+        return check.HDSpaceCheck(new File(BIConfigurePathUtils.createBasePath()));
     }
 
     protected Set<String> getDependTableSourceIdSet(Set<List<Set<CubeTableSource>>> dependTableSource) {
