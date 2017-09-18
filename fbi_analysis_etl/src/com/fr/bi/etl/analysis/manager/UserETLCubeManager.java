@@ -6,7 +6,6 @@ package com.fr.bi.etl.analysis.manager;
 import com.finebi.cube.api.ICubeTableService;
 import com.fr.base.FRContext;
 import com.fr.bi.base.BIUser;
-import com.fr.bi.conf.report.BIWidget;
 import com.fr.bi.etl.analysis.data.AnalysisCubeTableSource;
 import com.fr.bi.etl.analysis.data.UserCubeTableSource;
 import com.fr.bi.etl.analysis.data.UserETLTableSource;

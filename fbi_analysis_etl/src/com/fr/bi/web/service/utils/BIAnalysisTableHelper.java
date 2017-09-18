@@ -103,13 +103,14 @@ public class BIAnalysisTableHelper {
         return 0;
     }
 
+    // 从AnalysisCubeTableSource中获取对应业务包表的信息，然后对比当前业务包表里面是否还有这张表的存在。
     private static boolean isBusinessTableExist(AnalysisCubeTableSource source, long userId) {
         boolean exist = true;
         try {
             Set<IBusinessPackageGetterService> allPackages = BICubeConfigureCenter.getPackageManager().getAllPackages(userId);
-            Iterator<BIWidget> sourceIterator = source.getWidgets().iterator();
-            while (sourceIterator.hasNext()) {
-                BIWidget widget = sourceIterator.next();
+            Iterator<BIWidget> widgetIterator = source.getWidgets().iterator();
+            while (widgetIterator.hasNext()) {
+                BIWidget widget = widgetIterator.next();
                 BITargetAndDimension[] dimensions = widget.getDimensions();
                 for (BITargetAndDimension dimension : dimensions) {
                     BITableID tableId = dimension.createColumnKey().getTableBelongTo().getID();
