@@ -279,7 +279,6 @@ public abstract class AbstractCubeBuildStuff implements CubeBuildStuff {
 
     private boolean hasSpace() {
         CubePreConditionsCheck check = new CubePreConditionsCheckManager();
-        ICubeConfiguration conf = BICubeConfiguration.getConf(String.valueOf(userId));
         return check.HDSpaceCheck(new File(BIConfigurePathUtils.createBasePath()));
     }
 
