@@ -1,7 +1,9 @@
 package com.fr.bi.cal.report.io.core;
 
 import com.fr.base.DynamicUnitList;
+import com.fr.bi.cal.report.engine.CBCell;
 import com.fr.bi.cal.report.io.BIChartElementCase;
+import com.fr.bi.cal.report.io.iterator.StreamPagedIterator;
 import com.fr.data.TableDataSource;
 import com.fr.io.core.ExcelFloatIterator;
 import com.fr.main.FineBook;
@@ -43,6 +45,7 @@ public class BIExcelExporterBlock implements ResultReport, ResultElementCase {
     private static final long serialVersionUID = 5178446864197075830L;
     //b:TODO poly && resultreport重构，涉及到部分比较多，暂时用恶心的写法
     private ResultReport resultReport = null;
+    private Iterator iter = null;
     //b:TODO excelexporterreport属性重复，不extends
     private int row;
     private int column;
@@ -51,8 +54,9 @@ public class BIExcelExporterBlock implements ResultReport, ResultElementCase {
     //b:TODO chartresultblock
     private BIChartElementCase ecChart = null;
 
-    public BIExcelExporterBlock(ResultReport resultReport, int column, int row, int width, int height) {
+    public BIExcelExporterBlock(ResultReport resultReport, Iterator iter) {
         this.resultReport = resultReport;
+        this.iter = iter;
         this.row = row;
         this.column = column;
         this.width = width;
@@ -135,7 +139,7 @@ public class BIExcelExporterBlock implements ResultReport, ResultElementCase {
 
     @Override
     public Iterator cellIterator() {
-        return getElementCase().intersect(column, row, width, height);
+        return iter;
     }
 
     @Override

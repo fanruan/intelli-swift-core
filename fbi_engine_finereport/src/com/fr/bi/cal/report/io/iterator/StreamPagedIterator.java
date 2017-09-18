@@ -66,17 +66,15 @@ public class StreamPagedIterator<T> implements Iterator<T> {
 
     @Override
     public boolean hasNext() {
-//        waitFor();
-//        return (!isEnd) || (!isRealEmpty());
-        return !queue.isEmpty();
+        waitFor();
+        return (!isEnd) || (!isRealEmpty());
     }
 
     @Override
     public T next() {
-//        synchronized (queue) {
-//            return queue.poll();
-//        }
-        return queue.poll();
+        synchronized (queue) {
+            return queue.poll();
+        }
     }
 
     public void finish() {
@@ -93,33 +91,31 @@ public class StreamPagedIterator<T> implements Iterator<T> {
     }
 
     public void addCell(T cellElement) {
-//        if (queue.size() > maxCount) {
-//            synchronized (this) {
-//                if (queue.size() > maxCount) {
-//                    try {
-//                        isProducing = false;
-//                        this.wait();
-//                        isProducing = true;
-//                    } catch (Exception e) {
-//                        BILoggerFactory.getLogger().error(e.getMessage(), e);
-//                    }
-//                }
-//            }
-//        }
-//        synchronized (queue) {
-//            queue.add(cellElement);
-//        }
-////        如果消费线程wait住了，并且超过了消费阈值就唤醒消费线程
-//        if (queue.size() > consumeCount && !isConsuming) {
-//            synchronized (this) {
-//                if (queue.size() > consumeCount && !isConsuming){
-//                    isConsuming = true;
-//                    this.notify();
-//                }
-//            }
-//        }
-
-        queue.add(cellElement);
+        if (queue.size() > maxCount) {
+            synchronized (this) {
+                if (queue.size() > maxCount) {
+                    try {
+                        isProducing = false;
+                        this.wait();
+                        isProducing = true;
+                    } catch (Exception e) {
+                        BILoggerFactory.getLogger().error(e.getMessage(), e);
+                    }
+                }
+            }
+        }
+        synchronized (queue) {
+            queue.add(cellElement);
+        }
+//        如果消费线程wait住了，并且超过了消费阈值就唤醒消费线程
+        if (queue.size() > consumeCount && !isConsuming) {
+            synchronized (this) {
+                if (queue.size() > consumeCount && !isConsuming){
+                    isConsuming = true;
+                    this.notify();
+                }
+            }
+        }
     }
 
     @Override
