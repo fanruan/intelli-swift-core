@@ -23,6 +23,8 @@ public interface BIDAOProvider {
 
     List<BIReportNode> getBIReportNodesByShare2User(long userId) throws Exception;
 
+    List<BIReportNode> getAll() throws Exception;
+
     List<User> getSharedUsersByReport(long reportId, long createBy);
 
     boolean deleteBIReportById(long userId, long id) throws Exception;

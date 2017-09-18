@@ -106,7 +106,7 @@ import com.fr.stable.bridge.StableFactory;
 import com.fr.stable.fun.Service;
 import com.fr.web.core.db.PlatformDB;
 
-import javax.ws.rs.HEAD;
+
 import java.io.File;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -825,6 +825,7 @@ public class BICoreModule extends AbstractModule {
         StableFactory.registerJavaScriptFiles(ResourceConstants.DEFAULT_BASE_JS, BaseResourceHelper.getBaseJs());
         StableFactory.registerStyleFiles(ResourceConstants.DEFAULT_THIRD_CSS, BaseResourceHelper.getThirdCss());
         StableFactory.registerStyleFiles(ResourceConstants.DEFAULT_BASE_CSS, BaseResourceHelper.getBaseCss());
+        StableFactory.registerStyleFiles(ResourceConstants.DEFAULT_CORE_CSS, BaseResourceHelper.getCoreCss());
 
         StableFactory.registerJavaScriptFiles(ResourceConstants.DEFAULT_EXPORT_JS, BaseResourceHelper.getExportJS());
 
@@ -865,6 +866,7 @@ public class BICoreModule extends AbstractModule {
         com.fr.web.ResourceHelper.forceInitStyleCache(ResourceConstants.DEFAULT_PLATFORM_CSS);
         com.fr.web.ResourceHelper.forceInitStyleCache(ResourceConstants.DEFAULT_THIRD_CSS);
         com.fr.web.ResourceHelper.forceInitStyleCache(ResourceConstants.DEFAULT_BASE_CSS);
+        com.fr.web.ResourceHelper.forceInitStyleCache(ResourceConstants.DEFAULT_CORE_CSS);
         com.fr.web.ResourceHelper.forceInitStyleCache(ResourceConstants.DEFAULT_DESIGN_CSS);
         com.fr.web.ResourceHelper.forceInitStyleCache(ResourceConstants.DEFAULT_CONF_CSS);
         com.fr.web.ResourceHelper.forceInitStyleCache(ResourceConstants.DEFAULT_DESIGN_CSS);
@@ -912,6 +914,6 @@ public class BICoreModule extends AbstractModule {
      */
     public void loadEngine() {
 
-        BIRegisterCenter.regBusinessPackageManager(new CubePackageManager(getPackManagerProvider()));
+        BIRegisterCenter.regBusinessPackageManager(new CubePackageManager());
     }
 }

@@ -81,4 +81,11 @@ public class CubeConstant {
         public static String VALID = "VALID";
         public static String INVALID = "INVALID";
     }
+
+    public static final class TIMING_UPDATE_TYPE {
+        public static final int UPDATE_ONCE = 0x1;
+        public static final int SIMPLE_REPEAT = 0x2;
+        public static final int TIME_FREQUENCY = 0x3;
+        public static final int CRON_EXPRESSION = 0x4;
+    }
 }

@@ -152,4 +152,3 @@ public class BITableConstructHelper {
         it.setTextStyles(style.put("color",BITableStyleHelper.getContrastColor(backgroundColor.getValue())));
     }
 }
-

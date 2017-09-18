@@ -324,7 +324,11 @@ public class BILogger implements Logger {
         logger.error(s);
         poolLogger.info(s);
     }
-
+    public void errorCache(String s, Object o) {
+        if (!BILogCache.getInstance().containsKey(s)) {
+            logger.error(s, o);
+        }
+    }
     @Override
     public void error(String s, Object o) {
         logger.error(s, o);
@@ -334,12 +338,6 @@ public class BILogger implements Logger {
         logger.error(s, o);
         poolLogger.info(s, o);
 
-    }
-
-    public void errorCache(String s, Object o) {
-        if (!BILogCache.getInstance().containsKey(s)) {
-            logger.error(s, o);
-        }
     }
 
     public void errorCache(String s) {
