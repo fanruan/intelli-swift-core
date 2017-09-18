@@ -149,7 +149,7 @@ public class BIPlate extends AbstractFSPlate {
                 File migrate = new File(basePath + File.separator + "migrate");
                 File[] migrateFiles = migrate.listFiles();
                 if (migrateFiles == null) {
-                    return;
+                    continue;
                 }
                 for (int j = 0; j < migrateFiles.length; j++) {
                     File mFile = migrateFiles[j];
