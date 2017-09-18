@@ -478,4 +478,10 @@ public class DetailWidget extends AbstractBIWidget implements SclCalculator {
         DetailExecutor exe = new DetailExecutor(this, null, (BISession) session);
         return exe.getResult();
     }
+
+    @Override
+    public BusinessTable getBaseTable() {
+
+        return target;
+    }
 }
