@@ -103,7 +103,7 @@ public class MergeIterator implements Iterator<MetricMergeResult> {
     protected void moveNext() {
         do {
             IntArray array = new IntArray();
-            GroupValueIndex[] gvis = new GroupValueIndex[iterators.length];
+            gvis = new GroupValueIndex[iterators.length];
             Object minValue = getMinValuePositions(array, gvis);
             //设置mergenode
             if (minValue == null) {
