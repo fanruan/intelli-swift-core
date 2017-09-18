@@ -123,20 +123,20 @@ public class SingleUserCubeManager {
      * @return true或false
      */
     public boolean checkCubeStatus() {
-        return runner.getStatue() == Status.LOADING
+        return runner.getStatus() == Status.LOADING
                 || isReplacing();
     }
 
     public boolean isReplacing() {
-        return runner.getStatue() == Status.REPLACING;
+        return runner.getStatus() == Status.REPLACING;
     }
 
     public Status getStatus() {
-        return runner.getStatue();
+        return runner.getStatus();
     }
 
     public void setStatus(Status status) {
-        runner.setStatue(status);
+        runner.setStatus(status);
     }
 
     /**
