@@ -118,8 +118,8 @@ public class BIAnalysisTableHelper {
                     while (packageIterator.hasNext()) {
                         IBusinessPackageGetterService businessPackage = packageIterator.next();
                         BusinessTable specificTable = businessPackage.getSpecificTable(tableId);
-                        if (specificTable == null) {
-                            exist = false;
+                        if (specificTable != null) {
+                            return exist;
                         }
                     }
                 }
