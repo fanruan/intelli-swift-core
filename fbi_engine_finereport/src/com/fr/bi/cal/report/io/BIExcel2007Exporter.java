@@ -45,7 +45,7 @@ public class BIExcel2007Exporter extends StreamExcel2007Exporter {
                 StreamCellCase cellCase = (StreamCellCase) ((BIPolyAnalyECBlock) ec).getCellCase();
                 int c = 0;
                 TableCellIterator tableCellIterator = (TableCellIterator) cellCase.cellIterator();
-                while(tableCellIterator.hasNext()) {
+                while (tableCellIterator.hasNext()) {
                     this.innerExportReport(new BIExcelExporterBlock(innerReport[i], tableCellIterator.next()),
                             book.getReportExportAttr(), book.getReportName(i) + (c == 0 ? "" : "_" + c),
                             (SXSSFWorkbook) workbookWrapper.getWorkbook(), cellList, cellFormulaList, 0);
