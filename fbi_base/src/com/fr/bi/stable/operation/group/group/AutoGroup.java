@@ -190,7 +190,7 @@ public class AutoGroup extends AbstractGroup {
         }
         String min = GeneralUtils.objectToString(minV);
         int minIndex = min.indexOf(".");
-        min = minIndex == -1 ? min : (min.substring(minIndex).matches("\\.0+$") ? min.substring(0, minIndex) : min.replace(".", ""));
+        min = minIndex == -1 ? min : (min.substring(minIndex).matches("\\.0+$") ? min.substring(0, minIndex) : min.replace(".", StringUtils.EMPTY));
         minBuilder.append(min);
         StringBuilder maxBuilder = new StringBuilder("0.");
         while (count - maxCount > 0) {
@@ -199,7 +199,7 @@ public class AutoGroup extends AbstractGroup {
         }
         String max = GeneralUtils.objectToString(maxV);
         int maxIndex = max.indexOf(".");
-        max = maxIndex == -1 ? max : (max.substring(maxIndex).matches("\\.0+$") ? max.substring(0, maxIndex) : max.replace(".", ""));
+        max = maxIndex == -1 ? max : (max.substring(maxIndex).matches("\\.0+$") ? max.substring(0, maxIndex) : max.replace(".", StringUtils.EMPTY));
         maxBuilder.append(max);
         //后面补零对齐
         int zeros = maxBuilder.length() - minBuilder.length();
