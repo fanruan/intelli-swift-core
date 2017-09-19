@@ -27,6 +27,7 @@ import com.fr.bi.stable.engine.CubeTask;
 import com.fr.bi.stable.structure.queue.CubeTaskCondition;
 import com.fr.bi.stable.utils.program.BIConstructorUtils;
 import com.fr.fs.control.UserControl;
+import com.fr.general.ComparatorUtils;
 import com.fr.general.GeneralContext;
 import com.fr.stable.EnvChangedListener;
 
@@ -360,16 +361,27 @@ public class BICubeManager implements BICubeManagerProvider {
                      **/
                     long userId = cubeGenerateTask.getUserId();
                     cubeGenerateTask = mergeTaskIfNeed(cubeGenerateTask);
+                    CubeTask cubeTask = null;
                     ITaskCalculator taskCalculator = cubeGenerateTask.getTaskCalculator();
                     BISystemConfigHelper configHelper = new BISystemConfigHelper();
                     Set<CubeTableSource> allTableSources = configHelper.extractTableSource(configHelper.getSystemBusinessTables());
                     Set<BITableSourceRelation> allRelations = configHelper.convertRelations(configHelper.getSystemTableRelations());
                     Set<BITableSourceRelationPath> allPaths = configHelper.convertPaths(configHelper.getSystemTablePaths());
                     CubeBuildStuff cubeBuildStuff = taskCalculator.generateCubeBuildStuff(allTableSources, allRelations, allPaths);
-                    if (cubeBuildStuff.isNeed2Update()) {
-                        CubeTask cubeTask = new BuildCubeTask(new BIUser(userId), cubeBuildStuff);
-                        addTask(cubeTask, userId);
+                    // BI-9626 添加检查所需空间是否足够的方法，功能那边说这个方法只有全局更新的时候才有用
+                    if (ComparatorUtils.equals(cubeGenerateTask.getTaskInfo(), "AllCubeGenerateTask")) {
+                        if (cubeBuildStuff.preConditionsCheck()) {
+                            if (cubeBuildStuff.isNeed2Update()) {
+                                cubeTask = new BuildCubeTask(new BIUser(userId), cubeBuildStuff);
+                            }
+                        }
+                    } else {
+                        if (cubeBuildStuff.isNeed2Update()) {
+                            cubeTask = new BuildCubeTask(new BIUser(userId), cubeBuildStuff);
+
+                        }
                     }
+                    addTask(cubeTask, userId);
                 } catch (Exception e) {
                     BILoggerFactory.getLogger(BICubeManager.class).error(e.getMessage(), e);
                 } finally {
@@ -415,14 +427,17 @@ public class BICubeManager implements BICubeManagerProvider {
         return singleUserCubeManager.getUpdatingTask();
     }
 
+    @Override
     public List<ICubeGenerateTask> getCubeGenerateTasks() {
         return cubeGenerateTaskQueue.getCubeGenerateTasks();
     }
 
+    @Override
     public boolean removeCubeGenerateTask(ICubeGenerateTask task) {
         return removeCubeGenerateTaskQueue(task);
     }
 
+    @Override
     public boolean removeCubeGenerateTask(List<ICubeGenerateTask> tasks) {
         for (ICubeGenerateTask task : tasks) {
             removeCubeGenerateTaskQueue(task);

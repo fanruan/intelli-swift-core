@@ -1,5 +1,7 @@
 package com.finebi.cube.conf;
 
+import java.util.Set;
+
 /**
  * Created by Lucifer on 2017-5-19.
  *
@@ -21,4 +23,6 @@ public interface ICubeGenerateTask {
     ICubeGenerateTask merge(ICubeGenerateTask mergeCubeGenerateTask);
 
     String getTaskInfo();
+
+    Set<String> getAllsSourceIds();
 }

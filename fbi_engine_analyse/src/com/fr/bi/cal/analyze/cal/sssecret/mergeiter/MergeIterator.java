@@ -101,38 +101,39 @@ public class MergeIterator implements Iterator<MetricMergeResult> {
     }
 
     protected void moveNext() {
+        GroupValueIndex[] childGvi = null;
         do {
             IntArray array = new IntArray();
-            GroupValueIndex[] gvis = new GroupValueIndex[iterators.length];
-            Object minValue = getMinValuePositions(array, gvis);
+            childGvi = new GroupValueIndex[iterators.length];
+            Object minValue = getMinValuePositions(array, childGvi);
             //设置mergenode
             if (minValue == null) {
                 next = null;
             } else {
                 int[] groupIndex = null;
                 if (returnResultWithGroupIndex) {
-                    groupIndex = new int[gvis.length];
+                    groupIndex = new int[childGvi.length];
                 }
-                for (int i = 0; i < gvis.length; i++) {
-                    if (this.gvis[i] == null || gvis[i] == null) {
-                        gvis[i] = null;
+                for (int i = 0; i < childGvi.length; i++) {
+                    if (this.gvis[i] == null || childGvi[i] == null) {
+                        childGvi[i] = null;
                         if (returnResultWithGroupIndex) {
                             groupIndex[i] = NIOConstant.INTEGER.NULL_VALUE;
                         }
                     } else {
                         if (!iterators[i].isReturnFinalGroupValueIndex()) {
-                            andGVI(gvis, i);
+                            andGVI(childGvi, i);
                         }
                         if (returnResultWithGroupIndex) {
                             groupIndex[i] = iterators[i].getCurrentGroup();
                         }
                     }
                 }
-                next = returnResultWithGroupIndex ? new MetricMergeResultWithGroupIndex(c, minValue, sumLength, gvis, groupIndex) : new MetricMergeResult(c, minValue, sumLength, gvis);
+                next = returnResultWithGroupIndex ? new MetricMergeResultWithGroupIndex(c, minValue, sumLength, childGvi, groupIndex) : new MetricMergeResult(c, minValue, sumLength, childGvi);
             }
             moveEntries(array);
         }
-        while (isAllEmpty(gvis) && next != null);
+        while (isAllEmpty(childGvi) && next != null);
     }
 
     private void andGVI(GroupValueIndex[] gvis, int i) {
