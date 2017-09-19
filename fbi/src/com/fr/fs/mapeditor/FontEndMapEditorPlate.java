@@ -9,6 +9,10 @@ import com.fr.fs.control.dao.tabledata.TableDataDAOControl;
 import com.fr.fs.dao.EntryDAO;
 import com.fr.stable.fun.Service;
 
+import com.fr.plugin.chart.map.server.service.MapEditorOpenEntryService;
+import com.fr.plugin.chart.map.server.service.MapEditorEntryService;
+import com.fr.plugin.chart.map.server.service.MapGetJsonService;
+
 import java.util.List;
 
 public class FontEndMapEditorPlate extends AbstractFSPlate  {
@@ -17,10 +21,10 @@ public class FontEndMapEditorPlate extends AbstractFSPlate  {
 
     public Service[] service4Register() {
         return new Service[]{
-//                // 这里直接复用plugin-vanchart的MapEditorService
-//                new MapEditorOpenEntryService(),
-//                new MapEditorEntryService(),
-//                new MapGetJsonService()
+                // 这里直接复用plugin-vanchart的MapEditorService
+                new MapEditorOpenEntryService(),
+                new MapEditorEntryService(),
+                new MapGetJsonService()
         };
     }
 
