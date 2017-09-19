@@ -415,14 +415,17 @@ public class BICubeManager implements BICubeManagerProvider {
         return singleUserCubeManager.getUpdatingTask();
     }
 
+    @Override
     public List<ICubeGenerateTask> getCubeGenerateTasks() {
         return cubeGenerateTaskQueue.getCubeGenerateTasks();
     }
 
+    @Override
     public boolean removeCubeGenerateTask(ICubeGenerateTask task) {
         return removeCubeGenerateTaskQueue(task);
     }
 
+    @Override
     public boolean removeCubeGenerateTask(List<ICubeGenerateTask> tasks) {
         for (ICubeGenerateTask task : tasks) {
             removeCubeGenerateTaskQueue(task);

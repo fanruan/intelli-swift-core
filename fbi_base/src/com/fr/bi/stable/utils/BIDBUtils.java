@@ -1,5 +1,6 @@
 package com.fr.bi.stable.utils;
 
+import com.finebi.cube.common.log.BILogger;
 import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.base.FRContext;
 import com.fr.base.TableData;
@@ -67,6 +68,7 @@ import java.util.Set;
  * 数据库操作
  */
 public class BIDBUtils {
+    private static BILogger LOGGER = BILoggerFactory.getLogger();
     private static int INIT_TIME_BETWEEN_EVICTION_RUNS_MILLIS = -1;
     private static int BI_TIME_BETWEEN_EVICTION_RUNS_MILLI = 500000;
     private static int INIT_MIN_EVICTABLEIDLE_TIME_MILLIS = 1800000;
@@ -274,7 +276,9 @@ public class BIDBUtils {
             try {
                 conn = connection.createConnection();
                 Dialect dialect = DialectFactory.generateDialect(conn, connection.getDriver());
-                ColumnInformation[] columns = com.fr.data.core.db.DBUtils.checkInColumnInformation(conn, dialect, query);
+//                ColumnInformation[] columns = com.fr.data.core.db.DBUtils.checkInColumnInformation(conn, dialect, query);
+
+                ColumnInformation[] columns = checkColumnInfo(conn, dialect, query);
                 for (int i = 0, cols = columns.length; i < cols; i++) {
                     int columnSize = columns[i].getColumnSize();
                     PersistentField column;
@@ -519,11 +523,14 @@ public class BIDBUtils {
      */
     public static PersistentTable getServerBITable(String connection, String sql, String tableName) {
         TableData tableData = getServerTableData(connection, sql);
+        LOGGER.info("The table Data class is: " + tableData.getClass());
         if (StringUtils.isNotBlank(tableName)) {
             PersistentTable persistentTable = new PersistentTable(null, tableName, null);
             if (tableData instanceof DBTableData) {
+                LOGGER.info("get server biTable of DBTableData");
                 return getServerBITable((DBTableData) tableData, persistentTable);
             } else if (tableData != null) {
+                LOGGER.info("get server biTable of OtherTableData");
                 return getBITableOnlyByTableData(tableData, persistentTable, tableName);
             }
         }
@@ -756,4 +763,46 @@ public class BIDBUtils {
         return td;
     }
 
+    public static ColumnInformation[] checkColumnInfo(Connection connection, Dialect dialect, String query) throws SQLException {
+        if (connection == null) {
+            throw new SQLException("Cannot connect to database!");
+        } else {
+            connection.setAutoCommit(false);
+            Statement currentStatement = null;
+            ResultSet currentResultSet = null;
+
+            try {
+                if (DBUtils.isProcedure(query)) {
+                    Object[] statementAndResultSet = dialect.remoteProcedureCall(connection, query);
+                    currentStatement = (Statement) statementAndResultSet[0];
+                    currentResultSet = (ResultSet) statementAndResultSet[1];
+                } else {
+                    currentStatement = dialect.createStatement(connection, query);
+//                    currentStatement = connection.createStatement();
+                    try {
+                        currentResultSet = currentStatement.executeQuery(dialect.createSQL4Columns(query));
+                    } catch (Exception var6) {
+                        currentStatement.close();
+                        currentStatement = connection.createStatement();
+                        currentResultSet = currentStatement.executeQuery(query);
+                    }
+                }
+            } catch (SQLException var7) {
+                if (currentResultSet != null) {
+                    currentResultSet.close();
+                }
+
+                if (currentStatement != null) {
+                    currentStatement.close();
+                }
+
+                throw var7;
+            }
+
+            ColumnInformation[] columns = DBUtils.checkInColumnInformationByMetaData(currentResultSet.getMetaData());
+            currentResultSet.close();
+            currentStatement.close();
+            return columns;
+        }
+    }
 }

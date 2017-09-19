@@ -12,9 +12,9 @@ import com.fr.bi.stable.exception.BITablePathEmptyException;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
 import com.fr.general.ComparatorUtils;
 
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * This class created on 2016/3/7.
@@ -58,7 +58,7 @@ public class BICubeTableRelationEntityManager extends BIMapContainer<ICubeResour
 
     @Override
     protected Map<ICubeResourceLocation, ICubeRelationEntityService> initContainer() {
-        return new HashMap<ICubeResourceLocation, ICubeRelationEntityService>();
+        return new ConcurrentHashMap<ICubeResourceLocation, ICubeRelationEntityService>();
     }
 
     @Override
