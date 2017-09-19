@@ -223,4 +223,12 @@ public class AutoGroup extends AbstractGroup {
         this.start = genMin;
         return hasInterval ? this.interval : (Double.parseDouble(StableUtils.convertNumberStringToString((genMax - genMin) / DEFAULT_GROUP_SIZE)));
     }
+
+    public double getMaxValue() {
+        return max;
+    }
+
+    public double getMinValue() {
+        return min;
+    }
 }
