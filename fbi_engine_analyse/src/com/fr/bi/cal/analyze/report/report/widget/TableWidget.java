@@ -2,6 +2,7 @@ package com.fr.bi.cal.analyze.report.report.widget;
 
 
 import com.finebi.cube.common.log.BILoggerFactory;
+import com.finebi.cube.conf.field.BusinessField;
 import com.finebi.cube.conf.table.BusinessTable;
 import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.cal.analyze.cal.result.BIComplexExecutData;
@@ -48,6 +49,9 @@ import com.fr.bi.conf.report.widget.field.BITargetAndDimension;
 import com.fr.bi.conf.report.widget.field.dimension.BIDimension;
 import com.fr.bi.conf.report.widget.field.target.BITarget;
 import com.fr.bi.conf.session.BISessionProvider;
+import com.fr.bi.field.filtervalue.number.rangefilter.NumberInRangeFilterValue;
+import com.fr.bi.field.target.filter.field.ColumnFieldFilter;
+import com.fr.bi.field.target.filter.general.GeneralANDFilter;
 import com.fr.bi.field.target.target.BISummaryTarget;
 import com.fr.bi.field.target.target.TargetType;
 import com.fr.bi.field.target.target.cal.target.configure.BIConfiguredCalculateTarget;
@@ -60,6 +64,8 @@ import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.constant.BIStyleConstant;
 import com.fr.bi.stable.gvi.GVIUtils;
 import com.fr.bi.stable.gvi.GroupValueIndex;
+import com.fr.bi.stable.operation.group.IGroup;
+import com.fr.bi.stable.operation.group.group.AutoGroup;
 import com.fr.bi.stable.utils.BITravalUtils;
 import com.fr.general.ComparatorUtils;
 import com.fr.json.JSONArray;
@@ -68,6 +74,7 @@ import com.fr.json.JSONObject;
 import com.fr.stable.StringUtils;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -87,6 +94,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class TableWidget extends SummaryWidget implements SclCalculator {
 
     private static final long serialVersionUID = -4736577206434772688L;
+
     private int PAGE_SPINNER = 5;
 
     /**
@@ -118,6 +126,8 @@ public class TableWidget extends SummaryWidget implements SclCalculator {
     protected Map<Integer, List<String>> view = new HashMap<Integer, List<String>>();
 
     private BIWidgetStyle style;
+
+    private List<String> drillSequence = new ArrayList<String>();
 
     @Override
     public void setPageSpinner(int index, int value) {
@@ -254,9 +264,9 @@ public class TableWidget extends SummaryWidget implements SclCalculator {
         boolean b3 = !row.isEmpty() && columnLen == 0 && summaryLen == 0;
         if (b0 || b1) {
             executor = new ComplexHorGroupExecutor(this, PagingFactory.createPaging(PagingFactory.PAGE_PER_GROUP_20, operator), column, session, complexExpander);
-        }  else if (b2 || b3) {
+        } else if (b2 || b3) {
             executor = new ComplexGroupExecutor(this, PagingFactory.createPaging(PagingFactory.PAGE_PER_GROUP_20, operator), row, session, complexExpander);
-        }  else {
+        } else {
             executor = new ComplexCrossExecutor(this, PagingFactory.createPaging(PagingFactory.PAGE_PER_GROUP_20, operator), row, column, session, complexExpander);
         }
         return executor;
@@ -327,8 +337,17 @@ public class TableWidget extends SummaryWidget implements SclCalculator {
                 clicked.put(key, c.getJSONArray(key));
             }
         }
+        // 钻取队列
+        if (jo.has("drillSequence")) {
+            JSONArray ds = jo.optJSONArray("drillSequence");
+            for (int i = 0; i < ds.length(); i++) {
+                drillSequence.add(ds.optString(i));
+            }
+        }
         changeCalculateTargetStartGroup();
         createDimensionAndTargetMap();
+        // 钻取的过滤条件现在不直接放在前端进行解析了，因为数值分组的钻取点击最后一个分组的时候会有问题 BI-9303
+        dealWithDrill();
     }
 
     private void createDimAndTars(JSONObject jo) throws Exception {
@@ -453,7 +472,7 @@ public class TableWidget extends SummaryWidget implements SclCalculator {
 
         for (int i = dimensionIds.length - 1; i >= 0; i--) {
             String key = dimensionIds[i];
-            if (clicked.containsKey(key)) {
+            if (clicked.containsKey(key) && drillSequence.contains(key)) {
                 drills.put(key, clicked.get(key));
             }
         }
@@ -605,7 +624,7 @@ public class TableWidget extends SummaryWidget implements SclCalculator {
 
     @Override
     public void reSetDetailTarget() {
-
+        // do nothing
     }
 
     /*todo 想办法把数据和样式格式分离出来*/
@@ -632,11 +651,13 @@ public class TableWidget extends SummaryWidget implements SclCalculator {
             case BIReportConstant.TABLE_WIDGET.COMPLEX_TYPE:
                 builder = new SummaryComplexTableBuilder(viewMap, data.getJSONObject("data"), widgetSettings);
                 break;
+            default:
+                break;
         }
 
         DataConstructor res = BITableConstructHelper.buildTableData(builder);
         BITableConstructHelper.formatCells(res, operationMap, widgetSettings, getBackgroundColor(widgetConf));
-        return res.createJSON().put("row", data.optLong("row", 0)).put("page",data.opt("page"));
+        return res.createJSON().put("row", data.optLong("row", 0)).put("page", data.opt("page"));
     }
 
     /*
@@ -646,6 +667,7 @@ public class TableWidget extends SummaryWidget implements SclCalculator {
     * 当样式不一致时，优先级高的覆盖低的，选择纯色背景切设置为自动或透明时，展示效果同次一级的样式
     * */
     private BIWidgetBackgroundAttr getBackgroundColor(BIWidgetConf widgetConf) throws Exception {
+
         BIChartStyleAttr systemStyle = FBIConfig.getInstance().getChartStyleAttr();
         BIChartStyleAttr globalStyle = widgetConf.getGlobalStyleAttr();
         BIChartStyleAttr widgetStyle = getWidgetSettings(widgetConf).getWidgetStyle();
@@ -846,5 +868,64 @@ public class TableWidget extends SummaryWidget implements SclCalculator {
             BILoggerFactory.getLogger(this.getClass()).info("error in get result data");
         }
         return null;
+    }
+
+    /**
+     * 处理钻取情况
+     */
+    public void dealWithDrill() throws Exception {
+
+        try {
+            JSONObject ret = getWidgetDrill();
+            Iterator<String> ki = ret.keys();
+            while (ki.hasNext()) {
+                String k = ki.next();
+                JSONArray kv = ret.optJSONArray(k);
+                BIDimension dimension = getDimensionBydId(k);
+                IGroup group = dimension.getGroup();
+                if (group == null || group.getType() != BIReportConstant.GROUP.AUTO_GROUP) {
+                    continue;
+                }
+                JSONObject vs = kv.optJSONObject(0);
+                if (!vs.has("values")) {
+                    continue;
+                }
+                JSONArray va = vs.optJSONArray("values");
+                String v = va.getJSONObject(0).optJSONArray("value").getString(0);
+                AutoGroup autoGroup = (AutoGroup) group;
+                double rMin;
+                double rMax;
+                // 负数分组开头
+                if (v.startsWith("-")) {
+                    String temp = v.substring(1);
+                    rMin = Double.parseDouble(v.substring(0, temp.indexOf("-")));
+                    rMax = Double.parseDouble(temp.substring(temp.indexOf("-")));
+                } else {
+                    rMin = Double.parseDouble(v.substring(0, v.indexOf("-")));
+                    rMax = Double.parseDouble(v.substring(v.indexOf("-") + 1));
+                }
+                // 自动分组的最大值与最小值
+                double max = autoGroup.getMaxValue();
+                double min = autoGroup.getMinValue();
+                boolean isMaxClose = false;
+                // 钻取的是自动分组的最后一个分组
+                if (ComparatorUtils.equals(rMax, max)) {
+                    // 前端的外层都是包装的and filter
+                    isMaxClose = true;
+                }
+                GeneralANDFilter filter = (GeneralANDFilter) getFilter();
+                NumberInRangeFilterValue rf = new NumberInRangeFilterValue(rMin, true, rMax, isMaxClose);
+                BusinessField field = dimension.createColumnKey();
+                ColumnFieldFilter ff = new ColumnFieldFilter(field, rf);
+                JSONObject jo=JSONObject.create();
+                JSONObject srcJ =JSONObject.create();
+                srcJ.put(BIJSONConstant.JSON_KEYS.STATISTIC_ELEMENT, field.getFieldID().getIdentity());
+                jo.put(BIJSONConstant.JSON_KEYS.STATISTIC_ELEMENT, srcJ);
+                ff.setValueJo(jo);
+                filter.addChild(ff);
+            }
+        } catch (Exception e) {
+            BILoggerFactory.getLogger().warnCache("error in deal with drill ", e);
+        }
     }
 }

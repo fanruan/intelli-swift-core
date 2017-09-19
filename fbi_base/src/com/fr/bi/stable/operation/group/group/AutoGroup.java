@@ -12,6 +12,7 @@ import com.fr.general.ComparatorUtils;
 import com.fr.general.GeneralUtils;
 import com.fr.json.JSONObject;
 import com.fr.stable.StableUtils;
+import com.fr.stable.StringUtils;
 
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
@@ -56,10 +57,10 @@ public class AutoGroup extends AbstractGroup {
         while (it.hasNext()) {
             Map.Entry<Number, GroupValueIndex> entry = it.next();
             if (BICollectionUtils.isCubeNullKey(entry.getKey())) {
-                if (resultMap.get("") == null) {
-                    resultMap.put("", entry.getValue());
+                if (resultMap.get(StringUtils.EMPTY) == null) {
+                    resultMap.put(StringUtils.EMPTY, entry.getValue());
                 } else {
-                    resultMap.put("", GVIUtils.OR(entry.getValue(), (GroupValueIndex) resultMap.get("")));
+                    resultMap.put(StringUtils.EMPTY, GVIUtils.OR(entry.getValue(), (GroupValueIndex) resultMap.get(StringUtils.EMPTY)));
                 }
                 continue;
             }
@@ -189,7 +190,7 @@ public class AutoGroup extends AbstractGroup {
         }
         String min = GeneralUtils.objectToString(minV);
         int minIndex = min.indexOf(".");
-        min = minIndex == -1 ? min : (min.substring(minIndex).matches("\\.0+$") ? min.substring(0, minIndex) : min.replace(".", ""));
+        min = minIndex == -1 ? min : (min.substring(minIndex).matches("\\.0+$") ? min.substring(0, minIndex) : min.replace(".", StringUtils.EMPTY));
         minBuilder.append(min);
         StringBuilder maxBuilder = new StringBuilder("0.");
         while (count - maxCount > 0) {
@@ -198,7 +199,7 @@ public class AutoGroup extends AbstractGroup {
         }
         String max = GeneralUtils.objectToString(maxV);
         int maxIndex = max.indexOf(".");
-        max = maxIndex == -1 ? max : (max.substring(maxIndex).matches("\\.0+$") ? max.substring(0, maxIndex) : max.replace(".", ""));
+        max = maxIndex == -1 ? max : (max.substring(maxIndex).matches("\\.0+$") ? max.substring(0, maxIndex) : max.replace(".", StringUtils.EMPTY));
         maxBuilder.append(max);
         //后面补零对齐
         int zeros = maxBuilder.length() - minBuilder.length();
@@ -222,5 +223,13 @@ public class AutoGroup extends AbstractGroup {
         double genMax = maxV * magnify;
         this.start = genMin;
         return hasInterval ? this.interval : (Double.parseDouble(StableUtils.convertNumberStringToString((genMax - genMin) / DEFAULT_GROUP_SIZE)));
+    }
+
+    public double getMaxValue() {
+        return max;
+    }
+
+    public double getMinValue() {
+        return min;
     }
 }
