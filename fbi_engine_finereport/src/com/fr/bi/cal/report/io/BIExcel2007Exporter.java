@@ -1,9 +1,7 @@
 package com.fr.bi.cal.report.io;
 
-import com.fr.bi.cal.report.engine.CBCell;
 import com.fr.bi.cal.report.io.core.BIExcelExporterBlock;
 import com.fr.bi.cal.report.io.iterator.StreamCellCase;
-import com.fr.bi.cal.report.io.iterator.StreamPagedIterator;
 import com.fr.bi.cal.report.io.iterator.TableCellIterator;
 import com.fr.bi.cal.report.report.poly.BIPolyAnalyECBlock;
 import com.fr.io.exporter.excel.stream.StreamExcel2007Exporter;
@@ -14,11 +12,8 @@ import com.fr.report.elementcase.ElementCase;
 import com.fr.report.poly.AbstractPolyReport;
 import com.fr.report.poly.ResultChartBlock;
 import com.fr.report.report.ResultReport;
-import com.fr.stable.ExportConstants;
 import com.fr.third.v2.org.apache.poi.xssf.streaming.SXSSFWorkbook;
 
-import java.awt.Point;
-import java.util.ArrayList;
 import java.util.List;
 
 public class BIExcel2007Exporter extends StreamExcel2007Exporter {

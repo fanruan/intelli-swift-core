@@ -1,6 +1,5 @@
 package com.fr.bi.cal.report.io.iterator;
 
-import com.fr.bi.cal.report.io.BIExportUtils;
 import com.fr.report.cell.Cell;
 import com.fr.report.cellcase.CellCase;
 
