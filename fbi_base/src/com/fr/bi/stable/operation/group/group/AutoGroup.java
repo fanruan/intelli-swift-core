@@ -12,6 +12,7 @@ import com.fr.general.ComparatorUtils;
 import com.fr.general.GeneralUtils;
 import com.fr.json.JSONObject;
 import com.fr.stable.StableUtils;
+import com.fr.stable.StringUtils;
 
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
@@ -56,10 +57,10 @@ public class AutoGroup extends AbstractGroup {
         while (it.hasNext()) {
             Map.Entry<Number, GroupValueIndex> entry = it.next();
             if (BICollectionUtils.isCubeNullKey(entry.getKey())) {
-                if (resultMap.get("") == null) {
-                    resultMap.put("", entry.getValue());
+                if (resultMap.get(StringUtils.EMPTY) == null) {
+                    resultMap.put(StringUtils.EMPTY, entry.getValue());
                 } else {
-                    resultMap.put("", GVIUtils.OR(entry.getValue(), (GroupValueIndex) resultMap.get("")));
+                    resultMap.put(StringUtils.EMPTY, GVIUtils.OR(entry.getValue(), (GroupValueIndex) resultMap.get(StringUtils.EMPTY)));
                 }
                 continue;
             }

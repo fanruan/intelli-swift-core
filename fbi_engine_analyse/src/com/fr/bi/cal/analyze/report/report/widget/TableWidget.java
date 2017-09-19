@@ -624,7 +624,7 @@ public class TableWidget extends SummaryWidget implements SclCalculator {
 
     @Override
     public void reSetDetailTarget() {
-
+        // do nothing
     }
 
     /*todo 想办法把数据和样式格式分离出来*/
@@ -650,6 +650,8 @@ public class TableWidget extends SummaryWidget implements SclCalculator {
                 break;
             case BIReportConstant.TABLE_WIDGET.COMPLEX_TYPE:
                 builder = new SummaryComplexTableBuilder(viewMap, data.getJSONObject("data"), widgetSettings);
+                break;
+            default:
                 break;
         }
 
@@ -881,7 +883,6 @@ public class TableWidget extends SummaryWidget implements SclCalculator {
                 JSONArray kv = ret.optJSONArray(k);
                 BIDimension dimension = getDimensionBydId(k);
                 IGroup group = dimension.getGroup();
-                //
                 if (group == null || group.getType() != BIReportConstant.GROUP.AUTO_GROUP) {
                     continue;
                 }
@@ -891,7 +892,6 @@ public class TableWidget extends SummaryWidget implements SclCalculator {
                 }
                 JSONArray va = vs.optJSONArray("values");
                 String v = va.getJSONObject(0).optJSONArray("value").getString(0);
-                String did = va.getJSONObject(0).getString("dId");
                 AutoGroup autoGroup = (AutoGroup) group;
                 double rMin;
                 double rMax;
@@ -914,7 +914,6 @@ public class TableWidget extends SummaryWidget implements SclCalculator {
                     isMaxClose = true;
                 }
                 GeneralANDFilter filter = (GeneralANDFilter) getFilter();
-                //filter.clearChild();
                 NumberInRangeFilterValue rf = new NumberInRangeFilterValue(rMin, true, rMax, isMaxClose);
                 BusinessField field = dimension.createColumnKey();
                 ColumnFieldFilter ff = new ColumnFieldFilter(field, rf);
