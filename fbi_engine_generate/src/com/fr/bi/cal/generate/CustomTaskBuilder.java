@@ -1,6 +1,8 @@
 package com.fr.bi.cal.generate;
 
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.conf.BICubeConfigureCenter;
+import com.finebi.cube.conf.CubeBuildStuff;
 import com.finebi.cube.conf.ICubeGenerateTask;
 import com.finebi.cube.conf.table.BusinessTable;
 import com.finebi.cube.utils.CubeUpdateUtils;
@@ -47,6 +49,22 @@ public class CustomTaskBuilder {
             }
         }
         return true;
+    }
+
+    /**
+     * 前置条件检查（检查空间是否足够）
+     *
+     * @param userId
+     * @param cubeBuildStuff
+     * @return
+     */
+    private boolean preConditionsCheck(long userId, CubeBuildStuff cubeBuildStuff) {
+        boolean conditionsMeet = cubeBuildStuff.preConditionsCheck();
+        if (!conditionsMeet) {
+            String errorMessage = "preConditions check failed!";
+            BILoggerFactory.getLogger(this.getClass()).error(errorMessage);
+        }
+        return conditionsMeet;
     }
 
 
