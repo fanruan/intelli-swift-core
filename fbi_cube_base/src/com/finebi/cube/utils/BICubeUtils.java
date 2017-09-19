@@ -39,6 +39,10 @@ public class BICubeUtils {
     }
 
     public static boolean tableFieldRelationExist(ITableKey tableKey, BIColumnKey columnKey, BICubeTablePath relationPath, CubeTableEntityGetterService tableEntityGetterService, Cube cube) {
+        return tableFieldRelationExist(tableKey, columnKey, relationPath, tableEntityGetterService, cube, true);
+    }
+
+    public static boolean tableFieldRelationExist(ITableKey tableKey, BIColumnKey columnKey, BICubeTablePath relationPath, CubeTableEntityGetterService tableEntityGetterService, Cube cube, boolean release) {
         CubeColumnReaderService columnReaderService = null;
         CubeRelationEntityGetterService basicTableRelation = null;
         CubeRelationEntityGetterService fieldRelation = null;
@@ -71,14 +75,16 @@ public class BICubeUtils {
         } catch (Exception e) {
             throw BINonValueUtils.beyondControl(e);
         } finally {
-            if (columnReaderService != null) {
-                columnReaderService.clear();
-            }
-            if (basicTableRelation != null) {
-                basicTableRelation.clear();
-            }
-            if (fieldRelation != null) {
-                fieldRelation.clear();
+            if (release){
+                if (columnReaderService != null) {
+                    columnReaderService.clear();
+                }
+                if (basicTableRelation != null) {
+                    basicTableRelation.clear();
+                }
+                if (fieldRelation != null) {
+                    fieldRelation.clear();
+                }
             }
         }
     }
