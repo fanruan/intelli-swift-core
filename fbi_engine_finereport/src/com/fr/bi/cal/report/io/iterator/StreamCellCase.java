@@ -1,6 +1,5 @@
 package com.fr.bi.cal.report.io.iterator;
 
-import com.fr.bi.cal.report.io.BIExportUtils;
 import com.fr.report.cell.Cell;
 import com.fr.report.cellcase.CellCase;
 
@@ -69,7 +68,7 @@ public class StreamCellCase implements CellCase {
 
     @Override
     public Iterator cellIterator() {
-        return iterator.getIteratorByPage(0);
+        return iterator;
     }
 
     @Override
@@ -104,8 +103,7 @@ public class StreamCellCase implements CellCase {
 
     @Override
     public Iterator intersect(int column_start, int row_start, int column, int row) {
-        int page = BIExportUtils.createExcel2007Page(row_start) - 1;
-        return iterator.getIteratorByPage(page);
+        return iterator;
     }
 
     @Override
