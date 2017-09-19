@@ -84,12 +84,6 @@ public class StreamPagedIterator<T> implements Iterator<T> {
         }
     }
 
-    public void wakeUp() {
-        synchronized (this) {
-            this.notify();
-        }
-    }
-
     public void addCell(T cellElement) {
         if (queue.size() > maxCount) {
             synchronized (this) {
@@ -116,6 +110,10 @@ public class StreamPagedIterator<T> implements Iterator<T> {
                 }
             }
         }
+    }
+
+    public boolean isEnd() {
+        return isEnd;
     }
 
     @Override

@@ -4,6 +4,7 @@ import com.fr.bi.cal.report.engine.CBCell;
 import com.fr.bi.cal.report.io.core.BIExcelExporterBlock;
 import com.fr.bi.cal.report.io.iterator.StreamCellCase;
 import com.fr.bi.cal.report.io.iterator.StreamPagedIterator;
+import com.fr.bi.cal.report.io.iterator.TableCellIterator;
 import com.fr.bi.cal.report.report.poly.BIPolyAnalyECBlock;
 import com.fr.io.exporter.excel.stream.StreamExcel2007Exporter;
 import com.fr.io.exporter.poi.wrapper.POIWorkbookAction;
@@ -47,22 +48,13 @@ public class BIExcel2007Exporter extends StreamExcel2007Exporter {
             }
             if (ec instanceof BIPolyAnalyECBlock) {
                 StreamCellCase cellCase = (StreamCellCase) ((BIPolyAnalyECBlock) ec).getCellCase();
-                StreamPagedIterator pagedIterator = (StreamPagedIterator) cellCase.cellIterator();
-                List<List<CBCell>> pageCells = new ArrayList<List<CBCell>>();
-                List<CBCell> cells = new ArrayList<CBCell>();
-                while (pagedIterator.hasNext()) {
-                    CBCell cell = (CBCell) pagedIterator.next();
-                    int rowIdx = cell.getRow();
-                    if (rowIdx == 0) {
-                        cells = new ArrayList<CBCell>();
-                        pageCells.add(cells);
-                    }
-                    cells.add(cell);
-                }
-                for (int k = 0; k < pageCells.size(); k++) {
-                    this.innerExportReport(new BIExcelExporterBlock(innerReport[i], pageCells.get(k).iterator()),
-                            book.getReportExportAttr(), book.getReportName(i) + (k == 0 ? "" : "_" + k),
+                int c = 0;
+                TableCellIterator tableCellIterator = (TableCellIterator) cellCase.cellIterator();
+                while(tableCellIterator.hasNext()) {
+                    this.innerExportReport(new BIExcelExporterBlock(innerReport[i], tableCellIterator.next()),
+                            book.getReportExportAttr(), book.getReportName(i) + (c == 0 ? "" : "_" + c),
                             (SXSSFWorkbook) workbookWrapper.getWorkbook(), cellList, cellFormulaList, 0);
+                    c++;
                 }
             }
 
