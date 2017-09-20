@@ -6,6 +6,7 @@ import com.finebi.cube.conf.BICubeConfiguration;
 import com.finebi.cube.conf.BICubeConfigureCenter;
 import com.finebi.cube.conf.pack.data.IBusinessPackageGetterService;
 import com.finebi.cube.conf.table.BusinessTable;
+import com.finebi.cube.meta.BICubeConfigurationCenter;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.conf.report.BIWidget;
 import com.fr.bi.conf.report.widget.field.BITargetAndDimension;
@@ -14,6 +15,7 @@ import com.fr.bi.etl.analysis.data.AnalysisCubeTableSource;
 import com.fr.bi.etl.analysis.manager.BIAnalysisETLManagerCenter;
 import com.fr.bi.stable.data.BITableID;
 import com.fr.bi.stable.exception.BITableAbsentException;
+import com.fr.general.ComparatorUtils;
 
 import java.util.HashSet;
 import java.util.Iterator;
@@ -104,30 +106,37 @@ public class BIAnalysisTableHelper {
     }
 
     // 从AnalysisCubeTableSource中获取对应业务包表的信息，然后对比当前业务包表里面是否还有这张表的存在。
+    // BI-9690 只判断了业务包，并没有判断对应的螺旋分析表是否存在。
     private static boolean isBusinessTableExist(AnalysisCubeTableSource source, long userId) {
-        boolean exist = true;
-        try {
-            Set<IBusinessPackageGetterService> allPackages = BICubeConfigureCenter.getPackageManager().getAllPackages(userId);
-            Iterator<BIWidget> widgetIterator = source.getWidgets().iterator();
-            while (widgetIterator.hasNext()) {
-                BIWidget widget = widgetIterator.next();
-                BITargetAndDimension[] dimensions = widget.getDimensions();
-                for (BITargetAndDimension dimension : dimensions) {
-                    BITableID tableId = dimension.createColumnKey().getTableBelongTo().getID();
-                    Iterator<IBusinessPackageGetterService> packageIterator = allPackages.iterator();
-                    while (packageIterator.hasNext()) {
-                        IBusinessPackageGetterService businessPackage = packageIterator.next();
-                        BusinessTable specificTable = businessPackage.getSpecificTable(tableId);
-                        if (specificTable != null) {
-                            return exist;
-                        }
+        Set<BusinessTable> allBusinessTables = BICubeConfigureCenter.getPackageManager().getAllTables(userId);
+        Set<BusinessTable> allAnalysisTables = BIAnalysisETLManagerCenter.getBusiPackManager().getAllTables(userId);
+        allBusinessTables.addAll(allAnalysisTables);
+        Iterator<BIWidget> widgetIterator = source.getWidgets().iterator();
+        while (widgetIterator.hasNext()) {
+            BIWidget widget = widgetIterator.next();
+            BITargetAndDimension[] dimensions = widget.getDimensions();
+            for (BITargetAndDimension dimension : dimensions) {
+                BITableID tableId = dimension.createColumnKey().getTableBelongTo().getID();
+                Iterator<BusinessTable> businessTableIterator = allBusinessTables.iterator();
+                while (businessTableIterator.hasNext()) {
+                    BusinessTable businessTable = businessTableIterator.next();
+                    if (ComparatorUtils.equals(businessTable.getID(), tableId)) {
+                        return true;
                     }
                 }
             }
-        } catch (Exception e) {
-            exist = false;
-            BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
-        return exist;
+        return false;
+    }
+
+    private static boolean checkTable(Set<BusinessTable> tableSet, BITableID tableId) {
+        Iterator<BusinessTable> tableIterator = tableSet.iterator();
+        while (tableIterator.hasNext()) {
+            BusinessTable analysisTable = tableIterator.next();
+            if (ComparatorUtils.equals(tableId, analysisTable.getID())) {
+                return true;
+            }
+        }
+        return false;
     }
 }

@@ -165,23 +165,12 @@ public class PerformancePlugManager implements PerformancePlugManagerInterface {
     @Override
     public boolean updateParam(Map<String, String> resultMap) {
         try {
-            Map<String, String> doUpdateMap = new HashMap<String, String>();
             Map<String, String> runMap = getExtraParam(DBConstant.PARAM_TYPE.RUNTIME_TYPE);
             Map<String, String> newMap = getExtraParam(DBConstant.PARAM_TYPE.UPDATED_TYPE);
             resultMap = PerformanceParamTools.convertParamKey(resultMap);
             resultMap = config.beforeDoWrite(runMap, newMap, resultMap);
             resultMap = tools.convert2File(resultMap);
-            Iterator<String> it = resultMap.keySet().iterator();
-            while (it.hasNext()) {
-                String paramKey = it.next();
-                String defaultValue = defaultMap.get(paramKey);
-                String newValue = resultMap.get(paramKey);
-                if (!defaultValue.equals(newValue)) {
-                    doUpdateMap.put(paramKey, newValue);
-                    continue;
-                }
-            }
-            return config.writeConfig(doUpdateMap, FRContext.getCurrentEnv().writeBean(DBConstant.PERFORMANCE_FILE_NAME.NEW_FILE_NAME, ProjectConstants.RESOURCES_NAME));
+            return config.writeConfig(resultMap, FRContext.getCurrentEnv().writeBean(DBConstant.PERFORMANCE_FILE_NAME.NEW_FILE_NAME, ProjectConstants.RESOURCES_NAME));
         } catch (Exception e) {
             BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
