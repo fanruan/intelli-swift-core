@@ -9,9 +9,13 @@ import com.fr.fs.control.dao.tabledata.TableDataDAOControl;
 import com.fr.fs.dao.EntryDAO;
 import com.fr.stable.fun.Service;
 
-import com.fr.plugin.chart.map.server.service.MapEditorOpenEntryService;
-import com.fr.plugin.chart.map.server.service.MapEditorEntryService;
-import com.fr.plugin.chart.map.server.service.MapGetJsonService;
+// 这边的地图编辑功能和FR那边的一致，所以直接提供一个入口即可：
+// 而所用的jar包是在plugin-vancharts的jar基础上重新编译了一个fr.plugin.bi.chart。
+// 原因是避免与BI这边可能会被安装的新图表插件产生冲突
+// 对应的引入jar在nuclear-lib-plugin文件夹下：fr.plugin.chart.mapeditor-0&1.jar
+import com.fr.plugin.bi.chart.map.server.service.MapEditorOpenEntryService;
+import com.fr.plugin.bi.chart.map.server.service.MapEditorEntryService;
+import com.fr.plugin.bi.chart.map.server.service.MapGetJsonService;
 
 import java.util.List;
 
@@ -21,10 +25,10 @@ public class FontEndMapEditorPlate extends AbstractFSPlate  {
 
     public Service[] service4Register() {
         return new Service[]{
-                // 这里直接复用plugin-vanchart的MapEditorService
-                new MapEditorOpenEntryService(),
-                new MapEditorEntryService(),
-                new MapGetJsonService()
+            // 这里直接复用plugin-vanchart的MapEditorService
+            new MapEditorOpenEntryService(),
+            new MapEditorEntryService(),
+            new MapGetJsonService()
         };
     }
 
