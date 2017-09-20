@@ -29,7 +29,7 @@ public class TableCellIterator implements Iterator {
     }
 
     public int getRow() {
-            return row;
+        return row;
     }
 
     public void setRow(int row) {
@@ -67,7 +67,7 @@ public class TableCellIterator implements Iterator {
 
     private void waitFor() {
         synchronized (this) {
-            while(!isEnd && (pageIndex > 0 && !iters.get(pageIndex - 1).isEnd())) {
+            while (!isEnd && (pageIndex > 0 && !iters.get(pageIndex - 1).isEnd())) {
                 try {
                     this.wait();
                 } catch (InterruptedException e) {
