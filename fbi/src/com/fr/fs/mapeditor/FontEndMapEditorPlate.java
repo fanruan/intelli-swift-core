@@ -86,7 +86,7 @@ public class FontEndMapEditorPlate extends AbstractFSPlate  {
     @Override
     public String[] getLocaleFile() {
         return new String[]{
-                "com/fr/plugin/chart/locale/vancharts"
+                "com/fr/plugin/bi/chart/locale/vancharts"
         };
     }
 
