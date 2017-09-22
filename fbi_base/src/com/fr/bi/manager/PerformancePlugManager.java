@@ -151,6 +151,7 @@ public class PerformancePlugManager implements PerformancePlugManagerInterface {
             maxSPADetailSize = getInt(LIMIT + ".maxSPADetailSize", maxSPADetailSize);
             backupWhenStart = getBoolean(PERFORMANCE + ".backupWhenStart", backupWhenStart);
             useFineIO = getBoolean(PERFORMANCE + ".useFineIO", useFineIO);
+            minCubeFreeHDSpaceRate = getDouble(PERFORMANCE + ".minCubeFreeHDSpaceRate", minCubeFreeHDSpaceRate);
 //            logConfiguration();
         } catch (Exception e) {
             BILoggerFactory.getLogger().error(e.getMessage(), e);
@@ -365,6 +366,18 @@ public class PerformancePlugManager implements PerformancePlugManagerInterface {
             String property = properties.getProperty(name);
             if (property != null) {
                 return Long.valueOf(property);
+            }
+            return defaultValue;
+        } catch (Exception e) {
+            return defaultValue;
+        }
+    }
+
+    private double getDouble(String name, double defaultValue) {
+        try {
+            String property = properties.getProperty(name);
+            if (property != null) {
+                return Double.valueOf(property);
             }
             return defaultValue;
         } catch (Exception e) {
