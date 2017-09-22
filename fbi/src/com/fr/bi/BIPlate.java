@@ -637,7 +637,7 @@ public class BIPlate extends AbstractFSPlate {
     }
 
     private boolean updateToVersion41() {
-        //todo 等Lucifer判断版本的方法过来后，直接调用
+        //todo 等Lucifer判断版本的方法合并后，直接调用
         return false;
     }
 
