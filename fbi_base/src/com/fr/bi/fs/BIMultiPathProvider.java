@@ -10,5 +10,5 @@ public interface BIMultiPathProvider {
 
     JSONObject getMultiPath(long userId) throws Exception;
 
-    void updteMultiPath(long userId, String relation) throws Exception;
+    void updateMultiPath(long userId, String relation) throws Exception;
 }
