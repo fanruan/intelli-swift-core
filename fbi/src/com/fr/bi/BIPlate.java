@@ -62,6 +62,7 @@ import com.fr.general.FRLogger;
 import com.fr.general.GeneralContext;
 import com.fr.general.GeneralUtils;
 import com.fr.json.JSONArray;
+import com.fr.json.JSONException;
 import com.fr.json.JSONObject;
 import com.fr.plugin.ExtraClassManager;
 import com.fr.stable.ActorConstants;
@@ -607,6 +608,12 @@ public class BIPlate extends AbstractFSPlate {
         JSONObject styleSettings = JSONObject.create();
         SystemAttr systemAttr = FSConfig.getProviderInstance().getSystemAttr();
         SystemStyle systemStyle = FSConfig.getProviderInstance().getSystemStyle();
+        /*
+        * BI-9466 框架变了，老配色不适合新框架
+        * */
+        if (updateToVersion41()) {
+            useDefalutStyles(systemAttr, systemStyle);
+        }
         boolean isLoginImg = systemAttr.isLoginPageImg();
         styleSettings.put("isLoginImg", isLoginImg);
         if (isLoginImg) {
@@ -627,6 +634,18 @@ public class BIPlate extends AbstractFSPlate {
         styleSettings.put("colorSchema", systemStyle.getColorScheme());
         styleSettings.put("customColors", systemStyle.getCustomColorsAsArray());
         map.put("styleSettings", styleSettings);
+    }
+
+    private boolean updateToVersion41() {
+        //todo 等Lucifer判断版本的方法过来后，直接调用
+        return false;
+    }
+
+    private void useDefalutStyles(SystemAttr systemAttr, SystemStyle systemStyle) throws JSONException {
+        systemAttr.setBackgroundColor(0);
+        systemAttr.setCustomBackgroundColor("rgb(38,77,132)");
+        systemStyle.setColorScheme(0);
+        systemStyle.setCustomColors("[]");
     }
 
     private void loadIcons(Map<String, Object> result, long userId) throws Exception {
