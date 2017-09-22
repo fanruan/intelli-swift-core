@@ -612,7 +612,7 @@ public class BIPlate extends AbstractFSPlate {
         * BI-9466 框架变了，老配色不适合新框架
         * */
         if (updateToVersion41()) {
-            useDefalutStyles(systemAttr, systemStyle);
+            useDefaultStyles(systemAttr, systemStyle);
         }
         boolean isLoginImg = systemAttr.isLoginPageImg();
         styleSettings.put("isLoginImg", isLoginImg);
@@ -641,7 +641,7 @@ public class BIPlate extends AbstractFSPlate {
         return false;
     }
 
-    private void useDefalutStyles(SystemAttr systemAttr, SystemStyle systemStyle) throws JSONException {
+    private void useDefaultStyles(SystemAttr systemAttr, SystemStyle systemStyle) throws JSONException {
         systemAttr.setBackgroundColor(0);
         systemAttr.setCustomBackgroundColor("rgb(38,77,132)");
         systemStyle.setColorScheme(0);
