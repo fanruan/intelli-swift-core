@@ -119,7 +119,7 @@ public class PerformancePlugManager implements PerformancePlugManagerInterface {
             if (newFile.exists()) {
                 if (oldFile.exists()) {
                     BIFileUtils.delete(new File(filePath + File.separator + ProjectConstants.RESOURCES_NAME + File.separator + DBConstant.PERFORMANCE_FILE_NAME.TEMP_FILE_NAME));
-                    BIFileUtils.renameFile(oldFile,new File(filePath + File.separator + ProjectConstants.RESOURCES_NAME + File.separator + DBConstant.PERFORMANCE_FILE_NAME.TEMP_FILE_NAME));
+                    BIFileUtils.renameFile(oldFile, new File(filePath + File.separator + ProjectConstants.RESOURCES_NAME + File.separator + DBConstant.PERFORMANCE_FILE_NAME.TEMP_FILE_NAME));
                 }
                 BIFileUtils.renameFile(newFile, oldFile);
             }
@@ -170,6 +170,7 @@ public class PerformancePlugManager implements PerformancePlugManagerInterface {
 
     /**
      * 先整理需要更新的数据，然后更新参数配置信息
+     *
      * @param resultMap
      * @return
      */
@@ -206,9 +207,9 @@ public class PerformancePlugManager implements PerformancePlugManagerInterface {
                     continue;
                 }
                 fieldValue = String.valueOf(field.get(this));
-                map.put(fieldName ,fieldValue);
+                map.put(fieldName, fieldValue);
             } catch (IllegalAccessException e) {
-                BILoggerFactory.getLogger().error(e.getMessage() ,e);
+                BILoggerFactory.getLogger().error(e.getMessage(), e);
             }
         }
     }
@@ -222,10 +223,10 @@ public class PerformancePlugManager implements PerformancePlugManagerInterface {
     @Override
     public Map<String, String> getExtraParam(String paramType) {
         String readFileName = null;
-        if (ComparatorUtils.equals(DBConstant.PARAM_TYPE.RUNTIME_TYPE,paramType)) {
+        if (ComparatorUtils.equals(DBConstant.PARAM_TYPE.RUNTIME_TYPE, paramType)) {
             readFileName = DBConstant.PERFORMANCE_FILE_NAME.OLD_FILE_NAME;
         }
-        if (ComparatorUtils.equals(DBConstant.PARAM_TYPE.UPDATED_TYPE,paramType)) {
+        if (ComparatorUtils.equals(DBConstant.PARAM_TYPE.UPDATED_TYPE, paramType)) {
             readFileName = DBConstant.PERFORMANCE_FILE_NAME.NEW_FILE_NAME;
         }
         Map<String, String> paramConfig = new HashMap<String, String>();
@@ -509,10 +510,8 @@ public class PerformancePlugManager implements PerformancePlugManagerInterface {
     @Override
     public Map<String, String> getConfigByType(String paramType) {
         try {
-            if (ComparatorUtils.equals(DBConstant.PARAM_TYPE.RUNTIME_TYPE, paramType)) {
-                if (FRContext.getCurrentEnv().readBean(DBConstant.PERFORMANCE_FILE_NAME.OLD_FILE_NAME, ProjectConstants.RESOURCES_NAME) != null) {
-                    return currentParamMap;
-                }
+            if (ComparatorUtils.equals(DBConstant.PARAM_TYPE.RUNTIME_TYPE, paramType) && FRContext.getCurrentEnv().readBean(DBConstant.PERFORMANCE_FILE_NAME.OLD_FILE_NAME, ProjectConstants.RESOURCES_NAME) != null) {
+                return currentParamMap;
             }
             if (ComparatorUtils.equals(DBConstant.PARAM_TYPE.UPDATED_TYPE, paramType)) {
                 if (FRContext.getCurrentEnv().readBean(DBConstant.PERFORMANCE_FILE_NAME.NEW_FILE_NAME, ProjectConstants.RESOURCES_NAME) == null) {
