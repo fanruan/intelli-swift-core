@@ -1,5 +1,6 @@
 package com.fr.bi.manager;
 
+import com.finebi.cube.common.log.BILogger;
 import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.base.FRContext;
 import com.fr.bi.stable.constant.DBConstant;
@@ -96,6 +97,12 @@ public class PerformancePlugManager implements PerformancePlugManagerInterface {
 
     public Map<String, String> defaultMap = new HashMap<String, String>();
 
+    //当前系统运行的参数
+    private Map<String, String> currentParamMap = new HashMap<String, String>();
+
+    //系统更新的参数
+    private Map<String, String> updatedParamMap = new HashMap<String, String>();
+
     private PerformancePlugManager() {
         init();
     }
@@ -106,7 +113,8 @@ public class PerformancePlugManager implements PerformancePlugManagerInterface {
 
     private void init() {
         try {
-            saveDefaultConfig();
+            // 保存系统默认的配置信息
+            saveParamConfig(defaultMap);
             File newFile = new File(filePath + File.separator + ProjectConstants.RESOURCES_NAME + File.separator + DBConstant.PERFORMANCE_FILE_NAME.NEW_FILE_NAME);
             if (newFile.exists()) {
                 if (oldFile.exists()) {
@@ -152,6 +160,8 @@ public class PerformancePlugManager implements PerformancePlugManagerInterface {
             backupWhenStart = getBoolean(PERFORMANCE + ".backupWhenStart", backupWhenStart);
             useFineIO = getBoolean(PERFORMANCE + ".useFineIO", useFineIO);
             minCubeFreeHDSpaceRate = getDouble(PERFORMANCE + ".minCubeFreeHDSpaceRate", minCubeFreeHDSpaceRate);
+            // 系统参数赋值之后，保存一下当前的配置信息
+            saveParamConfig(currentParamMap);
 //            logConfiguration();
         } catch (Exception e) {
             BILoggerFactory.getLogger().error(e.getMessage(), e);
@@ -166,12 +176,10 @@ public class PerformancePlugManager implements PerformancePlugManagerInterface {
     @Override
     public boolean updateParam(Map<String, String> resultMap) {
         try {
-            Map<String, String> runMap = getExtraParam(DBConstant.PARAM_TYPE.RUNTIME_TYPE);
-            Map<String, String> newMap = getExtraParam(DBConstant.PARAM_TYPE.UPDATED_TYPE);
-            resultMap = PerformanceParamTools.convertParamKey(resultMap);
-            resultMap = config.beforeDoWrite(runMap, newMap, resultMap);
-            resultMap = tools.convert2File(resultMap);
-            return config.writeConfig(resultMap, FRContext.getCurrentEnv().writeBean(DBConstant.PERFORMANCE_FILE_NAME.NEW_FILE_NAME, ProjectConstants.RESOURCES_NAME));
+            // BI-9845 之前每次写入的时候，都要读取本地的配置文件信息。短时间内多次读取会出问题，就给参数的信息放到内存中，减少读取。
+            resultMap = config.beforeDoWrite(currentParamMap, updatedParamMap, resultMap);
+            updatedParamMap = resultMap;
+            return config.writeConfig(updatedParamMap, FRContext.getCurrentEnv().writeBean(DBConstant.PERFORMANCE_FILE_NAME.NEW_FILE_NAME, ProjectConstants.RESOURCES_NAME));
         } catch (Exception e) {
             BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
@@ -184,7 +192,7 @@ public class PerformancePlugManager implements PerformancePlugManagerInterface {
      * @return
      */
     @Override
-    public void saveDefaultConfig() {
+    public void saveParamConfig(Map<String, String> map) {
         Field[] fields = this.getClass().getDeclaredFields();
         String fieldName;
         String fieldValue;
@@ -198,7 +206,7 @@ public class PerformancePlugManager implements PerformancePlugManagerInterface {
                     continue;
                 }
                 fieldValue = String.valueOf(field.get(this));
-                defaultMap.put(fieldName ,fieldValue);
+                map.put(fieldName ,fieldValue);
             } catch (IllegalAccessException e) {
                 BILoggerFactory.getLogger().error(e.getMessage() ,e);
             }
@@ -500,53 +508,22 @@ public class PerformancePlugManager implements PerformancePlugManagerInterface {
      */
     @Override
     public Map<String, String> getConfigByType(String paramType) {
-        String fileName = null;
-        Map<String, String> newMap = new HashMap<String, String>();
-        if (ComparatorUtils.equals(DBConstant.PARAM_TYPE.RUNTIME_TYPE,paramType)) {
-            fileName = DBConstant.PERFORMANCE_FILE_NAME.OLD_FILE_NAME;
-        }
-        if (ComparatorUtils.equals(DBConstant.PARAM_TYPE.UPDATED_TYPE,paramType)) {
-            fileName = DBConstant.PERFORMANCE_FILE_NAME.NEW_FILE_NAME;
-        }
         try {
-            InputStream in = FRContext.getCurrentEnv().readBean(fileName, ProjectConstants.RESOURCES_NAME);
-            if (in == null && ComparatorUtils.equals(DBConstant.PARAM_TYPE.RUNTIME_TYPE,paramType)) {
-                return defaultMap;
-            } else {
-                properties = new Properties();
-                properties.load(in);
-                setTimeoutConfig(properties);
-                newMap.put("returnEmptyIndex", getString(PERFORMANCE + ".emptyWhenNotSelect", defaultMap.get("returnEmptyIndex")));
-                newMap.put("isSearchPinYin", getString(PERFORMANCE + ".isSearchPinYin", defaultMap.get("isSearchPinYin")));
-                newMap.put("useMultiThreadCal", getString(PERFORMANCE + ".useMultiThreadCal", defaultMap.get("useMultiThreadCal")));
-                newMap.put("diskSortDumpThreshold",getString(PERFORMANCE + ".diskSortDumpThreshold", defaultMap.get("diskSortDumpThreshold")));
-                newMap.put("diskSort", getString(PERFORMANCE + ".useDiskSort", defaultMap.get("diskSort")));
-                newMap.put("biThreadPoolSize", getString(PERFORMANCE + ".biThreadPoolSize", defaultMap.get("biThreadPoolSize")));
-                newMap.put("useStandardOutError", getString(PERFORMANCE + ".useStandardOutError", defaultMap.get("useStandardOutError")));
-                newMap.put("verboseLog", getString(PERFORMANCE + ".verboseLog", defaultMap.get("verboseLog")));
-                newMap.put("useLog4JPropertiesFile", getString(PERFORMANCE + ".useLog4JPropertiesFile", defaultMap.get("useLog4JPropertiesFile")));
-                newMap.put("serverJarLocation", getString(PERFORMANCE + ".serverJarLocation", defaultMap.get("serverJarLocation")));
-                newMap.put("deployModeSelectSize", getString(PERFORMANCE + ".deployModeSelectSize", defaultMap.get("deployModeSelectSize")));
-                newMap.put("retryMaxTimes", getString(PERFORMANCE + ".retryMaxTimes", defaultMap.get("retryMaxTimes")));
-                newMap.put("retryMaxSleepTime", getString(PERFORMANCE + ".retryMaxSleepTime", defaultMap.get("retryMaxSleepTime")));
-                newMap.put("extremeConcurrency",getString(PERFORMANCE + ".extremeConcurrency", defaultMap.get("extremeConcurrency")));
-                newMap.put("unmapReader",getString(PERFORMANCE + ".unmapReader", defaultMap.get("unmapReader")));
-                newMap.put("reIndexRowCount",getString(PERFORMANCE + ".reIndexRowCount", defaultMap.get("reIndexRowCount")));
-                newMap.put("cubeReaderReleaseSleepTime", getString(PERFORMANCE + ".cubeReaderReleaseSleepTime", defaultMap.get("cubeReaderReleaseSleepTime")));
-                newMap.put("isDirectGenerating",getString(PERFORMANCE + ".isDirectGenerating", defaultMap.get("isDirectGenerating")));
-                newMap.put("isForceWriter",getString(PERFORMANCE + ".isForceWriter", defaultMap.get("isForceWriter")));
-                newMap.put("maxCubeFileSize",getString(PERFORMANCE + ".maxCubeFileSize", defaultMap.get("maxCubeFileSize")));
-                newMap.put("maxStructureSize",getString(PERFORMANCE + ".maxStructureSize", defaultMap.get("maxStructureSize")));
-                newMap.put("maxSPADetailSize",getString(PERFORMANCE + ".maxSPADetailSize", defaultMap.get("maxSPADetailSize")));
-                newMap.put("backupWhenStart",getString(PERFORMANCE + ".backupWhenStart", defaultMap.get("backupWhenStart")));
-                newMap.put("useFineIO",getString(PERFORMANCE + ".useFineIO", defaultMap.get("useFineIO")));
-                newMap.put("minCubeFreeHDSpaceRate",getString(PERFORMANCE + ".minCubeFreeHDSpaceRate", defaultMap.get("minCubeFreeHDSpaceRate")));
-                newMap.put("biTransportThreadPoolSize",getString(PERFORMANCE + ".biTransportThreadPoolSize", defaultMap.get("biTransportThreadPoolSize")));
+            if (ComparatorUtils.equals(DBConstant.PARAM_TYPE.RUNTIME_TYPE, paramType)) {
+                if (FRContext.getCurrentEnv().readBean(DBConstant.PERFORMANCE_FILE_NAME.OLD_FILE_NAME, ProjectConstants.RESOURCES_NAME) != null) {
+                    return currentParamMap;
+                }
+            }
+            if (ComparatorUtils.equals(DBConstant.PARAM_TYPE.UPDATED_TYPE, paramType)) {
+                if (FRContext.getCurrentEnv().readBean(DBConstant.PERFORMANCE_FILE_NAME.NEW_FILE_NAME, ProjectConstants.RESOURCES_NAME) == null) {
+                    return currentParamMap;
+                }
+                return updatedParamMap;
             }
         } catch (Exception e) {
             BILoggerFactory.getLogger().error(e.getMessage(), e);
         }
-        return newMap;
+        return defaultMap;
     }
 
     @Override
@@ -666,5 +643,9 @@ public class PerformancePlugManager implements PerformancePlugManagerInterface {
 
     public boolean isUseFineIO() {
         return useFineIO;
+    }
+
+    public void setUpdatedParamMap(Map<String, String> updatedParamMap) {
+        this.updatedParamMap = updatedParamMap;
     }
 }

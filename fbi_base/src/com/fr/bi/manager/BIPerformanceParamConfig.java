@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Properties;
+import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * This class created on 2017/4/14.
@@ -17,6 +18,9 @@ import java.util.Properties;
 public class BIPerformanceParamConfig implements BIParamConfig {
 
     private Properties properties;
+    //加重入锁
+    private ReentrantLock readLock = new ReentrantLock();
+    private ReentrantLock writeLock = new ReentrantLock();
 
     /**
      * 读取配置参数
@@ -25,6 +29,7 @@ public class BIPerformanceParamConfig implements BIParamConfig {
      */
     @Override
     public Map<String, String> readConfig(InputStream inputStream) {
+        readLock.lock();
         Map<String, String> resultMap = new HashMap<String, String>();
         try {
             properties = new Properties();
@@ -44,6 +49,8 @@ public class BIPerformanceParamConfig implements BIParamConfig {
         } catch (Exception e) {
             //无额外参数配置，直接使用默认参数进行启动
             BILoggerFactory.getLogger().error(e.getMessage(), e);
+        } finally {
+            readLock.unlock();
         }
         return resultMap;
     }
@@ -55,6 +62,7 @@ public class BIPerformanceParamConfig implements BIParamConfig {
      */
     @Override
     public boolean writeConfig(Map<String, String> newParam, OutputStream outputStream) {
+        writeLock.lock();
         try {
             if (outputStream == null) {
                 return false;
@@ -72,6 +80,8 @@ public class BIPerformanceParamConfig implements BIParamConfig {
             return true;
         } catch (Exception e){
             BILoggerFactory.getLogger().error(e.getMessage(), e);
+        } finally {
+            writeLock.unlock();
         }
         return false;
     }
@@ -87,34 +97,14 @@ public class BIPerformanceParamConfig implements BIParamConfig {
     public Map<String, String> beforeDoWrite (Map<String, String> runParam, Map<String, String> newParam, Map<String, String> resultParam) {
         Map<String, String> tempParam ;
         if (newParam.size() != 0) {
-            tempParam = mergeMap(newParam, resultParam);
+            tempParam = PerformanceParamTools.mergeMaps(newParam, resultParam);
 
         } else {
             if (runParam.size() == 0) {
                 runParam = new HashMap<String, String>();
             }
-            tempParam = mergeMap(runParam, resultParam);
+            tempParam = PerformanceParamTools.mergeMaps(runParam, resultParam);
         }
         return tempParam;
-    }
-
-    /**
-     * 将传递的参数进行合并
-     * @param oldParam
-     * @param resultParam
-     * @return Map<String, String>
-     */
-    private Map<String, String> mergeMap(Map<String, String> oldParam, Map<String, String> resultParam) {
-        try {
-            Iterator<String> it = resultParam.keySet().iterator();
-            while (it.hasNext()) {
-                String resultParamKey = it.next();
-                String resultParamValue = resultParam.get(resultParamKey);
-                oldParam.put(resultParamKey, resultParamValue);
-            }
-        } catch (Exception e) {
-            BILoggerFactory.getLogger().error(e.getMessage(), e);
-        }
-        return oldParam;
     }
 }
