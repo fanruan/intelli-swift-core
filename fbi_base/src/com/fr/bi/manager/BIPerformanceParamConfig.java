@@ -29,7 +29,6 @@ public class BIPerformanceParamConfig implements BIParamConfig {
      */
     @Override
     public Map<String, String> readConfig(InputStream inputStream) {
-        readLock.lock();
         Map<String, String> resultMap = new HashMap<String, String>();
         try {
             properties = new Properties();
@@ -37,6 +36,7 @@ public class BIPerformanceParamConfig implements BIParamConfig {
                 return resultMap;
             }
             properties.load(inputStream);
+            readLock.lock();
             Iterator<String> it = properties.stringPropertyNames().iterator();
             while (it.hasNext()) {
                 //获取参数名
@@ -45,12 +45,11 @@ public class BIPerformanceParamConfig implements BIParamConfig {
                 String paramValue = properties.getProperty(paramName);
                 resultMap.put(paramName, paramValue);
             }
+            readLock.unlock();
             inputStream.close();
         } catch (Exception e) {
             //无额外参数配置，直接使用默认参数进行启动
             BILoggerFactory.getLogger().error(e.getMessage(), e);
-        } finally {
-            readLock.unlock();
         }
         return resultMap;
     }
@@ -62,7 +61,6 @@ public class BIPerformanceParamConfig implements BIParamConfig {
      */
     @Override
     public boolean writeConfig(Map<String, String> newParam, OutputStream outputStream) {
-        writeLock.lock();
         try {
             if (outputStream == null) {
                 return false;
@@ -71,17 +69,17 @@ public class BIPerformanceParamConfig implements BIParamConfig {
             PerformanceParamTools tools = new PerformanceParamTools();
             newParam = tools.convertParamKey(newParam);
             Iterator<String> it = newParam.keySet().iterator();
+            writeLock.lock();
             while (it.hasNext()) {
                 String paramKey = it.next();
                 String paramValue = newParam.get(paramKey);
                 properties.setProperty(paramKey, paramValue);
             }
             properties.store(outputStream,"paramKey - paramValue");
+            writeLock.unlock();
             return true;
         } catch (Exception e){
             BILoggerFactory.getLogger().error(e.getMessage(), e);
-        } finally {
-            writeLock.unlock();
         }
         return false;
     }
