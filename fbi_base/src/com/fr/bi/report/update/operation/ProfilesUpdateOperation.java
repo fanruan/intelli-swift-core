@@ -120,6 +120,9 @@ public class ProfilesUpdateOperation implements ReportUpdateOperation {
             while (keys.hasNext()) {
                 String widgetId = keys.next().toString();
                 JSONObject widgetJo = json.getJSONObject("widgets").getJSONObject(widgetId);
+                if(widgetJo.has("jump")){
+                    continue;
+                }
                 if (widgetJo.has("type") && widgetJo.getInt("type") == BIReportConstant.WIDGET.DETAIL) {
                     JSONObject dimensions = widgetJo.optJSONObject("dimensions");
                     JSONObject view = widgetJo.optJSONObject("view");
