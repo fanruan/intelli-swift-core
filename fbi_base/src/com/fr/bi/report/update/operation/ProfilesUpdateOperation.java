@@ -144,8 +144,10 @@ public class ProfilesUpdateOperation implements ReportUpdateOperation {
                             dimension.remove("hyperlink");
                         }
                     }
+                    if(!widgetJo.has("jump")){
+                        widgetJo.put("jump", jumps);
+                    }
                 }
-                widgetJo.put("jump", jumps);
             }
         }
     }

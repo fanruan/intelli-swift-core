@@ -128,4 +128,22 @@ public class PerformanceParamTools {
         }
         return returnMap;
     }
+
+    /**
+     * 合并Map
+     * @return
+     */
+    public static Map<String, String> mergeMaps(Map<String, String> paramMap1, Map<String, String> paramMap2) {
+        Map<String, String> resultMap = new HashMap<String, String>();
+        Iterator<String> paramIt = paramMap1.keySet().iterator();
+        while (paramIt.hasNext()) {
+            String key = paramIt.next();
+            String value = paramMap2.get(key);
+            if (value == null) {
+                value = paramMap1.get(key);
+            }
+            resultMap.put(key, value);
+        }
+        return resultMap;
+    }
 }
