@@ -50,7 +50,7 @@ public class BICubeTableEntity implements CubeTableEntityService {
             }
             relationManager = new BICubeTableRelationEntityManager(this.resourceRetrievalService, this.tableKey, discovery);
         } catch (Exception e) {
-            BINonValueUtils.beyondControl(e.getMessage(), e);
+            throw BINonValueUtils.beyondControl(e.getMessage(), e);
         }
     }
 

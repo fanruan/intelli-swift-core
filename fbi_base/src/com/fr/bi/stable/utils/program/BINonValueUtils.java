@@ -7,11 +7,20 @@ import com.fr.bi.exception.BIRuntimeException;
  */
 public class BINonValueUtils {
 
-    public static void checkNull(Object... args) {
-        for (int i = 0; i < args.length; i++) {
-            if (args[i] == null) {
-                throw new IllegalArgumentException("the parameter can't be null");
-            }
+    public static void checkNull(Object arg) {
+        if (arg == null) {
+            throw new IllegalArgumentException("the parameter can't be null");
+        }
+    }
+
+    public static void checkNull(Object arg0, Object... args) {
+        checkNull(arg0);
+        checkNull(args);
+    }
+
+    public static void checkNull(Object[] args) {
+        for (Object arg : args) {
+            checkNull(arg);
         }
     }
 
@@ -30,11 +39,10 @@ public class BINonValueUtils {
     public static BIRuntimeException beyondControl(Throwable throwable) {
         if (throwable instanceof BIRuntimeException) {
             Throwable cause = throwable.getCause();
-            if(null != cause)
-            {
+            if (null != cause) {
                 return beyondControl(cause.getMessage(), cause);
-            }else {
-                return beyondControl(throwable.getMessage(),throwable);
+            } else {
+                return beyondControl(throwable.getMessage(), throwable);
             }
         }
         return beyondControl(throwable.getMessage(), throwable);

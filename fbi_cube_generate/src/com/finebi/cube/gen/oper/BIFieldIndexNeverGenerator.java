@@ -1,5 +1,7 @@
 package com.finebi.cube.gen.oper;
 
+import com.finebi.cube.common.log.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.conf.utils.BILogHelper;
 import com.finebi.cube.message.IMessage;
 import com.finebi.cube.structure.Cube;
@@ -9,8 +11,6 @@ import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.utils.program.BIStringUtils;
 import com.fr.fs.control.UserControl;
 import com.google.common.base.Stopwatch;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.concurrent.TimeUnit;
 
@@ -19,20 +19,10 @@ import java.util.concurrent.TimeUnit;
  */
 public class BIFieldIndexNeverGenerator extends AbstractFieldIndexGenerator {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(BIFieldIndexNeverGenerator.class);
-
-    protected CubeTableSource tableSource;
-    protected ICubeFieldSource hostBICubeFieldSource;
-    protected BIColumnKey targetColumnKey;
-    protected Cube cube;
+    private static final BILogger LOGGER = BILoggerFactory.getLogger(BIFieldIndexNeverGenerator.class);
 
     public BIFieldIndexNeverGenerator(Cube cube, CubeTableSource tableSource, ICubeFieldSource hostBICubeFieldSource, BIColumnKey targetColumnKey) {
         super(cube, tableSource, hostBICubeFieldSource, targetColumnKey);
-        this.tableSource = tableSource;
-        this.hostBICubeFieldSource = hostBICubeFieldSource;
-        this.cube = cube;
-        this.targetColumnKey = targetColumnKey;
-        initThreadPool();
     }
 
     @Override

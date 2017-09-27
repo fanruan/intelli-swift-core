@@ -59,12 +59,7 @@ import com.fr.json.JSONObject;
 import com.fr.stable.StringUtils;
 import org.slf4j.Logger;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Future;
 
@@ -89,14 +84,15 @@ public class BuildCubeTask implements CubeTask {
     private int retryNTimes = 100;
     private final long CUBE_CHECK_PERIOD = 5000l;
     private final long TIME_SLEEP = 100l;
+
     public BuildCubeTask(BIUser biUser, CubeBuildStuff cubeBuildStuff) {
         this.cubeBuildStuff = cubeBuildStuff;
         this.biUser = biUser;
         cubeConfiguration = cubeBuildStuff.getCubeConfiguration();
         retrievalService = new BICubeResourceRetrieval(cubeConfiguration);
-        ICubeConfiguration IntegrityCubeConfiguration = BICubeConfiguration.getConf(Long.toString(biUser.getUserId()));
-        this.cube = new BICubeFromMultiSource(retrievalService, new BICubeResourceRetrieval(IntegrityCubeConfiguration), BIFactoryHelper.getObject(ICubeResourceDiscovery.class));
-        this.integrityCube = new BICube(new BICubeResourceRetrieval(IntegrityCubeConfiguration), BIFactoryHelper.getObject(ICubeResourceDiscovery.class));
+        ICubeConfiguration integrityCubeConf = BICubeConfiguration.getConf(Long.toString(biUser.getUserId()));
+        this.cube = new BICubeFromMultiSource(retrievalService, new BICubeResourceRetrieval(integrityCubeConf), BIFactoryHelper.getObject(ICubeResourceDiscovery.class));
+        this.integrityCube = new BICube(new BICubeResourceRetrieval(integrityCubeConf), BIFactoryHelper.getObject(ICubeResourceDiscovery.class));
     }
 
     @Override

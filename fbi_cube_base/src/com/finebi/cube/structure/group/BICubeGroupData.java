@@ -1,6 +1,7 @@
 package com.finebi.cube.structure.group;
 
 import com.finebi.cube.common.log.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.data.ICubeResourceDiscovery;
 import com.finebi.cube.data.input.ICubeIntegerReaderWrapper;
 import com.finebi.cube.data.input.ICubeReader;
@@ -9,7 +10,6 @@ import com.finebi.cube.data.output.ICubeWriter;
 import com.finebi.cube.exception.BIResourceInvalidException;
 import com.finebi.cube.location.ICubeResourceLocation;
 import com.fr.bi.stable.io.sortlist.ArrayLookupHelper;
-import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
 
 import java.util.Comparator;
@@ -31,7 +31,7 @@ public abstract class BICubeGroupData<T> implements ICubeGroupDataService<T> {
     protected ICubeResourceLocation superLocation;
     protected ICubeResourceLocation currentLocation;
     private ICubeResourceDiscovery resourceDiscovery;
-    private static BILogger LOGGER = BILoggerFactory.getLogger(BICubeGroupData.class);
+    private static final BILogger LOGGER = BILoggerFactory.getLogger(BICubeGroupData.class);
 
     public BICubeGroupData(ICubeResourceDiscovery resourceDiscovery, ICubeResourceLocation superLocation) {
         try {
@@ -52,7 +52,7 @@ public abstract class BICubeGroupData<T> implements ICubeGroupDataService<T> {
             currentLocation.setWriterSourceLocation();
             groupWriter = resourceDiscovery.getCubeWriter(currentLocation);
         } catch (Exception e) {
-            BINonValueUtils.beyondControl(e.getMessage(), e);
+            throw BINonValueUtils.beyondControl(e.getMessage(), e);
         }
     }
 
@@ -63,7 +63,7 @@ public abstract class BICubeGroupData<T> implements ICubeGroupDataService<T> {
             currentLocation.setReaderSourceLocation();
             groupReader = resourceDiscovery.getCubeReader(currentLocation);
         } catch (Exception e) {
-            BINonValueUtils.beyondControl(e.getMessage(), e);
+            throw BINonValueUtils.beyondControl(e.getMessage(), e);
         }
     }
 
@@ -74,7 +74,7 @@ public abstract class BICubeGroupData<T> implements ICubeGroupDataService<T> {
             sizeLocation.setReaderSourceLocation();
             groupLengthReader = (ICubeIntegerReaderWrapper) resourceDiscovery.getCubeReader(sizeLocation);
         } catch (Exception e) {
-            BINonValueUtils.beyondControl(e.getMessage(), e);
+            throw BINonValueUtils.beyondControl(e.getMessage(), e);
         }
     }
 
@@ -85,7 +85,7 @@ public abstract class BICubeGroupData<T> implements ICubeGroupDataService<T> {
             sizeLocation.setWriterSourceLocation();
             groupLengthWriter = (ICubeIntegerWriterWrapper) resourceDiscovery.getCubeWriter(sizeLocation);
         } catch (Exception e) {
-            BINonValueUtils.beyondControl(e.getMessage(), e);
+            throw BINonValueUtils.beyondControl(e.getMessage(), e);
         }
     }
 
