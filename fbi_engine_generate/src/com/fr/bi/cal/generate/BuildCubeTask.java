@@ -81,9 +81,9 @@ public class BuildCubeTask implements CubeTask {
     protected BICube cube;
     protected BICube integrityCube;
     protected BICubeFinishObserver<Future<String>> finishObserver;
-    private int retryNTimes = 100;
-    private final long CUBE_CHECK_PERIOD = 5000l;
-    private final long TIME_SLEEP = 100l;
+    private static final int RETRY_N_TIMES = 100;
+    private static final long CUBE_CHECK_PERIOD = 5000L;
+    private static final long TIME_SLEEP = 100L;
 
     public BuildCubeTask(BIUser biUser, CubeBuildStuff cubeBuildStuff) {
         this.cubeBuildStuff = cubeBuildStuff;
@@ -191,7 +191,6 @@ public class BuildCubeTask implements CubeTask {
             }
         } catch (Exception e) {
             BILoggerFactory.getLogger().error(e.getMessage(), e);
-        } finally {
         }
     }
 
@@ -223,7 +222,7 @@ public class BuildCubeTask implements CubeTask {
         try {
             LOGGER.info("Start Replacing Old FineIndex, Stop All Analysis");
             boolean replaceSuccess = false;
-            for (int i = 0; i < retryNTimes; i++) {
+            for (int i = 0; i < RETRY_N_TIMES; i++) {
                 if (Thread.currentThread().isInterrupted()) {
                     break;
                 }

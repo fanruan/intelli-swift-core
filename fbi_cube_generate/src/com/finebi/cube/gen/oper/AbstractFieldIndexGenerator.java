@@ -16,6 +16,7 @@ import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.utils.program.BIStringUtils;
 import com.fr.fs.control.UserControl;
+import com.fr.stable.StringUtils;
 
 /**
  * Created by neil on 2017/8/4.
@@ -62,7 +63,7 @@ public abstract class AbstractFieldIndexGenerator<T> extends BIProcessor<T> {
         } catch (Exception e) {
             LOGGER.error(e.getMessage(), e);
         }
-        return "";
+        return StringUtils.EMPTY;
     }
 
     protected void handleBuildIndexFailed(Throwable e) {

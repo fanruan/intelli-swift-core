@@ -16,6 +16,7 @@ import com.fr.bi.stable.data.db.BIDataValue;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
 import com.fr.bi.stable.utils.program.BIStringUtils;
+import com.fr.stable.StringUtils;
 import com.fr.stable.collections.array.IntArray;
 
 import java.util.*;
@@ -108,7 +109,7 @@ public class BICubeTableEntity implements CubeTableEntityService {
 
     @Override
     public void recordRemovedLine(TreeSet<Integer> removedLine) {
-        if (null == removedLine || removedLine.size() == 0) {
+        if (null == removedLine || removedLine.isEmpty()) {
             tableProperty.recordRemovedList(0, -1);
             return;
         }
@@ -153,7 +154,7 @@ public class BICubeTableEntity implements CubeTableEntityService {
                 columnService.increaseAddOriginalDataValue(rowNumber, value);
             }
         } catch (ClassCastException e) {
-            throw BINonValueUtils.beyondControl(BIStringUtils.append(e.getMessage(), "Table:" + tableKey != null ? tableKey.getSourceID() : ""
+            throw BINonValueUtils.beyondControl(BIStringUtils.append(e.getMessage(), "Table:" + tableKey != null ? tableKey.getSourceID() : StringUtils.EMPTY
                     , "Field column index:" + columnIndex
                     , "Field column is:" + field.getFieldName()
                     , "Field row number:" + rowNumber
@@ -183,6 +184,7 @@ public class BICubeTableEntity implements CubeTableEntityService {
 
     @Override
     public void copyDetailValue(CubeTableEntityService cube, long rowCount) {
+        throw new UnsupportedOperationException();
     }
 
     @Override
