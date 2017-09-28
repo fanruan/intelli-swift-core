@@ -11,7 +11,7 @@ import java.io.Serializable;
  * @author Connery
  * @since 4.0
  */
-public abstract class BIBasicRelation<T, F> implements Serializable{
+public abstract class BIBasicRelation<T, F> implements Serializable {
     public static final String XML_TAG = "BIBasicRelation";
     private static final long serialVersionUID = -1939057877078469485L;
     protected F primaryField;
@@ -23,11 +23,11 @@ public abstract class BIBasicRelation<T, F> implements Serializable{
     }
 
     public BIBasicRelation(F primaryField, F foreignField, T primaryTable, T foreignTable) {
+        BINonValueUtils.checkNull(primaryField, primaryTable, foreignField, foreignTable);
         this.primaryField = primaryField;
         this.foreignField = foreignField;
         this.primaryTable = primaryTable;
         this.foreignTable = foreignTable;
-        BINonValueUtils.checkNull(this.primaryField, primaryTable, this.foreignField, foreignTable);
     }
 
 
@@ -64,7 +64,6 @@ public abstract class BIBasicRelation<T, F> implements Serializable{
     }
 
 
-
     public F getPrimaryKey() {
         return getPrimaryField();
     }
@@ -85,11 +84,7 @@ public abstract class BIBasicRelation<T, F> implements Serializable{
 
     @Override
     public String toString() {
-        final StringBuffer sb = new StringBuffer("");
-        sb.append(primaryTable).append("->");
-        sb.append(foreignTable);
-        sb.append("");
-        return sb.toString();
+        return primaryTable + "->" + foreignTable;
     }
 
     /**

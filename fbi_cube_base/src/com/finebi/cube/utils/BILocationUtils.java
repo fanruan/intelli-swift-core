@@ -1,19 +1,16 @@
 package com.finebi.cube.utils;
 
 
-
-
 import com.fr.stable.StringUtils;
-import com.fr.stable.project.ProjectConstants;
-import java.io.File;
 
 /**
  * Created by wang on 2017/6/12.
  */
 public class BILocationUtils {
-    public static String CUBE_FOLDER_NAME = "/Advanced";
-    public static String CUBE_TEMP_FOLDER_NAME = "/tCube";
-    public static String LOCATION_SEPERATOR = "/";
+    public static final String CUBE_FOLDER_NAME = "/Advanced";
+    public static final String CUBE_TEMP_FOLDER_NAME = "/tCube";
+    public static final String LOCATION_SEPARATOR = "/";
+
     /**
      * 去掉Advanced（tCube）作为资源的logicPath
      *

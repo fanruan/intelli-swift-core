@@ -26,8 +26,8 @@ public class BIBasicRelationPath<T, F, R extends BIBasicRelation<T, F>> extends 
     public BIBasicRelationPath(R[] relations) throws BITablePathConfusionException {
         super();
         BINonValueUtils.checkNull(relations);
-        for (int i = 0; i < relations.length; i++) {
-            addRelationAtTail(relations[i]);
+        for (R relation : relations) {
+            addRelationAtTail(relation);
         }
     }
 
@@ -38,9 +38,10 @@ public class BIBasicRelationPath<T, F, R extends BIBasicRelation<T, F>> extends 
                 if (canRelationsBuildPath(lastRelation, relation)) {
                     add(relation);
                 } else {
-                    throw new BITablePathConfusionException("The primary of relation needed to be added is:" +
-                            "" + relation.getPrimaryTable().toString() + "" +
-                            ",but current path last relation's foreign table is:" + relation.getForeignField().toString() + ".They should be equal");
+                    throw new BITablePathConfusionException("The primary of relation needed to be added is: " +
+                            relation.getPrimaryTable() +
+                            ", but current path last relation's foreign table is: " +
+                            relation.getForeignField() + ".They should be equal");
                 }
             } catch (BITablePathEmptyException ignore) {
                 add(relation);
@@ -60,9 +61,10 @@ public class BIBasicRelationPath<T, F, R extends BIBasicRelation<T, F>> extends 
                     add(relation);
                     container.addAll(collection);
                 } else {
-                    throw new BITablePathConfusionException("The foreign of relation needed to be added is:" +
-                            "" + relation.getForeignField().toString() + "" +
-                            ",but current path first relation's primary table is:" + relation.getPrimaryTable().toString() + ".They should be equal");
+                    throw new BITablePathConfusionException("The foreign of relation needed to be added is: " +
+                            relation.getForeignField() +
+                            ", but current path first relation's primary table is: " +
+                            relation.getPrimaryTable() + ". They should be equal");
                 }
 
             } catch (BITablePathEmptyException ignore) {
@@ -83,6 +85,7 @@ public class BIBasicRelationPath<T, F, R extends BIBasicRelation<T, F>> extends 
             container.remove(getFirstRelation());
         }
     }
+
     public boolean canRelationsBuildPath(R part_head, R part_tail) {
         return ComparatorUtils.equals(part_head.getForeignTable(), part_tail.getPrimaryTable());
     }
@@ -117,7 +120,7 @@ public class BIBasicRelationPath<T, F, R extends BIBasicRelation<T, F>> extends 
         }
     }
 
-    public void copyFrom(BIBasicRelationPath path) {
+    public void copyFrom(BIBasicRelationPath<T, F, R> path) {
         container.addAll(path.container);
     }
 
@@ -128,9 +131,7 @@ public class BIBasicRelationPath<T, F, R extends BIBasicRelation<T, F>> extends 
     @Override
     public int hashCode() {
         int result = 0;
-        Iterator<R> it = container.iterator();
-        while (it.hasNext()) {
-            R relation = it.next();
+        for (R relation : container) {
             result = 31 * result + (relation != null ? relation.hashCode() : 0);
         }
         return result;
@@ -145,7 +146,7 @@ public class BIBasicRelationPath<T, F, R extends BIBasicRelation<T, F>> extends 
             return false;
         }
 
-        BIBasicRelationPath that = (BIBasicRelationPath) o;
+        BIBasicRelationPath<T, F, R> that = (BIBasicRelationPath<T, F, R>) o;
         Iterator<R> it = container.iterator();
         Iterator<R> thatIt = that.container.iterator();
 

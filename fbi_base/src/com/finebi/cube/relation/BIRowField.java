@@ -13,6 +13,7 @@ import com.fr.json.JSONObject;
  * @since 4.0
  */
 public final class BIRowField extends BICubeFieldSource {
+    private static final long serialVersionUID = 6114314337052821566L;
     public static BIRowField rowNumberField = new BIRowField();
 
     private BIRowField() {

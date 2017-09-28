@@ -4,13 +4,12 @@ import com.fr.bi.stable.utils.program.BICollectionUtils;
 
 import java.io.Serializable;
 import java.util.Collection;
-import java.util.Iterator;
 
 /**
  * 容器类，线程安全的
  * Created by Connery on 2015/12/28.
  */
-public abstract class BICollectionContainer<T> implements Cloneable,Serializable {
+public abstract class BICollectionContainer<T> implements Cloneable, Serializable {
     private static final long serialVersionUID = 953366154679673459L;
     protected Collection<T> container;
 
@@ -18,7 +17,7 @@ public abstract class BICollectionContainer<T> implements Cloneable,Serializable
         this.container = initCollection();
     }
 
-    protected abstract Collection initCollection();
+    protected abstract Collection<T> initCollection();
 
     protected Collection<T> getContainer() {
         return BICollectionUtils.unmodifiedCollection(container);
@@ -44,12 +43,11 @@ public abstract class BICollectionContainer<T> implements Cloneable,Serializable
         this.container = container;
     }
 
-    protected void useContent(BICollectionContainer targetContainer) {
+    protected void useContent(BICollectionContainer<T> targetContainer) {
         synchronized (container) {
             clear();
-            Iterator<T> it = targetContainer.container.iterator();
-            while (it.hasNext()) {
-                container.add(it.next());
+            for (T t : targetContainer.container) {
+                container.add(t);
             }
         }
     }

@@ -1,5 +1,7 @@
 package com.finebi.cube.gen.oper;
 
+import com.finebi.cube.common.log.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.conf.utils.BICubeLogExceptionInfo;
 import com.finebi.cube.conf.utils.BILogHelper;
 import com.finebi.cube.impl.pubsub.BIProcessor;
@@ -14,17 +16,20 @@ import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.utils.program.BIStringUtils;
 import com.fr.fs.control.UserControl;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.fr.stable.StringUtils;
 
 /**
  * Created by neil on 2017/8/4.
  */
-public abstract class AbstractFieldIndexGenerator extends BIProcessor {
-    private static final Logger LOGGER = LoggerFactory.getLogger(AbstractFieldIndexGenerator.class);
+public abstract class AbstractFieldIndexGenerator<T> extends BIProcessor<T> {
+    private static final BILogger LOGGER = BILoggerFactory.getLogger(AbstractFieldIndexGenerator.class);
 
     protected CubeTableSource tableSource;
     protected ICubeFieldSource hostBICubeFieldSource;
+    /**
+     * 当前需要生产的ColumnKey，不能通过hostDBField转换。
+     * 因为子类型是无法通过DBFiled转换得到的
+     */
     protected BIColumnKey targetColumnKey;
     protected Cube cube;
     protected BILogManagerProvider biLogManager;
@@ -58,7 +63,7 @@ public abstract class AbstractFieldIndexGenerator extends BIProcessor {
         } catch (Exception e) {
             LOGGER.error(e.getMessage(), e);
         }
-        return "";
+        return StringUtils.EMPTY;
     }
 
     protected void handleBuildIndexFailed(Throwable e) {

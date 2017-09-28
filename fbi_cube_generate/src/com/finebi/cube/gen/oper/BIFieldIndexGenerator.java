@@ -1,5 +1,7 @@
 package com.finebi.cube.gen.oper;
 
+import com.finebi.cube.common.log.BILogger;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.conf.utils.BILogHelper;
 import com.finebi.cube.map.map2.ExternalIntArrayMapFactory;
 import com.finebi.cube.map.map2.IntArrayListExternalMap;
@@ -44,29 +46,16 @@ import java.util.concurrent.TimeUnit;
  * @author Connery
  * @since 4.0
  */
-public class BIFieldIndexGenerator<T> extends AbstractFieldIndexGenerator {
-    private static final Logger LOGGER = LoggerFactory.getLogger(BIFieldIndexGenerator.class);
+public class BIFieldIndexGenerator<T> extends AbstractFieldIndexGenerator<T> {
+    private static final BILogger LOGGER = BILoggerFactory.getLogger(BIFieldIndexGenerator.class);
 
-    protected CubeTableSource tableSource;
-    protected ICubeFieldSource hostBICubeFieldSource;
-    /**
-     * 当前需要生产的ColumnKey，不能通过hostDBField转换。
-     * 因为子类型是无法通过DBFiled转换得到的
-     */
-    protected BIColumnKey targetColumnKey;
     protected ICubeColumnEntityService<T> columnEntityService;
-    protected Cube cube;
     protected long rowCount;
     private static final String CACHE = "caches";
     private static final String BASEPATH = File.separator + CACHE;
 
     public BIFieldIndexGenerator(Cube cube, CubeTableSource tableSource, ICubeFieldSource hostBICubeFieldSource, BIColumnKey targetColumnKey) {
         super(cube, tableSource, hostBICubeFieldSource, targetColumnKey);
-        this.tableSource = tableSource;
-        this.hostBICubeFieldSource = hostBICubeFieldSource;
-        this.cube = cube;
-        this.targetColumnKey = targetColumnKey;
-        initThreadPool();
     }
 
     private void initial() {
@@ -80,7 +69,7 @@ public class BIFieldIndexGenerator<T> extends AbstractFieldIndexGenerator {
     }
 
     @Override
-    public Object mainTask(IMessage lastReceiveMessage) {
+    public T mainTask(IMessage lastReceiveMessage) {
         LOGGER.info(BIStringUtils.append(logFileInfo(), " start building field index main task") +
                 BILogHelper.logCubeLogTableSourceInfo(tableSource.getSourceID()));
         BILogHelper.cacheCubeLogFieldNormalInfo(tableSource.getSourceID(), hostBICubeFieldSource.getFieldName(), BILogConstant.LOG_CACHE_TIME_TYPE.FIELD_INDEX_EXECUTE_START, System.currentTimeMillis());

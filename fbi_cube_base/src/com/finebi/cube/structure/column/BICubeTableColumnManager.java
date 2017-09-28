@@ -1,5 +1,6 @@
 package com.finebi.cube.structure.column;
 
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.data.ICubeResourceDiscovery;
 import com.finebi.cube.exception.BICubeColumnAbsentException;
 import com.finebi.cube.location.ICubeResourceLocation;
@@ -11,10 +12,12 @@ import com.finebi.cube.structure.column.date.*;
 import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.bi.stable.data.source.CubeTableSource;
-import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * This class created on 2016/3/7.
@@ -76,9 +79,8 @@ public class BICubeTableColumnManager implements ICubeTableColumnManagerService 
 
 
     private void initialColumn(List<ICubeFieldSource> fieldSet, ITableKey tableKey) {
-        for (int i = 0; i < fieldSet.size(); i++) {
+        for (ICubeFieldSource field : fieldSet) {
             try {
-                ICubeFieldSource field = fieldSet.get(i);
                 switch (field.getFieldType()) {
                     case DBConstant.COLUMN.DATE:
                         initialDataColumn(field, tableKey);
@@ -137,7 +139,7 @@ public class BICubeTableColumnManager implements ICubeTableColumnManagerService 
                 initialYearMonthDayHourMinuteSecondColumn(field, tableKey, dateColumn);
 
             } catch (Exception e) {
-                BINonValueUtils.beyondControl(e.getMessage(), e);
+                throw BINonValueUtils.beyondControl(e.getMessage(), e);
             }
         }
     }
@@ -196,12 +198,13 @@ public class BICubeTableColumnManager implements ICubeTableColumnManagerService 
                 BIColumnKey columnKey = BIDateColumnTool.generateYear(field);
                 BICubeYearColumn yearColumn = new BICubeYearColumn(discovery, yearLocation, hostDataColumn);
                 hostDataColumn.addSubColumns(yearColumn);
-                this.registerColumn(insertFieldRelationManager(yearColumn, columnKey),columnKey);
+                this.registerColumn(insertFieldRelationManager(yearColumn, columnKey), columnKey);
             } catch (Exception e) {
                 throw BINonValueUtils.beyondControl();
             }
         }
     }
+
     private void initialHourColumn(ICubeFieldSource field, ITableKey tableKey, BICubeDateColumn hostDataColumn) {
         if (field.getFieldType() == DBConstant.COLUMN.DATE) {
             try {
@@ -210,7 +213,7 @@ public class BICubeTableColumnManager implements ICubeTableColumnManagerService 
                 BIColumnKey columnKey = BIDateColumnTool.generateHour(field);
                 BICubeHourColumn hourColumn = new BICubeHourColumn(discovery, hourLocation, hostDataColumn);
                 hostDataColumn.addSubColumns(hourColumn);
-                this.registerColumn(insertFieldRelationManager(hourColumn, columnKey),columnKey);
+                this.registerColumn(insertFieldRelationManager(hourColumn, columnKey), columnKey);
             } catch (Exception e) {
                 throw BINonValueUtils.beyondControl();
             }
@@ -225,12 +228,13 @@ public class BICubeTableColumnManager implements ICubeTableColumnManagerService 
                 BIColumnKey columnKey = BIDateColumnTool.generateMinute(field);
                 BICubeMinuteColumn minuteColumn = new BICubeMinuteColumn(discovery, minuteLocation, hostDataColumn);
                 hostDataColumn.addSubColumns(minuteColumn);
-                this.registerColumn(insertFieldRelationManager(minuteColumn, columnKey),columnKey);
+                this.registerColumn(insertFieldRelationManager(minuteColumn, columnKey), columnKey);
             } catch (Exception e) {
                 throw BINonValueUtils.beyondControl();
             }
         }
     }
+
     private void initialSecondColumn(ICubeFieldSource field, ITableKey tableKey, BICubeDateColumn hostDataColumn) {
         if (field.getFieldType() == DBConstant.COLUMN.DATE) {
             try {
@@ -239,12 +243,13 @@ public class BICubeTableColumnManager implements ICubeTableColumnManagerService 
                 BIColumnKey columnKey = BIDateColumnTool.generateSecond(field);
                 BICubeSecondColumn secondColumn = new BICubeSecondColumn(discovery, secondLocation, hostDataColumn);
                 hostDataColumn.addSubColumns(secondColumn);
-                this.registerColumn(insertFieldRelationManager(secondColumn, columnKey),columnKey);
+                this.registerColumn(insertFieldRelationManager(secondColumn, columnKey), columnKey);
             } catch (Exception e) {
                 throw BINonValueUtils.beyondControl();
             }
         }
     }
+
     private void initialMonthColumn(ICubeFieldSource field, ITableKey tableKey, BICubeDateColumn hostDataColumn) {
         if (field.getFieldType() == DBConstant.COLUMN.DATE) {
             try {
@@ -292,6 +297,7 @@ public class BICubeTableColumnManager implements ICubeTableColumnManagerService 
             }
         }
     }
+
     private void initialWeekNumberColumn(ICubeFieldSource field, ITableKey tableKey, BICubeDateColumn hostDataColumn) {
         if (field.getFieldType() == DBConstant.COLUMN.DATE) {
             try {
@@ -300,12 +306,13 @@ public class BICubeTableColumnManager implements ICubeTableColumnManagerService 
                 BIColumnKey columnKey = BIDateColumnTool.generateWeekNumber(field);
                 BICubeWeekNumberColumn weekNumberColumn = new BICubeWeekNumberColumn(discovery, weekNumberLocation, hostDataColumn);
                 hostDataColumn.addSubColumns(weekNumberColumn);
-                this.registerColumn(insertFieldRelationManager(weekNumberColumn, columnKey),columnKey);
+                this.registerColumn(insertFieldRelationManager(weekNumberColumn, columnKey), columnKey);
             } catch (Exception e) {
                 throw BINonValueUtils.beyondControl();
             }
         }
     }
+
     private void initialDayColumn(ICubeFieldSource field, ITableKey tableKey, BICubeDateColumn hostDataColumn) {
         if (field.getFieldType() == DBConstant.COLUMN.DATE) {
             try {
@@ -321,6 +328,7 @@ public class BICubeTableColumnManager implements ICubeTableColumnManagerService 
             }
         }
     }
+
     private void initialYearMonthDayHourColumn(ICubeFieldSource field, ITableKey tableKey, BICubeDateColumn hostDataColumn) {
         if (field.getFieldType() == DBConstant.COLUMN.DATE) {
             try {
@@ -335,6 +343,7 @@ public class BICubeTableColumnManager implements ICubeTableColumnManagerService 
             }
         }
     }
+
     private void initialYearMonthDayColumn(ICubeFieldSource field, ITableKey tableKey, BICubeDateColumn hostDataColumn) {
         if (field.getFieldType() == DBConstant.COLUMN.DATE) {
             try {
@@ -350,6 +359,7 @@ public class BICubeTableColumnManager implements ICubeTableColumnManagerService 
             }
         }
     }
+
     private void initialYearMonthColumn(ICubeFieldSource field, ITableKey tableKey, BICubeDateColumn hostDataColumn) {
         if (field.getFieldType() == DBConstant.COLUMN.DATE) {
             try {
@@ -364,6 +374,7 @@ public class BICubeTableColumnManager implements ICubeTableColumnManagerService 
             }
         }
     }
+
     private void initialYearMonthDayHourMinuteColumn(ICubeFieldSource field, ITableKey tableKey, BICubeDateColumn hostDataColumn) {
         if (field.getFieldType() == DBConstant.COLUMN.DATE) {
             try {
@@ -378,6 +389,7 @@ public class BICubeTableColumnManager implements ICubeTableColumnManagerService 
             }
         }
     }
+
     private void initialYearMonthDayHourMinuteSecondColumn(ICubeFieldSource field, ITableKey tableKey, BICubeDateColumn hostDataColumn) {
         if (field.getFieldType() == DBConstant.COLUMN.DATE) {
             try {
@@ -392,6 +404,7 @@ public class BICubeTableColumnManager implements ICubeTableColumnManagerService 
             }
         }
     }
+
     private void initialYearSeasonColumn(ICubeFieldSource field, ITableKey tableKey, BICubeDateColumn hostDataColumn) {
         if (field.getFieldType() == DBConstant.COLUMN.DATE) {
             try {
@@ -424,9 +437,8 @@ public class BICubeTableColumnManager implements ICubeTableColumnManagerService 
 
     @Override
     public void clear() {
-        Iterator<ICubeColumnEntityService> it = columnKey2ColumnMap.values().iterator();
-        while (it.hasNext()) {
-            it.next().clear();
+        for (ICubeColumnEntityService iCubeColumnEntityService : columnKey2ColumnMap.values()) {
+            iCubeColumnEntityService.clear();
         }
     }
 
@@ -438,17 +450,16 @@ public class BICubeTableColumnManager implements ICubeTableColumnManagerService 
 
     @Override
     public void forceReleaseWriter() {
-        Iterator<ICubeColumnEntityService> it = columnKey2ColumnMap.values().iterator();
-        while (it.hasNext()) {
-            it.next().forceReleaseWriter();
+        for (ICubeColumnEntityService iCubeColumnEntityService : columnKey2ColumnMap.values()) {
+            iCubeColumnEntityService.forceReleaseWriter();
         }
         columnKey2ColumnMap.clear();
     }
+
     @Override
     public void forceReleaseReader() {
-        Iterator<ICubeColumnEntityService> it = columnKey2ColumnMap.values().iterator();
-        while (it.hasNext()) {
-            it.next().forceReleaseReader();
+        for (ICubeColumnEntityService iCubeColumnEntityService : columnKey2ColumnMap.values()) {
+            iCubeColumnEntityService.forceReleaseReader();
         }
     }
 }

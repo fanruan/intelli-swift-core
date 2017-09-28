@@ -21,12 +21,13 @@ public class BITableRelationPath extends BIBasicRelationPath<BusinessTable, Busi
     public BITableRelationPath(BITableRelation[] relations) throws BITablePathConfusionException {
         super();
         BINonValueUtils.checkNull(relations);
-        for (int i = 0; i < relations.length; i++) {
-            addRelationAtTail(relations[i]);
+        for (BITableRelation relation : relations) {
+            addRelationAtTail(relation);
         }
     }
-    public boolean containsRelation(BITableRelation relation){
-        if (null!=relation) {
+
+    public boolean containsRelation(BITableRelation relation) {
+        if (null != relation) {
             return container.contains(relation);
         }
         return false;

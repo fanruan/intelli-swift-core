@@ -39,13 +39,13 @@ public class BICubeValueEntryGetter<T> implements ICubeValueEntryGetter {
         }
     }
 
-    private int getReverseRow(int row){
+    private int getReverseRow(int row) {
         try {
             return reverseRowGetter == null ? row : reverseRowGetter.getReverseIndex(row);
         } catch (BIResourceInvalidException e) {
-            BINonValueUtils.beyondControl(e);
+//            throw BINonValueUtils.beyondControl(e);
+            return NIOConstant.INTEGER.NULL_VALUE;
         }
-        return NIOConstant.INTEGER.NULL_VALUE;
     }
 
     private boolean isRelationIndex(List<BITableSourceRelation> relationList) {
@@ -55,7 +55,7 @@ public class BICubeValueEntryGetter<T> implements ICubeValueEntryGetter {
     @Override
     public GroupValueIndex getIndexByRow(int row) {
         try {
-            int groupRow  = getPositionOfGroupByRow(row);
+            int groupRow = getPositionOfGroupByRow(row);
             return getIndexByGroupRow(groupRow);
         } catch (Exception e) {
             BILoggerFactory.getLogger().error(e.getMessage(), e);
@@ -73,16 +73,16 @@ public class BICubeValueEntryGetter<T> implements ICubeValueEntryGetter {
     }
 
     public T getGroupValue(int groupRow) {
-        return  groupRow == NIOConstant.INTEGER.NULL_VALUE ? null : columnReaderService.getGroupObjectValue(groupRow);
+        return groupRow == NIOConstant.INTEGER.NULL_VALUE ? null : columnReaderService.getGroupObjectValue(groupRow);
     }
 
     @Override
     public CubeValueEntry getEntryByRow(int row) {
-        int groupRow  = NIOConstant.INTEGER.NULL_VALUE;
+        int groupRow = NIOConstant.INTEGER.NULL_VALUE;
         GroupValueIndex gvi = null;
         T value = null;
         try {
-            groupRow  = getPositionOfGroupByRow(row);
+            groupRow = getPositionOfGroupByRow(row);
             gvi = getIndexByGroupRow(groupRow);
             value = getGroupValue(groupRow);
         } catch (Exception e) {
@@ -106,7 +106,7 @@ public class BICubeValueEntryGetter<T> implements ICubeValueEntryGetter {
     @Override
     public int getPositionOfGroupByValue(Object value) {
         try {
-            return columnReaderService.getPositionOfGroupByGroupValue((T)value);
+            return columnReaderService.getPositionOfGroupByGroupValue((T) value);
         } catch (BIResourceInvalidException e) {
             BILoggerFactory.getLogger().error(e.getMessage(), e);
             return 0;

@@ -41,8 +41,8 @@ public class BITableSourceRelationPath extends BIBasicRelationPath<CubeTableSour
     public BITableSourceRelationPath(BITableSourceRelation[] relations) throws BITablePathConfusionException {
         super();
         BINonValueUtils.checkNull(relations);
-        for (int i = 0; i < relations.length; i++) {
-            addRelationAtTail(relations[i]);
+        for (BITableSourceRelation relation : relations) {
+            addRelationAtTail(relation);
         }
     }
 

@@ -1,21 +1,21 @@
 package com.finebi.cube.structure.table.property;
 
 import com.finebi.cube.ICubeConfiguration;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.data.ICubeResourceDiscovery;
 import com.finebi.cube.exception.BICubeResourceAbsentException;
 import com.finebi.cube.exception.BIResourceInvalidException;
-import com.finebi.cube.tools.BICubeConfigurationTool;
 import com.finebi.cube.location.BICubeResourceRetrieval;
 import com.finebi.cube.location.ICubeResourceLocation;
 import com.finebi.cube.location.ICubeResourceRetrievalService;
 import com.finebi.cube.structure.BITableKey;
 import com.finebi.cube.structure.ITableKey;
+import com.finebi.cube.tools.BICubeConfigurationTool;
 import com.finebi.cube.tools.BITableSourceTestTool;
 import com.finebi.cube.tools.DBFieldTestTool;
 import com.fr.bi.common.factory.BIFactoryHelper;
 import com.fr.bi.stable.data.db.BICubeFieldSource;
 import com.fr.bi.stable.data.db.ICubeFieldSource;
-import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.stable.utils.file.BIFileUtils;
 import com.fr.bi.stable.utils.program.BINonValueUtils;
 import com.fr.json.JSONObject;
@@ -80,15 +80,16 @@ public class BICubeTablePropertyTest extends TestCase {
             tableFields.add(field3);
         } catch (BIResourceInvalidException e) {
             BILoggerFactory.getLogger().error(e.getMessage(), e);
-            BINonValueUtils.beyondControl(e.getMessage(), e);
+            throw BINonValueUtils.beyondControl(e.getMessage(), e);
         } catch (Exception e) {
             BILoggerFactory.getLogger().error(e.getMessage(), e);
-            BINonValueUtils.beyondControl(e.getMessage(), e);
+            throw BINonValueUtils.beyondControl(e.getMessage(), e);
         }
 
         property.recordTableStructure(tableFields);
-        assertTrue(property.getFieldInfo().size()==6);
+        assertTrue(property.getFieldInfo().size() == 6);
     }
+
     public void testRowCountWriteAvailable() {
         synchronized (this.getClass()) {
             try {
@@ -145,15 +146,15 @@ public class BICubeTablePropertyTest extends TestCase {
 
                 long version = 10;
                 property.addVersion(version);
-                assertEquals(version,property.getCubeVersion());
+                assertEquals(version, property.getCubeVersion());
 
                 version = 100;
                 property.addVersion(version);
-                assertEquals(version,property.getCubeVersion());
+                assertEquals(version, property.getCubeVersion());
 
                 version = 1;
                 property.addVersion(version);
-                assertEquals(version,property.getCubeVersion());
+                assertEquals(version, property.getCubeVersion());
             } catch (Exception e) {
                 assertFalse(true);
             } finally {
