@@ -2,6 +2,7 @@ package com.fr.bi.cal.report.io;
 
 import com.fr.bi.cal.report.io.core.BIExcelExporterBlock;
 import com.fr.bi.cal.report.io.iterator.StreamCellCase;
+import com.fr.bi.cal.report.io.iterator.StreamPagedIterator;
 import com.fr.bi.cal.report.io.iterator.TableCellIterator;
 import com.fr.bi.cal.report.report.poly.BIPolyAnalyECBlock;
 import com.fr.io.exporter.excel.stream.StreamExcel2007Exporter;
@@ -51,6 +52,12 @@ public class BIExcel2007Exporter extends StreamExcel2007Exporter {
                             (SXSSFWorkbook) workbookWrapper.getWorkbook(), cellList, cellFormulaList, 0);
                     c++;
                 }
+            } else {
+                StreamPagedIterator pagedIterator = new StreamPagedIterator();
+                pagedIterator.finish();
+                this.innerExportReport(new BIExcelExporterBlock(innerReport[i], pagedIterator),
+                        book.getReportExportAttr(), book.getReportName(i),
+                        (SXSSFWorkbook) workbookWrapper.getWorkbook(), cellList, cellFormulaList, 0);
             }
 
         }
