@@ -16,7 +16,7 @@ import com.fr.stable.xml.XMLableReader;
 public class BIUser implements XMLable, Cloneable {
 
     private static final long serialVersionUID = 6224757609479019110L;
-    public static BIUser DEFALUT = new BIUser(-0l);
+    public static BIUser DEFAULT = new BIUser(-0L);
     protected BINumberIdentity userId;
 
     protected BIUser() {

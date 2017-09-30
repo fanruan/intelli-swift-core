@@ -1,6 +1,7 @@
 package com.fr.bi.cal.stable.relation.uselinkindex;
 
 import com.finebi.cube.api.ICubeColumnIndexReader;
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.relation.BITableSourceRelation;
 import com.fr.base.FRContext;
 import com.fr.bi.base.key.BIKey;
@@ -18,7 +19,6 @@ import com.fr.bi.stable.gvi.array.ICubeTableIndexReader;
 import com.fr.bi.stable.index.CubeGenerator;
 import com.fr.bi.stable.io.newio.NIOWriter;
 import com.fr.bi.stable.io.newio.SingleUserNIOReadManager;
-import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.stable.utils.code.BIPrintUtils;
 import com.fr.general.DateUtils;
 
@@ -31,7 +31,7 @@ import java.util.concurrent.Callable;
 /**
  * Created by GUY on 2015/4/3.
  */
-public class LinkColumnUseIndexLoader implements LinkIndexLoader, CubeGenerator, Callable {
+public class LinkColumnUseIndexLoader implements LinkIndexLoader, CubeGenerator, Callable<Object> {
 
     /**
      *

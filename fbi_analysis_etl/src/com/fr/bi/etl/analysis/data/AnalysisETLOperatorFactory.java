@@ -114,7 +114,7 @@ public class AnalysisETLOperatorFactory {
     }
 
     public static void createJSONByOperators(JSONObject jo, List<IETLOperator> operators) throws Exception {
-        if (operators.get(0).isAddColumnOprator()) {
+        if (operators.get(0).isAddColumnOperator()) {
             jo.put("etlType", Constants.ETL_TYPE.ADD_COLUMN);
             JSONObject operator = new JSONObject();
             JSONArray columns = new JSONArray();

@@ -1,17 +1,18 @@
 package com.fr.bi.field.target.calculator.cal.configure;
 
 import com.fr.base.FRContext;
-import com.fr.bi.report.result.BIXLeftNode;
 import com.fr.bi.field.target.target.cal.target.configure.BIConfiguredCalculateTarget;
 import com.fr.bi.report.key.TargetGettingKey;
 import com.fr.bi.report.key.XTargetGettingKey;
 import com.fr.bi.report.result.BINode;
+import com.fr.bi.report.result.BIXLeftNode;
 import com.fr.bi.stable.io.newio.NIOConstant;
 import com.fr.bi.stable.utils.BICollectionUtils;
 import com.fr.bi.stable.utils.CubeBaseUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Callable;
 
 /**
  * Created by 小灰灰 on 2015/7/2.
@@ -26,7 +27,7 @@ public class SumOfAboveCalculator extends AbstractConfigureCalculator {
 
     @Override
     public void calCalculateTarget(BINode node) {
-       cal(node, null);
+        cal(node, null);
     }
 
     @Override
@@ -55,7 +56,7 @@ public class SumOfAboveCalculator extends AbstractConfigureCalculator {
             }
         }
 
-        List nodeList = new ArrayList();
+        List<Callable<Object>> nodeList = new ArrayList<Callable<Object>>();
         BINode cursor_node = tempNode;
         while (cursor_node != null) {
             if (shouldCalculate(cursor_node)) {
@@ -70,7 +71,7 @@ public class SumOfAboveCalculator extends AbstractConfigureCalculator {
         }
     }
 
-    private class RankDealWith implements java.util.concurrent.Callable {
+    private class RankDealWith implements Callable<Object> {
         private BINode rank_node;
         private XTargetGettingKey key;
 

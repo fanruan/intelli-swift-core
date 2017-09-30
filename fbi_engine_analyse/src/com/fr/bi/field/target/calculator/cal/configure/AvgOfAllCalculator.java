@@ -18,17 +18,13 @@ public class AvgOfAllCalculator extends SummaryOfAllCalculator {
     }
 
     @Override
-    public Callable createNodeDealWith(BINode node, XTargetGettingKey key) {
+    public Callable<Object> createNodeDealWith(BINode node, XTargetGettingKey key) {
         return new RankDealWith(node, key);
     }
 
-    private class RankDealWith implements Callable {
-        private BINode rank_node;
-        private XTargetGettingKey key;
-
-        public RankDealWith(BINode node, XTargetGettingKey key) {
-            this.rank_node = node;
-            this.key = key;
+    private class RankDealWith extends AbstractRankDealWith {
+        RankDealWith(BINode node, XTargetGettingKey key) {
+            super(node, key);
         }
 
         @Override
@@ -48,7 +44,7 @@ public class AvgOfAllCalculator extends SummaryOfAllCalculator {
             }
             cursor_node = temp_node;
             if (count > 0) {
-                Double value = new Double(sum / count);
+                Double value = sum / count;
                 while (isNotEnd(cursor_node, deep)) {
                     cursor_node.setSummaryValue(getTargetGettingKey(key), value);
                     cursor_node = cursor_node.getSibling();
@@ -57,7 +53,8 @@ public class AvgOfAllCalculator extends SummaryOfAllCalculator {
             return null;
         }
 
-        private boolean isNotEnd(BINode node, int deep) {
+        @Override
+        boolean isNotEnd(BINode node, int deep) {
             if (node == null) {
                 return false;
             }

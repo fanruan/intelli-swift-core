@@ -1,10 +1,10 @@
 package com.fr.bi.cal.analyze.report.report.widget.tree;
 
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.cal.analyze.executor.paging.Paging;
 import com.fr.bi.cal.analyze.report.report.widget.TreeWidget;
 import com.fr.bi.cal.analyze.session.BISession;
 import com.fr.bi.stable.utils.CubeBaseUtils;
-import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.stable.utils.program.BIPhoneticismUtils;
 import com.fr.general.ComparatorUtils;
 import com.fr.json.JSONArray;
@@ -13,6 +13,7 @@ import com.fr.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Callable;
 
 /**
  * Created by roy on 16/4/20.
@@ -75,7 +76,7 @@ public class GetSearchTreeNodeExecutor extends AbstractTreeNodeExecutor {
 
         List<String> output = new ArrayList<String>();
 
-        List threadList = new ArrayList();
+        List<Callable<Object>> threadList = new ArrayList<Callable<Object>>();
         for (i = start; i < vl.size() && i < start + getRows(); i++) {
             threadList.add(new NodeSearch(result, vl.get(i), selectedValues, keyword, String.valueOf(i + 1), deep, output));
         }
@@ -139,11 +140,11 @@ public class GetSearchTreeNodeExecutor extends AbstractTreeNodeExecutor {
             if (isMatch(value)) {
                 boolean checked = isAllSelected || isSelected(parents, value);
                 boolean halfChecked = !isAllSelected && isHalf(parents, value);
-                createOneJson(parents, getHTMLName(value), value, getPID(id), id, deep != this.deep, false, checked, halfChecked,halfChecked, true);
-                return new Status(true, checked,halfChecked);
+                createOneJson(parents, getHTMLName(value), value, getPID(id), id, deep != this.deep, false, checked, halfChecked, halfChecked, true);
+                return new Status(true, checked, halfChecked);
             }
             if (deep >= this.deep) {
-                return new Status(false, false,false);
+                return new Status(false, false, false);
             }
             String[] newParents = new String[parents.length + 1];
             for (int i = 0; i < parents.length; i++) {
@@ -164,16 +165,16 @@ public class GetSearchTreeNodeExecutor extends AbstractTreeNodeExecutor {
                 }
                 if (status.finded) {
                     can = true;
-                    if((!status.checked ||status.halfChecked)){
+                    if ((!status.checked || status.halfChecked)) {
                         halfChecked = true;
                     }
                 }
             }
             if (can) {
                 checked = isCurAllSelected || (isSelected(parents, value) && checked);
-                createOneJson(parents, value, value, getPID(id), id, true, true, checked, false, halfChecked,false);
+                createOneJson(parents, value, value, getPID(id), id, true, true, checked, false, halfChecked, false);
             }
-            return new Status(can, checked,halfChecked);
+            return new Status(can, checked, halfChecked);
         }
 
         public String getPID(String id) {
@@ -324,7 +325,7 @@ public class GetSearchTreeNodeExecutor extends AbstractTreeNodeExecutor {
                     obj.put("isParent", isParent);
                     obj.put("open", isOpen);
                     obj.put("checked", checked);
-                    obj.put("half",halfChecked);
+                    obj.put("half", halfChecked);
                     obj.put("halfCheck", half);
                     obj.put("flag", flag);
                     result.put(obj);
@@ -338,7 +339,7 @@ public class GetSearchTreeNodeExecutor extends AbstractTreeNodeExecutor {
         public boolean checked = false;
         public boolean halfChecked = false;
 
-        public Status(boolean finded, boolean checked,boolean halfChecked) {
+        public Status(boolean finded, boolean checked, boolean halfChecked) {
             this.finded = finded;
             this.checked = checked;
             this.halfChecked = halfChecked;

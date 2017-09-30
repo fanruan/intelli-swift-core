@@ -1,10 +1,10 @@
 package com.fr.bi.base;
 
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.base.annotation.BICoreField;
 import com.fr.bi.common.BICoreService;
 import com.fr.bi.common.persistent.BIBeanWrapper;
 import com.fr.bi.exception.BIAmountLimitUnmetException;
-import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.stable.utils.program.BITypeUtils;
 
 import javax.activation.UnsupportedDataTypeException;
@@ -40,9 +40,7 @@ public class BICoreGenerator implements BICoreService {
 
     private void generateBICore() {
         targetCore = new BIBasicCore();
-        Iterator<Object> it = extractCoreField().iterator();
-        while (it.hasNext()) {
-            Object attribute = it.next();
+        for (Object attribute : extractCoreField()) {
             try {
                 targetCore.registerAttribute(attribute);
             } catch (Exception ignore) {

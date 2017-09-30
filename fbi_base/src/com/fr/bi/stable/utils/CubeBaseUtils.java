@@ -1,5 +1,6 @@
 package com.fr.bi.stable.utils;
 
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.base.FRContext;
 import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.bi.stable.gvi.GroupValueIndex;
@@ -8,6 +9,10 @@ import com.fr.general.ComparatorUtils;
 import java.io.File;
 import java.util.Collection;
 import java.util.List;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 /**
  * Created by 小灰灰 on 2014/9/29.
@@ -17,20 +22,18 @@ public class CubeBaseUtils {
     public static final String JDK_TYPE = System.getProperty("sun.arch.data.model");
     public static final boolean ISX86_32JDK = ComparatorUtils.equals(JDK_TYPE, "32");
 
-    public static int AVAILABLEPROCESSORS = Runtime.getRuntime().availableProcessors();
-    public static int THREADPOOLSIZE = Math.max(1, AVAILABLEPROCESSORS) * 2;
+    public static final int AVAILABLE_PROCESSORS = Runtime.getRuntime().availableProcessors();
+    public static final int THREAD_POOL_SIZE = Math.max(1, AVAILABLE_PROCESSORS) * 2;
 
     static {
         if (ISX86_32JDK) {
-            String info = "Warring：please use 64-bit JDK";
-            FRContext.getLogger().info(info);
-            System.out.println(info);
+            BILoggerFactory.getLogger(CubeBaseUtils.class).warn("Warning：please use 64-bit JDK");
         }
     }
 
-    private final static java.util.concurrent.ExecutorService CUBE_EX = java.util.concurrent.Executors.newFixedThreadPool(THREADPOOLSIZE);
+    private final static ExecutorService CUBE_EX = Executors.newFixedThreadPool(THREAD_POOL_SIZE);
 
-    private final static java.util.concurrent.ExecutorService CALCULATOR_EX = java.util.concurrent.Executors.newFixedThreadPool(THREADPOOLSIZE);
+    private final static ExecutorService CALCULATOR_EX = Executors.newFixedThreadPool(THREAD_POOL_SIZE);
 
 
     /**
@@ -62,7 +65,7 @@ public class CubeBaseUtils {
      * @return list集合
      * @throws InterruptedException
      */
-    public static List invokeCalculatorThreads(Collection c) throws InterruptedException {
+    public static List<Future<Object>> invokeCalculatorThreads(Collection<? extends Callable<Object>> c) throws InterruptedException {
         return CALCULATOR_EX.invokeAll(c);
     }
 
@@ -73,7 +76,7 @@ public class CubeBaseUtils {
      * @return list集合
      * @throws InterruptedException
      */
-    public static List invokeCubeThreads(Collection c) throws InterruptedException {
+    public static List<Future<Object>> invokeCubeThreads(Collection<? extends Callable<Object>> c) throws InterruptedException {
         return CUBE_EX.invokeAll(c);
     }
 

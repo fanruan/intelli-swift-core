@@ -15,7 +15,11 @@ import com.finebi.cube.conf.utils.BILogHelper;
 import com.finebi.cube.exception.BICubeIndexException;
 import com.finebi.cube.gen.oper.BIFieldPathIndexBuilder;
 import com.finebi.cube.relation.BITableSourceRelation;
-import com.finebi.cube.structure.*;
+import com.finebi.cube.structure.BICubeTablePath;
+import com.finebi.cube.structure.BITableKey;
+import com.finebi.cube.structure.Cube;
+import com.finebi.cube.structure.CubeRelationEntityGetterService;
+import com.finebi.cube.structure.CubeTableEntityGetterService;
 import com.finebi.cube.structure.column.BIColumnKey;
 import com.finebi.cube.structure.column.CubeColumnReaderService;
 import com.finebi.cube.utils.BICubePathUtils;
@@ -35,7 +39,11 @@ import com.fr.bi.stable.utils.program.BINonValueUtils;
 import com.fr.general.ComparatorUtils;
 import com.fr.stable.collections.array.IntArray;
 
-import java.util.*;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -60,11 +68,9 @@ public class BICubeTableAdapter implements ICubeTableService {
         this.cube = cube;
         tableKey = new BITableKey(tableSource.getSourceID());
         primaryTable = cube.getCubeTable(tableKey);
-        Iterator<Set<CubeTableSource>> it = tableSource.createGenerateTablesMap().values().iterator();
-        while (it.hasNext()) {
-            Iterator<CubeTableSource> tableSourceIterator = it.next().iterator();
-            while (tableSourceIterator.hasNext()) {
-                initial(tableSourceIterator.next());
+        for (Set<CubeTableSource> cubeTableSources : tableSource.createGenerateTablesMap().values()) {
+            for (CubeTableSource cubeTableSource : cubeTableSources) {
+                initial(cubeTableSource);
             }
         }
         initData();
@@ -147,9 +153,7 @@ public class BICubeTableAdapter implements ICubeTableService {
             if (!isColumnInitial()) {
                 Map<BIKey, ICubeFieldSource> columnSetTemp = new ConcurrentHashMap<BIKey, ICubeFieldSource>();
                 List<ICubeFieldSource> list = primaryTable.getFieldInfo();
-                Iterator<ICubeFieldSource> tableFieldIt = list.iterator();
-                while (tableFieldIt.hasNext()) {
-                    ICubeFieldSource field = tableFieldIt.next();
+                for (ICubeFieldSource field : list) {
                     columnSetTemp.put(getColumnIndex(field.getFieldName()), field);
                 }
                 columnSet = columnSetTemp;
@@ -308,39 +312,56 @@ public class BICubeTableAdapter implements ICubeTableService {
         String columnSubType;
         switch (groupType) {
             case BIReportConstant.GROUP.Y:
-                columnSubType = BIColumnKey.DATA_SUB_TYPE_YEAR; break;
+                columnSubType = BIColumnKey.DATA_SUB_TYPE_YEAR;
+                break;
             case BIReportConstant.GROUP.M:
-                columnSubType = BIColumnKey.DATA_SUB_TYPE_MONTH; break;
+                columnSubType = BIColumnKey.DATA_SUB_TYPE_MONTH;
+                break;
             case BIReportConstant.GROUP.S:
-                columnSubType = BIColumnKey.DATA_SUB_TYPE_SEASON; break;
+                columnSubType = BIColumnKey.DATA_SUB_TYPE_SEASON;
+                break;
             case BIReportConstant.GROUP.W:
-                columnSubType = BIColumnKey.DATA_SUB_TYPE_WEEK; break;
+                columnSubType = BIColumnKey.DATA_SUB_TYPE_WEEK;
+                break;
             case BIReportConstant.GROUP.D:
-                columnSubType = BIColumnKey.DATA_SUB_TYPE_DAY; break;
+                columnSubType = BIColumnKey.DATA_SUB_TYPE_DAY;
+                break;
             case BIReportConstant.GROUP.YMD:
-                columnSubType = BIColumnKey.DATA_SUB_TYPE_YEAR_MONTH_DAY; break;
+                columnSubType = BIColumnKey.DATA_SUB_TYPE_YEAR_MONTH_DAY;
+                break;
             case BIReportConstant.GROUP.MD:
-                columnSubType = BIColumnKey.DATA_SUB_TYPE_DAY; break;
+                columnSubType = BIColumnKey.DATA_SUB_TYPE_DAY;
+                break;
             case BIReportConstant.GROUP.WEEK_COUNT:
-                columnSubType = BIColumnKey.DATA_SUB_TYPE_WEEKNUMBER; break;
+                columnSubType = BIColumnKey.DATA_SUB_TYPE_WEEKNUMBER;
+                break;
             case BIReportConstant.GROUP.HOUR:
-                columnSubType = BIColumnKey.DATA_SUB_TYPE_HOUR; break;
+                columnSubType = BIColumnKey.DATA_SUB_TYPE_HOUR;
+                break;
             case BIReportConstant.GROUP.MINUTE:
-                columnSubType = BIColumnKey.DATA_SUB_TYPE_MINUTE; break;
+                columnSubType = BIColumnKey.DATA_SUB_TYPE_MINUTE;
+                break;
             case BIReportConstant.GROUP.SECOND:
-                columnSubType = BIColumnKey.DATA_SUB_TYPE_SECOND; break;
+                columnSubType = BIColumnKey.DATA_SUB_TYPE_SECOND;
+                break;
             case BIReportConstant.GROUP.YS:
-                columnSubType = BIColumnKey.DATA_SUB_TYPE_YEAR_SEASON; break;
+                columnSubType = BIColumnKey.DATA_SUB_TYPE_YEAR_SEASON;
+                break;
             case BIReportConstant.GROUP.YM:
-                columnSubType = BIColumnKey.DATA_SUB_TYPE_YEAR_MONTH; break;
+                columnSubType = BIColumnKey.DATA_SUB_TYPE_YEAR_MONTH;
+                break;
             case BIReportConstant.GROUP.YW:
-                columnSubType = BIColumnKey.DATA_SUB_TYPE_YEAR_WEEK_NUMBER; break;
+                columnSubType = BIColumnKey.DATA_SUB_TYPE_YEAR_WEEK_NUMBER;
+                break;
             case BIReportConstant.GROUP.YMDH:
-                columnSubType = BIColumnKey.DATA_SUB_TYPE_YEAR_MONTH_DAY_HOUR; break;
+                columnSubType = BIColumnKey.DATA_SUB_TYPE_YEAR_MONTH_DAY_HOUR;
+                break;
             case BIReportConstant.GROUP.YMDHM:
-                columnSubType = BIColumnKey.DATA_SUB_TYPE_YEAR_MONTH_DAY_HOUR_MINUTE; break;
+                columnSubType = BIColumnKey.DATA_SUB_TYPE_YEAR_MONTH_DAY_HOUR_MINUTE;
+                break;
             case BIReportConstant.GROUP.YMDHMS:
-                columnSubType = BIColumnKey.DATA_SUB_TYPE_YEAR_MONTH_DAY_HOUR_MINUTE_SECOND; break;
+                columnSubType = BIColumnKey.DATA_SUB_TYPE_YEAR_MONTH_DAY_HOUR_MINUTE_SECOND;
+                break;
             default:
                 throw BINonValueUtils.beyondControl();
         }
@@ -392,9 +413,7 @@ public class BICubeTableAdapter implements ICubeTableService {
 
     private ICubeFieldSource getDBField(BIKey biKey) throws BIKeyAbsentException {
         Map<BIKey, ICubeFieldSource> map = getColumns();
-        Iterator<BIKey> it = map.keySet().iterator();
-        while (it.hasNext()) {
-            BIKey key = it.next();
+        for (BIKey key : map.keySet()) {
             if (ComparatorUtils.equals(key.getKey(), biKey.getKey())) {
                 return map.get(key);
             }

@@ -1,14 +1,13 @@
 package com.fr.bi.base;
 
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.exception.BIAmountLimitUnmetException;
 import com.fr.bi.stable.utils.algorithem.BIMD5Utils;
-import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.stable.EncodeConstants;
 
 import javax.activation.UnsupportedDataTypeException;
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
-import java.util.Iterator;
 
 /**
  * 替代原有的MD5，
@@ -40,9 +39,8 @@ public class BIBasicCore extends BICore {
     protected BIBasicIdentity computeValue() {
         MessageDigest digest = BIMD5Utils.getMessageDigest();
         digest.update("".getBytes());
-        Iterator<Object> it = coreAttributes.iterator();
-        while (it.hasNext()) {
-            String str = getObjectStringValue(it.next());
+        for (Object coreAttribute : coreAttributes) {
+            String str = getObjectStringValue(coreAttribute);
             //pony MD5要指定编码
             try {
                 digest.update(str.getBytes(EncodeConstants.ENCODING_UTF_8));

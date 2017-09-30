@@ -1,17 +1,18 @@
 package com.fr.bi.field.target.calculator.cal.configure;
 
 import com.fr.base.FRContext;
-import com.fr.bi.report.result.BIXLeftNode;
 import com.fr.bi.field.target.target.cal.target.configure.BIConfiguredCalculateTarget;
-import com.fr.bi.report.key.XTargetGettingKey;
-import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.report.key.TargetGettingKey;
+import com.fr.bi.report.key.XTargetGettingKey;
 import com.fr.bi.report.result.BINode;
+import com.fr.bi.report.result.BIXLeftNode;
+import com.fr.bi.stable.constant.BIReportConstant;
 import com.fr.bi.stable.utils.CubeBaseUtils;
 import com.fr.general.ComparatorUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Callable;
 
 /**
  * Created by 小灰灰 on 2015/7/2.
@@ -88,7 +89,7 @@ public class PeriodConfigureCalculator extends AbstractConfigureCalculator {
         cal(node, key);
     }
 
-    private class RankDealWith implements java.util.concurrent.Callable {
+    private class RankDealWith implements Callable<Object> {
         private BINode last_node;
         private BINode current_node;
         private XTargetGettingKey key;
