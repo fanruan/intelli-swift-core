@@ -644,6 +644,9 @@ public class BIReportConstant {
         public static final int DATA_MISS = 62400002;
         public static final int NO_AUTHORITY = 62400003;
         public static final int NO_DATA = 62400004;
+
+        public static final int LOGIN_FAILED = 11300007;
+        public static final int SESSION_TIME_OUT = 11300008;
 //        public static final int LOGIN_TIME_OUT = 62400005;
 //        public static final int SESSION_TIME_OUT = 62400006;
     }
