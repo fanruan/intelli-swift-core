@@ -25,6 +25,8 @@ public class BIDateUtils {
 
     public static final Integer MAX_MONTH = 11;
 
+    public static final long MILLSIONOFWEEK = 7 * 86400000;
+
     /**
      * 生成cube开始生成时间
      *
@@ -303,5 +305,32 @@ public class BIDateUtils {
             }
         }
         return null;
+    }
+
+    /**
+     * 获取年周数的
+     *
+     * @return
+     */
+    public static int getWeekNumber(long t) {
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(t);
+        int week = calendar.get(Calendar.DAY_OF_WEEK);
+        int month = calendar.get(Calendar.MONTH);
+        int day = calendar.get(Calendar.DAY_OF_MONTH);
+        if (month == 0 && day <= week) {
+            return 1;
+        }
+        calendar.set(Calendar.DAY_OF_MONTH, day - week);
+        long temp = calendar.getTimeInMillis();
+        calendar.set(Calendar.MONTH, 0);
+        calendar.set(Calendar.DAY_OF_MONTH, 1);
+        double o = temp / MILLSIONOFWEEK;
+        int offset = (int) Math.floor(o);
+        if (calendar.get(Calendar.DAY_OF_WEEK) > 0) {
+            offset++;
+        }
+        return offset;
     }
 }
