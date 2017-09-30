@@ -96,7 +96,10 @@ public class MergeIterator implements Iterator<MetricMergeResult> {
                     entries[index] = null;
                 }
             }
-            while (entries[index] != null && entries[index].getValue().isAllEmpty());
+            /*
+            * BI-10179 GVI空值问题
+            * */
+            while (entries[index] != null && entries[index].getValue() != null && entries[index].getValue().isAllEmpty());
         }
     }
 

@@ -6,6 +6,7 @@ import com.fr.bi.stable.data.db.ICubeFieldSource;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.engine.cal.DimensionIterator;
 import com.fr.bi.stable.engine.index.key.IndexKey;
+import com.fr.bi.stable.gvi.GVIFactory;
 import com.fr.bi.stable.gvi.GroupValueIndex;
 import com.fr.bi.stable.gvi.traversal.SingleRowTraversalAction;
 import com.fr.bi.report.result.DimensionCalculator;
@@ -75,7 +76,11 @@ public class DirectToDimensionRelationIterator implements DimensionIterator {
 
             @Override
             public GroupValueIndex getValue() {
-                return size > 0 ? gvi : null;
+                            /*
+            * BI-10179
+            * */
+                return size > 0 ? gvi : GVIFactory.createAllEmptyIndexGVI();
+
             }
 
             @Override
