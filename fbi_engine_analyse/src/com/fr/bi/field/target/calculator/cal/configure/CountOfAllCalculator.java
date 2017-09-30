@@ -18,17 +18,13 @@ public class CountOfAllCalculator extends SummaryOfAllCalculator {
     }
 
     @Override
-    public Callable createNodeDealWith(BINode node, XTargetGettingKey key) {
+    public Callable<Object> createNodeDealWith(BINode node, XTargetGettingKey key) {
         return new RankDealWith(node, key);
     }
 
-    private class RankDealWith implements Callable {
-        private BINode rank_node;
-        private XTargetGettingKey key;
-
-        private RankDealWith(BINode node, XTargetGettingKey key) {
-            this.rank_node = node;
-            this.key = key;
+    private class RankDealWith extends AbstractRankDealWith {
+        RankDealWith(BINode node, XTargetGettingKey key) {
+            super(node, key);
         }
 
         @Override
@@ -42,7 +38,7 @@ public class CountOfAllCalculator extends SummaryOfAllCalculator {
                 cursor_node = cursor_node.getSibling();
             }
             cursor_node = temp_node;
-            Integer value = new Integer(count);
+            Integer value = count;
             while (isNotEnd(cursor_node, deep)) {
                 cursor_node.setSummaryValue(getTargetGettingKey(key), value);
                 cursor_node = cursor_node.getSibling();
@@ -50,7 +46,8 @@ public class CountOfAllCalculator extends SummaryOfAllCalculator {
             return null;
         }
 
-        private boolean isNotEnd(BINode node, int deep) {
+        @Override
+        boolean isNotEnd(BINode node, int deep) {
             if (node == null) {
                 return false;
             }

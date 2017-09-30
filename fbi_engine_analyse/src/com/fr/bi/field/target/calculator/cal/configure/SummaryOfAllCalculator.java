@@ -1,11 +1,11 @@
 package com.fr.bi.field.target.calculator.cal.configure;
 
 import com.finebi.cube.common.log.BILoggerFactory;
-import com.fr.bi.report.result.BIXLeftNode;
 import com.fr.bi.field.target.target.cal.target.configure.BIConfiguredCalculateTarget;
 import com.fr.bi.report.key.TargetGettingKey;
 import com.fr.bi.report.key.XTargetGettingKey;
 import com.fr.bi.report.result.BINode;
+import com.fr.bi.report.result.BIXLeftNode;
 import com.fr.bi.stable.utils.CubeBaseUtils;
 
 import java.util.ArrayList;
@@ -37,9 +37,6 @@ public abstract class SummaryOfAllCalculator extends AbstractConfigureCalculator
         BINode tempNode = node;
         //从第几个纬度开始计算
         int calDeep = start_group == 0 ? 0 : deep - start_group;
-        /**
-         *
-         */
 
         for (int i = 0; i < calDeep; i++) {
             if (tempNode.getFirstChild() == null) {
@@ -63,7 +60,7 @@ public abstract class SummaryOfAllCalculator extends AbstractConfigureCalculator
             }
         }
 
-        List nodeList = new ArrayList();
+        List<Callable<Object>> nodeList = new ArrayList<Callable<Object>>();
         BINode cursor_node = tempNode;
         while (cursor_node != null) {
             if (shouldCalculate(cursor_node)) {
@@ -83,7 +80,19 @@ public abstract class SummaryOfAllCalculator extends AbstractConfigureCalculator
         cal(node, key);
     }
 
-    public abstract Callable createNodeDealWith(BINode node, XTargetGettingKey key);
+    abstract class AbstractRankDealWith implements Callable<Object> {
+        BINode rank_node;
+        XTargetGettingKey key;
+
+        AbstractRankDealWith(BINode node, XTargetGettingKey key) {
+            this.rank_node = node;
+            this.key = key;
+        }
+
+        abstract boolean isNotEnd(BINode node, int deep);
+    }
+
+    public abstract Callable<Object> createNodeDealWith(BINode node, XTargetGettingKey key);
 
     protected BINode getFirstCalNode(BINode rank_node) {
         BINode temp_node = rank_node;

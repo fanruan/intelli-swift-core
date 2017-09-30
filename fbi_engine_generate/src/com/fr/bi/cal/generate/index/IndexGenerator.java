@@ -1,26 +1,31 @@
 package com.fr.bi.cal.generate.index;
 
+import com.finebi.cube.common.log.BILoggerFactory;
 import com.finebi.cube.conf.CubeGenerationManager;
 import com.fr.bi.base.BIUser;
 import com.fr.bi.cal.loader.CubeGeneratingTableIndexLoader;
 import com.fr.bi.cal.stable.cube.file.TableCubeFile;
-import com.fr.bi.cal.stable.index.*;
+import com.fr.bi.cal.stable.index.AbstractIndexGenerator;
+import com.fr.bi.cal.stable.index.BeforeIndexGenerator;
+import com.fr.bi.cal.stable.index.FinishIndexGenerator;
+import com.fr.bi.cal.stable.index.GroupIndexGenerator;
+import com.fr.bi.cal.stable.index.SimpleIndexGenerator;
 import com.fr.bi.conf.log.BIRecord;
 import com.fr.bi.conf.provider.BIConfigureManagerCenter;
 import com.fr.bi.stable.data.source.CubeTableSource;
 import com.fr.bi.stable.index.CubeGenerator;
 import com.fr.bi.stable.log.CubeGenerateStatusProvider;
-import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.bi.util.BIConfigurePathUtils;
 import com.fr.general.DateUtils;
 import com.fr.stable.StringUtils;
 
 import java.util.Arrays;
+import java.util.concurrent.Callable;
 
 /**
  * Created by GUY on 2015/3/13.
  */
-public class IndexGenerator implements CubeGenerator, java.util.concurrent.Callable<Object>, CubeGenerateStatusProvider {
+public class IndexGenerator implements CubeGenerator, Callable<Object>, CubeGenerateStatusProvider {
 
     private static final long serialVersionUID = -128732121637843698L;
     protected CubeTableSource source;

@@ -18,17 +18,13 @@ public class MinOfAllCalculator extends SummaryOfAllCalculator {
     }
 
     @Override
-    public Callable createNodeDealWith(BINode node, XTargetGettingKey key) {
+    public Callable<Object> createNodeDealWith(BINode node, XTargetGettingKey key) {
         return new RankDealWith(node, key);
     }
 
-    private class RankDealWith implements Callable {
-        private BINode rank_node;
-        private XTargetGettingKey key;
-
-        private RankDealWith(BINode node, XTargetGettingKey key) {
-            this.rank_node = node;
-            this.key = key;
+    private class RankDealWith extends AbstractRankDealWith {
+        RankDealWith(BINode node, XTargetGettingKey key) {
+            super(node, key);
         }
 
         @Override
@@ -56,7 +52,8 @@ public class MinOfAllCalculator extends SummaryOfAllCalculator {
             return null;
         }
 
-        private boolean isNotEnd(BINode node, int deep) {
+        @Override
+        boolean isNotEnd(BINode node, int deep) {
             if (node == null) {
                 return false;
             }
