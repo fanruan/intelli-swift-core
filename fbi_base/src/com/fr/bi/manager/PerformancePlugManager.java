@@ -82,6 +82,7 @@ public class PerformancePlugManager implements PerformancePlugManagerInterface {
     private boolean isForceWriter = false;
     private boolean useSingleReader = false;
     private boolean useFineIO = false;
+    private boolean useNumberType = false;
 
 
     //cube单个文件的最大的size
@@ -642,6 +643,10 @@ public class PerformancePlugManager implements PerformancePlugManagerInterface {
 
     public boolean isUseFineIO() {
         return useFineIO;
+    }
+
+    public boolean isUseNumberType() {
+        return useNumberType;
     }
 
     public void setUpdatedParamMap(Map<String, String> updatedParamMap) {
