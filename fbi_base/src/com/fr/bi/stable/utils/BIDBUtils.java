@@ -9,6 +9,7 @@ import com.fr.bi.conf.base.datasource.BIConnectOptimizationUtilsFactory;
 import com.fr.bi.conf.base.datasource.BIConnectionManager;
 import com.fr.bi.manager.DBCPConnectionPlugInterface;
 import com.fr.bi.manager.DBCPConnectionPlugManager;
+import com.fr.bi.manager.PerformancePlugManager;
 import com.fr.bi.stable.constant.DBConstant;
 import com.fr.bi.stable.data.db.BIDBTableField;
 import com.fr.bi.stable.data.db.DistinctColumnSelect;
@@ -229,7 +230,7 @@ public class BIDBUtils {
      * @return
      */
     private static int getTypeByColumn_size(int column_size) {
-        if (column_size < MAX_LONG_COLUMN_SIZE) {
+        if (column_size < MAX_LONG_COLUMN_SIZE || PerformancePlugManager.getInstance().isUseNumberType()) {
             return DBConstant.CLASS.LONG;
         } else {
             return DBConstant.CLASS.STRING;
