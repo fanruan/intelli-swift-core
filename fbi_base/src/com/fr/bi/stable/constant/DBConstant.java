@@ -265,5 +265,6 @@ public class DBConstant {
         public static final String IS_FORCE_WRITER = "IsForceWriter";
         public static final String DEPLOY_MODE_SELECT_SIZE = "DeployModeSelectSize";
         public static final String EXTREME_CONCURRENCY = "ExtremeConcurrency";
+
     }
 }
