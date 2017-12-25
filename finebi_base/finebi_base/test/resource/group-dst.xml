@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?><Groups>
+<groups>
+<Group>
+<packages><![CDATA[["aaa","bbb"]]]></packages>
+<initTime>123456789</initTime>
+<updateTime>123456789</updateTime>
+<id>1234567</id>
+<name>分组1</name>
+<creator>-999</creator>
+</Group>
+</groups>
+</Groups>
