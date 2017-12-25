@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<DesiginSetting>
+	<initTime>1234567</initTime>
+	<updateTime>123456</updateTime>
+	<name>新建组件</name>
+	<widgetMap>
+		<f1adfasf class="com.miniengine.base.data.TableWidget">
+			<widgetId>adfb</widgetId>
+			<initTime>9887444</initTime>
+			<widgetName>组件1</widgetName>
+		</f1adfasf>
+		<f1adfasf class="com.miniengine.base.data.DetailWidget">
+			<widgetId>adfb</widgetId>
+			<initTime>678293</initTime>
+			<widgetName>组件2</widgetName>
+		</f1adfasf>
+	</widgetMap>
+</DesiginSetting>
