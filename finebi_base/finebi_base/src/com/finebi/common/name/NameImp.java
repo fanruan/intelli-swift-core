@@ -1,6 +1,5 @@
 package com.finebi.common.name;
 
-import com.fr.bi.stable.utils.program.BINonValueUtils;
 import com.fr.general.ComparatorUtils;
 
 /**
@@ -15,7 +14,6 @@ public class NameImp implements Name {
     public static final String SEPARATOR = "/";
 
     public NameImp(String selfNameValue, NameProvider parentName) {
-        BINonValueUtils.checkNull(selfNameValue);
         //字段名称可能为空字符串
         checkName(selfNameValue);
         this.selfNameValue = selfNameValue;
@@ -24,7 +22,6 @@ public class NameImp implements Name {
 
     private void checkName(String selfNameValue) {
         if ("".equals(selfNameValue)) {
-            throw BINonValueUtils.beyondControl("The Name value can't be empty");
         }
     }
 
@@ -47,7 +44,6 @@ public class NameImp implements Name {
             sb.append(SEPARATOR);
             sb.append(selfNameValue);
         } else {
-            throw BINonValueUtils.beyondControl("the name:" + selfNameValue + ". Parent's provider has null name");
         }
         return sb.toString();
     }
