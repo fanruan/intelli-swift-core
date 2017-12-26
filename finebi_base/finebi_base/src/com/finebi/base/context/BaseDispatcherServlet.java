@@ -1,11 +1,12 @@
 package com.finebi.base.context;
 
-import com.finebi.springframework.beans.factory.support.RootBeanDefinition;
-import com.finebi.springframework.web.context.WebApplicationContext;
-import com.finebi.springframework.web.servlet.DispatcherServlet;
-import com.finebi.springframework.web.servlet.mvc.method.annotation.ExceptionHandlerExceptionResolver;
-import com.finebi.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter;
-import com.finebi.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
+
+import com.fr.third.springframework.beans.factory.support.RootBeanDefinition;
+import com.fr.third.springframework.web.context.WebApplicationContext;
+import com.fr.third.springframework.web.servlet.DispatcherServlet;
+import com.fr.third.springframework.web.servlet.mvc.method.annotation.ExceptionHandlerExceptionResolver;
+import com.fr.third.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter;
+import com.fr.third.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
 
 /**
  * Created by andrew_asa on 2017/12/24.
