@@ -1,7 +1,5 @@
 package com.finebi.base.context;
 
-
-
 import com.fr.third.springframework.aop.config.AopConfigUtils;
 import com.fr.third.springframework.beans.factory.support.DefaultListableBeanFactory;
 import com.fr.third.springframework.context.ApplicationContext;

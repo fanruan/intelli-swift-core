@@ -1,6 +1,5 @@
 package com.finebi.base.context;
 
-
 import com.fr.third.springframework.beans.factory.support.RootBeanDefinition;
 import com.fr.third.springframework.web.context.WebApplicationContext;
 import com.fr.third.springframework.web.servlet.DispatcherServlet;
@@ -14,7 +13,7 @@ import com.fr.third.springframework.web.servlet.mvc.method.annotation.RequestMap
 public class BaseDispatcherServlet extends DispatcherServlet {
 
     // 只是记录action的包就行了，其它类的管理交个BaseContext来进行管理
-    public static String [] scranPath = {
+    public static String[] scranPath = {
             "com.finebi.web.conf.action",
             "com.finebi.web.conf.exception",
     };
