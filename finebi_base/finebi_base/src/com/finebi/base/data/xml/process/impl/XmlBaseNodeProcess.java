@@ -10,8 +10,8 @@ import com.finebi.base.utils.annotations.AnnotationsUtils;
 import com.finebi.base.utils.data.map.MapUtils;
 import com.finebi.base.utils.data.xml.XmlItemUtils;
 import com.finebi.base.utils.data.xml.imp.node.XmlNodeUtils;
-import com.finebi.cube.common.log.BILogger;
-import com.finebi.cube.common.log.BILoggerFactory;
+import com.finebi.log.BILogger;
+import com.finebi.log.BILoggerFactory;
 import org.xml.sax.Attributes;
 import org.xml.sax.helpers.AttributesImpl;
 
