@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Tables>
+    <tables>
+        <Table>
+            <id>absfa</id>
+            <name>info</name>
+            <type>1</type>
+            <fields>
+                <Field>
+                    <name>name</name>
+                    <id>rafa</id>
+                    <isUser>true</isUser>
+                    <fieldType>1</fieldType>
+                </Field>
+                <Field>
+                    <name>id</name>
+                    <id>afa</id>
+                    <isUser>true</isUser>
+                    <fieldType>2</fieldType>
+                </Field>
+            </fields>
+            <initTime>123456789</initTime>
+        </Table>
+    </tables>
+</Tables>

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<DesiginSetting>
+    <widgetMap>
+        <key key="tablewidget">
+            <BIWidget type="2">
+                <initTime>127892</initTime>
+                <widgetName/>
+                <widgetId>asdfsdbvsd</widgetId>
+                <tableName>table</tableName>
+            </BIWidget>
+        </key>
+        <key key="detailwidget">
+            <BIWidget type="1">
+                <initTime>1234566</initTime>
+                <widgetName>detailwidget</widgetName>
+                <widgetId/>
+                <detailName>detail</detailName>
+            </BIWidget>
+        </key>
+    </widgetMap>
+    <name>m</name>
+    <updateTime>0</updateTime>
+    <initTime>0</initTime>
+</DesiginSetting>
