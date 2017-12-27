@@ -1,6 +1,8 @@
 package com.finebi.base.common.resource;
 
-public interface FineResourceItem {
+/**
+ * Created by kary on 2017/12/27.
+ */public interface FineResourceItem {
 
     /**
      * 资源名字
@@ -8,6 +10,11 @@ public interface FineResourceItem {
      * @return
      */
     String getName();
+
+    /***
+     * 资源ID
+     * @return
+     */
     String getId();
     
     
