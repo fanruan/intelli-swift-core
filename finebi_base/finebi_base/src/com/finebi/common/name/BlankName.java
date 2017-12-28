@@ -1,5 +1,7 @@
 package com.finebi.common.name;
 
+import com.fr.stable.StringUtils;
+
 /**
  * This class created on 2017/4/11.
  *
@@ -7,7 +9,7 @@ package com.finebi.common.name;
  * @since Advanced FineBI Analysis 1.0
  */
 public class BlankName implements Name {
-    private String value = "";
+    private String value = StringUtils.EMPTY;
 
     @Override
     public String uniqueValue() {

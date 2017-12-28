@@ -16,6 +16,7 @@ import com.finebi.base.utils.data.xml.XmlItemUtils;
 import com.finebi.base.utils.data.xml.imp.node.XmlNodeUtils;
 import com.finebi.log.BILogger;
 import com.finebi.log.BILoggerFactory;
+import com.fr.stable.StringUtils;
 import org.xml.sax.Attributes;
 import org.xml.sax.helpers.AttributesImpl;
 
@@ -139,7 +140,7 @@ public class XmlMapNodeProcess extends AbstractXmlNodeProcess {
 
         String tagName = node.getTagName();
         attr.clear();
-        handler.startElement("", "", tagName, attr);
+        handler.startElement(StringUtils.EMPTY, StringUtils.EMPTY, tagName, attr);
         try {
             XmlMapNode mapNode = translateNode(node);
             Map<Object, Object> map = AnnotationsUtils.invokeGetMethod(o, mapNode.getTagName());
@@ -151,8 +152,8 @@ public class XmlMapNodeProcess extends AbstractXmlNodeProcess {
                 Set<Object> keys = map.keySet();
                 for (Object key : keys) {
                     attr.clear();
-                    attr.addAttribute("", "", KEYNAMETAG, "", key.toString());
-                    handler.startElement("", "", KEYNAMETAG, attr);
+                    attr.addAttribute(StringUtils.EMPTY, StringUtils.EMPTY, KEYNAMETAG, StringUtils.EMPTY, key.toString());
+                    handler.startElement(StringUtils.EMPTY, StringUtils.EMPTY, KEYNAMETAG, attr);
                     Object value = map.get(key);
                     if (isValueBaseElement) {
                         // 如果value是基本数据类型
@@ -162,11 +163,11 @@ public class XmlMapNodeProcess extends AbstractXmlNodeProcess {
                         XmlNodeProcess process = XmlStructureNodeFactory.getProcessByXmlNode(cn);
                         process.writeNode(value, cn, handler, attr);
                     }
-                    handler.endElement("", "", KEYNAMETAG);
+                    handler.endElement(StringUtils.EMPTY, StringUtils.EMPTY, KEYNAMETAG);
                 }
             }
         } finally {
-            handler.endElement("", "", tagName);
+            handler.endElement(StringUtils.EMPTY, StringUtils.EMPTY, tagName);
         }
     }
 }

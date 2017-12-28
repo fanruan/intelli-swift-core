@@ -12,6 +12,7 @@ import com.finebi.base.utils.annotations.AnnotationsUtils;
 import com.finebi.base.utils.data.map.MapUtils;
 import com.finebi.base.utils.data.xml.XmlItemUtils;
 import com.finebi.base.utils.data.xml.imp.node.XmlNodeUtils;
+import com.fr.stable.StringUtils;
 import org.xml.sax.Attributes;
 import org.xml.sax.helpers.AttributesImpl;
 
@@ -111,7 +112,7 @@ public class XmlObjectNodeProcess extends AbstractXmlNodeProcess {
         String tagName = node.getTagName();
         XmlObjectNode objectNode = translateNode(node);
         createAttr(o, objectNode, attr);
-        handler.startElement("", "", tagName, attr);
+        handler.startElement(StringUtils.EMPTY, StringUtils.EMPTY, tagName, attr);
         try {
             if (objectNode.isInterface()) {
                 // 如果是接口类型需要重新获取对象的node
@@ -123,7 +124,7 @@ public class XmlObjectNodeProcess extends AbstractXmlNodeProcess {
                 }
             }
         } finally {
-            handler.endElement("", "", tagName);
+            handler.endElement(StringUtils.EMPTY, StringUtils.EMPTY, tagName);
         }
     }
 

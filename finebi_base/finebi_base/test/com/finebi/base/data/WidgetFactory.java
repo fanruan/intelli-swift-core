@@ -1,6 +1,7 @@
 package com.finebi.base.data;
 
 import com.finebi.base.data.xml.XmlObjectFactory;
+import com.fr.stable.StringUtils;
 import org.xml.sax.Attributes;
 import org.xml.sax.helpers.AttributesImpl;
 
@@ -30,6 +31,6 @@ public class WidgetFactory implements XmlObjectFactory {
         } else if (o.getClass().equals(TableWidget.class)) {
             type = "2";
         }
-        attr.addAttribute("", "", "type", "", type);
+        attr.addAttribute(StringUtils.EMPTY, StringUtils.EMPTY, "type", StringUtils.EMPTY, type);
     }
 }

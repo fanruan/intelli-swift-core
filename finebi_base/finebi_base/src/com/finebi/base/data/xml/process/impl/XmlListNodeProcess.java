@@ -17,6 +17,7 @@ import com.finebi.base.utils.data.xml.imp.node.XmlNodeUtils;
 import com.finebi.log.BILogger;
 import com.finebi.log.BILoggerFactory;
 import com.fr.json.JSONArray;
+import com.fr.stable.StringUtils;
 import org.xml.sax.Attributes;
 import org.xml.sax.helpers.AttributesImpl;
 
@@ -139,7 +140,7 @@ public class XmlListNodeProcess extends AbstractXmlNodeProcess {
         attr.clear();
         try {
             XmlListNode ln = translateNode(node);
-            handler.startElement("", "", tagName, attr);
+            handler.startElement(StringUtils.EMPTY, StringUtils.EMPTY, tagName, attr);
             List<Object> list = AnnotationsUtils.invokeGetMethod(o, ln.getTagName());
             // 基本数据类型
             if (XmlItemUtils.isBaseXmlElement(clazz)) {
@@ -158,7 +159,7 @@ public class XmlListNodeProcess extends AbstractXmlNodeProcess {
                 }
             }
         } finally {
-            handler.endElement("", "", tagName);
+            handler.endElement(StringUtils.EMPTY, StringUtils.EMPTY, tagName);
         }
     }
 }

@@ -12,6 +12,7 @@ import com.finebi.base.utils.data.xml.XmlItemUtils;
 import com.finebi.base.utils.data.xml.imp.node.XmlNodeUtils;
 import com.finebi.log.BILogger;
 import com.finebi.log.BILoggerFactory;
+import com.fr.stable.StringUtils;
 import org.xml.sax.Attributes;
 import org.xml.sax.helpers.AttributesImpl;
 
@@ -126,7 +127,7 @@ public class XmlBaseNodeProcess extends AbstractXmlNodeProcess {
         Class clazz = node.getClazz();
         try {
             createInterfaceAttr(o, node, attr);
-            handler.startElement("", "", tagName, attr);
+            handler.startElement(StringUtils.EMPTY, StringUtils.EMPTY, tagName, attr);
             // 如果是基本数据类型
             if (XmlItemUtils.isBaseXmlElement(clazz)) {
                 // todo 如果是boolean类型的，并不一定是getxxx也可能是isxxx而已
@@ -141,7 +142,7 @@ public class XmlBaseNodeProcess extends AbstractXmlNodeProcess {
                 }
             }
         } finally {
-            handler.endElement("", "", tagName);
+            handler.endElement(StringUtils.EMPTY, StringUtils.EMPTY, tagName);
         }
     }
 
