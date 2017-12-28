@@ -1,6 +1,8 @@
 package com.finebi.base.utils.data.random;
 
 
+import com.fr.stable.StringUtils;
+
 import java.util.UUID;
 
 /**
@@ -10,7 +12,7 @@ public class RandomUtils {
 
     public static String getUUID() {
 
-        return UUID.randomUUID().toString().replaceAll("-", "");
+        return UUID.randomUUID().toString().replaceAll("-", StringUtils.EMPTY);
     }
 
 }

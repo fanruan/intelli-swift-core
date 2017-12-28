@@ -4,6 +4,7 @@ package com.finebi.base.utils.data.xml;
 import com.finebi.base.constant.XMLConstant;
 import com.finebi.base.data.xml.node.XmlNode;
 import com.finebi.base.utils.data.characters.CharUtils;
+import com.fr.stable.StringUtils;
 
 import javax.xml.transform.sax.TransformerHandler;
 import java.lang.reflect.Field;
@@ -206,7 +207,7 @@ public class XmlItemUtils {
         if (data != null) {
             str = data.toString();
         } else {
-            str = "";
+            str = StringUtils.EMPTY;
         }
         char[] tc = CharUtils.stringToCharacters(str);
         handler.characters(tc, 0, tc.length);

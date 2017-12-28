@@ -1,6 +1,7 @@
 package com.finebi.common.name;
 
 import com.fr.general.ComparatorUtils;
+import com.fr.stable.StringUtils;
 
 /**
  * This class created on 2017/4/11.
@@ -21,7 +22,7 @@ public class NameImp implements Name {
     }
 
     private void checkName(String selfNameValue) {
-        if ("".equals(selfNameValue)) {
+        if (StringUtils.EMPTY.equals(selfNameValue)) {
         }
     }
 

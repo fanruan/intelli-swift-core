@@ -51,7 +51,7 @@ public class DefaultXmlWriter {
 //        attr.clear();
 //        String tagName = node.getTagName();
 //        //char[] tc = CharUtils.stringToCharacters(tagName);
-//        handler.startElement("", "", tagName, attr);
+//        handler.startElement(StringUtils.EMPTY, StringUtils.EMPTY, tagName, attr);
 //        int type = node.getType();
 //        try {
 //            // 基本数据类型 -- 直接写入
@@ -96,7 +96,7 @@ public class DefaultXmlWriter {
 //
 //        } finally {
 //            // 确保闭合
-//            handler.endElement("", "", tagName);
+//            handler.endElement(StringUtils.EMPTY, StringUtils.EMPTY, tagName);
 //        }
     }
 }

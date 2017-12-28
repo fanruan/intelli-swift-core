@@ -6,7 +6,7 @@ package com.finebi.base.utils.data.string;
  */
 public class StringUtils {
 
-    public static String EMPTY = "";
+    public static String EMPTY = StringUtils.EMPTY;
 
     /**
      * 以前的所谓StringUtils都是用私有的构造方法但是这是不合理的，因为如果本utils方法里面不实现
@@ -26,7 +26,7 @@ public class StringUtils {
 
     public static boolean isEmpty(String s) {
 
-        return s != null && "".equals(s);
+        return s != null && StringUtils.EMPTY.equals(s);
     }
 
 }
