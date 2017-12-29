@@ -14,8 +14,8 @@ public class BaseDispatcherServlet extends DispatcherServlet {
 
     // 只是记录action的包就行了，其它类的管理交个BaseContext来进行管理
     public static String[] scranPath = {
-            "com.finebi.web.conf.action",
-            "com.finebi.web.conf.exception",
+            "com.finebi.web.action",
+            "com.finebi.web.exception",
     };
 
     @Override
