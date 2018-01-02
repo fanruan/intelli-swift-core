@@ -74,6 +74,6 @@ public class SwiftDataModel implements FineDataModel {
 
     @Override
     public int getEngineType() {
-        return 0;
+        return FineEngineType.Cube.getEngineType();
     }
 }
