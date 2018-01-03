@@ -3,7 +3,7 @@ package com.fr.swift.provider;
 import com.fr.swift.source.DataSource;
 import com.fr.swift.source.IRelationSource;
 import com.fr.swift.source.SourcePath;
-import com.fr.swift.source.manager.IndexStuffPorvider;
+import com.fr.swift.source.manager.IndexStuffProvider;
 
 import java.util.List;
 
@@ -14,10 +14,10 @@ import java.util.List;
  * @since Advanced FineBI Analysis 1.0
  */
 
-public class IndexStuffManager implements IndexStuffPorvider {
-    private IndexStuffPorvider provider;
+public class IndexStuffManager implements IndexStuffProvider {
+    private IndexStuffProvider provider;
 
-    public IndexStuffManager(IndexStuffPorvider provider) {
+    public IndexStuffManager(IndexStuffProvider provider) {
         this.provider = provider;
     }
 

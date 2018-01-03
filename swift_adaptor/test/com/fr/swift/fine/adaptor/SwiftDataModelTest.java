@@ -6,9 +6,9 @@ import com.finebi.conf.structure.result.BIDetailTableResult;
 import com.fr.swift.adaptor.model.SwiftDataModel;
 import com.fr.swift.source.db.ConnectionInfo;
 import com.fr.swift.source.db.ConnectionManager;
-import com.fr.swift.source.db.ConnectionProvider;
 import com.fr.swift.source.db.IConnectionProvider;
 import com.fr.swift.source.db.TableDBSource;
+import com.fr.swift.source.db.TestConnectionProvider;
 import junit.framework.TestCase;
 
 import java.util.List;
@@ -30,7 +30,7 @@ public class SwiftDataModelTest extends TestCase {
         super.setUp();
         IConnectionProvider connectionProvider = new com.fr.swift.provider.ConnectionProvider();
         ConnectionManager.getInstance().registerProvider(connectionProvider);
-        connectionInfo = ConnectionProvider.createConnection();
+        connectionInfo = TestConnectionProvider.createConnection();
         ConnectionManager.getInstance().registerConnectionInfo("local", connectionInfo);
     }
 

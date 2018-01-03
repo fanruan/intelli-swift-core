@@ -4,7 +4,7 @@ import com.fr.swift.source.DataSource;
 import com.fr.swift.source.IRelationSource;
 import com.fr.swift.source.SourcePath;
 import com.fr.swift.source.container.SourceContainer;
-import com.fr.swift.source.manager.IndexStuffPorvider;
+import com.fr.swift.source.manager.IndexStuffProvider;
 import com.fr.swift.stuff.IndexingStuff;
 
 import java.util.ArrayList;
@@ -16,7 +16,7 @@ import java.util.List;
  * @author Lucifer
  * @since Advanced FineBI Analysis 1.0
  */
-public class IndexStuffInfoProvider implements IndexStuffPorvider {
+public class IndexStuffInfoProvider implements IndexStuffProvider {
 
     private IndexingStuff indexingStuff;
     private SourceContainer sourceContainer;
