@@ -91,7 +91,7 @@ public class BIMapInfoManager {
             if(StringUtils.isEmpty(fileName)){
                 continue;
             }
-//            fileName = fileName.replace(GEOJSONHelper.POINT, StringUtils.EMPTY).replace(GEOJSONHelper.AREA, StringUtils.EMPTY);
+            fileName = fileName.replace(GEOJSONHelper.POINT, StringUtils.EMPTY).replace(GEOJSONHelper.AREA, StringUtils.EMPTY);
             String currentName = StringUtils.isEmpty(parentName) ? fileName : parentName + "/" + fileName;
             if (isInner) {
                 if(innerMapName.containsKey(fileName)){
