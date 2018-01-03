@@ -2,8 +2,12 @@ package com.fr.swift.adaptor.transformer;
 
 import com.fr.data.impl.Connection;
 import com.fr.swift.source.db.ConnectionManager;
+import com.fr.swift.source.db.QueryDBSource;
 import com.fr.swift.source.db.SwiftConnectionInfo;
 import com.fr.swift.source.db.TableDBSource;
+import com.fr.swift.source.excel.ExcelDataSource;
+
+import java.util.List;
 
 /**
  * This class created on 2017-12-19 09:12:11
@@ -14,27 +18,22 @@ import com.fr.swift.source.db.TableDBSource;
  */
 public class DataSourceFactory {
 
-    
+
     public static TableDBSource transformTableDBSource(String connectionName, String dbTableName, String schema, Connection connection) {
-
-        ConnectionManager.getInstance().registerConnectionInfo(connectionName,
-                new SwiftConnectionInfo(schema, connection));
-
+        ConnectionManager.getInstance().registerConnectionInfo(connectionName, new SwiftConnectionInfo(schema, connection));
         TableDBSource tableDBSource = new TableDBSource(dbTableName, connectionName);
         return tableDBSource;
     }
 
-//    private static QueryDBSource transformQueryDBSource(FineSQLCubeTable cubeTable) {
-//        String connectionName = cubeTable.getConnectionName();
-//        String query = cubeTable.getQuery();
-//
-//        FineConnectionInfo fineConnectionInfo = cubeTable.getUsedConnectionInfo();
-//        ConnectionManager.getInstance().registerConnectionInfo(connectionName,
-//                new SwiftConnectionInfo(fineConnectionInfo.getSchema(), fineConnectionInfo.getFRConnection()));
-//
-//        QueryDBSource queryDBSource = new QueryDBSource(query, connectionName);
-//        return queryDBSource;
-//    }
+    public static QueryDBSource transformQueryDBSource(String connectionName, String sql, String schema, Connection connection) {
+        ConnectionManager.getInstance().registerConnectionInfo(connectionName, new SwiftConnectionInfo(schema, connection));
+        QueryDBSource queryDBSource = new QueryDBSource(sql, connectionName);
+        return queryDBSource;
+    }
 
+    public static ExcelDataSource transformExcelDataSource(String path, String[] names, int[] types, List<String> appendedFileNames) {
+        ExcelDataSource excelDataSource = new ExcelDataSource(path, names, types, appendedFileNames);
+        return excelDataSource;
+    }
 }
 
