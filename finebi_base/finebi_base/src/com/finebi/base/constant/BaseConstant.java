@@ -33,5 +33,4 @@ public class BaseConstant {
         public static final int SERVER = 5;
 
     }
-
 }
