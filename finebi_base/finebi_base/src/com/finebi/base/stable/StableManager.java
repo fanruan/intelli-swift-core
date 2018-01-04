@@ -1,8 +1,6 @@
 package com.finebi.base.stable;
 
 import com.finebi.base.context.BaseContext;
-import com.fr.third.springframework.beans.factory.support.RootBeanDefinition;
-import com.fr.third.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
 
 /**
  * This class created on 2017/12/21
@@ -16,6 +14,7 @@ public class StableManager {
     private static String[] scanPath = {
             "com.finebi.conf.aop",
             "com.finebi.conf.internalimp",
+            "com.fr.swift.adaptor.model",
     };
 
 
