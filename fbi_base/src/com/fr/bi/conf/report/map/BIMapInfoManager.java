@@ -4,9 +4,10 @@ import com.finebi.cube.common.log.BILoggerFactory;
 import com.fr.base.FRContext;
 import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.json.JSONException;
-import com.fr.plugin.bi.chart.map.server.GEOJSONHelper;
 import com.fr.stable.CodeUtils;
 import com.fr.stable.StringUtils;
+import com.fr.plugin.bi.chart.map.server.GEOJSONHelper;
+
 
 import java.io.File;
 import java.util.ArrayList;
