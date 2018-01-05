@@ -18,4 +18,13 @@ public enum FineEngineType {
 
         return engineType;
     }
+
+    public static FineEngineType getEngineType(int i) {
+        if (i == 0) {
+            return Cube;
+        } else if (i == 1) {
+            return Direct;
+        }
+        return NONE;
+    }
 }
