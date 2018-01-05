@@ -6,6 +6,7 @@ package com.finebi.common.name;
  * @author Connery
  * @since Advanced FineBI Analysis 1.0
  */
+@Deprecated
 public interface Name extends Identity {
 
     /**
