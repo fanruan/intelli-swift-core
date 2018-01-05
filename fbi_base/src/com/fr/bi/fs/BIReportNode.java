@@ -328,7 +328,7 @@ public class BIReportNode extends DAOBean implements Entry {
         jo.put("pId", this.parentid);
         jo.put("text", this.reportname);
         jo.put("lastModify", modifytime.getTime());
-        jo.put("status", status);
+        jo.put("responed", status);
         jo.put("value", id);
         jo.put("createBy", this.userid);
         jo.put("description", this.description);
