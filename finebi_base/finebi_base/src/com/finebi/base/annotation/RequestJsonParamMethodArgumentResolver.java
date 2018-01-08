@@ -16,17 +16,16 @@
 
 package com.finebi.base.annotation;
 
+import com.fr.third.fasterxml.jackson.databind.JavaType;
+import com.fr.third.fasterxml.jackson.databind.JsonMappingException;
+import com.fr.third.fasterxml.jackson.databind.ObjectMapper;
+import com.fr.third.fasterxml.jackson.databind.type.MapType;
+import com.fr.third.fasterxml.jackson.databind.type.TypeFactory;
 import com.fr.third.springframework.core.MethodParameter;
 import com.fr.third.springframework.web.bind.ServletRequestBindingException;
 import com.fr.third.springframework.web.bind.support.WebArgumentResolver;
 import com.fr.third.springframework.web.context.request.NativeWebRequest;
 import com.fr.third.springframework.web.method.annotation.AbstractNamedValueMethodArgumentResolver;
-import org.codehaus.jackson.map.JsonMappingException;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.map.type.MapType;
-import org.codehaus.jackson.map.type.TypeFactory;
-import org.codehaus.jackson.type.JavaType;
-
 
 import javax.servlet.ServletException;
 import java.lang.reflect.ParameterizedType;
