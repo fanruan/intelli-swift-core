@@ -35,6 +35,6 @@ public class BaseConstant {
         /**
          * 分析表
          */
-        public static final int ANALSYIS = 6;
+        public static final int ANALSYSIS = 6;
     }
 }
