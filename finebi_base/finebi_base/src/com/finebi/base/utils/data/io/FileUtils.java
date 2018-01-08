@@ -6,7 +6,6 @@ import com.fr.stable.StableUtils;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -55,8 +54,9 @@ public class FileUtils {
         BufferedReader reader = new BufferedReader(fr);
         String line;
         try {
-            while ((line = reader.readLine()) != null)
+            while ((line = reader.readLine()) != null) {
                 sb.append(line);
+            }
             return sb.toString();
         } finally {
             reader.close();
