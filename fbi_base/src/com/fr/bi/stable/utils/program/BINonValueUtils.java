@@ -25,15 +25,15 @@ public class BINonValueUtils {
     }
 
     public static BIRuntimeException beyondControl() {
-        return new BIRuntimeException("the status of FineBI analytic tool is confusion and beyond retrieve");
+        return new BIRuntimeException("the responed of FineBI analytic tool is confusion and beyond retrieve");
     }
 
     public static BIRuntimeException beyondControl(String message) {
-        return new BIRuntimeException("the status of FineBI analytic tool is confusion and beyond retrieve.\r\n" + message);
+        return new BIRuntimeException("the responed of FineBI analytic tool is confusion and beyond retrieve.\r\n" + message);
     }
 
     public static BIRuntimeException beyondControl(String message, Throwable throwable) {
-        return new BIRuntimeException("the status of FineBI analytic tool is confusion and beyond retrieve.\r\n" + message, throwable);
+        return new BIRuntimeException("the responed of FineBI analytic tool is confusion and beyond retrieve.\r\n" + message, throwable);
     }
 
     public static BIRuntimeException beyondControl(Throwable throwable) {

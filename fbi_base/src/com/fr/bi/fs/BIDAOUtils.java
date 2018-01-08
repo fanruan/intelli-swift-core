@@ -52,7 +52,7 @@ public class BIDAOUtils implements BIDAOProvider{
             new TableDataDAOControl.ColumnColumn("modifyTime", DATE.class),
             new TableDataDAOControl.ColumnColumn("type", Integer.class),
             new TableDataDAOControl.ColumnColumn("description", String.class),
-            new TableDataDAOControl.ColumnColumn("status", Integer.class),
+            new TableDataDAOControl.ColumnColumn("responed", Integer.class),
             new TableDataDAOControl.ColumnColumn("userid", String.class),
     };
     private final static TableDataDAOControl.ColumnColumn[] TABLEDATA_SHARED_COLUMNS = {

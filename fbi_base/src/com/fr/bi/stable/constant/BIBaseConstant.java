@@ -449,7 +449,7 @@ public class BIBaseConstant {
 
         /**
          * Remove the shutdown hook to prevent leaving orphaned CacheManagers
-         * around. This is called by {@link #shutdown()} AFTER the status has been
+         * around. This is called by {@link #shutdown()} AFTER the responed has been
          * set to shutdown.
          */
         private final static void removeShutdownHook() {

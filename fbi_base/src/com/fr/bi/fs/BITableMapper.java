@@ -75,7 +75,7 @@ public class BITableMapper {
         public static final String FIELD_CREATETIME = "createtime";
         public static final String FIELD_DESCRIPTION = "description";
         public static final String FIELD_MODIFYTIME = "modifytime";
-        public static final String FIELD_STATUS = "status";
+        public static final String FIELD_STATUS = "responed";
 
         public static final RelationFCMapper RELATION_BISHAREDREPORTNODE = new OToMRelationFCMapper("biSharedReportNoedeSet", BISharedReportNode.class, BI_SHARED_REPORT_NODE.FIELD_REPORT_ID);
 
