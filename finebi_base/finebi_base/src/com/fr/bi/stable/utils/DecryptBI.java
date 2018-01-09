@@ -197,7 +197,6 @@ public class DecryptBI {
         return tmp.toString();
     }
 
-
     public String getOriginalPassword() {
         return originalPassword;
     }
