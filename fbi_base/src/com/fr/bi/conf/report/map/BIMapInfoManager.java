@@ -6,8 +6,6 @@ import com.fr.bi.stable.constant.BIBaseConstant;
 import com.fr.json.JSONException;
 import com.fr.stable.CodeUtils;
 import com.fr.stable.StringUtils;
-import com.fr.plugin.bi.chart.map.server.GEOJSONHelper;
-
 
 import java.io.File;
 import java.util.ArrayList;
@@ -93,7 +91,7 @@ public class BIMapInfoManager {
             if(StringUtils.isEmpty(fileName)){
                 continue;
             }
-            fileName = fileName.replace(GEOJSONHelper.POINT, StringUtils.EMPTY).replace(GEOJSONHelper.AREA, StringUtils.EMPTY);
+//            fileName = fileName.replace(GEOJSONHelper.POINT, StringUtils.EMPTY).replace(GEOJSONHelper.AREA, StringUtils.EMPTY);
             String currentName = StringUtils.isEmpty(parentName) ? fileName : parentName + "/" + fileName;
             if (isInner) {
                 if(innerMapName.containsKey(fileName)){
