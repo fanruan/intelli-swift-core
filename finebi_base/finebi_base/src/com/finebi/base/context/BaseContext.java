@@ -104,6 +104,12 @@ public class BaseContext extends GenericApplicationContext {
     }
 
     public <T> T getObject(String beanName) {
+
         return (T) getBean(beanName);
+    }
+
+    public <T> T getObject(String beanName, Object... args) {
+
+        return (T) getBean(beanName, args);
     }
 }

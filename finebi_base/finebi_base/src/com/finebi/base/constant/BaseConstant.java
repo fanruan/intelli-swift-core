@@ -32,5 +32,9 @@ public class BaseConstant {
          */
         public static final int SERVER = 5;
 
+        /**
+         * 分析表
+         */
+        public static final int ANALSYSIS = 6;
     }
 }
