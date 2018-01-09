@@ -196,10 +196,7 @@ public class DecryptBI {
         }
         return tmp.toString();
     }
-
-    public static void main(String[] args) {
-        encrypt("afafa");
-    }
+    
 
     public String getOriginalPassword() {
         return originalPassword;
