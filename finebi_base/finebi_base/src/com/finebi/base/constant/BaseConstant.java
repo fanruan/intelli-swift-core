@@ -13,19 +13,19 @@ public class BaseConstant {
         public static final int DB = 1;
 
         /**
-         * etl
-         */
-        public static final int ETL = 2;
-
-        /**
          * sql
          */
-        public static final int SQL = 3;
+        public static final int SQL = 2;
 
         /**
          * excel
          */
-        public static final int EXCEL = 4;
+        public static final int EXCEL = 3;
+
+        /**
+         * etl
+         */
+        public static final int ETL = 4;
 
         /**
          * server
