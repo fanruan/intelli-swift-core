@@ -8,7 +8,6 @@ import com.fr.stable.CodeUtils;
 import com.fr.stable.StringUtils;
 import com.fr.plugin.bi.chart.map.server.GEOJSONHelper;
 
-
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
