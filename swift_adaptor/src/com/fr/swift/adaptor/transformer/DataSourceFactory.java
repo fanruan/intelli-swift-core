@@ -1,6 +1,14 @@
 package com.fr.swift.adaptor.transformer;
 
+import com.finebi.conf.internalimp.table.FineDBBusinessTable;
+import com.finebi.conf.internalimp.update.TableUpdateInfo;
+import com.finebi.conf.structure.bean.connection.FineConnection;
+import com.finebi.conf.structure.bean.table.FineBusinessTable;
+import com.finebi.conf.utils.FineConnectionUtils;
 import com.fr.data.impl.Connection;
+import com.fr.swift.increase.Increment;
+import com.fr.swift.source.SourceKey;
+import com.fr.swift.source.db.ConnectionInfo;
 import com.fr.swift.source.db.ConnectionManager;
 import com.fr.swift.source.db.QueryDBSource;
 import com.fr.swift.source.db.SwiftConnectionInfo;

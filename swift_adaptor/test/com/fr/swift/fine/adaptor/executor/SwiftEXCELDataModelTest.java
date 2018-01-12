@@ -1,4 +1,4 @@
-package com.fr.swift.fine.adaptor;
+package com.fr.swift.fine.adaptor.executor;
 
 import com.finebi.conf.structure.bean.field.FineBusinessField;
 import com.finebi.conf.structure.result.BIDetailCell;
@@ -44,9 +44,7 @@ public class SwiftEXCELDataModelTest extends TestCase {
 
     public void testSwiftEXCELDataModelPreviewDBTable() throws Exception {
         SwiftEXCELDataModel dataModel = new SwiftEXCELDataModel();
-        List<String> pathList = new ArrayList<String>();
-        pathList.add(path);
-        BIDetailTableResult detailTableResult = dataModel.getPreviewData(pathList, types, dataSource.getMetadata(), 100);
+        BIDetailTableResult detailTableResult = dataModel.getPreviewData(path, names, types, new ArrayList<String>(), 100);
         assertEquals(detailTableResult.columnSize(), 2);
         int count = 0;
         while (detailTableResult.hasNext()) {

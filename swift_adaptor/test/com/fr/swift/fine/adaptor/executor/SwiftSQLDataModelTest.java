@@ -1,9 +1,9 @@
-package com.fr.swift.fine.adaptor;
+package com.fr.swift.fine.adaptor.executor;
 
 import com.finebi.conf.structure.bean.field.FineBusinessField;
 import com.finebi.conf.structure.result.BIDetailCell;
 import com.finebi.conf.structure.result.BIDetailTableResult;
-import com.fr.swift.adaptor.model.SwiftSQLDataModel;
+import com.fr.swift.adaptor.model.SwiftSQLEngineExecutor;
 import com.fr.swift.provider.ConnectionProvider;
 import com.fr.swift.source.db.ConnectionInfo;
 import com.fr.swift.source.db.ConnectionManager;
@@ -47,14 +47,14 @@ public class SwiftSQLDataModelTest extends TestCase {
     }
 
     public void testSwiftSQLDataModelGetFields() throws Exception {
-        SwiftSQLDataModel dataModel = new SwiftSQLDataModel();
+        SwiftSQLEngineExecutor dataModel = new SwiftSQLEngineExecutor();
         List<FineBusinessField> list = dataModel.getFieldList("local", sql, connectionInfo.getSchema(), connectionInfo.getFrConnection());
         assertEquals(list.size(), 9);
         assertTrue(true);
     }
 
     public void testSwiftSQLDataModelPreviewDBTable() throws Exception {
-        SwiftSQLDataModel dataModel = new SwiftSQLDataModel();
+        SwiftSQLEngineExecutor dataModel = new SwiftSQLEngineExecutor();
         BIDetailTableResult detailTableResult = dataModel.getPreviewData("local", sql, 250, connectionInfo.getSchema(), connectionInfo.getFrConnection());
         assertEquals(detailTableResult.columnSize(), 9);
         int count = 0;
