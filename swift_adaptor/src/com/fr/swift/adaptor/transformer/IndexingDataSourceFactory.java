@@ -60,7 +60,7 @@ public class IndexingDataSourceFactory {
 
     public static DataSource transformDataSource(FineBusinessTable table) throws Exception {
         DataSource dataSource = null;
-        switch (table.getTableType()) {
+        switch (table.getType()) {
             case BaseConstant.TABLETYPE.DB:
                 dataSource = transformTableDBSource((FineDBBusinessTable) table);
                 break;

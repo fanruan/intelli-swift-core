@@ -22,7 +22,7 @@ import java.util.List;
  */
 
 @Service("fineSQLaModel")
-public class SwiftSQLDataModel extends SwiftDBDataModel{
+public class SwiftSQLEngineExecutor extends SwiftDBDataModel{
 
     public BIDetailTableResult getPreviewData(String connectionName, String sql, int rowCount, String schema, Connection connection) throws Exception {
         ConnectionManager.getInstance().registerConnectionInfo(connectionName,
