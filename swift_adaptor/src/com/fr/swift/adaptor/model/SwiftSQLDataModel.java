@@ -6,13 +6,10 @@ import com.fr.data.impl.Connection;
 import com.fr.swift.adaptor.struct.SwiftDetailTableResult;
 import com.fr.swift.adaptor.transformer.DataSourceFactory;
 import com.fr.swift.adaptor.transformer.FieldFactory;
-import com.fr.swift.source.DataSource;
-import com.fr.swift.source.SwiftMetaData;
-import com.fr.swift.source.SwiftResultSet;
-import com.fr.swift.source.SwiftSourceTransfer;
-import com.fr.swift.source.SwiftSourceTransferFactory;
+import com.fr.swift.source.*;
 import com.fr.swift.source.db.ConnectionManager;
 import com.fr.swift.source.db.SwiftConnectionInfo;
+import com.fr.third.springframework.stereotype.Service;
 
 import java.util.List;
 
@@ -23,7 +20,9 @@ import java.util.List;
  * @description
  * @since Advanced FineBI Analysis 1.0
  */
-public class SwiftSQLDataModel {
+
+@Service("fineSQLaModel")
+public class SwiftSQLDataModel extends SwiftDBDataModel{
 
     public BIDetailTableResult getPreviewData(String connectionName, String sql, int rowCount, String schema, Connection connection) throws Exception {
         ConnectionManager.getInstance().registerConnectionInfo(connectionName,

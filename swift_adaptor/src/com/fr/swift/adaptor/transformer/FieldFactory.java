@@ -27,7 +27,7 @@ public class FieldFactory {
             String columnRemark = swiftMetaData.getColumnRemark(i);
             int precision = swiftMetaData.getPrecision(i);
             int scale = swiftMetaData.getScale(i);
-            FineBusinessField fineBusinessField = new FineBusinessFieldImp(columnName, ColumnTypeUtils.sqlTypeToClassType(columnType, precision, scale), precision, columnRemark, FineEngineType.Cube.getEngineType());
+            FineBusinessField fineBusinessField = new FineBusinessFieldImp(columnName, ColumnTypeUtils.sqlTypeToClassType(columnType, precision, scale), precision, columnRemark, FineEngineType.Cube);
             fineBusinessFieldList.add(fineBusinessField);
         }
         return fineBusinessFieldList;
