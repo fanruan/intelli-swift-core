@@ -1,5 +1,7 @@
 package com.fr.swift.adaptor.model;
 
+import com.finebi.base.constant.FineEngineType;
+import com.finebi.conf.internalimp.table.dataModel.FineSQLEngineExecutor;
 import com.finebi.conf.structure.bean.field.FineBusinessField;
 import com.finebi.conf.structure.result.BIDetailTableResult;
 import com.fr.data.impl.Connection;
@@ -13,6 +15,7 @@ import com.fr.swift.source.SwiftSourceTransfer;
 import com.fr.swift.source.SwiftSourceTransferFactory;
 import com.fr.swift.source.db.ConnectionManager;
 import com.fr.swift.source.db.SwiftConnectionInfo;
+import com.fr.third.springframework.stereotype.Service;
 
 import java.util.List;
 
@@ -23,7 +26,8 @@ import java.util.List;
  * @description
  * @since Advanced FineBI Analysis 1.0
  */
-public class SwiftSQLDataModel {
+@Service("fineSQLaModel")
+public class SwiftSQLEngineExecutor implements FineSQLEngineExecutor {
 
     public BIDetailTableResult getPreviewData(String connectionName, String sql, int rowCount, String schema, Connection connection) throws Exception {
         ConnectionManager.getInstance().registerConnectionInfo(connectionName,
@@ -40,4 +44,13 @@ public class SwiftSQLDataModel {
         return FieldFactory.transformColumns2Fields(swiftMetaData);
     }
 
+    @Override
+    public String getTableName() {
+        return null;
+    }
+
+    @Override
+    public FineEngineType getEngineType() {
+        return FineEngineType.Cube;
+    }
 }
