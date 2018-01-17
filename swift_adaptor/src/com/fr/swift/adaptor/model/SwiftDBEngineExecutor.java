@@ -95,8 +95,6 @@ public class SwiftDBEngineExecutor implements FineTableEngineExecutor {
     }
 
 
-    
-
     @Override
     public FineEngineType getEngineType() {
         return FineEngineType.Cube;
