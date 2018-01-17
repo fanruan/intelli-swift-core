@@ -32,7 +32,7 @@ public class UpdateTableTest extends TestCase {
         IConnectionProvider connectionProvider = new ConnectionProvider();
         ConnectionManager.getInstance().registerProvider(connectionProvider);
         String path = ResourceUtils.getFileAbsolutePath("com/fr/swift/resource/h2");
-        FineConnection connection = new FineConnectionImp(FineEngineType.Cube, "jdbc:h2://" + path + "/test", "sa", "", "org.h2.Driver", "local", null, null, null);
+        FineConnection connection = new FineConnectionImp("jdbc:h2://" + path + "/test", "sa", "", "org.h2.Driver", "local", null, null, null);
         FineConnectionUtils.removeAllConnections();
         FineConnectionUtils.addNewConnection(connection);
     }
@@ -56,7 +56,7 @@ public class UpdateTableTest extends TestCase {
     }
 
     public void testSqlTableUpdate() throws Exception {
-        FineBusinessTable fineBusinessTable = new FineSQLBusinessTable("local", FineEngineType.Cube, "select * from DEMO_CAPITAL_RETURN");
+        FineBusinessTable fineBusinessTable = new FineSQLBusinessTable("tableName", "local", FineEngineType.Cube, "select * from DEMO_CAPITAL_RETURN");
         SwiftUpdateManager manager = new SwiftUpdateManager();
         manager.saveUpdateSetting(null, fineBusinessTable);
 

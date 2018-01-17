@@ -8,9 +8,7 @@ import com.finebi.conf.internalimp.update.TableUpdateInfo;
 import com.finebi.conf.structure.bean.connection.FineConnection;
 import com.finebi.conf.structure.bean.table.FineBusinessTable;
 import com.finebi.conf.utils.FineConnectionUtils;
-import com.fr.swift.increase.Increment;
 import com.fr.swift.source.DataSource;
-import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.container.SourceContainer;
 import com.fr.swift.source.db.ConnectionInfo;
 import com.fr.swift.source.db.ConnectionManager;
@@ -106,8 +104,8 @@ public class IndexingDataSourceFactory {
     }
 
 
-    public static Increment transformIncrement(TableUpdateInfo tableUpdateInfo, SourceKey sourceKey, String connectionName) {
-        Increment increment = new Increment(tableUpdateInfo.getAddSql(), tableUpdateInfo.getDeleteSql(), tableUpdateInfo.getModifySql(), sourceKey, connectionName);
-        return increment;
-    }
+//    public static Increment transformIncrement(TableUpdateInfo tableUpdateInfo, SourceKey sourceKey, String connectionName) {
+//        Increment increment = new Increment(tableUpdateInfo.getAddSql(), tableUpdateInfo.getDeleteSql(), tableUpdateInfo.getModifySql(), sourceKey, connectionName);
+//        return increment;
+//    }
 }
