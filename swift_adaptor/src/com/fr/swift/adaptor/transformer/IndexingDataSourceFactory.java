@@ -8,7 +8,11 @@ import com.finebi.conf.internalimp.update.TableUpdateInfo;
 import com.finebi.conf.structure.bean.connection.FineConnection;
 import com.finebi.conf.structure.bean.table.FineBusinessTable;
 import com.finebi.conf.utils.FineConnectionUtils;
+import com.fr.swift.increase.IncrementImpl;
+import com.fr.swift.increment.Increment;
+import com.fr.swift.source.DBDataSource;
 import com.fr.swift.source.DataSource;
+import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.container.SourceContainer;
 import com.fr.swift.source.db.ConnectionInfo;
 import com.fr.swift.source.db.ConnectionManager;
@@ -31,13 +35,27 @@ import java.util.Map;
 public class IndexingDataSourceFactory {
 
 
-    public static void transformDataSources(Map<FineBusinessTable, TableUpdateInfo> infoMap, List<String> updateTableSourceKeys, SourceContainer updateSourceContainer) throws Exception {
-        if (infoMap != null) {
-            for (Map.Entry<FineBusinessTable, TableUpdateInfo> infoEntry : infoMap.entrySet()) {
-                DataSource updateDataSource = transformDataSource(infoEntry.getKey());
-                if (updateDataSource != null) {
-                    updateTableSourceKeys.add(updateDataSource.getSourceKey().getId());
-                    updateSourceContainer.getDataSourceContainer().addSource(updateDataSource);
+    public static void transformDataSources(Map<FineBusinessTable, TableUpdateInfo> infoMap, List<String> updateTableSourceKeys, SourceContainer updateSourceContainer, Map<String, List<Increment>> incrementMap) throws Exception {
+        for (Map.Entry<FineBusinessTable, TableUpdateInfo> infoEntry : infoMap.entrySet()) {
+            DataSource updateDataSource = transformDataSource(infoEntry.getKey());
+            if (updateDataSource != null) {
+                updateTableSourceKeys.add(updateDataSource.getSourceKey().getId());
+                updateSourceContainer.getDataSourceContainer().addSource(updateDataSource);
+
+                if (updateDataSource instanceof DBDataSource && infoEntry.getValue() != null) {
+                    Increment increment;
+                    if (updateDataSource instanceof QueryDBSource) {
+                        increment = transformIncrement(infoEntry.getValue(), updateDataSource.getSourceKey(), ((QueryDBSource) updateDataSource).getConnectionName());
+                    } else {
+                        increment = transformIncrement(infoEntry.getValue(), updateDataSource.getSourceKey(), ((TableDBSource) updateDataSource).getConnectionName());
+                    }
+
+                    if (incrementMap.containsKey(updateDataSource.getSourceKey().getId())) {
+                        incrementMap.get(updateDataSource.getSourceKey().getId()).add(increment);
+                    } else {
+                        incrementMap.put(updateDataSource.getSourceKey().getId(), new ArrayList<Increment>());
+                        incrementMap.get(updateDataSource.getSourceKey().getId()).add(increment);
+                    }
                 }
             }
         }
@@ -89,12 +107,12 @@ public class IndexingDataSourceFactory {
 
     private static QueryDBSource transformQueryDBSource(FineSQLBusinessTable table) throws Exception {
 
-        String connectionName = table.getConnectionName();
+        String connectionName = table.getConnName();
         FineConnection fineConnection = FineConnectionUtils.getConnectionByName(connectionName);
         ConnectionInfo connectionInfo = new SwiftConnectionInfo(fineConnection.getSchema(), fineConnection.getConnection());
         ConnectionManager.getInstance().registerConnectionInfo(connectionName, connectionInfo);
 
-        QueryDBSource queryDBSource = new QueryDBSource(table.getSql(), table.getConnectionName());
+        QueryDBSource queryDBSource = new QueryDBSource(table.getSql(), table.getConnName());
         return queryDBSource;
     }
 
@@ -104,8 +122,8 @@ public class IndexingDataSourceFactory {
     }
 
 
-//    public static Increment transformIncrement(TableUpdateInfo tableUpdateInfo, SourceKey sourceKey, String connectionName) {
-//        Increment increment = new Increment(tableUpdateInfo.getAddSql(), tableUpdateInfo.getDeleteSql(), tableUpdateInfo.getModifySql(), sourceKey, connectionName);
-//        return increment;
-//    }
+    public static Increment transformIncrement(TableUpdateInfo tableUpdateInfo, SourceKey sourceKey, String connectionName) {
+        Increment increment = new IncrementImpl(tableUpdateInfo.getAddSql(), tableUpdateInfo.getDeleteSql(), tableUpdateInfo.getModifySql(), sourceKey, connectionName, tableUpdateInfo.getUpdateType());
+        return increment;
+    }
 }

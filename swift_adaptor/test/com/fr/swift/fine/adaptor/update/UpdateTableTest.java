@@ -4,11 +4,12 @@ import com.finebi.base.constant.FineEngineType;
 import com.finebi.conf.internalimp.connection.FineConnectionImp;
 import com.finebi.conf.internalimp.table.FineDBBusinessTable;
 import com.finebi.conf.internalimp.table.FineSQLBusinessTable;
+import com.finebi.conf.internalimp.update.TableUpdateInfo;
 import com.finebi.conf.structure.bean.connection.FineConnection;
 import com.finebi.conf.structure.bean.table.FineBusinessTable;
 import com.finebi.conf.utils.FineConnectionUtils;
 import com.fr.swift.adaptor.update.SwiftUpdateManager;
-import com.fr.swift.manager.ProviderManager;
+import com.fr.swift.cube.queue.StuffProviderQueue;
 import com.fr.swift.provider.ConnectionProvider;
 import com.fr.swift.resource.ResourceUtils;
 import com.fr.swift.source.DataSource;
@@ -42,7 +43,7 @@ public class UpdateTableTest extends TestCase {
         SwiftUpdateManager manager = new SwiftUpdateManager();
         manager.saveUpdateSetting(null, fineBusinessTable);
 
-        IndexStuffProvider provider = ProviderManager.getManager().poll();
+        IndexStuffProvider provider = StuffProviderQueue.getQueue().poll();
         assertTrue(true);
         assertTrue(provider.getAllTables().size() == 1);
         try {
@@ -56,11 +57,11 @@ public class UpdateTableTest extends TestCase {
     }
 
     public void testSqlTableUpdate() throws Exception {
-        FineBusinessTable fineBusinessTable = new FineSQLBusinessTable("tableName", "local", FineEngineType.Cube, "select * from DEMO_CAPITAL_RETURN");
+        FineBusinessTable fineBusinessTable = new FineSQLBusinessTable("1", "local", FineEngineType.Cube, "select * from DEMO_CAPITAL_RETURN");
         SwiftUpdateManager manager = new SwiftUpdateManager();
         manager.saveUpdateSetting(null, fineBusinessTable);
 
-        IndexStuffProvider provider = ProviderManager.getManager().poll();
+        IndexStuffProvider provider = StuffProviderQueue.getQueue().poll();
         assertTrue(true);
         assertTrue(provider.getAllTables().size() == 1);
         try {
@@ -70,5 +71,26 @@ public class UpdateTableTest extends TestCase {
         } catch (Exception e) {
             assertTrue(false);
         }
+    }
+
+    public void testIncrementUpdate() throws Exception {
+        FineBusinessTable fineBusinessTable = new FineSQLBusinessTable("2", "local", FineEngineType.Cube, "select * from DEMO_CAPITAL_RETURN");
+        SwiftUpdateManager manager = new SwiftUpdateManager();
+        TableUpdateInfo tableUpdateInfo = new TableUpdateInfo();
+        tableUpdateInfo.setUpdateType(1);
+        tableUpdateInfo.setAddSql("select * from a");
+        manager.saveUpdateSetting(tableUpdateInfo, fineBusinessTable);
+
+        IndexStuffProvider provider = StuffProviderQueue.getQueue().poll();
+        assertTrue(true);
+        assertTrue(provider.getAllTables().size() == 1);
+        try {
+            for (DataSource dataSource : provider.getAllTables()) {
+                assertNotSame(dataSource.getMetadata().getColumnCount(), 0);
+            }
+        } catch (Exception e) {
+            assertTrue(false);
+        }
+        assertNotNull(provider.getIncrementBySourceId(provider.getAllTables().get(0).getSourceKey().getId()));
     }
 }
