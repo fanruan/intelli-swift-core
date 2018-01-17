@@ -43,7 +43,7 @@ public class SwiftSQLDataModel implements FineTableEngineExecutor {
     @Override
     public BIDetailTableResult getPreviewData(FineBusinessTable table, int rowCount) throws Exception {
         FineSQLBusinessTable sqlTable = (FineSQLBusinessTable) table;
-        FineConnection connection = FineConnectionUtils.getConnectionByName(sqlTable.getConnName());
+        FineConnection connection = FineConnectionUtils.getConnectionByName(sqlTable.getConnectionName());
         ConnectionManager.getInstance().registerConnectionInfo(sqlTable.getConnectionName(),
                 new SwiftConnectionInfo(connection.getSchema(), connection.getConnection()));
         SwiftSourceTransfer transfer = SwiftSourceTransferFactory.createDBSourcePreviewTransfer(sqlTable.getConnectionName(), sqlTable.getSql(), rowCount);
@@ -60,7 +60,7 @@ public class SwiftSQLDataModel implements FineTableEngineExecutor {
     @Override
     public List<FineBusinessField> getFieldList(FineBusinessTable table) throws Exception {
         FineSQLBusinessTable sqlTable = (FineSQLBusinessTable) table;
-        FineConnection connection = FineConnectionUtils.getConnectionByName(sqlTable.getConnName());
+        FineConnection connection = FineConnectionUtils.getConnectionByName(sqlTable.getConnectionName());
         DataSource dataSource = DataSourceFactory.transformTableDBSource(sqlTable.getConnectionName(), sqlTable.getSql(), connection.getSchema(), connection.getConnection());
         SwiftMetaData swiftMetaData = dataSource.getMetadata();
         return FieldFactory.transformColumns2Fields(swiftMetaData);
