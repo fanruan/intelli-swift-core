@@ -8,6 +8,7 @@ import com.finebi.conf.service.engine.update.EngineUpdateManager;
 import com.finebi.conf.structure.bean.table.FineBusinessTable;
 import com.fr.fs.control.UserControl;
 import com.fr.swift.adaptor.transformer.IndexingDataSourceFactory;
+import com.fr.swift.increment.Increment;
 import com.fr.swift.manager.ProviderManager;
 import com.fr.swift.provider.IndexStuffInfoProvider;
 import com.fr.swift.source.container.SourceContainer;
@@ -50,15 +51,19 @@ public class SwiftUpdateManager implements EngineUpdateManager {
 
     @Override
     public boolean saveUpdateSetting(Map<FineBusinessTable, TableUpdateInfo> infoMap) throws Exception {
+        if (infoMap == null) {
+            return false;
+        }
         List<String> updateTableSourceKeys = new ArrayList<String>();
         List<String> updateRelationSourceKeys = new ArrayList<String>();
         List<String> updatePathSourceKeys = new ArrayList<String>();
         SourceContainer updateSourceContainer = new SourceContainer();
 
-        IndexingDataSourceFactory.transformDataSources(infoMap, updateTableSourceKeys, updateSourceContainer);
+        Map<String, List<Increment>> incrementMap = new HashMap<String, List<Increment>>();
+        IndexingDataSourceFactory.transformDataSources(infoMap, updateTableSourceKeys, updateSourceContainer, incrementMap);
 
         IndexingStuff indexingStuff = new TotalIndexStuffImpl(updateTableSourceKeys, updateRelationSourceKeys, updatePathSourceKeys);
-        IndexStuffProvider indexStuffProvider = new IndexStuffInfoProvider(indexingStuff, updateSourceContainer);
+        IndexStuffProvider indexStuffProvider = new IndexStuffInfoProvider(indexingStuff, updateSourceContainer, incrementMap);
         ProviderManager.getManager().registProvider(userId, indexStuffProvider);
         return true;
     }
