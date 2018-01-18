@@ -107,12 +107,12 @@ public class IndexingDataSourceFactory {
 
     private static QueryDBSource transformQueryDBSource(FineSQLBusinessTable table) throws Exception {
 
-        String connectionName = table.getConnName();
+        String connectionName = table.getConnectionName();
         FineConnection fineConnection = FineConnectionUtils.getConnectionByName(connectionName);
         ConnectionInfo connectionInfo = new SwiftConnectionInfo(fineConnection.getSchema(), fineConnection.getConnection());
         ConnectionManager.getInstance().registerConnectionInfo(connectionName, connectionInfo);
 
-        QueryDBSource queryDBSource = new QueryDBSource(table.getSql(), table.getConnName());
+        QueryDBSource queryDBSource = new QueryDBSource(table.getSql(), table.getConnectionName());
         return queryDBSource;
     }
 

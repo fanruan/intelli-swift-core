@@ -1,10 +1,15 @@
 package com.fr.swift.adaptor.model;
 
+import com.finebi.base.common.resource.FineResourceItem;
 import com.finebi.base.constant.FineEngineType;
-import com.finebi.conf.internalimp.table.dataModel.FineDBEngineExecutor;
+import com.finebi.conf.internalimp.service.engine.table.FineTableEngineExecutor;
+import com.finebi.conf.internalimp.table.FineDBBusinessTable;
+import com.finebi.conf.structure.bean.connection.FineConnection;
 import com.finebi.conf.structure.bean.field.FineBusinessField;
+import com.finebi.conf.structure.bean.table.FineBusinessTable;
 import com.finebi.conf.structure.result.BIDetailCell;
 import com.finebi.conf.structure.result.BIDetailTableResult;
+import com.finebi.conf.utils.FineConnectionUtils;
 import com.fr.base.FRContext;
 import com.fr.data.core.DataCoreUtils;
 import com.fr.data.core.db.TableProcedure;
@@ -42,7 +47,7 @@ import java.util.List;
  * @since Advanced FineBI Analysis 1.0
  */
 @Service("fineDataModel")
-public class SwiftDBEngineExecutor implements FineDBEngineExecutor {
+public class SwiftDBEngineExecutor implements FineTableEngineExecutor {
 
     public List<TableProcedure> getAllTables(Connection connection, String connectionName, String schema) {
         TableProcedure[] tps = new TableProcedure[0];
@@ -89,18 +94,29 @@ public class SwiftDBEngineExecutor implements FineDBEngineExecutor {
         return false;
     }
 
+
     @Override
-    public BIDetailTableResult getPreviewData(String connectionName, String tableName, int rowCount, String schema, Connection connection) throws Exception {
-        ConnectionManager.getInstance().registerConnectionInfo(connectionName,
-                new SwiftConnectionInfo(schema, connection));
-        SwiftSourceTransfer transfer = SwiftSourceTransferFactory.createDBSourcePreviewTransfer(connectionName, tableName, rowCount);
+    public FineEngineType getEngineType() {
+        return FineEngineType.Cube;
+    }
+
+    @Override
+    public BIDetailTableResult getPreviewData(FineBusinessTable table, int rowCount) throws Exception {
+        FineDBBusinessTable dbTable = (FineDBBusinessTable) table;
+        FineConnection connection = FineConnectionUtils.getConnectionByName(dbTable.getConnName());
+        ConnectionManager.getInstance().registerConnectionInfo(dbTable.getConnName(),
+                new SwiftConnectionInfo(connection.getSchema(), connection.getConnection()));
+        SwiftSourceTransfer transfer = SwiftSourceTransferFactory.createDBSourcePreviewTransfer(dbTable.getConnName(), dbTable.getTableName(), rowCount);
         SwiftResultSet swiftResultSet = transfer.createResultSet();
         BIDetailTableResult detailTableResult = new SwiftDetailTableResult(swiftResultSet);
         return detailTableResult;
+
     }
 
-    public BIDetailTableResult getPreviewRealData(String connectionName, String tableName) throws Exception {
-        DataSource dataSource = new TableDBSource(tableName, connectionName);
+    @Override
+    public BIDetailTableResult getRealData(FineBusinessTable table, int rowCount) throws Exception {
+        FineDBBusinessTable dbTable = (FineDBBusinessTable) table;
+        DataSource dataSource = new TableDBSource(dbTable.getTableName(), dbTable.getConnName());
         List<Segment> segments = LocalSegmentProvider.getInstance().getSegment(dataSource.getSourceKey());
         SwiftMetaData swiftMetaData = dataSource.getMetadata();
         List<List<BIDetailCell>> dataList = new ArrayList<List<BIDetailCell>>();
@@ -123,22 +139,26 @@ public class SwiftDBEngineExecutor implements FineDBEngineExecutor {
         }
         BIDetailTableResult realDetailResult = new SwiftRealDetailResult(dataList.iterator(), dataList.size(), swiftMetaData.getColumnCount());
         return realDetailResult;
+
     }
 
     @Override
-    public String getTableName() {
-        return null;
-    }
-
-    @Override
-    public List<FineBusinessField> getFieldList(String connectionName, String dbTableName, String schema, Connection connection) throws Exception {
-        DataSource dataSource = DataSourceFactory.transformTableDBSource(connectionName, dbTableName, schema, connection);
+    public List<FineBusinessField> getFieldList(FineBusinessTable table) throws Exception {
+        FineDBBusinessTable dbTable = (FineDBBusinessTable) table;
+        FineConnection connection = FineConnectionUtils.getConnectionByName(dbTable.getConnName());
+        DataSource dataSource = DataSourceFactory.transformTableDBSource(dbTable.getConnName(), dbTable.getTableName(), connection.getSchema(), connection.getConnection());
         SwiftMetaData swiftMetaData = dataSource.getMetadata();
         return FieldFactory.transformColumns2Fields(swiftMetaData);
+
     }
 
     @Override
-    public FineEngineType getEngineType() {
-        return FineEngineType.Cube;
+    public boolean isAvailable(FineResourceItem item) {
+        return false;
+    }
+
+    @Override
+    public String getName(FineResourceItem item) {
+        return null;
     }
 }
