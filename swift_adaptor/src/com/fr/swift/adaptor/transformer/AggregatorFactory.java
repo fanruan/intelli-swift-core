@@ -1,4 +1,4 @@
-package com.fr.swift.cal.convert;
+package com.fr.swift.adaptor.transformer;
 
 import com.fr.swift.query.aggregator.Aggregator;
 import com.fr.swift.query.aggregator.SumAggregate;
