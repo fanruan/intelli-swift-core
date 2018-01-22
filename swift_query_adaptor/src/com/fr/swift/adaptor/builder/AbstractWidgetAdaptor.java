@@ -1,8 +1,8 @@
-package com.fr.swift.cal.builder;
+package com.fr.swift.adaptor.builder;
 
 import com.fr.json.JSONObject;
 import com.fr.swift.cal.QueryInfo;
-import com.fr.swift.cal.WidgetAdaptor;
+import com.fr.swift.adapter.WidgetAdaptor;
 import com.fr.swift.service.QueryRunnerProvider;
 import com.fr.swift.source.SwiftResultSet;
 

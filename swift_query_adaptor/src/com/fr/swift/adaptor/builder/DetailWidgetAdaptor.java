@@ -1,4 +1,4 @@
-package com.fr.swift.cal.builder;
+package com.fr.swift.adaptor.builder;
 
 import com.fr.json.JSONObject;
 import com.fr.swift.cal.QueryInfo;
@@ -7,8 +7,7 @@ import com.fr.swift.source.SwiftResultSet;
 /**
  * Created by pony on 2017/12/21.
  */
-public class TableWidgetAdaptor extends AbstractWidgetAdaptor {
-
+public class DetailWidgetAdaptor extends AbstractWidgetAdaptor {
 
     @Override
     protected QueryInfo buildQueryInfo() {
