@@ -10,6 +10,7 @@ import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftResultSet;
 import com.fr.swift.source.SwiftSourceTransfer;
 import com.fr.swift.source.SwiftSourceTransferFactory;
+import com.fr.swift.source.excel.ExcelDataSource;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,12 +29,13 @@ public class SwiftEXCELDataModel {
         if (appendedFileNames == null) {
             appendedFileNames = new ArrayList<String>();
         }
-        DataSource dataSource = DataSourceFactory.transformExcelDataSource(path, names, types, appendedFileNames);
+        ExcelDataSource dataSource = DataSourceFactory.transformExcelDataSource(path, names, types, appendedFileNames);
         SwiftMetaData swiftMetaData = dataSource.getMetadata();
+        SwiftMetaData outerMetaData = dataSource.getOuterMetadata();
         List<String> paths = new ArrayList<String>();
         paths.add(path);
         paths.addAll(appendedFileNames);
-        SwiftSourceTransfer transfer = SwiftSourceTransferFactory.createEXCELSourcePreviewTransfer(paths, types, swiftMetaData);
+        SwiftSourceTransfer transfer = SwiftSourceTransferFactory.createEXCELSourcePreviewTransfer(paths, swiftMetaData, outerMetaData);
         SwiftResultSet swiftResultSet = transfer.createResultSet();
         BIDetailTableResult detailTableResult = new SwiftDetailTableResult(swiftResultSet);
         return detailTableResult;

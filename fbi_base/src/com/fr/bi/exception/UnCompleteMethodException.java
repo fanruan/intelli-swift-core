@@ -1,1 +1,0 @@
-package com.fr.bi.exception;/** * Created by Hiram on 2015/7/8. */public class UnCompleteMethodException extends RuntimeException {    private static final long serialVersionUID = -5227078530892140302L;    public UnCompleteMethodException(String msg) {        super(msg);    }    public UnCompleteMethodException() {    }}
