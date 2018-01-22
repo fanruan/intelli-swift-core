@@ -121,7 +121,7 @@ public class SwiftDBEngineExecutor implements FineTableEngineExecutor {
         SwiftMetaData swiftMetaData = dataSource.getMetadata();
         List<List<BIDetailCell>> dataList = new ArrayList<List<BIDetailCell>>();
         for (Segment segment : segments) {
-            List<PrimitiveDetailColumn> columnList = new ArrayList<>();
+            List<PrimitiveDetailColumn> columnList = new ArrayList<PrimitiveDetailColumn>();
             int count = segment.getRowCount();
             for (int i = 1; i <= swiftMetaData.getColumnCount(); i++) {
                 String columnName = swiftMetaData.getColumnName(i);

@@ -1,1 +1,0 @@
-package com.fr.bi.cal.analyze.cal.sssecret;/** * Created by Hiram on 2015/1/15. */public interface ISingleDimensionGroup {    int getChildIndexByValue(Object value);    NoneDimensionGroup getChildDimensionGroup(int row);    Object getChildData(int row);    String getChildShowName(int row);    void release();    Object[] getData();}

@@ -1,1 +1,0 @@
-package com.fr.bi.manager;/** * Created by Hiram on 2015/3/18. */public class PlugManager {    public static PerformancePlugManagerInterface getPerformancePlugManager() {        return PerformancePlugManager.getInstance();    }}
