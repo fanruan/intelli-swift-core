@@ -1,6 +1,9 @@
 package com.fr.swift.fine.adaptor.executor;
 
+import com.finebi.base.constant.FineEngineType;
+import com.finebi.conf.internalimp.table.FineSQLBusinessTable;
 import com.finebi.conf.structure.bean.field.FineBusinessField;
+import com.finebi.conf.structure.bean.table.FineBusinessTable;
 import com.finebi.conf.structure.result.BIDetailCell;
 import com.finebi.conf.structure.result.BIDetailTableResult;
 import com.fr.swift.adaptor.model.SwiftSQLEngineExecutor;
@@ -48,14 +51,20 @@ public class SwiftSQLDataModelTest extends TestCase {
 
     public void testSwiftSQLDataModelGetFields() throws Exception {
         SwiftSQLEngineExecutor dataModel = new SwiftSQLEngineExecutor();
-        List<FineBusinessField> list = dataModel.getFieldList("local", sql, connectionInfo.getSchema(), connectionInfo.getFrConnection());
+        FineBusinessTable fineBusinessTable = new FineSQLBusinessTable("A", "local", FineEngineType.Cube, sql);
+
+        List<FineBusinessField> list = dataModel.getFieldList(fineBusinessTable);
         assertEquals(list.size(), 9);
         assertTrue(true);
     }
 
     public void testSwiftSQLDataModelPreviewDBTable() throws Exception {
         SwiftSQLEngineExecutor dataModel = new SwiftSQLEngineExecutor();
-        BIDetailTableResult detailTableResult = dataModel.getPreviewData("local", sql, 250, connectionInfo.getSchema(), connectionInfo.getFrConnection());
+
+        FineBusinessTable fineBusinessTable = new FineSQLBusinessTable("A", "local", FineEngineType.Cube, sql);
+
+
+        BIDetailTableResult detailTableResult = dataModel.getPreviewData(fineBusinessTable, 250);
         assertEquals(detailTableResult.columnSize(), 9);
         int count = 0;
         while (detailTableResult.hasNext()) {

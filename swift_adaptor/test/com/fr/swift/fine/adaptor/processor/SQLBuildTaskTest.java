@@ -50,7 +50,7 @@ public class SQLBuildTaskTest extends TestCase {
 
         Thread.sleep(10000l);
         SwiftSQLEngineExecutor executor = new SwiftSQLEngineExecutor();
-        BIDetailTableResult result = executor.getPreviewRealData("SQLBuildTaskTest", "select * from DEMO_CAPITAL_RETURN");
+        BIDetailTableResult result = executor.getRealData(fineBusinessTable, 1000);
         assertTrue(true);
         assertEquals(result.columnSize(), 4);
         assertEquals(result.rowSize(), 682);

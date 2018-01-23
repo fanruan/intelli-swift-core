@@ -8,7 +8,7 @@ import com.fr.swift.cube.task.impl.Operation;
 import com.fr.swift.cube.task.impl.SchedulerTaskPool;
 import com.fr.swift.cube.task.impl.WorkerTaskImpl;
 import com.fr.swift.cube.task.impl.WorkerTaskPool;
-import com.fr.swift.generate.impl.TableBuilder;
+import com.fr.swift.generate.history.TableBuilder;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.source.DataSource;

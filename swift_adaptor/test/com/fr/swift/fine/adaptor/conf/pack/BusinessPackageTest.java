@@ -1,0 +1,33 @@
+package com.fr.swift.fine.adaptor.conf.pack;
+
+import com.finebi.base.constant.FineEngineType;
+import com.finebi.conf.internalimp.pack.FineBusinessPackageImp;
+import com.finebi.conf.structure.bean.pack.FineBusinessPackage;
+import com.fr.swift.conf.provider.SwiftPackageConfProvider;
+import junit.framework.TestCase;
+
+/**
+ * This class created on 2018-1-23 16:46:11
+ *
+ * @author Lucifer
+ * @description
+ * @since Advanced FineBI Analysis 1.0
+ */
+public class BusinessPackageTest extends TestCase {
+
+    public void testWritePackage() {
+        SwiftPackageConfProvider provider = new SwiftPackageConfProvider();
+        for (FineBusinessPackage fineBusinessPackage : provider.getAllPackage()) {
+            provider.removePackage(fineBusinessPackage.getId());
+        }
+        assertEquals(provider.getAllPackage().size(), 0);
+
+        FineBusinessPackage fineBusinessPackage = new FineBusinessPackageImp("001", "lucifer", -999, 1000, FineEngineType.Cube, 1000);
+        provider.addPackage(fineBusinessPackage);
+        assertEquals(provider.getAllPackage().size(), 1);
+        assertNotNull(provider.getSinglePackage("001"));
+        assertNotNull(provider.getPackageByName("lucifer"));
+        provider.removePackage("001");
+        assertEquals(provider.getAllPackage().size(), 0);
+    }
+}
