@@ -12,9 +12,9 @@ import com.fr.swift.conf.business.ISwiftXmlWriter;
  * @description
  * @since Advanced FineBI Analysis 1.0
  */
-public class SwiftXmlBusinessPackDao extends SwiftBaseXmlDao<FineBusinessPackage> {
+public class SwiftPackageDao extends SwiftBaseXmlDao<FineBusinessPackage> {
 
-    public SwiftXmlBusinessPackDao(AbstractSwiftParseXml<FineBusinessPackage> xmlHandler, String xmlFileName, ISwiftXmlWriter<FineBusinessPackage> swiftXmlWriter) {
+    public SwiftPackageDao(AbstractSwiftParseXml<FineBusinessPackage> xmlHandler, String xmlFileName, ISwiftXmlWriter<FineBusinessPackage> swiftXmlWriter) {
         super(xmlHandler, xmlFileName, swiftXmlWriter);
     }
 }

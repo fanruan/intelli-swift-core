@@ -30,7 +30,7 @@ import java.util.List;
 public abstract class SwiftBaseXmlDao<T extends FineResourceItem> implements BusinessConfigDAO<T> {
 
     private AbstractSwiftParseXml<T> xmlHandler;
-    private static final SwiftLogger LOGGER = SwiftLoggers.getLogger(ProviderManager.class);
+    private static final SwiftLogger LOGGER = SwiftLoggers.getLogger(SwiftBaseXmlDao.class);
     private String xmlFileName;
 
     private ISwiftXmlWriter<T> swiftXmlWriter;
@@ -168,12 +168,13 @@ public abstract class SwiftBaseXmlDao<T extends FineResourceItem> implements Bus
         return out;
     }
 
-    protected void makeSureXmlFileExist() {
+    protected File makeSureXmlFileExist() {
         String path = this.getClass().getResource("/").getPath();
         File tableFile = new File(path + File.separator + xmlFileName);
         if (!tableFile.exists()) {
             FileUtils.createFile(tableFile);
         }
+        return tableFile;
     }
 
     protected InputStream getInputStream() throws Exception {
