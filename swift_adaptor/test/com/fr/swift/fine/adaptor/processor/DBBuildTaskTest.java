@@ -3,7 +3,6 @@ package com.fr.swift.fine.adaptor.processor;
 import com.finebi.base.constant.FineEngineType;
 import com.finebi.conf.internalimp.connection.FineConnectionImp;
 import com.finebi.conf.internalimp.table.FineDBBusinessTable;
-import com.finebi.conf.internalimp.table.FineSQLBusinessTable;
 import com.finebi.conf.structure.bean.connection.FineConnection;
 import com.finebi.conf.structure.bean.table.FineBusinessTable;
 import com.finebi.conf.structure.result.BIDetailTableResult;
@@ -11,7 +10,6 @@ import com.finebi.conf.utils.FineConnectionUtils;
 import com.fr.base.FRContext;
 import com.fr.dav.LocalEnv;
 import com.fr.swift.adaptor.model.SwiftDBEngineExecutor;
-import com.fr.swift.adaptor.model.SwiftSQLEngineExecutor;
 import com.fr.swift.adaptor.update.SwiftUpdateManager;
 import com.fr.swift.manager.ProviderTaskManager;
 import com.fr.swift.provider.ConnectionProvider;
@@ -52,7 +50,8 @@ public class DBBuildTaskTest extends TestCase {
 
         Thread.sleep(10000l);
         SwiftDBEngineExecutor executor = new SwiftDBEngineExecutor();
-        BIDetailTableResult result = executor.getPreviewRealData("DBBuildTaskTest", "DEMO_CAPITAL_RETURN");
+
+        BIDetailTableResult result = executor.getRealData(fineBusinessTable, 1000);
         assertTrue(true);
         assertEquals(result.columnSize(), 4);
         assertEquals(result.rowSize(), 682);

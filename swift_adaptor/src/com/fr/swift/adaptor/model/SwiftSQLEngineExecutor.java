@@ -33,7 +33,7 @@ import java.util.List;
  */
 @Qualifier()
 @Service("fineDataModel")
-public class SwiftSQLDataModel implements FineTableEngineExecutor {
+public class SwiftSQLEngineExecutor implements FineTableEngineExecutor {
 
     @Override
     public FineEngineType getEngineType() {

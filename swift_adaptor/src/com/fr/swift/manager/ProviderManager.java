@@ -1,18 +1,8 @@
 package com.fr.swift.manager;
 
 import com.fr.swift.cube.queue.StuffProviderQueue;
-import com.fr.swift.cube.queue.StuffFetchThread;
-import com.fr.swift.cube.task.TaskKey;
-import com.fr.swift.cube.task.WorkerTask;
-import com.fr.swift.cube.task.impl.CubeTaskManager;
-import com.fr.swift.cube.task.impl.Operation;
-import com.fr.swift.cube.task.impl.SchedulerTaskPool;
-import com.fr.swift.cube.task.impl.WorkerTaskImpl;
-import com.fr.swift.cube.task.impl.WorkerTaskPool;
-import com.fr.swift.generate.impl.TableBuilder;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
-import com.fr.swift.source.DataSource;
 import com.fr.swift.source.manager.IndexStuffProvider;
 
 import java.util.ArrayList;

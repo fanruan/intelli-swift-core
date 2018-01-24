@@ -22,7 +22,7 @@ import java.util.List;
  * @description
  * @since Advanced FineBI Analysis 1.0
  */
-public class SwiftEXCELDataModel {
+public class SwiftEXCELEngineExcutor {
 
     // TODO: 2018-1-3 预览加行数限制
     public BIDetailTableResult getPreviewData(String path, String[] names, int[] types, List<String> appendedFileNames, int rowCount) throws Exception {
