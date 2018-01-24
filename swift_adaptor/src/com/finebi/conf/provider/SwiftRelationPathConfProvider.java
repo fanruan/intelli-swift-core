@@ -1,7 +1,7 @@
-package com.fr.swift.conf.provider;
+package com.finebi.conf.provider;
 
 import com.finebi.base.constant.FineEngineType;
-import com.finebi.conf.service.provider.FineRelationPathConfProvider;
+import com.finebi.conf.service.engine.provider.relation.EngineRelationPathManager;
 import com.finebi.conf.structure.path.FineBusinessTableRelationPath;
 import com.finebi.conf.structure.relation.FineBusinessTableRelation;
 
@@ -14,7 +14,7 @@ import java.util.List;
  * @description
  * @since Advanced FineBI Analysis 1.0
  */
-public class SwiftRelationPathConfProvider implements FineRelationPathConfProvider {
+public class SwiftRelationPathConfProvider implements EngineRelationPathManager {
 
     @Override
     public List<FineBusinessTableRelation> getAllRelations() {

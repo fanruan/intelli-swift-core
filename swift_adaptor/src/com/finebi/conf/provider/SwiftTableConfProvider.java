@@ -1,13 +1,13 @@
-package com.fr.swift.conf.provider;
+package com.finebi.conf.provider;
 
 import com.finebi.base.constant.FineEngineType;
-import com.finebi.conf.service.provider.FineTableConfProvider;
+import com.finebi.conf.service.engine.provider.table.EngineTableManager;
 import com.finebi.conf.structure.bean.field.FineBusinessField;
 import com.finebi.conf.structure.bean.pack.FineBusinessPackage;
 import com.finebi.conf.structure.bean.table.FineBusinessTable;
 import com.fr.general.ComparatorUtils;
 import com.fr.swift.conf.business.ISwiftXmlWriter;
-import com.fr.swift.conf.business.table.SwiftXmlBusinessTableDao;
+import com.fr.swift.conf.business.table.SwiftTableDao;
 import com.fr.swift.conf.business.table.TableParseXml;
 import com.fr.swift.conf.business.table.TableXmlWriter;
 
@@ -21,16 +21,16 @@ import java.util.List;
  * @description
  * @since Advanced FineBI Analysis 1.0
  */
-public class SwiftTableConfProvider implements FineTableConfProvider {
+public class SwiftTableConfProvider implements EngineTableManager {
 
-    private SwiftXmlBusinessTableDao businessTableDAO;
+    private SwiftTableDao businessTableDAO;
     private SwiftPackageConfProvider swiftPackageConfProvider;
     private String xmlFileName = "table.xml";
 
     public SwiftTableConfProvider() {
         TableParseXml xmlHandler = new TableParseXml();
         ISwiftXmlWriter swiftXmlWriter = new TableXmlWriter();
-        businessTableDAO = new SwiftXmlBusinessTableDao(xmlHandler, xmlFileName, swiftXmlWriter);
+        businessTableDAO = new SwiftTableDao(xmlHandler, xmlFileName, swiftXmlWriter);
         swiftPackageConfProvider = new SwiftPackageConfProvider();
     }
 

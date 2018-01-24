@@ -1,7 +1,7 @@
-package com.fr.swift.conf.provider;
+package com.finebi.conf.provider;
 
 import com.finebi.base.constant.FineEngineType;
-import com.finebi.conf.service.provider.FinePackageConfProvider;
+import com.finebi.conf.service.engine.provider.pack.EnginePackageManager;
 import com.finebi.conf.structure.bean.group.FinePackageGroup;
 import com.finebi.conf.structure.bean.pack.FineBusinessPackage;
 import com.finebi.conf.utils.FineGroupUtils;
@@ -9,7 +9,7 @@ import com.fr.general.ComparatorUtils;
 import com.fr.swift.conf.business.ISwiftXmlWriter;
 import com.fr.swift.conf.business.pack.PackXmlWriter;
 import com.fr.swift.conf.business.pack.PackageParseXml;
-import com.fr.swift.conf.business.pack.SwiftXmlBusinessPackDao;
+import com.fr.swift.conf.business.pack.SwiftPackageDao;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.manager.ProviderManager;
@@ -24,9 +24,9 @@ import java.util.List;
  * @description
  * @since Advanced FineBI Analysis 1.0
  */
-public class SwiftPackageConfProvider implements FinePackageConfProvider {
+public class SwiftPackageConfProvider implements EnginePackageManager {
 
-    private SwiftXmlBusinessPackDao businessPackDAO;
+    private SwiftPackageDao businessPackDAO;
 
     private static final SwiftLogger LOGGER = SwiftLoggers.getLogger(ProviderManager.class);
 
@@ -35,7 +35,7 @@ public class SwiftPackageConfProvider implements FinePackageConfProvider {
     public SwiftPackageConfProvider() {
         PackageParseXml xmlHandler = new PackageParseXml();
         ISwiftXmlWriter swiftXmlWriter = new PackXmlWriter();
-        businessPackDAO = new SwiftXmlBusinessPackDao(xmlHandler, xmlFileName, swiftXmlWriter);
+        businessPackDAO = new SwiftPackageDao(xmlHandler, xmlFileName, swiftXmlWriter);
     }
 
     @Override
@@ -85,7 +85,7 @@ public class SwiftPackageConfProvider implements FinePackageConfProvider {
     }
 
     @Override
-    public boolean addPackage(FineBusinessPackage pack) {
+    public boolean addPackage(FineBusinessPackage pack, String groupId) {
         return businessPackDAO.saveConfig(pack);
     }
 

@@ -1,9 +1,9 @@
-package com.fr.swift.fine.adaptor.conf.table;
+package com.finebi.conf.table;
 
 import com.finebi.base.constant.FineEngineType;
 import com.finebi.conf.internalimp.table.FineDBBusinessTable;
 import com.finebi.conf.structure.bean.table.FineBusinessTable;
-import com.fr.swift.conf.provider.SwiftTableConfProvider;
+import com.finebi.conf.provider.SwiftTableConfProvider;
 import junit.framework.TestCase;
 
 import java.util.ArrayList;
@@ -16,7 +16,7 @@ import java.util.List;
  * @description
  * @since Advanced FineBI Analysis 1.0
  */
-public class BusinessTableTest extends TestCase {
+public class BusinessTableProviderTest extends TestCase {
 
     public void testBusinessTable() {
         SwiftTableConfProvider provider = new SwiftTableConfProvider();
