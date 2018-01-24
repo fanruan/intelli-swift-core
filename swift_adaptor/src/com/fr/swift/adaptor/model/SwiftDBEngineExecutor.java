@@ -2,8 +2,8 @@ package com.fr.swift.adaptor.model;
 
 import com.finebi.base.common.resource.FineResourceItem;
 import com.finebi.base.constant.FineEngineType;
+import com.finebi.conf.internalimp.basictable.table.FineDBBusinessTable;
 import com.finebi.conf.internalimp.service.engine.table.FineTableEngineExecutor;
-import com.finebi.conf.internalimp.table.FineDBBusinessTable;
 import com.finebi.conf.structure.bean.connection.FineConnection;
 import com.finebi.conf.structure.bean.field.FineBusinessField;
 import com.finebi.conf.structure.bean.table.FineBusinessTable;
@@ -34,7 +34,6 @@ import com.fr.swift.source.SwiftSourceTransferFactory;
 import com.fr.swift.source.db.ConnectionManager;
 import com.fr.swift.source.db.SwiftConnectionInfo;
 import com.fr.swift.source.db.TableDBSource;
-import com.fr.third.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,7 +45,7 @@ import java.util.List;
  * @description
  * @since Advanced FineBI Analysis 1.0
  */
-@Service("fineDataModel")
+//@Service("fineBDDataModel")
 public class SwiftDBEngineExecutor implements FineTableEngineExecutor {
 
     public List<TableProcedure> getAllTables(Connection connection, String connectionName, String schema) {
