@@ -3,7 +3,7 @@ package com.fr.swift.fine.adaptor.executor;
 import com.finebi.conf.structure.bean.field.FineBusinessField;
 import com.finebi.conf.structure.result.BIDetailCell;
 import com.finebi.conf.structure.result.BIDetailTableResult;
-import com.fr.swift.adaptor.model.SwiftEXCELDataModel;
+import com.fr.swift.adaptor.model.SwiftEXCELEngineExcutor;
 import com.fr.swift.resource.ResourceUtils;
 import com.fr.swift.source.ColumnTypeConstants;
 import com.fr.swift.source.excel.ExcelDataSource;
@@ -36,14 +36,14 @@ public class SwiftEXCELDataModelTest extends TestCase {
 
 
     public void testSwiftEXCELDataModelGetFields() throws Exception {
-        SwiftEXCELDataModel dataModel = new SwiftEXCELDataModel();
+        SwiftEXCELEngineExcutor dataModel = new SwiftEXCELEngineExcutor();
         List<FineBusinessField> list = dataModel.getFieldList(path, names, types, null);
         assertEquals(list.size(), 2);
         assertTrue(true);
     }
 
     public void testSwiftEXCELDataModelPreviewDBTable() throws Exception {
-        SwiftEXCELDataModel dataModel = new SwiftEXCELDataModel();
+        SwiftEXCELEngineExcutor dataModel = new SwiftEXCELEngineExcutor();
         BIDetailTableResult detailTableResult = dataModel.getPreviewData(path, names, types, new ArrayList<String>(), 100);
         assertEquals(detailTableResult.columnSize(), 2);
         int count = 0;

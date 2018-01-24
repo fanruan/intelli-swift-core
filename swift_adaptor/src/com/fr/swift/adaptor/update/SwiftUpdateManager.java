@@ -13,8 +13,8 @@ import com.fr.swift.manager.ProviderManager;
 import com.fr.swift.provider.IndexStuffInfoProvider;
 import com.fr.swift.source.container.SourceContainer;
 import com.fr.swift.source.manager.IndexStuffProvider;
+import com.fr.swift.stuff.HistoryIndexStuffImpl;
 import com.fr.swift.stuff.IndexingStuff;
-import com.fr.swift.stuff.TotalIndexStuffImpl;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -62,7 +62,7 @@ public class SwiftUpdateManager implements EngineUpdateManager {
         Map<String, List<Increment>> incrementMap = new HashMap<String, List<Increment>>();
         IndexingDataSourceFactory.transformDataSources(infoMap, updateTableSourceKeys, updateSourceContainer, incrementMap);
 
-        IndexingStuff indexingStuff = new TotalIndexStuffImpl(updateTableSourceKeys, updateRelationSourceKeys, updatePathSourceKeys);
+        IndexingStuff indexingStuff = new HistoryIndexStuffImpl(updateTableSourceKeys, updateRelationSourceKeys, updatePathSourceKeys);
         IndexStuffProvider indexStuffProvider = new IndexStuffInfoProvider(indexingStuff, updateSourceContainer, incrementMap);
         ProviderManager.getManager().registProvider(userId, indexStuffProvider);
         return true;
