@@ -1,7 +1,7 @@
 package com.finebi.conf.provider;
 
 import com.finebi.base.constant.FineEngineType;
-import com.finebi.conf.service.engine.provider.relation.EngineRelationPathManager;
+import com.finebi.conf.service.engine.relation.EngineRelationPathManager;
 import com.finebi.conf.structure.path.FineBusinessTableRelationPath;
 import com.finebi.conf.structure.relation.FineBusinessTableRelation;
 

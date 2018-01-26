@@ -1,7 +1,7 @@
 package com.finebi.conf.provider;
 
 import com.finebi.base.constant.FineEngineType;
-import com.finebi.conf.service.engine.provider.pack.EnginePackageManager;
+import com.finebi.conf.service.engine.pack.EnginePackageManager;
 import com.finebi.conf.structure.bean.group.FinePackageGroup;
 import com.finebi.conf.structure.bean.pack.FineBusinessPackage;
 import com.finebi.conf.utils.FineGroupUtils;
