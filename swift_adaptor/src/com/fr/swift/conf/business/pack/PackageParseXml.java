@@ -25,12 +25,12 @@ public class PackageParseXml extends AbstractSwiftParseXml<FineBusinessPackage> 
     }
 
     @Override
-    public void startDocument() throws SAXException {
+    public void startDocument() {
         list = new ArrayList<FineBusinessPackage>();
     }
 
     @Override
-    public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
+    public void startElement(String uri, String localName, String qName, Attributes attributes) {
         if (ComparatorUtils.equals(qName, "Package")) {
             String packageId = attributes.getValue("packageId");
             String packageName = attributes.getValue("packageName");
@@ -43,7 +43,7 @@ public class PackageParseXml extends AbstractSwiftParseXml<FineBusinessPackage> 
     }
 
     @Override
-    public void endElement(String uri, String localName, String qName) throws SAXException {
+    public void endElement(String uri, String localName, String qName) {
 
         if (ComparatorUtils.equals(qName, "Package")) {
             this.list.add(this.resource);
@@ -52,11 +52,11 @@ public class PackageParseXml extends AbstractSwiftParseXml<FineBusinessPackage> 
     }
 
     @Override
-    public void endDocument() throws SAXException {
+    public void endDocument() {
     }
 
     @Override
-    public void characters(char[] ch, int start, int length) throws SAXException {
+    public void characters(char[] ch, int start, int length) {
         if (this.tagName != null) {
             String date = new String(ch, start, length);
             if (ComparatorUtils.equals(tagName, "table")) {

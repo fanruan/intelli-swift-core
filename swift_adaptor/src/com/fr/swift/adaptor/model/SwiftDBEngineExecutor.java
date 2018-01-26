@@ -4,6 +4,7 @@ import com.finebi.base.common.resource.FineResourceItem;
 import com.finebi.base.constant.FineEngineType;
 import com.finebi.conf.internalimp.basictable.table.FineDBBusinessTable;
 import com.finebi.conf.internalimp.service.engine.table.FineTableEngineExecutor;
+import com.finebi.conf.structure.analysis.table.FineAnalysisTable;
 import com.finebi.conf.structure.bean.connection.FineConnection;
 import com.finebi.conf.structure.bean.field.FineBusinessField;
 import com.finebi.conf.structure.bean.table.FineBusinessTable;
@@ -25,7 +26,7 @@ import com.fr.swift.adaptor.transformer.FieldFactory;
 import com.fr.swift.manager.LocalSegmentProvider;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.column.ColumnKey;
-import com.fr.swift.segment.column.PrimitiveDetailColumn;
+import com.fr.swift.segment.column.DetailColumn;
 import com.fr.swift.source.DataSource;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftResultSet;
@@ -120,7 +121,7 @@ public class SwiftDBEngineExecutor implements FineTableEngineExecutor {
         SwiftMetaData swiftMetaData = dataSource.getMetadata();
         List<List<BIDetailCell>> dataList = new ArrayList<List<BIDetailCell>>();
         for (Segment segment : segments) {
-            List<PrimitiveDetailColumn> columnList = new ArrayList<PrimitiveDetailColumn>();
+            List<DetailColumn> columnList = new ArrayList<DetailColumn>();
             int count = segment.getRowCount();
             for (int i = 1; i <= swiftMetaData.getColumnCount(); i++) {
                 String columnName = swiftMetaData.getColumnName(i);
@@ -142,6 +143,11 @@ public class SwiftDBEngineExecutor implements FineTableEngineExecutor {
     }
 
     @Override
+    public BIDetailTableResult getRealData(FineBusinessTable table) throws Exception {
+        return null;
+    }
+
+    @Override
     public List<FineBusinessField> getFieldList(FineBusinessTable table) throws Exception {
         FineDBBusinessTable dbTable = (FineDBBusinessTable) table;
         FineConnection connection = FineConnectionUtils.getConnectionByName(dbTable.getConnName());
@@ -149,6 +155,11 @@ public class SwiftDBEngineExecutor implements FineTableEngineExecutor {
         SwiftMetaData swiftMetaData = dataSource.getMetadata();
         return FieldFactory.transformColumns2Fields(swiftMetaData);
 
+    }
+
+    @Override
+    public FineAnalysisTable getBasicOperator(FineAnalysisTable table) throws Exception {
+        return null;
     }
 
     @Override

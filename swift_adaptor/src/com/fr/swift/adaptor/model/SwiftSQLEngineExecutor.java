@@ -4,6 +4,7 @@ import com.finebi.base.common.resource.FineResourceItem;
 import com.finebi.base.constant.FineEngineType;
 import com.finebi.conf.internalimp.service.engine.table.FineTableEngineExecutor;
 import com.finebi.conf.internalimp.table.FineSQLBusinessTable;
+import com.finebi.conf.structure.analysis.table.FineAnalysisTable;
 import com.finebi.conf.structure.bean.connection.FineConnection;
 import com.finebi.conf.structure.bean.field.FineBusinessField;
 import com.finebi.conf.structure.bean.table.FineBusinessTable;
@@ -53,7 +54,12 @@ public class SwiftSQLEngineExecutor implements FineTableEngineExecutor {
     }
 
     @Override
-    public BIDetailTableResult getRealData(FineBusinessTable table, int rowCount) throws Exception {
+    public BIDetailTableResult getRealData(FineBusinessTable table, int rowCount) {
+        return null;
+    }
+
+    @Override
+    public BIDetailTableResult getRealData(FineBusinessTable table) throws Exception {
         return null;
     }
 
@@ -64,6 +70,11 @@ public class SwiftSQLEngineExecutor implements FineTableEngineExecutor {
         DataSource dataSource = DataSourceFactory.transformTableDBSource(sqlTable.getConnectionName(), sqlTable.getSql(), connection.getSchema(), connection.getConnection());
         SwiftMetaData swiftMetaData = dataSource.getMetadata();
         return FieldFactory.transformColumns2Fields(swiftMetaData);
+    }
+
+    @Override
+    public FineAnalysisTable getBasicOperator(FineAnalysisTable table) throws Exception {
+        return null;
     }
 
     @Override

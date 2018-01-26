@@ -24,6 +24,7 @@ import java.util.List;
  * @description
  * @since Advanced FineBI Analysis 1.0
  */
+
 public class SwiftPackageConfProvider implements EnginePackageManager {
 
     private SwiftPackageDao businessPackDAO;
@@ -105,10 +106,7 @@ public class SwiftPackageConfProvider implements EnginePackageManager {
 
     @Override
     public boolean isPackageExist(String packageId) {
-        if (this.getSinglePackage(packageId) == null) {
-            return false;
-        }
-        return true;
+        return this.getSinglePackage(packageId) != null;
     }
 
     @Override

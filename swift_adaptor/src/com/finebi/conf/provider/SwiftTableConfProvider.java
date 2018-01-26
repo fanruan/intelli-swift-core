@@ -121,13 +121,13 @@ public class SwiftTableConfProvider implements EngineTableManager {
     @Override
     public boolean isTableExist(String tableId) {
         FineBusinessTable fineBusinessTable = this.getSingleTable(tableId);
-        return fineBusinessTable == null ? false : true;
+        return fineBusinessTable != null;
     }
 
     @Override
     public boolean isFieldExist(String tableId, String fieldId) {
         FineBusinessField fineBusinessField = this.getField(tableId, fieldId);
-        return fineBusinessField == null ? false : true;
+        return fineBusinessField != null;
     }
 
     @Override
