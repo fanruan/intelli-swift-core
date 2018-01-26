@@ -38,21 +38,25 @@ public class SwiftUpdateManager implements EngineUpdateManager {
     }
 
     @Override
-    public TableUpdateInfo getTableUpdateInfo(FineBusinessTable table) {
+    public List<TableUpdateInfo> getTableUpdateInfo(FineBusinessTable table) throws Exception {
         return null;
     }
 
     @Override
-    public boolean saveUpdateSetting(TableUpdateInfo updateInfo, FineBusinessTable table) throws Exception {
-        Map<FineBusinessTable, TableUpdateInfo> infoMap = new HashMap<FineBusinessTable, TableUpdateInfo>();
-        infoMap.put(table, updateInfo);
-        return saveUpdateSetting(infoMap);
+    public TableUpdateInfo getPackageUpdateInfo(String packageId) throws Exception {
+        return null;
     }
 
     @Override
-    public boolean saveUpdateSetting(Map<FineBusinessTable, TableUpdateInfo> infoMap) throws Exception {
+    public void saveUpdateSetting(TableUpdateInfo updateInfo, FineBusinessTable table) throws Exception {
+        Map<FineBusinessTable, TableUpdateInfo> infoMap = new HashMap<FineBusinessTable, TableUpdateInfo>();
+        infoMap.put(table, updateInfo);
+        saveUpdateSetting(infoMap);
+    }
+
+    @Override
+    public void saveUpdateSetting(Map<FineBusinessTable, TableUpdateInfo> infoMap) throws Exception {
         if (infoMap == null) {
-            return false;
         }
         List<String> updateTableSourceKeys = new ArrayList<String>();
         List<String> updateRelationSourceKeys = new ArrayList<String>();
@@ -65,23 +69,28 @@ public class SwiftUpdateManager implements EngineUpdateManager {
         IndexingStuff indexingStuff = new HistoryIndexStuffImpl(updateTableSourceKeys, updateRelationSourceKeys, updatePathSourceKeys);
         IndexStuffProvider indexStuffProvider = new IndexStuffInfoProvider(indexingStuff, updateSourceContainer, incrementMap);
         ProviderManager.getManager().registProvider(userId, indexStuffProvider);
-        return true;
     }
 
     @Override
-    public UpdateStatus getTableUpdateStatus(FineBusinessTable table) {
+    public void savePackageUpdateSetting(String packId, TableUpdateInfo info) throws Exception {
+        
+    }
+
+    @Override
+    public Map<String, UpdateStatus> getTableUpdateStatus(FineBusinessTable table) throws Exception {
         return null;
     }
 
     @Override
-    public UpdateLog getTableUpdateLog(FineBusinessTable table) {
+    public List<UpdateLog> getTableUpdateLog(FineBusinessTable table) throws Exception {
         return null;
     }
 
     @Override
-    public void updateAll(TableUpdateInfo info) {
+    public void updateAll(TableUpdateInfo info) throws Exception {
 
     }
+
 
     @Override
     public FineEngineType getEngineType() {

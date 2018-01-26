@@ -34,7 +34,7 @@ public class SimpleBusinessRelation {
         this.relationType = relationType;
     }
 
-    public SimpleBusinessRelation(Map<String, Object> jsonMap) throws IOException {
+    public SimpleBusinessRelation(Map<String, Object> jsonMap) {
         this.relationName = String.valueOf(jsonMap.get("relationName"));
         this.primaryTable = String.valueOf(jsonMap.get("primaryTable"));
         this.foreignTable = String.valueOf(jsonMap.get("foreignTable"));

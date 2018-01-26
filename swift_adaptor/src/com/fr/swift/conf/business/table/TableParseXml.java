@@ -2,14 +2,13 @@ package com.fr.swift.conf.business.table;
 
 import com.finebi.base.constant.BaseConstant;
 import com.finebi.base.constant.FineEngineType;
+import com.finebi.conf.internalimp.basictable.table.FineDBBusinessTable;
 import com.finebi.conf.internalimp.field.FineBusinessFieldImp;
-import com.finebi.conf.internalimp.table.FineDBBusinessTable;
 import com.finebi.conf.internalimp.table.FineSQLBusinessTable;
 import com.finebi.conf.structure.bean.table.FineBusinessTable;
 import com.fr.general.ComparatorUtils;
 import com.fr.swift.conf.business.AbstractSwiftParseXml;
 import org.xml.sax.Attributes;
-import org.xml.sax.SAXException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,13 +24,13 @@ public class TableParseXml extends AbstractSwiftParseXml<FineBusinessTable> {
     private String tagName;
 
     @Override
-    public void startDocument() throws SAXException {
+    public void startDocument() {
 
         list = new ArrayList<FineBusinessTable>();
     }
 
     @Override
-    public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
+    public void startElement(String uri, String localName, String qName, Attributes attributes) {
 
         if (ComparatorUtils.equals(qName, "Table")) {
             // 对tableType进行判断，不同类型的table，不同类型的读取
@@ -80,7 +79,7 @@ public class TableParseXml extends AbstractSwiftParseXml<FineBusinessTable> {
     }
 
     @Override
-    public void endElement(String uri, String localName, String qName) throws SAXException {
+    public void endElement(String uri, String localName, String qName) {
 
         if (ComparatorUtils.equals(qName, "Table")) {
 
@@ -90,7 +89,7 @@ public class TableParseXml extends AbstractSwiftParseXml<FineBusinessTable> {
     }
 
     @Override
-    public void endDocument() throws SAXException {
+    public void endDocument() {
         if (ComparatorUtils.equals(tagName, "Table")) {
             this.list.add(this.resource);
         }
@@ -99,7 +98,7 @@ public class TableParseXml extends AbstractSwiftParseXml<FineBusinessTable> {
     }
 
     @Override
-    public void characters(char[] ch, int start, int length) throws SAXException {
+    public void characters(char[] ch, int start, int length) {
 
         if (this.tagName != null) {
             String date = new String(ch, start, length);
@@ -108,7 +107,7 @@ public class TableParseXml extends AbstractSwiftParseXml<FineBusinessTable> {
         }
     }
 
-    public List<FineBusinessTable> getList() throws Exception {
+    public List<FineBusinessTable> getList() {
 
         List<FineBusinessTable> ret = new ArrayList<FineBusinessTable>();
         if (list != null) {

@@ -1,6 +1,6 @@
 package com.fr.swift.manager;
 
-import com.fr.swift.cube.queue.StuffFetchThread;
+import com.fr.swift.cube.queue.StuffFetcher;
 import com.fr.swift.cube.task.TaskKey;
 import com.fr.swift.cube.task.WorkerTask;
 import com.fr.swift.cube.task.impl.CubeTaskManager;
@@ -63,6 +63,6 @@ public class ProviderTaskManager {
     }
 
     private void initTaskFetchThread() {
-        new Thread(new StuffFetchThread()).start();
+        new Thread(new StuffFetcher()).start();
     }
 }
