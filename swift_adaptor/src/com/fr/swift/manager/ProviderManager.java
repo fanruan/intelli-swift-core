@@ -23,6 +23,7 @@ public class ProviderManager {
 
     private ProviderManager() {
         providerMap = new HashMap<Long, List<IndexStuffProvider>>();
+        ProviderTaskManager.start();
     }
 
     private static class SingletonHolder {

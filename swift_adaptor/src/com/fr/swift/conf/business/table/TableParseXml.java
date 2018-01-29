@@ -9,6 +9,7 @@ import com.finebi.conf.structure.bean.table.FineBusinessTable;
 import com.fr.general.ComparatorUtils;
 import com.fr.swift.conf.business.AbstractSwiftParseXml;
 import org.xml.sax.Attributes;
+import org.xml.sax.SAXException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,13 +25,12 @@ public class TableParseXml extends AbstractSwiftParseXml<FineBusinessTable> {
     private String tagName;
 
     @Override
-    public void startDocument() {
-
+    public void startDocument() throws SAXException {
         list = new ArrayList<FineBusinessTable>();
     }
 
     @Override
-    public void startElement(String uri, String localName, String qName, Attributes attributes) {
+    public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
 
         if (ComparatorUtils.equals(qName, "Table")) {
             // 对tableType进行判断，不同类型的table，不同类型的读取
@@ -79,7 +79,7 @@ public class TableParseXml extends AbstractSwiftParseXml<FineBusinessTable> {
     }
 
     @Override
-    public void endElement(String uri, String localName, String qName) {
+    public void endElement(String uri, String localName, String qName) throws SAXException {
 
         if (ComparatorUtils.equals(qName, "Table")) {
 
@@ -89,7 +89,7 @@ public class TableParseXml extends AbstractSwiftParseXml<FineBusinessTable> {
     }
 
     @Override
-    public void endDocument() {
+    public void endDocument() throws SAXException {
         if (ComparatorUtils.equals(tagName, "Table")) {
             this.list.add(this.resource);
         }
@@ -98,7 +98,7 @@ public class TableParseXml extends AbstractSwiftParseXml<FineBusinessTable> {
     }
 
     @Override
-    public void characters(char[] ch, int start, int length) {
+    public void characters(char[] ch, int start, int length) throws SAXException {
 
         if (this.tagName != null) {
             String date = new String(ch, start, length);
@@ -107,7 +107,7 @@ public class TableParseXml extends AbstractSwiftParseXml<FineBusinessTable> {
         }
     }
 
-    public List<FineBusinessTable> getList() {
+    public List<FineBusinessTable> getList() throws Exception {
 
         List<FineBusinessTable> ret = new ArrayList<FineBusinessTable>();
         if (list != null) {

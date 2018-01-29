@@ -1,9 +1,9 @@
 package com.finebi.conf.table;
 
 import com.finebi.base.constant.FineEngineType;
-import com.finebi.conf.internalimp.table.FineDBBusinessTable;
-import com.finebi.conf.structure.bean.table.FineBusinessTable;
+import com.finebi.conf.internalimp.basictable.table.FineDBBusinessTable;
 import com.finebi.conf.provider.SwiftTableConfProvider;
+import com.finebi.conf.structure.bean.table.FineBusinessTable;
 import junit.framework.TestCase;
 
 import java.util.ArrayList;

@@ -38,8 +38,8 @@ public class SwiftUpdateManager implements EngineUpdateManager {
     }
 
     @Override
-    public List<TableUpdateInfo> getTableUpdateInfo(FineBusinessTable table) throws Exception {
-        return null;
+    public List<TableUpdateInfo> getTableUpdateInfo(FineBusinessTable table) {
+        return new ArrayList<TableUpdateInfo>();
     }
 
     @Override
@@ -73,24 +73,22 @@ public class SwiftUpdateManager implements EngineUpdateManager {
 
     @Override
     public void savePackageUpdateSetting(String packId, TableUpdateInfo info) throws Exception {
-        
     }
 
     @Override
-    public Map<String, UpdateStatus> getTableUpdateStatus(FineBusinessTable table) throws Exception {
+    public Map<String, UpdateStatus> getTableUpdateStatus(FineBusinessTable table) {
         return null;
     }
 
     @Override
-    public List<UpdateLog> getTableUpdateLog(FineBusinessTable table) throws Exception {
+    public List<UpdateLog> getTableUpdateLog(FineBusinessTable table) {
         return null;
     }
 
     @Override
-    public void updateAll(TableUpdateInfo info) throws Exception {
+    public void updateAll(TableUpdateInfo info) {
 
     }
-
 
     @Override
     public FineEngineType getEngineType() {

@@ -84,6 +84,11 @@ public class TestBusinessField implements FineBusinessField {
     }
 
     @Override
+    public void setType(int type) {
+
+    }
+
+    @Override
     public FineEngineType getEngineType() {
         return FineEngineType.Cube;
     }
