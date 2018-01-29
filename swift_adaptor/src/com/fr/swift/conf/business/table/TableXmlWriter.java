@@ -7,7 +7,6 @@ import com.finebi.conf.structure.bean.field.FineBusinessField;
 import com.finebi.conf.structure.bean.table.FineBusinessTable;
 import com.fr.stable.StringUtils;
 import com.fr.swift.conf.business.ISwiftXmlWriter;
-import com.fr.third.springframework.stereotype.Component;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 

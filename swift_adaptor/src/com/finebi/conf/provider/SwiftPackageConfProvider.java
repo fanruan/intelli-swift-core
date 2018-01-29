@@ -1,7 +1,7 @@
 package com.finebi.conf.provider;
 
 import com.finebi.base.constant.FineEngineType;
-import com.finebi.conf.service.engine.provider.pack.EnginePackageManager;
+import com.finebi.conf.service.engine.pack.EnginePackageManager;
 import com.finebi.conf.structure.bean.group.FinePackageGroup;
 import com.finebi.conf.structure.bean.pack.FineBusinessPackage;
 import com.finebi.conf.utils.FineGroupUtils;
@@ -24,6 +24,7 @@ import java.util.List;
  * @description
  * @since Advanced FineBI Analysis 1.0
  */
+
 public class SwiftPackageConfProvider implements EnginePackageManager {
 
     private SwiftPackageDao businessPackDAO;
@@ -117,10 +118,7 @@ public class SwiftPackageConfProvider implements EnginePackageManager {
 
     @Override
     public boolean isPackageExist(String packageId) {
-        if (this.getSinglePackage(packageId) == null) {
-            return false;
-        }
-        return true;
+        return this.getSinglePackage(packageId) != null;
     }
 
     @Override
