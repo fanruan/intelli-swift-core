@@ -1,7 +1,7 @@
 package com.fr.swift.conf.business.table;
 
 import com.finebi.base.constant.BaseConstant;
-import com.finebi.conf.internalimp.table.FineDBBusinessTable;
+import com.finebi.conf.internalimp.basictable.table.FineDBBusinessTable;
 import com.finebi.conf.internalimp.table.FineSQLBusinessTable;
 import com.finebi.conf.structure.bean.field.FineBusinessField;
 import com.finebi.conf.structure.bean.table.FineBusinessTable;

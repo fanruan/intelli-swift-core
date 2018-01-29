@@ -1,7 +1,7 @@
 package com.fr.swift.fine.adaptor.conf.creater;
 
 import com.finebi.base.constant.FineEngineType;
-import com.finebi.conf.internalimp.table.FineDBBusinessTable;
+import com.finebi.conf.internalimp.basictable.table.FineDBBusinessTable;
 
 /**
  * This class created on 2018-1-24 10:17:49

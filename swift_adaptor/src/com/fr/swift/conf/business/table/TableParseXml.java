@@ -2,8 +2,8 @@ package com.fr.swift.conf.business.table;
 
 import com.finebi.base.constant.BaseConstant;
 import com.finebi.base.constant.FineEngineType;
+import com.finebi.conf.internalimp.basictable.table.FineDBBusinessTable;
 import com.finebi.conf.internalimp.field.FineBusinessFieldImp;
-import com.finebi.conf.internalimp.table.FineDBBusinessTable;
 import com.finebi.conf.internalimp.table.FineSQLBusinessTable;
 import com.finebi.conf.structure.bean.table.FineBusinessTable;
 import com.fr.general.ComparatorUtils;
@@ -26,7 +26,6 @@ public class TableParseXml extends AbstractSwiftParseXml<FineBusinessTable> {
 
     @Override
     public void startDocument() throws SAXException {
-
         list = new ArrayList<FineBusinessTable>();
     }
 
