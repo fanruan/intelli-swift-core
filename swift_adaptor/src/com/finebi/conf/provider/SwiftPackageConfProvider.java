@@ -92,7 +92,7 @@ public class SwiftPackageConfProvider implements EnginePackageManager {
             for (FinePackageGroup group : groups) {
                 if (ComparatorUtils.equals(group.getGroupId(), groupId)) {
                     group.addPackage(pack.getId());
-                    FineGroupUtils.updateGroup(group);
+                    FineGroupUtils.updateGroups(group);
                 }
             }
             return businessPackDAO.saveConfig(pack);

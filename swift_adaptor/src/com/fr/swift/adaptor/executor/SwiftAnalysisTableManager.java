@@ -1,12 +1,17 @@
 package com.fr.swift.adaptor.executor;
 
 import com.finebi.base.constant.FineEngineType;
+import com.finebi.conf.internalimp.analysis.operator.select.SelectFieldOperator;
+import com.finebi.conf.internalimp.analysis.operator.select.SelectItem;
 import com.finebi.conf.service.engine.analysis.EngineAnalysisTableManager;
 import com.finebi.conf.structure.analysis.table.FineAnalysisTable;
+import com.finebi.conf.structure.bean.field.FineBusinessField;
+import com.finebi.conf.structure.bean.table.FineBusinessTable;
 import com.finebi.conf.structure.result.BIDetailTableResult;
 import com.fr.swift.adaptor.struct.SwiftDetailTableResult;
 import com.fr.swift.adaptor.struct.SwiftEmptyResult;
 
+import java.util.LinkedHashMap;
 import java.util.List;
 
 /**
@@ -22,7 +27,14 @@ public class SwiftAnalysisTableManager implements EngineAnalysisTableManager {
     public BIDetailTableResult getPreViewResult(FineAnalysisTable table, int rowCount) {
         try {
             if (table.getBaseTable() == null) {
-                return new SwiftDetailTableResult(new SwiftEmptyResult());
+                SelectFieldOperator selectFieldOperators = table.getOperator();
+                LinkedHashMap<FineBusinessField, FineBusinessTable> map = new LinkedHashMap<FineBusinessField, FineBusinessTable>();
+                for (SelectItem selectItem : selectFieldOperators.getFields()) {
+                    FineBusinessTable baseTable = selectItem.getTable();
+                    FineBusinessField field = selectItem.getField();
+                    map.put(field, baseTable);
+                }
+                return new SwiftFieldsDataPreview().getDetailPreviewByFields(map, rowCount);
             }
             return new SwiftDetailTableResult(new SwiftEmptyResult());
         } catch (Exception e) {
@@ -43,6 +55,16 @@ public class SwiftAnalysisTableManager implements EngineAnalysisTableManager {
     @Override
     public List<FineAnalysisTable> getAllAnalysistTable() {
         return null;
+    }
+
+    @Override
+    public List<FineBusinessField> getFields(FineAnalysisTable table) throws Exception {
+        return null;
+    }
+
+    @Override
+    public void saveAnalysisTable(FineAnalysisTable table) throws Exception {
+
     }
 
     @Override

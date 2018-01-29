@@ -1,6 +1,7 @@
 package com.fr.swift.adaptor.update;
 
 import com.finebi.base.constant.FineEngineType;
+import com.finebi.conf.internalimp.response.update.TableUpdateSetting;
 import com.finebi.conf.internalimp.update.TableUpdateInfo;
 import com.finebi.conf.internalimp.update.UpdateLog;
 import com.finebi.conf.internalimp.update.UpdateStatus;
@@ -55,6 +56,11 @@ public class SwiftUpdateManager implements EngineUpdateManager {
     }
 
     @Override
+    public void triggerTableUpdate(TableUpdateInfo updateInfo, FineBusinessTable table) throws Exception {
+
+    }
+
+    @Override
     public void saveUpdateSetting(Map<FineBusinessTable, TableUpdateInfo> infoMap) throws Exception {
         if (infoMap == null) {
         }
@@ -72,11 +78,26 @@ public class SwiftUpdateManager implements EngineUpdateManager {
     }
 
     @Override
+    public void saveTableUpdateSetting(TableUpdateSetting tableUpdateSetting) throws Exception {
+
+    }
+
+    @Override
     public void savePackageUpdateSetting(String packId, TableUpdateInfo info) throws Exception {
     }
 
     @Override
+    public void triggerPackageUpdate(String packId) throws Exception {
+
+    }
+
+    @Override
     public Map<String, UpdateStatus> getTableUpdateStatus(FineBusinessTable table) {
+        return null;
+    }
+
+    @Override
+    public UpdateStatus getPackUpdateStatus(String packId) throws Exception {
         return null;
     }
 
@@ -87,6 +108,16 @@ public class SwiftUpdateManager implements EngineUpdateManager {
 
     @Override
     public void updateAll(TableUpdateInfo info) {
+
+    }
+
+    @Override
+    public TableUpdateInfo getUpdateInfo() throws Exception {
+        return null;
+    }
+
+    @Override
+    public void triggerAllUpdate(TableUpdateInfo info) throws Exception {
 
     }
 

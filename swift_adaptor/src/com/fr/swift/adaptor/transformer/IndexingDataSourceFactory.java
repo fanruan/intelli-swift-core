@@ -3,7 +3,7 @@ package com.fr.swift.adaptor.transformer;
 import com.finebi.base.constant.BaseConstant;
 import com.finebi.conf.internalimp.basictable.table.FineDBBusinessTable;
 import com.finebi.conf.internalimp.basictable.table.FineExcelBusinessTable;
-import com.finebi.conf.internalimp.table.FineSQLBusinessTable;
+import com.finebi.conf.internalimp.basictable.table.FineSQLBusinessTable;
 import com.finebi.conf.internalimp.update.TableUpdateInfo;
 import com.finebi.conf.structure.bean.connection.FineConnection;
 import com.finebi.conf.structure.bean.table.FineBusinessTable;
@@ -107,12 +107,12 @@ public class IndexingDataSourceFactory {
 
     private static QueryDBSource transformQueryDBSource(FineSQLBusinessTable table) throws Exception {
 
-        String connectionName = table.getConnectionName();
+        String connectionName = table.getConnName();
         FineConnection fineConnection = FineConnectionUtils.getConnectionByName(connectionName);
         ConnectionInfo connectionInfo = new SwiftConnectionInfo(fineConnection.getSchema(), fineConnection.getConnection());
         ConnectionManager.getInstance().registerConnectionInfo(connectionName, connectionInfo);
 
-        QueryDBSource queryDBSource = new QueryDBSource(table.getSql(), table.getConnectionName());
+        QueryDBSource queryDBSource = new QueryDBSource(table.getSql(), table.getConnName());
         return queryDBSource;
     }
 

@@ -5,13 +5,11 @@ import com.finebi.base.constant.FineEngineType;
 import com.finebi.base.utils.data.io.FileUtils;
 import com.finebi.conf.service.dao.provider.BusinessConfigDAO;
 import com.fr.general.ComparatorUtils;
+import com.fr.swift.conf.business.container.ResourceContainer;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
-import com.fr.swift.manager.ProviderManager;
 import com.fr.third.springframework.core.io.ClassPathResource;
 
-import javax.xml.parsers.SAXParser;
-import javax.xml.parsers.SAXParserFactory;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
@@ -32,6 +30,7 @@ public abstract class SwiftBaseXmlDao<T extends FineResourceItem> implements Bus
     private AbstractSwiftParseXml<T> xmlHandler;
     private static final SwiftLogger LOGGER = SwiftLoggers.getLogger(SwiftBaseXmlDao.class);
     private String xmlFileName;
+    protected ResourceContainer<T> resourceContainer;
 
     private ISwiftXmlWriter<T> swiftXmlWriter;
 
@@ -134,22 +133,23 @@ public abstract class SwiftBaseXmlDao<T extends FineResourceItem> implements Bus
 
     @Override
     public List<T> getAllConfig() {
-        SAXParser parser = null;
-        try {
-            parser = SAXParserFactory.newInstance().newSAXParser();
-            parser.parse(getInputStream(), xmlHandler);
-        } catch (Exception e) {
-            LOGGER.info("error get all pack", e);
-        }
-        List<T> ret = new ArrayList<T>();
-        try {
-            for (T pack : xmlHandler.getList()) {
-                ret.add(pack);
-            }
-        } catch (Exception e) {
-
-        }
-        return new ArrayList<T>(ret);
+//        SAXParser parser = null;
+//        try {
+//            parser = SAXParserFactory.newInstance().newSAXParser();
+//            parser.parse(getInputStream(), xmlHandler);
+//        } catch (Exception e) {
+//            LOGGER.info("error get all pack", e);
+//        }
+//        List<T> ret = new ArrayList<T>();
+//        try {
+//            for (T pack : xmlHandler.getList()) {
+//                ret.add(pack);
+//            }
+//        } catch (Exception e) {
+//
+//        }
+//        return new ArrayList<T>(ret);
+        return resourceContainer.getResources();
     }
 
     @Override
@@ -158,7 +158,8 @@ public abstract class SwiftBaseXmlDao<T extends FineResourceItem> implements Bus
     }
 
     protected void saveResources(List<T> resources) throws Exception {
-        swiftXmlWriter.write(resources, getOutPutStream());
+//        swiftXmlWriter.write(resources, getOutPutStream());
+        resourceContainer.saveResources(resources);
     }
 
     protected OutputStream getOutPutStream() throws Exception {

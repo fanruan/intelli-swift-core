@@ -45,6 +45,11 @@ public abstract class AbstractSwiftTableEngineExecutor implements FineTableEngin
     }
 
     @Override
+    public BIDetailTableResult getRealData(FineBusinessTable table) throws Exception {
+        return this.getRealData(table, 100);
+    }
+
+    @Override
     public BIDetailTableResult getRealData(FineBusinessTable table, int rowCount) throws Exception {
         DataSource dataSource = IndexingDataSourceFactory.transformDataSource(table);
         List<Segment> segments = LocalSegmentProvider.getInstance().getSegment(dataSource.getSourceKey());
@@ -79,7 +84,7 @@ public abstract class AbstractSwiftTableEngineExecutor implements FineTableEngin
     }
 
     @Override
-    public FineBusinessTable getBasicOperator(FineAnalysisTable table) throws Exception {
+    public FineAnalysisTable getBasicOperator(FineAnalysisTable table) throws Exception {
         return null;
     }
 
@@ -97,5 +102,10 @@ public abstract class AbstractSwiftTableEngineExecutor implements FineTableEngin
     @Override
     public FineEngineType getEngineType() {
         return FineEngineType.Cube;
+    }
+
+    @Override
+    public List<List<String>> getFloors(FineAnalysisTable table) throws Exception {
+        return null;
     }
 }

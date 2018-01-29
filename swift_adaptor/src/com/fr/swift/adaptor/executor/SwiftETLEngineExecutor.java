@@ -29,12 +29,22 @@ public class SwiftETLEngineExecutor implements FineTableEngineExecutor {
     }
 
     @Override
+    public BIDetailTableResult getRealData(FineBusinessTable table) throws Exception {
+        return null;
+    }
+
+    @Override
     public List<FineBusinessField> getFieldList(FineBusinessTable table) throws Exception {
         return null;
     }
 
     @Override
-    public FineBusinessTable getBasicOperator(FineAnalysisTable table) throws Exception {
+    public FineAnalysisTable getBasicOperator(FineAnalysisTable table) throws Exception {
+        return null;
+    }
+
+    @Override
+    public List<List<String>> getFloors(FineAnalysisTable table) throws Exception {
         return null;
     }
 
