@@ -88,6 +88,11 @@ public class SwiftEmptyResult implements SwiftResultSet {
             public SwiftMetaDataColumn getColumn(String columnName) throws SwiftMetaDataException {
                 return null;
             }
+
+            @Override
+            public int getColumnIndex(String columnName) throws SwiftMetaDataException {
+                return 0;
+            }
         };
     }
 

@@ -5,7 +5,9 @@ import com.finebi.conf.internalimp.field.FineBusinessFieldImp;
 import com.finebi.conf.structure.bean.field.FineBusinessField;
 import com.fr.swift.exception.meta.SwiftMetaDataException;
 import com.fr.swift.source.ColumnTypeUtils;
+import com.fr.swift.source.MetaDataColumn;
 import com.fr.swift.source.SwiftMetaData;
+import com.fr.swift.source.SwiftMetaDataColumn;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,9 +29,21 @@ public class FieldFactory {
             String columnRemark = swiftMetaData.getColumnRemark(i);
             int precision = swiftMetaData.getPrecision(i);
             int scale = swiftMetaData.getScale(i);
-            FineBusinessField fineBusinessField = new FineBusinessFieldImp(columnName, ColumnTypeUtils.sqlTypeToClassType(columnType, precision, scale), precision, columnRemark, FineEngineType.Cube);
+            FineBusinessField fineBusinessField = new FineBusinessFieldImp(String.valueOf(System.currentTimeMillis() + i), columnName, ColumnTypeUtils.sqlTypeToClassType(columnType, precision, scale), precision, columnRemark, FineEngineType.Cube);
             fineBusinessFieldList.add(fineBusinessField);
         }
         return fineBusinessFieldList;
+    }
+
+
+    public static List<SwiftMetaDataColumn> transformFields2Column(List<FineBusinessField> fineBusinessFieldList) {
+
+        List<SwiftMetaDataColumn> swiftMetaDataColumnList = new ArrayList<SwiftMetaDataColumn>();
+        for (FineBusinessField fineBusinessField : fineBusinessFieldList) {
+            //String name, String remark, int sqlType, int precision, int scale
+            SwiftMetaDataColumn metaDataColumn = new MetaDataColumn(fineBusinessField.getName(), fineBusinessField.getTransferName(), fineBusinessField.getType(), fineBusinessField.getSize(), fineBusinessField.getType());
+            swiftMetaDataColumnList.add(metaDataColumn);
+        }
+        return swiftMetaDataColumnList;
     }
 }

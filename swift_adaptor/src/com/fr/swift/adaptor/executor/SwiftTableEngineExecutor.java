@@ -10,9 +10,12 @@ import com.finebi.conf.structure.result.BIDetailCell;
 import com.finebi.conf.structure.result.BIDetailTableResult;
 import com.fr.swift.adaptor.struct.SwiftDetailCell;
 import com.fr.swift.adaptor.struct.SwiftDetailTableResult;
+import com.fr.swift.adaptor.struct.SwiftEmptyResult;
 import com.fr.swift.adaptor.struct.SwiftRealDetailResult;
 import com.fr.swift.adaptor.transformer.FieldFactory;
 import com.fr.swift.adaptor.transformer.IndexingDataSourceFactory;
+import com.fr.swift.log.SwiftLogger;
+import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.manager.LocalSegmentProvider;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.column.ColumnKey;
@@ -33,15 +36,20 @@ import java.util.List;
  * @description
  * @since Advanced FineBI Analysis 1.0
  */
-public abstract class AbstractSwiftTableEngineExecutor implements FineTableEngineExecutor {
+public class SwiftTableEngineExecutor implements FineTableEngineExecutor {
+
+    private static final SwiftLogger LOGGER = SwiftLoggers.getLogger(SwiftTableEngineExecutor.class);
 
     @Override
     public BIDetailTableResult getPreviewData(FineBusinessTable table, int rowCount) throws Exception {
         DataSource dataSource = IndexingDataSourceFactory.transformDataSource(table);
-        SwiftSourceTransfer transfer = SwiftSourceTransferFactory.createSourcePreviewTransfer(dataSource, rowCount);
-        SwiftResultSet swiftResultSet = transfer.createResultSet();
-        BIDetailTableResult detailTableResult = new SwiftDetailTableResult(swiftResultSet);
-        return detailTableResult;
+        if (dataSource != null) {
+            SwiftSourceTransfer transfer = SwiftSourceTransferFactory.createSourcePreviewTransfer(dataSource, rowCount);
+            SwiftResultSet swiftResultSet = transfer.createResultSet();
+            BIDetailTableResult detailTableResult = new SwiftDetailTableResult(swiftResultSet);
+            return detailTableResult;
+        }
+        return new SwiftDetailTableResult(new SwiftEmptyResult());
     }
 
     @Override
@@ -79,6 +87,9 @@ public abstract class AbstractSwiftTableEngineExecutor implements FineTableEngin
     @Override
     public List<FineBusinessField> getFieldList(FineBusinessTable table) throws Exception {
         DataSource dataSource = IndexingDataSourceFactory.transformDataSource(table);
+        if (dataSource == null) {
+            return new ArrayList<FineBusinessField>();
+        }
         SwiftMetaData swiftMetaData = dataSource.getMetadata();
         return FieldFactory.transformColumns2Fields(swiftMetaData);
     }
