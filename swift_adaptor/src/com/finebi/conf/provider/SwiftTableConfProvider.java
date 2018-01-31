@@ -1,18 +1,24 @@
 package com.finebi.conf.provider;
 
+import com.finebi.base.constant.BaseConstant;
 import com.finebi.base.constant.FineEngineType;
+import com.finebi.conf.exception.FineEngineException;
+import com.finebi.conf.internalimp.analysis.table.FineAnalysisTableImpl;
 import com.finebi.conf.service.engine.table.EngineTableManager;
+import com.finebi.conf.structure.analysis.table.FineAnalysisTable;
 import com.finebi.conf.structure.bean.field.FineBusinessField;
 import com.finebi.conf.structure.bean.pack.FineBusinessPackage;
 import com.finebi.conf.structure.bean.table.FineBusinessTable;
 import com.fr.general.ComparatorUtils;
 import com.fr.swift.conf.business.ISwiftXmlWriter;
+import com.fr.swift.conf.business.pack.SwiftPackageDao;
 import com.fr.swift.conf.business.table.SwiftTableDao;
 import com.fr.swift.conf.business.table.TableParseXml;
 import com.fr.swift.conf.business.table.TableXmlWriter;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * This class created on 2018-1-23 13:58:46
@@ -24,6 +30,7 @@ import java.util.List;
 public class SwiftTableConfProvider implements EngineTableManager {
 
     private SwiftTableDao businessTableDAO;
+    private SwiftPackageDao businessPackageDAO;
     private SwiftPackageConfProvider swiftPackageConfProvider;
     private String xmlFileName = "table.xml";
 
@@ -53,20 +60,10 @@ public class SwiftTableConfProvider implements EngineTableManager {
     }
 
     @Override
-    public FineBusinessTable getSingleTable(String tableId) {
-        for (FineBusinessTable fineBusinessTable : businessTableDAO.getAllConfig()) {
-            if (ComparatorUtils.equals(tableId, fineBusinessTable.getId())) {
-                return fineBusinessTable;
-            }
-        }
-        return null;
-    }
-
-    @Override
-    public FineBusinessTable getTableByName(String tableName) {
+    public FineBusinessTable getSingleTable(String tableName) {
         for (FineBusinessTable fineBusinessTable : businessTableDAO.getAllConfig()) {
             if (ComparatorUtils.equals(tableName, fineBusinessTable.getName())) {
-                return fineBusinessTable;
+                    return fineBusinessTable;
             }
         }
         return null;
@@ -80,10 +77,29 @@ public class SwiftTableConfProvider implements EngineTableManager {
         }
         return null;
     }
-
+    
     @Override
-    public boolean addTables(List<FineBusinessTable> tables) {
-        return businessTableDAO.saveConfigs(tables);
+    public boolean addTables(Map<String, List<FineBusinessTable>> tables) throws FineEngineException {
+        List<FineBusinessPackage> needUpdatePackage = new ArrayList<FineBusinessPackage>();
+        List<FineBusinessTable> newAddTables = new ArrayList<FineBusinessTable>();
+        List<FineBusinessPackage> allPackage = businessPackageDAO.getAllConfig();
+        for (FineBusinessPackage pack : allPackage) {
+            if (tables.containsKey(pack.getId())) {
+                List<FineBusinessTable> allTables = tables.get(pack.getId());
+                pack.getTables().addAll(getTableNames(allTables));
+                needUpdatePackage.add(pack);
+                newAddTables.addAll(allTables);
+            }
+        }
+        return businessPackageDAO.updateConfigs(needUpdatePackage) && businessTableDAO.saveConfigs(newAddTables);
+    }
+    
+    private List<String> getTableNames(List<FineBusinessTable> tables) {
+        List<String> result = new ArrayList<String>();
+        for (FineBusinessTable table : tables) {
+            result.add(table.getName());
+        }
+        return result;
     }
 
     @Override
@@ -102,7 +118,7 @@ public class SwiftTableConfProvider implements EngineTableManager {
     @Override
     public boolean updateTable(String tableId, String newName) {
         FineBusinessTable fineBusinessTable = this.getSingleTable(tableId);
-        fineBusinessTable.updateTableName(newName);
+        fineBusinessTable.setName(newName);
         return businessTableDAO.updateConfig(fineBusinessTable);
     }
 
@@ -114,7 +130,13 @@ public class SwiftTableConfProvider implements EngineTableManager {
     @Override
     public boolean updateField(String tableId, FineBusinessField field) {
         FineBusinessTable fineBusinessTable = this.getSingleTable(tableId);
-        fineBusinessTable.addField(field);
+        List<FineBusinessField> allFields = fineBusinessTable.getFields();
+        for (FineBusinessField businessField : allFields) {
+            if (ComparatorUtils.equals(businessField.getId(), field.getId())) {
+                allFields.add(field);
+            }
+        }
+        fineBusinessTable.setFields(allFields);
         return businessTableDAO.updateConfig(fineBusinessTable);
     }
 
@@ -129,7 +151,22 @@ public class SwiftTableConfProvider implements EngineTableManager {
         FineBusinessField fineBusinessField = this.getField(tableId, fieldId);
         return fineBusinessField != null;
     }
-
+    
+    @Override
+    public List<FineBusinessTable> getBelongAnalysisTables(String tableName) throws FineEngineException {
+        List<FineBusinessTable> result = new ArrayList<FineBusinessTable>();
+        List<FineBusinessTable> allTable = businessTableDAO.getAllConfig();
+        for (FineBusinessTable table : allTable) {
+            if (ComparatorUtils.equals(BaseConstant.TABLETYPE.ANALYSIS, table.getType())) {
+                FineBusinessTable baseTable = ((FineAnalysisTableImpl) table).getBaseTable();
+                if (ComparatorUtils.equals(baseTable.getName(), tableName)) {
+                    result.add(table);
+                }
+            }
+        }
+        return result;
+    }
+    
     @Override
     public FineEngineType getEngineType() {
         return FineEngineType.Cube;
