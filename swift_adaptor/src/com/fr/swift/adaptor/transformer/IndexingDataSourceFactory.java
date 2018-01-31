@@ -2,6 +2,8 @@ package com.fr.swift.adaptor.transformer;
 
 import com.finebi.base.constant.BaseConstant;
 import com.finebi.conf.constant.ConfConstant;
+import com.finebi.base.constant.BaseConstant.TABLETYPE;
+import com.finebi.conf.exception.FineConfigException;
 import com.finebi.conf.internalimp.analysis.bean.operator.select.SelectFieldBeanItem;
 import com.finebi.conf.internalimp.analysis.operator.select.SelectFieldOperator;
 import com.finebi.conf.internalimp.basictable.table.FineDBBusinessTable;
@@ -14,7 +16,6 @@ import com.finebi.conf.structure.bean.field.FineBusinessField;
 import com.finebi.conf.structure.bean.table.FineBusinessTable;
 import com.finebi.conf.utils.FineConnectionUtils;
 import com.finebi.conf.utils.FineTableUtils;
-import com.fr.swift.adaptor.executor.SwiftTableEngineExecutor;
 import com.fr.swift.increase.IncrementImpl;
 import com.fr.swift.increment.Increment;
 import com.fr.swift.log.SwiftLogger;
@@ -50,7 +51,7 @@ import java.util.Map;
  */
 public class IndexingDataSourceFactory {
 
-    private static final SwiftLogger LOGGER = SwiftLoggers.getLogger(SwiftTableEngineExecutor.class);
+    private static final SwiftLogger LOGGER = SwiftLoggers.getLogger();
 
     public static void transformDataSources(Map<FineBusinessTable, TableUpdateInfo> infoMap, List<String> updateTableSourceKeys, SourceContainer updateSourceContainer, Map<String, List<Increment>> incrementMap) throws Exception {
         for (Map.Entry<FineBusinessTable, TableUpdateInfo> infoEntry : infoMap.entrySet()) {
@@ -105,13 +106,58 @@ public class IndexingDataSourceFactory {
             case BaseConstant.TABLETYPE.EXCEL:
                 dataSource = transformExcelDataSource((FineExcelBusinessTable) table);
                 break;
+            case TABLETYPE.ETL:
             case BaseConstant.TABLETYPE.ANALYSIS:
-                dataSource = transformETLDataSource((FineAnalysisTable) table);
+                dataSource = EtlConverter.transformEtlDataSource(table);//transformETLDataSource((FineAnalysisTable) table);
                 break;
             default:
         }
         return dataSource;
     }
+
+//    private static ETLSource transformETLDataSource(FineAnalysisTable table) {
+//
+//        try {
+//            LinkedHashMap<String, List<ColumnKey>> sourceKeyColumnMap = new LinkedHashMap<String, List<ColumnKey>>();
+//            LinkedHashMap<String, DataSource> sourceKeyDataSourceMap = new LinkedHashMap<String, DataSource>();
+//            SelectFieldOperator selectFieldOperator = table.getOperator();
+//            List<SelectFieldBeanItem> selectFieldBeanItemList = selectFieldOperator.getValue().getValue();
+//            for (SelectFieldBeanItem selectFieldBeanItem : selectFieldBeanItemList) {
+//                FineBusinessTable fineBusinessTable = FineTableUtils.getTableByFieldId(selectFieldBeanItem.getField());
+//                FineBusinessField fineBusinessField = fineBusinessTable.getFieldByFieldId(selectFieldBeanItem.getField());
+//                DataSource baseDataSource = transformDataSource(fineBusinessTable);
+//
+//                if (sourceKeyColumnMap.containsKey(baseDataSource.getSourceKey().getId())) {
+//                    sourceKeyColumnMap.get(baseDataSource.getSourceKey().getId()).add(new ColumnKey(fineBusinessField.getName()));
+//                } else {
+//                    sourceKeyColumnMap.put(baseDataSource.getSourceKey().getId(), new ArrayList<ColumnKey>());
+//                    sourceKeyColumnMap.get(baseDataSource.getSourceKey().getId()).add(new ColumnKey(fineBusinessField.getName()));
+//                }
+//                if (!sourceKeyDataSourceMap.containsKey(baseDataSource.getSourceKey().getId())) {
+//                    sourceKeyDataSourceMap.put(baseDataSource.getSourceKey().getId(), baseDataSource);
+//                }
+//            }
+//            List<DataSource> baseDatas = new ArrayList<DataSource>();
+//            List<SwiftMetaData> swiftMetaDatas = new ArrayList<SwiftMetaData>();
+//            List<ColumnKey[]> fields = new ArrayList<ColumnKey[]>();
+//
+//            for (Map.Entry<String, List<ColumnKey>> entry : sourceKeyColumnMap.entrySet()) {
+//                DataSource dataSource = sourceKeyDataSourceMap.get(entry.getKey());
+//                baseDatas.add(dataSource);
+//                swiftMetaDatas.add(dataSource.getMetadata());
+//                fields.add(entry.getValue().toArray(new ColumnKey[entry.getValue().size()]));
+//            }
+//            ETLOperator operator = new DetailOperator(fields, swiftMetaDatas);
+//            ETLSource etlSource = new ETLSource(baseDatas, operator);
+//            return etlSource;
+//        } catch (FineConfigException e) {
+//            LOGGER.error(e.getMessage(), e);
+//        } catch (Exception ee) {
+//            LOGGER.error(ee.getMessage(), ee);
+//        }
+//        return null;
+//    }
+
 
     private static TableDBSource transformTableDBSource(FineDBBusinessTable table) throws Exception {
         String connectionName = table.getConnName();
@@ -143,28 +189,28 @@ public class IndexingDataSourceFactory {
     }
 
 
-    private static DataSource transformETLDataSource(FineAnalysisTable table) throws Exception {
-        FineBusinessTable baseTable = table.getBaseTable();
-        switch (table.getOperator().getType()) {
-            case ConfConstant.AnalysisType.SELECT_FIELD:
-                return transformSelectField(table);
-            case ConfConstant.AnalysisType.SORT:
-                return transformSort(table);
-//            case ConfConstant.AnalysisType.FIELD_SETTING:
+//    private static DataSource transformETLDataSource(FineAnalysisTable table) throws Exception {
+//        FineBusinessTable baseTable = table.getBaseTable();
+//        switch (table.getOperator().getType()) {
+//            case ConfConstant.AnalysisType.SELECT_FIELD:
+//                return transformSelectField(table);
+//            case ConfConstant.AnalysisType.SORT:
+//                return transformSort(table);
+////            case ConfConstant.AnalysisType.FIELD_SETTING:
+//
+//        }
+//        return null;
+//    }
 
-        }
-        return null;
-    }
-
-    private static DataSource transformSort(FineAnalysisTable table) throws Exception {
-        List<DataSource> baseDatas = new ArrayList<DataSource>();
-        if (table.getBaseTable() != null) {
-            baseDatas.add(transformDataSource(table.getBaseTable()));
-        }
-        ETLSource etlSource = new ETLSource(baseDatas, null);
-        return null;
-    }
-
+//    private static DataSource transformSort(FineAnalysisTable table) throws Exception {
+//        List<DataSource> baseDatas = new ArrayList<DataSource>();
+//        if (table.getBaseTable() != null) {
+//            baseDatas.add(transformDataSource(table.getBaseTable()));
+//        }
+//        ETLSource etlSource = new ETLSource(baseDatas, null);
+//        return null;
+//    }
+//
     private static DataSource transformSelectField(FineAnalysisTable table) throws Exception {
         LinkedHashMap<String, List<ColumnKey>> sourceKeyColumnMap = new LinkedHashMap<String, List<ColumnKey>>();
         LinkedHashMap<String, DataSource> sourceKeyDataSourceMap = new LinkedHashMap<String, DataSource>();
