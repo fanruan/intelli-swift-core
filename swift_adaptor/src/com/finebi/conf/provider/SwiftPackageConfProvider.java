@@ -45,7 +45,7 @@ public class SwiftPackageConfProvider implements EnginePackageManager {
     }
 
     @Override
-    public List<FineBusinessPackage> getAllPackageByGroupId(String groupId) throws Exception {
+    public List<FineBusinessPackage> getAllPackageByGroupId(String groupId) {
         List<FineBusinessPackage> resultPackageList = new ArrayList<FineBusinessPackage>();
         List<FinePackageGroup> groupList = FineGroupUtils.getAllGroups();
         for (FinePackageGroup group : groupList) {

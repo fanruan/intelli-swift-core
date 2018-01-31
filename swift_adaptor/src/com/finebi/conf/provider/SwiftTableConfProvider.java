@@ -1,6 +1,7 @@
 package com.finebi.conf.provider;
 
 import com.finebi.base.constant.FineEngineType;
+import com.finebi.conf.exception.FineEngineException;
 import com.finebi.conf.service.engine.table.EngineTableManager;
 import com.finebi.conf.structure.bean.field.FineBusinessField;
 import com.finebi.conf.structure.bean.pack.FineBusinessPackage;
@@ -13,6 +14,7 @@ import com.fr.swift.conf.business.table.TableXmlWriter;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * This class created on 2018-1-23 13:58:46
@@ -63,16 +65,6 @@ public class SwiftTableConfProvider implements EngineTableManager {
     }
 
     @Override
-    public FineBusinessTable getTableByName(String tableName) {
-        for (FineBusinessTable fineBusinessTable : businessTableDAO.getAllConfig()) {
-            if (ComparatorUtils.equals(tableName, fineBusinessTable.getName())) {
-                return fineBusinessTable;
-            }
-        }
-        return null;
-    }
-
-    @Override
     public FineBusinessField getField(String tableId, String fieldId) {
         FineBusinessTable fineBusinessTable = this.getSingleTable(tableId);
         if (fineBusinessTable != null) {
@@ -82,8 +74,15 @@ public class SwiftTableConfProvider implements EngineTableManager {
     }
 
     @Override
-    public boolean addTables(List<FineBusinessTable> tables) {
-        return businessTableDAO.saveConfigs(tables);
+    public boolean addTables(Map<String, List<FineBusinessTable>> tables) throws FineEngineException {
+        for (Map.Entry<String, List<FineBusinessTable>> entry : tables.entrySet()) {
+            businessTableDAO.saveConfigs(entry.getValue());
+            FineBusinessPackage fineBusinessPackage = swiftPackageConfProvider.getSinglePackage(entry.getKey());
+            for (FineBusinessTable fineBusinessTable : entry.getValue()) {
+                fineBusinessPackage.addTable(fineBusinessTable.getId());
+            }
+        }
+        return false;
     }
 
     @Override
@@ -102,7 +101,6 @@ public class SwiftTableConfProvider implements EngineTableManager {
     @Override
     public boolean updateTable(String tableId, String newName) {
         FineBusinessTable fineBusinessTable = this.getSingleTable(tableId);
-        fineBusinessTable.updateTableName(newName);
         return businessTableDAO.updateConfig(fineBusinessTable);
     }
 
@@ -114,7 +112,6 @@ public class SwiftTableConfProvider implements EngineTableManager {
     @Override
     public boolean updateField(String tableId, FineBusinessField field) {
         FineBusinessTable fineBusinessTable = this.getSingleTable(tableId);
-        fineBusinessTable.addField(field);
         return businessTableDAO.updateConfig(fineBusinessTable);
     }
 
@@ -128,6 +125,11 @@ public class SwiftTableConfProvider implements EngineTableManager {
     public boolean isFieldExist(String tableId, String fieldId) {
         FineBusinessField fineBusinessField = this.getField(tableId, fieldId);
         return fineBusinessField != null;
+    }
+
+    @Override
+    public List<FineBusinessTable> getBelongAnalysisTables(String tableName) throws FineEngineException {
+        return null;
     }
 
     @Override

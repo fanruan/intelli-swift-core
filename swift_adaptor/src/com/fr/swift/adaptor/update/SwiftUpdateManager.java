@@ -84,7 +84,7 @@ public class SwiftUpdateManager implements EngineUpdateManager {
 
     @Override
     public void saveTableUpdateSetting(TableUpdateSetting tableUpdateSetting) throws Exception {
-        FineBusinessTable fineBusinessTable = new SwiftTableConfProvider().getTableByName(tableUpdateSetting.getTableName());
+        FineBusinessTable fineBusinessTable = new SwiftTableConfProvider().getSingleTable(tableUpdateSetting.getTableName());
         Map<FineBusinessTable, TableUpdateInfo> infoMap = new HashMap<FineBusinessTable, TableUpdateInfo>();
         infoMap.put(fineBusinessTable, tableUpdateSetting.getSettings().get(tableUpdateSetting.getTableName()));
         this.saveUpdateSetting(infoMap);
