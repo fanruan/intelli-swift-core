@@ -79,7 +79,7 @@ public class SwiftTableConfProvider implements EngineTableManager {
             businessTableDAO.saveConfigs(entry.getValue());
             FineBusinessPackage fineBusinessPackage = swiftPackageConfProvider.getSinglePackage(entry.getKey());
             for (FineBusinessTable fineBusinessTable : entry.getValue()) {
-                fineBusinessPackage.addTable(fineBusinessTable.getId());
+                fineBusinessPackage.addTable(fineBusinessTable.getName());
             }
         }
         return false;

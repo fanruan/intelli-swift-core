@@ -108,9 +108,10 @@ public class IndexingDataSourceFactory {
                 break;
             case TABLETYPE.ETL:
             case BaseConstant.TABLETYPE.ANALYSIS:
-                dataSource = EtlConverter.transformEtlDataSource(table);//transformETLDataSource((FineAnalysisTable) table);
+                dataSource = EtlConverter.transformEtlDataSource(table);
                 break;
             default:
+                dataSource = EtlConverter.transformEtlDataSource(table);
         }
         return dataSource;
     }
@@ -202,7 +203,7 @@ public class IndexingDataSourceFactory {
 //        return null;
 //    }
 
-//    private static DataSource transformSort(FineAnalysisTable table) throws Exception {
+    //    private static DataSource transformSort(FineAnalysisTable table) throws Exception {
 //        List<DataSource> baseDatas = new ArrayList<DataSource>();
 //        if (table.getBaseTable() != null) {
 //            baseDatas.add(transformDataSource(table.getBaseTable()));

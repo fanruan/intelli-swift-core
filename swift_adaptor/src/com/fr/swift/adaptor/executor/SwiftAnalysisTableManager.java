@@ -1,9 +1,11 @@
 package com.fr.swift.adaptor.executor;
 
 import com.finebi.base.constant.FineEngineType;
+import com.finebi.conf.internalimp.analysis.bean.operator.add.group.custom.number.NumberMaxAndMinValue;
 import com.finebi.conf.service.engine.analysis.EngineAnalysisTableManager;
 import com.finebi.conf.structure.analysis.table.FineAnalysisTable;
 import com.finebi.conf.structure.bean.field.FineBusinessField;
+import com.finebi.conf.structure.filter.FineFilter;
 import com.finebi.conf.structure.result.BIDetailTableResult;
 import com.fr.swift.adaptor.transformer.FieldFactory;
 import com.fr.swift.adaptor.transformer.IndexingDataSourceFactory;
@@ -24,21 +26,17 @@ public class SwiftAnalysisTableManager implements EngineAnalysisTableManager {
 
     private static final SwiftLogger LOGGER = SwiftLoggers.getLogger(SwiftAnalysisTableManager.class);
 
+    private SwiftFieldsDataPreview swiftFieldsDataPreview;
+
+    public SwiftAnalysisTableManager() {
+        swiftFieldsDataPreview = new SwiftFieldsDataPreview();
+    }
+
     @Override
     public BIDetailTableResult getPreViewResult(FineAnalysisTable table, int rowCount) {
         try {
-//            if (table.getBaseTable() == null) {
-//                SelectFieldOperator selectFieldOperators = table.getOperator();
-//                LinkedHashMap<FineBusinessField, FineBusinessTable> map = new LinkedHashMap<FineBusinessField, FineBusinessTable>();
-//                for (SelectItem selectItem : selectFieldOperators.getFields()) {
-//                    FineBusinessTable baseTable = selectItem.getTable();
-//                    FineBusinessField field = selectItem.getField();
-//                    map.put(field, baseTable);
-//                }
-//                return new SwiftFieldsDataPreview().getDetailPreviewByFields(map, rowCount);
-//            }
             ETLSource dataSource = (ETLSource) IndexingDataSourceFactory.transformDataSource(table);
-            return new SwiftFieldsDataPreview().getDetailPreviewByFields(dataSource, rowCount);
+            return swiftFieldsDataPreview.getDetailPreviewByFields(dataSource, rowCount);
         } catch (Exception e) {
             LOGGER.error(e.getMessage(), e);
         }
@@ -63,12 +61,26 @@ public class SwiftAnalysisTableManager implements EngineAnalysisTableManager {
     @Override
     public List<FineBusinessField> getFields(FineAnalysisTable table) throws Exception {
         return FieldFactory.transformColumns2Fields(IndexingDataSourceFactory.transformDataSource(table).getMetadata());
-//        return null;
     }
 
     @Override
     public void saveAnalysisTable(FineAnalysisTable table) throws Exception {
 
+    }
+
+    @Override
+    public BIDetailTableResult getPreViewResult(FineAnalysisTable table, FineFilter filter, int rowCount) {
+        return null;
+    }
+
+    @Override
+    public NumberMaxAndMinValue getNumberMaxAndMinValue(FineAnalysisTable table, String fieldName) throws Exception {
+        return null;
+    }
+
+    @Override
+    public List<Object> getColumnValue(FineAnalysisTable table, String fieldName) throws Exception {
+        return null;
     }
 
     @Override

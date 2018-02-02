@@ -2,12 +2,13 @@ package com.fr.swift.adaptor.executor;
 
 import com.finebi.base.common.resource.FineResourceItem;
 import com.finebi.base.constant.FineEngineType;
+import com.finebi.conf.internalimp.analysis.operator.trans.NameText;
+import com.finebi.conf.internalimp.basictable.previewdata.FIneColumnTransPreviewData;
 import com.finebi.conf.internalimp.service.engine.table.FineTableEngineExecutor;
-import com.finebi.conf.structure.analysis.table.FineAnalysisTable;
 import com.finebi.conf.structure.bean.field.FineBusinessField;
-import com.finebi.conf.structure.bean.table.BusinessTableBean;
 import com.finebi.conf.structure.bean.table.FineBusinessTable;
 import com.finebi.conf.structure.conf.base.EngineConfTable;
+import com.finebi.conf.structure.conf.result.EngineConfProduceData;
 import com.finebi.conf.structure.result.BIDetailCell;
 import com.finebi.conf.structure.result.BIDetailTableResult;
 import com.fr.swift.adaptor.struct.SwiftDetailCell;
@@ -97,14 +98,7 @@ public class SwiftTableEngineExecutor implements FineTableEngineExecutor {
     }
 
     @Override
-
     public String getName(FineResourceItem item) {
-        return null;
-    }
-
-
-    @Override
-    public EngineConfTable createTable(BusinessTableBean bean) throws Exception {
         return null;
     }
 
@@ -118,4 +112,21 @@ public class SwiftTableEngineExecutor implements FineTableEngineExecutor {
         return FineEngineType.Cube;
     }
 
+    @Override
+    public EngineConfProduceData getConfPreResult(FineBusinessTable table) throws Exception {
+        BIDetailTableResult detailTableResult = getPreviewData(table, 100);
+        FIneColumnTransPreviewData engineConfProduceData = new FIneColumnTransPreviewData();
+        List<NameText> previewData = new ArrayList<NameText>();
+        while (detailTableResult.hasNext()) {
+            List<BIDetailCell> dataList = detailTableResult.next();
+            previewData.add(new NameText(null, String.valueOf(dataList.get(0).getData())));
+        }
+        engineConfProduceData.setPreviewData(previewData);
+        return engineConfProduceData;
+    }
+
+    @Override
+    public FineBusinessTable createTable(FineBusinessTable table) throws Exception {
+        return null;
+    }
 }
