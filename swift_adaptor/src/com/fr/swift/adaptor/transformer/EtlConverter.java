@@ -1,9 +1,13 @@
 package com.fr.swift.adaptor.transformer;
 
+import com.finebi.conf.constant.BIConfConstants;
 import com.finebi.conf.constant.ConfConstant;
 import com.finebi.conf.constant.ConfConstant.AnalysisType;
 import com.finebi.conf.exception.FineAnalysisOperationUnSafe;
 import com.finebi.conf.exception.FineEngineException;
+import com.finebi.conf.internalimp.analysis.bean.operator.add.AddNewColumnBean;
+import com.finebi.conf.internalimp.analysis.bean.operator.add.AddNewColumnValueBean;
+import com.finebi.conf.internalimp.analysis.bean.operator.add.expression.AddExpressionValueBean;
 import com.finebi.conf.internalimp.analysis.bean.operator.circulate.CirculateOneFieldBean;
 import com.finebi.conf.internalimp.analysis.bean.operator.circulate.CirculateTwoFieldValue;
 import com.finebi.conf.internalimp.analysis.bean.operator.confselect.ConfSelectBean;
@@ -29,18 +33,21 @@ import com.finebi.conf.structure.analysis.table.FineAnalysisTable;
 import com.finebi.conf.structure.bean.field.FineBusinessField;
 import com.finebi.conf.structure.bean.table.FineBusinessTable;
 import com.finebi.conf.utils.FineTableUtils;
+import com.fr.swift.query.filter.info.FilterInfo;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.source.DataSource;
 import com.fr.swift.source.MetaDataColumn;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftMetaDataColumn;
 import com.fr.swift.source.SwiftMetaDataImpl;
+import com.fr.swift.source.etl.AbstractOperator;
 import com.fr.swift.source.etl.ETLOperator;
 import com.fr.swift.source.etl.ETLSource;
 import com.fr.swift.source.etl.columnfilter.ColumnFilterOperator;
 import com.fr.swift.source.etl.columnrowtrans.ColumnRowTransOperator;
 import com.fr.swift.source.etl.columnrowtrans.NameText;
 import com.fr.swift.source.etl.detail.DetailOperator;
+import com.fr.swift.source.etl.formula.ColumnFormulaOperator;
 import com.fr.swift.source.etl.join.JoinColumn;
 import com.fr.swift.source.etl.join.JoinOperator;
 import com.fr.swift.source.etl.selfrelation.OneUnionRelationOperator;
@@ -65,7 +72,7 @@ class EtlConverter {
         if (baseTable != null) {
             dataSources.add(IndexingDataSourceFactory.transformDataSource(baseTable));
         } else {
-            assert (analysis.getOperator().getType() == ConfConstant.AnalysisType.SELECT_FIELD);
+            assert (analysis.getOperator().getType() == AnalysisType.SELECT_FIELD);
             LinkedHashMap<String, List<ColumnKey>> sourceKeyColumnMap = new LinkedHashMap<String, List<ColumnKey>>();
             LinkedHashMap<String, DataSource> sourceKeyDataSourceMap = new LinkedHashMap<String, DataSource>();
             SelectFieldOperator selectFieldOperator = analysis.getOperator();
@@ -234,25 +241,27 @@ class EtlConverter {
 
     private static ETLOperator convertEtlOperator(FineOperator op) throws FineEngineException {
         switch (op.getType()) {
-            case ConfConstant.AnalysisType.SELECT_FIELD:
+            case AnalysisType.SELECT_FIELD:
                 return fromSelectFieldBean(op.<SelectFieldBean>getValue());
-            case ConfConstant.AnalysisType.JOIN:
+            case AnalysisType.JOIN:
                 return fromJoinBean(op.<JoinBean>getValue());
-            case ConfConstant.AnalysisType.UNION:
+            case AnalysisType.UNION:
                 return fromUnionBean(op.<UnionBean>getValue());
-            case ConfConstant.AnalysisType.FILTER:
+            case AnalysisType.FILTER:
                 // TODO 过滤那边还没弄好，要等他们
                 return null;
 //            case CIR_CULATOR.ONE_FIELD:
 //                return fromOneUnionRelationBean(op.<CirculateOneFieldBean>getValue());
 //            case CIR_CULATOR.TWO_FIELD:
 //                return fromTwoUnionRelationBean(op.<CirculateOneFieldBean>getValue());
-            case ConfConstant.AnalysisType.COLUMN_ROW_TRANS:
+            case AnalysisType.COLUMN_ROW_TRANS:
                 return fromColumnRowTransBean(op.<ColumnRowTransBean>getValue());
             case AnalysisType.CONF_SELECT:
                 return fromConfSelectBean(op.<ConfSelectBean>getValue());
             case AnalysisType.SORT:
                 return fromColumnSortedBean(op.<SortBean>getValue());
+            case AnalysisType.ADD_COLUMN:
+                return fromAddNewColumnBean(op.<AddNewColumnBean>getValue());
             default:
         }
         return null;
@@ -318,9 +327,20 @@ class EtlConverter {
         return operator;
     }
 
-    private static ColumnFilterOperator fromColumnFilterBean(FilterOperatorBean bean) {
-        // TODO
+    private static AbstractOperator fromAddNewColumnBean(AddNewColumnBean bean) {
+        AddNewColumnValueBean value = bean.getValue();
+        switch(value.getType()) {
+            case BIConfConstants.CONF.ADD_COLUMN.FORMULA.TYPE: {
+                return new ColumnFormulaOperator(((AddExpressionValueBean)value).getName(), ((AddExpressionValueBean)value).getType(), ((AddExpressionValueBean)value).getValue());
+            }
+            default:
+        }
         return null;
+    }
+
+    private static ColumnFilterOperator fromColumnFilterBean(FilterOperatorBean bean) {
+        FilterInfo filterInfo = FilterFactory.transformFilter(bean.getValue());
+        return new ColumnFilterOperator(filterInfo);
     }
 
     private static ColumnRowTransOperator fromColumnRowTransBean(ColumnRowTransBean bean) throws FineEngineException {
