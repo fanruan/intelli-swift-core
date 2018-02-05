@@ -17,7 +17,7 @@ public class BIMultiRelationHelper {
         List<ColumnKey> primaryKeys = new ArrayList<ColumnKey>();
         List<ColumnKey> foreignKeys = new ArrayList<ColumnKey>();
         List<String> primaryFields = source.getPrimaryFields();
-        List<String> foreignFields = source.getPrimaryFields();
+        List<String> foreignFields = source.getForeignFields();
         for (int i = 0, len = primaryFields.size(); i < len; i++) {
             ColumnKey key = new ColumnKey(primaryFields.get(i));
             key.setRelation(source);
