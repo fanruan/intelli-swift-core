@@ -5,12 +5,13 @@ import com.finebi.base.constant.FineEngineType;
 import com.finebi.conf.exception.FineEngineException;
 import com.finebi.conf.internalimp.analysis.table.FineAnalysisTableImpl;
 import com.finebi.conf.service.engine.table.EngineTableManager;
-import com.finebi.conf.structure.analysis.table.FineAnalysisTable;
 import com.finebi.conf.structure.bean.field.FineBusinessField;
 import com.finebi.conf.structure.bean.pack.FineBusinessPackage;
 import com.finebi.conf.structure.bean.table.FineBusinessTable;
 import com.fr.general.ComparatorUtils;
 import com.fr.swift.conf.business.ISwiftXmlWriter;
+import com.fr.swift.conf.business.pack.PackXmlWriter;
+import com.fr.swift.conf.business.pack.PackageParseXml;
 import com.fr.swift.conf.business.pack.SwiftPackageDao;
 import com.fr.swift.conf.business.table.SwiftTableDao;
 import com.fr.swift.conf.business.table.TableParseXml;
@@ -39,6 +40,7 @@ public class SwiftTableConfProvider implements EngineTableManager {
         ISwiftXmlWriter swiftXmlWriter = new TableXmlWriter();
         businessTableDAO = new SwiftTableDao(xmlHandler, xmlFileName, swiftXmlWriter);
         swiftPackageConfProvider = new SwiftPackageConfProvider();
+        businessPackageDAO = new SwiftPackageDao(new PackageParseXml(), xmlFileName, new PackXmlWriter());
     }
 
     @Override
@@ -63,7 +65,7 @@ public class SwiftTableConfProvider implements EngineTableManager {
     public FineBusinessTable getSingleTable(String tableName) {
         for (FineBusinessTable fineBusinessTable : businessTableDAO.getAllConfig()) {
             if (ComparatorUtils.equals(tableName, fineBusinessTable.getName())) {
-                    return fineBusinessTable;
+                return fineBusinessTable;
             }
         }
         return null;
@@ -77,7 +79,7 @@ public class SwiftTableConfProvider implements EngineTableManager {
         }
         return null;
     }
-    
+
     @Override
     public boolean addTables(Map<String, List<FineBusinessTable>> tables) throws FineEngineException {
         List<FineBusinessPackage> needUpdatePackage = new ArrayList<FineBusinessPackage>();
@@ -93,7 +95,7 @@ public class SwiftTableConfProvider implements EngineTableManager {
         }
         return businessPackageDAO.updateConfigs(needUpdatePackage) && businessTableDAO.saveConfigs(newAddTables);
     }
-    
+
     private List<String> getTableNames(List<FineBusinessTable> tables) {
         List<String> result = new ArrayList<String>();
         for (FineBusinessTable table : tables) {
@@ -151,7 +153,7 @@ public class SwiftTableConfProvider implements EngineTableManager {
         FineBusinessField fineBusinessField = this.getField(tableId, fieldId);
         return fineBusinessField != null;
     }
-    
+
     @Override
     public List<FineBusinessTable> getBelongAnalysisTables(String tableName) throws FineEngineException {
         List<FineBusinessTable> result = new ArrayList<FineBusinessTable>();
@@ -166,7 +168,7 @@ public class SwiftTableConfProvider implements EngineTableManager {
         }
         return result;
     }
-    
+
     @Override
     public FineEngineType getEngineType() {
         return FineEngineType.Cube;

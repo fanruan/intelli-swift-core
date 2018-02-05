@@ -3,9 +3,10 @@ package com.fr.swift.adaptor.executor;
 import com.finebi.base.common.resource.FineResourceItem;
 import com.finebi.base.constant.FineEngineType;
 import com.finebi.conf.internalimp.service.engine.table.FineTableEngineExecutor;
-import com.finebi.conf.structure.analysis.table.FineAnalysisTable;
 import com.finebi.conf.structure.bean.field.FineBusinessField;
 import com.finebi.conf.structure.bean.table.FineBusinessTable;
+import com.finebi.conf.structure.conf.base.EngineConfTable;
+import com.finebi.conf.structure.conf.result.EngineConfProduceData;
 import com.finebi.conf.structure.result.BIDetailTableResult;
 
 import java.util.List;
@@ -24,7 +25,7 @@ public class SwiftETLEngineExecutor implements FineTableEngineExecutor {
     }
 
     @Override
-    public BIDetailTableResult getRealData(FineBusinessTable table, int rowCount) throws Exception {
+    public BIDetailTableResult getRealData(FineBusinessTable table) throws Exception {
         return null;
     }
 
@@ -34,7 +35,17 @@ public class SwiftETLEngineExecutor implements FineTableEngineExecutor {
     }
 
     @Override
-    public FineBusinessTable getBasicOperator(FineAnalysisTable table) throws Exception {
+    public EngineConfProduceData getConfPreResult(FineBusinessTable table) throws Exception {
+        return null;
+    }
+
+    @Override
+    public boolean refresh(EngineConfTable table) {
+        return false;
+    }
+
+    @Override
+    public FineBusinessTable createTable(FineBusinessTable table) throws Exception {
         return null;
     }
 

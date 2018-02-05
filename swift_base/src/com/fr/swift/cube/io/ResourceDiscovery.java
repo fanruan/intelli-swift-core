@@ -1,0 +1,29 @@
+package com.fr.swift.cube.io;
+
+import com.fr.swift.cube.io.input.Reader;
+import com.fr.swift.cube.io.location.IResourceLocation;
+import com.fr.swift.cube.io.output.Writer;
+
+/**
+ * This class created on 2016/3/10.
+ * <p/>
+ * 获得Cube数据的接口
+ * 对象通过resourceRetrieve获得Location后。
+ * 通过该接口即可获得相应的目标读写接口。
+ *
+ * @author Connery
+ * @since 4.0
+ */
+public interface ResourceDiscovery {
+
+    Reader getReader(IResourceLocation location, BuildConf conf);
+
+    Writer getWriter(IResourceLocation location, BuildConf conf);
+
+    boolean exists(IResourceLocation location, BuildConf conf);
+
+    /**
+     * reader，writer用完自行release，此处只负责丢弃
+     */
+    void clear();
+}

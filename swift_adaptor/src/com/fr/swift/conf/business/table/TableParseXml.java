@@ -3,8 +3,8 @@ package com.fr.swift.conf.business.table;
 import com.finebi.base.constant.BaseConstant;
 import com.finebi.base.constant.FineEngineType;
 import com.finebi.conf.internalimp.basictable.table.FineDBBusinessTable;
+import com.finebi.conf.internalimp.basictable.table.FineSQLBusinessTable;
 import com.finebi.conf.internalimp.field.FineBusinessFieldImp;
-import com.finebi.conf.internalimp.table.FineSQLBusinessTable;
 import com.finebi.conf.structure.bean.table.FineBusinessTable;
 import com.fr.general.ComparatorUtils;
 import com.fr.swift.conf.business.AbstractSwiftParseXml;
@@ -53,7 +53,7 @@ public class TableParseXml extends AbstractSwiftParseXml<FineBusinessTable> {
             field.setType((Integer.valueOf(attributes.getValue("fieldType"))));
             field.setUsable(Boolean.valueOf(attributes.getValue("isUsed")));
             field.setTransferName(attributes.getValue("transferName"));
-            resource.addField(field);
+//            resource.addField(field);
         }
         this.tagName = qName;
     }
@@ -65,7 +65,7 @@ public class TableParseXml extends AbstractSwiftParseXml<FineBusinessTable> {
         FineEngineType engineType = FineEngineType.getEngineType(Integer.valueOf(attributes.getValue("engineType")));
         String connName = attributes.getValue("connName");
         resource = new FineDBBusinessTable(name, engineType, connName, tableName);
-        resource.setId(id);
+//        resource.setId(id);
     }
 
     private void parseSQLTable(Attributes attributes) {
@@ -75,7 +75,7 @@ public class TableParseXml extends AbstractSwiftParseXml<FineBusinessTable> {
         String sql = attributes.getValue("sql");
         String connName = attributes.getValue("connName");
         resource = new FineSQLBusinessTable(name, connName, engineType, sql);
-        resource.setId(id);
+//        resource.setId(id);
     }
 
     @Override

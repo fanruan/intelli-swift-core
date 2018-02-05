@@ -1,0 +1,34 @@
+package com.fr.swift.source.db;
+
+import com.fr.data.core.db.dialect.Dialect;
+import com.fr.swift.source.SwiftMetaData;
+import com.fr.swift.source.SwiftResultSet;
+import com.fr.swift.source.db.dbdealer.DBDealer;
+
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+
+/**
+ * Created by pony on 2017/12/5.
+ */
+public abstract class AbstractAllQueryTransfer extends AbstractQueryTransfer {
+    protected SwiftMetaData metaData;
+    protected SwiftMetaData outerMeta;
+
+    public AbstractAllQueryTransfer(ConnectionInfo connectionInfo, SwiftMetaData metaData, SwiftMetaData outerMeta) {
+        super(connectionInfo);
+        this.metaData = metaData;
+        this.outerMeta = outerMeta;
+    }
+
+    protected abstract SwiftMetaData getSqlMeta() throws SQLException;
+
+    @Override
+    public SwiftResultSet createIterator(final ResultSet rs, Dialect dialect, String sql, final Statement stmt, final Connection conn, boolean needCharSetConvert, String originalCharSetName, String newCharSetName) throws SQLException {
+        DBDealer[] dealers = createDBDealer(needCharSetConvert, originalCharSetName, newCharSetName, metaData, getSqlMeta());
+        return new JDBCResultSet(rs, stmt, conn, metaData, dealers);
+    }
+
+}

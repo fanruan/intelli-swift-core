@@ -1,9 +1,11 @@
 package com.fr.swift.adaptor.update;
 
 import com.finebi.base.constant.FineEngineType;
+import com.finebi.conf.internalimp.response.update.TableUpdateSetting;
 import com.finebi.conf.internalimp.update.TableUpdateInfo;
 import com.finebi.conf.internalimp.update.UpdateLog;
 import com.finebi.conf.internalimp.update.UpdateStatus;
+import com.finebi.conf.provider.SwiftTableConfProvider;
 import com.finebi.conf.service.engine.update.EngineUpdateManager;
 import com.finebi.conf.structure.bean.table.FineBusinessTable;
 import com.fr.fs.control.UserControl;
@@ -39,7 +41,11 @@ public class SwiftUpdateManager implements EngineUpdateManager {
 
     @Override
     public List<TableUpdateInfo> getTableUpdateInfo(FineBusinessTable table) {
-        return new ArrayList<TableUpdateInfo>();
+        TableUpdateInfo tableUpdateInfo = new TableUpdateInfo();
+        tableUpdateInfo.setTableName(table.getName());
+        List<TableUpdateInfo> tableUpdateInfoList = new ArrayList<TableUpdateInfo>();
+        tableUpdateInfoList.add(tableUpdateInfo);
+        return tableUpdateInfoList;
     }
 
     @Override
@@ -52,6 +58,11 @@ public class SwiftUpdateManager implements EngineUpdateManager {
         Map<FineBusinessTable, TableUpdateInfo> infoMap = new HashMap<FineBusinessTable, TableUpdateInfo>();
         infoMap.put(table, updateInfo);
         saveUpdateSetting(infoMap);
+    }
+
+    @Override
+    public void triggerTableUpdate(TableUpdateInfo updateInfo, FineBusinessTable table) throws Exception {
+
     }
 
     @Override
@@ -72,11 +83,29 @@ public class SwiftUpdateManager implements EngineUpdateManager {
     }
 
     @Override
+    public void saveTableUpdateSetting(TableUpdateSetting tableUpdateSetting) throws Exception {
+        FineBusinessTable fineBusinessTable = new SwiftTableConfProvider().getSingleTable(tableUpdateSetting.getTableName());
+        Map<FineBusinessTable, TableUpdateInfo> infoMap = new HashMap<FineBusinessTable, TableUpdateInfo>();
+        infoMap.put(fineBusinessTable, tableUpdateSetting.getSettings().get(tableUpdateSetting.getTableName()));
+        this.saveUpdateSetting(infoMap);
+    }
+
+    @Override
     public void savePackageUpdateSetting(String packId, TableUpdateInfo info) throws Exception {
     }
 
     @Override
+    public void triggerPackageUpdate(String packId) throws Exception {
+
+    }
+
+    @Override
     public Map<String, UpdateStatus> getTableUpdateStatus(FineBusinessTable table) {
+        return null;
+    }
+
+    @Override
+    public UpdateStatus getPackUpdateStatus(String packId) throws Exception {
         return null;
     }
 
@@ -87,6 +116,16 @@ public class SwiftUpdateManager implements EngineUpdateManager {
 
     @Override
     public void updateAll(TableUpdateInfo info) {
+
+    }
+
+    @Override
+    public TableUpdateInfo getUpdateInfo() throws Exception {
+        return null;
+    }
+
+    @Override
+    public void triggerAllUpdate(TableUpdateInfo info) throws Exception {
 
     }
 

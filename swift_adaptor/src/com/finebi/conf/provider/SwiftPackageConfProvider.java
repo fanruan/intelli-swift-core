@@ -45,7 +45,7 @@ public class SwiftPackageConfProvider implements EnginePackageManager {
     }
 
     @Override
-    public List<FineBusinessPackage> getAllPackageByGroupId(String groupId) throws Exception {
+    public List<FineBusinessPackage> getAllPackageByGroupId(String groupId) {
         List<FineBusinessPackage> resultPackageList = new ArrayList<FineBusinessPackage>();
         List<FinePackageGroup> groupList = FineGroupUtils.getAllGroups();
         for (FinePackageGroup group : groupList) {
@@ -88,13 +88,13 @@ public class SwiftPackageConfProvider implements EnginePackageManager {
     @Override
     public boolean addPackage(FineBusinessPackage pack, String groupId) {
         try {
-            List<FinePackageGroup> groups = FineGroupUtils.getAllGroups();
-            for (FinePackageGroup group : groups) {
-                if (ComparatorUtils.equals(group.getGroupId(), groupId)) {
-                    group.addPackage(pack.getId());
-                    FineGroupUtils.updateGroup(group);
-                }
-            }
+//            List<FinePackageGroup> groups = FineGroupUtils.getAllGroups();
+//            for (FinePackageGroup group : groups) {
+//                if (ComparatorUtils.equals(group.getGroupId(), groupId)) {
+//                    group.addPackage(pack.getId());
+//                    FineGroupUtils.updateGroups(group);
+//                }
+//            }
             return businessPackDAO.saveConfig(pack);
         } catch (Exception e) {
             LOGGER.error(e.getMessage(), e);
