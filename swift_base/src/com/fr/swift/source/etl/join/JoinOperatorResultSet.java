@@ -240,7 +240,7 @@ public class JoinOperatorResultSet implements SwiftResultSet {
 
     @Override
     public SwiftMetaData getMetaData() {
-        return null;
+        return metaData;
     }
 
     @Override
