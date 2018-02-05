@@ -60,6 +60,7 @@ public class MultiRelationIndexBuilder extends BaseWorker {
             workOver(Task.Result.SUCCEEDED);
             logger.info("generate relation: " + relation.getKey() + " success");
         } catch (Exception e) {
+            logger.error("generate relation: " + relation.getKey() + " failed because [" + e.getMessage() + "]", e);
             workOver(Task.Result.FAILED);
         }
     }
