@@ -72,6 +72,7 @@
 
 package com.fr.swift.manager;
 
+import com.fr.swift.cube.gen.oper.MultiRelationIndexBuilder;
 import com.fr.swift.cube.queue.StuffFetcher;
 import com.fr.swift.cube.task.TaskKey;
 import com.fr.swift.cube.task.WorkerTask;
@@ -86,7 +87,9 @@ import com.fr.swift.generate.history.TableBuilder;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.provider.ConnectionProvider;
+import com.fr.swift.relation.utils.BIMultiRelationHelper;
 import com.fr.swift.source.DataSource;
+import com.fr.swift.source.IRelationSource;
 import com.fr.swift.source.db.ConnectionManager;
 import com.fr.swift.structure.Pair;
 import com.fr.swift.util.function.Function;
@@ -144,6 +147,11 @@ public class ProviderTaskManager {
                     DataSource ds = ((DataSource) o);
                     WorkerTask wt = new WorkerTaskImpl(taskKey);
                     wt.setWorker(new TableBuilder(ds));
+                    return wt;
+                } else if (o instanceof IRelationSource) {
+                    IRelationSource source = (IRelationSource) o;
+                    WorkerTask wt = new WorkerTaskImpl(taskKey);
+                    wt.setWorker(new MultiRelationIndexBuilder(BIMultiRelationHelper.convert2CubeRelation(source), LocalSegmentProvider.getInstance()));
                     return wt;
                 } else {
                     return null;
