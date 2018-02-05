@@ -67,7 +67,7 @@ public class SwiftTableEngineExecutor implements FineTableEngineExecutor {
             for (int i = 1; i <= swiftMetaData.getColumnCount(); i++) {
                 String columnName = swiftMetaData.getColumnName(i);
                 ColumnKey columnKey = new ColumnKey(columnName);
-                columnList.add(segment.getColumn(columnKey).getPrimitiveDetailColumn());
+                columnList.add(segment.getColumn(columnKey).getDetailColumn());
             }
             for (int i = 0; i < count; i++) {
                 List<BIDetailCell> cellList = new ArrayList<BIDetailCell>();

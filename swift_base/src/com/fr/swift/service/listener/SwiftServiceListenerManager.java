@@ -1,0 +1,78 @@
+package com.fr.swift.service.listener;
+
+import com.fr.swift.exception.SwiftServiceException;
+import com.fr.swift.exception.SwiftServiceListenerHandlerAbsentException;
+import com.fr.swift.service.SwiftService;
+import com.fr.swift.service.SwiftServiceEvent;
+import com.fr.swift.util.Util;
+
+/**
+ * @author pony
+ * @date 2017/11/6
+ * 管理service向server注册与触发事件的类。
+ */
+public class SwiftServiceListenerManager {
+    private static final SwiftServiceListenerManager INSTANCE = new SwiftServiceListenerManager();
+
+    private SwiftServiceListenerHandler handler;
+
+    public static SwiftServiceListenerManager getInstance() {
+        return INSTANCE;
+    }
+
+    /**
+     * 单机模式就注册单机的handler, 多台就注册RemoteServiceListenerHandler
+     *
+     * @param handler
+     * @see SwiftServiceListenerHandler
+     * @see RemoteServiceListenerSender
+     */
+    public void registerHandler(SwiftServiceListenerHandler handler) {
+        Util.requireNonNull(handler);
+        this.handler = handler;
+    }
+
+    /**
+     * 注册服务
+     *
+     * @param service
+     * @throws SwiftServiceException
+     */
+    public void registerService(SwiftService service) throws SwiftServiceException {
+        checkIfHandlerRegistered();
+        this.handler.registerService(service);
+    }
+
+    /**
+     * 注销服务
+     *
+     * @param service
+     * @throws SwiftServiceException
+     */
+    public void unRegisterService(SwiftService service) throws SwiftServiceException {
+        checkIfHandlerRegistered();
+        this.handler.unRegisterService(service);
+    }
+
+    public void addListener(SwiftServiceListener listener) throws SwiftServiceException {
+        checkIfHandlerRegistered();
+        handler.addListener(listener);
+    }
+
+    /**
+     * 通知服务，触发事件
+     *
+     * @param event
+     * @throws SwiftServiceException
+     */
+    public void triggerEvent(SwiftServiceEvent event) throws SwiftServiceException {
+        checkIfHandlerRegistered();
+        handler.trigger(event);
+    }
+
+    private void checkIfHandlerRegistered() throws SwiftServiceListenerHandlerAbsentException {
+        if (this.handler == null) {
+            throw new SwiftServiceListenerHandlerAbsentException("can not register without handler");
+        }
+    }
+}

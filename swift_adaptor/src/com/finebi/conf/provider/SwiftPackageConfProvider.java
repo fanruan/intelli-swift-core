@@ -88,13 +88,13 @@ public class SwiftPackageConfProvider implements EnginePackageManager {
     @Override
     public boolean addPackage(FineBusinessPackage pack, String groupId) {
         try {
-            List<FinePackageGroup> groups = FineGroupUtils.getAllGroups();
-            for (FinePackageGroup group : groups) {
-                if (ComparatorUtils.equals(group.getGroupId(), groupId)) {
-                    group.addPackage(pack.getId());
-                    FineGroupUtils.updateGroups(group);
-                }
-            }
+//            List<FinePackageGroup> groups = FineGroupUtils.getAllGroups();
+//            for (FinePackageGroup group : groups) {
+//                if (ComparatorUtils.equals(group.getGroupId(), groupId)) {
+//                    group.addPackage(pack.getId());
+//                    FineGroupUtils.updateGroups(group);
+//                }
+//            }
             return businessPackDAO.saveConfig(pack);
         } catch (Exception e) {
             LOGGER.error(e.getMessage(), e);

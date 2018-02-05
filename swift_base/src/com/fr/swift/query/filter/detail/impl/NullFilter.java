@@ -1,0 +1,32 @@
+package com.fr.swift.query.filter.detail.impl;
+
+import com.fr.swift.bitmap.ImmutableBitMap;
+import com.fr.swift.result.SwiftNode;
+import com.fr.swift.segment.column.Column;
+import com.fr.swift.segment.column.DictionaryEncodedColumn;
+import com.fr.swift.structure.iterator.RowTraversal;
+
+/**
+ * Created by Lyon on 2017/12/5.
+ */
+public class NullFilter extends AbstractFilter {
+
+    public NullFilter(Column column) {
+        this.column = column;
+    }
+
+    @Override
+    protected RowTraversal getIntIterator(DictionaryEncodedColumn dict) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public ImmutableBitMap createFilterIndex() {
+        return column.getBitmapIndex().getNullIndex();
+    }
+
+    @Override
+    public boolean matches(SwiftNode node) {
+        throw new UnsupportedOperationException();
+    }
+}

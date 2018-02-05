@@ -1,0 +1,40 @@
+package com.fr.swift.source.db;
+
+import com.fr.swift.source.ColumnTypeConstants;
+import com.fr.swift.source.SwiftMetaData;
+import junit.framework.TestCase;
+
+import java.sql.Types;
+import java.util.HashMap;
+import java.util.Map;
+
+/**
+ * Created by pony on 2017/12/29.
+ */
+public class QueryDBSourceTest extends TestCase {
+    private QueryDBSource source;
+    private QueryDBSource partSource;
+    public void setUp() throws Exception{
+        ConnectionInfo connectionInfo = TestConnectionProvider.createConnection();
+        source = new QueryDBSource("select 合同ID from DEMO_CAPITAL_RETURN", "demo");
+        Map<String, Integer> fields = new HashMap<>();
+        fields.put("合同ID", ColumnTypeConstants.COLUMN.NUMBER);
+        partSource = new QueryDBSource("select 合同ID from DEMO_CAPITAL_RETURN", "demo", fields);
+    }
+
+    public void testGetSourceKey() throws Exception{
+        assertEquals("6f9909ab", source.getSourceKey().getId());
+    }
+
+    public void testGetMetadata() throws Exception{
+        SwiftMetaData metaData = source.getMetadata();
+        assertEquals(metaData.getColumnCount(), 1);
+        assertEquals(metaData.getColumnName(1), "合同ID");
+        assertEquals(metaData.getColumnType(1), Types.VARCHAR);
+
+        SwiftMetaData partMeta = partSource.getMetadata();
+        assertEquals(partMeta.getColumnCount(), 1);
+        assertEquals(partMeta.getColumnName(1), "合同ID");
+        assertEquals(partMeta.getColumnType(1), Types.DOUBLE);
+    }
+}

@@ -7,6 +7,9 @@ import com.fr.swift.source.SwiftMetaDataColumn;
 import com.fr.swift.source.SwiftResultSet;
 
 import java.sql.SQLException;
+import java.util.Iterator;
+import java.util.Spliterator;
+import java.util.function.Consumer;
 
 /**
  * This class created on 2018-1-29 10:35:58
@@ -92,6 +95,21 @@ public class SwiftEmptyResult implements SwiftResultSet {
             @Override
             public int getColumnIndex(String columnName) throws SwiftMetaDataException {
                 return 0;
+            }
+
+            @Override
+            public Iterator<SwiftMetaDataColumn> iterator() {
+                return null;
+            }
+
+            @Override
+            public void forEach(Consumer<? super SwiftMetaDataColumn> action) {
+
+            }
+
+            @Override
+            public Spliterator<SwiftMetaDataColumn> spliterator() {
+                return null;
             }
         };
     }

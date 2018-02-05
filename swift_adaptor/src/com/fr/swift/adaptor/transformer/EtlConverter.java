@@ -132,8 +132,12 @@ class EtlConverter {
             case AnalysisType.UNION:
                 UnionBeanValue ubv = op.<UnionBean>getValue().getValue();
                 for (UnionBeanValueTable table : ubv.getTables()) {
-                    FineBusinessTable busiTable = FineTableUtils.getTableById(table.getName());
-                    dataSources.add(IndexingDataSourceFactory.transformDataSource(busiTable));
+                    try {
+                        FineBusinessTable busiTable = FineTableUtils.getTableById(table.getName());
+                        dataSources.add(IndexingDataSourceFactory.transformDataSource(busiTable));
+                    } catch (Exception e) {
+                        continue;
+                    }
                 }
                 break;
             default:
@@ -194,7 +198,7 @@ class EtlConverter {
         List<ColumnKey> leftColumns = new ArrayList<ColumnKey>();
         List<ColumnKey> rightColumns = new ArrayList<ColumnKey>();
 
-        for(List<String> leftRight :  jbv.getBasis()) {
+        for (List<String> leftRight : jbv.getBasis()) {
             leftColumns.add(new ColumnKey(leftRight.get(0)));
             rightColumns.add(new ColumnKey(leftRight.get(1)));
 
@@ -222,10 +226,13 @@ class EtlConverter {
         List<List<String>> basis = ubv.getBasis();
         int basisSize = basis.size();
         List<List<ColumnKey>> listsOfColumn = new ArrayList<List<ColumnKey>>(basisSize);
-        for (int i = 0; i < basisSize; i++) {
-            List<String> columns = basis.get(i);
-            for (String column : columns) {
-                listsOfColumn.get(i).add(new ColumnKey(column));
+
+        for (int i = 0; i < ubv.getResult().size(); i++) {
+//            List<String> columns = basis.get(i);
+            listsOfColumn.add(new ArrayList<ColumnKey>());
+            listsOfColumn.get(i).add(new ColumnKey(ubv.getResult().get(i)));
+            for (List<String> columnKeys : basis) {
+                listsOfColumn.get(i).add(new ColumnKey(columnKeys.get(i)));
             }
         }
 

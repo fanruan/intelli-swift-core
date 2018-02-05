@@ -1,0 +1,45 @@
+package com.fr.swift.source.db;
+
+import com.fr.swift.source.ColumnTypeConstants;
+import com.fr.swift.source.SwiftResultSet;
+import junit.framework.TestCase;
+
+import java.util.HashMap;
+import java.util.Map;
+
+/**
+ * Created by pony on 2017/12/29.
+ */
+public class QuerySourceTransferTest extends TestCase {
+
+    public void testCreateResultSet() throws Exception{
+        ConnectionInfo connectionInfo = TestConnectionProvider.createConnection();
+        QueryDBSource source = new QueryDBSource("select 合同ID from DEMO_CAPITAL_RETURN", "demo");
+        QuerySourceTransfer transfer = new QuerySourceTransfer(connectionInfo, source.getMetadata(), source.getOuterMetadata(),  source.getQuery());
+        SwiftResultSet resultSet = transfer.createResultSet();
+        int index = 0;
+        while (resultSet.next()){
+            resultSet.getRowData();
+            index++;
+        }
+        resultSet.close();
+        assertEquals(index, 682);
+    }
+
+    public void testCreatePartResultSet() throws Exception{
+        ConnectionInfo connectionInfo = TestConnectionProvider.createConnection();
+        Map<String, Integer> fields = new HashMap<>();
+        fields.put("合同ID", ColumnTypeConstants.COLUMN.NUMBER);
+        QueryDBSource source = new QueryDBSource("select * from DEMO_CAPITAL_RETURN", "demo", fields);
+        QuerySourceTransfer transfer = new QuerySourceTransfer(connectionInfo, source.getMetadata(), source.getOuterMetadata(),  source.getQuery());
+        SwiftResultSet resultSet = transfer.createResultSet();
+        int index = 0;
+        while (resultSet.next()){
+            Object ob = resultSet.getRowData().getValue(0);
+            assert(ob == null || ob.getClass() == Double.class);
+            index++;
+        }
+        resultSet.close();
+        assertEquals(index, 682);
+    }
+}

@@ -1,0 +1,44 @@
+package com.fr.swift.manager;
+
+
+import com.fr.swift.cube.io.Types;
+import com.fr.swift.cube.io.location.ResourceLocation;
+import com.fr.swift.segment.AbstractSegmentManager;
+import com.fr.swift.segment.HistorySegmentImpl;
+import com.fr.swift.segment.RealTimeSegmentImpl;
+import com.fr.swift.segment.Segment;
+import com.fr.swift.segment.SegmentKey;
+import com.fr.swift.source.MetaDataXmlManager;
+import com.fr.swift.source.SourceKey;
+import com.fr.swift.source.SwiftMetaData;
+import com.fr.swift.util.Util;
+
+import java.net.URI;
+
+/**
+ * @author yee
+ * @date 2017/12/18
+ */
+public class LineSegmentManager extends AbstractSegmentManager {
+
+    @Override
+    public Segment getSegment(SegmentKey segmentKey) {
+        Util.requireNonNull(segmentKey);
+        int order = segmentKey.getSegmentOrder();
+        URI uri = segmentKey.getUri();
+        Types.StoreType storeType = segmentKey.getStoreType();
+        ResourceLocation location = new ResourceLocation(uri.getPath(), storeType);
+        SourceKey sourceKey = new SourceKey(segmentKey.getSourceId());
+        SwiftMetaData metaData = MetaDataXmlManager.getManager().getMetaData(sourceKey);
+        Util.requireNonNull(metaData);
+        switch (storeType) {
+            case MEMORY:
+                return new RealTimeSegmentImpl(location, metaData);
+            case FINE_IO:
+                return new HistorySegmentImpl(location, metaData);
+        }
+        Segment segment = new HistorySegmentImpl(location, metaData);
+        return segment;
+    }
+
+}
