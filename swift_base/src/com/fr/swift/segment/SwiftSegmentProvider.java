@@ -6,6 +6,8 @@ import com.fr.swift.source.SwiftMetaData;
 /**
  * @author yee
  * @date 2018/1/4
+ *
+ * fixme 变成OperatorProvider了 改改吧
  */
 public interface SwiftSegmentProvider extends SwiftSegmentManager {
     ISegmentOperator getIndexSegmentOperator(SourceKey sourceKey, SwiftMetaData metaData);

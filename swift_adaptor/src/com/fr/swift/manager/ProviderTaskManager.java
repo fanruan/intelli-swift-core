@@ -72,7 +72,6 @@
 
 package com.fr.swift.manager;
 
-import com.fr.swift.cube.gen.oper.MultiRelationIndexBuilder;
 import com.fr.swift.cube.queue.StuffFetcher;
 import com.fr.swift.cube.task.TaskKey;
 import com.fr.swift.cube.task.WorkerTask;
@@ -83,6 +82,7 @@ import com.fr.swift.cube.task.impl.SchedulerTaskPool;
 import com.fr.swift.cube.task.impl.WorkerTaskImpl;
 import com.fr.swift.cube.task.impl.WorkerTaskPool;
 import com.fr.swift.exception.SwiftServiceException;
+import com.fr.swift.generate.history.MultiRelationIndexBuilder;
 import com.fr.swift.generate.history.TableBuilder;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
