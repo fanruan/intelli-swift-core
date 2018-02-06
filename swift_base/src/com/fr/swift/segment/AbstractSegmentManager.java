@@ -31,4 +31,8 @@ public abstract class AbstractSegmentManager implements SwiftSegmentManager {
         return segments;
     }
 
+    @Override
+    public boolean isSegmentsExists(SourceKey sourceKey) {
+        return !SegmentXmlManager.getManager().getSegmentKeys(sourceKey).isEmpty();
+    }
 }

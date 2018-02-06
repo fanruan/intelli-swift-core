@@ -32,6 +32,11 @@ public class RemoteSegmentProvider implements SwiftSegmentProvider {
     }
 
     @Override
+    public boolean isSegmentsExists(SourceKey key) {
+        return false;
+    }
+
+    @Override
     public ISegmentOperator getIndexSegmentOperator(SourceKey sourceKey, SwiftMetaData metaData) {
         return null;
     }

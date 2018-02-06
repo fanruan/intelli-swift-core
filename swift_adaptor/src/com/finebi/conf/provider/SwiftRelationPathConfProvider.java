@@ -2,12 +2,13 @@ package com.finebi.conf.provider;
 
 import com.finebi.base.constant.FineEngineType;
 import com.finebi.conf.service.engine.relation.EngineRelationPathManager;
-import com.finebi.conf.structure.bean.table.FineBusinessTable;
 import com.finebi.conf.structure.path.FineBusinessTableRelationPath;
 import com.finebi.conf.structure.relation.FineBusinessTableRelation;
 import com.fr.general.ComparatorUtils;
 import com.fr.swift.conf.business.path.SwiftRelationPathDao;
 import com.fr.swift.conf.business.relation.SwiftRelationDao;
+import com.fr.swift.conf.business.table.TableParseXml;
+import com.fr.swift.conf.business.table.TableXmlWriter;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.manager.ProviderManager;
@@ -23,14 +24,18 @@ import java.util.List;
  * @since Advanced FineBI Analysis 1.0
  */
 public class SwiftRelationPathConfProvider implements EngineRelationPathManager {
-    
+
     // FIXME SwiftRelationPathDAO没有实现
     private SwiftRelationDao businessRelationDAO;
     private SwiftRelationPathDao businessPathDAO;
-    
+
     private static final SwiftLogger LOGGER = SwiftLoggers.getLogger(ProviderManager.class);
-    
+
     private String xmlFileName = "relation.xml";
+
+    public SwiftRelationPathConfProvider() {
+        businessRelationDAO = new SwiftRelationDao(new TableParseXml(), "table.xml", new TableXmlWriter());
+    }
 
     @Override
     public List<FineBusinessTableRelation> getAllRelations() {
@@ -74,7 +79,7 @@ public class SwiftRelationPathConfProvider implements EngineRelationPathManager 
 
     @Override
     public boolean updateRelations(List<FineBusinessTableRelation> relations) {
-        
+
         return false;
     }
 
@@ -85,7 +90,7 @@ public class SwiftRelationPathConfProvider implements EngineRelationPathManager 
 
     @Override
     public List<FineBusinessTableRelationPath> getAllRelationPaths() {
-        
+
         return new ArrayList<FineBusinessTableRelationPath>();
     }
 

@@ -47,6 +47,11 @@ public class LocalSegmentProvider implements SwiftSegmentProvider {
     }
 
     @Override
+    public boolean isSegmentsExists(SourceKey key) {
+        return manager.isSegmentsExists(key);
+    }
+
+    @Override
     public ISegmentOperator getIndexSegmentOperator(SourceKey sourceKey, SwiftMetaData metaData) {
         try {
             return new HistorySegmentOperator(sourceKey, metaData, manager.getSegment(sourceKey));
