@@ -2,7 +2,6 @@ package com.finebi.conf.provider;
 
 import com.finebi.base.constant.FineEngineType;
 import com.finebi.conf.service.engine.relation.EngineRelationPathManager;
-import com.finebi.conf.structure.bean.table.FineBusinessTable;
 import com.finebi.conf.structure.path.FineBusinessTableRelationPath;
 import com.finebi.conf.structure.relation.FineBusinessTableRelation;
 import com.fr.general.ComparatorUtils;
@@ -35,7 +34,7 @@ public class SwiftRelationPathConfProvider implements EngineRelationPathManager 
     @Override
     public List<FineBusinessTableRelation> getAllRelations() {
         List<FineBusinessTableRelation> allConfig = new ArrayList<FineBusinessTableRelation>();
-        allConfig.addAll(businessRelationDAO.getAllConfig());
+      //  allConfig.addAll(businessRelationDAO.getAllConfig());
         return allConfig;
     }
 

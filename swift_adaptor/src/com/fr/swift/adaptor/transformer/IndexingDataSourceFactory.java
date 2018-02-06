@@ -1,15 +1,16 @@
 package com.fr.swift.adaptor.transformer;
 
 import com.finebi.base.constant.BaseConstant;
-import com.finebi.conf.constant.ConfConstant;
 import com.finebi.base.constant.BaseConstant.TABLETYPE;
-import com.finebi.conf.exception.FineConfigException;
+import com.finebi.conf.constant.ConfConstant;
+import com.finebi.conf.internalimp.analysis.bean.operator.confselect.ConfSelectBeanItem;
 import com.finebi.conf.internalimp.analysis.bean.operator.select.SelectFieldBeanItem;
+import com.finebi.conf.internalimp.analysis.operator.confselect.ConfSelectOperator;
 import com.finebi.conf.internalimp.analysis.operator.select.SelectFieldOperator;
 import com.finebi.conf.internalimp.basictable.table.FineDBBusinessTable;
-import com.finebi.conf.internalimp.basictable.table.FineExcelBusinessTable;
 import com.finebi.conf.internalimp.basictable.table.FineSQLBusinessTable;
 import com.finebi.conf.internalimp.update.TableUpdateInfo;
+import com.finebi.conf.structure.analysis.operator.FineOperator;
 import com.finebi.conf.structure.analysis.table.FineAnalysisTable;
 import com.finebi.conf.structure.bean.connection.FineConnection;
 import com.finebi.conf.structure.bean.field.FineBusinessField;
@@ -34,7 +35,6 @@ import com.fr.swift.source.db.TableDBSource;
 import com.fr.swift.source.etl.ETLOperator;
 import com.fr.swift.source.etl.ETLSource;
 import com.fr.swift.source.etl.detail.DetailOperator;
-import com.fr.swift.source.excel.ExcelDataSource;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -103,9 +103,9 @@ public class IndexingDataSourceFactory {
                 break;
             case BaseConstant.TABLETYPE.SERVER:
                 break;
-            case BaseConstant.TABLETYPE.EXCEL:
-                dataSource = transformExcelDataSource((FineExcelBusinessTable) table);
-                break;
+//            case BaseConstant.TABLETYPE.EXCEL:
+//                dataSource = transformExcelDataSource((FineExcelBusinessTable) table);
+//                break;
             case TABLETYPE.ETL:
             case BaseConstant.TABLETYPE.ANALYSIS:
                 dataSource = EtlConverter.transformEtlDataSource(table);
@@ -165,8 +165,27 @@ public class IndexingDataSourceFactory {
         FineConnection fineConnection = FineConnectionUtils.getConnectionByName(connectionName);
         ConnectionInfo connectionInfo = new SwiftConnectionInfo(fineConnection.getSchema(), fineConnection.getConnection());
         ConnectionManager.getInstance().registerConnectionInfo(connectionName, connectionInfo);
-        TableDBSource tableDBSource = new TableDBSource(table.getTableName(), connectionName);
+        Map<String, Integer> fieldColumnTypes = checkFieldTypes(table.getOperators());
+        TableDBSource tableDBSource = fieldColumnTypes == null ?
+                new TableDBSource(table.getTableName(), connectionName) : new TableDBSource(table.getTableName(), connectionName, fieldColumnTypes);
         return tableDBSource;
+    }
+
+    private static Map<String, Integer> checkFieldTypes(List<FineOperator> operators) {
+        if (operators != null && operators.size() == 1) {
+            FineOperator op = operators.get(0);
+            if (op.getType() == ConfConstant.AnalysisType.CONF_SELECT) {
+                List<ConfSelectBeanItem> items = ((ConfSelectOperator) op).getFields();
+                Map<String, Integer> fieldsTypes = new HashMap<String, Integer>();
+                for (ConfSelectBeanItem item : items) {
+                    if (item.isUsable()) {
+                        fieldsTypes.put(item.getName(), FieldFactory.transformBIColumnType2SwiftColumnType(item.getType()));
+                    }
+                }
+                return fieldsTypes;
+            }
+        }
+        return null;
     }
 
     private static QueryDBSource transformQueryDBSource(FineSQLBusinessTable table) throws Exception {
@@ -175,14 +194,15 @@ public class IndexingDataSourceFactory {
         FineConnection fineConnection = FineConnectionUtils.getConnectionByName(connectionName);
         ConnectionInfo connectionInfo = new SwiftConnectionInfo(fineConnection.getSchema(), fineConnection.getConnection());
         ConnectionManager.getInstance().registerConnectionInfo(connectionName, connectionInfo);
-
-        QueryDBSource queryDBSource = new QueryDBSource(table.getSql(), table.getConnName());
+        Map<String, Integer> fieldColumnTypes = checkFieldTypes(table.getOperators());
+        QueryDBSource queryDBSource = fieldColumnTypes == null ?
+                new QueryDBSource(table.getSql(), table.getConnName()) : new QueryDBSource(table.getSql(), table.getConnName(), fieldColumnTypes);
         return queryDBSource;
     }
 
-    private static ExcelDataSource transformExcelDataSource(FineExcelBusinessTable table) {
-        return null;
-    }
+//    private static ExcelDataSource transformExcelDataSource(FineExcelBusinessTable table) {
+//        return null;
+//    }
 
     public static Increment transformIncrement(TableUpdateInfo tableUpdateInfo, SourceKey sourceKey, String connectionName) {
         Increment increment = new IncrementImpl(tableUpdateInfo.getAddSql(), tableUpdateInfo.getDeleteSql(), tableUpdateInfo.getModifySql(), sourceKey, connectionName, tableUpdateInfo.getUpdateType());

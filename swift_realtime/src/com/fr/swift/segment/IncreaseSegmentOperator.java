@@ -41,12 +41,14 @@ public class IncreaseSegmentOperator extends AbstractSegmentOperator {
     @Override
     public void transport(SwiftResultSet swiftResultSet) throws Exception {
         int count = 0;
-        String allotColumn = metaData.getColumnName(1);
-        while (swiftResultSet.next()) {
-            Row row = swiftResultSet.getRowData();
-            transportRow(count++, allotColumn, row);
+        if(metaData.getColumnCount() != 0){
+            String allotColumn = metaData.getColumnName(1);
+            while (swiftResultSet.next()) {
+                Row row = swiftResultSet.getRowData();
+                transportRow(count++, allotColumn, row);
+            }
+            segmentList.addAll(increaseSegmentList);
         }
-        segmentList.addAll(increaseSegmentList);
     }
 
     @Override

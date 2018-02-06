@@ -70,10 +70,9 @@ class EtlConverter {
         FineBusinessTable baseTable = analysis.getBaseTable();
         if (baseTable != null) {
             dataSources.add(IndexingDataSourceFactory.transformDataSource(baseTable));
-        } else {
-            assert (analysis.getOperator().getType() == AnalysisType.SELECT_FIELD);
-            LinkedHashMap<String, List<ColumnKey>> sourceKeyColumnMap = new LinkedHashMap<String, List<ColumnKey>>();
-            LinkedHashMap<String, DataSource> sourceKeyDataSourceMap = new LinkedHashMap<String, DataSource>();
+        } else if (analysis.getOperator().getType() == AnalysisType.SELECT_FIELD){
+            Map<String, List<ColumnKey>> sourceKeyColumnMap = new LinkedHashMap<String, List<ColumnKey>>();
+            Map<String, DataSource> sourceKeyDataSourceMap = new LinkedHashMap<String, DataSource>();
             SelectFieldOperator selectFieldOperator = analysis.getOperator();
             List<SelectFieldBeanItem> selectFieldBeanItemList = selectFieldOperator.getValue().getValue();
             for (SelectFieldBeanItem selectFieldBeanItem : selectFieldBeanItemList) {
