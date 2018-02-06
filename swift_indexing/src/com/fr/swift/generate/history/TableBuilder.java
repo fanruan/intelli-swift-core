@@ -15,8 +15,6 @@ import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.source.DataSource;
 import com.fr.swift.source.SwiftMetaData;
 
-import java.util.concurrent.atomic.AtomicInteger;
-
 /**
  * This class created on 2017-12-28 10:53:49
  *
@@ -79,10 +77,5 @@ public class TableBuilder extends BaseWorker {
             SwiftLoggers.getLogger().error(e);
             workOver(Result.FAILED);
         }
-    }
-
-    public static void main(String[] args) {
-        System.out.println(new AtomicInteger(Integer.MAX_VALUE).incrementAndGet());
-
     }
 }

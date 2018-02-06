@@ -1,4 +1,4 @@
-package com.fr.swift.cube.gen.oper;
+package com.fr.swift.generate.history;
 
 import com.fr.swift.bitmap.BitMaps;
 import com.fr.swift.bitmap.ImmutableBitMap;
