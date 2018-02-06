@@ -1,6 +1,5 @@
 package com.fr.swift.relation;
 
-import com.fr.bi.stable.data.BIFieldID;
 import com.fr.json.JSONObject;
 import com.fr.stable.StringUtils;
 import com.fr.swift.segment.column.ColumnKey;
@@ -43,11 +42,6 @@ public class BICubeLogicColumnKey extends BaseLogicKeyField<SourceKey, ColumnKey
             key = getFieldName();
         }
         return key;
-    }
-
-    @Override
-    public BIFieldID getFieldID() {
-        throw new UnsupportedOperationException();
     }
 
     @Override
