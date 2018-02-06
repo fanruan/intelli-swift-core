@@ -9,6 +9,9 @@ import com.fr.swift.cube.io.Releasable;
  * @date 2018/1/17
  */
 public interface RelationIndex extends Releasable, Flushable {
+    String NULL_INDEX = "null_index";
+    String INDEX = "index";
+    String REVERSE = "reverse";
     /**
      * 主表行号 -> 外表所有匹配行号
      *

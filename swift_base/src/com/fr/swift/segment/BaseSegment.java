@@ -1,7 +1,6 @@
 package com.fr.swift.segment;
 
 import com.fr.swift.bitmap.ImmutableBitMap;
-import com.fr.swift.compare.Comparators;
 import com.fr.swift.cube.io.BuildConf;
 import com.fr.swift.cube.io.ResourceDiscovery;
 import com.fr.swift.cube.io.ResourceDiscoveryImpl;
@@ -15,17 +14,17 @@ import com.fr.swift.cube.io.output.BitMapWriter;
 import com.fr.swift.cube.io.output.IntWriter;
 import com.fr.swift.exception.meta.SwiftMetaDataException;
 import com.fr.swift.log.SwiftLoggers;
+import com.fr.swift.relation.BICubeMultiRelation;
 import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.segment.column.impl.DateColumn;
 import com.fr.swift.segment.column.impl.DoubleColumn;
-import com.fr.swift.segment.column.impl.IntColumn;
 import com.fr.swift.segment.column.impl.LongColumn;
 import com.fr.swift.segment.column.impl.StringColumn;
 import com.fr.swift.segment.relation.RelationIndex;
+import com.fr.swift.segment.relation.RelationIndexImpl;
 import com.fr.swift.source.ColumnTypeConstants.CLASS;
 import com.fr.swift.source.ColumnTypeUtils;
-import com.fr.swift.source.DataSource;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.util.Crasher;
 
@@ -105,8 +104,8 @@ public abstract class BaseSegment implements Segment {
     }
 
     @Override
-    public RelationIndex getRelation(DataSource f) {
-        return null;
+    public RelationIndex getRelation(BICubeMultiRelation relation) {
+        return new RelationIndexImpl(getLocation().buildChildLocation("relations").buildChildLocation(relation.getPrimaryTable().getId()).buildChildLocation(relation.getKey()));
     }
 
     @Override

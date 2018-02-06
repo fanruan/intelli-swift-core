@@ -23,6 +23,10 @@ public class ColumnKey {
         return relation;
     }
 
+    public void setRelation(IRelationSource relation) {
+        this.relation = relation;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

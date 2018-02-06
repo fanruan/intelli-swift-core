@@ -1,6 +1,7 @@
 package com.fr.swift.segment;
 
 import com.fr.swift.source.SourceKey;
+
 import java.util.List;
 
 /**
@@ -13,4 +14,5 @@ public interface SwiftSegmentManager {
 
     List<Segment> getSegment(SourceKey sourceKey);
 
+    boolean isSegmentsExists(SourceKey key);
 }

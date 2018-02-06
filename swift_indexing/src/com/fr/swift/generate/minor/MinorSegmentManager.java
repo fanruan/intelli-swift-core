@@ -31,6 +31,11 @@ public class MinorSegmentManager implements IMinorSegmentManager {
     }
 
     @Override
+    public boolean isSegmentsExists(SourceKey sourceKey) {
+        return !getSegment(sourceKey).isEmpty();
+    }
+
+    @Override
     public void update(DataSource dataSource) throws Exception {
         MinorUpdater.update(dataSource);
     }

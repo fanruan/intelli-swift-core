@@ -32,7 +32,7 @@ public class RelationIndexImpl implements RelationIndex {
     @Override
     public void putIndex(int pos, ImmutableBitMap bitmap) {
         if (indexWriter == null) {
-            indexWriter = (BitMapWriter) DISCOVERY.getWriter(location, new BuildConf(IoType.WRITE, DataType.BITMAP));
+            indexWriter = (BitMapWriter) DISCOVERY.getWriter(location.buildChildLocation(INDEX), new BuildConf(IoType.WRITE, DataType.BITMAP));
         }
         indexWriter.put(pos, bitmap);
     }
@@ -40,7 +40,7 @@ public class RelationIndexImpl implements RelationIndex {
     @Override
     public ImmutableBitMap getIndex(int pos) {
         if (indexReader == null) {
-            indexReader = (BitMapReader) DISCOVERY.getReader(location, new BuildConf(IoType.READ, DataType.BITMAP));
+            indexReader = (BitMapReader) DISCOVERY.getReader(location.buildChildLocation(INDEX), new BuildConf(IoType.READ, DataType.BITMAP));
         }
         return indexReader.get(pos);
     }
@@ -48,7 +48,7 @@ public class RelationIndexImpl implements RelationIndex {
     @Override
     public void putNullIndex(ImmutableBitMap bitmap) {
         if (nullIndexWriter == null) {
-            nullIndexWriter = (BitMapWriter) DISCOVERY.getWriter(location, new BuildConf(IoType.WRITE, DataType.BITMAP));
+            nullIndexWriter = (BitMapWriter) DISCOVERY.getWriter(location.buildChildLocation(NULL_INDEX), new BuildConf(IoType.WRITE, DataType.BITMAP));
         }
         nullIndexWriter.put(0, bitmap);
     }
@@ -56,7 +56,7 @@ public class RelationIndexImpl implements RelationIndex {
     @Override
     public ImmutableBitMap getNullIndex() {
         if (nullIndexReader == null) {
-            nullIndexReader = (BitMapReader) DISCOVERY.getReader(location, new BuildConf(IoType.WRITE, DataType.BITMAP));
+            nullIndexReader = (BitMapReader) DISCOVERY.getReader(location.buildChildLocation(NULL_INDEX), new BuildConf(IoType.READ, DataType.BITMAP));
         }
         return nullIndexReader.get(0);
     }
@@ -64,7 +64,7 @@ public class RelationIndexImpl implements RelationIndex {
     @Override
     public void putReverseIndex(int tPos, int fPos) {
         if (reverseIndexWriter == null) {
-            reverseIndexWriter = (IntWriter) DISCOVERY.getWriter(location, new BuildConf(IoType.WRITE, DataType.INT));
+            reverseIndexWriter = (IntWriter) DISCOVERY.getWriter(location.buildChildLocation(REVERSE), new BuildConf(IoType.WRITE, DataType.INT));
         }
         reverseIndexWriter.put(tPos, fPos);
     }
@@ -72,7 +72,7 @@ public class RelationIndexImpl implements RelationIndex {
     @Override
     public int getReverseIndex(int fPos) {
         if (reverseIndexReader == null) {
-            reverseIndexReader = (IntReader) DISCOVERY.getReader(location, new BuildConf(IoType.READ, DataType.INT));
+            reverseIndexReader = (IntReader) DISCOVERY.getReader(location.buildChildLocation(REVERSE), new BuildConf(IoType.READ, DataType.INT));
         }
         return reverseIndexReader.get(fPos);
     }
