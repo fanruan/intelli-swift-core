@@ -2,6 +2,7 @@ package com.fr.swift.cube.gen.oper;
 
 import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.bitmap.impl.RoaringMutableBitMap;
+import com.fr.swift.cube.nio.NIOConstant;
 import com.fr.swift.structure.array.IntArray;
 import com.fr.swift.util.Crasher;
 
@@ -62,7 +63,9 @@ public class RelationIndexHelper {
         for (int i = 1, size = revert.size(); i < size; i++) {
             IntArray array = revert.get(i);
             for (int j = 0, len = target.size(); j < len; j++) {
-                target.put(j, target.get(j) & array.get(j));
+                int targetValue = target.get(j);
+                int arrayValue = array.get(j);
+                target.put(j, targetValue == arrayValue ? targetValue : NIOConstant.INTEGER.NULL_VALUE);
             }
         }
         return target;

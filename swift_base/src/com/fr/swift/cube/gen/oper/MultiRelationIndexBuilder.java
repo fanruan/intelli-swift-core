@@ -124,15 +124,15 @@ public class MultiRelationIndexBuilder extends BaseWorker {
             Comparator c = primaryDicColumn.getComparator();
             int result = c.compare(primaryObject, foreignObject);
             if (result < 0) {
-                // TODO 小于零表示主表不存在子表存在
+                // 主表不存在子表存在
                 notMatch(primaryIndex, relationIndexBytes);
             } else if (result == 0) {
-                // TODO 表示主表和子表的值存在
+                // 表示主表和子表的值存在
                 match(primaryIndex, foreignIndex, relationIndexBytes, revert);
                 foreignObject = getForeignValue(++foreignGroupIndex, foreignGroupSize, foreignDicColumn);
                 foreignIndex = getForeignColumnIndex(foreignGroupIndex, foreignGroupSize, foreignColumn);
             } else {
-                // TODO 主表存在子表不存在
+                // 主表存在子表不存在
                 while (foreignGroupIndex < foreignGroupSize && c.compare(primaryObject, foreignObject) > 0) {
                     nullIndex = nullIndex.getOr(foreignIndex);
                     foreignObject = getForeignValue(++foreignGroupIndex, foreignGroupSize, foreignDicColumn);
