@@ -5,11 +5,11 @@ import com.fr.swift.bitmap.MutableBitMap;
 import com.fr.swift.bitmap.impl.BitSetMutableBitMap;
 import com.fr.swift.cube.io.Types.StoreType;
 import com.fr.swift.cube.io.location.IResourceLocation;
+import com.fr.swift.relation.BICubeMultiRelation;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.segment.relation.RelationIndex;
-import com.fr.swift.source.DataSource;
 import com.fr.swift.source.SwiftMetaData;
 
 /**
@@ -40,9 +40,10 @@ public class CreateSegment {
             }
 
             @Override
-            public RelationIndex getRelation(DataSource f) {
+            public RelationIndex getRelation(BICubeMultiRelation f) {
                 return null;
             }
+
 
             @Override
             public IResourceLocation getLocation() {

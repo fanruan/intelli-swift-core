@@ -1,6 +1,5 @@
 package com.fr.swift.relation;
 
-import com.fr.bi.stable.data.BIFieldID;
 import com.fr.json.JSONTransform;
 
 import java.io.Serializable;
@@ -16,6 +15,4 @@ public interface ILogicKeyField<T, F> extends JSONTransform, Serializable {
     List<F> getKeyFields();
 
     String getFieldName();
-
-    BIFieldID getFieldID();
 }
