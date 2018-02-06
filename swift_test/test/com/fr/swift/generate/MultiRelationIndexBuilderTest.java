@@ -1,4 +1,4 @@
-package com.fr.swift.cube.gen.oper;
+package com.fr.swift.generate;
 
 import com.fr.base.FRContext;
 import com.fr.dav.LocalEnv;
@@ -14,6 +14,7 @@ import com.fr.swift.cube.task.impl.SchedulerTaskImpl;
 import com.fr.swift.cube.task.impl.SchedulerTaskPool;
 import com.fr.swift.cube.task.impl.WorkerTaskImpl;
 import com.fr.swift.cube.task.impl.WorkerTaskPool;
+import com.fr.swift.generate.history.MultiRelationIndexBuilder;
 import com.fr.swift.generate.history.TableBuilder;
 import com.fr.swift.manager.LocalSegmentProvider;
 import com.fr.swift.provider.ConnectionProvider;
