@@ -1,9 +1,9 @@
 package com.fr.swift.fine.adaptor.update;
 
 import com.finebi.base.constant.FineEngineType;
+import com.finebi.conf.internalimp.basictable.table.FineDBBusinessTable;
+import com.finebi.conf.internalimp.basictable.table.FineSQLBusinessTable;
 import com.finebi.conf.internalimp.connection.FineConnectionImp;
-import com.finebi.conf.internalimp.table.FineDBBusinessTable;
-import com.finebi.conf.internalimp.table.FineSQLBusinessTable;
 import com.finebi.conf.internalimp.update.TableUpdateInfo;
 import com.finebi.conf.structure.bean.connection.FineConnection;
 import com.finebi.conf.structure.bean.table.FineBusinessTable;

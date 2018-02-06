@@ -40,7 +40,7 @@ public class SwiftRelationPathConfProvider implements EngineRelationPathManager 
     @Override
     public List<FineBusinessTableRelation> getAllRelations() {
         List<FineBusinessTableRelation> allConfig = new ArrayList<FineBusinessTableRelation>();
-        allConfig.addAll(businessRelationDAO.getAllConfig());
+      //  allConfig.addAll(businessRelationDAO.getAllConfig());
         return allConfig;
     }
 
