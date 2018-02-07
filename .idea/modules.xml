@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/../5.0-feature-nuclear-conf/finebi_base/finebi_base.iml" filepath="$PROJECT_DIR$/../5.0-feature-nuclear-conf/finebi_base/finebi_base.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../5.0-feature-nuclear-conf/finebi_conf/finebi_conf.iml" filepath="$PROJECT_DIR$/../5.0-feature-nuclear-conf/finebi_conf/finebi_conf.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../5.0-feature-nuclear-web/finebi_web/src/main/main.iml" filepath="$PROJECT_DIR$/../5.0-feature-nuclear-web/finebi_web/src/main/main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../nuclear-webui/nuclear-webui.iml" filepath="$PROJECT_DIR$/../nuclear-webui/nuclear-webui.iml" />
+      <module fileurl="file://$PROJECT_DIR$/swift_query_adaptor/src/com/fr/swift/swift.iml" filepath="$PROJECT_DIR$/swift_query_adaptor/src/com/fr/swift/swift.iml" />
+      <module fileurl="file://$PROJECT_DIR$/swift_adaptor/swift_adaptor.iml" filepath="$PROJECT_DIR$/swift_adaptor/swift_adaptor.iml" />
+      <module fileurl="file://$PROJECT_DIR$/swift_analyse/swift_analyse.iml" filepath="$PROJECT_DIR$/swift_analyse/swift_analyse.iml" />
+      <module fileurl="file://$PROJECT_DIR$/swift_base/swift_base.iml" filepath="$PROJECT_DIR$/swift_base/swift_base.iml" />
+      <module fileurl="file://$PROJECT_DIR$/swift_history/swift_history.iml" filepath="$PROJECT_DIR$/swift_history/swift_history.iml" />
+      <module fileurl="file://$PROJECT_DIR$/swift_indexing/swift_indexing.iml" filepath="$PROJECT_DIR$/swift_indexing/swift_indexing.iml" />
+      <module fileurl="file://$PROJECT_DIR$/swift_realtime/swift_realtime.iml" filepath="$PROJECT_DIR$/swift_realtime/swift_realtime.iml" />
+      <module fileurl="file://$PROJECT_DIR$/swift_server/swift_server.iml" filepath="$PROJECT_DIR$/swift_server/swift_server.iml" />
+      <module fileurl="file://$PROJECT_DIR$/swift_test/swift_test.iml" filepath="$PROJECT_DIR$/swift_test/swift_test.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../5.0-feature-nuclear-web/finebi_web/src/test/java/test.iml" filepath="$PROJECT_DIR$/../5.0-feature-nuclear-web/finebi_web/src/test/java/test.iml" />
+    </modules>
+  </component>
+</project>

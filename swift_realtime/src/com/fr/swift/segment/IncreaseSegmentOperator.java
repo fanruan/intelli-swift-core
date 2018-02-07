@@ -32,7 +32,7 @@ public class IncreaseSegmentOperator extends AbstractSegmentOperator {
                     this.segmentList.add(new HistorySegmentHolder(segments.get(i)));
                 } else {
                     this.segmentList.add(new RealtimeSegmentHolder(segments.get(i)));
-                }
+            }
             }
         }
     }

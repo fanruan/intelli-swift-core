@@ -151,7 +151,7 @@ public class OneUnionRelationOperatorResultSet implements SwiftResultSet {
 
     @Override
     public SwiftMetaData getMetaData() throws SQLException {
-        return null;
+        return metaData;
     }
 
     @Override

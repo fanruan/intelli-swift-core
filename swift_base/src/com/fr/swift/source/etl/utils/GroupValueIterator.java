@@ -1,5 +1,6 @@
 package com.fr.swift.source.etl.utils;
 
+import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.bitmap.MutableBitMap;
 import com.fr.swift.bitmap.impl.AllShowBitMap;
 import com.fr.swift.query.group.Group;
@@ -22,7 +23,7 @@ public class GroupValueIterator {
     private DetailColumn[] getters;
     private DictionaryEncodedColumn[] mapGetters;
     private SwiftValuesAndGVI[] next;
-    private MutableBitMap allShowIndex;
+    private ImmutableBitMap allShowIndex;
     private GroupByResult[][] iterators;
     private SwiftValuesAndGVI[][] valuesAndGVIs;
     private Segment[] segment; //分片
@@ -50,7 +51,7 @@ public class GroupValueIterator {
         }
         //初始化
         for (int i = 0; i < this.segment.length; i++) {
-            allShowIndex = (MutableBitMap)this.segment[i].getAllShowIndex();
+            allShowIndex = this.segment[i].getAllShowIndex();
             valuesAndGVIs[i][0] = new SwiftValuesAndGVI(new Object[0], allShowIndex);
             iterators[i][0] = getIter(this.segment[i].getColumn(columnKey[0]), allShowIndex);
             if (iterators[i][0].hasNext()) {

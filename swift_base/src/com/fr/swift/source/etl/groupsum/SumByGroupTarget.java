@@ -59,7 +59,7 @@ public class SumByGroupTarget implements Serializable {
                 return minValue.calculate();
             }
             case ETLConstant.SUMMARY_TYPE.COUNT: {
-                DistinctCountAggregatorValue aggregatorValue = DistinctAggregate.INSTANCE.aggregate(traversal[0], segments[0].getColumn(new ColumnKey(name)));
+                DistinctCountAggregatorValue aggregatorValue = DistinctAggregate.INSTANCE.aggregate(traversal[0], segments[0].getColumn(new ColumnKey(name)));;
                 for(int i = 1; i < segments.length; i++) {
                     DistinctCountAggregatorValue otherValue = DistinctAggregate.INSTANCE.aggregate(traversal[i], segments[i].getColumn(new ColumnKey(name)));
                     DistinctAggregate.INSTANCE.combine(aggregatorValue, otherValue);
@@ -100,6 +100,9 @@ public class SumByGroupTarget implements Serializable {
         this.name = name;
     }
 
+    public void setNameText(String name) {
+        this.nameText = name;
+    }
     public String getName() {
         return this.name;
     }

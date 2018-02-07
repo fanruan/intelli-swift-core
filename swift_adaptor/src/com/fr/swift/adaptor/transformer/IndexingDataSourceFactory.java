@@ -7,7 +7,7 @@ import com.finebi.conf.exception.FineConfigException;
 import com.finebi.conf.internalimp.analysis.bean.operator.select.SelectFieldBeanItem;
 import com.finebi.conf.internalimp.analysis.operator.select.SelectFieldOperator;
 import com.finebi.conf.internalimp.basictable.table.FineDBBusinessTable;
-import com.finebi.conf.internalimp.basictable.table.FineExcelBusinessTable;
+//import com.finebi.conf.internalimp.basictable.table.FineExcelBusinessTable;
 import com.finebi.conf.internalimp.basictable.table.FineSQLBusinessTable;
 import com.finebi.conf.internalimp.update.TableUpdateInfo;
 import com.finebi.conf.structure.analysis.table.FineAnalysisTable;
@@ -104,7 +104,7 @@ public class IndexingDataSourceFactory {
             case BaseConstant.TABLETYPE.SERVER:
                 break;
             case BaseConstant.TABLETYPE.EXCEL:
-                dataSource = transformExcelDataSource((FineExcelBusinessTable) table);
+                //dataSource = transformExcelDataSource((FineExcelBusinessTable) table);
                 break;
             case TABLETYPE.ETL:
             case BaseConstant.TABLETYPE.ANALYSIS:
@@ -180,9 +180,9 @@ public class IndexingDataSourceFactory {
         return queryDBSource;
     }
 
-    private static ExcelDataSource transformExcelDataSource(FineExcelBusinessTable table) {
-        return null;
-    }
+    //private static ExcelDataSource transformExcelDataSource(FineExcelBusinessTable table) {
+        //return null;
+    //}
 
     public static Increment transformIncrement(TableUpdateInfo tableUpdateInfo, SourceKey sourceKey, String connectionName) {
         Increment increment = new IncrementImpl(tableUpdateInfo.getAddSql(), tableUpdateInfo.getDeleteSql(), tableUpdateInfo.getModifySql(), sourceKey, connectionName, tableUpdateInfo.getUpdateType());

@@ -5,7 +5,7 @@ package com.fr.swift.source.etl;
  * 操作的类型，union，join等等
  */
 public enum OperatorType {
-    DETAIL(true), UNION(false), JOIN(false), FILTER(false), COLUMNROWTRANS(true), GROUPSUM(true), ONEUNIONRELATION(true), TWOUNIONRELATION(true), COLUMNFORMULA(true), SORT(true);
+    DETAIL(true), UNION(false), JOIN(false), FILTER(false), COLUMNROWTRANS(false), GROUPSUM(false), ONEUNIONRELATION(true), TWOUNIONRELATION(true), COLUMNFORMULA(true), SORT(false);
 
     private boolean isAddColumn;
 

@@ -20,7 +20,6 @@ public class StringInFilter extends AbstractFilter<String> {
     private Set<String> groups;
 
     public StringInFilter(Set<String> groups, Column<String> column) {
-        Util.requireNonEmpty(groups);
         this.groups = groups;
         this.column = column;
     }
