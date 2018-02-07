@@ -37,7 +37,7 @@ public class SegmentDemo extends TestCase {
             }
 
             @Override
-            public boolean isSegmentsExists(SourceKey key) {
+            public boolean isSegmentsExist(SourceKey key) {
                 return false;
             }
         };
@@ -65,7 +65,7 @@ public class SegmentDemo extends TestCase {
             }
 
             @Override
-            public boolean isSegmentsExists(SourceKey key) {
+            public boolean isSegmentsExist(SourceKey key) {
                 return false;
             }
         };
@@ -97,7 +97,7 @@ public class SegmentDemo extends TestCase {
             }
 
             @Override
-            public boolean isSegmentsExists(SourceKey key) {
+            public boolean isSegmentsExist(SourceKey key) {
                 return false;
             }
         };

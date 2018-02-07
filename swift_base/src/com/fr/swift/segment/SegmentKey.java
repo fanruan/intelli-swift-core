@@ -10,6 +10,10 @@ import java.net.URI;
 public class SegmentKey {
     private String name;
     private URI uri;
+    /**
+     * @deprecated fixme 不是通用的抽象，可以扩展个按行分块的key
+     */
+    @Deprecated
     private int segmentOrder;
     private String sourceId;
     private Types.StoreType storeType;

@@ -87,7 +87,7 @@ import com.fr.swift.generate.history.TableBuilder;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.provider.ConnectionProvider;
-import com.fr.swift.relation.utils.BIMultiRelationHelper;
+import com.fr.swift.relation.utils.MultiRelationHelper;
 import com.fr.swift.source.DataSource;
 import com.fr.swift.source.IRelationSource;
 import com.fr.swift.source.db.ConnectionManager;
@@ -151,7 +151,7 @@ public class ProviderTaskManager {
                 } else if (o instanceof IRelationSource) {
                     IRelationSource source = (IRelationSource) o;
                     WorkerTask wt = new WorkerTaskImpl(taskKey);
-                    wt.setWorker(new MultiRelationIndexBuilder(BIMultiRelationHelper.convert2CubeRelation(source), LocalSegmentProvider.getInstance()));
+                    wt.setWorker(new MultiRelationIndexBuilder(MultiRelationHelper.convert2CubeRelation(source), LocalSegmentProvider.getInstance()));
                     return wt;
                 } else {
                     return null;

@@ -208,7 +208,4 @@ public abstract class BaseSegment implements Segment {
     }
 
 
-
-    @Override
-    public abstract Types.StoreType getStoreType();
 }

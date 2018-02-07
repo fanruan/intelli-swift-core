@@ -4,41 +4,32 @@ import com.finebi.base.constant.BaseConstant;
 import com.finebi.base.constant.BaseConstant.TABLETYPE;
 import com.finebi.conf.constant.ConfConstant;
 import com.finebi.conf.internalimp.analysis.bean.operator.confselect.ConfSelectBeanItem;
-import com.finebi.conf.internalimp.analysis.bean.operator.select.SelectFieldBeanItem;
 import com.finebi.conf.internalimp.analysis.operator.confselect.ConfSelectOperator;
-import com.finebi.conf.internalimp.analysis.operator.select.SelectFieldOperator;
 import com.finebi.conf.internalimp.basictable.table.FineDBBusinessTable;
 import com.finebi.conf.internalimp.basictable.table.FineSQLBusinessTable;
 import com.finebi.conf.internalimp.update.TableUpdateInfo;
 import com.finebi.conf.structure.analysis.operator.FineOperator;
-import com.finebi.conf.structure.analysis.table.FineAnalysisTable;
 import com.finebi.conf.structure.bean.connection.FineConnection;
-import com.finebi.conf.structure.bean.field.FineBusinessField;
+import com.finebi.conf.structure.bean.table.AbstractFineTable;
 import com.finebi.conf.structure.bean.table.FineBusinessTable;
 import com.finebi.conf.utils.FineConnectionUtils;
-import com.finebi.conf.utils.FineTableUtils;
 import com.fr.swift.increase.IncrementImpl;
 import com.fr.swift.increment.Increment;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
-import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.source.DBDataSource;
 import com.fr.swift.source.DataSource;
 import com.fr.swift.source.SourceKey;
-import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.container.SourceContainer;
 import com.fr.swift.source.db.ConnectionInfo;
 import com.fr.swift.source.db.ConnectionManager;
 import com.fr.swift.source.db.QueryDBSource;
 import com.fr.swift.source.db.SwiftConnectionInfo;
 import com.fr.swift.source.db.TableDBSource;
-import com.fr.swift.source.etl.ETLOperator;
 import com.fr.swift.source.etl.ETLSource;
-import com.fr.swift.source.etl.detail.DetailOperator;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -94,6 +85,7 @@ public class IndexingDataSourceFactory {
 
     public static DataSource transformDataSource(FineBusinessTable table) throws Exception {
         DataSource dataSource = null;
+        List<FineOperator> ops = ((AbstractFineTable) table).getOperators();
         switch (table.getType()) {
             case BaseConstant.TABLETYPE.DB:
                 dataSource = transformTableDBSource((FineDBBusinessTable) table);
@@ -160,7 +152,7 @@ public class IndexingDataSourceFactory {
 //    }
 
 
-    private static TableDBSource transformTableDBSource(FineDBBusinessTable table) throws Exception {
+    private static DataSource transformTableDBSource(FineDBBusinessTable table) throws Exception {
         String connectionName = table.getConnName();
         FineConnection fineConnection = FineConnectionUtils.getConnectionByName(connectionName);
         ConnectionInfo connectionInfo = new SwiftConnectionInfo(fineConnection.getSchema(), fineConnection.getConnection());
@@ -168,11 +160,11 @@ public class IndexingDataSourceFactory {
         Map<String, Integer> fieldColumnTypes = checkFieldTypes(table.getOperators());
         TableDBSource tableDBSource = fieldColumnTypes == null ?
                 new TableDBSource(table.getTableName(), connectionName) : new TableDBSource(table.getTableName(), connectionName, fieldColumnTypes);
-        return tableDBSource;
+        return checkETL(tableDBSource, table.getOperators());
     }
 
     private static Map<String, Integer> checkFieldTypes(List<FineOperator> operators) {
-        if (operators != null && operators.size() == 1) {
+        if (operators != null && !operators.isEmpty()) {
             FineOperator op = operators.get(0);
             if (op.getType() == ConfConstant.AnalysisType.CONF_SELECT) {
                 List<ConfSelectBeanItem> items = ((ConfSelectOperator) op).getFields();
@@ -188,7 +180,7 @@ public class IndexingDataSourceFactory {
         return null;
     }
 
-    private static QueryDBSource transformQueryDBSource(FineSQLBusinessTable table) throws Exception {
+    private static DataSource transformQueryDBSource(FineSQLBusinessTable table) throws Exception {
 
         String connectionName = table.getConnName();
         FineConnection fineConnection = FineConnectionUtils.getConnectionByName(connectionName);
@@ -197,7 +189,16 @@ public class IndexingDataSourceFactory {
         Map<String, Integer> fieldColumnTypes = checkFieldTypes(table.getOperators());
         QueryDBSource queryDBSource = fieldColumnTypes == null ?
                 new QueryDBSource(table.getSql(), table.getConnName()) : new QueryDBSource(table.getSql(), table.getConnName(), fieldColumnTypes);
-        return queryDBSource;
+        return checkETL(queryDBSource, table.getOperators());
+    }
+
+    private static DataSource checkETL(DataSource source, List<FineOperator> operators) throws Exception{
+        if (operators == null || operators.size() < 2){
+            return source;
+        }
+        List<DataSource> baseSource = new ArrayList<DataSource>();
+        baseSource.add(source);
+        return new ETLSource(baseSource, EtlConverter.convertEtlOperator(operators.get(operators.size() - 1)));
     }
 
 //    private static ExcelDataSource transformExcelDataSource(FineExcelBusinessTable table) {
@@ -232,50 +233,4 @@ public class IndexingDataSourceFactory {
 //        return null;
 //    }
 //
-    private static DataSource transformSelectField(FineAnalysisTable table) throws Exception {
-        LinkedHashMap<String, List<ColumnKey>> sourceKeyColumnMap = new LinkedHashMap<String, List<ColumnKey>>();
-        LinkedHashMap<String, DataSource> sourceKeyDataSourceMap = new LinkedHashMap<String, DataSource>();
-        SelectFieldOperator selectFieldOperator = table.getOperator();
-        List<SelectFieldBeanItem> selectFieldBeanItemList = selectFieldOperator.getValue().getValue();
-        for (SelectFieldBeanItem selectFieldBeanItem : selectFieldBeanItemList) {
-            FineBusinessTable fineBusinessTable = FineTableUtils.getTableByFieldId(selectFieldBeanItem.getField());
-            FineBusinessField fineBusinessField = fineBusinessTable.getFieldByFieldId(selectFieldBeanItem.getField());
-            DataSource baseDataSource = transformDataSource(fineBusinessTable);
-
-            if (sourceKeyColumnMap.containsKey(baseDataSource.getSourceKey().getId())) {
-                sourceKeyColumnMap.get(baseDataSource.getSourceKey().getId()).add(new ColumnKey(fineBusinessField.getName()));
-            } else {
-                sourceKeyColumnMap.put(baseDataSource.getSourceKey().getId(), new ArrayList<ColumnKey>());
-                sourceKeyColumnMap.get(baseDataSource.getSourceKey().getId()).add(new ColumnKey(fineBusinessField.getName()));
-            }
-            if (!sourceKeyDataSourceMap.containsKey(baseDataSource.getSourceKey().getId())) {
-                sourceKeyDataSourceMap.put(baseDataSource.getSourceKey().getId(), baseDataSource);
-            }
-        }
-        List<DataSource> baseDatas = new ArrayList<DataSource>();
-        List<SwiftMetaData> swiftMetaDatas = new ArrayList<SwiftMetaData>();
-        List<ColumnKey[]> fields = new ArrayList<ColumnKey[]>();
-
-        if (table.getBaseTable() != null) {
-            baseDatas.add(transformDataSource(table.getBaseTable()));
-        }
-
-        for (Map.Entry<String, List<ColumnKey>> entry : sourceKeyColumnMap.entrySet()) {
-            DataSource dataSource = sourceKeyDataSourceMap.get(entry.getKey());
-            baseDatas.add(dataSource);
-            swiftMetaDatas.add(dataSource.getMetadata());
-            fields.add(entry.getValue().toArray(new ColumnKey[entry.getValue().size()]));
-        }
-        ETLOperator operator = new DetailOperator(fields, swiftMetaDatas);
-        Map<Integer, String> fieldsInfo = new HashMap<Integer, String>();
-        ETLSource etlSource = new ETLSource(baseDatas, operator);
-        for (ColumnKey[] columnKeys : fields) {
-            for (ColumnKey columnKey : columnKeys) {
-                int index = etlSource.getMetadata().getColumnIndex(columnKey.getName());
-                fieldsInfo.put(index, columnKey.getName());
-            }
-        }
-        ETLSource dataSource = new ETLSource(baseDatas, operator, fieldsInfo);
-        return dataSource;
-    }
 }

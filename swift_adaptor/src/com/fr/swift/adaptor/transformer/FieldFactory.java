@@ -31,7 +31,8 @@ public class FieldFactory {
             String columnRemark = swiftMetaData.getColumnRemark(i);
             int precision = swiftMetaData.getPrecision(i);
             int scale = swiftMetaData.getScale(i);
-            FineBusinessField fineBusinessField = new FineBusinessFieldImp(String.valueOf(System.currentTimeMillis() + i), columnName, ColumnTypeUtils.sqlTypeToClassType(columnType, precision, scale), precision, columnRemark, FineEngineType.Cube);
+            FineBusinessField fineBusinessField = new FineBusinessFieldImp(swiftMetaData.getTableName() + columnName, columnName,
+                    transformSwiftColumnType2BIColumnType(ColumnTypeUtils.sqlTypeToColumnType(columnType, precision, scale)), precision, columnRemark, FineEngineType.Cube);
             fineBusinessFieldList.add(fineBusinessField);
         }
         return fineBusinessFieldList;
@@ -57,6 +58,17 @@ public class FieldFactory {
                 return ColumnTypeConstants.COLUMN.DATE;
             default:
                 return ColumnTypeConstants.COLUMN.STRING;
+        }
+    }
+
+    public static int transformSwiftColumnType2BIColumnType(int biType) {
+        switch (biType) {
+            case ColumnTypeConstants.COLUMN.NUMBER:
+                return BIConfConstants.CONF.COLUMN.NUMBER;
+            case ColumnTypeConstants.COLUMN.DATE:
+                return BIConfConstants.CONF.COLUMN.DATE;
+            default:
+                return BIConfConstants.CONF.COLUMN.STRING;
         }
     }
 }

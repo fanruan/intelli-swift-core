@@ -12,6 +12,8 @@ import java.util.Set;
 public interface TaskPool<T extends Task> {
     void add(T task);
 
+    boolean contains(TaskKey key);
+
     T get(TaskKey key);
 
     Collection<TaskKey> allTasks();

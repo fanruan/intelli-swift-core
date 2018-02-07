@@ -3,7 +3,6 @@ package com.fr.swift.source.etl.columnformula;
 import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.bitmap.MutableBitMap;
 import com.fr.swift.bitmap.impl.BitSetMutableBitMap;
-import com.fr.swift.cube.io.Types;
 import com.fr.swift.cube.io.location.IResourceLocation;
 import com.fr.swift.relation.CubeMultiRelation;
 import com.fr.swift.relation.CubeMultiRelationPath;
@@ -30,11 +29,6 @@ public class CreateSegment {
             @Override
             public void flush() {
 
-            }
-
-            @Override
-            public Types.StoreType getStoreType() {
-                return null;
             }
 
             @Override
