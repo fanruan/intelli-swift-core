@@ -8,8 +8,8 @@ import com.fr.swift.cube.task.Task;
 import com.fr.swift.cube.task.impl.BaseWorker;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
-import com.fr.swift.relation.BICubeLogicColumnKey;
-import com.fr.swift.relation.BICubeMultiRelation;
+import com.fr.swift.relation.CubeLogicColumnKey;
+import com.fr.swift.relation.CubeMultiRelation;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.SwiftSegmentProvider;
 import com.fr.swift.segment.column.BitmapIndexedColumn;
@@ -29,11 +29,11 @@ import java.util.List;
  */
 public class MultiRelationIndexBuilder extends BaseWorker {
 
-    private BICubeMultiRelation relation;
+    private CubeMultiRelation relation;
     private SwiftSegmentProvider provider;
     private SwiftLogger logger = SwiftLoggers.getLogger(MultiRelationIndexBuilder.class);
 
-    public MultiRelationIndexBuilder(BICubeMultiRelation relation, SwiftSegmentProvider provider) {
+    public MultiRelationIndexBuilder(CubeMultiRelation relation, SwiftSegmentProvider provider) {
         this.relation = relation;
         this.provider = provider;
     }
@@ -75,8 +75,8 @@ public class MultiRelationIndexBuilder extends BaseWorker {
         RelationIndex relationIndex = foreign.getRelation(relation);
         try {
             ImmutableBitMap allShow = primary.getAllShowIndex();
-            BICubeLogicColumnKey primaryKey = relation.getPrimaryKey();
-            BICubeLogicColumnKey foreignKey = relation.getForeignKey();
+            CubeLogicColumnKey primaryKey = relation.getPrimaryKey();
+            CubeLogicColumnKey foreignKey = relation.getForeignKey();
             List<ColumnKey> keys = primaryKey.getKeyFields();
             List<ColumnKey> foreignKeys = foreignKey.getKeyFields();
             RelationIndexHelper holder = new RelationIndexHelper();

@@ -21,6 +21,10 @@ public class Pair<K, V> {
         this.value = value;
     }
 
+    public static <K, V> Pair<K, V> of(K key, V val) {
+        return new Pair<K, V>(key, val);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {

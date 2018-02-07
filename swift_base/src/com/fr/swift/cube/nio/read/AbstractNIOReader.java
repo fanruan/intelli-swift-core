@@ -1,9 +1,9 @@
 package com.fr.swift.cube.nio.read;
 
-import com.fr.swift.cube.nio.BIReleaseUtils;
 import com.fr.swift.cube.nio.NIOConstant;
 import com.fr.swift.cube.nio.NIOReadWriter;
 import com.fr.swift.cube.nio.NIOReader;
+import com.fr.swift.cube.nio.ReleaseUtils;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
 
@@ -70,7 +70,7 @@ public abstract class AbstractNIOReader<T> extends NIOReadWriter implements NIOR
         synchronized (this) {
             releaseChild();
             for (Entry<Long, MappedByteBuffer> entry : buffers.entrySet()) {
-                BIReleaseUtils.doClean(entry.getValue());
+                ReleaseUtils.doClean(entry.getValue());
             }
             buffers.clear();
             try {

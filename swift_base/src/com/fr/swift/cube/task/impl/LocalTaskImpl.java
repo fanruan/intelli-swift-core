@@ -5,6 +5,7 @@ import com.fr.swift.cube.task.PrevOneDoneHandler;
 import com.fr.swift.cube.task.PrevOneDoneHandler.DefaultLocalHandler;
 import com.fr.swift.cube.task.SchedulerTask;
 import com.fr.swift.cube.task.TaskKey;
+import com.fr.swift.log.SwiftLoggers;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -76,7 +77,7 @@ public class LocalTaskImpl extends BaseTask implements LocalTask {
             setStatus(Status.DONE);
         }
 
-        System.out.println(String.format("%s %s", key, result));
+        SwiftLoggers.getLogger().info(String.format("%s %s", key, result));
 
         for (TaskKey next : nextTasks) {
             from(next).onPrevOneDone(key);

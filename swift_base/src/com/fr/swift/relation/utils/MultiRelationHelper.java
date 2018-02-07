@@ -1,7 +1,7 @@
 package com.fr.swift.relation.utils;
 
-import com.fr.swift.relation.BICubeLogicColumnKey;
-import com.fr.swift.relation.BICubeMultiRelation;
+import com.fr.swift.relation.CubeLogicColumnKey;
+import com.fr.swift.relation.CubeMultiRelation;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.source.IRelationSource;
 
@@ -12,8 +12,8 @@ import java.util.List;
  * @author yee
  * @date 2018/1/29
  */
-public class BIMultiRelationHelper {
-    public static BICubeMultiRelation convert2CubeRelation(IRelationSource source) {
+public class MultiRelationHelper {
+    public static CubeMultiRelation convert2CubeRelation(IRelationSource source) {
         List<ColumnKey> primaryKeys = new ArrayList<ColumnKey>();
         List<ColumnKey> foreignKeys = new ArrayList<ColumnKey>();
         List<String> primaryFields = source.getPrimaryFields();
@@ -28,6 +28,6 @@ public class BIMultiRelationHelper {
             key.setRelation(source);
             foreignKeys.add(key);
         }
-        return new BICubeMultiRelation(new BICubeLogicColumnKey(primaryKeys), new BICubeLogicColumnKey(foreignKeys), source.getPrimarySource(), source.getForeignSource());
+        return new CubeMultiRelation(new CubeLogicColumnKey(primaryKeys), new CubeLogicColumnKey(foreignKeys), source.getPrimarySource(), source.getForeignSource());
     }
 }

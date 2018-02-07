@@ -3,9 +3,8 @@ package com.fr.swift.source.etl;
 import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.bitmap.MutableBitMap;
 import com.fr.swift.bitmap.impl.BitSetMutableBitMap;
-import com.fr.swift.cube.io.Types.StoreType;
 import com.fr.swift.cube.io.location.IResourceLocation;
-import com.fr.swift.relation.BICubeMultiRelation;
+import com.fr.swift.relation.CubeMultiRelation;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.ColumnKey;
@@ -34,7 +33,7 @@ public class CreateSegmentForUnion2 {
             }
 
             @Override
-            public RelationIndex getRelation(BICubeMultiRelation f) {
+            public RelationIndex getRelation(CubeMultiRelation f) {
                 return null;
             }
 
@@ -78,11 +77,6 @@ public class CreateSegmentForUnion2 {
 
             @Override
             public SwiftMetaData getMetaData() {
-                return null;
-            }
-
-            @Override
-            public StoreType getStoreType() {
                 return null;
             }
 
