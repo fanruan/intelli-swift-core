@@ -99,7 +99,7 @@ public class SumByGroupOperator extends AbstractOperator {
 
     @Override
     public OperatorType getOperatorType() {
-        return OperatorType.DETAIL;
+        return OperatorType.GROUPSUM;
     }
 
 
