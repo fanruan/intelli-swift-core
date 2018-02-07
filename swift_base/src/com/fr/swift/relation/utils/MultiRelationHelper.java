@@ -12,7 +12,7 @@ import java.util.List;
  * @author yee
  * @date 2018/1/29
  */
-public class BIMultiRelationHelper {
+public class MultiRelationHelper {
     public static CubeMultiRelation convert2CubeRelation(IRelationSource source) {
         List<ColumnKey> primaryKeys = new ArrayList<ColumnKey>();
         List<ColumnKey> foreignKeys = new ArrayList<ColumnKey>();
