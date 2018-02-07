@@ -25,8 +25,13 @@ public class RelationIndexImpl implements RelationIndex {
     private BitMapReader indexReader, nullIndexReader;
     private IntReader reverseIndexReader;
 
+
     public RelationIndexImpl(IResourceLocation location) {
         this.location = location;
+    }
+
+    public RelationIndexImpl(IResourceLocation baseLocation, String primaryTable, String relationKey) {
+        this.location = baseLocation.buildChildLocation(RELATIONS_KEY).buildChildLocation(primaryTable).buildChildLocation(relationKey);
     }
 
     @Override

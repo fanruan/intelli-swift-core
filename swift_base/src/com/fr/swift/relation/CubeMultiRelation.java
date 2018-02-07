@@ -9,14 +9,14 @@ import com.fr.swift.util.Util;
  * @author yee
  * @date 2018/1/17
  */
-public class BICubeMultiRelation {
+public class CubeMultiRelation {
 
-    protected BICubeLogicColumnKey primaryField;
-    protected BICubeLogicColumnKey foreignField;
+    protected CubeLogicColumnKey primaryField;
+    protected CubeLogicColumnKey foreignField;
     protected SourceKey primaryTable;
     protected SourceKey foreignTable;
 
-    public BICubeMultiRelation(BICubeLogicColumnKey primaryField, BICubeLogicColumnKey foreignField, SourceKey primaryTable, SourceKey foreignTable) {
+    public CubeMultiRelation(CubeLogicColumnKey primaryField, CubeLogicColumnKey foreignField, SourceKey primaryTable, SourceKey foreignTable) {
         Util.requireNonNull(primaryField, foreignField, primaryTable, foreignTable);
         this.primaryField = primaryField;
         this.foreignField = foreignField;
@@ -28,19 +28,19 @@ public class BICubeMultiRelation {
         return MD5Utils.getMD5String(new String[]{primaryField.getKey(), foreignField.getKey()});
     }
 
-    public BICubeLogicColumnKey getPrimaryField() {
+    public CubeLogicColumnKey getPrimaryField() {
         return primaryField;
     }
 
-    public void setPrimaryField(BICubeLogicColumnKey primaryField) {
+    public void setPrimaryField(CubeLogicColumnKey primaryField) {
         this.primaryField = primaryField;
     }
 
-    public BICubeLogicColumnKey getForeignField() {
+    public CubeLogicColumnKey getForeignField() {
         return foreignField;
     }
 
-    public void setForeignField(BICubeLogicColumnKey foreignField) {
+    public void setForeignField(CubeLogicColumnKey foreignField) {
         this.foreignField = foreignField;
     }
 
@@ -60,11 +60,11 @@ public class BICubeMultiRelation {
         this.foreignTable = foreignTable;
     }
 
-    public BICubeLogicColumnKey getPrimaryKey() {
+    public CubeLogicColumnKey getPrimaryKey() {
         return getPrimaryField();
     }
 
-    public BICubeLogicColumnKey getForeignKey() {
+    public CubeLogicColumnKey getForeignKey() {
         return getForeignField();
     }
 
@@ -88,18 +88,18 @@ public class BICubeMultiRelation {
      */
     @Override
     public Object clone() throws CloneNotSupportedException {
-        BICubeMultiRelation cloned = (BICubeMultiRelation) super.clone();
+        CubeMultiRelation cloned = (CubeMultiRelation) super.clone();
         return cloned;
     }
 
 
     @Override
     public boolean equals(Object o) {
-        return o instanceof BICubeMultiRelation
-                && ComparatorUtils.equals(primaryField, ((BICubeMultiRelation) o).primaryField)
-                && ComparatorUtils.equals(foreignField, ((BICubeMultiRelation) o).foreignField)
-                && ComparatorUtils.equals(primaryTable, ((BICubeMultiRelation) o).primaryTable)
-                && ComparatorUtils.equals(foreignTable, ((BICubeMultiRelation) o).foreignTable);
+        return o instanceof CubeMultiRelation
+                && ComparatorUtils.equals(primaryField, ((CubeMultiRelation) o).primaryField)
+                && ComparatorUtils.equals(foreignField, ((CubeMultiRelation) o).foreignField)
+                && ComparatorUtils.equals(primaryTable, ((CubeMultiRelation) o).primaryTable)
+                && ComparatorUtils.equals(foreignTable, ((CubeMultiRelation) o).foreignTable);
     }
 
     @Override

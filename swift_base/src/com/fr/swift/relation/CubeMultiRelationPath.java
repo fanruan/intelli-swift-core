@@ -1,9 +1,10 @@
 package com.fr.swift.relation;
 
 import com.fr.general.ComparatorUtils;
+import com.fr.swift.relation.exception.CubePathConfusionException;
+import com.fr.swift.relation.exception.CubePathEmptyException;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.core.MD5Utils;
-import com.fr.swift.util.Crasher;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -15,55 +16,45 @@ import java.util.List;
  * @author yee
  * @date 2018/1/17
  */
-public class BICubeMultiRelationPath {
-    private List<BICubeMultiRelation> container;
-    public BICubeLogicColumnKey getPrimaryField() {
+public class CubeMultiRelationPath {
+    private List<CubeMultiRelation> container;
+
+    public CubeLogicColumnKey getPrimaryField() {
         return getFirstRelation().getPrimaryField();
     }
 
-    public String getSourceID() {
-        StringBuffer sb = new StringBuffer();
-        for (BICubeMultiRelation relation : getAllRelations()) {
-            sb.append(relation.getPrimaryTable().getId())
-                    .append(relation.getPrimaryField().getKey())
-                    .append(relation.getForeignTable().getId())
-                    .append(relation.getForeignField().getKey());
-        }
-        return MD5Utils.getMD5String(new String[]{sb.toString()});
+    public CubeMultiRelationPath() {
+        container = new ArrayList<CubeMultiRelation>();
     }
 
-    public BICubeMultiRelationPath() {
-        container = new ArrayList<BICubeMultiRelation>();
-    }
-
-    public BICubeMultiRelationPath(BICubeMultiRelation[] relations) {
-        for (BICubeMultiRelation relation : relations) {
+    public CubeMultiRelationPath(CubeMultiRelation[] relations) {
+        for (CubeMultiRelation relation : relations) {
             addRelationAtTail(relation);
         }
     }
 
-    public BICubeMultiRelationPath addRelationAtTail(BICubeMultiRelation relation) {
+    public CubeMultiRelationPath addRelationAtTail(CubeMultiRelation relation) {
         synchronized (container) {
-            BICubeMultiRelation lastRelation = null;
             try {
-                lastRelation = getLastRelation();
-            } catch (Exception ignore) {
+                CubeMultiRelation lastRelation = getLastRelation();
+                if (null != lastRelation && canRelationsBuildPath(lastRelation, relation)) {
+                    add(relation);
+                } else {
+                    throw new CubePathConfusionException("The primary of relation needed to be added is: " +
+                            relation.getPrimaryTable() +
+                            ", but current path last relation's foreign table is: " +
+                            relation.getForeignField() + ".They should be equal");
+                }
+            } catch (CubePathEmptyException ignore) {
                 add(relation);
                 return this;
             }
-            if (null != lastRelation && canRelationsBuildPath(lastRelation, relation)) {
-                add(relation);
-            } else {
-                Crasher.crash("The primary of relation needed to be added is: " +
-                        relation.getPrimaryTable() +
-                        ", but current path last relation's foreign table is: " +
-                        relation.getForeignField() + ".They should be equal");
-            }
+
             return this;
         }
     }
 
-    public void add(BICubeMultiRelation relation) {
+    public void add(CubeMultiRelation relation) {
         synchronized (container) {
             container.add(relation);
         }
@@ -75,24 +66,24 @@ public class BICubeMultiRelationPath {
         }
     }
 
-    public BICubeMultiRelationPath addRelationAtHead(BICubeMultiRelation relation) {
+    public CubeMultiRelationPath addRelationAtHead(CubeMultiRelation relation) {
         synchronized (container) {
             try {
-                BICubeMultiRelation firstRelation = getFirstRelation();
+                CubeMultiRelation firstRelation = getFirstRelation();
                 if (canRelationsBuildPath(relation, firstRelation)) {
-                    Collection<BICubeMultiRelation> collection = new ArrayList<BICubeMultiRelation>();
+                    Collection<CubeMultiRelation> collection = new ArrayList<CubeMultiRelation>();
                     collection.addAll(container);
                     clear();
                     add(relation);
                     container.addAll(collection);
                 } else {
-                    Crasher.crash("The foreign of relation needed to be added is: " +
+                    throw new CubePathConfusionException("The foreign of relation needed to be added is: " +
                             relation.getForeignField() +
                             ", but current path first relation's primary table is: " +
                             relation.getPrimaryTable() + ". They should be equal");
                 }
 
-            } catch (Exception ignore) {
+            } catch (CubePathEmptyException ignore) {
                 add(relation);
             }
             return this;
@@ -111,7 +102,7 @@ public class BICubeMultiRelationPath {
         }
     }
 
-    public boolean canRelationsBuildPath(BICubeMultiRelation part_head, BICubeMultiRelation part_tail) {
+    public boolean canRelationsBuildPath(CubeMultiRelation part_head, CubeMultiRelation part_tail) {
         return ComparatorUtils.equals(part_head.getForeignTable(), part_tail.getPrimaryTable());
     }
 
@@ -121,13 +112,13 @@ public class BICubeMultiRelationPath {
         }
     }
 
-    public BICubeMultiRelation getLastRelation() {
+    public CubeMultiRelation getLastRelation() {
         synchronized (container) {
 
             if (!isEmptyPath()) {
                 return getLastOne();
             } else {
-                return Crasher.crash("Path empty");
+                throw new CubePathEmptyException();
             }
         }
     }
@@ -138,28 +129,28 @@ public class BICubeMultiRelationPath {
         }
     }
 
-    public BICubeMultiRelation getFirstRelation() {
+    public CubeMultiRelation getFirstRelation() {
         synchronized (container) {
             if (!isEmptyPath()) {
                 return getFirstOne();
             } else {
-                return Crasher.crash("Path empty");
+                throw new CubePathEmptyException();
             }
         }
     }
 
-    public void copyFrom(BICubeMultiRelationPath path) {
+    public void copyFrom(CubeMultiRelationPath path) {
         container.addAll(path.container);
     }
 
-    public List<BICubeMultiRelation> getAllRelations() {
+    public List<CubeMultiRelation> getAllRelations() {
         return Collections.unmodifiableList(container);
     }
 
     @Override
     public int hashCode() {
         int result = 0;
-        for (BICubeMultiRelation relation : container) {
+        for (CubeMultiRelation relation : container) {
             result = 31 * result + (relation != null ? relation.hashCode() : 0);
         }
         return result;
@@ -170,18 +161,18 @@ public class BICubeMultiRelationPath {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof BICubeMultiRelation)) {
+        if (!(o instanceof CubeMultiRelation)) {
             return false;
         }
 
-        BICubeMultiRelationPath that = (BICubeMultiRelationPath) o;
-        Iterator<BICubeMultiRelation> it = container.iterator();
-        Iterator<BICubeMultiRelation> thatIt = that.container.iterator();
+        CubeMultiRelationPath that = (CubeMultiRelationPath) o;
+        Iterator<CubeMultiRelation> it = container.iterator();
+        Iterator<CubeMultiRelation> thatIt = that.container.iterator();
 
         if (container.size() == that.container.size()) {
             while (it.hasNext()) {
-                BICubeMultiRelation relation = it.next();
-                BICubeMultiRelation thatRelation = thatIt.next();
+                CubeMultiRelation relation = it.next();
+                CubeMultiRelation thatRelation = thatIt.next();
                 if (!ComparatorUtils.equals(relation, thatRelation)) {
                     return false;
                 }
@@ -200,11 +191,24 @@ public class BICubeMultiRelationPath {
         return getLastRelation().getForeignTable();
     }
 
-    protected BICubeMultiRelation getLastOne() throws IndexOutOfBoundsException {
+    protected CubeMultiRelation getLastOne() throws IndexOutOfBoundsException {
         return container.get(container.size() - 1);
     }
 
-    protected BICubeMultiRelation getFirstOne() throws IndexOutOfBoundsException {
+    protected CubeMultiRelation getFirstOne() throws IndexOutOfBoundsException {
         return container.get(0);
+    }
+
+    public String getKey() {
+        List<CubeMultiRelation> relations = getAllRelations();
+        int size = relations.size();
+        if (size == 1) {
+            return relations.get(0).getKey();
+        }
+        String[] relationKeys = new String[size];
+        for (int i = 0; i < size; i++) {
+            relationKeys[i] = relations.get(i).getKey();
+        }
+        return MD5Utils.getMD5String(relationKeys);
     }
 }
