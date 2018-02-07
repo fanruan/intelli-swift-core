@@ -1,6 +1,5 @@
 package com.fr.swift.relation;
 
-//import com.fr.bi.stable.data.BIFieldID;
 import com.fr.json.JSONObject;
 import com.fr.stable.StringUtils;
 import com.fr.swift.segment.column.ColumnKey;
@@ -12,11 +11,11 @@ import java.util.List;
  * @author yee
  * @date 2018/1/17
  */
-public class BICubeLogicColumnKey extends BaseLogicKeyField<SourceKey, ColumnKey> {
+public class CubeLogicColumnKey extends BaseLogicKeyField<SourceKey, ColumnKey> {
     private String fieldName;
     private String key;
 
-    public BICubeLogicColumnKey(List<ColumnKey> keyFields) {
+    public CubeLogicColumnKey(List<ColumnKey> keyFields) {
         super(keyFields);
     }
 
@@ -45,18 +44,13 @@ public class BICubeLogicColumnKey extends BaseLogicKeyField<SourceKey, ColumnKey
         return key;
     }
 
-    //@Override
-    //public BIFieldID getFieldID() {
-        //throw new UnsupportedOperationException();
-    //}
-
     @Override
-    public JSONObject createJSON() throws Exception {
+    public JSONObject createJSON() {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public void parseJSON(JSONObject jsonObject) throws Exception {
+    public void parseJSON(JSONObject jsonObject) {
         throw new UnsupportedOperationException();
     }
 }

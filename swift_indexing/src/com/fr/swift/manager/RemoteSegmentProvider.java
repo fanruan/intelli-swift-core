@@ -32,7 +32,7 @@ public class RemoteSegmentProvider implements SwiftSegmentProvider {
     }
 
     @Override
-    public boolean isSegmentsExists(SourceKey key) {
+    public boolean isSegmentsExist(SourceKey key) {
         return false;
     }
 

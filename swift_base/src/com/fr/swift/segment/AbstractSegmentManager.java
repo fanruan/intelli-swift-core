@@ -11,8 +11,7 @@ import java.util.List;
  */
 public abstract class AbstractSegmentManager implements SwiftSegmentManager {
     @Override
-    synchronized
-    public List<Segment> getSegment(SourceKey sourceKey) {
+    public synchronized List<Segment> getSegment(SourceKey sourceKey) {
         // 并发地拿，比如多个column indexer同时进行索引， 要同步下
         List<Segment> segments = new ArrayList<Segment>();
         List<SegmentKey> keys = SegmentXmlManager.getManager().getSegmentKeys(sourceKey);
@@ -32,7 +31,7 @@ public abstract class AbstractSegmentManager implements SwiftSegmentManager {
     }
 
     @Override
-    public boolean isSegmentsExists(SourceKey sourceKey) {
+    public boolean isSegmentsExist(SourceKey sourceKey) {
         return !SegmentXmlManager.getManager().getSegmentKeys(sourceKey).isEmpty();
     }
 }

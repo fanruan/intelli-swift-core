@@ -35,6 +35,11 @@ public class SegmentDemo extends TestCase {
             public List<Segment> getSegment(SourceKey sourceKey) {
                 return null;
             }
+
+            @Override
+            public boolean isSegmentsExist(SourceKey key) {
+                return false;
+            }
         };
         Segment segment = sm.getSegment(new SegmentKey("seg1"));
 
@@ -57,6 +62,11 @@ public class SegmentDemo extends TestCase {
             @Override
             public List<Segment> getSegment(SourceKey sourceKey) {
                 return null;
+            }
+
+            @Override
+            public boolean isSegmentsExist(SourceKey key) {
+                return false;
             }
         };
         Segment segment = sm.getSegment(new SegmentKey("seg1"));
@@ -84,6 +94,11 @@ public class SegmentDemo extends TestCase {
             @Override
             public List<Segment> getSegment(SourceKey sourceKey) {
                 return null;
+            }
+
+            @Override
+            public boolean isSegmentsExist(SourceKey key) {
+                return false;
             }
         };
         Segment segment = sm.getSegment(new SegmentKey("seg1"));

@@ -1,6 +1,5 @@
 package com.fr.swift.segment;
 
-import com.fr.swift.cube.io.Types;
 import com.fr.swift.cube.io.location.IResourceLocation;
 import com.fr.swift.source.SwiftMetaData;
 
@@ -16,8 +15,4 @@ public class RealTimeSegmentImpl extends BaseSegment implements RealTimeSegment 
         super(parent, meta);
     }
 
-    @Override
-    public Types.StoreType getStoreType() {
-        return Types.StoreType.MEMORY;
-    }
 }

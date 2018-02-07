@@ -89,7 +89,7 @@ public class SchedulerTaskImpl extends BaseTask implements SchedulerTask {
             setStatus(Status.DONE);
         }
 
-        System.out.println(String.format("%s %s", key.name(), result));
+        SwiftLoggers.getLogger().info(String.format("%s %s", key, result));
 
         for (TaskKey next : nextTasks) {
             from(next).onPrevOneDone(key);

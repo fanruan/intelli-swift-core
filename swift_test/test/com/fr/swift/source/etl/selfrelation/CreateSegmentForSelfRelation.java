@@ -3,16 +3,13 @@ package com.fr.swift.source.etl.selfrelation;
 import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.bitmap.MutableBitMap;
 import com.fr.swift.bitmap.impl.BitSetMutableBitMap;
-import com.fr.swift.cube.io.Types;
 import com.fr.swift.cube.io.location.IResourceLocation;
+import com.fr.swift.relation.CubeMultiRelation;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.segment.relation.RelationIndex;
-import com.fr.swift.source.DataSource;
 import com.fr.swift.source.SwiftMetaData;
-import com.fr.swift.source.etl.CreateColumn;
-import com.fr.swift.source.etl.CreateColumn2;
 
 /**
  * Created by Handsome on 2018/1/19 0019 11:55
@@ -27,16 +24,6 @@ public class CreateSegmentForSelfRelation {
             }
 
             @Override
-            public RelationIndex getRelation(DataSource f) {
-                return null;
-            }
-
-            @Override
-            public Types.StoreType getStoreType() {
-                return null;
-            }
-
-            @Override
             public int getRowCount() {
                 return 9;
             }
@@ -44,6 +31,11 @@ public class CreateSegmentForSelfRelation {
             @Override
             public void putRowCount(int rowCount) {
 
+            }
+
+            @Override
+            public RelationIndex getRelation(CubeMultiRelation f) {
+                return null;
             }
 
             @Override

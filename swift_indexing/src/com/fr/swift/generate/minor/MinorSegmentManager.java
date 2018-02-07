@@ -1,13 +1,12 @@
 package com.fr.swift.generate.minor;
 
-import com.fr.swift.segment.IMinorSegmentManager;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.SegmentKey;
-import com.fr.swift.source.DataSource;
+import com.fr.swift.segment.SwiftSegmentManager;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.util.Util;
 
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -16,28 +15,25 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author anchore
  * @date 2018/2/2
  */
-public class MinorSegmentManager implements IMinorSegmentManager {
+public class MinorSegmentManager implements SwiftSegmentManager {
     private Map<SourceKey, List<Segment>> segments = new ConcurrentHashMap<SourceKey, List<Segment>>();
 
     @Override
     public Segment getSegment(SegmentKey key) {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public List<Segment> getSegment(SourceKey sourceKey) {
-        List<Segment> segmentList = segments.get(sourceKey);
-        return segmentList == null ? new ArrayList<Segment>() : segmentList;
+        if (isSegmentsExist(sourceKey)) {
+            return segments.get(sourceKey);
+        }
+        return Collections.emptyList();
     }
 
     @Override
-    public boolean isSegmentsExists(SourceKey sourceKey) {
-        return !getSegment(sourceKey).isEmpty();
-    }
-
-    @Override
-    public void update(DataSource dataSource) throws Exception {
-        MinorUpdater.update(dataSource);
+    public boolean isSegmentsExist(SourceKey sourceKey) {
+        return segments.containsKey(sourceKey);
     }
 
     public void putSegment(SourceKey key, List<Segment> seg) {
@@ -57,5 +53,4 @@ public class MinorSegmentManager implements IMinorSegmentManager {
     public static MinorSegmentManager getInstance() {
         return INSTANCE;
     }
-
 }

@@ -28,7 +28,7 @@ public class IncreaseSegmentOperator extends AbstractSegmentOperator {
         this.increaseSegmentList = new ArrayList<ISegmentHolder>();
         if (null != segments && !segments.isEmpty()) {
             for (int i = 0, len = segments.size(); i < len; i++) {
-                if (segments.get(i).getStoreType() == Types.StoreType.FINE_IO) {
+                if (segments.get(i).getLocation().getStoreType() == Types.StoreType.FINE_IO) {
                     this.segmentList.add(new HistorySegmentHolder(segments.get(i)));
                 } else {
                     this.segmentList.add(new RealtimeSegmentHolder(segments.get(i)));
@@ -41,12 +41,14 @@ public class IncreaseSegmentOperator extends AbstractSegmentOperator {
     @Override
     public void transport(SwiftResultSet swiftResultSet) throws Exception {
         int count = 0;
-        String allotColumn = metaData.getColumnName(1);
-        while (swiftResultSet.next()) {
-            Row row = swiftResultSet.getRowData();
-            transportRow(count++, allotColumn, row);
+        if(metaData.getColumnCount() != 0){
+            String allotColumn = metaData.getColumnName(1);
+            while (swiftResultSet.next()) {
+                Row row = swiftResultSet.getRowData();
+                transportRow(count++, allotColumn, row);
+            }
+            segmentList.addAll(increaseSegmentList);
         }
-        segmentList.addAll(increaseSegmentList);
     }
 
     @Override

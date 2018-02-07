@@ -1,9 +1,11 @@
 package com.fr.swift.adaptor.transformer;
 
 import com.finebi.base.constant.FineEngineType;
+import com.finebi.conf.constant.BIConfConstants;
 import com.finebi.conf.internalimp.field.FineBusinessFieldImp;
 import com.finebi.conf.structure.bean.field.FineBusinessField;
 import com.fr.swift.exception.meta.SwiftMetaDataException;
+import com.fr.swift.source.ColumnTypeConstants;
 import com.fr.swift.source.ColumnTypeUtils;
 import com.fr.swift.source.MetaDataColumn;
 import com.fr.swift.source.SwiftMetaData;
@@ -29,7 +31,8 @@ public class FieldFactory {
             String columnRemark = swiftMetaData.getColumnRemark(i);
             int precision = swiftMetaData.getPrecision(i);
             int scale = swiftMetaData.getScale(i);
-            FineBusinessField fineBusinessField = new FineBusinessFieldImp(String.valueOf(System.currentTimeMillis() + i), columnName, ColumnTypeUtils.sqlTypeToClassType(columnType, precision, scale), precision, columnRemark, FineEngineType.Cube);
+            FineBusinessField fineBusinessField = new FineBusinessFieldImp(swiftMetaData.getTableName() + columnName, columnName,
+                    transformSwiftColumnType2BIColumnType(ColumnTypeUtils.sqlTypeToColumnType(columnType, precision, scale)), precision, columnRemark, FineEngineType.Cube);
             fineBusinessFieldList.add(fineBusinessField);
         }
         return fineBusinessFieldList;
@@ -45,5 +48,27 @@ public class FieldFactory {
             swiftMetaDataColumnList.add(metaDataColumn);
         }
         return swiftMetaDataColumnList;
+    }
+
+    public static int transformBIColumnType2SwiftColumnType(int biType) {
+        switch (biType) {
+            case BIConfConstants.CONF.COLUMN.NUMBER:
+                return ColumnTypeConstants.COLUMN.NUMBER;
+            case BIConfConstants.CONF.COLUMN.DATE:
+                return ColumnTypeConstants.COLUMN.DATE;
+            default:
+                return ColumnTypeConstants.COLUMN.STRING;
+        }
+    }
+
+    public static int transformSwiftColumnType2BIColumnType(int biType) {
+        switch (biType) {
+            case ColumnTypeConstants.COLUMN.NUMBER:
+                return BIConfConstants.CONF.COLUMN.NUMBER;
+            case ColumnTypeConstants.COLUMN.DATE:
+                return BIConfConstants.CONF.COLUMN.DATE;
+            default:
+                return BIConfConstants.CONF.COLUMN.STRING;
+        }
     }
 }

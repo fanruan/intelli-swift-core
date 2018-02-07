@@ -3,13 +3,16 @@ package com.fr.swift.source.etl.columnformula;
 import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.bitmap.MutableBitMap;
 import com.fr.swift.bitmap.impl.BitSetMutableBitMap;
-import com.fr.swift.cube.io.Types;
 import com.fr.swift.cube.io.location.IResourceLocation;
+import com.fr.swift.relation.CubeMultiRelation;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.segment.relation.RelationIndex;
-import com.fr.swift.source.*;
+import com.fr.swift.source.MetaDataColumn;
+import com.fr.swift.source.SwiftMetaData;
+import com.fr.swift.source.SwiftMetaDataColumn;
+import com.fr.swift.source.SwiftMetaDataImpl;
 import com.fr.swift.source.etl.CreateColumn;
 import com.fr.swift.source.etl.CreateColumnForSum;
 
@@ -28,11 +31,6 @@ public class CreateSegment {
             }
 
             @Override
-            public Types.StoreType getStoreType() {
-                return null;
-            }
-
-            @Override
             public int getRowCount() {
                 return 9;
             }
@@ -43,7 +41,7 @@ public class CreateSegment {
             }
 
             @Override
-            public RelationIndex getRelation(DataSource f) {
+            public RelationIndex getRelation(CubeMultiRelation f) {
                 return null;
             }
 

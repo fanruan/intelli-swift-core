@@ -1,6 +1,6 @@
 package com.fr.swift.context;
 
-import com.fr.swift.segment.IMinorSegmentManager;
+import com.fr.swift.segment.SwiftSegmentManager;
 import com.fr.swift.segment.SwiftSegmentProvider;
 
 /**
@@ -22,7 +22,7 @@ public class SwiftContext {
 
     private SwiftSegmentProvider swiftSegmentProvider;
 
-    private IMinorSegmentManager minorSegmentManager;
+    private SwiftSegmentManager minorSegmentManager;
 
     public void registerSwiftSegmentProvider(SwiftSegmentProvider swiftSegmentProvider) {
         this.swiftSegmentProvider = swiftSegmentProvider;
@@ -32,11 +32,11 @@ public class SwiftContext {
         return this.swiftSegmentProvider;
     }
 
-    public void registerMinorSegmentManager(IMinorSegmentManager manager) {
+    public void registerMinorSegmentManager(SwiftSegmentManager manager) {
         this.minorSegmentManager = manager;
     }
 
-    public IMinorSegmentManager getMinorSegmentManager() {
-        return this.minorSegmentManager;
+    public SwiftSegmentManager getMinorSegmentManager() {
+        return minorSegmentManager;
     }
 }

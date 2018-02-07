@@ -45,11 +45,11 @@ public class SwiftSourceTransferFactory {
     public static SwiftSourceTransfer createSourcePreviewTransfer(DataSource dataSource, int rowCount) throws Exception {
         SwiftSourceTransfer transfer = null;
         if (dataSource instanceof TableDBSource) {
-            transfer = new TableDBSourcePreviewTransfer(ConnectionManager.getInstance().getConnectionInfo(((TableDBSource) dataSource).getConnectionName())
-                    , rowCount, ((TableDBSource) dataSource).getDBTableName());
+            transfer = new TableDBSourcePreviewTransfer(ConnectionManager.getInstance().getConnectionInfo(((TableDBSource) dataSource).getConnectionName()),
+                    ((TableDBSource) dataSource).getFieldColumnTypes(), rowCount, ((TableDBSource) dataSource).getDBTableName());
         } else if (dataSource instanceof QueryDBSource) {
             transfer = new QuerySourcePreviewTransfer(ConnectionManager.getInstance().getConnectionInfo(((QueryDBSource) dataSource).getConnectionName()),
-                    rowCount, ((QueryDBSource) dataSource).getQuery());
+                    ((QueryDBSource) dataSource).getFieldColumnTypes(), rowCount, ((QueryDBSource) dataSource).getQuery());
         } else if (dataSource instanceof ServerDBSource) {
         } else if (dataSource instanceof ExcelDataSource) {
         } else if (dataSource instanceof ETLSource) {

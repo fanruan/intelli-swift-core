@@ -4,11 +4,14 @@ import com.fr.swift.cube.task.SchedulerTask;
 import com.fr.swift.cube.task.TaskKey;
 import com.fr.swift.cube.task.impl.CubeTaskKey;
 import com.fr.swift.cube.task.impl.Operation;
-import com.fr.swift.cube.task.impl.SchedulerTaskImpl;
 import com.fr.swift.cube.task.impl.SchedulerTaskPool;
+import com.fr.swift.exception.SwiftServiceException;
+import com.fr.swift.exception.meta.SwiftMetaDataException;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.source.DataSource;
+import com.fr.swift.source.ETLDataSource;
+import com.fr.swift.source.IRelationSource;
 import com.fr.swift.source.manager.IndexStuffProvider;
 import com.fr.swift.structure.Pair;
 
@@ -23,35 +26,62 @@ import java.util.List;
  * @since Advanced FineBI Analysis 1.0
  */
 public class StuffFetcher implements Runnable {
-
     private static final SwiftLogger LOGGER = SwiftLoggers.getLogger(StuffFetcher.class);
 
     @Override
     public void run() {
-        while (true) {
-            try {
+        try {
+            while (true) {
                 IndexStuffProvider provider = StuffProviderQueue.getQueue().take();
-
-                List<DataSource> dataSources = provider.getAllTables();
-                List<Pair<TaskKey, Object>> pairList = new ArrayList<Pair<TaskKey, Object>>();
-
-                SchedulerTask start = new SchedulerTaskImpl(new CubeTaskKey("start all")),
-                        end = new SchedulerTaskImpl(new CubeTaskKey("end all"));
-
-                pairList.add(new Pair<TaskKey, Object>(start.key(), null));
-                pairList.add(new Pair<TaskKey, Object>(end.key(), null));
-
-                for (DataSource dataSource : dataSources) {
-                    SchedulerTask task = new SchedulerTaskImpl(new CubeTaskKey(dataSource.getMetadata().getTableName(), Operation.BUILD_TABLE));
-                    start.addNext(task);
-                    task.addNext(end);
-                    pairList.add(new Pair<TaskKey, Object>(task.key(), dataSource));
-                }
-                SchedulerTaskPool.sendTasks(pairList);
-                start.triggerRun();
-            } catch (Throwable e) {
-                LOGGER.error(e.getMessage(), e);
+                update(provider);
             }
+        } catch (Throwable e) {
+            LOGGER.error(e);
         }
+    }
+
+    public static void update(IndexStuffProvider stuff) throws SwiftMetaDataException, SwiftServiceException {
+        List<Pair<TaskKey, Object>> pairs = new ArrayList<Pair<TaskKey, Object>>();
+
+        SchedulerTask start = CubeTasks.newStartTask(),
+                end = CubeTasks.newEndTask();
+
+        pairs.add(new Pair<TaskKey, Object>(start.key(), null));
+        pairs.add(new Pair<TaskKey, Object>(end.key(), null));
+
+        // 所有表
+        for (DataSource dataSource : stuff.getAllTables()) {
+            SchedulerTask task;
+
+            if (dataSource instanceof ETLDataSource) {
+                task = CubeTasks.newEtlTask((ETLDataSource) dataSource, start);
+            } else {
+                task = CubeTasks.newTableTask(dataSource);
+                start.addNext(task);
+            }
+
+            pairs.add(new Pair<TaskKey, Object>(task.key(), dataSource));
+        }
+
+        // 所有关联
+        for (IRelationSource relation : stuff.getAllRelations()) {
+            DataSource primary = stuff.getTableById(relation.getPrimarySource().getId());
+            DataSource foreign = stuff.getTableById(relation.getForeignSource().getId());
+            SchedulerTask relationTask = CubeTasks.newRelationTask(relation, primary, foreign);
+
+            SchedulerTask primaryTask = SchedulerTaskPool.getInstance().get(new CubeTaskKey(
+                    CubeTasks.newTaskName(primary), Operation.BUILD_TABLE)),
+
+                    foreignTask = SchedulerTaskPool.getInstance().get(new CubeTaskKey(
+                            CubeTasks.newTaskName(foreign), Operation.BUILD_TABLE));
+            primaryTask.addNext(relationTask);
+            foreignTask.addNext(relationTask);
+
+            relationTask.addNext(end);
+            pairs.add(new Pair<TaskKey, Object>(relationTask.key(), relation));
+        }
+
+        SchedulerTaskPool.sendTasks(pairs);
+        start.triggerRun();
     }
 }

@@ -11,7 +11,7 @@ import java.security.PrivilegedAction;
  * 释放对象，和外部资源
  * Created by Connery on 2015/12/4.
  */
-public class BIReleaseUtils {
+public class ReleaseUtils {
 
     /**
      * 清理

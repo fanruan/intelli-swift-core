@@ -34,6 +34,7 @@ import com.finebi.conf.structure.analysis.table.FineAnalysisTable;
 import com.finebi.conf.structure.bean.field.FineBusinessField;
 import com.finebi.conf.structure.bean.table.FineBusinessTable;
 import com.finebi.conf.utils.FineTableUtils;
+import com.fr.swift.exception.meta.SwiftMetaDataException;
 import com.fr.swift.query.filter.info.FilterInfo;
 import com.fr.swift.query.group.Group;
 import com.fr.swift.query.group.GroupType;
@@ -75,10 +76,9 @@ class EtlConverter {
         FineBusinessTable baseTable = analysis.getBaseTable();
         if (baseTable != null) {
             dataSources.add(IndexingDataSourceFactory.transformDataSource(baseTable));
-        } else {
-            assert (analysis.getOperator().getType() == AnalysisType.SELECT_FIELD);
-            LinkedHashMap<String, List<ColumnKey>> sourceKeyColumnMap = new LinkedHashMap<String, List<ColumnKey>>();
-            LinkedHashMap<String, DataSource> sourceKeyDataSourceMap = new LinkedHashMap<String, DataSource>();
+        } else if (analysis.getOperator().getType() == AnalysisType.SELECT_FIELD){
+            Map<String, List<ColumnKey>> sourceKeyColumnMap = new LinkedHashMap<String, List<ColumnKey>>();
+            Map<String, DataSource> sourceKeyDataSourceMap = new LinkedHashMap<String, DataSource>();
             SelectFieldOperator selectFieldOperator = analysis.getOperator();
             List<SelectFieldBeanItem> selectFieldBeanItemList = selectFieldOperator.getValue().getValue();
             for (SelectFieldBeanItem selectFieldBeanItem : selectFieldBeanItemList) {
@@ -122,13 +122,88 @@ class EtlConverter {
             ETLSource dataSource = new ETLSource(baseDatas, operator, fieldsInfo);
             return dataSource;
         }
+//        if (analysis.getOperator().getType() == AnalysisType.SELECT_FIELD) {
+//            return transformSelectField(analysis);
+//        }
         try {
+            if (baseTable != null) {
+                dataSources.add(IndexingDataSourceFactory.transformDataSource(baseTable));
+            }
             FineOperator op = analysis.getOperator();
             dataSources.addAll(fromOperator(op));
             return new ETLSource(dataSources, convertEtlOperator(op));
         } catch (Exception e) {
             return IndexingDataSourceFactory.transformDataSource(baseTable);
         }
+    }
+
+    private static DataSource transformSelectField(FineAnalysisTable analysis) throws Exception {
+        Map<String, List<ColumnKey>> sourceKeyColumnMap = new LinkedHashMap<String, List<ColumnKey>>();
+        Map<String, DataSource> sourceKeyDataSourceMap = new LinkedHashMap<String, DataSource>();
+        SelectFieldOperator selectFieldOperator = analysis.getOperator();
+        List<SelectFieldBeanItem> selectFieldBeanItemList = selectFieldOperator.getValue().getValue();
+        for (SelectFieldBeanItem selectFieldBeanItem : selectFieldBeanItemList) {
+            FineBusinessTable fineBusinessTable = FineTableUtils.getTableByFieldId(selectFieldBeanItem.getField());
+            FineBusinessField fineBusinessField = fineBusinessTable.getFieldByFieldId(selectFieldBeanItem.getField());
+            DataSource baseDataSource = IndexingDataSourceFactory.transformDataSource(fineBusinessTable);
+
+            if (sourceKeyColumnMap.containsKey(baseDataSource.getSourceKey().getId())) {
+                sourceKeyColumnMap.get(baseDataSource.getSourceKey().getId()).add(new ColumnKey(fineBusinessField.getName()));
+            } else {
+                sourceKeyColumnMap.put(baseDataSource.getSourceKey().getId(), new ArrayList<ColumnKey>());
+                sourceKeyColumnMap.get(baseDataSource.getSourceKey().getId()).add(new ColumnKey(fineBusinessField.getName()));
+            }
+            if (!sourceKeyDataSourceMap.containsKey(baseDataSource.getSourceKey().getId())) {
+                sourceKeyDataSourceMap.put(baseDataSource.getSourceKey().getId(), baseDataSource);
+            }
+        }
+        List<DataSource> baseDatas = new ArrayList<DataSource>();
+        if (analysis.getBaseTable() != null) {
+            baseDatas.add(IndexingDataSourceFactory.transformDataSource(analysis.getBaseTable()));
+        }
+        if (sourceKeyDataSourceMap.size() == 1){
+            //选字段只选了一张表的情况
+            return getSingleTableSelectFieldSource(sourceKeyColumnMap, sourceKeyDataSourceMap, baseDatas);
+        } else {
+            return getMultiTableSelectFieldSource(sourceKeyColumnMap, sourceKeyDataSourceMap, baseDatas);
+        }
+    }
+
+    private static DataSource getSingleTableSelectFieldSource(Map<String, List<ColumnKey>> sourceKeyColumnMap, Map<String, DataSource> sourceKeyDataSourceMap, List<DataSource> baseDatas) throws SwiftMetaDataException {
+        ETLOperator operator = new DetailOperator(new ArrayList<ColumnKey[]>(), new ArrayList<SwiftMetaData>());
+        Map<Integer, String> fieldsInfo = new HashMap<Integer, String>();
+        baseDatas.add(sourceKeyDataSourceMap.values().iterator().next());
+        ETLSource etlSource = new ETLSource(baseDatas, operator);
+        List<ColumnKey> fields = sourceKeyColumnMap.values().iterator().next();
+        for (ColumnKey columnKey : fields) {
+            int index = etlSource.getMetadata().getColumnIndex(columnKey.getName());
+            fieldsInfo.put(index, columnKey.getName());
+        }
+        ETLSource dataSource = new ETLSource(baseDatas, operator, fieldsInfo);
+        return dataSource;
+    }
+
+
+    private static DataSource getMultiTableSelectFieldSource(Map<String, List<ColumnKey>> sourceKeyColumnMap, Map<String, DataSource> sourceKeyDataSourceMap, List<DataSource> baseDatas) throws SwiftMetaDataException {
+        List<SwiftMetaData> swiftMetaDatas = new ArrayList<SwiftMetaData>();
+        List<ColumnKey[]> fields = new ArrayList<ColumnKey[]>();
+        for (Map.Entry<String, List<ColumnKey>> entry : sourceKeyColumnMap.entrySet()) {
+            DataSource dataSource = sourceKeyDataSourceMap.get(entry.getKey());
+            baseDatas.add(dataSource);
+            swiftMetaDatas.add(dataSource.getMetadata());
+            fields.add(entry.getValue().toArray(new ColumnKey[entry.getValue().size()]));
+        }
+        ETLOperator operator = new DetailOperator(fields, swiftMetaDatas);
+        Map<Integer, String> fieldsInfo = new HashMap<Integer, String>();
+        ETLSource etlSource = new ETLSource(baseDatas, operator);
+        for (ColumnKey[] columnKeys : fields) {
+            for (ColumnKey columnKey : columnKeys) {
+                int index = etlSource.getMetadata().getColumnIndex(columnKey.getName());
+                fieldsInfo.put(index, columnKey.getName());
+            }
+        }
+        ETLSource dataSource = new ETLSource(baseDatas, operator, fieldsInfo);
+        return dataSource;
     }
 
     private static List<DataSource> fromOperator(FineOperator op) throws Exception {
@@ -250,7 +325,7 @@ class EtlConverter {
         return new UnionOperator(listsOfColumn);
     }
 
-    private static ETLOperator convertEtlOperator(FineOperator op) throws FineEngineException {
+    public static ETLOperator convertEtlOperator(FineOperator op) throws FineEngineException {
         switch (op.getType()) {
             case AnalysisType.SELECT_FIELD:
                 return fromSelectFieldBean(op.<SelectFieldBean>getValue());
@@ -429,9 +504,9 @@ class EtlConverter {
                 }
             }
         }
-        throw new FineAnalysisOperationUnSafe("");
+      //  throw new FineAnalysisOperationUnSafe("");
 
-//        return new ColumnRowTransOperator(groupName, lcName, lcValue, columns, otherColumnNames);
+        return new ColumnRowTransOperator(groupName, lcName, lcValue, columns, otherColumnNames);
     }
 
     private static OneUnionRelationOperator fromOneUnionRelationBean(CirculateOneFieldBean bean) {
