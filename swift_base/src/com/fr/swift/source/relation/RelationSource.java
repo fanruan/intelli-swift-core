@@ -77,4 +77,14 @@ public class RelationSource implements IRelationSource {
         }
         return core;
     }
+
+    @Override
+    public String toString() {
+        return "RelationSource{" +
+                "primarySource=" + primarySource +
+                ", primaryFields=" + primaryFields +
+                ", foreignSource=" + foreignSource +
+                ", foreignFields=" + foreignFields +
+                '}';
+    }
 }

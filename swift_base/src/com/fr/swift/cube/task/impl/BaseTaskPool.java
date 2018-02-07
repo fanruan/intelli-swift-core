@@ -24,6 +24,11 @@ abstract class BaseTaskPool<T extends Task> implements TaskPool<T> {
     }
 
     @Override
+    public boolean contains(TaskKey key) {
+        return tasks.containsKey(key);
+    }
+
+    @Override
     public T get(TaskKey key) {
         return tasks.get(key);
     }
