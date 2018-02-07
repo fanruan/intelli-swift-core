@@ -4,7 +4,6 @@ import com.fr.swift.context.SwiftContext;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.source.DataSource;
 import com.fr.swift.source.SwiftMetaData;
-import com.fr.swift.source.SwiftSourceTransfer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,6 +47,9 @@ public class ETLTransferFactory {
         for (DataSource dataSource : baseDataSourceList) {
             List<Segment> segments = SwiftContext.getInstance().getMinorSegmentManager().getSegment(dataSource.getSourceKey());
             basedSegments.add(segments.toArray(new Segment[segments.size()]));
+        }
+        if (baseDataSourceList.isEmpty()){
+            basedSegments.add(new Segment[0]);
         }
         return new ETLTransfer(transferOperator, metaData, basedMetas, basedSegments);
     }

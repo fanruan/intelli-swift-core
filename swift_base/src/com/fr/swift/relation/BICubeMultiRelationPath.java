@@ -1,15 +1,13 @@
 package com.fr.swift.relation;
 
-import com.fr.bi.common.container.BIListContainer;
-import com.fr.bi.stable.exception.BITablePathConfusionException;
-import com.fr.bi.stable.exception.BITablePathEmptyException;
-import com.fr.bi.stable.utils.algorithem.BIMD5Utils;
-import com.fr.bi.stable.utils.program.BINonValueUtils;
 import com.fr.general.ComparatorUtils;
 import com.fr.swift.source.SourceKey;
+import com.fr.swift.source.core.MD5Utils;
 import com.fr.swift.util.Crasher;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
@@ -17,7 +15,8 @@ import java.util.List;
  * @author yee
  * @date 2018/1/17
  */
-public class BICubeMultiRelationPath extends BIListContainer<BICubeMultiRelation> {
+public class BICubeMultiRelationPath {
+    private List<BICubeMultiRelation> container;
     public BICubeLogicColumnKey getPrimaryField() {
         return getFirstRelation().getPrimaryField();
     }
@@ -30,41 +29,49 @@ public class BICubeMultiRelationPath extends BIListContainer<BICubeMultiRelation
                     .append(relation.getForeignTable().getId())
                     .append(relation.getForeignField().getKey());
         }
-        return BIMD5Utils.getMD5String(new String[]{sb.toString()});
+        return MD5Utils.getMD5String(new String[]{sb.toString()});
     }
 
     public BICubeMultiRelationPath() {
-        super();
+        container = new ArrayList<BICubeMultiRelation>();
     }
 
     public BICubeMultiRelationPath(BICubeMultiRelation[] relations) {
-        super();
-        try {
-            BINonValueUtils.checkNull(relations);
-            for (BICubeMultiRelation relation : relations) {
-                addRelationAtTail(relation);
-            }
-        } catch (Exception e) {
-            Crasher.crash(e);
+        for (BICubeMultiRelation relation : relations) {
+            addRelationAtTail(relation);
         }
     }
 
-    public BICubeMultiRelationPath addRelationAtTail(BICubeMultiRelation relation) throws BITablePathConfusionException {
+    public BICubeMultiRelationPath addRelationAtTail(BICubeMultiRelation relation) {
         synchronized (container) {
+            BICubeMultiRelation lastRelation = null;
             try {
-                BICubeMultiRelation lastRelation = getLastRelation();
-                if (canRelationsBuildPath(lastRelation, relation)) {
-                    add(relation);
-                } else {
-                    throw new BITablePathConfusionException("The primary of relation needed to be added is: " +
-                            relation.getPrimaryTable() +
-                            ", but current path last relation's foreign table is: " +
-                            relation.getForeignField() + ".They should be equal");
-                }
-            } catch (BITablePathEmptyException ignore) {
+                lastRelation = getLastRelation();
+            } catch (Exception ignore) {
                 add(relation);
+                return this;
+            }
+            if (null != lastRelation && canRelationsBuildPath(lastRelation, relation)) {
+                add(relation);
+            } else {
+                Crasher.crash("The primary of relation needed to be added is: " +
+                        relation.getPrimaryTable() +
+                        ", but current path last relation's foreign table is: " +
+                        relation.getForeignField() + ".They should be equal");
             }
             return this;
+        }
+    }
+
+    public void add(BICubeMultiRelation relation) {
+        synchronized (container) {
+            container.add(relation);
+        }
+    }
+
+    protected void clear() {
+        synchronized (container) {
+            container.clear();
         }
     }
 
@@ -73,13 +80,13 @@ public class BICubeMultiRelationPath extends BIListContainer<BICubeMultiRelation
             try {
                 BICubeMultiRelation firstRelation = getFirstRelation();
                 if (canRelationsBuildPath(relation, firstRelation)) {
-                    Collection<BICubeMultiRelation> collection = initCollection();
+                    Collection<BICubeMultiRelation> collection = new ArrayList<BICubeMultiRelation>();
                     collection.addAll(container);
                     clear();
                     add(relation);
                     container.addAll(collection);
                 } else {
-                    throw new BITablePathConfusionException("The foreign of relation needed to be added is: " +
+                    Crasher.crash("The foreign of relation needed to be added is: " +
                             relation.getForeignField() +
                             ", but current path first relation's primary table is: " +
                             relation.getPrimaryTable() + ". They should be equal");
@@ -92,7 +99,7 @@ public class BICubeMultiRelationPath extends BIListContainer<BICubeMultiRelation
         }
     }
 
-    public void removeLastRelation() throws BITablePathEmptyException {
+    public void removeLastRelation() {
         synchronized (container) {
             container.remove(getLastRelation());
         }
@@ -109,23 +116,26 @@ public class BICubeMultiRelationPath extends BIListContainer<BICubeMultiRelation
     }
 
     public Boolean isEmptyPath() {
-        return isEmpty();
+        synchronized (container) {
+            return container.isEmpty();
+        }
     }
 
-    public BICubeMultiRelation getLastRelation() throws BITablePathEmptyException {
+    public BICubeMultiRelation getLastRelation() {
         synchronized (container) {
 
             if (!isEmptyPath()) {
                 return getLastOne();
             } else {
-                throw new BITablePathEmptyException();
+                return Crasher.crash("Path empty");
             }
         }
     }
 
-    @Override
     public int size() {
-        return super.size();
+        synchronized (container) {
+            return container.size();
+        }
     }
 
     public BICubeMultiRelation getFirstRelation() {
@@ -133,7 +143,7 @@ public class BICubeMultiRelationPath extends BIListContainer<BICubeMultiRelation
             if (!isEmptyPath()) {
                 return getFirstOne();
             } else {
-                return Crasher.crash(new BITablePathEmptyException());
+                return Crasher.crash("Path empty");
             }
         }
     }
@@ -143,7 +153,7 @@ public class BICubeMultiRelationPath extends BIListContainer<BICubeMultiRelation
     }
 
     public List<BICubeMultiRelation> getAllRelations() {
-        return (List<BICubeMultiRelation>) super.getContainer();
+        return Collections.unmodifiableList(container);
     }
 
     @Override
@@ -160,7 +170,7 @@ public class BICubeMultiRelationPath extends BIListContainer<BICubeMultiRelation
         if (this == o) {
             return true;
         }
-        if (!(o instanceof com.finebi.cube.relation.BITableRelationPath)) {
+        if (!(o instanceof BICubeMultiRelation)) {
             return false;
         }
 
@@ -186,7 +196,15 @@ public class BICubeMultiRelationPath extends BIListContainer<BICubeMultiRelation
         return getFirstRelation().primaryTable;
     }
 
-    public SourceKey getEndTable() throws BITablePathEmptyException {
+    public SourceKey getEndTable() {
         return getLastRelation().getForeignTable();
+    }
+
+    protected BICubeMultiRelation getLastOne() throws IndexOutOfBoundsException {
+        return container.get(container.size() - 1);
+    }
+
+    protected BICubeMultiRelation getFirstOne() throws IndexOutOfBoundsException {
+        return container.get(0);
     }
 }
