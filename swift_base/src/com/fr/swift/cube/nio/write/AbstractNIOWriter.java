@@ -1,6 +1,6 @@
 package com.fr.swift.cube.nio.write;
 
-import com.fr.swift.cube.nio.BIMemoryUtils;
+import com.fr.swift.cube.nio.MemoryUtils;
 import com.fr.swift.cube.nio.NIOConstant;
 import com.fr.swift.cube.nio.NIOReadWriter;
 import com.fr.swift.cube.nio.NIOWriter;
@@ -47,7 +47,7 @@ public abstract class AbstractNIOWriter<T> extends NIOReadWriter implements NIOW
     public void clearBuffer() {
         if (buffer != null) {
             releaseChild();
-            BIMemoryUtils.un_map(buffer);
+            MemoryUtils.un_map(buffer);
             buffer = null;
         }
         try {
@@ -77,7 +77,7 @@ public abstract class AbstractNIOWriter<T> extends NIOReadWriter implements NIOW
             try {
                 if (buffer != null) {
                     releaseChild();
-                    BIMemoryUtils.un_map(buffer);
+                    MemoryUtils.un_map(buffer);
                 }
                 long start = getStart(index) - (fileIndex << NIOConstant.MAX_SINGLE_FILE_PART_MOVE_ALL);
                 buffer = fc.map(FileChannel.MapMode.READ_WRITE, start, getLen(index));

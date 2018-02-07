@@ -6,7 +6,7 @@ import java.nio.MappedByteBuffer;
  * 内存工具
  * Created by Connery on 2015/12/4.
  */
-public class BIMemoryUtils {
+public class MemoryUtils {
     private static final boolean IS_FORCE_NIO_WRITER = false;
 
     /**
@@ -19,7 +19,7 @@ public class BIMemoryUtils {
             if (IS_FORCE_NIO_WRITER) {
                 buffer.force();
             }
-            BIReleaseUtils.doClean(buffer);
+            ReleaseUtils.doClean(buffer);
         }
     }
 }

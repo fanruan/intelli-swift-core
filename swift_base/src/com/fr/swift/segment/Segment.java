@@ -5,7 +5,7 @@ import com.fr.swift.cube.io.Flushable;
 import com.fr.swift.cube.io.Releasable;
 import com.fr.swift.cube.io.Types;
 import com.fr.swift.cube.io.location.IResourceLocation;
-import com.fr.swift.relation.BICubeMultiRelation;
+import com.fr.swift.relation.CubeMultiRelation;
 import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.segment.relation.RelationIndex;
@@ -41,7 +41,7 @@ public interface Segment extends Releasable, Flushable {
      * @param f foreign table
      * @return relation index
      */
-    RelationIndex getRelation(BICubeMultiRelation f);
+    RelationIndex getRelation(CubeMultiRelation f);
 
     /**
      * 获取未被删除的索引

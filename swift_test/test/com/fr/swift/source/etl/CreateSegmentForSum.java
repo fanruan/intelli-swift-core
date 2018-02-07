@@ -5,7 +5,7 @@ import com.fr.swift.bitmap.MutableBitMap;
 import com.fr.swift.bitmap.impl.BitSetMutableBitMap;
 import com.fr.swift.cube.io.Types.StoreType;
 import com.fr.swift.cube.io.location.IResourceLocation;
-import com.fr.swift.relation.BICubeMultiRelation;
+import com.fr.swift.relation.CubeMultiRelation;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.ColumnKey;
@@ -34,7 +34,7 @@ public class CreateSegmentForSum {
             }
 
             @Override
-            public RelationIndex getRelation(BICubeMultiRelation f) {
+            public RelationIndex getRelation(CubeMultiRelation f) {
                 return null;
             }
 

@@ -18,9 +18,9 @@ import com.fr.swift.generate.history.MultiRelationIndexBuilder;
 import com.fr.swift.generate.history.TableBuilder;
 import com.fr.swift.manager.LocalSegmentProvider;
 import com.fr.swift.provider.ConnectionProvider;
-import com.fr.swift.relation.BICubeLogicColumnKey;
-import com.fr.swift.relation.BICubeMultiRelation;
-import com.fr.swift.relation.utils.BIMultiRelationHelper;
+import com.fr.swift.relation.CubeLogicColumnKey;
+import com.fr.swift.relation.CubeMultiRelation;
+import com.fr.swift.relation.utils.MultiRelationHelper;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.ColumnKey;
@@ -89,7 +89,7 @@ public class MultiRelationIndexBuilderTest extends TestCase {
             } else if (o instanceof IRelationSource) {
                 IRelationSource ds = ((IRelationSource) o);
                 WorkerTask wt = new WorkerTaskImpl(taskKey);
-                wt.setWorker(new MultiRelationIndexBuilder(BIMultiRelationHelper.convert2CubeRelation(ds), LocalSegmentProvider.getInstance()));
+                wt.setWorker(new MultiRelationIndexBuilder(MultiRelationHelper.convert2CubeRelation(ds), LocalSegmentProvider.getInstance()));
                 return wt;
             } else {
                 return null;
@@ -170,7 +170,7 @@ public class MultiRelationIndexBuilderTest extends TestCase {
         List<ColumnKey> foreignFields = new ArrayList<ColumnKey>();
         primaryFields.add(new ColumnKey("brand_id"));
         foreignFields.add(new ColumnKey("brand_id"));
-        BICubeMultiRelation relation = new BICubeMultiRelation(new BICubeLogicColumnKey(primaryFields), new BICubeLogicColumnKey(foreignFields), primaryTable, foreignTable);
+        CubeMultiRelation relation = new CubeMultiRelation(new CubeLogicColumnKey(primaryFields), new CubeLogicColumnKey(foreignFields), primaryTable, foreignTable);
 //        new MultiRelationIndexBuilder(relation, LocalSegmentProvider.getInstance()).work();
         List<Segment> primarySegments = LocalSegmentProvider.getInstance().getSegment(primaryTable);
         List<Segment> foreignSegements = LocalSegmentProvider.getInstance().getSegment(foreignTable);
