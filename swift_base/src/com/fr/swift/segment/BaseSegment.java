@@ -4,7 +4,6 @@ import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.cube.io.BuildConf;
 import com.fr.swift.cube.io.ResourceDiscovery;
 import com.fr.swift.cube.io.ResourceDiscoveryImpl;
-import com.fr.swift.cube.io.Types;
 import com.fr.swift.cube.io.Types.DataType;
 import com.fr.swift.cube.io.Types.IoType;
 import com.fr.swift.cube.io.input.BitMapReader;
@@ -197,7 +196,4 @@ public abstract class BaseSegment implements Segment {
     }
 
 
-
-    @Override
-    public abstract Types.StoreType getStoreType();
 }

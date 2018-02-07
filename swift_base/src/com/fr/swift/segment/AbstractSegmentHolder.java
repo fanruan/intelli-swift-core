@@ -37,7 +37,7 @@ public abstract class AbstractSegmentHolder implements ISegmentHolder {
         this.segment = segment;
         this.rowCount = new AtomicInteger(0);
         this.metaData = segment.getMetaData();
-        this.storeType = segment.getStoreType();
+        this.storeType = segment.getLocation().getStoreType();
         init();
     }
 

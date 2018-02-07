@@ -1,6 +1,5 @@
 package com.fr.swift.segment;
 
-import com.fr.swift.cube.io.Types;
 import com.fr.swift.cube.io.location.IResourceLocation;
 import com.fr.swift.source.SwiftMetaData;
 
@@ -13,8 +12,4 @@ public class HistorySegmentImpl extends BaseSegment implements HistorySegment {
         super(parent, meta);
     }
 
-    @Override
-    public Types.StoreType getStoreType() {
-        return Types.StoreType.FINE_IO;
-    }
 }

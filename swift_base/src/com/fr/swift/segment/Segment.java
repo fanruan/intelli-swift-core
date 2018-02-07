@@ -3,7 +3,6 @@ package com.fr.swift.segment;
 import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.cube.io.Flushable;
 import com.fr.swift.cube.io.Releasable;
-import com.fr.swift.cube.io.Types;
 import com.fr.swift.cube.io.location.IResourceLocation;
 import com.fr.swift.relation.CubeMultiRelation;
 import com.fr.swift.segment.column.Column;
@@ -56,5 +55,5 @@ public interface Segment extends Releasable, Flushable {
 
     IResourceLocation getLocation();
 
-    Types.StoreType getStoreType();
+    // fixme getStoreType接口删了，这个直接从getLocation().getStoreTye()拿 没必要再搞一个接口
 }
