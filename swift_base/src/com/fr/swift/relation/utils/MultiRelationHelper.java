@@ -4,6 +4,7 @@ import com.fr.swift.relation.CubeLogicColumnKey;
 import com.fr.swift.relation.CubeMultiRelation;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.source.IRelationSource;
+import com.fr.swift.source.SourceKey;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,6 +29,9 @@ public class MultiRelationHelper {
             key.setRelation(source);
             foreignKeys.add(key);
         }
-        return new CubeMultiRelation(new CubeLogicColumnKey(primaryKeys), new CubeLogicColumnKey(foreignKeys), source.getPrimarySource(), source.getForeignSource());
+        SourceKey primarySource = source.getPrimarySource();
+        SourceKey foreignSource = source.getPrimarySource();
+        return new CubeMultiRelation(new CubeLogicColumnKey(primarySource, primaryKeys),
+                new CubeLogicColumnKey(foreignSource, foreignKeys), primarySource, foreignSource);
     }
 }

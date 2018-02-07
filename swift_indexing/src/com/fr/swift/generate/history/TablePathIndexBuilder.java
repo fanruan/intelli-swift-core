@@ -64,11 +64,11 @@ public class TablePathIndexBuilder extends BaseWorker {
         }
     }
 
-    private SourceKey getPrimaryTable() {
+    protected SourceKey getPrimaryTable() {
         return relationPath.getStartTable();
     }
 
-    private SourceKey getTargetTable() {
+    protected SourceKey getTargetTable() {
         return relationPath.getEndTable();
     }
 
@@ -83,7 +83,7 @@ public class TablePathIndexBuilder extends BaseWorker {
         return result;
     }
 
-    private List<Segment> getPrimaryTableSegments() {
+    protected List<Segment> getPrimaryTableSegments() {
         return provider.getSegment(getPrimaryTable());
     }
 
@@ -91,7 +91,7 @@ public class TablePathIndexBuilder extends BaseWorker {
         return provider.getSegment(getPreTable());
     }
 
-    private List<Segment> getTargetTableSegments() {
+    protected List<Segment> getTargetTableSegments() {
         return provider.getSegment(getTargetTable());
     }
 
@@ -138,7 +138,7 @@ public class TablePathIndexBuilder extends BaseWorker {
         }
     }
 
-    protected static ImmutableBitMap getTableLinkedOrGVI(ImmutableBitMap currentIndex, final RelationIndex relationIndex, int rowCount) {
+    protected ImmutableBitMap getTableLinkedOrGVI(ImmutableBitMap currentIndex, final RelationIndex relationIndex, int rowCount) {
         if (null != currentIndex) {
             final byte[][] indexArray = new byte[rowCount][];
             currentIndex.breakableTraversal(new BreakTraversalAction() {

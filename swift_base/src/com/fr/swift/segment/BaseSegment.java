@@ -4,7 +4,6 @@ import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.cube.io.BuildConf;
 import com.fr.swift.cube.io.ResourceDiscovery;
 import com.fr.swift.cube.io.ResourceDiscoveryImpl;
-import com.fr.swift.cube.io.Types;
 import com.fr.swift.cube.io.Types.DataType;
 import com.fr.swift.cube.io.Types.IoType;
 import com.fr.swift.cube.io.input.BitMapReader;
@@ -14,6 +13,7 @@ import com.fr.swift.cube.io.output.BitMapWriter;
 import com.fr.swift.cube.io.output.IntWriter;
 import com.fr.swift.exception.meta.SwiftMetaDataException;
 import com.fr.swift.log.SwiftLoggers;
+import com.fr.swift.relation.CubeLogicColumnKey;
 import com.fr.swift.relation.CubeMultiRelation;
 import com.fr.swift.relation.CubeMultiRelationPath;
 import com.fr.swift.segment.column.Column;
@@ -109,14 +109,19 @@ public abstract class BaseSegment implements Segment {
     public RelationIndex getRelation(CubeMultiRelation relation) {
         SourceKey primarySourceKey = relation.getPrimaryTable();
         String relationKey = relation.getKey();
-        return new RelationIndexImpl(getLocation(), primarySourceKey.getId(), relationKey);
+        return RelationIndexImpl.newRelationIndex(getLocation(), primarySourceKey.getId(), relationKey);
     }
 
     @Override
     public RelationIndex getRelation(CubeMultiRelationPath relationPath) {
         SourceKey primarySourceKey = relationPath.getStartTable();
         String relationKey = relationPath.getKey();
-        return new RelationIndexImpl(getLocation(), primarySourceKey.getId(), relationKey);
+        return RelationIndexImpl.newRelationIndex(getLocation(), primarySourceKey.getId(), relationKey);
+    }
+
+    @Override
+    public RelationIndex getRelation(CubeLogicColumnKey f) {
+        return RelationIndexImpl.newFieldRelationIndex(getLocation(), f.belongTo().getId(), f.getKey());
     }
 
     @Override

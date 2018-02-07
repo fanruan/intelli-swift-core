@@ -4,6 +4,7 @@ import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.bitmap.MutableBitMap;
 import com.fr.swift.bitmap.impl.BitSetMutableBitMap;
 import com.fr.swift.cube.io.location.IResourceLocation;
+import com.fr.swift.relation.CubeLogicColumnKey;
 import com.fr.swift.relation.CubeMultiRelation;
 import com.fr.swift.relation.CubeMultiRelationPath;
 import com.fr.swift.segment.Segment;
@@ -40,6 +41,11 @@ public class CreateSegmentForUnion2 {
 
             @Override
             public RelationIndex getRelation(CubeMultiRelationPath f) {
+                return null;
+            }
+
+            @Override
+            public RelationIndex getRelation(CubeLogicColumnKey f) {
                 return null;
             }
 
