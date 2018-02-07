@@ -26,3 +26,5 @@ fbi_base/src/com/fr/bi/fs/BISuperManagerDAOManager.java
 fbi_h5/src/com/fr/bi/h5/dist/*.js
 fbi_h5/src/com/fr/bi/h5/node_modules
 *.DS_Store
+.idea/
+*.iml
