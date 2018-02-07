@@ -9,7 +9,8 @@ import com.fr.swift.adaptor.struct.SwiftCombineDetailResult;
 import com.fr.swift.adaptor.struct.SwiftDetailTableResult;
 import com.fr.swift.adaptor.struct.SwiftEmptyResult;
 import com.fr.swift.adaptor.transformer.IndexingDataSourceFactory;
-import com.fr.swift.context.SwiftContext;
+import com.fr.swift.generate.minor.MinorSegmentManager;
+import com.fr.swift.generate.minor.MinorUpdater;
 import com.fr.swift.source.DataSource;
 import com.fr.swift.source.SwiftResultSet;
 import com.fr.swift.source.SwiftSourceTransfer;
@@ -39,7 +40,10 @@ public class SwiftFieldsDataPreview {
 
         try {
             if (dataSource != null) {
-                SwiftContext.getInstance().getMinorSegmentManager().update(dataSource);
+                if (!MinorSegmentManager.getInstance().isSegmentsExist(dataSource.getSourceKey())) {
+                    MinorUpdater.update(dataSource);
+                }
+
                 SwiftSourceTransfer transfer = SwiftSourceTransferFactory.createSourcePreviewTransfer(dataSource, rowCount);
                 SwiftResultSet swiftResultSet = transfer.createResultSet();
                 BIDetailTableResult detailTableResult = new SwiftDetailTableResult(swiftResultSet);

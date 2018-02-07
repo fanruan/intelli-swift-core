@@ -14,5 +14,5 @@ public interface SwiftSegmentManager {
 
     List<Segment> getSegment(SourceKey sourceKey);
 
-    boolean isSegmentsExists(SourceKey key);
+    boolean isSegmentsExist(SourceKey key);
 }
