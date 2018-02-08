@@ -269,17 +269,17 @@ public abstract class ExternalMap<K, V> implements Map<K, V>, Iterable<Map.Entry
 
     @Override
     public boolean isEmpty() {
-        return false;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public boolean containsKey(Object key) {
-        return false;
+        return currentContainer.containsKey(key);
     }
 
     @Override
     public boolean containsValue(Object value) {
-        return false;
+        return currentContainer.containsValue(value);
     }
 
     @Override
@@ -325,7 +325,7 @@ public abstract class ExternalMap<K, V> implements Map<K, V>, Iterable<Map.Entry
 
     @Override
     public V remove(Object key) {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override
