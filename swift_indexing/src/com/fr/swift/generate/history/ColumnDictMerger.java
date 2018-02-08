@@ -9,6 +9,7 @@ import com.fr.swift.manager.LocalSegmentProvider;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.segment.column.DictionaryEncodedColumn;
+import com.fr.swift.source.ColumnTypeConstants.CLASS;
 import com.fr.swift.source.ColumnTypeUtils;
 import com.fr.swift.source.DataSource;
 import com.fr.swift.source.SwiftMetaDataColumn;
@@ -18,18 +19,14 @@ import com.fr.swift.structure.external.map.intpairs.IntPairsExtMaps;
 import com.fr.swift.util.Crasher;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 /**
  * @author anchore
  * @date 2018/1/9
  * <p>
  * 合并字典
- * <p>
- * fixme 底层的external io还是有问题
  */
 public class ColumnDictMerger<T extends Comparable<T>> extends BaseWorker {
     private DataSource dataSource;
@@ -51,11 +48,11 @@ public class ColumnDictMerger<T extends Comparable<T>> extends BaseWorker {
         }
     }
 
-    private void mergeDict() throws Exception {
+    private void mergeDict() {
         List<Segment> segments = LocalSegmentProvider.getInstance().getSegment(dataSource.getSourceKey());
         // 值 -> (块号, 值在这块里的序号)
         ExternalMap<T, List<Pair<Integer, Integer>>> map =
-                newIntPairsExternalMap(Comparators.<T>asc(), calExternalLocation(segments.get(0)));
+                newIntPairsExternalMap(calExternalLocation(segments.get(0)));
 
         List<DictionaryEncodedColumn<T>> dictColumns = new ArrayList<DictionaryEncodedColumn<T>>(segments.size());
         for (int segOrder = 0, size = segments.size(); segOrder < size; segOrder++) {
@@ -63,12 +60,6 @@ public class ColumnDictMerger<T extends Comparable<T>> extends BaseWorker {
             dictColumns.add(dictColumn);
             extractDictOf(dictColumn, segOrder, map);
         }
-
-        map.dumpMap();
-        while (!map.isDumpComplete()) {
-            TimeUnit.MILLISECONDS.sleep(1);
-        }
-        map.release();
 
         int globalIndex = 0;
         for (Map.Entry<T, List<Pair<Integer, Integer>>> entry : map) {
@@ -85,6 +76,8 @@ public class ColumnDictMerger<T extends Comparable<T>> extends BaseWorker {
             dictColumn.putGlobalSize(globalIndex);
             dictColumn.release();
         }
+
+        map.release();
     }
 
     private static <V> void extractDictOf(DictionaryEncodedColumn<V> dictColumn, int segOrder, Map<V, List<Pair<Integer, Integer>>> map) {
@@ -92,7 +85,7 @@ public class ColumnDictMerger<T extends Comparable<T>> extends BaseWorker {
             // 值
             V val = dictColumn.getValue(j);
             // (块号, 值在这块里的序号)
-            Pair<Integer, Integer> pair = new Pair<Integer, Integer>(segOrder, j);
+            Pair<Integer, Integer> pair = Pair.of(segOrder, j);
             if (map.containsKey(val)) {
                 map.get(val).add(pair);
             } else {
@@ -119,8 +112,14 @@ public class ColumnDictMerger<T extends Comparable<T>> extends BaseWorker {
                 .getPath();
     }
 
-    private <V extends Comparable<V>> ExternalMap<V, List<Pair<Integer, Integer>>> newIntPairsExternalMap(Comparator<V> c, String path) {
-        return IntPairsExtMaps.newExternalMap(getClassType(), c, path);
+    private <V extends Comparable<V>> ExternalMap<V, List<Pair<Integer, Integer>>> newIntPairsExternalMap(String path) {
+        int classType = getClassType();
+        switch (classType) {
+            case CLASS.STRING:
+                return (ExternalMap<V, List<Pair<Integer, Integer>>>) IntPairsExtMaps.newExternalMap(classType, Comparators.PINYIN_ASC, path);
+            default:
+                return IntPairsExtMaps.newExternalMap(classType, Comparators.<V>asc(), path);
+        }
     }
 
     private int getClassType() {

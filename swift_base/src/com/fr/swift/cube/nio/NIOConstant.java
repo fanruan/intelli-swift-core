@@ -1,10 +1,10 @@
 package com.fr.swift.cube.nio;
 
 
+import com.fr.swift.cube.io.IOConstant;
 import com.fr.swift.setting.PerformancePlugManager;
 
 public class NIOConstant {
-
     public static long PAGE_STEP = 22L;
 
     public static long PAGE_SIZE = 1 << PAGE_STEP;
@@ -29,7 +29,7 @@ public class NIOConstant {
 
         public static final long PAGE_MODE_TO_AND_READ_VALUE = (PAGE_SIZE << MAX_SINGLE_FILE_PART_SIZE) - 1;
 
-        public static final double NULL_VALUE = Double.NEGATIVE_INFINITY;
+        public static final double NULL_VALUE = IOConstant.NULL_DOUBLE;
     }
 
     public static final class INTEGER {
@@ -44,7 +44,7 @@ public class NIOConstant {
 
         public static final long PAGE_MODE_TO_AND_READ_VALUE = (PAGE_SIZE << MAX_SINGLE_FILE_PART_SIZE) - 1;
 
-        public static final int NULL_VALUE = Integer.MIN_VALUE;
+        public static final int NULL_VALUE = IOConstant.NULL_INT;
 
     }
 
@@ -60,7 +60,7 @@ public class NIOConstant {
 
         public static final long PAGE_MODE_TO_AND_READ_VALUE = (PAGE_SIZE << MAX_SINGLE_FILE_PART_SIZE) - 1;
 
-        public static final long NULL_VALUE = Long.MIN_VALUE;
+        public static final long NULL_VALUE = IOConstant.NULL_LONG;
     }
 
     public static final class BYTE {

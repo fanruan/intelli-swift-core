@@ -29,7 +29,7 @@ class DateDerivers {
     }
 
     private static Function<Long, Integer> newSingleFieldDeriver(final DateType dateType) {
-        return new BaseDateDeriver<Integer, Long>() {
+        return new BaseDateDeriver<Integer>() {
             @Override
             public Integer apply(Long millis) {
                 c.setTimeInMillis(millis);
@@ -41,7 +41,7 @@ class DateDerivers {
     private static Function<Long, Long> newTruncatedDeriver(GroupType type) {
         switch (type) {
             case Y_Q:
-                return new BaseDateDeriver<Long, Long>() {
+                return new BaseDateDeriver<Long>() {
                     @Override
                     public Long apply(Long millis) {
                         c.setTimeInMillis(millis);
@@ -54,7 +54,7 @@ class DateDerivers {
                     }
                 };
             case Y_M:
-                return new BaseDateDeriver<Long, Long>() {
+                return new BaseDateDeriver<Long>() {
                     @Override
                     public Long apply(Long millis) {
                         c.setTimeInMillis(millis);
@@ -67,7 +67,7 @@ class DateDerivers {
                     }
                 };
             case Y_D:
-                return new BaseDateDeriver<Long, Long>() {
+                return new BaseDateDeriver<Long>() {
                     @Override
                     public Long apply(Long millis) {
                         c.setTimeInMillis(millis);
@@ -80,7 +80,7 @@ class DateDerivers {
                     }
                 };
             case Y_W:
-                return new BaseDateDeriver<Long, Long>() {
+                return new BaseDateDeriver<Long>() {
                     @Override
                     public Long apply(Long millis) {
                         c.setTimeInMillis(millis);
@@ -98,7 +98,7 @@ class DateDerivers {
                     }
                 };
             case M_D:
-                return new BaseDateDeriver<Long, Long>() {
+                return new BaseDateDeriver<Long>() {
                     @Override
                     public Long apply(Long millis) {
                         c.setTimeInMillis(millis);
@@ -111,7 +111,7 @@ class DateDerivers {
                     }
                 };
             case Y_M_D:
-                return new BaseDateDeriver<Long, Long>() {
+                return new BaseDateDeriver<Long>() {
                     @Override
                     public Long apply(Long millis) {
                         c.setTimeInMillis(millis);
@@ -126,7 +126,7 @@ class DateDerivers {
                     }
                 };
             case Y_M_D_H:
-                return new BaseDateDeriver<Long, Long>() {
+                return new BaseDateDeriver<Long>() {
                     @Override
                     public Long apply(Long millis) {
                         c.setTimeInMillis(millis);
@@ -137,7 +137,7 @@ class DateDerivers {
                     }
                 };
             case Y_M_D_H_M:
-                return new BaseDateDeriver<Long, Long>() {
+                return new BaseDateDeriver<Long>() {
                     @Override
                     public Long apply(Long millis) {
                         c.setTimeInMillis(millis);
@@ -147,7 +147,7 @@ class DateDerivers {
                     }
                 };
             case Y_M_D_H_M_S:
-                return new BaseDateDeriver<Long, Long>() {
+                return new BaseDateDeriver<Long>() {
                     @Override
                     public Long apply(Long millis) {
                         c.setTimeInMillis(millis);
@@ -160,7 +160,7 @@ class DateDerivers {
         }
     }
 
-    private static abstract class BaseDateDeriver<Derive, Base> implements Function<Base, Derive> {
+    private static abstract class BaseDateDeriver<Derive> implements Function<Long, Derive> {
         Calendar c = Calendar.getInstance();
     }
 

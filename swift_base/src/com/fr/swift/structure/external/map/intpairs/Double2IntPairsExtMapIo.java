@@ -1,46 +1,34 @@
 package com.fr.swift.structure.external.map.intpairs;
 
-import com.fr.swift.cube.io.BuildConf;
-import com.fr.swift.cube.io.Readers;
-import com.fr.swift.cube.io.Types.DataType;
-import com.fr.swift.cube.io.Types.IoType;
-import com.fr.swift.cube.io.Writers;
-import com.fr.swift.cube.io.input.DoubleReader;
-import com.fr.swift.cube.io.output.DoubleWriter;
+import com.fr.swift.cube.io.IOConstant;
+import com.fr.swift.cube.nio.read.DoubleNIOReader;
+import com.fr.swift.cube.nio.write.DoubleNIOWriter;
 
 /**
  * @author anchore
  * @date 2018/1/5
  */
 class Double2IntPairsExtMapIo extends BaseIntPairsExtMapIo<Double> {
-    private DoubleWriter keyWriter;
-    private DoubleReader keyReader;
-
     Double2IntPairsExtMapIo(String id) {
         super(id);
     }
 
     @Override
-    void writeKey(int pos, Double key) {
-        initKeyWriter();
-        keyWriter.put(pos, key);
+    protected Double getEndFlag() {
+        return IOConstant.NULL_DOUBLE;
     }
 
     @Override
-    Double readKey(int pos) {
-        initKeyReader();
-        return keyReader.get(pos);
-    }
-
-    private void initKeyWriter() {
+    protected void initKeyWriter() {
         if (keyWriter == null) {
-            keyWriter = (DoubleWriter) Writers.build(keyLocation, new BuildConf(IoType.WRITE, DataType.DOUBLE));
+            keyWriter = new DoubleNIOWriter(keyFile);
         }
     }
 
-    private void initKeyReader() {
+    @Override
+    protected void initKeyReader() {
         if (keyReader == null) {
-            keyReader = (DoubleReader) Readers.build(keyLocation, new BuildConf(IoType.READ, DataType.DOUBLE));
+            keyReader = new DoubleNIOReader(keyFile);
         }
     }
 

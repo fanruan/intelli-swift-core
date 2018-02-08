@@ -29,7 +29,7 @@ class MemIntPairsMapIo<K> implements ExternalMapIO<K, List<Pair<Integer, Integer
             return null;
         }
         Map.Entry<K, List<Pair<Integer, Integer>>> entry = itr.next();
-        return new Pair<K, List<Pair<Integer, Integer>>>(entry.getKey(), entry.getValue());
+        return Pair.of(entry.getKey(), entry.getValue());
     }
 
     @Override

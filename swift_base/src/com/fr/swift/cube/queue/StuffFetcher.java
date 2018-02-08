@@ -46,8 +46,8 @@ public class StuffFetcher implements Runnable {
         SchedulerTask start = CubeTasks.newStartTask(),
                 end = CubeTasks.newEndTask();
 
-        pairs.add(new Pair<TaskKey, Object>(start.key(), null));
-        pairs.add(new Pair<TaskKey, Object>(end.key(), null));
+        pairs.add(Pair.of(start.key(), null));
+        pairs.add(Pair.of(end.key(), null));
 
         // 所有表
         for (DataSource dataSource : stuff.getAllTables()) {
