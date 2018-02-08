@@ -14,7 +14,7 @@ class Int2IntPairsExtMapIo extends BaseIntPairsExtMapIo<Integer> {
     }
 
     @Override
-    protected Integer getEndCookie() {
+    protected Integer getEndFlag() {
         return IOConstant.NULL_INT;
     }
 

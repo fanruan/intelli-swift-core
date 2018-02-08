@@ -5,9 +5,6 @@ import com.fr.swift.cube.io.IOConstant;
 import com.fr.swift.setting.PerformancePlugManager;
 
 public class NIOConstant {
-    public static void main(String[] args) {
-        System.out.println();
-    }
     public static long PAGE_STEP = 22L;
 
     public static long PAGE_SIZE = 1 << PAGE_STEP;

@@ -14,7 +14,7 @@ class Double2IntPairsExtMapIo extends BaseIntPairsExtMapIo<Double> {
     }
 
     @Override
-    protected Double getEndCookie() {
+    protected Double getEndFlag() {
         return IOConstant.NULL_DOUBLE;
     }
 

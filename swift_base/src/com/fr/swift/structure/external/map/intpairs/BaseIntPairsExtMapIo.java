@@ -45,7 +45,7 @@ abstract class BaseIntPairsExtMapIo<K> extends BaseExternalMapIo<K, List<Pair<In
         try {
             K key = readKey(readPos.keyPos++);
 
-            if (getEndCookie().equals(key)) {
+            if (getEndFlag().equals(key)) {
                 return null;
             }
 
@@ -76,10 +76,10 @@ abstract class BaseIntPairsExtMapIo<K> extends BaseExternalMapIo<K, List<Pair<In
         }
     }
 
-    protected abstract K getEndCookie();
+    protected abstract K getEndFlag();
 
     private void writeEndFlag() {
-        write(getEndCookie(), Collections.<Pair<Integer, Integer>>emptyList());
+        write(getEndFlag(), Collections.<Pair<Integer, Integer>>emptyList());
     }
 
     @Override
