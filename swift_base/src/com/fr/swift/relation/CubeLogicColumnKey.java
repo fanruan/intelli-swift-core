@@ -4,6 +4,7 @@ import com.fr.json.JSONObject;
 import com.fr.stable.StringUtils;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.source.SourceKey;
+import com.fr.swift.source.core.MD5Utils;
 
 import java.util.List;
 
@@ -13,15 +14,16 @@ import java.util.List;
  */
 public class CubeLogicColumnKey extends BaseLogicKeyField<SourceKey, ColumnKey> {
     private String fieldName;
-    private String key;
+    private SourceKey belongTo;
 
-    public CubeLogicColumnKey(List<ColumnKey> keyFields) {
+    public CubeLogicColumnKey(SourceKey belongTo, List<ColumnKey> keyFields) {
         super(keyFields);
+        this.belongTo = belongTo;
     }
 
     @Override
     public SourceKey belongTo() {
-        throw new UnsupportedOperationException();
+        return belongTo;
     }
 
     @Override
@@ -38,10 +40,7 @@ public class CubeLogicColumnKey extends BaseLogicKeyField<SourceKey, ColumnKey> 
     }
 
     public String getKey() {
-        if (StringUtils.isEmpty(key)) {
-            key = getFieldName();
-        }
-        return key;
+        return MD5Utils.getMD5String(new String[]{getFieldName()});
     }
 
     @Override

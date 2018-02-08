@@ -33,6 +33,10 @@ public class RelationIndexHelper {
         this.index.add(target);
     }
 
+    public void addIndex(ImmutableBitMap[] index) {
+        this.index.add(index);
+    }
+
     public void addRevert(IntArray revert) {
         this.revert.add(revert);
     }

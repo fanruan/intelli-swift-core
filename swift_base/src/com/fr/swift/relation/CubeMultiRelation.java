@@ -25,7 +25,7 @@ public class CubeMultiRelation {
     }
 
     public String getKey() {
-        return MD5Utils.getMD5String(new String[]{primaryField.getKey(), foreignField.getKey()});
+        return MD5Utils.getMD5String(new String[]{primaryField.getFieldName(), foreignField.getFieldName()});
     }
 
     public CubeLogicColumnKey getPrimaryField() {

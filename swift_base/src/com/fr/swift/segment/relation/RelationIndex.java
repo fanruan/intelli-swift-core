@@ -12,6 +12,7 @@ public interface RelationIndex extends Releasable, Flushable {
     String NULL_INDEX = "null_index";
     String INDEX = "index";
     String REVERSE = "reverse";
+    String RELATIONS_KEY = "relations";
     /**
      * 主表行号 -> 外表所有匹配行号
      *
@@ -20,6 +21,12 @@ public interface RelationIndex extends Releasable, Flushable {
      */
     void putIndex(int pos, ImmutableBitMap bitmap);
 
+    /**
+     * 正向关联
+     *
+     * @param pos
+     * @return
+     */
     ImmutableBitMap getIndex(int pos);
 
     /**
@@ -27,6 +34,10 @@ public interface RelationIndex extends Releasable, Flushable {
      */
     void putNullIndex(ImmutableBitMap bitmap);
 
+    /**
+     * 获取空索引
+     * @return 返回空索引
+     */
     ImmutableBitMap getNullIndex();
 
     /**
@@ -38,5 +49,10 @@ public interface RelationIndex extends Releasable, Flushable {
      */
     void putReverseIndex(int fPos, int tPos);
 
+    /**
+     * 获取反向关联
+     * @param fPos
+     * @return
+     */
     int getReverseIndex(int fPos);
 }
