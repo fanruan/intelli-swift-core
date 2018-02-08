@@ -2,15 +2,20 @@ package com.fr.swift.adaptor.executor;
 
 import com.finebi.base.common.resource.FineResourceItem;
 import com.finebi.base.constant.FineEngineType;
+import com.finebi.conf.internalimp.analysis.operator.trans.ColumnRowTransOperator;
 import com.finebi.conf.internalimp.analysis.operator.trans.NameText;
 import com.finebi.conf.internalimp.basictable.previewdata.FIneColumnTransPreviewData;
 import com.finebi.conf.internalimp.service.engine.table.FineTableEngineExecutor;
+import com.finebi.conf.structure.analysis.operator.FineOperator;
 import com.finebi.conf.structure.bean.field.FineBusinessField;
+import com.finebi.conf.structure.bean.table.AbstractFineTable;
 import com.finebi.conf.structure.bean.table.FineBusinessTable;
+import com.finebi.conf.structure.conf.base.EngineComplexConfTable;
 import com.finebi.conf.structure.conf.base.EngineConfTable;
 import com.finebi.conf.structure.conf.result.EngineConfProduceData;
 import com.finebi.conf.structure.result.BIDetailCell;
 import com.finebi.conf.structure.result.BIDetailTableResult;
+import com.fr.general.ComparatorUtils;
 import com.fr.swift.adaptor.struct.SwiftDetailCell;
 import com.fr.swift.adaptor.struct.SwiftDetailTableResult;
 import com.fr.swift.adaptor.struct.SwiftEmptyResult;
@@ -30,7 +35,9 @@ import com.fr.swift.source.SwiftSourceTransfer;
 import com.fr.swift.source.SwiftSourceTransferFactory;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * This class created on 2018-1-26 14:16:39
@@ -114,12 +121,30 @@ public class SwiftTableEngineExecutor implements FineTableEngineExecutor {
 
     @Override
     public EngineConfProduceData getConfPreResult(FineBusinessTable table) throws Exception {
-        BIDetailTableResult detailTableResult = getPreviewData(table, 100);
+        FineBusinessTable preTable = ((EngineComplexConfTable)table).getBaseTableBySelected(0);
+        List<FineOperator> operators = ((AbstractFineTable)table).getOperators();
+        ColumnRowTransOperator op = (ColumnRowTransOperator) operators.get(operators.size() - 1);
+        String lcId = op.getLcName();
+        int lcIndex = 0;
+        List<FineBusinessField> fields = preTable.getFields();
+        for (int i = 0; i < fields.size(); i++){
+            if (ComparatorUtils.equals(fields.get(i).getId(), lcId)){
+                lcIndex = i;
+                break;
+            }
+        }
+        BIDetailTableResult detailTableResult = getPreviewData(preTable, 100);
         FIneColumnTransPreviewData engineConfProduceData = new FIneColumnTransPreviewData();
         List<NameText> previewData = new ArrayList<NameText>();
+        Set<String> set = new HashSet<String>();
         while (detailTableResult.hasNext()) {
             List<BIDetailCell> dataList = detailTableResult.next();
-            previewData.add(new NameText(null, String.valueOf(dataList.get(0).getData())));
+            if (dataList.get(lcIndex).getData() != null){
+                set.add(dataList.get(lcIndex).getData().toString());
+            }
+        }
+        for (String s: set){
+            previewData.add(new NameText(null, s));
         }
         engineConfProduceData.setPreviewData(previewData);
         return engineConfProduceData;

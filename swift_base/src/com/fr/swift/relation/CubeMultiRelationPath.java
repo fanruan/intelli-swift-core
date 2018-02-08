@@ -1,9 +1,10 @@
 package com.fr.swift.relation;
 
 import com.fr.general.ComparatorUtils;
+import com.fr.swift.relation.exception.CubePathConfusionException;
+import com.fr.swift.relation.exception.CubePathEmptyException;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.core.MD5Utils;
-import com.fr.swift.util.Crasher;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -22,17 +23,6 @@ public class CubeMultiRelationPath {
         return getFirstRelation().getPrimaryField();
     }
 
-    public String getSourceID() {
-        StringBuffer sb = new StringBuffer();
-        for (CubeMultiRelation relation : getAllRelations()) {
-            sb.append(relation.getPrimaryTable().getId())
-                    .append(relation.getPrimaryField().getKey())
-                    .append(relation.getForeignTable().getId())
-                    .append(relation.getForeignField().getKey());
-        }
-        return MD5Utils.getMD5String(new String[]{sb.toString()});
-    }
-
     public CubeMultiRelationPath() {
         container = new ArrayList<CubeMultiRelation>();
     }
@@ -45,21 +35,21 @@ public class CubeMultiRelationPath {
 
     public CubeMultiRelationPath addRelationAtTail(CubeMultiRelation relation) {
         synchronized (container) {
-            CubeMultiRelation lastRelation = null;
             try {
-                lastRelation = getLastRelation();
-            } catch (Exception ignore) {
+                CubeMultiRelation lastRelation = getLastRelation();
+                if (null != lastRelation && canRelationsBuildPath(lastRelation, relation)) {
+                    add(relation);
+                } else {
+                    throw new CubePathConfusionException("The primary of relation needed to be added is: " +
+                            relation.getPrimaryTable() +
+                            ", but current path last relation's foreign table is: " +
+                            relation.getForeignField() + ".They should be equal");
+                }
+            } catch (CubePathEmptyException ignore) {
                 add(relation);
                 return this;
             }
-            if (null != lastRelation && canRelationsBuildPath(lastRelation, relation)) {
-                add(relation);
-            } else {
-                Crasher.crash("The primary of relation needed to be added is: " +
-                        relation.getPrimaryTable() +
-                        ", but current path last relation's foreign table is: " +
-                        relation.getForeignField() + ".They should be equal");
-            }
+
             return this;
         }
     }
@@ -87,13 +77,13 @@ public class CubeMultiRelationPath {
                     add(relation);
                     container.addAll(collection);
                 } else {
-                    Crasher.crash("The foreign of relation needed to be added is: " +
+                    throw new CubePathConfusionException("The foreign of relation needed to be added is: " +
                             relation.getForeignField() +
                             ", but current path first relation's primary table is: " +
                             relation.getPrimaryTable() + ". They should be equal");
                 }
 
-            } catch (Exception ignore) {
+            } catch (CubePathEmptyException ignore) {
                 add(relation);
             }
             return this;
@@ -128,7 +118,7 @@ public class CubeMultiRelationPath {
             if (!isEmptyPath()) {
                 return getLastOne();
             } else {
-                return Crasher.crash("Path empty");
+                throw new CubePathEmptyException();
             }
         }
     }
@@ -144,7 +134,7 @@ public class CubeMultiRelationPath {
             if (!isEmptyPath()) {
                 return getFirstOne();
             } else {
-                return Crasher.crash("Path empty");
+                throw new CubePathEmptyException();
             }
         }
     }
@@ -207,5 +197,18 @@ public class CubeMultiRelationPath {
 
     protected CubeMultiRelation getFirstOne() throws IndexOutOfBoundsException {
         return container.get(0);
+    }
+
+    public String getKey() {
+        List<CubeMultiRelation> relations = getAllRelations();
+        int size = relations.size();
+        if (size == 1) {
+            return relations.get(0).getKey();
+        }
+        String[] relationKeys = new String[size];
+        for (int i = 0; i < size; i++) {
+            relationKeys[i] = relations.get(i).getKey();
+        }
+        return MD5Utils.getMD5String(relationKeys);
     }
 }

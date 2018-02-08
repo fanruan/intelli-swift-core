@@ -7,7 +7,7 @@ import com.fr.swift.query.group.GroupType;
  * @date 2018/1/31
  */
 public class GroupImpl extends BaseGroup {
-    GroupImpl(GroupType type) {
+    public GroupImpl(GroupType type) {
         super(type);
     }
 }

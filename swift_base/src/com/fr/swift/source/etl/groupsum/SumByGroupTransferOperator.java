@@ -22,6 +22,6 @@ public class SumByGroupTransferOperator implements ETLTransferOperator {
 
     @Override
     public SwiftResultSet createResultSet(SwiftMetaData metaData, List<SwiftMetaData> basedMetas, List<Segment[]> basedSegments) {
-        return new SumByGroupOperatorResultSet(this.targets, this.dimensions, basedSegments.get(0));
+        return new SumByGroupOperatorResultSet(this.targets, this.dimensions, basedSegments.get(0), metaData);
     }
 }

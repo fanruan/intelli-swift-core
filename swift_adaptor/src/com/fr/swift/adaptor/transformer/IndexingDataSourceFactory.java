@@ -10,6 +10,7 @@ import com.finebi.conf.internalimp.basictable.table.FineSQLBusinessTable;
 import com.finebi.conf.internalimp.update.TableUpdateInfo;
 import com.finebi.conf.structure.analysis.operator.FineOperator;
 import com.finebi.conf.structure.bean.connection.FineConnection;
+import com.finebi.conf.structure.bean.table.AbstractFineTable;
 import com.finebi.conf.structure.bean.table.FineBusinessTable;
 import com.finebi.conf.utils.FineConnectionUtils;
 import com.fr.swift.increase.IncrementImpl;
@@ -25,6 +26,7 @@ import com.fr.swift.source.db.ConnectionManager;
 import com.fr.swift.source.db.QueryDBSource;
 import com.fr.swift.source.db.SwiftConnectionInfo;
 import com.fr.swift.source.db.TableDBSource;
+import com.fr.swift.source.etl.ETLSource;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -83,6 +85,7 @@ public class IndexingDataSourceFactory {
 
     public static DataSource transformDataSource(FineBusinessTable table) throws Exception {
         DataSource dataSource = null;
+        List<FineOperator> ops = ((AbstractFineTable) table).getOperators();
         switch (table.getType()) {
             case BaseConstant.TABLETYPE.DB:
                 dataSource = transformTableDBSource((FineDBBusinessTable) table);
@@ -149,7 +152,7 @@ public class IndexingDataSourceFactory {
 //    }
 
 
-    private static TableDBSource transformTableDBSource(FineDBBusinessTable table) throws Exception {
+    private static DataSource transformTableDBSource(FineDBBusinessTable table) throws Exception {
         String connectionName = table.getConnName();
         FineConnection fineConnection = FineConnectionUtils.getConnectionByName(connectionName);
         ConnectionInfo connectionInfo = new SwiftConnectionInfo(fineConnection.getSchema(), fineConnection.getConnection());
@@ -157,11 +160,11 @@ public class IndexingDataSourceFactory {
         Map<String, Integer> fieldColumnTypes = checkFieldTypes(table.getOperators());
         TableDBSource tableDBSource = fieldColumnTypes == null ?
                 new TableDBSource(table.getTableName(), connectionName) : new TableDBSource(table.getTableName(), connectionName, fieldColumnTypes);
-        return tableDBSource;
+        return checkETL(tableDBSource, table.getOperators());
     }
 
     private static Map<String, Integer> checkFieldTypes(List<FineOperator> operators) {
-        if (operators != null && operators.size() == 1) {
+        if (operators != null && !operators.isEmpty()) {
             FineOperator op = operators.get(0);
             if (op.getType() == ConfConstant.AnalysisType.CONF_SELECT) {
                 List<ConfSelectBeanItem> items = ((ConfSelectOperator) op).getFields();
@@ -177,7 +180,7 @@ public class IndexingDataSourceFactory {
         return null;
     }
 
-    private static QueryDBSource transformQueryDBSource(FineSQLBusinessTable table) throws Exception {
+    private static DataSource transformQueryDBSource(FineSQLBusinessTable table) throws Exception {
 
         String connectionName = table.getConnName();
         FineConnection fineConnection = FineConnectionUtils.getConnectionByName(connectionName);
@@ -186,7 +189,16 @@ public class IndexingDataSourceFactory {
         Map<String, Integer> fieldColumnTypes = checkFieldTypes(table.getOperators());
         QueryDBSource queryDBSource = fieldColumnTypes == null ?
                 new QueryDBSource(table.getSql(), table.getConnName()) : new QueryDBSource(table.getSql(), table.getConnName(), fieldColumnTypes);
-        return queryDBSource;
+        return checkETL(queryDBSource, table.getOperators());
+    }
+
+    private static DataSource checkETL(DataSource source, List<FineOperator> operators) throws Exception{
+        if (operators == null || operators.size() < 2){
+            return source;
+        }
+        List<DataSource> baseSource = new ArrayList<DataSource>();
+        baseSource.add(source);
+        return new ETLSource(baseSource, EtlConverter.convertEtlOperator(operators.get(operators.size() - 1)));
     }
 
 //    private static ExcelDataSource transformExcelDataSource(FineExcelBusinessTable table) {

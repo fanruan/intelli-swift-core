@@ -25,11 +25,13 @@ public class SumByGroupOperatorResultSet implements SwiftResultSet {
     private ListRow listRow = new ListRow();
     private Segment[] segments;
     private GroupValueIterator iterator;
+    private SwiftMetaData metaData;
 
-    public SumByGroupOperatorResultSet(SumByGroupTarget[] targets, SumByGroupDimension[] dimensions, Segment[] segments) {
+    public SumByGroupOperatorResultSet(SumByGroupTarget[] targets, SumByGroupDimension[] dimensions, Segment[] segments, SwiftMetaData metaData) {
         this.targets = targets;
         this.dimensions = dimensions;
         this.segments = segments;
+        this.metaData = metaData;
         init();
     }
 
@@ -88,7 +90,8 @@ public class SumByGroupOperatorResultSet implements SwiftResultSet {
 
     @Override
     public SwiftMetaData getMetaData() throws SQLException {
-        return null;
+        return metaData;
+
     }
 
     @Override

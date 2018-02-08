@@ -35,11 +35,13 @@ public class ColumnFormulaOperatorResultSet implements SwiftResultSet {
     private String expressionStr;
     private String formula;
     private TempValue tempValue;
+    private SwiftMetaData metaData;
 
-    public ColumnFormulaOperatorResultSet(int columnType, String expression, Segment[] segment) {
+    public ColumnFormulaOperatorResultSet(int columnType, String expression, Segment[] segment, SwiftMetaData metaData) {
         this.columnType = columnType;
         this.expression = expression;
         this.segment= segment;
+        this.metaData = metaData;
         init();
     }
 
@@ -102,7 +104,7 @@ public class ColumnFormulaOperatorResultSet implements SwiftResultSet {
 
     @Override
     public SwiftMetaData getMetaData() throws SQLException {
-        return null;
+        return metaData;
     }
 
     @Override

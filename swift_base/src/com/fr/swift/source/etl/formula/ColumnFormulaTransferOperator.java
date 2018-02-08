@@ -21,6 +21,6 @@ public class ColumnFormulaTransferOperator implements ETLTransferOperator {
     }
     @Override
     public SwiftResultSet createResultSet(SwiftMetaData metaData, List<SwiftMetaData> basedMetas, List<Segment[]> basedSegments) {
-        return new ColumnFormulaOperatorResultSet(this.columnType, this.expression, basedSegments.get(0));
+        return new ColumnFormulaOperatorResultSet(this.columnType, this.expression, basedSegments.get(0), metaData);
     }
 }
