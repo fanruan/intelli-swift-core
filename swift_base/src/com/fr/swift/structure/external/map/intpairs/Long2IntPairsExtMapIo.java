@@ -3,9 +3,6 @@ package com.fr.swift.structure.external.map.intpairs;
 import com.fr.swift.cube.io.IOConstant;
 import com.fr.swift.cube.nio.read.LongNIOReader;
 import com.fr.swift.cube.nio.write.LongNIOWriter;
-import com.fr.swift.structure.Pair;
-
-import java.util.Collections;
 
 /**
  * @author anchore
@@ -19,11 +16,6 @@ class Long2IntPairsExtMapIo extends BaseIntPairsExtMapIo<Long> {
     @Override
     protected Long getEndCookie() {
         return IOConstant.NULL_LONG;
-    }
-
-    @Override
-    protected void writeEndCookie() {
-        write(IOConstant.NULL_LONG, Collections.<Pair<Integer, Integer>>emptyList());
     }
 
     @Override

@@ -78,13 +78,13 @@ abstract class BaseIntPairsExtMapIo<K> extends BaseExternalMapIo<K, List<Pair<In
 
     protected abstract K getEndCookie();
 
-    protected void writeEndCookie() {
+    private void writeEndFlag() {
         write(getEndCookie(), Collections.<Pair<Integer, Integer>>emptyList());
     }
 
     @Override
     public void close() {
-        writeEndCookie();
+        writeEndFlag();
 
         if (valueWriter != null) {
             valueWriter.release();

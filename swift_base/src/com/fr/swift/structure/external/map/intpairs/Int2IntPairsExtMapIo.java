@@ -3,9 +3,6 @@ package com.fr.swift.structure.external.map.intpairs;
 import com.fr.swift.cube.io.IOConstant;
 import com.fr.swift.cube.nio.read.IntNIOReader;
 import com.fr.swift.cube.nio.write.IntNIOWriter;
-import com.fr.swift.structure.Pair;
-
-import java.util.Collections;
 
 /**
  * @author anchore
@@ -33,11 +30,6 @@ class Int2IntPairsExtMapIo extends BaseIntPairsExtMapIo<Integer> {
         if (keyReader == null) {
             keyReader = new IntNIOReader(keyFile);
         }
-    }
-
-    @Override
-    protected void writeEndCookie() {
-        write(IOConstant.NULL_INT, Collections.<Pair<Integer, Integer>>emptyList());
     }
 
     @Override
