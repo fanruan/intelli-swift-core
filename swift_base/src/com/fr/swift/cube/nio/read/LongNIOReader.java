@@ -1,6 +1,5 @@
 package com.fr.swift.cube.nio.read;
 
-import com.fr.general.ComparatorUtils;
 import com.fr.swift.cube.nio.NIOConstant;
 
 import java.io.File;
@@ -20,8 +19,7 @@ public class LongNIOReader extends AbstractNIOReader<Long> {
 
     @Override
     protected Long getValue(Long index, int l) {
-        Long value = longBuffers.get(index).get(l);
-        return ComparatorUtils.equals(value, NIOConstant.LONG.NULL_VALUE) ? null : value;
+        return longBuffers.get(index).get(l);
     }
 
     @Override

@@ -1,47 +1,43 @@
 package com.fr.swift.structure.external.map.intpairs;
 
-import com.fr.swift.cube.io.BuildConf;
-import com.fr.swift.cube.io.Readers;
-import com.fr.swift.cube.io.Types.DataType;
-import com.fr.swift.cube.io.Types.IoType;
-import com.fr.swift.cube.io.Writers;
-import com.fr.swift.cube.io.input.IntReader;
-import com.fr.swift.cube.io.output.IntWriter;
+import com.fr.swift.cube.io.IOConstant;
+import com.fr.swift.cube.nio.read.IntNIOReader;
+import com.fr.swift.cube.nio.write.IntNIOWriter;
+import com.fr.swift.structure.Pair;
+
+import java.util.Collections;
 
 /**
  * @author anchore
  * @date 2018/1/5
  */
 class Int2IntPairsExtMapIo extends BaseIntPairsExtMapIo<Integer> {
-    private IntWriter keyWriter;
-    private IntReader keyReader;
-
     Int2IntPairsExtMapIo(String id) {
         super(id);
     }
 
     @Override
-    void writeKey(int pos, Integer key) {
-        initKeyWriter();
-        keyWriter.put(pos, key);
+    protected Integer getEndCookie() {
+        return IOConstant.NULL_INT;
     }
 
     @Override
-    Integer readKey(int pos) {
-        initKeyReader();
-        return keyReader.get(pos);
-    }
-
-    private void initKeyWriter() {
+    public void initKeyWriter() {
         if (keyWriter == null) {
-            keyWriter = (IntWriter) Writers.build(keyLocation, new BuildConf(IoType.WRITE, DataType.INT));
+            keyWriter = new IntNIOWriter(keyFile);
         }
     }
 
-    private void initKeyReader() {
+    @Override
+    public void initKeyReader() {
         if (keyReader == null) {
-            keyReader = (IntReader) Readers.build(keyLocation, new BuildConf(IoType.READ, DataType.INT));
+            keyReader = new IntNIOReader(keyFile);
         }
+    }
+
+    @Override
+    protected void writeEndCookie() {
+        write(IOConstant.NULL_INT, Collections.<Pair<Integer, Integer>>emptyList());
     }
 
     @Override
