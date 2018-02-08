@@ -68,7 +68,6 @@ public class ColumnDictMerger<T extends Comparable<T>> extends BaseWorker {
         while (!map.isDumpComplete()) {
             TimeUnit.MILLISECONDS.sleep(1);
         }
-        map.release();
 
         int globalIndex = 0;
         for (Map.Entry<T, List<Pair<Integer, Integer>>> entry : map) {
@@ -85,6 +84,8 @@ public class ColumnDictMerger<T extends Comparable<T>> extends BaseWorker {
             dictColumn.putGlobalSize(globalIndex);
             dictColumn.release();
         }
+
+        map.release();
     }
 
     private static <V> void extractDictOf(DictionaryEncodedColumn<V> dictColumn, int segOrder, Map<V, List<Pair<Integer, Integer>>> map) {
@@ -92,7 +93,7 @@ public class ColumnDictMerger<T extends Comparable<T>> extends BaseWorker {
             // 值
             V val = dictColumn.getValue(j);
             // (块号, 值在这块里的序号)
-            Pair<Integer, Integer> pair = new Pair<Integer, Integer>(segOrder, j);
+            Pair<Integer, Integer> pair = Pair.of(segOrder, j);
             if (map.containsKey(val)) {
                 map.get(val).add(pair);
             } else {

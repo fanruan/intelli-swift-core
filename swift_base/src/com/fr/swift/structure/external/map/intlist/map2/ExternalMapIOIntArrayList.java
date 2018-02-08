@@ -147,7 +147,7 @@ public abstract class ExternalMapIOIntArrayList<K> implements ExternalMapIO<K, I
                 list.add(getValueReader().get(positionReader.valuePosition++));
             }
             if (!isEmpty(key) || list.size() != 0) {
-                return new Pair<K, IntList>(key, list);
+                return Pair.of(key, list);
             } else {
                 return null;
             }
