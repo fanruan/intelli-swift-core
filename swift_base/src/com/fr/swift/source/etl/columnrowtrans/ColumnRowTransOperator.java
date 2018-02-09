@@ -85,7 +85,7 @@ public class ColumnRowTransOperator extends AbstractOperator {
 
     @Override
     public OperatorType getOperatorType() {
-        return OperatorType.DETAIL;
+        return OperatorType.COLUMNROWTRANS;
     }
 
     private boolean isColumnSelected(String name) {

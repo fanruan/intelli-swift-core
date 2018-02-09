@@ -33,10 +33,11 @@ import com.finebi.conf.structure.analysis.operator.FineOperator;
 import com.finebi.conf.structure.analysis.table.FineAnalysisTable;
 import com.finebi.conf.structure.bean.field.FineBusinessField;
 import com.finebi.conf.structure.bean.table.FineBusinessTable;
+import com.finebi.conf.structure.conf.base.EngineComplexConfTable;
 import com.finebi.conf.utils.FineTableUtils;
+import com.fr.general.ComparatorUtils;
 import com.fr.swift.exception.meta.SwiftMetaDataException;
 import com.fr.swift.query.filter.info.FilterInfo;
-import com.fr.swift.query.group.Group;
 import com.fr.swift.query.group.GroupType;
 import com.fr.swift.query.group.impl.GroupImpl;
 import com.fr.swift.segment.column.ColumnKey;
@@ -131,7 +132,7 @@ class EtlConverter {
             }
             FineOperator op = analysis.getOperator();
             dataSources.addAll(fromOperator(op));
-            return new ETLSource(dataSources, convertEtlOperator(op));
+            return new ETLSource(dataSources, convertEtlOperator(op, table));
         } catch (Exception e) {
             return IndexingDataSourceFactory.transformDataSource(baseTable);
         }
@@ -325,7 +326,7 @@ class EtlConverter {
         return new UnionOperator(listsOfColumn);
     }
 
-    public static ETLOperator convertEtlOperator(FineOperator op) throws FineEngineException {
+    public static ETLOperator convertEtlOperator(FineOperator op, FineBusinessTable table) throws FineEngineException {
         switch (op.getType()) {
             case AnalysisType.SELECT_FIELD:
                 return fromSelectFieldBean(op.<SelectFieldBean>getValue());
@@ -340,7 +341,7 @@ class EtlConverter {
             case AnalysisType.CIRCLE_TWO_FIELD_CALCULATE:
                 return fromTwoUnionRelationBean(op.<CirculateOneFieldBean>getValue());
             case AnalysisType.COLUMN_ROW_TRANS:
-                return fromColumnRowTransBean(op.<ColumnRowTransBean>getValue());
+                return fromColumnRowTransBean(op.<ColumnRowTransBean>getValue(), table);
             case AnalysisType.CONF_SELECT:
                 return fromConfSelectBean(op.<ConfSelectBean>getValue());
             case AnalysisType.SORT:
@@ -482,29 +483,42 @@ class EtlConverter {
         return new ColumnFilterOperator(filterInfo);
     }
 
-    private static ColumnRowTransOperator fromColumnRowTransBean(ColumnRowTransBean bean) throws FineEngineException {
+    private static int findFieldName(List<FineBusinessField> fields, String fieldID) {
+        int index = Integer.MIN_VALUE;
+        for (int i = 0; i < fields.size(); i++){
+            if (ComparatorUtils.equals(fields.get(i).getId(), fieldID)){
+                index = i;
+                break;
+            }
+        }
+        return index;
+    }
+
+    private static ColumnRowTransOperator fromColumnRowTransBean(ColumnRowTransBean bean, FineBusinessTable table) throws FineEngineException {
         ColumnTransValue value = bean.getValue();
-        String groupName = value.getAccordingField();
-        String lcName = value.getFieldId();
+        FineBusinessTable preTable = ((EngineComplexConfTable)table).getBaseTableBySelected(0);
+        List<FineBusinessField> fields = preTable.getFields();
+        String groupName = fields.get(findFieldName(fields, value.getAccordingField())).getName();
+        String lcName = fields.get(findFieldName(fields, value.getFieldId())).getName();;
         List<NameText> lcValue = new ArrayList<NameText>();
         for (int i = 0; i < value.getValues().size(); i++) {
             ColumnInitalItem item = value.getValues().get(i);
-            NameText nameText = new NameText(item.getNewValue(), item.getOldValue());
+            NameText nameText = new NameText(item.getOldValue(), item.getNewValue());
             lcValue.add(nameText);
         }
         List<NameText> columns = new ArrayList<NameText>();
         List<String> otherColumnNames = new ArrayList<String>();
         for (int i = 0; i < value.getInitialFields().size(); i++) {
-            ColumnInitalItem item = value.getValues().get(i);
-            if (!groupName.equals(item.getNewValue()) && !lcName.equals(item.getNewValue())) {
+            ColumnInitalItem item = value.getInitialFields().get(i);
+            if (!groupName.equals(item.getOldValue()) && !lcName.equals(item.getOldValue())) {
+
                 if (item.isSelected()) {
-                    columns.add(new NameText(item.getNewValue(), item.getOldValue()));
+                    columns.add(new NameText(item.getOldValue(), item.getNewValue()));
                 } else {
-                    otherColumnNames.add(item.getNewValue());
+                    otherColumnNames.add(item.getOldValue());
                 }
             }
         }
-      //  throw new FineAnalysisOperationUnSafe("");
 
         return new ColumnRowTransOperator(groupName, lcName, lcValue, columns, otherColumnNames);
     }

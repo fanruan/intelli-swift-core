@@ -10,6 +10,7 @@ import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.segment.column.DictionaryEncodedColumn;
+import com.fr.swift.source.ColumnTypeUtils;
 import com.fr.third.antlr.ANTLRException;
 
 import java.util.*;
@@ -42,7 +43,7 @@ public class FormulaUtils {
                     throw new RuntimeException();
                 }
                 if(!isNullValue(value)) {
-                    if(columnType == ETLConstant.COLUMN.DATE) {
+                    if(columnType == ColumnTypeUtils.columnTypeToSqlType(ETLConstant.COLUMN.DATE)) {
                         value = new Date((Long)value);
                     }
                     c.set(columnName, value);

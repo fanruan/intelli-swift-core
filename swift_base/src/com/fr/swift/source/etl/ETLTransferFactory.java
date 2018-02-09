@@ -1,6 +1,8 @@
 package com.fr.swift.source.etl;
 
 import com.fr.swift.context.SwiftContext;
+import com.fr.swift.generate.minor.MinorSegmentManager;
+import com.fr.swift.generate.minor.MinorUpdater;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.source.DataSource;
 import com.fr.swift.source.SwiftMetaData;
@@ -45,8 +47,13 @@ public class ETLTransferFactory {
         List<DataSource> baseDataSourceList = source.getBasedSources();
         List<Segment[]> basedSegments = new ArrayList<Segment[]>();
         for (DataSource dataSource : baseDataSourceList) {
-            List<Segment> segments = SwiftContext.getInstance().getMinorSegmentManager().getSegment(dataSource.getSourceKey());
-            basedSegments.add(segments.toArray(new Segment[segments.size()]));
+            if(dataSource != null) {
+                if(!MinorSegmentManager.getInstance().isSegmentsExist(dataSource.getSourceKey())) {
+                    MinorUpdater.update(dataSource);
+                }
+                List<Segment> segments = SwiftContext.getInstance().getMinorSegmentManager().getSegment(dataSource.getSourceKey());
+                basedSegments.add(segments.toArray(new Segment[segments.size()]));
+            }
         }
         if (baseDataSourceList.isEmpty()){
             basedSegments.add(new Segment[0]);
