@@ -16,22 +16,6 @@ public class ETLConstant {
         public static final int RIGHT = 0x4;
     }
 
-    public static final class COLUMN {
-        public static final int NUMBER = 0x20;
-
-        public static final int STRING = 0x10;
-
-        public static final int DATE = 0x30;
-
-        public static final int COUNTER = 0x40;
-
-        /**
-         * 行号类型，逻辑对象
-         */
-        public static final int ROW = 0x50;
-
-    }
-
     public static final class SUMMARY_TYPE {
 
         public final static int SUM = 0x0;

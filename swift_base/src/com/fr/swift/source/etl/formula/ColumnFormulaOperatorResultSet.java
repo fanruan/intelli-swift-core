@@ -5,11 +5,11 @@ import com.fr.script.Calculator;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.segment.column.DictionaryEncodedColumn;
+import com.fr.swift.source.ColumnTypeConstants.ColumnType;
 import com.fr.swift.source.ListBasedRow;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftResultSet;
-import com.fr.swift.source.etl.utils.ETLConstant;
 import com.fr.swift.source.etl.utils.FormulaUtils;
 
 import java.sql.SQLException;
@@ -25,7 +25,7 @@ import java.util.regex.Pattern;
  */
 public class ColumnFormulaOperatorResultSet implements SwiftResultSet {
 
-    private int columnType;
+    private ColumnType columnType;
     private String expression;
     private Segment[] segment;
     private int rowCursor;
@@ -37,10 +37,10 @@ public class ColumnFormulaOperatorResultSet implements SwiftResultSet {
     private TempValue tempValue;
     private SwiftMetaData metaData;
 
-    public ColumnFormulaOperatorResultSet(int columnType, String expression, Segment[] segment, SwiftMetaData metaData) {
+    public ColumnFormulaOperatorResultSet(ColumnType columnType, String expression, Segment[] segment, SwiftMetaData metaData) {
         this.columnType = columnType;
         this.expression = expression;
-        this.segment= segment;
+        this.segment = segment;
         this.metaData = metaData;
         init();
     }
@@ -64,34 +64,34 @@ public class ColumnFormulaOperatorResultSet implements SwiftResultSet {
     }
 
     @Override
-    public void close() throws SQLException {
+    public void close() {
 
     }
 
     @Override
-    public boolean next() throws SQLException {
-        if(this.segCursor < this.segment.length && this.rowCursor < this.rowCount) {
+    public boolean next() {
+        if (this.segCursor < this.segment.length && this.rowCursor < this.rowCount) {
             rowCount = segment[segCursor].getRowCount();
             Map<String, ColumnKey> columnKeyMap = FormulaUtils.createColumnIndexMap(expression, segment[segCursor]);
             try {
                 Object value = FormulaUtils.getCalculatorValue(cal, formula, segment[segCursor], columnKeyMap, rowCursor);
                 List list = new ArrayList();
                 SwiftMetaData metaData = segment[segCursor].getMetaData();
-                for(int i = 0; i < metaData.getColumnCount(); i++) {
+                for (int i = 0; i < metaData.getColumnCount(); i++) {
                     DictionaryEncodedColumn getter = segment[segCursor].getColumn(new ColumnKey(metaData.getColumnName(i + 1))).getDictionaryEncodedColumn();
                     Object ob = getter.getValue(getter.getIndexByRow(rowCursor));
                     list.add(getValueByColumnType(ob));
                 }
                 list.add(getValueByColumnType(value));
                 tempValue.setRow(new ListBasedRow(list));
-            } catch(Exception e) {
+            } catch (Exception e) {
                 throw new RuntimeException();
             }
-            if(rowCursor < segment[segCursor].getRowCount() - 1) {
-                rowCursor ++;
+            if (rowCursor < segment[segCursor].getRowCount() - 1) {
+                rowCursor++;
             } else {
-                if(segCursor < segment.length) {
-                    segCursor ++;
+                if (segCursor < segment.length) {
+                    segCursor++;
                     rowCursor = 0;
                 } else {
                     return false;
@@ -108,7 +108,7 @@ public class ColumnFormulaOperatorResultSet implements SwiftResultSet {
     }
 
     @Override
-    public Row getRowData() throws SQLException {
+    public Row getRowData() {
         return tempValue.getRow();
     }
 
@@ -117,9 +117,9 @@ public class ColumnFormulaOperatorResultSet implements SwiftResultSet {
             return null;
         }
         switch (columnType) {
-            case ETLConstant.COLUMN.DATE:
+            case DATE:
                 return ((Date) value).getTime();
-            case ETLConstant.COLUMN.NUMBER:
+            case NUMBER:
                 return ((Number) value).doubleValue();
             default:
                 return Utils.objectToString(value);
@@ -138,4 +138,4 @@ public class ColumnFormulaOperatorResultSet implements SwiftResultSet {
         private ListBasedRow row;
 
     }
- }
+}

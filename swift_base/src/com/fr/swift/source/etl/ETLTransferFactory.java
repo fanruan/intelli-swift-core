@@ -36,7 +36,7 @@ public class ETLTransferFactory {
 //        return null;
 //    }
 
-    public static ETLTransfer createMinorTransfer(ETLSource source) throws Exception {
+    public static ETLTransfer createMinorTransfer(ETLSource source) {
         SwiftMetaData metaData = source.getMetadata();
         ETLOperator operator = source.getOperator();
         ETLTransferOperator transferOperator = ETLTransferOperatorFactory.createTransferOperator(operator);
@@ -55,7 +55,7 @@ public class ETLTransferFactory {
                 basedSegments.add(segments.toArray(new Segment[segments.size()]));
             }
         }
-        if (baseDataSourceList.isEmpty()){
+        if (baseDataSourceList.isEmpty()) {
             basedSegments.add(new Segment[0]);
         }
         return new ETLTransfer(transferOperator, metaData, basedMetas, basedSegments);

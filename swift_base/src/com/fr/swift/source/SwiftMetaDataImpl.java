@@ -3,7 +3,6 @@ package com.fr.swift.source;
 import com.fr.general.ComparatorUtils;
 import com.fr.swift.exception.meta.SwiftMetaDataColumnAbsentException;
 import com.fr.swift.exception.meta.SwiftMetaDataException;
-import com.fr.swift.util.Crasher;
 import com.fr.swift.util.Util;
 
 import java.util.ArrayList;
@@ -18,10 +17,13 @@ import java.util.List;
  */
 public class SwiftMetaDataImpl implements SwiftMetaData {
     private static final long serialVersionUID = 5516973769561307468L;
-    private List<SwiftMetaDataColumn> fieldList = new ArrayList<SwiftMetaDataColumn>();
-    private String remark;
+
     private String schema;
+
     protected String tableName;
+    private String remark;
+
+    private List<SwiftMetaDataColumn> fieldList = new ArrayList<SwiftMetaDataColumn>();
 
     public SwiftMetaDataImpl(String tableName, List<SwiftMetaDataColumn> fieldList) {
         this(tableName, null, null, fieldList);
@@ -39,19 +41,16 @@ public class SwiftMetaDataImpl implements SwiftMetaData {
         this.fieldList = fieldList;
     }
 
-    /**
-     * 获取表名称
-     *
-     * @return
-     */
-
     @Override
-    public String getTableName() {
-        return tableName;
+    public String getSchemaName() {
+        return schema;
     }
 
+    /**
+     * @return 表名
+     */
     @Override
-    public String getTableName(int column) {
+    public String getTableName() {
         return tableName;
     }
 
@@ -65,25 +64,9 @@ public class SwiftMetaDataImpl implements SwiftMetaData {
         return getColumn(column).getName();
     }
 
-
     @Override
     public String getColumnRemark(int column) throws SwiftMetaDataException {
         return getColumn(column).getRemark();
-    }
-
-    @Override
-    public String getSchemaName(int column) {
-        return schema;
-    }
-
-    @Override
-    public String getSchemaName() {
-        return schema;
-    }
-
-    @Override
-    public int getScale(int column) throws SwiftMetaDataException {
-        return getColumn(column).getScale();
     }
 
     @Override
@@ -94,6 +77,11 @@ public class SwiftMetaDataImpl implements SwiftMetaData {
     @Override
     public int getPrecision(int column) throws SwiftMetaDataException {
         return getColumn(column).getPrecision();
+    }
+
+    @Override
+    public int getScale(int column) throws SwiftMetaDataException {
+        return getColumn(column).getScale();
     }
 
     @Override
@@ -109,8 +97,7 @@ public class SwiftMetaDataImpl implements SwiftMetaData {
         if (fieldList == null) {
             throw new SwiftMetaDataColumnAbsentException(columnName);
         }
-        for (int i = 0; i < fieldList.size(); i++) {
-            SwiftMetaDataColumn column = fieldList.get(i);
+        for (SwiftMetaDataColumn column : fieldList) {
             if (ComparatorUtils.equals(column.getName(), columnName)) {
                 return column;
             }
@@ -132,23 +119,20 @@ public class SwiftMetaDataImpl implements SwiftMetaData {
         }
         throw new SwiftMetaDataColumnAbsentException(columnName);
     }
+
     @Override
     public Iterator<SwiftMetaDataColumn> iterator() {
         return new Iterator<SwiftMetaDataColumn>() {
-            int index = 1;
+            int index = 0;
 
             @Override
             public boolean hasNext() {
-                return index <= getColumnCount();
+                return index < fieldList.size();
             }
 
             @Override
             public SwiftMetaDataColumn next() {
-                try {
-                    return getColumn(index++);
-                } catch (SwiftMetaDataException e) {
-                    return Crasher.crash(e);
-                }
+                return fieldList.get(index++);
             }
 
             @Override

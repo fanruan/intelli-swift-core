@@ -1,6 +1,7 @@
 package com.fr.swift.source.etl.columnformula;
 
 import com.fr.swift.segment.Segment;
+import com.fr.swift.source.ColumnTypeConstants.ColumnType;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SwiftResultSet;
 import com.fr.swift.source.etl.formula.ColumnFormulaTransferOperator;
@@ -21,7 +22,7 @@ public class TestColumnFormula extends TestCase {
             List<Segment[]> basedSegment = new ArrayList<Segment[]>();
             basedSegment.add(segments);
             String expression = "${column2} + ${column2}";
-            int columnType = 31;
+            ColumnType columnType = ColumnType.STRING;
             ColumnFormulaTransferOperator operator = new ColumnFormulaTransferOperator(columnType, expression);
             SwiftResultSet rs = operator.createResultSet(null, null, basedSegment);
             Object[][] str = new Object[][]{{"A",5,10},{"B",1,2},{"C",2,4},{"B",2,4},{"C",2,4},{"B",1,2},{"A",1,2},{"C",5,10},{"B",2,4}};

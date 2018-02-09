@@ -28,7 +28,7 @@ public class MemIntArrayExternalMapIO<K> implements ExternalMapIO<K, IntList> {
     public Pair<K, IntList> read() {
         if (iterator.hasNext()) {
             K key = iterator.next();
-            return new Pair<K, IntList>(key, currentContainer.get(key));
+            return Pair.of(key, currentContainer.get(key));
         } else {
             return null;
         }

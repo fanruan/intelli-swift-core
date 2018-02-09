@@ -5,7 +5,7 @@ import com.finebi.conf.constant.BIConfConstants;
 import com.finebi.conf.internalimp.field.FineBusinessFieldImp;
 import com.finebi.conf.structure.bean.field.FineBusinessField;
 import com.fr.swift.exception.meta.SwiftMetaDataException;
-import com.fr.swift.source.ColumnTypeConstants;
+import com.fr.swift.source.ColumnTypeConstants.ColumnType;
 import com.fr.swift.source.ColumnTypeUtils;
 import com.fr.swift.source.MetaDataColumn;
 import com.fr.swift.source.SwiftMetaData;
@@ -50,22 +50,22 @@ public class FieldFactory {
         return swiftMetaDataColumnList;
     }
 
-    public static int transformBIColumnType2SwiftColumnType(int biType) {
+    public static ColumnType transformBIColumnType2SwiftColumnType(int biType) {
         switch (biType) {
             case BIConfConstants.CONF.COLUMN.NUMBER:
-                return ColumnTypeConstants.COLUMN.NUMBER;
+                return ColumnType.NUMBER;
             case BIConfConstants.CONF.COLUMN.DATE:
-                return ColumnTypeConstants.COLUMN.DATE;
+                return ColumnType.DATE;
             default:
-                return ColumnTypeConstants.COLUMN.STRING;
+                return ColumnType.STRING;
         }
     }
 
-    public static int transformSwiftColumnType2BIColumnType(int biType) {
+    public static int transformSwiftColumnType2BIColumnType(ColumnType biType) {
         switch (biType) {
-            case ColumnTypeConstants.COLUMN.NUMBER:
+            case NUMBER:
                 return BIConfConstants.CONF.COLUMN.NUMBER;
-            case ColumnTypeConstants.COLUMN.DATE:
+            case DATE:
                 return BIConfConstants.CONF.COLUMN.DATE;
             default:
                 return BIConfConstants.CONF.COLUMN.STRING;

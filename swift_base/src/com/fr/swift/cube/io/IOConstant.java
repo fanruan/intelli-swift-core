@@ -1,7 +1,5 @@
 package com.fr.swift.cube.io;
 
-import com.fr.stable.StringUtils;
-
 public class IOConstant {
     public static final int NULL_INT = Integer.MIN_VALUE;
 
@@ -9,5 +7,5 @@ public class IOConstant {
 
     public static final double NULL_DOUBLE = Double.NaN;
 
-    public static final String NULL_STRING = StringUtils.EMPTY;
+    public static final String NULL_STRING = "dcfac8e058dba55564d0bcfbb300ad1433437219";
 }

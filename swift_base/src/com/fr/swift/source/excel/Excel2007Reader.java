@@ -6,7 +6,7 @@ import com.fr.general.GeneralUtils;
 import com.fr.general.Inter;
 import com.fr.stable.StringUtils;
 import com.fr.swift.log.SwiftLoggers;
-import com.fr.swift.source.ColumnTypeConstants;
+import com.fr.swift.source.ColumnTypeConstants.ColumnType;
 import com.fr.third.v2.org.apache.poi.openxml4j.opc.OPCPackage;
 import com.fr.third.v2.org.apache.poi.openxml4j.opc.PackageAccess;
 
@@ -58,13 +58,14 @@ public class Excel2007Reader extends AbstractExcel2007Reader {
 
         //如果只有一行数据
         if (columnTypes.length == 0 && columnNames.length > 0) {
-            columnTypes = new int[columnNames.length];
+            columnTypes = new ColumnType[columnNames.length];
             for (int i = 0; i < columnNames.length; i++) {
-                columnTypes[i] = 1;
+                columnTypes[i] = ColumnType.STRING;
             }
         }
     }
 
+    @Override
     protected void dealWithSomething() {
         for (int i = 0; i < tempRowDataList.size(); i++) {
             Object[] oneRow = tempRowDataList.get(i);
@@ -117,7 +118,7 @@ public class Excel2007Reader extends AbstractExcel2007Reader {
     }
 
     private void dealWithExcelFieldType(Object[] oneRow){
-        columnTypes = new int[columnCount];
+        columnTypes = new ColumnType[columnCount];
         for (int j = 0; j < columnCount; j++) {
             String v;
             try {
@@ -136,11 +137,11 @@ public class Excel2007Reader extends AbstractExcel2007Reader {
                 dateType = false;
             }
             if (v.matches(ExcelConstant.NUMBER_REG)) {
-                columnTypes[j] = ColumnTypeConstants.COLUMN.NUMBER;
+                columnTypes[j] = ColumnType.NUMBER;
             } else if (dateType) {
-                columnTypes[j] = ColumnTypeConstants.COLUMN.DATE;
+                columnTypes[j] = ColumnType.DATE;
             } else {
-                columnTypes[j] = ColumnTypeConstants.COLUMN.STRING;
+                columnTypes[j] = ColumnType.STRING;
             }
         }
         rowDataList.add(currentRowData.toArray());

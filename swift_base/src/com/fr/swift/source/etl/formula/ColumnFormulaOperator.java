@@ -1,5 +1,6 @@
 package com.fr.swift.source.etl.formula;
 
+import com.fr.swift.source.ColumnTypeConstants.ColumnType;
 import com.fr.swift.source.ColumnTypeUtils;
 import com.fr.swift.source.MetaDataColumn;
 import com.fr.swift.source.SwiftMetaData;
@@ -16,10 +17,10 @@ import java.util.List;
 public class ColumnFormulaOperator extends AbstractOperator {
 
     private String columnName;
-    private int columnType;
+    private ColumnType columnType;
     private String expression;
 
-    public ColumnFormulaOperator(String columnName, int columnType, String expression) {
+    public ColumnFormulaOperator(String columnName, ColumnType columnType, String expression) {
         this.columnName = columnName;
         this.columnType = columnType;
         this.expression = expression;
@@ -42,7 +43,7 @@ public class ColumnFormulaOperator extends AbstractOperator {
         return columnName;
     }
 
-    public int getColumnType() {
+    public ColumnType getColumnType() {
         return columnType;
     }
 

@@ -6,7 +6,7 @@ import com.fr.general.Inter;
 import com.fr.stable.ColumnRow;
 import com.fr.stable.StringUtils;
 import com.fr.swift.log.SwiftLoggers;
-import com.fr.swift.source.ColumnTypeConstants;
+import com.fr.swift.source.ColumnTypeConstants.ColumnType;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
@@ -27,7 +27,7 @@ public class ExcelCSVReader extends AbstractExcelReader {
     private static final int READLENGTH = 8;
 
     private String[] columnNames = new String[0];
-    private int[] columnTypes = new int[0];
+    private ColumnType[] columnTypes = new ColumnType[0];
     private int columnCount = 0;
     private List<Object> currentRowData = new ArrayList<Object>();
     private List<Object[]> rowDataList = new ArrayList<Object[]>();
@@ -35,6 +35,7 @@ public class ExcelCSVReader extends AbstractExcelReader {
     private BufferedReader reader;
     private boolean end = false;
 
+    @Override
     public String[] getColumnNames() {
         return columnNames;
     }
@@ -43,7 +44,8 @@ public class ExcelCSVReader extends AbstractExcelReader {
         this.columnNames = columnNames;
     }
 
-    public int[] getColumnTypes() {
+    @Override
+    public ColumnType[] getColumnTypes() {
         return columnTypes;
     }
 
@@ -56,10 +58,11 @@ public class ExcelCSVReader extends AbstractExcelReader {
         return null;
     }
 
-    public void setColumnTypes(int[] columnTypes) {
+    public void setColumnTypes(ColumnType[] columnTypes) {
         this.columnTypes = columnTypes;
     }
 
+    @Override
     public List<Object[]> getRowDataList() {
         return rowDataList;
     }
@@ -172,7 +175,7 @@ public class ExcelCSVReader extends AbstractExcelReader {
     }
 
     private void initFieldTypes(Object[] oneRow) {
-        columnTypes = new int[columnCount];
+        columnTypes = new ColumnType[columnCount];
         for (int j = 0; j < columnCount; j++) {
             String v = StringUtils.EMPTY;
             if (oneRow.length > j) {
@@ -189,11 +192,11 @@ public class ExcelCSVReader extends AbstractExcelReader {
                 dateType = false;
             }
             if (v.matches(ExcelConstant.NUMBER_REG)) {
-                columnTypes[j] = ColumnTypeConstants.COLUMN.NUMBER;
+                columnTypes[j] = ColumnType.NUMBER;
             } else if (dateType) {
-                columnTypes[j] = ColumnTypeConstants.COLUMN.DATE;
+                columnTypes[j] = ColumnType.DATE;
             } else {
-                columnTypes[j] = ColumnTypeConstants.COLUMN.STRING;
+                columnTypes[j] = ColumnType.STRING;
             }
         }
         rowDataList.add(currentRowData.toArray());

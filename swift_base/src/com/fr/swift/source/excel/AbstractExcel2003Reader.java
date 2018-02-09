@@ -4,7 +4,7 @@ import com.fr.general.DateUtils;
 import com.fr.stable.ColumnRow;
 import com.fr.stable.StringUtils;
 import com.fr.swift.log.SwiftLoggers;
-import com.fr.swift.source.ColumnTypeConstants;
+import com.fr.swift.source.ColumnTypeConstants.ColumnType;
 import com.fr.third.v2.org.apache.poi.hssf.eventusermodel.EventWorkbookBuilder;
 import com.fr.third.v2.org.apache.poi.hssf.eventusermodel.FormatTrackingHSSFListener;
 import com.fr.third.v2.org.apache.poi.hssf.eventusermodel.HSSFEventFactory;
@@ -45,7 +45,7 @@ import static com.fr.swift.source.excel.ExcelConstant.NUMBER_REG;
  */
 public abstract class AbstractExcel2003Reader extends AbstractExcelReader implements HSSFListener {
     protected String[] columnNames;
-    private int[] columnTypes;
+    private ColumnType[] columnTypes;
     private int columnCount;
     protected List<Object[]> rowDataList;
     private List<Object> currentRowData = new ArrayList<Object>();
@@ -85,11 +85,13 @@ public abstract class AbstractExcel2003Reader extends AbstractExcelReader implem
         initFieldType();
     }
 
+    @Override
     public String[] getColumnNames() {
         return columnNames;
     }
 
-    public int[] getColumnTypes() {
+    @Override
+    public ColumnType[] getColumnTypes() {
         return columnTypes;
     }
 
@@ -97,10 +99,12 @@ public abstract class AbstractExcel2003Reader extends AbstractExcelReader implem
         return columnCount;
     }
 
+    @Override
     public Map<ColumnRow, ColumnRow> getMergeInfos() {
         return mergeCells;
     }
 
+    @Override
     public List<Object[]> getRowDataList() {
         //此处在外部获取的应当是数据，不包括字段名称
         return rowDataList.subList(1, rowDataList.size());
@@ -108,7 +112,7 @@ public abstract class AbstractExcel2003Reader extends AbstractExcelReader implem
 
     public void resetValues() {
         columnNames = new String[0];
-        columnTypes = new int[0];
+        columnTypes = new ColumnType[0];
         columnCount = 0;
         rowDataList = new ArrayList<Object[]>();
     }
@@ -368,10 +372,10 @@ public abstract class AbstractExcel2003Reader extends AbstractExcelReader implem
     //从第二行来读取数据类型
     private void initFieldType() {
         Object[] secondRow = rowDataList.get(1);
-        columnTypes = new int[secondRow.length];
+        columnTypes = new ColumnType[secondRow.length];
         if (secondRow == null) {
             for (int i = 0; i < columnNames.length; i++) {
-                columnTypes[i] = ColumnTypeConstants.COLUMN.STRING;
+                columnTypes[i] = ColumnType.STRING;
             }
             return;
         }
@@ -387,11 +391,11 @@ public abstract class AbstractExcel2003Reader extends AbstractExcelReader implem
                 dateType = false;
             }
             if (v.matches(NUMBER_REG)) {
-                columnTypes[i] = ColumnTypeConstants.COLUMN.NUMBER;
+                columnTypes[i] = ColumnType.NUMBER;
             } else if (dateType) {
-                columnTypes[i] = ColumnTypeConstants.COLUMN.DATE;
+                columnTypes[i] = ColumnType.DATE;
             } else {
-                columnTypes[i] = ColumnTypeConstants.COLUMN.STRING;
+                columnTypes[i] = ColumnType.STRING;
             }
         }
     }

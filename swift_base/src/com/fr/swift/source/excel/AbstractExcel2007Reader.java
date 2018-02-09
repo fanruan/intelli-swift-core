@@ -5,6 +5,7 @@ import com.fr.general.DateUtils;
 import com.fr.stable.ColumnRow;
 import com.fr.stable.StringUtils;
 import com.fr.swift.log.SwiftLoggers;
+import com.fr.swift.source.ColumnTypeConstants.ColumnType;
 import com.fr.third.v2.org.apache.poi.hssf.usermodel.HSSFDateUtil;
 import com.fr.third.v2.org.apache.poi.openxml4j.exceptions.OpenXML4JException;
 import com.fr.third.v2.org.apache.poi.openxml4j.opc.OPCPackage;
@@ -40,7 +41,7 @@ import java.util.Map;
 public abstract class AbstractExcel2007Reader extends AbstractExcelReader {
     public boolean isEmpty = false;
     protected String[] columnNames = new String[0];
-    protected int[] columnTypes = new int[0];
+    protected ColumnType[] columnTypes = new ColumnType[0];
     protected int columnCount = 0;
     protected List<Object> currentRowData = new ArrayList<Object>();
     protected List<Object[]> rowDataList = new ArrayList<Object[]>();
@@ -53,11 +54,13 @@ public abstract class AbstractExcel2007Reader extends AbstractExcelReader {
     public AbstractExcel2007Reader() {
     }
 
+    @Override
     public String[] getColumnNames() {
         return columnNames;
     }
 
-    public int[] getColumnTypes() {
+    @Override
+    public ColumnType[] getColumnTypes() {
         return columnTypes;
     }
 
@@ -65,10 +68,12 @@ public abstract class AbstractExcel2007Reader extends AbstractExcelReader {
         return columnCount;
     }
 
+    @Override
     public List<Object[]> getRowDataList() {
         return rowDataList;
     }
 
+    @Override
     public Map<ColumnRow, ColumnRow> getMergeInfos() {
         return mergeCells;
     }
@@ -312,10 +317,10 @@ public abstract class AbstractExcel2007Reader extends AbstractExcelReader {
         }
 
         private boolean isTextTag(String name) {
-            return "v".equals(name) ? true : ("inlineStr".equals(name) ? true : "t".equals(name) && this.isIsOpen);
+            return "v".equals(name) || ("inlineStr".equals(name) || "t".equals(name) && this.isIsOpen);
         }
 
-        public void startElement(String uri, String localName, String name, Attributes attributes) throws SAXException {
+        public void startElement(String uri, String localName, String name, Attributes attributes) {
             if (this.isTextTag(name)) {
                 this.vIsOpen = true;
                 this.value.setLength(0);
@@ -402,7 +407,7 @@ public abstract class AbstractExcel2007Reader extends AbstractExcelReader {
             }
         }
 
-        public void endElement(String uri, String localName, String name) throws SAXException {
+        public void endElement(String uri, String localName, String name) {
             if (this.isTextTag(name)) {
                 isTextTagName();
             } else if ("f".equals(name)) {
@@ -522,7 +527,7 @@ public abstract class AbstractExcel2007Reader extends AbstractExcelReader {
             }
         }
 
-        public void characters(char[] ch, int start, int length) throws SAXException {
+        public void characters(char[] ch, int start, int length) {
             if (this.vIsOpen) {
                 this.value.append(ch, start, length);
             }

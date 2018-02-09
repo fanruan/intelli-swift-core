@@ -4,7 +4,7 @@ import com.fr.swift.compare.Comparators;
 import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.DetailColumn;
 import com.fr.swift.segment.column.DictionaryEncodedColumn;
-import com.fr.swift.source.ColumnTypeConstants.CLASS;
+import com.fr.swift.source.ColumnTypeConstants.ClassType;
 import com.fr.swift.structure.array.IntList;
 import com.fr.swift.structure.array.IntListFactory;
 import com.fr.swift.structure.external.map.ExternalMap;
@@ -71,7 +71,7 @@ public class FakeStringDetailColumn implements DetailColumn<String> {
     }
 
     private ExternalMap<String, IntList> newIntListExternalMap(Comparator<String> c) {
-        return ExternalIntArrayMapFactory.getIntListExternalMap(CLASS.STRING, c, calExternalLocation(), true);
+        return ExternalIntArrayMapFactory.getIntListExternalMap(ClassType.STRING, c, calExternalLocation(), true);
     }
 
     private void waitUtilDumpOver() {

@@ -7,7 +7,7 @@ import com.fr.swift.cube.io.Types;
 import com.fr.swift.exception.meta.SwiftMetaDataException;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.segment.column.DetailColumn;
-import com.fr.swift.source.ColumnTypeConstants;
+import com.fr.swift.source.ColumnTypeConstants.ClassType;
 import com.fr.swift.source.ColumnTypeUtils;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.util.Crasher;
@@ -49,14 +49,17 @@ public abstract class AbstractSegmentHolder implements ISegmentHolder {
         }
     }
 
+    @Override
     public Segment getSegment() {
         return segment;
     }
 
+    @Override
     public DetailColumn getColumn(String columnName) {
         return getColumn(new ColumnKey(columnName));
     }
 
+    @Override
     public DetailColumn getColumn(ColumnKey columnKey) {
         return segment.getColumn(columnKey).getDetailColumn();
     }
@@ -70,18 +73,22 @@ public abstract class AbstractSegmentHolder implements ISegmentHolder {
         this.nullMap.put(columnKey, nullIndex);
     }
 
+    @Override
     public int incrementRowCount() {
         return rowCount.incrementAndGet();
     }
 
+    @Override
     public void putRowCount() {
         segment.putRowCount(rowCount.get());
     }
 
+    @Override
     public void putAllShowIndex() {
         segment.putAllShowIndex(BitMaps.newAllShowBitMap(rowCount.get()));
     }
 
+    @Override
     public void putNullIndex() {
         Iterator<ColumnKey> iterator = nullMap.keySet().iterator();
         while (iterator.hasNext()) {
@@ -90,8 +97,9 @@ public abstract class AbstractSegmentHolder implements ISegmentHolder {
         }
     }
 
+    @Override
     public void putDetail(int column, Object value) throws SwiftMetaDataException {
-        int clazz = getClassType(metaData.getColumnType(column + 1), metaData.getPrecision(column + 1), metaData.getScale(column + 1));
+        ClassType clazz = getClassType(metaData.getColumnType(column + 1), metaData.getPrecision(column + 1), metaData.getScale(column + 1));
         ColumnKey key = new ColumnKey(metaData.getColumnName(column + 1));
         DetailColumn detail = getColumn(key);
         int row = rowCount.get();
@@ -103,26 +111,27 @@ public abstract class AbstractSegmentHolder implements ISegmentHolder {
         }
     }
 
-    private int getClassType(int sqlType, int precision, int scale) {
+    private ClassType getClassType(int sqlType, int precision, int scale) {
         return ColumnTypeUtils.sqlTypeToClassType(sqlType, precision, scale);
     }
 
-    private Object getNullValue(int clazz) {
+    private Object getNullValue(ClassType clazz) {
         switch (clazz) {
-            case ColumnTypeConstants.CLASS.INTEGER:
+            case INTEGER:
                 return IOConstant.NULL_LONG;
-            case ColumnTypeConstants.CLASS.DATE:
-            case ColumnTypeConstants.CLASS.LONG:
+            case DATE:
+            case LONG:
                 return IOConstant.NULL_LONG;
-            case ColumnTypeConstants.CLASS.DOUBLE:
+            case DOUBLE:
                 return IOConstant.NULL_DOUBLE;
-            case ColumnTypeConstants.CLASS.STRING:
+            case STRING:
                 return IOConstant.NULL_STRING;
             default:
                 return Crasher.crash("Invalid type: " + clazz);
         }
     }
 
+    @Override
     public void release() {
         try {
             for (int i = 1, len = metaData.getColumnCount(); i <= len; i++) {

@@ -46,7 +46,7 @@ public class WorkerTaskImpl extends BaseTask implements WorkerTask {
             SwiftServiceListenerManager.getInstance().triggerEvent(new SwiftServiceEvent<Pair<TaskKey, Result>>() {
                 @Override
                 public Pair<TaskKey, Result> getContent() {
-                    return new Pair<TaskKey, Result>(key, result);
+                    return Pair.of(key, result);
                 }
 
                 @Override

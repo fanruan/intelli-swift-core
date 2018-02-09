@@ -1,4 +1,4 @@
-package com.fr.swift.segment;
+package com.fr.swift.util;
 
 import java.io.File;
 

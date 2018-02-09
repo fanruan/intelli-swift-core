@@ -13,7 +13,13 @@ import com.finebi.conf.internalimp.analysis.bean.operator.circulate.CirculateTwo
 import com.finebi.conf.internalimp.analysis.bean.operator.confselect.ConfSelectBean;
 import com.finebi.conf.internalimp.analysis.bean.operator.confselect.ConfSelectBeanItem;
 import com.finebi.conf.internalimp.analysis.bean.operator.filter.FilterOperatorBean;
-import com.finebi.conf.internalimp.analysis.bean.operator.group.*;
+import com.finebi.conf.internalimp.analysis.bean.operator.group.DimensionSelectValue;
+import com.finebi.conf.internalimp.analysis.bean.operator.group.DimensionSrcValue;
+import com.finebi.conf.internalimp.analysis.bean.operator.group.DimensionValueBean;
+import com.finebi.conf.internalimp.analysis.bean.operator.group.GroupBean;
+import com.finebi.conf.internalimp.analysis.bean.operator.group.GroupSingleValueBean;
+import com.finebi.conf.internalimp.analysis.bean.operator.group.GroupValueBean;
+import com.finebi.conf.internalimp.analysis.bean.operator.group.ViewBean;
 import com.finebi.conf.internalimp.analysis.bean.operator.join.JoinBean;
 import com.finebi.conf.internalimp.analysis.bean.operator.join.JoinBeanValue;
 import com.finebi.conf.internalimp.analysis.bean.operator.join.JoinNameItem;
@@ -41,7 +47,11 @@ import com.fr.swift.query.filter.info.FilterInfo;
 import com.fr.swift.query.group.GroupType;
 import com.fr.swift.query.group.impl.GroupImpl;
 import com.fr.swift.segment.column.ColumnKey;
-import com.fr.swift.source.*;
+import com.fr.swift.source.DataSource;
+import com.fr.swift.source.MetaDataColumn;
+import com.fr.swift.source.SwiftMetaData;
+import com.fr.swift.source.SwiftMetaDataColumn;
+import com.fr.swift.source.SwiftMetaDataImpl;
 import com.fr.swift.source.etl.AbstractOperator;
 import com.fr.swift.source.etl.ETLOperator;
 import com.fr.swift.source.etl.ETLSource;
@@ -70,14 +80,14 @@ import java.util.Map;
 /**
  * Created by Handsome on 2018/1/30 0030 16:38
  */
-class EtlConverter {
-    static DataSource transformEtlDataSource(FineBusinessTable table) throws Exception {
+class EtlAdaptor {
+    static DataSource adaptEtlDataSource(FineBusinessTable table) throws Exception {
         FineAnalysisTable analysis = ((FineAnalysisTable) table);
         List<DataSource> dataSources = new ArrayList<DataSource>();
         FineBusinessTable baseTable = analysis.getBaseTable();
         if (baseTable != null) {
             dataSources.add(IndexingDataSourceFactory.transformDataSource(baseTable));
-        } else if (analysis.getOperator().getType() == AnalysisType.SELECT_FIELD){
+        } else if (analysis.getOperator().getType() == AnalysisType.SELECT_FIELD) {
             Map<String, List<ColumnKey>> sourceKeyColumnMap = new LinkedHashMap<String, List<ColumnKey>>();
             Map<String, DataSource> sourceKeyDataSourceMap = new LinkedHashMap<String, DataSource>();
             SelectFieldOperator selectFieldOperator = analysis.getOperator();
@@ -124,7 +134,7 @@ class EtlConverter {
             return dataSource;
         }
 //        if (analysis.getOperator().getType() == AnalysisType.SELECT_FIELD) {
-//            return transformSelectField(analysis);
+//            return adaptSelectField(analysis);
 //        }
         try {
             if (baseTable != null) {
@@ -132,13 +142,17 @@ class EtlConverter {
             }
             FineOperator op = analysis.getOperator();
             dataSources.addAll(fromOperator(op));
+<<<<<<< HEAD:swift_adaptor/src/com/fr/swift/adaptor/transformer/EtlConverter.java
             return new ETLSource(dataSources, convertEtlOperator(op, table));
+=======
+            return new ETLSource(dataSources, adaptEtlOperator(op));
+>>>>>>> cb62b67baea5e733412283d71fd978dee88b82e5:swift_adaptor/src/com/fr/swift/adaptor/transformer/EtlAdaptor.java
         } catch (Exception e) {
             return IndexingDataSourceFactory.transformDataSource(baseTable);
         }
     }
 
-    private static DataSource transformSelectField(FineAnalysisTable analysis) throws Exception {
+    private static DataSource adaptSelectField(FineAnalysisTable analysis) throws Exception {
         Map<String, List<ColumnKey>> sourceKeyColumnMap = new LinkedHashMap<String, List<ColumnKey>>();
         Map<String, DataSource> sourceKeyDataSourceMap = new LinkedHashMap<String, DataSource>();
         SelectFieldOperator selectFieldOperator = analysis.getOperator();
@@ -162,7 +176,7 @@ class EtlConverter {
         if (analysis.getBaseTable() != null) {
             baseDatas.add(IndexingDataSourceFactory.transformDataSource(analysis.getBaseTable()));
         }
-        if (sourceKeyDataSourceMap.size() == 1){
+        if (sourceKeyDataSourceMap.size() == 1) {
             //选字段只选了一张表的情况
             return getSingleTableSelectFieldSource(sourceKeyColumnMap, sourceKeyDataSourceMap, baseDatas);
         } else {
@@ -326,7 +340,11 @@ class EtlConverter {
         return new UnionOperator(listsOfColumn);
     }
 
+<<<<<<< HEAD:swift_adaptor/src/com/fr/swift/adaptor/transformer/EtlConverter.java
     public static ETLOperator convertEtlOperator(FineOperator op, FineBusinessTable table) throws FineEngineException {
+=======
+    public static ETLOperator adaptEtlOperator(FineOperator op) throws FineEngineException {
+>>>>>>> cb62b67baea5e733412283d71fd978dee88b82e5:swift_adaptor/src/com/fr/swift/adaptor/transformer/EtlAdaptor.java
         switch (op.getType()) {
             case AnalysisType.SELECT_FIELD:
                 return fromSelectFieldBean(op.<SelectFieldBean>getValue());
@@ -416,38 +434,39 @@ class EtlConverter {
         return operator;
     }
 
-    private static SumByGroupOperator fromSumByGroupBean(GroupBean bean) throws FineEngineException {
+    private static SumByGroupOperator fromSumByGroupBean(GroupBean bean) {
         GroupValueBean valueBean = bean.getValue();
         Map<String, DimensionValueBean> dimensionBean = valueBean.getDimensions();
         ViewBean viewBean = valueBean.getView();
         List<String> dimensions = viewBean.getDimension();
         List<String> views = viewBean.getViews();
-        if(dimensionBean.isEmpty() || dimensions == null || views == null) {
+        if (dimensionBean.isEmpty() || dimensions == null || views == null) {
             return null;
         }
         SumByGroupDimension[] groupDimensions = new SumByGroupDimension[dimensions.size()];
         SumByGroupTarget[] groupTargets = new SumByGroupTarget[views.size()];
-        for(int i = 0; i < groupDimensions.length; i++) {
+        for (int i = 0; i < groupDimensions.length; i++) {
             DimensionValueBean tempBean = dimensionBean.get(dimensions.get(i));
             DimensionSrcValue srcValue = tempBean.getSrc();
             List<DimensionSelectValue> value = tempBean.getValue();
-            int type = value.get(0).getType();//分组类型
+            // 分组类型
+            int type = value.get(0).getType();
             SumByGroupDimension sumByGroupDimension = new SumByGroupDimension();
-            sumByGroupDimension.setColumnType(tempBean.getFieldType());
+            sumByGroupDimension.setColumnType(ColumnTypeAdaptor.adaptColumnType(tempBean.getFieldType()));
             sumByGroupDimension.setGroup(new GroupImpl(GroupType.values()[type]));
             sumByGroupDimension.setName(srcValue.getFieldName());
             sumByGroupDimension.setNameText(tempBean.getName());
             groupDimensions[i] = sumByGroupDimension;
         }
-        for(int i = 0; i < groupTargets.length; i++) {
+        for (int i = 0; i < groupTargets.length; i++) {
             DimensionValueBean tempBean = dimensionBean.get(views.get(i));
             DimensionSrcValue srcValue = tempBean.getSrc();
             SumByGroupTarget sumByGroupTarget = new SumByGroupTarget();
-            sumByGroupTarget.setColumnType(tempBean.getFieldType());
+            sumByGroupTarget.setColumnType(ColumnTypeAdaptor.adaptColumnType(tempBean.getFieldType()));
             sumByGroupTarget.setName(srcValue.getFieldName());
             sumByGroupTarget.setNameText(tempBean.getName());
             int type = ETLConstant.SUMMARY_TYPE.SUM;
-            switch(tempBean.getValue().get(0).getType()) {
+            switch (tempBean.getValue().get(0).getType()) {
                 case BIConfConstants.CONF.GROUP.TYPE.SINGLE:
                     type = ((GroupSingleValueBean) tempBean.getValue().get(0)).getValue();
                     break;
@@ -465,24 +484,25 @@ class EtlConverter {
     }
 
     private static AbstractOperator fromAddNewColumnBean(AddNewColumnBean bean) throws FineEngineException {
-        if(bean.getValue() instanceof EmptyAddNewColumnBean) {
+        if (bean.getValue() instanceof EmptyAddNewColumnBean) {
             throw new FineAnalysisOperationUnSafe("");
         }
         AddNewColumnValueBean value = bean.getValue();
         switch (value.getType()) {
             case BIConfConstants.CONF.ADD_COLUMN.FORMULA.TYPE: {
-                return new ColumnFormulaOperator(((AddExpressionValueBean) value).getName(), ((AddExpressionValueBean) value).getType(), ((AddExpressionValueBean) value).getValue());
+                return new ColumnFormulaOperator(value.getName(), ColumnTypeAdaptor.adaptColumnType(value.getType()), ((AddExpressionValueBean) value).getValue());
             }
             default:
         }
         return null;
     }
 
-    private static ColumnFilterOperator fromColumnFilterBean(FilterOperatorBean bean) throws FineEngineException{
+    private static ColumnFilterOperator fromColumnFilterBean(FilterOperatorBean bean) {
         FilterInfo filterInfo = FilterFactory.transformFilter(bean.getValue());
         return new ColumnFilterOperator(filterInfo);
     }
 
+<<<<<<< HEAD:swift_adaptor/src/com/fr/swift/adaptor/transformer/EtlConverter.java
     private static int findFieldName(List<FineBusinessField> fields, String fieldID) {
         int index = Integer.MIN_VALUE;
         for (int i = 0; i < fields.size(); i++){
@@ -495,6 +515,9 @@ class EtlConverter {
     }
 
     private static ColumnRowTransOperator fromColumnRowTransBean(ColumnRowTransBean bean, FineBusinessTable table) throws FineEngineException {
+=======
+    private static ColumnRowTransOperator fromColumnRowTransBean(ColumnRowTransBean bean) {
+>>>>>>> cb62b67baea5e733412283d71fd978dee88b82e5:swift_adaptor/src/com/fr/swift/adaptor/transformer/EtlAdaptor.java
         ColumnTransValue value = bean.getValue();
         FineBusinessTable preTable = ((EngineComplexConfTable)table).getBaseTableBySelected(0);
         List<FineBusinessField> fields = preTable.getFields();
@@ -519,6 +542,10 @@ class EtlConverter {
                 }
             }
         }
+<<<<<<< HEAD:swift_adaptor/src/com/fr/swift/adaptor/transformer/EtlConverter.java
+=======
+        //  throw new FineAnalysisOperationUnSafe("");
+>>>>>>> cb62b67baea5e733412283d71fd978dee88b82e5:swift_adaptor/src/com/fr/swift/adaptor/transformer/EtlAdaptor.java
 
         return new ColumnRowTransOperator(groupName, lcName, lcValue, columns, otherColumnNames);
     }

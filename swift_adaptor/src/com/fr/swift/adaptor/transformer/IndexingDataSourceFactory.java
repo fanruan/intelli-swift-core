@@ -17,6 +17,7 @@ import com.fr.swift.increase.IncrementImpl;
 import com.fr.swift.increment.Increment;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
+import com.fr.swift.source.ColumnTypeConstants.ColumnType;
 import com.fr.swift.source.DBDataSource;
 import com.fr.swift.source.DataSource;
 import com.fr.swift.source.SourceKey;
@@ -100,10 +101,10 @@ public class IndexingDataSourceFactory {
 //                break;
             case TABLETYPE.ETL:
             case BaseConstant.TABLETYPE.ANALYSIS:
-                dataSource = EtlConverter.transformEtlDataSource(table);
+                dataSource = EtlAdaptor.adaptEtlDataSource(table);
                 break;
             default:
-                dataSource = EtlConverter.transformEtlDataSource(table);
+                dataSource = EtlAdaptor.adaptEtlDataSource(table);
         }
         return dataSource;
     }
@@ -157,18 +158,18 @@ public class IndexingDataSourceFactory {
         FineConnection fineConnection = FineConnectionUtils.getConnectionByName(connectionName);
         ConnectionInfo connectionInfo = new SwiftConnectionInfo(fineConnection.getSchema(), fineConnection.getConnection());
         ConnectionManager.getInstance().registerConnectionInfo(connectionName, connectionInfo);
-        Map<String, Integer> fieldColumnTypes = checkFieldTypes(table.getOperators());
+        Map<String, ColumnType> fieldColumnTypes = checkFieldTypes(table.getOperators());
         TableDBSource tableDBSource = fieldColumnTypes == null ?
                 new TableDBSource(table.getTableName(), connectionName) : new TableDBSource(table.getTableName(), connectionName, fieldColumnTypes);
         return checkETL(tableDBSource, table);
     }
 
-    private static Map<String, Integer> checkFieldTypes(List<FineOperator> operators) {
+    private static Map<String, ColumnType> checkFieldTypes(List<FineOperator> operators) {
         if (operators != null && !operators.isEmpty()) {
             FineOperator op = operators.get(0);
             if (op.getType() == ConfConstant.AnalysisType.CONF_SELECT) {
                 List<ConfSelectBeanItem> items = ((ConfSelectOperator) op).getFields();
-                Map<String, Integer> fieldsTypes = new HashMap<String, Integer>();
+                Map<String, ColumnType> fieldsTypes = new HashMap<String, ColumnType>();
                 for (ConfSelectBeanItem item : items) {
                     if (item.isUsable()) {
                         fieldsTypes.put(item.getName(), FieldFactory.transformBIColumnType2SwiftColumnType(item.getType()));
@@ -186,7 +187,7 @@ public class IndexingDataSourceFactory {
         FineConnection fineConnection = FineConnectionUtils.getConnectionByName(connectionName);
         ConnectionInfo connectionInfo = new SwiftConnectionInfo(fineConnection.getSchema(), fineConnection.getConnection());
         ConnectionManager.getInstance().registerConnectionInfo(connectionName, connectionInfo);
-        Map<String, Integer> fieldColumnTypes = checkFieldTypes(table.getOperators());
+        Map<String, ColumnType> fieldColumnTypes = checkFieldTypes(table.getOperators());
         QueryDBSource queryDBSource = fieldColumnTypes == null ?
                 new QueryDBSource(table.getSql(), table.getConnName()) : new QueryDBSource(table.getSql(), table.getConnName(), fieldColumnTypes);
         return checkETL(queryDBSource, table);
@@ -199,7 +200,11 @@ public class IndexingDataSourceFactory {
         }
         List<DataSource> baseSource = new ArrayList<DataSource>();
         baseSource.add(source);
+<<<<<<< HEAD
         return new ETLSource(baseSource, EtlConverter.convertEtlOperator(operators.get(operators.size() - 1), table));
+=======
+        return new ETLSource(baseSource, EtlAdaptor.adaptEtlOperator(operators.get(operators.size() - 1)));
+>>>>>>> cb62b67baea5e733412283d71fd978dee88b82e5
     }
 
 //    private static ExcelDataSource transformExcelDataSource(FineExcelBusinessTable table) {

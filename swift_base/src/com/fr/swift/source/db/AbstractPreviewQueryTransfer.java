@@ -3,6 +3,7 @@ package com.fr.swift.source.db;
 import com.fr.data.core.db.ColumnInformation;
 import com.fr.data.core.db.dialect.Dialect;
 import com.fr.stable.StringUtils;
+import com.fr.swift.source.ColumnTypeConstants.ColumnType;
 import com.fr.swift.source.ColumnTypeUtils;
 import com.fr.swift.source.MetaDataColumn;
 import com.fr.swift.source.SwiftMetaData;
@@ -23,7 +24,7 @@ import java.util.Map;
  * Created by pony on 2017/12/5.
  */
 public abstract class AbstractPreviewQueryTransfer extends AbstractQueryTransfer {
-    protected Map<String, Integer> fieldClassTypes;
+    protected Map<String, ColumnType> fieldClassTypes;
     private int row;
 
     public AbstractPreviewQueryTransfer(ConnectionInfo connectionInfo, int row) {
@@ -31,7 +32,7 @@ public abstract class AbstractPreviewQueryTransfer extends AbstractQueryTransfer
         this.row = row;
     }
 
-    public AbstractPreviewQueryTransfer(ConnectionInfo connectionInfo, Map<String, Integer> fieldClassTypes, int row) {
+    public AbstractPreviewQueryTransfer(ConnectionInfo connectionInfo, Map<String, ColumnType> fieldClassTypes, int row) {
         super(connectionInfo);
         this.fieldClassTypes = fieldClassTypes;
         this.row = row;
@@ -56,8 +57,8 @@ public abstract class AbstractPreviewQueryTransfer extends AbstractQueryTransfer
                 columnList.add(outerColumn);
             } else if (fieldClassTypes.containsKey(outerColumn.getName())){
                 SwiftMetaDataColumn column = outerColumn;
-                int outerColumnType = ColumnTypeUtils.sqlTypeToColumnType(outerColumn.getType(), outerColumn.getPrecision(), outerColumn.getScale());
-                int columnType = fieldClassTypes.get(outerColumn.getName());
+                ColumnType outerColumnType = ColumnTypeUtils.sqlTypeToColumnType(outerColumn.getType(), outerColumn.getPrecision(), outerColumn.getScale());
+                ColumnType columnType = fieldClassTypes.get(outerColumn.getName());
                 if (outerColumnType != columnType) {
                     column = ColumnTypeUtils.convertColumn(columnType, outerColumn);
                 }

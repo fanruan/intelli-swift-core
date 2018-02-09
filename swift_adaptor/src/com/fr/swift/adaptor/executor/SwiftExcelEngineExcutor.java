@@ -1,20 +1,5 @@
 package com.fr.swift.adaptor.executor;
 
-import com.finebi.conf.structure.bean.field.FineBusinessField;
-import com.finebi.conf.structure.result.BIDetailTableResult;
-import com.fr.swift.adaptor.struct.SwiftDetailTableResult;
-import com.fr.swift.adaptor.transformer.DataSourceFactory;
-import com.fr.swift.adaptor.transformer.FieldFactory;
-import com.fr.swift.source.DataSource;
-import com.fr.swift.source.SwiftMetaData;
-import com.fr.swift.source.SwiftResultSet;
-import com.fr.swift.source.SwiftSourceTransfer;
-import com.fr.swift.source.SwiftSourceTransferFactory;
-import com.fr.swift.source.excel.ExcelDataSource;
-
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * This class created on 2018-1-3 10:01:05
  *
@@ -22,7 +7,7 @@ import java.util.List;
  * @description
  * @since Advanced FineBI Analysis 1.0
  */
-public class SwiftEXCELEngineExcutor {
+public class SwiftExcelEngineExcutor {
 
 //    // TODO: 2018-1-3 预览加行数限制
 //    public BIDetailTableResult getPreviewData(String path, String[] names, int[] types, List<String> appendedFileNames, int rowCount) throws Exception {

@@ -1,6 +1,7 @@
 package com.fr.swift.source.db;
 
 import com.fr.swift.source.AbstractOuterDataSource;
+import com.fr.swift.source.ColumnTypeConstants.ColumnType;
 import com.fr.swift.source.DBDataSource;
 
 import java.util.Map;
@@ -12,7 +13,7 @@ public abstract class AbstractDBDataSource extends AbstractOuterDataSource imple
     public AbstractDBDataSource() {
     }
 
-    public AbstractDBDataSource(Map<String, Integer> fieldColumnTypes) {
+    public AbstractDBDataSource(Map<String, ColumnType> fieldColumnTypes) {
         super(fieldColumnTypes);
     }
 }

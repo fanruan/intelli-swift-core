@@ -3,7 +3,7 @@ package com.fr.swift.compare;
 import java.util.Comparator;
 
 /**
- * BI静态值类
+ * 比较器工厂
  *
  * @author Daniel
  */
