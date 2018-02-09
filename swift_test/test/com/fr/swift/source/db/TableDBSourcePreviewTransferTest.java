@@ -1,6 +1,6 @@
 package com.fr.swift.source.db;
 
-import com.fr.swift.source.ColumnTypeConstants;
+import com.fr.swift.source.ColumnTypeConstants.ColumnType;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftResultSet;
 import junit.framework.TestCase;
@@ -41,8 +41,8 @@ public class TableDBSourcePreviewTransferTest extends TestCase {
     public void testCreatePartResultSet() throws Exception {
         ConnectionInfo connectionInfo = TestConnectionProvider.createConnection();
         TableDBSource source = new TableDBSource("DEMO_CAPITAL_RETURN", "demo");
-        Map<String, Integer> fieldClassTypes = new HashMap<>();
-        fieldClassTypes.put("付款金额", ColumnTypeConstants.COLUMN.STRING);
+        Map<String, ColumnType> fieldClassTypes = new HashMap<>();
+        fieldClassTypes.put("付款金额", ColumnType.STRING);
         TableDBSourcePreviewTransfer transfer = new TableDBSourcePreviewTransfer(connectionInfo, fieldClassTypes, 10, source.getDBTableName());
         SwiftResultSet resultSet = transfer.createResultSet();
         int index = 0;

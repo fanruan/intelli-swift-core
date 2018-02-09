@@ -9,7 +9,7 @@ import com.fr.swift.manager.LocalSegmentProvider;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.segment.column.DictionaryEncodedColumn;
-import com.fr.swift.source.ColumnTypeConstants.CLASS;
+import com.fr.swift.source.ColumnTypeConstants.ClassType;
 import com.fr.swift.source.ColumnTypeUtils;
 import com.fr.swift.source.DataSource;
 import com.fr.swift.source.SwiftMetaDataColumn;
@@ -113,16 +113,16 @@ public class ColumnDictMerger<T extends Comparable<T>> extends BaseWorker {
     }
 
     private <V extends Comparable<V>> ExternalMap<V, List<Pair<Integer, Integer>>> newIntPairsExternalMap(String path) {
-        int classType = getClassType();
+        ClassType classType = getClassType();
         switch (classType) {
-            case CLASS.STRING:
+            case STRING:
                 return (ExternalMap<V, List<Pair<Integer, Integer>>>) IntPairsExtMaps.newExternalMap(classType, Comparators.PINYIN_ASC, path);
             default:
                 return IntPairsExtMaps.newExternalMap(classType, Comparators.<V>asc(), path);
         }
     }
 
-    private int getClassType() {
+    private ClassType getClassType() {
         try {
             SwiftMetaDataColumn metaColumn = dataSource.getMetadata().getColumn(key.getName());
             return ColumnTypeUtils.sqlTypeToClassType(

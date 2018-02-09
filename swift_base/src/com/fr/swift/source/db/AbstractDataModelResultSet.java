@@ -5,7 +5,7 @@ import com.fr.general.DateUtils;
 import com.fr.stable.Primitive;
 import com.fr.stable.StringUtils;
 import com.fr.swift.exception.meta.SwiftMetaDataException;
-import com.fr.swift.source.ColumnTypeConstants;
+import com.fr.swift.source.ColumnTypeConstants.ColumnType;
 import com.fr.swift.source.ColumnTypeUtils;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftMetaDataColumn;
@@ -20,7 +20,7 @@ import java.util.List;
  */
 public abstract class AbstractDataModelResultSet implements SwiftResultSet {
     protected SwiftMetaData metaData;
-    protected int[] columnTypes;
+    protected ColumnType[] columnTypes;
     protected int[] columnIndexes;
     public AbstractDataModelResultSet(SwiftMetaData metaData, SwiftMetaData outerMetadata) {
         this.metaData = metaData;
@@ -29,7 +29,7 @@ public abstract class AbstractDataModelResultSet implements SwiftResultSet {
 
     private void checkColumnsByMetaData(SwiftMetaData metaData, SwiftMetaData outerMetadata) {
         List<Integer> indexList = new ArrayList<Integer>();
-        List<Integer> typeList = new ArrayList<Integer>();
+        List<ColumnType> typeList = new ArrayList<ColumnType>();
         int columnCount = 0;
         try {
             columnCount = outerMetadata.getColumnCount();
@@ -52,20 +52,20 @@ public abstract class AbstractDataModelResultSet implements SwiftResultSet {
         for (int i = 0; i < indexList.size(); i++){
             columnIndexes[i] = indexList.get(i);
         }
-        columnTypes = new int[typeList.size()];
+        columnTypes = new ColumnType[typeList.size()];
         for (int i = 0; i < typeList.size(); i++){
             columnTypes[i] = typeList.get(i);
         }
     }
 
-    protected Object getValue(Object value, int columnType) {
+    protected Object getValue(Object value, ColumnType columnType) {
         if (value == null || value == Primitive.NULL) {
             return null;
         }
         switch (columnType) {
-            case ColumnTypeConstants.COLUMN.NUMBER:
+            case NUMBER:
                 return dealWithNumber(value);
-            case ColumnTypeConstants.COLUMN.DATE:
+            case DATE:
                 return dealWithDate(value);
             default:
                 return value.toString();

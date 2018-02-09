@@ -2,6 +2,7 @@ package com.fr.swift.source.excel;
 
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.source.AbstractOuterDataSource;
+import com.fr.swift.source.ColumnTypeConstants.ColumnType;
 import com.fr.swift.source.ColumnTypeUtils;
 import com.fr.swift.source.MetaDataColumn;
 import com.fr.swift.source.SwiftMetaDataColumn;
@@ -25,16 +26,16 @@ public class ExcelDataSource extends AbstractOuterDataSource {
     @CoreField
     private String[] columnNames;
     @CoreField
-    private int[] columnTypes;
+    private ColumnType[] columnTypes;
 
-    public ExcelDataSource(String fullFileName, String[] columnNames, int[] columnTypes) {
+    public ExcelDataSource(String fullFileName, String[] columnNames, ColumnType[] columnTypes) {
         Util.requireNonNull(fullFileName, columnNames, columnTypes);
         this.fullFileName = fullFileName;
         this.columnNames = columnNames;
         this.columnTypes = columnTypes;
     }
 
-    public ExcelDataSource(String fullFileName, String[] columnNames, int[] columnTypes, Map<String, Integer> fieldColumnTypes) {
+    public ExcelDataSource(String fullFileName, String[] columnNames, ColumnType[] columnTypes, Map<String, ColumnType> fieldColumnTypes) {
         super(fieldColumnTypes);
         Util.requireNonNull(fullFileName, columnNames, columnTypes);
         this.fullFileName = fullFileName;
@@ -42,7 +43,7 @@ public class ExcelDataSource extends AbstractOuterDataSource {
         this.columnTypes = columnTypes;
     }
 
-    public ExcelDataSource(String fullFileName, String[] columnNames, int[] columnTypes, List<String> appendedFileNames) {
+    public ExcelDataSource(String fullFileName, String[] columnNames, ColumnType[] columnTypes, List<String> appendedFileNames) {
         Util.requireNonNull(fullFileName, columnNames, columnTypes, appendedFileNames);
         this.fullFileName = fullFileName;
         this.columnNames = columnNames;
@@ -50,7 +51,7 @@ public class ExcelDataSource extends AbstractOuterDataSource {
         this.appendedFileNames = appendedFileNames;
     }
 
-    public ExcelDataSource(String fullFileName, List<String> appendedFileNames, String[] columnNames, int[] columnTypes, Map<String, Integer> fieldColumnTypes) {
+    public ExcelDataSource(String fullFileName, List<String> appendedFileNames, String[] columnNames, ColumnType[] columnTypes, Map<String, ColumnType> fieldColumnTypes) {
         super(fieldColumnTypes);
         Util.requireNonNull(fullFileName, columnNames, columnTypes, appendedFileNames);
         this.fullFileName = fullFileName;

@@ -24,7 +24,7 @@ import com.fr.swift.segment.column.impl.LongColumn;
 import com.fr.swift.segment.column.impl.StringColumn;
 import com.fr.swift.segment.relation.RelationIndex;
 import com.fr.swift.segment.relation.RelationIndexImpl;
-import com.fr.swift.source.ColumnTypeConstants.CLASS;
+import com.fr.swift.source.ColumnTypeConstants.ClassType;
 import com.fr.swift.source.ColumnTypeUtils;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftMetaData;
@@ -72,24 +72,24 @@ public abstract class BaseSegment implements Segment {
         }
     }
 
-    private static Column<?> newColumn(IResourceLocation location, int classType) {
+    private static Column<?> newColumn(IResourceLocation location, ClassType classType) {
         switch (classType) {
-            case CLASS.INTEGER:
+            case INTEGER:
 //                return new IntColumn(location);
-            case CLASS.LONG:
+            case LONG:
                 return new LongColumn(location);
-            case CLASS.DOUBLE:
+            case DOUBLE:
                 return new DoubleColumn(location);
-            case CLASS.DATE:
+            case DATE:
                 return new DateColumn(location);
-            case CLASS.STRING:
+            case STRING:
                 return new StringColumn(location);
             default:
         }
         return Crasher.crash(String.format("cannot new correct column by class type: %d", classType));
     }
 
-    private int getClassType(ColumnKey key) {
+    private ClassType getClassType(ColumnKey key) {
         try {
             for (int i = 1, len = meta.getColumnCount(); i <= len; i++) {
                 if (meta.getColumnName(i).equals(key.getName())) {
@@ -102,7 +102,7 @@ public abstract class BaseSegment implements Segment {
         } catch (SwiftMetaDataException e) {
             SwiftLoggers.getLogger().error(e);
         }
-        return -1;
+        return null;
     }
 
     @Override

@@ -17,7 +17,7 @@ import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.segment.column.DetailColumn;
 import com.fr.swift.segment.column.DictionaryEncodedColumn;
 import com.fr.swift.setting.PerformancePlugManager;
-import com.fr.swift.source.ColumnTypeConstants;
+import com.fr.swift.source.ColumnTypeConstants.ClassType;
 import com.fr.swift.source.ColumnTypeUtils;
 import com.fr.swift.source.DataSource;
 import com.fr.swift.source.SwiftMetaDataColumn;
@@ -37,6 +37,7 @@ import static com.fr.swift.cube.io.IOConstant.NULL_DOUBLE;
 import static com.fr.swift.cube.io.IOConstant.NULL_INT;
 import static com.fr.swift.cube.io.IOConstant.NULL_LONG;
 import static com.fr.swift.cube.io.IOConstant.NULL_STRING;
+import static com.fr.swift.source.ColumnTypeConstants.ClassType.STRING;
 
 /**
  * This class created on 2018-1-22 10:53:18
@@ -82,7 +83,7 @@ public class RealtimeColumnIndexer<T extends Comparable<T>> extends BaseWorker {
     private void buildColumnIndex(Column<T> column, int rowCount) {
         Iterator<Map.Entry<T, IntList>> itr;
 
-        if (getClassType() == ColumnTypeConstants.CLASS.STRING) {
+        if (getClassType() == STRING) {
             // String类型的没写明细，数据写到外排map里了，所以这里可以直接开始索引了
             ExternalMap<T, IntList> extMap = newIntListExternalMap((Comparator<T>) Comparators.PINYIN_ASC);
             extMap.readExternal();
@@ -174,7 +175,7 @@ public class RealtimeColumnIndexer<T extends Comparable<T>> extends BaseWorker {
                 .getPath();
     }
 
-    private int getClassType() {
+    private ClassType getClassType() {
         try {
             SwiftMetaDataColumn metaColumn = dataSource.getMetadata().getColumn(key.getName());
             return ColumnTypeUtils.sqlTypeToClassType(

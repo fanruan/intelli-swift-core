@@ -9,11 +9,12 @@ import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.ColumnKey;
+import com.fr.swift.source.ColumnTypeConstants.ColumnType;
+import com.fr.swift.source.ColumnTypeUtils;
 import com.fr.swift.source.ListBasedRow;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftResultSet;
-import com.fr.swift.source.etl.utils.ETLConstant;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -87,7 +88,8 @@ public class UnionOperatorResultSet implements SwiftResultSet {
                         if (ob == null) {
                             res = null;
                         } else {
-                            res = table.getColumnType(cIndexCursor + 1) == ETLConstant.COLUMN.NUMBER ? ((Number) ob).doubleValue() : ob;
+                            res = table.getColumnType(cIndexCursor + 1) == ColumnTypeUtils.columnTypeToSqlType(ColumnType.NUMBER) ?
+                                    ((Number) ob).doubleValue() : ob;
                         }
                         valueList.add(res);
                         //TODO  value

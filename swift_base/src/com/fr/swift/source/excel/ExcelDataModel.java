@@ -2,13 +2,14 @@ package com.fr.swift.source.excel;
 
 import com.fr.general.DateUtils;
 import com.fr.swift.log.SwiftLoggers;
+import com.fr.swift.source.ColumnTypeConstants.ColumnType;
 
 /**
  * Created by sheldon on 14-8-8.
  */
 public class ExcelDataModel extends AbstractExcelDataModel {
 
-    public ExcelDataModel(String filePath, String[] columnNames, int[] columnTypes) {
+    public ExcelDataModel(String filePath, String[] columnNames, ColumnType[] columnTypes) {
         super(filePath, columnNames, columnTypes);
     }
 
@@ -19,6 +20,7 @@ public class ExcelDataModel extends AbstractExcelDataModel {
     /**
      * 初始化07excel
      */
+    @Override
     protected void initExcel4XLSX(boolean isPreview) {
         long start = System.currentTimeMillis();
         try {
@@ -36,6 +38,7 @@ public class ExcelDataModel extends AbstractExcelDataModel {
     /**
      * 初始化03excel
      */
+    @Override
     protected void initExcel4XLS(boolean isPreview) {
         long start = System.currentTimeMillis();
         try {

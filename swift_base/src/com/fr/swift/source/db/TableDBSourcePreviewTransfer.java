@@ -3,8 +3,8 @@ package com.fr.swift.source.db;
 import com.fr.data.core.db.dialect.Dialect;
 import com.fr.data.core.db.dml.Table;
 import com.fr.stable.StringUtils;
+import com.fr.swift.source.ColumnTypeConstants.ColumnType;
 
-import java.sql.SQLException;
 import java.util.Map;
 
 /**
@@ -19,13 +19,13 @@ public class TableDBSourcePreviewTransfer extends AbstractPreviewQueryTransfer {
     }
 
 
-    public TableDBSourcePreviewTransfer(ConnectionInfo connectionInfo, Map<String, Integer> fieldClassTypes, int row, String tableName) {
+    public TableDBSourcePreviewTransfer(ConnectionInfo connectionInfo, Map<String, ColumnType> fieldClassTypes, int row, String tableName) {
         super(connectionInfo, fieldClassTypes, row);
         this.tableName = tableName;
     }
 
     @Override
-    protected String getQuery(Dialect dialect) throws SQLException {
+    protected String getQuery(Dialect dialect) {
         String columns;
         StringBuffer sb = new StringBuffer();
         if (fieldClassTypes == null || fieldClassTypes.isEmpty()){

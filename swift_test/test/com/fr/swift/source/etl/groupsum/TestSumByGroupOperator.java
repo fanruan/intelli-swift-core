@@ -2,6 +2,7 @@ package com.fr.swift.source.etl.groupsum;
 
 import com.fr.swift.query.group.Group;
 import com.fr.swift.segment.Segment;
+import com.fr.swift.source.ColumnTypeConstants.ColumnType;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftMetaDataColumn;
@@ -46,7 +47,7 @@ public class TestSumByGroupOperator extends TestCase {
         target[0].setSumType(type);
         target[0].setName("column2");
         target[0].setClassType(1);// TODO   应该是整型
-        target[0].setColumnType(1);
+        target[0].setColumnType(ColumnType.STRING);
         dimension[0] = new SumByGroupDimension();
         dimension[0].setName("column1");
         dimension[0].setClassType(16);

@@ -1,7 +1,7 @@
 package com.fr.swift.structure.external.map.intpairs;
 
 import com.fr.swift.compare.Comparators;
-import com.fr.swift.source.ColumnTypeConstants.CLASS;
+import com.fr.swift.source.ColumnTypeConstants.ClassType;
 import com.fr.swift.structure.Pair;
 import com.fr.swift.structure.external.map.ExternalMap;
 import com.fr.swift.util.FileUtil;
@@ -27,7 +27,7 @@ public class IntPairsExtMapTest extends TestCase {
 
     public void testLongPutThenGet() {
         ExternalMap<Long, List<Pair<Integer, Integer>>> map =
-                IntPairsExtMaps.newExternalMap(CLASS.LONG, Comparators.<Long>asc(), basePath + "/externalMapTest/long");
+                IntPairsExtMaps.newExternalMap(ClassType.LONG, Comparators.<Long>asc(), basePath + "/externalMapTest/long");
         map.put(1L, list1);
         map.put(0L, list2);
         map.put(3L, list3);
@@ -63,7 +63,7 @@ public class IntPairsExtMapTest extends TestCase {
 
     public void testDoublePutThenGet() {
         ExternalMap<Double, List<Pair<Integer, Integer>>> map =
-                IntPairsExtMaps.newExternalMap(CLASS.DOUBLE, Comparators.<Double>asc(), basePath + "/externalMapTest/double");
+                IntPairsExtMaps.newExternalMap(ClassType.DOUBLE, Comparators.<Double>asc(), basePath + "/externalMapTest/double");
         map.put(1D, list1);
         map.put(0D, list2);
         map.put(3D, list3);
@@ -99,7 +99,7 @@ public class IntPairsExtMapTest extends TestCase {
 
     public void testStringPutThenGet() {
         ExternalMap<String, List<Pair<Integer, Integer>>> map =
-                IntPairsExtMaps.newExternalMap(CLASS.STRING, Comparators.<String>asc(), basePath + "/externalMapTest/String");
+                IntPairsExtMaps.newExternalMap(ClassType.STRING, Comparators.<String>asc(), basePath + "/externalMapTest/String");
         map.put("1", list1);
         map.put("0", list2);
         map.put("3", list3);

@@ -5,6 +5,7 @@ import com.fr.data.TableDataSource;
 import com.fr.general.data.DataModel;
 import com.fr.script.Calculator;
 import com.fr.stable.ParameterProvider;
+import com.fr.swift.source.ColumnTypeConstants.ColumnType;
 
 import java.util.ArrayList;
 
@@ -16,13 +17,13 @@ public abstract class AbstractExcelTableData extends AbstractTableData {
 
     protected boolean needColumnName = true;
     protected String[] columnNames;
-    protected int[] columnTypes;
+    protected ColumnType[] columnTypes;
 
     public AbstractExcelTableData(String filePath) {
         this.filePath = filePath;
     }
 
-    public AbstractExcelTableData(String filePath, String[] columnNames, int[] columnTypes) {
+    public AbstractExcelTableData(String filePath, String[] columnNames, ColumnType[] columnTypes) {
         this.filePath = filePath;
         this.columnNames = columnNames;
         this.columnTypes = columnTypes;

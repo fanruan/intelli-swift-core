@@ -1,7 +1,7 @@
 package com.fr.swift.source.excel;
 
 import com.fr.swift.resource.ResourceUtils;
-import com.fr.swift.source.ColumnTypeConstants;
+import com.fr.swift.source.ColumnTypeConstants.ColumnType;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SwiftResultSet;
 import junit.framework.TestCase;
@@ -24,7 +24,7 @@ public class ExcelTransferTest extends TestCase {
         paths.add(ResourceUtils.getFileAbsolutePath("com/fr/swift/resource/excel/test1.xlsx"));
         paths.add(ResourceUtils.getFileAbsolutePath("com/fr/swift/resource/excel/test2.xlsx"));
         String[] names = {"A", "B"};
-        int[] types = {ColumnTypeConstants.COLUMN.STRING, ColumnTypeConstants.COLUMN.NUMBER};
+        ColumnType[] types = {ColumnType.STRING, ColumnType.NUMBER};
         ExcelDataSource source = new ExcelDataSource(path, names, types);
         ExcelTransfer excelTransfer = new ExcelTransfer(paths, source.getMetadata(), source.getOuterMetadata());
         SwiftResultSet resultSet = excelTransfer.createResultSet();
@@ -34,8 +34,8 @@ public class ExcelTransferTest extends TestCase {
         }
         resultSet.close();
         assertEquals(list.size(), 9);
-        Map<String, Integer> fields = new HashMap<>();
-        fields.put("B", ColumnTypeConstants.COLUMN.STRING);
+        Map<String, ColumnType> fields = new HashMap<>();
+        fields.put("B", ColumnType.STRING);
         ExcelDataSource partSource = new ExcelDataSource(path, names, types, fields);
         ExcelTransfer excelPartTransfer = new ExcelTransfer(paths, partSource.getMetadata(), partSource.getOuterMetadata());
         SwiftResultSet partResultSet = excelPartTransfer.createResultSet();

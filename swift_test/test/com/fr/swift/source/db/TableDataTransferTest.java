@@ -1,7 +1,7 @@
 package com.fr.swift.source.db;
 
 import com.fr.swift.resource.ResourceUtils;
-import com.fr.swift.source.ColumnTypeConstants;
+import com.fr.swift.source.ColumnTypeConstants.ColumnType;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SwiftResultSet;
 import com.fr.swift.source.excel.ExcelDataSource;
@@ -22,7 +22,7 @@ public class TableDataTransferTest extends TestCase {
     public void testCreateResultSet() throws Exception{
         String path = ResourceUtils.getFileAbsolutePath("com/fr/swift/resource/excel/test.xlsx");
         String[] names = {"A", "B"};
-        int[] types = {ColumnTypeConstants.COLUMN.STRING, ColumnTypeConstants.COLUMN.NUMBER};
+        ColumnType[] types = {ColumnType.STRING, ColumnType.NUMBER};
         ExcelDataSource source = new ExcelDataSource(path, names, types);
         TableDataTransfer excelTransfer = new TableDataTransfer(new ExcelTableData(path, names, types), source.getMetadata(), source.getOuterMetadata());
         SwiftResultSet resultSet = excelTransfer.createResultSet();
@@ -37,9 +37,9 @@ public class TableDataTransferTest extends TestCase {
     public void testCreatePartResultSet() throws Exception{
         String path = ResourceUtils.getFileAbsolutePath("com/fr/swift/resource/excel/test.xlsx");
         String[] names = {"A", "B"};
-        int[] types = {ColumnTypeConstants.COLUMN.STRING, ColumnTypeConstants.COLUMN.NUMBER};
-        Map<String, Integer> fields = new HashMap<>();
-        fields.put("B", ColumnTypeConstants.COLUMN.STRING);
+        ColumnType[] types = {ColumnType.STRING, ColumnType.NUMBER};
+        Map<String, ColumnType> fields = new HashMap<>();
+        fields.put("B", ColumnType.STRING);
         ExcelDataSource source = new ExcelDataSource(path, names, types, fields);
         TableDataTransfer excelTransfer = new TableDataTransfer(new ExcelTableData(path, names, types), source.getMetadata(), source.getOuterMetadata());
         SwiftResultSet resultSet = excelTransfer.createResultSet();

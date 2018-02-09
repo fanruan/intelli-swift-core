@@ -3,6 +3,7 @@ package com.fr.swift.source.excel;
 import com.fr.general.ComparatorUtils;
 import com.fr.stable.xml.XMLPrintWriter;
 import com.fr.stable.xml.XMLableReader;
+import com.fr.swift.source.ColumnTypeConstants.ColumnType;
 
 /**
  * Created by sheldon on 14-8-8.
@@ -13,13 +14,14 @@ public class ExcelTableData extends AbstractExcelTableData {
         super(filePath);
     }
 
-    public ExcelTableData(String filePath, String[] columnNames, int[] columnTypes) {
+    public ExcelTableData(String filePath, String[] columnNames, ColumnType[] columnTypes) {
         super(filePath, columnNames, columnTypes);
     }
 
     /**
      * 创建数据表格
      */
+    @Override
     public ExcelDataModel createDataModel() {
         return new ExcelDataModel(filePath,
                 columnNames, columnTypes);

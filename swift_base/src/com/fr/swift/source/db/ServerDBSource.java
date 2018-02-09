@@ -1,5 +1,6 @@
 package com.fr.swift.source.db;
 
+import com.fr.swift.source.ColumnTypeConstants.ColumnType;
 import com.fr.swift.source.core.CoreField;
 
 import java.util.Map;
@@ -19,7 +20,7 @@ public class ServerDBSource extends AbstractDBDataSource {
         this.serverTableName = serverTableName;
     }
 
-    public ServerDBSource(String serverTableName, Map<String, Integer> fieldColumnTypes) {
+    public ServerDBSource(String serverTableName, Map<String, ColumnType> fieldColumnTypes) {
         super(fieldColumnTypes);
         this.serverTableName = serverTableName;
     }

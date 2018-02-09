@@ -1,6 +1,6 @@
 package com.fr.swift.source.db;
 
-import com.fr.swift.source.ColumnTypeConstants;
+import com.fr.swift.source.ColumnTypeConstants.ColumnType;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftResultSet;
 import junit.framework.TestCase;
@@ -34,8 +34,8 @@ public class QuerySourcePreviewTransferTest extends TestCase {
 
     public void testCreatePartResultSet() throws Exception{
         ConnectionInfo connectionInfo = TestConnectionProvider.createConnection();
-        Map<String, Integer> fields = new HashMap<>();
-        fields.put("合同ID", ColumnTypeConstants.COLUMN.NUMBER);
+        Map<String, ColumnType> fields = new HashMap<>();
+        fields.put("合同ID", ColumnType.NUMBER);
         QuerySourcePreviewTransfer transfer = new QuerySourcePreviewTransfer(connectionInfo, fields,
                 1000, "select * from DEMO_CAPITAL_RETURN");
         SwiftResultSet resultSet = transfer.createResultSet();

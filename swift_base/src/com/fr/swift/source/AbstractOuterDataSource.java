@@ -3,6 +3,7 @@ package com.fr.swift.source;
 import com.fr.swift.exception.meta.SwiftMetaDataException;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
+import com.fr.swift.source.ColumnTypeConstants.ColumnType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,20 +16,24 @@ import java.util.Map;
 public abstract class AbstractOuterDataSource extends AbstractDataSource implements OuterDataSource {
     private static final SwiftLogger LOGGER = SwiftLoggers.getLogger(AbstractOuterDataSource.class);
 
-    //保存使用的字段与columnType类型,空或者null表示没变
-    protected Map<String, Integer> fieldColumnTypes;
+    /**
+     * 保存使用的字段与columnType类型,空或者null表示没变
+     */
+    protected Map<String, ColumnType> fieldColumnTypes;
 
-    //外部数据源的meta
+    /**
+     * 外部数据源的meta
+     */
     protected SwiftMetaData outerMetaData;
 
     public AbstractOuterDataSource() {
     }
 
-    public AbstractOuterDataSource(Map<String, Integer> fieldColumnTypes) {
+    public AbstractOuterDataSource(Map<String, ColumnType> fieldColumnTypes) {
         this.fieldColumnTypes = fieldColumnTypes;
     }
 
-    public Map<String, Integer> getFieldColumnTypes() {
+    public Map<String, ColumnType> getFieldColumnTypes() {
         return fieldColumnTypes;
     }
 
@@ -51,10 +56,10 @@ public abstract class AbstractOuterDataSource extends AbstractDataSource impleme
         } else {
             List<SwiftMetaDataColumn> columns = new ArrayList<SwiftMetaDataColumn>();
             try {
-                for (Map.Entry<String, Integer> entry : fieldColumnTypes.entrySet()) {
+                for (Map.Entry<String, ColumnType> entry : fieldColumnTypes.entrySet()) {
                     SwiftMetaDataColumn outerColumn = outerMetadata.getColumn(entry.getKey());
                     SwiftMetaDataColumn column = outerColumn;
-                    int outerColumnType = ColumnTypeUtils.sqlTypeToColumnType(outerColumn.getType(), outerColumn.getPrecision(), outerColumn.getScale());
+                    ColumnType outerColumnType = ColumnTypeUtils.sqlTypeToColumnType(outerColumn.getType(), outerColumn.getPrecision(), outerColumn.getScale());
                     if (outerColumnType != entry.getValue()) {
                         column = ColumnTypeUtils.convertColumn(entry.getValue(), outerColumn);
                     }
