@@ -123,11 +123,11 @@ public class SwiftMetaDataImpl implements SwiftMetaData {
     @Override
     public Iterator<SwiftMetaDataColumn> iterator() {
         return new Iterator<SwiftMetaDataColumn>() {
-            int index = 1;
+            int index = 0;
 
             @Override
             public boolean hasNext() {
-                return index <= fieldList.size();
+                return index < fieldList.size();
             }
 
             @Override
