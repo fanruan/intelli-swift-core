@@ -13,6 +13,7 @@ import com.fr.swift.query.aggregator.SumAggregate;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.segment.column.DictionaryEncodedColumn;
+import com.fr.swift.source.ColumnTypeConstants.ClassType;
 import com.fr.swift.source.ColumnTypeConstants.ColumnType;
 import com.fr.swift.source.etl.utils.ETLConstant;
 import com.fr.swift.structure.iterator.RowTraversal;
@@ -28,7 +29,7 @@ public class SumByGroupTarget implements Serializable {
     private String name;
     private String nameText;
     private ColumnType columnType;
-    private int classType;
+    private ClassType classType;
 
 
     public Object getSumValue(Segment[] segments, RowTraversal[] traversal) {
@@ -132,11 +133,11 @@ public class SumByGroupTarget implements Serializable {
         this.columnType = columnType;
     }
 
-    public int getClassType() {
+    public ClassType getClassType() {
         return classType;
     }
 
-    public void setClassType(int classType) {
+    public void setClassType(ClassType classType) {
         this.classType = classType;
     }
 

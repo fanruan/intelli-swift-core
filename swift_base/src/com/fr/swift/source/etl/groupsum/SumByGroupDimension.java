@@ -4,8 +4,9 @@ import com.fr.general.ComparatorUtils;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.query.group.Group;
-import com.fr.swift.query.group.GroupType;
 import com.fr.swift.segment.column.ColumnKey;
+import com.fr.swift.source.ColumnTypeConstants.ClassType;
+import com.fr.swift.source.ColumnTypeConstants.ColumnType;
 import com.fr.swift.source.core.Core;
 import com.fr.swift.source.core.CoreGenerator;
 import com.fr.swift.source.core.CoreService;
@@ -25,9 +26,9 @@ public class SumByGroupDimension implements CoreService, Serializable {
 
     private String nameText;
 
-    private int columnType;
+    private ColumnType columnType;
 
-    private int classType;
+    private ClassType classType;
 
     public String getName() {
         return name;
@@ -54,7 +55,7 @@ public class SumByGroupDimension implements CoreService, Serializable {
     }
 
     public Object getKeyValue(Object value) {
-        return value == null ? null : value;
+        return value;
     }
 
 
@@ -79,11 +80,7 @@ public class SumByGroupDimension implements CoreService, Serializable {
         if (name != null ? !ComparatorUtils.equals(name, that.name) : that.name != null) {
             return false;
         }
-        if (nameText != null ? !ComparatorUtils.equals(nameText, that.nameText) : that.nameText != null) {
-            return false;
-        }
-
-        return true;
+        return nameText != null ? ComparatorUtils.equals(nameText, that.nameText) : that.nameText == null;
     }
 
     @Override
@@ -107,20 +104,19 @@ public class SumByGroupDimension implements CoreService, Serializable {
     }
 
 
-
-    public int getColumnType() {
+    public ColumnType getColumnType() {
         return columnType;
     }
 
-    public void setColumnType(int columnType) {
+    public void setColumnType(ColumnType columnType) {
         this.columnType = columnType;
     }
 
-    public int getClassType() {
+    public ClassType getClassType() {
         return classType;
     }
 
-    public void setClassType(int classType) {
+    public void setClassType(ClassType classType) {
         this.classType = classType;
     }
 }

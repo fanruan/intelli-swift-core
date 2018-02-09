@@ -442,7 +442,7 @@ class EtlConverter {
             // 分组类型
             int type = value.get(0).getType();
             SumByGroupDimension sumByGroupDimension = new SumByGroupDimension();
-            sumByGroupDimension.setColumnType(tempBean.getFieldType());
+            sumByGroupDimension.setColumnType(ColumnTypeAdaptor.adaptColumnType(tempBean.getFieldType()));
             sumByGroupDimension.setGroup(new GroupImpl(GroupType.values()[type]));
             sumByGroupDimension.setName(srcValue.getFieldName());
             sumByGroupDimension.setNameText(tempBean.getName());
@@ -452,7 +452,7 @@ class EtlConverter {
             DimensionValueBean tempBean = dimensionBean.get(views.get(i));
             DimensionSrcValue srcValue = tempBean.getSrc();
             SumByGroupTarget sumByGroupTarget = new SumByGroupTarget();
-            sumByGroupTarget.setColumnType(ColumnTypeConverter.fromColumnType(tempBean.getFieldType()));
+            sumByGroupTarget.setColumnType(ColumnTypeAdaptor.adaptColumnType(tempBean.getFieldType()));
             sumByGroupTarget.setName(srcValue.getFieldName());
             sumByGroupTarget.setNameText(tempBean.getName());
             int type = ETLConstant.SUMMARY_TYPE.SUM;
@@ -480,7 +480,7 @@ class EtlConverter {
         AddNewColumnValueBean value = bean.getValue();
         switch (value.getType()) {
             case BIConfConstants.CONF.ADD_COLUMN.FORMULA.TYPE: {
-                return new ColumnFormulaOperator(value.getName(), ColumnTypeConverter.fromColumnType(value.getType()), ((AddExpressionValueBean) value).getValue());
+                return new ColumnFormulaOperator(value.getName(), ColumnTypeAdaptor.adaptColumnType(value.getType()), ((AddExpressionValueBean) value).getValue());
             }
             default:
         }

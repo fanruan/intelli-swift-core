@@ -7,8 +7,8 @@ import com.fr.swift.source.ColumnTypeConstants.ColumnType;
  * @author anchore
  * @date 2018/2/9
  */
-public class ColumnTypeConverter {
-    public static ColumnType fromColumnType(int columnType) {
+public class ColumnTypeAdaptor {
+    public static ColumnType adaptColumnType(int columnType) {
         switch (columnType) {
             case COLUMN.NUMBER:
                 return ColumnType.NUMBER;

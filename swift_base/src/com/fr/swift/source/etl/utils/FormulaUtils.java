@@ -12,7 +12,6 @@ import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.segment.column.DictionaryEncodedColumn;
 import com.fr.swift.source.ColumnTypeConstants.ColumnType;
 import com.fr.swift.source.ColumnTypeUtils;
-import com.fr.third.antlr.ANTLRException;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -85,25 +84,21 @@ public class FormulaUtils {
 
     public static Map<String, ColumnKey> createColumnIndexMap(String formular, Segment segment) {
         Map<String, ColumnKey> columnIndexMap = new HashMap<String, ColumnKey>();
-        try {
-            String[] parameters = getRelatedParaNames(formular);
-            for(int i = 0; i < parameters.length; i++) {
-                String columnName;
-                if(parameters[i].contains(ETLConstant.FIELD_ID.HEAD)) {
-                    // TODO  通过工具类截取部分字段
-                    columnName = parameters[i].substring(ETLConstant.FIELD_ID.HEAD.length(), parameters[i].length()).substring(16);
-                } else {
-                    columnName = parameters[i];
-                }
-                Column column = segment.getColumn(new ColumnKey(columnName));
-                if(column != null) {
-                    columnIndexMap.put(toParameterFormat(String.valueOf(i)), new ColumnKey(columnName));
-                } else {
-                    LOGGER.error(columnName + ": not found");
-                }
+        String[] parameters = getRelatedParaNames(formular);
+        for (int i = 0; i < parameters.length; i++) {
+            String columnName;
+            if (parameters[i].contains(ETLConstant.FIELD_ID.HEAD)) {
+                // TODO  通过工具类截取部分字段
+                columnName = parameters[i].substring(ETLConstant.FIELD_ID.HEAD.length(), parameters[i].length()).substring(16);
+            } else {
+                columnName = parameters[i];
             }
-        } catch(ANTLRException e) {
-            LOGGER.error(e.getMessage(), e);
+            Column column = segment.getColumn(new ColumnKey(columnName));
+            if (column != null) {
+                columnIndexMap.put(toParameterFormat(String.valueOf(i)), new ColumnKey(columnName));
+            } else {
+                LOGGER.error(columnName + ": not found");
+            }
         }
         return columnIndexMap;
     }
