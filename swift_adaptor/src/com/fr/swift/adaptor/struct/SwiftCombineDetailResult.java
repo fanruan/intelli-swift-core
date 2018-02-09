@@ -32,8 +32,8 @@ public class SwiftCombineDetailResult implements BIDetailTableResult {
     private void column2Row(List<List<BIDetailCell>> columnDataLists, List<List<BIDetailCell>> rowDataLists, int rowCount) {
         for (int i = 0; i < rowCount; i++) {
             List<BIDetailCell> rowData = new ArrayList<BIDetailCell>();
-            for (int j = 0; j < columnDataLists.size(); j++) {
-                rowData.add(columnDataLists.get(j).get(i));
+            for (List<BIDetailCell> columnDataList : columnDataLists) {
+                rowData.add(columnDataList.get(i));
             }
             rowDataLists.add(rowData);
         }

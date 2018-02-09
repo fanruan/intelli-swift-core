@@ -1,8 +1,8 @@
 package com.fr.swift.source.db;
 
 import com.fr.data.core.db.dialect.Dialect;
+import com.fr.swift.source.ColumnTypeConstants.ColumnType;
 
-import java.sql.SQLException;
 import java.util.Map;
 
 /**
@@ -16,13 +16,13 @@ public class QuerySourcePreviewTransfer extends AbstractPreviewQueryTransfer {
         this.sql = sql;
     }
 
-    public QuerySourcePreviewTransfer(ConnectionInfo connectionInfo, Map<String, Integer> fieldClassTypes, int row, String sql) {
+    public QuerySourcePreviewTransfer(ConnectionInfo connectionInfo, Map<String, ColumnType> fieldClassTypes, int row, String sql) {
         super(connectionInfo, fieldClassTypes, row);
         this.sql = sql;
     }
 
     @Override
-    protected String getQuery(Dialect dialect) throws SQLException {
+    protected String getQuery(Dialect dialect) {
         return sql;
     }
 }

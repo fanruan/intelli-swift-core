@@ -1,6 +1,6 @@
 package com.fr.swift.source.db;
 
-import com.fr.swift.source.ColumnTypeConstants;
+import com.fr.swift.source.ColumnTypeConstants.ColumnType;
 import com.fr.swift.source.SwiftMetaData;
 import junit.framework.TestCase;
 
@@ -17,12 +17,12 @@ public class QueryDBSourceTest extends TestCase {
     public void setUp() throws Exception{
         ConnectionInfo connectionInfo = TestConnectionProvider.createConnection();
         source = new QueryDBSource("select 合同ID from DEMO_CAPITAL_RETURN", "demo");
-        Map<String, Integer> fields = new HashMap<>();
-        fields.put("合同ID", ColumnTypeConstants.COLUMN.NUMBER);
+        Map<String, ColumnType> fields = new HashMap<>();
+        fields.put("合同ID", ColumnType.NUMBER);
         partSource = new QueryDBSource("select 合同ID from DEMO_CAPITAL_RETURN", "demo", fields);
     }
 
-    public void testGetSourceKey() throws Exception{
+    public void testGetSourceKey() {
         assertEquals("6f9909ab", source.getSourceKey().getId());
     }
 

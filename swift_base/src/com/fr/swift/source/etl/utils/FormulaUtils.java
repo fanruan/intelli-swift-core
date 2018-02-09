@@ -10,13 +10,21 @@ import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.segment.column.DictionaryEncodedColumn;
-import com.fr.third.antlr.ANTLRException;
+import com.fr.swift.source.ColumnTypeConstants.ColumnType;
+import com.fr.swift.source.ColumnTypeUtils;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static com.fr.swift.cube.io.IOConstant.*;
+import static com.fr.swift.cube.io.IOConstant.NULL_DOUBLE;
+import static com.fr.swift.cube.io.IOConstant.NULL_INT;
+import static com.fr.swift.cube.io.IOConstant.NULL_LONG;
+import static com.fr.swift.cube.io.IOConstant.NULL_STRING;
 
 /**
  * Created by Handsome on 2018/2/1 0001 15:27
@@ -42,7 +50,7 @@ public class FormulaUtils {
                     throw new RuntimeException();
                 }
                 if(!isNullValue(value)) {
-                    if(columnType == ETLConstant.COLUMN.DATE) {
+                    if (columnType == ColumnTypeUtils.columnTypeToSqlType(ColumnType.DATE)) {
                         value = new Date((Long)value);
                     }
                     c.set(columnName, value);
@@ -76,34 +84,27 @@ public class FormulaUtils {
 
     public static Map<String, ColumnKey> createColumnIndexMap(String formular, Segment segment) {
         Map<String, ColumnKey> columnIndexMap = new HashMap<String, ColumnKey>();
-        try {
-            String[] parameters = getRelatedParaNames(formular);
-            for(int i = 0; i < parameters.length; i++) {
-                String columnName;
-                if(parameters[i].contains(ETLConstant.FIELD_ID.HEAD)) {
-                    // TODO  通过工具类截取部分字段
-                    columnName = parameters[i].substring(ETLConstant.FIELD_ID.HEAD.length(), parameters[i].length()).substring(16);
-                } else {
-                    columnName = parameters[i];
-                }
-                Column column = segment.getColumn(new ColumnKey(columnName));
-                if(column != null) {
-                    columnIndexMap.put(toParameterFormat(String.valueOf(i)), new ColumnKey(columnName));
-                } else {
-                    LOGGER.error(columnName + ": not found");
-                }
+        String[] parameters = getRelatedParaNames(formular);
+        for (int i = 0; i < parameters.length; i++) {
+            String columnName;
+            if (parameters[i].contains(ETLConstant.FIELD_ID.HEAD)) {
+                // TODO  通过工具类截取部分字段
+                columnName = parameters[i].substring(ETLConstant.FIELD_ID.HEAD.length(), parameters[i].length()).substring(16);
+            } else {
+                columnName = parameters[i];
             }
-        } catch(ANTLRException e) {
-            LOGGER.error(e.getMessage(), e);
+            Column column = segment.getColumn(new ColumnKey(columnName));
+            if (column != null) {
+                columnIndexMap.put(toParameterFormat(String.valueOf(i)), new ColumnKey(columnName));
+            } else {
+                LOGGER.error(columnName + ": not found");
+            }
         }
         return columnIndexMap;
     }
 
 
-
-
-
-    public static String[] getRelatedParaNames(String formular) throws ANTLRException {
+    public static String[] getRelatedParaNames(String formular) {
 
         ArrayList<String> nameList = new ArrayList<String>();
         Pattern pat = Pattern.compile("\\$[\\{][^\\}]*[\\}]");

@@ -14,7 +14,7 @@ import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.retry.RetryLoop;
 import com.fr.swift.retry.RetryNTimes;
 import com.fr.swift.setting.PerformancePlugManager;
-import com.fr.swift.source.ColumnTypeConstants;
+import com.fr.swift.source.ColumnTypeConstants.ColumnType;
 import com.fr.swift.source.ColumnTypeUtils;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftMetaDataColumn;
@@ -166,7 +166,7 @@ public abstract class AbstractQueryTransfer implements SwiftSourceTransfer {
 
     private DBDealer getDbDealer(boolean needCharSetConvert, String originalCharSetName, String newCharSetName, SwiftMetaData metaData, SwiftMetaData outerMeta, int rsColumn) throws SwiftMetaDataException {
         int outerSqlType = outerMeta.getColumnType(rsColumn);
-        int columnType = ColumnTypeUtils.sqlTypeToColumnType(metaData.getColumnType(rsColumn), metaData.getPrecision(rsColumn), metaData.getScale(rsColumn));
+        ColumnType columnType = ColumnTypeUtils.sqlTypeToColumnType(metaData.getColumnType(rsColumn), metaData.getPrecision(rsColumn), metaData.getScale(rsColumn));
         switch (outerSqlType) {
             case java.sql.Types.DECIMAL:
             case java.sql.Types.NUMERIC:
@@ -195,11 +195,11 @@ public abstract class AbstractQueryTransfer implements SwiftSourceTransfer {
         }
     }
 
-    private DBDealer getDealerByColumn(int precision, int scale, int rsColumn, int columnType) {
+    private DBDealer getDealerByColumn(int precision, int scale, int rsColumn, ColumnType columnType) {
         if (scale != 0) {
             //有小数点一定是double类型
             return getNumberConvertDealer(new DoubleDealer(rsColumn), columnType);
-        } else if (ColumnTypeUtils.isLongType(precision) || columnType != ColumnTypeConstants.COLUMN.STRING){
+        } else if (ColumnTypeUtils.isLongType(precision) || columnType != ColumnType.STRING) {
             //没有小数点，并且判断为long类型的，只要不转文本，都是long类型
             return getNumberConvertDealer(new LongDealer(rsColumn), columnType);
         } else {
@@ -208,9 +208,9 @@ public abstract class AbstractQueryTransfer implements SwiftSourceTransfer {
     }
 
 
-    private DBDealer getDateConvertDealer(DBDealer<Long> dateDealer, int columnType) {
+    private DBDealer getDateConvertDealer(DBDealer<Long> dateDealer, ColumnType columnType) {
         switch (columnType) {
-            case ColumnTypeConstants.COLUMN.STRING:
+            case STRING:
                 return new Date2StringConvertDealer(dateDealer);
             default:
                 return dateDealer;
@@ -218,11 +218,11 @@ public abstract class AbstractQueryTransfer implements SwiftSourceTransfer {
         }
     }
 
-    private DBDealer getStringConvertDealer(DBDealer<String> stringDealer, int columnType) {
+    private DBDealer getStringConvertDealer(DBDealer<String> stringDealer, ColumnType columnType) {
         switch (columnType) {
-            case ColumnTypeConstants.COLUMN.NUMBER:
+            case NUMBER:
                 return new String2NumberConvertDealer(stringDealer);
-            case ColumnTypeConstants.COLUMN.DATE:
+            case DATE:
                 return new String2DateConvertDealer(stringDealer);
             default:
                 return stringDealer;
@@ -230,11 +230,11 @@ public abstract class AbstractQueryTransfer implements SwiftSourceTransfer {
         }
     }
 
-    private DBDealer getNumberConvertDealer(DBDealer<? extends Number> numberDBDealer, int columnType) {
+    private DBDealer getNumberConvertDealer(DBDealer<? extends Number> numberDBDealer, ColumnType columnType) {
         switch (columnType) {
-            case ColumnTypeConstants.COLUMN.STRING:
+            case STRING:
                 return new Number2StringConvertDealer(numberDBDealer);
-            case ColumnTypeConstants.COLUMN.DATE:
+            case DATE:
                 return new Number2DateConvertDealer(numberDBDealer);
             default:
                 return numberDBDealer;

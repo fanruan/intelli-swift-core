@@ -2,7 +2,12 @@ package com.fr.swift.adaptor.transformer;
 
 import com.fr.data.impl.Connection;
 import com.fr.swift.provider.ConnectionProvider;
-import com.fr.swift.source.db.*;
+import com.fr.swift.source.ColumnTypeConstants.ColumnType;
+import com.fr.swift.source.db.ConnectionManager;
+import com.fr.swift.source.db.IConnectionProvider;
+import com.fr.swift.source.db.QueryDBSource;
+import com.fr.swift.source.db.SwiftConnectionInfo;
+import com.fr.swift.source.db.TableDBSource;
 import com.fr.swift.source.excel.ExcelDataSource;
 
 import java.util.List;
@@ -35,7 +40,7 @@ public class DataSourceFactory {
         return queryDBSource;
     }
 
-    public static ExcelDataSource transformExcelDataSource(String path, String[] names, int[] types, List<String> appendedFileNames) {
+    public static ExcelDataSource transformExcelDataSource(String path, String[] names, ColumnType[] types, List<String> appendedFileNames) {
         ExcelDataSource excelDataSource = new ExcelDataSource(path, names, types, appendedFileNames);
         return excelDataSource;
     }

@@ -2,9 +2,9 @@ package com.fr.swift.source.excel;
 
 import com.fr.data.AbstractDataModel;
 import com.fr.general.DateUtils;
-import com.fr.general.data.TableDataException;
 import com.fr.stable.ColumnRow;
 import com.fr.swift.log.SwiftLoggers;
+import com.fr.swift.source.ColumnTypeConstants.ColumnType;
 
 import java.util.HashMap;
 import java.util.List;
@@ -24,7 +24,7 @@ public abstract class AbstractExcelDataModel extends AbstractDataModel {
     //表数据
     protected List<Object[]> rowDataList;
     //字段类型
-    protected int[] columnTypes;
+    protected ColumnType[] columnTypes;
     //合并规则
     protected Map<ColumnRow, ColumnRow> mergeInfos;
 
@@ -36,7 +36,7 @@ public abstract class AbstractExcelDataModel extends AbstractDataModel {
 
     private Map<Integer, Object[]> csvRow = new HashMap<Integer, Object[]>();
 
-    public AbstractExcelDataModel(String filePath, String[] columnNames, int[] columnTypes) {
+    public AbstractExcelDataModel(String filePath, String[] columnNames, ColumnType[] columnTypes) {
         this.filePath = filePath;
         this.columnNames = columnNames;
         this.columnTypes = columnTypes;
@@ -51,7 +51,7 @@ public abstract class AbstractExcelDataModel extends AbstractDataModel {
     }
 
     @Override
-    public int getColumnCount() throws TableDataException {
+    public int getColumnCount() {
         if (this.columnNames == null) {
             initData();
         }
@@ -59,16 +59,16 @@ public abstract class AbstractExcelDataModel extends AbstractDataModel {
     }
 
     @Override
-    public String getColumnName(int columnIndex) throws TableDataException {
+    public String getColumnName(int columnIndex) {
         return this.columnNames[columnIndex];
     }
 
-    public int getColumnType(int columnIndex) throws TableDataException {
+    public ColumnType getColumnType(int columnIndex) {
         return this.columnTypes[columnIndex];
     }
 
     @Override
-    public int getRowCount() throws TableDataException {
+    public int getRowCount() {
         if (this.rowDataList == null) {
             initData();
         }
@@ -76,7 +76,7 @@ public abstract class AbstractExcelDataModel extends AbstractDataModel {
     }
 
     @Override
-    public Object getValueAt(int rowIndex, int columnIndex) throws TableDataException {
+    public Object getValueAt(int rowIndex, int columnIndex) {
         initData();
         if (getExcelType() == EXCEL_TYPE_CSV) {
             return getValueAt4CSV(rowIndex, columnIndex);
@@ -105,21 +105,21 @@ public abstract class AbstractExcelDataModel extends AbstractDataModel {
         return null;
     }
 
-    public Object getValueAt4Preview(int rowIndex, int columnIndex) throws Exception {
+    public Object getValueAt4Preview(int rowIndex, int columnIndex) {
         if (rowIndex > rowDataList.size() - 1 || columnIndex > rowDataList.get(rowIndex).length - 1) {
             return null;
         }
         return rowDataList.get(rowIndex)[columnIndex];
     }
 
-    public String[] onlyGetColumnNames() throws TableDataException {
+    public String[] onlyGetColumnNames() {
         if (this.columnNames == null) {
             initPartData();
         }
         return columnNames;
     }
 
-    public int[] onlyGetColumnTypes() throws TableDataException {
+    public ColumnType[] onlyGetColumnTypes() {
         if (this.columnTypes == null) {
             initPartData();
         }
@@ -146,7 +146,7 @@ public abstract class AbstractExcelDataModel extends AbstractDataModel {
      * @throws Exception
      */
     @Override
-    public void release() throws Exception {
+    public void release() {
 
     }
 

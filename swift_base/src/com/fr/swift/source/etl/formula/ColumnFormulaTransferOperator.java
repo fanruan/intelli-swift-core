@@ -1,6 +1,7 @@
 package com.fr.swift.source.etl.formula;
 
 import com.fr.swift.segment.Segment;
+import com.fr.swift.source.ColumnTypeConstants.ColumnType;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftResultSet;
 import com.fr.swift.source.etl.ETLTransferOperator;
@@ -12,10 +13,10 @@ import java.util.List;
  */
 public class ColumnFormulaTransferOperator implements ETLTransferOperator {
 
-    private int columnType;
+    private ColumnType columnType;
     private String expression;
 
-    public ColumnFormulaTransferOperator(int columnType, String expression) {
+    public ColumnFormulaTransferOperator(ColumnType columnType, String expression) {
         this.columnType = columnType;
         this.expression = expression;
     }

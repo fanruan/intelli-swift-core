@@ -1,7 +1,6 @@
 package com.fr.swift.segment;
 
 import com.fr.swift.exception.meta.SwiftMetaDataException;
-import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.segment.column.impl.base.FakeStringDetailColumn;
 import com.fr.swift.util.Crasher;
 
@@ -18,6 +17,7 @@ public class RealtimeSegmentHolder extends AbstractSegmentHolder {
         super(segment);
     }
 
+    @Override
     public void release() {
         try {
             for (int i = 1, len = metaData.getColumnCount(); i <= len; i++) {

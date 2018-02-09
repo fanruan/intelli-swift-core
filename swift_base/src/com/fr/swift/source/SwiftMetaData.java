@@ -8,62 +8,39 @@ import com.fr.swift.exception.meta.SwiftMetaDataException;
  * column 从1开始
  */
 public interface SwiftMetaData extends Iterable<SwiftMetaDataColumn> {
-    String getTableName() throws SwiftMetaDataException;
+    String getSchemaName() throws SwiftMetaDataException;
 
-    /**
-     * @param column the first column is 1, the second is 2
-     * @return
-     * @throws SwiftMetaDataException
-     */
-    String getTableName(int column) throws SwiftMetaDataException;
+    String getTableName() throws SwiftMetaDataException;
 
     int getColumnCount() throws SwiftMetaDataException;
 
-    /**
-     * @param column the first column is 1, the second is 2
-     * @return
-     * @throws SwiftMetaDataException
-     */
-    String getColumnName(int column) throws SwiftMetaDataException;
+    String getColumnName(int index) throws SwiftMetaDataException;
 
+    String getColumnRemark(int index) throws SwiftMetaDataException;
+    
     /**
-     * @param column the first column is 1, the second is 2
-     * @return
-     * @throws SwiftMetaDataException
+     * @param index 序号
+     * @return 字段对应的sql type
+     * @see java.sql.Types
+     * @throws SwiftMetaDataException 异常
      */
-    String getColumnRemark(int column) throws SwiftMetaDataException;
-
-    String getSchemaName() throws SwiftMetaDataException;
+    int getColumnType(int index) throws SwiftMetaDataException;
 
     /**
-     * @param column the first column is 1, the second is 2
-     * @return
-     * @throws SwiftMetaDataException
+     * @param index 序号
+     * @return 字段长度
+     * @throws SwiftMetaDataException 异常
      */
-    String getSchemaName(int column) throws SwiftMetaDataException;
-
+    int getPrecision(int index) throws SwiftMetaDataException;
+    
     /**
-     * @param column the first column is 1, the second is 2
-     * @return
-     * @throws SwiftMetaDataException
+     * @param index 序号
+     * @return 字段小数位数
+     * @throws SwiftMetaDataException 异常
      */
-    int getScale(int column) throws SwiftMetaDataException;
+    int getScale(int index) throws SwiftMetaDataException;
 
-    /**
-     * @param column the first column is 1, the second is 2
-     * @return
-     * @throws SwiftMetaDataException
-     */
-    int getColumnType(int column) throws SwiftMetaDataException;
-
-    /**
-     * @param column the first column is 1, the second is 2
-     * @return
-     * @throws SwiftMetaDataException
-     */
-    int getPrecision(int column) throws SwiftMetaDataException;
-
-    SwiftMetaDataColumn getColumn(int column) throws SwiftMetaDataException;
+    SwiftMetaDataColumn getColumn(int index) throws SwiftMetaDataException;
 
     SwiftMetaDataColumn getColumn(String columnName) throws SwiftMetaDataException;
 

@@ -1,6 +1,6 @@
 package com.fr.swift.source.db;
 
-import com.fr.swift.source.ColumnTypeConstants;
+import com.fr.swift.source.ColumnTypeConstants.ColumnType;
 import com.fr.swift.source.SwiftResultSet;
 import junit.framework.TestCase;
 
@@ -29,8 +29,8 @@ public class TableDBSourceTransferTest extends TestCase {
 
     public void testCreatePartResultSet() throws Exception{
         ConnectionInfo connectionInfo = TestConnectionProvider.createConnection();
-        Map<String, Integer> fields = new HashMap<>();
-        fields.put("JGID", ColumnTypeConstants.COLUMN.STRING);
+        Map<String, ColumnType> fields = new HashMap<>();
+        fields.put("JGID", ColumnType.STRING);
         TableDBSource source = new TableDBSource("BANK", "demo", fields);
         TableDBSourceTransfer transfer = new TableDBSourceTransfer(connectionInfo, source.getMetadata(), source.getOuterMetadata(), source.getDBTableName());
         SwiftResultSet resultSet = transfer.createResultSet();

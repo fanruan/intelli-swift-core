@@ -1,7 +1,7 @@
 package com.fr.swift.source.excel;
 
 import com.fr.swift.resource.ResourceUtils;
-import com.fr.swift.source.ColumnTypeConstants;
+import com.fr.swift.source.ColumnTypeConstants.ColumnType;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftMetaData;
 import junit.framework.TestCase;
@@ -20,14 +20,14 @@ public class ExcelDataSourceTest extends TestCase {
     public void setUp() throws Exception {
         String path = ResourceUtils.getFileAbsolutePath("com/fr/swift/resource/excel/test.xlsx");
         String[] names = {"A", "B"};
-        int[] types = {ColumnTypeConstants.COLUMN.STRING, ColumnTypeConstants.COLUMN.NUMBER};
+        ColumnType[] types = {ColumnType.STRING, ColumnType.NUMBER};
         dataSource = new ExcelDataSource(path, names, types);
-        Map<String, Integer> fields = new HashMap<>();
-        fields.put("B", ColumnTypeConstants.COLUMN.STRING);
+        Map<String, ColumnType> fields = new HashMap<>();
+        fields.put("B", ColumnType.STRING);
         partSource = new ExcelDataSource(path, names, types, fields);
     }
 
-    public void testGetSourceKey() throws Exception{
+    public void testGetSourceKey() {
         SourceKey key = dataSource.getSourceKey();
         assertEquals(key.getId(), "f05f42ea");
     }

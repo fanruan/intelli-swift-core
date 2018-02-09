@@ -10,7 +10,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author GUY
  * @date 2015/2/12
  */
-public class ChinesePinyinComparator implements Comparator<String> {
+class ChinesePinyinComparator implements Comparator<String> {
     private static ConcurrentHashMap<Integer, String> stringMap = new ConcurrentHashMap<Integer, String>();
     /**
      * 拼音的空值肯定是字母啦
@@ -58,7 +58,8 @@ public class ChinesePinyinComparator implements Comparator<String> {
                 String pinyin2 = pinyin(codePoint2);
                 boolean isChinese1 = pinyin1 != null;
                 boolean isChinese2 = pinyin2 != null;
-                if (isChinese1 && isChinese2) { // 两个字符都是汉字
+                // 两个字符都是汉字
+                if (isChinese1 && isChinese2) {
                     if (!pinyin1.equals(pinyin2)) {
                         return pinyin1.compareTo(pinyin2);
                     }

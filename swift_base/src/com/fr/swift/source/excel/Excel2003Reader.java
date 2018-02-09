@@ -21,6 +21,7 @@ public class Excel2003Reader extends AbstractExcel2003Reader {
         super(filePath, preview);
     }
 
+    @Override
     protected void initFieldNames() {
         Object[] firstRow = rowDataList.get(0);
         columnNames = new String[firstRow.length];

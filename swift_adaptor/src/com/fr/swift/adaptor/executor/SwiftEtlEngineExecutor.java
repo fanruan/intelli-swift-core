@@ -18,24 +18,24 @@ import java.util.List;
  * @description
  * @since Advanced FineBI Analysis 1.0
  */
-public class SwiftETLEngineExecutor implements FineTableEngineExecutor {
+public class SwiftEtlEngineExecutor implements FineTableEngineExecutor {
     @Override
-    public BIDetailTableResult getPreviewData(FineBusinessTable table, int rowCount) throws Exception {
+    public BIDetailTableResult getPreviewData(FineBusinessTable table, int rowCount) {
         return null;
     }
 
     @Override
-    public BIDetailTableResult getRealData(FineBusinessTable table) throws Exception {
+    public BIDetailTableResult getRealData(FineBusinessTable table) {
         return null;
     }
 
     @Override
-    public List<FineBusinessField> getFieldList(FineBusinessTable table) throws Exception {
+    public List<FineBusinessField> getFieldList(FineBusinessTable table) {
         return null;
     }
 
     @Override
-    public EngineConfProduceData getConfPreResult(FineBusinessTable table) throws Exception {
+    public EngineConfProduceData getConfPreResult(FineBusinessTable table) {
         return null;
     }
 
@@ -45,7 +45,7 @@ public class SwiftETLEngineExecutor implements FineTableEngineExecutor {
     }
 
     @Override
-    public FineBusinessTable createTable(FineBusinessTable table) throws Exception {
+    public FineBusinessTable createTable(FineBusinessTable table) {
         return null;
     }
 

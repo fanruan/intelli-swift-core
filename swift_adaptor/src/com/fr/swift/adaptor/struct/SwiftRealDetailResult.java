@@ -36,6 +36,11 @@ public class SwiftRealDetailResult implements BIDetailTableResult {
     }
 
     @Override
+    public void remove() {
+
+    }
+
+    @Override
     public int rowSize() {
         return rowCount;
     }

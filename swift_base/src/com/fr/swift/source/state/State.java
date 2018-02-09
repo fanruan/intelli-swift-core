@@ -7,6 +7,6 @@ package com.fr.swift.source.state;
  * @description
  * @since Advanced FineBI Analysis 1.0
  */
-public enum StateEnum {
-    PREPARING, PREPARED, RUNNING, END;
+public enum State {
+    PREPARING, PREPARED, RUNNING, END
 }
