@@ -34,11 +34,6 @@ public class SwiftEmptyResult implements SwiftResultSet {
             }
 
             @Override
-            public String getTableName(int column) {
-                return null;
-            }
-
-            @Override
             public int getColumnCount() {
                 return 0;
             }
@@ -55,11 +50,6 @@ public class SwiftEmptyResult implements SwiftResultSet {
 
             @Override
             public String getSchemaName() {
-                return null;
-            }
-
-            @Override
-            public String getSchemaName(int column) {
                 return null;
             }
 

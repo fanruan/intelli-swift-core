@@ -101,10 +101,10 @@ public class IndexingDataSourceFactory {
 //                break;
             case TABLETYPE.ETL:
             case BaseConstant.TABLETYPE.ANALYSIS:
-                dataSource = EtlConverter.transformEtlDataSource(table);
+                dataSource = EtlAdaptor.adaptEtlDataSource(table);
                 break;
             default:
-                dataSource = EtlConverter.transformEtlDataSource(table);
+                dataSource = EtlAdaptor.adaptEtlDataSource(table);
         }
         return dataSource;
     }
@@ -199,7 +199,7 @@ public class IndexingDataSourceFactory {
         }
         List<DataSource> baseSource = new ArrayList<DataSource>();
         baseSource.add(source);
-        return new ETLSource(baseSource, EtlConverter.convertEtlOperator(operators.get(operators.size() - 1)));
+        return new ETLSource(baseSource, EtlAdaptor.adaptEtlOperator(operators.get(operators.size() - 1)));
     }
 
 //    private static ExcelDataSource transformExcelDataSource(FineExcelBusinessTable table) {

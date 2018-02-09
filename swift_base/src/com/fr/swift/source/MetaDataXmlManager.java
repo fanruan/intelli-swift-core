@@ -100,7 +100,7 @@ public class MetaDataXmlManager extends XMLFileManager {
                     writer.attr("precision", data.getPrecision(i));
                     writer.attr("columnType", data.getColumnType(i));
                     writer.attr("scale", data.getScale(i));
-                    writer.attr("schema", data.getSchemaName(i));
+                    writer.attr("schema", data.getSchemaName());
                     writer.attr("remark", data.getColumnRemark(i));
                     writer.end();
                 }

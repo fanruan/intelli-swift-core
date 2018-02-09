@@ -78,8 +78,8 @@ import java.util.Map;
 /**
  * Created by Handsome on 2018/1/30 0030 16:38
  */
-class EtlConverter {
-    static DataSource transformEtlDataSource(FineBusinessTable table) throws Exception {
+class EtlAdaptor {
+    static DataSource adaptEtlDataSource(FineBusinessTable table) throws Exception {
         FineAnalysisTable analysis = ((FineAnalysisTable) table);
         List<DataSource> dataSources = new ArrayList<DataSource>();
         FineBusinessTable baseTable = analysis.getBaseTable();
@@ -132,7 +132,7 @@ class EtlConverter {
             return dataSource;
         }
 //        if (analysis.getOperator().getType() == AnalysisType.SELECT_FIELD) {
-//            return transformSelectField(analysis);
+//            return adaptSelectField(analysis);
 //        }
         try {
             if (baseTable != null) {
@@ -140,13 +140,13 @@ class EtlConverter {
             }
             FineOperator op = analysis.getOperator();
             dataSources.addAll(fromOperator(op));
-            return new ETLSource(dataSources, convertEtlOperator(op));
+            return new ETLSource(dataSources, adaptEtlOperator(op));
         } catch (Exception e) {
             return IndexingDataSourceFactory.transformDataSource(baseTable);
         }
     }
 
-    private static DataSource transformSelectField(FineAnalysisTable analysis) throws Exception {
+    private static DataSource adaptSelectField(FineAnalysisTable analysis) throws Exception {
         Map<String, List<ColumnKey>> sourceKeyColumnMap = new LinkedHashMap<String, List<ColumnKey>>();
         Map<String, DataSource> sourceKeyDataSourceMap = new LinkedHashMap<String, DataSource>();
         SelectFieldOperator selectFieldOperator = analysis.getOperator();
@@ -334,7 +334,7 @@ class EtlConverter {
         return new UnionOperator(listsOfColumn);
     }
 
-    public static ETLOperator convertEtlOperator(FineOperator op) throws FineEngineException {
+    public static ETLOperator adaptEtlOperator(FineOperator op) throws FineEngineException {
         switch (op.getType()) {
             case AnalysisType.SELECT_FIELD:
                 return fromSelectFieldBean(op.<SelectFieldBean>getValue());
