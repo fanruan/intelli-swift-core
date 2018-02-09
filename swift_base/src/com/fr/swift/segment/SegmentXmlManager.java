@@ -1,5 +1,6 @@
 package com.fr.swift.segment;
 
+import com.fr.base.FRContext;
 import com.fr.file.XMLFileManager;
 import com.fr.stable.StringUtils;
 import com.fr.stable.xml.XMLPrintWriter;
@@ -117,11 +118,11 @@ public class SegmentXmlManager extends XMLFileManager {
         return new ArrayList<SegmentKey>();
     }
 
-    public void addSegment(SourceKey sourceKey, SegmentKey segmentKey) {
+    public void addSegment(SourceKey sourceKey, SegmentKey segmentKey) throws Exception {
         segmentKey.setSourceId(sourceKey.getId());
         List<SegmentKey> segmentKeys = getSegmentKeys(sourceKey);
         segmentKeys.add(segmentKey);
         source2Segment.put(sourceKey, segmentKeys);
-//        FRContext.getCurrentEnv().writeResource(this);
+        FRContext.getCurrentEnv().writeResource(this);
     }
 }
