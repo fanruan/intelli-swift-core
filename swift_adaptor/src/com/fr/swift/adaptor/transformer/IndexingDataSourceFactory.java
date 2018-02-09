@@ -200,11 +200,7 @@ public class IndexingDataSourceFactory {
         }
         List<DataSource> baseSource = new ArrayList<DataSource>();
         baseSource.add(source);
-<<<<<<< HEAD
-        return new ETLSource(baseSource, EtlConverter.convertEtlOperator(operators.get(operators.size() - 1), table));
-=======
-        return new ETLSource(baseSource, EtlAdaptor.adaptEtlOperator(operators.get(operators.size() - 1)));
->>>>>>> cb62b67baea5e733412283d71fd978dee88b82e5
+        return new ETLSource(baseSource, EtlAdaptor.adaptEtlOperator(operators.get(operators.size() - 1), table));
     }
 
 //    private static ExcelDataSource transformExcelDataSource(FineExcelBusinessTable table) {

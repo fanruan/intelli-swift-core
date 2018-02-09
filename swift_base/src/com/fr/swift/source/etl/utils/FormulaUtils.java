@@ -10,12 +10,9 @@ import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.segment.column.DictionaryEncodedColumn;
-<<<<<<< HEAD
 import com.fr.swift.source.ColumnTypeUtils;
 import com.fr.third.antlr.ANTLRException;
-
 import java.util.*;
-=======
 import com.fr.swift.source.ColumnTypeConstants.ColumnType;
 import com.fr.swift.source.ColumnTypeUtils;
 
@@ -24,7 +21,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
->>>>>>> cb62b67baea5e733412283d71fd978dee88b82e5
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -57,11 +53,7 @@ public class FormulaUtils {
                     throw new RuntimeException();
                 }
                 if(!isNullValue(value)) {
-<<<<<<< HEAD
-                    if(columnType == ColumnTypeUtils.columnTypeToSqlType(ETLConstant.COLUMN.DATE)) {
-=======
                     if (columnType == ColumnTypeUtils.columnTypeToSqlType(ColumnType.DATE)) {
->>>>>>> cb62b67baea5e733412283d71fd978dee88b82e5
                         value = new Date((Long)value);
                     }
                     c.set(columnName, value);

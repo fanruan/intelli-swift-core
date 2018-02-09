@@ -142,11 +142,7 @@ class EtlAdaptor {
             }
             FineOperator op = analysis.getOperator();
             dataSources.addAll(fromOperator(op));
-<<<<<<< HEAD:swift_adaptor/src/com/fr/swift/adaptor/transformer/EtlConverter.java
-            return new ETLSource(dataSources, convertEtlOperator(op, table));
-=======
-            return new ETLSource(dataSources, adaptEtlOperator(op));
->>>>>>> cb62b67baea5e733412283d71fd978dee88b82e5:swift_adaptor/src/com/fr/swift/adaptor/transformer/EtlAdaptor.java
+            return new ETLSource(dataSources, adaptEtlOperator(op, table));
         } catch (Exception e) {
             return IndexingDataSourceFactory.transformDataSource(baseTable);
         }
@@ -339,12 +335,7 @@ class EtlAdaptor {
 
         return new UnionOperator(listsOfColumn);
     }
-
-<<<<<<< HEAD:swift_adaptor/src/com/fr/swift/adaptor/transformer/EtlConverter.java
-    public static ETLOperator convertEtlOperator(FineOperator op, FineBusinessTable table) throws FineEngineException {
-=======
-    public static ETLOperator adaptEtlOperator(FineOperator op) throws FineEngineException {
->>>>>>> cb62b67baea5e733412283d71fd978dee88b82e5:swift_adaptor/src/com/fr/swift/adaptor/transformer/EtlAdaptor.java
+    public static ETLOperator adaptEtlOperator(FineOperator op, FineBusinessTable table) throws FineEngineException {
         switch (op.getType()) {
             case AnalysisType.SELECT_FIELD:
                 return fromSelectFieldBean(op.<SelectFieldBean>getValue());
@@ -502,7 +493,6 @@ class EtlAdaptor {
         return new ColumnFilterOperator(filterInfo);
     }
 
-<<<<<<< HEAD:swift_adaptor/src/com/fr/swift/adaptor/transformer/EtlConverter.java
     private static int findFieldName(List<FineBusinessField> fields, String fieldID) {
         int index = Integer.MIN_VALUE;
         for (int i = 0; i < fields.size(); i++){
@@ -515,9 +505,6 @@ class EtlAdaptor {
     }
 
     private static ColumnRowTransOperator fromColumnRowTransBean(ColumnRowTransBean bean, FineBusinessTable table) throws FineEngineException {
-=======
-    private static ColumnRowTransOperator fromColumnRowTransBean(ColumnRowTransBean bean) {
->>>>>>> cb62b67baea5e733412283d71fd978dee88b82e5:swift_adaptor/src/com/fr/swift/adaptor/transformer/EtlAdaptor.java
         ColumnTransValue value = bean.getValue();
         FineBusinessTable preTable = ((EngineComplexConfTable)table).getBaseTableBySelected(0);
         List<FineBusinessField> fields = preTable.getFields();
@@ -542,11 +529,6 @@ class EtlAdaptor {
                 }
             }
         }
-<<<<<<< HEAD:swift_adaptor/src/com/fr/swift/adaptor/transformer/EtlConverter.java
-=======
-        //  throw new FineAnalysisOperationUnSafe("");
->>>>>>> cb62b67baea5e733412283d71fd978dee88b82e5:swift_adaptor/src/com/fr/swift/adaptor/transformer/EtlAdaptor.java
-
         return new ColumnRowTransOperator(groupName, lcName, lcValue, columns, otherColumnNames);
     }
 

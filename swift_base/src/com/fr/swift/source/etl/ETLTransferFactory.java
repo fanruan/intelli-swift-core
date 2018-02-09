@@ -49,7 +49,11 @@ public class ETLTransferFactory {
         for (DataSource dataSource : baseDataSourceList) {
             if(dataSource != null) {
                 if(!MinorSegmentManager.getInstance().isSegmentsExist(dataSource.getSourceKey())) {
-                    MinorUpdater.update(dataSource);
+                    try {
+                        MinorUpdater.update(dataSource);
+                    } catch(Exception e) {
+                        e.printStackTrace();
+                    }
                 }
                 List<Segment> segments = SwiftContext.getInstance().getMinorSegmentManager().getSegment(dataSource.getSourceKey());
                 basedSegments.add(segments.toArray(new Segment[segments.size()]));
