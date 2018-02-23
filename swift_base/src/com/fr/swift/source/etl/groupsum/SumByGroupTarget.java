@@ -142,6 +142,7 @@ public class SumByGroupTarget implements Serializable {
     }
 
     public ColumnType getColumnType() {
+        // TODO
         return getSumType() == ETLConstant.SUMMARY_TYPE.APPEND ?
                 ColumnType.STRING : ColumnType.NUMBER;
     }
