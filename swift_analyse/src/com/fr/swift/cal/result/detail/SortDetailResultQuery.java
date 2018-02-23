@@ -14,7 +14,7 @@ import java.util.List;
  * Created by pony on 2017/11/27.
  */
 public class SortDetailResultQuery extends AbstractDetailResultQuery {
-//    private IntList sortIndex;
+
     private Comparator comparator;
 
     public SortDetailResultQuery(List<Query<DetailResultSet>> queries) {

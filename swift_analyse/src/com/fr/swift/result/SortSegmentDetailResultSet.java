@@ -1,6 +1,7 @@
 package com.fr.swift.result;
 
 import com.fr.swift.bitmap.traversal.TraversalAction;
+import com.fr.swift.compare.Comparators;
 import com.fr.swift.query.filter.detail.DetailFilter;
 import com.fr.swift.query.sort.SortType;
 import com.fr.swift.segment.column.Column;
@@ -25,6 +26,7 @@ public class SortSegmentDetailResultSet extends DetailResultSet {
     private DetailFilter filter;
     private IntList sortIndex;
     private List<SortType> sorts;
+
 
     private ArrayList<Row> sortedDetailList = new ArrayList<Row>();
 
@@ -102,20 +104,21 @@ public class SortSegmentDetailResultSet extends DetailResultSet {
 
         @Override
         public int compare(Row o1, Row o2) {
-//            for (int i = 0; i < getColumnCount(); i++) {
-//                int c = 0;
-//                //比较的列先后顺序
-//                int realColumn = sortIndex.get(i);
-//                if (sorts.get(realColumn) == SortType.ASC) {
-//                    c = Comparators.asc().compare(o1.getValue(realColumn), o2.getValue(realColumn));
-//                }
-//                if (sorts.get(realColumn) == SortType.DESC) {
-//                    c = Comparators.desc().compare(o1.getValue(realColumn), o2.getValue(realColumn));
-//                }
-//                if (c != 0) {
-//                    return c;
-//                }
-//            }
+
+            for (int i = 0; i < getColumnCount(); i++) {
+                int c = 0;
+                //比较的列先后顺序
+                int realColumn = sortIndex.get(i);
+                if (sorts.get(realColumn) == SortType.ASC) {
+                    c = columnList.get(realColumn).getDictionaryEncodedColumn().getComparator().compare(o1.getValue(realColumn), o2.getValue(realColumn));
+                }
+                if (sorts.get(realColumn) == SortType.DESC) {
+                    c = Comparators.reverse(columnList.get(realColumn).getDictionaryEncodedColumn().getComparator()).compare(o1.getValue(realColumn), o2.getValue(realColumn));
+                }
+                if (c != 0) {
+                    return c;
+                }
+            }
             return 0;
         }
 
