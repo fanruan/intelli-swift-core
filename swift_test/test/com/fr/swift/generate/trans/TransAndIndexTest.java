@@ -2,6 +2,7 @@ package com.fr.swift.generate.trans;
 
 import com.fr.base.FRContext;
 import com.fr.dav.LocalEnv;
+import com.fr.swift.cube.queue.CubeTasks;
 import com.fr.swift.cube.task.SchedulerTask;
 import com.fr.swift.cube.task.Task.Status;
 import com.fr.swift.cube.task.TaskKey;
@@ -105,7 +106,7 @@ public class TransAndIndexTest extends TestCase {
 
             l.add(new Pair<>(task.key(), dataSource));
         }
-        SchedulerTaskPool.sendTasks(l);
+        CubeTasks.sendTasks(l);
         start.triggerRun();
 
         end.addStatusChangeListener((prev, now) -> {

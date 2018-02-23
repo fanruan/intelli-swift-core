@@ -2,6 +2,7 @@ package com.fr.swift.generate;
 
 import com.fr.base.FRContext;
 import com.fr.dav.LocalEnv;
+import com.fr.swift.cube.queue.CubeTasks;
 import com.fr.swift.cube.task.SchedulerTask;
 import com.fr.swift.cube.task.Task;
 import com.fr.swift.cube.task.TaskKey;
@@ -132,7 +133,7 @@ public class MultiRelationIndexBuilderTest extends TestCase {
         contractTask.addNext(task);
         task.addNext(end);
         l.add(new Pair<>(key, relationSource));
-        SchedulerTaskPool.sendTasks(l);
+        CubeTasks.sendTasks(l);
         start.triggerRun();
 
         end.addStatusChangeListener((prev, now) -> {

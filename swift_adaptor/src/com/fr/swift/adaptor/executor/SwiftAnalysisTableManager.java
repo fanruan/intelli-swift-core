@@ -7,6 +7,7 @@ import com.finebi.conf.structure.analysis.table.FineAnalysisTable;
 import com.finebi.conf.structure.bean.field.FineBusinessField;
 import com.finebi.conf.structure.filter.FineFilter;
 import com.finebi.conf.structure.result.BIDetailTableResult;
+import com.fr.swift.adaptor.preview.SwiftFieldsDataPreview;
 import com.fr.swift.adaptor.transformer.FieldFactory;
 import com.fr.swift.adaptor.transformer.IndexingDataSourceFactory;
 import com.fr.swift.log.SwiftLogger;
@@ -64,7 +65,7 @@ public class SwiftAnalysisTableManager implements EngineAnalysisTableManager {
     }
 
     @Override
-    public void saveAnalysisTable(FineAnalysisTable table) throws Exception {
+    public void saveAnalysisTable(FineAnalysisTable table) {
 
     }
 
@@ -74,12 +75,12 @@ public class SwiftAnalysisTableManager implements EngineAnalysisTableManager {
     }
 
     @Override
-    public NumberMaxAndMinValue getNumberMaxAndMinValue(FineAnalysisTable table, String fieldName) throws Exception {
+    public NumberMaxAndMinValue getNumberMaxAndMinValue(FineAnalysisTable table, String fieldName) {
         return null;
     }
 
     @Override
-    public List<Object> getColumnValue(FineAnalysisTable table, String fieldName) throws Exception {
+    public List<Object> getColumnValue(FineAnalysisTable table, String fieldName) {
         return null;
     }
 

@@ -1,4 +1,4 @@
-package com.fr.swift.generate.minor;
+package com.fr.swift.adaptor.preview;
 
 import com.fr.swift.generate.realtime.RealtimeColumnIndexer;
 import com.fr.swift.segment.ISegmentOperator;
@@ -8,7 +8,6 @@ import com.fr.swift.source.DataSource;
 import com.fr.swift.source.ETLDataSource;
 import com.fr.swift.source.SwiftMetaDataColumn;
 import com.fr.swift.source.SwiftSourceTransfer;
-import com.fr.swift.source.SwiftSourceTransferFactory;
 
 import java.util.List;
 
@@ -39,7 +38,7 @@ public class MinorUpdater {
 
     private static void build(final DataSource dataSource) throws Exception {
         ISegmentOperator operator = new MinorSegmentOperator(dataSource.getSourceKey(), dataSource.getMetadata(), null);
-        SwiftSourceTransfer transfer = SwiftSourceTransferFactory.createSourcePreviewTransfer(dataSource, 100);
+        SwiftSourceTransfer transfer = SwiftDataPreviewer.createPreviewTransfer(dataSource, 1000);
 
         operator.transport(transfer.createResultSet());
         operator.finishTransport();

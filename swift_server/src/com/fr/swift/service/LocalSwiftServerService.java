@@ -42,6 +42,7 @@ public class LocalSwiftServerService extends AbstractSwiftServerService {
     }
 
 
+    @Override
     protected void initListener() {
         super.initListener();
         initRealTimeListener();

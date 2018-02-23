@@ -1,6 +1,5 @@
 package com.fr.swift.context;
 
-import com.fr.swift.segment.SwiftSegmentManager;
 import com.fr.swift.segment.SwiftSegmentProvider;
 
 /**
@@ -11,7 +10,7 @@ import com.fr.swift.segment.SwiftSegmentProvider;
  * @since Advanced FineBI Analysis 1.0
  */
 public class SwiftContext {
-    private static SwiftContext INSTANCE = new SwiftContext();
+    private static final SwiftContext INSTANCE = new SwiftContext();
 
     private SwiftContext() {
     }
@@ -22,21 +21,11 @@ public class SwiftContext {
 
     private SwiftSegmentProvider swiftSegmentProvider;
 
-    private SwiftSegmentManager minorSegmentManager;
-
     public void registerSwiftSegmentProvider(SwiftSegmentProvider swiftSegmentProvider) {
         this.swiftSegmentProvider = swiftSegmentProvider;
     }
 
     public SwiftSegmentProvider getSwiftSegmentProvider() {
         return this.swiftSegmentProvider;
-    }
-
-    public void registerMinorSegmentManager(SwiftSegmentManager manager) {
-        this.minorSegmentManager = manager;
-    }
-
-    public SwiftSegmentManager getMinorSegmentManager() {
-        return minorSegmentManager;
     }
 }

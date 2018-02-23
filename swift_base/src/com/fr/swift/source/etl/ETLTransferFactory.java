@@ -1,8 +1,6 @@
 package com.fr.swift.source.etl;
 
 import com.fr.swift.context.SwiftContext;
-import com.fr.swift.generate.minor.MinorSegmentManager;
-import com.fr.swift.generate.minor.MinorUpdater;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.source.DataSource;
 import com.fr.swift.source.SwiftMetaData;
@@ -36,32 +34,4 @@ public class ETLTransferFactory {
 //        return null;
 //    }
 
-    public static ETLTransfer createMinorTransfer(ETLSource source) {
-        SwiftMetaData metaData = source.getMetadata();
-        ETLOperator operator = source.getOperator();
-        ETLTransferOperator transferOperator = ETLTransferOperatorFactory.createTransferOperator(operator);
-        List<SwiftMetaData> basedMetas = new ArrayList<SwiftMetaData>();
-        for (DataSource basedSource : source.getBasedSources()) {
-            basedMetas.add(basedSource.getMetadata());
-        }
-        List<DataSource> baseDataSourceList = source.getBasedSources();
-        List<Segment[]> basedSegments = new ArrayList<Segment[]>();
-        for (DataSource dataSource : baseDataSourceList) {
-            if(dataSource != null) {
-                if(!MinorSegmentManager.getInstance().isSegmentsExist(dataSource.getSourceKey())) {
-                    try {
-                        MinorUpdater.update(dataSource);
-                    } catch(Exception e) {
-                        e.printStackTrace();
-                    }
-                }
-                List<Segment> segments = SwiftContext.getInstance().getMinorSegmentManager().getSegment(dataSource.getSourceKey());
-                basedSegments.add(segments.toArray(new Segment[segments.size()]));
-            }
-        }
-        if (baseDataSourceList.isEmpty()) {
-            basedSegments.add(new Segment[0]);
-        }
-        return new ETLTransfer(transferOperator, metaData, basedMetas, basedSegments);
-    }
 }

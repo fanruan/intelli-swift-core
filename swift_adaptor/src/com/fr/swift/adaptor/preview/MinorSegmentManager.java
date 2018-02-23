@@ -1,4 +1,4 @@
-package com.fr.swift.generate.minor;
+package com.fr.swift.adaptor.preview;
 
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.SegmentKey;
@@ -15,7 +15,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author anchore
  * @date 2018/2/2
  */
-public class MinorSegmentManager implements SwiftSegmentManager {
+class MinorSegmentManager implements SwiftSegmentManager {
     private Map<SourceKey, List<Segment>> segments = new ConcurrentHashMap<SourceKey, List<Segment>>();
 
     @Override
