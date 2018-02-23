@@ -11,7 +11,6 @@ import com.fr.swift.service.listener.SwiftServiceListener;
 import com.fr.swift.service.listener.SwiftServiceListenerManager;
 import com.fr.swift.structure.Pair;
 
-import java.util.Collection;
 import java.util.HashMap;
 
 /**
@@ -35,20 +34,6 @@ public class SchedulerTaskPool extends BaseTaskPool<SchedulerTask> {
             @Override
             public EventOrder getOrder() {
                 return EventOrder.AFTER;
-            }
-        });
-    }
-
-    public static void sendTasks(final Collection<Pair<TaskKey, Object>> tasks) throws SwiftServiceException {
-        SwiftServiceListenerManager.getInstance().triggerEvent(new SwiftServiceEvent<Collection<Pair<TaskKey, Object>>>() {
-            @Override
-            public Collection<Pair<TaskKey, Object>> getContent() {
-                return tasks;
-            }
-
-            @Override
-            public EventType getEventType() {
-                return EventType.INIT_TASK;
             }
         });
     }

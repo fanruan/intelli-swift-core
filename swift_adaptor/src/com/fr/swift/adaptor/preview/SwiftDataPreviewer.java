@@ -1,0 +1,61 @@
+package com.fr.swift.adaptor.preview;
+
+import com.fr.swift.segment.Segment;
+import com.fr.swift.source.DataSource;
+import com.fr.swift.source.ETLDataSource;
+import com.fr.swift.source.SwiftMetaData;
+import com.fr.swift.source.SwiftSourceTransfer;
+import com.fr.swift.source.db.ConnectionManager;
+import com.fr.swift.source.db.QueryDBSource;
+import com.fr.swift.source.db.ServerDBSource;
+import com.fr.swift.source.db.TableDBSource;
+import com.fr.swift.source.etl.ETLOperator;
+import com.fr.swift.source.etl.ETLTransfer;
+import com.fr.swift.source.etl.ETLTransferOperator;
+import com.fr.swift.source.etl.ETLTransferOperatorFactory;
+import com.fr.swift.source.excel.ExcelDataSource;
+
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * @author anchore
+ * @date 2018/2/22
+ */
+public final class SwiftDataPreviewer {
+    public static SwiftSourceTransfer createPreviewTransfer(DataSource dataSource, int rowCount) {
+        SwiftSourceTransfer transfer = null;
+        if (dataSource instanceof TableDBSource) {
+            transfer = new TableDBSourcePreviewTransfer(ConnectionManager.getInstance().getConnectionInfo(((TableDBSource) dataSource).getConnectionName()),
+                    ((TableDBSource) dataSource).getFieldColumnTypes(), rowCount, ((TableDBSource) dataSource).getDBTableName());
+        } else if (dataSource instanceof QueryDBSource) {
+            transfer = new QuerySourcePreviewTransfer(ConnectionManager.getInstance().getConnectionInfo(((QueryDBSource) dataSource).getConnectionName()),
+                    ((QueryDBSource) dataSource).getFieldColumnTypes(), rowCount, ((QueryDBSource) dataSource).getQuery());
+        } else if (dataSource instanceof ServerDBSource) {
+        } else if (dataSource instanceof ExcelDataSource) {
+        } else if (dataSource instanceof ETLDataSource) {
+            transfer = createMinorEtlTransfer((ETLDataSource) dataSource);
+        }
+        return transfer;
+    }
+
+    private static ETLTransfer createMinorEtlTransfer(ETLDataSource source) {
+        SwiftMetaData metaData = source.getMetadata();
+        ETLOperator operator = source.getOperator();
+        ETLTransferOperator transferOperator = ETLTransferOperatorFactory.createTransferOperator(operator);
+        List<SwiftMetaData> basedMetas = new ArrayList<SwiftMetaData>();
+        for (DataSource basedSource : source.getBasedSources()) {
+            basedMetas.add(basedSource.getMetadata());
+        }
+        List<DataSource> baseDataSourceList = source.getBasedSources();
+        List<Segment[]> basedSegments = new ArrayList<Segment[]>();
+        for (DataSource dataSource : baseDataSourceList) {
+            List<Segment> segments = MinorSegmentManager.getInstance().getSegment(dataSource.getSourceKey());
+            basedSegments.add(segments.toArray(new Segment[segments.size()]));
+        }
+        if (baseDataSourceList.isEmpty()) {
+            basedSegments.add(new Segment[0]);
+        }
+        return new ETLTransfer(transferOperator, metaData, basedMetas, basedSegments);
+    }
+}

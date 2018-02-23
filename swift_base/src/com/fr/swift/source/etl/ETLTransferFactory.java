@@ -34,23 +34,4 @@ public class ETLTransferFactory {
 //        return null;
 //    }
 
-    public static ETLTransfer createMinorTransfer(ETLSource source) {
-        SwiftMetaData metaData = source.getMetadata();
-        ETLOperator operator = source.getOperator();
-        ETLTransferOperator transferOperator = ETLTransferOperatorFactory.createTransferOperator(operator);
-        List<SwiftMetaData> basedMetas = new ArrayList<SwiftMetaData>();
-        for (DataSource basedSource : source.getBasedSources()) {
-            basedMetas.add(basedSource.getMetadata());
-        }
-        List<DataSource> baseDataSourceList = source.getBasedSources();
-        List<Segment[]> basedSegments = new ArrayList<Segment[]>();
-        for (DataSource dataSource : baseDataSourceList) {
-            List<Segment> segments = SwiftContext.getInstance().getMinorSegmentManager().getSegment(dataSource.getSourceKey());
-            basedSegments.add(segments.toArray(new Segment[segments.size()]));
-        }
-        if (baseDataSourceList.isEmpty()) {
-            basedSegments.add(new Segment[0]);
-        }
-        return new ETLTransfer(transferOperator, metaData, basedMetas, basedSegments);
-    }
 }

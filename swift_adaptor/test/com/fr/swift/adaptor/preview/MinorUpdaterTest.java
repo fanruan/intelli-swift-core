@@ -1,4 +1,4 @@
-package com.fr.swift.generate.minor;
+package com.fr.swift.adaptor.preview;
 
 import com.fr.swift.provider.ConnectionProvider;
 import com.fr.swift.segment.Segment;

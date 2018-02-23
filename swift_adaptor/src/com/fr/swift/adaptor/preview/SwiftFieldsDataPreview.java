@@ -1,20 +1,19 @@
-package com.fr.swift.adaptor.executor;
+package com.fr.swift.adaptor.preview;
 
 import com.finebi.conf.structure.bean.field.FineBusinessField;
 import com.finebi.conf.structure.bean.table.FineBusinessTable;
 import com.finebi.conf.structure.result.BIDetailCell;
 import com.finebi.conf.structure.result.BIDetailTableResult;
 import com.fr.general.ComparatorUtils;
+import com.fr.swift.adaptor.executor.SwiftTableEngineExecutor;
 import com.fr.swift.adaptor.struct.SwiftCombineDetailResult;
 import com.fr.swift.adaptor.struct.SwiftDetailTableResult;
 import com.fr.swift.adaptor.struct.SwiftEmptyResult;
 import com.fr.swift.adaptor.transformer.IndexingDataSourceFactory;
-import com.fr.swift.generate.minor.MinorSegmentManager;
-import com.fr.swift.generate.minor.MinorUpdater;
+import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.source.DataSource;
 import com.fr.swift.source.SwiftResultSet;
 import com.fr.swift.source.SwiftSourceTransfer;
-import com.fr.swift.source.SwiftSourceTransferFactory;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -44,14 +43,14 @@ public class SwiftFieldsDataPreview {
                     MinorUpdater.update(dataSource);
                 }
 
-                SwiftSourceTransfer transfer = SwiftSourceTransferFactory.createSourcePreviewTransfer(dataSource, rowCount);
+                SwiftSourceTransfer transfer = SwiftDataPreviewer.createPreviewTransfer(dataSource, rowCount);
                 SwiftResultSet swiftResultSet = transfer.createResultSet();
                 BIDetailTableResult detailTableResult = new SwiftDetailTableResult(swiftResultSet);
                 return detailTableResult;
             }
             return new SwiftDetailTableResult(new SwiftEmptyResult());
         } catch (Exception e) {
-            e.printStackTrace();
+            SwiftLoggers.getLogger().error(e);
             return new SwiftDetailTableResult(new SwiftEmptyResult());
         }
 //        SwiftSourceTransfer transfer = SwiftSourceTransferFactory.createSourcePreviewTransfer(dataSource, rowCount);

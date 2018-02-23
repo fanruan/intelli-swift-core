@@ -19,6 +19,7 @@ import com.fr.swift.structure.external.map.intpairs.IntPairsExtMaps;
 import com.fr.swift.util.Crasher;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
@@ -114,12 +115,10 @@ public class ColumnDictMerger<T extends Comparable<T>> extends BaseWorker {
 
     private <V extends Comparable<V>> ExternalMap<V, List<Pair<Integer, Integer>>> newIntPairsExternalMap(String path) {
         ClassType classType = getClassType();
-        switch (classType) {
-            case STRING:
-                return (ExternalMap<V, List<Pair<Integer, Integer>>>) IntPairsExtMaps.newExternalMap(classType, Comparators.PINYIN_ASC, path);
-            default:
-                return IntPairsExtMaps.newExternalMap(classType, Comparators.<V>asc(), path);
-        }
+        return IntPairsExtMaps.newExternalMap(classType,
+                classType == ClassType.STRING ?
+                        (Comparator<V>) Comparators.PINYIN_ASC : Comparators.<V>asc(), path);
+
     }
 
     private ClassType getClassType() {
