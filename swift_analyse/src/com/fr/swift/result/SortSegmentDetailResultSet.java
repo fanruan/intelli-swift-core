@@ -26,8 +26,7 @@ public class SortSegmentDetailResultSet extends DetailResultSet {
     private DetailFilter filter;
     private IntList sortIndex;
     private List<SortType> sorts;
-    private Comparator asc = Comparators.asc();
-    private Comparator desc = Comparators.desc();
+
 
     private ArrayList<Row> sortedDetailList = new ArrayList<Row>();
 
@@ -111,10 +110,10 @@ public class SortSegmentDetailResultSet extends DetailResultSet {
                 //比较的列先后顺序
                 int realColumn = sortIndex.get(i);
                 if (sorts.get(realColumn) == SortType.ASC) {
-                    c = asc.compare(o1.getValue(realColumn), o2.getValue(realColumn));
+                    c = columnList.get(realColumn).getDictionaryEncodedColumn().getComparator().compare(o1.getValue(realColumn), o2.getValue(realColumn));
                 }
                 if (sorts.get(realColumn) == SortType.DESC) {
-                    c = desc.compare(o1.getValue(realColumn), o2.getValue(realColumn));
+                    c = Comparators.reverse(columnList.get(realColumn).getDictionaryEncodedColumn().getComparator()).compare(o1.getValue(realColumn), o2.getValue(realColumn));
                 }
                 if (c != 0) {
                     return c;
