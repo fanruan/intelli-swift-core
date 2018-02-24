@@ -1,7 +1,7 @@
 package com.fr.swift.structure.external.map.intpairs;
 
 import com.fr.swift.segment.column.DictionaryEncodedColumn;
-import com.fr.swift.structure.Pair;
+import com.fr.swift.structure.IntPair;
 import com.fr.swift.structure.external.map.ExternalMap;
 import com.fr.swift.structure.external.map.ExternalMapIO;
 
@@ -22,13 +22,13 @@ import java.util.TreeMap;
  * <p>
  * ps：你也可以用在别处，符合K-V格式即可
  */
-abstract class BaseIntPairsExtMap<K> extends ExternalMap<K, List<Pair<Integer, Integer>>> {
+abstract class BaseIntPairsExtMap<K> extends ExternalMap<K, List<IntPair>> {
     @Override
-    public List<Pair<Integer, Integer>> combineValue(TreeMap<Integer, List<Pair<Integer, Integer>>> lists) {
-        List<Pair<Integer, Integer>> result = new ArrayList<Pair<Integer, Integer>>();
-        Iterator<Map.Entry<Integer, List<Pair<Integer, Integer>>>> itr = lists.entrySet().iterator();
+    public List<IntPair> combineValue(TreeMap<Integer, List<IntPair>> lists) {
+        List<IntPair> result = new ArrayList<IntPair>();
+        Iterator<Map.Entry<Integer, List<IntPair>>> itr = lists.entrySet().iterator();
         while (itr.hasNext()) {
-            List<Pair<Integer, Integer>> temp = itr.next().getValue();
+            List<IntPair> temp = itr.next().getValue();
             result.addAll(temp);
             itr.remove();
         }
@@ -36,7 +36,7 @@ abstract class BaseIntPairsExtMap<K> extends ExternalMap<K, List<Pair<Integer, I
     }
 
     @Override
-    public ExternalMapIO<K, List<Pair<Integer, Integer>>> getMemMapIO(TreeMap<K, List<Pair<Integer, Integer>>> currentContainer) {
+    public ExternalMapIO<K, List<IntPair>> getMemMapIO(TreeMap<K, List<IntPair>> currentContainer) {
         return new MemIntPairsMapIo<K>(currentContainer);
     }
 

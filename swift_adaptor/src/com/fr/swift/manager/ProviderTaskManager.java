@@ -135,14 +135,14 @@ public class ProviderTaskManager {
         WorkerTaskPool.getInstance().setGenerator(new Function<Pair<TaskKey, Object>, WorkerTask>() {
             @Override
             public WorkerTask apply(Pair<TaskKey, Object> pair) {
-                TaskKey taskKey = pair.key();
+                TaskKey taskKey = pair.getKey();
                 if (taskKey.operation() == Operation.NULL) {
                     WorkerTask wt = new WorkerTaskImpl(taskKey);
                     wt.setWorker(BaseWorker.nullWorker());
                     return wt;
                 }
 
-                Object o = pair.value();
+                Object o = pair.getValue();
                 if (o instanceof DataSource) {
                     DataSource ds = ((DataSource) o);
                     WorkerTask wt = new WorkerTaskImpl(taskKey);
