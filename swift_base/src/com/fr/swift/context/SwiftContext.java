@@ -1,7 +1,7 @@
 package com.fr.swift.context;
 
+import com.fr.swift.segment.SegmentOperatorProvider;
 import com.fr.swift.segment.SwiftSegmentManager;
-import com.fr.swift.segment.SwiftSegmentProvider;
 
 /**
  * This class created on 2018-1-30 16:58:12
@@ -20,16 +20,26 @@ public class SwiftContext {
         return INSTANCE;
     }
 
-    private SwiftSegmentProvider swiftSegmentProvider;
+    private SwiftSegmentManager segmentProvider;
+
+    private SegmentOperatorProvider segmentOperatorProvider;
 
     private SwiftSegmentManager minorSegmentManager;
 
-    public void registerSwiftSegmentProvider(SwiftSegmentProvider swiftSegmentProvider) {
-        this.swiftSegmentProvider = swiftSegmentProvider;
+    public void registerSegmentProvider(SwiftSegmentManager segmentProvider) {
+        this.segmentProvider = segmentProvider;
     }
 
-    public SwiftSegmentProvider getSwiftSegmentProvider() {
-        return this.swiftSegmentProvider;
+    public void registerSegmentOperatorProvider(SegmentOperatorProvider segmentOperatorProvider) {
+        this.segmentOperatorProvider = segmentOperatorProvider;
+    }
+
+    public SwiftSegmentManager getSegmentProvider() {
+        return this.segmentProvider;
+    }
+
+    public SegmentOperatorProvider getSegmentOperatorProvider() {
+        return this.segmentOperatorProvider;
     }
 
     public void registerMinorSegmentManager(SwiftSegmentManager manager) {

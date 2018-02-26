@@ -67,7 +67,7 @@ public class SwiftSourceTransferFactory {
         List<DataSource> baseDataSourceList = source.getBasedSources();
         List<Segment[]> basedSegments = new ArrayList<Segment[]>();
         for (DataSource dataSource : baseDataSourceList) {
-            List<Segment> segments = SwiftContext.getInstance().getSwiftSegmentProvider().getSegment(dataSource.getSourceKey());
+            List<Segment> segments = SwiftContext.getInstance().getSegmentProvider().getSegment(dataSource.getSourceKey());
             basedSegments.add(segments.toArray(new Segment[segments.size()]));
         }
 

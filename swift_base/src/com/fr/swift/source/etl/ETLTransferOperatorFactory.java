@@ -6,6 +6,8 @@ import com.fr.swift.source.etl.columnrowtrans.ColumnRowTransOperator;
 import com.fr.swift.source.etl.columnrowtrans.ColumnRowTransferOperator;
 import com.fr.swift.source.etl.detail.DetailOperator;
 import com.fr.swift.source.etl.detail.DetailTransferOperator;
+import com.fr.swift.source.etl.formula.ColumnFormulaOperator;
+import com.fr.swift.source.etl.formula.ColumnFormulaTransferOperator;
 import com.fr.swift.source.etl.groupsum.SumByGroupOperator;
 import com.fr.swift.source.etl.groupsum.SumByGroupTransferOperator;
 import com.fr.swift.source.etl.join.JoinOperator;
@@ -43,6 +45,8 @@ public class ETLTransferOperatorFactory {
                 return transferTwoUnionRelationOperator((TwoUnionRelationOperator) operator);
             case SORT:
                 return transferColumnSortOperator((ColumnSortOperator) operator);
+            case COLUMNFORMULA:
+                return transferColumnFormulaOperator((ColumnFormulaOperator) operator);
         }
         return null;
     }
@@ -83,4 +87,7 @@ public class ETLTransferOperatorFactory {
         return new ColumnSortTransferOperator(operator.getFieldsSortedMap());
     }
 
+    private static ETLTransferOperator transferColumnFormulaOperator(ColumnFormulaOperator operator) {
+        return new ColumnFormulaTransferOperator(operator.getColumnType(), operator.getExpression());
+    }
 }

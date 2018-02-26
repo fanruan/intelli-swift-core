@@ -81,7 +81,7 @@ class CubeTasks {
     }
 
     private static boolean isReadable(DataSource dataSource) {
-        return SwiftContext.getInstance().getSwiftSegmentProvider().isSegmentsExist(dataSource.getSourceKey());
+        return SwiftContext.getInstance().getSegmentProvider().isSegmentsExist(dataSource.getSourceKey());
     }
 
     static String newTaskName(DataSource ds) throws SwiftMetaDataException {

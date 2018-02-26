@@ -1,12 +1,13 @@
 package com.fr.swift.fine.adaptor.executor;
 
+import com.finebi.base.constant.FineEngineType;
+import com.finebi.conf.internalimp.basictable.table.FineDBBusinessTable;
 import com.finebi.conf.structure.bean.field.FineBusinessField;
 import com.finebi.conf.structure.result.BIDetailCell;
 import com.finebi.conf.structure.result.BIDetailTableResult;
 import com.fr.base.FRContext;
-import com.fr.data.core.db.TableProcedure;
 import com.fr.dav.LocalEnv;
-import com.fr.swift.adaptor.executor.SwiftDBEngineExecutor;
+import com.fr.swift.adaptor.executor.SwiftTableEngineExecutor;
 import com.fr.swift.provider.ConnectionProvider;
 import com.fr.swift.source.db.ConnectionInfo;
 import com.fr.swift.source.db.ConnectionManager;
@@ -28,6 +29,8 @@ public class SwiftDBEngineExecutorTest extends TestCase {
 
     private ConnectionInfo connectionInfo;
 
+    private FineDBBusinessTable fineDBBusinessTable = new FineDBBusinessTable("DEMO_CONTRACT", FineEngineType.Cube, "local", "DEMO_CONTRACT");
+
     @Override
     public void setUp() throws Exception {
         super.setUp();
@@ -41,16 +44,16 @@ public class SwiftDBEngineExecutorTest extends TestCase {
 
     @Test
     public void testSwiftDBDataModelGetFields() throws Exception {
-        SwiftDBEngineExecutor dataModel = new SwiftDBEngineExecutor();
-        List<FineBusinessField> list = dataModel.getFieldList("local", "DEMO_CONTRACT", connectionInfo.getSchema(), connectionInfo.getFrConnection());
+        SwiftTableEngineExecutor dataModel = new SwiftTableEngineExecutor();
+        List<FineBusinessField> list = dataModel.getFieldList(fineDBBusinessTable);
         assertEquals(list.size(), 10);
         assertTrue(true);
     }
 
     @Test
     public void testSwiftDBDataModelPreviewDBTable() throws Exception {
-        SwiftDBEngineExecutor dataModel = new SwiftDBEngineExecutor();
-        BIDetailTableResult detailTableResult = dataModel.getPreviewData("local", "DEMO_CONTRACT", 150, connectionInfo.getSchema(), connectionInfo.getFrConnection());
+        SwiftTableEngineExecutor dataModel = new SwiftTableEngineExecutor();
+        BIDetailTableResult detailTableResult = dataModel.getPreviewData(fineDBBusinessTable, 150);
         assertEquals(detailTableResult.columnSize(), 10);
         int count = 0;
         while (detailTableResult.hasNext()) {

@@ -23,8 +23,8 @@ public class IncreaseSegmentOperator extends AbstractSegmentOperator {
 
     protected List<ISegmentHolder> increaseSegmentList;
 
-    public IncreaseSegmentOperator(SourceKey sourceKey, SwiftMetaData metaData, List<Segment> segments) throws SwiftMetaDataException {
-        super(sourceKey, metaData, segments);
+    public IncreaseSegmentOperator(SourceKey sourceKey, SwiftMetaData metaData, List<Segment> segments, String cubeSourceKey) throws SwiftMetaDataException {
+        super(sourceKey, metaData, segments, cubeSourceKey);
         this.increaseSegmentList = new ArrayList<ISegmentHolder>();
         if (null != segments && !segments.isEmpty()) {
             for (int i = 0, len = segments.size(); i < len; i++) {
@@ -32,7 +32,7 @@ public class IncreaseSegmentOperator extends AbstractSegmentOperator {
                     this.segmentList.add(new HistorySegmentHolder(segments.get(i)));
                 } else {
                     this.segmentList.add(new RealtimeSegmentHolder(segments.get(i)));
-            }
+                }
             }
         }
     }
@@ -41,7 +41,7 @@ public class IncreaseSegmentOperator extends AbstractSegmentOperator {
     @Override
     public void transport(SwiftResultSet swiftResultSet) throws Exception {
         int count = 0;
-        if(metaData.getColumnCount() != 0){
+        if (metaData.getColumnCount() != 0) {
             String allotColumn = metaData.getColumnName(1);
             while (swiftResultSet.next()) {
                 Row row = swiftResultSet.getRowData();
@@ -101,7 +101,7 @@ public class IncreaseSegmentOperator extends AbstractSegmentOperator {
      */
     @Deprecated
     protected Segment createSegment(int order) throws Exception {
-        String cubePath = System.getProperty("user.dir") + "/cubes/" + sourceKey.getId() + "/seg" + order;
+        String cubePath = System.getProperty("user.dir") + "/cubes/" + cubeSourceKey + "/seg" + order;
         IResourceLocation location = new ResourceLocation(cubePath, Types.StoreType.MEMORY);
         SegmentKey segmentKey = new SegmentKey();
         segmentKey.setSegmentOrder(order);
