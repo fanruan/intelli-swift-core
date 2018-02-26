@@ -18,10 +18,12 @@ public class BitMapGroupByEntry implements GroupByEntry {
         this.bitmap = bitmap;
     }
 
+    @Override
     public int getIndex() {
         return index;
     }
 
+    @Override
     public RowTraversal getTraversal() {
         return bitMapColumn.getBitMapIndex(index).getAnd(bitmap);
     }

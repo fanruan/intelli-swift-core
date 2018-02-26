@@ -19,7 +19,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 import static com.fr.swift.cube.io.IOConstant.NULL_INT;
 
 /**
- * Created by 小灰灰 on 2016/11/28.
+ * @author 小灰灰
+ * @date 2016/11/28
  */
 public class GroupBy {
     /**
@@ -58,12 +59,12 @@ public class GroupBy {
         switch (tool) {
             case INT_ARRAY:
                 return getArraySortResult(dictionaryEncodedColumn, bitMapColumn, filteredTraversal, startIndex, asc);
-            case TREE_MAP_RE_SORT:
-                return getTreeMapReSortResult(dictionaryEncodedColumn, filteredTraversal, startIndex, asc);
-            case INT_ARRAY_RE_SORT:
-                return getArrayReSortResult(dictionaryEncodedColumn, filteredTraversal, startIndex, asc);
+            case TREE_MAP_RESORT:
+                return getTreeMapResortResult(dictionaryEncodedColumn, filteredTraversal, startIndex, asc);
+            case INT_ARRAY_RESORT:
+                return getArrayResortResult(dictionaryEncodedColumn, filteredTraversal, startIndex, asc);
             case DIRECT:
-                return getOneKeyResult(dictionaryEncodedColumn, bitMapColumn, filteredTraversal);
+                return getOneKeyResult(dictionaryEncodedColumn, filteredTraversal);
             case EMPTY:
                 return EMPTY;
             case TREE_MAP:
@@ -74,7 +75,6 @@ public class GroupBy {
     }
 
     private static final GroupByResult EMPTY = new GroupByResult() {
-
         @Override
         public boolean hasNext() {
             return false;
@@ -87,11 +87,9 @@ public class GroupBy {
 
         @Override
         public void remove() {
-
+            throw new UnsupportedOperationException();
         }
-
     };
-
 
     private static GroupByResult getAllShowResult(DictionaryEncodedColumn dictionaryEncodedColumn, BitmapIndexedColumn bitMapColumn, int startIndex, boolean asc) {
         return asc ? getAllShowASCResult(dictionaryEncodedColumn, bitMapColumn, startIndex) : getAllShowDESCResult(dictionaryEncodedColumn, bitMapColumn, startIndex);
@@ -158,10 +156,11 @@ public class GroupBy {
                 }
             }
         });
-        return asc ? getArraySortASCResult(dictionaryEncodedColumn, bitMapColumn, groupIndex, startIndex, filteredTraversal) : getArraySortDESCResult(dictionaryEncodedColumn, bitMapColumn, groupIndex, startIndex, filteredTraversal);
+        return asc ? getArraySortAscResult(bitMapColumn, groupIndex, startIndex, filteredTraversal) :
+                getArraySortDescResult(bitMapColumn, groupIndex, startIndex, filteredTraversal);
     }
 
-    private static GroupByResult getArraySortDESCResult(final DictionaryEncodedColumn dictionaryEncodedColumn, final BitmapIndexedColumn bitMapColumn, final boolean[] groupIndex, final int startIndex, final RowTraversal rowTraversal) {
+    private static GroupByResult getArraySortDescResult(final BitmapIndexedColumn bitMapColumn, final boolean[] groupIndex, final int startIndex, final RowTraversal rowTraversal) {
         return new GroupByResult() {
 
             private int index = groupIndex.length - 1 - startIndex;
@@ -188,7 +187,7 @@ public class GroupBy {
         };
     }
 
-    private static GroupByResult getArraySortASCResult(final DictionaryEncodedColumn dictionaryEncodedColumn, final BitmapIndexedColumn bitMapColumn, final boolean[] groupIndex, final int startIndex, final RowTraversal rowTraversal) {
+    private static GroupByResult getArraySortAscResult(final BitmapIndexedColumn bitMapColumn, final boolean[] groupIndex, final int startIndex, final RowTraversal rowTraversal) {
         return new GroupByResult() {
 
             private int index = startIndex;
@@ -215,7 +214,7 @@ public class GroupBy {
         };
     }
 
-    private static GroupByResult getOneKeyResult(DictionaryEncodedColumn dictionaryEncodedColumn, BitmapIndexedColumn bitMapColumn, RowTraversal filteredTraversal) {
+    private static GroupByResult getOneKeyResult(DictionaryEncodedColumn dictionaryEncodedColumn, RowTraversal filteredTraversal) {
         final AtomicInteger value = new AtomicInteger(NULL_INT);
         filteredTraversal.traversal(new TraversalAction() {
             @Override
@@ -223,10 +222,10 @@ public class GroupBy {
                 value.set(row);
             }
         });
-        return getOneKeyResult(dictionaryEncodedColumn, bitMapColumn, value.get());
+        return getOneKeyResult(dictionaryEncodedColumn, value.get());
     }
 
-    private static GroupByResult getOneKeyResult(final DictionaryEncodedColumn dictionaryEncodedColumn, final BitmapIndexedColumn bitMapColumn, final Integer row) {
+    private static GroupByResult getOneKeyResult(final DictionaryEncodedColumn dictionaryEncodedColumn, final Integer row) {
         return new GroupByResult() {
             int groupRow = dictionaryEncodedColumn.getIndexByRow(row);
 
@@ -285,7 +284,7 @@ public class GroupBy {
         };
     }
 
-    private static GroupByResult getTreeMapReSortResult(final DictionaryEncodedColumn dictionaryEncodedColumn, RowTraversal filteredTraversal, final int startIndex, final boolean asc) {
+    private static GroupByResult getTreeMapResortResult(final DictionaryEncodedColumn dictionaryEncodedColumn, RowTraversal filteredTraversal, final int startIndex, final boolean asc) {
         final TreeMap<Integer, IntList> map = new TreeMap<Integer, IntList>(asc ? Comparators.<Integer>asc() : Comparators.<Integer>desc());
         filteredTraversal.traversal(new TraversalAction() {
             @Override
@@ -301,7 +300,7 @@ public class GroupBy {
                 }
             }
         });
-        return getTreeMapReSortResult(dictionaryEncodedColumn, map);
+        return getTreeMapResortResult(map);
     }
 
     private static boolean match(int startIndex, boolean asc, int groupRow) {
@@ -314,11 +313,11 @@ public class GroupBy {
         return asc ? groupRow >= startIndex : groupRow <= startIndex;
     }
 
-    private static GroupByResult getTreeMapReSortResult(DictionaryEncodedColumn dictionaryEncodedColumn, Map<Integer, IntList> map) {
-        return new TreeMapResortResult(dictionaryEncodedColumn, map);
+    private static GroupByResult getTreeMapResortResult(Map<Integer, IntList> map) {
+        return new TreeMapResortResult(map);
     }
 
-    private static GroupByResult getArrayReSortResult(final DictionaryEncodedColumn dictionaryEncodedColumn, RowTraversal filteredTraversal, int startIndex, boolean asc) {
+    private static GroupByResult getArrayResortResult(final DictionaryEncodedColumn dictionaryEncodedColumn, RowTraversal filteredTraversal, int startIndex, boolean asc) {
         final IntList[] groupArray = new IntList[dictionaryEncodedColumn.size()];
         filteredTraversal.traversal(new TraversalAction() {
             @Override
@@ -332,10 +331,10 @@ public class GroupBy {
                 }
             }
         });
-        return asc ? getArrayReSortASCResult(dictionaryEncodedColumn, groupArray, startIndex) : getArrayReSortDESCResult(dictionaryEncodedColumn, groupArray, startIndex);
+        return asc ? getArrayResortAscResult(groupArray, startIndex) : getArrayResortDescResult(groupArray, startIndex);
     }
 
-    private static GroupByResult getArrayReSortDESCResult(final DictionaryEncodedColumn dictionaryEncodedColumn, final IntList[] groupArray, final int startIndex) {
+    private static GroupByResult getArrayResortDescResult(final IntList[] groupArray, final int startIndex) {
         return new GroupByResult() {
             private int index = groupArray.length - 1 - startIndex;
 
@@ -361,7 +360,7 @@ public class GroupBy {
         };
     }
 
-    private static GroupByResult getArrayReSortASCResult(final DictionaryEncodedColumn dictionaryEncodedColumn, final IntList[] groupArray, final int startIndex) {
+    private static GroupByResult getArrayResortAscResult(final IntList[] groupArray, final int startIndex) {
         return new GroupByResult() {
 
             private int index = startIndex;

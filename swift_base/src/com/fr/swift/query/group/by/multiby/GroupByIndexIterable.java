@@ -22,7 +22,9 @@ import java.util.List;
  * 当前可以实现全部计算、分页计算、计算汇总值、不计算汇总值
  * 但是不能处理展开的情况。要处理展开的情况要把iteratorCursor抽象出来。
  * <p>
- * Created by Lyon on 2017/12/27.
+ *
+ * @author Lyon
+ * @date 2017/12/27
  */
 public class GroupByIndexIterable implements InCollector<RowIndexKey, RowTraversal> {
 

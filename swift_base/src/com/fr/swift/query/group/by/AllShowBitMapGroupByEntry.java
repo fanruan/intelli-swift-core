@@ -15,10 +15,12 @@ public class AllShowBitMapGroupByEntry implements GroupByEntry {
         this.bitMapColumn = bitMapColumn;
     }
 
+    @Override
     public int getIndex() {
         return index;
     }
 
+    @Override
     public RowTraversal getTraversal() {
         return bitMapColumn.getBitMapIndex(index);
     }
