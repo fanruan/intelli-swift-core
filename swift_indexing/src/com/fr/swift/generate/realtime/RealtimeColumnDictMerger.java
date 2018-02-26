@@ -1,4 +1,4 @@
-package com.fr.swift.generate.history;
+package com.fr.swift.generate.realtime;
 
 import com.fr.swift.cube.io.Releasable;
 import com.fr.swift.generate.BaseColumnDictMerger;
@@ -7,17 +7,15 @@ import com.fr.swift.source.DataSource;
 
 /**
  * @author anchore
- * @date 2018/1/9
- * <p>
- * 合并字典
+ * @date 2018/2/26
  */
-public class ColumnDictMerger<T extends Comparable<T>> extends BaseColumnDictMerger<T> {
-    public ColumnDictMerger(DataSource dataSource, ColumnKey key) {
+public class RealtimeColumnDictMerger<T extends Comparable<T>> extends BaseColumnDictMerger<T> {
+    public RealtimeColumnDictMerger(DataSource dataSource, ColumnKey key) {
         super(dataSource, key);
     }
 
     @Override
     protected void releaseIfNeed(Releasable baseColumn) {
-        baseColumn.release();
+        // realtime的不释放
     }
 }
