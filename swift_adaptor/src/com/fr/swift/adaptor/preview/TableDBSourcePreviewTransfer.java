@@ -1,16 +1,19 @@
-package com.fr.swift.source.db;
+package com.fr.swift.adaptor.preview;
 
 import com.fr.data.core.db.dialect.Dialect;
 import com.fr.data.core.db.dml.Table;
 import com.fr.stable.StringUtils;
 import com.fr.swift.source.ColumnTypeConstants.ColumnType;
+import com.fr.swift.source.db.AbstractPreviewQueryTransfer;
+import com.fr.swift.source.db.ConnectionInfo;
 
 import java.util.Map;
 
 /**
- * Created by pony on 2017/12/5.
+ * @author pony
+ * @date 2017/12/5
  */
-public class TableDBSourcePreviewTransfer extends AbstractPreviewQueryTransfer {
+class TableDBSourcePreviewTransfer extends AbstractPreviewQueryTransfer {
     private String tableName;
 
     public TableDBSourcePreviewTransfer(ConnectionInfo connectionInfo, int row, String tableName) {
@@ -27,11 +30,11 @@ public class TableDBSourcePreviewTransfer extends AbstractPreviewQueryTransfer {
     @Override
     protected String getQuery(Dialect dialect) {
         String columns;
-        StringBuffer sb = new StringBuffer();
-        if (fieldClassTypes == null || fieldClassTypes.isEmpty()){
+        StringBuilder sb = new StringBuilder();
+        if (fieldClassTypes == null || fieldClassTypes.isEmpty()) {
             columns = null;
         } else {
-            for (String fieldName : fieldClassTypes.keySet()){
+            for (String fieldName : fieldClassTypes.keySet()) {
                 sb.append(dialect.column2SQL(fieldName));
                 sb.append(",");
             }

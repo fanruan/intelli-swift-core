@@ -8,11 +8,11 @@ public class Pair<K, V> {
     private K key;
     private V value;
 
-    public K key() {
+    public K getKey() {
         return key;
     }
 
-    public V value() {
+    public V getValue() {
         return value;
     }
 

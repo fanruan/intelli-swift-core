@@ -4,7 +4,6 @@ package com.fr.swift.generate.history;
 import com.fr.swift.bitmap.BitMaps;
 import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.bitmap.impl.BitMapOrHelper;
-import com.fr.swift.bitmap.impl.RoaringMutableBitMap;
 import com.fr.swift.bitmap.traversal.BreakTraversalAction;
 import com.fr.swift.cube.nio.NIOConstant;
 import com.fr.swift.cube.task.Task;
@@ -21,6 +20,7 @@ import com.fr.swift.structure.array.IntArray;
 import com.fr.swift.structure.array.IntListFactory;
 import com.fr.swift.util.Crasher;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -106,7 +106,7 @@ public class TablePathIndexBuilder extends BaseWorker {
             BitMapOrHelper helper = new BitMapOrHelper();
             for (int i = 0; i < rowCount; i++) {
                 ImmutableBitMap preTableIndex = preTableRelationIndex.getIndex(i);
-                ImmutableBitMap resultIndex = getTableLinkedOrGVI(preTableIndex, lastRelationReader, rowCount);
+                ImmutableBitMap resultIndex = getTableLinkedOrGVI(preTableIndex, lastRelationReader);
                 helper.add(resultIndex);
                 targetTableRelationIndex.putIndex(i, resultIndex);
                 initReverse(reverse, i, resultIndex);
@@ -139,19 +139,23 @@ public class TablePathIndexBuilder extends BaseWorker {
         }
     }
 
-    protected ImmutableBitMap getTableLinkedOrGVI(ImmutableBitMap currentIndex, final RelationIndex relationIndex, int rowCount) {
+    protected ImmutableBitMap getTableLinkedOrGVI(ImmutableBitMap currentIndex, final RelationIndex relationIndex) {
         if (null != currentIndex) {
-            final byte[][] indexArray = new byte[rowCount][];
+            final List<ImmutableBitMap> bitMaps = new ArrayList<ImmutableBitMap>();
             currentIndex.breakableTraversal(new BreakTraversalAction() {
                 @Override
                 public boolean actionPerformed(int row) {
-                    indexArray[row] = relationIndex.getIndex(row).toBytes();
+                    try {
+                        bitMaps.add(relationIndex.getIndex(row));
+                    } catch (Exception ignore) {
+                        bitMaps.add(BitMaps.EMPTY_IMMUTABLE);
+                    }
                     return false;
                 }
             });
             ImmutableBitMap result = BitMaps.newRoaringMutable();
-            for (int i = 0; i < rowCount; i++) {
-                result = result.getOr(RoaringMutableBitMap.fromBytes(indexArray[i]));
+            for (int i = 0; i < bitMaps.size(); i++) {
+                result = result.getOr(bitMaps.get(i));
             }
             return result;
         }

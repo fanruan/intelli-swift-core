@@ -161,7 +161,7 @@ public class IndexingDataSourceFactory {
         Map<String, ColumnType> fieldColumnTypes = checkFieldTypes(table.getOperators());
         TableDBSource tableDBSource = fieldColumnTypes == null ?
                 new TableDBSource(table.getTableName(), connectionName) : new TableDBSource(table.getTableName(), connectionName, fieldColumnTypes);
-        return checkETL(tableDBSource, table.getOperators());
+        return checkETL(tableDBSource, table);
     }
 
     private static Map<String, ColumnType> checkFieldTypes(List<FineOperator> operators) {
@@ -190,16 +190,17 @@ public class IndexingDataSourceFactory {
         Map<String, ColumnType> fieldColumnTypes = checkFieldTypes(table.getOperators());
         QueryDBSource queryDBSource = fieldColumnTypes == null ?
                 new QueryDBSource(table.getSql(), table.getConnName()) : new QueryDBSource(table.getSql(), table.getConnName(), fieldColumnTypes);
-        return checkETL(queryDBSource, table.getOperators());
+        return checkETL(queryDBSource, table);
     }
 
-    private static DataSource checkETL(DataSource source, List<FineOperator> operators) throws Exception{
+    private static DataSource checkETL(DataSource source, AbstractFineTable table) throws Exception{
+        List<FineOperator> operators = table.getOperators();
         if (operators == null || operators.size() < 2){
             return source;
         }
         List<DataSource> baseSource = new ArrayList<DataSource>();
         baseSource.add(source);
-        return new ETLSource(baseSource, EtlAdaptor.adaptEtlOperator(operators.get(operators.size() - 1)));
+        return new ETLSource(baseSource, EtlAdaptor.adaptEtlOperator(operators.get(operators.size() - 1), table));
     }
 
 //    private static ExcelDataSource transformExcelDataSource(FineExcelBusinessTable table) {

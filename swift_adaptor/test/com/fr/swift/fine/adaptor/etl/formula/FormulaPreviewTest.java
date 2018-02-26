@@ -2,7 +2,7 @@ package com.fr.swift.fine.adaptor.etl.formula;
 
 import com.finebi.conf.structure.result.BIDetailCell;
 import com.finebi.conf.structure.result.BIDetailTableResult;
-import com.fr.swift.adaptor.executor.SwiftFieldsDataPreview;
+import com.fr.swift.adaptor.preview.SwiftFieldsDataPreview;
 import com.fr.swift.generate.BaseTest;
 import com.fr.swift.source.ColumnTypeConstants;
 import com.fr.swift.source.DataSource;

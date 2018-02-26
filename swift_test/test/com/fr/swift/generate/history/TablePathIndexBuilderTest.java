@@ -1,4 +1,4 @@
-package com.fr.swift.generate;
+package com.fr.swift.generate.history;
 
 import com.fr.base.FRContext;
 import com.fr.dav.LocalEnv;
@@ -15,18 +15,10 @@ import com.fr.swift.cube.task.impl.SchedulerTaskImpl;
 import com.fr.swift.cube.task.impl.SchedulerTaskPool;
 import com.fr.swift.cube.task.impl.WorkerTaskImpl;
 import com.fr.swift.cube.task.impl.WorkerTaskPool;
-import com.fr.swift.generate.history.MultiRelationIndexBuilder;
-import com.fr.swift.generate.history.TableBuilder;
 import com.fr.swift.manager.LocalSegmentProvider;
 import com.fr.swift.provider.ConnectionProvider;
-import com.fr.swift.relation.CubeLogicColumnKey;
-import com.fr.swift.relation.CubeMultiRelation;
+import com.fr.swift.relation.CubeMultiRelationPath;
 import com.fr.swift.relation.utils.MultiRelationHelper;
-import com.fr.swift.segment.Segment;
-import com.fr.swift.segment.column.Column;
-import com.fr.swift.segment.column.ColumnKey;
-import com.fr.swift.segment.column.DictionaryEncodedColumn;
-import com.fr.swift.segment.relation.RelationIndex;
 import com.fr.swift.service.LocalSwiftServerService;
 import com.fr.swift.source.DataSource;
 import com.fr.swift.source.IRelationSource;
@@ -45,9 +37,9 @@ import java.util.concurrent.CountDownLatch;
 
 /**
  * @author yee
- * @date 2018/2/5
+ * @date 2018/2/8
  */
-public class MultiRelationIndexBuilderTest extends TestCase {
+public class TablePathIndexBuilderTest extends TestCase {
 
     CountDownLatch latch = new CountDownLatch(1);
 
@@ -61,15 +53,10 @@ public class MultiRelationIndexBuilderTest extends TestCase {
         ConnectionManager.getInstance().registerConnectionInfo("allTest", TestConnectionProvider.createConnection());
     }
 
-    /**
-     * 全量更新取数索引
-     *
-     * @throws Exception
-     */
-    public void testTransport() throws Exception {
-//        IndexStuffProvider provider = ProviderManager.getManager().poll();
+    public void testWork() throws Exception {
         DataSource dataSource = new TableDBSource("DEMO_CONTRACT", "allTest");
         DataSource contract = new TableDBSource("DEMO_CAPITAL_RETURN", "allTest");
+        DataSource customer = new TableDBSource("DEMO_CUSTOMER", "allTest");
 
         SchedulerTaskPool.getInstance().initListener();
         WorkerTaskPool.getInstance().initListener();
@@ -119,20 +106,35 @@ public class MultiRelationIndexBuilderTest extends TestCase {
         dataSourceTask.addNext(contractTask);
         contractTask.addNext(end);
         l.add(new Pair<>(contractTask.key(), contract));
+
+        SchedulerTask customerTask = new SchedulerTaskImpl(new CubeTaskKey(customer.getMetadata().getTableName(), Operation.BUILD_TABLE));
+        contractTask.addNext(customerTask);
+        customerTask.addNext(end);
+        l.add(new Pair<>(customerTask.key(), customer));
 //        }
 
         List<String> primaryFields = new ArrayList<>();
         List<String> foreignFields = new ArrayList<>();
         primaryFields.add("合同ID");
-        primaryFields.add("总金额");
         foreignFields.add("合同ID");
-        foreignFields.add("付款金额");
         IRelationSource relationSource = new RelationSource(dataSource.getSourceKey(), contract.getSourceKey(), primaryFields, foreignFields);
         CubeTaskKey key = new CubeTaskKey("relation", Operation.INDEX_RELATION);
         SchedulerTask task = new SchedulerTaskImpl(key);
         contractTask.addNext(task);
         task.addNext(end);
         l.add(new Pair<>(key, relationSource));
+
+
+        List<String> primaryFields1 = new ArrayList<>();
+        List<String> foreignFields1 = new ArrayList<>();
+        primaryFields1.add("客户ID");
+        foreignFields1.add("客户ID");
+        IRelationSource custSource = new RelationSource(customer.getSourceKey(), dataSource.getSourceKey(), primaryFields1, foreignFields1);
+        CubeTaskKey custKey = new CubeTaskKey("custRelation", Operation.INDEX_RELATION);
+        SchedulerTask custTask = new SchedulerTaskImpl(custKey);
+        customerTask.addNext(custTask);
+        custTask.addNext(end);
+        l.add(new Pair<>(custKey, custSource));
         CubeTasks.sendTasks(l);
         start.triggerRun();
 
@@ -143,55 +145,24 @@ public class MultiRelationIndexBuilderTest extends TestCase {
         });
 
         latch.await();
-//        List<Segment> segmentList = LocalSegmentProvider.getInstance().getSegment(dataSource.getSourceKey());
-//        assertEquals(segmentList.size(), 1);
-//        Segment segment = segmentList.get(0);
-//        assertTrue(segment instanceof HistorySegmentImpl);
-//        assertEquals(segment.getRowCount(), 682);
-//        assertTrue(segment.getAllShowIndex().contains(0));
-//        assertTrue(segment.getAllShowIndex().contains(681));
-//        assertFalse(segment.getAllShowIndex().contains(682));
-//        try {
-//            for (int i = 1; i <= dataSource.getMetadata().getColumnCount(); i++) {
-//                String columnName = dataSource.getMetadata().getColumnName(i);
-//                Column column = segment.getColumn(new ColumnKey(columnName));
-//                assertNotNull(column.getBitmapIndex().getBitMapIndex(1));
-//                assertNotNull(column.getDictionaryEncodedColumn().getIndexByRow(1));
-//                assertNotNull(column.getDetailColumn().get(1));
-//            }
-//        } catch (Exception e) {
-//            assertTrue(false);
-//        }
     }
 
-    public void testWork() {
-        SourceKey primaryTable = new SourceKey("adf482df");
-        SourceKey foreignTable = new SourceKey("b727fa70");
-        List<ColumnKey> primaryFields = new ArrayList<ColumnKey>();
-        List<ColumnKey> foreignFields = new ArrayList<ColumnKey>();
-        primaryFields.add(new ColumnKey("brand_id"));
-        foreignFields.add(new ColumnKey("brand_id"));
-        CubeMultiRelation relation = new CubeMultiRelation(new CubeLogicColumnKey(primaryTable, primaryFields), new CubeLogicColumnKey(foreignTable, foreignFields), primaryTable, foreignTable);
-//        new MultiRelationIndexBuilder(relation, LocalSegmentProvider.getInstance()).work();
-        List<Segment> primarySegments = LocalSegmentProvider.getInstance().getSegment(primaryTable);
-        List<Segment> foreignSegements = LocalSegmentProvider.getInstance().getSegment(foreignTable);
-        for (int i = 0; i < primarySegments.size(); i++) {
-            Segment segment = primarySegments.get(i);
-            for (int k = 0; k < foreignSegements.size(); k++) {
-                Segment foreign = foreignSegements.get(k);
-                Column column = segment.getColumn(primaryFields.get(0));
-                DictionaryEncodedColumn dicColumn = column.getDictionaryEncodedColumn();
-                int len = dicColumn.size();
-                RelationIndex index = foreign.getRelation(relation);
-                for (int j = 0; j < len; j++) {
-                    System.out.println(index.getIndex(j));
-                }
-                int size = foreign.getRowCount();
-                for (int j = 0; j < size; j++) {
-                    System.out.println(index.getReverseIndex(j));
-                }
-                System.out.println(index.getNullIndex());
-            }
-        }
+    public void test() {
+        List<String> primaryFields = new ArrayList<>();
+        List<String> foreignFields = new ArrayList<>();
+        primaryFields.add("合同ID");
+        foreignFields.add("合同ID");
+        IRelationSource relationSource = new RelationSource(new SourceKey("f58554da"), new SourceKey("57a0b2a5"), primaryFields, foreignFields);
+
+        List<String> primaryFields1 = new ArrayList<>();
+        List<String> foreignFields1 = new ArrayList<>();
+        primaryFields1.add("客户ID");
+        foreignFields1.add("客户ID");
+        IRelationSource custSource = new RelationSource(new SourceKey("cf89ddaa"), new SourceKey("f58554da"), primaryFields1, foreignFields1);
+        CubeMultiRelationPath path = new CubeMultiRelationPath();
+        path.add(MultiRelationHelper.convert2CubeRelation(custSource));
+        path.add(MultiRelationHelper.convert2CubeRelation(relationSource));
+        TablePathIndexBuilder builder = new TablePathIndexBuilder(path, LocalSegmentProvider.getInstance());
+        builder.work();
     }
 }

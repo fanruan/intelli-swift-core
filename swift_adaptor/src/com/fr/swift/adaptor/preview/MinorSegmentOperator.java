@@ -1,4 +1,4 @@
-package com.fr.swift.generate.minor;
+package com.fr.swift.adaptor.preview;
 
 import com.fr.swift.cube.io.Types.StoreType;
 import com.fr.swift.cube.io.location.ResourceLocation;

@@ -40,22 +40,27 @@ public class MetaDataColumn implements SwiftMetaDataColumn {
         this.scale = scale;
     }
 
+    @Override
     public int getPrecision() {
         return precision;
     }
 
+    @Override
     public int getType() {
         return type;
     }
 
+    @Override
     public String getName() {
         return name;
     }
 
+    @Override
     public String getRemark() {
         return remark;
     }
 
+    @Override
     public int getScale() {
         return scale;
     }
