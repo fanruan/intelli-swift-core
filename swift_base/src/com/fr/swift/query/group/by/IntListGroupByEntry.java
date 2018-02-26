@@ -4,7 +4,6 @@ import com.fr.swift.structure.iterator.IntListRowTraversal;
 import com.fr.swift.structure.iterator.RowTraversal;
 
 /**
- *
  * @author pony
  * @date 2017/12/6
  */

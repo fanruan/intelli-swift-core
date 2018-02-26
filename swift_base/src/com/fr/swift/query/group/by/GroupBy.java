@@ -23,6 +23,23 @@ import static com.fr.swift.cube.io.IOConstant.NULL_INT;
  * @date 2016/11/28
  */
 public class GroupBy {
+    private static final GroupByResult EMPTY = new GroupByResult() {
+        @Override
+        public boolean hasNext() {
+            return false;
+        }
+
+        @Override
+        public GroupByEntry next() {
+            return null;
+        }
+
+        @Override
+        public void remove() {
+            throw new UnsupportedOperationException();
+        }
+    };
+
     /**
      * 根据父节点的过滤条件算出子节点的结构
      *
@@ -74,30 +91,13 @@ public class GroupBy {
         }
     }
 
-    private static final GroupByResult EMPTY = new GroupByResult() {
-        @Override
-        public boolean hasNext() {
-            return false;
-        }
-
-        @Override
-        public GroupByEntry next() {
-            return null;
-        }
-
-        @Override
-        public void remove() {
-            throw new UnsupportedOperationException();
-        }
-    };
-
     private static GroupByResult getAllShowResult(DictionaryEncodedColumn dictionaryEncodedColumn, BitmapIndexedColumn bitMapColumn, int startIndex, boolean asc) {
-        return asc ? getAllShowASCResult(dictionaryEncodedColumn, bitMapColumn, startIndex) : getAllShowDESCResult(dictionaryEncodedColumn, bitMapColumn, startIndex);
+        return asc ? getAllShowAscResult(dictionaryEncodedColumn, bitMapColumn, startIndex) :
+                getAllShowDescResult(dictionaryEncodedColumn, bitMapColumn, startIndex);
     }
 
-    private static GroupByResult getAllShowASCResult(final DictionaryEncodedColumn dictionaryEncodedColumn, final BitmapIndexedColumn bitMapColumn, final int startIndex) {
+    private static GroupByResult getAllShowAscResult(final DictionaryEncodedColumn dictionaryEncodedColumn, final BitmapIndexedColumn bitMapColumn, final int startIndex) {
         return new GroupByResult() {
-
             private int index = startIndex;
             private int groupSize = dictionaryEncodedColumn.size();
 
@@ -120,7 +120,7 @@ public class GroupBy {
         };
     }
 
-    private static GroupByResult getAllShowDESCResult(final DictionaryEncodedColumn dictionaryEncodedColumn, final BitmapIndexedColumn bitMapColumn, final int startIndex) {
+    private static GroupByResult getAllShowDescResult(final DictionaryEncodedColumn dictionaryEncodedColumn, final BitmapIndexedColumn bitMapColumn, final int startIndex) {
         return new GroupByResult() {
             private int index = dictionaryEncodedColumn.size() - 1 - startIndex;
 
@@ -143,7 +143,6 @@ public class GroupBy {
         };
     }
 
-
     private static GroupByResult getArraySortResult(final DictionaryEncodedColumn dictionaryEncodedColumn, BitmapIndexedColumn bitMapColumn, RowTraversal filteredTraversal, int startIndex, boolean asc) {
         //改成boolean小一点,反正这边只是标记一下
         final boolean[] groupIndex = new boolean[dictionaryEncodedColumn.size()];
@@ -160,36 +159,8 @@ public class GroupBy {
                 getArraySortDescResult(bitMapColumn, groupIndex, startIndex, filteredTraversal);
     }
 
-    private static GroupByResult getArraySortDescResult(final BitmapIndexedColumn bitMapColumn, final boolean[] groupIndex, final int startIndex, final RowTraversal rowTraversal) {
-        return new GroupByResult() {
-
-            private int index = groupIndex.length - 1 - startIndex;
-
-            @Override
-            public void remove() {
-                throw new UnsupportedOperationException("remove");
-            }
-
-            @Override
-            public boolean hasNext() {
-                while (index >= 0 && groupIndex[index] == false) {
-                    index--;
-                }
-                return index >= 0;
-            }
-
-            @Override
-            public GroupByEntry next() {
-                GroupByEntry entry = new BitMapGroupByEntry(index, bitMapColumn, rowTraversal.toBitMap());
-                index--;
-                return entry;
-            }
-        };
-    }
-
     private static GroupByResult getArraySortAscResult(final BitmapIndexedColumn bitMapColumn, final boolean[] groupIndex, final int startIndex, final RowTraversal rowTraversal) {
         return new GroupByResult() {
-
             private int index = startIndex;
 
             @Override
@@ -209,6 +180,32 @@ public class GroupBy {
             public GroupByEntry next() {
                 GroupByEntry entry = new BitMapGroupByEntry(index, bitMapColumn, rowTraversal.toBitMap());
                 index++;
+                return entry;
+            }
+        };
+    }
+
+    private static GroupByResult getArraySortDescResult(final BitmapIndexedColumn bitMapColumn, final boolean[] groupIndex, final int startIndex, final RowTraversal rowTraversal) {
+        return new GroupByResult() {
+            private int index = groupIndex.length - 1 - startIndex;
+
+            @Override
+            public void remove() {
+                throw new UnsupportedOperationException("remove");
+            }
+
+            @Override
+            public boolean hasNext() {
+                while (index >= 0 && groupIndex[index] == false) {
+                    index--;
+                }
+                return index >= 0;
+            }
+
+            @Override
+            public GroupByEntry next() {
+                GroupByEntry entry = new BitMapGroupByEntry(index, bitMapColumn, rowTraversal.toBitMap());
+                index--;
                 return entry;
             }
         };
@@ -334,6 +331,32 @@ public class GroupBy {
         return asc ? getArrayResortAscResult(groupArray, startIndex) : getArrayResortDescResult(groupArray, startIndex);
     }
 
+    private static GroupByResult getArrayResortAscResult(final IntList[] groupArray, final int startIndex) {
+        return new GroupByResult() {
+            private int index = startIndex;
+
+            @Override
+            public void remove() {
+                throw new UnsupportedOperationException("remove");
+            }
+
+            @Override
+            public boolean hasNext() {
+                while (index < groupArray.length && groupArray[index] == null) {
+                    index++;
+                }
+                return index < groupArray.length;
+            }
+
+            @Override
+            public GroupByEntry next() {
+                GroupByEntry entry = new IntListGroupByEntry(index, new IntListRowTraversal(groupArray[index]));
+                index++;
+                return entry;
+            }
+        };
+    }
+
     private static GroupByResult getArrayResortDescResult(final IntList[] groupArray, final int startIndex) {
         return new GroupByResult() {
             private int index = groupArray.length - 1 - startIndex;
@@ -355,33 +378,6 @@ public class GroupBy {
             public GroupByEntry next() {
                 GroupByEntry entry = new IntListGroupByEntry(index, new IntListRowTraversal(groupArray[index]));
                 index--;
-                return entry;
-            }
-        };
-    }
-
-    private static GroupByResult getArrayResortAscResult(final IntList[] groupArray, final int startIndex) {
-        return new GroupByResult() {
-
-            private int index = startIndex;
-
-            @Override
-            public void remove() {
-                throw new UnsupportedOperationException("remove");
-            }
-
-            @Override
-            public boolean hasNext() {
-                while (index < groupArray.length && groupArray[index] == null) {
-                    index++;
-                }
-                return index < groupArray.length;
-            }
-
-            @Override
-            public GroupByEntry next() {
-                GroupByEntry entry = new IntListGroupByEntry(index, new IntListRowTraversal(groupArray[index]));
-                index++;
                 return entry;
             }
         };

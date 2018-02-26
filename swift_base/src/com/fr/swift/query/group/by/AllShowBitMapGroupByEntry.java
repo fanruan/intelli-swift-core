@@ -4,7 +4,6 @@ import com.fr.swift.segment.column.BitmapIndexedColumn;
 import com.fr.swift.structure.iterator.RowTraversal;
 
 /**
- *
  * @author pony
  * @date 2018/1/24
  */
