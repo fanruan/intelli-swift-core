@@ -1,6 +1,8 @@
 package com.fr.swift.generate.history;
 
 import com.fr.swift.compare.Comparators;
+import com.fr.swift.cube.io.Types.StoreType;
+import com.fr.swift.cube.io.location.IResourceLocation;
 import com.fr.swift.cube.task.Task.Result;
 import com.fr.swift.cube.task.impl.BaseWorker;
 import com.fr.swift.exception.meta.SwiftMetaDataException;
@@ -13,7 +15,7 @@ import com.fr.swift.source.ColumnTypeConstants.ClassType;
 import com.fr.swift.source.ColumnTypeUtils;
 import com.fr.swift.source.DataSource;
 import com.fr.swift.source.SwiftMetaDataColumn;
-import com.fr.swift.structure.Pair;
+import com.fr.swift.structure.IntPair;
 import com.fr.swift.structure.external.map.ExternalMap;
 import com.fr.swift.structure.external.map.intpairs.IntPairsExtMaps;
 import com.fr.swift.util.Crasher;
@@ -22,6 +24,8 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.TreeMap;
 
 /**
  * @author anchore
@@ -52,8 +56,7 @@ public class ColumnDictMerger<T extends Comparable<T>> extends BaseWorker {
     private void mergeDict() {
         List<Segment> segments = LocalSegmentProvider.getInstance().getSegment(dataSource.getSourceKey());
         // 值 -> (块号, 值在这块里的序号)
-        ExternalMap<T, List<Pair<Integer, Integer>>> map =
-                newIntPairsExternalMap(calExternalLocation(segments.get(0)));
+        Map<T, List<IntPair>> map = newIntPairsSortedMap(calExternalLocation(segments.get(0).getLocation()));
 
         List<DictionaryEncodedColumn<T>> dictColumns = new ArrayList<DictionaryEncodedColumn<T>>(segments.size());
         for (int segOrder = 0, size = segments.size(); segOrder < size; segOrder++) {
@@ -63,13 +66,13 @@ public class ColumnDictMerger<T extends Comparable<T>> extends BaseWorker {
         }
 
         int globalIndex = 0;
-        for (Map.Entry<T, List<Pair<Integer, Integer>>> entry : map) {
-            List<Pair<Integer, Integer>> pairs = entry.getValue();
-            for (Pair<Integer, Integer> pair : pairs) {
+        for (Entry<T, List<IntPair>> entry : toIterable(map)) {
+            List<IntPair> pairs = entry.getValue();
+            for (IntPair pair : pairs) {
                 // 拿对应块的字典列
-                DictionaryEncodedColumn<T> dictColumn = dictColumns.get(pair.key());
+                DictionaryEncodedColumn<T> dictColumn = dictColumns.get(pair.getKey());
                 // 写入 字典序号 -> 全局序号
-                dictColumn.putGlobalIndex(pair.value(), globalIndex);
+                dictColumn.putGlobalIndex(pair.getValue(), globalIndex);
             }
             globalIndex++;
         }
@@ -78,19 +81,21 @@ public class ColumnDictMerger<T extends Comparable<T>> extends BaseWorker {
             dictColumn.release();
         }
 
-        map.release();
+        if (map instanceof ExternalMap) {
+            ((ExternalMap) map).release();
+        }
     }
 
-    private static <V> void extractDictOf(DictionaryEncodedColumn<V> dictColumn, int segOrder, Map<V, List<Pair<Integer, Integer>>> map) {
+    private static <V> void extractDictOf(DictionaryEncodedColumn<V> dictColumn, int segOrder, Map<V, List<IntPair>> map) {
         for (int j = 0, size = dictColumn.size(); j < size; j++) {
             // 值
             V val = dictColumn.getValue(j);
             // (块号, 值在这块里的序号)
-            Pair<Integer, Integer> pair = Pair.of(segOrder, j);
+            IntPair pair = IntPair.of(segOrder, j);
             if (map.containsKey(val)) {
                 map.get(val).add(pair);
             } else {
-                List<Pair<Integer, Integer>> pairs = new ArrayList<Pair<Integer, Integer>>(1);
+                List<IntPair> pairs = new ArrayList<IntPair>(1);
                 pairs.add(pair);
                 map.put(val, pairs);
             }
@@ -102,23 +107,32 @@ public class ColumnDictMerger<T extends Comparable<T>> extends BaseWorker {
      * Column数据位置：.../table/segment/column/...
      * 对应的全局字典External数据位置 ：.../table/external/column/...
      *
-     * @param seg segment
+     * @param segPath segment的path
      * @return extMap位置
      */
-    private String calExternalLocation(Segment seg) {
-        return seg.getLocation()
-                .getParent()
+    private IResourceLocation calExternalLocation(IResourceLocation segPath) {
+        return segPath.getParent()
                 .buildChildLocation("external")
-                .buildChildLocation(key.getName())
-                .getPath();
+                .buildChildLocation(key.getName());
     }
 
-    private <V extends Comparable<V>> ExternalMap<V, List<Pair<Integer, Integer>>> newIntPairsExternalMap(String path) {
-        ClassType classType = getClassType();
-        return IntPairsExtMaps.newExternalMap(classType,
-                classType == ClassType.STRING ?
-                        (Comparator<V>) Comparators.PINYIN_ASC : Comparators.<V>asc(), path);
+    private static <V extends Comparable<V>>
+    Iterable<Entry<V, List<IntPair>>> toIterable(Map<V, List<IntPair>> map) {
+        if (map instanceof ExternalMap) {
+            return (ExternalMap<V, List<IntPair>>) map;
+        }
+        return map.entrySet();
+    }
 
+    private Map<T, List<IntPair>> newIntPairsSortedMap(IResourceLocation pathIfNeed) {
+        ClassType classType = getClassType();
+
+        Comparator<T> c = classType == ClassType.STRING ?
+                (Comparator<T>) Comparators.PINYIN_ASC : Comparators.<T>asc();
+
+        return pathIfNeed.getStoreType() == StoreType.MEMORY ?
+                new TreeMap<T, List<IntPair>>(c) :
+                IntPairsExtMaps.newExternalMap(classType, c, pathIfNeed.getPath());
     }
 
     private ClassType getClassType() {

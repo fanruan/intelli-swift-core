@@ -222,7 +222,7 @@ class EtlAdaptor {
         switch (op.getType()) {
             case AnalysisType.JOIN: {
                 JoinBeanValue jbv = op.<JoinBean>getValue().getValue();
-                FineBusinessTable busiTable = FineTableUtils.getTableById(jbv.getTable().getName());
+                FineBusinessTable busiTable = FineTableUtils.getTableByName(jbv.getTable().getName());
                 dataSources.add(IndexingDataSourceFactory.transformDataSource(busiTable));
                 break;
             }
@@ -230,7 +230,7 @@ class EtlAdaptor {
                 UnionBeanValue ubv = op.<UnionBean>getValue().getValue();
                 for (UnionBeanValueTable table : ubv.getTables()) {
                     try {
-                        FineBusinessTable busiTable = FineTableUtils.getTableById(table.getName());
+                        FineBusinessTable busiTable = FineTableUtils.getTableByName(table.getName());
                         dataSources.add(IndexingDataSourceFactory.transformDataSource(busiTable));
                     } catch (Exception e) {
                         continue;
@@ -504,12 +504,12 @@ class EtlAdaptor {
         return index;
     }
 
-    private static ColumnRowTransOperator fromColumnRowTransBean(ColumnRowTransBean bean, FineBusinessTable table) throws FineEngineException {
+    private static ColumnRowTransOperator fromColumnRowTransBean(ColumnRowTransBean bean, FineBusinessTable table) {
         ColumnTransValue value = bean.getValue();
         FineBusinessTable preTable = ((EngineComplexConfTable)table).getBaseTableBySelected(0);
         List<FineBusinessField> fields = preTable.getFields();
         String groupName = fields.get(findFieldName(fields, value.getAccordingField())).getName();
-        String lcName = fields.get(findFieldName(fields, value.getFieldId())).getName();;
+        String lcName = fields.get(findFieldName(fields, value.getFieldId())).getName();
         List<NameText> lcValue = new ArrayList<NameText>();
         for (int i = 0; i < value.getValues().size(); i++) {
             ColumnInitalItem item = value.getValues().get(i);

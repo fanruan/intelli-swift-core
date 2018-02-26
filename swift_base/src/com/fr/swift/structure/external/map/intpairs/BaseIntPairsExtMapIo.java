@@ -2,6 +2,7 @@ package com.fr.swift.structure.external.map.intpairs;
 
 import com.fr.swift.cube.nio.read.IntNIOReader;
 import com.fr.swift.cube.nio.write.IntNIOWriter;
+import com.fr.swift.structure.IntPair;
 import com.fr.swift.structure.Pair;
 import com.fr.swift.structure.external.map.BaseExternalMapIo;
 
@@ -13,7 +14,7 @@ import java.util.List;
  * @author anchore
  * @date 2018/1/4
  */
-abstract class BaseIntPairsExtMapIo<K> extends BaseExternalMapIo<K, List<Pair<Integer, Integer>>> {
+abstract class BaseIntPairsExtMapIo<K> extends BaseExternalMapIo<K, List<IntPair>> {
     private IntNIOWriter valueWriter;
 
     private IntNIOReader valueReader;
@@ -24,21 +25,21 @@ abstract class BaseIntPairsExtMapIo<K> extends BaseExternalMapIo<K, List<Pair<In
     }
 
     @Override
-    public void write(K key, List<Pair<Integer, Integer>> value) {
+    public void write(K key, List<IntPair> value) {
         writeKey(writePos.keyPos++, key);
 
         initValueWriter();
         // 写list大小
         valueWriter.add(writePos.valuePos++, value.size());
         // 紧跟list各个值
-        for (Pair<Integer, Integer> intPair : value) {
-            valueWriter.add(writePos.valuePos++, intPair.key());
-            valueWriter.add(writePos.valuePos++, intPair.value());
+        for (IntPair intPair : value) {
+            valueWriter.add(writePos.valuePos++, intPair.getKey());
+            valueWriter.add(writePos.valuePos++, intPair.getValue());
         }
     }
 
     @Override
-    public Pair<K, List<Pair<Integer, Integer>>> read() {
+    public Pair<K, List<IntPair>> read() {
         if (readPos.keyPos >= size) {
             return null;
         }
@@ -51,9 +52,9 @@ abstract class BaseIntPairsExtMapIo<K> extends BaseExternalMapIo<K, List<Pair<In
 
             initValueReader();
             int listSize = valueReader.get(readPos.valuePos++);
-            List<Pair<Integer, Integer>> pairs = new ArrayList<Pair<Integer, Integer>>(listSize);
+            List<IntPair> pairs = new ArrayList<IntPair>(listSize);
             for (int i = 0; i < listSize; i++) {
-                pairs.add(Pair.of(
+                pairs.add(IntPair.of(
                         valueReader.get(readPos.valuePos++),
                         valueReader.get(readPos.valuePos++)
                 ));
@@ -79,7 +80,7 @@ abstract class BaseIntPairsExtMapIo<K> extends BaseExternalMapIo<K, List<Pair<In
     protected abstract K getEndFlag();
 
     private void writeEndFlag() {
-        write(getEndFlag(), Collections.<Pair<Integer, Integer>>emptyList());
+        write(getEndFlag(), Collections.<IntPair>emptyList());
     }
 
     @Override
