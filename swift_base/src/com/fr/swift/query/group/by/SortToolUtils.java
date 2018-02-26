@@ -1,6 +1,5 @@
 package com.fr.swift.query.group.by;
 
-
 import com.fr.swift.setting.PerformancePlugManager;
 
 /**

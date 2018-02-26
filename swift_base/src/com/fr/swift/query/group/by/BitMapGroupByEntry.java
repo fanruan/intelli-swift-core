@@ -5,7 +5,9 @@ import com.fr.swift.segment.column.BitmapIndexedColumn;
 import com.fr.swift.structure.iterator.RowTraversal;
 
 /**
- * Created by pony on 2017/12/6.
+ *
+ * @author pony
+ * @date 2017/12/6
  */
 public class BitMapGroupByEntry implements GroupByEntry {
     private int index;
