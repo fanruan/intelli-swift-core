@@ -23,7 +23,7 @@ public class SchedulerTaskPool extends BaseTaskPool<SchedulerTask> {
             @Override
             public void handle(SwiftServiceEvent<Pair<TaskKey, Result>> event) {
                 Pair<TaskKey, Result> pair = event.getContent();
-                get(pair.key()).onDone(pair.value());
+                get(pair.getKey()).onDone(pair.getValue());
             }
 
             @Override

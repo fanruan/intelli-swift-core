@@ -1,6 +1,6 @@
 package com.fr.swift.structure.external.map.intpairs;
 
-import com.fr.swift.structure.Pair;
+import com.fr.swift.structure.IntPair;
 import com.fr.swift.structure.external.map.ExternalMapIO;
 
 import java.util.Comparator;
@@ -12,7 +12,7 @@ import java.util.List;
  */
 class Double2IntPairsExtMap extends BaseIntPairsExtMap<Double> {
     @Override
-    public ExternalMapIO<Double, List<Pair<Integer, Integer>>> getExternalMapIO(String id_filePath) {
+    public ExternalMapIO<Double, List<IntPair>> getExternalMapIO(String id_filePath) {
         return new Double2IntPairsExtMapIo(id_filePath);
     }
 
