@@ -61,7 +61,7 @@ public class FieldPathIndexBuilder extends TablePathIndexBuilder {
                 for (int i = 0; i < rowCount; i++) {
                     ImmutableBitMap primaryIndex = primaryColumn.getBitmapIndex().getBitMapIndex(i);
                     primaryIndex = primaryIndex.getAnd(allShow);
-                    index[i] = buildIndexPerColumn(targetReader, helper, primaryIndex, rowCount);
+                    index[i] = buildIndexPerColumn(targetReader, helper, primaryIndex);
                 }
                 indexHelper.addIndex(index);
                 indexHelper.addNullIndex(helper.compute().getNot(targetRowCount));
@@ -82,8 +82,8 @@ public class FieldPathIndexBuilder extends TablePathIndexBuilder {
         }
     }
 
-    private ImmutableBitMap buildIndexPerColumn(RelationIndex targetReader, BitMapOrHelper helper, ImmutableBitMap index, int rowCount) {
-        ImmutableBitMap result = getTableLinkedOrGVI(index, targetReader, rowCount);
+    private ImmutableBitMap buildIndexPerColumn(RelationIndex targetReader, BitMapOrHelper helper, ImmutableBitMap index) {
+        ImmutableBitMap result = getTableLinkedOrGVI(index, targetReader);
         helper.add(result);
         return result;
     }
