@@ -2,9 +2,6 @@ package com.fr.swift.adaptor.update;
 
 import com.finebi.base.constant.FineEngineType;
 import com.finebi.conf.internalimp.response.update.TableUpdateSetting;
-<<<<<<< HEAD
-import com.finebi.conf.internalimp.update.*;
-=======
 import com.finebi.conf.internalimp.update.GlobalUpdateInfo;
 import com.finebi.conf.internalimp.update.GlobalUpdateLog;
 import com.finebi.conf.internalimp.update.GlobalUpdateSetting;
@@ -12,7 +9,6 @@ import com.finebi.conf.internalimp.update.TableUpdateInfo;
 import com.finebi.conf.internalimp.update.UpdateLog;
 import com.finebi.conf.internalimp.update.UpdateNeedSpace;
 import com.finebi.conf.internalimp.update.UpdateStatus;
->>>>>>> a73c0d1eed87bd58edb7be967b0aeb16e6cf63f8
 import com.finebi.conf.provider.SwiftTableConfProvider;
 import com.finebi.conf.service.engine.update.EngineUpdateManager;
 import com.finebi.conf.structure.bean.table.FineBusinessTable;
@@ -39,40 +35,6 @@ import java.util.Map;
  * @since Advanced FineBI Analysis 1.0
  */
 public class SwiftUpdateManager implements EngineUpdateManager {
-    @Override
-    public GlobalUpdateSetting getUpdateInfo() throws Exception {
-        return null;
-    }
-
-    @Override
-    public UpdateStatus getTableUpdateState(String tableName) throws Exception {
-        return null;
-    }
-
-    @Override
-    public void updateAll(GlobalUpdateSetting info) throws Exception {
-
-    }
-
-    @Override
-    public GlobalUpdateInfo checkGlobalUpdateInfo() {
-        return null;
-    }
-
-    @Override
-    public GlobalUpdateLog getGlobalUpdateLog() {
-        return null;
-    }
-
-    @Override
-    public UpdateNeedSpace getUpdateNeedSpace() {
-        return null;
-    }
-
-    @Override
-    public boolean shouldUpdate() {
-        return false;
-    }
 
     private long userId = UserControl.getInstance().getSuperManagerID();
 
@@ -161,20 +123,13 @@ public class SwiftUpdateManager implements EngineUpdateManager {
         return null;
     }
 
-<<<<<<< HEAD
-    public void updateAll(TableUpdateInfo info) {
-=======
 
     @Override
     public void triggerAllUpdate(TableUpdateInfo info) throws Exception {
->>>>>>> a73c0d1eed87bd58edb7be967b0aeb16e6cf63f8
 
     }
 
     @Override
-<<<<<<< HEAD
-    public void triggerAllUpdate(TableUpdateInfo info) throws Exception {
-=======
     public GlobalUpdateSetting getUpdateInfo() throws Exception {
         return null;
     }
@@ -193,7 +148,6 @@ public class SwiftUpdateManager implements EngineUpdateManager {
     public GlobalUpdateLog getGlobalUpdateLog() {
         return null;
     }
->>>>>>> a73c0d1eed87bd58edb7be967b0aeb16e6cf63f8
 
     @Override
     public UpdateNeedSpace getUpdateNeedSpace() {

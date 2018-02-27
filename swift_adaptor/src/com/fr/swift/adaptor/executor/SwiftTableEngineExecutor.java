@@ -29,13 +29,10 @@ import com.fr.data.impl.Connection;
 import com.fr.data.impl.DBTableData;
 import com.fr.data.impl.RecursionDataModel;
 import com.fr.general.ComparatorUtils;
-<<<<<<< HEAD
 import com.fr.general.data.DataModel;
 import com.fr.script.Calculator;
 import com.fr.stable.StringUtils;
-=======
 import com.fr.swift.adaptor.preview.SwiftDataPreviewer;
->>>>>>> a73c0d1eed87bd58edb7be967b0aeb16e6cf63f8
 import com.fr.swift.adaptor.struct.SwiftDetailCell;
 import com.fr.swift.adaptor.struct.SwiftDetailTableResult;
 import com.fr.swift.adaptor.struct.SwiftEmptyResult;

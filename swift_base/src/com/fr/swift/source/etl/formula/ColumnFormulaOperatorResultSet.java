@@ -77,14 +77,6 @@ public class ColumnFormulaOperatorResultSet implements SwiftResultSet {
                 Object value = FormulaUtils.getCalculatorValue(cal, formula, segment[segCursor], columnKeyMap, rowCursor);
                 List list = new ArrayList();
                 SwiftMetaData metaData = segment[segCursor].getMetaData();
-<<<<<<< HEAD
-                for (int i = 0; i < metaData.getColumnCount(); i++) {
-                    DictionaryEncodedColumn getter = segment[segCursor].getColumn(new ColumnKey(metaData.getColumnName(i + 1))).getDictionaryEncodedColumn();
-                    Object ob = getter.getValue(getter.getIndexByRow(rowCursor));
-                    list.add(ob);
-                }
-=======
->>>>>>> a73c0d1eed87bd58edb7be967b0aeb16e6cf63f8
                 list.add(getValueByColumnType(value));
                 if (!segment[segCursor].isHistory()) {
                     for (int i = 0; i < metaData.getColumnCount(); i++) {
