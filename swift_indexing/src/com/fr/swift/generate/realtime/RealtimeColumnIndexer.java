@@ -22,6 +22,11 @@ public class RealtimeColumnIndexer<T extends Comparable<T>> extends BaseColumnIn
     }
 
     @Override
+    protected void mergeDict() {
+        new RealtimeColumnDictMerger<T>(dataSource, key).work();
+    }
+
+    @Override
     protected void releaseIfNeed(Releasable baseColumn) {
         // 内存的column不释放，以后还有用
     }
