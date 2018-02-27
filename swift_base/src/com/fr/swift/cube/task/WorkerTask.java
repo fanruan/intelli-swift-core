@@ -24,7 +24,7 @@ public interface WorkerTask extends Task, Runnable {
 
     /**
      * WorkerTask需要有一个Worker
-     * 但是一个Worker不一定要附在m
+     * 但是一个Worker不一定要附在WorkerTask上
      */
     interface Worker {
         void setOwner(WorkerTask workerTask);

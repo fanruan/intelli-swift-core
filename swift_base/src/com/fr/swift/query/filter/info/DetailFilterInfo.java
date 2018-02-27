@@ -2,7 +2,6 @@ package com.fr.swift.query.filter.info;
 
 import com.fr.swift.bitmap.BitMaps;
 import com.fr.swift.bitmap.ImmutableBitMap;
-import com.fr.swift.bitmap.MutableBitMap;
 import com.fr.swift.query.filter.DetailFilterFactory;
 import com.fr.swift.query.filter.detail.DetailFilter;
 import com.fr.swift.result.SwiftNode;
@@ -33,7 +32,7 @@ public class DetailFilterInfo extends AbstractDetailFilterInfo {
             public ImmutableBitMap createFilterIndex() {
                 ImmutableBitMap bitMap = BitMaps.newAllShowBitMap(segment.getRowCount());
                 for (DetailFilter filter : filters) {
-                    bitMap.getAnd(filter.createFilterIndex());
+                    bitMap = bitMap.getAnd(filter.createFilterIndex());
                 }
                 return bitMap;
             }

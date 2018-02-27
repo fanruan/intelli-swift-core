@@ -1,12 +1,12 @@
 package com.fr.swift.fine.adaptor.executor;
 
 import com.finebi.base.constant.FineEngineType;
-import com.finebi.conf.internalimp.table.FineSQLBusinessTable;
+import com.finebi.conf.internalimp.basictable.table.FineSQLBusinessTable;
 import com.finebi.conf.structure.bean.field.FineBusinessField;
 import com.finebi.conf.structure.bean.table.FineBusinessTable;
 import com.finebi.conf.structure.result.BIDetailCell;
 import com.finebi.conf.structure.result.BIDetailTableResult;
-import com.fr.swift.adaptor.executor.SwiftSQLEngineExecutor;
+import com.fr.swift.adaptor.executor.SwiftTableEngineExecutor;
 import com.fr.swift.provider.ConnectionProvider;
 import com.fr.swift.source.db.ConnectionInfo;
 import com.fr.swift.source.db.ConnectionManager;
@@ -50,7 +50,7 @@ public class SwiftSQLDataModelTest extends TestCase {
     }
 
     public void testSwiftSQLDataModelGetFields() throws Exception {
-        SwiftSQLEngineExecutor dataModel = new SwiftSQLEngineExecutor();
+        SwiftTableEngineExecutor dataModel = new SwiftTableEngineExecutor();
         FineBusinessTable fineBusinessTable = new FineSQLBusinessTable("A", "local", FineEngineType.Cube, sql);
 
         List<FineBusinessField> list = dataModel.getFieldList(fineBusinessTable);
@@ -59,7 +59,7 @@ public class SwiftSQLDataModelTest extends TestCase {
     }
 
     public void testSwiftSQLDataModelPreviewDBTable() throws Exception {
-        SwiftSQLEngineExecutor dataModel = new SwiftSQLEngineExecutor();
+        SwiftTableEngineExecutor dataModel = new SwiftTableEngineExecutor();
 
         FineBusinessTable fineBusinessTable = new FineSQLBusinessTable("A", "local", FineEngineType.Cube, sql);
 

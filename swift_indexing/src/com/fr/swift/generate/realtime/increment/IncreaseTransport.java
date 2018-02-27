@@ -4,7 +4,7 @@ import com.fr.swift.flow.FlowRuleController;
 import com.fr.swift.flow.SwiftFlowResultSet;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
-import com.fr.swift.manager.LocalSegmentProvider;
+import com.fr.swift.manager.LocalSegmentOperatorProvider;
 import com.fr.swift.segment.ISegmentOperator;
 import com.fr.swift.source.DataSource;
 import com.fr.swift.source.SwiftMetaData;
@@ -42,7 +42,7 @@ public class IncreaseTransport implements IncrementTransport {
 
         SwiftFlowResultSet swiftFlowResultSet = new SwiftFlowResultSet(increaseResult, flowRuleController);
 
-        ISegmentOperator operator = LocalSegmentProvider.getInstance().getRealtimeSegmentOperator(dataSource.getSourceKey(), dataSource.getMetadata());
+        ISegmentOperator operator = LocalSegmentOperatorProvider.getInstance().getRealtimeSegmentOperator(dataSource);
         try {
             operator.transport(swiftFlowResultSet);
         } catch (Exception e) {

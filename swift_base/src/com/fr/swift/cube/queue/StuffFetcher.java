@@ -81,7 +81,7 @@ public class StuffFetcher implements Runnable {
             pairs.add(new Pair<TaskKey, Object>(relationTask.key(), relation));
         }
 
-        SchedulerTaskPool.sendTasks(pairs);
+        CubeTasks.sendTasks(pairs);
         start.triggerRun();
     }
 }

@@ -50,6 +50,7 @@ public class ClusterSwiftServerService extends AbstractSwiftServerService {
     }
 
 
+    @Override
     protected void initListener(){
         super.initListener();
     }

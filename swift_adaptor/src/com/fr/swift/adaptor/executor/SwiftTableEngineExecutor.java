@@ -29,9 +29,13 @@ import com.fr.data.impl.Connection;
 import com.fr.data.impl.DBTableData;
 import com.fr.data.impl.RecursionDataModel;
 import com.fr.general.ComparatorUtils;
+<<<<<<< HEAD
 import com.fr.general.data.DataModel;
 import com.fr.script.Calculator;
 import com.fr.stable.StringUtils;
+=======
+import com.fr.swift.adaptor.preview.SwiftDataPreviewer;
+>>>>>>> a73c0d1eed87bd58edb7be967b0aeb16e6cf63f8
 import com.fr.swift.adaptor.struct.SwiftDetailCell;
 import com.fr.swift.adaptor.struct.SwiftDetailTableResult;
 import com.fr.swift.adaptor.struct.SwiftEmptyResult;
@@ -51,7 +55,6 @@ import com.fr.swift.source.DataSource;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftResultSet;
 import com.fr.swift.source.SwiftSourceTransfer;
-import com.fr.swift.source.SwiftSourceTransferFactory;
 
 import java.util.*;
 
@@ -70,7 +73,7 @@ public class SwiftTableEngineExecutor implements FineTableEngineExecutor {
     public BIDetailTableResult getPreviewData(FineBusinessTable table, int rowCount) throws Exception {
         DataSource dataSource = IndexingDataSourceFactory.transformDataSource(table);
         if (dataSource != null) {
-            SwiftSourceTransfer transfer = SwiftSourceTransferFactory.createSourcePreviewTransfer(dataSource, rowCount);
+            SwiftSourceTransfer transfer = SwiftDataPreviewer.createPreviewTransfer(dataSource, rowCount);
             SwiftResultSet swiftResultSet = transfer.createResultSet();
             BIDetailTableResult detailTableResult = new SwiftDetailTableResult(swiftResultSet);
             return detailTableResult;
@@ -413,7 +416,7 @@ public class SwiftTableEngineExecutor implements FineTableEngineExecutor {
 
 
     @Override
-    public FineBusinessTable createTable(FineBusinessTable table) throws Exception {
+    public FineBusinessTable createTable(FineBusinessTable table) {
         return null;
     }
 }

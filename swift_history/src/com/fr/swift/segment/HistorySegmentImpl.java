@@ -12,4 +12,7 @@ public class HistorySegmentImpl extends BaseSegment implements HistorySegment {
         super(parent, meta);
     }
 
+    public boolean isHistory() {
+        return true;
+    }
 }

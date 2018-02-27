@@ -1,7 +1,7 @@
 package com.fr.swift.context;
 
+import com.fr.swift.segment.SegmentOperatorProvider;
 import com.fr.swift.segment.SwiftSegmentManager;
-import com.fr.swift.segment.SwiftSegmentProvider;
 
 /**
  * This class created on 2018-1-30 16:58:12
@@ -11,7 +11,7 @@ import com.fr.swift.segment.SwiftSegmentProvider;
  * @since Advanced FineBI Analysis 1.0
  */
 public class SwiftContext {
-    private static SwiftContext INSTANCE = new SwiftContext();
+    private static final SwiftContext INSTANCE = new SwiftContext();
 
     private SwiftContext() {
     }
@@ -20,23 +20,25 @@ public class SwiftContext {
         return INSTANCE;
     }
 
-    private SwiftSegmentProvider swiftSegmentProvider;
+    private SwiftSegmentManager segmentProvider;
+
+    private SegmentOperatorProvider segmentOperatorProvider;
 
     private SwiftSegmentManager minorSegmentManager;
 
-    public void registerSwiftSegmentProvider(SwiftSegmentProvider swiftSegmentProvider) {
-        this.swiftSegmentProvider = swiftSegmentProvider;
+    public void registerSegmentProvider(SwiftSegmentManager segmentProvider) {
+        this.segmentProvider = segmentProvider;
     }
 
-    public SwiftSegmentProvider getSwiftSegmentProvider() {
-        return this.swiftSegmentProvider;
+    public void registerSegmentOperatorProvider(SegmentOperatorProvider segmentOperatorProvider) {
+        this.segmentOperatorProvider = segmentOperatorProvider;
     }
 
-    public void registerMinorSegmentManager(SwiftSegmentManager manager) {
-        this.minorSegmentManager = manager;
+    public SwiftSegmentManager getSegmentProvider() {
+        return this.segmentProvider;
     }
 
-    public SwiftSegmentManager getMinorSegmentManager() {
-        return minorSegmentManager;
+    public SegmentOperatorProvider getSegmentOperatorProvider() {
+        return this.segmentOperatorProvider;
     }
 }

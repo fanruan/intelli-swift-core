@@ -7,19 +7,25 @@ import com.fr.swift.cube.task.impl.CubeTaskKey;
 import com.fr.swift.cube.task.impl.Operation;
 import com.fr.swift.cube.task.impl.SchedulerTaskImpl;
 import com.fr.swift.cube.task.impl.SchedulerTaskPool;
+import com.fr.swift.exception.SwiftServiceException;
 import com.fr.swift.exception.meta.SwiftMetaDataException;
+import com.fr.swift.service.SwiftServiceEvent;
+import com.fr.swift.service.listener.EventType;
+import com.fr.swift.service.listener.SwiftServiceListenerManager;
 import com.fr.swift.source.DataSource;
 import com.fr.swift.source.ETLDataSource;
 import com.fr.swift.source.IRelationSource;
+import com.fr.swift.structure.Pair;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 /**
  * @author anchore
  * @date 2018/2/7
  */
-class CubeTasks {
+public class CubeTasks {
     static SchedulerTask newTableTask(DataSource ds) throws SwiftMetaDataException {
         return new SchedulerTaskImpl(new CubeTaskKey(CubeTasks.newTaskName(ds), Operation.BUILD_TABLE));
     }
@@ -81,7 +87,7 @@ class CubeTasks {
     }
 
     private static boolean isReadable(DataSource dataSource) {
-        return SwiftContext.getInstance().getSwiftSegmentProvider().isSegmentsExist(dataSource.getSourceKey());
+        return SwiftContext.getInstance().getSegmentProvider().isSegmentsExist(dataSource.getSourceKey());
     }
 
     static String newTaskName(DataSource ds) throws SwiftMetaDataException {
@@ -98,5 +104,19 @@ class CubeTasks {
 
     static SchedulerTask newEndTask() {
         return new SchedulerTaskImpl(new CubeTaskKey("end of all @ " + Long.toHexString(System.nanoTime())));
+    }
+
+    public static void sendTasks(final Collection<Pair<TaskKey, Object>> tasks) throws SwiftServiceException {
+        SwiftServiceListenerManager.getInstance().triggerEvent(new SwiftServiceEvent<Collection<Pair<TaskKey, Object>>>() {
+            @Override
+            public Collection<Pair<TaskKey, Object>> getContent() {
+                return tasks;
+            }
+
+            @Override
+            public EventType getEventType() {
+                return EventType.INIT_TASK;
+            }
+        });
     }
 }

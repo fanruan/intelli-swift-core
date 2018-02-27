@@ -6,7 +6,8 @@ import com.fr.swift.cube.task.Task;
 import com.fr.swift.relation.CubeLogicColumnKey;
 import com.fr.swift.relation.CubeMultiRelationPath;
 import com.fr.swift.segment.Segment;
-import com.fr.swift.segment.SwiftSegmentProvider;
+import com.fr.swift.segment.SegmentOperatorProvider;
+import com.fr.swift.segment.SwiftSegmentManager;
 import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.segment.relation.RelationIndex;
@@ -21,7 +22,7 @@ public class FieldPathIndexBuilder extends TablePathIndexBuilder {
 
     private CubeLogicColumnKey logicColumnKey;
 
-    public FieldPathIndexBuilder(CubeMultiRelationPath relationPath, CubeLogicColumnKey logicColumnKey, SwiftSegmentProvider provider) {
+    public FieldPathIndexBuilder(CubeMultiRelationPath relationPath, CubeLogicColumnKey logicColumnKey, SwiftSegmentManager provider) {
         super(relationPath, provider);
         this.logicColumnKey = logicColumnKey;
     }
@@ -61,7 +62,7 @@ public class FieldPathIndexBuilder extends TablePathIndexBuilder {
                 for (int i = 0; i < rowCount; i++) {
                     ImmutableBitMap primaryIndex = primaryColumn.getBitmapIndex().getBitMapIndex(i);
                     primaryIndex = primaryIndex.getAnd(allShow);
-                    index[i] = buildIndexPerColumn(targetReader, helper, primaryIndex, rowCount);
+                    index[i] = buildIndexPerColumn(targetReader, helper, primaryIndex);
                 }
                 indexHelper.addIndex(index);
                 indexHelper.addNullIndex(helper.compute().getNot(targetRowCount));
@@ -82,8 +83,8 @@ public class FieldPathIndexBuilder extends TablePathIndexBuilder {
         }
     }
 
-    private ImmutableBitMap buildIndexPerColumn(RelationIndex targetReader, BitMapOrHelper helper, ImmutableBitMap index, int rowCount) {
-        ImmutableBitMap result = getTableLinkedOrGVI(index, targetReader, rowCount);
+    private ImmutableBitMap buildIndexPerColumn(RelationIndex targetReader, BitMapOrHelper helper, ImmutableBitMap index) {
+        ImmutableBitMap result = getTableLinkedOrGVI(index, targetReader);
         helper.add(result);
         return result;
     }

@@ -1,5 +1,6 @@
 package com.fr.swift.segment;
 
+import com.fr.general.ComparatorUtils;
 import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.cube.io.BuildConf;
 import com.fr.swift.cube.io.ResourceDiscovery;
@@ -58,18 +59,44 @@ public abstract class BaseSegment implements Segment {
     @Override
     @SuppressWarnings("unchecked")
     public <T> Column<T> getColumn(ColumnKey key) {
-        if (columns.containsKey(key)) {
-            return (Column<T>) columns.get(key);
-        }
-        synchronized (columns) {
-            if (columns.containsKey(key)) {
-                return (Column<T>) columns.get(key);
+        try {
+            String realName = getRealName(key.getName());
+            String remark = getRemark(key.getName());
+            String name = realName != null ? realName : remark;
+            ColumnKey nameColumnKey = new ColumnKey(name);
+            if (columns.containsKey(nameColumnKey)) {
+                return (Column<T>) columns.get(nameColumnKey);
             }
-            IResourceLocation child = parent.buildChildLocation(key.getName());
-            Column<?> column = newColumn(child, getClassType(key));
-            columns.put(key, column);
-            return (Column<T>) column;
+            synchronized (columns) {
+                if (columns.containsKey(nameColumnKey)) {
+                    return (Column<T>) columns.get(nameColumnKey);
+                }
+                IResourceLocation child = parent.buildChildLocation(name);
+                Column<?> column = newColumn(child, getClassType(name));
+                columns.put(nameColumnKey, column);
+                return (Column<T>) column;
+            }
+        } catch (Exception e) {
+            return null;
         }
+    }
+
+    private String getRealName(String name) throws SwiftMetaDataException {
+        for (int i = 1, len = meta.getColumnCount(); i <= len; i++) {
+            if (ComparatorUtils.equals(name, meta.getColumnName(i))) {
+                return name;
+            }
+        }
+        return null;
+    }
+
+    private String getRemark(String name) throws SwiftMetaDataException {
+        for (int i = 1, len = meta.getColumnCount(); i <= len; i++) {
+            if (ComparatorUtils.equals(name, meta.getColumnRemark(i))) {
+                return meta.getColumnName(i);
+            }
+        }
+        return null;
     }
 
     private static Column<?> newColumn(IResourceLocation location, ClassType classType) {
@@ -86,17 +113,19 @@ public abstract class BaseSegment implements Segment {
                 return new StringColumn(location);
             default:
         }
-        return Crasher.crash(String.format("cannot new correct column by class type: %d", classType));
+        return Crasher.crash(String.format("cannot new correct column by class type: %s", classType));
     }
 
-    private ClassType getClassType(ColumnKey key) {
+    private ClassType getClassType(String name) {
         try {
             for (int i = 1, len = meta.getColumnCount(); i <= len; i++) {
-                if (meta.getColumnName(i).equals(key.getName())) {
-                    return ColumnTypeUtils.sqlTypeToClassType(
-                            meta.getColumnType(i),
-                            meta.getPrecision(i),
-                            meta.getScale(i));
+                if (ComparatorUtils.equals(meta.getColumnName(i), name)) {
+                    return ColumnTypeUtils.sqlTypeToClassType(meta.getColumnType(i), meta.getPrecision(i), meta.getScale(i));
+                }
+            }
+            for (int i = 1, len = meta.getColumnCount(); i <= len; i++) {
+                if (ComparatorUtils.equals(meta.getColumnRemark(i), name)) {
+                    return ColumnTypeUtils.sqlTypeToClassType(meta.getColumnType(i), meta.getPrecision(i), meta.getScale(i));
                 }
             }
         } catch (SwiftMetaDataException e) {

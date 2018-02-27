@@ -142,8 +142,8 @@ public abstract class ExternalMapIOIntArrayList<K> implements ExternalMapIO<K, I
         if (canRead()) {
             K key = readKey();
             int amount = getValueReader().get(positionReader.valuePosition++);
-            IntList list = generateList();
-            for (int i = 0; compare(i, amount); i++) {
+            IntList list = IntListFactory.createIntList();
+            for (int i = 0; i < amount; i++) {
                 list.add(getValueReader().get(positionReader.valuePosition++));
             }
             if (!isEmpty(key) || list.size() != 0) {
@@ -154,14 +154,6 @@ public abstract class ExternalMapIOIntArrayList<K> implements ExternalMapIO<K, I
         } else {
             return null;
         }
-    }
-
-    private Boolean compare(int i, Integer amount) {
-        return i < amount;
-    }
-
-    private IntList generateList() {
-        return IntListFactory.createIntList();
     }
 
     private boolean canRead() {

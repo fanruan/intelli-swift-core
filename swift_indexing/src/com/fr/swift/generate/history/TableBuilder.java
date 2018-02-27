@@ -14,6 +14,7 @@ import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.source.DataSource;
 import com.fr.swift.source.SwiftMetaData;
+import com.fr.swift.utils.DataSourceUtils;
 
 /**
  * This class created on 2017-12-28 10:53:49
@@ -43,7 +44,13 @@ public class TableBuilder extends BaseWorker {
         end.setWorker(BaseWorker.nullWorker());
 
         // column index worker
-        for (int i = 1; i <= meta.getColumnCount(); i++) {
+        int columnNumber = 0;
+        if (DataSourceUtils.isAddColumn(dataSource)) {
+            columnNumber = 1;
+        } else {
+            columnNumber = meta.getColumnCount();
+        }
+        for (int i = 1; i <= columnNumber; i++) {
             ColumnIndexer<?> indexer = new ColumnIndexer(dataSource, new ColumnKey(meta.getColumnName(i)));
 
             LocalTask indexTask = new LocalTaskImpl(new CubeTaskKey(

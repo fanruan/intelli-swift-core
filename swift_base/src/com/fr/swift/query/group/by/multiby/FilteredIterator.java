@@ -4,7 +4,8 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 /**
- * Created by Lyon on 2018/1/5.
+ * @author Lyon
+ * @date 2018/1/5
  */
 public class FilteredIterator<T> implements Iterator<T> {
     private Iterator<? extends T> iterator;

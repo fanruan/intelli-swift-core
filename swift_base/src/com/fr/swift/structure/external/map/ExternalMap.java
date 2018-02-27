@@ -619,7 +619,7 @@ public abstract class ExternalMap<K, V> implements Map<K, V>, Iterable<Map.Entry
                     /**
                      * 记录当前record的出处。
                      */
-                    K name = oneRound.key();
+                    K name = oneRound.getKey();
                     if (!nameIdMap.containsKey(name)) {
                         nameIdMap.put(name, new ArrayList<Integer>());
                     }
@@ -632,7 +632,7 @@ public abstract class ExternalMap<K, V> implements Map<K, V>, Iterable<Map.Entry
                     if (list == null) {
                         list = generateComparedTreeMap();
                     }
-                    list.put(id, oneRound.value());
+                    list.put(id, oneRound.getValue());
                     container.put(name, list);
                 } else {
                     continue;

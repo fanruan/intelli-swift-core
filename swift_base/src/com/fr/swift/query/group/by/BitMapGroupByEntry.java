@@ -5,7 +5,8 @@ import com.fr.swift.segment.column.BitmapIndexedColumn;
 import com.fr.swift.structure.iterator.RowTraversal;
 
 /**
- * Created by pony on 2017/12/6.
+ * @author pony
+ * @date 2017/12/6
  */
 public class BitMapGroupByEntry implements GroupByEntry {
     private int index;
@@ -18,10 +19,12 @@ public class BitMapGroupByEntry implements GroupByEntry {
         this.bitmap = bitmap;
     }
 
+    @Override
     public int getIndex() {
         return index;
     }
 
+    @Override
     public RowTraversal getTraversal() {
         return bitMapColumn.getBitMapIndex(index).getAnd(bitmap);
     }

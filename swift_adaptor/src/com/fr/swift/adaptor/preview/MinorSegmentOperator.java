@@ -1,4 +1,4 @@
-package com.fr.swift.generate.minor;
+package com.fr.swift.adaptor.preview;
 
 import com.fr.swift.cube.io.Types.StoreType;
 import com.fr.swift.cube.io.location.ResourceLocation;
@@ -17,8 +17,8 @@ import java.util.List;
  * @date 2018/2/2
  */
 class MinorSegmentOperator extends IncreaseSegmentOperator {
-    public MinorSegmentOperator(SourceKey sourceKey, SwiftMetaData metaData, List<Segment> segments) throws SwiftMetaDataException {
-        super(sourceKey, metaData, segments);
+    public MinorSegmentOperator(SourceKey sourceKey, SwiftMetaData metaData, List<Segment> segments, String cubeSourceKey) throws SwiftMetaDataException {
+        super(sourceKey, metaData, segments, cubeSourceKey);
     }
 
     @Override

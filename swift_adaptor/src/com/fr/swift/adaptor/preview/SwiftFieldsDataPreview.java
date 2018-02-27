@@ -1,20 +1,23 @@
-package com.fr.swift.adaptor.executor;
+package com.fr.swift.adaptor.preview;
 
 import com.finebi.conf.structure.bean.field.FineBusinessField;
 import com.finebi.conf.structure.bean.table.FineBusinessTable;
 import com.finebi.conf.structure.result.BIDetailCell;
 import com.finebi.conf.structure.result.BIDetailTableResult;
 import com.fr.general.ComparatorUtils;
+import com.fr.swift.adaptor.executor.SwiftTableEngineExecutor;
 import com.fr.swift.adaptor.struct.SwiftCombineDetailResult;
 import com.fr.swift.adaptor.struct.SwiftDetailTableResult;
 import com.fr.swift.adaptor.struct.SwiftEmptyResult;
 import com.fr.swift.adaptor.transformer.IndexingDataSourceFactory;
-import com.fr.swift.generate.minor.MinorSegmentManager;
-import com.fr.swift.generate.minor.MinorUpdater;
+import com.fr.swift.log.SwiftLoggers;
+import com.fr.swift.segment.Segment;
+import com.fr.swift.segment.column.Column;
+import com.fr.swift.segment.column.ColumnKey;
+import com.fr.swift.segment.column.DictionaryEncodedColumn;
 import com.fr.swift.source.DataSource;
 import com.fr.swift.source.SwiftResultSet;
 import com.fr.swift.source.SwiftSourceTransfer;
-import com.fr.swift.source.SwiftSourceTransferFactory;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -44,14 +47,14 @@ public class SwiftFieldsDataPreview {
                     MinorUpdater.update(dataSource);
                 }
 
-                SwiftSourceTransfer transfer = SwiftSourceTransferFactory.createSourcePreviewTransfer(dataSource, rowCount);
+                SwiftSourceTransfer transfer = SwiftDataPreviewer.createPreviewTransfer(dataSource, rowCount);
                 SwiftResultSet swiftResultSet = transfer.createResultSet();
                 BIDetailTableResult detailTableResult = new SwiftDetailTableResult(swiftResultSet);
                 return detailTableResult;
             }
             return new SwiftDetailTableResult(new SwiftEmptyResult());
         } catch (Exception e) {
-            e.printStackTrace();
+            SwiftLoggers.getLogger().error(e);
             return new SwiftDetailTableResult(new SwiftEmptyResult());
         }
 //        SwiftSourceTransfer transfer = SwiftSourceTransferFactory.createSourcePreviewTransfer(dataSource, rowCount);
@@ -117,6 +120,30 @@ public class SwiftFieldsDataPreview {
         }
         BIDetailTableResult result = new SwiftCombineDetailResult(columnDataLists, realRowCount);
         return result;
+    }
+
+    public List<Object> getGroupPreviewByFields(DataSource dataSource, String fieldName) throws Exception {
+
+        try {
+            if (dataSource != null) {
+                if (!MinorSegmentManager.getInstance().isSegmentsExist(dataSource.getSourceKey())) {
+                    MinorUpdater.update(dataSource);
+                }
+                List<Segment> segments = MinorSegmentManager.getInstance().getSegment(dataSource.getSourceKey());
+                List<Object> list = new ArrayList<Object>();
+                for (Segment sg : segments){
+                    Column c  = sg.getColumn(new ColumnKey(fieldName));
+                    DictionaryEncodedColumn dic = c.getDictionaryEncodedColumn();
+                    for (int i = 0; i < dic.size(); i++){
+                        list.add(dic.getValue(i));
+                    }
+                }
+                return list;
+            }
+        } catch (Exception e) {
+            SwiftLoggers.getLogger().error(e);
+        }
+        return null;
     }
 }
 

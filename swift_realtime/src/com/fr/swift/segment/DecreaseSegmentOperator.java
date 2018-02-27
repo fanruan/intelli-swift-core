@@ -25,8 +25,8 @@ public class DecreaseSegmentOperator extends AbstractSegmentOperator {
 
     private static int DEFAULT_COLUMN_INDEX = 1;
 
-    public DecreaseSegmentOperator(SourceKey sourceKey, SwiftMetaData metaData, List<Segment> segments) throws SwiftMetaDataException {
-        super(sourceKey, metaData, segments);
+    public DecreaseSegmentOperator(SourceKey sourceKey, SwiftMetaData metaData, List<Segment> segments, String cubeSourceKey) throws SwiftMetaDataException {
+        super(sourceKey, metaData, segments, cubeSourceKey);
         if (null != segments && !segments.isEmpty()) {
             for (int i = 0, len = segments.size(); i < len; i++) {
                 if (segments.get(i).getLocation().getStoreType() == Types.StoreType.FINE_IO) {
