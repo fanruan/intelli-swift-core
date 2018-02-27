@@ -86,6 +86,11 @@ public class CreateSegmentForSum {
             public void release() {
 
             }
+
+            @Override
+            public boolean isHistory() {
+                return false;
+            }
         };
     }
 }

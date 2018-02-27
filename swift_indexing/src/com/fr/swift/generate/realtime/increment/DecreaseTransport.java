@@ -2,7 +2,7 @@ package com.fr.swift.generate.realtime.increment;
 
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
-import com.fr.swift.manager.LocalSegmentProvider;
+import com.fr.swift.manager.LocalSegmentOperatorProvider;
 import com.fr.swift.segment.ISegmentOperator;
 import com.fr.swift.source.DataSource;
 import com.fr.swift.source.SwiftMetaData;
@@ -35,7 +35,7 @@ public class DecreaseTransport implements IncrementTransport {
     public void doIncrementTransport() {
         SwiftSourceTransfer decreaseTransfer = SwiftSourceTransferFactory.createSourceTransfer(decreaseDataSource);
         SwiftResultSet decreaseResult = decreaseTransfer.createResultSet();
-        ISegmentOperator operator = LocalSegmentProvider.getInstance().getDecreaseSegmentOperator(dataSource.getSourceKey(), dataSource.getMetadata());
+        ISegmentOperator operator = LocalSegmentOperatorProvider.getInstance().getDecreaseSegmentOperator(dataSource);
         try {
             operator.transport(decreaseResult);
         } catch (Exception e) {

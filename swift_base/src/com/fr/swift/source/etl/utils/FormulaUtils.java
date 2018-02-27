@@ -98,7 +98,7 @@ public class FormulaUtils {
             }
             Column column = segment.getColumn(new ColumnKey(columnName));
             if (column != null) {
-                columnIndexMap.put(toParameterFormat(String.valueOf(i)), new ColumnKey(columnName));
+                columnIndexMap.put(toParameterFormat(String.valueOf(i)), new ColumnKey(column.getLocation().getName()));
             } else {
                 LOGGER.error(columnName + ": not found");
             }

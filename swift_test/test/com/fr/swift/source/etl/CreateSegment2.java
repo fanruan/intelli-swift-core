@@ -90,6 +90,11 @@ public class CreateSegment2 {
             public void release() {
 
             }
+
+            @Override
+            public boolean isHistory() {
+                return false;
+            }
         };
     }
 }

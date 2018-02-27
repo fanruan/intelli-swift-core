@@ -24,13 +24,15 @@ public abstract class AbstractSegmentOperator implements ISegmentOperator {
     protected SwiftMetaData metaData;
     protected SwiftSourceAlloter alloter;
     protected List<ISegmentHolder> segmentList;
+    protected String cubeSourceKey;
 
-    public AbstractSegmentOperator(SourceKey sourceKey, SwiftMetaData metaData, List<Segment> segments) throws SwiftMetaDataException {
+    public AbstractSegmentOperator(SourceKey sourceKey, SwiftMetaData metaData, List<Segment> segments, String cubeSourceKey) throws SwiftMetaDataException {
         Util.requireNonNull(sourceKey, metaData);
         this.sourceKey = sourceKey;
         this.metaData = metaData;
         this.alloter = SwiftSourceAlloterFactory.createSourceAlloter(sourceKey);
         this.segmentList = new ArrayList<ISegmentHolder>();
+        this.cubeSourceKey = cubeSourceKey;
     }
 
     protected int indexOfColumn(String columnName) throws SwiftMetaDataException {

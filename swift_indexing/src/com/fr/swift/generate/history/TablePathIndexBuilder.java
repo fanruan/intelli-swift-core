@@ -12,7 +12,8 @@ import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.relation.CubeMultiRelationPath;
 import com.fr.swift.segment.Segment;
-import com.fr.swift.segment.SwiftSegmentProvider;
+import com.fr.swift.segment.SegmentOperatorProvider;
+import com.fr.swift.segment.SwiftSegmentManager;
 import com.fr.swift.segment.relation.RelationIndex;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.structure.array.IntArray;
@@ -29,10 +30,10 @@ import java.util.List;
 public class TablePathIndexBuilder extends BaseWorker {
 
     protected CubeMultiRelationPath relationPath;
-    protected SwiftSegmentProvider provider;
+    protected SwiftSegmentManager provider;
     protected SwiftLogger logger = SwiftLoggers.getLogger(this.getClass());
 
-    public TablePathIndexBuilder(CubeMultiRelationPath relationPath, SwiftSegmentProvider provider) {
+    public TablePathIndexBuilder(CubeMultiRelationPath relationPath, SwiftSegmentManager provider) {
         this.relationPath = relationPath;
         this.provider = provider;
     }

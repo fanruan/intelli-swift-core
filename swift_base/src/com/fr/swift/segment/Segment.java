@@ -47,6 +47,7 @@ public interface Segment extends Releasable, Flushable {
     RelationIndex getRelation(CubeMultiRelationPath f);
 
     RelationIndex getRelation(CubeLogicColumnKey f);
+
     /**
      * 获取未被删除的索引
      *
@@ -60,5 +61,6 @@ public interface Segment extends Releasable, Flushable {
 
     IResourceLocation getLocation();
 
+    boolean isHistory();
     // fixme getStoreType接口删了，这个直接从getLocation().getStoreTye()拿 没必要再搞一个接口
 }

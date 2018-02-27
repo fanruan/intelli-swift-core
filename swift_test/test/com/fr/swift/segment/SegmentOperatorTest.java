@@ -2,9 +2,12 @@ package com.fr.swift.segment;
 
 import com.fr.base.FRContext;
 import com.fr.dav.LocalEnv;
-import com.fr.swift.manager.LocalSegmentProvider;
+import com.fr.swift.manager.LocalSegmentOperatorProvider;
+import com.fr.swift.source.DataSource;
 import com.fr.swift.source.SourceKey;
+import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftResultSet;
+import com.fr.swift.source.core.Core;
 import junit.framework.TestCase;
 
 import java.io.File;
@@ -35,7 +38,27 @@ public class SegmentOperatorTest extends TestCase {
     private void transport(SourceKey key, SwiftResultSet set) {
         boolean success = true;
         try {
-            ISegmentOperator operator = LocalSegmentProvider.getInstance().getIndexSegmentOperator(key, set.getMetaData());
+            DataSource dataSource = new DataSource() {
+                @Override
+                public SwiftMetaData getMetadata() {
+                    try {
+                        return set.getMetaData();
+                    } catch (Exception e) {
+                        return null;
+                    }
+                }
+
+                @Override
+                public SourceKey getSourceKey() {
+                    return key;
+                }
+
+                @Override
+                public Core fetchObjectCore() {
+                    return null;
+                }
+            };
+            ISegmentOperator operator = LocalSegmentOperatorProvider.getInstance().getIndexSegmentOperator(dataSource);
             operator.transport(set);
             operator.finishTransport();
         } catch (Exception e) {

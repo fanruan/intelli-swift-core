@@ -1,11 +1,9 @@
 package com.fr.swift.manager;
 
-import com.fr.swift.segment.ISegmentOperator;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.SegmentKey;
-import com.fr.swift.segment.SwiftSegmentProvider;
+import com.fr.swift.segment.SwiftSegmentManager;
 import com.fr.swift.source.SourceKey;
-import com.fr.swift.source.SwiftMetaData;
 
 import java.util.List;
 
@@ -13,7 +11,7 @@ import java.util.List;
  * @author yee
  * @date 2017/12/19
  */
-public class RemoteSegmentProvider implements SwiftSegmentProvider {
+public class RemoteSegmentProvider implements SwiftSegmentManager {
 
     private static RemoteSegmentProvider ourInstance = new RemoteSegmentProvider();
 
@@ -36,33 +34,4 @@ public class RemoteSegmentProvider implements SwiftSegmentProvider {
         return false;
     }
 
-    @Override
-    public ISegmentOperator getIndexSegmentOperator(SourceKey sourceKey, SwiftMetaData metaData) {
-        return null;
-    }
-
-    @Override
-    public ISegmentOperator getIndexSegmentOperator(SourceKey sourceKey) {
-        return null;
-    }
-
-    @Override
-    public ISegmentOperator getRealtimeSegmentOperator(SourceKey sourceKey, SwiftMetaData metaData) {
-        return null;
-    }
-
-    @Override
-    public ISegmentOperator getRealtimeSegmentOperator(SourceKey sourceKey) {
-        return null;
-    }
-
-    @Override
-    public ISegmentOperator getDecreaseSegmentOperator(SourceKey sourceKey, SwiftMetaData metaData) {
-        return null;
-    }
-
-    @Override
-    public ISegmentOperator getDecreaseSegmentOperator(SourceKey sourceKey) {
-        return null;
-    }
 }

@@ -5,6 +5,8 @@ import com.fr.swift.source.ColumnTypeUtils;
 import com.fr.swift.source.MetaDataColumn;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftMetaDataColumn;
+import com.fr.swift.source.core.CoreField;
+import com.fr.swift.source.core.MD5Utils;
 import com.fr.swift.source.etl.AbstractOperator;
 import com.fr.swift.source.etl.OperatorType;
 
@@ -16,8 +18,11 @@ import java.util.List;
  */
 public class ColumnFormulaOperator extends AbstractOperator {
 
+    @CoreField
     private String columnName;
+    @CoreField
     private ColumnType columnType;
+    @CoreField
     private String expression;
 
     public ColumnFormulaOperator(String columnName, ColumnType columnType, String expression) {
@@ -30,7 +35,7 @@ public class ColumnFormulaOperator extends AbstractOperator {
     @Override
     public List<SwiftMetaDataColumn> getColumns(SwiftMetaData[] metaDatas) {
         List<SwiftMetaDataColumn> columnList = new ArrayList<SwiftMetaDataColumn>();
-        columnList.add(new MetaDataColumn(this.columnName, ColumnTypeUtils.columnTypeToSqlType(this.columnType)));
+        columnList.add(new MetaDataColumn(MD5Utils.getMD5String(new String[]{(this.expression + this.columnType.name())}), this.columnName, ColumnTypeUtils.columnTypeToSqlType(this.columnType)));
         return columnList;
     }
 

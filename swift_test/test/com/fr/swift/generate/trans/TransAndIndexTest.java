@@ -44,17 +44,9 @@ public class TransAndIndexTest extends TestCase {
     @Override
     protected void setUp() {
         new LocalSwiftServerService().start();
-
         FRContext.setCurrentEnv(new LocalEnv(System.getProperty("user.dir") + "\\" + System.currentTimeMillis()));
         IConnectionProvider connectionProvider = new ConnectionProvider();
         ConnectionManager.getInstance().registerProvider(connectionProvider);
-//        ConnectionInfo localConnection = new SwiftConnectionInfo(null, frConnection);
-//        ConnectionManager.getInstance().registerConnectionInfo("local", localConnection);
-//        Connection frConnection = new JDBCDatabaseConnection("org.h2.Driver", "jdbc:h2://d:/test", "sa", "");
-//        FineConnectionImp fineConnectionInfo = new FineConnectionImp("allTest", null, frConnection);
-//        FineConnectionPool pool = new FineConnectionPoolImp();
-//        pool.addConnection(fineConnectionInfo.getResourceName(), fineConnectionInfo);
-//        FineBIConfigurationCenter.getConfigPoolCenter().registerConnectionPool(pool);
         ConnectionManager.getInstance().registerConnectionInfo("allTest", TestConnectionProvider.createConnection());
     }
 

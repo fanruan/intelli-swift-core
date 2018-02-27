@@ -61,14 +61,14 @@ public class TablePathIndexBuilderTest extends TestCase {
         SchedulerTaskPool.getInstance().initListener();
         WorkerTaskPool.getInstance().initListener();
         WorkerTaskPool.getInstance().setGenerator(pair -> {
-            TaskKey taskKey = pair.key();
+            TaskKey taskKey = pair.getKey();
             if (taskKey.operation() == Operation.NULL) {
                 WorkerTask wt = new WorkerTaskImpl(taskKey);
                 wt.setWorker(BaseWorker.nullWorker());
                 return wt;
             }
 
-            Object o = pair.value();
+            Object o = pair.getValue();
             if (o instanceof DataSource) {
                 DataSource ds = ((DataSource) o);
                 WorkerTask wt = new WorkerTaskImpl(taskKey);

@@ -123,11 +123,11 @@ public class SwiftUpdateManager implements EngineUpdateManager {
         return null;
     }
 
+
     @Override
-    public void updateAll(GlobalUpdateSetting info) throws Exception {
+    public void triggerAllUpdate(TableUpdateInfo info) throws Exception {
 
     }
-
 
     @Override
     public GlobalUpdateSetting getUpdateInfo() throws Exception {
@@ -135,7 +135,7 @@ public class SwiftUpdateManager implements EngineUpdateManager {
     }
 
     @Override
-    public void triggerAllUpdate(TableUpdateInfo info) throws Exception {
+    public void updateAll(GlobalUpdateSetting info) throws Exception {
 
     }
 

@@ -6,4 +6,6 @@ package com.fr.swift.source;
  */
 public interface Row {
     <V> V getValue(int index);
+
+    int getSize();
 }

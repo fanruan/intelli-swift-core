@@ -8,6 +8,7 @@ import com.fr.swift.source.DataSource;
 import com.fr.swift.source.ETLDataSource;
 import com.fr.swift.source.SwiftMetaDataColumn;
 import com.fr.swift.source.SwiftSourceTransfer;
+import com.fr.swift.utils.DataSourceUtils;
 
 import java.util.List;
 
@@ -37,7 +38,8 @@ public class MinorUpdater {
     }
 
     private static void build(final DataSource dataSource) throws Exception {
-        ISegmentOperator operator = new MinorSegmentOperator(dataSource.getSourceKey(), dataSource.getMetadata(), null);
+        ISegmentOperator operator = new MinorSegmentOperator(dataSource.getSourceKey(), dataSource.getMetadata(),
+                null, DataSourceUtils.getSwiftSourceKey(dataSource));
         SwiftSourceTransfer transfer = SwiftDataPreviewer.createPreviewTransfer(dataSource, 1000);
 
         operator.transport(transfer.createResultSet());

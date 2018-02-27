@@ -14,4 +14,9 @@ public class ListBasedRow implements Row {
     public <V> V getValue(int index) {
         return (V) values.get(index);
     }
+
+    @Override
+    public int getSize() {
+        return values == null ? 0 : values.size();
+    }
 }
