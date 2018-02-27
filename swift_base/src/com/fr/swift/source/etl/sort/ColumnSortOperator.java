@@ -2,6 +2,7 @@ package com.fr.swift.source.etl.sort;
 
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
+import com.fr.swift.source.MetaDataColumn;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftMetaDataColumn;
 import com.fr.swift.source.core.CoreField;
@@ -35,7 +36,19 @@ public class ColumnSortOperator extends AbstractOperator {
 
     @Override
     public List<SwiftMetaDataColumn> getColumns(SwiftMetaData[] metaDatas) {
-        return new ArrayList<SwiftMetaDataColumn>();
+        List<SwiftMetaDataColumn> columns = new ArrayList<SwiftMetaDataColumn>();
+        try {
+            for (SwiftMetaData basedMeta : metaDatas) {
+                for (int i = 0; i < basedMeta.getColumnCount(); i++) {
+                    int index = i + 1;
+                    columns.add(new MetaDataColumn(basedMeta.getColumnName(index), basedMeta.getColumnRemark(index),
+                            basedMeta.getColumnType(index), basedMeta.getPrecision(index), basedMeta.getScale(index)));
+                }
+            }
+        } catch (Exception e) {
+            //do nothing
+        }
+        return columns;
     }
 
     @Override

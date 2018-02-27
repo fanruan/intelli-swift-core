@@ -113,7 +113,7 @@ public abstract class BaseSegment implements Segment {
                 return new StringColumn(location);
             default:
         }
-        return Crasher.crash(String.format("cannot new correct column by class type: %d", classType));
+        return Crasher.crash(String.format("cannot new correct column by class type: %s", classType));
     }
 
     private ClassType getClassType(String name) {

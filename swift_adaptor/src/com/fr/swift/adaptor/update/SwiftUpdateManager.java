@@ -109,6 +109,11 @@ public class SwiftUpdateManager implements EngineUpdateManager {
     }
 
     @Override
+    public UpdateStatus getTableUpdateState(String tableName) throws Exception {
+        return null;
+    }
+
+    @Override
     public UpdateStatus getPackUpdateStatus(String packId) throws Exception {
         return null;
     }
@@ -125,23 +130,13 @@ public class SwiftUpdateManager implements EngineUpdateManager {
     }
 
     @Override
-    public FineEngineType getEngineType() {
-        return FineEngineType.Cube;
-    }
-
-    @Override
-    public UpdateStatus getTableUpdateState(String tableName) throws Exception {
+    public GlobalUpdateSetting getUpdateInfo() throws Exception {
         return null;
     }
 
     @Override
     public void updateAll(GlobalUpdateSetting info) throws Exception {
 
-    }
-
-    @Override
-    public GlobalUpdateSetting getUpdateInfo() throws Exception {
-        return null;
     }
 
     @Override
@@ -162,5 +157,10 @@ public class SwiftUpdateManager implements EngineUpdateManager {
     @Override
     public boolean shouldUpdate() {
         return false;
+    }
+
+    @Override
+    public FineEngineType getEngineType() {
+        return FineEngineType.Cube;
     }
 }
