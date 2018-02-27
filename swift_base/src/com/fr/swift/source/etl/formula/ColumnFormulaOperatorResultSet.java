@@ -80,12 +80,12 @@ public class ColumnFormulaOperatorResultSet implements SwiftResultSet {
                 for (int i = 0; i < metaData.getColumnCount(); i++) {
                     DictionaryEncodedColumn getter = segment[segCursor].getColumn(new ColumnKey(metaData.getColumnName(i + 1))).getDictionaryEncodedColumn();
                     Object ob = getter.getValue(getter.getIndexByRow(rowCursor));
-                    list.add(getValueByColumnType(ob));
+                    list.add(ob);
                 }
                 list.add(getValueByColumnType(value));
                 tempValue.setRow(new ListBasedRow(list));
             } catch (Exception e) {
-                throw new RuntimeException();
+                throw new RuntimeException(e);
             }
             if (rowCursor < segment[segCursor].getRowCount() - 1) {
                 rowCursor++;
