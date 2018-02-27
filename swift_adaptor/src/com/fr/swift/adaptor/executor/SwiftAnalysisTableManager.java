@@ -81,6 +81,11 @@ public class SwiftAnalysisTableManager implements EngineAnalysisTableManager {
 
     @Override
     public List<Object> getColumnValue(FineAnalysisTable table, String fieldName) {
+        try {
+            ETLSource dataSource = (ETLSource) IndexingDataSourceFactory.transformDataSource(table);
+            return swiftFieldsDataPreview.getGroupPreviewByFields(dataSource, fieldName);
+        } catch (Exception e) {
+        }
         return null;
     }
 
