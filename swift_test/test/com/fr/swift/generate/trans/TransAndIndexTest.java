@@ -2,6 +2,7 @@ package com.fr.swift.generate.trans;
 
 import com.fr.base.FRContext;
 import com.fr.dav.LocalEnv;
+import com.fr.swift.cube.queue.CubeTasks;
 import com.fr.swift.cube.task.SchedulerTask;
 import com.fr.swift.cube.task.Task.Status;
 import com.fr.swift.cube.task.TaskKey;
@@ -43,17 +44,9 @@ public class TransAndIndexTest extends TestCase {
     @Override
     protected void setUp() {
         new LocalSwiftServerService().start();
-
         FRContext.setCurrentEnv(new LocalEnv(System.getProperty("user.dir") + "\\" + System.currentTimeMillis()));
         IConnectionProvider connectionProvider = new ConnectionProvider();
         ConnectionManager.getInstance().registerProvider(connectionProvider);
-//        ConnectionInfo localConnection = new SwiftConnectionInfo(null, frConnection);
-//        ConnectionManager.getInstance().registerConnectionInfo("local", localConnection);
-//        Connection frConnection = new JDBCDatabaseConnection("org.h2.Driver", "jdbc:h2://d:/test", "sa", "");
-//        FineConnectionImp fineConnectionInfo = new FineConnectionImp("allTest", null, frConnection);
-//        FineConnectionPool pool = new FineConnectionPoolImp();
-//        pool.addConnection(fineConnectionInfo.getResourceName(), fineConnectionInfo);
-//        FineBIConfigurationCenter.getConfigPoolCenter().registerConnectionPool(pool);
         ConnectionManager.getInstance().registerConnectionInfo("allTest", TestConnectionProvider.createConnection());
     }
 
@@ -69,14 +62,14 @@ public class TransAndIndexTest extends TestCase {
         SchedulerTaskPool.getInstance().initListener();
         WorkerTaskPool.getInstance().initListener();
         WorkerTaskPool.getInstance().setGenerator(pair -> {
-            TaskKey taskKey = pair.key();
+            TaskKey taskKey = pair.getKey();
             if (taskKey.operation() == Operation.NULL) {
                 WorkerTask wt = new WorkerTaskImpl(taskKey);
                 wt.setWorker(BaseWorker.nullWorker());
                 return wt;
             }
 
-            Object o = pair.value();
+            Object o = pair.getValue();
             if (o instanceof DataSource) {
                 DataSource ds = ((DataSource) o);
                 WorkerTask wt = new WorkerTaskImpl(taskKey);
@@ -105,7 +98,7 @@ public class TransAndIndexTest extends TestCase {
 
             l.add(new Pair<>(task.key(), dataSource));
         }
-        SchedulerTaskPool.sendTasks(l);
+        CubeTasks.sendTasks(l);
         start.triggerRun();
 
         end.addStatusChangeListener((prev, now) -> {

@@ -96,6 +96,11 @@ public class CreateSegmentForColumnTrans {
             public void release() {
 
             }
+
+            @Override
+            public boolean isHistory() {
+                return false;
+            }
         };
     }
 }

@@ -96,6 +96,11 @@ public class CreateSegmentForUnion2 {
             public void release() {
 
             }
+
+            @Override
+            public boolean isHistory() {
+                return false;
+            }
         };
     }
 }

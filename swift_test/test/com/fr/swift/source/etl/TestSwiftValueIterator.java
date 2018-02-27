@@ -150,6 +150,11 @@ public class TestSwiftValueIterator extends TestCase {
             public void release() {
 
             }
+
+            @Override
+            public boolean isHistory() {
+                return false;
+            }
         };
         segment2 = new Segment() {
 
@@ -222,6 +227,11 @@ public class TestSwiftValueIterator extends TestCase {
             @Override
             public void release() {
 
+            }
+
+            @Override
+            public boolean isHistory() {
+                return false;
             }
         };
     }

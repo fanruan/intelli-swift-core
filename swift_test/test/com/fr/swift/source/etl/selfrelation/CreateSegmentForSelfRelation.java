@@ -97,6 +97,11 @@ public class CreateSegmentForSelfRelation {
             public void release() {
 
             }
+
+            @Override
+            public boolean isHistory() {
+                return false;
+            }
         };
     }
 }

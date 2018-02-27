@@ -5,7 +5,7 @@ import com.fr.swift.cal.segment.group.GroupAllSegmentQuery;
 import com.fr.swift.cal.segment.group.GroupAllSegmentQueryTest;
 import com.fr.swift.query.aggregator.Aggregator;
 import com.fr.swift.query.group.multiby.CubeData;
-import com.fr.swift.query.sort.ASCSort;
+import com.fr.swift.query.sort.AscSort;
 import com.fr.swift.query.sort.Sort;
 import com.fr.swift.result.RowIndexKey;
 import com.fr.swift.result.RowResultCollector;
@@ -88,7 +88,7 @@ public class GroupResultQueryTest extends TestCase {
             dimensions.add(cubeData.getDimensions());
         }
         for (int i = 0; i < dimensionCount; i++) {
-            indexSorts.add(new ASCSort(i));
+            indexSorts.add(new AscSort(i));
         }
         expectedDictionaries = getGlobalDictionaries(dimensions);
         expectedResult = mergeResult(expectedResultList);
