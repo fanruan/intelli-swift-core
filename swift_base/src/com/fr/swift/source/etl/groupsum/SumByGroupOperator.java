@@ -57,7 +57,7 @@ public class SumByGroupOperator extends AbstractOperator {
                         columns.add(new MetaDataColumn(this.dimensions[i].getNameText(), parent.getColumn(this.dimensions[i].getName()).getType(), parent.getColumn(this.dimensions[i].getName()).getPrecision()));
                     }
                     for(int j = 0; j < this.targets.length; j++) {
-                        columns.add(new MetaDataColumn(this.targets[i].getNameText(), ColumnTypeUtils.columnTypeToSqlType(null/*this.targets[i].getColumnType()*/), parent.getColumn(this.targets[i].getName()).getPrecision()));
+                        columns.add(new MetaDataColumn(this.targets[i].getNameText(), ColumnTypeUtils.columnTypeToSqlType(ColumnType.NUMBER), parent.getColumn(this.targets[i].getName()).getPrecision()));
                     }
                 } catch(SwiftMetaDataException e) {
                     LOGGER.error("getting meta's column information failed", e);

@@ -30,7 +30,7 @@ public class MultiRelationHelper {
             foreignKeys.add(key);
         }
         SourceKey primarySource = source.getPrimarySource();
-        SourceKey foreignSource = source.getPrimarySource();
+        SourceKey foreignSource = source.getForeignSource();
         return new CubeMultiRelation(new CubeLogicColumnKey(primarySource, primaryKeys),
                 new CubeLogicColumnKey(foreignSource, foreignKeys), primarySource, foreignSource);
     }

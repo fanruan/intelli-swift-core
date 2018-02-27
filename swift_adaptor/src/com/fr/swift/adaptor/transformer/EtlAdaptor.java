@@ -137,9 +137,9 @@ class EtlAdaptor {
 //            return adaptSelectField(analysis);
 //        }
         try {
-            if (baseTable != null) {
-                dataSources.add(IndexingDataSourceFactory.transformDataSource(baseTable));
-            }
+//            if (baseTable != null) {
+//                dataSources.add(IndexingDataSourceFactory.transformDataSource(baseTable));
+//            }
             FineOperator op = analysis.getOperator();
             dataSources.addAll(fromOperator(op));
             return new ETLSource(dataSources, adaptEtlOperator(op, table));
