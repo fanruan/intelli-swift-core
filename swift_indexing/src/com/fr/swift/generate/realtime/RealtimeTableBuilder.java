@@ -24,6 +24,7 @@ import com.fr.swift.source.SwiftMetaData;
  * @author Lucifer
  * @description
  * @since Advanced FineBI Analysis 1.0
+ * fixme copy过来的，实现改成realtime的
  */
 public class RealtimeTableBuilder extends BaseWorker {
     private DataSource dataSource;

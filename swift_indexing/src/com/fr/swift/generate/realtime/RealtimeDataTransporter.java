@@ -24,7 +24,6 @@ import java.util.List;
  * @since Advanced FineBI Analysis 1.0
  */
 public class RealtimeDataTransporter extends BaseWorker {
-
     private DataSource dataSource;
     private SwiftMetaData swiftMetaData;
     private Increment increment;

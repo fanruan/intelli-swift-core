@@ -4,9 +4,10 @@ import com.fr.swift.structure.iterator.IntListRowTraversal;
 import com.fr.swift.structure.iterator.RowTraversal;
 
 /**
- * Created by pony on 2017/12/6.
+ * @author pony
+ * @date 2017/12/6
  */
-public class IntListGroupByEntry implements GroupByEntry{
+public class IntListGroupByEntry implements GroupByEntry {
     private int index;
     private IntListRowTraversal rowTraversal;
 
@@ -15,10 +16,12 @@ public class IntListGroupByEntry implements GroupByEntry{
         this.rowTraversal = rowTraversal;
     }
 
+    @Override
     public int getIndex() {
         return index;
     }
 
+    @Override
     public RowTraversal getTraversal() {
         return rowTraversal;
     }
