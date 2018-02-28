@@ -9,7 +9,6 @@ import com.fr.swift.generate.realtime.RealtimeDataTransporter;
 import com.fr.swift.increase.IncrementImpl;
 import com.fr.swift.increment.Increment;
 import com.fr.swift.manager.LocalSegmentProvider;
-import com.fr.swift.provider.ConnectionProvider;
 import com.fr.swift.segment.RealTimeSegmentImpl;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.column.BitmapIndexedColumn;
@@ -18,9 +17,6 @@ import com.fr.swift.segment.column.DetailColumn;
 import com.fr.swift.segment.column.DictionaryEncodedColumn;
 import com.fr.swift.service.LocalSwiftServerService;
 import com.fr.swift.source.DataSource;
-import com.fr.swift.source.db.ConnectionInfo;
-import com.fr.swift.source.db.ConnectionManager;
-import com.fr.swift.source.db.IConnectionProvider;
 import com.fr.swift.source.db.QueryDBSource;
 import com.fr.swift.source.db.TestConnectionProvider;
 import junit.framework.TestCase;
@@ -45,10 +41,7 @@ public class IncreaseTransportTest extends TestCase {
         new LocalSwiftServerService().start();
 
         FRContext.setCurrentEnv(new LocalEnv(System.getProperty("user.dir") + "\\" + System.currentTimeMillis()));
-        IConnectionProvider connectionProvider = new ConnectionProvider();
-        ConnectionManager.getInstance().registerProvider(connectionProvider);
-        ConnectionInfo connectionInfo = TestConnectionProvider.createConnection();
-        connectionProvider.register("IncreaseTest", connectionInfo);
+        TestConnectionProvider.createConnection();
         dataSource = new QueryDBSource("select 付款时间 from DEMO_CAPITAL_RETURN", "IncreaseTest");
     }
 

@@ -86,11 +86,9 @@ import com.fr.swift.generate.history.MultiRelationIndexBuilder;
 import com.fr.swift.generate.history.TableBuilder;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
-import com.fr.swift.provider.ConnectionProvider;
 import com.fr.swift.relation.utils.MultiRelationHelper;
 import com.fr.swift.source.DataSource;
 import com.fr.swift.source.IRelationSource;
-import com.fr.swift.source.db.ConnectionManager;
 import com.fr.swift.structure.Pair;
 import com.fr.swift.util.function.Function;
 
@@ -113,8 +111,6 @@ public class ProviderTaskManager {
 
         }
         initTaskFetchThread();
-        ConnectionManager.getInstance().registerProvider(new ConnectionProvider());
-
     }
 
     private static class SingletonHolder {

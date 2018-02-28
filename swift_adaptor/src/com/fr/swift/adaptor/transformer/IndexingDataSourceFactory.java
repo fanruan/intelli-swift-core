@@ -9,23 +9,20 @@ import com.finebi.conf.internalimp.basictable.table.FineDBBusinessTable;
 import com.finebi.conf.internalimp.basictable.table.FineSQLBusinessTable;
 import com.finebi.conf.internalimp.update.TableUpdateInfo;
 import com.finebi.conf.structure.analysis.operator.FineOperator;
-import com.finebi.conf.structure.bean.connection.FineConnection;
 import com.finebi.conf.structure.bean.table.AbstractFineTable;
 import com.finebi.conf.structure.bean.table.FineBusinessTable;
-import com.finebi.conf.utils.FineConnectionUtils;
 import com.fr.swift.increase.IncrementImpl;
 import com.fr.swift.increment.Increment;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
+import com.fr.swift.manager.ConnectionProvider;
 import com.fr.swift.source.ColumnTypeConstants.ColumnType;
 import com.fr.swift.source.DBDataSource;
 import com.fr.swift.source.DataSource;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.container.SourceContainer;
-import com.fr.swift.source.db.ConnectionInfo;
 import com.fr.swift.source.db.ConnectionManager;
 import com.fr.swift.source.db.QueryDBSource;
-import com.fr.swift.source.db.SwiftConnectionInfo;
 import com.fr.swift.source.db.TableDBSource;
 import com.fr.swift.source.etl.ETLSource;
 
@@ -44,7 +41,9 @@ import java.util.Map;
 public class IndexingDataSourceFactory {
 
     private static final SwiftLogger LOGGER = SwiftLoggers.getLogger();
-
+    static {
+        ConnectionManager.getInstance().registerProvider(new ConnectionProvider());
+    }
     public static void transformDataSources(Map<FineBusinessTable, TableUpdateInfo> infoMap, List<String> updateTableSourceKeys, SourceContainer updateSourceContainer, Map<String, List<Increment>> incrementMap) throws Exception {
         for (Map.Entry<FineBusinessTable, TableUpdateInfo> infoEntry : infoMap.entrySet()) {
             DataSource updateDataSource = transformDataSource(infoEntry.getKey());
@@ -155,9 +154,6 @@ public class IndexingDataSourceFactory {
 
     private static DataSource transformTableDBSource(FineDBBusinessTable table) throws Exception {
         String connectionName = table.getConnName();
-        FineConnection fineConnection = FineConnectionUtils.getConnectionByName(connectionName);
-        ConnectionInfo connectionInfo = new SwiftConnectionInfo(fineConnection.getSchema(), fineConnection.getConnection());
-        ConnectionManager.getInstance().registerConnectionInfo(connectionName, connectionInfo);
         Map<String, ColumnType> fieldColumnTypes = checkFieldTypes(table.getOperators());
         TableDBSource tableDBSource = fieldColumnTypes == null ?
                 new TableDBSource(table.getTableName(), connectionName) : new TableDBSource(table.getTableName(), connectionName, fieldColumnTypes);
@@ -183,10 +179,6 @@ public class IndexingDataSourceFactory {
 
     private static DataSource transformQueryDBSource(FineSQLBusinessTable table) throws Exception {
 
-        String connectionName = table.getConnName();
-        FineConnection fineConnection = FineConnectionUtils.getConnectionByName(connectionName);
-        ConnectionInfo connectionInfo = new SwiftConnectionInfo(fineConnection.getSchema(), fineConnection.getConnection());
-        ConnectionManager.getInstance().registerConnectionInfo(connectionName, connectionInfo);
         Map<String, ColumnType> fieldColumnTypes = checkFieldTypes(table.getOperators());
         QueryDBSource queryDBSource = fieldColumnTypes == null ?
                 new QueryDBSource(table.getSql(), table.getConnName()) : new QueryDBSource(table.getSql(), table.getConnName(), fieldColumnTypes);

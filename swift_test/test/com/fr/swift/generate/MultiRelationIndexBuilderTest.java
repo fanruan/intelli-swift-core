@@ -18,7 +18,6 @@ import com.fr.swift.cube.task.impl.WorkerTaskPool;
 import com.fr.swift.generate.history.MultiRelationIndexBuilder;
 import com.fr.swift.generate.history.TableBuilder;
 import com.fr.swift.manager.LocalSegmentProvider;
-import com.fr.swift.provider.ConnectionProvider;
 import com.fr.swift.relation.CubeLogicColumnKey;
 import com.fr.swift.relation.CubeMultiRelation;
 import com.fr.swift.relation.utils.MultiRelationHelper;
@@ -31,8 +30,6 @@ import com.fr.swift.service.LocalSwiftServerService;
 import com.fr.swift.source.DataSource;
 import com.fr.swift.source.IRelationSource;
 import com.fr.swift.source.SourceKey;
-import com.fr.swift.source.db.ConnectionManager;
-import com.fr.swift.source.db.IConnectionProvider;
 import com.fr.swift.source.db.TableDBSource;
 import com.fr.swift.source.db.TestConnectionProvider;
 import com.fr.swift.source.relation.RelationSource;
@@ -56,9 +53,7 @@ public class MultiRelationIndexBuilderTest extends TestCase {
         new LocalSwiftServerService().start();
 
         FRContext.setCurrentEnv(new LocalEnv(System.getProperty("user.dir")));
-        IConnectionProvider connectionProvider = new ConnectionProvider();
-        ConnectionManager.getInstance().registerProvider(connectionProvider);
-        ConnectionManager.getInstance().registerConnectionInfo("allTest", TestConnectionProvider.createConnection());
+        TestConnectionProvider.createConnection();
     }
 
     /**
