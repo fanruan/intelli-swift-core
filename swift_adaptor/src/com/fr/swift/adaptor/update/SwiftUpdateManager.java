@@ -17,7 +17,7 @@ import com.fr.swift.adaptor.transformer.IndexingDataSourceFactory;
 import com.fr.swift.increment.Increment;
 import com.fr.swift.manager.ProviderManager;
 import com.fr.swift.provider.IndexStuffInfoProvider;
-import com.fr.swift.source.container.SourceContainer;
+import com.fr.swift.source.container.SourceContainerManager;
 import com.fr.swift.source.manager.IndexStuffProvider;
 import com.fr.swift.stuff.HistoryIndexStuffImpl;
 import com.fr.swift.stuff.IndexingStuff;
@@ -53,7 +53,7 @@ public class SwiftUpdateManager implements EngineUpdateManager {
     }
 
     @Override
-    public TableUpdateInfo getPackageUpdateInfo(String packageId) throws Exception {
+    public TableUpdateInfo getPackageUpdateInfo(String packageId) {
         return null;
     }
 
@@ -65,7 +65,7 @@ public class SwiftUpdateManager implements EngineUpdateManager {
     }
 
     @Override
-    public void triggerTableUpdate(TableUpdateInfo updateInfo, FineBusinessTable table) throws Exception {
+    public void triggerTableUpdate(TableUpdateInfo updateInfo, FineBusinessTable table) {
 
     }
 
@@ -76,7 +76,7 @@ public class SwiftUpdateManager implements EngineUpdateManager {
         List<String> updateTableSourceKeys = new ArrayList<String>();
         List<String> updateRelationSourceKeys = new ArrayList<String>();
         List<String> updatePathSourceKeys = new ArrayList<String>();
-        SourceContainer updateSourceContainer = new SourceContainer();
+        SourceContainerManager updateSourceContainer = new SourceContainerManager();
 
         Map<String, List<Increment>> incrementMap = new HashMap<String, List<Increment>>();
         IndexingDataSourceFactory.transformDataSources(infoMap, updateTableSourceKeys, updateSourceContainer, incrementMap);
@@ -95,11 +95,11 @@ public class SwiftUpdateManager implements EngineUpdateManager {
     }
 
     @Override
-    public void savePackageUpdateSetting(String packId, TableUpdateInfo info) throws Exception {
+    public void savePackageUpdateSetting(String packId, TableUpdateInfo info) {
     }
 
     @Override
-    public void triggerPackageUpdate(String packId) throws Exception {
+    public void triggerPackageUpdate(String packId) {
 
     }
 
@@ -109,12 +109,12 @@ public class SwiftUpdateManager implements EngineUpdateManager {
     }
 
     @Override
-    public UpdateStatus getTableUpdateState(String tableName) throws Exception {
+    public UpdateStatus getTableUpdateState(String tableName) {
         return null;
     }
 
     @Override
-    public UpdateStatus getPackUpdateStatus(String packId) throws Exception {
+    public UpdateStatus getPackUpdateStatus(String packId) {
         return null;
     }
 
@@ -125,17 +125,17 @@ public class SwiftUpdateManager implements EngineUpdateManager {
 
 
     @Override
-    public void triggerAllUpdate(TableUpdateInfo info) throws Exception {
+    public void triggerAllUpdate(TableUpdateInfo info) {
 
     }
 
     @Override
-    public GlobalUpdateSetting getUpdateInfo() throws Exception {
+    public GlobalUpdateSetting getUpdateInfo() {
         return null;
     }
 
     @Override
-    public void updateAll(GlobalUpdateSetting info) throws Exception {
+    public void updateAll(GlobalUpdateSetting info) {
 
     }
 

@@ -14,7 +14,7 @@ import com.fr.swift.service.listener.EventType;
 import com.fr.swift.service.listener.SwiftServiceListenerManager;
 import com.fr.swift.source.DataSource;
 import com.fr.swift.source.ETLDataSource;
-import com.fr.swift.source.IRelationSource;
+import com.fr.swift.source.RelationSource;
 import com.fr.swift.structure.Pair;
 
 import java.util.ArrayList;
@@ -72,7 +72,7 @@ public class CubeTasks {
         return etlTask;
     }
 
-    static SchedulerTask newRelationTask(IRelationSource relation, DataSource primary, DataSource foreign) throws SwiftMetaDataException {
+    static SchedulerTask newRelationTask(RelationSource relation, DataSource primary, DataSource foreign) throws SwiftMetaDataException {
         SchedulerTask relationTask = new SchedulerTaskImpl(new CubeTaskKey(newTaskName(relation), Operation.INDEX_RELATION));
 
         TaskKey primaryTaskKey = new CubeTaskKey(newTaskName(primary), Operation.BUILD_TABLE),
@@ -94,7 +94,7 @@ public class CubeTasks {
         return ds.getMetadata().getTableName() + "@" + ds.getSourceKey().getId();
     }
 
-    private static String newTaskName(IRelationSource relation) {
+    private static String newTaskName(RelationSource relation) {
         return relation + "@" + relation.getSourceKey().getId();
     }
 

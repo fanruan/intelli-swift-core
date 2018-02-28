@@ -18,7 +18,7 @@ import java.util.List;
  * @description container测试
  * @since Advanced FineBI Analysis 1.0
  */
-public class SourceContainerTest extends TestCase {
+public class SourceContainerManagerTest extends TestCase {
 
     private DataSourceContainer dataSourceContainer;
     private RelationSourceContainer relationSourceContainer;

@@ -8,7 +8,7 @@ import com.fr.swift.source.core.CoreService;
  * @author Lucifer
  * @since Advanced FineBI Analysis 1.0
  */
-public interface SourcePath extends ISource, CoreService {
+public interface SourcePath extends Source, CoreService {
 
     void addRelationAtHead();
 

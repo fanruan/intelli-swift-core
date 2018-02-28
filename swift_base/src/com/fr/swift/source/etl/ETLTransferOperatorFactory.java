@@ -47,6 +47,7 @@ public class ETLTransferOperatorFactory {
                 return transferColumnSortOperator((ColumnSortOperator) operator);
             case COLUMNFORMULA:
                 return transferColumnFormulaOperator((ColumnFormulaOperator) operator);
+            default:
         }
         return null;
     }

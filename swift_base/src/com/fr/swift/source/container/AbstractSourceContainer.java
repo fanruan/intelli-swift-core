@@ -1,6 +1,6 @@
 package com.fr.swift.source.container;
 
-import com.fr.swift.source.ISource;
+import com.fr.swift.source.Source;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -15,7 +15,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @description
  * @since Advanced FineBI Analysis 1.0
  */
-public abstract class AbstractSourceContainer<T extends ISource> implements ISourceContainer<T> {
+public abstract class AbstractSourceContainer<T extends Source> implements SourceContainer<T> {
 
     protected Map<String, T> sourceMap;
 

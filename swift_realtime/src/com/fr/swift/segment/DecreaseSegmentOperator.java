@@ -51,7 +51,7 @@ public class DecreaseSegmentOperator extends AbstractSegmentOperator {
 
     @Override
     public void transportRow(long row, String allotColumn, Row data) throws Exception {
-        for (ISegmentHolder segmentHolder : segmentList) {
+        for (SegmentHolder segmentHolder : segmentList) {
             Segment segment = segmentHolder.getSegment();
             DictionaryEncodedColumn dictionaryEncodedColumn = segment.getColumn(new ColumnKey(metaData.getColumnName(DEFAULT_COLUMN_INDEX))).getDictionaryEncodedColumn();
             BitmapIndexedColumn bitmapIndexedColumn = segment.getColumn(new ColumnKey(metaData.getColumnName(DEFAULT_COLUMN_INDEX))).getBitmapIndex();
@@ -70,7 +70,7 @@ public class DecreaseSegmentOperator extends AbstractSegmentOperator {
     public void finishTransport() {
         MetaDataXmlManager.getManager().putMetaData(sourceKey, metaData);
         for (int i = 0, len = segmentList.size(); i < len; i++) {
-            ISegmentHolder holder = segmentList.get(i);
+            SegmentHolder holder = segmentList.get(i);
 //            holder.putRowCount();
 //            holder.putAllShowIndex();
 //            holder.putNullIndex();
