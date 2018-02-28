@@ -346,9 +346,9 @@ class EtlAdaptor {
             case AnalysisType.FILTER:
                 return fromColumnFilterBean(op.<FilterOperatorBean>getValue());
             case AnalysisType.CIRCLE_ONE_FIELD_CALCULATE:
-                return fromOneUnionRelationBean(op.<CirculateOneFieldBean>getValue());
+                return fromOneUnionRelationBean(op.<CirculateOneFieldBean>getValue(), table);
             case AnalysisType.CIRCLE_TWO_FIELD_CALCULATE:
-                return fromTwoUnionRelationBean(op.<CirculateOneFieldBean>getValue());
+                return fromTwoUnionRelationBean(op.<CirculateOneFieldBean>getValue(), table);
             case AnalysisType.COLUMN_ROW_TRANS:
                 return fromColumnRowTransBean(op.<ColumnRowTransBean>getValue(), table);
             case AnalysisType.CONF_SELECT:
@@ -532,23 +532,52 @@ class EtlAdaptor {
         return new ColumnRowTransOperator(groupName, lcName, lcValue, columns, otherColumnNames);
     }
 
-    private static OneUnionRelationOperator fromOneUnionRelationBean(CirculateOneFieldBean bean) {
+    private static OneUnionRelationOperator fromOneUnionRelationBean(CirculateOneFieldBean bean, FineBusinessTable table) {
+        FineBusinessTable preTable = ((EngineComplexConfTable)table).getBaseTableBySelected(0);
+        List<FineBusinessField> fields = preTable.getFields();
         CirculateTwoFieldValue value = bean.getValue();
+        String idField = fields.get(findFieldName(fields, value.getIdField())).getName();
         LinkedHashMap<String, Integer> columns = new LinkedHashMap<String, Integer>();
         for (int i = 0; i < value.getFloors().size(); i++) {
             FloorItem item = value.getFloors().get(i);
-            columns.put(item.getName(), item.getLength());
+            String tempName = item.getName();
+            try {
+                tempName = fields.get(findFieldName(fields, item.getName())).getName();
+            } catch(Exception e) {
+
+            }
+            columns.put(tempName, item.getLength());
         }
-        return new OneUnionRelationOperator(value.getIdField(), value.getShowFields(), columns, value.getFieldType(), null);
+        List<String> showFields = new ArrayList<String>();
+        for(int i = 0; i < value.getShowFields().size(); i++) {
+            String tempName = fields.get(findFieldName(fields, value.getShowFields().get(i))).getName();
+            showFields.add(tempName);
+        }
+        return new OneUnionRelationOperator(idField, showFields, columns, value.getFieldType(), null);
     }
 
-    private static TwoUnionRelationOperator fromTwoUnionRelationBean(CirculateOneFieldBean bean) {
+    private static TwoUnionRelationOperator fromTwoUnionRelationBean(CirculateOneFieldBean bean, FineBusinessTable table) {
         CirculateTwoFieldValue value = bean.getValue();
+        FineBusinessTable preTable = ((EngineComplexConfTable)table).getBaseTableBySelected(0);
+        List<FineBusinessField> fields = preTable.getFields();
+        String idFieldName = fields.get(findFieldName(fields, value.getIdField())).getName();
+        String parentIdFieldName = fields.get(findFieldName(fields, value.getParentIdField())).getName();
         LinkedHashMap<String, Integer> columns = new LinkedHashMap<String, Integer>();
         for (int i = 0; i < value.getFloors().size(); i++) {
             FloorItem item = value.getFloors().get(i);
-            columns.put(item.getName(), item.getLength());
+            String tempName = item.getName();
+            try {
+                tempName = fields.get(findFieldName(fields, item.getName())).getName();
+            } catch(Exception e) {
+
+            }
+            columns.put(tempName, item.getLength());
         }
-        return new TwoUnionRelationOperator(value.getIdField(), value.getShowFields(), columns, value.getType(), null, value.getParentIdField());
+        List<String> showFields = new ArrayList<String>();
+        for(int i = 0; i < value.getShowFields().size(); i++) {
+            String tempName = fields.get(findFieldName(fields, value.getShowFields().get(i))).getName();
+            showFields.add(tempName);
+        }
+        return new TwoUnionRelationOperator(idFieldName, showFields, columns, value.getType(), null, parentIdFieldName);
     }
 }

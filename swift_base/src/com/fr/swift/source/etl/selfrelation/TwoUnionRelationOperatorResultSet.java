@@ -35,7 +35,7 @@ public class TwoUnionRelationOperatorResultSet implements SwiftResultSet {
     private int columnLength = 0;
     private SwiftMetaData metaData;
     private DictionaryEncodedColumn[][] gts = null;
-    private int segCursor = 0, rowCursor = 0;
+    private int segCursor = 0, rowCursor = 0, rowCount = 0;
     private Map<Object, IndexCollection> valueIndexMap = new HashMap<Object, IndexCollection>();
     private Segment[] segments;
 
@@ -57,6 +57,7 @@ public class TwoUnionRelationOperatorResultSet implements SwiftResultSet {
         idColumn = segments[0].getColumn(new ColumnKey(idColumnName));
         pidColumn = segments[0].getColumn(new ColumnKey(parentIdColumnName));
         columnLength = columns.size();
+        rowCount = segments[segCursor].getRowCount();
         try {
             int idIndex = 0, pidIndex = 0;
             for(int i = 0; i < metaData.getColumnCount(); i++) {
@@ -97,7 +98,8 @@ public class TwoUnionRelationOperatorResultSet implements SwiftResultSet {
 
     @Override
     public boolean next() throws SQLException {
-        if(rowCursor < segments[segCursor].getRowCount() || segCursor < segments.length) {
+        if(segCursor < segments.length && rowCursor < rowCount) {
+            rowCount = segments[segCursor].getRowCount();
             int index = 0;
             Object[] res = new Object[metaData.getColumnCount() + columnLength * showColumns.size()];
             for(int i = 0; i < metaData.getColumnCount(); i++) {
@@ -129,7 +131,7 @@ public class TwoUnionRelationOperatorResultSet implements SwiftResultSet {
             if(rowCursor < segments[segCursor].getRowCount() - 1) {
                 rowCursor++;
             } else {
-                if(segCursor < segments.length - 1) {
+                if(segCursor < segments.length) {
                     segCursor++;
                     rowCursor = 0;
                 } else {
