@@ -11,7 +11,7 @@ import com.fr.swift.source.SwiftResultSet;
  * @description
  * @since Advanced FineBI Analysis 1.0
  */
-public interface  ISegmentOperator {
+public interface SegmentOperator {
 
     void transport(SwiftResultSet swiftResultSet) throws Exception;
 

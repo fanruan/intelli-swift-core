@@ -14,18 +14,27 @@ import com.fr.swift.result.RowResultCollector;
 import java.util.TreeSet;
 
 /**
- * Created by pony on 2017/12/11.
+ * @author pony
+ * @date 2017/12/11
  */
 public class GroupQueryInfo extends AbstractQueryInfo<RowResultCollector> {
-    protected TableGroupQueryInfo[] tablesGroups;
-    //分组表的维度
+    TableGroupQueryInfo[] tablesGroups;
+    /**
+     * 分组表的维度
+     */
     private Dimension[] dimensions;
-    //分组表的聚合维度
+    /**
+     * 分组表的聚合维度
+     */
     private Metric[] metrics;
 
-    //分组表的指标
+    /**
+     * 分组表的指标
+     */
     private GroupTarget[] targets;
-    //展开
+    /**
+     * 展开
+     */
     private Expander expander;
 
     public GroupQueryInfo(Cursor cursor, String queryID, FilterInfo filterInfo, TableGroupQueryInfo[] tablesGroups, Dimension[] dimensions, Metric[] metrics, GroupTarget[] targets, Expander expander) {

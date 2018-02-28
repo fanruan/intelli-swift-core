@@ -12,7 +12,7 @@ import com.fr.swift.segment.column.DetailColumn;
  * @description
  * @since Advanced FineBI Analysis 1.0
  */
-public interface ISegmentHolder {
+public interface SegmentHolder {
 
     Segment getSegment();
 

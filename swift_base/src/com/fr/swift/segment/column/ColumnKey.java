@@ -1,6 +1,6 @@
 package com.fr.swift.segment.column;
 
-import com.fr.swift.source.IRelationSource;
+import com.fr.swift.source.RelationSource;
 
 /**
  * @author pony
@@ -9,7 +9,7 @@ import com.fr.swift.source.IRelationSource;
 public class ColumnKey {
     private final String name;
 
-    private IRelationSource relation;
+    private RelationSource relation;
 
     public ColumnKey(String name) {
         this.name = name;
@@ -19,11 +19,11 @@ public class ColumnKey {
         return name;
     }
 
-    public IRelationSource getRelation() {
+    public RelationSource getRelation() {
         return relation;
     }
 
-    public void setRelation(IRelationSource relation) {
+    public void setRelation(RelationSource relation) {
         this.relation = relation;
     }
 

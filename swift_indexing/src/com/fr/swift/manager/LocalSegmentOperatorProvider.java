@@ -3,8 +3,8 @@ package com.fr.swift.manager;
 import com.fr.swift.exception.meta.SwiftMetaDataException;
 import com.fr.swift.segment.DecreaseSegmentOperator;
 import com.fr.swift.segment.HistorySegmentOperator;
-import com.fr.swift.segment.ISegmentOperator;
 import com.fr.swift.segment.IncreaseSegmentOperator;
+import com.fr.swift.segment.SegmentOperator;
 import com.fr.swift.segment.SegmentOperatorProvider;
 import com.fr.swift.segment.SwiftSegmentManager;
 import com.fr.swift.source.DataSource;
@@ -30,7 +30,7 @@ public class LocalSegmentOperatorProvider implements SegmentOperatorProvider {
     }
 
     @Override
-    public ISegmentOperator getIndexSegmentOperator(DataSource dataSource) {
+    public SegmentOperator getIndexSegmentOperator(DataSource dataSource) {
         try {
             return new HistorySegmentOperator(dataSource.getSourceKey(), dataSource.getMetadata(),
                     manager.getSegment(dataSource.getSourceKey()), DataSourceUtils.getSwiftSourceKey(dataSource));
@@ -40,7 +40,7 @@ public class LocalSegmentOperatorProvider implements SegmentOperatorProvider {
     }
 
     @Override
-    public ISegmentOperator getRealtimeSegmentOperator(DataSource dataSource) {
+    public SegmentOperator getRealtimeSegmentOperator(DataSource dataSource) {
         try {
             return new IncreaseSegmentOperator(dataSource.getSourceKey(), dataSource.getMetadata(),
                     manager.getSegment(dataSource.getSourceKey()), DataSourceUtils.getSwiftSourceKey(dataSource));
@@ -50,7 +50,7 @@ public class LocalSegmentOperatorProvider implements SegmentOperatorProvider {
     }
 
     @Override
-    public ISegmentOperator getDecreaseSegmentOperator(DataSource dataSource) {
+    public SegmentOperator getDecreaseSegmentOperator(DataSource dataSource) {
         try {
             return new DecreaseSegmentOperator(dataSource.getSourceKey(), dataSource.getMetadata(),
                     manager.getSegment(dataSource.getSourceKey()), DataSourceUtils.getSwiftSourceKey(dataSource));

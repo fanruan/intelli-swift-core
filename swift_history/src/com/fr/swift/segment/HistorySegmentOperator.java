@@ -46,7 +46,7 @@ public class HistorySegmentOperator extends AbstractSegmentOperator {
         } else if (index == -1) {
             index = segmentList.size() - 1;
         }
-        ISegmentHolder segment = segmentList.get(index);
+        SegmentHolder segment = segmentList.get(index);
         for (int i = 0, len = (metaData.getColumnCount() <= data.getSize() ? metaData.getColumnCount() : data.getSize()); i < len; i++) {
             segment.putDetail(i, data.getValue(i));
         }
@@ -73,7 +73,7 @@ public class HistorySegmentOperator extends AbstractSegmentOperator {
     public void finishTransport() {
         MetaDataXmlManager.getManager().putMetaData(sourceKey, metaData);
         for (int i = 0, len = segmentList.size(); i < len; i++) {
-            ISegmentHolder holder = segmentList.get(i);
+            SegmentHolder holder = segmentList.get(i);
             holder.putRowCount();
             holder.putAllShowIndex();
             holder.putNullIndex();

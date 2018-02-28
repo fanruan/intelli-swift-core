@@ -11,7 +11,7 @@ import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.source.DataSource;
 import com.fr.swift.source.ETLDataSource;
-import com.fr.swift.source.IRelationSource;
+import com.fr.swift.source.RelationSource;
 import com.fr.swift.source.manager.IndexStuffProvider;
 import com.fr.swift.structure.Pair;
 
@@ -64,7 +64,7 @@ public class StuffFetcher implements Runnable {
         }
 
         // 所有关联
-        for (IRelationSource relation : stuff.getAllRelations()) {
+        for (RelationSource relation : stuff.getAllRelations()) {
             DataSource primary = stuff.getTableById(relation.getPrimarySource().getId());
             DataSource foreign = stuff.getTableById(relation.getForeignSource().getId());
             SchedulerTask relationTask = CubeTasks.newRelationTask(relation, primary, foreign);

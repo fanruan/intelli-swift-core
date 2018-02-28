@@ -58,7 +58,7 @@ public class SegmentOperatorTest extends TestCase {
                     return null;
                 }
             };
-            ISegmentOperator operator = LocalSegmentOperatorProvider.getInstance().getIndexSegmentOperator(dataSource);
+            SegmentOperator operator = LocalSegmentOperatorProvider.getInstance().getIndexSegmentOperator(dataSource);
             operator.transport(set);
             operator.finishTransport();
         } catch (Exception e) {
@@ -68,27 +68,27 @@ public class SegmentOperatorTest extends TestCase {
         assertTrue(success);
     }
 
-    public void testIntTransport() throws Exception {
+    public void testIntTransport() {
         SwiftResultSet set = new IntResultSet();
         transport(intKey, set);
     }
 
-    public void testLongTransport() throws Exception {
+    public void testLongTransport() {
         SwiftResultSet set = new LongResultSet();
         transport(longKey, set);
     }
 
-    public void testDoubleTransport() throws Exception {
+    public void testDoubleTransport() {
         SwiftResultSet set = new DoubleResultSet();
         transport(doubleKey, set);
     }
 
-    public void testStringTransport() throws Exception {
+    public void testStringTransport() {
         SwiftResultSet set = new StringResultSet();
         transport(stringKey, set);
     }
 
-    public void testDateTransport() throws Exception {
+    public void testDateTransport() {
         SwiftResultSet set = new DateResultSet();
         transport(dateKey, set);
     }

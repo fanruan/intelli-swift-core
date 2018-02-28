@@ -29,13 +29,13 @@ import com.fr.swift.segment.column.DictionaryEncodedColumn;
 import com.fr.swift.segment.relation.RelationIndex;
 import com.fr.swift.service.LocalSwiftServerService;
 import com.fr.swift.source.DataSource;
-import com.fr.swift.source.IRelationSource;
+import com.fr.swift.source.RelationSource;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.db.ConnectionManager;
 import com.fr.swift.source.db.IConnectionProvider;
 import com.fr.swift.source.db.TableDBSource;
 import com.fr.swift.source.db.TestConnectionProvider;
-import com.fr.swift.source.relation.RelationSource;
+import com.fr.swift.source.relation.RelationSourceImpl;
 import com.fr.swift.structure.Pair;
 import junit.framework.TestCase;
 
@@ -87,8 +87,8 @@ public class MultiRelationIndexBuilderTest extends TestCase {
                 WorkerTask wt = new WorkerTaskImpl(taskKey);
                 wt.setWorker(new TableBuilder(ds));
                 return wt;
-            } else if (o instanceof IRelationSource) {
-                IRelationSource ds = ((IRelationSource) o);
+            } else if (o instanceof RelationSource) {
+                RelationSource ds = ((RelationSource) o);
                 WorkerTask wt = new WorkerTaskImpl(taskKey);
                 wt.setWorker(new MultiRelationIndexBuilder(MultiRelationHelper.convert2CubeRelation(ds), LocalSegmentProvider.getInstance()));
                 return wt;
@@ -127,7 +127,7 @@ public class MultiRelationIndexBuilderTest extends TestCase {
         primaryFields.add("总金额");
         foreignFields.add("合同ID");
         foreignFields.add("付款金额");
-        IRelationSource relationSource = new RelationSource(dataSource.getSourceKey(), contract.getSourceKey(), primaryFields, foreignFields);
+        RelationSource relationSource = new RelationSourceImpl(dataSource.getSourceKey(), contract.getSourceKey(), primaryFields, foreignFields);
         CubeTaskKey key = new CubeTaskKey("relation", Operation.INDEX_RELATION);
         SchedulerTask task = new SchedulerTaskImpl(key);
         contractTask.addNext(task);
