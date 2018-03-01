@@ -1,8 +1,8 @@
 package com.fr.swift.adaptor.preview;
 
 import com.fr.swift.generate.realtime.RealtimeColumnIndexer;
-import com.fr.swift.segment.ISegmentOperator;
 import com.fr.swift.segment.Segment;
+import com.fr.swift.segment.SegmentOperator;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.source.DataSource;
 import com.fr.swift.source.ETLDataSource;
@@ -15,9 +15,14 @@ import java.util.List;
 /**
  * @author anchore
  * @date 2018/2/1
+ *
+ * todo 每次update都是重新存的数据，后期这块应该能优化下
  */
 public class MinorUpdater {
     public static void update(DataSource dataSource) throws Exception {
+        // 更新前，把之前的segment清除
+        MinorSegmentManager.getInstance().clear();
+
         if (isEtl(dataSource)) {
             buildEtl((ETLDataSource) dataSource);
         } else {
@@ -38,9 +43,9 @@ public class MinorUpdater {
     }
 
     private static void build(final DataSource dataSource) throws Exception {
-        ISegmentOperator operator = new MinorSegmentOperator(dataSource.getSourceKey(), dataSource.getMetadata(),
+        SegmentOperator operator = new MinorSegmentOperator(dataSource.getSourceKey(), dataSource.getMetadata(),
                 null, DataSourceUtils.getSwiftSourceKey(dataSource));
-        SwiftSourceTransfer transfer = SwiftDataPreviewer.createPreviewTransfer(dataSource, 1000);
+        SwiftSourceTransfer transfer = SwiftDataPreviewer.createPreviewTransfer(dataSource, 100);
 
         operator.transport(transfer.createResultSet());
         operator.finishTransport();

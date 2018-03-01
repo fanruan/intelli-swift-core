@@ -4,8 +4,8 @@ import com.fr.stable.StringUtils;
 import com.fr.swift.cube.io.location.ResourceLocation;
 import com.fr.swift.manager.LocalSegmentOperatorProvider;
 import com.fr.swift.segment.HistorySegmentImpl;
-import com.fr.swift.segment.ISegmentOperator;
 import com.fr.swift.segment.Segment;
+import com.fr.swift.segment.SegmentOperator;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.segment.column.DetailColumn;
 import com.fr.swift.source.DataSource;
@@ -21,7 +21,6 @@ import com.fr.swift.source.SwiftSourceAlloterFactory;
 import com.fr.swift.source.core.Core;
 import junit.framework.TestCase;
 
-import java.sql.SQLException;
 import java.sql.Types;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -53,23 +52,23 @@ public class LineSegmentAlloterTest extends TestCase {
             int position = 0;
 
             @Override
-            public void close() throws SQLException {
+            public void close() {
 
             }
 
             @Override
-            public boolean next() throws SQLException {
+            public boolean next() {
                 return position < datas.size();
             }
 
             @Override
-            public SwiftMetaData getMetaData() throws SQLException {
+            public SwiftMetaData getMetaData() {
                 return new SwiftMetaDataImpl("A",
                         Arrays.asList(new MetaDataColumn("long", Types.BIGINT)));
             }
 
             @Override
-            public Row getRowData() throws SQLException {
+            public Row getRowData() {
                 return datas.get(position++);
             }
         };
@@ -101,7 +100,7 @@ public class LineSegmentAlloterTest extends TestCase {
             }
         };
 
-        ISegmentOperator operator = LocalSegmentOperatorProvider.getInstance().getIndexSegmentOperator(dataSource);
+        SegmentOperator operator = LocalSegmentOperatorProvider.getInstance().getIndexSegmentOperator(dataSource);
         operator.transport(resultSet);
         operator.finishTransport();
 

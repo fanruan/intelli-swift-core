@@ -20,7 +20,7 @@ import com.fr.swift.source.ColumnTypeConstants.ColumnType;
 import com.fr.swift.source.DBDataSource;
 import com.fr.swift.source.DataSource;
 import com.fr.swift.source.SourceKey;
-import com.fr.swift.source.container.SourceContainer;
+import com.fr.swift.source.container.SourceContainerManager;
 import com.fr.swift.source.db.ConnectionManager;
 import com.fr.swift.source.db.QueryDBSource;
 import com.fr.swift.source.db.TableDBSource;
@@ -44,7 +44,7 @@ public class IndexingDataSourceFactory {
     static {
         ConnectionManager.getInstance().registerProvider(new ConnectionProvider());
     }
-    public static void transformDataSources(Map<FineBusinessTable, TableUpdateInfo> infoMap, List<String> updateTableSourceKeys, SourceContainer updateSourceContainer, Map<String, List<Increment>> incrementMap) throws Exception {
+    public static void transformDataSources(Map<FineBusinessTable, TableUpdateInfo> infoMap, List<String> updateTableSourceKeys, SourceContainerManager updateSourceContainer, Map<String, List<Increment>> incrementMap) throws Exception {
         for (Map.Entry<FineBusinessTable, TableUpdateInfo> infoEntry : infoMap.entrySet()) {
             DataSource updateDataSource = transformDataSource(infoEntry.getKey());
             if (updateDataSource != null) {

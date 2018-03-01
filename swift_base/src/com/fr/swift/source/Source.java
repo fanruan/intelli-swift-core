@@ -7,7 +7,7 @@ package com.fr.swift.source;
  * @description
  * @since Advanced FineBI Analysis 1.0
  */
-public interface ISource {
+public interface Source {
     /**
      * 标识这个数据源的key
      *

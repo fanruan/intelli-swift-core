@@ -17,7 +17,7 @@ public class ColumnTypeAdaptor {
             case COLUMN.STRING:
                 return ColumnType.STRING;
             default:
-                return null;
+                return ColumnType.STRING;
         }
     }
 }

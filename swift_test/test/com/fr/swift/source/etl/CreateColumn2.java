@@ -95,6 +95,7 @@ public class CreateColumn2 {
 
             }
 
+            @Override
             public int getGlobalIndexByRow(int row) {
                 return 0;
             }

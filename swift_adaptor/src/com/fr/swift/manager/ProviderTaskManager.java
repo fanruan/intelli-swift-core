@@ -88,7 +88,7 @@ import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.relation.utils.MultiRelationHelper;
 import com.fr.swift.source.DataSource;
-import com.fr.swift.source.IRelationSource;
+import com.fr.swift.source.RelationSource;
 import com.fr.swift.structure.Pair;
 import com.fr.swift.util.function.Function;
 
@@ -144,8 +144,8 @@ public class ProviderTaskManager {
                     WorkerTask wt = new WorkerTaskImpl(taskKey);
                     wt.setWorker(new TableBuilder(ds));
                     return wt;
-                } else if (o instanceof IRelationSource) {
-                    IRelationSource source = (IRelationSource) o;
+                } else if (o instanceof RelationSource) {
+                    RelationSource source = (RelationSource) o;
                     WorkerTask wt = new WorkerTaskImpl(taskKey);
                     wt.setWorker(new MultiRelationIndexBuilder(MultiRelationHelper.convert2CubeRelation(source), LocalSegmentProvider.getInstance()));
                     return wt;

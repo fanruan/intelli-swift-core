@@ -21,11 +21,11 @@ import java.util.List;
  */
 public class IncreaseSegmentOperator extends AbstractSegmentOperator {
 
-    protected List<ISegmentHolder> increaseSegmentList;
+    protected List<SegmentHolder> increaseSegmentList;
 
     public IncreaseSegmentOperator(SourceKey sourceKey, SwiftMetaData metaData, List<Segment> segments, String cubeSourceKey) throws SwiftMetaDataException {
         super(sourceKey, metaData, segments, cubeSourceKey);
-        this.increaseSegmentList = new ArrayList<ISegmentHolder>();
+        this.increaseSegmentList = new ArrayList<SegmentHolder>();
         if (null != segments && !segments.isEmpty()) {
             for (int i = 0, len = segments.size(); i < len; i++) {
                 if (segments.get(i).getLocation().getStoreType() == Types.StoreType.FINE_IO) {
@@ -62,7 +62,7 @@ public class IncreaseSegmentOperator extends AbstractSegmentOperator {
         } else if (index == -1) {
             index = increaseSegmentList.size() - 1;
         }
-        ISegmentHolder segment = increaseSegmentList.get(index);
+        SegmentHolder segment = increaseSegmentList.get(index);
         for (int i = 0, len = metaData.getColumnCount(); i < len; i++) {
             try {
                 segment.putDetail(i, data.getValue(i));
@@ -77,7 +77,7 @@ public class IncreaseSegmentOperator extends AbstractSegmentOperator {
     public void finishTransport() {
 //        MetaDataXmlManager.getManager().putMetaData(sourceKey, metaData);
         for (int i = 0, len = increaseSegmentList.size(); i < len; i++) {
-            ISegmentHolder holder = increaseSegmentList.get(i);
+            SegmentHolder holder = increaseSegmentList.get(i);
             holder.putRowCount();
             holder.putAllShowIndex();
             holder.putNullIndex();

@@ -8,7 +8,7 @@ import java.util.List;
 /**
  * Created by roy on 2017/7/9 .
  */
- public interface IRelationSource extends ISource, CoreService {
+public interface RelationSource extends Source, CoreService {
 
     SourceKey getPrimarySource();
 

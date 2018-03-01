@@ -1,6 +1,6 @@
 package com.fr.swift.source.relation;
 
-import com.fr.swift.source.IRelationSource;
+import com.fr.swift.source.RelationSource;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.core.Core;
 import com.fr.swift.source.core.CoreField;
@@ -16,7 +16,7 @@ import java.util.List;
  * @description
  * @since Advanced FineBI Analysis 1.0
  */
-public class RelationSource implements IRelationSource {
+public class RelationSourceImpl implements RelationSource {
     @CoreField
     private SourceKey primarySource;
     @CoreField
@@ -29,7 +29,7 @@ public class RelationSource implements IRelationSource {
     protected SourceKey key;
     private transient Core core;
 
-    public RelationSource(SourceKey primarySource, SourceKey foreignSource, List<String> primaryFields, List<String> foreignFields) {
+    public RelationSourceImpl(SourceKey primarySource, SourceKey foreignSource, List<String> primaryFields, List<String> foreignFields) {
         this.primarySource = primarySource;
         this.foreignSource = foreignSource;
         this.primaryFields = primaryFields;

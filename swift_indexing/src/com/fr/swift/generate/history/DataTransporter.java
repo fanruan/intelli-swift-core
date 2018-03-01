@@ -5,7 +5,7 @@ import com.fr.swift.cube.task.impl.BaseWorker;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.manager.LocalSegmentOperatorProvider;
-import com.fr.swift.segment.ISegmentOperator;
+import com.fr.swift.segment.SegmentOperator;
 import com.fr.swift.source.DataSource;
 import com.fr.swift.source.SwiftResultSet;
 import com.fr.swift.source.SwiftSourceTransfer;
@@ -41,7 +41,7 @@ public class DataTransporter extends BaseWorker {
     public void transport() throws Exception {
         SwiftSourceTransfer transfer = SwiftSourceTransferFactory.createSourceTransfer(dataSource);
         SwiftResultSet resultSet = transfer.createResultSet();
-        ISegmentOperator operator = LocalSegmentOperatorProvider.getInstance().getIndexSegmentOperator(dataSource);
+        SegmentOperator operator = LocalSegmentOperatorProvider.getInstance().getIndexSegmentOperator(dataSource);
         operator.transport(resultSet);
         operator.finishTransport();
     }

@@ -2,7 +2,7 @@ package com.fr.swift.source.manager;
 
 import com.fr.swift.increment.Increment;
 import com.fr.swift.source.DataSource;
-import com.fr.swift.source.IRelationSource;
+import com.fr.swift.source.RelationSource;
 import com.fr.swift.source.SourcePath;
 
 import java.util.List;
@@ -19,9 +19,9 @@ public interface IndexStuffProvider {
 
     List<DataSource> getTablesByIds(List<String> sourceIds);
 
-    IRelationSource getRelationById(String sourceId);
+    RelationSource getRelationById(String sourceId);
 
-    List<IRelationSource> getRelationsByIds(List<String> sourceIds);
+    List<RelationSource> getRelationsByIds(List<String> sourceIds);
 
     SourcePath getPathById(String sourceId);
 
@@ -29,7 +29,7 @@ public interface IndexStuffProvider {
 
     List<DataSource> getAllTables();
 
-    List<IRelationSource> getAllRelations();
+    List<RelationSource> getAllRelations();
 
     List<SourcePath> getAllPaths();
 
