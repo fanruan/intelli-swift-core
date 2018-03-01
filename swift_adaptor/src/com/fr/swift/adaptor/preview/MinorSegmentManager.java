@@ -15,7 +15,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author anchore
  * @date 2018/2/2
  */
-class MinorSegmentManager implements SwiftSegmentManager {
+public class MinorSegmentManager implements SwiftSegmentManager {
     private Map<SourceKey, List<Segment>> segments = new ConcurrentHashMap<SourceKey, List<Segment>>();
 
     @Override

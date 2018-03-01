@@ -63,7 +63,7 @@ public class IncreaseSegmentOperator extends AbstractSegmentOperator {
             index = increaseSegmentList.size() - 1;
         }
         SegmentHolder segment = increaseSegmentList.get(index);
-        for (int i = 0, len = metaData.getColumnCount(); i < len; i++) {
+        for (int i = 0, len = (metaData.getColumnCount() <= data.getSize() ? metaData.getColumnCount() : data.getSize()); i < len; i++) {
             try {
                 segment.putDetail(i, data.getValue(i));
             } catch (Exception e) {

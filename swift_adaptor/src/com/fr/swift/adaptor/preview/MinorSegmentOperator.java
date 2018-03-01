@@ -25,7 +25,7 @@ class MinorSegmentOperator extends IncreaseSegmentOperator {
     protected Segment createSegment(int order) {
         String path = String.format("/%s/cubes/%s/minor_seg",
                 System.getProperty("user.dir"),
-                sourceKey.getId());
+                cubeSourceKey);
         Segment seg = new RealTimeSegmentImpl(new ResourceLocation(path, StoreType.MEMORY), metaData);
         MinorSegmentManager.getInstance().putSegment(sourceKey, Collections.singletonList(seg));
         return seg;

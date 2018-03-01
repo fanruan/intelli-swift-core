@@ -116,6 +116,9 @@ public class SwiftMetaDataImpl implements SwiftMetaData {
             if (ComparatorUtils.equals(column.getName(), columnName)) {
                 return i;
             }
+            if (ComparatorUtils.equals(column.getRemark(), columnName)) {
+                return i;
+            }
         }
         throw new SwiftMetaDataColumnAbsentException(columnName);
     }
