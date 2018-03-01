@@ -12,7 +12,6 @@ import com.finebi.conf.internalimp.update.UpdateStatus;
 import com.finebi.conf.provider.SwiftTableConfProvider;
 import com.finebi.conf.service.engine.update.EngineUpdateManager;
 import com.finebi.conf.structure.bean.table.FineBusinessTable;
-import com.fr.fs.control.UserControl;
 import com.fr.swift.adaptor.transformer.IndexingDataSourceFactory;
 import com.fr.swift.increment.Increment;
 import com.fr.swift.manager.ProviderManager;
@@ -35,8 +34,6 @@ import java.util.Map;
  * @since Advanced FineBI Analysis 1.0
  */
 public class SwiftUpdateManager implements EngineUpdateManager {
-
-    private long userId = UserControl.getInstance().getSuperManagerID();
 
     @Override
     public Map<FineBusinessTable, TableUpdateInfo> getTableUpdateInfo() {
@@ -83,7 +80,7 @@ public class SwiftUpdateManager implements EngineUpdateManager {
 
         IndexingStuff indexingStuff = new HistoryIndexStuffImpl(updateTableSourceKeys, updateRelationSourceKeys, updatePathSourceKeys);
         IndexStuffProvider indexStuffProvider = new IndexStuffInfoProvider(indexingStuff, updateSourceContainer, incrementMap);
-        ProviderManager.getManager().registProvider(userId, indexStuffProvider);
+        ProviderManager.getManager().registProvider(0, indexStuffProvider);
     }
 
     @Override

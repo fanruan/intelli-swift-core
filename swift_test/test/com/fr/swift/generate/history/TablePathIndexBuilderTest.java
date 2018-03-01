@@ -16,15 +16,12 @@ import com.fr.swift.cube.task.impl.SchedulerTaskPool;
 import com.fr.swift.cube.task.impl.WorkerTaskImpl;
 import com.fr.swift.cube.task.impl.WorkerTaskPool;
 import com.fr.swift.manager.LocalSegmentProvider;
-import com.fr.swift.provider.ConnectionProvider;
 import com.fr.swift.relation.CubeMultiRelationPath;
 import com.fr.swift.relation.utils.MultiRelationHelper;
 import com.fr.swift.service.LocalSwiftServerService;
 import com.fr.swift.source.DataSource;
 import com.fr.swift.source.RelationSource;
 import com.fr.swift.source.SourceKey;
-import com.fr.swift.source.db.ConnectionManager;
-import com.fr.swift.source.db.IConnectionProvider;
 import com.fr.swift.source.db.TableDBSource;
 import com.fr.swift.source.db.TestConnectionProvider;
 import com.fr.swift.source.relation.RelationSourceImpl;
@@ -48,9 +45,7 @@ public class TablePathIndexBuilderTest extends TestCase {
         new LocalSwiftServerService().start();
 
         FRContext.setCurrentEnv(new LocalEnv(System.getProperty("user.dir")));
-        IConnectionProvider connectionProvider = new ConnectionProvider();
-        ConnectionManager.getInstance().registerProvider(connectionProvider);
-        ConnectionManager.getInstance().registerConnectionInfo("allTest", TestConnectionProvider.createConnection());
+        TestConnectionProvider.createConnection();
     }
 
     public void testWork() throws Exception {

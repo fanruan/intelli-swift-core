@@ -1,7 +1,5 @@
 package com.fr.swift.service;
 
-import com.fr.base.FRContext;
-import com.fr.dav.LocalEnv;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.manager.LocalSegmentOperatorProvider;
 import com.fr.swift.manager.LocalSegmentProvider;
@@ -12,7 +10,6 @@ import com.fr.swift.service.listener.SwiftServiceListenerHandler;
 import com.fr.swift.service.listener.SwiftServiceListenerManager;
 
 import javax.annotation.PostConstruct;
-import java.io.File;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -28,8 +25,6 @@ public abstract class AbstractSwiftServerService extends AbstractSwiftService im
     @PostConstruct
     @Override
     public boolean start() {
-        FRContext.setCurrentEnv(new LocalEnv(new File(AbstractSwiftServerService.class.getResource("/").getPath()).getParent()));
-
         initListener();
         SwiftServiceListenerManager.getInstance().registerHandler(this);
         SwiftContext.getInstance().registerSegmentProvider(LocalSegmentProvider.getInstance());

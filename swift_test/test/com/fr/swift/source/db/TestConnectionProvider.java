@@ -19,11 +19,6 @@ public class TestConnectionProvider {
             public ConnectionInfo getConnection(String connectionName) {
                 return connectionInfo;
             }
-
-            @Override
-            public void register(String connectionName, ConnectionInfo connectionInfo) {
-
-            }
         });
         return connectionInfo;
     }
