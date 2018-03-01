@@ -7,12 +7,8 @@ import com.fr.swift.generate.realtime.RealtimeDataTransporter;
 import com.fr.swift.increase.IncrementImpl;
 import com.fr.swift.increment.Increment;
 import com.fr.swift.manager.LocalSegmentProvider;
-import com.fr.swift.provider.ConnectionProvider;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.source.DataSource;
-import com.fr.swift.source.db.ConnectionInfo;
-import com.fr.swift.source.db.ConnectionManager;
-import com.fr.swift.source.db.IConnectionProvider;
 import com.fr.swift.source.db.QueryDBSource;
 import com.fr.swift.source.db.TestConnectionProvider;
 import junit.framework.TestCase;
@@ -34,10 +30,7 @@ public class DecreaseTransportTest extends TestCase {
     public void setUp() throws Exception {
         super.setUp();
         FRContext.setCurrentEnv(new LocalEnv(System.getProperty("user.dir") + "\\" + System.currentTimeMillis()));
-        IConnectionProvider connectionProvider = new ConnectionProvider();
-        ConnectionManager.getInstance().registerProvider(connectionProvider);
-        ConnectionInfo connectionInfo = TestConnectionProvider.createConnection();
-        connectionProvider.register("DecreaseTest", connectionInfo);
+        TestConnectionProvider.createConnection();
         dataSource = new QueryDBSource("select 记录人 from DEMO_CAPITAL_RETURN", "DecreaseTest");
     }
 

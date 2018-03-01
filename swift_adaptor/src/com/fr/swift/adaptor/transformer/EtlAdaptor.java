@@ -83,63 +83,15 @@ import java.util.Map;
 class EtlAdaptor {
     static DataSource adaptEtlDataSource(FineBusinessTable table) throws Exception {
         FineAnalysisTable analysis = ((FineAnalysisTable) table);
+        if (analysis.getOperator().getType() == AnalysisType.SELECT_FIELD) {
+            return adaptSelectField(analysis);
+        }
         List<DataSource> dataSources = new ArrayList<DataSource>();
         FineBusinessTable baseTable = analysis.getBaseTable();
-        if (baseTable != null) {
-            dataSources.add(IndexingDataSourceFactory.transformDataSource(baseTable));
-        } else if (analysis.getOperator().getType() == AnalysisType.SELECT_FIELD) {
-            Map<String, List<ColumnKey>> sourceKeyColumnMap = new LinkedHashMap<String, List<ColumnKey>>();
-            Map<String, DataSource> sourceKeyDataSourceMap = new LinkedHashMap<String, DataSource>();
-            SelectFieldOperator selectFieldOperator = analysis.getOperator();
-            List<SelectFieldBeanItem> selectFieldBeanItemList = selectFieldOperator.getValue().getValue();
-            for (SelectFieldBeanItem selectFieldBeanItem : selectFieldBeanItemList) {
-                FineBusinessTable fineBusinessTable = FineTableUtils.getTableByFieldId(selectFieldBeanItem.getField());
-                FineBusinessField fineBusinessField = fineBusinessTable.getFieldByFieldId(selectFieldBeanItem.getField());
-                DataSource baseDataSource = IndexingDataSourceFactory.transformDataSource(fineBusinessTable);
-
-                if (sourceKeyColumnMap.containsKey(baseDataSource.getSourceKey().getId())) {
-                    sourceKeyColumnMap.get(baseDataSource.getSourceKey().getId()).add(new ColumnKey(fineBusinessField.getName()));
-                } else {
-                    sourceKeyColumnMap.put(baseDataSource.getSourceKey().getId(), new ArrayList<ColumnKey>());
-                    sourceKeyColumnMap.get(baseDataSource.getSourceKey().getId()).add(new ColumnKey(fineBusinessField.getName()));
-                }
-                if (!sourceKeyDataSourceMap.containsKey(baseDataSource.getSourceKey().getId())) {
-                    sourceKeyDataSourceMap.put(baseDataSource.getSourceKey().getId(), baseDataSource);
-                }
-            }
-            List<DataSource> baseDatas = new ArrayList<DataSource>();
-            List<SwiftMetaData> swiftMetaDatas = new ArrayList<SwiftMetaData>();
-            List<ColumnKey[]> fields = new ArrayList<ColumnKey[]>();
-
-            if (analysis.getBaseTable() != null) {
-                baseDatas.add(IndexingDataSourceFactory.transformDataSource(analysis.getBaseTable()));
-            }
-
-            for (Map.Entry<String, List<ColumnKey>> entry : sourceKeyColumnMap.entrySet()) {
-                DataSource dataSource = sourceKeyDataSourceMap.get(entry.getKey());
-                baseDatas.add(dataSource);
-                swiftMetaDatas.add(dataSource.getMetadata());
-                fields.add(entry.getValue().toArray(new ColumnKey[entry.getValue().size()]));
-            }
-            ETLOperator operator = new DetailOperator(fields, swiftMetaDatas);
-            Map<Integer, String> fieldsInfo = new HashMap<Integer, String>();
-            ETLSource etlSource = new ETLSource(baseDatas, operator);
-            for (ColumnKey[] columnKeys : fields) {
-                for (ColumnKey columnKey : columnKeys) {
-                    int index = etlSource.getMetadata().getColumnIndex(columnKey.getName());
-                    fieldsInfo.put(index, columnKey.getName());
-                }
-            }
-            ETLSource dataSource = new ETLSource(baseDatas, operator, fieldsInfo);
-            return dataSource;
-        }
-//        if (analysis.getOperator().getType() == AnalysisType.SELECT_FIELD) {
-//            return adaptSelectField(analysis);
-//        }
         try {
-//            if (baseTable != null) {
-//                dataSources.add(IndexingDataSourceFactory.transformDataSource(baseTable));
-//            }
+            if (baseTable != null) {
+                dataSources.add(IndexingDataSourceFactory.transformDataSource(baseTable));
+            }
             FineOperator op = analysis.getOperator();
             dataSources.addAll(fromOperator(op));
             return new ETLSource(dataSources, adaptEtlOperator(op, table));

@@ -1,26 +1,18 @@
 package com.fr.swift.generate.etl.formula;
 
-import com.fr.base.FRContext;
-import com.fr.dav.LocalEnv;
 import com.fr.swift.generate.BaseTest;
 import com.fr.swift.generate.history.ColumnIndexer;
 import com.fr.swift.generate.history.DataTransporter;
 import com.fr.swift.manager.LocalSegmentProvider;
-import com.fr.swift.provider.ConnectionProvider;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.ColumnKey;
-import com.fr.swift.service.LocalSwiftServerService;
 import com.fr.swift.source.ColumnTypeConstants;
 import com.fr.swift.source.DataSource;
-import com.fr.swift.source.db.ConnectionManager;
-import com.fr.swift.source.db.IConnectionProvider;
 import com.fr.swift.source.db.QueryDBSource;
-import com.fr.swift.source.db.TestConnectionProvider;
 import com.fr.swift.source.etl.ETLOperator;
 import com.fr.swift.source.etl.ETLSource;
 import com.fr.swift.source.etl.formula.ColumnFormulaOperator;
-import junit.framework.TestCase;
 
 import java.util.ArrayList;
 import java.util.List;

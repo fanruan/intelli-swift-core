@@ -32,8 +32,12 @@ public class StuffFetcher implements Runnable {
     public void run() {
         try {
             while (true) {
-                IndexStuffProvider provider = StuffProviderQueue.getQueue().take();
-                update(provider);
+                try {
+                    IndexStuffProvider provider = StuffProviderQueue.getQueue().take();
+                    update(provider);
+                } catch (Exception e){
+
+                }
             }
         } catch (Throwable e) {
             LOGGER.error(e);
