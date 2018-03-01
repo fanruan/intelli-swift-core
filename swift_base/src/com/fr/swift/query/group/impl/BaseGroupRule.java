@@ -9,4 +9,8 @@ import com.fr.swift.segment.column.DictionaryEncodedColumn;
  */
 abstract class BaseGroupRule implements GroupRule {
     DictionaryEncodedColumn<?> dictColumn;
+
+    BaseGroupRule(DictionaryEncodedColumn<?> dictColumn) {
+        this.dictColumn = dictColumn;
+    }
 }

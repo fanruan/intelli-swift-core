@@ -1,4 +1,4 @@
-package com.fr.swift.adaptor.group;
+package com.fr.swift.adaptor.cal;
 
 import com.finebi.base.constant.FineEngineType;
 import com.finebi.conf.internalimp.dashboard.widget.detail.DetailWidget;
