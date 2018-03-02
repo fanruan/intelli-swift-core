@@ -35,13 +35,13 @@ public class GroupAdaptor {
         GroupType type = GroupTypeAdaptor.adaptGroupType(dimGroup.getType());
         switch (type) {
             case AUTO:
-                groupRule = newAutoRule(dimGroup);
+                groupRule = newAutoRule((NumberDimensionAutoGroup) dimGroup);
                 break;
             case CUSTOM_NUMBER:
-                groupRule = newCustomNumberRule(dimGroup);
+                groupRule = newCustomNumberRule((NumberDimensionCustomGroup) dimGroup);
                 break;
             case CUSTOM:
-                groupRule = newCustomRule(dimGroup);
+                groupRule = newCustomRule((StringDimensionCustomGroup) dimGroup);
                 break;
             default:
                 groupRule = new NoGroupRule();
@@ -49,8 +49,8 @@ public class GroupAdaptor {
         return Groups.newGroup(type, groupRule);
     }
 
-    private static GroupRule newCustomRule(FineDimensionGroup dimGroup) {
-        StringCustomGroupValueBean bean = ((StringDimensionCustomGroup) dimGroup).getValue().getValue();
+    private static GroupRule newCustomRule(StringDimensionCustomGroup dimGroup) {
+        StringCustomGroupValueBean bean = dimGroup.getValue().getValue();
 
         List<StringGroup> stringGroups = new ArrayList<StringGroup>();
         for (StringCustomDetailsBean detailsBean : bean.getDetails()) {
@@ -65,8 +65,8 @@ public class GroupAdaptor {
         return new CustomStrGroupRule(stringGroups, bean.getUseOther());
     }
 
-    private static GroupRule newCustomNumberRule(FineDimensionGroup dimGroup) {
-        NumberCustomGroupValueBean groupValue = ((NumberDimensionCustomGroup) dimGroup).getValue().getGroupValue();
+    private static GroupRule newCustomNumberRule(NumberDimensionCustomGroup dimGroup) {
+        NumberCustomGroupValueBean groupValue = dimGroup.getValue().getGroupValue();
         List<NumberCustomGroupNodeBean> beans = groupValue.getGroupNodes();
 
         List<NumInterval> intervals = new ArrayList<NumInterval>(beans.size());
@@ -79,8 +79,8 @@ public class GroupAdaptor {
         return new CustomNumGroupRule(intervals, groupValue.getUseOther());
     }
 
-    private static GroupRule newAutoRule(FineDimensionGroup group) {
-        NumberAutoGroupValueBean bean = ((NumberDimensionAutoGroup) group).getValue().getGroupValue();
+    private static GroupRule newAutoRule(NumberDimensionAutoGroup group) {
+        NumberAutoGroupValueBean bean = group.getValue().getGroupValue();
         return new AutoNumGroupRule(new Partition(bean.getMin(), bean.getMax(), bean.getGroupInterval()));
     }
 }
