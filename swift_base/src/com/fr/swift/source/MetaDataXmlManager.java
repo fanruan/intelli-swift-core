@@ -19,6 +19,8 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * @author yee
  * @date 2017/12/27
+ *
+ * fixme 配置可用10.0持久化了
  */
 public class MetaDataXmlManager extends XMLFileManager {
 

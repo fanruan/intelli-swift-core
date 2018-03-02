@@ -1,21 +1,18 @@
 package com.fr.swift.generate;
 
-import com.fr.base.FRContext;
-import com.fr.dav.LocalEnv;
 import com.fr.swift.cube.queue.CubeTasks;
 import com.fr.swift.cube.task.SchedulerTask;
 import com.fr.swift.cube.task.Task;
+import com.fr.swift.cube.task.Task.Result;
 import com.fr.swift.cube.task.TaskKey;
 import com.fr.swift.cube.task.WorkerTask;
 import com.fr.swift.cube.task.impl.BaseWorker;
-import com.fr.swift.cube.task.impl.CubeTaskKey;
 import com.fr.swift.cube.task.impl.CubeTaskManager;
 import com.fr.swift.cube.task.impl.Operation;
-import com.fr.swift.cube.task.impl.SchedulerTaskImpl;
 import com.fr.swift.cube.task.impl.SchedulerTaskPool;
 import com.fr.swift.cube.task.impl.WorkerTaskImpl;
 import com.fr.swift.cube.task.impl.WorkerTaskPool;
-import com.fr.swift.generate.history.MultiRelationIndexBuilder;
+import com.fr.swift.generate.history.MultiRelationIndexer;
 import com.fr.swift.generate.history.TableBuilder;
 import com.fr.swift.manager.LocalSegmentProvider;
 import com.fr.swift.relation.CubeLogicColumnKey;
@@ -40,11 +37,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 
+//import com.fr.dav.LocalEnv;
+
 /**
  * @author yee
  * @date 2018/2/5
  */
-public class MultiRelationIndexBuilderTest extends TestCase {
+public class MultiRelationIndexerTest extends TestCase {
 
     CountDownLatch latch = new CountDownLatch(1);
 
@@ -52,7 +51,8 @@ public class MultiRelationIndexBuilderTest extends TestCase {
     protected void setUp() {
         new LocalSwiftServerService().start();
 
-        FRContext.setCurrentEnv(new LocalEnv(System.getProperty("user.dir")));
+        // fixme LocalEnv没啦，配置写不进去，test不成功
+//        FRContext.setCurrentEnv(new LocalEnv(System.getProperty("user.dir")));
         TestConnectionProvider.createConnection();
     }
 
@@ -62,7 +62,6 @@ public class MultiRelationIndexBuilderTest extends TestCase {
      * @throws Exception
      */
     public void testTransport() throws Exception {
-//        IndexStuffProvider provider = ProviderManager.getManager().poll();
         DataSource dataSource = new TableDBSource("DEMO_CONTRACT", "allTest");
         DataSource contract = new TableDBSource("DEMO_CAPITAL_RETURN", "allTest");
 
@@ -85,7 +84,7 @@ public class MultiRelationIndexBuilderTest extends TestCase {
             } else if (o instanceof RelationSource) {
                 RelationSource ds = ((RelationSource) o);
                 WorkerTask wt = new WorkerTaskImpl(taskKey);
-                wt.setWorker(new MultiRelationIndexBuilder(MultiRelationHelper.convert2CubeRelation(ds), LocalSegmentProvider.getInstance()));
+                wt.setWorker(new MultiRelationIndexer(MultiRelationHelper.convert2CubeRelation(ds), LocalSegmentProvider.getInstance()));
                 return wt;
             } else {
                 return null;
@@ -93,28 +92,21 @@ public class MultiRelationIndexBuilderTest extends TestCase {
         });
         CubeTaskManager.getInstance().initListener();
 
-        List<DataSource> dataSources = new ArrayList<DataSource>();
-        dataSources.add(dataSource);
-        dataSources.add(contract);
         List<Pair<TaskKey, Object>> l = new ArrayList<>();
 
-        SchedulerTask start = new SchedulerTaskImpl(new CubeTaskKey("start all")),
-                end = new SchedulerTaskImpl(new CubeTaskKey("end all"));
+        SchedulerTask start = CubeTasks.newStartTask(),
+                end = CubeTasks.newEndTask();
         l.add(new Pair<>(start.key(), null));
         l.add(new Pair<>(end.key(), null));
 
-//        for (DataSource updateDataSource : dataSources) {
-        SchedulerTask dataSourceTask = new SchedulerTaskImpl(new CubeTaskKey(dataSource.getMetadata().getTableName(), Operation.BUILD_TABLE));
+        SchedulerTask dataSourceTask = CubeTasks.newTableTask(dataSource);
         start.addNext(dataSourceTask);
-        dataSourceTask.addNext(end);
         l.add(new Pair<>(dataSourceTask.key(), dataSource));
 
 
-        SchedulerTask contractTask = new SchedulerTaskImpl(new CubeTaskKey(contract.getMetadata().getTableName(), Operation.BUILD_TABLE));
-        dataSourceTask.addNext(contractTask);
-        contractTask.addNext(end);
+        SchedulerTask contractTask = CubeTasks.newTableTask(dataSource);
+        start.addNext(contractTask);
         l.add(new Pair<>(contractTask.key(), contract));
-//        }
 
         List<String> primaryFields = new ArrayList<>();
         List<String> foreignFields = new ArrayList<>();
@@ -123,11 +115,12 @@ public class MultiRelationIndexBuilderTest extends TestCase {
         foreignFields.add("合同ID");
         foreignFields.add("付款金额");
         RelationSource relationSource = new RelationSourceImpl(dataSource.getSourceKey(), contract.getSourceKey(), primaryFields, foreignFields);
-        CubeTaskKey key = new CubeTaskKey("relation", Operation.INDEX_RELATION);
-        SchedulerTask task = new SchedulerTaskImpl(key);
-        contractTask.addNext(task);
-        task.addNext(end);
-        l.add(new Pair<>(key, relationSource));
+        SchedulerTask relationTask = CubeTasks.newRelationTask(relationSource);
+
+        dataSourceTask.addNext(relationTask);
+        contractTask.addNext(relationTask);
+        relationTask.addNext(end);
+        l.add(new Pair<>(relationTask.key(), relationSource));
         CubeTasks.sendTasks(l);
         start.triggerRun();
 
@@ -138,6 +131,11 @@ public class MultiRelationIndexBuilderTest extends TestCase {
         });
 
         latch.await();
+
+        if (end.result() != Result.SUCCEEDED) {
+            fail();
+        }
+
 //        List<Segment> segmentList = LocalSegmentProvider.getInstance().getSegment(dataSource.getSourceKey());
 //        assertEquals(segmentList.size(), 1);
 //        Segment segment = segmentList.get(0);

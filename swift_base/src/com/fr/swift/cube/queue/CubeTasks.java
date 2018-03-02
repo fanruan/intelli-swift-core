@@ -6,7 +6,6 @@ import com.fr.swift.cube.task.TaskKey;
 import com.fr.swift.cube.task.impl.CubeTaskKey;
 import com.fr.swift.cube.task.impl.Operation;
 import com.fr.swift.cube.task.impl.SchedulerTaskImpl;
-import com.fr.swift.cube.task.impl.SchedulerTaskPool;
 import com.fr.swift.exception.SwiftServiceException;
 import com.fr.swift.exception.meta.SwiftMetaDataException;
 import com.fr.swift.service.SwiftServiceEvent;
@@ -26,8 +25,8 @@ import java.util.List;
  * @date 2018/2/7
  */
 public class CubeTasks {
-    static SchedulerTask newTableTask(DataSource ds) throws SwiftMetaDataException {
-        return new SchedulerTaskImpl(new CubeTaskKey(CubeTasks.newTaskName(ds), Operation.BUILD_TABLE));
+    public static SchedulerTask newTableTask(DataSource ds) throws SwiftMetaDataException {
+        return new SchedulerTaskImpl(newTaskKey(ds));
     }
 
     // newEtlTask(etl, prevTask) return e
@@ -72,38 +71,30 @@ public class CubeTasks {
         return etlTask;
     }
 
-    static SchedulerTask newRelationTask(RelationSource relation, DataSource primary, DataSource foreign) throws SwiftMetaDataException {
-        SchedulerTask relationTask = new SchedulerTaskImpl(new CubeTaskKey(newTaskName(relation), Operation.INDEX_RELATION));
-
-        TaskKey primaryTaskKey = new CubeTaskKey(newTaskName(primary), Operation.BUILD_TABLE),
-                foreignTaskKey = new CubeTaskKey(newTaskName(foreign), Operation.BUILD_TABLE);
-
-        SchedulerTaskPool pool = SchedulerTaskPool.getInstance();
-        // 这里默认任务已经生成 即先生成所有table的任务，然后生成relation任务
-        pool.get(primaryTaskKey).addNext(relationTask);
-        pool.get(foreignTaskKey).addNext(relationTask);
-
-        return relationTask;
+    public static SchedulerTask newRelationTask(RelationSource relation/*, DataSource primary, DataSource foreign*/) {
+        return new SchedulerTaskImpl(newTaskKey(relation));
     }
 
     private static boolean isReadable(DataSource dataSource) {
         return SwiftContext.getInstance().getSegmentProvider().isSegmentsExist(dataSource.getSourceKey());
     }
 
-    static String newTaskName(DataSource ds) throws SwiftMetaDataException {
-        return ds.getMetadata().getTableName() + "@" + ds.getSourceKey().getId();
+    public static TaskKey newTaskKey(DataSource ds) throws SwiftMetaDataException {
+        return new CubeTaskKey(ds.getMetadata().getTableName() + "@" + ds.getSourceKey().getId(),
+                Operation.BUILD_TABLE);
     }
 
-    private static String newTaskName(RelationSource relation) {
-        return relation + "@" + relation.getSourceKey().getId();
+    public static TaskKey newTaskKey(RelationSource relation) {
+        return new CubeTaskKey(relation + "@" + relation.getSourceKey().getId(),
+                Operation.INDEX_RELATION);
     }
 
-    static SchedulerTask newStartTask() {
-        return new SchedulerTaskImpl(new CubeTaskKey("start of all @ " + Long.toHexString(System.nanoTime())));
+    public static SchedulerTask newStartTask() {
+        return new SchedulerTaskImpl(new CubeTaskKey("start of all@" + Long.toHexString(System.nanoTime())));
     }
 
-    static SchedulerTask newEndTask() {
-        return new SchedulerTaskImpl(new CubeTaskKey("end of all @ " + Long.toHexString(System.nanoTime())));
+    public static SchedulerTask newEndTask() {
+        return new SchedulerTaskImpl(new CubeTaskKey("end of all@" + Long.toHexString(System.nanoTime())));
     }
 
     public static void sendTasks(final Collection<Pair<TaskKey, Object>> tasks) throws SwiftServiceException {

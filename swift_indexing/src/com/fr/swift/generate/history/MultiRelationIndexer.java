@@ -11,7 +11,6 @@ import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.relation.CubeLogicColumnKey;
 import com.fr.swift.relation.CubeMultiRelation;
 import com.fr.swift.segment.Segment;
-import com.fr.swift.segment.SegmentOperatorProvider;
 import com.fr.swift.segment.SwiftSegmentManager;
 import com.fr.swift.segment.column.BitmapIndexedColumn;
 import com.fr.swift.segment.column.Column;
@@ -28,13 +27,13 @@ import java.util.List;
  * @author yee
  * @date 2018/1/29
  */
-public class MultiRelationIndexBuilder extends BaseWorker {
+public class MultiRelationIndexer extends BaseWorker {
 
     private CubeMultiRelation relation;
     private SwiftSegmentManager provider;
-    private SwiftLogger logger = SwiftLoggers.getLogger(MultiRelationIndexBuilder.class);
+    private SwiftLogger logger = SwiftLoggers.getLogger(MultiRelationIndexer.class);
 
-    public MultiRelationIndexBuilder(CubeMultiRelation relation, SwiftSegmentManager provider) {
+    public MultiRelationIndexer(CubeMultiRelation relation, SwiftSegmentManager provider) {
         this.relation = relation;
         this.provider = provider;
     }
