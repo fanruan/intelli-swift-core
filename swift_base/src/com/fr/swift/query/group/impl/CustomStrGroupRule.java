@@ -1,12 +1,10 @@
 package com.fr.swift.query.group.impl;
 
+import com.fr.swift.structure.Pair;
 import com.fr.swift.structure.array.IntList;
 import com.fr.swift.structure.array.IntListFactory;
-import com.fr.swift.util.Crasher;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * @author anchore
@@ -14,38 +12,44 @@ import java.util.Map;
  * <p>
  * 字符串自定义分组规则
  */
-public class CustomGroupRule extends BaseGroupRule {
+public class CustomStrGroupRule extends BaseCustomGroupRule {
     private List<StringGroup> groups;
 
-    private Map<Integer, IntList> map = new HashMap<Integer, IntList>();
-
-    public CustomGroupRule(List<StringGroup> groups) {
-        super();
+    public CustomStrGroupRule(List<StringGroup> groups, String otherGroupName) {
+        super(otherGroupName);
         this.groups = groups;
     }
 
     @Override
-    public String getGroupName(int index) {
-        return groups.get(index).name;
-    }
-
-    @Override
-    public IntList map(int index) {
-        return map.get(index);
-    }
-
-    @Override
     void initMap() {
+        int lastIndex = groups.size();
+
         for (int i = 0; i < dictColumn.size(); i++) {
             String val = (String) dictColumn.<String>getValue(i);
             int index = findIndex(val);
 
+            String groupName;
+            if (index != -1) {
+                // 在区间里
+                groupName = groups.get(index).name;
+            } else {
+                if (hasOtherGroup()) {
+                    // 有其他组，则全部分到其他
+                    index = lastIndex;
+                    groupName = otherGroupName;
+                } else {
+                    // 不在区间里，又没有其他分组，则单独为一组
+                    index = lastIndex++;
+                    groupName = val;
+                }
+            }
+
             if (map.containsKey(index)) {
-                map.get(index).add(i);
+                map.get(index).getValue().add(i);
             } else {
                 IntList indices = IntListFactory.createIntList();
                 indices.add(i);
-                map.put(index, indices);
+                map.put(index, Pair.of(groupName, indices));
             }
         }
     }
@@ -56,12 +60,7 @@ public class CustomGroupRule extends BaseGroupRule {
                 return i;
             }
         }
-        return Crasher.crash("value not found");
-    }
-
-    @Override
-    public int newSize() {
-        return groups.size();
+        return -1;
     }
 
     public static class StringGroup {

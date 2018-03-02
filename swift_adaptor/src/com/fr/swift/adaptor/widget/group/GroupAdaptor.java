@@ -5,8 +5,7 @@ import com.finebi.conf.internalimp.bean.dashboard.widget.dimension.group.number.
 import com.finebi.conf.internalimp.bean.dashboard.widget.dimension.group.number.custom.NumberCustomGroupValueBean;
 import com.finebi.conf.internalimp.bean.dashboard.widget.dimension.group.string.StringCustomDetailsBean;
 import com.finebi.conf.internalimp.bean.dashboard.widget.dimension.group.string.StringCustomDetailsItemBean;
-import com.finebi.conf.internalimp.bean.dashboard.widget.dimension.group.string.StringCustomGroupBean;
-import com.finebi.conf.internalimp.bean.dashboard.widget.dimension.group.string.StringCustomUnGroupValueBean;
+import com.finebi.conf.internalimp.bean.dashboard.widget.dimension.group.string.StringCustomGroupValueBean;
 import com.finebi.conf.internalimp.dashboard.widget.dimension.group.number.NumberDimensionAutoGroup;
 import com.finebi.conf.internalimp.dashboard.widget.dimension.group.number.NumberDimensionCustomGroup;
 import com.finebi.conf.internalimp.dashboard.widget.dimension.group.string.StringDimensionCustomGroup;
@@ -15,16 +14,15 @@ import com.fr.swift.query.group.Group;
 import com.fr.swift.query.group.GroupRule;
 import com.fr.swift.query.group.GroupType;
 import com.fr.swift.query.group.Groups;
-import com.fr.swift.query.group.impl.AutoGroupRule;
-import com.fr.swift.query.group.impl.AutoGroupRule.Partition;
-import com.fr.swift.query.group.impl.CustomGroupRule;
-import com.fr.swift.query.group.impl.CustomGroupRule.StringGroup;
+import com.fr.swift.query.group.impl.AutoNumGroupRule;
+import com.fr.swift.query.group.impl.AutoNumGroupRule.Partition;
 import com.fr.swift.query.group.impl.CustomNumGroupRule;
 import com.fr.swift.query.group.impl.CustomNumGroupRule.NumInterval;
+import com.fr.swift.query.group.impl.CustomStrGroupRule;
+import com.fr.swift.query.group.impl.CustomStrGroupRule.StringGroup;
 import com.fr.swift.query.group.impl.NoGroupRule;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -52,7 +50,7 @@ public class GroupAdaptor {
     }
 
     private static GroupRule newCustomRule(FineDimensionGroup dimGroup) {
-        StringCustomGroupBean bean = ((StringDimensionCustomGroup) dimGroup).getValue();
+        StringCustomGroupValueBean bean = ((StringDimensionCustomGroup) dimGroup).getValue().getValue();
 
         List<StringGroup> stringGroups = new ArrayList<StringGroup>();
         for (StringCustomDetailsBean detailsBean : bean.getDetails()) {
@@ -64,26 +62,7 @@ public class GroupAdaptor {
             stringGroups.add(new StringGroup(groupName, values));
         }
 
-        // 处理未分组的值
-        // fixme 要通过ungroup2Other判断的 等andrew改
-        boolean hasOtherGroup = bean.getUnGroup2OtherName() == null;
-
-        if (hasOtherGroup) {
-            // 有其他组则全部分到其他
-            List<String> ungroupedValues = new ArrayList<String>();
-            for (StringCustomUnGroupValueBean ungroupedBean : bean.getUnGroup()) {
-                ungroupedValues.add(ungroupedBean.getValue());
-            }
-            stringGroups.add(new StringGroup(bean.getUnGroup2OtherName(), ungroupedValues));
-        } else {
-            // 无其他组则一个一组
-            for (StringCustomUnGroupValueBean ungroupedBean : bean.getUnGroup()) {
-                String value = ungroupedBean.getValue();
-                stringGroups.add(new StringGroup(value, Collections.singletonList(value)));
-            }
-        }
-
-        return new CustomGroupRule(stringGroups);
+        return new CustomStrGroupRule(stringGroups, bean.getUseOther());
     }
 
     private static GroupRule newCustomNumberRule(FineDimensionGroup dimGroup) {
@@ -102,6 +81,6 @@ public class GroupAdaptor {
 
     private static GroupRule newAutoRule(FineDimensionGroup group) {
         NumberAutoGroupValueBean bean = ((NumberDimensionAutoGroup) group).getValue().getGroupValue();
-        return new AutoGroupRule(new Partition(bean.getMin(), bean.getMax(), bean.getGroupInterval()));
+        return new AutoNumGroupRule(new Partition(bean.getMin(), bean.getMax(), bean.getGroupInterval()));
     }
 }

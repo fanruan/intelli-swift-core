@@ -9,8 +9,8 @@ import java.util.List;
  * <p>
  * 数字自动分组规则
  */
-public class AutoGroupRule extends CustomNumGroupRule {
-    public AutoGroupRule(Partition partition) {
+public class AutoNumGroupRule extends CustomNumGroupRule {
+    public AutoNumGroupRule(Partition partition) {
         // 无其他组，传null
         super(partition.toNumIntervals(), null);
     }

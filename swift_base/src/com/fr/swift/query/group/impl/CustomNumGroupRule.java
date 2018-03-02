@@ -6,35 +6,20 @@ import com.fr.swift.structure.array.IntListFactory;
 
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * @author anchore
  * @date 2018/2/28
  */
-public class CustomNumGroupRule extends BaseGroupRule {
+public class CustomNumGroupRule extends BaseCustomGroupRule {
     static final NumberFormat NUMBER_FORMAT = new DecimalFormat("#.##");
-    private List<NumInterval> intervals;
-    private String otherGroupName;
 
-    private Map<Integer, Pair<String, IntList>> map = new HashMap<Integer, Pair<String, IntList>>();
+    private List<NumInterval> intervals;
 
     public CustomNumGroupRule(List<NumInterval> intervals, String otherGroupName) {
-        super();
+        super(otherGroupName);
         this.intervals = intervals;
-        this.otherGroupName = otherGroupName;
-    }
-
-    @Override
-    public String getGroupName(int index) {
-        return map.get(index).getKey();
-    }
-
-    @Override
-    public IntList map(int index) {
-        return map.get(index).getValue();
     }
 
     @Override
@@ -76,15 +61,6 @@ public class CustomNumGroupRule extends BaseGroupRule {
             }
         }
         return -1;
-    }
-
-    @Override
-    public int newSize() {
-        return map.size();
-    }
-
-    private boolean hasOtherGroup() {
-        return otherGroupName != null;
     }
 
     public static class NumInterval {
