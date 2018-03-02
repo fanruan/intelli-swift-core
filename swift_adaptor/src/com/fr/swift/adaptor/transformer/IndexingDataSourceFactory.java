@@ -85,7 +85,6 @@ public class IndexingDataSourceFactory {
 
     public static DataSource transformDataSource(FineBusinessTable table) throws Exception {
         DataSource dataSource = null;
-        List<FineOperator> ops = ((AbstractFineTable) table).getOperators();
         switch (table.getType()) {
             case BaseConstant.TABLETYPE.DB:
                 dataSource = transformTableDBSource((FineDBBusinessTable) table);

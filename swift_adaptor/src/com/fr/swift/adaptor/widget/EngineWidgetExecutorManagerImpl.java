@@ -36,6 +36,11 @@ public class EngineWidgetExecutorManagerImpl implements EngineWidgetExecutorMana
     }
 
     @Override
+    public NumberMaxAndMinValue getFieldMaxAndMinValueByFieldId(String fieldId) throws Exception {
+        return null;
+    }
+
+    @Override
     public FineEngineType getEngineType() {
         return FineEngineType.Cube;
     }
