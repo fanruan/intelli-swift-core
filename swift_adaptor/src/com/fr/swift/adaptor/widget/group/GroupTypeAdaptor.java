@@ -1,4 +1,4 @@
-package com.fr.swift.adaptor.cal;
+package com.fr.swift.adaptor.widget.group;
 
 import com.finebi.conf.constant.BIReportConstant.GROUP;
 import com.fr.swift.query.group.GroupType;

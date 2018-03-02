@@ -1,4 +1,4 @@
-package com.fr.swift.adaptor.cal;
+package com.fr.swift.adaptor.widget.group;
 
 import com.finebi.conf.internalimp.bean.dashboard.widget.dimension.group.number.auto.NumberAutoGroupValueBean;
 import com.finebi.conf.internalimp.bean.dashboard.widget.dimension.group.number.custom.NumberCustomGroupNodeBean;

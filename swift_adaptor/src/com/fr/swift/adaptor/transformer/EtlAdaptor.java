@@ -42,7 +42,7 @@ import com.finebi.conf.structure.bean.table.FineBusinessTable;
 import com.finebi.conf.structure.conf.base.EngineComplexConfTable;
 import com.finebi.conf.utils.FineTableUtils;
 import com.fr.general.ComparatorUtils;
-import com.fr.swift.adaptor.cal.GroupTypeAdaptor;
+import com.fr.swift.adaptor.widget.group.GroupTypeAdaptor;
 import com.fr.swift.exception.meta.SwiftMetaDataException;
 import com.fr.swift.query.filter.info.FilterInfo;
 import com.fr.swift.query.group.impl.GroupImpl;
