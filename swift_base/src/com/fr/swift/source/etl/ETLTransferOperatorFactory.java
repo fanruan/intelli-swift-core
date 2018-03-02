@@ -16,8 +16,6 @@ import com.fr.swift.source.etl.selfrelation.OneUnionRelationOperator;
 import com.fr.swift.source.etl.selfrelation.OneUnionRelationTransferOperator;
 import com.fr.swift.source.etl.selfrelation.TwoUnionRelationOperator;
 import com.fr.swift.source.etl.selfrelation.TwoUnionRelationTransferOperator;
-import com.fr.swift.source.etl.sort.ColumnSortOperator;
-import com.fr.swift.source.etl.sort.ColumnSortTransferOperator;
 import com.fr.swift.source.etl.union.UnionOperator;
 import com.fr.swift.source.etl.union.UnionTransferOperator;
 
@@ -43,8 +41,6 @@ public class ETLTransferOperatorFactory {
                 return transferOneUnionRelationOperator((OneUnionRelationOperator) operator);
             case TWOUNIONRELATION:
                 return transferTwoUnionRelationOperator((TwoUnionRelationOperator) operator);
-            case SORT:
-                return transferColumnSortOperator((ColumnSortOperator) operator);
             case COLUMNFORMULA:
                 return transferColumnFormulaOperator((ColumnFormulaOperator) operator);
             default:
@@ -82,10 +78,6 @@ public class ETLTransferOperatorFactory {
 
     private static ETLTransferOperator transferTwoUnionRelationOperator(TwoUnionRelationOperator operator) {
         return new TwoUnionRelationTransferOperator(operator.getColumns(), operator.getIdColumnName(), operator.getShowColumns(), operator.getColumnType(), operator.getColumnName(), operator.getParentIdColumnName());
-    }
-
-    private static ETLTransferOperator transferColumnSortOperator(ColumnSortOperator operator) {
-        return new ColumnSortTransferOperator(operator.getFieldsSortedMap());
     }
 
     private static ETLTransferOperator transferColumnFormulaOperator(ColumnFormulaOperator operator) {
