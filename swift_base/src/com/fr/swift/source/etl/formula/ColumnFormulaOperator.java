@@ -35,7 +35,7 @@ public class ColumnFormulaOperator extends AbstractOperator {
     @Override
     public List<SwiftMetaDataColumn> getColumns(SwiftMetaData[] metaDatas) {
         List<SwiftMetaDataColumn> columnList = new ArrayList<SwiftMetaDataColumn>();
-        columnList.add(new MetaDataColumn(MD5Utils.getMD5String(new String[]{(this.expression + this.columnType.name())}), this.columnName, ColumnTypeUtils.columnTypeToSqlType(this.columnType)));
+        columnList.add(new MetaDataColumn(MD5Utils.getMD5String(new String[]{(this.expression + this.columnType)}), this.columnName, ColumnTypeUtils.columnTypeToSqlType(this.columnType)));
         return columnList;
     }
 

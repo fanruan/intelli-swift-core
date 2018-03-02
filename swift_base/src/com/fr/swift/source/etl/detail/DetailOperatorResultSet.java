@@ -2,7 +2,7 @@ package com.fr.swift.source.etl.detail;
 
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.column.ColumnKey;
-import com.fr.swift.segment.column.DictionaryEncodedColumn;
+import com.fr.swift.segment.column.DetailColumn;
 import com.fr.swift.source.ListBasedRow;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SwiftMetaData;
@@ -20,7 +20,7 @@ public class DetailOperatorResultSet implements SwiftResultSet {
     private final SwiftMetaData metaData;
     private final List<ColumnKey[]> fields;
     private final Segment[] segments;
-    private List<DictionaryEncodedColumn> columns;
+    private List<DetailColumn> columns;
     private int currentRow = -1;
     private int currentTotalRow;
     private int currentSegmentIndex = 0;
@@ -34,16 +34,21 @@ public class DetailOperatorResultSet implements SwiftResultSet {
     }
 
     private boolean moveToNextSegment() {
-        if (fields.isEmpty()) {
-            return false;
-        }
         if (currentSegmentIndex >= segments.length) {
             return false;
         }
-        columns = new ArrayList<DictionaryEncodedColumn>();
+        columns = new ArrayList<DetailColumn>();
+        //pony 暂时先加上原表的数据
+        try {
+            for (int i = 1; i <= metaData.getColumnCount(); i++) {
+                columns.add(segments[currentSegmentIndex].getColumn(new ColumnKey(metaData.getColumnName(i))).getDetailColumn());
+            }
+        } catch (Exception ignore){
+
+        }
         for (ColumnKey[] columnKeys : fields) {
             for (ColumnKey columnKey : columnKeys) {
-                columns.add(segments[currentSegmentIndex].getColumn(columnKey).getDictionaryEncodedColumn());
+                columns.add(segments[currentSegmentIndex].getColumn(columnKey).getDetailColumn());
             }
         }
         currentTotalRow = segments[currentSegmentIndex].getRowCount();
@@ -72,9 +77,8 @@ public class DetailOperatorResultSet implements SwiftResultSet {
     @Override
     public Row getRowData() {
         List list = new ArrayList();
-        for (DictionaryEncodedColumn column : columns) {
-            int index = column.getIndexByRow(currentRow);
-            list.add(column.getValue(index));
+        for (DetailColumn column : columns) {
+            list.add(column.get(currentRow));
         }
         return new ListBasedRow(list);
     }

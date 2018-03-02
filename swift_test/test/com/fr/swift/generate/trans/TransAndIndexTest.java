@@ -1,7 +1,5 @@
 package com.fr.swift.generate.trans;
 
-import com.fr.base.FRContext;
-import com.fr.dav.LocalEnv;
 import com.fr.swift.cube.queue.CubeTasks;
 import com.fr.swift.cube.task.SchedulerTask;
 import com.fr.swift.cube.task.Task.Status;
@@ -17,15 +15,12 @@ import com.fr.swift.cube.task.impl.WorkerTaskImpl;
 import com.fr.swift.cube.task.impl.WorkerTaskPool;
 import com.fr.swift.generate.history.TableBuilder;
 import com.fr.swift.manager.LocalSegmentProvider;
-import com.fr.swift.provider.ConnectionProvider;
 import com.fr.swift.segment.HistorySegmentImpl;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.service.LocalSwiftServerService;
 import com.fr.swift.source.DataSource;
-import com.fr.swift.source.db.ConnectionManager;
-import com.fr.swift.source.db.IConnectionProvider;
 import com.fr.swift.source.db.QueryDBSource;
 import com.fr.swift.source.db.TestConnectionProvider;
 import com.fr.swift.structure.Pair;
@@ -44,10 +39,7 @@ public class TransAndIndexTest extends TestCase {
     @Override
     protected void setUp() {
         new LocalSwiftServerService().start();
-        FRContext.setCurrentEnv(new LocalEnv(System.getProperty("user.dir") + "\\" + System.currentTimeMillis()));
-        IConnectionProvider connectionProvider = new ConnectionProvider();
-        ConnectionManager.getInstance().registerProvider(connectionProvider);
-        ConnectionManager.getInstance().registerConnectionInfo("allTest", TestConnectionProvider.createConnection());
+        TestConnectionProvider.createConnection();
     }
 
     /**

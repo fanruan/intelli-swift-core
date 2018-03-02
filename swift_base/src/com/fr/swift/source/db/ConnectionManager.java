@@ -1,6 +1,5 @@
 package com.fr.swift.source.db;
 
-import com.fr.swift.provider.ConnectionProvider;
 import com.fr.swift.util.Util;
 
 /**
@@ -12,7 +11,6 @@ public class ConnectionManager {
     public IConnectionProvider provider;
 
     private ConnectionManager() {
-        this.provider = new ConnectionProvider();
     }
 
     public static ConnectionManager getInstance() {
@@ -26,12 +24,5 @@ public class ConnectionManager {
     public ConnectionInfo getConnectionInfo(String connectionName) {
         Util.requireNonNull(provider);
         return provider.getConnection(connectionName);
-    }
-
-    public void registerConnectionInfo(String connectionName, ConnectionInfo connectionInfo) {
-        if (provider == null) {
-            this.registerProvider(new ConnectionProvider());
-        }
-        provider.register(connectionName, connectionInfo);
     }
 }

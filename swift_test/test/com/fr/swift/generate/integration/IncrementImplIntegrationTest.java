@@ -42,10 +42,7 @@ public class IncrementImplIntegrationTest extends TestCase {
     public void setUp() throws Exception {
         super.setUp();
         FRContext.setCurrentEnv(new LocalEnv(System.getProperty("user.dir") + "\\" + System.currentTimeMillis()));
-        IConnectionProvider connectionProvider = new ConnectionProvider();
-        ConnectionManager.getInstance().registerProvider(connectionProvider);
-        ConnectionInfo connectionInfo = TestConnectionProvider.createConnection();
-        connectionProvider.register("local2", connectionInfo);
+        TestConnectionProvider.createConnection();
 
         dataSource = new QueryDBSource("select 记录人 from DEMO_CAPITAL_RETURN", "local2");
     }

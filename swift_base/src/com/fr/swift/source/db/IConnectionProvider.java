@@ -9,6 +9,4 @@ package com.fr.swift.source.db;
  */
 public interface IConnectionProvider {
     ConnectionInfo getConnection(String connectionName);
-
-    void register(String connectionName, ConnectionInfo connectionInfo);
 }
