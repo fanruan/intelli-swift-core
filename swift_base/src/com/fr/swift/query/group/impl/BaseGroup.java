@@ -2,6 +2,7 @@ package com.fr.swift.query.group.impl;
 
 import com.fr.swift.query.group.Group;
 import com.fr.swift.query.group.GroupOperator;
+import com.fr.swift.query.group.GroupRule;
 import com.fr.swift.query.group.GroupType;
 import com.fr.swift.segment.column.Column;
 
@@ -11,9 +12,11 @@ import com.fr.swift.segment.column.Column;
  */
 abstract class BaseGroup implements Group {
     private GroupType type;
+    private GroupRule rule;
 
-    BaseGroup(GroupType type) {
+    BaseGroup(GroupType type, GroupRule rule) {
         this.type = type;
+        this.rule = rule;
     }
 
     @Override
@@ -26,7 +29,8 @@ abstract class BaseGroup implements Group {
         return new BaseGroupOperator() {
             @Override
             public Column<String> group(Column<?> column) {
-                return new GroupColumn(column.getBitmapIndex(), groupRule);
+                rule.setOriginDict(column.getDictionaryEncodedColumn());
+                return new GroupColumn(column.getBitmapIndex(), rule);
             }
         };
     }

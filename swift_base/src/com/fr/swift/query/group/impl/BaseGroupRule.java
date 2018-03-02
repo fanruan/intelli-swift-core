@@ -9,4 +9,15 @@ import com.fr.swift.segment.column.DictionaryEncodedColumn;
  */
 abstract class BaseGroupRule implements GroupRule {
     DictionaryEncodedColumn<?> dictColumn;
+
+    /**
+     * 初始化映射关系
+     */
+    abstract void initMap();
+
+    @Override
+    public void setOriginDict(DictionaryEncodedColumn<?> dict) {
+        this.dictColumn = dict;
+        initMap();
+    }
 }
