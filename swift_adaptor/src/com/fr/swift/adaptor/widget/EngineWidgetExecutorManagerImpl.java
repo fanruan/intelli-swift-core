@@ -1,6 +1,7 @@
 package com.fr.swift.adaptor.widget;
 
 import com.finebi.base.constant.FineEngineType;
+import com.finebi.conf.internalimp.analysis.bean.operator.add.group.custom.number.NumberMaxAndMinValue;
 import com.finebi.conf.internalimp.dashboard.widget.detail.DetailWidget;
 import com.finebi.conf.internalimp.dashboard.widget.table.StringControlWidget;
 import com.finebi.conf.internalimp.dashboard.widget.table.TableWidget;
@@ -26,6 +27,11 @@ public class EngineWidgetExecutorManagerImpl implements EngineWidgetExecutorMana
 
     @Override
     public BIStringDetailResult visit(StringControlWidget detailWidget) throws Exception {
+        return null;
+    }
+
+    @Override
+    public NumberMaxAndMinValue getFieldMaxAndMinValueByFieldId(String fieldId) throws Exception {
         return null;
     }
 
