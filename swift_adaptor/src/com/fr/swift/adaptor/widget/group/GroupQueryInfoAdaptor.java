@@ -35,7 +35,7 @@ import java.util.List;
  * @author anchore
  * @date 2018/2/27
  */
-public class QueryInfoAdaptor {
+public class GroupQueryInfoAdaptor {
     public static GroupQueryInfo adaptTableWidget(TableWidget widget) throws Exception {
         Cursor cursor = null;
         String queryId = widget.getWidgetId();
