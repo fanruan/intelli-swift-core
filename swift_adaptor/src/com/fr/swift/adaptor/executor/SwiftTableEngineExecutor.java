@@ -32,11 +32,11 @@ import com.fr.general.ComparatorUtils;
 import com.fr.general.data.DataModel;
 import com.fr.script.Calculator;
 import com.fr.stable.StringUtils;
-import com.fr.swift.adaptor.preview.SwiftDataPreviewer;
-import com.fr.swift.adaptor.struct.SwiftDetailCell;
+import com.fr.swift.adaptor.preview.MinorSegmentManager;
+import com.fr.swift.adaptor.preview.MinorUpdater;
 import com.fr.swift.adaptor.struct.SwiftDetailTableResult;
 import com.fr.swift.adaptor.struct.SwiftEmptyResult;
-import com.fr.swift.adaptor.struct.SwiftRealDetailResult;
+import com.fr.swift.adaptor.struct.SwiftSegmentDetailResult;
 import com.fr.swift.adaptor.transformer.FieldFactory;
 import com.fr.swift.adaptor.transformer.IndexingDataSourceFactory;
 import com.fr.swift.bitmap.ImmutableBitMap;
@@ -46,14 +46,16 @@ import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.manager.LocalSegmentProvider;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.column.ColumnKey;
-import com.fr.swift.segment.column.DetailColumn;
 import com.fr.swift.segment.column.DictionaryEncodedColumn;
 import com.fr.swift.source.DataSource;
 import com.fr.swift.source.SwiftMetaData;
-import com.fr.swift.source.SwiftResultSet;
-import com.fr.swift.source.SwiftSourceTransfer;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
 /**
  * This class created on 2018-1-26 14:16:39
@@ -70,10 +72,14 @@ public class SwiftTableEngineExecutor implements FineTableEngineExecutor {
     public BIDetailTableResult getPreviewData(FineBusinessTable table, int rowCount) throws Exception {
         DataSource dataSource = IndexingDataSourceFactory.transformDataSource(table);
         if (dataSource != null) {
-            SwiftSourceTransfer transfer = SwiftDataPreviewer.createPreviewTransfer(dataSource, rowCount);
-            SwiftResultSet swiftResultSet = transfer.createResultSet();
-            BIDetailTableResult detailTableResult = new SwiftDetailTableResult(swiftResultSet);
-            return detailTableResult;
+            if (!MinorSegmentManager.getInstance().isSegmentsExist(dataSource.getSourceKey())) {
+                MinorUpdater.update(dataSource);
+            }
+            List<Segment> segments = MinorSegmentManager.getInstance().getSegment(dataSource.getSourceKey());
+
+            SwiftMetaData swiftMetaData = dataSource.getMetadata();
+            BIDetailTableResult realDetailResult = new SwiftSegmentDetailResult(segments, swiftMetaData);
+            return realDetailResult;
         }
         return new SwiftDetailTableResult(new SwiftEmptyResult());
     }
@@ -83,26 +89,7 @@ public class SwiftTableEngineExecutor implements FineTableEngineExecutor {
         DataSource dataSource = IndexingDataSourceFactory.transformDataSource(table);
         List<Segment> segments = LocalSegmentProvider.getInstance().getSegment(dataSource.getSourceKey());
         SwiftMetaData swiftMetaData = dataSource.getMetadata();
-        List<List<BIDetailCell>> dataList = new ArrayList<List<BIDetailCell>>();
-        for (Segment segment : segments) {
-            List<DetailColumn> columnList = new ArrayList<DetailColumn>();
-            int count = segment.getRowCount();
-            for (int i = 1; i <= swiftMetaData.getColumnCount(); i++) {
-                String columnName = swiftMetaData.getColumnName(i);
-                ColumnKey columnKey = new ColumnKey(columnName);
-                columnList.add(segment.getColumn(columnKey).getDetailColumn());
-            }
-            for (int i = 0; i < count; i++) {
-                List<BIDetailCell> cellList = new ArrayList<BIDetailCell>();
-                for (int j = 0; j < swiftMetaData.getColumnCount(); j++) {
-                    BIDetailCell cell = new SwiftDetailCell(columnList.get(j).get(i));
-                    cellList.add(cell);
-                }
-                dataList.add(cellList);
-            }
-        }
-        BIDetailTableResult realDetailResult = new SwiftRealDetailResult(dataList.iterator(), dataList.size(), swiftMetaData.getColumnCount());
-        return realDetailResult;
+        return new SwiftSegmentDetailResult(segments, swiftMetaData);
     }
 
     @Override
@@ -138,17 +125,17 @@ public class SwiftTableEngineExecutor implements FineTableEngineExecutor {
     @Override
     public EngineConfProduceData getConfPreResult(FineBusinessTable table) throws Exception {
         //DataSource dataSource = IndexingDataSourceFactory.transformDataSource(table);
-        FineBusinessTable preTable = ((EngineComplexConfTable)table).getBaseTableBySelected(0);
-        List<FineOperator> operators = ((AbstractFineTable)table).getOperators();
-        for(int i = 0; i < operators.size(); i++) {
+        FineBusinessTable preTable = ((EngineComplexConfTable) table).getBaseTableBySelected(0);
+        List<FineOperator> operators = ((AbstractFineTable) table).getOperators();
+        for (int i = 0; i < operators.size(); i++) {
             FineOperator fineOperator = operators.get(i);
-            if(fineOperator instanceof ColumnRowTransOperator) {
+            if (fineOperator instanceof ColumnRowTransOperator) {
                 ColumnRowTransOperator op = (ColumnRowTransOperator) operators.get(operators.size() - 1);
                 return getProduceDataForColumnTrans(op, preTable);
-            } else if(fineOperator instanceof CirculateTwoFieldOperator) {
+            } else if (fineOperator instanceof CirculateTwoFieldOperator) {
                 CirculateTwoFieldOperator op = (CirculateTwoFieldOperator) operators.get(operators.size() - 1);
                 return getProduceDataForCirculateTwo(op, preTable, table);
-            } else if(fineOperator instanceof CirculateOneFieldOperator) {
+            } else if (fineOperator instanceof CirculateOneFieldOperator) {
                 CirculateOneFieldOperator op = (CirculateOneFieldOperator) operators.get(operators.size() - 1);
                 return getProduceDataForCirculateOne(op, preTable);
             }
@@ -156,12 +143,12 @@ public class SwiftTableEngineExecutor implements FineTableEngineExecutor {
         return null;
     }
 
-    private EngineConfProduceData getProduceDataForColumnTrans(ColumnRowTransOperator op, FineBusinessTable preTable) throws Exception{
+    private EngineConfProduceData getProduceDataForColumnTrans(ColumnRowTransOperator op, FineBusinessTable preTable) throws Exception {
         String lcId = op.getLcName();
         int lcIndex = 0;
         List<FineBusinessField> fields = preTable.getFields();
-        for (int i = 0; i < fields.size(); i++){
-            if (ComparatorUtils.equals(fields.get(i).getId(), lcId)){
+        for (int i = 0; i < fields.size(); i++) {
+            if (ComparatorUtils.equals(fields.get(i).getId(), lcId)) {
                 lcIndex = i;
                 break;
             }
@@ -172,11 +159,11 @@ public class SwiftTableEngineExecutor implements FineTableEngineExecutor {
         Set<String> set = new HashSet<String>();
         while (detailTableResult.hasNext()) {
             List<BIDetailCell> dataList = detailTableResult.next();
-            if (dataList.get(lcIndex).getData() != null){
+            if (dataList.get(lcIndex).getData() != null) {
                 set.add(dataList.get(lcIndex).getData().toString());
             }
         }
-        for (String s: set){
+        for (String s : set) {
             previewData.add(new NameText(null, s));
         }
         engineConfProduceData.setPreviewData(previewData);
@@ -189,17 +176,17 @@ public class SwiftTableEngineExecutor implements FineTableEngineExecutor {
 
         DictionaryEncodedColumn get1 = segment.getColumn(idCIndex).getDictionaryEncodedColumn();
         Object id = get1.getValue(get1.getIndexByRow(i));
-        if(id != null && list.size() < cl) {
+        if (id != null && list.size() < cl) {
             list.add(id);
             DictionaryEncodedColumn get2 = segment.getColumn(pidCIndex).getDictionaryEncodedColumn();
             Object pid = get2.getValue(get2.getIndexByRow(i));
-            if(pid != null) {
-                for(int k = 0; k < segments.length; k++) {
+            if (pid != null) {
+                for (int k = 0; k < segments.length; k++) {
                     DictionaryEncodedColumn gts = segments[k].getColumn(idCIndex).getDictionaryEncodedColumn();
                     int index = gts.getIndex(pid);
                     ImmutableBitMap bitMap = segments[k].getColumn(idCIndex).getBitmapIndex().getBitMapIndex(index);
                     final int indexOfSeg = k;
-                    if(bitMap != null) {
+                    if (bitMap != null) {
                         bitMap.breakableTraversal(new BreakTraversalAction() {
                             @Override
                             public boolean actionPerformed(int row) {
@@ -213,13 +200,13 @@ public class SwiftTableEngineExecutor implements FineTableEngineExecutor {
         }
     }
 
-    private EngineConfProduceData getProduceDataForCirculateTwo(CirculateTwoFieldOperator op, FineBusinessTable preTable, FineBusinessTable table) throws Exception{
+    private EngineConfProduceData getProduceDataForCirculateTwo(CirculateTwoFieldOperator op, FineBusinessTable preTable, FineBusinessTable table) throws Exception {
         final String tempName = "层级";
         List<String> fieldList = new ArrayList<String>();
         List<FineBusinessField> fields = preTable.getFields();
         fieldList.add(fields.get(findFieldName(fields, op.getIdFieldName())).getName());
         fieldList.add(fields.get(findFieldName(fields, op.getParentIdFieldName())).getName());
-        String connectionName = ((FineDBBusinessTable)table).getConnName();
+        String connectionName = ((FineDBBusinessTable) table).getConnName();
         FineConnection fineConnection = FineConnectionUtils.getConnectionByName(connectionName);
         Connection connection = fineConnection.getConnection();
         java.sql.Connection conn = connection.createConnection();
@@ -264,8 +251,8 @@ public class SwiftTableEngineExecutor implements FineTableEngineExecutor {
 
     private static int findFieldName(List<FineBusinessField> fields, String fieldID) {
         int index = Integer.MIN_VALUE;
-        for (int i = 0; i < fields.size(); i++){
-            if (ComparatorUtils.equals(fields.get(i).getId(), fieldID)){
+        for (int i = 0; i < fields.size(); i++) {
+            if (ComparatorUtils.equals(fields.get(i).getId(), fieldID)) {
                 index = i;
                 break;
             }
@@ -273,13 +260,13 @@ public class SwiftTableEngineExecutor implements FineTableEngineExecutor {
         return index;
     }
 
-    private EngineConfProduceData getProduceDataForCirculateOne(CirculateOneFieldOperator op, FineBusinessTable preTable) throws Exception{
+    private EngineConfProduceData getProduceDataForCirculateOne(CirculateOneFieldOperator op, FineBusinessTable preTable) throws Exception {
         String lcId = op.getIdFieldName();
         int divideLength = op.getDivideLength();
         int lcIndex = 0;
         List<FineBusinessField> fields = preTable.getFields();
-        for (int i = 0; i < fields.size(); i++){
-            if (ComparatorUtils.equals(fields.get(i).getId(), lcId)){
+        for (int i = 0; i < fields.size(); i++) {
+            if (ComparatorUtils.equals(fields.get(i).getId(), lcId)) {
                 lcIndex = i;
                 break;
             }
@@ -309,7 +296,7 @@ public class SwiftTableEngineExecutor implements FineTableEngineExecutor {
         return engineConfProduceData;
     }
 
-    private List<FloorPreviewItem> parseDataMode(Set ids, int[] len, boolean isTrue, int totalLength)  {
+    private List<FloorPreviewItem> parseDataMode(Set ids, int[] len, boolean isTrue, int totalLength) {
         int columnSize = len.length;
         int rowSize = Math.min(100, ids.size());
         final String tempName = "层级";
@@ -325,7 +312,7 @@ public class SwiftTableEngineExecutor implements FineTableEngineExecutor {
                     continue;
                 }
                 String s = obj.toString();
-                if(isTrue) {
+                if (isTrue) {
                     s = dealWithLayerValue(obj.toString(), len, totalLength);
                 }
                 if (s.length() >= len[i]) {
