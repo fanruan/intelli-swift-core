@@ -1,4 +1,4 @@
-package com.fr.swift.adaptor.group;
+package com.fr.swift.adaptor.widget;
 
 import com.finebi.base.constant.FineEngineType;
 import com.finebi.conf.internalimp.analysis.bean.operator.add.group.custom.number.NumberMaxAndMinValue;

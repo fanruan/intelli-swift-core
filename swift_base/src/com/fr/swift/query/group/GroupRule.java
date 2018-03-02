@@ -1,5 +1,8 @@
 package com.fr.swift.query.group;
 
+import com.fr.swift.segment.column.DictionaryEncodedColumn;
+import com.fr.swift.structure.array.IntList;
+
 /**
  * @author anchore
  * @date 2018/1/29
@@ -17,10 +20,15 @@ public interface GroupRule {
      * @param index 新分组号
      * @return 对应的旧分组号
      */
-    int[] map(int index);
+    IntList map(int index);
 
     /**
      * @return 新分组大小
      */
     int newSize();
+
+    /**
+     * @param dict 原始分组
+     */
+    void setOriginDict(DictionaryEncodedColumn<?> dict);
 }
