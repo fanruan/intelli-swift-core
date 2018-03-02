@@ -1,17 +1,15 @@
 package com.fr.swift.generate.history;
 
-import com.fr.base.FRContext;
-import com.fr.dav.LocalEnv;
+//import com.fr.dav.LocalEnv;
+
 import com.fr.swift.cube.queue.CubeTasks;
 import com.fr.swift.cube.task.SchedulerTask;
 import com.fr.swift.cube.task.Task;
 import com.fr.swift.cube.task.TaskKey;
 import com.fr.swift.cube.task.WorkerTask;
 import com.fr.swift.cube.task.impl.BaseWorker;
-import com.fr.swift.cube.task.impl.CubeTaskKey;
 import com.fr.swift.cube.task.impl.CubeTaskManager;
 import com.fr.swift.cube.task.impl.Operation;
-import com.fr.swift.cube.task.impl.SchedulerTaskImpl;
 import com.fr.swift.cube.task.impl.SchedulerTaskPool;
 import com.fr.swift.cube.task.impl.WorkerTaskImpl;
 import com.fr.swift.cube.task.impl.WorkerTaskPool;
@@ -36,15 +34,15 @@ import java.util.concurrent.CountDownLatch;
  * @author yee
  * @date 2018/2/8
  */
-public class TablePathIndexBuilderTest extends TestCase {
+public class TablePathIndexerTest extends TestCase {
 
     CountDownLatch latch = new CountDownLatch(1);
 
     @Override
     protected void setUp() {
         new LocalSwiftServerService().start();
-
-        FRContext.setCurrentEnv(new LocalEnv(System.getProperty("user.dir")));
+        // fixme LocalEnv没啦，配置写不进去，test不成功
+//        FRContext.setCurrentEnv(new LocalEnv(System.getProperty("user.dir")));
         TestConnectionProvider.createConnection();
     }
 
@@ -72,7 +70,7 @@ public class TablePathIndexBuilderTest extends TestCase {
             } else if (o instanceof RelationSource) {
                 RelationSource ds = ((RelationSource) o);
                 WorkerTask wt = new WorkerTaskImpl(taskKey);
-                wt.setWorker(new MultiRelationIndexBuilder(MultiRelationHelper.convert2CubeRelation(ds), LocalSegmentProvider.getInstance()));
+                wt.setWorker(new MultiRelationIndexer(MultiRelationHelper.convert2CubeRelation(ds), LocalSegmentProvider.getInstance()));
                 return wt;
             } else {
                 return null;
@@ -80,31 +78,24 @@ public class TablePathIndexBuilderTest extends TestCase {
         });
         CubeTaskManager.getInstance().initListener();
 
-        List<DataSource> dataSources = new ArrayList<DataSource>();
-        dataSources.add(dataSource);
-        dataSources.add(contract);
         List<Pair<TaskKey, Object>> l = new ArrayList<>();
 
-        SchedulerTask start = new SchedulerTaskImpl(new CubeTaskKey("start all")),
-                end = new SchedulerTaskImpl(new CubeTaskKey("end all"));
+        SchedulerTask start = CubeTasks.newStartTask(),
+                end = CubeTasks.newEndTask();
         l.add(new Pair<>(start.key(), null));
         l.add(new Pair<>(end.key(), null));
 
-//        for (DataSource updateDataSource : dataSources) {
-        SchedulerTask dataSourceTask = new SchedulerTaskImpl(new CubeTaskKey(dataSource.getMetadata().getTableName(), Operation.BUILD_TABLE));
+        SchedulerTask dataSourceTask = CubeTasks.newTableTask(dataSource);
         start.addNext(dataSourceTask);
-        dataSourceTask.addNext(end);
         l.add(new Pair<>(dataSourceTask.key(), dataSource));
 
 
-        SchedulerTask contractTask = new SchedulerTaskImpl(new CubeTaskKey(contract.getMetadata().getTableName(), Operation.BUILD_TABLE));
-        dataSourceTask.addNext(contractTask);
-        contractTask.addNext(end);
+        SchedulerTask contractTask = CubeTasks.newTableTask(contract);
+        start.addNext(contractTask);
         l.add(new Pair<>(contractTask.key(), contract));
 
-        SchedulerTask customerTask = new SchedulerTaskImpl(new CubeTaskKey(customer.getMetadata().getTableName(), Operation.BUILD_TABLE));
-        contractTask.addNext(customerTask);
-        customerTask.addNext(end);
+        SchedulerTask customerTask = CubeTasks.newTableTask(customer);
+        start.addNext(customerTask);
         l.add(new Pair<>(customerTask.key(), customer));
 //        }
 
@@ -113,11 +104,11 @@ public class TablePathIndexBuilderTest extends TestCase {
         primaryFields.add("合同ID");
         foreignFields.add("合同ID");
         RelationSource relationSource = new RelationSourceImpl(dataSource.getSourceKey(), contract.getSourceKey(), primaryFields, foreignFields);
-        CubeTaskKey key = new CubeTaskKey("relation", Operation.INDEX_RELATION);
-        SchedulerTask task = new SchedulerTaskImpl(key);
+        SchedulerTask task = CubeTasks.newRelationTask(relationSource);
+        dataSourceTask.addNext(task);
         contractTask.addNext(task);
         task.addNext(end);
-        l.add(new Pair<>(key, relationSource));
+        l.add(new Pair<>(task.key(), relationSource));
 
 
         List<String> primaryFields1 = new ArrayList<>();
@@ -125,19 +116,20 @@ public class TablePathIndexBuilderTest extends TestCase {
         primaryFields1.add("客户ID");
         foreignFields1.add("客户ID");
         RelationSource custSource = new RelationSourceImpl(customer.getSourceKey(), dataSource.getSourceKey(), primaryFields1, foreignFields1);
-        CubeTaskKey custKey = new CubeTaskKey("custRelation", Operation.INDEX_RELATION);
-        SchedulerTask custTask = new SchedulerTaskImpl(custKey);
+        SchedulerTask custTask = CubeTasks.newRelationTask(relationSource);
         customerTask.addNext(custTask);
+        dataSourceTask.addNext(custTask);
         custTask.addNext(end);
-        l.add(new Pair<>(custKey, custSource));
-        CubeTasks.sendTasks(l);
-        start.triggerRun();
+        l.add(new Pair<>(custTask.key(), custSource));
 
         end.addStatusChangeListener((prev, now) -> {
             if (now == Task.Status.DONE) {
                 latch.countDown();
             }
         });
+
+        CubeTasks.sendTasks(l);
+        start.triggerRun();
 
         latch.await();
     }
@@ -157,7 +149,7 @@ public class TablePathIndexBuilderTest extends TestCase {
         CubeMultiRelationPath path = new CubeMultiRelationPath();
         path.add(MultiRelationHelper.convert2CubeRelation(custSource));
         path.add(MultiRelationHelper.convert2CubeRelation(relationSource));
-        TablePathIndexBuilder builder = new TablePathIndexBuilder(path, LocalSegmentProvider.getInstance());
+        TablePathIndexer builder = new TablePathIndexer(path, LocalSegmentProvider.getInstance());
         builder.work();
     }
 }

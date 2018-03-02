@@ -26,7 +26,12 @@ public class EngineWidgetExecutorManagerImpl implements EngineWidgetExecutorMana
     }
 
     @Override
-    public BIStringDetailResult visit(StringControlWidget detailWidget) throws Exception {
+    public BIStringDetailResult visit(StringControlWidget detailWidget) {
+        return null;
+    }
+
+    @Override
+    public NumberMaxAndMinValue getFieldMaxAndMinValueByFieldId(String fieldId) {
         return null;
     }
 

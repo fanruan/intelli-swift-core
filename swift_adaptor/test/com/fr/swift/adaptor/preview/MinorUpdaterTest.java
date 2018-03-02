@@ -1,11 +1,8 @@
 package com.fr.swift.adaptor.preview;
 
-import com.fr.swift.provider.ConnectionProvider;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.source.DataSource;
-import com.fr.swift.source.db.ConnectionManager;
-import com.fr.swift.source.db.IConnectionProvider;
 import com.fr.swift.source.db.TableDBSource;
 import com.fr.swift.source.db.TestConnectionProvider;
 import com.fr.swift.source.etl.ETLOperator;
@@ -24,9 +21,7 @@ import java.util.Arrays;
 public class MinorUpdaterTest extends TestCase {
     @Override
     protected void setUp() {
-        IConnectionProvider connectionProvider = new ConnectionProvider();
-        ConnectionManager.getInstance().registerProvider(connectionProvider);
-        ConnectionManager.getInstance().registerConnectionInfo("allTest", TestConnectionProvider.createConnection());
+        TestConnectionProvider.createConnection();
     }
 
     public void testUpdate() throws Exception {
@@ -45,7 +40,7 @@ public class MinorUpdaterTest extends TestCase {
 
         Segment joinSeg = MinorSegmentManager.getInstance().getSegment(join.getSourceKey()).get(0);
 
-        assertEquals(768, joinSeg.getRowCount());
+        assertEquals(101, joinSeg.getRowCount());
 
         MinorSegmentManager.getInstance().clear();
     }

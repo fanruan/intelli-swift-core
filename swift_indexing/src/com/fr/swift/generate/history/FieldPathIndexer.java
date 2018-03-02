@@ -6,7 +6,6 @@ import com.fr.swift.cube.task.Task;
 import com.fr.swift.relation.CubeLogicColumnKey;
 import com.fr.swift.relation.CubeMultiRelationPath;
 import com.fr.swift.segment.Segment;
-import com.fr.swift.segment.SegmentOperatorProvider;
 import com.fr.swift.segment.SwiftSegmentManager;
 import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.ColumnKey;
@@ -18,11 +17,11 @@ import java.util.List;
  * @author yee
  * @date 2018/1/17
  */
-public class FieldPathIndexBuilder extends TablePathIndexBuilder {
+public class FieldPathIndexer extends TablePathIndexer {
 
     private CubeLogicColumnKey logicColumnKey;
 
-    public FieldPathIndexBuilder(CubeMultiRelationPath relationPath, CubeLogicColumnKey logicColumnKey, SwiftSegmentManager provider) {
+    public FieldPathIndexer(CubeMultiRelationPath relationPath, CubeLogicColumnKey logicColumnKey, SwiftSegmentManager provider) {
         super(relationPath, provider);
         this.logicColumnKey = logicColumnKey;
     }

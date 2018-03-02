@@ -37,14 +37,14 @@ public class TableBuilder extends BaseWorker {
         // transport worker
         DataTransporter transporter = new DataTransporter(dataSource);
 
-        LocalTask transportTask = new LocalTaskImpl(new CubeTaskKey(meta.getTableName(), Operation.TRANSPORT_TABLE));
+        LocalTask transportTask = new LocalTaskImpl(newPartStartTaskKey(dataSource));
         transportTask.setWorker(transporter);
 
-        LocalTask end = new LocalTaskImpl(new CubeTaskKey("end of " + meta.getTableName()));
+        LocalTask end = new LocalTaskImpl(newPartEndTaskKey(dataSource));
         end.setWorker(BaseWorker.nullWorker());
 
         // column index worker
-        int columnNumber = 0;
+        int columnNumber;
         if (DataSourceUtils.isAddColumn(dataSource)) {
             columnNumber = 1;
         } else {
@@ -54,7 +54,9 @@ public class TableBuilder extends BaseWorker {
             ColumnIndexer<?> indexer = new ColumnIndexer(dataSource, new ColumnKey(meta.getColumnName(i)));
 
             LocalTask indexTask = new LocalTaskImpl(new CubeTaskKey(
-                    String.format("%s.%s", meta.getTableName(), meta.getColumnName(i)),
+                    String.format("%s@%s.%s", meta.getTableName(),
+                            dataSource.getSourceKey().getId(),
+                            meta.getColumnName(i)),
                     Operation.INDEX_COLUMN));
             indexTask.setWorker(indexer);
             // link task
@@ -73,6 +75,14 @@ public class TableBuilder extends BaseWorker {
                 }
             }
         });
+    }
+
+    private static CubeTaskKey newPartStartTaskKey(DataSource ds) throws SwiftMetaDataException {
+        return new CubeTaskKey("part start of " + ds.getMetadata().getTableName() + "@" + ds.getSourceKey().getId(), Operation.BUILD_TABLE);
+    }
+
+    private static CubeTaskKey newPartEndTaskKey(DataSource ds) throws SwiftMetaDataException {
+        return new CubeTaskKey("part end of " + ds.getMetadata().getTableName() + "@" + ds.getSourceKey().getId(), Operation.BUILD_TABLE);
     }
 
     @Override
