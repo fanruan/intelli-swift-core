@@ -124,7 +124,6 @@ public class SwiftTableEngineExecutor implements FineTableEngineExecutor {
 
     @Override
     public EngineConfProduceData getConfPreResult(FineBusinessTable table) throws Exception {
-        //DataSource dataSource = IndexingDataSourceFactory.transformDataSource(table);
         FineBusinessTable preTable = ((EngineComplexConfTable) table).getBaseTableBySelected(0);
         List<FineOperator> operators = ((AbstractFineTable) table).getOperators();
         for (int i = 0; i < operators.size(); i++) {

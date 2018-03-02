@@ -25,8 +25,6 @@ import com.finebi.conf.internalimp.analysis.bean.operator.join.JoinBeanValue;
 import com.finebi.conf.internalimp.analysis.bean.operator.join.JoinNameItem;
 import com.finebi.conf.internalimp.analysis.bean.operator.select.SelectFieldBean;
 import com.finebi.conf.internalimp.analysis.bean.operator.select.SelectFieldBeanItem;
-import com.finebi.conf.internalimp.analysis.bean.operator.sort.SortBean;
-import com.finebi.conf.internalimp.analysis.bean.operator.sort.SortBeanItem;
 import com.finebi.conf.internalimp.analysis.bean.operator.trans.ColumnInitalItem;
 import com.finebi.conf.internalimp.analysis.bean.operator.trans.ColumnRowTransBean;
 import com.finebi.conf.internalimp.analysis.bean.operator.trans.ColumnTransValue;
@@ -67,7 +65,6 @@ import com.fr.swift.source.etl.join.JoinColumn;
 import com.fr.swift.source.etl.join.JoinOperator;
 import com.fr.swift.source.etl.selfrelation.OneUnionRelationOperator;
 import com.fr.swift.source.etl.selfrelation.TwoUnionRelationOperator;
-import com.fr.swift.source.etl.sort.ColumnSortOperator;
 import com.fr.swift.source.etl.union.UnionOperator;
 import com.fr.swift.source.etl.utils.ETLConstant;
 
@@ -83,8 +80,13 @@ import java.util.Map;
 class EtlAdaptor {
     static DataSource adaptEtlDataSource(FineBusinessTable table) throws Exception {
         FineAnalysisTable analysis = ((FineAnalysisTable) table);
-        if (analysis.getOperator().getType() == AnalysisType.SELECT_FIELD) {
+        FineOperator op = analysis.getOperator();
+        if (op.getType() == AnalysisType.SELECT_FIELD) {
             return adaptSelectField(analysis);
+        }
+        //排序没用，只能当作预览的属性和某些新增列的属性
+        if (op.getType() == AnalysisType.SORT){
+            return adaptEtlDataSource(analysis.getBaseTable());
         }
         List<DataSource> dataSources = new ArrayList<DataSource>();
         FineBusinessTable baseTable = analysis.getBaseTable();
@@ -92,7 +94,6 @@ class EtlAdaptor {
             if (baseTable != null) {
                 dataSources.add(IndexingDataSourceFactory.transformDataSource(baseTable));
             }
-            FineOperator op = analysis.getOperator();
             dataSources.addAll(fromOperator(op));
             return new ETLSource(dataSources, adaptEtlOperator(op, table));
         } catch (Exception e) {
@@ -305,8 +306,6 @@ class EtlAdaptor {
                 return fromColumnRowTransBean(op.<ColumnRowTransBean>getValue(), table);
             case AnalysisType.CONF_SELECT:
                 return fromConfSelectBean(op.<ConfSelectBean>getValue());
-            case AnalysisType.SORT:
-                return fromColumnSortedBean(op.<SortBean>getValue());
             case AnalysisType.ADD_COLUMN:
                 return fromAddNewColumnBean(op.<AddNewColumnBean>getValue());
             case AnalysisType.GROUP:
@@ -362,19 +361,6 @@ class EtlAdaptor {
             columnsList.add(columns.toArray(new ColumnKey[columns.size()]));
         }
         return new DetailOperator(columnsList, metas);
-    }
-
-    private static ColumnSortOperator fromColumnSortedBean(SortBean bean) throws FineEngineException {
-        List<SortBeanItem> sortBeanItemList = bean.getValue();
-        Map<String, Integer> fieldsSortedMap = new HashMap<String, Integer>();
-        for (SortBeanItem sortBeanItem : sortBeanItemList) {
-            fieldsSortedMap.put(sortBeanItem.getName(), sortBeanItem.getSortType());
-        }
-        if (fieldsSortedMap.isEmpty()) {
-            throw new FineAnalysisOperationUnSafe("");
-        }
-        ColumnSortOperator operator = new ColumnSortOperator(fieldsSortedMap);
-        return operator;
     }
 
     private static SumByGroupOperator fromSumByGroupBean(GroupBean bean) {

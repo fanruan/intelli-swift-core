@@ -105,7 +105,7 @@ public class SortSegmentDetailResultSet extends DetailResultSet {
         @Override
         public int compare(Row o1, Row o2) {
 
-            for (int i = 0; i < getColumnCount(); i++) {
+            for (int i = 0; i < sortIndex.size(); i++) {
                 int c = 0;
                 //比较的列先后顺序
                 int realColumn = sortIndex.get(i);
