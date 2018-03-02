@@ -1,6 +1,5 @@
 package com.fr.swift.query.group.impl;
 
-import com.fr.swift.segment.column.DictionaryEncodedColumn;
 import com.fr.swift.structure.array.IntList;
 import com.fr.swift.structure.array.IntListFactory;
 
@@ -11,10 +10,6 @@ import com.fr.swift.structure.array.IntListFactory;
  * 不分组规则 1个一组
  */
 public class NoGroupRule extends BaseGroupRule {
-    public NoGroupRule(DictionaryEncodedColumn<?> dictColumn) {
-        super(dictColumn);
-    }
-
     @Override
     public String getGroupName(int index) {
         return dictColumn.getValue(index).toString();
@@ -30,5 +25,10 @@ public class NoGroupRule extends BaseGroupRule {
     @Override
     public int newSize() {
         return dictColumn.size();
+    }
+
+    @Override
+    void initMap() {
+        // 不分组，直接用原来的映射关系
     }
 }

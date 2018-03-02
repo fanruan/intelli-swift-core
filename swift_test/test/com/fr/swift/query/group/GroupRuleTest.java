@@ -1,16 +1,17 @@
 package com.fr.swift.query.group;
 
+import com.fr.swift.query.group.impl.AutoGroupRule;
+import com.fr.swift.query.group.impl.AutoGroupRule.Partition;
 import com.fr.swift.query.group.impl.CustomGroupRule;
 import com.fr.swift.query.group.impl.CustomGroupRule.StringGroup;
 import com.fr.swift.query.group.impl.CustomNumGroupRule;
 import com.fr.swift.query.group.impl.CustomNumGroupRule.NumInterval;
 import com.fr.swift.segment.column.DictionaryEncodedColumn;
+import com.fr.swift.structure.array.IntList;
 import junit.framework.TestCase;
 
 import java.util.Arrays;
 import java.util.Comparator;
-
-import static com.fr.swift.query.group.impl.CustomGroupRule.UNGROUPED;
 
 /**
  * @author anchore
@@ -18,8 +19,13 @@ import static com.fr.swift.query.group.impl.CustomGroupRule.UNGROUPED;
  */
 public class GroupRuleTest extends TestCase {
     public void testCustomGroupRule() {
-        GroupRule rule = new CustomGroupRule(new BaseDictTestColumn<String>() {
-            Object[] values = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+        GroupRule rule = new CustomGroupRule(Arrays.asList(
+                new StringGroup("g0", Arrays.asList("1", "2", "3")),
+                new StringGroup("g1", Arrays.asList("5", "6")),
+                new StringGroup("ungrouped", Arrays.asList("4", "7", "8", "9", "10"))
+        ));
+        rule.setOriginDict(new BaseDictTestColumn<String>() {
+            String[] values = {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10"};
 
             @Override
             public int size() {
@@ -28,19 +34,15 @@ public class GroupRuleTest extends TestCase {
 
             @Override
             public String getValue(int index) {
-                return values[index].toString();
+                return values[index];
             }
-        }, Arrays.asList(
-                new StringGroup("g0", Arrays.asList("1", "2", "3")),
-                new StringGroup("g1", Arrays.asList("5", "6")),
-                new StringGroup(UNGROUPED, Arrays.asList("4", "7", "8", "9", "10"))
-        ), false);
+        });
 
         assertEquals(3, rule.newSize());
 
         assertEquals("g0", rule.getGroupName(0));
         assertEquals("g1", rule.getGroupName(1));
-        assertEquals(UNGROUPED, rule.getGroupName(2));
+        assertEquals("ungrouped", rule.getGroupName(2));
 
         assertEquals(0, rule.map(0).get(0));
         assertEquals(1, rule.map(0).get(1));
@@ -57,98 +59,162 @@ public class GroupRuleTest extends TestCase {
     }
 
     public void testCustomNumGroupRule() {
-        GroupRule rule = new CustomNumGroupRule(new BaseDictTestColumn<Number>() {
+        GroupRule rule = new CustomNumGroupRule(Arrays.asList(
+                new NumInterval("g0", 0, true, 2.1, false),
+                new NumInterval("g1", 4, true, 6, false),
+                new NumInterval("g2", 7, true, 10, false)
+        ), "ungrouped");
+        rule.setOriginDict(new BaseDictTestColumn<Number>() {
+            Number[] numbers = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+
             @Override
             public int size() {
-
+                return numbers.length;
             }
 
             @Override
             public Number getValue(int index) {
-
+                return numbers[index];
             }
-        }, Arrays.asList(
-                new NumInterval("g0", 0, true, 2.1, false),
-                new NumInterval("g0", 2.1, true, 2.1, false),
-                new NumInterval("g0", 0, true, 2.1, false)
-        ));
-    }
-}
+        });
+        assertEquals(4, rule.newSize());
 
-class BaseDictTestColumn<T> implements DictionaryEncodedColumn<T> {
+        assertEquals("g0", rule.getGroupName(0));
+        assertEquals("g1", rule.getGroupName(1));
+        assertEquals("g2", rule.getGroupName(2));
+        assertEquals("ungrouped", rule.getGroupName(3));
 
-    @Override
-    public void putSize(int size) {
+        IntList l0 = rule.map(0);
+        assertEquals(2, l0.size());
+        assertEquals(0, l0.get(0));
+        assertEquals(1, l0.get(1));
 
-    }
+        IntList l1 = rule.map(1);
+        assertEquals(2, l1.size());
+        assertEquals(3, l1.get(0));
+        assertEquals(4, l1.get(1));
 
-    @Override
-    public int size() {
-        return 0;
-    }
+        IntList l2 = rule.map(2);
+        assertEquals(3, l2.size());
+        assertEquals(6, l2.get(0));
+        assertEquals(7, l2.get(1));
+        assertEquals(8, l2.get(2));
 
-    @Override
-    public void putGlobalSize(int globalSize) {
-
-    }
-
-    @Override
-    public int globalSize() {
-        return 0;
-    }
-
-    @Override
-    public void putValue(int index, T val) {
-
+        IntList l3 = rule.map(3);
+        assertEquals(3, l3.size());
+        assertEquals(2, l3.get(0));
+        assertEquals(5, l3.get(1));
+        assertEquals(9, l3.get(2));
     }
 
-    @Override
-    public T getValue(int index) {
-        return null;
+    public void testAutoGroupRule() {
+        GroupRule rule = new AutoGroupRule(new Partition(1, 10, 4));
+        rule.setOriginDict(new BaseDictTestColumn<Number>() {
+            Number[] numbers = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+
+            @Override
+            public int size() {
+                return numbers.length;
+            }
+
+            @Override
+            public Number getValue(int index) {
+                return numbers[index];
+            }
+        });
+        assertEquals(3, rule.newSize());
+
+        assertEquals("1 - 5", rule.getGroupName(0));
+        assertEquals("5 - 9", rule.getGroupName(1));
+        assertEquals("9 - 10", rule.getGroupName(2));
+
+        IntList l0 = rule.map(0);
+        assertEquals(4, l0.size());
+        assertEquals(0, l0.get(0));
+        assertEquals(1, l0.get(1));
+        assertEquals(2, l0.get(2));
+        assertEquals(3, l0.get(3));
+
+        IntList l1 = rule.map(1);
+        assertEquals(4, l1.size());
+        assertEquals(4, l1.get(0));
+        assertEquals(5, l1.get(1));
+        assertEquals(6, l1.get(2));
+        assertEquals(7, l1.get(3));
+
+        IntList l2 = rule.map(2);
+        assertEquals(2, l2.size());
+        assertEquals(8, l2.get(0));
+        assertEquals(9, l2.get(1));
     }
 
-    @Override
-    public int getIndex(Object value) {
-        return 0;
-    }
+    private static class BaseDictTestColumn<T> implements DictionaryEncodedColumn<T> {
+        @Override
+        public void putSize(int size) {
+        }
 
-    @Override
-    public void putIndex(int row, int index) {
+        @Override
+        public int size() {
+            return 0;
+        }
 
-    }
+        @Override
+        public void putGlobalSize(int globalSize) {
+        }
 
-    @Override
-    public int getIndexByRow(int row) {
-        return 0;
-    }
+        @Override
+        public int globalSize() {
+            return 0;
+        }
 
-    @Override
-    public void putGlobalIndex(int index, int globalIndex) {
+        @Override
+        public void putValue(int index, T val) {
+        }
 
-    }
+        @Override
+        public T getValue(int index) {
+            return null;
+        }
 
-    @Override
-    public int getGlobalIndexByIndex(int index) {
-        return 0;
-    }
+        @Override
+        public int getIndex(Object value) {
+            return 0;
+        }
 
-    @Override
-    public int getGlobalIndexByRow(int row) {
-        return 0;
-    }
+        @Override
+        public void putIndex(int row, int index) {
+        }
 
-    @Override
-    public Comparator<T> getComparator() {
-        return null;
-    }
+        @Override
+        public int getIndexByRow(int row) {
+            return 0;
+        }
 
-    @Override
-    public void flush() {
+        @Override
+        public void putGlobalIndex(int index, int globalIndex) {
+        }
 
-    }
+        @Override
+        public int getGlobalIndexByIndex(int index) {
+            return 0;
+        }
 
-    @Override
-    public void release() {
+        @Override
+        public int getGlobalIndexByRow(int row) {
+            return 0;
+        }
 
+        @Override
+        public Comparator<T> getComparator() {
+            return null;
+        }
+
+        @Override
+        public void flush() {
+        }
+
+        @Override
+        public void release() {
+        }
     }
 }

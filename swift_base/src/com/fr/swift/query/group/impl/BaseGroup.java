@@ -29,6 +29,7 @@ abstract class BaseGroup implements Group {
         return new BaseGroupOperator() {
             @Override
             public Column<String> group(Column<?> column) {
+                rule.setOriginDict(column.getDictionaryEncodedColumn());
                 return new GroupColumn(column.getBitmapIndex(), rule);
             }
         };

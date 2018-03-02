@@ -1,5 +1,6 @@
 package com.fr.swift.query.group;
 
+import com.fr.swift.segment.column.DictionaryEncodedColumn;
 import com.fr.swift.structure.array.IntList;
 
 /**
@@ -25,4 +26,9 @@ public interface GroupRule {
      * @return 新分组大小
      */
     int newSize();
+
+    /**
+     * @param dict 原始分组
+     */
+    void setOriginDict(DictionaryEncodedColumn<?> dict);
 }

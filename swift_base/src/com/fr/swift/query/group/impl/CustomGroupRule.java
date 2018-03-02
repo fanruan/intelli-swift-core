@@ -1,6 +1,5 @@
 package com.fr.swift.query.group.impl;
 
-import com.fr.swift.segment.column.DictionaryEncodedColumn;
 import com.fr.swift.structure.array.IntList;
 import com.fr.swift.structure.array.IntListFactory;
 import com.fr.swift.util.Crasher;
@@ -12,24 +11,17 @@ import java.util.Map;
 /**
  * @author anchore
  * @date 2018/2/28
+ * <p>
+ * 字符串自定义分组规则
  */
 public class CustomGroupRule extends BaseGroupRule {
-    public static final String UNGROUPED = "UNGROUPED";
-
     private List<StringGroup> groups;
-    /**
-     * 是否未分组的分到“其他”
-     */
-    private boolean hasOtherGroup;
 
     private Map<Integer, IntList> map = new HashMap<Integer, IntList>();
 
-    public CustomGroupRule(DictionaryEncodedColumn<String> dictColumn, List<StringGroup> groups, boolean hasOtherGroup) {
-        super(dictColumn);
+    public CustomGroupRule(List<StringGroup> groups) {
+        super();
         this.groups = groups;
-        this.hasOtherGroup = hasOtherGroup;
-
-        initMap();
     }
 
     @Override
@@ -42,7 +34,8 @@ public class CustomGroupRule extends BaseGroupRule {
         return map.get(index);
     }
 
-    private void initMap() {
+    @Override
+    void initMap() {
         for (int i = 0; i < dictColumn.size(); i++) {
             String val = (String) dictColumn.<String>getValue(i);
             int index = findIndex(val);
@@ -80,7 +73,7 @@ public class CustomGroupRule extends BaseGroupRule {
             this.values = values;
         }
 
-        boolean contains(Object o) {
+        boolean contains(String o) {
             return values.contains(o);
         }
     }

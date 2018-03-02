@@ -2,6 +2,7 @@ package com.fr.swift.adaptor.cal;
 
 import com.finebi.conf.internalimp.bean.dashboard.widget.dimension.group.number.auto.NumberAutoGroupValueBean;
 import com.finebi.conf.internalimp.bean.dashboard.widget.dimension.group.number.custom.NumberCustomGroupNodeBean;
+import com.finebi.conf.internalimp.bean.dashboard.widget.dimension.group.number.custom.NumberCustomGroupValueBean;
 import com.finebi.conf.internalimp.bean.dashboard.widget.dimension.group.string.StringCustomDetailsBean;
 import com.finebi.conf.internalimp.bean.dashboard.widget.dimension.group.string.StringCustomDetailsItemBean;
 import com.finebi.conf.internalimp.bean.dashboard.widget.dimension.group.string.StringCustomGroupBean;
@@ -23,9 +24,8 @@ import com.fr.swift.query.group.impl.CustomNumGroupRule.NumInterval;
 import com.fr.swift.query.group.impl.NoGroupRule;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
-
-import static com.fr.swift.query.group.impl.CustomGroupRule.UNGROUPED;
 
 /**
  * @author pony
@@ -46,7 +46,7 @@ public class GroupAdaptor {
                 groupRule = newCustomRule(dimGroup);
                 break;
             default:
-                groupRule = new NoGroupRule(null);
+                groupRule = new NoGroupRule();
         }
         return Groups.newGroup(type, groupRule);
     }
@@ -65,22 +65,31 @@ public class GroupAdaptor {
         }
 
         // 处理未分组的值
-        List<String> ungroupedValues = new ArrayList<String>();
-        for (StringCustomUnGroupValueBean ungroupedBean : bean.getUnGroup()) {
-            ungroupedValues.add(ungroupedBean.getValue());
-        }
         // fixme 要通过ungroup2Other判断的 等andrew改
         boolean hasOtherGroup = bean.getUnGroup2OtherName() == null;
-        StringGroup ungrouped = new StringGroup(hasOtherGroup ? UNGROUPED : bean.getUnGroup2OtherName(), ungroupedValues);
-        stringGroups.add(ungrouped);
 
-        return new CustomGroupRule(null, stringGroups, hasOtherGroup);
+        if (hasOtherGroup) {
+            // 有其他组则全部分到其他
+            List<String> ungroupedValues = new ArrayList<String>();
+            for (StringCustomUnGroupValueBean ungroupedBean : bean.getUnGroup()) {
+                ungroupedValues.add(ungroupedBean.getValue());
+            }
+            stringGroups.add(new StringGroup(bean.getUnGroup2OtherName(), ungroupedValues));
+        } else {
+            // 无其他组则一个一组
+            for (StringCustomUnGroupValueBean ungroupedBean : bean.getUnGroup()) {
+                String value = ungroupedBean.getValue();
+                stringGroups.add(new StringGroup(value, Collections.singletonList(value)));
+            }
+        }
+
+        return new CustomGroupRule(stringGroups);
     }
 
     private static GroupRule newCustomNumberRule(FineDimensionGroup dimGroup) {
-        List<NumberCustomGroupNodeBean> beans = ((NumberDimensionCustomGroup) dimGroup).getValue().getGroupValue().getGroupNodes();
+        NumberCustomGroupValueBean groupValue = ((NumberDimensionCustomGroup) dimGroup).getValue().getGroupValue();
+        List<NumberCustomGroupNodeBean> beans = groupValue.getGroupNodes();
 
-        // fixme 未分组的分到“其他”
         List<NumInterval> intervals = new ArrayList<NumInterval>(beans.size());
         for (NumberCustomGroupNodeBean bean : beans) {
             intervals.add(new NumInterval(bean.getGroupName(),
@@ -88,11 +97,11 @@ public class GroupAdaptor {
                     bean.getMax(), bean.isCloseMax()));
         }
 
-        return new CustomNumGroupRule(null, intervals);
+        return new CustomNumGroupRule(intervals, groupValue.getUseOther());
     }
 
     private static GroupRule newAutoRule(FineDimensionGroup group) {
         NumberAutoGroupValueBean bean = ((NumberDimensionAutoGroup) group).getValue().getGroupValue();
-        return new AutoGroupRule(null, new Partition(bean.getMin(), bean.getMax(), bean.getGroupInterval()));
+        return new AutoGroupRule(new Partition(bean.getMin(), bean.getMax(), bean.getGroupInterval()));
     }
 }
