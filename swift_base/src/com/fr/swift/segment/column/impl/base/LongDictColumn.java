@@ -47,6 +47,11 @@ public class LongDictColumn extends BaseDictColumn<Long> {
     }
 
     @Override
+    public Long convertValue(Object value) {
+        return ((Number) value).longValue();
+    }
+
+    @Override
     public void putValue(int index, Long val) {
         initKeyWriter();
         keyWriter.put(index, val);

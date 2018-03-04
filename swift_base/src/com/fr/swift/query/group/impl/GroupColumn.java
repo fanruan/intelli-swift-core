@@ -120,6 +120,11 @@ class GroupColumn implements Column<String> {
         }
 
         @Override
+        public String convertValue(Object value) {
+            return value.toString();
+        }
+
+        @Override
         public void flush() {
         }
 

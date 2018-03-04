@@ -9,7 +9,11 @@ import com.fr.swift.source.SwiftMetaDataColumn;
 import com.fr.swift.source.etl.AbstractOperator;
 import com.fr.swift.source.etl.OperatorType;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Handsome on 2018/1/19 0019 09:59

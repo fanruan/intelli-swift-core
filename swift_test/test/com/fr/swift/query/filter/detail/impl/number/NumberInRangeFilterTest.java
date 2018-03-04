@@ -15,29 +15,53 @@ import java.util.stream.IntStream;
 /**
  * Created by Lyon on 2017/12/1.
  */
-public abstract class NumberInRangeFilterTest extends BaseNumberFilterTest {
+public class NumberInRangeFilterTest extends BaseNumberFilterTest {
 
-    protected static Class[] intType = new Class[] { int.class, int.class, int.class, boolean.class, boolean.class, Column.class };
-    protected static Class[] doubleType = new Class[] { int.class, double.class, double.class, boolean.class, boolean.class, Column.class };
-    protected static Class[] longType = new Class[] { int.class, long.class, long.class, boolean.class, boolean.class, Column.class };
+    static Class[] doubleType = new Class[] { int.class, Double.class, Double.class, boolean.class, boolean.class, Column.class };
 
     private Number min;
     private Number max;
     private boolean minIncluded = true;
     private boolean maxIncluded = true;
-    private Class<? extends DetailFilter> filterClass;
-    private List<Class> parameters;
+    protected Class<? extends DetailFilter> filterClass;
+    private List<Class> parameters = new ArrayList<>(Arrays.asList(doubleType));
     private List<Range> ranges = new ArrayList<>();
 
-    public NumberInRangeFilterTest(List<? extends Number> details,
-                                   Class<? extends DetailFilter> filterClass, Class[] parameters, Column column) {
+    @Override
+    public void setUp() throws Exception {
+        this.filterClass = NumberInRangeFilter.class;
+    }
+
+    private void prepare(List<? extends Number> details,
+                         Class<? extends DetailFilter> filterClass, Column column) {
         this.details = details;
         this.filterClass = filterClass;
-        this.parameters = new ArrayList<>(Arrays.asList(parameters));
         this.column = column;
     }
 
-    public void testMinGroupExisting() {
+    public void testIntColumn() {
+        prepare(intDetails, filterClass, intColumn);
+        start();
+    }
+
+    public void testDoubleColumn() {
+        prepare(doubleDetails, filterClass, doubleColumn);
+        start();
+    }
+
+    public void testLongColumn() {
+        prepare(longDetails, filterClass, longColumn);
+        start();
+    }
+
+    private void start() {
+        minGroupExisting();
+        minGroupNotExisting();
+        minOutOfRange();
+        maxOutOfRange();
+    }
+
+    private void minGroupExisting() {
         ranges.clear();
         min = getRandomGroup();
         max = getGreaterGroup(min);
@@ -47,7 +71,7 @@ public abstract class NumberInRangeFilterTest extends BaseNumberFilterTest {
         performTest();
     }
 
-    public void testMinGroupNotExisting() {
+    private void minGroupNotExisting() {
         ranges.clear();
         min = getRandomNotExistGroup();
         max = getGreaterGroup(min);
@@ -57,7 +81,7 @@ public abstract class NumberInRangeFilterTest extends BaseNumberFilterTest {
         performTest();
     }
 
-    public void testMinOutOfRange() {
+    private void minOutOfRange() {
         ranges.clear();
         int leftOffset = -20000;
         int rightOffset = 10000;
@@ -69,7 +93,7 @@ public abstract class NumberInRangeFilterTest extends BaseNumberFilterTest {
         performTest();
     }
 
-    public void testMaxOutOfRange() {
+    private void maxOutOfRange() {
         ranges.clear();
         int leftOffset = -20000;
         int rightOffset = 10000;
@@ -205,14 +229,14 @@ public abstract class NumberInRangeFilterTest extends BaseNumberFilterTest {
     }
 
     private static class Range {
-        Number min;
-        Number max;
+        double min;
+        double max;
         boolean minIncluded;
         boolean maxIncluded;
 
         public Range(Number min, Number max, boolean minIncluded, boolean maxIncluded) {
-            this.min = min;
-            this.max = max;
+            this.min = min.doubleValue();
+            this.max = max.doubleValue();
             this.minIncluded = minIncluded;
             this.maxIncluded = maxIncluded;
         }

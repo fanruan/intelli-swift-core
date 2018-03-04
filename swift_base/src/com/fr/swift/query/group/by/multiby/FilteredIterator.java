@@ -62,9 +62,9 @@ public class FilteredIterator<T> implements Iterator<T> {
     public void remove() {
         throw new UnsupportedOperationException();
     }
-}
 
-interface Filter<T> {
+    public interface Filter<T> {
 
-    boolean matches(T element);
+        boolean matches(T element);
+    }
 }

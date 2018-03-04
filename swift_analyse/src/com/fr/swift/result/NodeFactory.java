@@ -1,6 +1,5 @@
 package com.fr.swift.result;
 
-import com.fr.swift.mapreduce.KeyValue;
 import com.fr.swift.query.aggregator.AggregatorValue;
 import com.fr.swift.query.sort.Sort;
 import com.fr.swift.query.sort.SortType;
@@ -19,14 +18,15 @@ import java.util.TreeMap;
  */
 public class NodeFactory {
 
-    public static Node createNode(RowResultCollector collector) {
+    // TODO: 2018/2/26 把这边的递归全部改为循环，使用stack之类的数据结构来替换递归 
+    public static Node createNode(GroupByResultSet collector) {
         // 这边先假设没有指标排序，同时不考虑分页截断多余数据
         List<Sort> indexSorts = collector.getIndexSorts();
         assert indexSorts != null;
         Map<RowIndexKey, AggregatorValue[]> rows =
                 new TreeMap<RowIndexKey, AggregatorValue[]>(new RowIndexKeyComparator(indexSorts));
         Map<RowIndexKey, AggregatorValue[]> sumRows = new HashMap<RowIndexKey, AggregatorValue[]>();
-        Iterator<KeyValue<RowIndexKey, AggregatorValue[]>> iterator = collector.getRowResult().iterator();
+        Iterator<KeyValue<RowIndexKey, AggregatorValue[]>> iterator = null;
         KeyValue<RowIndexKey, AggregatorValue[]> keyValue = null;
         while (iterator.hasNext()) {
             keyValue = iterator.next();

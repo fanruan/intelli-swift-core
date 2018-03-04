@@ -1,8 +1,6 @@
 package com.fr.swift.bitmap.impl;
 
-import com.fr.swift.bitmap.BitMaps;
 import com.fr.swift.bitmap.ImmutableBitMap;
-import com.fr.swift.bitmap.MutableBitMap;
 import com.fr.swift.bitmap.roaringbitmap.buffer.ImmutableRoaringBitmap;
 import com.fr.swift.bitmap.roaringbitmap.buffer.MutableRoaringBitmap;
 import com.fr.swift.bitmap.traversal.BreakTraversalAction;

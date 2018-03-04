@@ -489,7 +489,7 @@ class EtlAdaptor {
     }
 
     private static ColumnFilterOperator fromColumnFilterBean(FilterOperatorBean bean) {
-        FilterInfo filterInfo = FilterFactory.transformFilter(bean.getValue());
+        FilterInfo filterInfo = FilterInfoFactory.transformFilter(bean.getValue());
         return new ColumnFilterOperator(filterInfo);
     }
 

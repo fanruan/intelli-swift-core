@@ -16,6 +16,11 @@ public class RowIndexKey {
         Arrays.fill(indexes, -1);
     }
 
+    public RowIndexKey(int[] indexes, boolean isSum) {
+        this.indexes = indexes;
+        this.isSum = isSum;
+    }
+
     public void setValue(int index, int value) {
         indexes[index] = value;
     }

@@ -1,8 +1,8 @@
 package com.fr.swift.creater;
 
 import com.fr.swift.source.DataSource;
-import com.fr.swift.source.SourcePath;
 import com.fr.swift.source.IRelationSource;
+import com.fr.swift.source.SourcePath;
 
 /**
  * This class created on 2017-11-29.

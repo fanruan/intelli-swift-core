@@ -1,7 +1,6 @@
 package com.fr.swift.source.etl.utils;
 
 import com.fr.swift.bitmap.ImmutableBitMap;
-import com.fr.swift.bitmap.MutableBitMap;
 import com.fr.swift.bitmap.impl.AllShowBitMap;
 import com.fr.swift.query.group.Group;
 import com.fr.swift.query.group.by.GroupBy;

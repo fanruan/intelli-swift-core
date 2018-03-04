@@ -22,8 +22,8 @@ public class SwiftDetailFilterValue<T> {
         return fieldName;
     }
 
-    public <T> T getFilterValue() {
-        return (T)filterValue;
+    public T getFilterValue() {
+        return filterValue;
     }
 
     public SwiftDetailFilterType getType() {

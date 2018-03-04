@@ -12,6 +12,7 @@ import static com.fr.swift.cube.io.IOConstant.NULL_DOUBLE;
 import static com.fr.swift.cube.io.IOConstant.NULL_INT;
 import static com.fr.swift.cube.io.IOConstant.NULL_LONG;
 
+
 /**
  * @author Xiaolei.liu
  */

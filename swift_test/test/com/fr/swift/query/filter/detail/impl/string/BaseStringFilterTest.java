@@ -19,7 +19,13 @@ import java.util.stream.IntStream;
 public abstract class BaseStringFilterTest extends BaseFilterTest {
 
     protected static List<String> words = prepareWords(100);
-    protected static Column wordsColumn = new ColumnImplTest(words, Comparator.naturalOrder(), NULL_VALUE);
+//    protected static Column wordsColumn = new ColumnImplTest(words, Comparator.naturalOrder(), NULL_VALUE);
+    protected static Column wordsColumn = new ColumnImplTest(words, Comparator.naturalOrder(), NULL_VALUE) {
+    @Override
+    protected Object convertValue(Object value) {
+        return value;
+    }
+};
 
     protected List<String> details;
     protected Column column;

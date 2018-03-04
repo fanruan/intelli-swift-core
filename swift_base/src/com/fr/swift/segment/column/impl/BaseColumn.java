@@ -6,8 +6,6 @@ import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.DictionaryEncodedColumn;
 import com.fr.swift.segment.column.impl.base.BitMapColumn;
 
-import java.util.Comparator;
-
 /**
  * @author anchore
  * @date 2017/11/30

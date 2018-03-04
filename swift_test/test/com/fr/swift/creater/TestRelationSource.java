@@ -1,7 +1,7 @@
 package com.fr.swift.creater;
 
-import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.IRelationSource;
+import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.core.Core;
 
 import java.util.List;

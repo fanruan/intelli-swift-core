@@ -4,7 +4,6 @@ import com.finebi.conf.structure.bean.field.FineBusinessField;
 import com.finebi.conf.structure.result.BIDetailCell;
 import com.finebi.conf.structure.result.BIDetailTableResult;
 import com.fr.base.FRContext;
-import com.fr.data.core.db.TableProcedure;
 import com.fr.dav.LocalEnv;
 import com.fr.swift.adaptor.executor.SwiftDBEngineExecutor;
 import com.fr.swift.provider.ConnectionProvider;

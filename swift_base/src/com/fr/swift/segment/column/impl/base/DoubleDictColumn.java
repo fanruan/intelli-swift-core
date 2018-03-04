@@ -72,4 +72,9 @@ public class DoubleDictColumn extends BaseDictColumn<Double> {
         initKeyWriter();
         keyWriter.put(index, val);
     }
+
+    @Override
+    public Double convertValue(Object value) {
+        return ((Number) value).doubleValue();
+    }
 }

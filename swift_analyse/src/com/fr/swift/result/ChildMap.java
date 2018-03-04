@@ -22,7 +22,6 @@ public class ChildMap<T> {
         return list.size();
     }
 
-
     @Override
     @SuppressWarnings("unchecked")
     public Object clone() throws CloneNotSupportedException {

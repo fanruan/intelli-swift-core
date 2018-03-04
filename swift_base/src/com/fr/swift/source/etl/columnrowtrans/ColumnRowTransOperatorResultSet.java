@@ -14,7 +14,11 @@ import com.fr.swift.source.etl.utils.GroupValueIterator;
 import com.fr.swift.source.etl.utils.SwiftValuesAndGVI;
 
 import java.sql.SQLException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Handsome on 2018/1/23 0023 14:16
