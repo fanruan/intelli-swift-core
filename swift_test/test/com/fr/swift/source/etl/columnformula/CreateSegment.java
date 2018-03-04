@@ -98,6 +98,11 @@ public class CreateSegment {
             public void release() {
 
             }
+
+            @Override
+            public boolean isHistory() {
+                return false;
+            }
         };
     }
 }

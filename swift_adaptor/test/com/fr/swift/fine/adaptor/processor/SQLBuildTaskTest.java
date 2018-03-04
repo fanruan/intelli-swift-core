@@ -1,15 +1,15 @@
 package com.fr.swift.fine.adaptor.processor;
 
 import com.finebi.base.constant.FineEngineType;
+import com.finebi.conf.internalimp.basictable.table.FineSQLBusinessTable;
 import com.finebi.conf.internalimp.connection.FineConnectionImp;
-import com.finebi.conf.internalimp.table.FineSQLBusinessTable;
 import com.finebi.conf.structure.bean.connection.FineConnection;
 import com.finebi.conf.structure.bean.table.FineBusinessTable;
 import com.finebi.conf.structure.result.BIDetailTableResult;
 import com.finebi.conf.utils.FineConnectionUtils;
 import com.fr.base.FRContext;
 import com.fr.dav.LocalEnv;
-import com.fr.swift.adaptor.model.SwiftSQLEngineExecutor;
+import com.fr.swift.adaptor.executor.SwiftTableEngineExecutor;
 import com.fr.swift.adaptor.update.SwiftUpdateManager;
 import com.fr.swift.manager.ProviderTaskManager;
 import com.fr.swift.provider.ConnectionProvider;
@@ -49,17 +49,17 @@ public class SQLBuildTaskTest extends TestCase {
         manager.saveUpdateSetting(null, fineBusinessTable);
 
         Thread.sleep(10000l);
-        SwiftSQLEngineExecutor executor = new SwiftSQLEngineExecutor();
-        BIDetailTableResult result = executor.getRealData(fineBusinessTable, 1000);
+        SwiftTableEngineExecutor executor = new SwiftTableEngineExecutor();
+        BIDetailTableResult result = executor.getPreviewData(fineBusinessTable, 100);
         assertTrue(true);
         assertEquals(result.columnSize(), 4);
-        assertEquals(result.rowSize(), 682);
+//        assertEquals(result.rowSize(), 682);
 
         int count = 0;
         while (result.hasNext()) {
             result.next();
             count++;
         }
-        assertEquals(count, 682);
+        assertEquals(count, 100);
     }
 }

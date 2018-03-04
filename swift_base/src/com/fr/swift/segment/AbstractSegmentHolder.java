@@ -24,7 +24,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * @description
  * @since Advanced FineBI Analysis 1.0
  */
-public abstract class AbstractSegmentHolder implements ISegmentHolder {
+public abstract class AbstractSegmentHolder implements SegmentHolder {
 
     protected Segment segment;
     protected Types.StoreType storeType;

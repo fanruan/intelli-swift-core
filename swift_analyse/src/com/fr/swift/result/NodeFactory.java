@@ -14,7 +14,8 @@ import java.util.Map;
 import java.util.TreeMap;
 
 /**
- * Created by Lyon on 18-1-1.
+ * @author Lyon
+ * @date 18-1-1
  */
 public class NodeFactory {
 

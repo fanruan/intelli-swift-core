@@ -25,8 +25,6 @@ import com.finebi.conf.internalimp.analysis.bean.operator.join.JoinBeanValue;
 import com.finebi.conf.internalimp.analysis.bean.operator.join.JoinNameItem;
 import com.finebi.conf.internalimp.analysis.bean.operator.select.SelectFieldBean;
 import com.finebi.conf.internalimp.analysis.bean.operator.select.SelectFieldBeanItem;
-import com.finebi.conf.internalimp.analysis.bean.operator.sort.SortBean;
-import com.finebi.conf.internalimp.analysis.bean.operator.sort.SortBeanItem;
 import com.finebi.conf.internalimp.analysis.bean.operator.trans.ColumnInitalItem;
 import com.finebi.conf.internalimp.analysis.bean.operator.trans.ColumnRowTransBean;
 import com.finebi.conf.internalimp.analysis.bean.operator.trans.ColumnTransValue;
@@ -42,9 +40,9 @@ import com.finebi.conf.structure.bean.table.FineBusinessTable;
 import com.finebi.conf.structure.conf.base.EngineComplexConfTable;
 import com.finebi.conf.utils.FineTableUtils;
 import com.fr.general.ComparatorUtils;
+import com.fr.swift.adaptor.widget.group.GroupTypeAdaptor;
 import com.fr.swift.exception.meta.SwiftMetaDataException;
 import com.fr.swift.query.filter.info.FilterInfo;
-import com.fr.swift.query.group.GroupType;
 import com.fr.swift.query.group.impl.GroupImpl;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.source.DataSource;
@@ -67,7 +65,6 @@ import com.fr.swift.source.etl.join.JoinColumn;
 import com.fr.swift.source.etl.join.JoinOperator;
 import com.fr.swift.source.etl.selfrelation.OneUnionRelationOperator;
 import com.fr.swift.source.etl.selfrelation.TwoUnionRelationOperator;
-import com.fr.swift.source.etl.sort.ColumnSortOperator;
 import com.fr.swift.source.etl.union.UnionOperator;
 import com.fr.swift.source.etl.utils.ETLConstant;
 
@@ -83,64 +80,20 @@ import java.util.Map;
 class EtlAdaptor {
     static DataSource adaptEtlDataSource(FineBusinessTable table) throws Exception {
         FineAnalysisTable analysis = ((FineAnalysisTable) table);
+        FineOperator op = analysis.getOperator();
+        if (op.getType() == AnalysisType.SELECT_FIELD) {
+            return adaptSelectField(analysis);
+        }
+        //排序没用，只能当作预览的属性和某些新增列的属性
+        if (op.getType() == AnalysisType.SORT){
+            return adaptEtlDataSource(analysis.getBaseTable());
+        }
         List<DataSource> dataSources = new ArrayList<DataSource>();
         FineBusinessTable baseTable = analysis.getBaseTable();
-        if (baseTable != null) {
-            dataSources.add(IndexingDataSourceFactory.transformDataSource(baseTable));
-        } else if (analysis.getOperator().getType() == AnalysisType.SELECT_FIELD) {
-            Map<String, List<ColumnKey>> sourceKeyColumnMap = new LinkedHashMap<String, List<ColumnKey>>();
-            Map<String, DataSource> sourceKeyDataSourceMap = new LinkedHashMap<String, DataSource>();
-            SelectFieldOperator selectFieldOperator = analysis.getOperator();
-            List<SelectFieldBeanItem> selectFieldBeanItemList = selectFieldOperator.getValue().getValue();
-            for (SelectFieldBeanItem selectFieldBeanItem : selectFieldBeanItemList) {
-                FineBusinessTable fineBusinessTable = FineTableUtils.getTableByFieldId(selectFieldBeanItem.getField());
-                FineBusinessField fineBusinessField = fineBusinessTable.getFieldByFieldId(selectFieldBeanItem.getField());
-                DataSource baseDataSource = IndexingDataSourceFactory.transformDataSource(fineBusinessTable);
-
-                if (sourceKeyColumnMap.containsKey(baseDataSource.getSourceKey().getId())) {
-                    sourceKeyColumnMap.get(baseDataSource.getSourceKey().getId()).add(new ColumnKey(fineBusinessField.getName()));
-                } else {
-                    sourceKeyColumnMap.put(baseDataSource.getSourceKey().getId(), new ArrayList<ColumnKey>());
-                    sourceKeyColumnMap.get(baseDataSource.getSourceKey().getId()).add(new ColumnKey(fineBusinessField.getName()));
-                }
-                if (!sourceKeyDataSourceMap.containsKey(baseDataSource.getSourceKey().getId())) {
-                    sourceKeyDataSourceMap.put(baseDataSource.getSourceKey().getId(), baseDataSource);
-                }
-            }
-            List<DataSource> baseDatas = new ArrayList<DataSource>();
-            List<SwiftMetaData> swiftMetaDatas = new ArrayList<SwiftMetaData>();
-            List<ColumnKey[]> fields = new ArrayList<ColumnKey[]>();
-
-            if (analysis.getBaseTable() != null) {
-                baseDatas.add(IndexingDataSourceFactory.transformDataSource(analysis.getBaseTable()));
-            }
-
-            for (Map.Entry<String, List<ColumnKey>> entry : sourceKeyColumnMap.entrySet()) {
-                DataSource dataSource = sourceKeyDataSourceMap.get(entry.getKey());
-                baseDatas.add(dataSource);
-                swiftMetaDatas.add(dataSource.getMetadata());
-                fields.add(entry.getValue().toArray(new ColumnKey[entry.getValue().size()]));
-            }
-            ETLOperator operator = new DetailOperator(fields, swiftMetaDatas);
-            Map<Integer, String> fieldsInfo = new HashMap<Integer, String>();
-            ETLSource etlSource = new ETLSource(baseDatas, operator);
-            for (ColumnKey[] columnKeys : fields) {
-                for (ColumnKey columnKey : columnKeys) {
-                    int index = etlSource.getMetadata().getColumnIndex(columnKey.getName());
-                    fieldsInfo.put(index, columnKey.getName());
-                }
-            }
-            ETLSource dataSource = new ETLSource(baseDatas, operator, fieldsInfo);
-            return dataSource;
-        }
-//        if (analysis.getOperator().getType() == AnalysisType.SELECT_FIELD) {
-//            return adaptSelectField(analysis);
-//        }
         try {
             if (baseTable != null) {
                 dataSources.add(IndexingDataSourceFactory.transformDataSource(baseTable));
             }
-            FineOperator op = analysis.getOperator();
             dataSources.addAll(fromOperator(op));
             return new ETLSource(dataSources, adaptEtlOperator(op, table));
         } catch (Exception e) {
@@ -346,15 +299,13 @@ class EtlAdaptor {
             case AnalysisType.FILTER:
                 return fromColumnFilterBean(op.<FilterOperatorBean>getValue());
             case AnalysisType.CIRCLE_ONE_FIELD_CALCULATE:
-                return fromOneUnionRelationBean(op.<CirculateOneFieldBean>getValue());
+                return fromOneUnionRelationBean(op.<CirculateOneFieldBean>getValue(), table);
             case AnalysisType.CIRCLE_TWO_FIELD_CALCULATE:
-                return fromTwoUnionRelationBean(op.<CirculateOneFieldBean>getValue());
+                return fromTwoUnionRelationBean(op.<CirculateOneFieldBean>getValue(), table);
             case AnalysisType.COLUMN_ROW_TRANS:
                 return fromColumnRowTransBean(op.<ColumnRowTransBean>getValue(), table);
             case AnalysisType.CONF_SELECT:
                 return fromConfSelectBean(op.<ConfSelectBean>getValue());
-            case AnalysisType.SORT:
-                return fromColumnSortedBean(op.<SortBean>getValue());
             case AnalysisType.ADD_COLUMN:
                 return fromAddNewColumnBean(op.<AddNewColumnBean>getValue());
             case AnalysisType.GROUP:
@@ -412,19 +363,6 @@ class EtlAdaptor {
         return new DetailOperator(columnsList, metas);
     }
 
-    private static ColumnSortOperator fromColumnSortedBean(SortBean bean) throws FineEngineException {
-        List<SortBeanItem> sortBeanItemList = bean.getValue();
-        Map<String, Integer> fieldsSortedMap = new HashMap<String, Integer>();
-        for (SortBeanItem sortBeanItem : sortBeanItemList) {
-            fieldsSortedMap.put(sortBeanItem.getName(), sortBeanItem.getSortType());
-        }
-        if (fieldsSortedMap.isEmpty()) {
-            throw new FineAnalysisOperationUnSafe("");
-        }
-        ColumnSortOperator operator = new ColumnSortOperator(fieldsSortedMap);
-        return operator;
-    }
-
     private static SumByGroupOperator fromSumByGroupBean(GroupBean bean) {
         GroupValueBean valueBean = bean.getValue();
         Map<String, DimensionValueBean> dimensionBean = valueBean.getDimensions();
@@ -444,7 +382,8 @@ class EtlAdaptor {
             int type = value.get(0).getType();
             SumByGroupDimension sumByGroupDimension = new SumByGroupDimension();
             sumByGroupDimension.setColumnType(ColumnTypeAdaptor.adaptColumnType(tempBean.getFieldType()));
-            sumByGroupDimension.setGroup(new GroupImpl(GroupType.values()[type]));
+            // fixme ???
+            sumByGroupDimension.setGroup(new GroupImpl(GroupTypeAdaptor.adaptGroupType(type), null));
             sumByGroupDimension.setName(srcValue.getFieldName());
             sumByGroupDimension.setNameText(tempBean.getName());
             groupDimensions[i] = sumByGroupDimension;
@@ -532,23 +471,52 @@ class EtlAdaptor {
         return new ColumnRowTransOperator(groupName, lcName, lcValue, columns, otherColumnNames);
     }
 
-    private static OneUnionRelationOperator fromOneUnionRelationBean(CirculateOneFieldBean bean) {
+    private static OneUnionRelationOperator fromOneUnionRelationBean(CirculateOneFieldBean bean, FineBusinessTable table) {
+        FineBusinessTable preTable = ((EngineComplexConfTable)table).getBaseTableBySelected(0);
+        List<FineBusinessField> fields = preTable.getFields();
         CirculateTwoFieldValue value = bean.getValue();
+        String idField = fields.get(findFieldName(fields, value.getIdField())).getName();
         LinkedHashMap<String, Integer> columns = new LinkedHashMap<String, Integer>();
         for (int i = 0; i < value.getFloors().size(); i++) {
             FloorItem item = value.getFloors().get(i);
-            columns.put(item.getName(), item.getLength());
+            String tempName = item.getName();
+            try {
+                tempName = fields.get(findFieldName(fields, item.getName())).getName();
+            } catch(Exception e) {
+
+            }
+            columns.put(tempName, item.getLength());
         }
-        return new OneUnionRelationOperator(value.getIdField(), value.getShowFields(), columns, value.getFieldType(), null);
+        List<String> showFields = new ArrayList<String>();
+        for(int i = 0; i < value.getShowFields().size(); i++) {
+            String tempName = fields.get(findFieldName(fields, value.getShowFields().get(i))).getName();
+            showFields.add(tempName);
+        }
+        return new OneUnionRelationOperator(idField, showFields, columns, value.getFieldType(), null);
     }
 
-    private static TwoUnionRelationOperator fromTwoUnionRelationBean(CirculateOneFieldBean bean) {
+    private static TwoUnionRelationOperator fromTwoUnionRelationBean(CirculateOneFieldBean bean, FineBusinessTable table) {
         CirculateTwoFieldValue value = bean.getValue();
+        FineBusinessTable preTable = ((EngineComplexConfTable)table).getBaseTableBySelected(0);
+        List<FineBusinessField> fields = preTable.getFields();
+        String idFieldName = fields.get(findFieldName(fields, value.getIdField())).getName();
+        String parentIdFieldName = fields.get(findFieldName(fields, value.getParentIdField())).getName();
         LinkedHashMap<String, Integer> columns = new LinkedHashMap<String, Integer>();
         for (int i = 0; i < value.getFloors().size(); i++) {
             FloorItem item = value.getFloors().get(i);
-            columns.put(item.getName(), item.getLength());
+            String tempName = item.getName();
+            try {
+                tempName = fields.get(findFieldName(fields, item.getName())).getName();
+            } catch(Exception e) {
+
+            }
+            columns.put(tempName, item.getLength());
         }
-        return new TwoUnionRelationOperator(value.getIdField(), value.getShowFields(), columns, value.getType(), null, value.getParentIdField());
+        List<String> showFields = new ArrayList<String>();
+        for(int i = 0; i < value.getShowFields().size(); i++) {
+            String tempName = fields.get(findFieldName(fields, value.getShowFields().get(i))).getName();
+            showFields.add(tempName);
+        }
+        return new TwoUnionRelationOperator(idFieldName, showFields, columns, value.getType(), null, parentIdFieldName);
     }
 }

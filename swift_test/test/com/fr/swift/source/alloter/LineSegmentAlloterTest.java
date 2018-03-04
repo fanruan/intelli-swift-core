@@ -2,12 +2,13 @@ package com.fr.swift.source.alloter;
 
 import com.fr.stable.StringUtils;
 import com.fr.swift.cube.io.location.ResourceLocation;
-import com.fr.swift.manager.LocalSegmentProvider;
+import com.fr.swift.manager.LocalSegmentOperatorProvider;
 import com.fr.swift.segment.HistorySegmentImpl;
-import com.fr.swift.segment.ISegmentOperator;
 import com.fr.swift.segment.Segment;
+import com.fr.swift.segment.SegmentOperator;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.segment.column.DetailColumn;
+import com.fr.swift.source.DataSource;
 import com.fr.swift.source.ListBasedRow;
 import com.fr.swift.source.MetaDataColumn;
 import com.fr.swift.source.Row;
@@ -17,9 +18,9 @@ import com.fr.swift.source.SwiftMetaDataImpl;
 import com.fr.swift.source.SwiftResultSet;
 import com.fr.swift.source.SwiftSourceAlloter;
 import com.fr.swift.source.SwiftSourceAlloterFactory;
+import com.fr.swift.source.core.Core;
 import junit.framework.TestCase;
 
-import java.sql.SQLException;
 import java.sql.Types;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -51,23 +52,23 @@ public class LineSegmentAlloterTest extends TestCase {
             int position = 0;
 
             @Override
-            public void close() throws SQLException {
+            public void close() {
 
             }
 
             @Override
-            public boolean next() throws SQLException {
+            public boolean next() {
                 return position < datas.size();
             }
 
             @Override
-            public SwiftMetaData getMetaData() throws SQLException {
+            public SwiftMetaData getMetaData() {
                 return new SwiftMetaDataImpl("A",
                         Arrays.asList(new MetaDataColumn("long", Types.BIGINT)));
             }
 
             @Override
-            public Row getRowData() throws SQLException {
+            public Row getRowData() {
                 return datas.get(position++);
             }
         };
@@ -77,7 +78,29 @@ public class LineSegmentAlloterTest extends TestCase {
     public void testAlloc() throws Exception {
         String key = String.valueOf(System.currentTimeMillis());
         SourceKey sourceKey = new SourceKey(key);
-        ISegmentOperator operator = LocalSegmentProvider.getInstance().getIndexSegmentOperator(sourceKey, resultSet.getMetaData());
+
+        DataSource dataSource = new DataSource() {
+            @Override
+            public SwiftMetaData getMetadata() {
+                try {
+                    return resultSet.getMetaData();
+                } catch (Exception e) {
+                    return null;
+                }
+            }
+
+            @Override
+            public SourceKey getSourceKey() {
+                return sourceKey;
+            }
+
+            @Override
+            public Core fetchObjectCore() {
+                return null;
+            }
+        };
+
+        SegmentOperator operator = LocalSegmentOperatorProvider.getInstance().getIndexSegmentOperator(dataSource);
         operator.transport(resultSet);
         operator.finishTransport();
 

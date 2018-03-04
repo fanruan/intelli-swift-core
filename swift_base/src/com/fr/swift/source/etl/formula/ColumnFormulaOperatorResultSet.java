@@ -4,7 +4,6 @@ import com.fr.base.Utils;
 import com.fr.script.Calculator;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.column.ColumnKey;
-import com.fr.swift.segment.column.DictionaryEncodedColumn;
 import com.fr.swift.source.ColumnTypeConstants.ColumnType;
 import com.fr.swift.source.ListBasedRow;
 import com.fr.swift.source.Row;
@@ -76,16 +75,10 @@ public class ColumnFormulaOperatorResultSet implements SwiftResultSet {
             try {
                 Object value = FormulaUtils.getCalculatorValue(cal, formula, segment[segCursor], columnKeyMap, rowCursor);
                 List list = new ArrayList();
-                SwiftMetaData metaData = segment[segCursor].getMetaData();
-                for (int i = 0; i < metaData.getColumnCount(); i++) {
-                    DictionaryEncodedColumn getter = segment[segCursor].getColumn(new ColumnKey(metaData.getColumnName(i + 1))).getDictionaryEncodedColumn();
-                    Object ob = getter.getValue(getter.getIndexByRow(rowCursor));
-                    list.add(getValueByColumnType(ob));
-                }
                 list.add(getValueByColumnType(value));
                 tempValue.setRow(new ListBasedRow(list));
             } catch (Exception e) {
-                throw new RuntimeException();
+                throw new RuntimeException(e);
             }
             if (rowCursor < segment[segCursor].getRowCount() - 1) {
                 rowCursor++;

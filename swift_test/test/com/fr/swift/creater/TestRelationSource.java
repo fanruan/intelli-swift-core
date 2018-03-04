@@ -1,6 +1,6 @@
 package com.fr.swift.creater;
 
-import com.fr.swift.source.IRelationSource;
+import com.fr.swift.source.RelationSource;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.core.Core;
 
@@ -12,7 +12,7 @@ import java.util.List;
  * @author Lucifer
  * @since Advanced FineBI Analysis 1.0
  */
-public class TestRelationSource implements IRelationSource {
+public class TestRelationSource implements RelationSource {
 
     private String relationName;
 

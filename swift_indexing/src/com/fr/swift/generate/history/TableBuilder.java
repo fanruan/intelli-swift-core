@@ -14,6 +14,7 @@ import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.source.DataSource;
 import com.fr.swift.source.SwiftMetaData;
+import com.fr.swift.utils.DataSourceUtils;
 
 /**
  * This class created on 2017-12-28 10:53:49
@@ -36,18 +37,26 @@ public class TableBuilder extends BaseWorker {
         // transport worker
         DataTransporter transporter = new DataTransporter(dataSource);
 
-        LocalTask transportTask = new LocalTaskImpl(new CubeTaskKey(meta.getTableName(), Operation.TRANSPORT_TABLE));
+        LocalTask transportTask = new LocalTaskImpl(newPartStartTaskKey(dataSource));
         transportTask.setWorker(transporter);
 
-        LocalTask end = new LocalTaskImpl(new CubeTaskKey("end of " + meta.getTableName()));
+        LocalTask end = new LocalTaskImpl(newPartEndTaskKey(dataSource));
         end.setWorker(BaseWorker.nullWorker());
 
         // column index worker
-        for (int i = 1; i <= meta.getColumnCount(); i++) {
+        int columnNumber;
+        if (DataSourceUtils.isAddColumn(dataSource)) {
+            columnNumber = 1;
+        } else {
+            columnNumber = meta.getColumnCount();
+        }
+        for (int i = 1; i <= columnNumber; i++) {
             ColumnIndexer<?> indexer = new ColumnIndexer(dataSource, new ColumnKey(meta.getColumnName(i)));
 
             LocalTask indexTask = new LocalTaskImpl(new CubeTaskKey(
-                    String.format("%s.%s", meta.getTableName(), meta.getColumnName(i)),
+                    String.format("%s@%s.%s", meta.getTableName(),
+                            dataSource.getSourceKey().getId(),
+                            meta.getColumnName(i)),
                     Operation.INDEX_COLUMN));
             indexTask.setWorker(indexer);
             // link task
@@ -66,6 +75,14 @@ public class TableBuilder extends BaseWorker {
                 }
             }
         });
+    }
+
+    private static CubeTaskKey newPartStartTaskKey(DataSource ds) throws SwiftMetaDataException {
+        return new CubeTaskKey("part start of " + ds.getMetadata().getTableName() + "@" + ds.getSourceKey().getId(), Operation.BUILD_TABLE);
+    }
+
+    private static CubeTaskKey newPartEndTaskKey(DataSource ds) throws SwiftMetaDataException {
+        return new CubeTaskKey("part end of " + ds.getMetadata().getTableName() + "@" + ds.getSourceKey().getId(), Operation.BUILD_TABLE);
     }
 
     @Override

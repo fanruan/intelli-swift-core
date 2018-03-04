@@ -82,15 +82,13 @@ import com.fr.swift.cube.task.impl.SchedulerTaskPool;
 import com.fr.swift.cube.task.impl.WorkerTaskImpl;
 import com.fr.swift.cube.task.impl.WorkerTaskPool;
 import com.fr.swift.exception.SwiftServiceException;
-import com.fr.swift.generate.history.MultiRelationIndexBuilder;
+import com.fr.swift.generate.history.MultiRelationIndexer;
 import com.fr.swift.generate.history.TableBuilder;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
-import com.fr.swift.provider.ConnectionProvider;
 import com.fr.swift.relation.utils.MultiRelationHelper;
 import com.fr.swift.source.DataSource;
-import com.fr.swift.source.IRelationSource;
-import com.fr.swift.source.db.ConnectionManager;
+import com.fr.swift.source.RelationSource;
 import com.fr.swift.structure.Pair;
 import com.fr.swift.util.function.Function;
 
@@ -113,8 +111,6 @@ public class ProviderTaskManager {
 
         }
         initTaskFetchThread();
-        ConnectionManager.getInstance().registerProvider(new ConnectionProvider());
-
     }
 
     private static class SingletonHolder {
@@ -148,10 +144,10 @@ public class ProviderTaskManager {
                     WorkerTask wt = new WorkerTaskImpl(taskKey);
                     wt.setWorker(new TableBuilder(ds));
                     return wt;
-                } else if (o instanceof IRelationSource) {
-                    IRelationSource source = (IRelationSource) o;
+                } else if (o instanceof RelationSource) {
+                    RelationSource source = (RelationSource) o;
                     WorkerTask wt = new WorkerTaskImpl(taskKey);
-                    wt.setWorker(new MultiRelationIndexBuilder(MultiRelationHelper.convert2CubeRelation(source), LocalSegmentProvider.getInstance()));
+                    wt.setWorker(new MultiRelationIndexer(MultiRelationHelper.convert2CubeRelation(source), LocalSegmentProvider.getInstance()));
                     return wt;
                 } else {
                     return null;

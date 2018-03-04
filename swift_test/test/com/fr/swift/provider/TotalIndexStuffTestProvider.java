@@ -3,7 +3,7 @@ package com.fr.swift.provider;
 import com.fr.swift.creater.StuffSourceCreater;
 import com.fr.swift.increment.Increment;
 import com.fr.swift.source.DataSource;
-import com.fr.swift.source.IRelationSource;
+import com.fr.swift.source.RelationSource;
 import com.fr.swift.source.SourcePath;
 import com.fr.swift.source.manager.IndexStuffProvider;
 
@@ -22,7 +22,7 @@ public class TotalIndexStuffTestProvider implements IndexStuffProvider {
 
     private Map<String, DataSource> tableMap = new HashMap<String, DataSource>();
 
-    private Map<String, IRelationSource> relationMap = new HashMap<String, IRelationSource>();
+    private Map<String, RelationSource> relationMap = new HashMap<String, RelationSource>();
 
     private Map<String, SourcePath> pathMap = new HashMap<String, SourcePath>();
 
@@ -61,13 +61,13 @@ public class TotalIndexStuffTestProvider implements IndexStuffProvider {
     }
 
     @Override
-    public IRelationSource getRelationById(String sourceId) {
+    public RelationSource getRelationById(String sourceId) {
         return relationMap.get(sourceId);
     }
 
     @Override
-    public List<IRelationSource> getRelationsByIds(List<String> sourceIds) {
-        List<IRelationSource> list = new ArrayList<IRelationSource>();
+    public List<RelationSource> getRelationsByIds(List<String> sourceIds) {
+        List<RelationSource> list = new ArrayList<RelationSource>();
         for (String sourceId : sourceIds) {
             list.add(relationMap.get(sourceId));
         }
@@ -94,8 +94,8 @@ public class TotalIndexStuffTestProvider implements IndexStuffProvider {
     }
 
     @Override
-    public List<IRelationSource> getAllRelations() {
-        return new ArrayList<IRelationSource>(relationMap.values());
+    public List<RelationSource> getAllRelations() {
+        return new ArrayList<RelationSource>(relationMap.values());
     }
 
     @Override

@@ -18,19 +18,21 @@ import java.util.List;
  * @description
  * @since Advanced FineBI Analysis 1.0
  */
-public abstract class AbstractSegmentOperator implements ISegmentOperator {
+public abstract class AbstractSegmentOperator implements SegmentOperator {
 
     protected SourceKey sourceKey;
     protected SwiftMetaData metaData;
     protected SwiftSourceAlloter alloter;
-    protected List<ISegmentHolder> segmentList;
+    protected List<SegmentHolder> segmentList;
+    protected String cubeSourceKey;
 
-    public AbstractSegmentOperator(SourceKey sourceKey, SwiftMetaData metaData, List<Segment> segments) throws SwiftMetaDataException {
+    public AbstractSegmentOperator(SourceKey sourceKey, SwiftMetaData metaData, List<Segment> segments, String cubeSourceKey) {
         Util.requireNonNull(sourceKey, metaData);
         this.sourceKey = sourceKey;
         this.metaData = metaData;
         this.alloter = SwiftSourceAlloterFactory.createSourceAlloter(sourceKey);
-        this.segmentList = new ArrayList<ISegmentHolder>();
+        this.segmentList = new ArrayList<SegmentHolder>();
+        this.cubeSourceKey = cubeSourceKey;
     }
 
     protected int indexOfColumn(String columnName) throws SwiftMetaDataException {

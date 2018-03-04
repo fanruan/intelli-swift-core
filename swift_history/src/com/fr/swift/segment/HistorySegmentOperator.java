@@ -18,8 +18,8 @@ import java.util.List;
  */
 public class HistorySegmentOperator extends AbstractSegmentOperator {
 
-    public HistorySegmentOperator(SourceKey sourceKey, SwiftMetaData metaData, List<Segment> segments) throws SwiftMetaDataException {
-        super(sourceKey, metaData, segments);
+    public HistorySegmentOperator(SourceKey sourceKey, SwiftMetaData metaData, List<Segment> segments, String cubeSourceKey) throws SwiftMetaDataException {
+        super(sourceKey, metaData, segments, cubeSourceKey);
         if (null != segments && !segments.isEmpty()) {
             for (int i = 0, len = segments.size(); i < len; i++) {
                 this.segmentList.add(new HistorySegmentHolder(segments.get(i)));
@@ -46,8 +46,8 @@ public class HistorySegmentOperator extends AbstractSegmentOperator {
         } else if (index == -1) {
             index = segmentList.size() - 1;
         }
-        ISegmentHolder segment = segmentList.get(index);
-        for (int i = 0, len = metaData.getColumnCount(); i < len; i++) {
+        SegmentHolder segment = segmentList.get(index);
+        for (int i = 0, len = (metaData.getColumnCount() <= data.getSize() ? metaData.getColumnCount() : data.getSize()); i < len; i++) {
             segment.putDetail(i, data.getValue(i));
         }
         segment.incrementRowCount();
@@ -73,7 +73,7 @@ public class HistorySegmentOperator extends AbstractSegmentOperator {
     public void finishTransport() {
         MetaDataXmlManager.getManager().putMetaData(sourceKey, metaData);
         for (int i = 0, len = segmentList.size(); i < len; i++) {
-            ISegmentHolder holder = segmentList.get(i);
+            SegmentHolder holder = segmentList.get(i);
             holder.putRowCount();
             holder.putAllShowIndex();
             holder.putNullIndex();
@@ -95,7 +95,7 @@ public class HistorySegmentOperator extends AbstractSegmentOperator {
      * @throws Exception
      */
     private Segment createSegment(int order) throws Exception {
-        String cubePath = System.getProperty("user.dir") + "/cubes/" + sourceKey.getId() + "/seg" + order;
+        String cubePath = System.getProperty("user.dir") + "/cubes/" + cubeSourceKey + "/seg" + order;
         IResourceLocation location = new ResourceLocation(cubePath);
         SegmentKey segmentKey = new SegmentKey();
         segmentKey.setSegmentOrder(order);

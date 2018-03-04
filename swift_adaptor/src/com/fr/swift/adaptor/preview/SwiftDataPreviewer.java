@@ -1,6 +1,5 @@
 package com.fr.swift.adaptor.preview;
 
-import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.source.DataSource;
 import com.fr.swift.source.ETLDataSource;
@@ -51,15 +50,6 @@ public final class SwiftDataPreviewer {
         List<DataSource> baseDataSourceList = source.getBasedSources();
         List<Segment[]> basedSegments = new ArrayList<Segment[]>();
         for (DataSource dataSource : baseDataSourceList) {
-            try {
-                if (!MinorSegmentManager.getInstance().isSegmentsExist(dataSource.getSourceKey())) {
-                    MinorUpdater.update(dataSource);
-                }
-            } catch (Exception e) {
-                SwiftLoggers.getLogger().error(e);
-                return null;
-            }
-
             List<Segment> segments = MinorSegmentManager.getInstance().getSegment(dataSource.getSourceKey());
             basedSegments.add(segments.toArray(new Segment[segments.size()]));
         }

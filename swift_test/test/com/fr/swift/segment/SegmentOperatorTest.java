@@ -2,9 +2,12 @@ package com.fr.swift.segment;
 
 import com.fr.base.FRContext;
 import com.fr.dav.LocalEnv;
-import com.fr.swift.manager.LocalSegmentProvider;
+import com.fr.swift.manager.LocalSegmentOperatorProvider;
+import com.fr.swift.source.DataSource;
 import com.fr.swift.source.SourceKey;
+import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftResultSet;
+import com.fr.swift.source.core.Core;
 import junit.framework.TestCase;
 
 import java.io.File;
@@ -35,7 +38,27 @@ public class SegmentOperatorTest extends TestCase {
     private void transport(SourceKey key, SwiftResultSet set) {
         boolean success = true;
         try {
-            ISegmentOperator operator = LocalSegmentProvider.getInstance().getIndexSegmentOperator(key, set.getMetaData());
+            DataSource dataSource = new DataSource() {
+                @Override
+                public SwiftMetaData getMetadata() {
+                    try {
+                        return set.getMetaData();
+                    } catch (Exception e) {
+                        return null;
+                    }
+                }
+
+                @Override
+                public SourceKey getSourceKey() {
+                    return key;
+                }
+
+                @Override
+                public Core fetchObjectCore() {
+                    return null;
+                }
+            };
+            SegmentOperator operator = LocalSegmentOperatorProvider.getInstance().getIndexSegmentOperator(dataSource);
             operator.transport(set);
             operator.finishTransport();
         } catch (Exception e) {
@@ -45,27 +68,27 @@ public class SegmentOperatorTest extends TestCase {
         assertTrue(success);
     }
 
-    public void testIntTransport() throws Exception {
+    public void testIntTransport() {
         SwiftResultSet set = new IntResultSet();
         transport(intKey, set);
     }
 
-    public void testLongTransport() throws Exception {
+    public void testLongTransport() {
         SwiftResultSet set = new LongResultSet();
         transport(longKey, set);
     }
 
-    public void testDoubleTransport() throws Exception {
+    public void testDoubleTransport() {
         SwiftResultSet set = new DoubleResultSet();
         transport(doubleKey, set);
     }
 
-    public void testStringTransport() throws Exception {
+    public void testStringTransport() {
         SwiftResultSet set = new StringResultSet();
         transport(stringKey, set);
     }
 
-    public void testDateTransport() throws Exception {
+    public void testDateTransport() {
         SwiftResultSet set = new DateResultSet();
         transport(dateKey, set);
     }

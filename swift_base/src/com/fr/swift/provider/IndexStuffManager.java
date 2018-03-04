@@ -2,7 +2,7 @@ package com.fr.swift.provider;
 
 import com.fr.swift.increment.Increment;
 import com.fr.swift.source.DataSource;
-import com.fr.swift.source.IRelationSource;
+import com.fr.swift.source.RelationSource;
 import com.fr.swift.source.SourcePath;
 import com.fr.swift.source.manager.IndexStuffProvider;
 
@@ -33,12 +33,12 @@ public class IndexStuffManager implements IndexStuffProvider {
     }
 
     @Override
-    public IRelationSource getRelationById(String sourceId) {
+    public RelationSource getRelationById(String sourceId) {
         return provider.getRelationById(sourceId);
     }
 
     @Override
-    public List<IRelationSource> getRelationsByIds(List<String> sourceIds) {
+    public List<RelationSource> getRelationsByIds(List<String> sourceIds) {
         return provider.getRelationsByIds(sourceIds);
     }
 
@@ -58,7 +58,7 @@ public class IndexStuffManager implements IndexStuffProvider {
     }
 
     @Override
-    public List<IRelationSource> getAllRelations() {
+    public List<RelationSource> getAllRelations() {
         return provider.getAllRelations();
     }
 

@@ -21,6 +21,8 @@ import java.util.concurrent.TimeUnit;
  * 假的明细列，put get都操作的dict和index
  */
 public class FakeStringDetailColumn implements DetailColumn<String> {
+    public static final String EXTERNAL_STRING = "external_string";
+
     private Column<String> hostColumn;
     private DictionaryEncodedColumn<String> dictColumn;
 
@@ -60,13 +62,13 @@ public class FakeStringDetailColumn implements DetailColumn<String> {
     /**
      * 计算对应的外排数据存放位置
      * Column数据位置：.../table/segment/column/...
-     * 对应的字典External数据位置 ：.../table/segment/column/external/...
+     * 对应的字典External数据位置 ：.../table/segment/column/external_string/...
      *
      * @return extMap位置
      */
     private String calExternalLocation() {
         return hostColumn.getLocation()
-                .buildChildLocation("external")
+                .buildChildLocation(EXTERNAL_STRING)
                 .getPath();
     }
 

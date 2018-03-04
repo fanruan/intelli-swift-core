@@ -1,7 +1,7 @@
 package com.fr.swift.creater;
 
 import com.fr.swift.source.DataSource;
-import com.fr.swift.source.IRelationSource;
+import com.fr.swift.source.RelationSource;
 import com.fr.swift.source.SourcePath;
 
 /**
@@ -33,19 +33,19 @@ public class StuffSourceCreater {
         return new TestDBDataSource("tableE");
     }
 
-    public static IRelationSource createRelationAB() {
+    public static RelationSource createRelationAB() {
         return new TestRelationSource("relationAB");
     }
 
-    public static IRelationSource createRelationBC() {
+    public static RelationSource createRelationBC() {
         return new TestRelationSource("relationBC");
     }
 
-    public static IRelationSource createRelationCD() {
+    public static RelationSource createRelationCD() {
         return new TestRelationSource("relationCD");
     }
 
-    public static IRelationSource createRelationDE() {
+    public static RelationSource createRelationDE() {
         return new TestRelationSource("relationDE");
     }
 

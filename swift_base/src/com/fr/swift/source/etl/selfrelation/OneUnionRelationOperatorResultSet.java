@@ -7,10 +7,7 @@ import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.segment.column.DictionaryEncodedColumn;
-import com.fr.swift.source.ListBasedRow;
-import com.fr.swift.source.Row;
-import com.fr.swift.source.SwiftMetaData;
-import com.fr.swift.source.SwiftResultSet;
+import com.fr.swift.source.*;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -40,7 +37,7 @@ public class OneUnionRelationOperatorResultSet implements SwiftResultSet {
     private int[] groupLength;
     private Map<String, IndexCollection> valueIndexMap = new HashMap<String, IndexCollection>();
     private DictionaryEncodedColumn[][] gts = null;
-    private int segCursor, rowCursor;
+    private int segCursor, rowCursor, rowCount;
 
     public OneUnionRelationOperatorResultSet(String columnName, List<String> showColumns, String idColumnName,
                                              int columnType, LinkedHashMap<String, Integer> columns,
@@ -62,11 +59,13 @@ public class OneUnionRelationOperatorResultSet implements SwiftResultSet {
         columnLength = columns.size();
         groupLength = new int[columnLength];
         column = segments[0].getColumn(new ColumnKey(idColumnName));
+        rowCount = segments[0].getRowCount();
         if(column != null) {
             try {
                 gts = new DictionaryEncodedColumn[segments.length][metaData.getColumnCount()];
                 //TODO  String
-                if (metaData.getColumn(idColumnName).getType() == 0x10) {
+                ColumnTypeConstants.ColumnType type = ColumnTypeUtils.sqlTypeToColumnType(metaData.getColumn(idColumnName).getType(),1, 1);
+                if (type == ColumnTypeConstants.ColumnType.STRING) {
                     Iterator<Integer> it = columns.values().iterator();
                     int k = 0;
                     while (it.hasNext()) {
@@ -105,7 +104,8 @@ public class OneUnionRelationOperatorResultSet implements SwiftResultSet {
 
     @Override
     public boolean next() throws SQLException {
-        if(rowCursor < segments[segCursor].getRowCount() || segCursor < segments.length) {
+        if(segCursor < segments.length && rowCursor < rowCount) {
+            rowCount = segments[segCursor].getRowCount();
             int index = 0;
             Object[] res = new Object[columns.size() + columnLength * showColumns.size()];
             for(int m = 0; m < metaData.getColumnCount(); m++) {
@@ -142,7 +142,7 @@ public class OneUnionRelationOperatorResultSet implements SwiftResultSet {
             if(rowCursor < segments[segCursor].getRowCount() - 1) {
                 rowCursor++;
             } else {
-                if(segCursor < segments.length - 1) {
+                if(segCursor < segments.length) {
                     segCursor++;
                     rowCursor = 0;
                 } else {
@@ -151,7 +151,6 @@ public class OneUnionRelationOperatorResultSet implements SwiftResultSet {
             }
             return true;
         }
-
         return false;
     }
 
