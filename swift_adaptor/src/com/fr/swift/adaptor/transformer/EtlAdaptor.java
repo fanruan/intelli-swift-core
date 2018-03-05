@@ -10,8 +10,6 @@ import com.finebi.conf.internalimp.analysis.bean.operator.add.EmptyAddNewColumnB
 import com.finebi.conf.internalimp.analysis.bean.operator.add.expression.AddExpressionValueBean;
 import com.finebi.conf.internalimp.analysis.bean.operator.circulate.CirculateOneFieldBean;
 import com.finebi.conf.internalimp.analysis.bean.operator.circulate.CirculateTwoFieldValue;
-import com.finebi.conf.internalimp.analysis.bean.operator.confselect.ConfSelectBean;
-import com.finebi.conf.internalimp.analysis.bean.operator.confselect.ConfSelectBeanItem;
 import com.finebi.conf.internalimp.analysis.bean.operator.filter.FilterOperatorBean;
 import com.finebi.conf.internalimp.analysis.bean.operator.group.DimensionSelectValue;
 import com.finebi.conf.internalimp.analysis.bean.operator.group.DimensionSrcValue;
@@ -23,7 +21,6 @@ import com.finebi.conf.internalimp.analysis.bean.operator.group.ViewBean;
 import com.finebi.conf.internalimp.analysis.bean.operator.join.JoinBean;
 import com.finebi.conf.internalimp.analysis.bean.operator.join.JoinBeanValue;
 import com.finebi.conf.internalimp.analysis.bean.operator.join.JoinNameItem;
-import com.finebi.conf.internalimp.analysis.bean.operator.select.SelectFieldBean;
 import com.finebi.conf.internalimp.analysis.bean.operator.select.SelectFieldBeanItem;
 import com.finebi.conf.internalimp.analysis.bean.operator.trans.ColumnInitalItem;
 import com.finebi.conf.internalimp.analysis.bean.operator.trans.ColumnRowTransBean;
@@ -134,11 +131,11 @@ class EtlAdaptor {
     }
 
     private static DataSource getSingleTableSelectFieldSource(Map<String, List<ColumnKey>> sourceKeyColumnMap, Map<String, DataSource> sourceKeyDataSourceMap, List<DataSource> baseDatas) throws SwiftMetaDataException {
-        ETLOperator operator = new DetailOperator(new ArrayList<ColumnKey[]>(), new ArrayList<SwiftMetaData>());
+        List<ColumnKey> fields = sourceKeyColumnMap.values().iterator().next();
+        ETLOperator operator = new DetailOperator(new ArrayList<ColumnKey[]>(), fields, new ArrayList<SwiftMetaData>());
         Map<Integer, String> fieldsInfo = new HashMap<Integer, String>();
         baseDatas.add(sourceKeyDataSourceMap.values().iterator().next());
         ETLSource etlSource = new ETLSource(baseDatas, operator);
-        List<ColumnKey> fields = sourceKeyColumnMap.values().iterator().next();
         for (ColumnKey columnKey : fields) {
             int index = etlSource.getMetadata().getColumnIndex(columnKey.getName());
             fieldsInfo.put(index, columnKey.getName());
@@ -157,7 +154,7 @@ class EtlAdaptor {
             swiftMetaDatas.add(dataSource.getMetadata());
             fields.add(entry.getValue().toArray(new ColumnKey[entry.getValue().size()]));
         }
-        ETLOperator operator = new DetailOperator(fields, swiftMetaDatas);
+        ETLOperator operator = new DetailOperator(fields, new ArrayList<ColumnKey>(),  swiftMetaDatas);
         Map<Integer, String> fieldsInfo = new HashMap<Integer, String>();
         ETLSource etlSource = new ETLSource(baseDatas, operator);
         for (ColumnKey[] columnKeys : fields) {
@@ -193,35 +190,6 @@ class EtlAdaptor {
             default:
         }
         return dataSources;
-    }
-
-    private static DetailOperator fromSelectFieldBean(SelectFieldBean sfb) throws FineEngineException {
-        List<List<ColumnKey>> fieldsList = new ArrayList<List<ColumnKey>>();
-        List<SwiftMetaData> metas = new ArrayList<SwiftMetaData>();
-
-        for (SelectFieldBeanItem selectField : sfb.getValue()) {
-            String fieldId = selectField.getField();
-            FineBusinessTable table = FineTableUtils.getTableByFieldId(fieldId);
-
-            SwiftMetaData meta = toMeta(table);
-            String columnName = table.getFieldByFieldId(fieldId).getName();
-
-            if (!metas.contains(meta)) {
-                metas.add(meta);
-                List<ColumnKey> columns = new ArrayList<ColumnKey>();
-                columns.add(new ColumnKey(columnName));
-                fieldsList.add(columns);
-            } else {
-                int index = metas.indexOf(meta);
-                fieldsList.get(index).add(new ColumnKey(columnName));
-            }
-        }
-
-        List<ColumnKey[]> columnsList = new ArrayList<ColumnKey[]>();
-        for (List<ColumnKey> columns : fieldsList) {
-            columnsList.add(columns.toArray(new ColumnKey[columns.size()]));
-        }
-        return new DetailOperator(columnsList, metas);
     }
 
     private static SwiftMetaData toMeta(FineBusinessTable table) {
@@ -290,8 +258,6 @@ class EtlAdaptor {
     }
     public static ETLOperator adaptEtlOperator(FineOperator op, FineBusinessTable table) throws FineEngineException {
         switch (op.getType()) {
-            case AnalysisType.SELECT_FIELD:
-                return fromSelectFieldBean(op.<SelectFieldBean>getValue());
             case AnalysisType.JOIN:
                 return fromJoinBean(op.<JoinBean>getValue());
             case AnalysisType.UNION:
@@ -304,8 +270,6 @@ class EtlAdaptor {
                 return fromTwoUnionRelationBean(op.<CirculateOneFieldBean>getValue(), table);
             case AnalysisType.COLUMN_ROW_TRANS:
                 return fromColumnRowTransBean(op.<ColumnRowTransBean>getValue(), table);
-            case AnalysisType.CONF_SELECT:
-                return fromConfSelectBean(op.<ConfSelectBean>getValue());
             case AnalysisType.ADD_COLUMN:
                 return fromAddNewColumnBean(op.<AddNewColumnBean>getValue());
             case AnalysisType.GROUP:
@@ -313,54 +277,6 @@ class EtlAdaptor {
             default:
         }
         return null;
-    }
-
-
-    private static ETLOperator fromConfSelectBean(ConfSelectBean bean) throws FineEngineException {
-        List<List<ColumnKey>> fieldsList = new ArrayList<List<ColumnKey>>();
-        List<SwiftMetaData> metas = new ArrayList<SwiftMetaData>();
-
-        for (Map.Entry<String, ConfSelectBeanItem> entry : bean.getValue().entrySet()) {
-            String fieldId = entry.getKey();
-            FineBusinessTable table = FineTableUtils.getTableByFieldId(fieldId);
-
-            SwiftMetaData meta = toMeta(table);
-            String columnName = table.getFieldByFieldId(fieldId).getName();
-
-            if (!metas.contains(meta)) {
-                metas.add(meta);
-                List<ColumnKey> columns = new ArrayList<ColumnKey>();
-                columns.add(new ColumnKey(columnName));
-                fieldsList.add(columns);
-            } else {
-                int index = metas.indexOf(meta);
-                fieldsList.get(index).add(new ColumnKey(columnName));
-            }
-        }
-
-//        for (SelectFieldBeanItem selectField : sfb.getValue()) {
-//            String fieldId = selectField.getField();
-//            FineBusinessTable table = FineTableUtils.getTableByFieldId(fieldId);
-//
-//            SwiftMetaData meta = toMeta(table);
-//            String columnName = table.getFieldByFieldId(fieldId).getName();
-//
-//            if (!metas.contains(meta)) {
-//                metas.add(meta);
-//                List<ColumnKey> columns = new ArrayList<ColumnKey>();
-//                columns.add(new ColumnKey(columnName));
-//                fieldsList.add(columns);
-//            } else {
-//                int index = metas.indexOf(meta);
-//                fieldsList.get(index).add(new ColumnKey(columnName));
-//            }
-//        }
-
-        List<ColumnKey[]> columnsList = new ArrayList<ColumnKey[]>();
-        for (List<ColumnKey> columns : fieldsList) {
-            columnsList.add(columns.toArray(new ColumnKey[columns.size()]));
-        }
-        return new DetailOperator(columnsList, metas);
     }
 
     private static SumByGroupOperator fromSumByGroupBean(GroupBean bean) {
