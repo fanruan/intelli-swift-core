@@ -9,16 +9,17 @@ import com.fr.swift.util.Util;
 import java.util.List;
 
 /**
- * Created by pony on 2017/12/5.
+ * @author pony
+ * @date 2017/12/5
  */
-public class ETLTransfer implements SwiftSourceTransfer {
+public class EtlTransfer implements SwiftSourceTransfer {
 
     private ETLTransferOperator operator;
     private SwiftMetaData metaData;
     private List<SwiftMetaData> basedMetas;
     private List<Segment[]> basedSegments;
 
-    public ETLTransfer(ETLTransferOperator operator, SwiftMetaData metaData, List<SwiftMetaData> basedMetas, List<Segment[]> basedSegments) {
+    public EtlTransfer(ETLTransferOperator operator, SwiftMetaData metaData, List<SwiftMetaData> basedMetas, List<Segment[]> basedSegments) {
         Util.requireNonNull(operator, metaData, basedMetas, basedMetas);
         this.operator = operator;
         this.metaData = metaData;

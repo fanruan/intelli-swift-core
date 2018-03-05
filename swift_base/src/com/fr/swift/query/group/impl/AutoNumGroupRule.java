@@ -27,7 +27,7 @@ public class AutoNumGroupRule extends CustomNumGroupRule {
         private List<NumInterval> toNumIntervals() {
             List<NumInterval> intervals = new ArrayList<NumInterval>();
 
-            double floor = border(0), ceil;
+            double floor = min, ceil;
             for (int i = 1; floor < max; i++) {
                 ceil = border(i);
                 intervals.add(new NumInterval(getIntervalName(floor, ceil),
