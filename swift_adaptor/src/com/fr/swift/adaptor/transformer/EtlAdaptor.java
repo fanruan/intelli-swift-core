@@ -154,7 +154,7 @@ class EtlAdaptor {
             swiftMetaDatas.add(dataSource.getMetadata());
             fields.add(entry.getValue().toArray(new ColumnKey[entry.getValue().size()]));
         }
-        ETLOperator operator = new DetailOperator(fields, null,  swiftMetaDatas);
+        ETLOperator operator = new DetailOperator(fields, new ArrayList<ColumnKey>(),  swiftMetaDatas);
         Map<Integer, String> fieldsInfo = new HashMap<Integer, String>();
         ETLSource etlSource = new ETLSource(baseDatas, operator);
         for (ColumnKey[] columnKeys : fields) {
