@@ -22,7 +22,8 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * Created by pony on 2017/11/27.
+ * @author pony
+ * @date 2017/11/27
  * 存配置的时候为了层级少点，只存key，构造的时候只能通过对象构造
  */
 public class ETLSource extends AbstractDataSource implements ETLDataSource {
@@ -33,7 +34,9 @@ public class ETLSource extends AbstractDataSource implements ETLDataSource {
     private List<DataSource> basedSources;
     @CoreField
     private ETLOperator operator;
-    //保存了使用的字段以及改名的结果，这边用index，没有用name是因为不能保证基础表的字段没有重名
+    /**
+     * 保存了使用的字段以及改名的结果，这边用index，没有用name是因为不能保证基础表的字段没有重名
+     */
     private Map<Integer, String> fieldsInfo;
 
     /**
@@ -60,8 +63,7 @@ public class ETLSource extends AbstractDataSource implements ETLDataSource {
 
     private void checkFieldsInfoValues(Map<Integer, String> fieldsInfo) {
         if (fieldsInfo != null) {
-            Set<String> values = new HashSet<String>();
-            values.addAll(fieldsInfo.values());
+            Set<String> values = new HashSet<String>(fieldsInfo.values());
             if (fieldsInfo.size() != values.size()) {
                 Crasher.crash("etl fieldNames must be different");
             }
@@ -118,13 +120,12 @@ public class ETLSource extends AbstractDataSource implements ETLDataSource {
         }
     }
 
-    //todo 配置里根据key初始化parents
     private void initBasedSources() {
-
+        //todo 配置里根据key初始化parents
     }
 
-    //如果是新增列,metadata需包含基础表的字段信息
     private List<SwiftMetaDataColumn> getOriginColumns(SwiftMetaData[] metaDatas) {
+        //如果是新增列,metadata需包含基础表的字段信息
         List<SwiftMetaDataColumn> columns = new ArrayList<SwiftMetaDataColumn>();
         try {
             OperatorType type = operator.getOperatorType();

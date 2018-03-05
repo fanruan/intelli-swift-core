@@ -155,6 +155,59 @@ public class GroupRuleTest extends TestCase {
         assertEquals(9, l3.get(2));
     }
 
+    public void testCustomNumGroupRuleWithNoOtherGroup() {
+        GroupRule rule = new CustomNumGroupRule(Arrays.asList(
+                new NumInterval("g0", 0, true, 2.1, false),
+                new NumInterval("g1", 4, true, 7, false),
+                new NumInterval("g2", 7, true, 10, false)
+        ), null);
+        rule.setOriginDict(new BaseDictTestColumn<Number>() {
+            Number[] numbers = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+
+            @Override
+            public int size() {
+                return numbers.length;
+            }
+
+            @Override
+            public Number getValue(int index) {
+                return numbers[index];
+            }
+        });
+        assertEquals(5, rule.newSize());
+
+        assertEquals("g0", rule.getGroupName(0));
+        assertEquals("g1", rule.getGroupName(1));
+        assertEquals("g2", rule.getGroupName(2));
+        assertEquals("3", rule.getGroupName(3));
+        assertEquals("10", rule.getGroupName(4));
+
+        IntList l0 = rule.map(0);
+        assertEquals(2, l0.size());
+        assertEquals(0, l0.get(0));
+        assertEquals(1, l0.get(1));
+
+        IntList l1 = rule.map(1);
+        assertEquals(3, l1.size());
+        assertEquals(3, l1.get(0));
+        assertEquals(4, l1.get(1));
+        assertEquals(5, l1.get(2));
+
+        IntList l2 = rule.map(2);
+        assertEquals(3, l2.size());
+        assertEquals(6, l2.get(0));
+        assertEquals(7, l2.get(1));
+        assertEquals(8, l2.get(2));
+
+        IntList l3 = rule.map(3);
+        assertEquals(1, l3.size());
+        assertEquals(2, l3.get(0));
+
+        IntList l4 = rule.map(4);
+        assertEquals(1, l4.size());
+        assertEquals(9, l4.get(0));
+    }
+
     public void testAutoGroupRule() {
         GroupRule rule = new AutoNumGroupRule(new Partition(1, 10, 4));
         rule.setOriginDict(new BaseDictTestColumn<Number>() {

@@ -24,6 +24,8 @@ public class CustomNumGroupRule extends BaseCustomGroupRule {
 
     @Override
     void initMap() {
+        int lastIndex = intervals.size();
+
         for (int i = 0; i < dictColumn.size(); i++) {
             Number num = (Number) dictColumn.getValue(i);
             int index = findIndex(num);
@@ -35,11 +37,11 @@ public class CustomNumGroupRule extends BaseCustomGroupRule {
             } else {
                 if (hasOtherGroup()) {
                     // 有其他组，则全部分到其他
-                    index = intervals.size();
+                    index = lastIndex;
                     groupName = otherGroupName;
                 } else {
                     // 不在区间里，又没有其他分组，则单独为一组
-                    index = map.size();
+                    index = lastIndex++;
                     groupName = NUMBER_FORMAT.format(num);
                 }
             }
