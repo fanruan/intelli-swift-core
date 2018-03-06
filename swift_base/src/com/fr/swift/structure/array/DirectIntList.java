@@ -23,7 +23,7 @@ package com.fr.swift.structure.array;
  * @author Nathan Sweet
  */
 public class DirectIntList implements IntList {
-    public DirectIntArray items;
+    private DirectIntArray items;
     public int size;
 
     protected DirectIntList() {
@@ -39,7 +39,7 @@ public class DirectIntList implements IntList {
         size =items.size();
     }
 
-
+    @Override
     public void add(int value) {
         DirectIntArray items = this.items;
         if (size == items.size()) {
@@ -48,7 +48,7 @@ public class DirectIntList implements IntList {
         items.put(size++, value);
     }
 
-
+    @Override
     public int get(int index) {
         if (index >= size) {
             throw new IndexOutOfBoundsException("index can't be >= size: " + index + " >= " + size);
@@ -56,6 +56,7 @@ public class DirectIntList implements IntList {
         return items.get(index);
     }
 
+    @Override
     public void set(int index, int val) {
         if (index >= size) {
             throw new IndexOutOfBoundsException("index can't be >= size: " + index + " >= " + size);
@@ -68,6 +69,7 @@ public class DirectIntList implements IntList {
         return size;
     }
 
+    @Override
     public void clear() {
         size = 0;
         items.release();
@@ -78,5 +80,4 @@ public class DirectIntList implements IntList {
         this.items = newItems;
         return newItems;
     }
-
 }

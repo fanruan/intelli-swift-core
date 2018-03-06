@@ -4,7 +4,9 @@ package com.fr.swift.structure.array;
 import com.fineio.memory.MemoryUtils;
 
 /**
- * Created by daniel on 2017/5/18.
+ *
+ * @author daniel
+ * @date 2017/5/18
  */
 public class DirectIntArray implements IntArray {
     private long address;
@@ -37,13 +39,14 @@ public class DirectIntArray implements IntArray {
         }
     }
 
+    @Override
     public int size() {
         return maxLen;
     }
 
     private void setValue(int len) {
         if (len < 0) {
-            throw new ArrayIndexOutOfBoundsException((int) len);
+            throw new ArrayIndexOutOfBoundsException(len);
         }
         this.maxLen = len;
         try {
@@ -54,6 +57,7 @@ public class DirectIntArray implements IntArray {
         }
     }
 
+    @Override
     public void put(int index, int value) {
         MemoryUtils.put(address, checkIndex(index), value);
     }
@@ -68,10 +72,12 @@ public class DirectIntArray implements IntArray {
         return index;
     }
 
+    @Override
     public int get(int index) {
         return MemoryUtils.getInt(address, checkIndex(index));
     }
 
+    @Override
     public void release() {
         if (!isClear) {
             synchronized (this) {

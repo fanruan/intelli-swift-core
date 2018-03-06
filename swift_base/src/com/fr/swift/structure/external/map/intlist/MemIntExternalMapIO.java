@@ -1,4 +1,4 @@
-package com.fr.swift.structure.external.map.intlist.map2;
+package com.fr.swift.structure.external.map.intlist;
 
 import com.fr.swift.structure.Pair;
 import com.fr.swift.structure.array.IntList;
@@ -10,11 +10,11 @@ import java.util.TreeMap;
 /**
  * Created by Connery on 2015/11/30.
  */
-public class MemIntArrayExternalMapIO<K> implements ExternalMapIO<K, IntList> {
+class MemIntExternalMapIO<K> implements ExternalMapIO<K, IntList> {
     private TreeMap<K, IntList> currentContainer;
     private Iterator<K> iterator;
 
-    public MemIntArrayExternalMapIO(TreeMap<K, IntList> currentContainer) {
+    public MemIntExternalMapIO(TreeMap<K, IntList> currentContainer) {
         this.currentContainer = new TreeMap<K, IntList>(currentContainer);
         this.iterator = currentContainer.keySet().iterator();
     }
