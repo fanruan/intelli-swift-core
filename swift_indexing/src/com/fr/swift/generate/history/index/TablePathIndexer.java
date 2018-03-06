@@ -27,13 +27,13 @@ import java.util.List;
  * @author yee
  * @date 2018/1/17
  */
-public class TablePathIndexBuilder extends BaseWorker {
+public class TablePathIndexer extends BaseWorker {
 
     protected CubeMultiRelationPath relationPath;
     protected SwiftSegmentManager provider;
     protected SwiftLogger logger = SwiftLoggers.getLogger(this.getClass());
 
-    public TablePathIndexBuilder(CubeMultiRelationPath relationPath, SwiftSegmentManager provider) {
+    public TablePathIndexer(CubeMultiRelationPath relationPath, SwiftSegmentManager provider) {
         this.relationPath = relationPath;
         this.provider = provider;
     }
