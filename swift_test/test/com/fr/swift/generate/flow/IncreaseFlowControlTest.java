@@ -1,7 +1,7 @@
 package com.fr.swift.generate.flow;
 
+import com.finebi.conf.env.LocalEnv;
 import com.fr.base.FRContext;
-import com.fr.dav.LocalEnv;
 import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.flow.FlowControlRule;
 import com.fr.swift.flow.FlowRuleController;

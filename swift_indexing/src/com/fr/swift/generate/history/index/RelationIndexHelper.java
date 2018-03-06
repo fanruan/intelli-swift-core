@@ -1,4 +1,4 @@
-package com.fr.swift.generate.history;
+package com.fr.swift.generate.history.index;
 
 import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.bitmap.impl.RoaringMutableBitMap;

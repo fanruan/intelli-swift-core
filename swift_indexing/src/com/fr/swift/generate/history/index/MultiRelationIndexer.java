@@ -1,4 +1,4 @@
-package com.fr.swift.generate.history;
+package com.fr.swift.generate.history.index;
 
 import com.fr.swift.bitmap.BitMaps;
 import com.fr.swift.bitmap.ImmutableBitMap;
@@ -6,7 +6,6 @@ import com.fr.swift.bitmap.traversal.BreakTraversalAction;
 import com.fr.swift.cube.nio.NIOConstant;
 import com.fr.swift.cube.task.Task;
 import com.fr.swift.cube.task.impl.BaseWorker;
-import com.fr.swift.generate.history.index.RelationIndexHelper;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.relation.CubeLogicColumnKey;

@@ -1,7 +1,7 @@
 package com.fr.swift.generate.increment;
 
+import com.finebi.conf.env.LocalEnv;
 import com.fr.base.FRContext;
-import com.fr.dav.LocalEnv;
 import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.generate.realtime.RealtimeDataTransporter;
 import com.fr.swift.increase.IncrementImpl;
@@ -41,7 +41,7 @@ public class DecreaseTransportTest extends TestCase {
 
 
         Increment increment = new IncrementImpl(null, "select 记录人 from DEMO_CAPITAL_RETURN where 记录人 ='庆芳'", null, dataSource.getSourceKey(), "local1");
-        RealtimeDataTransporter transport = new RealtimeDataTransporter(dataSource,  increment);
+        RealtimeDataTransporter transport = new RealtimeDataTransporter(dataSource, increment);
         transport.work();
 
         List<Segment> segments = LocalSegmentProvider.getInstance().getSegment(dataSource.getSourceKey());
