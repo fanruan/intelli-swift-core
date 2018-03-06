@@ -51,7 +51,7 @@ public class DataSourceUtils {
             if (dataSource instanceof ETLSource) {
                 ETLSource etlSource = (ETLSource) dataSource;
                 ETLOperator etlOperator = etlSource.getOperator();
-                if (etlOperator.getOperatorType().equals(OperatorType.COLUMNFORMULA)) {
+                if (etlOperator.getOperatorType().equals(OperatorType.COLUMN_FORMULA)) {
                     fields.add(((ColumnFormulaOperator) etlOperator).getColumnMD5());
                 }
             }

@@ -34,7 +34,7 @@ public class DetailOperatorTest extends TestCase {
         ColumnKey[] columnKeys = new ColumnKey[]{columnKey};
         List<ColumnKey[]> fields = new ArrayList<>();
         fields.add(columnKeys);
-        DetailOperator operator = new DetailOperator(fields, baseMeta);
+        DetailOperator operator = new DetailOperator(fields, null, baseMeta);
         ETLSource source = new ETLSource(sources, operator);
         SwiftMetaData metaData = source.getMetadata();
         assertEquals(metaData.getColumnCount(), 11);
