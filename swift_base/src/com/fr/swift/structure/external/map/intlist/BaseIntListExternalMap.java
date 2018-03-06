@@ -1,9 +1,10 @@
-package com.fr.swift.structure.external.map.intlist.map2;
+package com.fr.swift.structure.external.map.intlist;
 
 
 import com.fr.swift.structure.array.IntList;
 import com.fr.swift.structure.array.IntListFactory;
 import com.fr.swift.structure.external.map.ExternalMap;
+import com.fr.swift.structure.external.map.ExternalMapIO;
 
 import java.util.Comparator;
 import java.util.Iterator;
@@ -11,19 +12,25 @@ import java.util.Map;
 import java.util.TreeMap;
 
 /**
- * Created by FineSoft on 2015/7/14.
+ * @author FineSoft
+ * @date 2015/7/14
  */
-public abstract class IntArrayListExternalMap<K> extends ExternalMap<K, IntList> {
-    public IntArrayListExternalMap(Comparator comparator, String dataFolderAbsPath) {
+abstract class BaseIntListExternalMap<K> extends ExternalMap<K, IntList> {
+    public BaseIntListExternalMap(Comparator comparator, String dataFolderAbsPath) {
         super(comparator, dataFolderAbsPath);
     }
 
-    public IntArrayListExternalMap(long bufferSize, Comparator comparator, String dataFolderAbsPath) {
+    public BaseIntListExternalMap(long bufferSize, Comparator comparator, String dataFolderAbsPath) {
         super(bufferSize, comparator, dataFolderAbsPath);
     }
 
-    public IntArrayListExternalMap(long bufferSize, Comparator comparator, String dataFolderAbsPath, boolean isKeepDiskFile) {
+    public BaseIntListExternalMap(long bufferSize, Comparator comparator, String dataFolderAbsPath, boolean isKeepDiskFile) {
         super(bufferSize, comparator, dataFolderAbsPath, isKeepDiskFile);
+    }
+
+    @Override
+    public ExternalMapIO<K, IntList> getMemMapIO(TreeMap<K, IntList> currentContainer) {
+        return new MemIntExternalMapIO<K>(currentContainer);
     }
 
     @Override
@@ -47,5 +54,4 @@ public abstract class IntArrayListExternalMap<K> extends ExternalMap<K, IntList>
         }
         return result;
     }
-
 }

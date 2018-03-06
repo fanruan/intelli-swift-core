@@ -11,7 +11,4 @@ public interface ByteArrayReader extends ObjectReader<byte[]> {
     String LENGTH = ByteArrayWriter.LENGTH;
 
     byte[] NULL_VALUE = ByteArrayWriter.NULL_VALUE;
-
-    ByteDataInput getByteStream(long pos);
-
 }

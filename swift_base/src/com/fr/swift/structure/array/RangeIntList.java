@@ -1,12 +1,11 @@
 package com.fr.swift.structure.array;
 
 /**
- * Created by Lyon on 2017/11/27.
+ * @author Lyon
+ * @date 2017/11/27
  */
 public class RangeIntList implements IntList {
-
     private int startIndex;
-    private int endIndexIncluded;
     private int size;
 
     protected RangeIntList(int startIndex, int endIndexIncluded) {
@@ -14,7 +13,6 @@ public class RangeIntList implements IntList {
             throw new IllegalArgumentException();
         }
         this.startIndex = startIndex;
-        this.endIndexIncluded = endIndexIncluded;
         this.size = endIndexIncluded - startIndex + 1;
     }
 

@@ -1,4 +1,4 @@
-package com.fr.swift.structure.external.map.intlist.map2;
+package com.fr.swift.structure.external.map.intlist;
 
 import com.fr.general.ComparatorUtils;
 import com.fr.swift.cube.nio.read.IntNIOReader;
@@ -9,8 +9,8 @@ import java.io.FileNotFoundException;
 /**
  * Created by wang on 2016/9/2.
  */
-public class IntegerIntArrayListMapIO extends ExternalMapIOIntArrayList<Integer> {
-    public IntegerIntArrayListMapIO(String ID_path) {
+class IntegerIntListMapIO extends BaseIntListExternalMapIO<Integer> {
+    public IntegerIntListMapIO(String ID_path) {
         super(ID_path);
     }
 
@@ -30,6 +30,6 @@ public class IntegerIntArrayListMapIO extends ExternalMapIOIntArrayList<Integer>
 
     @Override
     public boolean isEmpty(Integer key) {
-        return key == null || ComparatorUtils.equals(key, Integer.valueOf(0));
+        return key == null || ComparatorUtils.equals(key, 0);
     }
 }

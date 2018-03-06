@@ -1,4 +1,4 @@
-package com.fr.swift.structure.external.map.intlist.map2;
+package com.fr.swift.structure.external.map.intlist;
 
 import com.fr.swift.cube.nio.NIOReader;
 import com.fr.swift.cube.nio.NIOWriter;
@@ -15,9 +15,10 @@ import java.io.File;
 import java.io.FileNotFoundException;
 
 /**
- * Created by wang on 2016/9/2.
+ * @author wang
+ * @date 2016/9/2
  */
-public abstract class ExternalMapIOIntArrayList<K> implements ExternalMapIO<K, IntList> {
+abstract class BaseIntListExternalMapIO<K> implements ExternalMapIO<K, IntList> {
     protected IntNIOWriter valueWriter = null;
     protected IntNIOReader valueReader = null;
     protected Position positionWriter;
@@ -27,9 +28,9 @@ public abstract class ExternalMapIOIntArrayList<K> implements ExternalMapIO<K, I
     protected NIOWriter<K> keyWriter = null;
     protected NIOReader<K> keyReader = null;
     protected int size;
-    private static final SwiftLogger LOGGER = SwiftLoggers.getLogger(ExternalMapIOIntArrayList.class);
+    private static final SwiftLogger LOGGER = SwiftLoggers.getLogger(BaseIntListExternalMapIO.class);
 
-    public ExternalMapIOIntArrayList(String ID_path) {
+    public BaseIntListExternalMapIO(String ID_path) {
         String intPath = getValuePath(ID_path);
         String keyPath = getKeyPath(ID_path);
         keyFile = initialFile(keyPath);
