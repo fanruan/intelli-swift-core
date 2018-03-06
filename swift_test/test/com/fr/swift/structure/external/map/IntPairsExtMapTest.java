@@ -134,8 +134,9 @@ public class IntPairsExtMapTest extends TestCase {
     }
 
     @Override
-    protected void tearDown() {
-        FileUtil.delete("/externalMapTest");
+    protected void tearDown() throws Exception {
+        super.tearDown();
+        FileUtil.delete(basePath + "/externalMapTest");
     }
 
     private static IntPair of(int key, int val) {
