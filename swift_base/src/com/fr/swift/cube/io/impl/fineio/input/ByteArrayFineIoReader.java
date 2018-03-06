@@ -1,7 +1,6 @@
 package com.fr.swift.cube.io.impl.fineio.input;
 
 import com.fr.swift.cube.io.input.ByteArrayReader;
-import com.fr.swift.cube.io.input.ByteDataInput;
 import com.fr.swift.cube.io.input.ByteReader;
 import com.fr.swift.cube.io.input.IntReader;
 import com.fr.swift.cube.io.input.LongReader;
@@ -65,13 +64,6 @@ public class ByteArrayFineIoReader extends BaseFineIoReader implements ByteArray
             bytes[i] = contentReader.get(start + i);
         }
         return bytes;
-    }
-
-    @Override
-    public ByteDataInput getByteStream(long pos) {
-        long start = positionReader.get(pos);
-        long size = lengthReader.get(pos);
-        return new ByteDataInputStream(contentReader, start, size);
     }
 
 }

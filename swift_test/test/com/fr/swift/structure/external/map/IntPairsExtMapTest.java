@@ -1,9 +1,9 @@
-package com.fr.swift.structure.external.map.intpairs;
+package com.fr.swift.structure.external.map;
 
 import com.fr.swift.compare.Comparators;
 import com.fr.swift.source.ColumnTypeConstants.ClassType;
 import com.fr.swift.structure.IntPair;
-import com.fr.swift.structure.external.map.ExternalMap;
+import com.fr.swift.structure.external.map.intpairs.IntPairsExtMaps;
 import com.fr.swift.util.FileUtil;
 import junit.framework.TestCase;
 

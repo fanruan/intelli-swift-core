@@ -24,7 +24,6 @@ public class LineSegmentManager extends AbstractSegmentManager {
     @Override
     public Segment getSegment(SegmentKey segmentKey) {
         Util.requireNonNull(segmentKey);
-        int order = segmentKey.getSegmentOrder();
         URI uri = segmentKey.getUri();
         Types.StoreType storeType = segmentKey.getStoreType();
         ResourceLocation location = new ResourceLocation(uri.getPath(), storeType);
@@ -36,9 +35,9 @@ public class LineSegmentManager extends AbstractSegmentManager {
                 return new RealTimeSegmentImpl(location, metaData);
             case FINE_IO:
                 return new HistorySegmentImpl(location, metaData);
+            default:
+                return new HistorySegmentImpl(location, metaData);
         }
-        Segment segment = new HistorySegmentImpl(location, metaData);
-        return segment;
     }
 
 }

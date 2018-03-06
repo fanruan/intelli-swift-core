@@ -3,11 +3,13 @@ package com.fr.swift.structure.array;
 import java.util.Arrays;
 
 /**
- * Created by 小灰灰 on 2017/5/22.
+ *
+ * @author 小灰灰
+ * @date 2017/5/22
  */
 public class HeapIntList implements IntList {
-    public int[] items;
-    public int size;
+    private int[] items;
+    private int size;
 
     protected HeapIntList() {
         this(16);
@@ -23,7 +25,7 @@ public class HeapIntList implements IntList {
         Arrays.fill(items, defaultValue);
     }
 
-
+    @Override
     public void add(int value) {
         int[] items = this.items;
         if (size == items.length) {
@@ -32,7 +34,7 @@ public class HeapIntList implements IntList {
         items[size++] = value;
     }
 
-
+    @Override
     public int get(int index) {
         if (index >= size) {
             throw new IndexOutOfBoundsException("index can't be >= size: " + index + " >= " + size);
@@ -45,6 +47,7 @@ public class HeapIntList implements IntList {
         return size;
     }
 
+    @Override
     public void set(int index, int val) {
         if (index >= size) {
             throw new IndexOutOfBoundsException("index can't be >= size: " + index + " >= " + size);
@@ -52,7 +55,7 @@ public class HeapIntList implements IntList {
         items[index] = val;
     }
 
-
+    @Override
     public void clear() {
         size = 0;
         items = null;

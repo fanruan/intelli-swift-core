@@ -1,4 +1,4 @@
-package com.fr.swift.structure.external.map.intlist.map2;
+package com.fr.swift.structure.external.map.intlist;
 
 import com.fr.general.ComparatorUtils;
 import com.fr.stable.StringUtils;
@@ -10,8 +10,8 @@ import java.io.FileNotFoundException;
 /**
  * Created by wang on 2016/9/2.
  */
-public class StringIntArrayListMapIO extends ExternalMapIOIntArrayList<String> {
-    public StringIntArrayListMapIO(String ID_path) {
+class StringIntListMapIO extends BaseIntListExternalMapIO<String> {
+    public StringIntListMapIO(String ID_path) {
         super(ID_path);
     }
 
