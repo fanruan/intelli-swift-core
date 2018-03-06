@@ -1,7 +1,7 @@
 package com.fr.swift.segment;
 
+import com.finebi.conf.env.LocalEnv;
 import com.fr.base.FRContext;
-import com.fr.dav.LocalEnv;
 import com.fr.swift.manager.LocalSegmentOperatorProvider;
 import com.fr.swift.source.DataSource;
 import com.fr.swift.source.SourceKey;
@@ -58,8 +58,8 @@ public class SegmentOperatorTest extends TestCase {
                     return null;
                 }
             };
-            SegmentOperator operator = LocalSegmentOperatorProvider.getInstance().getIndexSegmentOperator(dataSource);
-            operator.transport(set);
+            SegmentOperator operator = LocalSegmentOperatorProvider.getInstance().getHistorySegmentOperator(dataSource, set);
+            operator.transport();
             operator.finishTransport();
         } catch (Exception e) {
             success = false;

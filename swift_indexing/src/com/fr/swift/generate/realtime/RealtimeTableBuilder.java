@@ -11,7 +11,7 @@ import com.fr.swift.cube.task.impl.LocalTaskImpl;
 import com.fr.swift.cube.task.impl.Operation;
 import com.fr.swift.exception.meta.SwiftMetaDataException;
 import com.fr.swift.flow.FlowRuleController;
-import com.fr.swift.generate.history.ColumnIndexer;
+import com.fr.swift.generate.history.index.ColumnIndexer;
 import com.fr.swift.increment.Increment;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.segment.column.ColumnKey;

@@ -17,7 +17,9 @@ import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.segment.column.DictionaryEncodedColumn;
 import com.fr.swift.source.DataSource;
+import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftMetaData;
+import com.fr.swift.utils.DataSourceUtils;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -43,6 +45,7 @@ public class SwiftFieldsDataPreview {
 
         try {
             if (dataSource != null) {
+                MinorSegmentManager.getInstance().clear();
                 if (!MinorSegmentManager.getInstance().isSegmentsExist(dataSource.getSourceKey())) {
                     MinorUpdater.update(dataSource);
                 }

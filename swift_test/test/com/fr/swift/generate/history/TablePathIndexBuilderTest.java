@@ -1,7 +1,7 @@
 package com.fr.swift.generate.history;
 
+import com.finebi.conf.env.LocalEnv;
 import com.fr.base.FRContext;
-import com.fr.dav.LocalEnv;
 import com.fr.swift.cube.queue.CubeTasks;
 import com.fr.swift.cube.task.SchedulerTask;
 import com.fr.swift.cube.task.Task;
@@ -15,6 +15,8 @@ import com.fr.swift.cube.task.impl.SchedulerTaskImpl;
 import com.fr.swift.cube.task.impl.SchedulerTaskPool;
 import com.fr.swift.cube.task.impl.WorkerTaskImpl;
 import com.fr.swift.cube.task.impl.WorkerTaskPool;
+import com.fr.swift.generate.history.index.MultiRelationIndexBuilder;
+import com.fr.swift.generate.history.index.TablePathIndexBuilder;
 import com.fr.swift.manager.LocalSegmentProvider;
 import com.fr.swift.relation.CubeMultiRelationPath;
 import com.fr.swift.relation.utils.MultiRelationHelper;

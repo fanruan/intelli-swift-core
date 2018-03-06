@@ -7,12 +7,10 @@ import com.finebi.conf.structure.bean.connection.FineConnection;
 import com.finebi.conf.structure.bean.table.FineBusinessTable;
 import com.finebi.conf.structure.result.BIDetailTableResult;
 import com.finebi.conf.utils.FineConnectionUtils;
-import com.fr.base.FRContext;
-import com.fr.dav.LocalEnv;
 import com.fr.swift.adaptor.executor.SwiftTableEngineExecutor;
 import com.fr.swift.adaptor.update.SwiftUpdateManager;
+import com.fr.swift.manager.ConnectionProvider;
 import com.fr.swift.manager.ProviderTaskManager;
-import com.fr.swift.provider.ConnectionProvider;
 import com.fr.swift.resource.ResourceUtils;
 import com.fr.swift.service.LocalSwiftServerService;
 import com.fr.swift.source.db.ConnectionManager;
@@ -33,7 +31,7 @@ public class SQLBuildTaskTest extends TestCase {
         new LocalSwiftServerService().start();
         ProviderTaskManager.start();
 
-        FRContext.setCurrentEnv(new LocalEnv(System.getProperty("user.dir") + "\\" + System.currentTimeMillis()));
+//        FRContext.setCurrentEnv(new LocalEnv(System.getProperty("user.dir") + "\\" + System.currentTimeMillis()));
 
         IConnectionProvider connectionProvider = new ConnectionProvider();
         ConnectionManager.getInstance().registerProvider(connectionProvider);

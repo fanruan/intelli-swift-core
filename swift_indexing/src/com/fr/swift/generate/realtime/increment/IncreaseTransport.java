@@ -42,9 +42,9 @@ public class IncreaseTransport implements IncrementTransport {
 
         SwiftFlowResultSet swiftFlowResultSet = new SwiftFlowResultSet(increaseResult, flowRuleController);
 
-        SegmentOperator operator = LocalSegmentOperatorProvider.getInstance().getRealtimeSegmentOperator(dataSource);
+        SegmentOperator operator = LocalSegmentOperatorProvider.getInstance().getIncreaseSegmentOperator(dataSource, swiftFlowResultSet);
         try {
-            operator.transport(swiftFlowResultSet);
+            operator.transport();
         } catch (Exception e) {
             LOGGER.error(e);
         } finally {
