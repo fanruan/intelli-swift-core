@@ -6,10 +6,8 @@ import com.fr.swift.cube.task.Task.Status;
 import com.fr.swift.cube.task.TaskKey;
 import com.fr.swift.cube.task.WorkerTask;
 import com.fr.swift.cube.task.impl.BaseWorker;
-import com.fr.swift.cube.task.impl.CubeTaskKey;
 import com.fr.swift.cube.task.impl.CubeTaskManager;
 import com.fr.swift.cube.task.impl.Operation;
-import com.fr.swift.cube.task.impl.SchedulerTaskImpl;
 import com.fr.swift.cube.task.impl.SchedulerTaskPool;
 import com.fr.swift.cube.task.impl.WorkerTaskImpl;
 import com.fr.swift.cube.task.impl.WorkerTaskPool;
@@ -48,7 +46,6 @@ public class TransAndIndexTest extends TestCase {
      * @throws Exception
      */
     public void testTransport() throws Exception {
-//        IndexStuffProvider provider = ProviderManager.getManager().poll();
         DataSource dataSource = new QueryDBSource("select * from DEMO_CAPITAL_RETURN", "allTest");
 
         SchedulerTaskPool.getInstance().initListener();
@@ -77,27 +74,27 @@ public class TransAndIndexTest extends TestCase {
         dataSources.add(dataSource);
         List<Pair<TaskKey, Object>> l = new ArrayList<>();
 
-        SchedulerTask start = new SchedulerTaskImpl(new CubeTaskKey("start all")),
-                end = new SchedulerTaskImpl(new CubeTaskKey("end all"));
+        SchedulerTask start = CubeTasks.newStartTask(),
+                end = CubeTasks.newEndTask();
 
         l.add(new Pair<>(start.key(), null));
         l.add(new Pair<>(end.key(), null));
 
         for (DataSource updateDataSource : dataSources) {
-            SchedulerTask task = new SchedulerTaskImpl(new CubeTaskKey(updateDataSource.getMetadata().getTableName(), Operation.BUILD_TABLE));
+            SchedulerTask task = CubeTasks.newTableTask(updateDataSource);
             start.addNext(task);
             task.addNext(end);
 
             l.add(new Pair<>(task.key(), dataSource));
         }
-        CubeTasks.sendTasks(l);
-        start.triggerRun();
-
         end.addStatusChangeListener((prev, now) -> {
             if (now == Status.DONE) {
                 latch.countDown();
             }
         });
+
+        CubeTasks.sendTasks(l);
+        start.triggerRun();
 
         latch.await();
 

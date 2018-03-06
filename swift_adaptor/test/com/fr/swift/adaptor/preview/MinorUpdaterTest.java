@@ -35,7 +35,7 @@ public class MinorUpdaterTest extends BaseTest {
 
         Segment joinSeg = MinorSegmentManager.getInstance().getSegment(join.getSourceKey()).get(0);
 
-        assertEquals(768, joinSeg.getRowCount());
+        assertEquals(101, joinSeg.getRowCount());
 
         MinorSegmentManager.getInstance().clear();
     }

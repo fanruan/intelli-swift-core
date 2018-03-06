@@ -42,7 +42,7 @@ public class ColumnFormulaOperator extends AbstractOperator {
 
     @Override
     public OperatorType getOperatorType() {
-        return OperatorType.COLUMNFORMULA;
+        return OperatorType.COLUMN_FORMULA;
     }
 
     public String getColumnName() {

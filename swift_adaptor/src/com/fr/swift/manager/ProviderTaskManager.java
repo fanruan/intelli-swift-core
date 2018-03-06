@@ -10,7 +10,7 @@ import com.fr.swift.cube.task.impl.SchedulerTaskPool;
 import com.fr.swift.cube.task.impl.WorkerTaskImpl;
 import com.fr.swift.cube.task.impl.WorkerTaskPool;
 import com.fr.swift.exception.SwiftServiceException;
-import com.fr.swift.generate.history.index.MultiRelationIndexBuilder;
+import com.fr.swift.generate.history.MultiRelationIndexer;
 import com.fr.swift.generate.history.TableBuilder;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
@@ -75,7 +75,7 @@ public class ProviderTaskManager {
                 } else if (o instanceof RelationSource) {
                     RelationSource source = (RelationSource) o;
                     WorkerTask wt = new WorkerTaskImpl(taskKey);
-                    wt.setWorker(new MultiRelationIndexBuilder(MultiRelationHelper.convert2CubeRelation(source), LocalSegmentProvider.getInstance()));
+                    wt.setWorker(new MultiRelationIndexer(MultiRelationHelper.convert2CubeRelation(source), LocalSegmentProvider.getInstance()));
                     return wt;
                 } else {
                     return null;

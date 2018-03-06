@@ -9,13 +9,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by pony on 2018/1/8.
+ * @author pony
+ * @date 2018/1/8
  */
-public class ETLTransferFactory {
-    public static ETLTransfer createTransfer(ETLSource source) {
+public class EtlTransferFactory {
+    public static EtlTransfer createTransfer(ETLSource source) {
         SwiftMetaData metaData = source.getMetadata();
         ETLOperator operator = source.getOperator();
-        ETLTransferOperator transferOperator = ETLTransferOperatorFactory.createTransferOperator(operator);
+        ETLTransferOperator transferOperator = EtlTransferOperatorFactory.createTransferOperator(operator);
         List<SwiftMetaData> basedMetas = new ArrayList<SwiftMetaData>();
         for (DataSource basedSource : source.getBasedSources()) {
             basedMetas.add(basedSource.getMetadata());
@@ -26,7 +27,7 @@ public class ETLTransferFactory {
             List<Segment> segments = SwiftContext.getInstance().getSegmentProvider().getSegment(dataSource.getSourceKey());
             basedSegments.add(segments.toArray(new Segment[segments.size()]));
         }
-        return new ETLTransfer(transferOperator, metaData, basedMetas, basedSegments);
+        return new EtlTransfer(transferOperator, metaData, basedMetas, basedSegments);
     }
 
 //    public static SwiftSourceTransfer createBaseTableMinorTransfer(ETLSource source) throws Exception{

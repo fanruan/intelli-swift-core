@@ -12,14 +12,14 @@ import com.fr.swift.adaptor.struct.SwiftEmptyResult;
 import com.fr.swift.adaptor.struct.SwiftSegmentDetailResult;
 import com.fr.swift.adaptor.transformer.IndexingDataSourceFactory;
 import com.fr.swift.log.SwiftLoggers;
+import com.fr.swift.query.sort.SortType;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.segment.column.DictionaryEncodedColumn;
 import com.fr.swift.source.DataSource;
-import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftMetaData;
-import com.fr.swift.utils.DataSourceUtils;
+import com.fr.swift.structure.array.IntList;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -41,7 +41,7 @@ public class SwiftFieldsDataPreview {
         swiftTableEngineExecutor = new SwiftTableEngineExecutor();
     }
 
-    public BIDetailTableResult getDetailPreviewByFields(DataSource dataSource, int rowCount) throws Exception {
+    public BIDetailTableResult getDetailPreviewByFields(DataSource dataSource, int rowCount, IntList sortIndex, List<SortType> sorts) throws Exception {
 
         try {
             if (dataSource != null) {
@@ -52,7 +52,7 @@ public class SwiftFieldsDataPreview {
                 List<Segment> segments = MinorSegmentManager.getInstance().getSegment(dataSource.getSourceKey());
 
                 SwiftMetaData swiftMetaData = dataSource.getMetadata();
-                BIDetailTableResult realDetailResult = new SwiftSegmentDetailResult(segments, swiftMetaData);
+                BIDetailTableResult realDetailResult = new SwiftSegmentDetailResult(segments, swiftMetaData, sortIndex, sorts);
                 return realDetailResult;
             }
             return new SwiftDetailTableResult(new SwiftEmptyResult());

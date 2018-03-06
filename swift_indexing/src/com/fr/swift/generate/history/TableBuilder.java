@@ -1,6 +1,7 @@
 package com.fr.swift.generate.history;
 
 import com.fr.swift.cube.task.LocalTask;
+import com.fr.swift.cube.task.Task;
 import com.fr.swift.cube.task.Task.Status;
 import com.fr.swift.cube.task.TaskStatusChangeListener;
 import com.fr.swift.cube.task.impl.BaseWorker;
@@ -93,5 +94,24 @@ public class TableBuilder extends BaseTableBuilder {
                 }
             }
         });
+    }
+
+    private static CubeTaskKey newPartStartTaskKey(DataSource ds) throws SwiftMetaDataException {
+        return new CubeTaskKey("part start of " + ds.getMetadata().getTableName() + "@" + ds.getSourceKey().getId(), Operation.BUILD_TABLE);
+    }
+
+    private static CubeTaskKey newPartEndTaskKey(DataSource ds) throws SwiftMetaDataException {
+        return new CubeTaskKey("part end of " + ds.getMetadata().getTableName() + "@" + ds.getSourceKey().getId(), Operation.BUILD_TABLE);
+    }
+
+    @Override
+    public void work() {
+        try {
+            init();
+            taskGroup.run();
+        } catch (Exception e) {
+            SwiftLoggers.getLogger().error(e);
+            workOver(Task.Result.FAILED);
+        }
     }
 }
