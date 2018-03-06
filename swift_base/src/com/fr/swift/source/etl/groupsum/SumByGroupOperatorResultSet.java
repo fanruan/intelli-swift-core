@@ -74,7 +74,6 @@ public class SumByGroupOperatorResultSet implements SwiftResultSet {
         List<RowTraversal> rowTraversalList = new ArrayList<RowTraversal>();
         for(int i = 0; i < valuesAndGVI.getAggreator().size(); i++) {
             RowTraversal traversal = valuesAndGVI.getAggreator().get(i).getBitMap();
-            Segment segment = valuesAndGVI.getAggreator().get(i).getSegment();
             if(traversal != null) {
                 segmentList.add(valuesAndGVI.getAggreator().get(i).getSegment());
                 rowTraversalList.add(traversal);

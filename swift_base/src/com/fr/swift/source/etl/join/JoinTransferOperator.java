@@ -30,11 +30,11 @@ public class JoinTransferOperator implements ETLTransferOperator {
     public SwiftResultSet createResultSet(SwiftMetaData metaData, List<SwiftMetaData> basedMetas, List<Segment[]> basedSegments) {
         Segment[] lSegments = basedSegments.get(0);
         Segment[] rSegments = basedSegments.get(1);
-        if (this.type == ETLConstant.JOINTYPE.OUTER) {
+        if (this.type == ETLConstant.CONF.JOIN.OUTER) {
             return new JoinOperatorResultSet(columns, lKey, metaData, rKey, lSegments, rSegments, false, true);
-        } else if (this.type == ETLConstant.JOINTYPE.INNER) {
+        } else if (this.type == ETLConstant.CONF.JOIN.INNER) {
             return new JoinOperatorResultSet(columns, lKey, metaData, rKey, lSegments, rSegments, true, false);
-        } else if (this.type == ETLConstant.JOINTYPE.LEFT) {
+        } else if (this.type == ETLConstant.CONF.JOIN.LEFT) {
             return new JoinOperatorResultSet(columns, lKey, metaData, rKey, lSegments, rSegments, false, false);
         } else {
             return new JoinOperatorResultSet(columns, lKey, metaData, rKey, lSegments, rSegments, true, true);
