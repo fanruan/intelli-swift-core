@@ -1,6 +1,7 @@
 package com.fr.swift.source.etl.rowcal.alldata;
 
 import com.fr.swift.segment.Segment;
+import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftResultSet;
 import com.fr.swift.source.etl.ETLTransferOperator;
@@ -15,15 +16,15 @@ import java.util.List;
 public class AllDataTransferOperator implements ETLTransferOperator {
 
     private int summaryType;
-    private int rule;
     private String columnName;
     private int columnType;
+    private ColumnKey[] dimensions;
 
-    public AllDataTransferOperator(int summaryType, int rule, String columnName, int columnType) {
+    public AllDataTransferOperator(int summaryType, String columnName, int columnType, ColumnKey[] dimensions) {
         this.summaryType = summaryType;
-        this.rule = rule;
         this.columnName = columnName;
         this.columnType = columnType;
+        this.dimensions = dimensions;
     }
 
     @Override
@@ -34,24 +35,24 @@ public class AllDataTransferOperator implements ETLTransferOperator {
         for(int i = 0; i < traversals.length; i++) {
             traversals[i] = segments[i].getAllShowIndex();
         }
-        return new AllDataRowCalculatorResultSet(columnName, columnType, segments, traversals, metaData, cal);
+        return new AllDataRowCalculatorResultSet(columnName, segments, traversals, metaData, cal, dimensions);
     }
 
     private AllDataCalculator createCalculator(int type) {
         switch(type){
-            case ETLConstant.SUMMARY_TYPE.SUM : {
+            case ETLConstant.CONF.GROUP.NUMBER.SUM : {
                 return SumCalculator.INSTANCE;
             }
-            case ETLConstant.SUMMARY_TYPE.MAX : {
+            case ETLConstant.CONF.GROUP.NUMBER.MAX : {
                 return MaxCalculator.INSTANCE;
             }
-            case ETLConstant.SUMMARY_TYPE.MIN : {
+            case ETLConstant.CONF.GROUP.NUMBER.MIN : {
                 return MinCalculator.INSTANCE;
             }
-            case ETLConstant.SUMMARY_TYPE.AVG : {
+            case ETLConstant.CONF.GROUP.NUMBER.AVG : {
                 return AvgCalculator.INSTANCE;
             }
-            case ETLConstant.SUMMARY_TYPE.COUNT : {
+            case ETLConstant.CONF.GROUP.NUMBER.COUNT: {
                 return CountCalculator.INSTANCE;
             }
             default: {

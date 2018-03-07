@@ -1,6 +1,9 @@
 package com.fr.swift.source.etl.utils;
 
 import com.fr.stable.StringUtils;
+import com.fr.swift.source.ColumnTypeConstants;
+import com.fr.swift.source.ColumnTypeUtils;
+import com.fr.swift.source.SwiftMetaDataColumn;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -641,5 +644,11 @@ public class DateUtils {
     public static boolean afterYearMonthDayHourMinuteSecond(long time1, long time2) {
 
         return compareDate(time1, time2) > 0;
+    }
+
+    public static void checkDateColumnType(SwiftMetaDataColumn column) {
+        if(null == column || column.getType() != ColumnTypeUtils.columnTypeToSqlType(ColumnTypeConstants.ColumnType.DATE)) {
+            throw new RuntimeException("not date field");
+        }
     }
 }
