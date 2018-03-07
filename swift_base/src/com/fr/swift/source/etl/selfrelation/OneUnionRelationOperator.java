@@ -9,7 +9,11 @@ import com.fr.swift.source.SwiftMetaDataColumn;
 import com.fr.swift.source.etl.AbstractOperator;
 import com.fr.swift.source.etl.OperatorType;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Handsome on 2018/1/22 0022 10:56
@@ -81,6 +85,6 @@ public class OneUnionRelationOperator extends AbstractOperator {
 
     @Override
     public OperatorType getOperatorType() {
-        return OperatorType.ONEUNIONRELATION;
+        return OperatorType.ONE_UNION_RELATION;
     }
 }

@@ -7,7 +7,7 @@ import com.finebi.conf.structure.bean.table.FineBusinessTable;
 import com.finebi.conf.structure.result.BIDetailCell;
 import com.finebi.conf.structure.result.BIDetailTableResult;
 import com.fr.swift.adaptor.executor.SwiftTableEngineExecutor;
-import com.fr.swift.provider.ConnectionProvider;
+import com.fr.swift.manager.ConnectionProvider;
 import com.fr.swift.source.db.ConnectionInfo;
 import com.fr.swift.source.db.ConnectionManager;
 import com.fr.swift.source.db.IConnectionProvider;
@@ -34,7 +34,6 @@ public class SwiftSQLDataModelTest extends TestCase {
         IConnectionProvider connectionProvider = new ConnectionProvider();
         ConnectionManager.getInstance().registerProvider(connectionProvider);
         connectionInfo = TestConnectionProvider.createConnection();
-        ConnectionManager.getInstance().registerConnectionInfo("local", connectionInfo);
         sql = "select \n" +
 //                "合同ID,\n" +
                 "客户ID,\n" +

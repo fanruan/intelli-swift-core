@@ -1,13 +1,16 @@
 package com.fr.swift.manager;
 
 import com.fr.swift.exception.meta.SwiftMetaDataException;
-import com.fr.swift.segment.DecreaseSegmentOperator;
+import com.fr.swift.segment.HistoryFieldsSegmentOperator;
 import com.fr.swift.segment.HistorySegmentOperator;
-import com.fr.swift.segment.ISegmentOperator;
-import com.fr.swift.segment.IncreaseSegmentOperator;
+import com.fr.swift.segment.SegmentOperator;
 import com.fr.swift.segment.SegmentOperatorProvider;
 import com.fr.swift.segment.SwiftSegmentManager;
+import com.fr.swift.segment.decrease.DecreaseSegmentOperator;
+import com.fr.swift.segment.increase.IncreaseFieldsSegmentOperator;
+import com.fr.swift.segment.increase.IncreaseSegmentOperator;
 import com.fr.swift.source.DataSource;
+import com.fr.swift.source.SwiftResultSet;
 import com.fr.swift.util.Crasher;
 import com.fr.swift.utils.DataSourceUtils;
 
@@ -30,30 +33,40 @@ public class LocalSegmentOperatorProvider implements SegmentOperatorProvider {
     }
 
     @Override
-    public ISegmentOperator getIndexSegmentOperator(DataSource dataSource) {
+    public SegmentOperator getHistorySegmentOperator(DataSource dataSource, SwiftResultSet resultSet) {
         try {
+            if (DataSourceUtils.isAddColumn(dataSource)) {
+                return new HistoryFieldsSegmentOperator(dataSource.getSourceKey(), dataSource.getMetadata(),
+                        manager.getSegment(dataSource.getSourceKey()), DataSourceUtils.getSwiftSourceKey(dataSource),
+                        resultSet, DataSourceUtils.getAddFields(dataSource));
+            }
             return new HistorySegmentOperator(dataSource.getSourceKey(), dataSource.getMetadata(),
-                    manager.getSegment(dataSource.getSourceKey()), DataSourceUtils.getSwiftSourceKey(dataSource));
+                    manager.getSegment(dataSource.getSourceKey()), DataSourceUtils.getSwiftSourceKey(dataSource), resultSet);
         } catch (SwiftMetaDataException e) {
             return Crasher.crash(e);
         }
     }
 
     @Override
-    public ISegmentOperator getRealtimeSegmentOperator(DataSource dataSource) {
+    public SegmentOperator getIncreaseSegmentOperator(DataSource dataSource, SwiftResultSet resultSet) {
         try {
+            if (DataSourceUtils.isAddColumn(dataSource)) {
+                return new IncreaseFieldsSegmentOperator(dataSource.getSourceKey(), dataSource.getMetadata(),
+                        manager.getSegment(dataSource.getSourceKey()), DataSourceUtils.getSwiftSourceKey(dataSource),
+                        resultSet, DataSourceUtils.getAddFields(dataSource));
+            }
             return new IncreaseSegmentOperator(dataSource.getSourceKey(), dataSource.getMetadata(),
-                    manager.getSegment(dataSource.getSourceKey()), DataSourceUtils.getSwiftSourceKey(dataSource));
+                    manager.getSegment(dataSource.getSourceKey()), DataSourceUtils.getSwiftSourceKey(dataSource), resultSet);
         } catch (SwiftMetaDataException e) {
             return Crasher.crash(e);
         }
     }
 
     @Override
-    public ISegmentOperator getDecreaseSegmentOperator(DataSource dataSource) {
+    public SegmentOperator getDecreaseSegmentOperator(DataSource dataSource, SwiftResultSet resultSet) {
         try {
             return new DecreaseSegmentOperator(dataSource.getSourceKey(), dataSource.getMetadata(),
-                    manager.getSegment(dataSource.getSourceKey()), DataSourceUtils.getSwiftSourceKey(dataSource));
+                    manager.getSegment(dataSource.getSourceKey()), DataSourceUtils.getSwiftSourceKey(dataSource), resultSet);
         } catch (SwiftMetaDataException e) {
             return Crasher.crash(e);
         }

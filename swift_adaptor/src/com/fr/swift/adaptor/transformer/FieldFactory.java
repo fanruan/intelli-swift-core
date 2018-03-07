@@ -27,6 +27,7 @@ public class FieldFactory {
         List<FineBusinessField> fineBusinessFieldList = new ArrayList<FineBusinessField>();
         for (int i = 1; i <= swiftMetaData.getColumnCount(); i++) {
             String columnName = swiftMetaData.getColumnName(i);
+//            String columnName = swiftMetaData.getColumnRemark(i) == null ? swiftMetaData.getColumnName(i) : swiftMetaData.getColumnRemark(i);
             int columnType = swiftMetaData.getColumnType(i);
             String columnRemark = swiftMetaData.getColumnRemark(i);
             int precision = swiftMetaData.getPrecision(i);

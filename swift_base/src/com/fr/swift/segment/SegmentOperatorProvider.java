@@ -1,17 +1,16 @@
 package com.fr.swift.segment;
 
 import com.fr.swift.source.DataSource;
+import com.fr.swift.source.SwiftResultSet;
 
 /**
  * @author yee
  * @date 2018/1/4
- * <p>
- * fixme 变成OperatorProvider了 改改吧
  */
 public interface SegmentOperatorProvider {
-    ISegmentOperator getIndexSegmentOperator(DataSource dataSource);
+    SegmentOperator getHistorySegmentOperator(DataSource dataSource, SwiftResultSet resultSet);
 
-    ISegmentOperator getRealtimeSegmentOperator(DataSource dataSource);
+    SegmentOperator getIncreaseSegmentOperator(DataSource dataSource, SwiftResultSet resultSet);
 
-    ISegmentOperator getDecreaseSegmentOperator(DataSource dataSource);
+    SegmentOperator getDecreaseSegmentOperator(DataSource dataSource, SwiftResultSet resultSet);
 }

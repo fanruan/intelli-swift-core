@@ -36,7 +36,7 @@ public class ChildMap<T> {
     public T get(Object key) {
         Integer index =  lmp.get(key);
         if (index != null) {
-            int i = index.intValue();
+            int i = index;
             if (i < size()) {
                 return list.get(i);
             }
@@ -52,7 +52,7 @@ public class ChildMap<T> {
     }
 
     public T put(Object key, T value) {
-        Integer i = lmp.put(key, new Integer(list.size()));
+        Integer i = lmp.put(key, list.size());
         list.add(value);
         return i == null ? null : list.get(i);
     }

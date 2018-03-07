@@ -21,6 +21,8 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * @author yee
  * @date 2017/12/19
+ *
+ * fixme 配置可用10.0持久化了
  */
 public class SegmentXmlManager extends XMLFileManager {
 

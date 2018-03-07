@@ -5,7 +5,8 @@ import com.fr.swift.structure.Pair;
 import java.io.FileNotFoundException;
 
 /**
- * Created by FineSoft on 2015/7/15.
+ * @author FineSoft
+ * @date 2015/7/15
  */
 public interface ExternalMapIO<K, V> {
     void write(K key, V value);

@@ -35,13 +35,14 @@ public class ColumnFormulaOperator extends AbstractOperator {
     @Override
     public List<SwiftMetaDataColumn> getColumns(SwiftMetaData[] metaDatas) {
         List<SwiftMetaDataColumn> columnList = new ArrayList<SwiftMetaDataColumn>();
-        columnList.add(new MetaDataColumn(MD5Utils.getMD5String(new String[]{(this.expression + this.columnType.name())}), this.columnName, ColumnTypeUtils.columnTypeToSqlType(this.columnType)));
+        columnList.add(new MetaDataColumn(MD5Utils.getMD5String(new String[]{(this.expression + this.columnType)}),
+                this.columnName, ColumnTypeUtils.columnTypeToSqlType(this.columnType)));
         return columnList;
     }
 
     @Override
     public OperatorType getOperatorType() {
-        return OperatorType.COLUMNFORMULA;
+        return OperatorType.COLUMN_FORMULA;
     }
 
     public String getColumnName() {
@@ -54,5 +55,9 @@ public class ColumnFormulaOperator extends AbstractOperator {
 
     public String getExpression() {
         return expression;
+    }
+
+    public String getColumnMD5() {
+        return MD5Utils.getMD5String(new String[]{(this.expression + this.columnType)});
     }
 }

@@ -8,6 +8,7 @@ import com.fr.swift.segment.column.BitmapIndexedColumn;
 import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.DetailColumn;
 import com.fr.swift.segment.column.DictionaryEncodedColumn;
+import com.fr.swift.structure.array.IntList;
 
 import java.util.Comparator;
 
@@ -27,12 +28,13 @@ class GroupColumn implements Column<String> {
     }
 
     private void group(BitmapIndexedColumn indexColumn) {
-        groupedBitmaps = new ImmutableBitMap[groupRule.newSize()];
-        for (int i = 0; i < groupRule.newSize(); i++) {
-            int[] newGroup = groupRule.map(i);
+        int newSize = groupRule.newSize();
+        groupedBitmaps = new ImmutableBitMap[newSize];
+        for (int i = 0; i < newSize; i++) {
+            IntList newGroup = groupRule.map(i);
             BitMapOrHelper orHelper = new BitMapOrHelper();
-            for (int index : newGroup) {
-                orHelper.add(indexColumn.getBitMapIndex(index));
+            for (int j = 0; j < newGroup.size(); j++) {
+                orHelper.add(indexColumn.getBitMapIndex(newGroup.get(j)));
             }
             groupedBitmaps[i] = orHelper.compute();
         }
