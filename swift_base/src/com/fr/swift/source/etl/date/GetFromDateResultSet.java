@@ -91,14 +91,16 @@ public class GetFromDateResultSet implements SwiftResultSet {
     }
 
     private static DateGetter getDateGetter(int type){
-        if (ComparatorUtils.equals(type, ETLConstant.CONF.ADD_COLUMN.TIME_GAP.UNITS.YEAR)) {
-            return YearGetter.INSTANCE;
-        } else if (ComparatorUtils.equals(type, ETLConstant.CONF.ADD_COLUMN.TIME_GAP.UNITS.MONTH)) {
-            return MonthGetter.INSTANCE;
-        } else if (ComparatorUtils.equals(type, ETLConstant.CONF.ADD_COLUMN.TIME_GAP.UNITS.QUARTER)) {
-            return SeasonGetter.INSTANCE;
+        switch(type) {
+            case ETLConstant.CONF.ADD_COLUMN.TIME_GAP.UNITS.YEAR:
+                return YearGetter.INSTANCE;
+            case ETLConstant.CONF.ADD_COLUMN.TIME_GAP.UNITS.MONTH:
+                return MonthGetter.INSTANCE;
+            case ETLConstant.CONF.ADD_COLUMN.TIME_GAP.UNITS.QUARTER:
+                return SeasonGetter.INSTANCE;
+            default:
+                return SeasonGetter.INSTANCE;
         }
-        return SeasonGetter.INSTANCE;
     }
 
     private class TempValue {
