@@ -41,9 +41,8 @@ public class SumByGroupOperator extends AbstractOperator {
     @Override
     public List<SwiftMetaDataColumn> getColumns(SwiftMetaData[] tables) {
         List<SwiftMetaDataColumn> columns = new ArrayList<SwiftMetaDataColumn>();
-        for(int k = 0; k < tables.length; k++) {
-            SwiftMetaData parent = tables[k];
-            for(int i = 0; i < this.dimensions.length; i++) {
+        for (SwiftMetaData parent : tables) {
+            for (int i = 0; i < this.dimensions.length; i++) {
                 try {
                     int sqlType = parent.getColumn(this.dimensions[i].getName()).getType();
                     int columnSize = parent.getColumn(this.dimensions[i].getName()).getPrecision();
@@ -56,10 +55,10 @@ public class SumByGroupOperator extends AbstractOperator {
                     } else {
                         columns.add(new MetaDataColumn(this.dimensions[i].getNameText(), parent.getColumn(this.dimensions[i].getName()).getType(), parent.getColumn(this.dimensions[i].getName()).getPrecision()));
                     }
-                    for(int j = 0; j < this.targets.length; j++) {
+                    for (int j = 0; j < this.targets.length; j++) {
                         columns.add(new MetaDataColumn(this.targets[i].getNameText(), ColumnTypeUtils.columnTypeToSqlType(ColumnType.NUMBER), parent.getColumn(this.targets[i].getName()).getPrecision()));
                     }
-                } catch(SwiftMetaDataException e) {
+                } catch (SwiftMetaDataException e) {
                     LOGGER.error("getting meta's column information failed", e);
                 }
             }
@@ -99,7 +98,7 @@ public class SumByGroupOperator extends AbstractOperator {
 
     @Override
     public OperatorType getOperatorType() {
-        return OperatorType.GROUPSUM;
+        return OperatorType.GROUP_SUM;
     }
 
 

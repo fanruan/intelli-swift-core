@@ -7,7 +7,7 @@ import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.source.DataSource;
 import com.fr.swift.source.ETLDataSource;
 import com.fr.swift.source.SwiftMetaDataColumn;
-import com.fr.swift.source.SwiftSourceTransfer;
+import com.fr.swift.source.SwiftResultSet;
 import com.fr.swift.utils.DataSourceUtils;
 
 import java.util.List;
@@ -15,7 +15,7 @@ import java.util.List;
 /**
  * @author anchore
  * @date 2018/2/1
- *
+ * <p>
  * todo 每次update都是重新存的数据，后期这块应该能优化下
  */
 public class MinorUpdater {
@@ -43,11 +43,10 @@ public class MinorUpdater {
     }
 
     private static void build(final DataSource dataSource) throws Exception {
-        SegmentOperator operator = new MinorSegmentOperator(dataSource.getSourceKey(), dataSource.getMetadata(),
-                null, DataSourceUtils.getSwiftSourceKey(dataSource));
-        SwiftSourceTransfer transfer = SwiftDataPreviewer.createPreviewTransfer(dataSource, 100);
+        SwiftResultSet swiftResultSet = SwiftDataPreviewer.createPreviewTransfer(dataSource, 100).createResultSet();
 
-        operator.transport(transfer.createResultSet());
+        SegmentOperator operator = getSegmentOperator(dataSource, swiftResultSet);
+        operator.transport();
         operator.finishTransport();
 
         for (SwiftMetaDataColumn metaColumn : dataSource.getMetadata()) {
@@ -63,6 +62,17 @@ public class MinorUpdater {
             }.work();
         }
 
+    }
+
+    private static SegmentOperator getSegmentOperator(DataSource dataSource, SwiftResultSet swiftResultSet) throws Exception {
+
+        if (DataSourceUtils.isAddColumn(dataSource)) {
+            return new MinorFieldsSegmentOperator(dataSource.getSourceKey(), dataSource.getMetadata(),
+                    null, DataSourceUtils.getSwiftSourceKey(dataSource),
+                    swiftResultSet, DataSourceUtils.getAddFields(dataSource));
+        }
+        return new MinorSegmentOperator(dataSource.getSourceKey(), dataSource.getMetadata(),
+                null, DataSourceUtils.getSwiftSourceKey(dataSource), swiftResultSet);
     }
 
     private static boolean isEtl(DataSource ds) {

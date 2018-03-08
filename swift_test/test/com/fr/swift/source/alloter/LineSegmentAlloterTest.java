@@ -100,8 +100,8 @@ public class LineSegmentAlloterTest extends TestCase {
             }
         };
 
-        SegmentOperator operator = LocalSegmentOperatorProvider.getInstance().getIndexSegmentOperator(dataSource);
-        operator.transport(resultSet);
+        SegmentOperator operator = LocalSegmentOperatorProvider.getInstance().getHistorySegmentOperator(dataSource, resultSet);
+        operator.finishTransport();
         operator.finishTransport();
 
         segments = new ArrayList<>();

@@ -1,8 +1,6 @@
 package com.fr.swift.generate.etl.formula;
 
 import com.fr.swift.generate.BaseTest;
-import com.fr.swift.generate.history.ColumnIndexer;
-import com.fr.swift.generate.history.DataTransporter;
 import com.fr.swift.manager.LocalSegmentProvider;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.column.Column;
@@ -27,23 +25,20 @@ public class SingleTableColumnFormulaTest extends BaseTest {
      * @throws Exception
      */
     public void testOneColumnFormula() throws Exception {
+        TableBuildTestUtil.initGeneratorListener();
+
         DataSource dataSource = new QueryDBSource("select * from DEMO_CAPITAL_RETURN", "allTest");
-        DataTransporter dataTransporter = new DataTransporter(dataSource);
-        dataTransporter.work();
-        for (int i = 1; i <= dataSource.getMetadata().getColumnCount(); i++) {
-            ColumnIndexer<?> indexer = new ColumnIndexer(dataSource, new ColumnKey(dataSource.getMetadata().getColumnName(i)));
-            indexer.work();
-        }
         ETLOperator formulaOperator = new ColumnFormulaOperator("addField", ColumnTypeConstants.ColumnType.NUMBER, "${付款金额} + ${付款金额}");
         List<DataSource> baseDataSources = new ArrayList<DataSource>();
         baseDataSources.add(dataSource);
         ETLSource etlSource = new ETLSource(baseDataSources, formulaOperator);
-        DataTransporter dataTransporter1 = new DataTransporter(etlSource);
-        dataTransporter1.work();
-        for (int i = 1; i <= 1; i++) {
-            ColumnIndexer<?> indexer = new ColumnIndexer(etlSource, new ColumnKey(etlSource.getMetadata().getColumnName(i)));
-            indexer.work();
-        }
+
+        List<DataSource> dataSources = new ArrayList<DataSource>();
+        dataSources.add(dataSource);
+        dataSources.add(etlSource);
+        TableBuildTestUtil.preparePairList(dataSources);
+
+        Thread.sleep(5000l);
         Segment dataSourceSegment = LocalSegmentProvider.getInstance().getSegment(dataSource.getSourceKey()).get(0);
         Segment etlSourceSegment = LocalSegmentProvider.getInstance().getSegment(etlSource.getSourceKey()).get(0);
         assertEquals(dataSourceSegment.getLocation().getPath(), etlSourceSegment.getLocation().getPath());
@@ -71,35 +66,27 @@ public class SingleTableColumnFormulaTest extends BaseTest {
      * @throws Exception
      */
     public void testTwoColumnFormula() throws Exception {
+        TableBuildTestUtil.initGeneratorListener();
+
         DataSource dataSource = new QueryDBSource("select 付款金额,付款时间,合同ID from DEMO_CAPITAL_RETURN", "allTest");
-        DataTransporter dataTransporter = new DataTransporter(dataSource);
-        dataTransporter.work();
-        for (int i = 1; i <= dataSource.getMetadata().getColumnCount(); i++) {
-            ColumnIndexer<?> indexer = new ColumnIndexer(dataSource, new ColumnKey(dataSource.getMetadata().getColumnName(i)));
-            indexer.work();
-        }
 
         ETLOperator formulaOperator1 = new ColumnFormulaOperator("addField", ColumnTypeConstants.ColumnType.NUMBER, "${付款金额} + ${付款金额}");
         List<DataSource> baseDataSources1 = new ArrayList<DataSource>();
         baseDataSources1.add(dataSource);
         ETLSource etlSource1 = new ETLSource(baseDataSources1, formulaOperator1);
-        DataTransporter dataTransporter1 = new DataTransporter(etlSource1);
-        dataTransporter1.work();
-        for (int i = 1; i <= 1; i++) {
-            ColumnIndexer<?> indexer = new ColumnIndexer(etlSource1, new ColumnKey(etlSource1.getMetadata().getColumnName(i)));
-            indexer.work();
-        }
 
         ETLOperator formulaOperator2 = new ColumnFormulaOperator("addField2", ColumnTypeConstants.ColumnType.NUMBER, "${addField} + ${addField}");
         List<DataSource> baseDataSources2 = new ArrayList<DataSource>();
         baseDataSources2.add(etlSource1);
         ETLSource etlSource2 = new ETLSource(baseDataSources2, formulaOperator2);
-        DataTransporter dataTransporter2 = new DataTransporter(etlSource2);
-        dataTransporter2.work();
-        for (int i = 1; i <= 1; i++) {
-            ColumnIndexer<?> indexer = new ColumnIndexer(etlSource2, new ColumnKey(etlSource2.getMetadata().getColumnName(i)));
-            indexer.work();
-        }
+
+        List<DataSource> dataSources = new ArrayList<DataSource>();
+        dataSources.add(dataSource);
+        dataSources.add(etlSource1);
+        dataSources.add(etlSource2);
+        TableBuildTestUtil.preparePairList(dataSources);
+
+        Thread.sleep(5000l);
 
         Segment dataSourceSegment = LocalSegmentProvider.getInstance().getSegment(dataSource.getSourceKey()).get(0);
         Segment etlSourceSegment = LocalSegmentProvider.getInstance().getSegment(etlSource1.getSourceKey()).get(0);

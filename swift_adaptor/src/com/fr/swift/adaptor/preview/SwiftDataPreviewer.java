@@ -10,9 +10,9 @@ import com.fr.swift.source.db.QueryDBSource;
 import com.fr.swift.source.db.ServerDBSource;
 import com.fr.swift.source.db.TableDBSource;
 import com.fr.swift.source.etl.ETLOperator;
-import com.fr.swift.source.etl.ETLTransfer;
 import com.fr.swift.source.etl.ETLTransferOperator;
-import com.fr.swift.source.etl.ETLTransferOperatorFactory;
+import com.fr.swift.source.etl.EtlTransfer;
+import com.fr.swift.source.etl.EtlTransferOperatorFactory;
 import com.fr.swift.source.excel.ExcelDataSource;
 
 import java.util.ArrayList;
@@ -39,10 +39,10 @@ public final class SwiftDataPreviewer {
         return transfer;
     }
 
-    private static ETLTransfer createMinorEtlTransfer(ETLDataSource source) {
+    private static EtlTransfer createMinorEtlTransfer(ETLDataSource source) {
         SwiftMetaData metaData = source.getMetadata();
         ETLOperator operator = source.getOperator();
-        ETLTransferOperator transferOperator = ETLTransferOperatorFactory.createTransferOperator(operator);
+        ETLTransferOperator transferOperator = EtlTransferOperatorFactory.createTransferOperator(operator);
         List<SwiftMetaData> basedMetas = new ArrayList<SwiftMetaData>();
         for (DataSource basedSource : source.getBasedSources()) {
             basedMetas.add(basedSource.getMetadata());
@@ -56,6 +56,6 @@ public final class SwiftDataPreviewer {
         if (baseDataSourceList.isEmpty()) {
             basedSegments.add(new Segment[0]);
         }
-        return new ETLTransfer(transferOperator, metaData, basedMetas, basedSegments);
+        return new EtlTransfer(transferOperator, metaData, basedMetas, basedSegments);
     }
 }

@@ -1,7 +1,9 @@
 package com.fr.swift.structure.array;
 
 /**
- * Created by 小灰灰 on 2017/5/22.
+ *
+ * @author 小灰灰
+ * @date 2017/5/22
  */
 public interface IntArray {
     void put(int index, int value);

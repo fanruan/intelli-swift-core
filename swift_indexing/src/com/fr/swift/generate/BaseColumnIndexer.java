@@ -8,7 +8,7 @@ import com.fr.swift.cube.io.location.IResourceLocation;
 import com.fr.swift.cube.task.Task.Result;
 import com.fr.swift.cube.task.impl.BaseWorker;
 import com.fr.swift.exception.meta.SwiftMetaDataException;
-import com.fr.swift.generate.history.ColumnDictMerger;
+import com.fr.swift.generate.history.index.ColumnDictMerger;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.manager.LocalSegmentProvider;
 import com.fr.swift.segment.Segment;
@@ -23,7 +23,7 @@ import com.fr.swift.source.DataSource;
 import com.fr.swift.structure.array.IntList;
 import com.fr.swift.structure.array.IntListFactory;
 import com.fr.swift.structure.external.map.ExternalMap;
-import com.fr.swift.structure.external.map.intlist.map2.ExternalIntArrayMapFactory;
+import com.fr.swift.structure.external.map.intlist.IntListExternalMapFactory;
 import com.fr.swift.util.Crasher;
 
 import java.util.Comparator;
@@ -164,7 +164,7 @@ public abstract class BaseColumnIndexer<T extends Comparable<T>> extends BaseWor
     }
 
     private ExternalMap<T, IntList> newIntListExternalMap(Comparator<T> c, String path) {
-        return ExternalIntArrayMapFactory.getIntListExternalMap(getClassType(), c, path, true);
+        return IntListExternalMapFactory.getIntListExternalMap(getClassType(), c, path, true);
     }
 
     private ClassType getClassType() {

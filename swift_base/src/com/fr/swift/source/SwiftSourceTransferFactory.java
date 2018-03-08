@@ -8,14 +8,15 @@ import com.fr.swift.source.db.TableDBSource;
 import com.fr.swift.source.db.TableDBSourceTransfer;
 import com.fr.swift.source.etl.ETLOperator;
 import com.fr.swift.source.etl.ETLSource;
-import com.fr.swift.source.etl.ETLTransferFactory;
+import com.fr.swift.source.etl.EtlTransferFactory;
 import com.fr.swift.source.excel.ExcelDataSource;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by pony on 2017/11/22.
+ * @author pony
+ * @date 2017/11/22
  */
 public class SwiftSourceTransferFactory {
     public static SwiftSourceTransfer createSourceTransfer(DataSource dataSource) {
@@ -31,7 +32,7 @@ public class SwiftSourceTransferFactory {
         } else if (dataSource instanceof ExcelDataSource) {
 
         } else if (dataSource instanceof ETLSource) {
-            transfer = ETLTransferFactory.createTransfer((ETLSource) dataSource);
+            transfer = EtlTransferFactory.createTransfer((ETLSource) dataSource);
         }
         return transfer;
     }

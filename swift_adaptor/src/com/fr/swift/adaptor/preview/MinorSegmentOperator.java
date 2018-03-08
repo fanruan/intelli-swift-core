@@ -3,11 +3,12 @@ package com.fr.swift.adaptor.preview;
 import com.fr.swift.cube.io.Types.StoreType;
 import com.fr.swift.cube.io.location.ResourceLocation;
 import com.fr.swift.exception.meta.SwiftMetaDataException;
-import com.fr.swift.segment.IncreaseSegmentOperator;
+import com.fr.swift.segment.increase.IncreaseSegmentOperator;
 import com.fr.swift.segment.RealTimeSegmentImpl;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftMetaData;
+import com.fr.swift.source.SwiftResultSet;
 
 import java.util.Collections;
 import java.util.List;
@@ -17,8 +18,10 @@ import java.util.List;
  * @date 2018/2/2
  */
 class MinorSegmentOperator extends IncreaseSegmentOperator {
-    public MinorSegmentOperator(SourceKey sourceKey, SwiftMetaData metaData, List<Segment> segments, String cubeSourceKey) throws SwiftMetaDataException {
-        super(sourceKey, metaData, segments, cubeSourceKey);
+
+    public MinorSegmentOperator(SourceKey sourceKey, SwiftMetaData metaData, List<Segment> segments,
+                                String cubeSourceKey, SwiftResultSet swiftResultSet) throws SwiftMetaDataException {
+        super(sourceKey, metaData, segments, cubeSourceKey, swiftResultSet);
     }
 
     @Override

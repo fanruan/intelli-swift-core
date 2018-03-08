@@ -38,7 +38,7 @@ public class EngineWidgetExecutorManagerImpl implements EngineWidgetExecutorMana
     }
 
     @Override
-    public BICrossNode visit(CrossTableWidget tableWidget) throws Exception {
+    public BICrossNode visit(CrossTableWidget tableWidget) {
         return null;
     }
 
@@ -53,42 +53,42 @@ public class EngineWidgetExecutorManagerImpl implements EngineWidgetExecutorMana
     }
 
     @Override
-    public BISingleSliderResult visit(SingleSliderWidget detailWidget) throws Exception {
+    public BISingleSliderResult visit(SingleSliderWidget detailWidget) {
         return null;
     }
 
     @Override
-    public BIYearControlResult visit(YearControlWidget detailWidget) throws Exception {
+    public BIYearControlResult visit(YearControlWidget detailWidget) {
         return null;
     }
 
     @Override
-    public BIQuarterResult visit(QuarterControlWidget detailWidget) throws Exception {
+    public BIQuarterResult visit(QuarterControlWidget detailWidget) {
         return null;
     }
 
     @Override
-    public BIMonthControlResult visit(MonthControlWidget detailWidget) throws Exception {
+    public BIMonthControlResult visit(MonthControlWidget detailWidget) {
         return null;
     }
 
     @Override
-    public BITreeResult visit(TreeWidget detailWidget) throws Exception {
+    public BITreeResult visit(TreeWidget detailWidget) {
         return null;
     }
 
     @Override
-    public BIResult visit(TreeLabelWidget labelWidget) throws Exception {
+    public BIResult visit(TreeLabelWidget labelWidget) {
         return null;
     }
 
     @Override
-    public BIResult visit(TreeListWidget labelWidget) throws Exception {
+    public BIResult visit(TreeListWidget labelWidget) {
         return null;
     }
 
     @Override
-    public BIListLabelResult visit(ListLabelWidget listLabelWidget) throws Exception {
+    public BIListLabelResult visit(ListLabelWidget listLabelWidget) {
         return null;
     }
 

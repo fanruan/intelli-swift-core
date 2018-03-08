@@ -21,14 +21,14 @@ public class ColumnRowTransOperator extends AbstractOperator {
     private static final SwiftLogger LOGGER = SwiftLoggers.getLogger(ColumnRowTransOperator.class);
     private String groupName;
     private String lcName;
-    private List<NameText> lc_value;
+    private List<NameText> lcValue;
     private List<NameText> columns;
     private List<String> otherColumnNames;
 
-    public ColumnRowTransOperator(String groupName, String lcName, List<NameText> lc_value, List<NameText> columns, List<String> otherColumnNames) {
+    public ColumnRowTransOperator(String groupName, String lcName, List<NameText> lcValue, List<NameText> columns, List<String> otherColumnNames) {
         this.groupName = groupName;
         this.lcName = lcName;
-        this.lc_value = lc_value;
+        this.lcValue = lcValue;
         this.columns = columns;
         this.otherColumnNames = otherColumnNames;
     }
@@ -41,8 +41,8 @@ public class ColumnRowTransOperator extends AbstractOperator {
         return this.lcName;
     }
 
-    public List<NameText> getLc_value() {
-        return this.lc_value;
+    public List<NameText> getLcValue() {
+        return this.lcValue;
     }
 
     public List<NameText> getColumns() {
@@ -69,9 +69,9 @@ public class ColumnRowTransOperator extends AbstractOperator {
                 }
                 for(NameText column : this.columns) {
                     SwiftMetaDataColumn c = table.getColumn(column.origin);
-                    for(NameText aLc_value : lc_value) {
-                        String lcColumn = aLc_value.origin + "-" + column.origin;
-                        String text = aLc_value.getTransText() + "-" + column.getTransText();
+                    for (NameText aLcValue : lcValue) {
+                        String lcColumn = aLcValue.origin + "-" + column.origin;
+                        String text = aLcValue.getTransText() + "-" + column.getTransText();
                         String lcColumnText = ComparatorUtils.equals(text, lcColumn) ? null : text;
                         columnList.add(new MetaDataColumn(lcColumn, lcColumnText, c.getType(), c.getPrecision(), c.getScale()));
                     }
@@ -85,7 +85,7 @@ public class ColumnRowTransOperator extends AbstractOperator {
 
     @Override
     public OperatorType getOperatorType() {
-        return OperatorType.COLUMNROWTRANS;
+        return OperatorType.COLUMN_ROW_TRANS;
     }
 
     private boolean isColumnSelected(String name) {
