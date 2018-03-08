@@ -14,7 +14,7 @@ import java.util.Set;
 /**
  * Created by Lyon on 2017/11/28.
  */
-abstract class AbstractNumberContainFilter<T extends Number> extends AbstractFilter<Number> {
+abstract class AbstractNumberContainFilter<T extends Number> extends AbstractFilter<T> {
 
     private Set<T> groups;
 
@@ -26,9 +26,9 @@ abstract class AbstractNumberContainFilter<T extends Number> extends AbstractFil
     protected abstract Number getNodeData(Number value);
 
     @Override
-    protected RowTraversal getIntIterator(DictionaryEncodedColumn<Number> dict) {
+    protected RowTraversal getIntIterator(DictionaryEncodedColumn<T> dict) {
         IntList intList = IntListFactory.createIntList();
-        for (Number number : groups) {
+        for (T number : groups) {
             intList.add(dict.getIndex(number));
         }
         return new IntListRowTraversal(intList);

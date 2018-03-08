@@ -29,7 +29,7 @@ public class StringLikeFilter extends AbstractFilter<String> {
         IntList intList = IntListFactory.createIntList();
         for (int i = 0, size = dict.size(); i < size; i++) {
             String data = dict.getValue(i);
-            if (data != null && data.indexOf(like) != -1) {
+            if (data != null && data.contains(like)) {
                 intList.add(i);
             }
         }
@@ -39,6 +39,6 @@ public class StringLikeFilter extends AbstractFilter<String> {
     @Override
     public boolean matches(SwiftNode node) {
         String data = (String) node.getData();
-        return data != null && data.indexOf(like) != -1;
+        return data != null && data.contains(like);
     }
 }
