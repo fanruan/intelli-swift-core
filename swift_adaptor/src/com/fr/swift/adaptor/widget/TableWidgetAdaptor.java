@@ -1,4 +1,4 @@
-package com.fr.swift.adaptor.widget.group;
+package com.fr.swift.adaptor.widget;
 
 import com.finebi.conf.constant.BIReportConstant.SORT;
 import com.finebi.conf.exception.FineEngineException;
@@ -6,8 +6,11 @@ import com.finebi.conf.internalimp.dashboard.widget.table.TableWidget;
 import com.finebi.conf.structure.dashboard.widget.dimension.FineDimension;
 import com.finebi.conf.structure.dashboard.widget.dimension.FineDimensionSort;
 import com.finebi.conf.structure.dashboard.widget.target.FineTarget;
+import com.finebi.conf.structure.result.table.BIGroupNode;
 import com.finebi.conf.utils.FineFieldUtils;
 import com.fr.swift.adaptor.transformer.ColumnTypeAdaptor;
+import com.fr.swift.adaptor.widget.group.GroupAdaptor;
+import com.fr.swift.cal.QueryInfo;
 import com.fr.swift.cal.info.Expander;
 import com.fr.swift.cal.info.GroupQueryInfo;
 import com.fr.swift.cal.result.group.Cursor;
@@ -32,11 +35,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * @author anchore
- * @date 2018/2/27
+ * @author pony
+ * @date 2017/12/21
+ * 分组表
  */
-public class GroupQueryInfoAdaptor {
-    public static GroupQueryInfo adaptTableWidget(TableWidget widget) throws Exception {
+public class TableWidgetAdaptor {
+    public static BIGroupNode calculate(TableWidget widget) {
+        return null;
+    }
+
+    static QueryInfo buildQueryInfo(TableWidget widget) throws Exception {
         Cursor cursor = null;
         String queryId = widget.getWidgetId();
         FilterInfo filterInfo = null;
@@ -116,5 +124,4 @@ public class GroupQueryInfoAdaptor {
                 return null;
         }
     }
-
 }

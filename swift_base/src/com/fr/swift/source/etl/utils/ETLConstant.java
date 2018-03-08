@@ -273,6 +273,7 @@ public class ETLConstant {
                     public static final int AVG = 0x2;
                     public static final int MAX = 0x3;
                     public static final int MIN = 0x4;
+                    public static final int COUNT = 6;
                 }
             }
             public static final class ACCUMULATIVE_VALUE {
