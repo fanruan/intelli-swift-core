@@ -21,8 +21,12 @@ import java.util.List;
  */
 public class DetailOperator extends AbstractOperator {
     private static final SwiftLogger LOGGER = SwiftLoggers.getLogger(DetailOperator.class);
+    //主表的字段
     @CoreField
     private List<ColumnKey[]> fields;
+    //子表的字段
+    @CoreField
+    private List<ColumnKey> baseFields;
     private List<SwiftMetaData> baseMetas;
 
     /**
@@ -30,9 +34,10 @@ public class DetailOperator extends AbstractOperator {
      * @param fields 每个基础表的字段,不包括最子表
      * @param baseMetas 基础表的metadata,不包括最子表
      */
-    public DetailOperator(List<ColumnKey[]> fields, List<SwiftMetaData> baseMetas) {
+    public DetailOperator(List<ColumnKey[]> fields, List<ColumnKey> baseFields, List<SwiftMetaData> baseMetas) {
         Util.requireNonNull(fields, baseMetas);
         this.fields = fields;
+        this.baseFields = baseFields;
         this.baseMetas = baseMetas;
     }
 

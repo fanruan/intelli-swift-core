@@ -85,6 +85,6 @@ public class OneUnionRelationOperator extends AbstractOperator {
 
     @Override
     public OperatorType getOperatorType() {
-        return OperatorType.ONEUNIONRELATION;
+        return OperatorType.ONE_UNION_RELATION;
     }
 }

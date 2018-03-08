@@ -1,12 +1,11 @@
 package com.fr.swift.structure.array;
 
 /**
- * Created by Lyon on 2017/11/27.
+ *
+ * @author Lyon
+ * @date 2017/11/27
  */
 public class EmptyIntList implements IntList {
-
-    protected EmptyIntList() {}
-
     @Override
     public void add(int value) {
         throw new UnsupportedOperationException();
@@ -14,7 +13,7 @@ public class EmptyIntList implements IntList {
 
     @Override
     public int get(int index) {
-        throw new UnsupportedOperationException();
+        throw new IndexOutOfBoundsException();
     }
 
     @Override

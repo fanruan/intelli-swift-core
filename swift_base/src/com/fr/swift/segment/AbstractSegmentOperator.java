@@ -3,6 +3,7 @@ package com.fr.swift.segment;
 import com.fr.swift.exception.meta.SwiftMetaDataException;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftMetaData;
+import com.fr.swift.source.SwiftResultSet;
 import com.fr.swift.source.SwiftSourceAlloter;
 import com.fr.swift.source.SwiftSourceAlloterFactory;
 import com.fr.swift.util.Crasher;
@@ -25,14 +26,16 @@ public abstract class AbstractSegmentOperator implements SegmentOperator {
     protected SwiftSourceAlloter alloter;
     protected List<SegmentHolder> segmentList;
     protected String cubeSourceKey;
+    protected SwiftResultSet swiftResultSet;
 
-    public AbstractSegmentOperator(SourceKey sourceKey, SwiftMetaData metaData, List<Segment> segments, String cubeSourceKey) {
+    public AbstractSegmentOperator(SourceKey sourceKey, SwiftMetaData metaData, List<Segment> segments, String cubeSourceKey, SwiftResultSet swiftResultSet) {
         Util.requireNonNull(sourceKey, metaData);
         this.sourceKey = sourceKey;
         this.metaData = metaData;
         this.alloter = SwiftSourceAlloterFactory.createSourceAlloter(sourceKey);
         this.segmentList = new ArrayList<SegmentHolder>();
         this.cubeSourceKey = cubeSourceKey;
+        this.swiftResultSet = swiftResultSet;
     }
 
     protected int indexOfColumn(String columnName) throws SwiftMetaDataException {
@@ -44,4 +47,27 @@ public abstract class AbstractSegmentOperator implements SegmentOperator {
         return Crasher.crash("Can not find column named: " + columnName);
     }
 
+    @Override
+    public List<String> getIndexFields() throws SwiftMetaDataException {
+        List<String> fields = new ArrayList<String>();
+        for (int i = 1; i <= metaData.getColumnCount(); i++) {
+            fields.add(metaData.getColumnName(i));
+        }
+        return fields;
+    }
+
+    @Override
+    public void transport() throws Exception {
+
+    }
+
+    @Override
+    public void finishTransport() {
+
+    }
+
+    @Override
+    public int getSegmentCount() {
+        return segmentList.size();
+    }
 }

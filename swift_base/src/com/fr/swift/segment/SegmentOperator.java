@@ -1,8 +1,8 @@
 package com.fr.swift.segment;
 
-import com.fr.swift.source.Row;
-import com.fr.swift.source.SwiftResultSet;
+import com.fr.swift.exception.meta.SwiftMetaDataException;
 
+import java.util.List;
 
 /**
  * This class created on 2018-1-10 10:51:13
@@ -13,11 +13,11 @@ import com.fr.swift.source.SwiftResultSet;
  */
 public interface SegmentOperator {
 
-    void transport(SwiftResultSet swiftResultSet) throws Exception;
-
-    void transportRow(long row, String allotColumn, Row data) throws Exception;
+    void transport() throws Exception;
 
     void finishTransport();
 
     int getSegmentCount();
+
+    List<String> getIndexFields() throws SwiftMetaDataException;
 }

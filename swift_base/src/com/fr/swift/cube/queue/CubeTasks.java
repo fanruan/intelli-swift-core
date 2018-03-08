@@ -71,7 +71,7 @@ public class CubeTasks {
         return etlTask;
     }
 
-    public static SchedulerTask newRelationTask(RelationSource relation/*, DataSource primary, DataSource foreign*/) {
+    public static SchedulerTask newRelationTask(RelationSource relation) {
         return new SchedulerTaskImpl(newTaskKey(relation));
     }
 

@@ -9,8 +9,6 @@ import com.fr.swift.query.group.by.GroupByResult;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.ColumnKey;
-import com.fr.swift.segment.column.DetailColumn;
-import com.fr.swift.segment.column.DictionaryEncodedColumn;
 import com.fr.swift.structure.iterator.RowTraversal;
 
 import java.util.Comparator;
@@ -19,8 +17,6 @@ import java.util.Comparator;
  * Created by Handsome on 2017/12/28 0028 12:00
  */
 public class GroupValueIterator {
-    private DetailColumn[] getters;
-    private DictionaryEncodedColumn[] mapGetters;
     private SwiftValuesAndGVI[] next;
     private ImmutableBitMap allShowIndex;
     private GroupByResult[][] iterators;
@@ -38,21 +34,19 @@ public class GroupValueIterator {
     public GroupValueIterator(Segment[] segment, ColumnKey[] columnKey, Group[] groups) {
         this.segment = segment;
         this.columnKey = columnKey;
-        this.groups = groups;
         iterators = new GroupByResult[this.segment.length][this.columnKey.length];
         valuesAndGVIs = new SwiftValuesAndGVI[this.segment.length][this.columnKey.length + 1];
         next = new SwiftValuesAndGVI[this.segment.length];
-        if (groups == null || groups.length != columnKey.length) {
-            //this.groups = new Group[columnKey.length];
+        if(groups == null || groups.length != columnKey.length){
+            this.groups = new Group[columnKey.length];
         } else {
             this.groups = groups;
-            this.mapGetters = new DictionaryEncodedColumn[columnKey.length];
         }
         //初始化
         for (int i = 0; i < this.segment.length; i++) {
             allShowIndex = this.segment[i].getAllShowIndex();
             valuesAndGVIs[i][0] = new SwiftValuesAndGVI(new Object[0], allShowIndex);
-            iterators[i][0] = getIter(this.segment[i].getColumn(columnKey[0]), allShowIndex);
+            iterators[i][0] = getIter(this.segment[i].getColumn(columnKey[0]), allShowIndex, 0);
             if (iterators[i][0].hasNext()) {
                 move(i, 0);
             } else {
@@ -83,7 +77,7 @@ public class GroupValueIterator {
         for (int i = index; i < columnKey.length; i++) {
             Column singleColumn = this.segment[numOfSegment].getColumn(columnKey[i]);
             if (i != index) {
-                iterators[numOfSegment][i] = getIter(singleColumn, valuesAndGVIs[numOfSegment][i].getGvi());
+                iterators[numOfSegment][i] = getIter(singleColumn, valuesAndGVIs[numOfSegment][i].getGvi(), i);
             }
             Object[] values = new Object[i + 1];
             System.arraycopy(valuesAndGVIs[numOfSegment][i].getValues(), 0, values, 0, values.length - 1);
@@ -151,7 +145,10 @@ public class GroupValueIterator {
     }
 
     // TODO need to do
-    private GroupByResult getIter(Column column, RowTraversal gvi) {
+    private GroupByResult getIter(Column column, RowTraversal gvi, int index) {
+        if (groups[index] != null) {
+            return GroupBy.createGroupByResult(groups[index].getGroupOperator().group(column), gvi, true);
+        }
         return GroupBy.createGroupByResult(column, gvi, true);
     }
 }

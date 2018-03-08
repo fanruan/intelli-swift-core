@@ -133,7 +133,7 @@ public class TwoUnionRelationOperatorResultSet implements SwiftResultSet {
             List listRow = Arrays.asList(res);
             ListBasedRow listBasedRow = new ListBasedRow(listRow);
             row.setRow(listBasedRow);
-            if(rowCursor < segments[segCursor].getRowCount() - 1) {
+            if(rowCursor < rowCount - 1) {
                 rowCursor++;
             } else {
                 if(segCursor < segments.length) {

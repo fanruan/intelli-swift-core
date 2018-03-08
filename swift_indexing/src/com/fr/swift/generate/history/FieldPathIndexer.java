@@ -3,6 +3,7 @@ package com.fr.swift.generate.history;
 import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.bitmap.impl.BitMapOrHelper;
 import com.fr.swift.cube.task.Task;
+import com.fr.swift.generate.history.index.RelationIndexHelper;
 import com.fr.swift.relation.CubeLogicColumnKey;
 import com.fr.swift.relation.CubeMultiRelationPath;
 import com.fr.swift.segment.Segment;

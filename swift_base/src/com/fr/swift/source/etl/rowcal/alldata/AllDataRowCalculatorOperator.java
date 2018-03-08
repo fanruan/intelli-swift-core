@@ -1,5 +1,6 @@
 package com.fr.swift.source.etl.rowcal.alldata;
 
+import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.source.*;
 import com.fr.swift.source.etl.AbstractOperator;
 import com.fr.swift.source.etl.OperatorType;
@@ -13,23 +14,26 @@ import java.util.List;
  */
 public class AllDataRowCalculatorOperator extends AbstractOperator {
 
-    private int summaryType = ETLConstant.SUMMARY_TYPE.SUM;
-    private int rule = ETLConstant.TARGET_TYPE.SUM_OF_ALL;
-    private String columnName;
+    private int summaryType = ETLConstant.CONF.GROUP.NUMBER.SUM;
+    private String addedColumnName;//新增列
     private int columnType;
+    private String columnName;
+    private ColumnKey[] dimension;
 
-    public AllDataRowCalculatorOperator(String columnName, int columnType) {
-        this.columnName = columnName;
+    public AllDataRowCalculatorOperator(String addedColumnName, int columnType, String columnName, ColumnKey[] dimension) {
+        this.addedColumnName = addedColumnName;
         this.columnType = columnType;
+        this.columnName = columnName;
+        this.dimension = dimension;
+    }
+    public ColumnKey[] getDimension() {
+        return dimension;
     }
 
+    public String getAddedColumnName() { return addedColumnName; }
 
     public int getSummaryType() {
         return summaryType;
-    }
-
-    public int getRule() {
-        return rule;
     }
 
     public String getColumnName() {
@@ -40,10 +44,11 @@ public class AllDataRowCalculatorOperator extends AbstractOperator {
         return columnType;
     }
 
+
     @Override
     public List<SwiftMetaDataColumn> getColumns(SwiftMetaData[] metaDatas) {
         List<SwiftMetaDataColumn> columnList = new ArrayList<SwiftMetaDataColumn>();
-        columnList.add(new MetaDataColumn(columnName, getSqlType(metaDatas)));
+        columnList.add(new MetaDataColumn(addedColumnName, getSqlType(metaDatas)));
         return columnList;
     }
 
@@ -53,6 +58,6 @@ public class AllDataRowCalculatorOperator extends AbstractOperator {
 
     @Override
     public OperatorType getOperatorType() {
-        return OperatorType.DETAIL;
+        return OperatorType.ALLDATA;
     }
 }

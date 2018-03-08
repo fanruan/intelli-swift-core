@@ -1,6 +1,5 @@
 package com.fr.swift.source.etl.groupsum;
 
-import com.finebi.conf.constant.BIConfConstants;
 import com.fr.general.ComparatorUtils;
 import com.fr.swift.bitmap.traversal.TraversalAction;
 import com.fr.swift.query.aggregator.AverageAggregate;
@@ -35,7 +34,7 @@ public class SumByGroupTarget implements Serializable {
 
     public Object getSumValue(Segment[] segments, RowTraversal[] traversal) {
         switch (sumType) {
-            case BIConfConstants.CONF.GROUP.NUMBER.SUM: {
+            case ETLConstant.CONF.GROUP.NUMBER.SUM: {
                 DoubleAmountAggregateValue value = SumAggregate.INSTANCE.aggregate(traversal[0], segments[0].getColumn(new ColumnKey(name)));
                 for (int i = 1; i < segments.length; i++) {
                     DoubleAmountAggregateValue otherValue = SumAggregate.INSTANCE.aggregate(traversal[i], segments[i].getColumn(new ColumnKey(name)));
@@ -43,7 +42,7 @@ public class SumByGroupTarget implements Serializable {
                 }
                 return value.calculate();
             }
-            case BIConfConstants.CONF.GROUP.NUMBER.AVG: {
+            case ETLConstant.CONF.GROUP.NUMBER.AVG: {
                 DoubleAverageAggregateValue averageValue = AverageAggregate.INSTANCE.aggregate(traversal[0], segments[0].getColumn(new ColumnKey(name)));
                 for (int i = 1; i < segments.length; i++) {
                     DoubleAverageAggregateValue otherValue = AverageAggregate.INSTANCE.aggregate(traversal[i], segments[i].getColumn(new ColumnKey(name)));
@@ -51,7 +50,7 @@ public class SumByGroupTarget implements Serializable {
                 }
                 return averageValue.calculate();
             }
-            case BIConfConstants.CONF.GROUP.NUMBER.MAX: {
+            case ETLConstant.CONF.GROUP.NUMBER.MAX: {
                 DoubleAmountAggregateValue maxValue = MaxAggregate.INSTANCE.aggregate(traversal[0], segments[0].getColumn(new ColumnKey(name)));
                 for (int i = 1; i < segments.length; i++) {
                     DoubleAmountAggregateValue otherValue = MaxAggregate.INSTANCE.aggregate(traversal[i], segments[i].getColumn(new ColumnKey(name)));
@@ -59,7 +58,7 @@ public class SumByGroupTarget implements Serializable {
                 }
                 return maxValue.calculate();
             }
-            case BIConfConstants.CONF.GROUP.NUMBER.MIN: {
+            case ETLConstant.CONF.GROUP.NUMBER.MIN: {
                 DoubleAmountAggregateValue minValue = MinAggregate.INSTANCE.aggregate(traversal[0], segments[0].getColumn(new ColumnKey(name)));
                 for (int i = 1; i < segments.length; i++) {
                     DoubleAmountAggregateValue otherValue = MaxAggregate.INSTANCE.aggregate(traversal[i], segments[i].getColumn(new ColumnKey(name)));
@@ -67,7 +66,7 @@ public class SumByGroupTarget implements Serializable {
                 }
                 return minValue.calculate();
             }
-            case BIConfConstants.CONF.GROUP.NUMBER.COUNT: {
+            case ETLConstant.CONF.GROUP.NUMBER.COUNT: {
                 DistinctCountAggregatorValue aggregatorValue = DistinctAggregate.INSTANCE.aggregate(traversal[0], segments[0].getColumn(new ColumnKey(name)));
                 for (int i = 1; i < segments.length; i++) {
                     DistinctCountAggregatorValue otherValue = DistinctAggregate.INSTANCE.aggregate(traversal[i], segments[i].getColumn(new ColumnKey(name)));
@@ -75,10 +74,10 @@ public class SumByGroupTarget implements Serializable {
                 }
                 return aggregatorValue.calculate();
             }
-            case BIConfConstants.CONF.GROUP.STRING.APPEND: {
+            case ETLConstant.CONF.GROUP.STRING.APPEND: {
                 return getAppendString(segments, traversal);
             }
-            case BIConfConstants.CONF.GROUP.NUMBER.RECORD_COUNT: {
+            case ETLConstant.CONF.GROUP.NUMBER.RECORD_COUNT: {
                 double count = 0;
                 for (int i = 0; i < traversal.length; i++) {
                     count += (double) traversal[i].getCardinality();
@@ -144,7 +143,7 @@ public class SumByGroupTarget implements Serializable {
 
     public ColumnType getColumnType() {
         // TODO
-        return getSumType() == ETLConstant.SUMMARY_TYPE.APPEND ?
+        return getSumType() == ETLConstant.CONF.GROUP.STRING.APPEND ?
                 ColumnType.STRING : ColumnType.NUMBER;
     }
 

@@ -90,6 +90,6 @@ public class TwoUnionRelationOperator extends AbstractOperator {
 
     @Override
     public OperatorType getOperatorType() {
-        return OperatorType.TWOUNIONRELATION;
+        return OperatorType.TWO_UNION_RELATION;
     }
 }

@@ -1,14 +1,14 @@
 package com.fr.swift.fine.adaptor.executor;
 
 import com.finebi.base.constant.FineEngineType;
+import com.finebi.conf.env.LocalEnv;
 import com.finebi.conf.internalimp.basictable.table.FineDBBusinessTable;
 import com.finebi.conf.structure.bean.field.FineBusinessField;
 import com.finebi.conf.structure.result.BIDetailCell;
 import com.finebi.conf.structure.result.BIDetailTableResult;
 import com.fr.base.FRContext;
-import com.fr.dav.LocalEnv;
 import com.fr.swift.adaptor.executor.SwiftTableEngineExecutor;
-import com.fr.swift.provider.ConnectionProvider;
+import com.fr.swift.manager.ConnectionProvider;
 import com.fr.swift.source.db.ConnectionInfo;
 import com.fr.swift.source.db.ConnectionManager;
 import com.fr.swift.source.db.IConnectionProvider;
@@ -38,7 +38,7 @@ public class SwiftDBEngineExecutorTest extends TestCase {
         IConnectionProvider connectionProvider = new ConnectionProvider();
         ConnectionManager.getInstance().registerProvider(connectionProvider);
         connectionInfo = TestConnectionProvider.createConnection();
-        ConnectionManager.getInstance().registerConnectionInfo("local", connectionInfo);
+//        ConnectionManager.getInstance().registerConnectionInfo("local", connectionInfo);
     }
 
 

@@ -3,7 +3,7 @@ package com.fr.swift.fine.adaptor.update;
 import com.finebi.conf.internalimp.connection.FineConnectionImp;
 import com.finebi.conf.structure.bean.connection.FineConnection;
 import com.finebi.conf.utils.FineConnectionUtils;
-import com.fr.swift.provider.ConnectionProvider;
+import com.fr.swift.manager.ConnectionProvider;
 import com.fr.swift.resource.ResourceUtils;
 import com.fr.swift.source.db.ConnectionManager;
 import com.fr.swift.source.db.IConnectionProvider;

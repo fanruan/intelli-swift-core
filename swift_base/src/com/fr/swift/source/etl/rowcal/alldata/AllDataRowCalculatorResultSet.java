@@ -6,6 +6,8 @@ import com.fr.swift.source.ListBasedRow;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftResultSet;
+import com.fr.swift.source.etl.utils.GroupValueIterator;
+import com.fr.swift.source.etl.utils.SwiftValuesAndGVI;
 import com.fr.swift.structure.iterator.RowTraversal;
 
 import java.sql.SQLException;
@@ -18,34 +20,45 @@ import java.util.List;
 public class AllDataRowCalculatorResultSet implements SwiftResultSet {
 
     private String columnName;
-    private int columnType;
     private Segment[] segments;
-    private RowTraversal[] traversals;
+    private ColumnKey[] dimensions;
     private SwiftMetaData metaData;
+    private RowTraversal[] traversal;
     private double value;
     private AllDataCalculator cal;
     private int segCursor;
     private int rowCursor;
     private int rowCount;
     private TempValue tempValue;
+    private GroupValueIterator iterator;
+    private Segment[] tempSegment;
+    private RowTraversal[] tempTraversal;
+    private SwiftValuesAndGVI valuesAndGVI;
+    private boolean needNext = true;
 
-    public AllDataRowCalculatorResultSet(String columnName, int columnType, Segment[] segments,
-                                         RowTraversal[] traversals, SwiftMetaData metaData, AllDataCalculator cal) {
+    public AllDataRowCalculatorResultSet(String columnName, Segment[] segments, RowTraversal[] traversal,
+                                         SwiftMetaData metaData, AllDataCalculator cal, ColumnKey[] dimensions) {
         this.columnName = columnName;
-        this.columnType = columnType;
         this.segments = segments;
-        this.traversals = traversals;
         this.metaData = metaData;
         this.cal = cal;
+        this.dimensions = dimensions;
+        this.traversal = traversal;
         init();
     }
 
     private void init() {
-        this.value = cal.get(segments, traversals, new ColumnKey(columnName));
         segCursor = 0;
         rowCursor = 0;
         rowCount = segments[0].getRowCount();
         tempValue = new TempValue();
+        if(dimensions != null) {
+            iterator = new GroupValueIterator(segments, dimensions, null);
+            tempSegment = new Segment[0];
+            tempTraversal = new RowTraversal[0];
+        } else {
+            this.value = cal.get(segments, traversal, new ColumnKey(columnName));
+        }
     }
 
     @Override
@@ -55,6 +68,56 @@ public class AllDataRowCalculatorResultSet implements SwiftResultSet {
 
     @Override
     public boolean next() throws SQLException {
+        if(dimensions != null) {
+            if(iterator.hasNext() || (segCursor < tempSegment.length && rowCursor < rowCount)) {
+                if(needNext) {
+                    valuesAndGVI = iterator.next();
+                    tempTraversal = new RowTraversal[valuesAndGVI.getAggreator().size()];
+                    tempSegment = new Segment[valuesAndGVI.getAggreator().size()];
+                    for (int i = 0; i < valuesAndGVI.getAggreator().size(); i++) {
+                        tempTraversal[i] = valuesAndGVI.getAggreator().get(i).getBitMap();
+                        tempSegment[i] = valuesAndGVI.getAggreator().get(i).getSegment();
+                    }
+                    value = cal.get(tempSegment, tempTraversal, new ColumnKey(columnName));
+                    rowCount = tempTraversal[0].getCardinality();
+                    segCursor = 0;
+                    rowCursor = 0;
+                    needNext = false;
+                }
+                if(segCursor == tempSegment.length - 1 && rowCursor == rowCount - 1) {
+                    needNext = true;
+                }
+                nextValueForDimension();
+                return true;
+            }
+            return false;
+        } else {
+            return nextValue();
+        }
+    }
+
+    private boolean nextValueForDimension() throws SQLException {
+        if(segCursor < tempSegment.length && rowCursor < rowCount) {
+            rowCount = tempTraversal[segCursor].getCardinality();
+            List list = new ArrayList();
+            list.add(value);
+            tempValue.setRow(new ListBasedRow(list));
+            if(rowCursor < rowCount - 1) {
+                rowCursor ++;
+            } else {
+                if(segCursor < segments.length) {
+                    segCursor ++;
+                    rowCursor = 0;
+                } else {
+                    return false;
+                }
+            }
+            return true;
+        }
+        return false;
+    }
+
+    private boolean nextValue() throws SQLException {
         if(segCursor < segments.length && rowCursor < rowCount) {
             rowCount = segments[segCursor].getRowCount();
             List list = new ArrayList();
@@ -86,6 +149,7 @@ public class AllDataRowCalculatorResultSet implements SwiftResultSet {
     }
 
     private class TempValue {
+
         public ListBasedRow getRow() {
             return row;
         }
