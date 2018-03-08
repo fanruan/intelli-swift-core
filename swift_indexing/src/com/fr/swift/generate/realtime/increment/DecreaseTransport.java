@@ -35,9 +35,9 @@ public class DecreaseTransport implements IncrementTransport {
     public void doIncrementTransport() {
         SwiftSourceTransfer decreaseTransfer = SwiftSourceTransferFactory.createSourceTransfer(decreaseDataSource);
         SwiftResultSet decreaseResult = decreaseTransfer.createResultSet();
-        SegmentOperator operator = LocalSegmentOperatorProvider.getInstance().getDecreaseSegmentOperator(dataSource);
+        SegmentOperator operator = LocalSegmentOperatorProvider.getInstance().getDecreaseSegmentOperator(dataSource, decreaseResult);
         try {
-            operator.transport(decreaseResult);
+            operator.transport();
         } catch (Exception e) {
             LOGGER.error(e);
         } finally {

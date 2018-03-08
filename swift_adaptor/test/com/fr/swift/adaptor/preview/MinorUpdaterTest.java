@@ -1,16 +1,15 @@
 package com.fr.swift.adaptor.preview;
 
+import com.fr.swift.generate.BaseTest;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.source.DataSource;
 import com.fr.swift.source.db.TableDBSource;
-import com.fr.swift.source.db.TestConnectionProvider;
 import com.fr.swift.source.etl.ETLOperator;
 import com.fr.swift.source.etl.ETLSource;
 import com.fr.swift.source.etl.join.JoinColumn;
 import com.fr.swift.source.etl.join.JoinOperator;
 import com.fr.swift.source.etl.utils.ETLConstant;
-import junit.framework.TestCase;
 
 import java.util.Arrays;
 
@@ -18,15 +17,11 @@ import java.util.Arrays;
  * @author anchore
  * @date 2018/2/2
  */
-public class MinorUpdaterTest extends TestCase {
-    @Override
-    protected void setUp() {
-        TestConnectionProvider.createConnection();
-    }
+public class MinorUpdaterTest extends BaseTest {
 
     public void testUpdate() throws Exception {
-        DataSource demoCustomer = new TableDBSource("DEMO_CAPITAL_RETURN", "h2");
-        DataSource demoContract = new TableDBSource("DEMO_CONTRACT", "h2");
+        DataSource demoCustomer = new TableDBSource("DEMO_CAPITAL_RETURN", "allTest");
+        DataSource demoContract = new TableDBSource("DEMO_CONTRACT", "allTest");
         String joinOn = "合同ID";
         ETLOperator joinOp = new JoinOperator(
                 Arrays.asList(new JoinColumn(joinOn + "1", true, joinOn)),

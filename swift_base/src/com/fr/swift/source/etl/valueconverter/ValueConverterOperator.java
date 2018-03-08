@@ -48,6 +48,6 @@ public class ValueConverterOperator extends AbstractOperator {
 
     @Override
     public OperatorType getOperatorType() {
-        return OperatorType.DETAIL;
+        return OperatorType.CONVERTER;
     }
 }

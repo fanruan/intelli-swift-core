@@ -45,6 +45,7 @@ public class SwiftFieldsDataPreview {
 
         try {
             if (dataSource != null) {
+                MinorSegmentManager.getInstance().clear();
                 if (!MinorSegmentManager.getInstance().isSegmentsExist(dataSource.getSourceKey())) {
                     MinorUpdater.update(dataSource);
                 }

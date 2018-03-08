@@ -1,4 +1,4 @@
-package com.fr.swift.generate.history;
+package com.fr.swift.generate.history.index;
 
 import com.fr.swift.cube.io.Releasable;
 import com.fr.swift.generate.BaseColumnDictMerger;

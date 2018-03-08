@@ -1,0 +1,23 @@
+package com.fr.swift.source.etl.date;
+
+import java.util.Calendar;
+
+/**
+ * @author Daniel
+ *
+ */
+public class YearGetter implements DateGetter {
+
+    public static final YearGetter INSTANCE = new YearGetter();
+
+    @Override
+    public Integer get(Long v) {
+        if(v == null){
+            return null;
+        }
+        Calendar c = Calendar.getInstance();
+        c.setTimeInMillis(v);
+        return c.get(Calendar.YEAR);
+    }
+
+}

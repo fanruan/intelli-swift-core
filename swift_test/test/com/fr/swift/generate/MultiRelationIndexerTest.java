@@ -165,7 +165,7 @@ public class MultiRelationIndexerTest extends TestCase {
         primaryFields.add(new ColumnKey("brand_id"));
         foreignFields.add(new ColumnKey("brand_id"));
         CubeMultiRelation relation = new CubeMultiRelation(new CubeLogicColumnKey(primaryTable, primaryFields), new CubeLogicColumnKey(foreignTable, foreignFields), primaryTable, foreignTable);
-//        new MultiRelationIndexBuilder(relation, LocalSegmentProvider.getInstance()).work();
+//        new MultiRelationIndexer(relation, LocalSegmentProvider.getInstance()).work();
         List<Segment> primarySegments = LocalSegmentProvider.getInstance().getSegment(primaryTable);
         List<Segment> foreignSegements = LocalSegmentProvider.getInstance().getSegment(foreignTable);
         for (int i = 0; i < primarySegments.size(); i++) {

@@ -8,7 +8,7 @@ import com.fr.swift.cube.io.location.IResourceLocation;
 import com.fr.swift.cube.task.Task.Result;
 import com.fr.swift.cube.task.impl.BaseWorker;
 import com.fr.swift.exception.meta.SwiftMetaDataException;
-import com.fr.swift.generate.history.ColumnDictMerger;
+import com.fr.swift.generate.history.index.ColumnDictMerger;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.manager.LocalSegmentProvider;
 import com.fr.swift.segment.Segment;

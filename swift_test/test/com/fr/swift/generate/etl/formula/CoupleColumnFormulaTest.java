@@ -1,8 +1,6 @@
 package com.fr.swift.generate.etl.formula;
 
 import com.fr.swift.generate.BaseTest;
-import com.fr.swift.generate.history.ColumnIndexer;
-import com.fr.swift.generate.history.DataTransporter;
 import com.fr.swift.manager.LocalSegmentProvider;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.column.Column;
@@ -29,36 +27,26 @@ public class CoupleColumnFormulaTest extends BaseTest {
      * @expect 新增列为两个不同字段
      */
     public void testBothNotSame() throws Exception {
+        TableBuildTestUtil.initGeneratorListener();
+
         DataSource dataSource = new QueryDBSource("select 付款金额,付款时间 from DEMO_CAPITAL_RETURN", "allTest");
-        DataTransporter dataTransporter = new DataTransporter(dataSource);
-        dataTransporter.work();
-        for (int i = 1; i <= dataSource.getMetadata().getColumnCount(); i++) {
-            ColumnIndexer<?> indexer = new ColumnIndexer(dataSource, new ColumnKey(dataSource.getMetadata().getColumnName(i)));
-            indexer.work();
-        }
 
         ETLOperator formulaOperator1 = new ColumnFormulaOperator("addField", ColumnTypeConstants.ColumnType.NUMBER, "${付款金额} + ${付款金额}");
         List<DataSource> baseDataSources1 = new ArrayList<DataSource>();
         baseDataSources1.add(dataSource);
         ETLSource etlSource1 = new ETLSource(baseDataSources1, formulaOperator1);
-        etlSource1.getSourceKey();
-        DataTransporter dataTransporter1 = new DataTransporter(etlSource1);
-        dataTransporter1.work();
-        for (int i = 1; i <= 1; i++) {
-            ColumnIndexer<?> indexer = new ColumnIndexer(etlSource1, new ColumnKey(etlSource1.getMetadata().getColumnName(i)));
-            indexer.work();
-        }
 
         ETLOperator formulaOperator2 = new ColumnFormulaOperator("addField2", ColumnTypeConstants.ColumnType.NUMBER, "${付款金额} + ${付款金额} + ${付款金额}");
         List<DataSource> baseDataSources2 = new ArrayList<DataSource>();
         baseDataSources2.add(dataSource);
         ETLSource etlSource2 = new ETLSource(baseDataSources2, formulaOperator2);
-        DataTransporter dataTransporter2 = new DataTransporter(etlSource2);
-        dataTransporter2.work();
-        for (int i = 1; i <= 1; i++) {
-            ColumnIndexer<?> indexer = new ColumnIndexer(etlSource2, new ColumnKey(etlSource2.getMetadata().getColumnName(i)));
-            indexer.work();
-        }
+
+        List<DataSource> dataSources = new ArrayList<DataSource>();
+        dataSources.add(dataSource);
+        dataSources.add(etlSource1);
+        dataSources.add(etlSource2);
+        TableBuildTestUtil.preparePairList(dataSources);
+        Thread.sleep(5000l);
 
         Segment dataSourceSegment = LocalSegmentProvider.getInstance().getSegment(dataSource.getSourceKey()).get(0);
         Segment etlSourceSegment1 = LocalSegmentProvider.getInstance().getSegment(etlSource1.getSourceKey()).get(0);
@@ -100,36 +88,26 @@ public class CoupleColumnFormulaTest extends BaseTest {
      * @expect 新增列为两个不同字段
      */
     public void testFieldSameFormulaNotSame() throws Exception {
+        TableBuildTestUtil.initGeneratorListener();
+
         DataSource dataSource = new QueryDBSource("select 付款金额,付款时间,now() as time from DEMO_CAPITAL_RETURN", "allTest");
-        DataTransporter dataTransporter = new DataTransporter(dataSource);
-        dataTransporter.work();
-        for (int i = 1; i <= dataSource.getMetadata().getColumnCount(); i++) {
-            ColumnIndexer<?> indexer = new ColumnIndexer(dataSource, new ColumnKey(dataSource.getMetadata().getColumnName(i)));
-            indexer.work();
-        }
 
         ETLOperator formulaOperator1 = new ColumnFormulaOperator("addField", ColumnTypeConstants.ColumnType.NUMBER, "${付款金额} + ${付款金额}");
         List<DataSource> baseDataSources1 = new ArrayList<DataSource>();
         baseDataSources1.add(dataSource);
         ETLSource etlSource1 = new ETLSource(baseDataSources1, formulaOperator1);
-        etlSource1.getSourceKey();
-        DataTransporter dataTransporter1 = new DataTransporter(etlSource1);
-        dataTransporter1.work();
-        for (int i = 1; i <= 1; i++) {
-            ColumnIndexer<?> indexer = new ColumnIndexer(etlSource1, new ColumnKey(etlSource1.getMetadata().getColumnName(i)));
-            indexer.work();
-        }
 
         ETLOperator formulaOperator2 = new ColumnFormulaOperator("addField", ColumnTypeConstants.ColumnType.NUMBER, "${付款金额} + ${付款金额} + ${付款金额}");
         List<DataSource> baseDataSources2 = new ArrayList<DataSource>();
         baseDataSources2.add(dataSource);
         ETLSource etlSource2 = new ETLSource(baseDataSources2, formulaOperator2);
-        DataTransporter dataTransporter2 = new DataTransporter(etlSource2);
-        dataTransporter2.work();
-        for (int i = 1; i <= 1; i++) {
-            ColumnIndexer<?> indexer = new ColumnIndexer(etlSource2, new ColumnKey(etlSource2.getMetadata().getColumnName(i)));
-            indexer.work();
-        }
+
+        List<DataSource> dataSources = new ArrayList<DataSource>();
+        dataSources.add(dataSource);
+        dataSources.add(etlSource1);
+        dataSources.add(etlSource2);
+        TableBuildTestUtil.preparePairList(dataSources);
+        Thread.sleep(5000l);
 
         Segment dataSourceSegment = LocalSegmentProvider.getInstance().getSegment(dataSource.getSourceKey()).get(0);
         Segment etlSourceSegment1 = LocalSegmentProvider.getInstance().getSegment(etlSource1.getSourceKey()).get(0);
@@ -170,36 +148,26 @@ public class CoupleColumnFormulaTest extends BaseTest {
      * @expect 新增列为两个相同字段
      */
     public void testBothSame() throws Exception {
+        TableBuildTestUtil.initGeneratorListener();
+
         DataSource dataSource = new QueryDBSource("select 付款金额,付款时间,now() as time2 from DEMO_CAPITAL_RETURN", "allTest");
-        DataTransporter dataTransporter = new DataTransporter(dataSource);
-        dataTransporter.work();
-        for (int i = 1; i <= dataSource.getMetadata().getColumnCount(); i++) {
-            ColumnIndexer<?> indexer = new ColumnIndexer(dataSource, new ColumnKey(dataSource.getMetadata().getColumnName(i)));
-            indexer.work();
-        }
 
         ETLOperator formulaOperator1 = new ColumnFormulaOperator("addField", ColumnTypeConstants.ColumnType.NUMBER, "${付款金额} + ${付款金额}");
         List<DataSource> baseDataSources1 = new ArrayList<DataSource>();
         baseDataSources1.add(dataSource);
         ETLSource etlSource1 = new ETLSource(baseDataSources1, formulaOperator1);
-        etlSource1.getSourceKey();
-        DataTransporter dataTransporter1 = new DataTransporter(etlSource1);
-        dataTransporter1.work();
-        for (int i = 1; i <= 1; i++) {
-            ColumnIndexer<?> indexer = new ColumnIndexer(etlSource1, new ColumnKey(etlSource1.getMetadata().getColumnName(i)));
-            indexer.work();
-        }
 
         ETLOperator formulaOperator2 = new ColumnFormulaOperator("addField", ColumnTypeConstants.ColumnType.NUMBER, "${付款金额} + ${付款金额}");
         List<DataSource> baseDataSources2 = new ArrayList<DataSource>();
         baseDataSources2.add(dataSource);
         ETLSource etlSource2 = new ETLSource(baseDataSources2, formulaOperator2);
-        DataTransporter dataTransporter2 = new DataTransporter(etlSource2);
-        dataTransporter2.work();
-        for (int i = 1; i <= 1; i++) {
-            ColumnIndexer<?> indexer = new ColumnIndexer(etlSource2, new ColumnKey(etlSource2.getMetadata().getColumnName(i)));
-            indexer.work();
-        }
+
+        List<DataSource> dataSources = new ArrayList<DataSource>();
+        dataSources.add(dataSource);
+        dataSources.add(etlSource1);
+        dataSources.add(etlSource2);
+        TableBuildTestUtil.preparePairList(dataSources);
+        Thread.sleep(5000l);
 
         Segment dataSourceSegment = LocalSegmentProvider.getInstance().getSegment(dataSource.getSourceKey()).get(0);
         Segment etlSourceSegment1 = LocalSegmentProvider.getInstance().getSegment(etlSource1.getSourceKey()).get(0);
@@ -240,36 +208,25 @@ public class CoupleColumnFormulaTest extends BaseTest {
      * @expect 新增列为两个相同字段
      */
     public void testFormulaSameFieldNotSame() throws Exception {
+        TableBuildTestUtil.initGeneratorListener();
+
         DataSource dataSource = new QueryDBSource("select 付款金额,付款时间,now() as time3 from DEMO_CAPITAL_RETURN", "allTest");
-        DataTransporter dataTransporter = new DataTransporter(dataSource);
-        dataTransporter.work();
-        for (int i = 1; i <= dataSource.getMetadata().getColumnCount(); i++) {
-            ColumnIndexer<?> indexer = new ColumnIndexer(dataSource, new ColumnKey(dataSource.getMetadata().getColumnName(i)));
-            indexer.work();
-        }
 
         ETLOperator formulaOperator1 = new ColumnFormulaOperator("addField", ColumnTypeConstants.ColumnType.NUMBER, "${付款金额} + ${付款金额}");
         List<DataSource> baseDataSources1 = new ArrayList<DataSource>();
         baseDataSources1.add(dataSource);
         ETLSource etlSource1 = new ETLSource(baseDataSources1, formulaOperator1);
-        etlSource1.getSourceKey();
-        DataTransporter dataTransporter1 = new DataTransporter(etlSource1);
-        dataTransporter1.work();
-        for (int i = 1; i <= 1; i++) {
-            ColumnIndexer<?> indexer = new ColumnIndexer(etlSource1, new ColumnKey(etlSource1.getMetadata().getColumnName(i)));
-            indexer.work();
-        }
 
         ETLOperator formulaOperator2 = new ColumnFormulaOperator("addField2", ColumnTypeConstants.ColumnType.NUMBER, "${付款金额} + ${付款金额}");
         List<DataSource> baseDataSources2 = new ArrayList<DataSource>();
         baseDataSources2.add(dataSource);
         ETLSource etlSource2 = new ETLSource(baseDataSources2, formulaOperator2);
-        DataTransporter dataTransporter2 = new DataTransporter(etlSource2);
-        dataTransporter2.work();
-        for (int i = 1; i <= 1; i++) {
-            ColumnIndexer<?> indexer = new ColumnIndexer(etlSource2, new ColumnKey(etlSource2.getMetadata().getColumnName(i)));
-            indexer.work();
-        }
+        List<DataSource> dataSources = new ArrayList<DataSource>();
+        dataSources.add(dataSource);
+        dataSources.add(etlSource1);
+        dataSources.add(etlSource2);
+        TableBuildTestUtil.preparePairList(dataSources);
+        Thread.sleep(5000l);
 
         Segment dataSourceSegment = LocalSegmentProvider.getInstance().getSegment(dataSource.getSourceKey()).get(0);
         Segment etlSourceSegment1 = LocalSegmentProvider.getInstance().getSegment(etlSource1.getSourceKey()).get(0);
