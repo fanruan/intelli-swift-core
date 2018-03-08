@@ -37,6 +37,7 @@ import java.util.List;
 /**
  * @author pony
  * @date 2017/12/21
+ * 分组表
  */
 public class TableWidgetAdaptor {
     public static BIGroupNode calculate(TableWidget widget) {
