@@ -2,7 +2,6 @@ package com.fr.swift.adaptor.widget;
 
 import com.finebi.conf.internalimp.dashboard.widget.table.StringControlWidget;
 import com.fr.swift.cal.QueryInfo;
-import com.fr.swift.cal.info.StringControlQueryInfo;
 import com.fr.swift.query.filter.info.FilterInfo;
 
 import java.util.List;
@@ -19,6 +18,6 @@ public class DropdownStringWidgetAdaptor {
         int clickMore = widget.getTimes();
         FilterInfo filterInfo = null;
 
-        return new StringControlQueryInfo(null, widget.getWidgetId(), filterInfo);
+        return null/*new GroupQueryInfo(null, widget.getWidgetId(), filterInfo)*/;
     }
 }
