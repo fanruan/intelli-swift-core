@@ -4,6 +4,8 @@ import com.fr.swift.source.etl.columnfilter.ColumnFilterOperator;
 import com.fr.swift.source.etl.columnfilter.ColumnFilterTransferOperator;
 import com.fr.swift.source.etl.columnrowtrans.ColumnRowTransOperator;
 import com.fr.swift.source.etl.columnrowtrans.ColumnRowTransferOperator;
+import com.fr.swift.source.etl.datamining.DataMiningOperator;
+import com.fr.swift.source.etl.datamining.DataMiningTransferOperator;
 import com.fr.swift.source.etl.detail.DetailOperator;
 import com.fr.swift.source.etl.detail.DetailTransferOperator;
 import com.fr.swift.source.etl.formula.ColumnFormulaOperator;
@@ -23,6 +25,7 @@ import com.fr.swift.source.etl.union.UnionTransferOperator;
  * Created by pony on 2018/1/8.
  */
 public class ETLTransferOperatorFactory {
+
     public static ETLTransferOperator createTransferOperator(ETLOperator operator) {
         switch (operator.getOperatorType()) {
             case DETAIL:
@@ -43,6 +46,8 @@ public class ETLTransferOperatorFactory {
                 return transferTwoUnionRelationOperator((TwoUnionRelationOperator) operator);
             case COLUMNFORMULA:
                 return transferColumnFormulaOperator((ColumnFormulaOperator) operator);
+            case DATAMINING:
+                return transferDataMiningOperator((DataMiningOperator) operator);
             default:
         }
         return null;
@@ -82,5 +87,9 @@ public class ETLTransferOperatorFactory {
 
     private static ETLTransferOperator transferColumnFormulaOperator(ColumnFormulaOperator operator) {
         return new ColumnFormulaTransferOperator(operator.getColumnType(), operator.getExpression());
+    }
+
+    private static ETLTransferOperator transferDataMiningOperator(DataMiningOperator operator) {
+        return new DataMiningTransferOperator(operator.getColumnKeyList());
     }
 }

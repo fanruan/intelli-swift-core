@@ -12,6 +12,9 @@ import com.finebi.conf.internalimp.analysis.bean.operator.circulate.CirculateOne
 import com.finebi.conf.internalimp.analysis.bean.operator.circulate.CirculateTwoFieldValue;
 import com.finebi.conf.internalimp.analysis.bean.operator.confselect.ConfSelectBean;
 import com.finebi.conf.internalimp.analysis.bean.operator.confselect.ConfSelectBeanItem;
+import com.finebi.conf.internalimp.analysis.bean.operator.datamining.DataMiningBean;
+import com.finebi.conf.internalimp.analysis.bean.operator.datamining.DataMiningBeanValue;
+import com.finebi.conf.internalimp.analysis.bean.operator.datamining.DataMiningBeanValueTable;
 import com.finebi.conf.internalimp.analysis.bean.operator.filter.FilterOperatorBean;
 import com.finebi.conf.internalimp.analysis.bean.operator.group.DimensionSelectValue;
 import com.finebi.conf.internalimp.analysis.bean.operator.group.DimensionSrcValue;
@@ -56,6 +59,7 @@ import com.fr.swift.source.etl.ETLSource;
 import com.fr.swift.source.etl.columnfilter.ColumnFilterOperator;
 import com.fr.swift.source.etl.columnrowtrans.ColumnRowTransOperator;
 import com.fr.swift.source.etl.columnrowtrans.NameText;
+import com.fr.swift.source.etl.datamining.DataMiningOperator;
 import com.fr.swift.source.etl.detail.DetailOperator;
 import com.fr.swift.source.etl.formula.ColumnFormulaOperator;
 import com.fr.swift.source.etl.groupsum.SumByGroupDimension;
@@ -190,6 +194,17 @@ class EtlAdaptor {
                     }
                 }
                 break;
+            case AnalysisType.DATA_MINING:
+                DataMiningBeanValue dmbv = op.<DataMiningBean>getValue().getValue();
+                for (DataMiningBeanValueTable table : dmbv.getTables()) {
+                    try {
+                        FineBusinessTable busiTable = FineTableUtils.getTableByName(table.getName());
+                        dataSources.add(IndexingDataSourceFactory.transformDataSource(busiTable));
+                    } catch (Exception e) {
+                        continue;
+                    }
+                }
+                break;
             default:
         }
         return dataSources;
@@ -288,6 +303,25 @@ class EtlAdaptor {
 
         return new UnionOperator(listsOfColumn);
     }
+
+    private static DataMiningOperator fromDataMiningBean(DataMiningBean dmb) {
+        DataMiningBeanValue dmbv = dmb.getValue();
+
+        List<List<String>> basis = dmbv.getBasis();
+        int basisSize = basis.size();
+        List<List<ColumnKey>> listsOfColumn = new ArrayList<List<ColumnKey>>(basisSize);
+
+        for (int i = 0; i < dmbv.getResult().size(); i++) {
+//            List<String> columns = basis.get(i);
+            listsOfColumn.add(new ArrayList<ColumnKey>());
+            listsOfColumn.get(i).add(new ColumnKey(dmbv.getResult().get(i)));
+            for (List<String> columnKeys : basis) {
+                listsOfColumn.get(i).add(new ColumnKey(columnKeys.get(i)));
+            }
+        }
+
+        return new DataMiningOperator(listsOfColumn);
+    }
     public static ETLOperator adaptEtlOperator(FineOperator op, FineBusinessTable table) throws FineEngineException {
         switch (op.getType()) {
             case AnalysisType.SELECT_FIELD:
@@ -310,6 +344,8 @@ class EtlAdaptor {
                 return fromAddNewColumnBean(op.<AddNewColumnBean>getValue());
             case AnalysisType.GROUP:
                 return fromSumByGroupBean(op.<GroupBean>getValue());
+            case AnalysisType.DATA_MINING:
+                return fromDataMiningBean(op.<DataMiningBean>getValue());
             default:
         }
         return null;

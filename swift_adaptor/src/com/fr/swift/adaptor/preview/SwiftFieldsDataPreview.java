@@ -45,9 +45,10 @@ public class SwiftFieldsDataPreview {
 
         try {
             if (dataSource != null) {
-                if (!MinorSegmentManager.getInstance().isSegmentsExist(dataSource.getSourceKey())) {
-                    MinorUpdater.update(dataSource);
-                }
+                MinorUpdater.update(dataSource);
+//                if (!MinorSegmentManager.getInstance().isSegmentsExist(dataSource.getSourceKey())) {
+//                    MinorUpdater.update(dataSource);
+//                }
                 List<Segment> segments = MinorSegmentManager.getInstance().getSegment(dataSource.getSourceKey());
 
                 SwiftMetaData swiftMetaData = dataSource.getMetadata();
