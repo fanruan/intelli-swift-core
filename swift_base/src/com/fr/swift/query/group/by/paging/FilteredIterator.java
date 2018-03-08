@@ -1,4 +1,4 @@
-package com.fr.swift.query.group.by.multiby;
+package com.fr.swift.query.group.by.paging;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;
