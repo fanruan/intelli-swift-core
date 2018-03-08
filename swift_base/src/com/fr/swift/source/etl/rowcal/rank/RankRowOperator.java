@@ -1,54 +1,54 @@
-package com.fr.swift.source.etl.rowcal.alldata;
+package com.fr.swift.source.etl.rowcal.rank;
 
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.source.*;
 import com.fr.swift.source.etl.AbstractOperator;
 import com.fr.swift.source.etl.OperatorType;
-import com.fr.swift.source.etl.utils.ETLConstant;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by Handsome on 2018/2/24 0024 14:49
+ * Created by Handsome on 2018/2/28 0028 10:55
  */
-public class AllDataRowCalculatorOperator extends AbstractOperator {
+public class RankRowOperator extends AbstractOperator {
 
-    private int summaryType = ETLConstant.CONF.GROUP.NUMBER.SUM;
-    private String addedColumnName;//新增列
+    private int type;
+    private ColumnKey columnKey;
+    private String columnName;//新增列
     private int columnType;
-    private String columnName;
     private ColumnKey[] dimension;
 
-    public AllDataRowCalculatorOperator(String addedColumnName, int columnType, String columnName, ColumnKey[] dimension) {
-        this.addedColumnName = addedColumnName;
-        this.columnType = columnType;
+    public RankRowOperator(String columnName, int type, int columnType, ColumnKey columnKey, ColumnKey[] dimension) {
+        this.type = type;
         this.columnName = columnName;
+        this.columnType = columnType;
+        this.columnKey = columnKey;
         this.dimension = dimension;
     }
+
     public ColumnKey[] getDimension() {
         return dimension;
-    }
-
-    public String getAddedColumnName() { return addedColumnName; }
-
-    public int getSummaryType() {
-        return summaryType;
     }
 
     public String getColumnName() {
         return columnName;
     }
 
+    public int getType() {
+        return type;
+    }
+
     public int getColumnType() {
         return columnType;
     }
 
+    private ColumnKey getColumnKey() { return columnKey; }
 
     @Override
     public List<SwiftMetaDataColumn> getColumns(SwiftMetaData[] metaDatas) {
         List<SwiftMetaDataColumn> columnList = new ArrayList<SwiftMetaDataColumn>();
-        columnList.add(new MetaDataColumn(addedColumnName, getSqlType(metaDatas)));
+        columnList.add(new MetaDataColumn(columnName, getSqlType(metaDatas)));
         return columnList;
     }
 
@@ -58,6 +58,6 @@ public class AllDataRowCalculatorOperator extends AbstractOperator {
 
     @Override
     public OperatorType getOperatorType() {
-        return OperatorType.ALLDATA;
+        return OperatorType.RANK;
     }
 }

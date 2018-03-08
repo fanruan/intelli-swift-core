@@ -44,7 +44,6 @@ public class SwiftValueIterator {
     public SwiftValueIterator(Segment[] segment, ColumnKey[] columnKey, Group[] groups) {
         this.segment = segment;
         this.columnKey = columnKey;
-        this.groups = groups;
         iterators = new GroupByResult[this.segment.length][this.columnKey.length];
         valuesAndGVIs = new SwiftValuesAndGVI[this.segment.length][this.columnKey.length + 1];
         next = new SwiftValuesAndGVI[this.segment.length];

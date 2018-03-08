@@ -90,9 +90,9 @@ public class FormulaUtils {
         String[] parameters = getRelatedParaNames(formular);
         for (int i = 0; i < parameters.length; i++) {
             String columnName;
-            if (parameters[i].contains(ETLConstant.FIELD_ID.HEAD)) {
+            if (parameters[i].contains(ETLConstant.CONF.FIELD_ID.HEAD)) {
                 // TODO  通过工具类截取部分字段
-                columnName = parameters[i].substring(ETLConstant.FIELD_ID.HEAD.length(), parameters[i].length()).substring(16);
+                columnName = parameters[i].substring(ETLConstant.CONF.FIELD_ID.HEAD.length(), parameters[i].length()).substring(16);
             } else {
                 columnName = parameters[i];
             }

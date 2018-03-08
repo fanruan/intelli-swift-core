@@ -1,7 +1,9 @@
-package com.fr.swift.source.etl.rowcal.alldata;
+package com.fr.swift.source.etl.rowcal.accumulate;
 
+import com.fr.swift.bitmap.traversal.BreakTraversalAction;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.column.ColumnKey;
+import com.fr.swift.segment.column.DictionaryEncodedColumn;
 import com.fr.swift.source.ListBasedRow;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SwiftMetaData;
@@ -15,51 +17,45 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by Handsome on 2018/2/24 0024 16:11
+ * Created by Handsome on 2018/2/28 0028 15:47
  */
-public class AllDataRowCalculatorResultSet implements SwiftResultSet {
+public class AccumulateRowResultSet implements SwiftResultSet {
 
-    private String columnName;
+    private ColumnKey columnKey;
     private Segment[] segments;
-    private ColumnKey[] dimensions;
     private SwiftMetaData metaData;
-    private RowTraversal[] traversal;
-    private double value;
-    private AllDataCalculator cal;
-    private int segCursor;
-    private int rowCursor;
-    private int rowCount;
+    private ColumnKey[] dimensions;
+    private int segCursor, rowCursor, rowCount;
+    private double sum;
     private TempValue tempValue;
-    private GroupValueIterator iterator;
     private Segment[] tempSegment;
-    private RowTraversal[] tempTraversal;
+    private RowTraversal[] traversal;
+    private GroupValueIterator iterator;
     private SwiftValuesAndGVI valuesAndGVI;
-    private boolean needNext = true;
+    private boolean needNext;
 
-    public AllDataRowCalculatorResultSet(String columnName, Segment[] segments, RowTraversal[] traversal,
-                                         SwiftMetaData metaData, AllDataCalculator cal, ColumnKey[] dimensions) {
-        this.columnName = columnName;
+    public AccumulateRowResultSet(ColumnKey columnKey, Segment[] segments, SwiftMetaData metaData, ColumnKey[] dimensions) {
+        this.columnKey = columnKey;
         this.segments = segments;
         this.metaData = metaData;
-        this.cal = cal;
         this.dimensions = dimensions;
-        this.traversal = traversal;
         init();
     }
 
     private void init() {
         segCursor = 0;
         rowCursor = 0;
+        sum = 0;
+        needNext = true;
         rowCount = segments[0].getRowCount();
         tempValue = new TempValue();
         if(dimensions != null) {
             iterator = new GroupValueIterator(segments, dimensions, null);
             tempSegment = new Segment[0];
-            tempTraversal = new RowTraversal[0];
-        } else {
-            this.value = cal.get(segments, traversal, new ColumnKey(columnName));
+            traversal = new RowTraversal[0];
         }
     }
+
 
     @Override
     public void close() throws SQLException {
@@ -72,17 +68,17 @@ public class AllDataRowCalculatorResultSet implements SwiftResultSet {
             if(iterator.hasNext() || (segCursor < tempSegment.length && rowCursor < rowCount)) {
                 if(needNext) {
                     valuesAndGVI = iterator.next();
-                    tempTraversal = new RowTraversal[valuesAndGVI.getAggreator().size()];
+                    traversal = new RowTraversal[valuesAndGVI.getAggreator().size()];
                     tempSegment = new Segment[valuesAndGVI.getAggreator().size()];
-                    for (int i = 0; i < valuesAndGVI.getAggreator().size(); i++) {
-                        tempTraversal[i] = valuesAndGVI.getAggreator().get(i).getBitMap();
+                    for(int i = 0; i < valuesAndGVI.getAggreator().size(); i++) {
+                        traversal[i] = valuesAndGVI.getAggreator().get(i).getBitMap();
                         tempSegment[i] = valuesAndGVI.getAggreator().get(i).getSegment();
                     }
-                    value = cal.get(tempSegment, tempTraversal, new ColumnKey(columnName));
-                    rowCount = tempTraversal[0].getCardinality();
+                    rowCount = traversal[0].getCardinality();
                     segCursor = 0;
                     rowCursor = 0;
                     needNext = false;
+                    sum = 0;
                 }
                 if(segCursor == tempSegment.length - 1 && rowCursor == rowCount - 1) {
                     needNext = true;
@@ -98,16 +94,34 @@ public class AllDataRowCalculatorResultSet implements SwiftResultSet {
 
     private boolean nextValueForDimension() throws SQLException {
         if(segCursor < tempSegment.length && rowCursor < rowCount) {
-            rowCount = tempTraversal[segCursor].getCardinality();
-            List list = new ArrayList();
-            list.add(value);
-            tempValue.setRow(new ListBasedRow(list));
+            rowCount = traversal[segCursor].getCardinality();
+            DictionaryEncodedColumn getter = tempSegment[segCursor].getColumn(columnKey).getDictionaryEncodedColumn();
+            final Index index = new Index();
+            traversal[segCursor].breakableTraversal(new BreakTraversalAction() {
+                int cursor = 0;
+                @Override
+                public boolean actionPerformed(int row) {
+                    if(cursor == rowCursor) {
+                        index.setIndex(row);
+                        return true;
+                    }
+                    cursor ++;
+                    return false;
+                }
+            });
+            Number v = (Number) getter.getValue(getter.getIndexByRow(index.getIndex()));
+            if(null != v) {
+                sum += v.doubleValue();
+            }
+            List dataList = new ArrayList();
+            dataList.add(sum);
+            tempValue.setRow(new ListBasedRow(dataList));
             if(rowCursor < rowCount - 1) {
                 rowCursor ++;
             } else {
                 if(segCursor < segments.length) {
-                    segCursor ++;
                     rowCursor = 0;
+                    segCursor ++;
                 } else {
                     return false;
                 }
@@ -120,15 +134,20 @@ public class AllDataRowCalculatorResultSet implements SwiftResultSet {
     private boolean nextValue() throws SQLException {
         if(segCursor < segments.length && rowCursor < rowCount) {
             rowCount = segments[segCursor].getRowCount();
-            List list = new ArrayList();
-            list.add(value);
-            tempValue.setRow(new ListBasedRow(list));
+            DictionaryEncodedColumn getter = segments[segCursor].getColumn(columnKey).getDictionaryEncodedColumn();
+            Number v = (Number) getter.getValue(getter.getIndexByRow(rowCursor));
+            if(null != v) {
+                sum += v.doubleValue();
+            }
+            List dataList = new ArrayList();
+            dataList.add(sum);
+            tempValue.setRow(new ListBasedRow(dataList));
             if(rowCursor < rowCount - 1) {
                 rowCursor ++;
             } else {
                 if(segCursor < segments.length) {
-                    segCursor ++;
                     rowCursor = 0;
+                    segCursor ++;
                 } else {
                     return false;
                 }
@@ -159,6 +178,17 @@ public class AllDataRowCalculatorResultSet implements SwiftResultSet {
         }
 
         ListBasedRow row;
+    }
 
+    private class Index {
+        private int index = 0;
+
+        public int getIndex() {
+            return index;
+        }
+
+        public void setIndex(int index) {
+            this.index = index;
+        }
     }
 }
