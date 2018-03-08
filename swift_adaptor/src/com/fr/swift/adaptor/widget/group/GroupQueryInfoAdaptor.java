@@ -8,6 +8,7 @@ import com.finebi.conf.structure.dashboard.widget.dimension.FineDimensionSort;
 import com.finebi.conf.structure.dashboard.widget.target.FineTarget;
 import com.finebi.conf.utils.FineFieldUtils;
 import com.fr.swift.adaptor.transformer.ColumnTypeAdaptor;
+import com.fr.swift.adaptor.transformer.FilterInfoFactory;
 import com.fr.swift.cal.info.Expander;
 import com.fr.swift.cal.info.GroupQueryInfo;
 import com.fr.swift.cal.result.group.Cursor;
@@ -27,6 +28,7 @@ import com.fr.swift.query.sort.Sort;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.source.ColumnTypeConstants.ColumnType;
 import com.fr.swift.source.SourceKey;
+import org.junit.runner.FilterFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,7 +41,7 @@ public class GroupQueryInfoAdaptor {
     public static GroupQueryInfo adaptTableWidget(TableWidget widget) throws Exception {
         Cursor cursor = null;
         String queryId = widget.getWidgetId();
-        FilterInfo filterInfo = null;
+        FilterInfo filterInfo = FilterInfoFactory.transformFineFilter(widget.getFilters());
 
         List<Dimension> dimensions = new ArrayList<Dimension>();
         List<Metric> metrics = new ArrayList<Metric>();

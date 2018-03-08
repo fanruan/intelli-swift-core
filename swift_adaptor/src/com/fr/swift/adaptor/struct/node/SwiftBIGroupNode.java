@@ -5,12 +5,17 @@ import com.fr.swift.result.ChildMap;
 
 public class SwiftBIGroupNode implements BIGroupNode {
 
-    private ChildMap<BIGroupNode> childMap;
+    private Object data;
+    private ChildMap<BIGroupNode> childMap = new ChildMap<BIGroupNode>();
     private Number[] summaryValue;
 
-    public SwiftBIGroupNode(ChildMap<BIGroupNode> childMap, Number[] summaryValue) {
-        this.childMap = childMap;
+    public SwiftBIGroupNode(Object data, Number[] summaryValue) {
+        this.data = data;
         this.summaryValue = summaryValue;
+    }
+
+    public void addChild(BIGroupNode child) {
+        childMap.put(child.getData(), child);
     }
 
     @Override

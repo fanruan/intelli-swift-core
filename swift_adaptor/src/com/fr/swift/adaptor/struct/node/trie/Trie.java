@@ -1,19 +1,30 @@
 package com.fr.swift.adaptor.struct.node.trie;
 
+import java.util.Iterator;
+import java.util.Map;
+
 /**
  * Created by Lyon on 2018/3/4.
  */
-public interface Trie<K, V> {
+public interface Trie<RAW_KEY, K, V> {
 
-    Trie<K, V> insert(K key, V value);
+    void insert(RAW_KEY key, V value);
 
-    Trie<K, V> delete(K key);
+    void delete(RAW_KEY key);
 
-    Trie<K, V> getParent();
+    Trie<RAW_KEY, K, V> parent();
 
-    Trie<K, V> get(K key);
+    Trie<RAW_KEY, K, V> get(RAW_KEY key);
 
-    V getData();
+    V getValue();
 
-    boolean containsKey(K key);
+    void setValue(V value);
+
+    K getKey();
+
+    boolean containsKey(RAW_KEY key);
+
+    int deep();
+
+    Iterator<Map.Entry<K, Trie<RAW_KEY, K, V>>> iterator();
 }

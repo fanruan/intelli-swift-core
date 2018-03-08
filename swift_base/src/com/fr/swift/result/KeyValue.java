@@ -21,6 +21,11 @@ public class KeyValue<K, V> {
         return value;
     }
 
+    /**
+     * equals只比较key！
+     * @param o
+     * @return
+     */
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -33,6 +38,10 @@ public class KeyValue<K, V> {
         return key != null ? key.equals(keyValue.key) : keyValue.key == null;
     }
 
+    /**
+     * hashCode计算只用key！
+     * @return
+     */
     @Override
     public int hashCode() {
         return key != null ? key.hashCode() : 0;

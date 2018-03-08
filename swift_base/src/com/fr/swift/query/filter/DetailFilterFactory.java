@@ -1,6 +1,11 @@
 package com.fr.swift.query.filter;
 
+import com.fr.swift.bitmap.BitMaps;
+import com.fr.swift.bitmap.ImmutableBitMap;
+import com.fr.swift.bitmap.impl.AllShowBitMap;
 import com.fr.swift.query.filter.detail.DetailFilter;
+import com.fr.swift.query.filter.detail.impl.date.DateInRangeFilter;
+import com.fr.swift.query.filter.detail.impl.date.not.DateNotInRangeFilter;
 import com.fr.swift.query.filter.detail.impl.number.NumberContainFilter;
 import com.fr.swift.query.filter.detail.impl.number.NumberInRangeFilter;
 import com.fr.swift.query.filter.detail.impl.number.not.NumberNotContainFilter;
@@ -14,7 +19,9 @@ import com.fr.swift.query.filter.detail.impl.string.not.StringNotInFilter;
 import com.fr.swift.query.filter.detail.impl.string.not.StringNotLikeFilter;
 import com.fr.swift.query.filter.detail.impl.string.not.StringNotStartsWithFilter;
 import com.fr.swift.query.filter.info.SwiftDetailFilterValue;
+import com.fr.swift.query.filter.info.value.SwiftDateInRangeFilterValue;
 import com.fr.swift.query.filter.info.value.SwiftNumberInRangeFilterValue;
+import com.fr.swift.result.SwiftNode;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.ColumnKey;
@@ -28,7 +35,7 @@ public class DetailFilterFactory {
 
     public static DetailFilter createFilter(Segment segment, SwiftDetailFilterValue filterValue) {
         Column column = segment.getColumn(new ColumnKey(filterValue.getFieldName()));
-        int rowCount = segment.getRowCount();
+        final int rowCount = segment.getRowCount();
         switch (filterValue.getType()) {
             case STRING_IN:
                 return new StringInFilter((Set<String>) filterValue.getFilterValue(), column);
@@ -61,9 +68,23 @@ public class DetailFilterFactory {
                         value1.isMaxIncluded(), column);
 
             case DATE_IN_RANGE:
+                SwiftDateInRangeFilterValue value2 = (SwiftDateInRangeFilterValue) filterValue.getFilterValue();
+                return new DateInRangeFilter(value2.getStart(), value2.getEnd(), column);
             case DATE_NOT_IN_RANGE:
+                SwiftDateInRangeFilterValue value3 = (SwiftDateInRangeFilterValue) filterValue.getFilterValue();
+                return new DateNotInRangeFilter(rowCount, value3.getStart(), value3.getEnd(), column);
             default:
+                return new DetailFilter() {
+                    @Override
+                    public ImmutableBitMap createFilterIndex() {
+                        return BitMaps.newAllShowBitMap(rowCount);
+                    }
+
+                    @Override
+                    public boolean matches(SwiftNode node) {
+                        return true;
+                    }
+                };
         }
-        return null;
     }
 }
