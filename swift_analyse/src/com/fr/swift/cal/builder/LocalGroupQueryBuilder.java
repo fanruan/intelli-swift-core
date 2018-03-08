@@ -2,7 +2,7 @@ package com.fr.swift.cal.builder;
 
 import com.fr.swift.cal.Query;
 import com.fr.swift.cal.info.GroupQueryInfo;
-import com.fr.swift.result.RowResultCollector;
+import com.fr.swift.result.GroupByResultSet;
 
 import java.util.List;
 
@@ -17,7 +17,7 @@ public interface LocalGroupQueryBuilder {
     LocalGroupQueryBuilder ALL = new LocalGroupAllQueryBuilder();
 
 
-    Query<RowResultCollector> buildLocalQuery(GroupQueryInfo info);
+    Query<GroupByResultSet> buildLocalQuery(GroupQueryInfo info);
 
-    Query<RowResultCollector> buildResultQuery(List<Query<RowResultCollector>> queries, GroupQueryInfo info);
+    Query<GroupByResultSet> buildResultQuery(List<Query<GroupByResultSet>> queries, GroupQueryInfo info);
 }

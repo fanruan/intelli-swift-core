@@ -9,7 +9,7 @@ import com.fr.swift.query.adapter.target.TargetDeep;
 import com.fr.swift.query.filter.info.FilterInfo;
 import com.fr.swift.query.sort.Sort;
 import com.fr.swift.query.sort.SortType;
-import com.fr.swift.result.RowResultCollector;
+import com.fr.swift.result.GroupByResultSet;
 
 import java.util.TreeSet;
 
@@ -17,11 +17,9 @@ import java.util.TreeSet;
  * @author pony
  * @date 2017/12/11
  */
-public class GroupQueryInfo extends AbstractQueryInfo<RowResultCollector> {
-    TableGroupQueryInfo[] tablesGroups;
-    /**
-     * 分组表的维度
-     */
+public class GroupQueryInfo extends AbstractQueryInfo<GroupByResultSet> {
+    protected TableGroupQueryInfo[] tablesGroups;
+    //分组表的维度
     private Dimension[] dimensions;
     /**
      * 分组表的聚合维度

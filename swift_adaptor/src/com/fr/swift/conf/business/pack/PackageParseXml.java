@@ -6,7 +6,6 @@ import com.finebi.conf.structure.bean.pack.FineBusinessPackage;
 import com.fr.general.ComparatorUtils;
 import com.fr.swift.conf.business.AbstractSwiftParseXml;
 import org.xml.sax.Attributes;
-import org.xml.sax.SAXException;
 
 import java.util.ArrayList;
 

@@ -8,7 +8,6 @@ import com.fr.swift.structure.array.IntList;
 import com.fr.swift.structure.array.IntListFactory;
 import com.fr.swift.structure.iterator.IntListRowTraversal;
 import com.fr.swift.structure.iterator.RowTraversal;
-import com.fr.swift.util.Util;
 
 import java.util.Set;
 

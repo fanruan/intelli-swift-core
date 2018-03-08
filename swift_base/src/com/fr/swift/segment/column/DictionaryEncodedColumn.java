@@ -52,7 +52,7 @@ public interface DictionaryEncodedColumn<T> extends Releasable, Flushable {
      * 获取值对应的字典序号
      *
      * @param value 字典值
-     * @return 对应序号
+     * @return 对应序号，-1表示未找到对应序号
      */
     int getIndex(Object value);
 
@@ -91,4 +91,13 @@ public interface DictionaryEncodedColumn<T> extends Releasable, Flushable {
      * @return 比较器
      */
     Comparator<T> getComparator();
+
+    /**
+     * 用于不同数值类型之间转换。
+     * ArrayLookupHelper.binarySearch(Lookup<T> lookup, T value | T[] values)用到的比较器要求类型一致。
+     * 把要查找的值类型转化为lookup用到的字典类型参数类型，可以减少数值类过滤器处理不同类型的代码。
+     * @param value
+     * @return
+     */
+    T convertValue(Object value);
 }

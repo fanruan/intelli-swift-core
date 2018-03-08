@@ -2,9 +2,12 @@ package com.fr.swift.cal.segment.group;
 
 import com.fr.swift.query.aggregator.Aggregator;
 import com.fr.swift.query.filter.detail.DetailFilter;
-import com.fr.swift.result.RowResultCollector;
+import com.fr.swift.query.group.by.GroupByUtils;
+import com.fr.swift.query.sort.Sort;
+import com.fr.swift.result.GroupByResultSet;
 import com.fr.swift.segment.column.Column;
 
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -12,12 +15,16 @@ import java.util.List;
  */
 public class GroupAllSegmentQuery extends AbstractGroupSegmentQuery{
 
+    private List<Sort> indexSorts;
+
     public GroupAllSegmentQuery(List<Column> dimensions, List<Column> metrics, List<Aggregator> aggregators, DetailFilter filter) {
         super(dimensions, metrics, aggregators, filter);
     }
 
     @Override
-    public RowResultCollector getQueryResult() {
-        return SegmentQueryUtils.queryAll(dimensions, metrics, aggregators, filter);
+    public GroupByResultSet getQueryResult() {
+        int[] cursor = new int[dimensions.size()];
+        Arrays.fill(cursor, 0);
+        return GroupByUtils.query(dimensions, metrics, aggregators, filter, indexSorts, cursor, -1);
     }
 }

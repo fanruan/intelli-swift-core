@@ -2,14 +2,10 @@ package com.fr.swift.log;
 
 import com.fr.base.Env;
 import com.fr.base.FRContext;
-import com.fr.general.FRLogger;
 import com.fr.third.apache.log4j.Logger;
 import com.fr.third.apache.log4j.PropertyConfigurator;
 
 import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.util.HashMap;
 import java.util.Map;
 

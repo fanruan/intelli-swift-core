@@ -27,7 +27,7 @@ public class MinorUpdaterTest extends BaseTest {
                 Arrays.asList(new JoinColumn(joinOn + "1", true, joinOn)),
                 new ColumnKey[]{new ColumnKey(joinOn)},
                 new ColumnKey[]{new ColumnKey(joinOn)},
-                ETLConstant.JOINTYPE.LEFT
+                ETLConstant.CONF.JOIN.LEFT
         );
         DataSource join = new ETLSource(Arrays.asList(demoContract, demoCustomer), joinOp);
 

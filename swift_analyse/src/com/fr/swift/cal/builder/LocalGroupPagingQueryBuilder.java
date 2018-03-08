@@ -8,7 +8,7 @@ import com.fr.swift.cal.segment.group.GroupPagingSegmentQuery;
 import com.fr.swift.manager.LocalSegmentProvider;
 import com.fr.swift.query.aggregator.Aggregator;
 import com.fr.swift.query.filter.FilterBuilder;
-import com.fr.swift.result.RowResultCollector;
+import com.fr.swift.result.GroupByResultSet;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.column.Column;
 
@@ -20,8 +20,8 @@ import java.util.List;
  */
 public class LocalGroupPagingQueryBuilder extends AbstractLocalGroupQueryBuilder {
     @Override
-    public Query<RowResultCollector> buildLocalQuery(GroupQueryInfo info) {
-        List<Query<RowResultCollector>> queries = new ArrayList<Query<RowResultCollector>>();
+    public Query<GroupByResultSet> buildLocalQuery(GroupQueryInfo info) {
+        List<Query<GroupByResultSet>> queries = new ArrayList<Query<com.fr.swift.result.GroupByResultSet>>();
         for (TableGroupQueryInfo groupQueryInfo : info.getTableGroups()) {
             List<Segment> segments = LocalSegmentProvider.getInstance().getSegment(groupQueryInfo.getTable());
             for (Segment segment : segments) {
@@ -35,7 +35,7 @@ public class LocalGroupPagingQueryBuilder extends AbstractLocalGroupQueryBuilder
     }
 
     @Override
-    public Query<RowResultCollector> buildResultQuery(List<Query<RowResultCollector>> queries, GroupQueryInfo info) {
+    public Query<GroupByResultSet> buildResultQuery(List<Query<GroupByResultSet>> queries, GroupQueryInfo info) {
         return new GroupPagingResultQuery(queries, getAggregators(info.getMetrics()), getTargets(info.getTargets()));
     }
 }

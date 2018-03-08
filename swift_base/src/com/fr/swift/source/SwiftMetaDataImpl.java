@@ -3,6 +3,8 @@ package com.fr.swift.source;
 import com.fr.general.ComparatorUtils;
 import com.fr.swift.exception.meta.SwiftMetaDataColumnAbsentException;
 import com.fr.swift.exception.meta.SwiftMetaDataException;
+import com.fr.swift.config.pojo.MetaDataColumnPojo;
+import com.fr.swift.config.pojo.SwiftMetaDataPojo;
 import com.fr.swift.util.Util;
 
 import java.util.ArrayList;
@@ -18,12 +20,9 @@ import java.util.List;
 public class SwiftMetaDataImpl implements SwiftMetaData {
     private static final long serialVersionUID = 5516973769561307468L;
 
-    private String schema;
+    private SwiftMetaDataPojo swiftMetaDataPojo;
 
-    protected String tableName;
-    private String remark;
-
-    private List<SwiftMetaDataColumn> fieldList = new ArrayList<SwiftMetaDataColumn>();
+    private List<SwiftMetaDataColumn> fieldList;
 
     public SwiftMetaDataImpl(String tableName, List<SwiftMetaDataColumn> fieldList) {
         this(tableName, null, null, fieldList);
@@ -34,16 +33,18 @@ public class SwiftMetaDataImpl implements SwiftMetaData {
     }
 
     public SwiftMetaDataImpl(String tableName, String tableNameRemark, String schema, List<SwiftMetaDataColumn> fieldList) {
-        this.schema = schema;
-        this.remark = tableNameRemark;
-        this.tableName = tableName;
         Util.requireNonNull(tableName, fieldList);
+        List<MetaDataColumnPojo> fieldPojoList = new ArrayList<MetaDataColumnPojo>();
+        for (SwiftMetaDataColumn column : fieldList) {
+            fieldPojoList.add(column.getMetaDataColumnPojo());
+        }
+        swiftMetaDataPojo = new SwiftMetaDataPojo(schema, tableName, tableNameRemark, fieldPojoList);
         this.fieldList = fieldList;
     }
 
     @Override
     public String getSchemaName() {
-        return schema;
+        return swiftMetaDataPojo.getSchema();
     }
 
     /**
@@ -51,7 +52,7 @@ public class SwiftMetaDataImpl implements SwiftMetaData {
      */
     @Override
     public String getTableName() {
-        return tableName;
+        return swiftMetaDataPojo.getTableName();
     }
 
     @Override
