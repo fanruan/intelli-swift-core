@@ -1,7 +1,6 @@
 package com.fr.swift.segment;
 
 import com.fr.swift.source.Row;
-import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftResultSet;
 
 import java.sql.SQLException;

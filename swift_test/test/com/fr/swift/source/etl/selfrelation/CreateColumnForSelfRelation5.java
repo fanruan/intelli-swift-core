@@ -8,7 +8,6 @@ import com.fr.swift.segment.column.BitmapIndexedColumn;
 import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.DetailColumn;
 import com.fr.swift.segment.column.DictionaryEncodedColumn;
-import com.fr.swift.segment.column.DetailColumn;
 
 import java.util.Comparator;
 

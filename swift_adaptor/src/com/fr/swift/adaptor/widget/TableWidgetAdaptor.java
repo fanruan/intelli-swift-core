@@ -9,6 +9,7 @@ import com.finebi.conf.structure.dashboard.widget.target.FineTarget;
 import com.finebi.conf.structure.result.table.BIGroupNode;
 import com.finebi.conf.utils.FineFieldUtils;
 import com.fr.swift.adaptor.transformer.ColumnTypeAdaptor;
+import com.fr.swift.adaptor.transformer.FilterInfoFactory;
 import com.fr.swift.adaptor.widget.group.GroupAdaptor;
 import com.fr.swift.cal.QueryInfo;
 import com.fr.swift.cal.info.Expander;
@@ -47,7 +48,7 @@ public class TableWidgetAdaptor {
     static QueryInfo buildQueryInfo(TableWidget widget) throws Exception {
         Cursor cursor = null;
         String queryId = widget.getWidgetId();
-        FilterInfo filterInfo = null;
+        FilterInfo filterInfo = FilterInfoFactory.transformFineFilter(widget.getFilters());
 
         List<Dimension> dimensions = new ArrayList<Dimension>();
         List<Metric> metrics = new ArrayList<Metric>();

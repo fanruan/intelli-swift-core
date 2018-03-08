@@ -10,9 +10,6 @@ import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.segment.column.DictionaryEncodedColumn;
-import com.fr.swift.source.ColumnTypeUtils;
-import com.fr.third.antlr.ANTLRException;
-import java.util.*;
 import com.fr.swift.source.ColumnTypeConstants.ColumnType;
 import com.fr.swift.source.ColumnTypeUtils;
 
@@ -24,10 +21,7 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static com.fr.swift.cube.io.IOConstant.NULL_DOUBLE;
-import static com.fr.swift.cube.io.IOConstant.NULL_INT;
-import static com.fr.swift.cube.io.IOConstant.NULL_LONG;
-import static com.fr.swift.cube.io.IOConstant.NULL_STRING;
+import static com.fr.swift.cube.io.IOConstant.*;
 
 /**
  * Created by Handsome on 2018/2/1 0001 15:27

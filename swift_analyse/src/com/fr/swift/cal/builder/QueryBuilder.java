@@ -5,7 +5,7 @@ import com.fr.swift.cal.QueryInfo;
 import com.fr.swift.cal.info.DetailQueryInfo;
 import com.fr.swift.cal.info.GroupQueryInfo;
 import com.fr.swift.result.DetailResultSet;
-import com.fr.swift.result.RowResultCollector;
+import com.fr.swift.result.GroupByResultSet;
 import com.fr.swift.source.SwiftResultSet;
 
 import java.net.URI;
@@ -24,7 +24,7 @@ public class QueryBuilder {
         }
     }
 
-    private static Query<RowResultCollector> buildGroupQuery(GroupQueryInfo info) throws SQLException {
+    private static Query<GroupByResultSet> buildGroupQuery(GroupQueryInfo info) throws SQLException {
         return GroupQueryBuilder.buildQuery(info);
     }
 

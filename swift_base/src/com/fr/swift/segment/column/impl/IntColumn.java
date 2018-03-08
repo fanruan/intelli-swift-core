@@ -6,8 +6,6 @@ import com.fr.swift.segment.column.DictionaryEncodedColumn;
 import com.fr.swift.segment.column.impl.base.IntDetailColumn;
 import com.fr.swift.segment.column.impl.base.IntDictColumn;
 
-import java.util.Comparator;
-
 /**
  * @author anchore
  * @date 2017/11/30

@@ -47,6 +47,11 @@ public class StringDictColumn extends BaseDictColumn<String> {
     }
 
     @Override
+    public String convertValue(Object value) {
+        return value.toString();
+    }
+
+    @Override
     public void putValue(int index, String val) {
         initKeyWriter();
         keyWriter.put(index, val);

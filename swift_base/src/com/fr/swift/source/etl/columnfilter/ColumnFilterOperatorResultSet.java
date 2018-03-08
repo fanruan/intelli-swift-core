@@ -1,7 +1,5 @@
 package com.fr.swift.source.etl.columnfilter;
 
-import com.fr.swift.bitmap.MutableBitMap;
-import com.fr.swift.bitmap.impl.BitSetMutableBitMap;
 import com.fr.swift.bitmap.traversal.TraversalAction;
 import com.fr.swift.exception.meta.SwiftMetaDataException;
 import com.fr.swift.log.SwiftLogger;
@@ -11,7 +9,11 @@ import com.fr.swift.query.filter.info.FilterInfo;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.segment.column.DictionaryEncodedColumn;
-import com.fr.swift.source.*;
+import com.fr.swift.source.ListBasedRow;
+import com.fr.swift.source.Row;
+import com.fr.swift.source.SwiftMetaData;
+import com.fr.swift.source.SwiftMetaDataColumn;
+import com.fr.swift.source.SwiftResultSet;
 import com.fr.swift.structure.iterator.RowTraversal;
 
 import java.sql.SQLException;

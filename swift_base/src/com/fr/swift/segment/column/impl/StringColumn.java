@@ -2,12 +2,10 @@ package com.fr.swift.segment.column.impl;
 
 import com.fr.swift.compare.Comparators;
 import com.fr.swift.cube.io.location.IResourceLocation;
-import com.fr.swift.segment.column.DictionaryEncodedColumn;
 import com.fr.swift.segment.column.DetailColumn;
+import com.fr.swift.segment.column.DictionaryEncodedColumn;
 import com.fr.swift.segment.column.impl.base.FakeStringDetailColumn;
 import com.fr.swift.segment.column.impl.base.StringDictColumn;
-
-import java.util.Comparator;
 
 /**
  * @author anchore

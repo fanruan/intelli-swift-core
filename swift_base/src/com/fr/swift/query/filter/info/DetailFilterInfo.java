@@ -39,7 +39,7 @@ public class DetailFilterInfo extends AbstractDetailFilterInfo {
 
             @Override
             public boolean matches(SwiftNode node) {
-                return false;
+                throw new UnsupportedOperationException();
             }
         };
     }
