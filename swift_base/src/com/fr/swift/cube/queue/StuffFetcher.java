@@ -2,14 +2,12 @@ package com.fr.swift.cube.queue;
 
 import com.fr.swift.cube.task.SchedulerTask;
 import com.fr.swift.cube.task.TaskKey;
-import com.fr.swift.cube.task.impl.SchedulerTaskPool;
 import com.fr.swift.exception.SwiftServiceException;
 import com.fr.swift.exception.meta.SwiftMetaDataException;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.source.DataSource;
 import com.fr.swift.source.ETLDataSource;
-import com.fr.swift.source.RelationSource;
 import com.fr.swift.source.manager.IndexStuffProvider;
 import com.fr.swift.structure.Pair;
 
@@ -62,23 +60,25 @@ public class StuffFetcher implements Runnable {
                 start.addNext(task);
             }
 
+            task.addNext(end);
+
             pairs.add(new Pair<TaskKey, Object>(task.key(), dataSource));
         }
 
         // 所有关联
-        for (RelationSource relation : stuff.getAllRelations()) {
-            DataSource primary = stuff.getTableById(relation.getPrimarySource().getId());
-            DataSource foreign = stuff.getTableById(relation.getForeignSource().getId());
-
-            SchedulerTask relationTask = CubeTasks.newRelationTask(relation);
-            SchedulerTask primaryTask = SchedulerTaskPool.getInstance().get(CubeTasks.newTaskKey(primary)),
-                    foreignTask = SchedulerTaskPool.getInstance().get(CubeTasks.newTaskKey(foreign));
-            primaryTask.addNext(relationTask);
-            foreignTask.addNext(relationTask);
-
-            relationTask.addNext(end);
-            pairs.add(new Pair<TaskKey, Object>(relationTask.key(), relation));
-        }
+//        for (RelationSource relation : stuff.getAllRelations()) {
+//            DataSource primary = stuff.getTableById(relation.getPrimarySource().getId());
+//            DataSource foreign = stuff.getTableById(relation.getForeignSource().getId());
+//
+//            SchedulerTask relationTask = CubeTasks.newRelationTask(relation);
+//            SchedulerTask primaryTask = SchedulerTaskPool.getInstance().get(CubeTasks.newTaskKey(primary)),
+//                    foreignTask = SchedulerTaskPool.getInstance().get(CubeTasks.newTaskKey(foreign));
+//            primaryTask.addNext(relationTask);
+//            foreignTask.addNext(relationTask);
+//
+//            relationTask.addNext(end);
+//            pairs.add(new Pair<TaskKey, Object>(relationTask.key(), relation));
+//        }
 
         CubeTasks.sendTasks(pairs);
         start.triggerRun();

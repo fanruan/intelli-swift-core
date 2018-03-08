@@ -52,7 +52,7 @@ public interface DictionaryEncodedColumn<T> extends Releasable, Flushable {
      * 获取值对应的字典序号
      *
      * @param value 字典值
-     * @return 对应序号
+     * @return 对应序号，-1表示未找到对应序号
      */
     int getIndex(Object value);
 
