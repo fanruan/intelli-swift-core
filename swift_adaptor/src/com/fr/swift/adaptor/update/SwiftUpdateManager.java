@@ -1,6 +1,8 @@
 package com.fr.swift.adaptor.update;
 
 import com.finebi.base.constant.FineEngineType;
+import com.finebi.conf.internalimp.bean.table.UpdatePreviewTableBean;
+import com.finebi.conf.internalimp.bean.update.UpdatePreview;
 import com.finebi.conf.internalimp.response.update.TableUpdateSetting;
 import com.finebi.conf.internalimp.update.GlobalUpdateInfo;
 import com.finebi.conf.internalimp.update.GlobalUpdateLog;
@@ -12,11 +14,19 @@ import com.finebi.conf.internalimp.update.UpdateStatus;
 import com.finebi.conf.provider.SwiftTableConfProvider;
 import com.finebi.conf.service.engine.update.EngineUpdateManager;
 import com.finebi.conf.structure.bean.table.FineBusinessTable;
+import com.fr.swift.adaptor.preview.SwiftDataPreviewer;
 import com.fr.swift.adaptor.transformer.IndexingDataSourceFactory;
 import com.fr.swift.increment.Increment;
+import com.fr.swift.log.SwiftLogger;
+import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.manager.ProviderManager;
 import com.fr.swift.provider.IndexStuffInfoProvider;
+import com.fr.swift.source.DataSource;
+import com.fr.swift.source.Row;
+import com.fr.swift.source.SwiftResultSet;
+import com.fr.swift.source.SwiftSourceTransfer;
 import com.fr.swift.source.container.SourceContainerManager;
+import com.fr.swift.source.db.QueryDBSource;
 import com.fr.swift.source.manager.IndexStuffProvider;
 import com.fr.swift.stuff.HistoryIndexStuffImpl;
 import com.fr.swift.stuff.IndexingStuff;
@@ -34,6 +44,8 @@ import java.util.Map;
  * @since Advanced FineBI Analysis 1.0
  */
 public class SwiftUpdateManager implements EngineUpdateManager {
+
+    private static final SwiftLogger LOGGER = SwiftLoggers.getLogger(SwiftUpdateManager.class);
 
     @Override
     public Map<FineBusinessTable, TableUpdateInfo> getTableUpdateInfo() {
@@ -159,5 +171,35 @@ public class SwiftUpdateManager implements EngineUpdateManager {
     @Override
     public FineEngineType getEngineType() {
         return FineEngineType.Cube;
+    }
+
+    @Override
+    public UpdatePreview getUpdatePreview(UpdatePreviewTableBean updatePreviewTableBean) {
+        try {
+            DataSource queryDBSource = new QueryDBSource(updatePreviewTableBean.getSql(), updatePreviewTableBean.getConnectionName());
+            SwiftSourceTransfer transfer = SwiftDataPreviewer.createPreviewTransfer(queryDBSource, 100);
+            SwiftResultSet resultSet = transfer.createResultSet();
+            Object[] data = new Object[100];
+            Object[] fieldNames = new Object[queryDBSource.getMetadata().getColumnCount()];
+            for (int i = 1; i <= queryDBSource.getMetadata().getColumnCount(); i++) {
+                fieldNames[i - 1] = queryDBSource.getMetadata().getColumnName(i);
+            }
+            int count = 0;
+            while (resultSet.next()) {
+                Row row = resultSet.getRowData();
+                List<Object> rowList = new ArrayList<Object>();
+                for (int i = 1; i <= queryDBSource.getMetadata().getColumnCount(); i++) {
+                    rowList.add(row.getValue(i - 1));
+                }
+                data[count] = rowList;
+                count++;
+            }
+
+            UpdatePreview updatePreview = new UpdatePreview(updatePreviewTableBean.getSql(), data, fieldNames);
+            return updatePreview;
+        } catch (Exception e) {
+            LOGGER.error(e.getMessage(), e);
+            return new UpdatePreview();
+        }
     }
 }

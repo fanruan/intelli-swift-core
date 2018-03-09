@@ -10,7 +10,13 @@ import com.fr.swift.segment.column.DictionaryEncodedColumn;
 import com.fr.swift.source.*;
 
 import java.sql.SQLException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Handsome on 2018/1/22 0022 10:19

@@ -3,7 +3,6 @@ package com.fr.swift.cube.io;
 import com.fr.swift.cube.io.Types.DataType;
 import com.fr.swift.cube.io.Types.IoType;
 import com.fr.swift.cube.io.Types.WriteType;
-import com.fr.swift.cube.io.impl.fineio.input.ByteArrayFineIoReader;
 import com.fr.swift.cube.io.input.ByteArrayReader;
 import com.fr.swift.cube.io.location.IResourceLocation;
 import com.fr.swift.cube.io.location.ResourceLocation;

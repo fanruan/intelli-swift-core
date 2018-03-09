@@ -2,8 +2,6 @@ package com.fr.swift.segment.column.impl;
 
 import com.fr.swift.cube.io.location.IResourceLocation;
 
-import java.util.Comparator;
-
 /**
  * @author anchore
  * @date 2017/11/30

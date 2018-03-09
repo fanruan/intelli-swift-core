@@ -1,6 +1,5 @@
 package com.fr.swift.conf.business.relation;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 

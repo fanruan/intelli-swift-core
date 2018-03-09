@@ -1,6 +1,8 @@
 package com.fr.swift.query.filter.detail.impl.number;
 
 import com.fr.swift.bitmap.ImmutableBitMap;
+import com.fr.swift.query.filter.detail.DetailFilter;
+import com.fr.swift.segment.column.Column;
 
 import java.util.HashSet;
 import java.util.List;
@@ -11,45 +13,58 @@ import java.util.stream.IntStream;
 /**
  * Created by Lyon on 2017/12/1.
  */
-public abstract class NumberContainFilterTest extends BaseNumberFilterTest {
+public class NumberContainFilterTest extends BaseNumberFilterTest {
 
     protected Set groups = new HashSet<>();
 
-    public NumberContainFilterTest(List<? extends Number> details) {
-        super();
-        this.details = details;
-        init();
+    protected DetailFilter createFilter(Column column) {
+        return new NumberContainFilter(groups, column);
     }
 
-    @Override
-    protected void setUp() throws Exception {
+    private void prepare(List details, Column column) {
+        this.details = details;
+        IntStream.range(0, 10).forEach(i -> groups.add(new Double(details.get(random.nextInt(details.size())).toString())));
+        filter = createFilter(column);
         expectedIndexes = getExpectedIndexes();
     }
 
-    public void testFilter() {
+    public void testInt() {
+        prepare(intDetails, intColumn);
+        filter();
+        match();
+    }
+
+    public void testDouble() {
+        prepare(doubleDetails, doubleColumn);
+        filter();
+        match();
+    }
+
+    public void testLong() {
+        prepare(longDetails, longColumn);
+        filter();
+        match();
+    }
+
+    public void filter() {
         ImmutableBitMap bitMap = filter.createFilterIndex();
         assertEquals(bitMap.getCardinality(), expectedIndexes.size());
         IntStream.range(0, expectedIndexes.size()).forEach(i -> assertTrue(bitMap.contains(expectedIndexes.get(i))));
     }
 
-    public void testMatch() {
+    public void match() {
         assertTrue(!filter.matches(createNode(null)));
         assertTrue(filter.matches(createNode(getRandomMatchedNumber())));
         assertTrue(!filter.matches(createNode(getRandomNotMatchedNumber())));
     }
 
-    private void init() {
-        IntStream.range(0, 10)
-                .forEach(i -> groups.add(details.get(random.nextInt(details.size()))));
-    }
-
     @Override
     protected List<Integer> getExpectedIndexes() {
         if (isNot) {
-            return IntStream.range(0, details.size()).filter(i -> !groups.contains(details.get(i)))
+            return IntStream.range(0, details.size()).filter(i -> !groups.contains(((Number) details.get(i)).doubleValue()))
                     .mapToObj(Integer::new).collect(Collectors.toList());
         }
-        return IntStream.range(0, details.size()).filter(i -> groups.contains(details.get(i)))
+        return IntStream.range(0, details.size()).filter(i -> groups.contains(((Number) details.get(i)).doubleValue()))
                 .mapToObj(Integer::new).collect(Collectors.toList());
     }
 }

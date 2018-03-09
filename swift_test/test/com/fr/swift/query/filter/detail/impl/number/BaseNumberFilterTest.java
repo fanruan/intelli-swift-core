@@ -35,15 +35,27 @@ public abstract class BaseNumberFilterTest extends BaseFilterTest {
     protected Column column;
     protected DetailFilter filter;
 
-    public BaseNumberFilterTest() {
-    }
-
     protected abstract List<Integer> getExpectedIndexes();
 
     private static void initColumn() {
-        intColumn = new ColumnImplTest<Integer>(intDetails, (t1, t2) -> t1.compareTo(t2), null);
-        doubleColumn = new ColumnImplTest<Double>(doubleDetails, (t1, t2) -> t1.compareTo(t2), null);
-        longColumn = new ColumnImplTest<Long>(longDetails, (t1, t2) -> t1.compareTo(t2), null);
+        intColumn = new ColumnImplTest<Integer>(intDetails, (t1, t2) -> t1.compareTo(t2), null) {
+            @Override
+            protected Integer convertValue(Object value) {
+                return ((Number)value).intValue();
+            }
+        };
+        doubleColumn = new ColumnImplTest<Double>(doubleDetails, (t1, t2) -> t1.compareTo(t2), null) {
+            @Override
+            protected Double convertValue(Object value) {
+                return ((Number) value).doubleValue();
+            }
+        };
+        longColumn = new ColumnImplTest<Long>(longDetails, (t1, t2) -> t1.compareTo(t2), null) {
+            @Override
+            protected Long convertValue(Object value) {
+                return ((Number) value).longValue();
+            }
+        };
     }
 
     private static void initDetails() {
