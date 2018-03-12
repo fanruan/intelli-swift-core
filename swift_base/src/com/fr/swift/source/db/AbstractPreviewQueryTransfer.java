@@ -41,7 +41,11 @@ public abstract class AbstractPreviewQueryTransfer extends AbstractQueryTransfer
     @Override
     public Statement createStatement(Connection conn, Dialect dialect) throws SQLException {
         Statement statement = super.createStatement(conn, dialect);
-        statement.setMaxRows(row);
+        try {
+            statement.setMaxRows(row);
+        } catch (Exception e){
+            LOGGER.error("not support setMaxRow");
+        }
         return statement;
     }
 
