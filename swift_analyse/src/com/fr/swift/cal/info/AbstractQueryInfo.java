@@ -5,7 +5,8 @@ import com.fr.swift.cal.result.group.Cursor;
 import com.fr.swift.query.filter.info.FilterInfo;
 
 /**
- * Created by pony on 2017/12/15.
+ * @author pony
+ * @date 2017/12/15
  */
 public abstract class AbstractQueryInfo<T> implements QueryInfo<T> {
     private Cursor cursor;
@@ -23,6 +24,7 @@ public abstract class AbstractQueryInfo<T> implements QueryInfo<T> {
         return cursor;
     }
 
+    @Override
     public String getQueryID() {
         return id;
     }

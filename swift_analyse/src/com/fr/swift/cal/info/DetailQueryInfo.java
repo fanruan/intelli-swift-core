@@ -11,16 +11,25 @@ import com.fr.swift.source.SourceKey;
 import com.fr.swift.structure.array.IntList;
 
 /**
- * Created by pony on 2017/12/11.
+ * @author pony
+ * @date 2017/12/11
  */
 public class DetailQueryInfo extends AbstractQueryInfo<DetailResultSet> {
-    //明细表维度，支持分组，排序
+    /**
+     * 明细表维度，支持分组，排序
+     */
     private Dimension[] dimensions;
-    //公共子表
+    /**
+     * 公共子表
+     */
     private SourceKey target;
-    //排序的顺序
+    /**
+     * 排序的顺序
+     */
     private IntList sortIndex;
-    //明细表的指标，目前只支持公式
+    /**
+     * 明细表的指标，目前只支持公式
+     */
     private DetailTarget[] targets;
 
     public DetailQueryInfo(Cursor cursor, String queryID, Dimension[] dimensions, SourceKey target, DetailTarget[] targets, IntList sortIndex, FilterInfo filterInfo) {

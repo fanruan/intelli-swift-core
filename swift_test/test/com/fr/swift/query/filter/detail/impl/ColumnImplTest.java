@@ -8,6 +8,7 @@ import com.fr.swift.segment.column.BitmapIndexedColumn;
 import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.DetailColumn;
 import com.fr.swift.segment.column.DictionaryEncodedColumn;
+import com.fr.swift.util.ArrayLookupHelper;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -18,12 +19,12 @@ import java.util.stream.IntStream;
 /**
  * Created by Lyon on 2017/12/1.
  */
-public class ColumnImplTest<T> implements Column {
+public abstract class ColumnImplTest<T> implements Column {
 
     private DictionaryEncodedColumn<T> dict;
-    private List<T> groups;
+    protected List<T> groups;
     private TreeMap<T, MutableBitMap> indexes = new TreeMap<>();
-    private Comparator<T> comparator;
+    protected Comparator<T> comparator;
     private T nullKey;
 
     public ColumnImplTest(List<T> details, Comparator<T> comparator, T nullKey) {
@@ -32,12 +33,38 @@ public class ColumnImplTest<T> implements Column {
         init(details);
     }
 
+    protected abstract T convertValue(Object value);
+
     private void init(List<T> list) {
         list.stream().forEach(s -> indexes.putIfAbsent(s, BitMaps.newRoaringMutable()));
         IntStream.range(0, list.size()).forEach(i -> indexes.get(list.get(i)).add(i));
         groups = new ArrayList<>();
         groups.addAll(indexes.keySet());
         dict = new DictionaryEncodedColumn<T>() {
+
+            private ArrayLookupHelper.Lookup<T> lookup = new ArrayLookupHelper.Lookup<T>() {
+                @Override
+                public int minIndex() {
+                    return 0;
+                }
+
+                @Override
+                public int maxIndex() {
+                    return size() - 1;
+                }
+
+                @Override
+                public T lookupByIndex(int index) {
+                    return getValue(index);
+                }
+
+                @Override
+                public int compare(T t1, T t2) {
+                    return comparator.compare(t1, t2);
+                }
+
+            };
+
             @Override
             public void flush() {
 
@@ -75,7 +102,7 @@ public class ColumnImplTest<T> implements Column {
 
             @Override
             public int getIndex(Object value) {
-                return groups.indexOf(value);
+                return ArrayLookupHelper.lookup((T[]) new Object[]{ColumnImplTest.this.convertValue(value)}, lookup)[0];
             }
 
             @Override
@@ -106,6 +133,11 @@ public class ColumnImplTest<T> implements Column {
             @Override
             public Comparator<T> getComparator() {
                 return comparator;
+            }
+
+            @Override
+            public T convertValue(Object value) {
+                return ColumnImplTest.this.convertValue(value);
             }
 
             @Override

@@ -17,6 +17,7 @@ import java.util.List;
 public class FormulaPreviewTest extends BaseTest {
 
     public void testOneFormulaPreview() throws Exception {
+
         DataSource dataSource = new QueryDBSource("select * from DEMO_CAPITAL_RETURN", "allTest");
         ETLOperator formulaOperator = new ColumnFormulaOperator("addField", ColumnTypeConstants.ColumnType.NUMBER, "${付款金额} + ${付款金额}");
         List<DataSource> baseDataSources = new ArrayList<DataSource>();
@@ -24,7 +25,7 @@ public class FormulaPreviewTest extends BaseTest {
         ETLSource etlSource = new ETLSource(baseDataSources, formulaOperator);
 
         SwiftFieldsDataPreview swiftFieldsDataPreview = new SwiftFieldsDataPreview();
-        BIDetailTableResult detailTableResult = swiftFieldsDataPreview.getDetailPreviewByFields(etlSource, 200);
+        BIDetailTableResult detailTableResult = swiftFieldsDataPreview.getDetailPreviewByFields(etlSource, 200, null, null);
 
         assertEquals(etlSource.getMetadata().getColumnCount(), 5);
         int count = 0;

@@ -6,8 +6,8 @@ import com.fr.swift.bitmap.impl.BitSetMutableBitMap;
 import com.fr.swift.cube.io.location.IResourceLocation;
 import com.fr.swift.segment.column.BitmapIndexedColumn;
 import com.fr.swift.segment.column.Column;
-import com.fr.swift.segment.column.DictionaryEncodedColumn;
 import com.fr.swift.segment.column.DetailColumn;
+import com.fr.swift.segment.column.DictionaryEncodedColumn;
 
 import java.util.Comparator;
 

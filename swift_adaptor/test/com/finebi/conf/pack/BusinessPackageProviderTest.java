@@ -2,8 +2,8 @@ package com.finebi.conf.pack;
 
 import com.finebi.base.constant.FineEngineType;
 import com.finebi.conf.internalimp.pack.FineBusinessPackageImp;
-import com.finebi.conf.structure.bean.pack.FineBusinessPackage;
 import com.finebi.conf.provider.SwiftPackageConfProvider;
+import com.finebi.conf.structure.bean.pack.FineBusinessPackage;
 import junit.framework.TestCase;
 
 /**

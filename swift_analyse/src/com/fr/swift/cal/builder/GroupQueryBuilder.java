@@ -5,7 +5,7 @@ import com.fr.swift.cal.info.GroupQueryInfo;
 import com.fr.swift.cal.info.TableGroupQueryInfo;
 import com.fr.swift.cal.remote.RemoteQueryImpl;
 import com.fr.swift.exception.SwiftSegmentAbsentException;
-import com.fr.swift.result.RowResultCollector;
+import com.fr.swift.result.GroupByResultSet;
 import com.fr.swift.segment.SegmentLocationProvider;
 import com.fr.swift.source.SourceKey;
 
@@ -20,7 +20,7 @@ import java.util.Set;
  * Created by pony on 2017/12/14.
  */
 public class GroupQueryBuilder {
-    protected static Query<RowResultCollector> buildQuery(GroupQueryInfo info) throws SQLException {
+    protected static Query<GroupByResultSet> buildQuery(GroupQueryInfo info) throws SQLException {
         TableGroupQueryInfo[] tableGroups = info.getTableGroups();
         Set<URI> uris = new HashSet<URI>();
         for (TableGroupQueryInfo tableGroup : tableGroups){
@@ -39,9 +39,9 @@ public class GroupQueryBuilder {
         }
     }
 
-    private static Query<RowResultCollector> buildQuery(Set<URI> uris, GroupQueryInfo info, LocalGroupQueryBuilder builder) {
+    private static Query<GroupByResultSet> buildQuery(Set<URI> uris, GroupQueryInfo info, LocalGroupQueryBuilder builder) {
 
-        List<Query<RowResultCollector>> queries = new ArrayList<Query<RowResultCollector>>();
+        List<Query<GroupByResultSet>> queries = new ArrayList<Query<com.fr.swift.result.GroupByResultSet>>();
         for (URI uri : uris){
             if (QueryBuilder.isLocalURI(uri)){
                 queries.add(builder.buildLocalQuery(info));

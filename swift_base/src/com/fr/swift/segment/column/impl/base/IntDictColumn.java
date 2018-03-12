@@ -73,4 +73,8 @@ public class IntDictColumn extends BaseDictColumn<Integer> {
         }
     }
 
+    @Override
+    public Integer convertValue(Object value) {
+        return ((Number) value).intValue();
+    }
 }

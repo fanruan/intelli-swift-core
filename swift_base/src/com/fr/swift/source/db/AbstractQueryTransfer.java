@@ -48,7 +48,7 @@ import java.util.concurrent.Callable;
  * Created by pony on 2017/12/5.
  */
 public abstract class AbstractQueryTransfer implements SwiftSourceTransfer {
-    private static final SwiftLogger LOGGER = SwiftLoggers.getLogger(AbstractQueryTransfer.class);
+    protected static final SwiftLogger LOGGER = SwiftLoggers.getLogger(AbstractQueryTransfer.class);
     protected ConnectionInfo connectionInfo;
 
     public AbstractQueryTransfer(ConnectionInfo connectionInfo) {

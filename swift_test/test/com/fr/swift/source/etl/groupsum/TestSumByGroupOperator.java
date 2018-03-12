@@ -23,7 +23,7 @@ public class TestSumByGroupOperator extends TestCase {
 
 
     public void testSumByGroup() {
-        SwiftResultSet rs = init(ETLConstant.SUMMARY_TYPE.SUM);
+        SwiftResultSet rs = init(ETLConstant.CONF.ADD_COLUMN.ALL_VALUES.SUMMARY_TYPE.SUM);
         Object[][] value = new Object[][]{{"A", new Double(12.0)}, {"B", new Double(12.0)}, {"C", new Double(18.0)}};
         int index = 0;
         try {

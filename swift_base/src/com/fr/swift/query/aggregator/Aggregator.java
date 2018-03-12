@@ -19,6 +19,7 @@ public interface Aggregator<T extends AggregatorValue> {
 
     /**
      * 根据聚合的结果再计算
+     * 合并两个值，并把合并后的值设置给
      *
      * @param value
      * @param other

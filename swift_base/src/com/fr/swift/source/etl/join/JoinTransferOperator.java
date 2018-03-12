@@ -4,8 +4,8 @@ import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftResultSet;
-import com.fr.swift.source.etl.utils.ETLConstant;
 import com.fr.swift.source.etl.ETLTransferOperator;
+import com.fr.swift.source.etl.utils.ETLConstant;
 
 import java.util.List;
 
