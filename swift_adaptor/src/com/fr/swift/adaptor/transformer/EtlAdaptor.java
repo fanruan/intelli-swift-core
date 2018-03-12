@@ -311,7 +311,7 @@ class EtlAdaptor {
             sumByGroupTarget.setColumnType(ColumnTypeAdaptor.adaptColumnType(tempBean.getFieldType()));
             sumByGroupTarget.setName(srcValue.getFieldName());
             sumByGroupTarget.setNameText(tempBean.getName());
-            int type = ETLConstant.SUMMARY_TYPE.SUM;
+            int type = ETLConstant.CONF.GROUP.NUMBER.SUM;
             switch (tempBean.getValue().get(0).getType()) {
                 case BIConfConstants.CONF.GROUP.TYPE.SINGLE:
                     type = ((GroupSingleValueBean) tempBean.getValue().get(0)).getValue();
