@@ -1,7 +1,6 @@
 package com.fr.swift.adaptor.transformer;
 
 import com.finebi.conf.constant.BICommonConstants;
-import com.finebi.conf.constant.BIConfConstants;
 import com.finebi.conf.internalimp.bean.filter.AbstractFilterBean;
 import com.finebi.conf.internalimp.bean.filter.date.DateAfterFilterBean;
 import com.finebi.conf.internalimp.bean.filter.date.DateBeforeFilterBean;
@@ -23,6 +22,7 @@ import com.finebi.conf.internalimp.bean.filter.string.StringNoBeginWithFilterBea
 import com.finebi.conf.internalimp.bean.filter.string.StringNoBelongFilterBean;
 import com.finebi.conf.internalimp.bean.filter.string.StringNoContainFilterBean;
 import com.finebi.conf.internalimp.bean.filter.string.StringNoEndWithFilterBean;
+import com.finebi.conf.internalimp.bean.filtervalue.date.DateBoxFilterBean;
 import com.finebi.conf.internalimp.bean.filtervalue.date.DateSelectedValueBean;
 import com.finebi.conf.internalimp.bean.filtervalue.date.DateValueBean;
 import com.finebi.conf.internalimp.bean.filtervalue.number.NumberValue;
@@ -38,6 +38,7 @@ import com.fr.swift.query.filter.info.value.SwiftDateInRangeFilterValue;
 import com.fr.swift.query.filter.info.value.SwiftNumberInRangeFilterValue;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -216,9 +217,17 @@ public class FilterInfoFactory {
 
     private static SwiftDateInRangeFilterValue createValue(DateValueBean bean) {
         SwiftDateInRangeFilterValue value = new SwiftDateInRangeFilterValue();
-        value.setStart(bean.getStart());
-        value.setEnd(bean.getEnd());
+        value.setStart(DateBoxFilterBean2Long(bean.getStart()));
+        value.setEnd(DateBoxFilterBean2Long(bean.getEnd()));
         return value;
+    }
+
+    private static long DateBoxFilterBean2Long(DateBoxFilterBean bean){
+        Calendar c = Calendar.getInstance();
+        c.set(Calendar.YEAR, bean.getYear());
+        c.set(Calendar.MONTH, bean.getMonth());
+        c.set(Calendar.DAY_OF_MONTH, bean.getDay());
+        return c.getTimeInMillis();
     }
 
     private static SwiftNumberInRangeFilterValue createValue(NumberValue nv) {
