@@ -39,11 +39,6 @@ public class SortSegmentDetailResultSet extends DetailResultSet {
         init();
     }
 
-    @Override
-    public boolean next() {
-
-        return rowCount < maxRow;
-    }
 
     @Override
     public SwiftMetaData getMetaData() {
@@ -55,7 +50,6 @@ public class SortSegmentDetailResultSet extends DetailResultSet {
     public Row getRowData() {
 
         Row row = sortedDetailList.get(rowCount);
-        rowCount ++;
         return row;
     }
 

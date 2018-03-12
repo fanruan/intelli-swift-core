@@ -1,6 +1,7 @@
 package com.fr.swift.result;
 
 import com.fr.swift.cal.Query;
+import com.fr.swift.exception.SwiftSegmentAbsentException;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SwiftMetaData;
 
@@ -31,13 +32,6 @@ public class MultiSegmentDetailResultSet extends DetailResultSet {
 
     }
 
-    @Override
-    public boolean next() throws SQLException {
-        if (rowCount < maxRow) {
-            return true;
-        }
-        return false;
-    }
 
     @Override
     public SwiftMetaData getMetaData() throws SQLException {
@@ -50,7 +44,6 @@ public class MultiSegmentDetailResultSet extends DetailResultSet {
         while (!(drs.get(index).next())) {
             index ++;
         }
-        rowCount ++;
         return drs.get(index).getRowData();
     }
 

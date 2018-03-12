@@ -40,20 +40,6 @@ public class SegmentDetailResultSet extends DetailResultSet {
     }
 
     @Override
-    public void close() throws SQLException {
-
-    }
-
-
-    @Override
-    public boolean next() throws SQLException {
-        if (rowCount < maxRow) {
-            return true;
-        }
-        return false;
-    }
-
-    @Override
     public SwiftMetaData getMetaData() throws SQLException {
         return null;
     }
@@ -71,7 +57,6 @@ public class SegmentDetailResultSet extends DetailResultSet {
         for (int i = 0; i < columnList.size(); i++) {
             values.add(columnList.get(i).getDetailColumn().get(index));
         }
-        rowCount ++;
         return new ListBasedRow(values);
     }
 

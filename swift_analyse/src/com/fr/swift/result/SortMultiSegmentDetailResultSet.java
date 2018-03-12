@@ -36,18 +36,12 @@ public class SortMultiSegmentDetailResultSet extends DetailResultSet {
         return null;
     }
 
-    @Override
-    public boolean next() {
-
-        return rowCount < maxRow;
-    }
 
 
     @Override
     public Row getRowData() {
 
         Row row = sortedDetailList.get(rowCount);
-        rowCount ++;
         return row;
     }
 

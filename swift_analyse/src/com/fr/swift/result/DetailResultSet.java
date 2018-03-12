@@ -14,7 +14,7 @@ public abstract class DetailResultSet implements SwiftResultSet{
     /**
      * 已拿到的行数
      */
-    protected  int rowCount = 0;
+    protected  int rowCount = -1;
 
     /**
      * 结果集的行数
@@ -31,7 +31,8 @@ public abstract class DetailResultSet implements SwiftResultSet{
 
     @Override
     public boolean next() throws SQLException {
-        return false;
+
+        return ++ rowCount < maxRow;
     }
 
     @Override
