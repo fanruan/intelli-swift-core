@@ -1,4 +1,4 @@
-package com.fr.swift.adaptor.preview;
+package com.fr.swift.generate.preview;
 
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.SegmentKey;
