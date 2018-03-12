@@ -1,5 +1,6 @@
 package com.fr.swift.source.etl.selfrelation;
 
+import com.fr.swift.Temps.TempDictColumn;
 import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.bitmap.MutableBitMap;
 import com.fr.swift.bitmap.impl.BitSetMutableBitMap;
@@ -97,41 +98,11 @@ public class CreateColumnForSelfRelation2 {
     private DictionaryEncodedColumn createDicColumn() {
         final String[] keys = {"mmm","AAA","fff","ggg","nnn","bbb"};
         final int[] index = {0,1,1,2,3,4,3,0,5};
-        return new DictionaryEncodedColumn() {
-
-            @Override
-            public void flush() {
-
-            }
-
-            @Override
-            public int getGlobalIndexByRow(int row) {
-                return 0;
-            }
-
-            @Override
-            public int getGlobalIndexByIndex(int index) {
-                return 0;
-            }
+        return new TempDictColumn() {
 
             @Override
             public int size() {
                 return 6;
-            }
-
-            @Override
-            public void putGlobalSize(int globalSize) {
-
-            }
-
-            @Override
-            public int globalSize() {
-                return 0;
-            }
-
-            @Override
-            public void putSize(int size) {
-
             }
 
             @Override
@@ -140,33 +111,8 @@ public class CreateColumnForSelfRelation2 {
             }
 
             @Override
-            public void putValue(int index, Object val) {
-
-            }
-
-            @Override
-            public int getIndex(Object value) {
-                return 0;
-            }
-
-            @Override
-            public void putIndex(int row, int index) {
-
-            }
-
-            @Override
             public int getIndexByRow(int row) {
                 return index[row];
-            }
-
-            @Override
-            public void putGlobalIndex(int index, int globalIndex) {
-
-            }
-
-            @Override
-            public void release() {
-
             }
 
             @Override
