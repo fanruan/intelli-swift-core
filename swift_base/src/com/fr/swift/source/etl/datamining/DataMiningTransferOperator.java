@@ -1,10 +1,13 @@
 package com.fr.swift.source.etl.datamining;
 
+import com.finebi.conf.internalimp.analysis.bean.operator.datamining.AlgorithmBean;
 import com.fr.swift.segment.Segment;
-import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftResultSet;
 import com.fr.swift.source.etl.ETLTransferOperator;
+import com.fr.swift.source.etl.datamining.timeseries.arima.ArimaResultSet;
+import com.fr.swift.source.etl.datamining.timeseries.holtwinter.HoltWinterResultSet;
+import com.fr.swift.source.etl.datamining.timeseries.regression.RegressionResultSet;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -15,10 +18,10 @@ import java.util.List;
  */
 public class DataMiningTransferOperator implements ETLTransferOperator {
 
-    private List<List<ColumnKey>> lists;
+    private AlgorithmBean algorithmBean;
 
-    public DataMiningTransferOperator(List<List<ColumnKey>> lists) {
-        this.lists = lists;
+    public DataMiningTransferOperator(AlgorithmBean ab) {
+        this.algorithmBean = ab;
     }
 
     @Override
@@ -27,6 +30,15 @@ public class DataMiningTransferOperator implements ETLTransferOperator {
         for (int i = 0; i < basedSegments.size(); i++) {
             tis.add(Arrays.asList(basedSegments.get(i)));
         }
-        return new DataMiningOperatorResultSet(lists, tis, metaData);
+        switch (algorithmBean.getAlgorithmName()){
+            case ARIMA:
+                return new ArimaResultSet(algorithmBean, metaData,basedMetas.get(0), tis.get(0));
+            case REGRESSION:
+                return new RegressionResultSet(algorithmBean, tis, metaData);
+            case HOLTWINTERS:
+                return new HoltWinterResultSet(algorithmBean, tis, metaData);
+            default:
+                return null;
+        }
     }
 }

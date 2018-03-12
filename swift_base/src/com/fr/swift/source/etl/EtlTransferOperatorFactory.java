@@ -91,6 +91,6 @@ public class EtlTransferOperatorFactory {
     }
 
     private static ETLTransferOperator transferDataMiningOperator(DataMiningOperator operator) {
-        return new DataMiningTransferOperator(operator.getColumnKeyList());
+        return new DataMiningTransferOperator(operator.getAlgorithmBean());
     }
 }
