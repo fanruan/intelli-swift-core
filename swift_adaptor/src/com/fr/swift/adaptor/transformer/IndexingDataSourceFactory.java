@@ -1,7 +1,6 @@
 package com.fr.swift.adaptor.transformer;
 
-import com.finebi.base.constant.BaseConstant;
-import com.finebi.base.constant.BaseConstant.TABLETYPE;
+import com.finebi.conf.constant.BICommonConstants;
 import com.finebi.conf.constant.ConfConstant;
 import com.finebi.conf.internalimp.analysis.bean.operator.confselect.ConfSelectBeanItem;
 import com.finebi.conf.internalimp.analysis.operator.confselect.ConfSelectOperator;
@@ -86,19 +85,16 @@ public class IndexingDataSourceFactory {
     public static DataSource transformDataSource(FineBusinessTable table) throws Exception {
         DataSource dataSource = null;
         switch (table.getType()) {
-            case BaseConstant.TABLETYPE.DB:
+            case BICommonConstants.TABLE.DATABASE:
                 dataSource = transformTableDBSource((FineDBBusinessTable) table);
                 break;
-            case BaseConstant.TABLETYPE.SQL:
+            case BICommonConstants.TABLE.SQL:
                 dataSource = transformQueryDBSource((FineSQLBusinessTable) table);
                 break;
-            case BaseConstant.TABLETYPE.SERVER:
-                break;
-//            case BaseConstant.TABLETYPE.EXCEL:
+//            case BICommonConstants.TABLE.EXCEL:
 //                dataSource = transformExcelDataSource((FineExcelBusinessTable) table);
 //                break;
-            case TABLETYPE.ETL:
-            case BaseConstant.TABLETYPE.ANALYSIS:
+            case BICommonConstants.TABLE.ANALYSIS:
                 dataSource = EtlAdaptor.adaptEtlDataSource(table);
                 break;
             default:
