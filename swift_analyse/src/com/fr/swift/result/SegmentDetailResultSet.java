@@ -55,7 +55,11 @@ public class SegmentDetailResultSet extends DetailResultSet {
             }
         }
         for (int i = 0; i < columnList.size(); i++) {
-            values.add(columnList.get(i).getDetailColumn().get(index));
+            Object val = columnList.get(i).getDetailColumn().get(index);
+            if (isNullValue(val) && columnList.get(i).getBitmapIndex().getNullIndex().contains(i)) {
+                continue;
+            }
+            values.add(val);
         }
         return new ListBasedRow(values);
     }

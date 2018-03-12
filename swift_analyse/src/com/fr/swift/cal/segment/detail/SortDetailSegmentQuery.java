@@ -33,4 +33,6 @@ public class SortDetailSegmentQuery extends AbstractDetailSegmentQuery {
             return new SortSegmentDetailByIndexResultSet(columnList, filter, sortIndex, sorts);
         }
     }
+
+
 }

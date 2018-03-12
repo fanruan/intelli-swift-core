@@ -76,14 +76,17 @@ public class SortSegmentDetailResultSet extends DetailResultSet {
     }
 
     private void sortDetail() {
-
         final TreeSet<Row> treeSet = new TreeSet<Row>(new DetailSortComparator());
         filter.createFilterIndex().traversal(new TraversalAction() {
             @Override
             public void actionPerformed(int row) {
                 List<Object> values = new ArrayList<Object>();
                 for (int i = 0; i < columnList.size(); i++) {
-                    values.add(columnList.get(i).getDetailColumn().get(row));
+                    Object val = columnList.get(i).getDetailColumn().get(row);
+                    if (isNullValue(val) && columnList.get(i).getBitmapIndex().getNullIndex().contains(i)) {
+                        continue;
+                    }
+                    values.add(val);
                 }
                 Row rowData = new ListBasedRow(values);
                 treeSet.add(rowData);

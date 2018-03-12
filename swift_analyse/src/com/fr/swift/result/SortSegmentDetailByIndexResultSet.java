@@ -3,6 +3,7 @@ package com.fr.swift.result;
 import com.fr.base.FRContext;
 import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.bitmap.traversal.BreakTraversalAction;
+import com.fr.swift.compare.Comparators;
 import com.fr.swift.query.filter.detail.DetailFilter;
 import com.fr.swift.query.group.by.GroupBy;
 import com.fr.swift.query.group.by.GroupByEntry;
@@ -14,6 +15,7 @@ import com.fr.swift.source.Row;
 import com.fr.swift.structure.array.IntList;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 
@@ -58,6 +60,10 @@ public class SortSegmentDetailByIndexResultSet extends DetailResultSet {
 
     }
 
+    public int getMaxRow() {
+        return maxRow;
+    }
+
 
     @Override
     public Row getRowData(){
@@ -76,7 +82,11 @@ public class SortSegmentDetailByIndexResultSet extends DetailResultSet {
                     return false;
                 }
                 for (int i = 0; i < columnList.size(); i++) {
-                    values.add(columnList.get(i).getDetailColumn().get(row));
+                    Object val = columnList.get(i).getDetailColumn().get(row);
+                    if (isNullValue(val) && columnList.get(i).getBitmapIndex().getNullIndex().contains(i)) {
+                        continue;
+                    }
+                    values.add(val);
                 }
                 return true;
             }
@@ -129,6 +139,37 @@ public class SortSegmentDetailByIndexResultSet extends DetailResultSet {
             } catch (Exception e) {
                 FRContext.getLogger().error(e.getMessage());
             }
+        }
+    }
+
+    public DetailSortComparator getDetailSortComparator() {
+        return new DetailSortComparator();
+    }
+    protected class DetailSortComparator implements Comparator<Row> {
+
+        @Override
+        public int compare(Row o1, Row o2) {
+
+            for (int i = 0; i < sortIndex.size(); i++) {
+                int c = 0;
+                //比较的列先后顺序
+                int realColumn = sortIndex.get(i);
+                if (sorts.get(realColumn) == SortType.ASC) {
+                    c = columnList.get(realColumn).getDictionaryEncodedColumn().getComparator().compare(o1.getValue(realColumn), o2.getValue(realColumn));
+                }
+                if (sorts.get(realColumn) == SortType.DESC) {
+                    c = Comparators.reverse(columnList.get(realColumn).getDictionaryEncodedColumn().getComparator()).compare(o1.getValue(realColumn), o2.getValue(realColumn));
+                }
+                if (c != 0) {
+                    return c;
+                }
+            }
+            return 0;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            return false;
         }
     }
 

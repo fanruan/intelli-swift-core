@@ -4,6 +4,7 @@ import com.fr.swift.cal.Query;
 import com.fr.swift.query.adapter.target.DetailTarget;
 import com.fr.swift.result.DetailResultSet;
 import com.fr.swift.result.SortMultiSegmentDetailResultSet;
+import com.fr.swift.result.SortSegmentDetailByIndexResultSet;
 import com.fr.swift.result.SortSegmentDetailResultSet;
 
 import java.sql.SQLException;
@@ -29,7 +30,7 @@ public class SortDetailResultQuery extends AbstractDetailResultQuery {
     @Override
     public DetailResultSet getQueryResult() throws SQLException {
 
-        comparator = ((SortSegmentDetailResultSet)queryList.get(0).getQueryResult()).getDetailSortComparator();
+        comparator = queryList.get(0) instanceof SortSegmentDetailResultSet ? ((SortSegmentDetailResultSet)queryList.get(0).getQueryResult()).getDetailSortComparator() : ((SortSegmentDetailByIndexResultSet) queryList.get(0).getQueryResult()).getDetailSortComparator();
         return new SortMultiSegmentDetailResultSet(queryList, comparator);
     }
 }
