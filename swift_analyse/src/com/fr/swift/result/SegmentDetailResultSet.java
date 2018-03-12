@@ -49,7 +49,7 @@ public class SegmentDetailResultSet extends DetailResultSet {
         ImmutableBitMap rowIndex = filter.createFilterIndex();
         List values = new ArrayList();
         while (true) {
-            index ++;
+            index++;
             if (rowIndex.contains(index)) {
                 break;
             }

@@ -84,9 +84,9 @@ public class DetailResultSetTest extends TestCase {
             Row row = rs.getRowData();
             assertEquals((int) row.getValue(0), intData[i]);
             assertEquals((long) row.getValue(1), longData[i]);
-            assertEquals( row.getValue(2), doubleData[i]);
+            assertEquals(row.getValue(2), doubleData[i]);
             assertEquals(row.getValue(3), strData[i]);
-            i ++;
+            i++;
         }
 
 
@@ -138,7 +138,7 @@ public class DetailResultSetTest extends TestCase {
                 assertEquals((long) row.getValue(1), longData[i]);
                 assertEquals(row.getValue(2), doubleData[i]);
                 assertEquals(row.getValue(3), strData[i]);
-                i ++;
+                i++;
             }
         } catch (Exception e) {
 
@@ -175,7 +175,7 @@ public class DetailResultSetTest extends TestCase {
                 assertEquals((long) row.getValue(1), longData[i / 3]);
                 assertEquals(row.getValue(2), doubleData[i / 3]);
                 assertEquals(row.getValue(3), strData[i / 3]);
-                i ++;
+                i++;
             }
         } catch (Exception e) {
 
@@ -207,7 +207,7 @@ public class DetailResultSetTest extends TestCase {
                 assertEquals((long) row.getValue(1), longData[i]);
                 assertEquals(row.getValue(2), doubleData[i]);
                 assertEquals(row.getValue(3), strData[i]);
-                i ++;
+                i++;
             }
         } catch (Exception e) {
 

@@ -28,8 +28,8 @@ public class SortSegmentDetailByIndexResultSet extends DetailResultSet {
     private DetailFilter filter;
     private IntList sortIndex;
     private List<SortType> sorts;
-    private GroupByResult [] gbr;
-    private ImmutableBitMap [] bitmap;
+    private GroupByResult[] gbr;
+    private ImmutableBitMap[] bitmap;
 
 
     //已排序的行数
@@ -39,7 +39,7 @@ public class SortSegmentDetailByIndexResultSet extends DetailResultSet {
     private int bitmapCount = 1;
     private ArrayList<ImmutableBitMap> sortedDetail = new ArrayList<>();
 
-    public SortSegmentDetailByIndexResultSet(List<Column> columnList, DetailFilter filter, IntList sortIndex, List<SortType> sorts)  {
+    public SortSegmentDetailByIndexResultSet(List<Column> columnList, DetailFilter filter, IntList sortIndex, List<SortType> sorts) {
         this.columnList = columnList;
         this.filter = filter;
         this.sortIndex = sortIndex;
@@ -49,6 +49,7 @@ public class SortSegmentDetailByIndexResultSet extends DetailResultSet {
         bitmap[0] = filter.createFilterIndex();
         init();
     }
+
     private void init() {
         maxRow = filter.createFilterIndex().getCardinality();
         getIndexBitmap(0);
@@ -66,19 +67,20 @@ public class SortSegmentDetailByIndexResultSet extends DetailResultSet {
 
 
     @Override
-    public Row getRowData(){
+    public Row getRowData() {
 
-        if(bitmapCount > sortedDetail.get(index).getCardinality()) {
+        if (bitmapCount > sortedDetail.get(index).getCardinality()) {
             bitmapCount = 1;
-            index ++;
+            index++;
         }
         List values = new ArrayList();
         sortedDetail.get(index).breakableTraversal(new BreakTraversalAction() {
             //用来判断是分组中的第几行
             private int count = 1;
+
             @Override
             public boolean actionPerformed(int row) {
-                if(count++ < bitmapCount) {
+                if (count++ < bitmapCount) {
                     return false;
                 }
                 for (int i = 0; i < columnList.size(); i++) {
@@ -96,8 +98,8 @@ public class SortSegmentDetailByIndexResultSet extends DetailResultSet {
     }
 
 
-    public void getSortedData()  {
-        while(true) {
+    public void getSortedData() {
+        while (true) {
             ImmutableBitMap filterBitmap = gbr[sortIndex.size() - 1].next().getTraversal().toBitMap();
             sortedRows += filterBitmap.getCardinality();
             sortedDetail.add(filterBitmap);
@@ -109,11 +111,11 @@ public class SortSegmentDetailByIndexResultSet extends DetailResultSet {
         }
     }
 
-    public void nextCursor(ImmutableBitMap filterBitmap)  {
+    public void nextCursor(ImmutableBitMap filterBitmap) {
         int index = 0;
         for (int i = 0; i < sortIndex.size(); i++) {
-            bitmap[i] = bitmap [i].getAndNot(filterBitmap);
-            if ((bitmap [i].isEmpty())) {
+            bitmap[i] = bitmap[i].getAndNot(filterBitmap);
+            if ((bitmap[i].isEmpty())) {
                 break;
             }
             index = i;
@@ -133,7 +135,7 @@ public class SortSegmentDetailByIndexResultSet extends DetailResultSet {
                 }
                 bitmap[i + 1] = gbe.getTraversal().toBitMap();
                 gbr[i] = GroupBy.createGroupByResult(columnList.get(sortIndex.get(i)), bitmap[i], sorts.get(sortIndex.get(i)) == SortType.ASC);
-                if(i == sortIndex.size() - 1) {
+                if (i == sortIndex.size() - 1) {
                     gbr[i].hasNext();
                 }
             } catch (Exception e) {
@@ -145,6 +147,7 @@ public class SortSegmentDetailByIndexResultSet extends DetailResultSet {
     public DetailSortComparator getDetailSortComparator() {
         return new DetailSortComparator();
     }
+
     protected class DetailSortComparator implements Comparator<Row> {
 
         @Override

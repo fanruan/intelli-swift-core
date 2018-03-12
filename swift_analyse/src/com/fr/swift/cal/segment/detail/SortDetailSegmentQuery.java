@@ -26,8 +26,8 @@ public class SortDetailSegmentQuery extends AbstractDetailSegmentQuery {
     }
 
     @Override
-    public DetailResultSet getQueryResult()  {
-        if(filter.createFilterIndex().getCardinality() <= MEMORY_LIMIT) {
+    public DetailResultSet getQueryResult() {
+        if (filter.createFilterIndex().getCardinality() <= MEMORY_LIMIT) {
             return new SortSegmentDetailResultSet(columnList, filter, sortIndex, sorts);
         } else {
             return new SortSegmentDetailByIndexResultSet(columnList, filter, sortIndex, sorts);

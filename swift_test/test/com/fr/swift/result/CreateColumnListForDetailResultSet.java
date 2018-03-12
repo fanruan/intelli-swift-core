@@ -42,8 +42,8 @@ public class CreateColumnListForDetailResultSet {
 
     private DetailColumn createIntDetailColumn() {
 
-        final int[] data = {2,2,4,3,2,3,4,2};
-        return new DetailColumn<Integer>(){
+        final int[] data = {2, 2, 4, 3, 2, 3, 4, 2};
+        return new DetailColumn<Integer>() {
 
 
             @Override
@@ -248,7 +248,7 @@ public class CreateColumnListForDetailResultSet {
     }
 
     private DetailColumn createLongDetailColumn() {
-        final long[] data = {12,18,23,18,23,18,23,12};
+        final long[] data = {12, 18, 23, 18, 23, 18, 23, 12};
         return new DetailColumn() {
             @Override
             public int getInt(int pos) {
@@ -287,6 +287,7 @@ public class CreateColumnListForDetailResultSet {
         };
 
     }
+
     private DictionaryEncodedColumn createLongDicColumn() {
         final long[] keys = {12, 18, 23};
         final int[] index = {0, 1, 2, 1, 2, 1, 2, 0};
@@ -395,7 +396,7 @@ public class CreateColumnListForDetailResultSet {
         bitMaps[2].add(2);
         bitMaps[2].add(4);
         bitMaps[2].add(6);
-        return  new BitmapIndexedColumn() {
+        return new BitmapIndexedColumn() {
             @Override
             public void putBitMapIndex(int index, ImmutableBitMap bitmap) {
 
@@ -453,7 +454,7 @@ public class CreateColumnListForDetailResultSet {
     }
 
     private DetailColumn createDoubleDetailColumn() {
-        final double[] data = {9.5,50.2,40.1,12.3,9.5,12.3,40.1,9.5};
+        final double[] data = {9.5, 50.2, 40.1, 12.3, 9.5, 12.3, 40.1, 9.5};
         return new DetailColumn() {
             @Override
             public int getInt(int pos) {
@@ -491,10 +492,11 @@ public class CreateColumnListForDetailResultSet {
             }
         };
     }
+
     private DictionaryEncodedColumn createDoubleDicColumn() {
         final double[] keys = {9.5, 12.3, 40.1, 50.2};
         final int[] index = {0, 3, 2, 1, 0, 1, 2, 0};
-        return  new DictionaryEncodedColumn() {
+        return new DictionaryEncodedColumn() {
             @Override
             public void putSize(int size) {
 
@@ -584,7 +586,7 @@ public class CreateColumnListForDetailResultSet {
         };
     }
 
-    private BitmapIndexedColumn createDoubleIndexedColumn () {
+    private BitmapIndexedColumn createDoubleIndexedColumn() {
         final MutableBitMap[] bitMaps = new MutableBitMap[4];
         bitMaps[0] = BitSetMutableBitMap.newInstance();
         bitMaps[1] = BitSetMutableBitMap.newInstance();
@@ -657,7 +659,7 @@ public class CreateColumnListForDetailResultSet {
     }
 
     private DetailColumn createStringDetailColumn() {
-        final String data[] = {"A","B","C","B","C","B","A","C"};
+        final String data[] = {"A", "B", "C", "B", "C", "B", "A", "C"};
         return new DetailColumn() {
             @Override
             public int getInt(int pos) {
@@ -697,8 +699,8 @@ public class CreateColumnListForDetailResultSet {
     }
 
     private DictionaryEncodedColumn createStringDicColumn() {
-        final String[] keys = {"A","B","C"};
-        final int[] index = {0,1,2,1,2,1,0,2};
+        final String[] keys = {"A", "B", "C"};
+        final int[] index = {0, 1, 2, 1, 2, 1, 0, 2};
         return new DictionaryEncodedColumn() {
             @Override
             public void putSize(int size) {

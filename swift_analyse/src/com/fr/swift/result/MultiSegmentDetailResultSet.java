@@ -42,7 +42,7 @@ public class MultiSegmentDetailResultSet extends DetailResultSet {
     public Row getRowData() throws SQLException {
 
         while (!(drs.get(index).next())) {
-            index ++;
+            index++;
         }
         return drs.get(index).getRowData();
     }
