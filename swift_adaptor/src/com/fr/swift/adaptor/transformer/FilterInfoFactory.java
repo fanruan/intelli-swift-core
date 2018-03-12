@@ -217,8 +217,8 @@ public class FilterInfoFactory {
 
     private static SwiftDateInRangeFilterValue createValue(DateValueBean bean) {
         SwiftDateInRangeFilterValue value = new SwiftDateInRangeFilterValue();
-        value.setStart(DateBoxFilterBean2Long(bean.getStart()));
-        value.setEnd(DateBoxFilterBean2Long(bean.getEnd()));
+        value.setStart(DateBoxFilterBean2Long((DateBoxFilterBean)bean.getStart()));
+        value.setEnd(DateBoxFilterBean2Long((DateBoxFilterBean)bean.getEnd()));
         return value;
     }
 
