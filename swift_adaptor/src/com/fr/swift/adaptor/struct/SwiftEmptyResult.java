@@ -1,5 +1,6 @@
 package com.fr.swift.adaptor.struct;
 
+import com.fr.swift.exception.meta.SwiftMetaDataException;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftMetaDataColumn;
@@ -86,6 +87,11 @@ public class SwiftEmptyResult implements SwiftResultSet {
             @Override
             public Iterator<SwiftMetaDataColumn> iterator() {
                 return null;
+            }
+
+            @Override
+            public boolean getColumnAddState(int index) throws SwiftMetaDataException {
+                return false;
             }
         };
     }

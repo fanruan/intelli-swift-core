@@ -20,16 +20,18 @@ public class MetaDataColumnUnique extends UniqueKey implements IMetaDataColumn {
     private Conf<String> remark = Holders.simple(StringUtils.EMPTY);
     private Conf<Integer> precision = Holders.simple(0);
     private Conf<Integer> scale = Holders.simple(0);
+    private Conf<Boolean> isAdd = Holders.simple(false);
 
     public MetaDataColumnUnique() {
     }
 
-    public MetaDataColumnUnique(int type, String name, String remark, int precision, int scale) {
+    public MetaDataColumnUnique(int type, String name, String remark, int precision, int scale, boolean isAdd) {
         this.setType(type);
         this.setName(name);
         this.setRemark(remark);
         this.setPrecision(precision);
         this.setScale(scale);
+        this.setAdd(isAdd);
     }
 
     @Override
@@ -80,5 +82,15 @@ public class MetaDataColumnUnique extends UniqueKey implements IMetaDataColumn {
     @Override
     public void setScale(int scale) {
         this.scale.set(scale);
+    }
+
+    @Override
+    public boolean isAdd() {
+        return isAdd.get();
+    }
+
+    @Override
+    public void setAdd(boolean add) {
+        isAdd.set(add);
     }
 }

@@ -2,6 +2,7 @@ package com.fr.swift.adaptor.widget;
 
 import com.finebi.base.constant.FineEngineType;
 import com.finebi.conf.internalimp.analysis.bean.operator.add.group.custom.number.NumberMaxAndMinValue;
+import com.finebi.conf.internalimp.dashboard.widget.chart.VanChartWidget;
 import com.finebi.conf.internalimp.dashboard.widget.control.number.SingleSliderWidget;
 import com.finebi.conf.internalimp.dashboard.widget.control.string.ListLabelWidget;
 import com.finebi.conf.internalimp.dashboard.widget.control.time.MonthControlWidget;

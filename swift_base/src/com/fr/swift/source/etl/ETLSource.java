@@ -134,7 +134,7 @@ public class ETLSource extends AbstractDataSource implements ETLDataSource {
                     for (int i = 0; i < basedMeta.getColumnCount(); i++) {
                         int index = i + 1;
                         columns.add(new MetaDataColumn(basedMeta.getColumnName(index), basedMeta.getColumnRemark(index),
-                                basedMeta.getColumnType(index), basedMeta.getPrecision(index), basedMeta.getScale(index)));
+                                basedMeta.getColumnType(index), basedMeta.getPrecision(index), basedMeta.getScale(index), basedMeta.getColumnAddState(index)));
                     }
                 }
             }
