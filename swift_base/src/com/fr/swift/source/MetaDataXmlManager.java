@@ -114,7 +114,8 @@ public class MetaDataXmlManager extends XMLFileManager {
         writer.end();
     }
 
-    public void putMetaData(SourceKey key, SwiftMetaData metaData) {
+    public void
+    putMetaData(SourceKey key, SwiftMetaData metaData) {
         SwiftMetaData data = sourceMetaData.get(key);
         if (null == data) {
             sourceMetaData.put(key, metaData);

@@ -1,10 +1,10 @@
 package com.fr.swift.source;
 
 import com.fr.general.ComparatorUtils;
-import com.fr.swift.exception.meta.SwiftMetaDataColumnAbsentException;
-import com.fr.swift.exception.meta.SwiftMetaDataException;
 import com.fr.swift.config.pojo.MetaDataColumnPojo;
 import com.fr.swift.config.pojo.SwiftMetaDataPojo;
+import com.fr.swift.exception.meta.SwiftMetaDataColumnAbsentException;
+import com.fr.swift.exception.meta.SwiftMetaDataException;
 import com.fr.swift.util.Util;
 
 import java.util.ArrayList;
@@ -83,6 +83,11 @@ public class SwiftMetaDataImpl implements SwiftMetaData {
     @Override
     public int getScale(int column) throws SwiftMetaDataException {
         return getColumn(column).getScale();
+    }
+
+    @Override
+    public boolean getColumnAddState(int index) throws SwiftMetaDataException {
+        return getColumn(index).isAddColumn();
     }
 
     @Override

@@ -13,6 +13,7 @@ public class MetaDataColumnPojo implements IMetaDataColumn {
     private String remark;
     private int precision;
     private int scale;
+    private boolean isAdd = false;
 
     public MetaDataColumnPojo(int type, String name, String remark, int precision, int scale) {
         this.type = type;
@@ -20,6 +21,15 @@ public class MetaDataColumnPojo implements IMetaDataColumn {
         this.remark = remark;
         this.precision = precision;
         this.scale = scale;
+    }
+
+    public MetaDataColumnPojo(int type, String name, String remark, int precision, int scale, boolean isAdd) {
+        this.type = type;
+        this.name = name;
+        this.remark = remark;
+        this.precision = precision;
+        this.scale = scale;
+        this.isAdd = isAdd;
     }
 
     @Override
@@ -70,5 +80,15 @@ public class MetaDataColumnPojo implements IMetaDataColumn {
     @Override
     public void setScale(int scale) {
         this.scale = scale;
+    }
+
+    @Override
+    public boolean isAdd() {
+        return isAdd;
+    }
+
+    @Override
+    public void setAdd(boolean add) {
+        isAdd = add;
     }
 }
