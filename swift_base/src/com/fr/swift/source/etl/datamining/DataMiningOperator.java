@@ -32,10 +32,10 @@ public class DataMiningOperator extends AbstractOperator {
             case ARIMA:
                 algorithmOperator = new ArimaOperator(algorithmBean);
                 break;
-            case REGRESSION:
+            case MULTI_REGRESSION:
                 algorithmOperator = new RegressionOperator(algorithmBean);
                 break;
-            case HOLTWINTERS:
+            case HOLT_WINTERS:
                 algorithmOperator = new HoltWinterOperator(algorithmBean);
                 break;
             default:

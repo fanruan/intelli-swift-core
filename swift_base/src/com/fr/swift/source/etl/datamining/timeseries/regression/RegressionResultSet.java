@@ -22,8 +22,6 @@ public class RegressionResultSet implements SwiftResultSet {
     private static final SwiftLogger LOGGER = SwiftLoggers.getLogger(RegressionResultSet.class);
     private AlgorithmBean columnKeyList;
     private List<List<Segment>> segmentListList = new ArrayList<List<Segment>>();
-    private int rowIndex = 0, segmentListListSize = 0, segmentListSize = 0, columnIndexSize = 0;
-    private int segmentListListCursor = 0, segmentCursor = 0, bitMapCursor = 0;
     private List<Segment> segmentList;
     private Column[] columnIndex = null;
     private ImmutableBitMap bitMap = AllShowBitMap.newInstance(100);

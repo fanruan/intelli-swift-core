@@ -22,10 +22,6 @@ public class RegressionOperator implements AlgorithmMetaData {
         this.ab = ab;
     }
 
-    public AlgorithmBean getColumnKeyList() {
-        return this.ab;
-    }
-
     @Override
     public List<SwiftMetaDataColumn> getColumns(SwiftMetaData[] tables) {
         List<SwiftMetaDataColumn> columnList = new ArrayList<SwiftMetaDataColumn>();

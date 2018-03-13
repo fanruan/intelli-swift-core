@@ -20,8 +20,8 @@ public class DataMiningTransferOperator implements ETLTransferOperator {
 
     private AlgorithmBean algorithmBean;
 
-    public DataMiningTransferOperator(AlgorithmBean ab) {
-        this.algorithmBean = ab;
+    public DataMiningTransferOperator(AlgorithmBean algorithmBean) {
+        this.algorithmBean = algorithmBean;
     }
 
     @Override
@@ -33,9 +33,9 @@ public class DataMiningTransferOperator implements ETLTransferOperator {
         switch (algorithmBean.getAlgorithmName()){
             case ARIMA:
                 return new ArimaResultSet(algorithmBean, metaData,basedMetas.get(0), tis.get(0));
-            case REGRESSION:
+            case MULTI_REGRESSION:
                 return new RegressionResultSet(algorithmBean, tis, metaData);
-            case HOLTWINTERS:
+            case HOLT_WINTERS:
                 return new HoltWinterResultSet(algorithmBean, tis, metaData);
             default:
                 return null;
