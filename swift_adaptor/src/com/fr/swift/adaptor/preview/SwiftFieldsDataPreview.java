@@ -11,6 +11,8 @@ import com.fr.swift.adaptor.struct.SwiftDetailTableResult;
 import com.fr.swift.adaptor.struct.SwiftEmptyResult;
 import com.fr.swift.adaptor.struct.SwiftSegmentDetailResult;
 import com.fr.swift.adaptor.transformer.IndexingDataSourceFactory;
+import com.fr.swift.generate.preview.MinorSegmentManager;
+import com.fr.swift.generate.preview.MinorUpdater;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.query.sort.SortType;
 import com.fr.swift.segment.Segment;
@@ -88,7 +90,7 @@ public class SwiftFieldsDataPreview {
         return result;
     }
 
-    public List<Object> getGroupPreviewByFields(DataSource dataSource, String fieldName) throws Exception {
+    public List<Object> getGroupPreviewByFields(DataSource dataSource, String fieldName) {
 
         try {
             if (dataSource != null) {

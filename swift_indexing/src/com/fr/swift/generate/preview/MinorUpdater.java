@@ -1,4 +1,4 @@
-package com.fr.swift.adaptor.preview;
+package com.fr.swift.generate.preview;
 
 import com.fr.swift.generate.realtime.RealtimeColumnIndexer;
 import com.fr.swift.segment.Segment;
@@ -6,7 +6,6 @@ import com.fr.swift.segment.SegmentOperator;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.source.DataSource;
 import com.fr.swift.source.ETLDataSource;
-import com.fr.swift.source.SwiftMetaDataColumn;
 import com.fr.swift.source.SwiftResultSet;
 import com.fr.swift.utils.DataSourceUtils;
 
@@ -49,8 +48,8 @@ public class MinorUpdater {
         operator.transport();
         operator.finishTransport();
 
-        for (SwiftMetaDataColumn metaColumn : dataSource.getMetadata()) {
-            new RealtimeColumnIndexer(dataSource, new ColumnKey(metaColumn.getName())) {
+        for (String indexField : operator.getIndexFields()) {
+            new RealtimeColumnIndexer(dataSource, new ColumnKey(indexField)) {
                 @Override
                 protected List<Segment> getSegments() {
                     return MinorSegmentManager.getInstance().getSegment(dataSource.getSourceKey());

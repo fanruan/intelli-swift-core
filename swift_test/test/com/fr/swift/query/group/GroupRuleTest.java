@@ -1,17 +1,16 @@
 package com.fr.swift.query.group;
 
+import com.fr.swift.Temps.TempDictColumn;
 import com.fr.swift.query.group.impl.AutoNumGroupRule;
 import com.fr.swift.query.group.impl.AutoNumGroupRule.Partition;
 import com.fr.swift.query.group.impl.CustomNumGroupRule;
 import com.fr.swift.query.group.impl.CustomNumGroupRule.NumInterval;
 import com.fr.swift.query.group.impl.CustomStrGroupRule;
 import com.fr.swift.query.group.impl.CustomStrGroupRule.StringGroup;
-import com.fr.swift.segment.column.DictionaryEncodedColumn;
 import com.fr.swift.structure.array.IntList;
 import junit.framework.TestCase;
 
 import java.util.Arrays;
-import java.util.Comparator;
 
 /**
  * @author anchore
@@ -23,7 +22,7 @@ public class GroupRuleTest extends TestCase {
                 new StringGroup("g0", Arrays.asList("1", "2", "3")),
                 new StringGroup("g1", Arrays.asList("5", "6"))
         ), "ungrouped");
-        rule.setOriginDict(new BaseDictTestColumn<String>() {
+        rule.setOriginDict(new TempDictColumn<String>() {
             String[] values = {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10"};
 
             @Override
@@ -62,7 +61,7 @@ public class GroupRuleTest extends TestCase {
                 new StringGroup("g0", Arrays.asList("1", "2", "3")),
                 new StringGroup("g1", Arrays.asList("5", "6", "7", "8", "9"))
         ), null);
-        rule.setOriginDict(new BaseDictTestColumn<String>() {
+        rule.setOriginDict(new TempDictColumn<String>() {
             String[] values = {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10"};
 
             @Override
@@ -112,7 +111,7 @@ public class GroupRuleTest extends TestCase {
                 new NumInterval("g1", 4, true, 6, false),
                 new NumInterval("g2", 7, true, 10, false)
         ), "ungrouped");
-        rule.setOriginDict(new BaseDictTestColumn<Number>() {
+        rule.setOriginDict(new TempDictColumn<Number>() {
             Number[] numbers = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
 
             @Override
@@ -161,7 +160,7 @@ public class GroupRuleTest extends TestCase {
                 new NumInterval("g1", 4, true, 7, false),
                 new NumInterval("g2", 7, true, 10, false)
         ), null);
-        rule.setOriginDict(new BaseDictTestColumn<Number>() {
+        rule.setOriginDict(new TempDictColumn<Number>() {
             Number[] numbers = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
 
             @Override
@@ -210,7 +209,7 @@ public class GroupRuleTest extends TestCase {
 
     public void testAutoGroupRule() {
         GroupRule rule = new AutoNumGroupRule(new Partition(1, 10, 4));
-        rule.setOriginDict(new BaseDictTestColumn<Number>() {
+        rule.setOriginDict(new TempDictColumn<Number>() {
             Number[] numbers = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
 
             @Override
@@ -247,75 +246,5 @@ public class GroupRuleTest extends TestCase {
         assertEquals(2, l2.size());
         assertEquals(8, l2.get(0));
         assertEquals(9, l2.get(1));
-    }
-
-    private static class BaseDictTestColumn<T> implements DictionaryEncodedColumn<T> {
-        @Override
-        public void putSize(int size) {
-        }
-
-        @Override
-        public int size() {
-            return 0;
-        }
-
-        @Override
-        public void putGlobalSize(int globalSize) {
-        }
-
-        @Override
-        public int globalSize() {
-            return 0;
-        }
-
-        @Override
-        public void putValue(int index, T val) {
-        }
-
-        @Override
-        public T getValue(int index) {
-            return null;
-        }
-
-        @Override
-        public int getIndex(Object value) {
-            return 0;
-        }
-
-        @Override
-        public void putIndex(int row, int index) {
-        }
-
-        @Override
-        public int getIndexByRow(int row) {
-            return 0;
-        }
-
-        @Override
-        public void putGlobalIndex(int index, int globalIndex) {
-        }
-
-        @Override
-        public int getGlobalIndexByIndex(int index) {
-            return 0;
-        }
-
-        @Override
-        public int getGlobalIndexByRow(int row) {
-            return 0;
-        }
-
-        @Override
-        public Comparator<T> getComparator() {
-            return null;
-        }
-
-        @Override
-        public void flush() {
-        }
-
-        @Override
-        public void release() {
-        }
     }
 }
