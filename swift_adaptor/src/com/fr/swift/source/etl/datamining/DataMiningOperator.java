@@ -54,6 +54,6 @@ public class DataMiningOperator extends AbstractOperator {
 
     @Override
     public OperatorType getOperatorType() {
-        return OperatorType.DATAMINING;
+        return OperatorType.EXTRA;
     }
 }
