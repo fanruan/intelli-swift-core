@@ -24,7 +24,7 @@ public class QueryRunnerProvider {
         this.runner = runner;
     }
 
-    public <T extends SwiftResultSet> T executeQuery (QueryInfo<T> info) throws SQLException{
+    public <T extends SwiftResultSet> T executeQuery(QueryInfo<T> info) throws SQLException {
         return runner.getQueryResult(info);
     }
 }

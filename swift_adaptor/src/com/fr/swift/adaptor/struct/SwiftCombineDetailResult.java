@@ -63,4 +63,9 @@ public class SwiftCombineDetailResult implements BIDetailTableResult {
     public List<BIDetailCell> next() {
         return dataIterator.next();
     }
+
+    @Override
+    public void remove() {
+        throw new UnsupportedOperationException();
+    }
 }
