@@ -33,12 +33,12 @@ public class UnionOperatorResultSet implements SwiftResultSet {
     private ImmutableBitMap bitMap = AllShowBitMap.newInstance(100);
     private List valueList = new ArrayList();
     private ListBasedRow listBasedRow = null;
-    private SwiftMetaData table = null;
+    private SwiftMetaData swiftMetatable = null;
 
     public UnionOperatorResultSet(List<List<ColumnKey>> lists, List<List<Segment>> tis, SwiftMetaData metaData) {
         this.lists = lists;
         this.tis = tis;
-        this.table = metaData;
+        this.swiftMetatable = metaData;
         init();
     }
 
@@ -88,7 +88,7 @@ public class UnionOperatorResultSet implements SwiftResultSet {
                         if (ob == null) {
                             res = null;
                         } else {
-                            res = table.getColumnType(cIndexCursor + 1) == ColumnTypeUtils.columnTypeToSqlType(ColumnType.NUMBER) ?
+                            res = swiftMetatable.getColumnType(cIndexCursor + 1) == ColumnTypeUtils.columnTypeToSqlType(ColumnType.NUMBER) ?
                                     ((Number) ob).doubleValue() : ob;
                         }
                         valueList.add(res);
@@ -128,7 +128,7 @@ public class UnionOperatorResultSet implements SwiftResultSet {
 
     @Override
     public SwiftMetaData getMetaData() {
-        return table;
+        return swiftMetatable;
     }
 
     @Override
