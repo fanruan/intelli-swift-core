@@ -10,8 +10,6 @@ import com.fr.swift.cube.io.Releasable;
  * 获取基础类型的列，用于聚合
  */
 public interface DetailColumn<T> extends Releasable, Flushable {
-    String DETAIL = "detail";
-
     int getInt(int pos);
 
     long getLong(int pos);

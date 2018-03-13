@@ -18,6 +18,14 @@ import java.util.Comparator;
  * @date 2017/11/7
  */
 abstract class BaseDictColumn<T> implements DictionaryEncodedColumn<T> {
+    static final String KEY = "dict_key";
+
+    private static final String INDEX = "dict_index";
+    private static final String SIZE = "dict_size";
+
+    private static final String GLOBAL_INDEX = "global_dict_index";
+    private static final String GLOBAL_SIZE = "global_dict_size";
+
     static final ResourceDiscovery DISCOVERY = ResourceDiscoveryImpl.getInstance();
 
     IResourceLocation parent;

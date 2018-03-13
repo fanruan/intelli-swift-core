@@ -14,7 +14,6 @@ import java.util.Comparator;
  * @date 2017/11/7
  */
 public class StringDictColumn extends BaseDictColumn<String> {
-
     private StringWriter keyWriter;
     private StringReader keyReader;
 
@@ -42,6 +41,9 @@ public class StringDictColumn extends BaseDictColumn<String> {
 
     @Override
     public String getValue(int index) {
+        if (index < 0) {
+            return null;
+        }
         initKeyReader();
         return keyReader.get(index);
     }

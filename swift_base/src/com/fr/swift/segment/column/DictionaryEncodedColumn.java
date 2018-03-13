@@ -11,14 +11,6 @@ import java.util.Comparator;
  * 字典编码的列
  */
 public interface DictionaryEncodedColumn<T> extends Releasable, Flushable {
-    String KEY = "dict_key";
-
-    String INDEX = "dict_index";
-    String SIZE = "dict_size";
-
-    String GLOBAL_INDEX = "global_dict_index";
-    String GLOBAL_SIZE = "global_dict_size";
-
     /**
      * 写入字典的长度，唯一值的个数
      *
@@ -60,7 +52,7 @@ public interface DictionaryEncodedColumn<T> extends Releasable, Flushable {
      * 行号 -> 字典序号
      *
      * @param row   行号
-     * @param index 字典序号
+     * @param index 字典序号 -1代表null
      */
     void putIndex(int row, int index);
 
