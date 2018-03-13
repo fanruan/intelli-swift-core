@@ -1,5 +1,6 @@
 package com.fr.swift.source.etl.rowcal.periodpercentage;
 
+import com.fr.swift.Temps.TempDictColumn;
 import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.bitmap.MutableBitMap;
 import com.fr.swift.bitmap.impl.BitSetMutableBitMap;
@@ -92,41 +93,11 @@ public class CreateColumn1 {
     private DictionaryEncodedColumn createDicColumn() {
         final int[] keys = {1, 2};
         final int[] index = {0, 0, 0, 0, 0, 0, 1, 1};
-        return new DictionaryEncodedColumn() {
-
-            @Override
-            public void flush() {
-
-            }
-
-            @Override
-            public int getGlobalIndexByRow(int row) {
-                return 0;
-            }
-
-            @Override
-            public int getGlobalIndexByIndex(int index) {
-                return 0;
-            }
+        return new TempDictColumn() {
 
             @Override
             public int size() {
                 return 8;
-            }
-
-            @Override
-            public void putGlobalSize(int globalSize) {
-
-            }
-
-            @Override
-            public int globalSize() {
-                return 0;
-            }
-
-            @Override
-            public void putSize(int size) {
-
             }
 
             @Override
@@ -135,33 +106,8 @@ public class CreateColumn1 {
             }
 
             @Override
-            public void putValue(int index, Object val) {
-
-            }
-
-            @Override
-            public int getIndex(Object value) {
-                return 0;
-            }
-
-            @Override
-            public void putIndex(int row, int index) {
-
-            }
-
-            @Override
             public int getIndexByRow(int row) {
                 return index[row];
-            }
-
-            @Override
-            public void putGlobalIndex(int index, int globalIndex) {
-
-            }
-
-            @Override
-            public void release() {
-
             }
 
             @Override

@@ -1,4 +1,4 @@
-package com.fr.swift.adaptor.preview;
+package com.fr.swift.generate.preview;
 
 import com.fr.data.core.db.dialect.Dialect;
 import com.fr.data.core.db.dml.Table;
@@ -13,16 +13,16 @@ import java.util.Map;
  * @author pony
  * @date 2017/12/5
  */
-class TableDBSourcePreviewTransfer extends AbstractPreviewQueryTransfer {
+class TableDbSourcePreviewTransfer extends AbstractPreviewQueryTransfer {
     private String tableName;
 
-    public TableDBSourcePreviewTransfer(ConnectionInfo connectionInfo, int row, String tableName) {
+    public TableDbSourcePreviewTransfer(ConnectionInfo connectionInfo, int row, String tableName) {
         super(connectionInfo, row);
         this.tableName = tableName;
     }
 
 
-    public TableDBSourcePreviewTransfer(ConnectionInfo connectionInfo, Map<String, ColumnType> fieldClassTypes, int row, String tableName) {
+    public TableDbSourcePreviewTransfer(ConnectionInfo connectionInfo, Map<String, ColumnType> fieldClassTypes, int row, String tableName) {
         super(connectionInfo, fieldClassTypes, row);
         this.tableName = tableName;
     }
