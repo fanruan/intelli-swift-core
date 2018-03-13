@@ -10,9 +10,6 @@ import com.fr.swift.cube.io.Releasable;
  * 列的位图索引
  */
 public interface BitmapIndexedColumn extends Releasable, Flushable {
-    String INDEX = "index";
-    String NULL_INDEX = "null_index";
-
     /**
      * 写入索引
      *

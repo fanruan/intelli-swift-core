@@ -26,6 +26,7 @@ import com.fr.swift.structure.external.map.ExternalMap;
 import com.fr.swift.structure.external.map.intlist.IntListExternalMapFactory;
 import com.fr.swift.util.Crasher;
 
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
@@ -94,7 +95,7 @@ public abstract class BaseColumnIndexer<T extends Comparable<T>> extends BaseWor
             map = mapDictValueToRows(column, rowCount);
         }
 
-        iterateBuildIndex(toIterable(map), column);
+        iterateBuildIndex(toIterable(map), column, rowCount);
 
         // ext map用完release，不然线程爆炸
         if (map instanceof ExternalMap) {
@@ -126,9 +127,13 @@ public abstract class BaseColumnIndexer<T extends Comparable<T>> extends BaseWor
         return map;
     }
 
-    private void iterateBuildIndex(Iterable<Entry<T, IntList>> iterable, Column<T> column) {
+    private void iterateBuildIndex(Iterable<Entry<T, IntList>> iterable, Column<T> column, int rowCount) {
         DictionaryEncodedColumn<T> dictColumn = column.getDictionaryEncodedColumn();
         BitmapIndexedColumn indexColumn = column.getBitmapIndex();
+
+        // row -> index -1作为null值行号的对应序号
+        int[] rowToIndex = new int[rowCount];
+        Arrays.fill(rowToIndex, -1);
 
         int pos = 0;
         for (Entry<T, IntList> entry : iterable) {
@@ -139,14 +144,19 @@ public abstract class BaseColumnIndexer<T extends Comparable<T>> extends BaseWor
 
             for (int i = 0, len = rows.size(), row; i < len; i++) {
                 row = rows.get(i);
-                dictColumn.putIndex(row, pos);
+                rowToIndex[row] = pos;
                 bitmap.add(row);
             }
             indexColumn.putBitMapIndex(pos, bitmap);
 
             pos++;
         }
+
         dictColumn.putSize(pos);
+
+        for (int row = 0, len = rowToIndex.length; row < len; row++) {
+            dictColumn.putIndex(row, rowToIndex[row]);
+        }
 
         releaseIfNeed(dictColumn);
         releaseIfNeed(indexColumn);

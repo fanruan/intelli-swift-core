@@ -11,6 +11,8 @@ import com.fr.swift.util.Crasher;
  * @date 2017/11/7
  */
 abstract class BaseDetailColumn<T> implements DetailColumn<T> {
+    private static final String DETAIL = "detail";
+
     IResourceLocation location;
 
     static final ResourceDiscovery DISCOVERY = ResourceDiscoveryImpl.getInstance();

@@ -24,5 +24,8 @@ public interface SwiftMetaDataColumn {
     int getScale();
 
     MetaDataColumnPojo getMetaDataColumnPojo();
+
+    //是否新增的字段
+    boolean isAddColumn();
 }
 

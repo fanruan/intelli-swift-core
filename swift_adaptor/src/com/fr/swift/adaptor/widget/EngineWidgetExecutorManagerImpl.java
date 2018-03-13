@@ -2,6 +2,7 @@ package com.fr.swift.adaptor.widget;
 
 import com.finebi.base.constant.FineEngineType;
 import com.finebi.conf.internalimp.analysis.bean.operator.add.group.custom.number.NumberMaxAndMinValue;
+import com.finebi.conf.internalimp.dashboard.widget.chart.VanChartWidget;
 import com.finebi.conf.internalimp.dashboard.widget.control.number.SingleSliderWidget;
 import com.finebi.conf.internalimp.dashboard.widget.control.string.ListLabelWidget;
 import com.finebi.conf.internalimp.dashboard.widget.control.time.MonthControlWidget;
@@ -24,6 +25,7 @@ import com.finebi.conf.structure.result.control.time.BIMonthControlResult;
 import com.finebi.conf.structure.result.control.time.BIQuarterResult;
 import com.finebi.conf.structure.result.control.time.BIYearControlResult;
 import com.finebi.conf.structure.result.control.tree.BITreeResult;
+import com.finebi.conf.structure.result.table.BIComplexGroupResult;
 import com.finebi.conf.structure.result.table.BICrossNode;
 import com.finebi.conf.structure.result.table.BIGroupNode;
 
@@ -34,6 +36,10 @@ import com.finebi.conf.structure.result.table.BIGroupNode;
 public class EngineWidgetExecutorManagerImpl implements EngineWidgetExecutorManager {
     @Override
     public BIGroupNode visit(TableWidget tableWidget) {
+        return null;
+    }
+
+    public BIComplexGroupResult visit(VanChartWidget vanChartWidget) {
         return null;
     }
 

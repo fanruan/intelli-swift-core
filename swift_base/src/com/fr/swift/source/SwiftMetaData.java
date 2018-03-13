@@ -17,12 +17,12 @@ public interface SwiftMetaData extends Iterable<SwiftMetaDataColumn> {
     String getColumnName(int index) throws SwiftMetaDataException;
 
     String getColumnRemark(int index) throws SwiftMetaDataException;
-    
+
     /**
      * @param index 序号
      * @return 字段对应的sql type
-     * @see java.sql.Types
      * @throws SwiftMetaDataException 异常
+     * @see java.sql.Types
      */
     int getColumnType(int index) throws SwiftMetaDataException;
 
@@ -32,7 +32,7 @@ public interface SwiftMetaData extends Iterable<SwiftMetaDataColumn> {
      * @throws SwiftMetaDataException 异常
      */
     int getPrecision(int index) throws SwiftMetaDataException;
-    
+
     /**
      * @param index 序号
      * @return 字段小数位数
@@ -45,4 +45,6 @@ public interface SwiftMetaData extends Iterable<SwiftMetaDataColumn> {
     SwiftMetaDataColumn getColumn(String columnName) throws SwiftMetaDataException;
 
     int getColumnIndex(String columnName) throws SwiftMetaDataException;
+
+    boolean getColumnAddState(int index) throws SwiftMetaDataException;
 }

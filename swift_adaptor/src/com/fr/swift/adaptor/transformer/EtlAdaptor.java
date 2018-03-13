@@ -256,6 +256,12 @@ class EtlAdaptor {
 
         return new UnionOperator(listsOfColumn);
     }
+
+//    private static DataMiningOperator fromDataMiningBean(DataMiningBean dmb) {
+//        AlgorithmBean dmbv = dmb.getValue();
+//
+//        return new DataMiningOperator(dmbv);
+//    }
     public static ETLOperator adaptEtlOperator(FineOperator op, FineBusinessTable table) throws FineEngineException {
         switch (op.getType()) {
             case AnalysisType.JOIN:
@@ -274,6 +280,8 @@ class EtlAdaptor {
                 return fromAddNewColumnBean(op.<AddNewColumnBean>getValue());
             case AnalysisType.GROUP:
                 return fromSumByGroupBean(op.<GroupBean>getValue());
+//            case AnalysisType.DATA_MINING:
+//                return fromDataMiningBean(op.<DataMiningBean>getValue());
             default:
         }
         return null;

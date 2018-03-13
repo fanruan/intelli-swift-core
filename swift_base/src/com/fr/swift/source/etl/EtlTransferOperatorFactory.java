@@ -19,12 +19,16 @@ import com.fr.swift.source.etl.selfrelation.TwoUnionRelationTransferOperator;
 import com.fr.swift.source.etl.union.UnionOperator;
 import com.fr.swift.source.etl.union.UnionTransferOperator;
 
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
 /**
  *
  * @author pony
  * @date 2018/1/8
  */
 public class EtlTransferOperatorFactory {
+    private static Map<String, ETLTransferCreator> extra = new ConcurrentHashMap<String, ETLTransferCreator>();
     public static ETLTransferOperator createTransferOperator(ETLOperator operator) {
         switch (operator.getOperatorType()) {
             case DETAIL:
@@ -45,9 +49,13 @@ public class EtlTransferOperatorFactory {
                 return transferTwoUnionRelationOperator((TwoUnionRelationOperator) operator);
             case COLUMN_FORMULA:
                 return transferColumnFormulaOperator((ColumnFormulaOperator) operator);
-            default:
         }
-        return null;
+        ETLTransferCreator creator = extra.get(operator.getClass().getName());
+        return creator == null ? null : creator.createTransferOperator(operator);
+    }
+
+    public static void register(Class c,  ETLTransferCreator creator){
+        extra.put(c.getName(), creator);
     }
 
     private static ETLTransferOperator transferDetailOperator(DetailOperator operator) {
@@ -84,5 +92,9 @@ public class EtlTransferOperatorFactory {
 
     private static ETLTransferOperator transferColumnFormulaOperator(ColumnFormulaOperator operator) {
         return new ColumnFormulaTransferOperator(operator.getColumnType(), operator.getExpression());
+    }
+
+    public interface ETLTransferCreator {
+        ETLTransferOperator createTransferOperator(ETLOperator operator);
     }
 }

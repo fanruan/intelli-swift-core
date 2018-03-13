@@ -14,7 +14,6 @@ import java.util.Comparator;
  * @date 2017/11/11
  */
 public class IntDictColumn extends BaseDictColumn<Integer> {
-
     private IntWriter keyWriter;
     private IntReader keyReader;
 
@@ -42,6 +41,9 @@ public class IntDictColumn extends BaseDictColumn<Integer> {
 
     @Override
     public Integer getValue(int index) {
+        if (index < 0) {
+            return null;
+        }
         initKeyReader();
         return keyReader.get(index);
     }
