@@ -1,24 +1,14 @@
 package com.fr.swift.result;
 
-import com.fr.swift.bitmap.ImmutableBitMap;
+
 import com.fr.swift.bitmap.MutableBitMap;
-import com.fr.swift.bitmap.impl.BitSetImmutableBitMap;
 import com.fr.swift.bitmap.impl.BitSetMutableBitMap;
-import com.fr.swift.bitmap.impl.RoaringMutableBitMap;
 import com.fr.swift.cal.Query;
 import com.fr.swift.cal.segment.detail.NormalDetailSegmentQuery;
 import com.fr.swift.cal.segment.detail.SortDetailSegmentQuery;
-import com.fr.swift.cube.io.location.IResourceLocation;
 import com.fr.swift.query.filter.detail.DetailFilter;
 import com.fr.swift.query.sort.SortType;
-import com.fr.swift.segment.column.BitmapIndexedColumn;
 import com.fr.swift.segment.column.Column;
-import com.fr.swift.segment.column.DetailColumn;
-import com.fr.swift.segment.column.DictionaryEncodedColumn;
-import com.fr.swift.segment.column.impl.base.DoubleDetailColumn;
-import com.fr.swift.segment.column.impl.base.FakeStringDetailColumn;
-import com.fr.swift.segment.column.impl.base.IntDetailColumn;
-import com.fr.swift.segment.column.impl.base.LongDetailColumn;
 import com.fr.swift.source.Row;
 import com.fr.swift.structure.array.IntList;
 import com.fr.swift.structure.array.IntListFactory;
@@ -28,7 +18,6 @@ import org.easymock.IMocksControl;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 
 public class DetailResultSetTest extends TestCase {

@@ -5,6 +5,7 @@ import com.fr.swift.compare.Comparators;
 import com.fr.swift.query.filter.detail.DetailFilter;
 import com.fr.swift.query.sort.SortType;
 import com.fr.swift.segment.column.Column;
+import com.fr.swift.segment.column.DictionaryEncodedColumn;
 import com.fr.swift.source.ListBasedRow;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SwiftMetaData;
@@ -58,9 +59,6 @@ public class SortSegmentDetailResultSet extends DetailResultSet {
         return maxRow;
     }
 
-    public ArrayList<Row> getSortedDetailList() {
-        return sortedDetailList;
-    }
 
     public int getColumnCount() {
         return columnList.size();
@@ -82,10 +80,8 @@ public class SortSegmentDetailResultSet extends DetailResultSet {
             public void actionPerformed(int row) {
                 List<Object> values = new ArrayList<Object>();
                 for (int i = 0; i < columnList.size(); i++) {
-                    Object val = columnList.get(i).getDetailColumn().get(row);
-                    if (isNullValue(val) && columnList.get(i).getBitmapIndex().getNullIndex().contains(i)) {
-                        continue;
-                    }
+                    DictionaryEncodedColumn column = columnList.get(i).getDictionaryEncodedColumn();
+                    Object val = column.getValue(column.getIndexByRow(row));
                     values.add(val);
                 }
                 Row rowData = new ListBasedRow(values);

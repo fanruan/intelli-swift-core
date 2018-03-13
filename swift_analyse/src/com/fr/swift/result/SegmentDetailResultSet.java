@@ -3,6 +3,7 @@ package com.fr.swift.result;
 import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.query.filter.detail.DetailFilter;
 import com.fr.swift.segment.column.Column;
+import com.fr.swift.segment.column.DictionaryEncodedColumn;
 import com.fr.swift.source.ListBasedRow;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SwiftMetaData;
@@ -21,7 +22,7 @@ public class SegmentDetailResultSet extends DetailResultSet {
     /**
      * 行号
      */
-    private int index = -1;
+    private int row = -1;
 
     /**
      * 列
@@ -49,16 +50,14 @@ public class SegmentDetailResultSet extends DetailResultSet {
         ImmutableBitMap rowIndex = filter.createFilterIndex();
         List values = new ArrayList();
         while (true) {
-            index++;
-            if (rowIndex.contains(index)) {
+            row++;
+            if (rowIndex.contains(row)) {
                 break;
             }
         }
         for (int i = 0; i < columnList.size(); i++) {
-            Object val = columnList.get(i).getDetailColumn().get(index);
-            if (isNullValue(val) && columnList.get(i).getBitmapIndex().getNullIndex().contains(i)) {
-                continue;
-            }
+            DictionaryEncodedColumn column = columnList.get(i).getDictionaryEncodedColumn();
+            Object val = column.getValue(column.getIndexByRow(row));
             values.add(val);
         }
         return new ListBasedRow(values);

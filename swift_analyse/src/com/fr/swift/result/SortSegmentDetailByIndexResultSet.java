@@ -10,6 +10,7 @@ import com.fr.swift.query.group.by.GroupByEntry;
 import com.fr.swift.query.group.by.GroupByResult;
 import com.fr.swift.query.sort.SortType;
 import com.fr.swift.segment.column.Column;
+import com.fr.swift.segment.column.DictionaryEncodedColumn;
 import com.fr.swift.source.ListBasedRow;
 import com.fr.swift.source.Row;
 import com.fr.swift.structure.array.IntList;
@@ -84,10 +85,8 @@ public class SortSegmentDetailByIndexResultSet extends DetailResultSet {
                     return false;
                 }
                 for (int i = 0; i < columnList.size(); i++) {
-                    Object val = columnList.get(i).getDetailColumn().get(row);
-                    if (isNullValue(val) && columnList.get(i).getBitmapIndex().getNullIndex().contains(i)) {
-                        continue;
-                    }
+                    DictionaryEncodedColumn column = columnList.get(i).getDictionaryEncodedColumn();
+                    Object val = column.getValue(column.getIndexByRow(row));
                     values.add(val);
                 }
                 return true;
@@ -130,6 +129,7 @@ public class SortSegmentDetailByIndexResultSet extends DetailResultSet {
             try {
                 if (gbr[i].hasNext()) {
                     gbe = gbr[i].next();
+                    bitmap[i + 1] = gbe.getTraversal().toBitMap();
                 } else {
                     throw new Exception("At least one column has no data");
                 }

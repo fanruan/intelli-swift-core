@@ -29,16 +29,6 @@ public class SortMultiSegmentDetailResultSet extends DetailResultSet {
         init();
     }
 
-    @Override
-    public void close() {
-
-    }
-
-    @Override
-    public SwiftMetaData getMetaData() {
-        return null;
-    }
-
 
     @Override
     public Row getRowData() throws SQLException {
