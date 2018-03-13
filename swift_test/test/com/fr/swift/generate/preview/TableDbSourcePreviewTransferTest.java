@@ -1,4 +1,4 @@
-package com.fr.swift.adaptor.preview;
+package com.fr.swift.generate.preview;
 
 import com.fr.swift.source.ColumnTypeConstants.ColumnType;
 import com.fr.swift.source.SwiftMetaData;
@@ -15,12 +15,12 @@ import java.util.Map;
 /**
  * Created by pony on 2017/12/29.
  */
-public class TableDBSourcePreviewTransferTest extends TestCase {
+public class TableDbSourcePreviewTransferTest extends TestCase {
 
     public void testCreateResultSet() throws Exception {
         ConnectionInfo connectionInfo = TestConnectionProvider.createConnection();
         TableDBSource source = new TableDBSource("DEMO_CAPITAL_RETURN", "demo");
-        TableDBSourcePreviewTransfer transfer = new TableDBSourcePreviewTransfer(connectionInfo, 10, source.getDBTableName());
+        TableDbSourcePreviewTransfer transfer = new TableDbSourcePreviewTransfer(connectionInfo, 10, source.getDBTableName());
         SwiftResultSet resultSet = transfer.createResultSet();
         int index = 0;
         while (resultSet.next()) {
@@ -46,7 +46,7 @@ public class TableDBSourcePreviewTransferTest extends TestCase {
         TableDBSource source = new TableDBSource("DEMO_CAPITAL_RETURN", "demo");
         Map<String, ColumnType> fieldClassTypes = new HashMap<String, ColumnType>();
         fieldClassTypes.put("付款金额", ColumnType.STRING);
-        TableDBSourcePreviewTransfer transfer = new TableDBSourcePreviewTransfer(connectionInfo, fieldClassTypes, 10, source.getDBTableName());
+        TableDbSourcePreviewTransfer transfer = new TableDbSourcePreviewTransfer(connectionInfo, fieldClassTypes, 10, source.getDBTableName());
         SwiftResultSet resultSet = transfer.createResultSet();
         int index = 0;
         while (resultSet.next()) {

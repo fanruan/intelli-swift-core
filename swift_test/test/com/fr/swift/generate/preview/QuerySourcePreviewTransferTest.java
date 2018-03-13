@@ -1,4 +1,4 @@
-package com.fr.swift.adaptor.preview;
+package com.fr.swift.generate.preview;
 
 import com.fr.swift.source.ColumnTypeConstants.ColumnType;
 import com.fr.swift.source.SwiftMetaData;

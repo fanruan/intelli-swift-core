@@ -1,4 +1,4 @@
-package com.fr.swift.adaptor.preview;
+package com.fr.swift.generate.preview;
 
 import com.fr.swift.generate.realtime.RealtimeColumnIndexer;
 import com.fr.swift.segment.Segment;

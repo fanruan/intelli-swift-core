@@ -1,4 +1,4 @@
-package com.fr.swift.adaptor.preview;
+package com.fr.swift.generate.preview;
 
 import com.fr.swift.segment.Segment;
 import com.fr.swift.source.DataSource;
@@ -26,7 +26,7 @@ public final class SwiftDataPreviewer {
     public static SwiftSourceTransfer createPreviewTransfer(DataSource dataSource, int rowCount) {
         SwiftSourceTransfer transfer = null;
         if (dataSource instanceof TableDBSource) {
-            transfer = new TableDBSourcePreviewTransfer(ConnectionManager.getInstance().getConnectionInfo(((TableDBSource) dataSource).getConnectionName()),
+            transfer = new TableDbSourcePreviewTransfer(ConnectionManager.getInstance().getConnectionInfo(((TableDBSource) dataSource).getConnectionName()),
                     ((TableDBSource) dataSource).getFieldColumnTypes(), rowCount, ((TableDBSource) dataSource).getDBTableName());
         } else if (dataSource instanceof QueryDBSource) {
             transfer = new QuerySourcePreviewTransfer(ConnectionManager.getInstance().getConnectionInfo(((QueryDBSource) dataSource).getConnectionName()),

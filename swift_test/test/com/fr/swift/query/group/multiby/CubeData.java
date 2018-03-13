@@ -1,5 +1,6 @@
 package com.fr.swift.query.group.multiby;
 
+import com.fr.swift.Temps.TempDictColumn;
 import com.fr.swift.bitmap.BitMaps;
 import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.bitmap.traversal.TraversalAction;
@@ -116,11 +117,7 @@ public class CubeData {
 
                 @Override
                 public DictionaryEncodedColumn getDictionaryEncodedColumn() {
-                    return new DictionaryEncodedColumn() {
-                        @Override
-                        public void flush() {
-
-                        }
+                    return new TempDictColumn() {
 
                         private Map<Integer, Integer> globalIndexMap = new HashMap<>();
 
@@ -130,23 +127,8 @@ public class CubeData {
                         }
 
                         @Override
-                        public void putGlobalSize(int globalSize) {
-
-                        }
-
-                        @Override
-                        public int globalSize() {
-                            return 0;
-                        }
-
-                        @Override
                         public void putGlobalIndex(int index, int globalIndex) {
                             globalIndexMap.put(index, globalIndex);
-                        }
-
-                        @Override
-                        public void putSize(int size) {
-
                         }
 
                         @Override
@@ -155,18 +137,8 @@ public class CubeData {
                         }
 
                         @Override
-                        public void putValue(int index, Object val) {
-
-                        }
-
-                        @Override
                         public int getIndex(Object value) {
                             return new ArrayList<>(dict.get(columnIndex).keySet()).indexOf(value);
-                        }
-
-                        @Override
-                        public void putIndex(int row, int index) {
-
                         }
 
                         @Override
@@ -175,23 +147,8 @@ public class CubeData {
                         }
 
                         @Override
-                        public int getGlobalIndexByRow(int row) {
-                            return 0;
-                        }
-
-                        @Override
                         public int getGlobalIndexByIndex(int index) {
                             return globalIndexMap.get(index) == null ? index : globalIndexMap.get(index);
-                        }
-
-                        @Override
-                        public Comparator getComparator() {
-                            return null;
-                        }
-
-                        @Override
-                        public void release() {
-
                         }
                     };
                 }
