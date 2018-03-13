@@ -4,8 +4,6 @@ import com.fr.swift.source.etl.columnfilter.ColumnFilterOperator;
 import com.fr.swift.source.etl.columnfilter.ColumnFilterTransferOperator;
 import com.fr.swift.source.etl.columnrowtrans.ColumnRowTransOperator;
 import com.fr.swift.source.etl.columnrowtrans.ColumnRowTransferOperator;
-import com.fr.swift.source.etl.datamining.DataMiningOperator;
-import com.fr.swift.source.etl.datamining.DataMiningTransferOperator;
 import com.fr.swift.source.etl.detail.DetailOperator;
 import com.fr.swift.source.etl.detail.DetailTransferOperator;
 import com.fr.swift.source.etl.formula.ColumnFormulaOperator;
@@ -21,12 +19,16 @@ import com.fr.swift.source.etl.selfrelation.TwoUnionRelationTransferOperator;
 import com.fr.swift.source.etl.union.UnionOperator;
 import com.fr.swift.source.etl.union.UnionTransferOperator;
 
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
 /**
  *
  * @author pony
  * @date 2018/1/8
  */
 public class EtlTransferOperatorFactory {
+    private static Map<String, ETLTransferCreator> extra = new ConcurrentHashMap<String, ETLTransferCreator>();
     public static ETLTransferOperator createTransferOperator(ETLOperator operator) {
         switch (operator.getOperatorType()) {
             case DETAIL:
@@ -47,11 +49,13 @@ public class EtlTransferOperatorFactory {
                 return transferTwoUnionRelationOperator((TwoUnionRelationOperator) operator);
             case COLUMN_FORMULA:
                 return transferColumnFormulaOperator((ColumnFormulaOperator) operator);
-            case DATAMINING:
-                return transferDataMiningOperator((DataMiningOperator) operator);
-            default:
         }
-        return null;
+        ETLTransferCreator creator = extra.get(operator.getClass().getName());
+        return creator == null ? null : creator.createTransferOperator(operator);
+    }
+
+    public static void register(Class c,  ETLTransferCreator creator){
+        extra.put(c.getName(), creator);
     }
 
     private static ETLTransferOperator transferDetailOperator(DetailOperator operator) {
@@ -90,7 +94,7 @@ public class EtlTransferOperatorFactory {
         return new ColumnFormulaTransferOperator(operator.getColumnType(), operator.getExpression());
     }
 
-    private static ETLTransferOperator transferDataMiningOperator(DataMiningOperator operator) {
-        return new DataMiningTransferOperator(operator.getAlgorithmBean());
+    public interface ETLTransferCreator {
+        ETLTransferOperator createTransferOperator(ETLOperator operator);
     }
 }

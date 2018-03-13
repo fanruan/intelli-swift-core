@@ -11,6 +11,7 @@ import com.finebi.conf.internalimp.dashboard.widget.control.time.YearControlWidg
 import com.finebi.conf.internalimp.dashboard.widget.control.tree.TreeLabelWidget;
 import com.finebi.conf.internalimp.dashboard.widget.control.tree.TreeListWidget;
 import com.finebi.conf.internalimp.dashboard.widget.control.tree.TreeWidget;
+import com.finebi.conf.internalimp.dashboard.widget.chart.VanChartWidget;
 import com.finebi.conf.internalimp.dashboard.widget.detail.DetailWidget;
 import com.finebi.conf.internalimp.dashboard.widget.table.CrossTableWidget;
 import com.finebi.conf.internalimp.dashboard.widget.table.StringControlWidget;
