@@ -1,9 +1,9 @@
 package com.fr.swift.source.etl.datamining.timeseries.arima;
 
 import com.finebi.conf.internalimp.analysis.bean.operator.datamining.AlgorithmBean;
-import com.finebi.conf.internalimp.rlang.RDataModel;
-import com.finebi.conf.internalimp.rlang.algorithm.RAlgorithm;
-import com.finebi.conf.internalimp.rlang.algorithm.RAlgorithmFactory;
+import com.finebi.conf.rlang.RDataModel;
+import com.finebi.conf.rlang.algorithm.RAlgorithm;
+import com.finebi.conf.rlang.algorithm.RAlgorithmFactory;
 import com.fr.json.JSONArray;
 import com.fr.json.JSONObject;
 import com.fr.swift.log.SwiftLogger;
