@@ -10,8 +10,6 @@ import com.finebi.conf.internalimp.analysis.bean.operator.add.EmptyAddNewColumnB
 import com.finebi.conf.internalimp.analysis.bean.operator.add.expression.AddExpressionValueBean;
 import com.finebi.conf.internalimp.analysis.bean.operator.circulate.CirculateOneFieldBean;
 import com.finebi.conf.internalimp.analysis.bean.operator.circulate.CirculateTwoFieldValue;
-import com.finebi.conf.internalimp.analysis.bean.operator.datamining.AlgorithmBean;
-import com.finebi.conf.internalimp.analysis.bean.operator.datamining.DataMiningBean;
 import com.finebi.conf.internalimp.analysis.bean.operator.filter.FilterOperatorBean;
 import com.finebi.conf.internalimp.analysis.bean.operator.group.DimensionSelectValue;
 import com.finebi.conf.internalimp.analysis.bean.operator.group.DimensionSrcValue;
@@ -55,7 +53,6 @@ import com.fr.swift.source.etl.ETLSource;
 import com.fr.swift.source.etl.columnfilter.ColumnFilterOperator;
 import com.fr.swift.source.etl.columnrowtrans.ColumnRowTransOperator;
 import com.fr.swift.source.etl.columnrowtrans.NameText;
-import com.fr.swift.source.etl.datamining.DataMiningOperator;
 import com.fr.swift.source.etl.detail.DetailOperator;
 import com.fr.swift.source.etl.formula.ColumnFormulaOperator;
 import com.fr.swift.source.etl.groupsum.SumByGroupDimension;
@@ -260,11 +257,11 @@ class EtlAdaptor {
         return new UnionOperator(listsOfColumn);
     }
 
-    private static DataMiningOperator fromDataMiningBean(DataMiningBean dmb) {
-        AlgorithmBean dmbv = dmb.getValue();
-
-        return new DataMiningOperator(dmbv);
-    }
+//    private static DataMiningOperator fromDataMiningBean(DataMiningBean dmb) {
+//        AlgorithmBean dmbv = dmb.getValue();
+//
+//        return new DataMiningOperator(dmbv);
+//    }
     public static ETLOperator adaptEtlOperator(FineOperator op, FineBusinessTable table) throws FineEngineException {
         switch (op.getType()) {
             case AnalysisType.JOIN:
@@ -283,8 +280,8 @@ class EtlAdaptor {
                 return fromAddNewColumnBean(op.<AddNewColumnBean>getValue());
             case AnalysisType.GROUP:
                 return fromSumByGroupBean(op.<GroupBean>getValue());
-            case AnalysisType.DATA_MINING:
-                return fromDataMiningBean(op.<DataMiningBean>getValue());
+//            case AnalysisType.DATA_MINING:
+//                return fromDataMiningBean(op.<DataMiningBean>getValue());
             default:
         }
         return null;
