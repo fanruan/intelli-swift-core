@@ -8,13 +8,8 @@ package com.fr.swift.source.etl;
 public enum OperatorType {
     DETAIL(true), UNION(false), JOIN(false), FILTER(false), COLUMN_ROW_TRANS(false), GROUP_SUM(false),
     ONE_UNION_RELATION(true), TWO_UNION_RELATION(true), COLUMN_FORMULA(true), SORT(false), GETDATE(true),
-<<<<<<< HEAD
     DATEDIFF(true), ACCUMULATE(true), ALLDATA(true), PERIOD(true), PERCENTAGE(true), RANK(true), CONVERTER(true),
-    EXPRESSION_FILTER(true);
-
-=======
-    DATEDIFF(true), ACCUMULATE(true), ALLDATA(true), PERIOD(true), PERCENTAGE(true), RANK(true), CONVERTER(true), EXTRA(false);
->>>>>>> 894da94acf5c66a0d3bdc2dd2600a548f711c28f
+    EXPRESSION_FILTER(true), EXTRA(false);
     private boolean isAddColumn;
 
     OperatorType(boolean isAddColumn) {
