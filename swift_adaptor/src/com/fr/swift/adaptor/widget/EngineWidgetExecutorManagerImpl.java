@@ -24,6 +24,7 @@ import com.finebi.conf.structure.result.control.time.BIMonthControlResult;
 import com.finebi.conf.structure.result.control.time.BIQuarterResult;
 import com.finebi.conf.structure.result.control.time.BIYearControlResult;
 import com.finebi.conf.structure.result.control.tree.BITreeResult;
+import com.finebi.conf.structure.result.table.BIComplexGroupResult;
 import com.finebi.conf.structure.result.table.BICrossNode;
 import com.finebi.conf.structure.result.table.BIGroupNode;
 
@@ -34,6 +35,10 @@ import com.finebi.conf.structure.result.table.BIGroupNode;
 public class EngineWidgetExecutorManagerImpl implements EngineWidgetExecutorManager {
     @Override
     public BIGroupNode visit(TableWidget tableWidget) {
+        return null;
+    }
+
+    public BIComplexGroupResult visit(VanChartWidget vanChartWidget) {
         return null;
     }
 
