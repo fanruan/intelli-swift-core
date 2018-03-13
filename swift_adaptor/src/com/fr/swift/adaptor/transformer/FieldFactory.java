@@ -32,8 +32,18 @@ public class FieldFactory {
             String columnRemark = swiftMetaData.getColumnRemark(i);
             int precision = swiftMetaData.getPrecision(i);
             int scale = swiftMetaData.getScale(i);
-            FineBusinessField fineBusinessField = new FineBusinessFieldImp(swiftMetaData.getTableName() + columnName, columnName,
-                    transformSwiftColumnType2BIColumnType(ColumnTypeUtils.sqlTypeToColumnType(columnType, precision, scale)), precision, columnRemark, FineEngineType.Cube);
+
+            FineBusinessField fineBusinessField;
+
+            if (swiftMetaData.getColumnAddState(i)) {
+                fineBusinessField = new FineBusinessFieldImp(swiftMetaData.getTableName() + columnRemark, columnRemark, columnName);
+            } else {
+                fineBusinessField = new FineBusinessFieldImp(swiftMetaData.getTableName() + columnName, columnName, columnRemark);
+            }
+
+            ((FineBusinessFieldImp) fineBusinessField).setEngineType(FineEngineType.Cube);
+            fineBusinessField.setType(transformSwiftColumnType2BIColumnType(ColumnTypeUtils.sqlTypeToColumnType(columnType, precision, scale)));
+
             fineBusinessFieldList.add(fineBusinessField);
         }
         return fineBusinessFieldList;

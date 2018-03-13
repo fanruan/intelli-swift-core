@@ -26,4 +26,8 @@ public interface IMetaDataColumn {
     int getScale();
 
     void setScale(int scale);
+
+    boolean isAdd();
+
+    void setAdd(boolean add);
 }

@@ -14,7 +14,6 @@ import java.util.Comparator;
  * @date 2017/11/11
  */
 public class DoubleDictColumn extends BaseDictColumn<Double> {
-
     private DoubleWriter keyWriter;
     private DoubleReader keyReader;
 
@@ -63,6 +62,10 @@ public class DoubleDictColumn extends BaseDictColumn<Double> {
 
     @Override
     public Double getValue(int index) {
+        if (index < 0) {
+            return null;
+        }
+
         initKeyReader();
         return keyReader.get(index);
     }

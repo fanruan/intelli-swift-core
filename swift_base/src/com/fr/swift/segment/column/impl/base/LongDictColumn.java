@@ -14,7 +14,6 @@ import java.util.Comparator;
  * @date 2017/11/11
  */
 public class LongDictColumn extends BaseDictColumn<Long> {
-
     private LongWriter keyWriter;
     private LongReader keyReader;
 
@@ -42,6 +41,9 @@ public class LongDictColumn extends BaseDictColumn<Long> {
 
     @Override
     public Long getValue(int index) {
+        if (index < 0) {
+            return null;
+        }
         initKeyReader();
         return keyReader.get(index);
     }
