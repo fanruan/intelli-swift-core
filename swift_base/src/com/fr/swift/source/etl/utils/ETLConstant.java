@@ -18,6 +18,15 @@ public class ETLConstant {
             public static final int MONTH_OF_SEASON = 3;
         }
 
+
+        public static final class COLUMN {
+            public static final int STRING = 16;
+            public static final int NUMBER = 32;
+            public static final int DATE = 48;
+            public static final int COUNTER = 64;
+            public static final int ROW = 80;
+        }
+
         public static final class FIELD_ID {
 
             public static final String HEAD = "81c48028-1401-11e6-a148-3e1d05defe78";
