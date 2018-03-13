@@ -15,11 +15,11 @@ public class SingleColumnIndexNode extends IndexNode {
         this.dictionaryEncodedColumn = dictionaryEncodedColumn;
     }
 
-    protected void initDataByIndex(){
+    protected void initDataByIndex() {
         data = dictionaryEncodedColumn.getValue(index);
     }
 
-    protected  Object createKey() {
+    protected Object createKey() {
         return index;
     }
 }
