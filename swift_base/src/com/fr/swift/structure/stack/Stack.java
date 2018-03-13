@@ -2,6 +2,8 @@ package com.fr.swift.structure.stack;
 
 /**
  * Created by Lyon on 2018/3/1.
+ *
+ * todo 其实java.util.Deque就满足lifo，不用再写个接口
  */
 public interface Stack<T> {
 

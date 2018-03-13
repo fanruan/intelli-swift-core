@@ -16,6 +16,9 @@ import com.fr.swift.segment.column.BitmapIndexedColumn;
  * @date 2017/11/9
  */
 public class BitMapColumn implements BitmapIndexedColumn {
+    private static final String INDEX = "index";
+    private static final String NULL_INDEX = "null_index";
+
     private static final ResourceDiscovery DISCOVERY = ResourceDiscoveryImpl.getInstance();
 
     private BitMapWriter writer;
