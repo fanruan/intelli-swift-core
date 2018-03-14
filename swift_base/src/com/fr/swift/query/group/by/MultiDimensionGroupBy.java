@@ -92,12 +92,11 @@ public class MultiDimensionGroupBy implements Iterator<KeyValue<RowIndexKey, Row
                 // 更新当前维度的索引迭代器
                 // 首先重置一下当前维度的groupIndex
                 updateGroupIndex(iterators.size() - 1, -1);
+                // 本次循环没找到next，可能group by结束了
+                next = null;
                 // 这边只要把当前维度的迭代器丢弃，继续执行循环体就行了
                 iterators.pop();
             }
-        }
-        if (iterators.isEmpty()) {
-            next = null;
         }
         return old;
     }
