@@ -41,7 +41,7 @@ public class GroupAdaptor {
     public static Group adaptGroup(DimensionSelectValue selectValue) {
         switch (selectValue.getType()) {
             case TYPE.GROUP:
-                return UglyGroupAdaptor.uglyAdapt(((GroupCustomGroupValueBean) selectValue));
+                return AnotherGroupAdaptor.adapt(((GroupCustomGroupValueBean) selectValue));
             case TYPE.SINGLE:
                 // 相同值作为一组，可直接取底层的dict
                 return Groups.newGroup(new NoGroupRule());
@@ -109,8 +109,8 @@ public class GroupAdaptor {
     /**
      * nice job! bi-foundation
      */
-    private static class UglyGroupAdaptor {
-        static Group uglyAdapt(GroupCustomGroupValueBean bean) {
+    private static class AnotherGroupAdaptor {
+        static Group adapt(GroupCustomGroupValueBean bean) {
             CustomGroupValueBean group = bean.getGroup();
 
             GroupRule groupRule;
