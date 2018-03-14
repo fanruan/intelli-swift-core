@@ -45,6 +45,9 @@ import static com.fr.swift.source.ColumnTypeConstants.ClassType.STRING;
  * @date 2018/2/26
  */
 public abstract class BaseColumnIndexer<T extends Comparable<T>> extends BaseWorker {
+    /**
+     * todo 可以把segment的获取过程抽出来，让基础的worker脱离不相关的一些东西
+     */
     protected DataSource dataSource;
     protected ColumnKey key;
 

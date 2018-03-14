@@ -31,6 +31,9 @@ import java.util.TreeMap;
  * @date 2018/2/26
  */
 public abstract class BaseColumnDictMerger<T extends Comparable<T>> extends BaseWorker {
+    /**
+     * todo 可以把segment的获取过程抽出来，让基础的worker脱离不相关的一些东西
+     */
     private DataSource dataSource;
     private ColumnKey key;
 
@@ -51,7 +54,7 @@ public abstract class BaseColumnDictMerger<T extends Comparable<T>> extends Base
     }
 
     private void mergeDict() {
-        List<Segment> segments = LocalSegmentProvider.getInstance().getSegment(dataSource.getSourceKey());
+        List<Segment> segments = getSegments();
         // 值 -> (块号, 值在这块里的序号)
         Map<T, List<IntPair>> map = newIntPairsSortedMap(calExternalLocation(segments.get(0).getLocation()));
 
@@ -81,6 +84,10 @@ public abstract class BaseColumnDictMerger<T extends Comparable<T>> extends Base
         if (map instanceof ExternalMap) {
             ((ExternalMap) map).release();
         }
+    }
+
+    protected List<Segment> getSegments() {
+        return LocalSegmentProvider.getInstance().getSegment(dataSource.getSourceKey());
     }
 
     private static <V> void extractDictOf(DictionaryEncodedColumn<V> dictColumn, int segOrder, Map<V, List<IntPair>> map) {
