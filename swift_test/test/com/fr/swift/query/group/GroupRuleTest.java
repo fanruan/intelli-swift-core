@@ -7,12 +7,10 @@ import com.fr.swift.query.group.impl.CustomNumGroupRule;
 import com.fr.swift.query.group.impl.CustomNumGroupRule.NumInterval;
 import com.fr.swift.query.group.impl.CustomStrGroupRule;
 import com.fr.swift.query.group.impl.CustomStrGroupRule.StringGroup;
-import com.fr.swift.segment.column.DictionaryEncodedColumn;
 import com.fr.swift.structure.array.IntList;
 import junit.framework.TestCase;
 
 import java.util.Arrays;
-import java.util.Comparator;
 
 /**
  * @author anchore
@@ -248,80 +246,5 @@ public class GroupRuleTest extends TestCase {
         assertEquals(2, l2.size());
         assertEquals(8, l2.get(0));
         assertEquals(9, l2.get(1));
-    }
-
-    private static class BaseDictTestColumn<T> implements DictionaryEncodedColumn<T> {
-        @Override
-        public void putSize(int size) {
-        }
-
-        @Override
-        public int size() {
-            return 0;
-        }
-
-        @Override
-        public void putGlobalSize(int globalSize) {
-        }
-
-        @Override
-        public int globalSize() {
-            return 0;
-        }
-
-        @Override
-        public void putValue(int index, T val) {
-        }
-
-        @Override
-        public T getValue(int index) {
-            return null;
-        }
-
-        @Override
-        public int getIndex(Object value) {
-            return 0;
-        }
-
-        @Override
-        public void putIndex(int row, int index) {
-        }
-
-        @Override
-        public int getIndexByRow(int row) {
-            return 0;
-        }
-
-        @Override
-        public void putGlobalIndex(int index, int globalIndex) {
-        }
-
-        @Override
-        public int getGlobalIndexByIndex(int index) {
-            return 0;
-        }
-
-        @Override
-        public int getGlobalIndexByRow(int row) {
-            return 0;
-        }
-
-        @Override
-        public Comparator<T> getComparator() {
-            return null;
-        }
-
-        @Override
-        public T convertValue(Object value) {
-            return (T) value;
-        }
-
-        @Override
-        public void flush() {
-        }
-
-        @Override
-        public void release() {
-        }
     }
 }

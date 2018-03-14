@@ -16,7 +16,6 @@ import com.fr.swift.segment.column.DictionaryEncodedColumn;
 import junit.framework.TestCase;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -118,36 +117,6 @@ public class GroupByTest extends TestCase {
             @Override
             public int getIndexByRow(int row) {
                 return index[row];
-            }
-
-            @Override
-            public void putGlobalIndex(int index, int globalIndex) {
-
-            }
-
-            @Override
-            public int getGlobalIndexByRow(int row) {
-                return 0;
-            }
-
-            @Override
-            public int getGlobalIndexByIndex(int index) {
-                return 0;
-            }
-
-            @Override
-            public void release() {
-
-            }
-
-            @Override
-            public Comparator getComparator() {
-                return null;
-            }
-
-            @Override
-            public Object convertValue(Object value) {
-                return value;
             }
         };
     }
