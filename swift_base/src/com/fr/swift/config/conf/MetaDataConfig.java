@@ -39,14 +39,11 @@ public class MetaDataConfig extends DefaultConfiguration {
         return (IMetaData) metaDataHolder.get(key);
     }
 
-
-    //todo key是存sourcekey还是metadata的name？
-//    public void addMetaData(IMetaData... metaDatas) {
-//        for (IMetaData metaData : metaDatas) {
-//            metaDataHolder.put(metaData.getTableName(), metaData);
-//        }
-//    }
-
+    /**
+     * sourceKey -> metadata
+     * @param sourceKey
+     * @param metaData
+     */
     public void addMetaData(String sourceKey, IMetaData metaData) {
         metaDataHolder.put(sourceKey, metaData);
     }
