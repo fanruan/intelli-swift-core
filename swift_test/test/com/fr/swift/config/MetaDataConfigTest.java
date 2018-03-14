@@ -11,6 +11,7 @@ import com.fr.config.entity.XmlEntity;
 import com.fr.stable.db.DBContext;
 import com.fr.stable.db.option.DBOption;
 import com.fr.swift.config.conf.MetaDataConfig;
+import com.fr.swift.source.SourceKey;
 import junit.framework.TestCase;
 
 /**
@@ -20,11 +21,12 @@ import junit.framework.TestCase;
  */
 public class MetaDataConfigTest extends TestCase {
 
+    private SourceKey sourceKey = new SourceKey("A");
     @Override
     public void setUp() throws Exception {
         super.setUp();
         DBOption dbOption = new DBOption();
-        dbOption.setPassword("root123");
+        dbOption.setPassword("root");
         dbOption.setDialectClass("com.fr.third.org.hibernate.dialect.MySQL5InnoDBDialect");
         dbOption.setDriverClass("com.mysql.jdbc.Driver");
         dbOption.setUsername("root");
@@ -43,11 +45,11 @@ public class MetaDataConfigTest extends TestCase {
     }
 
     public void testAddAndGet() {
-        MetaDataConfig.getInstance().addMetaData(MetaDataCreater.getMA());
+        MetaDataConfig.getInstance().addMetaData(sourceKey.getId(), MetaDataCreater.getMA());
 
         assertEquals(MetaDataConfig.getInstance().getAllMetaData().size(), 1);
 
-        IMetaData metaData = MetaDataConfig.getInstance().getMetaDataByKey("A");
+        IMetaData metaData = MetaDataConfig.getInstance().getMetaDataByKey(sourceKey.getId());
         assertEquals(metaData.getTableName(), MetaDataCreater.getMA().getTableName());
         assertEquals(metaData.getRemark(), MetaDataCreater.getMA().getRemark());
         assertEquals(metaData.getSchema(), MetaDataCreater.getMA().getSchema());
@@ -55,19 +57,19 @@ public class MetaDataConfigTest extends TestCase {
     }
 
     public void testAddAndRemove() {
-        MetaDataConfig.getInstance().addMetaData(MetaDataCreater.getMA());
+        MetaDataConfig.getInstance().addMetaData(sourceKey.getId(), MetaDataCreater.getMA());
         assertEquals(MetaDataConfig.getInstance().getAllMetaData().size(), 1);
-        MetaDataConfig.getInstance().removeMetaData(MetaDataCreater.getMA().getTableName());
+        MetaDataConfig.getInstance().removeMetaData(sourceKey.getId());
         assertEquals(MetaDataConfig.getInstance().getAllMetaData().size(), 0);
     }
 
     public void testAddAndModify() {
-        MetaDataConfig.getInstance().addMetaData(MetaDataCreater.getMA());
-        IMetaData metaData1 = MetaDataConfig.getInstance().getMetaDataByKey("A");
+        MetaDataConfig.getInstance().addMetaData(sourceKey.getId(), MetaDataCreater.getMA());
+        IMetaData metaData1 = MetaDataConfig.getInstance().getMetaDataByKey(sourceKey.getId());
 
-        MetaDataConfig.getInstance().modifyMetaData(MetaDataCreater.getMAModify());
+        MetaDataConfig.getInstance().modifyMetaData(sourceKey.getId(), MetaDataCreater.getMAModify());
 
-        IMetaData metaData2 = MetaDataConfig.getInstance().getMetaDataByKey("A");
+        IMetaData metaData2 = MetaDataConfig.getInstance().getMetaDataByKey(sourceKey.getId());
 
         assertEquals(metaData1.getTableName(), metaData2.getTableName());
         assertNotSame(metaData1.getRemark(), metaData2.getRemark());
