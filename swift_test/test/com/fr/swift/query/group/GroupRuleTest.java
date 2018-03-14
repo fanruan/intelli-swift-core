@@ -1,5 +1,6 @@
 package com.fr.swift.query.group;
 
+import com.fr.swift.Temps.TempDictColumn;
 import com.fr.swift.query.group.impl.AutoNumGroupRule;
 import com.fr.swift.query.group.impl.AutoNumGroupRule.Partition;
 import com.fr.swift.query.group.impl.CustomNumGroupRule;
@@ -23,7 +24,7 @@ public class GroupRuleTest extends TestCase {
                 new StringGroup("g0", Arrays.asList("1", "2", "3")),
                 new StringGroup("g1", Arrays.asList("5", "6"))
         ), "ungrouped");
-        rule.setOriginDict(new BaseDictTestColumn<String>() {
+        rule.setOriginDict(new TempDictColumn<String>() {
             String[] values = {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10"};
 
             @Override
@@ -62,7 +63,7 @@ public class GroupRuleTest extends TestCase {
                 new StringGroup("g0", Arrays.asList("1", "2", "3")),
                 new StringGroup("g1", Arrays.asList("5", "6", "7", "8", "9"))
         ), null);
-        rule.setOriginDict(new BaseDictTestColumn<String>() {
+        rule.setOriginDict(new TempDictColumn<String>() {
             String[] values = {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10"};
 
             @Override
@@ -112,7 +113,7 @@ public class GroupRuleTest extends TestCase {
                 new NumInterval("g1", 4, true, 6, false),
                 new NumInterval("g2", 7, true, 10, false)
         ), "ungrouped");
-        rule.setOriginDict(new BaseDictTestColumn<Number>() {
+        rule.setOriginDict(new TempDictColumn<Number>() {
             Number[] numbers = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
 
             @Override
@@ -161,7 +162,7 @@ public class GroupRuleTest extends TestCase {
                 new NumInterval("g1", 4, true, 7, false),
                 new NumInterval("g2", 7, true, 10, false)
         ), null);
-        rule.setOriginDict(new BaseDictTestColumn<Number>() {
+        rule.setOriginDict(new TempDictColumn<Number>() {
             Number[] numbers = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
 
             @Override
@@ -210,7 +211,7 @@ public class GroupRuleTest extends TestCase {
 
     public void testAutoGroupRule() {
         GroupRule rule = new AutoNumGroupRule(new Partition(1, 10, 4));
-        rule.setOriginDict(new BaseDictTestColumn<Number>() {
+        rule.setOriginDict(new TempDictColumn<Number>() {
             Number[] numbers = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
 
             @Override

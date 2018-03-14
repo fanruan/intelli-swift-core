@@ -63,6 +63,9 @@ public abstract class BaseSegment implements Segment {
             String realName = getRealName(key.getName());
             String remark = getRemark(key.getName());
             String name = realName != null ? realName : remark;
+            if (name == null) {
+                return null;
+            }
             ColumnKey nameColumnKey = new ColumnKey(name);
             if (columns.containsKey(nameColumnKey)) {
                 return (Column<T>) columns.get(nameColumnKey);

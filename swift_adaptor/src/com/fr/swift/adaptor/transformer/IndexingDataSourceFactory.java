@@ -42,6 +42,13 @@ public class IndexingDataSourceFactory {
     private static final SwiftLogger LOGGER = SwiftLoggers.getLogger();
     static {
         ConnectionManager.getInstance().registerProvider(new ConnectionProvider());
+//        EtlTransferOperatorFactory.register(DataMiningOperator.class, new ETLTransferCreator(){
+//
+//            @Override
+//            public ETLTransferOperator createTransferOperator(ETLOperator operator) {
+//                return new DataMiningTransferOperator(((DataMiningOperator)operator).getAlgorithmBean());
+//            }
+//        });
     }
     public static void transformDataSources(Map<FineBusinessTable, TableUpdateInfo> infoMap, List<String> updateTableSourceKeys, SourceContainerManager updateSourceContainer, Map<String, List<Increment>> incrementMap) throws Exception {
         for (Map.Entry<FineBusinessTable, TableUpdateInfo> infoEntry : infoMap.entrySet()) {

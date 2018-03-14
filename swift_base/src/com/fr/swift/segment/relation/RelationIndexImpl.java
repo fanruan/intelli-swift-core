@@ -17,6 +17,11 @@ import com.fr.swift.cube.io.output.IntWriter;
  * @date 2018/1/17
  */
 public class RelationIndexImpl implements RelationIndex {
+    private static final String NULL_INDEX = "null_index";
+    private static final String INDEX = "index";
+    private static final String REVERSE = "reverse";
+    private static final String RELATIONS_KEY = "relations";
+
     private static final ResourceDiscovery DISCOVERY = ResourceDiscoveryImpl.getInstance();
 
     private IResourceLocation location;

@@ -3,6 +3,7 @@ package com.fr.swift.cal.segment.detail;
 import com.fr.swift.query.filter.detail.DetailFilter;
 import com.fr.swift.query.sort.SortType;
 import com.fr.swift.result.DetailResultSet;
+import com.fr.swift.result.SortSegmentDetailByIndexResultSet;
 import com.fr.swift.result.SortSegmentDetailResultSet;
 import com.fr.swift.segment.column.Column;
 import com.fr.swift.structure.array.IntList;
@@ -16,6 +17,7 @@ import java.util.List;
 public class SortDetailSegmentQuery extends AbstractDetailSegmentQuery {
     private IntList sortIndex;
     private List<SortType> sorts;
+    private final static int MEMORY_LIMIT = 3000;
 
     public SortDetailSegmentQuery(List<Column> columnList, DetailFilter filter, IntList sortIndex, List<SortType> sorts) {
         super(columnList, filter);
@@ -25,6 +27,12 @@ public class SortDetailSegmentQuery extends AbstractDetailSegmentQuery {
 
     @Override
     public DetailResultSet getQueryResult() {
-        return new SortSegmentDetailResultSet(columnList, filter, sortIndex, sorts);
+        if (filter.createFilterIndex().getCardinality() <= MEMORY_LIMIT) {
+            return new SortSegmentDetailResultSet(columnList, filter, sortIndex, sorts);
+        } else {
+            return new SortSegmentDetailByIndexResultSet(columnList, filter, sortIndex, sorts);
+        }
     }
+
+
 }

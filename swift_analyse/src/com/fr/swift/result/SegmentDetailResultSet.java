@@ -3,6 +3,7 @@ package com.fr.swift.result;
 import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.query.filter.detail.DetailFilter;
 import com.fr.swift.segment.column.Column;
+import com.fr.swift.segment.column.DictionaryEncodedColumn;
 import com.fr.swift.source.ListBasedRow;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SwiftMetaData;
@@ -21,7 +22,7 @@ public class SegmentDetailResultSet extends DetailResultSet {
     /**
      * 行号
      */
-    private int index = -1;
+    private int row = -1;
 
     /**
      * 列
@@ -40,20 +41,6 @@ public class SegmentDetailResultSet extends DetailResultSet {
     }
 
     @Override
-    public void close() throws SQLException {
-
-    }
-
-
-    @Override
-    public boolean next() throws SQLException {
-        if (rowCount < maxRow) {
-            return true;
-        }
-        return false;
-    }
-
-    @Override
     public SwiftMetaData getMetaData() throws SQLException {
         return null;
     }
@@ -63,15 +50,16 @@ public class SegmentDetailResultSet extends DetailResultSet {
         ImmutableBitMap rowIndex = filter.createFilterIndex();
         List values = new ArrayList();
         while (true) {
-            index ++;
-            if (rowIndex.contains(index)) {
+            row++;
+            if (rowIndex.contains(row)) {
                 break;
             }
         }
         for (int i = 0; i < columnList.size(); i++) {
-            values.add(columnList.get(i).getDetailColumn().get(index));
+            DictionaryEncodedColumn column = columnList.get(i).getDictionaryEncodedColumn();
+            Object val = column.getValue(column.getIndexByRow(row));
+            values.add(val);
         }
-        rowCount ++;
         return new ListBasedRow(values);
     }
 

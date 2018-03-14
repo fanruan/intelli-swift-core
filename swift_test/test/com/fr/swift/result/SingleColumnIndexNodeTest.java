@@ -1,5 +1,6 @@
 package com.fr.swift.result;
 
+import com.fr.swift.Temps.TempDictColumn;
 import com.fr.swift.query.aggregator.AggregatorValue;
 import com.fr.swift.query.aggregator.DoubleAmountAggregateValue;
 import com.fr.swift.segment.column.DictionaryEncodedColumn;
@@ -22,50 +23,15 @@ public class SingleColumnIndexNodeTest extends TestCase {
         super.setUp();
         final String[] keys = {"A","B","C"};
         final int[] index = {0,1,2,1,2,1,0,2,1};
-        column =  new DictionaryEncodedColumn() {
-            @Override
-            public void flush() {
-
-            }
-
+        column = new TempDictColumn() {
             @Override
             public int size() {
                 return 3;
             }
 
             @Override
-            public void putGlobalSize(int globalSize) {
-
-            }
-
-            @Override
-            public int globalSize() {
-                return 0;
-            }
-
-            @Override
-            public void putSize(int size) {
-
-            }
-
-            @Override
             public Object getValue(int index) {
                 return keys[index];
-            }
-
-            @Override
-            public void putValue(int index, Object val) {
-
-            }
-
-            @Override
-            public int getIndex(Object value) {
-                return 0;
-            }
-
-            @Override
-            public void putIndex(int row, int index) {
-
             }
 
             @Override

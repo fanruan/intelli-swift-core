@@ -1,5 +1,6 @@
 package com.fr.swift.query.group;
 
+import com.fr.swift.Temps.TempDictColumn;
 import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.bitmap.MutableBitMap;
 import com.fr.swift.bitmap.impl.BitSetMutableBitMap;
@@ -102,11 +103,7 @@ public class GroupByTest extends TestCase {
     private DictionaryEncodedColumn createDicColumn() {
         final String[] keys = {"A","B","C"};
         final int[] index = {0,1,2,1,2,1,0,2,1};
-        return new DictionaryEncodedColumn() {
-            @Override
-            public void flush() {
-
-            }
+        return new TempDictColumn() {
 
             @Override
             public int size() {
@@ -114,38 +111,8 @@ public class GroupByTest extends TestCase {
             }
 
             @Override
-            public void putGlobalSize(int globalSize) {
-
-            }
-
-            @Override
-            public int globalSize() {
-                return 0;
-            }
-
-            @Override
-            public void putSize(int size) {
-
-            }
-
-            @Override
             public Object getValue(int index) {
                 return keys[index];
-            }
-
-            @Override
-            public void putValue(int index, Object val) {
-
-            }
-
-            @Override
-            public int getIndex(Object value) {
-                return 0;
-            }
-
-            @Override
-            public void putIndex(int row, int index) {
-
             }
 
             @Override
