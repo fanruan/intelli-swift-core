@@ -58,9 +58,6 @@ public class GroupByUtils {
         // 这边sorts的size能保证和维度的size相同吗？
         boolean[] asc = new boolean[sorts.size()];
         Arrays.fill(asc, false);
-        if (sorts == null) {
-            return asc;
-        }
         for (int i = 0; i < asc.length; i++) {
             if (sorts.get(i).getSortType() == SortType.ASC) {
                 asc[i] = true;
