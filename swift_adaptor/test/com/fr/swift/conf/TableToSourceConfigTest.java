@@ -30,7 +30,7 @@ public class TableToSourceConfigTest extends TestCase {
     public void setUp() throws Exception {
         super.setUp();
         DBOption dbOption = new DBOption();
-        dbOption.setPassword("zhy100112");
+        dbOption.setPassword("root");
         dbOption.setDialectClass("com.fr.third.org.hibernate.dialect.MySQL5InnoDBDialect");
         dbOption.setDriverClass("com.mysql.jdbc.Driver");
         dbOption.setUsername("root");
