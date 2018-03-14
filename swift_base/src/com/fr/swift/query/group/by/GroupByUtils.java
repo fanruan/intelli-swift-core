@@ -9,6 +9,7 @@ import com.fr.swift.query.sort.SortType;
 import com.fr.swift.result.GroupByResultSet;
 import com.fr.swift.result.GroupByResultSetImpl;
 import com.fr.swift.result.KeyValue;
+import com.fr.swift.result.RowIndexKey;
 import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.DictionaryEncodedColumn;
 import com.fr.swift.structure.iterator.RowTraversal;
@@ -28,20 +29,26 @@ public class GroupByUtils {
 
     public static GroupByResultSet query(List<Column> dimensions, List<Column> metrics, List<Aggregator> aggregators,
                                          DetailFilter filter, List<Sort> indexSorts, int[] cursor, int pageSize) {
-        boolean[] asc = getSorts(indexSorts);
-        Iterator<KeyValue<int[], RowTraversal>> groupByIterator = new MultiDimensionGroupBy(dimensions, filter, cursor, asc);
+        boolean[] asc;
+        if (indexSorts == null) {
+            asc = new boolean[dimensions.size()];
+            Arrays.fill(asc, true);
+        } else {
+            asc = getSorts(indexSorts);
+        }
+        Iterator<KeyValue<RowIndexKey, RowTraversal>> groupByIterator = new MultiDimensionGroupBy(dimensions, filter, cursor, asc);
         if (pageSize != -1) {
             // 分页的情况
             groupByIterator = new GroupByPagingIterator(pageSize, groupByIterator);
         }
-        List<KeyValue<int[], AggregatorValue[]>> rowResult = new ArrayList<KeyValue<int[], AggregatorValue[]>>();
+        List<KeyValue<RowIndexKey, AggregatorValue[]>> rowResult = new ArrayList<KeyValue<RowIndexKey, AggregatorValue[]>>();
         List<Map<Integer, Object>> globalDictionaries= createGlobalDictionaries(dimensions.size());
         List<DictionaryEncodedColumn> dictionaries = getDictionaries(dimensions);
         while (groupByIterator.hasNext()) {
-            KeyValue<int[], RowTraversal> keyValue = groupByIterator.next();
-            int[] key = keyValue.getKey();
+            KeyValue<RowIndexKey, RowTraversal> keyValue = groupByIterator.next();
+            int[] key = keyValue.getKey().getKey();
             AggregatorValue[] values = aggregateRow(keyValue.getValue(), metrics, aggregators);
-            rowResult.add(new KeyValue<int[], AggregatorValue[]>(toGlobalIndex(key, dictionaries), values));
+            rowResult.add(new KeyValue<RowIndexKey, AggregatorValue[]>(toGlobalIndex(key, dictionaries), values));
             updateGlobalDictionaries(key, globalDictionaries, dictionaries);
         }
         return new GroupByResultSetImpl(rowResult.iterator(), globalDictionaries, indexSorts);
@@ -89,7 +96,7 @@ public class GroupByUtils {
         return dictionaries;
     }
 
-    private static int[] toGlobalIndex(int[] segmentIndexes, List<DictionaryEncodedColumn> dictionaries) {
+    private static RowIndexKey toGlobalIndex(int[] segmentIndexes, List<DictionaryEncodedColumn> dictionaries) {
         int[] globalIndexes = new int[segmentIndexes.length];
         Arrays.fill(globalIndexes, -1);
         for (int i = 0; i < segmentIndexes.length; i++) {
@@ -98,7 +105,7 @@ public class GroupByUtils {
             }
             globalIndexes[i] = dictionaries.get(i).getGlobalIndexByIndex(segmentIndexes[i]);
         }
-        return globalIndexes;
+        return new RowIndexKey(globalIndexes);
     }
 
     private static AggregatorValue[] aggregateRow(RowTraversal traversal, List<Column> metrics,

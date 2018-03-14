@@ -1,11 +1,15 @@
 package com.fr.swift.cal.segment.group;
 
-import com.fr.swift.mapreduce.KeyValue;
+import com.fr.swift.bitmap.BitMaps;
+import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.query.aggregator.Aggregator;
 import com.fr.swift.query.aggregator.AggregatorValue;
-import com.fr.swift.query.group.multiby.CubeData;
+import com.fr.swift.query.filter.detail.DetailFilter;
+import com.fr.swift.query.group.by.CubeData;
+import com.fr.swift.result.GroupByResultSet;
+import com.fr.swift.result.KeyValue;
 import com.fr.swift.result.RowIndexKey;
-import com.fr.swift.result.RowResultCollector;
+import com.fr.swift.result.SwiftNode;
 import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.DictionaryEncodedColumn;
 import junit.framework.TestCase;
@@ -23,11 +27,15 @@ public class GroupAllSegmentQueryTest extends TestCase {
     private List<Column> dimensions;
     private List<Column> metrics;
     private List<Aggregator> aggregators;
+    private int rowCount;
 
-    public static void checkResult(RowResultCollector collector, Map<RowIndexKey, double[]> expectedResult) {
-        Iterator<KeyValue<RowIndexKey, AggregatorValue[]>> iterator = collector.getRowResult().iterator();
+    public static void checkResult(GroupByResultSet collector, Map<RowIndexKey, double[]> expectedResult) {
+        Iterator<KeyValue<RowIndexKey, AggregatorValue[]>> iterator = collector.getRowResultIterator();
         while (iterator.hasNext()) {
             KeyValue<RowIndexKey, AggregatorValue[]> keyValue = iterator.next();
+            if (!isNormalRow(keyValue.getKey().getKey())) {
+                continue;
+            }
             assertTrue(expectedResult.containsKey(keyValue.getKey()));
             double[] expectedValues = expectedResult.get(keyValue.getKey());
             AggregatorValue[] values = keyValue.getValue();
@@ -38,13 +46,33 @@ public class GroupAllSegmentQueryTest extends TestCase {
         }
     }
 
+    private static boolean isNormalRow(int[] index) {
+        for (int i = 0; i < index.length; i++) {
+            if (index[i] == -1) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     private void test(CubeData cubeData) {
         dimensions = cubeData.getDimensions();
         metrics = cubeData.getMetrics();
         expectedResult = cubeData.getAggregationResult();
         aggregators = cubeData.getAggregators();
-        GroupAllSegmentQuery query = new GroupAllSegmentQuery(dimensions, metrics, aggregators, null);
-        RowResultCollector collector = null;
+        rowCount = cubeData.getRowCount();
+        GroupAllSegmentQuery query = new GroupAllSegmentQuery(dimensions, metrics, aggregators, new DetailFilter() {
+            @Override
+            public ImmutableBitMap createFilterIndex() {
+                return BitMaps.newAllShowBitMap(rowCount);
+            }
+
+            @Override
+            public boolean matches(SwiftNode node) {
+                return false;
+            }
+        });
+        GroupByResultSet collector = null;
         try {
             collector = query.getQueryResult();
         } catch (Exception e) {

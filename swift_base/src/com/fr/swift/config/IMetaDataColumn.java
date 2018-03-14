@@ -27,7 +27,7 @@ public interface IMetaDataColumn {
 
     void setScale(int scale);
 
-    boolean isAdd();
+    String getColumnId();
 
-    void setAdd(boolean add);
+    void setColumnId(String columnId);
 }
