@@ -38,7 +38,7 @@ public class SortSegmentDetailByIndexResultSet extends DetailResultSet {
     //已排序的第几个bitmap
     private int index = 0;
     private int bitmapCount = 1;
-    private ArrayList<ImmutableBitMap> sortedDetail = new ArrayList<>();
+    private ArrayList<ImmutableBitMap> sortedDetail = new ArrayList<ImmutableBitMap>();
 
     public SortSegmentDetailByIndexResultSet(List<Column> columnList, DetailFilter filter, IntList sortIndex, List<SortType> sorts) {
         this.columnList = columnList;
@@ -74,7 +74,7 @@ public class SortSegmentDetailByIndexResultSet extends DetailResultSet {
             bitmapCount = 1;
             index++;
         }
-        List values = new ArrayList();
+        final List values = new ArrayList();
         sortedDetail.get(index).breakableTraversal(new BreakTraversalAction() {
             //用来判断是分组中的第几行
             private int count = 1;
