@@ -6,8 +6,6 @@ import com.fr.swift.query.aggregator.DoubleAmountAggregateValue;
 import com.fr.swift.segment.column.DictionaryEncodedColumn;
 import junit.framework.TestCase;
 
-import java.util.Comparator;
-
 /**
  * Created by pony on 2017/12/8.
  */
@@ -37,36 +35,6 @@ public class SingleColumnIndexNodeTest extends TestCase {
             @Override
             public int getIndexByRow(int row) {
                 return index[row];
-            }
-
-            @Override
-            public void putGlobalIndex(int index, int globalIndex) {
-
-            }
-
-            @Override
-            public int getGlobalIndexByRow(int row) {
-                return 0;
-            }
-
-            @Override
-            public int getGlobalIndexByIndex(int index) {
-                return 0;
-            }
-
-            @Override
-            public void release() {
-
-            }
-
-            @Override
-            public Comparator getComparator() {
-                return null;
-            }
-
-            @Override
-            public Object convertValue(Object value) {
-                return value;
             }
         };
         node = new SingleColumnIndexNode(1, 2, column);
