@@ -7,10 +7,7 @@ import com.fr.swift.cube.io.Releasable;
 import com.fr.swift.cube.io.location.IResourceLocation;
 import com.fr.swift.cube.task.Task.Result;
 import com.fr.swift.cube.task.impl.BaseWorker;
-import com.fr.swift.exception.meta.SwiftMetaDataException;
-import com.fr.swift.generate.history.index.ColumnDictMerger;
 import com.fr.swift.log.SwiftLoggers;
-import com.fr.swift.manager.LocalSegmentProvider;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.column.BitmapIndexedColumn;
 import com.fr.swift.segment.column.Column;
@@ -19,12 +16,10 @@ import com.fr.swift.segment.column.DetailColumn;
 import com.fr.swift.segment.column.DictionaryEncodedColumn;
 import com.fr.swift.setting.PerformancePlugManager;
 import com.fr.swift.source.ColumnTypeConstants.ClassType;
-import com.fr.swift.source.DataSource;
 import com.fr.swift.structure.array.IntList;
 import com.fr.swift.structure.array.IntListFactory;
 import com.fr.swift.structure.external.map.ExternalMap;
 import com.fr.swift.structure.external.map.intlist.IntListExternalMapFactory;
-import com.fr.swift.util.Crasher;
 
 import java.util.Arrays;
 import java.util.Comparator;
@@ -45,14 +40,9 @@ import static com.fr.swift.source.ColumnTypeConstants.ClassType.STRING;
  * @date 2018/2/26
  */
 public abstract class BaseColumnIndexer<T extends Comparable<T>> extends BaseWorker {
-    /**
-     * todo 可以把segment的获取过程抽出来，让基础的worker脱离不相关的一些东西
-     */
-    protected DataSource dataSource;
     protected ColumnKey key;
 
-    public BaseColumnIndexer(DataSource dataSource, ColumnKey key) {
-        this.dataSource = dataSource;
+    public BaseColumnIndexer(ColumnKey key) {
         this.key = key;
     }
 
@@ -76,9 +66,7 @@ public abstract class BaseColumnIndexer<T extends Comparable<T>> extends BaseWor
         }
     }
 
-    protected List<Segment> getSegments() {
-        return LocalSegmentProvider.getInstance().getSegment(dataSource.getSourceKey());
-    }
+    protected abstract List<Segment> getSegments();
 
     protected abstract void releaseIfNeed(Releasable baseColumn);
 
@@ -165,9 +153,7 @@ public abstract class BaseColumnIndexer<T extends Comparable<T>> extends BaseWor
         releaseIfNeed(indexColumn);
     }
 
-    protected void mergeDict() {
-        new ColumnDictMerger<T>(dataSource, key).work();
-    }
+    protected abstract void mergeDict();
 
     private Map<T, IntList> newIntListSortedMap(Column<T> column) {
         Comparator<T> c = column.getDictionaryEncodedColumn().getComparator();
@@ -180,13 +166,7 @@ public abstract class BaseColumnIndexer<T extends Comparable<T>> extends BaseWor
         return IntListExternalMapFactory.getIntListExternalMap(getClassType(), c, path, true);
     }
 
-    private ClassType getClassType() {
-        try {
-            return PrivateUtil.getClassType(dataSource, key);
-        } catch (SwiftMetaDataException e) {
-            return Crasher.crash(e);
-        }
-    }
+    protected abstract ClassType getClassType();
 
     private static <V> boolean isNullValue(V val) {
         return val.equals(NULL_INT) ||
