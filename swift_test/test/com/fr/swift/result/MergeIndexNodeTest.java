@@ -92,6 +92,11 @@ public class MergeIndexNodeTest extends TestCase {
             public Comparator getComparator() {
                 return null;
             }
+
+            @Override
+            public Object convertValue(Object value) {
+                return value;
+            }
         };
         node = new MergeIndexNode(1, 1, 1, new DictionaryEncodedColumn[]{column, column});
     }

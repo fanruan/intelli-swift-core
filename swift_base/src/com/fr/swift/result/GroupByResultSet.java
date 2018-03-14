@@ -18,7 +18,7 @@ public interface GroupByResultSet extends SwiftResultSet {
      * 这边的index是global index
      * @return
      */
-    Iterator<KeyValue<int[], AggregatorValue[]>> getRowResultIterator();
+    Iterator<KeyValue<RowIndexKey, AggregatorValue[]>> getRowResultIterator();
 
     /**
      * 行结果各个维度用到的字典值

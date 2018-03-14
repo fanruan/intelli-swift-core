@@ -1,4 +1,4 @@
-package com.fr.swift.query.group.multiby;
+package com.fr.swift.query.group.by;
 
 import com.fr.swift.bitmap.BitMaps;
 import com.fr.swift.bitmap.ImmutableBitMap;
@@ -11,6 +11,7 @@ import com.fr.swift.segment.column.BitmapIndexedColumn;
 import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.DetailColumn;
 import com.fr.swift.segment.column.DictionaryEncodedColumn;
+import com.fr.swift.segment.column.impl.base.IntDetailColumn;
 import com.fr.swift.structure.array.IntList;
 import com.fr.swift.structure.array.IntListFactory;
 import com.fr.swift.structure.iterator.IntListRowTraversal;
@@ -60,6 +61,10 @@ public class CubeData {
         prepareIndex();
         prepareAggregationResult();
         prepareAggregators();
+    }
+
+    public int getRowCount() {
+        return rowCount;
     }
 
     public List<Column> getDimensions() {
@@ -190,6 +195,11 @@ public class CubeData {
                         }
 
                         @Override
+                        public Object convertValue(Object value) {
+                            return value;
+                        }
+
+                        @Override
                         public void release() {
 
                         }
@@ -262,7 +272,7 @@ public class CubeData {
 
                 @Override
                 public DetailColumn getDetailColumn() {
-                    DetailColumn column = EasyMock.createMock(DetailColumn.class);
+                    DetailColumn column = EasyMock.createMock(IntDetailColumn.class);
                     for (int i = 0; i < rowCount; i++) {
                         EasyMock.expect(column.getInt(i)).andReturn(metrics[columnIndex][i]).times(1);
                     }
@@ -272,19 +282,18 @@ public class CubeData {
             });
         }
 
-        // 处理索引
+        // group by
         List<List<String>> groupValues = new ArrayList<>();
         for (int i = 0; i < dict.size(); i++) {
             groupValues.add(new ArrayList<>(dict.get(i).keySet()));
         }
         Map<RowIndexKey, IntList> map = new HashMap<>();
         IntStream.range(0, rowCount).forEach(i -> {
-            RowIndexKey key = new RowIndexKey(dimensionCount, false);
             int[] indexes = new int[dimensionCount];
             for (int n = 0; n < dimensionCount; n++) {
                 indexes[n] = groupValues.get(n).indexOf(dimensions[n][i]);
             }
-            key.setValues(indexes);
+            RowIndexKey key = new RowIndexKey(indexes);
             if (!map.containsKey(key)) {
                 map.put(key, IntListFactory.createIntList());
             }

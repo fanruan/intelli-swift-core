@@ -97,6 +97,11 @@ public class SingleColumnIndexNodeTest extends TestCase {
             public Comparator getComparator() {
                 return null;
             }
+
+            @Override
+            public Object convertValue(Object value) {
+                return value;
+            }
         };
         node = new SingleColumnIndexNode(1, 2, column);
         child = new SingleColumnIndexNode(1, 2, column);

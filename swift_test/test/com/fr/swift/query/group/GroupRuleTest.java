@@ -311,6 +311,11 @@ public class GroupRuleTest extends TestCase {
         }
 
         @Override
+        public T convertValue(Object value) {
+            return (T) value;
+        }
+
+        @Override
         public void flush() {
         }
 

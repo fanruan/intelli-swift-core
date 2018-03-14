@@ -177,6 +177,11 @@ public class GroupByTest extends TestCase {
             public Comparator getComparator() {
                 return null;
             }
+
+            @Override
+            public Object convertValue(Object value) {
+                return value;
+            }
         };
     }
 
