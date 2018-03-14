@@ -13,7 +13,7 @@ public class MetaDataColumnPojo implements IMetaDataColumn {
     private String remark;
     private int precision;
     private int scale;
-    private boolean isAdd = false;
+    private String columnId;
 
     public MetaDataColumnPojo(int type, String name, String remark, int precision, int scale) {
         this.type = type;
@@ -21,15 +21,16 @@ public class MetaDataColumnPojo implements IMetaDataColumn {
         this.remark = remark;
         this.precision = precision;
         this.scale = scale;
+        this.columnId = name;
     }
 
-    public MetaDataColumnPojo(int type, String name, String remark, int precision, int scale, boolean isAdd) {
+    public MetaDataColumnPojo(int type, String name, String remark, int precision, int scale, String columnId) {
         this.type = type;
         this.name = name;
         this.remark = remark;
         this.precision = precision;
         this.scale = scale;
-        this.isAdd = isAdd;
+        this.columnId = columnId;
     }
 
     @Override
@@ -83,12 +84,12 @@ public class MetaDataColumnPojo implements IMetaDataColumn {
     }
 
     @Override
-    public boolean isAdd() {
-        return isAdd;
+    public String getColumnId() {
+        return columnId;
     }
 
     @Override
-    public void setAdd(boolean add) {
-        isAdd = add;
+    public void setColumnId(String columnId) {
+        this.columnId = columnId;
     }
 }

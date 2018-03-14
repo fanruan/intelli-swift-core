@@ -23,7 +23,7 @@ import java.util.List;
  */
 public class FieldFactory {
 
-    public static List<FineBusinessField> transformColumns2Fields(SwiftMetaData swiftMetaData) throws SwiftMetaDataException {
+    public static List<FineBusinessField> transformColumns2Fields(SwiftMetaData swiftMetaData, String tableId) throws SwiftMetaDataException {
         List<FineBusinessField> fineBusinessFieldList = new ArrayList<FineBusinessField>();
         for (int i = 1; i <= swiftMetaData.getColumnCount(); i++) {
             String columnName = swiftMetaData.getColumnName(i);
@@ -32,14 +32,15 @@ public class FieldFactory {
             String columnRemark = swiftMetaData.getColumnRemark(i);
             int precision = swiftMetaData.getPrecision(i);
             int scale = swiftMetaData.getScale(i);
+            String columnId = swiftMetaData.getColumnId(i);
 
             FineBusinessField fineBusinessField;
 
-            if (swiftMetaData.getColumnAddState(i)) {
-                fineBusinessField = new FineBusinessFieldImp(swiftMetaData.getTableName() + columnRemark, columnRemark, columnName);
-            } else {
-                fineBusinessField = new FineBusinessFieldImp(swiftMetaData.getTableName() + columnName, columnName, columnRemark);
-            }
+//            if (swiftMetaData.getColumnAddState(i)) {
+//                fineBusinessField = new FineBusinessFieldImp(swiftMetaData.getTableName() + columnId, columnName, columnId);
+//            } else {
+            fineBusinessField = new FineBusinessFieldImp(tableId == null ? swiftMetaData.getTableName() + columnId : tableId + columnId, columnName, columnId);
+//            }
 
             ((FineBusinessFieldImp) fineBusinessField).setEngineType(FineEngineType.Cube);
             fineBusinessField.setType(transformSwiftColumnType2BIColumnType(ColumnTypeUtils.sqlTypeToColumnType(columnType, precision, scale)));

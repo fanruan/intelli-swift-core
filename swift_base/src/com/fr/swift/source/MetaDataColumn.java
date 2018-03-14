@@ -20,8 +20,8 @@ public class MetaDataColumn implements SwiftMetaDataColumn {
         this(name, remark, sqlType, DEFAULT_PRECISION, DEFAULT_SCALE);
     }
 
-    public MetaDataColumn(String name, String remark, int sqlType, boolean isAdd) {
-        this(name, remark, sqlType, DEFAULT_PRECISION, DEFAULT_SCALE, isAdd);
+    public MetaDataColumn(String name, String remark, int sqlType, String columnId) {
+        this(name, remark, sqlType, DEFAULT_PRECISION, DEFAULT_SCALE, columnId);
     }
 
     public MetaDataColumn(String name, int sqlType, int size) {
@@ -37,8 +37,8 @@ public class MetaDataColumn implements SwiftMetaDataColumn {
         metaDataColumnPojo = new MetaDataColumnPojo(sqlType, name, remark, precision, scale);
     }
 
-    public MetaDataColumn(String name, String remark, int sqlType, int precision, int scale, boolean isAdd) {
-        this.metaDataColumnPojo = new MetaDataColumnPojo(sqlType, name, remark, precision, scale, isAdd);
+    public MetaDataColumn(String name, String remark, int sqlType, int precision, int scale, String columnId) {
+        this.metaDataColumnPojo = new MetaDataColumnPojo(sqlType, name, remark, precision, scale, columnId);
     }
 
     @Override
@@ -80,7 +80,7 @@ public class MetaDataColumn implements SwiftMetaDataColumn {
     }
 
     @Override
-    public boolean isAddColumn() {
-        return metaDataColumnPojo.isAdd();
+    public String getColumnId() {
+        return metaDataColumnPojo.getColumnId();
     }
 }
