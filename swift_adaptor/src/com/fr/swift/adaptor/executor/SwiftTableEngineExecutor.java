@@ -99,7 +99,7 @@ public class SwiftTableEngineExecutor implements FineTableEngineExecutor {
             return new ArrayList<FineBusinessField>();
         }
         SwiftMetaData swiftMetaData = dataSource.getMetadata();
-        return FieldFactory.transformColumns2Fields(swiftMetaData);
+        return FieldFactory.transformColumns2Fields(swiftMetaData, table.getId());
     }
 
     @Override
