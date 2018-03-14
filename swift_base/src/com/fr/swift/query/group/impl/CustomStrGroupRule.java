@@ -1,5 +1,6 @@
 package com.fr.swift.query.group.impl;
 
+import com.fr.swift.query.group.GroupType;
 import com.fr.swift.structure.Pair;
 import com.fr.swift.structure.array.IntList;
 import com.fr.swift.structure.array.IntListFactory;
@@ -61,6 +62,11 @@ public class CustomStrGroupRule extends BaseCustomGroupRule {
             }
         }
         return -1;
+    }
+
+    @Override
+    public GroupType getGroupType() {
+        return GroupType.CUSTOM;
     }
 
     public static class StringGroup {
