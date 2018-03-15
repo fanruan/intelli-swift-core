@@ -157,10 +157,10 @@ public class SortSegmentDetailByIndexResultSet extends DetailResultSet {
                 int c = 0;
                 //比较的列先后顺序
                 int realColumn = sortIndex.get(i);
-                if (sorts.get(realColumn) == SortType.ASC) {
+                if (sorts.get(i) == SortType.ASC) {
                     c = columnList.get(realColumn).getDictionaryEncodedColumn().getComparator().compare(o1.getValue(realColumn), o2.getValue(realColumn));
                 }
-                if (sorts.get(realColumn) == SortType.DESC) {
+                if (sorts.get(i) == SortType.DESC) {
                     c = Comparators.reverse(columnList.get(realColumn).getDictionaryEncodedColumn().getComparator()).compare(o1.getValue(realColumn), o2.getValue(realColumn));
                 }
                 if (c != 0) {
