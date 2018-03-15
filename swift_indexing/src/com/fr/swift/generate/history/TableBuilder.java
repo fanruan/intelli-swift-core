@@ -19,6 +19,8 @@ import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.source.DataSource;
 import com.fr.swift.source.SwiftMetaData;
 
+import static com.fr.swift.cube.task.Task.Result.SUCCEEDED;
+
 /**
  * This class created on 2017-12-28 10:53:49
  *
@@ -45,12 +47,11 @@ public class TableBuilder extends BaseTableBuilder {
         final LocalTask end = new LocalTaskImpl(new CubeTaskKey("end of " + meta.getTableName()));
         end.setWorker(BaseWorker.nullWorker());
 
-
         //监听表取数任务，完成后添加字段索引任务。
         transportTask.addStatusChangeListener(new TaskStatusChangeListener() {
             @Override
             public void onChange(Status prev, Status now) {
-                if (now == Status.DONE) {
+                if (now == Status.DONE && transportTask.result() == SUCCEEDED) {
                     try {
                         for (String indexField : transporter.getIndexFieldsList()) {
                             ColumnIndexer<?> indexer = new ColumnIndexer(dataSource, new ColumnKey(indexField));

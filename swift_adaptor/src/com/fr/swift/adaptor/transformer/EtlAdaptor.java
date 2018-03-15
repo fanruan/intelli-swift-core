@@ -10,6 +10,8 @@ import com.finebi.conf.internalimp.analysis.bean.operator.add.EmptyAddNewColumnB
 import com.finebi.conf.internalimp.analysis.bean.operator.add.expression.AddExpressionValueBean;
 import com.finebi.conf.internalimp.analysis.bean.operator.circulate.CirculateOneFieldBean;
 import com.finebi.conf.internalimp.analysis.bean.operator.circulate.CirculateTwoFieldValue;
+import com.finebi.conf.internalimp.analysis.bean.operator.datamining.AlgorithmBean;
+import com.finebi.conf.internalimp.analysis.bean.operator.datamining.DataMiningBean;
 import com.finebi.conf.internalimp.analysis.bean.operator.filter.FilterOperatorBean;
 import com.finebi.conf.internalimp.analysis.bean.operator.group.DimensionSelectValue;
 import com.finebi.conf.internalimp.analysis.bean.operator.group.DimensionSrcValue;
@@ -55,6 +57,7 @@ import com.fr.swift.source.etl.ETLSource;
 import com.fr.swift.source.etl.columnfilter.ColumnFilterOperator;
 import com.fr.swift.source.etl.columnrowtrans.ColumnRowTransOperator;
 import com.fr.swift.source.etl.columnrowtrans.NameText;
+import com.fr.swift.source.etl.datamining.DataMiningOperator;
 import com.fr.swift.source.etl.detail.DetailOperator;
 import com.fr.swift.source.etl.formula.ColumnFormulaOperator;
 import com.fr.swift.source.etl.groupsum.SumByGroupDimension;
@@ -66,6 +69,7 @@ import com.fr.swift.source.etl.selfrelation.OneUnionRelationOperator;
 import com.fr.swift.source.etl.selfrelation.TwoUnionRelationOperator;
 import com.fr.swift.source.etl.union.UnionOperator;
 import com.fr.swift.source.etl.utils.ETLConstant;
+import com.fr.swift.source.etl.utils.FormulaUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -259,12 +263,13 @@ class EtlAdaptor {
         return new UnionOperator(listsOfColumn);
     }
 
-//    private static DataMiningOperator fromDataMiningBean(DataMiningBean dmb) {
-//        AlgorithmBean dmbv = dmb.getValue();
-//
-//        return new DataMiningOperator(dmbv);
-//    }
-    public static ETLOperator adaptEtlOperator(FineOperator op, FineBusinessTable table) throws FineEngineException {
+    private static DataMiningOperator fromDataMiningBean(DataMiningBean dmb) {
+        AlgorithmBean dmbv = dmb.getValue();
+
+        return new DataMiningOperator(dmbv);
+    }
+
+    public static ETLOperator adaptEtlOperator(FineOperator op, FineBusinessTable table) throws Exception {
         switch (op.getType()) {
             case AnalysisType.JOIN:
                 return fromJoinBean(op.<JoinBean>getValue());
@@ -279,11 +284,11 @@ class EtlAdaptor {
             case AnalysisType.COLUMN_ROW_TRANS:
                 return fromColumnRowTransBean(op.<ColumnRowTransBean>getValue(), table);
             case AnalysisType.ADD_COLUMN:
-                return fromAddNewColumnBean(op.<AddNewColumnBean>getValue());
+                return fromAddNewColumnBean(op.<AddNewColumnBean>getValue(), table);
             case AnalysisType.GROUP:
                 return fromSumByGroupBean(op.<GroupBean>getValue());
-//            case AnalysisType.DATA_MINING:
-//                return fromDataMiningBean(op.<DataMiningBean>getValue());
+            case AnalysisType.DATA_MINING:
+                return fromDataMiningBean(op.<DataMiningBean>getValue());
             default:
         }
         return null;
@@ -339,14 +344,16 @@ class EtlAdaptor {
         return new SumByGroupOperator(groupTargets, groupDimensions);
     }
 
-    private static AbstractOperator fromAddNewColumnBean(AddNewColumnBean bean) throws FineEngineException {
+    private static AbstractOperator fromAddNewColumnBean(AddNewColumnBean bean, FineBusinessTable table) throws Exception {
         if (bean.getValue() instanceof EmptyAddNewColumnBean) {
             throw new FineAnalysisOperationUnSafe("");
         }
         AddNewColumnValueBean value = bean.getValue();
+        DataSource source = adaptEtlDataSource(((FineAnalysisTableImpl) table).getBaseTable());
         switch (value.getType()) {
             case BIConfConstants.CONF.ADD_COLUMN.FORMULA.TYPE: {
-                return new ColumnFormulaOperator(value.getName(), ColumnTypeAdaptor.adaptColumnType(value.getType()), ((AddExpressionValueBean) value).getValue());
+                String expression = ((AddExpressionValueBean) value).getValue();
+                return new ColumnFormulaOperator(value.getName(), FormulaUtils.getColumnType(source.getMetadata(), expression), expression);
             }
             default:
         }

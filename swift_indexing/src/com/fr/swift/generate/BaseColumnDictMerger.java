@@ -6,18 +6,14 @@ import com.fr.swift.cube.io.Types.StoreType;
 import com.fr.swift.cube.io.location.IResourceLocation;
 import com.fr.swift.cube.task.Task.Result;
 import com.fr.swift.cube.task.impl.BaseWorker;
-import com.fr.swift.exception.meta.SwiftMetaDataException;
 import com.fr.swift.log.SwiftLoggers;
-import com.fr.swift.manager.LocalSegmentProvider;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.segment.column.DictionaryEncodedColumn;
 import com.fr.swift.source.ColumnTypeConstants.ClassType;
-import com.fr.swift.source.DataSource;
 import com.fr.swift.structure.IntPair;
 import com.fr.swift.structure.external.map.ExternalMap;
 import com.fr.swift.structure.external.map.intpairs.IntPairsExtMaps;
-import com.fr.swift.util.Crasher;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -31,11 +27,9 @@ import java.util.TreeMap;
  * @date 2018/2/26
  */
 public abstract class BaseColumnDictMerger<T extends Comparable<T>> extends BaseWorker {
-    private DataSource dataSource;
-    private ColumnKey key;
+    protected ColumnKey key;
 
-    public BaseColumnDictMerger(DataSource dataSource, ColumnKey key) {
-        this.dataSource = dataSource;
+    public BaseColumnDictMerger(ColumnKey key) {
         this.key = key;
     }
 
@@ -51,7 +45,7 @@ public abstract class BaseColumnDictMerger<T extends Comparable<T>> extends Base
     }
 
     private void mergeDict() {
-        List<Segment> segments = LocalSegmentProvider.getInstance().getSegment(dataSource.getSourceKey());
+        List<Segment> segments = getSegments();
         // 值 -> (块号, 值在这块里的序号)
         Map<T, List<IntPair>> map = newIntPairsSortedMap(calExternalLocation(segments.get(0).getLocation()));
 
@@ -82,6 +76,8 @@ public abstract class BaseColumnDictMerger<T extends Comparable<T>> extends Base
             ((ExternalMap) map).release();
         }
     }
+
+    protected abstract List<Segment> getSegments();
 
     private static <V> void extractDictOf(DictionaryEncodedColumn<V> dictColumn, int segOrder, Map<V, List<IntPair>> map) {
         for (int j = 0, size = dictColumn.size(); j < size; j++) {
@@ -134,11 +130,5 @@ public abstract class BaseColumnDictMerger<T extends Comparable<T>> extends Base
                 IntPairsExtMaps.newExternalMap(classType, c, pathIfNeed.getPath());
     }
 
-    private ClassType getClassType() {
-        try {
-            return PrivateUtil.getClassType(dataSource, key);
-        } catch (SwiftMetaDataException e) {
-            return Crasher.crash(e);
-        }
-    }
+    protected abstract ClassType getClassType();
 }
