@@ -136,7 +136,7 @@ public class SwiftRelationDao implements BusinessConfigDAO<FineBusinessTableRela
 ////            return false;
 ////        }
         try {
-            container.saveResources(new ArrayList<>());
+            container.saveResources(new ArrayList<FineBusinessTableRelation>());
             return true;
         } catch (Exception e) {
             LOGGER.error(e.getMessage(), e);

@@ -2,11 +2,8 @@ package com.fr.swift.source.etl.datamining.timeseries;
 
 import com.finebi.conf.internalimp.analysis.bean.operator.datamining.AlgorithmBean;
 import com.finebi.conf.rlang.RDataModel;
-import com.finebi.conf.rlang.algorithm.RAlgorithm;
-import com.finebi.conf.rlang.algorithm.RAlgorithmFactory;
+import com.finebi.conf.rlang.algorithm.timeseries.RTimeSeriesAbstract;
 import com.fr.json.JSONArray;
-import com.fr.json.JSONException;
-import com.fr.json.JSONObject;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.segment.Segment;
@@ -26,7 +23,7 @@ import java.util.List;
 /**
  * Created by Jonas on 2018/3/13 4:43
  */
-public class AbstractTimeSeriesResultSet implements SwiftResultSet {
+public abstract class AbstractTimeSeriesResultSet implements SwiftResultSet {
     private static final SwiftLogger LOGGER = SwiftLoggers.getLogger(ArimaResultSet.class);
     private AlgorithmBean algorithmBean;
     private List<Segment> segmentList;
@@ -36,32 +33,34 @@ public class AbstractTimeSeriesResultSet implements SwiftResultSet {
     private RDataModel dataModel = null;
     private int rowCursor = 0;
     private boolean isFirst = true;
-
-    protected JSONObject argvJo = new JSONObject();
+    protected RTimeSeriesAbstract timeSeriesAlgorithm;
 
     public AbstractTimeSeriesResultSet(AlgorithmBean algorithmBean, SwiftMetaData selfMetaData, SwiftMetaData baseMetaData, List<Segment> segmentList) throws Exception {
         this.algorithmBean = algorithmBean;
         this.segmentList = segmentList;
         this.selfMetaData = selfMetaData;
         this.baseMetaData = baseMetaData;
-
-        // 初始化参数
-        argvJo.put("time", "field2");
-        argvJo.put("forecast", "field1");
-        argvJo.put("step", "15");
-        argvJo.put("interval", "month");
-        argvJo.put("confidence", 95);
-        argvJo.put("miss_value", 0);
-        argvJo.put("isFill", true);
-        argvJo.put("period", "12");
     }
 
+    protected abstract void setExtraConfiguration();
+
     private void init() throws Exception {
+        // 初始化参数
+        timeSeriesAlgorithm.setTimeName("field2");
+        timeSeriesAlgorithm.setForecastName("field1");
+        timeSeriesAlgorithm.setStep(15);
+        timeSeriesAlgorithm.setInterval(RTimeSeriesAbstract.TimeCycle.MONTH);
+        timeSeriesAlgorithm.setConfidence(95);
+        timeSeriesAlgorithm.setFill(true);
+        timeSeriesAlgorithm.setMissValue(0);
+        timeSeriesAlgorithm.setPeriod(12);
+
+        setExtraConfiguration();
+
         RDataModel rDataModel;
         JSONArray tableDataJa = new JSONArray();
         String[] columnNameArr = new String[baseMetaData.getColumnCount()];
         int[] columnTypeArr = new int[baseMetaData.getColumnCount()];
-        RAlgorithm rAlgorithm = RAlgorithmFactory.createAlgorithm(RAlgorithmFactory.AlgorithmType.ARIMA);
 
 
         // 初始化数据,把所有数据传进去
@@ -87,8 +86,8 @@ public class AbstractTimeSeriesResultSet implements SwiftResultSet {
 
         rDataModel = new RDataModel(tableDataJa, columnNameArr, columnTypeArr);
 
-        rAlgorithm.initData(rDataModel, argvJo);
-        dataModel = rAlgorithm.run();
+        timeSeriesAlgorithm.loadData(rDataModel);
+        dataModel = timeSeriesAlgorithm.run();
     }
 
     @Override
