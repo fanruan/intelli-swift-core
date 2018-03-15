@@ -12,11 +12,11 @@ import java.util.Map;
 
 public class GroupByResultSetImpl implements GroupByResultSet {
 
-    private Iterator<KeyValue<int[], AggregatorValue[]>> rowResultIterator;
+    private Iterator<KeyValue<RowIndexKey, AggregatorValue[]>> rowResultIterator;
     private List<Map<Integer, Object>> globalDictionaries;
     private List<Sort> indexSorts;
 
-    public GroupByResultSetImpl(Iterator<KeyValue<int[], AggregatorValue[]>> rowResultIterator,
+    public GroupByResultSetImpl(Iterator<KeyValue<RowIndexKey, AggregatorValue[]>> rowResultIterator,
                                 List<Map<Integer, Object>> globalDictionaries, List<Sort> indexSorts) {
         this.rowResultIterator = rowResultIterator;
         this.globalDictionaries = globalDictionaries;
@@ -24,7 +24,7 @@ public class GroupByResultSetImpl implements GroupByResultSet {
     }
 
     @Override
-    public Iterator<KeyValue<int[], AggregatorValue[]>> getRowResultIterator() {
+    public Iterator<KeyValue<RowIndexKey, AggregatorValue[]>> getRowResultIterator() {
         return rowResultIterator;
     }
 

@@ -1,14 +1,18 @@
 package com.fr.swift.cal.result.group;
 
+import com.fr.swift.bitmap.BitMaps;
+import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.cal.Query;
 import com.fr.swift.cal.segment.group.GroupAllSegmentQuery;
 import com.fr.swift.cal.segment.group.GroupAllSegmentQueryTest;
 import com.fr.swift.query.aggregator.Aggregator;
-import com.fr.swift.query.group.multiby.CubeData;
+import com.fr.swift.query.filter.detail.DetailFilter;
+import com.fr.swift.query.group.by.CubeData;
 import com.fr.swift.query.sort.AscSort;
 import com.fr.swift.query.sort.Sort;
+import com.fr.swift.result.GroupByResultSet;
 import com.fr.swift.result.RowIndexKey;
-import com.fr.swift.result.RowResultCollector;
+import com.fr.swift.result.SwiftNode;
 import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.DictionaryEncodedColumn;
 import junit.framework.TestCase;
@@ -28,7 +32,7 @@ import java.util.stream.IntStream;
  */
 public class GroupResultQueryTest extends TestCase {
 
-    private RowResultCollector collector;
+    private GroupByResultSet collector;
     private Map<RowIndexKey, double[]> expectedResult;
     private List<List<String>> expectedDictionaries;
 
@@ -39,7 +43,7 @@ public class GroupResultQueryTest extends TestCase {
         prepareGroupResultQuery(segmentCount, dimensionCount, metricCount, rowCount);
     }
 
-    public RowResultCollector getCollector() {
+    public GroupByResultSet getCollector() {
         return collector;
     }
 
@@ -73,7 +77,7 @@ public class GroupResultQueryTest extends TestCase {
     }
 
     private void prepareGroupResultQuery(int segmentCount, int dimensionCount, int metricCount, int rowCount) {
-        List<Query<RowResultCollector>> queryList = new ArrayList<>();
+        List<Query<GroupByResultSet>> queryList = new ArrayList<>();
         List<Aggregator> aggregators = new ArrayList<>();
         List<Sort> indexSorts = new ArrayList<>();
         List<Map<RowIndexKey, double[]>> expectedResultList = new ArrayList<>();
@@ -81,7 +85,17 @@ public class GroupResultQueryTest extends TestCase {
         for (int i = 0; i < segmentCount; i++) {
             CubeData cubeData = new CubeData(dimensionCount, metricCount, rowCount);
             GroupAllSegmentQuery query = new GroupAllSegmentQuery(cubeData.getDimensions(), cubeData.getMetrics(),
-                    cubeData.getAggregators(), null);
+                    cubeData.getAggregators(), new DetailFilter() {
+                @Override
+                public ImmutableBitMap createFilterIndex() {
+                    return BitMaps.newAllShowBitMap(rowCount);
+                }
+
+                @Override
+                public boolean matches(SwiftNode node) {
+                    return false;
+                }
+            });
             queryList.add(query);
             aggregators = cubeData.getAggregators();
             expectedResultList.add(cubeData.getAggregationResult());
