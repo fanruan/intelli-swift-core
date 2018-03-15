@@ -2,9 +2,11 @@ package com.fr.swift.source.etl.rowcal.alldata;
 
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.source.*;
+import com.fr.swift.source.core.CoreField;
+import com.fr.swift.source.core.MD5Utils;
 import com.fr.swift.source.etl.AbstractOperator;
 import com.fr.swift.source.etl.OperatorType;
-import com.fr.swift.source.etl.utils.ETLConstant;
+import com.fr.swift.source.ColumnTypeConstants.ColumnType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,18 +15,24 @@ import java.util.List;
  * Created by Handsome on 2018/2/24 0024 14:49
  */
 public class AllDataRowCalculatorOperator extends AbstractOperator {
-
-    private int summaryType = ETLConstant.CONF.GROUP.NUMBER.SUM;
+    @CoreField
     private String addedColumnName;//新增列
-    private int columnType;
+    @CoreField
+    private ColumnType columnType;
+    @CoreField
     private String columnName;
+    @CoreField
     private ColumnKey[] dimension;
+    @CoreField
+    private int calculatorType;
 
-    public AllDataRowCalculatorOperator(String addedColumnName, int columnType, String columnName, ColumnKey[] dimension) {
+    public AllDataRowCalculatorOperator(String addedColumnName, ColumnType columnType, String columnName,
+                                        ColumnKey[] dimension, int calculatorType) {
         this.addedColumnName = addedColumnName;
         this.columnType = columnType;
         this.columnName = columnName;
         this.dimension = dimension;
+        this.calculatorType = calculatorType;
     }
     public ColumnKey[] getDimension() {
         return dimension;
@@ -32,32 +40,31 @@ public class AllDataRowCalculatorOperator extends AbstractOperator {
 
     public String getAddedColumnName() { return addedColumnName; }
 
-    public int getSummaryType() {
-        return summaryType;
-    }
-
     public String getColumnName() {
         return columnName;
     }
 
-    public int getColumnType() {
+    public ColumnType getColumnType() {
         return columnType;
     }
+
+    public int getCalculatorType() { return calculatorType; }
 
 
     @Override
     public List<SwiftMetaDataColumn> getColumns(SwiftMetaData[] metaDatas) {
         List<SwiftMetaDataColumn> columnList = new ArrayList<SwiftMetaDataColumn>();
-        columnList.add(new MetaDataColumn(addedColumnName, getSqlType(metaDatas)));
+        columnList.add(new MetaDataColumn(MD5Utils.getMD5String(new String[]{(this.addedColumnName)}),
+                this.addedColumnName, ColumnTypeUtils.columnTypeToSqlType(this.columnType), true));
         return columnList;
-    }
-
-    private int getSqlType(SwiftMetaData[] metaDatas) {
-        return ColumnTypeUtils.columnTypeToSqlType(ColumnTypeConstants.ColumnType.values()[columnType]);
     }
 
     @Override
     public OperatorType getOperatorType() {
         return OperatorType.ALLDATA;
+    }
+
+    public String getColumnMD5() {
+        return MD5Utils.getMD5String(new String[]{(this.addedColumnName)});
     }
 }

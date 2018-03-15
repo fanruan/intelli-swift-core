@@ -2,8 +2,11 @@ package com.fr.swift.source.etl.rowcal.rank;
 
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.source.*;
+import com.fr.swift.source.core.CoreField;
+import com.fr.swift.source.core.MD5Utils;
 import com.fr.swift.source.etl.AbstractOperator;
 import com.fr.swift.source.etl.OperatorType;
+import com.fr.swift.source.ColumnTypeConstants.ColumnType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,14 +15,18 @@ import java.util.List;
  * Created by Handsome on 2018/2/28 0028 10:55
  */
 public class RankRowOperator extends AbstractOperator {
-
+    @CoreField
     private int type;
+    @CoreField
     private ColumnKey columnKey;
+    @CoreField
     private String columnName;//新增列
-    private int columnType;
+    @CoreField
+    private ColumnType columnType;
+    @CoreField
     private ColumnKey[] dimension;
 
-    public RankRowOperator(String columnName, int type, int columnType, ColumnKey columnKey, ColumnKey[] dimension) {
+    public RankRowOperator(String columnName, int type, ColumnType columnType, ColumnKey columnKey, ColumnKey[] dimension) {
         this.type = type;
         this.columnName = columnName;
         this.columnType = columnType;
@@ -39,25 +46,26 @@ public class RankRowOperator extends AbstractOperator {
         return type;
     }
 
-    public int getColumnType() {
+    public ColumnType getColumnType() {
         return columnType;
     }
 
-    private ColumnKey getColumnKey() { return columnKey; }
+    public ColumnKey getColumnKey() { return columnKey; }
 
     @Override
     public List<SwiftMetaDataColumn> getColumns(SwiftMetaData[] metaDatas) {
         List<SwiftMetaDataColumn> columnList = new ArrayList<SwiftMetaDataColumn>();
-        columnList.add(new MetaDataColumn(columnName, getSqlType(metaDatas)));
+        columnList.add(new MetaDataColumn(MD5Utils.getMD5String(new String[]{(this.columnName)}),
+                this.columnName, ColumnTypeUtils.columnTypeToSqlType(this.columnType), 0, 15,true));
         return columnList;
-    }
-
-    private int getSqlType(SwiftMetaData[] metaDatas) {
-        return ColumnTypeUtils.columnTypeToSqlType(ColumnTypeConstants.ColumnType.values()[columnType]);
     }
 
     @Override
     public OperatorType getOperatorType() {
         return OperatorType.RANK;
+    }
+
+    public String getColumnMD5() {
+        return MD5Utils.getMD5String(new String[]{(this.columnName)});
     }
 }

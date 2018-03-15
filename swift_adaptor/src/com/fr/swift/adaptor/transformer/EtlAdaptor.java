@@ -7,7 +7,20 @@ import com.finebi.conf.exception.FineEngineException;
 import com.finebi.conf.internalimp.analysis.bean.operator.add.AddNewColumnBean;
 import com.finebi.conf.internalimp.analysis.bean.operator.add.AddNewColumnValueBean;
 import com.finebi.conf.internalimp.analysis.bean.operator.add.EmptyAddNewColumnBean;
+import com.finebi.conf.internalimp.analysis.bean.operator.add.accumulative.AccumulativeItemBean;
+import com.finebi.conf.internalimp.analysis.bean.operator.add.accumulative.AddAllAccumulativeValueBean;
+import com.finebi.conf.internalimp.analysis.bean.operator.add.accumulative.group.GroupAccumulativeValue;
+import com.finebi.conf.internalimp.analysis.bean.operator.add.allvalue.AddAllValueColumnBean;
+import com.finebi.conf.internalimp.analysis.bean.operator.add.allvalue.AllValueItemBean;
+import com.finebi.conf.internalimp.analysis.bean.operator.add.allvalue.group.GroupAllValueValue;
 import com.finebi.conf.internalimp.analysis.bean.operator.add.expression.AddExpressionValueBean;
+import com.finebi.conf.internalimp.analysis.bean.operator.add.gettime.GetFieldTimeValueBean;
+import com.finebi.conf.internalimp.analysis.bean.operator.add.gettime.GetFieldTimeValueItem;
+import com.finebi.conf.internalimp.analysis.bean.operator.add.rank.AddFieldRankColumnBean;
+import com.finebi.conf.internalimp.analysis.bean.operator.add.rank.AddFieldRankColumnItem;
+import com.finebi.conf.internalimp.analysis.bean.operator.add.rank.group.GroupRankValueBean;
+import com.finebi.conf.internalimp.analysis.bean.operator.add.timediff.TimeDiffValueBean;
+import com.finebi.conf.internalimp.analysis.bean.operator.add.timediff.TimeDiffValueItem;
 import com.finebi.conf.internalimp.analysis.bean.operator.circulate.CirculateOneFieldBean;
 import com.finebi.conf.internalimp.analysis.bean.operator.circulate.CirculateTwoFieldValue;
 import com.finebi.conf.internalimp.analysis.bean.operator.filter.FilterOperatorBean;
@@ -53,6 +66,8 @@ import com.fr.swift.source.etl.ETLSource;
 import com.fr.swift.source.etl.columnfilter.ColumnFilterOperator;
 import com.fr.swift.source.etl.columnrowtrans.ColumnRowTransOperator;
 import com.fr.swift.source.etl.columnrowtrans.NameText;
+import com.fr.swift.source.etl.date.GetFromDateOperator;
+import com.fr.swift.source.etl.datediff.DateDiffOperator;
 import com.fr.swift.source.etl.detail.DetailOperator;
 import com.fr.swift.source.etl.formula.ColumnFormulaOperator;
 import com.fr.swift.source.etl.groupsum.SumByGroupDimension;
@@ -60,6 +75,9 @@ import com.fr.swift.source.etl.groupsum.SumByGroupOperator;
 import com.fr.swift.source.etl.groupsum.SumByGroupTarget;
 import com.fr.swift.source.etl.join.JoinColumn;
 import com.fr.swift.source.etl.join.JoinOperator;
+import com.fr.swift.source.etl.rowcal.accumulate.AccumulateRowOperator;
+import com.fr.swift.source.etl.rowcal.alldata.AllDataRowCalculatorOperator;
+import com.fr.swift.source.etl.rowcal.rank.RankRowOperator;
 import com.fr.swift.source.etl.selfrelation.OneUnionRelationOperator;
 import com.fr.swift.source.etl.selfrelation.TwoUnionRelationOperator;
 import com.fr.swift.source.etl.union.UnionOperator;
@@ -337,15 +355,98 @@ class EtlAdaptor {
         return new SumByGroupOperator(groupTargets, groupDimensions);
     }
 
+    private static AccumulateRowOperator getAccumulateRowOperator(AddNewColumnValueBean value) {
+        AccumulativeItemBean tempBean = ((AddAllAccumulativeValueBean)value).getValue();
+        String columnName = value.getName();
+        ColumnKey columnKey = new ColumnKey(tempBean.getOrigin());
+        if (tempBean.getRule() == BIConfConstants.CONF.ADD_COLUMN.NOT_IN_GROUP) {
+            return new AccumulateRowOperator(columnKey, columnName, ColumnTypeAdaptor.adaptColumnType(32), null);
+        } else {
+            List<String> selects = ((GroupAccumulativeValue) tempBean).getSelects();
+            ColumnKey[] dimensions = new ColumnKey[selects.size()];
+            for(int i = 0; i < selects.size(); i++) {
+                dimensions[i] = new ColumnKey(selects.get(i));
+            }
+            return new AccumulateRowOperator(columnKey, columnName, ColumnTypeAdaptor.adaptColumnType(32), dimensions);
+        }
+    }
+
+    private static AllDataRowCalculatorOperator getAllDataRowCalculatorOperator(AddNewColumnValueBean value) {
+        String columnName = value.getName();
+        AllValueItemBean tempBean = ((AddAllValueColumnBean)value).getValue();
+        String columnKey = tempBean.getOrigin();
+        int summary = tempBean.getSummary();
+        if(tempBean.getRule() == BIConfConstants.CONF.ADD_COLUMN.NOT_IN_GROUP) {
+            return new AllDataRowCalculatorOperator(columnName, ColumnTypeAdaptor.adaptColumnType(32), columnKey, null, summary);
+        } else {
+            List<String> selects = ((GroupAllValueValue)tempBean).getSelects();
+            ColumnKey[] dimensions = new ColumnKey[selects.size()];
+            for(int i = 0; i < dimensions.length; i++) {
+                dimensions[i] = new ColumnKey(selects.get(i));
+            }
+            return new AllDataRowCalculatorOperator(columnName, ColumnTypeAdaptor.adaptColumnType(32), columnKey, dimensions, summary);
+        }
+    }
+
+    private static RankRowOperator getRankRowOperator(AddNewColumnValueBean value) {
+        String columnName = value.getName();
+        AddFieldRankColumnItem tempBean = ((AddFieldRankColumnBean) value).getValue();
+        ColumnKey columnKey = new ColumnKey(tempBean.getOrigin());
+        int summary = tempBean.getSummary();
+        if(tempBean.getRule() == BIConfConstants.CONF.ADD_COLUMN.RANKING.ASC_IN_GROUP) {
+            List<String> selects = ((GroupRankValueBean) tempBean).getSelects();
+            ColumnKey[] dimensions = new ColumnKey[selects.size()];
+            for(int i = 0; i < dimensions.length; i++) {
+                 dimensions[i] = new ColumnKey(selects.get(0));
+            }
+            return new RankRowOperator(columnName, summary, ColumnTypeAdaptor.adaptColumnType(32), columnKey, dimensions);
+        } else {
+            return new RankRowOperator(columnName, summary, ColumnTypeAdaptor.adaptColumnType(32), columnKey, null);
+        }
+    }
+
+    private static GetFromDateOperator getFromDataOperator(AddNewColumnValueBean value) {
+        String columnName = value.getName();
+        GetFieldTimeValueItem tempBean = ((GetFieldTimeValueBean) value).getValue();
+        String fieldName = tempBean.getFieldName();
+        int type = tempBean.getUnit();
+        return new GetFromDateOperator(fieldName, type, columnName, ColumnTypeAdaptor.adaptColumnType(48));
+    }
+
+    private static DateDiffOperator getDateDiffOperator(AddNewColumnValueBean value) {
+        TimeDiffValueItem tempBean = ((TimeDiffValueBean) value).getValue();
+        String columnName = value.getName();
+        String field1 = tempBean.getMinuend();
+        String field2 = tempBean.getMinus();
+        int type = tempBean.getUnit();
+        return new DateDiffOperator(field1, field2, type, columnName, ColumnTypeAdaptor.adaptColumnType(48));
+    }
+
     private static AbstractOperator fromAddNewColumnBean(AddNewColumnBean bean) throws FineEngineException {
         if (bean.getValue() instanceof EmptyAddNewColumnBean) {
             throw new FineAnalysisOperationUnSafe("");
         }
+
         AddNewColumnValueBean value = bean.getValue();
         switch (value.getType()) {
             case BIConfConstants.CONF.ADD_COLUMN.FORMULA.TYPE: {
-                return new ColumnFormulaOperator(value.getName(), ColumnTypeAdaptor.adaptColumnType(value.getType()), ((AddExpressionValueBean) value).getValue());
+                return new ColumnFormulaOperator(value.getName(), ColumnTypeAdaptor.adaptColumnType(16), ((AddExpressionValueBean) value).getValue());
             }
+            case BIConfConstants.CONF.ADD_COLUMN.ACCUMULATIVE_VALUE.TYPE: {
+                return getAccumulateRowOperator(value);
+            }
+            case BIConfConstants.CONF.ADD_COLUMN.ALL_VALUES.TYPE: {
+                return getAllDataRowCalculatorOperator(value);
+            }
+            case BIConfConstants.CONF.ADD_COLUMN.RANKING.TYPE: {
+                return getRankRowOperator(value);
+            }
+            case BIConfConstants.CONF.ADD_COLUMN.TIME.TYPE: {
+                return getFromDataOperator(value);
+            }
+            case BIConfConstants.CONF.ADD_COLUMN.TIME_GAP.TYPE:
+                return getDateDiffOperator(value);
+           // case
             default:
         }
         return null;

@@ -6,7 +6,12 @@ import com.fr.swift.source.DataSource;
 import com.fr.swift.source.etl.ETLOperator;
 import com.fr.swift.source.etl.ETLSource;
 import com.fr.swift.source.etl.OperatorType;
+import com.fr.swift.source.etl.date.GetFromDateOperator;
+import com.fr.swift.source.etl.datediff.DateDiffOperator;
 import com.fr.swift.source.etl.formula.ColumnFormulaOperator;
+import com.fr.swift.source.etl.rowcal.accumulate.AccumulateRowOperator;
+import com.fr.swift.source.etl.rowcal.alldata.AllDataRowCalculatorOperator;
+import com.fr.swift.source.etl.rowcal.rank.RankRowOperator;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -51,8 +56,26 @@ public class DataSourceUtils {
             if (dataSource instanceof ETLSource) {
                 ETLSource etlSource = (ETLSource) dataSource;
                 ETLOperator etlOperator = etlSource.getOperator();
-                if (etlOperator.getOperatorType().equals(OperatorType.COLUMN_FORMULA)) {
-                    fields.add(((ColumnFormulaOperator) etlOperator).getColumnMD5());
+                OperatorType type = etlOperator.getOperatorType();
+                switch(type) {
+                    case COLUMN_FORMULA:
+                        fields.add(((ColumnFormulaOperator) etlOperator).getColumnMD5());
+                        break;
+                    case ACCUMULATE:
+                        fields.add(((AccumulateRowOperator) etlOperator).getColumnMD5());
+                        break;
+                    case ALLDATA:
+                        fields.add(((AllDataRowCalculatorOperator) etlOperator).getColumnMD5());
+                        break;
+                    case RANK:
+                        fields.add(((RankRowOperator) etlOperator).getColumnMD5());
+                        break;
+                    case GETDATE:
+                        fields.add(((GetFromDateOperator) etlOperator).getColumnMD5());
+                        break;
+                    case DATEDIFF:
+                        fields.add(((DateDiffOperator) etlOperator).getColumnMD5());
+                        break;
                 }
             }
             return fields;

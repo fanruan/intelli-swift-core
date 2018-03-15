@@ -123,7 +123,7 @@ public class RankRowResultSet implements SwiftResultSet {
             });
             DictionaryEncodedColumn getter = tempSegment[segCursor].getColumn(columnKey).getDictionaryEncodedColumn();
             Number v = (Number) getter.getValue(getter.getIndexByRow(index.getIndex()));
-            int rank = map.get(v);
+            Double rank = new Double(Double.parseDouble(map.get(v) + ""));
             List dataList = new ArrayList();
             dataList.add(rank);
             tempValue.setRow(new ListBasedRow(dataList));
