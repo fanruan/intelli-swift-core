@@ -50,8 +50,8 @@ public class AccumulateRowOperator extends AbstractOperator {
     @Override
     public List<SwiftMetaDataColumn> getColumns(SwiftMetaData[] metaDatas) {
         List<SwiftMetaDataColumn> columnList = new ArrayList<SwiftMetaDataColumn>();
-        columnList.add(new MetaDataColumn(MD5Utils.getMD5String(new String[]{(this.columnName)}),
-                this.columnName, ColumnTypeUtils.columnTypeToSqlType(this.columnType), true));
+        columnList.add(new MetaDataColumn(MD5Utils.getMD5String(new String[]{(this.columnName)}), this.columnName,
+                ColumnTypeUtils.columnTypeToSqlType(this.columnType), MD5Utils.getMD5String(new String[]{(this.columnName)})));
         return columnList;
     }
 

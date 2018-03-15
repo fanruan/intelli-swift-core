@@ -68,12 +68,9 @@ import com.fr.swift.source.etl.ETLSource;
 import com.fr.swift.source.etl.columnfilter.ColumnFilterOperator;
 import com.fr.swift.source.etl.columnrowtrans.ColumnRowTransOperator;
 import com.fr.swift.source.etl.columnrowtrans.NameText;
-<<<<<<< HEAD
 import com.fr.swift.source.etl.date.GetFromDateOperator;
 import com.fr.swift.source.etl.datediff.DateDiffOperator;
-=======
 import com.fr.swift.source.etl.datamining.DataMiningOperator;
->>>>>>> fc0231d0300a772eb2341eeeb2f1c764958c5495
 import com.fr.swift.source.etl.detail.DetailOperator;
 import com.fr.swift.source.etl.formula.ColumnFormulaOperator;
 import com.fr.swift.source.etl.groupsum.SumByGroupDimension;
@@ -363,7 +360,6 @@ class EtlAdaptor {
         return new SumByGroupOperator(groupTargets, groupDimensions);
     }
 
-<<<<<<< HEAD
     private static AccumulateRowOperator getAccumulateRowOperator(AddNewColumnValueBean value) {
         AccumulativeItemBean tempBean = ((AddAllAccumulativeValueBean)value).getValue();
         String columnName = value.getName();
@@ -431,10 +427,7 @@ class EtlAdaptor {
         return new DateDiffOperator(field1, field2, type, columnName, ColumnTypeAdaptor.adaptColumnType(48));
     }
 
-    private static AbstractOperator fromAddNewColumnBean(AddNewColumnBean bean) throws FineEngineException {
-=======
     private static AbstractOperator fromAddNewColumnBean(AddNewColumnBean bean, FineBusinessTable table) throws Exception {
->>>>>>> fc0231d0300a772eb2341eeeb2f1c764958c5495
         if (bean.getValue() instanceof EmptyAddNewColumnBean) {
             throw new FineAnalysisOperationUnSafe("");
         }
@@ -443,8 +436,8 @@ class EtlAdaptor {
         DataSource source = adaptEtlDataSource(((FineAnalysisTableImpl) table).getBaseTable());
         switch (value.getType()) {
             case BIConfConstants.CONF.ADD_COLUMN.FORMULA.TYPE: {
-<<<<<<< HEAD
-                return new ColumnFormulaOperator(value.getName(), ColumnTypeAdaptor.adaptColumnType(16), ((AddExpressionValueBean) value).getValue());
+                String expression = ((AddExpressionValueBean) value).getValue();
+                return new ColumnFormulaOperator(value.getName(), FormulaUtils.getColumnType(source.getMetadata(), expression), expression);
             }
             case BIConfConstants.CONF.ADD_COLUMN.ACCUMULATIVE_VALUE.TYPE: {
                 return getAccumulateRowOperator(value);
@@ -457,10 +450,6 @@ class EtlAdaptor {
             }
             case BIConfConstants.CONF.ADD_COLUMN.TIME.TYPE: {
                 return getFromDataOperator(value);
-=======
-                String expression = ((AddExpressionValueBean) value).getValue();
-                return new ColumnFormulaOperator(value.getName(), FormulaUtils.getColumnType(source.getMetadata(), expression), expression);
->>>>>>> fc0231d0300a772eb2341eeeb2f1c764958c5495
             }
             case BIConfConstants.CONF.ADD_COLUMN.TIME_GAP.TYPE:
                 return getDateDiffOperator(value);

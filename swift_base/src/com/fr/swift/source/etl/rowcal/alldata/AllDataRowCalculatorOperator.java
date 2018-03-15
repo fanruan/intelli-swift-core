@@ -54,8 +54,8 @@ public class AllDataRowCalculatorOperator extends AbstractOperator {
     @Override
     public List<SwiftMetaDataColumn> getColumns(SwiftMetaData[] metaDatas) {
         List<SwiftMetaDataColumn> columnList = new ArrayList<SwiftMetaDataColumn>();
-        columnList.add(new MetaDataColumn(MD5Utils.getMD5String(new String[]{(this.addedColumnName)}),
-                this.addedColumnName, ColumnTypeUtils.columnTypeToSqlType(this.columnType), true));
+        columnList.add(new MetaDataColumn(MD5Utils.getMD5String(new String[]{(this.addedColumnName)}), this.addedColumnName,
+                ColumnTypeUtils.columnTypeToSqlType(this.columnType), MD5Utils.getMD5String(new String[]{(this.addedColumnName)})));
         return columnList;
     }
 
