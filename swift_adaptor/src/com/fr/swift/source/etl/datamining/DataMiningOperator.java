@@ -12,7 +12,7 @@ import com.fr.swift.source.etl.datamining.timeseries.regression.RegressionOperat
 import java.util.List;
 
 /**
- * Created by Handsome on 2018/1/17 0017 10:45
+ * Created by Jonas on 2018/3/12 9:00
  */
 public class DataMiningOperator extends AbstractOperator {
 

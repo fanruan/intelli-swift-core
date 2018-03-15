@@ -16,12 +16,10 @@ import java.util.List;
  * Created by Jonas on 2018/3/12 9:00
  */
 public class HoltWinterOperator implements AlgorithmMetaData {
+    private AlgorithmBean algorithmBean = null;
 
-    private static final SwiftLogger LOGGER = SwiftLoggers.getLogger(HoltWinterOperator.class);
-    private AlgorithmBean ab = null;
-
-    public HoltWinterOperator(AlgorithmBean ab) {
-        this.ab = ab;
+    public HoltWinterOperator(AlgorithmBean algorithmBean) {
+        this.algorithmBean = algorithmBean;
     }
 
     @Override
