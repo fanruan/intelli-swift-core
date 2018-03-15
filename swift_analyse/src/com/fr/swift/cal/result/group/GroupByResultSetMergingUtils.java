@@ -6,6 +6,7 @@ import com.fr.swift.query.sort.Sort;
 import com.fr.swift.result.GroupByResultSet;
 import com.fr.swift.result.GroupByResultSetImpl;
 import com.fr.swift.result.KeyValue;
+import com.fr.swift.result.RowIndexKey;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -17,7 +18,7 @@ public class GroupByResultSetMergingUtils {
 
     public static GroupByResultSet merge(List<GroupByResultSet> groupByResultSets,
                                          List<Aggregator> aggregators, List<Sort> indexSorts) {
-        Map<int[], KeyValue<int[], AggregatorValue[]>> resultMap = new HashMap<int[], KeyValue<int[], AggregatorValue[]>>();
+        Map<RowIndexKey, KeyValue<RowIndexKey, AggregatorValue[]>> resultMap = new HashMap<RowIndexKey, KeyValue<RowIndexKey, AggregatorValue[]>>();
         List<Map<Integer, Object>> globalDictionaries = new ArrayList<Map<Integer, Object>>();
         for (GroupByResultSet resultSet : groupByResultSets) {
             addResultSet(resultSet.getRowResultIterator(), resultMap, aggregators);
@@ -38,11 +39,11 @@ public class GroupByResultSetMergingUtils {
         }
     }
 
-    private static void addResultSet(Iterator<KeyValue<int[], AggregatorValue[]>> iterator,
-                                     Map<int[], KeyValue<int[], AggregatorValue[]>> map,
+    private static void addResultSet(Iterator<KeyValue<RowIndexKey, AggregatorValue[]>> iterator,
+                                     Map<RowIndexKey, KeyValue<RowIndexKey, AggregatorValue[]>> map,
                                      List<Aggregator> aggregators) {
         while (iterator.hasNext()) {
-            KeyValue<int[], AggregatorValue[]> keyValue = iterator.next();
+            KeyValue<RowIndexKey, AggregatorValue[]> keyValue = iterator.next();
             if (!map.containsKey(keyValue.getKey())) {
                 map.put(keyValue.getKey(), keyValue);
             } else {
