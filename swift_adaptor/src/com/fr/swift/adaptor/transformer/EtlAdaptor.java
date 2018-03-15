@@ -30,6 +30,7 @@ import com.finebi.conf.internalimp.analysis.bean.operator.union.UnionBeanValue;
 import com.finebi.conf.internalimp.analysis.bean.operator.union.UnionBeanValueTable;
 import com.finebi.conf.internalimp.analysis.operator.circulate.FloorItem;
 import com.finebi.conf.internalimp.analysis.operator.select.SelectFieldOperator;
+import com.finebi.conf.internalimp.analysis.table.FineAnalysisTableImpl;
 import com.finebi.conf.structure.analysis.operator.FineOperator;
 import com.finebi.conf.structure.analysis.table.FineAnalysisTable;
 import com.finebi.conf.structure.bean.field.FineBusinessField;
@@ -39,7 +40,9 @@ import com.finebi.conf.utils.FineTableUtils;
 import com.fr.general.ComparatorUtils;
 import com.fr.swift.adaptor.widget.group.GroupAdaptor;
 import com.fr.swift.exception.meta.SwiftMetaDataException;
+import com.fr.swift.generate.preview.MinorSegmentManager;
 import com.fr.swift.query.filter.info.FilterInfo;
+import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.source.DataSource;
 import com.fr.swift.source.MetaDataColumn;
@@ -268,7 +271,7 @@ class EtlAdaptor {
             case AnalysisType.UNION:
                 return fromUnionBean(op.<UnionBean>getValue());
             case AnalysisType.FILTER:
-                return fromColumnFilterBean(op.<FilterOperatorBean>getValue());
+                return fromColumnFilterBean(op.<FilterOperatorBean>getValue(), table);
             case AnalysisType.CIRCLE_ONE_FIELD_CALCULATE:
                 return fromOneUnionRelationBean(op.<CirculateOneFieldBean>getValue(), table);
             case AnalysisType.CIRCLE_TWO_FIELD_CALCULATE:
@@ -350,8 +353,15 @@ class EtlAdaptor {
         return null;
     }
 
-    private static ColumnFilterOperator fromColumnFilterBean(FilterOperatorBean bean) {
-        FilterInfo filterInfo = FilterInfoFactory.transformFilterBean(bean.getValue());
+    private static ColumnFilterOperator fromColumnFilterBean(FilterOperatorBean bean, FineBusinessTable table) {
+        List<Segment> segments = new ArrayList<Segment>();
+        try {
+            DataSource source = adaptEtlDataSource(((FineAnalysisTableImpl) table).getBaseTable());
+            segments = MinorSegmentManager.getInstance().getSegment(source.getSourceKey());
+        } catch (Exception e) {
+
+        }
+        FilterInfo filterInfo = FilterInfoFactory.transformFilterBean(bean.getValue(), segments);
         return new ColumnFilterOperator(filterInfo);
     }
 

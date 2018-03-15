@@ -2,10 +2,13 @@ package com.fr.swift.query.filter;
 
 import com.fr.swift.bitmap.BitMaps;
 import com.fr.swift.bitmap.ImmutableBitMap;
-import com.fr.swift.bitmap.impl.AllShowBitMap;
 import com.fr.swift.query.filter.detail.DetailFilter;
+import com.fr.swift.query.filter.detail.impl.NotNullFilter;
+import com.fr.swift.query.filter.detail.impl.NullFilter;
 import com.fr.swift.query.filter.detail.impl.date.DateInRangeFilter;
 import com.fr.swift.query.filter.detail.impl.date.not.DateNotInRangeFilter;
+import com.fr.swift.query.filter.detail.impl.nfilter.BottomNFilter;
+import com.fr.swift.query.filter.detail.impl.nfilter.TopNFilter;
 import com.fr.swift.query.filter.detail.impl.number.NumberContainFilter;
 import com.fr.swift.query.filter.detail.impl.number.NumberInRangeFilter;
 import com.fr.swift.query.filter.detail.impl.number.not.NumberNotContainFilter;
@@ -73,6 +76,14 @@ public class DetailFilterFactory {
             case DATE_NOT_IN_RANGE:
                 SwiftDateInRangeFilterValue value3 = (SwiftDateInRangeFilterValue) filterValue.getFilterValue();
                 return new DateNotInRangeFilter(rowCount, value3.getStart(), value3.getEnd(), column);
+            case TOP_N:
+                return new TopNFilter((Integer) filterValue.getFilterValue(), column);
+            case BOTTOM_N:
+                return new BottomNFilter((Integer) filterValue.getFilterValue(), column);
+            case NULL:
+                return new NullFilter(column);
+            case NOT_NULL:
+                return new NotNullFilter(rowCount, column);
             default:
                 return new DetailFilter() {
                     @Override

@@ -26,5 +26,7 @@ public enum SwiftDetailFilterType {
     TOP_N,
 
     NULL,
-    NOT_NULL
+    NOT_NULL,
+
+    ALL_SHOW
 }
