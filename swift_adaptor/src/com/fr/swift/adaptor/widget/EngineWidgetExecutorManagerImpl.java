@@ -43,6 +43,7 @@ public class EngineWidgetExecutorManagerImpl implements EngineWidgetExecutorMana
         return null;
     }
 
+    @Override
     public BIComplexGroupResult visit(VanChartWidget vanChartWidget) {
         return null;
     }
