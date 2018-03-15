@@ -35,22 +35,22 @@ public class FormulaUtils {
 
     public static Object getCalculatorValue(Calculator c, String formula, Segment segment, Map<String, ColumnKey> columnIndexMap, int row) {
         Iterator<Map.Entry<String, ColumnKey>> iter = columnIndexMap.entrySet().iterator();
-        while(iter.hasNext()) {
+        while (iter.hasNext()) {
             Map.Entry<String, ColumnKey> entry = iter.next();
             String columnName = entry.getKey();
             ColumnKey columnKey = entry.getValue();
-            if(columnKey != null) {
+            if (columnKey != null) {
                 DictionaryEncodedColumn getter = segment.getColumn(columnKey).getDictionaryEncodedColumn();
                 Object value = getter.getValue(getter.getIndexByRow(row));
                 int columnType = 0;
                 try {
                     columnType = segment.getMetaData().getColumn(columnKey.getName()).getType();
-                } catch(SwiftMetaDataException e) {
+                } catch (SwiftMetaDataException e) {
                     throw new RuntimeException();
                 }
-                if(!isNullValue(value)) {
+                if (!isNullValue(value)) {
                     if (columnType == ColumnTypeUtils.columnTypeToSqlType(ColumnType.DATE)) {
-                        value = new Date((Long)value);
+                        value = new Date((Long) value);
                     }
                     c.set(columnName, value);
                 } else {
@@ -120,19 +120,19 @@ public class FormulaUtils {
         return names;
     }
 
-    public static ColumnType getColumnType(SwiftMetaData metadata, String expression){
+    public static ColumnType getColumnType(SwiftMetaData metadata, String expression) {
         Calculator c = Calculator.createCalculator();
         String formula = getParameterIndexEncodedFormula(expression);
         String[] parameters = getRelatedParaNames(expression);
         int index = 0;
-        for (String parameter : parameters){
-            c.set(toParameterFormat(index++ +""), getParameterDefaultValue(metadata, parameter));
+        for (String parameter : parameters) {
+            c.set(toParameterFormat(index++ + ""), getParameterDefaultValue(metadata, parameter));
         }
         try {
             Object ob = c.eval(formula);
-            if(ob instanceof Date){
+            if (ob instanceof Date) {
                 return ColumnType.DATE;
-            } else if (ob instanceof Number){
+            } else if (ob instanceof Number) {
                 return ColumnType.NUMBER;
             } else {
                 return ColumnType.STRING;
@@ -144,10 +144,11 @@ public class FormulaUtils {
 
     /**
      * 参数转成自增长id，避免字段名字带特殊字符
+     *
      * @param expression
      * @return
      */
-    public static String getParameterIndexEncodedFormula(String expression){
+    public static String getParameterIndexEncodedFormula(String expression) {
         Pattern pat = Pattern.compile("\\$[\\{][^\\}]*[\\}]");
         Matcher matcher = pat.matcher(expression);
         int parameterCount = 0;
@@ -162,7 +163,7 @@ public class FormulaUtils {
     private static Object getParameterDefaultValue(SwiftMetaData metadata, String parameter) {
         try {
             SwiftMetaDataColumn column = metadata.getColumn(parameter);
-            switch (ColumnTypeUtils.sqlTypeToColumnType(column.getType(), column.getPrecision(), column.getScale())){
+            switch (ColumnTypeUtils.sqlTypeToColumnType(column.getType(), column.getPrecision(), column.getScale())) {
                 case NUMBER:
                     return 1;
                 case DATE:
