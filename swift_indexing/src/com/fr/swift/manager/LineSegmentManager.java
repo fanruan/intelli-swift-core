@@ -8,7 +8,7 @@ import com.fr.swift.segment.HistorySegmentImpl;
 import com.fr.swift.segment.RealTimeSegmentImpl;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.SegmentKey;
-import com.fr.swift.source.MetaDataXmlManager;
+//import com.fr.swift.source.MetaDataXmlManager;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.util.Util;
@@ -28,7 +28,8 @@ public class LineSegmentManager extends AbstractSegmentManager {
         Types.StoreType storeType = segmentKey.getStoreType();
         ResourceLocation location = new ResourceLocation(uri.getPath(), storeType);
         SourceKey sourceKey = new SourceKey(segmentKey.getSourceId());
-        SwiftMetaData metaData = MetaDataXmlManager.getManager().getMetaData(sourceKey);
+        SwiftMetaData metaData = getMetaData(sourceKey.getId());
+        //MetaDataXmlManager.getManager().getMetaData(sourceKey);
         Util.requireNonNull(metaData);
         switch (storeType) {
             case MEMORY:

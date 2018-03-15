@@ -49,4 +49,6 @@ public interface SwiftMetaData extends Iterable<SwiftMetaDataColumn> {
     String getColumnId(int index) throws SwiftMetaDataException;
 
     String getColumnId(String columnName) throws SwiftMetaDataException;
+
+    String getRemark() throws SwiftMetaDataException;
 }

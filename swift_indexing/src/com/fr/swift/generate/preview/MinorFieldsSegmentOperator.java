@@ -14,9 +14,9 @@ import java.util.Collections;
 import java.util.List;
 
 class MinorFieldsSegmentOperator extends IncreaseFieldsSegmentOperator {
-    MinorFieldsSegmentOperator(SourceKey sourceKey, SwiftMetaData metaData, List<Segment> segments,
+    MinorFieldsSegmentOperator(SourceKey sourceKey, List<Segment> segments,
                                       String cubeSourceKey, SwiftResultSet swiftResultSet, List<String> fields) throws SwiftMetaDataException {
-        super(sourceKey, metaData, segments, cubeSourceKey, swiftResultSet, fields);
+        super(sourceKey, segments, cubeSourceKey, swiftResultSet, fields);
     }
 
     @Override

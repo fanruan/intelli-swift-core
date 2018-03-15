@@ -1,14 +1,22 @@
 package com.fr.swift.segment;
 
+import com.fr.swift.config.IConfigSegment;
+import com.fr.swift.config.IMetaData;
+import com.fr.swift.config.IMetaDataColumn;
+import com.fr.swift.config.unique.MetaDataColumnUnique;
+import com.fr.swift.config.unique.SegmentUnique;
+import com.fr.swift.config.unique.SwiftMetaDataUnique;
 import com.fr.swift.exception.meta.SwiftMetaDataException;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftMetaData;
+import com.fr.swift.source.SwiftMetaDataColumn;
 import com.fr.swift.source.SwiftResultSet;
 import com.fr.swift.source.SwiftSourceAlloter;
 import com.fr.swift.source.SwiftSourceAlloterFactory;
 import com.fr.swift.util.Crasher;
 import com.fr.swift.util.Util;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,10 +36,14 @@ public abstract class AbstractSegmentOperator implements SegmentOperator {
     protected String cubeSourceKey;
     protected SwiftResultSet swiftResultSet;
 
-    public AbstractSegmentOperator(SourceKey sourceKey, SwiftMetaData metaData, List<Segment> segments, String cubeSourceKey, SwiftResultSet swiftResultSet) {
-        Util.requireNonNull(sourceKey, metaData);
+    public AbstractSegmentOperator(SourceKey sourceKey, List<Segment> segments, String cubeSourceKey, SwiftResultSet swiftResultSet) {
+        Util.requireNonNull(sourceKey);
         this.sourceKey = sourceKey;
-        this.metaData = metaData;
+        try {
+            this.metaData = swiftResultSet.getMetaData();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
         this.alloter = SwiftSourceAlloterFactory.createSourceAlloter(sourceKey);
         this.segmentList = new ArrayList<SegmentHolder>();
         this.cubeSourceKey = cubeSourceKey;
@@ -69,5 +81,15 @@ public abstract class AbstractSegmentOperator implements SegmentOperator {
     @Override
     public int getSegmentCount() {
         return segmentList.size();
+    }
+
+    protected IMetaData convert2ConfigMetaData() throws SwiftMetaDataException {
+        List<MetaDataColumnUnique> columns = new ArrayList<MetaDataColumnUnique>();
+        int columnCount = metaData.getColumnCount();
+        for (int i = 1; i <= columnCount; i++) {
+            SwiftMetaDataColumn column = metaData.getColumn(i);
+            columns.add(new MetaDataColumnUnique(column.getType(), column.getName(), column.getRemark(), column.getPrecision(), column.getScale(), column.getColumnId()));
+        }
+        return new SwiftMetaDataUnique(metaData.getSchemaName(), metaData.getTableName(), metaData.getRemark(), columns);
     }
 }

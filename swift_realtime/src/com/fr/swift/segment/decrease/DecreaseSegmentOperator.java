@@ -24,14 +24,14 @@ public class DecreaseSegmentOperator extends AbstractSegmentOperator {
 
     private static int DEFAULT_COLUMN_INDEX = 1;
 
-    public DecreaseSegmentOperator(SourceKey sourceKey, SwiftMetaData metaData, List<Segment> segments, String cubeSourceKey, SwiftResultSet swiftResultSet) throws SwiftMetaDataException {
-        super(sourceKey, metaData, segments, cubeSourceKey, swiftResultSet);
+    public DecreaseSegmentOperator(SourceKey sourceKey, List<Segment> segments, String cubeSourceKey, SwiftResultSet swiftResultSet) throws SwiftMetaDataException {
+        super(sourceKey, segments, cubeSourceKey, swiftResultSet);
         if (null != segments && !segments.isEmpty()) {
             for (int i = 0, len = segments.size(); i < len; i++) {
                 if (segments.get(i).getLocation().getStoreType() == Types.StoreType.FINE_IO) {
-                    this.segmentList.add(new HistorySegmentHolder(segments.get(i)));
+                    this.segmentList.add(new HistorySegmentHolder(metaData, segments.get(i)));
                 } else {
-                    this.segmentList.add(new RealtimeSegmentHolder(segments.get(i)));
+                    this.segmentList.add(new RealtimeSegmentHolder(metaData, segments.get(i)));
                 }
             }
         }

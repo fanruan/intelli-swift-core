@@ -91,6 +91,11 @@ public class SwiftMetaDataImpl implements SwiftMetaData {
     }
 
     @Override
+    public String getRemark() {
+        return swiftMetaDataPojo.getRemark();
+    }
+
+    @Override
     public String getColumnId(String columnName) throws SwiftMetaDataException {
         return getColumn(columnName).getColumnId();
     }

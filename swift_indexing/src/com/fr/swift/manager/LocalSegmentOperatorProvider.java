@@ -36,11 +36,11 @@ public class LocalSegmentOperatorProvider implements SegmentOperatorProvider {
     public SegmentOperator getHistorySegmentOperator(DataSource dataSource, SwiftResultSet resultSet) {
         try {
             if (DataSourceUtils.isAddColumn(dataSource)) {
-                return new HistoryFieldsSegmentOperator(dataSource.getSourceKey(), dataSource.getMetadata(),
+                return new HistoryFieldsSegmentOperator(dataSource.getSourceKey(),
                         manager.getSegment(dataSource.getSourceKey()), DataSourceUtils.getSwiftSourceKey(dataSource),
                         resultSet, DataSourceUtils.getAddFields(dataSource));
             }
-            return new HistorySegmentOperator(dataSource.getSourceKey(), dataSource.getMetadata(),
+            return new HistorySegmentOperator(dataSource.getSourceKey(),
                     manager.getSegment(dataSource.getSourceKey()), DataSourceUtils.getSwiftSourceKey(dataSource), resultSet);
         } catch (SwiftMetaDataException e) {
             return Crasher.crash(e);
@@ -51,11 +51,11 @@ public class LocalSegmentOperatorProvider implements SegmentOperatorProvider {
     public SegmentOperator getIncreaseSegmentOperator(DataSource dataSource, SwiftResultSet resultSet) {
         try {
             if (DataSourceUtils.isAddColumn(dataSource)) {
-                return new IncreaseFieldsSegmentOperator(dataSource.getSourceKey(), dataSource.getMetadata(),
+                return new IncreaseFieldsSegmentOperator(dataSource.getSourceKey(),
                         manager.getSegment(dataSource.getSourceKey()), DataSourceUtils.getSwiftSourceKey(dataSource),
                         resultSet, DataSourceUtils.getAddFields(dataSource));
             }
-            return new IncreaseSegmentOperator(dataSource.getSourceKey(), dataSource.getMetadata(),
+            return new IncreaseSegmentOperator(dataSource.getSourceKey(),
                     manager.getSegment(dataSource.getSourceKey()), DataSourceUtils.getSwiftSourceKey(dataSource), resultSet);
         } catch (SwiftMetaDataException e) {
             return Crasher.crash(e);
@@ -65,7 +65,7 @@ public class LocalSegmentOperatorProvider implements SegmentOperatorProvider {
     @Override
     public SegmentOperator getDecreaseSegmentOperator(DataSource dataSource, SwiftResultSet resultSet) {
         try {
-            return new DecreaseSegmentOperator(dataSource.getSourceKey(), dataSource.getMetadata(),
+            return new DecreaseSegmentOperator(dataSource.getSourceKey(),
                     manager.getSegment(dataSource.getSourceKey()), DataSourceUtils.getSwiftSourceKey(dataSource), resultSet);
         } catch (SwiftMetaDataException e) {
             return Crasher.crash(e);

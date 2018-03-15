@@ -16,9 +16,9 @@ public class IncreaseFieldsSegmentOperator extends AbstractIncreaseSegmentOperat
 
     private List<String> fields;
 
-    public IncreaseFieldsSegmentOperator(SourceKey sourceKey, SwiftMetaData metaData, List<Segment> segments,
+    public IncreaseFieldsSegmentOperator(SourceKey sourceKey, List<Segment> segments,
                                          String cubeSourceKey, SwiftResultSet swiftResultSet, List<String> fields) throws SwiftMetaDataException {
-        super(sourceKey, metaData, segments, cubeSourceKey, swiftResultSet);
+        super(sourceKey, segments, cubeSourceKey, swiftResultSet);
         this.fields = fields;
     }
 
@@ -34,7 +34,7 @@ public class IncreaseFieldsSegmentOperator extends AbstractIncreaseSegmentOperat
                 int size = increaseSegmentList.size();
                 if (index >= size) {
                     for (int i = size; i <= index; i++) {
-                        increaseSegmentList.add(new RealtimeSegmentHolder(createSegment(segmentList.size() + i)));
+                        increaseSegmentList.add(new RealtimeSegmentHolder(metaData, createSegment(segmentList.size() + i)));
                     }
                 } else if (index == -1) {
                     index = increaseSegmentList.size() - 1;
@@ -52,7 +52,7 @@ public class IncreaseFieldsSegmentOperator extends AbstractIncreaseSegmentOperat
             }
             segmentList.addAll(increaseSegmentList);
         } else {
-            increaseSegmentList.add(new RealtimeSegmentHolder(createSegment(0)));
+            increaseSegmentList.add(new RealtimeSegmentHolder(metaData, createSegment(0)));
         }
     }
 

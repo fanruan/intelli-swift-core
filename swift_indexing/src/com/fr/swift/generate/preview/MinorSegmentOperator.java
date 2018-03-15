@@ -19,9 +19,9 @@ import java.util.List;
  */
 class MinorSegmentOperator extends IncreaseSegmentOperator {
 
-    public MinorSegmentOperator(SourceKey sourceKey, SwiftMetaData metaData, List<Segment> segments,
+    public MinorSegmentOperator(SourceKey sourceKey, List<Segment> segments,
                                 String cubeSourceKey, SwiftResultSet swiftResultSet) throws SwiftMetaDataException {
-        super(sourceKey, metaData, segments, cubeSourceKey, swiftResultSet);
+        super(sourceKey, segments, cubeSourceKey, swiftResultSet);
     }
 
     @Override

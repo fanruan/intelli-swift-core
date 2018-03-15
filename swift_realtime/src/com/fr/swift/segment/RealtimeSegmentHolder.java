@@ -2,6 +2,7 @@ package com.fr.swift.segment;
 
 import com.fr.swift.exception.meta.SwiftMetaDataException;
 import com.fr.swift.segment.column.impl.base.FakeStringDetailColumn;
+import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.util.Crasher;
 
 /**
@@ -13,8 +14,8 @@ import com.fr.swift.util.Crasher;
  */
 public class RealtimeSegmentHolder extends AbstractSegmentHolder {
 
-    public RealtimeSegmentHolder(Segment segment) throws SwiftMetaDataException {
-        super(segment);
+    public RealtimeSegmentHolder(SwiftMetaData metaData, Segment segment) throws SwiftMetaDataException {
+        super(metaData, segment);
     }
 
     @Override

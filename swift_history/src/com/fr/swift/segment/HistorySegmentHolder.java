@@ -3,6 +3,7 @@ package com.fr.swift.segment;
 import com.fr.swift.exception.meta.SwiftMetaDataException;
 import com.fr.swift.segment.AbstractSegmentHolder;
 import com.fr.swift.segment.Segment;
+import com.fr.swift.source.SwiftMetaData;
 
 /**
  * @author yee
@@ -10,8 +11,8 @@ import com.fr.swift.segment.Segment;
  */
 public class HistorySegmentHolder extends AbstractSegmentHolder {
 
-    public HistorySegmentHolder(Segment segment) throws SwiftMetaDataException {
-        super(segment);
+    public HistorySegmentHolder(SwiftMetaData metaData, Segment segment) throws SwiftMetaDataException {
+        super(metaData, segment);
     }
 }
 
