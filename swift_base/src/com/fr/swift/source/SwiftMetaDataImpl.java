@@ -91,6 +91,11 @@ public class SwiftMetaDataImpl implements SwiftMetaData {
     }
 
     @Override
+    public String getColumnId(String columnName) throws SwiftMetaDataException {
+        return getColumn(columnName).getColumnId();
+    }
+
+    @Override
     public SwiftMetaDataColumn getColumn(int column) throws SwiftMetaDataException {
         if (fieldList == null || fieldList.size() < column) {
             throw new SwiftMetaDataColumnAbsentException(column);

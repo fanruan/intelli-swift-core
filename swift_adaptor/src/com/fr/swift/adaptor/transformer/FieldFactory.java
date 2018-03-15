@@ -39,7 +39,7 @@ public class FieldFactory {
 //            if (swiftMetaData.getColumnAddState(i)) {
 //                fineBusinessField = new FineBusinessFieldImp(swiftMetaData.getTableName() + columnId, columnName, columnId);
 //            } else {
-            fineBusinessField = new FineBusinessFieldImp(tableId == null ? swiftMetaData.getTableName() + columnId : tableId + columnId, columnName, columnId);
+            fineBusinessField = new FineBusinessFieldImp(tableId == null ? swiftMetaData.getTableName() + columnId : tableId + columnId, columnName, columnRemark);
 //            }
 
             ((FineBusinessFieldImp) fineBusinessField).setEngineType(FineEngineType.Cube);

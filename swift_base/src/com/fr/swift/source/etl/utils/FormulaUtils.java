@@ -21,7 +21,10 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static com.fr.swift.cube.io.IOConstant.*;
+import static com.fr.swift.cube.io.IOConstant.NULL_DOUBLE;
+import static com.fr.swift.cube.io.IOConstant.NULL_INT;
+import static com.fr.swift.cube.io.IOConstant.NULL_LONG;
+import static com.fr.swift.cube.io.IOConstant.NULL_STRING;
 
 /**
  * Created by Handsome on 2018/2/1 0001 15:27
@@ -33,22 +36,22 @@ public class FormulaUtils {
 
     public static Object getCalculatorValue(Calculator c, String formula, Segment segment, Map<String, ColumnKey> columnIndexMap, int row) {
         Iterator<Map.Entry<String, ColumnKey>> iter = columnIndexMap.entrySet().iterator();
-        while(iter.hasNext()) {
+        while (iter.hasNext()) {
             Map.Entry<String, ColumnKey> entry = iter.next();
             String columnName = entry.getKey();
             ColumnKey columnKey = entry.getValue();
-            if(columnKey != null) {
+            if (columnKey != null) {
                 DictionaryEncodedColumn getter = segment.getColumn(columnKey).getDictionaryEncodedColumn();
                 Object value = getter.getValue(getter.getIndexByRow(row));
                 int columnType = 0;
                 try {
                     columnType = segment.getMetaData().getColumn(columnKey.getName()).getType();
-                } catch(SwiftMetaDataException e) {
+                } catch (SwiftMetaDataException e) {
                     throw new RuntimeException();
                 }
-                if(!isNullValue(value)) {
+                if (!isNullValue(value)) {
                     if (columnType == ColumnTypeUtils.columnTypeToSqlType(ColumnType.DATE)) {
-                        value = new Date((Long)value);
+                        value = new Date((Long) value);
                     }
                     c.set(columnName, value);
                 } else {
@@ -92,7 +95,7 @@ public class FormulaUtils {
             }
             Column column = segment.getColumn(new ColumnKey(columnName));
             if (column != null) {
-                columnIndexMap.put(toParameterFormat(String.valueOf(i)), new ColumnKey(column.getLocation().getName()));
+                columnIndexMap.put(toParameterFormat(String.valueOf(i)), new ColumnKey(columnName));
             } else {
                 LOGGER.error(columnName + ": not found");
             }
