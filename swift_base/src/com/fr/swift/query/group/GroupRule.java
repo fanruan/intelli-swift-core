@@ -31,4 +31,6 @@ public interface GroupRule {
      * @param dict 原始分组
      */
     void setOriginDict(DictionaryEncodedColumn<?> dict);
+
+    GroupType getGroupType();
 }

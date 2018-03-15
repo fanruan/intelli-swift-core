@@ -25,7 +25,6 @@ public interface SwiftMetaDataColumn {
 
     MetaDataColumnPojo getMetaDataColumnPojo();
 
-    //是否新增的字段
-    boolean isAddColumn();
+    String getColumnId();
 }
 

@@ -5,8 +5,10 @@ import com.finebi.base.utils.data.io.FileUtils;
 import com.finebi.conf.service.dao.provider.BusinessConfigDAO;
 import com.finebi.conf.structure.bean.table.FineBusinessTable;
 import com.finebi.conf.structure.relation.FineBusinessTableRelation;
+import com.fr.general.ComparatorUtils;
 import com.fr.swift.conf.business.AbstractSwiftParseXml;
 import com.fr.swift.conf.business.ISwiftXmlWriter;
+import com.fr.swift.conf.business.container.ResourceContainer;
 import com.fr.swift.conf.business.table.SwiftTableDao;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
@@ -16,6 +18,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -36,6 +39,7 @@ public class SwiftRelationDao implements BusinessConfigDAO<FineBusinessTableRela
     private ISwiftXmlWriter swiftXmlWriter;
     private String xmlFileName;
     private SwiftTableDao tableDao;
+    private ResourceContainer<FineBusinessTableRelation> container = RelationContainer.getContainer();
 
 
     public SwiftRelationDao(AbstractSwiftParseXml xmlHandler, String xmlFileName, ISwiftXmlWriter swiftXmlWriter) {
@@ -56,10 +60,12 @@ public class SwiftRelationDao implements BusinessConfigDAO<FineBusinessTableRela
     public boolean saveConfigs(List<FineBusinessTableRelation> tableRelationList) {
         try {
             List<FineBusinessTableRelation> relations = getAllConfig();
-            Map<String, FineBusinessTableRelation> relationMap = convertToMap(relations);
-            Map<String, FineBusinessTableRelation> saveRelationMap = convertToMap(tableRelationList);
-            relationMap.putAll(saveRelationMap);
-            return saveRelations(relationMap);
+//            Map<String, FineBusinessTableRelation> relationMap = convertToMap(relations);
+//            Map<String, FineBusinessTableRelation> saveRelationMap = convertToMap(tableRelationList);
+//            relationMap.putAll(saveRelationMap);
+            relations.addAll(tableRelationList);
+            container.saveResources(relations);
+            return true;
         } catch (Exception e) {
             LOGGER.error(e.getMessage(), e);
             return false;
@@ -75,18 +81,20 @@ public class SwiftRelationDao implements BusinessConfigDAO<FineBusinessTableRela
 
     @Override
     public boolean updateConfigs(List<FineBusinessTableRelation> tableRelationList) {
-        try {
-            Map<String, FineBusinessTableRelation> relationMap = convertToMap(getAllConfig());
-            for (FineBusinessTableRelation tableRelation : tableRelationList) {
-                if (relationMap.containsKey(tableRelation.getRelationName())) {
-                    relationMap.put(tableRelation.getRelationName(), tableRelation);
+        List<FineBusinessTableRelation> resources = getAllConfig();
+        Iterator<FineBusinessTableRelation> it = resources.iterator();
+        while (it.hasNext()) {
+            FineBusinessTableRelation fineResource = it.next();
+            for (FineBusinessTableRelation resource : tableRelationList) {
+                if (ComparatorUtils.equals(resource.getRelationName(), fineResource.getRelationName())) {
+                    it.remove();
+                    break;
                 }
             }
-            return saveRelations(relationMap);
-        } catch (Exception e) {
-            LOGGER.error(e.getMessage(), e);
-            return false;
         }
+        resources.addAll(tableRelationList);
+        container.saveResources(resources);
+        return true;
     }
 
     @Override
@@ -99,41 +107,55 @@ public class SwiftRelationDao implements BusinessConfigDAO<FineBusinessTableRela
     @Override
     public boolean removeConfigs(List<FineBusinessTableRelation> tableRelationList) {
         try {
-            Map<String, FineBusinessTableRelation> relationMap = convertToMap(getAllConfig());
-            for (FineBusinessTableRelation tableRelation : tableRelationList) {
-                if (relationMap.containsKey(tableRelation.getRelationName())) {
-                    relationMap.remove(tableRelation.getRelationName(), tableRelation);
+            List<FineBusinessTableRelation> resources = getAllConfig();
+            Iterator<FineBusinessTableRelation> it = resources.iterator();
+            while (it.hasNext()) {
+                FineBusinessTableRelation fineResource = it.next();
+                for (FineBusinessTableRelation resource : tableRelationList) {
+                    if (ComparatorUtils.equals(resource.getRelationName(), fineResource.getRelationName())) {
+                        it.remove();
+                        break;
+                    }
                 }
             }
-            return saveRelations(relationMap);
+            container.saveResources(resources);
+            return true;
         } catch (Exception e) {
-            LOGGER.error(e.getMessage(), e);
+            LOGGER.info(e.getMessage(), e);
             return false;
         }
     }
 
     @Override
     public boolean removeAllConfig() {
+//        try {
+////            saveRelations(new HashMap<String, FineBusinessTableRelation>());
+////            return true;
+////        } catch (Exception e) {
+////            LOGGER.error(e.getMessage(), e);
+////            return false;
+////        }
         try {
-            saveRelations(new HashMap<String, FineBusinessTableRelation>());
+            container.saveResources(new ArrayList<>());
             return true;
         } catch (Exception e) {
             LOGGER.error(e.getMessage(), e);
-            return false;
         }
+        return false;
     }
 
     @Override
     public List<FineBusinessTableRelation> getAllConfig() {
-        try {
-            Map<String, Map> map = objectMapper.readValue(makeSureXmlFileExist(), Map.class);
-            List<FineBusinessTable> businessTableList = tableDao.getAllConfig();
-            List<FineBusinessTableRelation> result = SimpleRelationUtils.transforSimpleRelarions(map, businessTableList);
-            return result;
-        } catch (Exception e) {
-            LOGGER.error(e.getMessage(), e);
-        }
-        return new ArrayList<FineBusinessTableRelation>();
+//        try {
+//            Map<String, Map> map = objectMapper.readValue(makeSureXmlFileExist(), Map.class);
+//            List<FineBusinessTable> businessTableList = tableDao.getAllConfig();
+//            List<FineBusinessTableRelation> result = SimpleRelationUtils.transforSimpleRelarions(map, businessTableList);
+//            return result;
+//        } catch (Exception e) {
+//            LOGGER.error(e.getMessage(), e);
+//        }
+//        return new ArrayList<FineBusinessTableRelation>();
+        return container.getResources();
     }
 
     @Override

@@ -11,17 +11,15 @@ import com.fr.swift.segment.column.Column;
  * @date 2018/1/26
  */
 abstract class BaseGroup implements Group {
-    private GroupType type;
     private GroupRule rule;
 
-    BaseGroup(GroupType type, GroupRule rule) {
-        this.type = type;
+    BaseGroup(GroupRule rule) {
         this.rule = rule;
     }
 
     @Override
     public GroupType getGroupType() {
-        return type;
+        return rule.getGroupType();
     }
 
     @Override

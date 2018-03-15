@@ -1,5 +1,6 @@
 package com.fr.swift.query.group.impl;
 
+import com.fr.swift.query.group.GroupType;
 import com.fr.swift.structure.array.IntList;
 import com.fr.swift.structure.array.IntListFactory;
 
@@ -25,6 +26,11 @@ public class NoGroupRule extends BaseGroupRule {
     @Override
     public int newSize() {
         return dictColumn.size();
+    }
+
+    @Override
+    public GroupType getGroupType() {
+        return GroupType.NONE;
     }
 
     @Override

@@ -80,7 +80,7 @@ public class SwiftAnalysisTableManager implements EngineAnalysisTableManager {
 
     @Override
     public List<FineBusinessField> getFields(FineAnalysisTable table) throws Exception {
-        return FieldFactory.transformColumns2Fields(IndexingDataSourceFactory.transformDataSource(table).getMetadata());
+        return FieldFactory.transformColumns2Fields(IndexingDataSourceFactory.transformDataSource(table).getMetadata(),table.getId());
     }
 
     @Override

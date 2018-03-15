@@ -10,6 +10,8 @@ import com.finebi.conf.internalimp.analysis.bean.operator.add.EmptyAddNewColumnB
 import com.finebi.conf.internalimp.analysis.bean.operator.add.expression.AddExpressionValueBean;
 import com.finebi.conf.internalimp.analysis.bean.operator.circulate.CirculateOneFieldBean;
 import com.finebi.conf.internalimp.analysis.bean.operator.circulate.CirculateTwoFieldValue;
+import com.finebi.conf.internalimp.analysis.bean.operator.datamining.AlgorithmBean;
+import com.finebi.conf.internalimp.analysis.bean.operator.datamining.DataMiningBean;
 import com.finebi.conf.internalimp.analysis.bean.operator.filter.FilterOperatorBean;
 import com.finebi.conf.internalimp.analysis.bean.operator.group.DimensionSelectValue;
 import com.finebi.conf.internalimp.analysis.bean.operator.group.DimensionSrcValue;
@@ -38,10 +40,9 @@ import com.finebi.conf.structure.bean.table.FineBusinessTable;
 import com.finebi.conf.structure.conf.base.EngineComplexConfTable;
 import com.finebi.conf.utils.FineTableUtils;
 import com.fr.general.ComparatorUtils;
-import com.fr.swift.adaptor.widget.group.GroupTypeAdaptor;
+import com.fr.swift.adaptor.widget.group.GroupAdaptor;
 import com.fr.swift.exception.meta.SwiftMetaDataException;
 import com.fr.swift.query.filter.info.FilterInfo;
-import com.fr.swift.query.group.impl.GroupImpl;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.source.DataSource;
 import com.fr.swift.source.MetaDataColumn;
@@ -54,6 +55,7 @@ import com.fr.swift.source.etl.ETLSource;
 import com.fr.swift.source.etl.columnfilter.ColumnFilterOperator;
 import com.fr.swift.source.etl.columnrowtrans.ColumnRowTransOperator;
 import com.fr.swift.source.etl.columnrowtrans.NameText;
+import com.fr.swift.source.etl.datamining.DataMiningOperator;
 import com.fr.swift.source.etl.detail.DetailOperator;
 import com.fr.swift.source.etl.formula.ColumnFormulaOperator;
 import com.fr.swift.source.etl.groupsum.SumByGroupDimension;
@@ -259,11 +261,12 @@ class EtlAdaptor {
         return new UnionOperator(listsOfColumn);
     }
 
-//    private static DataMiningOperator fromDataMiningBean(DataMiningBean dmb) {
-//        AlgorithmBean dmbv = dmb.getValue();
-//
-//        return new DataMiningOperator(dmbv);
-//    }
+    private static DataMiningOperator fromDataMiningBean(DataMiningBean dmb) {
+        AlgorithmBean dmbv = dmb.getValue();
+
+        return new DataMiningOperator(dmbv);
+    }
+
     public static ETLOperator adaptEtlOperator(FineOperator op, FineBusinessTable table) throws Exception {
         switch (op.getType()) {
             case AnalysisType.JOIN:
@@ -282,8 +285,8 @@ class EtlAdaptor {
                 return fromAddNewColumnBean(op.<AddNewColumnBean>getValue(), table);
             case AnalysisType.GROUP:
                 return fromSumByGroupBean(op.<GroupBean>getValue());
-//            case AnalysisType.DATA_MINING:
-//                return fromDataMiningBean(op.<DataMiningBean>getValue());
+            case AnalysisType.DATA_MINING:
+                return fromDataMiningBean(op.<DataMiningBean>getValue());
             default:
         }
         return null;
@@ -309,7 +312,7 @@ class EtlAdaptor {
             SumByGroupDimension sumByGroupDimension = new SumByGroupDimension();
             sumByGroupDimension.setColumnType(ColumnTypeAdaptor.adaptColumnType(tempBean.getFieldType()));
             // fixme ???
-            sumByGroupDimension.setGroup(new GroupImpl(GroupTypeAdaptor.adaptGroupType(type), null));
+            sumByGroupDimension.setGroup(GroupAdaptor.adaptGroup(value.get(0)));
             sumByGroupDimension.setName(srcValue.getFieldName());
             sumByGroupDimension.setNameText(tempBean.getName());
             groupDimensions[i] = sumByGroupDimension;

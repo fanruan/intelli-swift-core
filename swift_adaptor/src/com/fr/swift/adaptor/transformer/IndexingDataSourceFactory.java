@@ -23,7 +23,12 @@ import com.fr.swift.source.container.SourceContainerManager;
 import com.fr.swift.source.db.ConnectionManager;
 import com.fr.swift.source.db.QueryDBSource;
 import com.fr.swift.source.db.TableDBSource;
+import com.fr.swift.source.etl.ETLOperator;
 import com.fr.swift.source.etl.ETLSource;
+import com.fr.swift.source.etl.ETLTransferOperator;
+import com.fr.swift.source.etl.EtlTransferOperatorFactory;
+import com.fr.swift.source.etl.datamining.DataMiningOperator;
+import com.fr.swift.source.etl.datamining.DataMiningTransferOperator;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -42,13 +47,13 @@ public class IndexingDataSourceFactory {
     private static final SwiftLogger LOGGER = SwiftLoggers.getLogger();
     static {
         ConnectionManager.getInstance().registerProvider(new ConnectionProvider());
-//        EtlTransferOperatorFactory.register(DataMiningOperator.class, new ETLTransferCreator(){
-//
-//            @Override
-//            public ETLTransferOperator createTransferOperator(ETLOperator operator) {
-//                return new DataMiningTransferOperator(((DataMiningOperator)operator).getAlgorithmBean());
-//            }
-//        });
+        EtlTransferOperatorFactory.register(DataMiningOperator.class, new EtlTransferOperatorFactory.ETLTransferCreator(){
+
+            @Override
+            public ETLTransferOperator createTransferOperator(ETLOperator operator) {
+                return new DataMiningTransferOperator(((DataMiningOperator)operator).getAlgorithmBean());
+            }
+        });
     }
     public static void transformDataSources(Map<FineBusinessTable, TableUpdateInfo> infoMap, List<String> updateTableSourceKeys, SourceContainerManager updateSourceContainer, Map<String, List<Increment>> incrementMap) throws Exception {
         for (Map.Entry<FineBusinessTable, TableUpdateInfo> infoEntry : infoMap.entrySet()) {
