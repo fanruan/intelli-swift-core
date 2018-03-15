@@ -52,7 +52,7 @@ public class DataSourceUtils {
                 ETLSource etlSource = (ETLSource) dataSource;
                 ETLOperator etlOperator = etlSource.getOperator();
                 if (etlOperator.getOperatorType().equals(OperatorType.COLUMN_FORMULA)) {
-                    fields.add(((ColumnFormulaOperator) etlOperator).getColumnMD5());
+                    fields.add(((ColumnFormulaOperator) etlOperator).getColumnName());
                 }
             }
             return fields;
