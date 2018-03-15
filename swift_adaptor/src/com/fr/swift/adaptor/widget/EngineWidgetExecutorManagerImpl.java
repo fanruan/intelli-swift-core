@@ -2,7 +2,6 @@ package com.fr.swift.adaptor.widget;
 
 import com.finebi.base.constant.FineEngineType;
 import com.finebi.conf.internalimp.analysis.bean.operator.add.group.custom.number.NumberMaxAndMinValue;
-import com.finebi.conf.internalimp.dashboard.widget.chart.VanChartWidget;
 import com.finebi.conf.internalimp.dashboard.widget.control.number.SingleSliderWidget;
 import com.finebi.conf.internalimp.dashboard.widget.control.string.ListLabelWidget;
 import com.finebi.conf.internalimp.dashboard.widget.control.time.MonthControlWidget;
@@ -16,7 +15,6 @@ import com.finebi.conf.internalimp.dashboard.widget.table.CrossTableWidget;
 import com.finebi.conf.internalimp.dashboard.widget.table.StringControlWidget;
 import com.finebi.conf.internalimp.dashboard.widget.table.TableWidget;
 import com.finebi.conf.service.engine.excutor.EngineWidgetExecutorManager;
-import com.finebi.conf.structure.dashboard.widget.FineWidget;
 import com.finebi.conf.structure.result.BIDetailTableResult;
 import com.finebi.conf.structure.result.BIResult;
 import com.finebi.conf.structure.result.BIStringDetailResult;
@@ -26,12 +24,8 @@ import com.finebi.conf.structure.result.control.time.BIMonthControlResult;
 import com.finebi.conf.structure.result.control.time.BIQuarterResult;
 import com.finebi.conf.structure.result.control.time.BIYearControlResult;
 import com.finebi.conf.structure.result.control.tree.BITreeResult;
-import com.finebi.conf.structure.result.table.BIComplexGroupResult;
 import com.finebi.conf.structure.result.table.BICrossNode;
 import com.finebi.conf.structure.result.table.BIGroupNode;
-
-import java.util.List;
-import java.util.Map;
 
 /**
  * @author anchore
@@ -43,10 +37,9 @@ public class EngineWidgetExecutorManagerImpl implements EngineWidgetExecutorMana
         return null;
     }
 
-    @Override
-    public BIComplexGroupResult visit(VanChartWidget vanChartWidget) {
-        return null;
-    }
+//    public BIComplexGroupResult visit(VanChartWidget vanChartWidget) {
+//        return null;
+//    }
 
     @Override
     public BICrossNode visit(CrossTableWidget tableWidget) {
@@ -109,10 +102,10 @@ public class EngineWidgetExecutorManagerImpl implements EngineWidgetExecutorMana
     }
 
 
-    @Override
-    public Map<String, Object> getClickValue(FineWidget widget, Map clicked, List<String> fieldsId) {
-        return null;
-    }
+//    @Override
+//    public Map<String, Object> getClickValue(FineWidget widget, Map clicked, List<String> fieldsId) {
+//        return null;
+//    }
 
     @Override
     public FineEngineType getEngineType() {
