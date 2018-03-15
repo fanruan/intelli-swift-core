@@ -16,8 +16,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * Created by Handsome on 2018/2/1 0001 15:06
@@ -31,7 +29,6 @@ public class ColumnFormulaOperatorResultSet implements SwiftResultSet {
     private int segCursor;
     private int rowCount;
     private Calculator cal;
-    private String expressionStr;
     private String formula;
     private TempValue tempValue;
     private SwiftMetaData metaData;
@@ -49,16 +46,7 @@ public class ColumnFormulaOperatorResultSet implements SwiftResultSet {
         this.segCursor = 0;
         this.rowCount = this.segment[0].getRowCount();
         cal = Calculator.createCalculator();
-        expressionStr = expression;
-        Pattern pat = Pattern.compile("\\$[\\{][^\\}]*[\\}]");
-        Matcher matcher = pat.matcher(expressionStr);
-        int parameterCount = 0;
-        while (matcher.find()) {
-            String matchStr = matcher.group(0);
-            expressionStr = expressionStr.replace(matchStr, "$" + String.valueOf(parameterCount));
-            parameterCount++;
-        }
-        formula = "=" + expressionStr;
+        formula = FormulaUtils.getParameterIndexEncodedFormula(expression);
         tempValue = new TempValue();
     }
 
