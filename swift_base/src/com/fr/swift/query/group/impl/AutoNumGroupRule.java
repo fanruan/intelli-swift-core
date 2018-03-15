@@ -1,5 +1,7 @@
 package com.fr.swift.query.group.impl;
 
+import com.fr.swift.query.group.GroupType;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,6 +15,11 @@ public class AutoNumGroupRule extends CustomNumGroupRule {
     public AutoNumGroupRule(Partition partition) {
         // 无其他组，传null
         super(partition.toNumIntervals(), null);
+    }
+
+    @Override
+    public GroupType getGroupType() {
+        return GroupType.AUTO;
     }
 
     public static class Partition {

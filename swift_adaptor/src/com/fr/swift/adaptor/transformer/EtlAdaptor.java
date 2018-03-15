@@ -23,6 +23,8 @@ import com.finebi.conf.internalimp.analysis.bean.operator.add.timediff.TimeDiffV
 import com.finebi.conf.internalimp.analysis.bean.operator.add.timediff.TimeDiffValueItem;
 import com.finebi.conf.internalimp.analysis.bean.operator.circulate.CirculateOneFieldBean;
 import com.finebi.conf.internalimp.analysis.bean.operator.circulate.CirculateTwoFieldValue;
+import com.finebi.conf.internalimp.analysis.bean.operator.datamining.AlgorithmBean;
+import com.finebi.conf.internalimp.analysis.bean.operator.datamining.DataMiningBean;
 import com.finebi.conf.internalimp.analysis.bean.operator.filter.FilterOperatorBean;
 import com.finebi.conf.internalimp.analysis.bean.operator.group.DimensionSelectValue;
 import com.finebi.conf.internalimp.analysis.bean.operator.group.DimensionSrcValue;
@@ -43,6 +45,7 @@ import com.finebi.conf.internalimp.analysis.bean.operator.union.UnionBeanValue;
 import com.finebi.conf.internalimp.analysis.bean.operator.union.UnionBeanValueTable;
 import com.finebi.conf.internalimp.analysis.operator.circulate.FloorItem;
 import com.finebi.conf.internalimp.analysis.operator.select.SelectFieldOperator;
+import com.finebi.conf.internalimp.analysis.table.FineAnalysisTableImpl;
 import com.finebi.conf.structure.analysis.operator.FineOperator;
 import com.finebi.conf.structure.analysis.table.FineAnalysisTable;
 import com.finebi.conf.structure.bean.field.FineBusinessField;
@@ -50,10 +53,9 @@ import com.finebi.conf.structure.bean.table.FineBusinessTable;
 import com.finebi.conf.structure.conf.base.EngineComplexConfTable;
 import com.finebi.conf.utils.FineTableUtils;
 import com.fr.general.ComparatorUtils;
-import com.fr.swift.adaptor.widget.group.GroupTypeAdaptor;
+import com.fr.swift.adaptor.widget.group.GroupAdaptor;
 import com.fr.swift.exception.meta.SwiftMetaDataException;
 import com.fr.swift.query.filter.info.FilterInfo;
-import com.fr.swift.query.group.impl.GroupImpl;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.source.DataSource;
 import com.fr.swift.source.MetaDataColumn;
@@ -66,8 +68,12 @@ import com.fr.swift.source.etl.ETLSource;
 import com.fr.swift.source.etl.columnfilter.ColumnFilterOperator;
 import com.fr.swift.source.etl.columnrowtrans.ColumnRowTransOperator;
 import com.fr.swift.source.etl.columnrowtrans.NameText;
+<<<<<<< HEAD
 import com.fr.swift.source.etl.date.GetFromDateOperator;
 import com.fr.swift.source.etl.datediff.DateDiffOperator;
+=======
+import com.fr.swift.source.etl.datamining.DataMiningOperator;
+>>>>>>> fc0231d0300a772eb2341eeeb2f1c764958c5495
 import com.fr.swift.source.etl.detail.DetailOperator;
 import com.fr.swift.source.etl.formula.ColumnFormulaOperator;
 import com.fr.swift.source.etl.groupsum.SumByGroupDimension;
@@ -82,6 +88,7 @@ import com.fr.swift.source.etl.selfrelation.OneUnionRelationOperator;
 import com.fr.swift.source.etl.selfrelation.TwoUnionRelationOperator;
 import com.fr.swift.source.etl.union.UnionOperator;
 import com.fr.swift.source.etl.utils.ETLConstant;
+import com.fr.swift.source.etl.utils.FormulaUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -275,12 +282,13 @@ class EtlAdaptor {
         return new UnionOperator(listsOfColumn);
     }
 
-//    private static DataMiningOperator fromDataMiningBean(DataMiningBean dmb) {
-//        AlgorithmBean dmbv = dmb.getValue();
-//
-//        return new DataMiningOperator(dmbv);
-//    }
-    public static ETLOperator adaptEtlOperator(FineOperator op, FineBusinessTable table) throws FineEngineException {
+    private static DataMiningOperator fromDataMiningBean(DataMiningBean dmb) {
+        AlgorithmBean dmbv = dmb.getValue();
+
+        return new DataMiningOperator(dmbv);
+    }
+
+    public static ETLOperator adaptEtlOperator(FineOperator op, FineBusinessTable table) throws Exception {
         switch (op.getType()) {
             case AnalysisType.JOIN:
                 return fromJoinBean(op.<JoinBean>getValue());
@@ -295,11 +303,11 @@ class EtlAdaptor {
             case AnalysisType.COLUMN_ROW_TRANS:
                 return fromColumnRowTransBean(op.<ColumnRowTransBean>getValue(), table);
             case AnalysisType.ADD_COLUMN:
-                return fromAddNewColumnBean(op.<AddNewColumnBean>getValue());
+                return fromAddNewColumnBean(op.<AddNewColumnBean>getValue(), table);
             case AnalysisType.GROUP:
                 return fromSumByGroupBean(op.<GroupBean>getValue());
-//            case AnalysisType.DATA_MINING:
-//                return fromDataMiningBean(op.<DataMiningBean>getValue());
+            case AnalysisType.DATA_MINING:
+                return fromDataMiningBean(op.<DataMiningBean>getValue());
             default:
         }
         return null;
@@ -325,7 +333,7 @@ class EtlAdaptor {
             SumByGroupDimension sumByGroupDimension = new SumByGroupDimension();
             sumByGroupDimension.setColumnType(ColumnTypeAdaptor.adaptColumnType(tempBean.getFieldType()));
             // fixme ???
-            sumByGroupDimension.setGroup(new GroupImpl(GroupTypeAdaptor.adaptGroupType(type), null));
+            sumByGroupDimension.setGroup(GroupAdaptor.adaptGroup(value.get(0)));
             sumByGroupDimension.setName(srcValue.getFieldName());
             sumByGroupDimension.setNameText(tempBean.getName());
             groupDimensions[i] = sumByGroupDimension;
@@ -355,6 +363,7 @@ class EtlAdaptor {
         return new SumByGroupOperator(groupTargets, groupDimensions);
     }
 
+<<<<<<< HEAD
     private static AccumulateRowOperator getAccumulateRowOperator(AddNewColumnValueBean value) {
         AccumulativeItemBean tempBean = ((AddAllAccumulativeValueBean)value).getValue();
         String columnName = value.getName();
@@ -423,13 +432,18 @@ class EtlAdaptor {
     }
 
     private static AbstractOperator fromAddNewColumnBean(AddNewColumnBean bean) throws FineEngineException {
+=======
+    private static AbstractOperator fromAddNewColumnBean(AddNewColumnBean bean, FineBusinessTable table) throws Exception {
+>>>>>>> fc0231d0300a772eb2341eeeb2f1c764958c5495
         if (bean.getValue() instanceof EmptyAddNewColumnBean) {
             throw new FineAnalysisOperationUnSafe("");
         }
 
         AddNewColumnValueBean value = bean.getValue();
+        DataSource source = adaptEtlDataSource(((FineAnalysisTableImpl) table).getBaseTable());
         switch (value.getType()) {
             case BIConfConstants.CONF.ADD_COLUMN.FORMULA.TYPE: {
+<<<<<<< HEAD
                 return new ColumnFormulaOperator(value.getName(), ColumnTypeAdaptor.adaptColumnType(16), ((AddExpressionValueBean) value).getValue());
             }
             case BIConfConstants.CONF.ADD_COLUMN.ACCUMULATIVE_VALUE.TYPE: {
@@ -443,6 +457,10 @@ class EtlAdaptor {
             }
             case BIConfConstants.CONF.ADD_COLUMN.TIME.TYPE: {
                 return getFromDataOperator(value);
+=======
+                String expression = ((AddExpressionValueBean) value).getValue();
+                return new ColumnFormulaOperator(value.getName(), FormulaUtils.getColumnType(source.getMetadata(), expression), expression);
+>>>>>>> fc0231d0300a772eb2341eeeb2f1c764958c5495
             }
             case BIConfConstants.CONF.ADD_COLUMN.TIME_GAP.TYPE:
                 return getDateDiffOperator(value);

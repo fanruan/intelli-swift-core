@@ -16,6 +16,7 @@ import com.finebi.conf.internalimp.dashboard.widget.table.CrossTableWidget;
 import com.finebi.conf.internalimp.dashboard.widget.table.StringControlWidget;
 import com.finebi.conf.internalimp.dashboard.widget.table.TableWidget;
 import com.finebi.conf.service.engine.excutor.EngineWidgetExecutorManager;
+import com.finebi.conf.structure.dashboard.widget.FineWidget;
 import com.finebi.conf.structure.result.BIDetailTableResult;
 import com.finebi.conf.structure.result.BIResult;
 import com.finebi.conf.structure.result.BIStringDetailResult;
@@ -29,6 +30,9 @@ import com.finebi.conf.structure.result.table.BIComplexGroupResult;
 import com.finebi.conf.structure.result.table.BICrossNode;
 import com.finebi.conf.structure.result.table.BIGroupNode;
 
+import java.util.List;
+import java.util.Map;
+
 /**
  * @author anchore
  * @date 2018/2/26
@@ -39,6 +43,7 @@ public class EngineWidgetExecutorManagerImpl implements EngineWidgetExecutorMana
         return null;
     }
 
+    @Override
     public BIComplexGroupResult visit(VanChartWidget vanChartWidget) {
         return null;
     }
@@ -100,6 +105,12 @@ public class EngineWidgetExecutorManagerImpl implements EngineWidgetExecutorMana
 
     @Override
     public NumberMaxAndMinValue getFieldMaxAndMinValueByFieldId(String fieldId) {
+        return null;
+    }
+
+
+    @Override
+    public Map<String, Object> getClickValue(FineWidget widget, Map clicked, List<String> fieldsId) {
         return null;
     }
 

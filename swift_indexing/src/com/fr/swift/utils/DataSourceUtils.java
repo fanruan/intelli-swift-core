@@ -56,6 +56,7 @@ public class DataSourceUtils {
             if (dataSource instanceof ETLSource) {
                 ETLSource etlSource = (ETLSource) dataSource;
                 ETLOperator etlOperator = etlSource.getOperator();
+<<<<<<< HEAD
                 OperatorType type = etlOperator.getOperatorType();
                 switch(type) {
                     case COLUMN_FORMULA:
@@ -76,6 +77,10 @@ public class DataSourceUtils {
                     case DATEDIFF:
                         fields.add(((DateDiffOperator) etlOperator).getColumnMD5());
                         break;
+=======
+                if (etlOperator.getOperatorType().equals(OperatorType.COLUMN_FORMULA)) {
+                    fields.add(((ColumnFormulaOperator) etlOperator).getColumnName());
+>>>>>>> fc0231d0300a772eb2341eeeb2f1c764958c5495
                 }
             }
             return fields;

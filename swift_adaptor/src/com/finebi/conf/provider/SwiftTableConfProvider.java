@@ -88,12 +88,16 @@ public class SwiftTableConfProvider implements EngineTableManager {
         for (FineBusinessPackage pack : allPackage) {
             if (tables.containsKey(pack.getId())) {
                 List<FineBusinessTable> allTables = tables.get(pack.getId());
-                pack.getTables().addAll(getTableNames(allTables));
+                for (FineBusinessTable table : allTables) {
+                    if (!pack.getTables().contains(table.getName())) {
+                        pack.addTable(table.getName());
+                    }
+                }
                 needUpdatePackage.add(pack);
                 newAddTables.addAll(allTables);
             }
         }
-        return businessPackageDAO.updateConfigs(needUpdatePackage) && businessTableDAO.saveConfigs(newAddTables);
+        return businessPackageDAO.updateConfigs(needUpdatePackage) && businessTableDAO.updateConfigs(newAddTables);
     }
 
     private List<String> getTableNames(List<FineBusinessTable> tables) {

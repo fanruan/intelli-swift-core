@@ -86,8 +86,13 @@ public class SwiftMetaDataImpl implements SwiftMetaData {
     }
 
     @Override
-    public boolean getColumnAddState(int index) throws SwiftMetaDataException {
-        return getColumn(index).isAddColumn();
+    public String getColumnId(int index) throws SwiftMetaDataException {
+        return getColumn(index).getColumnId();
+    }
+
+    @Override
+    public String getColumnId(String columnName) throws SwiftMetaDataException {
+        return getColumn(columnName).getColumnId();
     }
 
     @Override

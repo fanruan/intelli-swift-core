@@ -7,6 +7,7 @@ import com.fr.swift.query.aggregator.AggregatorValue;
 import com.fr.swift.query.sort.Sort;
 import com.fr.swift.result.GroupByResultSet;
 import com.fr.swift.result.KeyValue;
+import com.fr.swift.result.RowIndexKey;
 import com.fr.swift.structure.queue.FIFOQueue;
 import com.fr.swift.structure.queue.LinkedListFIFOQueue;
 
@@ -18,14 +19,14 @@ public class BIGroupNodeFactory {
 
     // 构建没有指标排序的node结构
     public static BIGroupNode create(GroupByResultSet resultSet) {
-        Iterator<KeyValue<int[], AggregatorValue[]>> iterator = resultSet.getRowResultIterator();
+        Iterator<KeyValue<RowIndexKey, AggregatorValue[]>> iterator = resultSet.getRowResultIterator();
         List<Map<Integer, Object>> dictionaries = resultSet.getGlobalDictionaries();
         List<Sort> sorts = resultSet.getIndexSorts();
         Trie<int[], Integer, Number[]> trie = new GroupNodeTrie(-1, null, null, null, sorts);
         while (iterator.hasNext()) {
-            KeyValue<int[], AggregatorValue[]> keyValue = iterator.next();
+            KeyValue<RowIndexKey, AggregatorValue[]> keyValue = iterator.next();
             Number[] value = getValues(keyValue.getValue());
-            int[] key = keyValue.getKey();
+            int[] key = keyValue.getKey().getKey();
             trie.insert(key, value);
         }
         // convert trie to BIGroupNode

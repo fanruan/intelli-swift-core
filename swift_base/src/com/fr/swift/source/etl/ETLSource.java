@@ -110,8 +110,8 @@ public class ETLSource extends AbstractDataSource implements ETLDataSource {
                 try {
                     int columnIndex = entry.getKey() + 1;
                     //改名这边不需要转义了
-                    columnList.add(new MetaDataColumn(entry.getValue(), metaData.getColumnType(columnIndex),
-                            metaData.getPrecision(columnIndex), metaData.getScale(columnIndex)));
+                    columnList.add(new MetaDataColumn(entry.getValue(), null, metaData.getColumnType(columnIndex),
+                            metaData.getPrecision(columnIndex), metaData.getScale(columnIndex), metaData.getColumnId(columnIndex)));
                 } catch (SwiftMetaDataException e) {
                     LOGGER.error("field missed " + entry.getKey());
                 }
@@ -134,7 +134,7 @@ public class ETLSource extends AbstractDataSource implements ETLDataSource {
                     for (int i = 0; i < basedMeta.getColumnCount(); i++) {
                         int index = i + 1;
                         columns.add(new MetaDataColumn(basedMeta.getColumnName(index), basedMeta.getColumnRemark(index),
-                                basedMeta.getColumnType(index), basedMeta.getPrecision(index), basedMeta.getScale(index), basedMeta.getColumnAddState(index)));
+                                basedMeta.getColumnType(index), basedMeta.getPrecision(index), basedMeta.getScale(index), basedMeta.getColumnId(index)));
                     }
                 }
             }

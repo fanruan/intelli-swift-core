@@ -1,5 +1,6 @@
 package com.fr.swift.generate.preview;
 
+import com.fr.swift.generate.realtime.RealtimeColumnDictMerger;
 import com.fr.swift.generate.realtime.RealtimeColumnIndexer;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.SegmentOperator;
@@ -57,6 +58,12 @@ public class MinorUpdater {
 
                 @Override
                 protected void mergeDict() {
+                    new RealtimeColumnDictMerger(dataSource, key) {
+                        @Override
+                        protected List<Segment> getSegments() {
+                            return MinorSegmentManager.getInstance().getSegment(dataSource.getSourceKey());
+                        }
+                    }.work();
                 }
             }.work();
         }

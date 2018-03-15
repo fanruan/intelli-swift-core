@@ -90,8 +90,13 @@ public class SwiftEmptyResult implements SwiftResultSet {
             }
 
             @Override
-            public boolean getColumnAddState(int index) throws SwiftMetaDataException {
-                return false;
+            public String getColumnId(int index) throws SwiftMetaDataException {
+                return null;
+            }
+
+            @Override
+            public String getColumnId(String columnName) throws SwiftMetaDataException {
+                return null;
             }
         };
     }
