@@ -18,7 +18,7 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * Created by Handsome on 2018/1/17 0017 10:52
+ * Created by Jonas on 2018/3/12 9:00
  */
 public class DataMiningTransferOperator implements ETLTransferOperator {
     private static final SwiftLogger LOGGER = SwiftLoggers.getLogger(DataMiningTransferOperator.class);

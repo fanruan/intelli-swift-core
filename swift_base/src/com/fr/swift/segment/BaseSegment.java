@@ -60,23 +60,25 @@ public abstract class BaseSegment implements Segment {
     @SuppressWarnings("unchecked")
     public <T> Column<T> getColumn(ColumnKey key) {
         try {
-            String realName = getRealName(key.getName());
-            String remark = getRemark(key.getName());
-            String name = realName != null ? realName : remark;
-            if (name == null) {
-                return null;
-            }
-            ColumnKey nameColumnKey = new ColumnKey(name);
-            if (columns.containsKey(nameColumnKey)) {
-                return (Column<T>) columns.get(nameColumnKey);
+//            String realName = getRealName(key.getName());
+//            String remark = getRemark(key.getName());
+//            String name = realName != null ? realName : remark;
+//            if (name == null) {
+//                return null;
+//            }
+            String name = key.getName();
+            String columnId = meta.getColumnId(name);
+
+            if (columns.containsKey(key)) {
+                return (Column<T>) columns.get(key);
             }
             synchronized (columns) {
-                if (columns.containsKey(nameColumnKey)) {
-                    return (Column<T>) columns.get(nameColumnKey);
+                if (columns.containsKey(key)) {
+                    return (Column<T>) columns.get(key);
                 }
-                IResourceLocation child = parent.buildChildLocation(name);
+                IResourceLocation child = parent.buildChildLocation(columnId);
                 Column<?> column = newColumn(child, getClassType(name));
-                columns.put(nameColumnKey, column);
+                columns.put(key, column);
                 return (Column<T>) column;
             }
         } catch (Exception e) {

@@ -23,7 +23,10 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static com.fr.swift.cube.io.IOConstant.*;
+import static com.fr.swift.cube.io.IOConstant.NULL_DOUBLE;
+import static com.fr.swift.cube.io.IOConstant.NULL_INT;
+import static com.fr.swift.cube.io.IOConstant.NULL_LONG;
+import static com.fr.swift.cube.io.IOConstant.NULL_STRING;
 
 /**
  * Created by Handsome on 2018/2/1 0001 15:27
@@ -95,7 +98,7 @@ public class FormulaUtils {
             }
             Column column = segment.getColumn(new ColumnKey(columnName));
             if (column != null) {
-                columnIndexMap.put(toParameterFormat(String.valueOf(i)), new ColumnKey(column.getLocation().getName()));
+                columnIndexMap.put(toParameterFormat(String.valueOf(i)), new ColumnKey(columnName));
             } else {
                 LOGGER.error(columnName + ": not found");
             }

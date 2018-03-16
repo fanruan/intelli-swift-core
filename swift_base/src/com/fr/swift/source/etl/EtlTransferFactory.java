@@ -14,7 +14,7 @@ import java.util.List;
  */
 public class EtlTransferFactory {
     public static EtlTransfer createTransfer(ETLSource source) {
-        SwiftMetaData metaData = source.getMetadata();
+        SwiftMetaData metaData = source.getMetadata(); 
         ETLOperator operator = source.getOperator();
         ETLTransferOperator transferOperator = EtlTransferOperatorFactory.createTransferOperator(operator);
         List<SwiftMetaData> basedMetas = new ArrayList<SwiftMetaData>();
