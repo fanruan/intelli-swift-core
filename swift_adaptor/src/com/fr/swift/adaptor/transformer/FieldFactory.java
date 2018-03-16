@@ -27,7 +27,6 @@ public class FieldFactory {
         List<FineBusinessField> fineBusinessFieldList = new ArrayList<FineBusinessField>();
         for (int i = 1; i <= swiftMetaData.getColumnCount(); i++) {
             String columnName = swiftMetaData.getColumnName(i);
-//            String columnName = swiftMetaData.getColumnRemark(i) == null ? swiftMetaData.getColumnName(i) : swiftMetaData.getColumnRemark(i);
             int columnType = swiftMetaData.getColumnType(i);
             String columnRemark = swiftMetaData.getColumnRemark(i);
             int precision = swiftMetaData.getPrecision(i);
@@ -36,11 +35,7 @@ public class FieldFactory {
 
             FineBusinessField fineBusinessField;
 
-//            if (swiftMetaData.getColumnAddState(i)) {
-//                fineBusinessField = new FineBusinessFieldImp(swiftMetaData.getTableName() + columnId, columnName, columnId);
-//            } else {
             fineBusinessField = new FineBusinessFieldImp(tableId == null ? swiftMetaData.getTableName() + columnId : tableId + columnId, columnName, columnRemark);
-//            }
 
             ((FineBusinessFieldImp) fineBusinessField).setEngineType(FineEngineType.Cube);
             fineBusinessField.setType(transformSwiftColumnType2BIColumnType(ColumnTypeUtils.sqlTypeToColumnType(columnType, precision, scale)));
