@@ -21,7 +21,7 @@ public class HistorySegmentOperator extends AbstractHistorySegmentOperator {
         super(sourceKey, segments, cubeSourceKey, swiftResultSet);
         if (null != segments && !segments.isEmpty()) {
             for (int i = 0, len = segments.size(); i < len; i++) {
-                this.segmentList.add(new HistorySegmentHolder(metaData, segments.get(i)));
+                this.segmentList.add(new HistorySegmentHolder(segments.get(i)));
             }
         }
     }
@@ -36,7 +36,7 @@ public class HistorySegmentOperator extends AbstractHistorySegmentOperator {
             int size = segmentList.size();
             if (index >= size) {
                 for (int i = size; i <= index; i++) {
-                    segmentList.add(new HistorySegmentHolder(metaData, createSegment(i)));
+                    segmentList.add(new HistorySegmentHolder(createSegment(i)));
                 }
             } else if (index == -1) {
                 index = segmentList.size() - 1;

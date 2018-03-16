@@ -14,8 +14,8 @@ import com.fr.swift.util.Crasher;
  */
 public class RealtimeSegmentHolder extends AbstractSegmentHolder {
 
-    public RealtimeSegmentHolder(SwiftMetaData metaData, Segment segment) throws SwiftMetaDataException {
-        super(metaData, segment);
+    public RealtimeSegmentHolder(Segment segment) throws SwiftMetaDataException {
+        super(segment);
     }
 
     @Override

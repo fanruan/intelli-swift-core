@@ -34,10 +34,10 @@ public abstract class AbstractSegmentHolder implements SegmentHolder {
     protected  AtomicInteger rowCount;
     protected SwiftMetaData metaData;
 
-    public AbstractSegmentHolder(SwiftMetaData metaData, Segment segment) throws SwiftMetaDataException {
+    public AbstractSegmentHolder(Segment segment) throws SwiftMetaDataException {
         this.segment = segment;
         this.rowCount = new AtomicInteger(0);
-        this.metaData = metaData;
+        this.metaData = segment.getMetaData();
         this.storeType = segment.getLocation().getStoreType();
         init();
     }

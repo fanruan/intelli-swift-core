@@ -37,7 +37,7 @@ public class IncreaseSegmentOperator extends AbstractIncreaseSegmentOperator {
                 int size = increaseSegmentList.size();
                 if (index >= size) {
                     for (int i = size; i <= index; i++) {
-                        increaseSegmentList.add(new RealtimeSegmentHolder(metaData, createSegment(segmentList.size() + i)));
+                        increaseSegmentList.add(new RealtimeSegmentHolder(createSegment(segmentList.size() + i)));
                     }
                 } else if (index == -1) {
                     index = increaseSegmentList.size() - 1;

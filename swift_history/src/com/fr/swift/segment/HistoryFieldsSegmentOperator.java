@@ -36,7 +36,7 @@ public class HistoryFieldsSegmentOperator extends AbstractHistorySegmentOperator
             int size = segmentList.size();
             if (index >= size) {
                 for (int i = size; i <= index; i++) {
-                    segmentList.add(new HistorySegmentHolder(metaData, createSegment(i)));
+                    segmentList.add(new HistorySegmentHolder(createSegment(i)));
                 }
             } else if (index == -1) {
                 index = segmentList.size() - 1;

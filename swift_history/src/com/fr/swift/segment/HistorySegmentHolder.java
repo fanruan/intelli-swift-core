@@ -11,8 +11,8 @@ import com.fr.swift.source.SwiftMetaData;
  */
 public class HistorySegmentHolder extends AbstractSegmentHolder {
 
-    public HistorySegmentHolder(SwiftMetaData metaData, Segment segment) throws SwiftMetaDataException {
-        super(metaData, segment);
+    public HistorySegmentHolder(Segment segment) throws SwiftMetaDataException {
+        super(segment);
     }
 }
 
