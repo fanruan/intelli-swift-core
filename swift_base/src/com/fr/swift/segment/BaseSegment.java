@@ -86,7 +86,7 @@ public abstract class BaseSegment implements Segment {
 
     private String getRealName(String name) throws SwiftMetaDataException {
         for (int i = 1, len = meta.getColumnCount(); i <= len; i++) {
-            if (ComparatorUtils.equals(name, meta.getColumnName(i))) {
+            if (ComparatorUtils.equals(name, meta.getColumnId(i))) {
                 return name;
             }
         }
@@ -122,12 +122,7 @@ public abstract class BaseSegment implements Segment {
     private ClassType getClassType(String name) {
         try {
             for (int i = 1, len = meta.getColumnCount(); i <= len; i++) {
-                if (ComparatorUtils.equals(meta.getColumnName(i), name)) {
-                    return ColumnTypeUtils.sqlTypeToClassType(meta.getColumnType(i), meta.getPrecision(i), meta.getScale(i));
-                }
-            }
-            for (int i = 1, len = meta.getColumnCount(); i <= len; i++) {
-                if (ComparatorUtils.equals(meta.getColumnRemark(i), name)) {
+                if (ComparatorUtils.equals(meta.getColumnId(i), name)) {
                     return ColumnTypeUtils.sqlTypeToClassType(meta.getColumnType(i), meta.getPrecision(i), meta.getScale(i));
                 }
             }

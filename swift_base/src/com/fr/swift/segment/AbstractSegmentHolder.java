@@ -44,7 +44,7 @@ public abstract class AbstractSegmentHolder implements SegmentHolder {
     private void init() throws SwiftMetaDataException {
         this.nullMap = new ConcurrentHashMap<ColumnKey, MutableBitMap>();
         for (int i = 1, len = metaData.getColumnCount(); i <= len; i++) {
-            ColumnKey columnKey = new ColumnKey(metaData.getColumnName(i));
+            ColumnKey columnKey = new ColumnKey(metaData.getColumnId(i));
             this.nullMap.put(columnKey, BitMaps.newRoaringMutable());
         }
     }
@@ -100,7 +100,7 @@ public abstract class AbstractSegmentHolder implements SegmentHolder {
     @Override
     public void putDetail(int column, Object value) throws SwiftMetaDataException {
         ClassType clazz = getClassType(metaData.getColumnType(column + 1), metaData.getPrecision(column + 1), metaData.getScale(column + 1));
-        ColumnKey key = new ColumnKey(metaData.getColumnName(column + 1));
+        ColumnKey key = new ColumnKey(metaData.getColumnId(column + 1));
         DetailColumn detail = getColumn(key);
         int row = rowCount.get();
         if (null == value) {

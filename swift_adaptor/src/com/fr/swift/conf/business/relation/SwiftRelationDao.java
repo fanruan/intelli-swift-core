@@ -3,7 +3,6 @@ package com.fr.swift.conf.business.relation;
 import com.finebi.base.constant.FineEngineType;
 import com.finebi.base.utils.data.io.FileUtils;
 import com.finebi.conf.service.dao.provider.BusinessConfigDAO;
-import com.finebi.conf.structure.bean.table.FineBusinessTable;
 import com.finebi.conf.structure.relation.FineBusinessTableRelation;
 import com.fr.general.ComparatorUtils;
 import com.fr.swift.conf.business.AbstractSwiftParseXml;
@@ -136,7 +135,7 @@ public class SwiftRelationDao implements BusinessConfigDAO<FineBusinessTableRela
 ////            return false;
 ////        }
         try {
-            container.saveResources(new ArrayList<>());
+            container.saveResources(new ArrayList<FineBusinessTableRelation>());
             return true;
         } catch (Exception e) {
             LOGGER.error(e.getMessage(), e);

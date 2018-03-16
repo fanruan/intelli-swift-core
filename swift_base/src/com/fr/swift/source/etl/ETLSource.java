@@ -80,6 +80,10 @@ public class ETLSource extends AbstractDataSource implements ETLDataSource {
         return basedSources;
     }
 
+    public Map<Integer, String> getFieldsInfo() {
+        return fieldsInfo;
+    }
+
     private void initParentKeys() {
         basedKeys = new ArrayList<SourceKey>();
         for (DataSource source : basedSources) {
@@ -109,9 +113,8 @@ public class ETLSource extends AbstractDataSource implements ETLDataSource {
             for (Map.Entry<Integer, String> entry : fieldsInfo.entrySet()) {
                 try {
                     int columnIndex = entry.getKey() + 1;
-                    //改名这边不需要转义了
-                    columnList.add(new MetaDataColumn(entry.getValue(), metaData.getColumnType(columnIndex),
-                            metaData.getPrecision(columnIndex), metaData.getScale(columnIndex)));
+                    columnList.add(new MetaDataColumn(entry.getValue(), metaData.getColumnRemark(columnIndex), metaData.getColumnType(columnIndex),
+                            metaData.getPrecision(columnIndex), metaData.getScale(columnIndex), metaData.getColumnId(columnIndex)));
                 } catch (SwiftMetaDataException e) {
                     LOGGER.error("field missed " + entry.getKey());
                 }
