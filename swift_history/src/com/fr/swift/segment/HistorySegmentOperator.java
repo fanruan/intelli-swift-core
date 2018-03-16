@@ -4,7 +4,6 @@ import com.fr.swift.config.IMetaData;
 import com.fr.swift.config.conf.MetaDataConvertUtil;
 import com.fr.swift.config.conf.MetaDataConfig;
 import com.fr.swift.exception.meta.SwiftMetaDataException;
-//import com.fr.swift.source.MetaDataXmlManager;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftResultSet;
