@@ -22,6 +22,7 @@ import java.util.concurrent.ConcurrentHashMap;
  *
  * fixme 配置可用10.0持久化了
  */
+@Deprecated
 public class MetaDataXmlManager extends XMLFileManager {
 
     private static final String META_DATA_FILE_NAME = "sourceMetaData.xml";
