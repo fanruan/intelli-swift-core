@@ -41,7 +41,7 @@ public class DetailOperatorResultSet implements SwiftResultSet {
         //pony 暂时先加上原表的数据
         try {
             for (int i = 1; i <= metaData.getColumnCount(); i++) {
-                columns.add(segments[currentSegmentIndex].getColumn(new ColumnKey(metaData.getColumnId(i))).getDetailColumn());
+                columns.add(segments[currentSegmentIndex].getColumn(new ColumnKey(metaData.getColumnName(i))).getDetailColumn());
             }
         } catch (Exception ignore){
 

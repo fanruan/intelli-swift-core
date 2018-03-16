@@ -87,7 +87,7 @@ public class SwiftSegmentDetailResult implements BIDetailTableResult {
             List<Column> columnList = new ArrayList<Column>();
             rowCount += segment.getRowCount();
             for (int i = 1; i <= swiftMetaData.getColumnCount(); i++) {
-                String columnName = swiftMetaData.getColumnId(i);
+                String columnName = swiftMetaData.getColumnName(i);
                 ColumnKey columnKey = new ColumnKey(columnName);
                 columnList.add(segment.getColumn(columnKey));
             }

@@ -58,7 +58,7 @@ public class ColumnFilterOperatorResultSet implements SwiftResultSet {
             metaDataColumn = new SwiftMetaDataColumn[this.metaData.getColumnCount()];
             for(int i = 0; i < this.metaData.getColumnCount(); i++) {
                 metaDataColumn[i] = this.metaData.getColumn(i + 1);
-                getters[i] = this.segment[segCursor].getColumn(new ColumnKey(metaDataColumn[i].getColumnId())).getDictionaryEncodedColumn();
+                getters[i] = this.segment[segCursor].getColumn(new ColumnKey(metaDataColumn[i].getName())).getDictionaryEncodedColumn();
             }
         } catch(SwiftMetaDataException e) {
             LOGGER.error("getting meta's column information failed", e);

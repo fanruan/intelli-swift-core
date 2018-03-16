@@ -21,9 +21,9 @@ public class RealtimeSegmentHolder extends AbstractSegmentHolder {
     public void release() {
         try {
             for (int i = 1, len = metaData.getColumnCount(); i <= len; i++) {
-                if (getColumn(metaData.getColumnId(i)) instanceof FakeStringDetailColumn) {
+                if (getColumn(metaData.getColumnName(i)) instanceof FakeStringDetailColumn) {
 //                    segment.getColumn(new ColumnKey(metaData.getColumnName(i))).getBitmapIndex().release();
-                    getColumn(metaData.getColumnId(i)).release();
+                    getColumn(metaData.getColumnName(i)).release();
                 }
             }
         } catch (Exception e) {
