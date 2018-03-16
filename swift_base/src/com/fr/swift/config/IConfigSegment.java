@@ -1,7 +1,6 @@
 package com.fr.swift.config;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * @author yee
