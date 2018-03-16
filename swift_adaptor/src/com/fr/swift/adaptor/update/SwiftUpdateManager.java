@@ -36,7 +36,6 @@ import com.fr.swift.stuff.HistoryIndexStuffImpl;
 import com.fr.swift.stuff.IndexingStuff;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -196,7 +195,7 @@ public class SwiftUpdateManager implements EngineUpdateManager {
                 SwiftMetaData meta = queryDBSource.getMetadata();
                 for (int i = 1; i <= meta.getColumnCount(); i++) {
                     rowList.add(isDate(meta, i) ?
-                            new Date(((Long) row.getValue(i - 1))) :
+                            new java.sql.Date(((Long) row.getValue(i - 1))) :
                             row.getValue(i - 1));
                 }
                 data[count] = rowList;
