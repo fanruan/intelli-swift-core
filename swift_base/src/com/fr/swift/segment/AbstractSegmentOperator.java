@@ -36,14 +36,10 @@ public abstract class AbstractSegmentOperator implements SegmentOperator {
     protected String cubeSourceKey;
     protected SwiftResultSet swiftResultSet;
 
-    public AbstractSegmentOperator(SourceKey sourceKey, List<Segment> segments, String cubeSourceKey, SwiftResultSet swiftResultSet) {
+    public AbstractSegmentOperator(SourceKey sourceKey, List<Segment> segments, String cubeSourceKey, SwiftResultSet swiftResultSet) throws SQLException {
         Util.requireNonNull(sourceKey);
         this.sourceKey = sourceKey;
-        try {
-            this.metaData = swiftResultSet.getMetaData();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        this.metaData = swiftResultSet.getMetaData();
         this.alloter = SwiftSourceAlloterFactory.createSourceAlloter(sourceKey);
         this.segmentList = new ArrayList<SegmentHolder>();
         this.cubeSourceKey = cubeSourceKey;

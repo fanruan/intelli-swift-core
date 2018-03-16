@@ -8,6 +8,7 @@ import com.fr.swift.source.Row;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftResultSet;
 
+import java.sql.SQLException;
 import java.util.List;
 
 /**
@@ -20,7 +21,7 @@ public class HistoryFieldsSegmentOperator extends AbstractHistorySegmentOperator
     private List<String> fields;
 
     public HistoryFieldsSegmentOperator(SourceKey sourceKey, List<Segment> segments,
-                                        String cubeSourceKey, SwiftResultSet swiftResultSet, List<String> fields) {
+                                        String cubeSourceKey, SwiftResultSet swiftResultSet, List<String> fields) throws SQLException {
         super(sourceKey, segments, cubeSourceKey, swiftResultSet);
         this.fields = fields;
     }

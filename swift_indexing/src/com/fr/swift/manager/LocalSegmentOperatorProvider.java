@@ -14,6 +14,8 @@ import com.fr.swift.source.SwiftResultSet;
 import com.fr.swift.util.Crasher;
 import com.fr.swift.utils.DataSourceUtils;
 
+import java.sql.SQLException;
+
 public class LocalSegmentOperatorProvider implements SegmentOperatorProvider {
 
     private static LocalSegmentOperatorProvider INSTANCE = new LocalSegmentOperatorProvider();
@@ -42,7 +44,7 @@ public class LocalSegmentOperatorProvider implements SegmentOperatorProvider {
             }
             return new HistorySegmentOperator(dataSource.getSourceKey(),
                     manager.getSegment(dataSource.getSourceKey()), DataSourceUtils.getSwiftSourceKey(dataSource), resultSet);
-        } catch (SwiftMetaDataException e) {
+        } catch (SQLException e) {
             return Crasher.crash(e);
         }
     }
@@ -57,7 +59,7 @@ public class LocalSegmentOperatorProvider implements SegmentOperatorProvider {
             }
             return new IncreaseSegmentOperator(dataSource.getSourceKey(),
                     manager.getSegment(dataSource.getSourceKey()), DataSourceUtils.getSwiftSourceKey(dataSource), resultSet);
-        } catch (SwiftMetaDataException e) {
+        } catch (SQLException e) {
             return Crasher.crash(e);
         }
     }
@@ -67,7 +69,7 @@ public class LocalSegmentOperatorProvider implements SegmentOperatorProvider {
         try {
             return new DecreaseSegmentOperator(dataSource.getSourceKey(),
                     manager.getSegment(dataSource.getSourceKey()), DataSourceUtils.getSwiftSourceKey(dataSource), resultSet);
-        } catch (SwiftMetaDataException e) {
+        } catch (SQLException e) {
             return Crasher.crash(e);
         }
     }

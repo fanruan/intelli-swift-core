@@ -9,6 +9,7 @@ import com.fr.swift.cube.io.location.ResourceLocation;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftResultSet;
 
+import java.sql.SQLException;
 import java.util.List;
 
 /**
@@ -18,7 +19,7 @@ import java.util.List;
  */
 public abstract class AbstractHistorySegmentOperator extends AbstractSegmentOperator {
     public AbstractHistorySegmentOperator(SourceKey sourceKey, List<Segment> segments,
-                                          String cubeSourceKey, SwiftResultSet swiftResultSet) {
+                                          String cubeSourceKey, SwiftResultSet swiftResultSet) throws SQLException {
         super(sourceKey, segments, cubeSourceKey, swiftResultSet);
     }
 

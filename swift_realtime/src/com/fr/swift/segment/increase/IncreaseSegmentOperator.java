@@ -9,6 +9,7 @@ import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftResultSet;
 
+import java.sql.SQLException;
 import java.util.List;
 
 /**
@@ -21,7 +22,7 @@ import java.util.List;
 public class IncreaseSegmentOperator extends AbstractIncreaseSegmentOperator {
 
     public IncreaseSegmentOperator(SourceKey sourceKey, List<Segment> segments,
-                                   String cubeSourceKey, SwiftResultSet swiftResultSet) throws SwiftMetaDataException {
+                                   String cubeSourceKey, SwiftResultSet swiftResultSet) throws SQLException {
         super(sourceKey, segments, cubeSourceKey, swiftResultSet);
     }
 

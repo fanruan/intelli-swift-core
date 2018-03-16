@@ -10,12 +10,13 @@ import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftResultSet;
 
+import java.sql.SQLException;
 import java.util.Collections;
 import java.util.List;
 
 class MinorFieldsSegmentOperator extends IncreaseFieldsSegmentOperator {
     MinorFieldsSegmentOperator(SourceKey sourceKey, List<Segment> segments,
-                                      String cubeSourceKey, SwiftResultSet swiftResultSet, List<String> fields) throws SwiftMetaDataException {
+                                      String cubeSourceKey, SwiftResultSet swiftResultSet, List<String> fields) throws SQLException {
         super(sourceKey, segments, cubeSourceKey, swiftResultSet, fields);
     }
 
