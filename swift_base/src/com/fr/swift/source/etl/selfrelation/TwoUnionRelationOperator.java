@@ -62,6 +62,10 @@ public class TwoUnionRelationOperator extends AbstractOperator {
         return parentIdColumnName;
     }
 
+    public String getNewAddedName() {
+        return null;
+    }
+
     @Override
     public List<SwiftMetaDataColumn> getColumns(SwiftMetaData[] metaDatas) {
         Iterator<Map.Entry<String, Integer>> it;

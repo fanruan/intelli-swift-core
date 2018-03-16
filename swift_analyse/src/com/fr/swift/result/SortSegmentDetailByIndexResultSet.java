@@ -124,7 +124,7 @@ public class SortSegmentDetailByIndexResultSet extends DetailResultSet {
 
     public void getIndexBitmap(int start) {
         for (int i = start; i < sortIndex.size(); i++) {
-            gbr[i] = GroupBy.createGroupByResult(columnList.get(sortIndex.get(i)), bitmap[i], sorts.get(sortIndex.get(i)) == SortType.ASC);
+            gbr[i] = GroupBy.createGroupByResult(columnList.get(sortIndex.get(i)), bitmap[i], sorts.get(i) == SortType.ASC);
             GroupByEntry gbe;
             try {
                 if (gbr[i].hasNext()) {
@@ -134,7 +134,7 @@ public class SortSegmentDetailByIndexResultSet extends DetailResultSet {
                     throw new Exception("At least one column has no data");
                 }
                 bitmap[i + 1] = gbe.getTraversal().toBitMap();
-                gbr[i] = GroupBy.createGroupByResult(columnList.get(sortIndex.get(i)), bitmap[i], sorts.get(sortIndex.get(i)) == SortType.ASC);
+                gbr[i] = GroupBy.createGroupByResult(columnList.get(sortIndex.get(i)), bitmap[i], sorts.get(i) == SortType.ASC);
                 if (i == sortIndex.size() - 1) {
                     gbr[i].hasNext();
                 }
@@ -157,10 +157,10 @@ public class SortSegmentDetailByIndexResultSet extends DetailResultSet {
                 int c = 0;
                 //比较的列先后顺序
                 int realColumn = sortIndex.get(i);
-                if (sorts.get(realColumn) == SortType.ASC) {
+                if (sorts.get(i) == SortType.ASC) {
                     c = columnList.get(realColumn).getDictionaryEncodedColumn().getComparator().compare(o1.getValue(realColumn), o2.getValue(realColumn));
                 }
-                if (sorts.get(realColumn) == SortType.DESC) {
+                if (sorts.get(i) == SortType.DESC) {
                     c = Comparators.reverse(columnList.get(realColumn).getDictionaryEncodedColumn().getComparator()).compare(o1.getValue(realColumn), o2.getValue(realColumn));
                 }
                 if (c != 0) {

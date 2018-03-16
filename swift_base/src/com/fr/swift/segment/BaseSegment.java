@@ -128,11 +128,6 @@ public abstract class BaseSegment implements Segment {
                     return ColumnTypeUtils.sqlTypeToClassType(meta.getColumnType(i), meta.getPrecision(i), meta.getScale(i));
                 }
             }
-            for (int i = 1, len = meta.getColumnCount(); i <= len; i++) {
-                if (ComparatorUtils.equals(meta.getColumnRemark(i), name)) {
-                    return ColumnTypeUtils.sqlTypeToClassType(meta.getColumnType(i), meta.getPrecision(i), meta.getScale(i));
-                }
-            }
         } catch (SwiftMetaDataException e) {
             SwiftLoggers.getLogger().error(e);
         }

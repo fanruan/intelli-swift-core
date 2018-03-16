@@ -32,14 +32,13 @@ public class FieldFactory {
             String columnRemark = swiftMetaData.getColumnRemark(i);
             int precision = swiftMetaData.getPrecision(i);
             int scale = swiftMetaData.getScale(i);
-            String columnId = swiftMetaData.getColumnId(i);
 
             FineBusinessField fineBusinessField;
 
 //            if (swiftMetaData.getColumnAddState(i)) {
 //                fineBusinessField = new FineBusinessFieldImp(swiftMetaData.getTableName() + columnId, columnName, columnId);
 //            } else {
-            fineBusinessField = new FineBusinessFieldImp(tableId == null ? swiftMetaData.getTableName() + columnId : tableId + columnId, columnName, columnRemark);
+            fineBusinessField = new FineBusinessFieldImp(tableId == null ? swiftMetaData.getTableName() + columnName : tableId + columnName, columnName, columnRemark);
 //            }
 
             ((FineBusinessFieldImp) fineBusinessField).setEngineType(FineEngineType.Cube);

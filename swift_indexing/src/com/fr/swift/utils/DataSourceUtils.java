@@ -6,7 +6,12 @@ import com.fr.swift.source.DataSource;
 import com.fr.swift.source.etl.ETLOperator;
 import com.fr.swift.source.etl.ETLSource;
 import com.fr.swift.source.etl.OperatorType;
+import com.fr.swift.source.etl.date.GetFromDateOperator;
+import com.fr.swift.source.etl.datediff.DateDiffOperator;
 import com.fr.swift.source.etl.formula.ColumnFormulaOperator;
+import com.fr.swift.source.etl.rowcal.accumulate.AccumulateRowOperator;
+import com.fr.swift.source.etl.rowcal.alldata.AllDataRowCalculatorOperator;
+import com.fr.swift.source.etl.rowcal.rank.RankRowOperator;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -51,8 +56,12 @@ public class DataSourceUtils {
             if (dataSource instanceof ETLSource) {
                 ETLSource etlSource = (ETLSource) dataSource;
                 ETLOperator etlOperator = etlSource.getOperator();
-                if (etlOperator.getOperatorType().equals(OperatorType.COLUMN_FORMULA)) {
-                    fields.add(((ColumnFormulaOperator) etlOperator).getColumnName());
+                OperatorType type = etlOperator.getOperatorType();
+                if(type.isAddColumn()) {
+                    if(type == OperatorType.DETAIL) {
+                        return fields;
+                    }
+                    fields.add(etlOperator.getNewAddedName());
                 }
             }
             return fields;
