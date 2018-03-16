@@ -4,6 +4,8 @@ import com.fr.swift.config.IMetaData;
 import com.fr.swift.config.conf.MetaDataConvertUtil;
 import com.fr.swift.config.conf.MetaDataConfig;
 import com.fr.swift.exception.meta.SwiftMetaDataException;
+import com.fr.swift.log.SwiftLogger;
+import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftResultSet;
@@ -19,6 +21,7 @@ import java.util.List;
 public class HistoryFieldsSegmentOperator extends AbstractHistorySegmentOperator {
 
     private List<String> fields;
+    private SwiftLogger logger = SwiftLoggers.getLogger(HistoryFieldsSegmentOperator.class);
 
     public HistoryFieldsSegmentOperator(SourceKey sourceKey, List<Segment> segments,
                                         String cubeSourceKey, SwiftResultSet swiftResultSet, List<String> fields) throws SQLException {
@@ -53,12 +56,11 @@ public class HistoryFieldsSegmentOperator extends AbstractHistorySegmentOperator
 
     @Override
     public void finishTransport() {
-//        MetaDataXmlManager.getManager().putMetaData(sourceKey, metaData);
         try {
             IMetaData metaData = MetaDataConvertUtil.convert2ConfigMetaData(this.metaData);
             MetaDataConfig.getInstance().addMetaData(sourceKey.getId(), metaData);
         } catch (SwiftMetaDataException e) {
-            e.printStackTrace();
+            logger.error("save metadata failed! ", e);
         }
         for (int i = 0, len = segmentList.size(); i < len; i++) {
             SegmentHolder holder = segmentList.get(i);

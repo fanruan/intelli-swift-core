@@ -34,8 +34,6 @@ public abstract class AbstractHistorySegmentOperator extends AbstractSegmentOper
     protected Segment createSegment(int order) {
         String cubePath = System.getProperty("user.dir") + "/cubes/" + cubeSourceKey + "/seg" + order;
         IResourceLocation location = new ResourceLocation(cubePath);
-//        SegmentKey segmentKey = new SegmentKey();
-//        SegmentXmlManager.getManager().addOrUpdateSegment(sourceKey, segmentKey);
         ISegmentKey segmentKey = new SegmentKeyUnique();
         segmentKey.setSegmentOrder(order);
         segmentKey.setUri(location.getUri().getPath());
