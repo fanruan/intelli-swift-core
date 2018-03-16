@@ -9,6 +9,7 @@ import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftResultSet;
 
+import java.sql.SQLException;
 import java.util.List;
 
 
@@ -16,9 +17,9 @@ public class IncreaseFieldsSegmentOperator extends AbstractIncreaseSegmentOperat
 
     private List<String> fields;
 
-    public IncreaseFieldsSegmentOperator(SourceKey sourceKey, SwiftMetaData metaData, List<Segment> segments,
-                                         String cubeSourceKey, SwiftResultSet swiftResultSet, List<String> fields) throws SwiftMetaDataException {
-        super(sourceKey, metaData, segments, cubeSourceKey, swiftResultSet);
+    public IncreaseFieldsSegmentOperator(SourceKey sourceKey, List<Segment> segments,
+                                         String cubeSourceKey, SwiftResultSet swiftResultSet, List<String> fields) throws SQLException {
+        super(sourceKey, segments, cubeSourceKey, swiftResultSet);
         this.fields = fields;
     }
 

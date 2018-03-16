@@ -10,6 +10,7 @@ import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftResultSet;
 
+import java.sql.SQLException;
 import java.util.Collections;
 import java.util.List;
 
@@ -19,9 +20,9 @@ import java.util.List;
  */
 class MinorSegmentOperator extends IncreaseSegmentOperator {
 
-    public MinorSegmentOperator(SourceKey sourceKey, SwiftMetaData metaData, List<Segment> segments,
-                                String cubeSourceKey, SwiftResultSet swiftResultSet) throws SwiftMetaDataException {
-        super(sourceKey, metaData, segments, cubeSourceKey, swiftResultSet);
+    public MinorSegmentOperator(SourceKey sourceKey, List<Segment> segments,
+                                String cubeSourceKey, SwiftResultSet swiftResultSet) throws SQLException {
+        super(sourceKey, segments, cubeSourceKey, swiftResultSet);
     }
 
     @Override

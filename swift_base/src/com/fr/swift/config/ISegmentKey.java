@@ -24,4 +24,6 @@ public interface ISegmentKey {
     String getSourceId();
 
     void setSourceId(String sourceId);
+
+    boolean equals(Object object);
 }

@@ -10,6 +10,7 @@ import com.fr.swift.segment.column.DetailColumn;
 import com.fr.swift.source.ColumnTypeConstants.ClassType;
 import com.fr.swift.source.ColumnTypeUtils;
 import com.fr.swift.source.SwiftMetaData;
+import com.fr.swift.source.SwiftMetaDataColumn;
 import com.fr.swift.util.Crasher;
 
 import java.util.Iterator;
@@ -99,8 +100,9 @@ public abstract class AbstractSegmentHolder implements SegmentHolder {
 
     @Override
     public void putDetail(int column, Object value) throws SwiftMetaDataException {
-        ClassType clazz = getClassType(metaData.getColumnType(column + 1), metaData.getPrecision(column + 1), metaData.getScale(column + 1));
-        ColumnKey key = new ColumnKey(metaData.getColumnName(column + 1));
+        SwiftMetaDataColumn metaDataColumn = metaData.getColumn(column + 1);
+        ClassType clazz = getClassType(metaDataColumn.getType(), metaDataColumn.getPrecision(), metaDataColumn.getScale());
+        ColumnKey key = new ColumnKey(metaDataColumn.getName());
         DetailColumn detail = getColumn(key);
         int row = rowCount.get();
         if (null == value) {

@@ -2,14 +2,15 @@ package com.fr.swift.config.unique;
 
 import com.fr.config.holder.Conf;
 import com.fr.config.holder.factory.Holders;
-import com.fr.config.holder.impl.ObjectColConf;
+import com.fr.config.holder.impl.ObjectMapConf;
 import com.fr.config.utils.UniqueKey;
 import com.fr.stable.StringUtils;
 import com.fr.swift.config.IMetaData;
 
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @Author: Lucifer
@@ -23,9 +24,7 @@ public class SwiftMetaDataUnique extends UniqueKey implements IMetaData<MetaData
     private Conf<String> schema = Holders.simple(StringUtils.EMPTY);
     private Conf<String> tableName = Holders.simple(StringUtils.EMPTY);
     private Conf<String> remark = Holders.simple(StringUtils.EMPTY);
-    private ObjectColConf<Collection<MetaDataColumnUnique>> fieldList =
-            Holders.objCollection(new ArrayList<MetaDataColumnUnique>(), MetaDataColumnUnique.class);
-
+    private ObjectMapConf<Map<Integer, MetaDataColumnUnique>> fieldList = Holders.objMap(new HashMap<Integer, MetaDataColumnUnique>(), Integer.class, MetaDataColumnUnique.class);
     public SwiftMetaDataUnique() {
     }
 
@@ -68,12 +67,21 @@ public class SwiftMetaDataUnique extends UniqueKey implements IMetaData<MetaData
 
     @Override
     public List<MetaDataColumnUnique> getFieldList() {
-        return (List<MetaDataColumnUnique>) fieldList.get();
+        // 不能直接用fieldList.get(i)
+        Map<Integer, MetaDataColumnUnique> map = fieldList.get();
+        int size = map.size();
+        List<MetaDataColumnUnique> target = new ArrayList<MetaDataColumnUnique>();
+        for (int i = 0; i < size; i++) {
+            target.add(map.get(i));
+        }
+        return target;
     }
 
     @Override
     public void setFieldList(List<MetaDataColumnUnique> fieldList) {
-        this.fieldList.set(fieldList);
+        for (int i = 0, len = fieldList.size(); i < len; i++) {
+            this.fieldList.put(i, fieldList.get(i));
+        }
     }
 
 

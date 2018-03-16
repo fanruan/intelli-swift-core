@@ -24,6 +24,7 @@ import java.util.concurrent.ConcurrentHashMap;
  *
  * fixme 配置可用10.0持久化了
  */
+@Deprecated
 public class SegmentXmlManager extends XMLFileManager {
 
     private static SegmentXmlManager manager;

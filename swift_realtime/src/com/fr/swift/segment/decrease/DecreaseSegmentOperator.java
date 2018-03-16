@@ -10,6 +10,7 @@ import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftResultSet;
 
+import java.sql.SQLException;
 import java.util.List;
 
 /**
@@ -24,8 +25,8 @@ public class DecreaseSegmentOperator extends AbstractSegmentOperator {
 
     private static int DEFAULT_COLUMN_INDEX = 1;
 
-    public DecreaseSegmentOperator(SourceKey sourceKey, SwiftMetaData metaData, List<Segment> segments, String cubeSourceKey, SwiftResultSet swiftResultSet) throws SwiftMetaDataException {
-        super(sourceKey, metaData, segments, cubeSourceKey, swiftResultSet);
+    public DecreaseSegmentOperator(SourceKey sourceKey, List<Segment> segments, String cubeSourceKey, SwiftResultSet swiftResultSet) throws SQLException {
+        super(sourceKey, segments, cubeSourceKey, swiftResultSet);
         if (null != segments && !segments.isEmpty()) {
             for (int i = 0, len = segments.size(); i < len; i++) {
                 if (segments.get(i).getLocation().getStoreType() == Types.StoreType.FINE_IO) {
