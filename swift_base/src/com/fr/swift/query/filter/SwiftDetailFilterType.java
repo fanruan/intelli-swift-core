@@ -28,5 +28,8 @@ public enum SwiftDetailFilterType {
     NULL,
     NOT_NULL,
 
+    AND,
+    OR,
+
     ALL_SHOW
 }

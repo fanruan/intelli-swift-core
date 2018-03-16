@@ -40,7 +40,7 @@ public class DateInRangeFilter extends AbstractFilter<Long> {
         // 不管是否match，该index都是过滤结果的最后一个分组值
         int endIndex = endMatchAndIndex.getIndex();
         startIndex = startIndex < 0 ? 0 : startIndex;
-        if (startIndex >= dict.size() || endIndex <= 0 || startIndex > endIndex) {
+        if (startIndex >= dict.size() || endIndex < 0 || startIndex > endIndex) {
             return new IntListRowTraversal(IntListFactory.createEmptyIntList());
         }
         return new IntListRowTraversal(IntListFactory.createRangeIntList(startIndex, endIndex));

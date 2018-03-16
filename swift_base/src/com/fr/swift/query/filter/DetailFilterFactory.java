@@ -3,6 +3,8 @@ package com.fr.swift.query.filter;
 import com.fr.swift.bitmap.BitMaps;
 import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.query.filter.detail.DetailFilter;
+import com.fr.swift.query.filter.detail.impl.GeneralAndFilter;
+import com.fr.swift.query.filter.detail.impl.GeneralOrFilter;
 import com.fr.swift.query.filter.detail.impl.NotNullFilter;
 import com.fr.swift.query.filter.detail.impl.NullFilter;
 import com.fr.swift.query.filter.detail.impl.date.DateInRangeFilter;
@@ -29,6 +31,7 @@ import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.ColumnKey;
 
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -84,6 +87,10 @@ public class DetailFilterFactory {
                 return new NullFilter(column);
             case NOT_NULL:
                 return new NotNullFilter(rowCount, column);
+            case AND:
+                return new GeneralAndFilter((List<SwiftDetailFilterValue>) filterValue.getFilterValue(), segment);
+            case OR:
+                return new GeneralOrFilter((List<SwiftDetailFilterValue>) filterValue.getFilterValue(), segment);
             default:
                 return new DetailFilter() {
                     @Override

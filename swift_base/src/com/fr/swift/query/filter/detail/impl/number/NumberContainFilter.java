@@ -29,7 +29,10 @@ public class NumberContainFilter extends AbstractFilter<Number> {
     protected RowTraversal getIntIterator(DictionaryEncodedColumn<Number> dict) {
         IntList intList = IntListFactory.createIntList();
         for (Number number : groups) {
-            intList.add(dict.getIndex(number));
+            int index = dict.getIndex(number);
+            if (index != -1) {
+                intList.add(index);
+            }
         }
         return new IntListRowTraversal(intList);
     }
