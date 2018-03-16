@@ -5,6 +5,7 @@ import com.fr.swift.query.adapter.target.DetailTarget;
 import com.fr.swift.result.DetailResultSet;
 import com.fr.swift.result.MultiSegmentDetailResultSet;
 
+import java.sql.SQLException;
 import java.util.List;
 
 /**
@@ -22,7 +23,7 @@ public class NormalDetailResultQuery extends AbstractDetailResultQuery {
     }
 
     @Override
-    public DetailResultSet getQueryResult() {
+    public DetailResultSet getQueryResult() throws SQLException {
 
         return new MultiSegmentDetailResultSet(queryList);
     }
