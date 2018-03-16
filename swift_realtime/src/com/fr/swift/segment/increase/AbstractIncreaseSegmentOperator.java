@@ -66,7 +66,7 @@ public abstract class AbstractIncreaseSegmentOperator extends AbstractSegmentOpe
         segmentKey.setSourceId(sourceKey.getId());
         segmentKey.setStoreType(Types.StoreType.MEMORY.name());
 //        SegmentXmlManager.getManager().addSegment(sourceKey, segmentKey);
-        SegmentConfig.getInstance().addOrUpdateSegment(segmentKey);
+        SegmentConfig.getInstance().addSegment(segmentKey);
         return new RealTimeSegmentImpl(location, metaData);
     }
 }

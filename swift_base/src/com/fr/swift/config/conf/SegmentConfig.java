@@ -56,18 +56,18 @@ public class SegmentConfig extends DefaultConfiguration {
         segmentUnique.setSourceKey(segment.getSourceKey());
     }
 
-    public void addOrUpdateSegment(ISegmentKey segmentKey) {
+    public void addSegment(ISegmentKey segmentKey) {
         String sourceId = segmentKey.getSourceId();
         IConfigSegment segmentUnique = (IConfigSegment) segmentHolder.get(sourceId);
         if (null == segmentUnique) {
             segmentUnique = new SegmentUnique();
-            Map<String, ISegmentKey> segments = new HashMap<String, ISegmentKey>();
-            segments.put(segmentKey.getName(), segmentKey);
+            List<ISegmentKey> segments = new ArrayList<ISegmentKey>();
+            segments.add(segmentKey);
             segmentUnique.setSegments(segments);
             segmentUnique.setSourceKey(sourceId);
             addSegments(segmentUnique);
         } else {
-            segmentUnique.addOrUpdateSegment(segmentKey);
+            segmentUnique.addSegment(segmentKey);
         }
     }
 

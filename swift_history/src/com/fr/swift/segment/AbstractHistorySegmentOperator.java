@@ -40,7 +40,7 @@ public abstract class AbstractHistorySegmentOperator extends AbstractSegmentOper
         segmentKey.setUri(location.getUri().getPath());
         segmentKey.setSourceId(sourceKey.getId());
         segmentKey.setStoreType(Types.StoreType.FINE_IO.name());
-        SegmentConfig.getInstance().addOrUpdateSegment(segmentKey);
+        SegmentConfig.getInstance().addSegment(segmentKey);
         return new HistorySegmentImpl(location, metaData);
     }
 }

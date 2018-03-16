@@ -18,10 +18,10 @@ public class SegmentCreater {
     public static SegmentUnique getSegment() {
         SegmentUnique segmentUnique = new SegmentUnique();
         segmentUnique.setSourceKey("sourceA");
-        Map<String, ISegmentKey> keyUniques = new HashMap<>();
+        List<ISegmentKey> keyUniques = new ArrayList<>();
         for (int i = 0; i < 3; i++) {
             SegmentKeyUnique keyUnique = new SegmentKeyUnique("seg" + i, URI.create("/seg" + i), i, Types.StoreType.FINE_IO);
-            keyUniques.put(keyUnique.getName(), keyUnique);
+            keyUniques.add(keyUnique);
         }
         segmentUnique.setSegments(keyUniques);
         return segmentUnique;
@@ -30,10 +30,10 @@ public class SegmentCreater {
     public static SegmentUnique getModify() {
         SegmentUnique segmentUnique = new SegmentUnique();
         segmentUnique.setSourceKey("sourceA");
-        Map<String, ISegmentKey> keyUniques = new HashMap<>();
+        List<ISegmentKey> keyUniques = new ArrayList<>();
         for (int i = 0; i < 3; i++) {
             SegmentKeyUnique keyUnique = new SegmentKeyUnique("seg" + (i + 1), URI.create("/seg" + (i + 1)), i, Types.StoreType.FINE_IO);
-            keyUniques.put(keyUnique.getName(), keyUnique);
+            keyUniques.add(keyUnique);
         }
         segmentUnique.setSegments(keyUniques);
         return segmentUnique;

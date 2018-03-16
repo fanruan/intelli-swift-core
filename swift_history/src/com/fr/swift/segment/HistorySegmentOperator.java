@@ -1,6 +1,7 @@
 package com.fr.swift.segment;
 
 import com.fr.swift.config.IMetaData;
+import com.fr.swift.config.conf.ConfigObjUtil;
 import com.fr.swift.config.conf.MetaDataConfig;
 import com.fr.swift.exception.meta.SwiftMetaDataException;
 //import com.fr.swift.source.MetaDataXmlManager;
@@ -53,7 +54,7 @@ public class HistorySegmentOperator extends AbstractHistorySegmentOperator {
     public void finishTransport() {
 //        MetaDataXmlManager.getManager().putMetaData(sourceKey, metaData);
         try {
-            IMetaData metaData = convert2ConfigMetaData();
+            IMetaData metaData = ConfigObjUtil.convert2ConfigMetaData(this.metaData);
             MetaDataConfig.getInstance().addMetaData(sourceKey.getId(), metaData);
         } catch (SwiftMetaDataException e) {
             e.printStackTrace();

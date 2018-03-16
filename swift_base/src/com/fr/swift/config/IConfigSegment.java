@@ -1,5 +1,6 @@
 package com.fr.swift.config;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -7,13 +8,13 @@ import java.util.Map;
  * @date 2018/3/9
  */
 public interface IConfigSegment {
-    Map<String, ISegmentKey> getSegments();
+    List<ISegmentKey> getSegments();
 
-    void setSegments(Map<String, ISegmentKey> segments);
+    void setSegments(List<ISegmentKey> segments);
 
     String getSourceKey();
 
     void setSourceKey(String sourceKey);
 
-    void addOrUpdateSegment(ISegmentKey segmentKey);
+    void addSegment(ISegmentKey segmentKey);
 }

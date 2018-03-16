@@ -2,7 +2,6 @@ package com.fr.swift.config.unique;
 
 import com.fr.config.holder.Conf;
 import com.fr.config.holder.factory.Holders;
-import com.fr.config.holder.impl.ObjectColConf;
 import com.fr.config.holder.impl.ObjectMapConf;
 import com.fr.config.utils.UniqueKey;
 import com.fr.stable.StringUtils;
@@ -10,7 +9,6 @@ import com.fr.swift.config.IConfigSegment;
 import com.fr.swift.config.ISegmentKey;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,9 +21,9 @@ public class SegmentUnique extends UniqueKey implements IConfigSegment {
 
     private Conf<String> sourceKey = Holders.simple(StringUtils.EMPTY);
 
-    private ObjectMapConf<Map<String, ISegmentKey>> segments = Holders.objMap(new HashMap<String, ISegmentKey>(), String.class, ISegmentKey.class);
+    private ObjectMapConf<Map<Integer, ISegmentKey>> segments = Holders.objMap(new HashMap<Integer, ISegmentKey>(), Integer.class, ISegmentKey.class);
 
-    public SegmentUnique(String sourceKey, Map<String, ISegmentKey> keys) {
+    public SegmentUnique(String sourceKey, List<ISegmentKey> keys) {
         this.setSourceKey(sourceKey);
         this.setSegments(keys);
     }
@@ -34,12 +32,22 @@ public class SegmentUnique extends UniqueKey implements IConfigSegment {
 
     }
 
-    public Map<String, ISegmentKey> getSegments() {
-        return (Map<String, ISegmentKey>) segments.get();
+    public List<ISegmentKey> getSegments() {
+        Map<Integer, ISegmentKey> map = segments.get();
+        int size = map.size();
+        List<ISegmentKey> result = new ArrayList<ISegmentKey>();
+        for (int i = 0; i < size; i++) {
+            result.add(map.get(i));
+        }
+        // fixme 是不是需要 unmodified
+        return result;
     }
 
-    public void setSegments(Map<String, ISegmentKey> segments) {
-        this.segments.set(segments);
+    public void setSegments(List<ISegmentKey> segments) {
+        int size = segments.size();
+        for (int i = 0; i < size; i++) {
+            this.segments.put(i, segments.get(i));
+        }
     }
 
     public String getSourceKey() {
@@ -51,7 +59,7 @@ public class SegmentUnique extends UniqueKey implements IConfigSegment {
     }
 
     @Override
-    public void addOrUpdateSegment(ISegmentKey segmentKey) {
+    public void addSegment(ISegmentKey segmentKey) {
         segments.put(segmentKey.getName(), segmentKey);
     }
 }

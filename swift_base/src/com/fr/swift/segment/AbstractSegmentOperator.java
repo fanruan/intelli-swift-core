@@ -82,14 +82,4 @@ public abstract class AbstractSegmentOperator implements SegmentOperator {
     public int getSegmentCount() {
         return segmentList.size();
     }
-
-    protected IMetaData convert2ConfigMetaData() throws SwiftMetaDataException {
-        List<MetaDataColumnUnique> columns = new ArrayList<MetaDataColumnUnique>();
-        int columnCount = metaData.getColumnCount();
-        for (int i = 1; i <= columnCount; i++) {
-            SwiftMetaDataColumn column = metaData.getColumn(i);
-            columns.add(new MetaDataColumnUnique(column.getType(), column.getName(), column.getRemark(), column.getPrecision(), column.getScale(), column.getColumnId()));
-        }
-        return new SwiftMetaDataUnique(metaData.getSchemaName(), metaData.getTableName(), metaData.getRemark(), columns);
-    }
 }

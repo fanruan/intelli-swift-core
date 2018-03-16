@@ -16,6 +16,7 @@ import junit.framework.TestCase;
 
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -28,7 +29,7 @@ public class SegmentConfigTest extends TestCase {
     public void setUp() throws Exception {
         super.setUp();
         DBOption dbOption = new DBOption();
-        dbOption.setPassword("zhy100112");
+        dbOption.setPassword("root");
         dbOption.setDialectClass("com.fr.third.org.hibernate.dialect.MySQL5InnoDBDialect");
         dbOption.setDriverClass("com.mysql.jdbc.Driver");
         dbOption.setUsername("root");
@@ -54,18 +55,17 @@ public class SegmentConfigTest extends TestCase {
 
         IConfigSegment unique = SegmentConfig.getInstance().getSegmentByKey(source.getSourceKey());
         assertEquals(unique.getSourceKey(), source.getSourceKey());
-        Map<String, ISegmentKey> keyUniques = unique.getSegments();
-        Map<String, ISegmentKey> sourceKeyUniques = source.getSegments();
+        List<ISegmentKey> keyUniques = unique.getSegments();
+        List<ISegmentKey> sourceKeyUniques = source.getSegments();
         assertEquals(keyUniques.size(), sourceKeyUniques.size());
-        Iterator<Map.Entry<String, ISegmentKey>> iterator = sourceKeyUniques.entrySet().iterator();
-        while (iterator.hasNext()) {
-            Map.Entry<String, ISegmentKey> entry = iterator.next();
-
-            assertEquals(keyUniques.get(entry.getKey()).getName(), entry.getValue().getName());
-            assertEquals(keyUniques.get(entry.getKey()).getSegmentOrder(), entry.getValue().getSegmentOrder());
-            assertEquals(keyUniques.get(entry.getKey()).getSourceId(), entry.getValue().getSourceId());
-            assertEquals(keyUniques.get(entry.getKey()).getStoreType(), entry.getValue().getStoreType());
-            assertEquals(keyUniques.get(entry.getKey()).getUri(), entry.getValue().getUri());
+        for (int i = 0, len = sourceKeyUniques.size(); i < len; i++) {
+            ISegmentKey key = sourceKeyUniques.get(i);
+            ISegmentKey target = keyUniques.get(i);
+            assertEquals(target.getName(), key.getName());
+            assertEquals(target.getSegmentOrder(), key.getSegmentOrder());
+            assertEquals(target.getSourceId(), key.getSourceId());
+            assertEquals(target.getStoreType(), key.getStoreType());
+            assertEquals(target.getUri(), key.getUri());
         }
 //        assertEquals(metaData.getRemark(), MetaDataCreater.getMA().getRemark());
 //        assertEquals(metaData.getSchema(), MetaDataCreater.getMA().getSchema());
@@ -91,17 +91,17 @@ public class SegmentConfigTest extends TestCase {
 
         assertEquals(SegmentConfig.getInstance().getAllSegments().size(), 1);
         assertEquals(target1.getSourceKey(), target2.getSourceKey());
-        Map<String, ISegmentKey> keyUniques = target1.getSegments();
-        Map<String, ISegmentKey> sourceKeyUniques = target2.getSegments();
+        List<ISegmentKey> keyUniques = target1.getSegments();
+        List<ISegmentKey> sourceKeyUniques = target2.getSegments();
         assertEquals(keyUniques.size(), sourceKeyUniques.size());
-        Iterator<Map.Entry<String, ISegmentKey>> iterator = sourceKeyUniques.entrySet().iterator();
-        while (iterator.hasNext()) {
-            Map.Entry<String, ISegmentKey> entry = iterator.next();
-            assertNotSame(keyUniques.get(entry.getKey()).getName(), entry.getValue().getName());
-            assertEquals(keyUniques.get(entry.getKey()).getSegmentOrder(), entry.getValue().getSegmentOrder());
-            assertEquals(keyUniques.get(entry.getKey()).getSourceId(), entry.getValue().getSourceId());
-            assertEquals(keyUniques.get(entry.getKey()).getStoreType(), entry.getValue().getStoreType());
-            assertNotSame(keyUniques.get(entry.getKey()).getUri(), entry.getValue().getUri());
+        for (int i = 0, len = sourceKeyUniques.size(); i < len; i++) {
+            ISegmentKey key = sourceKeyUniques.get(i);
+            ISegmentKey target = keyUniques.get(i);
+            assertNotSame(key.getName(), target.getName());
+            assertEquals(key.getSegmentOrder(), target.getSegmentOrder());
+            assertEquals(key.getSourceId(), target.getSourceId());
+            assertEquals(key.getStoreType(), target.getStoreType());
+            assertNotSame(key.getUri(), target.getUri());
         }
 //        assertEquals(metaData1.getTableName(), metaData2.getTableName());
 //        assertNotSame(metaData1.getRemark(), metaData2.getRemark());
