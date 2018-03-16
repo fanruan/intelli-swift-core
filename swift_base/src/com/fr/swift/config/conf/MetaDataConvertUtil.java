@@ -17,8 +17,8 @@ import java.util.List;
  * @author yee
  * @date 2018/3/16
  */
-public class ConfigObjUtil {
-    public static SwiftMetaData convert2SwiftMetaData(String sourceKey) {
+public class MetaDataConvertUtil {
+    public static SwiftMetaData getSwiftMetaDataBySourceKey(String sourceKey) {
         IMetaData iMetaData = MetaDataConfig.getInstance().getMetaDataByKey(sourceKey);
         List<IMetaDataColumn> fieldList = iMetaData.getFieldList();
         List<SwiftMetaDataColumn> fields = new ArrayList<SwiftMetaDataColumn>();

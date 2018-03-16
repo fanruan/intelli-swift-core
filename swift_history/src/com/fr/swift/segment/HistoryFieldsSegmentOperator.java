@@ -1,13 +1,11 @@
 package com.fr.swift.segment;
 
 import com.fr.swift.config.IMetaData;
-import com.fr.swift.config.conf.ConfigObjUtil;
+import com.fr.swift.config.conf.MetaDataConvertUtil;
 import com.fr.swift.config.conf.MetaDataConfig;
 import com.fr.swift.exception.meta.SwiftMetaDataException;
-import com.fr.swift.source.MetaDataXmlManager;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SourceKey;
-import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftResultSet;
 
 import java.util.List;
@@ -56,7 +54,7 @@ public class HistoryFieldsSegmentOperator extends AbstractHistorySegmentOperator
     public void finishTransport() {
 //        MetaDataXmlManager.getManager().putMetaData(sourceKey, metaData);
         try {
-            IMetaData metaData = ConfigObjUtil.convert2ConfigMetaData(this.metaData);
+            IMetaData metaData = MetaDataConvertUtil.convert2ConfigMetaData(this.metaData);
             MetaDataConfig.getInstance().addMetaData(sourceKey.getId(), metaData);
         } catch (SwiftMetaDataException e) {
             e.printStackTrace();
