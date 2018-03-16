@@ -61,4 +61,8 @@ public class UnionOperator extends AbstractOperator {
     public OperatorType getOperatorType() {
         return OperatorType.UNION;
     }
+
+    public String getNewAddedName() {
+        return null;
+    }
 }

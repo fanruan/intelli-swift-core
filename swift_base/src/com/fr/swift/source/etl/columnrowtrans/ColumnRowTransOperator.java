@@ -53,6 +53,10 @@ public class ColumnRowTransOperator extends AbstractOperator {
         return this.otherColumnNames;
     }
 
+    public String getNewAddedName() {
+        return null;
+    }
+
     @Override
     public List<SwiftMetaDataColumn> getColumns(SwiftMetaData[] tables) {
         List<SwiftMetaDataColumn> columnList = new ArrayList<SwiftMetaDataColumn>();

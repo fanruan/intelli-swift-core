@@ -2,8 +2,11 @@ package com.fr.swift.source.etl.rowcal.accumulate;
 
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.source.*;
+import com.fr.swift.source.core.CoreField;
+import com.fr.swift.source.core.MD5Utils;
 import com.fr.swift.source.etl.AbstractOperator;
 import com.fr.swift.source.etl.OperatorType;
+import com.fr.swift.source.ColumnTypeConstants.ColumnType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,13 +15,16 @@ import java.util.List;
  * Created by Handsome on 2018/2/28 0028 15:23
  */
 public class AccumulateRowOperator extends AbstractOperator {
-
+    @CoreField
     private ColumnKey columnKey;
+    @CoreField
     private String columnName;//新增列名
-    private int columnType;
+    @CoreField
+    private ColumnType columnType;
+    @CoreField
     private ColumnKey[] dimension;
 
-    public AccumulateRowOperator(ColumnKey columnKey, String columnName, int columnType, ColumnKey[] dimension) {
+    public AccumulateRowOperator(ColumnKey columnKey, String columnName, ColumnType columnType, ColumnKey[] dimension) {
         this.columnKey = columnKey;
         this.columnName = columnName;
         this.columnType = columnType;
@@ -33,7 +39,7 @@ public class AccumulateRowOperator extends AbstractOperator {
         return columnName;
     }
 
-    public int getColumnType() {
+    public ColumnType getColumnType() {
         return columnType;
     }
 
@@ -44,8 +50,13 @@ public class AccumulateRowOperator extends AbstractOperator {
     @Override
     public List<SwiftMetaDataColumn> getColumns(SwiftMetaData[] metaDatas) {
         List<SwiftMetaDataColumn> columnList = new ArrayList<SwiftMetaDataColumn>();
-        columnList.add(new MetaDataColumn(columnName, getSqlType(metaDatas)));
+        columnList.add(new MetaDataColumn(this.columnName, this.columnName,
+                ColumnTypeUtils.columnTypeToSqlType(this.columnType), MD5Utils.getMD5String(new String[]{(this.columnName)})));
         return columnList;
+    }
+
+    public String getNewAddedName() {
+        return columnName;
     }
 
     @Override
@@ -53,7 +64,7 @@ public class AccumulateRowOperator extends AbstractOperator {
         return OperatorType.ACCUMULATE;
     }
 
-    private int getSqlType(SwiftMetaData[] metaDatas) {
-        return ColumnTypeUtils.columnTypeToSqlType(ColumnTypeConstants.ColumnType.values()[columnType]);
+    public String getColumnMD5() {
+        return MD5Utils.getMD5String(new String[]{(this.columnName)});
     }
 }

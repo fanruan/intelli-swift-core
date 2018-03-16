@@ -48,6 +48,10 @@ public class PeriodOperator extends AbstractOperator {
         return dimensions;
     }
 
+    public String getNewAddedName() {
+        return columnName;
+    }
+
     @Override
     public List<SwiftMetaDataColumn> getColumns(SwiftMetaData[] metaDatas) {
         List<SwiftMetaDataColumn> columnList = new ArrayList<SwiftMetaDataColumn>();
