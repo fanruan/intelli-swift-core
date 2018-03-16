@@ -57,7 +57,9 @@ import com.finebi.conf.utils.FineTableUtils;
 import com.fr.general.ComparatorUtils;
 import com.fr.swift.adaptor.widget.group.GroupAdaptor;
 import com.fr.swift.exception.meta.SwiftMetaDataException;
+import com.fr.swift.generate.preview.MinorSegmentManager;
 import com.fr.swift.query.filter.info.FilterInfo;
+import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.source.DataSource;
 import com.fr.swift.source.MetaDataColumn;
@@ -340,7 +342,7 @@ class EtlAdaptor {
             case AnalysisType.UNION:
                 return fromUnionBean(op.<UnionBean>getValue());
             case AnalysisType.FILTER:
-                return fromColumnFilterBean(op.<FilterOperatorBean>getValue());
+                return fromColumnFilterBean(op.<FilterOperatorBean>getValue(), table);
             case AnalysisType.CIRCLE_ONE_FIELD_CALCULATE:
                 return fromOneUnionRelationBean(op.<CirculateOneFieldBean>getValue(), table);
             case AnalysisType.CIRCLE_TWO_FIELD_CALCULATE:
@@ -507,8 +509,16 @@ class EtlAdaptor {
         return null;
     }
 
-    private static ColumnFilterOperator fromColumnFilterBean(FilterOperatorBean bean) {
-        FilterInfo filterInfo = FilterInfoFactory.transformFilterBean(bean.getValue());
+    private static ColumnFilterOperator fromColumnFilterBean(FilterOperatorBean bean, FineBusinessTable table) {
+        List<Segment> segments = new ArrayList<Segment>();
+        try {
+            DataSource source = adaptEtlDataSource(((FineAnalysisTableImpl) table).getBaseTable());
+            // TODO: 2018/3/16 这边直接通过minor来拿有问题。不能区分当前是部分数据还是全部数据的预览。需要anchore在上层处理:)
+            segments = MinorSegmentManager.getInstance().getSegment(source.getSourceKey());
+        } catch (Exception e) {
+
+        }
+        FilterInfo filterInfo = FilterInfoFactory.transformFilterBean(bean.getValue(), segments);
         return new ColumnFilterOperator(filterInfo);
     }
 

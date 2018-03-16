@@ -34,7 +34,8 @@ public class DateUtils {
             case BIConfConstants.CONF.DATE_TYPE.MULTI_DATE_YEAR_END: {
                 int year = now.get(Calendar.YEAR);
                 now.clear();
-                now.set(Calendar.YEAR, year + 1);
+                now.set(Calendar.YEAR, year);
+                now.add(Calendar.YEAR, 1);
                 return now.getTimeInMillis();
             }
 
@@ -57,7 +58,8 @@ public class DateUtils {
                 int month = now.get(Calendar.MONTH);
                 now.clear();
                 now.set(Calendar.YEAR, year);
-                now.set(Calendar.MONTH, month + 1);
+                now.set(Calendar.MONTH, month);
+                now.add(Calendar.MONTH, 1);
                 return now.getTimeInMillis();
             }
 
@@ -82,9 +84,10 @@ public class DateUtils {
                 int month = now.get(Calendar.MONTH);
                 now.clear();
                 int season = getSeason(month);
-                month = getStartMonthOfSeason(season + 1);
+                month = getStartMonthOfSeason(season);
                 now.set(Calendar.YEAR, year);
                 now.set(Calendar.MONTH, month);
+                now.add(Calendar.MONTH, 3);
                 return now.getTimeInMillis();
             }
 

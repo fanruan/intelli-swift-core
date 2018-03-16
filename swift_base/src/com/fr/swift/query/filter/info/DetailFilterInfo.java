@@ -1,13 +1,9 @@
 package com.fr.swift.query.filter.info;
 
-import com.fr.swift.bitmap.BitMaps;
-import com.fr.swift.bitmap.ImmutableBitMap;
-import com.fr.swift.query.filter.DetailFilterFactory;
 import com.fr.swift.query.filter.detail.DetailFilter;
-import com.fr.swift.result.SwiftNode;
+import com.fr.swift.query.filter.detail.impl.GeneralAndFilter;
 import com.fr.swift.segment.Segment;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -23,24 +19,6 @@ public class DetailFilterInfo extends AbstractDetailFilterInfo {
 
     @Override
     public DetailFilter createDetailFilter(final Segment segment) {
-        final List<DetailFilter> filters = new ArrayList<DetailFilter>();
-        for (SwiftDetailFilterValue filterValue : filterValues) {
-            filters.add(DetailFilterFactory.createFilter(segment, filterValue));
-        }
-        return new DetailFilter() {
-            @Override
-            public ImmutableBitMap createFilterIndex() {
-                ImmutableBitMap bitMap = BitMaps.newAllShowBitMap(segment.getRowCount());
-                for (DetailFilter filter : filters) {
-                    bitMap = bitMap.getAnd(filter.createFilterIndex());
-                }
-                return bitMap;
-            }
-
-            @Override
-            public boolean matches(SwiftNode node) {
-                throw new UnsupportedOperationException();
-            }
-        };
+        return new GeneralAndFilter(filterValues, segment);
     }
 }
