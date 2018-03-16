@@ -513,6 +513,7 @@ class EtlAdaptor {
         List<Segment> segments = new ArrayList<Segment>();
         try {
             DataSource source = adaptEtlDataSource(((FineAnalysisTableImpl) table).getBaseTable());
+            // TODO: 2018/3/16 这边直接通过minor来拿有问题。不能区分当前是部分数据还是全部数据的预览。需要anchore在上层处理:)
             segments = MinorSegmentManager.getInstance().getSegment(source.getSourceKey());
         } catch (Exception e) {
 
