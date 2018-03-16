@@ -17,13 +17,11 @@ public class AllDataTransferOperator implements ETLTransferOperator {
 
     private int summaryType;
     private String columnName;
-    private int columnType;
     private ColumnKey[] dimensions;
 
-    public AllDataTransferOperator(int summaryType, String columnName, int columnType, ColumnKey[] dimensions) {
+    public AllDataTransferOperator(int summaryType, String columnName, ColumnKey[] dimensions) {
         this.summaryType = summaryType;
         this.columnName = columnName;
-        this.columnType = columnType;
         this.dimensions = dimensions;
     }
 

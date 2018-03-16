@@ -69,4 +69,8 @@ public class DetailOperator extends AbstractOperator {
     public OperatorType getOperatorType() {
         return OperatorType.DETAIL;
     }
+
+    public String getNewAddedName() {
+        return null;
+    }
 }

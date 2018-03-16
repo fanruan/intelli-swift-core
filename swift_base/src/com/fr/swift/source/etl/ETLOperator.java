@@ -25,4 +25,11 @@ public interface ETLOperator extends CoreService{
      */
     OperatorType getOperatorType();
 
+    /**
+     * 获取新增列名
+     * @return
+     *
+     */
+    String getNewAddedName();
+
 }

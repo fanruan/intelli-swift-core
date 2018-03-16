@@ -647,7 +647,7 @@ public class DateUtils {
     }
 
     public static void checkDateColumnType(SwiftMetaDataColumn column) {
-        if(null == column || column.getType() != ColumnTypeUtils.columnTypeToSqlType(ColumnTypeConstants.ColumnType.DATE)) {
+        if(null == column || ColumnTypeUtils.sqlTypeToColumnType(column.getType(), column.getScale() , column.getPrecision()) != ColumnTypeConstants.ColumnType.DATE) {
             throw new RuntimeException("not date field");
         }
     }

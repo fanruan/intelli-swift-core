@@ -1,5 +1,6 @@
-package com.fr.swift.source.etl.rowcal.correspondperiodpercentage;
+package com.fr.swift.source.etl.expression;
 
+import com.fr.swift.query.filter.info.DetailFilterInfo;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.source.*;
 import com.fr.swift.source.etl.AbstractOperator;
@@ -9,23 +10,27 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by Handsome on 2018/3/4 0006 11:49
+ * Created by Handsome on 2018/3/6 0013 11:40
  */
-public class CorrespondMonthPercentOperator extends AbstractOperator {
+public class ExpressionFilterOperator extends AbstractOperator {
 
     private String columnName;//新增列名
     private int columnType;
     private ColumnKey columnKey;
-    private ColumnKey periodKey;
-    private ColumnKey[] dimensions;
+    private int type;
+    private DetailFilterInfo[] filters;
+    private Object[] values;
+    private Object otherValue;
 
-    public CorrespondMonthPercentOperator(String columnName, int columnType, ColumnKey columnKey,
-                                          ColumnKey periodKey, ColumnKey[] dimensions) {
+    public ExpressionFilterOperator(String columnName, int columnType, ColumnKey columnKey,
+                                    int type, DetailFilterInfo[] filters, Object[] values, Object otherValue) {
         this.columnName = columnName;
         this.columnType = columnType;
         this.columnKey = columnKey;
-        this.periodKey = periodKey;
-        this.dimensions = dimensions;
+        this.type = type;
+        this.filters = filters;
+        this.values = values;
+        this.otherValue = otherValue;
     }
 
     public String getColumnName() {
@@ -40,17 +45,22 @@ public class CorrespondMonthPercentOperator extends AbstractOperator {
         return columnKey;
     }
 
-    public ColumnKey getPeriodKey() {
-        return periodKey;
+    public int getType() {
+        return type;
     }
 
-    public ColumnKey[] getDimensions() {
-        return dimensions;
+    public DetailFilterInfo[] getFilters() {
+        return filters;
     }
 
-    public String getNewAddedName() {
-        return columnName;
+    public Object[] getValues() {
+        return values;
     }
+
+    public Object getOtherValue() {
+        return otherValue;
+    }
+
 
     @Override
     public List<SwiftMetaDataColumn> getColumns(SwiftMetaData[] metaDatas) {
@@ -59,12 +69,16 @@ public class CorrespondMonthPercentOperator extends AbstractOperator {
         return columnList;
     }
 
+    @Override
+    public OperatorType getOperatorType() {
+        return OperatorType.EXPRESSION_FILTER;
+    }
+
     private int getSqlType(SwiftMetaData[] metaDatas) {
         return ColumnTypeUtils.columnTypeToSqlType(ColumnTypeConstants.ColumnType.values()[columnType]);
     }
 
-    @Override
-    public OperatorType getOperatorType() {
-        return OperatorType.PERCENTAGE;
+    public String getNewAddedName() {
+        return columnName;
     }
 }
