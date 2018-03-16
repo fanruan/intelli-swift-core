@@ -29,6 +29,10 @@ public class ColumnFilterOperator extends AbstractOperator {
         return this.filterInfo;
     }
 
+    public String getNewAddedName() {
+        return null;
+    }
+
     @Override
     public List<SwiftMetaDataColumn> getColumns(SwiftMetaData[] metaDatas) {
         List<SwiftMetaDataColumn> columnList = new ArrayList<SwiftMetaDataColumn>();

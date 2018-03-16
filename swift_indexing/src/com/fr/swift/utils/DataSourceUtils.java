@@ -57,25 +57,11 @@ public class DataSourceUtils {
                 ETLSource etlSource = (ETLSource) dataSource;
                 ETLOperator etlOperator = etlSource.getOperator();
                 OperatorType type = etlOperator.getOperatorType();
-                switch(type) {
-                    case COLUMN_FORMULA:
-                        fields.add(((ColumnFormulaOperator) etlOperator).getColumnMD5());
-                        break;
-                    case ACCUMULATE:
-                        fields.add(((AccumulateRowOperator) etlOperator).getColumnMD5());
-                        break;
-                    case ALLDATA:
-                        fields.add(((AllDataRowCalculatorOperator) etlOperator).getColumnMD5());
-                        break;
-                    case RANK:
-                        fields.add(((RankRowOperator) etlOperator).getColumnMD5());
-                        break;
-                    case GETDATE:
-                        fields.add(((GetFromDateOperator) etlOperator).getColumnMD5());
-                        break;
-                    case DATEDIFF:
-                        fields.add(((DateDiffOperator) etlOperator).getColumnMD5());
-                        break;
+                if(type.isAddColumn()) {
+                    if(type == OperatorType.DETAIL) {
+                        return fields;
+                    }
+                    fields.add(etlOperator.getNewAddedName());
                 }
             }
             return fields;

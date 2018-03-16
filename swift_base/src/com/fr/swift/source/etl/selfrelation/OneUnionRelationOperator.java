@@ -55,6 +55,10 @@ public class OneUnionRelationOperator extends AbstractOperator {
         return columnName;
     }
 
+    public String getNewAddedName() {
+        return null;
+    }
+
 
     @Override
     public List<SwiftMetaDataColumn> getColumns(SwiftMetaData[] metaDatas) {

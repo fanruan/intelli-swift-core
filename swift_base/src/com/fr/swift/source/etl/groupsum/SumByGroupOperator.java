@@ -38,6 +38,10 @@ public class SumByGroupOperator extends AbstractOperator {
         return dimensions;
     }
 
+    public String getNewAddedName() {
+        return null;
+    }
+
     @Override
     public List<SwiftMetaDataColumn> getColumns(SwiftMetaData[] tables) {
         List<SwiftMetaDataColumn> columns = new ArrayList<SwiftMetaDataColumn>();

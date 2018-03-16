@@ -77,4 +77,8 @@ public class ExpressionFilterOperator extends AbstractOperator {
     private int getSqlType(SwiftMetaData[] metaDatas) {
         return ColumnTypeUtils.columnTypeToSqlType(ColumnTypeConstants.ColumnType.values()[columnType]);
     }
+
+    public String getNewAddedName() {
+        return columnName;
+    }
 }
