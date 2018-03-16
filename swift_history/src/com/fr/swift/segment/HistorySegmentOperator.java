@@ -1,12 +1,16 @@
 package com.fr.swift.segment;
 
+import com.fr.swift.config.IMetaData;
+import com.fr.swift.config.conf.MetaDataConvertUtil;
+import com.fr.swift.config.conf.MetaDataConfig;
 import com.fr.swift.exception.meta.SwiftMetaDataException;
-import com.fr.swift.source.MetaDataXmlManager;
+import com.fr.swift.log.SwiftLogger;
+import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SourceKey;
-import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftResultSet;
 
+import java.sql.SQLException;
 import java.util.List;
 
 /**
@@ -14,9 +18,9 @@ import java.util.List;
  * @date 2018/1/4
  */
 public class HistorySegmentOperator extends AbstractHistorySegmentOperator {
-
-    public HistorySegmentOperator(SourceKey sourceKey, SwiftMetaData metaData, List<Segment> segments, String cubeSourceKey, SwiftResultSet swiftResultSet) throws SwiftMetaDataException {
-        super(sourceKey, metaData, segments, cubeSourceKey, swiftResultSet);
+    private SwiftLogger logger = SwiftLoggers.getLogger(HistorySegmentOperator.class);
+    public HistorySegmentOperator(SourceKey sourceKey, List<Segment> segments, String cubeSourceKey, SwiftResultSet swiftResultSet) throws SQLException {
+        super(sourceKey, segments, cubeSourceKey, swiftResultSet);
         if (null != segments && !segments.isEmpty()) {
             for (int i = 0, len = segments.size(); i < len; i++) {
                 this.segmentList.add(new HistorySegmentHolder(segments.get(i)));
@@ -49,7 +53,12 @@ public class HistorySegmentOperator extends AbstractHistorySegmentOperator {
 
     @Override
     public void finishTransport() {
-        MetaDataXmlManager.getManager().putMetaData(sourceKey, metaData);
+        try {
+            IMetaData metaData = MetaDataConvertUtil.convert2ConfigMetaData(this.metaData);
+            MetaDataConfig.getInstance().addMetaData(sourceKey.getId(), metaData);
+        } catch (SwiftMetaDataException e) {
+            logger.error("save metadata failed! ", e);
+        }
         for (int i = 0, len = segmentList.size(); i < len; i++) {
             SegmentHolder holder = segmentList.get(i);
             holder.putRowCount();

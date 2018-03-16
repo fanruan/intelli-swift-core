@@ -6,7 +6,7 @@ import java.util.List;
  * @author yee
  * @date 2018/3/9
  */
-public interface ISegment {
+public interface IConfigSegment {
     List<ISegmentKey> getSegments();
 
     void setSegments(List<ISegmentKey> segments);
@@ -14,4 +14,6 @@ public interface ISegment {
     String getSourceKey();
 
     void setSourceKey(String sourceKey);
+
+    void addSegment(ISegmentKey segmentKey);
 }

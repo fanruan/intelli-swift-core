@@ -1,21 +1,21 @@
 package com.fr.swift.segment.increase;
 
+import com.fr.swift.config.ISegmentKey;
+import com.fr.swift.config.conf.SegmentConfig;
+import com.fr.swift.config.unique.SegmentKeyUnique;
 import com.fr.swift.cube.io.Types;
 import com.fr.swift.cube.io.location.IResourceLocation;
 import com.fr.swift.cube.io.location.ResourceLocation;
-import com.fr.swift.exception.meta.SwiftMetaDataException;
 import com.fr.swift.segment.AbstractSegmentOperator;
 import com.fr.swift.segment.HistorySegmentHolder;
 import com.fr.swift.segment.RealTimeSegmentImpl;
 import com.fr.swift.segment.RealtimeSegmentHolder;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.SegmentHolder;
-import com.fr.swift.segment.SegmentKey;
-import com.fr.swift.segment.SegmentXmlManager;
 import com.fr.swift.source.SourceKey;
-import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftResultSet;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,9 +28,9 @@ public abstract class AbstractIncreaseSegmentOperator extends AbstractSegmentOpe
 
     protected List<SegmentHolder> increaseSegmentList;
 
-    public AbstractIncreaseSegmentOperator(SourceKey sourceKey, SwiftMetaData metaData, List<Segment> segments,
-                                           String cubeSourceKey, SwiftResultSet swiftResultSet) throws SwiftMetaDataException {
-        super(sourceKey, metaData, segments, cubeSourceKey, swiftResultSet);
+    public AbstractIncreaseSegmentOperator(SourceKey sourceKey, List<Segment> segments,
+                                           String cubeSourceKey, SwiftResultSet swiftResultSet) throws SQLException {
+        super(sourceKey, segments, cubeSourceKey, swiftResultSet);
         this.increaseSegmentList = new ArrayList<SegmentHolder>();
         if (null != segments && !segments.isEmpty()) {
             for (int i = 0, len = segments.size(); i < len; i++) {
@@ -53,15 +53,15 @@ public abstract class AbstractIncreaseSegmentOperator extends AbstractSegmentOpe
      * @deprecated fixme 名字换成nextSegment()吧，可能有别的分块规则，和这个不兼容
      */
     @Deprecated
-    protected Segment createSegment(int order) throws Exception {
+    protected Segment createSegment(int order) {
         String cubePath = System.getProperty("user.dir") + "/cubes/" + cubeSourceKey + "/seg" + order;
         IResourceLocation location = new ResourceLocation(cubePath, Types.StoreType.MEMORY);
-        SegmentKey segmentKey = new SegmentKey();
+        ISegmentKey segmentKey = new SegmentKeyUnique();
         segmentKey.setSegmentOrder(order);
-        segmentKey.setUri(location.getUri());
+        segmentKey.setUri(location.getUri().getPath());
         segmentKey.setSourceId(sourceKey.getId());
-        segmentKey.setStoreType(Types.StoreType.MEMORY);
-        SegmentXmlManager.getManager().addSegment(sourceKey, segmentKey);
+        segmentKey.setStoreType(Types.StoreType.MEMORY.name());
+        SegmentConfig.getInstance().addSegment(segmentKey);
         return new RealTimeSegmentImpl(location, metaData);
     }
 }

@@ -7,7 +7,20 @@ import com.finebi.conf.exception.FineEngineException;
 import com.finebi.conf.internalimp.analysis.bean.operator.add.AddNewColumnBean;
 import com.finebi.conf.internalimp.analysis.bean.operator.add.AddNewColumnValueBean;
 import com.finebi.conf.internalimp.analysis.bean.operator.add.EmptyAddNewColumnBean;
+import com.finebi.conf.internalimp.analysis.bean.operator.add.accumulative.AccumulativeItemBean;
+import com.finebi.conf.internalimp.analysis.bean.operator.add.accumulative.AddAllAccumulativeValueBean;
+import com.finebi.conf.internalimp.analysis.bean.operator.add.accumulative.group.GroupAccumulativeValue;
+import com.finebi.conf.internalimp.analysis.bean.operator.add.allvalue.AddAllValueColumnBean;
+import com.finebi.conf.internalimp.analysis.bean.operator.add.allvalue.AllValueItemBean;
+import com.finebi.conf.internalimp.analysis.bean.operator.add.allvalue.group.GroupAllValueValue;
 import com.finebi.conf.internalimp.analysis.bean.operator.add.expression.AddExpressionValueBean;
+import com.finebi.conf.internalimp.analysis.bean.operator.add.gettime.GetFieldTimeValueBean;
+import com.finebi.conf.internalimp.analysis.bean.operator.add.gettime.GetFieldTimeValueItem;
+import com.finebi.conf.internalimp.analysis.bean.operator.add.rank.AddFieldRankColumnBean;
+import com.finebi.conf.internalimp.analysis.bean.operator.add.rank.AddFieldRankColumnItem;
+import com.finebi.conf.internalimp.analysis.bean.operator.add.rank.group.GroupRankValueBean;
+import com.finebi.conf.internalimp.analysis.bean.operator.add.timediff.TimeDiffValueBean;
+import com.finebi.conf.internalimp.analysis.bean.operator.add.timediff.TimeDiffValueItem;
 import com.finebi.conf.internalimp.analysis.bean.operator.circulate.CirculateOneFieldBean;
 import com.finebi.conf.internalimp.analysis.bean.operator.circulate.CirculateTwoFieldValue;
 import com.finebi.conf.internalimp.analysis.bean.operator.datamining.AlgorithmBean;
@@ -24,6 +37,7 @@ import com.finebi.conf.internalimp.analysis.bean.operator.join.JoinBean;
 import com.finebi.conf.internalimp.analysis.bean.operator.join.JoinBeanValue;
 import com.finebi.conf.internalimp.analysis.bean.operator.join.JoinNameItem;
 import com.finebi.conf.internalimp.analysis.bean.operator.select.SelectFieldBeanItem;
+import com.finebi.conf.internalimp.analysis.bean.operator.setting.FieldSettingBeanItem;
 import com.finebi.conf.internalimp.analysis.bean.operator.trans.ColumnInitalItem;
 import com.finebi.conf.internalimp.analysis.bean.operator.trans.ColumnRowTransBean;
 import com.finebi.conf.internalimp.analysis.bean.operator.trans.ColumnTransValue;
@@ -32,6 +46,7 @@ import com.finebi.conf.internalimp.analysis.bean.operator.union.UnionBeanValue;
 import com.finebi.conf.internalimp.analysis.bean.operator.union.UnionBeanValueTable;
 import com.finebi.conf.internalimp.analysis.operator.circulate.FloorItem;
 import com.finebi.conf.internalimp.analysis.operator.select.SelectFieldOperator;
+import com.finebi.conf.internalimp.analysis.operator.setting.FieldSettingOperator;
 import com.finebi.conf.internalimp.analysis.table.FineAnalysisTableImpl;
 import com.finebi.conf.structure.analysis.operator.FineOperator;
 import com.finebi.conf.structure.analysis.table.FineAnalysisTable;
@@ -57,6 +72,8 @@ import com.fr.swift.source.etl.ETLSource;
 import com.fr.swift.source.etl.columnfilter.ColumnFilterOperator;
 import com.fr.swift.source.etl.columnrowtrans.ColumnRowTransOperator;
 import com.fr.swift.source.etl.columnrowtrans.NameText;
+import com.fr.swift.source.etl.date.GetFromDateOperator;
+import com.fr.swift.source.etl.datediff.DateDiffOperator;
 import com.fr.swift.source.etl.datamining.DataMiningOperator;
 import com.fr.swift.source.etl.detail.DetailOperator;
 import com.fr.swift.source.etl.formula.ColumnFormulaOperator;
@@ -65,6 +82,9 @@ import com.fr.swift.source.etl.groupsum.SumByGroupOperator;
 import com.fr.swift.source.etl.groupsum.SumByGroupTarget;
 import com.fr.swift.source.etl.join.JoinColumn;
 import com.fr.swift.source.etl.join.JoinOperator;
+import com.fr.swift.source.etl.rowcal.accumulate.AccumulateRowOperator;
+import com.fr.swift.source.etl.rowcal.alldata.AllDataRowCalculatorOperator;
+import com.fr.swift.source.etl.rowcal.rank.RankRowOperator;
 import com.fr.swift.source.etl.selfrelation.OneUnionRelationOperator;
 import com.fr.swift.source.etl.selfrelation.TwoUnionRelationOperator;
 import com.fr.swift.source.etl.union.UnionOperator;
@@ -73,9 +93,11 @@ import com.fr.swift.source.etl.utils.FormulaUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 /**
  * Created by Handsome on 2018/1/30 0030 16:38
@@ -91,6 +113,9 @@ class EtlAdaptor {
         if (op.getType() == AnalysisType.SORT){
             return adaptEtlDataSource(analysis.getBaseTable());
         }
+        if (op.getType() == AnalysisType.FIELD_SETTING){
+            return adaptFieldSetting(analysis);
+        }
         List<DataSource> dataSources = new ArrayList<DataSource>();
         FineBusinessTable baseTable = analysis.getBaseTable();
         try {
@@ -102,6 +127,47 @@ class EtlAdaptor {
         } catch (Exception e) {
             return IndexingDataSourceFactory.transformDataSource(baseTable);
         }
+    }
+
+    private static DataSource adaptFieldSetting(FineAnalysisTable analysis) throws Exception{
+        FineOperator op = analysis.getOperator();
+        List<FieldSettingOperator> fieldSettingOperatorList = new ArrayList<FieldSettingOperator>();
+        while (op.getType() == AnalysisType.FIELD_SETTING){
+            fieldSettingOperatorList.add((FieldSettingOperator) analysis.getOperator());
+            analysis = analysis.getBaseTable();
+            op = analysis.getOperator();
+            if (op.getType() == AnalysisType.SELECT_FIELD){
+                break;
+            }
+        }
+        ETLSource source = (ETLSource) IndexingDataSourceFactory.transformDataSource(analysis);
+        return new ETLSource(source.getBasedSources(), source.getOperator(), createFieldsInfo(fieldSettingOperatorList, source));
+    }
+
+    private static Map<Integer, String> createFieldsInfo(List<FieldSettingOperator> fieldSettingOperatorList, ETLSource source) throws SwiftMetaDataException {
+        Map<Integer, String> sourceFieldsInfo = source.getFieldsInfo();
+        Map<Integer, String> sourceFullFieldInfo = new TreeMap<Integer, String>();
+        Map<Integer, String> fieldInfo = new TreeMap<Integer, String>();
+        //如果为空，就根据metadata创建
+        if (sourceFieldsInfo == null || sourceFieldsInfo.isEmpty()){
+            for (int i = 0; i <source.getMetadata().getColumnCount(); ){
+                sourceFullFieldInfo.put(i, source.getMetadata().getColumnName(++i));
+            }
+        } else {
+            sourceFullFieldInfo.putAll(sourceFieldsInfo);
+        }
+        for (int i = fieldSettingOperatorList.size() - 1; i >=0; i--){
+            List<FieldSettingBeanItem> fieldSettings = fieldSettingOperatorList.get(i).getValue().getValue();
+            Iterator<Map.Entry<Integer, String>> fullFieldInfoIter = sourceFullFieldInfo.entrySet().iterator();
+            for (int j = 0; j < fieldSettings.size(); j++){
+                FieldSettingBeanItem setting = fieldSettings.get(j);
+                Map.Entry<Integer, String> entry = fullFieldInfoIter.next();
+                if (setting.isUsed()){
+                    fieldInfo.put(entry.getKey(), setting.getName());
+                }
+            }
+        }
+        return fieldInfo.isEmpty() ? sourceFieldsInfo : fieldInfo;
     }
 
     private static DataSource adaptSelectField(FineAnalysisTable analysis) throws Exception {
@@ -344,10 +410,78 @@ class EtlAdaptor {
         return new SumByGroupOperator(groupTargets, groupDimensions);
     }
 
+    private static AccumulateRowOperator getAccumulateRowOperator(AddNewColumnValueBean value) {
+        AccumulativeItemBean tempBean = ((AddAllAccumulativeValueBean)value).getValue();
+        String columnName = value.getName();
+        ColumnKey columnKey = new ColumnKey(tempBean.getOrigin());
+        if (tempBean.getRule() == BIConfConstants.CONF.ADD_COLUMN.NOT_IN_GROUP) {
+            return new AccumulateRowOperator(columnKey, columnName, ColumnTypeAdaptor.adaptColumnType(32), null);
+        } else {
+            List<String> selects = ((GroupAccumulativeValue) tempBean).getSelects();
+            ColumnKey[] dimensions = new ColumnKey[selects.size()];
+            for(int i = 0; i < selects.size(); i++) {
+                dimensions[i] = new ColumnKey(selects.get(i));
+            }
+            return new AccumulateRowOperator(columnKey, columnName, ColumnTypeAdaptor.adaptColumnType(32), dimensions);
+        }
+    }
+
+    private static AllDataRowCalculatorOperator getAllDataRowCalculatorOperator(AddNewColumnValueBean value) {
+        String columnName = value.getName();
+        AllValueItemBean tempBean = ((AddAllValueColumnBean)value).getValue();
+        String columnKey = tempBean.getOrigin();
+        int summary = tempBean.getSummary();
+        if(tempBean.getRule() == BIConfConstants.CONF.ADD_COLUMN.NOT_IN_GROUP) {
+            return new AllDataRowCalculatorOperator(columnName, ColumnTypeAdaptor.adaptColumnType(32), columnKey, null, summary);
+        } else {
+            List<String> selects = ((GroupAllValueValue)tempBean).getSelects();
+            ColumnKey[] dimensions = new ColumnKey[selects.size()];
+            for(int i = 0; i < dimensions.length; i++) {
+                dimensions[i] = new ColumnKey(selects.get(i));
+            }
+            return new AllDataRowCalculatorOperator(columnName, ColumnTypeAdaptor.adaptColumnType(32), columnKey, dimensions, summary);
+        }
+    }
+
+    private static RankRowOperator getRankRowOperator(AddNewColumnValueBean value) {
+        String columnName = value.getName();
+        AddFieldRankColumnItem tempBean = ((AddFieldRankColumnBean) value).getValue();
+        ColumnKey columnKey = new ColumnKey(tempBean.getOrigin());
+        int summary = tempBean.getSummary();
+        if(tempBean.getRule() == BIConfConstants.CONF.ADD_COLUMN.RANKING.ASC_IN_GROUP) {
+            List<String> selects = ((GroupRankValueBean) tempBean).getSelects();
+            ColumnKey[] dimensions = new ColumnKey[selects.size()];
+            for(int i = 0; i < dimensions.length; i++) {
+                 dimensions[i] = new ColumnKey(selects.get(0));
+            }
+            return new RankRowOperator(columnName, summary, ColumnTypeAdaptor.adaptColumnType(32), columnKey, dimensions);
+        } else {
+            return new RankRowOperator(columnName, summary, ColumnTypeAdaptor.adaptColumnType(32), columnKey, null);
+        }
+    }
+
+    private static GetFromDateOperator getFromDataOperator(AddNewColumnValueBean value) {
+        String columnName = value.getName();
+        GetFieldTimeValueItem tempBean = ((GetFieldTimeValueBean) value).getValue();
+        String fieldName = tempBean.getFieldName();
+        int type = tempBean.getUnit();
+        return new GetFromDateOperator(fieldName, type, columnName, ColumnTypeAdaptor.adaptColumnType(48));
+    }
+
+    private static DateDiffOperator getDateDiffOperator(AddNewColumnValueBean value) {
+        TimeDiffValueItem tempBean = ((TimeDiffValueBean) value).getValue();
+        String columnName = value.getName();
+        String field1 = tempBean.getMinuend();
+        String field2 = tempBean.getMinus();
+        int type = tempBean.getUnit();
+        return new DateDiffOperator(field1, field2, type, columnName, ColumnTypeAdaptor.adaptColumnType(48));
+    }
+
     private static AbstractOperator fromAddNewColumnBean(AddNewColumnBean bean, FineBusinessTable table) throws Exception {
         if (bean.getValue() instanceof EmptyAddNewColumnBean) {
             throw new FineAnalysisOperationUnSafe("");
         }
+
         AddNewColumnValueBean value = bean.getValue();
         DataSource source = adaptEtlDataSource(((FineAnalysisTableImpl) table).getBaseTable());
         switch (value.getType()) {
@@ -355,6 +489,21 @@ class EtlAdaptor {
                 String expression = ((AddExpressionValueBean) value).getValue();
                 return new ColumnFormulaOperator(value.getName(), FormulaUtils.getColumnType(source.getMetadata(), expression), expression);
             }
+            case BIConfConstants.CONF.ADD_COLUMN.ACCUMULATIVE_VALUE.TYPE: {
+                return getAccumulateRowOperator(value);
+            }
+            case BIConfConstants.CONF.ADD_COLUMN.ALL_VALUES.TYPE: {
+                return getAllDataRowCalculatorOperator(value);
+            }
+            case BIConfConstants.CONF.ADD_COLUMN.RANKING.TYPE: {
+                return getRankRowOperator(value);
+            }
+            case BIConfConstants.CONF.ADD_COLUMN.TIME.TYPE: {
+                return getFromDataOperator(value);
+            }
+            case BIConfConstants.CONF.ADD_COLUMN.TIME_GAP.TYPE:
+                return getDateDiffOperator(value);
+           // case
             default:
         }
         return null;

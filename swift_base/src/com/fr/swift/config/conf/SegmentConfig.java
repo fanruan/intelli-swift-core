@@ -4,9 +4,13 @@ import com.fr.config.ConfigContext;
 import com.fr.config.DefaultConfiguration;
 import com.fr.config.holder.factory.Holders;
 import com.fr.config.holder.impl.ObjectMapConf;
-import com.fr.swift.config.ISegment;
+import com.fr.swift.config.IConfigSegment;
+import com.fr.swift.config.ISegmentKey;
+import com.fr.swift.config.unique.SegmentUnique;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -18,7 +22,7 @@ public class SegmentConfig extends DefaultConfiguration {
 
     private static SegmentConfig config = null;
 
-    private ObjectMapConf<Map<String, ISegment>> segmentHolder = Holders.objMap(new HashMap<String, ISegment>(), String.class, ISegment.class);
+    private ObjectMapConf<Map<String, IConfigSegment>> segmentHolder = Holders.objMap(new HashMap<String, IConfigSegment>(), String.class, IConfigSegment.class);
 
 
     public static SegmentConfig getInstance() {
@@ -28,16 +32,16 @@ public class SegmentConfig extends DefaultConfiguration {
         return config;
     }
 
-    public Map<String, ISegment> getAllSegments() {
+    public Map<String, IConfigSegment> getAllSegments() {
         return segmentHolder.get();
     }
 
-    public ISegment getSegmentByKey(String key) {
-        return (ISegment) segmentHolder.get(key);
+    public IConfigSegment getSegmentByKey(String key) {
+        return (IConfigSegment) segmentHolder.get(key);
     }
 
-    public void addSegments(ISegment... segments) {
-        for (ISegment segment : segments) {
+    public void addSegments(IConfigSegment... segments) {
+        for (IConfigSegment segment : segments) {
             segmentHolder.put(segment.getSourceKey(), segment);
         }
     }
@@ -46,10 +50,25 @@ public class SegmentConfig extends DefaultConfiguration {
         segmentHolder.remove(key);
     }
 
-    public void modifySegment(ISegment segment) {
-        ISegment segmentUnique = (ISegment) segmentHolder.get(segment.getSourceKey());
+    public void modifySegment(IConfigSegment segment) {
+        IConfigSegment segmentUnique = (IConfigSegment) segmentHolder.get(segment.getSourceKey());
         segmentUnique.setSegments(segment.getSegments());
         segmentUnique.setSourceKey(segment.getSourceKey());
+    }
+
+    public void addSegment(ISegmentKey segmentKey) {
+        String sourceId = segmentKey.getSourceId();
+        IConfigSegment segmentUnique = (IConfigSegment) segmentHolder.get(sourceId);
+        if (null == segmentUnique) {
+            segmentUnique = new SegmentUnique();
+            List<ISegmentKey> segments = new ArrayList<ISegmentKey>();
+            segments.add(segmentKey);
+            segmentUnique.setSegments(segments);
+            segmentUnique.setSourceKey(sourceId);
+            addSegments(segmentUnique);
+        } else {
+            segmentUnique.addSegment(segmentKey);
+        }
     }
 
     @Override

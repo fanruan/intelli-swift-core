@@ -8,6 +8,7 @@ import com.fr.swift.cal.result.detail.NormalDetailResultQuery;
 import com.fr.swift.cal.result.detail.SortDetailResultQuery;
 import com.fr.swift.cal.segment.detail.NormalDetailSegmentQuery;
 import com.fr.swift.cal.segment.detail.SortDetailSegmentQuery;
+import com.fr.swift.exception.meta.SwiftMetaDataException;
 import com.fr.swift.query.filter.detail.DetailFilter;
 import com.fr.swift.query.sort.SortType;
 import com.fr.swift.result.DetailResultSet;
@@ -15,6 +16,8 @@ import com.fr.swift.result.SwiftNode;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.ColumnKey;
+import com.fr.swift.source.ColumnTypeConstants.ColumnType;
+import com.fr.swift.source.ColumnTypeUtils;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.structure.array.IntList;
@@ -55,7 +58,7 @@ public class SwiftSegmentDetailResult implements BIDetailTableResult {
         }
     }
 
-    private void initSort(List<Segment> segments, SwiftMetaData swiftMetaData, IntList sortIndex, List<SortType> sorts) throws SQLException{
+    private void initSort(List<Segment> segments, SwiftMetaData swiftMetaData, IntList sortIndex, List<SortType> sorts) throws SQLException {
         this.rowCount = 0;
         List<Query<DetailResultSet>> queryList = new ArrayList<Query<DetailResultSet>>();
         for (Segment segment : segments) {
@@ -66,7 +69,7 @@ public class SwiftSegmentDetailResult implements BIDetailTableResult {
                 ColumnKey columnKey = new ColumnKey(columnName);
                 columnList.add(segment.getColumn(columnKey));
             }
-            queryList.add(new SortDetailSegmentQuery(columnList, new AllShowFilter(segment.getAllShowIndex()) , sortIndex, sorts));
+            queryList.add(new SortDetailSegmentQuery(columnList, new AllShowFilter(segment.getAllShowIndex()), sortIndex, sorts));
         }
         Query<DetailResultSet> query = null;
         if (queryList.size() == 1) {
@@ -74,7 +77,7 @@ public class SwiftSegmentDetailResult implements BIDetailTableResult {
         } else {
             query = new SortDetailResultQuery(queryList);
         }
-        this.dataIterator = new DetailResultIterator(query.getQueryResult());
+        this.dataIterator = new DetailResultIterator(query.getQueryResult(), swiftMetaData);
     }
 
     private void initNoneSort(List<Segment> segments, SwiftMetaData swiftMetaData) throws SQLException {
@@ -96,7 +99,7 @@ public class SwiftSegmentDetailResult implements BIDetailTableResult {
         } else {
             query = new NormalDetailResultQuery(queryList);
         }
-        this.dataIterator = new DetailResultIterator(query.getQueryResult());
+        this.dataIterator = new DetailResultIterator(query.getQueryResult(), swiftMetaData);
     }
 
     @Override
@@ -131,6 +134,7 @@ public class SwiftSegmentDetailResult implements BIDetailTableResult {
 
     private class AllShowFilter implements DetailFilter {
         private ImmutableBitMap bitMap;
+
         public AllShowFilter(ImmutableBitMap bitMap) {
             this.bitMap = bitMap;
         }
@@ -148,9 +152,11 @@ public class SwiftSegmentDetailResult implements BIDetailTableResult {
 
     private class DetailResultIterator implements Iterator<List<BIDetailCell>> {
         private DetailResultSet resultSet;
+        private SwiftMetaData meta;
 
-        public DetailResultIterator(DetailResultSet resultSet) {
+        public DetailResultIterator(DetailResultSet resultSet, SwiftMetaData meta) {
             this.resultSet = resultSet;
+            this.meta = meta;
         }
 
         @Override
@@ -168,7 +174,9 @@ public class SwiftSegmentDetailResult implements BIDetailTableResult {
             try {
                 Row row = resultSet.getRowData();
                 for (int i = 0; i < row.getSize(); i++) {
-                    BIDetailCell cell = new SwiftDetailCell(row.getValue(i));
+                    BIDetailCell cell = new SwiftDetailCell(isDate(meta, i + 1) ?
+                            toSqlDate(row.getValue(i)) :
+                            row.getValue(i));
                     cellList.add(cell);
                 }
             } catch (SQLException ignore) {
@@ -177,9 +185,22 @@ public class SwiftSegmentDetailResult implements BIDetailTableResult {
             return cellList;
         }
 
+        private java.sql.Date toSqlDate(Object date) {
+            return date == null ? null :
+                    new java.sql.Date(((Long) date));
+        }
+
         @Override
         public void remove() {
+            throw new UnsupportedOperationException();
+        }
 
+        private boolean isDate(SwiftMetaData meta, int i) throws SwiftMetaDataException {
+            return ColumnType.DATE ==
+                    ColumnTypeUtils.sqlTypeToColumnType(
+                            meta.getColumnType(i),
+                            meta.getPrecision(i),
+                            meta.getScale(i));
         }
     }
 }

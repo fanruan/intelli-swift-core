@@ -2,6 +2,7 @@ package com.fr.swift.segment;
 
 import com.fr.swift.exception.meta.SwiftMetaDataException;
 import com.fr.swift.segment.column.impl.base.FakeStringDetailColumn;
+import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.util.Crasher;
 
 /**

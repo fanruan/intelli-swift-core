@@ -73,11 +73,11 @@ public class MinorUpdater {
     private static SegmentOperator getSegmentOperator(DataSource dataSource, SwiftResultSet swiftResultSet) throws Exception {
 
         if (DataSourceUtils.isAddColumn(dataSource)) {
-            return new MinorFieldsSegmentOperator(dataSource.getSourceKey(), dataSource.getMetadata(),
+            return new MinorFieldsSegmentOperator(dataSource.getSourceKey(),
                     null, DataSourceUtils.getSwiftSourceKey(dataSource),
                     swiftResultSet, DataSourceUtils.getAddFields(dataSource));
         }
-        return new MinorSegmentOperator(dataSource.getSourceKey(), dataSource.getMetadata(),
+        return new MinorSegmentOperator(dataSource.getSourceKey(),
                 null, DataSourceUtils.getSwiftSourceKey(dataSource), swiftResultSet);
     }
 

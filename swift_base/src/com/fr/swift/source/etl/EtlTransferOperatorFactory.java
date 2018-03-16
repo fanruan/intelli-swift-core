@@ -4,6 +4,10 @@ import com.fr.swift.source.etl.columnfilter.ColumnFilterOperator;
 import com.fr.swift.source.etl.columnfilter.ColumnFilterTransferOperator;
 import com.fr.swift.source.etl.columnrowtrans.ColumnRowTransOperator;
 import com.fr.swift.source.etl.columnrowtrans.ColumnRowTransferOperator;
+import com.fr.swift.source.etl.date.GetFromDateOperator;
+import com.fr.swift.source.etl.date.GetFromDateTransferOperator;
+import com.fr.swift.source.etl.datediff.DateDiffOperator;
+import com.fr.swift.source.etl.datediff.DateDiffTransferOperator;
 import com.fr.swift.source.etl.detail.DetailOperator;
 import com.fr.swift.source.etl.detail.DetailTransferOperator;
 import com.fr.swift.source.etl.formula.ColumnFormulaOperator;
@@ -12,6 +16,12 @@ import com.fr.swift.source.etl.groupsum.SumByGroupOperator;
 import com.fr.swift.source.etl.groupsum.SumByGroupTransferOperator;
 import com.fr.swift.source.etl.join.JoinOperator;
 import com.fr.swift.source.etl.join.JoinTransferOperator;
+import com.fr.swift.source.etl.rowcal.accumulate.AccumulateRowOperator;
+import com.fr.swift.source.etl.rowcal.accumulate.AccumulateRowTransferOperator;
+import com.fr.swift.source.etl.rowcal.alldata.AllDataRowCalculatorOperator;
+import com.fr.swift.source.etl.rowcal.alldata.AllDataTransferOperator;
+import com.fr.swift.source.etl.rowcal.rank.RankRowOperator;
+import com.fr.swift.source.etl.rowcal.rank.RankRowTransferOperator;
 import com.fr.swift.source.etl.selfrelation.OneUnionRelationOperator;
 import com.fr.swift.source.etl.selfrelation.OneUnionRelationTransferOperator;
 import com.fr.swift.source.etl.selfrelation.TwoUnionRelationOperator;
@@ -49,6 +59,16 @@ public class EtlTransferOperatorFactory {
                 return transferTwoUnionRelationOperator((TwoUnionRelationOperator) operator);
             case COLUMN_FORMULA:
                 return transferColumnFormulaOperator((ColumnFormulaOperator) operator);
+            case ACCUMULATE:
+                return transferAccumulateRowOperator((AccumulateRowOperator) operator);
+            case ALLDATA:
+                return transferAllDataCalculatorOperator((AllDataRowCalculatorOperator) operator);
+            case RANK:
+                return transferRankRowOperator((RankRowOperator) operator);
+            case GETDATE:
+                return transferGetDateOperator((GetFromDateOperator) operator);
+            case DATEDIFF:
+                return transferDateDiffOperator((DateDiffOperator) operator);
         }
         ETLTransferCreator creator = extra.get(operator.getClass().getName());
         return creator == null ? null : creator.createTransferOperator(operator);
@@ -56,6 +76,22 @@ public class EtlTransferOperatorFactory {
 
     public static void register(Class c,  ETLTransferCreator creator){
         extra.put(c.getName(), creator);
+    }
+
+    private static ETLTransferOperator transferDateDiffOperator(DateDiffOperator operator) {
+        return new DateDiffTransferOperator(operator.getField1(), operator.getField2(), operator.getUnit());
+    }
+
+    private static ETLTransferOperator transferGetDateOperator(GetFromDateOperator operator) {
+        return new GetFromDateTransferOperator(operator.getField(), operator.getType());
+    }
+
+    private static ETLTransferOperator transferRankRowOperator(RankRowOperator operator) {
+        return new RankRowTransferOperator(operator.getType(), operator.getColumnKey(), operator.getDimension());
+    }
+
+    private static ETLTransferOperator transferAllDataCalculatorOperator(AllDataRowCalculatorOperator operator) {
+        return new AllDataTransferOperator(operator.getCalculatorType(), operator.getColumnName(), operator.getDimension());
     }
 
     private static ETLTransferOperator transferDetailOperator(DetailOperator operator) {
@@ -92,6 +128,10 @@ public class EtlTransferOperatorFactory {
 
     private static ETLTransferOperator transferColumnFormulaOperator(ColumnFormulaOperator operator) {
         return new ColumnFormulaTransferOperator(operator.getColumnType(), operator.getExpression());
+    }
+
+    private static ETLTransferOperator transferAccumulateRowOperator(AccumulateRowOperator operator) {
+        return new AccumulateRowTransferOperator(operator.getColumnKey(), operator.getDimension());
     }
 
     public interface ETLTransferCreator {

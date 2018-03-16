@@ -34,6 +34,10 @@ public class ValueConverterOperator extends AbstractOperator {
         return columnName;
     }
 
+    public String getNewAddedName() {
+        return columnName;
+    }
+
 
     @Override
     public List<SwiftMetaDataColumn> getColumns(SwiftMetaData[] metaDatas) {
