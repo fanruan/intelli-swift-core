@@ -169,7 +169,7 @@ public class DBSourceUtils {
                     ColumnInformation[] columns = DBUtils.checkInColumnInformation(conn, dialect, query);
                     List<SwiftMetaDataColumn> columnList = new ArrayList<SwiftMetaDataColumn>();
                     for (int i = 0, cols = columns.length; i < cols; i++) {
-                        columnList.add(new MetaDataColumn(columns[i].getColumnName(), columns[i].getColumnType(), columns[i].getColumnSize()));
+                        columnList.add(new MetaDataColumn(columns[i].getColumnName(), columns[i].getColumnType(), columns[i].getColumnSize(), columns[i].getScale()));
                     }
                     return new SwiftMetaDataImpl(tableName, columnList);
                 } finally {
