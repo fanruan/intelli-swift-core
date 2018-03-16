@@ -60,6 +60,6 @@ public class SegmentUnique extends UniqueKey implements IConfigSegment {
 
     @Override
     public void addSegment(ISegmentKey segmentKey) {
-        segments.put(segmentKey.getName(), segmentKey);
+        segments.put(segments.get().size(), segmentKey);
     }
 }
