@@ -175,7 +175,7 @@ public class SwiftSegmentDetailResult implements BIDetailTableResult {
                 Row row = resultSet.getRowData();
                 for (int i = 0; i < row.getSize(); i++) {
                     BIDetailCell cell = new SwiftDetailCell(isDate(meta, i + 1) ?
-                            new java.sql.Date(((Long) row.getValue(i))) :
+                            toSqlDate(row.getValue(i)) :
                             row.getValue(i));
                     cellList.add(cell);
                 }
@@ -183,6 +183,11 @@ public class SwiftSegmentDetailResult implements BIDetailTableResult {
 
             }
             return cellList;
+        }
+
+        private java.sql.Date toSqlDate(Object date) {
+            return date == null ? null :
+                    new java.sql.Date(((Long) date));
         }
 
         @Override

@@ -31,11 +31,8 @@ public class FieldFactory {
             String columnRemark = swiftMetaData.getColumnRemark(i);
             int precision = swiftMetaData.getPrecision(i);
             int scale = swiftMetaData.getScale(i);
-            String columnId = swiftMetaData.getColumnId(i);
 
-            FineBusinessField fineBusinessField;
-
-            fineBusinessField = new FineBusinessFieldImp(tableId == null ? swiftMetaData.getTableName() + columnId : tableId + columnId, columnName, columnRemark);
+            FineBusinessField fineBusinessField = new FineBusinessFieldImp(tableId == null ? swiftMetaData.getTableName() + columnName : tableId + columnName, columnName, columnRemark);
 
             ((FineBusinessFieldImp) fineBusinessField).setEngineType(FineEngineType.Cube);
             fineBusinessField.setType(transformSwiftColumnType2BIColumnType(ColumnTypeUtils.sqlTypeToColumnType(columnType, precision, scale)));

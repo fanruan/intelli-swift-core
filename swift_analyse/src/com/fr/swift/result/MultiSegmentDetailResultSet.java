@@ -1,7 +1,6 @@
 package com.fr.swift.result;
 
 import com.fr.swift.cal.Query;
-import com.fr.swift.exception.SwiftSegmentAbsentException;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SwiftMetaData;
 
@@ -22,7 +21,7 @@ public class MultiSegmentDetailResultSet extends DetailResultSet {
     private List<DetailResultSet> drs = new ArrayList<DetailResultSet>();
     private List<Query<DetailResultSet>> queries;
 
-    public MultiSegmentDetailResultSet(List<Query<DetailResultSet>> queries) {
+    public MultiSegmentDetailResultSet(List<Query<DetailResultSet>> queries) throws SQLException {
         this.queries = queries;
         init();
     }
@@ -48,14 +47,10 @@ public class MultiSegmentDetailResultSet extends DetailResultSet {
     }
 
 
-    private void init() {
-        try {
+    private void init() throws SQLException{
             for (Query query : queries) {
                 maxRow += ((SegmentDetailResultSet) query.getQueryResult()).getMaxRow();
                 drs.add((SegmentDetailResultSet) query.getQueryResult());
             }
-        } catch (SQLException e) {
-
-        }
     }
 }
