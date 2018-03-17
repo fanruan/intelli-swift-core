@@ -1,7 +1,7 @@
 package com.fr.swift.segment;
 
-import com.finebi.conf.env.LocalEnv;
 import com.fr.base.FRContext;
+import com.fr.dav.LocalEnv;
 import com.fr.swift.manager.LocalSegmentOperatorProvider;
 import com.fr.swift.source.DataSource;
 import com.fr.swift.source.SourceKey;

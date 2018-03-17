@@ -332,6 +332,8 @@ public abstract class ExternalMap<K, V> implements Map<K, V>, Iterable<Map.Entry
     public void clear() {
         currentContainer.clear();
         release();
+
+        FileUtil.delete(diskContainerPath);
     }
 
     @Override
@@ -357,12 +359,6 @@ public abstract class ExternalMap<K, V> implements Map<K, V>, Iterable<Map.Entry
     public void release() {
         this.writeFile.stop();
         this.readFile.release();
-//        if (this.containerFolderNeedDel) {
-//            File file = new File(diskContainerPath);
-//            if (file.exists()) {
-//                FileUtil.delete(file);
-//            }
-//        }
     }
 
     public void display(Map<K, V> content) {
@@ -680,7 +676,7 @@ public abstract class ExternalMap<K, V> implements Map<K, V>, Iterable<Map.Entry
         private BlockingQueue<Map<K, V>> buffer = new ArrayBlockingQueue<Map<K, V>>(1);
 
         WriteFile() {
-            writeThread = new Thread(this);
+            writeThread = new Thread(this, "Swift-ExternalMap-WriteFile");
             writeThread.start();
         }
 
