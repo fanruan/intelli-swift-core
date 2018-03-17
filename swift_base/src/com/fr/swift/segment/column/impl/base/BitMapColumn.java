@@ -36,25 +36,25 @@ public class BitMapColumn implements BitmapIndexedColumn {
 
     private void initIndexWriter() {
         if (writer == null) {
-            writer = (BitMapWriter) DISCOVERY.getWriter(indexLocation, new BuildConf(IoType.WRITE, DataType.BITMAP));
+            writer = DISCOVERY.getWriter(indexLocation, new BuildConf(IoType.WRITE, DataType.BITMAP));
         }
     }
 
     private void initIndexReader() {
         if (reader == null) {
-            reader = (BitMapReader) DISCOVERY.getReader(indexLocation, new BuildConf(IoType.READ, DataType.BITMAP));
+            reader = DISCOVERY.getReader(indexLocation, new BuildConf(IoType.READ, DataType.BITMAP));
         }
     }
 
     private void initNullIndexWriter() {
         if (nullWriter == null) {
-            nullWriter = (BitMapWriter) DISCOVERY.getWriter(nullLocation, new BuildConf(IoType.WRITE, DataType.BITMAP));
+            nullWriter = DISCOVERY.getWriter(nullLocation, new BuildConf(IoType.WRITE, DataType.BITMAP));
         }
     }
 
     private void initNullIndexReader() {
         if (nullReader == null) {
-            nullReader = (BitMapReader) DISCOVERY.getReader(nullLocation, new BuildConf(IoType.READ, DataType.BITMAP));
+            nullReader = DISCOVERY.getReader(nullLocation, new BuildConf(IoType.READ, DataType.BITMAP));
         }
     }
 

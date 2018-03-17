@@ -27,7 +27,7 @@ public class IntDictColumn extends BaseDictColumn<Integer> {
             return;
         }
         IResourceLocation keyLocation = parent.buildChildLocation(KEY);
-        keyWriter = (IntWriter) DISCOVERY.getWriter(keyLocation, new BuildConf(IoType.WRITE, DataType.INT));
+        keyWriter = DISCOVERY.getWriter(keyLocation, new BuildConf(IoType.WRITE, DataType.INT));
     }
 
     @Override
@@ -36,7 +36,7 @@ public class IntDictColumn extends BaseDictColumn<Integer> {
             return;
         }
         IResourceLocation keyLocation = parent.buildChildLocation(KEY);
-        keyReader = (IntReader) DISCOVERY.getReader(keyLocation, new BuildConf(IoType.READ, DataType.INT));
+        keyReader = DISCOVERY.getReader(keyLocation, new BuildConf(IoType.READ, DataType.INT));
     }
 
     @Override

@@ -3,6 +3,7 @@ package com.fr.swift.cube.io;
 import com.fr.swift.cube.io.input.Reader;
 import com.fr.swift.cube.io.location.IResourceLocation;
 import com.fr.swift.cube.io.output.Writer;
+import com.fr.swift.util.Clearable;
 
 /**
  * This class created on 2016/3/10.
@@ -14,16 +15,16 @@ import com.fr.swift.cube.io.output.Writer;
  * @author Connery
  * @since 4.0
  */
-public interface ResourceDiscovery {
+public interface ResourceDiscovery extends Clearable {
+    <R extends Reader> R getReader(IResourceLocation location, BuildConf conf);
 
-    Reader getReader(IResourceLocation location, BuildConf conf);
-
-    Writer getWriter(IResourceLocation location, BuildConf conf);
+    <W extends Writer> W getWriter(IResourceLocation location, BuildConf conf);
 
     boolean exists(IResourceLocation location, BuildConf conf);
 
     /**
      * reader，writer用完自行release，此处只负责丢弃
      */
+    @Override
     void clear();
 }

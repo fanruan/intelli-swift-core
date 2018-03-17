@@ -39,14 +39,14 @@ public class IntDetailColumn extends BaseDetailColumn<Integer> {
     @Override
     void initDetailWriter() {
         if (detailWriter == null) {
-            detailWriter = (IntWriter) DISCOVERY.getWriter(location, new BuildConf(IoType.WRITE, DataType.INT));
+            detailWriter = DISCOVERY.getWriter(location, new BuildConf(IoType.WRITE, DataType.INT));
         }
     }
 
     @Override
     void initDetailReader() {
         if (detailReader == null) {
-            detailReader = (IntReader) DISCOVERY.getReader(location, new BuildConf(IoType.READ, DataType.INT));
+            detailReader = DISCOVERY.getReader(location, new BuildConf(IoType.READ, DataType.INT));
         }
     }
 

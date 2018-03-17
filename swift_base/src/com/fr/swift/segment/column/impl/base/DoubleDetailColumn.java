@@ -39,14 +39,14 @@ public class DoubleDetailColumn extends BaseDetailColumn<Double> {
     @Override
     void initDetailWriter() {
         if (detailWriter == null) {
-            detailWriter = (DoubleWriter) DISCOVERY.getWriter(location, new BuildConf(IoType.WRITE, DataType.DOUBLE));
+            detailWriter = DISCOVERY.getWriter(location, new BuildConf(IoType.WRITE, DataType.DOUBLE));
         }
     }
 
     @Override
     void initDetailReader() {
         if (detailReader == null) {
-            detailReader = (DoubleReader) DISCOVERY.getReader(location, new BuildConf(IoType.READ, DataType.DOUBLE));
+            detailReader = DISCOVERY.getReader(location, new BuildConf(IoType.READ, DataType.DOUBLE));
         }
     }
 

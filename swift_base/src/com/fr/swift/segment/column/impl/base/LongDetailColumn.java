@@ -39,14 +39,14 @@ public class LongDetailColumn extends BaseDetailColumn<Long> {
     @Override
     void initDetailWriter() {
         if (detailWriter == null) {
-            detailWriter = (LongWriter) DISCOVERY.getWriter(location, new BuildConf(IoType.WRITE, DataType.LONG));
+            detailWriter = DISCOVERY.getWriter(location, new BuildConf(IoType.WRITE, DataType.LONG));
         }
     }
 
     @Override
     void initDetailReader() {
         if (detailReader == null) {
-            detailReader = (LongReader) DISCOVERY.getReader(location, new BuildConf(IoType.READ, DataType.LONG));
+            detailReader = DISCOVERY.getReader(location, new BuildConf(IoType.READ, DataType.LONG));
         }
     }
 
