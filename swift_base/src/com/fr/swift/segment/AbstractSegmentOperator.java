@@ -1,15 +1,8 @@
 package com.fr.swift.segment;
 
-import com.fr.swift.config.IConfigSegment;
-import com.fr.swift.config.IMetaData;
-import com.fr.swift.config.IMetaDataColumn;
-import com.fr.swift.config.unique.MetaDataColumnUnique;
-import com.fr.swift.config.unique.SegmentUnique;
-import com.fr.swift.config.unique.SwiftMetaDataUnique;
 import com.fr.swift.exception.meta.SwiftMetaDataException;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftMetaData;
-import com.fr.swift.source.SwiftMetaDataColumn;
 import com.fr.swift.source.SwiftResultSet;
 import com.fr.swift.source.SwiftSourceAlloter;
 import com.fr.swift.source.SwiftSourceAlloterFactory;
@@ -28,7 +21,6 @@ import java.util.List;
  * @since Advanced FineBI Analysis 1.0
  */
 public abstract class AbstractSegmentOperator implements SegmentOperator {
-
     protected SourceKey sourceKey;
     protected SwiftMetaData metaData;
     protected SwiftSourceAlloter alloter;
@@ -36,7 +28,7 @@ public abstract class AbstractSegmentOperator implements SegmentOperator {
     protected String cubeSourceKey;
     protected SwiftResultSet swiftResultSet;
 
-    public AbstractSegmentOperator(SourceKey sourceKey, List<Segment> segments, String cubeSourceKey, SwiftResultSet swiftResultSet) throws SQLException {
+    public AbstractSegmentOperator(SourceKey sourceKey, String cubeSourceKey, SwiftResultSet swiftResultSet) throws SQLException {
         Util.requireNonNull(sourceKey);
         this.sourceKey = sourceKey;
         this.metaData = swiftResultSet.getMetaData();
@@ -62,16 +54,6 @@ public abstract class AbstractSegmentOperator implements SegmentOperator {
             fields.add(metaData.getColumnName(i));
         }
         return fields;
-    }
-
-    @Override
-    public void transport() throws Exception {
-
-    }
-
-    @Override
-    public void finishTransport() {
-
     }
 
     @Override

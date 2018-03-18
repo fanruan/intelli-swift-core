@@ -1,6 +1,5 @@
 package com.fr.swift.manager;
 
-import com.fr.swift.exception.meta.SwiftMetaDataException;
 import com.fr.swift.segment.HistoryFieldsSegmentOperator;
 import com.fr.swift.segment.HistorySegmentOperator;
 import com.fr.swift.segment.SegmentOperator;
@@ -38,8 +37,7 @@ public class LocalSegmentOperatorProvider implements SegmentOperatorProvider {
     public SegmentOperator getHistorySegmentOperator(DataSource dataSource, SwiftResultSet resultSet) {
         try {
             if (DataSourceUtils.isAddColumn(dataSource)) {
-                return new HistoryFieldsSegmentOperator(dataSource.getSourceKey(),
-                        manager.getSegment(dataSource.getSourceKey()), DataSourceUtils.getSwiftSourceKey(dataSource),
+                return new HistoryFieldsSegmentOperator(dataSource.getSourceKey(), DataSourceUtils.getSwiftSourceKey(dataSource),
                         resultSet, DataSourceUtils.getAddFields(dataSource));
             }
             return new HistorySegmentOperator(dataSource.getSourceKey(),

@@ -1,8 +1,8 @@
 package com.fr.swift.segment;
 
 import com.fr.swift.config.IMetaData;
-import com.fr.swift.config.conf.MetaDataConvertUtil;
 import com.fr.swift.config.conf.MetaDataConfig;
+import com.fr.swift.config.conf.MetaDataConvertUtil;
 import com.fr.swift.exception.meta.SwiftMetaDataException;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
@@ -20,7 +20,7 @@ import java.util.List;
 public class HistorySegmentOperator extends AbstractHistorySegmentOperator {
     private SwiftLogger logger = SwiftLoggers.getLogger(HistorySegmentOperator.class);
     public HistorySegmentOperator(SourceKey sourceKey, List<Segment> segments, String cubeSourceKey, SwiftResultSet swiftResultSet) throws SQLException {
-        super(sourceKey, segments, cubeSourceKey, swiftResultSet);
+        super(sourceKey, cubeSourceKey, swiftResultSet);
         if (null != segments && !segments.isEmpty()) {
             for (int i = 0, len = segments.size(); i < len; i++) {
                 this.segmentList.add(new HistorySegmentHolder(segments.get(i)));
