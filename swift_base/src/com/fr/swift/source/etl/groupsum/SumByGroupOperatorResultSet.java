@@ -26,6 +26,8 @@ public class SumByGroupOperatorResultSet implements SwiftResultSet {
     private Segment[] segments;
     private GroupValueIterator iterator;
     private SwiftMetaData metaData;
+    private boolean hasDimension;
+    private boolean noNext;
 
     public SumByGroupOperatorResultSet(SumByGroupTarget[] targets, SumByGroupDimension[] dimensions, Segment[] segments, SwiftMetaData metaData) {
         this.targets = targets;
@@ -36,17 +38,17 @@ public class SumByGroupOperatorResultSet implements SwiftResultSet {
     }
 
     private void init() {
-        if(getDimensions().length == 0) {
+        if(getDimensions().length > 0) {
+            hasDimension = true;
+            ColumnKey[] keys = new ColumnKey[getDimensions().length];
             // TODO
+            Group[] groups = new Group[getDimensions().length];
+            for (int i = 0; i < groups.length; i++) {
+                keys[i] = getDimensions()[i].createKey();
+                groups[i] = getDimensions()[i].getGroup();
+            }
+            iterator = new GroupValueIterator(segments, keys, groups);
         }
-        ColumnKey[] keys = new ColumnKey[getDimensions().length];
-        // TODO
-        Group[] groups = new Group[getDimensions().length];
-        for (int i = 0; i < groups.length; i++) {
-            keys[i] = getDimensions()[i].createKey();
-            groups[i] = getDimensions()[i].getGroup();
-        }
-        iterator = new GroupValueIterator(segments, keys, groups);
     }
 
 
@@ -57,12 +59,36 @@ public class SumByGroupOperatorResultSet implements SwiftResultSet {
 
     @Override
     public boolean next() throws SQLException {
-        if(iterator.hasNext()) {
-            SwiftValuesAndGVI valuesAndGVI = iterator.next();
-            write(valuesAndGVI);
-            return true;
+        if(hasDimension) {
+            if(iterator.hasNext()) {
+                SwiftValuesAndGVI valuesAndGVI = iterator.next();
+                write(valuesAndGVI);
+                return true;
+            }
+            return false;
+        } else {
+            if(!noNext) {
+                writeNoDimension(segments);
+                noNext = true;
+                return true;
+            }
+            return false;
         }
-        return false;
+
+    }
+
+    private ListRow writeNoDimension(Segment[] segment){
+        List valueList = new ArrayList();
+        RowTraversal[] rowTraversal = new RowTraversal[segment.length];
+        for(int i = 0; i < segment.length; i++) {
+            rowTraversal[i] = segment[i].getAllShowIndex();
+        }
+        for(int i = 0; i < getTargets().length; i++) {
+            valueList.add(getTargets()[i].getSumValue(segment, rowTraversal));
+        }
+        ListBasedRow basedRow = new ListBasedRow(valueList);
+        listRow.setBasedRow(basedRow);
+        return listRow;
     }
 
     private ListRow write(SwiftValuesAndGVI valuesAndGVI) {
