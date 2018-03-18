@@ -60,12 +60,6 @@ public abstract class BaseSegment implements Segment {
     @SuppressWarnings("unchecked")
     public <T> Column<T> getColumn(ColumnKey key) {
         try {
-//            String realName = getRealName(key.getName());
-//            String remark = getRemark(key.getName());
-//            String name = realName != null ? realName : remark;
-//            if (name == null) {
-//                return null;
-//            }
             String name = key.getName();
             String columnId = meta.getColumnId(name);
 

@@ -29,7 +29,7 @@ public class StringInFilter extends AbstractFilter<String> {
         for (String group : groups) {
             int index = dict.getIndex(group);
             if (index != -1) {
-                intList.add(dict.getIndex(group));
+                intList.add(index);
             }
         }
         return new IntListRowTraversal(intList);
