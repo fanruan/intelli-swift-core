@@ -36,15 +36,13 @@ public class IntDetailColumn extends BaseDetailColumn<Integer> {
         return getInt(pos);
     }
 
-    @Override
-    void initDetailWriter() {
+    private void initDetailWriter() {
         if (detailWriter == null) {
             detailWriter = DISCOVERY.getWriter(location, new BuildConf(IoType.WRITE, DataType.INT));
         }
     }
 
-    @Override
-    void initDetailReader() {
+    private void initDetailReader() {
         if (detailReader == null) {
             detailReader = DISCOVERY.getReader(location, new BuildConf(IoType.READ, DataType.INT));
         }

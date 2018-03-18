@@ -36,15 +36,13 @@ public class LongDetailColumn extends BaseDetailColumn<Long> {
         return getLong(pos);
     }
 
-    @Override
-    void initDetailWriter() {
+    private void initDetailWriter() {
         if (detailWriter == null) {
             detailWriter = DISCOVERY.getWriter(location, new BuildConf(IoType.WRITE, DataType.LONG));
         }
     }
 
-    @Override
-    void initDetailReader() {
+    private void initDetailReader() {
         if (detailReader == null) {
             detailReader = DISCOVERY.getReader(location, new BuildConf(IoType.READ, DataType.LONG));
         }

@@ -72,9 +72,8 @@ public abstract class BaseColumnDictMerger<T extends Comparable<T>> extends Base
             releaseIfNeed(dictColumn);
         }
 
-        if (map instanceof ExternalMap) {
-            ((ExternalMap) map).release();
-        }
+        // 外排map释放并清除文件
+        map.clear();
     }
 
     protected abstract List<Segment> getSegments();
