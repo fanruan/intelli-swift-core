@@ -54,9 +54,11 @@ public class StringDetailColumn extends BaseDetailColumn<String> {
     public void release() {
         if (detailWriter != null) {
             detailWriter.release();
+            detailWriter = null;
         }
         if (detailReader != null) {
             detailReader.release();
+            detailReader = null;
         }
     }
 }
