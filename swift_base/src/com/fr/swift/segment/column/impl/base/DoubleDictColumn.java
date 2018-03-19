@@ -21,7 +21,6 @@ public class DoubleDictColumn extends BaseDictColumn<Double> {
         super(parent, keyComparator);
     }
 
-    @Override
     void initKeyWriter() {
         if (keyWriter != null) {
             return;
@@ -30,7 +29,6 @@ public class DoubleDictColumn extends BaseDictColumn<Double> {
         keyWriter = DISCOVERY.getWriter(keyLocation, new BuildConf(IoType.WRITE, DataType.DOUBLE));
     }
 
-    @Override
     void initKeyReader() {
         if (keyReader != null) {
             return;
