@@ -38,14 +38,15 @@ public class SumByGroupOperatorResultSet implements SwiftResultSet {
     }
 
     private void init() {
-        if(getDimensions().length > 0) {
+        int len = getDimensions().length;
+        if(len > 0) {
             hasDimension = true;
-            ColumnKey[] keys = new ColumnKey[getDimensions().length];
+            ColumnKey[] keys = new ColumnKey[len];
             // TODO
-            Group[] groups = new Group[getDimensions().length];
+            Group[] groups = new Group[len];
             for (int i = 0; i < groups.length; i++) {
-                keys[i] = getDimensions()[i].createKey();
-                groups[i] = getDimensions()[i].getGroup();
+                keys[i] = dimensions[i].createKey();
+                groups[i] = dimensions[i].getGroup();
             }
             iterator = new GroupValueIterator(segments, keys, groups);
         }
@@ -94,7 +95,7 @@ public class SumByGroupOperatorResultSet implements SwiftResultSet {
     private ListRow write(SwiftValuesAndGVI valuesAndGVI) {
         List valueList = new ArrayList();
         for(int i = 0; i < valuesAndGVI.getValues().length; i++) {
-            valueList.add(getDimensions()[i].getKeyValue(valuesAndGVI.getValues()[i]));
+            valueList.add(dimensions[i].getKeyValue(valuesAndGVI.getValues()[i]));
         }
         List<Segment> segmentList = new ArrayList<Segment>();
         List<RowTraversal> rowTraversalList = new ArrayList<RowTraversal>();
