@@ -44,7 +44,7 @@ public class GroupAdaptor {
                 return AnotherGroupAdaptor.adapt(((GroupCustomGroupValueBean) selectValue));
             case TYPE.SINGLE:
                 // 相同值作为一组，可直接取底层的dict
-                return Groups.newGroup(new NoGroupRule());
+                return Groups.newNoGroup();
             case TYPE.DOUBLE:
                 // 不知道double是啥,前端界面只有group和single
             default:

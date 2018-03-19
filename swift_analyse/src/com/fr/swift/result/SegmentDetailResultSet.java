@@ -6,9 +6,7 @@ import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.DictionaryEncodedColumn;
 import com.fr.swift.source.ListBasedRow;
 import com.fr.swift.source.Row;
-import com.fr.swift.source.SwiftMetaData;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,8 +15,6 @@ import java.util.List;
  * Created by Xiaolei.Liu on 2018/1/18
  */
 public class SegmentDetailResultSet extends DetailResultSet {
-
-
     /**
      * 行号
      */
@@ -41,12 +37,7 @@ public class SegmentDetailResultSet extends DetailResultSet {
     }
 
     @Override
-    public SwiftMetaData getMetaData() throws SQLException {
-        return null;
-    }
-
-    @Override
-    public Row getRowData() throws SQLException {
+    public Row getRowData() {
         ImmutableBitMap rowIndex = filter.createFilterIndex();
         List values = new ArrayList();
         while (true) {

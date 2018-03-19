@@ -30,7 +30,7 @@ public abstract class AbstractIncreaseSegmentOperator extends AbstractSegmentOpe
 
     public AbstractIncreaseSegmentOperator(SourceKey sourceKey, List<Segment> segments,
                                            String cubeSourceKey, SwiftResultSet swiftResultSet) throws SQLException {
-        super(sourceKey, segments, cubeSourceKey, swiftResultSet);
+        super(sourceKey, cubeSourceKey, swiftResultSet);
         this.increaseSegmentList = new ArrayList<SegmentHolder>();
         if (null != segments && !segments.isEmpty()) {
             for (int i = 0, len = segments.size(); i < len; i++) {

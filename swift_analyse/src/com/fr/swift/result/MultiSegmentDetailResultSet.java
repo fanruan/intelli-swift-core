@@ -2,7 +2,6 @@ package com.fr.swift.result;
 
 import com.fr.swift.cal.Query;
 import com.fr.swift.source.Row;
-import com.fr.swift.source.SwiftMetaData;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -13,7 +12,6 @@ import java.util.List;
  */
 
 public class MultiSegmentDetailResultSet extends DetailResultSet {
-
     /**
      * 第几块
      */
@@ -27,25 +25,12 @@ public class MultiSegmentDetailResultSet extends DetailResultSet {
     }
 
     @Override
-    public void close() throws SQLException {
-
-    }
-
-
-    @Override
-    public SwiftMetaData getMetaData() throws SQLException {
-        return null;
-    }
-
-    @Override
     public Row getRowData() throws SQLException {
-
         while (!(drs.get(index).next())) {
             index++;
         }
         return drs.get(index).getRowData();
     }
-
 
     private void init() throws SQLException{
             for (Query query : queries) {

@@ -27,7 +27,7 @@ public class StringDictColumn extends BaseDictColumn<String> {
             return;
         }
         IResourceLocation keyLocation = parent.buildChildLocation(KEY);
-        keyWriter = (StringWriter) DISCOVERY.getWriter(keyLocation, new BuildConf(IoType.WRITE, DataType.STRING));
+        keyWriter = DISCOVERY.getWriter(keyLocation, new BuildConf(IoType.WRITE, DataType.STRING));
     }
 
     @Override
@@ -36,7 +36,7 @@ public class StringDictColumn extends BaseDictColumn<String> {
             return;
         }
         IResourceLocation keyLocation = parent.buildChildLocation(KEY);
-        keyReader = (StringReader) DISCOVERY.getReader(keyLocation, new BuildConf(IoType.READ, DataType.STRING));
+        keyReader = DISCOVERY.getReader(keyLocation, new BuildConf(IoType.READ, DataType.STRING));
     }
 
     @Override

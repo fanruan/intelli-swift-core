@@ -1,17 +1,13 @@
 package com.fr.swift.result;
 
-import com.fr.swift.source.Row;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftResultSet;
 
-import java.sql.SQLException;
-
-
 /**
- * Created by pony on 2017/12/6.
+ * @author pony
+ * @date 2017/12/6
  */
 public abstract class DetailResultSet implements SwiftResultSet {
-
     /**
      * 已拿到的行数
      */
@@ -22,29 +18,18 @@ public abstract class DetailResultSet implements SwiftResultSet {
      */
     protected int maxRow = 0;
 
-    public DetailResultSet() {
-
-    }
-
     @Override
-    public void close() throws SQLException {
-    }
-
-    @Override
-    public boolean next() throws SQLException {
-
+    public boolean next() {
         return ++rowCount < maxRow;
     }
 
     @Override
-    public SwiftMetaData getMetaData() throws SQLException {
+    public SwiftMetaData getMetaData() {
         return null;
     }
 
     @Override
-    public Row getRowData() throws SQLException {
-        return null;
+    public void close() {
+
     }
-
-
 }

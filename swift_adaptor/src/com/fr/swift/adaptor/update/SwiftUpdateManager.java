@@ -14,16 +14,14 @@ import com.finebi.conf.internalimp.update.UpdateStatus;
 import com.finebi.conf.provider.SwiftTableConfProvider;
 import com.finebi.conf.service.engine.update.EngineUpdateManager;
 import com.finebi.conf.structure.bean.table.FineBusinessTable;
+import com.fr.swift.adaptor.struct.ShowResultSet;
 import com.fr.swift.adaptor.transformer.IndexingDataSourceFactory;
-import com.fr.swift.exception.meta.SwiftMetaDataException;
 import com.fr.swift.generate.preview.SwiftDataPreviewer;
 import com.fr.swift.increment.Increment;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.manager.ProviderManager;
 import com.fr.swift.provider.IndexStuffInfoProvider;
-import com.fr.swift.source.ColumnTypeConstants.ColumnType;
-import com.fr.swift.source.ColumnTypeUtils;
 import com.fr.swift.source.DataSource;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SwiftMetaData;
@@ -182,7 +180,7 @@ public class SwiftUpdateManager implements EngineUpdateManager {
         try {
             DataSource queryDBSource = new QueryDBSource(updatePreviewTableBean.getSql(), updatePreviewTableBean.getConnectionName());
             SwiftSourceTransfer transfer = SwiftDataPreviewer.createPreviewTransfer(queryDBSource, 100);
-            SwiftResultSet resultSet = transfer.createResultSet();
+            SwiftResultSet resultSet = ShowResultSet.of(transfer.createResultSet());
             Object[] data = new Object[100];
             Object[] fieldNames = new Object[queryDBSource.getMetadata().getColumnCount()];
             for (int i = 1; i <= queryDBSource.getMetadata().getColumnCount(); i++) {
@@ -194,9 +192,7 @@ public class SwiftUpdateManager implements EngineUpdateManager {
                 List<Object> rowList = new ArrayList<Object>();
                 SwiftMetaData meta = queryDBSource.getMetadata();
                 for (int i = 1; i <= meta.getColumnCount(); i++) {
-                    rowList.add(isDate(meta, i) ?
-                            toSqlDate(row.getValue(i - 1)) :
-                            row.getValue(i - 1));
+                    rowList.add(row.getValue(i - 1));
                 }
                 data[count] = rowList;
                 count++;
@@ -208,18 +204,5 @@ public class SwiftUpdateManager implements EngineUpdateManager {
             LOGGER.error(e.getMessage(), e);
             return new UpdatePreview();
         }
-    }
-
-    private static boolean isDate(SwiftMetaData metaData, int i) throws SwiftMetaDataException {
-        return ColumnType.DATE ==
-                ColumnTypeUtils.sqlTypeToColumnType(
-                        metaData.getColumnType(i),
-                        metaData.getPrecision(i),
-                        metaData.getScale(i));
-    }
-
-    private static java.sql.Date toSqlDate(Object date) {
-        return date == null ? null :
-                new java.sql.Date(((Long) date));
     }
 }

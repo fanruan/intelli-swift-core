@@ -1,13 +1,11 @@
 package com.fr.swift.segment.decrease;
 
 import com.fr.swift.cube.io.Types;
-import com.fr.swift.exception.meta.SwiftMetaDataException;
 import com.fr.swift.segment.AbstractSegmentOperator;
 import com.fr.swift.segment.HistorySegmentHolder;
 import com.fr.swift.segment.RealtimeSegmentHolder;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.source.SourceKey;
-import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftResultSet;
 
 import java.sql.SQLException;
@@ -26,7 +24,7 @@ public class DecreaseSegmentOperator extends AbstractSegmentOperator {
     private static int DEFAULT_COLUMN_INDEX = 1;
 
     public DecreaseSegmentOperator(SourceKey sourceKey, List<Segment> segments, String cubeSourceKey, SwiftResultSet swiftResultSet) throws SQLException {
-        super(sourceKey, segments, cubeSourceKey, swiftResultSet);
+        super(sourceKey, cubeSourceKey, swiftResultSet);
         if (null != segments && !segments.isEmpty()) {
             for (int i = 0, len = segments.size(); i < len; i++) {
                 if (segments.get(i).getLocation().getStoreType() == Types.StoreType.FINE_IO) {
@@ -79,6 +77,16 @@ public class DecreaseSegmentOperator extends AbstractSegmentOperator {
 //            }
 //        }
 //    }
+
+    @Override
+    public void transport() {
+
+    }
+
+    @Override
+    public void finishTransport() {
+
+    }
 
     @Override
     public int getSegmentCount() {

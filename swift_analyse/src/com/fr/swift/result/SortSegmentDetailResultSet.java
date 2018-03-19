@@ -8,29 +8,24 @@ import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.DictionaryEncodedColumn;
 import com.fr.swift.source.ListBasedRow;
 import com.fr.swift.source.Row;
-import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.structure.array.IntList;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Collections;
 
 /**
  * Created by Xiaolei.Liu on 2018/1/24
  */
 
 public class SortSegmentDetailResultSet extends DetailResultSet {
-
-
     private List<Column> columnList;
     private DetailFilter filter;
     private IntList sortIndex;
     private List<SortType> sorts;
 
-
     private ArrayList<Row> sortedDetailList;
-
 
     public SortSegmentDetailResultSet(List<Column> columnList, DetailFilter filter, IntList sortIndex, List<SortType> sorts) {
         this.columnList = columnList;
@@ -40,20 +35,14 @@ public class SortSegmentDetailResultSet extends DetailResultSet {
         init();
     }
 
-
-
     @Override
     public Row getRowData() {
-
-        Row row = sortedDetailList.get(rowCount);
-        return row;
+        return sortedDetailList.get(rowCount);
     }
-
 
     public int getMaxRow() {
         return maxRow;
     }
-
 
     public int getColumnCount() {
         return columnList.size();
@@ -87,7 +76,6 @@ public class SortSegmentDetailResultSet extends DetailResultSet {
     }
 
     protected class DetailSortComparator implements Comparator<Row> {
-
         @Override
         public int compare(Row o1, Row o2) {
 

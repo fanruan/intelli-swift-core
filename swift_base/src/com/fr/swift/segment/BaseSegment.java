@@ -183,25 +183,25 @@ public abstract class BaseSegment implements Segment {
 
     private void initRowCountWriter() {
         if (rowCountWriter == null) {
-            rowCountWriter = (IntWriter) DISCOVERY.getWriter(parent.buildChildLocation(ROW_COUNT), new BuildConf(IoType.WRITE, DataType.INT));
+            rowCountWriter = DISCOVERY.getWriter(parent.buildChildLocation(ROW_COUNT), new BuildConf(IoType.WRITE, DataType.INT));
         }
     }
 
     private void initRowCountReader() {
         if (rowCountReader == null) {
-            rowCountReader = (IntReader) DISCOVERY.getReader(parent.buildChildLocation(ROW_COUNT), new BuildConf(IoType.READ, DataType.INT));
+            rowCountReader = DISCOVERY.getReader(parent.buildChildLocation(ROW_COUNT), new BuildConf(IoType.READ, DataType.INT));
         }
     }
 
     private void initBitMapWriter() {
         if (bitMapWriter == null) {
-            bitMapWriter = (BitMapWriter) DISCOVERY.getWriter(parent.buildChildLocation(ALL_SHOW_INDEX), new BuildConf(IoType.WRITE, DataType.BITMAP));
+            bitMapWriter = DISCOVERY.getWriter(parent.buildChildLocation(ALL_SHOW_INDEX), new BuildConf(IoType.WRITE, DataType.BITMAP));
         }
     }
 
     private void initBitMapReader() {
         if (bitMapReader == null) {
-            bitMapReader = (BitMapReader) DISCOVERY.getReader(parent.buildChildLocation(ALL_SHOW_INDEX), new BuildConf(IoType.READ, DataType.BITMAP));
+            bitMapReader = DISCOVERY.getReader(parent.buildChildLocation(ALL_SHOW_INDEX), new BuildConf(IoType.READ, DataType.BITMAP));
         }
     }
 

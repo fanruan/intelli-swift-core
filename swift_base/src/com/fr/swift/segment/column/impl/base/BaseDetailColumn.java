@@ -21,16 +21,6 @@ abstract class BaseDetailColumn<T> implements DetailColumn<T> {
         location = parent.buildChildLocation(DETAIL);
     }
 
-    /**
-     * 明细值的writer
-     */
-    abstract void initDetailWriter();
-
-    /**
-     * 明细值的reader
-     */
-    abstract void initDetailReader();
-
     @Override
     public int getInt(int pos) {
         return Crasher.crash("not allowed");

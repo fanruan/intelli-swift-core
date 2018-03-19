@@ -1,7 +1,7 @@
 package com.fr.swift.generate;
 
-import com.finebi.conf.env.LocalEnv;
 import com.fr.base.FRContext;
+import com.fr.dav.LocalEnv;
 import com.fr.swift.service.LocalSwiftServerService;
 import com.fr.swift.source.db.TestConnectionProvider;
 import junit.framework.TestCase;

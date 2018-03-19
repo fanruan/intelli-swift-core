@@ -21,8 +21,8 @@ public class BitMapColumn implements BitmapIndexedColumn {
 
     private static final ResourceDiscovery DISCOVERY = ResourceDiscoveryImpl.getInstance();
 
-    private BitMapWriter writer;
-    private BitMapReader reader;
+    private BitMapWriter indexWriter;
+    private BitMapReader indexReader;
     private IResourceLocation indexLocation;
 
     private BitMapWriter nullWriter;
@@ -35,39 +35,39 @@ public class BitMapColumn implements BitmapIndexedColumn {
     }
 
     private void initIndexWriter() {
-        if (writer == null) {
-            writer = (BitMapWriter) DISCOVERY.getWriter(indexLocation, new BuildConf(IoType.WRITE, DataType.BITMAP));
+        if (indexWriter == null) {
+            indexWriter = DISCOVERY.getWriter(indexLocation, new BuildConf(IoType.WRITE, DataType.BITMAP));
         }
     }
 
     private void initIndexReader() {
-        if (reader == null) {
-            reader = (BitMapReader) DISCOVERY.getReader(indexLocation, new BuildConf(IoType.READ, DataType.BITMAP));
+        if (indexReader == null) {
+            indexReader = DISCOVERY.getReader(indexLocation, new BuildConf(IoType.READ, DataType.BITMAP));
         }
     }
 
     private void initNullIndexWriter() {
         if (nullWriter == null) {
-            nullWriter = (BitMapWriter) DISCOVERY.getWriter(nullLocation, new BuildConf(IoType.WRITE, DataType.BITMAP));
+            nullWriter = DISCOVERY.getWriter(nullLocation, new BuildConf(IoType.WRITE, DataType.BITMAP));
         }
     }
 
     private void initNullIndexReader() {
         if (nullReader == null) {
-            nullReader = (BitMapReader) DISCOVERY.getReader(nullLocation, new BuildConf(IoType.READ, DataType.BITMAP));
+            nullReader = DISCOVERY.getReader(nullLocation, new BuildConf(IoType.READ, DataType.BITMAP));
         }
     }
 
     @Override
     public void putBitMapIndex(int index, ImmutableBitMap bitmap) {
         initIndexWriter();
-        writer.put(index, bitmap);
+        indexWriter.put(index, bitmap);
     }
 
     @Override
     public ImmutableBitMap getBitMapIndex(int index) {
         initIndexReader();
-        return reader.get(index);
+        return indexReader.get(index);
     }
 
     @Override
@@ -84,8 +84,8 @@ public class BitMapColumn implements BitmapIndexedColumn {
 
     @Override
     public void flush() {
-        if (writer != null) {
-            writer.flush();
+        if (indexWriter != null) {
+            indexWriter.flush();
         }
         if (nullWriter != null) {
             nullWriter.flush();
@@ -94,13 +94,13 @@ public class BitMapColumn implements BitmapIndexedColumn {
 
     @Override
     public void release() {
-        if (writer != null) {
-            writer.release();
-            writer = null;
+        if (indexWriter != null) {
+            indexWriter.release();
+            indexWriter = null;
         }
-        if (reader != null) {
-            reader.release();
-            reader = null;
+        if (indexReader != null) {
+            indexReader.release();
+            indexReader = null;
         }
         if (nullWriter != null) {
             nullWriter.release();

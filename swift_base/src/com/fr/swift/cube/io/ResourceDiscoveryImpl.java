@@ -16,11 +16,11 @@ public class ResourceDiscoveryImpl implements ResourceDiscovery {
     /**
      * resourcePath -> reader
      */
-    private Map<String, Reader> readers = new ConcurrentHashMap<String, Reader>();
+    private final Map<String, Reader> readers = new ConcurrentHashMap<String, Reader>();
     /**
      * resourcePath -> writer
      */
-    private Map<String, Writer> writers = new ConcurrentHashMap<String, Writer>();
+    private final Map<String, Writer> writers = new ConcurrentHashMap<String, Writer>();
 
     private static boolean shouldCache(StoreType storeType) {
         return storeType == StoreType.MEMORY;
@@ -31,7 +31,7 @@ public class ResourceDiscoveryImpl implements ResourceDiscovery {
     }
 
     @Override
-    public Reader getReader(IResourceLocation location, BuildConf conf) {
+    public <R extends Reader> R getReader(IResourceLocation location, BuildConf conf) {
         String path = location.getPath();
         if (!readers.containsKey(path)) {
             synchronized (readers) {
@@ -45,15 +45,15 @@ public class ResourceDiscoveryImpl implements ResourceDiscovery {
                         writers.put(path, (Writer) reader);
                     }
 
-                    return reader;
+                    return (R) reader;
                 }
             }
         }
-        return readers.get(path);
+        return (R) readers.get(path);
     }
 
     @Override
-    public Writer getWriter(IResourceLocation location, BuildConf conf) {
+    public <W extends Writer> W getWriter(IResourceLocation location, BuildConf conf) {
         String path = location.getPath();
         if (!writers.containsKey(path)) {
             synchronized (writers) {
@@ -67,11 +67,11 @@ public class ResourceDiscoveryImpl implements ResourceDiscovery {
                         readers.put(path, (Reader) writer);
                     }
 
-                    return writer;
+                    return (W) writer;
                 }
             }
         }
-        return writers.get(path);
+        return (W) writers.get(path);
     }
 
 
