@@ -22,9 +22,9 @@ public class GetFromDateOperator extends AbstractOperator {
     @CoreField
     private String columnName;//新增列名
     @CoreField
-    private ColumnType columnType;
+    private int columnType;
 
-    public GetFromDateOperator(String field, int type, String columnName, ColumnType columnType) {
+    public GetFromDateOperator(String field, int type, String columnName, int columnType) {
         this.field = field;
         this.type = type;
         this.columnName = columnName;
@@ -43,7 +43,7 @@ public class GetFromDateOperator extends AbstractOperator {
         return columnName;
     }
 
-    public ColumnType getColumnType() {
+    public int getColumnType() {
         return columnType;
     }
 
@@ -55,7 +55,7 @@ public class GetFromDateOperator extends AbstractOperator {
     public List<SwiftMetaDataColumn> getColumns(SwiftMetaData[] metaDatas) {
         List<SwiftMetaDataColumn> columnList = new ArrayList<SwiftMetaDataColumn>();
         columnList.add(new MetaDataColumn(this.columnName, this.columnName,
-                ColumnTypeUtils.columnTypeToSqlType(this.columnType), MD5Utils.getMD5String(new String[]{(this.columnName)})));
+                this.columnType, MD5Utils.getMD5String(new String[]{(this.columnName)})));
         return columnList;
     }
 

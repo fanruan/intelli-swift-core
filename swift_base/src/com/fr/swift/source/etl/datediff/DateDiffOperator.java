@@ -24,9 +24,9 @@ public class DateDiffOperator extends AbstractOperator {
     @CoreField
     private String columnName;//新增列名
     @CoreField
-    private ColumnType columnType;
+    private int columnType;
 
-    public DateDiffOperator(String field1, String field2, int unit, String columnName, ColumnType columnType) {
+    public DateDiffOperator(String field1, String field2, int unit, String columnName, int columnType) {
         this.field1 = field1;
         this.field2 = field2;
         this.unit = unit;
@@ -39,7 +39,7 @@ public class DateDiffOperator extends AbstractOperator {
     public List<SwiftMetaDataColumn> getColumns(SwiftMetaData[] metaDatas) {
         List<SwiftMetaDataColumn> columnList = new ArrayList<SwiftMetaDataColumn>();
         columnList.add(new MetaDataColumn(this.columnName, this.columnName,
-                ColumnTypeUtils.columnTypeToSqlType(this.columnType), MD5Utils.getMD5String(new String[]{(this.columnName)})));
+                this.columnType, MD5Utils.getMD5String(new String[]{(this.columnName)})));
         return columnList;
     }
 
@@ -68,7 +68,7 @@ public class DateDiffOperator extends AbstractOperator {
         return columnName;
     }
 
-    public ColumnType getColumnType() {
+    public int getColumnType() {
         return columnType;
     }
 
