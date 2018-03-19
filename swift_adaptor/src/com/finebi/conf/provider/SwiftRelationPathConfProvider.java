@@ -35,12 +35,14 @@ public class SwiftRelationPathConfProvider implements EngineRelationPathManager 
 
     public SwiftRelationPathConfProvider() {
         businessRelationDAO = new SwiftRelationDao(new TableParseXml(), "table.xml", new TableXmlWriter());
+        businessPathDAO = new SwiftRelationPathDao(businessRelationDAO);
     }
 
     @Override
     public List<FineBusinessTableRelation> getAllRelations() {
         List<FineBusinessTableRelation> allConfig = new ArrayList<FineBusinessTableRelation>();
         allConfig.addAll(businessRelationDAO.getAllConfig());
+        businessPathDAO.registRelations(allConfig);
         return allConfig;
     }
 
@@ -74,13 +76,13 @@ public class SwiftRelationPathConfProvider implements EngineRelationPathManager 
 
     @Override
     public boolean addRelations(List<FineBusinessTableRelation> relations) {
+        businessPathDAO.registRelations(relations);
         return businessRelationDAO.saveConfigs(relations);
     }
 
     @Override
     public boolean updateRelations(List<FineBusinessTableRelation> relations) {
-
-        return false;
+        return businessRelationDAO.updateConfigs(relations);
     }
 
     @Override
@@ -90,33 +92,47 @@ public class SwiftRelationPathConfProvider implements EngineRelationPathManager 
 
     @Override
     public List<FineBusinessTableRelationPath> getAllRelationPaths() {
-
-        return new ArrayList<FineBusinessTableRelationPath>();
+        return businessPathDAO.getAllConfig();
     }
 
     @Override
     public List<FineBusinessTableRelationPath> getRelationPaths(String fromTable, String toTable) {
-        return null;
+        List<FineBusinessTableRelationPath> configs = businessPathDAO.getAllConfig();
+        List<FineBusinessTableRelationPath> target = new ArrayList<FineBusinessTableRelationPath>();
+        for (FineBusinessTableRelationPath path :
+                configs) {
+            if (path.getFirstTable().getName().equals(fromTable) && path.getEndTable().getName().equals(toTable)) {
+                target.add(path);
+            }
+        }
+        return target;
     }
 
     @Override
     public FineBusinessTableRelationPath getPath(String pathName) {
+        List<FineBusinessTableRelationPath> configs = businessPathDAO.getAllConfig();
+        for (FineBusinessTableRelationPath path :
+                configs) {
+            if (path.getPathName().equals(pathName)) {
+                return path;
+            }
+        }
         return null;
     }
 
     @Override
     public boolean addRelationPaths(List<FineBusinessTableRelationPath> newPaths) {
-        return false;
+        return businessPathDAO.saveConfigs(newPaths);
     }
 
     @Override
     public boolean removeRelationPath(List<FineBusinessTableRelationPath> paths) {
-        return false;
+        return businessPathDAO.removeConfigs(paths);
     }
 
     @Override
     public boolean updateRelationPath(List<FineBusinessTableRelationPath> paths) {
-        return false;
+        return businessPathDAO.updateConfigs(paths);
     }
 
     @Override
@@ -140,12 +156,12 @@ public class SwiftRelationPathConfProvider implements EngineRelationPathManager 
 
     @Override
     public boolean isRelationPathExist(String pathName) {
-        return false;
+        return null != getPath(pathName);
     }
 
     @Override
     public boolean isRelationPathExist(String fromTableId, String toTableId) {
-        return false;
+        return !getRelationPaths(fromTableId, toTableId).isEmpty();
     }
 
     @Override
