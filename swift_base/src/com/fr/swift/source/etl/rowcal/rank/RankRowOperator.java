@@ -63,7 +63,7 @@ public class RankRowOperator extends AbstractOperator {
         addColumnNames.add(columnName);
         return addColumnNames;
     }
-    
+
     @Override
     public List<SwiftMetaDataColumn> getColumns(SwiftMetaData[] metaDatas) {
         List<SwiftMetaDataColumn> columnList = new ArrayList<SwiftMetaDataColumn>();
