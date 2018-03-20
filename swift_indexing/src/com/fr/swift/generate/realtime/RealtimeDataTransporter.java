@@ -64,6 +64,11 @@ public class RealtimeDataTransporter extends BaseWorker {
             IncrementTransport modifyTransport = new ModifyTransport(dataSource, increment.getDecreaseSource(), swiftMetaData, flowRuleController);
             incrementTransportList.add(modifyTransport);
         }
+
+        if (increment.getIncreaseExcelSource() != null) {
+            IncreaseTransport increaseTransport = new IncreaseTransport(dataSource, increment.getIncreaseExcelSource(), swiftMetaData, flowRuleController);
+            incrementTransportList.add(increaseTransport);
+        }
     }
 
     @Override

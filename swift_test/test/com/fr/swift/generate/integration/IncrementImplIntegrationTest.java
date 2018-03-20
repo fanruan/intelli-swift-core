@@ -3,22 +3,22 @@ package com.fr.swift.generate.integration;
 import com.fr.base.FRContext;
 import com.fr.dav.LocalEnv;
 import com.fr.swift.bitmap.ImmutableBitMap;
+import com.fr.swift.flow.FlowRuleController;
+import com.fr.swift.generate.history.index.ColumnIndexer;
+import com.fr.swift.generate.history.transport.TableTransporter;
+import com.fr.swift.generate.realtime.RealtimeColumnIndexer;
 import com.fr.swift.generate.realtime.RealtimeDataTransporter;
 import com.fr.swift.increase.IncrementImpl;
 import com.fr.swift.increment.Increment;
 import com.fr.swift.manager.LocalSegmentProvider;
-import com.fr.swift.provider.ConnectionProvider;
 import com.fr.swift.segment.HistorySegmentImpl;
 import com.fr.swift.segment.RealTimeSegmentImpl;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.column.BitmapIndexedColumn;
 import com.fr.swift.segment.column.ColumnKey;
+import com.fr.swift.segment.column.DetailColumn;
 import com.fr.swift.segment.column.DictionaryEncodedColumn;
-import com.fr.swift.segment.column.PrimitiveDetailColumn;
 import com.fr.swift.source.DataSource;
-import com.fr.swift.source.db.ConnectionInfo;
-import com.fr.swift.source.db.ConnectionManager;
-import com.fr.swift.source.db.IConnectionProvider;
 import com.fr.swift.source.db.QueryDBSource;
 import com.fr.swift.source.db.TestConnectionProvider;
 import junit.framework.TestCase;
@@ -48,10 +48,12 @@ public class IncrementImplIntegrationTest extends TestCase {
     }
 
     @Test
-    public void testIntegration() {
+    public void testIntegration() throws Exception {
         //先做全量更新
-        ISwiftProcessor processer = new IndexingDataProcessor(dataSource);
-        processer.doProcess();
+        TableTransporter tableTransporter = new TableTransporter(dataSource);
+        tableTransporter.transport();
+        ColumnIndexer columnIndexer = new ColumnIndexer(dataSource, new ColumnKey("记录人"));
+        columnIndexer.work();
         List<Segment> segmentList = LocalSegmentProvider.getInstance().getSegment(dataSource.getSourceKey());
         assertEquals(segmentList.size(), 1);
         assertTrue(segmentList.get(0) instanceof HistorySegmentImpl);
@@ -62,8 +64,13 @@ public class IncrementImplIntegrationTest extends TestCase {
 
         //再做增量新增'庆芳'更新
         Increment increment = new IncrementImpl("select 记录人 from DEMO_CAPITAL_RETURN where 记录人 ='庆芳'", null, null, dataSource.getSourceKey(), "local");
-        IDataTransporter transport = new RealtimeDataTransporter(dataSource, null, increment);
-        transport.doTransport();
+
+        RealtimeDataTransporter transport = new RealtimeDataTransporter(dataSource, increment, new FlowRuleController());
+        transport.work();
+        for (int i = 1; i <= dataSource.getMetadata().getColumnCount(); i++) {
+            RealtimeColumnIndexer<?> indexer = new RealtimeColumnIndexer(dataSource, new ColumnKey(dataSource.getMetadata().getColumnName(i)));
+            indexer.work();
+        }
         segmentList = LocalSegmentProvider.getInstance().getSegment(dataSource.getSourceKey());
         assertEquals(segmentList.size(), 2);
         //判断第一块内容没有改变
@@ -74,7 +81,7 @@ public class IncrementImplIntegrationTest extends TestCase {
         assertFalse(segmentList.get(0).getAllShowIndex().contains(682));
         //判断第二块新增内容
         assertTrue(segmentList.get(1) instanceof RealTimeSegmentImpl);
-        PrimitiveDetailColumn column = (segmentList.get(1).getColumn(new ColumnKey("记录人")).getPrimitiveDetailColumn());
+        DetailColumn column = (segmentList.get(1).getColumn(new ColumnKey("记录人")).getDetailColumn());
         assertEquals(segmentList.get(1).getRowCount(), 32);
         assertEquals(column.get(0), "庆芳");
         assertEquals(column.get(31), "庆芳");
@@ -108,8 +115,9 @@ public class IncrementImplIntegrationTest extends TestCase {
 
         //最后做增量删除'庆芳'更新
         Increment increment2 = new IncrementImpl(null, "select 记录人 from DEMO_CAPITAL_RETURN where 记录人 ='庆芳'", null, dataSource.getSourceKey(), "local");
-        IDataTransporter realtimeDataTransport = new RealtimeDataTransporter(dataSource, null, increment2);
-        realtimeDataTransport.doTransport();
+        RealtimeDataTransporter transport2 = new RealtimeDataTransporter(dataSource, increment2);
+        transport2.work();
+
         segmentList = LocalSegmentProvider.getInstance().getSegment(dataSource.getSourceKey());
         //判断第一块数据不变，但是allshowindex去掉了庆芳的索引
         assertTrue(segmentList.get(0) instanceof HistorySegmentImpl);
@@ -120,7 +128,7 @@ public class IncrementImplIntegrationTest extends TestCase {
             if (segmentList.get(0).getAllShowIndex().contains(i)) {
                 showNumber++;
             }
-            if (segmentList.get(0).getColumn(new ColumnKey("记录人")).getPrimitiveDetailColumn().get(i) != null) {
+            if (segmentList.get(0).getColumn(new ColumnKey("记录人")).getDetailColumn().get(i) != null) {
                 allNumber++;
             }
         }
@@ -135,7 +143,7 @@ public class IncrementImplIntegrationTest extends TestCase {
             if (segmentList.get(1).getAllShowIndex().contains(i)) {
                 showNumber2++;
             }
-            if (segmentList.get(1).getColumn(new ColumnKey("记录人")).getPrimitiveDetailColumn().get(i) != null) {
+            if (segmentList.get(1).getColumn(new ColumnKey("记录人")).getDetailColumn().get(i) != null) {
                 allNumber2++;
             }
         }
