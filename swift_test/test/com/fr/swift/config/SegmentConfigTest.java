@@ -29,11 +29,11 @@ public class SegmentConfigTest extends TestCase {
     public void setUp() throws Exception {
         super.setUp();
         DBOption dbOption = new DBOption();
-        dbOption.setPassword("root");
-        dbOption.setDialectClass("com.fr.third.org.hibernate.dialect.MySQL5InnoDBDialect");
-        dbOption.setDriverClass("com.mysql.jdbc.Driver");
-        dbOption.setUsername("root");
-        dbOption.setUrl("jdbc:mysql://localhost:3306/config");
+        dbOption.setPassword("");
+        dbOption.setDialectClass("com.fr.third.org.hibernate.dialect.H2Dialect");
+        dbOption.setDriverClass("org.h2.Driver");
+        dbOption.setUsername("sa");
+        dbOption.setUrl("jdbc:h2:~/config");
         dbOption.addRawProperty("hibernate.show_sql", true)
                 .addRawProperty("hibernate.format_sql", true).addRawProperty("hibernate.connection.autocommit", true);
         DBContext dbProvider = DBContext.create();
@@ -55,7 +55,40 @@ public class SegmentConfigTest extends TestCase {
 
         IConfigSegment unique = SegmentConfig.getInstance().getSegmentByKey(source.getSourceKey());
         assertEquals(unique.getSourceKey(), source.getSourceKey());
-        List<ISegmentKey> keyUniques = unique.getSegments();
+        assertSegmentEquals(source, unique);
+    }
+
+    public void testAddAndRemove() {
+        SegmentUnique source = SegmentCreater.getSegment();
+        SegmentConfig.getInstance().addSegments(source);
+        assertEquals(SegmentConfig.getInstance().getAllSegments().size(), 1);
+        SegmentConfig.getInstance().removeSegment(source.getSourceKey());
+        assertEquals(SegmentConfig.getInstance().getAllSegments().size(), 0);
+    }
+
+    /**
+     * h2 获取的都是修改之后的数据，即target1 和 target2获取的数据都是修改后的
+     */
+    public void testAddAndModify() {
+        SegmentUnique source = SegmentCreater.getSegment();
+        SegmentConfig.getInstance().addSegments(source);
+        IConfigSegment target1 = SegmentConfig.getInstance().getSegmentByKey(source.getSourceKey());
+        SegmentUnique modify = SegmentCreater.getModify();
+
+        assertSegmentEquals(source, target1);
+
+        SegmentConfig.getInstance().modifySegment(modify);
+
+        IConfigSegment target2 = SegmentConfig.getInstance().getSegmentByKey(source.getSourceKey());
+
+        assertEquals(SegmentConfig.getInstance().getAllSegments().size(), 1);
+        assertEquals(source.getSourceKey(), target2.getSourceKey());
+        assertSegmentNotSame(source, target2);
+        assertSegmentEquals(modify, target2);
+    }
+
+    private void assertSegmentEquals(IConfigSegment source, IConfigSegment dest) {
+        List<ISegmentKey> keyUniques = dest.getSegments();
         List<ISegmentKey> sourceKeyUniques = source.getSegments();
         assertEquals(keyUniques.size(), sourceKeyUniques.size());
         for (int i = 0, len = sourceKeyUniques.size(); i < len; i++) {
@@ -67,45 +100,20 @@ public class SegmentConfigTest extends TestCase {
             assertEquals(target.getStoreType(), key.getStoreType());
             assertEquals(target.getUri(), key.getUri());
         }
-//        assertEquals(metaData.getRemark(), MetaDataCreater.getMA().getRemark());
-//        assertEquals(metaData.getSchema(), MetaDataCreater.getMA().getSchema());
-//        assertEquals(metaData.getFieldList().size(), MetaDataCreater.getMA().getFieldList().size());
     }
 
-    public void testAddAndRemove() {
-        SegmentUnique source = SegmentCreater.getSegment();
-        SegmentConfig.getInstance().addSegments(source);
-        assertEquals(SegmentConfig.getInstance().getAllSegments().size(), 1);
-        SegmentConfig.getInstance().removeSegment(source.getSourceKey());
-        assertEquals(SegmentConfig.getInstance().getAllSegments().size(), 0);
-    }
-
-    public void testAddAndModify() {
-        SegmentUnique source = SegmentCreater.getSegment();
-        SegmentConfig.getInstance().addSegments(source);
-        IConfigSegment target1 = SegmentConfig.getInstance().getSegmentByKey(source.getSourceKey());
-        SegmentUnique modify = SegmentCreater.getModify();
-        SegmentConfig.getInstance().modifySegment(modify);
-
-        IConfigSegment target2 = SegmentConfig.getInstance().getSegmentByKey(source.getSourceKey());
-
-        assertEquals(SegmentConfig.getInstance().getAllSegments().size(), 1);
-        assertEquals(target1.getSourceKey(), target2.getSourceKey());
-        List<ISegmentKey> keyUniques = target1.getSegments();
-        List<ISegmentKey> sourceKeyUniques = target2.getSegments();
+    private void assertSegmentNotSame(IConfigSegment source, IConfigSegment dest) {
+        List<ISegmentKey> keyUniques = dest.getSegments();
+        List<ISegmentKey> sourceKeyUniques = source.getSegments();
         assertEquals(keyUniques.size(), sourceKeyUniques.size());
         for (int i = 0, len = sourceKeyUniques.size(); i < len; i++) {
             ISegmentKey key = sourceKeyUniques.get(i);
             ISegmentKey target = keyUniques.get(i);
-            assertNotSame(key.getName(), target.getName());
-            assertEquals(key.getSegmentOrder(), target.getSegmentOrder());
-            assertEquals(key.getSourceId(), target.getSourceId());
-            assertEquals(key.getStoreType(), target.getStoreType());
-            assertNotSame(key.getUri(), target.getUri());
+            assertNotSame(target.getName(), key.getName());
+            assertEquals(target.getSegmentOrder(), key.getSegmentOrder());
+            assertEquals(target.getSourceId(), key.getSourceId());
+            assertEquals(target.getStoreType(), key.getStoreType());
+            assertNotSame(target.getUri(), key.getUri());
         }
-//        assertEquals(metaData1.getTableName(), metaData2.getTableName());
-//        assertNotSame(metaData1.getRemark(), metaData2.getRemark());
-//        assertNotSame(metaData1.getSchema(), metaData2.getSchema());
-//        assertEquals(metaData1.getFieldList().size(), metaData2.getFieldList().size());
     }
 }
