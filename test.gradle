@@ -88,6 +88,9 @@ task test_jar(dependsOn:compileJava)<<{
 					fileset(dir:"../lib-core"){ 
 						include(name:"**/*.jar")
 					}
+					fileset(dir:"../lib-other"){ 
+						include(name:"**/*.jar")
+					}
 				}
 				classpath(path:"build/classes/test")
 				formatter(type:"xml")
