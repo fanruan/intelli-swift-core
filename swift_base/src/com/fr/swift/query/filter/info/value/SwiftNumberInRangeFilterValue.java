@@ -7,8 +7,8 @@ public class SwiftNumberInRangeFilterValue {
 
     private double min = Double.MIN_VALUE;
     private double max = Double.MAX_VALUE;
-    private boolean minIncluded = false;
-    private boolean maxIncluded = false;
+    private boolean minIncluded = true;
+    private boolean maxIncluded = true;
 
     public double getMin() {
         return min;
