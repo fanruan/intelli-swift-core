@@ -25,7 +25,7 @@ def jarname='fine-bi-engine-swift-1.0.jar'
 //指定生成的jar包版本
 version='1.0'
 
-def libDir = "../../lib-core"
+def libDir = "../lib-core"
 
 //每次构建前先删掉build目录和reports目录
 ant.delete(dir:"build")
@@ -36,7 +36,7 @@ ant.delete(dir:"reports")
 
 jar{
 //指定生成jar包的名称
-	baseName='fine-bi-engine-index'
+	baseName='fine-bi-engine-swift'
 }
 def list=[
 		"swift_base/src",
