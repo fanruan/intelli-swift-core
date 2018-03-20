@@ -16,7 +16,7 @@ public final class SwiftLoggers {
     private static final Map<Class, SwiftLogger> LOGGERS = new HashMap<Class, SwiftLogger>();
     private static final String FINE_LOG_PROPS = "FineLog.properties";
 
-    private static final SwiftLogger ROOT_LOGGER = getLogger(SwiftLogger.class);
+    private static final SwiftLogger ROOT_LOGGER = new SwiftLogger(Logger.getRootLogger());
 
     static {
         conf();

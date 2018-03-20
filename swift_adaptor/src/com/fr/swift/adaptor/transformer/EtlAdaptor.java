@@ -624,6 +624,6 @@ class EtlAdaptor {
             String tempName = fields.get(findFieldName(fields, value.getShowFields().get(i))).getName();
             showFields.add(tempName);
         }
-        return new TwoUnionRelationOperator(idFieldName, showFields, columns, value.getFieldType(), null, parentIdFieldName);
+        return new TwoUnionRelationOperator(idFieldName, showFields, columns, value.getType(), null, parentIdFieldName);
     }
 }

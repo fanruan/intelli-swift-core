@@ -7,5 +7,5 @@ public class IOConstant {
 
     public static final double NULL_DOUBLE = Double.NaN;
 
-    public static final String NULL_STRING = "\0\0\0\0\0\0\0\0\0\0\0\0";
+    public static final String NULL_STRING = "dcfac8e058dba55564d0bcfbb300ad1433437219";
 }
