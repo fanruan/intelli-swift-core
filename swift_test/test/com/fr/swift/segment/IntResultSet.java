@@ -20,7 +20,7 @@ public class IntResultSet extends SingleColumnResultSet {
     int count;
 
     @Override
-    public SwiftMetaData getMetaData() throws SQLException {
+    public SwiftMetaData getMetaData() {
         return new SwiftMetaDataImpl("INT_TABLE",
                 Arrays.asList(new MetaDataColumn("int", Types.INTEGER)));
     }
@@ -30,11 +30,11 @@ public class IntResultSet extends SingleColumnResultSet {
     protected void initData() {
         count = (int) (Math.random() * 1000000);
         for (int i = 0; i < count; i++) {
-            List data = new ArrayList<Integer>();
-            data.add(i);
+            List data = new ArrayList<Long>();
+            data.add((long) i);
             datas.add(new ListBasedRow(data));
         }
-        List data = new ArrayList<Integer>();
+        List data = new ArrayList<Long>();
         data.add(null);
         datas.add(new ListBasedRow(data));
     }
