@@ -53,6 +53,7 @@ public class ColumnRowTransOperator extends AbstractOperator {
         return this.otherColumnNames;
     }
 
+    @Override
     public String getNewAddedName() {
         return null;
     }

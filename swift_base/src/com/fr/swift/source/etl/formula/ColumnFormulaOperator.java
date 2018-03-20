@@ -61,6 +61,7 @@ public class ColumnFormulaOperator extends AbstractOperator {
         return MD5Utils.getMD5String(new String[]{(this.expression + this.columnType)});
     }
 
+    @Override
     public String getNewAddedName() {
         return columnName;
     }

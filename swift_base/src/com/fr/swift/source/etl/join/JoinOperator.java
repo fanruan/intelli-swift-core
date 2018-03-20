@@ -46,6 +46,7 @@ public class JoinOperator extends AbstractOperator {
         return type;
     }
 
+    @Override
     public String getNewAddedName() {
         return null;
     }

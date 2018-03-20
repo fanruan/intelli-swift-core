@@ -70,6 +70,7 @@ public class DetailOperator extends AbstractOperator {
         return OperatorType.DETAIL;
     }
 
+    @Override
     public String getNewAddedName() {
         return null;
     }

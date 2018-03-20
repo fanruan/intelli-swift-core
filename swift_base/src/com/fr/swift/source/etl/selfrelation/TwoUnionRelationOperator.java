@@ -62,6 +62,7 @@ public class TwoUnionRelationOperator extends AbstractOperator {
         return parentIdColumnName;
     }
 
+    @Override
     public String getNewAddedName() {
         return null;
     }

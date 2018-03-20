@@ -38,6 +38,7 @@ public class SumByGroupOperator extends AbstractOperator {
         return dimensions;
     }
 
+    @Override
     public String getNewAddedName() {
         return null;
     }

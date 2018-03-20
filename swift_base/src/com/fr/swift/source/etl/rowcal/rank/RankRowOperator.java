@@ -1,12 +1,15 @@
 package com.fr.swift.source.etl.rowcal.rank;
 
 import com.fr.swift.segment.column.ColumnKey;
-import com.fr.swift.source.*;
+import com.fr.swift.source.ColumnTypeConstants.ColumnType;
+import com.fr.swift.source.ColumnTypeUtils;
+import com.fr.swift.source.MetaDataColumn;
+import com.fr.swift.source.SwiftMetaData;
+import com.fr.swift.source.SwiftMetaDataColumn;
 import com.fr.swift.source.core.CoreField;
 import com.fr.swift.source.core.MD5Utils;
 import com.fr.swift.source.etl.AbstractOperator;
 import com.fr.swift.source.etl.OperatorType;
-import com.fr.swift.source.ColumnTypeConstants.ColumnType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -52,6 +55,7 @@ public class RankRowOperator extends AbstractOperator {
 
     public ColumnKey getColumnKey() { return columnKey; }
 
+    @Override
     public String getNewAddedName() {
         return columnName;
     }

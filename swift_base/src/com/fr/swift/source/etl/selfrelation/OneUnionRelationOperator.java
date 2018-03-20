@@ -55,6 +55,7 @@ public class OneUnionRelationOperator extends AbstractOperator {
         return columnName;
     }
 
+    @Override
     public String getNewAddedName() {
         return null;
     }

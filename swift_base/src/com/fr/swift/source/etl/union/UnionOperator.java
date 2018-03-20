@@ -62,6 +62,7 @@ public class UnionOperator extends AbstractOperator {
         return OperatorType.UNION;
     }
 
+    @Override
     public String getNewAddedName() {
         return null;
     }

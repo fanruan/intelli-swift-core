@@ -29,6 +29,7 @@ public class ColumnFilterOperator extends AbstractOperator {
         return this.filterInfo;
     }
 
+    @Override
     public String getNewAddedName() {
         return null;
     }

@@ -2,7 +2,11 @@ package com.fr.swift.source.etl.expression;
 
 import com.fr.swift.query.filter.info.DetailFilterInfo;
 import com.fr.swift.segment.column.ColumnKey;
-import com.fr.swift.source.*;
+import com.fr.swift.source.ColumnTypeConstants;
+import com.fr.swift.source.ColumnTypeUtils;
+import com.fr.swift.source.MetaDataColumn;
+import com.fr.swift.source.SwiftMetaData;
+import com.fr.swift.source.SwiftMetaDataColumn;
 import com.fr.swift.source.etl.AbstractOperator;
 import com.fr.swift.source.etl.OperatorType;
 
@@ -78,6 +82,7 @@ public class ExpressionFilterOperator extends AbstractOperator {
         return ColumnTypeUtils.columnTypeToSqlType(ColumnTypeConstants.ColumnType.values()[columnType]);
     }
 
+    @Override
     public String getNewAddedName() {
         return columnName;
     }
