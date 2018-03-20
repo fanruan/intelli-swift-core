@@ -40,7 +40,7 @@ import java.util.Map;
 public class SwiftEngineWidgetExecutorManager implements EngineWidgetExecutorManager {
     @Override
     public BIGroupNode visit(TableWidget tableWidget) {
-        return null;
+        return TableWidgetAdaptor.calculate(tableWidget);
     }
 
     @Override

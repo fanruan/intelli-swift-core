@@ -27,7 +27,7 @@ public class LocalGroupAllQueryBuilder extends AbstractLocalGroupQueryBuilder {
 
     @Override
     public Query<GroupByResultSet> buildLocalQuery(GroupQueryInfo info) {
-        List<Query<GroupByResultSet>> queries = new ArrayList<Query<com.fr.swift.result.GroupByResultSet>>();
+        List<Query<GroupByResultSet>> queries = new ArrayList<Query<GroupByResultSet>>();
         for (TableGroupQueryInfo groupQueryInfo : info.getTableGroups()) {
             List<Segment> segments = LocalSegmentProvider.getInstance().getSegment(groupQueryInfo.getTable());
             for (Segment segment : segments) {

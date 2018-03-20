@@ -22,9 +22,8 @@ public class BottomNFilter extends AbstractFilter {
 
     @Override
     protected RowTraversal getIntIterator(DictionaryEncodedColumn dict) {
-        int size = dict.globalSize();
-        int endIndex = size >= bottomN ? size - bottomN - 1 : 0;
-        return new BottomNFilterRowTraversal(endIndex, dict);
+        int endIndex = dict.globalSize() >= bottomN ? bottomN : dict.globalSize();
+        return new TopNFilterRowTraversal(endIndex, dict);
     }
 
     @Override

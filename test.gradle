@@ -1,0 +1,139 @@
+
+apply plugin: 'java'
+tasks.withType(JavaCompile){
+		options.encoding = 'UTF-8'
+		destinationDir = file('build/classes/test')
+}
+//指定构建的jdk版本
+//sourceCompatibility=1.5
+//指定jar包版本
+version='1.0'
+//给自定义jar
+
+def srcDir="."
+
+
+//设置源码路径
+	sourceSets{
+		main {
+			java{
+				srcDirs=["${srcDir}/swift_test/test"]
+			}
+		}
+		
+	
+	}
+repositories {
+         mavenCentral()
+}
+def basicDir="../../"
+
+dependencies{
+	compile fileTree(dir:"../lib-core",include:'**/*.jar')
+	compile fileTree(dir:"../lib-other",include:'**/*.jar')
+	compile fileTree(dir:"build/libs",include:"**/*.jar")
+	testCompile "junit:junit:4.12"
+}
+//将无法编译的文件copy到classes文件夹参与打包
+task copyFile(type:Copy){
+	copy{
+
+		from ("${srcDir}/swift_test/test"){
+			exclude "**/*.java","**/.settings/**",".classpath",".project","**/*.g","**/package.html"
+		
+		}
+
+		into "build/classes/test"
+
+	}
+
+	
+}
+
+task test_jar(dependsOn:compileJava)<<{
+	ant.delete(dir:"test_result")
+	ant.mkdir(dir:"test_result")
+	ant{
+		taskdef(name:"junit",classname:"org.apache.tools.ant.taskdefs.optional.junit.JUnitTask"){
+			classpath(){
+				pathelement(path:"../lib-other/test/ant-junit.jar")
+				pathelement(path:"../lib-other/test/junit-4.12.jar")
+			}	
+		}
+		taskdef(name:"junitreport",classname:"org.apache.tools.ant.taskdefs.optional.junit.XMLResultAggregator"){
+			classpath(){
+				pathelement(path:"../lib-other/test/ant-junit.jar")
+			}	
+		}
+
+		taskdef(name:"jacocoCoverage", classname:"org.jacoco.ant.CoverageTask") {
+			classpath() {
+			    pathelement(path:"../lib-other/test/jacocoant.jar")
+			}
+		    }
+
+		        //如果你希望得到可视化的测试报告（如html报告），而不依赖于Jenkins，你可以自己定义JacocoReport任务
+		    taskdef(name:"jacocoReport", classname:"org.jacoco.ant.ReportTask") {
+			classpath() {
+			    pathelement(path:"../lib-other/test/jacocoant.jar")
+			}
+		    }
+		 jacocoCoverage(destfile:"reports/jacoco/jacoco.exec", append:"true") {
+			junit(printsummary:"on",fork:"true",haltonfailure:"false",failureproperty:"tests.failed",showoutput:"true"){
+				classpath(){
+					fileset(dir:"."){
+						include(name:"build/libs/*.jar")
+			
+					}
+					fileset(dir:"../lib-core"){ 
+						include(name:"**/*.jar")
+					}
+					fileset(dir:"../lib-other"){ 
+						include(name:"**/*.jar")
+					}
+				}
+				classpath(path:"build/classes/test")
+				formatter(type:"xml")
+				batchtest(todir:"test_result"){
+					fileset(dir:"build/classes/test"){
+						include(name:"**/*Test.class")
+					}
+				}
+			}
+		}
+		    jacocoReport() {
+        //exec文件所在目录
+        executiondata {
+            fileset(dir:"reports/jacoco") {
+                include(name:"jacoco.exec")
+            }
+        }
+        //指明被测试的类/源文件所在目录
+        structure(name:"jacoco") {
+            classfiles {
+                fileset(dir:"build/classes/main") {
+                    include(name:"**/*.class")
+                }
+            }
+            sourcefiles {
+                fileset(dir:"${srcDir}") {
+                    include(name:"**/src/**/*.java")
+                }
+            }
+        }
+        //报告文件存放位置
+        html(destdir:"reports/jacoco/html")
+        xml(destfile:"reports/jacoco/jacoco.xml")
+        csv(destfile:"reports/jacoco/jacoco.csv")
+    }
+		junitreport(todir:"test_result"){
+			fileset(dir:"test_result"){
+				include(name:"TEST-*.xml")
+			}
+			report(format:"frames",todir:"test_result/report")
+		}	
+		fail(if:"tests.failed",message:"There were test failures.")
+	
+	}
+}
+
