@@ -1,4 +1,4 @@
-package com.fr.swift.conf;
+package com.fr.swift.config;
 
 import java.util.HashMap;
 import java.util.Map;
