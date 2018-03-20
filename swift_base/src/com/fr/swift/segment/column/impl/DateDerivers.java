@@ -1,7 +1,6 @@
 package com.fr.swift.segment.column.impl;
 
 import com.fr.swift.query.group.GroupType;
-import com.fr.swift.segment.column.impl.DateType.MixDateType;
 import com.fr.swift.util.function.Function;
 
 import java.util.Calendar;

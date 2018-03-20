@@ -1,24 +1,25 @@
 package com.fr.swift.source.etl.datediff;
 
+import com.fr.swift.segment.column.impl.DateType;
+
 import java.util.Calendar;
 
 /**
  * @author Daniel
- *
  */
 public class YearDiff implements DateDiffCalculator {
+    private Calendar c = Calendar.getInstance();
 
-    public static final YearDiff INSTANCE = new YearDiff();
     @Override
     public int get(Long d1, Long d2) {
-        if(d1 == null || d2 == null){
+        if (d1 == null || d2 == null) {
             return 0;
         }
-        Calendar c1 = Calendar.getInstance();
-        c1.setTimeInMillis(d1.longValue());
-        Calendar c2 = Calendar.getInstance();
-        c2.setTimeInMillis(d2.longValue());
-        return c1.get(Calendar.YEAR) - c2.get(Calendar.YEAR);
+        c.setTimeInMillis(d1);
+        int year1 = DateType.YEAR.from(c);
+        c.setTimeInMillis(d2);
+        int year2 = DateType.YEAR.from(c);
+        return year1 - year2;
     }
 
 }

@@ -5,6 +5,7 @@ import com.fr.swift.structure.Pair;
 import com.fr.swift.structure.array.IntList;
 import com.fr.swift.structure.array.IntListFactory;
 
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -23,9 +24,14 @@ public class CustomStrGroupRule extends BaseCustomGroupRule {
 
     @Override
     void initMap() {
+        filterInvalidGroup();
+
         int lastIndex = groups.size();
 
-        for (int i = 0; i < dictColumn.size(); i++) {
+        int dictSize = dictColumn.size();
+        reverseMap = new int[dictSize];
+
+        for (int i = 0; i < dictSize; i++) {
             String val = (String) dictColumn.<String>getValue(i);
             int index = findIndex(val);
 
@@ -51,6 +57,17 @@ public class CustomStrGroupRule extends BaseCustomGroupRule {
                 IntList indices = IntListFactory.createIntList();
                 indices.add(i);
                 map.put(index, Pair.of(groupName, indices));
+                reverseMap[i] = index;
+            }
+        }
+    }
+
+    private void filterInvalidGroup() {
+        Iterator<StringGroup> itr = groups.iterator();
+        while (itr.hasNext()) {
+            StringGroup sg = itr.next();
+            if (sg.values.isEmpty()) {
+                itr.remove();
             }
         }
     }

@@ -23,6 +23,15 @@ public interface GroupRule {
     IntList map(int index);
 
     /**
+     * 反向映射
+     * 旧值序号 -> 新值序号
+     *
+     * @param originIndex 旧值序号
+     * @return 新值序号
+     */
+    int reverseMap(int originIndex);
+
+    /**
      * @return 新分组大小
      */
     int newSize();

@@ -80,7 +80,7 @@ public class TableWidgetAdaptor {
                 sourceKey
         );
         return new GroupQueryInfo(cursor, queryId, filterInfo,
-                new TableGroupQueryInfo[] { tableGroupQueryInfo },
+                new TableGroupQueryInfo[]{tableGroupQueryInfo},
                 dimensions.toArray(new Dimension[dimensions.size()]),
                 metrics.toArray(new Metric[metrics.size()]),
                 targets, expander);

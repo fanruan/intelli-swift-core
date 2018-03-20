@@ -16,6 +16,10 @@ abstract class BaseCustomGroupRule extends BaseGroupRule {
      * 新分组序号 -> (新分组名, 旧分组序号)
      */
     Map<Integer, Pair<String, IntList>> map = new HashMap<Integer, Pair<String, IntList>>();
+    /**
+     * 旧值序号 -> 新值序号
+     */
+    int[] reverseMap;
 
     String otherGroupName;
 
@@ -31,6 +35,11 @@ abstract class BaseCustomGroupRule extends BaseGroupRule {
     @Override
     public IntList map(int index) {
         return map.get(index).getValue();
+    }
+
+    @Override
+    public int reverseMap(int originIndex) {
+        return reverseMap[originIndex];
     }
 
     @Override

@@ -21,13 +21,18 @@ import java.util.Comparator;
 class GroupColumn implements Column<String> {
     private GroupRule groupRule;
     private ImmutableBitMap[] groupedBitmaps;
+    private Column<?> originColumn;
 
-    GroupColumn(BitmapIndexedColumn indexColumn, GroupRule groupRule) {
+    GroupColumn(Column<?> originColumn, GroupRule groupRule) {
+        this.originColumn = originColumn;
         this.groupRule = groupRule;
-        group(indexColumn);
+        group();
     }
 
-    private void group(BitmapIndexedColumn indexColumn) {
+    private void group() {
+        groupRule.setOriginDict(originColumn.getDictionaryEncodedColumn());
+
+        BitmapIndexedColumn indexColumn = originColumn.getBitmapIndex();
         int newSize = groupRule.newSize();
         groupedBitmaps = new ImmutableBitMap[newSize];
         for (int i = 0; i < newSize; i++) {
@@ -61,8 +66,11 @@ class GroupColumn implements Column<String> {
     }
 
     private class GroupDictColumn implements DictionaryEncodedColumn<String> {
+        DictionaryEncodedColumn<?> originDict = originColumn.getDictionaryEncodedColumn();
+
         @Override
         public void putSize(int size) {
+            throw new UnsupportedOperationException();
         }
 
         @Override
@@ -72,15 +80,17 @@ class GroupColumn implements Column<String> {
 
         @Override
         public void putGlobalSize(int globalSize) {
+            throw new UnsupportedOperationException();
         }
 
         @Override
         public int globalSize() {
-            return 0;
+            throw new UnsupportedOperationException();
         }
 
         @Override
         public void putValue(int index, String val) {
+            throw new UnsupportedOperationException();
         }
 
         @Override
@@ -90,54 +100,60 @@ class GroupColumn implements Column<String> {
 
         @Override
         public int getIndex(Object value) {
-            return 0;
+            throw new UnsupportedOperationException();
         }
 
         @Override
         public void putIndex(int row, int index) {
+            throw new UnsupportedOperationException();
         }
 
         @Override
         public int getIndexByRow(int row) {
-            return 0;
+            int originIndex = originDict.getIndexByRow(row);
+            return groupRule.reverseMap(originIndex);
         }
 
         @Override
         public void putGlobalIndex(int index, int globalIndex) {
+            throw new UnsupportedOperationException();
         }
 
         @Override
         public int getGlobalIndexByIndex(int index) {
-            return 0;
+            throw new UnsupportedOperationException();
         }
 
         @Override
         public int getGlobalIndexByRow(int row) {
-            return 0;
+            throw new UnsupportedOperationException();
         }
 
         @Override
         public Comparator<String> getComparator() {
-            return null;
+            throw new UnsupportedOperationException();
         }
 
         @Override
         public String convertValue(Object value) {
-            return value.toString();
+            throw new UnsupportedOperationException();
         }
 
         @Override
         public void flush() {
+            throw new UnsupportedOperationException();
         }
 
         @Override
         public void release() {
+            throw new UnsupportedOperationException();
         }
     }
 
     private class GroupBitmapColumn implements BitmapIndexedColumn {
         @Override
         public void putBitMapIndex(int index, ImmutableBitMap bitmap) {
+            throw new UnsupportedOperationException();
         }
 
         @Override
@@ -148,20 +164,22 @@ class GroupColumn implements Column<String> {
 
         @Override
         public void putNullIndex(ImmutableBitMap bitMap) {
+            throw new UnsupportedOperationException();
         }
 
         @Override
         public ImmutableBitMap getNullIndex() {
-            return null;
-        }
-
-        @Override
-        public void flush() {
+            throw new UnsupportedOperationException();
         }
 
         @Override
         public void release() {
             groupedBitmaps = null;
+        }
+
+        @Override
+        public void flush() {
+            throw new UnsupportedOperationException();
         }
     }
 }
