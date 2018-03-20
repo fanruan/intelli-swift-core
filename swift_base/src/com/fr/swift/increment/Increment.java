@@ -1,6 +1,7 @@
 package com.fr.swift.increment;
 
 import com.fr.swift.source.db.QueryDBSource;
+import com.fr.swift.source.excel.ExcelDataSource;
 
 /**
  * This class created on 2018-1-15 14:44:16
@@ -16,6 +17,8 @@ public interface Increment {
     QueryDBSource getDecreaseSource();
 
     QueryDBSource getModifySource();
+
+    ExcelDataSource getIncreaseExcelSource();
 
     int getUpdateType();
 
