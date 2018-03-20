@@ -53,8 +53,10 @@ public class ColumnRowTransOperator extends AbstractOperator {
         return this.otherColumnNames;
     }
 
-    public String getNewAddedName() {
-        return null;
+    @Override
+    public List<String> getNewAddedName() {
+        List<String> addColumnNames = new ArrayList<String>();
+        return addColumnNames;
     }
 
     @Override

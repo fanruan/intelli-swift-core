@@ -30,8 +30,7 @@ public class DetailOperator extends AbstractOperator {
     private List<SwiftMetaData> baseMetas;
 
     /**
-     *
-     * @param fields 每个基础表的字段,不包括最子表
+     * @param fields    每个基础表的字段,不包括最子表
      * @param baseMetas 基础表的metadata,不包括最子表
      */
     public DetailOperator(List<ColumnKey[]> fields, List<ColumnKey> baseFields, List<SwiftMetaData> baseMetas) {
@@ -49,11 +48,11 @@ public class DetailOperator extends AbstractOperator {
     @Override
     public List<SwiftMetaDataColumn> getColumns(SwiftMetaData[] metaDatas) {
         List<SwiftMetaDataColumn> columns = new ArrayList<SwiftMetaDataColumn>();
-        for (int i = 0; i < fields.size(); i++){
+        for (int i = 0; i < fields.size(); i++) {
             SwiftMetaData metaData = baseMetas.get(i);
             ColumnKey[] columnKeys = fields.get(i);
             Util.requireNonNull(columnKeys);
-            for (ColumnKey columnKey : columnKeys){
+            for (ColumnKey columnKey : columnKeys) {
                 try {
                     SwiftMetaDataColumn column = metaData.getColumn(columnKey.getName());
                     columns.add(column);
@@ -70,7 +69,9 @@ public class DetailOperator extends AbstractOperator {
         return OperatorType.DETAIL;
     }
 
-    public String getNewAddedName() {
-        return null;
+    @Override
+    public List<String> getNewAddedName() {
+        List<String> addColumnNames = new ArrayList<String>();
+        return addColumnNames;
     }
 }

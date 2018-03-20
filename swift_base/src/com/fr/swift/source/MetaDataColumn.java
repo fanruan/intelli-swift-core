@@ -28,6 +28,10 @@ public class MetaDataColumn implements SwiftMetaDataColumn {
         this(name, null, sqlType, size, DEFAULT_SCALE);
     }
 
+    public MetaDataColumn(String name, int sqlType, int size, String columnId) {
+        this(name, null, sqlType, size, DEFAULT_SCALE, columnId);
+    }
+
     public MetaDataColumn(String name, int sqlType, int size, int scale) {
         this(name, null, sqlType, size, scale);
     }

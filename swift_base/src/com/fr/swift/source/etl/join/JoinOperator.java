@@ -46,8 +46,10 @@ public class JoinOperator extends AbstractOperator {
         return type;
     }
 
-    public String getNewAddedName() {
-        return null;
+    @Override
+    public List<String> getNewAddedName() {
+        List<String> addColumnNames = new ArrayList<String>();
+        return addColumnNames;
     }
 
     @Override

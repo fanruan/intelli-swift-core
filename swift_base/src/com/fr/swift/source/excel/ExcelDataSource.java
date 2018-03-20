@@ -68,6 +68,19 @@ public class ExcelDataSource extends AbstractOuterDataSource {
         return columnNames;
     }
 
+    public ColumnType[] getColumnTypes() {
+        return columnTypes;
+    }
+
+    public List<String> getAllPaths() {
+        List<String> allPaths = new ArrayList<String>();
+        allPaths.add(fullFileName);
+        if (appendedFileNames != null) {
+            allPaths.addAll(appendedFileNames);
+        }
+        return allPaths;
+    }
+
     @Override
     protected void initOuterMetaData() {
         ExcelDataModel dm = null;

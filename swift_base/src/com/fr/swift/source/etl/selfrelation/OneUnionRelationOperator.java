@@ -6,6 +6,7 @@ import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.source.MetaDataColumn;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftMetaDataColumn;
+import com.fr.swift.source.core.MD5Utils;
 import com.fr.swift.source.etl.AbstractOperator;
 import com.fr.swift.source.etl.OperatorType;
 
@@ -26,6 +27,8 @@ public class OneUnionRelationOperator extends AbstractOperator {
     private LinkedHashMap<String, Integer> columns = new LinkedHashMap<String, Integer>();
     private int columnType;
     private String columnName;
+    private List<SwiftMetaDataColumn> columnList;
+
 
     public OneUnionRelationOperator(String idColumnName, List<String> showColumns, LinkedHashMap<String, Integer> columns, int columnType, String columnName) {
         this.idColumnName = idColumnName;
@@ -55,31 +58,38 @@ public class OneUnionRelationOperator extends AbstractOperator {
         return columnName;
     }
 
-    public String getNewAddedName() {
-        return null;
+    @Override
+    public List<String> getNewAddedName() {
+        List<String> addColumnNames = new ArrayList<String>();
+        for (SwiftMetaDataColumn column : columnList) {
+            if (!showColumns.contains(column.getName())) {
+                addColumnNames.add(column.getName());
+            }
+        }
+        return addColumnNames;
     }
-
 
     @Override
     public List<SwiftMetaDataColumn> getColumns(SwiftMetaData[] metaDatas) {
 
         Iterator<Map.Entry<String, Integer>> it;
-        List<SwiftMetaDataColumn> columnList = new ArrayList<SwiftMetaDataColumn>();
-        for(int i = 0; i < metaDatas.length; i++) {
+        columnList = new ArrayList<SwiftMetaDataColumn>();
+        for (int i = 0; i < metaDatas.length; i++) {
             SwiftMetaData table = metaDatas[0];
             try {
-                int size =  table.getColumn(this.idColumnName).getPrecision();
-                for(int j = 0; j < table.getColumnCount(); j++) {
-                    columnList.add(table.getColumn(table.getColumnName(j + 1)));
-                }
-                for(String s : this.showColumns) {
+                int size = table.getColumn(this.idColumnName).getPrecision();
+//                for (int j = 0; j < table.getColumnCount(); j++) {
+//                    columnList.add(table.getColumn(table.getColumnName(j + 1)));
+//                }
+                for (String s : this.showColumns) {
                     it = columns.entrySet().iterator();
-                    while(it.hasNext()) {
+                    while (it.hasNext()) {
                         Map.Entry<String, Integer> entry = it.next();
-                        columnList.add(new MetaDataColumn(s + "-" + entry.getKey(), this.columnType, size));
+                        columnList.add(new MetaDataColumn(s + "-" + entry.getKey(), this.columnType, size,
+                                MD5Utils.getMD5String(new String[]{(s + "-" + entry.getKey() + this.columnType)})));
                     }
                 }
-            } catch(SwiftMetaDataException e) {
+            } catch (SwiftMetaDataException e) {
                 LOGGER.error("getting meta's column information failed", e);
             }
 
