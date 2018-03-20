@@ -53,6 +53,9 @@ public class GroupAdaptor {
     }
 
     public static Group adaptGroup(FineDimensionGroup dimGroup) {
+        if (dimGroup == null) {
+            return Groups.newGroup(new NoGroupRule());
+        }
         GroupRule groupRule;
         GroupType type = GroupTypeAdaptor.adaptGroupType(dimGroup.getType());
         switch (type) {
