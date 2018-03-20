@@ -1,6 +1,5 @@
 package com.fr.swift.adaptor.transformer;
 
-import com.finebi.conf.constant.BICommonConstants;
 import com.finebi.conf.constant.BIConfConstants;
 import com.finebi.conf.constant.ConfConstant.AnalysisType;
 import com.finebi.conf.exception.FineAnalysisOperationUnSafe;
@@ -62,16 +61,20 @@ import com.fr.swift.generate.preview.MinorSegmentManager;
 import com.fr.swift.query.filter.info.FilterInfo;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.column.ColumnKey;
-import com.fr.swift.source.*;
+import com.fr.swift.source.DataSource;
+import com.fr.swift.source.MetaDataColumn;
+import com.fr.swift.source.SwiftMetaData;
+import com.fr.swift.source.SwiftMetaDataColumn;
+import com.fr.swift.source.SwiftMetaDataImpl;
 import com.fr.swift.source.etl.AbstractOperator;
 import com.fr.swift.source.etl.ETLOperator;
 import com.fr.swift.source.etl.ETLSource;
 import com.fr.swift.source.etl.columnfilter.ColumnFilterOperator;
 import com.fr.swift.source.etl.columnrowtrans.ColumnRowTransOperator;
 import com.fr.swift.source.etl.columnrowtrans.NameText;
+import com.fr.swift.source.etl.datamining.DataMiningOperator;
 import com.fr.swift.source.etl.date.GetFromDateOperator;
 import com.fr.swift.source.etl.datediff.DateDiffOperator;
-import com.fr.swift.source.etl.datamining.DataMiningOperator;
 import com.fr.swift.source.etl.detail.DetailOperator;
 import com.fr.swift.source.etl.formula.ColumnFormulaOperator;
 import com.fr.swift.source.etl.groupsum.SumByGroupDimension;
@@ -108,10 +111,10 @@ class EtlAdaptor {
             return adaptSelectField(analysis);
         }
         //排序没用，只能当作预览的属性和某些新增列的属性
-        if (op.getType() == AnalysisType.SORT){
+        if (op.getType() == AnalysisType.SORT) {
             return adaptEtlDataSource(analysis.getBaseTable());
         }
-        if (op.getType() == AnalysisType.FIELD_SETTING){
+        if (op.getType() == AnalysisType.FIELD_SETTING) {
             return adaptFieldSetting(analysis);
         }
         List<DataSource> dataSources = new ArrayList<DataSource>();
@@ -127,14 +130,14 @@ class EtlAdaptor {
         }
     }
 
-    private static DataSource adaptFieldSetting(FineAnalysisTable analysis) throws Exception{
+    private static DataSource adaptFieldSetting(FineAnalysisTable analysis) throws Exception {
         FineOperator op = analysis.getOperator();
         List<FieldSettingOperator> fieldSettingOperatorList = new ArrayList<FieldSettingOperator>();
-        while (op.getType() == AnalysisType.FIELD_SETTING){
+        while (op.getType() == AnalysisType.FIELD_SETTING) {
             fieldSettingOperatorList.add((FieldSettingOperator) analysis.getOperator());
             analysis = analysis.getBaseTable();
             op = analysis.getOperator();
-            if (op.getType() == AnalysisType.SELECT_FIELD){
+            if (op.getType() == AnalysisType.SELECT_FIELD) {
                 break;
             }
         }
@@ -147,20 +150,20 @@ class EtlAdaptor {
         Map<Integer, String> sourceFullFieldInfo = new TreeMap<Integer, String>();
         Map<Integer, String> fieldInfo = new TreeMap<Integer, String>();
         //如果为空，就根据metadata创建
-        if (sourceFieldsInfo == null || sourceFieldsInfo.isEmpty()){
-            for (int i = 0; i <source.getMetadata().getColumnCount(); ){
+        if (sourceFieldsInfo == null || sourceFieldsInfo.isEmpty()) {
+            for (int i = 0; i < source.getMetadata().getColumnCount(); ) {
                 sourceFullFieldInfo.put(i, source.getMetadata().getColumnName(++i));
             }
         } else {
             sourceFullFieldInfo.putAll(sourceFieldsInfo);
         }
-        for (int i = fieldSettingOperatorList.size() - 1; i >=0; i--){
+        for (int i = fieldSettingOperatorList.size() - 1; i >= 0; i--) {
             List<FieldSettingBeanItem> fieldSettings = fieldSettingOperatorList.get(i).getValue().getValue();
             Iterator<Map.Entry<Integer, String>> fullFieldInfoIter = sourceFullFieldInfo.entrySet().iterator();
-            for (int j = 0; j < fieldSettings.size(); j++){
+            for (int j = 0; j < fieldSettings.size(); j++) {
                 FieldSettingBeanItem setting = fieldSettings.get(j);
                 Map.Entry<Integer, String> entry = fullFieldInfoIter.next();
-                if (setting.isUsed()){
+                if (setting.isUsed()) {
                     fieldInfo.put(entry.getKey(), setting.getName());
                 }
             }
@@ -224,7 +227,7 @@ class EtlAdaptor {
             swiftMetaDatas.add(dataSource.getMetadata());
             fields.add(entry.getValue().toArray(new ColumnKey[entry.getValue().size()]));
         }
-        ETLOperator operator = new DetailOperator(fields, new ArrayList<ColumnKey>(),  swiftMetaDatas);
+        ETLOperator operator = new DetailOperator(fields, new ArrayList<ColumnKey>(), swiftMetaDatas);
         Map<Integer, String> fieldsInfo = new HashMap<Integer, String>();
         ETLSource etlSource = new ETLSource(baseDatas, operator);
         for (ColumnKey[] columnKeys : fields) {
@@ -409,7 +412,7 @@ class EtlAdaptor {
     }
 
     private static AccumulateRowOperator getAccumulateRowOperator(AddNewColumnValueBean value) {
-        AccumulativeItemBean tempBean = ((AddAllAccumulativeValueBean)value).getValue();
+        AccumulativeItemBean tempBean = ((AddAllAccumulativeValueBean) value).getValue();
         String columnName = value.getName();
         ColumnKey columnKey = new ColumnKey(tempBean.getOrigin());
         if (tempBean.getRule() == BIConfConstants.CONF.ADD_COLUMN.NOT_IN_GROUP) {
@@ -417,7 +420,7 @@ class EtlAdaptor {
         } else {
             List<String> selects = ((GroupAccumulativeValue) tempBean).getSelects();
             ColumnKey[] dimensions = new ColumnKey[selects.size()];
-            for(int i = 0; i < selects.size(); i++) {
+            for (int i = 0; i < selects.size(); i++) {
                 dimensions[i] = new ColumnKey(selects.get(i));
             }
             return new AccumulateRowOperator(columnKey, columnName, ColumnTypeAdaptor.adaptColumnType(32), dimensions);
@@ -426,15 +429,15 @@ class EtlAdaptor {
 
     private static AllDataRowCalculatorOperator getAllDataRowCalculatorOperator(AddNewColumnValueBean value) {
         String columnName = value.getName();
-        AllValueItemBean tempBean = ((AddAllValueColumnBean)value).getValue();
+        AllValueItemBean tempBean = ((AddAllValueColumnBean) value).getValue();
         String columnKey = tempBean.getOrigin();
         int summary = tempBean.getSummary();
-        if(tempBean.getRule() == BIConfConstants.CONF.ADD_COLUMN.NOT_IN_GROUP) {
+        if (tempBean.getRule() == BIConfConstants.CONF.ADD_COLUMN.NOT_IN_GROUP) {
             return new AllDataRowCalculatorOperator(columnName, ColumnTypeAdaptor.adaptColumnType(32), columnKey, null, summary);
         } else {
-            List<String> selects = ((GroupAllValueValue)tempBean).getSelects();
+            List<String> selects = ((GroupAllValueValue) tempBean).getSelects();
             ColumnKey[] dimensions = new ColumnKey[selects.size()];
-            for(int i = 0; i < dimensions.length; i++) {
+            for (int i = 0; i < dimensions.length; i++) {
                 dimensions[i] = new ColumnKey(selects.get(i));
             }
             return new AllDataRowCalculatorOperator(columnName, ColumnTypeAdaptor.adaptColumnType(32), columnKey, dimensions, summary);
@@ -446,11 +449,11 @@ class EtlAdaptor {
         AddFieldRankColumnItem tempBean = ((AddFieldRankColumnBean) value).getValue();
         ColumnKey columnKey = new ColumnKey(tempBean.getOrigin());
         int summary = tempBean.getSummary();
-        if(tempBean.getRule() == BIConfConstants.CONF.ADD_COLUMN.RANKING.ASC_IN_GROUP) {
+        if (tempBean.getRule() == BIConfConstants.CONF.ADD_COLUMN.RANKING.ASC_IN_GROUP) {
             List<String> selects = ((GroupRankValueBean) tempBean).getSelects();
             ColumnKey[] dimensions = new ColumnKey[selects.size()];
-            for(int i = 0; i < dimensions.length; i++) {
-                 dimensions[i] = new ColumnKey(selects.get(0));
+            for (int i = 0; i < dimensions.length; i++) {
+                dimensions[i] = new ColumnKey(selects.get(0));
             }
             return new RankRowOperator(columnName, summary, ColumnTypeAdaptor.adaptColumnType(32), columnKey, dimensions);
         } else {
@@ -464,7 +467,7 @@ class EtlAdaptor {
         String fieldName = tempBean.getFieldName();
         int type = tempBean.getUnit();
         int columnType;
-        switch(type) {
+        switch (type) {
             case BIConfConstants.CONF.ADD_COLUMN.TIME.UNITS.YEAR:
             case BIConfConstants.CONF.ADD_COLUMN.TIME.UNITS.QUARTER:
             case BIConfConstants.CONF.ADD_COLUMN.TIME.UNITS.MONTH:
@@ -517,7 +520,7 @@ class EtlAdaptor {
             }
             case BIConfConstants.CONF.ADD_COLUMN.TIME_GAP.TYPE:
                 return getDateDiffOperator(value);
-           // case
+            // case
             default:
         }
         return null;
@@ -538,8 +541,8 @@ class EtlAdaptor {
 
     private static int findFieldName(List<FineBusinessField> fields, String fieldID) {
         int index = Integer.MIN_VALUE;
-        for (int i = 0; i < fields.size(); i++){
-            if (ComparatorUtils.equals(fields.get(i).getId(), fieldID)){
+        for (int i = 0; i < fields.size(); i++) {
+            if (ComparatorUtils.equals(fields.get(i).getId(), fieldID)) {
                 index = i;
                 break;
             }
@@ -549,7 +552,7 @@ class EtlAdaptor {
 
     private static ColumnRowTransOperator fromColumnRowTransBean(ColumnRowTransBean bean, FineBusinessTable table) {
         ColumnTransValue value = bean.getValue();
-        FineBusinessTable preTable = ((EngineComplexConfTable)table).getBaseTableBySelected(0);
+        FineBusinessTable preTable = ((EngineComplexConfTable) table).getBaseTableBySelected(0);
         List<FineBusinessField> fields = preTable.getFields();
         String groupName = fields.get(findFieldName(fields, value.getAccordingField())).getName();
         String lcName = fields.get(findFieldName(fields, value.getFieldId())).getName();
@@ -576,7 +579,7 @@ class EtlAdaptor {
     }
 
     private static OneUnionRelationOperator fromOneUnionRelationBean(CirculateOneFieldBean bean, FineBusinessTable table) {
-        FineBusinessTable preTable = ((EngineComplexConfTable)table).getBaseTableBySelected(0);
+        FineBusinessTable preTable = ((EngineComplexConfTable) table).getBaseTableBySelected(0);
         List<FineBusinessField> fields = preTable.getFields();
         CirculateTwoFieldValue value = bean.getValue();
         String idField = fields.get(findFieldName(fields, value.getIdField())).getName();
@@ -586,13 +589,13 @@ class EtlAdaptor {
             String tempName = item.getName();
             try {
                 tempName = fields.get(findFieldName(fields, item.getName())).getName();
-            } catch(Exception e) {
+            } catch (Exception e) {
 
             }
             columns.put(tempName, item.getLength());
         }
         List<String> showFields = new ArrayList<String>();
-        for(int i = 0; i < value.getShowFields().size(); i++) {
+        for (int i = 0; i < value.getShowFields().size(); i++) {
             String tempName = fields.get(findFieldName(fields, value.getShowFields().get(i))).getName();
             showFields.add(tempName);
         }
@@ -601,7 +604,7 @@ class EtlAdaptor {
 
     private static TwoUnionRelationOperator fromTwoUnionRelationBean(CirculateOneFieldBean bean, FineBusinessTable table) {
         CirculateTwoFieldValue value = bean.getValue();
-        FineBusinessTable preTable = ((EngineComplexConfTable)table).getBaseTableBySelected(0);
+        FineBusinessTable preTable = ((EngineComplexConfTable) table).getBaseTableBySelected(0);
         List<FineBusinessField> fields = preTable.getFields();
         String idFieldName = fields.get(findFieldName(fields, value.getIdField())).getName();
         String parentIdFieldName = fields.get(findFieldName(fields, value.getParentIdField())).getName();
@@ -611,16 +614,16 @@ class EtlAdaptor {
             String tempName = item.getName();
             try {
                 tempName = fields.get(findFieldName(fields, item.getName())).getName();
-            } catch(Exception e) {
+            } catch (Exception e) {
 
             }
             columns.put(tempName, item.getLength());
         }
         List<String> showFields = new ArrayList<String>();
-        for(int i = 0; i < value.getShowFields().size(); i++) {
+        for (int i = 0; i < value.getShowFields().size(); i++) {
             String tempName = fields.get(findFieldName(fields, value.getShowFields().get(i))).getName();
             showFields.add(tempName);
         }
-        return new TwoUnionRelationOperator(idFieldName, showFields, columns, value.getFieldType(), null, parentIdFieldName);
+        return new TwoUnionRelationOperator(idFieldName, showFields, columns, value.getType(), null, parentIdFieldName);
     }
 }
