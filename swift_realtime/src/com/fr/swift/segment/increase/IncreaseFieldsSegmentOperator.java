@@ -1,12 +1,10 @@
 package com.fr.swift.segment.increase;
 
-import com.fr.swift.exception.meta.SwiftMetaDataException;
 import com.fr.swift.segment.RealtimeSegmentHolder;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.SegmentHolder;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SourceKey;
-import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftResultSet;
 
 import java.sql.SQLException;
