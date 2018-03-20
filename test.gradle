@@ -39,7 +39,7 @@ task copyFile(type:Copy){
 	copy{
 
 		from ("${srcDir}/swift_test/test"){
-			exclude "**/*.java","**/.settings/**",".classpath",".project","**/*.db","**/*.g","**/package.html"
+			exclude "**/*.java","**/.settings/**",".classpath",".project","**/*.g","**/package.html"
 		
 		}
 
