@@ -58,7 +58,7 @@ public enum DateType {
         c.set(type, value);
     }
 
-    enum MixDateType {
+    public enum MixDateType {
         Y_Q {
             @Override
             long from(Calendar c) {

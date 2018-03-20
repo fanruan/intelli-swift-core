@@ -1,5 +1,6 @@
 package com.fr.swift.adaptor.transformer;
 
+import com.finebi.conf.constant.BICommonConstants;
 import com.finebi.conf.constant.BIConfConstants;
 import com.finebi.conf.constant.ConfConstant.AnalysisType;
 import com.finebi.conf.exception.FineAnalysisOperationUnSafe;
@@ -61,11 +62,7 @@ import com.fr.swift.generate.preview.MinorSegmentManager;
 import com.fr.swift.query.filter.info.FilterInfo;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.column.ColumnKey;
-import com.fr.swift.source.DataSource;
-import com.fr.swift.source.MetaDataColumn;
-import com.fr.swift.source.SwiftMetaData;
-import com.fr.swift.source.SwiftMetaDataColumn;
-import com.fr.swift.source.SwiftMetaDataImpl;
+import com.fr.swift.source.*;
 import com.fr.swift.source.etl.AbstractOperator;
 import com.fr.swift.source.etl.ETLOperator;
 import com.fr.swift.source.etl.ETLSource;
@@ -91,6 +88,7 @@ import com.fr.swift.source.etl.union.UnionOperator;
 import com.fr.swift.source.etl.utils.ETLConstant;
 import com.fr.swift.source.etl.utils.FormulaUtils;
 
+import java.sql.Types;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -366,7 +364,7 @@ class EtlAdaptor {
         ViewBean viewBean = valueBean.getView();
         List<String> dimensions = viewBean.getDimension();
         List<String> views = viewBean.getViews();
-        if (dimensionBean.isEmpty() || dimensions == null || views == null) {
+        if (dimensionBean.isEmpty()) {
             return null;
         }
         SumByGroupDimension[] groupDimensions = new SumByGroupDimension[dimensions.size()];
@@ -465,7 +463,23 @@ class EtlAdaptor {
         GetFieldTimeValueItem tempBean = ((GetFieldTimeValueBean) value).getValue();
         String fieldName = tempBean.getFieldName();
         int type = tempBean.getUnit();
-        return new GetFromDateOperator(fieldName, type, columnName, ColumnTypeAdaptor.adaptColumnType(48));
+        int columnType;
+        switch(type) {
+            case BIConfConstants.CONF.ADD_COLUMN.TIME.UNITS.YEAR:
+            case BIConfConstants.CONF.ADD_COLUMN.TIME.UNITS.QUARTER:
+            case BIConfConstants.CONF.ADD_COLUMN.TIME.UNITS.MONTH:
+            case BIConfConstants.CONF.ADD_COLUMN.TIME.UNITS.WEEKDAY:
+            case BIConfConstants.CONF.ADD_COLUMN.TIME.UNITS.DAY:
+            case BIConfConstants.CONF.ADD_COLUMN.TIME.UNITS.WEEK_COUNT:
+            case BIConfConstants.CONF.ADD_COLUMN.TIME.UNITS.HOUR:
+            case BIConfConstants.CONF.ADD_COLUMN.TIME.UNITS.MINUTE:
+            case BIConfConstants.CONF.ADD_COLUMN.TIME.UNITS.SECOND:
+                columnType = Types.INTEGER;
+                break;
+            default:
+                columnType = Types.DATE;
+        }
+        return new GetFromDateOperator(fieldName, type, columnName, columnType);
     }
 
     private static DateDiffOperator getDateDiffOperator(AddNewColumnValueBean value) {
@@ -474,7 +488,7 @@ class EtlAdaptor {
         String field1 = tempBean.getMinuend();
         String field2 = tempBean.getMinus();
         int type = tempBean.getUnit();
-        return new DateDiffOperator(field1, field2, type, columnName, ColumnTypeAdaptor.adaptColumnType(48));
+        return new DateDiffOperator(field1, field2, type, columnName, Types.INTEGER);
     }
 
     private static AbstractOperator fromAddNewColumnBean(AddNewColumnBean bean, FineBusinessTable table) throws Exception {
