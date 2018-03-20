@@ -14,10 +14,7 @@ import com.fr.swift.config.conf.SegmentConfig;
 import com.fr.swift.config.unique.SegmentUnique;
 import junit.framework.TestCase;
 
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 /**
  * @author yee
@@ -55,7 +52,7 @@ public class SegmentConfigTest extends TestCase {
 
         IConfigSegment unique = SegmentConfig.getInstance().getSegmentByKey(source.getSourceKey());
         assertEquals(unique.getSourceKey(), source.getSourceKey());
-        assertSegmentEquals(source, unique);
+        assertSegmentSame(source, unique);
     }
 
     public void testAddAndRemove() {
@@ -75,7 +72,7 @@ public class SegmentConfigTest extends TestCase {
         IConfigSegment target1 = SegmentConfig.getInstance().getSegmentByKey(source.getSourceKey());
         SegmentUnique modify = SegmentCreater.getModify();
 
-        assertSegmentEquals(source, target1);
+        assertSegmentSame(source, target1);
 
         SegmentConfig.getInstance().modifySegment(modify);
 
@@ -84,10 +81,10 @@ public class SegmentConfigTest extends TestCase {
         assertEquals(SegmentConfig.getInstance().getAllSegments().size(), 1);
         assertEquals(source.getSourceKey(), target2.getSourceKey());
         assertSegmentNotSame(source, target2);
-        assertSegmentEquals(modify, target2);
+        assertSegmentSame(modify, target2);
     }
 
-    private void assertSegmentEquals(IConfigSegment source, IConfigSegment dest) {
+    private void assertSegmentSame(IConfigSegment source, IConfigSegment dest) {
         List<ISegmentKey> keyUniques = dest.getSegments();
         List<ISegmentKey> sourceKeyUniques = source.getSegments();
         assertEquals(keyUniques.size(), sourceKeyUniques.size());
