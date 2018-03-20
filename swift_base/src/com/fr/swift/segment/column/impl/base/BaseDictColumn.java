@@ -112,22 +112,12 @@ abstract class BaseDictColumn<T> implements DictionaryEncodedColumn<T> {
         return keyComparator;
     }
 
-    /**
-     * 初始化字典键的writer
-     */
-    abstract void initKeyWriter();
-
-    /**
-     * 初始化字典键的reader
-     */
-    abstract void initKeyReader();
-
     private void initSizeWriter() {
         if (sizeWriter != null) {
             return;
         }
         IResourceLocation sizeLocation = parent.buildChildLocation(SIZE);
-        sizeWriter = (IntWriter) DISCOVERY.getWriter(sizeLocation, new BuildConf(IoType.WRITE, DataType.INT));
+        sizeWriter = DISCOVERY.getWriter(sizeLocation, new BuildConf(IoType.WRITE, DataType.INT));
     }
 
     private void initSizeReader() {
@@ -135,7 +125,7 @@ abstract class BaseDictColumn<T> implements DictionaryEncodedColumn<T> {
             return;
         }
         IResourceLocation sizeLocation = parent.buildChildLocation(SIZE);
-        sizeReader = (IntReader) DISCOVERY.getReader(sizeLocation, new BuildConf(IoType.READ, DataType.INT));
+        sizeReader = DISCOVERY.getReader(sizeLocation, new BuildConf(IoType.READ, DataType.INT));
     }
 
     private void initIndexWriter() {
@@ -143,7 +133,7 @@ abstract class BaseDictColumn<T> implements DictionaryEncodedColumn<T> {
             return;
         }
         IResourceLocation indexLocation = parent.buildChildLocation(INDEX);
-        indexWriter = (IntWriter) DISCOVERY.getWriter(indexLocation, new BuildConf(IoType.WRITE, DataType.INT));
+        indexWriter = DISCOVERY.getWriter(indexLocation, new BuildConf(IoType.WRITE, DataType.INT));
     }
 
     private void initIndexReader() {
@@ -151,7 +141,7 @@ abstract class BaseDictColumn<T> implements DictionaryEncodedColumn<T> {
             return;
         }
         IResourceLocation indexLocation = parent.buildChildLocation(INDEX);
-        indexReader = (IntReader) DISCOVERY.getReader(indexLocation, new BuildConf(IoType.READ, DataType.INT));
+        indexReader = DISCOVERY.getReader(indexLocation, new BuildConf(IoType.READ, DataType.INT));
     }
 
     private void initGlobalSizeWriter() {
@@ -159,7 +149,7 @@ abstract class BaseDictColumn<T> implements DictionaryEncodedColumn<T> {
             return;
         }
         IResourceLocation globalSizeLocation = parent.buildChildLocation(GLOBAL_SIZE);
-        globalSizeWriter = (IntWriter) DISCOVERY.getWriter(globalSizeLocation, new BuildConf(IoType.WRITE, DataType.INT));
+        globalSizeWriter = DISCOVERY.getWriter(globalSizeLocation, new BuildConf(IoType.WRITE, DataType.INT));
     }
 
     private void initGlobalSizeReader() {
@@ -167,7 +157,7 @@ abstract class BaseDictColumn<T> implements DictionaryEncodedColumn<T> {
             return;
         }
         IResourceLocation globalSizeLocation = parent.buildChildLocation(GLOBAL_SIZE);
-        globalSizeReader = (IntReader) DISCOVERY.getReader(globalSizeLocation, new BuildConf(IoType.READ, DataType.INT));
+        globalSizeReader = DISCOVERY.getReader(globalSizeLocation, new BuildConf(IoType.READ, DataType.INT));
     }
 
     private void initGlobalIndexWriter() {
@@ -175,7 +165,7 @@ abstract class BaseDictColumn<T> implements DictionaryEncodedColumn<T> {
             return;
         }
         IResourceLocation globalIndexLocation = parent.buildChildLocation(GLOBAL_INDEX);
-        globalIndexWriter = (IntWriter) DISCOVERY.getWriter(globalIndexLocation, new BuildConf(IoType.WRITE, DataType.INT));
+        globalIndexWriter = DISCOVERY.getWriter(globalIndexLocation, new BuildConf(IoType.WRITE, DataType.INT));
     }
 
     private void initGlobalIndexReader() {
@@ -183,7 +173,7 @@ abstract class BaseDictColumn<T> implements DictionaryEncodedColumn<T> {
             return;
         }
         IResourceLocation globalIndexLocation = parent.buildChildLocation(GLOBAL_INDEX);
-        globalIndexReader = (IntReader) DISCOVERY.getReader(globalIndexLocation, new BuildConf(IoType.READ, DataType.INT));
+        globalIndexReader = DISCOVERY.getReader(globalIndexLocation, new BuildConf(IoType.READ, DataType.INT));
     }
 
     @Override

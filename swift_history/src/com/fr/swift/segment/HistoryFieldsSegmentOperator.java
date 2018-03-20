@@ -1,8 +1,8 @@
 package com.fr.swift.segment;
 
 import com.fr.swift.config.IMetaData;
-import com.fr.swift.config.conf.MetaDataConvertUtil;
 import com.fr.swift.config.conf.MetaDataConfig;
+import com.fr.swift.config.conf.MetaDataConvertUtil;
 import com.fr.swift.exception.meta.SwiftMetaDataException;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
@@ -23,9 +23,9 @@ public class HistoryFieldsSegmentOperator extends AbstractHistorySegmentOperator
     private List<String> fields;
     private SwiftLogger logger = SwiftLoggers.getLogger(HistoryFieldsSegmentOperator.class);
 
-    public HistoryFieldsSegmentOperator(SourceKey sourceKey, List<Segment> segments,
+    public HistoryFieldsSegmentOperator(SourceKey sourceKey,
                                         String cubeSourceKey, SwiftResultSet swiftResultSet, List<String> fields) throws SQLException {
-        super(sourceKey, segments, cubeSourceKey, swiftResultSet);
+        super(sourceKey, cubeSourceKey, swiftResultSet);
         this.fields = fields;
     }
 
@@ -35,6 +35,7 @@ public class HistoryFieldsSegmentOperator extends AbstractHistorySegmentOperator
         String allotColumn = fields.get(0);
         while (swiftResultSet.next()) {
             Row row = swiftResultSet.getRowData();
+            // fixme 为啥这里要传后两个参数？
             int index = alloter.allot(count, allotColumn, row.getValue(indexOfColumn(allotColumn)));
             int size = segmentList.size();
             if (index >= size) {

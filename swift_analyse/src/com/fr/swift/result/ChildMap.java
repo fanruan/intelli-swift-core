@@ -1,5 +1,7 @@
 package com.fr.swift.result;
 
+import com.fr.swift.util.Clearable;
+
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 
@@ -8,7 +10,7 @@ import java.util.LinkedHashMap;
  *
  * @author Daniel
  */
-public class ChildMap<T> {
+public class ChildMap<T> implements Clearable {
 
     /**
      *
@@ -56,6 +58,7 @@ public class ChildMap<T> {
         return i == null ? null : list.get(i);
     }
 
+    @Override
     public void clear() {
         lmp.clear();
         list.clear();

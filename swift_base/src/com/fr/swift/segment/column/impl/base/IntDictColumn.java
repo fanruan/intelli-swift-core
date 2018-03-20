@@ -21,22 +21,20 @@ public class IntDictColumn extends BaseDictColumn<Integer> {
         super(parent, keyComparator);
     }
 
-    @Override
     void initKeyWriter() {
         if (keyWriter != null) {
             return;
         }
         IResourceLocation keyLocation = parent.buildChildLocation(KEY);
-        keyWriter = (IntWriter) DISCOVERY.getWriter(keyLocation, new BuildConf(IoType.WRITE, DataType.INT));
+        keyWriter = DISCOVERY.getWriter(keyLocation, new BuildConf(IoType.WRITE, DataType.INT));
     }
 
-    @Override
     void initKeyReader() {
         if (keyReader != null) {
             return;
         }
         IResourceLocation keyLocation = parent.buildChildLocation(KEY);
-        keyReader = (IntReader) DISCOVERY.getReader(keyLocation, new BuildConf(IoType.READ, DataType.INT));
+        keyReader = DISCOVERY.getReader(keyLocation, new BuildConf(IoType.READ, DataType.INT));
     }
 
     @Override

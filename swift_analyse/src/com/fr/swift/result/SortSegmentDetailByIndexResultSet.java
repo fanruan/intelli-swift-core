@@ -32,10 +32,13 @@ public class SortSegmentDetailByIndexResultSet extends DetailResultSet {
     private GroupByResult[] gbr;
     private ImmutableBitMap[] bitmap;
 
-
-    //已排序的行数
+    /**
+     * 已排序的行数
+     */
     private int sortedRows;
-    //已排序的第几个bitmap
+    /**
+     * 已排序的第几个bitmap
+     */
     private int index = 0;
     private int bitmapCount = 1;
     private ArrayList<ImmutableBitMap> sortedDetail = new ArrayList<ImmutableBitMap>();
@@ -57,11 +60,6 @@ public class SortSegmentDetailByIndexResultSet extends DetailResultSet {
         getSortedData();
     }
 
-    @Override
-    public void close() {
-
-    }
-
     public int getMaxRow() {
         return maxRow;
     }
@@ -69,7 +67,6 @@ public class SortSegmentDetailByIndexResultSet extends DetailResultSet {
 
     @Override
     public Row getRowData() {
-
         if (bitmapCount > sortedDetail.get(index).getCardinality()) {
             bitmapCount = 1;
             index++;
@@ -95,7 +92,6 @@ public class SortSegmentDetailByIndexResultSet extends DetailResultSet {
         bitmapCount++;
         return new ListBasedRow(values);
     }
-
 
     public void getSortedData() {
         while (true) {
@@ -175,6 +171,5 @@ public class SortSegmentDetailByIndexResultSet extends DetailResultSet {
             return false;
         }
     }
-
 
 }

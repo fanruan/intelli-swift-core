@@ -16,7 +16,10 @@ import java.util.Date;
  *
  * @author Connery
  * @since 4.0
+ *
+ * @deprecated fixme Date的好些方法都deprecated了，用别的类代替吧
  */
+@Deprecated
 public class DateUtils {
 
     private static String defaultDatePattern = "yyyy-MM-dd";

@@ -34,6 +34,7 @@ public class ETLSource extends AbstractDataSource implements ETLDataSource {
     private List<DataSource> basedSources;
     @CoreField
     private ETLOperator operator;
+    @CoreField
     /**
      * 保存了使用的字段以及改名的结果，这边用index，没有用name是因为不能保证基础表的字段没有重名
      */

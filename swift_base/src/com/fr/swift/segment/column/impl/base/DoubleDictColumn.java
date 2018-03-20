@@ -21,22 +21,20 @@ public class DoubleDictColumn extends BaseDictColumn<Double> {
         super(parent, keyComparator);
     }
 
-    @Override
     void initKeyWriter() {
         if (keyWriter != null) {
             return;
         }
         IResourceLocation keyLocation = parent.buildChildLocation(KEY);
-        keyWriter = (DoubleWriter) DISCOVERY.getWriter(keyLocation, new BuildConf(IoType.WRITE, DataType.DOUBLE));
+        keyWriter = DISCOVERY.getWriter(keyLocation, new BuildConf(IoType.WRITE, DataType.DOUBLE));
     }
 
-    @Override
     void initKeyReader() {
         if (keyReader != null) {
             return;
         }
         IResourceLocation keyLocation = parent.buildChildLocation(KEY);
-        keyReader = (DoubleReader) DISCOVERY.getReader(keyLocation, new BuildConf(IoType.READ, DataType.DOUBLE));
+        keyReader = DISCOVERY.getReader(keyLocation, new BuildConf(IoType.READ, DataType.DOUBLE));
     }
 
     @Override

@@ -21,22 +21,20 @@ public class LongDictColumn extends BaseDictColumn<Long> {
         super(parent, keyComparator);
     }
 
-    @Override
     void initKeyWriter() {
         if (keyWriter != null) {
             return;
         }
         IResourceLocation keyLocation = parent.buildChildLocation(KEY);
-        keyWriter = (LongWriter) DISCOVERY.getWriter(keyLocation, new BuildConf(IoType.WRITE, DataType.LONG));
+        keyWriter = DISCOVERY.getWriter(keyLocation, new BuildConf(IoType.WRITE, DataType.LONG));
     }
 
-    @Override
     void initKeyReader() {
         if (keyReader != null) {
             return;
         }
         IResourceLocation keyLocation = parent.buildChildLocation(KEY);
-        keyReader = (LongReader) DISCOVERY.getReader(keyLocation, new BuildConf(IoType.READ, DataType.LONG));
+        keyReader = DISCOVERY.getReader(keyLocation, new BuildConf(IoType.READ, DataType.LONG));
     }
 
     @Override

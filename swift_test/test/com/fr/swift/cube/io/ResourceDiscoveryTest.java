@@ -2,6 +2,7 @@ package com.fr.swift.cube.io;
 
 import com.fr.swift.cube.io.Types.DataType;
 import com.fr.swift.cube.io.Types.IoType;
+import com.fr.swift.cube.io.Types.StoreType;
 import com.fr.swift.cube.io.input.Reader;
 import com.fr.swift.cube.io.location.IResourceLocation;
 import com.fr.swift.cube.io.location.ResourceLocation;
@@ -27,9 +28,9 @@ public class ResourceDiscoveryTest extends TestCase {
 
     public void testGetReader() throws ExecutionException, InterruptedException {
         List<Future<Reader>> readers = new ArrayList<>();
-        IResourceLocation location = new ResourceLocation(CUBES_PATH + "/byte/child");
+        IResourceLocation location = new ResourceLocation(CUBES_PATH + "/int/child", StoreType.MEMORY);
         for (int i = 0; i < 16; i++) {
-            readers.add(exec.submit(() -> DISCOVERY.getReader(location, new BuildConf(IoType.READ, DataType.BYTE))));
+            readers.add(exec.submit(() -> DISCOVERY.getReader(location, new BuildConf(IoType.READ, DataType.INT))));
         }
 
         for (int i = 0; i < readers.size() - 1; i++) {
@@ -40,11 +41,10 @@ public class ResourceDiscoveryTest extends TestCase {
     }
 
     public void testGetWriter() throws ExecutionException, InterruptedException {
-        ExecutorService exec = Executors.newFixedThreadPool(8);
         List<Future<Writer>> writers = new ArrayList<>();
-        IResourceLocation location = new ResourceLocation(CUBES_PATH + "/byte/child");
+        IResourceLocation location = new ResourceLocation(CUBES_PATH + "/int/child", StoreType.MEMORY);
         for (int i = 0; i < 16; i++) {
-            writers.add(exec.submit(() -> DISCOVERY.getWriter(location, new BuildConf(IoType.WRITE, DataType.BYTE))));
+            writers.add(exec.submit(() -> DISCOVERY.getWriter(location, new BuildConf(IoType.WRITE, DataType.INT))));
         }
         for (int i = 0; i < writers.size() - 1; i++) {
             if (writers.get(i).get() != writers.get(i + 1).get()) {
@@ -54,7 +54,7 @@ public class ResourceDiscoveryTest extends TestCase {
     }
 
     @Override
-    protected void tearDown() throws Exception {
+    protected void tearDown() {
         exec.shutdown();
     }
 }

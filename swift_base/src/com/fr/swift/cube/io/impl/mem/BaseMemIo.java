@@ -8,7 +8,6 @@ package com.fr.swift.cube.io.impl.mem;
  * @date 2017/11/23
  */
 abstract class BaseMemIo implements MemIo {
-
     static final int DEFAULT_CAPACITY = 16;
     private static final int EXPAND_SCALE = 1;
 

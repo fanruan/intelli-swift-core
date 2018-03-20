@@ -1,5 +1,6 @@
 package com.fr.swift.query.group.impl;
 
+import com.fr.stable.StringUtils;
 import com.fr.swift.structure.Pair;
 import com.fr.swift.structure.array.IntList;
 
@@ -38,6 +39,6 @@ abstract class BaseCustomGroupRule extends BaseGroupRule {
     }
 
     boolean hasOtherGroup() {
-        return otherGroupName != null;
+        return StringUtils.isNotEmpty(otherGroupName);
     }
 }

@@ -37,7 +37,7 @@ public class DecreaseSegmentOperator extends AbstractSegmentOperator {
     private static SwiftLogger LOGGER = SwiftLoggers.getLogger(DecreaseSegmentOperator.class);
 
     public DecreaseSegmentOperator(SourceKey sourceKey, List<Segment> segments, String cubeSourceKey, SwiftResultSet swiftResultSet) throws SQLException {
-        super(sourceKey, segments, cubeSourceKey, swiftResultSet);
+        super(sourceKey, cubeSourceKey, swiftResultSet);
         if (null != segments && !segments.isEmpty()) {
             for (int i = 0, len = segments.size(); i < len; i++) {
                 if (segments.get(i).getLocation().getStoreType() == Types.StoreType.FINE_IO) {

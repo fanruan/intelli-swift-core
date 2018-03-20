@@ -86,6 +86,6 @@ public class ProviderTaskManager {
     }
 
     private void initTaskFetchThread() {
-        new Thread(new StuffFetcher()).start();
+        new Thread(new StuffFetcher(), "StuffFetcher").start();
     }
 }

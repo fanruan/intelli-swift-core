@@ -2,7 +2,6 @@ package com.fr.swift.result;
 
 import com.fr.swift.cal.Query;
 import com.fr.swift.source.Row;
-import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftResultSet;
 
 import java.sql.SQLException;
@@ -14,8 +13,6 @@ import java.util.List;
  */
 
 public class SortMultiSegmentDetailResultSet extends DetailResultSet {
-
-
     private List<Query<DetailResultSet>> queries;
     private Comparator comparator;
     private Row[] unsortedRows;
@@ -32,10 +29,8 @@ public class SortMultiSegmentDetailResultSet extends DetailResultSet {
 
     @Override
     public Row getRowData() throws SQLException {
-
         return getLatestRowData(unsortedRows[0]);
     }
-
 
     private void init() throws SQLException {
         int i = 0;

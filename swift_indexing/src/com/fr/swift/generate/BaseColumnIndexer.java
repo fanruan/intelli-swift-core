@@ -4,6 +4,7 @@ import com.fr.swift.bitmap.BitMaps;
 import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.bitmap.MutableBitMap;
 import com.fr.swift.cube.io.Releasable;
+import com.fr.swift.cube.io.Types.StoreType;
 import com.fr.swift.cube.io.location.IResourceLocation;
 import com.fr.swift.cube.task.Task.Result;
 import com.fr.swift.cube.task.impl.BaseWorker;
@@ -74,9 +75,7 @@ public abstract class BaseColumnIndexer<T extends Comparable<T>> extends BaseWor
         Map<T, IntList> map;
         IResourceLocation location = column.getLocation();
 
-        if (getClassType() == STRING) {
-            // String类型的没写明细，数据写到外排map里了，所以这里可以直接开始索引了
-            // @see FakeStringDetailColumn#calExternalLocation
+        if (isDetailInExternal(getClassType(), location.getStoreType())) {
             ExternalMap<T, IntList> extMap = newIntListExternalMap(
                     column.getDictionaryEncodedColumn().getComparator(),
                     location.buildChildLocation(EXTERNAL_STRING).getPath());
@@ -89,9 +88,14 @@ public abstract class BaseColumnIndexer<T extends Comparable<T>> extends BaseWor
         iterateBuildIndex(toIterable(map), column, rowCount);
 
         // ext map用完release，不然线程爆炸
-        if (map instanceof ExternalMap) {
-            ((ExternalMap) map).release();
-        }
+        map.clear();
+
+    }
+
+    private static boolean isDetailInExternal(ClassType klass, StoreType storeType) {
+        // 非内存的String类型没写明细，数据写到外排map里了，所以这里可以直接开始索引了
+        // @see FakeStringDetailColumn#calExternalLocation
+        return klass == STRING && storeType != StoreType.MEMORY;
     }
 
     private Map<T, IntList> mapDictValueToRows(Column<T> column, int rowCount) {

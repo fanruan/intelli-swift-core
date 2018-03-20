@@ -10,7 +10,6 @@ import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftResultSet;
 
 import java.sql.SQLException;
-import java.util.List;
 
 /**
  * @Author: Lucifer
@@ -18,9 +17,9 @@ import java.util.List;
  * @Date: Created in 2018-3-6
  */
 public abstract class AbstractHistorySegmentOperator extends AbstractSegmentOperator {
-    public AbstractHistorySegmentOperator(SourceKey sourceKey, List<Segment> segments,
+    public AbstractHistorySegmentOperator(SourceKey sourceKey,
                                           String cubeSourceKey, SwiftResultSet swiftResultSet) throws SQLException {
-        super(sourceKey, segments, cubeSourceKey, swiftResultSet);
+        super(sourceKey, cubeSourceKey, swiftResultSet);
     }
 
     /**
