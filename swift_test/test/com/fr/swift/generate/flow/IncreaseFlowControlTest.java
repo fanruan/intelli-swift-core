@@ -7,6 +7,7 @@ import com.fr.swift.flow.FlowControlRule;
 import com.fr.swift.flow.FlowRuleController;
 import com.fr.swift.flow.RowNumberControlRule;
 import com.fr.swift.flow.TimeControlRule;
+import com.fr.swift.generate.history.index.ColumnIndexer;
 import com.fr.swift.generate.realtime.RealtimeDataTransporter;
 import com.fr.swift.increase.IncrementImpl;
 import com.fr.swift.increment.Increment;
@@ -46,8 +47,8 @@ public class IncreaseFlowControlTest extends TestCase {
 
 
     @Test
-    public void testRowControl() {
-        Increment increment = new IncrementImpl("select * from DEMO_CAPITAL_RETURN where 记录人 ='庆芳'", null, null, dataSource.getSourceKey(), "local");
+    public void testRowControl() throws Exception{
+        Increment increment = new IncrementImpl("select 合同ID from DEMO_CAPITAL_RETURN where 记录人 ='庆芳'", null, null, dataSource.getSourceKey(), "local");
 
         /**
          * 控制增量只取5行
@@ -58,6 +59,11 @@ public class IncreaseFlowControlTest extends TestCase {
         FlowRuleController flowRuleController = new FlowRuleController(list);
         RealtimeDataTransporter transport = new RealtimeDataTransporter(dataSource, increment, flowRuleController);
         transport.work();
+
+        for (int i = 1; i <= dataSource.getMetadata().getColumnCount(); i++) {
+            ColumnIndexer columnIndexer = new ColumnIndexer(dataSource, new ColumnKey(dataSource.getMetadata().getColumnName(i)));
+            columnIndexer.work();
+        }
 
         List<Segment> segments = LocalSegmentProvider.getInstance().getSegment(dataSource.getSourceKey());
         Segment segment = segments.get(0);
@@ -102,9 +108,6 @@ public class IncreaseFlowControlTest extends TestCase {
     public void testTimeControl() {
         Increment increment = new IncrementImpl("select * from DEMO_CAPITAL_RETURN where 记录人 ='庆芳'", null, null, dataSource.getSourceKey(), "local");
 
-        /**
-         * 控制增量只取5行
-         */
         FlowControlRule flowControlRule = new TimeControlRule(100);
         List<FlowControlRule> list = new ArrayList<FlowControlRule>();
         list.add(flowControlRule);
