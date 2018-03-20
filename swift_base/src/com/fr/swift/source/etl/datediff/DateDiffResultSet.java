@@ -105,11 +105,13 @@ public class DateDiffResultSet implements SwiftResultSet {
     private static DateDiffCalculator getDiffCalculator(int unit) {
         switch (unit) {
             case UNITS.YEAR:
-                return YearDiff.INSTANCE;
+                return new YearDiff();
             case UNITS.MONTH:
-                return MonthDiff.INSTANCE;
+                return new MonthDiff();
             case UNITS.QUARTER:
-                return SeasonDiff.INSTANCE;
+                return new SeasonDiff();
+            case UNITS.WEEK:
+                return new WeekDiffer();
             case UNITS.DAY:
                 return DayDiff.INSTANCE;
             case UNITS.HOUR:
@@ -119,7 +121,7 @@ public class DateDiffResultSet implements SwiftResultSet {
             case UNITS.SECOND:
                 return SecondDiffer.INSTANCE;
             default:
-                return DayDiff.INSTANCE;
+                return null;
         }
     }
 

@@ -6,21 +6,21 @@ import java.util.Calendar;
 
 /**
  * @author Daniel
- *
  */
 public class MonthDiff implements DateDiffCalculator {
-    public static final MonthDiff INSTANCE = new MonthDiff();
+    private Calendar c = Calendar.getInstance();
+
     @Override
     public int get(Long d1, Long d2) {
-        if(d1 == null || d2 == null){
+        if (d1 == null || d2 == null) {
             return 0;
         }
-        Calendar c1 = Calendar.getInstance();
-        c1.setTimeInMillis(d1);
-        Calendar c2 = Calendar.getInstance();
-        c2.setTimeInMillis(d2);
-        int year = c1.get(Calendar.YEAR) - c2.get(Calendar.YEAR);
-        int month = c1.get(Calendar.MONTH) - c2.get(Calendar.MONTH);
+        c.setTimeInMillis(d1);
+        int year1 = DateType.YEAR.from(c), month1 = DateType.MONTH.from(c);
+        c.setTimeInMillis(d2);
+        int year2 = DateType.YEAR.from(c), month2 = DateType.MONTH.from(c);
+        int year = year1 - year2;
+        int month = month1 - month2;
         return year * DateType.MONTH.radix + month;
     }
 

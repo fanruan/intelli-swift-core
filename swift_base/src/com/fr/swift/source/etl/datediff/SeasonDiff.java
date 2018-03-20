@@ -6,8 +6,6 @@ import com.fr.swift.segment.column.impl.DateType;
  * @author Daniel
  */
 public class SeasonDiff extends MonthDiff {
-    public static final SeasonDiff INSTANCE = new SeasonDiff();
-
     @Override
     public int get(Long d1, Long d2) {
         int month = super.get(d1, d2);

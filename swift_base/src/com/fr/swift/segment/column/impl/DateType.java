@@ -12,7 +12,12 @@ public enum DateType {
      */
     YEAR(Calendar.YEAR, 1),
 
-    MONTH(Calendar.MONTH, 12),
+    MONTH(Calendar.MONTH, 12) {
+        @Override
+        public int from(Calendar c) {
+            return super.from(c) + 1;
+        }
+    },
 
     WEEK(Calendar.DAY_OF_WEEK),
 
