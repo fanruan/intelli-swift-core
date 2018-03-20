@@ -5,32 +5,19 @@ tasks.withType(JavaCompile){
 		destinationDir = file('build/classes/test')
 }
 //指定构建的jdk版本
-sourceCompatibility=1.5
+//sourceCompatibility=1.5
 //指定jar包版本
-version='10.0'
+version='1.0'
 //给自定义jar
 
 def srcDir="."
 
-//获取什么分支名
-FileTree files =fileTree(dir:'./',include:'test*.gradle')
-def buildDir=files[0].path.substring(0,files[0].path.lastIndexOf ('/'))
-def branchName=buildDir.substring(buildDir.lastIndexOf ('/')+1)
 
 //设置源码路径
 	sourceSets{
 		main {
 			java{
-				srcDirs=["${srcDir}/basic-base/test",
-					"${srcDir}/basic-chart/test",
-					"${srcDir}/basic-form/test",
-					"${srcDir}/basic-function/test",
-					"${srcDir}/basic-headerfooter/test",
-					"${srcDir}/basic-privilege/test",
-					"${srcDir}/basic-record/test",
-					"${srcDir}/basic-upload/test",
-					"${srcDir}/basic-market/test",
-					"${srcDir}/basic-web/test"]
+				srcDirs=["${srcDir}/swift_test/test"]
 			}
 		}
 		
@@ -42,16 +29,16 @@ repositories {
 def basicDir="../../"
 
 dependencies{
-	compile fileTree(dir:"../../finereport-lib-stable/${branchName}",include:'**/*.jar')
+	compile fileTree(dir:"../lib-core",include:'**/*.jar')
+	compile fileTree(dir:"../lib-other",include:'**/*.jar')
 	compile fileTree(dir:"build/libs",include:"**/*.jar")
-	compile fileTree(dir:'../../',include:"finereport-*-code/${branchName}/build/libs/*.jar")
 	testCompile "junit:junit:4.12"
 }
 //将无法编译的文件copy到classes文件夹参与打包
 task copyFile(type:Copy){
 	copy{
 
-		from ("${srcDir}/basic-base/test"){
+		from ("${srcDir}/swift_test/test"){
 			exclude "**/*.java","**/.settings/**",".classpath",".project","**/*.db","**/*.g","**/package.html"
 		
 		}
@@ -60,106 +47,7 @@ task copyFile(type:Copy){
 
 	}
 
-	copy{
-
-		from ("${srcDir}/basic-chart/test"){
-			exclude "**/*.java","**/.settings/**",".classpath",".project","**/*.db","**/*.g","**/package.html"
-		
-		}
-
-		into "build/classes/test"
-
-	}
-
-	copy{
-
-		from ("${srcDir}/basic-form/test"){
-			exclude "**/*.java","**/.settings/**",".classpath",".project","**/*.db","**/*.g","**/package.html"
-		
-		}
-
-		into "build/classes/test"
-
-	}
-
-	copy{
-
-		from ("${srcDir}/basic-function/test"){
-			exclude "**/*.java","**/.settings/**",".classpath",".project","**/*.db","**/*.g","**/package.html"
-		
-		}
-
-		into "build/classes/test"
-
-	}
-
-	copy{
-
-		from ("${srcDir}/basic-headerfooter/test"){
-			exclude "**/*.java","**/.settings/**",".classpath",".project","**/*.db","**/*.g","**/package.html"
-		
-		}
-
-		into "build/classes/test"
-
-	}
-
-		copy{
-
-		from ("${srcDir}/basic-privilege/test"){
-			exclude "**/*.java","**/.settings/**",".classpath",".project","**/*.db","**/*.g","**/package.html"
-		
-		}
-
-		into "build/classes/test"
-
-	}
-
-		copy{
-
-		from ("${srcDir}/basic-record/test"){
-			exclude "**/*.java","**/.settings/**",".classpath",".project","**/*.db","**/*.g","**/package.html"
-		
-		}
-
-		into "build/classes/test"
-
-	}
-
-		copy{
-
-		from ("${srcDir}/basic-upload/test"){
-			exclude "**/*.java","**/.settings/**",".classpath",".project","**/*.db","**/*.g","**/package.html"
-		
-		}
-
-		into "build/classes/test"
-
-	}
-
-		copy{
-
-		from ("${srcDir}/basic-market/test"){
-			exclude "**/*.java","**/.settings/**",".classpath",".project","**/*.db","**/*.g","**/package.html"
-		
-		}
-
-		into "build/classes/test"
-
-	}
-
-
-		copy{
-
-		from ("${srcDir}/basic-web/test"){
-			exclude "**/*.java","**/.settings/**",".classpath",".project","**/*.db","**/*.g","**/package.html"
-		
-		}
-
-		into "build/classes/test"
-
-	}
-
+	
 }
 
 task test_jar(dependsOn:compileJava)<<{
@@ -168,26 +56,26 @@ task test_jar(dependsOn:compileJava)<<{
 	ant{
 		taskdef(name:"junit",classname:"org.apache.tools.ant.taskdefs.optional.junit.JUnitTask"){
 			classpath(){
-				pathelement(path:"${basicDir}/finereport-lib-stable/${branchName}/test/ant-junit.jar")
-				pathelement(path:"${basicDir}/finereport-lib-stable/${branchName}/test/junit-4.12.jar")
+				pathelement(path:"../lib-other/test/ant-junit.jar")
+				pathelement(path:"../lib-other/test/junit-4.12.jar")
 			}	
 		}
 		taskdef(name:"junitreport",classname:"org.apache.tools.ant.taskdefs.optional.junit.XMLResultAggregator"){
 			classpath(){
-				pathelement(path:"${basicDir}/finereport-lib-stable/${branchName}/test/ant-junit.jar")
+				pathelement(path:"../lib-other/test/ant-junit.jar")
 			}	
 		}
 
 		taskdef(name:"jacocoCoverage", classname:"org.jacoco.ant.CoverageTask") {
 			classpath() {
-			    pathelement(path:"${basicDir}/finereport-lib-stable/${branchName}/test/jacocoant.jar")
+			    pathelement(path:"../lib-other/test/jacocoant.jar")
 			}
 		    }
 
 		        //如果你希望得到可视化的测试报告（如html报告），而不依赖于Jenkins，你可以自己定义JacocoReport任务
 		    taskdef(name:"jacocoReport", classname:"org.jacoco.ant.ReportTask") {
 			classpath() {
-			    pathelement(path:"${basicDir}/finereport-lib-stable/${branchName}/test/jacocoant.jar")
+			    pathelement(path:"../lib-other/test/jacocoant.jar")
 			}
 		    }
 		 jacocoCoverage(destfile:"reports/jacoco/jacoco.exec", append:"true") {
@@ -197,14 +85,8 @@ task test_jar(dependsOn:compileJava)<<{
 						include(name:"build/libs/*.jar")
 			
 					}
-					fileset(dir:"${basicDir}/finereport-lib-stable/${branchName}") {
-						include(name:"fine-third-10.0.jar")
-					}
-					fileset(dir:"${basicDir}/finereport-lib-stable/${branchName}"){ 
+					fileset(dir:"../lib-core"){ 
 						include(name:"**/*.jar")
-					}
-					fileset(dir:"${basicDir}"){ 
-						include(name:"finereport-*-code/${branchName}/**/*.jar")
 					}
 				}
 				classpath(path:"build/classes/test")
