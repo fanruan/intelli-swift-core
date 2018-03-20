@@ -24,6 +24,8 @@ public class CustomStrGroupRule extends BaseCustomGroupRule {
 
     @Override
     void initMap() {
+        filterInvalidGroup();
+
         int lastIndex = groups.size();
 
         int dictSize = dictColumn.size();
@@ -60,7 +62,7 @@ public class CustomStrGroupRule extends BaseCustomGroupRule {
         }
     }
 
-    private void filterValidGroup() {
+    private void filterInvalidGroup() {
         Iterator<StringGroup> itr = groups.iterator();
         while (itr.hasNext()) {
             StringGroup sg = itr.next();
