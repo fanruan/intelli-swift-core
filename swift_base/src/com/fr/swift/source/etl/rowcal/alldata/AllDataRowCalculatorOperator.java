@@ -1,12 +1,15 @@
 package com.fr.swift.source.etl.rowcal.alldata;
 
 import com.fr.swift.segment.column.ColumnKey;
-import com.fr.swift.source.*;
+import com.fr.swift.source.ColumnTypeConstants.ColumnType;
+import com.fr.swift.source.ColumnTypeUtils;
+import com.fr.swift.source.MetaDataColumn;
+import com.fr.swift.source.SwiftMetaData;
+import com.fr.swift.source.SwiftMetaDataColumn;
 import com.fr.swift.source.core.CoreField;
 import com.fr.swift.source.core.MD5Utils;
 import com.fr.swift.source.etl.AbstractOperator;
 import com.fr.swift.source.etl.OperatorType;
-import com.fr.swift.source.ColumnTypeConstants.ColumnType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,11 +37,14 @@ public class AllDataRowCalculatorOperator extends AbstractOperator {
         this.dimension = dimension;
         this.calculatorType = calculatorType;
     }
+
     public ColumnKey[] getDimension() {
         return dimension;
     }
 
-    public String getAddedColumnName() { return addedColumnName; }
+    public String getAddedColumnName() {
+        return addedColumnName;
+    }
 
     public String getColumnName() {
         return columnName;
@@ -48,7 +54,9 @@ public class AllDataRowCalculatorOperator extends AbstractOperator {
         return columnType;
     }
 
-    public int getCalculatorType() { return calculatorType; }
+    public int getCalculatorType() {
+        return calculatorType;
+    }
 
 
     @Override
@@ -59,8 +67,11 @@ public class AllDataRowCalculatorOperator extends AbstractOperator {
         return columnList;
     }
 
-    public String getNewAddedName() {
-        return addedColumnName;
+    @Override
+    public List<String> getNewAddedName() {
+        List<String> addColumnNames = new ArrayList<String>();
+        addColumnNames.add(addedColumnName);
+        return addColumnNames;
     }
 
     @Override

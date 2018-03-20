@@ -45,7 +45,7 @@ public class TwoUnionRelationOperatorResultSet implements SwiftResultSet {
     private Segment[] segments;
 
     public TwoUnionRelationOperatorResultSet(LinkedHashMap<String, Integer> columns, String idColumnName, List<String> showColumns,
-                                           int columnType, String columnName, String parentIdColumnName, Segment[] segments, SwiftMetaData metaData) {
+                                             int columnType, String columnName, String parentIdColumnName, Segment[] segments, SwiftMetaData metaData) {
         this.columns = columns;
         this.idColumnName = idColumnName;
         this.showColumns = showColumns;
@@ -65,33 +65,38 @@ public class TwoUnionRelationOperatorResultSet implements SwiftResultSet {
         rowCount = segments[segCursor].getRowCount();
         try {
             int idIndex = 0, pidIndex = 0;
-            for(int i = 0; i < metaData.getColumnCount(); i++) {
-                if(metaData.getColumnName(i + 1).equals(idColumnName)) {
+            for (int i = 0; i < metaData.getColumnCount(); i++) {
+                if (metaData.getColumnName(i + 1).equals(idColumnName)) {
                     idIndex = i + 1;
                 }
-                if(metaData.getColumnName(i + 1).equals(parentIdColumnName)) {
+                if (metaData.getColumnName(i + 1).equals(parentIdColumnName)) {
                     pidIndex = i + 1;
                 }
             }
             gts = new DictionaryEncodedColumn[segments.length][metaData.getColumnCount()];
-            if(idColumn != null && pidColumn != null && metaData.getColumnType(idIndex) == metaData.getColumnType(pidIndex)) {
-                for(int i = 0; i < segments.length; i++) {
+            if (idColumn != null && pidColumn != null && metaData.getColumnType(idIndex) == metaData.getColumnType(pidIndex)) {
+                for (int i = 0; i < segments.length; i++) {
                     DictionaryEncodedColumn getter = segments[i].getColumn(new ColumnKey(idColumnName)).getDictionaryEncodedColumn();
-                    for(int j = 0; j < segments[i].getRowCount(); j++) {
+                    for (int j = 0; j < segments[i].getRowCount(); j++) {
                         int indexByRow = getter.getIndexByRow(j);
                         Object ob = getter.getValue(indexByRow);
-                        if(null == ob) {
+                        if (null == ob) {
                             continue;
                         }
                         IndexCollection indexCollection = new IndexCollection(i, j);
                         valueIndexMap.put(ob, indexCollection);
                     }
-                    for(int k = 0; k < metaData.getColumnCount(); k++) {
-                        gts[i][k] = segments[i].getColumn(new ColumnKey(metaData.getColumnName(k + 1))).getDictionaryEncodedColumn();
+                    for (int k = 0; k < metaData.getColumnCount(); k++) {
+                        try {
+                            gts[i][k] = segments[i].getColumn(new ColumnKey(metaData.getColumnName(k + 1))).getDictionaryEncodedColumn();
+                        } catch (Exception e) {
+                            gts[i][k] = null;
+                        }
+
                     }
                 }
             }
-        } catch(SwiftMetaDataException e) {
+        } catch (SwiftMetaDataException e) {
             LOGGER.error("getting meta's column information failed", e);
         }
     }
@@ -103,13 +108,17 @@ public class TwoUnionRelationOperatorResultSet implements SwiftResultSet {
 
     @Override
     public boolean next() throws SQLException {
-        if(segCursor < segments.length && rowCursor < rowCount) {
+        if (segCursor < segments.length && rowCursor < rowCount) {
             rowCount = segments[segCursor].getRowCount();
             int index = 0;
-            Object[] res = new Object[metaData.getColumnCount() + columnLength * showColumns.size()];
-            for(int i = 0; i < metaData.getColumnCount(); i++) {
-                int indexByRow = gts[segCursor][i].getIndexByRow(rowCursor);
-                res[index++] = gts[segCursor][i].getValue(indexByRow);
+            Object[] res = new Object[metaData.getColumnCount()];
+            for (int i = 0; i < metaData.getColumnCount(); i++) {
+                if (gts[segCursor][i] != null) {
+                    int indexByRow = gts[segCursor][i].getIndexByRow(rowCursor);
+                    res[index++] = gts[segCursor][i].getValue(indexByRow);
+                } else {
+                    res[index++] = null;
+                }
             }
             Object[] tags = new Object[columnLength];
             List<Number> list = new ArrayList<Number>();
@@ -117,26 +126,27 @@ public class TwoUnionRelationOperatorResultSet implements SwiftResultSet {
             for (int k = list.size(), cnt = 0; k > 0 && cnt < list.size(); k--, cnt++) {
                 tags[cnt] = list.get(k - 1);
             }
-            for(String s : showColumns) {
-                for(int i = 0; i < columnLength; i++) {
-                    if(tags[i] != null) {
+            index = 0;
+            for (String s : showColumns) {
+                for (int i = 0; i < columnLength; i++) {
+                    if (tags[i] != null) {
                         IndexCollection indexCollection = valueIndexMap.get(tags[i]);
                         DictionaryEncodedColumn getter = segments[indexCollection.getNumOfSegment()].getColumn(new ColumnKey(s)).getDictionaryEncodedColumn();
                         Object showOb = getter.getValue(getter.getIndexByRow(indexCollection.getIndexOfRow()));
-                        if(showOb != null) {
+                        if (showOb != null) {
                             res[index] = showOb;
                         }
                     }
-                    index ++;
+                    index++;
                 }
             }
             List listRow = Arrays.asList(res);
             ListBasedRow listBasedRow = new ListBasedRow(listRow);
             row.setRow(listBasedRow);
-            if(rowCursor < rowCount - 1) {
+            if (rowCursor < rowCount - 1) {
                 rowCursor++;
             } else {
-                if(segCursor < segments.length) {
+                if (segCursor < segments.length) {
                     segCursor++;
                     rowCursor = 0;
                 } else {
@@ -164,17 +174,17 @@ public class TwoUnionRelationOperatorResultSet implements SwiftResultSet {
 
         DictionaryEncodedColumn get1 = segment.getColumn(idCIndex).getDictionaryEncodedColumn();
         Object id = get1.getValue(get1.getIndexByRow(i));
-        if(id != null && list.size() < cl) {
+        if (id != null && list.size() < cl) {
             list.add(id);
             DictionaryEncodedColumn get2 = segment.getColumn(pidCIndex).getDictionaryEncodedColumn();
             Object pid = get2.getValue(get2.getIndexByRow(i));
-            if(pid != null) {
-                for(int k = 0; k < segments.length; k++) {
+            if (pid != null) {
+                for (int k = 0; k < segments.length; k++) {
                     DictionaryEncodedColumn gts = segments[k].getColumn(new ColumnKey(this.idColumnName)).getDictionaryEncodedColumn();
                     int index = gts.getIndex(pid);
                     ImmutableBitMap bitMap = segments[k].getColumn(new ColumnKey(this.idColumnName)).getBitmapIndex().getBitMapIndex(index);
                     final int indexOfSeg = k;
-                    if(bitMap != null) {
+                    if (bitMap != null) {
                         bitMap.breakableTraversal(new BreakTraversalAction() {
                             @Override
                             public boolean actionPerformed(int row) {
