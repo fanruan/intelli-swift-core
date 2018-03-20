@@ -1,12 +1,20 @@
 package com.fr.swift.source.etl.date;
 
-import com.fr.general.ComparatorUtils;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.segment.column.DictionaryEncodedColumn;
-import com.fr.swift.source.*;
+import com.fr.swift.segment.column.impl.DateDerivers;
+import com.fr.swift.segment.column.impl.DateType;
+import com.fr.swift.segment.column.impl.MixDateType;
+import com.fr.swift.source.ListBasedRow;
+import com.fr.swift.source.Row;
+import com.fr.swift.source.SwiftMetaData;
+import com.fr.swift.source.SwiftMetaDataColumn;
+import com.fr.swift.source.SwiftResultSet;
 import com.fr.swift.source.etl.utils.DateUtils;
 import com.fr.swift.source.etl.utils.ETLConstant;
+import com.fr.swift.source.etl.utils.ETLConstant.CONF.ADD_COLUMN.TIME.UNITS;
+import com.fr.swift.util.function.Function;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -46,21 +54,21 @@ public class GetFromDateResultSet implements SwiftResultSet {
 
     @Override
     public boolean next() throws SQLException {
-        if(segCursor < segments.length && rowCursor < rowCount) {
+        if (segCursor < segments.length && rowCursor < rowCount) {
             rowCount = segments[segCursor].getRowCount();
-            DateGetter dg = getDateGetter(type);
+            Function dateGetter = getDateGetter(type);
             ColumnKey columnKey = new ColumnKey(field);
             checkType(field);
             DictionaryEncodedColumn getter = segments[segCursor].getColumn(columnKey).getDictionaryEncodedColumn();
-            Integer value = dg.get((Long)getter.getValue(getter.getIndexByRow(rowCursor)));
-            List list = new ArrayList();
-            list.add(value == null ? null : value.longValue());
+            Object value = dateGetter.apply(getter.getValue(getter.getIndexByRow(rowCursor)));
+            List<Object> list = new ArrayList<Object>();
+            list.add(value);
             tempValue.setRow(new ListBasedRow(list));
-            if(rowCursor < rowCount - 1) {
-                rowCursor ++;
+            if (rowCursor < rowCount - 1) {
+                rowCursor++;
             } else {
-                if(segCursor < segments.length) {
-                    segCursor ++;
+                if (segCursor < segments.length) {
+                    segCursor++;
                     rowCursor = 0;
                 } else {
                     return false;
@@ -75,7 +83,7 @@ public class GetFromDateResultSet implements SwiftResultSet {
         SwiftMetaDataColumn column = null;
         try {
             column = metaData.getColumn(field);
-        } catch(Exception e) {
+        } catch (Exception e) {
         }
         DateUtils.checkDateColumnType(column);
     }
@@ -90,16 +98,28 @@ public class GetFromDateResultSet implements SwiftResultSet {
         return tempValue.getRow();
     }
 
-    private static DateGetter getDateGetter(int type){
-        switch(type) {
+    private static Function getDateGetter(int type) {
+        switch (type) {
             case ETLConstant.CONF.ADD_COLUMN.TIME_GAP.UNITS.YEAR:
-                return YearGetter.INSTANCE;
+                return DateDerivers.newSingleFieldDeriver(DateType.YEAR);
             case ETLConstant.CONF.ADD_COLUMN.TIME_GAP.UNITS.MONTH:
-                return MonthGetter.INSTANCE;
+                return DateDerivers.newSingleFieldDeriver(DateType.MONTH);
             case ETLConstant.CONF.ADD_COLUMN.TIME_GAP.UNITS.QUARTER:
-                return SeasonGetter.INSTANCE;
+                return DateDerivers.newSingleFieldDeriver(DateType.QUARTER);
+            case UNITS.YQ:
+                return DateDerivers.newTruncatedDeriver(MixDateType.Y_Q);
+            case UNITS.YM:
+                return DateDerivers.newTruncatedDeriver(MixDateType.Y_M);
+            case UNITS.YW:
+                return DateDerivers.newTruncatedDeriver(MixDateType.Y_W);
+            case UNITS.YMDH:
+                return DateDerivers.newTruncatedDeriver(MixDateType.Y_M_D_H);
+            case UNITS.YMDHM:
+                return DateDerivers.newTruncatedDeriver(MixDateType.Y_M_D_H_M);
+            case UNITS.YMDHMS:
+                return DateDerivers.newTruncatedDeriver(MixDateType.Y_M_D_H_M_S);
             default:
-                return SeasonGetter.INSTANCE;
+                return null;
         }
     }
 

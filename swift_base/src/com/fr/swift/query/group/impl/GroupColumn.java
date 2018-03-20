@@ -9,8 +9,8 @@ import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.DetailColumn;
 import com.fr.swift.segment.column.DictionaryEncodedColumn;
 import com.fr.swift.structure.array.IntList;
-
-import java.util.Comparator;
+import com.fr.swift.util.Extends.ExtendsBitmapColumn;
+import com.fr.swift.util.Extends.ExtendsDictColumn;
 
 /**
  * @author anchore
@@ -60,103 +60,23 @@ class GroupColumn implements Column<String> {
         return null;
     }
 
-    private class GroupDictColumn implements DictionaryEncodedColumn<String> {
-        @Override
-        public void putSize(int size) {
-        }
-
+    private class GroupDictColumn extends ExtendsDictColumn<String> {
         @Override
         public int size() {
             return groupRule.newSize();
         }
 
         @Override
-        public void putGlobalSize(int globalSize) {
-        }
-
-        @Override
-        public int globalSize() {
-            return 0;
-        }
-
-        @Override
-        public void putValue(int index, String val) {
-        }
-
-        @Override
         public String getValue(int index) {
             return groupRule.getGroupName(index);
         }
-
-        @Override
-        public int getIndex(Object value) {
-            return 0;
-        }
-
-        @Override
-        public void putIndex(int row, int index) {
-        }
-
-        @Override
-        public int getIndexByRow(int row) {
-            return 0;
-        }
-
-        @Override
-        public void putGlobalIndex(int index, int globalIndex) {
-        }
-
-        @Override
-        public int getGlobalIndexByIndex(int index) {
-            return 0;
-        }
-
-        @Override
-        public int getGlobalIndexByRow(int row) {
-            return 0;
-        }
-
-        @Override
-        public Comparator<String> getComparator() {
-            return null;
-        }
-
-        @Override
-        public String convertValue(Object value) {
-            return value.toString();
-        }
-
-        @Override
-        public void flush() {
-        }
-
-        @Override
-        public void release() {
-        }
     }
 
-    private class GroupBitmapColumn implements BitmapIndexedColumn {
-        @Override
-        public void putBitMapIndex(int index, ImmutableBitMap bitmap) {
-        }
-
+    private class GroupBitmapColumn extends ExtendsBitmapColumn {
         @Override
         public ImmutableBitMap getBitMapIndex(int index) {
             // 通过新分组号拿新索引
             return groupedBitmaps[index];
-        }
-
-        @Override
-        public void putNullIndex(ImmutableBitMap bitMap) {
-        }
-
-        @Override
-        public ImmutableBitMap getNullIndex() {
-            return null;
-        }
-
-        @Override
-        public void flush() {
         }
 
         @Override

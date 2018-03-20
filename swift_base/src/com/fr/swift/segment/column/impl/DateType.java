@@ -10,17 +10,24 @@ public enum DateType {
     /**
      * 日期类型
      */
-    YEAR(Calendar.YEAR),
-    MONTH(Calendar.MONTH),
+    YEAR(Calendar.YEAR, 1),
+
+    MONTH(Calendar.MONTH, 12),
+
     WEEK(Calendar.DAY_OF_WEEK),
+
     DAY(Calendar.DAY_OF_MONTH),
-    HOUR(Calendar.HOUR_OF_DAY),
-    MINUTE(Calendar.MINUTE),
-    SECOND(Calendar.SECOND),
-    MILLISECOND(Calendar.MILLISECOND),
+
+    HOUR(Calendar.HOUR_OF_DAY, 24),
+
+    MINUTE(Calendar.MINUTE, 60),
+
+    SECOND(Calendar.SECOND, 60),
+
+    MILLISECOND(Calendar.MILLISECOND, 1000),
 
     // 季度
-    QUARTER {
+    QUARTER(-1, 4) {
         @Override
         public int from(Calendar c) {
             int month = MONTH.from(c);
@@ -37,17 +44,20 @@ public enum DateType {
             DAY.set(c, 1);
         }
     },
+
     WEEK_OF_YEAR(Calendar.WEEK_OF_YEAR);
 
     private static final int UNDEF = -1;
     private final int type;
-
-    DateType() {
-        this(UNDEF);
-    }
+    public final int radix;
 
     DateType(int type) {
+        this(type, UNDEF);
+    }
+
+    DateType(int type, int radix) {
         this.type = type;
+        this.radix = radix;
     }
 
     public int from(Calendar c) {
@@ -56,107 +66,5 @@ public enum DateType {
 
     public void set(Calendar c, int value) {
         c.set(type, value);
-    }
-
-    enum MixDateType {
-        Y_Q {
-            @Override
-            long from(Calendar c) {
-                int year = YEAR.from(c);
-                int quarter = QUARTER.from(c);
-                c.clear();
-                YEAR.set(c, year);
-                QUARTER.set(c, quarter);
-                return c.getTimeInMillis();
-            }
-        },
-        Y_M {
-            @Override
-            long from(Calendar c) {
-                int year = YEAR.from(c);
-                int month = MONTH.from(c);
-                c.clear();
-                YEAR.set(c, year);
-                MONTH.set(c, month);
-                return c.getTimeInMillis();
-            }
-        },
-        Y_D {
-            @Override
-            long from(Calendar c) {
-                int year = YEAR.from(c);
-                int day = DAY.from(c);
-                c.clear();
-                YEAR.set(c, year);
-                DAY.set(c, day);
-                return c.getTimeInMillis();
-            }
-        },
-        Y_W {
-            @Override
-            long from(Calendar c) {
-                int year = YEAR.from(c);
-                c.clear();
-                YEAR.set(c, year);
-                WEEK.set(c, Calendar.MONDAY);
-                // 一周跨两年，设为周一可能跑到去年了 重新改为本年第一天
-                if (YEAR.from(c) != year) {
-                    YEAR.set(c, year);
-                    MONTH.set(c, Calendar.JANUARY);
-                    DAY.set(c, 1);
-                }
-                return c.getTimeInMillis();
-            }
-        },
-        M_D {
-            @Override
-            long from(Calendar c) {
-                int year = MONTH.from(c);
-                int day = DAY.from(c);
-                c.clear();
-                MONTH.set(c, year);
-                DAY.set(c, day);
-                return c.getTimeInMillis();
-            }
-        },
-        Y_M_D {
-            @Override
-            long from(Calendar c) {
-                int year = YEAR.from(c);
-                int month = MONTH.from(c);
-                int day = DAY.from(c);
-                c.clear();
-                YEAR.set(c, year);
-                MONTH.set(c, month);
-                DAY.set(c, day);
-                return c.getTimeInMillis();
-            }
-        },
-        Y_M_D_H {
-            @Override
-            long from(Calendar c) {
-                MINUTE.set(c, 0);
-                SECOND.set(c, 0);
-                MILLISECOND.set(c, 0);
-                return c.getTimeInMillis();
-            }
-        },
-        Y_M_D_H_M {
-            @Override
-            long from(Calendar c) {
-                SECOND.set(c, 0);
-                MILLISECOND.set(c, 0);
-                return c.getTimeInMillis();
-            }
-        },
-        Y_M_D_H_M_S {
-            @Override
-            long from(Calendar c) {
-                MILLISECOND.set(c, 0);
-                return c.getTimeInMillis();
-            }
-        };
-
-        abstract long from(Calendar c);
     }
 }

@@ -37,7 +37,7 @@ import java.util.Map;
  * @author anchore
  * @date 2018/2/26
  */
-public class EngineWidgetExecutorManagerImpl implements EngineWidgetExecutorManager {
+public class SwiftEngineWidgetExecutorManager implements EngineWidgetExecutorManager {
     @Override
     public BIGroupNode visit(TableWidget tableWidget) {
         return null;
