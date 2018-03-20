@@ -9,7 +9,7 @@ import java.util.List;
 /**
  * Created by pony on 2017/12/7.
  */
-public interface ETLOperator extends CoreService{
+public interface ETLOperator extends CoreService {
     /**
      * 返回etl后改变的列
      *
@@ -20,16 +20,16 @@ public interface ETLOperator extends CoreService{
 
     /**
      * 获取etl的类型
-     * @return
      *
+     * @return
      */
     OperatorType getOperatorType();
 
     /**
      * 获取新增列名
-     * @return
      *
+     * @return
      */
-    String getNewAddedName();
+    List<String> getNewAddedName();
 
 }

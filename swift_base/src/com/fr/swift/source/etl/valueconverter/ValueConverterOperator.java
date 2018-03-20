@@ -1,6 +1,10 @@
 package com.fr.swift.source.etl.valueconverter;
 
-import com.fr.swift.source.*;
+import com.fr.swift.source.ColumnTypeConstants;
+import com.fr.swift.source.ColumnTypeUtils;
+import com.fr.swift.source.MetaDataColumn;
+import com.fr.swift.source.SwiftMetaData;
+import com.fr.swift.source.SwiftMetaDataColumn;
 import com.fr.swift.source.etl.AbstractOperator;
 import com.fr.swift.source.etl.OperatorType;
 
@@ -34,10 +38,12 @@ public class ValueConverterOperator extends AbstractOperator {
         return columnName;
     }
 
-    public String getNewAddedName() {
-        return columnName;
+    @Override
+    public List<String> getNewAddedName() {
+        List<String> addColumnNames = new ArrayList<String>();
+        addColumnNames.add(columnName);
+        return addColumnNames;
     }
-
 
     @Override
     public List<SwiftMetaDataColumn> getColumns(SwiftMetaData[] metaDatas) {

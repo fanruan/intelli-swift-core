@@ -55,8 +55,11 @@ public class AccumulateRowOperator extends AbstractOperator {
         return columnList;
     }
 
-    public String getNewAddedName() {
-        return columnName;
+    @Override
+    public List<String> getNewAddedName() {
+        List<String> addColumnNames = new ArrayList<String>();
+        addColumnNames.add(columnName);
+        return addColumnNames;
     }
 
     @Override

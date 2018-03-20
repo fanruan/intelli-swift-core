@@ -7,7 +7,12 @@ import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.segment.column.DictionaryEncodedColumn;
-import com.fr.swift.source.*;
+import com.fr.swift.source.ColumnTypeConstants;
+import com.fr.swift.source.ColumnTypeUtils;
+import com.fr.swift.source.ListBasedRow;
+import com.fr.swift.source.Row;
+import com.fr.swift.source.SwiftMetaData;
+import com.fr.swift.source.SwiftResultSet;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -60,11 +65,11 @@ public class OneUnionRelationOperatorResultSet implements SwiftResultSet {
         groupLength = new int[columnLength];
         column = segments[0].getColumn(new ColumnKey(idColumnName));
         rowCount = segments[0].getRowCount();
-        if(column != null) {
+        if (column != null) {
             try {
                 gts = new DictionaryEncodedColumn[segments.length][metaData.getColumnCount()];
                 //TODO  String
-                ColumnTypeConstants.ColumnType type = ColumnTypeUtils.sqlTypeToColumnType(metaData.getColumn(idColumnName).getType(),1, 1);
+                ColumnTypeConstants.ColumnType type = ColumnTypeUtils.sqlTypeToColumnType(metaData.getColumn(idColumnName).getType(), 1, 1);
                 if (type == ColumnTypeConstants.ColumnType.STRING) {
                     Iterator<Integer> it = columns.values().iterator();
                     int k = 0;
@@ -87,11 +92,15 @@ public class OneUnionRelationOperatorResultSet implements SwiftResultSet {
                     }
                     for (int i = 0; i < segments.length; i++) {
                         for (int j = 0; j < metaData.getColumnCount(); j++) {
-                            gts[i][j] = segments[i].getColumn(new ColumnKey(metaData.getColumnName(j + 1))).getDictionaryEncodedColumn();
+                            try {
+                                gts[i][j] = segments[i].getColumn(new ColumnKey(metaData.getColumnName(j + 1))).getDictionaryEncodedColumn();
+                            } catch (Exception e) {
+                                gts[i][j] = null;
+                            }
                         }
                     }
                 }
-            } catch(SwiftMetaDataException e) {
+            } catch (SwiftMetaDataException e) {
                 LOGGER.error("getting meta's column information failed", e);
             }
         }
@@ -104,30 +113,35 @@ public class OneUnionRelationOperatorResultSet implements SwiftResultSet {
 
     @Override
     public boolean next() throws SQLException {
-        if(segCursor < segments.length && rowCursor < rowCount) {
+        if (segCursor < segments.length && rowCursor < rowCount) {
             rowCount = segments[segCursor].getRowCount();
             int index = 0;
-            Object[] res = new Object[columns.size() + columnLength * showColumns.size()];
-            for(int m = 0; m < metaData.getColumnCount(); m++) {
-                int indexByRow = gts[segCursor][m].getIndexByRow(rowCursor);
-                res[index++] = gts[segCursor][m].getValue(indexByRow);
+            Object[] res = new Object[metaData.getColumnCount()];
+            for (int m = 0; m < metaData.getColumnCount(); m++) {
+                if (gts[segCursor][m] != null) {
+                    int indexByRow = gts[segCursor][m].getIndexByRow(rowCursor);
+                    res[index++] = gts[segCursor][m].getValue(indexByRow);
+                } else {
+                    res[index++] = null;
+                }
             }
+            index = 0;
             DictionaryEncodedColumn getter = segments[segCursor].getColumn(new ColumnKey(idColumnName)).getDictionaryEncodedColumn();
             int indexByRow = getter.getIndexByRow(rowCursor);
             Object ob = getter.getValue(indexByRow);
-            if(ob != null) {
+            if (ob != null) {
                 String v = ob.toString();
                 v = dealWithLayerValue(v, groupLength);
-                for(String s : showColumns) {
-                    for(int m = 0; m < columnLength; m++) {
-                        if(v.length() >= groupLength[m]) {
+                for (String s : showColumns) {
+                    for (int m = 0; m < columnLength; m++) {
+                        if (v.length() >= groupLength[m]) {
                             String result = v.substring(0, groupLength[m]);
                             IndexCollection indexCollection = valueIndexMap.get(result);
-                            if(indexCollection != null) {
+                            if (indexCollection != null) {
                                 DictionaryEncodedColumn get = segments[indexCollection.getNumOfSegment()].getColumn(new ColumnKey(s)).getDictionaryEncodedColumn();
                                 int indexOfRow = get.getIndexByRow(indexCollection.getIndexOfRow());
                                 Object showOb = get.getValue(indexOfRow);
-                                if(showOb != null) {
+                                if (showOb != null) {
                                     res[index] = showOb;
                                 }
                             }
@@ -139,10 +153,10 @@ public class OneUnionRelationOperatorResultSet implements SwiftResultSet {
             List list = Arrays.asList(res);
             ListBasedRow listBasedRow = new ListBasedRow(list);
             row.setRow(listBasedRow);
-            if(rowCursor < segments[segCursor].getRowCount() - 1) {
+            if (rowCursor < segments[segCursor].getRowCount() - 1) {
                 rowCursor++;
             } else {
-                if(segCursor < segments.length) {
+                if (segCursor < segments.length) {
                     segCursor++;
                     rowCursor = 0;
                 } else {
