@@ -23,13 +23,13 @@ public class IncreaseFieldsSegmentOperator extends AbstractIncreaseSegmentOperat
 
     @Override
     public void transport() throws Exception {
-        int count = 0;
+        long count = 0;
         if (!fields.isEmpty()) {
             String allotColumn = fields.get(0);
             while (swiftResultSet.next()) {
                 Row row = swiftResultSet.getRowData();
 
-                int index = alloter.allot(count, allotColumn, row.getValue(indexOfColumn(allotColumn)));
+                int index = alloter.allot(count++, allotColumn, row.getValue(indexOfColumn(allotColumn)));
                 int size = increaseSegmentList.size();
                 if (index >= size) {
                     for (int i = size; i <= index; i++) {

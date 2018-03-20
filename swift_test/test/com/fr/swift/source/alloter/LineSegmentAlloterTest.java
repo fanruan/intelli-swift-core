@@ -32,7 +32,6 @@ import java.util.List;
  */
 public class LineSegmentAlloterTest extends TestCase {
     SwiftResultSet resultSet;
-    List<Segment> segments;
     int count;
 
     @Override
@@ -76,8 +75,7 @@ public class LineSegmentAlloterTest extends TestCase {
     }
 
     public void testAlloc() throws Exception {
-        String key = String.valueOf(System.currentTimeMillis());
-        SourceKey sourceKey = new SourceKey(key);
+        SourceKey sourceKey = new SourceKey("A");
 
         DataSource dataSource = new DataSource() {
             @Override
@@ -101,28 +99,21 @@ public class LineSegmentAlloterTest extends TestCase {
         };
 
         SegmentOperator operator = LocalSegmentOperatorProvider.getInstance().getHistorySegmentOperator(dataSource, resultSet);
+        operator.transport();
         operator.finishTransport();
-        operator.finishTransport();
-
-        segments = new ArrayList<>();
-        for (int i = 0; i < count; i++) {
-            ResourceLocation location = new ResourceLocation(System.getProperty("user.dir") + "/cubes/" + sourceKey.getId() + "/" + resultSet.getMetaData().getTableName() + "/seg" + i);
-            Segment segment = new HistorySegmentImpl(location, resultSet.getMetaData());
-            segments.add(segment);
-        }
-//
         SwiftSourceAlloter alloter = SwiftSourceAlloterFactory.createSourceAlloter(sourceKey);
         int lastIndex = -1;
+        Segment segment = null;
+        DetailColumn column = null;
         for (int i = 0; i < count; i++) {
             int index = alloter.allot(i, StringUtils.EMPTY, null);
-            if (lastIndex != index) {
+            if (lastIndex != index || null == segment) {
                 lastIndex = index;
-                System.err.println("index: " + index);
-                System.err.println("rowCount: " + segments.get(index).getRowCount());
+                ResourceLocation location = new ResourceLocation(System.getProperty("user.dir") + "/cubes/" + sourceKey.getId() + "/seg" + index);
+                segment = new HistorySegmentImpl(location, resultSet.getMetaData());
+                column = segment.getColumn(new ColumnKey("long")).getDetailColumn();
             }
-            DetailColumn column = segments.get(index).getColumn(new ColumnKey("long")).getDetailColumn();
-//            System.out.println(index);
-            assertEquals(column.getLong(i), (long) i);
+            assertEquals(column.getLong(i % 100000), (long) i);
         }
     }
 }
