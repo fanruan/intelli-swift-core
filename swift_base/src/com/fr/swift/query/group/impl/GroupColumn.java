@@ -9,8 +9,8 @@ import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.DetailColumn;
 import com.fr.swift.segment.column.DictionaryEncodedColumn;
 import com.fr.swift.structure.array.IntList;
-import com.fr.swift.util.Extends.ExtendsBitmapColumn;
-import com.fr.swift.util.Extends.ExtendsDictColumn;
+
+import java.util.Comparator;
 
 /**
  * @author anchore
@@ -21,13 +21,18 @@ import com.fr.swift.util.Extends.ExtendsDictColumn;
 class GroupColumn implements Column<String> {
     private GroupRule groupRule;
     private ImmutableBitMap[] groupedBitmaps;
+    private Column<?> originColumn;
 
-    GroupColumn(BitmapIndexedColumn indexColumn, GroupRule groupRule) {
+    GroupColumn(Column<?> originColumn, GroupRule groupRule) {
+        this.originColumn = originColumn;
         this.groupRule = groupRule;
-        group(indexColumn);
+        group();
     }
 
-    private void group(BitmapIndexedColumn indexColumn) {
+    private void group() {
+        groupRule.setOriginDict(originColumn.getDictionaryEncodedColumn());
+
+        BitmapIndexedColumn indexColumn = originColumn.getBitmapIndex();
         int newSize = groupRule.newSize();
         groupedBitmaps = new ImmutableBitMap[newSize];
         for (int i = 0; i < newSize; i++) {
@@ -60,19 +65,97 @@ class GroupColumn implements Column<String> {
         return null;
     }
 
-    private class GroupDictColumn extends ExtendsDictColumn<String> {
+    private class GroupDictColumn implements DictionaryEncodedColumn<String> {
+        DictionaryEncodedColumn<?> originDict = originColumn.getDictionaryEncodedColumn();
+
+        @Override
+        public void putSize(int size) {
+            throw new UnsupportedOperationException();
+        }
+
         @Override
         public int size() {
             return groupRule.newSize();
         }
 
         @Override
+        public void putGlobalSize(int globalSize) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public int globalSize() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void putValue(int index, String val) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
         public String getValue(int index) {
             return groupRule.getGroupName(index);
         }
+
+        @Override
+        public int getIndex(Object value) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void putIndex(int row, int index) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public int getIndexByRow(int row) {
+            int originIndex = originDict.getIndexByRow(row);
+            return groupRule.reverseMap(originIndex);
+        }
+
+        @Override
+        public void putGlobalIndex(int index, int globalIndex) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public int getGlobalIndexByIndex(int index) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public int getGlobalIndexByRow(int row) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public Comparator<String> getComparator() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public String convertValue(Object value) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void flush() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void release() {
+            throw new UnsupportedOperationException();
+        }
     }
 
-    private class GroupBitmapColumn extends ExtendsBitmapColumn {
+    private class GroupBitmapColumn implements BitmapIndexedColumn {
+        @Override
+        public void putBitMapIndex(int index, ImmutableBitMap bitmap) {
+            throw new UnsupportedOperationException();
+        }
+
         @Override
         public ImmutableBitMap getBitMapIndex(int index) {
             // 通过新分组号拿新索引
@@ -80,8 +163,23 @@ class GroupColumn implements Column<String> {
         }
 
         @Override
+        public void putNullIndex(ImmutableBitMap bitMap) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public ImmutableBitMap getNullIndex() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
         public void release() {
             groupedBitmaps = null;
+        }
+
+        @Override
+        public void flush() {
+            throw new UnsupportedOperationException();
         }
     }
 }

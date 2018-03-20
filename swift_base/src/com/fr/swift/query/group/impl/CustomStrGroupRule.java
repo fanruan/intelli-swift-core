@@ -25,7 +25,10 @@ public class CustomStrGroupRule extends BaseCustomGroupRule {
     void initMap() {
         int lastIndex = groups.size();
 
-        for (int i = 0; i < dictColumn.size(); i++) {
+        int dictSize = dictColumn.size();
+        reverseMap = new int[dictSize];
+
+        for (int i = 0; i < dictSize; i++) {
             String val = (String) dictColumn.<String>getValue(i);
             int index = findIndex(val);
 
@@ -51,6 +54,7 @@ public class CustomStrGroupRule extends BaseCustomGroupRule {
                 IntList indices = IntListFactory.createIntList();
                 indices.add(i);
                 map.put(index, Pair.of(groupName, indices));
+                reverseMap[i] = index;
             }
         }
     }
