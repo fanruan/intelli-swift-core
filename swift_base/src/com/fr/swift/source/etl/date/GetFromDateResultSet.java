@@ -5,7 +5,6 @@ import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.segment.column.DictionaryEncodedColumn;
 import com.fr.swift.segment.column.impl.DateDerivers;
 import com.fr.swift.segment.column.impl.DateType;
-import com.fr.swift.segment.column.impl.MixDateType;
 import com.fr.swift.source.ListBasedRow;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SwiftMetaData;
@@ -13,7 +12,6 @@ import com.fr.swift.source.SwiftMetaDataColumn;
 import com.fr.swift.source.SwiftResultSet;
 import com.fr.swift.source.etl.utils.DateUtils;
 import com.fr.swift.source.etl.utils.ETLConstant;
-import com.fr.swift.source.etl.utils.ETLConstant.CONF.ADD_COLUMN.TIME.UNITS;
 import com.fr.swift.util.function.Function;
 
 import java.sql.SQLException;
@@ -61,8 +59,9 @@ public class GetFromDateResultSet implements SwiftResultSet {
             checkType(field);
             DictionaryEncodedColumn getter = segments[segCursor].getColumn(columnKey).getDictionaryEncodedColumn();
             Object value = dateGetter.apply(getter.getValue(getter.getIndexByRow(rowCursor)));
+            Long v = Long.parseLong(value.toString());
             List<Object> list = new ArrayList<Object>();
-            list.add(value);
+            list.add(v);
             tempValue.setRow(new ListBasedRow(list));
             if (rowCursor < rowCount - 1) {
                 rowCursor++;
@@ -106,18 +105,18 @@ public class GetFromDateResultSet implements SwiftResultSet {
                 return DateDerivers.newSingleFieldDeriver(DateType.MONTH);
             case ETLConstant.CONF.ADD_COLUMN.TIME_GAP.UNITS.QUARTER:
                 return DateDerivers.newSingleFieldDeriver(DateType.QUARTER);
-            case UNITS.YQ:
-                return DateDerivers.newTruncatedDeriver(MixDateType.Y_Q);
-            case UNITS.YM:
-                return DateDerivers.newTruncatedDeriver(MixDateType.Y_M);
-            case UNITS.YW:
-                return DateDerivers.newTruncatedDeriver(MixDateType.Y_W);
-            case UNITS.YMDH:
-                return DateDerivers.newTruncatedDeriver(MixDateType.Y_M_D_H);
-            case UNITS.YMDHM:
-                return DateDerivers.newTruncatedDeriver(MixDateType.Y_M_D_H_M);
-            case UNITS.YMDHMS:
-                return DateDerivers.newTruncatedDeriver(MixDateType.Y_M_D_H_M_S);
+            case ETLConstant.CONF.ADD_COLUMN.TIME.UNITS.YQ:
+                return DateDerivers.newTruncatedDeriver(DateType.MixDateType.Y_Q);
+            case ETLConstant.CONF.ADD_COLUMN.TIME.UNITS.YM:
+                return DateDerivers.newTruncatedDeriver(DateType.MixDateType.Y_M);
+            case ETLConstant.CONF.ADD_COLUMN.TIME.UNITS.YW:
+                return DateDerivers.newTruncatedDeriver(DateType.MixDateType.Y_W);
+            case ETLConstant.CONF.ADD_COLUMN.TIME.UNITS.YMDH:
+                return DateDerivers.newTruncatedDeriver(DateType.MixDateType.Y_M_D_H);
+            case ETLConstant.CONF.ADD_COLUMN.TIME.UNITS.YMDHM:
+                return DateDerivers.newTruncatedDeriver(DateType.MixDateType.Y_M_D_H_M);
+            case ETLConstant.CONF.ADD_COLUMN.TIME.UNITS.YMDHMS:
+                return DateDerivers.newTruncatedDeriver(DateType.MixDateType.Y_M_D_H_M_S);
             default:
                 return null;
         }
