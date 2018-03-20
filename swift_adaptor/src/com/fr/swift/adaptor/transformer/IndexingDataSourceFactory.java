@@ -15,6 +15,11 @@ import com.fr.swift.increment.Increment;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.manager.ConnectionProvider;
+import com.fr.swift.service.LocalSwiftServerService;
+import com.fr.swift.service.SwiftAnalyseService;
+import com.fr.swift.service.SwiftHistoryService;
+import com.fr.swift.service.SwiftIndexingService;
+import com.fr.swift.service.SwiftRealTimeService;
 import com.fr.swift.source.ColumnTypeConstants.ColumnType;
 import com.fr.swift.source.DBDataSource;
 import com.fr.swift.source.DataSource;
@@ -45,6 +50,7 @@ import java.util.Map;
 public class IndexingDataSourceFactory {
 
     private static final SwiftLogger LOGGER = SwiftLoggers.getLogger();
+
     static {
         ConnectionManager.getInstance().registerProvider(new ConnectionProvider());
         EtlTransferOperatorFactory.register(DataMiningOperator.class, new EtlTransferOperatorFactory.ETLTransferCreator(){
@@ -54,7 +60,17 @@ public class IndexingDataSourceFactory {
                 return new DataMiningTransferOperator(((DataMiningOperator)operator).getAlgorithmBean());
             }
         });
+        try{
+            new LocalSwiftServerService().start();
+            new SwiftAnalyseService().start();
+            new SwiftHistoryService().start();
+            new SwiftIndexingService().start();
+            new SwiftRealTimeService().start();
+        } catch (Exception e){
+            LOGGER.error(e.getMessage(), e);
+        }
     }
+
     public static void transformDataSources(Map<FineBusinessTable, TableUpdateInfo> infoMap, List<String> updateTableSourceKeys, SourceContainerManager updateSourceContainer, Map<String, List<Increment>> incrementMap) throws Exception {
         for (Map.Entry<FineBusinessTable, TableUpdateInfo> infoEntry : infoMap.entrySet()) {
             DataSource updateDataSource = transformDataSource(infoEntry.getKey());
