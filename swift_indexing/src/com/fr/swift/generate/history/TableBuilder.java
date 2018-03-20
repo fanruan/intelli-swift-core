@@ -29,22 +29,22 @@ import static com.fr.swift.cube.task.Task.Result.SUCCEEDED;
  * @since Advanced FineBI Analysis 1.0
  */
 public class TableBuilder extends BaseTableBuilder {
-
     private static final SwiftLogger LOGGER = SwiftLoggers.getLogger(TableBuilder.class);
 
     public TableBuilder(DataSource dataSource) {
         super(dataSource);
     }
 
+    @Override
     protected void init() throws SwiftMetaDataException {
         final SwiftMetaData meta = dataSource.getMetadata();
         // transport worker
         final TableTransporter transporter = new TableTransporter(dataSource);
 
-        final LocalTask transportTask = new LocalTaskImpl(new CubeTaskKey(meta.getTableName(), Operation.TRANSPORT_TABLE));
+        final LocalTask transportTask = new LocalTaskImpl(newPartStartTaskKey(dataSource));
         transportTask.setWorker(transporter);
 
-        final LocalTask end = new LocalTaskImpl(new CubeTaskKey("end of " + meta.getTableName()));
+        final LocalTask end = new LocalTaskImpl(newPartEndTaskKey(dataSource));
         end.setWorker(BaseWorker.nullWorker());
 
         //监听表取数任务，完成后添加字段索引任务。
@@ -57,7 +57,9 @@ public class TableBuilder extends BaseTableBuilder {
                             ColumnIndexer<?> indexer = new ColumnIndexer(dataSource, new ColumnKey(indexField));
 
                             LocalTask indexTask = new LocalTaskImpl(new CubeTaskKey(
-                                    String.format("%s.%s", meta.getTableName(), indexField),
+                                    String.format("%s@%s.%s", meta.getTableName(),
+                                            dataSource.getSourceKey().getId(),
+                                            indexField),
                                     Operation.INDEX_COLUMN));
                             indexTask.setWorker(indexer);
                             // link task
@@ -70,19 +72,6 @@ public class TableBuilder extends BaseTableBuilder {
                 }
             }
         });
-
-        // column index worker
-//        for (int i = 1; i <= meta.getColumnCount(); i++) {
-//            ColumnIndexer<?> indexer = new ColumnIndexer(dataSource, new ColumnKey(meta.getColumnName(i)));
-//
-//            LocalTask indexTask = new LocalTaskImpl(new CubeTaskKey(
-//                    String.format("%s.%s", meta.getTableName(), meta.getColumnName(i)),
-//                    Operation.INDEX_COLUMN));
-//            indexTask.setWorker(indexer);
-//            // link task
-//            transportTask.addNext(indexTask);
-//            indexTask.addNext(end);
-//        }
 
         taskGroup = new LocalTaskGroup(new CubeTaskKey(meta.getTableName(), Operation.NULL));
         taskGroup.wrap(transportTask, end);

@@ -37,11 +37,14 @@ public class AllDataRowCalculatorOperator extends AbstractOperator {
         this.dimension = dimension;
         this.calculatorType = calculatorType;
     }
+
     public ColumnKey[] getDimension() {
         return dimension;
     }
 
-    public String getAddedColumnName() { return addedColumnName; }
+    public String getAddedColumnName() {
+        return addedColumnName;
+    }
 
     public String getColumnName() {
         return columnName;
@@ -51,7 +54,9 @@ public class AllDataRowCalculatorOperator extends AbstractOperator {
         return columnType;
     }
 
-    public int getCalculatorType() { return calculatorType; }
+    public int getCalculatorType() {
+        return calculatorType;
+    }
 
 
     @Override
@@ -63,8 +68,10 @@ public class AllDataRowCalculatorOperator extends AbstractOperator {
     }
 
     @Override
-    public String getNewAddedName() {
-        return addedColumnName;
+    public List<String> getNewAddedName() {
+        List<String> addColumnNames = new ArrayList<String>();
+        addColumnNames.add(addedColumnName);
+        return addColumnNames;
     }
 
     @Override

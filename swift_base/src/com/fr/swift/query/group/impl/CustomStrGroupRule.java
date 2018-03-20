@@ -5,6 +5,7 @@ import com.fr.swift.structure.Pair;
 import com.fr.swift.structure.array.IntList;
 import com.fr.swift.structure.array.IntListFactory;
 
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -55,6 +56,16 @@ public class CustomStrGroupRule extends BaseCustomGroupRule {
                 indices.add(i);
                 map.put(index, Pair.of(groupName, indices));
                 reverseMap[i] = index;
+            }
+        }
+    }
+
+    private void filterValidGroup() {
+        Iterator<StringGroup> itr = groups.iterator();
+        while (itr.hasNext()) {
+            StringGroup sg = itr.next();
+            if (sg.values.isEmpty()) {
+                itr.remove();
             }
         }
     }

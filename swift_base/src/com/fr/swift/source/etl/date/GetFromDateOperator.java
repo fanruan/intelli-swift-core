@@ -1,5 +1,7 @@
 package com.fr.swift.source.etl.date;
 
+import com.fr.swift.source.ColumnTypeConstants.ColumnType;
+import com.fr.swift.source.ColumnTypeUtils;
 import com.fr.swift.source.MetaDataColumn;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftMetaDataColumn;
@@ -49,8 +51,10 @@ public class GetFromDateOperator extends AbstractOperator {
     }
 
     @Override
-    public String getNewAddedName() {
-        return columnName;
+    public List<String> getNewAddedName() {
+        List<String> addColumnNames = new ArrayList<String>();
+        addColumnNames.add(columnName);
+        return addColumnNames;
     }
 
     @Override

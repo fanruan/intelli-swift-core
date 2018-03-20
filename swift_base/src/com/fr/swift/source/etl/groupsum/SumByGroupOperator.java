@@ -39,8 +39,9 @@ public class SumByGroupOperator extends AbstractOperator {
     }
 
     @Override
-    public String getNewAddedName() {
-        return null;
+    public List<String> getNewAddedName() {
+        List<String> addColumnNames = new ArrayList<String>();
+        return addColumnNames;
     }
 
     @Override
@@ -64,7 +65,7 @@ public class SumByGroupOperator extends AbstractOperator {
                 for (int j = 0; j < this.targets.length; j++) {
                     columns.add(new MetaDataColumn(this.targets[j].getNameText(), ColumnTypeUtils.columnTypeToSqlType(ColumnType.NUMBER), parent.getColumn(this.targets[j].getName()).getPrecision()));
                 }
-            } catch(SwiftMetaDataException e) {
+            } catch (SwiftMetaDataException e) {
                 LOGGER.error("getting meta's column information failed", e);
             }
         }
@@ -73,7 +74,7 @@ public class SumByGroupOperator extends AbstractOperator {
 
     private int convertGroupTpye(GroupType groupType) {
         int type = Integer.MIN_VALUE;
-        switch(groupType) {
+        switch (groupType) {
             case YEAR:
             case QUARTER:
             case MONTH:
@@ -109,7 +110,7 @@ public class SumByGroupOperator extends AbstractOperator {
 
     private SwiftMetaDataColumn generateSumNumberGroup(SumByGroupDimension sum, SwiftMetaDataColumn parentColumn) {
         int type = ColumnTypeUtils.columnTypeToSqlType(ColumnType.STRING);
-        if(sum.getGroup().getGroupType() == GroupType.NONE) {
+        if (sum.getGroup().getGroupType() == GroupType.NONE) {
             type = parentColumn.getType();
         }
         return new MetaDataColumn(sum.getNameText(), sum.getNameText(), type, parentColumn.getPrecision(), parentColumn.getScale());

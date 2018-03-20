@@ -102,9 +102,14 @@ public class ETLSource extends AbstractDataSource implements ETLDataSource {
             metaDatas[i] = basedSources.get(i).getMetadata();
         }
         List<SwiftMetaDataColumn> originColumns = getOriginColumns(metaDatas);
-        List<SwiftMetaDataColumn> columnList = operator.getColumns(metaDatas);
-        columnList.addAll(originColumns);
-        metaData = new SwiftMetaDataImpl(getSourceKey().getId(), columnList);
+        List<SwiftMetaDataColumn> addColumnList = operator.getColumns(metaDatas);
+
+        // TODO: 2018/3/20 by lucifer  字段顺序先是新增字段，再是原始字段了，不然目前会挂。
+//        List<SwiftMetaDataColumn> columnList = new ArrayList<SwiftMetaDataColumn>();
+//        columnList.addAll(originColumns);
+//        columnList.addAll(addColumnList);
+        addColumnList.addAll(originColumns);
+        metaData = new SwiftMetaDataImpl(getSourceKey().getId(), addColumnList);
         checkFieldsInfo();
     }
 

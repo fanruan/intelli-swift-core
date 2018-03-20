@@ -16,7 +16,6 @@ import com.fr.swift.conf.business.pack.SwiftPackageDao;
 import com.fr.swift.conf.business.table.SwiftTableDao;
 import com.fr.swift.conf.business.table.TableParseXml;
 import com.fr.swift.conf.business.table.TableXmlWriter;
-import com.finebi.conf.internalimp.response.bean.FineTableResponed;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -82,7 +81,7 @@ public class SwiftTableConfProvider implements EngineTableManager {
     }
 
     @Override
-    public FineTableResponed addTables(Map<String, List<FineBusinessTable>> tables) throws FineEngineException {
+    public boolean addTables(Map<String, List<FineBusinessTable>> tables) throws FineEngineException {
         List<FineBusinessPackage> needUpdatePackage = new ArrayList<FineBusinessPackage>();
         List<FineBusinessTable> newAddTables = new ArrayList<FineBusinessTable>();
         List<FineBusinessPackage> allPackage = businessPackageDAO.getAllConfig();
@@ -100,7 +99,7 @@ public class SwiftTableConfProvider implements EngineTableManager {
         }
         businessPackageDAO.updateConfigs(needUpdatePackage);
         businessTableDAO.updateConfigs(newAddTables);
-        return new FineTableResponed();
+        return false;
     }
 
     private List<String> getTableNames(List<FineBusinessTable> tables) {

@@ -39,10 +39,11 @@ public class ValueConverterOperator extends AbstractOperator {
     }
 
     @Override
-    public String getNewAddedName() {
-        return columnName;
+    public List<String> getNewAddedName() {
+        List<String> addColumnNames = new ArrayList<String>();
+        addColumnNames.add(columnName);
+        return addColumnNames;
     }
-
 
     @Override
     public List<SwiftMetaDataColumn> getColumns(SwiftMetaData[] metaDatas) {

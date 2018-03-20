@@ -63,7 +63,8 @@ public class UnionOperator extends AbstractOperator {
     }
 
     @Override
-    public String getNewAddedName() {
-        return null;
+    public List<String> getNewAddedName() {
+        List<String> addColumnNames = new ArrayList<String>();
+        return addColumnNames;
     }
 }

@@ -9,6 +9,7 @@ import com.fr.swift.source.etl.datamining.timeseries.arima.ArimaOperator;
 import com.fr.swift.source.etl.datamining.timeseries.holtwinter.HoltWinterOperator;
 import com.fr.swift.source.etl.datamining.timeseries.regression.RegressionOperator;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -25,8 +26,8 @@ public class DataMiningOperator extends AbstractOperator {
         init();
     }
 
-    private void init(){
-        switch (algorithmBean.getAlgorithmName()){
+    private void init() {
+        switch (algorithmBean.getAlgorithmName()) {
             case ARIMA:
                 algorithmOperator = new ArimaOperator(algorithmBean);
                 break;
@@ -56,7 +57,8 @@ public class DataMiningOperator extends AbstractOperator {
     }
 
     @Override
-    public String getNewAddedName() {
-        return null;
+    public List<String> getNewAddedName() {
+        List<String> addColumnNames = new ArrayList<String>();
+        return addColumnNames;
     }
 }
