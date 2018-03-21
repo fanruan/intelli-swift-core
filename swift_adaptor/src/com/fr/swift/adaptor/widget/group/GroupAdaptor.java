@@ -53,6 +53,7 @@ public class GroupAdaptor {
     }
 
     public static Group adaptGroup(FineDimensionGroup dimGroup) {
+        // TODO: 2018/3/21 anchore的锅 
         if (dimGroup == null) {
             return Groups.newGroup(new NoGroupRule());
         }
