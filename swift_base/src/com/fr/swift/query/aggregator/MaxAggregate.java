@@ -1,5 +1,6 @@
 package com.fr.swift.query.aggregator;
 
+import static com.fr.swift.cube.io.IOConstant.NULL_DOUBLE;
 import static com.fr.swift.cube.io.IOConstant.NULL_INT;
 import static com.fr.swift.cube.io.IOConstant.NULL_LONG;
 
@@ -13,9 +14,9 @@ public class MaxAggregate extends AllDataCompare {
 
     @Override
     protected double compare(double sum, double rowValue) {
-        if (Double.isInfinite(sum)) {
+        if (Double.isNaN(sum)) {
             return rowValue;
-        } else if (Double.isInfinite(rowValue)) {
+        } else if (Double.isNaN(rowValue)) {
             return sum;
         }
         return Math.max(sum, rowValue);
