@@ -1,5 +1,6 @@
 package com.fr.swift.segment.increase;
 
+import com.fr.swift.config.conf.SegmentConfig;
 import com.fr.swift.segment.RealtimeSegmentHolder;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.SegmentHolder;
@@ -62,6 +63,7 @@ public class IncreaseFieldsSegmentOperator extends AbstractIncreaseSegmentOperat
             holder.putNullIndex();
             holder.release();
         }
+        SegmentConfig.getInstance().putSegments(segment);
     }
 
     @Override

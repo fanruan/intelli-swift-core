@@ -3,10 +3,10 @@ package com.fr.swift.segment.increase;
 import com.fr.swift.config.IMetaData;
 import com.fr.swift.config.conf.MetaDataConfig;
 import com.fr.swift.config.conf.MetaDataConvertUtil;
+import com.fr.swift.config.conf.SegmentConfig;
 import com.fr.swift.exception.meta.SwiftMetaDataException;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
-import com.fr.swift.segment.HistorySegmentOperator;
 import com.fr.swift.segment.RealtimeSegmentHolder;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.SegmentHolder;
@@ -82,6 +82,7 @@ public class IncreaseSegmentOperator extends AbstractIncreaseSegmentOperator {
             holder.putNullIndex();
             holder.release();
         }
+        SegmentConfig.getInstance().putSegments(segment);
     }
 
     @Override

@@ -60,9 +60,6 @@ public class MetaDataConfigTest extends TestCase {
         assertEquals(MetaDataConfig.getInstance().getAllMetaData().size(), 0);
     }
 
-    /**
-     * h2 获取的都是修改之后的数据，metaData1 和 metaData2获取的数据都是修改后的
-     */
     public void testAddAndModify() {
         IMetaData before = MetaDataCreater.getMA();
         MetaDataConfig.getInstance().addMetaData(sourceKey.getId(), MetaDataCreater.getMA());

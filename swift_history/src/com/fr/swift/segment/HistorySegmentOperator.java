@@ -3,6 +3,7 @@ package com.fr.swift.segment;
 import com.fr.swift.config.IMetaData;
 import com.fr.swift.config.conf.MetaDataConfig;
 import com.fr.swift.config.conf.MetaDataConvertUtil;
+import com.fr.swift.config.conf.SegmentConfig;
 import com.fr.swift.exception.meta.SwiftMetaDataException;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
@@ -32,9 +33,10 @@ public class HistorySegmentOperator extends AbstractHistorySegmentOperator {
     public void transport() throws Exception {
         long count = 0;
         String allotColumn = metaData.getColumnName(1);
+        int step = segmentList.size();
         while (swiftResultSet.next()) {
             Row row = swiftResultSet.getRowData();
-            int index = alloter.allot(count++, allotColumn, row.getValue(indexOfColumn(allotColumn)));
+            int index = step + alloter.allot(count++, allotColumn, row.getValue(indexOfColumn(allotColumn)));
             int size = segmentList.size();
             if (index >= size) {
                 for (int i = size; i <= index; i++) {
@@ -66,6 +68,7 @@ public class HistorySegmentOperator extends AbstractHistorySegmentOperator {
             holder.putNullIndex();
             holder.release();
         }
+        SegmentConfig.getInstance().putSegments(configSegment);
     }
 
 }
