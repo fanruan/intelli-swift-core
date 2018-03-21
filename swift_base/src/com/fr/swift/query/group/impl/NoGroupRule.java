@@ -24,6 +24,11 @@ public class NoGroupRule extends BaseGroupRule {
     }
 
     @Override
+    public int reverseMap(int originIndex) {
+        return originIndex;
+    }
+
+    @Override
     public int newSize() {
         return dictColumn.size();
     }

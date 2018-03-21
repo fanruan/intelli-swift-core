@@ -7,6 +7,7 @@ import com.fr.swift.source.etl.AbstractOperator;
 import com.fr.swift.source.etl.OperatorType;
 import com.fr.swift.source.etl.datamining.timeseries.holtwinter.HoltWinterOperator;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -48,7 +49,8 @@ public class DataMiningOperator extends AbstractOperator {
     }
 
     @Override
-    public String getNewAddedName() {
-        return null;
+    public List<String> getNewAddedName() {
+        List<String> addColumnNames = new ArrayList<String>();
+        return addColumnNames;
     }
 }

@@ -5,9 +5,14 @@ import com.fr.swift.exception.meta.SwiftMetaDataException;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.segment.column.DictionaryEncodedColumn;
-import com.fr.swift.source.*;
+import com.fr.swift.source.ListBasedRow;
+import com.fr.swift.source.Row;
+import com.fr.swift.source.SwiftMetaData;
+import com.fr.swift.source.SwiftMetaDataColumn;
+import com.fr.swift.source.SwiftResultSet;
 import com.fr.swift.source.etl.utils.DateUtils;
 import com.fr.swift.source.etl.utils.ETLConstant;
+import com.fr.swift.source.etl.utils.ETLConstant.CONF.ADD_COLUMN.TIME_GAP.UNITS;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -50,7 +55,7 @@ public class DateDiffResultSet implements SwiftResultSet {
 
     @Override
     public boolean next() throws SQLException {
-        if(segCursor < segments.length && rowCursor < rowCount) {
+        if (segCursor < segments.length && rowCursor < rowCount) {
             rowCount = segments[segCursor].getRowCount();
             DateDiffCalculator dc = getDiffCalculator(unit);
             long systemTime = System.currentTimeMillis();
@@ -60,11 +65,11 @@ public class DateDiffResultSet implements SwiftResultSet {
             List dataList = new ArrayList();
             dataList.add(value);
             tempValue.setRow(new ListBasedRow(dataList));
-            if(rowCursor < rowCount - 1) {
-                rowCursor ++;
+            if (rowCursor < rowCount - 1) {
+                rowCursor++;
             } else {
-                if(segCursor < segments.length) {
-                    segCursor ++;
+                if (segCursor < segments.length) {
+                    segCursor++;
                     rowCursor = 0;
                 } else {
                     return false;
@@ -99,17 +104,24 @@ public class DateDiffResultSet implements SwiftResultSet {
 
     private static DateDiffCalculator getDiffCalculator(int unit) {
         switch (unit) {
-            case ETLConstant.CONF.ADD_COLUMN.TIME_GAP.UNITS.YEAR:
-                return YearDiff.INSTANCE;
-            case ETLConstant.CONF.ADD_COLUMN.TIME_GAP.UNITS.MONTH:
-                return MonthDiff.INSTANCE;
-            case ETLConstant.CONF.ADD_COLUMN.TIME_GAP.UNITS.QUARTER:
-                return SeasonDiff.INSTANCE;
-            case ETLConstant.CONF.ADD_COLUMN.TIME_GAP.UNITS.DAY:
+            case UNITS.YEAR:
+                return new YearDiff();
+            case UNITS.MONTH:
+                return new MonthDiff();
+            case UNITS.QUARTER:
+                return new SeasonDiff();
+            case UNITS.WEEK:
+                return new WeekDiffer();
+            case UNITS.DAY:
                 return DayDiff.INSTANCE;
-            default: {
-                return getDiffCalculator(ETLConstant.CONF.ADD_COLUMN.TIME_GAP.UNITS.DAY);
-            }
+            case UNITS.HOUR:
+                return HourDiffer.INSTANCE;
+            case UNITS.MINUTE:
+                return MinuteDiffer.INSTANCE;
+            case UNITS.SECOND:
+                return SecondDiffer.INSTANCE;
+            default:
+                return null;
         }
     }
 
@@ -121,6 +133,7 @@ public class DateDiffResultSet implements SwiftResultSet {
         public void setRow(ListBasedRow row) {
             this.row = row;
         }
+
         private ListBasedRow row;
     }
 
@@ -138,10 +151,12 @@ public class DateDiffResultSet implements SwiftResultSet {
             this.t = t;
         }
 
+        @Override
         public Long getTime(int row) {
             return t;
         }
 
+        @Override
         public void check() {
         }
     }
@@ -157,15 +172,17 @@ public class DateDiffResultSet implements SwiftResultSet {
             this.getter = segment.getColumn(columnKey).getDictionaryEncodedColumn();
         }
 
+        @Override
         public Long getTime(int row) {
             return (Long) getter.getValue(getter.getIndexByRow(row));
         }
 
+        @Override
         public void check() {
             SwiftMetaDataColumn column = null;
             try {
                 column = metaData.getColumn(columnKey.getName());
-            } catch(SwiftMetaDataException e) {
+            } catch (SwiftMetaDataException e) {
             }
             DateUtils.checkDateColumnType(column);
         }

@@ -10,6 +10,7 @@ import com.fr.swift.source.etl.ETLOperator;
 import com.fr.swift.source.etl.ETLSource;
 import com.fr.swift.source.etl.EtlTransferFactory;
 import com.fr.swift.source.excel.ExcelDataSource;
+import com.fr.swift.source.excel.ExcelTransfer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,29 +31,12 @@ public class SwiftSourceTransferFactory {
         } else if (dataSource instanceof ServerDBSource) {
 
         } else if (dataSource instanceof ExcelDataSource) {
-
+            transfer = new ExcelTransfer(((ExcelDataSource) dataSource).getAllPaths(), dataSource.getMetadata(), ((ExcelDataSource) dataSource).getOuterMetadata());
         } else if (dataSource instanceof ETLSource) {
             transfer = EtlTransferFactory.createTransfer((ETLSource) dataSource);
         }
         return transfer;
     }
-
-//    public static SwiftSourceTransfer createDBSourcePreviewTransfer(String connectionName, String tableName, int rowCount) {
-//        ConnectionInfo connectionInfo = ConnectionManager.getInstance().getConnectionInfo(connectionName);
-//        SwiftSourceTransfer transfer = new TableDBSourcePreviewTransfer(connectionInfo, rowCount, tableName);
-//        return transfer;
-//    }
-//
-//    public static SwiftSourceTransfer createSQLSourcePreviewTransfer(String connectionName, int rowCount, String sql) {
-//        ConnectionInfo connectionInfo = ConnectionManager.getInstance().getConnectionInfo(connectionName);
-//        SwiftSourceTransfer transfer = new QuerySourcePreviewTransfer(connectionInfo, rowCount, sql);
-//        return transfer;
-//    }
-//
-//    public static SwiftSourceTransfer createEXCELSourcePreviewTransfer(List<String> fileNames, SwiftMetaData metaData, SwiftMetaData outerMetaData) {
-//        SwiftSourceTransfer transfer = new ExcelTransfer(fileNames, metaData, outerMetaData);
-//        return transfer;
-//    }
 
     private static SwiftMetaData getOrCreateETLTable(SwiftMetaData metaData, ETLSource source) {
         if (metaData == null) {

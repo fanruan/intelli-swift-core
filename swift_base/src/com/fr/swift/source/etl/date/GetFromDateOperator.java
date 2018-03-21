@@ -1,11 +1,12 @@
 package com.fr.swift.source.etl.date;
 
-import com.fr.swift.source.*;
+import com.fr.swift.source.MetaDataColumn;
+import com.fr.swift.source.SwiftMetaData;
+import com.fr.swift.source.SwiftMetaDataColumn;
 import com.fr.swift.source.core.CoreField;
 import com.fr.swift.source.core.MD5Utils;
 import com.fr.swift.source.etl.AbstractOperator;
 import com.fr.swift.source.etl.OperatorType;
-import com.fr.swift.source.ColumnTypeConstants.ColumnType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,9 +23,9 @@ public class GetFromDateOperator extends AbstractOperator {
     @CoreField
     private String columnName;//新增列名
     @CoreField
-    private ColumnType columnType;
+    private int columnType;
 
-    public GetFromDateOperator(String field, int type, String columnName, ColumnType columnType) {
+    public GetFromDateOperator(String field, int type, String columnName, int columnType) {
         this.field = field;
         this.type = type;
         this.columnName = columnName;
@@ -43,19 +44,22 @@ public class GetFromDateOperator extends AbstractOperator {
         return columnName;
     }
 
-    public ColumnType getColumnType() {
+    public int getColumnType() {
         return columnType;
     }
 
-    public String getNewAddedName() {
-        return columnName;
+    @Override
+    public List<String> getNewAddedName() {
+        List<String> addColumnNames = new ArrayList<String>();
+        addColumnNames.add(columnName);
+        return addColumnNames;
     }
 
     @Override
     public List<SwiftMetaDataColumn> getColumns(SwiftMetaData[] metaDatas) {
         List<SwiftMetaDataColumn> columnList = new ArrayList<SwiftMetaDataColumn>();
         columnList.add(new MetaDataColumn(this.columnName, this.columnName,
-                ColumnTypeUtils.columnTypeToSqlType(this.columnType), MD5Utils.getMD5String(new String[]{(this.columnName)})));
+                this.columnType, MD5Utils.getMD5String(new String[]{(this.columnName)})));
         return columnList;
     }
 

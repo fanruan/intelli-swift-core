@@ -1,11 +1,12 @@
 package com.fr.swift.source.etl.datediff;
 
-import com.fr.swift.source.*;
+import com.fr.swift.source.MetaDataColumn;
+import com.fr.swift.source.SwiftMetaData;
+import com.fr.swift.source.SwiftMetaDataColumn;
 import com.fr.swift.source.core.CoreField;
 import com.fr.swift.source.core.MD5Utils;
 import com.fr.swift.source.etl.AbstractOperator;
 import com.fr.swift.source.etl.OperatorType;
-import com.fr.swift.source.ColumnTypeConstants.ColumnType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,9 +25,9 @@ public class DateDiffOperator extends AbstractOperator {
     @CoreField
     private String columnName;//新增列名
     @CoreField
-    private ColumnType columnType;
+    private int columnType;
 
-    public DateDiffOperator(String field1, String field2, int unit, String columnName, ColumnType columnType) {
+    public DateDiffOperator(String field1, String field2, int unit, String columnName, int columnType) {
         this.field1 = field1;
         this.field2 = field2;
         this.unit = unit;
@@ -39,7 +40,7 @@ public class DateDiffOperator extends AbstractOperator {
     public List<SwiftMetaDataColumn> getColumns(SwiftMetaData[] metaDatas) {
         List<SwiftMetaDataColumn> columnList = new ArrayList<SwiftMetaDataColumn>();
         columnList.add(new MetaDataColumn(this.columnName, this.columnName,
-                ColumnTypeUtils.columnTypeToSqlType(this.columnType), MD5Utils.getMD5String(new String[]{(this.columnName)})));
+                this.columnType, MD5Utils.getMD5String(new String[]{(this.columnName)})));
         return columnList;
     }
 
@@ -68,12 +69,15 @@ public class DateDiffOperator extends AbstractOperator {
         return columnName;
     }
 
-    public ColumnType getColumnType() {
+    public int getColumnType() {
         return columnType;
     }
 
-    public String getNewAddedName() {
-        return columnName;
+    @Override
+    public List<String> getNewAddedName() {
+        List<String> addColumnNames = new ArrayList<String>();
+        addColumnNames.add(columnName);
+        return addColumnNames;
     }
 
 }

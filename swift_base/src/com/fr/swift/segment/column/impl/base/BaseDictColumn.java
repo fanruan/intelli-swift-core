@@ -112,16 +112,6 @@ abstract class BaseDictColumn<T> implements DictionaryEncodedColumn<T> {
         return keyComparator;
     }
 
-    /**
-     * 初始化字典键的writer
-     */
-    abstract void initKeyWriter();
-
-    /**
-     * 初始化字典键的reader
-     */
-    abstract void initKeyReader();
-
     private void initSizeWriter() {
         if (sizeWriter != null) {
             return;

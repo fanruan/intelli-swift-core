@@ -1,12 +1,17 @@
 package com.fr.swift.segment.increase;
 
+import com.fr.swift.config.IMetaData;
+import com.fr.swift.config.conf.MetaDataConfig;
+import com.fr.swift.config.conf.MetaDataConvertUtil;
 import com.fr.swift.exception.meta.SwiftMetaDataException;
+import com.fr.swift.log.SwiftLogger;
+import com.fr.swift.log.SwiftLoggers;
+import com.fr.swift.segment.HistorySegmentOperator;
 import com.fr.swift.segment.RealtimeSegmentHolder;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.SegmentHolder;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SourceKey;
-import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftResultSet;
 
 import java.sql.SQLException;
@@ -21,6 +26,8 @@ import java.util.List;
  */
 public class IncreaseSegmentOperator extends AbstractIncreaseSegmentOperator {
 
+    private static SwiftLogger LOGGER = SwiftLoggers.getLogger(IncreaseSegmentOperator.class);
+
     public IncreaseSegmentOperator(SourceKey sourceKey, List<Segment> segments,
                                    String cubeSourceKey, SwiftResultSet swiftResultSet) throws SQLException {
         super(sourceKey, segments, cubeSourceKey, swiftResultSet);
@@ -28,13 +35,13 @@ public class IncreaseSegmentOperator extends AbstractIncreaseSegmentOperator {
 
     @Override
     public void transport() throws Exception {
-        int count = 0;
+        long count = 0;
         if (metaData.getColumnCount() != 0) {
             String allotColumn = metaData.getColumnName(1);
             while (swiftResultSet.next()) {
                 Row row = swiftResultSet.getRowData();
 
-                int index = alloter.allot(count, allotColumn, row.getValue(indexOfColumn(allotColumn)));
+                int index = alloter.allot(count++, allotColumn, row.getValue(indexOfColumn(allotColumn)));
                 int size = increaseSegmentList.size();
                 if (index >= size) {
                     for (int i = size; i <= index; i++) {
@@ -60,6 +67,14 @@ public class IncreaseSegmentOperator extends AbstractIncreaseSegmentOperator {
 
     @Override
     public void finishTransport() {
+
+        try {
+            IMetaData metaData = MetaDataConvertUtil.convert2ConfigMetaData(this.metaData);
+            MetaDataConfig.getInstance().addMetaData(sourceKey.getId(), metaData);
+        } catch (SwiftMetaDataException e) {
+            LOGGER.error("save metadata failed! ", e);
+        }
+
         for (int i = 0, len = increaseSegmentList.size(); i < len; i++) {
             SegmentHolder holder = increaseSegmentList.get(i);
             holder.putRowCount();

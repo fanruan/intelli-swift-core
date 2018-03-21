@@ -27,7 +27,10 @@ public class CustomNumGroupRule extends BaseCustomGroupRule {
     void initMap() {
         int lastIndex = intervals.size();
 
-        for (int i = 0; i < dictColumn.size(); i++) {
+        int dictSize = dictColumn.size();
+        reverseMap = new int[dictSize];
+
+        for (int i = 0; i < dictSize; i++) {
             Number num = (Number) dictColumn.getValue(i);
             int index = findIndex(num);
 
@@ -53,6 +56,7 @@ public class CustomNumGroupRule extends BaseCustomGroupRule {
                 IntList indices = IntListFactory.createIntList();
                 indices.add(i);
                 map.put(index, Pair.of(groupName, indices));
+                reverseMap[i] = index;
             }
         }
     }

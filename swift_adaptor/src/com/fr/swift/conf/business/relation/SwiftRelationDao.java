@@ -197,5 +197,15 @@ public class SwiftRelationDao implements BusinessConfigDAO<FineBusinessTableRela
         return relations;
     }
 
-
+    public List<FineBusinessTableRelation> getRelation(String primary, String foreign) {
+        List<FineBusinessTableRelation> allConfigs = getAllConfig();
+        List<FineBusinessTableRelation> result = new ArrayList<FineBusinessTableRelation>();
+        for (FineBusinessTableRelation relation :
+                allConfigs) {
+            if (primary.equals(relation.getPrimaryBusinessTable().getName()) && foreign.equals(relation.getForeignBusinessTable().getName())) {
+                result.add(relation);
+            }
+        }
+        return result;
+    }
 }

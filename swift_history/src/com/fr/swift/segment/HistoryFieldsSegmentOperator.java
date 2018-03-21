@@ -31,12 +31,13 @@ public class HistoryFieldsSegmentOperator extends AbstractHistorySegmentOperator
 
     @Override
     public void transport() throws Exception {
-        int count = 0;
+        long count = 0;
         String allotColumn = fields.get(0);
         while (swiftResultSet.next()) {
             Row row = swiftResultSet.getRowData();
             // fixme 为啥这里要传后两个参数？
-            int index = alloter.allot(count, allotColumn, row.getValue(indexOfColumn(allotColumn)));
+            // 为了以后特殊的分块逻辑
+            int index = alloter.allot(count++, allotColumn, row.getValue(indexOfColumn(allotColumn)));
             int size = segmentList.size();
             if (index >= size) {
                 for (int i = size; i <= index; i++) {

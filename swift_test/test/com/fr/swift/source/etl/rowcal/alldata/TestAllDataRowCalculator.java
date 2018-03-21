@@ -32,7 +32,7 @@ public class TestAllDataRowCalculator extends TestCase {
             String[] str = new String[]{"20.0", "20.0", "96.0", "96.0", "96.0", "96.0", "96.0", "96.0", "46.0", "46.0", "46.0", "46.0", "36.0", "36.0"};
             int index = 0;
             for(int k = 0; k < 1; k++) {
-                AllDataTransferOperator operator = new AllDataTransferOperator(summaryType[k], column3, columnType, dimension);
+                AllDataTransferOperator operator = new AllDataTransferOperator(summaryType[k], column3, dimension);
                 SwiftResultSet rs = operator.createResultSet(null, null, list);
                 while(rs.next()) {
                     Row row = rs.getRowData();

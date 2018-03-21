@@ -2,8 +2,8 @@ package com.finebi.conf.provider;
 
 import com.finebi.base.constant.BaseConstant;
 import com.finebi.base.constant.FineEngineType;
-import com.finebi.conf.exception.FineEngineException;
 import com.finebi.conf.internalimp.analysis.table.FineAnalysisTableImpl;
+import com.finebi.conf.internalimp.response.bean.FineTableResponed;
 import com.finebi.conf.service.engine.table.EngineTableManager;
 import com.finebi.conf.structure.bean.field.FineBusinessField;
 import com.finebi.conf.structure.bean.pack.FineBusinessPackage;
@@ -81,7 +81,7 @@ public class SwiftTableConfProvider implements EngineTableManager {
     }
 
     @Override
-    public boolean addTables(Map<String, List<FineBusinessTable>> tables) throws FineEngineException {
+    public FineTableResponed addTables(Map<String, List<FineBusinessTable>> tables) {
         List<FineBusinessPackage> needUpdatePackage = new ArrayList<FineBusinessPackage>();
         List<FineBusinessTable> newAddTables = new ArrayList<FineBusinessTable>();
         List<FineBusinessPackage> allPackage = businessPackageDAO.getAllConfig();
@@ -97,7 +97,9 @@ public class SwiftTableConfProvider implements EngineTableManager {
                 newAddTables.addAll(allTables);
             }
         }
-        return businessPackageDAO.updateConfigs(needUpdatePackage) && businessTableDAO.updateConfigs(newAddTables);
+        businessPackageDAO.updateConfigs(needUpdatePackage);
+        businessTableDAO.updateConfigs(newAddTables);
+        return new FineTableResponed();
     }
 
     private List<String> getTableNames(List<FineBusinessTable> tables) {
@@ -159,7 +161,7 @@ public class SwiftTableConfProvider implements EngineTableManager {
     }
 
     @Override
-    public List<FineBusinessTable> getBelongAnalysisTables(String tableName) throws FineEngineException {
+    public List<FineBusinessTable> getBelongAnalysisTables(String tableName) {
         List<FineBusinessTable> result = new ArrayList<FineBusinessTable>();
         List<FineBusinessTable> allTable = businessTableDAO.getAllConfig();
         for (FineBusinessTable table : allTable) {

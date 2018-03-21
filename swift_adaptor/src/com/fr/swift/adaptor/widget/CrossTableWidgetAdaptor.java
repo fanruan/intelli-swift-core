@@ -10,6 +10,6 @@ import com.fr.swift.cal.QueryInfo;
  */
 public class CrossTableWidgetAdaptor {
     static QueryInfo buildQueryInfo(CrossTableWidget widget) {
-        return null;
+        return null;// TableWidgetAdaptor.buildQueryInfo(widget);
     }
 }

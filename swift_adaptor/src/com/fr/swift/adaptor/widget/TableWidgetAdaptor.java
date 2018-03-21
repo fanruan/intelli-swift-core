@@ -3,17 +3,22 @@ package com.fr.swift.adaptor.widget;
 import com.finebi.conf.constant.BIReportConstant.SORT;
 import com.finebi.conf.exception.FineEngineException;
 import com.finebi.conf.internalimp.dashboard.widget.table.TableWidget;
+import com.finebi.conf.provider.SwiftTableConfProvider;
+import com.finebi.conf.structure.bean.table.FineBusinessTable;
 import com.finebi.conf.structure.dashboard.widget.dimension.FineDimension;
 import com.finebi.conf.structure.dashboard.widget.dimension.FineDimensionSort;
 import com.finebi.conf.structure.dashboard.widget.target.FineTarget;
 import com.finebi.conf.structure.result.table.BIGroupNode;
 import com.finebi.conf.utils.FineFieldUtils;
+import com.fr.swift.adaptor.struct.node.BIGroupNodeFactory;
 import com.fr.swift.adaptor.transformer.ColumnTypeAdaptor;
 import com.fr.swift.adaptor.transformer.FilterInfoFactory;
+import com.fr.swift.adaptor.transformer.IndexingDataSourceFactory;
 import com.fr.swift.adaptor.widget.group.GroupAdaptor;
 import com.fr.swift.cal.QueryInfo;
 import com.fr.swift.cal.info.Expander;
 import com.fr.swift.cal.info.GroupQueryInfo;
+import com.fr.swift.cal.info.TableGroupQueryInfo;
 import com.fr.swift.cal.result.group.Cursor;
 import com.fr.swift.query.adapter.dimension.Dimension;
 import com.fr.swift.query.adapter.dimension.GroupDimension;
@@ -28,9 +33,12 @@ import com.fr.swift.query.sort.AscSort;
 import com.fr.swift.query.sort.DescSort;
 import com.fr.swift.query.sort.NoneSort;
 import com.fr.swift.query.sort.Sort;
+import com.fr.swift.result.GroupByResultSet;
 import com.fr.swift.segment.column.ColumnKey;
+import com.fr.swift.service.QueryRunnerProvider;
 import com.fr.swift.source.ColumnTypeConstants.ColumnType;
 import com.fr.swift.source.SourceKey;
+import com.fr.swift.source.SwiftResultSet;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,7 +50,15 @@ import java.util.List;
  */
 public class TableWidgetAdaptor {
     public static BIGroupNode calculate(TableWidget widget) {
-        return null;
+        BIGroupNode resultNode = null;
+        SwiftResultSet resultSet;
+        try {
+            resultSet = QueryRunnerProvider.getInstance().executeQuery(buildQueryInfo(widget));
+            resultNode = BIGroupNodeFactory.create((GroupByResultSet) resultSet);
+        } catch (Exception e) {
+
+        }
+        return resultNode;
     }
 
     static QueryInfo buildQueryInfo(TableWidget widget) throws Exception {
@@ -56,8 +72,15 @@ public class TableWidgetAdaptor {
 
         GroupTarget[] targets = getTargets(widget);
         Expander expander = null;
-
-        return new GroupQueryInfo(cursor, queryId, filterInfo, null,
+        FineBusinessTable table = new SwiftTableConfProvider().getSingleTable(widget.getTableName());
+        SourceKey sourceKey = IndexingDataSourceFactory.transformDataSource(table).getSourceKey();
+        TableGroupQueryInfo tableGroupQueryInfo = new TableGroupQueryInfo(
+                dimensions.toArray(new Dimension[dimensions.size()]),
+                metrics.toArray(new Metric[metrics.size()]),
+                sourceKey
+        );
+        return new GroupQueryInfo(cursor, queryId, filterInfo,
+                new TableGroupQueryInfo[]{tableGroupQueryInfo},
                 dimensions.toArray(new Dimension[dimensions.size()]),
                 metrics.toArray(new Metric[metrics.size()]),
                 targets, expander);
@@ -98,7 +121,7 @@ public class TableWidgetAdaptor {
 
         FilterInfo filterInfo = null;
 
-        return new GroupDimension(index, key, colKey, group, adaptSort(fineDim.getSort(), index), filterInfo);
+        return new GroupDimension(index, key, colKey, group, fineDim.getSort() == null ? new AscSort(index) : adaptSort(fineDim.getSort(), index), filterInfo);
     }
 
 

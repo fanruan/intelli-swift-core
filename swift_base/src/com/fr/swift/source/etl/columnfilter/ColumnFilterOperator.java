@@ -29,20 +29,22 @@ public class ColumnFilterOperator extends AbstractOperator {
         return this.filterInfo;
     }
 
-    public String getNewAddedName() {
-        return null;
+    @Override
+    public List<String> getNewAddedName() {
+        List<String> addColumnNames = new ArrayList<String>();
+        return addColumnNames;
     }
 
     @Override
     public List<SwiftMetaDataColumn> getColumns(SwiftMetaData[] metaDatas) {
         List<SwiftMetaDataColumn> columnList = new ArrayList<SwiftMetaDataColumn>();
         try {
-            for(int i = 0; i < metaDatas.length; i++) {
-                for(int j = 0; j < metaDatas[i].getColumnCount(); j++) {
+            for (int i = 0; i < metaDatas.length; i++) {
+                for (int j = 0; j < metaDatas[i].getColumnCount(); j++) {
                     columnList.add(metaDatas[i].getColumn(j + 1));
                 }
             }
-        } catch(SwiftMetaDataException e) {
+        } catch (SwiftMetaDataException e) {
             LOGGER.error("getting meta's column information failed", e);
         }
         return columnList;
