@@ -25,7 +25,7 @@ public class DropdownStringWidgetAdaptor {
 
     static QueryInfo buildQueryInfo(StringControlWidget widget) {
         List<String> selectedValues = widget.getSelectedValues();
-        String queryWords = widget.getKeywords();
+//        String queryWords = widget.getKeywords();
         int clickMore = widget.getTimes();
         FilterInfo filterInfo = null;
 

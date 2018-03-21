@@ -127,7 +127,10 @@ public class GroupNodeTrie implements Trie<int[], Integer, Number[]> {
         @Override
         public int compare(Integer o1, Integer o2) {
             int result = compareInt(o1, o2);
-            return sorts.get(deep).getSortType() == SortType.ASC ? result : -result;
+            if (sorts != null && sorts.size() > deep) {
+                return sorts.get(deep).getSortType() == SortType.ASC ? result : -result;
+            }
+            return result;
         }
 
         private static int compareInt(int x, int y) {

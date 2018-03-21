@@ -121,12 +121,12 @@ class GroupColumn implements Column<String> {
 
         @Override
         public int getGlobalIndexByIndex(int index) {
-            throw new UnsupportedOperationException();
+            return originDict.getGlobalIndexByIndex(index);
         }
 
         @Override
         public int getGlobalIndexByRow(int row) {
-            throw new UnsupportedOperationException();
+            return originDict.getGlobalIndexByRow(row);
         }
 
         @Override
