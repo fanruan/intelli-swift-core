@@ -29,7 +29,7 @@ public class ExcelDataSourceTest extends TestCase {
 
     public void testGetSourceKey() {
         SourceKey key = dataSource.getSourceKey();
-        assertEquals(key.getId(), "f05f42ea");
+        assertEquals(key.getId(), "1ff8586a");
     }
 
     public void testGetMetadata() throws Exception{
