@@ -3,11 +3,14 @@ package com.fr.swift.query.filter.detail.impl.util;
 import com.fr.swift.segment.column.DictionaryEncodedColumn;
 import com.fr.swift.util.ArrayLookupHelper;
 
+import java.util.Comparator;
+
 /**
  * Created by Lyon on 2017/11/29.
  */
 public class LookupFactory {
-    public static <T> ArrayLookupHelper.Lookup<T> create(final DictionaryEncodedColumn<T> dict) {
+
+    public static <T> ArrayLookupHelper.Lookup<T> create(final DictionaryEncodedColumn<T> dict, final Comparator<T> comparator) {
         return new ArrayLookupHelper.Lookup<T>() {
             @Override
             public int minIndex() {
@@ -26,8 +29,12 @@ public class LookupFactory {
 
             @Override
             public int compare(T t1, T t2) {
-                return dict.getComparator().compare(t1, t2);
+                return comparator.compare(t1, t2);
             }
         };
+    }
+
+    public static <T> ArrayLookupHelper.Lookup<T> create(final DictionaryEncodedColumn<T> dict) {
+        return create(dict, dict.getComparator());
     }
 }
