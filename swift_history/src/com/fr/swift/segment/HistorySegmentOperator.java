@@ -20,23 +20,23 @@ import java.util.List;
  */
 public class HistorySegmentOperator extends AbstractHistorySegmentOperator {
     private SwiftLogger logger = SwiftLoggers.getLogger(HistorySegmentOperator.class);
-    public HistorySegmentOperator(SourceKey sourceKey, List<Segment> segments, String cubeSourceKey, SwiftResultSet swiftResultSet) throws SQLException {
+    public HistorySegmentOperator(SourceKey sourceKey, String cubeSourceKey, SwiftResultSet swiftResultSet) throws SQLException {
         super(sourceKey, cubeSourceKey, swiftResultSet);
-        if (null != segments && !segments.isEmpty()) {
-            for (int i = 0, len = segments.size(); i < len; i++) {
-                this.segmentList.add(new HistorySegmentHolder(segments.get(i)));
-            }
-        }
+//        没必要去加载原有的Segment
+//        if (null != segments && !segments.isEmpty()) {
+//            for (int i = 0, len = segments.size(); i < len; i++) {
+//                this.segmentList.add(new HistorySegmentHolder(segments.get(i)));
+//            }
+//        }
     }
 
     @Override
     public void transport() throws Exception {
         long count = 0;
         String allotColumn = metaData.getColumnName(1);
-        int step = segmentList.size();
         while (swiftResultSet.next()) {
             Row row = swiftResultSet.getRowData();
-            int index = step + alloter.allot(count++, allotColumn, row.getValue(indexOfColumn(allotColumn)));
+            int index = alloter.allot(count++, allotColumn, row.getValue(indexOfColumn(allotColumn)));
             int size = segmentList.size();
             if (index >= size) {
                 for (int i = size; i <= index; i++) {
