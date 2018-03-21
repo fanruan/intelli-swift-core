@@ -14,13 +14,8 @@ public class HoltWinterResultSet extends AbstractTimeSeriesResultSet {
 
     public HoltWinterResultSet(AlgorithmBean algorithmBean, SwiftMetaData selfMetaData, SwiftMetaData baseMetaData, List<Segment> segmentList) throws Exception {
         super(algorithmBean,selfMetaData,baseMetaData,segmentList);
-     //   timeSeriesAlgorithm = new RHoltWinters();
     }
 
     protected void setExtraConfiguration(){
-//        RHoltWinters rHoltWinters = (RHoltWinters)timeSeriesAlgorithm;
-//        rHoltWinters.setIncludeAdditiveEffect(true);
-//        rHoltWinters.setIncludeSeasonalCorrection(true);
-//        rHoltWinters.setIncludeTrendCorrection(true);
     }
 }

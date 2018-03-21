@@ -12,7 +12,7 @@ import com.fr.swift.segment.column.DictionaryEncodedColumn;
 
 import java.util.Comparator;
 
-public class CreateColumnListForDetailResultSet {
+public class CreateColumnList {
 
 
     public Column getIntColumn() {
@@ -46,7 +46,7 @@ public class CreateColumnListForDetailResultSet {
         return new TempDetailColumn() {
 
             @Override
-            public Object get(int pos) {
+            public int getInt(int pos) {
                 return data[pos];
             }
         };
@@ -143,7 +143,7 @@ public class CreateColumnListForDetailResultSet {
         return new TempDetailColumn(){
 
             @Override
-            public Object get(int pos) {
+            public long getLong(int pos) {
                 return data[pos];
             }
 
@@ -243,7 +243,7 @@ public class CreateColumnListForDetailResultSet {
         return new TempDetailColumn() {
 
             @Override
-            public Object get(int pos) {
+            public double getDouble(int pos) {
                 return data[pos];
             }
 

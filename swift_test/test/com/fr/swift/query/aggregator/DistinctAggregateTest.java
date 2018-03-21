@@ -4,6 +4,7 @@ import com.fr.swift.bitmap.MutableBitMap;
 import com.fr.swift.bitmap.impl.AllShowBitMap;
 import com.fr.swift.bitmap.impl.RoaringMutableBitMap;
 import com.fr.swift.segment.column.Column;
+import com.fr.swift.segment.column.DictionaryEncodedColumn;
 import com.fr.swift.segment.column.impl.base.IntDictColumn;
 import com.fr.swift.structure.iterator.RowTraversal;
 import junit.framework.TestCase;
@@ -21,40 +22,33 @@ public class DistinctAggregateTest extends TestCase {
         RowTraversal traversal = AllShowBitMap.newInstance(5);
         IMocksControl control = EasyMock.createControl();
         Column column = control.createMock(Column.class);
-        IntDictColumn dic = control.createMock(IntDictColumn.class);
+        DictionaryEncodedColumn dic = control.createMock(DictionaryEncodedColumn.class);
 
+        column.getDictionaryEncodedColumn();
+        expectLastCall().andReturn(dic).anyTimes();
+        //   expect(column.getDictionaryEncodedColumn()).andReturn(dic);
+        expect(dic.getGlobalIndexByRow(0)).andReturn(1<<18).anyTimes();
+        expect(dic.getGlobalIndexByRow(1)).andReturn(3).anyTimes();
+        expect(dic.getGlobalIndexByRow(2)).andReturn(4).anyTimes();
+        expect(dic.getGlobalIndexByRow(3)).andReturn(7).anyTimes();
+        expect(dic.getGlobalIndexByRow(4)).andReturn(8).anyTimes();
 
+        control.replay();
 
+        double count = 5;
+        DistinctAggregate distinctCalculator = DistinctAggregate.INSTANCE;
+        an = distinctCalculator.aggregate(traversal, column);
 
-        try {
-            column.getDictionaryEncodedColumn();
-            expectLastCall().andReturn(dic).anyTimes();
-            //   expect(column.getDictionaryEncodedColumn()).andReturn(dic);
-            expect(dic.getIndexByRow(0)).andReturn(1<<18).anyTimes();
-            expect(dic.getIndexByRow(1)).andReturn(3).anyTimes();
-            expect(dic.getIndexByRow(2)).andReturn(4).anyTimes();
-            expect(dic.getIndexByRow(3)).andReturn(7).anyTimes();
-            expect(dic.getIndexByRow(4)).andReturn(8).anyTimes();
+        assertEquals(true, an.getBitMap().contains(1<<18));
+        assertEquals(true, an.getBitMap().contains(3));
+        assertEquals(true, an.getBitMap().contains(4));
+        assertEquals(false, an.getBitMap().contains(5));
+        assertEquals(false, an.getBitMap().contains(6));
+        assertEquals(true, an.getBitMap().contains(7));
+        assertEquals(true, an.getBitMap().contains(8));
+        assertEquals(count, an.calculate());
 
-            control.replay();
-
-            double count = 5;
-            DistinctAggregate distinctCalculator = DistinctAggregate.INSTANCE;
-            an = distinctCalculator.aggregate(traversal, column);
-
-            assertEquals(true, an.getBitMap().contains(1<<18));
-            assertEquals(true, an.getBitMap().contains(3));
-            assertEquals(true, an.getBitMap().contains(4));
-            assertEquals(false, an.getBitMap().contains(5));
-            assertEquals(false, an.getBitMap().contains(6));
-            assertEquals(true, an.getBitMap().contains(7));
-            assertEquals(true, an.getBitMap().contains(8));
-            assertEquals(count, an.calculate());
-
-            control.verify();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        control.verify();
     }
 
     public void testCombine() {

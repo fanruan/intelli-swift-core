@@ -9,7 +9,7 @@ public enum OperatorType {
     DETAIL(true), UNION(false), JOIN(false), FILTER(false), COLUMN_ROW_TRANS(false), GROUP_SUM(false),
     ONE_UNION_RELATION(true), TWO_UNION_RELATION(true), COLUMN_FORMULA(true), SORT(false), GETDATE(true),
     DATEDIFF(true), ACCUMULATE(true), ALLDATA(true), PERIOD(true), PERCENTAGE(true), RANK(true), CONVERTER(true),
-    EXPRESSION_FILTER(true), EXTRA(false);
+    EXPRESSION_FILTER(true), EXTRA(false), KMEANS(true);
     private boolean isAddColumn;
 
     OperatorType(boolean isAddColumn) {
