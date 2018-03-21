@@ -35,10 +35,6 @@ public class DataMiningTransferOperator implements ETLTransferOperator {
         }
         try{
             switch (algorithmBean.getAlgorithmName()){
-//                case ARIMA:
-//                    return new ArimaResultSet(algorithmBean, metaData,basedMetas.get(0), tis.get(0));
-//                case MULTI_REGRESSION:
-//                    return new RegressionResultSet(algorithmBean, metaData,basedMetas.get(0), tis.get(0));
                 case HOLT_WINTERS:
                     return new HoltWinterResultSet(algorithmBean, metaData,basedMetas.get(0), tis.get(0));
                 default:

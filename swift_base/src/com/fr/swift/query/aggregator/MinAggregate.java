@@ -13,9 +13,9 @@ public class MinAggregate extends AllDataCompare {
 
     @Override
     protected double compare(double sum, double rowValue) {
-        if (Double.isInfinite(sum)) {
+        if (Double.isNaN(sum)) {
             return rowValue;
-        } else if (Double.isInfinite(rowValue)) {
+        } else if (Double.isNaN(rowValue)) {
             return sum;
         }
         return Math.min(sum, rowValue);
