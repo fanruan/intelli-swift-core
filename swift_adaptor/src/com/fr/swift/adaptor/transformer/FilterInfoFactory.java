@@ -42,6 +42,7 @@ import com.finebi.conf.internalimp.bean.filtervalue.number.NumberValue;
 import com.finebi.conf.structure.bean.filter.DateFilterBean;
 import com.finebi.conf.structure.bean.filter.FilterBean;
 import com.finebi.conf.structure.filter.FineFilter;
+import com.fr.stable.StringUtils;
 import com.fr.swift.adaptor.transformer.cal.AvgUtils;
 import com.fr.swift.adaptor.transformer.date.DateUtils;
 import com.fr.swift.query.filter.SwiftDetailFilterType;
@@ -290,9 +291,9 @@ public class FilterInfoFactory {
             }
             case BICommonConstants.DATE_TYPE.DYNAMIC: {
                 DateDynamicFilterBeanValue value = ((DateDynamicFilterBean) bean).getValue();
-                c.add(Calendar.YEAR, value.getYear());
-                c.add(Calendar.MONTH, value.getMonth());
-                c.add(Calendar.DATE, value.getWorkDay());
+                c.add(Calendar.YEAR, StringUtils.isNotEmpty(value.getYear()) ? Integer.parseInt(value.getYear().trim()) : 0);
+                c.add(Calendar.MONTH, StringUtils.isNotEmpty(value.getMonth()) ? Integer.parseInt(value.getMonth().trim()) : 0);
+                c.add(Calendar.DATE, StringUtils.isNotEmpty(value.getWorkDay()) ? Integer.parseInt(value.getWorkDay().trim()) : 0);
                 return c.getTimeInMillis();
             }
         }

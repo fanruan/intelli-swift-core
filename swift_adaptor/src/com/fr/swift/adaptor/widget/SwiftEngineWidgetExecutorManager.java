@@ -5,6 +5,9 @@ import com.finebi.conf.internalimp.analysis.bean.operator.add.group.custom.numbe
 import com.finebi.conf.internalimp.dashboard.widget.chart.VanChartWidget;
 import com.finebi.conf.internalimp.dashboard.widget.control.number.SingleSliderWidget;
 import com.finebi.conf.internalimp.dashboard.widget.control.string.ListLabelWidget;
+import com.finebi.conf.internalimp.dashboard.widget.control.time.DateControlWidget;
+import com.finebi.conf.internalimp.dashboard.widget.control.time.DateIntervalControlWidget;
+import com.finebi.conf.internalimp.dashboard.widget.control.time.DatePaneControlWidget;
 import com.finebi.conf.internalimp.dashboard.widget.control.time.MonthControlWidget;
 import com.finebi.conf.internalimp.dashboard.widget.control.time.QuarterControlWidget;
 import com.finebi.conf.internalimp.dashboard.widget.control.time.YearControlWidget;
@@ -14,6 +17,7 @@ import com.finebi.conf.internalimp.dashboard.widget.control.tree.TreeWidget;
 import com.finebi.conf.internalimp.dashboard.widget.detail.DetailWidget;
 import com.finebi.conf.internalimp.dashboard.widget.table.CrossTableWidget;
 import com.finebi.conf.internalimp.dashboard.widget.table.StringControlWidget;
+import com.finebi.conf.internalimp.dashboard.widget.table.StringListControlWidget;
 import com.finebi.conf.internalimp.dashboard.widget.table.TableWidget;
 import com.finebi.conf.service.engine.excutor.EngineWidgetExecutorManager;
 import com.finebi.conf.structure.dashboard.widget.FineWidget;
@@ -95,6 +99,26 @@ public class SwiftEngineWidgetExecutorManager implements EngineWidgetExecutorMan
 
     @Override
     public BIResult visit(TreeListWidget labelWidget) {
+        return null;
+    }
+
+    @Override
+    public BIResult visit(DateControlWidget dateControlWidget) throws Exception {
+        return null;
+    }
+
+    @Override
+    public BIResult visit(DatePaneControlWidget datePaneControlWidget) throws Exception {
+        return null;
+    }
+
+    @Override
+    public BIResult visit(DateIntervalControlWidget dateIntervalControlWidget) throws Exception {
+        return null;
+    }
+
+    @Override
+    public BIResult visit(StringListControlWidget stringListControlWidget) throws Exception {
         return null;
     }
 
