@@ -63,9 +63,10 @@ public class KmeansOperator extends AbstractOperator {
 
     @Override
     public OperatorType getOperatorType() {
-        return null;
+        return OperatorType.KMEANS;
     }
 
+    // TODO 这个后面还要改进，暂时返回空
     @Override
     public String getNewAddedName() {
         return null;
