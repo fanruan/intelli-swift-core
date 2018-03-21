@@ -5,9 +5,7 @@ import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftMetaDataColumn;
 import com.fr.swift.source.etl.AbstractOperator;
 import com.fr.swift.source.etl.OperatorType;
-import com.fr.swift.source.etl.datamining.timeseries.arima.ArimaOperator;
 import com.fr.swift.source.etl.datamining.timeseries.holtwinter.HoltWinterOperator;
-import com.fr.swift.source.etl.datamining.timeseries.regression.RegressionOperator;
 
 import java.util.List;
 
@@ -27,12 +25,6 @@ public class DataMiningOperator extends AbstractOperator {
 
     private void init(){
         switch (algorithmBean.getAlgorithmName()){
-            case ARIMA:
-                algorithmOperator = new ArimaOperator(algorithmBean);
-                break;
-            case MULTI_REGRESSION:
-                algorithmOperator = new RegressionOperator(algorithmBean);
-                break;
             case HOLT_WINTERS:
                 algorithmOperator = new HoltWinterOperator(algorithmBean);
                 break;

@@ -8,9 +8,7 @@ import com.fr.swift.source.Row;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftResultSet;
 import com.fr.swift.source.etl.ETLTransferOperator;
-import com.fr.swift.source.etl.datamining.timeseries.arima.ArimaResultSet;
 import com.fr.swift.source.etl.datamining.timeseries.holtwinter.HoltWinterResultSet;
-import com.fr.swift.source.etl.datamining.timeseries.regression.RegressionResultSet;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -37,10 +35,6 @@ public class DataMiningTransferOperator implements ETLTransferOperator {
         }
         try{
             switch (algorithmBean.getAlgorithmName()){
-                case ARIMA:
-                    return new ArimaResultSet(algorithmBean, metaData,basedMetas.get(0), tis.get(0));
-                case MULTI_REGRESSION:
-                    return new RegressionResultSet(algorithmBean, metaData,basedMetas.get(0), tis.get(0));
                 case HOLT_WINTERS:
                     return new HoltWinterResultSet(algorithmBean, metaData,basedMetas.get(0), tis.get(0));
                 default:

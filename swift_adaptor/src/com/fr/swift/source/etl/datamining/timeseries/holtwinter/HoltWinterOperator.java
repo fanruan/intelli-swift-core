@@ -26,10 +26,8 @@ public class HoltWinterOperator implements AlgorithmMetaData {
     public List<SwiftMetaDataColumn> getColumns(SwiftMetaData[] tables) {
         List<SwiftMetaDataColumn> columnList = new ArrayList<SwiftMetaDataColumn>();
         columnList.add(new MetaDataColumn("时间列", Types.DATE));
-        columnList.add(new MetaDataColumn("观测值", Types.DOUBLE));
+        columnList.add(new MetaDataColumn("观测值", Types.VARCHAR));
         columnList.add(new MetaDataColumn("预测值", Types.DOUBLE));
-        columnList.add(new MetaDataColumn("下区间", Types.DOUBLE));
-        columnList.add(new MetaDataColumn("上区间", Types.DOUBLE));
         return columnList;
     }
 }
