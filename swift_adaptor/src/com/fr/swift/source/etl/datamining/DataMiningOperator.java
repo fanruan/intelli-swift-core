@@ -24,14 +24,8 @@ public class DataMiningOperator extends AbstractOperator {
         init();
     }
 
-    private void init() {
-        switch (algorithmBean.getAlgorithmName()) {
-//            case ARIMA:
-//                algorithmOperator = new ArimaOperator(algorithmBean);
-//                break;
-//            case MULTI_REGRESSION:
-//                algorithmOperator = new RegressionOperator(algorithmBean);
-//                break;
+    private void init(){
+        switch (algorithmBean.getAlgorithmName()){
             case HOLT_WINTERS:
                 algorithmOperator = new HoltWinterOperator(algorithmBean);
                 break;
