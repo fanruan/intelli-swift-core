@@ -17,8 +17,10 @@ import weka.classifiers.timeseries.WekaForecaster;
 import weka.core.Attribute;
 import weka.core.DenseInstance;
 import weka.core.Instances;
+import weka.filters.supervised.attribute.TSLagMaker;
 
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -55,6 +57,7 @@ public abstract class AbstractTimeSeriesResultSet implements SwiftResultSet {
     private void init() throws Exception {
         // 初始化参数
 
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
         String timeFieldName = "data";
         String targetFiledName = "sum";
 
@@ -63,7 +66,7 @@ public abstract class AbstractTimeSeriesResultSet implements SwiftResultSet {
 //        additionalField.add("shop_id");
         int aheadStep = 12;
 
-        // 初始化数据,把所有数据传进去
+        // init data, put down data set
         Segment segment = segmentList.get(0);
 
         for (int i = 0; i < segment.getRowCount(); ++i) {
@@ -74,7 +77,9 @@ public abstract class AbstractTimeSeriesResultSet implements SwiftResultSet {
                 multiFieldKey.addFieldValue(cellValue);
             }
 
+            // time field
             long timeCellValue = (Long) getCellValueFromSegment(segment, timeFieldName, i);
+            // forecast field
             double targetCellValue = Double.parseDouble(getCellValueFromSegment(segment, targetFiledName, i).toString());
 
             List<MultiFieldValueItem> multiFieldValue = multiFieldHashMap.get(multiFieldKey);
@@ -89,42 +94,49 @@ public abstract class AbstractTimeSeriesResultSet implements SwiftResultSet {
 
         for (Map.Entry<MultiFieldKey, List<MultiFieldValueItem>> entry : multiFieldHashMap.entrySet()) {
             MultiFieldKey key = entry.getKey();
-            List<MultiFieldValueItem> value = entry.getValue();
-            List<NumericPrediction> predicListForTarget = forecast(aheadStep, value);
+            List<MultiFieldValueItem> listForForecastData = entry.getValue();
+            WekaForecaster forecaster = forecast(listForForecastData);
 
-            int numAhead = 1;
-            for (NumericPrediction prediction :
-                    predicListForTarget) {
+            List<List<NumericPrediction>> forecastData = forecaster.forecast(aheadStep, System.out);
+
+            TSLagMaker.Periodicity periodicity = forecaster.getTSLagMaker().getPeriodicity();
+
+            long deltaTime = (long)periodicity.deltaTime();
+            long theLastTimeStemp = listForForecastData.get(listForForecastData.size() - 1).getTimestamp();
+
+
+            for (int i = 0; i < aheadStep; i++) {
+                List<NumericPrediction> predictAtStep = forecastData.get(i);
+                NumericPrediction predForTarget = predictAtStep.get(0);
                 List<Object> row = new ArrayList<Object>();
-                row.add(numAhead);
+                theLastTimeStemp += deltaTime;
+                row.add(simpleDateFormat.format(new Date(theLastTimeStemp)));
                 row.addAll(key.getFields());
-                row.add(prediction.predicted());
+                row.add(predForTarget.predicted());
                 waitForAppadData.add(row);
-                numAhead++;
             }
         }
 
-        System.out.println("gggg");
+        System.out.println("test");
     }
 
 
-    public List<NumericPrediction> forecast(int stepAhead, List<MultiFieldValueItem> items) {
+    public WekaForecaster forecast(List<MultiFieldValueItem> items) {
         List<NumericPrediction> returnData = new ArrayList<NumericPrediction>();
         try {
 
             ArrayList<Attribute> attributes = new ArrayList<Attribute>();
             attributes.add(new Attribute("date"));
             attributes.add(new Attribute("forecast"));
-            Instances wine = new Instances("dataSet", attributes, 2);
+            Instances instances = new Instances("instances", attributes, 2);
             for (int i = 0; i < items.size(); i++) {
                 DenseInstance dataInstance = new DenseInstance(2);
-                dataInstance.setDataset(wine);
-//                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
-//                Date date = simpleDateFormat.parse(dataArr[i]);
+                dataInstance.setDataset(instances);
+
                 MultiFieldValueItem item = items.get(i);
-                dataInstance.setValue(0, item.getDatestamp());
+                dataInstance.setValue(0, item.getTimestamp());
                 dataInstance.setValue(1, item.getValue());
-                wine.add(dataInstance);
+                instances.add(dataInstance);
             }
 
             // new forecaster
@@ -151,29 +163,18 @@ public abstract class AbstractTimeSeriesResultSet implements SwiftResultSet {
             forecaster.getTSLagMaker().setAddQuarterOfYear(true);
 
             // build the model
-            forecaster.buildForecaster(wine, System.out);
+            forecaster.buildForecaster(instances, System.out);
 
             // prime the forecaster with enough recent historical data
             // to cover up to the maximum lag. In our case, we could just supply
             // the 12 most recent historical instances, as this covers our maximum
             // lag period
-            forecaster.primeForecaster(wine);
+            forecaster.primeForecaster(instances);
 
-            // forecast for 12 units (months) beyond the end of the
-            // training data
-            List<List<NumericPrediction>> forecast = forecaster.forecast(stepAhead, System.out);
-
-            // output the predictions. Outer list is over the steps; inner list is over
-            // the targets
-            for (int i = 0; i < stepAhead; i++) {
-                List<NumericPrediction> predsAtStep = forecast.get(i);
-                NumericPrediction predForTarget = predsAtStep.get(0);
-                returnData.add(predForTarget);
-            }
-            return returnData;
+            return forecaster;
         } catch (Exception ex) {
             LOGGER.error(ex.getMessage(), ex);
-            return returnData;
+            return null;
         }
     }
 

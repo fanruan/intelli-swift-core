@@ -1,16 +1,14 @@
 package com.fr.swift.source.etl.datamining.timeseries;
 
-import java.util.List;
-
 public class MultiFieldValueItem{
-    private long datestamp;
+    private long timestamp;
 
-    public long getDatestamp() {
-        return datestamp;
+    public long getTimestamp() {
+        return timestamp;
     }
 
-    public void setDatestamp(long datestamp) {
-        this.datestamp = datestamp;
+    public void setTimestamp(long timestamp) {
+        this.timestamp = timestamp;
     }
 
     public double getValue() {
@@ -23,8 +21,8 @@ public class MultiFieldValueItem{
 
     private double value;
 
-    public MultiFieldValueItem(long datestamp, double value){
-        this.datestamp = datestamp;
+    public MultiFieldValueItem(long timestamp, double value){
+        this.timestamp = timestamp;
         this.value = value;
     }
 }
