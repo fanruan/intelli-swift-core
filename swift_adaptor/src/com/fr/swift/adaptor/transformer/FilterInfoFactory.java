@@ -9,8 +9,6 @@ import com.finebi.conf.internalimp.bean.filter.date.DateAfterFilterBean;
 import com.finebi.conf.internalimp.bean.filter.date.DateBeforeFilterBean;
 import com.finebi.conf.internalimp.bean.filter.date.DateBelongFilterBean;
 import com.finebi.conf.internalimp.bean.filter.date.DateBottomNFilterBean;
-import com.finebi.conf.internalimp.bean.filter.date.DateEqualFilterBean;
-import com.finebi.conf.internalimp.bean.filter.date.DateNoEqualFilterBean;
 import com.finebi.conf.internalimp.bean.filter.date.DateTopNFilterBean;
 import com.finebi.conf.internalimp.bean.filter.number.NumberBelongFilterBean;
 import com.finebi.conf.internalimp.bean.filter.number.NumberBottomNFilterBean;
@@ -30,9 +28,7 @@ import com.finebi.conf.internalimp.bean.filter.string.StringNoBeginWithFilterBea
 import com.finebi.conf.internalimp.bean.filter.string.StringNoBelongFilterBean;
 import com.finebi.conf.internalimp.bean.filter.string.StringNoContainFilterBean;
 import com.finebi.conf.internalimp.bean.filter.string.StringNoEndWithFilterBean;
-import com.finebi.conf.internalimp.bean.filtervalue.date.DateBoxFilterBean;
 import com.finebi.conf.internalimp.bean.filtervalue.date.DateRangeValueBean;
-import com.finebi.conf.internalimp.bean.filtervalue.date.DateSelectedValueBean;
 import com.finebi.conf.internalimp.bean.filtervalue.date.single.DateDynamicFilterBean;
 import com.finebi.conf.internalimp.bean.filtervalue.date.single.DateDynamicFilterBeanValue;
 import com.finebi.conf.internalimp.bean.filtervalue.date.single.DateStaticFilterBean;
@@ -44,7 +40,6 @@ import com.finebi.conf.structure.bean.filter.FilterBean;
 import com.finebi.conf.structure.filter.FineFilter;
 import com.fr.stable.StringUtils;
 import com.fr.swift.adaptor.transformer.cal.AvgUtils;
-import com.fr.swift.adaptor.transformer.date.DateUtils;
 import com.fr.swift.query.filter.SwiftDetailFilterType;
 import com.fr.swift.query.filter.info.DetailFilterInfo;
 import com.fr.swift.query.filter.info.FilterInfo;
@@ -213,16 +208,16 @@ public class FilterInfoFactory {
                         filterValue, SwiftDetailFilterType.DATE_IN_RANGE);
             }
             case BICommonConstants.ANALYSIS_FILTER_DATE.EQUAL_TO: {
-                DateBoxFilterBean boxFilterBean = (DateBoxFilterBean) ((DateEqualFilterBean) bean).getFilterValue();
-                SwiftDateInRangeFilterValue filterValue = dateBoxFilterBean2DateRangeFilterValue(boxFilterBean);
-                return new SwiftDetailFilterValue<SwiftDateInRangeFilterValue> (fieldName,
-                        filterValue, SwiftDetailFilterType.DATE_IN_RANGE);
+//                DateBoxFilterBean boxFilterBean = (DateBoxFilterBean) ((DateEqualFilterBean) bean).getFilterValue();
+//                SwiftDateInRangeFilterValue filterValue = dateBoxFilterBean2DateRangeFilterValue(boxFilterBean);
+//                return new SwiftDetailFilterValue<SwiftDateInRangeFilterValue> (fieldName,
+//                        filterValue, SwiftDetailFilterType.DATE_IN_RANGE);
             }
             case BICommonConstants.ANALYSIS_FILTER_DATE.NOT_EQUAL_TO: {
-                DateBoxFilterBean boxFilterBean = (DateBoxFilterBean) ((DateNoEqualFilterBean) bean).getFilterValue();
-                SwiftDateInRangeFilterValue filterValue = dateBoxFilterBean2DateRangeFilterValue(boxFilterBean);
-                return new SwiftDetailFilterValue<SwiftDateInRangeFilterValue> (fieldName,
-                        filterValue, SwiftDetailFilterType.DATE_NOT_IN_RANGE);
+//                DateBoxFilterBean boxFilterBean = (DateBoxFilterBean) ((DateNoEqualFilterBean) bean).getFilterValue();
+//                SwiftDateInRangeFilterValue filterValue = dateBoxFilterBean2DateRangeFilterValue(boxFilterBean);
+//                return new SwiftDetailFilterValue<SwiftDateInRangeFilterValue> (fieldName,
+//                        filterValue, SwiftDetailFilterType.DATE_NOT_IN_RANGE);
             }
             case BICommonConstants.ANALYSIS_FILTER_DATE.TOP_N: {
                 int n = ((DateTopNFilterBean) bean).getFilterValue().intValue();
@@ -310,13 +305,13 @@ public class FilterInfoFactory {
 
     private static long createValueByDateFilterBeanType(DateFilterBean bean) {
         int beanType = bean.getType();
-        long value;
+        long value = 0l;
         switch (beanType) {
             case BIConfConstants.CONF.DATE_TYPE.MULTI_DATE_CALENDAR:
                 value = dateFilterBean2long(bean);
                 break;
             default:
-                value = getTime((DateSelectedValueBean) bean);
+                //value = getTime((DateSelectedValueBean) bean);
         }
         return value;
     }
@@ -332,11 +327,6 @@ public class FilterInfoFactory {
         return min;
     }
 
-    private static long getTime(DateSelectedValueBean bean) {
-        int value = bean.getValue();
-        int type = bean.getType();
-        return DateUtils.getTime(type, value);
-    }
 
     private static SwiftDateInRangeFilterValue createValue(DateRangeValueBean bean) {
         SwiftDateInRangeFilterValue value = new SwiftDateInRangeFilterValue();
@@ -345,25 +335,7 @@ public class FilterInfoFactory {
         return value;
     }
 
-    private static long dateBoxFilterBean2Long(DateBoxFilterBean bean){
-        Calendar c = Calendar.getInstance();
-        c.set(Calendar.YEAR, bean.getYear());
-        c.set(Calendar.MONTH, bean.getMonth());
-        c.set(Calendar.DAY_OF_MONTH, bean.getDay());
-        return c.getTimeInMillis();
-    }
 
-    private static SwiftDateInRangeFilterValue dateBoxFilterBean2DateRangeFilterValue(DateBoxFilterBean bean) {
-        Calendar c = Calendar.getInstance();
-        c.clear();
-        c.set(Calendar.YEAR, bean.getYear());
-        c.set(Calendar.MONTH, bean.getMonth());
-        c.set(Calendar.DATE, bean.getDay());
-        SwiftDateInRangeFilterValue filterValue = new SwiftDateInRangeFilterValue();
-        filterValue.setStart(c.getTimeInMillis());
-        filterValue.setEnd(toDayEnd(c));
-        return filterValue;
-    }
 
     private static long toDayEnd(Calendar c) {
         c.add(Calendar.DATE, 1);
