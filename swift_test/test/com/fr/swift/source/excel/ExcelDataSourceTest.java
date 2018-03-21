@@ -2,7 +2,6 @@ package com.fr.swift.source.excel;
 
 import com.fr.swift.resource.ResourceUtils;
 import com.fr.swift.source.ColumnTypeConstants.ColumnType;
-import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftMetaData;
 import junit.framework.TestCase;
 
@@ -25,11 +24,6 @@ public class ExcelDataSourceTest extends TestCase {
         Map<String, ColumnType> fields = new HashMap<>();
         fields.put("B", ColumnType.STRING);
         partSource = new ExcelDataSource(path, names, types, fields);
-    }
-
-    public void testGetSourceKey() {
-        SourceKey key = dataSource.getSourceKey();
-        assertEquals(key.getId(), "1ff8586a");
     }
 
     public void testGetMetadata() throws Exception{
