@@ -35,13 +35,13 @@ public class IncreaseSegmentOperator extends AbstractIncreaseSegmentOperator {
 
     @Override
     public void transport() throws Exception {
-        int count = 0;
+        long count = 0;
         if (metaData.getColumnCount() != 0) {
             String allotColumn = metaData.getColumnName(1);
             while (swiftResultSet.next()) {
                 Row row = swiftResultSet.getRowData();
 
-                int index = alloter.allot(count, allotColumn, row.getValue(indexOfColumn(allotColumn)));
+                int index = alloter.allot(count++, allotColumn, row.getValue(indexOfColumn(allotColumn)));
                 int size = increaseSegmentList.size();
                 if (index >= size) {
                     for (int i = size; i <= index; i++) {
