@@ -63,7 +63,7 @@ public class IncreaseFieldsSegmentOperator extends AbstractIncreaseSegmentOperat
             holder.putNullIndex();
             holder.release();
         }
-        SegmentConfig.getInstance().putSegments(segment);
+        SegmentConfig.getInstance().putSegments(configSegment);
     }
 
     @Override

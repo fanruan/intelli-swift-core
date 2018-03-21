@@ -2,7 +2,6 @@ package com.fr.swift.segment.increase;
 
 import com.fr.swift.config.IConfigSegment;
 import com.fr.swift.config.ISegmentKey;
-import com.fr.swift.config.conf.SegmentConfig;
 import com.fr.swift.config.unique.SegmentKeyUnique;
 import com.fr.swift.config.unique.SegmentUnique;
 import com.fr.swift.cube.io.Types;
@@ -29,14 +28,14 @@ import java.util.List;
 public abstract class AbstractIncreaseSegmentOperator extends AbstractSegmentOperator {
 
     protected List<SegmentHolder> increaseSegmentList;
-    protected IConfigSegment segment;
+    protected IConfigSegment configSegment;
 
     public AbstractIncreaseSegmentOperator(SourceKey sourceKey, List<Segment> segments,
                                            String cubeSourceKey, SwiftResultSet swiftResultSet) throws SQLException {
         super(sourceKey, cubeSourceKey, swiftResultSet);
         this.increaseSegmentList = new ArrayList<SegmentHolder>();
-        this.segment = new SegmentUnique();
-        this.segment.setSourceKey(sourceKey.getId());
+        this.configSegment = new SegmentUnique();
+        this.configSegment.setSourceKey(sourceKey.getId());
         if (null != segments && !segments.isEmpty()) {
             for (int i = 0, len = segments.size(); i < len; i++) {
                 if (segments.get(i).getLocation().getStoreType() == Types.StoreType.FINE_IO) {
@@ -67,7 +66,7 @@ public abstract class AbstractIncreaseSegmentOperator extends AbstractSegmentOpe
         segmentKey.setSourceId(sourceKey.getId());
         segmentKey.setStoreType(Types.StoreType.MEMORY.name());
 //        SegmentConfig.getInstance().addSegment(segmentKey);
-        segment.addSegment(segmentKey);
+        configSegment.addSegment(segmentKey);
         return new RealTimeSegmentImpl(location, metaData);
     }
 }
