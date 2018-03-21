@@ -30,7 +30,7 @@ public class RankRowResultSet implements SwiftResultSet {
     private ColumnKey[] dimension;
     private int segCursor, rowCursor, rowCount;
     private TreeMap<Number, FinalInt> tree;
-    private HashMap<Number, Integer> map;
+    private HashMap<Number, Long> map;
     private TempValue tempValue;
     private SwiftMetaData metaData;
     private GroupValueIterator iterator;
@@ -147,7 +147,7 @@ public class RankRowResultSet implements SwiftResultSet {
             rowCount = segments[segCursor].getRowCount();
             DictionaryEncodedColumn getter = segments[segCursor].getColumn(columnKey).getDictionaryEncodedColumn();
             Number v = (Number) getter.getValue(getter.getIndexByRow(rowCursor));
-            int rank = map.get(v);
+            long rank = map.get(v);
             List dataList = new ArrayList();
             dataList.add(rank);
             tempValue.setRow(new ListBasedRow(dataList));
@@ -177,9 +177,9 @@ public class RankRowResultSet implements SwiftResultSet {
         return tempValue.getRow();
     }
 
-    private HashMap<Number, Integer> buildRankMap(TreeMap<Number, FinalInt> tree) {
-        int rank = 1;
-        HashMap<Number, Integer> rankMap = new HashMap<Number, Integer>();
+    private HashMap<Number, Long> buildRankMap(TreeMap<Number, FinalInt> tree) {
+        long rank = 1L;
+        HashMap<Number, Long> rankMap = new HashMap<Number, Long>();
         Iterator<Map.Entry<Number, FinalInt>> iter = tree.entrySet().iterator();
         while(iter.hasNext()){
             Map.Entry<Number, FinalInt> entry = iter.next();
