@@ -96,7 +96,7 @@ public class MergeSegmentOperator implements SegmentOperator {
             }
 
             while (currentCount < segCount) {
-                int index = alloter.allot(count, allotColumn, null);
+                int index = alloter.allot(count++, allotColumn, null);
                 if (index >= newHisSegmentList.size()) {
                     for (int i = newHisSegmentList.size(); i <= index; i++) {
                         newHisSegmentList.add(new HistorySegmentHolder(createSegment(i + historySegmentList.size())));
@@ -106,30 +106,13 @@ public class MergeSegmentOperator implements SegmentOperator {
                 }
                 SegmentHolder segmentHolder = newHisSegmentList.get(index);
                 for (int i = 0; i < columnCount; i++) {
-                    segment.getColumn("记录人").get(0);
                     segmentHolder.putDetail(i, columnList.get(i).get(currentCount));
                 }
-                count++;
                 currentCount++;
                 segmentHolder.incrementRowCount();
             }
         }
         historySegmentList.addAll(newHisSegmentList);
-
-//        IConfigSegment configSegment = new SegmentUnique();
-//        List<ISegmentKey> segments = new ArrayList<ISegmentKey>();
-//        for (ISegmentKey segmentKey : SegmentConfig.getInstance().getSegmentByKey(sourceKey.getId()).getSegments()) {
-//            if (ComparatorUtils.equals(segmentKey.getStoreType(), Types.StoreType.FINE_IO.name())) {
-//                ISegmentKey newSegmentKey = new SegmentKeyUnique();
-//                newSegmentKey.setSegmentOrder(segmentKey.getSegmentOrder());
-//                newSegmentKey.setUri(segmentKey.getUri());
-//                newSegmentKey.setSourceId(segmentKey.getSourceId());
-//                newSegmentKey.setStoreType(Types.StoreType.FINE_IO.name());
-//                segments.add(newSegmentKey);
-//            }
-//        }
-//        configSegment.setSegments(segments);
-//        configSegment.setSourceKey(sourceKey.getId());
     }
 
     @Override
