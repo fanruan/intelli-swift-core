@@ -44,7 +44,9 @@ public class ResourceDiscoveryImpl implements ResourceDiscovery {
             synchronized (readers) {
                 if (!readers.containsKey(path)) {
                     Reader reader = Readers.build(location, conf);
-                    readers.put(path, reader);
+                    if (shouldCache(location.getStoreType())) {
+                        readers.put(path, reader);
+                    }
                     if (shouldShare(location.getStoreType())) {
                         writers.put(path, (Writer) reader);
                     }
@@ -67,7 +69,9 @@ public class ResourceDiscoveryImpl implements ResourceDiscovery {
                     if (shouldCache(location.getStoreType())) {
                         writers.put(path, writer);
                     }
-                    readers.put(path, (Reader) writer);
+                    if (shouldShare(location.getStoreType())) {
+                        readers.put(path, (Reader) writer);
+                    }
                     return (W) writer;
                 }
                 return (W) writers.get(path);
