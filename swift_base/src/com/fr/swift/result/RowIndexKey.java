@@ -1,5 +1,7 @@
 package com.fr.swift.result;
 
+import com.fr.swift.util.Util;
+
 import java.util.Arrays;
 
 /**
@@ -10,6 +12,7 @@ public class RowIndexKey {
     private int[] key;
 
     public RowIndexKey(int[] key) {
+        Util.requireNonNull(key);
         this.key = key;
     }
 

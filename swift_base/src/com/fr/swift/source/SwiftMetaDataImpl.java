@@ -1,6 +1,7 @@
 package com.fr.swift.source;
 
 import com.fr.general.ComparatorUtils;
+import com.fr.stable.StringUtils;
 import com.fr.swift.config.pojo.MetaDataColumnPojo;
 import com.fr.swift.config.pojo.SwiftMetaDataPojo;
 import com.fr.swift.exception.meta.SwiftMetaDataColumnAbsentException;
@@ -114,7 +115,9 @@ public class SwiftMetaDataImpl implements SwiftMetaData {
             throw new SwiftMetaDataColumnAbsentException(columnName);
         }
         for (SwiftMetaDataColumn column : fieldList) {
-            if (ComparatorUtils.equals(column.getName(), columnName)) {
+            String compareName = StringUtils.isNotEmpty(getTableName()) ? getTableName() + column.getName() : column.getName();
+            // TODO: 2018/3/21 这边有点乱 
+            if (ComparatorUtils.equals(compareName, columnName) || ComparatorUtils.equals(column.getName(), columnName)) {
                 return column;
             }
         }

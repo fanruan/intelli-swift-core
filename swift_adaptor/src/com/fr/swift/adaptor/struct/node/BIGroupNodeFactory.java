@@ -32,7 +32,7 @@ public class BIGroupNodeFactory {
         // convert trie to BIGroupNode
         FIFOQueue<SwiftBIGroupNode> nodeFIFOQueue = new LinkedListFIFOQueue<SwiftBIGroupNode>();
         FIFOQueue<Trie<int[], Integer, Number[]>> trieFIFOQueue = new LinkedListFIFOQueue<Trie<int[], Integer, Number[]>>();
-        SwiftBIGroupNode rootNode = new SwiftBIGroupNode(getData(trie, dictionaries), trie.getValue());
+        SwiftBIGroupNode rootNode = new SwiftBIGroupNode(-1, getData(trie, dictionaries), trie.getValue());
         nodeFIFOQueue.add(rootNode);
         trieFIFOQueue.add(trie);
         while (!trieFIFOQueue.isEmpty()) {
@@ -46,7 +46,8 @@ public class BIGroupNodeFactory {
             }
             while (entryIterator.hasNext()) {
                 Trie<int[], Integer, Number[]> child = entryIterator.next().getValue();
-                SwiftBIGroupNode childNode = new SwiftBIGroupNode(getData(child, dictionaries), child.getValue());
+                SwiftBIGroupNode childNode = new SwiftBIGroupNode(child.deep(), getData(child, dictionaries), child.getValue());
+                childNode.setSummaryValue(child.getValue());
                 n.addChild(childNode);
                 nodeFIFOQueue.add(childNode);
                 trieFIFOQueue.add(child);
@@ -56,7 +57,7 @@ public class BIGroupNodeFactory {
     }
 
     private static Object getData(Trie<int[], Integer, Number[]> trie, List<Map<Integer, Object>> dictionaries) {
-        return dictionaries.get(trie.deep()).get(trie.getKey());
+        return trie.deep() == -1 ? null : dictionaries.get(trie.deep()).get(trie.getKey());
     }
 
     private static Number[] getValues(AggregatorValue[] aggregatorValues) {
