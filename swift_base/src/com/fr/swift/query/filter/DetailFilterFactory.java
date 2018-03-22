@@ -3,6 +3,7 @@ package com.fr.swift.query.filter;
 import com.fr.swift.bitmap.BitMaps;
 import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.query.filter.detail.DetailFilter;
+import com.fr.swift.query.filter.detail.impl.FormulaFilter;
 import com.fr.swift.query.filter.detail.impl.GeneralAndFilter;
 import com.fr.swift.query.filter.detail.impl.GeneralOrFilter;
 import com.fr.swift.query.filter.detail.impl.NotNullFilter;
@@ -91,6 +92,8 @@ public class DetailFilterFactory {
                 return new GeneralAndFilter((List<SwiftDetailFilterValue>) filterValue.getFilterValue(), segment);
             case OR:
                 return new GeneralOrFilter((List<SwiftDetailFilterValue>) filterValue.getFilterValue(), segment);
+            case FORMULA:
+                return new FormulaFilter((String) filterValue.getFilterValue(), segment);
             default:
                 return new DetailFilter() {
                     @Override

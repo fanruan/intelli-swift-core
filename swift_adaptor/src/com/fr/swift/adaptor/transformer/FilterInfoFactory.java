@@ -3,6 +3,7 @@ package com.fr.swift.adaptor.transformer;
 import com.finebi.conf.constant.BICommonConstants;
 import com.finebi.conf.constant.BIConfConstants;
 import com.finebi.conf.internalimp.bean.filter.AbstractFilterBean;
+import com.finebi.conf.internalimp.bean.filter.FormulaFilterBean;
 import com.finebi.conf.internalimp.bean.filter.GeneraAndFilterBean;
 import com.finebi.conf.internalimp.bean.filter.GeneraOrFilterBean;
 import com.finebi.conf.internalimp.bean.filter.date.DateAfterFilterBean;
@@ -252,7 +253,10 @@ public class FilterInfoFactory {
 
             }
 
-            case BICommonConstants.ANALYSIS_FILTER_TYPE.FORMULA:
+            case BICommonConstants.ANALYSIS_FILTER_TYPE.FORMULA: {
+                String expr = ((FormulaFilterBean) bean).getFilterValue();
+                return new SwiftDetailFilterValue<String>(fieldName, expr, SwiftDetailFilterType.FORMULA);
+            }
             case BICommonConstants.ANALYSIS_FILTER_TYPE.AND: {
                 List<FilterBean> beans = ((GeneraAndFilterBean) bean).getFilterValue();
                 List<SwiftDetailFilterValue> filterValues = createFilterValueList(beans, segments);
