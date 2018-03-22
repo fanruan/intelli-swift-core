@@ -1,6 +1,8 @@
 package com.fr.swift.generate.realtime;
 
+import com.fr.general.ComparatorUtils;
 import com.fr.swift.cube.io.Releasable;
+import com.fr.swift.cube.io.Types;
 import com.fr.swift.exception.meta.SwiftMetaDataException;
 import com.fr.swift.generate.BaseColumnIndexer;
 import com.fr.swift.manager.LocalSegmentProvider;
@@ -12,6 +14,7 @@ import com.fr.swift.source.DataSource;
 import com.fr.swift.source.SwiftMetaDataColumn;
 import com.fr.swift.util.Crasher;
 
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -31,8 +34,17 @@ public class RealtimeColumnIndexer<T extends Comparable<T>> extends BaseColumnIn
 
     @Override
     protected List<Segment> getSegments() {
-        return LocalSegmentProvider.getInstance().getSegment(dataSource.getSourceKey());
+        List<Segment> segmentList = LocalSegmentProvider.getInstance().getSegment(dataSource.getSourceKey());
+        Iterator<Segment> segmentIterator = segmentList.iterator();
+        while (segmentIterator.hasNext()) {
+            Segment segment = segmentIterator.next();
+            if (ComparatorUtils.equals(segment.getLocation().getStoreType(), Types.StoreType.FINE_IO)) {
+                segmentIterator.remove();
+            }
+        }
+        return segmentList;
     }
+
 
     @Override
     protected void mergeDict() {

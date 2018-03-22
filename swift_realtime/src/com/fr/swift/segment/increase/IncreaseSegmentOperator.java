@@ -4,6 +4,7 @@ import com.fr.swift.config.IMetaData;
 import com.fr.swift.config.conf.MetaDataConfig;
 import com.fr.swift.config.conf.MetaDataConvertUtil;
 import com.fr.swift.config.conf.SegmentConfig;
+import com.fr.swift.cube.io.Types;
 import com.fr.swift.exception.meta.SwiftMetaDataException;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
@@ -45,7 +46,7 @@ public class IncreaseSegmentOperator extends AbstractIncreaseSegmentOperator {
                 int size = increaseSegmentList.size();
                 if (index >= size) {
                     for (int i = size; i <= index; i++) {
-                        increaseSegmentList.add(new RealtimeSegmentHolder(createSegment(segmentList.size() + i)));
+                        increaseSegmentList.add(new RealtimeSegmentHolder(createSegment(segmentList.size() + i, Types.StoreType.MEMORY)));
                     }
                 } else if (index == -1) {
                     index = increaseSegmentList.size() - 1;
@@ -70,7 +71,6 @@ public class IncreaseSegmentOperator extends AbstractIncreaseSegmentOperator {
         } catch (SwiftMetaDataException e) {
             LOGGER.error("save metadata failed! ", e);
         }
-
         for (int i = 0, len = increaseSegmentList.size(); i < len; i++) {
             SegmentHolder holder = increaseSegmentList.get(i);
             holder.putRowCount();
@@ -79,10 +79,5 @@ public class IncreaseSegmentOperator extends AbstractIncreaseSegmentOperator {
             holder.release();
         }
         SegmentConfig.getInstance().putSegments(configSegment);
-    }
-
-    @Override
-    public int getSegmentCount() {
-        return 0;
     }
 }

@@ -1,5 +1,7 @@
 package com.fr.swift.segment;
 
+import com.fr.swift.config.IConfigSegment;
+import com.fr.swift.config.unique.SegmentUnique;
 import com.fr.swift.exception.meta.SwiftMetaDataException;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftMetaData;
@@ -27,6 +29,7 @@ public abstract class AbstractSegmentOperator implements SegmentOperator {
     protected List<SegmentHolder> segmentList;
     protected String cubeSourceKey;
     protected SwiftResultSet swiftResultSet;
+    protected IConfigSegment configSegment;
 
     public AbstractSegmentOperator(SourceKey sourceKey, String cubeSourceKey, SwiftResultSet swiftResultSet) throws SQLException {
         Util.requireNonNull(sourceKey);
@@ -36,6 +39,9 @@ public abstract class AbstractSegmentOperator implements SegmentOperator {
         this.segmentList = new ArrayList<SegmentHolder>();
         this.cubeSourceKey = cubeSourceKey;
         this.swiftResultSet = swiftResultSet;
+
+        this.configSegment = new SegmentUnique();
+        this.configSegment.setSourceKey(sourceKey.getId());
     }
 
     protected int indexOfColumn(String columnName) throws SwiftMetaDataException {
@@ -54,10 +60,5 @@ public abstract class AbstractSegmentOperator implements SegmentOperator {
             fields.add(metaData.getColumnName(i));
         }
         return fields;
-    }
-
-    @Override
-    public int getSegmentCount() {
-        return segmentList.size();
     }
 }

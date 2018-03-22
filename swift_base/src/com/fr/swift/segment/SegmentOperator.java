@@ -17,7 +17,5 @@ public interface SegmentOperator {
 
     void finishTransport();
 
-    int getSegmentCount();
-
     List<String> getIndexFields() throws SwiftMetaDataException;
 }
