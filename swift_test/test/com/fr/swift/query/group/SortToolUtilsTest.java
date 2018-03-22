@@ -9,7 +9,7 @@ public class SortToolUtilsTest extends TestCase {
         assertEquals(SortToolUtils.getSortTool(10, 1), SortTool.DIRECT);
         assertEquals(SortToolUtils.getSortTool(10, 10), SortTool.INT_ARRAY_RESORT);
         assertEquals(SortToolUtils.getSortTool(100000, 10), SortTool.TREE_MAP_RESORT);
-        assertEquals(SortToolUtils.getSortTool(100000000, 10000), SortTool.TREE_MAP);
-        assertEquals(SortToolUtils.getSortTool(100, 10000), SortTool.INT_ARRAY);
+        assertEquals(SortToolUtils.getSortTool(1000000000, 20000), SortTool.TREE_MAP);
+        assertEquals(SortToolUtils.getSortTool(100, 20000), SortTool.INT_ARRAY);
     }
 }

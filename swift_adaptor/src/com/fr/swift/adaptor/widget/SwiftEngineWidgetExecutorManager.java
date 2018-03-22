@@ -33,6 +33,12 @@ import com.finebi.conf.structure.result.control.tree.BITreeResult;
 import com.finebi.conf.structure.result.table.BIComplexGroupResult;
 import com.finebi.conf.structure.result.table.BICrossNode;
 import com.finebi.conf.structure.result.table.BIGroupNode;
+import com.fr.swift.cal.Query;
+import com.fr.swift.cal.QueryInfo;
+import com.fr.swift.cal.builder.QueryBuilder;
+import com.fr.swift.log.SwiftLogger;
+import com.fr.swift.log.SwiftLoggers;
+import com.fr.swift.source.SwiftResultSet;
 
 import java.util.List;
 import java.util.Map;
@@ -42,6 +48,7 @@ import java.util.Map;
  * @date 2018/2/26
  */
 public class SwiftEngineWidgetExecutorManager implements EngineWidgetExecutorManager {
+    private static final SwiftLogger LOGGER = SwiftLoggers.getLogger(SwiftEngineWidgetExecutorManager.class);
     @Override
     public BIGroupNode visit(TableWidget tableWidget) {
         return TableWidgetAdaptor.calculate(tableWidget);
@@ -64,6 +71,7 @@ public class SwiftEngineWidgetExecutorManager implements EngineWidgetExecutorMan
 
     @Override
     public BIStringDetailResult visit(StringControlWidget detailWidget) {
+        SwiftResultSet resultSet = getWidgetResultSet(detailWidget);
         return null;
     }
 
@@ -135,6 +143,17 @@ public class SwiftEngineWidgetExecutorManager implements EngineWidgetExecutorMan
 
     @Override
     public Map<String, Object> getClickValue(FineWidget widget, Map clicked, List<String> fieldsId) {
+        return null;
+    }
+
+    private SwiftResultSet getWidgetResultSet(FineWidget detailWidget){
+        try {
+            QueryInfo info = WidgetAdaptor.buildQueryInfo(detailWidget);
+            Query query = QueryBuilder.buildQuery(info);
+            return query.getQueryResult();
+        } catch (Exception e) {
+            LOGGER.error(e);
+        }
         return null;
     }
 

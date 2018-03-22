@@ -34,10 +34,10 @@ public class DetailResultSetTest extends TestCase {
     @Override
     public void setUp() throws Exception {
         super.setUp();
-        intColumn = new CreateColumnListForDetailResultSet().getIntColumn();
-        longColumn = new CreateColumnListForDetailResultSet().getLongColumn();
-        doubleColumn = new CreateColumnListForDetailResultSet().getDoubleColumn();
-        stringColumn = new CreateColumnListForDetailResultSet().getStringColumn();
+        intColumn = new CreateColumnList().getIntColumn();
+        longColumn = new CreateColumnList().getLongColumn();
+        doubleColumn = new CreateColumnList().getDoubleColumn();
+        stringColumn = new CreateColumnList().getStringColumn();
         IMocksControl control = EasyMock.createControl();
 
 
@@ -106,8 +106,8 @@ public class DetailResultSetTest extends TestCase {
         int i = 0;
         int[] intData = {4, 4, 2, 2};
         double[] doubleData = {40.1, 40.1, 9.5, 9.5};
-        long[] longData = {23, 23, 12, 23};
-        String[] strData = {"A", "C", "A", "C"};
+        long[] longData = {23, 23, 23, 12};
+        String[] strData = {"C", "A", "C", "A"};
         IntList sortIndex = IntListFactory.createHeapIntList(3);
         List<SortType> sorts = new ArrayList<SortType>();
         sortIndex.add(0);
@@ -116,7 +116,6 @@ public class DetailResultSetTest extends TestCase {
 
         sorts.add(SortType.DESC);
         sorts.add(SortType.DESC);
-        sorts.add(SortType.NONE);
         sorts.add(SortType.ASC);
         DetailResultSet rs = new SortSegmentDetailResultSet(columnList, filter, sortIndex, sorts);
 
@@ -139,8 +138,8 @@ public class DetailResultSetTest extends TestCase {
         int i = 0;
         int[] intData = {4, 4, 2, 2};
         double[] doubleData = {40.1, 40.1, 9.5, 9.5};
-        long[] longData = {23, 23, 12, 23};
-        String[] strData = {"A", "C", "A", "C"};
+        long[] longData = {23, 23, 23, 12};
+        String[] strData = {"C", "A", "C", "A"};
         IntList sortIndex = IntListFactory.createHeapIntList(3);
         List<SortType> sorts = new ArrayList<SortType>();
         sortIndex.add(0);
@@ -148,7 +147,6 @@ public class DetailResultSetTest extends TestCase {
         sortIndex.add(1);
         sorts.add(SortType.DESC);
         sorts.add(SortType.DESC);
-        sorts.add(SortType.NONE);
         sorts.add(SortType.ASC);
         for (int j = 0; j < 3; j++) {
             queries.add(new SortDetailSegmentQuery(columnList, filter, sortIndex, sorts));
@@ -175,8 +173,8 @@ public class DetailResultSetTest extends TestCase {
         int i = 0;
         int[] intData = {2, 4, 4, 2};
         double[] doubleData = {9.5, 40.1, 40.1, 9.5};
-        long[] longData = {12, 23, 23, 23};
-        String[] strData = {"A", "C", "A", "C"};
+        long[] longData = {23, 23, 23, 12};
+        String[] strData = {"C", "C", "A", "A"};
         IntList sortIndex = IntListFactory.createHeapIntList(3);
         List<SortType> sorts = new ArrayList<SortType>();
 
@@ -184,8 +182,6 @@ public class DetailResultSetTest extends TestCase {
         sortIndex.add(0);
         sorts.add(SortType.DESC);
         sorts.add(SortType.ASC);
-        sorts.add(SortType.NONE);
-        sorts.add(SortType.NONE);
 
         DetailResultSet rs = new SortSegmentDetailByIndexResultSet(columnList, filter, sortIndex, sorts);
 

@@ -2,10 +2,11 @@ package com.fr.swift.segment;
 
 import com.fr.swift.bitmap.BitMaps;
 import com.fr.swift.cube.io.ResourceDiscoveryImpl;
+import com.fr.swift.cube.io.Types.StoreType;
 import com.fr.swift.cube.io.location.ResourceLocation;
 import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.ColumnKey;
-import com.fr.swift.segment.column.impl.base.FakeStringDetailColumn;
+import com.fr.swift.segment.column.DetailColumn;
 import com.fr.swift.segment.column.impl.base.LongDetailColumn;
 import com.fr.swift.source.MetaDataColumn;
 import com.fr.swift.source.SourceKey;
@@ -85,8 +86,8 @@ public class SegmentDemo extends TestCase {
         SwiftSegmentManager sm = new SwiftSegmentManager() {
             @Override
             public Segment getSegment(SegmentKey key) {
-                return new HistorySegmentImpl(
-                        new ResourceLocation("/cube/A/seg1"),
+                return new RealTimeSegmentImpl(
+                        new ResourceLocation("/cube/A/seg1", StoreType.MEMORY),
                         new SwiftMetaDataImpl("A",
                                 Arrays.asList(new MetaDataColumn("string", Types.VARCHAR))));
             }
@@ -103,14 +104,13 @@ public class SegmentDemo extends TestCase {
         };
         Segment segment = sm.getSegment(new SegmentKey("seg1"));
         Column<String> stringColumn = segment.getColumn(new ColumnKey("string"));
-        FakeStringDetailColumn stringDetailColumn = (FakeStringDetailColumn) stringColumn.getDetailColumn();
+        DetailColumn<String> stringDetailColumn = stringColumn.getDetailColumn();
         stringDetailColumn.put(0, "hello world");
-        stringDetailColumn.release();
-
-        clear();
 
         assertEquals(stringDetailColumn.get(0), "hello world");
         stringDetailColumn.release();
+
+        clear();
     }
 
     private void clear() {

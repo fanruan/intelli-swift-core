@@ -1,6 +1,7 @@
 package com.fr.swift.query.aggregator;
 
 import com.fr.swift.bitmap.impl.AllShowBitMap;
+import com.fr.swift.cube.io.location.ResourceLocation;
 import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.impl.base.DoubleDetailColumn;
 import com.fr.swift.segment.column.impl.base.IntDetailColumn;
@@ -21,76 +22,66 @@ public class SumAggregateTest extends TestCase {
 
     public void testAggregateInt() {
 
-        RowTraversal bitMap = AllShowBitMap.newInstance(2);
+        RowTraversal bitMap = AllShowBitMap.newInstance(4);
         IMocksControl control = EasyMock.createControl();
         Column mockColumn = control.createMock(Column.class);
-        IntDetailColumn mockIntColumn = control.createMock(IntDetailColumn.class);
+//        IntDetailColumn mockIntColumn = control.createMock(IntDetailColumn.class);
+        IntDetailColumn detailColumn = new TempIntDetailColumn(new ResourceLocation("liu"));
+//            mockColumn.getDetailColumn();
+//            expectLastCall().andReturn(mockIntColumn);
+//            expect(mockIntColumn.getInt(0)).andReturn(1);
+//            expect(mockIntColumn.getInt(1)).andReturn(3);
+        expect(mockColumn.getDetailColumn()).andReturn(detailColumn).anyTimes();
+        control.replay();
 
-        try {
-            mockColumn.getDetailColumn();
-            expectLastCall().andReturn(mockIntColumn);
-            expect(mockIntColumn.getInt(0)).andReturn(1);
-            expect(mockIntColumn.getInt(1)).andReturn(3);
-            control.replay();
 
-            double sum = 4.0;
-            SumAggregate sumCalculator = SumAggregate.INSTANCE;
-            DoubleAmountAggregateValue an = sumCalculator.aggregate(bitMap, mockColumn);
-            assertEquals(sum, an.getValue());
-            control.verify();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        double sum = 17.0;
+        SumAggregate sumCalculator = SumAggregate.INSTANCE;
+        DoubleAmountAggregateValue an = sumCalculator.aggregate(bitMap, mockColumn);
+        assertEquals(sum, an.getValue());
+        control.verify();
     }
 
     public void testAggregateLong() {
 
-        RowTraversal bitMap = AllShowBitMap.newInstance(2);
+        RowTraversal bitMap = AllShowBitMap.newInstance(4);
         IMocksControl control = EasyMock.createControl();
         Column mockColumn = control.createMock(Column.class);
-        LongDetailColumn longDetailColumn = control.createMock(LongDetailColumn.class);
-        try {
-            mockColumn.getDetailColumn();
-            expectLastCall().andReturn(longDetailColumn);
-            longDetailColumn.getLong(0);
-            expectLastCall().andReturn(1l);
-            longDetailColumn.getLong(1);
-            expectLastCall().andReturn(2l);
-            control.replay();
+        LongDetailColumn longDetailColumn = new TempLongDetailColumn(new ResourceLocation("liu"));
+        mockColumn.getDetailColumn();
+        expectLastCall().andReturn(longDetailColumn);
+//            longDetailColumn.getLong(0);
+//            expectLastCall().andReturn(1l);
+//            longDetailColumn.getLong(1);
+//            expectLastCall().andReturn(2l);
+        control.replay();
 
-            double sum = 3.0;
-            SumAggregate sumCalculator = SumAggregate.INSTANCE;
-            DoubleAmountAggregateValue an = sumCalculator.aggregate(bitMap, mockColumn);
-            assertEquals(sum, an.getValue());
-            control.verify();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        double sum = 9.0;
+        SumAggregate sumCalculator = SumAggregate.INSTANCE;
+        DoubleAmountAggregateValue an = sumCalculator.aggregate(bitMap, mockColumn);
+        assertEquals(sum, an.getValue());
+        control.verify();
     }
 
     public void testAggregateDouble() {
 
-        RowTraversal bitMap = AllShowBitMap.newInstance(2);
+        RowTraversal bitMap = AllShowBitMap.newInstance(4);
         IMocksControl control = EasyMock.createControl();
         Column mockColumn = control.createMock(Column.class);
-        DoubleDetailColumn doubleDetailColumn = control.createMock(DoubleDetailColumn.class);
-        try {
+        DoubleDetailColumn doubleDetailColumn = new TempDoubleDetailColumn(new ResourceLocation("liu"));
             mockColumn.getDetailColumn();
             expectLastCall().andReturn(doubleDetailColumn);
-            doubleDetailColumn.getDouble(0);
-            expectLastCall().andReturn(1.0);
-            doubleDetailColumn.getDouble(1);
-            expectLastCall().andReturn(9.0);
+//            doubleDetailColumn.getDouble(0);
+//            expectLastCall().andReturn(1.0);
+//            doubleDetailColumn.getDouble(1);
+//            expectLastCall().andReturn(9.0);
             control.replay();
 
-            double sum = 10.0;
+            double sum = 19.0;
             SumAggregate sumCalculator = SumAggregate.INSTANCE;
             DoubleAmountAggregateValue an = sumCalculator.aggregate(bitMap, mockColumn);
             assertEquals(sum, an.getValue());
             control.verify();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 
     public void testCombine() {

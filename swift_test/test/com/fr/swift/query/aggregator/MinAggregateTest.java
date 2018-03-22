@@ -1,6 +1,7 @@
 package com.fr.swift.query.aggregator;
 
 import com.fr.swift.bitmap.impl.AllShowBitMap;
+import com.fr.swift.cube.io.location.ResourceLocation;
 import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.impl.base.DoubleDetailColumn;
 import com.fr.swift.segment.column.impl.base.IntDetailColumn;
@@ -19,78 +20,66 @@ public class MinAggregateTest extends TestCase {
 
 
     public void testAggregateInt() {
-        RowTraversal bitMap = AllShowBitMap.newInstance(5);
+        RowTraversal bitMap = AllShowBitMap.newInstance(4);
         IMocksControl control = EasyMock.createControl();
         Column mockColumn = control.createMock(Column.class);
-        IntDetailColumn mockIntColumn = control.createMock(IntDetailColumn.class);
+        IntDetailColumn mockIntColumn = new TempIntDetailColumn(new ResourceLocation("liu"));
 
-        try {
-            mockColumn.getDetailColumn();
-            expectLastCall().andReturn(mockIntColumn);
-            expect(mockIntColumn.getInt(0)).andReturn(1);
-            expect(mockIntColumn.getInt(1)).andReturn(3);
-            expect(mockIntColumn.getInt(2)).andReturn(5);
-            expect(mockIntColumn.getInt(3)).andReturn(7);
-            expect(mockIntColumn.getInt(4)).andReturn(0);
-            control.replay();
+        mockColumn.getDetailColumn();
+        expectLastCall().andReturn(mockIntColumn);
+//            expect(mockIntColumn.getInt(0)).andReturn(1);
+//            expect(mockIntColumn.getInt(1)).andReturn(3);
+//            expect(mockIntColumn.getInt(2)).andReturn(5);
+//            expect(mockIntColumn.getInt(3)).andReturn(7);
+//            expect(mockIntColumn.getInt(4)).andReturn(0);
+        control.replay();
 
-            double minNumber = 0;
-            DoubleAmountAggregateValue an = min.aggregate(bitMap, mockColumn);
-            assertEquals(an.getValue(), minNumber);
-            control.verify();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        double minNumber = 1;
+        DoubleAmountAggregateValue an = min.aggregate(bitMap, mockColumn);
+        assertEquals(an.getValue(), minNumber);
+        control.verify();
     }
 
     public void testAggregateLongSum() {
-        RowTraversal bitMap = AllShowBitMap.newInstance(5);
+        RowTraversal bitMap = AllShowBitMap.newInstance(4);
         IMocksControl control = EasyMock.createControl();
         Column mockColumn = control.createMock(Column.class);
-        LongDetailColumn mockLongColumn = control.createMock(LongDetailColumn.class);
+        LongDetailColumn mockLongColumn = new TempLongDetailColumn(new ResourceLocation("liu"));
 
-        try {
-            mockColumn.getDetailColumn();
-            expectLastCall().andReturn(mockLongColumn);
-            expect(mockLongColumn.getLong(0)).andReturn(1l);
-            expect(mockLongColumn.getLong(1)).andReturn(3l);
-            expect(mockLongColumn.getLong(2)).andReturn(5l);
-            expect(mockLongColumn.getLong(3)).andReturn(7l);
-            expect(mockLongColumn.getLong(4)).andReturn(0l);
-            control.replay();
+        mockColumn.getDetailColumn();
+        expectLastCall().andReturn(mockLongColumn);
+//            expect(mockLongColumn.getLong(0)).andReturn(1l);
+//            expect(mockLongColumn.getLong(1)).andReturn(3l);
+//            expect(mockLongColumn.getLong(2)).andReturn(5l);
+//            expect(mockLongColumn.getLong(3)).andReturn(7l);
+//            expect(mockLongColumn.getLong(4)).andReturn(0l);
+        control.replay();
 
-            double minNumber = 0;
-            DoubleAmountAggregateValue an = min.aggregate(bitMap, mockColumn);
-            assertEquals(an.getValue(), minNumber);
-            control.verify();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        double minNumber = 0;
+        DoubleAmountAggregateValue an = min.aggregate(bitMap, mockColumn);
+        assertEquals(an.getValue(), minNumber);
+        control.verify();
     }
 
     public void testAggregateDoubleSum() {
-        RowTraversal bitMap = AllShowBitMap.newInstance(5);
+        RowTraversal bitMap = AllShowBitMap.newInstance(4);
         IMocksControl control = EasyMock.createControl();
         Column mockColumn = control.createMock(Column.class);
-        DoubleDetailColumn mockDoubleColumn = control.createMock(DoubleDetailColumn.class);
+        DoubleDetailColumn mockDoubleColumn = new TempDoubleDetailColumn(new ResourceLocation("liu"));
 
-        try {
-            mockColumn.getDetailColumn();
-            expectLastCall().andReturn(mockDoubleColumn);
-            expect(mockDoubleColumn.getDouble(0)).andReturn(1.0);
-            expect(mockDoubleColumn.getDouble(1)).andReturn(3.3);
-            expect(mockDoubleColumn.getDouble(2)).andReturn(5.4);
-            expect(mockDoubleColumn.getDouble(3)).andReturn(7.1);
-            expect(mockDoubleColumn.getDouble(4)).andReturn(0.2);
-            control.replay();
+        mockColumn.getDetailColumn();
+        expectLastCall().andReturn(mockDoubleColumn);
+//            expect(mockDoubleColumn.getDouble(0)).andReturn(1.0);
+//            expect(mockDoubleColumn.getDouble(1)).andReturn(3.3);
+//            expect(mockDoubleColumn.getDouble(2)).andReturn(5.4);
+//            expect(mockDoubleColumn.getDouble(3)).andReturn(7.1);
+//            expect(mockDoubleColumn.getDouble(4)).andReturn(0.2);
+        control.replay();
 
-            double minNumber = 0.2;
-            DoubleAmountAggregateValue an = min.aggregate(bitMap, mockColumn);
-            assertEquals(an.getValue(), minNumber);
-            control.verify();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        double minNumber = 1.2;
+        DoubleAmountAggregateValue an = min.aggregate(bitMap, mockColumn);
+        assertEquals(an.getValue(), minNumber);
+        control.verify();
     }
 
     public void testCombine() {

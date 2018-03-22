@@ -40,8 +40,7 @@ public class LocalSegmentOperatorProvider implements SegmentOperatorProvider {
                 return new HistoryFieldsSegmentOperator(dataSource.getSourceKey(), DataSourceUtils.getSwiftSourceKey(dataSource),
                         resultSet, DataSourceUtils.getAddFields(dataSource));
             }
-            return new HistorySegmentOperator(dataSource.getSourceKey(),
-                    manager.getSegment(dataSource.getSourceKey()), DataSourceUtils.getSwiftSourceKey(dataSource), resultSet);
+            return new HistorySegmentOperator(dataSource.getSourceKey(), DataSourceUtils.getSwiftSourceKey(dataSource), resultSet);
         } catch (SQLException e) {
             return Crasher.crash(e);
         }
