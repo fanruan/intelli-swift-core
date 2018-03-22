@@ -13,7 +13,7 @@ import java.util.List;
  * @author anchore
  * @date 2018/2/28
  */
-public class CustomNumGroupRule extends BaseCustomGroupRule {
+public class CustomNumGroupRule extends BaseCustomGroupRule<Number> {
     static final NumberFormat NUMBER_FORMAT = new DecimalFormat("#.##");
 
     private List<NumInterval> intervals;
@@ -31,7 +31,7 @@ public class CustomNumGroupRule extends BaseCustomGroupRule {
         reverseMap = new int[dictSize];
 
         for (int i = 0; i < dictSize; i++) {
-            Number num = (Number) dictColumn.getValue(i);
+            Number num = dictColumn.getValue(i);
             int index = findIndex(num);
 
             String groupName;

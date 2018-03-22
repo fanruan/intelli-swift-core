@@ -11,7 +11,7 @@ import java.util.Map;
  * @author anchore
  * @date 2018/3/2
  */
-abstract class BaseCustomGroupRule extends BaseGroupRule {
+abstract class BaseCustomGroupRule<Base> extends BaseGroupRule<Base, String> {
     /**
      * 新分组序号 -> (新分组名, 旧分组序号)
      */
@@ -28,7 +28,7 @@ abstract class BaseCustomGroupRule extends BaseGroupRule {
     }
 
     @Override
-    public String getGroupName(int index) {
+    public String getValue(int index) {
         return map.get(index).getKey();
     }
 

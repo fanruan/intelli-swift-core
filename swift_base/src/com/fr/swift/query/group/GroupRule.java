@@ -7,12 +7,12 @@ import com.fr.swift.structure.array.IntList;
  * @author anchore
  * @date 2018/1/29
  */
-public interface GroupRule {
+public interface GroupRule<Base, Derive> {
     /**
      * @param index 新分组号
      * @return 新分组名
      */
-    String getGroupName(int index);
+    Derive getValue(int index);
 
     /**
      * 新值序号 -> 多个旧值序号
@@ -39,7 +39,7 @@ public interface GroupRule {
     /**
      * @param dict 原始分组
      */
-    void setOriginDict(DictionaryEncodedColumn<?> dict);
+    void setOriginDict(DictionaryEncodedColumn<Base> dict);
 
     GroupType getGroupType();
 }

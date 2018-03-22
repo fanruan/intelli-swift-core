@@ -52,11 +52,7 @@ public class IncreaseSegmentOperator extends AbstractIncreaseSegmentOperator {
                 }
                 SegmentHolder segment = increaseSegmentList.get(index);
                 for (int i = 0, len = metaData.getColumnCount(); i < len; i++) {
-                    try {
-                        segment.putDetail(i, row.getValue(i));
-                    } catch (Exception e) {
-                        segment.putDetail(i, null);
-                    }
+                    segment.putDetail(i, row.getValue(i));
                 }
                 segment.incrementRowCount();
             }
