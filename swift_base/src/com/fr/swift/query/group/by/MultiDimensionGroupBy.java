@@ -17,6 +17,8 @@ import java.util.List;
  */
 public class MultiDimensionGroupBy implements Iterator<KeyValue<RowIndexKey, RowTraversal>> {
 
+    public static final int START_INDEX = 1;
+
     private List<Column> dimensions;
     private DetailFilter detailFilter;
     private int[] cursor;
@@ -46,9 +48,9 @@ public class MultiDimensionGroupBy implements Iterator<KeyValue<RowIndexKey, Row
 
     private int getStartIndex(int dimensionIndex) {
         int index = cursor[dimensionIndex];
-        if (index != 0) {
+        if (index != START_INDEX) {
             // 分组定位的游标只能用一次
-            cursor[dimensionIndex] = 0;
+            cursor[dimensionIndex] = START_INDEX;
         }
         return index;
     }
