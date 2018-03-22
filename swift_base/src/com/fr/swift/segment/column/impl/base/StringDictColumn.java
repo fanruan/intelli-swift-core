@@ -39,7 +39,7 @@ public class StringDictColumn extends BaseDictColumn<String> {
 
     @Override
     public String getValue(int index) {
-        if (index < 0) {
+        if (index < 1) {
             return null;
         }
         initKeyReader();

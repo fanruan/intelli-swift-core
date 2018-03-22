@@ -39,7 +39,7 @@ public class LongDictColumn extends BaseDictColumn<Long> {
 
     @Override
     public Long getValue(int index) {
-        if (index < 0) {
+        if (index < 1) {
             return null;
         }
         initKeyReader();
