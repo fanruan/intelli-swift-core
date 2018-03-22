@@ -1,5 +1,6 @@
 package com.fr.swift.segment;
 
+import com.fr.stable.StringUtils;
 import com.fr.swift.bitmap.BitMaps;
 import com.fr.swift.bitmap.MutableBitMap;
 import com.fr.swift.cube.io.IOConstant;
@@ -32,7 +33,7 @@ public abstract class AbstractSegmentHolder implements SegmentHolder {
     protected Types.StoreType storeType;
     protected Map<ColumnKey, MutableBitMap> nullMap;
 
-    protected  AtomicInteger rowCount;
+    protected AtomicInteger rowCount;
     protected SwiftMetaData metaData;
 
     public AbstractSegmentHolder(Segment segment) throws SwiftMetaDataException {
@@ -110,12 +111,20 @@ public abstract class AbstractSegmentHolder implements SegmentHolder {
         ColumnKey key = new ColumnKey(metaDataColumn.getName());
         DetailColumn detail = getColumn(key);
         int row = rowCount.get();
-        if (null == value) {
+        if (isBusinessNullValue(value)) {
             detail.put(row, getNullValue(clazz));
             setNullIndex(key, row);
         } else {
             detail.put(row, value);
         }
+    }
+
+    private static <V> boolean isBusinessNullValue(V val) {
+        if (val == null) {
+            return true;
+        }
+        // string的空白串也视为空值
+        return val instanceof String && StringUtils.isBlank((String) val);
     }
 
     private ClassType getClassType(int sqlType, int precision, int scale) {
