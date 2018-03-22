@@ -114,20 +114,48 @@ public class SwiftTableConfProvider implements EngineTableManager {
     public boolean removeTable(List<String> tableIds) {
         List<FineBusinessTable> removeTableList = new ArrayList<FineBusinessTable>();
         List<FineBusinessTable> fineBusinessTableList = this.getAllTable();
-
+        List<FineBusinessPackage> allPackage = businessPackageDAO.getAllConfig();
+        List<FineBusinessPackage> needUpdatePackage = new ArrayList<FineBusinessPackage>();
         for (FineBusinessTable fineBusinessTable : fineBusinessTableList) {
-            if (tableIds.contains(fineBusinessTable.getId())) {
+            if (tableIds.contains(fineBusinessTable.getName())) {
                 removeTableList.add(fineBusinessTable);
             }
         }
-        return businessTableDAO.removeConfigs(removeTableList);
+        try {
+            for (FineBusinessPackage pack : allPackage) {
+                for (FineBusinessTable table : removeTableList) {
+                    if (pack.getTables().contains(table.getId())) {
+                        pack.removeTable(table.getName());
+                        if (!needUpdatePackage.contains(pack)) {
+                            needUpdatePackage.add(pack);
+                        }
+                    }
+                }
+            }
+        } catch (Exception e) {
+
+        }
+        return businessTableDAO.removeConfigs(removeTableList) && businessPackageDAO.updateConfigs(needUpdatePackage);
     }
 
     @Override
     public boolean updateTable(String tableId, String newName) {
         FineBusinessTable fineBusinessTable = this.getSingleTable(tableId);
+        List<FineBusinessPackage> needUpdatePackage = new ArrayList<FineBusinessPackage>();
         fineBusinessTable.setName(newName);
-        return businessTableDAO.updateConfig(fineBusinessTable);
+        List<FineBusinessPackage> allPackage = businessPackageDAO.getAllConfig();
+        try {
+            for (FineBusinessPackage pack : allPackage) {
+                if (pack.getTables().contains(tableId)) {
+                    pack.removeTable(tableId);
+                    pack.addTable(newName);
+                    needUpdatePackage.add(pack);
+                }
+            }
+        } catch (Exception e) {
+
+        }
+        return businessTableDAO.updateConfig(fineBusinessTable) && businessPackageDAO.updateConfigs(needUpdatePackage);
     }
 
     @Override
