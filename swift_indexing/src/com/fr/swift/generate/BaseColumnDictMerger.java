@@ -101,14 +101,14 @@ public abstract class BaseColumnDictMerger<T extends Comparable<T>> extends Base
     /**
      * 计算对应的外排数据存放位置
      * Column数据位置：.../table/segment/column/...
-     * 对应的全局字典External数据位置 ：.../table/external/column/...
+     * 对应的全局字典External数据位置 ：.../table/external_global_dict/column/...
      *
      * @param segPath segment的path
      * @return extMap位置
      */
     private IResourceLocation calExternalLocation(IResourceLocation segPath) {
         return segPath.getParent()
-                .buildChildLocation("external")
+                .buildChildLocation("external_global_dict")
                 .buildChildLocation(key.getName());
     }
 

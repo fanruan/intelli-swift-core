@@ -161,7 +161,7 @@ public abstract class BaseColumnIndexer<T extends Comparable<T>> extends BaseWor
     private Map<T, IntList> newIntListSortedMap(Column<T> column) {
         Comparator<T> c = column.getDictionaryEncodedColumn().getComparator();
         return PerformancePlugManager.getInstance().isDiskSort() ?
-                newIntListExternalMap(c, column.getLocation().buildChildLocation("external_global_dict").getPath()) :
+                newIntListExternalMap(c, column.getLocation().buildChildLocation("external_index").getPath()) :
                 new TreeMap<T, IntList>(c);
     }
 
