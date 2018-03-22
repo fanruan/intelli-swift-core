@@ -27,6 +27,14 @@ public class ResourceDiscoveryImpl implements ResourceDiscovery {
 
     }
 
+    private static boolean shouldCache(StoreType storeType) {
+        return storeType == StoreType.MEMORY;
+    }
+
+    private static boolean shouldShare(StoreType storeType) {
+        return storeType == StoreType.MEMORY;
+    }
+
     @Override
     public <R extends Reader> R getReader(IResourceLocation location, BuildConf conf) {
         String path = location.getPath();
@@ -37,7 +45,9 @@ public class ResourceDiscoveryImpl implements ResourceDiscovery {
                 if (!readers.containsKey(path)) {
                     Reader reader = Readers.build(location, conf);
                     readers.put(path, reader);
-                    writers.put(path, (Writer) reader);
+                    if (shouldShare(location.getStoreType())) {
+                        writers.put(path, (Writer) reader);
+                    }
                     return (R) reader;
                 }
                 return (R) readers.get(path);
@@ -54,7 +64,9 @@ public class ResourceDiscoveryImpl implements ResourceDiscovery {
             synchronized (writers) {
                 if (!writers.containsKey(path)) {
                     Writer writer = Writers.build(location, conf);
-                    writers.put(path, writer);
+                    if (shouldCache(location.getStoreType())) {
+                        writers.put(path, writer);
+                    }
                     readers.put(path, (Reader) writer);
                     return (W) writer;
                 }
