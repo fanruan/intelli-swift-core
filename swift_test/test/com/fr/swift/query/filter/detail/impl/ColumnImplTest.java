@@ -23,12 +23,13 @@ public abstract class ColumnImplTest<T> implements Column {
 
     private DictionaryEncodedColumn<T> dict;
     protected List<T> groups;
-    private TreeMap<T, MutableBitMap> indexes = new TreeMap<>();
+    private TreeMap<T, MutableBitMap> indexes;
     protected Comparator<T> comparator;
     private T nullKey;
 
     public ColumnImplTest(List<T> details, Comparator<T> comparator, T nullKey) {
         this.comparator = comparator;
+        indexes = new TreeMap<>(comparator);
         this.nullKey = nullKey;
         init(details);
     }
