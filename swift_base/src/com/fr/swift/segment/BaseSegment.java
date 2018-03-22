@@ -71,7 +71,7 @@ public abstract class BaseSegment implements Segment {
                     return (Column<T>) columns.get(key);
                 }
                 IResourceLocation child = parent.buildChildLocation(columnId);
-                Column<?> column = newColumn(child, getClassType(columnId));
+                Column<?> column = newColumn(child, getClassType(name));
                 columns.put(key, column);
                 return (Column<T>) column;
             }

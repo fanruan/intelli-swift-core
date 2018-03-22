@@ -1,9 +1,7 @@
 package com.fr.swift.segment.increase;
 
-import com.fr.swift.config.IConfigSegment;
 import com.fr.swift.config.ISegmentKey;
 import com.fr.swift.config.unique.SegmentKeyUnique;
-import com.fr.swift.config.unique.SegmentUnique;
 import com.fr.swift.cube.io.Types;
 import com.fr.swift.cube.io.location.IResourceLocation;
 import com.fr.swift.cube.io.location.ResourceLocation;
@@ -28,20 +26,20 @@ import java.util.List;
 public abstract class AbstractIncreaseSegmentOperator extends AbstractSegmentOperator {
 
     protected List<SegmentHolder> increaseSegmentList;
-    protected IConfigSegment configSegment;
 
     public AbstractIncreaseSegmentOperator(SourceKey sourceKey, List<Segment> segments,
                                            String cubeSourceKey, SwiftResultSet swiftResultSet) throws SQLException {
         super(sourceKey, cubeSourceKey, swiftResultSet);
         this.increaseSegmentList = new ArrayList<SegmentHolder>();
-        this.configSegment = new SegmentUnique();
-        this.configSegment.setSourceKey(sourceKey.getId());
+
         if (null != segments && !segments.isEmpty()) {
             for (int i = 0, len = segments.size(); i < len; i++) {
                 if (segments.get(i).getLocation().getStoreType() == Types.StoreType.FINE_IO) {
                     this.segmentList.add(new HistorySegmentHolder(segments.get(i)));
+                    createSegment(i, Types.StoreType.FINE_IO);
                 } else {
                     this.segmentList.add(new RealtimeSegmentHolder(segments.get(i)));
+                    createSegment(i, Types.StoreType.MEMORY);
                 }
             }
         }
@@ -57,15 +55,14 @@ public abstract class AbstractIncreaseSegmentOperator extends AbstractSegmentOpe
      * @deprecated fixme 名字换成nextSegment()吧，可能有别的分块规则，和这个不兼容
      */
     @Deprecated
-    protected Segment createSegment(int order) {
+    protected Segment createSegment(int order, Types.StoreType storeType) {
         String cubePath = System.getProperty("user.dir") + "/cubes/" + cubeSourceKey + "/seg" + order;
-        IResourceLocation location = new ResourceLocation(cubePath, Types.StoreType.MEMORY);
+        IResourceLocation location = new ResourceLocation(cubePath, storeType);
         ISegmentKey segmentKey = new SegmentKeyUnique();
         segmentKey.setSegmentOrder(order);
         segmentKey.setUri(location.getUri().getPath());
         segmentKey.setSourceId(sourceKey.getId());
-        segmentKey.setStoreType(Types.StoreType.MEMORY.name());
-//        SegmentConfig.getInstance().addSegment(segmentKey);
+        segmentKey.setStoreType(storeType.name());
         configSegment.addSegment(segmentKey);
         return new RealTimeSegmentImpl(location, metaData);
     }

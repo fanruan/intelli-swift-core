@@ -22,56 +22,45 @@ public class ResourceDiscoveryImpl implements ResourceDiscovery {
      */
     private final Map<String, Writer> writers = new ConcurrentHashMap<String, Writer>();
 
-    private static boolean shouldCache(StoreType storeType) {
+    private static boolean isMemory(StoreType storeType) {
         return storeType == StoreType.MEMORY;
-    }
 
-    private static boolean shouldShare(StoreType storeType) {
-        return StoreType.MEMORY == storeType;
     }
 
     @Override
     public <R extends Reader> R getReader(IResourceLocation location, BuildConf conf) {
         String path = location.getPath();
-        if (!readers.containsKey(path)) {
+        if (!isMemory(location.getStoreType())) {
+            return (R) Readers.build(location, conf);
+        } else {
             synchronized (readers) {
                 if (!readers.containsKey(path)) {
                     Reader reader = Readers.build(location, conf);
-                    if (shouldCache(location.getStoreType())) {
-                        readers.put(path, reader);
-                    }
-
-                    if (shouldShare(location.getStoreType())) {
-                        writers.put(path, (Writer) reader);
-                    }
-
+                    readers.put(path, reader);
+                    writers.put(path, (Writer) reader);
                     return (R) reader;
                 }
+                return (R) readers.get(path);
             }
         }
-        return (R) readers.get(path);
     }
 
     @Override
     public <W extends Writer> W getWriter(IResourceLocation location, BuildConf conf) {
         String path = location.getPath();
-        if (!writers.containsKey(path)) {
+        if (!isMemory(location.getStoreType())) {
+            return (W) Writers.build(location, conf);
+        } else {
             synchronized (writers) {
                 if (!writers.containsKey(path)) {
                     Writer writer = Writers.build(location, conf);
-                    if (shouldCache(location.getStoreType())) {
-                        writers.put(path, writer);
-                    }
-
-                    if (shouldShare(location.getStoreType())) {
-                        readers.put(path, (Reader) writer);
-                    }
-
+                    writers.put(path, writer);
+                    readers.put(path, (Reader) writer);
                     return (W) writer;
                 }
+                return (W) writers.get(path);
             }
         }
-        return (W) writers.get(path);
     }
 
 

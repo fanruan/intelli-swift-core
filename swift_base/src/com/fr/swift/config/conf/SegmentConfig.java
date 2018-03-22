@@ -5,12 +5,8 @@ import com.fr.config.DefaultConfiguration;
 import com.fr.config.holder.factory.Holders;
 import com.fr.config.holder.impl.ObjectMapConf;
 import com.fr.swift.config.IConfigSegment;
-import com.fr.swift.config.ISegmentKey;
-import com.fr.swift.config.unique.SegmentUnique;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
