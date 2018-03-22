@@ -3,6 +3,7 @@ package com.fr.swift.segment;
 import com.fr.swift.config.IMetaData;
 import com.fr.swift.config.conf.MetaDataConfig;
 import com.fr.swift.config.conf.MetaDataConvertUtil;
+import com.fr.swift.config.conf.SegmentConfig;
 import com.fr.swift.exception.meta.SwiftMetaDataException;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
@@ -19,13 +20,14 @@ import java.util.List;
  */
 public class HistorySegmentOperator extends AbstractHistorySegmentOperator {
     private SwiftLogger logger = SwiftLoggers.getLogger(HistorySegmentOperator.class);
-    public HistorySegmentOperator(SourceKey sourceKey, List<Segment> segments, String cubeSourceKey, SwiftResultSet swiftResultSet) throws SQLException {
+    public HistorySegmentOperator(SourceKey sourceKey, String cubeSourceKey, SwiftResultSet swiftResultSet) throws SQLException {
         super(sourceKey, cubeSourceKey, swiftResultSet);
-        if (null != segments && !segments.isEmpty()) {
-            for (int i = 0, len = segments.size(); i < len; i++) {
-                this.segmentList.add(new HistorySegmentHolder(segments.get(i)));
-            }
-        }
+//        没必要去加载原有的Segment
+//        if (null != segments && !segments.isEmpty()) {
+//            for (int i = 0, len = segments.size(); i < len; i++) {
+//                this.segmentList.add(new HistorySegmentHolder(segments.get(i)));
+//            }
+//        }
     }
 
     @Override
@@ -66,6 +68,7 @@ public class HistorySegmentOperator extends AbstractHistorySegmentOperator {
             holder.putNullIndex();
             holder.release();
         }
+        SegmentConfig.getInstance().putSegments(configSegment);
     }
 
 }

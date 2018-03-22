@@ -46,7 +46,7 @@ public class SegmentConfigTest extends TestCase {
 
     public void testAddAndGet() {
         SegmentUnique source = SegmentCreater.getSegment();
-        SegmentConfig.getInstance().addSegments(source);
+        SegmentConfig.getInstance().putSegments(source);
 
         assertEquals(SegmentConfig.getInstance().getAllSegments().size(), 1);
 
@@ -57,18 +57,15 @@ public class SegmentConfigTest extends TestCase {
 
     public void testAddAndRemove() {
         SegmentUnique source = SegmentCreater.getSegment();
-        SegmentConfig.getInstance().addSegments(source);
+        SegmentConfig.getInstance().putSegments(source);
         assertEquals(SegmentConfig.getInstance().getAllSegments().size(), 1);
         SegmentConfig.getInstance().removeSegment(source.getSourceKey());
         assertEquals(SegmentConfig.getInstance().getAllSegments().size(), 0);
     }
 
-    /**
-     * h2 获取的都是修改之后的数据，即target1 和 target2获取的数据都是修改后的
-     */
     public void testAddAndModify() {
         SegmentUnique source = SegmentCreater.getSegment();
-        SegmentConfig.getInstance().addSegments(source);
+        SegmentConfig.getInstance().putSegments(source);
         IConfigSegment target1 = SegmentConfig.getInstance().getSegmentByKey(source.getSourceKey());
         SegmentUnique modify = SegmentCreater.getModify();
 
@@ -80,8 +77,9 @@ public class SegmentConfigTest extends TestCase {
 
         assertEquals(SegmentConfig.getInstance().getAllSegments().size(), 1);
         assertEquals(source.getSourceKey(), target2.getSourceKey());
-        assertSegmentNotSame(source, target2);
+        assertSegmentNotSame(target1, target2);
         assertSegmentSame(modify, target2);
+        assertSegmentSame(source, target1);
     }
 
     private void assertSegmentSame(IConfigSegment source, IConfigSegment dest) {

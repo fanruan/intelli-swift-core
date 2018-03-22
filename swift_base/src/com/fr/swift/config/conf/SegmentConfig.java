@@ -40,7 +40,7 @@ public class SegmentConfig extends DefaultConfiguration {
         return (IConfigSegment) segmentHolder.get(key);
     }
 
-    public void addSegments(IConfigSegment... segments) {
+    public void putSegments(IConfigSegment... segments) {
         for (IConfigSegment segment : segments) {
             segmentHolder.put(segment.getSourceKey(), segment);
         }
@@ -51,25 +51,9 @@ public class SegmentConfig extends DefaultConfiguration {
     }
 
     public void modifySegment(IConfigSegment segment) {
-        IConfigSegment segmentUnique = (IConfigSegment) segmentHolder.get(segment.getSourceKey());
-        segmentUnique.setSegments(segment.getSegments());
-        segmentUnique.setSourceKey(segment.getSourceKey());
+        putSegments(segment);
     }
 
-    public void addSegment(ISegmentKey segmentKey) {
-        String sourceId = segmentKey.getSourceId();
-        IConfigSegment segmentUnique = (IConfigSegment) segmentHolder.get(sourceId);
-        if (null == segmentUnique) {
-            segmentUnique = new SegmentUnique();
-            List<ISegmentKey> segments = new ArrayList<ISegmentKey>();
-            segments.add(segmentKey);
-            segmentUnique.setSegments(segments);
-            segmentUnique.setSourceKey(sourceId);
-            addSegments(segmentUnique);
-        } else {
-            segmentUnique.addSegment(segmentKey);
-        }
-    }
 
     @Override
     public String getNameSpace() {

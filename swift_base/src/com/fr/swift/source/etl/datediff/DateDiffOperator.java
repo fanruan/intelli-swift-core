@@ -4,7 +4,6 @@ import com.fr.swift.source.MetaDataColumn;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftMetaDataColumn;
 import com.fr.swift.source.core.CoreField;
-import com.fr.swift.source.core.MD5Utils;
 import com.fr.swift.source.etl.AbstractOperator;
 import com.fr.swift.source.etl.OperatorType;
 
@@ -22,7 +21,6 @@ public class DateDiffOperator extends AbstractOperator {
     private String field2;
     @CoreField
     private int unit;
-    @CoreField
     private String columnName;//新增列名
     @CoreField
     private int columnType;
@@ -40,17 +38,13 @@ public class DateDiffOperator extends AbstractOperator {
     public List<SwiftMetaDataColumn> getColumns(SwiftMetaData[] metaDatas) {
         List<SwiftMetaDataColumn> columnList = new ArrayList<SwiftMetaDataColumn>();
         columnList.add(new MetaDataColumn(this.columnName, this.columnName,
-                this.columnType, MD5Utils.getMD5String(new String[]{(this.columnName)})));
+                this.columnType, fetchObjectCore().getValue()));
         return columnList;
     }
 
     @Override
     public OperatorType getOperatorType() {
         return OperatorType.DATEDIFF;
-    }
-
-    public String getColumnMD5() {
-        return MD5Utils.getMD5String(new String[]{(this.columnName)});
     }
 
     public String getField1() {

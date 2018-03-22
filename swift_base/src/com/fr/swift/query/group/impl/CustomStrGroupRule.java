@@ -14,7 +14,7 @@ import java.util.List;
  * <p>
  * 字符串自定义分组规则
  */
-public class CustomStrGroupRule extends BaseCustomGroupRule {
+public class CustomStrGroupRule extends BaseCustomGroupRule<String> {
     private List<StringGroup> groups;
 
     public CustomStrGroupRule(List<StringGroup> groups, String otherGroupName) {
@@ -32,7 +32,7 @@ public class CustomStrGroupRule extends BaseCustomGroupRule {
         reverseMap = new int[dictSize];
 
         for (int i = 0; i < dictSize; i++) {
-            String val = (String) dictColumn.<String>getValue(i);
+            String val = dictColumn.<String>getValue(i);
             int index = findIndex(val);
 
             String groupName;

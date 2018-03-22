@@ -10,10 +10,10 @@ import com.fr.swift.structure.array.IntListFactory;
  * <p>
  * 不分组规则 1个一组
  */
-public class NoGroupRule extends BaseGroupRule {
+public class NoGroupRule<Base> extends BaseGroupRule<Base, Base> {
     @Override
-    public String getGroupName(int index) {
-        return dictColumn.getValue(index).toString();
+    public Base getValue(int index) {
+        return dictColumn.getValue(index);
     }
 
     @Override

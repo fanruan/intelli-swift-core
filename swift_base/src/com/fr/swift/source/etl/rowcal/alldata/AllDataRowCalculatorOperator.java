@@ -18,11 +18,9 @@ import java.util.List;
  * Created by Handsome on 2018/2/24 0024 14:49
  */
 public class AllDataRowCalculatorOperator extends AbstractOperator {
-    @CoreField
     private String addedColumnName;//新增列
     @CoreField
     private ColumnType columnType;
-    @CoreField
     private String columnName;
     @CoreField
     private ColumnKey[] dimension;
@@ -63,7 +61,7 @@ public class AllDataRowCalculatorOperator extends AbstractOperator {
     public List<SwiftMetaDataColumn> getColumns(SwiftMetaData[] metaDatas) {
         List<SwiftMetaDataColumn> columnList = new ArrayList<SwiftMetaDataColumn>();
         columnList.add(new MetaDataColumn(this.addedColumnName, this.addedColumnName,
-                ColumnTypeUtils.columnTypeToSqlType(this.columnType), MD5Utils.getMD5String(new String[]{(this.addedColumnName)})));
+                ColumnTypeUtils.columnTypeToSqlType(this.columnType), fetchObjectCore().getValue()));
         return columnList;
     }
 

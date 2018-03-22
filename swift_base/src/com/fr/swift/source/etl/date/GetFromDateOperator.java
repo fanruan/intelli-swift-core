@@ -59,7 +59,7 @@ public class GetFromDateOperator extends AbstractOperator {
     public List<SwiftMetaDataColumn> getColumns(SwiftMetaData[] metaDatas) {
         List<SwiftMetaDataColumn> columnList = new ArrayList<SwiftMetaDataColumn>();
         columnList.add(new MetaDataColumn(this.columnName, this.columnName,
-                this.columnType, MD5Utils.getMD5String(new String[]{(this.columnName)})));
+                this.columnType, fetchObjectCore().getValue()));
         return columnList;
     }
 
