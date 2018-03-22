@@ -120,9 +120,10 @@ public class TableWidgetAdaptor {
         return columnType == ColumnType.NUMBER;
     }
 
-    private static Dimension toDimension(FineDimension fineDim, int index) {
+    private static Dimension toDimension(FineDimension fineDim, int index) throws Exception {
         SourceKey key = new SourceKey(fineDim.getId());
-        ColumnKey colKey = new ColumnKey(fineDim.getFieldId());
+        // fixme 传text可能有问题
+        ColumnKey colKey = new ColumnKey(fineDim.getText());
 
         Group group = GroupAdaptor.adaptGroup(fineDim.getGroup());
 
@@ -132,9 +133,10 @@ public class TableWidgetAdaptor {
     }
 
 
-    private static Metric toMetric(FineTarget target, int index) {
+    private static Metric toMetric(FineTarget target, int index) throws Exception {
         SourceKey key = new SourceKey(target.getId());
-        ColumnKey colKey = new ColumnKey(target.getFieldId());
+        // fixme 传text可能有问题
+        ColumnKey colKey = new ColumnKey(target.getText());
 
         FilterInfo filterInfo = null;
         // TODO: 2018/3/21   先跑通流程吧。。
