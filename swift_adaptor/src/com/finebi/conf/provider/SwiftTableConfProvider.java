@@ -16,6 +16,8 @@ import com.fr.swift.conf.business.pack.SwiftPackageDao;
 import com.fr.swift.conf.business.table.SwiftTableDao;
 import com.fr.swift.conf.business.table.TableParseXml;
 import com.fr.swift.conf.business.table.TableXmlWriter;
+import com.fr.swift.log.SwiftLogger;
+import com.fr.swift.log.SwiftLoggers;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,6 +36,7 @@ public class SwiftTableConfProvider implements EngineTableManager {
     private SwiftPackageDao businessPackageDAO;
     private SwiftPackageConfProvider swiftPackageConfProvider;
     private String xmlFileName = "table.xml";
+    private SwiftLogger logger = SwiftLoggers.getLogger(SwiftTableConfProvider.class);
 
     public SwiftTableConfProvider() {
         TableParseXml xmlHandler = new TableParseXml();
@@ -133,7 +136,7 @@ public class SwiftTableConfProvider implements EngineTableManager {
                 }
             }
         } catch (Exception e) {
-
+            logger.error("remove from package error", e);
         }
         return businessTableDAO.removeConfigs(removeTableList) && businessPackageDAO.updateConfigs(needUpdatePackage);
     }
@@ -153,7 +156,7 @@ public class SwiftTableConfProvider implements EngineTableManager {
                 }
             }
         } catch (Exception e) {
-
+            logger.error("remove from package error", e);
         }
         return businessTableDAO.updateConfig(fineBusinessTable) && businessPackageDAO.updateConfigs(needUpdatePackage);
     }

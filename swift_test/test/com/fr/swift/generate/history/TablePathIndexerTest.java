@@ -13,6 +13,8 @@ import com.fr.swift.cube.task.impl.Operation;
 import com.fr.swift.cube.task.impl.SchedulerTaskPool;
 import com.fr.swift.cube.task.impl.WorkerTaskImpl;
 import com.fr.swift.cube.task.impl.WorkerTaskPool;
+import com.fr.swift.generate.history.index.MultiRelationIndexer;
+import com.fr.swift.generate.history.index.TablePathIndexer;
 import com.fr.swift.manager.LocalSegmentProvider;
 import com.fr.swift.relation.CubeMultiRelationPath;
 import com.fr.swift.relation.utils.MultiRelationHelper;
