@@ -107,7 +107,7 @@ public class TablePathIndexer extends BaseWorker {
                 ImmutableBitMap preTableIndex = preTableRelationIndex.getIndex(i + 1);
                 ImmutableBitMap resultIndex = getTableLinkedOrGVI(preTableIndex, lastRelationReader);
                 helper.add(resultIndex);
-                targetTableRelationIndex.putIndex(i, resultIndex);
+                targetTableRelationIndex.putIndex(i + 1, resultIndex);
                 initReverse(reverse, i, resultIndex);
             }
             buildReverseIndex(targetTableRelationIndex, reverse);
@@ -145,7 +145,7 @@ public class TablePathIndexer extends BaseWorker {
                 @Override
                 public boolean actionPerformed(int row) {
                     try {
-                        bitMaps.add(relationIndex.getIndex(row));
+                        bitMaps.add(relationIndex.getIndex(row + 1));
                     } catch (Exception ignore) {
                         bitMaps.add(BitMaps.EMPTY_IMMUTABLE);
                     }
