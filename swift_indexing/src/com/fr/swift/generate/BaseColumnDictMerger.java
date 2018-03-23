@@ -56,7 +56,8 @@ public abstract class BaseColumnDictMerger<T extends Comparable<T>> extends Base
             extractDictOf(dictColumn, segOrder, map);
         }
 
-        int globalIndex = 0;
+        // 有效值序号从1开始
+        int globalIndex = 1;
         for (Entry<T, List<IntPair>> entry : toIterable(map)) {
             List<IntPair> pairs = entry.getValue();
             for (IntPair pair : pairs) {
@@ -68,6 +69,7 @@ public abstract class BaseColumnDictMerger<T extends Comparable<T>> extends Base
             globalIndex++;
         }
         for (DictionaryEncodedColumn<T> dictColumn : dictColumns) {
+            dictColumn.putGlobalIndex(0, 0);
             dictColumn.putGlobalSize(globalIndex);
             releaseIfNeed(dictColumn);
         }
@@ -79,7 +81,7 @@ public abstract class BaseColumnDictMerger<T extends Comparable<T>> extends Base
     protected abstract List<Segment> getSegments();
 
     private static <V> void extractDictOf(DictionaryEncodedColumn<V> dictColumn, int segOrder, Map<V, List<IntPair>> map) {
-        for (int j = 0, size = dictColumn.size(); j < size; j++) {
+        for (int j = 1, size = dictColumn.size(); j < size; j++) {
             // 值
             V val = dictColumn.getValue(j);
             // (块号, 值在这块里的序号)
@@ -99,14 +101,14 @@ public abstract class BaseColumnDictMerger<T extends Comparable<T>> extends Base
     /**
      * 计算对应的外排数据存放位置
      * Column数据位置：.../table/segment/column/...
-     * 对应的全局字典External数据位置 ：.../table/external/column/...
+     * 对应的全局字典External数据位置 ：.../table/external_global_dict/column/...
      *
      * @param segPath segment的path
      * @return extMap位置
      */
     private IResourceLocation calExternalLocation(IResourceLocation segPath) {
         return segPath.getParent()
-                .buildChildLocation("external")
+                .buildChildLocation("external_global_dict")
                 .buildChildLocation(key.getName());
     }
 

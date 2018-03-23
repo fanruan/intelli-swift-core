@@ -1,10 +1,7 @@
 package com.fr.swift.segment;
 
-import com.fr.swift.config.IConfigSegment;
 import com.fr.swift.config.ISegmentKey;
-import com.fr.swift.config.conf.SegmentConfig;
 import com.fr.swift.config.unique.SegmentKeyUnique;
-import com.fr.swift.config.unique.SegmentUnique;
 import com.fr.swift.cube.io.Types;
 import com.fr.swift.cube.io.location.IResourceLocation;
 import com.fr.swift.cube.io.location.ResourceLocation;
@@ -22,11 +19,7 @@ public abstract class AbstractHistorySegmentOperator extends AbstractSegmentOper
     public AbstractHistorySegmentOperator(SourceKey sourceKey,
                                           String cubeSourceKey, SwiftResultSet swiftResultSet) throws SQLException {
         super(sourceKey, cubeSourceKey, swiftResultSet);
-        configSegment = new SegmentUnique();
-        configSegment.setSourceKey(sourceKey.getId());
     }
-
-    protected IConfigSegment configSegment;
 
     /**
      * 创建Segment

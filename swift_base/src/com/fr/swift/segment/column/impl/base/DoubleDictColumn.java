@@ -60,7 +60,7 @@ public class DoubleDictColumn extends BaseDictColumn<Double> {
 
     @Override
     public Double getValue(int index) {
-        if (index < 0) {
+        if (index < 1) {
             return null;
         }
 

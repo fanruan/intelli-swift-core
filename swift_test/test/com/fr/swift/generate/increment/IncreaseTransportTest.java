@@ -50,12 +50,12 @@ public class IncreaseTransportTest extends TestCase {
 
         Increment increment = new IncrementImpl("select 付款时间 from DEMO_CAPITAL_RETURN where 记录人 ='庆芳'", null, null, dataSource.getSourceKey(), "IncreaseTest");
 
-            RealtimeDataTransporter transport = new RealtimeDataTransporter(dataSource, increment, new FlowRuleController());
-            transport.work();
+        RealtimeDataTransporter transport = new RealtimeDataTransporter(dataSource, increment, new FlowRuleController());
+        transport.work();
 
-            for (int i = 1; i <= dataSource.getMetadata().getColumnCount(); i++) {
-                RealtimeColumnIndexer<?> indexer = new RealtimeColumnIndexer(dataSource, new ColumnKey(dataSource.getMetadata().getColumnName(i)));
-                indexer.work();
+        for (int i = 1; i <= dataSource.getMetadata().getColumnCount(); i++) {
+            RealtimeColumnIndexer<?> indexer = new RealtimeColumnIndexer(dataSource, new ColumnKey(dataSource.getMetadata().getColumnName(i)));
+            indexer.work();
         }
 
         List<Segment> segments = LocalSegmentProvider.getInstance().getSegment(dataSource.getSourceKey());

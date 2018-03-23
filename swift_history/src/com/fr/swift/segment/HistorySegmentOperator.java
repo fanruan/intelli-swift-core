@@ -22,12 +22,6 @@ public class HistorySegmentOperator extends AbstractHistorySegmentOperator {
     private SwiftLogger logger = SwiftLoggers.getLogger(HistorySegmentOperator.class);
     public HistorySegmentOperator(SourceKey sourceKey, String cubeSourceKey, SwiftResultSet swiftResultSet) throws SQLException {
         super(sourceKey, cubeSourceKey, swiftResultSet);
-//        没必要去加载原有的Segment
-//        if (null != segments && !segments.isEmpty()) {
-//            for (int i = 0, len = segments.size(); i < len; i++) {
-//                this.segmentList.add(new HistorySegmentHolder(segments.get(i)));
-//            }
-//        }
     }
 
     @Override

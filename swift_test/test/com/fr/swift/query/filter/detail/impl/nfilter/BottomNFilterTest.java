@@ -42,7 +42,7 @@ public class BottomNFilterTest extends BaseNumberFilterTest {
 
     @Override
     protected List<Integer> getExpectedIndexes() {
-        Set<Long> bottomNGroups = new HashSet<>(groups.subList(bottomN, groups.size()));
+        Set<Long> bottomNGroups = new HashSet<>(groups.subList(0, bottomN));
         return IntStream.range(0, details.size()).filter(i -> bottomNGroups.contains(details.get(i)))
                 .mapToObj(Integer::new).collect(Collectors.toList());
     }

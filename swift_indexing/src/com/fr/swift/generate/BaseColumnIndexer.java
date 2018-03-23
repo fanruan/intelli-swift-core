@@ -22,7 +22,6 @@ import com.fr.swift.structure.array.IntListFactory;
 import com.fr.swift.structure.external.map.ExternalMap;
 import com.fr.swift.structure.external.map.intlist.IntListExternalMapFactory;
 
-import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
@@ -126,11 +125,11 @@ public abstract class BaseColumnIndexer<T extends Comparable<T>> extends BaseWor
         DictionaryEncodedColumn<T> dictColumn = column.getDictionaryEncodedColumn();
         BitmapIndexedColumn indexColumn = column.getBitmapIndex();
 
-        // row -> index -1作为null值行号的对应序号
+        // row -> index， 0作为null值行号的对应序号
         int[] rowToIndex = new int[rowCount];
-        Arrays.fill(rowToIndex, -1);
 
-        int pos = 0;
+        // 有效值序号从1开始
+        int pos = 1;
         for (Entry<T, IntList> entry : iterable) {
             dictColumn.putValue(pos, entry.getKey());
 
@@ -162,7 +161,7 @@ public abstract class BaseColumnIndexer<T extends Comparable<T>> extends BaseWor
     private Map<T, IntList> newIntListSortedMap(Column<T> column) {
         Comparator<T> c = column.getDictionaryEncodedColumn().getComparator();
         return PerformancePlugManager.getInstance().isDiskSort() ?
-                newIntListExternalMap(c, column.getLocation().buildChildLocation("external").getPath()) :
+                newIntListExternalMap(c, column.getLocation().buildChildLocation("external_index").getPath()) :
                 new TreeMap<T, IntList>(c);
     }
 

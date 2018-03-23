@@ -1,6 +1,7 @@
 package com.fr.swift.segment.increase;
 
 import com.fr.swift.config.conf.SegmentConfig;
+import com.fr.swift.cube.io.Types;
 import com.fr.swift.segment.RealtimeSegmentHolder;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.SegmentHolder;
@@ -36,7 +37,7 @@ public class IncreaseFieldsSegmentOperator extends AbstractIncreaseSegmentOperat
                 int size = increaseSegmentList.size();
                 if (index >= size) {
                     for (int i = size; i <= index; i++) {
-                        increaseSegmentList.add(new RealtimeSegmentHolder(createSegment(segmentList.size() + i)));
+                        increaseSegmentList.add(new RealtimeSegmentHolder(createSegment(segmentList.size() + i, Types.StoreType.MEMORY)));
                     }
                 } else if (index == -1) {
                     index = increaseSegmentList.size() - 1;
@@ -55,7 +56,7 @@ public class IncreaseFieldsSegmentOperator extends AbstractIncreaseSegmentOperat
             segmentList.addAll(increaseSegmentList);
         } else {
             if (segmentList == null || segmentList.isEmpty()) {
-                increaseSegmentList.add(new RealtimeSegmentHolder(createSegment(0)));
+                increaseSegmentList.add(new RealtimeSegmentHolder(createSegment(0, Types.StoreType.MEMORY)));
             } else {
                 increaseSegmentList.addAll(segmentList);
             }

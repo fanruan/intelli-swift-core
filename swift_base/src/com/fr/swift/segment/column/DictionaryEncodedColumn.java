@@ -32,6 +32,7 @@ public interface DictionaryEncodedColumn<T> extends Releasable, Flushable {
     /**
      * 对应位置写入字典值
      * 序号 -> 值
+     * 0号始终为null，但不代表一定有null值，这个要看nullIndex
      *
      * @param index 字典序号
      * @param val   值
@@ -52,7 +53,7 @@ public interface DictionaryEncodedColumn<T> extends Releasable, Flushable {
      * 行号 -> 字典序号
      *
      * @param row   行号
-     * @param index 字典序号 -1代表null
+     * @param index 字典序号 0号代表null
      */
     void putIndex(int row, int index);
 
@@ -60,6 +61,7 @@ public interface DictionaryEncodedColumn<T> extends Releasable, Flushable {
 
     /**
      * 字典序号 -> 全局字典序号
+     * 0号始终为null，但不代表一定有null值，这个要看nullIndex
      *
      * @param index       序号
      * @param globalIndex 全局序号
@@ -88,6 +90,7 @@ public interface DictionaryEncodedColumn<T> extends Releasable, Flushable {
      * 用于不同数值类型之间转换。
      * ArrayLookupHelper.binarySearch(Lookup<T> lookup, T value | T[] values)用到的比较器要求类型一致。
      * 把要查找的值类型转化为lookup用到的字典类型参数类型，可以减少数值类过滤器处理不同类型的代码。
+     *
      * @param value
      * @return
      */

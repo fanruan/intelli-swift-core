@@ -66,6 +66,9 @@ public class BitMapColumn implements BitmapIndexedColumn {
 
     @Override
     public ImmutableBitMap getBitMapIndex(int index) {
+        if (index < 1) {
+            return getNullIndex();
+        }
         initIndexReader();
         return indexReader.get(index);
     }

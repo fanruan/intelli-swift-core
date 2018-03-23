@@ -1,6 +1,6 @@
 package com.fr.swift.adaptor.widget.group;
 
-import com.finebi.conf.constant.BIReportConstant.GROUP;
+import com.finebi.conf.constant.BICommonConstants.GROUP;
 import com.fr.swift.query.group.GroupType;
 
 /**
@@ -48,12 +48,12 @@ public class GroupTypeAdaptor {
                 return GroupType.Y_Q;
             case GROUP.YM:
                 return GroupType.Y_M;
-            case GROUP.YD:
-                return GroupType.Y_D;
+//            case GROUP.YD:
+//                return GroupType.Y_D;
             case GROUP.YW:
                 return GroupType.Y_W;
-            case GROUP.MD:
-                return GroupType.M_D;
+//            case GROUP.MD:
+//                return GroupType.M_D;
             default:
                 return null;
         }

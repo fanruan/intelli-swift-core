@@ -1,16 +1,15 @@
 package com.fr.swift.config.conf;
 
 import com.fr.config.ConfigContext;
+import com.fr.config.Configuration;
 import com.fr.config.DefaultConfiguration;
 import com.fr.config.holder.factory.Holders;
 import com.fr.config.holder.impl.ObjectMapConf;
 import com.fr.swift.config.IConfigSegment;
-import com.fr.swift.config.ISegmentKey;
-import com.fr.swift.config.unique.SegmentUnique;
+import com.fr.transaction.Configurations;
+import com.fr.transaction.Worker;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -41,13 +40,35 @@ public class SegmentConfig extends DefaultConfiguration {
     }
 
     public void putSegments(IConfigSegment... segments) {
-        for (IConfigSegment segment : segments) {
-            segmentHolder.put(segment.getSourceKey(), segment);
-        }
+        Configurations.update(new Worker() {
+            @Override
+            public void run() {
+                for (IConfigSegment segment : segments) {
+                    segmentHolder.put(segment.getSourceKey(), segment);
+                }
+            }
+
+            @Override
+            public Class<? extends Configuration>[] targets() {
+                return new Class[] { SegmentConfig.class };
+            }
+        });
+
     }
 
     public void removeSegment(String key) {
-        segmentHolder.remove(key);
+
+        Configurations.update(new Worker() {
+            @Override
+            public void run() {
+                segmentHolder.remove(key);
+            }
+
+            @Override
+            public Class<? extends Configuration>[] targets() {
+                return new Class[] { SegmentConfig.class };
+            }
+        });
     }
 
     public void modifySegment(IConfigSegment segment) {
