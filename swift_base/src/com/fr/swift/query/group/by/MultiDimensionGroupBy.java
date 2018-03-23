@@ -1,5 +1,6 @@
 package com.fr.swift.query.group.by;
 
+import com.fr.swift.constant.SwiftConstants;
 import com.fr.swift.query.filter.detail.DetailFilter;
 import com.fr.swift.result.KeyValue;
 import com.fr.swift.result.RowIndexKey;
@@ -17,7 +18,7 @@ import java.util.List;
  */
 public class MultiDimensionGroupBy implements Iterator<KeyValue<RowIndexKey, RowTraversal>> {
 
-    public static final int START_INDEX = 1;
+    public static final int START_INDEX = SwiftConstants.DICTIONARY.NOT_NULL_START_INDEX;
 
     private List<Column> dimensions;
     private DetailFilter detailFilter;

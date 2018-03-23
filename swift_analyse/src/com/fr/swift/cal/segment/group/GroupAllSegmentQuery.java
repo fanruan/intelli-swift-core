@@ -1,5 +1,6 @@
 package com.fr.swift.cal.segment.group;
 
+import com.fr.swift.constant.SwiftConstants;
 import com.fr.swift.query.aggregator.Aggregator;
 import com.fr.swift.query.filter.detail.DetailFilter;
 import com.fr.swift.query.group.by.GroupByUtils;
@@ -25,7 +26,7 @@ public class GroupAllSegmentQuery extends AbstractGroupSegmentQuery{
     @Override
     public GroupByResultSet getQueryResult() {
         int[] cursor = new int[dimensions.size()];
-        Arrays.fill(cursor, MultiDimensionGroupBy.START_INDEX);
+        Arrays.fill(cursor, SwiftConstants.DICTIONARY.NOT_NULL_START_INDEX);
         return GroupByUtils.query(dimensions, metrics, aggregators, filter, indexSorts, cursor, -1);
     }
 }

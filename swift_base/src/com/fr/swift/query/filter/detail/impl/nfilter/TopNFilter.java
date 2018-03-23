@@ -1,9 +1,12 @@
 package com.fr.swift.query.filter.detail.impl.nfilter;
 
+import com.fr.swift.constant.SwiftConstants;
 import com.fr.swift.query.filter.detail.impl.AbstractFilter;
 import com.fr.swift.result.SwiftNode;
 import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.DictionaryEncodedColumn;
+import com.fr.swift.structure.array.IntListFactory;
+import com.fr.swift.structure.iterator.IntListRowTraversal;
 import com.fr.swift.structure.iterator.RowTraversal;
 import com.fr.swift.util.Util;
 
@@ -23,8 +26,8 @@ public class TopNFilter extends AbstractFilter {
     @Override
     protected RowTraversal getIntIterator(DictionaryEncodedColumn dict) {
         int size = dict.globalSize();
-        int endIndex = size >= topN ? size - topN - 1 : 0;
-        return new BottomNFilterRowTraversal(endIndex, dict);
+        int startIndex = size >= topN ? size - topN : SwiftConstants.DICTIONARY.NOT_NULL_START_INDEX;
+        return new IntListRowTraversal(IntListFactory.createRangeIntList(startIndex, dict.size() - 1));
     }
 
     @Override

@@ -137,7 +137,7 @@ public class ArrayLookupHelper {
      * @return
      */
     public static <T> MatchAndIndex binarySearch(Lookup<T> lookup, T value) {
-        return binarySearch(lookup, 0, lookup.maxIndex(), value);
+        return binarySearch(lookup, lookup.minIndex(), lookup.maxIndex(), value);
     }
 
     private static <T> MatchAndIndex binarySearch(Lookup<T> lookup, int start, int end, T value) {
