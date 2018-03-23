@@ -10,7 +10,7 @@ import com.fr.swift.structure.array.IntList;
 public interface GroupRule<Base, Derive> {
     /**
      * @param index 新分组号
-     * @return 新分组名
+     * @return 新分组值
      */
     Derive getValue(int index);
 
