@@ -1,9 +1,11 @@
 package com.fr.swift.segment;
 
 import com.fr.swift.exception.meta.SwiftMetaDataException;
+import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.segment.column.impl.base.FakeStringDetailColumn;
-import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.util.Crasher;
+
+import java.util.List;
 
 /**
  * This class created on 2018-1-10 10:54:44
@@ -20,17 +22,9 @@ public class RealtimeSegmentHolder extends AbstractSegmentHolder {
 
     @Override
     public void release() {
-        try {
-            for (int i = 1, len = metaData.getColumnCount(); i <= len; i++) {
-                if (getColumn(metaData.getColumnName(i)) instanceof FakeStringDetailColumn) {
-//                    segment.getColumn(new ColumnKey(metaData.getColumnName(i))).getBitmapIndex().release();
-                    getColumn(metaData.getColumnName(i)).release();
-                }
-            }
-        } catch (Exception e) {
-            Crasher.crash(e);
-        } finally {
-//            segment.release();
-        }
+    }
+
+    @Override
+    public void release(List<ColumnKey> columns) {
     }
 }
