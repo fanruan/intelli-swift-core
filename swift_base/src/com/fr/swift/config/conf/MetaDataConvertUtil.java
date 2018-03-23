@@ -2,6 +2,7 @@ package com.fr.swift.config.conf;
 
 import com.fr.swift.config.IMetaData;
 import com.fr.swift.config.IMetaDataColumn;
+import com.fr.swift.config.conf.service.SwiftConfigServiceProvider;
 import com.fr.swift.config.unique.MetaDataColumnUnique;
 import com.fr.swift.config.unique.SwiftMetaDataUnique;
 import com.fr.swift.exception.meta.SwiftMetaDataException;
@@ -19,7 +20,7 @@ import java.util.List;
  */
 public class MetaDataConvertUtil {
     public static SwiftMetaData getSwiftMetaDataBySourceKey(String sourceKey) {
-        IMetaData iMetaData = MetaDataConfig.getInstance().getMetaDataByKey(sourceKey);
+        IMetaData iMetaData = SwiftConfigServiceProvider.getInstance().getMetaDataByKey(sourceKey);
         List<IMetaDataColumn> fieldList = iMetaData.getFieldList();
         List<SwiftMetaDataColumn> fields = new ArrayList<SwiftMetaDataColumn>();
         for (int i = 0, len = fieldList.size(); i < len; i++) {

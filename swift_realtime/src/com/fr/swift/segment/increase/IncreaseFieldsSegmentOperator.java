@@ -1,6 +1,6 @@
 package com.fr.swift.segment.increase;
 
-import com.fr.swift.config.conf.SegmentConfig;
+import com.fr.swift.config.conf.service.SwiftConfigServiceProvider;
 import com.fr.swift.cube.io.Types;
 import com.fr.swift.segment.RealtimeSegmentHolder;
 import com.fr.swift.segment.Segment;
@@ -74,7 +74,7 @@ public class IncreaseFieldsSegmentOperator extends AbstractIncreaseSegmentOperat
             holder.putNullIndex(columnKeys);
             holder.release(columnKeys);
         }
-        SegmentConfig.getInstance().putSegments(configSegment);
+        SwiftConfigServiceProvider.getInstance().addSegments(configSegment);
     }
 
     @Override

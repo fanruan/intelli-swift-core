@@ -63,7 +63,7 @@ public class KmeansOperator extends AbstractOperator {
 
     @Override
     public OperatorType getOperatorType() {
-        return OperatorType.KMEANS;
+        return OperatorType.EXTRA_TRUE;
     }
 
     // TODO 这个后面还要改进，暂时返回空
