@@ -4,6 +4,7 @@ import com.finebi.base.constant.FineEngineType;
 import com.finebi.conf.constant.BIConfConstants;
 import com.finebi.conf.internalimp.field.FineBusinessFieldImp;
 import com.finebi.conf.structure.bean.field.FineBusinessField;
+import com.fr.swift.adaptor.encrypt.SwiftEncryption;
 import com.fr.swift.exception.meta.SwiftMetaDataException;
 import com.fr.swift.source.ColumnTypeConstants.ColumnType;
 import com.fr.swift.source.ColumnTypeUtils;
@@ -23,7 +24,7 @@ import java.util.List;
  */
 public class FieldFactory {
 
-    public static List<FineBusinessField> transformColumns2Fields(SwiftMetaData swiftMetaData, String tableId) throws SwiftMetaDataException {
+    public static List<FineBusinessField> transformColumns2Fields(SwiftMetaData swiftMetaData, String businessTableId) throws SwiftMetaDataException {
         List<FineBusinessField> fineBusinessFieldList = new ArrayList<FineBusinessField>();
         for (int i = 1; i <= swiftMetaData.getColumnCount(); i++) {
             String columnName = swiftMetaData.getColumnName(i);
@@ -32,7 +33,8 @@ public class FieldFactory {
             int precision = swiftMetaData.getPrecision(i);
             int scale = swiftMetaData.getScale(i);
 
-            FineBusinessField fineBusinessField = new FineBusinessFieldImp(tableId == null ? swiftMetaData.getTableName() + columnName : tableId + columnName, columnName, columnRemark);
+            String tableId = businessTableId == null ? swiftMetaData.getTableName() : businessTableId;
+            FineBusinessField fineBusinessField = new FineBusinessFieldImp(SwiftEncryption.encryptFieldId(tableId, columnName), columnName, columnRemark);
 
             ((FineBusinessFieldImp) fineBusinessField).setEngineType(FineEngineType.Cube);
             fineBusinessField.setType(transformSwiftColumnType2BIColumnType(ColumnTypeUtils.sqlTypeToColumnType(columnType, precision, scale)));
