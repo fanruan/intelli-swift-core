@@ -1,10 +1,13 @@
 package com.fr.swift.config.conf;
 
 import com.fr.config.ConfigContext;
+import com.fr.config.Configuration;
 import com.fr.config.DefaultConfiguration;
 import com.fr.config.holder.factory.Holders;
 import com.fr.config.holder.impl.ObjectMapConf;
 import com.fr.swift.config.IMetaData;
+import com.fr.transaction.Configurations;
+import com.fr.transaction.Worker;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -45,19 +48,51 @@ public class MetaDataConfig extends DefaultConfiguration {
      * @param metaData
      */
     public void addMetaData(String sourceKey, IMetaData metaData) {
-        metaDataHolder.put(sourceKey, metaData);
+        Configurations.update(new Worker() {
+            @Override
+            public void run() {
+                metaDataHolder.put(sourceKey, metaData);
+            }
+
+            @Override
+            public Class<? extends Configuration>[] targets() {
+                return new Class[] { MetaDataConfig.class };
+            }
+        });
+
     }
 
     public void removeMetaData(String key) {
-        metaDataHolder.remove(key);
+
+        Configurations.update(new Worker() {
+            @Override
+            public void run() {
+                metaDataHolder.remove(key);
+            }
+
+            @Override
+            public Class<? extends Configuration>[] targets() {
+                return new Class[] { MetaDataConfig.class };
+            }
+        });
     }
 
     public void modifyMetaData(String sourceKey, IMetaData metaData) {
-        IMetaData iMetaData = (IMetaData) metaDataHolder.get(sourceKey);
-        iMetaData.setSchema(metaData.getSchema());
-        iMetaData.setRemark(metaData.getRemark());
-        iMetaData.setTableName(metaData.getTableName());
-        iMetaData.setFieldList(metaData.getFieldList());
+        Configurations.update(new Worker() {
+            @Override
+            public void run() {
+                IMetaData iMetaData = (IMetaData) metaDataHolder.get(sourceKey);
+                iMetaData.setSchema(metaData.getSchema());
+                iMetaData.setRemark(metaData.getRemark());
+                iMetaData.setTableName(metaData.getTableName());
+                iMetaData.setFieldList(metaData.getFieldList());
+            }
+
+            @Override
+            public Class<? extends Configuration>[] targets() {
+                return new Class[] { MetaDataConfig.class };
+            }
+        });
     }
 
     @Override
