@@ -71,7 +71,7 @@ public class FilterInfoFactory {
     }
 
     public static FilterInfo transformFilterBean(List<FilterBean> beans, List<Segment> segments) {
-        List<SwiftDetailFilterValue> filterValues = new ArrayList<SwiftDetailFilterValue>();
+        List<FilterInfo> filterValues = new ArrayList<FilterInfo>();
         for (FilterBean bean : beans) {
             filterValues.add(createFilterValue(bean, segments));
         }
