@@ -18,7 +18,7 @@ import java.util.List;
  * @author anchore
  * @date 2018/2/26
  */
-public class RealtimeColumnDictMerger<T extends Comparable<T>> extends BaseColumnDictMerger<T> {
+public class RealtimeColumnDictMerger<T> extends BaseColumnDictMerger<T> {
     private DataSource dataSource;
 
     public RealtimeColumnDictMerger(DataSource dataSource, ColumnKey key) {

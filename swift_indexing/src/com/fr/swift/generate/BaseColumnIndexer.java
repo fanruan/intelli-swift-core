@@ -39,7 +39,7 @@ import static com.fr.swift.source.ColumnTypeConstants.ClassType.STRING;
  * @author anchore
  * @date 2018/2/26
  */
-public abstract class BaseColumnIndexer<T extends Comparable<T>> extends BaseWorker {
+public abstract class BaseColumnIndexer<T> extends BaseWorker {
     protected ColumnKey key;
 
     public BaseColumnIndexer(ColumnKey key) {
@@ -61,12 +61,16 @@ public abstract class BaseColumnIndexer<T extends Comparable<T>> extends BaseWor
     private void buildIndex() {
         List<Segment> segments = getSegments();
         for (Segment segment : segments) {
-            Column<T> column = segment.getColumn(key);
+            Column<T> column = getColumn(segment);
             buildColumnIndex(column, segment.getRowCount());
         }
     }
 
     protected abstract List<Segment> getSegments();
+
+    Column<T> getColumn(Segment segment) {
+        return segment.getColumn(key);
+    }
 
     protected abstract void releaseIfNeed(Releasable baseColumn);
 
@@ -178,7 +182,7 @@ public abstract class BaseColumnIndexer<T extends Comparable<T>> extends BaseWor
                 val.equals(NULL_STRING);
     }
 
-    private static <V extends Comparable<V>> Iterable<Entry<V, IntList>> toIterable(Map<V, IntList> map) {
+    private static <V> Iterable<Entry<V, IntList>> toIterable(Map<V, IntList> map) {
         if (map instanceof ExternalMap) {
             return (ExternalMap<V, IntList>) map;
         }

@@ -21,7 +21,7 @@ import java.util.List;
  * @description
  * @since Advanced FineBI Analysis 1.0
  */
-public class ColumnIndexer<T extends Comparable<T>> extends BaseColumnIndexer<T> {
+public class ColumnIndexer<T> extends BaseColumnIndexer<T> {
     private DataSource dataSource;
 
     public ColumnIndexer(DataSource dataSource, ColumnKey key) {

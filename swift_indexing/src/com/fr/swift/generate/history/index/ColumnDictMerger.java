@@ -20,7 +20,7 @@ import java.util.List;
  * <p>
  * 合并字典
  */
-public class ColumnDictMerger<T extends Comparable<T>> extends BaseColumnDictMerger<T> {
+public class ColumnDictMerger<T> extends BaseColumnDictMerger<T> {
     private DataSource dataSource;
 
     public ColumnDictMerger(DataSource dataSource, ColumnKey key) {

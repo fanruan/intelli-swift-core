@@ -1,6 +1,5 @@
 package com.fr.swift.generate;
 
-import com.fr.swift.compare.Comparators;
 import com.fr.swift.cube.io.Releasable;
 import com.fr.swift.cube.io.Types.StoreType;
 import com.fr.swift.cube.io.location.IResourceLocation;
@@ -26,7 +25,7 @@ import java.util.TreeMap;
  * @author anchore
  * @date 2018/2/26
  */
-public abstract class BaseColumnDictMerger<T extends Comparable<T>> extends BaseWorker {
+public abstract class BaseColumnDictMerger<T> extends BaseWorker {
     protected ColumnKey key;
 
     public BaseColumnDictMerger(ColumnKey key) {
@@ -47,7 +46,7 @@ public abstract class BaseColumnDictMerger<T extends Comparable<T>> extends Base
     private void mergeDict() {
         List<Segment> segments = getSegments();
         // 值 -> (块号, 值在这块里的序号)
-        Map<T, List<IntPair>> map = newIntPairsSortedMap(calExternalLocation(segments.get(0).getLocation()));
+        Map<T, List<IntPair>> map = newIntPairsSortedMap(segments.get(0));
 
         List<DictionaryEncodedColumn<T>> dictColumns = new ArrayList<DictionaryEncodedColumn<T>>(segments.size());
         for (int segOrder = 0, size = segments.size(); segOrder < size; segOrder++) {
@@ -98,37 +97,38 @@ public abstract class BaseColumnDictMerger<T extends Comparable<T>> extends Base
 
     protected abstract void releaseIfNeed(Releasable baseColumn);
 
-    /**
-     * 计算对应的外排数据存放位置
-     * Column数据位置：.../table/segment/column/...
-     * 对应的全局字典External数据位置 ：.../table/external_global_dict/column/...
-     *
-     * @param segPath segment的path
-     * @return extMap位置
-     */
-    private IResourceLocation calExternalLocation(IResourceLocation segPath) {
-        return segPath.getParent()
-                .buildChildLocation("external_global_dict")
-                .buildChildLocation(key.getName());
-    }
-
-    private static <V extends Comparable<V>>
-    Iterable<Entry<V, List<IntPair>>> toIterable(Map<V, List<IntPair>> map) {
+    private static <V> Iterable<Entry<V, List<IntPair>>> toIterable(Map<V, List<IntPair>> map) {
         if (map instanceof ExternalMap) {
             return (ExternalMap<V, List<IntPair>>) map;
         }
         return map.entrySet();
     }
 
-    private Map<T, List<IntPair>> newIntPairsSortedMap(IResourceLocation pathIfNeed) {
+    /**
+     * 计算对应的外排数据存放位置
+     * Column数据位置：.../table/segment/column/...
+     * 对应的全局字典External数据位置 ：.../table/external_global_dict/column/...
+     *
+     * @param oneOfSegments 其中一块segment
+     * @return extMap位置
+     */
+    private IResourceLocation calExternalLocation(Segment oneOfSegments) {
+        return oneOfSegments.getLocation().getParent().
+                buildChildLocation("external_global_dict").
+                buildChildLocation(key.getName());
+    }
+
+    private Map<T, List<IntPair>> newIntPairsSortedMap(Segment oneOfSegments) {
+        IResourceLocation path = calExternalLocation(oneOfSegments);
+
+        Comparator<T> c = oneOfSegments.<T>getColumn(key).getDictionaryEncodedColumn().getComparator();
+
+        if (path.getStoreType() == StoreType.MEMORY) {
+            return new TreeMap<T, List<IntPair>>(c);
+        }
+
         ClassType classType = getClassType();
-
-        Comparator<T> c = classType == ClassType.STRING ?
-                (Comparator<T>) Comparators.PINYIN_ASC : Comparators.<T>asc();
-
-        return pathIfNeed.getStoreType() == StoreType.MEMORY ?
-                new TreeMap<T, List<IntPair>>(c) :
-                IntPairsExtMaps.newExternalMap(classType, c, pathIfNeed.getPath());
+        return IntPairsExtMaps.newExternalMap(classType, c, path.getPath());
     }
 
     protected abstract ClassType getClassType();
