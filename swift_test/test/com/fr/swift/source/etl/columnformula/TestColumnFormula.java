@@ -25,17 +25,14 @@ public class TestColumnFormula extends TestCase {
             ColumnType columnType = ColumnType.STRING;
             ColumnFormulaTransferOperator operator = new ColumnFormulaTransferOperator(columnType, expression);
             SwiftResultSet rs = operator.createResultSet(null, null, basedSegment);
-            Object[][] str = new Object[][]{{"A",5,10},{"B",1,2},{"C",2,4},{"B",2,4},{"C",2,4},{"B",1,2},{"A",1,2},{"C",5,10},{"B",2,4}};
+            Object[] str = new Object[]{"10","2","4","4","4","2","2","10","4","10","2","4","4","4","2","2","10","4"};
             int index = 0;
             while(rs.next()) {
                 Row row = rs.getRowData();
-                for(int i = 0; i < 3; i++) {
-                    assertEquals(row.getValue(i).toString(), str[index][i].toString());
+                for(int i = 0; i < 1; i++) {
+                    assertEquals(row.getValue(i).toString(), str[index].toString());
                 }
                 index ++;
-                if(index == 9) {
-                    index = 0;
-                }
             }
         } catch(Exception e) {
             e.printStackTrace();

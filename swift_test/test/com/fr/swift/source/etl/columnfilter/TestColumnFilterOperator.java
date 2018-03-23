@@ -1,5 +1,6 @@
 package com.fr.swift.source.etl.columnfilter;
 
+import com.fr.swift.query.filter.info.DetailFilterInfo;
 import com.fr.swift.query.filter.info.FilterInfo;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.source.Row;
@@ -20,7 +21,7 @@ public class TestColumnFilterOperator extends TestCase {
 
     public void testColumnFilter () {
         try {
-            FilterInfo filterInfo = EasyMock.createMock(FilterInfo.class);
+            FilterInfo filterInfo = EasyMock.createMock(DetailFilterInfo.class);
             SwiftMetaData metaData = EasyMock.createMock(SwiftMetaData.class);
             SwiftMetaDataColumn metaDataColumn = EasyMock.createMock(SwiftMetaDataColumn.class);
             EasyMock.expect(metaData.getColumnCount()).andReturn(2).anyTimes();
@@ -36,13 +37,13 @@ public class TestColumnFilterOperator extends TestCase {
             list.add(segment);
             ColumnFilterTransferOperator operator = new ColumnFilterTransferOperator(filterInfo);
             SwiftResultSet rs = operator.createResultSet(metaData, null, list);
-            while(rs.next()) {
+            /*while(rs.next()) {
                 Row row = rs.getRowData();
                 for(int i = 0; i < 2; i++) {
                     System.out.print(row.getValue(i) + "、");
                 }
                 System.out.println();
-            }
+            }*/
         } catch(Exception e) {
             e.printStackTrace();
         }

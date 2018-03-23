@@ -39,7 +39,7 @@ public class SegmentConfig extends DefaultConfiguration {
         return (IConfigSegment) segmentHolder.get(key);
     }
 
-    public void putSegments(IConfigSegment... segments) {
+    public void putSegments(final IConfigSegment... segments) {
         Configurations.update(new Worker() {
             @Override
             public void run() {
@@ -56,7 +56,7 @@ public class SegmentConfig extends DefaultConfiguration {
 
     }
 
-    public void removeSegment(String key) {
+    public void removeSegment(final String key) {
 
         Configurations.update(new Worker() {
             @Override
