@@ -2,7 +2,6 @@ package com.fr.swift.segment.decrease;
 
 import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.config.IMetaData;
-import com.fr.swift.config.conf.MetaDataConfig;
 import com.fr.swift.config.conf.MetaDataConvertUtil;
 import com.fr.swift.config.conf.service.SwiftConfigService;
 import com.fr.swift.config.conf.service.SwiftConfigServiceProvider;

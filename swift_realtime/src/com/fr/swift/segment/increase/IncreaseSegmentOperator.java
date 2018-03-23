@@ -1,9 +1,7 @@
 package com.fr.swift.segment.increase;
 
 import com.fr.swift.config.IMetaData;
-import com.fr.swift.config.conf.MetaDataConfig;
 import com.fr.swift.config.conf.MetaDataConvertUtil;
-import com.fr.swift.config.conf.SegmentConfig;
 import com.fr.swift.config.conf.service.SwiftConfigService;
 import com.fr.swift.config.conf.service.SwiftConfigServiceProvider;
 import com.fr.swift.cube.io.Types;
