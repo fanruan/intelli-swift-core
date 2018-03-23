@@ -27,6 +27,12 @@ public class DataMiningTransferOperator implements ETLTransferOperator {
         this.algorithmBean = algorithmBean;
     }
 
+    /**
+     * @param metaData      当前表的元数据
+     * @param basedMetas    上一步表的元数据
+     * @param basedSegments 上一步表的segment
+     * @return  当前ETL操作的数据
+     */
     @Override
     public SwiftResultSet createResultSet(SwiftMetaData metaData, List<SwiftMetaData> basedMetas, List<Segment[]> basedSegments) {
         List<List<Segment>> tis = new ArrayList<List<Segment>>();
