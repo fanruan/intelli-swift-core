@@ -15,15 +15,13 @@ import java.util.Comparator;
 /**
  * @author anchore
  * @date 2018/1/29
- * <p>
- * 新分组用String表示分组值
  */
-class GroupColumn implements Column<String> {
-    private GroupRule groupRule;
+class GroupColumn<Base, Derive> implements Column<Derive> {
+    private GroupRule<Base, Derive> groupRule;
     private ImmutableBitMap[] groupedBitmaps;
-    private Column<?> originColumn;
+    private Column<Base> originColumn;
 
-    GroupColumn(Column<?> originColumn, GroupRule groupRule) {
+    GroupColumn(Column<Base> originColumn, GroupRule<Base, Derive> groupRule) {
         this.originColumn = originColumn;
         this.groupRule = groupRule;
         group();
@@ -46,7 +44,7 @@ class GroupColumn implements Column<String> {
     }
 
     @Override
-    public DictionaryEncodedColumn<String> getDictionaryEncodedColumn() {
+    public DictionaryEncodedColumn<Derive> getDictionaryEncodedColumn() {
         return new GroupDictColumn();
     }
 
@@ -56,7 +54,7 @@ class GroupColumn implements Column<String> {
     }
 
     @Override
-    public DetailColumn<String> getDetailColumn() {
+    public DetailColumn<Derive> getDetailColumn() {
         throw new UnsupportedOperationException();
     }
 
@@ -65,8 +63,8 @@ class GroupColumn implements Column<String> {
         return null;
     }
 
-    private class GroupDictColumn implements DictionaryEncodedColumn<String> {
-        DictionaryEncodedColumn<?> originDict = originColumn.getDictionaryEncodedColumn();
+    private class GroupDictColumn implements DictionaryEncodedColumn<Derive> {
+        DictionaryEncodedColumn<Base> originDict = originColumn.getDictionaryEncodedColumn();
 
         @Override
         public void putSize(int size) {
@@ -89,13 +87,13 @@ class GroupColumn implements Column<String> {
         }
 
         @Override
-        public void putValue(int index, String val) {
+        public void putValue(int index, Derive val) {
             throw new UnsupportedOperationException();
         }
 
         @Override
-        public String getValue(int index) {
-            return groupRule.getGroupName(index);
+        public Derive getValue(int index) {
+            return groupRule.getValue(index);
         }
 
         @Override
@@ -121,21 +119,23 @@ class GroupColumn implements Column<String> {
 
         @Override
         public int getGlobalIndexByIndex(int index) {
-            throw new UnsupportedOperationException();
+            // TODO: 2018/3/21 anchore的锅
+            return originDict.getGlobalIndexByIndex(index);
         }
 
         @Override
         public int getGlobalIndexByRow(int row) {
+            // TODO: 2018/3/21 同上
+            return originDict.getGlobalIndexByRow(row);
+        }
+
+        @Override
+        public Comparator<Derive> getComparator() {
             throw new UnsupportedOperationException();
         }
 
         @Override
-        public Comparator<String> getComparator() {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
-        public String convertValue(Object value) {
+        public Derive convertValue(Object value) {
             throw new UnsupportedOperationException();
         }
 

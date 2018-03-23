@@ -1,13 +1,16 @@
 package com.fr.swift.segment.increase;
 
+import com.fr.swift.config.conf.SegmentConfig;
 import com.fr.swift.segment.RealtimeSegmentHolder;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.SegmentHolder;
+import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftResultSet;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -51,17 +54,26 @@ public class IncreaseFieldsSegmentOperator extends AbstractIncreaseSegmentOperat
             }
             segmentList.addAll(increaseSegmentList);
         } else {
-            increaseSegmentList.add(new RealtimeSegmentHolder(createSegment(0)));
+            if (segmentList == null || segmentList.isEmpty()) {
+                increaseSegmentList.add(new RealtimeSegmentHolder(createSegment(0)));
+            } else {
+                increaseSegmentList.addAll(segmentList);
+            }
         }
     }
 
     @Override
     public void finishTransport() {
-        for (int i = 0, len = increaseSegmentList.size(); i < len; i++) {
-            SegmentHolder holder = increaseSegmentList.get(i);
-            holder.putNullIndex();
-            holder.release();
+        List<ColumnKey> columnKeys = new ArrayList<ColumnKey>();
+        for (String field : fields) {
+            columnKeys.add(new ColumnKey(field));
         }
+
+        for (SegmentHolder holder : increaseSegmentList) {
+            holder.putNullIndex(columnKeys);
+            holder.release(columnKeys);
+        }
+        SegmentConfig.getInstance().putSegments(configSegment);
     }
 
     @Override

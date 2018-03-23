@@ -27,6 +27,7 @@ import com.fr.swift.query.adapter.metric.Metric;
 import com.fr.swift.query.adapter.target.GroupFormulaTarget;
 import com.fr.swift.query.adapter.target.GroupTarget;
 import com.fr.swift.query.aggregator.Aggregator;
+import com.fr.swift.query.aggregator.SumAggregate;
 import com.fr.swift.query.filter.info.FilterInfo;
 import com.fr.swift.query.group.Group;
 import com.fr.swift.query.sort.AscSort;
@@ -66,9 +67,8 @@ public class TableWidgetAdaptor {
         String queryId = widget.getWidgetId();
         FilterInfo filterInfo = FilterInfoFactory.transformFineFilter(widget.getFilters());
 
-        List<Dimension> dimensions = new ArrayList<Dimension>();
-        List<Metric> metrics = new ArrayList<Metric>();
-        getDimensions(widget, dimensions, metrics);
+        List<Dimension> dimensions = getDimensions(widget);
+        List<Metric> metrics = getMetrics(widget);
 
         GroupTarget[] targets = getTargets(widget);
         Expander expander = null;
@@ -86,16 +86,23 @@ public class TableWidgetAdaptor {
                 targets, expander);
     }
 
-    private static void getDimensions(TableWidget widget, List<Dimension> dimensions, List<Metric> metrics) throws Exception {
+    private static List<Metric> getMetrics(TableWidget widget) throws Exception {
+        List<Metric> metrics = new ArrayList<Metric>();
+        List<FineTarget> targets = widget.getTargetList();
+        for (int i = 0; i < targets.size(); i++) {
+            metrics.add(toMetric(targets.get(i), i));
+        }
+        return metrics;
+    }
+
+    private static List<Dimension> getDimensions(TableWidget widget) throws Exception {
+        List<Dimension> dimensions = new ArrayList<Dimension>();
         List<FineDimension> fineDims = widget.getDimensionList();
         for (int i = 0, size = fineDims.size(); i < size; i++) {
             FineDimension fineDim = fineDims.get(i);
-            if (isMetric(fineDim)) {
-                metrics.add(toMetric(fineDim, i));
-            } else {
-                dimensions.add(toDimension(fineDim, i));
-            }
+            dimensions.add(toDimension(fineDim, i));
         }
+        return dimensions;
     }
 
     private static GroupTarget[] getTargets(TableWidget widget) throws Exception {
@@ -125,13 +132,13 @@ public class TableWidgetAdaptor {
     }
 
 
-    private static Metric toMetric(FineDimension fineDim, int index) {
-        SourceKey key = new SourceKey(fineDim.getId());
-        ColumnKey colKey = new ColumnKey(fineDim.getFieldId());
+    private static Metric toMetric(FineTarget target, int index) {
+        SourceKey key = new SourceKey(target.getId());
+        ColumnKey colKey = new ColumnKey(target.getFieldId());
 
         FilterInfo filterInfo = null;
-
-        Aggregator agg = null;
+        // TODO: 2018/3/21   先跑通流程吧。。
+        Aggregator agg = new SumAggregate();
 
         return new GroupMetric(index, key, colKey, filterInfo, agg);
     }

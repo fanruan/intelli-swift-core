@@ -38,9 +38,9 @@ public class GroupRuleTest extends TestCase {
 
         assertEquals(3, rule.newSize());
 
-        assertEquals("g0", rule.getGroupName(0));
-        assertEquals("g1", rule.getGroupName(1));
-        assertEquals("ungrouped", rule.getGroupName(2));
+        assertEquals("g0", rule.getValue(0));
+        assertEquals("g1", rule.getValue(1));
+        assertEquals("ungrouped", rule.getValue(2));
 
         assertEquals(0, rule.map(0).get(0));
         assertEquals(1, rule.map(0).get(1));
@@ -77,10 +77,10 @@ public class GroupRuleTest extends TestCase {
 
         assertEquals(4, rule.newSize());
 
-        assertEquals("g0", rule.getGroupName(0));
-        assertEquals("g1", rule.getGroupName(1));
-        assertEquals("4", rule.getGroupName(2));
-        assertEquals("10", rule.getGroupName(3));
+        assertEquals("g0", rule.getValue(0));
+        assertEquals("g1", rule.getValue(1));
+        assertEquals("4", rule.getValue(2));
+        assertEquals("10", rule.getValue(3));
 
         IntList l0 = rule.map(0);
         assertEquals(3, l0.size());
@@ -126,10 +126,10 @@ public class GroupRuleTest extends TestCase {
         });
         assertEquals(4, rule.newSize());
 
-        assertEquals("g0", rule.getGroupName(0));
-        assertEquals("g1", rule.getGroupName(1));
-        assertEquals("g2", rule.getGroupName(2));
-        assertEquals("ungrouped", rule.getGroupName(3));
+        assertEquals("g0", rule.getValue(0));
+        assertEquals("g1", rule.getValue(1));
+        assertEquals("g2", rule.getValue(2));
+        assertEquals("ungrouped", rule.getValue(3));
 
         IntList l0 = rule.map(0);
         assertEquals(2, l0.size());
@@ -175,11 +175,11 @@ public class GroupRuleTest extends TestCase {
         });
         assertEquals(5, rule.newSize());
 
-        assertEquals("g0", rule.getGroupName(0));
-        assertEquals("g1", rule.getGroupName(1));
-        assertEquals("g2", rule.getGroupName(2));
-        assertEquals("3", rule.getGroupName(3));
-        assertEquals("10", rule.getGroupName(4));
+        assertEquals("g0", rule.getValue(0));
+        assertEquals("g1", rule.getValue(1));
+        assertEquals("g2", rule.getValue(2));
+        assertEquals("3", rule.getValue(3));
+        assertEquals("10", rule.getValue(4));
 
         IntList l0 = rule.map(0);
         assertEquals(2, l0.size());
@@ -224,9 +224,9 @@ public class GroupRuleTest extends TestCase {
         });
         assertEquals(3, rule.newSize());
 
-        assertEquals("1 - 5", rule.getGroupName(0));
-        assertEquals("5 - 9", rule.getGroupName(1));
-        assertEquals("9 - 10", rule.getGroupName(2));
+        assertEquals("1 - 5", rule.getValue(0));
+        assertEquals("5 - 9", rule.getValue(1));
+        assertEquals("9 - 10", rule.getValue(2));
 
         IntList l0 = rule.map(0);
         assertEquals(4, l0.size());

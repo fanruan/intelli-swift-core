@@ -1,5 +1,6 @@
 package com.fr.swift.query.filter.detail.impl.number;
 
+import com.fr.swift.compare.Comparators;
 import com.fr.swift.query.filter.detail.impl.AbstractFilter;
 import com.fr.swift.query.filter.detail.impl.util.LookupFactory;
 import com.fr.swift.result.SwiftNode;
@@ -33,9 +34,9 @@ public class NumberInRangeFilter extends AbstractFilter<Number> {
 
     @Override
     protected RowTraversal getIntIterator(final DictionaryEncodedColumn<Number> dict) {
-        ArrayLookupHelper.Lookup<Number> lookup = LookupFactory.create(dict);
-        MatchAndIndex minMatchAndIndex = ArrayLookupHelper.binarySearch(lookup, dict.convertValue(min));
-        MatchAndIndex maxMatchAndIndex = ArrayLookupHelper.binarySearch(lookup, dict.convertValue(max));
+        ArrayLookupHelper.Lookup<Number> lookup = LookupFactory.create(dict, Comparators.numberAsc());
+        MatchAndIndex minMatchAndIndex = ArrayLookupHelper.binarySearch(lookup, min);
+        MatchAndIndex maxMatchAndIndex = ArrayLookupHelper.binarySearch(lookup, max);
         // 获取过滤条件对应的RangeIntList区间
         int start, end;
         if (minMatchAndIndex.isMatch()) {

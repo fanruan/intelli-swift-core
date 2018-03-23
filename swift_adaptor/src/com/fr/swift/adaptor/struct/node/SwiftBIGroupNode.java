@@ -5,17 +5,25 @@ import com.fr.swift.result.ChildMap;
 
 public class SwiftBIGroupNode implements BIGroupNode {
 
+    private int deep;
     private Object data;
     private ChildMap<BIGroupNode> childMap = new ChildMap<BIGroupNode>();
     private Number[] summaryValue;
+    private BIGroupNode parent;
+    private BIGroupNode sibling;
 
-    public SwiftBIGroupNode(Object data, Number[] summaryValue) {
+    public SwiftBIGroupNode(int deep, Object data, Number[] summaryValue) {
+        this.deep = deep;
         this.data = data;
         this.summaryValue = summaryValue;
     }
 
     public void addChild(BIGroupNode child) {
+        if (getLastChild() != null) {
+            ((SwiftBIGroupNode) getLastChild()).sibling = child;
+        }
         childMap.put(child.getData(), child);
+        ((SwiftBIGroupNode) child).parent = this;
     }
 
     @Override
@@ -30,7 +38,7 @@ public class SwiftBIGroupNode implements BIGroupNode {
 
     @Override
     public BIGroupNode getLastChild() {
-        return childMap.get(childMap.size() - 1);
+        return childMap.size() == 0 ? null : childMap.get(childMap.size() - 1);
     }
 
     @Override
@@ -45,32 +53,45 @@ public class SwiftBIGroupNode implements BIGroupNode {
 
     @Override
     public BIGroupNode getSiblingGroupNode() {
-        return null;
+        return sibling;
     }
 
     @Override
     public BIGroupNode getParent() {
-        return null;
+        return parent;
     }
 
     @Override
     public int getDeep() {
-        return 0;
+        return deep;
     }
 
     @Override
     public int getTotalLength() {
-        return 0;
+        int count = 1;
+        for (int i = 0; i < childMap.size(); i++) {
+            BIGroupNode node = childMap.get(i);
+            count += node.getTotalLength();
+        }
+        return Math.max(count, 1);
     }
 
     @Override
     public int getTotalLengthWithSummary() {
-        return 0;
+        int count = 1;
+        for (int i = 0; i < childMap.size(); i++) {
+            BIGroupNode node = childMap.get(i);
+            count += node.getTotalLengthWithSummary();
+        }
+        if (getChildLength() <= 1) {
+            count -= 1;
+        }
+        return Math.max(count, 1);
     }
 
     @Override
     public Object getData() {
-        return null;
+        return data;
     }
 
     @Override

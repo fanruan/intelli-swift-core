@@ -13,7 +13,8 @@ import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftMetaDataColumn;
 import com.fr.swift.util.Crasher;
 
-import java.util.Iterator;
+import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -91,12 +92,16 @@ public abstract class AbstractSegmentHolder implements SegmentHolder {
 
     @Override
     public void putNullIndex() {
-        Iterator<ColumnKey> iterator = nullMap.keySet().iterator();
-        while (iterator.hasNext()) {
-            ColumnKey key = iterator.next();
-            segment.getColumn(key).getBitmapIndex().putNullIndex(nullMap.get(key));
+        putNullIndex(nullMap.keySet());
+    }
+
+    @Override
+    public void putNullIndex(Collection<ColumnKey> columns) {
+        for (ColumnKey columnKey : columns) {
+            segment.getColumn(columnKey).getBitmapIndex().putNullIndex(nullMap.get(columnKey));
         }
     }
+
 
     @Override
     public void putDetail(int column, Object value) throws SwiftMetaDataException {
@@ -148,8 +153,15 @@ public abstract class AbstractSegmentHolder implements SegmentHolder {
     }
 
     @Override
+    public void release(List<ColumnKey> columns) {
+        for (ColumnKey columnKey : columns) {
+            segment.getColumn(columnKey).getBitmapIndex().release();
+            getColumn(columnKey).release();
+        }
+    }
+
+    @Override
     public Types.StoreType getStoreType() {
         return storeType;
     }
-
 }

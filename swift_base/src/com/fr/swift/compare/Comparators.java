@@ -1,5 +1,6 @@
 package com.fr.swift.compare;
 
+import java.math.BigDecimal;
 import java.util.Comparator;
 
 /**
@@ -58,5 +59,18 @@ public class Comparators {
                 return c.compare(o2, o1);
             }
         };
+    }
+
+    public static <T extends Number> Comparator<T> numberAsc() {
+        return new Comparator<T>() {
+            @Override
+            public int compare(T a, T b){
+                return new BigDecimal(a.toString()).compareTo(new BigDecimal(b.toString()));
+            }
+        };
+    }
+
+    public static <T extends Number> Comparator<T> numberDesc() {
+        return reverse(Comparators.<T>numberAsc());
     }
 }

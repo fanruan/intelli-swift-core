@@ -7,10 +7,10 @@ import com.fr.swift.source.MetaDataColumn;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftMetaDataColumn;
 import com.fr.swift.source.core.CoreField;
-import com.fr.swift.source.core.MD5Utils;
 import com.fr.swift.source.etl.AbstractOperator;
 import com.fr.swift.source.etl.OperatorType;
 
+import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -68,7 +68,7 @@ public class RankRowOperator extends AbstractOperator {
     public List<SwiftMetaDataColumn> getColumns(SwiftMetaData[] metaDatas) {
         List<SwiftMetaDataColumn> columnList = new ArrayList<SwiftMetaDataColumn>();
         columnList.add(new MetaDataColumn(this.columnName, this.columnName,
-                ColumnTypeUtils.columnTypeToSqlType(this.columnType), MD5Utils.getMD5String(new String[]{(this.columnName)})));
+                Types.INTEGER, ColumnTypeUtils.MAX_LONG_COLUMN_SIZE, 0, fetchObjectCore().getValue()));
         return columnList;
     }
 
@@ -77,7 +77,4 @@ public class RankRowOperator extends AbstractOperator {
         return OperatorType.RANK;
     }
 
-    public String getColumnMD5() {
-        return MD5Utils.getMD5String(new String[]{(this.columnName)});
-    }
 }

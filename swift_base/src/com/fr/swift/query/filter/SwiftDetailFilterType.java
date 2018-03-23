@@ -31,5 +31,7 @@ public enum SwiftDetailFilterType {
     AND,
     OR,
 
+    FORMULA,
+
     ALL_SHOW
 }

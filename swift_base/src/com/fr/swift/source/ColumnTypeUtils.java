@@ -16,7 +16,7 @@ import java.sql.Types;
  * sqlType 数据库标准的类型
  */
 public class ColumnTypeUtils {
-    private static final int MAX_LONG_COLUMN_SIZE = 19;
+    public static final int MAX_LONG_COLUMN_SIZE = 19;
 
     /**
      * 通过数据库类型判断java类

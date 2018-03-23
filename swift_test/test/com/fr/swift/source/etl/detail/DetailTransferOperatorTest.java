@@ -31,6 +31,7 @@ public class DetailTransferOperatorTest extends TestCase {
         EasyMock.expect(sg1.getRowCount()).andReturn(2).anyTimes();
         EasyMock.expect(sg1.getColumn(EasyMock.anyObject())).andReturn(column1).anyTimes();
         EasyMock.expect(column1.getDictionaryEncodedColumn()).andReturn(dic1).anyTimes();
+        EasyMock.expect(dic1.getIndexByRow(EasyMock.anyInt())).andReturn(1).anyTimes();
         EasyMock.expect(dic1.getValue(EasyMock.anyInt())).andReturn(1).anyTimes();
         Segment sgEmpty = control.createMock(Segment.class);
         EasyMock.expect(sgEmpty.getRowCount()).andReturn(0).anyTimes();
@@ -41,6 +42,7 @@ public class DetailTransferOperatorTest extends TestCase {
         EasyMock.expect(sg2.getRowCount()).andReturn(3).anyTimes();
         EasyMock.expect(sg2.getColumn(EasyMock.anyObject())).andReturn(column2).anyTimes();
         EasyMock.expect(column2.getDictionaryEncodedColumn()).andReturn(dic2).anyTimes();
+        EasyMock.expect(dic2.getIndexByRow(EasyMock.anyInt())).andReturn(1).anyTimes();
         EasyMock.expect(dic2.getValue(EasyMock.anyInt())).andReturn(2).anyTimes();
         control.replay();
         List<Segment[]> segments = new ArrayList<>();
@@ -54,8 +56,5 @@ public class DetailTransferOperatorTest extends TestCase {
         assertEquals(list.size(), 5);
         assertEquals(list.get(1), 1);
         assertEquals(list.get(2), 2);
-        DetailTransferOperator emptyOperator = new DetailTransferOperator(new ArrayList<>());
-        SwiftResultSet emptyResultSet = emptyOperator.createResultSet(null, null, segments);
-        assertEquals(emptyResultSet.next(), false);
     }
 }
