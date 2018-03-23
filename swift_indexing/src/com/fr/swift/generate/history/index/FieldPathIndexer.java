@@ -59,7 +59,7 @@ public class FieldPathIndexer extends TablePathIndexer {
                 ImmutableBitMap[] index = new ImmutableBitMap[rowCount];
                 BitMapOrHelper helper = new BitMapOrHelper();
                 for (int i = 0; i < rowCount; i++) {
-                    ImmutableBitMap primaryIndex = primaryColumn.getBitmapIndex().getBitMapIndex(i);
+                    ImmutableBitMap primaryIndex = primaryColumn.getBitmapIndex().getBitMapIndex(i + 1);
                     primaryIndex = primaryIndex.getAnd(allShow);
                     index[i] = buildIndexPerColumn(targetReader, helper, primaryIndex);
                 }
@@ -99,7 +99,7 @@ public class FieldPathIndexer extends TablePathIndexer {
     public void writeTargetIndex(RelationIndex targetWriter, RelationIndexHelper helper) {
         ImmutableBitMap[] targetIndex = helper.getIndex();
         for (int i = 0, len = targetIndex.length; i < len; i++) {
-            targetWriter.putIndex(i, targetIndex[i]);
+            targetWriter.putIndex(i + 1, targetIndex[i]);
         }
     }
 }
