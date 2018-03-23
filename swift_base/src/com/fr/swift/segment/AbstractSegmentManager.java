@@ -7,6 +7,7 @@ import com.fr.swift.config.IMetaDataColumn;
 import com.fr.swift.config.ISegmentKey;
 import com.fr.swift.config.conf.MetaDataConfig;
 import com.fr.swift.config.conf.SegmentConfig;
+import com.fr.swift.config.conf.service.SwiftConfigServiceProvider;
 import com.fr.swift.cube.io.Types;
 import com.fr.swift.source.MetaDataColumn;
 import com.fr.swift.source.SourceKey;
@@ -50,7 +51,7 @@ public abstract class AbstractSegmentManager implements SwiftSegmentManager {
     }
 
     private List<SegmentKey> getSegmentKey(String sourceKey) {
-        IConfigSegment segments = SegmentConfig.getInstance().getSegmentByKey(sourceKey);
+        IConfigSegment segments = SwiftConfigServiceProvider.getInstance().getSegmentByKey(sourceKey);
         List<SegmentKey> target = new ArrayList<SegmentKey>();
         if (null != segments) {
             List<ISegmentKey> segmentKeys = segments.getSegments();

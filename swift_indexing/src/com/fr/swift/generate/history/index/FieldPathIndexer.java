@@ -9,6 +9,7 @@ import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.SwiftSegmentManager;
 import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.ColumnKey;
+import com.fr.swift.segment.column.DictionaryEncodedColumn;
 import com.fr.swift.segment.relation.RelationIndex;
 
 import java.util.List;
@@ -49,19 +50,20 @@ public class FieldPathIndexer extends TablePathIndexer {
         RelationIndex targetReader = getTargetReadIndex(segment);
         RelationIndex targetWriter = getTargetWriteIndex(segment);
         try {
-            int rowCount = primary.getRowCount();
             int targetRowCount = segment.getRowCount();
             List<ColumnKey> columnKeys = logicColumnKey.getKeyFields();
             ImmutableBitMap allShow = primary.getAllShowIndex();
             RelationIndexHelper indexHelper = new RelationIndexHelper();
             for (int j = 0, columnLen = columnKeys.size(); j < columnLen; j++) {
                 Column primaryColumn = primary.getColumn(columnKeys.get(j));
-                ImmutableBitMap[] index = new ImmutableBitMap[rowCount];
+                DictionaryEncodedColumn dicColumn = primaryColumn.getDictionaryEncodedColumn();
+                int size = dicColumn.size();
+                ImmutableBitMap[] index = new ImmutableBitMap[size - 1];
                 BitMapOrHelper helper = new BitMapOrHelper();
-                for (int i = 0; i < rowCount; i++) {
-                    ImmutableBitMap primaryIndex = primaryColumn.getBitmapIndex().getBitMapIndex(i + 1);
+                for (int i = 1; i < size; i++) {
+                    ImmutableBitMap primaryIndex = primaryColumn.getBitmapIndex().getBitMapIndex(i);
                     primaryIndex = primaryIndex.getAnd(allShow);
-                    index[i] = buildIndexPerColumn(targetReader, helper, primaryIndex);
+                    index[i - 1] = buildIndexPerColumn(targetReader, helper, primaryIndex);
                 }
                 indexHelper.addIndex(index);
                 indexHelper.addNullIndex(helper.compute().getNot(targetRowCount));
