@@ -47,7 +47,7 @@ public class MetaDataConfig extends DefaultConfiguration {
      * @param sourceKey
      * @param metaData
      */
-    public void addMetaData(final String sourceKey, final IMetaData metaData) {
+    public void addMetaData(String sourceKey, IMetaData metaData) {
         Configurations.update(new Worker() {
             @Override
             public void run() {
@@ -62,7 +62,7 @@ public class MetaDataConfig extends DefaultConfiguration {
 
     }
 
-    public void removeMetaData(final String key) {
+    public void removeMetaData(String key) {
 
         Configurations.update(new Worker() {
             @Override
@@ -77,7 +77,7 @@ public class MetaDataConfig extends DefaultConfiguration {
         });
     }
 
-    public void modifyMetaData(final String sourceKey, final IMetaData metaData) {
+    public void modifyMetaData(String sourceKey, IMetaData metaData) {
         Configurations.update(new Worker() {
             @Override
             public void run() {
