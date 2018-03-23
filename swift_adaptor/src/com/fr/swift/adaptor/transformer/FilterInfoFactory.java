@@ -195,7 +195,7 @@ public class FilterInfoFactory {
                         createValue(dateValueBean), SwiftDetailFilterType.DATE_NOT_IN_RANGE);
             }
             case BICommonConstants.ANALYSIS_FILTER_DATE.LESS_THAN: {
-                DateRangeValueBean dateFilterBean = ((DateBeforeFilterBean) bean).getFilterValue();
+                DateFilterBean dateFilterBean = ((DateBeforeFilterBean) bean).getFilterValue();
 //                long value = dateFilterBean2long(dateFilterBean);
                 SwiftDateInRangeFilterValue filterValue = new SwiftDateInRangeFilterValue();
                 filterValue.setEnd(System.currentTimeMillis());
@@ -203,7 +203,7 @@ public class FilterInfoFactory {
                         filterValue, SwiftDetailFilterType.DATE_IN_RANGE);
             }
             case BICommonConstants.ANALYSIS_FILTER_DATE.MORE_THAN: {
-                DateRangeValueBean dateFilterBean = ((DateAfterFilterBean) bean).getFilterValue();
+                DateFilterBean dateFilterBean = ((DateAfterFilterBean) bean).getFilterValue();
 //                long value = createValueByDateFilterBeanType(dateFilterBean);
                 SwiftDateInRangeFilterValue filterValue = new SwiftDateInRangeFilterValue();
                 filterValue.setStart(System.currentTimeMillis());
