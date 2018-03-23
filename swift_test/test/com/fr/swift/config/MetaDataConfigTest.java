@@ -10,7 +10,8 @@ import com.fr.config.entity.Entity;
 import com.fr.config.entity.XmlEntity;
 import com.fr.stable.db.DBContext;
 import com.fr.stable.db.option.DBOption;
-import com.fr.swift.config.conf.MetaDataConfig;
+import com.fr.swift.config.conf.service.SwiftConfigService;
+import com.fr.swift.config.conf.service.SwiftConfigServiceProvider;
 import com.fr.swift.source.SourceKey;
 import junit.framework.TestCase;
 
@@ -22,6 +23,7 @@ import junit.framework.TestCase;
 public class MetaDataConfigTest extends TestCase {
 
     private SourceKey sourceKey = new SourceKey("A");
+    private SwiftConfigService configService;
     @Override
     public void setUp() throws Exception {
         super.setUp();
@@ -30,7 +32,7 @@ public class MetaDataConfigTest extends TestCase {
         dbOption.setDialectClass("com.fr.third.org.hibernate.dialect.H2Dialect");
         dbOption.setDriverClass("org.h2.Driver");
         dbOption.setUsername("sa");
-        dbOption.setUrl("jdbc:h2:~/config");
+        dbOption.setUrl("jdbc:h2:~/config/db");
         dbOption.addRawProperty("hibernate.show_sql", true)
                 .addRawProperty("hibernate.format_sql", true).addRawProperty("hibernate.connection.autocommit", true);
         DBContext dbProvider = DBContext.create();
@@ -42,32 +44,33 @@ public class MetaDataConfigTest extends TestCase {
         DaoContext.setClassHelperDao(new HibernateClassHelperDao());
         DaoContext.setXmlEntityDao(new HibernateXmlEnityDao());
         DaoContext.setEntityDao(new HibernateEntityDao());
+        configService = SwiftConfigServiceProvider.getInstance();
     }
 
     public void testAddAndGet() {
-        MetaDataConfig.getInstance().addMetaData(sourceKey.getId(), MetaDataCreater.getMA());
+        configService.addMetaData(sourceKey.getId(), MetaDataCreater.getMA());
 
-        assertEquals(MetaDataConfig.getInstance().getAllMetaData().size(), 1);
+        assertEquals(configService.getAllMetaData().size(), 1);
 
-        IMetaData metaData = MetaDataConfig.getInstance().getMetaDataByKey(sourceKey.getId());
+        IMetaData metaData = configService.getMetaDataByKey(sourceKey.getId());
         assertMetaDataSame(MetaDataCreater.getMA(), metaData);
     }
 
     public void testAddAndRemove() {
-        MetaDataConfig.getInstance().addMetaData(sourceKey.getId(), MetaDataCreater.getMA());
-        assertEquals(MetaDataConfig.getInstance().getAllMetaData().size(), 1);
-        MetaDataConfig.getInstance().removeMetaData(sourceKey.getId());
-        assertEquals(MetaDataConfig.getInstance().getAllMetaData().size(), 0);
+        configService.addMetaData(sourceKey.getId(), MetaDataCreater.getMA());
+        assertEquals(configService.getAllMetaData().size(), 1);
+        configService.removeMetaDatas(sourceKey.getId());
+        assertEquals(configService.getAllMetaData().size(), 0);
     }
 
     public void testAddAndModify() {
         IMetaData before = MetaDataCreater.getMA();
-        MetaDataConfig.getInstance().addMetaData(sourceKey.getId(), MetaDataCreater.getMA());
-        IMetaData metaData1 = MetaDataConfig.getInstance().getMetaDataByKey(sourceKey.getId());
+        configService.addMetaData(sourceKey.getId(), MetaDataCreater.getMA());
+        IMetaData metaData1 = configService.getMetaDataByKey(sourceKey.getId());
         assertMetaDataSame(before, metaData1);
-        MetaDataConfig.getInstance().modifyMetaData(sourceKey.getId(), MetaDataCreater.getMAModify());
+        configService.updateMetaData(sourceKey.getId(), MetaDataCreater.getMAModify());
 
-        IMetaData metaData2 = MetaDataConfig.getInstance().getMetaDataByKey(sourceKey.getId());
+        IMetaData metaData2 = configService.getMetaDataByKey(sourceKey.getId());
         assertMetaDataNotSame(before, metaData2);
         assertMetaDataSame(MetaDataCreater.getMAModify(), metaData2);
     }
