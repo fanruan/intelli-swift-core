@@ -44,54 +44,6 @@ public class MetaDataConfig extends DefaultConfiguration {
      * @param sourceKey
      * @param metaData
      */
-<<<<<<< HEAD
-    public void addMetaData(final String sourceKey, final IMetaData metaData) {
-        Configurations.update(new Worker() {
-            @Override
-            public void run() {
-                metaDataHolder.put(sourceKey, metaData);
-            }
-
-            @Override
-            public Class<? extends Configuration>[] targets() {
-                return new Class[] { MetaDataConfig.class };
-            }
-        });
-
-    }
-
-    public void removeMetaData(final String key) {
-
-        Configurations.update(new Worker() {
-            @Override
-            public void run() {
-                metaDataHolder.remove(key);
-            }
-
-            @Override
-            public Class<? extends Configuration>[] targets() {
-                return new Class[] { MetaDataConfig.class };
-            }
-        });
-    }
-
-    public void modifyMetaData(final String sourceKey, final IMetaData metaData) {
-        Configurations.update(new Worker() {
-            @Override
-            public void run() {
-                IMetaData iMetaData = (IMetaData) metaDataHolder.get(sourceKey);
-                iMetaData.setSchema(metaData.getSchema());
-                iMetaData.setRemark(metaData.getRemark());
-                iMetaData.setTableName(metaData.getTableName());
-                iMetaData.setFieldList(metaData.getFieldList());
-            }
-
-            @Override
-            public Class<? extends Configuration>[] targets() {
-                return new Class[] { MetaDataConfig.class };
-            }
-        });
-=======
     public void addMetaData(String sourceKey, IMetaData metaData) {
         metaDataHolder.put(sourceKey, metaData);
     }
@@ -106,7 +58,6 @@ public class MetaDataConfig extends DefaultConfiguration {
         iMetaData.setRemark(metaData.getRemark());
         iMetaData.setTableName(metaData.getTableName());
         iMetaData.setFieldList(metaData.getFieldList());
->>>>>>> ae9b2351410f8df8e8ca60d225f37418ec9f8df8
     }
 
     @Override

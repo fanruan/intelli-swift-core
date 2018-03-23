@@ -36,45 +36,12 @@ public class SegmentConfig extends DefaultConfiguration {
         return (IConfigSegment) segmentHolder.get(key);
     }
 
-<<<<<<< HEAD
-    public void putSegments(final IConfigSegment... segments) {
-        Configurations.update(new Worker() {
-            @Override
-            public void run() {
-                for (IConfigSegment segment : segments) {
-                    segmentHolder.put(segment.getSourceKey(), segment);
-                }
-            }
-
-            @Override
-            public Class<? extends Configuration>[] targets() {
-                return new Class[] { SegmentConfig.class };
-            }
-        });
-
-    }
-
-    public void removeSegment(final String key) {
-
-        Configurations.update(new Worker() {
-            @Override
-            public void run() {
-                segmentHolder.remove(key);
-            }
-
-            @Override
-            public Class<? extends Configuration>[] targets() {
-                return new Class[] { SegmentConfig.class };
-            }
-        });
-=======
     public void putSegment(IConfigSegment segment) {
         segmentHolder.put(segment.getSourceKey(), segment);
     }
 
     public void removeSegment(String key) {
         segmentHolder.remove(key);
->>>>>>> ae9b2351410f8df8e8ca60d225f37418ec9f8df8
     }
 
     public void modifySegment(IConfigSegment segment) {
