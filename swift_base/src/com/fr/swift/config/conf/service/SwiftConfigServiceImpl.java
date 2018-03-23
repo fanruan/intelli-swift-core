@@ -21,7 +21,7 @@ public class SwiftConfigServiceImpl implements SwiftConfigService {
     private SegmentConfig segmentConfig = SegmentConfig.getInstance();
 
     @Override
-    public boolean addMetaData(String sourceKey, IMetaData metaData) {
+    public boolean addMetaData(final String sourceKey, final IMetaData metaData) {
         return Configurations.update(new MetaDataConfigWorker() {
             @Override
             public void run() {
@@ -31,7 +31,7 @@ public class SwiftConfigServiceImpl implements SwiftConfigService {
     }
 
     @Override
-    public boolean addMetaDatas(Map<String, IMetaData> metaDatas) {
+    public boolean addMetaDatas(final Map<String, IMetaData> metaDatas) {
         return Configurations.update(new MetaDataConfigWorker() {
             @Override
             public void run() {
@@ -45,7 +45,7 @@ public class SwiftConfigServiceImpl implements SwiftConfigService {
     }
 
     @Override
-    public boolean removeMetaDatas(String... sourceKeys) {
+    public boolean removeMetaDatas(final String... sourceKeys) {
         return Configurations.update(new MetaDataConfigWorker() {
             @Override
             public void run() {
@@ -57,7 +57,7 @@ public class SwiftConfigServiceImpl implements SwiftConfigService {
     }
 
     @Override
-    public boolean updateMetaData(String sourceKey, IMetaData metaData) {
+    public boolean updateMetaData(final String sourceKey, final IMetaData metaData) {
         return Configurations.update(new MetaDataConfigWorker() {
             @Override
             public void run() {
@@ -77,7 +77,7 @@ public class SwiftConfigServiceImpl implements SwiftConfigService {
     }
 
     @Override
-    public boolean addSegments(IConfigSegment... segments) {
+    public boolean addSegments(final IConfigSegment... segments) {
         return Configurations.update(new SegmentConfigWorker() {
             @Override
             public void run() {
@@ -89,7 +89,7 @@ public class SwiftConfigServiceImpl implements SwiftConfigService {
     }
 
     @Override
-    public boolean removeSegments(String... sourceKeys) {
+    public boolean removeSegments(final String... sourceKeys) {
         return Configurations.update(new SegmentConfigWorker() {
             @Override
             public void run() {
@@ -101,7 +101,7 @@ public class SwiftConfigServiceImpl implements SwiftConfigService {
     }
 
     @Override
-    public boolean updateSegments(IConfigSegment... segments) {
+    public boolean updateSegments(final IConfigSegment... segments) {
         return Configurations.update(new SegmentConfigWorker() {
             @Override
             public void run() {
