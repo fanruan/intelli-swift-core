@@ -1,9 +1,6 @@
 package com.fr.swift.segment;
 
 import com.fr.swift.exception.meta.SwiftMetaDataException;
-import com.fr.swift.segment.AbstractSegmentHolder;
-import com.fr.swift.segment.Segment;
-import com.fr.swift.source.SwiftMetaData;
 
 /**
  * @author yee

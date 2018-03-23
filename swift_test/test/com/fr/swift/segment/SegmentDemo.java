@@ -22,12 +22,14 @@ import java.util.List;
  * @date 2017/12/25
  */
 public class SegmentDemo extends TestCase {
+    static final String BASE_PATH = System.getProperty("user.dir");
+
     public void testPutSegmentMeta() {
         SwiftSegmentManager sm = new SwiftSegmentManager() {
             @Override
             public Segment getSegment(SegmentKey key) {
                 return new HistorySegmentImpl(
-                        new ResourceLocation("/cube/A/seg1"),
+                        new ResourceLocation(BASE_PATH + "/cubes/A/seg1"),
                         new SwiftMetaDataImpl("A",
                                 Arrays.asList(new MetaDataColumn("long", Types.BIGINT))));
             }
@@ -55,7 +57,7 @@ public class SegmentDemo extends TestCase {
             @Override
             public Segment getSegment(SegmentKey key) {
                 return new HistorySegmentImpl(
-                        new ResourceLocation("/cube/A/seg1"),
+                        new ResourceLocation(BASE_PATH + "/cubes/A/seg1"),
                         new SwiftMetaDataImpl("A",
                                 Arrays.asList(new MetaDataColumn("long", Types.BIGINT))));
             }
@@ -87,7 +89,7 @@ public class SegmentDemo extends TestCase {
             @Override
             public Segment getSegment(SegmentKey key) {
                 return new RealTimeSegmentImpl(
-                        new ResourceLocation("/cube/A/seg1", StoreType.MEMORY),
+                        new ResourceLocation(BASE_PATH + "/cubes/A/seg1", StoreType.MEMORY),
                         new SwiftMetaDataImpl("A",
                                 Arrays.asList(new MetaDataColumn("string", Types.VARCHAR))));
             }

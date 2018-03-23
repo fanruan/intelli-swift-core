@@ -1,9 +1,9 @@
 package com.fr.swift.segment;
 
 import com.fr.swift.config.IMetaData;
-import com.fr.swift.config.conf.MetaDataConfig;
 import com.fr.swift.config.conf.MetaDataConvertUtil;
-import com.fr.swift.config.conf.SegmentConfig;
+import com.fr.swift.config.conf.service.SwiftConfigService;
+import com.fr.swift.config.conf.service.SwiftConfigServiceProvider;
 import com.fr.swift.exception.meta.SwiftMetaDataException;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
@@ -59,9 +59,10 @@ public class HistoryFieldsSegmentOperator extends AbstractHistorySegmentOperator
 
     @Override
     public void finishTransport() {
+        SwiftConfigService configService = SwiftConfigServiceProvider.getInstance();
         try {
             IMetaData metaData = MetaDataConvertUtil.convert2ConfigMetaData(this.metaData);
-            MetaDataConfig.getInstance().addMetaData(sourceKey.getId(), metaData);
+            configService.addMetaData(sourceKey.getId(), metaData);
         } catch (SwiftMetaDataException e) {
             logger.error("save metadata failed! ", e);
         }
@@ -70,7 +71,7 @@ public class HistoryFieldsSegmentOperator extends AbstractHistorySegmentOperator
             holder.putNullIndex();
             holder.release();
         }
-        SegmentConfig.getInstance().putSegments(configSegment);
+        configService.addSegments(configSegment);
     }
 
     @Override

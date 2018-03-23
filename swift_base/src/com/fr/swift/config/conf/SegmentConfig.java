@@ -36,10 +36,8 @@ public class SegmentConfig extends DefaultConfiguration {
         return (IConfigSegment) segmentHolder.get(key);
     }
 
-    public void putSegments(IConfigSegment... segments) {
-        for (IConfigSegment segment : segments) {
-            segmentHolder.put(segment.getSourceKey(), segment);
-        }
+    public void putSegment(IConfigSegment segment) {
+        segmentHolder.put(segment.getSourceKey(), segment);
     }
 
     public void removeSegment(String key) {
@@ -47,7 +45,7 @@ public class SegmentConfig extends DefaultConfiguration {
     }
 
     public void modifySegment(IConfigSegment segment) {
-        putSegments(segment);
+        putSegment(segment);
     }
 
 

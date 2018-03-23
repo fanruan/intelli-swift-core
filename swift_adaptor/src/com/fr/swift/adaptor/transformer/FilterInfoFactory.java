@@ -65,7 +65,9 @@ public class FilterInfoFactory {
     public static FilterInfo transformFineFilter(List<FineFilter> filters) {
         List<FilterBean> beans = new ArrayList<FilterBean>();
         for (FineFilter filter : filters) {
-            beans.add((FilterBean) filter.getValue());
+            if (filter.getValue() != null){
+                beans.add((FilterBean) filter.getValue());
+            }
         }
         return transformFilterBean(beans, new ArrayList<Segment>());
     }
