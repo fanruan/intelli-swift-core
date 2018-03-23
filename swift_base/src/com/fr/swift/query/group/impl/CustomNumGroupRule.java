@@ -30,7 +30,7 @@ public class CustomNumGroupRule extends BaseCustomGroupRule<Number> {
         int dictSize = dictColumn.size();
         reverseMap = new int[dictSize];
 
-        for (int i = 0; i < dictSize; i++) {
+        for (int i = 1; i < dictSize; i++) {
             Number num = dictColumn.getValue(i);
             int index = findIndex(num);
 
