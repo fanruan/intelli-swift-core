@@ -31,7 +31,7 @@ public class CustomStrGroupRule extends BaseCustomGroupRule<String> {
         int dictSize = dictColumn.size();
         reverseMap = new int[dictSize];
 
-        for (int i = 0; i < dictSize; i++) {
+        for (int i = 1; i < dictSize; i++) {
             String val = dictColumn.<String>getValue(i);
             int index = findIndex(val);
 
