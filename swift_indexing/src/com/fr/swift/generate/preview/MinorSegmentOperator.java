@@ -2,12 +2,10 @@ package com.fr.swift.generate.preview;
 
 import com.fr.swift.cube.io.Types.StoreType;
 import com.fr.swift.cube.io.location.ResourceLocation;
-import com.fr.swift.exception.meta.SwiftMetaDataException;
 import com.fr.swift.segment.RealTimeSegmentImpl;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.increase.IncreaseSegmentOperator;
 import com.fr.swift.source.SourceKey;
-import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftResultSet;
 
 import java.sql.SQLException;
@@ -26,11 +24,11 @@ class MinorSegmentOperator extends IncreaseSegmentOperator {
     }
 
     @Override
-    protected Segment createSegment(int order) {
+    protected Segment createSegment(int order, StoreType storeType) {
         String path = String.format("/%s/cubes/%s/minor_seg",
                 System.getProperty("user.dir"),
                 cubeSourceKey);
-        Segment seg = new RealTimeSegmentImpl(new ResourceLocation(path, StoreType.MEMORY), metaData);
+        Segment seg = new RealTimeSegmentImpl(new ResourceLocation(path, storeType), metaData);
         MinorSegmentManager.getInstance().putSegment(sourceKey, Collections.singletonList(seg));
         return seg;
     }

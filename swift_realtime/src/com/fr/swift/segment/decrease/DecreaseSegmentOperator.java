@@ -83,17 +83,9 @@ public class DecreaseSegmentOperator extends AbstractSegmentOperator {
         }
         for (int i = 0, len = segmentList.size(); i < len; i++) {
             SegmentHolder holder = segmentList.get(i);
-//            holder.putRowCount();
-//            holder.putAllShowIndex();
-//            holder.putNullIndex();
             if (holder.getSegment().getLocation().getStoreType() == Types.StoreType.FINE_IO) {
                 holder.release();
             }
         }
-    }
-
-    @Override
-    public int getSegmentCount() {
-        return 0;
     }
 }
