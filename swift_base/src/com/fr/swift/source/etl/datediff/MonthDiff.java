@@ -11,9 +11,9 @@ public class MonthDiff implements DateDiffCalculator {
     private Calendar c = Calendar.getInstance();
 
     @Override
-    public int get(Long d1, Long d2) {
+    public Object get(Long d1, Long d2) {
         if (d1 == null || d2 == null) {
-            return 0;
+            return null;
         }
         c.setTimeInMillis(d1);
         int year1 = DateType.YEAR.from(c), month1 = DateType.MONTH.from(c);
