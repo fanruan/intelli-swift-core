@@ -41,7 +41,7 @@ public class TableToSourceConfigDaoImpl implements TableToSourceConfigDao {
     }
 
     @Override
-    public boolean addConfig(TableToSource... table2Source) {
+    public boolean addConfig(final TableToSource... table2Source) {
         return Configurations.update(new TableToSourceConfigWorker() {
             @Override
             public void run() {
@@ -53,7 +53,7 @@ public class TableToSourceConfigDaoImpl implements TableToSourceConfigDao {
     }
 
     @Override
-    public boolean removeConfig(String... tableId) {
+    public boolean removeConfig(final String... tableId) {
         return Configurations.update(new TableToSourceConfigWorker() {
             @Override
             public void run() {
@@ -65,7 +65,7 @@ public class TableToSourceConfigDaoImpl implements TableToSourceConfigDao {
     }
 
     @Override
-    public boolean updateConfig(TableToSource... table2Source) {
+    public boolean updateConfig(final TableToSource... table2Source) {
         return Configurations.update(new TableToSourceConfigWorker() {
             @Override
             public void run() {
