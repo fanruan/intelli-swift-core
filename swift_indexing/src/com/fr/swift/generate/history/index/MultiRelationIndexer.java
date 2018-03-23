@@ -116,7 +116,7 @@ public class MultiRelationIndexer extends BaseWorker {
         Object primaryObject = null;
         Object foreignObject = getForeignValue(foreignGroupIndex, foreignGroupSize, foreignDicColumn);
         IntArray revert = IntListFactory.createIntArray(foreignTableRowCount, NIOConstant.INTEGER.NULL_VALUE);
-        for (int i = 0, size = primaryDicColumn.size(); i < size; i++) {
+        for (int i = 1, size = primaryDicColumn.size(); i < size; i++) {
             BitmapIndexedColumn primaryIndexColumn = primaryColumn.getBitmapIndex();
             ImmutableBitMap primaryIndex = primaryIndexColumn.getBitMapIndex(i);
             primaryIndex = primaryIndex.getAnd(allShow);
@@ -160,14 +160,14 @@ public class MultiRelationIndexer extends BaseWorker {
     public void buildTargetIndex(RelationIndex index, RelationIndexHelper holder) {
         ImmutableBitMap[] target = holder.getIndex();
         for (int i = 0, len = target.length; i < len; i++) {
-            index.putIndex(i, target[i]);
+            index.putIndex(i + 1, target[i]);
         }
     }
 
     private void buildRevertIndex(RelationIndex index, RelationIndexHelper holder) {
         IntArray target = holder.getRevert();
         for (int i = 0, size = target.size(); i < size; i++) {
-            index.putReverseIndex(i, target.get(i));
+            index.putReverseIndex(i + 1, target.get(i));
         }
     }
 

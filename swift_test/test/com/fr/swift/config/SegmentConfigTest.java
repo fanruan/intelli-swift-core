@@ -10,7 +10,8 @@ import com.fr.config.entity.Entity;
 import com.fr.config.entity.XmlEntity;
 import com.fr.stable.db.DBContext;
 import com.fr.stable.db.option.DBOption;
-import com.fr.swift.config.conf.SegmentConfig;
+import com.fr.swift.config.conf.service.SwiftConfigService;
+import com.fr.swift.config.conf.service.SwiftConfigServiceProvider;
 import com.fr.swift.config.unique.SegmentUnique;
 import junit.framework.TestCase;
 
@@ -22,6 +23,7 @@ import java.util.List;
  */
 public class SegmentConfigTest extends TestCase {
 
+    private SwiftConfigService configService;
 
     public void setUp() throws Exception {
         super.setUp();
@@ -30,7 +32,7 @@ public class SegmentConfigTest extends TestCase {
         dbOption.setDialectClass("com.fr.third.org.hibernate.dialect.H2Dialect");
         dbOption.setDriverClass("org.h2.Driver");
         dbOption.setUsername("sa");
-        dbOption.setUrl("jdbc:h2:~/config");
+        dbOption.setUrl("jdbc:h2:~/config/db");
         dbOption.addRawProperty("hibernate.show_sql", true)
                 .addRawProperty("hibernate.format_sql", true).addRawProperty("hibernate.connection.autocommit", true);
         DBContext dbProvider = DBContext.create();
@@ -42,40 +44,41 @@ public class SegmentConfigTest extends TestCase {
         DaoContext.setClassHelperDao(new HibernateClassHelperDao());
         DaoContext.setXmlEntityDao(new HibernateXmlEnityDao());
         DaoContext.setEntityDao(new HibernateEntityDao());
+        configService = SwiftConfigServiceProvider.getInstance();
     }
 
     public void testAddAndGet() {
         SegmentUnique source = SegmentCreater.getSegment();
-        SegmentConfig.getInstance().putSegments(source);
+        configService.addSegments(source);
 
-        assertEquals(SegmentConfig.getInstance().getAllSegments().size(), 1);
+        assertEquals(configService.getAllSegments().size(), 1);
 
-        IConfigSegment unique = SegmentConfig.getInstance().getSegmentByKey(source.getSourceKey());
+        IConfigSegment unique = configService.getSegmentByKey(source.getSourceKey());
         assertEquals(unique.getSourceKey(), source.getSourceKey());
         assertSegmentSame(source, unique);
     }
 
     public void testAddAndRemove() {
         SegmentUnique source = SegmentCreater.getSegment();
-        SegmentConfig.getInstance().putSegments(source);
-        assertEquals(SegmentConfig.getInstance().getAllSegments().size(), 1);
-        SegmentConfig.getInstance().removeSegment(source.getSourceKey());
-        assertEquals(SegmentConfig.getInstance().getAllSegments().size(), 0);
+        configService.addSegments(source);
+        assertEquals(configService.getAllSegments().size(), 1);
+        configService.removeSegments(source.getSourceKey());
+        assertEquals(configService.getAllSegments().size(), 0);
     }
 
     public void testAddAndModify() {
         SegmentUnique source = SegmentCreater.getSegment();
-        SegmentConfig.getInstance().putSegments(source);
-        IConfigSegment target1 = SegmentConfig.getInstance().getSegmentByKey(source.getSourceKey());
+        configService.addSegments(source);
+        IConfigSegment target1 = configService.getSegmentByKey(source.getSourceKey());
         SegmentUnique modify = SegmentCreater.getModify();
 
         assertSegmentSame(source, target1);
 
-        SegmentConfig.getInstance().modifySegment(modify);
+        configService.updateSegments(modify);
 
-        IConfigSegment target2 = SegmentConfig.getInstance().getSegmentByKey(source.getSourceKey());
+        IConfigSegment target2 = configService.getSegmentByKey(source.getSourceKey());
 
-        assertEquals(SegmentConfig.getInstance().getAllSegments().size(), 1);
+        assertEquals(configService.getAllSegments().size(), 1);
         assertEquals(source.getSourceKey(), target2.getSourceKey());
         assertSegmentNotSame(target1, target2);
         assertSegmentSame(modify, target2);

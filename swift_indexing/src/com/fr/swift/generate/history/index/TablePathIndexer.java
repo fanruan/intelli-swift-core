@@ -104,10 +104,10 @@ public class TablePathIndexer extends BaseWorker {
             IntArray reverse = IntListFactory.createIntArray(targetTableSegment.getRowCount(), NIOConstant.INTEGER.NULL_VALUE);
             BitMapOrHelper helper = new BitMapOrHelper();
             for (int i = 0; i < rowCount; i++) {
-                ImmutableBitMap preTableIndex = preTableRelationIndex.getIndex(i);
+                ImmutableBitMap preTableIndex = preTableRelationIndex.getIndex(i + 1);
                 ImmutableBitMap resultIndex = getTableLinkedOrGVI(preTableIndex, lastRelationReader);
                 helper.add(resultIndex);
-                targetTableRelationIndex.putIndex(i, resultIndex);
+                targetTableRelationIndex.putIndex(i + 1, resultIndex);
                 initReverse(reverse, i, resultIndex);
             }
             buildReverseIndex(targetTableRelationIndex, reverse);
@@ -134,7 +134,7 @@ public class TablePathIndexer extends BaseWorker {
 
     private void buildReverseIndex(RelationIndex targetTableRelationIndex, IntArray reverse) {
         for (int i = 0, len = reverse.size(); i < len; i++) {
-            targetTableRelationIndex.putReverseIndex(i, reverse.get(i));
+            targetTableRelationIndex.putReverseIndex(i + 1, reverse.get(i));
         }
     }
 
@@ -145,7 +145,7 @@ public class TablePathIndexer extends BaseWorker {
                 @Override
                 public boolean actionPerformed(int row) {
                     try {
-                        bitMaps.add(relationIndex.getIndex(row));
+                        bitMaps.add(relationIndex.getIndex(row + 1));
                     } catch (Exception ignore) {
                         bitMaps.add(BitMaps.EMPTY_IMMUTABLE);
                     }

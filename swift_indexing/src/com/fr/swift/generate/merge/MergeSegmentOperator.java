@@ -4,9 +4,9 @@ import com.fr.general.ComparatorUtils;
 import com.fr.swift.config.IConfigSegment;
 import com.fr.swift.config.IMetaData;
 import com.fr.swift.config.ISegmentKey;
-import com.fr.swift.config.conf.MetaDataConfig;
 import com.fr.swift.config.conf.MetaDataConvertUtil;
-import com.fr.swift.config.conf.SegmentConfig;
+import com.fr.swift.config.conf.service.SwiftConfigService;
+import com.fr.swift.config.conf.service.SwiftConfigServiceProvider;
 import com.fr.swift.config.unique.SegmentKeyUnique;
 import com.fr.swift.config.unique.SegmentUnique;
 import com.fr.swift.cube.io.Types;
@@ -117,9 +117,10 @@ public class MergeSegmentOperator implements SegmentOperator {
 
     @Override
     public void finishTransport() {
+        SwiftConfigService configService = SwiftConfigServiceProvider.getInstance();
         try {
             IMetaData metaData = MetaDataConvertUtil.convert2ConfigMetaData(this.metaData);
-            MetaDataConfig.getInstance().addMetaData(sourceKey.getId(), metaData);
+            configService.addMetaData(sourceKey.getId(), metaData);
         } catch (SwiftMetaDataException e) {
             LOGGER.error("save metadata failed! ", e);
         }
@@ -130,7 +131,7 @@ public class MergeSegmentOperator implements SegmentOperator {
             holder.putNullIndex();
             holder.release();
         }
-        SegmentConfig.getInstance().putSegments(configSegment);
+        configService.addSegments(configSegment);
     }
 
     @Override
