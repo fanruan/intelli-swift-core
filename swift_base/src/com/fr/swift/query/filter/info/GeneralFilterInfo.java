@@ -1,6 +1,8 @@
 package com.fr.swift.query.filter.info;
 
 import com.fr.swift.query.filter.detail.DetailFilter;
+import com.fr.swift.query.filter.detail.impl.GeneralAndFilter;
+import com.fr.swift.query.filter.detail.impl.GeneralOrFilter;
 import com.fr.swift.segment.Segment;
 
 import java.util.List;
@@ -35,6 +37,6 @@ public class GeneralFilterInfo implements FilterInfo{
 
     @Override
     public DetailFilter createDetailFilter(Segment segment) {
-        return null;
+        return type == OR ? new GeneralOrFilter(children, segment) : new GeneralAndFilter(children, segment);
     }
 }

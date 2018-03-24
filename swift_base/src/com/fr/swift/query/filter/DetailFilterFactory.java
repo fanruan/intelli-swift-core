@@ -1,8 +1,7 @@
 package com.fr.swift.query.filter;
 
-import com.fr.swift.bitmap.BitMaps;
-import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.query.filter.detail.DetailFilter;
+import com.fr.swift.query.filter.detail.impl.AllShowDetailFilter;
 import com.fr.swift.query.filter.detail.impl.FormulaFilter;
 import com.fr.swift.query.filter.detail.impl.GeneralAndFilter;
 import com.fr.swift.query.filter.detail.impl.GeneralOrFilter;
@@ -24,10 +23,10 @@ import com.fr.swift.query.filter.detail.impl.string.not.StringNotEndsWithFilter;
 import com.fr.swift.query.filter.detail.impl.string.not.StringNotInFilter;
 import com.fr.swift.query.filter.detail.impl.string.not.StringNotLikeFilter;
 import com.fr.swift.query.filter.detail.impl.string.not.StringNotStartsWithFilter;
+import com.fr.swift.query.filter.info.FilterInfo;
 import com.fr.swift.query.filter.info.SwiftDetailFilterValue;
 import com.fr.swift.query.filter.info.value.SwiftDateInRangeFilterValue;
 import com.fr.swift.query.filter.info.value.SwiftNumberInRangeFilterValue;
-import com.fr.swift.result.SwiftNode;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.ColumnKey;
@@ -89,23 +88,13 @@ public class DetailFilterFactory {
             case NOT_NULL:
                 return new NotNullFilter(rowCount, column);
             case AND:
-                return new GeneralAndFilter((List<SwiftDetailFilterValue>) filterValue.getFilterValue(), segment);
+                return new GeneralAndFilter((List<FilterInfo>) filterValue.getFilterValue(), segment);
             case OR:
-                return new GeneralOrFilter((List<SwiftDetailFilterValue>) filterValue.getFilterValue(), segment);
+                return new GeneralOrFilter((List<FilterInfo>) filterValue.getFilterValue(), segment);
             case FORMULA:
                 return new FormulaFilter((String) filterValue.getFilterValue(), segment);
             default:
-                return new DetailFilter() {
-                    @Override
-                    public ImmutableBitMap createFilterIndex() {
-                        return BitMaps.newAllShowBitMap(rowCount);
-                    }
-
-                    @Override
-                    public boolean matches(SwiftNode node) {
-                        return true;
-                    }
-                };
+                return new AllShowDetailFilter(segment);
         }
     }
 }
