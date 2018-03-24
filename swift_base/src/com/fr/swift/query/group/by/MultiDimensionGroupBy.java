@@ -18,7 +18,7 @@ import java.util.List;
  */
 public class MultiDimensionGroupBy implements Iterator<KeyValue<RowIndexKey, RowTraversal>> {
 
-    public static final int START_INDEX = SwiftConstants.DICTIONARY.NOT_NULL_START_INDEX;
+    private static final int START_INDEX = SwiftConstants.DICTIONARY.NOT_NULL_START_INDEX;
 
     private List<Column> dimensions;
     private DetailFilter detailFilter;
