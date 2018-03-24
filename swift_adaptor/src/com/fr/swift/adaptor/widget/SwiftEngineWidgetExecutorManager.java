@@ -67,7 +67,7 @@ public class SwiftEngineWidgetExecutorManager implements EngineWidgetExecutorMan
 
     @Override
     public BIStringDetailResult visit(StringControlWidget detailWidget) {
-        return null;
+        return StringControlWidgetAdaptor.calculate(detailWidget);
     }
 
     @Override
@@ -127,7 +127,7 @@ public class SwiftEngineWidgetExecutorManager implements EngineWidgetExecutorMan
 
     @Override
     public BIListLabelResult visit(ListLabelWidget listLabelWidget) {
-        return null;
+        return ListLabelWidgetAdaptor.calculate(listLabelWidget);
     }
 
     @Override
