@@ -13,7 +13,7 @@ import java.util.Calendar;
  */
 public class DateDerivers {
     @SuppressWarnings("unchecked")
-    static <Derive> Function<Long, Derive> newDeriver(GroupType type) {
+    public static <Derive> Function<Long, Derive> newDeriver(GroupType type) {
         switch (type) {
             case YEAR:
             case QUARTER:

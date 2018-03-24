@@ -80,7 +80,7 @@ public abstract class BaseColumnIndexer<T> extends BaseWorker {
      */
     protected abstract List<Segment> getSegments();
 
-    Column<T> getColumn(Segment segment) {
+    protected Column<T> getColumn(Segment segment) {
         return segment.getColumn(key);
     }
 

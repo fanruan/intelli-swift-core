@@ -5,6 +5,10 @@ import java.util.Calendar;
 /**
  * @author anchore
  * @date 2017/11/29
+ * <p>
+ * 可用于提取日期子字段，如：
+ * 年、月、日、时、分、秒、毫秒
+ * 季度、全年第几周等
  */
 public enum DateType {
     /**
