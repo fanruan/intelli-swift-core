@@ -1,6 +1,9 @@
 package com.fr.swift.query.filter.info;
 
+import com.finebi.conf.internalimp.filter.GeneraOrFilter;
 import com.fr.swift.query.filter.detail.DetailFilter;
+import com.fr.swift.query.filter.detail.impl.GeneralAndFilter;
+import com.fr.swift.query.filter.detail.impl.GeneralOrFilter;
 import com.fr.swift.segment.Segment;
 
 import java.util.List;
@@ -8,7 +11,7 @@ import java.util.List;
 /**
  * Created by pony on 2017/12/21.
  */
-public class GeneralFilterInfo implements FilterInfo{
+public class GeneralFilterInfo implements FilterInfo {
     public static final int OR = 0;
     public static final int AND = 1;
     private List<FilterInfo> children;
@@ -35,6 +38,10 @@ public class GeneralFilterInfo implements FilterInfo{
 
     @Override
     public DetailFilter createDetailFilter(Segment segment) {
-        return null;
+        if (type == OR) {
+            return new GeneralOrFilter(children, segment);
+        } else {
+            return new GeneralAndFilter(children, segment);
+        }
     }
 }

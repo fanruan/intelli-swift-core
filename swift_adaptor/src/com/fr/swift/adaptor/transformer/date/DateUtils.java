@@ -145,6 +145,32 @@ public class DateUtils {
         return endOfDay(c);
     }
 
+    public static long startOfDay(long milliseconds) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(milliseconds);
+        return startOfDay(calendar).getTimeInMillis();
+    }
+
+    public static long endOfDay(long milliseconds) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(milliseconds);
+        return endOfDay(calendar).getTimeInMillis();
+    }
+
+    public static long endOfLastDay(long milliseconds) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(milliseconds);
+        calendar.add(Calendar.DATE, -1);
+        return endOfDay(calendar).getTimeInMillis();
+    }
+
+    public static long startOfNextDay(long milliseconds) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(milliseconds);
+        calendar.add(Calendar.DATE, 1);
+        return startOfDay(calendar).getTimeInMillis();
+    }
+
     private static Calendar startOfDay(Calendar c) {
         int day = c.get(Calendar.DATE);
         Calendar calendar = startOfMonth(c);
