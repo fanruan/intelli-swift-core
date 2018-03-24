@@ -4,6 +4,7 @@ import com.fr.swift.exception.meta.SwiftMetaDataException;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.source.ColumnTypeConstants.ColumnType;
+import com.fr.swift.source.core.CoreField;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,6 +20,7 @@ public abstract class AbstractOuterDataSource extends AbstractDataSource impleme
     /**
      * 保存使用的字段与columnType类型,空或者null表示没变
      */
+    @CoreField
     protected Map<String, ColumnType> fieldColumnTypes;
 
     /**

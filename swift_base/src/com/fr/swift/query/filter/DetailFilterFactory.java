@@ -1,8 +1,7 @@
 package com.fr.swift.query.filter;
 
-import com.fr.swift.bitmap.BitMaps;
-import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.query.filter.detail.DetailFilter;
+import com.fr.swift.query.filter.detail.impl.AllShowDetailFilter;
 import com.fr.swift.query.filter.detail.impl.FormulaFilter;
 import com.fr.swift.query.filter.detail.impl.GeneralAndFilter;
 import com.fr.swift.query.filter.detail.impl.GeneralOrFilter;
@@ -28,7 +27,6 @@ import com.fr.swift.query.filter.info.FilterInfo;
 import com.fr.swift.query.filter.info.SwiftDetailFilterInfo;
 import com.fr.swift.query.filter.info.value.SwiftDateInRangeFilterValue;
 import com.fr.swift.query.filter.info.value.SwiftNumberInRangeFilterValue;
-import com.fr.swift.result.SwiftNode;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.ColumnKey;
@@ -96,17 +94,7 @@ public class DetailFilterFactory {
             case FORMULA:
                 return new FormulaFilter((String) filterInfo.getFilterValue(), segment);
             default:
-                return new DetailFilter() {
-                    @Override
-                    public ImmutableBitMap createFilterIndex() {
-                        return BitMaps.newAllShowBitMap(rowCount);
-                    }
-
-                    @Override
-                    public boolean matches(SwiftNode node) {
-                        return true;
-                    }
-                };
+                return new AllShowDetailFilter(segment);
         }
     }
 }

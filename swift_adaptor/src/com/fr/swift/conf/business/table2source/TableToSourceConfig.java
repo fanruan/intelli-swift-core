@@ -1,9 +1,9 @@
-package com.fr.swift.conf;
+package com.fr.swift.conf.business.table2source;
 
 import com.fr.config.ConfigContext;
 import com.fr.config.DefaultConfiguration;
 import com.fr.config.holder.factory.Holders;
-import com.fr.config.holder.impl.MapConf;
+import com.fr.config.holder.impl.ObjectMapConf;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -23,26 +23,30 @@ public class TableToSourceConfig extends DefaultConfiguration {
         return configuration;
     }
 
-    private MapConf<Map<String, String>> config = Holders.map(new HashMap<String, String>(), String.class, String.class);
+    private ObjectMapConf<Map<String, TableToSource>> config = Holders.objMap(new HashMap<String, TableToSource>(), String.class, TableToSource.class);
 
-    public Map<String, String> getAllConfig() {
+    public Map<String, TableToSource> getAllConfig() {
         return config.get();
     }
 
     public String getConfigByTableId(String tableId) {
-        return (String) config.get(tableId);
+        TableToSource tableToSource = (TableToSource) config.get(tableId);
+        if (null != tableToSource) {
+            return tableToSource.getSourceKey();
+        }
+        return null;
     }
 
-    public void addConfig(String tableId, String sourceKey) {
-        config.put(tableId, sourceKey);
+    public void addConfig(TableToSource table2Source) {
+        config.put(table2Source.getTableId(), table2Source);
     }
 
     public void removeConfig(String tableId) {
         config.remove(tableId);
     }
 
-    public void updateConfig(String tableId, String sourceKey) {
-        addConfig(tableId, sourceKey);
+    public void updateConfig(TableToSource table2Source) {
+        addConfig(table2Source);
     }
 
     public void removeAllConfigs() {
