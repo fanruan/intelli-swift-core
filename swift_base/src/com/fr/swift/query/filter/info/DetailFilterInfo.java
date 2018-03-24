@@ -11,9 +11,9 @@ import java.util.List;
  */
 public class DetailFilterInfo extends AbstractDetailFilterInfo {
 
-    List<SwiftDetailFilterValue> filterValues;
+    List<FilterInfo> filterValues;
 
-    public DetailFilterInfo(List<SwiftDetailFilterValue> filterValues) {
+    public DetailFilterInfo(List<FilterInfo> filterValues) {
         this.filterValues = filterValues;
     }
 
