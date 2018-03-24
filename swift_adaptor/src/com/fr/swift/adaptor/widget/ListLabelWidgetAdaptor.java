@@ -38,7 +38,7 @@ public class ListLabelWidgetAdaptor {
 
         @Override
         public ResultType getResultType() {
-            return ResultType.STRING;
+            return ResultType.LIST_LABEL;
         }
 
         @Override
