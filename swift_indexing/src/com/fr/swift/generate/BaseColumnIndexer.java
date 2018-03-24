@@ -8,7 +8,6 @@ import com.fr.swift.cube.io.Types.StoreType;
 import com.fr.swift.cube.io.location.IResourceLocation;
 import com.fr.swift.cube.task.Task.Result;
 import com.fr.swift.cube.task.impl.BaseWorker;
-import com.fr.swift.exception.meta.SwiftMetaDataException;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.column.BitmapIndexedColumn;
@@ -18,14 +17,11 @@ import com.fr.swift.segment.column.DetailColumn;
 import com.fr.swift.segment.column.DictionaryEncodedColumn;
 import com.fr.swift.setting.PerformancePlugManager;
 import com.fr.swift.source.ColumnTypeConstants.ClassType;
-import com.fr.swift.source.ColumnTypeUtils;
 import com.fr.swift.source.DataSource;
-import com.fr.swift.source.SwiftMetaDataColumn;
 import com.fr.swift.structure.array.IntList;
 import com.fr.swift.structure.array.IntListFactory;
 import com.fr.swift.structure.external.map.ExternalMap;
 import com.fr.swift.structure.external.map.intlist.IntListExternalMapFactory;
-import com.fr.swift.util.Crasher;
 
 import java.util.Comparator;
 import java.util.List;
@@ -95,7 +91,7 @@ public abstract class BaseColumnIndexer<T> extends BaseWorker {
         Map<T, IntList> map;
         IResourceLocation location = column.getLocation();
 
-        if (isDetailInExternal(getClassType(), location.getStoreType())) {
+        if (isDetailInExternal(Util.getClassType(dataSource, key), location.getStoreType())) {
             ExternalMap<T, IntList> extMap = newIntListExternalMap(
                     column.getDictionaryEncodedColumn().getComparator(),
                     location.buildChildLocation(EXTERNAL_STRING).getPath());
@@ -190,20 +186,7 @@ public abstract class BaseColumnIndexer<T> extends BaseWorker {
     }
 
     private ExternalMap<T, IntList> newIntListExternalMap(Comparator<T> c, String path) {
-        return IntListExternalMapFactory.getIntListExternalMap(getClassType(), c, path, true);
-    }
-
-    private ClassType getClassType() {
-        try {
-            SwiftMetaDataColumn metaColumn = dataSource.getMetadata().getColumn(key.getName());
-            return ColumnTypeUtils.sqlTypeToClassType(
-                    metaColumn.getType(),
-                    metaColumn.getPrecision(),
-                    metaColumn.getScale()
-            );
-        } catch (SwiftMetaDataException e) {
-            return Crasher.crash(e);
-        }
+        return IntListExternalMapFactory.getIntListExternalMap(Util.getClassType(dataSource, key), c, path, true);
     }
 
     private static <V> boolean isNullValue(V val) {
