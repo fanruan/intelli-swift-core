@@ -1,7 +1,6 @@
 package com.fr.swift.adaptor.transformer.date;
 
 import com.finebi.conf.constant.BICommonConstants;
-import com.finebi.conf.constant.BIConfConstants;
 import com.finebi.conf.internalimp.bean.filtervalue.date.single.DateDynamicFilterBean;
 import com.finebi.conf.internalimp.bean.filtervalue.date.single.DateDynamicFilterBeanValue;
 import com.finebi.conf.internalimp.bean.filtervalue.date.single.DateStaticFilterBean;
@@ -191,107 +190,6 @@ public class DateUtils {
     private static Calendar minus1Millisecond(Calendar c) {
         c.add(Calendar.MILLISECOND, -1);
         return c;
-    }
-
-    /**
-     * 这边END时间点是不包含的
-     * @param type
-     * @param value
-     * @return
-     */
-    public static long getTime(int type, int value) {
-        Calendar now = Calendar.getInstance();
-        now.setTimeInMillis(System.currentTimeMillis());
-        switch (type) {
-            case BIConfConstants.CONF.DATE_TYPE.MULTI_DATE_YEAR_PREV:
-                now.add(Calendar.YEAR, -value);
-                return now.getTimeInMillis();
-            case BIConfConstants.CONF.DATE_TYPE.MULTI_DATE_YEAR_AFTER:
-                now.add(Calendar.YEAR, value);
-                return now.getTimeInMillis();
-            case BIConfConstants.CONF.DATE_TYPE.MULTI_DATE_YEAR_BEGIN: {
-                int year = now.get(Calendar.YEAR);
-                now.clear();
-                now.set(Calendar.YEAR, year);
-                return now.getTimeInMillis();
-            }
-            case BIConfConstants.CONF.DATE_TYPE.MULTI_DATE_YEAR_END: {
-                int year = now.get(Calendar.YEAR);
-                now.clear();
-                now.set(Calendar.YEAR, year);
-                now.add(Calendar.YEAR, 1);
-                return now.getTimeInMillis();
-            }
-
-            case BIConfConstants.CONF.DATE_TYPE.MULTI_DATE_MONTH_PREV:
-                now.add(Calendar.MONTH, -value);
-                return now.getTimeInMillis();
-            case BIConfConstants.CONF.DATE_TYPE.MULTI_DATE_MONTH_AFTER:
-                now.add(Calendar.MONTH, value);
-                return now.getTimeInMillis();
-            case BIConfConstants.CONF.DATE_TYPE.MULTI_DATE_MONTH_BEGIN: {
-                int year = now.get(Calendar.YEAR);
-                int month = now.get(Calendar.MONTH);
-                now.clear();
-                now.set(Calendar.YEAR, year);
-                now.set(Calendar.MONTH, month);
-                return now.getTimeInMillis();
-            }
-            case BIConfConstants.CONF.DATE_TYPE.MULTI_DATE_MONTH_END: {
-                int year = now.get(Calendar.YEAR);
-                int month = now.get(Calendar.MONTH);
-                now.clear();
-                now.set(Calendar.YEAR, year);
-                now.set(Calendar.MONTH, month);
-                now.add(Calendar.MONTH, 1);
-                return now.getTimeInMillis();
-            }
-
-            case BIConfConstants.CONF.DATE_TYPE.MULTI_DATE_QUARTER_PREV:
-                now.add(Calendar.MONTH, -value * 3);
-                return now.getTimeInMillis();
-            case BIConfConstants.CONF.DATE_TYPE.MULTI_DATE_QUARTER_AFTER:
-                now.add(Calendar.MONTH, value * 3);
-                return now.getTimeInMillis();
-            case BIConfConstants.CONF.DATE_TYPE.MULTI_DATE_QUARTER_BEGIN: {
-                int year = now.get(Calendar.YEAR);
-                int month = now.get(Calendar.MONTH);
-                now.clear();
-                int season = month2Quarter(month);
-                month = getStartMonthOfQuarter(season);
-                now.set(Calendar.YEAR, year);
-                now.set(Calendar.MONTH, month);
-                return now.getTimeInMillis();
-            }
-            case BIConfConstants.CONF.DATE_TYPE.MULTI_DATE_QUARTER_END: {
-                int year = now.get(Calendar.YEAR);
-                int month = now.get(Calendar.MONTH);
-                now.clear();
-                int season = month2Quarter(month);
-                month = getStartMonthOfQuarter(season);
-                now.set(Calendar.YEAR, year);
-                now.set(Calendar.MONTH, month);
-                now.add(Calendar.MONTH, 3);
-                return now.getTimeInMillis();
-            }
-
-            case BIConfConstants.CONF.DATE_TYPE.MULTI_DATE_WEEK_PREV:
-                now.add(Calendar.DATE, -value * 7);
-                return now.getTimeInMillis();
-            case BIConfConstants.CONF.DATE_TYPE.MULTI_DATE_WEEK_AFTER:
-                now.add(Calendar.DATE, value * 7);
-                return now.getTimeInMillis();
-            case BIConfConstants.CONF.DATE_TYPE.MULTI_DATE_DAY_PREV:
-                now.add(Calendar.DATE, -value);
-                return now.getTimeInMillis();
-            case BIConfConstants.CONF.DATE_TYPE.MULTI_DATE_DAY_AFTER:
-                now.add(Calendar.DATE, value);
-                return now.getTimeInMillis();
-            case BIConfConstants.CONF.DATE_TYPE.MULTI_DATE_DAY_TODAY:
-                return now.getTimeInMillis();
-            case BIConfConstants.CONF.DATE_TYPE.MULTI_DATE_PARAM:
-        }
-        return now.getTimeInMillis();
     }
 
     private static int getStartMonthOfQuarter(int quarter) {
