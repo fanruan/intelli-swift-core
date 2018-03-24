@@ -39,7 +39,7 @@ public class NumberInRangeFilter extends AbstractFilter<Number> {
     protected RowTraversal getIntIterator(final DictionaryEncodedColumn<Number> dict) {
         ArrayLookupHelper.Lookup<Number> lookup = LookupFactory.create(dict, Comparators.numberAsc());
         // 获取过滤条件对应的RangeIntList区间
-        int start = min == Double.MIN_VALUE ? START_INDEX : getStart(ArrayLookupHelper.binarySearch(lookup, min));
+        int start = min == -Double.MAX_VALUE ? START_INDEX : getStart(ArrayLookupHelper.binarySearch(lookup, min));
         int end = max == Double.MAX_VALUE ? dict.size() - 1 : getEnd(ArrayLookupHelper.binarySearch(lookup, max));
         start = start < START_INDEX ? START_INDEX : start;
         if (start >= dict.size() || end < START_INDEX || start > end) {
