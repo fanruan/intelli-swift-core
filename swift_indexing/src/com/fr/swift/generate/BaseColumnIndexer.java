@@ -8,6 +8,7 @@ import com.fr.swift.cube.io.Types.StoreType;
 import com.fr.swift.cube.io.location.IResourceLocation;
 import com.fr.swift.cube.task.Task.Result;
 import com.fr.swift.cube.task.impl.BaseWorker;
+import com.fr.swift.exception.meta.SwiftMetaDataException;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.column.BitmapIndexedColumn;
@@ -17,10 +18,14 @@ import com.fr.swift.segment.column.DetailColumn;
 import com.fr.swift.segment.column.DictionaryEncodedColumn;
 import com.fr.swift.setting.PerformancePlugManager;
 import com.fr.swift.source.ColumnTypeConstants.ClassType;
+import com.fr.swift.source.ColumnTypeUtils;
+import com.fr.swift.source.DataSource;
+import com.fr.swift.source.SwiftMetaDataColumn;
 import com.fr.swift.structure.array.IntList;
 import com.fr.swift.structure.array.IntListFactory;
 import com.fr.swift.structure.external.map.ExternalMap;
 import com.fr.swift.structure.external.map.intlist.IntListExternalMapFactory;
+import com.fr.swift.util.Crasher;
 
 import java.util.Comparator;
 import java.util.List;
@@ -40,9 +45,11 @@ import static com.fr.swift.source.ColumnTypeConstants.ClassType.STRING;
  * @date 2018/2/26
  */
 public abstract class BaseColumnIndexer<T> extends BaseWorker {
+    protected DataSource dataSource;
     protected ColumnKey key;
 
-    public BaseColumnIndexer(ColumnKey key) {
+    public BaseColumnIndexer(DataSource dataSource, ColumnKey key) {
+        this.dataSource = dataSource;
         this.key = key;
     }
 
@@ -66,12 +73,22 @@ public abstract class BaseColumnIndexer<T> extends BaseWorker {
         }
     }
 
+    /**
+     * indexer 会对返回的segments的对应列进行索引
+     *
+     * @return 要索引的segments
+     */
     protected abstract List<Segment> getSegments();
 
     Column<T> getColumn(Segment segment) {
         return segment.getColumn(key);
     }
 
+    /**
+     * 如有必要就释放
+     *
+     * @param baseColumn 基础列
+     */
     protected abstract void releaseIfNeed(Releasable baseColumn);
 
     private void buildColumnIndex(Column<T> column, int rowCount) {
@@ -160,6 +177,9 @@ public abstract class BaseColumnIndexer<T> extends BaseWorker {
         releaseIfNeed(indexColumn);
     }
 
+    /**
+     * 全局字典
+     */
     protected abstract void mergeDict();
 
     private Map<T, IntList> newIntListSortedMap(Column<T> column) {
@@ -173,7 +193,18 @@ public abstract class BaseColumnIndexer<T> extends BaseWorker {
         return IntListExternalMapFactory.getIntListExternalMap(getClassType(), c, path, true);
     }
 
-    protected abstract ClassType getClassType();
+    private ClassType getClassType() {
+        try {
+            SwiftMetaDataColumn metaColumn = dataSource.getMetadata().getColumn(key.getName());
+            return ColumnTypeUtils.sqlTypeToClassType(
+                    metaColumn.getType(),
+                    metaColumn.getPrecision(),
+                    metaColumn.getScale()
+            );
+        } catch (SwiftMetaDataException e) {
+            return Crasher.crash(e);
+        }
+    }
 
     private static <V> boolean isNullValue(V val) {
         return val.equals(NULL_INT) ||

@@ -1,7 +1,6 @@
 package com.fr.swift.segment.column.impl;
 
 import com.fr.swift.compare.Comparators;
-import com.fr.swift.cube.io.location.IResourceLocation;
 import com.fr.swift.query.group.GroupType;
 import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.DictionaryEncodedColumn;
@@ -16,9 +15,9 @@ import com.fr.swift.segment.column.impl.base.LongDictColumn;
  * @author anchore
  * @date 2017/12/01
  */
-public class TruncatedDateColumn extends BaseSubDateColumn<Long, Long> {
-    public TruncatedDateColumn(IResourceLocation location, GroupType type, Column<Long> origin) {
-        super(location, type, origin);
+public class TruncDateColumn extends BaseSubDateColumn<Long> {
+    public TruncDateColumn(Column<Long> origin, GroupType type) {
+        super(origin, type);
     }
 
     @Override

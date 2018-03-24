@@ -1,7 +1,7 @@
-package com.fr.swift.generate.history.index;
+package com.fr.swift.generate.realtime.index;
 
 import com.fr.swift.cube.io.Releasable;
-import com.fr.swift.generate.BaseColumnIndexer;
+import com.fr.swift.generate.BaseColumnDictMerger;
 import com.fr.swift.manager.LocalSegmentProvider;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.column.ColumnKey;
@@ -10,14 +10,11 @@ import com.fr.swift.source.DataSource;
 import java.util.List;
 
 /**
- * This class created on 2017-12-28 10:54:47
- *
- * @author Lucifer
- * @description
- * @since Advanced FineBI Analysis 1.0
+ * @author anchore
+ * @date 2018/2/26
  */
-public class ColumnIndexer<T> extends BaseColumnIndexer<T> {
-    public ColumnIndexer(DataSource dataSource, ColumnKey key) {
+public class RealtimeColumnDictMerger<T> extends BaseColumnDictMerger<T> {
+    public RealtimeColumnDictMerger(DataSource dataSource, ColumnKey key) {
         super(dataSource, key);
     }
 
@@ -27,12 +24,7 @@ public class ColumnIndexer<T> extends BaseColumnIndexer<T> {
     }
 
     @Override
-    protected void mergeDict() {
-        new ColumnDictMerger<T>(dataSource, key).work();
-    }
-
-    @Override
     protected void releaseIfNeed(Releasable baseColumn) {
-        baseColumn.release();
+        // realtime的不释放
     }
 }

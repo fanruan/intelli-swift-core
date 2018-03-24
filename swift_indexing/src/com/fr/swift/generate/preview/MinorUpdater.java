@@ -1,7 +1,7 @@
 package com.fr.swift.generate.preview;
 
-import com.fr.swift.generate.realtime.RealtimeColumnDictMerger;
-import com.fr.swift.generate.realtime.RealtimeColumnIndexer;
+import com.fr.swift.generate.realtime.index.RealtimeColumnDictMerger;
+import com.fr.swift.generate.realtime.index.RealtimeColumnIndexer;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.SegmentOperator;
 import com.fr.swift.segment.column.ColumnKey;
