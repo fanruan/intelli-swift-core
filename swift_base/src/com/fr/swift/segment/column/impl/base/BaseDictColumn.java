@@ -1,6 +1,6 @@
 package com.fr.swift.segment.column.impl.base;
 
-import com.fr.swift.constant.SwiftConstants;
+import com.fr.swift.constant.SwiftGroupByConstants;
 import com.fr.swift.cube.io.BuildConf;
 import com.fr.swift.cube.io.ResourceDiscovery;
 import com.fr.swift.cube.io.ResourceDiscoveryImpl;
@@ -232,7 +232,7 @@ abstract class BaseDictColumn<T> implements DictionaryEncodedColumn<T> {
     private ArrayLookupHelper.Lookup<T> lookup = new ArrayLookupHelper.Lookup<T>() {
         @Override
         public int minIndex() {
-            return SwiftConstants.DICTIONARY.NOT_NULL_START_INDEX;
+            return SwiftGroupByConstants.DICTIONARY.NOT_NULL_START_INDEX;
         }
 
         @Override

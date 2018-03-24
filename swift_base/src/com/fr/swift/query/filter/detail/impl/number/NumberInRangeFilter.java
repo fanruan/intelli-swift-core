@@ -1,7 +1,7 @@
 package com.fr.swift.query.filter.detail.impl.number;
 
 import com.fr.swift.compare.Comparators;
-import com.fr.swift.constant.SwiftConstants;
+import com.fr.swift.constant.SwiftGroupByConstants;
 import com.fr.swift.query.filter.detail.impl.AbstractFilter;
 import com.fr.swift.query.filter.detail.impl.util.LookupFactory;
 import com.fr.swift.result.SwiftNode;
@@ -19,7 +19,7 @@ import com.fr.swift.util.Util;
  */
 public class NumberInRangeFilter extends AbstractFilter<Number> {
 
-    private final static int START_INDEX = SwiftConstants.DICTIONARY.NOT_NULL_START_INDEX;
+    private final static int START_INDEX = SwiftGroupByConstants.DICTIONARY.NOT_NULL_START_INDEX;
 
     protected final Double min;
     protected final Double max;

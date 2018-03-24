@@ -1,6 +1,6 @@
 package com.fr.swift.query.filter.detail.impl.util;
 
-import com.fr.swift.constant.SwiftConstants;
+import com.fr.swift.constant.SwiftGroupByConstants;
 import com.fr.swift.segment.column.DictionaryEncodedColumn;
 import com.fr.swift.util.ArrayLookupHelper;
 
@@ -15,7 +15,7 @@ public class LookupFactory {
         return new ArrayLookupHelper.Lookup<T>() {
             @Override
             public int minIndex() {
-                return SwiftConstants.DICTIONARY.NOT_NULL_START_INDEX;
+                return SwiftGroupByConstants.DICTIONARY.NOT_NULL_START_INDEX;
             }
 
             @Override
