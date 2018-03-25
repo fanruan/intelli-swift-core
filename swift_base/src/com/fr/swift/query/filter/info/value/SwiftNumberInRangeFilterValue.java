@@ -5,8 +5,8 @@ package com.fr.swift.query.filter.info.value;
  */
 public class SwiftNumberInRangeFilterValue {
 
-    private double min = -Double.MAX_VALUE;
-    private double max = Double.MAX_VALUE;
+    private double min = Double.NEGATIVE_INFINITY;
+    private double max = Double.POSITIVE_INFINITY;
     private boolean minIncluded = false;
     private boolean maxIncluded = false;
 

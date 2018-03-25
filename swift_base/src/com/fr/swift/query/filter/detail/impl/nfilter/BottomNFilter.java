@@ -1,6 +1,5 @@
 package com.fr.swift.query.filter.detail.impl.nfilter;
 
-import com.fr.swift.constant.SwiftGroupByConstants;
 import com.fr.swift.query.filter.detail.impl.AbstractFilter;
 import com.fr.swift.result.SwiftNode;
 import com.fr.swift.segment.column.Column;
@@ -27,7 +26,7 @@ public class BottomNFilter extends AbstractFilter {
     protected RowTraversal getIntIterator(DictionaryEncodedColumn dict) {
         int endIndex = dict.globalSize() >= bottomN ? bottomN : dict.globalSize();
         return new IntListRowTraversal(
-                IntListFactory.createRangeIntList(SwiftGroupByConstants.DICTIONARY.NOT_NULL_START_INDEX, endIndex));
+                IntListFactory.createRangeIntList(DictionaryEncodedColumn.NOT_NULL_START_INDEX, endIndex));
     }
 
     @Override

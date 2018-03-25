@@ -1,7 +1,6 @@
 package com.fr.swift.query.filter.detail.impl.number;
 
 import com.fr.swift.compare.Comparators;
-import com.fr.swift.constant.SwiftGroupByConstants;
 import com.fr.swift.query.filter.detail.impl.AbstractFilter;
 import com.fr.swift.query.filter.detail.impl.util.LookupFactory;
 import com.fr.swift.result.SwiftNode;
@@ -19,7 +18,7 @@ import com.fr.swift.util.Util;
  */
 public class NumberInRangeFilter extends AbstractFilter<Number> {
 
-    private final static int START_INDEX = SwiftGroupByConstants.DICTIONARY.NOT_NULL_START_INDEX;
+    private final static int START_INDEX = DictionaryEncodedColumn.NOT_NULL_START_INDEX;
 
     protected final Double min;
     protected final Double max;
@@ -39,8 +38,8 @@ public class NumberInRangeFilter extends AbstractFilter<Number> {
     protected RowTraversal getIntIterator(final DictionaryEncodedColumn<Number> dict) {
         ArrayLookupHelper.Lookup<Number> lookup = LookupFactory.create(dict, Comparators.numberAsc());
         // 获取过滤条件对应的RangeIntList区间
-        int start = min == -Double.MAX_VALUE ? START_INDEX : getStart(ArrayLookupHelper.binarySearch(lookup, min));
-        int end = max == Double.MAX_VALUE ? dict.size() - 1 : getEnd(ArrayLookupHelper.binarySearch(lookup, max));
+        int start = min == Double.NEGATIVE_INFINITY ? START_INDEX : getStart(ArrayLookupHelper.binarySearch(lookup, min));
+        int end = max == Double.POSITIVE_INFINITY ? dict.size() - 1 : getEnd(ArrayLookupHelper.binarySearch(lookup, max));
         start = start < START_INDEX ? START_INDEX : start;
         if (start >= dict.size() || end < START_INDEX || start > end) {
             return new IntListRowTraversal(IntListFactory.createEmptyIntList());
