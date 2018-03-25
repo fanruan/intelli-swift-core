@@ -6,6 +6,7 @@ import com.finebi.conf.internalimp.analysis.bean.operator.add.group.custom.numbe
 import com.finebi.conf.internalimp.analysis.bean.operator.group.CustomGroupValueItemBean;
 import com.finebi.conf.internalimp.analysis.bean.operator.group.DimensionSelectValue;
 import com.finebi.conf.internalimp.analysis.bean.operator.group.GroupCustomGroupValueBean;
+import com.finebi.conf.internalimp.analysis.bean.operator.group.GroupSingleValueBean;
 import com.finebi.conf.internalimp.analysis.bean.operator.group.custom.CustomGroupValueBean;
 import com.finebi.conf.internalimp.analysis.bean.operator.group.custom.CustomGroupValueContent;
 import com.finebi.conf.internalimp.bean.dashboard.widget.dimension.group.number.auto.NumberAutoGroupValueBean;
@@ -44,7 +45,8 @@ public class GroupAdaptor {
                 return AnotherGroupAdaptor.adapt(((GroupCustomGroupValueBean) selectValue));
             case TYPE.SINGLE:
                 // 相同值作为一组，可直接取底层的dict
-                return Groups.newNoGroup();
+                GroupType type = GroupTypeAdaptor.adaptGroupType(((GroupSingleValueBean) selectValue).getValue());
+                return Groups.newGroup(new NoGroupRule(type));
             case TYPE.DOUBLE:
                 // 不知道double是啥,前端界面只有group和single
             default:
@@ -70,7 +72,7 @@ public class GroupAdaptor {
                 groupRule = newCustomRule((StringDimensionCustomGroup) dimGroup);
                 break;
             default:
-                groupRule = new NoGroupRule();
+                groupRule = new NoGroupRule(type);
         }
         return Groups.newGroup(groupRule);
     }
