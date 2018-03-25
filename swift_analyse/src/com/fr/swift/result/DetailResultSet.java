@@ -32,4 +32,12 @@ public abstract class DetailResultSet implements SwiftResultSet {
     public void close() {
 
     }
+
+    public int getRowCount() {
+        return maxRow;
+    }
+
+    public int getColumnCount() {
+        return 0;
+    }
 }

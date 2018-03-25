@@ -1,5 +1,6 @@
 package com.fr.swift.cal.result.detail;
 
+import com.fr.swift.adaptor.struct.SwiftEmptyResult;
 import com.fr.swift.cal.Query;
 import com.fr.swift.query.adapter.target.DetailTarget;
 import com.fr.swift.result.DetailResultSet;
@@ -29,10 +30,16 @@ public class SortDetailResultQuery extends AbstractDetailResultQuery {
 
     @Override
     public DetailResultSet getQueryResult() throws SQLException {
-        if (queryList.size() == 1){
+
+        if(queryList.size() == 0) {
+            return null;
+        }
+
+        if(queryList.size() == 1) {
             return queryList.get(0).getQueryResult();
         }
-        comparator = queryList.get(0) instanceof SortSegmentDetailResultSet ? ((SortSegmentDetailResultSet) queryList.get(0).getQueryResult()).getDetailSortComparator() : ((SortSegmentDetailByIndexResultSet) queryList.get(0).getQueryResult()).getDetailSortComparator();
+        DetailResultSet rs = queryList.get(0).getQueryResult();
+        comparator = rs instanceof SortSegmentDetailResultSet ? ((SortSegmentDetailResultSet) rs).getDetailSortComparator() : ((SortSegmentDetailByIndexResultSet) rs).getDetailSortComparator();
         return new SortMultiSegmentDetailResultSet(queryList, comparator);
     }
 }

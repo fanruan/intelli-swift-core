@@ -1,7 +1,9 @@
 package com.fr.swift.result;
 
 import com.fr.swift.cal.Query;
+import com.fr.swift.exception.meta.SwiftMetaDataException;
 import com.fr.swift.source.Row;
+import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftResultSet;
 
 import java.sql.SQLException;
@@ -30,6 +32,22 @@ public class SortMultiSegmentDetailResultSet extends DetailResultSet {
     @Override
     public Row getRowData() throws SQLException {
         return getLatestRowData(unsortedRows[0]);
+    }
+
+    @Override
+    public SwiftMetaData getMetaData() {
+        return new DetailMetaData(){
+            @Override
+            public int getColumnCount() throws SwiftMetaDataException {
+                DetailResultSet drs = null;
+                try {
+                    drs = queries.get(0).getQueryResult();
+                } catch (SQLException e) {
+                    return -1;
+                }
+                return drs.getColumnCount();
+            }
+        };
     }
 
     private void init() throws SQLException {

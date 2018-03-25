@@ -2,12 +2,14 @@ package com.fr.swift.result;
 
 import com.fr.swift.bitmap.traversal.TraversalAction;
 import com.fr.swift.compare.Comparators;
+import com.fr.swift.exception.meta.SwiftMetaDataException;
 import com.fr.swift.query.filter.detail.DetailFilter;
 import com.fr.swift.query.sort.SortType;
 import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.DictionaryEncodedColumn;
 import com.fr.swift.source.ListBasedRow;
 import com.fr.swift.source.Row;
+import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.structure.array.IntList;
 
 import java.util.ArrayList;
@@ -47,6 +49,17 @@ public class SortSegmentDetailResultSet extends DetailResultSet {
     public int getColumnCount() {
         return columnList.size();
     }
+
+    @Override
+    public SwiftMetaData getMetaData() {
+        return new DetailMetaData(){
+            @Override
+            public int getColumnCount() throws SwiftMetaDataException {
+                return columnList.size();
+            }
+        };
+    }
+
 
     public DetailSortComparator getDetailSortComparator() {
         return new DetailSortComparator();

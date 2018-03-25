@@ -4,6 +4,7 @@ import com.finebi.conf.structure.result.BIDetailCell;
 import com.finebi.conf.structure.result.BIDetailTableResult;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
+import com.fr.swift.result.DetailResultSet;
 import com.fr.swift.source.SwiftResultSet;
 
 import java.sql.SQLException;
@@ -62,7 +63,7 @@ public class SwiftDetailTableResult implements BIDetailTableResult {
 
     @Override
     public int rowSize() {
-        return 0;
+        return swiftResultSet instanceof SwiftEmptyResult ? 0 :((DetailResultSet) swiftResultSet).getRowCount();
     }
 
     @Override

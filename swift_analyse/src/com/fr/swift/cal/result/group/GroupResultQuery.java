@@ -35,6 +35,7 @@ public class GroupResultQuery extends AbstractGroupResultQuery {
     public GroupByResultSet getQueryResult() throws SQLException {
         // 暂时不考虑对结果的过滤
         // 这边因为要构建node，需要用到cube的字典（找到全局索引对应的分组值）
+
         List<GroupByResultSet> groupByResultSets = new ArrayList<GroupByResultSet>();
         for (Query<GroupByResultSet> query : queryList) {
             groupByResultSets.add(query.getQueryResult());
