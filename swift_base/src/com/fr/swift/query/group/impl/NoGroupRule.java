@@ -9,8 +9,19 @@ import com.fr.swift.structure.array.IntListFactory;
  * @date 2018/1/31
  * <p>
  * 不分组规则 1个一组
+ * 两种情况：普通列、日期子列
  */
 public class NoGroupRule<Base> extends BaseGroupRule<Base, Base> {
+    private GroupType type;
+
+    public NoGroupRule() {
+        this(GroupType.NONE);
+    }
+
+    public NoGroupRule(GroupType type) {
+        this.type = type;
+    }
+
     @Override
     public Base getValue(int index) {
         return dictColumn.getValue(index);
@@ -35,7 +46,7 @@ public class NoGroupRule<Base> extends BaseGroupRule<Base, Base> {
 
     @Override
     public GroupType getGroupType() {
-        return GroupType.NONE;
+        return type;
     }
 
     @Override

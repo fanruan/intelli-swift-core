@@ -169,7 +169,7 @@ class GroupColumn<Base, Derive> implements Column<Derive> {
 
         @Override
         public ImmutableBitMap getNullIndex() {
-            throw new UnsupportedOperationException();
+            return getBitMapIndex(0);
         }
 
         @Override

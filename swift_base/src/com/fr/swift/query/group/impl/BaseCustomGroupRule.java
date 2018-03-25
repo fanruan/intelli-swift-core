@@ -3,6 +3,7 @@ package com.fr.swift.query.group.impl;
 import com.fr.stable.StringUtils;
 import com.fr.swift.structure.Pair;
 import com.fr.swift.structure.array.IntList;
+import com.fr.swift.structure.array.IntListFactory;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -15,7 +16,7 @@ abstract class BaseCustomGroupRule<Base> extends BaseGroupRule<Base, String> {
     /**
      * 新分组序号 -> (新分组名, 旧分组序号)
      */
-    Map<Integer, Pair<String, IntList>> map = new HashMap<Integer, Pair<String, IntList>>();
+    private Map<Integer, Pair<String, IntList>> map = new HashMap<Integer, Pair<String, IntList>>();
     /**
      * 旧值序号 -> 新值序号
      */
@@ -49,5 +50,21 @@ abstract class BaseCustomGroupRule<Base> extends BaseGroupRule<Base, String> {
 
     boolean hasOtherGroup() {
         return StringUtils.isNotEmpty(otherGroupName);
+    }
+
+    void internalMap(int oldIndex, int newIndex, String groupName) {
+        if (map.containsKey(newIndex)) {
+            map.get(newIndex).getValue().add(oldIndex);
+        } else {
+            IntList indices = IntListFactory.createIntList();
+            indices.add(oldIndex);
+            map.put(newIndex, Pair.of(groupName, indices));
+            reverseMap[oldIndex] = newIndex;
+        }
+
+        // 0号为null
+        IntList ints = IntListFactory.createIntList(1);
+        ints.add(0);
+        map.put(0, Pair.of((String) null, ints));
     }
 }

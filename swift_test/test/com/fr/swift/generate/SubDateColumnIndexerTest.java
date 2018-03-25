@@ -34,15 +34,7 @@ public class SubDateColumnIndexerTest extends BaseTest {
     }
 
     public void testIndexSubDate() {
-        GroupType[] types = {
-                GroupType.YEAR, GroupType.QUARTER, GroupType.MONTH,
-                GroupType.WEEK, GroupType.WEEK_OF_YEAR, GroupType.DAY,
-                GroupType.HOUR, GroupType.MINUTE, GroupType.SECOND,
-                GroupType.Y_M_D_H_M_S, GroupType.Y_M_D_H_M, GroupType.Y_M_D_H,
-                GroupType.Y_M_D, GroupType.Y_M, GroupType.Y_Q, GroupType.Y_W, GroupType.Y_D
-        };
-
-        for (GroupType type : types) {
+        for (GroupType type : SubDateColumn.TYPES_TO_GENERATE) {
             indexSubDate(type);
         }
     }

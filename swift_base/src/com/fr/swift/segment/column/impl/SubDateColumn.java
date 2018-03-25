@@ -20,6 +20,11 @@ import com.fr.swift.util.function.Function;
  * @see GroupType
  */
 public class SubDateColumn<Derive> extends BaseColumn<Derive> {
+    public static final GroupType[] TYPES_TO_GENERATE = {
+            GroupType.YEAR, GroupType.QUARTER, GroupType.MONTH,
+            GroupType.Y_M_D, GroupType.Y_M
+    };
+
     private GroupType type;
 
     /**
@@ -113,6 +118,7 @@ public class SubDateColumn<Derive> extends BaseColumn<Derive> {
         @Override
         public ImmutableBitMap getBitMapIndex(int index) {
             if (index < 1) {
+                // 拿源列的nullIndex
                 return getNullIndex();
             }
             return deriveBitmapColumn.getBitMapIndex(index);
