@@ -43,7 +43,7 @@ public class SortMultiSegmentDetailResultSet extends DetailResultSet {
                 try {
                     drs = queries.get(0).getQueryResult();
                 } catch (SQLException e) {
-                    return -1;
+
                 }
                 return drs.getColumnCount();
             }

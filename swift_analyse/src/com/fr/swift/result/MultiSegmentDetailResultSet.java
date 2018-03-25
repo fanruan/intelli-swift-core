@@ -28,10 +28,11 @@ public class MultiSegmentDetailResultSet extends DetailResultSet {
 
     @Override
     public Row getRowData() throws SQLException {
-        while (!(drs.get(index).next())) {
+        DetailResultSet rs = drs.get(index);
+        while (!rs.next()) {
             index++;
         }
-        return drs.get(index).getRowData();
+        return rs.getRowData();
     }
 
     private void init() throws SQLException{
@@ -46,7 +47,13 @@ public class MultiSegmentDetailResultSet extends DetailResultSet {
         return new DetailMetaData(){
             @Override
             public int getColumnCount() throws SwiftMetaDataException {
-                    return drs.size();
+                DetailResultSet drs = null;
+                try {
+                    drs = queries.get(0).getQueryResult();
+                } catch (SQLException e) {
+
+                }
+                return drs.getColumnCount();
             }
         };
     }
