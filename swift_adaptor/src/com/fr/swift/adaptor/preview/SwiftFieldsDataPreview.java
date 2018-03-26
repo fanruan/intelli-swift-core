@@ -101,8 +101,8 @@ public class SwiftFieldsDataPreview {
                 }
                 List<Segment> segments = MinorSegmentManager.getInstance().getSegment(dataSource.getSourceKey());
                 List<Object> list = new ArrayList<Object>();
-                max = - Double.NaN;
-                min = Double.NaN;
+                max = Double.NEGATIVE_INFINITY;
+                min = Double.POSITIVE_INFINITY;
                 for (Segment sg : segments) {
                     Column c = sg.getColumn(new ColumnKey(fieldName));
                     DictionaryEncodedColumn dic = c.getDictionaryEncodedColumn();
