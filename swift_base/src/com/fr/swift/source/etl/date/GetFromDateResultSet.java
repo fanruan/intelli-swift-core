@@ -60,10 +60,7 @@ public class GetFromDateResultSet implements SwiftResultSet {
             checkType(field);
             DictionaryEncodedColumn getter = segments[segCursor].getColumn(columnKey).getDictionaryEncodedColumn();
             Object value = getter.getValue(getter.getIndexByRow(rowCursor));
-            if (value != null){
-                value = dateGetter.apply(value);
-            }
-            Long v = Long.parseLong(value.toString());
+            Long v = value != null ? Long.parseLong(dateGetter.apply(value).toString()) : null;
             List<Object> list = new ArrayList<Object>();
             list.add(v);
             tempValue.setRow(new ListBasedRow(list));
