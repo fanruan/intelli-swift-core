@@ -1,6 +1,6 @@
 package com.fr.swift.source.etl.expression;
 
-import com.fr.swift.query.filter.info.DetailFilterInfo;
+import com.fr.swift.query.filter.info.FilterInfo;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.source.SwiftMetaData;
@@ -16,11 +16,11 @@ public class ExpressionFilterTransferOperator implements ETLTransferOperator {
 
     private ColumnKey columnKey;
     private int type;
-    private DetailFilterInfo[] filters;
+    private FilterInfo[] filters;
     private Object[] values;
     private Object otherValue;
 
-    public ExpressionFilterTransferOperator(ColumnKey columnKey, int type, DetailFilterInfo[] filters,
+    public ExpressionFilterTransferOperator(ColumnKey columnKey, int type, FilterInfo[] filters,
                                             Object[] values, Object otherValue) {
         this.columnKey = columnKey;
         this.type = type;
