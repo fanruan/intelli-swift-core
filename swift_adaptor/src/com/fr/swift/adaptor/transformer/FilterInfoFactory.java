@@ -193,11 +193,7 @@ public class FilterInfoFactory {
             }
             case BICommonConstants.ANALYSIS_FILTER_DATE.LESS_THAN: {
                 DateFilterBean dateFilterBean = ((DateBeforeFilterBean) bean).getFilterValue();
-<<<<<<< HEAD
-//                long value = dateFilterBean2long(dateFilterBean);
-=======
                 long value = DateUtils.endOfLastDay(DateUtils.dateFilterBean2Long(dateFilterBean));
->>>>>>> ed2650aac7e0309d2c400a9e61bf01cf190783b6
                 SwiftDateInRangeFilterValue filterValue = new SwiftDateInRangeFilterValue();
                 filterValue.setEnd(value);
                 return new SwiftDetailFilterInfo<SwiftDateInRangeFilterValue>(fieldName,
@@ -205,11 +201,7 @@ public class FilterInfoFactory {
             }
             case BICommonConstants.ANALYSIS_FILTER_DATE.MORE_THAN: {
                 DateFilterBean dateFilterBean = ((DateAfterFilterBean) bean).getFilterValue();
-<<<<<<< HEAD
-//                long value = createValueByDateFilterBeanType(dateFilterBean);
-=======
                 long value = DateUtils.startOfNextDay(DateUtils.dateFilterBean2Long(dateFilterBean));
->>>>>>> ed2650aac7e0309d2c400a9e61bf01cf190783b6
                 SwiftDateInRangeFilterValue filterValue = new SwiftDateInRangeFilterValue();
                 filterValue.setStart(value);
                 return new SwiftDetailFilterInfo<SwiftDateInRangeFilterValue>(fieldName,
