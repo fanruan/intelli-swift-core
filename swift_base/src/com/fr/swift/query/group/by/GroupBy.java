@@ -92,6 +92,10 @@ public class GroupBy {
     }
 
     private static GroupByResult getAllShowResult(DictionaryEncodedColumn dictionaryEncodedColumn, BitmapIndexedColumn bitMapColumn, int startIndex, boolean asc) {
+        //null值如果没有，就去掉
+        if (startIndex == 0 && bitMapColumn.getBitMapIndex(0).isEmpty()){
+            startIndex = 1;
+        }
         return asc ? getAllShowAscResult(dictionaryEncodedColumn, bitMapColumn, startIndex) :
                 getAllShowDescResult(dictionaryEncodedColumn, bitMapColumn, startIndex);
     }
