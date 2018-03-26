@@ -33,6 +33,9 @@ public class SumByGroupTarget implements Serializable {
 
 
     public Object getSumValue(Segment[] segments, RowTraversal[] traversal) {
+        if (segments == null || segments.length == 0){
+            return null;
+        }
         switch (sumType) {
             case ETLConstant.CONF.GROUP.NUMBER.SUM: {
                 DoubleAmountAggregateValue value = SumAggregate.INSTANCE.aggregate(traversal[0], segments[0].getColumn(new ColumnKey(name)));

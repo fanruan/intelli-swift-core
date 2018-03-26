@@ -71,7 +71,9 @@ public class AllDataRowCalculatorResultSet implements SwiftResultSet {
         if(dimensions != null) {
             if(iterator.hasNext() || (segCursor < tempSegment.length && rowCursor < rowCount)) {
                 if(needNext) {
-                    valuesAndGVI = iterator.next();
+                    do {
+                        valuesAndGVI = iterator.next();
+                    } while (valuesAndGVI.getAggreator().isEmpty());
                     tempTraversal = new RowTraversal[valuesAndGVI.getAggreator().size()];
                     tempSegment = new Segment[valuesAndGVI.getAggreator().size()];
                     for (int i = 0; i < valuesAndGVI.getAggreator().size(); i++) {
