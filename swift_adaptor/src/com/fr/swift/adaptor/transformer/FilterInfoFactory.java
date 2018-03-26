@@ -37,6 +37,7 @@ import com.finebi.conf.internalimp.bean.filtervalue.number.NumberValue;
 import com.finebi.conf.structure.bean.filter.DateFilterBean;
 import com.finebi.conf.structure.bean.filter.FilterBean;
 import com.finebi.conf.structure.filter.FineFilter;
+import com.fr.stable.StringUtils;
 import com.fr.swift.adaptor.transformer.cal.AvgUtils;
 import com.fr.swift.adaptor.transformer.date.DateUtils;
 import com.fr.swift.query.filter.SwiftDetailFilterType;
@@ -82,33 +83,57 @@ public class FilterInfoFactory {
             // string类过滤
             case BICommonConstants.ANALYSIS_FILTER_STRING.BELONG_VALUE:
                 List<String> belongValues = ((StringBelongFilterBean) bean).getFilterValue().getValue();
+                if (belongValues == null || belongValues.size() == 0) {
+                    break;
+                }
                 return new SwiftDetailFilterInfo<Set<String>>(fieldName,
                         new HashSet<String>(belongValues), SwiftDetailFilterType.STRING_IN);
             case BICommonConstants.ANALYSIS_FILTER_STRING.NOT_BELONG_VALUE:
                 List<String> notBelongValues = ((StringNoBelongFilterBean) bean).getFilterValue().getValue();
+                if (notBelongValues == null || notBelongValues.size() == 0) {
+                    break;
+                }
                 return new SwiftDetailFilterInfo<Set<String>>(fieldName,
                         new HashSet<String>(notBelongValues), SwiftDetailFilterType.STRING_NOT_IN);
             case BICommonConstants.ANALYSIS_FILTER_STRING.CONTAIN:
                 String contain = ((StringContainFilterBean) bean).getFilterValue();
+                if (StringUtils.isBlank(contain)) {
+                    break;
+                }
                 return new SwiftDetailFilterInfo<String>(fieldName, contain, SwiftDetailFilterType.STRING_LIKE);
             case BICommonConstants.ANALYSIS_FILTER_STRING.NOT_CONTAIN: {
                 String value = ((StringNoContainFilterBean) bean).getFilterValue();
+                if (StringUtils.isBlank(value)) {
+                    break;
+                }
                 return new SwiftDetailFilterInfo<String>(fieldName, value, SwiftDetailFilterType.STRING_NOT_LIKE);
             }
             case BICommonConstants.ANALYSIS_FILTER_STRING.BEGIN_WITH: {
                 String value = ((StringBeginWithFilterBean) bean).getFilterValue();
+                if (StringUtils.isBlank(value)) {
+                    break;
+                }
                 return new SwiftDetailFilterInfo<String>(fieldName, value, SwiftDetailFilterType.STRING_STARTS_WITH);
             }
             case BICommonConstants.ANALYSIS_FILTER_STRING.NOT_BEGIN_WITH: {
                 String value = ((StringNoBeginWithFilterBean) bean).getFilterValue();
+                if (StringUtils.isBlank(value)) {
+                    break;
+                }
                 return new SwiftDetailFilterInfo<String>(fieldName, value, SwiftDetailFilterType.STRING_NOT_STARTS_WITH);
             }
             case BICommonConstants.ANALYSIS_FILTER_STRING.END_WITH: {
                 String value = ((StringEndWithFilterBean) bean).getFilterValue();
+                if (StringUtils.isBlank(value)) {
+                    break;
+                }
                 return new SwiftDetailFilterInfo<String>(fieldName, value, SwiftDetailFilterType.STRING_ENDS_WITH);
             }
             case BICommonConstants.ANALYSIS_FILTER_STRING.NOT_END_WITH: {
                 String value = ((StringNoEndWithFilterBean) bean).getFilterValue();
+                if (StringUtils.isBlank(value)) {
+                    break;
+                }
                 return new SwiftDetailFilterInfo<String>(fieldName, value, SwiftDetailFilterType.STRING_NOT_ENDS_WITH);
             }
             case BICommonConstants.ANALYSIS_FILTER_STRING.IS_NULL:
