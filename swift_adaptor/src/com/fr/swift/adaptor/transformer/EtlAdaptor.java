@@ -377,8 +377,15 @@ class EtlAdaptor {
         if (dimensionBean.isEmpty()) {
             return null;
         }
-        SumByGroupDimension[] groupDimensions = new SumByGroupDimension[dimensions.size()];
-        SumByGroupTarget[] groupTargets = new SumByGroupTarget[views.size()];
+
+        SumByGroupDimension[] groupDimensions = null;
+        SumByGroupTarget[] groupTargets = null;
+        if(null != views) {
+            groupTargets = new SumByGroupTarget[views.size()];
+        }
+        if(null != dimensions) {
+            groupDimensions = new SumByGroupDimension[dimensions.size()];
+        }
         for (int i = 0; i < groupDimensions.length; i++) {
             DimensionValueBean tempBean = dimensionBean.get(dimensions.get(i));
             DimensionSrcValue srcValue = tempBean.getSrc();

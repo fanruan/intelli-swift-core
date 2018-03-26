@@ -92,7 +92,7 @@ public class GroupValueIterator {
             System.arraycopy(valuesAndGVIs[numOfSegment][i].getValues(), 0, values, 0, values.length - 1);
             if (iterators[numOfSegment][i].hasNext()) {
                 GroupByEntry entry = iterators[numOfSegment][i].next();
-                values[values.length - 1] = singleColumn.getDictionaryEncodedColumn().getValue(entry.getIndex());
+                values[values.length - 1] = singleColumn.getDictionaryEncodedColumn().getValue(entry.getIndex() + 1);
                 valuesAndGVIs[numOfSegment][i + 1] = new SwiftValuesAndGVI(values, valuesAndGVIs[numOfSegment][i].getGvi().getAnd(entry.getTraversal().toBitMap()));
             } else {
                 move(numOfSegment,i - 1);
