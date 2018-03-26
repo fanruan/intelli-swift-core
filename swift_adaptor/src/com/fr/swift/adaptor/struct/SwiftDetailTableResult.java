@@ -5,6 +5,7 @@ import com.finebi.conf.structure.result.BIDetailTableResult;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.result.DetailResultSet;
+import com.fr.swift.source.Row;
 import com.fr.swift.source.SwiftResultSet;
 
 import java.sql.SQLException;
@@ -47,8 +48,9 @@ public class SwiftDetailTableResult implements BIDetailTableResult {
     public List<BIDetailCell> next() {
         try {
             List<BIDetailCell> detailCellList = new ArrayList<BIDetailCell>();
+            Row row = swiftResultSet.getRowData();
             for (int i = 0; i < columnSize; i++) {
-                BIDetailCell detailCell = new SwiftDetailCell(swiftResultSet.getRowData().getValue(i));
+                BIDetailCell detailCell = new SwiftDetailCell(row.getValue(i));
                 detailCellList.add(detailCell);
             }
             return detailCellList;

@@ -87,7 +87,7 @@ public class DetailWidgetAdaptor {
         Dimension[] dimensions = new Dimension[fineDimensions.size()];
         for(int i = 0, size  = fineDimensions.size(); i< size; i++) {
             FineDimension fineDimension = fineDimensions.get(i);
-            Sort sort = fineDimension.getSort() == null ? new AscSort(i):adaptSort(fineDimension.getSort(), i);
+            Sort sort = fineDimension.getSort() == null ? null : adaptSort(fineDimension.getSort(), i);
             dimensions[i] = new DetailDimension(i, new SourceKey(fineDimension.getId()), new ColumnKey(fineDimension.getText()),
                     GroupAdaptor.adaptGroup(fineDimension.getGroup()), sort,
                     FilterInfoFactory.transformFineFilter(widget.getFilters()));
