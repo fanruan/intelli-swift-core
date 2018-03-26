@@ -8,6 +8,7 @@ import com.fr.swift.source.Row;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftResultSet;
 import com.fr.swift.source.etl.ETLTransferOperator;
+import com.fr.swift.source.etl.datamining.kmeans.KmeansResultSet;
 import com.fr.swift.source.etl.datamining.timeseries.holtwinter.HoltWinterResultSet;
 
 import java.sql.SQLException;
@@ -43,8 +44,10 @@ public class DataMiningTransferOperator implements ETLTransferOperator {
             switch (algorithmBean.getAlgorithmName()){
                 case HOLT_WINTERS:
                     return new HoltWinterResultSet(algorithmBean, metaData,basedMetas.get(0), tis.get(0));
+                case KMEANS: {
+                    return new KmeansResultSet(algorithmBean, metaData, basedSegments.get(0));
+                }
                 default:
-                    return null;
             }
         }catch (Exception e){
             LOGGER.error(e.getMessage(),e);
@@ -70,5 +73,6 @@ public class DataMiningTransferOperator implements ETLTransferOperator {
                 }
             };
         }
+        return null;
     }
 }
