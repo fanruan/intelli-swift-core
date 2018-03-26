@@ -1,7 +1,9 @@
 package com.fr.swift.result;
 
 import com.fr.swift.cal.Query;
+import com.fr.swift.exception.meta.SwiftMetaDataException;
 import com.fr.swift.source.Row;
+import com.fr.swift.source.SwiftMetaData;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -26,7 +28,8 @@ public class MultiSegmentDetailResultSet extends DetailResultSet {
 
     @Override
     public Row getRowData() throws SQLException {
-        while (!(drs.get(index).next())) {
+
+        while (!drs.get(index).next()) {
             index++;
         }
         return drs.get(index).getRowData();
@@ -34,8 +37,24 @@ public class MultiSegmentDetailResultSet extends DetailResultSet {
 
     private void init() throws SQLException{
             for (Query query : queries) {
-                maxRow += ((SegmentDetailResultSet) query.getQueryResult()).getMaxRow();
+                maxRow += ((SegmentDetailResultSet) query.getQueryResult()).getRowSize();
                 drs.add((SegmentDetailResultSet) query.getQueryResult());
             }
+    }
+
+    @Override
+    public SwiftMetaData getMetaData() {
+        return new DetailMetaData(){
+            @Override
+            public int getColumnCount() throws SwiftMetaDataException {
+                DetailResultSet drs = null;
+                try {
+                    drs = queries.get(0).getQueryResult();
+                } catch (SQLException e) {
+
+                }
+                return drs.getColumnCount();
+            }
+        };
     }
 }

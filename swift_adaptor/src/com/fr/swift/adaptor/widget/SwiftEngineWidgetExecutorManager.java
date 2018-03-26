@@ -62,7 +62,7 @@ public class SwiftEngineWidgetExecutorManager implements EngineWidgetExecutorMan
 
     @Override
     public BIDetailTableResult visit(DetailWidget detailWidget) {
-        return null;
+        return DetailWidgetAdaptor.calculate(detailWidget);
     }
 
     @Override

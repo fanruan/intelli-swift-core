@@ -151,7 +151,7 @@ public class DetailResultSetTest extends TestCase {
         for (int j = 0; j < 3; j++) {
             queries.add(new SortDetailSegmentQuery(columnList, filter, sortIndex, sorts));
         }
-        DetailResultSet rs = new SortMultiSegmentDetailResultSet(queries, ((SortSegmentDetailResultSet) queries.get(0).getQueryResult()).getDetailSortComparator());
+        DetailResultSet rs = new SortMultiSegmentDetailResultSet(queries, queries.get(0).getQueryResult().getDetailSortComparator());
         //测试索引排序，单块数据量大于3000时使用索引排序
 //        DetailResultSet rs = new SortMultiSegmentDetailResultSet(queries, ((SortSegmentDetailByIndexResultSet) queries.get(0).getQueryResult()).getDetailSortComparator());
 
