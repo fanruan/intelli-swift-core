@@ -1,5 +1,6 @@
 package com.fr.swift.adaptor.preview;
 
+import com.finebi.conf.internalimp.analysis.bean.operator.add.group.custom.number.NumberMaxAndMinValue;
 import com.finebi.conf.structure.bean.field.FineBusinessField;
 import com.finebi.conf.structure.bean.table.FineBusinessTable;
 import com.finebi.conf.structure.result.BIDetailCell;
@@ -21,6 +22,7 @@ import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.segment.column.DictionaryEncodedColumn;
 import com.fr.swift.source.DataSource;
 import com.fr.swift.source.SwiftMetaData;
+import com.fr.swift.source.etl.ETLSource;
 import com.fr.swift.structure.array.IntList;
 
 import java.util.ArrayList;
@@ -88,6 +90,45 @@ public class SwiftFieldsDataPreview {
         }
         BIDetailTableResult result = new SwiftCombineDetailResult(columnDataLists, realRowCount);
         return result;
+    }
+
+    public NumberMaxAndMinValue getNumberMaxAndMinValue(ETLSource dataSource, String fieldName) {
+        try {
+            double max,min;
+            if (dataSource != null) {
+                if (!MinorSegmentManager.getInstance().isSegmentsExist(dataSource.getSourceKey())) {
+                    MinorUpdater.update(dataSource);
+                }
+                List<Segment> segments = MinorSegmentManager.getInstance().getSegment(dataSource.getSourceKey());
+                List<Object> list = new ArrayList<Object>();
+                max = Double.NEGATIVE_INFINITY;
+                min = Double.POSITIVE_INFINITY;
+                for (Segment sg : segments) {
+                    Column c = sg.getColumn(new ColumnKey(fieldName));
+                    DictionaryEncodedColumn dic = c.getDictionaryEncodedColumn();
+                    try {
+                        double tempValue = Double.parseDouble(dic.getValue(dic.size() -1).toString());
+                        max = Math.max(tempValue, max);
+                    } catch(Exception e) {
+                        e.printStackTrace();
+                    }
+                    for(int i = 1; i < dic.size(); i++) {
+                        Object tempValue = dic.getValue(i);
+                        if(tempValue != null) {
+                            min = Math.min(Double.parseDouble(tempValue.toString()), min);
+                            break;
+                        }
+                    }
+                }
+                NumberMaxAndMinValue maxAndMin = new NumberMaxAndMinValue();
+                maxAndMin.setMax(max);
+                maxAndMin.setMin(min);
+                return maxAndMin;
+            }
+        } catch (Exception e) {
+            SwiftLoggers.getLogger().error(e);
+        }
+        return null;
     }
 
     public List<Object> getGroupPreviewByFields(DataSource dataSource, String fieldName) {

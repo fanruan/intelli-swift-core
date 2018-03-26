@@ -28,7 +28,7 @@ public class TestRankRowOperator extends TestCase {
             ColumnKey[] dimension = new ColumnKey[]{new ColumnKey(column1), new ColumnKey(column2)};
             RankRowTransferOperator operator = new RankRowTransferOperator(type, new ColumnKey(column3), dimension);
             SwiftResultSet rs = operator.createResultSet(null, null, list);
-            String[] str = new String[]{"1","1","1","3","5","1","3","5","1","3","1","3","1","1"};
+            String[] str = new String[]{"1.0","1.0","1.0","3.0","5.0","1.0","3.0","5.0","1.0","3.0","1.0","3.0","1.0","1.0"};
             int index = 0;
             while(rs.next()) {
                 Row row = rs.getRowData();

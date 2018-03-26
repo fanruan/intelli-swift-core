@@ -77,17 +77,17 @@ public class SwiftEngineWidgetExecutorManager implements EngineWidgetExecutorMan
 
     @Override
     public BIYearControlResult visit(YearControlWidget detailWidget) {
-        return null;
+        return YearControlWidgetAdaptor.calculate(detailWidget);
     }
 
     @Override
     public BIQuarterResult visit(QuarterControlWidget detailWidget) {
-        return null;
+        return QuarterControlWidgetAdaptor.calculate(detailWidget);
     }
 
     @Override
     public BIMonthControlResult visit(MonthControlWidget detailWidget) {
-        return null;
+        return BIMonthControlResultAdaptor.calculate(detailWidget);
     }
 
     @Override

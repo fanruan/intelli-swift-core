@@ -5,22 +5,22 @@ package com.fr.swift.query.filter.info.value;
  */
 public class SwiftDateInRangeFilterValue {
 
-    private long start = Long.MIN_VALUE;
-    private long end = Long.MAX_VALUE;
+    private long startIncluded = Long.MIN_VALUE;
+    private long endIncluded = Long.MAX_VALUE;
 
     public long getStart() {
-        return start;
+        return startIncluded;
     }
 
     public long getEnd() {
-        return end;
+        return endIncluded;
     }
 
     public void setStart(long start) {
-        this.start = start;
+        this.startIncluded = start;
     }
 
     public void setEnd(long end) {
-        this.end = end;
+        this.endIncluded = end;
     }
 }

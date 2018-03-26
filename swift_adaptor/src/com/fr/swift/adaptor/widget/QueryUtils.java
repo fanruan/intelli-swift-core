@@ -6,8 +6,6 @@ import com.finebi.conf.structure.dashboard.widget.dimension.FineDimension;
 import com.finebi.conf.utils.FineTableUtils;
 import com.fr.swift.adaptor.transformer.IndexingDataSourceFactory;
 import com.fr.swift.adaptor.widget.group.GroupAdaptor;
-import com.fr.swift.cal.Query;
-import com.fr.swift.cal.builder.QueryBuilder;
 import com.fr.swift.cal.info.SingleTableGroupQueryInfo;
 import com.fr.swift.cal.result.group.RowCursor;
 import com.fr.swift.log.SwiftLogger;
@@ -22,6 +20,7 @@ import com.fr.swift.result.GroupByResultSet;
 import com.fr.swift.result.KeyValue;
 import com.fr.swift.result.RowIndexKey;
 import com.fr.swift.segment.column.ColumnKey;
+import com.fr.swift.service.QueryRunnerProvider;
 import com.fr.swift.source.DataSource;
 
 import java.util.ArrayList;
@@ -50,8 +49,7 @@ public class QueryUtils {
             DataSource baseDataSource = IndexingDataSourceFactory.transformDataSource(fineBusinessTable);
             GroupDimension groupDimension = new GroupDimension(0, baseDataSource.getSourceKey(), new ColumnKey(fineBusinessField.getName()), GroupAdaptor.adaptGroup(dimension.getGroup()), null, null);
             SingleTableGroupQueryInfo valueInfo = new SingleTableGroupQueryInfo(new RowCursor(), id, new Dimension[]{groupDimension}, new Metric[0], new GroupTarget[0], filterInfo, null);
-            Query<GroupByResultSet> valuesQuery = QueryBuilder.buildQuery(valueInfo);
-            GroupByResultSet valuesResultSet = valuesQuery.getQueryResult();
+            GroupByResultSet valuesResultSet = QueryRunnerProvider.getInstance().executeQuery(valueInfo);
             Iterator<KeyValue<RowIndexKey, AggregatorValue[]>> it = valuesResultSet.getRowResultIterator();
             Map<Integer, Object> dic = valuesResultSet.getGlobalDictionaries().get(0);
             List values = new ArrayList();

@@ -6,7 +6,11 @@ package com.fr.swift.source.etl.datediff;
  */
 public class WeekDiffer extends DayDiff {
     @Override
-    public int get(Long d1, Long d2) {
-        return super.get(d1, d2) / 7;
+    public Object get(Long d1, Long d2) {
+        Object dayDiff = super.get(d1, d2);
+        if(null != dayDiff) {
+            return Integer.parseInt(dayDiff.toString()) / 7;
+        }
+        return null;
     }
 }
