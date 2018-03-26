@@ -1,13 +1,14 @@
 package com.fr.swift.query.group;
 
 import com.fr.swift.segment.column.DictionaryEncodedColumn;
+import com.fr.swift.source.core.CoreService;
 import com.fr.swift.structure.array.IntList;
 
 /**
  * @author anchore
  * @date 2018/1/29
  */
-public interface GroupRule<Base, Derive> {
+public interface GroupRule<Base, Derive> extends CoreService{
     /**
      * @param index 新分组号
      * @return 新分组值

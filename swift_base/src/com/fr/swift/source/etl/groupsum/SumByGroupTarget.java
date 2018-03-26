@@ -15,6 +15,10 @@ import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.segment.column.DictionaryEncodedColumn;
 import com.fr.swift.source.ColumnTypeConstants.ClassType;
 import com.fr.swift.source.ColumnTypeConstants.ColumnType;
+import com.fr.swift.source.core.Core;
+import com.fr.swift.source.core.CoreField;
+import com.fr.swift.source.core.CoreGenerator;
+import com.fr.swift.source.core.CoreService;
 import com.fr.swift.source.etl.utils.ETLConstant;
 import com.fr.swift.structure.iterator.RowTraversal;
 
@@ -23,9 +27,11 @@ import java.io.Serializable;
 /**
  * Created by Handsome on 2017/12/8 0008 14:14
  */
-public class SumByGroupTarget implements Serializable {
+public class SumByGroupTarget implements CoreService,Serializable {
 
+    @CoreField
     private int sumType;
+    @CoreField
     private String name;
     private String nameText;
     private ColumnType columnType;
@@ -172,5 +178,16 @@ public class SumByGroupTarget implements Serializable {
         int result = sumType;
         result = 31 * result + (name != null ? name.hashCode() : 0);
         return result;
+    }
+
+
+    @Override
+    public Core fetchObjectCore() {
+        try {
+            return new CoreGenerator(this).fetchObjectCore();
+        } catch(Exception ignore) {
+
+        }
+        return Core.EMPTY_CORE;
     }
 }

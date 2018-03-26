@@ -128,7 +128,7 @@ public class SwiftFieldsDataPreview {
         } catch (Exception e) {
             SwiftLoggers.getLogger().error(e);
         }
-        return null;
+        return new NumberMaxAndMinValue();
     }
 
     public List<Object> getGroupPreviewByFields(DataSource dataSource, String fieldName) {

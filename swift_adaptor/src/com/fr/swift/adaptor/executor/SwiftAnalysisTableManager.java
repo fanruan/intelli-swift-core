@@ -98,9 +98,9 @@ public class SwiftAnalysisTableManager implements EngineAnalysisTableManager {
         try {
             ETLSource dataSource = (ETLSource) IndexingDataSourceFactory.transformDataSource(table);
             return swiftFieldsDataPreview.getNumberMaxAndMinValue(dataSource, fieldName);
-        } catch (Exception e) {
+        } catch (Exception ignore) {
         }
-        return null;
+        return new NumberMaxAndMinValue();
     }
 
     @Override

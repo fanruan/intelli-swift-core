@@ -1,6 +1,7 @@
 package com.fr.swift.query.group.impl;
 
 import com.fr.stable.StringUtils;
+import com.fr.swift.source.core.CoreField;
 import com.fr.swift.structure.Pair;
 import com.fr.swift.structure.array.IntList;
 
@@ -20,7 +21,7 @@ abstract class BaseCustomGroupRule<Base> extends BaseGroupRule<Base, String> {
      * 旧值序号 -> 新值序号
      */
     int[] reverseMap;
-
+    @CoreField
     String otherGroupName;
 
     BaseCustomGroupRule(String otherGroupName) {

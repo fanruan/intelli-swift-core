@@ -1,6 +1,10 @@
 package com.fr.swift.query.group.impl;
 
 import com.fr.swift.query.group.GroupType;
+import com.fr.swift.source.core.Core;
+import com.fr.swift.source.core.CoreField;
+import com.fr.swift.source.core.CoreGenerator;
+import com.fr.swift.source.core.CoreService;
 import com.fr.swift.structure.Pair;
 import com.fr.swift.structure.array.IntList;
 import com.fr.swift.structure.array.IntListFactory;
@@ -15,7 +19,7 @@ import java.util.List;
  */
 public class CustomNumGroupRule extends BaseCustomGroupRule<Number> {
     static final NumberFormat NUMBER_FORMAT = new DecimalFormat("#.##");
-
+    @CoreField
     private List<NumInterval> intervals;
 
     public CustomNumGroupRule(List<NumInterval> intervals, String otherGroupName) {
@@ -75,24 +79,29 @@ public class CustomNumGroupRule extends BaseCustomGroupRule<Number> {
         return GroupType.CUSTOM_NUMBER;
     }
 
-    public static class NumInterval {
+    public static class NumInterval implements CoreService{
         /**
          * 是否为大于等于
          */
+        @CoreField
         private boolean greaterOrEq;
         /**
          * 下界
          */
+        @CoreField
         private double floor;
         /**
          * 是否为小于等于
          */
+        @CoreField
         boolean lessOrEq;
         /**
          * 上界
          */
+        @CoreField
         private double ceil;
 
+        @CoreField
         private String name;
 
         public NumInterval(String name, double floor, boolean greaterOrEq, double ceil, boolean lessOrEq) {
@@ -111,6 +120,15 @@ public class CustomNumGroupRule extends BaseCustomGroupRule<Number> {
                 return true;
             }
             return Double.compare(val, ceil) == 0 && lessOrEq;
+        }
+
+        public Core fetchObjectCore() {
+            try {
+                return new CoreGenerator(this).fetchObjectCore();
+            } catch(Exception ignore) {
+
+            }
+            return Core.EMPTY_CORE;
         }
     }
 }
