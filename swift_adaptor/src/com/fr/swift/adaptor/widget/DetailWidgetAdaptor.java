@@ -53,7 +53,7 @@ public class DetailWidgetAdaptor {
         SwiftResultSet resultSet;
         try {
         resultSet = QueryRunnerProvider.getInstance().executeQuery(buildQueryInfo(widget));
-        if(result == null) {
+        if(resultSet == null) {
             return new SwiftDetailTableResult(new SwiftEmptyResult());
         }
         result = new SwiftDetailTableResult(resultSet);
@@ -72,12 +72,12 @@ public class DetailWidgetAdaptor {
         SourceKey target = IndexingDataSourceFactory.transformDataSource(table).getSourceKey();
         DetailTarget[] targets = getTargets(widget);
         //没传进来排序顺序
-//        IntList sortIndex = IntListFactory.createHeapIntList();
-//        for (int i = 0; i < dimensions.length; i++) {
-//            sortIndex.add(i);
-//        }
+        IntList sortIndex = IntListFactory.createHeapIntList();
+        for (int i = 0; i < dimensions.length; i++) {
+            sortIndex.add(i);
+        }
 
-        IntList sortIndex = null;
+//        IntList sortIndex = null;
         FilterInfo filterInfo = FilterInfoFactory.transformFineFilter(widget.getFilters());
         return new DetailQueryInfo(cursor, queryId, dimensions, target, targets, sortIndex, filterInfo);
     }
@@ -88,7 +88,7 @@ public class DetailWidgetAdaptor {
         for(int i = 0, size  = fineDimensions.size(); i< size; i++) {
             FineDimension fineDimension = fineDimensions.get(i);
             Sort sort = fineDimension.getSort() == null ? new AscSort(i):adaptSort(fineDimension.getSort(), i);
-            dimensions[i] = new DetailDimension(i, new SourceKey(fineDimension.getId()), new ColumnKey(fineDimension.getFieldId()),
+            dimensions[i] = new DetailDimension(i, new SourceKey(fineDimension.getId()), new ColumnKey(fineDimension.getText()),
                     GroupAdaptor.adaptGroup(fineDimension.getGroup()), sort,
                     FilterInfoFactory.transformFineFilter(widget.getFilters()));
         }
