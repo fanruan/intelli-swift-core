@@ -3,7 +3,6 @@ package com.fr.swift.source.etl.datamining;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SwiftResultSet;
-import com.fr.swift.source.etl.datamining.kmeans.KmeansTransferOperator;
 import com.fr.swift.source.etl.rowcal.rank.CreateSegmentForRank;
 import junit.framework.TestCase;
 

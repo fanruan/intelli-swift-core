@@ -49,21 +49,25 @@ public class SumByGroupOperator extends AbstractOperator {
         List<SwiftMetaDataColumn> columns = new ArrayList<SwiftMetaDataColumn>();
         for (SwiftMetaData parent : tables) {
             try {
-                for (int i = 0; i < this.dimensions.length; i++) {
-                    int sqlType = parent.getColumn(this.dimensions[i].getName()).getType();
-                    int columnSize = parent.getColumn(this.dimensions[i].getName()).getPrecision();
-                    int scale = parent.getColumn(this.dimensions[i].getName()).getScale();
-                    if (ColumnTypeUtils.sqlTypeToColumnType(sqlType, columnSize, scale) == ColumnType.DATE) {
-                        columns.add(new MetaDataColumn(this.dimensions[i].getNameText(), convertGroupTpye(this.dimensions[i].getGroup().getGroupType()), 30));
-                    } else if (ColumnTypeUtils.sqlTypeToColumnType(sqlType, columnSize, scale) == ColumnType.NUMBER) {
-                        SwiftMetaDataColumn singleColumn = parent.getColumn(this.dimensions[i].getName());
-                        columns.add(generateSumNumberGroup(this.dimensions[i], singleColumn));
-                    } else {
-                        columns.add(new MetaDataColumn(this.dimensions[i].getNameText(), parent.getColumn(this.dimensions[i].getName()).getType(), parent.getColumn(this.dimensions[i].getName()).getPrecision()));
+                if(null != dimensions) {
+                    for (int i = 0; i < this.dimensions.length; i++) {
+                        int sqlType = parent.getColumn(this.dimensions[i].getName()).getType();
+                        int columnSize = parent.getColumn(this.dimensions[i].getName()).getPrecision();
+                        int scale = parent.getColumn(this.dimensions[i].getName()).getScale();
+                        if (ColumnTypeUtils.sqlTypeToColumnType(sqlType, columnSize, scale) == ColumnType.DATE) {
+                            columns.add(new MetaDataColumn(this.dimensions[i].getNameText(), convertGroupTpye(this.dimensions[i].getGroup().getGroupType()), 30));
+                        } else if (ColumnTypeUtils.sqlTypeToColumnType(sqlType, columnSize, scale) == ColumnType.NUMBER) {
+                            SwiftMetaDataColumn singleColumn = parent.getColumn(this.dimensions[i].getName());
+                            columns.add(generateSumNumberGroup(this.dimensions[i], singleColumn));
+                        } else {
+                            columns.add(new MetaDataColumn(this.dimensions[i].getNameText(), parent.getColumn(this.dimensions[i].getName()).getType(), parent.getColumn(this.dimensions[i].getName()).getPrecision()));
+                        }
                     }
                 }
-                for (int j = 0; j < this.targets.length; j++) {
-                    columns.add(new MetaDataColumn(this.targets[j].getNameText(), ColumnTypeUtils.columnTypeToSqlType(ColumnType.NUMBER), parent.getColumn(this.targets[j].getName()).getPrecision()));
+                if(null != targets) {
+                    for (int j = 0; j < this.targets.length; j++) {
+                        columns.add(new MetaDataColumn(this.targets[j].getNameText(), ColumnTypeUtils.columnTypeToSqlType(ColumnType.NUMBER), parent.getColumn(this.targets[j].getName()).getPrecision()));
+                    }
                 }
             } catch (SwiftMetaDataException e) {
                 LOGGER.error("getting meta's column information failed", e);
