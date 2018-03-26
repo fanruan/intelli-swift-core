@@ -16,26 +16,26 @@ import com.fr.swift.util.MatchAndIndex;
  */
 public class DateInRangeFilter extends AbstractFilter<Long> {
 
-    private Long start;
-    private Long end;
+    private Long startIncluded;
+    private Long endIncluded;
 
     /**
      * 日期过滤，包含开始和结束日期
      *
-     * @param start
-     * @param end
+     * @param startIncluded
+     * @param endIncluded
      */
-    public DateInRangeFilter(Long start, Long end, Column<Long> column) {
-        this.start = start;
-        this.end = end;
+    public DateInRangeFilter(Long startIncluded, Long endIncluded, Column<Long> column) {
+        this.startIncluded = startIncluded;
+        this.endIncluded = endIncluded;
         this.column = column;
     }
 
     @Override
     protected RowTraversal getIntIterator(final DictionaryEncodedColumn<Long> dict) {
         ArrayLookupHelper.Lookup<Long> lookup = LookupFactory.create(dict);
-        MatchAndIndex startMatchAndIndex = ArrayLookupHelper.binarySearch(lookup, start);
-        MatchAndIndex endMatchAndIndex = ArrayLookupHelper.binarySearch(lookup, end);
+        MatchAndIndex startMatchAndIndex = ArrayLookupHelper.binarySearch(lookup, startIncluded);
+        MatchAndIndex endMatchAndIndex = ArrayLookupHelper.binarySearch(lookup, endIncluded);
         int startIndex = startMatchAndIndex.isMatch() ? startMatchAndIndex.getIndex() : startMatchAndIndex.getIndex() + 1;
         // 不管是否match，该index都是过滤结果的最后一个分组值
         int endIndex = endMatchAndIndex.getIndex();
@@ -56,10 +56,10 @@ public class DateInRangeFilter extends AbstractFilter<Long> {
     }
 
     private boolean smallerThanEnd(Long date) {
-        return end == null || end>= date;
+        return endIncluded == null || endIncluded >= date;
     }
 
     private boolean largerThanStart(Long date) {
-        return start == null || date >= start;
+        return startIncluded == null || date >= startIncluded;
     }
 }
