@@ -14,4 +14,5 @@ public interface SwiftResultSet{
     SwiftMetaData getMetaData() throws SQLException;
 
     Row getRowData() throws SQLException;
+
 }

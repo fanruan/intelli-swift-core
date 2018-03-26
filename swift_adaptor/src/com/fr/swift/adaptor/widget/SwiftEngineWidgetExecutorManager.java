@@ -62,12 +62,12 @@ public class SwiftEngineWidgetExecutorManager implements EngineWidgetExecutorMan
 
     @Override
     public BIDetailTableResult visit(DetailWidget detailWidget) {
-        return null;
+        return DetailWidgetAdaptor.calculate(detailWidget);
     }
 
     @Override
     public BIStringDetailResult visit(StringControlWidget detailWidget) {
-        return null;
+        return StringControlWidgetAdaptor.calculate(detailWidget);
     }
 
     @Override
@@ -77,17 +77,17 @@ public class SwiftEngineWidgetExecutorManager implements EngineWidgetExecutorMan
 
     @Override
     public BIYearControlResult visit(YearControlWidget detailWidget) {
-        return null;
+        return YearControlWidgetAdaptor.calculate(detailWidget);
     }
 
     @Override
     public BIQuarterResult visit(QuarterControlWidget detailWidget) {
-        return null;
+        return QuarterControlWidgetAdaptor.calculate(detailWidget);
     }
 
     @Override
     public BIMonthControlResult visit(MonthControlWidget detailWidget) {
-        return null;
+        return BIMonthControlResultAdaptor.calculate(detailWidget);
     }
 
     @Override
@@ -127,7 +127,7 @@ public class SwiftEngineWidgetExecutorManager implements EngineWidgetExecutorMan
 
     @Override
     public BIListLabelResult visit(ListLabelWidget listLabelWidget) {
-        return null;
+        return ListLabelWidgetAdaptor.calculate(listLabelWidget);
     }
 
     @Override

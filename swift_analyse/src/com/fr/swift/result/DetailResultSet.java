@@ -3,6 +3,8 @@ package com.fr.swift.result;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftResultSet;
 
+import java.util.Comparator;
+
 /**
  * @author pony
  * @date 2017/12/6
@@ -31,5 +33,17 @@ public abstract class DetailResultSet implements SwiftResultSet {
     @Override
     public void close() {
 
+    }
+
+    public int getRowSize() {
+        return maxRow;
+    }
+
+    public int getColumnCount() {
+        return 0;
+    }
+
+    public Comparator getDetailSortComparator() {
+        return null;
     }
 }

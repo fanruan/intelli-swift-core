@@ -9,6 +9,7 @@ import com.fr.swift.source.etl.CreateSegmentForSum;
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
 
+import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,7 +31,9 @@ public class TestDateDiffOperator extends TestCase{
             SwiftMetaDataColumn column = EasyMock.createMock(SwiftMetaDataColumn.class);
             EasyMock.expect(metaData.getColumn(column1)).andReturn(column).anyTimes();
             EasyMock.expect(column.getName()).andReturn(column1).anyTimes();
-            EasyMock.expect(column.getType()).andReturn(91).anyTimes();
+            EasyMock.expect(column.getType()).andReturn(Types.DATE).anyTimes();
+            EasyMock.expect(column.getScale()).andReturn(10).anyTimes();
+            EasyMock.expect(column.getPrecision()).andReturn(0).anyTimes();
             EasyMock.replay(metaData);
             EasyMock.replay(column);
             DateDiffTransferOperator operator = new DateDiffTransferOperator(column1, column2, unit);

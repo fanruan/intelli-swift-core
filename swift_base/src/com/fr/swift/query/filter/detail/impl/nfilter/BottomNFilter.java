@@ -4,6 +4,8 @@ import com.fr.swift.query.filter.detail.impl.AbstractFilter;
 import com.fr.swift.result.SwiftNode;
 import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.DictionaryEncodedColumn;
+import com.fr.swift.structure.array.IntListFactory;
+import com.fr.swift.structure.iterator.IntListRowTraversal;
 import com.fr.swift.structure.iterator.RowTraversal;
 import com.fr.swift.util.Util;
 
@@ -23,7 +25,9 @@ public class BottomNFilter extends AbstractFilter {
     @Override
     protected RowTraversal getIntIterator(DictionaryEncodedColumn dict) {
         int endIndex = dict.globalSize() >= bottomN ? bottomN : dict.globalSize();
-        return new TopNFilterRowTraversal(endIndex, dict);
+        // TODO: 2018/3/26 同topN
+        return new IntListRowTraversal(
+                IntListFactory.createRangeIntList(DictionaryEncodedColumn.NOT_NULL_START_INDEX, endIndex));
     }
 
     @Override

@@ -11,9 +11,9 @@ public class DayDiff implements DateDiffCalculator {
     private static final int ONE_DAY = DateType.HOUR.radix * DateType.MINUTE.radix * DateType.SECOND.radix * DateType.MILLISECOND.radix;
 
     @Override
-    public int get(Long d1, Long d2) {
+    public Object get(Long d1, Long d2) {
         if (d1 == null || d2 == null) {
-            return 0;
+            return null;
         }
         long t = d1 - d2;
         return (int) (t / ONE_DAY);

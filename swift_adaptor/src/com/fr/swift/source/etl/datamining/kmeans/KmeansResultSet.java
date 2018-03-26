@@ -1,5 +1,7 @@
 package com.fr.swift.source.etl.datamining.kmeans;
 
+import com.finebi.conf.internalimp.analysis.bean.operator.datamining.AlgorithmBean;
+import com.finebi.conf.internalimp.analysis.bean.operator.datamining.kmeans.KmeansBean;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.segment.column.DictionaryEncodedColumn;
@@ -19,6 +21,7 @@ import java.util.List;
  */
 public class KmeansResultSet implements SwiftResultSet {
 
+    private AlgorithmBean algorithmBean;
     private int cluster;
     private int iterations;
     private boolean replaceMissing;
@@ -31,20 +34,20 @@ public class KmeansResultSet implements SwiftResultSet {
     private int rowCursor;
     private TempValue tempValue;
 
-    public KmeansResultSet(int cluster, int iterations, boolean replaceMissing,
-                           boolean distanceFunction, Segment[] segments,
-                           SwiftMetaData metaData, String[] dimensions) {
-        this.cluster = cluster;
-        this.iterations = iterations;
-        this.replaceMissing = replaceMissing;
-        this.distanceFunction = distanceFunction;
-        this.segments = segments;
+    public KmeansResultSet(AlgorithmBean algorithmBean, SwiftMetaData metaData, Segment[] segments) {
+        this.algorithmBean = algorithmBean;
         this.metaData = metaData;
-        this.dimensions = dimensions;
+        this.segments = segments;
         init();
     }
 
     private void init(){
+        KmeansBean bean = (KmeansBean) algorithmBean;
+        this.cluster = bean.getCluster();
+        this.iterations = bean.getIterations();
+        this.replaceMissing = bean.isReplaceMissing();
+        this.distanceFunction = bean.isDistanceFunction();
+        this.dimensions = bean.getDimensions();
         tempValue = new TempValue();
         data = new double[cluster][dimensions.length];
         rowCursor = 0;
@@ -60,7 +63,7 @@ public class KmeansResultSet implements SwiftResultSet {
             } else {
                 kmeans.setDistanceFunction(new ManhattanDistance());
             }
-            kmeans.setDontReplaceMissingValues(replaceMissing);
+            kmeans.setDontReplaceMissingValues(false);
             kmeans.buildClusterer(instances);
             createData(kmeans.getClusterCentroids());
         } catch(Exception e) {
@@ -87,16 +90,38 @@ public class KmeansResultSet implements SwiftResultSet {
             totalRowCount += segments[i].getRowCount();
         }
         Instances wine = new Instances("dataSet", attributes, totalRowCount);
-        for(int i = 0; i < segments.length; i++) {
-            for(int j = 0; j < segments[i].getRowCount(); j++) {
-                DenseInstance dataInstance = new DenseInstance(colCount);
-                for(int k = 0; k < dimensions.length; k++) {
-                    DictionaryEncodedColumn getter = segments[i].getColumn(new ColumnKey(dimensions[k])).getDictionaryEncodedColumn();
-                    Object value = getter.getValue(getter.getIndexByRow(j));
-                    double v = Double.parseDouble(value.toString());
-                    dataInstance.setValue(k, v);
+        if(replaceMissing) {
+            for(int i = 0; i < segments.length; i++) {
+                for(int j = 0; j < segments[i].getRowCount(); j++) {
+                    DenseInstance dataInstance = new DenseInstance(colCount);
+                    boolean isNotNull = true;
+                    for(int k = 0; k < dimensions.length; k++) {
+                        DictionaryEncodedColumn getter = segments[i].getColumn(new ColumnKey(dimensions[k])).getDictionaryEncodedColumn();
+                        Object value = getter.getValue(getter.getIndexByRow(j));
+                        if(null == value) {
+                            isNotNull = false;
+                            break;
+                        }
+                        double v = Double.parseDouble(value.toString());
+                        dataInstance.setValue(k, v);
+                    }
+                    if(isNotNull) {
+                        wine.add(dataInstance);
+                    }
                 }
-                wine.add(dataInstance);
+            }
+        } else {
+            for(int i = 0; i < segments.length; i++) {
+                for(int j = 0; j < segments[i].getRowCount(); j++) {
+                    DenseInstance dataInstance = new DenseInstance(colCount);
+                    for(int k = 0; k < dimensions.length; k++) {
+                        DictionaryEncodedColumn getter = segments[i].getColumn(new ColumnKey(dimensions[k])).getDictionaryEncodedColumn();
+                        Object value = getter.getValue(getter.getIndexByRow(j));
+                        double v = Double.parseDouble(value.toString());
+                        dataInstance.setValue(k, v);
+                    }
+                    wine.add(dataInstance);
+                }
             }
         }
         return wine;

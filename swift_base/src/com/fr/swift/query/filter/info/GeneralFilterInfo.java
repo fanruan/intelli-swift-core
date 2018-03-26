@@ -10,7 +10,7 @@ import java.util.List;
 /**
  * Created by pony on 2017/12/21.
  */
-public class GeneralFilterInfo implements FilterInfo{
+public class GeneralFilterInfo implements FilterInfo {
     public static final int OR = 0;
     public static final int AND = 1;
     private List<FilterInfo> children;

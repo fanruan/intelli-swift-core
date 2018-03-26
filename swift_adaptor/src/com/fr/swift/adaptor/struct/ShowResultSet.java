@@ -55,10 +55,10 @@ public class ShowResultSet implements SwiftResultSet {
      * @throws SQLException 异常
      */
     public static SwiftResultSet of(SwiftResultSet origin, SwiftMetaData metaIfNeed) throws SQLException {
-        if (origin.getMetaData() == null) {
+       // if (origin.getMetaData() == null) {
             return new ShowResultSet(origin, metaIfNeed);
-        }
-        return new ShowResultSet(origin);
+    //    }
+     //   return new ShowResultSet(origin);
     }
 
     private void init() throws SQLException {
