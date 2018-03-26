@@ -55,13 +55,13 @@ public class RankRowResultSet implements SwiftResultSet {
         needNext = true;
         tempValue = new TempValue();
         //TODO group type
-        if(dimension != null) {
+        if (dimension != null) {
             iterator = new GroupValueIterator(segments, dimension, null);
             tempSegment = new Segment[0];
             traversal = new RowTraversal[0];
         } else {
             RowTraversal[] traversals = new RowTraversal[segments.length];
-            for(int i = 0; i < segments.length; i++) {
+            for (int i = 0; i < segments.length; i++) {
                 traversals[i] = segments[i].getAllShowIndex();
             }
             tree = createSortedTree(segments, traversals);
@@ -76,13 +76,13 @@ public class RankRowResultSet implements SwiftResultSet {
 
     @Override
     public boolean next() throws SQLException {
-        if(null != dimension) {
-            if(iterator.hasNext() || (segCursor < tempSegment.length && rowCursor < rowCount)) {
-                if(needNext) {
+        if (null != dimension) {
+            if (iterator.hasNext() || (segCursor < tempSegment.length && rowCursor < rowCount)) {
+                if (needNext) {
                     valuesAndGVI = iterator.next();
                     traversal = new RowTraversal[valuesAndGVI.getAggreator().size()];
                     tempSegment = new Segment[valuesAndGVI.getAggreator().size()];
-                    for(int i = 0; i < valuesAndGVI.getAggreator().size(); i++) {
+                    for (int i = 0; i < valuesAndGVI.getAggreator().size(); i++) {
                         traversal[i] = valuesAndGVI.getAggreator().get(i).getBitMap();
                         tempSegment[i] = valuesAndGVI.getAggreator().get(i).getSegment();
                     }
@@ -93,7 +93,7 @@ public class RankRowResultSet implements SwiftResultSet {
                     rowCursor = 0;
                     needNext = false;
                 }
-                if(segCursor == tempSegment.length - 1 && rowCursor == rowCount - 1) {
+                if (segCursor == tempSegment.length - 1 && rowCursor >= rowCount - 1) {
                     needNext = true;
                 }
                 nextValueForDimension();
@@ -106,18 +106,19 @@ public class RankRowResultSet implements SwiftResultSet {
     }
 
     private boolean nextValueForDimension() throws SQLException {
-        if(segCursor < tempSegment.length && rowCursor < rowCount) {
+        if (segCursor < tempSegment.length && rowCursor < rowCount) {
             rowCount = traversal[segCursor].getCardinality();
             final Index index = new Index();
             traversal[segCursor].breakableTraversal(new BreakTraversalAction() {
                 int cursor = 0;
+
                 @Override
                 public boolean actionPerformed(int row) {
-                    if(cursor == rowCursor) {
+                    if (cursor == rowCursor) {
                         index.setIndex(row);
                         return true;
                     }
-                    cursor ++;
+                    cursor++;
                     return false;
                 }
             });
@@ -127,23 +128,27 @@ public class RankRowResultSet implements SwiftResultSet {
             List dataList = new ArrayList();
             dataList.add(rank);
             tempValue.setRow(new ListBasedRow(dataList));
-            if(rowCursor < rowCount - 1) {
-                rowCursor ++;
+            if (rowCursor < rowCount - 1) {
+                rowCursor++;
             } else {
-                if(segCursor < segments.length) {
+                if (segCursor < segments.length) {
                     rowCursor = 0;
-                    segCursor ++;
+                    segCursor++;
                 } else {
                     return false;
                 }
             }
             return true;
+        } else {
+            List list = new ArrayList();
+            list.add(null);
+            tempValue.setRow(new ListBasedRow(list));
         }
         return false;
     }
 
     private boolean nextValue() throws SQLException {
-        if(segCursor < segments.length && rowCursor < rowCount) {
+        if (segCursor < segments.length && rowCursor < rowCount) {
             rowCount = segments[segCursor].getRowCount();
             DictionaryEncodedColumn getter = segments[segCursor].getColumn(columnKey).getDictionaryEncodedColumn();
             Number v = (Number) getter.getValue(getter.getIndexByRow(rowCursor));
@@ -151,12 +156,12 @@ public class RankRowResultSet implements SwiftResultSet {
             List dataList = new ArrayList();
             dataList.add(rank);
             tempValue.setRow(new ListBasedRow(dataList));
-            if(rowCursor < rowCount - 1) {
-                rowCursor ++;
+            if (rowCursor < rowCount - 1) {
+                rowCursor++;
             } else {
-                if(segCursor < segments.length) {
+                if (segCursor < segments.length) {
                     rowCursor = 0;
-                    segCursor ++;
+                    segCursor++;
                 } else {
                     return false;
                 }
@@ -181,7 +186,7 @@ public class RankRowResultSet implements SwiftResultSet {
         long rank = 1L;
         HashMap<Number, Long> rankMap = new HashMap<Number, Long>();
         Iterator<Map.Entry<Number, FinalInt>> iter = tree.entrySet().iterator();
-        while(iter.hasNext()){
+        while (iter.hasNext()) {
             Map.Entry<Number, FinalInt> entry = iter.next();
             rankMap.put(entry.getKey(), rank);
             rank += entry.getValue().value;
@@ -191,24 +196,24 @@ public class RankRowResultSet implements SwiftResultSet {
 
     private TreeMap<Number, FinalInt> createSortedTree(Segment[] segments, RowTraversal[] traversals) {
         Comparator comparator = null;
-        if(type == ETLConstant.CONF.ADD_COLUMN.RANKING.ASC) {
+        if (type == ETLConstant.CONF.ADD_COLUMN.RANKING.ASC) {
             comparator = Comparators.<Double>asc();
         } else {
             comparator = Comparators.<Double>desc();
         }
         final TreeMap<Number, FinalInt> tree = new TreeMap<Number, FinalInt>(comparator);
-        for(int i = 0; i < segments.length; i++) {
+        for (int i = 0; i < segments.length; i++) {
             final DictionaryEncodedColumn getter = segments[i].getColumn(columnKey).getDictionaryEncodedColumn();
             traversals[i].traversal(new TraversalAction() {
                 @Override
                 public void actionPerformed(int row) {
                     Number v = (Number) getter.getValue(getter.getIndexByRow(row));
                     FinalInt count = tree.get(v);
-                    if(null == count) {
+                    if (null == count) {
                         count = new FinalInt();
                         tree.put(v, count);
                     }
-                    count.value ++;
+                    count.value++;
                 }
             });
         }
