@@ -57,11 +57,11 @@ public class LocalDetailGroupQueryBuilder implements LocalDetailQueryBuilder {
             }
             queries.add(new SortDetailSegmentQuery(columns, FilterBuilder.buildDetailFilter(segment, new GeneralFilterInfo(filterInfos, GeneralFilterInfo.AND)), list, sortTypes));
         }
-        return new SortDetailResultQuery(queries);
+        return new SortDetailResultQuery(queries, info.getComparator());
     }
 
     @Override
     public Query<DetailResultSet> buildResultQuery(List<Query<DetailResultSet>> queries, DetailQueryInfo info) {
-        return new SortDetailResultQuery(queries, info.getTargets());
+        return new SortDetailResultQuery(queries, info.getTargets(), info.getComparator());
     }
 }

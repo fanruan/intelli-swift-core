@@ -6,6 +6,7 @@ import com.fr.swift.bitmap.impl.BitSetMutableBitMap;
 import com.fr.swift.cal.Query;
 import com.fr.swift.cal.segment.detail.NormalDetailSegmentQuery;
 import com.fr.swift.cal.segment.detail.SortDetailSegmentQuery;
+import com.fr.swift.compare.Comparators;
 import com.fr.swift.query.filter.detail.DetailFilter;
 import com.fr.swift.query.sort.SortType;
 import com.fr.swift.segment.column.Column;
@@ -18,6 +19,7 @@ import org.easymock.IMocksControl;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 public class DetailResultSetTest extends TestCase {
@@ -151,9 +153,29 @@ public class DetailResultSetTest extends TestCase {
         for (int j = 0; j < 3; j++) {
             queries.add(new SortDetailSegmentQuery(columnList, filter, sortIndex, sorts));
         }
-        DetailResultSet rs = new SortMultiSegmentDetailResultSet(queries, queries.get(0).getQueryResult().getDetailSortComparator());
+        Comparator comparator = new Comparator <Row>() {
+            @Override
+            public int compare(Row o1, Row o2) {
+                for (int i = 0; i < sortIndex.size(); i++) {
+                    int c = 0;
+                    //比较的列先后顺序
+                    int realColumn = sortIndex.get(i);
+                    if (sorts.get(i) == SortType.ASC) {
+                        c = columnList.get(realColumn).getDictionaryEncodedColumn().getComparator().compare(o1.getValue(realColumn), o2.getValue(realColumn));
+                    }
+                    if (sorts.get(i) == SortType.DESC) {
+                        c = Comparators.reverse(columnList.get(realColumn).getDictionaryEncodedColumn().getComparator()).compare(o1.getValue(realColumn), o2.getValue(realColumn));
+                    }
+                    if (c != 0) {
+                        return c;
+                    }
+                }
+                return 0;
+            }
+        };
+        DetailResultSet rs = new SortMultiSegmentDetailResultSet(queries, comparator);
         //测试索引排序，单块数据量大于3000时使用索引排序
-//        DetailResultSet rs = new SortMultiSegmentDetailResultSet(queries, ((SortSegmentDetailByIndexResultSet) queries.get(0).getQueryResult()).getDetailSortComparator());
+//        DetailResultSet rs = new SortMultiSegmentDetailResultSet(queries, comparator);
 
         try {
             while (rs.next()) {

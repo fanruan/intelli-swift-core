@@ -56,10 +56,10 @@ public class SortSegmentDetailResultSet extends DetailResultSet {
         };
     }
 
-    @Override
-    public DetailSortComparator getDetailSortComparator() {
-        return new DetailSortComparator();
-    }
+//    @Override
+//    public DetailSortComparator getDetailSortComparator() {
+//        return new DetailSortComparator();
+//    }
 
     private void init() {
         maxRow = filter.createFilterIndex().getCardinality();

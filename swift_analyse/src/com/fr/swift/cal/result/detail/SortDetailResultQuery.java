@@ -17,13 +17,14 @@ public class SortDetailResultQuery extends AbstractDetailResultQuery {
 
     private Comparator comparator;
 
-    public SortDetailResultQuery(List<Query<DetailResultSet>> queries) {
+    public SortDetailResultQuery(List<Query<DetailResultSet>> queries, Comparator comparator) {
         super(queries);
-
+        this.comparator = comparator;
     }
 
-    public SortDetailResultQuery(List<Query<DetailResultSet>> queries, DetailTarget[] targets) {
+    public SortDetailResultQuery(List<Query<DetailResultSet>> queries, DetailTarget[] targets, Comparator comparator) {
         super(queries, targets);
+        this.comparator = comparator;
     }
 
     @Override
@@ -36,8 +37,6 @@ public class SortDetailResultQuery extends AbstractDetailResultQuery {
         if(queryList.size() == 1) {
             return queryList.get(0).getQueryResult();
         }
-        DetailResultSet rs = queryList.get(0).getQueryResult();
-        comparator = rs.getDetailSortComparator();
         return new SortMultiSegmentDetailResultSet(queryList, comparator);
     }
 }

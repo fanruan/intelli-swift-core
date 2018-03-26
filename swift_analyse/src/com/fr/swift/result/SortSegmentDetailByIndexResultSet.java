@@ -148,37 +148,4 @@ public class SortSegmentDetailByIndexResultSet extends DetailResultSet {
         };
     }
 
-    @Override
-    public DetailSortComparator getDetailSortComparator() {
-        return new DetailSortComparator();
-    }
-
-    protected class DetailSortComparator implements Comparator<Row> {
-
-        @Override
-        public int compare(Row o1, Row o2) {
-
-            for (int i = 0; i < sortIndex.size(); i++) {
-                int c = 0;
-                //比较的列先后顺序
-                int realColumn = sortIndex.get(i);
-                if (sorts.get(i) == SortType.ASC) {
-                    c = columnList.get(realColumn).getDictionaryEncodedColumn().getComparator().compare(o1.getValue(realColumn), o2.getValue(realColumn));
-                }
-                if (sorts.get(i) == SortType.DESC) {
-                    c = Comparators.reverse(columnList.get(realColumn).getDictionaryEncodedColumn().getComparator()).compare(o1.getValue(realColumn), o2.getValue(realColumn));
-                }
-                if (c != 0) {
-                    return c;
-                }
-            }
-            return 0;
-        }
-
-        @Override
-        public boolean equals(Object obj) {
-            return false;
-        }
-    }
-
 }
