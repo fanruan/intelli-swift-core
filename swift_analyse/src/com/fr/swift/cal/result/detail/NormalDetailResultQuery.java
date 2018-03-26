@@ -1,5 +1,6 @@
 package com.fr.swift.cal.result.detail;
 
+import com.fr.swift.adaptor.struct.SwiftEmptyResult;
 import com.fr.swift.cal.Query;
 import com.fr.swift.query.adapter.target.DetailTarget;
 import com.fr.swift.result.DetailResultSet;
@@ -25,6 +26,12 @@ public class NormalDetailResultQuery extends AbstractDetailResultQuery {
 
     @Override
     public DetailResultSet getQueryResult() throws SQLException {
+        if(queryList.size() == 0) {
+            return null;
+        }
+        if(queryList.size() == 1) {
+            return queryList.get(0).getQueryResult();
+        }
         return new MultiSegmentDetailResultSet(queryList);
     }
 }

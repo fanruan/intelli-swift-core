@@ -102,7 +102,21 @@ public class CubeData {
     private void prepareIndex() {
         // 创建每一列的分组索引
         List<TreeMap<String, List<Integer>>> dict = new ArrayList<>();
-        IntStream.range(0, dimensionCount).forEach(i -> dict.add(new TreeMap<>(Comparator.naturalOrder())));
+        IntStream.range(0, dimensionCount).forEach(i -> {
+            dict.add(new TreeMap<>((a, b) -> {
+                if (a == null && b == null) {
+                    return 0;
+                }
+                if (a == null) {
+                    return 1;
+                }
+                if (b == null) {
+                    return -1;
+                }
+                return Comparator.<String>naturalOrder().compare(a, b);
+            }));
+            dict.get(i).put("NULL", new ArrayList<>());
+        });
         IntStream.range(0, dimensionCount).forEach(i -> IntStream.range(0, rowCount).forEach(j -> {
             Map<String, List<Integer>> d = dict.get(i);
             if (!d.containsKey(dimensions[i][j])) {

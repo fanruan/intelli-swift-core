@@ -4,6 +4,7 @@ import com.fr.base.FRContext;
 import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.bitmap.traversal.BreakTraversalAction;
 import com.fr.swift.compare.Comparators;
+import com.fr.swift.exception.meta.SwiftMetaDataException;
 import com.fr.swift.query.filter.detail.DetailFilter;
 import com.fr.swift.query.group.by.GroupBy;
 import com.fr.swift.query.group.by.GroupByEntry;
@@ -13,6 +14,7 @@ import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.DictionaryEncodedColumn;
 import com.fr.swift.source.ListBasedRow;
 import com.fr.swift.source.Row;
+import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.structure.array.IntList;
 
 import java.util.ArrayList;
@@ -58,10 +60,6 @@ public class SortSegmentDetailByIndexResultSet extends DetailResultSet {
         maxRow = filter.createFilterIndex().getCardinality();
         getIndexBitmap(0);
         getSortedData();
-    }
-
-    public int getMaxRow() {
-        return maxRow;
     }
 
 
@@ -140,6 +138,17 @@ public class SortSegmentDetailByIndexResultSet extends DetailResultSet {
         }
     }
 
+    @Override
+    public SwiftMetaData getMetaData() {
+        return new DetailMetaData(){
+            @Override
+            public int getColumnCount() throws SwiftMetaDataException {
+                return columnList.size();
+            }
+        };
+    }
+
+    @Override
     public DetailSortComparator getDetailSortComparator() {
         return new DetailSortComparator();
     }
