@@ -79,7 +79,9 @@ public class RankRowResultSet implements SwiftResultSet {
         if (null != dimension) {
             if (iterator.hasNext() || (segCursor < tempSegment.length && rowCursor < rowCount)) {
                 if (needNext) {
-                    valuesAndGVI = iterator.next();
+                    do {
+                        valuesAndGVI = iterator.next();
+                    } while (valuesAndGVI.getAggreator().isEmpty() && iterator.hasNext());
                     traversal = new RowTraversal[valuesAndGVI.getAggreator().size()];
                     tempSegment = new Segment[valuesAndGVI.getAggreator().size()];
                     for (int i = 0; i < valuesAndGVI.getAggreator().size(); i++) {
@@ -124,7 +126,7 @@ public class RankRowResultSet implements SwiftResultSet {
             });
             DictionaryEncodedColumn getter = tempSegment[segCursor].getColumn(columnKey).getDictionaryEncodedColumn();
             Number v = (Number) getter.getValue(getter.getIndexByRow(index.getIndex()));
-            Double rank = Double.parseDouble(map.get(v) + "");
+            Long rank = Long.parseLong(map.get(v) + "");
             List dataList = new ArrayList();
             dataList.add(rank);
             tempValue.setRow(new ListBasedRow(dataList));
