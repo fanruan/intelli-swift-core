@@ -42,11 +42,16 @@ public class DateUtils {
 
     public static long dateDynamicFilterBeanValue2Long(DateDynamicFilterBeanValue value) {
         Calendar c = Calendar.getInstance();
-        c.add(Calendar.YEAR, string2Int(value.getYear()));
-        c.add(Calendar.MONTH, string2Int(value.getMonth()));
-        c.add(Calendar.MONTH, string2Int(value.getQuarter()) * 3);
-        c.add(Calendar.DATE, string2Int(value.getWeek()) * 7);
-        c.add(Calendar.DATE, string2Int(value.getWorkDay()));
+        // workDay和其他几个属性互斥
+        if (value.getWorkDay() == null) {
+            c.add(Calendar.YEAR, string2Int(value.getYear()));
+            c.add(Calendar.MONTH, string2Int(value.getMonth()));
+            c.add(Calendar.MONTH, string2Int(value.getQuarter()) * 3);
+            c.add(Calendar.DATE, string2Int(value.getWeek()) * 7);
+            c.add(Calendar.DATE, string2Int(value.getDay()));
+        } else {
+            c.add(Calendar.DATE, workDayOffset2DayOffset(string2Int(value.getWorkDay())));
+        }
         int position = value.getPosition();
         if (position != 2 || position != 3) {
             return c.getTimeInMillis();
@@ -75,6 +80,25 @@ public class DateUtils {
                 return endOfYear(c).getTimeInMillis();
         }
         return c.getTimeInMillis();
+    }
+
+    // 一周工作日的起始日和结束日，没有功能文档，和测试同学统一的
+    private static int START_OF_WORK_DAY = Calendar.MONDAY;
+    private static int END_OF_WORK_DAY = Calendar.FRIDAY;
+
+    private static int workDayOffset2DayOffset(int workDayOffset) {
+        Calendar calendar = Calendar.getInstance();
+        int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
+        boolean after = workDayOffset > 0;
+        int dayOffset;
+        if (after) {
+            int n = workDayOffset - (END_OF_WORK_DAY - dayOfWeek);
+            dayOffset = n <= 0 ? workDayOffset : (END_OF_WORK_DAY - dayOfWeek) + (n % 5 == 0 ? n / 5 : n / 5 + 1) * 2 + n;
+        } else {
+            int n = -workDayOffset - (dayOfWeek - START_OF_WORK_DAY);
+            dayOffset = n <= 0 ? workDayOffset : (START_OF_WORK_DAY - dayOfWeek) - (n % 5 == 0 ? n / 5 : n / 5 + 1) * 2 - n;
+        }
+        return dayOffset;
     }
 
     private static TimeType getUnit(DateDynamicFilterBeanValue value, int position) {
@@ -133,7 +157,6 @@ public class DateUtils {
     }
 
     private static Calendar startOfWeek(Calendar c) {
-        // TODO: 2018/3/23 一周从哪天开始，使用默认的？
         c.set(Calendar.DATE, c.getFirstDayOfWeek() - c.get(Calendar.DAY_OF_WEEK));
         return startOfDay(c);
     }
