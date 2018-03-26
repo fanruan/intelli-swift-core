@@ -1,6 +1,5 @@
 package com.fr.swift.cal.result.detail;
 
-import com.fr.swift.adaptor.struct.SwiftEmptyResult;
 import com.fr.swift.cal.Query;
 import com.fr.swift.query.adapter.target.DetailTarget;
 import com.fr.swift.result.DetailResultSet;
