@@ -9,8 +9,6 @@ import com.finebi.conf.structure.result.control.number.BISingleSliderResult;
 import com.finebi.conf.utils.FineTableUtils;
 import com.fr.swift.adaptor.transformer.FilterInfoFactory;
 import com.fr.swift.adaptor.transformer.IndexingDataSourceFactory;
-import com.fr.swift.cal.Query;
-import com.fr.swift.cal.builder.QueryBuilder;
 import com.fr.swift.cal.info.DetailQueryInfo;
 import com.fr.swift.cal.result.group.RowCursor;
 import com.fr.swift.log.SwiftLogger;
@@ -21,6 +19,7 @@ import com.fr.swift.query.sort.AscSort;
 import com.fr.swift.query.sort.DescSort;
 import com.fr.swift.result.DetailResultSet;
 import com.fr.swift.segment.column.ColumnKey;
+import com.fr.swift.service.QueryRunnerProvider;
 import com.fr.swift.source.DataSource;
 import com.fr.swift.structure.array.IntList;
 import com.fr.swift.structure.array.IntListFactory;
@@ -48,8 +47,7 @@ public class SingleSliderWidgetAdaptor {
                 IntList sortIndex = IntListFactory.createHeapIntList(1);
                 sortIndex.add(0);
                 DetailQueryInfo minQueryInfo = new DetailQueryInfo(new RowCursor(), widget.getWidgetId(), new DetailDimension[]{ascDimension}, baseDataSource.getSourceKey(), null, sortIndex, null);
-                Query<DetailResultSet> minQuery = QueryBuilder.buildQuery(minQueryInfo);
-                DetailResultSet minResultSet = minQuery.getQueryResult();
+                DetailResultSet minResultSet =  QueryRunnerProvider.getInstance().executeQuery(minQueryInfo);
                 minResultSet.next();
                 Number min = minResultSet.getRowData().getValue(0);
                 value.setMin(Math.min(value.getMin(), min.doubleValue()));
@@ -57,8 +55,7 @@ public class SingleSliderWidgetAdaptor {
                 DetailDimension descDimension = new DetailDimension(0, baseDataSource.getSourceKey(), new ColumnKey(fineBusinessField.getName()),
                         null, new DescSort(0), filterInfo);
                 DetailQueryInfo maxQueryInfo = new DetailQueryInfo(new RowCursor(), widget.getWidgetId(), new DetailDimension[]{descDimension}, baseDataSource.getSourceKey(), null, sortIndex, null);
-                Query<DetailResultSet> maxQuery = QueryBuilder.buildQuery(maxQueryInfo);
-                DetailResultSet maxResultSet = maxQuery.getQueryResult();
+                DetailResultSet maxResultSet = QueryRunnerProvider.getInstance().executeQuery(maxQueryInfo);
                 maxResultSet.next();
                 Number max = maxResultSet.getRowData().getValue(0);
                 value.setMax(Math.max(value.getMax(), max.doubleValue()));
