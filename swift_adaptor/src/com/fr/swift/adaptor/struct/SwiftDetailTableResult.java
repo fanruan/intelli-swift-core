@@ -65,7 +65,7 @@ public class SwiftDetailTableResult implements BIDetailTableResult {
 
     @Override
     public int rowSize() {
-        return swiftResultSet instanceof SwiftEmptyResult ? 0 :((DetailResultSet) swiftResultSet).getRowCount();
+        return swiftResultSet instanceof SwiftEmptyResult ? 0 :((DetailResultSet) swiftResultSet).getRowSize();
     }
 
     @Override

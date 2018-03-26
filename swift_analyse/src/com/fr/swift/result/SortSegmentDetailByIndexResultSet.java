@@ -62,10 +62,6 @@ public class SortSegmentDetailByIndexResultSet extends DetailResultSet {
         getSortedData();
     }
 
-    public int getMaxRow() {
-        return maxRow;
-    }
-
 
     @Override
     public Row getRowData() {
@@ -152,6 +148,7 @@ public class SortSegmentDetailByIndexResultSet extends DetailResultSet {
         };
     }
 
+    @Override
     public DetailSortComparator getDetailSortComparator() {
         return new DetailSortComparator();
     }

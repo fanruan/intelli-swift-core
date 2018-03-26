@@ -56,9 +56,6 @@ public class SegmentDetailResultSet extends DetailResultSet {
         return new ListBasedRow(values);
     }
 
-    public int getMaxRow() {
-        return maxRow;
-    }
 
     private void init() {
         this.maxRow = filter.createFilterIndex().getCardinality();

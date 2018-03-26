@@ -42,10 +42,6 @@ public class SortSegmentDetailResultSet extends DetailResultSet {
         return sortedDetailList.get(rowCount);
     }
 
-    public int getMaxRow() {
-        return maxRow;
-    }
-
     public int getColumnCount() {
         return columnList.size();
     }
@@ -60,7 +56,7 @@ public class SortSegmentDetailResultSet extends DetailResultSet {
         };
     }
 
-
+    @Override
     public DetailSortComparator getDetailSortComparator() {
         return new DetailSortComparator();
     }

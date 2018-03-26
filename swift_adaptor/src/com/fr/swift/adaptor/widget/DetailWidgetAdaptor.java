@@ -2,17 +2,14 @@ package com.fr.swift.adaptor.widget;
 
 import com.finebi.conf.constant.BIReportConstant.SORT;
 import com.finebi.conf.internalimp.dashboard.widget.detail.DetailWidget;
-import com.finebi.conf.internalimp.dashboard.widget.table.TableWidget;
 import com.finebi.conf.provider.SwiftTableConfProvider;
 import com.finebi.conf.structure.bean.table.FineBusinessTable;
 import com.finebi.conf.structure.dashboard.widget.dimension.FineDimension;
 import com.finebi.conf.structure.dashboard.widget.dimension.FineDimensionSort;
 import com.finebi.conf.structure.dashboard.widget.target.FineTarget;
 import com.finebi.conf.structure.result.BIDetailTableResult;
-import com.finebi.conf.structure.result.table.BIGroupNode;
 import com.fr.swift.adaptor.struct.SwiftDetailTableResult;
 import com.fr.swift.adaptor.struct.SwiftEmptyResult;
-import com.fr.swift.adaptor.struct.node.BIGroupNodeFactory;
 import com.fr.swift.adaptor.transformer.FilterInfoFactory;
 import com.fr.swift.adaptor.transformer.IndexingDataSourceFactory;
 import com.fr.swift.adaptor.widget.group.GroupAdaptor;
@@ -28,7 +25,6 @@ import com.fr.swift.query.sort.AscSort;
 import com.fr.swift.query.sort.DescSort;
 import com.fr.swift.query.sort.NoneSort;
 import com.fr.swift.query.sort.Sort;
-import com.fr.swift.result.GroupByResultSet;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.service.QueryRunnerProvider;
 import com.fr.swift.source.SourceKey;
@@ -36,7 +32,7 @@ import com.fr.swift.source.SwiftResultSet;
 import com.fr.swift.structure.array.IntList;
 import com.fr.swift.structure.array.IntListFactory;
 
-import java.sql.SQLException;
+
 import java.util.List;
 
 
@@ -76,7 +72,6 @@ public class DetailWidgetAdaptor {
         for (int i = 0; i < dimensions.length; i++) {
             sortIndex.add(i);
         }
-
 //        IntList sortIndex = null;
         FilterInfo filterInfo = FilterInfoFactory.transformFineFilter(widget.getFilters());
         return new DetailQueryInfo(cursor, queryId, dimensions, target, targets, sortIndex, filterInfo);

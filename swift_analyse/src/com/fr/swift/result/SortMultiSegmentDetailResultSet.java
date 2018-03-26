@@ -57,7 +57,7 @@ public class SortMultiSegmentDetailResultSet extends DetailResultSet {
             if (rs[i].next()) {
                 unsortedRows[i] = rs[i].getRowData();
             }
-            maxRow += query.getQueryResult() instanceof SortSegmentDetailResultSet ? ((SortSegmentDetailResultSet) query.getQueryResult()).getMaxRow() : ((SortSegmentDetailByIndexResultSet) query.getQueryResult()).getMaxRow();
+            maxRow += ((DetailResultSet) query.getQueryResult()).getRowSize();
             i++;
         }
 

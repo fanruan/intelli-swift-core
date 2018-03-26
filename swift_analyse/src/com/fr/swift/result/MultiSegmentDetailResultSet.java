@@ -28,16 +28,16 @@ public class MultiSegmentDetailResultSet extends DetailResultSet {
 
     @Override
     public Row getRowData() throws SQLException {
-        DetailResultSet rs = drs.get(index);
-        while (!rs.next()) {
+
+        while (!drs.get(index).next()) {
             index++;
         }
-        return rs.getRowData();
+        return drs.get(index).getRowData();
     }
 
     private void init() throws SQLException{
             for (Query query : queries) {
-                maxRow += ((SegmentDetailResultSet) query.getQueryResult()).getMaxRow();
+                maxRow += ((SegmentDetailResultSet) query.getQueryResult()).getRowSize();
                 drs.add((SegmentDetailResultSet) query.getQueryResult());
             }
     }
