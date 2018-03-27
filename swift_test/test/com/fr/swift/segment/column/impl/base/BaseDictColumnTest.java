@@ -24,14 +24,14 @@ public abstract class BaseDictColumnTest<T> extends TestCase {
 
     public void testPutValueThenGet() {
         DictionaryEncodedColumn<T> dictColumn = getDictColumn();
-        for (int i = 0; i < values.length; i++) {
+        for (int i = 1; i < values.length; i++) {
             dictColumn.putValue(i, values[i]);
         }
         dictColumn.putSize(values.length);
         reset(dictColumn);
 
         dictColumn = getDictColumn();
-        for (int i = 0; i < values.length; i++) {
+        for (int i = 1; i < values.length; i++) {
             assertEquals(i, dictColumn.getIndex(values[i]));
             assertEquals(values[i], dictColumn.getValue(i));
         }
@@ -65,7 +65,7 @@ public abstract class BaseDictColumnTest<T> extends TestCase {
     /**
      * release之后，discovery还保留着，清一遍，免得影响别的test方法
      */
-    static <T> void reset(DictionaryEncodedColumn<T> column) {
+    private static <T> void reset(DictionaryEncodedColumn<T> column) {
         column.release();
         ResourceDiscoveryImpl.getInstance().clear();
     }

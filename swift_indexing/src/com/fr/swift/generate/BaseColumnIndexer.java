@@ -17,6 +17,7 @@ import com.fr.swift.segment.column.DetailColumn;
 import com.fr.swift.segment.column.DictionaryEncodedColumn;
 import com.fr.swift.setting.PerformancePlugManager;
 import com.fr.swift.source.ColumnTypeConstants.ClassType;
+import com.fr.swift.source.DataSource;
 import com.fr.swift.structure.array.IntList;
 import com.fr.swift.structure.array.IntListFactory;
 import com.fr.swift.structure.external.map.ExternalMap;
@@ -39,10 +40,12 @@ import static com.fr.swift.source.ColumnTypeConstants.ClassType.STRING;
  * @author anchore
  * @date 2018/2/26
  */
-public abstract class BaseColumnIndexer<T extends Comparable<T>> extends BaseWorker {
+public abstract class BaseColumnIndexer<T> extends BaseWorker {
+    protected DataSource dataSource;
     protected ColumnKey key;
 
-    public BaseColumnIndexer(ColumnKey key) {
+    public BaseColumnIndexer(DataSource dataSource, ColumnKey key) {
+        this.dataSource = dataSource;
         this.key = key;
     }
 
@@ -61,20 +64,34 @@ public abstract class BaseColumnIndexer<T extends Comparable<T>> extends BaseWor
     private void buildIndex() {
         List<Segment> segments = getSegments();
         for (Segment segment : segments) {
-            Column<T> column = segment.getColumn(key);
+            Column<T> column = getColumn(segment);
             buildColumnIndex(column, segment.getRowCount());
         }
     }
 
+    /**
+     * indexer 会对返回的segments的对应列进行索引
+     *
+     * @return 要索引的segments
+     */
     protected abstract List<Segment> getSegments();
 
+    protected Column<T> getColumn(Segment segment) {
+        return segment.getColumn(key);
+    }
+
+    /**
+     * 如有必要就释放
+     *
+     * @param baseColumn 基础列
+     */
     protected abstract void releaseIfNeed(Releasable baseColumn);
 
     private void buildColumnIndex(Column<T> column, int rowCount) {
         Map<T, IntList> map;
         IResourceLocation location = column.getLocation();
 
-        if (isDetailInExternal(getClassType(), location.getStoreType())) {
+        if (isDetailInExternal(Util.getClassType(dataSource, key), location.getStoreType())) {
             ExternalMap<T, IntList> extMap = newIntListExternalMap(
                     column.getDictionaryEncodedColumn().getComparator(),
                     location.buildChildLocation(EXTERNAL_STRING).getPath());
@@ -156,6 +173,9 @@ public abstract class BaseColumnIndexer<T extends Comparable<T>> extends BaseWor
         releaseIfNeed(indexColumn);
     }
 
+    /**
+     * 全局字典
+     */
     protected abstract void mergeDict();
 
     private Map<T, IntList> newIntListSortedMap(Column<T> column) {
@@ -166,10 +186,8 @@ public abstract class BaseColumnIndexer<T extends Comparable<T>> extends BaseWor
     }
 
     private ExternalMap<T, IntList> newIntListExternalMap(Comparator<T> c, String path) {
-        return IntListExternalMapFactory.getIntListExternalMap(getClassType(), c, path, true);
+        return IntListExternalMapFactory.getIntListExternalMap(Util.getClassType(dataSource, key), c, path, true);
     }
-
-    protected abstract ClassType getClassType();
 
     private static <V> boolean isNullValue(V val) {
         return val.equals(NULL_INT) ||
@@ -178,7 +196,7 @@ public abstract class BaseColumnIndexer<T extends Comparable<T>> extends BaseWor
                 val.equals(NULL_STRING);
     }
 
-    private static <V extends Comparable<V>> Iterable<Entry<V, IntList>> toIterable(Map<V, IntList> map) {
+    private static <V> Iterable<Entry<V, IntList>> toIterable(Map<V, IntList> map) {
         if (map instanceof ExternalMap) {
             return (ExternalMap<V, IntList>) map;
         }

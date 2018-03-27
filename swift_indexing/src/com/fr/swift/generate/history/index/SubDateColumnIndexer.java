@@ -3,22 +3,26 @@ package com.fr.swift.generate.history.index;
 import com.fr.swift.cube.io.Releasable;
 import com.fr.swift.generate.BaseColumnIndexer;
 import com.fr.swift.manager.LocalSegmentProvider;
+import com.fr.swift.query.group.GroupType;
 import com.fr.swift.segment.Segment;
+import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.ColumnKey;
+import com.fr.swift.segment.column.impl.DateColumn;
+import com.fr.swift.segment.column.impl.SubDateColumn;
 import com.fr.swift.source.DataSource;
 
 import java.util.List;
 
 /**
- * This class created on 2017-12-28 10:54:47
- *
- * @author Lucifer
- * @description
- * @since Advanced FineBI Analysis 1.0
+ * @author anchore
+ * @date 2018/3/23
  */
-public class ColumnIndexer<T> extends BaseColumnIndexer<T> {
-    public ColumnIndexer(DataSource dataSource, ColumnKey key) {
+public class SubDateColumnIndexer<Derive> extends BaseColumnIndexer<Derive> {
+    protected GroupType type;
+
+    public SubDateColumnIndexer(DataSource dataSource, ColumnKey key, GroupType type) {
         super(dataSource, key);
+        this.type = type;
     }
 
     @Override
@@ -27,8 +31,13 @@ public class ColumnIndexer<T> extends BaseColumnIndexer<T> {
     }
 
     @Override
+    protected Column<Derive> getColumn(Segment segment) {
+        return (Column<Derive>) new SubDateColumn(((DateColumn) super.getColumn(segment)), type);
+    }
+
+    @Override
     protected void mergeDict() {
-        new ColumnDictMerger<T>(dataSource, key).work();
+
     }
 
     @Override

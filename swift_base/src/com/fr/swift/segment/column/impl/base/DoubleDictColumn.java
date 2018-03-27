@@ -21,7 +21,7 @@ public class DoubleDictColumn extends BaseDictColumn<Double> {
         super(parent, keyComparator);
     }
 
-    void initKeyWriter() {
+    private void initKeyWriter() {
         if (keyWriter != null) {
             return;
         }
@@ -29,7 +29,7 @@ public class DoubleDictColumn extends BaseDictColumn<Double> {
         keyWriter = DISCOVERY.getWriter(keyLocation, new BuildConf(IoType.WRITE, DataType.DOUBLE));
     }
 
-    void initKeyReader() {
+    private void initKeyReader() {
         if (keyReader != null) {
             return;
         }

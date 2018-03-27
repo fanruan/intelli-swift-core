@@ -1,9 +1,6 @@
 package com.fr.swift.query.group.impl;
 
 import com.fr.swift.query.group.GroupType;
-import com.fr.swift.structure.Pair;
-import com.fr.swift.structure.array.IntList;
-import com.fr.swift.structure.array.IntListFactory;
 
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
@@ -25,7 +22,7 @@ public class CustomNumGroupRule extends BaseCustomGroupRule<Number> {
 
     @Override
     void initMap() {
-        int lastIndex = intervals.size();
+        int lastIndex = intervals.size() + 1;
 
         int dictSize = dictColumn.size();
         reverseMap = new int[dictSize];
@@ -37,7 +34,7 @@ public class CustomNumGroupRule extends BaseCustomGroupRule<Number> {
             String groupName;
             if (index != -1) {
                 // 在区间里
-                groupName = intervals.get(index).name;
+                groupName = intervals.get(index - 1).name;
             } else {
                 if (hasOtherGroup()) {
                     // 有其他组，则全部分到其他
@@ -50,21 +47,15 @@ public class CustomNumGroupRule extends BaseCustomGroupRule<Number> {
                 }
             }
 
-            if (map.containsKey(index)) {
-                map.get(index).getValue().add(i);
-            } else {
-                IntList indices = IntListFactory.createIntList();
-                indices.add(i);
-                map.put(index, Pair.of(groupName, indices));
-                reverseMap[i] = index;
-            }
+            internalMap(i, index, groupName);
         }
     }
 
     private int findIndex(Number num) {
         for (int i = 0, size = intervals.size(); i < size; i++) {
             if (intervals.get(i).contains(num.doubleValue())) {
-                return i;
+                // 有效字典序号从1开始
+                return i + 1;
             }
         }
         return -1;
