@@ -66,6 +66,8 @@ import com.fr.swift.adaptor.widget.group.GroupAdaptor;
 import com.fr.swift.exception.meta.SwiftMetaDataException;
 import com.fr.swift.generate.preview.MinorSegmentManager;
 import com.fr.swift.log.SwiftLoggers;
+import com.fr.swift.query.aggregator.AggregatorFactory;
+import com.fr.swift.query.aggregator.AggregatorType;
 import com.fr.swift.query.filter.info.FilterInfo;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.column.ColumnKey;
@@ -101,7 +103,6 @@ import com.fr.swift.source.etl.rowcal.rank.RankRowOperator;
 import com.fr.swift.source.etl.selfrelation.OneUnionRelationOperator;
 import com.fr.swift.source.etl.selfrelation.TwoUnionRelationOperator;
 import com.fr.swift.source.etl.union.UnionOperator;
-import com.fr.swift.source.etl.utils.ETLConstant;
 import com.fr.swift.source.etl.utils.FormulaUtils;
 
 import java.sql.Types;
@@ -411,10 +412,9 @@ class EtlAdaptor {
             DimensionValueBean tempBean = dimensionBean.get(views.get(i));
             DimensionSrcValue srcValue = tempBean.getSrc();
             SumByGroupTarget sumByGroupTarget = new SumByGroupTarget();
-            sumByGroupTarget.setColumnType(ColumnTypeAdaptor.adaptColumnType(tempBean.getFieldType()));
             sumByGroupTarget.setName(srcValue.getFieldName());
             sumByGroupTarget.setNameText(tempBean.getName());
-            int type = ETLConstant.CONF.GROUP.NUMBER.SUM;
+            int type = BIConfConstants.CONF.GROUP.NUMBER.SUM;
             switch (tempBean.getValue().get(0).getType()) {
                 case BIConfConstants.CONF.GROUP.TYPE.SINGLE:
                     type = ((GroupSingleValueBean) tempBean.getValue().get(0)).getValue();
@@ -426,7 +426,12 @@ class EtlAdaptor {
                     //TODO
                     break;
             }
-            sumByGroupTarget.setAggregator(AggregatorAdaptor.transformAggregator(tempBean.getFieldType(), type));
+            AggregatorType aggregatorType = AggregatorAdaptor.transformAggregatorType(tempBean.getFieldType(), type);
+            sumByGroupTarget.setAggregator(AggregatorFactory.createAggregator(aggregatorType));
+            sumByGroupTarget.setColumnType(ColumnTypeAdaptor.adaptColumnType(tempBean.getFieldType()));
+            if (aggregatorType == AggregatorType.COUNT || aggregatorType == AggregatorType.DISTINCT){
+                sumByGroupTarget.setColumnType(ColumnTypeConstants.ColumnType.NUMBER);
+            }
             sumByGroupTarget.setSumType(type);
             groupTargets[i] = sumByGroupTarget;
         }
