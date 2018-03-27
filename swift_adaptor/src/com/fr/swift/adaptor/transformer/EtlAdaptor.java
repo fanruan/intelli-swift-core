@@ -1,5 +1,6 @@
 package com.fr.swift.adaptor.transformer;
 
+import com.finebi.conf.constant.BICommonConstants;
 import com.finebi.conf.constant.BIConfConstants;
 import com.finebi.conf.constant.ConfConstant.AnalysisType;
 import com.finebi.conf.exception.FineAnalysisOperationUnSafe;
@@ -459,15 +460,16 @@ class EtlAdaptor {
         AllValueItemBean tempBean = ((AddAllValueColumnBean) value).getValue();
         String columnKey = tempBean.getOrigin();
         int summary = tempBean.getSummary();
+        AggregatorType aggregatorType = AggregatorAdaptor.transformAggregatorType(BICommonConstants.COLUMN.NUMBER, summary);
         if (tempBean.getRule() == BIConfConstants.CONF.ADD_COLUMN.NOT_IN_GROUP) {
-            return new AllDataRowCalculatorOperator(columnName, ColumnTypeAdaptor.adaptColumnType(32), columnKey, null, summary);
+            return new AllDataRowCalculatorOperator(columnName, ColumnTypeAdaptor.adaptColumnType(32), columnKey, null, aggregatorType);
         } else {
             List<String> selects = ((GroupAllValueValue) tempBean).getSelects();
             ColumnKey[] dimensions = new ColumnKey[selects.size()];
             for (int i = 0; i < dimensions.length; i++) {
                 dimensions[i] = new ColumnKey(selects.get(i));
             }
-            return new AllDataRowCalculatorOperator(columnName, ColumnTypeAdaptor.adaptColumnType(32), columnKey, dimensions, summary);
+            return new AllDataRowCalculatorOperator(columnName, ColumnTypeAdaptor.adaptColumnType(32), columnKey, dimensions, aggregatorType);
         }
     }
 

@@ -1,5 +1,6 @@
 package com.fr.swift.source.etl.rowcal.alldata;
 
+import com.fr.swift.query.aggregator.AggregatorType;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.source.ColumnTypeConstants.ColumnType;
 import com.fr.swift.source.ColumnTypeUtils;
@@ -25,10 +26,10 @@ public class AllDataRowCalculatorOperator extends AbstractOperator {
     @CoreField
     private ColumnKey[] dimension;
     @CoreField
-    private int calculatorType;
+    private AggregatorType calculatorType;
 
     public AllDataRowCalculatorOperator(String addedColumnName, ColumnType columnType, String columnName,
-                                        ColumnKey[] dimension, int calculatorType) {
+                                        ColumnKey[] dimension, AggregatorType calculatorType) {
         this.addedColumnName = addedColumnName;
         this.columnType = columnType;
         this.columnName = columnName;
@@ -52,7 +53,7 @@ public class AllDataRowCalculatorOperator extends AbstractOperator {
         return columnType;
     }
 
-    public int getCalculatorType() {
+    public AggregatorType getCalculatorType() {
         return calculatorType;
     }
 
