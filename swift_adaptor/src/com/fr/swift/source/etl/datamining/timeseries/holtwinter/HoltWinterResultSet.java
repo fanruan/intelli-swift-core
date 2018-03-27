@@ -16,7 +16,6 @@ import com.fr.swift.source.etl.datamining.timeseries.MultiFieldKey;
 import weka.filters.supervised.attribute.TSLagMaker;
 
 import java.sql.SQLException;
-import java.sql.Types;
 import java.text.DateFormat;
 import java.util.*;
 
@@ -73,6 +72,7 @@ public class HoltWinterResultSet implements SwiftResultSet {
         timeSeriesForecast.setIncludeTrendCorrection(algorithmBean.isIncludeTrendCorrection());
         timeSeriesForecast.setSeasonCycleLength(algorithmBean.getSeasonCycleLength());
         timeSeriesForecast.setCalculateConfidenceInterval(algorithmBean.isCalculateConfidenceInterval());
+        timeSeriesForecast.setMultiEffect(algorithmBean.isMultiEffect());
         int periodicityInt = algorithmBean.getPeriodicity();
         if (!isDateField) {
             // 如果是数值型的话直接当日来处理
