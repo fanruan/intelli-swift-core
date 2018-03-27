@@ -31,23 +31,23 @@ public class DataMiningTransferOperator implements ETLTransferOperator {
      * @param metaData      当前表的元数据
      * @param basedMetas    上一步表的元数据
      * @param basedSegments 上一步表的segment
-     * @return  当前ETL操作的数据
+     * @return 当前ETL操作处理后的数据
      */
     @Override
     public SwiftResultSet createResultSet(SwiftMetaData metaData, List<SwiftMetaData> basedMetas, List<Segment[]> basedSegments) {
         List<List<Segment>> tis = new ArrayList<List<Segment>>();
-        for (int i = 0; i < basedSegments.size(); i++) {
-            tis.add(Arrays.asList(basedSegments.get(i)));
+        for (Segment[] basedSegment : basedSegments) {
+            tis.add(Arrays.asList(basedSegment));
         }
-        try{
-            switch (algorithmBean.getAlgorithmName()){
+        try {
+            switch (algorithmBean.getAlgorithmName()) {
                 case HOLT_WINTERS:
-                    return new HoltWinterResultSet(algorithmBean, metaData,basedMetas.get(0), tis.get(0));
+                    return new HoltWinterResultSet(algorithmBean, metaData, basedMetas.get(0), tis.get(0));
                 default:
                     return null;
             }
-        }catch (Exception e){
-            LOGGER.error(e.getMessage(),e);
+        } catch (Exception e) {
+            LOGGER.error(e.getMessage(), e);
             return new SwiftResultSet() {
                 @Override
                 public void close() throws SQLException {

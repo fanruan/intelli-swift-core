@@ -1,6 +1,7 @@
 package com.fr.swift.source.etl.datamining.timeseries.holtwinter;
 
 import com.finebi.conf.internalimp.analysis.bean.operator.datamining.AlgorithmBean;
+import com.finebi.conf.internalimp.analysis.bean.operator.datamining.timeseries.HoltWintersBean;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.source.MetaDataColumn;
@@ -18,34 +19,43 @@ import java.util.List;
  */
 public class HoltWinterOperator extends AbstractOperator {
     private static final SwiftLogger LOGGER = SwiftLoggers.getLogger(HoltWinterOperator.class);
-    private AlgorithmBean algorithmBean = null;
-    private String columnName = "forecast";
+    private HoltWintersBean algorithmBean = null;
 
     public HoltWinterOperator(AlgorithmBean algorithmBean) {
-        this.algorithmBean = algorithmBean;
+        this.algorithmBean = (HoltWintersBean) algorithmBean;
     }
 
     @Override
     public List<SwiftMetaDataColumn> getColumns(SwiftMetaData[] tables) {
         SwiftMetaData table = tables[0];
         List<SwiftMetaDataColumn> columnList = new ArrayList<SwiftMetaDataColumn>();
-        columnList.add(new MetaDataColumn("时间列", Types.DATE));
-        columnList.add(new MetaDataColumn("分组列", Types.VARCHAR));
-        columnList.add(new MetaDataColumn("实际值", Types.DOUBLE));
-
-        columnList.add(new MetaDataColumn("预测值",Types.DOUBLE));
-//        try {
-//            for (int i = 0; i < table.getColumnCount(); i++) {
-//                columnList.add(table.getColumn(i+1));
-//            }
-//            columnList.add(new MetaDataColumn("预测值",Types.DOUBLE));
-//        } catch (SwiftMetaDataException e) {
-//            LOGGER.error(e.getMessage(),e);
-//        }
-//        columnList.add(new MetaDataColumn(this.columnName,
-//                this.columnName, Types.DOUBLE, MD5Utils.getMD5String(new String[]{(this.columnName)})));
-
+        String timeFieldName = algorithmBean.getTimeFieldName();
+        try {
+            if (isDateType(table.getColumn(timeFieldName).getType())) {
+                columnList.add(new MetaDataColumn(timeFieldName, Types.TIMESTAMP));
+            } else {
+                columnList.add(new MetaDataColumn(timeFieldName, Types.INTEGER));
+            }
+        } catch (Exception e) {
+            LOGGER.error(e.getMessage(), e);
+            columnList.add(new MetaDataColumn(timeFieldName, Types.TIMESTAMP));
+        }
+        for (String groupName : algorithmBean.getGroupFields()) {
+            columnList.add(new MetaDataColumn(groupName, Types.VARCHAR));
+        }
+        columnList.add(new MetaDataColumn(algorithmBean.getTargetFiledName(), Types.DOUBLE));
+        columnList.add(new MetaDataColumn("forecast", Types.DOUBLE));
         return columnList;
+    }
+
+    public static boolean isDateType(int sqlType) {
+        switch (sqlType) {
+            case Types.DATE:
+            case Types.TIMESTAMP:
+            case Types.TIME:
+                return true;
+        }
+        return false;
     }
 
     @Override

@@ -43,7 +43,7 @@ public class MinorUpdater {
     }
 
     private static void build(final DataSource dataSource) throws Exception {
-        SwiftResultSet swiftResultSet = SwiftDataPreviewer.createPreviewTransfer(dataSource, 100).createResultSet();
+        SwiftResultSet swiftResultSet = SwiftDataPreviewer.createPreviewTransfer(dataSource, 10000).createResultSet();
 
         SegmentOperator operator = getSegmentOperator(dataSource, swiftResultSet);
         operator.transport();
