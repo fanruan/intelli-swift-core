@@ -1,5 +1,6 @@
 package com.fr.swift.source.etl.groupsum;
 
+import com.fr.swift.query.aggregator.AggregatorType;
 import com.fr.swift.query.group.Group;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.source.ColumnTypeConstants.ClassType;
@@ -9,7 +10,6 @@ import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftMetaDataColumn;
 import com.fr.swift.source.SwiftResultSet;
 import com.fr.swift.source.etl.CreateSegmentForSum;
-import com.fr.swift.source.etl.utils.ETLConstant;
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
 
@@ -23,7 +23,7 @@ public class TestSumByGroupOperator extends TestCase {
 
 
     public void testSumByGroup() {
-        SwiftResultSet rs = init(ETLConstant.CONF.GROUP.NUMBER.SUM);
+        SwiftResultSet rs = init(AggregatorType.SUM);
         Object[][] value = new Object[][]{{"A", new Double(12.0)}, {"B", new Double(12.0)}, {"C", new Double(18.0)}};
         int index = 0;
         try {
@@ -39,11 +39,11 @@ public class TestSumByGroupOperator extends TestCase {
         }
     }
 
-    public SwiftResultSet init(int type) {
+    public SwiftResultSet init(AggregatorType type) {
         SumByGroupTarget[] target = new SumByGroupTarget[1];
         SumByGroupDimension[] dimension = new SumByGroupDimension[1];
         target[0] = new SumByGroupTarget();
-        target[0].setSumType(type);
+        target[0].setSumType(1);
         target[0].setName("column2");
         // TODO   应该是整型
         target[0].setClassType(ClassType.LONG);

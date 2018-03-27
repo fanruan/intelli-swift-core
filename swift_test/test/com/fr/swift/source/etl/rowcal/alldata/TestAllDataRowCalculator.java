@@ -1,11 +1,11 @@
 package com.fr.swift.source.etl.rowcal.alldata;
 
+import com.fr.swift.query.aggregator.AggregatorType;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SwiftResultSet;
 import com.fr.swift.source.etl.rowcal.rank.CreateSegmentForRank;
-import com.fr.swift.source.etl.utils.ETLConstant;
 import junit.framework.TestCase;
 
 import java.util.ArrayList;
@@ -26,8 +26,8 @@ public class TestAllDataRowCalculator extends TestCase {
             String column2 = "column2";
             String column3 = "column3";
             ColumnKey[] dimension = new ColumnKey[]{new ColumnKey(column1), new ColumnKey(column2)};
-            int[] summaryType = new int[]{ETLConstant.CONF.ADD_COLUMN.ALL_VALUES.SUMMARY_TYPE.SUM, ETLConstant.CONF.ADD_COLUMN.ALL_VALUES.SUMMARY_TYPE.COUNT,
-                    ETLConstant.CONF.ADD_COLUMN.ALL_VALUES.SUMMARY_TYPE.MIN, ETLConstant.CONF.ADD_COLUMN.ALL_VALUES.SUMMARY_TYPE.MAX, ETLConstant.CONF.ADD_COLUMN.ALL_VALUES.SUMMARY_TYPE.AVG};
+            AggregatorType[] summaryType = new AggregatorType[]{AggregatorType.SUM, AggregatorType.COUNT,
+                    AggregatorType.MIN, AggregatorType.MAX, AggregatorType.AVERAGE};
             int columnType = 0;
             String[] str = new String[]{"20.0", "20.0", "96.0", "96.0", "96.0", "96.0", "96.0", "96.0", "46.0", "46.0", "46.0", "46.0", "36.0", "36.0"};
             int index = 0;
