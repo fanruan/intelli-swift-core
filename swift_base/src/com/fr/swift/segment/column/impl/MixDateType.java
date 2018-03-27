@@ -4,6 +4,10 @@ import java.util.Calendar;
 
 /**
  * @author anchore
+ * <p>
+ * 可用于截取日期，如：
+ * 截取年月：2017/11/30 12:23:34.456 => 2017/11/01 00:00:00.000
+ * 截取年，季度（截取后取当季第一个月的第一天）：2017/11/30 12:23:34.456 => 2017/10/01 00:00:00.000
  */
 public enum MixDateType {
     Y_Q {
@@ -24,7 +28,7 @@ public enum MixDateType {
             int month = DateType.MONTH.from(c);
             c.clear();
             DateType.YEAR.set(c, year);
-            DateType.MONTH.set(c, month);
+            DateType.MONTH.set(c, month - 1);
             return c.getTimeInMillis();
         }
     },
@@ -58,10 +62,10 @@ public enum MixDateType {
     M_D {
         @Override
         long from(Calendar c) {
-            int year = DateType.MONTH.from(c);
+            int month = DateType.MONTH.from(c);
             int day = DateType.DAY.from(c);
             c.clear();
-            DateType.MONTH.set(c, year);
+            DateType.MONTH.set(c, month - 1);
             DateType.DAY.set(c, day);
             return c.getTimeInMillis();
         }
@@ -74,7 +78,7 @@ public enum MixDateType {
             int day = DateType.DAY.from(c);
             c.clear();
             DateType.YEAR.set(c, year);
-            DateType.MONTH.set(c, month);
+            DateType.MONTH.set(c, month - 1);
             DateType.DAY.set(c, day);
             return c.getTimeInMillis();
         }

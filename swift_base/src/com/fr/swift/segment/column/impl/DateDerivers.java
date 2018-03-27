@@ -13,7 +13,7 @@ import java.util.Calendar;
  */
 public class DateDerivers {
     @SuppressWarnings("unchecked")
-    static <Base, Derive> Function<Base, Derive> newDeriver(GroupType type) {
+    public static <Derive> Function<Long, Derive> newDeriver(GroupType type) {
         switch (type) {
             case YEAR:
             case QUARTER:
@@ -24,10 +24,19 @@ public class DateDerivers {
             case MINUTE:
             case SECOND:
             case WEEK_OF_YEAR:
-                return (Function<Base, Derive>) newSingleFieldDeriver(toDateType(type));
+                return (Function<Long, Derive>) longWrap(newSingleFieldDeriver(toDateType(type)));
             default:
-                return (Function<Base, Derive>) newTruncatedDeriver(toMixDateType(type));
+                return (Function<Long, Derive>) newTruncDeriver(toMixDateType(type));
         }
+    }
+
+    private static Function<Long, Long> longWrap(final Function<Long, Integer> old) {
+        return new Function<Long, Long>() {
+            @Override
+            public Long apply(Long p) {
+                return Long.valueOf(old.apply(p));
+            }
+        };
     }
 
     public static Function<Long, Integer> newSingleFieldDeriver(final DateType dateType) {
@@ -40,7 +49,7 @@ public class DateDerivers {
         };
     }
 
-    public static Function<Long, Long> newTruncatedDeriver(final MixDateType type) {
+    public static Function<Long, Long> newTruncDeriver(final MixDateType type) {
         return new BaseDateDeriver<Long>() {
             @Override
             public Long apply(Long millis) {

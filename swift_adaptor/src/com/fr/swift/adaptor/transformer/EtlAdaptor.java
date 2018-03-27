@@ -28,10 +28,10 @@ import com.finebi.conf.internalimp.analysis.bean.operator.add.timediff.TimeDiffV
 import com.finebi.conf.internalimp.analysis.bean.operator.add.timediff.TimeDiffValueItem;
 import com.finebi.conf.internalimp.analysis.bean.operator.circulate.CirculateOneFieldBean;
 import com.finebi.conf.internalimp.analysis.bean.operator.circulate.CirculateTwoFieldValue;
-import com.finebi.conf.internalimp.analysis.bean.operator.group.CustomGroupValueItemBean;
 import com.finebi.conf.internalimp.analysis.bean.operator.datamining.AlgorithmBean;
 import com.finebi.conf.internalimp.analysis.bean.operator.datamining.DataMiningBean;
 import com.finebi.conf.internalimp.analysis.bean.operator.filter.FilterOperatorBean;
+import com.finebi.conf.internalimp.analysis.bean.operator.group.CustomGroupValueItemBean;
 import com.finebi.conf.internalimp.analysis.bean.operator.group.DimensionSelectValue;
 import com.finebi.conf.internalimp.analysis.bean.operator.group.DimensionSrcValue;
 import com.finebi.conf.internalimp.analysis.bean.operator.group.DimensionValueBean;
@@ -65,10 +65,16 @@ import com.fr.general.ComparatorUtils;
 import com.fr.swift.adaptor.widget.group.GroupAdaptor;
 import com.fr.swift.exception.meta.SwiftMetaDataException;
 import com.fr.swift.generate.preview.MinorSegmentManager;
+import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.query.filter.info.FilterInfo;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.column.ColumnKey;
-import com.fr.swift.source.*;
+import com.fr.swift.source.ColumnTypeConstants;
+import com.fr.swift.source.DataSource;
+import com.fr.swift.source.MetaDataColumn;
+import com.fr.swift.source.SwiftMetaData;
+import com.fr.swift.source.SwiftMetaDataColumn;
+import com.fr.swift.source.SwiftMetaDataImpl;
 import com.fr.swift.source.etl.AbstractOperator;
 import com.fr.swift.source.etl.ETLOperator;
 import com.fr.swift.source.etl.ETLSource;
@@ -133,6 +139,7 @@ class EtlAdaptor {
             dataSources.addAll(fromOperator(op));
             return new ETLSource(dataSources, adaptEtlOperator(op, table));
         } catch (Exception e) {
+            SwiftLoggers.getLogger().error(e);
             return IndexingDataSourceFactory.transformDataSource(baseTable);
         }
     }
@@ -419,6 +426,7 @@ class EtlAdaptor {
                     //TODO
                     break;
             }
+            sumByGroupTarget.setAggregator(AggregatorAdaptor.transformAggregator(tempBean.getFieldType(), type));
             sumByGroupTarget.setSumType(type);
             groupTargets[i] = sumByGroupTarget;
         }

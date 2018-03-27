@@ -1,6 +1,10 @@
 package com.fr.swift.query.group.impl;
 
 import com.fr.swift.query.group.GroupType;
+import com.fr.swift.source.core.Core;
+import com.fr.swift.source.core.CoreField;
+import com.fr.swift.source.core.CoreGenerator;
+import com.fr.swift.source.core.CoreService;
 import com.fr.swift.structure.Pair;
 import com.fr.swift.structure.array.IntList;
 import com.fr.swift.structure.array.IntListFactory;
@@ -15,6 +19,7 @@ import java.util.List;
  * 字符串自定义分组规则
  */
 public class CustomStrGroupRule extends BaseCustomGroupRule<String> {
+    @CoreField
     private List<StringGroup> groups;
 
     public CustomStrGroupRule(List<StringGroup> groups, String otherGroupName) {
@@ -26,7 +31,7 @@ public class CustomStrGroupRule extends BaseCustomGroupRule<String> {
     void initMap() {
         filterInvalidGroup();
 
-        int lastIndex = groups.size();
+        int lastIndex = groups.size() + 1;
 
         int dictSize = dictColumn.size();
         reverseMap = new int[dictSize];
@@ -38,7 +43,7 @@ public class CustomStrGroupRule extends BaseCustomGroupRule<String> {
             String groupName;
             if (index != -1) {
                 // 在区间里
-                groupName = groups.get(index).name;
+                groupName = groups.get(index - 1).name;
             } else {
                 if (hasOtherGroup()) {
                     // 有其他组，则全部分到其他
@@ -51,14 +56,7 @@ public class CustomStrGroupRule extends BaseCustomGroupRule<String> {
                 }
             }
 
-            if (map.containsKey(index)) {
-                map.get(index).getValue().add(i);
-            } else {
-                IntList indices = IntListFactory.createIntList();
-                indices.add(i);
-                map.put(index, Pair.of(groupName, indices));
-                reverseMap[i] = index;
-            }
+            internalMap(i, index, groupName);
         }
     }
 
@@ -75,7 +73,8 @@ public class CustomStrGroupRule extends BaseCustomGroupRule<String> {
     private int findIndex(String val) {
         for (int i = 0; i < groups.size(); i++) {
             if (groups.get(i).contains(val)) {
-                return i;
+                // 有效字典序号从1开始
+                return i + 1;
             }
         }
         return -1;
@@ -86,8 +85,10 @@ public class CustomStrGroupRule extends BaseCustomGroupRule<String> {
         return GroupType.CUSTOM;
     }
 
-    public static class StringGroup {
+    public static class StringGroup implements CoreService{
+        @CoreField
         String name;
+        @CoreField
         List<String> values;
 
         public StringGroup(String name, List<String> values) {
@@ -97,6 +98,15 @@ public class CustomStrGroupRule extends BaseCustomGroupRule<String> {
 
         boolean contains(String o) {
             return values.contains(o);
+        }
+
+        public Core fetchObjectCore() {
+            try {
+                return new CoreGenerator(this).fetchObjectCore();
+            } catch(Exception ignore) {
+
+            }
+            return Core.EMPTY_CORE;
         }
     }
 }

@@ -57,6 +57,13 @@ public class ByteArrayFineIoWriter extends BaseFineIoWriter implements ByteArray
         return new ByteArrayFineIoWriter(contentWriter, positionWriter, lengthWriter, lastPosWriter);
     }
 
+    /**
+     * last position是用于edit的场景
+     * over write场景不用它
+     *
+     * @param location 位置
+     * @return 上次写的位置
+     */
     private static long getLastPosition(IResourceLocation location) {
         try {
             IResourceLocation lastPosLocation = location.buildChildLocation(LAST_POSITION);
@@ -82,6 +89,8 @@ public class ByteArrayFineIoWriter extends BaseFineIoWriter implements ByteArray
         contentWriter.release();
         positionWriter.release();
         lengthWriter.release();
+
+        lastPosWriter.put(0, curPos);
         lastPosWriter.release();
     }
 

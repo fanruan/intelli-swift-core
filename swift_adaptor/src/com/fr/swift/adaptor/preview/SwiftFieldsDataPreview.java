@@ -100,7 +100,6 @@ public class SwiftFieldsDataPreview {
                     MinorUpdater.update(dataSource);
                 }
                 List<Segment> segments = MinorSegmentManager.getInstance().getSegment(dataSource.getSourceKey());
-                List<Object> list = new ArrayList<Object>();
                 max = Double.NEGATIVE_INFINITY;
                 min = Double.POSITIVE_INFINITY;
                 for (Segment sg : segments) {
@@ -128,7 +127,7 @@ public class SwiftFieldsDataPreview {
         } catch (Exception e) {
             SwiftLoggers.getLogger().error(e);
         }
-        return null;
+        return new NumberMaxAndMinValue();
     }
 
     public List<Object> getGroupPreviewByFields(DataSource dataSource, String fieldName) {

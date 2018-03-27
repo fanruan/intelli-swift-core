@@ -9,7 +9,6 @@ import com.fr.swift.query.group.by.GroupByResult;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.ColumnKey;
-import com.fr.swift.segment.column.DictionaryEncodedColumn;
 import com.fr.swift.structure.iterator.RowTraversal;
 
 import java.util.Comparator;
@@ -92,7 +91,7 @@ public class GroupValueIterator {
             System.arraycopy(valuesAndGVIs[numOfSegment][i].getValues(), 0, values, 0, values.length - 1);
             if (iterators[numOfSegment][i].hasNext()) {
                 GroupByEntry entry = iterators[numOfSegment][i].next();
-                values[values.length - 1] = singleColumn.getDictionaryEncodedColumn().getValue(entry.getIndex() + 1);
+                values[values.length - 1] = singleColumn.getDictionaryEncodedColumn().getValue(entry.getIndex());
                 valuesAndGVIs[numOfSegment][i + 1] = new SwiftValuesAndGVI(values, valuesAndGVIs[numOfSegment][i].getGvi().getAnd(entry.getTraversal().toBitMap()));
             } else {
                 move(numOfSegment,i - 1);
@@ -108,7 +107,10 @@ public class GroupValueIterator {
         nextOne = new SwiftValuesAndGVI(new Object[0], AllShowBitMap.newInstance(100));
         boolean[] isMin = new boolean[this.segment.length];
         SwiftValuesAndGVI min = next[0];
-        for (int i = 0; i < this.segment.length; i++) {
+        if (segment.length == 1){
+            isMin[0] = true;
+        }
+        for (int i = 1; i < this.segment.length; i++) {
             int result = min.compareTo(next[i], comparators);
             if (result == 0 ) {
                 isMin[i] = true;
