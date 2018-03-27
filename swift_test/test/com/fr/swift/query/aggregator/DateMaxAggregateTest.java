@@ -28,14 +28,14 @@ public class DateMaxAggregateTest extends TestCase {
         EasyMock.expect(detailColumn.getLong(EasyMock.anyInt())).andReturn(2l).anyTimes();
         EasyMock.expect(bitMapColumn.getNullIndex()).andReturn(null).anyTimes();
         control.replay();
-        LongAmountAggregateValue value = (LongAmountAggregateValue) DateMaxAggregate.INSTANCE.aggregate(bitMap, mockColumn);
+        DateAmountAggregateValue value = (DateAmountAggregateValue) DateMaxAggregate.INSTANCE.aggregate(bitMap, mockColumn);
         assertEquals(value.calculateValue(), Long.valueOf(2));
     }
 
     public void testCombine() {
-        LongAmountAggregateValue v1 = new LongAmountAggregateValue();
+        DateAmountAggregateValue v1 = new DateAmountAggregateValue();
         v1.setValue(1);
-        LongAmountAggregateValue v2 = new LongAmountAggregateValue();
+        DateAmountAggregateValue v2 = new DateAmountAggregateValue();
         v2.setValue(2);
         DateMaxAggregate.INSTANCE.combine(v1, v2);
         assertEquals(v1.getValue(), 2);
