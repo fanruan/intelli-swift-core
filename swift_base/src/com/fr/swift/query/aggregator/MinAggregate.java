@@ -8,7 +8,7 @@ import static com.fr.swift.cube.io.IOConstant.NULL_LONG;
  */
 public class MinAggregate extends AllDataCompare {
 
-    public static MinAggregate INSTANCE = new MinAggregate();
+    protected static final MinAggregate INSTANCE = new MinAggregate();
 
 
     @Override

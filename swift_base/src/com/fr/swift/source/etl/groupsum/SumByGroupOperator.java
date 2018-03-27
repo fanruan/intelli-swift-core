@@ -9,6 +9,7 @@ import com.fr.swift.source.ColumnTypeUtils;
 import com.fr.swift.source.MetaDataColumn;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftMetaDataColumn;
+import com.fr.swift.source.core.CoreField;
 import com.fr.swift.source.etl.AbstractOperator;
 import com.fr.swift.source.etl.OperatorType;
 
@@ -22,7 +23,9 @@ import java.util.List;
 public class SumByGroupOperator extends AbstractOperator {
 
     private static final SwiftLogger LOGGER = SwiftLoggers.getLogger(SumByGroupOperator.class);
+    @CoreField
     private SumByGroupTarget[] targets;
+    @CoreField
     private SumByGroupDimension[] dimensions;
 
     public SumByGroupOperator(SumByGroupTarget[] targets, SumByGroupDimension[] dimensions) {
@@ -66,7 +69,7 @@ public class SumByGroupOperator extends AbstractOperator {
                 }
                 if(null != targets) {
                     for (int j = 0; j < this.targets.length; j++) {
-                        columns.add(new MetaDataColumn(this.targets[j].getNameText(), ColumnTypeUtils.columnTypeToSqlType(ColumnType.NUMBER), parent.getColumn(this.targets[j].getName()).getPrecision()));
+                        columns.add(new MetaDataColumn(this.targets[j].getNameText(), ColumnTypeUtils.columnTypeToSqlType(targets[j].getColumnType()), parent.getColumn(this.targets[j].getName()).getPrecision()));
                     }
                 }
             } catch (SwiftMetaDataException e) {

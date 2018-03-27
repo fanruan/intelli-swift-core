@@ -11,4 +11,10 @@ public interface AggregatorValue<T> {
      * @return
      */
     double calculate();
+
+    /**
+     * 取聚合之后的对象
+     * @return
+     */
+    T calculateValue();
 }
