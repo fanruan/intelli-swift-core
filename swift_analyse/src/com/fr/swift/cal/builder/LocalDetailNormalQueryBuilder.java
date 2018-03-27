@@ -41,13 +41,13 @@ public class LocalDetailNormalQueryBuilder implements LocalDetailQueryBuilder {
             if (info.getFilterInfo() != null) {
                 filterInfos.add(info.getFilterInfo());
             }
-            queries.add(new NormalDetailSegmentQuery(columns, FilterBuilder.buildDetailFilter(segment, new GeneralFilterInfo(filterInfos, GeneralFilterInfo.AND))));
+            queries.add(new NormalDetailSegmentQuery(columns, FilterBuilder.buildDetailFilter(segment, new GeneralFilterInfo(filterInfos, GeneralFilterInfo.AND)), info.getMetaData()));
         }
-        return new NormalDetailResultQuery(queries);
+        return new NormalDetailResultQuery(queries, info.getMetaData());
     }
 
     @Override
     public Query<DetailResultSet> buildResultQuery(List<Query<DetailResultSet>> queries, DetailQueryInfo info) {
-        return new NormalDetailResultQuery(queries, info.getTargets());
+        return new NormalDetailResultQuery(queries, info.getTargets(), info.getMetaData());
     }
 }

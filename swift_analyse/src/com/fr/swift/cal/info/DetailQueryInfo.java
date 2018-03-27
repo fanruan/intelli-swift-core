@@ -13,6 +13,7 @@ import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.column.Column;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SourceKey;
+import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.structure.array.IntList;
 
 import java.util.ArrayList;
@@ -41,12 +42,15 @@ public class DetailQueryInfo extends AbstractQueryInfo<DetailResultSet> {
      */
     private DetailTarget[] targets;
 
-    public DetailQueryInfo(Cursor cursor, String queryID, Dimension[] dimensions, SourceKey target, DetailTarget[] targets, IntList sortIndex, FilterInfo filterInfo) {
+    SwiftMetaData metaData;
+
+    public DetailQueryInfo(Cursor cursor, String queryID, Dimension[] dimensions, SourceKey target, DetailTarget[] targets, IntList sortIndex, FilterInfo filterInfo, SwiftMetaData metaData) {
         super(cursor, queryID, filterInfo);
         this.dimensions = dimensions;
         this.target = target;
         this.sortIndex = sortIndex;
         this.targets = targets;
+        this.metaData = metaData;
     }
 
     public Dimension[] getDimensions() {
@@ -68,6 +72,10 @@ public class DetailQueryInfo extends AbstractQueryInfo<DetailResultSet> {
     @Override
     public QueryType getType() {
         return QueryType.DETAIL;
+    }
+
+    public SwiftMetaData getMetaData() {
+        return metaData;
     }
 
     public boolean hasSort() {

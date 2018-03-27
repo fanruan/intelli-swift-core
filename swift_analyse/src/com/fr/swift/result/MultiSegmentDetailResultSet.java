@@ -20,9 +20,11 @@ public class MultiSegmentDetailResultSet extends DetailResultSet {
     private int index = 0;
     private List<DetailResultSet> drs = new ArrayList<DetailResultSet>();
     private List<Query<DetailResultSet>> queries;
+    private SwiftMetaData metaData;
 
-    public MultiSegmentDetailResultSet(List<Query<DetailResultSet>> queries) throws SQLException {
+    public MultiSegmentDetailResultSet(List<Query<DetailResultSet>> queries, SwiftMetaData metaData) throws SQLException {
         this.queries = queries;
+        this.metaData = metaData;
         init();
     }
 
@@ -44,17 +46,6 @@ public class MultiSegmentDetailResultSet extends DetailResultSet {
 
     @Override
     public SwiftMetaData getMetaData() {
-        return new DetailMetaData(){
-            @Override
-            public int getColumnCount() throws SwiftMetaDataException {
-                DetailResultSet drs = null;
-                try {
-                    drs = queries.get(0).getQueryResult();
-                } catch (SQLException e) {
-
-                }
-                return drs.getColumnCount();
-            }
-        };
+        return metaData;
     }
 }

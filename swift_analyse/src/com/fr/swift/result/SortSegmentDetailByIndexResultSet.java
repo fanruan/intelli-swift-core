@@ -33,6 +33,7 @@ public class SortSegmentDetailByIndexResultSet extends DetailResultSet {
     private List<SortType> sorts;
     private GroupByResult[] gbr;
     private ImmutableBitMap[] bitmap;
+    private SwiftMetaData metaData;
 
     /**
      * 已排序的行数
@@ -45,11 +46,12 @@ public class SortSegmentDetailByIndexResultSet extends DetailResultSet {
     private int bitmapCount = 1;
     private ArrayList<ImmutableBitMap> sortedDetail = new ArrayList<ImmutableBitMap>();
 
-    public SortSegmentDetailByIndexResultSet(List<Column> columnList, DetailFilter filter, IntList sortIndex, List<SortType> sorts) {
+    public SortSegmentDetailByIndexResultSet(List<Column> columnList, DetailFilter filter, IntList sortIndex, List<SortType> sorts, SwiftMetaData metaData) {
         this.columnList = columnList;
         this.filter = filter;
         this.sortIndex = sortIndex;
         this.sorts = sorts;
+        this.metaData =metaData;
         this.gbr = new GroupByResult[sortIndex.size()];
         this.bitmap = new ImmutableBitMap[sortIndex.size() + 1];
         bitmap[0] = filter.createFilterIndex();
@@ -140,12 +142,7 @@ public class SortSegmentDetailByIndexResultSet extends DetailResultSet {
 
     @Override
     public SwiftMetaData getMetaData() {
-        return new DetailMetaData(){
-            @Override
-            public int getColumnCount() throws SwiftMetaDataException {
-                return columnList.size();
-            }
-        };
+        return metaData;
     }
 
 }

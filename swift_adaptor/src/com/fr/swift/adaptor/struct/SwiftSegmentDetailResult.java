@@ -75,13 +75,13 @@ public class SwiftSegmentDetailResult implements BIDetailTableResult {
             if(comparator == null) {
                 comparator = new DetailSortComparator(columnList, sortIndex, sorts);
             }
-            queryList.add(new SortDetailSegmentQuery(columnList, new AllShowFilter(segment.getAllShowIndex()), sortIndex, sorts));
+            queryList.add(new SortDetailSegmentQuery(columnList, new AllShowFilter(segment.getAllShowIndex()), sortIndex, sorts, swiftMetaData));
         }
         Query<DetailResultSet> query = null;
         if (queryList.size() == 1) {
             query = queryList.get(0);
         } else {
-            query = new SortDetailResultQuery(queryList, comparator);
+            query = new SortDetailResultQuery(queryList, comparator, swiftMetaData);
         }
         SwiftResultSet resultSet = ShowResultSet.of(query.getQueryResult(), swiftMetaData);
         dataIterator = new DetailResultIterator(resultSet);
@@ -98,13 +98,13 @@ public class SwiftSegmentDetailResult implements BIDetailTableResult {
                 ColumnKey columnKey = new ColumnKey(columnName);
                 columnList.add(segment.getColumn(columnKey));
             }
-            queryList.add(new NormalDetailSegmentQuery(columnList, new AllShowFilter(segment.getAllShowIndex())));
+            queryList.add(new NormalDetailSegmentQuery(columnList, new AllShowFilter(segment.getAllShowIndex()), swiftMetaData));
         }
         Query<DetailResultSet> query = null;
         if (queryList.size() == 1) {
             query = queryList.get(0);
         } else {
-            query = new NormalDetailResultQuery(queryList);
+            query = new NormalDetailResultQuery(queryList, swiftMetaData);
         }
         SwiftResultSet resultSet = ShowResultSet.of(query.getQueryResult(), swiftMetaData);
         dataIterator = new DetailResultIterator(resultSet);
