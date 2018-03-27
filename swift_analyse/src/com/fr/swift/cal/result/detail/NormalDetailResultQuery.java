@@ -26,7 +26,7 @@ public class NormalDetailResultQuery extends AbstractDetailResultQuery {
     @Override
     public DetailResultSet getQueryResult() throws SQLException {
         if(queryList.size() == 0) {
-            return null;
+            return DetailResultSet.EMPTY;
         }
         if(queryList.size() == 1) {
             return queryList.get(0).getQueryResult();

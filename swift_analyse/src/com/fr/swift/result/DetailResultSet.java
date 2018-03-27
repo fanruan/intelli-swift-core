@@ -1,8 +1,12 @@
 package com.fr.swift.result;
 
+import com.fr.swift.source.ListBasedRow;
+import com.fr.swift.source.Row;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftResultSet;
 
+import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Comparator;
 
 /**
@@ -10,6 +14,17 @@ import java.util.Comparator;
  * @date 2017/12/6
  */
 public abstract class DetailResultSet implements SwiftResultSet {
+    public static final DetailResultSet EMPTY = new DetailResultSet() {
+        @Override
+        public boolean next() {
+            return false;
+        }
+
+        @Override
+        public Row getRowData() throws SQLException {
+            return new ListBasedRow(new ArrayList<Object>());
+        }
+    };
     /**
      * 已拿到的行数
      */
