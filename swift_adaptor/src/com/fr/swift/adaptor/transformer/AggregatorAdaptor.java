@@ -1,20 +1,14 @@
 package com.fr.swift.adaptor.transformer;
 
 import com.finebi.conf.constant.BICommonConstants;
-import com.fr.swift.query.aggregator.Aggregator;
-import com.fr.swift.query.aggregator.AggregatorFactory;
+import com.finebi.conf.constant.BIConfConstants;
 import com.fr.swift.query.aggregator.AggregatorType;
-import com.fr.swift.source.etl.utils.ETLConstant;
 
 /**
  * Created by pony on 2017/12/26.
  */
 public class AggregatorAdaptor {
-    public static Aggregator transformAggregator(int fieldType, int aggregatorType) {
-        return AggregatorFactory.createAggregator(getAggregatorType(fieldType, aggregatorType));
-    }
-
-    private static AggregatorType getAggregatorType(int fieldType, int aggregatorType) {
+    public static AggregatorType transformAggregatorType(int fieldType, int aggregatorType) {
         switch (fieldType) {
             case BICommonConstants.COLUMN.NUMBER:
                 return getNumberAggregatorType(aggregatorType);
@@ -27,9 +21,9 @@ public class AggregatorAdaptor {
 
     private static AggregatorType getStringAggregatorType(int aggregatorType) {
         switch (aggregatorType) {
-            case ETLConstant.CONF.GROUP.STRING.COUNT:
+            case BIConfConstants.CONF.GROUP.STRING.COUNT:
                 return AggregatorType.DISTINCT;
-            case ETLConstant.CONF.GROUP.STRING.APPEND:
+            case BIConfConstants.CONF.GROUP.STRING.APPEND:
                 return AggregatorType.STRING_COMBINE;
             default:
                 return AggregatorType.COUNT;
@@ -38,12 +32,12 @@ public class AggregatorAdaptor {
 
     private static AggregatorType getDateAggregatorType(int aggregatorType) {
         switch (aggregatorType) {
-            case ETLConstant.CONF.GROUP.DATE.COUNT:
+            case BIConfConstants.CONF.GROUP.DATE.COUNT:
                 return AggregatorType.DISTINCT;
-            case ETLConstant.CONF.GROUP.DATE.ET:
-                return AggregatorType.MIN;
-            case ETLConstant.CONF.GROUP.DATE.LT:
-                return AggregatorType.MAX;
+            case BIConfConstants.CONF.GROUP.DATE.ET:
+                return AggregatorType.DATE_MIN;
+            case BIConfConstants.CONF.GROUP.DATE.LT:
+                return AggregatorType.DATE_MAX;
             default:
                 return AggregatorType.COUNT;
         }
@@ -51,18 +45,18 @@ public class AggregatorAdaptor {
 
     private static AggregatorType getNumberAggregatorType(int aggregatorType) {
         switch (aggregatorType) {
-            case ETLConstant.CONF.GROUP.NUMBER.SUM:
+            case BIConfConstants.CONF.GROUP.NUMBER.SUM:
                 return AggregatorType.SUM;
-            case ETLConstant.CONF.GROUP.NUMBER.AVG:
+            case BIConfConstants.CONF.GROUP.NUMBER.AVG:
                 return AggregatorType.AVERAGE;
-            case ETLConstant.CONF.GROUP.NUMBER.MEDIAN:
-            case ETLConstant.CONF.GROUP.NUMBER.MAX:
+            case BIConfConstants.CONF.GROUP.NUMBER.MEDIAN:
+            case BIConfConstants.CONF.GROUP.NUMBER.MAX:
                 return AggregatorType.MAX;
-            case ETLConstant.CONF.GROUP.NUMBER.MIN:
+            case BIConfConstants.CONF.GROUP.NUMBER.MIN:
                 return AggregatorType.MIN;
-            case ETLConstant.CONF.GROUP.NUMBER.STANDARD_DEVIATION:
-            case ETLConstant.CONF.GROUP.NUMBER.VARIANCE:
-            case ETLConstant.CONF.GROUP.NUMBER.COUNT:
+            case BIConfConstants.CONF.GROUP.NUMBER.STANDARD_DEVIATION:
+            case BIConfConstants.CONF.GROUP.NUMBER.VARIANCE:
+            case BIConfConstants.CONF.GROUP.NUMBER.COUNT:
                 return AggregatorType.DISTINCT;
             default:
                 return AggregatorType.COUNT;

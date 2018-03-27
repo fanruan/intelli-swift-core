@@ -1,6 +1,7 @@
 package com.fr.swift.query.aggregator;
 
 
+import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.bitmap.traversal.CalculatorTraversalAction;
 import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.DetailColumn;
@@ -23,6 +24,10 @@ public abstract class AllDataCompare implements Aggregator<DoubleAmountAggregate
 
         final DoubleAmountAggregateValue minOrMaxValue = new DoubleAmountAggregateValue();
         final DetailColumn getter = column.getDetailColumn();
+        ImmutableBitMap nullIndex = column.getBitmapIndex().getNullIndex();
+        if (!nullIndex.isEmpty()){
+            traversal = traversal.toBitMap().getAndNot(nullIndex);
+        }
         CalculatorTraversalAction ss;
         if (getter instanceof LongDetailColumn) {
             return aggregateLongSum(traversal, getter);
@@ -83,6 +88,7 @@ public abstract class AllDataCompare implements Aggregator<DoubleAmountAggregate
                 sum = compare(value, sum);
             }
         };
+
         traversal.traversal(ss);
         minOrMaxValue.setValue(ss.getCalculatorValue());
         return minOrMaxValue;
