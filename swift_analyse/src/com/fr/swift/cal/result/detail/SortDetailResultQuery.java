@@ -4,6 +4,7 @@ import com.fr.swift.cal.Query;
 import com.fr.swift.query.adapter.target.DetailTarget;
 import com.fr.swift.result.DetailResultSet;
 import com.fr.swift.result.SortMultiSegmentDetailResultSet;
+import com.fr.swift.source.SwiftMetaData;
 
 
 import java.sql.SQLException;
@@ -16,14 +17,18 @@ import java.util.List;
 public class SortDetailResultQuery extends AbstractDetailResultQuery {
 
     private Comparator comparator;
+    private SwiftMetaData metaData;
 
-    public SortDetailResultQuery(List<Query<DetailResultSet>> queries) {
+    public SortDetailResultQuery(List<Query<DetailResultSet>> queries, Comparator comparator, SwiftMetaData metaData) {
         super(queries);
-
+        this.comparator = comparator;
+        this.metaData = metaData;
     }
 
-    public SortDetailResultQuery(List<Query<DetailResultSet>> queries, DetailTarget[] targets) {
+    public SortDetailResultQuery(List<Query<DetailResultSet>> queries, DetailTarget[] targets, Comparator comparator, SwiftMetaData metaData) {
         super(queries, targets);
+        this.comparator = comparator;
+        this.metaData = metaData;
     }
 
     @Override
@@ -36,8 +41,6 @@ public class SortDetailResultQuery extends AbstractDetailResultQuery {
         if(queryList.size() == 1) {
             return queryList.get(0).getQueryResult();
         }
-        DetailResultSet rs = queryList.get(0).getQueryResult();
-        comparator = rs.getDetailSortComparator();
-        return new SortMultiSegmentDetailResultSet(queryList, comparator);
+        return new SortMultiSegmentDetailResultSet(queryList, comparator, metaData);
     }
 }

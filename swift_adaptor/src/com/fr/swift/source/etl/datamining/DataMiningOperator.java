@@ -25,8 +25,8 @@ public class DataMiningOperator extends AbstractOperator {
         init();
     }
 
-    private void init(){
-        switch (algorithmBean.getAlgorithmName()){
+    private void init() {
+        switch (algorithmBean.getAlgorithmName()) {
             case HOLT_WINTERS:
                 algorithmOperator = new HoltWinterOperator(algorithmBean);
                 break;
