@@ -6,6 +6,7 @@ import com.fr.swift.bitmap.impl.BitSetMutableBitMap;
 import com.fr.swift.cal.Query;
 import com.fr.swift.cal.segment.detail.NormalDetailSegmentQuery;
 import com.fr.swift.cal.segment.detail.SortDetailSegmentQuery;
+import com.fr.swift.compare.Comparators;
 import com.fr.swift.query.filter.detail.DetailFilter;
 import com.fr.swift.query.sort.SortType;
 import com.fr.swift.segment.column.Column;
@@ -18,6 +19,7 @@ import org.easymock.IMocksControl;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 public class DetailResultSetTest extends TestCase {
@@ -68,7 +70,7 @@ public class DetailResultSetTest extends TestCase {
         double[] doubleData = {9.5, 40.1, 9.5, 40.1};
         long[] longData = {12, 23, 23, 23};
         String[] strData = {"A", "C", "C", "A"};
-        SegmentDetailResultSet rs = new SegmentDetailResultSet(columnList, filter);
+        SegmentDetailResultSet rs = new SegmentDetailResultSet(columnList, filter, null);
         while (rs.next()) {
             Row row = rs.getRowData();
             assertEquals((int) row.getValue(0), intData[i]);
@@ -89,9 +91,9 @@ public class DetailResultSetTest extends TestCase {
         String[] strData = {"A", "C", "C", "A"};
 
         for (int j = 0; j < 3; j++) {
-            queries.add(new NormalDetailSegmentQuery(columnList, filter));
+            queries.add(new NormalDetailSegmentQuery(columnList, filter, null));
         }
-        MultiSegmentDetailResultSet mrs = new MultiSegmentDetailResultSet(queries);
+        MultiSegmentDetailResultSet mrs = new MultiSegmentDetailResultSet(queries, null);
         while (mrs.next()) {
             Row row = mrs.getRowData();
             assertEquals((int) row.getValue(0), intData[i]);
@@ -117,7 +119,7 @@ public class DetailResultSetTest extends TestCase {
         sorts.add(SortType.DESC);
         sorts.add(SortType.DESC);
         sorts.add(SortType.ASC);
-        DetailResultSet rs = new SortSegmentDetailResultSet(columnList, filter, sortIndex, sorts);
+        DetailResultSet rs = new SortSegmentDetailResultSet(columnList, filter, sortIndex, sorts, null);
 
         try {
             while (rs.next()) {
@@ -149,11 +151,31 @@ public class DetailResultSetTest extends TestCase {
         sorts.add(SortType.DESC);
         sorts.add(SortType.ASC);
         for (int j = 0; j < 3; j++) {
-            queries.add(new SortDetailSegmentQuery(columnList, filter, sortIndex, sorts));
+            queries.add(new SortDetailSegmentQuery(columnList, filter, sortIndex, sorts, null));
         }
-        DetailResultSet rs = new SortMultiSegmentDetailResultSet(queries, queries.get(0).getQueryResult().getDetailSortComparator());
+        Comparator comparator = new Comparator <Row>() {
+            @Override
+            public int compare(Row o1, Row o2) {
+                for (int i = 0; i < sortIndex.size(); i++) {
+                    int c = 0;
+                    //比较的列先后顺序
+                    int realColumn = sortIndex.get(i);
+                    if (sorts.get(i) == SortType.ASC) {
+                        c = columnList.get(realColumn).getDictionaryEncodedColumn().getComparator().compare(o1.getValue(realColumn), o2.getValue(realColumn));
+                    }
+                    if (sorts.get(i) == SortType.DESC) {
+                        c = Comparators.reverse(columnList.get(realColumn).getDictionaryEncodedColumn().getComparator()).compare(o1.getValue(realColumn), o2.getValue(realColumn));
+                    }
+                    if (c != 0) {
+                        return c;
+                    }
+                }
+                return 0;
+            }
+        };
+        DetailResultSet rs = new SortMultiSegmentDetailResultSet(queries, comparator, null);
         //测试索引排序，单块数据量大于3000时使用索引排序
-//        DetailResultSet rs = new SortMultiSegmentDetailResultSet(queries, ((SortSegmentDetailByIndexResultSet) queries.get(0).getQueryResult()).getDetailSortComparator());
+//        DetailResultSet rs = new SortMultiSegmentDetailResultSet(queries, comparator);
 
         try {
             while (rs.next()) {
@@ -183,7 +205,7 @@ public class DetailResultSetTest extends TestCase {
         sorts.add(SortType.DESC);
         sorts.add(SortType.ASC);
 
-        DetailResultSet rs = new SortSegmentDetailByIndexResultSet(columnList, filter, sortIndex, sorts);
+        DetailResultSet rs = new SortSegmentDetailByIndexResultSet(columnList, filter, sortIndex, sorts, null);
 
         try {
             while (rs.next()) {

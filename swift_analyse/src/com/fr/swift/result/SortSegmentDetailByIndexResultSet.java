@@ -3,8 +3,6 @@ package com.fr.swift.result;
 import com.fr.base.FRContext;
 import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.bitmap.traversal.BreakTraversalAction;
-import com.fr.swift.compare.Comparators;
-import com.fr.swift.exception.meta.SwiftMetaDataException;
 import com.fr.swift.query.filter.detail.DetailFilter;
 import com.fr.swift.query.group.by.GroupBy;
 import com.fr.swift.query.group.by.GroupByEntry;
@@ -33,6 +31,7 @@ public class SortSegmentDetailByIndexResultSet extends DetailResultSet {
     private List<SortType> sorts;
     private GroupByResult[] gbr;
     private ImmutableBitMap[] bitmap;
+    private SwiftMetaData metaData;
 
     /**
      * 已排序的行数
@@ -45,11 +44,12 @@ public class SortSegmentDetailByIndexResultSet extends DetailResultSet {
     private int bitmapCount = 1;
     private ArrayList<ImmutableBitMap> sortedDetail = new ArrayList<ImmutableBitMap>();
 
-    public SortSegmentDetailByIndexResultSet(List<Column> columnList, DetailFilter filter, IntList sortIndex, List<SortType> sorts) {
+    public SortSegmentDetailByIndexResultSet(List<Column> columnList, DetailFilter filter, IntList sortIndex, List<SortType> sorts, SwiftMetaData metaData) {
         this.columnList = columnList;
         this.filter = filter;
         this.sortIndex = sortIndex;
         this.sorts = sorts;
+        this.metaData =metaData;
         this.gbr = new GroupByResult[sortIndex.size()];
         this.bitmap = new ImmutableBitMap[sortIndex.size() + 1];
         bitmap[0] = filter.createFilterIndex();
@@ -140,45 +140,7 @@ public class SortSegmentDetailByIndexResultSet extends DetailResultSet {
 
     @Override
     public SwiftMetaData getMetaData() {
-        return new DetailMetaData(){
-            @Override
-            public int getColumnCount() throws SwiftMetaDataException {
-                return columnList.size();
-            }
-        };
-    }
-
-    @Override
-    public DetailSortComparator getDetailSortComparator() {
-        return new DetailSortComparator();
-    }
-
-    protected class DetailSortComparator implements Comparator<Row> {
-
-        @Override
-        public int compare(Row o1, Row o2) {
-
-            for (int i = 0; i < sortIndex.size(); i++) {
-                int c = 0;
-                //比较的列先后顺序
-                int realColumn = sortIndex.get(i);
-                if (sorts.get(i) == SortType.ASC) {
-                    c = columnList.get(realColumn).getDictionaryEncodedColumn().getComparator().compare(o1.getValue(realColumn), o2.getValue(realColumn));
-                }
-                if (sorts.get(i) == SortType.DESC) {
-                    c = Comparators.reverse(columnList.get(realColumn).getDictionaryEncodedColumn().getComparator()).compare(o1.getValue(realColumn), o2.getValue(realColumn));
-                }
-                if (c != 0) {
-                    return c;
-                }
-            }
-            return 0;
-        }
-
-        @Override
-        public boolean equals(Object obj) {
-            return false;
-        }
+        return metaData;
     }
 
 }

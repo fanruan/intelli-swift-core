@@ -43,7 +43,7 @@ public abstract class DetailResultSet implements SwiftResultSet {
         return 0;
     }
 
-    public Comparator getDetailSortComparator() {
-        return null;
-    }
+//    public Comparator getDetailSortComparator() {
+//        return null;
+//    }
 }

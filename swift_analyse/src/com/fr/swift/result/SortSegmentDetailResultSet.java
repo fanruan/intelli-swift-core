@@ -2,7 +2,6 @@ package com.fr.swift.result;
 
 import com.fr.swift.bitmap.traversal.TraversalAction;
 import com.fr.swift.compare.Comparators;
-import com.fr.swift.exception.meta.SwiftMetaDataException;
 import com.fr.swift.query.filter.detail.DetailFilter;
 import com.fr.swift.query.sort.SortType;
 import com.fr.swift.segment.column.Column;
@@ -26,14 +25,15 @@ public class SortSegmentDetailResultSet extends DetailResultSet {
     private DetailFilter filter;
     private IntList sortIndex;
     private List<SortType> sorts;
-
+    private SwiftMetaData metaData;
     private ArrayList<Row> sortedDetailList;
 
-    public SortSegmentDetailResultSet(List<Column> columnList, DetailFilter filter, IntList sortIndex, List<SortType> sorts) {
+    public SortSegmentDetailResultSet(List<Column> columnList, DetailFilter filter, IntList sortIndex, List<SortType> sorts, SwiftMetaData metaData) {
         this.columnList = columnList;
         this.filter = filter;
         this.sortIndex = sortIndex;
         this.sorts = sorts;
+        this.metaData = metaData;
         init();
     }
 
@@ -48,18 +48,13 @@ public class SortSegmentDetailResultSet extends DetailResultSet {
 
     @Override
     public SwiftMetaData getMetaData() {
-        return new DetailMetaData(){
-            @Override
-            public int getColumnCount() throws SwiftMetaDataException {
-                return columnList.size();
-            }
-        };
+        return metaData;
     }
 
-    @Override
-    public DetailSortComparator getDetailSortComparator() {
-        return new DetailSortComparator();
-    }
+//    @Override
+//    public DetailSortComparator getDetailSortComparator() {
+//        return new DetailSortComparator();
+//    }
 
     private void init() {
         maxRow = filter.createFilterIndex().getCardinality();
