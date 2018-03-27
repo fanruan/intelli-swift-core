@@ -24,9 +24,9 @@ public class GroupValueIterator {
     private Segment[] segment; //分片
     private ColumnKey[] columnKey; //字段
     private Group[] groups;
-    Comparator[] comparators;
-    SwiftValuesAndGVI nextOne;
-    private TempValue[] tempValue;
+    private Comparator[] comparators;
+    private SwiftValuesAndGVI nextOne;
+    private Column[][] groupColumns;
 
     public GroupValueIterator(Segment[] segments, ColumnKey[] columnKey) {
         this(segments, columnKey, null);
@@ -38,18 +38,20 @@ public class GroupValueIterator {
         iterators = new GroupByResult[this.segment.length][this.columnKey.length];
         valuesAndGVIs = new SwiftValuesAndGVI[this.segment.length][this.columnKey.length + 1];
         next = new SwiftValuesAndGVI[this.segment.length];
+        groupColumns = new Column[this.segment.length][this.columnKey.length];
         if(groups == null || groups.length != columnKey.length){
             this.groups = new Group[columnKey.length];
         } else {
             this.groups = groups;
         }
-        tempValue = new TempValue[segment.length];
         //初始化
         for (int i = 0; i < this.segment.length; i++) {
             allShowIndex = this.segment[i].getAllShowIndex();
             valuesAndGVIs[i][0] = new SwiftValuesAndGVI(new Object[0], allShowIndex);
-            tempValue[i] = getIter(this.segment[i].getColumn(columnKey[0]), allShowIndex, 0);
-            iterators[i][0] = tempValue[i].getResultSet();
+            for(int j = 0; j < this.columnKey.length; j++) {
+                groupColumns[i][j] = getGroupColumn(this.segment[i].getColumn(columnKey[j]), j);
+            }
+            iterators[i][0] = getIter(groupColumns[i][0], allShowIndex, 0);
             if (iterators[i][0].hasNext()) {
                 move(i, 0);
             } else {
@@ -78,14 +80,9 @@ public class GroupValueIterator {
             return;
         }
         for (int i = index; i < columnKey.length; i++) {
-            Column singleColumn = this.segment[numOfSegment].getColumn(columnKey[i]);
-            if(i == 0) {
-                singleColumn = tempValue[numOfSegment].getColumn();
-            }
-            if (i != index) {
-                TempValue collect = getIter(singleColumn, valuesAndGVIs[numOfSegment][i].getGvi(), i);
-                iterators[numOfSegment][i] = collect.getResultSet();
-                singleColumn = collect.getColumn();
+            Column singleColumn = groupColumns[numOfSegment][i];
+            if(i != index) {
+                iterators[numOfSegment][i] = getIter(singleColumn, valuesAndGVIs[numOfSegment][i].getGvi(), i);
             }
             Object[] values = new Object[i + 1];
             System.arraycopy(valuesAndGVIs[numOfSegment][i].getValues(), 0, values, 0, values.length - 1);
@@ -155,8 +152,9 @@ public class GroupValueIterator {
         next[numOfSegment] = null;
     }
 
-    private TempValue getIter(Column column, RowTraversal gvi, int index) {
-        TempValue tempValue = new TempValue();
+    private GroupByResult getIter(Column column, RowTraversal gvi, int index) {
+        return GroupBy.createGroupByResult(column, gvi, true);
+        /*TempValue tempValue = new TempValue();
         if (groups[index] != null) {
             Column groupColumn = groups[index].getGroupOperator().group(column);
             tempValue.setColumn(groupColumn);
@@ -165,27 +163,16 @@ public class GroupValueIterator {
             tempValue.setColumn(column);
             tempValue.setResultSet(GroupBy.createGroupByResult(column, gvi, true));
         }
-        return tempValue;
+        return tempValue;*/
     }
 
-    private class TempValue {
-        public GroupByResult getResultSet() {
-            return resultSet;
+    private Column getGroupColumn(Column column, int index) {
+        Column groupColumn = null;
+        if(groups[index] != null) {
+            groupColumn = groups[index].getGroupOperator().group(column);
+        } else {
+            groupColumn = column;
         }
-
-        public void setResultSet(GroupByResult resultSet) {
-            this.resultSet = resultSet;
-        }
-
-        public Column getColumn() {
-            return column;
-        }
-
-        public void setColumn(Column column) {
-            this.column = column;
-        }
-
-        Column column;
-        GroupByResult resultSet;
+        return groupColumn;
     }
 }
