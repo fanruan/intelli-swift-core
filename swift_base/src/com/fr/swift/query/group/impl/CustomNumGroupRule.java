@@ -5,6 +5,9 @@ import com.fr.swift.source.core.Core;
 import com.fr.swift.source.core.CoreField;
 import com.fr.swift.source.core.CoreGenerator;
 import com.fr.swift.source.core.CoreService;
+import com.fr.swift.structure.Pair;
+import com.fr.swift.structure.array.IntList;
+import com.fr.swift.structure.array.IntListFactory;
 
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
@@ -53,6 +56,8 @@ public class CustomNumGroupRule extends BaseCustomGroupRule<Number> {
 
             internalMap(i, index, groupName);
         }
+
+        fillRestMap(lastIndex);
     }
 
     private int findIndex(Number num) {
@@ -63,6 +68,20 @@ public class CustomNumGroupRule extends BaseCustomGroupRule<Number> {
             }
         }
         return -1;
+    }
+
+    private void fillRestMap(int size) {
+        // 0号为null
+        IntList ints = IntListFactory.createIntList(1);
+        ints.add(0);
+        map.put(0, Pair.of((String) null, ints));
+
+        for (int i = 1; i < size; i++) {
+            if (map.containsKey(i)) {
+                continue;
+            }
+            map.put(i, Pair.of(intervals.get(i - 1).name, IntListFactory.createEmptyIntList()));
+        }
     }
 
     @Override
@@ -113,6 +132,7 @@ public class CustomNumGroupRule extends BaseCustomGroupRule<Number> {
             return Double.compare(val, ceil) == 0 && lessOrEq;
         }
 
+        @Override
         public Core fetchObjectCore() {
             try {
                 return new CoreGenerator(this).fetchObjectCore();
