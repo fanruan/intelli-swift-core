@@ -40,7 +40,8 @@ import java.util.Set;
 public class DetailFilterFactory {
 
     public static DetailFilter createFilter(Segment segment, SwiftDetailFilterInfo filterInfo) {
-        Column column = segment.getColumn(new ColumnKey(filterInfo.getFieldName()));
+        // 通用过滤器没有fieldName
+        Column column = filterInfo.getFieldName() == null ? null : segment.getColumn(new ColumnKey(filterInfo.getFieldName()));
         final int rowCount = segment.getRowCount();
         switch (filterInfo.getType()) {
             case STRING_IN:

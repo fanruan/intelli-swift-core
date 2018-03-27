@@ -38,6 +38,7 @@ import com.finebi.conf.structure.bean.filter.DateFilterBean;
 import com.finebi.conf.structure.bean.filter.FilterBean;
 import com.finebi.conf.structure.filter.FineFilter;
 import com.fr.stable.StringUtils;
+import com.fr.swift.adaptor.encrypt.SwiftEncryption;
 import com.fr.swift.adaptor.transformer.cal.AvgUtils;
 import com.fr.swift.adaptor.transformer.date.DateUtils;
 import com.fr.swift.query.filter.SwiftDetailFilterType;
@@ -77,7 +78,8 @@ public class FilterInfoFactory {
     }
 
     private static SwiftDetailFilterInfo createFilterInfo(FilterBean bean, List<Segment> segments) {
-        String fieldName = ((AbstractFilterBean) bean).getFieldName();
+        String fieldId = ((AbstractFilterBean) bean).getFieldId();
+        String fieldName = StringUtils.isEmpty(fieldId) ? null : SwiftEncryption.decryptFieldId(fieldId)[1];
         int type = bean.getFilterType();
         switch (type) {
             // string类过滤
