@@ -69,7 +69,7 @@ public class SumByGroupOperator extends AbstractOperator {
                 }
                 if(null != targets) {
                     for (int j = 0; j < this.targets.length; j++) {
-                        columns.add(new MetaDataColumn(this.targets[j].getNameText(), ColumnTypeUtils.columnTypeToSqlType(ColumnType.NUMBER), parent.getColumn(this.targets[j].getName()).getPrecision()));
+                        columns.add(new MetaDataColumn(this.targets[j].getNameText(), ColumnTypeUtils.columnTypeToSqlType(targets[j].getColumnType()), parent.getColumn(this.targets[j].getName()).getPrecision()));
                     }
                 }
             } catch (SwiftMetaDataException e) {
