@@ -31,7 +31,7 @@ public class CustomStrGroupRule extends BaseCustomGroupRule<String> {
     void initMap() {
         filterInvalidGroup();
 
-        int lastIndex = groups.size();
+        int lastIndex = groups.size() + 1;
 
         int dictSize = dictColumn.size();
         reverseMap = new int[dictSize];
@@ -43,7 +43,7 @@ public class CustomStrGroupRule extends BaseCustomGroupRule<String> {
             String groupName;
             if (index != -1) {
                 // 在区间里
-                groupName = groups.get(index).name;
+                groupName = groups.get(index - 1).name;
             } else {
                 if (hasOtherGroup()) {
                     // 有其他组，则全部分到其他
@@ -56,14 +56,7 @@ public class CustomStrGroupRule extends BaseCustomGroupRule<String> {
                 }
             }
 
-            if (map.containsKey(index)) {
-                map.get(index).getValue().add(i);
-            } else {
-                IntList indices = IntListFactory.createIntList();
-                indices.add(i);
-                map.put(index, Pair.of(groupName, indices));
-                reverseMap[i] = index;
-            }
+            internalMap(i, index, groupName);
         }
     }
 
@@ -80,7 +73,8 @@ public class CustomStrGroupRule extends BaseCustomGroupRule<String> {
     private int findIndex(String val) {
         for (int i = 0; i < groups.size(); i++) {
             if (groups.get(i).contains(val)) {
-                return i;
+                // 有效字典序号从1开始
+                return i + 1;
             }
         }
         return -1;

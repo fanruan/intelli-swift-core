@@ -6,8 +6,8 @@ import com.finebi.conf.internalimp.analysis.operator.circulate.CirculateOneField
 import com.finebi.conf.internalimp.analysis.operator.circulate.CirculateTwoFieldOperator;
 import com.finebi.conf.internalimp.analysis.operator.trans.ColumnRowTransOperator;
 import com.finebi.conf.internalimp.analysis.operator.trans.NameText;
-import com.finebi.conf.internalimp.basictable.previewdata.FIneCirculatePreviewData;
-import com.finebi.conf.internalimp.basictable.previewdata.FIneColumnTransPreviewData;
+import com.finebi.conf.internalimp.basictable.previewdata.FineCirculatePreviewData;
+import com.finebi.conf.internalimp.basictable.previewdata.FineColumnTransPreviewData;
 import com.finebi.conf.internalimp.basictable.previewdata.FloorPreviewItem;
 import com.finebi.conf.internalimp.basictable.table.FineDBBusinessTable;
 import com.finebi.conf.internalimp.service.engine.table.FineTableEngineExecutor;
@@ -153,7 +153,7 @@ public class SwiftTableEngineExecutor implements FineTableEngineExecutor {
             }
         }
         BIDetailTableResult detailTableResult = getPreviewData(preTable, 100);
-        FIneColumnTransPreviewData engineConfProduceData = new FIneColumnTransPreviewData();
+        FineColumnTransPreviewData engineConfProduceData = new FineColumnTransPreviewData();
         List<NameText> previewData = new ArrayList<NameText>();
         Set<String> set = new HashSet<String>();
         while (detailTableResult.hasNext()) {
@@ -243,7 +243,7 @@ public class SwiftTableEngineExecutor implements FineTableEngineExecutor {
             // TODO length
             previewData.add(new FloorPreviewItem((tempName + k), dataList, 0));
         }
-        FIneCirculatePreviewData engineConfProduceData = new FIneCirculatePreviewData();
+        FineCirculatePreviewData engineConfProduceData = new FineCirculatePreviewData();
         engineConfProduceData.setPreviewData(previewData);
         return engineConfProduceData;
     }
@@ -271,7 +271,7 @@ public class SwiftTableEngineExecutor implements FineTableEngineExecutor {
             }
         }
         BIDetailTableResult detailTableResult = getPreviewData(preTable, 100);
-        FIneCirculatePreviewData engineConfProduceData = new FIneCirculatePreviewData();
+        FineCirculatePreviewData engineConfProduceData = new FineCirculatePreviewData();
         Set<Object> set = new HashSet<Object>();
         while (detailTableResult.hasNext()) {
             List<BIDetailCell> dataList = detailTableResult.next();

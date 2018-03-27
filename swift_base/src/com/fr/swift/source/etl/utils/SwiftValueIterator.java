@@ -109,9 +109,11 @@ public class SwiftValueIterator {
 
     public void getNextOne() {
         boolean[] isMin = new boolean[this.segment.length];
-        // TODO if next[i] is null here, how to solve this problem ?
         SwiftValuesAndGVI min = next[0];
-        for (int i = 0; i < this.segment.length; i++) {
+        if(segment.length == 1) {
+            isMin[0] = true;
+        }
+        for (int i = 1; i < this.segment.length; i++) {
             int result = min.compareTo(next[i], comparators);
             if (result == 0) {
                 isMin[i] = true;
