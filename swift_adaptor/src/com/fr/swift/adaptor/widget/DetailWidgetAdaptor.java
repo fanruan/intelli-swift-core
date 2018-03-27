@@ -16,6 +16,7 @@ import com.fr.swift.adaptor.widget.group.GroupAdaptor;
 import com.fr.swift.cal.QueryInfo;
 import com.fr.swift.cal.info.DetailQueryInfo;
 import com.fr.swift.cal.result.group.Cursor;
+import com.fr.swift.config.conf.MetaDataConvertUtil;
 import com.fr.swift.query.adapter.dimension.DetailDimension;
 import com.fr.swift.query.adapter.dimension.Dimension;
 import com.fr.swift.query.adapter.target.DetailFormulaTarget;
@@ -28,6 +29,7 @@ import com.fr.swift.query.sort.Sort;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.service.QueryRunnerProvider;
 import com.fr.swift.source.SourceKey;
+import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftResultSet;
 import com.fr.swift.structure.array.IntList;
 import com.fr.swift.structure.array.IntListFactory;
@@ -66,15 +68,17 @@ public class DetailWidgetAdaptor {
 
         FineBusinessTable table = new SwiftTableConfProvider().getSingleTable(widget.getTableName());
         SourceKey target = IndexingDataSourceFactory.transformDataSource(table).getSourceKey();
+        SwiftMetaData swiftMetaData = MetaDataConvertUtil.getSwiftMetaDataBySourceKey(target.toString());
         DetailTarget[] targets = getTargets(widget);
         //没传进来排序顺序
         IntList sortIndex = IntListFactory.createHeapIntList();
         for (int i = 0; i < dimensions.length; i++) {
             sortIndex.add(i);
         }
+
 //        IntList sortIndex = null;
         FilterInfo filterInfo = FilterInfoFactory.transformFineFilter(widget.getFilters());
-        return new DetailQueryInfo(cursor, queryId, dimensions, target, targets, sortIndex, filterInfo);
+        return new DetailQueryInfo(cursor, queryId, dimensions, target, targets, sortIndex, filterInfo, swiftMetaData);
     }
 
     private static Dimension[] getDimension(DetailWidget widget) throws Exception {
@@ -89,6 +93,7 @@ public class DetailWidgetAdaptor {
         }
         return dimensions;
     }
+
 
     private static DetailTarget[] getTargets(DetailWidget widget) {
         List<FineTarget> fineTargets = widget.getTargetList();
