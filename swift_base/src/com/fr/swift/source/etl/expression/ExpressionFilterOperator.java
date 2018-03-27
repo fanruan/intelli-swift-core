@@ -1,6 +1,6 @@
 package com.fr.swift.source.etl.expression;
 
-import com.fr.swift.query.filter.info.DetailFilterInfo;
+import com.fr.swift.query.filter.info.FilterInfo;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.source.ColumnTypeConstants;
 import com.fr.swift.source.ColumnTypeUtils;
@@ -22,12 +22,12 @@ public class ExpressionFilterOperator extends AbstractOperator {
     private int columnType;
     private ColumnKey columnKey;
     private int type;
-    private DetailFilterInfo[] filters;
+    private FilterInfo[] filters;
     private Object[] values;
     private Object otherValue;
 
     public ExpressionFilterOperator(String columnName, int columnType, ColumnKey columnKey,
-                                    int type, DetailFilterInfo[] filters, Object[] values, Object otherValue) {
+                                    int type, FilterInfo[] filters, Object[] values, Object otherValue) {
         this.columnName = columnName;
         this.columnType = columnType;
         this.columnKey = columnKey;
@@ -53,7 +53,7 @@ public class ExpressionFilterOperator extends AbstractOperator {
         return type;
     }
 
-    public DetailFilterInfo[] getFilters() {
+    public FilterInfo[] getFilters() {
         return filters;
     }
 

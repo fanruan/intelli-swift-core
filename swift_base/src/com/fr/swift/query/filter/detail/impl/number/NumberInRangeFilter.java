@@ -18,6 +18,8 @@ import com.fr.swift.util.Util;
  */
 public class NumberInRangeFilter extends AbstractFilter<Number> {
 
+    private final static int START_INDEX = DictionaryEncodedColumn.NOT_NULL_START_INDEX;
+
     protected final Double min;
     protected final Double max;
     protected final boolean minIncluded;
@@ -35,21 +37,18 @@ public class NumberInRangeFilter extends AbstractFilter<Number> {
     @Override
     protected RowTraversal getIntIterator(final DictionaryEncodedColumn<Number> dict) {
         ArrayLookupHelper.Lookup<Number> lookup = LookupFactory.create(dict, Comparators.numberAsc());
-        MatchAndIndex minMatchAndIndex = ArrayLookupHelper.binarySearch(lookup, min);
-        MatchAndIndex maxMatchAndIndex = ArrayLookupHelper.binarySearch(lookup, max);
         // 获取过滤条件对应的RangeIntList区间
-        int start, end;
-        if (minMatchAndIndex.isMatch()) {
-            if (minIncluded) {
-                start = minMatchAndIndex.getIndex();
-            } else {
-                // min这个分组值存在但是不包含该分组值的条件下，索引值加1
-                start = minMatchAndIndex.getIndex() + 1;
-            }
-        } else {
-            // min这个分组值不存在的条件下，索引值要加1
-            start = minMatchAndIndex.getIndex() + 1;
+        int start = min == Double.NEGATIVE_INFINITY ? START_INDEX : getStart(ArrayLookupHelper.binarySearch(lookup, min));
+        int end = max == Double.POSITIVE_INFINITY ? dict.size() - 1 : getEnd(ArrayLookupHelper.binarySearch(lookup, max));
+        start = start < START_INDEX ? START_INDEX : start;
+        if (start >= dict.size() || end < START_INDEX || start > end) {
+            return new IntListRowTraversal(IntListFactory.createEmptyIntList());
         }
+        return new IntListRowTraversal(IntListFactory.createRangeIntList(start, end));
+    }
+
+    private int getEnd(MatchAndIndex maxMatchAndIndex) {
+        int end;
         if (maxMatchAndIndex.isMatch()) {
             if (maxIncluded) {
                 end = maxMatchAndIndex.getIndex();
@@ -61,11 +60,23 @@ public class NumberInRangeFilter extends AbstractFilter<Number> {
             // max这个分组值不存在的条件下，取当前索引值
             end = maxMatchAndIndex.getIndex();
         }
-        start = start < 0 ? 0 : start;
-        if (start >= dict.size() || end < 0 || start > end) {
-            return new IntListRowTraversal(IntListFactory.createEmptyIntList());
+        return end;
+    }
+
+    private int getStart(MatchAndIndex minMatchAndIndex) {
+        int start;
+        if (minMatchAndIndex.isMatch()) {
+            if (minIncluded) {
+                start = minMatchAndIndex.getIndex();
+            } else {
+                // min这个分组值存在但是不包含该分组值的条件下，索引值加1
+                start = minMatchAndIndex.getIndex() + 1;
+            }
+        } else {
+            // min这个分组值不存在的条件下，索引值要加1
+            start = minMatchAndIndex.getIndex() + 1;
         }
-        return new IntListRowTraversal(IntListFactory.createRangeIntList(start, end));
+        return start;
     }
 
     @Override

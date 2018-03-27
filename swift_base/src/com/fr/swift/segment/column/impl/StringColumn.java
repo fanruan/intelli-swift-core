@@ -14,8 +14,6 @@ import com.fr.swift.segment.column.impl.base.StringDictColumn;
  * @date 2017/11/30
  */
 public class StringColumn extends BaseColumn<String> {
-    private DetailColumn<String> detailColumn;
-
     public StringColumn(IResourceLocation location) {
         super(location);
     }

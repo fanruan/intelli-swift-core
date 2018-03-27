@@ -16,6 +16,11 @@ import com.finebi.conf.internalimp.analysis.bean.operator.add.allvalue.group.Gro
 import com.finebi.conf.internalimp.analysis.bean.operator.add.expression.AddExpressionValueBean;
 import com.finebi.conf.internalimp.analysis.bean.operator.add.gettime.GetFieldTimeValueBean;
 import com.finebi.conf.internalimp.analysis.bean.operator.add.gettime.GetFieldTimeValueItem;
+import com.finebi.conf.internalimp.analysis.bean.operator.add.group.custom.number.AddNumberCustomGroupBean;
+import com.finebi.conf.internalimp.analysis.bean.operator.add.group.custom.number.NumberCustomGroupValueBean;
+import com.finebi.conf.internalimp.analysis.bean.operator.add.group.custom.number.NumberCustomGroupValueNodeBean;
+import com.finebi.conf.internalimp.analysis.bean.operator.add.group.custom.string.AddStringCustomGroupValueBean;
+import com.finebi.conf.internalimp.analysis.bean.operator.add.group.custom.string.StringCustomGroupValueBean;
 import com.finebi.conf.internalimp.analysis.bean.operator.add.rank.AddFieldRankColumnBean;
 import com.finebi.conf.internalimp.analysis.bean.operator.add.rank.AddFieldRankColumnItem;
 import com.finebi.conf.internalimp.analysis.bean.operator.add.rank.group.GroupRankValueBean;
@@ -26,6 +31,7 @@ import com.finebi.conf.internalimp.analysis.bean.operator.circulate.CirculateTwo
 import com.finebi.conf.internalimp.analysis.bean.operator.datamining.AlgorithmBean;
 import com.finebi.conf.internalimp.analysis.bean.operator.datamining.DataMiningBean;
 import com.finebi.conf.internalimp.analysis.bean.operator.filter.FilterOperatorBean;
+import com.finebi.conf.internalimp.analysis.bean.operator.group.CustomGroupValueItemBean;
 import com.finebi.conf.internalimp.analysis.bean.operator.group.DimensionSelectValue;
 import com.finebi.conf.internalimp.analysis.bean.operator.group.DimensionSrcValue;
 import com.finebi.conf.internalimp.analysis.bean.operator.group.DimensionValueBean;
@@ -33,6 +39,7 @@ import com.finebi.conf.internalimp.analysis.bean.operator.group.GroupBean;
 import com.finebi.conf.internalimp.analysis.bean.operator.group.GroupSingleValueBean;
 import com.finebi.conf.internalimp.analysis.bean.operator.group.GroupValueBean;
 import com.finebi.conf.internalimp.analysis.bean.operator.group.ViewBean;
+import com.finebi.conf.internalimp.analysis.bean.operator.group.custom.CustomGroupValueContent;
 import com.finebi.conf.internalimp.analysis.bean.operator.join.JoinBean;
 import com.finebi.conf.internalimp.analysis.bean.operator.join.JoinBeanValue;
 import com.finebi.conf.internalimp.analysis.bean.operator.join.JoinNameItem;
@@ -58,9 +65,11 @@ import com.fr.general.ComparatorUtils;
 import com.fr.swift.adaptor.widget.group.GroupAdaptor;
 import com.fr.swift.exception.meta.SwiftMetaDataException;
 import com.fr.swift.generate.preview.MinorSegmentManager;
+import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.query.filter.info.FilterInfo;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.column.ColumnKey;
+import com.fr.swift.source.ColumnTypeConstants;
 import com.fr.swift.source.DataSource;
 import com.fr.swift.source.MetaDataColumn;
 import com.fr.swift.source.SwiftMetaData;
@@ -77,6 +86,10 @@ import com.fr.swift.source.etl.date.GetFromDateOperator;
 import com.fr.swift.source.etl.datediff.DateDiffOperator;
 import com.fr.swift.source.etl.detail.DetailOperator;
 import com.fr.swift.source.etl.formula.ColumnFormulaOperator;
+import com.fr.swift.source.etl.group.GroupAssignmentOperator;
+import com.fr.swift.source.etl.group.GroupNumericOperator;
+import com.fr.swift.source.etl.group.RestrictRange;
+import com.fr.swift.source.etl.group.SingleGroup;
 import com.fr.swift.source.etl.groupsum.SumByGroupDimension;
 import com.fr.swift.source.etl.groupsum.SumByGroupOperator;
 import com.fr.swift.source.etl.groupsum.SumByGroupTarget;
@@ -126,6 +139,7 @@ class EtlAdaptor {
             dataSources.addAll(fromOperator(op));
             return new ETLSource(dataSources, adaptEtlOperator(op, table));
         } catch (Exception e) {
+            SwiftLoggers.getLogger().error(e);
             return IndexingDataSourceFactory.transformDataSource(baseTable);
         }
     }
@@ -370,8 +384,15 @@ class EtlAdaptor {
         if (dimensionBean.isEmpty()) {
             return null;
         }
-        SumByGroupDimension[] groupDimensions = new SumByGroupDimension[dimensions.size()];
-        SumByGroupTarget[] groupTargets = new SumByGroupTarget[views.size()];
+
+        SumByGroupDimension[] groupDimensions = null;
+        SumByGroupTarget[] groupTargets = null;
+        if(null != views) {
+            groupTargets = new SumByGroupTarget[views.size()];
+        }
+        if(null != dimensions) {
+            groupDimensions = new SumByGroupDimension[dimensions.size()];
+        }
         for (int i = 0; i < groupDimensions.length; i++) {
             DimensionValueBean tempBean = dimensionBean.get(dimensions.get(i));
             DimensionSrcValue srcValue = tempBean.getSrc();
@@ -405,6 +426,7 @@ class EtlAdaptor {
                     //TODO
                     break;
             }
+            sumByGroupTarget.setAggregator(AggregatorAdaptor.transformAggregator(tempBean.getFieldType(), type));
             sumByGroupTarget.setSumType(type);
             groupTargets[i] = sumByGroupTarget;
         }
@@ -494,6 +516,58 @@ class EtlAdaptor {
         return new DateDiffOperator(field1, field2, type, columnName, Types.INTEGER);
     }
 
+    private static GroupAssignmentOperator getAutoGroupOperator(AddNewColumnValueBean value) {
+        StringCustomGroupValueBean bean = ((AddStringCustomGroupValueBean) value).getValue();
+        String columnName = value.getName();
+        String useOther = bean.getUseOther();
+        String field = bean.getField();
+        List<CustomGroupValueContent> details = bean.getDetails();
+        List<SingleGroup> group = new ArrayList<SingleGroup>();
+        Iterator<CustomGroupValueContent> iterator = details.iterator();
+        while(iterator.hasNext()) {
+            CustomGroupValueContent content = iterator.next();
+            String id = content.getId();
+            String name = content.getValue();
+            List<CustomGroupValueItemBean> itemBean = content.getContent();
+            List<String> dataList = new ArrayList<String>();
+            Iterator<CustomGroupValueItemBean>  iter = itemBean.iterator();
+            while(iter.hasNext()) {
+                CustomGroupValueItemBean tempValue = iter.next();
+                dataList.add(tempValue.getValue());
+            }
+            SingleGroup singleGroup = new SingleGroup();
+            singleGroup.setName(name);
+            singleGroup.setList(dataList);
+            group.add(singleGroup);
+        }
+        return new GroupAssignmentOperator(columnName, ColumnTypeConstants.ColumnType.STRING, useOther, new ColumnKey(field), group);
+    }
+
+    private static GroupNumericOperator getGroupNumericOperator(AddNewColumnValueBean value) {
+        String columnName = value.getName();
+        NumberCustomGroupValueBean bean = ((AddNumberCustomGroupBean) value).getValue();
+        String field = bean.getField();
+        double max = Double.parseDouble(bean.getMax());
+        double min = Double.parseDouble(bean.getMin());
+        String other = bean.getUseOther();
+        List<NumberCustomGroupValueNodeBean> nodes = bean.getNodes();
+        Iterator<NumberCustomGroupValueNodeBean> iterator = nodes.iterator();
+        List<RestrictRange> list = new ArrayList<RestrictRange>();
+        while(iterator.hasNext()) {
+            NumberCustomGroupValueNodeBean nodeBean = iterator.next();
+            boolean closemax = nodeBean.isClosemax();
+            boolean closemin = nodeBean.isClosemin();
+            String groupName = nodeBean.getGroupName();
+            double nodeMax = Double.parseDouble(nodeBean.getMax());
+            double nodeMin = Double.parseDouble(nodeBean.getMin());
+            boolean valid = nodeBean.isValid();
+            RestrictRange restrictRange = new RestrictRange(closemax, closemin, groupName, field, nodeMax, nodeMin, valid);
+            list.add(restrictRange);
+        }
+        return new GroupNumericOperator(columnName, ColumnTypeConstants.ColumnType.STRING,
+                new ColumnKey(field), max, min, other, list);
+    }
+
     private static AbstractOperator fromAddNewColumnBean(AddNewColumnBean bean, FineBusinessTable table) throws Exception {
         if (bean.getValue() instanceof EmptyAddNewColumnBean) {
             throw new FineAnalysisOperationUnSafe("");
@@ -518,9 +592,15 @@ class EtlAdaptor {
             case BIConfConstants.CONF.ADD_COLUMN.TIME.TYPE: {
                 return getFromDataOperator(value);
             }
-            case BIConfConstants.CONF.ADD_COLUMN.TIME_GAP.TYPE:
+            case BIConfConstants.CONF.ADD_COLUMN.TIME_GAP.TYPE: {
                 return getDateDiffOperator(value);
-            // case
+            }
+            case BIConfConstants.CONF.ADD_COLUMN.GROUP.TYPE_STRING: {
+                return getAutoGroupOperator(value);
+            }
+            case BIConfConstants.CONF.ADD_COLUMN.GROUP.TYPE_NUMBER_CUSTOM: {
+                return getGroupNumericOperator(value);
+            }
             default:
         }
         return null;

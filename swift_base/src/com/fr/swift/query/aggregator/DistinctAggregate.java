@@ -12,7 +12,7 @@ import com.fr.swift.structure.iterator.RowTraversal;
 
 public class DistinctAggregate implements Aggregator<DistinctCountAggregatorValue> {
 
-    public static DistinctAggregate INSTANCE = new DistinctAggregate();
+    protected static final DistinctAggregate INSTANCE = new DistinctAggregate();
 
     @Override
     public DistinctCountAggregatorValue aggregate(RowTraversal traversal, final Column column) {

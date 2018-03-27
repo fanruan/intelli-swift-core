@@ -83,7 +83,7 @@ public class GroupAllSegmentQueryTest extends TestCase {
         List<Map<Integer, Object>> dictionaries = collector.getGlobalDictionaries();
         assertEquals(dictionaries.size(), dimensions.size());
         for (int i = 0; i < dimensions.size(); i++) {
-            assertEquals(dictionaries.get(i).size(), dimensions.get(i).getDictionaryEncodedColumn().size());
+            assertEquals(dictionaries.get(i).size(), dimensions.get(i).getDictionaryEncodedColumn().size() - 1);
             DictionaryEncodedColumn dict = dimensions.get(i).getDictionaryEncodedColumn();
             for (Map.Entry entry : dictionaries.get(i).entrySet()) {
                 assertEquals(entry.getKey(), dict.getGlobalIndexByIndex(dict.getIndex(entry.getValue())));

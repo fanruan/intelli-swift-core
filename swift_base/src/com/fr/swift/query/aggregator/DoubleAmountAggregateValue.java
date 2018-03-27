@@ -20,4 +20,9 @@ public class DoubleAmountAggregateValue implements AggregatorValue<Double> {
     public double calculate() {
         return value;
     }
+
+    @Override
+    public Double calculateValue() {
+        return value;
+    }
 }

@@ -33,12 +33,8 @@ import com.finebi.conf.structure.result.control.tree.BITreeResult;
 import com.finebi.conf.structure.result.table.BIComplexGroupResult;
 import com.finebi.conf.structure.result.table.BICrossNode;
 import com.finebi.conf.structure.result.table.BIGroupNode;
-import com.fr.swift.cal.Query;
-import com.fr.swift.cal.QueryInfo;
-import com.fr.swift.cal.builder.QueryBuilder;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
-import com.fr.swift.source.SwiftResultSet;
 
 import java.util.List;
 import java.util.Map;
@@ -66,33 +62,32 @@ public class SwiftEngineWidgetExecutorManager implements EngineWidgetExecutorMan
 
     @Override
     public BIDetailTableResult visit(DetailWidget detailWidget) {
-        return null;
+        return DetailWidgetAdaptor.calculate(detailWidget);
     }
 
     @Override
     public BIStringDetailResult visit(StringControlWidget detailWidget) {
-        SwiftResultSet resultSet = getWidgetResultSet(detailWidget);
-        return null;
+        return StringControlWidgetAdaptor.calculate(detailWidget);
     }
 
     @Override
     public BISingleSliderResult visit(SingleSliderWidget detailWidget) {
-        return null;
+        return SingleSliderWidgetAdaptor.calculate(detailWidget);
     }
 
     @Override
     public BIYearControlResult visit(YearControlWidget detailWidget) {
-        return null;
+        return YearControlWidgetAdaptor.calculate(detailWidget);
     }
 
     @Override
     public BIQuarterResult visit(QuarterControlWidget detailWidget) {
-        return null;
+        return QuarterControlWidgetAdaptor.calculate(detailWidget);
     }
 
     @Override
     public BIMonthControlResult visit(MonthControlWidget detailWidget) {
-        return null;
+        return BIMonthControlResultAdaptor.calculate(detailWidget);
     }
 
     @Override
@@ -132,7 +127,7 @@ public class SwiftEngineWidgetExecutorManager implements EngineWidgetExecutorMan
 
     @Override
     public BIListLabelResult visit(ListLabelWidget listLabelWidget) {
-        return null;
+        return ListLabelWidgetAdaptor.calculate(listLabelWidget);
     }
 
     @Override
@@ -143,17 +138,6 @@ public class SwiftEngineWidgetExecutorManager implements EngineWidgetExecutorMan
 
     @Override
     public Map<String, Object> getClickValue(FineWidget widget, Map clicked, List<String> fieldsId) {
-        return null;
-    }
-
-    private SwiftResultSet getWidgetResultSet(FineWidget detailWidget){
-        try {
-            QueryInfo info = WidgetAdaptor.buildQueryInfo(detailWidget);
-            Query query = QueryBuilder.buildQuery(info);
-            return query.getQueryResult();
-        } catch (Exception e) {
-            LOGGER.error(e);
-        }
         return null;
     }
 

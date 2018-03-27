@@ -61,9 +61,9 @@ public class DateDiffResultSet implements SwiftResultSet {
             long systemTime = System.currentTimeMillis();
             ValueGetter g1 = createValueGetter(field1, segments[segCursor], systemTime);
             ValueGetter g2 = createValueGetter(field2, segments[segCursor], systemTime);
-            long value = dc.get(g1.getTime(rowCursor), g2.getTime(rowCursor));
+            Object value = dc.get(g1.getTime(rowCursor), g2.getTime(rowCursor));
             List dataList = new ArrayList();
-            dataList.add(value);
+            dataList.add(value == null ? value : Long.parseLong(value.toString()));
             tempValue.setRow(new ListBasedRow(dataList));
             if (rowCursor < rowCount - 1) {
                 rowCursor++;

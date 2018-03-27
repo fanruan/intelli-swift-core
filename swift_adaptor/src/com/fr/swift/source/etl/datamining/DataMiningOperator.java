@@ -1,10 +1,12 @@
 package com.fr.swift.source.etl.datamining;
 
 import com.finebi.conf.internalimp.analysis.bean.operator.datamining.AlgorithmBean;
+import com.finebi.conf.internalimp.analysis.bean.operator.datamining.kmeans.KmeansBean;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftMetaDataColumn;
 import com.fr.swift.source.etl.AbstractOperator;
 import com.fr.swift.source.etl.OperatorType;
+import com.fr.swift.source.etl.datamining.kmeans.KmeansOperator;
 import com.fr.swift.source.etl.datamining.timeseries.holtwinter.HoltWinterOperator;
 
 import java.util.List;
@@ -28,6 +30,9 @@ public class DataMiningOperator extends AbstractOperator {
             case HOLT_WINTERS:
                 algorithmOperator = new HoltWinterOperator(algorithmBean);
                 break;
+            case KMEANS:
+                algorithmOperator = new KmeansOperator(algorithmBean);
+
             default:
                 break;
         }

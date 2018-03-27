@@ -9,6 +9,7 @@ import com.finebi.conf.structure.bean.field.FineBusinessField;
 import com.finebi.conf.structure.bean.pack.FineBusinessPackage;
 import com.finebi.conf.structure.bean.table.FineBusinessTable;
 import com.fr.general.ComparatorUtils;
+import com.fr.swift.adaptor.transformer.IndexingDataSourceFactory;
 import com.fr.swift.conf.business.ISwiftXmlWriter;
 import com.fr.swift.conf.business.pack.PackXmlWriter;
 import com.fr.swift.conf.business.pack.PackageParseXml;
@@ -16,6 +17,8 @@ import com.fr.swift.conf.business.pack.SwiftPackageDao;
 import com.fr.swift.conf.business.table.SwiftTableDao;
 import com.fr.swift.conf.business.table.TableParseXml;
 import com.fr.swift.conf.business.table.TableXmlWriter;
+import com.fr.swift.conf.business.table2source.dao.TableToSourceConfigDao;
+import com.fr.swift.conf.business.table2source.dao.TableToSourceMemConfigDao;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
 
@@ -34,6 +37,7 @@ public class SwiftTableConfProvider implements EngineTableManager {
 
     private SwiftTableDao businessTableDAO;
     private SwiftPackageDao businessPackageDAO;
+    private TableToSourceConfigDao tableToSourceConfigDao;
     private SwiftPackageConfProvider swiftPackageConfProvider;
     private String xmlFileName = "table.xml";
     private SwiftLogger logger = SwiftLoggers.getLogger(SwiftTableConfProvider.class);
@@ -44,6 +48,7 @@ public class SwiftTableConfProvider implements EngineTableManager {
         businessTableDAO = new SwiftTableDao(xmlHandler, xmlFileName, swiftXmlWriter);
         swiftPackageConfProvider = new SwiftPackageConfProvider();
         businessPackageDAO = new SwiftPackageDao(new PackageParseXml(), xmlFileName, new PackXmlWriter());
+        tableToSourceConfigDao = new TableToSourceMemConfigDao();
     }
 
     @Override
@@ -94,6 +99,11 @@ public class SwiftTableConfProvider implements EngineTableManager {
                 for (FineBusinessTable table : allTables) {
                     if (!pack.getTables().contains(table.getName())) {
                         pack.addTable(table.getName());
+                    }
+                    try {
+                        tableToSourceConfigDao.addConfig(table.getId(), IndexingDataSourceFactory.transformDataSource(table).getSourceKey().getId());
+                    } catch (Exception e) {
+                        logger.error("Cannot save tableId to sourceKey: ", e);
                     }
                 }
                 needUpdatePackage.add(pack);

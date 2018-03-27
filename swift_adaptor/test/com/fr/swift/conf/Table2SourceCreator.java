@@ -1,6 +1,11 @@
-package com.fr.swift.config;
+package com.fr.swift.conf;
 
+import com.fr.swift.conf.business.table2source.TableToSource;
+import com.fr.swift.conf.business.table2source.unique.TableToSourceUnique;
+
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -8,18 +13,18 @@ import java.util.Map;
  * @date 2018/3/14
  */
 public class Table2SourceCreator {
-    public static Map<String, String> create(int size) {
-        Map<String, String> result = new HashMap<String, String>(size);
+    public static List<TableToSource> create(int size) {
+        List<TableToSource> result = new ArrayList<TableToSource>();
         for (int i = 0; i < size; i++) {
-            result.put("table" + i, "source" + i);
+            result.add(new TableToSourceUnique("table" + i, "source" + i));
         }
         return result;
     }
 
-    public static Map<String, String> modify(int size) {
-        Map<String, String> result = new HashMap<String, String>(size);
+    public static List<TableToSource> modify(int size) {
+        List<TableToSource> result = new ArrayList<TableToSource>();
         for (int i = 0; i < size; i++) {
-            result.put("table" + i, "modifySource" + i);
+            result.add(new TableToSourceUnique("table" + i, "modifySource" + i));
         }
         return result;
     }
