@@ -37,6 +37,7 @@ public class GroupValueIterator {
         iterators = new GroupByResult[this.segment.length][this.columnKey.length];
         valuesAndGVIs = new SwiftValuesAndGVI[this.segment.length][this.columnKey.length + 1];
         next = new SwiftValuesAndGVI[this.segment.length];
+        this.groups = groups;
         initGroupColumns();
         //初始化
         for (int i = 0; i < this.segment.length; i++) {

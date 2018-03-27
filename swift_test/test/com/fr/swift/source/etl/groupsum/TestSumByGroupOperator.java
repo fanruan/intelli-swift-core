@@ -43,7 +43,6 @@ public class TestSumByGroupOperator extends TestCase {
         SumByGroupTarget[] target = new SumByGroupTarget[1];
         SumByGroupDimension[] dimension = new SumByGroupDimension[1];
         target[0] = new SumByGroupTarget();
-        target[0].setSumType(1);
         target[0].setName("column2");
         // TODO   应该是整型
         target[0].setClassType(ClassType.LONG);
