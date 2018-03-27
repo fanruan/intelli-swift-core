@@ -43,4 +43,9 @@ public class AggregatorValueCollection implements AggregatorValue {
     public double calculate() {
         return 0;
     }
+
+    @Override
+    public Object calculateValue() {
+        return null;
+    }
 }

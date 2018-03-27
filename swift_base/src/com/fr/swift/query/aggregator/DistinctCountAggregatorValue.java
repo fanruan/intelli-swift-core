@@ -1,13 +1,12 @@
 package com.fr.swift.query.aggregator;
 
-import com.fr.swift.bitmap.impl.BitSetMutableBitMap;
 import com.fr.swift.bitmap.impl.RoaringMutableBitMap;
 
 /**
  * @author Xiaolei.liu
  */
 
-public class DistinctCountAggregatorValue implements AggregatorValue<BitSetMutableBitMap> {
+public class DistinctCountAggregatorValue implements AggregatorValue<Double> {
 
 
     private RoaringMutableBitMap bitMap;
@@ -25,5 +24,10 @@ public class DistinctCountAggregatorValue implements AggregatorValue<BitSetMutab
     @Override
     public double calculate() {
         return bitMap.getCardinality();
+    }
+
+    @Override
+    public Double calculateValue() {
+        return Double.valueOf(bitMap.getCardinality());
     }
 }

@@ -28,4 +28,9 @@ public class DoubleAverageAggregateValue implements AggregatorValue<Double> {
     public double calculate() {
         return value / rowCount;
     }
+
+    @Override
+    public Double calculateValue() {
+        return value / rowCount;
+    }
 }

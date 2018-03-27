@@ -1,6 +1,5 @@
 package com.fr.swift.query.aggregator;
 
-import static com.fr.swift.cube.io.IOConstant.NULL_DOUBLE;
 import static com.fr.swift.cube.io.IOConstant.NULL_INT;
 import static com.fr.swift.cube.io.IOConstant.NULL_LONG;
 
@@ -9,7 +8,7 @@ import static com.fr.swift.cube.io.IOConstant.NULL_LONG;
  */
 public class MaxAggregate extends AllDataCompare {
 
-    public static MaxAggregate INSTANCE = new MaxAggregate();
+    protected static final MaxAggregate INSTANCE = new MaxAggregate();
 
 
     @Override

@@ -18,7 +18,7 @@ import static com.fr.swift.cube.io.IOConstant.NULL_DOUBLE;
 
 public class SumAggregate implements Aggregator<DoubleAmountAggregateValue> {
 
-    public static SumAggregate INSTANCE = new SumAggregate();
+    protected static final SumAggregate INSTANCE = new SumAggregate();
 
 
     @Override

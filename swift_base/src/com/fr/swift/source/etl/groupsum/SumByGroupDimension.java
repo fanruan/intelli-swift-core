@@ -8,6 +8,7 @@ import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.source.ColumnTypeConstants.ClassType;
 import com.fr.swift.source.ColumnTypeConstants.ColumnType;
 import com.fr.swift.source.core.Core;
+import com.fr.swift.source.core.CoreField;
 import com.fr.swift.source.core.CoreGenerator;
 import com.fr.swift.source.core.CoreService;
 
@@ -19,15 +20,14 @@ import java.io.Serializable;
 public class SumByGroupDimension implements CoreService, Serializable {
 
     private static final SwiftLogger LOGGER = SwiftLoggers.getLogger(SumByGroupDimension.class);
-
     private String name;
-
+    @CoreField
     private Group group;
-
+    @CoreField
     private String nameText;
-
+    @CoreField
     private ColumnType columnType;
-
+    @CoreField
     private ClassType classType;
 
     public String getName() {

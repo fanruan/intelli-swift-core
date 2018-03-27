@@ -9,7 +9,7 @@ import com.fr.swift.structure.iterator.RowTraversal;
  */
 public class AverageAggregate implements Aggregator <DoubleAverageAggregateValue>{
 
-    public static AverageAggregate INSTANCE = new AverageAggregate();
+    protected static final AverageAggregate INSTANCE = new AverageAggregate();
 
     @Override
     public DoubleAverageAggregateValue aggregate(RowTraversal traversal, Column column) {

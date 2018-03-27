@@ -426,6 +426,7 @@ class EtlAdaptor {
                     //TODO
                     break;
             }
+            sumByGroupTarget.setAggregator(AggregatorAdaptor.transformAggregator(tempBean.getFieldType(), type));
             sumByGroupTarget.setSumType(type);
             groupTargets[i] = sumByGroupTarget;
         }

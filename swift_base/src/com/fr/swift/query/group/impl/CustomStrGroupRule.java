@@ -1,6 +1,13 @@
 package com.fr.swift.query.group.impl;
 
 import com.fr.swift.query.group.GroupType;
+import com.fr.swift.source.core.Core;
+import com.fr.swift.source.core.CoreField;
+import com.fr.swift.source.core.CoreGenerator;
+import com.fr.swift.source.core.CoreService;
+import com.fr.swift.structure.Pair;
+import com.fr.swift.structure.array.IntList;
+import com.fr.swift.structure.array.IntListFactory;
 
 import java.util.Iterator;
 import java.util.List;
@@ -12,6 +19,7 @@ import java.util.List;
  * 字符串自定义分组规则
  */
 public class CustomStrGroupRule extends BaseCustomGroupRule<String> {
+    @CoreField
     private List<StringGroup> groups;
 
     public CustomStrGroupRule(List<StringGroup> groups, String otherGroupName) {
@@ -77,8 +85,10 @@ public class CustomStrGroupRule extends BaseCustomGroupRule<String> {
         return GroupType.CUSTOM;
     }
 
-    public static class StringGroup {
+    public static class StringGroup implements CoreService{
+        @CoreField
         String name;
+        @CoreField
         List<String> values;
 
         public StringGroup(String name, List<String> values) {
@@ -88,6 +98,15 @@ public class CustomStrGroupRule extends BaseCustomGroupRule<String> {
 
         boolean contains(String o) {
             return values.contains(o);
+        }
+
+        public Core fetchObjectCore() {
+            try {
+                return new CoreGenerator(this).fetchObjectCore();
+            } catch(Exception ignore) {
+
+            }
+            return Core.EMPTY_CORE;
         }
     }
 }
