@@ -4,72 +4,65 @@ import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.compare.Comparators;
 import com.fr.swift.query.group.GroupType;
 import com.fr.swift.segment.column.BitmapIndexedColumn;
-import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.DetailColumn;
 import com.fr.swift.segment.column.DictionaryEncodedColumn;
-import com.fr.swift.segment.column.impl.base.IntDictColumn;
 import com.fr.swift.segment.column.impl.base.LongDictColumn;
 import com.fr.swift.util.function.Function;
+
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * 日期子列，用于分组的
  *
- * @param <Derive> 新值
  * @author anchore
  * @date 2017/12/4
  * @see GroupType
  */
-public class SubDateColumn<Derive> extends BaseColumn<Derive> {
-    public static final GroupType[] TYPES_TO_GENERATE = {
-            GroupType.YEAR, GroupType.QUARTER, GroupType.MONTH,
-            GroupType.Y_M_D, GroupType.Y_M
-    };
+public class SubDateColumn extends BaseColumn<Long> {
+    public static final List<GroupType> TYPES_TO_GENERATE = Arrays.asList(
+            GroupType.YEAR, GroupType.QUARTER, GroupType.MONTH, GroupType.WEEK, GroupType.DAY,
+
+            GroupType.WEEK_OF_YEAR, GroupType.HOUR, GroupType.MINUTE, GroupType.SECOND,
+
+            GroupType.Y_Q, GroupType.Y_M, GroupType.Y_W,
+            GroupType.Y_M_D_H, GroupType.Y_M_D_H_M, GroupType.Y_M_D_H_M_S,
+
+            GroupType.Y_M_D
+    );
 
     private GroupType type;
 
     /**
      * 源列，子列的父列
      */
-    private Column<Long> origin;
+    private DateColumn origin;
 
-    public SubDateColumn(Column<Long> origin, GroupType type) {
+    public SubDateColumn(DateColumn origin, GroupType type) {
         super(origin.getLocation().buildChildLocation(type.toString()));
         this.type = type;
         this.origin = origin;
     }
 
     @Override
-    public DetailColumn<Derive> getDetailColumn() throws UnsupportedOperationException {
-        return new SubDetailColumn();
+    public DetailColumn<Long> getDetailColumn() throws UnsupportedOperationException {
+        return detailColumn != null ? detailColumn : (detailColumn = new SubDetailColumn());
     }
 
     @Override
-    public DictionaryEncodedColumn<Derive> getDictionaryEncodedColumn() {
-        switch (type) {
-            case YEAR:
-            case QUARTER:
-            case MONTH:
-            case WEEK:
-            case DAY:
-            case HOUR:
-            case MINUTE:
-            case SECOND:
-            case WEEK_OF_YEAR:
-                return (DictionaryEncodedColumn<Derive>) new IntDictColumn(location, Comparators.<Integer>asc());
-            default:
-                return (DictionaryEncodedColumn<Derive>) new LongDictColumn(location, Comparators.<Long>asc());
-        }
+    public DictionaryEncodedColumn<Long> getDictionaryEncodedColumn() {
+        return dictColumn != null ? dictColumn : (dictColumn = new LongDictColumn(location, Comparators.<Long>asc()));
     }
 
     @Override
     public BitmapIndexedColumn getBitmapIndex() {
-        return new SubBitmapIndexedColumn();
+        return indexColumn != null ? indexColumn : (indexColumn = new SubBitmapIndexedColumn());
     }
 
-    private class SubDetailColumn implements DetailColumn<Derive> {
+    private class SubDetailColumn implements DetailColumn<Long> {
         private DetailColumn<Long> baseDetail = origin.getDetailColumn();
 
-        private Function<Long, Derive> deriver = DateDerivers.newDeriver(type);
+        private Function<Long, Long> deriver = DateDerivers.newDeriver(type);
 
         @Override
         public int getInt(int pos) {
@@ -87,12 +80,12 @@ public class SubDateColumn<Derive> extends BaseColumn<Derive> {
         }
 
         @Override
-        public void put(int pos, Derive val) {
+        public void put(int pos, Long val) {
             throw new UnsupportedOperationException();
         }
 
         @Override
-        public Derive get(int pos) {
+        public Long get(int pos) {
             return deriver.apply(baseDetail.get(pos));
         }
 

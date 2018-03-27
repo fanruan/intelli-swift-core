@@ -3,6 +3,7 @@ package com.fr.swift.query.group.impl;
 import com.fr.swift.query.group.GroupOperator;
 import com.fr.swift.query.group.GroupRule;
 import com.fr.swift.segment.column.Column;
+import com.fr.swift.segment.column.impl.DateColumn;
 import com.fr.swift.segment.column.impl.SubDateColumn;
 
 /**
@@ -41,10 +42,12 @@ class PlainGroupOperator<Base, Derive> implements GroupOperator<Base, Derive> {
             case HOUR:
             case MINUTE:
             case SECOND:
-                return new SubDateColumn<Derive>((Column<Long>) column, rule.getGroupType());
+                DateColumn dateColumn = (DateColumn) column;
+                return (Column<Derive>) new SubDateColumn(dateColumn, rule.getGroupType());
             case NONE:
-            default:
                 return (Column<Derive>) column;
+            default:
+                return null;
         }
     }
 }

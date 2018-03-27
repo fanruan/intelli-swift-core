@@ -8,6 +8,7 @@ import com.fr.swift.query.group.GroupType;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.SegmentOperator;
 import com.fr.swift.segment.column.ColumnKey;
+import com.fr.swift.segment.column.impl.SubDateColumn;
 import com.fr.swift.source.ColumnTypeConstants.ClassType;
 import com.fr.swift.source.DataSource;
 import com.fr.swift.source.ETLDataSource;
@@ -84,7 +85,7 @@ public class MinorUpdater {
         if (Util.getClassType(dataSource, columnKey) != ClassType.DATE) {
             return;
         }
-        for (GroupType type : SUB_DATE_TYPES) {
+        for (GroupType type : SubDateColumn.TYPES_TO_GENERATE) {
             new RealtimeSubDateColumnIndexer(dataSource, columnKey, type) {
                 @Override
                 protected List<Segment> getSegments() {

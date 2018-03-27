@@ -28,7 +28,7 @@ public enum MixDateType {
             int month = DateType.MONTH.from(c);
             c.clear();
             DateType.YEAR.set(c, year);
-            DateType.MONTH.set(c, month);
+            DateType.MONTH.set(c, month - 1);
             return c.getTimeInMillis();
         }
     },
@@ -62,10 +62,10 @@ public enum MixDateType {
     M_D {
         @Override
         long from(Calendar c) {
-            int year = DateType.MONTH.from(c);
+            int month = DateType.MONTH.from(c);
             int day = DateType.DAY.from(c);
             c.clear();
-            DateType.MONTH.set(c, year);
+            DateType.MONTH.set(c, month - 1);
             DateType.DAY.set(c, day);
             return c.getTimeInMillis();
         }
@@ -78,7 +78,7 @@ public enum MixDateType {
             int day = DateType.DAY.from(c);
             c.clear();
             DateType.YEAR.set(c, year);
-            DateType.MONTH.set(c, month);
+            DateType.MONTH.set(c, month - 1);
             DateType.DAY.set(c, day);
             return c.getTimeInMillis();
         }

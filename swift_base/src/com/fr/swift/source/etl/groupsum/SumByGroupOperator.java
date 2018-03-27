@@ -55,7 +55,7 @@ public class SumByGroupOperator extends AbstractOperator {
                         int columnSize = parent.getColumn(this.dimensions[i].getName()).getPrecision();
                         int scale = parent.getColumn(this.dimensions[i].getName()).getScale();
                         if (ColumnTypeUtils.sqlTypeToColumnType(sqlType, columnSize, scale) == ColumnType.DATE) {
-                            columns.add(new MetaDataColumn(this.dimensions[i].getNameText(), convertGroupTpye(this.dimensions[i].getGroup().getGroupType()), 30));
+                            columns.add(new MetaDataColumn(this.dimensions[i].getNameText(), convertGroupType(this.dimensions[i].getGroup().getGroupType()), 30));
                         } else if (ColumnTypeUtils.sqlTypeToColumnType(sqlType, columnSize, scale) == ColumnType.NUMBER) {
                             SwiftMetaDataColumn singleColumn = parent.getColumn(this.dimensions[i].getName());
                             columns.add(generateSumNumberGroup(this.dimensions[i], singleColumn));
@@ -76,28 +76,29 @@ public class SumByGroupOperator extends AbstractOperator {
         return columns;
     }
 
-    private int convertGroupTpye(GroupType groupType) {
-        int type = Integer.MIN_VALUE;
+    private int convertGroupType(GroupType groupType) {
+        int type;
         switch (groupType) {
             case YEAR:
             case QUARTER:
             case MONTH:
             case WEEK:
-            case M_D:
+            case WEEK_OF_YEAR:
+            case DAY:
             case HOUR:
             case MINUTE:
             case SECOND:
-            case WEEK_OF_YEAR:
-            case DAY:
                 type = Types.INTEGER;
                 break;
-            case Y_M_D:
             case Y_M_D_H_M_S:
+            case Y_M_D_H_M:
+            case Y_M_D_H:
+            case Y_M_D:
+            case Y_Q:
             case Y_M:
             case Y_W:
-            case Y_M_D_H:
-            case Y_M_D_H_M:
-            case Y_Q:
+            case Y_D:
+            case M_D:
                 type = Types.DATE;
                 break;
             default:

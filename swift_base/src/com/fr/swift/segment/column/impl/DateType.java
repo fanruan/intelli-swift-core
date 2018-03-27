@@ -23,7 +23,26 @@ public enum DateType {
         }
     },
 
-    WEEK(Calendar.DAY_OF_WEEK),
+    WEEK(Calendar.DAY_OF_WEEK) {
+        @Override
+        public int from(Calendar c) {
+            int week = super.from(c);
+            if (Calendar.SUNDAY == week) {
+                return 7;
+            }
+            return week - 1;
+        }
+
+        @Override
+        public void set(Calendar c, int value) {
+            if (value == 7) {
+                value = Calendar.SUNDAY;
+            } else {
+                value++;
+            }
+            super.set(c, value);
+        }
+    },
 
     DAY(Calendar.DAY_OF_MONTH),
 
@@ -40,7 +59,7 @@ public enum DateType {
         @Override
         public int from(Calendar c) {
             int month = MONTH.from(c);
-            return month / 3 + 1;
+            return (month - 1) / 3 + 1;
         }
 
         /**

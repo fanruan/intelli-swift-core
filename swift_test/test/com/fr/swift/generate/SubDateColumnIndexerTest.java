@@ -9,6 +9,7 @@ import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.segment.column.DictionaryEncodedColumn;
+import com.fr.swift.segment.column.impl.DateColumn;
 import com.fr.swift.segment.column.impl.DateDerivers;
 import com.fr.swift.segment.column.impl.SubDateColumn;
 import com.fr.swift.source.DataSource;
@@ -46,7 +47,7 @@ public class SubDateColumnIndexerTest extends BaseTest {
         assertTrue(!segments.isEmpty());
 
         Column origin = segments.get(0).getColumn(new ColumnKey(columnName));
-        Column derive = new SubDateColumn(origin, type);
+        Column derive = new SubDateColumn((DateColumn) origin, type);
 
         DictionaryEncodedColumn originDict = origin.getDictionaryEncodedColumn();
         DictionaryEncodedColumn deriveDict = derive.getDictionaryEncodedColumn();
