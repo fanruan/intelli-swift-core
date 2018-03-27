@@ -1,7 +1,6 @@
 package com.fr.swift.result;
 
 import com.fr.swift.bitmap.ImmutableBitMap;
-import com.fr.swift.exception.meta.SwiftMetaDataException;
 import com.fr.swift.query.filter.detail.DetailFilter;
 import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.DictionaryEncodedColumn;

@@ -16,9 +16,7 @@ import com.fr.swift.adaptor.widget.group.GroupAdaptor;
 import com.fr.swift.cal.QueryInfo;
 import com.fr.swift.cal.info.DetailQueryInfo;
 import com.fr.swift.cal.result.group.Cursor;
-import com.fr.swift.config.IMetaData;
 import com.fr.swift.config.conf.MetaDataConvertUtil;
-import com.fr.swift.config.conf.service.SwiftConfigServiceProvider;
 import com.fr.swift.query.adapter.dimension.DetailDimension;
 import com.fr.swift.query.adapter.dimension.Dimension;
 import com.fr.swift.query.adapter.target.DetailFormulaTarget;
@@ -30,13 +28,13 @@ import com.fr.swift.query.sort.NoneSort;
 import com.fr.swift.query.sort.Sort;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.service.QueryRunnerProvider;
-import com.fr.swift.source.*;
+import com.fr.swift.source.SourceKey;
+import com.fr.swift.source.SwiftMetaData;
+import com.fr.swift.source.SwiftResultSet;
 import com.fr.swift.structure.array.IntList;
 import com.fr.swift.structure.array.IntListFactory;
 
 
-import java.sql.Types;
-import java.util.ArrayList;
 import java.util.List;
 
 

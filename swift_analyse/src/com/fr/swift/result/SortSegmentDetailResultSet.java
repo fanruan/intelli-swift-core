@@ -2,7 +2,6 @@ package com.fr.swift.result;
 
 import com.fr.swift.bitmap.traversal.TraversalAction;
 import com.fr.swift.compare.Comparators;
-import com.fr.swift.exception.meta.SwiftMetaDataException;
 import com.fr.swift.query.filter.detail.DetailFilter;
 import com.fr.swift.query.sort.SortType;
 import com.fr.swift.segment.column.Column;
