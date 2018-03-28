@@ -116,7 +116,6 @@ import com.fr.swift.util.Crasher;
 
 import java.sql.Types;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -284,15 +283,8 @@ class EtlAdaptor {
     private static DataSource getSingleTableSelectFieldSource(Map<String, List<ColumnKey>> sourceKeyColumnMap, Map<String, DataSource> sourceKeyDataSourceMap, List<DataSource> baseDatas) throws SwiftMetaDataException {
         List<ColumnKey> fields = sourceKeyColumnMap.values().iterator().next();
         ETLOperator operator = new DetailOperator(new ArrayList<ColumnKey[]>(), fields, new ArrayList<SwiftMetaData>());
-        Map<Integer, String> fieldsInfo = new HashMap<Integer, String>();
         baseDatas.add(sourceKeyDataSourceMap.values().iterator().next());
-        ETLSource etlSource = new ETLSource(baseDatas, operator);
-        for (ColumnKey columnKey : fields) {
-            int index = etlSource.getMetadata().getColumnIndex(columnKey.getName());
-            fieldsInfo.put(index, columnKey.getName());
-        }
-        ETLSource dataSource = new ETLSource(baseDatas, operator, fieldsInfo);
-        return dataSource;
+        return new ETLSource(baseDatas, operator);
     }
 
 
@@ -305,25 +297,13 @@ class EtlAdaptor {
             if (ComparatorUtils.equals(baseSoruceKey, entry.getKey())){
                 continue;
             }
+            baseDatas.add(sourceKeyDataSourceMap.get(entry.getKey()));
             DataSource dataSource = sourceKeyDataSourceMap.get(entry.getKey());
             swiftMetaDatas.add(dataSource.getMetadata());
             fields.add(entry.getValue().toArray(new ColumnKey[entry.getValue().size()]));
         }
         ETLOperator operator = new DetailOperator(fields, baseFields, swiftMetaDatas);
-        Map<Integer, String> fieldsInfo = new HashMap<Integer, String>();
-        ETLSource etlSource = new ETLSource(baseDatas, operator);
-        for (ColumnKey[] columnKeys : fields) {
-            for (ColumnKey columnKey : columnKeys) {
-                int index = etlSource.getMetadata().getColumnIndex(columnKey.getName());
-                fieldsInfo.put(index, columnKey.getName());
-            }
-        }
-        for (ColumnKey columnKey : baseFields) {
-            int index = etlSource.getMetadata().getColumnIndex(columnKey.getName());
-            fieldsInfo.put(index, columnKey.getName());
-        }
-        ETLSource dataSource = new ETLSource(baseDatas, operator, fieldsInfo);
-        return dataSource;
+        return new ETLSource(baseDatas, operator);
     }
 
     private static List<DataSource> fromOperator(FineOperator op) throws Exception {
