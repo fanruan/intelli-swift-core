@@ -101,7 +101,7 @@ public class ETLSource extends AbstractDataSource implements ETLDataSource {
         for (int i = 0; i < metaDatas.length; i++) {
             metaDatas[i] = basedSources.get(i).getMetadata();
         }
-        List<SwiftMetaDataColumn> originColumns = getOriginColumns(metaDatas);
+        List<SwiftMetaDataColumn> originColumns = operator.getBaseColumns(metaDatas);
         List<SwiftMetaDataColumn> addColumnList = operator.getColumns(metaDatas);
 
         // TODO: 2018/3/20 by lucifer  字段顺序先是新增字段，再是原始字段了，不然目前会挂。
@@ -131,25 +131,5 @@ public class ETLSource extends AbstractDataSource implements ETLDataSource {
 
     private void initBasedSources() {
         //todo 配置里根据key初始化parents
-    }
-
-    private List<SwiftMetaDataColumn> getOriginColumns(SwiftMetaData[] metaDatas) {
-        //如果是新增列,metadata需包含基础表的字段信息
-        List<SwiftMetaDataColumn> columns = new ArrayList<SwiftMetaDataColumn>();
-        try {
-            OperatorType type = operator.getOperatorType();
-            if (type.isAddColumn()) {
-                for (SwiftMetaData basedMeta : metaDatas) {
-                    for (int i = 0; i < basedMeta.getColumnCount(); i++) {
-                        int index = i + 1;
-                        columns.add(new MetaDataColumn(basedMeta.getColumnName(index), basedMeta.getColumnRemark(index),
-                                basedMeta.getColumnType(index), basedMeta.getPrecision(index), basedMeta.getScale(index), basedMeta.getColumnId(index)));
-                    }
-                }
-            }
-        } catch (Exception e) {
-            LOGGER.error(operator.getOperatorType() + "get origin meta failed");
-        }
-        return columns;
     }
 }

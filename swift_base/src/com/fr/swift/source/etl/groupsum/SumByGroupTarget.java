@@ -11,7 +11,6 @@ import com.fr.swift.source.core.Core;
 import com.fr.swift.source.core.CoreField;
 import com.fr.swift.source.core.CoreGenerator;
 import com.fr.swift.source.core.CoreService;
-import com.fr.swift.source.etl.utils.ETLConstant;
 import com.fr.swift.structure.iterator.RowTraversal;
 
 import java.io.Serializable;
@@ -81,9 +80,7 @@ public class SumByGroupTarget implements CoreService,Serializable {
     }
 
     public ColumnType getColumnType() {
-        // TODO
-        return getSumType() == ETLConstant.CONF.GROUP.STRING.APPEND ?
-                ColumnType.STRING : ColumnType.NUMBER;
+        return columnType;
     }
 
     @Override

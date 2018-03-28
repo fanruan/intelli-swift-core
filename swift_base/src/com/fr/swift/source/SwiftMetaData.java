@@ -2,7 +2,7 @@ package com.fr.swift.source;
 
 import com.fr.swift.exception.meta.SwiftMetaDataException;
 
-import java.sql.SQLException;
+import java.util.List;
 
 /**
  * Created by pony on 2017/10/24.
@@ -53,4 +53,6 @@ public interface SwiftMetaData extends Iterable<SwiftMetaDataColumn> {
     String getColumnId(String columnName) throws SwiftMetaDataException;
 
     String getRemark() throws SwiftMetaDataException;
+
+    List<String> getFieldNames();
 }

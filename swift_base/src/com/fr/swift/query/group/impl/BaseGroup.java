@@ -30,6 +30,7 @@ abstract class BaseGroup<Base, Derive> implements Group<Base, Derive> {
         return new PlainGroupOperator<Base, Derive>(rule);
     }
 
+    @Override
     public Core fetchObjectCore() {
         try {
             return new CoreGenerator(this).fetchObjectCore();

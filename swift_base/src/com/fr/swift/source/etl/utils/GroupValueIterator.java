@@ -156,4 +156,8 @@ public class GroupValueIterator {
         next[numOfSegment] = null;
     }
 
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> 72b82218cd8aaa7e393b45490d542b7999d415ed

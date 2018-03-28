@@ -1,5 +1,8 @@
 package com.fr.swift.adaptor.transformer;
 
+import com.finebi.base.constant.FineEngineType;
+import com.finebi.base.stable.StableManager;
+import com.finebi.conf.constant.BICommonConstants;
 import com.finebi.conf.constant.BIConfConstants;
 import com.finebi.conf.constant.ConfConstant.AnalysisType;
 import com.finebi.conf.exception.FineAnalysisOperationUnSafe;
@@ -44,6 +47,7 @@ import com.finebi.conf.internalimp.analysis.bean.operator.join.JoinBean;
 import com.finebi.conf.internalimp.analysis.bean.operator.join.JoinBeanValue;
 import com.finebi.conf.internalimp.analysis.bean.operator.join.JoinNameItem;
 import com.finebi.conf.internalimp.analysis.bean.operator.select.SelectFieldBeanItem;
+import com.finebi.conf.internalimp.analysis.bean.operator.select.SelectFieldPathItem;
 import com.finebi.conf.internalimp.analysis.bean.operator.setting.FieldSettingBeanItem;
 import com.finebi.conf.internalimp.analysis.bean.operator.trans.ColumnInitalItem;
 import com.finebi.conf.internalimp.analysis.bean.operator.trans.ColumnRowTransBean;
@@ -55,23 +59,29 @@ import com.finebi.conf.internalimp.analysis.operator.circulate.FloorItem;
 import com.finebi.conf.internalimp.analysis.operator.select.SelectFieldOperator;
 import com.finebi.conf.internalimp.analysis.operator.setting.FieldSettingOperator;
 import com.finebi.conf.internalimp.analysis.table.FineAnalysisTableImpl;
+import com.finebi.conf.internalimp.service.pack.FineConfManageCenter;
+import com.finebi.conf.provider.SwiftRelationPathConfProvider;
 import com.finebi.conf.structure.analysis.operator.FineOperator;
 import com.finebi.conf.structure.analysis.table.FineAnalysisTable;
 import com.finebi.conf.structure.bean.field.FineBusinessField;
 import com.finebi.conf.structure.bean.table.FineBusinessTable;
 import com.finebi.conf.structure.conf.base.EngineComplexConfTable;
+import com.finebi.conf.structure.path.FineBusinessTableRelationPath;
 import com.finebi.conf.utils.FineTableUtils;
 import com.fr.general.ComparatorUtils;
 import com.fr.swift.adaptor.widget.group.GroupAdaptor;
 import com.fr.swift.exception.meta.SwiftMetaDataException;
 import com.fr.swift.generate.preview.MinorSegmentManager;
 import com.fr.swift.log.SwiftLoggers;
+import com.fr.swift.query.aggregator.AggregatorFactory;
+import com.fr.swift.query.aggregator.AggregatorType;
 import com.fr.swift.query.filter.info.FilterInfo;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.source.ColumnTypeConstants;
 import com.fr.swift.source.DataSource;
 import com.fr.swift.source.MetaDataColumn;
+import com.fr.swift.source.RelationSource;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftMetaDataColumn;
 import com.fr.swift.source.SwiftMetaDataImpl;
@@ -101,16 +111,17 @@ import com.fr.swift.source.etl.rowcal.rank.RankRowOperator;
 import com.fr.swift.source.etl.selfrelation.OneUnionRelationOperator;
 import com.fr.swift.source.etl.selfrelation.TwoUnionRelationOperator;
 import com.fr.swift.source.etl.union.UnionOperator;
-import com.fr.swift.source.etl.utils.ETLConstant;
 import com.fr.swift.source.etl.utils.FormulaUtils;
+import com.fr.swift.util.Crasher;
 
 import java.sql.Types;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
 
 /**
@@ -190,16 +201,23 @@ class EtlAdaptor {
         Map<String, DataSource> sourceKeyDataSourceMap = new LinkedHashMap<String, DataSource>();
         SelectFieldOperator selectFieldOperator = analysis.getOperator();
         List<SelectFieldBeanItem> selectFieldBeanItemList = selectFieldOperator.getValue().getValue();
+        FineConfManageCenter fineConfManageCenter = StableManager.getContext().getObject("fineConfManageCenter");
+        SwiftRelationPathConfProvider relationProvider = (SwiftRelationPathConfProvider) fineConfManageCenter.getRelationPathProvider().get(FineEngineType.Cube);
+        String baseTable = getBaseTable(relationProvider, selectFieldBeanItemList);
         for (SelectFieldBeanItem selectFieldBeanItem : selectFieldBeanItemList) {
             FineBusinessTable fineBusinessTable = FineTableUtils.getTableByFieldId(selectFieldBeanItem.getField());
             FineBusinessField fineBusinessField = fineBusinessTable.getFieldByFieldId(selectFieldBeanItem.getField());
             DataSource baseDataSource = IndexingDataSourceFactory.transformDataSource(fineBusinessTable);
-
+            List<SelectFieldPathItem> path = selectFieldBeanItem.getPath();
+            ColumnKey columnKey = new ColumnKey(fineBusinessField.getName());
+            if (baseTable != null && !ComparatorUtils.equals(baseTable, fineBusinessTable.getId())){
+                columnKey.setRelation(getRelation(selectFieldBeanItem.getPath(), baseTable, fineBusinessTable.getId(), relationProvider));
+            }
             if (sourceKeyColumnMap.containsKey(baseDataSource.getSourceKey().getId())) {
-                sourceKeyColumnMap.get(baseDataSource.getSourceKey().getId()).add(new ColumnKey(fineBusinessField.getName()));
+                sourceKeyColumnMap.get(baseDataSource.getSourceKey().getId()).add(columnKey);
             } else {
                 sourceKeyColumnMap.put(baseDataSource.getSourceKey().getId(), new ArrayList<ColumnKey>());
-                sourceKeyColumnMap.get(baseDataSource.getSourceKey().getId()).add(new ColumnKey(fineBusinessField.getName()));
+                sourceKeyColumnMap.get(baseDataSource.getSourceKey().getId()).add(columnKey);
             }
             if (!sourceKeyDataSourceMap.containsKey(baseDataSource.getSourceKey().getId())) {
                 sourceKeyDataSourceMap.put(baseDataSource.getSourceKey().getId(), baseDataSource);
@@ -213,45 +231,79 @@ class EtlAdaptor {
             //选字段只选了一张表的情况
             return getSingleTableSelectFieldSource(sourceKeyColumnMap, sourceKeyDataSourceMap, baseDatas);
         } else {
-            return getMultiTableSelectFieldSource(sourceKeyColumnMap, sourceKeyDataSourceMap, baseDatas);
+            FineBusinessTable table = FineTableUtils.getTableByName(baseTable);
+            DataSource baseDataSource = IndexingDataSourceFactory.transformDataSource(table);
+            return getMultiTableSelectFieldSource(sourceKeyColumnMap, sourceKeyDataSourceMap, baseDatas, baseDataSource.getSourceKey().getId());
         }
+    }
+
+    private static RelationSource getRelation(List<SelectFieldPathItem> path, String baseTable, String table, SwiftRelationPathConfProvider relationProvider) {
+        if (path != null){
+            //@yee todo 选定的路径转化
+        }
+        List<FineBusinessTableRelationPath> relation =  relationProvider.getRelationPaths(table, baseTable);
+        if (relation == null || relation.isEmpty()){
+            return Crasher.crash("invalid relation tables");
+        }
+        FineBusinessTableRelationPath p = relation.get(0);
+        //@yee todo path转化
+        return null;
+    }
+
+    private static String getBaseTable(SwiftRelationPathConfProvider relationProvider, List<SelectFieldBeanItem> selectFieldBeanItemList) throws Exception{
+        Set<String> tables = new HashSet<String>();
+        for (SelectFieldBeanItem selectFieldBeanItem : selectFieldBeanItemList){
+            tables.add(selectFieldBeanItem.getTableName());
+            //设置了关联与子表的都直接返回
+            List<String> baseTables = selectFieldBeanItem.getCommonTable();
+            if (baseTables != null && !baseTables.isEmpty()){
+                return baseTables.get(0);
+            }
+            List<SelectFieldPathItem> path = selectFieldBeanItem.getPath();
+            if (path != null){
+                return path.get(path.size() - 1).getTable();
+            }
+        }
+        for (FineBusinessTableRelationPath path : relationProvider.getAllRelationPaths()){
+            if (tables.size() == 1){
+                break;
+            }
+            String prim = path.getFirstTable().getId();
+            String foreign = path.getEndTable().getId();
+            if (tables.contains(prim) && tables.contains(foreign)){
+                tables.remove(prim);
+            }
+        }
+        if (tables.size() != 1){
+            return Crasher.crash("wrong relation, foreign table size is" + tables.size());
+        }
+        return tables.iterator().next();
     }
 
     private static DataSource getSingleTableSelectFieldSource(Map<String, List<ColumnKey>> sourceKeyColumnMap, Map<String, DataSource> sourceKeyDataSourceMap, List<DataSource> baseDatas) throws SwiftMetaDataException {
         List<ColumnKey> fields = sourceKeyColumnMap.values().iterator().next();
         ETLOperator operator = new DetailOperator(new ArrayList<ColumnKey[]>(), fields, new ArrayList<SwiftMetaData>());
-        Map<Integer, String> fieldsInfo = new HashMap<Integer, String>();
         baseDatas.add(sourceKeyDataSourceMap.values().iterator().next());
-        ETLSource etlSource = new ETLSource(baseDatas, operator);
-        for (ColumnKey columnKey : fields) {
-            int index = etlSource.getMetadata().getColumnIndex(columnKey.getName());
-            fieldsInfo.put(index, columnKey.getName());
-        }
-        ETLSource dataSource = new ETLSource(baseDatas, operator, fieldsInfo);
-        return dataSource;
+        return new ETLSource(baseDatas, operator);
     }
 
 
-    private static DataSource getMultiTableSelectFieldSource(Map<String, List<ColumnKey>> sourceKeyColumnMap, Map<String, DataSource> sourceKeyDataSourceMap, List<DataSource> baseDatas) throws SwiftMetaDataException {
+    private static DataSource getMultiTableSelectFieldSource(Map<String, List<ColumnKey>> sourceKeyColumnMap, Map<String, DataSource> sourceKeyDataSourceMap, List<DataSource> baseDatas, String baseSoruceKey) throws SwiftMetaDataException {
         List<SwiftMetaData> swiftMetaDatas = new ArrayList<SwiftMetaData>();
         List<ColumnKey[]> fields = new ArrayList<ColumnKey[]>();
+        List<ColumnKey> baseFields= sourceKeyColumnMap.get(baseSoruceKey);
+        baseDatas.add(sourceKeyDataSourceMap.get(baseSoruceKey));
         for (Map.Entry<String, List<ColumnKey>> entry : sourceKeyColumnMap.entrySet()) {
+            if (ComparatorUtils.equals(baseSoruceKey, entry.getKey())){
+                continue;
+            }
+            baseDatas.add(sourceKeyDataSourceMap.get(entry.getKey()));
             DataSource dataSource = sourceKeyDataSourceMap.get(entry.getKey());
-            baseDatas.add(dataSource);
             swiftMetaDatas.add(dataSource.getMetadata());
             fields.add(entry.getValue().toArray(new ColumnKey[entry.getValue().size()]));
         }
-        ETLOperator operator = new DetailOperator(fields, new ArrayList<ColumnKey>(), swiftMetaDatas);
-        Map<Integer, String> fieldsInfo = new HashMap<Integer, String>();
-        ETLSource etlSource = new ETLSource(baseDatas, operator);
-        for (ColumnKey[] columnKeys : fields) {
-            for (ColumnKey columnKey : columnKeys) {
-                int index = etlSource.getMetadata().getColumnIndex(columnKey.getName());
-                fieldsInfo.put(index, columnKey.getName());
-            }
-        }
-        ETLSource dataSource = new ETLSource(baseDatas, operator, fieldsInfo);
-        return dataSource;
+        ETLOperator operator = new DetailOperator(fields, baseFields, swiftMetaDatas);
+        return new ETLSource(baseDatas, operator);
     }
 
     private static List<DataSource> fromOperator(FineOperator op) throws Exception {
@@ -330,14 +382,18 @@ class EtlAdaptor {
 
         List<List<String>> basis = ubv.getBasis();
         int basisSize = basis.size();
-        List<List<ColumnKey>> listsOfColumn = new ArrayList<List<ColumnKey>>(basisSize);
+        List<List<String>> listsOfColumn = new ArrayList<List<String>>(basisSize);
 
         for (int i = 0; i < ubv.getResult().size(); i++) {
-//            List<String> columns = basis.get(i);
-            listsOfColumn.add(new ArrayList<ColumnKey>());
-            listsOfColumn.get(i).add(new ColumnKey(ubv.getResult().get(i)));
+            listsOfColumn.add(new ArrayList<String>());
+            listsOfColumn.get(i).add(ubv.getResult().get(i));
             for (List<String> columnKeys : basis) {
-                listsOfColumn.get(i).add(new ColumnKey(columnKeys.get(i)));
+                String columnName = columnKeys.get(i);
+                if (ComparatorUtils.equals(columnName, BIConfConstants.CONF.EMPTY_FIELD)) {
+                    listsOfColumn.get(i).add(null);
+                } else {
+                    listsOfColumn.get(i).add(columnName);
+                }
             }
         }
 
@@ -387,21 +443,18 @@ class EtlAdaptor {
 
         SumByGroupDimension[] groupDimensions = null;
         SumByGroupTarget[] groupTargets = null;
-        if(null != views) {
+        if (null != views) {
             groupTargets = new SumByGroupTarget[views.size()];
         }
-        if(null != dimensions) {
+        if (null != dimensions) {
             groupDimensions = new SumByGroupDimension[dimensions.size()];
         }
         for (int i = 0; i < groupDimensions.length; i++) {
             DimensionValueBean tempBean = dimensionBean.get(dimensions.get(i));
             DimensionSrcValue srcValue = tempBean.getSrc();
             List<DimensionSelectValue> value = tempBean.getValue();
-            // 分组类型
-            int type = value.get(0).getType();
             SumByGroupDimension sumByGroupDimension = new SumByGroupDimension();
             sumByGroupDimension.setColumnType(ColumnTypeAdaptor.adaptColumnType(tempBean.getFieldType()));
-            // fixme ???
             sumByGroupDimension.setGroup(GroupAdaptor.adaptGroup(value.get(0)));
             sumByGroupDimension.setName(srcValue.getFieldName());
             sumByGroupDimension.setNameText(tempBean.getName());
@@ -411,10 +464,9 @@ class EtlAdaptor {
             DimensionValueBean tempBean = dimensionBean.get(views.get(i));
             DimensionSrcValue srcValue = tempBean.getSrc();
             SumByGroupTarget sumByGroupTarget = new SumByGroupTarget();
-            sumByGroupTarget.setColumnType(ColumnTypeAdaptor.adaptColumnType(tempBean.getFieldType()));
             sumByGroupTarget.setName(srcValue.getFieldName());
             sumByGroupTarget.setNameText(tempBean.getName());
-            int type = ETLConstant.CONF.GROUP.NUMBER.SUM;
+            int type = BIConfConstants.CONF.GROUP.NUMBER.SUM;
             switch (tempBean.getValue().get(0).getType()) {
                 case BIConfConstants.CONF.GROUP.TYPE.SINGLE:
                     type = ((GroupSingleValueBean) tempBean.getValue().get(0)).getValue();
@@ -426,7 +478,12 @@ class EtlAdaptor {
                     //TODO
                     break;
             }
-            sumByGroupTarget.setAggregator(AggregatorAdaptor.transformAggregator(tempBean.getFieldType(), type));
+            AggregatorType aggregatorType = AggregatorAdaptor.transformAggregatorType(tempBean.getFieldType(), type);
+            sumByGroupTarget.setAggregator(AggregatorFactory.createAggregator(aggregatorType));
+            sumByGroupTarget.setColumnType(ColumnTypeAdaptor.adaptColumnType(tempBean.getFieldType()));
+            if (aggregatorType == AggregatorType.COUNT || aggregatorType == AggregatorType.DISTINCT) {
+                sumByGroupTarget.setColumnType(ColumnTypeConstants.ColumnType.NUMBER);
+            }
             sumByGroupTarget.setSumType(type);
             groupTargets[i] = sumByGroupTarget;
         }
@@ -454,15 +511,16 @@ class EtlAdaptor {
         AllValueItemBean tempBean = ((AddAllValueColumnBean) value).getValue();
         String columnKey = tempBean.getOrigin();
         int summary = tempBean.getSummary();
+        AggregatorType aggregatorType = AggregatorAdaptor.transformAggregatorType(BICommonConstants.COLUMN.NUMBER, summary);
         if (tempBean.getRule() == BIConfConstants.CONF.ADD_COLUMN.NOT_IN_GROUP) {
-            return new AllDataRowCalculatorOperator(columnName, ColumnTypeAdaptor.adaptColumnType(32), columnKey, null, summary);
+            return new AllDataRowCalculatorOperator(columnName, ColumnTypeAdaptor.adaptColumnType(32), columnKey, null, aggregatorType);
         } else {
             List<String> selects = ((GroupAllValueValue) tempBean).getSelects();
             ColumnKey[] dimensions = new ColumnKey[selects.size()];
             for (int i = 0; i < dimensions.length; i++) {
                 dimensions[i] = new ColumnKey(selects.get(i));
             }
-            return new AllDataRowCalculatorOperator(columnName, ColumnTypeAdaptor.adaptColumnType(32), columnKey, dimensions, summary);
+            return new AllDataRowCalculatorOperator(columnName, ColumnTypeAdaptor.adaptColumnType(32), columnKey, dimensions, aggregatorType);
         }
     }
 
@@ -524,14 +582,14 @@ class EtlAdaptor {
         List<CustomGroupValueContent> details = bean.getDetails();
         List<SingleGroup> group = new ArrayList<SingleGroup>();
         Iterator<CustomGroupValueContent> iterator = details.iterator();
-        while(iterator.hasNext()) {
+        while (iterator.hasNext()) {
             CustomGroupValueContent content = iterator.next();
             String id = content.getId();
             String name = content.getValue();
             List<CustomGroupValueItemBean> itemBean = content.getContent();
             List<String> dataList = new ArrayList<String>();
-            Iterator<CustomGroupValueItemBean>  iter = itemBean.iterator();
-            while(iter.hasNext()) {
+            Iterator<CustomGroupValueItemBean> iter = itemBean.iterator();
+            while (iter.hasNext()) {
                 CustomGroupValueItemBean tempValue = iter.next();
                 dataList.add(tempValue.getValue());
             }
@@ -553,7 +611,7 @@ class EtlAdaptor {
         List<NumberCustomGroupValueNodeBean> nodes = bean.getNodes();
         Iterator<NumberCustomGroupValueNodeBean> iterator = nodes.iterator();
         List<RestrictRange> list = new ArrayList<RestrictRange>();
-        while(iterator.hasNext()) {
+        while (iterator.hasNext()) {
             NumberCustomGroupValueNodeBean nodeBean = iterator.next();
             boolean closemax = nodeBean.isClosemax();
             boolean closemin = nodeBean.isClosemin();

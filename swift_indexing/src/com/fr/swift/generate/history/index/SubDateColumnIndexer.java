@@ -1,6 +1,7 @@
 package com.fr.swift.generate.history.index;
 
 import com.fr.swift.cube.io.Releasable;
+import com.fr.swift.generate.BaseColumnDictMerger;
 import com.fr.swift.generate.BaseColumnIndexer;
 import com.fr.swift.manager.LocalSegmentProvider;
 import com.fr.swift.query.group.GroupType;
@@ -37,11 +38,38 @@ public class SubDateColumnIndexer<Derive> extends BaseColumnIndexer<Derive> {
 
     @Override
     protected void mergeDict() {
-
+        new SubDateColumnDictMerger(dataSource, key).work();
     }
 
     @Override
     protected void releaseIfNeed(Releasable baseColumn) {
         baseColumn.release();
+    }
+
+    /**
+     * @author anchore
+     * @date 2018/1/9
+     * <p>
+     * 合并字典
+     */
+    public class SubDateColumnDictMerger extends BaseColumnDictMerger<Derive> {
+        public SubDateColumnDictMerger(DataSource dataSource, ColumnKey key) {
+            super(dataSource, key);
+        }
+
+        @Override
+        protected List<Segment> getSegments() {
+            return SubDateColumnIndexer.this.getSegments();
+        }
+
+        @Override
+        protected Column<Derive> getColumn(Segment segment) {
+            return SubDateColumnIndexer.this.getColumn(segment);
+        }
+
+        @Override
+        protected void releaseIfNeed(Releasable baseColumn) {
+            baseColumn.release();
+        }
     }
 }

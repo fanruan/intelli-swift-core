@@ -2,7 +2,7 @@ package com.fr.swift.result;
 
 import com.fr.swift.Temps.TempDictColumn;
 import com.fr.swift.query.aggregator.AggregatorValue;
-import com.fr.swift.query.aggregator.DoubleAmountAggregateValue;
+import com.fr.swift.query.aggregator.DoubleAmountAggregatorValue;
 import com.fr.swift.segment.column.DictionaryEncodedColumn;
 import junit.framework.TestCase;
 
@@ -61,10 +61,10 @@ public class SingleColumnIndexNodeTest extends TestCase {
     }
 
     public void testGetAggregatorValue() {
-        AggregatorValue value = new DoubleAmountAggregateValue();
+        AggregatorValue value = new DoubleAmountAggregatorValue();
         node.setAggregatorValue(new TargetGettingKey(0), value);
         assertEquals(value, node.getAggregatorValue(new TargetGettingKey(0)));
-        AggregatorValue value1 = new DoubleAmountAggregateValue();
+        AggregatorValue value1 = new DoubleAmountAggregatorValue();
         AggregatorValue[] values = new AggregatorValue[]{value1};
         node.setAggregatorValue(values);
         assertEquals(values, node.getAggregatorValue());

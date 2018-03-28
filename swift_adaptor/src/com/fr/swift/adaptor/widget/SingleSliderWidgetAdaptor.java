@@ -31,11 +31,12 @@ import java.util.List;
  */
 public class SingleSliderWidgetAdaptor {
     private static final SwiftLogger LOGGER = SwiftLoggers.getLogger(SingleSliderWidgetAdaptor.class);
+
     public static BISingleSliderResult calculate(SingleSliderWidget widget) {
         NumberMaxAndMinValue value = new NumberMaxAndMinValue();
         try {
             List<FineDimension> dimensions = widget.getDimensionList();
-            for (FineDimension dimension : dimensions){
+            for (FineDimension dimension : dimensions) {
                 String fieldId = dimension.getFieldId();
                 FineBusinessTable fineBusinessTable = FineTableUtils.getTableByFieldId(fieldId);
                 FineBusinessField fineBusinessField = fineBusinessTable.getFieldByFieldId(fieldId);
@@ -46,15 +47,15 @@ public class SingleSliderWidgetAdaptor {
                         null, new AscSort(0), filterInfo);
                 IntList sortIndex = IntListFactory.createHeapIntList(1);
                 sortIndex.add(0);
-                DetailQueryInfo minQueryInfo = new DetailQueryInfo(new RowCursor(), widget.getWidgetId(), new DetailDimension[]{ascDimension}, baseDataSource.getSourceKey(), null, sortIndex, null);
-                DetailResultSet minResultSet =  QueryRunnerProvider.getInstance().executeQuery(minQueryInfo);
+                DetailQueryInfo minQueryInfo = new DetailQueryInfo(new RowCursor(), widget.getWidgetId(), new DetailDimension[]{ascDimension}, baseDataSource.getSourceKey(), null, sortIndex, null, null);
+                DetailResultSet minResultSet = QueryRunnerProvider.getInstance().executeQuery(minQueryInfo);
                 minResultSet.next();
                 Number min = minResultSet.getRowData().getValue(0);
                 value.setMin(Math.min(value.getMin(), min.doubleValue()));
                 //再通过明细表排序差最大
                 DetailDimension descDimension = new DetailDimension(0, baseDataSource.getSourceKey(), new ColumnKey(fineBusinessField.getName()),
                         null, new DescSort(0), filterInfo);
-                DetailQueryInfo maxQueryInfo = new DetailQueryInfo(new RowCursor(), widget.getWidgetId(), new DetailDimension[]{descDimension}, baseDataSource.getSourceKey(), null, sortIndex, null);
+                DetailQueryInfo maxQueryInfo = new DetailQueryInfo(new RowCursor(), widget.getWidgetId(), new DetailDimension[]{descDimension}, baseDataSource.getSourceKey(), null, sortIndex, null, null);
                 DetailResultSet maxResultSet = QueryRunnerProvider.getInstance().executeQuery(maxQueryInfo);
                 maxResultSet.next();
                 Number max = maxResultSet.getRowData().getValue(0);
@@ -66,7 +67,7 @@ public class SingleSliderWidgetAdaptor {
         return new SingleSliderResult(value);
     }
 
-    static class SingleSliderResult implements BISingleSliderResult{
+    static class SingleSliderResult implements BISingleSliderResult {
         private NumberMaxAndMinValue value;
 
         SingleSliderResult(NumberMaxAndMinValue value) {

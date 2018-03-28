@@ -116,7 +116,7 @@ public class EtlTransferOperatorFactory {
     }
 
     private static ETLTransferOperator transferUnionOperator(UnionOperator operator) {
-        return new UnionTransferOperator(operator.getColumnKeyList());
+        return new UnionTransferOperator(operator.getColumnNameList());
     }
 
     private static ETLTransferOperator transferJoinOperator(JoinOperator operator) {

@@ -23,6 +23,7 @@ abstract class BaseGroupRule<Base, Derive> implements GroupRule<Base, Derive> {
         initMap();
     }
 
+    @Override
     public Core fetchObjectCore() {
         try {
             return new CoreGenerator(this).fetchObjectCore();

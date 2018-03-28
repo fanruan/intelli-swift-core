@@ -36,6 +36,7 @@ public class QueryUtils {
 
     /**
      * 获取一个维度过滤之后的值，各种控件都会用到
+     *
      * @param dimension
      * @param filterInfo
      * @param id
@@ -53,10 +54,10 @@ public class QueryUtils {
             Iterator<KeyValue<RowIndexKey, AggregatorValue[]>> it = valuesResultSet.getRowResultIterator();
             Map<Integer, Object> dic = valuesResultSet.getGlobalDictionaries().get(0);
             List values = new ArrayList();
-            while (it.hasNext()){
+            while (it.hasNext()) {
                 RowIndexKey indexKey = it.next().getKey();
                 Object v = dic.get(indexKey.getKey()[0]);
-                if (v != null){
+                if (v != null) {
                     values.add(v);
                 }
             }

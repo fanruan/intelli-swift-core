@@ -36,6 +36,11 @@ public class CustomStrGroupRule extends BaseCustomGroupRule<String> {
         int dictSize = dictColumn.size();
         reverseMap = new int[dictSize];
 
+        // 0号为null
+        IntList ints = IntListFactory.createIntList(1);
+        ints.add(0);
+        map.put(0, Pair.of((String) null, ints));
+
         for (int i = 1; i < dictSize; i++) {
             String val = dictColumn.<String>getValue(i);
             int index = findIndex(val);
@@ -100,6 +105,7 @@ public class CustomStrGroupRule extends BaseCustomGroupRule<String> {
             return values.contains(o);
         }
 
+        @Override
         public Core fetchObjectCore() {
             try {
                 return new CoreGenerator(this).fetchObjectCore();

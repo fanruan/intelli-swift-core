@@ -20,6 +20,6 @@ public class DetailTransferOperator implements ETLTransferOperator {
 
     @Override
     public SwiftResultSet createResultSet(SwiftMetaData metaData, List<SwiftMetaData> basedMetas, List<Segment[]> basedSegments) {
-        return new DetailOperatorResultSet(metaData, fields, basedSegments.get(0));
+        return new DetailOperatorResultSet(metaData, fields, basedSegments);
     }
 }

@@ -1,7 +1,6 @@
 package com.fr.swift.result;
 
 import com.fr.swift.cal.Query;
-import com.fr.swift.exception.meta.SwiftMetaDataException;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftResultSet;
@@ -19,12 +18,14 @@ public class SortMultiSegmentDetailResultSet extends DetailResultSet {
     private Comparator comparator;
     private Row[] unsortedRows;
     private SwiftResultSet[] rs;
+    private SwiftMetaData metaData;
 
-    public SortMultiSegmentDetailResultSet(List<Query<DetailResultSet>> queries, Comparator comparator) throws SQLException {
+    public SortMultiSegmentDetailResultSet(List<Query<DetailResultSet>> queries, Comparator comparator, SwiftMetaData metaData) throws SQLException {
         this.unsortedRows = new Row[queries.size()];
         this.rs = new SwiftResultSet[queries.size()];
         this.queries = queries;
         this.comparator = comparator;
+        this.metaData = metaData;
         init();
     }
 
@@ -36,18 +37,7 @@ public class SortMultiSegmentDetailResultSet extends DetailResultSet {
 
     @Override
     public SwiftMetaData getMetaData() {
-        return new DetailMetaData(){
-            @Override
-            public int getColumnCount() throws SwiftMetaDataException {
-                DetailResultSet drs = null;
-                try {
-                    drs = queries.get(0).getQueryResult();
-                } catch (SQLException e) {
-
-                }
-                return drs.getColumnCount();
-            }
-        };
+        return metaData;
     }
 
     private void init() throws SQLException {

@@ -24,6 +24,7 @@ public class SwiftAnalyseService extends AbstractSwiftService implements QueryRu
         return start;
     }
 
+    @Override
     public <T extends SwiftResultSet> T getQueryResult(QueryInfo<T> info) throws SQLException{
         return QueryBuilder.buildQuery(info).getQueryResult();
     }
