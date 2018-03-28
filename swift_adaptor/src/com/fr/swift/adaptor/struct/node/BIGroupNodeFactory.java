@@ -19,12 +19,12 @@ public class BIGroupNodeFactory {
 
     // 构建没有指标排序的node结构
     public static BIGroupNode create(GroupByResultSet resultSet) {
-        Iterator<KeyValue<RowIndexKey, AggregatorValue[]>> iterator = resultSet.getRowResultIterator();
+        Iterator<KeyValue<RowIndexKey<int[]>, AggregatorValue[]>> iterator = resultSet.getRowResultIterator();
         List<Map<Integer, Object>> dictionaries = resultSet.getGlobalDictionaries();
         List<Sort> sorts = resultSet.getIndexSorts();
         Trie<int[], Integer, Number[]> trie = new GroupNodeTrie(-1, null, null, null, sorts);
         while (iterator.hasNext()) {
-            KeyValue<RowIndexKey, AggregatorValue[]> keyValue = iterator.next();
+            KeyValue<RowIndexKey<int[]>, AggregatorValue[]> keyValue = iterator.next();
             Number[] value = getValues(keyValue.getValue());
             int[] key = keyValue.getKey().getKey();
             trie.insert(key, value);

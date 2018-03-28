@@ -50,11 +50,11 @@ public class QueryUtils {
             GroupDimension groupDimension = new GroupDimension(0, baseDataSource.getSourceKey(), new ColumnKey(fineBusinessField.getName()), GroupAdaptor.adaptGroup(dimension.getGroup()), null, null);
             SingleTableGroupQueryInfo valueInfo = new SingleTableGroupQueryInfo(new RowCursor(), id, new Dimension[]{groupDimension}, new Metric[0], new GroupTarget[0], filterInfo, null);
             GroupByResultSet valuesResultSet = QueryRunnerProvider.getInstance().executeQuery(valueInfo);
-            Iterator<KeyValue<RowIndexKey, AggregatorValue[]>> it = valuesResultSet.getRowResultIterator();
+            Iterator<KeyValue<RowIndexKey<int[]>, AggregatorValue[]>> it = valuesResultSet.getRowResultIterator();
             Map<Integer, Object> dic = valuesResultSet.getGlobalDictionaries().get(0);
             List values = new ArrayList();
             while (it.hasNext()){
-                RowIndexKey indexKey = it.next().getKey();
+                RowIndexKey<int[]> indexKey = it.next().getKey();
                 Object v = dic.get(indexKey.getKey()[0]);
                 if (v != null){
                     values.add(v);
