@@ -16,20 +16,24 @@ import static com.fr.swift.cube.io.IOConstant.NULL_DOUBLE;
  * @author Xiaolei.liu
  */
 
-public class SumAggregate implements Aggregator<DoubleAmountAggregateValue> {
+public class SumAggregate extends AbstractAggregator<DoubleAmountAggregatorValue> {
 
-    protected static final SumAggregate INSTANCE = new SumAggregate();
+    protected static final Aggregator INSTANCE = new SumAggregate();
 
 
     @Override
-    public DoubleAmountAggregateValue aggregate(RowTraversal traversal, Column column) {
-        final DoubleAmountAggregateValue valueAmount = new DoubleAmountAggregateValue();
+    public DoubleAmountAggregatorValue aggregate(RowTraversal traversal, Column column) {
+        final DoubleAmountAggregatorValue valueAmount = new DoubleAmountAggregatorValue();
         final DetailColumn detailColumn = column.getDetailColumn();
+        RowTraversal notNullTraversal = getNotNullTraversal(traversal, column);
+        if (notNullTraversal.isEmpty()){
+            return new DoubleAmountAggregatorValue();
+        }
         TraversalAction ss;
         if (detailColumn instanceof LongDetailColumn) {
-            return aggregateLong(traversal, detailColumn);
+            return aggregateLong(notNullTraversal, detailColumn);
         } else if (detailColumn instanceof DoubleDetailColumn) {
-            return aggregateDouble(traversal, detailColumn);
+            return aggregateDouble(notNullTraversal, detailColumn);
         } else {
             final IntDetailColumn idc = (IntDetailColumn) detailColumn;
             if (traversal.isEmpty()) {
@@ -39,23 +43,23 @@ public class SumAggregate implements Aggregator<DoubleAmountAggregateValue> {
             ss = new CalculatorTraversalAction() {
                 @Override
                 public double getCalculatorValue() {
-                    return sum;
+                    return result;
                 }
 
                 @Override
                 public void actionPerformed(int row) {
-                    sum += idc.getInt(row);
+                    result += idc.getInt(row);
                 }
             };
         }
-        traversal.traversal(ss);
+        notNullTraversal.traversal(ss);
         double value = ((CalculatorTraversalAction) ss).getCalculatorValue();
         valueAmount.setValue(value);
         return valueAmount;
     }
 
-    private DoubleAmountAggregateValue aggregateLong(RowTraversal traversal, final DetailColumn detailColumn) {
-        final DoubleAmountAggregateValue valueAmount = new DoubleAmountAggregateValue();
+    private DoubleAmountAggregatorValue aggregateLong(RowTraversal traversal, final DetailColumn detailColumn) {
+        final DoubleAmountAggregatorValue valueAmount = new DoubleAmountAggregatorValue();
         final LongDetailColumn ldc = (LongDetailColumn) detailColumn;
         CalculatorTraversalAction ss;
         if (traversal.isEmpty()) {
@@ -65,12 +69,12 @@ public class SumAggregate implements Aggregator<DoubleAmountAggregateValue> {
         ss = new CalculatorTraversalAction() {
             @Override
             public double getCalculatorValue() {
-                return sum;
+                return result;
             }
 
             @Override
             public void actionPerformed(int row) {
-                sum += ldc.getLong(row);
+                result += ldc.getLong(row);
             }
         };
         traversal.traversal(ss);
@@ -78,8 +82,8 @@ public class SumAggregate implements Aggregator<DoubleAmountAggregateValue> {
         return valueAmount;
     }
 
-    private DoubleAmountAggregateValue aggregateDouble(RowTraversal traversal, DetailColumn detailColumn) {
-        final DoubleAmountAggregateValue valueAmount = new DoubleAmountAggregateValue();
+    private DoubleAmountAggregatorValue aggregateDouble(RowTraversal traversal, DetailColumn detailColumn) {
+        final DoubleAmountAggregatorValue valueAmount = new DoubleAmountAggregatorValue();
         final DoubleDetailColumn ldc = (DoubleDetailColumn) detailColumn;
         CalculatorTraversalAction ss;
         if (traversal.isEmpty()) {
@@ -89,12 +93,12 @@ public class SumAggregate implements Aggregator<DoubleAmountAggregateValue> {
         ss = new CalculatorTraversalAction() {
             @Override
             public double getCalculatorValue() {
-                return sum;
+                return result;
             }
 
             @Override
             public void actionPerformed(int row) {
-                sum += ldc.getDouble(row);
+                result += ldc.getDouble(row);
             }
         };
         traversal.traversal(ss);
@@ -103,7 +107,7 @@ public class SumAggregate implements Aggregator<DoubleAmountAggregateValue> {
     }
 
     @Override
-    public void combine(DoubleAmountAggregateValue value, DoubleAmountAggregateValue other) {
+    public void combine(DoubleAmountAggregatorValue value, DoubleAmountAggregatorValue other) {
         value.setValue(value.getValue() + other.getValue());
     }
 }
