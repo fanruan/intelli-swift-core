@@ -7,6 +7,7 @@ import com.fr.swift.source.SwiftMetaDataColumn;
 import com.fr.swift.source.SwiftResultSet;
 
 import java.util.Iterator;
+import java.util.List;
 
 /**
  * This class created on 2018-1-29 10:35:58
@@ -101,6 +102,11 @@ public class SwiftEmptyResult implements SwiftResultSet {
 
             @Override
             public String getColumnId(String columnName) {
+                return null;
+            }
+
+            @Override
+            public List<String> getFieldNames() {
                 return null;
             }
         };

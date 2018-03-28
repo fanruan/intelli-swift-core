@@ -13,10 +13,12 @@ public class SwiftEncryption {
     private static int HEAD_START = 0;
     private static int HEAD_END = 4;
 
+    //拼fieldId
     public static String encryptFieldId(String tableId, String fieldName) {
         return formatString(tableId.length(), HEAD_LENGTH) + tableId + fieldName;
     }
 
+    //fieldId解析成tableid和columnName
     public static String[] decryptFieldId(String fieldId) {
         int tableIdLength = Integer.valueOf(fieldId.substring(HEAD_START, HEAD_END));
         String tableId = fieldId.substring(HEAD_END, HEAD_END + tableIdLength);

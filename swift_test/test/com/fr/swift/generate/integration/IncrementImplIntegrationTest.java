@@ -4,9 +4,10 @@ import com.fr.base.FRContext;
 import com.fr.dav.LocalEnv;
 import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.flow.FlowRuleController;
+import com.fr.swift.generate.BaseTest;
+import com.fr.swift.generate.TestIndexer;
 import com.fr.swift.generate.history.index.ColumnIndexer;
 import com.fr.swift.generate.history.transport.TableTransporter;
-import com.fr.swift.generate.realtime.RealtimeColumnIndexer;
 import com.fr.swift.generate.realtime.RealtimeDataTransporter;
 import com.fr.swift.increase.IncrementImpl;
 import com.fr.swift.increment.Increment;
@@ -21,7 +22,6 @@ import com.fr.swift.segment.column.DictionaryEncodedColumn;
 import com.fr.swift.source.DataSource;
 import com.fr.swift.source.db.QueryDBSource;
 import com.fr.swift.source.db.TestConnectionProvider;
-import junit.framework.TestCase;
 import org.junit.Test;
 
 import java.util.List;
@@ -34,7 +34,7 @@ import java.util.List;
  * @since Advanced FineBI Analysis 1.0
  * 增量更新集成测试
  */
-public class IncrementImplIntegrationTest extends TestCase {
+public class IncrementImplIntegrationTest extends BaseTest {
 
     private DataSource dataSource;
 
@@ -67,10 +67,8 @@ public class IncrementImplIntegrationTest extends TestCase {
 
         RealtimeDataTransporter transport = new RealtimeDataTransporter(dataSource, increment, new FlowRuleController());
         transport.work();
-        for (int i = 1; i <= dataSource.getMetadata().getColumnCount(); i++) {
-            RealtimeColumnIndexer<?> indexer = new RealtimeColumnIndexer(dataSource, new ColumnKey(dataSource.getMetadata().getColumnName(i)));
-            indexer.work();
-        }
+        TestIndexer.realtimeIndex(dataSource);
+
         segmentList = LocalSegmentProvider.getInstance().getSegment(dataSource.getSourceKey());
         assertEquals(segmentList.size(), 2);
         //判断第一块内容没有改变
@@ -98,7 +96,7 @@ public class IncrementImplIntegrationTest extends TestCase {
         assertFalse(segmentList.get(1).getAllShowIndex().contains(32));
         BitmapIndexedColumn bitmapIndexedColumn = (segmentList.get(1).getColumn(new ColumnKey("记录人")).getBitmapIndex());
         DictionaryEncodedColumn dictionaryEncodedColumn = (segmentList.get(1).getColumn(new ColumnKey("记录人")).getDictionaryEncodedColumn());
-        int count = 0;
+        int count = 1;
         try {
             while (bitmapIndexedColumn.getBitMapIndex(count) != null) {
                 ImmutableBitMap bitMap = bitmapIndexedColumn.getBitMapIndex(count);

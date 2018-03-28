@@ -1,7 +1,7 @@
 package com.fr.swift.service;
 
 import com.fr.swift.context.SwiftContext;
-import com.fr.swift.manager.LocalSegmentOperatorProvider;
+import com.fr.swift.manager.LocalDataOperatorProvider;
 import com.fr.swift.manager.LocalSegmentProvider;
 import com.fr.swift.service.listener.EventType;
 import com.fr.swift.service.listener.SingleTypeListenerContainer;
@@ -28,7 +28,7 @@ public abstract class AbstractSwiftServerService extends AbstractSwiftService im
         initListener();
         SwiftServiceListenerManager.getInstance().registerHandler(this);
         SwiftContext.getInstance().registerSegmentProvider(LocalSegmentProvider.getInstance());
-        SwiftContext.getInstance().registerSegmentOperatorProvider(LocalSegmentOperatorProvider.getInstance());
+        SwiftContext.getInstance().registerSegmentOperatorProvider(LocalDataOperatorProvider.getInstance());
         return true;
     }
 

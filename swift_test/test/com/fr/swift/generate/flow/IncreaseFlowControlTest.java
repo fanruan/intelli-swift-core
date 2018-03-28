@@ -7,7 +7,8 @@ import com.fr.swift.flow.FlowControlRule;
 import com.fr.swift.flow.FlowRuleController;
 import com.fr.swift.flow.RowNumberControlRule;
 import com.fr.swift.flow.TimeControlRule;
-import com.fr.swift.generate.history.index.ColumnIndexer;
+import com.fr.swift.generate.BaseTest;
+import com.fr.swift.generate.realtime.RealtimeColumnIndexer;
 import com.fr.swift.generate.realtime.RealtimeDataTransporter;
 import com.fr.swift.increase.IncrementImpl;
 import com.fr.swift.increment.Increment;
@@ -20,7 +21,6 @@ import com.fr.swift.segment.column.DictionaryEncodedColumn;
 import com.fr.swift.source.DataSource;
 import com.fr.swift.source.db.QueryDBSource;
 import com.fr.swift.source.db.TestConnectionProvider;
-import junit.framework.TestCase;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -33,7 +33,7 @@ import java.util.List;
  * @description
  * @since Advanced FineBI Analysis 1.0
  */
-public class IncreaseFlowControlTest extends TestCase {
+public class IncreaseFlowControlTest extends BaseTest {
 
     private DataSource dataSource;
 
@@ -47,7 +47,7 @@ public class IncreaseFlowControlTest extends TestCase {
 
 
     @Test
-    public void testRowControl() throws Exception{
+    public void testRowControl() throws Exception {
         Increment increment = new IncrementImpl("select 合同ID from DEMO_CAPITAL_RETURN where 记录人 ='庆芳'", null, null, dataSource.getSourceKey(), "local");
 
         /**
@@ -61,7 +61,7 @@ public class IncreaseFlowControlTest extends TestCase {
         transport.work();
 
         for (int i = 1; i <= dataSource.getMetadata().getColumnCount(); i++) {
-            ColumnIndexer columnIndexer = new ColumnIndexer(dataSource, new ColumnKey(dataSource.getMetadata().getColumnName(i)));
+            RealtimeColumnIndexer columnIndexer = new RealtimeColumnIndexer(dataSource, new ColumnKey(dataSource.getMetadata().getColumnName(i)));
             columnIndexer.work();
         }
 
@@ -88,7 +88,7 @@ public class IncreaseFlowControlTest extends TestCase {
         BitmapIndexedColumn bitmapIndexedColumn = (segment.getColumn(new ColumnKey("合同ID")).getBitmapIndex());
         DictionaryEncodedColumn dictionaryEncodedColumn = (segment.getColumn(new ColumnKey("合同ID")).getDictionaryEncodedColumn());
 
-        int count = 0;
+        int count = 1;
         try {
             while (bitmapIndexedColumn.getBitMapIndex(count) != null) {
                 ImmutableBitMap bitMap = bitmapIndexedColumn.getBitMapIndex(count);

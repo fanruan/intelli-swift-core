@@ -2,6 +2,8 @@ package com.fr.swift.source;
 
 import com.fr.swift.exception.meta.SwiftMetaDataException;
 
+import java.util.List;
+
 /**
  * Created by pony on 2017/10/24.
  * 先实现一些基本的功能，以后如果需要兼容jdbc，可扩展为ResultSetMetadata
@@ -51,4 +53,6 @@ public interface SwiftMetaData extends Iterable<SwiftMetaDataColumn> {
     String getColumnId(String columnName) throws SwiftMetaDataException;
 
     String getRemark() throws SwiftMetaDataException;
+
+    List<String> getFieldNames();
 }
