@@ -1,7 +1,6 @@
 package com.fr.swift.source.etl.union;
 
 import com.fr.swift.segment.Segment;
-import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftResultSet;
 import com.fr.swift.source.etl.ETLTransferOperator;
@@ -15,18 +14,18 @@ import java.util.List;
  */
 public class UnionTransferOperator implements ETLTransferOperator {
 
-    private List<List<ColumnKey>> lists;
+    private List<List<String>> unionColumns;
 
-    public UnionTransferOperator(List<List<ColumnKey>> lists) {
-        this.lists = lists;
+    public UnionTransferOperator(List<List<String>> unionColumns) {
+        this.unionColumns = unionColumns;
     }
 
     @Override
     public SwiftResultSet createResultSet(SwiftMetaData metaData, List<SwiftMetaData> basedMetas, List<Segment[]> basedSegments) {
-        List<List<Segment>> tis = new ArrayList<List<Segment>>();
+        List<List<Segment>> segments = new ArrayList<List<Segment>>();
         for (int i = 0; i < basedSegments.size(); i++) {
-            tis.add(Arrays.asList(basedSegments.get(i)));
+            segments.add(Arrays.asList(basedSegments.get(i)));
         }
-        return new UnionOperatorResultSet(lists, tis, metaData);
+        return new UnionOperatorResultSet(unionColumns, segments, metaData);
     }
 }
