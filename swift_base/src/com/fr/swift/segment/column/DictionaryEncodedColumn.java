@@ -12,6 +12,13 @@ import java.util.Comparator;
  */
 public interface DictionaryEncodedColumn<T> extends Releasable, Flushable {
     /**
+     * 非空序号
+     */
+    int NOT_NULL_START_INDEX = 1;
+
+    int NULL_INDEX = 0;
+
+    /**
      * 写入字典的长度，唯一值的个数
      *
      * @param size 字典的长度

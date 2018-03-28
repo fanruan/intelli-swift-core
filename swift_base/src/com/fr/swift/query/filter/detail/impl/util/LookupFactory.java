@@ -14,7 +14,7 @@ public class LookupFactory {
         return new ArrayLookupHelper.Lookup<T>() {
             @Override
             public int minIndex() {
-                return 0;
+                return DictionaryEncodedColumn.NOT_NULL_START_INDEX;
             }
 
             @Override

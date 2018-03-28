@@ -32,10 +32,6 @@ public class ShowResultSet implements SwiftResultSet {
         init();
     }
 
-    private ShowResultSet(SwiftResultSet origin) throws SQLException {
-        this(origin, origin.getMetaData());
-    }
-
     /**
      * origin自带meta时用
      *
@@ -44,21 +40,18 @@ public class ShowResultSet implements SwiftResultSet {
      * @throws SQLException 异常
      */
     public static SwiftResultSet of(SwiftResultSet origin) throws SQLException {
-        return of(origin, null);
+        return of(origin, origin.getMetaData());
     }
 
     /**
-     * origin没有meta时用
+     * origin没有meta时或者meta不对时用
      *
      * @param origin 源result set
      * @return 展示的result set
      * @throws SQLException 异常
      */
     public static SwiftResultSet of(SwiftResultSet origin, SwiftMetaData metaIfNeed) throws SQLException {
-        if (origin.getMetaData() == null) {
-            return new ShowResultSet(origin, metaIfNeed);
-        }
-        return new ShowResultSet(origin);
+        return new ShowResultSet(origin, metaIfNeed);
     }
 
     private void init() throws SQLException {
@@ -87,12 +80,12 @@ public class ShowResultSet implements SwiftResultSet {
 
     @Override
     public boolean next() throws SQLException {
-        return origin.next();
+        return origin != null && origin.next();
     }
 
     @Override
-    public SwiftMetaData getMetaData() throws SQLException {
-        return origin.getMetaData();
+    public SwiftMetaData getMetaData() {
+        return meta;
     }
 
     @Override

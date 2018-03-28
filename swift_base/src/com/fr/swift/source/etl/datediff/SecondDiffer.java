@@ -12,9 +12,9 @@ public class SecondDiffer implements DateDiffCalculator {
     private static final int ONE_SECOND = DateType.MILLISECOND.radix;
 
     @Override
-    public int get(Long d1, Long d2) {
+    public Object get(Long d1, Long d2) {
         if (d1 == null || d2 == null) {
-            return 0;
+            return null;
         }
         return (int) ((d1 - d2) / ONE_SECOND);
     }

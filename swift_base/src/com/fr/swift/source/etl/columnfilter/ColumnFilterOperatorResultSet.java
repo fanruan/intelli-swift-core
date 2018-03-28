@@ -79,7 +79,7 @@ public class ColumnFilterOperatorResultSet implements SwiftResultSet {
         if(segCursor < segment.length && rowCursor < bitMap.getCardinality()) {
             for(; segCursor < segment.length; segCursor++) {
                 bitMap = createFilter(this.segment[segCursor], this.filterInfo);
-                if(bitMap != null) {
+                if(bitMap != null && bitMap.getCardinality() > 0) {
                     break;
                 }
             }

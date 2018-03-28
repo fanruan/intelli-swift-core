@@ -231,7 +231,7 @@ abstract class BaseDictColumn<T> implements DictionaryEncodedColumn<T> {
     private ArrayLookupHelper.Lookup<T> lookup = new ArrayLookupHelper.Lookup<T>() {
         @Override
         public int minIndex() {
-            return 0;
+            return NOT_NULL_START_INDEX;
         }
 
         @Override

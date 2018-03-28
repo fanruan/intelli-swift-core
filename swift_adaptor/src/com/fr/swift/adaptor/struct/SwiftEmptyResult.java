@@ -1,11 +1,13 @@
 package com.fr.swift.adaptor.struct;
 
 import com.fr.swift.exception.meta.SwiftMetaDataException;
+import com.fr.swift.result.DetailResultSet;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftMetaDataColumn;
 import com.fr.swift.source.SwiftResultSet;
 
+import java.sql.SQLException;
 import java.util.Iterator;
 import java.util.List;
 
@@ -16,9 +18,11 @@ import java.util.List;
  * @description
  * @since Advanced FineBI Analysis 1.0
  */
-public class SwiftEmptyResult implements SwiftResultSet {
+public class SwiftEmptyResult implements SwiftResultSet{
+
+
     @Override
-    public void close() {
+    public void close() throws SQLException {
 
     }
 
@@ -116,4 +120,6 @@ public class SwiftEmptyResult implements SwiftResultSet {
     public Row getRowData() {
         return null;
     }
+
+
 }

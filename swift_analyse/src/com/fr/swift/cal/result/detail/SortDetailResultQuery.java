@@ -4,8 +4,8 @@ import com.fr.swift.cal.Query;
 import com.fr.swift.query.adapter.target.DetailTarget;
 import com.fr.swift.result.DetailResultSet;
 import com.fr.swift.result.SortMultiSegmentDetailResultSet;
-import com.fr.swift.result.SortSegmentDetailByIndexResultSet;
-import com.fr.swift.result.SortSegmentDetailResultSet;
+import com.fr.swift.source.SwiftMetaData;
+
 
 import java.sql.SQLException;
 import java.util.Comparator;
@@ -17,20 +17,30 @@ import java.util.List;
 public class SortDetailResultQuery extends AbstractDetailResultQuery {
 
     private Comparator comparator;
+    private SwiftMetaData metaData;
 
-    public SortDetailResultQuery(List<Query<DetailResultSet>> queries) {
+    public SortDetailResultQuery(List<Query<DetailResultSet>> queries, Comparator comparator, SwiftMetaData metaData) {
         super(queries);
-
+        this.comparator = comparator;
+        this.metaData = metaData;
     }
 
-    public SortDetailResultQuery(List<Query<DetailResultSet>> queries, DetailTarget[] targets) {
+    public SortDetailResultQuery(List<Query<DetailResultSet>> queries, DetailTarget[] targets, Comparator comparator, SwiftMetaData metaData) {
         super(queries, targets);
+        this.comparator = comparator;
+        this.metaData = metaData;
     }
 
     @Override
     public DetailResultSet getQueryResult() throws SQLException {
 
-        comparator = queryList.get(0) instanceof SortSegmentDetailResultSet ? ((SortSegmentDetailResultSet) queryList.get(0).getQueryResult()).getDetailSortComparator() : ((SortSegmentDetailByIndexResultSet) queryList.get(0).getQueryResult()).getDetailSortComparator();
-        return new SortMultiSegmentDetailResultSet(queryList, comparator);
+        if(queryList.size() == 0) {
+            return null;
+        }
+
+        if(queryList.size() == 1) {
+            return queryList.get(0).getQueryResult();
+        }
+        return new SortMultiSegmentDetailResultSet(queryList, comparator, metaData);
     }
 }

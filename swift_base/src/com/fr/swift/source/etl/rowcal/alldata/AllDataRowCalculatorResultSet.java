@@ -71,7 +71,9 @@ public class AllDataRowCalculatorResultSet implements SwiftResultSet {
         if(dimensions != null) {
             if(iterator.hasNext() || (segCursor < tempSegment.length && rowCursor < rowCount)) {
                 if(needNext) {
-                    valuesAndGVI = iterator.next();
+                    do {
+                        valuesAndGVI = iterator.next();
+                    } while (valuesAndGVI.getAggreator().isEmpty() && iterator.hasNext());
                     tempTraversal = new RowTraversal[valuesAndGVI.getAggreator().size()];
                     tempSegment = new Segment[valuesAndGVI.getAggreator().size()];
                     for (int i = 0; i < valuesAndGVI.getAggreator().size(); i++) {
@@ -84,7 +86,7 @@ public class AllDataRowCalculatorResultSet implements SwiftResultSet {
                     rowCursor = 0;
                     needNext = false;
                 }
-                if(segCursor == tempSegment.length - 1 && rowCursor == rowCount - 1) {
+                if(segCursor == tempSegment.length - 1 && rowCursor >= rowCount - 1) {
                     needNext = true;
                 }
                 nextValueForDimension();
@@ -113,6 +115,10 @@ public class AllDataRowCalculatorResultSet implements SwiftResultSet {
                 }
             }
             return true;
+        } else {
+            List list = new ArrayList();
+            list.add(null);
+            tempValue.setRow(new ListBasedRow(list));
         }
         return false;
     }

@@ -3,7 +3,7 @@ package com.fr.swift.generate;
 import com.fr.swift.exception.meta.SwiftMetaDataException;
 import com.fr.swift.generate.history.index.ColumnIndexer;
 import com.fr.swift.generate.history.transport.TableTransporter;
-import com.fr.swift.generate.realtime.RealtimeColumnIndexer;
+import com.fr.swift.generate.realtime.index.RealtimeColumnIndexer;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.source.DataSource;
 

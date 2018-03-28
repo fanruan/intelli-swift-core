@@ -1,13 +1,14 @@
 package com.fr.swift.source.etl.datamining;
 
 import com.finebi.conf.internalimp.analysis.bean.operator.datamining.AlgorithmBean;
+import com.finebi.conf.internalimp.analysis.bean.operator.datamining.kmeans.KmeansBean;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftMetaDataColumn;
 import com.fr.swift.source.etl.AbstractOperator;
 import com.fr.swift.source.etl.OperatorType;
+import com.fr.swift.source.etl.datamining.kmeans.KmeansOperator;
 import com.fr.swift.source.etl.datamining.timeseries.holtwinter.HoltWinterOperator;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -17,18 +18,21 @@ public class DataMiningOperator extends AbstractOperator {
 
     private AlgorithmBean algorithmBean = null;
 
-    private AlgorithmMetaData algorithmOperator = null;
+    private AbstractOperator algorithmOperator = null;
 
     public DataMiningOperator(AlgorithmBean algorithmBean) {
         this.algorithmBean = algorithmBean;
         init();
     }
 
-    private void init(){
-        switch (algorithmBean.getAlgorithmName()){
+    private void init() {
+        switch (algorithmBean.getAlgorithmName()) {
             case HOLT_WINTERS:
                 algorithmOperator = new HoltWinterOperator(algorithmBean);
                 break;
+            case KMEANS:
+                algorithmOperator = new KmeansOperator(algorithmBean);
+
             default:
                 break;
         }
@@ -45,12 +49,11 @@ public class DataMiningOperator extends AbstractOperator {
 
     @Override
     public OperatorType getOperatorType() {
-        return OperatorType.EXTRA;
+        return algorithmOperator.getOperatorType();
     }
 
     @Override
     public List<String> getNewAddedName() {
-        List<String> addColumnNames = new ArrayList<String>();
-        return addColumnNames;
+        return algorithmOperator.getNewAddedName();
     }
 }

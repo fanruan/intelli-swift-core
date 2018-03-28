@@ -2,6 +2,7 @@ package com.fr.swift.segment.column.impl;
 
 import com.fr.swift.compare.Comparators;
 import com.fr.swift.cube.io.location.IResourceLocation;
+import com.fr.swift.segment.column.DetailColumn;
 import com.fr.swift.segment.column.DictionaryEncodedColumn;
 import com.fr.swift.segment.column.impl.base.IntDetailColumn;
 import com.fr.swift.segment.column.impl.base.IntDictColumn;
@@ -11,8 +12,6 @@ import com.fr.swift.segment.column.impl.base.IntDictColumn;
  * @date 2017/11/30
  */
 public class IntColumn extends BaseColumn<Integer> {
-    private IntDetailColumn detailColumn;
-
     public IntColumn(IResourceLocation location) {
         super(location);
     }
@@ -23,7 +22,7 @@ public class IntColumn extends BaseColumn<Integer> {
     }
 
     @Override
-    public IntDetailColumn getDetailColumn() {
+    public DetailColumn<Integer> getDetailColumn() {
         return detailColumn != null ? detailColumn : (detailColumn = new IntDetailColumn(location));
     }
 }

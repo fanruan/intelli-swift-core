@@ -12,6 +12,9 @@ public interface Flushable {
     /**
      * Flushes this by writing any buffered output to the underlying
      * stream.
+     *
+     * @deprecated fixme 现在的io好像并没有真正用到，尝试删除实现了
      */
+    @Deprecated
     void flush();
 }

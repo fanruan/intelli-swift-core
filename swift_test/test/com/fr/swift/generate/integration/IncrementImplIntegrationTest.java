@@ -9,6 +9,7 @@ import com.fr.swift.generate.TestIndexer;
 import com.fr.swift.generate.history.index.ColumnIndexer;
 import com.fr.swift.generate.history.transport.TableTransporter;
 import com.fr.swift.generate.realtime.RealtimeDataTransporter;
+import com.fr.swift.generate.realtime.index.RealtimeColumnIndexer;
 import com.fr.swift.increase.IncrementImpl;
 import com.fr.swift.increment.Increment;
 import com.fr.swift.manager.LocalSegmentProvider;

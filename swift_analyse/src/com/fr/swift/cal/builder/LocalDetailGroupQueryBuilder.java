@@ -7,8 +7,10 @@ import com.fr.swift.cal.segment.detail.SortDetailSegmentQuery;
 import com.fr.swift.manager.LocalSegmentProvider;
 import com.fr.swift.query.adapter.dimension.Dimension;
 import com.fr.swift.query.filter.FilterBuilder;
+import com.fr.swift.query.filter.SwiftDetailFilterType;
 import com.fr.swift.query.filter.info.FilterInfo;
 import com.fr.swift.query.filter.info.GeneralFilterInfo;
+import com.fr.swift.query.filter.info.SwiftDetailFilterInfo;
 import com.fr.swift.query.sort.Sort;
 import com.fr.swift.query.sort.SortType;
 import com.fr.swift.result.DetailResultSet;
@@ -43,6 +45,7 @@ public class LocalDetailGroupQueryBuilder implements LocalDetailQueryBuilder {
         for (Segment segment : segments) {
             List<Column> columns = new ArrayList<Column>();
             List<FilterInfo> filterInfos = new ArrayList<FilterInfo>();
+            filterInfos.add(new SwiftDetailFilterInfo<Object>(null, null, SwiftDetailFilterType.ALL_SHOW));
             for (Dimension dimension : dimensions) {
                 columns.add(segment.getColumn(dimension.getColumnKey()));
                 if (dimension.getFilter() != null) {
@@ -52,13 +55,13 @@ public class LocalDetailGroupQueryBuilder implements LocalDetailQueryBuilder {
             if (info.getFilterInfo() != null) {
                 filterInfos.add(info.getFilterInfo());
             }
-            queries.add(new SortDetailSegmentQuery(columns, FilterBuilder.buildDetailFilter(segment, new GeneralFilterInfo(filterInfos, GeneralFilterInfo.AND)), list, sortTypes));
+            queries.add(new SortDetailSegmentQuery(columns, FilterBuilder.buildDetailFilter(segment, new GeneralFilterInfo(filterInfos, GeneralFilterInfo.AND)), list, sortTypes, info.getMetaData()));
         }
-        return new SortDetailResultQuery(queries);
+        return new SortDetailResultQuery(queries, info.getComparator(), info.getMetaData());
     }
 
     @Override
     public Query<DetailResultSet> buildResultQuery(List<Query<DetailResultSet>> queries, DetailQueryInfo info) {
-        return new SortDetailResultQuery(queries, info.getTargets());
+        return new SortDetailResultQuery(queries, info.getTargets(), info.getComparator(), info.getMetaData());
     }
 }

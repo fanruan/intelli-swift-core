@@ -6,6 +6,7 @@ import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.DictionaryEncodedColumn;
 import com.fr.swift.source.ListBasedRow;
 import com.fr.swift.source.Row;
+import com.fr.swift.source.SwiftMetaData;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,10 +30,12 @@ public class SegmentDetailResultSet extends DetailResultSet {
      * 明细过滤条件
      */
     private DetailFilter filter;
+    private SwiftMetaData metaData;
 
-    public SegmentDetailResultSet(List<Column> columnList, DetailFilter filter) {
+    public SegmentDetailResultSet(List<Column> columnList, DetailFilter filter, SwiftMetaData metaData) {
         this.columnList = columnList;
         this.filter = filter;
+        this.metaData = metaData;
         init();
     }
 
@@ -54,9 +57,6 @@ public class SegmentDetailResultSet extends DetailResultSet {
         return new ListBasedRow(values);
     }
 
-    public int getMaxRow() {
-        return maxRow;
-    }
 
     private void init() {
         this.maxRow = filter.createFilterIndex().getCardinality();
@@ -64,5 +64,10 @@ public class SegmentDetailResultSet extends DetailResultSet {
 
     public int getColumnCount() {
         return columnList.size();
+    }
+
+    @Override
+    public SwiftMetaData getMetaData() {
+        return metaData;
     }
 }

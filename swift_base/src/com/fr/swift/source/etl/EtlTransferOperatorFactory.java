@@ -12,6 +12,10 @@ import com.fr.swift.source.etl.detail.DetailOperator;
 import com.fr.swift.source.etl.detail.DetailTransferOperator;
 import com.fr.swift.source.etl.formula.ColumnFormulaOperator;
 import com.fr.swift.source.etl.formula.ColumnFormulaTransferOperator;
+import com.fr.swift.source.etl.group.GroupAssignmentOperator;
+import com.fr.swift.source.etl.group.GroupAssignmentTransferOperator;
+import com.fr.swift.source.etl.group.GroupNumericOperator;
+import com.fr.swift.source.etl.group.GroupNumericTransferOperator;
 import com.fr.swift.source.etl.groupsum.SumByGroupOperator;
 import com.fr.swift.source.etl.groupsum.SumByGroupTransferOperator;
 import com.fr.swift.source.etl.join.JoinOperator;
@@ -69,6 +73,10 @@ public class EtlTransferOperatorFactory {
                 return transferGetDateOperator((GetFromDateOperator) operator);
             case DATEDIFF:
                 return transferDateDiffOperator((DateDiffOperator) operator);
+            case GROUP_STRING:
+                return transferGroupStringOperator((GroupAssignmentOperator) operator);
+            case GROUP_NUM:
+                return transferGroupNumOperator((GroupNumericOperator) operator);
         }
         ETLTransferCreator creator = extra.get(operator.getClass().getName());
         return creator == null ? null : creator.createTransferOperator(operator);
@@ -76,6 +84,15 @@ public class EtlTransferOperatorFactory {
 
     public static void register(Class c,  ETLTransferCreator creator){
         extra.put(c.getName(), creator);
+    }
+
+    public static ETLTransferOperator transferGroupNumOperator(GroupNumericOperator operator) {
+        return new GroupNumericTransferOperator(operator.getColumnKey(), operator.getMax(),
+                operator.getMin(), operator.getUseOther(), operator.getNodes());
+    }
+
+    public static ETLTransferOperator transferGroupStringOperator(GroupAssignmentOperator operator) {
+        return new GroupAssignmentTransferOperator(operator.getOtherName(), operator.getColumnKey(), operator.getGroup());
     }
 
     private static ETLTransferOperator transferDateDiffOperator(DateDiffOperator operator) {

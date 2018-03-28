@@ -5,6 +5,10 @@ import java.util.Calendar;
 /**
  * @author anchore
  * @date 2017/11/29
+ * <p>
+ * 可用于提取日期子字段，如：
+ * 年、月、日、时、分、秒、毫秒
+ * 季度、全年第几周等
  */
 public enum DateType {
     /**
@@ -12,14 +16,44 @@ public enum DateType {
      */
     YEAR(Calendar.YEAR, 1),
 
+    /**
+     * 1-12 -> Jan-Dec
+     */
     MONTH(Calendar.MONTH, 12) {
         @Override
         public int from(Calendar c) {
             return super.from(c) + 1;
         }
+
+        @Override
+        public void set(Calendar c, int value) {
+            super.set(c, value - 1);
+        }
     },
 
-    WEEK(Calendar.DAY_OF_WEEK),
+    /**
+     * 1-7 -> Mon-Sun
+     */
+    WEEK(Calendar.DAY_OF_WEEK) {
+        @Override
+        public int from(Calendar c) {
+            int week = super.from(c);
+            if (Calendar.SUNDAY == week) {
+                return 7;
+            }
+            return week - 1;
+        }
+
+        @Override
+        public void set(Calendar c, int value) {
+            if (value == 7) {
+                value = Calendar.SUNDAY;
+            } else {
+                value++;
+            }
+            super.set(c, value);
+        }
+    },
 
     DAY(Calendar.DAY_OF_MONTH),
 
@@ -36,7 +70,7 @@ public enum DateType {
         @Override
         public int from(Calendar c) {
             int month = MONTH.from(c);
-            return month / 3 + 1;
+            return (month - 1) / 3 + 1;
         }
 
         /**
@@ -44,7 +78,7 @@ public enum DateType {
          */
         @Override
         public void set(Calendar c, int value) {
-            int month = (value - 1) * 3;
+            int month = (value - 1) * 3 + 1;
             MONTH.set(c, month);
             DAY.set(c, 1);
         }

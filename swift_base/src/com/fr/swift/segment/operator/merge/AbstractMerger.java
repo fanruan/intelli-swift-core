@@ -124,7 +124,7 @@ public abstract class AbstractMerger implements Merger {
     }
 
     protected void persistSegment() {
-        SegmentConfig.getInstance().putSegments(configSegment);
+        SegmentConfig.getInstance().putSegment(configSegment);
     }
 
     protected abstract Segment createSegment(int order);

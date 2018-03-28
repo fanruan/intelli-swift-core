@@ -2,13 +2,18 @@ package com.fr.swift.generate.preview;
 
 import com.fr.swift.cube.io.Types;
 import com.fr.swift.cube.io.location.ResourceLocation;
+import com.fr.swift.generate.Util;
 import com.fr.swift.generate.preview.operator.MinorInserter;
-import com.fr.swift.generate.realtime.RealtimeColumnDictMerger;
-import com.fr.swift.generate.realtime.RealtimeColumnIndexer;
+import com.fr.swift.generate.realtime.index.RealtimeColumnDictMerger;
+import com.fr.swift.generate.realtime.index.RealtimeColumnIndexer;
+import com.fr.swift.generate.realtime.index.RealtimeSubDateColumnIndexer;
+import com.fr.swift.query.group.GroupType;
 import com.fr.swift.segment.RealTimeSegmentImpl;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.column.ColumnKey;
+import com.fr.swift.segment.column.impl.SubDateColumn;
 import com.fr.swift.segment.operator.Inserter;
+import com.fr.swift.source.ColumnTypeConstants.ClassType;
 import com.fr.swift.source.DataSource;
 import com.fr.swift.source.ETLDataSource;
 import com.fr.swift.source.SwiftResultSet;
@@ -54,25 +59,49 @@ public class MinorUpdater {
         Inserter inserter = getInserter(dataSource, segment);
         inserter.insertData(swiftResultSet);
 
-        for (String indexField : inserter.getFields()) {
-            new RealtimeColumnIndexer(dataSource, new ColumnKey(indexField)) {
+        for (
+                String indexField : inserter.getFields())
+
+        {
+            ColumnKey columnKey = new ColumnKey(indexField);
+            indexColumn(dataSource, columnKey);
+            indexSubColumnIfNeed(dataSource, columnKey);
+        }
+
+    }
+
+    private static void indexColumn(final DataSource dataSource, final ColumnKey indexField) {
+        new RealtimeColumnIndexer(dataSource, indexField) {
+            @Override
+            protected List<Segment> getSegments() {
+                return MinorSegmentManager.getInstance().getSegment(dataSource.getSourceKey());
+            }
+
+            @Override
+            protected void mergeDict() {
+                new RealtimeColumnDictMerger(dataSource, key) {
+                    @Override
+                    protected List<Segment> getSegments() {
+                        return MinorSegmentManager.getInstance().getSegment(dataSource.getSourceKey());
+                    }
+                }.work();
+            }
+        }.work();
+    }
+
+    private static void indexSubColumnIfNeed(final DataSource dataSource, final ColumnKey columnKey) {
+        if (Util.getClassType(dataSource, columnKey) != ClassType.DATE) {
+            return;
+        }
+        for (GroupType type : SubDateColumn.TYPES_TO_GENERATE) {
+            new RealtimeSubDateColumnIndexer(dataSource, columnKey, type) {
                 @Override
+
                 protected List<Segment> getSegments() {
                     return MinorSegmentManager.getInstance().getSegment(dataSource.getSourceKey());
                 }
-
-                @Override
-                protected void mergeDict() {
-                    new RealtimeColumnDictMerger(dataSource, key) {
-                        @Override
-                        protected List<Segment> getSegments() {
-                            return MinorSegmentManager.getInstance().getSegment(dataSource.getSourceKey());
-                        }
-                    }.work();
-                }
             }.work();
         }
-
     }
 
     private static Inserter getInserter(DataSource dataSource, Segment segment) throws Exception {
@@ -95,4 +124,12 @@ public class MinorUpdater {
     private static boolean isEtl(DataSource ds) {
         return ds instanceof ETLDataSource;
     }
+
+    private static GroupType[] SUB_DATE_TYPES = {
+            GroupType.YEAR, GroupType.QUARTER, GroupType.MONTH,
+            GroupType.WEEK, GroupType.WEEK_OF_YEAR, GroupType.DAY,
+            GroupType.HOUR, GroupType.MINUTE, GroupType.SECOND,
+            GroupType.Y_M_D_H_M_S, GroupType.Y_M_D_H_M, GroupType.Y_M_D_H,
+            GroupType.Y_M_D, GroupType.Y_M, GroupType.Y_Q, GroupType.Y_W, GroupType.Y_D
+    };
 }

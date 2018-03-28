@@ -59,8 +59,8 @@ public class GetFromDateResultSet implements SwiftResultSet {
             ColumnKey columnKey = new ColumnKey(field);
             checkType(field);
             DictionaryEncodedColumn getter = segments[segCursor].getColumn(columnKey).getDictionaryEncodedColumn();
-            Object value = dateGetter.apply(getter.getValue(getter.getIndexByRow(rowCursor)));
-            Long v = Long.parseLong(value.toString());
+            Object value = getter.getValue(getter.getIndexByRow(rowCursor));
+            Long v = value != null ? Long.parseLong(dateGetter.apply(value).toString()) : null;
             List<Object> list = new ArrayList<Object>();
             list.add(v);
             tempValue.setRow(new ListBasedRow(list));
@@ -119,17 +119,17 @@ public class GetFromDateResultSet implements SwiftResultSet {
             case UNITS.SECOND:
                 return DateDerivers.newSingleFieldDeriver(DateType.SECOND);
             case UNITS.YQ:
-                return DateDerivers.newTruncatedDeriver(MixDateType.Y_Q);
+                return DateDerivers.newTruncDeriver(MixDateType.Y_Q);
             case UNITS.YM:
-                return DateDerivers.newTruncatedDeriver(MixDateType.Y_M);
+                return DateDerivers.newTruncDeriver(MixDateType.Y_M);
             case UNITS.YW:
-                return DateDerivers.newTruncatedDeriver(MixDateType.Y_W);
+                return DateDerivers.newTruncDeriver(MixDateType.Y_W);
             case UNITS.YMDH:
-                return DateDerivers.newTruncatedDeriver(MixDateType.Y_M_D_H);
+                return DateDerivers.newTruncDeriver(MixDateType.Y_M_D_H);
             case UNITS.YMDHM:
-                return DateDerivers.newTruncatedDeriver(MixDateType.Y_M_D_H_M);
+                return DateDerivers.newTruncDeriver(MixDateType.Y_M_D_H_M);
             case UNITS.YMDHMS:
-                return DateDerivers.newTruncatedDeriver(MixDateType.Y_M_D_H_M_S);
+                return DateDerivers.newTruncDeriver(MixDateType.Y_M_D_H_M_S);
             default:
                 return null;
         }

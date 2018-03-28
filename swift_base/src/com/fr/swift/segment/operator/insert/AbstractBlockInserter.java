@@ -171,7 +171,7 @@ public abstract class AbstractBlockInserter implements Inserter {
     }
 
     protected void persistSegment() {
-        SegmentConfig.getInstance().putSegments(configSegment);
+        SegmentConfig.getInstance().putSegment(configSegment);
     }
 
     @Override

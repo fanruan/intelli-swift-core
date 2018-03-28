@@ -1,5 +1,6 @@
 package com.fr.swift.segment.column.impl.base;
 
+import com.fr.swift.compare.Comparators;
 import com.fr.swift.cube.io.location.ResourceLocation;
 import com.fr.swift.segment.column.DictionaryEncodedColumn;
 
@@ -10,11 +11,10 @@ import java.util.stream.Stream;
  * @date 2017/11/10
  */
 public class StringDictColumnTest extends BaseDictColumnTest<String> {
-
-    int size = 10000;
+    int size = 100;
 
     {
-        c = String::compareTo;
+        c = Comparators.asc();
         byte[] bytes = new byte[100];
         values = Stream.generate(() -> {
             r.nextBytes(bytes);

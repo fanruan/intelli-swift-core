@@ -5,8 +5,8 @@ import com.fr.swift.flow.FlowRuleController;
 import com.fr.swift.generate.BaseTest;
 import com.fr.swift.generate.history.index.ColumnIndexer;
 import com.fr.swift.generate.history.transport.TableTransporter;
-import com.fr.swift.generate.realtime.RealtimeColumnIndexer;
 import com.fr.swift.generate.realtime.RealtimeDataTransporter;
+import com.fr.swift.generate.realtime.index.RealtimeColumnIndexer;
 import com.fr.swift.increase.IncrementImpl;
 import com.fr.swift.increment.Increment;
 import com.fr.swift.manager.LocalSegmentProvider;
@@ -21,8 +21,7 @@ import java.util.List;
  * This class created on 2018/3/20
  *
  * @author Lucifer
- * @description
- * todo 合并还要重做下。。
+ * @description todo 合并还要重做下。。
  * @since Advanced FineBI Analysis 1.0
  */
 public class RealtimeMergeTest extends BaseTest {
@@ -113,7 +112,7 @@ public class RealtimeMergeTest extends BaseTest {
             assertEquals(segmentList.size(), 2);
             assertEquals(segmentList.get(1).getRowCount(), count1 + count2 + count3);
             for (int i = 0; i < count1 + count2 + count3; i++) {
-               assertNotNull(segmentList.get(1).getColumn(new ColumnKey("付款时间")).getDetailColumn().get(i));
+                assertNotNull(segmentList.get(1).getColumn(new ColumnKey("付款时间")).getDetailColumn().get(i));
             }
         } catch (Exception e) {
             LOGGER.error(e.getMessage(), e);

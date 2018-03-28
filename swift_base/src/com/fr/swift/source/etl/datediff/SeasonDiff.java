@@ -7,8 +7,11 @@ import com.fr.swift.segment.column.impl.DateType;
  */
 public class SeasonDiff extends MonthDiff {
     @Override
-    public int get(Long d1, Long d2) {
-        int month = super.get(d1, d2);
-        return month / (DateType.MONTH.radix / DateType.QUARTER.radix);
+    public Object get(Long d1, Long d2) {
+        Object month = super.get(d1, d2);
+        if(null != month) {
+            return Integer.parseInt(month.toString()) / (DateType.MONTH.radix / DateType.QUARTER.radix);
+        }
+        return null;
     }
 }

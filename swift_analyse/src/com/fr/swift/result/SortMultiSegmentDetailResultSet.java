@@ -2,6 +2,7 @@ package com.fr.swift.result;
 
 import com.fr.swift.cal.Query;
 import com.fr.swift.source.Row;
+import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftResultSet;
 
 import java.sql.SQLException;
@@ -17,12 +18,14 @@ public class SortMultiSegmentDetailResultSet extends DetailResultSet {
     private Comparator comparator;
     private Row[] unsortedRows;
     private SwiftResultSet[] rs;
+    private SwiftMetaData metaData;
 
-    public SortMultiSegmentDetailResultSet(List<Query<DetailResultSet>> queries, Comparator comparator) throws SQLException {
+    public SortMultiSegmentDetailResultSet(List<Query<DetailResultSet>> queries, Comparator comparator, SwiftMetaData metaData) throws SQLException {
         this.unsortedRows = new Row[queries.size()];
         this.rs = new SwiftResultSet[queries.size()];
         this.queries = queries;
         this.comparator = comparator;
+        this.metaData = metaData;
         init();
     }
 
@@ -32,6 +35,11 @@ public class SortMultiSegmentDetailResultSet extends DetailResultSet {
         return getLatestRowData(unsortedRows[0]);
     }
 
+    @Override
+    public SwiftMetaData getMetaData() {
+        return metaData;
+    }
+
     private void init() throws SQLException {
         int i = 0;
         for (Query query : queries) {
@@ -39,7 +47,7 @@ public class SortMultiSegmentDetailResultSet extends DetailResultSet {
             if (rs[i].next()) {
                 unsortedRows[i] = rs[i].getRowData();
             }
-            maxRow += query.getQueryResult() instanceof SortSegmentDetailResultSet ? ((SortSegmentDetailResultSet) query.getQueryResult()).getMaxRow() : ((SortSegmentDetailByIndexResultSet) query.getQueryResult()).getMaxRow();
+            maxRow += ((DetailResultSet) query.getQueryResult()).getRowSize();
             i++;
         }
 

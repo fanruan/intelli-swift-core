@@ -5,7 +5,7 @@ import com.fr.swift.cube.io.Types;
 import com.fr.swift.cube.io.location.IResourceLocation;
 import com.fr.swift.cube.io.location.ResourceLocation;
 import com.fr.swift.generate.BaseTest;
-import com.fr.swift.generate.realtime.RealtimeColumnIndexer;
+import com.fr.swift.generate.realtime.index.RealtimeColumnIndexer;
 import com.fr.swift.segment.RealTimeSegmentImpl;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.column.ColumnKey;

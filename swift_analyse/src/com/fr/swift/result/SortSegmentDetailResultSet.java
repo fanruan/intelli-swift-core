@@ -8,6 +8,7 @@ import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.DictionaryEncodedColumn;
 import com.fr.swift.source.ListBasedRow;
 import com.fr.swift.source.Row;
+import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.structure.array.IntList;
 
 import java.util.ArrayList;
@@ -24,14 +25,15 @@ public class SortSegmentDetailResultSet extends DetailResultSet {
     private DetailFilter filter;
     private IntList sortIndex;
     private List<SortType> sorts;
-
+    private SwiftMetaData metaData;
     private ArrayList<Row> sortedDetailList;
 
-    public SortSegmentDetailResultSet(List<Column> columnList, DetailFilter filter, IntList sortIndex, List<SortType> sorts) {
+    public SortSegmentDetailResultSet(List<Column> columnList, DetailFilter filter, IntList sortIndex, List<SortType> sorts, SwiftMetaData metaData) {
         this.columnList = columnList;
         this.filter = filter;
         this.sortIndex = sortIndex;
         this.sorts = sorts;
+        this.metaData = metaData;
         init();
     }
 
@@ -40,17 +42,19 @@ public class SortSegmentDetailResultSet extends DetailResultSet {
         return sortedDetailList.get(rowCount);
     }
 
-    public int getMaxRow() {
-        return maxRow;
-    }
-
     public int getColumnCount() {
         return columnList.size();
     }
 
-    public DetailSortComparator getDetailSortComparator() {
-        return new DetailSortComparator();
+    @Override
+    public SwiftMetaData getMetaData() {
+        return metaData;
     }
+
+//    @Override
+//    public DetailSortComparator getDetailSortComparator() {
+//        return new DetailSortComparator();
+//    }
 
     private void init() {
         maxRow = filter.createFilterIndex().getCardinality();

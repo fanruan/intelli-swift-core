@@ -8,6 +8,7 @@ import com.fr.swift.cal.result.detail.NormalDetailResultQuery;
 import com.fr.swift.cal.result.detail.SortDetailResultQuery;
 import com.fr.swift.cal.segment.detail.NormalDetailSegmentQuery;
 import com.fr.swift.cal.segment.detail.SortDetailSegmentQuery;
+import com.fr.swift.compare.Comparators;
 import com.fr.swift.exception.meta.SwiftMetaDataException;
 import com.fr.swift.query.filter.detail.DetailFilter;
 import com.fr.swift.query.sort.SortType;
@@ -25,6 +26,7 @@ import com.fr.swift.structure.array.IntList;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 
@@ -61,6 +63,7 @@ public class SwiftSegmentDetailResult implements BIDetailTableResult {
     private void initSort(List<Segment> segments, SwiftMetaData swiftMetaData, IntList sortIndex, List<SortType> sorts) throws SQLException {
         this.rowCount = 0;
         List<Query<DetailResultSet>> queryList = new ArrayList<Query<DetailResultSet>>();
+        Comparator comparator = null;
         for (Segment segment : segments) {
             List<Column> columnList = new ArrayList<Column>();
             rowCount += segment.getRowCount();
@@ -69,13 +72,16 @@ public class SwiftSegmentDetailResult implements BIDetailTableResult {
                 ColumnKey columnKey = new ColumnKey(columnName);
                 columnList.add(segment.getColumn(columnKey));
             }
-            queryList.add(new SortDetailSegmentQuery(columnList, new AllShowFilter(segment.getAllShowIndex()), sortIndex, sorts));
+            if(comparator == null) {
+                comparator = new DetailSortComparator(columnList, sortIndex, sorts);
+            }
+            queryList.add(new SortDetailSegmentQuery(columnList, new AllShowFilter(segment.getAllShowIndex()), sortIndex, sorts, swiftMetaData));
         }
         Query<DetailResultSet> query = null;
         if (queryList.size() == 1) {
             query = queryList.get(0);
         } else {
-            query = new SortDetailResultQuery(queryList);
+            query = new SortDetailResultQuery(queryList, comparator, swiftMetaData);
         }
         SwiftResultSet resultSet = ShowResultSet.of(query.getQueryResult(), swiftMetaData);
         dataIterator = new DetailResultIterator(resultSet);
@@ -92,13 +98,13 @@ public class SwiftSegmentDetailResult implements BIDetailTableResult {
                 ColumnKey columnKey = new ColumnKey(columnName);
                 columnList.add(segment.getColumn(columnKey));
             }
-            queryList.add(new NormalDetailSegmentQuery(columnList, new AllShowFilter(segment.getAllShowIndex())));
+            queryList.add(new NormalDetailSegmentQuery(columnList, new AllShowFilter(segment.getAllShowIndex()), swiftMetaData));
         }
         Query<DetailResultSet> query = null;
         if (queryList.size() == 1) {
             query = queryList.get(0);
         } else {
-            query = new NormalDetailResultQuery(queryList);
+            query = new NormalDetailResultQuery(queryList, swiftMetaData);
         }
         SwiftResultSet resultSet = ShowResultSet.of(query.getQueryResult(), swiftMetaData);
         dataIterator = new DetailResultIterator(resultSet);
@@ -199,6 +205,43 @@ public class SwiftSegmentDetailResult implements BIDetailTableResult {
                             meta.getColumnType(i),
                             meta.getPrecision(i),
                             meta.getScale(i));
+        }
+    }
+
+    protected class DetailSortComparator implements Comparator<Row> {
+
+        private List<Column> columns;
+        private IntList sortIndex;
+        private List<SortType> sorts;
+
+        public DetailSortComparator(List<Column> columnList, IntList sortIndex, List<SortType> sorts) {
+            this.columns = columnList;
+            this.sortIndex = sortIndex;
+            this.sorts = sorts;
+        }
+        @Override
+        public int compare(Row o1, Row o2) {
+
+            for (int i = 0; i < sortIndex.size(); i++) {
+                int c = 0;
+                //比较的列先后顺序
+                int realColumn = sortIndex.get(i);
+                if (sorts.get(i) == SortType.ASC) {
+                    c = columns.get(realColumn).getDictionaryEncodedColumn().getComparator().compare(o1.getValue(realColumn), o2.getValue(realColumn));
+                }
+                if (sorts.get(i) == SortType.DESC) {
+                    c = Comparators.reverse(columns.get(realColumn).getDictionaryEncodedColumn().getComparator()).compare(o1.getValue(realColumn), o2.getValue(realColumn));
+                }
+                if (c != 0) {
+                    return c;
+                }
+            }
+            return 0;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            return false;
         }
     }
 }

@@ -34,8 +34,6 @@ public class IncreaseTransportTest extends BaseTest {
     @Override
     public void setUp() throws Exception {
         super.setUp();
-//        new LocalSwiftServerService().start();
-//        FRContext.setCurrentEnv(new LocalEnv(System.getProperty("user.dir") + "\\" + System.currentTimeMillis()));
         TestConnectionProvider.createConnection();
         dataSource = new QueryDBSource("select 付款时间 from DEMO_CAPITAL_RETURN", "IncreaseTest");
     }

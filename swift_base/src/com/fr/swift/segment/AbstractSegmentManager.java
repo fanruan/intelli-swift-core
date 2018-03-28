@@ -2,17 +2,10 @@ package com.fr.swift.segment;
 
 import com.fr.general.ComparatorUtils;
 import com.fr.swift.config.IConfigSegment;
-import com.fr.swift.config.IMetaData;
-import com.fr.swift.config.IMetaDataColumn;
 import com.fr.swift.config.ISegmentKey;
-import com.fr.swift.config.conf.MetaDataConfig;
-import com.fr.swift.config.conf.SegmentConfig;
+import com.fr.swift.config.conf.service.SwiftConfigServiceProvider;
 import com.fr.swift.cube.io.Types;
-import com.fr.swift.source.MetaDataColumn;
 import com.fr.swift.source.SourceKey;
-import com.fr.swift.source.SwiftMetaData;
-import com.fr.swift.source.SwiftMetaDataColumn;
-import com.fr.swift.source.SwiftMetaDataImpl;
 
 import java.net.URI;
 import java.util.ArrayList;
@@ -28,7 +21,6 @@ public abstract class AbstractSegmentManager implements SwiftSegmentManager {
         // 并发地拿，比如多个column indexer同时进行索引， 要同步下
         List<Segment> segments = new ArrayList<Segment>();
         List<SegmentKey> keys = getSegmentKey(sourceKey.getId());
-//                SegmentXmlManager.getManager().getSegmentKeys(sourceKey);
         if (null != keys && !keys.isEmpty()) {
             for (SegmentKey key : keys) {
                 try {
@@ -50,7 +42,7 @@ public abstract class AbstractSegmentManager implements SwiftSegmentManager {
     }
 
     private List<SegmentKey> getSegmentKey(String sourceKey) {
-        IConfigSegment segments = SegmentConfig.getInstance().getSegmentByKey(sourceKey);
+        IConfigSegment segments = SwiftConfigServiceProvider.getInstance().getSegmentByKey(sourceKey);
         List<SegmentKey> target = new ArrayList<SegmentKey>();
         if (null != segments) {
             List<ISegmentKey> segmentKeys = segments.getSegments();
