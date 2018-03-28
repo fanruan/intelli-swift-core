@@ -34,9 +34,7 @@ import com.fr.swift.source.SwiftResultSet;
 import com.fr.swift.structure.array.IntList;
 import com.fr.swift.structure.array.IntListFactory;
 
-
 import java.util.List;
-
 
 
 /**
@@ -50,16 +48,17 @@ public class DetailWidgetAdaptor {
         BIDetailTableResult result = null;
         SwiftResultSet resultSet;
         try {
-        resultSet = QueryRunnerProvider.getInstance().executeQuery(buildQueryInfo(widget));
-        if(resultSet == null) {
-            return new SwiftDetailTableResult(new SwiftEmptyResult());
-        }
-        result = new SwiftDetailTableResult(resultSet);
+            resultSet = QueryRunnerProvider.getInstance().executeQuery(buildQueryInfo(widget));
+            if (resultSet == null) {
+                return new SwiftDetailTableResult(new SwiftEmptyResult());
+            }
+            result = new SwiftDetailTableResult(resultSet);
         } catch (Exception e) {
         }
 
         return result;
     }
+
     static QueryInfo buildQueryInfo(DetailWidget widget) throws Exception {
 
         Cursor cursor = null;
@@ -84,7 +83,7 @@ public class DetailWidgetAdaptor {
     private static Dimension[] getDimension(DetailWidget widget) throws Exception {
         final List<FineDimension> fineDimensions = widget.getDimensionList();
         Dimension[] dimensions = new Dimension[fineDimensions.size()];
-        for(int i = 0, size  = fineDimensions.size(); i< size; i++) {
+        for (int i = 0, size = fineDimensions.size(); i < size; i++) {
             FineDimension fineDimension = fineDimensions.get(i);
             Sort sort = fineDimension.getSort() == null ? null : adaptSort(fineDimension.getSort(), i);
             dimensions[i] = new DetailDimension(i, new SourceKey(fineDimension.getId()), new ColumnKey(fineDimension.getText()),
@@ -97,7 +96,7 @@ public class DetailWidgetAdaptor {
 
     private static DetailTarget[] getTargets(DetailWidget widget) {
         List<FineTarget> fineTargets = widget.getTargetList();
-        if(fineTargets == null) {
+        if (fineTargets == null) {
             return null;
         }
         DetailTarget[] targets = new DetailTarget[fineTargets.size()];
