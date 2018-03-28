@@ -11,6 +11,7 @@ import com.finebi.conf.structure.dashboard.widget.target.FineTarget;
 import com.finebi.conf.structure.result.table.BIGroupNode;
 import com.finebi.conf.utils.FineFieldUtils;
 import com.finebi.conf.utils.FineTableUtils;
+import com.fr.swift.adaptor.encrypt.SwiftEncryption;
 import com.fr.swift.adaptor.struct.node.BIGroupNodeFactory;
 import com.fr.swift.adaptor.transformer.ColumnTypeAdaptor;
 import com.fr.swift.adaptor.transformer.FilterInfoFactory;
@@ -64,7 +65,7 @@ public class TableWidgetAdaptor {
         return resultNode;
     }
 
-    static QueryInfo buildQueryInfo(FineWidget widget) throws Exception {
+    static QueryInfo buildQueryInfo(TableWidget widget) throws Exception {
         Cursor cursor = null;
         String queryId = widget.getWidgetId();
         FilterInfo filterInfo = FilterInfoFactory.transformFineFilter(widget.getFilters());
@@ -124,11 +125,10 @@ public class TableWidgetAdaptor {
         ColumnType columnType = ColumnTypeAdaptor.adaptColumnType(type);
         return columnType == ColumnType.NUMBER;
     }
-
-    static Dimension toDimension(FineDimension fineDim, int index) throws Exception {
+    private static Dimension toDimension(FineDimension fineDim, int index) {
         SourceKey key = new SourceKey(fineDim.getId());
-        // fixme 传text可能有问题
-        ColumnKey colKey = new ColumnKey(fineDim.getText());
+        String columnName = SwiftEncryption.decryptFieldId(fineDim.getFieldId())[1];
+        ColumnKey colKey = new ColumnKey(columnName);
 
         Group group = GroupAdaptor.adaptGroup(fineDim.getGroup());
 
@@ -138,10 +138,10 @@ public class TableWidgetAdaptor {
     }
 
 
-    private static Metric toMetric(FineTarget target, int index) throws Exception {
+    private static Metric toMetric(FineTarget target, int index) {
         SourceKey key = new SourceKey(target.getId());
-        // fixme 传text可能有问题
-        ColumnKey colKey = new ColumnKey(target.getText());
+        String columnName = SwiftEncryption.decryptFieldId(target.getFieldId())[1];
+        ColumnKey colKey = new ColumnKey(columnName);
 
         FilterInfo filterInfo = null;
         // TODO: 2018/3/21   先跑通流程吧。。

@@ -399,11 +399,8 @@ class EtlAdaptor {
             DimensionValueBean tempBean = dimensionBean.get(dimensions.get(i));
             DimensionSrcValue srcValue = tempBean.getSrc();
             List<DimensionSelectValue> value = tempBean.getValue();
-            // 分组类型
-            int type = value.get(0).getType();
             SumByGroupDimension sumByGroupDimension = new SumByGroupDimension();
             sumByGroupDimension.setColumnType(ColumnTypeAdaptor.adaptColumnType(tempBean.getFieldType()));
-            // fixme ???
             sumByGroupDimension.setGroup(GroupAdaptor.adaptGroup(value.get(0)));
             sumByGroupDimension.setName(srcValue.getFieldName());
             sumByGroupDimension.setNameText(tempBean.getName());
