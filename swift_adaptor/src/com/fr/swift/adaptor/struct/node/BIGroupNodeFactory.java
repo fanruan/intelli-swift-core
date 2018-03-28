@@ -40,10 +40,6 @@ public class BIGroupNodeFactory {
             Trie<int[], Integer, Number[]> t = trieFIFOQueue.remove();
             SwiftBIGroupNode n = nodeFIFOQueue.remove();
             Iterator<Map.Entry<Integer, Trie<int[], Integer, Number[]>>> entryIterator = t.iterator();
-            if (!entryIterator.hasNext()) {
-                trieFIFOQueue.remove();
-                nodeFIFOQueue.remove();
-            }
             while (entryIterator.hasNext()) {
                 Trie<int[], Integer, Number[]> child = entryIterator.next().getValue();
                 SwiftBIGroupNode childNode = new SwiftBIGroupNode(child.deep(), getData(child, dictionaries), child.getValue());

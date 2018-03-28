@@ -36,7 +36,7 @@ public class DistinctAggregateTest extends TestCase {
         control.replay();
 
         double count = 5;
-        DistinctAggregate distinctCalculator = DistinctAggregate.INSTANCE;
+        DistinctAggregate distinctCalculator = (DistinctAggregate)DistinctAggregate.INSTANCE;
         an = distinctCalculator.aggregate(traversal, column);
 
         assertEquals(true, an.getBitMap().contains(1<<18));
@@ -71,7 +71,7 @@ public class DistinctAggregateTest extends TestCase {
         other.setBitMap((RoaringMutableBitMap)bitMap2);
 
         double expect = 6.0;
-        DistinctAggregate distinctCalculator = DistinctAggregate.INSTANCE;
+        DistinctAggregate distinctCalculator = (DistinctAggregate)DistinctAggregate.INSTANCE;
         distinctCalculator.combine(value, other);
 
         assertEquals(true, value.getBitMap().contains(1));

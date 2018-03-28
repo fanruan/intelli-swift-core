@@ -3,13 +3,14 @@ package com.fr.swift.adaptor.widget;
 import com.finebi.conf.constant.BIReportConstant.SORT;
 import com.finebi.conf.exception.FineEngineException;
 import com.finebi.conf.internalimp.dashboard.widget.table.TableWidget;
-import com.finebi.conf.provider.SwiftTableConfProvider;
 import com.finebi.conf.structure.bean.table.FineBusinessTable;
+import com.finebi.conf.structure.dashboard.widget.FineWidget;
 import com.finebi.conf.structure.dashboard.widget.dimension.FineDimension;
 import com.finebi.conf.structure.dashboard.widget.dimension.FineDimensionSort;
 import com.finebi.conf.structure.dashboard.widget.target.FineTarget;
 import com.finebi.conf.structure.result.table.BIGroupNode;
 import com.finebi.conf.utils.FineFieldUtils;
+import com.finebi.conf.utils.FineTableUtils;
 import com.fr.swift.adaptor.encrypt.SwiftEncryption;
 import com.fr.swift.adaptor.struct.node.BIGroupNodeFactory;
 import com.fr.swift.adaptor.transformer.ColumnTypeAdaptor;
@@ -39,6 +40,7 @@ import com.fr.swift.result.GroupByResultSet;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.service.QueryRunnerProvider;
 import com.fr.swift.source.ColumnTypeConstants.ColumnType;
+import com.fr.swift.source.DataSource;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftResultSet;
 
@@ -63,7 +65,7 @@ public class TableWidgetAdaptor {
         return resultNode;
     }
 
-    private static QueryInfo buildQueryInfo(TableWidget widget) throws Exception {
+    static QueryInfo buildQueryInfo(TableWidget widget) throws Exception {
         Cursor cursor = null;
         String queryId = widget.getWidgetId();
         FilterInfo filterInfo = FilterInfoFactory.transformFineFilter(widget.getFilters());
@@ -73,12 +75,13 @@ public class TableWidgetAdaptor {
 
         GroupTarget[] targets = getTargets(widget);
         Expander expander = null;
-        FineBusinessTable table = new SwiftTableConfProvider().getSingleTable(widget.getTableName());
-        SourceKey sourceKey = IndexingDataSourceFactory.transformDataSource(table).getSourceKey();
+        String fieldId = widget.getDimensionList().get(0).getFieldId();
+        FineBusinessTable fineBusinessTable = FineTableUtils.getTableByFieldId(fieldId);
+        DataSource baseDataSource = IndexingDataSourceFactory.transformDataSource(fineBusinessTable);
         TableGroupQueryInfo tableGroupQueryInfo = new TableGroupQueryInfo(
                 dimensions.toArray(new Dimension[dimensions.size()]),
                 metrics.toArray(new Metric[metrics.size()]),
-                sourceKey
+                baseDataSource.getSourceKey()
         );
         return new GroupQueryInfo(cursor, queryId, filterInfo,
                 new TableGroupQueryInfo[]{tableGroupQueryInfo},
@@ -87,16 +90,17 @@ public class TableWidgetAdaptor {
                 targets, expander);
     }
 
-    private static List<Metric> getMetrics(TableWidget widget) throws Exception {
+    private static List<Metric> getMetrics(FineWidget widget) throws Exception {
         List<Metric> metrics = new ArrayList<Metric>();
         List<FineTarget> targets = widget.getTargetList();
+        targets = targets == null ? new ArrayList<FineTarget>() : targets;
         for (int i = 0; i < targets.size(); i++) {
             metrics.add(toMetric(targets.get(i), i));
         }
         return metrics;
     }
 
-    private static List<Dimension> getDimensions(TableWidget widget) throws Exception {
+    private static List<Dimension> getDimensions(FineWidget widget) throws Exception {
         List<Dimension> dimensions = new ArrayList<Dimension>();
         List<FineDimension> fineDims = widget.getDimensionList();
         for (int i = 0, size = fineDims.size(); i < size; i++) {
@@ -106,8 +110,9 @@ public class TableWidgetAdaptor {
         return dimensions;
     }
 
-    private static GroupTarget[] getTargets(TableWidget widget) throws Exception {
+    private static GroupTarget[] getTargets(FineWidget widget) throws Exception {
         List<FineTarget> fineTargets = widget.getTargetList();
+        fineTargets = fineTargets == null ? new ArrayList<FineTarget>() : fineTargets;
         GroupTarget[] targets = new GroupTarget[fineTargets.size()];
         for (int i = 0, size = fineTargets.size(); i < size; i++) {
             targets[i] = new GroupFormulaTarget(i);
@@ -120,7 +125,6 @@ public class TableWidgetAdaptor {
         ColumnType columnType = ColumnTypeAdaptor.adaptColumnType(type);
         return columnType == ColumnType.NUMBER;
     }
-
     private static Dimension toDimension(FineDimension fineDim, int index) {
         SourceKey key = new SourceKey(fineDim.getId());
         String columnName = SwiftEncryption.decryptFieldId(fineDim.getFieldId())[1];

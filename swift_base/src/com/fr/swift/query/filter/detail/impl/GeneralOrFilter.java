@@ -25,6 +25,9 @@ public class GeneralOrFilter implements DetailFilter {
 
     @Override
     public ImmutableBitMap createFilterIndex() {
+        if (filterInfoList.size() == 0) {
+            return new AllShowDetailFilter(segment).createFilterIndex();
+        }
         final List<DetailFilter> filters = new ArrayList<DetailFilter>();
         for (FilterInfo filterInfo : filterInfoList) {
             filters.add(filterInfo.createDetailFilter(segment));
