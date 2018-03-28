@@ -34,11 +34,11 @@ public class FieldFactory {
             int scale = swiftMetaData.getScale(i);
 
             String tableId = businessTableId == null ? swiftMetaData.getTableName() : businessTableId;
-            FineBusinessField fineBusinessField = new FineBusinessFieldImp(SwiftEncryption.encryptFieldId(tableId, columnName), columnName, columnRemark);
+            FineBusinessFieldImp fineBusinessField = new FineBusinessFieldImp(SwiftEncryption.encryptFieldId(tableId, columnName), columnName, columnRemark);
 
-            ((FineBusinessFieldImp) fineBusinessField).setEngineType(FineEngineType.Cube);
+            fineBusinessField.setEngineType(FineEngineType.Cube);
             fineBusinessField.setType(transformSwiftColumnType2BIColumnType(ColumnTypeUtils.sqlTypeToColumnType(columnType, precision, scale)));
-
+            fineBusinessField.setUsable(true);
             fineBusinessFieldList.add(fineBusinessField);
         }
         return fineBusinessFieldList;
