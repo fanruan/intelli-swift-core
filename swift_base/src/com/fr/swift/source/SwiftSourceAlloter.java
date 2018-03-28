@@ -7,10 +7,13 @@ package com.fr.swift.source;
 public interface SwiftSourceAlloter {
     /**
      * 分片逻辑
-     * @param row 行号
+     *
+     * @param row       行号
      * @param keyColumn 分片参照列
-     * @param data 参照列的值
+     * @param data      参照列的值
      * @return 返回根据逻辑返回的segment序号
      */
     int allot(long row, String keyColumn, Object data);
+
+    int getAllotStep();
 }

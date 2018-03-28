@@ -2,7 +2,8 @@ package com.fr.swift.segment;
 
 import com.fr.base.FRContext;
 import com.fr.dav.LocalEnv;
-import com.fr.swift.manager.LocalSegmentOperatorProvider;
+import com.fr.swift.manager.LocalDataOperatorProvider;
+import com.fr.swift.segment.operator.Inserter;
 import com.fr.swift.source.DataSource;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftMetaData;
@@ -58,9 +59,9 @@ public class SegmentOperatorTest extends TestCase {
                     return null;
                 }
             };
-            SegmentOperator operator = LocalSegmentOperatorProvider.getInstance().getHistorySegmentOperator(dataSource, set);
-            operator.transport();
-            operator.finishTransport();
+
+            Inserter inserter = LocalDataOperatorProvider.getInstance().getHistoryBlockSwiftInserter(dataSource);
+            inserter.insertData(set);
         } catch (Exception e) {
             success = false;
             e.printStackTrace();

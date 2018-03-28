@@ -2,12 +2,12 @@ package com.fr.swift.source.alloter;
 
 import com.fr.stable.StringUtils;
 import com.fr.swift.cube.io.location.ResourceLocation;
-import com.fr.swift.manager.LocalSegmentOperatorProvider;
+import com.fr.swift.manager.LocalDataOperatorProvider;
 import com.fr.swift.segment.HistorySegmentImpl;
 import com.fr.swift.segment.Segment;
-import com.fr.swift.segment.SegmentOperator;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.segment.column.DetailColumn;
+import com.fr.swift.segment.operator.Inserter;
 import com.fr.swift.source.DataSource;
 import com.fr.swift.source.ListBasedRow;
 import com.fr.swift.source.MetaDataColumn;
@@ -98,9 +98,8 @@ public class LineSegmentAlloterTest extends TestCase {
             }
         };
 
-        SegmentOperator operator = LocalSegmentOperatorProvider.getInstance().getHistorySegmentOperator(dataSource, resultSet);
-        operator.transport();
-        operator.finishTransport();
+        Inserter inserter = LocalDataOperatorProvider.getInstance().getHistoryBlockSwiftInserter(dataSource);
+        inserter.insertData(resultSet);
         SwiftSourceAlloter alloter = SwiftSourceAlloterFactory.createSourceAlloter(sourceKey);
         int lastIndex = -1;
         Segment segment = null;

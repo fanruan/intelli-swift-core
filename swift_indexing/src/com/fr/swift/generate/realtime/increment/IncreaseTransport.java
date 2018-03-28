@@ -1,11 +1,11 @@
 package com.fr.swift.generate.realtime.increment;
 
+import com.fr.swift.context.SwiftContext;
 import com.fr.swift.flow.FlowRuleController;
 import com.fr.swift.flow.SwiftFlowResultSet;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
-import com.fr.swift.manager.LocalSegmentOperatorProvider;
-import com.fr.swift.segment.SegmentOperator;
+import com.fr.swift.segment.operator.Inserter;
 import com.fr.swift.source.DataSource;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftResultSet;
@@ -36,19 +36,13 @@ public class IncreaseTransport implements IncrementTransport {
     }
 
     @Override
-    public void doIncrementTransport() {
+    public void doIncrementTransport() throws Exception {
         SwiftSourceTransfer increaseTransfer = SwiftSourceTransferFactory.createSourceTransfer(increaseDataSource);
         SwiftResultSet increaseResult = increaseTransfer.createResultSet();
 
         SwiftFlowResultSet swiftFlowResultSet = new SwiftFlowResultSet(increaseResult, flowRuleController);
 
-        SegmentOperator operator = LocalSegmentOperatorProvider.getInstance().getIncreaseSegmentOperator(dataSource, swiftFlowResultSet);
-        try {
-            operator.transport();
-        } catch (Exception e) {
-            LOGGER.error(e);
-        } finally {
-            operator.finishTransport();
-        }
+        Inserter inserter = SwiftContext.getInstance().getSwiftDataOperatorProvider().getRealtimeBlockSwiftInserter(dataSource);
+        inserter.insertData(swiftFlowResultSet);
     }
 }

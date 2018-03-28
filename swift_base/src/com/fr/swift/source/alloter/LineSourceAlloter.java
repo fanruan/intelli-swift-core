@@ -31,4 +31,8 @@ public class LineSourceAlloter implements SwiftSourceAlloter {
         return (int) segmentIndex;
     }
 
+    @Override
+    public int getAllotStep() {
+        return allotStep;
+    }
 }
