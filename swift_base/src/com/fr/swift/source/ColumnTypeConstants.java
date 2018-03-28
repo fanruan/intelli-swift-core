@@ -16,7 +16,7 @@ public class ColumnTypeConstants {
 
     /**
      * Java对象类型
-     *
+     * 顺序不能变哦，Double>Long>Integer
      * @author frank
      */
     public enum ClassType {

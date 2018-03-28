@@ -1,19 +1,19 @@
 package com.fr.swift.source.etl.union;
 
+import com.fr.stable.StringUtils;
 import com.fr.swift.bitmap.ImmutableBitMap;
-import com.fr.swift.bitmap.impl.AllShowBitMap;
-import com.fr.swift.bitmap.traversal.TraversalAction;
 import com.fr.swift.exception.meta.SwiftMetaDataException;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.ColumnKey;
-import com.fr.swift.source.ColumnTypeConstants.ColumnType;
+import com.fr.swift.source.ColumnTypeConstants;
 import com.fr.swift.source.ColumnTypeUtils;
 import com.fr.swift.source.ListBasedRow;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SwiftMetaData;
+import com.fr.swift.source.SwiftMetaDataColumn;
 import com.fr.swift.source.SwiftResultSet;
 
 import java.util.ArrayList;
@@ -24,30 +24,60 @@ import java.util.List;
  */
 public class UnionOperatorResultSet implements SwiftResultSet {
     private static final SwiftLogger LOGGER = SwiftLoggers.getLogger(UnionOperatorResultSet.class);
-    private List<List<ColumnKey>> lists = new ArrayList<List<ColumnKey>>();
-    private List<List<Segment>> tis = new ArrayList<List<Segment>>();
-    private int rowIndex = 0, tisSize = 0, tiSize = 0, cIndexSize = 0;
-    private int tisCursor = 0, tiCursor = 0, bitMapCursor = 0;
-    private List<Segment> ti;
-    private Column[] cIndex = null;
-    private ImmutableBitMap bitMap = AllShowBitMap.newInstance(100);
-    private List valueList = new ArrayList();
-    private ListBasedRow listBasedRow = null;
-    private SwiftMetaData swiftMetatable = null;
+    private List<List<String>> unionColumns;
+    private List<List<Segment>> segments;
+    //当前segment序号
+    private int currentSegmentIndex = 0;
+    //当前表的序号
+    private int currentTableIndex = 0;
+    //当前的列
+    private ColumnDetailValueConverter[] currentColumns = null;
+    private AllShowIterator iterator = null;
+    private SwiftMetaData metaData = null;
 
-    public UnionOperatorResultSet(List<List<ColumnKey>> lists, List<List<Segment>> tis, SwiftMetaData metaData) {
-        this.lists = lists;
-        this.tis = tis;
-        this.swiftMetatable = metaData;
-        init();
+    public UnionOperatorResultSet(List<List<String>> unionColumns, List<List<Segment>> segments, SwiftMetaData metaData) {
+        this.unionColumns = unionColumns;
+        this.segments = segments;
+        this.metaData = metaData;
+        move2NextSegment();
     }
 
-    private void init() {
-        cIndex = new Column[this.lists.size()];
-        rowIndex = 0;
-        tisSize = tis.size();
-        tiSize = tis.size();
-        cIndexSize = this.lists.size();
+    private void move2NextSegment() {
+        currentColumns = new ColumnDetailValueConverter[this.unionColumns.size()];
+        Segment segment = getNextSegment();
+        if (segment != null){
+            iterator = new AllShowIterator(segment.getAllShowIndex(), segment.getRowCount());
+            for (int i = 0; i < currentColumns.length; i++){
+                String name = this.unionColumns.get(i).get(currentTableIndex + 1);
+                //没设置就全部返回null
+                if (StringUtils.isEmpty(name)){
+                    currentColumns[i] = new NullDetailValueConverter();
+                    continue;
+                }
+                Column column = segment.getColumn(new ColumnKey(name));
+                try {
+                    SwiftMetaData segMeta = segment.getMetaData();
+                    SwiftMetaDataColumn currentMetaDataColumn = metaData.getColumn(name);
+                    SwiftMetaDataColumn segColumn = segMeta.getColumn(name);
+                    ColumnTypeConstants.ClassType currentType = ColumnTypeUtils.sqlTypeToClassType(currentMetaDataColumn.getType(), currentMetaDataColumn.getPrecision(), currentMetaDataColumn.getScale());
+                    ColumnTypeConstants.ClassType segType = ColumnTypeUtils.sqlTypeToClassType(segColumn.getType(), segColumn.getPrecision(), segColumn.getScale());
+                    //根据字段类型，决定类型转化
+                    if (currentType == segType){
+                        currentColumns[i] = new OriginColumnDetailValueConverter(column.getDictionaryEncodedColumn());
+                    } else if (currentType == ColumnTypeConstants.ClassType.LONG){
+                        currentColumns[i] = new LongDetailValueConverter(column.getDictionaryEncodedColumn());
+                    } else {
+                        currentColumns[i] = new DoubleDetailValueConverter(column.getDictionaryEncodedColumn());
+                    }
+                } catch (SwiftMetaDataException e) {
+                    LOGGER.error(e);
+                    currentColumns[i] = new NullDetailValueConverter();
+                }
+            }
+        } else {
+            //取不到segment说明结束了，置空结束循环
+            iterator = null;
+        }
     }
 
     @Override
@@ -57,86 +87,63 @@ public class UnionOperatorResultSet implements SwiftResultSet {
 
     @Override
     public boolean next() {
-        if (tisCursor < tisSize && tiCursor < tiSize && bitMapCursor < bitMap.getCardinality()) {
-            try {
-                ti = tis.get(tisCursor);
-                tiSize = ti.size();
-
-                for (int i = 0; i < cIndexSize; i++) {
-                    try {
-                        cIndex[i] = ti.get(tiCursor).getColumn(this.lists.get(i).get(tisCursor + 1));
-                    } catch (Exception e) {
-                        cIndex[i] = null;
-                    }
-                }
-
-                bitMap = ti.get(tiCursor).getAllShowIndex();
-                final List<Integer> intList = new ArrayList<Integer>();
-                bitMap.traversal(new TraversalAction() {
-                    @Override
-                    public void actionPerformed(int row) {
-                        intList.add(row);
-                    }
-                });
-                for (int cIndexCursor = 0; cIndexCursor < cIndexSize; cIndexCursor++) {
-                    if (cIndex[cIndexCursor] == null) {
-                        valueList.add(null);
-                    } else {
-                        Object ob = cIndex[cIndexCursor].getDictionaryEncodedColumn().getValue(cIndex[cIndexCursor].getDictionaryEncodedColumn().getIndexByRow(intList.get(bitMapCursor)));
-                        Object res = "";
-                        //TODO
-                        if (ob == null) {
-                            res = null;
-                        } else {
-                            res = swiftMetatable.getColumnType(cIndexCursor + 1) == ColumnTypeUtils.columnTypeToSqlType(ColumnType.NUMBER) ?
-                                    ((Number) ob).doubleValue() : ob;
-                        }
-                        valueList.add(res);
-                        //TODO  value
-                    }
-                }
-                setRowValue(new ListBasedRow(valueList));
-                valueList = new ArrayList();
-                if (bitMapCursor < intList.size() - 1) {
-                    bitMapCursor++;
-                } else {
-                    if (tiCursor < tiSize - 1) {
-                        tiCursor++;
-                        bitMapCursor = 0;
-                    } else {
-                        if (tisCursor < tisSize) {
-                            tisCursor++;
-                            tiCursor = 0;
-                            bitMapCursor = 0;
-                        } else {
-                            return false;
-                        }
-                    }
-                }
-                return true;
-            } catch (SwiftMetaDataException e) {
-                LOGGER.error("when getting the meta's information, the error occurred", e);
-                return false;
-            }
+        while (iterator != null && !iterator.hasNext()){
+            move2NextSegment();
         }
-        return false;
+        return iterator != null && iterator.hasNext();
     }
 
-    private void setRowValue(ListBasedRow row) {
-        this.listBasedRow = row;
-    }
 
     @Override
     public SwiftMetaData getMetaData() {
-        return swiftMetatable;
+        return metaData;
     }
 
     @Override
     public Row getRowData() {
-        return getRowValue();
+        List list = new ArrayList();
+        int row = iterator.next();
+        for (int i = 0; i < currentColumns.length; i++){
+            list.add(currentColumns[i].convertValue(row));
+        }
+        return new ListBasedRow(list);
     }
 
-    private ListBasedRow getRowValue() {
-        return this.listBasedRow;
+    public Segment getNextSegment() {
+        while (currentTableIndex < segments.size()){
+            List<Segment> currentSegments = segments.get(currentTableIndex);
+            if (currentSegments.size() > currentSegmentIndex){
+                return currentSegments.get(currentSegmentIndex++);
+            }
+            currentTableIndex++;
+            currentSegmentIndex = 0;
+        }
+        return null;
     }
+
+    //把删除掉的行去掉的迭代器
+    private class AllShowIterator {
+        private int index = 0;
+        private ImmutableBitMap bitMap;
+        private int row;
+
+        public AllShowIterator(ImmutableBitMap bitMap, int row) {
+            this.bitMap = bitMap;
+            this.row = row;
+        }
+
+        public boolean hasNext(){
+            while (!bitMap.contains(index) && index < row){
+                index++;
+            }
+            return index < row;
+        }
+
+        public int next(){
+            return index++;
+        }
+    }
+
+
+
 }

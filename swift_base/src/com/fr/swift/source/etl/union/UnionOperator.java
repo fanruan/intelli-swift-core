@@ -3,14 +3,16 @@ package com.fr.swift.source.etl.union;
 import com.fr.swift.exception.meta.SwiftMetaDataException;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
-import com.fr.swift.segment.column.ColumnKey;
+import com.fr.swift.source.ColumnTypeConstants;
+import com.fr.swift.source.ColumnTypeUtils;
 import com.fr.swift.source.MetaDataColumn;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftMetaDataColumn;
+import com.fr.swift.source.core.CoreField;
 import com.fr.swift.source.etl.AbstractOperator;
 import com.fr.swift.source.etl.OperatorType;
-import com.fr.swift.util.Util;
 
+import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,41 +22,69 @@ import java.util.List;
 public class UnionOperator extends AbstractOperator {
 
     private static final SwiftLogger LOGGER = SwiftLoggers.getLogger(UnionOperator.class);
-    private List<List<ColumnKey>> lists = new ArrayList<List<ColumnKey>>();
+    //每个list表示一列数，第一个是合并之后的名字，往下依次是每个表的字段，没用到的为null
+    @CoreField
+    private List<List<String>> unionColumns;
 
-    public UnionOperator(List<List<ColumnKey>> lists) {
-        this.lists = lists;
+    public UnionOperator(List<List<String>> unionColumns) {
+        this.unionColumns = unionColumns;
     }
 
-    public List<List<ColumnKey>> getColumnKeyList() {
-        return this.lists;
+    public List<List<String>> getColumnNameList() {
+        return this.unionColumns;
     }
 
     @Override
     public List<SwiftMetaDataColumn> getColumns(SwiftMetaData[] tables) {
         List<SwiftMetaDataColumn> columnList = new ArrayList<SwiftMetaDataColumn>();
-        SwiftMetaData[] smd = new SwiftMetaData[tables.length];
-        for (int i = 0; i < smd.length; i++) {
-            smd[i] = tables[i];
-        }
-        for (int i = 0; i < this.lists.size(); i++) {
-            List<ColumnKey> list = this.lists.get(i);
-            int type = 0;
+        for (int i = 0; i < this.unionColumns.size(); i++) {
+            List<String> list = this.unionColumns.get(i);
+            ColumnTypeConstants.ClassType type = ColumnTypeConstants.ClassType.INTEGER;
             int columnSize = 0;
+            int scale = 0;
             for (int j = 1; j < list.size(); j++) {
-                Util.requireNonNull(list.get(j));
                 try {
-                    SwiftMetaDataColumn singleColumn = smd[j - 1].getColumn(list.get(j).getName());
-                    type = singleColumn.getType();
+                    String columnName = list.get(j);
+                    if (columnName == null){
+                        continue;
+                    }
+                    SwiftMetaDataColumn singleColumn = tables[j - 1].getColumn(list.get(j));
+                    type = getMaxType(singleColumn, type);
                     columnSize = Math.max(columnSize, singleColumn.getPrecision());
+                    scale = Math.max(scale, singleColumn.getScale());
                 } catch (SwiftMetaDataException e) {
-                    LOGGER.error("the field " + list.get(j).getName() + " get meta failed", e);
+                    LOGGER.error("the field " + list.get(j) + " get meta failed", e);
                 }
             }
-            // TODO  maybe need to consider about type
-            columnList.add(new MetaDataColumn(list.get(0).getName(), type, columnSize));
+            columnList.add(new MetaDataColumn(list.get(0), getSqlTypeByClassType(type), columnSize, scale));
         }
         return columnList;
+    }
+
+    private int getSqlTypeByClassType(ColumnTypeConstants.ClassType type) {
+        switch (type){
+            case DATE:
+                return Types.DATE;
+            case INTEGER:
+            case LONG:
+                return Types.BIGINT;
+            case DOUBLE:
+                return Types.DOUBLE;
+            default:
+                return Types.VARCHAR;
+        }
+    }
+
+    private ColumnTypeConstants.ClassType getMaxType(SwiftMetaDataColumn singleColumn, ColumnTypeConstants.ClassType type) {
+        ColumnTypeConstants.ClassType columnClassType = ColumnTypeUtils.sqlTypeToClassType(singleColumn.getType(), singleColumn.getPrecision(), singleColumn.getScale());
+        if (columnClassType == ColumnTypeConstants.ClassType.STRING || columnClassType == ColumnTypeConstants.ClassType.DATE){
+            return columnClassType;
+        }
+        if (type.compareTo(columnClassType) > 0){
+            return type;
+        } else {
+            return columnClassType;
+        }
     }
 
     @Override
