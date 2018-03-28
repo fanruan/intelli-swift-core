@@ -332,14 +332,18 @@ class EtlAdaptor {
 
         List<List<String>> basis = ubv.getBasis();
         int basisSize = basis.size();
-        List<List<ColumnKey>> listsOfColumn = new ArrayList<List<ColumnKey>>(basisSize);
+        List<List<String>> listsOfColumn = new ArrayList<List<String>>(basisSize);
 
         for (int i = 0; i < ubv.getResult().size(); i++) {
-//            List<String> columns = basis.get(i);
-            listsOfColumn.add(new ArrayList<ColumnKey>());
-            listsOfColumn.get(i).add(new ColumnKey(ubv.getResult().get(i)));
+            listsOfColumn.add(new ArrayList<String>());
+            listsOfColumn.get(i).add(ubv.getResult().get(i));
             for (List<String> columnKeys : basis) {
-                listsOfColumn.get(i).add(new ColumnKey(columnKeys.get(i)));
+                String columnName = columnKeys.get(i);
+                if (ComparatorUtils.equals(columnName, BIConfConstants.CONF.EMPTY_FIELD)){
+                    listsOfColumn.get(i).add(null);
+                } else {
+                    listsOfColumn.get(i).add(columnName);
+                }
             }
         }
 
