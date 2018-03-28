@@ -79,7 +79,9 @@ public class FilterInfoFactory {
 
     private static SwiftDetailFilterInfo createFilterInfo(FilterBean bean, List<Segment> segments) {
         String fieldId = ((AbstractFilterBean) bean).getFieldId();
-        String fieldName = StringUtils.isEmpty(fieldId) ? null : SwiftEncryption.decryptFieldId(fieldId)[1];
+        // 分析表这边的bean暂时没有FieldId，所以还是取FieldName
+        String fieldName = StringUtils.isEmpty(fieldId) ?
+                ((AbstractFilterBean) bean).getFieldName() : SwiftEncryption.decryptFieldId(fieldId)[1];
         int type = bean.getFilterType();
         switch (type) {
             // string类过滤
