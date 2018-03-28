@@ -1,10 +1,13 @@
-package com.fr.swift.adaptor.widget;
+package com.fr.swift.adaptor.widget.date;
 
+import com.finebi.conf.constant.BIConfConstants.CONF.GROUP.DATE;
+import com.finebi.conf.internalimp.bean.dashboard.widget.dimension.group.TypeGroupBean;
 import com.finebi.conf.internalimp.dashboard.widget.control.time.YearControlWidget;
 import com.finebi.conf.internalimp.dashboard.widget.dimension.group.DimensionTypeGroup;
 import com.finebi.conf.structure.dashboard.widget.dimension.FineDimension;
 import com.finebi.conf.structure.result.control.time.BIYearControlResult;
 import com.fr.swift.adaptor.transformer.FilterInfoFactory;
+import com.fr.swift.adaptor.widget.QueryUtils;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.query.filter.info.FilterInfo;
@@ -22,8 +25,13 @@ public class YearControlWidgetAdaptor {
     public static BIYearControlResult calculate(YearControlWidget widget) {
         try {
             FineDimension dimension = widget.getDimensionList().get(0);
+            DimensionTypeGroup typeGroup = new DimensionTypeGroup();
+            typeGroup.setType(DATE.YEAR);
+            TypeGroupBean bean = new TypeGroupBean();
+            bean.setType(typeGroup.getType());
+            typeGroup.setValue(bean);
             //设置下年分组
-            dimension.setGroup(new DimensionTypeGroup());
+            dimension.setGroup(typeGroup);
             FilterInfo filterInfo = FilterInfoFactory.transformFineFilter(widget.getFilters());
             List<Long> values = QueryUtils.getOneDimensionFilterValues(dimension, filterInfo, widget.getWidgetId());
             List<Integer> years = new ArrayList<Integer>();
@@ -40,7 +48,7 @@ public class YearControlWidgetAdaptor {
     static class YearControlResult implements BIYearControlResult {
         private List<Integer> values;
 
-        public YearControlResult(List values) {
+        public YearControlResult(List<Integer> values) {
             this.values = values;
         }
 

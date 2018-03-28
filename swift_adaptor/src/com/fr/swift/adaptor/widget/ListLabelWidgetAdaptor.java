@@ -15,6 +15,7 @@ import java.util.List;
  */
 public class ListLabelWidgetAdaptor {
     private static final SwiftLogger LOGGER = SwiftLoggers.getLogger(ListLabelWidgetAdaptor.class);
+
     public static BIListLabelResult calculate(ListLabelWidget widget) {
         try {
             FineDimension dimension = widget.getDimensionList().get(0);
@@ -27,7 +28,7 @@ public class ListLabelWidgetAdaptor {
         return null;
     }
 
-    static class ListLabelResult implements BIListLabelResult{
+    static class ListLabelResult implements BIListLabelResult {
         private boolean hasNext;
         private List<String> values;
 

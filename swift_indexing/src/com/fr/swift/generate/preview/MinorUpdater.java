@@ -4,7 +4,6 @@ import com.fr.swift.cube.io.Types;
 import com.fr.swift.cube.io.location.ResourceLocation;
 import com.fr.swift.generate.Util;
 import com.fr.swift.generate.preview.operator.MinorInserter;
-import com.fr.swift.generate.realtime.index.RealtimeColumnDictMerger;
 import com.fr.swift.generate.realtime.index.RealtimeColumnIndexer;
 import com.fr.swift.generate.realtime.index.RealtimeSubDateColumnIndexer;
 import com.fr.swift.query.group.GroupType;
@@ -59,10 +58,7 @@ public class MinorUpdater {
         Inserter inserter = getInserter(dataSource, segment);
         inserter.insertData(swiftResultSet);
 
-        for (
-                String indexField : inserter.getFields())
-
-        {
+        for (String indexField : inserter.getFields()) {
             ColumnKey columnKey = new ColumnKey(indexField);
             indexColumn(dataSource, columnKey);
             indexSubColumnIfNeed(dataSource, columnKey);
@@ -99,6 +95,16 @@ public class MinorUpdater {
 
                 protected List<Segment> getSegments() {
                     return MinorSegmentManager.getInstance().getSegment(dataSource.getSourceKey());
+                }
+
+                @Override
+                protected void mergeDict() {
+                    new RealtimeSubDateColumnDictMerger(dataSource, key) {
+                        @Override
+                        protected List<Segment> getSegments() {
+                            return MinorSegmentManager.getInstance().getSegment(dataSource.getSourceKey());
+                        }
+                    }.work();
                 }
             }.work();
         }
