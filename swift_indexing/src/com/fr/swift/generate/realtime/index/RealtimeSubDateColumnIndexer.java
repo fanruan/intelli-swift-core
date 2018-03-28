@@ -68,7 +68,6 @@ public class RealtimeSubDateColumnIndexer<Derive> extends BaseColumnIndexer<Deri
 
         @Override
         protected void releaseIfNeed(Releasable baseColumn) {
-            baseColumn.release();
         }
     }
 }
