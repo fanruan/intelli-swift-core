@@ -89,6 +89,16 @@ public class TestBusinessField implements FineBusinessField {
     }
 
     @Override
+    public int getGroup() {
+        return 0;
+    }
+
+    @Override
+    public void setGroup(int i) {
+
+    }
+
+    @Override
     public FineEngineType getEngineType() {
         return FineEngineType.Cube;
     }

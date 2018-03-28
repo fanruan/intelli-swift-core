@@ -16,13 +16,24 @@ public enum DateType {
      */
     YEAR(Calendar.YEAR, 1),
 
+    /**
+     * 1-12 -> Jan-Dec
+     */
     MONTH(Calendar.MONTH, 12) {
         @Override
         public int from(Calendar c) {
             return super.from(c) + 1;
         }
+
+        @Override
+        public void set(Calendar c, int value) {
+            super.set(c, value - 1);
+        }
     },
 
+    /**
+     * 1-7 -> Mon-Sun
+     */
     WEEK(Calendar.DAY_OF_WEEK) {
         @Override
         public int from(Calendar c) {
@@ -67,7 +78,7 @@ public enum DateType {
          */
         @Override
         public void set(Calendar c, int value) {
-            int month = (value - 1) * 3;
+            int month = (value - 1) * 3 + 1;
             MONTH.set(c, month);
             DAY.set(c, 1);
         }

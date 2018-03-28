@@ -8,5 +8,5 @@ package com.fr.swift.generate.realtime.increment;
  * @since Advanced FineBI Analysis 1.0
  */
 public interface IncrementTransport {
-    void doIncrementTransport();
+    void doIncrementTransport() throws Exception;
 }

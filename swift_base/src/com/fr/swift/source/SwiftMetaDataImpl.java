@@ -1,7 +1,6 @@
 package com.fr.swift.source;
 
 import com.fr.general.ComparatorUtils;
-import com.fr.stable.StringUtils;
 import com.fr.swift.config.pojo.MetaDataColumnPojo;
 import com.fr.swift.config.pojo.SwiftMetaDataPojo;
 import com.fr.swift.exception.meta.SwiftMetaDataColumnAbsentException;
@@ -25,6 +24,8 @@ public class SwiftMetaDataImpl implements SwiftMetaData {
 
     private List<SwiftMetaDataColumn> fieldList;
 
+    private List<String> fieldNames = new ArrayList<String>();
+
     public SwiftMetaDataImpl(String tableName, List<SwiftMetaDataColumn> fieldList) {
         this(tableName, null, null, fieldList);
     }
@@ -36,8 +37,10 @@ public class SwiftMetaDataImpl implements SwiftMetaData {
     public SwiftMetaDataImpl(String tableName, String tableNameRemark, String schema, List<SwiftMetaDataColumn> fieldList) {
         Util.requireNonNull(tableName, fieldList);
         List<MetaDataColumnPojo> fieldPojoList = new ArrayList<MetaDataColumnPojo>();
+
         for (SwiftMetaDataColumn column : fieldList) {
             fieldPojoList.add(column.getMetaDataColumnPojo());
+            fieldNames.add(column.getName());
         }
         swiftMetaDataPojo = new SwiftMetaDataPojo(schema, tableName, tableNameRemark, fieldPojoList);
         this.fieldList = fieldList;
@@ -115,11 +118,15 @@ public class SwiftMetaDataImpl implements SwiftMetaData {
             throw new SwiftMetaDataColumnAbsentException(columnName);
         }
         for (SwiftMetaDataColumn column : fieldList) {
-            String compareName = StringUtils.isNotEmpty(getTableName()) ? getTableName() + column.getName() : column.getName();
-            // TODO: 2018/3/21 这边有点乱 
-            if (ComparatorUtils.equals(compareName, columnName) || ComparatorUtils.equals(column.getName(), columnName)) {
+            //by lucifer 这里为什么要做这么麻烦的判断?这里只是根据字段名取字段啊，完全不需要考虑表名。。。
+            if (ComparatorUtils.equals(column.getName(), columnName)) {
                 return column;
             }
+            //            String compareName = StringUtils.isNotEmpty(getTableName()) ? getTableName() + column.getName() : column.getName();
+//            // TODO: 2018/3/21 这边有点乱
+//            if (ComparatorUtils.equals(compareName, columnName) || ComparatorUtils.equals(column.getName(), columnName)) {
+//                return column;
+//            }
         }
         throw new SwiftMetaDataColumnAbsentException(columnName);
     }
@@ -159,5 +166,10 @@ public class SwiftMetaDataImpl implements SwiftMetaData {
                 throw new UnsupportedOperationException();
             }
         };
+    }
+
+    @Override
+    public List<String> getFieldNames() {
+        return fieldNames;
     }
 }

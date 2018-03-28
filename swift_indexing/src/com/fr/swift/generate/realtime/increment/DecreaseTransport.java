@@ -1,14 +1,18 @@
 package com.fr.swift.generate.realtime.increment;
 
+import com.fr.swift.context.SwiftContext;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
-import com.fr.swift.manager.LocalSegmentOperatorProvider;
-import com.fr.swift.segment.SegmentOperator;
+import com.fr.swift.manager.LineSegmentManager;
+import com.fr.swift.segment.Segment;
+import com.fr.swift.segment.operator.Deleter;
 import com.fr.swift.source.DataSource;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftResultSet;
 import com.fr.swift.source.SwiftSourceTransfer;
 import com.fr.swift.source.SwiftSourceTransferFactory;
+
+import java.util.List;
 
 /**
  * This class created on 2018-1-5 14:43:18
@@ -32,16 +36,13 @@ public class DecreaseTransport implements IncrementTransport {
     }
 
     @Override
-    public void doIncrementTransport() {
+    public void doIncrementTransport() throws Exception {
         SwiftSourceTransfer decreaseTransfer = SwiftSourceTransferFactory.createSourceTransfer(decreaseDataSource);
-        SwiftResultSet decreaseResult = decreaseTransfer.createResultSet();
-        SegmentOperator operator = LocalSegmentOperatorProvider.getInstance().getDecreaseSegmentOperator(dataSource, decreaseResult);
-        try {
-            operator.transport();
-        } catch (Exception e) {
-            LOGGER.error(e);
-        } finally {
-            operator.finishTransport();
+        List<Segment> segmentList = new LineSegmentManager().getSegment(dataSource.getSourceKey());
+        for (Segment segment : segmentList) {
+            SwiftResultSet decreaseResult = decreaseTransfer.createResultSet();
+            Deleter deleter = SwiftContext.getInstance().getSwiftDataOperatorProvider().getSwiftDeleter(segment);
+            deleter.deleteData(decreaseResult);
         }
     }
 }

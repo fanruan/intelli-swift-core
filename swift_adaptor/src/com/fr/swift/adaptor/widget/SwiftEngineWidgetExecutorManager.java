@@ -91,18 +91,18 @@ public class SwiftEngineWidgetExecutorManager implements EngineWidgetExecutorMan
     }
 
     @Override
-    public BITreeResult visit(TreeWidget detailWidget) {
-        return null;
+    public BITreeResult visit(TreeWidget treeWidget) {
+        return TreeWidgetAdaptor.calculate(treeWidget);
     }
 
     @Override
-    public BIResult visit(TreeLabelWidget labelWidget) {
-        return null;
+    public BIResult visit(TreeLabelWidget treeLabelWidget) {
+        return TreeLabelWidgetAdaptor.calculate(treeLabelWidget);
     }
 
     @Override
-    public BIResult visit(TreeListWidget labelWidget) {
-        return null;
+    public BIResult visit(TreeListWidget treeListWidget) {
+        return TreeListWidgetAdaptor.calculate(treeListWidget);
     }
 
     @Override
