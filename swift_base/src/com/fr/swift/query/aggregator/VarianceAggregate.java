@@ -13,7 +13,7 @@ import java.util.Arrays;
 
 /**
  * @author Xiaolei.liu
- * 试着写的方差，方差的计算和平均数计算基本一样，只是求和的数据有差别，
+ * 方差的计算和平均数计算基本一样，只是求和的数据有差别，
  * 标准差可以由方差得到
  */
 public class VarianceAggregate extends AbstractAggregator<VarianceAggregatorValue> {
