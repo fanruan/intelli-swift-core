@@ -38,7 +38,7 @@ public class DateMinAggregateTest extends TestCase {
         DateAmountAggregateValue v2 = new DateAmountAggregateValue();
         v2.setValue(2);
         DateMinAggregate.INSTANCE.combine(v1, v2);
-        assertEquals(v1.getValue(), 2);
-        assertEquals(v1.calculate(), 2.0);
+        assertEquals(v1.getValue(), 1);
+        assertEquals(v1.calculate(), 1.0);
     }
 }

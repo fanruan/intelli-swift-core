@@ -1,5 +1,8 @@
 package com.fr.swift.generate.excel;
 
+import com.fr.swift.generate.BaseTest;
+import com.fr.swift.log.SwiftLogger;
+import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.resource.ResourceUtils;
 import com.fr.swift.source.ColumnTypeConstants;
 import com.fr.swift.source.excel.ExcelDataSource;
@@ -13,6 +16,8 @@ import junit.framework.TestCase;
  * @since Advanced FineBI Analysis 1.0
  */
 public abstract class BaseExcelTest extends TestCase {
+
+    protected static final SwiftLogger LOGGER = SwiftLoggers.getLogger(BaseExcelTest.class);
 
     protected String path1 = ResourceUtils.getFileAbsolutePath("com/fr/swift/resource/excel/test.xlsx");
     protected String path2 = ResourceUtils.getFileAbsolutePath("com/fr/swift/resource/excel/test1.xlsx");

@@ -3,6 +3,7 @@ package com.fr.swift.query.aggregator;
 import com.fr.swift.bitmap.impl.AllShowBitMap;
 import com.fr.swift.cube.io.location.ResourceLocation;
 import com.fr.swift.segment.column.Column;
+import com.fr.swift.segment.column.impl.base.BitMapColumn;
 import com.fr.swift.segment.column.impl.base.DoubleDetailColumn;
 import com.fr.swift.segment.column.impl.base.IntDetailColumn;
 import com.fr.swift.segment.column.impl.base.LongDetailColumn;
@@ -21,16 +22,17 @@ public class AverageAggregateTest extends TestCase {
         IMocksControl control = EasyMock.createControl();
         Column mockColumn = control.createMock(Column.class);
         IntDetailColumn mockIntColumn = new TempIntDetailColumn(new ResourceLocation("liu"));
+        BitMapColumn bitMapColumn = control.createMock(BitMapColumn.class);
 
+        EasyMock.expect(mockColumn.getBitmapIndex()).andReturn(bitMapColumn).anyTimes();
+        EasyMock.expect(bitMapColumn.getNullIndex()).andReturn(null).anyTimes();
         mockColumn.getDetailColumn();
         expectLastCall().andReturn(mockIntColumn);
-//        expect(mockIntColumn.getInt(0)).andReturn(1);
-//        expect(mockIntColumn.getInt(1)).andReturn(3);
         control.replay();
 
         double sum = 17.0;
-        AverageAggregate avg = AverageAggregate.INSTANCE;
-        DoubleAverageAggregateValue an = avg.aggregate(bitMap, mockColumn);
+        AverageAggregate avg = (AverageAggregate)AverageAggregate.INSTANCE;
+        DoubleAverageAggregatorValue an = avg.aggregate(bitMap, mockColumn);
         assertEquals(sum, an.getValue());
         assertEquals(4, an.getRowCount());
         assertEquals(sum/4, an.calculate());
@@ -44,17 +46,17 @@ public class AverageAggregateTest extends TestCase {
         IMocksControl control = EasyMock.createControl();
         Column mockColumn = control.createMock(Column.class);
         LongDetailColumn mockLongColumn = new TempLongDetailColumn(new ResourceLocation("liu"));
+        BitMapColumn bitMapColumn = control.createMock(BitMapColumn.class);
 
+        EasyMock.expect(mockColumn.getBitmapIndex()).andReturn(bitMapColumn).anyTimes();
+        EasyMock.expect(bitMapColumn.getNullIndex()).andReturn(null).anyTimes();
         mockColumn.getDetailColumn();
         expectLastCall().andReturn(mockLongColumn);
-//        expect(mockLongColumn.getLong(0)).andReturn(1l);
-//        expect(mockLongColumn.getLong(1)).andReturn(3l);
-//        expect(mockLongColumn.getLong(2)).andReturn(11l);
         control.replay();
 
         double sum = 9.0;
-        AverageAggregate avg = AverageAggregate.INSTANCE;
-        DoubleAverageAggregateValue an = avg.aggregate(bitMap, mockColumn);
+        AverageAggregate avg = (AverageAggregate)AverageAggregate.INSTANCE;
+        DoubleAverageAggregatorValue an = avg.aggregate(bitMap, mockColumn);
         assertEquals(sum, an.getValue());
         assertEquals(4, an.getRowCount());
         assertEquals(sum/4, an.calculate());
@@ -68,18 +70,17 @@ public class AverageAggregateTest extends TestCase {
         IMocksControl control = EasyMock.createControl();
         Column mockColumn = control.createMock(Column.class);
         DoubleDetailColumn mockDoubleColumn = new TempDoubleDetailColumn(new ResourceLocation("liu"));
+        BitMapColumn bitMapColumn = control.createMock(BitMapColumn.class);
 
+        EasyMock.expect(mockColumn.getBitmapIndex()).andReturn(bitMapColumn).anyTimes();
+        EasyMock.expect(bitMapColumn.getNullIndex()).andReturn(null).anyTimes();
         mockColumn.getDetailColumn();
         expectLastCall().andReturn(mockDoubleColumn);
-//        expect(mockDoubleColumn.getDouble(0)).andReturn(1.0);
-//        expect(mockDoubleColumn.getDouble(1)).andReturn(3.0);
-//        expect(mockDoubleColumn.getDouble(2)).andReturn(1.0);
-//        expect(mockDoubleColumn.getDouble(3)).andReturn(7.0);
         control.replay();
 
         double sum = 19.0;
-        AverageAggregate avg = AverageAggregate.INSTANCE;
-        DoubleAverageAggregateValue an = avg.aggregate(bitMap, mockColumn);
+        AverageAggregate avg = (AverageAggregate)AverageAggregate.INSTANCE;
+        DoubleAverageAggregatorValue an = avg.aggregate(bitMap, mockColumn);
         assertEquals(sum, an.getValue());
         assertEquals(4, an.getRowCount());
         assertEquals(sum/4, an.calculate());
@@ -90,10 +91,10 @@ public class AverageAggregateTest extends TestCase {
 
 
     public void testCombine() {
-        DoubleAverageAggregateValue valueTest1 = new DoubleAverageAggregateValue();
-        DoubleAverageAggregateValue otherTest1 = new DoubleAverageAggregateValue();
-        DoubleAverageAggregateValue valueTest2 = new DoubleAverageAggregateValue();
-        DoubleAverageAggregateValue otherTest2 = new DoubleAverageAggregateValue();
+        DoubleAverageAggregatorValue valueTest1 = new DoubleAverageAggregatorValue();
+        DoubleAverageAggregatorValue otherTest1 = new DoubleAverageAggregatorValue();
+        DoubleAverageAggregatorValue valueTest2 = new DoubleAverageAggregatorValue();
+        DoubleAverageAggregatorValue otherTest2 = new DoubleAverageAggregatorValue();
 
         valueTest1.setValue(-10.1);
         valueTest1.setRowCount(10);
@@ -104,7 +105,7 @@ public class AverageAggregateTest extends TestCase {
         otherTest2.setValue(0);
         otherTest2.setRowCount(2);
 
-        AverageAggregate avg = AverageAggregate.INSTANCE;
+        AverageAggregate avg = (AverageAggregate)AverageAggregate.INSTANCE;
         avg.combine(valueTest1, otherTest1);
         avg.combine(valueTest2, otherTest2);
 
