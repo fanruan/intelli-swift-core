@@ -52,7 +52,7 @@ public class SumByGroupOperator extends AbstractOperator {
         List<SwiftMetaDataColumn> columns = new ArrayList<SwiftMetaDataColumn>();
         for (SwiftMetaData parent : tables) {
             try {
-                if(null != dimensions) {
+                if (null != dimensions) {
                     for (int i = 0; i < this.dimensions.length; i++) {
                         int sqlType = parent.getColumn(this.dimensions[i].getName()).getType();
                         int columnSize = parent.getColumn(this.dimensions[i].getName()).getPrecision();
@@ -67,7 +67,7 @@ public class SumByGroupOperator extends AbstractOperator {
                         }
                     }
                 }
-                if(null != targets) {
+                if (null != targets) {
                     for (int j = 0; j < this.targets.length; j++) {
                         columns.add(new MetaDataColumn(this.targets[j].getNameText(), ColumnTypeUtils.columnTypeToSqlType(targets[j].getColumnType()), parent.getColumn(this.targets[j].getName()).getPrecision()));
                     }
@@ -117,10 +117,40 @@ public class SumByGroupOperator extends AbstractOperator {
 
 
     private SwiftMetaDataColumn generateSumNumberGroup(SumByGroupDimension sum, SwiftMetaDataColumn parentColumn) {
-        int type = ColumnTypeUtils.columnTypeToSqlType(ColumnType.STRING);
-        if (sum.getGroup().getGroupType() == GroupType.NONE) {
-            type = parentColumn.getType();
+        int sqlType;
+        switch (sum.getGroup().getGroupType()) {
+            case CUSTOM:
+            case CUSTOM_NUMBER:
+            case AUTO:
+                sqlType = Types.VARCHAR;
+                break;
+            case YEAR:
+            case QUARTER:
+            case MONTH:
+            case WEEK:
+            case WEEK_OF_YEAR:
+            case DAY:
+            case HOUR:
+            case MINUTE:
+            case SECOND:
+                sqlType = Types.INTEGER;
+                break;
+            case Y_M_D_H_M_S:
+            case Y_M_D_H_M:
+            case Y_M_D_H:
+            case Y_M_D:
+            case Y_Q:
+            case Y_M:
+            case Y_W:
+            case Y_D:
+            case M_D:
+                sqlType = Types.DATE;
+                break;
+            case NONE:
+            default:
+                sqlType = parentColumn.getType();
         }
-        return new MetaDataColumn(sum.getNameText(), sum.getNameText(), type, parentColumn.getPrecision(), parentColumn.getScale());
+
+        return new MetaDataColumn(sum.getNameText(), sum.getNameText(), sqlType, parentColumn.getPrecision(), parentColumn.getScale());
     }
 }

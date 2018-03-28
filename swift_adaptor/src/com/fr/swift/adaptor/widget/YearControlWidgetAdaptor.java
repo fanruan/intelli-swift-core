@@ -13,10 +13,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by pony on 2018/3/26.
+ * @author pony
+ * @date 2018/3/26
  */
 public class YearControlWidgetAdaptor {
     private static final SwiftLogger LOGGER = SwiftLoggers.getLogger(YearControlWidgetAdaptor.class);
+
     public static BIYearControlResult calculate(YearControlWidget widget) {
         try {
             FineDimension dimension = widget.getDimensionList().get(0);
@@ -25,7 +27,7 @@ public class YearControlWidgetAdaptor {
             FilterInfo filterInfo = FilterInfoFactory.transformFineFilter(widget.getFilters());
             List<Long> values = QueryUtils.getOneDimensionFilterValues(dimension, filterInfo, widget.getWidgetId());
             List<Integer> years = new ArrayList<Integer>();
-            for (Long v : values){
+            for (Long v : values) {
                 years.add(v.intValue());
             }
             return new YearControlResult(years);
@@ -35,7 +37,7 @@ public class YearControlWidgetAdaptor {
         return null;
     }
 
-    static class YearControlResult implements BIYearControlResult{
+    static class YearControlResult implements BIYearControlResult {
         private List<Integer> values;
 
         public YearControlResult(List values) {
