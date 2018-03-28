@@ -70,8 +70,29 @@ public class DetailOperator extends AbstractOperator {
     }
 
     @Override
+    public List<SwiftMetaDataColumn> getBaseColumns(SwiftMetaData[] metaDatas) {
+        List<SwiftMetaDataColumn> columns = new ArrayList<SwiftMetaDataColumn>();
+        SwiftMetaData basedMeta = metaDatas[0];
+        try {
+            for (ColumnKey key : baseFields) {
+                columns.add(basedMeta.getColumn(key.getName()));
+            }
+        } catch (Exception e) {
+            LOGGER.error(getOperatorType() + "get origin meta failed");
+        }
+        return columns;
+    }
+
+    @Override
     public List<String> getNewAddedName() {
         List<String> addColumnNames = new ArrayList<String>();
+        for (int i = 0; i < fields.size(); i++) {
+            ColumnKey[] columnKeys = fields.get(i);
+            Util.requireNonNull(columnKeys);
+            for (ColumnKey columnKey : columnKeys) {
+                addColumnNames.add(columnKey.getName());
+            }
+        }
         return addColumnNames;
     }
 }

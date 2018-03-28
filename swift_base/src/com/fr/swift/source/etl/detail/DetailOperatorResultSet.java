@@ -19,13 +19,13 @@ import java.util.List;
 public class DetailOperatorResultSet implements SwiftResultSet {
     private final SwiftMetaData metaData;
     private final List<ColumnKey[]> fields;
-    private final Segment[] segments;
+    private final List<Segment[]> segments;
     private List<DictionaryEncodedColumn> columns;
     private int currentRow = -1;
     private int currentTotalRow;
     private int currentSegmentIndex = 0;
 
-    public DetailOperatorResultSet(SwiftMetaData metaData, List<ColumnKey[]> fields, Segment[] segments) {
+    public DetailOperatorResultSet(SwiftMetaData metaData, List<ColumnKey[]> fields, List<Segment[]> segments) {
         Util.requireNonNull(fields, segments);
         this.metaData = metaData;
         this.fields = fields;
@@ -34,27 +34,23 @@ public class DetailOperatorResultSet implements SwiftResultSet {
     }
 
     private boolean moveToNextSegment() {
-        if (currentSegmentIndex >= segments.length) {
+        if (currentSegmentIndex >= getBaseSegments().length) {
             return false;
         }
         columns = new ArrayList<DictionaryEncodedColumn>();
-        //pony 暂时先加上原表的数据
-        try {
-            for (int i = 1; i <= metaData.getColumnCount(); i++) {
-                columns.add(segments[currentSegmentIndex].getColumn(new ColumnKey(metaData.getColumnName(i))).getDictionaryEncodedColumn());
-            }
-        } catch (Exception ignore){
-
-        }
-        for (ColumnKey[] columnKeys : fields) {
-            for (ColumnKey columnKey : columnKeys) {
-                columns.add(segments[currentSegmentIndex].getColumn(columnKey).getDictionaryEncodedColumn());
+        for (int i = 0; i < fields.size(); i++){
+            for (ColumnKey columnKey : fields.get(i)) {
+                columns.add(getRelationColumns(columnKey, i));
             }
         }
-        currentTotalRow = segments[currentSegmentIndex].getRowCount();
+        currentTotalRow = getBaseSegments()[currentSegmentIndex].getRowCount();
         currentRow = -1;
         currentSegmentIndex++;
         return true;
+    }
+
+    private Segment[] getBaseSegments(){
+        return segments.get(0);
     }
 
     @Override
@@ -78,8 +74,20 @@ public class DetailOperatorResultSet implements SwiftResultSet {
     public Row getRowData() {
         List list = new ArrayList();
         for (DictionaryEncodedColumn column : columns) {
-            list.add(column.getValue(column.getIndexByRow(currentRow)));
+            Object v = null;
+            //@yee todo 这边会越界，关联取好了应该就不会越界了
+            try {
+                v = column.getValue(column.getIndexByRow(currentRow));
+            } catch (Exception ignore){
+            }
+            list.add(v);
         }
         return new ListBasedRow(list);
+    }
+
+    //@yee todo 找到关联的column，暂时只取主表的column凑数
+    private DictionaryEncodedColumn getRelationColumns(ColumnKey columnKey, int foreignSegIndex) {
+        Segment[] foreignSegments = segments.get(foreignSegIndex + 1);
+        return foreignSegments[0].getColumn(columnKey).getDictionaryEncodedColumn();
     }
 }
