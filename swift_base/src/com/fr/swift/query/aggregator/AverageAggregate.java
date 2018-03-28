@@ -7,29 +7,29 @@ import com.fr.swift.structure.iterator.RowTraversal;
 /**
  * @author Xiaolei.liu
  */
-public class AverageAggregate implements Aggregator <DoubleAverageAggregateValue>{
+public class AverageAggregate implements Aggregator <DoubleAverageAggregatorValue>{
 
-    protected static final AverageAggregate INSTANCE = new AverageAggregate();
+    protected static final Aggregator INSTANCE = new AverageAggregate();
 
     @Override
-    public DoubleAverageAggregateValue aggregate(RowTraversal traversal, Column column) {
+    public DoubleAverageAggregatorValue aggregate(RowTraversal traversal, Column column) {
 
-        DoubleAverageAggregateValue averageValue = new DoubleAverageAggregateValue();
-        averageValue.setValue(((DoubleAmountAggregateValue)getSumValue(traversal, column)).getValue());
+        DoubleAverageAggregatorValue averageValue = new DoubleAverageAggregatorValue();
+        averageValue.setValue((getSumValue(traversal, column)).getValue());
         averageValue.setRowCount(traversal.getCardinality());
         return averageValue;
     }
 
     @Override
-    public void combine(DoubleAverageAggregateValue value, DoubleAverageAggregateValue other) {
+    public void combine(DoubleAverageAggregatorValue value, DoubleAverageAggregatorValue other) {
         value.setRowCount(value.getRowCount() + other.getRowCount());
         value.setValue(value.getValue() + other.getValue());
     }
 
 
 
-    protected AggregatorValue getSumValue(RowTraversal traversal, Column column) {
-        return SumAggregate.INSTANCE.aggregate(traversal, column);
+    protected DoubleAmountAggregatorValue getSumValue(RowTraversal traversal, Column column) {
+        return ((DoubleAmountAggregatorValue)SumAggregate.INSTANCE.aggregate(traversal, column));
     }
 
 

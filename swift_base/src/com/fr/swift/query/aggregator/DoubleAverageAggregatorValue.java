@@ -4,7 +4,7 @@ package com.fr.swift.query.aggregator;
  * @author Xiaolei.liu
  */
 
-public class DoubleAverageAggregateValue implements AggregatorValue<Double> {
+public class DoubleAverageAggregatorValue implements AggregatorValue<Double> {
     private int rowCount;
     private double value;
 

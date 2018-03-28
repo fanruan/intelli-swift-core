@@ -1,7 +1,7 @@
 package com.fr.swift.bitmap.traversal;
 
 public abstract class CalculatorTraversalAction implements TraversalAction{
-    protected double sum;
+    protected double result;
 
     public CalculatorTraversalAction() {
 
