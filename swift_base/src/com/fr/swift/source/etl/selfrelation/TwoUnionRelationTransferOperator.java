@@ -16,22 +16,20 @@ public class TwoUnionRelationTransferOperator implements ETLTransferOperator {
     private LinkedHashMap<String, Integer> columns;
     private String idColumnName;
     private List<String> showColumns;
-    private int columnType;
-    private String columnName;
+    private String[] addedColumns;
     private String parentIdColumnName;
 
     public TwoUnionRelationTransferOperator(LinkedHashMap<String, Integer> columns, String idColumnName, List<String> showColumns,
-                                            int columnType, String columnName, String parentIdColumnName) {
+                                            String[] addedColumns, String parentIdColumnName) {
         this.columns = columns;
         this.idColumnName = idColumnName;
         this.showColumns = showColumns;
-        this.columnType = columnType;
-        this.columnName = columnName;
+        this.addedColumns = addedColumns;
         this.parentIdColumnName = parentIdColumnName;
     }
 
     @Override
     public SwiftResultSet createResultSet(SwiftMetaData metaData, List<SwiftMetaData> basedMetas, List<Segment[]> basedSegments) {
-        return new TwoUnionRelationOperatorResultSet(this.columns, this.idColumnName, this.showColumns, this.columnType, this.columnName, this.parentIdColumnName, basedSegments.get(0), metaData);
+        return new TwoUnionRelationOperatorResultSet(this.columns, this.idColumnName, this.showColumns, this.addedColumns, this.parentIdColumnName, basedSegments.get(0), metaData);
     }
 }

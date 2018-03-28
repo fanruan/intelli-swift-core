@@ -140,7 +140,7 @@ public class EtlTransferOperatorFactory {
     }
 
     private static ETLTransferOperator transferTwoUnionRelationOperator(TwoUnionRelationOperator operator) {
-        return new TwoUnionRelationTransferOperator(operator.getColumns(), operator.getIdColumnName(), operator.getShowColumns(), operator.getColumnType(), operator.getColumnName(), operator.getParentIdColumnName());
+        return new TwoUnionRelationTransferOperator(operator.getColumns(), operator.getIdColumnName(), operator.getShowColumns(), operator.getAddedName(), operator.getParentIdColumnName());
     }
 
     private static ETLTransferOperator transferColumnFormulaOperator(ColumnFormulaOperator operator) {
