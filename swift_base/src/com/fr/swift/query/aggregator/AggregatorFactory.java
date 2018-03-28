@@ -18,6 +18,10 @@ public class AggregatorFactory {
                 return DistinctAggregate.INSTANCE;
             case STRING_COMBINE:
                 return StringCombineAggregate.INSTANCE;
+            case DATE_MAX:
+                return DateMaxAggregate.INSTANCE;
+            case DATE_MIN:
+                return DateMinAggregate.INSTANCE;
             default:
                 return CountAggregator.INSTANCE;
         }

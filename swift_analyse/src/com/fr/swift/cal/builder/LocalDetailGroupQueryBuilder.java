@@ -55,13 +55,13 @@ public class LocalDetailGroupQueryBuilder implements LocalDetailQueryBuilder {
             if (info.getFilterInfo() != null) {
                 filterInfos.add(info.getFilterInfo());
             }
-            queries.add(new SortDetailSegmentQuery(columns, FilterBuilder.buildDetailFilter(segment, new GeneralFilterInfo(filterInfos, GeneralFilterInfo.AND)), list, sortTypes));
+            queries.add(new SortDetailSegmentQuery(columns, FilterBuilder.buildDetailFilter(segment, new GeneralFilterInfo(filterInfos, GeneralFilterInfo.AND)), list, sortTypes, info.getMetaData()));
         }
-        return new SortDetailResultQuery(queries);
+        return new SortDetailResultQuery(queries, info.getComparator(), info.getMetaData());
     }
 
     @Override
     public Query<DetailResultSet> buildResultQuery(List<Query<DetailResultSet>> queries, DetailQueryInfo info) {
-        return new SortDetailResultQuery(queries, info.getTargets());
+        return new SortDetailResultQuery(queries, info.getTargets(), info.getComparator(), info.getMetaData());
     }
 }

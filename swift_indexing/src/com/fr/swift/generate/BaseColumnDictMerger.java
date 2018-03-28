@@ -48,6 +48,11 @@ public abstract class BaseColumnDictMerger<T> extends BaseWorker {
 
     private void mergeDict() {
         List<Segment> segments = getSegments();
+
+        if (segments.isEmpty()) {
+            return;
+        }
+
         // 值 -> (块号, 值在这块里的序号)
         Map<T, List<IntPair>> map = newIntPairsSortedMap(segments.get(0));
 

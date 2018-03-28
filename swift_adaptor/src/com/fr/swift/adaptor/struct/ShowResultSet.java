@@ -80,7 +80,7 @@ public class ShowResultSet implements SwiftResultSet {
 
     @Override
     public boolean next() throws SQLException {
-        return origin.next();
+        return origin != null && origin.next();
     }
 
     @Override

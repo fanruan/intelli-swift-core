@@ -1,7 +1,6 @@
 package com.fr.swift.result;
 
 import com.fr.swift.bitmap.ImmutableBitMap;
-import com.fr.swift.exception.meta.SwiftMetaDataException;
 import com.fr.swift.query.filter.detail.DetailFilter;
 import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.DictionaryEncodedColumn;
@@ -31,10 +30,12 @@ public class SegmentDetailResultSet extends DetailResultSet {
      * 明细过滤条件
      */
     private DetailFilter filter;
+    private SwiftMetaData metaData;
 
-    public SegmentDetailResultSet(List<Column> columnList, DetailFilter filter) {
+    public SegmentDetailResultSet(List<Column> columnList, DetailFilter filter, SwiftMetaData metaData) {
         this.columnList = columnList;
         this.filter = filter;
+        this.metaData = metaData;
         init();
     }
 
@@ -67,11 +68,6 @@ public class SegmentDetailResultSet extends DetailResultSet {
 
     @Override
     public SwiftMetaData getMetaData() {
-        return new DetailMetaData(){
-            @Override
-            public int getColumnCount() throws SwiftMetaDataException {
-                return columnList.size();
-            }
-        };
+        return metaData;
     }
 }
