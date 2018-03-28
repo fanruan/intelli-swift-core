@@ -7,6 +7,7 @@ import com.finebi.conf.internalimp.response.bean.FineTableResponed;
 import com.finebi.conf.service.engine.table.EngineTableManager;
 import com.finebi.conf.structure.bean.field.FineBusinessField;
 import com.finebi.conf.structure.bean.pack.FineBusinessPackage;
+import com.finebi.conf.structure.bean.table.AbstractFineTable;
 import com.finebi.conf.structure.bean.table.FineBusinessTable;
 import com.fr.general.ComparatorUtils;
 import com.fr.swift.adaptor.transformer.IndexingDataSourceFactory;
@@ -73,7 +74,7 @@ public class SwiftTableConfProvider implements EngineTableManager {
     public FineBusinessTable getSingleTable(String tableName) {
         for (FineBusinessTable fineBusinessTable : businessTableDAO.getAllConfig()) {
             if (ComparatorUtils.equals(tableName, fineBusinessTable.getName())) {
-                return fineBusinessTable;
+                return ((AbstractFineTable) fineBusinessTable).clone();
             }
         }
         return null;
