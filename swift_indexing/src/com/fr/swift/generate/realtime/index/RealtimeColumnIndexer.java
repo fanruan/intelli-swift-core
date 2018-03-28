@@ -3,6 +3,7 @@ package com.fr.swift.generate.realtime.index;
 import com.fr.general.ComparatorUtils;
 import com.fr.swift.cube.io.Releasable;
 import com.fr.swift.cube.io.Types;
+import com.fr.swift.generate.BaseColumnDictMerger;
 import com.fr.swift.generate.BaseColumnIndexer;
 import com.fr.swift.manager.LocalSegmentProvider;
 import com.fr.swift.segment.Segment;
@@ -46,5 +47,25 @@ public class RealtimeColumnIndexer<T> extends BaseColumnIndexer<T> {
     @Override
     protected void releaseIfNeed(Releasable baseColumn) {
         // 内存的column不释放，以后还有用
+    }
+
+    /**
+     * @author anchore
+     * @date 2018/2/26
+     */
+    public class RealtimeColumnDictMerger<T> extends BaseColumnDictMerger<T> {
+        public RealtimeColumnDictMerger(DataSource dataSource, ColumnKey key) {
+            super(dataSource, key);
+        }
+
+        @Override
+        protected List<Segment> getSegments() {
+            return RealtimeColumnIndexer.this.getSegments();
+        }
+
+        @Override
+        protected void releaseIfNeed(Releasable baseColumn) {
+            // realtime的不释放
+        }
     }
 }

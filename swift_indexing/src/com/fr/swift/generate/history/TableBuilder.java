@@ -1,7 +1,6 @@
 package com.fr.swift.generate.history;
 
 import com.fr.swift.cube.task.LocalTask;
-import com.fr.swift.cube.task.Task;
 import com.fr.swift.cube.task.Task.Status;
 import com.fr.swift.cube.task.TaskStatusChangeListener;
 import com.fr.swift.cube.task.impl.BaseWorker;
@@ -12,12 +11,18 @@ import com.fr.swift.cube.task.impl.Operation;
 import com.fr.swift.exception.meta.SwiftMetaDataException;
 import com.fr.swift.generate.BaseTableBuilder;
 import com.fr.swift.generate.history.index.ColumnIndexer;
+import com.fr.swift.generate.history.index.SubDateColumnIndexer;
 import com.fr.swift.generate.history.transport.TableTransporter;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
+import com.fr.swift.query.group.GroupType;
 import com.fr.swift.segment.column.ColumnKey;
+import com.fr.swift.segment.column.impl.SubDateColumn;
+import com.fr.swift.source.ColumnTypeConstants.ColumnType;
+import com.fr.swift.source.ColumnTypeUtils;
 import com.fr.swift.source.DataSource;
 import com.fr.swift.source.SwiftMetaData;
+import com.fr.swift.source.SwiftMetaDataColumn;
 
 import static com.fr.swift.cube.task.Task.Result.SUCCEEDED;
 
@@ -36,15 +41,16 @@ public class TableBuilder extends BaseTableBuilder {
         super(dataSource);
     }
 
+    @Override
     protected void init() throws SwiftMetaDataException {
         final SwiftMetaData meta = dataSource.getMetadata();
         // transport worker
         final TableTransporter transporter = new TableTransporter(dataSource);
 
-        final LocalTask transportTask = new LocalTaskImpl(new CubeTaskKey(meta.getTableName(), Operation.TRANSPORT_TABLE));
+        final LocalTask transportTask = new LocalTaskImpl(newPartStartTaskKey(dataSource));
         transportTask.setWorker(transporter);
 
-        final LocalTask end = new LocalTaskImpl(new CubeTaskKey("end of " + meta.getTableName()));
+        final LocalTask end = new LocalTaskImpl(newPartEndTaskKey(dataSource));
         end.setWorker(BaseWorker.nullWorker());
 
         //监听表取数任务，完成后添加字段索引任务。
@@ -53,21 +59,47 @@ public class TableBuilder extends BaseTableBuilder {
             public void onChange(Status prev, Status now) {
                 if (now == Status.DONE && transportTask.result() == SUCCEEDED) {
                     try {
-                        for (String indexField : transporter.getIndexFieldsList()) {
-                            ColumnIndexer<?> indexer = new ColumnIndexer(dataSource, new ColumnKey(indexField));
-
-                            LocalTask indexTask = new LocalTaskImpl(new CubeTaskKey(
-                                    String.format("%s.%s", meta.getTableName(), indexField),
-                                    Operation.INDEX_COLUMN));
-                            indexTask.setWorker(indexer);
-                            // link task
-                            transportTask.addNext(indexTask);
-                            indexTask.addNext(end);
-                        }
+                        initColumnIndexTask();
                     } catch (Exception e) {
                         LOGGER.error("Table :" + dataSource.getSourceKey() + " add field index task failed!", e);
                     }
                 }
+            }
+
+            private void initColumnIndexTask() throws SwiftMetaDataException {
+                for (String indexField : transporter.getIndexFieldsList()) {
+                    ColumnIndexer<?> indexer = new ColumnIndexer(dataSource, new ColumnKey(indexField));
+
+                    LocalTask indexTask = new LocalTaskImpl(new CubeTaskKey(
+                            String.format("%s@%s.%s", meta.getTableName(), dataSource.getSourceKey(), indexField),
+                            Operation.INDEX_COLUMN));
+                    indexTask.setWorker(indexer);
+
+                    // link task
+                    transportTask.addNext(indexTask);
+                    initSubColumnTaskIfHas(indexTask, indexField);
+                }
+            }
+
+            private void initSubColumnTaskIfHas(LocalTask indexTask, String indexField) throws SwiftMetaDataException {
+                if (!hasSubColumn(indexField)) {
+                    indexTask.addNext(end);
+                    return;
+                }
+                for (GroupType groupType : SubDateColumn.TYPES_TO_GENERATE) {
+                    LocalTask indexSubColumnTask = new LocalTaskImpl(new CubeTaskKey(
+                            String.format("%s@%s.%s.%s", meta.getTableName(), dataSource.getSourceKey(), indexField, groupType),
+                            Operation.INDEX_COLUMN));
+                    indexSubColumnTask.setWorker(new SubDateColumnIndexer(dataSource, new ColumnKey(indexField), groupType));
+
+                    indexTask.addNext(indexSubColumnTask);
+                    indexSubColumnTask.addNext(end);
+                }
+            }
+
+            private boolean hasSubColumn(String indexField) throws SwiftMetaDataException {
+                SwiftMetaDataColumn columnMeta = meta.getColumn(indexField);
+                return ColumnTypeUtils.sqlTypeToColumnType(columnMeta.getType(), columnMeta.getPrecision(), columnMeta.getScale()) == ColumnType.DATE;
             }
         });
 
@@ -95,24 +127,5 @@ public class TableBuilder extends BaseTableBuilder {
                 }
             }
         });
-    }
-
-    private static CubeTaskKey newPartStartTaskKey(DataSource ds) throws SwiftMetaDataException {
-        return new CubeTaskKey("part start of " + ds.getMetadata().getTableName() + "@" + ds.getSourceKey().getId(), Operation.BUILD_TABLE);
-    }
-
-    private static CubeTaskKey newPartEndTaskKey(DataSource ds) throws SwiftMetaDataException {
-        return new CubeTaskKey("part end of " + ds.getMetadata().getTableName() + "@" + ds.getSourceKey().getId(), Operation.BUILD_TABLE);
-    }
-
-    @Override
-    public void work() {
-        try {
-            init();
-            taskGroup.run();
-        } catch (Exception e) {
-            SwiftLoggers.getLogger().error(e);
-            workOver(Task.Result.FAILED);
-        }
     }
 }

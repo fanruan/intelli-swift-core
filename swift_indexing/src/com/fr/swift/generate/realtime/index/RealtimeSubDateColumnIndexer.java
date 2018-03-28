@@ -1,6 +1,7 @@
 package com.fr.swift.generate.realtime.index;
 
 import com.fr.swift.cube.io.Releasable;
+import com.fr.swift.generate.BaseColumnDictMerger;
 import com.fr.swift.generate.BaseColumnIndexer;
 import com.fr.swift.manager.LocalSegmentProvider;
 import com.fr.swift.query.group.GroupType;
@@ -37,10 +38,37 @@ public class RealtimeSubDateColumnIndexer<Derive> extends BaseColumnIndexer<Deri
 
     @Override
     protected void mergeDict() {
-
+        new RealtimeSubDateColumnDictMerger(dataSource, key).work();
     }
 
     @Override
     protected void releaseIfNeed(Releasable baseColumn) {
+    }
+
+    /**
+     * @author anchore
+     * @date 2018/1/9
+     * <p>
+     * 合并字典
+     */
+    public class RealtimeSubDateColumnDictMerger extends BaseColumnDictMerger<Derive> {
+        public RealtimeSubDateColumnDictMerger(DataSource dataSource, ColumnKey key) {
+            super(dataSource, key);
+        }
+
+        @Override
+        protected List<Segment> getSegments() {
+            return RealtimeSubDateColumnIndexer.this.getSegments();
+        }
+
+        @Override
+        protected Column<Derive> getColumn(Segment segment) {
+            return RealtimeSubDateColumnIndexer.this.getColumn(segment);
+        }
+
+        @Override
+        protected void releaseIfNeed(Releasable baseColumn) {
+            baseColumn.release();
+        }
     }
 }
