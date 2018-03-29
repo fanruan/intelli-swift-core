@@ -1,5 +1,6 @@
 package com.fr.swift.utils;
 
+import com.fr.general.ComparatorUtils;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.source.DataSource;
@@ -52,7 +53,18 @@ public class DataSourceUtils {
                 ETLOperator etlOperator = etlSource.getOperator();
                 OperatorType type = etlOperator.getOperatorType();
                 if (type.isAddColumn()) {
-                    fields.addAll(etlOperator.getNewAddedName());
+                    List<String> names = etlOperator.getNewAddedName();
+                    if (etlSource.getFieldsInfo() != null) {
+                        for (int i = 0; i < names.size(); i++) {
+                            if (ComparatorUtils.equals(etlSource.getFieldsInfo().get(i), names.get(i))) {
+                                fields.add(names.get(i));
+                            } else {
+                                fields.add(etlSource.getFieldsInfo().get(i));
+                            }
+                        }
+                    } else {
+                        fields.addAll(names);
+                    }
                 }
             }
             return fields;
