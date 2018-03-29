@@ -7,6 +7,9 @@ import com.fr.swift.structure.iterator.RowTraversal;
 
 
 import java.util.Arrays;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.TreeMap;
 
 import static com.fr.swift.cube.io.IOConstant.NULL_DOUBLE;
 
@@ -14,7 +17,7 @@ import static com.fr.swift.cube.io.IOConstant.NULL_DOUBLE;
  * @author Xiaolei.liu
  */
 
-public class MedianAggregate extends AbstractAggregator<MedianAggregatorValue>{
+public class MedianAggregate extends AbstractAggregator<MedianAggregatorValue> {
 
     protected static final Aggregator INSTANCE = new MedianAggregate();
 
@@ -24,18 +27,14 @@ public class MedianAggregate extends AbstractAggregator<MedianAggregatorValue>{
         final MedianAggregatorValue valueAmount = new MedianAggregatorValue();
         final DictionaryEncodedColumn diColumn = column.getDictionaryEncodedColumn();
         final int[] groupIndex = new int[diColumn.size()];
+        Map<Double, Integer> values = new TreeMap<Double, Integer>();
+        valueAmount.setCount(traversal.getCardinality());
         Arrays.fill(groupIndex, 0);
-        int mid = (traversal.getCardinality() / 2) + 1;
         RowTraversal notNullTraversal = getNotNullTraversal(traversal, column);
-        if (notNullTraversal.isEmpty()){
+        if (notNullTraversal.isEmpty()) {
             return new MedianAggregatorValue();
         }
-
-//        if (traversal.isEmpty()) {
-//            valueAmount.setMedian(NULL_DOUBLE);
-//            return valueAmount;
-//        }
-        notNullTraversal.traversal(new CalculatorTraversalAction(){
+        notNullTraversal.traversal(new CalculatorTraversalAction() {
 
             @Override
             public double getCalculatorValue() {
@@ -44,34 +43,82 @@ public class MedianAggregate extends AbstractAggregator<MedianAggregatorValue>{
 
             @Override
             public void actionPerformed(int row) {
-
                 int groupRow = diColumn.getIndexByRow(row);
-                groupIndex[groupRow] ++;
+                groupIndex[groupRow]++;
             }
         });
-        //偶数时中间两数的前一个值
-        double tempMid = NULL_DOUBLE;
-        for(int i = 1; i < diColumn.size(); i++) {
-            mid -= groupIndex[i];
-            if(Double.compare(tempMid, NULL_DOUBLE) != 0) {
-                valueAmount.setMedian(((Double)diColumn.getValue(i) + tempMid) / 2);
-                return valueAmount;
-            }
-            if(mid <= 0) {
-                valueAmount.setMedian((Double)diColumn.getValue(i));
-                return valueAmount;
-            }
-            if(traversal.getCardinality() % 2 == 0 && mid == 1) {
-                tempMid = (Double)diColumn.getValue(i);
-            }
-        }
+        setMedian(values, diColumn, traversal.getCardinality(), groupIndex, valueAmount);
+        valueAmount.setValues(values);
         return valueAmount;
     }
 
 
     @Override
     public void combine(MedianAggregatorValue value, MedianAggregatorValue other) {
-        //
+        int totalCount = value.getCount() + other.getCount();
+        int mid = totalCount / 2 + 1;
+        Map<Double, Integer> vMap = value.getValues();
+        Map<Double, Integer> oMap = other.getValues();
+        mergeMap(vMap, oMap);
+        //偶数时中间两数的前一个值
+        double tempMid = NULL_DOUBLE;
+        Iterator itForMedian = vMap.entrySet().iterator();
+        while (itForMedian.hasNext()) {
+            Map.Entry entry = (Map.Entry) itForMedian.next();
+            if (Double.compare(tempMid, NULL_DOUBLE) != 0) {
+                value.setMedian((Double.parseDouble(entry.getKey().toString()) + tempMid) / 2);
+                break;
+            }
+            mid -= Integer.parseInt(entry.getValue().toString());
+            if (mid < 0) {
+                value.setMedian(Double.parseDouble(entry.getKey().toString()));
+                break;
+            }
+            if (mid == 1 && (totalCount) % 2 == 0) {
+                tempMid = Double.parseDouble(entry.getKey().toString());
+            }
+        }
+        value.setCount(totalCount);
+        value.setValues(vMap);
+    }
+
+    private void setMedian(Map<Double, Integer> values, DictionaryEncodedColumn diColumn, int count, int[] groupIndex, MedianAggregatorValue valueAmount) {
+        double tempMid = NULL_DOUBLE;
+        boolean getMedian = false;
+        int mid = count / 2 + 1;
+        for (int i = 1; i < diColumn.size(); i++) {
+            mid -= groupIndex[i];
+            if (groupIndex[i] > 0) {
+                values.put(Double.parseDouble(diColumn.getValue(i).toString()), groupIndex[i]);
+            }
+            if (getMedian == true) {
+                continue;
+            }
+            if (Double.compare(tempMid, NULL_DOUBLE) != 0) {
+                valueAmount.setMedian(((Double) diColumn.getValue(i) + tempMid) / 2);
+                getMedian = true;
+            }
+            if (mid <= 0) {
+                valueAmount.setMedian((Double) diColumn.getValue(i));
+                getMedian = true;
+            }
+            if (count % 2 == 0 && mid == 1) {
+                tempMid = (Double) diColumn.getValue(i);
+            }
+        }
+    }
+
+    private void mergeMap(Map<Double, Integer> vMap, Map<Double, Integer> oMap) {
+        Iterator it = oMap.entrySet().iterator();
+        while (it.hasNext()) {
+            Map.Entry entry = (Map.Entry) it.next();
+            Object key = entry.getKey();
+            if (vMap.containsKey(key)) {
+                Integer count = vMap.get(key) + oMap.get(key);
+                vMap.put(Double.parseDouble(key.toString()), count);
+            }
+            vMap.put(Double.parseDouble(key.toString()), oMap.get(key));
+        }
     }
 
 }

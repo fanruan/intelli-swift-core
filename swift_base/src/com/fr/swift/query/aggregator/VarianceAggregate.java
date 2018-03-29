@@ -19,6 +19,7 @@ import java.util.Arrays;
 public class VarianceAggregate extends AbstractAggregator<VarianceAggregatorValue> {
 
     protected static final Aggregator INSTANCE = new VarianceAggregate();
+
     @Override
     public VarianceAggregatorValue aggregate(RowTraversal traversal, Column column) {
         final VarianceAggregatorValue varianceValue = new VarianceAggregatorValue();
@@ -28,7 +29,7 @@ public class VarianceAggregate extends AbstractAggregator<VarianceAggregatorValu
         final double[] sum = new double[2];
         Arrays.fill(sum, 0);
         RowTraversal notNullTraversal = getNotNullTraversal(traversal, column);
-        if (notNullTraversal.isEmpty()){
+        if (notNullTraversal.isEmpty()) {
             return new VarianceAggregatorValue();
         }
         CalculatorTraversalAction ss;
@@ -38,10 +39,6 @@ public class VarianceAggregate extends AbstractAggregator<VarianceAggregatorValu
             return aggregateDouble(notNullTraversal, detailColumn, average);
         } else {
             final IntDetailColumn idc = (IntDetailColumn) detailColumn;
-//            if (traversal.isEmpty()) {
-//                valueAmount.setValue(NULL_DOUBLE);
-//                return valueAmount;
-//            }
             ss = new CalculatorTraversalAction() {
 
                 @Override
@@ -70,10 +67,6 @@ public class VarianceAggregate extends AbstractAggregator<VarianceAggregatorValu
         final VarianceAggregatorValue varianceValue = new VarianceAggregatorValue();
         final LongDetailColumn ldc = (LongDetailColumn) detailColumn;
         CalculatorTraversalAction ss;
-//        if (traversal.isEmpty()) {
-//            valueAmount.setValue(NULL_DOUBLE);
-//            return valueAmount;
-//        }
         final double[] sum = new double[2];
         Arrays.fill(sum, 0);
         ss = new CalculatorTraversalAction() {
@@ -105,10 +98,6 @@ public class VarianceAggregate extends AbstractAggregator<VarianceAggregatorValu
         final double[] sum = new double[2];
         Arrays.fill(sum, 0);
         CalculatorTraversalAction ss;
-//        if (traversal.isEmpty()) {
-//            valueAmount.setValue(NULL_DOUBLE);
-//            return valueAmount;
-//        }
         ss = new CalculatorTraversalAction() {
             @Override
             public double getCalculatorValue() {
@@ -136,7 +125,7 @@ public class VarianceAggregate extends AbstractAggregator<VarianceAggregatorValu
         double sum = value.getSum() + other.getSum();
         double squareSum = value.getSquareSum() + other.getSquareSum();
         int count = value.getCount() + other.getCount();
-        double variance = squareSum  - sum * sum / (count);
+        double variance = squareSum - sum * sum / (count);
         value.setSum(sum);
         value.setSquareSum(squareSum);
         value.setCount(count);
