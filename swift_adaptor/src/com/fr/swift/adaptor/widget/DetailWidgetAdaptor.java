@@ -8,7 +8,6 @@ import com.finebi.conf.structure.dashboard.widget.dimension.FineDimension;
 import com.finebi.conf.structure.dashboard.widget.dimension.FineDimensionSort;
 import com.finebi.conf.structure.dashboard.widget.target.FineTarget;
 import com.finebi.conf.structure.result.BIDetailTableResult;
-import com.fr.swift.adaptor.encrypt.SwiftEncryption;
 import com.fr.swift.adaptor.struct.SwiftDetailTableResult;
 import com.fr.swift.adaptor.struct.SwiftEmptyResult;
 import com.fr.swift.adaptor.transformer.FilterInfoFactory;
@@ -79,6 +78,8 @@ public class DetailWidgetAdaptor {
         for (int i = 0; i < dimensions.length; i++) {
             sortIndex.add(i);
         }
+
+//        IntList sortIndex = null;
         FilterInfo filterInfo = FilterInfoFactory.transformFineFilter(widget.getFilters());
         return new DetailQueryInfo(cursor, queryId, dimensions, target, targets, sortIndex, filterInfo, metaData);
     }
@@ -88,8 +89,7 @@ public class DetailWidgetAdaptor {
         List<SwiftMetaDataColumn> fields = new ArrayList<SwiftMetaDataColumn>();
         for (int i = 0, len = fineDimensions.size(); i < len; i++) {
             FineDimension fineDimension = fineDimensions.get(i);
-            String columnName = SwiftEncryption.decryptFieldId(fineDimension.getFieldId())[1];
-            fields.add(metaData.getColumn(columnName));
+            fields.add(metaData.getColumn(fineDimension.getText()));
         }
         return new SwiftMetaDataImpl(metaData.getTableName(), metaData.getRemark(), metaData.getSchemaName(), fields);
     }
@@ -99,9 +99,8 @@ public class DetailWidgetAdaptor {
         Dimension[] dimensions = new Dimension[fineDimensions.size()];
         for (int i = 0, size = fineDimensions.size(); i < size; i++) {
             FineDimension fineDimension = fineDimensions.get(i);
-            String columnName = SwiftEncryption.decryptFieldId(fineDimension.getFieldId())[1];
             Sort sort = fineDimension.getSort() == null ? null : adaptSort(fineDimension.getSort(), i);
-            dimensions[i] = new DetailDimension(i, new SourceKey(fineDimension.getId()), new ColumnKey(columnName), GroupAdaptor.adaptGroup(fineDimension.getGroup()), sort, FilterInfoFactory.transformFineFilter(widget.getFilters()));
+            dimensions[i] = new DetailDimension(i, new SourceKey(fineDimension.getId()), new ColumnKey(fineDimension.getText()), GroupAdaptor.adaptGroup(fineDimension.getGroup()), sort, FilterInfoFactory.transformFineFilter(widget.getFilters()));
         }
         return dimensions;
     }
