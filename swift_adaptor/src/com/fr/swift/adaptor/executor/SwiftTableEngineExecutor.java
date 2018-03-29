@@ -32,6 +32,7 @@ import com.fr.general.ComparatorUtils;
 import com.fr.general.data.DataModel;
 import com.fr.script.Calculator;
 import com.fr.stable.StringUtils;
+import com.fr.swift.adaptor.preview.SwiftFieldsDataPreview;
 import com.fr.swift.adaptor.struct.SwiftDetailTableResult;
 import com.fr.swift.adaptor.struct.SwiftEmptyResult;
 import com.fr.swift.adaptor.struct.SwiftSegmentDetailResult;
@@ -39,8 +40,6 @@ import com.fr.swift.adaptor.transformer.FieldFactory;
 import com.fr.swift.adaptor.transformer.IndexingDataSourceFactory;
 import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.bitmap.traversal.BreakTraversalAction;
-import com.fr.swift.generate.preview.MinorSegmentManager;
-import com.fr.swift.generate.preview.MinorUpdater;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.manager.LocalSegmentProvider;
@@ -68,18 +67,18 @@ public class SwiftTableEngineExecutor implements FineTableEngineExecutor {
 
     private static final SwiftLogger LOGGER = SwiftLoggers.getLogger(SwiftTableEngineExecutor.class);
 
+    private SwiftFieldsDataPreview swiftFieldsDataPreview;
+
+    public SwiftTableEngineExecutor() {
+        this.swiftFieldsDataPreview = new SwiftFieldsDataPreview();
+    }
+
     @Override
     public BIDetailTableResult getPreviewData(FineBusinessTable table, int rowCount) throws Exception {
-        DataSource dataSource = IndexingDataSourceFactory.transformDataSource(table);
-        if (dataSource != null) {
-            if (!MinorSegmentManager.getInstance().isSegmentsExist(dataSource.getSourceKey())) {
-                MinorUpdater.update(dataSource);
-            }
-            List<Segment> segments = MinorSegmentManager.getInstance().getSegment(dataSource.getSourceKey());
-
-            SwiftMetaData swiftMetaData = dataSource.getMetadata();
-            BIDetailTableResult realDetailResult = new SwiftSegmentDetailResult(segments, swiftMetaData);
-            return realDetailResult;
+        try {
+            return swiftFieldsDataPreview.getDetailPreviewByFields(table, rowCount);
+        } catch (Exception e) {
+            LOGGER.error(e.getMessage(), e);
         }
         return new SwiftDetailTableResult(new SwiftEmptyResult());
     }

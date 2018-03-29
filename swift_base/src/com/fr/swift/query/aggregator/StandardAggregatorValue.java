@@ -23,6 +23,6 @@ public class StandardAggregatorValue extends VarianceAggregatorValue {
 
     @Override
     public Number calculateValue() {
-        return Math.sqrt((double)variance.calculateValue());
+        return Math.sqrt(variance.calculateValue().doubleValue());
     }
 }

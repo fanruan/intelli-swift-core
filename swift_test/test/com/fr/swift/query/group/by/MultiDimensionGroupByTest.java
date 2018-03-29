@@ -20,8 +20,8 @@ import java.util.Map;
  * Created by Lyon on 2017/12/28.
  */
 public class MultiDimensionGroupByTest extends TestCase {
-    List<Column> dimensions;
-    Map<RowIndexKey, RowTraversal> bitMapGroup;
+    protected List<Column> dimensions;
+    protected Map<RowIndexKey<int[]>, RowTraversal> bitMapGroup;
     private int rowCount;
 
     @Override
@@ -37,7 +37,7 @@ public class MultiDimensionGroupByTest extends TestCase {
         Arrays.fill(cursor, 0);
         boolean[] asc = new boolean[dimensions.size()];
         Arrays.fill(asc, true);
-        Iterator<KeyValue<RowIndexKey, RowTraversal>> iterator = new MultiDimensionGroupBy(dimensions, new DetailFilter() {
+        Iterator<KeyValue<RowIndexKey<int[]>, RowTraversal>> iterator = new MultiDimensionGroupBy(dimensions, new DetailFilter() {
             @Override
             public ImmutableBitMap createFilterIndex() {
                 return BitMaps.newAllShowBitMap(rowCount);
@@ -49,7 +49,7 @@ public class MultiDimensionGroupByTest extends TestCase {
             }
         }, cursor, asc);
         while (iterator.hasNext()) {
-            KeyValue<RowIndexKey, RowTraversal> keyValue = iterator.next();
+            KeyValue<RowIndexKey<int[]>, RowTraversal> keyValue = iterator.next();
             int[] key = keyValue.getKey().getKey();
             if (key[key.length - 1] != -1) {
                 continue;
@@ -67,7 +67,7 @@ public class MultiDimensionGroupByTest extends TestCase {
 
     private ImmutableBitMap getSumBitMap(int[] key) {
         ImmutableBitMap bitMap = BitMaps.newRoaringMutable();
-        for (Map.Entry<RowIndexKey, RowTraversal> entry : bitMapGroup.entrySet()) {
+        for (Map.Entry<RowIndexKey<int[]>, RowTraversal> entry : bitMapGroup.entrySet()) {
             if (isSubIndex(key, entry.getKey().getKey())) {
                 bitMap = bitMap.getOr(entry.getValue().toBitMap());
             }
@@ -101,7 +101,7 @@ public class MultiDimensionGroupByTest extends TestCase {
         Arrays.fill(cursor, 0);
         boolean[] asc = new boolean[dimensions.size()];
         Arrays.fill(asc, true);
-        Iterator<KeyValue<RowIndexKey, RowTraversal>> iterator = new MultiDimensionGroupBy(dimensions, new DetailFilter() {
+        Iterator<KeyValue<RowIndexKey<int[]>, RowTraversal>> iterator = new MultiDimensionGroupBy(dimensions, new DetailFilter() {
             @Override
             public ImmutableBitMap createFilterIndex() {
                 return BitMaps.newAllShowBitMap(rowCount);
@@ -113,7 +113,7 @@ public class MultiDimensionGroupByTest extends TestCase {
             }
         }, cursor, asc);
         while (iterator.hasNext()) {
-            KeyValue<RowIndexKey, RowTraversal> keyValue = iterator.next();
+            KeyValue<RowIndexKey<int[]>, RowTraversal> keyValue = iterator.next();
             if (!isNormalRow(keyValue.getKey().getKey())) {
                 continue;
             }
