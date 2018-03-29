@@ -42,13 +42,13 @@ public class SwiftFieldsDataPreview {
 
     public BIDetailTableResult getDetailPreviewByFields(FineBusinessTable table, int rowCount) throws Exception {
 
-        DataSource dataSource =  IndexingDataSourceFactory.transformDataSource(table);
+        DataSource dataSource = IndexingDataSourceFactory.transformDataSource(table);
         IntList sortIndex = IntListFactory.createHeapIntList();
-        List<SortType > sorts = new ArrayList<SortType>();
+        List<SortType> sorts = new ArrayList<SortType>();
         //分析表排序加上属性
-        if (table.getType() == BICommonConstants.TABLE.ANALYSIS){
-            FineOperator op = ((FineAnalysisTable)table).getOperator();
-            if (op != null && op.getType() == ConfConstant.AnalysisType.SORT){
+        if (table.getType() == BICommonConstants.TABLE.ANALYSIS) {
+            FineOperator op = ((FineAnalysisTable) table).getOperator();
+            if (op != null && op.getType() == ConfConstant.AnalysisType.SORT) {
                 List<SortBeanItem> sortBeanItemList = op.<SortBean>getValue().getValue();
                 for (SortBeanItem sortBeanItem : sortBeanItemList) {
                     sortIndex.add(dataSource.getMetadata().getColumnIndex(sortBeanItem.getName()));
@@ -71,14 +71,14 @@ public class SwiftFieldsDataPreview {
             }
             return new SwiftDetailTableResult(new SwiftEmptyResult());
         } catch (Exception e) {
-            SwiftLoggers.getLogger().error(e);
+            SwiftLoggers.getLogger().error(e.getMessage(), e);
             return new SwiftDetailTableResult(new SwiftEmptyResult());
         }
     }
 
     public NumberMaxAndMinValue getNumberMaxAndMinValue(ETLSource dataSource, String fieldName) {
         try {
-            double max,min;
+            double max, min;
             if (dataSource != null) {
                 if (!MinorSegmentManager.getInstance().isSegmentsExist(dataSource.getSourceKey())) {
                     MinorUpdater.update(dataSource);
@@ -90,14 +90,14 @@ public class SwiftFieldsDataPreview {
                     Column c = sg.getColumn(new ColumnKey(fieldName));
                     DictionaryEncodedColumn dic = c.getDictionaryEncodedColumn();
                     try {
-                        double tempValue = Double.parseDouble(dic.getValue(dic.size() -1).toString());
+                        double tempValue = Double.parseDouble(dic.getValue(dic.size() - 1).toString());
                         max = Math.max(tempValue, max);
-                    } catch(Exception e) {
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
-                    for(int i = 1; i < dic.size(); i++) {
+                    for (int i = 1; i < dic.size(); i++) {
                         Object tempValue = dic.getValue(i);
-                        if(tempValue != null) {
+                        if (tempValue != null) {
                             min = Math.min(Double.parseDouble(tempValue.toString()), min);
                             break;
                         }
