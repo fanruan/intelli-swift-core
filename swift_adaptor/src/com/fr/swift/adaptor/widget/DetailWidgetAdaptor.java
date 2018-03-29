@@ -30,10 +30,13 @@ import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.service.QueryRunnerProvider;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftMetaData;
+import com.fr.swift.source.SwiftMetaDataColumn;
 import com.fr.swift.source.SwiftResultSet;
+import com.fr.swift.source.SwiftMetaDataImpl;
 import com.fr.swift.structure.array.IntList;
 import com.fr.swift.structure.array.IntListFactory;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -68,6 +71,7 @@ public class DetailWidgetAdaptor {
         FineBusinessTable table = new SwiftTableConfProvider().getSingleTable(widget.getTableName());
         SourceKey target = IndexingDataSourceFactory.transformDataSource(table).getSourceKey();
         SwiftMetaData swiftMetaData = MetaDataConvertUtil.getSwiftMetaDataBySourceKey(target.toString());
+        SwiftMetaData metaData = getMetaData(widget, swiftMetaData);
         DetailTarget[] targets = getTargets(widget);
         //没传进来排序顺序
         IntList sortIndex = IntListFactory.createHeapIntList();
@@ -77,7 +81,17 @@ public class DetailWidgetAdaptor {
 
 //        IntList sortIndex = null;
         FilterInfo filterInfo = FilterInfoFactory.transformFineFilter(widget.getFilters());
-        return new DetailQueryInfo(cursor, queryId, dimensions, target, targets, sortIndex, filterInfo, swiftMetaData);
+        return new DetailQueryInfo(cursor, queryId, dimensions, target, targets, sortIndex, filterInfo, metaData);
+    }
+
+    private static SwiftMetaData getMetaData(DetailWidget widget, SwiftMetaData metaData) throws Exception {
+        final List<FineDimension> fineDimensions = widget.getDimensionList();
+        List<SwiftMetaDataColumn> fields = new ArrayList<SwiftMetaDataColumn>();
+        for (int i = 0, len = fineDimensions.size(); i < len; i++) {
+            FineDimension fineDimension = fineDimensions.get(i);
+            fields.add(metaData.getColumn(fineDimension.getText()));
+        }
+        return new SwiftMetaDataImpl(metaData.getTableName(), metaData.getRemark(), metaData.getSchemaName(), fields);
     }
 
     private static Dimension[] getDimension(DetailWidget widget) throws Exception {
