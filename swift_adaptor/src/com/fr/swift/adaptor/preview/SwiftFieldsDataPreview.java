@@ -49,8 +49,12 @@ public class SwiftFieldsDataPreview {
         //分析表排序加上属性
         List<SortBeanItem> sortBeanItemList = getSortItems(table);
         for (SortBeanItem sortBeanItem : sortBeanItemList) {
-            sortIndex.add(dataSource.getMetadata().getColumnIndex(sortBeanItem.getName()));
-            sorts.add(SortFactory.transformSort(sortBeanItem.getSortType()).getSortType());
+            //可能有些字段排序的后来被删了
+            try {
+                sortIndex.add(dataSource.getMetadata().getColumnIndex(sortBeanItem.getName()));
+                sorts.add(SortFactory.transformSort(sortBeanItem.getSortType()).getSortType());
+            } catch (Exception ignore){
+            }
         }
         try {
             if (dataSource != null) {

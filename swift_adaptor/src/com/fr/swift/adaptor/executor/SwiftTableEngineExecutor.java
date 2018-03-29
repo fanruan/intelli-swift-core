@@ -274,7 +274,7 @@ public class SwiftTableEngineExecutor implements FineTableEngineExecutor {
         Set<Object> set = new HashSet<Object>();
         while (detailTableResult.hasNext()) {
             List<BIDetailCell> dataList = detailTableResult.next();
-            set.add(dataList.get(lcIndex).getData().toString());
+            set.add(dataList.get(lcIndex).getData());
         }
         Set lengthSet = getLengthSetFromID(set);
         if (lengthSet.size() > 1) {
