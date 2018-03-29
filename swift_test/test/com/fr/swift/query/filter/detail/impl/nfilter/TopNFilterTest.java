@@ -42,7 +42,7 @@ public class TopNFilterTest extends BaseNumberFilterTest {
 
     @Override
     protected List<Integer> getExpectedIndexes() {
-        Set<Double> topNGroups = new HashSet<>(groups.subList(topN, groups.size()));
+        Set<Double> topNGroups = new HashSet<>(groups.subList(topN + 1, groups.size()));
         return IntStream.range(0, details.size()).filter(i -> topNGroups.contains(details.get(i)))
                 .mapToObj(Integer::new).collect(Collectors.toList());
     }

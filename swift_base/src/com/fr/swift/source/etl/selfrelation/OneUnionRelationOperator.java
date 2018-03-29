@@ -6,6 +6,7 @@ import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.source.MetaDataColumn;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftMetaDataColumn;
+import com.fr.swift.source.core.CoreField;
 import com.fr.swift.source.core.MD5Utils;
 import com.fr.swift.source.etl.AbstractOperator;
 import com.fr.swift.source.etl.OperatorType;
@@ -22,11 +23,17 @@ import java.util.Map;
 public class OneUnionRelationOperator extends AbstractOperator {
 
     private static final SwiftLogger LOGGER = SwiftLoggers.getLogger(OneUnionRelationOperator.class);
+    @CoreField
     private String idColumnName;
+    @CoreField
     private List<String> showColumns = new ArrayList<String>();
+    @CoreField
     private LinkedHashMap<String, Integer> columns = new LinkedHashMap<String, Integer>();
+    @CoreField
     private int columnType;
+    @CoreField
     private String columnName;
+    @CoreField
     private List<SwiftMetaDataColumn> columnList;
 
 

@@ -7,29 +7,99 @@ import java.util.Arrays;
 /**
  * Created by Lyon on 2017/12/29.
  */
-public class RowIndexKey {
+public class RowIndexKey<T> {
 
-    private int[] key;
+    private RowIndexKey rowIndexKey;
 
     public RowIndexKey(int[] key) {
         Util.requireNonNull(key);
+        this.rowIndexKey = new IntKey(key);
+    }
+
+    public RowIndexKey(Object[] key) {
+        Util.requireNonNull(key);
+        this.rowIndexKey = new ObjectKey(key);
+    }
+
+    RowIndexKey() {
+    }
+
+    public T getKey() {
+        return (T) rowIndexKey.getKey();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        return rowIndexKey.equals(o);
+    }
+
+    @Override
+    public int hashCode() {
+        return rowIndexKey.hashCode();
+    }
+
+    @Override
+    public String toString() {
+        return rowIndexKey.toString();
+    }
+}
+
+class IntKey extends RowIndexKey {
+
+    protected int[] key;
+
+    public IntKey(int[] key) {
         this.key = key;
     }
 
-    public int[] getKey() {
+    @Override
+    public Object getKey() {
         return key;
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
 
         RowIndexKey key1 = (RowIndexKey) o;
 
-        return Arrays.equals(key, key1.key);
+        return Arrays.equals(key, (int[]) key1.getKey());
+    }
+
+    @Override
+    public int hashCode() {
+        return Arrays.hashCode(key);
+    }
+
+    @Override
+    public String toString() {
+        return Arrays.toString(key);
+    }
+}
+
+class ObjectKey extends RowIndexKey {
+
+    private Object[] key;
+
+    public ObjectKey(Object[] key) {
+        this.key = key;
+    }
+
+    @Override
+    public Object getKey() {
+        return key;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+
+        RowIndexKey key1 = (RowIndexKey) o;
+
+        return Arrays.equals(key, (Object[]) key1.getKey());
     }
 
     @Override

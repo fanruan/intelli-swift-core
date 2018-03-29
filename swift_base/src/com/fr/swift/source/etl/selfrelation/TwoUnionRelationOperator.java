@@ -6,6 +6,7 @@ import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.source.MetaDataColumn;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftMetaDataColumn;
+import com.fr.swift.source.core.CoreField;
 import com.fr.swift.source.core.MD5Utils;
 import com.fr.swift.source.etl.AbstractOperator;
 import com.fr.swift.source.etl.OperatorType;
@@ -22,12 +23,20 @@ import java.util.Map;
 public class TwoUnionRelationOperator extends AbstractOperator {
 
     private static final SwiftLogger LOGGER = SwiftLoggers.getLogger(TwoUnionRelationOperator.class);
+    @CoreField
     private String idColumnName;
+    @CoreField
     private List<String> showColumns = new ArrayList<String>();
+    @CoreField
     private LinkedHashMap<String, Integer> columns = new LinkedHashMap<String, Integer>();
+    @CoreField
     private int columnType;
+    @CoreField
     private String columnName;
+    @CoreField
     private String parentIdColumnName;
+    @CoreField
+    private String[] addedColumns;
 
     private List<SwiftMetaDataColumn> columnList;
 
@@ -65,6 +74,10 @@ public class TwoUnionRelationOperator extends AbstractOperator {
         return parentIdColumnName;
     }
 
+    public String[] getAddedName() {
+        return addedColumns;
+    }
+
     @Override
     public List<String> getNewAddedName() {
         List<String> addColumnNames = new ArrayList<String>();
@@ -99,6 +112,13 @@ public class TwoUnionRelationOperator extends AbstractOperator {
                 LOGGER.error("getting meta's column information failed", e);
             }
 
+        }
+        addedColumns = new String[columnList.size()];
+        int index = 0;
+        Iterator<SwiftMetaDataColumn> iterator = columnList.iterator();
+        while(iterator.hasNext()) {
+            SwiftMetaDataColumn temp = iterator.next();
+            addedColumns[index ++] = temp.getName();
         }
         return columnList;
     }

@@ -3,6 +3,7 @@ package com.fr.swift.query.filter.detail.impl.nfilter;
 import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.query.filter.detail.impl.ColumnImplTest;
 import com.fr.swift.query.filter.detail.impl.number.BaseNumberFilterTest;
+import com.fr.swift.segment.column.DictionaryEncodedColumn;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -42,7 +43,7 @@ public class BottomNFilterTest extends BaseNumberFilterTest {
 
     @Override
     protected List<Integer> getExpectedIndexes() {
-        Set<Long> bottomNGroups = new HashSet<>(groups.subList(0, bottomN));
+        Set<Long> bottomNGroups = new HashSet<>(groups.subList(DictionaryEncodedColumn.NOT_NULL_START_INDEX, bottomN + 1));
         return IntStream.range(0, details.size()).filter(i -> bottomNGroups.contains(details.get(i)))
                 .mapToObj(Integer::new).collect(Collectors.toList());
     }

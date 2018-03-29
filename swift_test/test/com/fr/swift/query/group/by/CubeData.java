@@ -40,7 +40,7 @@ public class CubeData {
     private Random random = new Random(23435);
     List<Column> dimensionColumns = new ArrayList<>();
     List<Column> metricColumns = new ArrayList<>();
-    Map<RowIndexKey, RowTraversal> bitMapGroup;
+    Map<RowIndexKey<int[]>, RowTraversal> bitMapGroup;
     String[][] dimensions;
     int[][] metrics;
     Map<RowIndexKey, double[]> aggregationResult;
@@ -76,7 +76,7 @@ public class CubeData {
         return metricColumns;
     }
 
-    public Map<RowIndexKey, RowTraversal> getBitMapGroup() {
+    public Map<RowIndexKey<int[]>, RowTraversal> getBitMapGroup() {
         return bitMapGroup;
     }
 
