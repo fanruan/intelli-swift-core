@@ -3,6 +3,7 @@ package com.fr.swift.source;
 import com.fr.swift.setting.PerformancePlugManager;
 import com.fr.swift.source.ColumnTypeConstants.ClassType;
 import com.fr.swift.source.ColumnTypeConstants.ColumnType;
+import com.fr.swift.util.Crasher;
 
 import java.sql.Types;
 
@@ -143,5 +144,12 @@ public class ColumnTypeUtils {
      */
     public static ColumnType sqlTypeToColumnType(int sqlType, int columnSize, int scale) {
         return classTypeToColumnType(sqlTypeToClassType(sqlType, columnSize, scale));
+    }
+
+    public static boolean checkColumnType(SwiftMetaDataColumn column, ColumnType type) {
+        if (null == column || ColumnTypeUtils.sqlTypeToColumnType(column.getType(), column.getScale(), column.getPrecision()) != type) {
+            return Crasher.crash("not " + type + " field");
+        }
+        return true;
     }
 }
