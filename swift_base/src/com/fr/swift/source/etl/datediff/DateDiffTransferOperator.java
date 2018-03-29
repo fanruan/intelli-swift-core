@@ -1,5 +1,6 @@
 package com.fr.swift.source.etl.datediff;
 
+import com.fr.swift.query.group.GroupType;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftResultSet;
@@ -14,16 +15,16 @@ public class DateDiffTransferOperator implements ETLTransferOperator {
 
     private String field1;
     private String field2;
-    private int unit;
+    private GroupType groupType;
 
-    public DateDiffTransferOperator(String field1, String field2, int unit) {
+    public DateDiffTransferOperator(String field1, String field2, GroupType groupType) {
         this.field1 = field1;
         this.field2 = field2;
-        this.unit = unit;
+        this.groupType = groupType;
     }
 
     @Override
     public SwiftResultSet createResultSet(SwiftMetaData metaData, List<SwiftMetaData> basedMetas, List<Segment[]> basedSegments) {
-        return new DateDiffResultSet(field1, field2, unit, basedSegments.get(0), metaData);
+        return new DateDiffResultSet(field1, field2, groupType, basedSegments.get(0), metaData);
     }
 }

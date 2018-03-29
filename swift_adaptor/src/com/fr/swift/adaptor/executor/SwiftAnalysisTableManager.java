@@ -1,7 +1,11 @@
 package com.fr.swift.adaptor.executor;
 
 import com.finebi.base.constant.FineEngineType;
+import com.finebi.conf.constant.ConfConstant;
 import com.finebi.conf.internalimp.analysis.bean.operator.add.group.custom.number.NumberMaxAndMinValue;
+import com.finebi.conf.internalimp.analysis.bean.operator.setting.FieldSettingBeanItem;
+import com.finebi.conf.internalimp.analysis.operator.setting.FieldSettingOperator;
+import com.finebi.conf.internalimp.field.FineBusinessFieldImp;
 import com.finebi.conf.service.engine.analysis.EngineAnalysisTableManager;
 import com.finebi.conf.structure.analysis.table.FineAnalysisTable;
 import com.finebi.conf.structure.bean.field.FineBusinessField;
@@ -36,6 +40,11 @@ public class SwiftAnalysisTableManager implements EngineAnalysisTableManager {
     @Override
     public BIDetailTableResult getPreViewResult(FineAnalysisTable table, int rowCount) {
         try {
+            //nice job foundation
+            //字段设置居然要返回上一层的结果
+            if (table.getOperator() != null && table.getOperator().getType() == ConfConstant.AnalysisType.FIELD_SETTING){
+                table = table.getBaseTable();
+            }
             return swiftFieldsDataPreview.getDetailPreviewByFields(table, rowCount);
         } catch (Exception e) {
             LOGGER.error(e.getMessage(), e);
@@ -60,6 +69,18 @@ public class SwiftAnalysisTableManager implements EngineAnalysisTableManager {
 
     @Override
     public List<FineBusinessField> getFields(FineAnalysisTable table) throws Exception {
+        //nice job foundation
+        //字段设置居然要返回上一层的结果
+        if (table.getOperator() != null && table.getOperator().getType() == ConfConstant.AnalysisType.FIELD_SETTING){
+            List<FieldSettingBeanItem> fieldSettings = ((FieldSettingOperator) table.getOperator()).getValue().getValue();
+            List<FineBusinessField> pFields = FieldFactory.transformColumns2Fields(IndexingDataSourceFactory.transformDataSource(table.getBaseTable()).getMetadata(),table.getId());
+            for (int i = 0; i < pFields.size(); i++){
+                if (!fieldSettings.isEmpty() && !fieldSettings.get(i).isUsed()){
+                    ((FineBusinessFieldImp)(pFields.get(i))).setUsable(false);
+                }
+            }
+            return pFields;
+        }
         return FieldFactory.transformColumns2Fields(IndexingDataSourceFactory.transformDataSource(table).getMetadata(),table.getId());
     }
 

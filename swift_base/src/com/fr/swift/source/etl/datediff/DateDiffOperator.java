@@ -1,5 +1,7 @@
 package com.fr.swift.source.etl.datediff;
 
+import com.fr.swift.query.group.GroupType;
+import com.fr.swift.source.ColumnTypeUtils;
 import com.fr.swift.source.MetaDataColumn;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftMetaDataColumn;
@@ -7,6 +9,7 @@ import com.fr.swift.source.core.CoreField;
 import com.fr.swift.source.etl.AbstractOperator;
 import com.fr.swift.source.etl.OperatorType;
 
+import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,17 +23,14 @@ public class DateDiffOperator extends AbstractOperator {
     @CoreField
     private String field2;
     @CoreField
-    private int unit;
+    private GroupType groupType;
     private String columnName;//新增列名
-    @CoreField
-    private int columnType;
 
-    public DateDiffOperator(String field1, String field2, int unit, String columnName, int columnType) {
+    public DateDiffOperator(String field1, String field2, GroupType groupType, String columnName) {
         this.field1 = field1;
         this.field2 = field2;
-        this.unit = unit;
+        this.groupType = groupType;
         this.columnName = columnName;
-        this.columnType = columnType;
     }
 
 
@@ -38,7 +38,7 @@ public class DateDiffOperator extends AbstractOperator {
     public List<SwiftMetaDataColumn> getColumns(SwiftMetaData[] metaDatas) {
         List<SwiftMetaDataColumn> columnList = new ArrayList<SwiftMetaDataColumn>();
         columnList.add(new MetaDataColumn(this.columnName, this.columnName,
-                this.columnType, fetchObjectCore().getValue()));
+                Types.BIGINT, ColumnTypeUtils.MAX_LONG_COLUMN_SIZE, 0, fetchObjectCore().getValue()));
         return columnList;
     }
 
@@ -55,16 +55,8 @@ public class DateDiffOperator extends AbstractOperator {
         return field2;
     }
 
-    public int getUnit() {
-        return unit;
-    }
-
     public String getColumnName() {
         return columnName;
-    }
-
-    public int getColumnType() {
-        return columnType;
     }
 
     @Override
@@ -74,4 +66,7 @@ public class DateDiffOperator extends AbstractOperator {
         return addColumnNames;
     }
 
+    public GroupType getGroupType() {
+        return groupType;
+    }
 }
