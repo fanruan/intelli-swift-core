@@ -40,23 +40,18 @@ import java.util.List;
  */
 public class SwiftFieldsDataPreview {
 
+
     public BIDetailTableResult getDetailPreviewByFields(FineBusinessTable table, int rowCount) throws Exception {
 
-        DataSource dataSource =  IndexingDataSourceFactory.transformDataSource(table);
+        DataSource dataSource = IndexingDataSourceFactory.transformDataSource(table);
         IntList sortIndex = IntListFactory.createHeapIntList();
-        List<SortType > sorts = new ArrayList<SortType>();
+        List<SortType> sorts = new ArrayList<SortType>();
         //分析表排序加上属性
-        if (table.getType() == BICommonConstants.TABLE.ANALYSIS){
-            FineOperator op = ((FineAnalysisTable)table).getOperator();
-            if (op != null && op.getType() == ConfConstant.AnalysisType.SORT){
-                List<SortBeanItem> sortBeanItemList = op.<SortBean>getValue().getValue();
-                for (SortBeanItem sortBeanItem : sortBeanItemList) {
-                    sortIndex.add(dataSource.getMetadata().getColumnIndex(sortBeanItem.getName()));
-                    sorts.add(SortFactory.transformSort(sortBeanItem.getSortType()).getSortType());
-                }
-            }
+        List<SortBeanItem> sortBeanItemList = getSortItems(table);
+        for (SortBeanItem sortBeanItem : sortBeanItemList) {
+            sortIndex.add(dataSource.getMetadata().getColumnIndex(sortBeanItem.getName()));
+            sorts.add(SortFactory.transformSort(sortBeanItem.getSortType()).getSortType());
         }
-
         try {
             if (dataSource != null) {
                 MinorSegmentManager.getInstance().clear();
@@ -136,6 +131,21 @@ public class SwiftFieldsDataPreview {
             SwiftLoggers.getLogger().error(e);
         }
         return null;
+    }
+
+    public List<SortBeanItem> getSortItems(FineBusinessTable table) {
+        if (table == null){
+            return new ArrayList<SortBeanItem>();
+        }
+        if (table.getType() == BICommonConstants.TABLE.ANALYSIS) {
+            FineOperator op = ((FineAnalysisTable) table).getOperator();
+            if (op != null && op.getType() == ConfConstant.AnalysisType.SORT) {
+                return op.<SortBean>getValue().getValue();
+            } else {
+                return getSortItems(((FineAnalysisTable) table).getBaseTable());
+            }
+        }
+        return new ArrayList<SortBeanItem>();
     }
 }
 
