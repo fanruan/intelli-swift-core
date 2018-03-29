@@ -2,7 +2,7 @@ package com.fr.swift.generate.preview;
 
 import com.fr.swift.segment.Segment;
 import com.fr.swift.source.DataSource;
-import com.fr.swift.source.ETLDataSource;
+import com.fr.swift.source.EtlDataSource;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftSourceTransfer;
 import com.fr.swift.source.db.ConnectionManager;
@@ -33,13 +33,13 @@ public final class SwiftDataPreviewer {
                     ((QueryDBSource) dataSource).getFieldColumnTypes(), rowCount, ((QueryDBSource) dataSource).getQuery());
         } else if (dataSource instanceof ServerDBSource) {
         } else if (dataSource instanceof ExcelDataSource) {
-        } else if (dataSource instanceof ETLDataSource) {
-            transfer = createMinorEtlTransfer((ETLDataSource) dataSource);
+        } else if (dataSource instanceof EtlDataSource) {
+            transfer = createMinorEtlTransfer((EtlDataSource) dataSource);
         }
         return transfer;
     }
 
-    private static EtlTransfer createMinorEtlTransfer(ETLDataSource source) {
+    private static EtlTransfer createMinorEtlTransfer(EtlDataSource source) {
         SwiftMetaData metaData = source.getMetadata();
         ETLOperator operator = source.getOperator();
         ETLTransferOperator transferOperator = EtlTransferOperatorFactory.createTransferOperator(operator);

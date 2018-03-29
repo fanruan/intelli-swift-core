@@ -5,7 +5,7 @@ import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.source.AbstractDataSource;
 import com.fr.swift.source.DataSource;
-import com.fr.swift.source.ETLDataSource;
+import com.fr.swift.source.EtlDataSource;
 import com.fr.swift.source.MetaDataColumn;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftMetaData;
@@ -26,8 +26,8 @@ import java.util.Set;
  * @date 2017/11/27
  * 存配置的时候为了层级少点，只存key，构造的时候只能通过对象构造
  */
-public class ETLSource extends AbstractDataSource implements ETLDataSource {
-    private static final SwiftLogger LOGGER = SwiftLoggers.getLogger(ETLSource.class);
+public class EtlSource extends AbstractDataSource implements EtlDataSource {
+    private static final SwiftLogger LOGGER = SwiftLoggers.getLogger(EtlSource.class);
     @CoreField
     private List<SourceKey> basedKeys;
 
@@ -44,7 +44,7 @@ public class ETLSource extends AbstractDataSource implements ETLDataSource {
      * @param basedSources 上层表
      * @param operator     操作
      */
-    public ETLSource(List<DataSource> basedSources, ETLOperator operator) {
+    public EtlSource(List<DataSource> basedSources, ETLOperator operator) {
         this(basedSources, operator, null);
     }
 
@@ -53,7 +53,7 @@ public class ETLSource extends AbstractDataSource implements ETLDataSource {
      * @param operator     操作
      * @param fieldsInfo   使用的字段
      */
-    public ETLSource(List<DataSource> basedSources, ETLOperator operator, Map<Integer, String> fieldsInfo) {
+    public EtlSource(List<DataSource> basedSources, ETLOperator operator, Map<Integer, String> fieldsInfo) {
         Util.requireNonNull(basedSources, operator);
         checkFieldsInfoValues(fieldsInfo);
         this.basedSources = basedSources;

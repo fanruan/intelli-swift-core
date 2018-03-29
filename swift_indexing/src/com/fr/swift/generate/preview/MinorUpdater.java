@@ -14,7 +14,7 @@ import com.fr.swift.segment.column.impl.SubDateColumn;
 import com.fr.swift.segment.operator.Inserter;
 import com.fr.swift.source.ColumnTypeConstants.ClassType;
 import com.fr.swift.source.DataSource;
-import com.fr.swift.source.ETLDataSource;
+import com.fr.swift.source.EtlDataSource;
 import com.fr.swift.source.SwiftResultSet;
 import com.fr.swift.utils.DataSourceUtils;
 
@@ -33,17 +33,17 @@ public class MinorUpdater {
         MinorSegmentManager.getInstance().clear();
 
         if (isEtl(dataSource)) {
-            buildEtl((ETLDataSource) dataSource);
+            buildEtl((EtlDataSource) dataSource);
         } else {
             build(dataSource);
         }
     }
 
-    private static void buildEtl(ETLDataSource etl) throws Exception {
+    private static void buildEtl(EtlDataSource etl) throws Exception {
         List<DataSource> dataSources = etl.getBasedSources();
         for (DataSource dataSource : dataSources) {
             if (isEtl(dataSource)) {
-                buildEtl((ETLDataSource) dataSource);
+                buildEtl((EtlDataSource) dataSource);
             } else {
                 build(dataSource);
             }
@@ -128,7 +128,7 @@ public class MinorUpdater {
     }
 
     private static boolean isEtl(DataSource ds) {
-        return ds instanceof ETLDataSource;
+        return ds instanceof EtlDataSource;
     }
 
     private static GroupType[] SUB_DATE_TYPES = {
