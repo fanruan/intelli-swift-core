@@ -6,13 +6,13 @@ import com.fr.swift.structure.iterator.RowTraversal;
 
 import java.util.Iterator;
 
-public class GroupByPagingIterator implements Iterator<KeyValue<RowIndexKey, RowTraversal>> {
+public class GroupByPagingIterator implements Iterator<KeyValue<RowIndexKey<int[]>, RowTraversal>> {
 
     private final int threshold;
     private int counter = 0;
-    private Iterator<KeyValue<RowIndexKey, RowTraversal>> groupByIterator;
+    private Iterator<KeyValue<RowIndexKey<int[]>, RowTraversal>> groupByIterator;
 
-    public GroupByPagingIterator(int threshold, Iterator<KeyValue<RowIndexKey, RowTraversal>> groupByIterator) {
+    public GroupByPagingIterator(int threshold, Iterator<KeyValue<RowIndexKey<int[]>, RowTraversal>> groupByIterator) {
         this.threshold = threshold;
         this.groupByIterator = groupByIterator;
     }
@@ -22,8 +22,8 @@ public class GroupByPagingIterator implements Iterator<KeyValue<RowIndexKey, Row
     }
 
     @Override
-    public KeyValue<RowIndexKey, RowTraversal> next() {
-        KeyValue<RowIndexKey, RowTraversal> next = groupByIterator.next();
+    public KeyValue<RowIndexKey<int[]>, RowTraversal> next() {
+        KeyValue<RowIndexKey<int[]>, RowTraversal> next = groupByIterator.next();
         int[] key = next.getKey().getKey();
         if (key[key.length - 1] != -1) {
             // 这边只对普通行进行计数

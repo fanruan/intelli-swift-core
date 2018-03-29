@@ -1,13 +1,15 @@
 package com.fr.swift.source.etl.date;
 
+import com.fr.swift.query.group.GroupType;
+import com.fr.swift.source.ColumnTypeUtils;
 import com.fr.swift.source.MetaDataColumn;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftMetaDataColumn;
 import com.fr.swift.source.core.CoreField;
-import com.fr.swift.source.core.MD5Utils;
 import com.fr.swift.source.etl.AbstractOperator;
 import com.fr.swift.source.etl.OperatorType;
 
+import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,33 +21,25 @@ public class GetFromDateOperator extends AbstractOperator {
     @CoreField
     private String field;
     @CoreField
-    private int type;
-    @CoreField
+    private GroupType type;
     private String columnName;//新增列名
-    @CoreField
-    private int columnType;
 
-    public GetFromDateOperator(String field, int type, String columnName, int columnType) {
+    public GetFromDateOperator(String field, GroupType type, String columnName) {
         this.field = field;
         this.type = type;
         this.columnName = columnName;
-        this.columnType = columnType;
     }
 
     public String getField() {
         return field;
     }
 
-    public int getType() {
+    public GroupType getType() {
         return type;
     }
 
     public String getColumnName() {
         return columnName;
-    }
-
-    public int getColumnType() {
-        return columnType;
     }
 
     @Override
@@ -59,7 +53,7 @@ public class GetFromDateOperator extends AbstractOperator {
     public List<SwiftMetaDataColumn> getColumns(SwiftMetaData[] metaDatas) {
         List<SwiftMetaDataColumn> columnList = new ArrayList<SwiftMetaDataColumn>();
         columnList.add(new MetaDataColumn(this.columnName, this.columnName,
-                this.columnType, fetchObjectCore().getValue()));
+                getColumnType(), ColumnTypeUtils.MAX_LONG_COLUMN_SIZE, 0, fetchObjectCore().getValue()));
         return columnList;
     }
 
@@ -68,7 +62,19 @@ public class GetFromDateOperator extends AbstractOperator {
         return OperatorType.GETDATE;
     }
 
-    public String getColumnMD5() {
-        return MD5Utils.getMD5String(new String[]{(this.columnName)});
+    public int getColumnType() {
+        switch (type) {
+            case YEAR:
+            case QUARTER:
+            case MONTH:
+            case WEEK:
+            case DAY:
+            case HOUR:
+            case MINUTE:
+            case SECOND:
+                return Types.BIGINT;
+            default:
+                return Types.DATE;
+        }
     }
 }

@@ -27,8 +27,6 @@ public class TestTwoUnionRelationOperator extends TestCase {
         showColumns.add("mmm");
         showColumns.add("ddd");
         showColumns.add("WWW");
-        int columnType = 0;
-        String columnName = null;
         String parentIdColumnName = "ddd";
         try {
             SwiftMetaData metaData = EasyMock.createMock(SwiftMetaData.class);
@@ -47,22 +45,23 @@ public class TestTwoUnionRelationOperator extends TestCase {
             //segment[1] = new CreateSegmentForSelfRelation().getSegment();
             List<Segment[]> list = new ArrayList<Segment[]>();
             list.add(segment);
-            String[][] str = new String[][]{{"109","mmm","123","江西","11","11","aa","109","mmm","江西","11","11","aa"},
-                    {"102","AAA","123","江苏","22","22","bb","102","AAA","江苏","22","22","bb"},
-                    {"103","AAA","123","河南","33","33","","103","AAA","河南","33","33",""},
-                    {"105","fff","333","湖北","1","1","","105","fff","湖北","1","1",""},
-                    {"106","ggg","321","福建","6","6","","104","mmm","四川","6","6",null},
-                    {"106","nnn","","","","",null,"107","bbb","","","",""},
-                    {"101","ggg","323","安徽","","","","107","bbb","","","",""},
-                    {"104","mmm","777","四川","6","6",null,"104","mmm","四川","6","6",null},
-                    {"107","bbb","","","","","","107","bbb","","","",""}};
-            TwoUnionRelationTransferOperator operator = new TwoUnionRelationTransferOperator(columns, idColumnName, showColumns, columnType, columnName, parentIdColumnName);
+            String[][] str = new String[][]{{"109","mmm","江西","11","11","aa"},
+                    {"102","AAA","江苏","22","22","bb"},
+                    {"103","AAA","河南","33","33",""},
+                    {"105","fff","湖北","1","1",""},
+                    {"104","mmm","四川","6","6",null},
+                    {"107","bbb","","","",""},
+                    {"107","bbb","","","",""},
+                    {"104","mmm","四川","6","6",null},
+                    {"107","bbb","","","",""}};
+            String[] addNames = new String[]{"A","B","C","D","E","F"};
+            TwoUnionRelationTransferOperator operator = new TwoUnionRelationTransferOperator(columns, idColumnName, showColumns, addNames, parentIdColumnName);
             SwiftResultSet rs = operator.createResultSet(metaData, null, list);
             int k = -1;
             while(rs.next()) {
                 k++;
                 Row row = rs.getRowData();
-                for(int i = 0; i < 13; i++) {
+                for(int i = 0; i < 6; i++) {
                     assertEquals(row.getValue(i),str[k][i]);
                 }
                 if(k == 8){

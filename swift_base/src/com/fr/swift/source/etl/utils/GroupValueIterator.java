@@ -58,12 +58,12 @@ public class GroupValueIterator {
     }
 
     private void initGroupColumns() {
-        if(groups == null || groups.length != columnKey.length){
+        if (groups == null || groups.length != columnKey.length) {
             this.groups = new Group[columnKey.length];
         }
         groupColumns = new Column[segment.length][columnKey.length];
-        for (int i = 0; i < segment.length; i++){
-            for (int j = 0; j < columnKey.length; j++){
+        for (int i = 0; i < segment.length; i++) {
+            for (int j = 0; j < columnKey.length; j++) {
                 Column column = segment[i].getColumn(columnKey[j]);
                 groupColumns[i][j] = groups[j] == null ? column : groups[j].getGroupOperator().group(column);
             }
@@ -95,7 +95,7 @@ public class GroupValueIterator {
                 values[values.length - 1] = groupColumns[numOfSegment][i].getDictionaryEncodedColumn().getValue(entry.getIndex());
                 valuesAndGVIs[numOfSegment][i + 1] = new SwiftValuesAndGVI(values, valuesAndGVIs[numOfSegment][i].getGvi().getAnd(entry.getTraversal().toBitMap()));
             } else {
-                move(numOfSegment,i - 1);
+                move(numOfSegment, i - 1);
                 if (next[numOfSegment] == null) {
                     return;
                 }
@@ -108,12 +108,12 @@ public class GroupValueIterator {
         nextOne = new SwiftValuesAndGVI(new Object[0], AllShowBitMap.newInstance(100));
         boolean[] isMin = new boolean[this.segment.length];
         SwiftValuesAndGVI min = next[0];
-        if (segment.length == 1){
+        if (segment.length == 1) {
             isMin[0] = true;
         }
         for (int i = 1; i < this.segment.length; i++) {
             int result = min.compareTo(next[i], comparators);
-            if (result == 0 ) {
+            if (result == 0) {
                 isMin[i] = true;
             } else if (result < 0) {
                 isMin[i] = false;
@@ -137,7 +137,7 @@ public class GroupValueIterator {
     }
 
     public SwiftValuesAndGVI next() {
-        if(hasNext()) {
+        if (hasNext()) {
             getNextOne();
             return nextOne;
         }
@@ -155,5 +155,4 @@ public class GroupValueIterator {
         }
         next[numOfSegment] = null;
     }
-
 }

@@ -1,17 +1,19 @@
 package com.fr.swift.adaptor.preview;
 
+import com.finebi.conf.constant.BICommonConstants;
+import com.finebi.conf.constant.ConfConstant;
 import com.finebi.conf.internalimp.analysis.bean.operator.add.group.custom.number.NumberMaxAndMinValue;
-import com.finebi.conf.structure.bean.field.FineBusinessField;
+import com.finebi.conf.internalimp.analysis.bean.operator.sort.SortBean;
+import com.finebi.conf.internalimp.analysis.bean.operator.sort.SortBeanItem;
+import com.finebi.conf.structure.analysis.operator.FineOperator;
+import com.finebi.conf.structure.analysis.table.FineAnalysisTable;
 import com.finebi.conf.structure.bean.table.FineBusinessTable;
-import com.finebi.conf.structure.result.BIDetailCell;
 import com.finebi.conf.structure.result.BIDetailTableResult;
-import com.fr.general.ComparatorUtils;
-import com.fr.swift.adaptor.executor.SwiftTableEngineExecutor;
-import com.fr.swift.adaptor.struct.SwiftCombineDetailResult;
 import com.fr.swift.adaptor.struct.SwiftDetailTableResult;
 import com.fr.swift.adaptor.struct.SwiftEmptyResult;
 import com.fr.swift.adaptor.struct.SwiftSegmentDetailResult;
 import com.fr.swift.adaptor.transformer.IndexingDataSourceFactory;
+import com.fr.swift.adaptor.transformer.SortFactory;
 import com.fr.swift.generate.preview.MinorSegmentManager;
 import com.fr.swift.generate.preview.MinorUpdater;
 import com.fr.swift.log.SwiftLoggers;
@@ -24,11 +26,10 @@ import com.fr.swift.source.DataSource;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.etl.ETLSource;
 import com.fr.swift.structure.array.IntList;
+import com.fr.swift.structure.array.IntListFactory;
 
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * This class created on 2018-1-29 12:02:53
@@ -39,14 +40,22 @@ import java.util.Map;
  */
 public class SwiftFieldsDataPreview {
 
-    private SwiftTableEngineExecutor swiftTableEngineExecutor;
 
-    public SwiftFieldsDataPreview() {
-        swiftTableEngineExecutor = new SwiftTableEngineExecutor();
-    }
+    public BIDetailTableResult getDetailPreviewByFields(FineBusinessTable table, int rowCount) throws Exception {
 
-    public BIDetailTableResult getDetailPreviewByFields(DataSource dataSource, int rowCount, IntList sortIndex, List<SortType> sorts) throws Exception {
-
+        DataSource dataSource = IndexingDataSourceFactory.transformDataSource(table);
+        IntList sortIndex = IntListFactory.createHeapIntList();
+        List<SortType> sorts = new ArrayList<SortType>();
+        //分析表排序加上属性
+        List<SortBeanItem> sortBeanItemList = getSortItems(table);
+        for (SortBeanItem sortBeanItem : sortBeanItemList) {
+            //可能有些字段排序的后来被删了
+            try {
+                sortIndex.add(dataSource.getMetadata().getColumnIndex(sortBeanItem.getName()));
+                sorts.add(SortFactory.transformSort(sortBeanItem.getSortType()).getSortType());
+            } catch (Exception ignore){
+            }
+        }
         try {
             if (dataSource != null) {
                 MinorSegmentManager.getInstance().clear();
@@ -64,32 +73,6 @@ public class SwiftFieldsDataPreview {
             SwiftLoggers.getLogger().error(e);
             return new SwiftDetailTableResult(new SwiftEmptyResult());
         }
-    }
-
-    public BIDetailTableResult getDetailPreviewByFields(LinkedHashMap<FineBusinessField, FineBusinessTable> fieldTableMap, int rowCount) throws Exception {
-        List<List<BIDetailCell>> columnDataLists = new ArrayList<List<BIDetailCell>>();
-        int realRowCount = 0;
-        for (Map.Entry<FineBusinessField, FineBusinessTable> entry : fieldTableMap.entrySet()) {
-            DataSource dataSource = IndexingDataSourceFactory.transformDataSource(entry.getValue());
-            BIDetailTableResult detailTableResult = swiftTableEngineExecutor.getPreviewData(entry.getValue(), rowCount);
-            int index = 0;
-            for (int i = 1; i <= dataSource.getMetadata().getColumnCount(); i++) {
-                if (ComparatorUtils.equals(entry.getKey().getName(), dataSource.getMetadata().getColumnName(i))) {
-                    index = i;
-                    break;
-                }
-            }
-            List<BIDetailCell> columnDataList = new ArrayList<BIDetailCell>();
-            if (index != 0) {
-                while (detailTableResult.hasNext()) {
-                    columnDataList.add(detailTableResult.next().get(index - 1));
-                }
-                realRowCount = columnDataList.size();
-            }
-            columnDataLists.add(columnDataList);
-        }
-        BIDetailTableResult result = new SwiftCombineDetailResult(columnDataLists, realRowCount);
-        return result;
     }
 
     public NumberMaxAndMinValue getNumberMaxAndMinValue(ETLSource dataSource, String fieldName) {
@@ -152,6 +135,21 @@ public class SwiftFieldsDataPreview {
             SwiftLoggers.getLogger().error(e);
         }
         return null;
+    }
+
+    public List<SortBeanItem> getSortItems(FineBusinessTable table) {
+        if (table == null){
+            return new ArrayList<SortBeanItem>();
+        }
+        if (table.getType() == BICommonConstants.TABLE.ANALYSIS) {
+            FineOperator op = ((FineAnalysisTable) table).getOperator();
+            if (op != null && op.getType() == ConfConstant.AnalysisType.SORT) {
+                return op.<SortBean>getValue().getValue();
+            } else {
+                return getSortItems(((FineAnalysisTable) table).getBaseTable());
+            }
+        }
+        return new ArrayList<SortBeanItem>();
     }
 }
 

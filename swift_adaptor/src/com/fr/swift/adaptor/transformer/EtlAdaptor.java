@@ -70,12 +70,14 @@ import com.finebi.conf.structure.path.FineBusinessTableRelationPath;
 import com.finebi.conf.utils.FineTableUtils;
 import com.fr.general.ComparatorUtils;
 import com.fr.swift.adaptor.widget.group.GroupAdaptor;
+import com.fr.swift.adaptor.widget.group.GroupTypeAdaptor;
 import com.fr.swift.exception.meta.SwiftMetaDataException;
 import com.fr.swift.generate.preview.MinorSegmentManager;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.query.aggregator.AggregatorFactory;
 import com.fr.swift.query.aggregator.AggregatorType;
 import com.fr.swift.query.filter.info.FilterInfo;
+import com.fr.swift.query.group.GroupType;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.source.ColumnTypeConstants;
@@ -545,24 +547,8 @@ class EtlAdaptor {
         String columnName = value.getName();
         GetFieldTimeValueItem tempBean = ((GetFieldTimeValueBean) value).getValue();
         String fieldName = tempBean.getFieldName();
-        int type = tempBean.getUnit();
-        int columnType;
-        switch (type) {
-            case BIConfConstants.CONF.ADD_COLUMN.TIME.UNITS.YEAR:
-            case BIConfConstants.CONF.ADD_COLUMN.TIME.UNITS.QUARTER:
-            case BIConfConstants.CONF.ADD_COLUMN.TIME.UNITS.MONTH:
-            case BIConfConstants.CONF.ADD_COLUMN.TIME.UNITS.WEEKDAY:
-            case BIConfConstants.CONF.ADD_COLUMN.TIME.UNITS.DAY:
-            case BIConfConstants.CONF.ADD_COLUMN.TIME.UNITS.WEEK_COUNT:
-            case BIConfConstants.CONF.ADD_COLUMN.TIME.UNITS.HOUR:
-            case BIConfConstants.CONF.ADD_COLUMN.TIME.UNITS.MINUTE:
-            case BIConfConstants.CONF.ADD_COLUMN.TIME.UNITS.SECOND:
-                columnType = Types.INTEGER;
-                break;
-            default:
-                columnType = Types.DATE;
-        }
-        return new GetFromDateOperator(fieldName, type, columnName, columnType);
+        GroupType type = GroupTypeAdaptor.adaptDateUNITS(tempBean.getUnit());
+        return new GetFromDateOperator(fieldName, type, columnName);
     }
 
     private static DateDiffOperator getDateDiffOperator(AddNewColumnValueBean value) {
@@ -762,6 +748,6 @@ class EtlAdaptor {
             String tempName = fields.get(findFieldName(fields, value.getShowFields().get(i))).getName();
             showFields.add(tempName);
         }
-        return new TwoUnionRelationOperator(idFieldName, showFields, columns, value.getType(), null, parentIdFieldName);
+        return new TwoUnionRelationOperator(idFieldName, showFields, columns, Types.VARCHAR, null, parentIdFieldName);
     }
 }
