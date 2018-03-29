@@ -36,6 +36,7 @@ public class QueryUtils {
 
     /**
      * 获取一个维度过滤之后的值，各种控件都会用到
+     *
      * @param dimension
      * @param filterInfo
      * @param id
@@ -56,7 +57,7 @@ public class QueryUtils {
             while (it.hasNext()){
                 RowIndexKey<int[]> indexKey = it.next().getKey();
                 Object v = dic.get(indexKey.getKey()[0]);
-                if (v != null){
+                if (v != null) {
                     values.add(v);
                 }
             }

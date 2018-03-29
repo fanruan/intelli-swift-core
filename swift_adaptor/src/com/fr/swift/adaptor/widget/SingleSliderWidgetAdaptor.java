@@ -31,11 +31,12 @@ import java.util.List;
  */
 public class SingleSliderWidgetAdaptor {
     private static final SwiftLogger LOGGER = SwiftLoggers.getLogger(SingleSliderWidgetAdaptor.class);
+
     public static BISingleSliderResult calculate(SingleSliderWidget widget) {
         NumberMaxAndMinValue value = new NumberMaxAndMinValue();
         try {
             List<FineDimension> dimensions = widget.getDimensionList();
-            for (FineDimension dimension : dimensions){
+            for (FineDimension dimension : dimensions) {
                 String fieldId = dimension.getFieldId();
                 FineBusinessTable fineBusinessTable = FineTableUtils.getTableByFieldId(fieldId);
                 FineBusinessField fineBusinessField = fineBusinessTable.getFieldByFieldId(fieldId);
@@ -47,7 +48,7 @@ public class SingleSliderWidgetAdaptor {
                 IntList sortIndex = IntListFactory.createHeapIntList(1);
                 sortIndex.add(0);
                 DetailQueryInfo minQueryInfo = new DetailQueryInfo(new RowCursor(), widget.getWidgetId(), new DetailDimension[]{ascDimension}, baseDataSource.getSourceKey(), null, sortIndex, null, null);
-                DetailResultSet minResultSet =  QueryRunnerProvider.getInstance().executeQuery(minQueryInfo);
+                DetailResultSet minResultSet = QueryRunnerProvider.getInstance().executeQuery(minQueryInfo);
                 minResultSet.next();
                 Number min = minResultSet.getRowData().getValue(0);
                 value.setMin(Math.min(value.getMin(), min.doubleValue()));
@@ -66,7 +67,7 @@ public class SingleSliderWidgetAdaptor {
         return new SingleSliderResult(value);
     }
 
-    static class SingleSliderResult implements BISingleSliderResult{
+    static class SingleSliderResult implements BISingleSliderResult {
         private NumberMaxAndMinValue value;
 
         SingleSliderResult(NumberMaxAndMinValue value) {

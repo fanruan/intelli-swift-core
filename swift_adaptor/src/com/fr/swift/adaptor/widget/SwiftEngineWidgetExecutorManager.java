@@ -33,6 +33,9 @@ import com.finebi.conf.structure.result.control.tree.BITreeResult;
 import com.finebi.conf.structure.result.table.BIComplexGroupResult;
 import com.finebi.conf.structure.result.table.BICrossNode;
 import com.finebi.conf.structure.result.table.BIGroupNode;
+import com.fr.swift.adaptor.widget.date.MonthControlWidgetAdaptor;
+import com.fr.swift.adaptor.widget.date.QuarterControlWidgetAdaptor;
+import com.fr.swift.adaptor.widget.date.YearControlWidgetAdaptor;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
 
@@ -45,6 +48,7 @@ import java.util.Map;
  */
 public class SwiftEngineWidgetExecutorManager implements EngineWidgetExecutorManager {
     private static final SwiftLogger LOGGER = SwiftLoggers.getLogger(SwiftEngineWidgetExecutorManager.class);
+
     @Override
     public BIGroupNode visit(TableWidget tableWidget) {
         return TableWidgetAdaptor.calculate(tableWidget);
@@ -87,7 +91,7 @@ public class SwiftEngineWidgetExecutorManager implements EngineWidgetExecutorMan
 
     @Override
     public BIMonthControlResult visit(MonthControlWidget detailWidget) {
-        return BIMonthControlResultAdaptor.calculate(detailWidget);
+        return MonthControlWidgetAdaptor.calculate(detailWidget);
     }
 
     @Override
@@ -106,22 +110,22 @@ public class SwiftEngineWidgetExecutorManager implements EngineWidgetExecutorMan
     }
 
     @Override
-    public BIResult visit(DateControlWidget dateControlWidget) throws Exception {
+    public BIResult visit(DateControlWidget dateControlWidget) {
         return null;
     }
 
     @Override
-    public BIResult visit(DatePaneControlWidget datePaneControlWidget) throws Exception {
+    public BIResult visit(DatePaneControlWidget datePaneControlWidget) {
         return null;
     }
 
     @Override
-    public BIResult visit(DateIntervalControlWidget dateIntervalControlWidget) throws Exception {
+    public BIResult visit(DateIntervalControlWidget dateIntervalControlWidget) {
         return null;
     }
 
     @Override
-    public BIResult visit(StringListControlWidget stringListControlWidget) throws Exception {
+    public BIResult visit(StringListControlWidget stringListControlWidget) {
         return null;
     }
 

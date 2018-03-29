@@ -125,6 +125,7 @@ public class TableWidgetAdaptor {
         ColumnType columnType = ColumnTypeAdaptor.adaptColumnType(type);
         return columnType == ColumnType.NUMBER;
     }
+
     private static Dimension toDimension(FineDimension fineDim, int index) {
         SourceKey key = new SourceKey(fineDim.getId());
         String columnName = SwiftEncryption.decryptFieldId(fineDim.getFieldId())[1];

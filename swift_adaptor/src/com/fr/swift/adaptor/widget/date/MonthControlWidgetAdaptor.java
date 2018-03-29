@@ -1,10 +1,13 @@
-package com.fr.swift.adaptor.widget;
+package com.fr.swift.adaptor.widget.date;
 
+import com.finebi.conf.constant.BIConfConstants.CONF.GROUP.DATE;
+import com.finebi.conf.internalimp.bean.dashboard.widget.dimension.group.TypeGroupBean;
 import com.finebi.conf.internalimp.dashboard.widget.control.time.MonthControlWidget;
 import com.finebi.conf.internalimp.dashboard.widget.dimension.group.DimensionTypeGroup;
 import com.finebi.conf.structure.dashboard.widget.dimension.FineDimension;
 import com.finebi.conf.structure.result.control.time.BIMonthControlResult;
 import com.fr.swift.adaptor.transformer.FilterInfoFactory;
+import com.fr.swift.adaptor.widget.QueryUtils;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.query.filter.info.FilterInfo;
@@ -13,26 +16,42 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by pony on 2018/3/26.
+ * @author pony
+ * @date 2018/3/26
  */
-public class BIMonthControlResultAdaptor {
-    private static final SwiftLogger LOGGER = SwiftLoggers.getLogger(BIMonthControlResultAdaptor.class);
+public class MonthControlWidgetAdaptor {
+    private static final SwiftLogger LOGGER = SwiftLoggers.getLogger(MonthControlWidgetAdaptor.class);
+
     public static BIMonthControlResult calculate(MonthControlWidget widget) {
         try {
             FineDimension dimension = widget.getDimensionList().get(0);
+
             //设置下年分组
-            dimension.setGroup(new DimensionTypeGroup());
+            DimensionTypeGroup yearGroup = new DimensionTypeGroup();
+            yearGroup.setType(DATE.YEAR);
+            TypeGroupBean yearBean = new TypeGroupBean();
+            yearBean.setType(yearGroup.getType());
+            yearGroup.setValue(yearBean);
+            dimension.setGroup(yearGroup);
+
             FilterInfo filterInfo = FilterInfoFactory.transformFineFilter(widget.getFilters());
             List<Long> yearValues = QueryUtils.getOneDimensionFilterValues(dimension, filterInfo, widget.getWidgetId());
             List<Integer> years = new ArrayList<Integer>();
-            for (Long v : yearValues){
+            for (Long v : yearValues) {
                 years.add(v.intValue());
             }
+
             //设置下月分组
-            dimension.setGroup(new DimensionTypeGroup());
+            DimensionTypeGroup monthGroup = new DimensionTypeGroup();
+            monthGroup.setType(DATE.MONTH);
+            TypeGroupBean monthBean = new TypeGroupBean();
+            monthBean.setType(monthGroup.getType());
+            monthGroup.setValue(monthBean);
+            dimension.setGroup(monthGroup);
+
             List<Long> monthValues = QueryUtils.getOneDimensionFilterValues(dimension, filterInfo, widget.getWidgetId());
             List<Integer> months = new ArrayList<Integer>();
-            for (Long v : monthValues){
+            for (Long v : monthValues) {
                 months.add(v.intValue());
             }
             return new MonthControlResult(years, months);
@@ -42,11 +61,11 @@ public class BIMonthControlResultAdaptor {
         return null;
     }
 
-    static class MonthControlResult implements BIMonthControlResult{
+    static class MonthControlResult implements BIMonthControlResult {
         private List<Integer> years;
         private List<Integer> months;
 
-        public MonthControlResult(List years, List months) {
+        public MonthControlResult(List<Integer> years, List<Integer> months) {
             this.years = years;
             this.months = months;
         }
