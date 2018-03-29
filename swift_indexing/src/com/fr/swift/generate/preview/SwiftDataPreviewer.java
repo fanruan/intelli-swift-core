@@ -56,6 +56,6 @@ public final class SwiftDataPreviewer {
         if (baseDataSourceList.isEmpty()) {
             basedSegments.add(new Segment[0]);
         }
-        return new EtlTransfer(transferOperator, metaData, basedMetas, basedSegments);
+        return new EtlTransfer(transferOperator, metaData, basedMetas, basedSegments, source.getFieldsInfo());
     }
 }
