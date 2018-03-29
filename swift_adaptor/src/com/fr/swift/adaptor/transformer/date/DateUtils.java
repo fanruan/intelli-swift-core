@@ -29,14 +29,14 @@ public class DateUtils {
     public static long dateStaticFilterBean2Long(DateStaticFilterBeanValue value) {
         Calendar c = Calendar.getInstance();
         c.clear();
-        c.set(Calendar.YEAR, value.getYear());
+        c.set(Calendar.YEAR, string2Int(value.getYear()));
         // TODO: 2018/3/23 季度这个值没法理解
 //                c.set(Calendar.MONTH, getStartMonthOfQuarter(value.month2Quarter()));
-        c.set(Calendar.MONTH, value.getMonth());
-        c.set(Calendar.DATE, value.getDay());
-        c.set(Calendar.HOUR_OF_DAY, value.getHour());
-        c.set(Calendar.MINUTE, value.getMinute());
-        c.set(Calendar.SECOND, value.getSecond());
+        c.set(Calendar.MONTH, string2Int(value.getMonth()));
+        c.set(Calendar.DATE, string2Int(value.getDay()));
+        c.set(Calendar.HOUR_OF_DAY, string2Int(value.getHour()));
+        c.set(Calendar.MINUTE, string2Int(value.getMinute()));
+        c.set(Calendar.SECOND, string2Int(value.getSecond()));
         return c.getTimeInMillis();
     }
 
