@@ -42,20 +42,18 @@ public class SwiftDatabase implements Database {
 
 
     @Override
-    public boolean alterTable(String tableName, SwiftMetaData meta) throws SQLException {
+    public void alterTable(String tableName, SwiftMetaData meta) throws SQLException {
         if (!existsTable(tableName)) {
             throw new SQLException("table not exists");
         }
         tables.get(tableName).setMeta(meta);
-        return true;
     }
 
     @Override
-    public boolean dropTable(String tableName) throws SQLException {
+    public void dropTable(String tableName) throws SQLException {
         if (!existsTable(tableName)) {
             throw new SQLException("table not exists");
         }
         tables.remove(tableName);
-        return true;
     }
 }
