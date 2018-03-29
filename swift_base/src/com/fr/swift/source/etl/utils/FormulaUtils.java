@@ -89,13 +89,7 @@ public class FormulaUtils {
         Map<String, ColumnKey> columnIndexMap = new HashMap<String, ColumnKey>();
         String[] parameters = getRelatedParaNames(formular);
         for (int i = 0; i < parameters.length; i++) {
-            String columnName;
-            if (parameters[i].contains(ETLConstant.CONF.FIELD_ID.HEAD)) {
-                // TODO  通过工具类截取部分字段
-                columnName = parameters[i].substring(ETLConstant.CONF.FIELD_ID.HEAD.length(), parameters[i].length()).substring(16);
-            } else {
-                columnName = parameters[i];
-            }
+            String columnName = parameters[i];
             Column column = segment.getColumn(new ColumnKey(columnName));
             if (column != null) {
                 columnIndexMap.put(toParameterFormat(String.valueOf(i)), new ColumnKey(columnName));
