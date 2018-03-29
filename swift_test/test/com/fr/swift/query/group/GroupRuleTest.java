@@ -8,15 +8,18 @@ import com.fr.swift.query.group.impl.CustomNumGroupRule.NumInterval;
 import com.fr.swift.query.group.impl.CustomStrGroupRule;
 import com.fr.swift.query.group.impl.CustomStrGroupRule.StringGroup;
 import com.fr.swift.structure.array.IntList;
-import junit.framework.TestCase;
+import org.junit.Test;
 
 import java.util.Arrays;
+
+import static org.junit.Assert.assertEquals;
 
 /**
  * @author anchore
  * @date 2018/3/1
  */
-public class GroupRuleTest extends TestCase {
+public class GroupRuleTest {
+    @Test
     public void testCustomStrGroupRule() {
         GroupRule rule = new CustomStrGroupRule(Arrays.asList(
                 new StringGroup("g0", Arrays.asList("1", "2", "3")),
@@ -68,6 +71,7 @@ public class GroupRuleTest extends TestCase {
         assertEquals(3, rule.reverseMap(10));
     }
 
+    @Test
     public void testCustomStrGroupRuleWithNoOtherGroup() {
         GroupRule rule = new CustomStrGroupRule(Arrays.asList(
                 new StringGroup("g0", Arrays.asList("1", "2", "3")),
@@ -129,6 +133,7 @@ public class GroupRuleTest extends TestCase {
         assertEquals(4, rule.reverseMap(10));
     }
 
+    @Test
     public void testCustomNumGroupRule() {
         GroupRule rule = new CustomNumGroupRule(Arrays.asList(
                 new NumInterval("g0", 0, true, 2.1, false),
@@ -190,6 +195,7 @@ public class GroupRuleTest extends TestCase {
         assertEquals(4, rule.reverseMap(10));
     }
 
+    @Test
     public void testCustomNumGroupRuleWithNoOtherGroup() {
         GroupRule rule = new CustomNumGroupRule(Arrays.asList(
                 new NumInterval("g0", 0, true, 2.1, false),
@@ -255,6 +261,7 @@ public class GroupRuleTest extends TestCase {
         assertEquals(5, rule.reverseMap(10));
     }
 
+    @Test
     public void testAutoGroupRule() {
         GroupRule rule = new AutoNumGroupRule(new Partition(1, 10, 4));
         rule.setOriginDict(new TempDictColumn<Number>() {
