@@ -16,7 +16,7 @@ import java.util.List;
 /**
  * Created by Lyon on 2018/2/27.
  */
-public class MultiDimensionGroupBy implements Iterator<KeyValue<RowIndexKey, RowTraversal>> {
+public class MultiDimensionGroupBy implements Iterator<KeyValue<RowIndexKey<int[]>, RowTraversal>> {
 
     private static final int START_INDEX = DictionaryEncodedColumn.NOT_NULL_START_INDEX;
 
@@ -25,9 +25,10 @@ public class MultiDimensionGroupBy implements Iterator<KeyValue<RowIndexKey, Row
     private int[] cursor;
     private boolean[] asc;
     private Stack<GroupByResult> iterators;
-    private KeyValue<RowIndexKey, RowTraversal> next = null;
+    private KeyValue<RowIndexKey<int[]>, RowTraversal> next = null;
     private int[] groupIndexes;
 
+    // TODO: 2018/3/28 这个要改为仅作为内部实现，外部只用MultiGroupByValues或者MultiGroupByIndex
     public MultiDimensionGroupBy(List<Column> dimensions, DetailFilter detailFilter, int[] cursor, boolean[] asc) {
         this.dimensions = dimensions;
         this.detailFilter = detailFilter;
@@ -41,7 +42,7 @@ public class MultiDimensionGroupBy implements Iterator<KeyValue<RowIndexKey, Row
 
     private void init() {
         RowTraversal traversal = detailFilter.createFilterIndex();
-        next = new KeyValue<RowIndexKey, RowTraversal>(new RowIndexKey(createRowIndexKey()), traversal);
+        next = new KeyValue<RowIndexKey<int[]>, RowTraversal>(new RowIndexKey(createRowIndexKey()), traversal);
         GroupByResult groupByResult = GroupBy.createGroupByResult(dimensions.get(0), traversal,
                 getStartIndex(0), asc[0]);
         iterators.push(groupByResult);
@@ -74,8 +75,8 @@ public class MultiDimensionGroupBy implements Iterator<KeyValue<RowIndexKey, Row
      * @return
      */
     @Override
-    public KeyValue<RowIndexKey, RowTraversal> next() {
-        KeyValue<RowIndexKey, RowTraversal> old = next;
+    public KeyValue<RowIndexKey<int[]>, RowTraversal> next() {
+        KeyValue<RowIndexKey<int[]>, RowTraversal> old = next;
         while (!iterators.isEmpty()) {
             GroupByResult it = iterators.peek();
             if (it.hasNext()) {
@@ -83,7 +84,7 @@ public class MultiDimensionGroupBy implements Iterator<KeyValue<RowIndexKey, Row
                 RowTraversal traversal = entry.getTraversal();
                 // 更新当前维度的groupIndex
                 updateGroupIndex(iterators.size() - 1, entry.getIndex());
-                next = new KeyValue<RowIndexKey, RowTraversal>(new RowIndexKey(createRowIndexKey()), traversal);
+                next = new KeyValue<RowIndexKey<int[]>, RowTraversal>(new RowIndexKey(createRowIndexKey()), traversal);
                 if (iterators.size() != iterators.limit()) {
                     // 要继续group by下一个维度
                     GroupByResult result = GroupBy.createGroupByResult(dimensions.get(iterators.size()), traversal,

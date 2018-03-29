@@ -36,19 +36,19 @@ public class GroupByUtils {
         } else {
             asc = getSorts(indexSorts);
         }
-        Iterator<KeyValue<RowIndexKey, RowTraversal>> groupByIterator = new MultiDimensionGroupBy(dimensions, filter, cursor, asc);
+        Iterator<KeyValue<RowIndexKey<int[]>, RowTraversal>> groupByIterator = new MultiDimensionGroupBy(dimensions, filter, cursor, asc);
         if (pageSize != -1) {
             // 分页的情况
             groupByIterator = new GroupByPagingIterator(pageSize, groupByIterator);
         }
-        List<KeyValue<RowIndexKey, AggregatorValue[]>> rowResult = new ArrayList<KeyValue<RowIndexKey, AggregatorValue[]>>();
+        List<KeyValue<RowIndexKey<int[]>, AggregatorValue[]>> rowResult = new ArrayList<KeyValue<RowIndexKey<int[]>, AggregatorValue[]>>();
         List<Map<Integer, Object>> globalDictionaries= createGlobalDictionaries(dimensions.size());
         List<DictionaryEncodedColumn> dictionaries = getDictionaries(dimensions);
         while (groupByIterator.hasNext()) {
-            KeyValue<RowIndexKey, RowTraversal> keyValue = groupByIterator.next();
+            KeyValue<RowIndexKey<int[]>, RowTraversal> keyValue = groupByIterator.next();
             int[] key = keyValue.getKey().getKey();
             AggregatorValue[] values = aggregateRow(keyValue.getValue(), metrics, aggregators);
-            rowResult.add(new KeyValue<RowIndexKey, AggregatorValue[]>(toGlobalIndex(key, dictionaries), values));
+            rowResult.add(new KeyValue<RowIndexKey<int[]>, AggregatorValue[]>(toGlobalIndex(key, dictionaries), values));
             updateGlobalDictionaries(key, globalDictionaries, dictionaries);
         }
         return new GroupByResultSetImpl(rowResult.iterator(), globalDictionaries, indexSorts);

@@ -24,10 +24,10 @@ public abstract class ColumnImplTest<T> implements Column {
     private DictionaryEncodedColumn<T> dict;
     protected List<T> groups;
     private TreeMap<T, MutableBitMap> indexes;
-    protected Comparator<T> comparator;
+    protected Comparator comparator;
     private T nullKey;
 
-    public ColumnImplTest(List<T> details, Comparator<T> comparator, T nullKey) {
+    public ColumnImplTest(List<T> details, Comparator comparator, T nullKey) {
         this.comparator = comparator;
         indexes = new TreeMap<>(comparator);
         this.nullKey = nullKey;
@@ -37,6 +37,7 @@ public abstract class ColumnImplTest<T> implements Column {
     protected abstract T convertValue(Object value);
 
     private void init(List<T> list) {
+        indexes.put(nullKey, BitMaps.newRoaringMutable());
         list.stream().forEach(s -> indexes.putIfAbsent(s, BitMaps.newRoaringMutable()));
         IntStream.range(0, list.size()).forEach(i -> indexes.get(list.get(i)).add(i));
         groups = new ArrayList<>();
