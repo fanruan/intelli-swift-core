@@ -60,7 +60,8 @@ abstract class BaseCustomGroupRule<Base> extends BaseGroupRule<Base, String> {
             IntList indices = IntListFactory.createIntList();
             indices.add(oldIndex);
             map.put(newIndex, Pair.of(groupName, indices));
-            reverseMap[oldIndex] = newIndex;
         }
+        
+        reverseMap[oldIndex] = newIndex;
     }
 }
