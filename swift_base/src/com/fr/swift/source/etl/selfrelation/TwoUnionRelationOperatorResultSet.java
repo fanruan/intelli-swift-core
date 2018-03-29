@@ -31,26 +31,23 @@ public class TwoUnionRelationOperatorResultSet implements SwiftResultSet {
     private LinkedHashMap<String, Integer> columns = new LinkedHashMap<String, Integer>();
     private String idColumnName;
     private List<String> showColumns = new ArrayList<String>();
-    private int columnType;
-    private String columnName;
+    private String[] addedColumns;
     private String parentIdColumnName;
     private RowValue row;
     private Column idColumn;
     private Column pidColumn;
     private int columnLength = 0;
     private SwiftMetaData metaData;
-    private DictionaryEncodedColumn[][] gts = null;
     private int segCursor = 0, rowCursor = 0, rowCount = 0;
     private Map<Object, IndexCollection> valueIndexMap = new HashMap<Object, IndexCollection>();
     private Segment[] segments;
 
     public TwoUnionRelationOperatorResultSet(LinkedHashMap<String, Integer> columns, String idColumnName, List<String> showColumns,
-                                             int columnType, String columnName, String parentIdColumnName, Segment[] segments, SwiftMetaData metaData) {
+                                             String[] addedColumns, String parentIdColumnName, Segment[] segments, SwiftMetaData metaData) {
         this.columns = columns;
         this.idColumnName = idColumnName;
         this.showColumns = showColumns;
-        this.columnType = columnType;
-        this.columnName = columnName;
+        this.addedColumns = addedColumns;
         this.parentIdColumnName = parentIdColumnName;
         this.segments = segments;
         this.metaData = metaData;
@@ -73,7 +70,6 @@ public class TwoUnionRelationOperatorResultSet implements SwiftResultSet {
                     pidIndex = i + 1;
                 }
             }
-            gts = new DictionaryEncodedColumn[segments.length][metaData.getColumnCount()];
             if(idColumn != null && pidColumn != null && metaData.getColumnType(idIndex) == metaData.getColumnType(pidIndex)) {
                 for(int i = 0; i < segments.length; i++) {
                     DictionaryEncodedColumn getter = segments[i].getColumn(new ColumnKey(idColumnName)).getDictionaryEncodedColumn();
@@ -85,9 +81,6 @@ public class TwoUnionRelationOperatorResultSet implements SwiftResultSet {
                         }
                         IndexCollection indexCollection = new IndexCollection(i, j);
                         valueIndexMap.put(ob, indexCollection);
-                    }
-                    for(int k = 0; k < metaData.getColumnCount(); k++) {
-                        gts[i][k] = segments[i].getColumn(new ColumnKey(metaData.getColumnName(k + 1))).getDictionaryEncodedColumn();
                     }
                 }
             }
@@ -106,11 +99,7 @@ public class TwoUnionRelationOperatorResultSet implements SwiftResultSet {
         if(segCursor < segments.length && rowCursor < rowCount) {
             rowCount = segments[segCursor].getRowCount();
             int index = 0;
-            Object[] res = new Object[metaData.getColumnCount() + columnLength * showColumns.size()];
-            for(int i = 0; i < metaData.getColumnCount(); i++) {
-                int indexByRow = gts[segCursor][i].getIndexByRow(rowCursor);
-                res[index++] = gts[segCursor][i].getValue(indexByRow);
-            }
+            Object[] res = new Object[columnLength * showColumns.size()];
             Object[] tags = new Object[columnLength];
             List<Number> list = new ArrayList<Number>();
             dealWithID(columnLength, rowCursor, list, segments[segCursor], new ColumnKey(idColumnName), new ColumnKey(parentIdColumnName), segments);
@@ -172,16 +161,18 @@ public class TwoUnionRelationOperatorResultSet implements SwiftResultSet {
                 for(int k = 0; k < segments.length; k++) {
                     DictionaryEncodedColumn gts = segments[k].getColumn(new ColumnKey(this.idColumnName)).getDictionaryEncodedColumn();
                     int index = gts.getIndex(pid);
-                    ImmutableBitMap bitMap = segments[k].getColumn(new ColumnKey(this.idColumnName)).getBitmapIndex().getBitMapIndex(index);
-                    final int indexOfSeg = k;
-                    if(bitMap != null) {
-                        bitMap.breakableTraversal(new BreakTraversalAction() {
-                            @Override
-                            public boolean actionPerformed(int row) {
-                                dealWithID(cl, row, list, segments[indexOfSeg], idCIndex, pidCIndex, segments);
-                                return true;
-                            }
-                        });
+                    if(index > -1) {
+                        ImmutableBitMap bitMap = segments[k].getColumn(new ColumnKey(this.idColumnName)).getBitmapIndex().getBitMapIndex(index);
+                        final int indexOfSeg = k;
+                        if(bitMap != null) {
+                            bitMap.breakableTraversal(new BreakTraversalAction() {
+                                @Override
+                                public boolean actionPerformed(int row) {
+                                    dealWithID(cl, row, list, segments[indexOfSeg], idCIndex, pidCIndex, segments);
+                                    return true;
+                                }
+                            });
+                        }
                     }
                 }
             }
