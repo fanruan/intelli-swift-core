@@ -1,6 +1,7 @@
 package com.fr.swift.adaptor.widget.group;
 
 import com.finebi.conf.constant.BICommonConstants.GROUP;
+import com.finebi.conf.constant.BIConfConstants;
 import com.fr.swift.query.group.GroupType;
 
 import static com.finebi.conf.constant.BIConfConstants.CONF.GROUP.DATE;
@@ -98,6 +99,46 @@ public class GroupTypeAdaptor {
                 return GroupType.Y_M;
             case DATE.YW:
                 return GroupType.Y_W;
+            default:
+                return null;
+        }
+    }
+
+    /**
+     * nice job! bi-foundation
+     */
+    public static GroupType adaptDateUNITS(int unit) {
+        switch (unit) {
+            case BIConfConstants.CONF.ADD_COLUMN.TIME.UNITS.YEAR:
+                return GroupType.YEAR;
+            case BIConfConstants.CONF.ADD_COLUMN.TIME.UNITS.QUARTER:
+                return GroupType.QUARTER;
+            case BIConfConstants.CONF.ADD_COLUMN.TIME.UNITS.MONTH:
+                return GroupType.MONTH;
+            case BIConfConstants.CONF.ADD_COLUMN.TIME.UNITS.WEEKDAY:
+                return GroupType.WEEK;
+            case BIConfConstants.CONF.ADD_COLUMN.TIME.UNITS.DAY:
+                return GroupType.DAY;
+            case BIConfConstants.CONF.ADD_COLUMN.TIME.UNITS.WEEK_COUNT:
+                return GroupType.WEEK_OF_YEAR;
+            case BIConfConstants.CONF.ADD_COLUMN.TIME.UNITS.HOUR:
+                return GroupType.HOUR;
+            case BIConfConstants.CONF.ADD_COLUMN.TIME.UNITS.MINUTE:
+                return GroupType.MINUTE;
+            case BIConfConstants.CONF.ADD_COLUMN.TIME.UNITS.SECOND:
+                return GroupType.SECOND;
+            case BIConfConstants.CONF.ADD_COLUMN.TIME.UNITS.YQ:
+                return GroupType.Y_Q;
+            case BIConfConstants.CONF.ADD_COLUMN.TIME.UNITS.YM:
+                return GroupType.Y_M;
+            case BIConfConstants.CONF.ADD_COLUMN.TIME.UNITS.YW:
+                return GroupType.Y_W;
+            case BIConfConstants.CONF.ADD_COLUMN.TIME.UNITS.YMDH:
+                return GroupType.Y_M_D_H;
+            case BIConfConstants.CONF.ADD_COLUMN.TIME.UNITS.YMDHM:
+                return GroupType.Y_M_D_H_M;
+            case BIConfConstants.CONF.ADD_COLUMN.TIME.UNITS.YMDHMS:
+                return GroupType.Y_M_D_H_M_S;
             default:
                 return null;
         }

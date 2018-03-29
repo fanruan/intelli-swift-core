@@ -1,18 +1,16 @@
 package com.fr.swift.source.etl.date;
 
+import com.fr.swift.query.group.GroupType;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.segment.column.DictionaryEncodedColumn;
 import com.fr.swift.segment.column.impl.DateDerivers;
-import com.fr.swift.segment.column.impl.DateType;
-import com.fr.swift.segment.column.impl.MixDateType;
 import com.fr.swift.source.ListBasedRow;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftMetaDataColumn;
 import com.fr.swift.source.SwiftResultSet;
 import com.fr.swift.source.etl.utils.DateUtils;
-import com.fr.swift.source.etl.utils.ETLConstant.CONF.ADD_COLUMN.TIME.UNITS;
 import com.fr.swift.util.function.Function;
 
 import java.sql.SQLException;
@@ -25,13 +23,14 @@ import java.util.List;
 public class GetFromDateResultSet implements SwiftResultSet {
 
     private String field;
-    private int type;
+    private GroupType type;
     private Segment[] segments;
     private SwiftMetaData metaData;
     private TempValue tempValue;
+    private Function dateGetter;
     private int rowCount, rowCursor, segCursor;
 
-    public GetFromDateResultSet(String field, int type, Segment[] segments, SwiftMetaData metaData) {
+    public GetFromDateResultSet(String field, GroupType type, Segment[] segments, SwiftMetaData metaData) {
         this.field = field;
         this.type = type;
         this.segments = segments;
@@ -44,6 +43,7 @@ public class GetFromDateResultSet implements SwiftResultSet {
         rowCursor = 0;
         rowCount = segments[0].getRowCount();
         tempValue = new TempValue();
+        dateGetter = DateDerivers.newDeriver(type);
     }
 
     @Override
@@ -55,7 +55,6 @@ public class GetFromDateResultSet implements SwiftResultSet {
     public boolean next() throws SQLException {
         if (segCursor < segments.length && rowCursor < rowCount) {
             rowCount = segments[segCursor].getRowCount();
-            Function dateGetter = getDateGetter(type);
             ColumnKey columnKey = new ColumnKey(field);
             checkType(field);
             DictionaryEncodedColumn getter = segments[segCursor].getColumn(columnKey).getDictionaryEncodedColumn();
@@ -96,43 +95,6 @@ public class GetFromDateResultSet implements SwiftResultSet {
     @Override
     public Row getRowData() throws SQLException {
         return tempValue.getRow();
-    }
-
-    private static Function getDateGetter(int type) {
-        switch (type) {
-            case UNITS.YEAR:
-                return DateDerivers.newSingleFieldDeriver(DateType.YEAR);
-            case UNITS.QUARTER:
-                return DateDerivers.newSingleFieldDeriver(DateType.QUARTER);
-            case UNITS.MONTH:
-                return DateDerivers.newSingleFieldDeriver(DateType.MONTH);
-            case UNITS.WEEKDAY:
-                return DateDerivers.newSingleFieldDeriver(DateType.WEEK);
-            case UNITS.DAY:
-                return DateDerivers.newSingleFieldDeriver(DateType.DAY);
-            case UNITS.WEEK_COUNT:
-                return DateDerivers.newSingleFieldDeriver(DateType.WEEK_OF_YEAR);
-            case UNITS.HOUR:
-                return DateDerivers.newSingleFieldDeriver(DateType.HOUR);
-            case UNITS.MINUTE:
-                return DateDerivers.newSingleFieldDeriver(DateType.MINUTE);
-            case UNITS.SECOND:
-                return DateDerivers.newSingleFieldDeriver(DateType.SECOND);
-            case UNITS.YQ:
-                return DateDerivers.newTruncDeriver(MixDateType.Y_Q);
-            case UNITS.YM:
-                return DateDerivers.newTruncDeriver(MixDateType.Y_M);
-            case UNITS.YW:
-                return DateDerivers.newTruncDeriver(MixDateType.Y_W);
-            case UNITS.YMDH:
-                return DateDerivers.newTruncDeriver(MixDateType.Y_M_D_H);
-            case UNITS.YMDHM:
-                return DateDerivers.newTruncDeriver(MixDateType.Y_M_D_H_M);
-            case UNITS.YMDHMS:
-                return DateDerivers.newTruncDeriver(MixDateType.Y_M_D_H_M_S);
-            default:
-                return null;
-        }
     }
 
     private class TempValue {
