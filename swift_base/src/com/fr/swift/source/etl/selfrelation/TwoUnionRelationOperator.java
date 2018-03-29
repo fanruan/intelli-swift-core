@@ -10,6 +10,7 @@ import com.fr.swift.source.core.CoreField;
 import com.fr.swift.source.core.MD5Utils;
 import com.fr.swift.source.etl.AbstractOperator;
 import com.fr.swift.source.etl.OperatorType;
+import edu.emory.mathcs.backport.java.util.Arrays;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -80,13 +81,7 @@ public class TwoUnionRelationOperator extends AbstractOperator {
 
     @Override
     public List<String> getNewAddedName() {
-        List<String> addColumnNames = new ArrayList<String>();
-        for (SwiftMetaDataColumn column : columnList) {
-            if (!showColumns.contains(column.getName())) {
-                addColumnNames.add(column.getName());
-            }
-        }
-        return addColumnNames;
+        return Arrays.asList(addedColumns);
     }
 
     @Override
@@ -116,9 +111,9 @@ public class TwoUnionRelationOperator extends AbstractOperator {
         addedColumns = new String[columnList.size()];
         int index = 0;
         Iterator<SwiftMetaDataColumn> iterator = columnList.iterator();
-        while(iterator.hasNext()) {
+        while (iterator.hasNext()) {
             SwiftMetaDataColumn temp = iterator.next();
-            addedColumns[index ++] = temp.getName();
+            addedColumns[index++] = temp.getName();
         }
         return columnList;
     }
