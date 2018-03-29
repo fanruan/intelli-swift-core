@@ -27,7 +27,7 @@ public class EtlTransferFactory {
             List<Segment> segments = SwiftContext.getInstance().getSegmentProvider().getSegment(dataSource.getSourceKey());
             basedSegments.add(segments.toArray(new Segment[segments.size()]));
         }
-        return new EtlTransfer(transferOperator, metaData, basedMetas, basedSegments);
+        return new EtlTransfer(transferOperator, metaData, basedMetas, basedSegments, source.getFieldsInfo());
     }
 
 //    public static SwiftSourceTransfer createBaseTableMinorTransfer(ETLSource source) throws Exception{

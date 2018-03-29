@@ -143,4 +143,30 @@ public class GroupTypeAdaptor {
                 return null;
         }
     }
+
+    /**
+     * nice job! bi-foundation
+     */
+    public static GroupType adaptDateGAPUNITS(int unit) {
+        switch (unit) {
+            case BIConfConstants.CONF.ADD_COLUMN.TIME_GAP.UNITS.YEAR:
+                return GroupType.YEAR;
+            case BIConfConstants.CONF.ADD_COLUMN.TIME_GAP.UNITS.QUARTER:
+                return GroupType.QUARTER;
+            case BIConfConstants.CONF.ADD_COLUMN.TIME_GAP.UNITS.MONTH:
+                return GroupType.MONTH;
+            case BIConfConstants.CONF.ADD_COLUMN.TIME_GAP.UNITS.WEEK:
+                return GroupType.WEEK;
+            case BIConfConstants.CONF.ADD_COLUMN.TIME_GAP.UNITS.DAY:
+                return GroupType.DAY;
+            case BIConfConstants.CONF.ADD_COLUMN.TIME_GAP.UNITS.HOUR:
+                return GroupType.HOUR;
+            case BIConfConstants.CONF.ADD_COLUMN.TIME_GAP.UNITS.MINUTE:
+                return GroupType.MINUTE;
+            case BIConfConstants.CONF.ADD_COLUMN.TIME_GAP.UNITS.SECOND:
+                return GroupType.SECOND;
+            default:
+                return null;
+        }
+    }
 }

@@ -96,7 +96,7 @@ public class EtlTransferOperatorFactory {
     }
 
     private static ETLTransferOperator transferDateDiffOperator(DateDiffOperator operator) {
-        return new DateDiffTransferOperator(operator.getField1(), operator.getField2(), operator.getUnit());
+        return new DateDiffTransferOperator(operator.getField1(), operator.getField2(), operator.getGroupType());
     }
 
     private static ETLTransferOperator transferGetDateOperator(GetFromDateOperator operator) {

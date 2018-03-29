@@ -1,18 +1,18 @@
 package com.fr.swift.source.etl.datediff;
 
-import com.fr.general.ComparatorUtils;
 import com.fr.swift.exception.meta.SwiftMetaDataException;
+import com.fr.swift.query.group.GroupType;
 import com.fr.swift.segment.Segment;
+import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.segment.column.DictionaryEncodedColumn;
+import com.fr.swift.source.ColumnTypeConstants;
+import com.fr.swift.source.ColumnTypeUtils;
 import com.fr.swift.source.ListBasedRow;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftMetaDataColumn;
 import com.fr.swift.source.SwiftResultSet;
-import com.fr.swift.source.etl.utils.DateUtils;
-import com.fr.swift.source.etl.utils.ETLConstant;
-import com.fr.swift.source.etl.utils.ETLConstant.CONF.ADD_COLUMN.TIME_GAP.UNITS;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -25,26 +25,26 @@ public class DateDiffResultSet implements SwiftResultSet {
 
     private String field1;
     private String field2;
-    private int unit;
     private Segment[] segments;
     private SwiftMetaData metaData;
     private int rowCount, rowCursor, segCursor;
     private TempValue tempValue;
+    private DateDiffCalculator calculator;
 
-    public DateDiffResultSet(String field1, String field2, int unit, Segment[] segments, SwiftMetaData metaData) {
+    public DateDiffResultSet(String field1, String field2, GroupType groupType, Segment[] segments, SwiftMetaData metaData) {
         this.field1 = field1;
         this.field2 = field2;
-        this.unit = unit;
         this.segments = segments;
         this.metaData = metaData;
-        init();
+        init(groupType);
     }
 
-    private void init() {
+    private void init(GroupType groupType) {
         rowCursor = 0;
         segCursor = 0;
         rowCount = segments[0].getRowCount();
         tempValue = new TempValue();
+        calculator = getDiffCalculator(groupType);
     }
 
 
@@ -57,11 +57,10 @@ public class DateDiffResultSet implements SwiftResultSet {
     public boolean next() throws SQLException {
         if (segCursor < segments.length && rowCursor < rowCount) {
             rowCount = segments[segCursor].getRowCount();
-            DateDiffCalculator dc = getDiffCalculator(unit);
             long systemTime = System.currentTimeMillis();
             ValueGetter g1 = createValueGetter(field1, segments[segCursor], systemTime);
             ValueGetter g2 = createValueGetter(field2, segments[segCursor], systemTime);
-            Object value = dc.get(g1.getTime(rowCursor), g2.getTime(rowCursor));
+            Object value = calculator.get(g1.getTime(rowCursor), g2.getTime(rowCursor));
             List dataList = new ArrayList();
             dataList.add(value == null ? value : Long.parseLong(value.toString()));
             tempValue.setRow(new ListBasedRow(dataList));
@@ -91,34 +90,40 @@ public class DateDiffResultSet implements SwiftResultSet {
     }
 
     private ValueGetter createValueGetter(String field, Segment segment, long systemTime) {
-        ValueGetter vg = null;
-        if (ComparatorUtils.equals(field, ETLConstant.CONF.FIELD_ID.SYSTEM_TIME)) {
+        ValueGetter vg ;
+        Column column = segment.getColumn(new ColumnKey(field));
+        if (column == null) {
             vg = new SystemTimeValueGetter(systemTime);
         } else {
-            vg = new DataValueGetter(segment, new ColumnKey(field));
+            SwiftMetaDataColumn metaDataColumn = null;
+            try {
+                metaDataColumn = segment.getMetaData().getColumn(field);
+            } catch (SwiftMetaDataException ignore) {
+            }
+            ColumnTypeUtils.checkColumnType(metaDataColumn, ColumnTypeConstants.ColumnType.DATE);
+            vg = new DataValueGetter(column.getDictionaryEncodedColumn());
         }
-        vg.check();
         return vg;
     }
 
 
-    private static DateDiffCalculator getDiffCalculator(int unit) {
-        switch (unit) {
-            case UNITS.YEAR:
+    private static DateDiffCalculator getDiffCalculator(GroupType groupType) {
+        switch (groupType) {
+            case YEAR:
                 return new YearDiff();
-            case UNITS.MONTH:
+            case MONTH:
                 return new MonthDiff();
-            case UNITS.QUARTER:
+            case QUARTER:
                 return new SeasonDiff();
-            case UNITS.WEEK:
+            case WEEK:
                 return new WeekDiffer();
-            case UNITS.DAY:
+            case DAY:
                 return DayDiff.INSTANCE;
-            case UNITS.HOUR:
+            case HOUR:
                 return HourDiffer.INSTANCE;
-            case UNITS.MINUTE:
+            case MINUTE:
                 return MinuteDiffer.INSTANCE;
-            case UNITS.SECOND:
+            case SECOND:
                 return SecondDiffer.INSTANCE;
             default:
                 return null;
@@ -139,13 +144,11 @@ public class DateDiffResultSet implements SwiftResultSet {
 
     private interface ValueGetter {
         Long getTime(int row);
-
-        void check();
     }
 
     private class SystemTimeValueGetter implements ValueGetter {
 
-        long t;
+        Long t;
 
         SystemTimeValueGetter(long t) {
             this.t = t;
@@ -155,36 +158,18 @@ public class DateDiffResultSet implements SwiftResultSet {
         public Long getTime(int row) {
             return t;
         }
-
-        @Override
-        public void check() {
-        }
     }
 
     private class DataValueGetter implements ValueGetter {
-        private Segment segment;
-        private DictionaryEncodedColumn getter;
-        private ColumnKey columnKey;
+        private DictionaryEncodedColumn dic;
 
-        DataValueGetter(Segment segment, ColumnKey columnKey) {
-            this.segment = segment;
-            this.columnKey = columnKey;
-            this.getter = segment.getColumn(columnKey).getDictionaryEncodedColumn();
+        DataValueGetter(DictionaryEncodedColumn dic) {
+            this.dic = dic;
         }
 
         @Override
         public Long getTime(int row) {
-            return (Long) getter.getValue(getter.getIndexByRow(row));
-        }
-
-        @Override
-        public void check() {
-            SwiftMetaDataColumn column = null;
-            try {
-                column = metaData.getColumn(columnKey.getName());
-            } catch (SwiftMetaDataException e) {
-            }
-            DateUtils.checkDateColumnType(column);
+            return (Long) dic.getValue(dic.getIndexByRow(row));
         }
     }
 }

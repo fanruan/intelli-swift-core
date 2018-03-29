@@ -2,7 +2,6 @@ package com.fr.swift.adaptor.transformer;
 
 import com.finebi.base.constant.FineEngineType;
 import com.finebi.base.stable.StableManager;
-import com.finebi.conf.constant.BICommonConstants;
 import com.finebi.conf.constant.BIConfConstants;
 import com.finebi.conf.constant.ConfConstant.AnalysisType;
 import com.finebi.conf.exception.FineAnalysisOperationUnSafe;
@@ -212,7 +211,7 @@ class EtlAdaptor {
             DataSource baseDataSource = IndexingDataSourceFactory.transformDataSource(fineBusinessTable);
             List<SelectFieldPathItem> path = selectFieldBeanItem.getPath();
             ColumnKey columnKey = new ColumnKey(fineBusinessField.getName());
-            if (baseTable != null && !ComparatorUtils.equals(baseTable, fineBusinessTable.getId())){
+            if (baseTable != null && !ComparatorUtils.equals(baseTable, fineBusinessTable.getId())) {
                 columnKey.setRelation(getRelation(selectFieldBeanItem.getPath(), baseTable, fineBusinessTable.getId(), relationProvider));
             }
             if (sourceKeyColumnMap.containsKey(baseDataSource.getSourceKey().getId())) {
@@ -240,11 +239,11 @@ class EtlAdaptor {
     }
 
     private static RelationSource getRelation(List<SelectFieldPathItem> path, String baseTable, String table, SwiftRelationPathConfProvider relationProvider) {
-        if (path != null){
+        if (path != null) {
             //@yee todo 选定的路径转化
         }
-        List<FineBusinessTableRelationPath> relation =  relationProvider.getRelationPaths(table, baseTable);
-        if (relation == null || relation.isEmpty()){
+        List<FineBusinessTableRelationPath> relation = relationProvider.getRelationPaths(table, baseTable);
+        if (relation == null || relation.isEmpty()) {
             return Crasher.crash("invalid relation tables");
         }
         FineBusinessTableRelationPath p = relation.get(0);
@@ -252,31 +251,31 @@ class EtlAdaptor {
         return null;
     }
 
-    private static String getBaseTable(SwiftRelationPathConfProvider relationProvider, List<SelectFieldBeanItem> selectFieldBeanItemList) throws Exception{
+    private static String getBaseTable(SwiftRelationPathConfProvider relationProvider, List<SelectFieldBeanItem> selectFieldBeanItemList) throws Exception {
         Set<String> tables = new HashSet<String>();
-        for (SelectFieldBeanItem selectFieldBeanItem : selectFieldBeanItemList){
+        for (SelectFieldBeanItem selectFieldBeanItem : selectFieldBeanItemList) {
             tables.add(selectFieldBeanItem.getTableName());
             //设置了关联与子表的都直接返回
             List<String> baseTables = selectFieldBeanItem.getCommonTable();
-            if (baseTables != null && !baseTables.isEmpty()){
+            if (baseTables != null && !baseTables.isEmpty()) {
                 return baseTables.get(0);
             }
             List<SelectFieldPathItem> path = selectFieldBeanItem.getPath();
-            if (path != null){
+            if (path != null) {
                 return path.get(path.size() - 1).getTable();
             }
         }
-        for (FineBusinessTableRelationPath path : relationProvider.getAllRelationPaths()){
-            if (tables.size() == 1){
+        for (FineBusinessTableRelationPath path : relationProvider.getAllRelationPaths()) {
+            if (tables.size() == 1) {
                 break;
             }
             String prim = path.getFirstTable().getId();
             String foreign = path.getEndTable().getId();
-            if (tables.contains(prim) && tables.contains(foreign)){
+            if (tables.contains(prim) && tables.contains(foreign)) {
                 tables.remove(prim);
             }
         }
-        if (tables.size() != 1){
+        if (tables.size() != 1) {
             return Crasher.crash("wrong relation, foreign table size is" + tables.size());
         }
         return tables.iterator().next();
@@ -293,10 +292,10 @@ class EtlAdaptor {
     private static DataSource getMultiTableSelectFieldSource(Map<String, List<ColumnKey>> sourceKeyColumnMap, Map<String, DataSource> sourceKeyDataSourceMap, List<DataSource> baseDatas, String baseSoruceKey) throws SwiftMetaDataException {
         List<SwiftMetaData> swiftMetaDatas = new ArrayList<SwiftMetaData>();
         List<ColumnKey[]> fields = new ArrayList<ColumnKey[]>();
-        List<ColumnKey> baseFields= sourceKeyColumnMap.get(baseSoruceKey);
+        List<ColumnKey> baseFields = sourceKeyColumnMap.get(baseSoruceKey);
         baseDatas.add(sourceKeyDataSourceMap.get(baseSoruceKey));
         for (Map.Entry<String, List<ColumnKey>> entry : sourceKeyColumnMap.entrySet()) {
-            if (ComparatorUtils.equals(baseSoruceKey, entry.getKey())){
+            if (ComparatorUtils.equals(baseSoruceKey, entry.getKey())) {
                 continue;
             }
             baseDatas.add(sourceKeyDataSourceMap.get(entry.getKey()));
@@ -513,7 +512,7 @@ class EtlAdaptor {
         AllValueItemBean tempBean = ((AddAllValueColumnBean) value).getValue();
         String columnKey = tempBean.getOrigin();
         int summary = tempBean.getSummary();
-        AggregatorType aggregatorType = AggregatorAdaptor.transformAggregatorType(BICommonConstants.COLUMN.NUMBER, summary);
+        AggregatorType aggregatorType = AggregatorAdaptor.transformAllValuesAggregatorType(summary);
         if (tempBean.getRule() == BIConfConstants.CONF.ADD_COLUMN.NOT_IN_GROUP) {
             return new AllDataRowCalculatorOperator(columnName, ColumnTypeAdaptor.adaptColumnType(32), columnKey, null, aggregatorType);
         } else {
@@ -556,8 +555,7 @@ class EtlAdaptor {
         String columnName = value.getName();
         String field1 = tempBean.getMinuend();
         String field2 = tempBean.getMinus();
-        int type = tempBean.getUnit();
-        return new DateDiffOperator(field1, field2, type, columnName, Types.INTEGER);
+        return new DateDiffOperator(field1, field2, GroupTypeAdaptor.adaptDateGAPUNITS(tempBean.getUnit()), columnName);
     }
 
     private static GroupAssignmentOperator getAutoGroupOperator(AddNewColumnValueBean value) {
