@@ -67,10 +67,7 @@ public class ShowResultSet implements SwiftResultSet {
     }
 
     private static boolean isDate(SwiftMetaData meta, int i) throws SwiftMetaDataException {
-        return ColumnType.DATE == ColumnTypeUtils.sqlTypeToColumnType(
-                meta.getColumnType(i),
-                meta.getPrecision(i),
-                meta.getScale(i));
+        return ColumnType.DATE == ColumnTypeUtils.getColumnType(meta.getColumn(i));
     }
 
     @Override

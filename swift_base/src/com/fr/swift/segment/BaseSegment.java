@@ -1,6 +1,5 @@
 package com.fr.swift.segment;
 
-import com.fr.general.ComparatorUtils;
 import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.cube.io.BuildConf;
 import com.fr.swift.cube.io.ResourceDiscovery;
@@ -13,7 +12,6 @@ import com.fr.swift.cube.io.location.IResourceLocation;
 import com.fr.swift.cube.io.output.BitMapWriter;
 import com.fr.swift.cube.io.output.IntWriter;
 import com.fr.swift.exception.meta.SwiftMetaDataException;
-import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.relation.CubeLogicColumnKey;
 import com.fr.swift.relation.CubeMultiRelation;
 import com.fr.swift.relation.CubeMultiRelationPath;
@@ -80,28 +78,9 @@ public abstract class BaseSegment implements Segment {
         }
     }
 
-    private String getRealName(String name) throws SwiftMetaDataException {
-        for (int i = 1, len = meta.getColumnCount(); i <= len; i++) {
-            if (ComparatorUtils.equals(name, meta.getColumnName(i))) {
-                return name;
-            }
-        }
-        return null;
-    }
-
-    private String getRemark(String name) throws SwiftMetaDataException {
-        for (int i = 1, len = meta.getColumnCount(); i <= len; i++) {
-            if (ComparatorUtils.equals(name, meta.getColumnRemark(i))) {
-                return meta.getColumnName(i);
-            }
-        }
-        return null;
-    }
-
     private static Column<?> newColumn(IResourceLocation location, ClassType classType) {
         switch (classType) {
             case INTEGER:
-//                return new IntColumn(location);
             case LONG:
                 return new LongColumn(location);
             case DOUBLE:
@@ -115,17 +94,8 @@ public abstract class BaseSegment implements Segment {
         return Crasher.crash(String.format("cannot new correct column by class type: %s", classType));
     }
 
-    private ClassType getClassType(String name) {
-        try {
-            for (int i = 1, len = meta.getColumnCount(); i <= len; i++) {
-                if (ComparatorUtils.equals(meta.getColumnName(i), name)) {
-                    return ColumnTypeUtils.sqlTypeToClassType(meta.getColumnType(i), meta.getPrecision(i), meta.getScale(i));
-                }
-            }
-        } catch (SwiftMetaDataException e) {
-            SwiftLoggers.getLogger().error(e);
-        }
-        return null;
+    private ClassType getClassType(String name) throws SwiftMetaDataException {
+        return ColumnTypeUtils.getClassType(meta.getColumn(name));
     }
 
     @Override

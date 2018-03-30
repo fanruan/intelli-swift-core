@@ -61,7 +61,7 @@ public abstract class AbstractPreviewQueryTransfer extends AbstractQueryTransfer
                 columnList.add(outerColumn);
             } else if (fieldClassTypes.containsKey(outerColumn.getName())){
                 SwiftMetaDataColumn column = outerColumn;
-                ColumnType outerColumnType = ColumnTypeUtils.sqlTypeToColumnType(outerColumn.getType(), outerColumn.getPrecision(), outerColumn.getScale());
+                ColumnType outerColumnType = ColumnTypeUtils.getColumnType(outerColumn);
                 ColumnType columnType = fieldClassTypes.get(outerColumn.getName());
                 if (outerColumnType != columnType) {
                     column = ColumnTypeUtils.convertColumn(columnType, outerColumn);

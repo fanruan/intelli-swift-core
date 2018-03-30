@@ -2,7 +2,7 @@ package com.fr.swift.generate.preview;
 
 import com.fr.swift.cube.io.Types;
 import com.fr.swift.cube.io.location.ResourceLocation;
-import com.fr.swift.generate.Util;
+import com.fr.swift.exception.meta.SwiftMetaDataException;
 import com.fr.swift.generate.preview.operator.MinorInserter;
 import com.fr.swift.generate.realtime.index.RealtimeColumnIndexer;
 import com.fr.swift.generate.realtime.index.RealtimeSubDateColumnIndexer;
@@ -13,8 +13,10 @@ import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.segment.column.impl.SubDateColumn;
 import com.fr.swift.segment.operator.Inserter;
 import com.fr.swift.source.ColumnTypeConstants.ClassType;
+import com.fr.swift.source.ColumnTypeUtils;
 import com.fr.swift.source.DataSource;
 import com.fr.swift.source.EtlDataSource;
+import com.fr.swift.source.SwiftMetaDataColumn;
 import com.fr.swift.source.SwiftResultSet;
 import com.fr.swift.utils.DataSourceUtils;
 
@@ -85,8 +87,9 @@ public class MinorUpdater {
         }.work();
     }
 
-    private static void indexSubColumnIfNeed(final DataSource dataSource, final ColumnKey columnKey) {
-        if (Util.getClassType(dataSource, columnKey) != ClassType.DATE) {
+    private static void indexSubColumnIfNeed(final DataSource dataSource, final ColumnKey columnKey) throws SwiftMetaDataException {
+        SwiftMetaDataColumn columnMeta = dataSource.getMetadata().getColumn(columnKey.getName());
+        if (ColumnTypeUtils.getClassType(columnMeta) != ClassType.DATE) {
             return;
         }
         for (GroupType type : SubDateColumn.TYPES_TO_GENERATE) {

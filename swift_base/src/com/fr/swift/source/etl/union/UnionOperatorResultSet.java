@@ -61,8 +61,8 @@ public class UnionOperatorResultSet implements SwiftResultSet {
                     String currentName = this.unionColumns.get(i).get(0);
                     SwiftMetaDataColumn currentMetaDataColumn = metaData.getColumn(currentName);
                     SwiftMetaDataColumn segColumn = segMeta.getColumn(name);
-                    ColumnTypeConstants.ClassType currentType = ColumnTypeUtils.sqlTypeToClassType(currentMetaDataColumn.getType(), currentMetaDataColumn.getPrecision(), currentMetaDataColumn.getScale());
-                    ColumnTypeConstants.ClassType segType = ColumnTypeUtils.sqlTypeToClassType(segColumn.getType(), segColumn.getPrecision(), segColumn.getScale());
+                    ColumnTypeConstants.ClassType currentType = ColumnTypeUtils.getClassType(currentMetaDataColumn);
+                    ColumnTypeConstants.ClassType segType = ColumnTypeUtils.getClassType(segColumn);
                     //根据字段类型，决定类型转化
                     if (currentType == segType){
                         currentColumns[i] = new OriginColumnDetailValueConverter(column.getDictionaryEncodedColumn());

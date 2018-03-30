@@ -22,21 +22,22 @@ public class DateUtils {
                 return dateStaticFilterBean2Long(((DateStaticFilterBean) bean).getValue());
             case BICommonConstants.DATE_TYPE.DYNAMIC:
                 return dateDynamicFilterBeanValue2Long(((DateDynamicFilterBean) bean).getValue());
+            default:
+                return dateStaticFilterBean2Long(((DateStaticFilterBean) bean).getValue());
         }
-        return dateStaticFilterBean2Long(((DateStaticFilterBean) bean).getValue());
     }
 
     public static long dateStaticFilterBean2Long(DateStaticFilterBeanValue value) {
         Calendar c = Calendar.getInstance();
         c.clear();
-        c.set(Calendar.YEAR, string2Int(value.getYear()));
+        c.set(Calendar.YEAR, value.getYear());
         // TODO: 2018/3/23 季度这个值没法理解
 //                c.set(Calendar.MONTH, getStartMonthOfQuarter(value.month2Quarter()));
-        c.set(Calendar.MONTH, string2Int(value.getMonth()));
-        c.set(Calendar.DATE, string2Int(value.getDay()));
-        c.set(Calendar.HOUR_OF_DAY, string2Int(value.getHour()));
-        c.set(Calendar.MINUTE, string2Int(value.getMinute()));
-        c.set(Calendar.SECOND, string2Int(value.getSecond()));
+        c.set(Calendar.MONTH, value.getMonth());
+        c.set(Calendar.DATE, value.getDay());
+        c.set(Calendar.HOUR_OF_DAY, value.getHour());
+        c.set(Calendar.MINUTE, value.getMinute());
+        c.set(Calendar.SECOND, value.getSecond());
         return c.getTimeInMillis();
     }
 
@@ -78,8 +79,9 @@ public class DateUtils {
                 return startOfYear(c).getTimeInMillis();
             case YEAR_END:
                 return endOfYear(c).getTimeInMillis();
+            default:
+                return c.getTimeInMillis();
         }
-        return c.getTimeInMillis();
     }
 
     // 一周工作日的起始日和结束日，没有功能文档，和测试同学统一的
