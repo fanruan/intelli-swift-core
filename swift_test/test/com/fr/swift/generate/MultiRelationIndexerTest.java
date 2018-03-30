@@ -186,7 +186,7 @@ public class MultiRelationIndexerTest extends TestCase {
                 assertTrue(foreign instanceof HistorySegmentImpl);
 
                 CubeMultiRelation relation = MultiRelationHelper.convert2CubeRelation(createRelation());
-                RelationIndex index = foreign.getRelation(relation, pi);
+                RelationIndex index = foreign.getRelation(relation);
                 int primaryRow = segment.getRowCount();
                 int foreignRow = foreign.getRowCount();
                 ImmutableBitMap nullIndex = index.getNullIndex();
