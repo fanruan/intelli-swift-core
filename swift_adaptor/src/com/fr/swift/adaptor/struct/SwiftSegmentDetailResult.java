@@ -9,7 +9,6 @@ import com.fr.swift.cal.result.detail.SortDetailResultQuery;
 import com.fr.swift.cal.segment.detail.NormalDetailSegmentQuery;
 import com.fr.swift.cal.segment.detail.SortDetailSegmentQuery;
 import com.fr.swift.compare.Comparators;
-import com.fr.swift.exception.meta.SwiftMetaDataException;
 import com.fr.swift.query.filter.detail.DetailFilter;
 import com.fr.swift.query.sort.SortType;
 import com.fr.swift.result.DetailResultSet;
@@ -17,8 +16,6 @@ import com.fr.swift.result.SwiftNode;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.ColumnKey;
-import com.fr.swift.source.ColumnTypeConstants.ColumnType;
-import com.fr.swift.source.ColumnTypeUtils;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftResultSet;
@@ -189,22 +186,9 @@ public class SwiftSegmentDetailResult implements BIDetailTableResult {
             return cellList;
         }
 
-        private java.sql.Date toSqlDate(Object date) {
-            return date == null ? null :
-                    new java.sql.Date(((Long) date));
-        }
-
         @Override
         public void remove() {
             throw new UnsupportedOperationException();
-        }
-
-        private boolean isDate(SwiftMetaData meta, int i) throws SwiftMetaDataException {
-            return ColumnType.DATE ==
-                    ColumnTypeUtils.sqlTypeToColumnType(
-                            meta.getColumnType(i),
-                            meta.getPrecision(i),
-                            meta.getScale(i));
         }
     }
 

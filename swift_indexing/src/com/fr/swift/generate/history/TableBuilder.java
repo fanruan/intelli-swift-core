@@ -99,7 +99,7 @@ public class TableBuilder extends BaseTableBuilder {
 
             private boolean hasSubColumn(String indexField) throws SwiftMetaDataException {
                 SwiftMetaDataColumn columnMeta = meta.getColumn(indexField);
-                return ColumnTypeUtils.sqlTypeToColumnType(columnMeta.getType(), columnMeta.getPrecision(), columnMeta.getScale()) == ColumnType.DATE;
+                return ColumnTypeUtils.getColumnType(columnMeta) == ColumnType.DATE;
             }
         });
 
