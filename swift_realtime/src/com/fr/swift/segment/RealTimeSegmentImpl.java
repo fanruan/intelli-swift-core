@@ -15,6 +15,7 @@ public class RealTimeSegmentImpl extends BaseSegment implements RealTimeSegment 
         super(parent, meta);
     }
 
+    @Override
     public boolean isHistory() {
         return false;
     }

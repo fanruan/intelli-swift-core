@@ -8,15 +8,18 @@ import com.fr.swift.query.group.impl.CustomNumGroupRule.NumInterval;
 import com.fr.swift.query.group.impl.CustomStrGroupRule;
 import com.fr.swift.query.group.impl.CustomStrGroupRule.StringGroup;
 import com.fr.swift.structure.array.IntList;
-import junit.framework.TestCase;
+import org.junit.Test;
 
 import java.util.Arrays;
+
+import static org.junit.Assert.assertEquals;
 
 /**
  * @author anchore
  * @date 2018/3/1
  */
-public class GroupRuleTest extends TestCase {
+public class GroupRuleTest {
+    @Test
     public void testCustomStrGroupRule() {
         GroupRule rule = new CustomStrGroupRule(Arrays.asList(
                 new StringGroup("g0", Arrays.asList("1", "2", "3")),
@@ -54,8 +57,21 @@ public class GroupRuleTest extends TestCase {
         assertEquals(8, rule.map(3).get(2));
         assertEquals(9, rule.map(3).get(3));
         assertEquals(10, rule.map(3).get(4));
+
+        assertEquals(0, rule.reverseMap(0));
+        assertEquals(1, rule.reverseMap(1));
+        assertEquals(1, rule.reverseMap(2));
+        assertEquals(1, rule.reverseMap(3));
+        assertEquals(3, rule.reverseMap(4));
+        assertEquals(2, rule.reverseMap(5));
+        assertEquals(2, rule.reverseMap(6));
+        assertEquals(3, rule.reverseMap(7));
+        assertEquals(3, rule.reverseMap(8));
+        assertEquals(3, rule.reverseMap(9));
+        assertEquals(3, rule.reverseMap(10));
     }
 
+    @Test
     public void testCustomStrGroupRuleWithNoOtherGroup() {
         GroupRule rule = new CustomStrGroupRule(Arrays.asList(
                 new StringGroup("g0", Arrays.asList("1", "2", "3")),
@@ -103,8 +119,21 @@ public class GroupRuleTest extends TestCase {
         IntList l3 = rule.map(4);
         assertEquals(1, l3.size());
         assertEquals(10, l3.get(0));
+
+        assertEquals(0, rule.reverseMap(0));
+        assertEquals(1, rule.reverseMap(1));
+        assertEquals(1, rule.reverseMap(2));
+        assertEquals(1, rule.reverseMap(3));
+        assertEquals(3, rule.reverseMap(4));
+        assertEquals(2, rule.reverseMap(5));
+        assertEquals(2, rule.reverseMap(6));
+        assertEquals(2, rule.reverseMap(7));
+        assertEquals(2, rule.reverseMap(8));
+        assertEquals(2, rule.reverseMap(9));
+        assertEquals(4, rule.reverseMap(10));
     }
 
+    @Test
     public void testCustomNumGroupRule() {
         GroupRule rule = new CustomNumGroupRule(Arrays.asList(
                 new NumInterval("g0", 0, true, 2.1, false),
@@ -152,8 +181,21 @@ public class GroupRuleTest extends TestCase {
         assertEquals(3, l3.get(0));
         assertEquals(6, l3.get(1));
         assertEquals(10, l3.get(2));
+
+        assertEquals(0, rule.reverseMap(0));
+        assertEquals(1, rule.reverseMap(1));
+        assertEquals(1, rule.reverseMap(2));
+        assertEquals(4, rule.reverseMap(3));
+        assertEquals(2, rule.reverseMap(4));
+        assertEquals(2, rule.reverseMap(5));
+        assertEquals(4, rule.reverseMap(6));
+        assertEquals(3, rule.reverseMap(7));
+        assertEquals(3, rule.reverseMap(8));
+        assertEquals(3, rule.reverseMap(9));
+        assertEquals(4, rule.reverseMap(10));
     }
 
+    @Test
     public void testCustomNumGroupRuleWithNoOtherGroup() {
         GroupRule rule = new CustomNumGroupRule(Arrays.asList(
                 new NumInterval("g0", 0, true, 2.1, false),
@@ -205,8 +247,21 @@ public class GroupRuleTest extends TestCase {
         IntList l4 = rule.map(5);
         assertEquals(1, l4.size());
         assertEquals(10, l4.get(0));
+
+        assertEquals(0, rule.reverseMap(0));
+        assertEquals(1, rule.reverseMap(1));
+        assertEquals(1, rule.reverseMap(2));
+        assertEquals(4, rule.reverseMap(3));
+        assertEquals(2, rule.reverseMap(4));
+        assertEquals(2, rule.reverseMap(5));
+        assertEquals(2, rule.reverseMap(6));
+        assertEquals(3, rule.reverseMap(7));
+        assertEquals(3, rule.reverseMap(8));
+        assertEquals(3, rule.reverseMap(9));
+        assertEquals(5, rule.reverseMap(10));
     }
 
+    @Test
     public void testAutoGroupRule() {
         GroupRule rule = new AutoNumGroupRule(new Partition(1, 10, 4));
         rule.setOriginDict(new TempDictColumn<Number>() {
@@ -246,5 +301,17 @@ public class GroupRuleTest extends TestCase {
         assertEquals(2, l2.size());
         assertEquals(9, l2.get(0));
         assertEquals(10, l2.get(1));
+
+        assertEquals(0, rule.reverseMap(0));
+        assertEquals(1, rule.reverseMap(1));
+        assertEquals(1, rule.reverseMap(2));
+        assertEquals(1, rule.reverseMap(3));
+        assertEquals(1, rule.reverseMap(4));
+        assertEquals(2, rule.reverseMap(5));
+        assertEquals(2, rule.reverseMap(6));
+        assertEquals(2, rule.reverseMap(7));
+        assertEquals(2, rule.reverseMap(8));
+        assertEquals(3, rule.reverseMap(9));
+        assertEquals(3, rule.reverseMap(10));
     }
 }

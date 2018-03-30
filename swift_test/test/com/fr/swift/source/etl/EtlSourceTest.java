@@ -17,7 +17,7 @@ import java.util.Map;
 /**
  * Created by pony on 2018/1/10.
  */
-public class ETLSourceTest extends TestCase {
+public class EtlSourceTest extends TestCase {
 
     public void setUp() throws Exception{
         TestConnectionProvider.createConnection();
@@ -33,12 +33,12 @@ public class ETLSourceTest extends TestCase {
         EasyMock.expect(operator.getColumns(EasyMock.anyObject())).andReturn(new ArrayList<>()).anyTimes();
         EasyMock.expect(operator.fetchObjectCore()).andReturn(new BasicCore()).anyTimes();
         control.replay();
-        ETLSource source = new ETLSource(sources, operator);
+        EtlSource source = new EtlSource(sources, operator);
         SwiftMetaData metaData = source.getMetadata();
         assertEquals(metaData.getColumnCount(),4);
         Map<Integer, String> fileds = new HashMap<>();
         fileds.put(1, "a");
-        ETLSource part = new ETLSource(sources, operator, fileds);
+        EtlSource part = new EtlSource(sources, operator, fileds);
         SwiftMetaData partMetadata = part.getMetadata();
         assertEquals(partMetadata.getColumnCount(),1);
         assertEquals(partMetadata.getColumnName(1),"a");

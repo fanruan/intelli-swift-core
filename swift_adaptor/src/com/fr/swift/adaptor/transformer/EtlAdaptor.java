@@ -88,7 +88,7 @@ import com.fr.swift.source.SwiftMetaDataColumn;
 import com.fr.swift.source.SwiftMetaDataImpl;
 import com.fr.swift.source.etl.AbstractOperator;
 import com.fr.swift.source.etl.ETLOperator;
-import com.fr.swift.source.etl.ETLSource;
+import com.fr.swift.source.etl.EtlSource;
 import com.fr.swift.source.etl.columnfilter.ColumnFilterOperator;
 import com.fr.swift.source.etl.columnrowtrans.ColumnRowTransOperator;
 import com.fr.swift.source.etl.columnrowtrans.NameText;
@@ -149,7 +149,7 @@ class EtlAdaptor {
                 dataSources.add(IndexingDataSourceFactory.transformDataSource(baseTable));
             }
             dataSources.addAll(fromOperator(op));
-            return new ETLSource(dataSources, adaptEtlOperator(op, table));
+            return new EtlSource(dataSources, adaptEtlOperator(op, table));
         } catch (Exception e) {
             SwiftLoggers.getLogger().error(e);
             return IndexingDataSourceFactory.transformDataSource(baseTable);
@@ -167,11 +167,11 @@ class EtlAdaptor {
                 break;
             }
         }
-        ETLSource source = (ETLSource) IndexingDataSourceFactory.transformDataSource(analysis);
-        return new ETLSource(source.getBasedSources(), source.getOperator(), createFieldsInfo(fieldSettingOperatorList, source));
+        EtlSource source = (EtlSource) IndexingDataSourceFactory.transformDataSource(analysis);
+        return new EtlSource(source.getBasedSources(), source.getOperator(), createFieldsInfo(fieldSettingOperatorList, source));
     }
 
-    private static Map<Integer, String> createFieldsInfo(List<FieldSettingOperator> fieldSettingOperatorList, ETLSource source) throws SwiftMetaDataException {
+    private static Map<Integer, String> createFieldsInfo(List<FieldSettingOperator> fieldSettingOperatorList, EtlSource source) throws SwiftMetaDataException {
         Map<Integer, String> sourceFieldsInfo = source.getFieldsInfo();
         Map<Integer, String> sourceFullFieldInfo = new TreeMap<Integer, String>();
         Map<Integer, String> fieldInfo = new TreeMap<Integer, String>();
@@ -251,7 +251,7 @@ class EtlAdaptor {
         return null;
     }
 
-    private static String getBaseTable(SwiftRelationPathConfProvider relationProvider, List<SelectFieldBeanItem> selectFieldBeanItemList) throws Exception {
+    private static String getBaseTable(SwiftRelationPathConfProvider relationProvider, List<SelectFieldBeanItem> selectFieldBeanItemList) {
         Set<String> tables = new HashSet<String>();
         for (SelectFieldBeanItem selectFieldBeanItem : selectFieldBeanItemList) {
             tables.add(selectFieldBeanItem.getTableName());
@@ -281,15 +281,15 @@ class EtlAdaptor {
         return tables.iterator().next();
     }
 
-    private static DataSource getSingleTableSelectFieldSource(Map<String, List<ColumnKey>> sourceKeyColumnMap, Map<String, DataSource> sourceKeyDataSourceMap, List<DataSource> baseDatas) throws SwiftMetaDataException {
+    private static DataSource getSingleTableSelectFieldSource(Map<String, List<ColumnKey>> sourceKeyColumnMap, Map<String, DataSource> sourceKeyDataSourceMap, List<DataSource> baseDatas) {
         List<ColumnKey> fields = sourceKeyColumnMap.values().iterator().next();
         ETLOperator operator = new DetailOperator(new ArrayList<ColumnKey[]>(), fields, new ArrayList<SwiftMetaData>());
         baseDatas.add(sourceKeyDataSourceMap.values().iterator().next());
-        return new ETLSource(baseDatas, operator);
+        return new EtlSource(baseDatas, operator);
     }
 
 
-    private static DataSource getMultiTableSelectFieldSource(Map<String, List<ColumnKey>> sourceKeyColumnMap, Map<String, DataSource> sourceKeyDataSourceMap, List<DataSource> baseDatas, String baseSoruceKey) throws SwiftMetaDataException {
+    private static DataSource getMultiTableSelectFieldSource(Map<String, List<ColumnKey>> sourceKeyColumnMap, Map<String, DataSource> sourceKeyDataSourceMap, List<DataSource> baseDatas, String baseSoruceKey) {
         List<SwiftMetaData> swiftMetaDatas = new ArrayList<SwiftMetaData>();
         List<ColumnKey[]> fields = new ArrayList<ColumnKey[]>();
         List<ColumnKey> baseFields = sourceKeyColumnMap.get(baseSoruceKey);
@@ -304,7 +304,7 @@ class EtlAdaptor {
             fields.add(entry.getValue().toArray(new ColumnKey[entry.getValue().size()]));
         }
         ETLOperator operator = new DetailOperator(fields, baseFields, swiftMetaDatas);
-        return new ETLSource(baseDatas, operator);
+        return new EtlSource(baseDatas, operator);
     }
 
     private static List<DataSource> fromOperator(FineOperator op) throws Exception {
@@ -546,7 +546,7 @@ class EtlAdaptor {
         String columnName = value.getName();
         GetFieldTimeValueItem tempBean = ((GetFieldTimeValueBean) value).getValue();
         String fieldName = tempBean.getFieldName();
-        GroupType type = GroupTypeAdaptor.adaptDateUNITS(tempBean.getUnit());
+        GroupType type = GroupTypeAdaptor.adaptDateUnit(tempBean.getUnit());
         return new GetFromDateOperator(fieldName, type, columnName);
     }
 
@@ -555,7 +555,7 @@ class EtlAdaptor {
         String columnName = value.getName();
         String field1 = tempBean.getMinuend();
         String field2 = tempBean.getMinus();
-        return new DateDiffOperator(field1, field2, GroupTypeAdaptor.adaptDateGAPUNITS(tempBean.getUnit()), columnName);
+        return new DateDiffOperator(field1, field2, GroupTypeAdaptor.adaptDateGapUnit(tempBean.getUnit()), columnName);
     }
 
     private static GroupAssignmentOperator getAutoGroupOperator(AddNewColumnValueBean value) {
