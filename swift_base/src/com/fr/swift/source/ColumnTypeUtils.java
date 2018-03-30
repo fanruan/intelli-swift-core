@@ -104,7 +104,7 @@ public class ColumnTypeUtils {
      * @return
      */
     public static SwiftMetaDataColumn convertColumn(ColumnType columnType, SwiftMetaDataColumn fromColumn) {
-        ColumnType fromColumnType = sqlTypeToColumnType(fromColumn.getType(), fromColumn.getPrecision(), fromColumn.getScale());
+        ColumnType fromColumnType = getColumnType(fromColumn);
         switch (columnType) {
             case NUMBER:
                 //Date → Number 是Long类型
@@ -147,9 +147,21 @@ public class ColumnTypeUtils {
     }
 
     public static boolean checkColumnType(SwiftMetaDataColumn column, ColumnType type) {
-        if (null == column || ColumnTypeUtils.sqlTypeToColumnType(column.getType(), column.getScale(), column.getPrecision()) != type) {
+        if (null == column || getColumnType(column) != type) {
             return Crasher.crash("not " + type + " field");
         }
         return true;
+    }
+
+    public static ClassType getClassType(SwiftMetaDataColumn columnMeta) {
+        return sqlTypeToClassType(
+                columnMeta.getType(),
+                columnMeta.getPrecision(),
+                columnMeta.getScale()
+        );
+    }
+
+    public static ColumnType getColumnType(SwiftMetaDataColumn columnMeta) {
+        return classTypeToColumnType(getClassType(columnMeta));
     }
 }
