@@ -530,6 +530,7 @@ class EtlAdaptor {
         String columnName = value.getName();
         AddFieldRankColumnItem tempBean = ((AddFieldRankColumnBean) value).getValue();
         ColumnKey columnKey = new ColumnKey(tempBean.getOrigin());
+        //nice job! foundation
         SortType sortType = tempBean.getRule() == BIConfConstants.CONF.ADD_COLUMN.RANKING.ASC || tempBean.getRule() == BIConfConstants.CONF.ADD_COLUMN.RANKING.ASC_IN_GROUP ? SortType.ASC : SortType.DESC;
         if (tempBean.getRule() == BIConfConstants.CONF.ADD_COLUMN.RANKING.ASC_IN_GROUP) {
             List<String> selects = ((GroupRankValueBean) tempBean).getSelects();
