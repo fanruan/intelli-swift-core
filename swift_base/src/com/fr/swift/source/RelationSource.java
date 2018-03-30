@@ -17,4 +17,6 @@ public interface RelationSource extends Source, CoreService {
     List<String> getPrimaryFields();
 
     List<String> getForeignFields();
+
+    RelationSourceType getRelationType();
 }

@@ -38,6 +38,7 @@ import com.fr.swift.segment.relation.RelationIndex;
 import com.fr.swift.service.LocalSwiftServerService;
 import com.fr.swift.source.DataSource;
 import com.fr.swift.source.RelationSource;
+import com.fr.swift.source.RelationSourceType;
 import com.fr.swift.source.db.TableDBSource;
 import com.fr.swift.source.db.TestConnectionProvider;
 import com.fr.swift.source.relation.RelationSourceImpl;
@@ -163,7 +164,7 @@ public class MultiRelationIndexerTest extends TestCase {
         primaryFields.add("总金额");
         foreignFields.add("合同ID");
         foreignFields.add("付款金额");
-        return new RelationSourceImpl(dataSource.getSourceKey(), contract.getSourceKey(), primaryFields, foreignFields);
+        return new RelationSourceImpl(dataSource.getSourceKey(), contract.getSourceKey(), primaryFields, foreignFields, RelationSourceType.RELATION);
     }
 
     /**
@@ -175,34 +176,38 @@ public class MultiRelationIndexerTest extends TestCase {
         buildMultiRelationIndex();
         List<Segment> segmentList = LocalSegmentProvider.getInstance().getSegment(dataSource.getSourceKey());
         List<Segment> foreignList = LocalSegmentProvider.getInstance().getSegment(contract.getSourceKey());
-        assertEquals(segmentList.size(), 1);
-        assertEquals(foreignList.size(), 1);
-        Segment segment = segmentList.get(0);
-        Segment foreign = foreignList.get(0);
-        assertTrue(segment instanceof HistorySegmentImpl);
-        assertTrue(foreign instanceof HistorySegmentImpl);
+//        assertEquals(segmentList.size(), 1);
+//        assertEquals(foreignList.size(), 1);
+        for (int pi = 0; pi < segmentList.size(); pi++) {
+            Segment segment = segmentList.get(pi);
+            for (int fi = 0; fi < foreignList.size(); fi ++) {
+                Segment foreign = foreignList.get(fi);
+                assertTrue(segment instanceof HistorySegmentImpl);
+                assertTrue(foreign instanceof HistorySegmentImpl);
 
-        CubeMultiRelation relation = MultiRelationHelper.convert2CubeRelation(createRelation());
-        RelationIndex index = foreign.getRelation(relation);
-        int primaryRow = segment.getRowCount();
-        int foreignRow = foreign.getRowCount();
-        ImmutableBitMap nullIndex = index.getNullIndex();
-        List<ColumnKey> primaryKeys = relation.getPrimaryField().getKeyFields();
-        List<ColumnKey> foreignKeys = relation.getForeignField().getKeyFields();
-        DetailColumn primary1 = segment.getColumn(primaryKeys.get(0)).getDetailColumn();
-        DetailColumn primary2 = segment.getColumn(primaryKeys.get(1)).getDetailColumn();
-        DetailColumn foreign1 = foreign.getColumn(foreignKeys.get(0)).getDetailColumn();
-        DetailColumn foreign2 = foreign.getColumn(foreignKeys.get(1)).getDetailColumn();
-        for (int i = 0; i < primaryRow; i++) {
-            Object p1 = primary1.get(i);
-            Object p2 = primary2.get(i);
-            ImmutableBitMap targetIndex = index.getIndex(i + 1);
-            for (int j = 0; j < foreignRow; j++) {
-                Object f1 = foreign1.get(j);
-                Object f2 = foreign2.get(j);
-                if (ComparatorUtils.equals(p1, f1) && ComparatorUtils.equals(p2, f2)) {
-                    assertTrue(targetIndex.contains(j));
-                    assertFalse(nullIndex.contains(j));
+                CubeMultiRelation relation = MultiRelationHelper.convert2CubeRelation(createRelation());
+                RelationIndex index = foreign.getRelation(relation, pi);
+                int primaryRow = segment.getRowCount();
+                int foreignRow = foreign.getRowCount();
+                ImmutableBitMap nullIndex = index.getNullIndex();
+                List<ColumnKey> primaryKeys = relation.getPrimaryField().getKeyFields();
+                List<ColumnKey> foreignKeys = relation.getForeignField().getKeyFields();
+                DetailColumn primary1 = segment.getColumn(primaryKeys.get(0)).getDetailColumn();
+                DetailColumn primary2 = segment.getColumn(primaryKeys.get(1)).getDetailColumn();
+                DetailColumn foreign1 = foreign.getColumn(foreignKeys.get(0)).getDetailColumn();
+                DetailColumn foreign2 = foreign.getColumn(foreignKeys.get(1)).getDetailColumn();
+                for (int i = 0; i < primaryRow; i++) {
+                    Object p1 = primary1.get(i);
+                    Object p2 = primary2.get(i);
+                    ImmutableBitMap targetIndex = index.getIndex(i + 1);
+                    for (int j = 0; j < foreignRow; j++) {
+                        Object f1 = foreign1.get(j);
+                        Object f2 = foreign2.get(j);
+                        if (ComparatorUtils.equals(p1, f1) && ComparatorUtils.equals(p2, f2)) {
+                            assertTrue(targetIndex.contains(j));
+                            assertFalse(nullIndex.contains(j));
+                        }
+                    }
                 }
             }
         }
