@@ -152,4 +152,12 @@ public class ColumnTypeUtils {
         }
         return true;
     }
+
+    public static ClassType getClassType(SwiftMetaDataColumn columnMeta) {
+        return sqlTypeToClassType(
+                columnMeta.getType(),
+                columnMeta.getPrecision(),
+                columnMeta.getScale()
+        );
+    }
 }

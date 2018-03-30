@@ -78,6 +78,8 @@ public class DateUtils {
                 return startOfYear(c).getTimeInMillis();
             case YEAR_END:
                 return endOfYear(c).getTimeInMillis();
+            default:
+                return c.getTimeInMillis();
         }
         return c.getTimeInMillis();
     }
