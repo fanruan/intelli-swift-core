@@ -172,7 +172,7 @@ public class CubeData {
 
                         @Override
                         public Comparator getComparator() {
-                            return null;
+                            return Comparator.<String>naturalOrder();
                         }
 
                         @Override

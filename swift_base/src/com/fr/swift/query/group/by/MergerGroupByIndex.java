@@ -14,6 +14,7 @@ public class MergerGroupByIndex extends MergerGroupBy<int[]> {
     public MergerGroupByIndex(MultiGroupByIndex[] iterators, boolean[] asc) {
         super(iterators);
         this.asc = asc;
+        initMap();
     }
 
 

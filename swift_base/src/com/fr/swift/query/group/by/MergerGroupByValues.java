@@ -17,6 +17,7 @@ public class MergerGroupByValues extends MergerGroupBy<Object> {
         super(iterators);
         this.comparators = comparators;
         this.asc = asc;
+        initMap();
     }
 
     @Override

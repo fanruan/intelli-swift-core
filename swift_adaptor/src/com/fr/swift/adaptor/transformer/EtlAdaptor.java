@@ -77,6 +77,7 @@ import com.fr.swift.query.aggregator.AggregatorFactory;
 import com.fr.swift.query.aggregator.AggregatorType;
 import com.fr.swift.query.filter.info.FilterInfo;
 import com.fr.swift.query.group.GroupType;
+import com.fr.swift.query.sort.SortType;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.source.ColumnTypeConstants;
@@ -496,14 +497,14 @@ class EtlAdaptor {
         String columnName = value.getName();
         ColumnKey columnKey = new ColumnKey(tempBean.getOrigin());
         if (tempBean.getRule() == BIConfConstants.CONF.ADD_COLUMN.NOT_IN_GROUP) {
-            return new AccumulateRowOperator(columnKey, columnName, ColumnTypeAdaptor.adaptColumnType(32), null);
+            return new AccumulateRowOperator(columnKey, columnName, null);
         } else {
             List<String> selects = ((GroupAccumulativeValue) tempBean).getSelects();
             ColumnKey[] dimensions = new ColumnKey[selects.size()];
             for (int i = 0; i < selects.size(); i++) {
                 dimensions[i] = new ColumnKey(selects.get(i));
             }
-            return new AccumulateRowOperator(columnKey, columnName, ColumnTypeAdaptor.adaptColumnType(32), dimensions);
+            return new AccumulateRowOperator(columnKey, columnName, dimensions);
         }
     }
 
@@ -529,16 +530,16 @@ class EtlAdaptor {
         String columnName = value.getName();
         AddFieldRankColumnItem tempBean = ((AddFieldRankColumnBean) value).getValue();
         ColumnKey columnKey = new ColumnKey(tempBean.getOrigin());
-        int summary = tempBean.getSummary();
+        SortType sortType = tempBean.getRule() == BIConfConstants.CONF.ADD_COLUMN.RANKING.ASC || tempBean.getRule() == BIConfConstants.CONF.ADD_COLUMN.RANKING.ASC_IN_GROUP ? SortType.ASC : SortType.DESC;
         if (tempBean.getRule() == BIConfConstants.CONF.ADD_COLUMN.RANKING.ASC_IN_GROUP) {
             List<String> selects = ((GroupRankValueBean) tempBean).getSelects();
             ColumnKey[] dimensions = new ColumnKey[selects.size()];
             for (int i = 0; i < dimensions.length; i++) {
                 dimensions[i] = new ColumnKey(selects.get(0));
             }
-            return new RankRowOperator(columnName, summary, ColumnTypeAdaptor.adaptColumnType(32), columnKey, dimensions);
+            return new RankRowOperator(columnName, sortType, columnKey, dimensions);
         } else {
-            return new RankRowOperator(columnName, summary, ColumnTypeAdaptor.adaptColumnType(32), columnKey, null);
+            return new RankRowOperator(columnName, sortType, columnKey, null);
         }
     }
 

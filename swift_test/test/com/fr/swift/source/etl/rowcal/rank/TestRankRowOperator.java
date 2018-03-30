@@ -1,5 +1,6 @@
 package com.fr.swift.source.etl.rowcal.rank;
 
+import com.fr.swift.query.sort.SortType;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.source.Row;
@@ -24,9 +25,8 @@ public class TestRankRowOperator extends TestCase {
             String column1 = "column1";
             String column2 = "column2";
             String column3 = "column3";
-            int type = 0xa;
             ColumnKey[] dimension = new ColumnKey[]{new ColumnKey(column1), new ColumnKey(column2)};
-            RankRowTransferOperator operator = new RankRowTransferOperator(type, new ColumnKey(column3), dimension);
+            RankRowTransferOperator operator = new RankRowTransferOperator(SortType.ASC, new ColumnKey(column3), dimension);
             SwiftResultSet rs = operator.createResultSet(null, null, list);
             String[] str = new String[]{"1.0","1.0","1.0","3.0","5.0","1.0","3.0","5.0","1.0","3.0","1.0","3.0","1.0","1.0"};
             int index = 0;

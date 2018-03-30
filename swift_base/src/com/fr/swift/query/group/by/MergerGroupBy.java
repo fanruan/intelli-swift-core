@@ -14,6 +14,7 @@ import java.util.TreeMap;
 
 /**
  * Created by pony on 2018/3/29.
+ * 返回多个segment合并之后的结果，按传入的segment的multigroupby的顺序返回
  */
 public abstract class MergerGroupBy<T> implements Iterator<KeyValue<RowIndexKey<T>, List<RowTraversal[]>>> {
     protected MultiGroupBy[] iterators;
@@ -23,11 +24,10 @@ public abstract class MergerGroupBy<T> implements Iterator<KeyValue<RowIndexKey<
     public MergerGroupBy(MultiGroupBy[] iterators) {
         Util.requireNonNull(iterators);
         this.iterators = iterators;
-        initMap();
     }
 
     //初始化，把每个迭代器的第一个放入map
-    private void initMap() {
+    protected void initMap() {
         mergeMap = new TreeMap<RowIndexKey<T>, List<RowTraversal[]>>(getComparator());
         for (int i = 0; i < iterators.length; i++) {
             pick(i);
@@ -42,6 +42,8 @@ public abstract class MergerGroupBy<T> implements Iterator<KeyValue<RowIndexKey<
         if (entry != null) {
             moveNext(entry.getValue());
             next = new KeyValue<RowIndexKey<T>, List<RowTraversal[]>>(entry.getKey(), entry.getValue());
+        } else {
+            next = null;
         }
         return next != null;
     }
