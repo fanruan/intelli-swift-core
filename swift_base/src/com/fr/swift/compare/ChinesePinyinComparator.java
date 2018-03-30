@@ -40,14 +40,14 @@ class ChinesePinyinComparator implements Comparator<String> {
 
     @Override
     public int compare(String o1, String o2) {
+        if (o1 == o2) {
+            return 0;
+        }
         if (o1 == null) {
             return -1;
         }
         if (o2 == null) {
             return 1;
-        }
-        if (o1 == o2) {
-            return 0;
         }
         int o1Len = o1.length(), o2Len = o2.length();
         for (int i = 0; i < o1Len && i < o2Len; i++) {

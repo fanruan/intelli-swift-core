@@ -6,7 +6,6 @@ import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftResultSet;
 import com.fr.swift.source.etl.ETLTransferOperator;
-import com.fr.swift.structure.iterator.RowTraversal;
 
 import java.util.List;
 
@@ -28,11 +27,7 @@ public class AllDataTransferOperator implements ETLTransferOperator {
     public SwiftResultSet createResultSet(SwiftMetaData metaData, List<SwiftMetaData> basedMetas, List<Segment[]> basedSegments) {
         AllDataCalculator cal = createCalculator(summaryType);
         Segment[] segments = basedSegments.get(0);
-        RowTraversal[] traversals = new RowTraversal[segments.length];
-        for (int i = 0; i < traversals.length; i++) {
-            traversals[i] = segments[i].getAllShowIndex();
-        }
-        return new AllDataRowCalculatorResultSet(columnName, segments, traversals, metaData, cal, dimensions);
+        return new AllDataRowCalculatorResultSet(columnName, segments, metaData, cal, dimensions);
     }
 
     private AllDataCalculator createCalculator(AggregatorType type) {

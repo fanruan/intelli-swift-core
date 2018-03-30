@@ -8,7 +8,6 @@ import com.fr.swift.source.MetaDataColumn;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftMetaDataColumn;
 import com.fr.swift.source.core.CoreField;
-import com.fr.swift.source.core.MD5Utils;
 import com.fr.swift.source.etl.AbstractOperator;
 import com.fr.swift.source.etl.OperatorType;
 
@@ -39,10 +38,6 @@ public class AllDataRowCalculatorOperator extends AbstractOperator {
 
     public ColumnKey[] getDimension() {
         return dimension;
-    }
-
-    public String getAddedColumnName() {
-        return addedColumnName;
     }
 
     public String getColumnName() {
@@ -78,7 +73,4 @@ public class AllDataRowCalculatorOperator extends AbstractOperator {
         return OperatorType.ALLDATA;
     }
 
-    public String getColumnMD5() {
-        return MD5Utils.getMD5String(new String[]{(this.addedColumnName)});
-    }
 }
