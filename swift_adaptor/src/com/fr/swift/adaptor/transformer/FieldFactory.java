@@ -37,7 +37,7 @@ public class FieldFactory {
             FineBusinessFieldImp fineBusinessField = new FineBusinessFieldImp(SwiftEncryption.encryptFieldId(tableId, columnName), columnName, columnRemark);
 
             fineBusinessField.setEngineType(FineEngineType.Cube);
-            fineBusinessField.setType(transformSwiftColumnType2BIColumnType(ColumnTypeUtils.getColumnType(columnType, precision, scale)));
+            fineBusinessField.setType(transformSwiftColumnType2BIColumnType(ColumnTypeUtils.sqlTypeToColumnType(columnType, precision, scale)));
             fineBusinessField.setUsable(true);
             fineBusinessFieldList.add(fineBusinessField);
         }
