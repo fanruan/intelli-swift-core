@@ -107,7 +107,7 @@ public class GroupTypeAdaptor {
     /**
      * nice job! bi-foundation
      */
-    public static GroupType adaptDateUNITS(int unit) {
+    public static GroupType adaptDateUnit(int unit) {
         switch (unit) {
             case BIConfConstants.CONF.ADD_COLUMN.TIME.UNITS.YEAR:
                 return GroupType.YEAR;
@@ -147,7 +147,7 @@ public class GroupTypeAdaptor {
     /**
      * nice job! bi-foundation
      */
-    public static GroupType adaptDateGAPUNITS(int unit) {
+    public static GroupType adaptDateGapUnit(int unit) {
         switch (unit) {
             case BIConfConstants.CONF.ADD_COLUMN.TIME_GAP.UNITS.YEAR:
                 return GroupType.YEAR;

@@ -5,7 +5,7 @@ import com.fr.swift.source.DataSource;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.db.TableDBSource;
 import com.fr.swift.source.db.TestConnectionProvider;
-import com.fr.swift.source.etl.ETLSource;
+import com.fr.swift.source.etl.EtlSource;
 import junit.framework.TestCase;
 
 import java.util.ArrayList;
@@ -35,7 +35,7 @@ public class DetailOperatorTest extends TestCase {
         List<ColumnKey[]> fields = new ArrayList<>();
         fields.add(columnKeys);
         DetailOperator operator = new DetailOperator(fields, null, baseMeta);
-        ETLSource source = new ETLSource(sources, operator);
+        EtlSource source = new EtlSource(sources, operator);
         SwiftMetaData metaData = source.getMetadata();
         assertEquals(metaData.getColumnCount(), 11);
 
@@ -43,7 +43,7 @@ public class DetailOperatorTest extends TestCase {
         Map<Integer, String> partFiels = new HashMap<>();
         partFiels.put(0, "SALES_NAME");
         partFiels.put(1, "合同ID");
-        ETLSource partSource = new ETLSource(sources, operator, partFiels);
+        EtlSource partSource = new EtlSource(sources, operator, partFiels);
         SwiftMetaData partMeta = partSource.getMetadata();
         assertEquals(partMeta.getColumnCount(), 2);
     }

@@ -24,7 +24,7 @@ import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.segment.column.DictionaryEncodedColumn;
 import com.fr.swift.source.DataSource;
 import com.fr.swift.source.SwiftMetaData;
-import com.fr.swift.source.etl.ETLSource;
+import com.fr.swift.source.etl.EtlSource;
 import com.fr.swift.structure.array.IntList;
 import com.fr.swift.structure.array.IntListFactory;
 
@@ -75,7 +75,7 @@ public class SwiftFieldsDataPreview {
         }
     }
 
-    public NumberMaxAndMinValue getNumberMaxAndMinValue(ETLSource dataSource, String fieldName) {
+    public NumberMaxAndMinValue getNumberMaxAndMinValue(EtlSource dataSource, String fieldName) {
         try {
             double max,min;
             if (dataSource != null) {

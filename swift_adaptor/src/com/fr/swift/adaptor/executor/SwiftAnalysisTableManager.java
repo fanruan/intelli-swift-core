@@ -16,7 +16,7 @@ import com.fr.swift.adaptor.transformer.FieldFactory;
 import com.fr.swift.adaptor.transformer.IndexingDataSourceFactory;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
-import com.fr.swift.source.etl.ETLSource;
+import com.fr.swift.source.etl.EtlSource;
 
 import java.util.List;
 
@@ -97,7 +97,7 @@ public class SwiftAnalysisTableManager implements EngineAnalysisTableManager {
     @Override
     public NumberMaxAndMinValue getNumberMaxAndMinValue(FineAnalysisTable table, String fieldName) {
         try {
-            ETLSource dataSource = (ETLSource) IndexingDataSourceFactory.transformDataSource(table);
+            EtlSource dataSource = (EtlSource) IndexingDataSourceFactory.transformDataSource(table);
             return swiftFieldsDataPreview.getNumberMaxAndMinValue(dataSource, fieldName);
         } catch (Exception ignore) {
         }
@@ -107,7 +107,7 @@ public class SwiftAnalysisTableManager implements EngineAnalysisTableManager {
     @Override
     public List<Object> getColumnValue(FineAnalysisTable table, String fieldName) {
         try {
-            ETLSource dataSource = (ETLSource) IndexingDataSourceFactory.transformDataSource(table);
+            EtlSource dataSource = (EtlSource) IndexingDataSourceFactory.transformDataSource(table);
             return swiftFieldsDataPreview.getGroupPreviewByFields(dataSource, fieldName);
         } catch (Exception e) {
         }
