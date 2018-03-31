@@ -61,7 +61,7 @@ public abstract class AbstractOuterDataSource extends AbstractDataSource impleme
                 for (Map.Entry<String, ColumnType> entry : fieldColumnTypes.entrySet()) {
                     SwiftMetaDataColumn outerColumn = outerMetadata.getColumn(entry.getKey());
                     SwiftMetaDataColumn column = outerColumn;
-                    ColumnType outerColumnType = ColumnTypeUtils.sqlTypeToColumnType(outerColumn.getType(), outerColumn.getPrecision(), outerColumn.getScale());
+                    ColumnType outerColumnType = ColumnTypeUtils.getColumnType(outerColumn);
                     if (outerColumnType != entry.getValue()) {
                         column = ColumnTypeUtils.convertColumn(entry.getValue(), outerColumn);
                     }

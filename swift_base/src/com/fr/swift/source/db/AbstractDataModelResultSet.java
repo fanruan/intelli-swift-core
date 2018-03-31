@@ -42,7 +42,7 @@ public abstract class AbstractDataModelResultSet implements SwiftResultSet {
                 column = metaData.getColumn(outerMetadata.getColumnName(i+1));
                 if (column != null){
                     indexList.add(i);
-                    typeList.add(ColumnTypeUtils.sqlTypeToColumnType(column.getType(), column.getPrecision(), column.getScale()));
+                    typeList.add(ColumnTypeUtils.getColumnType(column));
                 }
             } catch (SwiftMetaDataException e) {
                 //do nothing;

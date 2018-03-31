@@ -88,7 +88,7 @@ public abstract class AbstractBlockInserter implements Inserter {
     }
 
     @Override
-    public boolean insertData(List<Row> rowList) throws Exception {
+    public boolean insertData(List<Row> rowList) {
         return false;
     }
 
@@ -117,7 +117,7 @@ public abstract class AbstractBlockInserter implements Inserter {
             for (int i = 0; i < fields.size(); i++) {
                 if (InserterUtils.isBusinessNullValue(rowData.getValue(i))) {
                     SwiftMetaDataColumn metaDataColumn = swiftMetaData.getColumn(fields.get(i));
-                    ColumnTypeConstants.ClassType clazz = ColumnTypeUtils.sqlTypeToClassType(metaDataColumn.getType(), metaDataColumn.getPrecision(), metaDataColumn.getScale());
+                    ColumnTypeConstants.ClassType clazz = ColumnTypeUtils.getClassType(metaDataColumn);
                     segment.getColumn(new ColumnKey(fields.get(i))).getDetailColumn().put(segmentRow, InserterUtils.getNullValue(clazz));
                     segmentIndexCache.putSegFieldNull(index, fields.get(i), segmentRow);
                 } else {
