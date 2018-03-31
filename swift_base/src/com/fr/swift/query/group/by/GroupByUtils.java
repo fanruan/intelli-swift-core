@@ -51,7 +51,7 @@ public class GroupByUtils {
             rowResult.add(new KeyValue<RowIndexKey<int[]>, AggregatorValue[]>(toGlobalIndex(key, dictionaries), values));
             updateGlobalDictionaries(key, globalDictionaries, dictionaries);
         }
-        return new GroupByResultSetImpl(rowResult.iterator(), globalDictionaries, indexSorts);
+        return new GroupByResultSetImpl(rowResult, globalDictionaries, indexSorts);
     }
 
     private static boolean[] getSorts(List<Sort> sorts) {

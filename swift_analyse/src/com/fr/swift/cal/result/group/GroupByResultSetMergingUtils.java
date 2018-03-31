@@ -22,10 +22,11 @@ public class GroupByResultSetMergingUtils {
                 new HashMap<RowIndexKey<int[]>, KeyValue<RowIndexKey<int[]>, AggregatorValue[]>>();
         List<Map<Integer, Object>> globalDictionaries = new ArrayList<Map<Integer, Object>>();
         for (GroupByResultSet resultSet : groupByResultSets) {
-            addResultSet(resultSet.getRowResultIterator(), resultMap, aggregators);
+            addResultSet(resultSet.getResultList(), resultMap, aggregators);
             addDictionaries(resultSet.getGlobalDictionaries(), globalDictionaries);
         }
-        return new GroupByResultSetImpl(resultMap.values().iterator(), globalDictionaries, indexSorts);
+        return new GroupByResultSetImpl(new ArrayList<KeyValue<RowIndexKey<int[]>, AggregatorValue[]>>(resultMap.values()),
+                globalDictionaries, indexSorts);
     }
 
     private static void addDictionaries(List<Map<Integer, Object>> dictionaries,
@@ -40,9 +41,10 @@ public class GroupByResultSetMergingUtils {
         }
     }
 
-    private static void addResultSet(Iterator<KeyValue<RowIndexKey<int[]>, AggregatorValue[]>> iterator,
+    private static void addResultSet(List<KeyValue<RowIndexKey<int[]>, AggregatorValue[]>> resultList,
                                      Map<RowIndexKey<int[]>, KeyValue<RowIndexKey<int[]>, AggregatorValue[]>> map,
                                      List<Aggregator> aggregators) {
+        Iterator<KeyValue<RowIndexKey<int[]>, AggregatorValue[]>> iterator = resultList.iterator();
         while (iterator.hasNext()) {
             KeyValue<RowIndexKey<int[]>, AggregatorValue[]> keyValue = iterator.next();
             if (!map.containsKey(keyValue.getKey())) {
