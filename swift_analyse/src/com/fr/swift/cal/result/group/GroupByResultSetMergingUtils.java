@@ -29,7 +29,7 @@ public class GroupByResultSetMergingUtils {
      * 中无疑是有性能损耗的。这个性能损耗怎么来的呢？首先功能的node结构可以理解为一种广义上的搜索树（有序的），所以肯定要为排序
      * 多做一些操作。举个容易理解的例子，有序数组构造平衡二叉树搜索树的复杂度是O(n)，乱序数组是O(n*log(n))
      * 如何利用这边提供的有序序列构造我们这边比较特殊的搜索树则是另外的优化内容
-     * 
+     *
      * @param groupByResultSets
      * @param aggregators
      * @param indexSorts

@@ -58,7 +58,7 @@ public class TableWidgetAdaptor {
         SwiftResultSet resultSet;
         try {
             resultSet = QueryRunnerProvider.getInstance().executeQuery(buildQueryInfo(widget));
-            resultNode = BIGroupNodeFactory.create((GroupByResultSet) resultSet);
+            resultNode = BIGroupNodeFactory.createFromSortedList((GroupByResultSet) resultSet);
         } catch (Exception e) {
 
         }

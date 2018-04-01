@@ -11,13 +11,74 @@ import com.fr.swift.result.RowIndexKey;
 import com.fr.swift.structure.queue.FIFOQueue;
 import com.fr.swift.structure.queue.LinkedListFIFOQueue;
 
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Created by Lyon on 2018/4/1.
+ */
 public class BIGroupNodeFactory {
 
-    // 构建没有指标排序的node结构
+    /**
+     * 利用有序序列构造树，避免了构造过程中的排序操作，同时通过缓存节点避免构造过程对树进行查找，构造复杂度为O(n)
+     *
+     * @param resultSet
+     * @return
+     */
+    public static BIGroupNode createFromSortedList(GroupByResultSet resultSet) {
+        List<KeyValue<RowIndexKey<int[]>, AggregatorValue[]>> resultList = resultSet.getResultList();
+        List<Map<Integer, Object>> dictionaries = resultSet.getGlobalDictionaries();
+        int dimensionSize = resultList.isEmpty() ? 0 : resultList.get(0).getKey().getKey().length;
+        // BIGroupNode各层的节点缓存，第一层为根节点
+        SwiftBIGroupNode[] cachedNode = new SwiftBIGroupNode[dimensionSize + 1];
+        Arrays.fill(cachedNode, null);
+        // 缓存上一次插入的一行数据对于的各个维度的索引
+        int[] cachedIndex = new int[dimensionSize];
+        Arrays.fill(cachedIndex, -1);
+        SwiftBIGroupNode root = new SwiftBIGroupNode(-1, null, null);
+        cachedNode[0] = root;
+        Iterator<KeyValue<RowIndexKey<int[]>, AggregatorValue[]>> iterator = resultList.iterator();
+        while (iterator.hasNext()) {
+            KeyValue<RowIndexKey<int[]>, AggregatorValue[]> kv = iterator.next();
+            int[] index = kv.getKey().getKey();
+            int deep = 0;
+            for (; deep < index.length; deep++) {
+                if (index[deep] == -1) {
+                    break;
+                } else if (cachedNode[deep + 1] == null || cachedIndex[deep] != index[deep]) {
+                    // 刷新缓存索引，deep之后的索引都无效了
+                    Arrays.fill(cachedIndex, deep, cachedIndex.length, -1);
+                    // cachedNode和cachedIndex是同步更新的
+                    cachedNode[deep + 1] = createNode(deep, index[deep], dictionaries);
+                    cachedIndex[deep] = index[deep];
+                    cachedNode[deep].addChild(cachedNode[deep + 1]);
+                } else {
+                    continue;
+                }
+            }
+            // 给当前kv所代表的行设置值
+            cachedNode[deep].setSummaryValue(getValues(kv.getValue()));
+        }
+        return root;
+    }
+
+    private static SwiftBIGroupNode createNode(int dimensionIndex, int key, List<Map<Integer, Object>> dictionaries) {
+        Object data = getData(dimensionIndex, key, dictionaries);
+        return new SwiftBIGroupNode(dimensionIndex, data, new Number[0]);
+    }
+
+    private static Object getData(int dimensionIndex, int key, List<Map<Integer, Object>> dictionaries) {
+        return dictionaries.get(dimensionIndex).get(key);
+    }
+
+    /**
+     * 初阶阶段的尝试。。
+     * 构建没有指标排序的node结构
+     * @param resultSet
+     * @return
+     */
     public static BIGroupNode create(GroupByResultSet resultSet) {
         Iterator<KeyValue<RowIndexKey<int[]>, AggregatorValue[]>> iterator = resultSet.getResultList().iterator();
         List<Map<Integer, Object>> dictionaries = resultSet.getGlobalDictionaries();
