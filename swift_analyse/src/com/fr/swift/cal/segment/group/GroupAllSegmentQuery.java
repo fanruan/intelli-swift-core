@@ -16,7 +16,7 @@ import java.util.List;
  */
 public class GroupAllSegmentQuery extends AbstractGroupSegmentQuery{
 
-    private List<Sort> indexSorts;
+    protected List<Sort> indexSorts;
 
     public GroupAllSegmentQuery(List<Column> dimensions, List<Column> metrics, List<Aggregator> aggregators, DetailFilter filter) {
         super(dimensions, metrics, aggregators, filter);

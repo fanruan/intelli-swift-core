@@ -3,8 +3,12 @@ package com.fr.swift.cal.builder;
 import com.fr.swift.cal.Query;
 import com.fr.swift.cal.info.GroupQueryInfo;
 import com.fr.swift.cal.info.TableGroupQueryInfo;
+import com.fr.swift.cal.info.XGroupQueryInfo;
+import com.fr.swift.cal.info.XTableGroupQueryInfo;
 import com.fr.swift.cal.result.group.GroupResultQuery;
+import com.fr.swift.cal.result.group.XGroupResultQuery;
 import com.fr.swift.cal.segment.group.GroupAllSegmentQuery;
+import com.fr.swift.cal.segment.group.XGroupAllSegmentQuery;
 import com.fr.swift.manager.LocalSegmentProvider;
 import com.fr.swift.query.adapter.dimension.Dimension;
 import com.fr.swift.query.aggregator.Aggregator;
@@ -28,20 +32,36 @@ public class LocalGroupAllQueryBuilder extends AbstractLocalGroupQueryBuilder {
     @Override
     public Query<GroupByResultSet> buildLocalQuery(GroupQueryInfo info) {
         List<Query<GroupByResultSet>> queries = new ArrayList<Query<GroupByResultSet>>();
+        QueryType type = info.getType();
         for (TableGroupQueryInfo groupQueryInfo : info.getTableGroups()) {
             List<Segment> segments = LocalSegmentProvider.getInstance().getSegment(groupQueryInfo.getTable());
             for (Segment segment : segments) {
                 List<Column> dimensionSegments = getDimensionSegments(segment, groupQueryInfo.getDimensions());
                 List<Column> metricSegments = getMetricSegments(segment, groupQueryInfo.getMetrics());
                 List<Aggregator> aggregators = getAggregators(groupQueryInfo.getMetrics());
-                queries.add(new GroupAllSegmentQuery(dimensionSegments, metricSegments, aggregators, FilterBuilder.buildDetailFilter(segment, info.getFilterInfo())));
+                if (type == QueryType.CROSS_GROUP) {
+                    List<Column> colDimension = getDimensionSegments(segment, ((XTableGroupQueryInfo) groupQueryInfo).getColDimensions());
+                    queries.add(new XGroupAllSegmentQuery(dimensionSegments, colDimension, metricSegments, aggregators,
+                            FilterBuilder.buildDetailFilter(segment, info.getFilterInfo())));
+                } else {
+                    queries.add(new GroupAllSegmentQuery(dimensionSegments, metricSegments, aggregators,
+                            FilterBuilder.buildDetailFilter(segment, info.getFilterInfo())));
+                }
             }
         }
+        if (type == QueryType.CROSS_GROUP) {
+            return new XGroupResultQuery(queries, getAggregators(info.getMetrics()), getTargets(info.getTargets()));
+        }
         return new GroupResultQuery(queries, getAggregators(info.getMetrics()), getTargets(info.getTargets()));
+
     }
 
     @Override
     public Query<GroupByResultSet> buildResultQuery(List<Query<GroupByResultSet>> queries, GroupQueryInfo info) {
+        QueryType type = info.getType();
+        if (type == QueryType.CROSS_GROUP) {
+            return new XGroupResultQuery(queries, getAggregators(info.getMetrics()), getTargets(info.getTargets()), getIndexSorts(info.getDimensions()), getDimensionMatchFilters(info.getDimensions()));
+        }
         return new GroupResultQuery(queries, getAggregators(info.getMetrics()), getTargets(info.getTargets()), getIndexSorts(info.getDimensions()), getDimensionMatchFilters(info.getDimensions()));
     }
 

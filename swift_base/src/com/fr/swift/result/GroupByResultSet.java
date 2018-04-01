@@ -14,7 +14,7 @@ import java.util.Map;
 public interface GroupByResultSet<T> extends SwiftResultSet {
 
     /**
-     * 表示普通行或者汇总行
+     * 表示普通行或者汇总行集合
      * 这边的index是global index
      * @return
      */
