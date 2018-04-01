@@ -3,30 +3,57 @@ package com.fr.swift.cal.result.group;
 import com.fr.swift.query.aggregator.Aggregator;
 import com.fr.swift.query.aggregator.AggregatorValue;
 import com.fr.swift.query.sort.Sort;
+import com.fr.swift.query.sort.SortType;
 import com.fr.swift.result.GroupByResultSet;
 import com.fr.swift.result.GroupByResultSetImpl;
+import com.fr.swift.result.KVCombiner;
 import com.fr.swift.result.KeyValue;
 import com.fr.swift.result.RowIndexKey;
+import com.fr.swift.structure.queue.SortedListMergingUtils;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Created by Lyon on 2018/4/1.
+ */
 public class GroupByResultSetMergingUtils {
 
+    /**
+     * 这边一开始欠考虑使用hashSet来合并，后来经pony提醒计算过程中最好不要破坏底层索引提供的有序结构
+     * 一语惊醒，swift计算很大部分优势都建立在底层数据的索引结构之上，比如随机读取、过滤用到的二分查找、排序等
+     * 就拿这个结果集的合并来说，如果合并过程中乱序了（比如一开始使用hashSet来合并），那么在适配层还是得转为有序结构，这个过程
+     * 中无疑是有性能损耗的。这个性能损耗怎么来的呢？首先功能的node结构可以理解为一种广义上的搜索树（有序的），所以肯定要为排序
+     * 多做一些操作。举个容易理解的例子，有序数组构造平衡二叉树搜索树的复杂度是O(n)，乱序数组是O(n*log(n))
+     * 如何利用这边提供的有序序列构造我们这边比较特殊的搜索树则是另外的优化内容
+     * 
+     * @param groupByResultSets
+     * @param aggregators
+     * @param indexSorts
+     * @return
+     */
     public static GroupByResultSet merge(List<GroupByResultSet> groupByResultSets,
                                          List<Aggregator> aggregators, List<Sort> indexSorts) {
-        Map<RowIndexKey<int[]>, KeyValue<RowIndexKey<int[]>, AggregatorValue[]>> resultMap =
-                new HashMap<RowIndexKey<int[]>, KeyValue<RowIndexKey<int[]>, AggregatorValue[]>>();
         List<Map<Integer, Object>> globalDictionaries = new ArrayList<Map<Integer, Object>>();
+        List<List<KeyValue<RowIndexKey<int[]>, AggregatorValue[]>>> lists = new ArrayList<List<KeyValue<RowIndexKey<int[]>, AggregatorValue[]>>>();
         for (GroupByResultSet resultSet : groupByResultSets) {
-            addResultSet(resultSet.getResultList(), resultMap, aggregators);
+            lists.add(resultSet.getResultList());
             addDictionaries(resultSet.getGlobalDictionaries(), globalDictionaries);
         }
-        return new GroupByResultSetImpl(new ArrayList<KeyValue<RowIndexKey<int[]>, AggregatorValue[]>>(resultMap.values()),
-                globalDictionaries, indexSorts);
+        List<KeyValue<RowIndexKey<int[]>, AggregatorValue[]>> mergedResult = SortedListMergingUtils.merge(lists,
+                new IndexKeyComparator(indexSorts), new KVCombiner<AggregatorValue>(convertType(aggregators)));
+        return new GroupByResultSetImpl(mergedResult, globalDictionaries, indexSorts);
+    }
+
+    private static List<Aggregator<AggregatorValue>> convertType(List<Aggregator> aggregators) {
+        List<Aggregator<AggregatorValue>> aggregatorList = new ArrayList<Aggregator<AggregatorValue>>();
+        for (Aggregator aggregator : aggregators) {
+            aggregatorList.add((Aggregator<AggregatorValue>) aggregator);
+        }
+        return aggregatorList;
     }
 
     private static void addDictionaries(List<Map<Integer, Object>> dictionaries,
@@ -41,22 +68,35 @@ public class GroupByResultSetMergingUtils {
         }
     }
 
-    private static void addResultSet(List<KeyValue<RowIndexKey<int[]>, AggregatorValue[]>> resultList,
-                                     Map<RowIndexKey<int[]>, KeyValue<RowIndexKey<int[]>, AggregatorValue[]>> map,
-                                     List<Aggregator> aggregators) {
-        Iterator<KeyValue<RowIndexKey<int[]>, AggregatorValue[]>> iterator = resultList.iterator();
-        while (iterator.hasNext()) {
-            KeyValue<RowIndexKey<int[]>, AggregatorValue[]> keyValue = iterator.next();
-            if (!map.containsKey(keyValue.getKey())) {
-                map.put(keyValue.getKey(), keyValue);
-            } else {
-                AggregatorValue[] result = map.get(keyValue.getKey()).getValue();
-                AggregatorValue[] values = keyValue.getValue();
-                for (int i = 0; i < values.length; i++) {
-                    // 这边合并两个值，并把合并后的值设置给result[i]
-                    aggregators.get(i).combine(result[i], values[i]);
+    private static class IndexKeyComparator implements Comparator<KeyValue<RowIndexKey<int[]>, AggregatorValue[]>> {
+
+        private List<Sort> sorts;
+
+        public IndexKeyComparator(List<Sort> sorts) {
+            this.sorts = sorts;
+        }
+
+        @Override
+        public int compare(KeyValue<RowIndexKey<int[]>, AggregatorValue[]> o1,
+                           KeyValue<RowIndexKey<int[]>, AggregatorValue[]> o2) {
+            int[] index1 = o1.getKey().getKey();
+            int[] index2 = o2.getKey().getKey();
+            int result = 0;
+            for (int i = 0; i < index1.length; i++) {
+                result = compareIndex(index1[i], index2[i]);
+                if (sorts != null && !sorts.isEmpty() && sorts.get(i).getTargetIndex() == i) {
+                    // TODO: 2018/4/1 如果是对指标排序怎么处理呢？
+                    result = sorts.get(i).getSortType() == SortType.ASC ? result : -result;
+                }
+                if (result != 0) {
+                    break;
                 }
             }
+            return result;
+        }
+
+        private static int compareIndex(int x, int y) {
+            return (x < y) ? -1 : ((x == y) ? 0 : 1);
         }
     }
 }

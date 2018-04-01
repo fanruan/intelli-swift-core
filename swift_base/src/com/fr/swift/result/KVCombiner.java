@@ -9,9 +9,9 @@ import java.util.List;
  */
 public class KVCombiner<V> implements Combiner<KeyValue<RowIndexKey<int[]>, V[]>> {
 
-    private List<Combiner<V>> combiners;
+    private List<? extends Combiner<V>> combiners;
 
-    public KVCombiner(List<Combiner<V>> combiners) {
+    public KVCombiner(List<? extends Combiner<V>> combiners) {
         this.combiners = combiners;
     }
 

@@ -120,12 +120,6 @@ public class TableWidgetAdaptor {
         return targets;
     }
 
-    private static boolean isMetric(FineDimension dimension) throws FineEngineException {
-        int type = FineFieldUtils.getField(dimension.getFieldId()).getType();
-        ColumnType columnType = ColumnTypeAdaptor.adaptColumnType(type);
-        return columnType == ColumnType.NUMBER;
-    }
-
     private static Dimension toDimension(FineDimension fineDim, int index) {
         SourceKey key = new SourceKey(fineDim.getId());
         String columnName = SwiftEncryption.decryptFieldId(fineDim.getFieldId())[1];
@@ -135,7 +129,8 @@ public class TableWidgetAdaptor {
 
         FilterInfo filterInfo = null;
 
-        return new GroupDimension(index, key, colKey, group, fineDim.getSort() == null ? new AscSort(index) : adaptSort(fineDim.getSort(), index), filterInfo);
+        return new GroupDimension(index, key, colKey, group,
+                fineDim.getSort() == null ? new AscSort(index) : adaptSort(fineDim.getSort(), index), filterInfo);
     }
 
 
@@ -144,8 +139,9 @@ public class TableWidgetAdaptor {
         String columnName = SwiftEncryption.decryptFieldId(target.getFieldId())[1];
         ColumnKey colKey = new ColumnKey(columnName);
 
+        // TODO: 2018/3/31 指标的filter属性还没有传过来
         FilterInfo filterInfo = null;
-        // TODO: 2018/3/21   先跑通流程吧。。
+        // TODO: 2018/3/21  暂时不知道targetType如何对应不同聚合类型
         Aggregator agg = new SumAggregate();
 
         return new GroupMetric(index, key, colKey, filterInfo, agg);
