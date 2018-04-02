@@ -29,9 +29,7 @@ public class NoGroupRule<Base> extends BaseGroupRule<Base, Base> {
 
     @Override
     public IntList map(int index) {
-        IntList list = IntListFactory.createIntList(1);
-        list.add(index);
-        return list;
+        return IntListFactory.newSingleList(index);
     }
 
     @Override

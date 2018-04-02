@@ -42,6 +42,7 @@ public class SortSegmentDetailResultSet extends DetailResultSet {
         return sortedDetailList.get(rowCount);
     }
 
+    @Override
     public int getColumnCount() {
         return columnList.size();
     }
