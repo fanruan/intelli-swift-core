@@ -45,6 +45,10 @@ import com.fr.swift.source.db.TestConnectionProvider;
 import com.fr.swift.source.relation.RelationSourceImpl;
 import com.fr.swift.structure.Pair;
 import junit.framework.TestCase;
+import org.junit.Before;
+import org.junit.FixMethodOrder;
+import org.junit.Test;
+import org.junit.runners.MethodSorters;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -54,14 +58,15 @@ import java.util.concurrent.CountDownLatch;
  * @author yee
  * @date 2018/2/5
  */
-public class MultiRelationIndexerTest extends TestCase {
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
+public class MultiRelationIndexerTest  {
 
     CountDownLatch latch = new CountDownLatch(1);
     DataSource dataSource = null;
     DataSource contract = null;
 
-    @Override
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         new LocalSwiftServerService().start();
         TestConnectionProvider.createConnection();
         SchedulerTaskPool.getInstance().initListener();
@@ -134,7 +139,7 @@ public class MultiRelationIndexerTest extends TestCase {
         start.triggerRun();
         latch.await();
         if (end.result() != Result.SUCCEEDED) {
-            fail();
+            TestCase.fail();
         }
         MultiRelationIndexer indexer = new MultiRelationIndexer(MultiRelationHelper.convert2CubeRelation(createRelation()), LocalSegmentProvider.getInstance());
         SchedulerTask relationTask = CubeTasks.newRelationTask(createRelation());
@@ -164,7 +169,8 @@ public class MultiRelationIndexerTest extends TestCase {
      *
      * @throws Exception
      */
-    public void testTransport() throws Exception {
+    @Test
+    public void testBuildRelation() throws Exception {
         buildMultiRelationIndex();
         List<Segment> segmentList = LocalSegmentProvider.getInstance().getSegment(dataSource.getSourceKey());
         List<Segment> foreignList = LocalSegmentProvider.getInstance().getSegment(contract.getSourceKey());
@@ -179,8 +185,8 @@ public class MultiRelationIndexerTest extends TestCase {
             int pos = 1;
             for (int pi = 0; pi < segmentList.size(); pi++) {
                 Segment segment = segmentList.get(pi);
-                assertTrue(segment instanceof HistorySegmentImpl);
-                assertTrue(foreign instanceof HistorySegmentImpl);
+                TestCase.assertTrue(segment instanceof HistorySegmentImpl);
+                TestCase.assertTrue(foreign instanceof HistorySegmentImpl);
                 int primaryRow = segment.getRowCount();
                 int foreignRow = foreign.getRowCount();
                 ImmutableBitMap nullIndex = index.getNullIndex(pi);
@@ -196,8 +202,8 @@ public class MultiRelationIndexerTest extends TestCase {
                         Object f1 = foreign1.get(j);
                         Object f2 = foreign2.get(j);
                         if (ComparatorUtils.equals(p1, f1) && ComparatorUtils.equals(p2, f2)) {
-                            assertTrue(targetIndex.contains(j));
-                            assertFalse(nullIndex.contains(j));
+                            TestCase.assertTrue(targetIndex.contains(j));
+                            TestCase.assertFalse(nullIndex.contains(j));
                         }
                     }
                 }
@@ -206,7 +212,7 @@ public class MultiRelationIndexerTest extends TestCase {
         }
     }
 
-
+    @Test
     public void testReverse() {
         List<Segment> segmentList = LocalSegmentProvider.getInstance().getSegment(dataSource.getSourceKey());
         List<Segment> foreignList = LocalSegmentProvider.getInstance().getSegment(contract.getSourceKey());
@@ -227,8 +233,8 @@ public class MultiRelationIndexerTest extends TestCase {
                     Object p2 = primarySegment.getColumn(primaryKeys.get(1)).getDetailColumn().get(target[1]);
                     Object f1 = foreign.getColumn(foreignKeys.get(0)).getDetailColumn().get(i % rowCount);
                     Object f2 = foreign.getColumn(foreignKeys.get(1)).getDetailColumn().get(i % rowCount);
-                    assertEquals(p1, f1);
-                    assertEquals(p2, f2);
+                    TestCase.assertEquals(p1, f1);
+                    TestCase.assertEquals(p2, f2);
                 }
             }
         }
