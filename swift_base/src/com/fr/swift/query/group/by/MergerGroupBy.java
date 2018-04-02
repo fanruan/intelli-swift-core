@@ -24,6 +24,7 @@ public abstract class MergerGroupBy<T> implements Iterator<KeyValue<RowIndexKey<
     public MergerGroupBy(MultiGroupBy[] iterators) {
         Util.requireNonNull(iterators);
         this.iterators = iterators;
+        moveNext();
     }
 
     //初始化，把每个迭代器的第一个放入map
@@ -38,13 +39,6 @@ public abstract class MergerGroupBy<T> implements Iterator<KeyValue<RowIndexKey<
 
     @Override
     public boolean hasNext() {
-        Map.Entry<RowIndexKey<T>, List<RowTraversal[]>> entry = mergeMap.pollFirstEntry();
-        if (entry != null) {
-            moveNext(entry.getValue());
-            next = new KeyValue<RowIndexKey<T>, List<RowTraversal[]>>(entry.getKey(), entry.getValue());
-        } else {
-            next = null;
-        }
         return next != null;
     }
 
@@ -76,7 +70,19 @@ public abstract class MergerGroupBy<T> implements Iterator<KeyValue<RowIndexKey<
 
     @Override
     public KeyValue<RowIndexKey<T>, List<RowTraversal[]>> next() {
-        return next;
+        KeyValue<RowIndexKey<T>, List<RowTraversal[]>> tempNext = next;
+        moveNext();
+        return tempNext;
+    }
+
+    protected void moveNext() {
+        Map.Entry<RowIndexKey<T>, List<RowTraversal[]>> entry = mergeMap.pollFirstEntry();
+        if (entry != null) {
+            moveNext(entry.getValue());
+            next = new KeyValue<RowIndexKey<T>, List<RowTraversal[]>>(entry.getKey(), entry.getValue());
+        } else {
+            next = null;
+        }
     }
 
 
