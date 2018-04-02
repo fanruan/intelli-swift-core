@@ -87,7 +87,6 @@ public class MergerGroupByTest extends TestCase {
     }
 
     public void testNext() {
-        assertNull(mergerGroupByIndex.next());
         mergerGroupByIndex.hasNext();
         mergerGroupByValues.hasNext();
         assertNotNull(mergerGroupByIndex.next());
