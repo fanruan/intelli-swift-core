@@ -54,14 +54,10 @@ public interface RelationIndex extends Releasable, Flushable {
 
     void putSegIndex(int fPos, int tPos);
 
-    /**
-     * 获取反向关联
-     * @param fPos
-     * @return
-     */
     int getSegIndex(int fPos);
 
     int getReverseCount();
 
     void putReverseCount(int count);
+
 }

@@ -131,6 +131,7 @@ public class RelationIndexImpl implements RelationIndex {
         reverseCountWriter.put(0, count);
     }
 
+
     @Override
     public void flush() {
         if (indexWriter != null) {
