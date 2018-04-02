@@ -1,12 +1,14 @@
 package com.fr.swift.source.etl.group;
 
 import com.fr.swift.segment.column.ColumnKey;
-import com.fr.swift.source.*;
+import com.fr.swift.source.MetaDataColumn;
+import com.fr.swift.source.SwiftMetaData;
+import com.fr.swift.source.SwiftMetaDataColumn;
 import com.fr.swift.source.core.CoreField;
 import com.fr.swift.source.etl.AbstractOperator;
 import com.fr.swift.source.etl.OperatorType;
-import com.fr.swift.source.ColumnTypeConstants.*;
 
+import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,10 +16,7 @@ import java.util.List;
  * Created by Handsome on 2018/2/22 0022 11:30
  */
 public class GroupAssignmentOperator extends AbstractOperator {
-    @CoreField
     private String columnName;
-    @CoreField
-    private ColumnType columnType;
     @CoreField
     private String otherName;
     @CoreField
@@ -25,9 +24,8 @@ public class GroupAssignmentOperator extends AbstractOperator {
     @CoreField
     private List<SingleGroup> group;
 
-    public GroupAssignmentOperator(String columnName, ColumnType columnType, String otherName, ColumnKey columnKey, List<SingleGroup> group) {
+    public GroupAssignmentOperator(String columnName, String otherName, ColumnKey columnKey, List<SingleGroup> group) {
         this.columnName = columnName;
-        this.columnType = columnType;
         this.otherName = otherName;
         this.columnKey = columnKey;
         this.group = group;
@@ -37,7 +35,7 @@ public class GroupAssignmentOperator extends AbstractOperator {
     public List<SwiftMetaDataColumn> getColumns(SwiftMetaData[] metaDatas) {
         List<SwiftMetaDataColumn> columnList = new ArrayList<SwiftMetaDataColumn>();
         columnList.add(new MetaDataColumn(this.columnName,
-                this.columnName, ColumnTypeUtils.columnTypeToSqlType(this.columnType), fetchObjectCore().getValue()));
+                this.columnName, Types.VARCHAR, fetchObjectCore().getValue()));
         return columnList;
     }
 

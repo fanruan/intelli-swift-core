@@ -1,5 +1,6 @@
 package com.fr.swift.generate.excel.increase;
 
+import com.fr.swift.context.SwiftContext;
 import com.fr.swift.flow.FlowRuleController;
 import com.fr.swift.generate.excel.BaseExcelTest;
 import com.fr.swift.generate.history.index.ColumnIndexer;
@@ -8,6 +9,7 @@ import com.fr.swift.generate.realtime.RealtimeDataTransporter;
 import com.fr.swift.generate.realtime.index.RealtimeColumnIndexer;
 import com.fr.swift.increase.IncrementImpl;
 import com.fr.swift.increment.Increment;
+import com.fr.swift.manager.LocalDataOperatorProvider;
 import com.fr.swift.manager.LocalSegmentProvider;
 import com.fr.swift.segment.HistorySegment;
 import com.fr.swift.segment.RealTimeSegment;
@@ -29,6 +31,7 @@ public class ExcelIncreaseCoupleTest extends BaseExcelTest {
 
     public void testIncreaseCoupleFiles() throws Exception {
         dataSource = new ExcelDataSource(path2, names, types);
+        SwiftContext.getInstance().registerSegmentOperatorProvider(LocalDataOperatorProvider.getInstance());
         TableTransporter tableTransporter = new TableTransporter(dataSource);
         tableTransporter.transport();
 

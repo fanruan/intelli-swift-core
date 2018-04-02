@@ -19,7 +19,7 @@ import java.util.stream.IntStream;
 /**
  * Created by Lyon on 2017/12/1.
  */
-public abstract class ColumnImplTest<T> implements Column {
+public abstract class BaseColumnImplTest<T> implements Column {
 
     private DictionaryEncodedColumn<T> dict;
     protected List<T> groups;
@@ -27,7 +27,7 @@ public abstract class ColumnImplTest<T> implements Column {
     protected Comparator comparator;
     private T nullKey;
 
-    public ColumnImplTest(List<T> details, Comparator comparator, T nullKey) {
+    public BaseColumnImplTest(List<T> details, Comparator comparator, T nullKey) {
         this.comparator = comparator;
         indexes = new TreeMap<>(comparator);
         this.nullKey = nullKey;
@@ -104,7 +104,7 @@ public abstract class ColumnImplTest<T> implements Column {
 
             @Override
             public int getIndex(Object value) {
-                return ArrayLookupHelper.lookup((T[]) new Object[]{ColumnImplTest.this.convertValue(value)}, lookup)[0];
+                return ArrayLookupHelper.lookup((T[]) new Object[]{BaseColumnImplTest.this.convertValue(value)}, lookup)[0];
             }
 
             @Override
@@ -139,7 +139,7 @@ public abstract class ColumnImplTest<T> implements Column {
 
             @Override
             public T convertValue(Object value) {
-                return ColumnImplTest.this.convertValue(value);
+                return BaseColumnImplTest.this.convertValue(value);
             }
 
             @Override

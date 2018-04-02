@@ -3,15 +3,14 @@ package com.fr.swift.source.etl.rowcal.alldata;
 import com.fr.swift.query.aggregator.AggregatorType;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.source.ColumnTypeConstants.ColumnType;
-import com.fr.swift.source.ColumnTypeUtils;
 import com.fr.swift.source.MetaDataColumn;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftMetaDataColumn;
 import com.fr.swift.source.core.CoreField;
-import com.fr.swift.source.core.MD5Utils;
 import com.fr.swift.source.etl.AbstractOperator;
 import com.fr.swift.source.etl.OperatorType;
 
+import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,10 +40,6 @@ public class AllDataRowCalculatorOperator extends AbstractOperator {
         return dimension;
     }
 
-    public String getAddedColumnName() {
-        return addedColumnName;
-    }
-
     public String getColumnName() {
         return columnName;
     }
@@ -62,7 +57,7 @@ public class AllDataRowCalculatorOperator extends AbstractOperator {
     public List<SwiftMetaDataColumn> getColumns(SwiftMetaData[] metaDatas) {
         List<SwiftMetaDataColumn> columnList = new ArrayList<SwiftMetaDataColumn>();
         columnList.add(new MetaDataColumn(this.addedColumnName, this.addedColumnName,
-                ColumnTypeUtils.columnTypeToSqlType(this.columnType), fetchObjectCore().getValue()));
+                Types.DOUBLE, fetchObjectCore().getValue()));
         return columnList;
     }
 
@@ -78,7 +73,4 @@ public class AllDataRowCalculatorOperator extends AbstractOperator {
         return OperatorType.ALLDATA;
     }
 
-    public String getColumnMD5() {
-        return MD5Utils.getMD5String(new String[]{(this.addedColumnName)});
-    }
 }

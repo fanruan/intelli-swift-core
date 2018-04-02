@@ -3,8 +3,6 @@ package com.fr.swift.source.etl.groupsum;
 import com.fr.swift.query.aggregator.AggregatorType;
 import com.fr.swift.query.group.Group;
 import com.fr.swift.segment.Segment;
-import com.fr.swift.source.ColumnTypeConstants.ClassType;
-import com.fr.swift.source.ColumnTypeConstants.ColumnType;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftMetaDataColumn;
@@ -45,12 +43,8 @@ public class TestSumByGroupOperator extends TestCase {
         target[0] = new SumByGroupTarget();
         target[0].setName("column2");
         // TODO   应该是整型
-        target[0].setClassType(ClassType.LONG);
-        target[0].setColumnType(ColumnType.STRING);
         dimension[0] = new SumByGroupDimension();
         dimension[0].setName("column1");
-        dimension[0].setClassType(ClassType.STRING);
-        dimension[0].setColumnType(ColumnType.STRING);
 
         Segment[] segment = new Segment[2];
         segment[0] = new CreateSegmentForSum().getSegment();

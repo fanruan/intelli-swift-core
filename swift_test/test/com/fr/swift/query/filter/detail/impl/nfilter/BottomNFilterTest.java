@@ -1,7 +1,7 @@
 package com.fr.swift.query.filter.detail.impl.nfilter;
 
 import com.fr.swift.bitmap.ImmutableBitMap;
-import com.fr.swift.query.filter.detail.impl.ColumnImplTest;
+import com.fr.swift.query.filter.detail.impl.BaseColumnImplTest;
 import com.fr.swift.query.filter.detail.impl.number.BaseNumberFilterTest;
 import com.fr.swift.segment.column.DictionaryEncodedColumn;
 
@@ -23,7 +23,7 @@ public class BottomNFilterTest extends BaseNumberFilterTest {
     public BottomNFilterTest() {
         this.column = longColumn;
         this.details = longDetails;
-        this.groups = new ArrayList<>(((ColumnImplTest) column).getGroups());
+        this.groups = new ArrayList<>(((BaseColumnImplTest) column).getGroups());
         this.bottomN = groups.size() / 2;
         this.filter = new BottomNFilter(bottomN, column);
     }

@@ -5,7 +5,6 @@ import com.fr.swift.query.aggregator.Aggregator;
 import com.fr.swift.query.aggregator.AggregatorValue;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.column.ColumnKey;
-import com.fr.swift.source.ColumnTypeConstants.ClassType;
 import com.fr.swift.source.ColumnTypeConstants.ColumnType;
 import com.fr.swift.source.core.Core;
 import com.fr.swift.source.core.CoreField;
@@ -26,7 +25,6 @@ public class SumByGroupTarget implements CoreService,Serializable {
     private String name;
     private String nameText;
     private ColumnType columnType;
-    private ClassType classType;
     private Aggregator aggregator;
 
 
@@ -58,10 +56,6 @@ public class SumByGroupTarget implements CoreService,Serializable {
         return nameText;
     }
 
-    public int getSumType() {
-        return sumType;
-    }
-
     public void setSumType(int sumType) {
         this.sumType = sumType;
     }
@@ -71,13 +65,6 @@ public class SumByGroupTarget implements CoreService,Serializable {
         this.columnType = columnType;
     }
 
-    public ClassType getClassType() {
-        return classType;
-    }
-
-    public void setClassType(ClassType classType) {
-        this.classType = classType;
-    }
 
     public ColumnType getColumnType() {
         return columnType;

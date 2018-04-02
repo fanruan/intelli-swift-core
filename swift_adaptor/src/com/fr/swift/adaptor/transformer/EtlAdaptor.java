@@ -66,6 +66,7 @@ import com.finebi.conf.structure.bean.field.FineBusinessField;
 import com.finebi.conf.structure.bean.table.FineBusinessTable;
 import com.finebi.conf.structure.conf.base.EngineComplexConfTable;
 import com.finebi.conf.structure.path.FineBusinessTableRelationPath;
+import com.finebi.conf.structure.relation.FineBusinessTableRelation;
 import com.finebi.conf.utils.FineTableUtils;
 import com.fr.general.ComparatorUtils;
 import com.fr.swift.adaptor.widget.group.GroupAdaptor;
@@ -77,12 +78,15 @@ import com.fr.swift.query.aggregator.AggregatorFactory;
 import com.fr.swift.query.aggregator.AggregatorType;
 import com.fr.swift.query.filter.info.FilterInfo;
 import com.fr.swift.query.group.GroupType;
+import com.fr.swift.query.sort.SortType;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.source.ColumnTypeConstants;
 import com.fr.swift.source.DataSource;
 import com.fr.swift.source.MetaDataColumn;
 import com.fr.swift.source.RelationSource;
+import com.fr.swift.source.RelationSourceType;
+import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftMetaDataColumn;
 import com.fr.swift.source.SwiftMetaDataImpl;
@@ -113,6 +117,7 @@ import com.fr.swift.source.etl.selfrelation.OneUnionRelationOperator;
 import com.fr.swift.source.etl.selfrelation.TwoUnionRelationOperator;
 import com.fr.swift.source.etl.union.UnionOperator;
 import com.fr.swift.source.etl.utils.FormulaUtils;
+import com.fr.swift.source.relation.RelationSourceImpl;
 import com.fr.swift.util.Crasher;
 
 import java.sql.Types;
@@ -248,7 +253,40 @@ class EtlAdaptor {
         }
         FineBusinessTableRelationPath p = relation.get(0);
         //@yee todo path转化
-        return null;
+        return getRelation(p);
+    }
+
+    private static RelationSource getRelation(FineBusinessTableRelationPath path) {
+        try {
+            FineBusinessTable primaryTable = path.getFirstTable();
+            FineBusinessTable foreignTable = path.getEndTable();
+            List<FineBusinessTableRelation> relations = path.getFineBusinessTableRelations();
+            int size = relations.size();
+            FineBusinessTableRelation firstRelation = relations.get(0);
+            FineBusinessTableRelation lastRelation = relations.get(size - 1);
+            SourceKey primary = IndexingDataSourceFactory.transformDataSource(primaryTable).getSourceKey();
+            SourceKey foreign = IndexingDataSourceFactory.transformDataSource(foreignTable).getSourceKey();
+            List<FineBusinessField> primaryFields = firstRelation.getPrimaryBusinessField();
+            List<FineBusinessField> foreignFields = lastRelation.getForeignBusinessField();
+            List<String> primaryKey = new ArrayList<String>();
+            List<String> foreignKey = new ArrayList<String>();
+
+            for (FineBusinessField field : primaryFields) {
+                primaryKey.add(field.getName());
+            }
+
+            for (FineBusinessField field : foreignFields) {
+                foreignKey.add(field.getName());
+            }
+
+            if (size == 1) {
+                return new RelationSourceImpl(primary, foreign, primaryKey, foreignKey, RelationSourceType.RELATION);
+            } else {
+                return new RelationSourceImpl(primary, foreign, primaryKey, foreignKey, RelationSourceType.RELATION_PATH);
+            }
+        } catch (Exception e) {
+            return null;
+        }
     }
 
     private static String getBaseTable(SwiftRelationPathConfProvider relationProvider, List<SelectFieldBeanItem> selectFieldBeanItemList) {
@@ -496,14 +534,14 @@ class EtlAdaptor {
         String columnName = value.getName();
         ColumnKey columnKey = new ColumnKey(tempBean.getOrigin());
         if (tempBean.getRule() == BIConfConstants.CONF.ADD_COLUMN.NOT_IN_GROUP) {
-            return new AccumulateRowOperator(columnKey, columnName, ColumnTypeAdaptor.adaptColumnType(32), null);
+            return new AccumulateRowOperator(columnKey, columnName, null);
         } else {
             List<String> selects = ((GroupAccumulativeValue) tempBean).getSelects();
             ColumnKey[] dimensions = new ColumnKey[selects.size()];
             for (int i = 0; i < selects.size(); i++) {
                 dimensions[i] = new ColumnKey(selects.get(i));
             }
-            return new AccumulateRowOperator(columnKey, columnName, ColumnTypeAdaptor.adaptColumnType(32), dimensions);
+            return new AccumulateRowOperator(columnKey, columnName, dimensions);
         }
     }
 
@@ -529,16 +567,17 @@ class EtlAdaptor {
         String columnName = value.getName();
         AddFieldRankColumnItem tempBean = ((AddFieldRankColumnBean) value).getValue();
         ColumnKey columnKey = new ColumnKey(tempBean.getOrigin());
-        int summary = tempBean.getSummary();
+        //nice job! foundation
+        SortType sortType = tempBean.getRule() == BIConfConstants.CONF.ADD_COLUMN.RANKING.ASC || tempBean.getRule() == BIConfConstants.CONF.ADD_COLUMN.RANKING.ASC_IN_GROUP ? SortType.ASC : SortType.DESC;
         if (tempBean.getRule() == BIConfConstants.CONF.ADD_COLUMN.RANKING.ASC_IN_GROUP) {
             List<String> selects = ((GroupRankValueBean) tempBean).getSelects();
             ColumnKey[] dimensions = new ColumnKey[selects.size()];
             for (int i = 0; i < dimensions.length; i++) {
                 dimensions[i] = new ColumnKey(selects.get(0));
             }
-            return new RankRowOperator(columnName, summary, ColumnTypeAdaptor.adaptColumnType(32), columnKey, dimensions);
+            return new RankRowOperator(columnName, sortType, columnKey, dimensions);
         } else {
-            return new RankRowOperator(columnName, summary, ColumnTypeAdaptor.adaptColumnType(32), columnKey, null);
+            return new RankRowOperator(columnName, sortType, columnKey, null);
         }
     }
 
@@ -582,7 +621,7 @@ class EtlAdaptor {
             singleGroup.setList(dataList);
             group.add(singleGroup);
         }
-        return new GroupAssignmentOperator(columnName, ColumnTypeConstants.ColumnType.STRING, useOther, new ColumnKey(field), group);
+        return new GroupAssignmentOperator(columnName, useOther, new ColumnKey(field), group);
     }
 
     private static GroupNumericOperator getGroupNumericOperator(AddNewColumnValueBean value) {
@@ -606,7 +645,7 @@ class EtlAdaptor {
             RestrictRange restrictRange = new RestrictRange(closemax, closemin, groupName, field, nodeMax, nodeMin, valid);
             list.add(restrictRange);
         }
-        return new GroupNumericOperator(columnName, ColumnTypeConstants.ColumnType.STRING,
+        return new GroupNumericOperator(columnName,
                 new ColumnKey(field), max, min, other, list);
     }
 

@@ -1,9 +1,11 @@
 package com.fr.swift.generate.excel.all;
 
 import com.fr.swift.bitmap.ImmutableBitMap;
+import com.fr.swift.context.SwiftContext;
 import com.fr.swift.generate.TestIndexer;
 import com.fr.swift.generate.TestTransport;
 import com.fr.swift.generate.excel.BaseExcelTest;
+import com.fr.swift.manager.LocalDataOperatorProvider;
 import com.fr.swift.manager.LocalSegmentProvider;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.column.ColumnKey;
@@ -23,6 +25,7 @@ public class ExcelGenerateTest extends BaseExcelTest {
 
     public void testSingleFileGenerateExcel() throws Exception {
         try {
+            SwiftContext.getInstance().registerSegmentOperatorProvider(LocalDataOperatorProvider.getInstance());
             dataSource = new ExcelDataSource(path1, names, types);
 
             TestIndexer.historyIndex(dataSource, TestTransport.historyTransport(dataSource));

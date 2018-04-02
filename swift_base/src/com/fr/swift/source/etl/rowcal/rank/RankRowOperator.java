@@ -1,7 +1,7 @@
 package com.fr.swift.source.etl.rowcal.rank;
 
+import com.fr.swift.query.sort.SortType;
 import com.fr.swift.segment.column.ColumnKey;
-import com.fr.swift.source.ColumnTypeConstants.ColumnType;
 import com.fr.swift.source.ColumnTypeUtils;
 import com.fr.swift.source.MetaDataColumn;
 import com.fr.swift.source.SwiftMetaData;
@@ -19,20 +19,16 @@ import java.util.List;
  */
 public class RankRowOperator extends AbstractOperator {
     @CoreField
-    private int type;
+    private SortType sortType;
     @CoreField
     private ColumnKey columnKey;
-    @CoreField
     private String columnName;//新增列
-    @CoreField
-    private ColumnType columnType;
     @CoreField
     private ColumnKey[] dimension;
 
-    public RankRowOperator(String columnName, int type, ColumnType columnType, ColumnKey columnKey, ColumnKey[] dimension) {
-        this.type = type;
+    public RankRowOperator(String columnName, SortType type, ColumnKey columnKey, ColumnKey[] dimension) {
+        this.sortType = type;
         this.columnName = columnName;
-        this.columnType = columnType;
         this.columnKey = columnKey;
         this.dimension = dimension;
     }
@@ -45,13 +41,10 @@ public class RankRowOperator extends AbstractOperator {
         return columnName;
     }
 
-    public int getType() {
-        return type;
+    public SortType getType() {
+        return sortType;
     }
 
-    public ColumnType getColumnType() {
-        return columnType;
-    }
 
     public ColumnKey getColumnKey() {
         return columnKey;
@@ -68,7 +61,7 @@ public class RankRowOperator extends AbstractOperator {
     public List<SwiftMetaDataColumn> getColumns(SwiftMetaData[] metaDatas) {
         List<SwiftMetaDataColumn> columnList = new ArrayList<SwiftMetaDataColumn>();
         columnList.add(new MetaDataColumn(this.columnName, this.columnName,
-                Types.INTEGER, ColumnTypeUtils.MAX_LONG_COLUMN_SIZE, 0, fetchObjectCore().getValue()));
+                Types.BIGINT, ColumnTypeUtils.MAX_LONG_COLUMN_SIZE - 1, 0, fetchObjectCore().getValue()));
         return columnList;
     }
 

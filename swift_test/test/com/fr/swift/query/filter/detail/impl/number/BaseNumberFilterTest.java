@@ -1,8 +1,8 @@
 package com.fr.swift.query.filter.detail.impl.number;
 
 import com.fr.swift.query.filter.detail.DetailFilter;
+import com.fr.swift.query.filter.detail.impl.BaseColumnImplTest;
 import com.fr.swift.query.filter.detail.impl.BaseFilterTest;
-import com.fr.swift.query.filter.detail.impl.ColumnImplTest;
 import com.fr.swift.segment.column.Column;
 
 import java.util.Comparator;
@@ -54,19 +54,19 @@ public abstract class BaseNumberFilterTest extends BaseFilterTest {
     }
 
     private static void initColumn() {
-        intColumn = new ColumnImplTest<Integer>(intDetails, new NumberComparator<Integer>(), null) {
+        intColumn = new BaseColumnImplTest<Integer>(intDetails, new NumberComparator<Integer>(), null) {
             @Override
             protected Integer convertValue(Object value) {
                 return ((Number)value).intValue();
             }
         };
-        doubleColumn = new ColumnImplTest<Double>(doubleDetails, new NumberComparator<Double>(), null) {
+        doubleColumn = new BaseColumnImplTest<Double>(doubleDetails, new NumberComparator<Double>(), null) {
             @Override
             protected Double convertValue(Object value) {
                 return ((Number) value).doubleValue();
             }
         };
-        longColumn = new ColumnImplTest<Long>(longDetails, new NumberComparator<Long>(), null) {
+        longColumn = new BaseColumnImplTest<Long>(longDetails, new NumberComparator<Long>(), null) {
             @Override
             protected Long convertValue(Object value) {
                 return ((Number) value).longValue();
