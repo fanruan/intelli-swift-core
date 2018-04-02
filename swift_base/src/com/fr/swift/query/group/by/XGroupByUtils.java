@@ -59,7 +59,8 @@ public class XGroupByUtils {
             List<KeyValue<RowIndexKey<int[]>, RowTraversal>> keyValues = kv.getValue();
             List<KeyValue<RowIndexKey<int[]>, AggregatorValue[]>> list = new ArrayList<KeyValue<RowIndexKey<int[]>, AggregatorValue[]>>();
             for (KeyValue<RowIndexKey<int[]>, RowTraversal> keyValue : keyValues) {
-                list.add(new KeyValue<RowIndexKey<int[]>, AggregatorValue[]>(keyValue.getKey(),
+                list.add(new KeyValue<RowIndexKey<int[]>, AggregatorValue[]>(
+                        toGlobalIndex(keyValue.getKey().getKey(), xDictionaries),
                         aggregateRow(keyValue.getValue(), metrics, aggregators)));
                 // 更新列表头的全局字典
                 updateGlobalDictionaries(keyValue.getKey().getKey(), xGlobalDictionaries, xDictionaries);

@@ -31,9 +31,9 @@ public class XGroupResultQuery extends GroupResultQuery {
 
     @Override
     public GroupByResultSet getQueryResult() throws SQLException {
-        List<XGroupByResultSet> xGroupByResultSets = new ArrayList<XGroupByResultSet>();
+        List<XGroupByResultSet<int[]>> xGroupByResultSets = new ArrayList<XGroupByResultSet<int[]>>();
         for (Query<GroupByResultSet> query : queryList) {
-            xGroupByResultSets.add((XGroupByResultSet) query.getQueryResult());
+            xGroupByResultSets.add((XGroupByResultSet<int[]>) query.getQueryResult());
         }
         return XGroupByResultSetMergingUtils.merge(xGroupByResultSets, aggregators, indexSorts, xIndexSorts);
     }

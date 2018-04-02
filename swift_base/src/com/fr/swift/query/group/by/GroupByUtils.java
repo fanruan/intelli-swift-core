@@ -96,7 +96,7 @@ public class GroupByUtils {
         return dictionaries;
     }
 
-    static RowIndexKey toGlobalIndex(int[] segmentIndexes, List<DictionaryEncodedColumn> dictionaries) {
+    static RowIndexKey<int[]> toGlobalIndex(int[] segmentIndexes, List<DictionaryEncodedColumn> dictionaries) {
         int[] globalIndexes = new int[segmentIndexes.length];
         Arrays.fill(globalIndexes, -1);
         for (int i = 0; i < segmentIndexes.length; i++) {
@@ -105,7 +105,7 @@ public class GroupByUtils {
             }
             globalIndexes[i] = dictionaries.get(i).getGlobalIndexByIndex(segmentIndexes[i]);
         }
-        return new RowIndexKey(globalIndexes);
+        return new RowIndexKey<int[]>(globalIndexes);
     }
 
     static AggregatorValue[] aggregateRow(RowTraversal traversal, List<Column> metrics,

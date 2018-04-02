@@ -22,13 +22,13 @@ import static com.fr.swift.cal.result.group.GroupByResultSetMergingUtils.convert
  */
 public class XGroupByResultSetMergingUtils {
 
-    public static XGroupByResultSet merge(List<XGroupByResultSet> xGroupByResultSets, List<Aggregator> aggregators,
+    public static XGroupByResultSet merge(List<XGroupByResultSet<int[]>> xGroupByResultSets, List<Aggregator> aggregators,
                                           List<Sort> rowSorts, List<Sort> colSorts) {
         List<Map<Integer, Object>> rowGlobalDictionaries = new ArrayList<Map<Integer, Object>>();
         List<Map<Integer, Object>> colGlobalDictionaries = new ArrayList<Map<Integer, Object>>();
         List<List<KeyValue<RowIndexKey<int[]>, List<KeyValue<RowIndexKey<int[]>, AggregatorValue[]>>>>> lists = new ArrayList<List<KeyValue<RowIndexKey<int[]>, List<KeyValue<RowIndexKey<int[]>, AggregatorValue[]>>>>>();
-        for (XGroupByResultSet resultSet : xGroupByResultSets) {
-            lists.add(resultSet.getResultList());
+        for (XGroupByResultSet<int[]> resultSet : xGroupByResultSets) {
+            lists.add(resultSet.getXResultList());
             addDictionaries(resultSet.getGlobalDictionaries(), rowGlobalDictionaries);
             addDictionaries(resultSet.getColGlobalDictionaries(), colGlobalDictionaries);
         }
