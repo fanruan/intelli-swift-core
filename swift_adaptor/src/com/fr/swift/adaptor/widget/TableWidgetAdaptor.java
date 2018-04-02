@@ -1,7 +1,6 @@
 package com.fr.swift.adaptor.widget;
 
 import com.finebi.conf.constant.BIReportConstant.SORT;
-import com.finebi.conf.exception.FineEngineException;
 import com.finebi.conf.internalimp.dashboard.widget.table.TableWidget;
 import com.finebi.conf.structure.bean.table.FineBusinessTable;
 import com.finebi.conf.structure.dashboard.widget.FineWidget;
@@ -9,11 +8,9 @@ import com.finebi.conf.structure.dashboard.widget.dimension.FineDimension;
 import com.finebi.conf.structure.dashboard.widget.dimension.FineDimensionSort;
 import com.finebi.conf.structure.dashboard.widget.target.FineTarget;
 import com.finebi.conf.structure.result.table.BIGroupNode;
-import com.finebi.conf.utils.FineFieldUtils;
 import com.finebi.conf.utils.FineTableUtils;
 import com.fr.swift.adaptor.encrypt.SwiftEncryption;
 import com.fr.swift.adaptor.struct.node.BIGroupNodeFactory;
-import com.fr.swift.adaptor.transformer.ColumnTypeAdaptor;
 import com.fr.swift.adaptor.transformer.FilterInfoFactory;
 import com.fr.swift.adaptor.transformer.IndexingDataSourceFactory;
 import com.fr.swift.adaptor.widget.group.GroupAdaptor;
@@ -22,6 +19,8 @@ import com.fr.swift.cal.info.Expander;
 import com.fr.swift.cal.info.GroupQueryInfo;
 import com.fr.swift.cal.info.TableGroupQueryInfo;
 import com.fr.swift.cal.result.group.Cursor;
+import com.fr.swift.log.SwiftLogger;
+import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.query.adapter.dimension.Dimension;
 import com.fr.swift.query.adapter.dimension.GroupDimension;
 import com.fr.swift.query.adapter.metric.GroupMetric;
@@ -39,7 +38,6 @@ import com.fr.swift.query.sort.Sort;
 import com.fr.swift.result.GroupByResultSet;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.service.QueryRunnerProvider;
-import com.fr.swift.source.ColumnTypeConstants.ColumnType;
 import com.fr.swift.source.DataSource;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftResultSet;
@@ -53,6 +51,9 @@ import java.util.List;
  * 分组表
  */
 public class TableWidgetAdaptor {
+
+    private static final SwiftLogger LOGGER = SwiftLoggers.getLogger(TableWidgetAdaptor.class);
+
     public static BIGroupNode calculate(TableWidget widget) {
         BIGroupNode resultNode = null;
         SwiftResultSet resultSet;
@@ -60,7 +61,7 @@ public class TableWidgetAdaptor {
             resultSet = QueryRunnerProvider.getInstance().executeQuery(buildQueryInfo(widget));
             resultNode = BIGroupNodeFactory.createFromSortedList((GroupByResultSet) resultSet);
         } catch (Exception e) {
-
+            LOGGER.error(e);
         }
         return resultNode;
     }
@@ -75,7 +76,10 @@ public class TableWidgetAdaptor {
 
         GroupTarget[] targets = getTargets(widget);
         Expander expander = null;
-        String fieldId = widget.getDimensionList().get(0).getFieldId();
+        String fieldId = widget.getDimensionList().isEmpty() ? null : widget.getDimensionList().get(0).getFieldId();
+        fieldId = fieldId == null ?
+                widget.getTargetList().isEmpty() ? null : widget.getTargetList().get(0).getFieldId()
+                : fieldId;
         FineBusinessTable fineBusinessTable = FineTableUtils.getTableByFieldId(fieldId);
         DataSource baseDataSource = IndexingDataSourceFactory.transformDataSource(fineBusinessTable);
         TableGroupQueryInfo tableGroupQueryInfo = new TableGroupQueryInfo(
