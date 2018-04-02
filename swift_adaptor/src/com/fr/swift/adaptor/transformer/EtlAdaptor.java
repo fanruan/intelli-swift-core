@@ -621,7 +621,7 @@ class EtlAdaptor {
             singleGroup.setList(dataList);
             group.add(singleGroup);
         }
-        return new GroupAssignmentOperator(columnName, ColumnTypeConstants.ColumnType.STRING, useOther, new ColumnKey(field), group);
+        return new GroupAssignmentOperator(columnName, useOther, new ColumnKey(field), group);
     }
 
     private static GroupNumericOperator getGroupNumericOperator(AddNewColumnValueBean value) {
@@ -645,7 +645,7 @@ class EtlAdaptor {
             RestrictRange restrictRange = new RestrictRange(closemax, closemin, groupName, field, nodeMax, nodeMin, valid);
             list.add(restrictRange);
         }
-        return new GroupNumericOperator(columnName, ColumnTypeConstants.ColumnType.STRING,
+        return new GroupNumericOperator(columnName,
                 new ColumnKey(field), max, min, other, list);
     }
 
