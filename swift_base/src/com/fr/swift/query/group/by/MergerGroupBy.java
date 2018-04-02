@@ -24,7 +24,6 @@ public abstract class MergerGroupBy<T> implements Iterator<KeyValue<RowIndexKey<
     public MergerGroupBy(MultiGroupBy[] iterators) {
         Util.requireNonNull(iterators);
         this.iterators = iterators;
-        moveNext();
     }
 
     //初始化，把每个迭代器的第一个放入map
@@ -33,6 +32,7 @@ public abstract class MergerGroupBy<T> implements Iterator<KeyValue<RowIndexKey<
         for (int i = 0; i < iterators.length; i++) {
             pick(i);
         }
+        moveNext();
     }
 
     protected abstract Comparator<RowIndexKey<T>> getComparator();
