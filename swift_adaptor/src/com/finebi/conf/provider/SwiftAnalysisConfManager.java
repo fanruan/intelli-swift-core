@@ -16,7 +16,7 @@ public class SwiftAnalysisConfManager implements EngineAnalysisConfManager {
     private SwiftPackageConfProvider packProvider;
 
     @Autowired
-    private SwiftTableConfProvider tableProvider;
+    private SwiftTableManager tableProvider;
 
     @Override
     public FineBusinessPackage getBusinessPackage(String s) {

@@ -28,6 +28,11 @@ public class NoGroupRule<Base> extends BaseGroupRule<Base, Base> {
     }
 
     @Override
+    public int getIndex(Object val) {
+        return dictColumn.getIndex(val);
+    }
+
+    @Override
     public IntList map(int index) {
         return IntListFactory.newSingleList(index);
     }
