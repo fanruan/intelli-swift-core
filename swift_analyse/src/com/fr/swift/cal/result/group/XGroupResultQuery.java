@@ -6,8 +6,10 @@ import com.fr.swift.query.aggregator.Aggregator;
 import com.fr.swift.query.filter.match.MatchFilter;
 import com.fr.swift.query.sort.Sort;
 import com.fr.swift.result.GroupByResultSet;
+import com.fr.swift.result.XGroupByResultSet;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -29,6 +31,10 @@ public class XGroupResultQuery extends GroupResultQuery {
 
     @Override
     public GroupByResultSet getQueryResult() throws SQLException {
-        return null;
+        List<XGroupByResultSet> xGroupByResultSets = new ArrayList<XGroupByResultSet>();
+        for (Query<GroupByResultSet> query : queryList) {
+            xGroupByResultSets.add((XGroupByResultSet) query.getQueryResult());
+        }
+        return XGroupByResultSetMergingUtils.merge(xGroupByResultSets, aggregators, indexSorts, xIndexSorts);
     }
 }

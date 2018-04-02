@@ -2,11 +2,11 @@ package com.fr.swift.cal.result.group;
 
 import com.fr.swift.query.aggregator.Aggregator;
 import com.fr.swift.query.aggregator.AggregatorValue;
+import com.fr.swift.query.aggregator.Combiner;
 import com.fr.swift.query.sort.Sort;
 import com.fr.swift.query.sort.SortType;
 import com.fr.swift.result.GroupByResultSet;
 import com.fr.swift.result.GroupByResultSetImpl;
-import com.fr.swift.result.KVCombiner;
 import com.fr.swift.result.KeyValue;
 import com.fr.swift.result.RowIndexKey;
 import com.fr.swift.structure.queue.SortedListMergingUtils;
@@ -44,11 +44,11 @@ public class GroupByResultSetMergingUtils {
             addDictionaries(resultSet.getGlobalDictionaries(), globalDictionaries);
         }
         List<KeyValue<RowIndexKey<int[]>, AggregatorValue[]>> mergedResult = SortedListMergingUtils.merge(lists,
-                new IndexKeyComparator(indexSorts), new KVCombiner<AggregatorValue>(convertType(aggregators)));
+                new IndexKeyComparator<AggregatorValue[]>(indexSorts), new KVCombiner<AggregatorValue>(convertType(aggregators)));
         return new GroupByResultSetImpl(mergedResult, globalDictionaries, indexSorts);
     }
 
-    private static List<Aggregator<AggregatorValue>> convertType(List<Aggregator> aggregators) {
+    static List<Aggregator<AggregatorValue>> convertType(List<Aggregator> aggregators) {
         List<Aggregator<AggregatorValue>> aggregatorList = new ArrayList<Aggregator<AggregatorValue>>();
         for (Aggregator aggregator : aggregators) {
             aggregatorList.add((Aggregator<AggregatorValue>) aggregator);
@@ -56,7 +56,7 @@ public class GroupByResultSetMergingUtils {
         return aggregatorList;
     }
 
-    private static void addDictionaries(List<Map<Integer, Object>> dictionaries,
+    static void addDictionaries(List<Map<Integer, Object>> dictionaries,
                                         List<Map<Integer, Object>> totalDictionaries) {
         if (totalDictionaries.size() == 0) {
             for (int i = 0; i < dictionaries.size(); i++) {
@@ -68,7 +68,7 @@ public class GroupByResultSetMergingUtils {
         }
     }
 
-    private static class IndexKeyComparator implements Comparator<KeyValue<RowIndexKey<int[]>, AggregatorValue[]>> {
+    static class IndexKeyComparator<T> implements Comparator<KeyValue<RowIndexKey<int[]>, T>> {
 
         private List<Sort> sorts;
 
@@ -77,8 +77,8 @@ public class GroupByResultSetMergingUtils {
         }
 
         @Override
-        public int compare(KeyValue<RowIndexKey<int[]>, AggregatorValue[]> o1,
-                           KeyValue<RowIndexKey<int[]>, AggregatorValue[]> o2) {
+        public int compare(KeyValue<RowIndexKey<int[]>, T> o1,
+                           KeyValue<RowIndexKey<int[]>, T> o2) {
             int[] index1 = o1.getKey().getKey();
             int[] index2 = o2.getKey().getKey();
             int result = 0;
@@ -97,6 +97,28 @@ public class GroupByResultSetMergingUtils {
 
         private static int compareIndex(int x, int y) {
             return (x < y) ? -1 : ((x == y) ? 0 : 1);
+        }
+    }
+
+    /**
+     * 合并KeyValue的value
+     * @param <V>
+     */
+    static class KVCombiner<V> implements Combiner<KeyValue<RowIndexKey<int[]>, V[]>> {
+
+        private List<? extends Combiner<V>> combiners;
+
+        public KVCombiner(List<? extends Combiner<V>> combiners) {
+            this.combiners = combiners;
+        }
+
+        @Override
+        public void combine(KeyValue<RowIndexKey<int[]>, V[]> current, KeyValue<RowIndexKey<int[]>, V[]> other) {
+            V[] values = current.getValue();
+            V[] otherValues = other.getValue();
+            for (int i = 0; i < combiners.size(); i++) {
+                combiners.get(i).combine(values[i], otherValues[i]);
+            }
         }
     }
 }

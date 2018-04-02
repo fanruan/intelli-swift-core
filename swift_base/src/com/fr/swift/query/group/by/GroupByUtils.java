@@ -34,7 +34,7 @@ public class GroupByUtils {
             asc = new boolean[dimensions.size()];
             Arrays.fill(asc, true);
         } else {
-            asc = getSorts(indexSorts);
+            asc = getSorts(indexSorts, dimensions.size());
         }
         Iterator<KeyValue<RowIndexKey<int[]>, RowTraversal>> groupByIterator = new MultiDimensionGroupBy(dimensions, filter, cursor, asc);
         if (pageSize != -1) {
@@ -54,9 +54,9 @@ public class GroupByUtils {
         return new GroupByResultSetImpl(rowResult, globalDictionaries, indexSorts);
     }
 
-    private static boolean[] getSorts(List<Sort> sorts) {
+    static boolean[] getSorts(List<Sort> sorts, int dimensionSize) {
         // 这边sorts的size能保证和维度的size相同吗？
-        boolean[] asc = new boolean[sorts.size()];
+        boolean[] asc = new boolean[dimensionSize];
         Arrays.fill(asc, false);
         for (int i = 0; i < asc.length; i++) {
             if (sorts.get(i).getSortType() == SortType.ASC) {
@@ -66,7 +66,7 @@ public class GroupByUtils {
         return asc;
     }
 
-    private static List<DictionaryEncodedColumn> getDictionaries(List<Column> dimensions) {
+    static List<DictionaryEncodedColumn> getDictionaries(List<Column> dimensions) {
         List<DictionaryEncodedColumn> dictionaries = new ArrayList<DictionaryEncodedColumn>();
         for (Column column : dimensions) {
             dictionaries.add(column.getDictionaryEncodedColumn());
@@ -74,7 +74,7 @@ public class GroupByUtils {
         return dictionaries;
     }
 
-    private static void updateGlobalDictionaries(int[] segmentIndexes, List<Map<Integer, Object>> globalDictionaries,
+    static void updateGlobalDictionaries(int[] segmentIndexes, List<Map<Integer, Object>> globalDictionaries,
                                                  List<DictionaryEncodedColumn> dictionaries) {
         for (int i = 0; i < segmentIndexes.length; i++) {
             if (segmentIndexes[i] == -1) {
@@ -88,7 +88,7 @@ public class GroupByUtils {
         }
     }
 
-    private static List<Map<Integer, Object>> createGlobalDictionaries(int dimensionSize) {
+    static List<Map<Integer, Object>> createGlobalDictionaries(int dimensionSize) {
         List<Map<Integer, Object>> dictionaries = new ArrayList<Map<Integer, Object>>();
         for (int i = 0; i < dimensionSize; i++) {
             dictionaries.add(new HashMap<Integer, Object>());
@@ -96,7 +96,7 @@ public class GroupByUtils {
         return dictionaries;
     }
 
-    private static RowIndexKey toGlobalIndex(int[] segmentIndexes, List<DictionaryEncodedColumn> dictionaries) {
+    static RowIndexKey toGlobalIndex(int[] segmentIndexes, List<DictionaryEncodedColumn> dictionaries) {
         int[] globalIndexes = new int[segmentIndexes.length];
         Arrays.fill(globalIndexes, -1);
         for (int i = 0; i < segmentIndexes.length; i++) {
@@ -108,7 +108,7 @@ public class GroupByUtils {
         return new RowIndexKey(globalIndexes);
     }
 
-    private static AggregatorValue[] aggregateRow(RowTraversal traversal, List<Column> metrics,
+    static AggregatorValue[] aggregateRow(RowTraversal traversal, List<Column> metrics,
                                                   List<Aggregator> aggregators) {
         AggregatorValue[] values = new AggregatorValue[metrics.size()];
         for (int i = 0; i < metrics.size(); i++) {
