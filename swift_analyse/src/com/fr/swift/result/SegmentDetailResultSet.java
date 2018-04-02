@@ -63,11 +63,6 @@ public class SegmentDetailResultSet extends DetailResultSet {
     }
 
     @Override
-    public int getColumnCount() {
-        return columnList.size();
-    }
-
-    @Override
     public SwiftMetaData getMetaData() {
         return metaData;
     }
