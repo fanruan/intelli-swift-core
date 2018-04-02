@@ -17,7 +17,10 @@ public class RowIndexKey<T> {
     }
 
     public RowIndexKey(Object[] key) {
-        Util.requireNonNull(key);
+        //不能用Util.requireNonNull，这边只要数组不是null，不要求元素不是null
+        if (key == null){
+            throw new NullPointerException();
+        }
         this.rowIndexKey = new ObjectKey(key);
     }
 

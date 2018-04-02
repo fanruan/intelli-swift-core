@@ -1,12 +1,12 @@
 package com.fr.swift.source.etl.rowcal.alldata;
 
+import com.fr.swift.query.aggregator.AggregatorFactory;
 import com.fr.swift.query.aggregator.AggregatorType;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftResultSet;
 import com.fr.swift.source.etl.ETLTransferOperator;
-import com.fr.swift.structure.iterator.RowTraversal;
 
 import java.util.List;
 
@@ -26,35 +26,9 @@ public class AllDataTransferOperator implements ETLTransferOperator {
 
     @Override
     public SwiftResultSet createResultSet(SwiftMetaData metaData, List<SwiftMetaData> basedMetas, List<Segment[]> basedSegments) {
-        AllDataCalculator cal = createCalculator(summaryType);
+        AllDataCalculator cal = new AllDataCalculator(AggregatorFactory.createAggregator(summaryType));
         Segment[] segments = basedSegments.get(0);
-        RowTraversal[] traversals = new RowTraversal[segments.length];
-        for (int i = 0; i < traversals.length; i++) {
-            traversals[i] = segments[i].getAllShowIndex();
-        }
-        return new AllDataRowCalculatorResultSet(columnName, segments, traversals, metaData, cal, dimensions);
+        return new AllDataRowCalculatorResultSet(columnName, segments, metaData, cal, dimensions);
     }
 
-    private AllDataCalculator createCalculator(AggregatorType type) {
-        switch (type) {
-            case SUM: {
-                return SumCalculator.INSTANCE;
-            }
-            case MAX: {
-                return MaxCalculator.INSTANCE;
-            }
-            case MIN: {
-                return MinCalculator.INSTANCE;
-            }
-            case AVERAGE: {
-                return AvgCalculator.INSTANCE;
-            }
-            case COUNT: {
-                return CountCalculator.INSTANCE;
-            }
-            default: {
-                return SumCalculator.INSTANCE;
-            }
-        }
-    }
 }
