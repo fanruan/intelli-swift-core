@@ -1,6 +1,7 @@
 package com.fr.swift.source.etl.utils;
 
 import com.fr.swift.query.filter.detail.impl.AllShowDetailFilter;
+import com.fr.swift.query.group.Group;
 import com.fr.swift.query.group.by.MergerGroupByValues;
 import com.fr.swift.query.group.by.MultiGroupByValues;
 import com.fr.swift.segment.Segment;
@@ -16,7 +17,12 @@ import java.util.List;
  * Created by pony on 2018/3/30.
  */
 public class MergerGroupByValuesFactory {
-    public static MergerGroupByValues createMergerGroupBy(Segment[] segments, ColumnKey[] dimensions, boolean[] asc){
+
+    public static MergerGroupByValues createMergerGroupBy(Segment[] segments, ColumnKey[] dimensions,  boolean[] asc){
+        return createMergerGroupBy(segments, dimensions, new Group[dimensions.length], asc);
+    }
+
+    public static MergerGroupByValues createMergerGroupBy(Segment[] segments, ColumnKey[] dimensions, Group[] groups,  boolean[] asc){
         if (dimensions == null){
             dimensions = new ColumnKey[0];
         }
@@ -27,7 +33,11 @@ public class MergerGroupByValuesFactory {
             Arrays.fill(cursor, 0);
             List<Column> columns = new ArrayList<Column>();
             for (ColumnKey columnKey : dimensions) {
-                columns.add(segments[i].getColumn(columnKey));
+                Column column = segments[i].getColumn(columnKey);
+                if (groups != null && groups[i] != null){
+                    column = groups[i].getGroupOperator().group(column);
+                }
+                columns.add(column);
             }
             if (comparators == null) {
                 comparators = new Comparator[dimensions.length];

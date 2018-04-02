@@ -1,6 +1,6 @@
 package com.fr.swift.query.filter.detail.impl.date;
 
-import com.fr.swift.query.filter.detail.impl.ColumnImplTest;
+import com.fr.swift.query.filter.detail.impl.BaseColumnImplTest;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -11,7 +11,7 @@ import java.util.stream.IntStream;
  */
 public class DateInRangeFilterTest extends BaseDateFilterTest {
 
-    private List<Long> groups = ((ColumnImplTest) column).getGroups();
+    private List<Long> groups = ((BaseColumnImplTest) column).getGroups();
     protected Long startDate;
     protected Long endDate;
 

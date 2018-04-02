@@ -34,7 +34,12 @@ public class DetailOperatorTest extends TestCase {
         ColumnKey[] columnKeys = new ColumnKey[]{columnKey};
         List<ColumnKey[]> fields = new ArrayList<>();
         fields.add(columnKeys);
-        DetailOperator operator = new DetailOperator(fields, null, baseMeta);
+        List<ColumnKey> baseColumns = new ArrayList<>();
+        SwiftMetaData tableContractMeta = tableContract.getMetadata();
+        for (int i = 0; i < tableContractMeta.getColumnCount(); i++) {
+            baseColumns.add(new ColumnKey(tableContractMeta.getColumnName(i + 1)));
+        }
+        DetailOperator operator = new DetailOperator(fields, baseColumns, baseMeta);
         EtlSource source = new EtlSource(sources, operator);
         SwiftMetaData metaData = source.getMetadata();
         assertEquals(metaData.getColumnCount(), 11);
