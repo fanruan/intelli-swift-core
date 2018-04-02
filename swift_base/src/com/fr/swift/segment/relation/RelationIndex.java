@@ -28,13 +28,13 @@ public interface RelationIndex extends Releasable, Flushable {
     /**
      * @param bitmap 主表所有未匹配行号索引
      */
-    void putNullIndex(ImmutableBitMap bitmap);
+    void putNullIndex(int pos, ImmutableBitMap bitmap);
 
     /**
      * 获取空索引
      * @return 返回空索引
      */
-    ImmutableBitMap getNullIndex();
+    ImmutableBitMap getNullIndex(int pos);
 
     /**
      * 反向关联
@@ -43,12 +43,25 @@ public interface RelationIndex extends Releasable, Flushable {
      * @param fPos 外表行号
      * @param tPos 主表行号
      */
-    void putReverseIndex(int fPos, int tPos);
+    void putReverseIndex(int fPos, long tPos);
 
     /**
      * 获取反向关联
      * @param fPos
      * @return
      */
-    int getReverseIndex(int fPos);
+    long getReverseIndex(int fPos);
+
+    void putSegIndex(int fPos, int tPos);
+
+    /**
+     * 获取反向关联
+     * @param fPos
+     * @return
+     */
+    int getSegIndex(int fPos);
+
+    int getReverseCount();
+
+    void putReverseCount(int count);
 }

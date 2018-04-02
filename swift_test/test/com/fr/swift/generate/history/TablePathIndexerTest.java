@@ -222,7 +222,7 @@ public class TablePathIndexerTest extends TestCase {
         int firstRow = first.getRowCount();
         int secondRow = second.getRowCount();
         int thirdRow = second.getRowCount();
-        ImmutableBitMap nullIndex = index.getNullIndex();
+        ImmutableBitMap nullIndex = index.getNullIndex(0);
         List<ColumnKey> firstRelationPrimaryKeys = path.getFirstRelation().getPrimaryField().getKeyFields();
         List<ColumnKey> firstRelationForeignKeys = path.getFirstRelation().getForeignField().getKeyFields();
         List<ColumnKey> lastRelationPrimaryKeys = path.getLastRelation().getPrimaryField().getKeyFields();
