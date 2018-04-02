@@ -3,7 +3,7 @@ package com.fr.swift.query.filter.detail.impl.string;
 import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.query.filter.detail.DetailFilter;
 import com.fr.swift.query.filter.detail.impl.BaseFilterTest;
-import com.fr.swift.query.filter.detail.impl.ColumnImplTest;
+import com.fr.swift.query.filter.detail.impl.BaseColumnImplTest;
 import com.fr.swift.segment.column.Column;
 
 import java.util.ArrayList;
@@ -19,8 +19,8 @@ import java.util.stream.IntStream;
 public abstract class BaseStringFilterTest extends BaseFilterTest {
 
     protected static List<String> words = prepareWords(100);
-//    protected static Column wordsColumn = new ColumnImplTest(words, Comparator.naturalOrder(), NULL_VALUE);
-    protected static Column wordsColumn = new ColumnImplTest(words, Comparator.naturalOrder(), NULL_VALUE) {
+//    protected static Column wordsColumn = new BaseColumnImplTest(words, Comparator.naturalOrder(), NULL_VALUE);
+    protected static Column wordsColumn = new BaseColumnImplTest(words, Comparator.naturalOrder(), NULL_VALUE) {
     @Override
     protected Object convertValue(Object value) {
         return value;
