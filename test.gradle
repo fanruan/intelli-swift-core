@@ -55,6 +55,7 @@ task test_jar(dependsOn: compileJava) << {
             classpath() {
                 pathelement(path: "../lib-other/test/ant-junit.jar")
                 pathelement(path: "../lib-other/test/junit-4.12.jar")
+                pathelement(path: "../lib-other/test/objenesis-2.6.jar")
             }
         }
 
