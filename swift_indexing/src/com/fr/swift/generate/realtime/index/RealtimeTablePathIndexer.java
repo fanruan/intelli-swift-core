@@ -1,4 +1,4 @@
-package com.fr.swift.generate.history.index;
+package com.fr.swift.generate.realtime.index;
 
 
 import com.fr.swift.generate.BaseTablePathIndexer;
@@ -13,8 +13,8 @@ import java.util.List;
  * @author yee
  * @date 2018/1/17
  */
-public class TablePathIndexer extends BaseTablePathIndexer {
-    public TablePathIndexer(CubeMultiRelationPath relationPath, SwiftSegmentManager provider) {
+public class RealtimeTablePathIndexer extends BaseTablePathIndexer {
+    public RealtimeTablePathIndexer(CubeMultiRelationPath relationPath, SwiftSegmentManager provider) {
         super(relationPath, provider);
     }
 

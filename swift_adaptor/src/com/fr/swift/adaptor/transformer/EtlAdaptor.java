@@ -66,6 +66,7 @@ import com.finebi.conf.structure.bean.field.FineBusinessField;
 import com.finebi.conf.structure.bean.table.FineBusinessTable;
 import com.finebi.conf.structure.conf.base.EngineComplexConfTable;
 import com.finebi.conf.structure.path.FineBusinessTableRelationPath;
+import com.finebi.conf.structure.relation.FineBusinessTableRelation;
 import com.finebi.conf.utils.FineTableUtils;
 import com.fr.general.ComparatorUtils;
 import com.fr.swift.adaptor.widget.group.GroupAdaptor;
@@ -84,6 +85,8 @@ import com.fr.swift.source.ColumnTypeConstants;
 import com.fr.swift.source.DataSource;
 import com.fr.swift.source.MetaDataColumn;
 import com.fr.swift.source.RelationSource;
+import com.fr.swift.source.RelationSourceType;
+import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftMetaDataColumn;
 import com.fr.swift.source.SwiftMetaDataImpl;
@@ -114,6 +117,7 @@ import com.fr.swift.source.etl.selfrelation.OneUnionRelationOperator;
 import com.fr.swift.source.etl.selfrelation.TwoUnionRelationOperator;
 import com.fr.swift.source.etl.union.UnionOperator;
 import com.fr.swift.source.etl.utils.FormulaUtils;
+import com.fr.swift.source.relation.RelationSourceImpl;
 import com.fr.swift.util.Crasher;
 
 import java.sql.Types;
@@ -249,7 +253,40 @@ class EtlAdaptor {
         }
         FineBusinessTableRelationPath p = relation.get(0);
         //@yee todo path转化
-        return null;
+        return getRelation(p);
+    }
+
+    private static RelationSource getRelation(FineBusinessTableRelationPath path) {
+        try {
+            FineBusinessTable primaryTable = path.getFirstTable();
+            FineBusinessTable foreignTable = path.getEndTable();
+            List<FineBusinessTableRelation> relations = path.getFineBusinessTableRelations();
+            int size = relations.size();
+            FineBusinessTableRelation firstRelation = relations.get(0);
+            FineBusinessTableRelation lastRelation = relations.get(size - 1);
+            SourceKey primary = IndexingDataSourceFactory.transformDataSource(primaryTable).getSourceKey();
+            SourceKey foreign = IndexingDataSourceFactory.transformDataSource(foreignTable).getSourceKey();
+            List<FineBusinessField> primaryFields = firstRelation.getPrimaryBusinessField();
+            List<FineBusinessField> foreignFields = lastRelation.getForeignBusinessField();
+            List<String> primaryKey = new ArrayList<String>();
+            List<String> foreignKey = new ArrayList<String>();
+
+            for (FineBusinessField field : primaryFields) {
+                primaryKey.add(field.getName());
+            }
+
+            for (FineBusinessField field : foreignFields) {
+                foreignKey.add(field.getName());
+            }
+
+            if (size == 1) {
+                return new RelationSourceImpl(primary, foreign, primaryKey, foreignKey, RelationSourceType.RELATION);
+            } else {
+                return new RelationSourceImpl(primary, foreign, primaryKey, foreignKey, RelationSourceType.RELATION_PATH);
+            }
+        } catch (Exception e) {
+            return null;
+        }
     }
 
     private static String getBaseTable(SwiftRelationPathConfProvider relationProvider, List<SelectFieldBeanItem> selectFieldBeanItemList) {

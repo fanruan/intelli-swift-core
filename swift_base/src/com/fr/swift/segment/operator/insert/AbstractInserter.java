@@ -56,7 +56,7 @@ public abstract class AbstractInserter implements Inserter {
         SwiftMetaData metaData = segment.getMetaData();
         for (int i = 0; i < fields.size(); i++) {
             SwiftMetaDataColumn metaDataColumn = metaData.getColumn(fields.get(i));
-            ColumnTypeConstants.ClassType clazz = ColumnTypeUtils.sqlTypeToClassType(metaDataColumn.getType(), metaDataColumn.getPrecision(), metaDataColumn.getScale());
+            ColumnTypeConstants.ClassType clazz = ColumnTypeUtils.getClassType(metaDataColumn);
             ColumnKey columnKey = new ColumnKey(metaDataColumn.getName());
             Column column = segment.getColumn(columnKey);
             columnList.add(column);
@@ -66,7 +66,7 @@ public abstract class AbstractInserter implements Inserter {
     }
 
     @Override
-    public boolean insertData(List<Row> rowList) throws Exception {
+    public boolean insertData(List<Row> rowList) {
         allShowIndex = BitMaps.newAllShowBitMap(rowList.size());
         for (Row rowData : rowList) {
             for (int i = 0; i < fields.size(); i++) {

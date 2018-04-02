@@ -76,7 +76,7 @@ public class UnionOperator extends AbstractOperator {
     }
 
     private ColumnTypeConstants.ClassType getMaxType(SwiftMetaDataColumn singleColumn, ColumnTypeConstants.ClassType type) {
-        ColumnTypeConstants.ClassType columnClassType = ColumnTypeUtils.sqlTypeToClassType(singleColumn.getType(), singleColumn.getPrecision(), singleColumn.getScale());
+        ColumnTypeConstants.ClassType columnClassType = ColumnTypeUtils.getClassType(singleColumn);
         if (columnClassType == ColumnTypeConstants.ClassType.STRING || columnClassType == ColumnTypeConstants.ClassType.DATE){
             return columnClassType;
         }

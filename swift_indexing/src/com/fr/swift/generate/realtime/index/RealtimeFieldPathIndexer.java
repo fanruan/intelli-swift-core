@@ -1,4 +1,4 @@
-package com.fr.swift.generate.history.index;
+package com.fr.swift.generate.realtime.index;
 
 import com.fr.swift.generate.BaseFieldPathIndexer;
 import com.fr.swift.relation.CubeLogicColumnKey;
@@ -13,8 +13,8 @@ import java.util.List;
  * @author yee
  * @date 2018/1/17
  */
-public class FieldPathIndexer extends BaseFieldPathIndexer {
-    public FieldPathIndexer(CubeMultiRelationPath relationPath, CubeLogicColumnKey logicColumnKey, SwiftSegmentManager provider) {
+public class RealtimeFieldPathIndexer extends BaseFieldPathIndexer {
+    public RealtimeFieldPathIndexer(CubeMultiRelationPath relationPath, CubeLogicColumnKey logicColumnKey, SwiftSegmentManager provider) {
         super(relationPath, logicColumnKey, provider);
     }
 

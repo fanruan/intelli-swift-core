@@ -22,8 +22,9 @@ public class DateUtils {
                 return dateStaticFilterBean2Long(((DateStaticFilterBean) bean).getValue());
             case BICommonConstants.DATE_TYPE.DYNAMIC:
                 return dateDynamicFilterBeanValue2Long(((DateDynamicFilterBean) bean).getValue());
+            default:
+                return dateStaticFilterBean2Long(((DateStaticFilterBean) bean).getValue());
         }
-        return dateStaticFilterBean2Long(((DateStaticFilterBean) bean).getValue());
     }
 
     public static long dateStaticFilterBean2Long(DateStaticFilterBeanValue value) {
@@ -78,8 +79,9 @@ public class DateUtils {
                 return startOfYear(c).getTimeInMillis();
             case YEAR_END:
                 return endOfYear(c).getTimeInMillis();
+            default:
+                return c.getTimeInMillis();
         }
-        return c.getTimeInMillis();
     }
 
     // 一周工作日的起始日和结束日，没有功能文档，和测试同学统一的

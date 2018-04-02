@@ -160,7 +160,7 @@ public class FormulaUtils {
     private static Object getParameterDefaultValue(SwiftMetaData metadata, String parameter) {
         try {
             SwiftMetaDataColumn column = metadata.getColumn(parameter);
-            switch (ColumnTypeUtils.sqlTypeToColumnType(column.getType(), column.getPrecision(), column.getScale())) {
+            switch (ColumnTypeUtils.getColumnType(column)) {
                 case NUMBER:
                     return 1;
                 case DATE:
