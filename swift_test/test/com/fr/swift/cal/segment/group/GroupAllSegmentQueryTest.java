@@ -30,7 +30,7 @@ public class GroupAllSegmentQueryTest extends TestCase {
     private int rowCount;
 
     public static void checkResult(GroupByResultSet collector, Map<RowIndexKey, double[]> expectedResult) {
-        Iterator<KeyValue<RowIndexKey<int[]>, AggregatorValue[]>> iterator = collector.getRowResultIterator();
+        Iterator<KeyValue<RowIndexKey<int[]>, AggregatorValue[]>> iterator = collector.getResultList().iterator();
         while (iterator.hasNext()) {
             KeyValue<RowIndexKey<int[]>, AggregatorValue[]> keyValue = iterator.next();
             if (!isNormalRow(keyValue.getKey().getKey())) {

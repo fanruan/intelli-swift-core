@@ -10,6 +10,7 @@ import com.finebi.conf.utils.FineTableUtils;
 import com.fr.swift.adaptor.transformer.FilterInfoFactory;
 import com.fr.swift.adaptor.transformer.IndexingDataSourceFactory;
 import com.fr.swift.cal.info.DetailQueryInfo;
+import com.fr.swift.cal.result.group.AllCursor;
 import com.fr.swift.cal.result.group.RowCursor;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
@@ -47,7 +48,7 @@ public class SingleSliderWidgetAdaptor {
                         null, new AscSort(0), filterInfo);
                 IntList sortIndex = IntListFactory.createHeapIntList(1);
                 sortIndex.add(0);
-                DetailQueryInfo minQueryInfo = new DetailQueryInfo(new RowCursor(), widget.getWidgetId(), new DetailDimension[]{ascDimension}, baseDataSource.getSourceKey(), null, sortIndex, null, null);
+                DetailQueryInfo minQueryInfo = new DetailQueryInfo(new AllCursor(), widget.getWidgetId(), new DetailDimension[]{ascDimension}, baseDataSource.getSourceKey(), null, sortIndex, null, null);
                 DetailResultSet minResultSet = QueryRunnerProvider.getInstance().executeQuery(minQueryInfo);
                 minResultSet.next();
                 Number min = minResultSet.getRowData().getValue(0);
@@ -55,7 +56,7 @@ public class SingleSliderWidgetAdaptor {
                 //再通过明细表排序差最大
                 DetailDimension descDimension = new DetailDimension(0, baseDataSource.getSourceKey(), new ColumnKey(fineBusinessField.getName()),
                         null, new DescSort(0), filterInfo);
-                DetailQueryInfo maxQueryInfo = new DetailQueryInfo(new RowCursor(), widget.getWidgetId(), new DetailDimension[]{descDimension}, baseDataSource.getSourceKey(), null, sortIndex, null, null);
+                DetailQueryInfo maxQueryInfo = new DetailQueryInfo(new AllCursor(), widget.getWidgetId(), new DetailDimension[]{descDimension}, baseDataSource.getSourceKey(), null, sortIndex, null, null);
                 DetailResultSet maxResultSet = QueryRunnerProvider.getInstance().executeQuery(maxQueryInfo);
                 maxResultSet.next();
                 Number max = maxResultSet.getRowData().getValue(0);

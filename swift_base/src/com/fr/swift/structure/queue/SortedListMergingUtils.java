@@ -10,40 +10,122 @@ import java.util.List;
 import java.util.PriorityQueue;
 
 /**
+ * 多个有序列表(迭代器)合并的通用方法，实现流式合并&组合，丝般顺滑
+ *
+ * 这边采用类库里面java.util.PriorityQueue的堆实现
+ * java.util.PriorityQueue实现中维护堆性质的复杂度是O(log(n))，构造堆的复杂度(目测)是O(n*log(n))
+ * 假设有m个待合并的列表，这些列表总共有n个元素，那么最终合并的效率是O(n*log(m) + m*log(m))
+ * 考虑到待合并列表的个数不会太多，所以效率可以约等于O(n*log(m))
+ *
  * Created by Lyon on 2018/3/30.
  */
 public class SortedListMergingUtils {
 
     /**
-     * 多个有序列表合并的通用方法，这边采用类库里面java.util.PriorityQueue的堆实现
-     * java.util.PriorityQueue实现中维护堆性质的复杂度是O(log(n))，构造堆的复杂度(目测)是O(n*log(n))
-     * 假设有m个待合并的列表，这些列表总共有n个元素，那么最终合并的效率是O(n*log(m) + m*log(m))
-     * 考虑到待合并列表的个数不会太多，所以效率可以约等于O(n*log(m))
+     * 多个有序列表合并
      *
-     * @param lists 要合并的列表集合
-     * @param <E> 列表元素
-     * @return 多个列表列表的合并结果
+     * @param lists 多个有序列表
+     * @param comparator 元素比较器
+     * @param combiner 元素组合器
+     * @param <E> 元素
+     * @return 返回合并后的元素列表
      */
-    public static <E> List<E> merge(Collection<? extends List<? extends E>> lists,
+    public static <E> List<E> merge(Collection<? extends List<E>> lists,
                                     Comparator<E> comparator, Combiner<E> combiner) {
-        Iterator<E> iterator = new ElementIterator<E>(lists, comparator);
-        List<E> mergedList = new ArrayList<E>();
-        E lastE = null;
-        while (iterator.hasNext()) {
-            E item = iterator.next();
-            if (lastE != null && comparator.compare(lastE, item) == 0) {
-                // 合并相同元素
-                combiner.combine(lastE, item);
-                continue;
+        List<Iterator<E>> iterators = new ArrayList<Iterator<E>>();
+        for (List<E> list : lists) {
+            if (!list.isEmpty()) {
+                iterators.add(list.iterator());
             }
-            mergedList.add(item);
-            lastE = item;
+        }
+        return merge(iterators, comparator, combiner);
+    }
+
+    /**
+     * 多个有序迭代器合并
+     *
+     * @param iterators 多个有序列表
+     * @param comparator 元素比较器
+     * @param combiner 元素合并器
+     * @param <E> 元素
+     * @return 返回合并后的元素列表
+     */
+    public static <E> List<E> merge(List<Iterator<E>> iterators, Comparator<E> comparator, Combiner<E> combiner) {
+        Iterator<E> iterator = mergeIterator(iterators, comparator, combiner);
+        List<E> mergedList = new ArrayList<E>();
+        while (iterator.hasNext()) {
+            mergedList.add(iterator.next());
         }
         return mergedList;
     }
 
-    public static <E> List<E> merge(List<Iterator<E>> iterators, Comparator<E> comparator, Combiner<E> combiner) {
-        return null;
+    /**
+     * 流式合并&组合，尤其适用于有序且内存开销比较大的迭代器。比如group by索引迭代器，明显不能把所有索引算完放列表里面
+     *
+     * @param iterators 多个有序迭代器
+     * @param comparator 元素比较器
+     * @param combiner 元素组合器
+     * @param <E> 元素
+     * @return 返回丝般顺滑的迭代器
+     */
+    public static <E> Iterator<E> mergeIterator(List<Iterator<E>> iterators,
+                                                Comparator<E> comparator, Combiner<E> combiner) {
+        Iterator<E> iterator = new ElementIterator<E>(iterators, comparator);
+        return new StreamCombinerIterator<E>(iterator, comparator, combiner);
+    }
+
+    private static class StreamCombinerIterator<E> implements Iterator<E> {
+
+        private Iterator<E> iterator;
+        private Comparator<E> comparator;
+        private Combiner<E> combiner;
+        private E next = null;
+
+        public StreamCombinerIterator(Iterator<E> iterator, Comparator<E> comparator, Combiner<E> combiner) {
+            this.iterator = iterator;
+            this.comparator = comparator;
+            this.combiner = combiner;
+            next = iterator.hasNext() ? iterator.next() : null;
+        }
+
+        @Override
+        public boolean hasNext() {
+            return next != null;
+        }
+
+        @Override
+        public E next() {
+            E e4Return = next;
+            // 
+            E lastE = next;
+            if (!iterator.hasNext()) {
+                // 最后一个元素
+                next = null;
+                return e4Return;
+            }
+            while (iterator.hasNext()) {
+                E item = iterator.next();
+                // 判断item是否和lastE相同，相同则要合并并e4Return继续检查下一个
+                if (comparator.compare(lastE, item) == 0) {
+                    combiner.combine(e4Return, item);
+                    // 合并导致e4Return已经变了，lastE保存item的引用，用于判断下一个元素是否相同
+                    lastE = item;
+                    // 如果迭代器迭代完了，这个if分支也会跳出while，因为当前item也被合并了，这时要设置next为null
+                    next = iterator.hasNext() ? next : null;
+                    continue;
+                }
+                // item不等于lastE，说明可以返回e4Return
+                // 下一次的next设置为item
+                next = item;
+                break;
+            }
+            return e4Return;
+        }
+
+        @Override
+        public void remove() {
+            throw new UnsupportedOperationException();
+        }
     }
 
     private static class ElementIterator<E> implements Iterator<E> {
@@ -51,19 +133,17 @@ public class SortedListMergingUtils {
         private PriorityQueue<IteratorComparator<E>> queue;
         private E next = null;
 
-        public ElementIterator(Collection<? extends List<? extends E>> lists, Comparator<E> comparator) {
+        public ElementIterator(List<Iterator<E>> iterators, Comparator<E> comparator) {
             // 这边构建优先队列没有传入队列元素的comparator
             // 那么PriorityQueue的实现里面是默认队列元素(IteratorComparator<E>)已经实现了Comparable接口的！
             this.queue = new PriorityQueue<IteratorComparator<E>>();
-            init(lists, comparator);
+            init(iterators, comparator);
         }
 
-        private void init(Collection<? extends List<? extends E>> lists, Comparator<E> comparator) {
+        private void init(List<Iterator<E>> iterators, Comparator<E> comparator) {
             // 构造queue
-            for (List<? extends E> list : lists) {
-                if (!list.isEmpty()) {
-                    queue.add(new IteratorComparator<E>(list.iterator(), comparator));
-                }
+            for (Iterator<E> iterator : iterators) {
+                queue.add(new IteratorComparator<E>(iterator, comparator));
             }
             next = getNext();
         }
@@ -76,7 +156,7 @@ public class SortedListMergingUtils {
                     n = nextIt.next();
                 }
                 if (nextIt.hasNext()) {
-                    // 当前迭代器还有元素，要把迭代器仍回队列
+                    // 当前迭代器还有元素，要把迭代器扔回队列
                     queue.add(nextIt);
                 }
             }

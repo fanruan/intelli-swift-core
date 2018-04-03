@@ -28,6 +28,7 @@ public class TreeWidgetAdaptor {
             // 当前功能没法点击展开操作
             FineDimension dimension = treeWidget.getDimensionList().get(0);
             FilterInfo filterInfo = FilterInfoFactory.transformFineFilter(treeWidget.getFilters());
+            // selectedValues是一个嵌套的map，如何确定是第几层的分组值呢？
             List values = QueryUtils.getOneDimensionFilterValues(dimension, filterInfo, treeWidget.getWidgetId());
             return new TreeResult(true, createTreeItems(values, treeWidget.getSelectedValues()));
         } catch (Exception e) {

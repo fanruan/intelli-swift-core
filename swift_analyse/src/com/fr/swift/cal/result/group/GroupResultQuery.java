@@ -17,9 +17,9 @@ import java.util.List;
 public class GroupResultQuery extends AbstractGroupResultQuery {
 
     // 这些都是对维度的排序，构建Node的时候要用到
-    private List<Sort> indexSorts;
+    protected List<Sort> indexSorts;
     // 这个应该是对指标的结果过滤？维度过滤应该在分块计算中处理，不然影响分页计算量的准确性
-    private List<MatchFilter> dimensionMatchFilter;
+    protected List<MatchFilter> dimensionMatchFilter;
 
     public GroupResultQuery(List<Query<GroupByResultSet>> queries, List<Aggregator> aggregators, List<GroupTarget> targets) {
         super(queries, aggregators, targets);
