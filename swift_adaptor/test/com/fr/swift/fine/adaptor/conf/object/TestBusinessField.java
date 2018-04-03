@@ -99,6 +99,11 @@ public class TestBusinessField implements FineBusinessField {
     }
 
     @Override
+    public FineBusinessField clone() {
+        return null;
+    }
+
+    @Override
     public FineEngineType getEngineType() {
         return FineEngineType.Cube;
     }

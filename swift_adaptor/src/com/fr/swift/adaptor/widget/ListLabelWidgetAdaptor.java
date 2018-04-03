@@ -32,7 +32,7 @@ public class ListLabelWidgetAdaptor {
         private boolean hasNext;
         private List<String> values;
 
-        public ListLabelResult(boolean hasNext, List values) {
+        public ListLabelResult(boolean hasNext, List<String> values) {
             this.hasNext = hasNext;
             this.values = values;
         }

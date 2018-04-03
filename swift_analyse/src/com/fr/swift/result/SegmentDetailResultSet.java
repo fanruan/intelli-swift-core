@@ -62,10 +62,6 @@ public class SegmentDetailResultSet extends DetailResultSet {
         this.maxRow = filter.createFilterIndex().getCardinality();
     }
 
-    public int getColumnCount() {
-        return columnList.size();
-    }
-
     @Override
     public SwiftMetaData getMetaData() {
         return metaData;

@@ -65,7 +65,6 @@ public class AggregatorAdaptor {
 
     /**
      * nice job foundation
-     * @param fieldType
      * @param aggregatorType
      * @return
      */

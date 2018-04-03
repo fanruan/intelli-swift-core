@@ -1,10 +1,10 @@
 package com.fr.swift.structure.array;
 
-
 import com.fr.swift.setting.PerformancePlugManager;
 
 /**
- * Created by 小灰灰 on 2017/5/22.
+ * @author 小灰灰
+ * @date 2017/5/22
  */
 public class IntListFactory {
     public static IntList createIntList() {
@@ -33,5 +33,9 @@ public class IntListFactory {
 
     public static IntList createEmptyIntList() {
         return new EmptyIntList();
+    }
+
+    public static IntList newSingleList(int onlyOne) {
+        return createRangeIntList(onlyOne, onlyOne);
     }
 }

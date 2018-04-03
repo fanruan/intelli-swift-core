@@ -131,7 +131,12 @@ class GroupColumn<Base, Derive> implements Column<Derive> {
 
         @Override
         public Comparator<Derive> getComparator() {
-            throw new UnsupportedOperationException();
+            return new Comparator<Derive>() {
+                @Override
+                public int compare(Derive o1, Derive o2) {
+                    return getIndex(o1) - getIndex(o2);
+                }
+            };
         }
 
         @Override
