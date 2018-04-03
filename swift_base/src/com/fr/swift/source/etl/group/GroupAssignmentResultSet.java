@@ -1,5 +1,6 @@
 package com.fr.swift.source.etl.group;
 
+import com.fr.stable.StringUtils;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.segment.column.DictionaryEncodedColumn;
@@ -16,6 +17,7 @@ import java.util.*;
  */
 public class GroupAssignmentResultSet implements SwiftResultSet {
 
+    //为空时表示未分组用原始名字
     private String otherName;
     private ColumnKey columnKey;
     private List<SingleGroup> group;
@@ -67,7 +69,7 @@ public class GroupAssignmentResultSet implements SwiftResultSet {
             Object ob = getter.getValue(getter.getIndexByRow(rowCursor));
             Object value = resMap.get(ob);
             if(value == null) {
-                value = otherName;
+                value = StringUtils.isEmpty(otherName) ? value : otherName;
             }
             List<Object> dataList = new ArrayList<Object>();
             dataList.add(value);

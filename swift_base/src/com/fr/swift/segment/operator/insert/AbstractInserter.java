@@ -87,18 +87,23 @@ public abstract class AbstractInserter implements Inserter {
 
     @Override
     public boolean insertData(SwiftResultSet swiftResultSet) throws Exception {
-        while (swiftResultSet.next()) {
-            Row rowData = swiftResultSet.getRowData();
-            for (int i = 0; i < fields.size(); i++) {
-                if (InserterUtils.isBusinessNullValue(rowData.getValue(i))) {
-                    columnList.get(i).getDetailColumn().put(row, InserterUtils.getNullValue(classTypeList.get(i)));
-                    InserterUtils.setNullIndex(fields.get(i), row, nullMap);
-                } else {
-                    columnList.get(i).getDetailColumn().put(row, rowData.getValue(i));
+        try {
+            while (swiftResultSet.next()) {
+                Row rowData = swiftResultSet.getRowData();
+                for (int i = 0; i < fields.size(); i++) {
+                    if (InserterUtils.isBusinessNullValue(rowData.getValue(i))) {
+                        columnList.get(i).getDetailColumn().put(row, InserterUtils.getNullValue(classTypeList.get(i)));
+                        InserterUtils.setNullIndex(fields.get(i), row, nullMap);
+                    } else {
+                        columnList.get(i).getDetailColumn().put(row, rowData.getValue(i));
+                    }
                 }
+                row++;
             }
-            row++;
+        } finally {
+            swiftResultSet.close();
         }
+
         allShowIndex = BitMaps.newAllShowBitMap(row);
         segment.putRowCount(row);
         segment.putAllShowIndex(allShowIndex);

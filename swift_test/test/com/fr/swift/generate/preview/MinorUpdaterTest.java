@@ -9,7 +9,7 @@ import com.fr.swift.source.etl.ETLOperator;
 import com.fr.swift.source.etl.EtlSource;
 import com.fr.swift.source.etl.join.JoinColumn;
 import com.fr.swift.source.etl.join.JoinOperator;
-import com.fr.swift.source.etl.utils.ETLConstant;
+import com.fr.swift.source.etl.join.JoinType;
 
 import java.util.Arrays;
 
@@ -27,7 +27,7 @@ public class MinorUpdaterTest extends BaseTest {
                 Arrays.asList(new JoinColumn(joinOn + "1", true, joinOn)),
                 new ColumnKey[]{new ColumnKey(joinOn)},
                 new ColumnKey[]{new ColumnKey(joinOn)},
-                ETLConstant.CONF.JOIN.LEFT
+                JoinType.LEFT
         );
         DataSource join = new EtlSource(Arrays.asList(demoContract, demoCustomer), joinOp);
 
