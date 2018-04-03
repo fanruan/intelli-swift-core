@@ -22,6 +22,12 @@ public class AggregatorFactory {
                 return DateMaxAggregate.INSTANCE;
             case DATE_MIN:
                 return DateMinAggregate.INSTANCE;
+            case MEDIAN:
+                return MedianAggregate.INSTANCE;
+            case VARIANCE:
+                return VarianceAggregate.INSTANCE;
+            case STANDARD_DEVIATION:
+                return StandarDeviationAggregate.INSTANCE;
             default:
                 return CountAggregator.INSTANCE;
         }
