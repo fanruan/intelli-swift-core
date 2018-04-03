@@ -145,7 +145,7 @@ public class TablePathIndexerTest extends TestCase {
         List<String> foreignFields = new ArrayList<>();
         primaryFields.add("合同ID");
         foreignFields.add("合同ID");
-        RelationSource relationSource = new RelationSourceImpl(dataSource.getSourceKey(), contract.getSourceKey(), primaryFields, foreignFields, RelationSourceType.RELATION);
+        RelationSource relationSource = new RelationSourceImpl(dataSource.getSourceKey(), contract.getSourceKey(), primaryFields, foreignFields);
         MultiRelationIndexer indexer = new MultiRelationIndexer(MultiRelationHelper.convert2CubeRelation(relationSource), LocalSegmentProvider.getInstance());
         SchedulerTask relationTask = CubeTasks.newRelationTask(relationSource);
         WorkerTask task = new WorkerTaskImpl(relationTask.key());
@@ -162,7 +162,7 @@ public class TablePathIndexerTest extends TestCase {
         List<String> foreignFields1 = new ArrayList<>();
         primaryFields1.add("客户ID");
         foreignFields1.add("客户ID");
-        RelationSource custSource = new RelationSourceImpl(customer.getSourceKey(), dataSource.getSourceKey(), primaryFields1, foreignFields1, RelationSourceType.RELATION);
+        RelationSource custSource = new RelationSourceImpl(customer.getSourceKey(), dataSource.getSourceKey(), primaryFields1, foreignFields1);
         MultiRelationIndexer custRelationIndexer = new MultiRelationIndexer(MultiRelationHelper.convert2CubeRelation(custSource), LocalSegmentProvider.getInstance());
         SchedulerTask custRelationTask = CubeTasks.newRelationTask(custSource);
         WorkerTask custTask = new WorkerTaskImpl(custRelationTask.key());
@@ -182,13 +182,13 @@ public class TablePathIndexerTest extends TestCase {
         List<String> foreignFields = new ArrayList<>();
         primaryFields.add("合同ID");
         foreignFields.add("合同ID");
-        RelationSource relationSource = new RelationSourceImpl(dataSource.getSourceKey(), contract.getSourceKey(), primaryFields, foreignFields, RelationSourceType.RELATION);
+        RelationSource relationSource = new RelationSourceImpl(dataSource.getSourceKey(), contract.getSourceKey(), primaryFields, foreignFields);
 
         List<String> primaryFields1 = new ArrayList<>();
         List<String> foreignFields1 = new ArrayList<>();
         primaryFields1.add("客户ID");
         foreignFields1.add("客户ID");
-        RelationSource custSource = new RelationSourceImpl(customer.getSourceKey(), dataSource.getSourceKey(), primaryFields1, foreignFields1, RelationSourceType.RELATION);
+        RelationSource custSource = new RelationSourceImpl(customer.getSourceKey(), dataSource.getSourceKey(), primaryFields1, foreignFields1);
         CubeMultiRelationPath path = new CubeMultiRelationPath();
         path.add(MultiRelationHelper.convert2CubeRelation(custSource));
         path.add(MultiRelationHelper.convert2CubeRelation(relationSource));

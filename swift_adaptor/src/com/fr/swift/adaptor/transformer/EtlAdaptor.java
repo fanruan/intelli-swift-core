@@ -117,11 +117,13 @@ import com.fr.swift.source.etl.selfrelation.OneUnionRelationOperator;
 import com.fr.swift.source.etl.selfrelation.TwoUnionRelationOperator;
 import com.fr.swift.source.etl.union.UnionOperator;
 import com.fr.swift.source.etl.utils.FormulaUtils;
+import com.fr.swift.source.relation.RelationPathSourceImpl;
 import com.fr.swift.source.relation.RelationSourceImpl;
 import com.fr.swift.util.Crasher;
 
 import java.sql.Types;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -245,29 +247,41 @@ class EtlAdaptor {
 
     private static RelationSource getRelation(List<SelectFieldPathItem> path, String baseTable, String table, SwiftRelationPathConfProvider relationProvider) {
         if (path != null) {
-            //@yee todo 选定的路径转化
+            //@yee todo 暂时不知道path穿过来是什么样子的
         }
         List<FineBusinessTableRelationPath> relation = relationProvider.getRelationPaths(table, baseTable);
         if (relation == null || relation.isEmpty()) {
             return Crasher.crash("invalid relation tables");
         }
         FineBusinessTableRelationPath p = relation.get(0);
-        //@yee todo path转化
         return getRelation(p);
     }
 
     private static RelationSource getRelation(FineBusinessTableRelationPath path) {
         try {
+            List<RelationSource> relationSources = pathConvert2RelationSource(path);
+            if (relationSources.isEmpty()) {
+                return null;
+            }
+            if (1 == relationSources.size()) {
+                return relationSources.get(0);
+            }
+            return new RelationPathSourceImpl(relationSources);
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    private static List<RelationSource> pathConvert2RelationSource(FineBusinessTableRelationPath path) throws Exception {
+        List<FineBusinessTableRelation> relations = path.getFineBusinessTableRelations();
+        List<RelationSource> result = new ArrayList<RelationSource>();
+        for (FineBusinessTableRelation relation : relations) {
             FineBusinessTable primaryTable = path.getFirstTable();
             FineBusinessTable foreignTable = path.getEndTable();
-            List<FineBusinessTableRelation> relations = path.getFineBusinessTableRelations();
-            int size = relations.size();
-            FineBusinessTableRelation firstRelation = relations.get(0);
-            FineBusinessTableRelation lastRelation = relations.get(size - 1);
             SourceKey primary = IndexingDataSourceFactory.transformDataSource(primaryTable).getSourceKey();
             SourceKey foreign = IndexingDataSourceFactory.transformDataSource(foreignTable).getSourceKey();
-            List<FineBusinessField> primaryFields = firstRelation.getPrimaryBusinessField();
-            List<FineBusinessField> foreignFields = lastRelation.getForeignBusinessField();
+            List<FineBusinessField> primaryFields = relation.getPrimaryBusinessField();
+            List<FineBusinessField> foreignFields = relation.getForeignBusinessField();
             List<String> primaryKey = new ArrayList<String>();
             List<String> foreignKey = new ArrayList<String>();
 
@@ -278,15 +292,9 @@ class EtlAdaptor {
             for (FineBusinessField field : foreignFields) {
                 foreignKey.add(field.getName());
             }
-
-            if (size == 1) {
-                return new RelationSourceImpl(primary, foreign, primaryKey, foreignKey, RelationSourceType.RELATION);
-            } else {
-                return new RelationSourceImpl(primary, foreign, primaryKey, foreignKey, RelationSourceType.RELATION_PATH);
-            }
-        } catch (Exception e) {
-            return null;
+            result.add(new RelationSourceImpl(primary, foreign, primaryKey, foreignKey));
         }
+        return result;
     }
 
     private static String getBaseTable(SwiftRelationPathConfProvider relationProvider, List<SelectFieldBeanItem> selectFieldBeanItemList) {

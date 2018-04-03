@@ -161,7 +161,7 @@ public class MultiRelationIndexerTest  {
         primaryFields.add("总金额");
         foreignFields.add("合同ID");
         foreignFields.add("付款金额");
-        return new RelationSourceImpl(dataSource.getSourceKey(), contract.getSourceKey(), primaryFields, foreignFields, RelationSourceType.RELATION);
+        return new RelationSourceImpl(dataSource.getSourceKey(), contract.getSourceKey(), primaryFields, foreignFields);
     }
 
     /**
