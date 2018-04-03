@@ -62,9 +62,6 @@ public abstract class MergerGroupBy<T> implements Iterator<KeyValue<RowIndexKey<
                 values.set(index, kv.getValue().clone());
             } else {
                 values = new ArrayList<RowTraversal[]>(Arrays.asList(new RowTraversal[iterators.length][]));
-                for (int i = 0; i < iterators.length; i++) {
-                    values.add(null);
-                }
                 values.set(index, kv.getValue().clone());
                 mergeMap.put(kv.getKey(), values);
             }
