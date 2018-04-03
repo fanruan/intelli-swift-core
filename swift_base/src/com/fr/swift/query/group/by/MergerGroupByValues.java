@@ -2,7 +2,6 @@ package com.fr.swift.query.group.by;
 
 import com.fr.swift.result.KeyValue;
 import com.fr.swift.result.RowIndexKey;
-import com.fr.swift.structure.iterator.RowTraversal;
 
 import java.util.Comparator;
 
@@ -20,11 +19,10 @@ public class MergerGroupByValues extends MergerGroupBy<Object[]> {
     }
 
     @Override
-    protected Comparator<KeyValue<RowIndexKey<Object[]>, RowTraversal[]>> getComparator() {
-        return new Comparator<KeyValue<RowIndexKey<Object[]>, RowTraversal[]>>() {
+    protected <V> Comparator<KeyValue<RowIndexKey<Object[]>, V>> getComparator() {
+        return new Comparator<KeyValue<RowIndexKey<Object[]>, V>>() {
             @Override
-            public int compare(KeyValue<RowIndexKey<Object[]>, RowTraversal[]> o1,
-                               KeyValue<RowIndexKey<Object[]>, RowTraversal[]> o2) {
+            public int compare(KeyValue<RowIndexKey<Object[]>, V> o1, KeyValue<RowIndexKey<Object[]>, V> o2) {
                 Object[] index1 = o1.getKey().getKey();
                 Object[] index2 = o2.getKey().getKey();
                 for (int i = 0; i < index1.length; i++) {
