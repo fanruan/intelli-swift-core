@@ -1,4 +1,4 @@
-package com.fr.swift.adaptor.executor;
+package com.finebi.conf.imp;
 
 import com.finebi.base.common.resource.FineResourceItem;
 import com.finebi.base.constant.FineEngineType;
@@ -32,12 +32,12 @@ import com.fr.general.ComparatorUtils;
 import com.fr.general.data.DataModel;
 import com.fr.script.Calculator;
 import com.fr.stable.StringUtils;
-import com.fr.swift.adaptor.preview.SwiftFieldsDataPreview;
+import com.fr.swift.adaptor.preview.SwiftDataPreview;
 import com.fr.swift.adaptor.struct.SwiftDetailTableResult;
 import com.fr.swift.adaptor.struct.SwiftEmptyResult;
 import com.fr.swift.adaptor.struct.SwiftSegmentDetailResult;
+import com.fr.swift.adaptor.transformer.DataSourceFactory;
 import com.fr.swift.adaptor.transformer.FieldFactory;
-import com.fr.swift.adaptor.transformer.IndexingDataSourceFactory;
 import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.bitmap.traversal.BreakTraversalAction;
 import com.fr.swift.log.SwiftLogger;
@@ -67,16 +67,16 @@ public class SwiftTableEngineExecutor implements FineTableEngineExecutor {
 
     private static final SwiftLogger LOGGER = SwiftLoggers.getLogger(SwiftTableEngineExecutor.class);
 
-    private SwiftFieldsDataPreview swiftFieldsDataPreview;
+    private SwiftDataPreview swiftDataPreview;
 
     public SwiftTableEngineExecutor() {
-        this.swiftFieldsDataPreview = new SwiftFieldsDataPreview();
+        this.swiftDataPreview = new SwiftDataPreview();
     }
 
     @Override
     public BIDetailTableResult getPreviewData(FineBusinessTable table, int rowCount) throws Exception {
         try {
-            return swiftFieldsDataPreview.getDetailPreviewByFields(table, rowCount);
+            return swiftDataPreview.getDetailPreviewByFields(table, rowCount);
         } catch (Exception e) {
             LOGGER.error(e.getMessage(), e);
         }
@@ -85,7 +85,8 @@ public class SwiftTableEngineExecutor implements FineTableEngineExecutor {
 
     @Override
     public BIDetailTableResult getRealData(FineBusinessTable table) throws Exception {
-        DataSource dataSource = IndexingDataSourceFactory.transformDataSource(table);
+
+        DataSource dataSource = DataSourceFactory.getDataSource(table);
         List<Segment> segments = LocalSegmentProvider.getInstance().getSegment(dataSource.getSourceKey());
         SwiftMetaData swiftMetaData = dataSource.getMetadata();
         return new SwiftSegmentDetailResult(segments, swiftMetaData);
@@ -93,12 +94,14 @@ public class SwiftTableEngineExecutor implements FineTableEngineExecutor {
 
     @Override
     public List<FineBusinessField> getFieldList(FineBusinessTable table) throws Exception {
-        DataSource dataSource = IndexingDataSourceFactory.transformDataSource(table);
-        if (dataSource == null) {
+        DataSource dataSource = DataSourceFactory.getDataSource(table);
+        try {
+            List<FineBusinessField> fieldsList = FieldFactory.transformColumns2Fields(dataSource.getMetadata(), table.getId());
+            return fieldsList;
+        } catch (Exception e) {
+            LOGGER.error(e);
             return new ArrayList<FineBusinessField>();
         }
-        SwiftMetaData swiftMetaData = dataSource.getMetadata();
-        return FieldFactory.transformColumns2Fields(swiftMetaData, table.getId());
     }
 
     @Override

@@ -68,7 +68,7 @@ public abstract class BaseFieldPathIndexer extends BaseTablePathIndexer {
                 indexHelper.addNullIndex(helper.compute().getNot(targetRowCount));
             }
             writeTargetIndex(targetWriter, indexHelper);
-            targetWriter.putNullIndex(indexHelper.getNullIndex());
+            targetWriter.putNullIndex(0, indexHelper.getNullIndex());
         } finally {
             if (null != targetReader) {
                 targetReader.release();

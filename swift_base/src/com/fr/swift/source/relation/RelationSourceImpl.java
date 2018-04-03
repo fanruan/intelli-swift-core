@@ -27,17 +27,14 @@ public class RelationSourceImpl implements RelationSource {
     @CoreField
     private List<String> foreignFields;
 
-    private RelationSourceType type;
-
     protected SourceKey key;
     private transient Core core;
 
-    public RelationSourceImpl(SourceKey primarySource, SourceKey foreignSource, List<String> primaryFields, List<String> foreignFields, RelationSourceType type) {
+    public RelationSourceImpl(SourceKey primarySource, SourceKey foreignSource, List<String> primaryFields, List<String> foreignFields) {
         this.primarySource = primarySource;
         this.foreignSource = foreignSource;
         this.primaryFields = primaryFields;
         this.foreignFields = foreignFields;
-        this.type = type;
     }
 
     @Override
@@ -62,7 +59,7 @@ public class RelationSourceImpl implements RelationSource {
 
     @Override
     public RelationSourceType getRelationType() {
-        return type;
+        return RelationSourceType.RELATION;
     }
 
     @Override

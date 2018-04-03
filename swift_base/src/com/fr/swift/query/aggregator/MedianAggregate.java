@@ -62,20 +62,20 @@ public class MedianAggregate extends AbstractAggregator<MedianAggregatorValue> {
         mergeMap(vMap, oMap);
         //偶数时中间两数的前一个值
         double tempMid = NULL_DOUBLE;
-        Iterator itForMedian = vMap.entrySet().iterator();
-        while (itForMedian.hasNext()) {
-            Map.Entry entry = (Map.Entry) itForMedian.next();
+        for (Object o : vMap.entrySet()) {
+            Map.Entry entry = (Map.Entry) o;
             if (Double.compare(tempMid, NULL_DOUBLE) != 0) {
-                value.setMedian((Double.parseDouble(entry.getKey().toString()) + tempMid) / 2);
+                value.setMedian(((Double) entry.getKey() + tempMid) / 2);
                 break;
             }
-            mid -= Integer.parseInt(entry.getValue().toString());
+            mid -= (Integer) entry.getValue();
+//            mid -= Integer.parseInt(entry.getValue().toString());
             if (mid < 0) {
-                value.setMedian(Double.parseDouble(entry.getKey().toString()));
+                value.setMedian((Double) entry.getKey());
                 break;
             }
             if (mid == 1 && (totalCount) % 2 == 0) {
-                tempMid = Double.parseDouble(entry.getKey().toString());
+                tempMid = (Double) entry.getKey();
             }
         }
         value.setCount(totalCount);
@@ -89,35 +89,31 @@ public class MedianAggregate extends AbstractAggregator<MedianAggregatorValue> {
         for (int i = 1; i < diColumn.size(); i++) {
             mid -= groupIndex[i];
             if (groupIndex[i] > 0) {
-                values.put(Double.parseDouble(diColumn.getValue(i).toString()), groupIndex[i]);
+                values.put(((Number)diColumn.getValue(i)).doubleValue(), groupIndex[i]);
             }
-            if (getMedian == true) {
-                continue;
-            }
-            if (Double.compare(tempMid, NULL_DOUBLE) != 0) {
-                valueAmount.setMedian(((Double) diColumn.getValue(i) + tempMid) / 2);
+            if (!getMedian && Double.compare(tempMid, NULL_DOUBLE) != 0) {
+                valueAmount.setMedian((((Number)diColumn.getValue(i)).doubleValue() + tempMid) / 2);
                 getMedian = true;
             }
-            if (mid <= 0) {
-                valueAmount.setMedian((Double) diColumn.getValue(i));
+            if (!getMedian && mid <= 0) {
+                valueAmount.setMedian(((Number)diColumn.getValue(i)).doubleValue());
                 getMedian = true;
             }
             if (count % 2 == 0 && mid == 1) {
-                tempMid = (Double) diColumn.getValue(i);
+                tempMid = ((Number)diColumn.getValue(i)).doubleValue();
             }
         }
     }
 
     private void mergeMap(Map<Double, Integer> vMap, Map<Double, Integer> oMap) {
-        Iterator it = oMap.entrySet().iterator();
-        while (it.hasNext()) {
-            Map.Entry entry = (Map.Entry) it.next();
+        for (Object o : oMap.entrySet()) {
+            Map.Entry entry = (Map.Entry) o;
             Object key = entry.getKey();
             if (vMap.containsKey(key)) {
                 Integer count = vMap.get(key) + oMap.get(key);
-                vMap.put(Double.parseDouble(key.toString()), count);
+                vMap.put((Double) key, count);
             }
-            vMap.put(Double.parseDouble(key.toString()), oMap.get(key));
+            vMap.put((Double) key, oMap.get(key));
         }
     }
 

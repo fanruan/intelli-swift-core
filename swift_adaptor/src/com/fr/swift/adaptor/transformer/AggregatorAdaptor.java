@@ -50,12 +50,15 @@ public class AggregatorAdaptor {
             case BIConfConstants.CONF.GROUP.NUMBER.AVG:
                 return AggregatorType.AVERAGE;
             case BIConfConstants.CONF.GROUP.NUMBER.MEDIAN:
+                return AggregatorType.MEDIAN;
             case BIConfConstants.CONF.GROUP.NUMBER.MAX:
                 return AggregatorType.MAX;
             case BIConfConstants.CONF.GROUP.NUMBER.MIN:
                 return AggregatorType.MIN;
             case BIConfConstants.CONF.GROUP.NUMBER.STANDARD_DEVIATION:
+                return AggregatorType.STANDARD_DEVIATION;
             case BIConfConstants.CONF.GROUP.NUMBER.VARIANCE:
+                return AggregatorType.VARIANCE;
             case BIConfConstants.CONF.GROUP.NUMBER.COUNT:
                 return AggregatorType.DISTINCT;
             default:
@@ -65,7 +68,6 @@ public class AggregatorAdaptor {
 
     /**
      * nice job foundation
-     * @param fieldType
      * @param aggregatorType
      * @return
      */

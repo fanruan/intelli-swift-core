@@ -1,4 +1,4 @@
-package com.fr.swift.adaptor.update;
+package com.finebi.conf.imp;
 
 import com.finebi.base.constant.FineEngineType;
 import com.finebi.conf.internalimp.bean.table.UpdatePreviewTableBean;
@@ -11,11 +11,11 @@ import com.finebi.conf.internalimp.update.TableUpdateInfo;
 import com.finebi.conf.internalimp.update.UpdateLog;
 import com.finebi.conf.internalimp.update.UpdateNeedSpace;
 import com.finebi.conf.internalimp.update.UpdateStatus;
-import com.finebi.conf.provider.SwiftTableConfProvider;
+import com.finebi.conf.provider.SwiftTableManager;
 import com.finebi.conf.service.engine.update.EngineUpdateManager;
 import com.finebi.conf.structure.bean.table.FineBusinessTable;
 import com.fr.swift.adaptor.struct.ShowResultSet;
-import com.fr.swift.adaptor.transformer.IndexingDataSourceFactory;
+import com.fr.swift.adaptor.transformer.DataSourceFactory;
 import com.fr.swift.generate.preview.SwiftDataPreviewer;
 import com.fr.swift.increment.Increment;
 import com.fr.swift.log.SwiftLogger;
@@ -90,7 +90,7 @@ public class SwiftUpdateManager implements EngineUpdateManager {
         SourceContainerManager updateSourceContainer = new SourceContainerManager();
 
         Map<String, List<Increment>> incrementMap = new HashMap<String, List<Increment>>();
-        IndexingDataSourceFactory.transformDataSources(infoMap, updateTableSourceKeys, updateSourceContainer, incrementMap);
+        DataSourceFactory.transformDataSources(infoMap, updateTableSourceKeys, updateSourceContainer, incrementMap);
 
         IndexingStuff indexingStuff = new HistoryIndexStuffImpl(updateTableSourceKeys, updateRelationSourceKeys, updatePathSourceKeys);
         IndexStuffProvider indexStuffProvider = new IndexStuffInfoProvider(indexingStuff, updateSourceContainer, incrementMap);
@@ -99,7 +99,7 @@ public class SwiftUpdateManager implements EngineUpdateManager {
 
     @Override
     public void saveTableUpdateSetting(TableUpdateSetting tableUpdateSetting) throws Exception {
-        FineBusinessTable fineBusinessTable = new SwiftTableConfProvider().getSingleTable(tableUpdateSetting.getTableName());
+        FineBusinessTable fineBusinessTable = new SwiftTableManager().getSingleTable(tableUpdateSetting.getTableName());
         Map<FineBusinessTable, TableUpdateInfo> infoMap = new HashMap<FineBusinessTable, TableUpdateInfo>();
         infoMap.put(fineBusinessTable, tableUpdateSetting.getSettings().get(tableUpdateSetting.getTableName()));
         this.saveUpdateSetting(infoMap);

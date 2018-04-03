@@ -16,7 +16,7 @@ import java.util.List;
 /**
  * Created by Lyon on 2018/2/27.
  */
-public class MultiDimensionGroupBy implements Iterator<KeyValue<RowIndexKey<int[]>, RowTraversal>> {
+class MultiDimensionGroupBy implements Iterator<KeyValue<RowIndexKey<int[]>, RowTraversal>> {
 
     private static final int START_INDEX = DictionaryEncodedColumn.NOT_NULL_START_INDEX;
 
@@ -28,7 +28,6 @@ public class MultiDimensionGroupBy implements Iterator<KeyValue<RowIndexKey<int[
     private KeyValue<RowIndexKey<int[]>, RowTraversal> next = null;
     private int[] groupIndexes;
 
-    // TODO: 2018/3/28 这个要改为仅作为内部实现，外部只用MultiGroupByValues或者MultiGroupByIndex
     public MultiDimensionGroupBy(List<Column> dimensions, DetailFilter detailFilter, int[] cursor, boolean[] asc) {
         this.dimensions = dimensions;
         this.detailFilter = detailFilter;

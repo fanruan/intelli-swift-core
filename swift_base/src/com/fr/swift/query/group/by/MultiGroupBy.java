@@ -6,6 +6,8 @@ import com.fr.swift.result.RowIndexKey;
 import com.fr.swift.segment.column.Column;
 import com.fr.swift.structure.iterator.RowTraversal;
 
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
@@ -44,7 +46,7 @@ abstract class MultiGroupBy<T> implements Iterator<KeyValue<RowIndexKey<T>, RowT
                 break;
             }
         }
-        return new KeyValue<RowIndexKey<T>, RowTraversal[]>(createKey(key), traversals);
+        return new KeyValue<RowIndexKey<T>, RowTraversal[]>(createKey(key), Arrays.copyOf(traversals, traversals.length));
     }
 
     private boolean isRow(int[] key) {

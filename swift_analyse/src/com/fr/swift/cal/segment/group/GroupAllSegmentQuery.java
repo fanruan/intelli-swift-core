@@ -16,7 +16,8 @@ import java.util.List;
  */
 public class GroupAllSegmentQuery extends AbstractGroupSegmentQuery{
 
-    private List<Sort> indexSorts;
+    protected List<Sort> indexSorts;
+    protected int[] cursor;
 
     public GroupAllSegmentQuery(List<Column> dimensions, List<Column> metrics, List<Aggregator> aggregators, DetailFilter filter) {
         super(dimensions, metrics, aggregators, filter);
@@ -24,7 +25,7 @@ public class GroupAllSegmentQuery extends AbstractGroupSegmentQuery{
 
     @Override
     public GroupByResultSet getQueryResult() {
-        int[] cursor = new int[dimensions.size()];
+        cursor = new int[dimensions.size()];
         Arrays.fill(cursor, DictionaryEncodedColumn.NOT_NULL_START_INDEX);
         return GroupByUtils.query(dimensions, metrics, aggregators, filter, indexSorts, cursor, -1);
     }

@@ -117,4 +117,5 @@ public abstract class AbstractInserter implements Inserter {
     public List<String> getFields() {
         return fields;
     }
+
 }

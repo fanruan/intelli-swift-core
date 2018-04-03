@@ -85,7 +85,6 @@ import com.fr.swift.source.ColumnTypeConstants;
 import com.fr.swift.source.DataSource;
 import com.fr.swift.source.MetaDataColumn;
 import com.fr.swift.source.RelationSource;
-import com.fr.swift.source.RelationSourceType;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftMetaDataColumn;
@@ -118,6 +117,7 @@ import com.fr.swift.source.etl.selfrelation.OneUnionRelationOperator;
 import com.fr.swift.source.etl.selfrelation.TwoUnionRelationOperator;
 import com.fr.swift.source.etl.union.UnionOperator;
 import com.fr.swift.source.etl.utils.FormulaUtils;
+import com.fr.swift.source.relation.RelationPathSourceImpl;
 import com.fr.swift.source.relation.RelationSourceImpl;
 import com.fr.swift.util.Crasher;
 
@@ -152,13 +152,13 @@ class EtlAdaptor {
         FineBusinessTable baseTable = analysis.getBaseTable();
         try {
             if (baseTable != null) {
-                dataSources.add(IndexingDataSourceFactory.transformDataSource(baseTable));
+                dataSources.add(DataSourceFactory.getDataSource(baseTable));
             }
             dataSources.addAll(fromOperator(op));
             return new EtlSource(dataSources, adaptEtlOperator(op, table));
         } catch (Exception e) {
             SwiftLoggers.getLogger().error(e);
-            return IndexingDataSourceFactory.transformDataSource(baseTable);
+            return DataSourceFactory.getDataSource(baseTable);
         }
     }
 
@@ -173,7 +173,7 @@ class EtlAdaptor {
                 break;
             }
         }
-        EtlSource source = (EtlSource) IndexingDataSourceFactory.transformDataSource(analysis);
+        EtlSource source = (EtlSource) DataSourceFactory.getDataSource(analysis);
         return new EtlSource(source.getBasedSources(), source.getOperator(), createFieldsInfo(fieldSettingOperatorList, source));
     }
 
@@ -214,7 +214,7 @@ class EtlAdaptor {
         for (SelectFieldBeanItem selectFieldBeanItem : selectFieldBeanItemList) {
             FineBusinessTable fineBusinessTable = FineTableUtils.getTableByFieldId(selectFieldBeanItem.getField());
             FineBusinessField fineBusinessField = fineBusinessTable.getFieldByFieldId(selectFieldBeanItem.getField());
-            DataSource baseDataSource = IndexingDataSourceFactory.transformDataSource(fineBusinessTable);
+            DataSource baseDataSource = DataSourceFactory.getDataSource(fineBusinessTable);
             List<SelectFieldPathItem> path = selectFieldBeanItem.getPath();
             ColumnKey columnKey = new ColumnKey(fineBusinessField.getName());
             if (baseTable != null && !ComparatorUtils.equals(baseTable, fineBusinessTable.getId())) {
@@ -232,43 +232,55 @@ class EtlAdaptor {
         }
         List<DataSource> baseDatas = new ArrayList<DataSource>();
         if (analysis.getBaseTable() != null) {
-            baseDatas.add(IndexingDataSourceFactory.transformDataSource(analysis.getBaseTable()));
+            baseDatas.add(DataSourceFactory.getDataSource(analysis.getBaseTable()));
         }
         if (sourceKeyDataSourceMap.size() == 1) {
             //选字段只选了一张表的情况
             return getSingleTableSelectFieldSource(sourceKeyColumnMap, sourceKeyDataSourceMap, baseDatas);
         } else {
             FineBusinessTable table = FineTableUtils.getTableByName(baseTable);
-            DataSource baseDataSource = IndexingDataSourceFactory.transformDataSource(table);
+            DataSource baseDataSource = DataSourceFactory.getDataSource(table);
             return getMultiTableSelectFieldSource(sourceKeyColumnMap, sourceKeyDataSourceMap, baseDatas, baseDataSource.getSourceKey().getId());
         }
     }
 
     private static RelationSource getRelation(List<SelectFieldPathItem> path, String baseTable, String table, SwiftRelationPathConfProvider relationProvider) {
         if (path != null) {
-            //@yee todo 选定的路径转化
+            //@yee todo 暂时不知道path穿过来是什么样子的
         }
         List<FineBusinessTableRelationPath> relation = relationProvider.getRelationPaths(table, baseTable);
         if (relation == null || relation.isEmpty()) {
             return Crasher.crash("invalid relation tables");
         }
         FineBusinessTableRelationPath p = relation.get(0);
-        //@yee todo path转化
         return getRelation(p);
     }
 
     private static RelationSource getRelation(FineBusinessTableRelationPath path) {
         try {
+            List<RelationSource> relationSources = pathConvert2RelationSource(path);
+            if (relationSources.isEmpty()) {
+                return null;
+            }
+            if (1 == relationSources.size()) {
+                return relationSources.get(0);
+            }
+            return new RelationPathSourceImpl(relationSources);
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    private static List<RelationSource> pathConvert2RelationSource(FineBusinessTableRelationPath path) throws Exception {
+        List<FineBusinessTableRelation> relations = path.getFineBusinessTableRelations();
+        List<RelationSource> result = new ArrayList<RelationSource>();
+        for (FineBusinessTableRelation relation : relations) {
             FineBusinessTable primaryTable = path.getFirstTable();
             FineBusinessTable foreignTable = path.getEndTable();
-            List<FineBusinessTableRelation> relations = path.getFineBusinessTableRelations();
-            int size = relations.size();
-            FineBusinessTableRelation firstRelation = relations.get(0);
-            FineBusinessTableRelation lastRelation = relations.get(size - 1);
-            SourceKey primary = IndexingDataSourceFactory.transformDataSource(primaryTable).getSourceKey();
-            SourceKey foreign = IndexingDataSourceFactory.transformDataSource(foreignTable).getSourceKey();
-            List<FineBusinessField> primaryFields = firstRelation.getPrimaryBusinessField();
-            List<FineBusinessField> foreignFields = lastRelation.getForeignBusinessField();
+            SourceKey primary = DataSourceFactory.getDataSource(primaryTable).getSourceKey();
+            SourceKey foreign = DataSourceFactory.getDataSource(foreignTable).getSourceKey();
+            List<FineBusinessField> primaryFields = relation.getPrimaryBusinessField();
+            List<FineBusinessField> foreignFields = relation.getForeignBusinessField();
             List<String> primaryKey = new ArrayList<String>();
             List<String> foreignKey = new ArrayList<String>();
 
@@ -279,15 +291,9 @@ class EtlAdaptor {
             for (FineBusinessField field : foreignFields) {
                 foreignKey.add(field.getName());
             }
-
-            if (size == 1) {
-                return new RelationSourceImpl(primary, foreign, primaryKey, foreignKey, RelationSourceType.RELATION);
-            } else {
-                return new RelationSourceImpl(primary, foreign, primaryKey, foreignKey, RelationSourceType.RELATION_PATH);
-            }
-        } catch (Exception e) {
-            return null;
+            result.add(new RelationSourceImpl(primary, foreign, primaryKey, foreignKey));
         }
+        return result;
     }
 
     private static String getBaseTable(SwiftRelationPathConfProvider relationProvider, List<SelectFieldBeanItem> selectFieldBeanItemList) {
@@ -352,7 +358,7 @@ class EtlAdaptor {
             case AnalysisType.JOIN: {
                 JoinBeanValue jbv = op.<JoinBean>getValue().getValue();
                 FineBusinessTable busiTable = FineTableUtils.getTableByName(jbv.getTable().getName());
-                dataSources.add(IndexingDataSourceFactory.transformDataSource(busiTable));
+                dataSources.add(DataSourceFactory.getDataSource(busiTable));
                 break;
             }
             case AnalysisType.UNION:
@@ -360,7 +366,7 @@ class EtlAdaptor {
                 for (UnionBeanValueTable table : ubv.getTables()) {
                     try {
                         FineBusinessTable busiTable = FineTableUtils.getTableByName(table.getName());
-                        dataSources.add(IndexingDataSourceFactory.transformDataSource(busiTable));
+                        dataSources.add(DataSourceFactory.getDataSource(busiTable));
                     } catch (Exception e) {
                         continue;
                     }

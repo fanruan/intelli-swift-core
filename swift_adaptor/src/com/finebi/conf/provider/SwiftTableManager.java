@@ -9,7 +9,7 @@ import com.finebi.conf.structure.bean.field.FineBusinessField;
 import com.finebi.conf.structure.bean.pack.FineBusinessPackage;
 import com.finebi.conf.structure.bean.table.FineBusinessTable;
 import com.fr.general.ComparatorUtils;
-import com.fr.swift.adaptor.transformer.IndexingDataSourceFactory;
+import com.fr.swift.adaptor.transformer.DataSourceFactory;
 import com.fr.swift.conf.business.ISwiftXmlWriter;
 import com.fr.swift.conf.business.pack.PackXmlWriter;
 import com.fr.swift.conf.business.pack.PackageParseXml;
@@ -33,16 +33,15 @@ import java.util.Map;
  * @description
  * @since Advanced FineBI Analysis 1.0
  */
-public class SwiftTableConfProvider implements EngineTableManager {
-
+public class SwiftTableManager implements EngineTableManager {
     private SwiftTableDao businessTableDAO;
     private SwiftPackageDao businessPackageDAO;
     private TableToSourceConfigDao tableToSourceConfigDao;
     private SwiftPackageConfProvider swiftPackageConfProvider;
     private String xmlFileName = "table.xml";
-    private SwiftLogger logger = SwiftLoggers.getLogger(SwiftTableConfProvider.class);
+    private SwiftLogger logger = SwiftLoggers.getLogger(SwiftTableManager.class);
 
-    public SwiftTableConfProvider() {
+    public SwiftTableManager() {
         TableParseXml xmlHandler = new TableParseXml();
         ISwiftXmlWriter swiftXmlWriter = new TableXmlWriter();
         businessTableDAO = new SwiftTableDao(xmlHandler, xmlFileName, swiftXmlWriter);
@@ -101,7 +100,7 @@ public class SwiftTableConfProvider implements EngineTableManager {
                         pack.addTable(table.getName());
                     }
                     try {
-                        tableToSourceConfigDao.addConfig(table.getId(), IndexingDataSourceFactory.transformDataSource(table).getSourceKey().getId());
+                        tableToSourceConfigDao.addConfig(table.getId(), DataSourceFactory.getDataSource(table).getSourceKey().getId());
                     } catch (Exception e) {
                         logger.error("Cannot save tableId to sourceKey: ", e);
                     }

@@ -10,22 +10,22 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-public class GroupByResultSetImpl implements GroupByResultSet {
+public class GroupByResultSetImpl implements GroupByResultSet<int[]> {
 
-    private Iterator<KeyValue<RowIndexKey<int[]>, AggregatorValue[]>> rowResultIterator;
+    private List<KeyValue<RowIndexKey<int[]>, AggregatorValue[]>> resultList;
     private List<Map<Integer, Object>> globalDictionaries;
     private List<Sort> indexSorts;
 
-    public GroupByResultSetImpl(Iterator<KeyValue<RowIndexKey<int[]>, AggregatorValue[]>> rowResultIterator,
+    public GroupByResultSetImpl(List<KeyValue<RowIndexKey<int[]>, AggregatorValue[]>> resultList,
                                 List<Map<Integer, Object>> globalDictionaries, List<Sort> indexSorts) {
-        this.rowResultIterator = rowResultIterator;
+        this.resultList = resultList;
         this.globalDictionaries = globalDictionaries;
         this.indexSorts = indexSorts;
     }
 
     @Override
-    public Iterator<KeyValue<RowIndexKey<int[]>, AggregatorValue[]>> getRowResultIterator() {
-        return rowResultIterator;
+    public List<KeyValue<RowIndexKey<int[]>, AggregatorValue[]>> getResultList() {
+        return resultList;
     }
 
     @Override
