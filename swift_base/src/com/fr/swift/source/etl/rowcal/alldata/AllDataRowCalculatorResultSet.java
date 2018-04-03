@@ -58,7 +58,9 @@ public class AllDataRowCalculatorResultSet implements SwiftResultSet {
             RowTraversal[] traversal = new RowTraversal[traversals.size()];
             //调用mergetGroupBy遍历，取到最后一个维度的travels算结果，并且根据travels，把结果再填到对应的行
             for (int i = 0; i < traversal.length; i++) {
-                traversal[i] = traversals.get(i)[dimensions.length];
+                if (traversals.get(i) != null){
+                    traversal[i] = traversals.get(i)[dimensions.length];
+                }
             }
             final Double value = cal.get(segments, traversal, new ColumnKey(columnName));
             for (int i = 0; i < traversal.length; i++) {

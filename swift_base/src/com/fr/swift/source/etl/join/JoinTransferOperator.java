@@ -6,6 +6,7 @@ import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftResultSet;
 import com.fr.swift.source.etl.ETLTransferOperator;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -31,13 +32,18 @@ public class JoinTransferOperator implements ETLTransferOperator {
         Segment[] rSegments = basedSegments.get(1);
         switch(type) {
             case OUTER:
-                return new JoinOperatorResultSet(columns, lKey, metaData, rKey, lSegments, rSegments, false, true);
+                return new JoinOperatorResultSet(columns, lKey, metaData, rKey, lSegments, rSegments, true, true);
             case INNER:
-                return new JoinOperatorResultSet(columns, lKey, metaData, rKey, lSegments, rSegments, true, false);
-            case LEFT:
                 return new JoinOperatorResultSet(columns, lKey, metaData, rKey, lSegments, rSegments, false, false);
+            case LEFT:
+                return new JoinOperatorResultSet(columns, lKey, metaData, rKey, lSegments, rSegments, true, false);
             default:
-                return new JoinOperatorResultSet(columns, rKey, metaData, lKey, rSegments, lSegments, false, false);
+                //right Join 做下反向转化
+                List<JoinColumn> columns = new ArrayList<JoinColumn>();
+                for (JoinColumn column : this.columns){
+                    columns.add(new JoinColumn(column.getName(), !column.isLeft(), column.getColumnName()));
+                }
+                return new JoinOperatorResultSet(columns, rKey, metaData, lKey, rSegments, lSegments, true, false);
         }
     }
 }

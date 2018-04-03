@@ -129,7 +129,7 @@ public class JoinOperatorResultSet implements SwiftResultSet {
 
     private void moverIter() {
         //如果不需要写右边剩下的，就结束
-        if (writeRightLeftValue) {
+        if (writeRightLeftValue && rKeyValue != null) {
             createNewLeftRows(null, rKeyValue);
             rKeyValue = rValueIterator.next();
         } else {
