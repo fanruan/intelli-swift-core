@@ -1,4 +1,4 @@
-package com.fr.swift.adaptor.executor;
+package com.finebi.conf.Implementation;
 
 import com.finebi.base.constant.FineEngineType;
 import com.finebi.conf.internalimp.analysis.bean.operator.add.group.custom.number.NumberMaxAndMinValue;
@@ -7,13 +7,15 @@ import com.finebi.conf.structure.analysis.table.FineAnalysisTable;
 import com.finebi.conf.structure.bean.field.FineBusinessField;
 import com.finebi.conf.structure.filter.FineFilter;
 import com.finebi.conf.structure.result.BIDetailTableResult;
-import com.fr.swift.adaptor.preview.SwiftFieldsDataPreview;
+import com.fr.swift.adaptor.preview.SwiftDataPreview;
+import com.fr.swift.adaptor.transformer.DataSourceFactory;
 import com.fr.swift.adaptor.transformer.FieldFactory;
-import com.fr.swift.adaptor.transformer.IndexingDataSourceFactory;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
-import com.fr.swift.source.etl.ETLSource;
+import com.fr.swift.source.DataSource;
 
+import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -27,17 +29,17 @@ public class SwiftAnalysisTableManager implements EngineAnalysisTableManager {
 
     private static final SwiftLogger LOGGER = SwiftLoggers.getLogger(SwiftAnalysisTableManager.class);
 
-    private SwiftFieldsDataPreview swiftFieldsDataPreview;
+    private SwiftDataPreview swiftDataPreview;
 
     public SwiftAnalysisTableManager() {
-        swiftFieldsDataPreview = new SwiftFieldsDataPreview();
+        swiftDataPreview = new SwiftDataPreview();
     }
 
     @Override
     public BIDetailTableResult getPreViewResult(FineAnalysisTable table, int rowCount) {
         try {
-            return swiftFieldsDataPreview.getDetailPreviewByFields(table, rowCount);
-        } catch (Exception e) {
+            return swiftDataPreview.getDetailPreviewByFields(table, rowCount);
+        } catch (SQLException e) {
             LOGGER.error(e.getMessage(), e);
         }
         return null;
@@ -60,7 +62,14 @@ public class SwiftAnalysisTableManager implements EngineAnalysisTableManager {
 
     @Override
     public List<FineBusinessField> getFields(FineAnalysisTable table) throws Exception {
-        return FieldFactory.transformColumns2Fields(IndexingDataSourceFactory.transformDataSource(table).getMetadata(),table.getId());
+        try {
+            DataSource dataSource = DataSourceFactory.getDataSource(table);
+            List<FineBusinessField> fieldsList = FieldFactory.transformColumns2Fields(dataSource.getMetadata(), table.getId());
+            return fieldsList;
+        } catch (Exception e) {
+            LOGGER.error(e);
+            return new ArrayList<FineBusinessField>();
+        }
     }
 
     @Override
@@ -75,9 +84,10 @@ public class SwiftAnalysisTableManager implements EngineAnalysisTableManager {
 
     @Override
     public NumberMaxAndMinValue getNumberMaxAndMinValue(FineAnalysisTable table, String fieldName) {
+
         try {
-            ETLSource dataSource = (ETLSource) IndexingDataSourceFactory.transformDataSource(table);
-            return swiftFieldsDataPreview.getNumberMaxAndMinValue(dataSource, fieldName);
+            DataSource dataSource = DataSourceFactory.getDataSource(table);
+            return swiftDataPreview.getNumberMaxAndMinValue(dataSource, fieldName);
         } catch (Exception ignore) {
         }
         return new NumberMaxAndMinValue();
@@ -86,11 +96,12 @@ public class SwiftAnalysisTableManager implements EngineAnalysisTableManager {
     @Override
     public List<Object> getColumnValue(FineAnalysisTable table, String fieldName) {
         try {
-            ETLSource dataSource = (ETLSource) IndexingDataSourceFactory.transformDataSource(table);
-            return swiftFieldsDataPreview.getGroupPreviewByFields(dataSource, fieldName);
+            DataSource dataSource = DataSourceFactory.getDataSource(table);
+            return swiftDataPreview.getGroupPreviewByFields(dataSource, fieldName);
         } catch (Exception e) {
+            LOGGER.error(e);
         }
-        return null;
+        return new ArrayList<Object>();
     }
 
     @Override

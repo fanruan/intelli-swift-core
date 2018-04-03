@@ -31,7 +31,7 @@ public class MinorUpdaterTest extends BaseTest {
         );
         DataSource join = new ETLSource(Arrays.asList(demoContract, demoCustomer), joinOp);
 
-        MinorUpdater.update(join);
+        new MinorUpdater(join).update();
 
         Segment joinSeg = MinorSegmentManager.getInstance().getSegment(join.getSourceKey()).get(0);
 

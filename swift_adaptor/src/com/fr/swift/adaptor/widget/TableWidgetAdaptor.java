@@ -15,7 +15,7 @@ import com.fr.swift.adaptor.encrypt.SwiftEncryption;
 import com.fr.swift.adaptor.struct.node.BIGroupNodeFactory;
 import com.fr.swift.adaptor.transformer.ColumnTypeAdaptor;
 import com.fr.swift.adaptor.transformer.FilterInfoFactory;
-import com.fr.swift.adaptor.transformer.IndexingDataSourceFactory;
+import com.fr.swift.adaptor.transformer.DataSourceFactory;
 import com.fr.swift.adaptor.widget.group.GroupAdaptor;
 import com.fr.swift.cal.QueryInfo;
 import com.fr.swift.cal.info.Expander;
@@ -77,7 +77,7 @@ public class TableWidgetAdaptor {
         Expander expander = null;
         String fieldId = widget.getDimensionList().get(0).getFieldId();
         FineBusinessTable fineBusinessTable = FineTableUtils.getTableByFieldId(fieldId);
-        DataSource baseDataSource = IndexingDataSourceFactory.transformDataSource(fineBusinessTable);
+        DataSource baseDataSource = DataSourceFactory.getDataSource(fineBusinessTable);
         TableGroupQueryInfo tableGroupQueryInfo = new TableGroupQueryInfo(
                 dimensions.toArray(new Dimension[dimensions.size()]),
                 metrics.toArray(new Metric[metrics.size()]),

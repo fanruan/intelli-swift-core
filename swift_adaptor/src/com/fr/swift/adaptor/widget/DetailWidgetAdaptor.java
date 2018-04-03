@@ -11,7 +11,7 @@ import com.finebi.conf.structure.result.BIDetailTableResult;
 import com.fr.swift.adaptor.struct.SwiftDetailTableResult;
 import com.fr.swift.adaptor.struct.SwiftEmptyResult;
 import com.fr.swift.adaptor.transformer.FilterInfoFactory;
-import com.fr.swift.adaptor.transformer.IndexingDataSourceFactory;
+import com.fr.swift.adaptor.transformer.DataSourceFactory;
 import com.fr.swift.adaptor.widget.group.GroupAdaptor;
 import com.fr.swift.cal.QueryInfo;
 import com.fr.swift.cal.info.DetailQueryInfo;
@@ -66,7 +66,7 @@ public class DetailWidgetAdaptor {
         Dimension[] dimensions = getDimension(widget);
 
         FineBusinessTable table = new SwiftTableConfProvider().getSingleTable(widget.getTableName());
-        SourceKey target = IndexingDataSourceFactory.transformDataSource(table).getSourceKey();
+        SourceKey target = DataSourceFactory.getDataSource(table).getSourceKey();
         SwiftMetaData swiftMetaData = MetaDataConvertUtil.getSwiftMetaDataBySourceKey(target.toString());
         DetailTarget[] targets = getTargets(widget);
         //没传进来排序顺序
