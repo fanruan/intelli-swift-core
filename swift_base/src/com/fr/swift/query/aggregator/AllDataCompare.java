@@ -1,7 +1,6 @@
 package com.fr.swift.query.aggregator;
 
 
-import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.bitmap.traversal.CalculatorTraversalAction;
 import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.DetailColumn;
@@ -17,27 +16,26 @@ import static com.fr.swift.cube.io.IOConstant.NULL_LONG;
 /**
  * @author Xiaolei.liu
  */
-public abstract class AllDataCompare implements Aggregator<DoubleAmountAggregateValue> {
+public abstract class AllDataCompare extends AbstractAggregator<DoubleAmountAggregatorValue> {
 
     @Override
-    public DoubleAmountAggregateValue aggregate(RowTraversal traversal, Column column) {
+    public DoubleAmountAggregatorValue aggregate(RowTraversal traversal, Column column) {
 
-        final DoubleAmountAggregateValue minOrMaxValue = new DoubleAmountAggregateValue();
+        final DoubleAmountAggregatorValue minOrMaxValue = new DoubleAmountAggregatorValue();
         final DetailColumn getter = column.getDetailColumn();
-        ImmutableBitMap nullIndex = column.getBitmapIndex().getNullIndex();
-        if (!nullIndex.isEmpty()){
-            traversal = traversal.toBitMap().getAndNot(nullIndex);
+        RowTraversal notNullTraversal = getNotNullTraversal(traversal, column);
+        if (notNullTraversal.isEmpty()) {
+            return new DoubleAmountAggregatorValue();
         }
         CalculatorTraversalAction ss;
         if (getter instanceof LongDetailColumn) {
-            return aggregateLongSum(traversal, getter);
+            return aggregateLongSum(notNullTraversal, getter);
         } else if (getter instanceof DoubleDetailColumn) {
-            return aggregateDoubleSum(traversal, getter);
+            return aggregateDoubleSum(notNullTraversal, getter);
         } else {
             ss = new CalculatorTraversalAction() {
 
                 int sum = NULL_INT;
-
 
                 @Override
                 public double getCalculatorValue() {
@@ -56,14 +54,14 @@ public abstract class AllDataCompare implements Aggregator<DoubleAmountAggregate
                 }
             };
         }
-        traversal.traversal(ss);
+        notNullTraversal.traversal(ss);
         minOrMaxValue.setValue(ss.getCalculatorValue());
         return minOrMaxValue;
     }
 
-    private DoubleAmountAggregateValue aggregateLongSum(RowTraversal traversal, final DetailColumn getter) {
+    private DoubleAmountAggregatorValue aggregateLongSum(RowTraversal traversal, final DetailColumn getter) {
 
-        final DoubleAmountAggregateValue minOrMaxValue = new DoubleAmountAggregateValue();
+        final DoubleAmountAggregatorValue minOrMaxValue = new DoubleAmountAggregatorValue();
         final LongDetailColumn g = (LongDetailColumn) getter;
         CalculatorTraversalAction ss;
         //bitMap.getAndNot()
@@ -94,9 +92,9 @@ public abstract class AllDataCompare implements Aggregator<DoubleAmountAggregate
         return minOrMaxValue;
     }
 
-    private DoubleAmountAggregateValue aggregateDoubleSum(RowTraversal bitMap, final DetailColumn getter) {
+    private DoubleAmountAggregatorValue aggregateDoubleSum(RowTraversal bitMap, final DetailColumn getter) {
 
-        final DoubleAmountAggregateValue minOrMaxValue = new DoubleAmountAggregateValue();
+        final DoubleAmountAggregatorValue minOrMaxValue = new DoubleAmountAggregatorValue();
         final DoubleDetailColumn g = (DoubleDetailColumn) getter;
         CalculatorTraversalAction ss;
         ss = new CalculatorTraversalAction() {

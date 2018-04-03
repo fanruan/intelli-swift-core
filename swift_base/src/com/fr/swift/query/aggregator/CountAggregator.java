@@ -6,19 +6,19 @@ import com.fr.swift.structure.iterator.RowTraversal;
 /**
  * Created by pony on 2018/3/26.
  */
-public class CountAggregator implements Aggregator<DoubleAmountAggregateValue> {
+public class CountAggregator implements Aggregator<DoubleAmountAggregatorValue> {
 
     protected static final Aggregator INSTANCE = new CountAggregator();
 
     @Override
-    public DoubleAmountAggregateValue aggregate(RowTraversal traversal, Column column) {
-        DoubleAmountAggregateValue value = new DoubleAmountAggregateValue();
+    public DoubleAmountAggregatorValue aggregate(RowTraversal traversal, Column column) {
+        DoubleAmountAggregatorValue value = new DoubleAmountAggregatorValue();
         value.setValue(traversal.getCardinality());
         return value;
     }
 
     @Override
-    public void combine(DoubleAmountAggregateValue value, DoubleAmountAggregateValue other) {
+    public void combine(DoubleAmountAggregatorValue value, DoubleAmountAggregatorValue other) {
         value.setValue(value.getValue() + other.getValue());
     }
 }

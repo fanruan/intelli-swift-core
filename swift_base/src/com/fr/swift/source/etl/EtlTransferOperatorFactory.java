@@ -96,7 +96,7 @@ public class EtlTransferOperatorFactory {
     }
 
     private static ETLTransferOperator transferDateDiffOperator(DateDiffOperator operator) {
-        return new DateDiffTransferOperator(operator.getField1(), operator.getField2(), operator.getUnit());
+        return new DateDiffTransferOperator(operator.getField1(), operator.getField2(), operator.getGroupType());
     }
 
     private static ETLTransferOperator transferGetDateOperator(GetFromDateOperator operator) {
@@ -116,7 +116,7 @@ public class EtlTransferOperatorFactory {
     }
 
     private static ETLTransferOperator transferUnionOperator(UnionOperator operator) {
-        return new UnionTransferOperator(operator.getColumnKeyList());
+        return new UnionTransferOperator(operator.getColumnNameList());
     }
 
     private static ETLTransferOperator transferJoinOperator(JoinOperator operator) {
@@ -140,7 +140,7 @@ public class EtlTransferOperatorFactory {
     }
 
     private static ETLTransferOperator transferTwoUnionRelationOperator(TwoUnionRelationOperator operator) {
-        return new TwoUnionRelationTransferOperator(operator.getColumns(), operator.getIdColumnName(), operator.getShowColumns(), operator.getColumnType(), operator.getColumnName(), operator.getParentIdColumnName());
+        return new TwoUnionRelationTransferOperator(operator.getColumns(), operator.getIdColumnName(), operator.getShowColumns(), operator.getAddedName(), operator.getParentIdColumnName());
     }
 
     private static ETLTransferOperator transferColumnFormulaOperator(ColumnFormulaOperator operator) {

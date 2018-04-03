@@ -16,6 +16,7 @@ import java.util.List;
  */
 public class StringControlWidgetAdaptor {
     private static final SwiftLogger LOGGER = SwiftLoggers.getLogger(StringControlWidgetAdaptor.class);
+
     public static BIStringDetailResult calculate(StringControlWidget widget) {
         StringControlResult value = new StringControlResult();
         try {
@@ -37,7 +38,7 @@ public class StringControlWidgetAdaptor {
         return new StringDetailResult(value);
     }
 
-    static class StringDetailResult implements BIStringDetailResult{
+    static class StringDetailResult implements BIStringDetailResult {
 
         private StringControlResult result;
 

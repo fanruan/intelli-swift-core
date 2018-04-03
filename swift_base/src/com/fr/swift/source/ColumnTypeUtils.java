@@ -3,6 +3,7 @@ package com.fr.swift.source;
 import com.fr.swift.setting.PerformancePlugManager;
 import com.fr.swift.source.ColumnTypeConstants.ClassType;
 import com.fr.swift.source.ColumnTypeConstants.ColumnType;
+import com.fr.swift.util.Crasher;
 
 import java.sql.Types;
 
@@ -103,7 +104,7 @@ public class ColumnTypeUtils {
      * @return
      */
     public static SwiftMetaDataColumn convertColumn(ColumnType columnType, SwiftMetaDataColumn fromColumn) {
-        ColumnType fromColumnType = sqlTypeToColumnType(fromColumn.getType(), fromColumn.getPrecision(), fromColumn.getScale());
+        ColumnType fromColumnType = getColumnType(fromColumn);
         switch (columnType) {
             case NUMBER:
                 //Date → Number 是Long类型
@@ -143,5 +144,24 @@ public class ColumnTypeUtils {
      */
     public static ColumnType sqlTypeToColumnType(int sqlType, int columnSize, int scale) {
         return classTypeToColumnType(sqlTypeToClassType(sqlType, columnSize, scale));
+    }
+
+    public static boolean checkColumnType(SwiftMetaDataColumn column, ColumnType type) {
+        if (null == column || getColumnType(column) != type) {
+            return Crasher.crash("not " + type + " field");
+        }
+        return true;
+    }
+
+    public static ClassType getClassType(SwiftMetaDataColumn columnMeta) {
+        return sqlTypeToClassType(
+                columnMeta.getType(),
+                columnMeta.getPrecision(),
+                columnMeta.getScale()
+        );
+    }
+
+    public static ColumnType getColumnType(SwiftMetaDataColumn columnMeta) {
+        return classTypeToColumnType(getClassType(columnMeta));
     }
 }

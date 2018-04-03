@@ -6,6 +6,7 @@ import com.finebi.conf.internalimp.analysis.bean.operator.add.group.custom.numbe
 import com.finebi.conf.internalimp.analysis.bean.operator.group.CustomGroupValueItemBean;
 import com.finebi.conf.internalimp.analysis.bean.operator.group.DimensionSelectValue;
 import com.finebi.conf.internalimp.analysis.bean.operator.group.GroupCustomGroupValueBean;
+import com.finebi.conf.internalimp.analysis.bean.operator.group.GroupDoubleValueBean;
 import com.finebi.conf.internalimp.analysis.bean.operator.group.GroupSingleValueBean;
 import com.finebi.conf.internalimp.analysis.bean.operator.group.custom.CustomGroupValueBean;
 import com.finebi.conf.internalimp.analysis.bean.operator.group.custom.CustomGroupValueContent;
@@ -43,14 +44,19 @@ public class GroupAdaptor {
         switch (selectValue.getType()) {
             case TYPE.GROUP:
                 return AnotherGroupAdaptor.adapt(((GroupCustomGroupValueBean) selectValue));
-            case TYPE.SINGLE:
+            case TYPE.SINGLE: {
                 // 相同值作为一组，可直接取底层的dict
-                GroupType type = GroupTypeAdaptor.adaptGroupType(((GroupSingleValueBean) selectValue).getValue());
+                GroupType type = GroupTypeAdaptor.adaptSingleValueGroupType(((GroupSingleValueBean) selectValue).getValue());
                 return Groups.newGroup(new NoGroupRule(type));
-            case TYPE.DOUBLE:
-                // 不知道double是啥,前端界面只有group和single
+            }
+            case TYPE.DOUBLE: {
+                // 不知道double是啥, 暂用于日期分组的更多分组
+                // 相同值作为一组，可直接取底层的dict
+                GroupType type = GroupTypeAdaptor.adaptSingleValueGroupType(((GroupDoubleValueBean) selectValue).getChildValue());
+                return Groups.newGroup(new NoGroupRule(type));
+            }
             default:
-                return null;
+                return Groups.newGroup(new NoGroupRule());
         }
     }
 

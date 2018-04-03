@@ -1,6 +1,6 @@
 package com.fr.swift.context;
 
-import com.fr.swift.segment.SegmentOperatorProvider;
+import com.fr.swift.segment.SwiftDataOperatorProvider;
 import com.fr.swift.segment.SwiftSegmentManager;
 
 /**
@@ -22,7 +22,7 @@ public class SwiftContext {
 
     private SwiftSegmentManager segmentProvider;
 
-    private SegmentOperatorProvider segmentOperatorProvider;
+    private SwiftDataOperatorProvider swiftDataOperatorProvider;
 
     private SwiftSegmentManager minorSegmentManager;
 
@@ -30,15 +30,15 @@ public class SwiftContext {
         this.segmentProvider = segmentProvider;
     }
 
-    public void registerSegmentOperatorProvider(SegmentOperatorProvider segmentOperatorProvider) {
-        this.segmentOperatorProvider = segmentOperatorProvider;
+    public void registerSegmentOperatorProvider(SwiftDataOperatorProvider swiftDataOperatorProvider) {
+        this.swiftDataOperatorProvider = swiftDataOperatorProvider;
     }
 
     public SwiftSegmentManager getSegmentProvider() {
         return this.segmentProvider;
     }
 
-    public SegmentOperatorProvider getSegmentOperatorProvider() {
-        return this.segmentOperatorProvider;
+    public SwiftDataOperatorProvider getSwiftDataOperatorProvider() {
+        return this.swiftDataOperatorProvider;
     }
 }

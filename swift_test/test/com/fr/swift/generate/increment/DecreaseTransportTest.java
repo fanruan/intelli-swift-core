@@ -3,17 +3,17 @@ package com.fr.swift.generate.increment;
 import com.fr.base.FRContext;
 import com.fr.dav.LocalEnv;
 import com.fr.swift.bitmap.ImmutableBitMap;
-import com.fr.swift.generate.history.index.ColumnIndexer;
-import com.fr.swift.generate.history.transport.TableTransporter;
+import com.fr.swift.context.SwiftContext;
+import com.fr.swift.generate.TestIndexer;
+import com.fr.swift.generate.TestTransport;
 import com.fr.swift.generate.realtime.RealtimeDataTransporter;
 import com.fr.swift.increase.IncrementImpl;
 import com.fr.swift.increment.Increment;
+import com.fr.swift.manager.LocalDataOperatorProvider;
 import com.fr.swift.manager.LocalSegmentProvider;
 import com.fr.swift.segment.Segment;
-import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.source.DataSource;
 import com.fr.swift.source.db.QueryDBSource;
-import com.fr.swift.source.db.TableDataTransfer;
 import com.fr.swift.source.db.TestConnectionProvider;
 import junit.framework.TestCase;
 
@@ -39,12 +39,9 @@ public class DecreaseTransportTest extends TestCase {
     }
 
     public void testDecreaseTransport() throws Exception {
+        SwiftContext.getInstance().registerSegmentOperatorProvider(LocalDataOperatorProvider.getInstance());
 
-        TableTransporter tableTransporter = new TableTransporter(dataSource);
-        tableTransporter.transport();
-        ColumnIndexer columnIndexer = new ColumnIndexer(dataSource, new ColumnKey("记录人"));
-        columnIndexer.work();
-
+        TestIndexer.historyIndex(dataSource, TestTransport.historyTransport(dataSource));
 
         Increment increment = new IncrementImpl(null, "select 记录人 from DEMO_CAPITAL_RETURN where 记录人 ='庆芳'", null, dataSource.getSourceKey(), "local1");
         RealtimeDataTransporter transport = new RealtimeDataTransporter(dataSource, increment);

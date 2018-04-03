@@ -33,6 +33,9 @@ import com.finebi.conf.structure.result.control.tree.BITreeResult;
 import com.finebi.conf.structure.result.table.BIComplexGroupResult;
 import com.finebi.conf.structure.result.table.BICrossNode;
 import com.finebi.conf.structure.result.table.BIGroupNode;
+import com.fr.swift.adaptor.widget.date.MonthControlWidgetAdaptor;
+import com.fr.swift.adaptor.widget.date.QuarterControlWidgetAdaptor;
+import com.fr.swift.adaptor.widget.date.YearControlWidgetAdaptor;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
 
@@ -45,6 +48,7 @@ import java.util.Map;
  */
 public class SwiftEngineWidgetExecutorManager implements EngineWidgetExecutorManager {
     private static final SwiftLogger LOGGER = SwiftLoggers.getLogger(SwiftEngineWidgetExecutorManager.class);
+
     @Override
     public BIGroupNode visit(TableWidget tableWidget) {
         return TableWidgetAdaptor.calculate(tableWidget);
@@ -87,41 +91,41 @@ public class SwiftEngineWidgetExecutorManager implements EngineWidgetExecutorMan
 
     @Override
     public BIMonthControlResult visit(MonthControlWidget detailWidget) {
-        return BIMonthControlResultAdaptor.calculate(detailWidget);
+        return MonthControlWidgetAdaptor.calculate(detailWidget);
     }
 
     @Override
-    public BITreeResult visit(TreeWidget detailWidget) {
+    public BITreeResult visit(TreeWidget treeWidget) {
+        return TreeWidgetAdaptor.calculate(treeWidget);
+    }
+
+    @Override
+    public BIResult visit(TreeLabelWidget treeLabelWidget) {
+        return TreeLabelWidgetAdaptor.calculate(treeLabelWidget);
+    }
+
+    @Override
+    public BIResult visit(TreeListWidget treeListWidget) {
+        return TreeListWidgetAdaptor.calculate(treeListWidget);
+    }
+
+    @Override
+    public BIResult visit(DateControlWidget dateControlWidget) {
         return null;
     }
 
     @Override
-    public BIResult visit(TreeLabelWidget labelWidget) {
+    public BIResult visit(DatePaneControlWidget datePaneControlWidget) {
         return null;
     }
 
     @Override
-    public BIResult visit(TreeListWidget labelWidget) {
+    public BIResult visit(DateIntervalControlWidget dateIntervalControlWidget) {
         return null;
     }
 
     @Override
-    public BIResult visit(DateControlWidget dateControlWidget) throws Exception {
-        return null;
-    }
-
-    @Override
-    public BIResult visit(DatePaneControlWidget datePaneControlWidget) throws Exception {
-        return null;
-    }
-
-    @Override
-    public BIResult visit(DateIntervalControlWidget dateIntervalControlWidget) throws Exception {
-        return null;
-    }
-
-    @Override
-    public BIResult visit(StringListControlWidget stringListControlWidget) throws Exception {
+    public BIResult visit(StringListControlWidget stringListControlWidget) {
         return null;
     }
 

@@ -1,6 +1,7 @@
 package com.fr.swift.query.filter.detail.impl.date;
 
-import com.fr.swift.query.filter.detail.impl.ColumnImplTest;
+import com.fr.swift.query.filter.detail.impl.BaseColumnImplTest;
+import com.fr.swift.query.filter.detail.impl.number.BaseNumberFilterTest;
 import com.fr.swift.query.filter.detail.impl.string.BaseStringFilterTest;
 
 import java.util.Comparator;
@@ -16,12 +17,12 @@ public abstract class BaseDateFilterTest extends BaseStringFilterTest {
 
     protected static List<Long> dates = prepare();
 
-    protected Comparator<Long> comparator = Comparator.naturalOrder();
+    protected Comparator comparator = new BaseNumberFilterTest.NumberComparator<Long>();
     protected List<Long> details;
 
     public BaseDateFilterTest() {
         this.details = dates;
-        this.column = new ColumnImplTest<Long>(details, comparator, null) {
+        this.column = new BaseColumnImplTest<Long>(details, comparator, null) {
             @Override
             protected Long convertValue(Object value) {
                 return ((Number) value).longValue();

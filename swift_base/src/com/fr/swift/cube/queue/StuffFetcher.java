@@ -7,7 +7,7 @@ import com.fr.swift.exception.meta.SwiftMetaDataException;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.source.DataSource;
-import com.fr.swift.source.ETLDataSource;
+import com.fr.swift.source.EtlDataSource;
 import com.fr.swift.source.manager.IndexStuffProvider;
 import com.fr.swift.structure.Pair;
 
@@ -53,8 +53,8 @@ public class StuffFetcher implements Runnable {
         for (DataSource dataSource : stuff.getAllTables()) {
             SchedulerTask task;
 
-            if (dataSource instanceof ETLDataSource) {
-                task = CubeTasks.newEtlTask((ETLDataSource) dataSource, start);
+            if (dataSource instanceof EtlDataSource) {
+                task = CubeTasks.newEtlTask((EtlDataSource) dataSource, start);
             } else {
                 task = CubeTasks.newTableTask(dataSource);
                 start.addNext(task);

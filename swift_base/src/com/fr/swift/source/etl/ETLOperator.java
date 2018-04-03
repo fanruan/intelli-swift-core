@@ -19,6 +19,14 @@ public interface ETLOperator extends CoreService {
     List<SwiftMetaDataColumn> getColumns(SwiftMetaData[] metaDatas);
 
     /**
+     * 返回etl用到的基础表的列
+     *
+     * @param metaDatas 基础的metaDatas
+     * @return
+     */
+    List<SwiftMetaDataColumn> getBaseColumns(SwiftMetaData[] metaDatas);
+
+    /**
      * 获取etl的类型
      *
      * @return

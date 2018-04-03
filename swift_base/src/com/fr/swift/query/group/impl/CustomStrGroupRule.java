@@ -6,7 +6,6 @@ import com.fr.swift.source.core.CoreField;
 import com.fr.swift.source.core.CoreGenerator;
 import com.fr.swift.source.core.CoreService;
 import com.fr.swift.structure.Pair;
-import com.fr.swift.structure.array.IntList;
 import com.fr.swift.structure.array.IntListFactory;
 
 import java.util.Iterator;
@@ -35,6 +34,9 @@ public class CustomStrGroupRule extends BaseCustomGroupRule<String> {
 
         int dictSize = dictColumn.size();
         reverseMap = new int[dictSize];
+
+        // 0号为null
+        map.put(0, Pair.of((String) null, IntListFactory.newSingleList(0)));
 
         for (int i = 1; i < dictSize; i++) {
             String val = dictColumn.<String>getValue(i);
@@ -100,6 +102,7 @@ public class CustomStrGroupRule extends BaseCustomGroupRule<String> {
             return values.contains(o);
         }
 
+        @Override
         public Core fetchObjectCore() {
             try {
                 return new CoreGenerator(this).fetchObjectCore();

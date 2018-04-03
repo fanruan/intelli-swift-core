@@ -1,5 +1,6 @@
 package com.fr.swift.query.aggregator;
 
+import static com.fr.swift.cube.io.IOConstant.NULL_DOUBLE;
 import static com.fr.swift.cube.io.IOConstant.NULL_INT;
 import static com.fr.swift.cube.io.IOConstant.NULL_LONG;
 
@@ -8,14 +9,14 @@ import static com.fr.swift.cube.io.IOConstant.NULL_LONG;
  */
 public class MinAggregate extends AllDataCompare {
 
-    protected static final MinAggregate INSTANCE = new MinAggregate();
+    protected static final Aggregator INSTANCE = new MinAggregate();
 
 
     @Override
     protected double compare(double sum, double rowValue) {
-        if (Double.isNaN(sum)) {
+        if (Double.compare(sum, NULL_DOUBLE) == 0) {
             return rowValue;
-        } else if (Double.isNaN(rowValue)) {
+        } else if (Double.compare(rowValue, NULL_DOUBLE) == 0) {
             return sum;
         }
         return Math.min(sum, rowValue);
@@ -42,7 +43,7 @@ public class MinAggregate extends AllDataCompare {
     }
 
     @Override
-    public void combine(DoubleAmountAggregateValue value, DoubleAmountAggregateValue other) {
+    public void combine(DoubleAmountAggregatorValue value, DoubleAmountAggregatorValue other) {
         value.setValue(Math.min(value.getValue(), other.getValue()));
     }
 }

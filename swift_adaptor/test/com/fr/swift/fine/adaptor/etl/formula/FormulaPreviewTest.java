@@ -2,13 +2,13 @@ package com.fr.swift.fine.adaptor.etl.formula;
 
 import com.finebi.conf.structure.result.BIDetailCell;
 import com.finebi.conf.structure.result.BIDetailTableResult;
-import com.fr.swift.adaptor.preview.SwiftFieldsDataPreview;
+import com.fr.swift.adaptor.preview.SwiftDataPreview;
 import com.fr.swift.generate.BaseTest;
 import com.fr.swift.source.ColumnTypeConstants;
 import com.fr.swift.source.DataSource;
 import com.fr.swift.source.db.QueryDBSource;
 import com.fr.swift.source.etl.ETLOperator;
-import com.fr.swift.source.etl.ETLSource;
+import com.fr.swift.source.etl.EtlSource;
 import com.fr.swift.source.etl.formula.ColumnFormulaOperator;
 
 import java.util.ArrayList;
@@ -22,10 +22,10 @@ public class FormulaPreviewTest extends BaseTest {
         ETLOperator formulaOperator = new ColumnFormulaOperator("addField", ColumnTypeConstants.ColumnType.NUMBER, "${付款金额} + ${付款金额}");
         List<DataSource> baseDataSources = new ArrayList<DataSource>();
         baseDataSources.add(dataSource);
-        ETLSource etlSource = new ETLSource(baseDataSources, formulaOperator);
+        EtlSource etlSource = new EtlSource(baseDataSources, formulaOperator);
 
-        SwiftFieldsDataPreview swiftFieldsDataPreview = new SwiftFieldsDataPreview();
-        BIDetailTableResult detailTableResult = swiftFieldsDataPreview.getDetailPreviewByFields(etlSource, 200, null, null);
+        SwiftDataPreview swiftFieldsDataPreview = new SwiftDataPreview();
+        BIDetailTableResult detailTableResult = swiftFieldsDataPreview.getDetailPreviewByFields(null, 0);
 
         assertEquals(etlSource.getMetadata().getColumnCount(), 5);
         int count = 0;

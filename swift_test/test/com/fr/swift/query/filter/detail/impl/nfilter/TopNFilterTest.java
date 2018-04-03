@@ -1,7 +1,7 @@
 package com.fr.swift.query.filter.detail.impl.nfilter;
 
 import com.fr.swift.bitmap.ImmutableBitMap;
-import com.fr.swift.query.filter.detail.impl.ColumnImplTest;
+import com.fr.swift.query.filter.detail.impl.BaseColumnImplTest;
 import com.fr.swift.query.filter.detail.impl.number.BaseNumberFilterTest;
 
 import java.util.ArrayList;
@@ -22,7 +22,7 @@ public class TopNFilterTest extends BaseNumberFilterTest {
     public TopNFilterTest() {
         this.column = doubleColumn;
         this.details = doubleDetails;
-        this.groups = new ArrayList<>(((ColumnImplTest) column).getGroups());
+        this.groups = new ArrayList<>(((BaseColumnImplTest) column).getGroups());
         topN = groups.size() / 2;
         this.filter = new TopNFilter(topN, column);
     }
@@ -42,7 +42,7 @@ public class TopNFilterTest extends BaseNumberFilterTest {
 
     @Override
     protected List<Integer> getExpectedIndexes() {
-        Set<Double> topNGroups = new HashSet<>(groups.subList(topN, groups.size()));
+        Set<Double> topNGroups = new HashSet<>(groups.subList(topN + 1, groups.size()));
         return IntStream.range(0, details.size()).filter(i -> topNGroups.contains(details.get(i)))
                 .mapToObj(Integer::new).collect(Collectors.toList());
     }

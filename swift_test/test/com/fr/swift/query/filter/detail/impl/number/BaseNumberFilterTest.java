@@ -1,10 +1,11 @@
 package com.fr.swift.query.filter.detail.impl.number;
 
 import com.fr.swift.query.filter.detail.DetailFilter;
+import com.fr.swift.query.filter.detail.impl.BaseColumnImplTest;
 import com.fr.swift.query.filter.detail.impl.BaseFilterTest;
-import com.fr.swift.query.filter.detail.impl.ColumnImplTest;
 import com.fr.swift.segment.column.Column;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
@@ -37,20 +38,35 @@ public abstract class BaseNumberFilterTest extends BaseFilterTest {
 
     protected abstract List<Integer> getExpectedIndexes();
 
+    public static class NumberComparator<T extends Number> implements Comparator<Number> {
+        @Override
+        public int compare(Number o1, Number o2) {
+            if (o1 == null) {
+                return -1;
+            }
+            if (o2 == null) {
+                return 1;
+            }
+            Double d1 = o1.doubleValue();
+            Double d2 = o2.doubleValue();
+            return d1.compareTo(d2);
+        }
+    }
+
     private static void initColumn() {
-        intColumn = new ColumnImplTest<Integer>(intDetails, (t1, t2) -> t1.compareTo(t2), null) {
+        intColumn = new BaseColumnImplTest<Integer>(intDetails, new NumberComparator<Integer>(), null) {
             @Override
             protected Integer convertValue(Object value) {
                 return ((Number)value).intValue();
             }
         };
-        doubleColumn = new ColumnImplTest<Double>(doubleDetails, (t1, t2) -> t1.compareTo(t2), null) {
+        doubleColumn = new BaseColumnImplTest<Double>(doubleDetails, new NumberComparator<Double>(), null) {
             @Override
             protected Double convertValue(Object value) {
                 return ((Number) value).doubleValue();
             }
         };
-        longColumn = new ColumnImplTest<Long>(longDetails, (t1, t2) -> t1.compareTo(t2), null) {
+        longColumn = new BaseColumnImplTest<Long>(longDetails, new NumberComparator<Long>(), null) {
             @Override
             protected Long convertValue(Object value) {
                 return ((Number) value).longValue();

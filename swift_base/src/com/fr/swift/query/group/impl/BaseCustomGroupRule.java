@@ -1,5 +1,6 @@
 package com.fr.swift.query.group.impl;
 
+import com.fr.general.ComparatorUtils;
 import com.fr.stable.StringUtils;
 import com.fr.swift.source.core.CoreField;
 import com.fr.swift.structure.Pair;
@@ -17,11 +18,12 @@ abstract class BaseCustomGroupRule<Base> extends BaseGroupRule<Base, String> {
     /**
      * 新分组序号 -> (新分组名, 旧分组序号)
      */
-    private Map<Integer, Pair<String, IntList>> map = new HashMap<Integer, Pair<String, IntList>>();
+    Map<Integer, Pair<String, IntList>> map = new HashMap<Integer, Pair<String, IntList>>();
     /**
      * 旧值序号 -> 新值序号
      */
     int[] reverseMap;
+
     @CoreField
     String otherGroupName;
 
@@ -32,6 +34,16 @@ abstract class BaseCustomGroupRule<Base> extends BaseGroupRule<Base, String> {
     @Override
     public String getValue(int index) {
         return map.get(index).getKey();
+    }
+
+    @Override
+    public int getIndex(Object val) {
+        for (int i = 0, size = newSize(); i < size; i++) {
+            if (ComparatorUtils.equals(getValue(i), val)) {
+                return i;
+            }
+        }
+        return -1;
     }
 
     @Override
@@ -60,12 +72,8 @@ abstract class BaseCustomGroupRule<Base> extends BaseGroupRule<Base, String> {
             IntList indices = IntListFactory.createIntList();
             indices.add(oldIndex);
             map.put(newIndex, Pair.of(groupName, indices));
-            reverseMap[oldIndex] = newIndex;
         }
-
-        // 0号为null
-        IntList ints = IntListFactory.createIntList(1);
-        ints.add(0);
-        map.put(0, Pair.of((String) null, ints));
+        
+        reverseMap[oldIndex] = newIndex;
     }
 }

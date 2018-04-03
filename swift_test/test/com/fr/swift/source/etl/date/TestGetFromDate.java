@@ -1,5 +1,6 @@
 package com.fr.swift.source.etl.date;
 
+import com.fr.swift.query.group.GroupType;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SwiftMetaData;
@@ -26,7 +27,6 @@ public class TestGetFromDate extends TestCase {
             List<Segment[]> list = new ArrayList<Segment[]>();
             list.add(segments);
             String column1 = "column2";
-            int unit = 0x1;
             SwiftMetaData metaData = EasyMock.createMock(SwiftMetaData.class);
             SwiftMetaDataColumn column = EasyMock.createMock(SwiftMetaDataColumn.class);
             EasyMock.expect(metaData.getColumn(column1)).andReturn(column).anyTimes();
@@ -36,7 +36,7 @@ public class TestGetFromDate extends TestCase {
             EasyMock.expect(column.getPrecision()).andReturn(10).anyTimes();
             EasyMock.replay(metaData);
             EasyMock.replay(column);
-            GetFromDateTransferOperator operator = new GetFromDateTransferOperator(column1, unit);
+            GetFromDateTransferOperator operator = new GetFromDateTransferOperator(column1, GroupType.YEAR);
             SwiftResultSet rs = operator.createResultSet(metaData, null, list);
             while(rs.next()) {
                 Row row = rs.getRowData();

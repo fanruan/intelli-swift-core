@@ -24,27 +24,18 @@ public class DateDerivers {
             case MINUTE:
             case SECOND:
             case WEEK_OF_YEAR:
-                return (Function<Long, Derive>) longWrap(newSingleFieldDeriver(toDateType(type)));
+                return (Function<Long, Derive>) newSingleFieldDeriver(toDateType(type));
             default:
                 return (Function<Long, Derive>) newTruncDeriver(toMixDateType(type));
         }
     }
 
-    private static Function<Long, Long> longWrap(final Function<Long, Integer> old) {
-        return new Function<Long, Long>() {
+    public static Function<Long, Long> newSingleFieldDeriver(final DateType dateType) {
+        return new BaseDateDeriver<Long>() {
             @Override
-            public Long apply(Long p) {
-                return Long.valueOf(old.apply(p));
-            }
-        };
-    }
-
-    public static Function<Long, Integer> newSingleFieldDeriver(final DateType dateType) {
-        return new BaseDateDeriver<Integer>() {
-            @Override
-            public Integer apply(Long millis) {
+            public Long apply(Long millis) {
                 c.setTimeInMillis(millis);
-                return dateType.from(c);
+                return (long) dateType.from(c);
             }
         };
     }

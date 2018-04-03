@@ -5,9 +5,7 @@ import com.fr.swift.source.Row;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftResultSet;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Comparator;
 
 /**
  * @author pony
@@ -21,7 +19,7 @@ public abstract class DetailResultSet implements SwiftResultSet {
         }
 
         @Override
-        public Row getRowData() throws SQLException {
+        public Row getRowData() {
             return new ListBasedRow(new ArrayList<Object>());
         }
     };
@@ -53,12 +51,4 @@ public abstract class DetailResultSet implements SwiftResultSet {
     public int getRowSize() {
         return maxRow;
     }
-
-    public int getColumnCount() {
-        return 0;
-    }
-
-//    public Comparator getDetailSortComparator() {
-//        return null;
-//    }
 }

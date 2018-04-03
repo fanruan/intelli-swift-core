@@ -33,7 +33,7 @@ public class StringCombineAggregateTest extends TestCase {
         v2.setValue("b");
         StringCombineAggregate.INSTANCE.combine(v1, v2);
         assertEquals(v1.getValue(), "a,b");
-        assertEquals(v1.calculate(), 0);
+        assertEquals(v1.calculate(), 0.0);
         assertEquals(v1.calculateValue(), "a,b");
     }
 }

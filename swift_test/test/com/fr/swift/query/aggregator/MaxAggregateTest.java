@@ -3,6 +3,7 @@ package com.fr.swift.query.aggregator;
 import com.fr.swift.bitmap.impl.AllShowBitMap;
 import com.fr.swift.cube.io.location.ResourceLocation;
 import com.fr.swift.segment.column.Column;
+import com.fr.swift.segment.column.impl.base.BitMapColumn;
 import com.fr.swift.segment.column.impl.base.DoubleDetailColumn;
 import com.fr.swift.segment.column.impl.base.IntDetailColumn;
 import com.fr.swift.segment.column.impl.base.LongDetailColumn;
@@ -11,12 +12,11 @@ import junit.framework.TestCase;
 import org.easymock.EasyMock;
 import org.easymock.IMocksControl;
 
-import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.expectLastCall;
 
 public class MaxAggregateTest extends TestCase{
 
-    private MaxAggregate max = MaxAggregate.INSTANCE;
+    private MaxAggregate max = (MaxAggregate)MaxAggregate.INSTANCE;
 
 //    BILogger log = new BILogger();
 
@@ -26,19 +26,16 @@ public class MaxAggregateTest extends TestCase{
         IMocksControl control = EasyMock.createControl();
         Column mockColumn = control.createMock(Column.class);
         IntDetailColumn mockIntColumn = new TempIntDetailColumn(new ResourceLocation("liu"));
+        BitMapColumn bitMapColumn = control.createMock(BitMapColumn.class);
 
-
+        EasyMock.expect(mockColumn.getBitmapIndex()).andReturn(bitMapColumn).anyTimes();
+        EasyMock.expect(bitMapColumn.getNullIndex()).andReturn(null).anyTimes();
         mockColumn.getDetailColumn();
         expectLastCall().andReturn(mockIntColumn);
-//            expect(mockIntColumn.getInt(0)).andReturn(1);
-//            expect(mockIntColumn.getInt(1)).andReturn(3);
-//            expect(mockIntColumn.getInt(2)).andReturn(5);
-//            expect(mockIntColumn.getInt(3)).andReturn(7);
-//            expect(mockIntColumn.getInt(4)).andReturn(0);
         control.replay();
 
         double maxNumber = 10;
-        DoubleAmountAggregateValue an = max.aggregate(bitMap, mockColumn);
+        DoubleAmountAggregatorValue an = max.aggregate(bitMap, mockColumn);
         assertEquals(an.getValue(), maxNumber);
         control.verify();
     }
@@ -48,18 +45,16 @@ public class MaxAggregateTest extends TestCase{
         IMocksControl control = EasyMock.createControl();
         Column mockColumn = control.createMock(Column.class);
         LongDetailColumn mockLongColumn = new TempLongDetailColumn(new ResourceLocation("liu"));
+        BitMapColumn bitMapColumn = control.createMock(BitMapColumn.class);
 
+        EasyMock.expect(mockColumn.getBitmapIndex()).andReturn(bitMapColumn).anyTimes();
+        EasyMock.expect(bitMapColumn.getNullIndex()).andReturn(null).anyTimes();
         mockColumn.getDetailColumn();
         expectLastCall().andReturn(mockLongColumn);
-//            expect(mockLongColumn.getLong(0)).andReturn(1l);
-//            expect(mockLongColumn.getLong(1)).andReturn(3l);
-//            expect(mockLongColumn.getLong(2)).andReturn(5l);
-//            expect(mockLongColumn.getLong(3)).andReturn(7l);
-//            expect(mockLongColumn.getLong(4)).andReturn(0l);
         control.replay();
 
         double maxNumber = 4;
-        DoubleAmountAggregateValue an = max.aggregate(bitMap, mockColumn);
+        DoubleAmountAggregatorValue an = max.aggregate(bitMap, mockColumn);
         assertEquals(an.getValue(), maxNumber);
         control.verify();
     }
@@ -69,34 +64,32 @@ public class MaxAggregateTest extends TestCase{
         IMocksControl control = EasyMock.createControl();
         Column mockColumn = control.createMock(Column.class);
         DoubleDetailColumn mockDoubleColumn = new TempDoubleDetailColumn(new ResourceLocation("liu"));
+        BitMapColumn bitMapColumn = control.createMock(BitMapColumn.class);
 
+        EasyMock.expect(mockColumn.getBitmapIndex()).andReturn(bitMapColumn).anyTimes();
+        EasyMock.expect(bitMapColumn.getNullIndex()).andReturn(null).anyTimes();
         mockColumn.getDetailColumn();
         expectLastCall().andReturn(mockDoubleColumn);
-//            expect(mockDoubleColumn.getDouble(0)).andReturn(1.0);
-//            expect(mockDoubleColumn.getDouble(1)).andReturn(3.3);
-//            expect(mockDoubleColumn.getDouble(2)).andReturn(5.4);
-//            expect(mockDoubleColumn.getDouble(3)).andReturn(7.1);
-//            expect(mockDoubleColumn.getDouble(4)).andReturn(0.2);
         control.replay();
 
         double maxNumber = 9.8;
-        DoubleAmountAggregateValue an = max.aggregate(bitMap, mockColumn);
+        DoubleAmountAggregatorValue an = max.aggregate(bitMap, mockColumn);
         assertEquals(an.getValue(), maxNumber);
         control.verify();
     }
 
     public void testCombine() {
-        DoubleAmountAggregateValue valueTest1 = new DoubleAmountAggregateValue();
-        DoubleAmountAggregateValue otherTest1 = new DoubleAmountAggregateValue();
-        DoubleAmountAggregateValue valueTest2 = new DoubleAmountAggregateValue();
-        DoubleAmountAggregateValue otherTest2 = new DoubleAmountAggregateValue();
+        DoubleAmountAggregatorValue valueTest1 = new DoubleAmountAggregatorValue();
+        DoubleAmountAggregatorValue otherTest1 = new DoubleAmountAggregatorValue();
+        DoubleAmountAggregatorValue valueTest2 = new DoubleAmountAggregatorValue();
+        DoubleAmountAggregatorValue otherTest2 = new DoubleAmountAggregatorValue();
 
         valueTest1.setValue(-10);
         valueTest2.setValue(10);
         otherTest1.setValue(-2);
         otherTest2.setValue(20);
 
-        MaxAggregate max = MaxAggregate.INSTANCE;
+        MaxAggregate max = (MaxAggregate)MaxAggregate.INSTANCE;
         max.combine(valueTest1, otherTest1);
         max.combine(valueTest2, otherTest2);
 

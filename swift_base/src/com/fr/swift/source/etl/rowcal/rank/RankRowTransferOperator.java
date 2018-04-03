@@ -1,5 +1,6 @@
 package com.fr.swift.source.etl.rowcal.rank;
 
+import com.fr.swift.query.sort.SortType;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.source.SwiftMetaData;
@@ -13,11 +14,11 @@ import java.util.List;
  */
 public class RankRowTransferOperator implements ETLTransferOperator {
 
-    private int type;
+    private SortType type;
     private ColumnKey columnKey;
     private ColumnKey[] dimension;
 
-    public RankRowTransferOperator(int type, ColumnKey columnKey, ColumnKey[] dimension) {
+    public RankRowTransferOperator(SortType type, ColumnKey columnKey, ColumnKey[] dimension) {
         this.type = type;
         this.columnKey = columnKey;
         this.dimension = dimension;

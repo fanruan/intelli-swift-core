@@ -98,7 +98,9 @@ public final class AllShowBitMap extends AbstractBitMap {
 
     @Override
     public byte[] toBytes() {
-        return Util.intToBytes(rowCount);
+        byte[] bytes = new byte[4];
+        Bits.putInt(bytes, 0, rowCount);
+        return bytes;
     }
 
     public static ImmutableBitMap fromBytes(byte[] bytes) {

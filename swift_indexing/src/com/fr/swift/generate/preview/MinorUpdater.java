@@ -1,45 +1,62 @@
 package com.fr.swift.generate.preview;
 
-import com.fr.swift.generate.Util;
-import com.fr.swift.generate.realtime.index.RealtimeColumnDictMerger;
+import com.fr.swift.cube.io.Types;
+import com.fr.swift.cube.io.location.ResourceLocation;
+import com.fr.swift.exception.meta.SwiftMetaDataException;
+import com.fr.swift.generate.preview.operator.MinorInserter;
 import com.fr.swift.generate.realtime.index.RealtimeColumnIndexer;
 import com.fr.swift.generate.realtime.index.RealtimeSubDateColumnIndexer;
 import com.fr.swift.query.group.GroupType;
+import com.fr.swift.segment.RealTimeSegmentImpl;
 import com.fr.swift.segment.Segment;
-import com.fr.swift.segment.SegmentOperator;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.segment.column.impl.SubDateColumn;
+import com.fr.swift.segment.operator.Inserter;
 import com.fr.swift.source.ColumnTypeConstants.ClassType;
+import com.fr.swift.source.ColumnTypeUtils;
 import com.fr.swift.source.DataSource;
-import com.fr.swift.source.ETLDataSource;
+import com.fr.swift.source.EtlDataSource;
+import com.fr.swift.source.SwiftMetaDataColumn;
 import com.fr.swift.source.SwiftResultSet;
 import com.fr.swift.utils.DataSourceUtils;
 
+import java.util.Collections;
 import java.util.List;
 
 /**
  * @author anchore
  * @date 2018/2/1
  * <p>
- * todo 每次update都是重新存的数据，后期这块应该能优化下
+ * 基础表每次
  */
 public class MinorUpdater {
-    public static void update(DataSource dataSource) throws Exception {
-        // 更新前，把之前的segment清除
-        MinorSegmentManager.getInstance().clear();
 
+    DataSource dataSource;
+
+    public MinorUpdater(DataSource dataSource) {
+        this.dataSource = dataSource;
+    }
+
+    /**
+     * 是基础表的话，就清除数据，重新update
+     * 否则，取存在的数据update。
+     *
+     * @throws Exception
+     */
+    public void update() throws Exception {
         if (isEtl(dataSource)) {
-            buildEtl((ETLDataSource) dataSource);
+            buildEtl((EtlDataSource) dataSource);
         } else {
+            MinorSegmentManager.getInstance().remove(dataSource.getSourceKey());
             build(dataSource);
         }
     }
 
-    private static void buildEtl(ETLDataSource etl) throws Exception {
+    private void buildEtl(EtlDataSource etl) throws Exception {
         List<DataSource> dataSources = etl.getBasedSources();
         for (DataSource dataSource : dataSources) {
             if (isEtl(dataSource)) {
-                buildEtl((ETLDataSource) dataSource);
+                buildEtl((EtlDataSource) dataSource);
             } else {
                 build(dataSource);
             }
@@ -47,14 +64,18 @@ public class MinorUpdater {
         build(etl);
     }
 
-    private static void build(final DataSource dataSource) throws Exception {
+    private void build(final DataSource dataSource) throws Exception {
+        List<Segment> segmentList = MinorSegmentManager.getInstance().getSegment(dataSource.getSourceKey());
+        if (segmentList != null && !segmentList.isEmpty()) {
+            return;
+        }
         SwiftResultSet swiftResultSet = SwiftDataPreviewer.createPreviewTransfer(dataSource, 100).createResultSet();
 
-        SegmentOperator operator = getSegmentOperator(dataSource, swiftResultSet);
-        operator.transport();
-        operator.finishTransport();
+        Segment segment = createSegment(dataSource);
+        Inserter inserter = getInserter(dataSource, segment);
+        inserter.insertData(swiftResultSet);
 
-        for (String indexField : operator.getIndexFields()) {
+        for (String indexField : inserter.getFields()) {
             ColumnKey columnKey = new ColumnKey(indexField);
             indexColumn(dataSource, columnKey);
             indexSubColumnIfNeed(dataSource, columnKey);
@@ -62,7 +83,7 @@ public class MinorUpdater {
 
     }
 
-    private static void indexColumn(final DataSource dataSource, final ColumnKey indexField) {
+    private void indexColumn(final DataSource dataSource, final ColumnKey indexField) {
         new RealtimeColumnIndexer(dataSource, indexField) {
             @Override
             protected List<Segment> getSegments() {
@@ -81,32 +102,51 @@ public class MinorUpdater {
         }.work();
     }
 
-    private static void indexSubColumnIfNeed(final DataSource dataSource, final ColumnKey columnKey) {
-        if (Util.getClassType(dataSource, columnKey) != ClassType.DATE) {
+    private static void indexSubColumnIfNeed(final DataSource dataSource, final ColumnKey columnKey) throws SwiftMetaDataException {
+        SwiftMetaDataColumn columnMeta = dataSource.getMetadata().getColumn(columnKey.getName());
+        if (ColumnTypeUtils.getClassType(columnMeta) != ClassType.DATE) {
             return;
         }
         for (GroupType type : SubDateColumn.TYPES_TO_GENERATE) {
             new RealtimeSubDateColumnIndexer(dataSource, columnKey, type) {
                 @Override
+
                 protected List<Segment> getSegments() {
                     return MinorSegmentManager.getInstance().getSegment(dataSource.getSourceKey());
+                }
+
+                @Override
+                protected void mergeDict() {
+                    new RealtimeSubDateColumnDictMerger(dataSource, key) {
+                        @Override
+                        protected List<Segment> getSegments() {
+                            return MinorSegmentManager.getInstance().getSegment(dataSource.getSourceKey());
+                        }
+                    }.work();
                 }
             }.work();
         }
     }
 
-    private static SegmentOperator getSegmentOperator(DataSource dataSource, SwiftResultSet swiftResultSet) throws Exception {
+    private Inserter getInserter(DataSource dataSource, Segment segment) throws Exception {
         if (DataSourceUtils.isAddColumn(dataSource)) {
-            return new MinorFieldsSegmentOperator(dataSource.getSourceKey(),
-                    null, DataSourceUtils.getSwiftSourceKey(dataSource),
-                    swiftResultSet, DataSourceUtils.getAddFields(dataSource));
+            return new MinorInserter(segment, DataSourceUtils.getAddFields(dataSource));
         }
-        return new MinorSegmentOperator(dataSource.getSourceKey(),
-                null, DataSourceUtils.getSwiftSourceKey(dataSource), swiftResultSet);
+        return new MinorInserter(segment);
+    }
+
+    private Segment createSegment(DataSource dataSource) {
+        String cubeSourceKey = DataSourceUtils.getSwiftSourceKey(dataSource);
+        String path = String.format("/%s/cubes/%s/minor_seg",
+                System.getProperty("user.dir"),
+                cubeSourceKey);
+        Segment seg = new RealTimeSegmentImpl(new ResourceLocation(path, Types.StoreType.MEMORY), dataSource.getMetadata());
+        MinorSegmentManager.getInstance().putSegment(dataSource.getSourceKey(), Collections.singletonList(seg));
+        return seg;
     }
 
     private static boolean isEtl(DataSource ds) {
-        return ds instanceof ETLDataSource;
+        return ds instanceof EtlDataSource;
     }
 
     private static GroupType[] SUB_DATE_TYPES = {

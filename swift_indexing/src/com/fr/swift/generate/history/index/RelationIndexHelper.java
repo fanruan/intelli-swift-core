@@ -4,6 +4,7 @@ import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.bitmap.impl.RoaringMutableBitMap;
 import com.fr.swift.cube.nio.NIOConstant;
 import com.fr.swift.structure.array.IntArray;
+import com.fr.swift.structure.array.LongArray;
 import com.fr.swift.util.Crasher;
 
 import java.util.ArrayList;
@@ -15,12 +16,12 @@ import java.util.List;
  */
 public class RelationIndexHelper {
     private List<ImmutableBitMap[]> index;
-    private List<IntArray> revert;
+    private List<LongArray> revert;
     private List<ImmutableBitMap> nullIndex;
 
     public RelationIndexHelper() {
         this.index = new ArrayList<ImmutableBitMap[]>();
-        this.revert = new ArrayList<IntArray>();
+        this.revert = new ArrayList<LongArray>();
         this.nullIndex = new ArrayList<ImmutableBitMap>();
     }
 
@@ -37,7 +38,7 @@ public class RelationIndexHelper {
         this.index.add(index);
     }
 
-    public void addRevert(IntArray revert) {
+    public void addRevert(LongArray revert) {
         this.revert.add(revert);
     }
 
@@ -59,17 +60,17 @@ public class RelationIndexHelper {
         return result;
     }
 
-    public IntArray getRevert() {
+    public LongArray getRevert() {
         if (revert.isEmpty()) {
             Crasher.crash("revert array is empty");
         }
-        IntArray target = revert.get(0);
+        LongArray target = revert.get(0);
         for (int i = 1, size = revert.size(); i < size; i++) {
-            IntArray array = revert.get(i);
+            LongArray array = revert.get(i);
             for (int j = 0, len = target.size(); j < len; j++) {
-                int targetValue = target.get(j);
-                int arrayValue = array.get(j);
-                target.put(j, targetValue == arrayValue ? targetValue : NIOConstant.INTEGER.NULL_VALUE);
+                long targetValue = target.get(j);
+                long arrayValue = array.get(j);
+                target.put(j, targetValue == arrayValue ? targetValue : NIOConstant.LONG.NULL_VALUE);
             }
         }
         return target;

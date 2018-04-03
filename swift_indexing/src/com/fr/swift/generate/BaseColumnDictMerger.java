@@ -5,12 +5,16 @@ import com.fr.swift.cube.io.Types.StoreType;
 import com.fr.swift.cube.io.location.IResourceLocation;
 import com.fr.swift.cube.task.Task.Result;
 import com.fr.swift.cube.task.impl.BaseWorker;
+import com.fr.swift.exception.meta.SwiftMetaDataException;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.segment.Segment;
+import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.segment.column.DictionaryEncodedColumn;
 import com.fr.swift.source.ColumnTypeConstants.ClassType;
+import com.fr.swift.source.ColumnTypeUtils;
 import com.fr.swift.source.DataSource;
+import com.fr.swift.source.SwiftMetaDataColumn;
 import com.fr.swift.structure.IntPair;
 import com.fr.swift.structure.external.map.ExternalMap;
 import com.fr.swift.structure.external.map.intpairs.IntPairsExtMaps;
@@ -46,20 +50,25 @@ public abstract class BaseColumnDictMerger<T> extends BaseWorker {
         }
     }
 
-    private void mergeDict() {
+    private void mergeDict() throws SwiftMetaDataException {
         List<Segment> segments = getSegments();
+
+        if (segments.isEmpty()) {
+            return;
+        }
+
         // 值 -> (块号, 值在这块里的序号)
         Map<T, List<IntPair>> map = newIntPairsSortedMap(segments.get(0));
 
         List<DictionaryEncodedColumn<T>> dictColumns = new ArrayList<DictionaryEncodedColumn<T>>(segments.size());
         for (int segOrder = 0, size = segments.size(); segOrder < size; segOrder++) {
-            DictionaryEncodedColumn<T> dictColumn = segments.get(segOrder).<T>getColumn(key).getDictionaryEncodedColumn();
+            DictionaryEncodedColumn<T> dictColumn = getColumn(segments.get(segOrder)).getDictionaryEncodedColumn();
             dictColumns.add(dictColumn);
             extractDictOf(dictColumn, segOrder, map);
         }
 
         // 有效值序号从1开始
-        int globalIndex = 1;
+        int globalIndex = DictionaryEncodedColumn.NOT_NULL_START_INDEX;
         for (Entry<T, List<IntPair>> entry : toIterable(map)) {
             List<IntPair> pairs = entry.getValue();
             for (IntPair pair : pairs) {
@@ -80,7 +89,16 @@ public abstract class BaseColumnDictMerger<T> extends BaseWorker {
         map.clear();
     }
 
+    /**
+     * merger会对返回的segments的对应列进行字典合并
+     *
+     * @return 要字典合并的segments
+     */
     protected abstract List<Segment> getSegments();
+
+    protected Column<T> getColumn(Segment segment) {
+        return segment.getColumn(key);
+    }
 
     private static <V> void extractDictOf(DictionaryEncodedColumn<V> dictColumn, int segOrder, Map<V, List<IntPair>> map) {
         for (int j = 1, size = dictColumn.size(); j < size; j++) {
@@ -121,7 +139,7 @@ public abstract class BaseColumnDictMerger<T> extends BaseWorker {
                 buildChildLocation(key.getName());
     }
 
-    private Map<T, List<IntPair>> newIntPairsSortedMap(Segment oneOfSegments) {
+    private Map<T, List<IntPair>> newIntPairsSortedMap(Segment oneOfSegments) throws SwiftMetaDataException {
         IResourceLocation path = calExternalLocation(oneOfSegments);
 
         Comparator<T> c = oneOfSegments.<T>getColumn(key).getDictionaryEncodedColumn().getComparator();
@@ -130,7 +148,8 @@ public abstract class BaseColumnDictMerger<T> extends BaseWorker {
             return new TreeMap<T, List<IntPair>>(c);
         }
 
-        ClassType classType = Util.getClassType(dataSource, key);
+        SwiftMetaDataColumn columnMeta = dataSource.getMetadata().getColumn(key.getName());
+        ClassType classType = ColumnTypeUtils.getClassType(columnMeta);
         return IntPairsExtMaps.newExternalMap(classType, c, path.getPath());
     }
 }

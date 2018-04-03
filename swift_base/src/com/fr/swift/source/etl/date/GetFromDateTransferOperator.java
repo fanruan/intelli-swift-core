@@ -1,5 +1,6 @@
 package com.fr.swift.source.etl.date;
 
+import com.fr.swift.query.group.GroupType;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftResultSet;
@@ -13,9 +14,9 @@ import java.util.List;
 public class GetFromDateTransferOperator implements ETLTransferOperator {
 
     private String field;
-    private int type;
+    private GroupType type;
 
-    public GetFromDateTransferOperator(String field, int type) {
+    public GetFromDateTransferOperator(String field, GroupType type) {
         this.field = field;
         this.type = type;
     }

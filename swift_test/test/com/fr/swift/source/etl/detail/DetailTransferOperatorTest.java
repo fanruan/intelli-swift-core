@@ -20,7 +20,7 @@ public class DetailTransferOperatorTest extends TestCase {
 
     public void testCreateResultSet() throws SQLException {
         ColumnKey columnKey = new ColumnKey("SALES_NAME");
-        ColumnKey[] columnKeys = new ColumnKey[]{columnKey};
+        ColumnKey[] columnKeys = new ColumnKey[]{};
         List<ColumnKey[]> fields = new ArrayList<>();
         fields.add(columnKeys);
         DetailTransferOperator operator = new DetailTransferOperator(fields);
@@ -51,10 +51,8 @@ public class DetailTransferOperatorTest extends TestCase {
         SwiftResultSet resultSet = operator.createResultSet(null, null, segments);
         List list = new ArrayList();
         while (resultSet.next()) {
-            list.add(resultSet.getRowData().getValue(0));
+            list.add(resultSet.getRowData());
         }
         assertEquals(list.size(), 5);
-        assertEquals(list.get(1), 1);
-        assertEquals(list.get(2), 2);
     }
 }

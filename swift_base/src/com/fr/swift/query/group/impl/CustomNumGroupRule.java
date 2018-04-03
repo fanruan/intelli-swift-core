@@ -5,6 +5,8 @@ import com.fr.swift.source.core.Core;
 import com.fr.swift.source.core.CoreField;
 import com.fr.swift.source.core.CoreGenerator;
 import com.fr.swift.source.core.CoreService;
+import com.fr.swift.structure.Pair;
+import com.fr.swift.structure.array.IntListFactory;
 
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
@@ -53,6 +55,8 @@ public class CustomNumGroupRule extends BaseCustomGroupRule<Number> {
 
             internalMap(i, index, groupName);
         }
+
+        compactMap(lastIndex);
     }
 
     private int findIndex(Number num) {
@@ -65,12 +69,43 @@ public class CustomNumGroupRule extends BaseCustomGroupRule<Number> {
         return -1;
     }
 
+    private void compactMap(int oldSize) {
+        // 压缩map，没分到值得区间要去掉
+        for (int i = 1, j = 1; i < oldSize; i++, j++) {
+            while (!map.containsKey(i)) {
+                i++;
+            }
+            if (i == j) {
+                continue;
+            }
+            map.put(j, map.get(i));
+            updateReverseMap(i, j);
+            if (i > j) {
+                map.remove(i);
+            }
+        }
+
+        // 0号为null
+        map.put(0, Pair.of((String) null, IntListFactory.newSingleList(0)));
+    }
+
+    private void updateReverseMap(int oldIndex, int newIndex) {
+        if (oldIndex == newIndex) {
+            return;
+        }
+        for (int i = 0; i < reverseMap.length; i++) {
+            if (reverseMap[i] == oldIndex) {
+                reverseMap[i] = newIndex;
+            }
+        }
+    }
+
     @Override
     public GroupType getGroupType() {
         return GroupType.CUSTOM_NUMBER;
     }
 
-    public static class NumInterval implements CoreService{
+    public static class NumInterval implements CoreService {
         /**
          * 是否为大于等于
          */
@@ -113,10 +148,11 @@ public class CustomNumGroupRule extends BaseCustomGroupRule<Number> {
             return Double.compare(val, ceil) == 0 && lessOrEq;
         }
 
+        @Override
         public Core fetchObjectCore() {
             try {
                 return new CoreGenerator(this).fetchObjectCore();
-            } catch(Exception ignore) {
+            } catch (Exception ignore) {
 
             }
             return Core.EMPTY_CORE;
