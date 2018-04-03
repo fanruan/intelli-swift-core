@@ -36,6 +36,8 @@ public class SwiftTable implements Table {
             inserter.insertData(rowSet);
         } catch (Exception e) {
             throw new SQLException(e);
+        } finally {
+            rowSet.close();
         }
     }
 

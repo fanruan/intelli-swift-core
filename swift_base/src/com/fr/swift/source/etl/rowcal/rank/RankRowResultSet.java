@@ -76,7 +76,9 @@ public class RankRowResultSet implements SwiftResultSet {
             RowTraversal[] traversal = new RowTraversal[traversals.size()];
             //调用mergetGroupBy遍历，取到最后一个维度的travels算结果，并且根据travels，把结果再填到对应的行
             for (int i = 0; i < traversal.length; i++) {
-                traversal[i] = traversals.get(i)[dims.length];
+                if (traversals.get(i) != null){
+                    traversal[i] = traversals.get(i)[dims.length];
+                }
             }
             for (int i = 0; i < traversal.length; i++) {
                 if (traversal[i] != null) {
