@@ -4,11 +4,11 @@ package com.fr.swift.structure.array;
  * @author Lyon
  * @date 2017/11/27
  */
-public class RangeIntList implements IntList {
+class RangeIntList implements IntList {
     private int startIndex;
     private int size;
 
-    protected RangeIntList(int startIndex, int endIndexIncluded) {
+    RangeIntList(int startIndex, int endIndexIncluded) {
         if (endIndexIncluded - startIndex < 0) {
             throw new IllegalArgumentException();
         }

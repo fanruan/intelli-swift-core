@@ -15,6 +15,8 @@ public interface GroupRule<Base, Derive> extends CoreService{
      */
     Derive getValue(int index);
 
+    int getIndex(Object val);
+
     /**
      * 新值序号 -> 多个旧值序号
      *

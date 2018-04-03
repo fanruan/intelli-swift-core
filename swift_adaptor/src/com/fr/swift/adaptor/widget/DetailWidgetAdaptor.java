@@ -2,7 +2,7 @@ package com.fr.swift.adaptor.widget;
 
 import com.finebi.conf.constant.BIReportConstant.SORT;
 import com.finebi.conf.internalimp.dashboard.widget.detail.DetailWidget;
-import com.finebi.conf.provider.SwiftTableConfProvider;
+import com.finebi.conf.provider.SwiftTableManager;
 import com.finebi.conf.structure.bean.table.FineBusinessTable;
 import com.finebi.conf.structure.dashboard.widget.dimension.FineDimension;
 import com.finebi.conf.structure.dashboard.widget.dimension.FineDimensionSort;
@@ -32,8 +32,8 @@ import com.fr.swift.service.QueryRunnerProvider;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftMetaDataColumn;
-import com.fr.swift.source.SwiftResultSet;
 import com.fr.swift.source.SwiftMetaDataImpl;
+import com.fr.swift.source.SwiftResultSet;
 import com.fr.swift.structure.array.IntList;
 import com.fr.swift.structure.array.IntListFactory;
 
@@ -69,7 +69,7 @@ public class DetailWidgetAdaptor {
         String queryId = widget.getWidgetId();
         Dimension[] dimensions = getDimension(widget);
 
-        FineBusinessTable table = new SwiftTableConfProvider().getSingleTable(widget.getTableName());
+        FineBusinessTable table = new SwiftTableManager().getSingleTable(widget.getTableName());
         SourceKey target = IndexingDataSourceFactory.transformDataSource(table).getSourceKey();
         SwiftMetaData swiftMetaData = MetaDataConvertUtil.getSwiftMetaDataBySourceKey(target.toString());
         SwiftMetaData metaData = getMetaData(widget, swiftMetaData);

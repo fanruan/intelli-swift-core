@@ -11,7 +11,7 @@ import com.finebi.conf.internalimp.update.TableUpdateInfo;
 import com.finebi.conf.internalimp.update.UpdateLog;
 import com.finebi.conf.internalimp.update.UpdateNeedSpace;
 import com.finebi.conf.internalimp.update.UpdateStatus;
-import com.finebi.conf.provider.SwiftTableConfProvider;
+import com.finebi.conf.provider.SwiftTableManager;
 import com.finebi.conf.service.engine.update.EngineUpdateManager;
 import com.finebi.conf.structure.bean.table.FineBusinessTable;
 import com.fr.swift.adaptor.struct.ShowResultSet;
@@ -99,7 +99,7 @@ public class SwiftUpdateManager implements EngineUpdateManager {
 
     @Override
     public void saveTableUpdateSetting(TableUpdateSetting tableUpdateSetting) throws Exception {
-        FineBusinessTable fineBusinessTable = new SwiftTableConfProvider().getSingleTable(tableUpdateSetting.getTableName());
+        FineBusinessTable fineBusinessTable = new SwiftTableManager().getSingleTable(tableUpdateSetting.getTableName());
         Map<FineBusinessTable, TableUpdateInfo> infoMap = new HashMap<FineBusinessTable, TableUpdateInfo>();
         infoMap.put(fineBusinessTable, tableUpdateSetting.getSettings().get(tableUpdateSetting.getTableName()));
         this.saveUpdateSetting(infoMap);
