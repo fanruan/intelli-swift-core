@@ -76,7 +76,9 @@ public class SumByGroupOperatorResultSet implements SwiftResultSet {
         List<RowTraversal[]> traversals =kv.getValue();
         RowTraversal[] traversal = new RowTraversal[traversals.size()];
         for (int i = 0; i < traversal.length; i++) {
-            traversal[i] = traversals.get(i)[dimensionsValues.length];
+            if (traversals.get(i) != null){
+                traversal[i] = traversals.get(i)[dimensionsValues.length];
+            }
         }
         for (int i = 0; i< targets.length; i++){
             valueList.add(targets[i].getSumValue(segments, traversal));

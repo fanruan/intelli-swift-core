@@ -25,7 +25,11 @@ public class DataMiningOperator extends AbstractOperator {
 
     public DataMiningOperator(AlgorithmBean algorithmBean) {
         this.algorithmBean = algorithmBean;
-        this.algorithm = DMAlgorithmFactory.create(algorithmBean.getAlgorithmName());
+        try{
+            this.algorithm = DMAlgorithmFactory.create(algorithmBean.getAlgorithmName());
+        }catch (Exception e){
+            LOGGER.error(e);
+        }
     }
 
     public AlgorithmBean getAlgorithmBean() {
