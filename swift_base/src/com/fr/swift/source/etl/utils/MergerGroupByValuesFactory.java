@@ -32,10 +32,11 @@ public class MergerGroupByValuesFactory {
             int[] cursor = new int[dimensions.length];
             Arrays.fill(cursor, 0);
             List<Column> columns = new ArrayList<Column>();
-            for (ColumnKey columnKey : dimensions) {
+            for (int j = 0; j < dimensions.length; j++){
+                ColumnKey columnKey = dimensions[j];
                 Column column = segments[i].getColumn(columnKey);
-                if (groups != null && groups[i] != null){
-                    column = groups[i].getGroupOperator().group(column);
+                if (groups != null && groups[j] != null){
+                    column = groups[j].getGroupOperator().group(column);
                 }
                 columns.add(column);
             }

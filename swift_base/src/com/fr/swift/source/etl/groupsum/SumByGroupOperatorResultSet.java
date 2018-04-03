@@ -28,7 +28,6 @@ public class SumByGroupOperatorResultSet implements SwiftResultSet {
     private Segment[] segments;
     private MergerGroupByValues mergerGroupByValues;
     private SwiftMetaData metaData;
-    private boolean noNext;
 
     public SumByGroupOperatorResultSet(SumByGroupTarget[] targets, SumByGroupDimension[] dimensions, Segment[] segments, SwiftMetaData metaData) {
         this.targets = targets == null ? new SumByGroupTarget[0] : targets;
