@@ -8,7 +8,7 @@ import com.finebi.conf.structure.dashboard.widget.dimension.FineDimension;
 import com.finebi.conf.structure.result.control.number.BISingleSliderResult;
 import com.finebi.conf.utils.FineTableUtils;
 import com.fr.swift.adaptor.transformer.FilterInfoFactory;
-import com.fr.swift.adaptor.transformer.IndexingDataSourceFactory;
+import com.fr.swift.adaptor.transformer.DataSourceFactory;
 import com.fr.swift.cal.info.DetailQueryInfo;
 import com.fr.swift.cal.result.group.AllCursor;
 import com.fr.swift.cal.result.group.RowCursor;
@@ -41,7 +41,7 @@ public class SingleSliderWidgetAdaptor {
                 String fieldId = dimension.getFieldId();
                 FineBusinessTable fineBusinessTable = FineTableUtils.getTableByFieldId(fieldId);
                 FineBusinessField fineBusinessField = fineBusinessTable.getFieldByFieldId(fieldId);
-                DataSource baseDataSource = IndexingDataSourceFactory.transformDataSource(fineBusinessTable);
+                DataSource baseDataSource = DataSourceFactory.getDataSource(fineBusinessTable);
                 FilterInfo filterInfo = FilterInfoFactory.transformFineFilter(widget.getFilters());
                 //先通过明细表排序查最小
                 DetailDimension ascDimension = new DetailDimension(0, baseDataSource.getSourceKey(), new ColumnKey(fineBusinessField.getName()),

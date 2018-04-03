@@ -8,7 +8,7 @@ import com.finebi.conf.internalimp.update.TableUpdateInfo;
 import com.finebi.conf.structure.bean.connection.FineConnection;
 import com.finebi.conf.structure.bean.table.FineBusinessTable;
 import com.finebi.conf.utils.FineConnectionUtils;
-import com.fr.swift.adaptor.update.SwiftUpdateManager;
+import com.finebi.conf.imp.SwiftUpdateManager;
 import com.fr.swift.cube.queue.StuffProviderQueue;
 import com.fr.swift.manager.ConnectionProvider;
 import com.fr.swift.resource.ResourceUtils;

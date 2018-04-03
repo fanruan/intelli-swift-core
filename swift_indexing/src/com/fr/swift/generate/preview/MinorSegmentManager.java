@@ -45,6 +45,10 @@ public class MinorSegmentManager implements SwiftSegmentManager {
         segments.clear();
     }
 
+    public List<Segment> remove(SourceKey sourceKey) {
+        return segments.remove(sourceKey);
+    }
+
     private static final MinorSegmentManager INSTANCE = new MinorSegmentManager();
 
     private MinorSegmentManager() {
