@@ -117,7 +117,7 @@ public abstract class BaseTablePathIndexer extends BaseWorker {
                 initReverse(reverse, i, resultIndex);
             }
             buildReverseIndex(targetTableRelationIndex, reverse);
-            targetTableRelationIndex.putNullIndex(helper.compute().getNot(reverse.size()));
+            targetTableRelationIndex.putNullIndex(0, helper.compute().getNot(reverse.size()));
         } catch (Exception e) {
             Crasher.crash(e);
         } finally {
