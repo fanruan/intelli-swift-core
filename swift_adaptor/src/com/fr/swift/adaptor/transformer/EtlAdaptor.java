@@ -382,7 +382,7 @@ class EtlAdaptor {
             case AnalysisType.JOIN: {
                 JoinBeanValue jbv = op.<JoinBean>getValue().getValue();
                 FineBusinessTable busiTable = FineTableUtils.getTableByName(jbv.getTable().getName());
-                dataSources.add(IndexingDataSourceFactory.transformDataSource(busiTable));
+                dataSources.add(DataSourceFactory.getDataSource(busiTable));
                 break;
             }
             case AnalysisType.UNION:
@@ -390,7 +390,7 @@ class EtlAdaptor {
                 for (UnionBeanValueTable table : ubv.getTables()) {
                     try {
                         FineBusinessTable busiTable = FineTableUtils.getTableByName(table.getName());
-                        dataSources.add(IndexingDataSourceFactory.transformDataSource(busiTable));
+                        dataSources.add(DataSourceFactory.getDataSource(busiTable));
                     } catch (Exception e) {
                         continue;
                     }
