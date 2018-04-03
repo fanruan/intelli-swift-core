@@ -110,6 +110,7 @@ import com.fr.swift.source.etl.groupsum.SumByGroupOperator;
 import com.fr.swift.source.etl.groupsum.SumByGroupTarget;
 import com.fr.swift.source.etl.join.JoinColumn;
 import com.fr.swift.source.etl.join.JoinOperator;
+import com.fr.swift.source.etl.join.JoinType;
 import com.fr.swift.source.etl.rowcal.accumulate.AccumulateRowOperator;
 import com.fr.swift.source.etl.rowcal.alldata.AllDataRowCalculatorOperator;
 import com.fr.swift.source.etl.rowcal.rank.RankRowOperator;
@@ -413,7 +414,20 @@ class EtlAdaptor {
                 joinColumns,
                 leftColumns.toArray(new ColumnKey[leftColumns.size()]),
                 rightColumns.toArray(new ColumnKey[rightColumns.size()]),
-                type);
+                getJoinType(type));
+    }
+
+    private static JoinType getJoinType(int type) {
+        switch (type) {
+            case BIConfConstants.CONF.JOIN.INNER:
+                return JoinType.INNER;
+            case BIConfConstants.CONF.JOIN.OUTER:
+                return JoinType.OUTER;
+            case BIConfConstants.CONF.JOIN.RIGHT:
+                return JoinType.RIGHT;
+            default:
+                return JoinType.LEFT;
+        }
     }
 
     private static UnionOperator fromUnionBean(UnionBean ub) {

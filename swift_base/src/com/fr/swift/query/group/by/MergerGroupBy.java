@@ -6,6 +6,7 @@ import com.fr.swift.structure.iterator.RowTraversal;
 import com.fr.swift.util.Util;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
@@ -58,10 +59,13 @@ public abstract class MergerGroupBy<T> implements Iterator<KeyValue<RowIndexKey<
             KeyValue<RowIndexKey<T>, RowTraversal[]> kv = iterators[index].next();
             List<RowTraversal[]> values = mergeMap.get(kv.getKey());
             if (values != null) {
-                values.add(index, kv.getValue().clone());
+                values.set(index, kv.getValue().clone());
             } else {
-                values = new ArrayList<RowTraversal[]>(iterators.length);
-                values.add(index, kv.getValue().clone());
+                values = new ArrayList<RowTraversal[]>(Arrays.asList(new RowTraversal[iterators.length][]));
+                for (int i = 0; i < iterators.length; i++) {
+                    values.add(null);
+                }
+                values.set(index, kv.getValue().clone());
                 mergeMap.put(kv.getKey(), values);
             }
         }
