@@ -5,8 +5,8 @@ import com.fineio.memory.MemoryUtils;
 
 /**
  *
- * @author daniel
- * @date 2017/5/18
+ * @author yee
+ * @date 2018/4/2
  */
 public class DirectLongArray implements LongArray {
     private long address;

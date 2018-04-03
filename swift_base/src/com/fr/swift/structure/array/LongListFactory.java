@@ -4,7 +4,9 @@ package com.fr.swift.structure.array;
 import com.fr.swift.setting.PerformancePlugManager;
 
 /**
- * Created by 小灰灰 on 2017/5/22.
+ *
+ * @author yee
+ * @date 2018/4/2
  */
 public class LongListFactory {
     public static LongArray createLongArray(int capacity, long defaultValue) {
