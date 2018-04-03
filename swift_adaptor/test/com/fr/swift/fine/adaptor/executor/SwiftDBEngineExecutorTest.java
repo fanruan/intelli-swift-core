@@ -7,7 +7,7 @@ import com.finebi.conf.structure.bean.field.FineBusinessField;
 import com.finebi.conf.structure.result.BIDetailCell;
 import com.finebi.conf.structure.result.BIDetailTableResult;
 import com.fr.base.FRContext;
-import com.finebi.conf.Implementation.SwiftTableEngineExecutor;
+import com.finebi.conf.imp.SwiftTableEngineExecutor;
 import com.fr.swift.manager.ConnectionProvider;
 import com.fr.swift.source.db.ConnectionInfo;
 import com.fr.swift.source.db.ConnectionManager;
