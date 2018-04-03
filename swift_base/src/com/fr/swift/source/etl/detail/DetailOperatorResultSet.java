@@ -49,7 +49,8 @@ public class DetailOperatorResultSet implements SwiftResultSet {
             }
         }
         currentTotalRow = getBaseSegments()[currentSegmentIndex].getRowCount();
-        currentRow = -1;
+        // 接着往后取 不需要从头算位置了
+//        currentRow = -1;
         currentSegmentIndex++;
         return true;
     }
