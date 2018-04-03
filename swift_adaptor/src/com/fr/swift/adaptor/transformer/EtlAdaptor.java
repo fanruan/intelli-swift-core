@@ -276,12 +276,23 @@ class EtlAdaptor {
         List<FineBusinessTableRelation> relations = path.getFineBusinessTableRelations();
         List<RelationSource> result = new ArrayList<RelationSource>();
         for (FineBusinessTableRelation relation : relations) {
-            FineBusinessTable primaryTable = path.getFirstTable();
-            FineBusinessTable foreignTable = path.getEndTable();
+            FineBusinessTable primaryTable;
+            FineBusinessTable foreignTable;
+            List<FineBusinessField> primaryFields;
+            List<FineBusinessField> foreignFields;
+            if (relation.getRelationType() == 3) {
+                primaryTable = relation.getForeignBusinessTable();
+                foreignTable = relation.getPrimaryBusinessTable();
+                primaryFields = relation.getForeignBusinessField();
+                foreignFields = relation.getPrimaryBusinessField();
+            } else {
+                primaryTable = relation.getPrimaryBusinessTable();
+                foreignTable = relation.getForeignBusinessTable();
+                primaryFields = relation.getPrimaryBusinessField();
+                foreignFields = relation.getForeignBusinessField();
+            }
             SourceKey primary = IndexingDataSourceFactory.transformDataSource(primaryTable).getSourceKey();
             SourceKey foreign = IndexingDataSourceFactory.transformDataSource(foreignTable).getSourceKey();
-            List<FineBusinessField> primaryFields = relation.getPrimaryBusinessField();
-            List<FineBusinessField> foreignFields = relation.getForeignBusinessField();
             List<String> primaryKey = new ArrayList<String>();
             List<String> foreignKey = new ArrayList<String>();
 
@@ -315,8 +326,21 @@ class EtlAdaptor {
             if (tables.size() == 1) {
                 break;
             }
-            String prim = path.getFirstTable().getId();
-            String foreign = path.getEndTable().getId();
+            List<FineBusinessTableRelation> relations = path.getFineBusinessTableRelations();
+            FineBusinessTableRelation firstRelation = relations.get(0);
+            FineBusinessTableRelation lastRelation = relations.get(relations.size() - 1);
+            String prim;
+            if (firstRelation.getRelationType() == 3) {
+                prim = firstRelation.getForeignBusinessTable().getId();
+            } else {
+                prim = firstRelation.getPrimaryBusinessTable().getId();
+            }
+            String foreign;
+            if (lastRelation.getRelationType() == 3) {
+                foreign = lastRelation.getPrimaryBusinessTable().getId();
+            } else {
+                foreign = lastRelation.getForeignBusinessTable().getId();
+            }
             if (tables.contains(prim) && tables.contains(foreign)) {
                 tables.remove(prim);
             }
