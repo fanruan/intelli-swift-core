@@ -64,10 +64,10 @@ public class RankRowResultSet implements SwiftResultSet {
         //组内的结果默认不多，都放到内存
         final Long[] values = new Long[row];
         final AtomicLong value = new AtomicLong(1);
-        KeyValue<RowIndexKey<Object>, List<RowTraversal[]>> lastKv = null;
+        KeyValue<RowIndexKey<Object[]>, List<RowTraversal[]>> lastKv = null;
         while (mergerGroupByValues.hasNext()) {
             long size = 0l;
-            KeyValue<RowIndexKey<Object>, List<RowTraversal[]>> kv =  mergerGroupByValues.next();
+            KeyValue<RowIndexKey<Object[]>, List<RowTraversal[]>> kv =  mergerGroupByValues.next();
             if (groupChanged(lastKv, kv)){
                 value.set(1);
             }
@@ -95,12 +95,13 @@ public class RankRowResultSet implements SwiftResultSet {
         valueIterator = Arrays.asList(values).iterator();
     }
 
-    private boolean groupChanged(KeyValue<RowIndexKey<Object>, List<RowTraversal[]>> lastKv, KeyValue<RowIndexKey<Object>, List<RowTraversal[]>> kv) {
+    private boolean groupChanged(KeyValue<RowIndexKey<Object[]>, List<RowTraversal[]>> lastKv,
+                                 KeyValue<RowIndexKey<Object[]>, List<RowTraversal[]>> kv) {
         if (lastKv == null || kv == null){
             return true;
         }
-        Object[] last = (Object[]) lastKv.getKey().getKey();
-        Object[] current = (Object[]) kv.getKey().getKey();
+        Object[] last = lastKv.getKey().getKey();
+        Object[] current = kv.getKey().getKey();
         for (int i = 0; i < last.length - 1; i++){
             if (!ComparatorUtils.equals(last[i], current[i])){
                 return true;

@@ -7,7 +7,6 @@ import com.fr.swift.segment.column.Column;
 import com.fr.swift.structure.iterator.RowTraversal;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
@@ -26,6 +25,11 @@ abstract class MultiGroupBy<T> implements Iterator<KeyValue<RowIndexKey<T>, RowT
         this.traversals = new RowTraversal[dimensions.size() + 1];
     }
 
+    /**
+     * 如果迭代器用于多个segment合并，int[]类型的key要转为globalIndex，而Object[]类型的key则不需要
+     * @param indexes
+     * @return
+     */
     protected abstract RowIndexKey<T> createKey(int[] indexes);
 
     @Override
@@ -46,6 +50,7 @@ abstract class MultiGroupBy<T> implements Iterator<KeyValue<RowIndexKey<T>, RowT
                 break;
             }
         }
+        // traversal数组被迭代器复用的，所以返回的时候要拷贝一个引用数组
         return new KeyValue<RowIndexKey<T>, RowTraversal[]>(createKey(key), Arrays.copyOf(traversals, traversals.length));
     }
 
