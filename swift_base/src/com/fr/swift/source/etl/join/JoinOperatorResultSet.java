@@ -1,69 +1,139 @@
 package com.fr.swift.source.etl.join;
 
+import com.fr.swift.bitmap.traversal.TraversalAction;
+import com.fr.swift.compare.Comparators;
+import com.fr.swift.exception.meta.SwiftMetaDataException;
+import com.fr.swift.log.SwiftLogger;
+import com.fr.swift.log.SwiftLoggers;
+import com.fr.swift.query.group.by.MergerGroupByValues;
+import com.fr.swift.result.KeyValue;
+import com.fr.swift.result.RowIndexKey;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.segment.column.DictionaryEncodedColumn;
+import com.fr.swift.source.ColumnTypeConstants;
+import com.fr.swift.source.ColumnTypeUtils;
 import com.fr.swift.source.ListBasedRow;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SwiftMetaData;
+import com.fr.swift.source.SwiftMetaDataColumn;
 import com.fr.swift.source.SwiftResultSet;
-import com.fr.swift.source.etl.utils.GVIAndSegment;
-import com.fr.swift.source.etl.utils.SwiftValueIterator;
+import com.fr.swift.source.etl.utils.MergerGroupByValuesFactory;
+import com.fr.swift.structure.iterator.RowTraversal;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
  * Created by Handsome on 2018/1/16 0016 14:23
  */
 public class JoinOperatorResultSet implements SwiftResultSet {
-    private ColumnKey[] lKey;
-    private ColumnKey[] rKey;
-    private List<JoinColumn> columns = new ArrayList<JoinColumn>();
-    private boolean nullContinue;
-    private boolean writeLeft;
-    private SwiftMetaData metaData;
+    private static final SwiftLogger LOGGER = SwiftLoggers.getLogger(JoinOperatorResultSet.class);
     private Segment[] lSegments;
     private Segment[] rSegments;
-    final ListRow listRow = new ListRow();
-    private SwiftValueIterator lValueIterator;
-    private SwiftValueIterator rValueIterator;
+    private List<JoinColumn> columns;
+    //左右不匹配时，是否需要返回结果。
+    private boolean writeDifferentValue;
+    //右有左没有时，是否要返回结果
+    private boolean writeRightLeftValue;
+    private SwiftMetaData metaData;
+    private MergerGroupByValues lValueIterator;
+    private MergerGroupByValues rValueIterator;
+    private KeyValue<RowIndexKey<Object>, List<RowTraversal[]>> lKeyValue;
+    private KeyValue<RowIndexKey<Object>, List<RowTraversal[]>> rKeyValue;
     private Comparator[] comparators;
-    private GVIAndSegment lValuesAndGVI;
-    private GVIAndSegment rValuesAndGVI;
-    private boolean isLeftNeedNext = true;
-    private boolean isRightNeedNext = true;
-    private boolean isLeftMatched = false;
-    private boolean isRightMatched = false;
-    private boolean isLeftEnd = false;
-    private boolean isFirstTraverse = true;
-    private boolean[] isMatched;
-    private boolean isFirstInit = true;
-    private int rightCursor;
-    private int arrayIndex = -1;
+    private LinkedList<Row> leftRows;
 
 
     public JoinOperatorResultSet(List<JoinColumn> columns, ColumnKey[] lKey, SwiftMetaData metaData,
                                  ColumnKey[] rKey, Segment[] lSegments, Segment[] rSegments,
-                                 boolean nullContinue, boolean writeLeft) {
+                                 boolean writeDifferentValue, boolean writeRightLeftValue) {
         this.columns = columns;
-        this.lKey = lKey;
-        this.rKey = rKey;
+        this.metaData = metaData;
+        this.writeDifferentValue = writeDifferentValue;
+        this.writeRightLeftValue = writeRightLeftValue;
         this.lSegments = lSegments;
         this.rSegments = rSegments;
-        this.metaData = metaData;
-        this.nullContinue = nullContinue;
-        this.writeLeft = writeLeft;
-        init();
+        init(lKey, rKey, lSegments, rSegments);
     }
 
-    private void init() {
-        this.lValueIterator = new SwiftValueIterator(lSegments, lKey);
-        this.rValueIterator = new SwiftValueIterator(rSegments, rKey);
+    private void init(ColumnKey[] lKey, ColumnKey[] rKey, Segment[] lSegments, Segment[] rSegments) {
+        boolean[] asc = new boolean[lKey.length];
+        Arrays.fill(asc, true);
+        this.lValueIterator = MergerGroupByValuesFactory.createMergerGroupBy(lSegments, lKey, asc);
+        this.rValueIterator = MergerGroupByValuesFactory.createMergerGroupBy(rSegments, rKey, asc);
         comparators = new Comparator[lKey.length];
-        for (int i = 0; i < comparators.length; i++) {
-            comparators[i] = lSegments[0].getColumn(lKey[i]).getDictionaryEncodedColumn().getComparator();
+        try {
+            for (int i = 0; i < comparators.length; i++) {
+                SwiftMetaDataColumn column = lSegments[0].getMetaData().getColumn(lKey[i].getName());
+                comparators[i] = ColumnTypeUtils.getClassType(column) == ColumnTypeConstants.ClassType.STRING ? Comparators.PINYIN_ASC : Comparators.numberAsc();
+            }
+        } catch (SwiftMetaDataException e) {
+            LOGGER.error(e);
+        }
+        lKeyValue = lValueIterator.next();
+        rKeyValue = rValueIterator.next();
+        leftRows = new LinkedList<Row>();
+        moveToNextRows();
+    }
+
+    private void moveToNextRows() {
+        //如果左边的没了，就只移动右边
+        if (lKeyValue == null) {
+            moverIter();
+        } else {
+            move2Iter();
+        }
+    }
+
+    //极端情况可能引起递归过多导致的堆栈问题，可能需要考虑改成while循环
+    private void move2Iter() {
+        int result = compareValues();
+        //相同，就写几行，左右都往下移动
+        if (result == 0) {
+            createNewLeftRows(lKeyValue, rKeyValue);
+            lKeyValue = lValueIterator.next();
+            rKeyValue = rValueIterator.next();
+        } else if (result > 0) {
+            //左边的快了，就看看是否需要写右边剩下的，移动右边
+            if (writeRightLeftValue){
+                createNewLeftRows(null, rKeyValue);
+            }
+            rKeyValue = rValueIterator.next();
+        } else {
+            //右边的快了就看看要不要写左边有值右边是空值的情况，fulljoin这种不用写，其他的都要写
+            if (writeDifferentValue) {
+                createNewLeftRows(lKeyValue, null);
+            }
+            lKeyValue = lValueIterator.next();
+        }
+    }
+
+    private int compareValues() {
+        Object[] leftValues = (Object[]) lKeyValue.getKey().getKey();
+        if (rKeyValue == null) {
+            return -1;
+        }
+        Object[] rightValues = (Object[]) rKeyValue.getKey().getKey();
+        for (int i = 0; i < leftValues.length; i++) {
+            int result = comparators[i].compare(leftValues[i], rightValues[i]);
+            if (result != 0) {
+                return result;
+            }
+        }
+        return 0;
+    }
+
+    private void moverIter() {
+        //如果不需要写右边剩下的，就结束
+        if (writeRightLeftValue && rKeyValue != null) {
+            createNewLeftRows(null, rKeyValue);
+            rKeyValue = rValueIterator.next();
+        } else {
+            leftRows = null;
         }
     }
 
@@ -72,170 +142,12 @@ public class JoinOperatorResultSet implements SwiftResultSet {
 
     }
 
-    private boolean leftJoin() {
-        if (!lValueIterator.hasNext() && !rValueIterator.hasNext()) {
-            return false;
-        }
-        if (lValueIterator.hasNext() && isLeftNeedNext) {
-            this.lValuesAndGVI = lValueIterator.next();
-            this.rValueIterator = new SwiftValueIterator(rSegments, rKey);
-            isLeftNeedNext = false;
-            isLeftMatched = false;
-        }
-        while (rValueIterator.hasNext()) {
-            this.rValuesAndGVI = rValueIterator.next();
-            int result = lValuesAndGVI.compareTo(rValuesAndGVI, comparators);
-            isLeftNeedNext = !rValueIterator.hasNext();
-            if (result == 0) {
-                writeOneGroup(lSegments, rSegments, lValuesAndGVI, rValuesAndGVI);
-                isLeftMatched = true;
-                return true;
-            }
-        }
-        if (!isLeftMatched) {
-            writeOneGroup(lSegments, rSegments, lValuesAndGVI, null);
-        } else {
-            if (!rValueIterator.hasNext()) {
-                return leftJoin();
-            }
-        }
-        return true;
-    }
-
-    private boolean outterJoin() {
-        if (isFirstTraverse) {
-            this.rValueIterator = new SwiftValueIterator(rSegments, rKey);
-            int size = 0;
-            while (rValueIterator.hasNext()) {
-                this.rValueIterator.next();
-                size++;
-            }
-            isMatched = new boolean[size];
-            isFirstTraverse = false;
-        }
-        if (!isLeftEnd) {
-            if (lValueIterator.hasNext() && isLeftNeedNext) {
-                this.lValuesAndGVI = lValueIterator.next();
-                rightCursor = -1;
-                this.rValueIterator = new SwiftValueIterator(rSegments, rKey);
-                isLeftNeedNext = false;
-                isLeftMatched = false;
-            }
-            while (rValueIterator.hasNext()) {
-                this.rValuesAndGVI = rValueIterator.next();
-                rightCursor++;
-                int result = lValuesAndGVI.compareTo(rValuesAndGVI, comparators);
-                isLeftNeedNext = !rValueIterator.hasNext();
-                if (!lValueIterator.hasNext() && !rValueIterator.hasNext()) {
-                    isLeftEnd = true;
-                }
-                if (result == 0) {
-                    writeOneGroup(lSegments, rSegments, lValuesAndGVI, rValuesAndGVI);
-                    isMatched[rightCursor] = true;
-                    isLeftMatched = true;
-                    return true;
-                }
-            }
-            if (!isLeftMatched) {
-                writeOneGroup(lSegments, rSegments, lValuesAndGVI, null);
-                if (!lValueIterator.hasNext() && !rValueIterator.hasNext()) {
-                    isLeftEnd = true;
-                }
-            } else {
-                if (!rValueIterator.hasNext()) {
-                    return outterJoin();
-                }
-            }
-            return true;
-        } else {
-            if (isFirstInit) {
-                this.rValueIterator = new SwiftValueIterator(rSegments, rKey);
-                isFirstInit = false;
-            }
-            while (rValueIterator.hasNext()) {
-                this.rValuesAndGVI = this.rValueIterator.next();
-                arrayIndex++;
-                if (arrayIndex < isMatched.length) {
-                    if (!isMatched[arrayIndex]) {
-                        writeOneGroup(lSegments, rSegments, null, rValuesAndGVI);
-                        return true;
-                    }
-                }
-            }
-            return false;
-        }
-    }
-
-    private boolean innerJoin() {
-        if (!lValueIterator.hasNext() && !rValueIterator.hasNext()) {
-            return false;
-        }
-        if (lValueIterator.hasNext() && isLeftNeedNext) {
-            this.lValuesAndGVI = lValueIterator.next();
-            this.rValueIterator = new SwiftValueIterator(rSegments, rKey);
-            isLeftNeedNext = false;
-            isLeftMatched = false;
-        }
-        while (rValueIterator.hasNext()) {
-            this.rValuesAndGVI = rValueIterator.next();
-            int result = lValuesAndGVI.compareTo(rValuesAndGVI, comparators);
-            isLeftNeedNext = !rValueIterator.hasNext();
-            if (result == 0) {
-                writeOneGroup(lSegments, rSegments, lValuesAndGVI, rValuesAndGVI);
-                isLeftMatched = true;
-                return true;
-            }
-        }
-        /*if (isLeftMatched) {
-            return innerJoin();
-        }
-        return false;*/
-
-
-        return innerJoin();
-    }
-
-    public boolean rightJoin() {
-        if (!lValueIterator.hasNext() && !rValueIterator.hasNext()) {
-            return false;
-        }
-        if (rValueIterator.hasNext() && isRightNeedNext) {
-            this.rValuesAndGVI = rValueIterator.next();
-            this.lValueIterator = new SwiftValueIterator(lSegments, lKey);
-            isRightNeedNext = false;
-            isRightMatched = false;
-        }
-        while (lValueIterator.hasNext()) {
-            this.lValuesAndGVI = lValueIterator.next();
-            int result = rValuesAndGVI.compareTo(lValuesAndGVI, comparators);
-            isRightNeedNext = !lValueIterator.hasNext();
-            if (result == 0) {
-                writeOneGroup(lSegments, rSegments, lValuesAndGVI, rValuesAndGVI);
-                isRightMatched = true;
-                return true;
-            }
-        }
-        if (!isRightMatched) {
-            writeOneGroup(lSegments, rSegments, null, rValuesAndGVI);
-        } else {
-            if (!lValueIterator.hasNext()) {
-                return rightJoin();
-            }
-        }
-        return true;
-    }
-
     @Override
     public boolean next() {
-        if (nullContinue == false && writeLeft == false) {
-            return leftJoin();
-        } else if (nullContinue == false && writeLeft == true) {
-            return outterJoin();
-        } else if (nullContinue == true && writeLeft == false) {
-            return innerJoin();
-        } else {
-            return rightJoin();
+        while (leftRows != null && leftRows.isEmpty()) {
+            moveToNextRows();
         }
+        return leftRows != null && !leftRows.isEmpty();
     }
 
     @Override
@@ -245,45 +157,71 @@ public class JoinOperatorResultSet implements SwiftResultSet {
 
     @Override
     public Row getRowData() {
-        return listRow.getBasedRow();
+        return leftRows.poll();
     }
 
-    private void writeOneGroup(Segment[] lSegment, Segment[] rSegment, GVIAndSegment lGroup, GVIAndSegment rGroup) {
+    private void createNewLeftRows(KeyValue<RowIndexKey<Object>, List<RowTraversal[]>> lKeyValue, final KeyValue<RowIndexKey<Object>, List<RowTraversal[]>> rKeyValue) {
+        leftRows = new LinkedList<Row>();
+        if (lKeyValue != null) {
+            Object[] lValues = (Object[]) lKeyValue.getKey().getKey();
+            for (int i = 0; i < lKeyValue.getValue().size(); i++) {
+                RowTraversal[] traversals = lKeyValue.getValue().get(i);
+                if (traversals != null && traversals[lValues.length] != null) {
+                    final int finalI = i;
+                    traversals[lValues.length].traversal(new TraversalAction() {
+                        @Override
+                        public void actionPerformed(int row) {
+                            dealWithRightSegments(finalI, row, rKeyValue);
+                        }
+                    });
+                }
+            }
+        } else {
+            dealWithRightSegments(-1, -1, rKeyValue);
+        }
+    }
+
+    private void dealWithRightSegments(final int leftSegIndex, final int leftRow, final KeyValue<RowIndexKey<Object>, List<RowTraversal[]>> rKeyValue) {
+        if (rKeyValue != null) {
+            Object[] lValues = (Object[]) rKeyValue.getKey().getKey();
+            for (int i = 0; i < rKeyValue.getValue().size(); i++) {
+                RowTraversal[] traversals = rKeyValue.getValue().get(i);
+                if (traversals != null && traversals[lValues.length] != null) {
+                    final int finalI = i;
+                    traversals[lValues.length].traversal(new TraversalAction() {
+                        @Override
+                        public void actionPerformed(int row) {
+                            insertRow(leftSegIndex, leftRow, finalI, row);
+                        }
+                    });
+                }
+            }
+        } else {
+            insertRow(leftSegIndex, leftRow, -1, -1);
+        }
+    }
+
+    private void insertRow(int leftSegIndex, int leftRow, int rightSegIndex, int rightRow) {
         List valueList = new ArrayList();
         for (JoinColumn c : columns) {
             if (c.isLeft()) {
-                if (lGroup != null) {
-                    DictionaryEncodedColumn getter = lGroup.getSegment().getColumn(new ColumnKey(c.getColumnName())).getDictionaryEncodedColumn();
-                    int indexByRow = getter.getIndexByRow(lGroup.getRow());
-                    valueList.add(getter.getValue(indexByRow));
+                if (leftSegIndex >= 0) {
+                    DictionaryEncodedColumn dic = lSegments[leftSegIndex].getColumn(new ColumnKey(c.getColumnName())).getDictionaryEncodedColumn();
+                    valueList.add(dic.getValue(dic.getIndexByRow(leftRow)));
                 } else {
                     valueList.add(null);
                 }
             } else {
-                if (rGroup != null) {
-                    DictionaryEncodedColumn getter = rGroup.getSegment().getColumn(new ColumnKey(c.getColumnName())).getDictionaryEncodedColumn();
-                    int indexByRow = getter.getIndexByRow(rGroup.getRow());
-                    valueList.add(getter.getValue(indexByRow));
+                if (rightSegIndex >= 0) {
+                    DictionaryEncodedColumn dic = rSegments[rightSegIndex].getColumn(new ColumnKey(c.getColumnName())).getDictionaryEncodedColumn();
+                    valueList.add(dic.getValue(dic.getIndexByRow(rightRow)));
                 } else {
                     valueList.add(null);
                 }
             }
         }
-        ListBasedRow basedRow = new ListBasedRow(valueList);
-        listRow.setBasedRow(basedRow);
-    }
-
-    private class ListRow {
-        ListBasedRow basedRow;
-
-        public ListBasedRow getBasedRow() {
-            return basedRow;
-        }
-
-        public void setBasedRow(ListBasedRow basedRow) {
-            this.basedRow = basedRow;
-        }
-
+        ListBasedRow row = new ListBasedRow(valueList);
+        leftRows.add(row);
     }
 }
 

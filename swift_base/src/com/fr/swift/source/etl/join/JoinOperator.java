@@ -4,8 +4,10 @@ import com.fr.swift.exception.meta.SwiftMetaDataException;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.segment.column.ColumnKey;
+import com.fr.swift.source.MetaDataColumn;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftMetaDataColumn;
+import com.fr.swift.source.core.CoreField;
 import com.fr.swift.source.etl.AbstractOperator;
 import com.fr.swift.source.etl.OperatorType;
 
@@ -19,11 +21,14 @@ public class JoinOperator extends AbstractOperator {
     private static final SwiftLogger LOGGER = SwiftLoggers.getLogger(JoinOperator.class);
 
     private List<JoinColumn> columns;
+    @CoreField
     private ColumnKey[] lKey;
+    @CoreField
     private ColumnKey[] rKey;
-    private int type;
+    @CoreField
+    private JoinType type;
 
-    public JoinOperator(List<JoinColumn> columns, ColumnKey[] lKey, ColumnKey[] rKey, int type) {
+    public JoinOperator(List<JoinColumn> columns, ColumnKey[] lKey, ColumnKey[] rKey, JoinType type) {
         this.columns = columns;
         this.lKey = lKey;
         this.rKey = rKey;
@@ -42,7 +47,7 @@ public class JoinOperator extends AbstractOperator {
         return rKey;
     }
 
-    public int getType() {
+    public JoinType getType() {
         return type;
     }
 
@@ -60,8 +65,8 @@ public class JoinOperator extends AbstractOperator {
         SwiftMetaData rightT = tables[1];
         for (JoinColumn joinColumn : this.columns) {
             try {
-                SwiftMetaDataColumn column = joinColumn.isLeft() ? leftT.getColumn(joinColumn.getColumnName()) : rightT.getColumn(joinColumn.getColumnName());
-                columnList.add(column);
+                SwiftMetaDataColumn originColumn = joinColumn.isLeft() ? leftT.getColumn(joinColumn.getColumnName()) : rightT.getColumn(joinColumn.getColumnName());
+                columnList.add(new MetaDataColumn(joinColumn.getName(), originColumn.getRemark(), originColumn.getType(), originColumn.getScale(), originColumn.getPrecision(), originColumn.getColumnId()));
             } catch (SwiftMetaDataException e) {
                 LOGGER.error("the field " + joinColumn.getColumnName() + " get meta failed", e);
             }
