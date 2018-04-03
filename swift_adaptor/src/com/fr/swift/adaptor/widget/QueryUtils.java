@@ -4,7 +4,7 @@ import com.finebi.conf.structure.bean.field.FineBusinessField;
 import com.finebi.conf.structure.bean.table.FineBusinessTable;
 import com.finebi.conf.structure.dashboard.widget.dimension.FineDimension;
 import com.finebi.conf.utils.FineTableUtils;
-import com.fr.swift.adaptor.transformer.IndexingDataSourceFactory;
+import com.fr.swift.adaptor.transformer.DataSourceFactory;
 import com.fr.swift.adaptor.widget.group.GroupAdaptor;
 import com.fr.swift.cal.QueryInfo;
 import com.fr.swift.cal.info.GroupQueryInfo;
@@ -52,14 +52,14 @@ public class QueryUtils {
             String fieldId = dimension.getFieldId();
             FineBusinessTable fineBusinessTable = FineTableUtils.getTableByFieldId(fieldId);
             FineBusinessField fineBusinessField = fineBusinessTable.getFieldByFieldId(fieldId);
-            DataSource baseDataSource = IndexingDataSourceFactory.transformDataSource(fineBusinessTable);
+            DataSource baseDataSource = DataSourceFactory.getDataSource(fineBusinessTable);
             GroupDimension groupDimension = new GroupDimension(0, baseDataSource.getSourceKey(), new ColumnKey(fineBusinessField.getName()), GroupAdaptor.adaptGroup(dimension.getGroup()), null, null);
             SingleTableGroupQueryInfo valueInfo = new SingleTableGroupQueryInfo(new AllCursor(), id, new Dimension[]{groupDimension}, new Metric[0], new GroupTarget[0], filterInfo, null);
             GroupByResultSet<int[]> valuesResultSet = (GroupByResultSet<int[]>) QueryRunnerProvider.getInstance().executeQuery(valueInfo);
             Iterator<KeyValue<RowIndexKey<int[]>, AggregatorValue[]>> it = valuesResultSet.getResultList().iterator();
             Map<Integer, Object> dic = valuesResultSet.getGlobalDictionaries().get(0);
             List values = new ArrayList();
-            while (it.hasNext()){
+            while (it.hasNext()) {
                 RowIndexKey<int[]> indexKey = it.next().getKey();
                 Object v = dic.get(indexKey.getKey()[0]);
                 if (v != null) {
@@ -83,7 +83,7 @@ public class QueryUtils {
                     dimensionList.toArray(new Dimension[dimensionList.size()]), new Metric[0], dataSource.getSourceKey());
             // TODO: 2018/3/29 先不管分页全部取出来吧
             QueryInfo queryInfo = new GroupQueryInfo(new RowCursor(cursor), id, filterInfo,
-                    new TableGroupQueryInfo[] { tableGroupQueryInfo },
+                    new TableGroupQueryInfo[]{tableGroupQueryInfo},
                     dimensionList.toArray(new Dimension[dimensionList.size()]),
                     new Metric[0], new GroupTarget[0], null);
             SwiftResultSet resultSet = QueryRunnerProvider.getInstance().executeQuery(queryInfo);
@@ -96,7 +96,7 @@ public class QueryUtils {
     private static DataSource getDataSource(FineDimension fineDimension) throws Exception {
         String fieldId = fineDimension.getFieldId();
         FineBusinessTable fineBusinessTable = FineTableUtils.getTableByFieldId(fieldId);
-        return IndexingDataSourceFactory.transformDataSource(fineBusinessTable);
+        return DataSourceFactory.getDataSource(fineBusinessTable);
     }
 
     private static List<Dimension> createGroupDimension(List<FineDimension> fineDimensions) throws Exception {

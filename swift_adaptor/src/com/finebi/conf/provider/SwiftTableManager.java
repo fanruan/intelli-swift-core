@@ -9,7 +9,7 @@ import com.finebi.conf.structure.bean.field.FineBusinessField;
 import com.finebi.conf.structure.bean.pack.FineBusinessPackage;
 import com.finebi.conf.structure.bean.table.FineBusinessTable;
 import com.fr.general.ComparatorUtils;
-import com.fr.swift.adaptor.transformer.IndexingDataSourceFactory;
+import com.fr.swift.adaptor.transformer.DataSourceFactory;
 import com.fr.swift.conf.business.ISwiftXmlWriter;
 import com.fr.swift.conf.business.pack.PackXmlWriter;
 import com.fr.swift.conf.business.pack.PackageParseXml;
@@ -100,7 +100,7 @@ public class SwiftTableManager implements EngineTableManager {
                         pack.addTable(table.getName());
                     }
                     try {
-                        tableToSourceConfigDao.addConfig(table.getId(), IndexingDataSourceFactory.transformDataSource(table).getSourceKey().getId());
+                        tableToSourceConfigDao.addConfig(table.getId(), DataSourceFactory.getDataSource(table).getSourceKey().getId());
                     } catch (Exception e) {
                         logger.error("Cannot save tableId to sourceKey: ", e);
                     }
