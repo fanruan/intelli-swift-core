@@ -30,8 +30,8 @@ import com.fr.swift.source.db.ConnectionManager;
 import com.fr.swift.source.db.QueryDBSource;
 import com.fr.swift.source.db.TableDBSource;
 import com.fr.swift.source.etl.ETLOperator;
-import com.fr.swift.source.etl.ETLSource;
 import com.fr.swift.source.etl.ETLTransferOperator;
+import com.fr.swift.source.etl.EtlSource;
 import com.fr.swift.source.etl.EtlTransferOperatorFactory;
 import com.fr.swift.source.etl.datamining.DataMiningOperator;
 import com.fr.swift.source.etl.datamining.DataMiningTransferOperator;
@@ -180,7 +180,7 @@ public class DataSourceFactory {
         }
         List<DataSource> baseSource = new ArrayList<DataSource>();
         baseSource.add(source);
-        return new ETLSource(baseSource, EtlAdaptor.adaptEtlOperator(operators.get(operators.size() - 1), table));
+        return new EtlSource(baseSource, EtlAdaptor.adaptEtlOperator(operators.get(operators.size() - 1), table));
     }
 
     public static Increment transformIncrement(TableUpdateInfo tableUpdateInfo, SourceKey sourceKey, String connectionName) {

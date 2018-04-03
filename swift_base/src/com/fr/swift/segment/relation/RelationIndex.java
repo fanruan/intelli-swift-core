@@ -7,6 +7,8 @@ import com.fr.swift.cube.io.Releasable;
 /**
  * @author anchore
  * @date 2018/1/17
+ * @modify yee
+ * @description 每块数据接续着上一块的位置往下写
  */
 public interface RelationIndex extends Releasable, Flushable {
     /**
@@ -26,29 +28,54 @@ public interface RelationIndex extends Releasable, Flushable {
     ImmutableBitMap getIndex(int pos);
 
     /**
+     * @param pos 块号
      * @param bitmap 主表所有未匹配行号索引
      */
-    void putNullIndex(ImmutableBitMap bitmap);
+    void putNullIndex(int pos, ImmutableBitMap bitmap);
 
     /**
      * 获取空索引
+     * @param pos 块号
      * @return 返回空索引
      */
-    ImmutableBitMap getNullIndex();
+    ImmutableBitMap getNullIndex(int pos);
 
     /**
      * 反向关联
      * 外表行号 -> 主表行号
      *
      * @param fPos 外表行号
-     * @param tPos 主表行号
+     * @param tPos 主表块号+行号
      */
-    void putReverseIndex(int fPos, int tPos);
+    void putReverseIndex(int fPos, long tPos);
 
     /**
      * 获取反向关联
      * @param fPos
      * @return
      */
-    int getReverseIndex(int fPos);
+    long getReverseIndex(int fPos);
+
+    /**
+     * @param fPos 主表行号
+     * @param tPos 主表块号
+     */
+    void putSegIndex(int fPos, int tPos);
+
+    /**
+     * @param fPos 主表行号
+     * @return 对应块号
+     */
+    int getSegIndex(int fPos);
+
+    /**
+     * @return 反向关联数
+     */
+    int getReverseCount();
+
+    /**
+     * @param count 反向关联数
+     */
+    void putReverseCount(int count);
+
 }

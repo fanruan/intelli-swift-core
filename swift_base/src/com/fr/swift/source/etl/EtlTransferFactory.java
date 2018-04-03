@@ -13,7 +13,7 @@ import java.util.List;
  * @date 2018/1/8
  */
 public class EtlTransferFactory {
-    public static EtlTransfer createTransfer(ETLSource source) {
+    public static EtlTransfer createTransfer(EtlSource source) {
         SwiftMetaData metaData = source.getMetadata(); 
         ETLOperator operator = source.getOperator();
         ETLTransferOperator transferOperator = EtlTransferOperatorFactory.createTransferOperator(operator);
@@ -27,7 +27,7 @@ public class EtlTransferFactory {
             List<Segment> segments = SwiftContext.getInstance().getSegmentProvider().getSegment(dataSource.getSourceKey());
             basedSegments.add(segments.toArray(new Segment[segments.size()]));
         }
-        return new EtlTransfer(transferOperator, metaData, basedMetas, basedSegments);
+        return new EtlTransfer(transferOperator, metaData, basedMetas, basedSegments, source.getFieldsInfo());
     }
 
 //    public static SwiftSourceTransfer createBaseTableMinorTransfer(ETLSource source) throws Exception{

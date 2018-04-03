@@ -62,4 +62,24 @@ public class AggregatorAdaptor {
                 return AggregatorType.COUNT;
         }
     }
+
+    /**
+     * nice job foundation
+     * @param aggregatorType
+     * @return
+     */
+    public static AggregatorType transformAllValuesAggregatorType(int aggregatorType) {
+        switch (aggregatorType) {
+            case BIConfConstants.CONF.ADD_COLUMN.ALL_VALUES.SUMMARY_TYPE.SUM:
+                return AggregatorType.SUM;
+            case BIConfConstants.CONF.ADD_COLUMN.ALL_VALUES.SUMMARY_TYPE.AVG:
+                return AggregatorType.AVERAGE;
+            case BIConfConstants.CONF.ADD_COLUMN.ALL_VALUES.SUMMARY_TYPE.MAX:
+                return AggregatorType.MAX;
+            case BIConfConstants.CONF.ADD_COLUMN.ALL_VALUES.SUMMARY_TYPE.MIN:
+                return AggregatorType.MIN;
+            default:
+                return AggregatorType.COUNT;
+        }
+    }
 }

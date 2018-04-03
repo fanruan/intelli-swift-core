@@ -11,7 +11,7 @@ import com.fr.swift.source.ColumnTypeConstants;
 import com.fr.swift.source.DataSource;
 import com.fr.swift.source.db.QueryDBSource;
 import com.fr.swift.source.etl.ETLOperator;
-import com.fr.swift.source.etl.ETLSource;
+import com.fr.swift.source.etl.EtlSource;
 import com.fr.swift.source.etl.formula.ColumnFormulaOperator;
 
 import java.util.ArrayList;
@@ -35,12 +35,12 @@ public class CoupleColumnFormulaTest extends BaseTest {
             ETLOperator formulaOperator1 = new ColumnFormulaOperator("addField", ColumnTypeConstants.ColumnType.NUMBER, "${付款金额} + ${付款金额}");
             List<DataSource> baseDataSources1 = new ArrayList<DataSource>();
             baseDataSources1.add(dataSource);
-            ETLSource etlSource1 = new ETLSource(baseDataSources1, formulaOperator1);
+            EtlSource etlSource1 = new EtlSource(baseDataSources1, formulaOperator1);
 
             ETLOperator formulaOperator2 = new ColumnFormulaOperator("addField2", ColumnTypeConstants.ColumnType.NUMBER, "${付款金额} + ${付款金额} + ${付款金额}");
             List<DataSource> baseDataSources2 = new ArrayList<DataSource>();
             baseDataSources2.add(dataSource);
-            ETLSource etlSource2 = new ETLSource(baseDataSources2, formulaOperator2);
+            EtlSource etlSource2 = new EtlSource(baseDataSources2, formulaOperator2);
 
             TestIndexer.historyIndex(dataSource, TestTransport.historyTransport(dataSource));
             TestIndexer.historyIndex(etlSource1, TestTransport.historyTransport(etlSource1));
@@ -95,12 +95,12 @@ public class CoupleColumnFormulaTest extends BaseTest {
             ETLOperator formulaOperator1 = new ColumnFormulaOperator("addField", ColumnTypeConstants.ColumnType.NUMBER, "${付款金额} + ${付款金额}");
             List<DataSource> baseDataSources1 = new ArrayList<DataSource>();
             baseDataSources1.add(dataSource);
-            ETLSource etlSource1 = new ETLSource(baseDataSources1, formulaOperator1);
+            EtlSource etlSource1 = new EtlSource(baseDataSources1, formulaOperator1);
 
             ETLOperator formulaOperator2 = new ColumnFormulaOperator("addField", ColumnTypeConstants.ColumnType.NUMBER, "${付款金额} + ${付款金额} + ${付款金额}");
             List<DataSource> baseDataSources2 = new ArrayList<DataSource>();
             baseDataSources2.add(dataSource);
-            ETLSource etlSource2 = new ETLSource(baseDataSources2, formulaOperator2);
+            EtlSource etlSource2 = new EtlSource(baseDataSources2, formulaOperator2);
 
             TestIndexer.historyIndex(dataSource, TestTransport.historyTransport(dataSource));
             TestIndexer.historyIndex(etlSource1, TestTransport.historyTransport(etlSource1));
@@ -155,12 +155,12 @@ public class CoupleColumnFormulaTest extends BaseTest {
             ETLOperator formulaOperator1 = new ColumnFormulaOperator("addField", ColumnTypeConstants.ColumnType.NUMBER, "${付款金额} + ${付款金额}");
             List<DataSource> baseDataSources1 = new ArrayList<DataSource>();
             baseDataSources1.add(dataSource);
-            ETLSource etlSource1 = new ETLSource(baseDataSources1, formulaOperator1);
+            EtlSource etlSource1 = new EtlSource(baseDataSources1, formulaOperator1);
 
             ETLOperator formulaOperator2 = new ColumnFormulaOperator("addField", ColumnTypeConstants.ColumnType.NUMBER, "${付款金额} + ${付款金额}");
             List<DataSource> baseDataSources2 = new ArrayList<DataSource>();
             baseDataSources2.add(dataSource);
-            ETLSource etlSource2 = new ETLSource(baseDataSources2, formulaOperator2);
+            EtlSource etlSource2 = new EtlSource(baseDataSources2, formulaOperator2);
 
             TestIndexer.historyIndex(dataSource, TestTransport.historyTransport(dataSource));
             TestIndexer.historyIndex(etlSource1, TestTransport.historyTransport(etlSource1));
@@ -215,12 +215,12 @@ public class CoupleColumnFormulaTest extends BaseTest {
             ETLOperator formulaOperator1 = new ColumnFormulaOperator("addField", ColumnTypeConstants.ColumnType.NUMBER, "${付款金额} + ${付款金额}");
             List<DataSource> baseDataSources1 = new ArrayList<DataSource>();
             baseDataSources1.add(dataSource);
-            ETLSource etlSource1 = new ETLSource(baseDataSources1, formulaOperator1);
+            EtlSource etlSource1 = new EtlSource(baseDataSources1, formulaOperator1);
 
             ETLOperator formulaOperator2 = new ColumnFormulaOperator("addField2", ColumnTypeConstants.ColumnType.NUMBER, "${付款金额} + ${付款金额}");
             List<DataSource> baseDataSources2 = new ArrayList<DataSource>();
             baseDataSources2.add(dataSource);
-            ETLSource etlSource2 = new ETLSource(baseDataSources2, formulaOperator2);
+            EtlSource etlSource2 = new EtlSource(baseDataSources2, formulaOperator2);
 
             TestIndexer.historyIndex(dataSource, TestTransport.historyTransport(dataSource));
             TestIndexer.historyIndex(etlSource1, TestTransport.historyTransport(etlSource1));

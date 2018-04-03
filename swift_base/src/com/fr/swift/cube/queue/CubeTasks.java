@@ -12,7 +12,7 @@ import com.fr.swift.service.SwiftServiceEvent;
 import com.fr.swift.service.listener.EventType;
 import com.fr.swift.service.listener.SwiftServiceListenerManager;
 import com.fr.swift.source.DataSource;
-import com.fr.swift.source.ETLDataSource;
+import com.fr.swift.source.EtlDataSource;
 import com.fr.swift.source.RelationSource;
 import com.fr.swift.structure.Pair;
 
@@ -45,7 +45,7 @@ public class CubeTasks {
      * @return etl task 如上图，返回的是E
      * @throws SwiftMetaDataException 异常
      */
-    static SchedulerTask newEtlTask(ETLDataSource etl, SchedulerTask prevTask) throws SwiftMetaDataException {
+    static SchedulerTask newEtlTask(EtlDataSource etl, SchedulerTask prevTask) throws SwiftMetaDataException {
         List<SchedulerTask> dependTasks = new ArrayList<SchedulerTask>();
 
         for (DataSource dataSource : etl.getBasedSources()) {
@@ -54,8 +54,8 @@ public class CubeTasks {
             }
 
             SchedulerTask task;
-            if (dataSource instanceof ETLDataSource) {
-                task = newEtlTask(((ETLDataSource) dataSource), prevTask);
+            if (dataSource instanceof EtlDataSource) {
+                task = newEtlTask(((EtlDataSource) dataSource), prevTask);
             } else {
                 task = newTableTask(dataSource);
                 prevTask.addNext(task);

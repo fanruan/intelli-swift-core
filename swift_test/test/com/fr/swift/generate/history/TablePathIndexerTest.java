@@ -37,6 +37,7 @@ import com.fr.swift.segment.relation.RelationIndex;
 import com.fr.swift.service.LocalSwiftServerService;
 import com.fr.swift.source.DataSource;
 import com.fr.swift.source.RelationSource;
+import com.fr.swift.source.RelationSourceType;
 import com.fr.swift.source.db.TableDBSource;
 import com.fr.swift.source.db.TestConnectionProvider;
 import com.fr.swift.source.relation.RelationSourceImpl;
@@ -221,7 +222,7 @@ public class TablePathIndexerTest extends TestCase {
         int firstRow = first.getRowCount();
         int secondRow = second.getRowCount();
         int thirdRow = second.getRowCount();
-        ImmutableBitMap nullIndex = index.getNullIndex();
+        ImmutableBitMap nullIndex = index.getNullIndex(0);
         List<ColumnKey> firstRelationPrimaryKeys = path.getFirstRelation().getPrimaryField().getKeyFields();
         List<ColumnKey> firstRelationForeignKeys = path.getFirstRelation().getForeignField().getKeyFields();
         List<ColumnKey> lastRelationPrimaryKeys = path.getLastRelation().getPrimaryField().getKeyFields();

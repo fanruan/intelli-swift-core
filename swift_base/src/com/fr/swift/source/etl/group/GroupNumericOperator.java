@@ -1,15 +1,14 @@
 package com.fr.swift.source.etl.group;
 
 import com.fr.swift.segment.column.ColumnKey;
-import com.fr.swift.source.ColumnTypeUtils;
 import com.fr.swift.source.MetaDataColumn;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftMetaDataColumn;
 import com.fr.swift.source.core.CoreField;
 import com.fr.swift.source.etl.AbstractOperator;
 import com.fr.swift.source.etl.OperatorType;
-import com.fr.swift.source.ColumnTypeConstants.*;
 
+import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,10 +17,7 @@ import java.util.List;
  */
 public class GroupNumericOperator extends AbstractOperator {
 
-    @CoreField
     private String columnName;
-    @CoreField
-    private ColumnType columnType;
     @CoreField
     private ColumnKey columnKey;
     @CoreField
@@ -33,10 +29,9 @@ public class GroupNumericOperator extends AbstractOperator {
     @CoreField
     private List<RestrictRange> nodes;
 
-    public GroupNumericOperator(String columnName, ColumnType columnType, ColumnKey columnKey, double max,
+    public GroupNumericOperator(String columnName, ColumnKey columnKey, double max,
                                 double min, String useOther, List<RestrictRange> nodes) {
         this.columnName = columnName;
-        this.columnType = columnType;
         this.columnKey = columnKey;
         this.max = max;
         this.min = min;
@@ -46,10 +41,6 @@ public class GroupNumericOperator extends AbstractOperator {
 
     public String getColumnName() {
         return columnName;
-    }
-
-    public ColumnType getColumnType() {
-        return columnType;
     }
 
     public ColumnKey getColumnKey() {
@@ -77,7 +68,7 @@ public class GroupNumericOperator extends AbstractOperator {
     public List<SwiftMetaDataColumn> getColumns(SwiftMetaData[] metaDatas) {
         List<SwiftMetaDataColumn> columnList = new ArrayList<SwiftMetaDataColumn>();
         columnList.add(new MetaDataColumn(this.columnName,
-                this.columnName, ColumnTypeUtils.columnTypeToSqlType(this.columnType), fetchObjectCore().getValue()));
+                this.columnName, Types.VARCHAR, fetchObjectCore().getValue()));
         return columnList;
     }
 

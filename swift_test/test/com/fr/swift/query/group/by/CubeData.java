@@ -172,7 +172,7 @@ public class CubeData {
 
                         @Override
                         public Comparator getComparator() {
-                            return null;
+                            return Comparator.<String>naturalOrder();
                         }
 
                         @Override
@@ -248,7 +248,37 @@ public class CubeData {
 
                 @Override
                 public BitmapIndexedColumn getBitmapIndex() {
-                    return null;
+                    return new BitmapIndexedColumn() {
+                        @Override
+                        public void putBitMapIndex(int index, ImmutableBitMap bitmap) {
+
+                        }
+
+                        @Override
+                        public ImmutableBitMap getBitMapIndex(int index) {
+                            return null;
+                        }
+
+                        @Override
+                        public void putNullIndex(ImmutableBitMap bitMap) {
+
+                        }
+
+                        @Override
+                        public ImmutableBitMap getNullIndex() {
+                            return null;
+                        }
+
+                        @Override
+                        public void flush() {
+
+                        }
+
+                        @Override
+                        public void release() {
+
+                        }
+                    };
                 }
 
                 @Override

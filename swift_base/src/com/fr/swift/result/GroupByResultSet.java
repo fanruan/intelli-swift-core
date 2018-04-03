@@ -11,14 +11,14 @@ import java.util.Map;
 /**
  * Created by Lyon on 2018/2/27.
  */
-public interface GroupByResultSet extends SwiftResultSet {
+public interface GroupByResultSet<T> extends SwiftResultSet {
 
     /**
-     * 表示普通行或者汇总行
+     * 表示普通行或者汇总行集合
      * 这边的index是global index
      * @return
      */
-    Iterator<KeyValue<RowIndexKey<int[]>, AggregatorValue[]>> getRowResultIterator();
+    List<KeyValue<RowIndexKey<T>, AggregatorValue[]>> getResultList();
 
     /**
      * 行结果各个维度用到的字典值

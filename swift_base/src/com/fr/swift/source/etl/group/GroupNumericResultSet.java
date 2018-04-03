@@ -68,8 +68,8 @@ public class GroupNumericResultSet implements SwiftResultSet {
                         dataList.add(restrictRange.getGroupName());
                         break;
                     }
-                    dataList.add(useOther);
                 }
+                dataList.add(useOther);
             } else {
                 dataList.add(useOther);
             }

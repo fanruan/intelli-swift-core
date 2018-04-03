@@ -6,7 +6,7 @@ import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.source.DataSource;
 import com.fr.swift.source.db.TableDBSource;
 import com.fr.swift.source.etl.ETLOperator;
-import com.fr.swift.source.etl.ETLSource;
+import com.fr.swift.source.etl.EtlSource;
 import com.fr.swift.source.etl.join.JoinColumn;
 import com.fr.swift.source.etl.join.JoinOperator;
 import com.fr.swift.source.etl.utils.ETLConstant;
@@ -29,7 +29,7 @@ public class MinorUpdaterTest extends BaseTest {
                 new ColumnKey[]{new ColumnKey(joinOn)},
                 ETLConstant.CONF.JOIN.LEFT
         );
-        DataSource join = new ETLSource(Arrays.asList(demoContract, demoCustomer), joinOp);
+        DataSource join = new EtlSource(Arrays.asList(demoContract, demoCustomer), joinOp);
 
         new MinorUpdater(join).update();
 

@@ -1,178 +1,124 @@
 package com.fr.swift.source.etl.rowcal.rank;
 
-import com.fr.swift.bitmap.traversal.BreakTraversalAction;
+import com.fr.general.ComparatorUtils;
 import com.fr.swift.bitmap.traversal.TraversalAction;
-import com.fr.swift.compare.Comparators;
+import com.fr.swift.query.group.by.MergerGroupByValues;
+import com.fr.swift.query.sort.SortType;
+import com.fr.swift.result.KeyValue;
+import com.fr.swift.result.RowIndexKey;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.column.ColumnKey;
-import com.fr.swift.segment.column.DictionaryEncodedColumn;
 import com.fr.swift.source.ListBasedRow;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftResultSet;
-import com.fr.swift.source.etl.utils.ETLConstant;
-import com.fr.swift.source.etl.utils.FinalInt;
-import com.fr.swift.source.etl.utils.GroupValueIterator;
-import com.fr.swift.source.etl.utils.SwiftValuesAndGVI;
+import com.fr.swift.source.etl.utils.MergerGroupByValuesFactory;
 import com.fr.swift.structure.iterator.RowTraversal;
 
 import java.sql.SQLException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.List;
+import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * Created by Handsome on 2018/2/28 0028 11:06
  */
 public class RankRowResultSet implements SwiftResultSet {
 
-    private int type;
+    private SortType type;
     private ColumnKey columnKey;
     private Segment[] segments;
-    private ColumnKey[] dimension;
-    private int segCursor, rowCursor, rowCount;
-    private TreeMap<Number, FinalInt> tree;
-    private HashMap<Number, Long> map;
-    private TempValue tempValue;
+    private ColumnKey[] dimensions;
     private SwiftMetaData metaData;
-    private GroupValueIterator iterator;
-    private boolean needNext;
-    private SwiftValuesAndGVI valuesAndGVI;
-    private Segment[] tempSegment;
-    private RowTraversal[] traversal;
+    private Iterator<Long> valueIterator;
 
-    public RankRowResultSet(int type, ColumnKey columnKey, Segment[] segments, SwiftMetaData metaData, ColumnKey[] dimension) {
+    public RankRowResultSet(SortType type, ColumnKey columnKey, Segment[] segments, SwiftMetaData metaData, ColumnKey[] dimensions) {
         this.type = type;
         this.columnKey = columnKey;
         this.segments = segments;
         this.metaData = metaData;
-        this.dimension = dimension;
+        this.dimensions = dimensions == null ? new ColumnKey[0] : dimensions;
         init();
     }
 
     private void init() {
-        segCursor = 0;
-        rowCursor = 0;
-        rowCount = segments[0].getRowCount();
-        needNext = true;
-        tempValue = new TempValue();
-        //TODO group type
-        if (dimension != null) {
-            iterator = new GroupValueIterator(segments, dimension, null);
-            tempSegment = new Segment[0];
-            traversal = new RowTraversal[0];
-        } else {
-            RowTraversal[] traversals = new RowTraversal[segments.length];
-            for (int i = 0; i < segments.length; i++) {
-                traversals[i] = segments[i].getAllShowIndex();
-            }
-            tree = createSortedTree(segments, traversals);
-            map = buildRankMap(tree);
+        //只要把排序的字段放在最后，再设置下排序即可
+        ColumnKey[] dims = new ColumnKey[dimensions.length + 1];
+        System.arraycopy(dimensions, 0 ,dims, 0, dimensions.length);
+        dims[dims.length - 1] = columnKey;
+        boolean[] asc = new boolean[dims.length];
+        Arrays.fill(asc, true);
+        asc[asc.length - 1] = type == SortType.ASC;
+        //每个segment再最终结果的偏移量
+        final int[] shiftRow = new int[segments.length];
+        //总行数
+        int row = 0;
+        //构造MergerGroupBy
+        for (int i = 0; i < segments.length; i++) {
+            shiftRow[i] = row;
+            row += segments[i].getRowCount();
         }
+        MergerGroupByValues mergerGroupByValues = MergerGroupByValuesFactory.createMergerGroupBy(segments, dims, asc);
+        //组内的结果默认不多，都放到内存
+        final Long[] values = new Long[row];
+        final AtomicLong value = new AtomicLong(1);
+        KeyValue<RowIndexKey<Object>, List<RowTraversal[]>> lastKv = null;
+        while (mergerGroupByValues.hasNext()) {
+            long size = 0l;
+            KeyValue<RowIndexKey<Object>, List<RowTraversal[]>> kv =  mergerGroupByValues.next();
+            if (groupChanged(lastKv, kv)){
+                value.set(1);
+            }
+            lastKv = kv;
+            List<RowTraversal[]> traversals = kv.getValue();
+            RowTraversal[] traversal = new RowTraversal[traversals.size()];
+            //调用mergetGroupBy遍历，取到最后一个维度的travels算结果，并且根据travels，把结果再填到对应的行
+            for (int i = 0; i < traversal.length; i++) {
+                traversal[i] = traversals.get(i)[dims.length];
+            }
+            for (int i = 0; i < traversal.length; i++) {
+                if (traversal[i] != null) {
+                    final int segIndex = i;
+                    traversal[i].traversal(new TraversalAction() {
+                        @Override
+                        public void actionPerformed(int row) {
+                            values[shiftRow[segIndex] + row] = value.get();
+                        }
+                    });
+                    size += traversal[i].getCardinality();
+                }
+            }
+            value.set(value.get() + size);
+        }
+        valueIterator = Arrays.asList(values).iterator();
     }
+
+    private boolean groupChanged(KeyValue<RowIndexKey<Object>, List<RowTraversal[]>> lastKv, KeyValue<RowIndexKey<Object>, List<RowTraversal[]>> kv) {
+        if (lastKv == null || kv == null){
+            return true;
+        }
+        Object[] last = (Object[]) lastKv.getKey().getKey();
+        Object[] current = (Object[]) kv.getKey().getKey();
+        for (int i = 0; i < last.length - 1; i++){
+            if (!ComparatorUtils.equals(last[i], current[i])){
+                return true;
+            }
+        }
+        return false;
+    }
+
 
     @Override
     public void close() throws SQLException {
-
+        valueIterator = null;
     }
 
     @Override
     public boolean next() throws SQLException {
-        if (null != dimension) {
-            if (iterator.hasNext() || (segCursor < tempSegment.length && rowCursor < rowCount)) {
-                if (needNext) {
-                    do {
-                        valuesAndGVI = iterator.next();
-                    } while (valuesAndGVI.getAggreator().isEmpty() && iterator.hasNext());
-                    traversal = new RowTraversal[valuesAndGVI.getAggreator().size()];
-                    tempSegment = new Segment[valuesAndGVI.getAggreator().size()];
-                    for (int i = 0; i < valuesAndGVI.getAggreator().size(); i++) {
-                        traversal[i] = valuesAndGVI.getAggreator().get(i).getBitMap();
-                        tempSegment[i] = valuesAndGVI.getAggreator().get(i).getSegment();
-                    }
-                    tree = createSortedTree(tempSegment, traversal);
-                    map = buildRankMap(tree);
-                    rowCount = traversal[0].getCardinality();
-                    segCursor = 0;
-                    rowCursor = 0;
-                    needNext = false;
-                }
-                if (segCursor == tempSegment.length - 1 && rowCursor >= rowCount - 1) {
-                    needNext = true;
-                }
-                nextValueForDimension();
-                return true;
-            }
-            return false;
-        } else {
-            return nextValue();
-        }
+        return valueIterator.hasNext();
     }
-
-    private boolean nextValueForDimension() throws SQLException {
-        if (segCursor < tempSegment.length && rowCursor < rowCount) {
-            rowCount = traversal[segCursor].getCardinality();
-            final Index index = new Index();
-            traversal[segCursor].breakableTraversal(new BreakTraversalAction() {
-                int cursor = 0;
-
-                @Override
-                public boolean actionPerformed(int row) {
-                    if (cursor == rowCursor) {
-                        index.setIndex(row);
-                        return true;
-                    }
-                    cursor++;
-                    return false;
-                }
-            });
-            DictionaryEncodedColumn getter = tempSegment[segCursor].getColumn(columnKey).getDictionaryEncodedColumn();
-            Number v = (Number) getter.getValue(getter.getIndexByRow(index.getIndex()));
-            Long rank = Long.parseLong(map.get(v) + "");
-            List dataList = new ArrayList();
-            dataList.add(rank);
-            tempValue.setRow(new ListBasedRow(dataList));
-            if (rowCursor < rowCount - 1) {
-                rowCursor++;
-            } else {
-                if (segCursor < segments.length) {
-                    rowCursor = 0;
-                    segCursor++;
-                } else {
-                    return false;
-                }
-            }
-            return true;
-        } else {
-            List list = new ArrayList();
-            list.add(null);
-            tempValue.setRow(new ListBasedRow(list));
-        }
-        return false;
-    }
-
-    private boolean nextValue() throws SQLException {
-        if (segCursor < segments.length && rowCursor < rowCount) {
-            rowCount = segments[segCursor].getRowCount();
-            DictionaryEncodedColumn getter = segments[segCursor].getColumn(columnKey).getDictionaryEncodedColumn();
-            Number v = (Number) getter.getValue(getter.getIndexByRow(rowCursor));
-            long rank = map.get(v);
-            List dataList = new ArrayList();
-            dataList.add(rank);
-            tempValue.setRow(new ListBasedRow(dataList));
-            if (rowCursor < rowCount - 1) {
-                rowCursor++;
-            } else {
-                if (segCursor < segments.length) {
-                    rowCursor = 0;
-                    segCursor++;
-                } else {
-                    return false;
-                }
-            }
-            return true;
-        }
-        return false;
-    }
-
 
     @Override
     public SwiftMetaData getMetaData() throws SQLException {
@@ -181,71 +127,8 @@ public class RankRowResultSet implements SwiftResultSet {
 
     @Override
     public Row getRowData() throws SQLException {
-        return tempValue.getRow();
+        List list = new ArrayList();
+        list.add(valueIterator.next());
+        return new ListBasedRow(list);
     }
-
-    private HashMap<Number, Long> buildRankMap(TreeMap<Number, FinalInt> tree) {
-        long rank = 1L;
-        HashMap<Number, Long> rankMap = new HashMap<Number, Long>();
-        Iterator<Map.Entry<Number, FinalInt>> iter = tree.entrySet().iterator();
-        while (iter.hasNext()) {
-            Map.Entry<Number, FinalInt> entry = iter.next();
-            rankMap.put(entry.getKey(), rank);
-            rank += entry.getValue().value;
-        }
-        return rankMap;
-    }
-
-    private TreeMap<Number, FinalInt> createSortedTree(Segment[] segments, RowTraversal[] traversals) {
-        Comparator comparator = null;
-        if (type == ETLConstant.CONF.ADD_COLUMN.RANKING.ASC) {
-            comparator = Comparators.<Double>asc();
-        } else {
-            comparator = Comparators.<Double>desc();
-        }
-        final TreeMap<Number, FinalInt> tree = new TreeMap<Number, FinalInt>(comparator);
-        for (int i = 0; i < segments.length; i++) {
-            final DictionaryEncodedColumn getter = segments[i].getColumn(columnKey).getDictionaryEncodedColumn();
-            traversals[i].traversal(new TraversalAction() {
-                @Override
-                public void actionPerformed(int row) {
-                    Number v = (Number) getter.getValue(getter.getIndexByRow(row));
-                    FinalInt count = tree.get(v);
-                    if (null == count) {
-                        count = new FinalInt();
-                        tree.put(v, count);
-                    }
-                    count.value++;
-                }
-            });
-        }
-        return tree;
-    }
-
-    private class TempValue {
-
-        public ListBasedRow getRow() {
-            return row;
-        }
-
-        public void setRow(ListBasedRow row) {
-            this.row = row;
-        }
-
-        private ListBasedRow row;
-
-    }
-
-    private class Index {
-        private int index = 0;
-
-        public int getIndex() {
-            return index;
-        }
-
-        public void setIndex(int index) {
-            this.index = index;
-        }
-    }
-
 }

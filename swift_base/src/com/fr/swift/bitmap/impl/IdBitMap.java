@@ -1,5 +1,6 @@
 package com.fr.swift.bitmap.impl;
 
+import com.fineio.base.Bits;
 import com.fr.swift.bitmap.BitMapType;
 import com.fr.swift.bitmap.BitMaps;
 import com.fr.swift.bitmap.ImmutableBitMap;
@@ -118,11 +119,13 @@ public final class IdBitMap extends AbstractBitMap {
 
     @Override
     public byte[] toBytes() {
-        return Util.intToBytes(id);
+        byte[] bytes = new byte[4];
+        Bits.putInt(bytes, 0, id);
+        return bytes;
     }
 
     static ImmutableBitMap fromBytes(byte[] bytes) {
-        return newInstance(Util.bytesToInt(bytes));
+        return newInstance(Bits.getInt(bytes, 0));
     }
 
     @Override

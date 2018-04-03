@@ -4,8 +4,6 @@ import com.fr.general.ComparatorUtils;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.query.group.Group;
-import com.fr.swift.segment.column.ColumnKey;
-import com.fr.swift.source.ColumnTypeConstants.ClassType;
 import com.fr.swift.source.ColumnTypeConstants.ColumnType;
 import com.fr.swift.source.core.Core;
 import com.fr.swift.source.core.CoreField;
@@ -20,15 +18,15 @@ import java.io.Serializable;
 public class SumByGroupDimension implements CoreService, Serializable {
 
     private static final SwiftLogger LOGGER = SwiftLoggers.getLogger(SumByGroupDimension.class);
+    //维度字段名
+    @CoreField
     private String name;
     @CoreField
     private Group group;
-    @CoreField
+    //改名之后的字段，不需要算md5
     private String nameText;
     @CoreField
     private ColumnType columnType;
-    @CoreField
-    private ClassType classType;
 
     public String getName() {
         return name;
@@ -56,11 +54,6 @@ public class SumByGroupDimension implements CoreService, Serializable {
 
     public Object getKeyValue(Object value) {
         return value;
-    }
-
-
-    public ColumnKey createKey() {
-        return new ColumnKey(getName());
     }
 
     @Override
@@ -112,11 +105,4 @@ public class SumByGroupDimension implements CoreService, Serializable {
         this.columnType = columnType;
     }
 
-    public ClassType getClassType() {
-        return classType;
-    }
-
-    public void setClassType(ClassType classType) {
-        this.classType = classType;
-    }
 }

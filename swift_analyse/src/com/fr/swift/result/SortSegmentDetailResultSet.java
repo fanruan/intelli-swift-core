@@ -42,20 +42,10 @@ public class SortSegmentDetailResultSet extends DetailResultSet {
         return sortedDetailList.get(rowCount);
     }
 
-    public int getColumnCount() {
-        return columnList.size();
-    }
-
     @Override
     public SwiftMetaData getMetaData() {
         return metaData;
     }
-
-//    @Override
-//    public DetailSortComparator getDetailSortComparator() {
-//        return new DetailSortComparator();
-//    }
-
     private void init() {
         maxRow = filter.createFilterIndex().getCardinality();
         sortDetail();

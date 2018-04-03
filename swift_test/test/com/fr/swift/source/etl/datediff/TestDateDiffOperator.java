@@ -1,5 +1,6 @@
 package com.fr.swift.source.etl.datediff;
 
+import com.fr.swift.query.group.GroupType;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SwiftMetaData;
@@ -26,7 +27,6 @@ public class TestDateDiffOperator extends TestCase{
             list.add(segments);
             String column1 = "column2";
             String column2 = "column2";
-            int unit = 0x5;
             SwiftMetaData metaData = EasyMock.createMock(SwiftMetaData.class);
             SwiftMetaDataColumn column = EasyMock.createMock(SwiftMetaDataColumn.class);
             EasyMock.expect(metaData.getColumn(column1)).andReturn(column).anyTimes();
@@ -36,7 +36,7 @@ public class TestDateDiffOperator extends TestCase{
             EasyMock.expect(column.getPrecision()).andReturn(0).anyTimes();
             EasyMock.replay(metaData);
             EasyMock.replay(column);
-            DateDiffTransferOperator operator = new DateDiffTransferOperator(column1, column2, unit);
+            DateDiffTransferOperator operator = new DateDiffTransferOperator(column1, column2, GroupType.YEAR);
             SwiftResultSet rs = operator.createResultSet(metaData, null, list);
             while(rs.next()) {
                 Row row = rs.getRowData();

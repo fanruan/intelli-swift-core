@@ -5,12 +5,13 @@ import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.segment.column.DictionaryEncodedColumn;
 import com.fr.swift.segment.column.impl.DateDerivers;
+import com.fr.swift.source.ColumnTypeConstants;
+import com.fr.swift.source.ColumnTypeUtils;
 import com.fr.swift.source.ListBasedRow;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftMetaDataColumn;
 import com.fr.swift.source.SwiftResultSet;
-import com.fr.swift.source.etl.utils.DateUtils;
 import com.fr.swift.util.function.Function;
 
 import java.sql.SQLException;
@@ -82,9 +83,9 @@ public class GetFromDateResultSet implements SwiftResultSet {
         SwiftMetaDataColumn column = null;
         try {
             column = metaData.getColumn(field);
-        } catch (Exception e) {
+        } catch (Exception ignore) {
         }
-        DateUtils.checkDateColumnType(column);
+        ColumnTypeUtils.checkColumnType(column, ColumnTypeConstants.ColumnType.DATE);
     }
 
     @Override

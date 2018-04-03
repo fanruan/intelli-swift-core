@@ -7,7 +7,7 @@ import com.fr.swift.structure.iterator.RowTraversal;
  * Created by pony on 2017/10/10.
  * 聚合器
  */
-public interface Aggregator<T extends AggregatorValue> {
+public interface Aggregator<T extends AggregatorValue> extends Combiner<T> {
     /**
      * 根据明细聚合出结果
      *
@@ -16,13 +16,4 @@ public interface Aggregator<T extends AggregatorValue> {
      * @return
      */
     T aggregate(RowTraversal traversal, Column column);
-
-    /**
-     * 根据聚合的结果再计算
-     * 合并两个值，并把合并后的值设置给
-     *
-     * @param value
-     * @param other
-     */
-    void combine(T value, T other);
 }

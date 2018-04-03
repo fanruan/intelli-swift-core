@@ -33,16 +33,15 @@ import java.util.Map;
  * @description
  * @since Advanced FineBI Analysis 1.0
  */
-public class SwiftTableConfProvider implements EngineTableManager {
-
+public class SwiftTableManager implements EngineTableManager {
     private SwiftTableDao businessTableDAO;
     private SwiftPackageDao businessPackageDAO;
     private TableToSourceConfigDao tableToSourceConfigDao;
     private SwiftPackageConfProvider swiftPackageConfProvider;
     private String xmlFileName = "table.xml";
-    private SwiftLogger logger = SwiftLoggers.getLogger(SwiftTableConfProvider.class);
+    private SwiftLogger logger = SwiftLoggers.getLogger(SwiftTableManager.class);
 
-    public SwiftTableConfProvider() {
+    public SwiftTableManager() {
         TableParseXml xmlHandler = new TableParseXml();
         ISwiftXmlWriter swiftXmlWriter = new TableXmlWriter();
         businessTableDAO = new SwiftTableDao(xmlHandler, xmlFileName, swiftXmlWriter);

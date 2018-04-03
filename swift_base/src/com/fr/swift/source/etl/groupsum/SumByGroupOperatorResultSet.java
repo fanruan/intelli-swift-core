@@ -1,18 +1,21 @@
 package com.fr.swift.source.etl.groupsum;
 
 import com.fr.swift.query.group.Group;
+import com.fr.swift.query.group.by.MergerGroupByValues;
+import com.fr.swift.result.KeyValue;
+import com.fr.swift.result.RowIndexKey;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.source.ListBasedRow;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftResultSet;
-import com.fr.swift.source.etl.utils.GroupValueIterator;
-import com.fr.swift.source.etl.utils.SwiftValuesAndGVI;
+import com.fr.swift.source.etl.utils.MergerGroupByValuesFactory;
 import com.fr.swift.structure.iterator.RowTraversal;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -22,133 +25,63 @@ public class SumByGroupOperatorResultSet implements SwiftResultSet {
 
     private SumByGroupTarget[] targets;
     private SumByGroupDimension[] dimensions;
-    private ListRow listRow = new ListRow();
     private Segment[] segments;
-    private GroupValueIterator iterator;
+    private MergerGroupByValues mergerGroupByValues;
     private SwiftMetaData metaData;
-    private boolean hasDimension;
-    private boolean noNext;
 
     public SumByGroupOperatorResultSet(SumByGroupTarget[] targets, SumByGroupDimension[] dimensions, Segment[] segments, SwiftMetaData metaData) {
-        this.targets = targets;
-        this.dimensions = dimensions;
+        this.targets = targets == null ? new SumByGroupTarget[0] : targets;
+        this.dimensions = dimensions == null ? new SumByGroupDimension[0] : dimensions;
         this.segments = segments;
         this.metaData = metaData;
         init();
     }
 
     private void init() {
-        int len = getDimensions().length;
-        if(len > 0) {
-            hasDimension = true;
-            ColumnKey[] keys = new ColumnKey[len];
-            // TODO
-            Group[] groups = new Group[len];
-            for (int i = 0; i < groups.length; i++) {
-                keys[i] = dimensions[i].createKey();
-                groups[i] = dimensions[i].getGroup();
-            }
-            iterator = new GroupValueIterator(segments, keys, groups);
+        boolean[] asc = new boolean[dimensions.length];
+        Arrays.fill(asc, true);
+        ColumnKey[] columnKeys = new ColumnKey[dimensions.length];
+        Group[] groups = new Group[dimensions.length];
+        for (int i = 0; i < dimensions.length; i++){
+            columnKeys[i] = new ColumnKey(dimensions[i].getName());
+            groups[i] = dimensions[i].getGroup();
         }
+        mergerGroupByValues = MergerGroupByValuesFactory.createMergerGroupBy(segments, columnKeys, groups,  asc);
     }
 
 
     @Override
     public void close() throws SQLException {
-
+        mergerGroupByValues = null;
     }
 
     @Override
     public boolean next() throws SQLException {
-        if(hasDimension) {
-            if(iterator.hasNext()) {
-                SwiftValuesAndGVI valuesAndGVI = iterator.next();
-                write(valuesAndGVI);
-                return true;
-            }
-            return false;
-        } else {
-            if(!noNext) {
-                writeNoDimension(segments);
-                noNext = true;
-                return true;
-            }
-            return false;
-        }
-
-    }
-
-    private ListRow writeNoDimension(Segment[] segment){
-        List valueList = new ArrayList();
-        RowTraversal[] rowTraversal = new RowTraversal[segment.length];
-        for(int i = 0; i < segment.length; i++) {
-            rowTraversal[i] = segment[i].getAllShowIndex();
-        }
-        for(int i = 0; i < getTargets().length; i++) {
-            valueList.add(getTargets()[i].getSumValue(segment, rowTraversal));
-        }
-        ListBasedRow basedRow = new ListBasedRow(valueList);
-        listRow.setBasedRow(basedRow);
-        return listRow;
-    }
-
-    private ListRow write(SwiftValuesAndGVI valuesAndGVI) {
-        List valueList = new ArrayList();
-        for(int i = 0; i < valuesAndGVI.getValues().length; i++) {
-            valueList.add(dimensions[i].getKeyValue(valuesAndGVI.getValues()[i]));
-        }
-        List<Segment> segmentList = new ArrayList<Segment>();
-        List<RowTraversal> rowTraversalList = new ArrayList<RowTraversal>();
-        for(int i = 0; i < valuesAndGVI.getAggreator().size(); i++) {
-            RowTraversal traversal = valuesAndGVI.getAggreator().get(i).getBitMap();
-            if(traversal != null) {
-                segmentList.add(valuesAndGVI.getAggreator().get(i).getSegment());
-                rowTraversalList.add(traversal);
-            }
-        }
-        for(int i = 0; i < getTargets().length; i++) {
-            valueList.add(getTargets()[i].getSumValue(segmentList.toArray(new Segment[segmentList.size()]), rowTraversalList.toArray(new RowTraversal[rowTraversalList.size()])));
-        }
-        ListBasedRow basedRow = new ListBasedRow(valueList);
-        listRow.setBasedRow(basedRow);
-        return listRow;
+        return mergerGroupByValues.hasNext();
     }
 
     @Override
     public SwiftMetaData getMetaData() throws SQLException {
         return metaData;
-
     }
 
     @Override
     public Row getRowData() throws SQLException {
-        return listRow.getBasedRow();
+        KeyValue<RowIndexKey<Object>, List<RowTraversal[]>> kv = mergerGroupByValues.next();
+        List valueList = new ArrayList();
+        Object[] dimensionsValues = (Object[]) kv.getKey().getKey();
+        for (int i = 0; i < dimensionsValues.length; i++) {
+            valueList.add(dimensionsValues[i]);
+        }
+        List<RowTraversal[]> traversals =kv.getValue();
+        RowTraversal[] traversal = new RowTraversal[traversals.size()];
+        for (int i = 0; i < traversal.length; i++) {
+            traversal[i] = traversals.get(i)[dimensionsValues.length];
+        }
+        for (int i = 0; i< targets.length; i++){
+            valueList.add(targets[i].getSumValue(segments, traversal));
+        }
+        return new ListBasedRow(valueList);
     }
 
-    private SumByGroupDimension[] getDimensions() {
-        if (this.dimensions == null) {
-            return new SumByGroupDimension[0];
-        }
-        return this.dimensions;
-    }
-
-    private SumByGroupTarget[] getTargets() {
-        if (this.targets == null) {
-            return new SumByGroupTarget[0];
-        }
-        return this.targets;
-    }
-
-    private class ListRow {
-        ListBasedRow basedRow;
-
-        public ListBasedRow getBasedRow() {
-            return basedRow;
-        }
-
-        public void setBasedRow(ListBasedRow basedRow) {
-            this.basedRow = basedRow;
-        }
-
-    }
 }

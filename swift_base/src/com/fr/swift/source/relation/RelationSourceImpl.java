@@ -1,6 +1,7 @@
 package com.fr.swift.source.relation;
 
 import com.fr.swift.source.RelationSource;
+import com.fr.swift.source.RelationSourceType;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.core.Core;
 import com.fr.swift.source.core.CoreField;
@@ -54,6 +55,11 @@ public class RelationSourceImpl implements RelationSource {
     @Override
     public List<String> getForeignFields() {
         return foreignFields;
+    }
+
+    @Override
+    public RelationSourceType getRelationType() {
+        return RelationSourceType.RELATION;
     }
 
     @Override

@@ -89,13 +89,18 @@ public class TestBusinessField implements FineBusinessField {
     }
 
     @Override
-    public int getGroup() {
+    public int getFieldGroupType() {
         return 0;
     }
 
     @Override
-    public void setGroup(int i) {
+    public void setFieldGroupType(int i) {
 
+    }
+
+    @Override
+    public FineBusinessField clone() {
+        return null;
     }
 
     @Override

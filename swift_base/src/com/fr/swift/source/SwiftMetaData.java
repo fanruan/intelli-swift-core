@@ -5,7 +5,8 @@ import com.fr.swift.exception.meta.SwiftMetaDataException;
 import java.util.List;
 
 /**
- * Created by pony on 2017/10/24.
+ * @author pony
+ * @date 2017/10/24
  * 先实现一些基本的功能，以后如果需要兼容jdbc，可扩展为ResultSetMetadata
  * column 从1开始
  */
@@ -21,6 +22,8 @@ public interface SwiftMetaData extends Iterable<SwiftMetaDataColumn> {
     String getColumnRemark(int index) throws SwiftMetaDataException;
 
     /**
+     * sql type
+     *
      * @param index 序号
      * @return 字段对应的sql type
      * @throws SwiftMetaDataException 异常
@@ -29,6 +32,8 @@ public interface SwiftMetaData extends Iterable<SwiftMetaDataColumn> {
     int getColumnType(int index) throws SwiftMetaDataException;
 
     /**
+     * 字段长度
+     *
      * @param index 序号
      * @return 字段长度
      * @throws SwiftMetaDataException 异常
@@ -36,6 +41,8 @@ public interface SwiftMetaData extends Iterable<SwiftMetaDataColumn> {
     int getPrecision(int index) throws SwiftMetaDataException;
 
     /**
+     * 字段小数位数
+     *
      * @param index 序号
      * @return 字段小数位数
      * @throws SwiftMetaDataException 异常
