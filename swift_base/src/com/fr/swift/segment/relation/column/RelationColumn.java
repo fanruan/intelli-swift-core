@@ -15,22 +15,26 @@ public class RelationColumn {
     private Segment[] segments;
     private ColumnKey columnKey;
     private DictionaryEncodedColumn[] columns;
+    private int reverseCount;
 
     public RelationColumn(RelationIndex relationIndex, Segment[] segments, ColumnKey columnKey) {
         this.relationIndex = relationIndex;
         this.segments = segments;
         this.columnKey = columnKey;
         this.columns = new DictionaryEncodedColumn[segments.length];
+        this.reverseCount = relationIndex.getReverseCount();
     }
 
     public Object getValue(int row) {
-        long reverse = relationIndex.getReverseIndex(row);
-        if (reverse != NIOConstant.LONG.NULL_VALUE) {
-            int[] result = reverse2SegAndRow(reverse);
-            if (columns[result[0]] == null) {
-                columns[result[0]] = segments[result[0]].getColumn(columnKey).getDictionaryEncodedColumn();
+        if (row < reverseCount) {
+            long reverse = relationIndex.getReverseIndex(row);
+            if (reverse != NIOConstant.LONG.NULL_VALUE) {
+                int[] result = reverse2SegAndRow(reverse);
+                if (columns[result[0]] == null) {
+                    columns[result[0]] = segments[result[0]].getColumn(columnKey).getDictionaryEncodedColumn();
+                }
+                return columns[result[0]].getValue(columns[result[0]].getIndexByRow(result[1]));
             }
-            return columns[result[0]].getValue(columns[result[0]].getIndexByRow(result[1]));
         }
         return null;
     }
