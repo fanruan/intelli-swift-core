@@ -1,4 +1,4 @@
-package com.fr.swift.adaptor.executor;
+package com.finebi.conf.imp;
 
 import com.finebi.base.constant.FineEngineType;
 import com.finebi.conf.constant.ConfConstant;
@@ -11,13 +11,14 @@ import com.finebi.conf.structure.analysis.table.FineAnalysisTable;
 import com.finebi.conf.structure.bean.field.FineBusinessField;
 import com.finebi.conf.structure.filter.FineFilter;
 import com.finebi.conf.structure.result.BIDetailTableResult;
-import com.fr.swift.adaptor.preview.SwiftFieldsDataPreview;
+import com.fr.swift.adaptor.preview.SwiftDataPreview;
+import com.fr.swift.adaptor.transformer.DataSourceFactory;
 import com.fr.swift.adaptor.transformer.FieldFactory;
-import com.fr.swift.adaptor.transformer.IndexingDataSourceFactory;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
-import com.fr.swift.source.etl.EtlSource;
+import com.fr.swift.source.DataSource;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -31,21 +32,20 @@ public class SwiftAnalysisTableManager implements EngineAnalysisTableManager {
 
     private static final SwiftLogger LOGGER = SwiftLoggers.getLogger(SwiftAnalysisTableManager.class);
 
-    private SwiftFieldsDataPreview swiftFieldsDataPreview;
+    private SwiftDataPreview swiftDataPreview;
 
     public SwiftAnalysisTableManager() {
-        swiftFieldsDataPreview = new SwiftFieldsDataPreview();
+        swiftDataPreview = new SwiftDataPreview();
     }
 
     @Override
     public BIDetailTableResult getPreViewResult(FineAnalysisTable table, int rowCount) {
         try {
-            //nice job foundation
             //字段设置居然要返回上一层的结果
-            if (table.getOperator() != null && table.getOperator().getType() == ConfConstant.AnalysisType.FIELD_SETTING){
+            if (table.getOperator() != null && table.getOperator().getType() == ConfConstant.AnalysisType.FIELD_SETTING) {
                 table = table.getBaseTable();
             }
-            return swiftFieldsDataPreview.getDetailPreviewByFields(table, rowCount);
+            return swiftDataPreview.getDetailPreviewByFields(table, rowCount);
         } catch (Exception e) {
             LOGGER.error(e.getMessage(), e);
         }
@@ -71,17 +71,22 @@ public class SwiftAnalysisTableManager implements EngineAnalysisTableManager {
     public List<FineBusinessField> getFields(FineAnalysisTable table) throws Exception {
         //nice job foundation
         //字段设置居然要返回上一层的结果
-        if (table.getOperator() != null && table.getOperator().getType() == ConfConstant.AnalysisType.FIELD_SETTING){
-            List<FieldSettingBeanItem> fieldSettings = ((FieldSettingOperator) table.getOperator()).getValue().getValue();
-            List<FineBusinessField> pFields = FieldFactory.transformColumns2Fields(IndexingDataSourceFactory.transformDataSource(table.getBaseTable()).getMetadata(),table.getId());
-            for (int i = 0; i < pFields.size(); i++){
-                if (!fieldSettings.isEmpty() && !fieldSettings.get(i).isUsed()){
-                    ((FineBusinessFieldImp)(pFields.get(i))).setUsable(false);
+        try {
+            if (table.getOperator() != null && table.getOperator().getType() == ConfConstant.AnalysisType.FIELD_SETTING) {
+                List<FieldSettingBeanItem> fieldSettings = ((FieldSettingOperator) table.getOperator()).getValue().getValue();
+                List<FineBusinessField> pFields = FieldFactory.transformColumns2Fields(DataSourceFactory.getDataSource(table.getBaseTable()).getMetadata(), table.getId());
+                for (int i = 0; i < pFields.size(); i++) {
+                    if (!fieldSettings.isEmpty() && !fieldSettings.get(i).isUsed()) {
+                        ((FineBusinessFieldImp) (pFields.get(i))).setUsable(false);
+                    }
                 }
+                return pFields;
             }
-            return pFields;
+            return FieldFactory.transformColumns2Fields(DataSourceFactory.getDataSource(table).getMetadata(), table.getId());
+        } catch (Exception e) {
+            LOGGER.error(e);
         }
-        return FieldFactory.transformColumns2Fields(IndexingDataSourceFactory.transformDataSource(table).getMetadata(),table.getId());
+        return new ArrayList<FineBusinessField>();
     }
 
     @Override
@@ -96,9 +101,10 @@ public class SwiftAnalysisTableManager implements EngineAnalysisTableManager {
 
     @Override
     public NumberMaxAndMinValue getNumberMaxAndMinValue(FineAnalysisTable table, String fieldName) {
+
         try {
-            EtlSource dataSource = (EtlSource) IndexingDataSourceFactory.transformDataSource(table);
-            return swiftFieldsDataPreview.getNumberMaxAndMinValue(dataSource, fieldName);
+            DataSource dataSource = DataSourceFactory.getDataSource(table);
+            return swiftDataPreview.getNumberMaxAndMinValue(dataSource, fieldName);
         } catch (Exception ignore) {
         }
         return new NumberMaxAndMinValue();
@@ -107,11 +113,12 @@ public class SwiftAnalysisTableManager implements EngineAnalysisTableManager {
     @Override
     public List<Object> getColumnValue(FineAnalysisTable table, String fieldName) {
         try {
-            EtlSource dataSource = (EtlSource) IndexingDataSourceFactory.transformDataSource(table);
-            return swiftFieldsDataPreview.getGroupPreviewByFields(dataSource, fieldName);
+            DataSource dataSource = DataSourceFactory.getDataSource(table);
+            return swiftDataPreview.getGroupPreviewByFields(dataSource, fieldName);
         } catch (Exception e) {
+            LOGGER.error(e);
         }
-        return null;
+        return new ArrayList<Object>();
     }
 
     @Override

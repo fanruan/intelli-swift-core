@@ -27,21 +27,32 @@ import java.util.List;
  * @author anchore
  * @date 2018/2/1
  * <p>
- * todo 每次update都是重新存的数据，后期这块应该能优化下
+ * 基础表每次
  */
 public class MinorUpdater {
-    public static void update(DataSource dataSource) throws Exception {
-        // 更新前，把之前的segment清除
-        MinorSegmentManager.getInstance().clear();
 
+    DataSource dataSource;
+
+    public MinorUpdater(DataSource dataSource) {
+        this.dataSource = dataSource;
+    }
+
+    /**
+     * 是基础表的话，就清除数据，重新update
+     * 否则，取存在的数据update。
+     *
+     * @throws Exception
+     */
+    public void update() throws Exception {
         if (isEtl(dataSource)) {
             buildEtl((EtlDataSource) dataSource);
         } else {
+            MinorSegmentManager.getInstance().remove(dataSource.getSourceKey());
             build(dataSource);
         }
     }
 
-    private static void buildEtl(EtlDataSource etl) throws Exception {
+    private void buildEtl(EtlDataSource etl) throws Exception {
         List<DataSource> dataSources = etl.getBasedSources();
         for (DataSource dataSource : dataSources) {
             if (isEtl(dataSource)) {
@@ -53,7 +64,11 @@ public class MinorUpdater {
         build(etl);
     }
 
-    private static void build(final DataSource dataSource) throws Exception {
+    private void build(final DataSource dataSource) throws Exception {
+        List<Segment> segmentList = MinorSegmentManager.getInstance().getSegment(dataSource.getSourceKey());
+        if (segmentList != null && !segmentList.isEmpty()) {
+            return;
+        }
         SwiftResultSet swiftResultSet = SwiftDataPreviewer.createPreviewTransfer(dataSource, 100).createResultSet();
 
         Segment segment = createSegment(dataSource);
@@ -68,7 +83,7 @@ public class MinorUpdater {
 
     }
 
-    private static void indexColumn(final DataSource dataSource, final ColumnKey indexField) {
+    private void indexColumn(final DataSource dataSource, final ColumnKey indexField) {
         new RealtimeColumnIndexer(dataSource, indexField) {
             @Override
             protected List<Segment> getSegments() {
@@ -113,14 +128,14 @@ public class MinorUpdater {
         }
     }
 
-    private static Inserter getInserter(DataSource dataSource, Segment segment) throws Exception {
+    private Inserter getInserter(DataSource dataSource, Segment segment) throws Exception {
         if (DataSourceUtils.isAddColumn(dataSource)) {
             return new MinorInserter(segment, DataSourceUtils.getAddFields(dataSource));
         }
         return new MinorInserter(segment);
     }
 
-    private static Segment createSegment(DataSource dataSource) {
+    private Segment createSegment(DataSource dataSource) {
         String cubeSourceKey = DataSourceUtils.getSwiftSourceKey(dataSource);
         String path = String.format("/%s/cubes/%s/minor_seg",
                 System.getProperty("user.dir"),

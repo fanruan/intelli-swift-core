@@ -85,7 +85,6 @@ import com.fr.swift.source.ColumnTypeConstants;
 import com.fr.swift.source.DataSource;
 import com.fr.swift.source.MetaDataColumn;
 import com.fr.swift.source.RelationSource;
-import com.fr.swift.source.RelationSourceType;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftMetaDataColumn;
@@ -123,7 +122,6 @@ import com.fr.swift.util.Crasher;
 
 import java.sql.Types;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -153,13 +151,13 @@ class EtlAdaptor {
         FineBusinessTable baseTable = analysis.getBaseTable();
         try {
             if (baseTable != null) {
-                dataSources.add(IndexingDataSourceFactory.transformDataSource(baseTable));
+                dataSources.add(DataSourceFactory.getDataSource(baseTable));
             }
             dataSources.addAll(fromOperator(op));
             return new EtlSource(dataSources, adaptEtlOperator(op, table));
         } catch (Exception e) {
             SwiftLoggers.getLogger().error(e);
-            return IndexingDataSourceFactory.transformDataSource(baseTable);
+            return DataSourceFactory.getDataSource(baseTable);
         }
     }
 
@@ -174,7 +172,7 @@ class EtlAdaptor {
                 break;
             }
         }
-        EtlSource source = (EtlSource) IndexingDataSourceFactory.transformDataSource(analysis);
+        EtlSource source = (EtlSource) DataSourceFactory.getDataSource(analysis);
         return new EtlSource(source.getBasedSources(), source.getOperator(), createFieldsInfo(fieldSettingOperatorList, source));
     }
 
@@ -215,7 +213,7 @@ class EtlAdaptor {
         for (SelectFieldBeanItem selectFieldBeanItem : selectFieldBeanItemList) {
             FineBusinessTable fineBusinessTable = FineTableUtils.getTableByFieldId(selectFieldBeanItem.getField());
             FineBusinessField fineBusinessField = fineBusinessTable.getFieldByFieldId(selectFieldBeanItem.getField());
-            DataSource baseDataSource = IndexingDataSourceFactory.transformDataSource(fineBusinessTable);
+            DataSource baseDataSource = DataSourceFactory.getDataSource(fineBusinessTable);
             List<SelectFieldPathItem> path = selectFieldBeanItem.getPath();
             ColumnKey columnKey = new ColumnKey(fineBusinessField.getName());
             if (baseTable != null && !ComparatorUtils.equals(baseTable, fineBusinessTable.getId())) {
@@ -233,14 +231,14 @@ class EtlAdaptor {
         }
         List<DataSource> baseDatas = new ArrayList<DataSource>();
         if (analysis.getBaseTable() != null) {
-            baseDatas.add(IndexingDataSourceFactory.transformDataSource(analysis.getBaseTable()));
+            baseDatas.add(DataSourceFactory.getDataSource(analysis.getBaseTable()));
         }
         if (sourceKeyDataSourceMap.size() == 1) {
             //选字段只选了一张表的情况
             return getSingleTableSelectFieldSource(sourceKeyColumnMap, sourceKeyDataSourceMap, baseDatas);
         } else {
             FineBusinessTable table = FineTableUtils.getTableByName(baseTable);
-            DataSource baseDataSource = IndexingDataSourceFactory.transformDataSource(table);
+            DataSource baseDataSource = DataSourceFactory.getDataSource(table);
             return getMultiTableSelectFieldSource(sourceKeyColumnMap, sourceKeyDataSourceMap, baseDatas, baseDataSource.getSourceKey().getId());
         }
     }
@@ -278,8 +276,8 @@ class EtlAdaptor {
         for (FineBusinessTableRelation relation : relations) {
             FineBusinessTable primaryTable = path.getFirstTable();
             FineBusinessTable foreignTable = path.getEndTable();
-            SourceKey primary = IndexingDataSourceFactory.transformDataSource(primaryTable).getSourceKey();
-            SourceKey foreign = IndexingDataSourceFactory.transformDataSource(foreignTable).getSourceKey();
+            SourceKey primary = DataSourceFactory.getDataSource(primaryTable).getSourceKey();
+            SourceKey foreign = DataSourceFactory.getDataSource(foreignTable).getSourceKey();
             List<FineBusinessField> primaryFields = relation.getPrimaryBusinessField();
             List<FineBusinessField> foreignFields = relation.getForeignBusinessField();
             List<String> primaryKey = new ArrayList<String>();
@@ -359,7 +357,7 @@ class EtlAdaptor {
             case AnalysisType.JOIN: {
                 JoinBeanValue jbv = op.<JoinBean>getValue().getValue();
                 FineBusinessTable busiTable = FineTableUtils.getTableByName(jbv.getTable().getName());
-                dataSources.add(IndexingDataSourceFactory.transformDataSource(busiTable));
+                dataSources.add(DataSourceFactory.getDataSource(busiTable));
                 break;
             }
             case AnalysisType.UNION:
@@ -367,7 +365,7 @@ class EtlAdaptor {
                 for (UnionBeanValueTable table : ubv.getTables()) {
                     try {
                         FineBusinessTable busiTable = FineTableUtils.getTableByName(table.getName());
-                        dataSources.add(IndexingDataSourceFactory.transformDataSource(busiTable));
+                        dataSources.add(DataSourceFactory.getDataSource(busiTable));
                     } catch (Exception e) {
                         continue;
                     }
