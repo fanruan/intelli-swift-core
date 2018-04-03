@@ -4,6 +4,7 @@ import com.fr.swift.query.filter.detail.DetailFilter;
 import com.fr.swift.result.RowIndexKey;
 import com.fr.swift.segment.column.Column;
 
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -16,6 +17,6 @@ public class MultiGroupByIndex extends MultiGroupBy<int[]> {
 
     @Override
     protected RowIndexKey<int[]> createKey(int[] indexes) {
-        return new RowIndexKey<int[]>(indexes);
+        return new RowIndexKey<int[]>(Arrays.copyOf(indexes, indexes.length));
     }
 }

@@ -5,5 +5,5 @@ package com.fr.swift.cal.builder;
  * @date 2017/12/12
  */
 public enum QueryType {
-    DETAIL, GROUP
+    DETAIL, GROUP, CROSS_GROUP
 }
