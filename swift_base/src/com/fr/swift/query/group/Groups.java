@@ -7,7 +7,7 @@ import com.fr.swift.query.group.impl.GroupImpl;
  * @date 2018/1/26
  */
 public class Groups {
-    public static <Base, Derive> Group newGroup(GroupRule<Base, Derive> groupRule) {
-        return new GroupImpl<Base, Derive>(groupRule);
+    public static Group newGroup(GroupRule groupRule) {
+        return new GroupImpl(groupRule);
     }
 }

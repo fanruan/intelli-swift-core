@@ -14,9 +14,9 @@ import com.fr.swift.source.core.CoreGenerator;
  */
 abstract class BaseGroup<Base, Derive> implements Group<Base, Derive> {
     @CoreField
-    private GroupRule<Base, Derive> rule;
+    private GroupRule rule;
 
-    BaseGroup(GroupRule<Base, Derive> rule) {
+    BaseGroup(GroupRule rule) {
         this.rule = rule;
     }
 

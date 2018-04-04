@@ -41,6 +41,7 @@ import com.finebi.conf.internalimp.analysis.bean.operator.group.GroupBean;
 import com.finebi.conf.internalimp.analysis.bean.operator.group.GroupSingleValueBean;
 import com.finebi.conf.internalimp.analysis.bean.operator.group.GroupValueBean;
 import com.finebi.conf.internalimp.analysis.bean.operator.group.ViewBean;
+import com.finebi.conf.internalimp.analysis.bean.operator.datamining.rcompile.RCompileBean;
 import com.finebi.conf.internalimp.analysis.bean.operator.group.custom.CustomGroupValueContent;
 import com.finebi.conf.internalimp.analysis.bean.operator.join.JoinBean;
 import com.finebi.conf.internalimp.analysis.bean.operator.join.JoinBeanValue;
@@ -69,11 +70,16 @@ import com.finebi.conf.structure.path.FineBusinessTableRelationPath;
 import com.finebi.conf.structure.relation.FineBusinessTableRelation;
 import com.finebi.conf.utils.FineTableUtils;
 import com.fr.general.ComparatorUtils;
+import com.fr.stable.StringUtils;
+import com.fr.swift.adaptor.encrypt.SwiftEncryption;
 import com.fr.swift.adaptor.widget.group.GroupAdaptor;
 import com.fr.swift.adaptor.widget.group.GroupTypeAdaptor;
+import com.fr.swift.conf.business.relation.RelationType;
 import com.fr.swift.exception.meta.SwiftMetaDataException;
 import com.fr.swift.generate.preview.MinorSegmentManager;
 import com.fr.swift.log.SwiftLoggers;
+import com.fr.swift.provider.DataProvider;
+import com.fr.swift.provider.impl.SwiftDataProvider;
 import com.fr.swift.query.aggregator.AggregatorFactory;
 import com.fr.swift.query.aggregator.AggregatorType;
 import com.fr.swift.query.filter.info.FilterInfo;
@@ -94,8 +100,8 @@ import com.fr.swift.source.etl.ETLOperator;
 import com.fr.swift.source.etl.EtlSource;
 import com.fr.swift.source.etl.columnfilter.ColumnFilterOperator;
 import com.fr.swift.source.etl.columnrowtrans.ColumnRowTransOperator;
-import com.fr.swift.source.etl.columnrowtrans.NameText;
 import com.fr.swift.source.etl.datamining.DataMiningOperator;
+import com.fr.swift.source.etl.datamining.rcompile.RCompileOperator;
 import com.fr.swift.source.etl.date.GetFromDateOperator;
 import com.fr.swift.source.etl.datediff.DateDiffOperator;
 import com.fr.swift.source.etl.detail.DetailOperator;
@@ -119,6 +125,7 @@ import com.fr.swift.source.etl.union.UnionOperator;
 import com.fr.swift.source.etl.utils.FormulaUtils;
 import com.fr.swift.source.relation.RelationPathSourceImpl;
 import com.fr.swift.source.relation.RelationSourceImpl;
+import com.fr.swift.structure.Pair;
 import com.fr.swift.util.Crasher;
 
 import java.sql.Types;
@@ -275,12 +282,23 @@ class EtlAdaptor {
         List<FineBusinessTableRelation> relations = path.getFineBusinessTableRelations();
         List<RelationSource> result = new ArrayList<RelationSource>();
         for (FineBusinessTableRelation relation : relations) {
-            FineBusinessTable primaryTable = path.getFirstTable();
-            FineBusinessTable foreignTable = path.getEndTable();
+            FineBusinessTable primaryTable;
+            FineBusinessTable foreignTable;
+            List<FineBusinessField> primaryFields;
+            List<FineBusinessField> foreignFields;
+            if (relation.getRelationType() == RelationType.MORE_TO_ONE) {
+                primaryTable = relation.getForeignBusinessTable();
+                foreignTable = relation.getPrimaryBusinessTable();
+                primaryFields = relation.getForeignBusinessField();
+                foreignFields = relation.getPrimaryBusinessField();
+            } else {
+                primaryTable = relation.getPrimaryBusinessTable();
+                foreignTable = relation.getForeignBusinessTable();
+                primaryFields = relation.getPrimaryBusinessField();
+                foreignFields = relation.getForeignBusinessField();
+            }
             SourceKey primary = DataSourceFactory.getDataSource(primaryTable).getSourceKey();
             SourceKey foreign = DataSourceFactory.getDataSource(foreignTable).getSourceKey();
-            List<FineBusinessField> primaryFields = relation.getPrimaryBusinessField();
-            List<FineBusinessField> foreignFields = relation.getForeignBusinessField();
             List<String> primaryKey = new ArrayList<String>();
             List<String> foreignKey = new ArrayList<String>();
 
@@ -314,8 +332,21 @@ class EtlAdaptor {
             if (tables.size() == 1) {
                 break;
             }
-            String prim = path.getFirstTable().getId();
-            String foreign = path.getEndTable().getId();
+            List<FineBusinessTableRelation> relations = path.getFineBusinessTableRelations();
+            FineBusinessTableRelation firstRelation = relations.get(0);
+            FineBusinessTableRelation lastRelation = relations.get(relations.size() - 1);
+            String prim;
+            if (firstRelation.getRelationType() == RelationType.MORE_TO_ONE) {
+                prim = firstRelation.getForeignBusinessTable().getId();
+            } else {
+                prim = firstRelation.getPrimaryBusinessTable().getId();
+            }
+            String foreign;
+            if (lastRelation.getRelationType() == RelationType.MORE_TO_ONE) {
+                foreign = lastRelation.getPrimaryBusinessTable().getId();
+            } else {
+                foreign = lastRelation.getForeignBusinessTable().getId();
+            }
             if (tables.contains(prim) && tables.contains(foreign)) {
                 tables.remove(prim);
             }
@@ -485,7 +516,40 @@ class EtlAdaptor {
                 return fromSumByGroupBean(op.<GroupBean>getValue());
             case AnalysisType.DATA_MINING:
                 return fromDataMiningBean(op.<DataMiningBean>getValue());
+            /* case AnalysisType.R_Compile: {
+                DataSource source = adaptEtlDataSource(((FineAnalysisTableImpl) table).getBaseTable());
+                return fromRCompileOperator(op.<RCompileBean>getValue(), source);
+            }*/
             default:
+        }
+        return null;
+    }
+
+    private static RCompileOperator fromRCompileOperator(RCompileBean bean, DataSource dataSource) {
+        boolean needExecute = bean.isNeedExecute();
+        String ip = bean.getIp();
+        int port = bean.getPort();
+        String tableName = bean.getTableName();
+        if(needExecute) {
+            String commands = bean.getCommands();
+            if(null != commands && !"".equals(commands)) {
+                if(null != dataSource) {
+                    try {
+                        DataProvider dataProvider = new SwiftDataProvider();
+                        List<Segment> segments = dataProvider.getPreviewData(dataSource);
+                        return new RCompileOperator(commands, needExecute, ip, port, tableName,
+                                segments.toArray(new Segment[segments.size()]), null);
+                    } catch(Exception e) {
+                        SwiftLoggers.getLogger().error(e);
+                    }
+                }
+            } else{
+                return null;
+            }
+        } else {
+            //String[] columns = bean.getColumns();
+            //return new RCompileOperator(null, needExecute, ip, port, tableName, null, columns);
+            return null;
         }
         return null;
     }
@@ -733,27 +797,23 @@ class EtlAdaptor {
 
     private static ColumnRowTransOperator fromColumnRowTransBean(ColumnRowTransBean bean, FineBusinessTable table) {
         ColumnTransValue value = bean.getValue();
-        FineBusinessTable preTable = ((EngineComplexConfTable) table).getBaseTableBySelected(0);
-        List<FineBusinessField> fields = preTable.getFields();
-        String groupName = fields.get(findFieldName(fields, value.getAccordingField())).getName();
-        String lcName = fields.get(findFieldName(fields, value.getFieldId())).getName();
-        List<NameText> lcValue = new ArrayList<NameText>();
+        String groupName = SwiftEncryption.decryptFieldId(value.getAccordingField())[1];
+        String lcName = SwiftEncryption.decryptFieldId(value.getFieldId())[1];
+        List<Pair<String, String>> lcValue = new ArrayList<Pair<String, String>>();
         for (int i = 0; i < value.getValues().size(); i++) {
             ColumnInitalItem item = value.getValues().get(i);
-            NameText nameText = new NameText(item.getOldValue(), item.getNewValue());
-            lcValue.add(nameText);
+            if (item.isSelected()) {
+                lcValue.add(Pair.of(item.getOldValue(), StringUtils.isEmpty(item.getNewValue()) ? item.getOldValue() : item.getNewValue()));
+            }
         }
-        List<NameText> columns = new ArrayList<NameText>();
-        List<String> otherColumnNames = new ArrayList<String>();
+        List<Pair<String, String>> columns = new ArrayList<Pair<String, String>>();
+        List<Pair<String, String>> otherColumnNames = new ArrayList<Pair<String, String>>();
         for (int i = 0; i < value.getInitialFields().size(); i++) {
             ColumnInitalItem item = value.getInitialFields().get(i);
-            if (!groupName.equals(item.getOldValue()) && !lcName.equals(item.getOldValue())) {
-
-                if (item.isSelected()) {
-                    columns.add(new NameText(item.getOldValue(), item.getNewValue()));
-                } else {
-                    otherColumnNames.add(item.getOldValue());
-                }
+            if (item.isSelected()) {
+                columns.add(Pair.of(item.getOldValue(), StringUtils.isEmpty(item.getNewValue()) ? item.getOldValue() : item.getNewValue()));
+            } else {
+                otherColumnNames.add(Pair.of(item.getOldValue(), StringUtils.isEmpty(item.getNewValue()) ? item.getOldValue() : item.getNewValue()));
             }
         }
         return new ColumnRowTransOperator(groupName, lcName, lcValue, columns, otherColumnNames);

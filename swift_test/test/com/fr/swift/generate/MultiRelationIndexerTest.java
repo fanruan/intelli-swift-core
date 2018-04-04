@@ -29,17 +29,15 @@ import com.fr.swift.generate.history.index.MultiRelationIndexer;
 import com.fr.swift.generate.history.TableBuilder;
 import com.fr.swift.manager.LocalSegmentProvider;
 import com.fr.swift.relation.CubeMultiRelation;
-import com.fr.swift.relation.utils.MultiRelationHelper;
+import com.fr.swift.relation.utils.RelationPathHelper;
 import com.fr.swift.segment.HistorySegmentImpl;
 import com.fr.swift.segment.Segment;
-import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.segment.column.DetailColumn;
 import com.fr.swift.segment.relation.RelationIndex;
 import com.fr.swift.service.LocalSwiftServerService;
 import com.fr.swift.source.DataSource;
 import com.fr.swift.source.RelationSource;
-import com.fr.swift.source.RelationSourceType;
 import com.fr.swift.source.db.TableDBSource;
 import com.fr.swift.source.db.TestConnectionProvider;
 import com.fr.swift.source.relation.RelationSourceImpl;
@@ -141,7 +139,7 @@ public class MultiRelationIndexerTest  {
         if (end.result() != Result.SUCCEEDED) {
             TestCase.fail();
         }
-        MultiRelationIndexer indexer = new MultiRelationIndexer(MultiRelationHelper.convert2CubeRelation(createRelation()), LocalSegmentProvider.getInstance());
+        MultiRelationIndexer indexer = new MultiRelationIndexer(RelationPathHelper.convert2CubeRelation(createRelation()), LocalSegmentProvider.getInstance());
         SchedulerTask relationTask = CubeTasks.newRelationTask(createRelation());
         WorkerTask task = new WorkerTaskImpl(relationTask.key());
         task.setWorker(indexer);
@@ -176,7 +174,7 @@ public class MultiRelationIndexerTest  {
         List<Segment> foreignList = LocalSegmentProvider.getInstance().getSegment(contract.getSourceKey());
         for (int fi = 0; fi < foreignList.size(); fi++) {
             Segment foreign = foreignList.get(fi);
-            CubeMultiRelation relation = MultiRelationHelper.convert2CubeRelation(createRelation());
+            CubeMultiRelation relation = RelationPathHelper.convert2CubeRelation(createRelation());
             RelationIndex index = foreign.getRelation(relation);
             List<ColumnKey> primaryKeys = relation.getPrimaryField().getKeyFields();
             List<ColumnKey> foreignKeys = relation.getForeignField().getKeyFields();
@@ -216,7 +214,7 @@ public class MultiRelationIndexerTest  {
     public void testReverse() {
         List<Segment> segmentList = LocalSegmentProvider.getInstance().getSegment(dataSource.getSourceKey());
         List<Segment> foreignList = LocalSegmentProvider.getInstance().getSegment(contract.getSourceKey());
-        CubeMultiRelation relation = MultiRelationHelper.convert2CubeRelation(createRelation());
+        CubeMultiRelation relation = RelationPathHelper.convert2CubeRelation(createRelation());
         List<ColumnKey> primaryKeys = relation.getPrimaryField().getKeyFields();
         List<ColumnKey> foreignKeys = relation.getForeignField().getKeyFields();
         for (int fi = 0; fi < foreignList.size(); fi++) {

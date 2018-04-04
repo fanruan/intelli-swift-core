@@ -6,6 +6,7 @@ import com.finebi.conf.internalimp.analysis.bean.operator.confselect.ConfSelectB
 import com.finebi.conf.internalimp.analysis.operator.confselect.ConfSelectOperator;
 import com.finebi.conf.internalimp.basictable.table.FineDBBusinessTable;
 import com.finebi.conf.internalimp.basictable.table.FineSQLBusinessTable;
+import com.finebi.conf.internalimp.basictable.table.FineSQLTableParameter;
 import com.finebi.conf.internalimp.update.TableUpdateInfo;
 import com.finebi.conf.structure.analysis.operator.FineOperator;
 import com.finebi.conf.structure.bean.table.AbstractFineTable;
@@ -35,6 +36,8 @@ import com.fr.swift.source.etl.EtlSource;
 import com.fr.swift.source.etl.EtlTransferOperatorFactory;
 import com.fr.swift.source.etl.datamining.DataMiningOperator;
 import com.fr.swift.source.etl.datamining.DataMiningTransferOperator;
+import com.fr.swift.source.etl.datamining.rcompile.RCompileOperator;
+import com.fr.swift.source.etl.datamining.rcompile.RCompileTransferOperator;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -59,6 +62,14 @@ public class DataSourceFactory {
             @Override
             public ETLTransferOperator createTransferOperator(ETLOperator operator) {
                 return new DataMiningTransferOperator(((DataMiningOperator) operator).getAlgorithmBean());
+            }
+        });
+        EtlTransferOperatorFactory.register(RCompileOperator.class,new EtlTransferOperatorFactory.ETLTransferCreator(){
+
+            @Override
+            public ETLTransferOperator createTransferOperator(ETLOperator operator) {
+                RCompileOperator op = (RCompileOperator) operator;
+                return new RCompileTransferOperator(op.getColumns(), op.getColumnTypes(), op.getDataList());
             }
         });
         try {
@@ -168,8 +179,20 @@ public class DataSourceFactory {
     private static DataSource transformQueryDBSource(FineSQLBusinessTable table) throws Exception {
 
         Map<String, ColumnType> fieldColumnTypes = checkFieldTypes(table.getOperators());
+
+        String sql = table.getSql();
+        List<FineSQLTableParameter> sqlTableParameters = table.getParamSetting();
+        if (sqlTableParameters != null) {
+            for (FineSQLTableParameter parameter : sqlTableParameters) {
+                String name = parameter.getName();
+                String value = parameter.getValue();
+                String compareName = "\\$" + "\\{" + name + "\\}";
+                sql = sql.replaceAll(compareName, value);
+            }
+        }
+
         QueryDBSource queryDBSource = fieldColumnTypes == null ?
-                new QueryDBSource(table.getSql(), table.getConnName()) : new QueryDBSource(table.getSql(), table.getConnName(), fieldColumnTypes);
+                new QueryDBSource(sql, table.getConnName()) : new QueryDBSource(table.getSql(), table.getConnName(), fieldColumnTypes);
         return checkETL(queryDBSource, table);
     }
 

@@ -44,7 +44,7 @@ public class DateDiffOperator extends AbstractOperator {
 
     @Override
     public OperatorType getOperatorType() {
-        return OperatorType.DATEDIFF;
+        return OperatorType.DATE_DIFF;
     }
 
     public String getField1() {
