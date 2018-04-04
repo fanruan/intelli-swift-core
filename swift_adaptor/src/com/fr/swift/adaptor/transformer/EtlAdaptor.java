@@ -74,7 +74,6 @@ import com.fr.swift.adaptor.widget.group.GroupAdaptor;
 import com.fr.swift.adaptor.widget.group.GroupTypeAdaptor;
 import com.fr.swift.exception.meta.SwiftMetaDataException;
 import com.fr.swift.generate.preview.MinorSegmentManager;
-import com.fr.swift.generate.preview.MinorUpdater;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.provider.DataProvider;
 import com.fr.swift.provider.impl.SwiftDataProvider;
@@ -514,7 +513,7 @@ class EtlAdaptor {
                         return new RCompileOperator(commands, needExecute, ip, port, tableName,
                                 segments.toArray(new Segment[segments.size()]), null);
                     } catch(Exception e) {
-                        e.printStackTrace();
+                        SwiftLoggers.getLogger().error(e);
                     }
                 }
             } else{
