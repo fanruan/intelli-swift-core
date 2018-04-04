@@ -65,13 +65,13 @@ public class EtlTransferOperatorFactory {
                 return transferColumnFormulaOperator((ColumnFormulaOperator) operator);
             case ACCUMULATE:
                 return transferAccumulateRowOperator((AccumulateRowOperator) operator);
-            case ALLDATA:
+            case ALL_DATA:
                 return transferAllDataCalculatorOperator((AllDataRowCalculatorOperator) operator);
             case RANK:
                 return transferRankRowOperator((RankRowOperator) operator);
-            case GETDATE:
+            case GET_DATE:
                 return transferGetDateOperator((GetFromDateOperator) operator);
-            case DATEDIFF:
+            case DATE_DIFF:
                 return transferDateDiffOperator((DateDiffOperator) operator);
             case GROUP_STRING:
                 return transferGroupStringOperator((GroupAssignmentOperator) operator);

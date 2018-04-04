@@ -8,7 +8,6 @@ import com.fr.swift.source.core.CoreService;
 import com.fr.swift.structure.Pair;
 import com.fr.swift.structure.array.IntListFactory;
 
-import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -28,8 +27,6 @@ public class CustomStrGroupRule extends BaseCustomGroupRule<String> {
 
     @Override
     void initMap() {
-        filterInvalidGroup();
-
         int lastIndex = groups.size() + 1;
 
         int dictSize = dictColumn.size();
@@ -62,16 +59,6 @@ public class CustomStrGroupRule extends BaseCustomGroupRule<String> {
         }
     }
 
-    private void filterInvalidGroup() {
-        Iterator<StringGroup> itr = groups.iterator();
-        while (itr.hasNext()) {
-            StringGroup sg = itr.next();
-            if (sg.values.isEmpty()) {
-                itr.remove();
-            }
-        }
-    }
-
     private int findIndex(String val) {
         for (int i = 0; i < groups.size(); i++) {
             if (groups.get(i).contains(val)) {
@@ -85,6 +72,11 @@ public class CustomStrGroupRule extends BaseCustomGroupRule<String> {
     @Override
     public GroupType getGroupType() {
         return GroupType.CUSTOM;
+    }
+
+    @Override
+    public int originalSize() {
+        return groups.size();
     }
 
     public static class StringGroup implements CoreService{

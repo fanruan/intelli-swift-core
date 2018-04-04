@@ -70,7 +70,7 @@ public class AllDataRowCalculatorOperator extends AbstractOperator {
 
     @Override
     public OperatorType getOperatorType() {
-        return OperatorType.ALLDATA;
+        return OperatorType.ALL_DATA;
     }
 
 }

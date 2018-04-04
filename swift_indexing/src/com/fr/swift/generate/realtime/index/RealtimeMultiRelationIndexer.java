@@ -1,5 +1,6 @@
 package com.fr.swift.generate.realtime.index;
 
+import com.fr.swift.cube.io.Releasable;
 import com.fr.swift.generate.BaseMultiRelationIndexer;
 import com.fr.swift.relation.CubeMultiRelation;
 import com.fr.swift.segment.Segment;
@@ -20,5 +21,9 @@ public class RealtimeMultiRelationIndexer extends BaseMultiRelationIndexer {
     @Override
     protected List<Segment> getSegments(SourceKey key) {
         return provider.getSegment(key);
+    }
+
+    @Override
+    protected void releaseIfNeed(Releasable releasable) {
     }
 }
