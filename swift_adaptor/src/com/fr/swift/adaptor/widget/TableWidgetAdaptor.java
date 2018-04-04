@@ -11,8 +11,8 @@ import com.finebi.conf.structure.result.table.BIGroupNode;
 import com.finebi.conf.utils.FineTableUtils;
 import com.fr.swift.adaptor.encrypt.SwiftEncryption;
 import com.fr.swift.adaptor.struct.node.BIGroupNodeFactory;
-import com.fr.swift.adaptor.transformer.FilterInfoFactory;
 import com.fr.swift.adaptor.transformer.DataSourceFactory;
+import com.fr.swift.adaptor.transformer.FilterInfoFactory;
 import com.fr.swift.adaptor.widget.group.GroupAdaptor;
 import com.fr.swift.cal.QueryInfo;
 import com.fr.swift.cal.info.Expander;
@@ -36,6 +36,7 @@ import com.fr.swift.query.sort.DescSort;
 import com.fr.swift.query.sort.NoneSort;
 import com.fr.swift.query.sort.Sort;
 import com.fr.swift.result.GroupByResultSet;
+import com.fr.swift.result.TargetGettingKey;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.service.QueryRunnerProvider;
 import com.fr.swift.source.DataSource;
@@ -57,6 +58,28 @@ public class TableWidgetAdaptor {
     public static BIGroupNode calculate(TableWidget widget) {
         BIGroupNode resultNode = null;
         SwiftResultSet resultSet;
+        // TODO: 2018/4/4 涉及到计算指标，结果值的设置要重新考虑一下
+        // 为了计算所有要显示的指标而需要聚合的指标（metric）的个数，等于resultSet返回的AggregatorValue[]的长度
+        int numberOfMetrics = 0;
+        // 为了计算所有要显示的计算指标需要计算的计算指标的个数，因为有的计算指标的计算依赖于计算指标（现在有的功能有待确认）
+        int numberOfCalTargets = 0;
+        // 计算一行计算的所有指标的个数，包括所有聚合指标和所有计算指标。BIGroupNode的SummaryValue[]的长度为numberOfTargets
+        int numberOfTargets = numberOfMetrics + numberOfCalTargets;
+
+        // 需要显示的聚合指标的个数
+        int numberOfMetricForShow = 0;
+        // AggregatorValue[numberOfMetrics]中需要显示的AggregatorValue对应的TargetGettingKey
+        TargetGettingKey[] metricsForShowGettingKeys = new TargetGettingKey[numberOfMetricForShow];
+
+        // 需要显示的计算指标的个数 
+        int numberOfCalTargetsForShow = 0;
+        // 需要显示的计算指标对应的TargetGettingKey
+        TargetGettingKey[] calTargetsForShowGettingKeys = new TargetGettingKey[numberOfCalTargetsForShow];
+
+        // 结果要显示的指标的个数，包含聚合指标和根据汇总结果计算的计算指标
+        int numberOfTargetsForShow = numberOfMetricForShow + numberOfCalTargetsForShow;
+        TargetGettingKey[] targetsForShowGettingKeys = new TargetGettingKey[numberOfTargetsForShow];
+
         try {
             resultSet = QueryRunnerProvider.getInstance().executeQuery(buildQueryInfo(widget));
             resultNode = BIGroupNodeFactory.createFromSortedList((GroupByResultSet) resultSet);

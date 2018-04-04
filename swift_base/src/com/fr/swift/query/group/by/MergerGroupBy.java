@@ -80,7 +80,7 @@ public abstract class MergerGroupBy<T> implements Iterator<KeyValue<RowIndexKey<
     }
 
     /**
-     * 进行mapper之后的value保持了初始迭代器的索引
+     * 进行mapper之后的value保持了初始迭代器迭代器数组中的索引（对应哪个segment）
      */
     private List<Iterator<KeyValue<RowIndexKey<T>, KeyValue<Integer, RowTraversal[]>>>> array2List(MultiGroupBy<T>[] its) {
         List<Iterator<KeyValue<RowIndexKey<T>, KeyValue<Integer, RowTraversal[]>>>> iterators = new ArrayList<Iterator<KeyValue<RowIndexKey<T>, KeyValue<Integer, RowTraversal[]>>>>();

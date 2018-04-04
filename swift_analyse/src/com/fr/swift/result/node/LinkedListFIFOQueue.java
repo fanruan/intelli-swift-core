@@ -1,4 +1,4 @@
-package com.fr.swift.structure.queue;
+package com.fr.swift.result.node;
 
 import java.util.LinkedList;
 

@@ -8,8 +8,8 @@ import com.fr.swift.query.sort.Sort;
 import com.fr.swift.result.GroupByResultSet;
 import com.fr.swift.result.KeyValue;
 import com.fr.swift.result.RowIndexKey;
-import com.fr.swift.structure.queue.FIFOQueue;
-import com.fr.swift.structure.queue.LinkedListFIFOQueue;
+import com.fr.swift.result.node.FIFOQueue;
+import com.fr.swift.result.node.LinkedListFIFOQueue;
 
 import java.util.Arrays;
 import java.util.Iterator;
@@ -58,6 +58,8 @@ public class BIGroupNodeFactory {
                     continue;
                 }
             }
+            // TODO: 2018/4/4 这边没有考虑到根据汇总值计算计算指标的情况。
+            // TODO: 2018/4/4 需要使用AggregatorValueContainer保存和设置汇总值
             // 给当前kv所代表的行设置值
             cachedNode[deep].setSummaryValue(getValues(kv.getValue()));
         }
