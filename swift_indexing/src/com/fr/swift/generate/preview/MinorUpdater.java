@@ -90,7 +90,7 @@ public class MinorUpdater {
             indexColumn(dataSource, columnKey);
             indexSubColumnIfNeed(dataSource, columnKey);
         }
-
+        MinorSegmentManager.getInstance().putSegment(dataSource.getSourceKey(), Collections.singletonList(segment));
     }
 
     private static void indexColumn(final DataSource dataSource, final ColumnKey indexField) {
@@ -174,9 +174,7 @@ public class MinorUpdater {
         String path = String.format("/%s/cubes/%s/minor_seg",
                 System.getProperty("user.dir"),
                 cubeSourceKey);
-        Segment seg = new RealTimeSegmentImpl(new ResourceLocation(path, Types.StoreType.MEMORY), dataSource.getMetadata());
-        MinorSegmentManager.getInstance().putSegment(dataSource.getSourceKey(), Collections.singletonList(seg));
-        return seg;
+        return new RealTimeSegmentImpl(new ResourceLocation(path, Types.StoreType.MEMORY), dataSource.getMetadata());
     }
 
     private static boolean isEtl(DataSource ds) {
