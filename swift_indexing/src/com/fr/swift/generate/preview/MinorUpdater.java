@@ -5,8 +5,11 @@ import com.fr.swift.cube.io.location.ResourceLocation;
 import com.fr.swift.exception.meta.SwiftMetaDataException;
 import com.fr.swift.generate.preview.operator.MinorInserter;
 import com.fr.swift.generate.realtime.index.RealtimeColumnIndexer;
+import com.fr.swift.generate.realtime.index.RealtimeMultiRelationIndexer;
 import com.fr.swift.generate.realtime.index.RealtimeSubDateColumnIndexer;
+import com.fr.swift.generate.realtime.index.RealtimeTablePathIndexer;
 import com.fr.swift.query.group.GroupType;
+import com.fr.swift.relation.utils.RelationPathHelper;
 import com.fr.swift.segment.RealTimeSegmentImpl;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.column.ColumnKey;
@@ -16,8 +19,13 @@ import com.fr.swift.source.ColumnTypeConstants.ClassType;
 import com.fr.swift.source.ColumnTypeUtils;
 import com.fr.swift.source.DataSource;
 import com.fr.swift.source.EtlDataSource;
+import com.fr.swift.source.RelationSource;
+import com.fr.swift.source.RelationSourceType;
 import com.fr.swift.source.SwiftMetaDataColumn;
 import com.fr.swift.source.SwiftResultSet;
+import com.fr.swift.source.etl.ETLOperator;
+import com.fr.swift.source.etl.OperatorType;
+import com.fr.swift.source.etl.detail.DetailOperator;
 import com.fr.swift.utils.DataSourceUtils;
 
 import java.util.Collections;
@@ -43,7 +51,7 @@ public class MinorUpdater {
      * 是基础表的话，就清除数据，重新update
      * 否则，取存在的数据update。
      *
-     * @throws Exception
+     * @throws Exception 异常
      */
     public void update() throws Exception {
         if (isEtl(dataSource)) {
@@ -63,6 +71,9 @@ public class MinorUpdater {
                 build(dataSource);
             }
         }
+
+        indexRelationOnSelectField(etl);
+
         build(etl);
     }
 
@@ -104,7 +115,7 @@ public class MinorUpdater {
         }.work();
     }
 
-    private static void indexSubColumnIfNeed(final DataSource dataSource, final ColumnKey columnKey) throws SwiftMetaDataException {
+    private void indexSubColumnIfNeed(final DataSource dataSource, final ColumnKey columnKey) throws SwiftMetaDataException {
         SwiftMetaDataColumn columnMeta = dataSource.getMetadata().getColumn(columnKey.getName());
         if (ColumnTypeUtils.getClassType(columnMeta) != ClassType.DATE) {
             return;
@@ -130,6 +141,30 @@ public class MinorUpdater {
         }
     }
 
+    private void indexRelationOnSelectField(EtlDataSource etl) {
+        ETLOperator op = etl.getOperator();
+        if (op.getOperatorType() != OperatorType.DETAIL) {
+            return;
+        }
+        // 只有选字段才生成关联
+        DetailOperator detailOp = (DetailOperator) op;
+
+        for (ColumnKey[] keys : detailOp.getFields()) {
+            for (ColumnKey key : keys) {
+                RelationSource relation = key.getRelation();
+                if (relation != null) {
+                    if (relation.getRelationType() == RelationSourceType.RELATION) {
+                        new RealtimeMultiRelationIndexer(RelationPathHelper.convert2CubeRelation(relation), MinorSegmentManager.getInstance()).work();
+                    } else {
+                        new RealtimeTablePathIndexer(RelationPathHelper.convert2CubeRelationPath(relation), MinorSegmentManager.getInstance()).work();
+                    }
+                    // 只生成一次
+                    break;
+                }
+            }
+        }
+    }
+
     private Inserter getInserter(DataSource dataSource, Segment segment) throws Exception {
         if (DataSourceUtils.isAddColumn(dataSource)) {
             return new MinorInserter(segment, DataSourceUtils.getAddFields(dataSource));
@@ -147,11 +182,11 @@ public class MinorUpdater {
         return seg;
     }
 
-    private static boolean isEtl(DataSource ds) {
+    private boolean isEtl(DataSource ds) {
         return ds instanceof EtlDataSource;
     }
 
-    private static GroupType[] SUB_DATE_TYPES = {
+    private GroupType[] SUB_DATE_TYPES = {
             GroupType.YEAR, GroupType.QUARTER, GroupType.MONTH,
             GroupType.WEEK, GroupType.WEEK_OF_YEAR, GroupType.DAY,
             GroupType.HOUR, GroupType.MINUTE, GroupType.SECOND,

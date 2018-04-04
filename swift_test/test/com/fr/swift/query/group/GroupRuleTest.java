@@ -21,7 +21,7 @@ import static org.junit.Assert.assertEquals;
 public class GroupRuleTest {
     @Test
     public void testCustomStrGroupRule() {
-        GroupRule rule = new CustomStrGroupRule(Arrays.asList(
+        CustomGroupRule rule = new CustomStrGroupRule(Arrays.asList(
                 new StringGroup("g0", Arrays.asList("1", "2", "3")),
                 new StringGroup("g1", Arrays.asList("5", "6"))
         ), "ungrouped");
@@ -78,7 +78,7 @@ public class GroupRuleTest {
 
     @Test
     public void testCustomStrGroupRuleWithNoOtherGroup() {
-        GroupRule rule = new CustomStrGroupRule(Arrays.asList(
+        CustomGroupRule rule = new CustomStrGroupRule(Arrays.asList(
                 new StringGroup("g0", Arrays.asList("1", "2", "3")),
                 new StringGroup("g1", Arrays.asList("5", "6", "7", "8", "9"))
         ), null);
@@ -146,7 +146,7 @@ public class GroupRuleTest {
 
     @Test
     public void testCustomNumGroupRule() {
-        GroupRule rule = new CustomNumGroupRule(Arrays.asList(
+        CustomGroupRule rule = new CustomNumGroupRule(Arrays.asList(
                 new NumInterval("g0", 0, true, 2.1, false),
                 new NumInterval("g1", 4, true, 6, false),
                 new NumInterval("g2", 7, true, 10, false)
@@ -214,7 +214,7 @@ public class GroupRuleTest {
 
     @Test
     public void testCustomNumGroupRuleWithNoOtherGroup() {
-        GroupRule rule = new CustomNumGroupRule(Arrays.asList(
+        CustomGroupRule rule = new CustomNumGroupRule(Arrays.asList(
                 new NumInterval("g0", 0, true, 2.1, false),
                 new NumInterval("g1", 4, true, 7, false),
                 new NumInterval("g2", 7, true, 10, false)
@@ -287,7 +287,7 @@ public class GroupRuleTest {
 
     @Test
     public void testAutoGroupRule() {
-        GroupRule rule = new AutoNumGroupRule(new Partition(1, 10, 4));
+        CustomGroupRule rule = new AutoNumGroupRule(new Partition(1, 10, 4));
         rule.setOriginDict(new TempDictColumn<Number>() {
             Number[] numbers = {null, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
 

@@ -1,9 +1,14 @@
 package com.fr.swift.source.etl.detail;
 
+import com.fr.swift.relation.utils.RelationPathHelper;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.segment.column.DictionaryEncodedColumn;
+import com.fr.swift.segment.relation.RelationIndex;
+import com.fr.swift.segment.relation.column.RelationColumn;
 import com.fr.swift.source.ListBasedRow;
+import com.fr.swift.source.RelationSource;
+import com.fr.swift.source.RelationSourceType;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftResultSet;
@@ -20,7 +25,7 @@ public class DetailOperatorResultSet implements SwiftResultSet {
     private final SwiftMetaData metaData;
     private final List<ColumnKey[]> fields;
     private final List<Segment[]> segments;
-    private List<DictionaryEncodedColumn> columns;
+    private List<RelationColumn> columns;
     private int currentRow = -1;
     private int currentTotalRow;
     private int currentSegmentIndex = 0;
@@ -37,14 +42,15 @@ public class DetailOperatorResultSet implements SwiftResultSet {
         if (currentSegmentIndex >= getBaseSegments().length) {
             return false;
         }
-        columns = new ArrayList<DictionaryEncodedColumn>();
+        columns = new ArrayList<RelationColumn>();
         for (int i = 0; i < fields.size(); i++){
             for (ColumnKey columnKey : fields.get(i)) {
                 columns.add(getRelationColumns(columnKey, i));
             }
         }
         currentTotalRow = getBaseSegments()[currentSegmentIndex].getRowCount();
-        currentRow = -1;
+        // 接着往后取 不需要从头算位置了
+//        currentRow = -1;
         currentSegmentIndex++;
         return true;
     }
@@ -73,11 +79,10 @@ public class DetailOperatorResultSet implements SwiftResultSet {
     @Override
     public Row getRowData() {
         List list = new ArrayList();
-        for (DictionaryEncodedColumn column : columns) {
+        for (RelationColumn column : columns) {
             Object v = null;
-            //@yee todo 这边会越界，关联取好了应该就不会越界了
             try {
-                v = column.getValue(column.getIndexByRow(currentRow));
+                v = column.getValue(currentRow);
             } catch (Exception ignore){
             }
             list.add(v);
@@ -85,9 +90,15 @@ public class DetailOperatorResultSet implements SwiftResultSet {
         return new ListBasedRow(list);
     }
 
-    //@yee todo 找到关联的column，暂时只取主表的column凑数
-    private DictionaryEncodedColumn getRelationColumns(ColumnKey columnKey, int foreignSegIndex) {
+    private RelationColumn getRelationColumns(ColumnKey columnKey, int foreignSegIndex) {
         Segment[] foreignSegments = segments.get(foreignSegIndex + 1);
-        return foreignSegments[0].getColumn(columnKey).getDictionaryEncodedColumn();
+        RelationSource relationSource = columnKey.getRelation();
+        RelationIndex relationIndex;
+        if (relationSource.getRelationType() == RelationSourceType.RELATION) {
+            relationIndex = getBaseSegments()[currentSegmentIndex].getRelation(RelationPathHelper.convert2CubeRelation(relationSource));
+        } else {
+            relationIndex = getBaseSegments()[currentSegmentIndex].getRelation(RelationPathHelper.convert2CubeRelationPath(relationSource));
+        }
+        return new RelationColumn(relationIndex, foreignSegments, columnKey);
     }
 }

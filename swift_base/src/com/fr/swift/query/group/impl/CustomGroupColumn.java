@@ -3,7 +3,7 @@ package com.fr.swift.query.group.impl;
 import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.bitmap.impl.BitMapOrHelper;
 import com.fr.swift.cube.io.location.IResourceLocation;
-import com.fr.swift.query.group.GroupRule;
+import com.fr.swift.query.group.CustomGroupRule;
 import com.fr.swift.segment.column.BitmapIndexedColumn;
 import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.DetailColumn;
@@ -16,12 +16,12 @@ import java.util.Comparator;
  * @author anchore
  * @date 2018/1/29
  */
-class GroupColumn<Base, Derive> implements Column<Derive> {
-    private GroupRule<Base, Derive> groupRule;
+class CustomGroupColumn<Base, Derive> implements Column<Derive> {
+    private CustomGroupRule<Base, Derive> groupRule;
     private ImmutableBitMap[] groupedBitmaps;
     private Column<Base> originColumn;
 
-    GroupColumn(Column<Base> originColumn, GroupRule<Base, Derive> groupRule) {
+    CustomGroupColumn(Column<Base> originColumn, CustomGroupRule<Base, Derive> groupRule) {
         this.originColumn = originColumn;
         this.groupRule = groupRule;
         group();
@@ -98,7 +98,7 @@ class GroupColumn<Base, Derive> implements Column<Derive> {
 
         @Override
         public int getIndex(Object value) {
-            throw new UnsupportedOperationException();
+            return groupRule.getIndex(value);
         }
 
         @Override

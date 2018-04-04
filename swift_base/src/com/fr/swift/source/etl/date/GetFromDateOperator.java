@@ -59,7 +59,7 @@ public class GetFromDateOperator extends AbstractOperator {
 
     @Override
     public OperatorType getOperatorType() {
-        return OperatorType.GETDATE;
+        return OperatorType.GET_DATE;
     }
 
     public int getColumnType() {

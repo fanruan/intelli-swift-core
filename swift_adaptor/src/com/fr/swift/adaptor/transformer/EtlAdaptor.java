@@ -71,6 +71,7 @@ import com.finebi.conf.utils.FineTableUtils;
 import com.fr.general.ComparatorUtils;
 import com.fr.swift.adaptor.widget.group.GroupAdaptor;
 import com.fr.swift.adaptor.widget.group.GroupTypeAdaptor;
+import com.fr.swift.conf.business.relation.RelationType;
 import com.fr.swift.exception.meta.SwiftMetaDataException;
 import com.fr.swift.generate.preview.MinorSegmentManager;
 import com.fr.swift.log.SwiftLoggers;
@@ -109,6 +110,7 @@ import com.fr.swift.source.etl.groupsum.SumByGroupOperator;
 import com.fr.swift.source.etl.groupsum.SumByGroupTarget;
 import com.fr.swift.source.etl.join.JoinColumn;
 import com.fr.swift.source.etl.join.JoinOperator;
+import com.fr.swift.source.etl.join.JoinType;
 import com.fr.swift.source.etl.rowcal.accumulate.AccumulateRowOperator;
 import com.fr.swift.source.etl.rowcal.alldata.AllDataRowCalculatorOperator;
 import com.fr.swift.source.etl.rowcal.rank.RankRowOperator;
@@ -274,12 +276,23 @@ class EtlAdaptor {
         List<FineBusinessTableRelation> relations = path.getFineBusinessTableRelations();
         List<RelationSource> result = new ArrayList<RelationSource>();
         for (FineBusinessTableRelation relation : relations) {
-            FineBusinessTable primaryTable = path.getFirstTable();
-            FineBusinessTable foreignTable = path.getEndTable();
+            FineBusinessTable primaryTable;
+            FineBusinessTable foreignTable;
+            List<FineBusinessField> primaryFields;
+            List<FineBusinessField> foreignFields;
+            if (relation.getRelationType() == RelationType.MORE_TO_ONE) {
+                primaryTable = relation.getForeignBusinessTable();
+                foreignTable = relation.getPrimaryBusinessTable();
+                primaryFields = relation.getForeignBusinessField();
+                foreignFields = relation.getPrimaryBusinessField();
+            } else {
+                primaryTable = relation.getPrimaryBusinessTable();
+                foreignTable = relation.getForeignBusinessTable();
+                primaryFields = relation.getPrimaryBusinessField();
+                foreignFields = relation.getForeignBusinessField();
+            }
             SourceKey primary = DataSourceFactory.getDataSource(primaryTable).getSourceKey();
             SourceKey foreign = DataSourceFactory.getDataSource(foreignTable).getSourceKey();
-            List<FineBusinessField> primaryFields = relation.getPrimaryBusinessField();
-            List<FineBusinessField> foreignFields = relation.getForeignBusinessField();
             List<String> primaryKey = new ArrayList<String>();
             List<String> foreignKey = new ArrayList<String>();
 
@@ -313,8 +326,21 @@ class EtlAdaptor {
             if (tables.size() == 1) {
                 break;
             }
-            String prim = path.getFirstTable().getId();
-            String foreign = path.getEndTable().getId();
+            List<FineBusinessTableRelation> relations = path.getFineBusinessTableRelations();
+            FineBusinessTableRelation firstRelation = relations.get(0);
+            FineBusinessTableRelation lastRelation = relations.get(relations.size() - 1);
+            String prim;
+            if (firstRelation.getRelationType() == RelationType.MORE_TO_ONE) {
+                prim = firstRelation.getForeignBusinessTable().getId();
+            } else {
+                prim = firstRelation.getPrimaryBusinessTable().getId();
+            }
+            String foreign;
+            if (lastRelation.getRelationType() == RelationType.MORE_TO_ONE) {
+                foreign = lastRelation.getPrimaryBusinessTable().getId();
+            } else {
+                foreign = lastRelation.getForeignBusinessTable().getId();
+            }
             if (tables.contains(prim) && tables.contains(foreign)) {
                 tables.remove(prim);
             }
@@ -419,7 +445,20 @@ class EtlAdaptor {
                 joinColumns,
                 leftColumns.toArray(new ColumnKey[leftColumns.size()]),
                 rightColumns.toArray(new ColumnKey[rightColumns.size()]),
-                type);
+                getJoinType(type));
+    }
+
+    private static JoinType getJoinType(int type) {
+        switch (type) {
+            case BIConfConstants.CONF.JOIN.INNER:
+                return JoinType.INNER;
+            case BIConfConstants.CONF.JOIN.OUTER:
+                return JoinType.OUTER;
+            case BIConfConstants.CONF.JOIN.RIGHT:
+                return JoinType.RIGHT;
+            default:
+                return JoinType.LEFT;
+        }
     }
 
     private static UnionOperator fromUnionBean(UnionBean ub) {
