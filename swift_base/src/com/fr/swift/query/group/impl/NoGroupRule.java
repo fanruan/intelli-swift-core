@@ -1,8 +1,6 @@
 package com.fr.swift.query.group.impl;
 
 import com.fr.swift.query.group.GroupType;
-import com.fr.swift.structure.array.IntList;
-import com.fr.swift.structure.array.IntListFactory;
 
 /**
  * @author anchore
@@ -11,7 +9,7 @@ import com.fr.swift.structure.array.IntListFactory;
  * 不分组规则 1个一组
  * 两种情况：普通列、日期子列
  */
-public class NoGroupRule<Base> extends BaseGroupRule<Base, Base> {
+public class NoGroupRule extends BaseGroupRule {
     private GroupType type;
 
     public NoGroupRule() {
@@ -23,37 +21,7 @@ public class NoGroupRule<Base> extends BaseGroupRule<Base, Base> {
     }
 
     @Override
-    public Base getValue(int index) {
-        return dictColumn.getValue(index);
-    }
-
-    @Override
-    public int getIndex(Object val) {
-        return dictColumn.getIndex(val);
-    }
-
-    @Override
-    public IntList map(int index) {
-        return IntListFactory.newSingleList(index);
-    }
-
-    @Override
-    public int reverseMap(int originIndex) {
-        return originIndex;
-    }
-
-    @Override
-    public int newSize() {
-        return dictColumn.size();
-    }
-
-    @Override
     public GroupType getGroupType() {
         return type;
-    }
-
-    @Override
-    void initMap() {
-        // 不分组，直接用原来的映射关系
     }
 }

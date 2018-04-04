@@ -41,6 +41,7 @@ import com.finebi.conf.internalimp.analysis.bean.operator.group.GroupBean;
 import com.finebi.conf.internalimp.analysis.bean.operator.group.GroupSingleValueBean;
 import com.finebi.conf.internalimp.analysis.bean.operator.group.GroupValueBean;
 import com.finebi.conf.internalimp.analysis.bean.operator.group.ViewBean;
+import com.finebi.conf.internalimp.analysis.bean.operator.datamining.rcompile.RCompileBean;
 import com.finebi.conf.internalimp.analysis.bean.operator.group.custom.CustomGroupValueContent;
 import com.finebi.conf.internalimp.analysis.bean.operator.join.JoinBean;
 import com.finebi.conf.internalimp.analysis.bean.operator.join.JoinBeanValue;
@@ -73,9 +74,12 @@ import com.fr.stable.StringUtils;
 import com.fr.swift.adaptor.encrypt.SwiftEncryption;
 import com.fr.swift.adaptor.widget.group.GroupAdaptor;
 import com.fr.swift.adaptor.widget.group.GroupTypeAdaptor;
+import com.fr.swift.conf.business.relation.RelationType;
 import com.fr.swift.exception.meta.SwiftMetaDataException;
 import com.fr.swift.generate.preview.MinorSegmentManager;
 import com.fr.swift.log.SwiftLoggers;
+import com.fr.swift.provider.DataProvider;
+import com.fr.swift.provider.impl.SwiftDataProvider;
 import com.fr.swift.query.aggregator.AggregatorFactory;
 import com.fr.swift.query.aggregator.AggregatorType;
 import com.fr.swift.query.filter.info.FilterInfo;
@@ -97,6 +101,7 @@ import com.fr.swift.source.etl.EtlSource;
 import com.fr.swift.source.etl.columnfilter.ColumnFilterOperator;
 import com.fr.swift.source.etl.columnrowtrans.ColumnRowTransOperator;
 import com.fr.swift.source.etl.datamining.DataMiningOperator;
+import com.fr.swift.source.etl.datamining.rcompile.RCompileOperator;
 import com.fr.swift.source.etl.date.GetFromDateOperator;
 import com.fr.swift.source.etl.datediff.DateDiffOperator;
 import com.fr.swift.source.etl.detail.DetailOperator;
@@ -277,12 +282,23 @@ class EtlAdaptor {
         List<FineBusinessTableRelation> relations = path.getFineBusinessTableRelations();
         List<RelationSource> result = new ArrayList<RelationSource>();
         for (FineBusinessTableRelation relation : relations) {
-            FineBusinessTable primaryTable = path.getFirstTable();
-            FineBusinessTable foreignTable = path.getEndTable();
+            FineBusinessTable primaryTable;
+            FineBusinessTable foreignTable;
+            List<FineBusinessField> primaryFields;
+            List<FineBusinessField> foreignFields;
+            if (relation.getRelationType() == RelationType.MORE_TO_ONE) {
+                primaryTable = relation.getForeignBusinessTable();
+                foreignTable = relation.getPrimaryBusinessTable();
+                primaryFields = relation.getForeignBusinessField();
+                foreignFields = relation.getPrimaryBusinessField();
+            } else {
+                primaryTable = relation.getPrimaryBusinessTable();
+                foreignTable = relation.getForeignBusinessTable();
+                primaryFields = relation.getPrimaryBusinessField();
+                foreignFields = relation.getForeignBusinessField();
+            }
             SourceKey primary = DataSourceFactory.getDataSource(primaryTable).getSourceKey();
             SourceKey foreign = DataSourceFactory.getDataSource(foreignTable).getSourceKey();
-            List<FineBusinessField> primaryFields = relation.getPrimaryBusinessField();
-            List<FineBusinessField> foreignFields = relation.getForeignBusinessField();
             List<String> primaryKey = new ArrayList<String>();
             List<String> foreignKey = new ArrayList<String>();
 
@@ -316,8 +332,21 @@ class EtlAdaptor {
             if (tables.size() == 1) {
                 break;
             }
-            String prim = path.getFirstTable().getId();
-            String foreign = path.getEndTable().getId();
+            List<FineBusinessTableRelation> relations = path.getFineBusinessTableRelations();
+            FineBusinessTableRelation firstRelation = relations.get(0);
+            FineBusinessTableRelation lastRelation = relations.get(relations.size() - 1);
+            String prim;
+            if (firstRelation.getRelationType() == RelationType.MORE_TO_ONE) {
+                prim = firstRelation.getForeignBusinessTable().getId();
+            } else {
+                prim = firstRelation.getPrimaryBusinessTable().getId();
+            }
+            String foreign;
+            if (lastRelation.getRelationType() == RelationType.MORE_TO_ONE) {
+                foreign = lastRelation.getPrimaryBusinessTable().getId();
+            } else {
+                foreign = lastRelation.getForeignBusinessTable().getId();
+            }
             if (tables.contains(prim) && tables.contains(foreign)) {
                 tables.remove(prim);
             }
@@ -487,7 +516,40 @@ class EtlAdaptor {
                 return fromSumByGroupBean(op.<GroupBean>getValue());
             case AnalysisType.DATA_MINING:
                 return fromDataMiningBean(op.<DataMiningBean>getValue());
+            /* case AnalysisType.R_Compile: {
+                DataSource source = adaptEtlDataSource(((FineAnalysisTableImpl) table).getBaseTable());
+                return fromRCompileOperator(op.<RCompileBean>getValue(), source);
+            }*/
             default:
+        }
+        return null;
+    }
+
+    private static RCompileOperator fromRCompileOperator(RCompileBean bean, DataSource dataSource) {
+        boolean needExecute = bean.isNeedExecute();
+        String ip = bean.getIp();
+        int port = bean.getPort();
+        String tableName = bean.getTableName();
+        if(needExecute) {
+            String commands = bean.getCommands();
+            if(null != commands && !"".equals(commands)) {
+                if(null != dataSource) {
+                    try {
+                        DataProvider dataProvider = new SwiftDataProvider();
+                        List<Segment> segments = dataProvider.getPreviewData(dataSource);
+                        return new RCompileOperator(commands, needExecute, ip, port, tableName,
+                                segments.toArray(new Segment[segments.size()]), null);
+                    } catch(Exception e) {
+                        SwiftLoggers.getLogger().error(e);
+                    }
+                }
+            } else{
+                return null;
+            }
+        } else {
+            //String[] columns = bean.getColumns();
+            //return new RCompileOperator(null, needExecute, ip, port, tableName, null, columns);
+            return null;
         }
         return null;
     }

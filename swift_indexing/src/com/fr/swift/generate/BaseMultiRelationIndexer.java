@@ -3,6 +3,7 @@ package com.fr.swift.generate;
 import com.fr.swift.bitmap.BitMaps;
 import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.bitmap.traversal.BreakTraversalAction;
+import com.fr.swift.cube.io.Releasable;
 import com.fr.swift.cube.nio.NIOConstant;
 import com.fr.swift.cube.task.Task;
 import com.fr.swift.cube.task.impl.BaseWorker;
@@ -72,12 +73,14 @@ public abstract class BaseMultiRelationIndexer extends BaseWorker {
                 }
                 relationIndex.putReverseCount(reversePos);
             } finally {
-                relationIndex.release();
+                releaseIfNeed(relationIndex);
             }
         }
     }
 
     protected abstract List<Segment> getSegments(SourceKey key);
+
+    protected abstract void releaseIfNeed(Releasable releasable);
 
     /**
      * 建关联索引

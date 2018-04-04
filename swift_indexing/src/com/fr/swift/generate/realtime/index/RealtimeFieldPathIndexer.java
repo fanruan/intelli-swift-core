@@ -1,5 +1,6 @@
 package com.fr.swift.generate.realtime.index;
 
+import com.fr.swift.cube.io.Releasable;
 import com.fr.swift.generate.BaseFieldPathIndexer;
 import com.fr.swift.relation.CubeLogicColumnKey;
 import com.fr.swift.relation.CubeMultiRelationPath;
@@ -21,5 +22,9 @@ public class RealtimeFieldPathIndexer extends BaseFieldPathIndexer {
     @Override
     protected List<Segment> getSegments(SourceKey key) {
         return provider.getSegment(key);
+    }
+
+    @Override
+    protected void releaseIfNeed(Releasable releasable) {
     }
 }

@@ -7,7 +7,7 @@ import com.fr.swift.query.group.GroupRule;
  * @date 2018/1/31
  */
 public class GroupImpl<Base, Derive> extends BaseGroup<Base, Derive> {
-    public GroupImpl(GroupRule<Base, Derive> rule) {
+    public GroupImpl(GroupRule rule) {
         super(rule);
     }
 }
