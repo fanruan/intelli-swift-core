@@ -17,6 +17,11 @@ public class RelationColumn {
     private DictionaryEncodedColumn[] columns;
     private int reverseCount;
 
+    /**
+     * @param relationIndex 关联索引操作器
+     * @param segments 主表的所有segment
+     * @param columnKey 主表的column
+     */
     public RelationColumn(RelationIndex relationIndex, Segment[] segments, ColumnKey columnKey) {
         this.relationIndex = relationIndex;
         this.segments = segments;
@@ -25,6 +30,11 @@ public class RelationColumn {
         this.reverseCount = relationIndex.getReverseCount();
     }
 
+    /**
+     * 通过子表行号取值
+     * @param row
+     * @return
+     */
     public Object getValue(int row) {
         if (row < reverseCount) {
             long reverse = relationIndex.getReverseIndex(row);
@@ -39,6 +49,11 @@ public class RelationColumn {
         return null;
     }
 
+    /**
+     * 根据long来获取segment序号和segment行号
+     * @param reverse
+     * @return
+     */
     private int[] reverse2SegAndRow(long reverse) {
         int[] result = new int[2];
         result[0] = (int) ((reverse & 0xFFFFFFFF00000000L) >> 32);
