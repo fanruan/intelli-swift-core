@@ -41,6 +41,7 @@ import com.finebi.conf.internalimp.analysis.bean.operator.group.GroupBean;
 import com.finebi.conf.internalimp.analysis.bean.operator.group.GroupSingleValueBean;
 import com.finebi.conf.internalimp.analysis.bean.operator.group.GroupValueBean;
 import com.finebi.conf.internalimp.analysis.bean.operator.group.ViewBean;
+import com.finebi.conf.internalimp.analysis.bean.operator.datamining.rcompile.RCompileBean;
 import com.finebi.conf.internalimp.analysis.bean.operator.group.custom.CustomGroupValueContent;
 import com.finebi.conf.internalimp.analysis.bean.operator.join.JoinBean;
 import com.finebi.conf.internalimp.analysis.bean.operator.join.JoinBeanValue;
@@ -73,7 +74,10 @@ import com.fr.swift.adaptor.widget.group.GroupAdaptor;
 import com.fr.swift.adaptor.widget.group.GroupTypeAdaptor;
 import com.fr.swift.exception.meta.SwiftMetaDataException;
 import com.fr.swift.generate.preview.MinorSegmentManager;
+import com.fr.swift.generate.preview.MinorUpdater;
 import com.fr.swift.log.SwiftLoggers;
+import com.fr.swift.provider.DataProvider;
+import com.fr.swift.provider.impl.SwiftDataProvider;
 import com.fr.swift.query.aggregator.AggregatorFactory;
 import com.fr.swift.query.aggregator.AggregatorType;
 import com.fr.swift.query.filter.info.FilterInfo;
@@ -96,6 +100,7 @@ import com.fr.swift.source.etl.columnfilter.ColumnFilterOperator;
 import com.fr.swift.source.etl.columnrowtrans.ColumnRowTransOperator;
 import com.fr.swift.source.etl.columnrowtrans.NameText;
 import com.fr.swift.source.etl.datamining.DataMiningOperator;
+import com.fr.swift.source.etl.datamining.rcompile.RCompileOperator;
 import com.fr.swift.source.etl.date.GetFromDateOperator;
 import com.fr.swift.source.etl.datediff.DateDiffOperator;
 import com.fr.swift.source.etl.detail.DetailOperator;
@@ -485,7 +490,40 @@ class EtlAdaptor {
                 return fromSumByGroupBean(op.<GroupBean>getValue());
             case AnalysisType.DATA_MINING:
                 return fromDataMiningBean(op.<DataMiningBean>getValue());
+            /* case AnalysisType.R_Compile: {
+                DataSource source = adaptEtlDataSource(((FineAnalysisTableImpl) table).getBaseTable());
+                return fromRCompileOperator(op.<RCompileBean>getValue(), source);
+            }*/
             default:
+        }
+        return null;
+    }
+
+    private static RCompileOperator fromRCompileOperator(RCompileBean bean, DataSource dataSource) {
+        boolean needExecute = bean.isNeedExecute();
+        String ip = bean.getIp();
+        int port = bean.getPort();
+        String tableName = bean.getTableName();
+        if(needExecute) {
+            String commands = bean.getCommands();
+            if(null != commands && !"".equals(commands)) {
+                if(null != dataSource) {
+                    try {
+                        DataProvider dataProvider = new SwiftDataProvider();
+                        List<Segment> segments = dataProvider.getPreviewData(dataSource);
+                        return new RCompileOperator(commands, needExecute, ip, port, tableName,
+                                segments.toArray(new Segment[segments.size()]), null);
+                    } catch(Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            } else{
+                return null;
+            }
+        } else {
+            //String[] columns = bean.getColumns();
+            //return new RCompileOperator(null, needExecute, ip, port, tableName, null, columns);
+            return null;
         }
         return null;
     }
