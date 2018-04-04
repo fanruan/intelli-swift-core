@@ -1,4 +1,4 @@
-package com.fr.swift.source.etl.rowcal.periodpercentage;
+package com.fr.swift.source.etl.datamining.createsegment;
 
 import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.bitmap.MutableBitMap;
@@ -11,12 +11,19 @@ import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.segment.relation.RelationIndex;
+import com.fr.swift.source.MetaDataColumn;
 import com.fr.swift.source.SwiftMetaData;
+import com.fr.swift.source.SwiftMetaDataColumn;
+import com.fr.swift.source.SwiftMetaDataImpl;
+
+import java.sql.Types;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
- * Created by Handsome on 2018/3/4 0006 15:46
+ * Created by Handsome on 2018/4/2 0002 09:31
  */
-public class CreateSegmentForPeriod {
+public class CreateSegment {
     public Segment getSegment() {
         return new Segment() {
             @Override
@@ -26,7 +33,7 @@ public class CreateSegmentForPeriod {
 
             @Override
             public int getRowCount() {
-                return 7;
+                return 8;
             }
 
             @Override
@@ -58,12 +65,8 @@ public class CreateSegmentForPeriod {
             public Column getColumn(ColumnKey key) {
                 if(key.getName().equals("column1")) {
                     return new CreateColumn1().getColumn();
-                } else if (key.getName().equals("column2")){
-                    return new CreateColumn2().getColumn();
-                } else if(key.getName().equals("column3")){
-                    return new CreateColumn3().getColumn();
                 } else {
-                    return new CreateColumn4().getColumn();
+                    return new CreateColumn2().getColumn();
                 }
             }
 
@@ -83,7 +86,12 @@ public class CreateSegmentForPeriod {
 
             @Override
             public SwiftMetaData getMetaData() {
-                return null;
+                MetaDataColumn column1 = new MetaDataColumn("column1", "column1", Types.INTEGER);
+                MetaDataColumn column2 = new MetaDataColumn("column2", "column2", Types.INTEGER);
+                List<SwiftMetaDataColumn> fieldList = new ArrayList<SwiftMetaDataColumn>();
+                fieldList.add(column1);
+                fieldList.add(column2);
+                return new SwiftMetaDataImpl("table1", "table1", "table1", fieldList);
             }
 
             @Override

@@ -1,5 +1,6 @@
 package com.fr.swift.query.group.impl;
 
+import com.fr.swift.query.group.CustomGroupRule;
 import com.fr.swift.query.group.GroupOperator;
 import com.fr.swift.query.group.GroupRule;
 import com.fr.swift.segment.column.Column;
@@ -11,9 +12,9 @@ import com.fr.swift.segment.column.impl.SubDateColumn;
  * @date 2018/1/26
  */
 class PlainGroupOperator<Base, Derive> implements GroupOperator<Base, Derive> {
-    private GroupRule<Base, Derive> rule;
+    private GroupRule rule;
 
-    PlainGroupOperator(GroupRule<Base, Derive> rule) {
+    PlainGroupOperator(GroupRule rule) {
         this.rule = rule;
     }
 
@@ -23,7 +24,7 @@ class PlainGroupOperator<Base, Derive> implements GroupOperator<Base, Derive> {
             case AUTO:
             case CUSTOM_NUMBER:
             case CUSTOM:
-                return new GroupColumn<Base, Derive>(column, rule);
+                return new CustomGroupColumn<Base, Derive>(column, (CustomGroupRule<Base, Derive>) rule);
             case Y_M_D_H_M_S:
             case Y_M_D_H_M:
             case Y_M_D_H:

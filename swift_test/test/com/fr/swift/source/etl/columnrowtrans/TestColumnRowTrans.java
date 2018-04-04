@@ -8,6 +8,7 @@ import com.fr.swift.source.SwiftMetaDataColumn;
 import com.fr.swift.source.SwiftMetaDataImpl;
 import com.fr.swift.source.SwiftResultSet;
 import com.fr.swift.source.etl.CreateSegmentForColumnTrans;
+import com.fr.swift.structure.Pair;
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
 
@@ -20,18 +21,18 @@ import java.util.List;
 public class TestColumnRowTrans extends TestCase {
 
     public void testColumnRowTrans() {
-        List<String> otherColumns = new ArrayList<String>();
-        otherColumns.add("column2");
+        List<Pair<String, String>> otherColumns = new ArrayList<Pair<String, String>>();
+        otherColumns.add(Pair.of("column2", "column2"));
         ColumnKey key1 = new ColumnKey("column1");
         ColumnKey key2 = new ColumnKey("column2");
         Segment segment1 = new CreateSegmentForColumnTrans().getSegment();
         Segment segment2 = new CreateSegmentForColumnTrans().getSegment();
-        NameText nameText = new NameText("column2", "");
-        NameText lc_value1 = new NameText("A", "");
-        NameText lc_value2 = new NameText("B", "");
-        NameText lc_value3 = new NameText("C", "");
-        List<NameText> column = new ArrayList<NameText>();
-        List<NameText> lc_value = new ArrayList<NameText>();
+        Pair<String, String> nameText = new Pair<String, String>("column2", "");
+        Pair<String, String> lc_value1 = new Pair<String, String>("A", "");
+        Pair<String, String> lc_value2 = new Pair<String, String>("B", "");
+        Pair<String, String> lc_value3 = new Pair<String, String>("C", "");
+        List<Pair<String, String>> column = new ArrayList<Pair<String, String>>();
+        List<Pair<String, String>> lc_value = new ArrayList<Pair<String, String>>();
         lc_value.add(lc_value1);
         lc_value.add(lc_value2);
         lc_value.add(lc_value3);

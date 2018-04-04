@@ -15,18 +15,24 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by pony on 2018/1/9.
+ * @author pony
+ * @date 2018/1/9
  * etl第一步，选字段
  * 看成是主表与新增表的组合，外加使用部分字段
  */
 public class DetailOperator extends AbstractOperator {
     private static final SwiftLogger LOGGER = SwiftLoggers.getLogger(DetailOperator.class);
-    //主表的字段
+    /**
+     * 主表的字段
+     */
     @CoreField
     private List<ColumnKey[]> fields;
-    //子表的字段
+    /**
+     * 子表的字段
+     */
     @CoreField
     private List<ColumnKey> baseFields;
+
     private List<SwiftMetaData> baseMetas;
 
     /**

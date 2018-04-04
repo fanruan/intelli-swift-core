@@ -1,6 +1,6 @@
-package com.fr.swift.source.etl.rowcal.periodpercentage;
+package com.fr.swift.source.etl.datamining.createsegment;
 
-import com.fr.swift.Temps.TempDictColumn;
+import com.fr.swift.Temps;
 import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.bitmap.MutableBitMap;
 import com.fr.swift.bitmap.impl.BitSetMutableBitMap;
@@ -13,9 +13,9 @@ import com.fr.swift.segment.column.DictionaryEncodedColumn;
 import java.util.Comparator;
 
 /**
- * Created by Handsome on 2018/3/4 0004 15:04
+ * Created by Handsome on 2018/4/2 0002 09:26
  */
-public class CreateColumn3 {
+public class CreateColumn1 {
     public Column getColumn() {
         return new Column() {
 
@@ -48,10 +48,10 @@ public class CreateColumn3 {
         bitMaps[0].add(0);
         bitMaps[0].add(1);
         bitMaps[0].add(2);
-        bitMaps[0].add(6);
-        bitMaps[1].add(3);
-        bitMaps[1].add(4);
-        bitMaps[1].add(5);
+        bitMaps[0].add(3);
+        bitMaps[0].add(4);
+        bitMaps[0].add(5);
+        bitMaps[1].add(6);
         bitMaps[1].add(7);
         return new BitmapIndexedColumn() {
             @Override
@@ -91,9 +91,9 @@ public class CreateColumn3 {
     }
 
     private DictionaryEncodedColumn createDicColumn() {
-        final int[] keys = {2012, 2013};
-        final int[] index = {0, 0, 0, 1, 1, 1, 0, 1};
-        return new TempDictColumn() {
+        final int[] keys = {1, 2};
+        final int[] index = {0, 0, 0, 0, 0, 0, 1, 1};
+        return new Temps.TempDictColumn() {
 
             @Override
             public int size() {

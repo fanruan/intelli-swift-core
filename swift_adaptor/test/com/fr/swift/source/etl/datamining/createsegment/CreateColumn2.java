@@ -1,6 +1,6 @@
-package com.fr.swift.source.etl.rowcal.periodpercentage;
+package com.fr.swift.source.etl.datamining.createsegment;
 
-import com.fr.swift.Temps.TempDictColumn;
+import com.fr.swift.Temps;
 import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.bitmap.MutableBitMap;
 import com.fr.swift.bitmap.impl.BitSetMutableBitMap;
@@ -13,9 +13,9 @@ import com.fr.swift.segment.column.DictionaryEncodedColumn;
 import java.util.Comparator;
 
 /**
- * Created by Handsome on 2018/3/4 0004 15:04
+ * Created by Handsome on 2018/4/2 0002 09:29
  */
-public class CreateColumn4 {
+public class CreateColumn2 {
     public Column getColumn() {
         return new Column() {
 
@@ -42,18 +42,21 @@ public class CreateColumn4 {
     }
 
     private BitmapIndexedColumn createBitmapColumn() {
-        final MutableBitMap[] bitMaps = new MutableBitMap[3];
+        final MutableBitMap[] bitMaps = new MutableBitMap[6];
         bitMaps[0] = BitSetMutableBitMap.newInstance();
         bitMaps[1] = BitSetMutableBitMap.newInstance();
         bitMaps[2] = BitSetMutableBitMap.newInstance();
-        bitMaps[0].add(0);
-        bitMaps[0].add(3);
+        bitMaps[3] = BitSetMutableBitMap.newInstance();
+        bitMaps[4] = BitSetMutableBitMap.newInstance();
+        bitMaps[5] = BitSetMutableBitMap.newInstance();
         bitMaps[0].add(6);
-        bitMaps[0].add(7);
-        bitMaps[1].add(1);
-        bitMaps[1].add(4);
-        bitMaps[2].add(2);
-        bitMaps[2].add(5);
+        bitMaps[1].add(0);
+        bitMaps[2].add(1);
+        bitMaps[3].add(2);
+        bitMaps[3].add(7);
+        bitMaps[4].add(3);
+        bitMaps[5].add(4);
+        bitMaps[5].add(5);
         return new BitmapIndexedColumn() {
             @Override
             public void flush() {
@@ -92,9 +95,9 @@ public class CreateColumn4 {
     }
 
     private DictionaryEncodedColumn createDicColumn() {
-        final int[] keys = {1, 2, 3};
-        final int[] index = {0, 1, 2, 0, 1, 2, 0, 0};
-        return new TempDictColumn() {
+        final int[] keys = {17, 18, 19, 20, 21, 22};
+        final int[] index = {1, 2, 3, 4, 5, 5, 0, 3};
+        return new Temps.TempDictColumn() {
 
             @Override
             public int size() {
@@ -126,4 +129,3 @@ public class CreateColumn4 {
         };
     }
 }
-

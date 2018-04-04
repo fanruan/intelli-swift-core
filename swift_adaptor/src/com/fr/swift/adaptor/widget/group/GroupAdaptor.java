@@ -83,11 +83,19 @@ public class GroupAdaptor {
         return Groups.newGroup(groupRule);
     }
 
+    private static boolean isEmptyGroup(StringCustomDetailsBean stringGroup) {
+        return stringGroup.getContent().isEmpty();
+    }
+
     private static GroupRule newCustomRule(StringDimensionCustomGroup dimGroup) {
         StringCustomGroupValueBean bean = dimGroup.getValue().getValue();
 
         List<StringGroup> stringGroups = new ArrayList<StringGroup>();
         for (StringCustomDetailsBean detailsBean : bean.getDetails()) {
+            if (isEmptyGroup(detailsBean)) {
+                continue;
+            }
+
             String groupName = detailsBean.getValue();
             List<String> values = new ArrayList<String>();
             for (StringCustomDetailsItemBean itemBean : detailsBean.getContent()) {
@@ -142,9 +150,17 @@ public class GroupAdaptor {
             return Groups.newGroup(groupRule);
         }
 
+        private static boolean anotherIsEmptyGroup(CustomGroupValueContent stringGroup) {
+            return stringGroup.getContent().isEmpty();
+        }
+
         private static GroupRule newCustomRule(com.finebi.conf.internalimp.analysis.bean.operator.group.custom.StringCustomGroupValueBean bean) {
             List<StringGroup> stringGroups = new ArrayList<StringGroup>();
             for (CustomGroupValueContent detailsBean : bean.getDetails()) {
+                if (anotherIsEmptyGroup(detailsBean)) {
+                    continue;
+                }
+
                 String groupName = detailsBean.getValue();
                 List<String> values = new ArrayList<String>();
                 for (CustomGroupValueItemBean itemBean : detailsBean.getContent()) {
