@@ -9,11 +9,8 @@ import java.util.Iterator;
  */
 public class AllSumOfAboveCalculator extends AbstractTargetCalculator {
 
-    private Iterator<Number[]> iterator;
-
     public AllSumOfAboveCalculator(TargetGettingKey paramIndex, TargetGettingKey resultIndex, Iterator<Number[]> iterator) {
-        super(paramIndex, resultIndex);
-        this.iterator = iterator;
+        super(paramIndex, resultIndex, iterator);
     }
 
     @Override

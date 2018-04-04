@@ -10,12 +10,11 @@ import java.util.Iterator;
  */
 public class AllSumOfAllCalculator extends AbstractTargetCalculator {
 
-    private Iterator<Number[]> iterator;
     private Double summaryValue;
 
     public AllSumOfAllCalculator(TargetGettingKey paramIndex, TargetGettingKey resultIndex,
                                  Iterator<Number[]> iterator, Double summaryValue) {
-        super(paramIndex, resultIndex);
+        super(paramIndex, resultIndex, iterator);
         this.iterator = iterator;
         this.summaryValue = summaryValue;
     }

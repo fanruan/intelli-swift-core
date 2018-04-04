@@ -11,11 +11,8 @@ import java.util.List;
  */
 public class AllAverageCalculator extends AbstractTargetCalculator {
 
-    private Iterator<Number[]> iterator;
-
     public AllAverageCalculator(TargetGettingKey paramIndex, TargetGettingKey resultIndex, Iterator<Number[]> iterator) {
-        super(paramIndex, resultIndex);
-        this.iterator = iterator;
+        super(paramIndex, resultIndex, iterator);
     }
 
     @Override
