@@ -53,11 +53,8 @@ public class MetaDataConfig extends DefaultConfiguration {
     }
 
     public void modifyMetaData(String sourceKey, IMetaData metaData) {
-        IMetaData iMetaData = (IMetaData) metaDataHolder.get(sourceKey);
-        iMetaData.setSchema(metaData.getSchema());
-        iMetaData.setRemark(metaData.getRemark());
-        iMetaData.setTableName(metaData.getTableName());
-        iMetaData.setFieldList(metaData.getFieldList());
+        // 直接调添加方法好了，取出metaData再设置好像不能全覆盖
+        addMetaData(sourceKey, metaData);
     }
 
     @Override
