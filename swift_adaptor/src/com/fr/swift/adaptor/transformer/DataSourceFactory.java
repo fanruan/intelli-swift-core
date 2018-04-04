@@ -6,6 +6,7 @@ import com.finebi.conf.internalimp.analysis.bean.operator.confselect.ConfSelectB
 import com.finebi.conf.internalimp.analysis.operator.confselect.ConfSelectOperator;
 import com.finebi.conf.internalimp.basictable.table.FineDBBusinessTable;
 import com.finebi.conf.internalimp.basictable.table.FineSQLBusinessTable;
+import com.finebi.conf.internalimp.basictable.table.FineSQLTableParameter;
 import com.finebi.conf.internalimp.update.TableUpdateInfo;
 import com.finebi.conf.structure.analysis.operator.FineOperator;
 import com.finebi.conf.structure.bean.table.AbstractFineTable;
@@ -168,8 +169,20 @@ public class DataSourceFactory {
     private static DataSource transformQueryDBSource(FineSQLBusinessTable table) throws Exception {
 
         Map<String, ColumnType> fieldColumnTypes = checkFieldTypes(table.getOperators());
+
+        String sql = table.getSql();
+        List<FineSQLTableParameter> sqlTableParameters = table.getParamSetting();
+        if (sqlTableParameters != null) {
+            for (FineSQLTableParameter parameter : sqlTableParameters) {
+                String name = parameter.getName();
+                String value = parameter.getValue();
+                String compareName = "\\$" + "\\{" + name + "\\}";
+                sql = sql.replaceAll(compareName, value);
+            }
+        }
+
         QueryDBSource queryDBSource = fieldColumnTypes == null ?
-                new QueryDBSource(table.getSql(), table.getConnName()) : new QueryDBSource(table.getSql(), table.getConnName(), fieldColumnTypes);
+                new QueryDBSource(sql, table.getConnName()) : new QueryDBSource(table.getSql(), table.getConnName(), fieldColumnTypes);
         return checkETL(queryDBSource, table);
     }
 
