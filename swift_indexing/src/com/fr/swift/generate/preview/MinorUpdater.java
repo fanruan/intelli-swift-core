@@ -31,7 +31,9 @@ import java.util.List;
  */
 public class MinorUpdater {
 
-    DataSource dataSource;
+    private DataSource dataSource;
+
+    private int previewRowCount = 100;
 
     public MinorUpdater(DataSource dataSource) {
         this.dataSource = dataSource;
@@ -69,7 +71,7 @@ public class MinorUpdater {
         if (segmentList != null && !segmentList.isEmpty()) {
             return;
         }
-        SwiftResultSet swiftResultSet = SwiftDataPreviewer.createPreviewTransfer(dataSource, 100).createResultSet();
+        SwiftResultSet swiftResultSet = SwiftDataPreviewer.createPreviewTransfer(dataSource, previewRowCount).createResultSet();
 
         Segment segment = createSegment(dataSource);
         Inserter inserter = getInserter(dataSource, segment);

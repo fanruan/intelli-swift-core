@@ -2,6 +2,7 @@ package com.finebi.conf.imp;
 
 import com.finebi.base.common.resource.FineResourceItem;
 import com.finebi.base.constant.FineEngineType;
+import com.finebi.conf.exception.FineEngineException;
 import com.finebi.conf.internalimp.analysis.operator.circulate.CirculateOneFieldOperator;
 import com.finebi.conf.internalimp.analysis.operator.circulate.CirculateTwoFieldOperator;
 import com.finebi.conf.internalimp.analysis.operator.trans.ColumnRowTransOperator;
@@ -11,6 +12,8 @@ import com.finebi.conf.internalimp.basictable.previewdata.FineColumnTransPreview
 import com.finebi.conf.internalimp.basictable.previewdata.FloorPreviewItem;
 import com.finebi.conf.internalimp.basictable.table.FineDBBusinessTable;
 import com.finebi.conf.internalimp.service.engine.table.FineTableEngineExecutor;
+import com.finebi.conf.provider.SwiftTableManager;
+import com.finebi.conf.service.engine.table.EngineTableManager;
 import com.finebi.conf.structure.analysis.operator.FineOperator;
 import com.finebi.conf.structure.bean.connection.FineConnection;
 import com.finebi.conf.structure.bean.field.FineBusinessField;
@@ -32,7 +35,6 @@ import com.fr.general.ComparatorUtils;
 import com.fr.general.data.DataModel;
 import com.fr.script.Calculator;
 import com.fr.stable.StringUtils;
-import com.fr.swift.adaptor.preview.SwiftDataPreview;
 import com.fr.swift.adaptor.struct.SwiftDetailTableResult;
 import com.fr.swift.adaptor.struct.SwiftEmptyResult;
 import com.fr.swift.adaptor.struct.SwiftSegmentDetailResult;
@@ -42,12 +44,12 @@ import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.bitmap.traversal.BreakTraversalAction;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
-import com.fr.swift.manager.LocalSegmentProvider;
+import com.fr.swift.provider.DataProvider;
+import com.fr.swift.provider.impl.SwiftDataProvider;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.segment.column.DictionaryEncodedColumn;
 import com.fr.swift.source.DataSource;
-import com.fr.swift.source.SwiftMetaData;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -67,16 +69,19 @@ public class SwiftTableEngineExecutor implements FineTableEngineExecutor {
 
     private static final SwiftLogger LOGGER = SwiftLoggers.getLogger(SwiftTableEngineExecutor.class);
 
-    private SwiftDataPreview swiftDataPreview;
+    private DataProvider dataProvider;
+
+    private EngineTableManager tableManager;
 
     public SwiftTableEngineExecutor() {
-        this.swiftDataPreview = new SwiftDataPreview();
+        this.dataProvider = new SwiftDataProvider();
+        this.tableManager = new SwiftTableManager();
     }
 
     @Override
     public BIDetailTableResult getPreviewData(FineBusinessTable table, int rowCount) throws Exception {
         try {
-            return swiftDataPreview.getDetailPreviewByFields(table, rowCount);
+            return dataProvider.getDetailPreviewByFields(table, rowCount);
         } catch (Exception e) {
             LOGGER.error(e.getMessage(), e);
         }
@@ -85,11 +90,9 @@ public class SwiftTableEngineExecutor implements FineTableEngineExecutor {
 
     @Override
     public BIDetailTableResult getRealData(FineBusinessTable table) throws Exception {
-
         DataSource dataSource = DataSourceFactory.getDataSource(table);
-        List<Segment> segments = LocalSegmentProvider.getInstance().getSegment(dataSource.getSourceKey());
-        SwiftMetaData swiftMetaData = dataSource.getMetadata();
-        return new SwiftSegmentDetailResult(segments, swiftMetaData);
+        List<Segment> segmentList = dataProvider.getRealData(dataSource);
+        return new SwiftSegmentDetailResult(segmentList, dataSource.getMetadata());
     }
 
     @Override
@@ -106,6 +109,15 @@ public class SwiftTableEngineExecutor implements FineTableEngineExecutor {
 
     @Override
     public boolean isAvailable(FineResourceItem item) {
+        try {
+            FineBusinessTable fineBusinessTable = tableManager.getSingleTable(item.getName());
+            DataSource dataSource = DataSourceFactory.getDataSource(fineBusinessTable);
+            return dataProvider.isSwiftAvailable(dataSource);
+        } catch (FineEngineException e) {
+            LOGGER.error(e);
+        } catch (Exception ee) {
+            LOGGER.error(ee);
+        }
         return false;
     }
 
