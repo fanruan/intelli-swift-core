@@ -1,9 +1,10 @@
-package com.fr.swift.source.etl.datamining.rcompile;
+package com.fr.swift.config.unique;
 
 import com.fr.config.holder.Conf;
 import com.fr.config.holder.factory.Holders;
 import com.fr.config.utils.UniqueKey;
 import com.fr.stable.StringUtils;
+import com.fr.swift.config.MetaDataRCode;
 
 /**
  * Created by Handsome on 2018/3/29 0030 17:16

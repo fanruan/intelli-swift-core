@@ -4,10 +4,12 @@ import com.finebi.base.common.resource.FineResourceItem;
 import com.finebi.base.constant.FineEngineType;
 import com.finebi.conf.internalimp.analysis.operator.circulate.CirculateOneFieldOperator;
 import com.finebi.conf.internalimp.analysis.operator.circulate.CirculateTwoFieldOperator;
+import com.finebi.conf.internalimp.analysis.operator.rcompile.RCompileOperator;
 import com.finebi.conf.internalimp.analysis.operator.trans.ColumnRowTransOperator;
 import com.finebi.conf.internalimp.analysis.operator.trans.NameText;
 import com.finebi.conf.internalimp.basictable.previewdata.FineCirculatePreviewData;
 import com.finebi.conf.internalimp.basictable.previewdata.FineColumnTransPreviewData;
+import com.finebi.conf.internalimp.basictable.previewdata.FineGetRCodePreviewData;
 import com.finebi.conf.internalimp.basictable.previewdata.FloorPreviewItem;
 import com.finebi.conf.internalimp.basictable.table.FineDBBusinessTable;
 import com.finebi.conf.internalimp.service.engine.table.FineTableEngineExecutor;
@@ -40,6 +42,8 @@ import com.fr.swift.adaptor.transformer.DataSourceFactory;
 import com.fr.swift.adaptor.transformer.FieldFactory;
 import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.bitmap.traversal.BreakTraversalAction;
+import com.fr.swift.config.IMetaDataRCode;
+import com.fr.swift.config.conf.RCodeConfig;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.manager.LocalSegmentProvider;
@@ -139,6 +143,8 @@ public class SwiftTableEngineExecutor implements FineTableEngineExecutor {
             } else if (fineOperator instanceof CirculateOneFieldOperator) {
                 CirculateOneFieldOperator op = (CirculateOneFieldOperator) operators.get(operators.size() - 1);
                 return getProduceDataForCirculateOne(op, preTable);
+            } else if (fineOperator instanceof RCompileOperator) {
+                return getRCodeForRCompileOperator(preTable);
             }
         }
         return null;
@@ -169,36 +175,6 @@ public class SwiftTableEngineExecutor implements FineTableEngineExecutor {
         }
         engineConfProduceData.setPreviewData(previewData);
         return engineConfProduceData;
-    }
-
-    private void dealWithID(final int cl, final int i, final List list,
-                            final Segment segment, final ColumnKey idCIndex,
-                            final ColumnKey pidCIndex, final Segment[] segments) {
-
-        DictionaryEncodedColumn get1 = segment.getColumn(idCIndex).getDictionaryEncodedColumn();
-        Object id = get1.getValue(get1.getIndexByRow(i));
-        if (id != null && list.size() < cl) {
-            list.add(id);
-            DictionaryEncodedColumn get2 = segment.getColumn(pidCIndex).getDictionaryEncodedColumn();
-            Object pid = get2.getValue(get2.getIndexByRow(i));
-            if (pid != null) {
-                for (int k = 0; k < segments.length; k++) {
-                    DictionaryEncodedColumn gts = segments[k].getColumn(idCIndex).getDictionaryEncodedColumn();
-                    int index = gts.getIndex(pid);
-                    ImmutableBitMap bitMap = segments[k].getColumn(idCIndex).getBitmapIndex().getBitMapIndex(index);
-                    final int indexOfSeg = k;
-                    if (bitMap != null) {
-                        bitMap.breakableTraversal(new BreakTraversalAction() {
-                            @Override
-                            public boolean actionPerformed(int row) {
-                                dealWithID(cl, row, list, segments[indexOfSeg], idCIndex, pidCIndex, segments);
-                                return true;
-                            }
-                        });
-                    }
-                }
-            }
-        }
     }
 
     private EngineConfProduceData getProduceDataForCirculateTwo(CirculateTwoFieldOperator op, FineBusinessTable preTable, FineBusinessTable table) throws Exception {
@@ -259,6 +235,21 @@ public class SwiftTableEngineExecutor implements FineTableEngineExecutor {
             }
         }
         return index;
+    }
+
+    private EngineConfProduceData getRCodeForRCompileOperator(FineBusinessTable preTable) {
+        FineGetRCodePreviewData previewData = new FineGetRCodePreviewData();
+        try {
+            String tableId = DataSourceFactory.getDataSource(preTable).getSourceKey().getId();
+            IMetaDataRCode rcode = RCodeConfig.getInstance().getRCodeById(tableId);
+            String commands = rcode.getRCode();
+            previewData.setPreviedData(commands);
+            return previewData;
+        } catch(Exception e) {
+            LOGGER.error("failed to get sourceKey!", e);
+        }
+        previewData.setPreviedData("failed to get R code!");
+        return previewData;
     }
 
     private EngineConfProduceData getProduceDataForCirculateOne(CirculateOneFieldOperator op, FineBusinessTable preTable) throws Exception {

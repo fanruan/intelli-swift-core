@@ -1,4 +1,4 @@
-package com.fr.swift.source.etl.datamining.rcompile;
+package com.fr.swift.config;
 
 /**
  * Created by Handsome on 2018/3/29 0030 16:54
