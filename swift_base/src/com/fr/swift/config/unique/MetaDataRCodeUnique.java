@@ -4,21 +4,21 @@ import com.fr.config.holder.Conf;
 import com.fr.config.holder.factory.Holders;
 import com.fr.config.utils.UniqueKey;
 import com.fr.stable.StringUtils;
-import com.fr.swift.config.MetaDataRCode;
+import com.fr.swift.config.IMetaDataRCode;
 
 /**
  * Created by Handsome on 2018/3/29 0030 17:16
  */
-public class MetaDataRCodeConfig extends UniqueKey implements MetaDataRCode {
+public class MetaDataRCodeUnique extends UniqueKey implements IMetaDataRCode {
 
     private final static String NAMESPACE = "metadata";
 
     private Conf<String> tableId = Holders.simple(StringUtils.EMPTY);
     private Conf<String> rCode = Holders.simple(StringUtils.EMPTY);
 
-    public MetaDataRCodeConfig() {}
+    public MetaDataRCodeUnique() {}
 
-    public MetaDataRCodeConfig(String tableId, String rCode) {
+    public MetaDataRCodeUnique(String tableId, String rCode) {
         this.setTableId(tableId);
         this.setRCode(rCode);
     }
