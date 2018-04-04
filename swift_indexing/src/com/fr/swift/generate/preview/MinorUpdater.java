@@ -7,8 +7,9 @@ import com.fr.swift.generate.preview.operator.MinorInserter;
 import com.fr.swift.generate.realtime.index.RealtimeColumnIndexer;
 import com.fr.swift.generate.realtime.index.RealtimeMultiRelationIndexer;
 import com.fr.swift.generate.realtime.index.RealtimeSubDateColumnIndexer;
+import com.fr.swift.generate.realtime.index.RealtimeTablePathIndexer;
 import com.fr.swift.query.group.GroupType;
-import com.fr.swift.relation.utils.MultiRelationHelper;
+import com.fr.swift.relation.utils.RelationPathHelper;
 import com.fr.swift.segment.RealTimeSegmentImpl;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.column.ColumnKey;
@@ -150,9 +151,9 @@ public class MinorUpdater {
                 RelationSource relation = key.getRelation();
                 if (relation != null) {
                     if (relation.getRelationType() == RelationSourceType.RELATION) {
-                        new RealtimeMultiRelationIndexer(MultiRelationHelper.convert2CubeRelation(relation), MinorSegmentManager.getInstance()).work();
+                        new RealtimeMultiRelationIndexer(RelationPathHelper.convert2CubeRelation(relation), MinorSegmentManager.getInstance()).work();
                     } else {
-                        // path生成
+                        new RealtimeTablePathIndexer(RelationPathHelper.convert2CubeRelationPath(relation), MinorSegmentManager.getInstance()).work();
                     }
                     // 只生成一次
                     break;
