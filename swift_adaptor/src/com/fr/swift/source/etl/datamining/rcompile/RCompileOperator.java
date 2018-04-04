@@ -1,0 +1,109 @@
+package com.fr.swift.source.etl.datamining.rcompile;
+
+import com.fr.swift.segment.Segment;
+import com.fr.swift.segment.column.ColumnKey;
+import com.fr.swift.source.ColumnTypeUtils;
+import com.fr.swift.source.MetaDataColumn;
+import com.fr.swift.source.SwiftMetaData;
+import com.fr.swift.source.SwiftMetaDataColumn;
+import com.fr.swift.source.etl.AbstractOperator;
+import com.fr.swift.source.etl.OperatorType;
+import org.rosuda.REngine.Rserve.RConnection;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+/**
+ * Created by Handsome on 2018/3/29 0029 15:59
+ */
+public class RCompileOperator extends AbstractOperator {
+
+    private String[] columns;
+    private int[] columnTypes;
+    private List dataList;
+    private List<SwiftMetaDataColumn> columnList;
+    private String commands;
+    private boolean needExecute;
+    private String ip;
+    private int port;
+    private RConnection conn;
+    private String tableName;
+    private Segment[] segments;
+
+    public RCompileOperator(String commands, boolean needExecute, String ip,
+                            int port, String tableName, Segment[] segments, String[] columns) {
+        if(needExecute) {
+            this.columns = (String[]) dataList.get(0);
+            this.columnTypes = (int[]) dataList.get(1);
+        } else {
+            this.columns = columns;
+        }
+        this.commands = commands;
+        this.needExecute = needExecute;
+        this.ip = ip;
+        this.port = port;
+        this.tableName = tableName;
+        this.segments = segments;
+        init(commands, needExecute, ip, port, tableName, segments);
+    }
+
+    private void init(String commands, boolean needExecute, String ip, int port, String tableName, Segment[] segments) {
+        if(null != ip) {
+            if(port > 0) {
+                conn = new CreateRConnect(ip, port).getConnection();
+            } else {
+                conn = new CreateRConnect(ip).getConnection();
+            }
+        } else {
+            conn = new CreateRConnect().getConnection();
+        }
+        if(needExecute) {
+            List list = RExecute.process(conn, commands, tableName);
+            if(null != list) {
+                dataList = list;
+            }
+        } else {
+            ColumnKey[] columnKeys = new ColumnKey[columns.length];
+            for(int i = 0; i < columns.length; i++) {
+                columnKeys[i] = new ColumnKey(columns[i]);
+            }
+            RExecute.processAssignment(conn, segments, columnKeys, tableName);
+        }
+    }
+
+
+    public String[] getColumns() {
+        return columns;
+    }
+
+    public int[] getColumnTypes() {
+        return columnTypes;
+    }
+
+    public List getDataList() {
+        return dataList;
+    }
+
+    @Override
+    public List<SwiftMetaDataColumn> getColumns(SwiftMetaData[] metaDatas) {
+        columns = (String[]) dataList.get(0);
+        columnTypes = (int[]) dataList.get(1);
+        columnList = new ArrayList<SwiftMetaDataColumn>();
+        for(int i = 0; i < columns.length; i++) {
+            columnList.add(new MetaDataColumn(columns[i], columns[i], columnTypes[i],
+                    ColumnTypeUtils.MAX_LONG_COLUMN_SIZE, 0, fetchObjectCore().getValue()));
+        }
+        return columnList;
+    }
+
+    @Override
+    public OperatorType getOperatorType() {
+        return OperatorType.R_COMPILE;
+    }
+
+    @Override
+    public List<String> getNewAddedName() {
+        return Arrays.asList(columns);
+    }
+}
