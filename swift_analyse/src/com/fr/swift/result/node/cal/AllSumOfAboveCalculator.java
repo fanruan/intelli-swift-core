@@ -7,11 +7,11 @@ import java.util.Iterator;
 /**
  * Created by Lyon on 2018/4/4.
  */
-public class SumOfAboveCalculator extends AbstractTargetCalculator {
+public class AllSumOfAboveCalculator extends AbstractTargetCalculator {
 
     private Iterator<Number[]> iterator;
 
-    public SumOfAboveCalculator(TargetGettingKey paramIndex, TargetGettingKey resultIndex, Iterator<Number[]> iterator) {
+    public AllSumOfAboveCalculator(TargetGettingKey paramIndex, TargetGettingKey resultIndex, Iterator<Number[]> iterator) {
         super(paramIndex, resultIndex);
         this.iterator = iterator;
     }
