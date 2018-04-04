@@ -11,11 +11,12 @@ import com.finebi.conf.structure.analysis.table.FineAnalysisTable;
 import com.finebi.conf.structure.bean.field.FineBusinessField;
 import com.finebi.conf.structure.filter.FineFilter;
 import com.finebi.conf.structure.result.BIDetailTableResult;
-import com.fr.swift.adaptor.preview.SwiftDataPreview;
 import com.fr.swift.adaptor.transformer.DataSourceFactory;
 import com.fr.swift.adaptor.transformer.FieldFactory;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
+import com.fr.swift.provider.DataProvider;
+import com.fr.swift.provider.impl.SwiftDataProvider;
 import com.fr.swift.source.DataSource;
 
 import java.util.ArrayList;
@@ -32,10 +33,10 @@ public class SwiftAnalysisTableManager implements EngineAnalysisTableManager {
 
     private static final SwiftLogger LOGGER = SwiftLoggers.getLogger(SwiftAnalysisTableManager.class);
 
-    private SwiftDataPreview swiftDataPreview;
+    private DataProvider dataProvider;
 
     public SwiftAnalysisTableManager() {
-        swiftDataPreview = new SwiftDataPreview();
+        this.dataProvider = new SwiftDataProvider();
     }
 
     @Override
@@ -45,7 +46,7 @@ public class SwiftAnalysisTableManager implements EngineAnalysisTableManager {
             if (table.getOperator() != null && table.getOperator().getType() == ConfConstant.AnalysisType.FIELD_SETTING) {
                 table = table.getBaseTable();
             }
-            return swiftDataPreview.getDetailPreviewByFields(table, rowCount);
+            return dataProvider.getDetailPreviewByFields(table, rowCount);
         } catch (Exception e) {
             LOGGER.error(e.getMessage(), e);
         }
@@ -105,7 +106,7 @@ public class SwiftAnalysisTableManager implements EngineAnalysisTableManager {
 
         try {
             DataSource dataSource = DataSourceFactory.getDataSource(table);
-            return swiftDataPreview.getNumberMaxAndMinValue(dataSource, fieldName);
+            return dataProvider.getNumberMaxAndMinValue(dataSource, fieldName);
         } catch (Exception ignore) {
         }
         return new NumberMaxAndMinValue();
@@ -115,7 +116,7 @@ public class SwiftAnalysisTableManager implements EngineAnalysisTableManager {
     public List<Object> getColumnValue(FineAnalysisTable table, String fieldName) {
         try {
             DataSource dataSource = DataSourceFactory.getDataSource(table);
-            return swiftDataPreview.getGroupPreviewByFields(dataSource, fieldName);
+            return dataProvider.getGroupPreviewByFields(dataSource, fieldName);
         } catch (Exception e) {
             LOGGER.error(e);
         }
