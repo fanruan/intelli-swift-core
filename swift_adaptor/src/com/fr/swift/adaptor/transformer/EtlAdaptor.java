@@ -69,6 +69,8 @@ import com.finebi.conf.structure.path.FineBusinessTableRelationPath;
 import com.finebi.conf.structure.relation.FineBusinessTableRelation;
 import com.finebi.conf.utils.FineTableUtils;
 import com.fr.general.ComparatorUtils;
+import com.fr.stable.StringUtils;
+import com.fr.swift.adaptor.encrypt.SwiftEncryption;
 import com.fr.swift.adaptor.widget.group.GroupAdaptor;
 import com.fr.swift.adaptor.widget.group.GroupTypeAdaptor;
 import com.fr.swift.exception.meta.SwiftMetaDataException;
@@ -94,7 +96,6 @@ import com.fr.swift.source.etl.ETLOperator;
 import com.fr.swift.source.etl.EtlSource;
 import com.fr.swift.source.etl.columnfilter.ColumnFilterOperator;
 import com.fr.swift.source.etl.columnrowtrans.ColumnRowTransOperator;
-import com.fr.swift.source.etl.columnrowtrans.NameText;
 import com.fr.swift.source.etl.datamining.DataMiningOperator;
 import com.fr.swift.source.etl.date.GetFromDateOperator;
 import com.fr.swift.source.etl.datediff.DateDiffOperator;
@@ -119,6 +120,7 @@ import com.fr.swift.source.etl.union.UnionOperator;
 import com.fr.swift.source.etl.utils.FormulaUtils;
 import com.fr.swift.source.relation.RelationPathSourceImpl;
 import com.fr.swift.source.relation.RelationSourceImpl;
+import com.fr.swift.structure.Pair;
 import com.fr.swift.util.Crasher;
 
 import java.sql.Types;
@@ -733,27 +735,23 @@ class EtlAdaptor {
 
     private static ColumnRowTransOperator fromColumnRowTransBean(ColumnRowTransBean bean, FineBusinessTable table) {
         ColumnTransValue value = bean.getValue();
-        FineBusinessTable preTable = ((EngineComplexConfTable) table).getBaseTableBySelected(0);
-        List<FineBusinessField> fields = preTable.getFields();
-        String groupName = fields.get(findFieldName(fields, value.getAccordingField())).getName();
-        String lcName = fields.get(findFieldName(fields, value.getFieldId())).getName();
-        List<NameText> lcValue = new ArrayList<NameText>();
+        String groupName = SwiftEncryption.decryptFieldId(value.getAccordingField())[1];
+        String lcName = SwiftEncryption.decryptFieldId(value.getFieldId())[1];
+        List<Pair<String, String>> lcValue = new ArrayList<Pair<String, String>>();
         for (int i = 0; i < value.getValues().size(); i++) {
             ColumnInitalItem item = value.getValues().get(i);
-            NameText nameText = new NameText(item.getOldValue(), item.getNewValue());
-            lcValue.add(nameText);
+            if (item.isSelected()) {
+                lcValue.add(Pair.of(item.getOldValue(), StringUtils.isEmpty(item.getNewValue()) ? item.getOldValue() : item.getNewValue()));
+            }
         }
-        List<NameText> columns = new ArrayList<NameText>();
-        List<String> otherColumnNames = new ArrayList<String>();
+        List<Pair<String, String>> columns = new ArrayList<Pair<String, String>>();
+        List<Pair<String, String>> otherColumnNames = new ArrayList<Pair<String, String>>();
         for (int i = 0; i < value.getInitialFields().size(); i++) {
             ColumnInitalItem item = value.getInitialFields().get(i);
-            if (!groupName.equals(item.getOldValue()) && !lcName.equals(item.getOldValue())) {
-
-                if (item.isSelected()) {
-                    columns.add(new NameText(item.getOldValue(), item.getNewValue()));
-                } else {
-                    otherColumnNames.add(item.getOldValue());
-                }
+            if (item.isSelected()) {
+                columns.add(Pair.of(item.getOldValue(), StringUtils.isEmpty(item.getNewValue()) ? item.getOldValue() : item.getNewValue()));
+            } else {
+                otherColumnNames.add(Pair.of(item.getOldValue(), StringUtils.isEmpty(item.getNewValue()) ? item.getOldValue() : item.getNewValue()));
             }
         }
         return new ColumnRowTransOperator(groupName, lcName, lcValue, columns, otherColumnNames);

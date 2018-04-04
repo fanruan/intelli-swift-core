@@ -128,7 +128,7 @@ public class EtlTransferOperatorFactory {
     }
 
     private static ETLTransferOperator transferColumnRowTransOperator(ColumnRowTransOperator operator) {
-        return new ColumnRowTransferOperator(operator.getGroupName(), operator.getLcName(), operator.getColumns(), operator.getLcValue(), operator.getOtherColumnNames());
+        return new ColumnRowTransferOperator(operator.getGroupName(), operator.getLcName(), operator.getColumns() , operator.getLcValue(), operator.getOtherColumnNames());
     }
 
     private static ETLTransferOperator transferColumnFilterOperator(ColumnFilterOperator operator) {
