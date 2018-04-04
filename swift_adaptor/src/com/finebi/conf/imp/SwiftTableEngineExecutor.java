@@ -15,7 +15,6 @@ import com.finebi.conf.internalimp.service.engine.table.FineTableEngineExecutor;
 import com.finebi.conf.provider.SwiftTableManager;
 import com.finebi.conf.service.engine.table.EngineTableManager;
 import com.finebi.conf.structure.analysis.operator.FineOperator;
-import com.finebi.conf.structure.bean.connection.FineConnection;
 import com.finebi.conf.structure.bean.field.FineBusinessField;
 import com.finebi.conf.structure.bean.table.AbstractFineTable;
 import com.finebi.conf.structure.bean.table.FineBusinessTable;
@@ -24,7 +23,6 @@ import com.finebi.conf.structure.conf.base.EngineConfTable;
 import com.finebi.conf.structure.conf.result.EngineConfProduceData;
 import com.finebi.conf.structure.result.BIDetailCell;
 import com.finebi.conf.structure.result.BIDetailTableResult;
-import com.finebi.conf.utils.FineConnectionUtils;
 import com.fr.data.core.db.dialect.Dialect;
 import com.fr.data.core.db.dialect.DialectFactory;
 import com.fr.data.core.db.dml.Table;
@@ -50,6 +48,8 @@ import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.segment.column.DictionaryEncodedColumn;
 import com.fr.swift.source.DataSource;
+import com.fr.swift.source.db.ConnectionInfo;
+import com.fr.swift.source.db.ConnectionManager;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -220,11 +220,11 @@ public class SwiftTableEngineExecutor implements FineTableEngineExecutor {
         fieldList.add(fields.get(findFieldName(fields, op.getIdFieldName())).getName());
         fieldList.add(fields.get(findFieldName(fields, op.getParentIdFieldName())).getName());
         String connectionName = ((FineDBBusinessTable) table).getConnName();
-        FineConnection fineConnection = FineConnectionUtils.getConnectionByName(connectionName);
-        Connection connection = fineConnection.getConnection();
+        ConnectionInfo connectionInfo = ConnectionManager.getInstance().getConnectionInfo(connectionName);
+        Connection connection = connectionInfo.getFrConnection();
         java.sql.Connection conn = connection.createConnection();
         Dialect dialect = DialectFactory.generateDialect(conn, connection.getDriver());
-        Table tb = new Table(fineConnection.getSchema(), ((FineDBBusinessTable) table).getTableName());
+        Table tb = new Table(connectionInfo.getSchema(), ((FineDBBusinessTable) table).getTableName());
         StringBuffer sb = new StringBuffer();
         for (int i = 0; i < fieldList.size(); i++) {
             if (i != 0) {

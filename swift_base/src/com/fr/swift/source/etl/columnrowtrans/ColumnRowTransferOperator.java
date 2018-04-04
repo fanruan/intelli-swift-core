@@ -4,6 +4,7 @@ import com.fr.swift.segment.Segment;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftResultSet;
 import com.fr.swift.source.etl.ETLTransferOperator;
+import com.fr.swift.structure.Pair;
 
 import java.util.List;
 
@@ -14,12 +15,12 @@ public class ColumnRowTransferOperator implements ETLTransferOperator {
 
     private String groupName;
     private String lcName;
-    private List<NameText> lc_value;
-    private List<NameText> columns;
-    private List<String> otherColumnNames;
+    private List<Pair<String, String>> lc_value;
+    private List<Pair<String, String>> columns;
+    private List<Pair<String, String>> otherColumnNames;
 
-    public ColumnRowTransferOperator(String groupName, String lcName, List<NameText> columns,
-                                           List<NameText> lc_value, List<String> otherColumnNames) {
+    public ColumnRowTransferOperator(String groupName, String lcName, List<Pair<String, String>> columns,
+                                     List<Pair<String, String>> lc_value, List<Pair<String, String>> otherColumnNames) {
         this.groupName = groupName;
         this.lcName = lcName;
         this.columns = columns;

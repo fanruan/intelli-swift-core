@@ -36,6 +36,8 @@ import com.fr.swift.source.etl.EtlSource;
 import com.fr.swift.source.etl.EtlTransferOperatorFactory;
 import com.fr.swift.source.etl.datamining.DataMiningOperator;
 import com.fr.swift.source.etl.datamining.DataMiningTransferOperator;
+import com.fr.swift.source.etl.datamining.rcompile.RCompileOperator;
+import com.fr.swift.source.etl.datamining.rcompile.RCompileTransferOperator;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -60,6 +62,14 @@ public class DataSourceFactory {
             @Override
             public ETLTransferOperator createTransferOperator(ETLOperator operator) {
                 return new DataMiningTransferOperator(((DataMiningOperator) operator).getAlgorithmBean());
+            }
+        });
+        EtlTransferOperatorFactory.register(RCompileOperator.class,new EtlTransferOperatorFactory.ETLTransferCreator(){
+
+            @Override
+            public ETLTransferOperator createTransferOperator(ETLOperator operator) {
+                RCompileOperator op = (RCompileOperator) operator;
+                return new RCompileTransferOperator(op.getColumns(), op.getColumnTypes(), op.getDataList());
             }
         });
         try {
