@@ -2,7 +2,7 @@ package com.fr.swift.manager;
 
 import com.finebi.base.stable.StableManager;
 import com.finebi.conf.service.connection.FineConnectionService;
-import com.fr.data.impl.Connection;
+import com.fr.data.impl.JDBCDatabaseConnection;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.source.db.ConnectionInfo;
@@ -19,8 +19,8 @@ public class ConnectionProvider implements IConnectionProvider {
     @Override
     public ConnectionInfo getConnection(String connectionName) {
         try {
-            Connection connection = connService.getConnectionByName(connectionName);
-            return new SwiftConnectionInfo(null,connection);
+            JDBCDatabaseConnection connection = (JDBCDatabaseConnection) connService.getConnectionByName(connectionName);
+            return new SwiftConnectionInfo(connection.getSchema(),connection);
         } catch (Exception e) {
             LOGGER.error(e.getMessage(), e);
             return null;
