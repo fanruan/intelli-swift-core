@@ -6,6 +6,7 @@ import com.finebi.conf.structure.path.FineBusinessTableRelationPath;
 import com.finebi.conf.structure.relation.FineBusinessTableRelation;
 import com.fr.general.ComparatorUtils;
 import com.fr.swift.conf.business.path.SwiftRelationPathDao;
+import com.fr.swift.conf.business.relation.RelationShipType;
 import com.fr.swift.conf.business.relation.SwiftRelationDao;
 import com.fr.swift.conf.business.table.TableParseXml;
 import com.fr.swift.conf.business.table.TableXmlWriter;
@@ -105,12 +106,12 @@ public class SwiftRelationPathConfProvider implements EngineRelationPathManager 
             List<FineBusinessTableRelation> relations = path.getFineBusinessTableRelations();
             FineBusinessTableRelation firstRelation = relations.get(0);
             FineBusinessTableRelation lastRelation = relations.get(relations.size() - 1);
-            if (firstRelation.getRelationType() == 3) {
+            if (firstRelation.getRelationType() == RelationShipType.MORE_TO_ONE) {
                 firstTable = firstRelation.getForeignBusinessTable().getName();
             } else {
                 firstTable = firstRelation.getPrimaryBusinessTable().getName();
             }
-            if (lastRelation.getRelationType() == 3) {
+            if (lastRelation.getRelationType() == RelationShipType.MORE_TO_ONE) {
                 lastTable = firstRelation.getPrimaryBusinessTable().getName();
             } else {
                 lastTable = firstRelation.getForeignBusinessTable().getName();

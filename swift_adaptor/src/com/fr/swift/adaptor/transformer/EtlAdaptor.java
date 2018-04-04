@@ -71,6 +71,7 @@ import com.finebi.conf.utils.FineTableUtils;
 import com.fr.general.ComparatorUtils;
 import com.fr.swift.adaptor.widget.group.GroupAdaptor;
 import com.fr.swift.adaptor.widget.group.GroupTypeAdaptor;
+import com.fr.swift.conf.business.relation.RelationShipType;
 import com.fr.swift.exception.meta.SwiftMetaDataException;
 import com.fr.swift.generate.preview.MinorSegmentManager;
 import com.fr.swift.log.SwiftLoggers;
@@ -279,7 +280,7 @@ class EtlAdaptor {
             FineBusinessTable foreignTable;
             List<FineBusinessField> primaryFields;
             List<FineBusinessField> foreignFields;
-            if (relation.getRelationType() == 3) {
+            if (relation.getRelationType() == RelationShipType.MORE_TO_ONE) {
                 primaryTable = relation.getForeignBusinessTable();
                 foreignTable = relation.getPrimaryBusinessTable();
                 primaryFields = relation.getForeignBusinessField();
@@ -329,13 +330,13 @@ class EtlAdaptor {
             FineBusinessTableRelation firstRelation = relations.get(0);
             FineBusinessTableRelation lastRelation = relations.get(relations.size() - 1);
             String prim;
-            if (firstRelation.getRelationType() == 3) {
+            if (firstRelation.getRelationType() == RelationShipType.MORE_TO_ONE) {
                 prim = firstRelation.getForeignBusinessTable().getId();
             } else {
                 prim = firstRelation.getPrimaryBusinessTable().getId();
             }
             String foreign;
-            if (lastRelation.getRelationType() == 3) {
+            if (lastRelation.getRelationType() == RelationShipType.MORE_TO_ONE) {
                 foreign = lastRelation.getPrimaryBusinessTable().getId();
             } else {
                 foreign = lastRelation.getForeignBusinessTable().getId();
