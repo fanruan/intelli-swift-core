@@ -105,6 +105,11 @@ public class CustomNumGroupRule extends BaseCustomGroupRule<Number> {
         return GroupType.CUSTOM_NUMBER;
     }
 
+    @Override
+    public int originalSize() {
+        return intervals.size();
+    }
+
     public static class NumInterval implements CoreService {
         /**
          * 是否为大于等于
