@@ -1,5 +1,6 @@
 package com.fr.swift.db;
 
+import com.fr.swift.source.Source;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftResultSet;
 
@@ -9,7 +10,7 @@ import java.sql.SQLException;
  * @author anchore
  * @date 2018/3/26
  */
-public interface Table {
+public interface Table extends Source {
     /**
      * 元数据
      *

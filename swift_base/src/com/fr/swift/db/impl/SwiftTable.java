@@ -3,6 +3,7 @@ package com.fr.swift.db.impl;
 import com.fr.swift.db.Table;
 import com.fr.swift.db.Where;
 import com.fr.swift.segment.operator.Inserter;
+import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftResultSet;
 
@@ -13,9 +14,11 @@ import java.sql.SQLException;
  * @date 2018/3/28
  */
 public class SwiftTable implements Table {
+    private SourceKey key;
     private SwiftMetaData meta;
 
-    public SwiftTable(SwiftMetaData meta) {
+    public SwiftTable(SourceKey key, SwiftMetaData meta) {
+        this.key = key;
         this.meta = meta;
     }
 
@@ -54,5 +57,10 @@ public class SwiftTable implements Table {
     @Override
     public SwiftResultSet select(Where where) {
         return null;
+    }
+
+    @Override
+    public SourceKey getSourceKey() {
+        return key;
     }
 }
