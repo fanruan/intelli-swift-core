@@ -23,8 +23,7 @@ public class MetaDataConvertUtil {
         IMetaData iMetaData = SwiftConfigServiceProvider.getInstance().getMetaDataByKey(sourceKey);
         List<IMetaDataColumn> fieldList = iMetaData.getFieldList();
         List<SwiftMetaDataColumn> fields = new ArrayList<SwiftMetaDataColumn>();
-        for (int i = 0, len = fieldList.size(); i < len; i++) {
-            IMetaDataColumn column = fieldList.get(i);
+        for (IMetaDataColumn column : fieldList) {
             fields.add(new MetaDataColumn(column.getName(), column.getRemark(), column.getType(),
                     column.getPrecision(), column.getScale(), column.getColumnId()));
         }
@@ -39,5 +38,16 @@ public class MetaDataConvertUtil {
             columns.add(new MetaDataColumnUnique(column.getType(), column.getName(), column.getRemark(), column.getPrecision(), column.getScale(), column.getColumnId()));
         }
         return new SwiftMetaDataUnique(metaData.getSchemaName(), metaData.getTableName(), metaData.getRemark(), columns);
+    }
+
+    public static SwiftMetaData toSwiftMetadata(IMetaData<IMetaDataColumn> iMetaData) {
+        List<SwiftMetaDataColumn> columnMetas = new ArrayList<SwiftMetaDataColumn>();
+        for (IMetaDataColumn columnMeta : iMetaData.getFieldList()) {
+            columnMetas.add(new MetaDataColumn(columnMeta.getName(), columnMeta.getRemark(),
+                    columnMeta.getType(), columnMeta.getPrecision(), columnMeta.getScale(),
+                    columnMeta.getColumnId()
+            ));
+        }
+        return new SwiftMetaDataImpl(iMetaData.getTableName(), iMetaData.getRemark(), iMetaData.getSchema(), columnMetas);
     }
 }

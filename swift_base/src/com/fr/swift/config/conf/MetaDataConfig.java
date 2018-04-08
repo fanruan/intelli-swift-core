@@ -5,6 +5,7 @@ import com.fr.config.DefaultConfiguration;
 import com.fr.config.holder.factory.Holders;
 import com.fr.config.holder.impl.ObjectMapConf;
 import com.fr.swift.config.IMetaData;
+import com.fr.swift.source.SourceKey;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -55,6 +56,10 @@ public class MetaDataConfig extends DefaultConfiguration {
     public void modifyMetaData(String sourceKey, IMetaData metaData) {
         // 直接调添加方法好了，取出metaData再设置好像不能全覆盖
         addMetaData(sourceKey, metaData);
+    }
+
+    public boolean contains(SourceKey metaKey) {
+        return metaDataHolder.containsKey(metaKey.getId());
     }
 
     @Override

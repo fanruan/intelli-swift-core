@@ -3,7 +3,8 @@ package com.fr.swift.source;
 import com.fr.swift.util.Util;
 
 /**
- * Created by pony on 2017/10/24.
+ * @author pony
+ * @date 2017/10/24
  */
 public class SourceKey {
     private String id;
