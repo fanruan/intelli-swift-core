@@ -1,7 +1,6 @@
 package com.fr.swift.result.node.cal;
 
 import com.fr.swift.compare.Comparators;
-import com.fr.swift.result.TargetGettingKey;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -16,7 +15,7 @@ public class AllRankCalculator extends AbstractTargetCalculator {
 
     private boolean asc;
 
-    public AllRankCalculator(TargetGettingKey paramIndex, TargetGettingKey resultIndex,
+    public AllRankCalculator(int paramIndex, int resultIndex,
                              Iterator<Number[]> iterator, boolean asc) {
         super(paramIndex, resultIndex, iterator);
         this.asc = asc;
@@ -29,7 +28,7 @@ public class AllRankCalculator extends AbstractTargetCalculator {
         while (iterator.hasNext()) {
             Number[] row = iterator.next();
             rows.add(row);
-            Double key = row[paramIndex.getTargetIndex()].doubleValue();
+            Double key = row[paramIndex].doubleValue();
             Integer count = map.get(key);
             // 首先用map统计个数并排序
             if (count == null) {
@@ -46,7 +45,7 @@ public class AllRankCalculator extends AbstractTargetCalculator {
         }
         for (Number[] row : rows) {
             // 设置排名
-            row[resultIndex.getTargetIndex()] = map.get(row[paramIndex.getTargetIndex()].doubleValue());
+            row[resultIndex] = map.get(row[paramIndex].doubleValue());
         }
         return null;
     }

@@ -32,7 +32,7 @@ public class LastDimensionIterator implements Iterator<Number[]> {
         rows = new MapperIterator<GroupNode, Number[]>(filteredIterator, new Function<GroupNode, Number[]>() {
             @Override
             public Number[] apply(GroupNode p) {
-                return p.getValues();
+                return p.getSummaryValue();
             }
         });
     }

@@ -21,7 +21,7 @@ public class GroupNodeFactory {
      * @param resultSet
      * @return
      */
-    public static GroupNode createFromSortedList(GroupByResultSet resultSet) {
+    public static GroupNode createFromSortedList(GroupByResultSet resultSet, int targetLength) {
         List<KeyValue<RowIndexKey<int[]>, AggregatorValue[]>> resultList = resultSet.getResultList();
         List<Map<Integer, Object>> dictionaries = resultSet.getGlobalDictionaries();
         int dimensionSize = resultList.isEmpty() ? 0 : resultList.get(0).getKey().getKey().length;
@@ -55,9 +55,17 @@ public class GroupNodeFactory {
             // TODO: 2018/4/4 这边没有考虑到根据汇总值计算计算指标的情况。
             // TODO: 2018/4/4 需要使用AggregatorValueContainer保存和设置汇总值
             // 给当前kv所代表的行设置值
-            cachedNode[deep].setValues(getValues(kv.getValue()));
+            cachedNode[deep].setSummaryValue(createSummaryValue(getValues(kv.getValue()), targetLength));
         }
         return root;
+    }
+
+    private static Number[] createSummaryValue(Number[] metrics, int targetLength) {
+        Number[] summaryValue = new Number[targetLength];
+        for (int i = 0; i < metrics.length; i++) {
+            summaryValue[i] = metrics[i];
+        }
+        return summaryValue;
     }
 
     private static GroupNode createNode(int dimensionIndex, int key, List<Map<Integer, Object>> dictionaries) {

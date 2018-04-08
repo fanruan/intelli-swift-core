@@ -20,12 +20,25 @@ public class GroupNode extends AbstractSwiftNode<GroupNode> {
         this.values = values;
     }
 
-    public Number[] getValues() {
+    // TODO: 2018/4/8 SwiftNode接口有待调整。当前所有聚合结构都是按行保存的，只有聚合完处理计算指标之前才转为node结构
+    public ChildMap<GroupNode> getChildMap() {
+        return childMap;
+    }
+
+    public void setSummaryValue(int index, Number value) {
+        values[index] = value;
+    }
+
+    public Number getSummaryValue(int index) {
+        return values[index];
+    }
+
+    public Number[] getSummaryValue() {
         return values;
     }
 
-    public void setValues(Number[] values) {
-        this.values = values;
+    public void setSummaryValue(Number[] summaryValue) {
+        this.values = summaryValue;
     }
 
     public int getDeep() {
@@ -50,7 +63,7 @@ public class GroupNode extends AbstractSwiftNode<GroupNode> {
     @Override
     public void addChild(GroupNode child) {
         if (getLastChild() != null) {
-            sibling = child;
+            getLastChild().sibling = child;
         }
         childMap.put(child.getData(), child);
         child.parent = this;
@@ -62,7 +75,7 @@ public class GroupNode extends AbstractSwiftNode<GroupNode> {
 
     @Override
     public int getChildrenSize() {
-        return 0;
+        return childMap.size();
     }
 
     @Override

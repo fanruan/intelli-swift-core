@@ -26,10 +26,10 @@ public class GroupNodeIterator implements Iterator<GroupNode> {
     @Override
     public GroupNode next() {
         GroupNode node4Return = queue.remove();
-        GroupNode tmp = node4Return;
-        while (tmp.getSibling() != null) {
+        GroupNode tmp = node4Return.getChildrenSize() == 0 ? null : node4Return.getChild(0);
+        while (tmp != null) {
+            queue.add(tmp);
             tmp = tmp.getSibling();
-            queue.add(tmp.getSibling());
         }
         return node4Return;
     }

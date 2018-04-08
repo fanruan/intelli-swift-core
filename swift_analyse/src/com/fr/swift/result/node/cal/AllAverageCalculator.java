@@ -1,7 +1,5 @@
 package com.fr.swift.result.node.cal;
 
-import com.fr.swift.result.TargetGettingKey;
-
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -11,7 +9,7 @@ import java.util.List;
  */
 public class AllAverageCalculator extends AbstractTargetCalculator {
 
-    public AllAverageCalculator(TargetGettingKey paramIndex, TargetGettingKey resultIndex, Iterator<Number[]> iterator) {
+    public AllAverageCalculator(int paramIndex, int resultIndex, Iterator<Number[]> iterator) {
         super(paramIndex, resultIndex, iterator);
     }
 
@@ -22,11 +20,11 @@ public class AllAverageCalculator extends AbstractTargetCalculator {
         while (iterator.hasNext()) {
             Number[] row = iterator.next();
             rows.add(row);
-            sum += row[paramIndex.getTargetIndex()].doubleValue();
+            sum += row[paramIndex].doubleValue();
         }
         Double average = rows.isEmpty() ? .0 : sum / rows.size();
         for (Number[] row : rows) {
-            row[resultIndex.getTargetIndex()] = average;
+            row[resultIndex] = average;
         }
         return null;
     }

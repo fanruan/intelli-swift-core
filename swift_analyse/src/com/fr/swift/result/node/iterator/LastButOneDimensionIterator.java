@@ -37,7 +37,7 @@ public class LastButOneDimensionIterator implements Iterator<Iterator<Number[]>>
         Iterator<Number[]> iterator = new MapperIterator<GroupNode, Number[]>(new ChildIterator(lastButOneNode), new Function<GroupNode, Number[]>() {
             @Override
             public Number[] apply(GroupNode p) {
-                return p.getValues();
+                return p.getSummaryValue();
             }
         });
         lastButOneNode = getNextNode();

@@ -1,7 +1,5 @@
 package com.fr.swift.result.node.cal;
 
-import com.fr.swift.result.TargetGettingKey;
-
 import java.util.Iterator;
 
 /**
@@ -9,7 +7,7 @@ import java.util.Iterator;
  */
 public class AllSumOfAboveCalculator extends AbstractTargetCalculator {
 
-    public AllSumOfAboveCalculator(TargetGettingKey paramIndex, TargetGettingKey resultIndex, Iterator<Number[]> iterator) {
+    public AllSumOfAboveCalculator(int paramIndex, int resultIndex, Iterator<Number[]> iterator) {
         super(paramIndex, resultIndex, iterator);
     }
 
@@ -17,9 +15,9 @@ public class AllSumOfAboveCalculator extends AbstractTargetCalculator {
     public Object call() throws Exception {
         Number[] lastRow = null;
         while (iterator.hasNext()) {
-            Double lastSum = lastRow == null ? 0 : lastRow[resultIndex.getTargetIndex()].doubleValue();
+            Double lastSum = lastRow == null ? 0 : lastRow[resultIndex].doubleValue();
             Number[] row = iterator.next();
-            row[resultIndex.getTargetIndex()] = lastSum + row[paramIndex.getTargetIndex()].doubleValue();
+            row[resultIndex] = lastSum + row[paramIndex].doubleValue();
             lastRow = row;
         }
         return null;

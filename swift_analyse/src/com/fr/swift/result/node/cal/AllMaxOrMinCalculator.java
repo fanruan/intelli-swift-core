@@ -1,7 +1,6 @@
 package com.fr.swift.result.node.cal;
 
 import com.fr.swift.compare.Comparators;
-import com.fr.swift.result.TargetGettingKey;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -16,7 +15,7 @@ public class AllMaxOrMinCalculator extends AbstractTargetCalculator {
     private Comparator<Double> comparator;
     private Double value = null;
 
-    public AllMaxOrMinCalculator(TargetGettingKey paramIndex, TargetGettingKey resultIndex,
+    public AllMaxOrMinCalculator(int paramIndex, int resultIndex,
                                  Iterator<Number[]> iterator, boolean isMax) {
         super(paramIndex, resultIndex, iterator);
         this.comparator = isMax ? Comparators.<Double>asc() : Comparators.<Double>desc();
@@ -28,7 +27,7 @@ public class AllMaxOrMinCalculator extends AbstractTargetCalculator {
         while (iterator.hasNext()) {
             Number[] row = iterator.next();
             rows.add(row);
-            Double v = row[paramIndex.getTargetIndex()].doubleValue();
+            Double v = row[paramIndex].doubleValue();
             if (value == null) {
                 value = v;
                 continue;
@@ -38,7 +37,7 @@ public class AllMaxOrMinCalculator extends AbstractTargetCalculator {
             }
         }
         for (Number[] row : rows) {
-            row[resultIndex.getTargetIndex()] = value;
+            row[resultIndex] = value;
         }
         return null;
     }
