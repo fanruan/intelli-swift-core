@@ -4,12 +4,10 @@ import com.finebi.base.common.resource.FineResourceItem;
 import com.finebi.base.constant.FineEngineType;
 import com.finebi.conf.internalimp.analysis.operator.circulate.CirculateOneFieldOperator;
 import com.finebi.conf.internalimp.analysis.operator.circulate.CirculateTwoFieldOperator;
-import com.finebi.conf.internalimp.analysis.operator.rcompile.RCompileOperator;
 import com.finebi.conf.internalimp.analysis.operator.trans.ColumnRowTransOperator;
 import com.finebi.conf.internalimp.analysis.operator.trans.NameText;
 import com.finebi.conf.internalimp.basictable.previewdata.FineCirculatePreviewData;
 import com.finebi.conf.internalimp.basictable.previewdata.FineColumnTransPreviewData;
-import com.finebi.conf.internalimp.basictable.previewdata.FineGetRCodePreviewData;
 import com.finebi.conf.internalimp.basictable.previewdata.FloorPreviewItem;
 import com.finebi.conf.internalimp.basictable.table.FineDBBusinessTable;
 import com.finebi.conf.internalimp.service.engine.table.FineTableEngineExecutor;
@@ -40,16 +38,10 @@ import com.fr.swift.adaptor.struct.SwiftEmptyResult;
 import com.fr.swift.adaptor.struct.SwiftSegmentDetailResult;
 import com.fr.swift.adaptor.transformer.DataSourceFactory;
 import com.fr.swift.adaptor.transformer.FieldFactory;
-import com.fr.swift.bitmap.ImmutableBitMap;
-import com.fr.swift.bitmap.traversal.BreakTraversalAction;
-import com.fr.swift.config.IMetaDataRCode;
-import com.fr.swift.config.conf.RCodeConfig;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.manager.LocalSegmentProvider;
 import com.fr.swift.segment.Segment;
-import com.fr.swift.segment.column.ColumnKey;
-import com.fr.swift.segment.column.DictionaryEncodedColumn;
 import com.fr.swift.source.DataSource;
 import com.fr.swift.source.SwiftMetaData;
 
@@ -143,8 +135,6 @@ public class SwiftTableEngineExecutor implements FineTableEngineExecutor {
             } else if (fineOperator instanceof CirculateOneFieldOperator) {
                 CirculateOneFieldOperator op = (CirculateOneFieldOperator) operators.get(operators.size() - 1);
                 return getProduceDataForCirculateOne(op, preTable);
-            } else if (fineOperator instanceof RCompileOperator) {
-                return getRCodeForRCompileOperator(preTable);
             }
         }
         return null;
@@ -235,21 +225,6 @@ public class SwiftTableEngineExecutor implements FineTableEngineExecutor {
             }
         }
         return index;
-    }
-
-    private EngineConfProduceData getRCodeForRCompileOperator(FineBusinessTable preTable) {
-        FineGetRCodePreviewData previewData = new FineGetRCodePreviewData();
-        try {
-            String tableId = DataSourceFactory.getDataSource(preTable).getSourceKey().getId();
-            IMetaDataRCode rcode = RCodeConfig.getInstance().getRCodeById(tableId);
-            String commands = rcode.getRCode();
-            previewData.setPreviedData(commands);
-            return previewData;
-        } catch(Exception e) {
-            LOGGER.error("failed to get sourceKey!", e);
-        }
-        previewData.setPreviedData("failed to get R code!");
-        return previewData;
     }
 
     private EngineConfProduceData getProduceDataForCirculateOne(CirculateOneFieldOperator op, FineBusinessTable preTable) throws Exception {

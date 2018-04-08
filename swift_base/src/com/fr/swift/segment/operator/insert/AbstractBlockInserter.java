@@ -2,13 +2,10 @@ package com.fr.swift.segment.operator.insert;
 
 import com.fr.swift.config.IConfigSegment;
 import com.fr.swift.config.IMetaData;
-import com.fr.swift.config.IMetaDataRCode;
 import com.fr.swift.config.ISegmentKey;
 import com.fr.swift.config.conf.MetaDataConfig;
 import com.fr.swift.config.conf.MetaDataConvertUtil;
-import com.fr.swift.config.conf.RCodeConfig;
 import com.fr.swift.config.conf.SegmentConfig;
-import com.fr.swift.config.unique.MetaDataRCodeUnique;
 import com.fr.swift.config.unique.SegmentKeyUnique;
 import com.fr.swift.config.unique.SegmentUnique;
 import com.fr.swift.cube.io.Types;
@@ -55,7 +52,6 @@ public abstract class AbstractBlockInserter implements Inserter {
     protected IConfigSegment configSegment;
     protected SwiftSourceAlloter alloter;
     protected SegmentIndexCache segmentIndexCache;
-    protected IMetaDataRCode metaDataRCode;
     private int startSegIndex;
 
     public AbstractBlockInserter(SourceKey sourceKey, String cubeSourceKey, SwiftMetaData swiftMetaData) {
@@ -89,7 +85,6 @@ public abstract class AbstractBlockInserter implements Inserter {
                 createSegment(i, Types.StoreType.MEMORY);
             }
         }
-        metaDataRCode = new MetaDataRCodeUnique();
     }
 
     @Override
@@ -164,21 +159,9 @@ public abstract class AbstractBlockInserter implements Inserter {
 
     protected abstract Segment createNewSegment(IResourceLocation location, SwiftMetaData swiftMetaData);
 
-    public void insertRCode(String code) {
-        metaDataRCode.setTableId(sourceKey.getId());
-        metaDataRCode.setRCode(code);
-    }
-
     public void release() {
         persistMeta();
         persistSegment();
-        if(metaDataRCode.getTableId() != null) {
-            persistRCode();
-        }
-    }
-
-    private void persistRCode() {
-        RCodeConfig.getInstance().putRCode(metaDataRCode);
     }
 
     protected void persistMeta() {
