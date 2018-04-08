@@ -15,7 +15,7 @@ import com.fr.swift.adaptor.transformer.DataSourceFactory;
 import com.fr.swift.adaptor.transformer.FilterInfoFactory;
 import com.fr.swift.adaptor.widget.group.GroupAdaptor;
 import com.fr.swift.adaptor.widget.target.CalTargetParseUtils;
-import com.fr.swift.adaptor.widget.target.TargetInfo;
+import com.fr.swift.query.adapter.target.cal.TargetInfo;
 import com.fr.swift.cal.QueryInfo;
 import com.fr.swift.cal.info.Expander;
 import com.fr.swift.cal.info.GroupQueryInfo;
@@ -63,7 +63,7 @@ public class TableWidgetAdaptor {
             TargetInfo targetInfo = CalTargetParseUtils.parseCalTarget(widget);
             resultSet = QueryRunnerProvider.getInstance().executeQuery(buildQueryInfo(widget, targetInfo.getMetrics()));
             GroupNode groupNode = GroupNodeFactory.createFromSortedList((GroupByResultSet) resultSet, targetInfo.getTargetLength());
-            TargetCalculatorUtils.calculate(groupNode, targetInfo.getTargetCalculatorInfoList(), targetInfo.getIndexesOfTargetsForShow());
+            TargetCalculatorUtils.calculate(groupNode, targetInfo.getTargetCalculatorInfoList(), targetInfo.getTargetsForShowList());
             resultNode = new BIGroupNodeAdaptor(groupNode);
         } catch (Exception e) {
             LOGGER.error(e);

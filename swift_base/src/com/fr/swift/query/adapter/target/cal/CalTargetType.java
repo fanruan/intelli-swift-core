@@ -1,4 +1,4 @@
-package com.fr.swift.result.node.cal;
+package com.fr.swift.query.adapter.target.cal;
 
 /**
  * Created by Lyon on 2018/4/8.

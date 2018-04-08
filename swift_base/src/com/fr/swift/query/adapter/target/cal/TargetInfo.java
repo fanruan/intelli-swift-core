@@ -1,7 +1,6 @@
-package com.fr.swift.adaptor.widget.target;
+package com.fr.swift.query.adapter.target.cal;
 
 import com.fr.swift.query.adapter.metric.Metric;
-import com.fr.swift.result.node.cal.TargetCalculatorInfo;
 
 import java.util.List;
 
@@ -13,13 +12,13 @@ public class TargetInfo {
     private int targetLength;
     private List<Metric> metrics;
     private List<TargetCalculatorInfo> targetCalculatorInfoList;
-    private List<Integer> indexesOfTargetsForShow;
+    private List<ResultTarget> targetsForShowList;
 
     public TargetInfo(List<Metric> metrics, List<TargetCalculatorInfo> targetCalculatorInfoList,
-                      List<Integer> indexesOfTargetsForShow) {
+                      List<ResultTarget> targetsForShowList) {
         this.metrics = metrics;
         this.targetCalculatorInfoList = targetCalculatorInfoList;
-        this.indexesOfTargetsForShow = indexesOfTargetsForShow;
+        this.targetsForShowList = targetsForShowList;
         this.targetLength = metrics.size() + targetCalculatorInfoList.size();
     }
 
@@ -55,7 +54,7 @@ public class TargetInfo {
      *
      * @return
      */
-    public List<Integer> getIndexesOfTargetsForShow() {
-        return indexesOfTargetsForShow;
+    public List<ResultTarget> getTargetsForShowList() {
+        return targetsForShowList;
     }
 }

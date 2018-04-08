@@ -8,11 +8,13 @@ import com.finebi.conf.structure.dashboard.widget.target.FineTarget;
 import com.fr.swift.adaptor.encrypt.SwiftEncryption;
 import com.fr.swift.query.adapter.metric.GroupMetric;
 import com.fr.swift.query.adapter.metric.Metric;
+import com.fr.swift.query.adapter.target.cal.ResultTarget;
+import com.fr.swift.query.adapter.target.cal.TargetInfo;
 import com.fr.swift.query.aggregator.Aggregator;
 import com.fr.swift.query.aggregator.SumAggregate;
 import com.fr.swift.query.filter.info.FilterInfo;
-import com.fr.swift.result.node.cal.CalTargetType;
-import com.fr.swift.result.node.cal.TargetCalculatorInfo;
+import com.fr.swift.query.adapter.target.cal.CalTargetType;
+import com.fr.swift.query.adapter.target.cal.TargetCalculatorInfo;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.source.SourceKey;
 
@@ -42,13 +44,14 @@ public class CalTargetParseUtils {
         allTargetFieldIds.addAll(metricFieldIds);
         allTargetFieldIds.addAll(relatedMetricFieldIds);
         allTargetFieldIds.addAll(calTargetFieldIds);
-        List<Integer> targetsForShowKeys = new ArrayList<Integer>();
+        List<ResultTarget> targetsForShowList = new ArrayList<ResultTarget>();
         List<TargetCalculatorInfo> calculatorInfoList = new ArrayList<TargetCalculatorInfo>();
         List<FineTarget> targets = widget.getTargetList();
         for (int i = 0; i < targets.size(); i++) {
             String fieldId = targets.get(i).getFieldId();
             int resultIndex = allTargetFieldIds.indexOf(fieldId);
-            targetsForShowKeys.add(resultIndex);
+            // TODO: 2018/4/9 ResultTarget的queryColumnIndex没有加上维度的个数
+            targetsForShowList.add(new ResultTarget(i, resultIndex));
             WidgetBeanFieldValue value = widget.getFieldByFieldId(fieldId).getCalculate();
             if (value != null) {
                 // TODO: 2018/4/8 根据value的type来判断哪类配置类计算
@@ -59,7 +62,7 @@ public class CalTargetParseUtils {
         }
         metricFieldIds.addAll(relatedMetricFieldIds);
         List<Metric> metrics = createMetrics(metricFieldIds);
-        return new TargetInfo(metrics, calculatorInfoList, targetsForShowKeys);
+        return new TargetInfo(metrics, calculatorInfoList, targetsForShowList);
     }
 
     private static List<Metric> createMetrics(List<String> fieldIds) {

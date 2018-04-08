@@ -1,5 +1,7 @@
 package com.fr.swift.result.node.cal;
 
+import com.fr.swift.query.adapter.target.cal.CalTargetType;
+import com.fr.swift.query.adapter.target.cal.TargetCalculatorInfo;
 import com.fr.swift.result.node.GroupNode;
 import com.fr.swift.result.node.iterator.LastDimensionIterator;
 
