@@ -5,6 +5,7 @@ import com.finebi.base.constant.FineEngineType;
 import com.finebi.conf.exception.FineEngineException;
 import com.finebi.conf.internalimp.analysis.operator.circulate.CirculateOneFieldOperator;
 import com.finebi.conf.internalimp.analysis.operator.circulate.CirculateTwoFieldOperator;
+import com.finebi.conf.internalimp.analysis.operator.circulate.FloorItem;
 import com.finebi.conf.internalimp.analysis.operator.trans.ColumnRowTransOperator;
 import com.finebi.conf.internalimp.analysis.operator.trans.NameText;
 import com.finebi.conf.internalimp.basictable.previewdata.FineCirculatePreviewData;
@@ -204,6 +205,7 @@ public class SwiftTableEngineExecutor implements FineTableEngineExecutor {
         int columnSize = dm.getColumnCount();
         int rowSize = dm.getRowCount();
         int k = 1;
+        Iterator<FloorItem> iterator = op.getFloors().iterator();
         List<FloorPreviewItem> previewData = new ArrayList<FloorPreviewItem>();
         for (int i = 2; i < columnSize; i++) {
             Set set = new HashSet();
@@ -221,7 +223,13 @@ public class SwiftTableEngineExecutor implements FineTableEngineExecutor {
                 dataList.add(iter.next().toString());
             }
             // TODO length
-            previewData.add(new FloorPreviewItem((tempName + k), dataList, 0));
+            if(iterator.hasNext()) {
+                FloorItem floorItem = iterator.next();
+                previewData.add(new FloorPreviewItem((floorItem.getName()), dataList, 0));
+            } else {
+                previewData.add(new FloorPreviewItem((tempName + k), dataList, 0));
+            }
+            k ++;
         }
         FineCirculatePreviewData engineConfProduceData = new FineCirculatePreviewData();
         engineConfProduceData.setPreviewData(previewData);
