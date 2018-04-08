@@ -3,10 +3,10 @@ package com.fr.swift.generate.preview;
 import com.fr.swift.cube.io.Types;
 import com.fr.swift.cube.io.location.ResourceLocation;
 import com.fr.swift.exception.meta.SwiftMetaDataException;
+import com.fr.swift.generate.preview.operator.MinorColumnIndexer;
 import com.fr.swift.generate.preview.operator.MinorInserter;
-import com.fr.swift.generate.realtime.index.RealtimeColumnIndexer;
+import com.fr.swift.generate.preview.operator.MinorSubDateColumnIndexer;
 import com.fr.swift.generate.realtime.index.RealtimeMultiRelationIndexer;
-import com.fr.swift.generate.realtime.index.RealtimeSubDateColumnIndexer;
 import com.fr.swift.generate.realtime.index.RealtimeTablePathIndexer;
 import com.fr.swift.query.group.GroupType;
 import com.fr.swift.relation.utils.RelationPathHelper;
@@ -38,7 +38,6 @@ import java.util.List;
  * 基础表每次
  */
 public class MinorUpdater {
-
     private DataSource dataSource;
 
     private int previewRowCount = 100;
@@ -90,54 +89,21 @@ public class MinorUpdater {
 
         for (String indexField : inserter.getFields()) {
             ColumnKey columnKey = new ColumnKey(indexField);
-            indexColumn(dataSource, columnKey);
-            indexSubColumnIfNeed(dataSource, columnKey);
+            new MinorColumnIndexer(dataSource, columnKey, segment).work();
+            indexSubColumnIfNeed(dataSource, columnKey, segment);
         }
+
+        // seg基础数据生成好了才放进去
         MinorSegmentManager.getInstance().putSegment(dataSource.getSourceKey(), Collections.singletonList(segment));
     }
 
-    private void indexColumn(final DataSource dataSource, final ColumnKey indexField) {
-        new RealtimeColumnIndexer(dataSource, indexField) {
-            @Override
-            protected List<Segment> getSegments() {
-                return MinorSegmentManager.getInstance().getSegment(dataSource.getSourceKey());
-            }
-
-            @Override
-            protected void mergeDict() {
-                new RealtimeColumnDictMerger(dataSource, key) {
-                    @Override
-                    protected List<Segment> getSegments() {
-                        return MinorSegmentManager.getInstance().getSegment(dataSource.getSourceKey());
-                    }
-                }.work();
-            }
-        }.work();
-    }
-
-    private void indexSubColumnIfNeed(final DataSource dataSource, final ColumnKey columnKey) throws SwiftMetaDataException {
+    private void indexSubColumnIfNeed(DataSource dataSource, ColumnKey columnKey, Segment seg) throws SwiftMetaDataException {
         SwiftMetaDataColumn columnMeta = dataSource.getMetadata().getColumn(columnKey.getName());
         if (ColumnTypeUtils.getClassType(columnMeta) != ClassType.DATE) {
             return;
         }
         for (GroupType type : SubDateColumn.TYPES_TO_GENERATE) {
-            new RealtimeSubDateColumnIndexer(dataSource, columnKey, type) {
-                @Override
-
-                protected List<Segment> getSegments() {
-                    return MinorSegmentManager.getInstance().getSegment(dataSource.getSourceKey());
-                }
-
-                @Override
-                protected void mergeDict() {
-                    new RealtimeSubDateColumnDictMerger(dataSource, key) {
-                        @Override
-                        protected List<Segment> getSegments() {
-                            return MinorSegmentManager.getInstance().getSegment(dataSource.getSourceKey());
-                        }
-                    }.work();
-                }
-            }.work();
+            new MinorSubDateColumnIndexer(dataSource, columnKey, type, seg).work();
         }
     }
 

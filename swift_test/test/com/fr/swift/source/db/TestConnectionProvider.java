@@ -14,12 +14,7 @@ public class TestConnectionProvider {
         String path = ResourceUtils.getFileAbsolutePath("com/fr/swift/resource/h2");
         Connection frConnection = new JDBCDatabaseConnection("org.h2.Driver", "jdbc:h2://" + path + "/test", "sa", "");
         SwiftConnectionInfo connectionInfo = new SwiftConnectionInfo(null, frConnection);
-        ConnectionManager.getInstance().registerProvider(new IConnectionProvider() {
-            @Override
-            public ConnectionInfo getConnection(String connectionName) {
-                return connectionInfo;
-            }
-        });
+        ConnectionManager.getInstance().registerProvider(connectionName -> connectionInfo);
         return connectionInfo;
     }
 }

@@ -1,6 +1,7 @@
 //package com.fr.swift.generate.increment;
 //
 //import com.fr.annotation.Test;
+//import com.fr.swift.config.TestConfDb;
 //import com.fr.swift.flow.FlowRuleController;
 //import com.fr.swift.generate.BaseTest;
 //import com.fr.swift.generate.history.index.ColumnIndexer;
@@ -29,22 +30,7 @@
 //    @Override
 //    public void setUp() throws Exception {
 //        super.setUp();
-////        DBOption dbOption = new DBOption();
-////        dbOption.setPassword("root123");
-////        dbOption.setDialectClass("com.fr.third.org.hibernate.dialect.MySQL5InnoDBDialect");
-////        dbOption.setDriverClass("com.mysql.jdbc.Driver");
-////        dbOption.setUsername("root");
-////        dbOption.setUrl("jdbc:mysql://localhost:3306/lucifer");
-////        dbOption.addRawProperty("hibernate.show_sql", true)
-////                .addRawProperty("hibernate.format_sql", true).addRawProperty("hibernate.connection.autocommit", true);
-////        DBContext dbProvider = DBContext.create();
-////        dbProvider.addEntityClass(Entity.class);
-////        dbProvider.addEntityClass(XmlEntity.class);
-////        dbProvider.addEntityClass(ClassHelper.class);
-////        dbProvider.init(dbOption);
-////        DBEnv.setDBContext(dbProvider);
-////        DaoContext.setClassHelperDao(new HibernateClassHelperDao());
-////        DaoContext.setXmlEntityDao(new HibernateXmlEnityDao());
+//        TestConfDb.setConfDb();
 ////        DaoContext.setEntityDao(new HibernateEntityDao());
 //    }
 //
