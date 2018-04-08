@@ -2,8 +2,9 @@ package com.fr.swift.fine.adaptor.etl.formula;
 
 import com.finebi.conf.structure.result.BIDetailCell;
 import com.finebi.conf.structure.result.BIDetailTableResult;
-import com.fr.swift.adaptor.preview.SwiftDataPreview;
 import com.fr.swift.generate.BaseTest;
+import com.fr.swift.provider.DataProvider;
+import com.fr.swift.provider.impl.SwiftDataProvider;
 import com.fr.swift.source.ColumnTypeConstants;
 import com.fr.swift.source.DataSource;
 import com.fr.swift.source.db.QueryDBSource;
@@ -18,14 +19,14 @@ public class FormulaPreviewTest extends BaseTest {
 
     public void testOneFormulaPreview() throws Exception {
 
+        DataProvider dataProvider = new SwiftDataProvider();
         DataSource dataSource = new QueryDBSource("select * from DEMO_CAPITAL_RETURN", "allTest");
         ETLOperator formulaOperator = new ColumnFormulaOperator("addField", ColumnTypeConstants.ColumnType.NUMBER, "${付款金额} + ${付款金额}");
         List<DataSource> baseDataSources = new ArrayList<DataSource>();
         baseDataSources.add(dataSource);
         EtlSource etlSource = new EtlSource(baseDataSources, formulaOperator);
 
-        SwiftDataPreview swiftFieldsDataPreview = new SwiftDataPreview();
-        BIDetailTableResult detailTableResult = swiftFieldsDataPreview.getDetailPreviewByFields(null, 0);
+        BIDetailTableResult detailTableResult = dataProvider.getDetailPreviewByFields(null, 0);
 
         assertEquals(etlSource.getMetadata().getColumnCount(), 5);
         int count = 0;

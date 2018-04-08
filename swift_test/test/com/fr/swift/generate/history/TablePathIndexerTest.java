@@ -2,18 +2,9 @@ package com.fr.swift.generate.history;
 
 //import com.fr.dav.LocalEnv;
 
-import com.fr.config.DBEnv;
-import com.fr.config.dao.DaoContext;
-import com.fr.config.dao.impl.HibernateClassHelperDao;
-import com.fr.config.dao.impl.HibernateEntityDao;
-import com.fr.config.dao.impl.HibernateXmlEnityDao;
-import com.fr.config.entity.ClassHelper;
-import com.fr.config.entity.Entity;
-import com.fr.config.entity.XmlEntity;
 import com.fr.general.ComparatorUtils;
-import com.fr.stable.db.DBContext;
-import com.fr.stable.db.option.DBOption;
 import com.fr.swift.bitmap.ImmutableBitMap;
+import com.fr.swift.config.TestConfDb;
 import com.fr.swift.cube.queue.CubeTasks;
 import com.fr.swift.cube.task.SchedulerTask;
 import com.fr.swift.cube.task.Task;
@@ -29,7 +20,7 @@ import com.fr.swift.generate.history.index.MultiRelationIndexer;
 import com.fr.swift.generate.history.index.TablePathIndexer;
 import com.fr.swift.manager.LocalSegmentProvider;
 import com.fr.swift.relation.CubeMultiRelationPath;
-import com.fr.swift.relation.utils.MultiRelationHelper;
+import com.fr.swift.relation.utils.RelationPathHelper;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.segment.column.DetailColumn;
@@ -37,7 +28,6 @@ import com.fr.swift.segment.relation.RelationIndex;
 import com.fr.swift.service.LocalSwiftServerService;
 import com.fr.swift.source.DataSource;
 import com.fr.swift.source.RelationSource;
-import com.fr.swift.source.RelationSourceType;
 import com.fr.swift.source.db.TableDBSource;
 import com.fr.swift.source.db.TestConnectionProvider;
 import com.fr.swift.source.relation.RelationSourceImpl;
@@ -90,23 +80,7 @@ public class TablePathIndexerTest extends TestCase {
     }
 
     private void initConfigDB() throws Exception {
-        DBOption dbOption = new DBOption();
-        dbOption.setPassword("");
-        dbOption.setDialectClass("com.fr.third.org.hibernate.dialect.H2Dialect");
-        dbOption.setDriverClass("org.h2.Driver");
-        dbOption.setUsername("sa");
-        dbOption.setUrl("jdbc:h2:~/config");
-        dbOption.addRawProperty("hibernate.show_sql", false)
-                .addRawProperty("hibernate.format_sql", true).addRawProperty("hibernate.connection.autocommit", true);
-        DBContext dbProvider = DBContext.create();
-        dbProvider.addEntityClass(Entity.class);
-        dbProvider.addEntityClass(XmlEntity.class);
-        dbProvider.addEntityClass(ClassHelper.class);
-        dbProvider.init(dbOption);
-        DBEnv.setDBContext(dbProvider);
-        DaoContext.setClassHelperDao(new HibernateClassHelperDao());
-        DaoContext.setXmlEntityDao(new HibernateXmlEnityDao());
-        DaoContext.setEntityDao(new HibernateEntityDao());
+        TestConfDb.setConfDb();
     }
 
     public void buildMultiRelationIndex() throws Exception {
@@ -146,7 +120,7 @@ public class TablePathIndexerTest extends TestCase {
         primaryFields.add("合同ID");
         foreignFields.add("合同ID");
         RelationSource relationSource = new RelationSourceImpl(dataSource.getSourceKey(), contract.getSourceKey(), primaryFields, foreignFields);
-        MultiRelationIndexer indexer = new MultiRelationIndexer(MultiRelationHelper.convert2CubeRelation(relationSource), LocalSegmentProvider.getInstance());
+        MultiRelationIndexer indexer = new MultiRelationIndexer(RelationPathHelper.convert2CubeRelation(relationSource), LocalSegmentProvider.getInstance());
         SchedulerTask relationTask = CubeTasks.newRelationTask(relationSource);
         WorkerTask task = new WorkerTaskImpl(relationTask.key());
         task.setWorker(indexer);
@@ -163,7 +137,7 @@ public class TablePathIndexerTest extends TestCase {
         primaryFields1.add("客户ID");
         foreignFields1.add("客户ID");
         RelationSource custSource = new RelationSourceImpl(customer.getSourceKey(), dataSource.getSourceKey(), primaryFields1, foreignFields1);
-        MultiRelationIndexer custRelationIndexer = new MultiRelationIndexer(MultiRelationHelper.convert2CubeRelation(custSource), LocalSegmentProvider.getInstance());
+        MultiRelationIndexer custRelationIndexer = new MultiRelationIndexer(RelationPathHelper.convert2CubeRelation(custSource), LocalSegmentProvider.getInstance());
         SchedulerTask custRelationTask = CubeTasks.newRelationTask(custSource);
         WorkerTask custTask = new WorkerTaskImpl(custRelationTask.key());
         custTask.setWorker(custRelationIndexer);
@@ -190,8 +164,8 @@ public class TablePathIndexerTest extends TestCase {
         foreignFields1.add("客户ID");
         RelationSource custSource = new RelationSourceImpl(customer.getSourceKey(), dataSource.getSourceKey(), primaryFields1, foreignFields1);
         CubeMultiRelationPath path = new CubeMultiRelationPath();
-        path.add(MultiRelationHelper.convert2CubeRelation(custSource));
-        path.add(MultiRelationHelper.convert2CubeRelation(relationSource));
+        path.add(RelationPathHelper.convert2CubeRelation(custSource));
+        path.add(RelationPathHelper.convert2CubeRelation(relationSource));
         TablePathIndexer builder = new TablePathIndexer(path, LocalSegmentProvider.getInstance());
         WorkerTask task = new WorkerTaskImpl(CubeTasks.newTaskKey(relationSource));
         task.setWorker(builder);

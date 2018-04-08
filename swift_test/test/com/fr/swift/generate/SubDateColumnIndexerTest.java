@@ -1,5 +1,6 @@
 package com.fr.swift.generate;
 
+import com.fr.swift.config.TestConfDb;
 import com.fr.swift.generate.history.index.ColumnIndexer;
 import com.fr.swift.generate.history.index.SubDateColumnIndexer;
 import com.fr.swift.generate.history.transport.TableTransporter;
@@ -12,28 +13,41 @@ import com.fr.swift.segment.column.DictionaryEncodedColumn;
 import com.fr.swift.segment.column.impl.DateColumn;
 import com.fr.swift.segment.column.impl.DateDerivers;
 import com.fr.swift.segment.column.impl.SubDateColumn;
+import com.fr.swift.service.LocalSwiftServerService;
 import com.fr.swift.source.DataSource;
 import com.fr.swift.source.db.QueryDBSource;
+import com.fr.swift.source.db.TestConnectionProvider;
 import com.fr.swift.util.function.Function;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
 import java.util.List;
+
+import static org.junit.Assert.assertTrue;
 
 /**
  * @author anchore
  * @date 2018/3/24
  */
-public class SubDateColumnIndexerTest extends BaseTest {
+public class SubDateColumnIndexerTest {
     private String columnName = "注册时间";
     private DataSource dataSource = new QueryDBSource("select " + columnName + " from DEMO_CONTRACT", getClass().getName());
 
-    @Override
-    public void setUp() throws Exception {
-        super.setUp();
-        setConfDb();
+    @BeforeClass
+    public static void beforeClass() throws Exception {
+        new LocalSwiftServerService().start();
+        TestConfDb.setConfDb();
+        TestConnectionProvider.createConnection();
+    }
+
+    @Before
+    public void before() {
         new TableTransporter(dataSource).work();
         new ColumnIndexer(dataSource, new ColumnKey(columnName)).work();
     }
 
+    @Test
     public void testIndexSubDate() {
         for (GroupType type : SubDateColumn.TYPES_TO_GENERATE) {
             indexSubDate(type);

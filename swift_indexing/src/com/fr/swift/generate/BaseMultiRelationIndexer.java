@@ -232,6 +232,12 @@ public abstract class BaseMultiRelationIndexer extends BaseWorker {
         return column.getValue(index);
     }
 
+    /**
+     * 将块号和行号封装成long
+     * @param seg 块号
+     * @param row 行号
+     * @return
+     */
     private long merge2Long(int seg, int row) {
         return ((long) row & 0xFFFFFFFFL) | (((long) seg << 32) & 0xFFFFFFFF00000000L);
     }

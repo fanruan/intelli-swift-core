@@ -7,8 +7,10 @@ import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.source.MetaDataColumn;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftMetaDataColumn;
+import com.fr.swift.source.core.CoreField;
 import com.fr.swift.source.etl.AbstractOperator;
 import com.fr.swift.source.etl.OperatorType;
+import com.fr.swift.structure.Pair;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,13 +21,23 @@ import java.util.List;
 public class ColumnRowTransOperator extends AbstractOperator {
 
     private static final SwiftLogger LOGGER = SwiftLoggers.getLogger(ColumnRowTransOperator.class);
+    //分组名
+    @CoreField
     private String groupName;
+    //栏次字段名
+    @CoreField
     private String lcName;
-    private List<NameText> lcValue;
-    private List<NameText> columns;
-    private List<String> otherColumnNames;
+    //栏次值
+    @CoreField
+    private List<Pair<String, String>> lcValue;
+    //行列转化的指标名称
+    @CoreField
+    private List<Pair<String, String>> columns;
+    //其他指标名
+    @CoreField
+    private List<Pair<String, String>> otherColumnNames;
 
-    public ColumnRowTransOperator(String groupName, String lcName, List<NameText> lcValue, List<NameText> columns, List<String> otherColumnNames) {
+    public ColumnRowTransOperator(String groupName, String lcName, List<Pair<String, String>> lcValue, List<Pair<String, String>> columns, List<Pair<String, String>> otherColumnNames) {
         this.groupName = groupName;
         this.lcName = lcName;
         this.lcValue = lcValue;
@@ -41,15 +53,15 @@ public class ColumnRowTransOperator extends AbstractOperator {
         return this.lcName;
     }
 
-    public List<NameText> getLcValue() {
+    public List<Pair<String, String>> getLcValue() {
         return this.lcValue;
     }
 
-    public List<NameText> getColumns() {
+    public List<Pair<String, String>> getColumns() {
         return this.columns;
     }
 
-    public List<String> getOtherColumnNames() {
+    public List<Pair<String, String>> getOtherColumnNames() {
         return this.otherColumnNames;
     }
 
@@ -63,27 +75,23 @@ public class ColumnRowTransOperator extends AbstractOperator {
     public List<SwiftMetaDataColumn> getColumns(SwiftMetaData[] tables) {
         List<SwiftMetaDataColumn> columnList = new ArrayList<SwiftMetaDataColumn>();
         try {
-            for(SwiftMetaData table : tables) {
-                SwiftMetaDataColumn singleColumn = table.getColumn(groupName);
-                columnList.add(new MetaDataColumn(groupName, groupName, singleColumn.getType(), singleColumn.getPrecision(), singleColumn.getScale()));
-                for(int i = 0; i < table.getColumnCount(); i++) {
-                    SwiftMetaDataColumn tarColumn = table.getColumn(table.getColumnName(i + 1));
-                    if(!isColumnSelected(tarColumn.getName())) {
-                        String tarColumnName = tarColumn.getName();
-                        columnList.add(new MetaDataColumn(tarColumnName, null, tarColumn.getType(), tarColumn.getPrecision(), tarColumn.getScale()));
-                    }
-                }
-                for(NameText column : this.columns) {
-                    SwiftMetaDataColumn c = table.getColumn(column.origin);
-                    for (NameText aLcValue : lcValue) {
-                        String lcColumn = aLcValue.origin + "-" + column.origin;
-                        String text = aLcValue.getTransText() + "-" + column.getTransText();
-                        String lcColumnText = ComparatorUtils.equals(text, lcColumn) ? null : text;
-                        columnList.add(new MetaDataColumn(lcColumn, lcColumnText, c.getType(), c.getPrecision(), c.getScale()));
-                    }
+            SwiftMetaData table = tables[0];
+            SwiftMetaDataColumn groupColumn = table.getColumn(groupName);
+            columnList.add(new MetaDataColumn(groupName, groupName, groupColumn.getType(), groupColumn.getPrecision(), groupColumn.getScale()));
+            for (Pair<String, String> column : this.columns) {
+                SwiftMetaDataColumn c = table.getColumn(column.getKey());
+                for (Pair<String, String> aLcValue : lcValue) {
+                    String lcColumn = aLcValue.getKey() + "-" + column.getKey();
+                    String text = aLcValue.getValue() + "-" + column.getValue();
+                    String lcColumnText = ComparatorUtils.equals(text, lcColumn) ? null : text;
+                    columnList.add(new MetaDataColumn(lcColumn, lcColumnText, c.getType(), c.getPrecision(), c.getScale()));
                 }
             }
-        } catch(SwiftMetaDataException e) {
+            for (Pair<String, String> column : this.otherColumnNames) {
+                SwiftMetaDataColumn c = table.getColumn(column.getKey());
+                columnList.add(new MetaDataColumn(column.getKey(), column.getValue(), c.getType(), c.getPrecision(), c.getScale()));
+            }
+        } catch (SwiftMetaDataException e) {
             LOGGER.error("getting meta's column information failed", e);
         }
         return columnList;
@@ -92,20 +100,5 @@ public class ColumnRowTransOperator extends AbstractOperator {
     @Override
     public OperatorType getOperatorType() {
         return OperatorType.COLUMN_ROW_TRANS;
-    }
-
-    private boolean isColumnSelected(String name) {
-        if (ComparatorUtils.equals(name, this.lcName)) {
-            return true;
-        }
-        if (ComparatorUtils.equals(name, this.groupName)) {
-            return true;
-        }
-        for (NameText nt : this.columns) {
-            if (ComparatorUtils.equals(nt.origin, name)) {
-                return true;
-            }
-        }
-        return false;
     }
 }
