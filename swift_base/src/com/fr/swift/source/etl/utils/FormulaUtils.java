@@ -123,10 +123,9 @@ public class FormulaUtils {
             return ColumnType.DATE;
         } else if(fieldType == BICommonConstants.FORMULA_GENERATE_TYPE.NUMBER) {
             return ColumnType.NUMBER;
-        } else if (fieldType == BICommonConstants.FORMULA_GENERATE_TYPE.STRING) {
+        } else {
             return ColumnType.STRING;
         }
-        return ColumnType.STRING;
     }
 
     public static ColumnType getColumnType(SwiftMetaData metadata, String expression) {
