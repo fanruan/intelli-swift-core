@@ -2,6 +2,7 @@ package com.fr.swift.adaptor.transformer;
 
 import com.finebi.base.constant.FineEngineType;
 import com.finebi.base.stable.StableManager;
+import com.finebi.conf.constant.BICommonConstants;
 import com.finebi.conf.constant.BIConfConstants;
 import com.finebi.conf.constant.ConfConstant.AnalysisType;
 import com.finebi.conf.exception.FineAnalysisOperationUnSafe;
@@ -74,7 +75,6 @@ import com.fr.stable.StringUtils;
 import com.fr.swift.adaptor.encrypt.SwiftEncryption;
 import com.fr.swift.adaptor.widget.group.GroupAdaptor;
 import com.fr.swift.adaptor.widget.group.GroupTypeAdaptor;
-import com.fr.swift.conf.business.relation.RelationType;
 import com.fr.swift.exception.meta.SwiftMetaDataException;
 import com.fr.swift.generate.preview.MinorSegmentManager;
 import com.fr.swift.log.SwiftLoggers;
@@ -286,7 +286,7 @@ class EtlAdaptor {
             FineBusinessTable foreignTable;
             List<FineBusinessField> primaryFields;
             List<FineBusinessField> foreignFields;
-            if (relation.getRelationType() == RelationType.MORE_TO_ONE) {
+            if (relation.getRelationType() == BICommonConstants.RELATION_TYPE.MANY_TO_ONE) {
                 primaryTable = relation.getForeignBusinessTable();
                 foreignTable = relation.getPrimaryBusinessTable();
                 primaryFields = relation.getForeignBusinessField();
@@ -336,13 +336,13 @@ class EtlAdaptor {
             FineBusinessTableRelation firstRelation = relations.get(0);
             FineBusinessTableRelation lastRelation = relations.get(relations.size() - 1);
             String prim;
-            if (firstRelation.getRelationType() == RelationType.MORE_TO_ONE) {
+            if (firstRelation.getRelationType() == BICommonConstants.RELATION_TYPE.MANY_TO_ONE) {
                 prim = firstRelation.getForeignBusinessTable().getId();
             } else {
                 prim = firstRelation.getPrimaryBusinessTable().getId();
             }
             String foreign;
-            if (lastRelation.getRelationType() == RelationType.MORE_TO_ONE) {
+            if (lastRelation.getRelationType() == BICommonConstants.RELATION_TYPE.MANY_TO_ONE) {
                 foreign = lastRelation.getPrimaryBusinessTable().getId();
             } else {
                 foreign = lastRelation.getForeignBusinessTable().getId();
