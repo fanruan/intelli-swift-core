@@ -615,11 +615,22 @@ class EtlAdaptor {
         return new SumByGroupOperator(groupTargets, groupDimensions);
     }
 
+    //fieldType为将被转换的字段类型
+    public static ColumnTypeConstants.ColumnType getColumnType(int fieldType) {
+        if(fieldType == BICommonConstants.FORMULA_GENERATE_TYPE.DATE) {
+            return ColumnTypeConstants.ColumnType.DATE;
+        } else if(fieldType == BICommonConstants.FORMULA_GENERATE_TYPE.NUMBER) {
+            return ColumnTypeConstants.ColumnType.NUMBER;
+        } else {
+            return ColumnTypeConstants.ColumnType.STRING;
+        }
+    }
+
     private static ColumnFormulaOperator getColumnFormulaOperator(AddNewColumnValueBean value, DataSource source) {
         String expression = ((AddExpressionValueBean) value).getValue();
         int fieldType = ((AddExpressionValueBean) value).getFieldType();
         if(fieldType != BICommonConstants.FORMULA_GENERATE_TYPE.AUTO) {
-            return new ColumnFormulaOperator(value.getName(), FormulaUtils.getColumnType(fieldType), expression);
+            return new ColumnFormulaOperator(value.getName(), getColumnType(fieldType), expression);
         }
         return new ColumnFormulaOperator(value.getName(), FormulaUtils.getColumnType(source.getMetadata(), expression), expression);
     }

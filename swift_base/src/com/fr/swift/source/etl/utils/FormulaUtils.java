@@ -118,16 +118,6 @@ public class FormulaUtils {
         return names;
     }
 
-    //fieldType为将被转换的字段类型
-    public static ColumnType getColumnType(int fieldType) {
-        if(fieldType == BICommonConstants.FORMULA_GENERATE_TYPE.DATE) {
-            return ColumnType.DATE;
-        } else if(fieldType == BICommonConstants.FORMULA_GENERATE_TYPE.NUMBER) {
-            return ColumnType.NUMBER;
-        } else {
-            return ColumnType.STRING;
-        }
-    }
 
     //取得字段原本的类型
     public static ColumnType getColumnType(SwiftMetaData metadata, String expression) {
