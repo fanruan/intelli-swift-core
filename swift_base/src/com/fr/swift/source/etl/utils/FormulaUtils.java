@@ -1,5 +1,6 @@
 package com.fr.swift.source.etl.utils;
 
+import com.finebi.conf.constant.BICommonConstants;
 import com.fr.script.Calculator;
 import com.fr.stable.Primitive;
 import com.fr.stable.UtilEvalError;
@@ -115,6 +116,17 @@ public class FormulaUtils {
             names[i] = nameList.get(i);
         }
         return names;
+    }
+
+    public static ColumnType getColumnType(int fieldType) {
+        if(fieldType == BICommonConstants.FORMULA_GENERATE_TYPE.DATE) {
+            return ColumnType.DATE;
+        } else if(fieldType == BICommonConstants.FORMULA_GENERATE_TYPE.NUMBER) {
+            return ColumnType.NUMBER;
+        } else if (fieldType == BICommonConstants.FORMULA_GENERATE_TYPE.STRING) {
+            return ColumnType.STRING;
+        }
+        return ColumnType.STRING;
     }
 
     public static ColumnType getColumnType(SwiftMetaData metadata, String expression) {

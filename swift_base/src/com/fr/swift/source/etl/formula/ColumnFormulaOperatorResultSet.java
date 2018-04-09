@@ -1,6 +1,7 @@
 package com.fr.swift.source.etl.formula;
 
 import com.fr.base.Utils;
+import com.fr.general.DateUtils;
 import com.fr.script.Calculator;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.column.ColumnKey;
@@ -32,6 +33,9 @@ public class ColumnFormulaOperatorResultSet implements SwiftResultSet {
     private String formula;
     private TempValue tempValue;
     private SwiftMetaData metaData;
+//    //1900到1970年的天数
+//    private static final long days = 25569;
+//    private static final long msOfOneDay = 86400000;
 
     public ColumnFormulaOperatorResultSet(ColumnType columnType, String expression, Segment[] segment, SwiftMetaData metaData) {
         this.columnType = columnType;
@@ -99,11 +103,48 @@ public class ColumnFormulaOperatorResultSet implements SwiftResultSet {
         }
         switch (columnType) {
             case DATE:
-                return ((Date) value).getTime();
+                return object2Date(value);
             case NUMBER:
-                return ((Number) value).doubleValue();
+                return object2Number(value);
             default:
                 return Utils.objectToString(value);
+        }
+    }
+
+//    private Long object2Date(Object value) {
+//        if(DateUtils.object2Date(value, true) == null) {
+//            return null;
+//        } else {
+//            return DateUtils.object2Date(value, true).getTime();
+//        }
+//    }
+
+    private Long object2Date(Object value) {
+        if (value instanceof Number) {
+            return ((Number) value).longValue();
+            //所有原始字段（文本/数值/时间）为空的，转换字段类型后也是空。原始数值字段为null的，转换字段类型后也为空
+        } else if (DateUtils.object2Date(value, true) == null) {
+            return null;
+        } else {
+            return DateUtils.object2Date(value, true).getTime();
+        }
+    }
+//    private Double objectToNumber(Object value){
+//        if(Utils.objectToNumber(value, true) == null) {
+//            return null;
+//        } else {
+//            return Utils.objectToNumber(value, true).doubleValue();
+//        }
+//    }
+
+    private Double object2Number(Object value) {
+        if (value instanceof Date) {
+            return (double) (((Date) value).getTime());
+            //所有原始字段（文本/数值/时间）为空的，转换字段类型后也是空。原始数值字段为null的，转换字段类型后也为空
+        } else if (Utils.objectToNumber(value, true) == null) {
+            return null;
+        } else {
+            return Utils.objectToNumber(value, true).doubleValue();
         }
     }
 
