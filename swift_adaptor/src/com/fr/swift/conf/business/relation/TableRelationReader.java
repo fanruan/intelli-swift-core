@@ -53,7 +53,7 @@ public class TableRelationReader {
         this.schema = info.getSchema();
         this.tableId = info.getID();
         this.currentEntryInfo = info;
-        adapter = new SwiftConnectionAdaptor();
+        this.adapter = new SwiftConnectionAdaptor();
     }
 
     public static TableRelationReader create(String packageId, EntryInfo entryInfo) {
@@ -93,6 +93,7 @@ public class TableRelationReader {
 
         getRelationsSet(connection, relationsSet, sit, allTableSources);
         DBUtils.closeConnection(connection);
+
         return relationsSet;
     }
 
@@ -104,6 +105,13 @@ public class TableRelationReader {
         }
     }
 
+    /**
+     * 读取出来是 N-1 的所以下面primary和foreign是反的
+     * @param connection
+     * @param dbEntry
+     * @param relationsSet
+     * @param oldTableSources
+     */
     private void getRelationSet(Connection connection, DatabaseEntryInfo dbEntry, List<Relation> relationsSet, List<DatabaseEntryInfo> oldTableSources) {
         String connectionName = dbEntry.getDataSourceName();
 
@@ -116,18 +124,30 @@ public class TableRelationReader {
                 // 新增表为
                 RelationFieldId primaryFieldId = RelationFieldIdUtils.create(relation.getPrimaryColumnName());
                 RelationFieldId foreignFieldId = RelationFieldIdUtils.create(relation.getForeignColumnName());
-                relationsSet.add(new RelationImpl(dbEntry.getID(), primaryFieldId, this.tableId, foreignFieldId));
+                relationsSet.add(createRelation(dbEntry.getID(), primaryFieldId, this.tableId, foreignFieldId));
             } else if (ComparatorUtils.equals(dbEntry.getID(), tableId)) {
                 // 如果当前表和新增表相同则遍历所有表加关联
                 for (DatabaseEntryInfo info : oldTableSources) {
                     if (ComparatorUtils.equals(info.getDataSourceName(), connectionName) && ComparatorUtils.equals(relation.getFkTable(), info.getDbTableName())) {
-                        RelationFieldId primaryFieldId = RelationFieldIdUtils.create(relation.getPrimaryColumnName());
-                        RelationFieldId foreignFieldId = RelationFieldIdUtils.create(relation.getForeignColumnName());
-                        relationsSet.add(new RelationImpl(dbEntry.getID(), primaryFieldId, info.getID(), foreignFieldId));
+                        RelationFieldId primaryFieldId = RelationFieldIdUtils.create(relation.getForeignColumnName());
+                        RelationFieldId foreignFieldId = RelationFieldIdUtils.create(relation.getPrimaryColumnName());
+                        relationsSet.add(createRelation(dbEntry.getID(), primaryFieldId, info.getID(), foreignFieldId));
                     }
                 }
             }
         }
+    }
+
+    /**
+     * Relation因为读出来是  N : 1 所以要反过来
+     * @param primaryTableId
+     * @param primaryFieldId
+     * @param foreignTableId
+     * @param foreignFieldId
+     * @return
+     */
+    private Relation createRelation(String primaryTableId, RelationFieldId primaryFieldId, String foreignTableId, RelationFieldId foreignFieldId) {
+        return new RelationImpl(foreignTableId, foreignFieldId, primaryTableId, primaryFieldId);
     }
 
     /**
@@ -286,7 +306,7 @@ public class TableRelationReader {
         public List<String> getForeignColumnName() {
             List<String> result = new ArrayList<String>();
             for (DbTableColumn column : foreignColumns) {
-                result.add(SwiftEncryption.encryptFieldId(pkTable, column.getColumnName()));
+                result.add(SwiftEncryption.encryptFieldId(fkTable, column.getColumnName()));
             }
             return result;
         }

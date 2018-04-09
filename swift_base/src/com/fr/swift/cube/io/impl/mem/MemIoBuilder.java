@@ -26,6 +26,8 @@ public final class MemIoBuilder {
                     return new StringMemIo();
                 case BITMAP:
                     return new BitMapMemIo();
+                case LONG_ARRAY:
+                    return new LongArrayMemIo();
                 default:
             }
         }

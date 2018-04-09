@@ -3,8 +3,11 @@ package com.finebi.conf.provider;
 import com.finebi.base.constant.FineEngineType;
 import com.finebi.common.service.engine.relation.AbstractDirectRelationPathManager;
 import com.finebi.conf.constant.BICommonConstants;
+import com.finebi.conf.exception.FineRelationAbsentException;
 import com.finebi.conf.structure.path.FineBusinessTableRelationPath;
 import com.finebi.conf.structure.relation.FineBusinessTableRelation;
+import com.fr.general.ComparatorUtils;
+import com.fr.swift.driver.SwiftDriverRegister;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,6 +18,11 @@ import java.util.List;
  * @description
  */
 public class SwiftRelationPathConfProvider extends AbstractDirectRelationPathManager {
+
+
+    public SwiftRelationPathConfProvider() {
+        SwiftDriverRegister.register();
+    }
 
     @Override
     public List<FineBusinessTableRelationPath> getRelationPaths(String fromTable, String toTable) {
@@ -43,8 +51,38 @@ public class SwiftRelationPathConfProvider extends AbstractDirectRelationPathMan
         return target;
     }
 
+    @Override
+    public List<FineBusinessTableRelation> getRelationsByTableId(String tableId) {
+        List<FineBusinessTableRelation> relations = getAllRelations();
+        List<FineBusinessTableRelation> target = new ArrayList<FineBusinessTableRelation>();
+        for (FineBusinessTableRelation relation : relations) {
+            if (ComparatorUtils.equals(tableId, relation.getPrimaryBusinessTable().getName()) || ComparatorUtils.equals(tableId, relation.getForeignBusinessTable().getName())) {
+                target.add(relation);
+            }
+        }
+        return target;
+    }
 
-
+    @Override
+    public List<FineBusinessTableRelation> getRelationsByTables(String primaryTableId, String foreignTableId) {
+        List<FineBusinessTableRelation> relations = getAllRelations();
+        List<FineBusinessTableRelation> target = new ArrayList<FineBusinessTableRelation>();
+        for (FineBusinessTableRelation relation : relations) {
+            String primaryTable;
+            String foreignTable;
+            if (relation.getRelationType() == BICommonConstants.RELATION_TYPE.MANY_TO_ONE) {
+                primaryTable = relation.getForeignBusinessTable().getName();
+                foreignTable = relation.getPrimaryBusinessTable().getName();
+            } else {
+                primaryTable = relation.getPrimaryBusinessTable().getName();
+                foreignTable = relation.getForeignBusinessTable().getName();
+            }
+            if (ComparatorUtils.equals(primaryTable, primaryTableId) && ComparatorUtils.equals(foreignTable, foreignTableId)) {
+                target.add(relation);
+            }
+        }
+        return target;
+    }
 
     @Override
     public FineEngineType getEngineType() {

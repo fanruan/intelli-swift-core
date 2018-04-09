@@ -23,6 +23,7 @@ import com.fr.swift.source.SourceKey;
 import com.fr.swift.structure.array.LongArray;
 import com.fr.swift.structure.array.LongListFactory;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
@@ -96,7 +97,7 @@ public abstract class BaseMultiRelationIndexer extends BaseWorker {
         List<ColumnKey> foreignKeys = foreignKey.getKeyFields();
         RelationIndexHelper holder = new RelationIndexHelper();
         for (int i = 0, len = keys.size(); i < len; i++) {
-            final byte[][] relationIndexBytes = new byte[primary.getRowCount()][];
+            final LongArray[] relationIndexBytes = new LongArray[primary.getRowCount()];
             ColumnKey primaryColumnKey = keys.get(i);
             ColumnKey foreignColumnKey = foreignKeys.get(i);
             Column primaryColumn = primary.getColumn(primaryColumnKey);
@@ -105,7 +106,7 @@ public abstract class BaseMultiRelationIndexer extends BaseWorker {
             buildRelationIndexPerColumn(primaryColumn, foreignColumn, allShow, 0, relationIndexBytes, foreign.getRowCount(), holder, primaryIndex);
             LOGGER.info("build " + primaryColumnKey.getName() + "->" + foreignColumnKey.getName() + " success");
         }
-        currentPos = buildTargetIndex(relationIndex, holder, currentPos, primaryIndex);
+        currentPos = buildTargetIndex(relationIndex, holder, currentPos);
         reversePos = buildRevertIndex(relationIndex, holder, reversePos);
         relationIndex.putNullIndex(primaryIndex, holder.getNullIndex());
         return new int[]{currentPos, reversePos};
@@ -118,13 +119,13 @@ public abstract class BaseMultiRelationIndexer extends BaseWorker {
      * @param foreignGroupIndex
      */
     private void buildRelationIndexPerColumn(Column primaryColumn, Column foreignColumn,
-                                             ImmutableBitMap allShow, int foreignGroupIndex, byte[][] relationIndexBytes,
+                                             ImmutableBitMap allShow, int foreignGroupIndex, LongArray[] relationIndexBytes,
                                              int foreignTableRowCount, RelationIndexHelper holder, int primarySegmentIndex) {
         DictionaryEncodedColumn primaryDicColumn = primaryColumn.getDictionaryEncodedColumn();
         DictionaryEncodedColumn foreignDicColumn = foreignColumn.getDictionaryEncodedColumn();
         BitmapIndexedColumn foreignIndexColumn = foreignColumn.getBitmapIndex();
         ImmutableBitMap foreignIndex = foreignIndexColumn.getBitMapIndex(foreignGroupIndex);
-        ImmutableBitMap nullIndex = BitMaps.newRoaringMutable();
+        List<Long> nullIndex = new ArrayList<Long>();
         int foreignGroupSize = foreignDicColumn.size();
         Object primaryObject;
         Object foreignObject = getForeignValue(foreignGroupIndex, foreignGroupSize, foreignDicColumn);
@@ -147,7 +148,7 @@ public abstract class BaseMultiRelationIndexer extends BaseWorker {
             } else {
                 // 主表存在子表不存在
                 while (foreignGroupIndex < foreignGroupSize && c.compare(primaryObject, foreignObject) > 0) {
-                    nullIndex = nullIndex.getOr(foreignIndex);
+                    initNullIndex(nullIndex, foreignIndex, primarySegmentIndex);
                     foreignObject = getForeignValue(++foreignGroupIndex, foreignGroupSize, foreignDicColumn);
                     foreignIndex = getForeignColumnIndex(foreignGroupIndex, foreignGroupSize, foreignColumn);
                 }
@@ -161,20 +162,19 @@ public abstract class BaseMultiRelationIndexer extends BaseWorker {
             }
         }
         while (foreignGroupIndex < foreignGroupSize - 1) {
-            nullIndex = nullIndex.getOr(foreignIndex);
+            initNullIndex(nullIndex, foreignIndex, primarySegmentIndex);
             foreignIndex = foreignIndexColumn.getBitMapIndex(++foreignGroupIndex);
         }
-        nullIndex.getOr(foreignIndex);
-        holder.addNullIndex(nullIndex);
+        initNullIndex(nullIndex, foreignIndex, primarySegmentIndex);
+        holder.addNullIndex(LongListFactory.fromList(nullIndex));
         holder.addRevert(revert);
         holder.addIndex(relationIndexBytes);
     }
 
-    private int buildTargetIndex(RelationIndex index, RelationIndexHelper holder, int pos, int primaryIndex) {
-        ImmutableBitMap[] target = holder.getIndex();
+    private int buildTargetIndex(RelationIndex index, RelationIndexHelper holder, int pos) {
+        LongArray[] target = holder.getIndex();
         for (int i = 0, len = target.length; i < len; i++, pos++) {
             index.putIndex(pos, target[i]);
-            index.putSegIndex(pos - 1, primaryIndex);
         }
         return pos;
     }
@@ -194,22 +194,43 @@ public abstract class BaseMultiRelationIndexer extends BaseWorker {
         return foreignColumn.getBitmapIndex().getBitMapIndex(foreignIndex);
     }
 
-    private void notMatch(ImmutableBitMap indexBitMap, final byte[][] relationIndexBytes) {
+    private void notMatch(ImmutableBitMap indexBitMap, final LongArray[] relationIndexBytes) {
         indexBitMap.breakableTraversal(new BreakTraversalAction() {
             @Override
             public boolean actionPerformed(int row) {
-                relationIndexBytes[row] = BitMaps.newRoaringMutable().toBytes();
+                relationIndexBytes[row] = LongListFactory.createEmptyLongArray();
                 return false;
             }
         });
     }
 
-    private void match(ImmutableBitMap primary, final ImmutableBitMap foreign, final byte[][] relationIndexBytes, final LongArray revert, final int primaryIndex) {
+    private void match(ImmutableBitMap primary, final ImmutableBitMap foreign, final LongArray[] relationIndexBytes, final LongArray revert, final int primaryIndex) {
         primary.breakableTraversal(new BreakTraversalAction() {
             @Override
             public boolean actionPerformed(int row) {
-                relationIndexBytes[row] = foreign.toBytes();
-                initReverseIndex(revert, merge2Long(primaryIndex, row), foreign);
+                final List<Long> list = new ArrayList<Long>();
+                foreign.breakableTraversal(new BreakTraversalAction() {
+                    @Override
+                    public boolean actionPerformed(int row) {
+                        list.add(RelationIndexHelper.merge2Long(primaryIndex, row));
+                        return false;
+                    }
+                });
+                relationIndexBytes[row] = LongListFactory.fromList(list);
+                initReverseIndex(revert, RelationIndexHelper.merge2Long(primaryIndex, row), foreign);
+                return false;
+            }
+        });
+    }
+
+    private void initNullIndex(final List<Long> nullIndex, ImmutableBitMap bitMap, final int primaryIndex) {
+        bitMap.breakableTraversal(new BreakTraversalAction() {
+            @Override
+            public boolean actionPerformed(int row) {
+                Long value = RelationIndexHelper.merge2Long(primaryIndex, row);
+                if (!nullIndex.contains(value)) {
+                    nullIndex.add(value);
+                }
                 return false;
             }
         });
@@ -232,13 +253,5 @@ public abstract class BaseMultiRelationIndexer extends BaseWorker {
         return column.getValue(index);
     }
 
-    /**
-     * 将块号和行号封装成long
-     * @param seg 块号
-     * @param row 行号
-     * @return
-     */
-    private long merge2Long(int seg, int row) {
-        return ((long) row & 0xFFFFFFFFL) | (((long) seg << 32) & 0xFFFFFFFF00000000L);
-    }
+
 }

@@ -16,6 +16,7 @@ import com.fr.swift.conf.business.field.FieldInfoHelper;
 import com.fr.swift.conf.business.relation.TableRelationReader;
 import com.fr.swift.conf.business.table2source.dao.TableToSourceConfigDao;
 import com.fr.swift.conf.business.table2source.dao.TableToSourceConfigDaoImpl;
+import com.fr.swift.driver.SwiftDriverRegister;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.util.Crasher;
@@ -36,6 +37,7 @@ public class SwiftTableManager extends AbstractEngineTableManager {
     private SwiftLogger logger = SwiftLoggers.getLogger(SwiftTableManager.class);
 
     public SwiftTableManager() {
+        SwiftDriverRegister.register();
         tableToSourceConfigDao = new TableToSourceConfigDaoImpl();
     }
 

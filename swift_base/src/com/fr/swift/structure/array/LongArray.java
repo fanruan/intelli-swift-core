@@ -13,4 +13,6 @@ public interface LongArray {
     long get(int index);
 
     void release();
+
+    LongArray clone();
 }

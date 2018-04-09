@@ -7,6 +7,7 @@ import com.finebi.conf.constant.BIConfConstants;
 import com.finebi.conf.constant.ConfConstant.AnalysisType;
 import com.finebi.conf.exception.FineAnalysisOperationUnSafe;
 import com.finebi.conf.exception.FineEngineException;
+import com.finebi.conf.exception.FineRelationAbsentException;
 import com.finebi.conf.internalimp.analysis.bean.operator.add.AddNewColumnBean;
 import com.finebi.conf.internalimp.analysis.bean.operator.add.AddNewColumnValueBean;
 import com.finebi.conf.internalimp.analysis.bean.operator.add.EmptyAddNewColumnBean;
@@ -47,6 +48,7 @@ import com.finebi.conf.internalimp.analysis.bean.operator.group.custom.CustomGro
 import com.finebi.conf.internalimp.analysis.bean.operator.join.JoinBean;
 import com.finebi.conf.internalimp.analysis.bean.operator.join.JoinBeanValue;
 import com.finebi.conf.internalimp.analysis.bean.operator.join.JoinNameItem;
+import com.finebi.conf.internalimp.analysis.bean.operator.select.RelationshipBean;
 import com.finebi.conf.internalimp.analysis.bean.operator.select.SelectFieldBeanItem;
 import com.finebi.conf.internalimp.analysis.bean.operator.select.SelectFieldPathItem;
 import com.finebi.conf.internalimp.analysis.bean.operator.setting.FieldSettingBeanItem;
@@ -60,6 +62,7 @@ import com.finebi.conf.internalimp.analysis.operator.circulate.FloorItem;
 import com.finebi.conf.internalimp.analysis.operator.select.SelectFieldOperator;
 import com.finebi.conf.internalimp.analysis.operator.setting.FieldSettingOperator;
 import com.finebi.conf.internalimp.analysis.table.FineAnalysisTableImpl;
+import com.finebi.conf.internalimp.path.FineBusinessTableRelationPathImp;
 import com.finebi.conf.internalimp.service.pack.FineConfManageCenter;
 import com.finebi.conf.provider.SwiftRelationPathConfProvider;
 import com.finebi.conf.structure.analysis.operator.FineOperator;
@@ -253,7 +256,54 @@ class EtlAdaptor {
 
     private static RelationSource getRelation(List<SelectFieldPathItem> path, String baseTable, String table, SwiftRelationPathConfProvider relationProvider) {
         if (path != null) {
-            //@yee todo 暂时不知道path穿过来是什么样子的
+            List<FineBusinessTableRelation> targetRelations = new ArrayList<FineBusinessTableRelation>();
+            try {
+                for (SelectFieldPathItem item : path) {
+                    String tableName = item.getTable();
+                    RelationshipBean bean = item.getRelationship();
+                    List<String> from = bean.getFrom();
+                    List<String> to = bean.getTo();
+                    FineBusinessTable foreignTable = FineTableUtils.getTableByFieldId(to.get(0));
+                    List<FineBusinessTableRelation> relations = relationProvider.getRelationsByTables(tableName, foreignTable.getName());
+                    if (!relations.isEmpty()) {
+                        int lastSize = targetRelations.size();
+                        for (FineBusinessTableRelation relation : relations) {
+                            List<FineBusinessField> primaryFields;
+                            List<FineBusinessField> foreignFields;
+                            if (relation.getRelationType() == BICommonConstants.RELATION_TYPE.MANY_TO_ONE) {
+                                primaryFields = relation.getForeignBusinessField();
+                                foreignFields = relation.getPrimaryBusinessField();
+                            } else {
+                                primaryFields = relation.getPrimaryBusinessField();
+                                foreignFields = relation.getForeignBusinessField();
+                            }
+                            if (from.size() != primaryFields.size() || to.size() != foreignFields.size()) {
+                                continue;
+                            }
+                            boolean equals = true;
+                            for (int i = 0; i < from.size(); i++) {
+                                // 按照常理主表字段和子表字段数是一样的
+                                if (!ComparatorUtils.equals(from.get(i), primaryFields.get(i).getId()) || !ComparatorUtils.equals(to.get(i), foreignFields.get(i).getId())) {
+                                    equals = false;
+                                    break;
+                                }
+                            }
+                            if (equals) {
+                                targetRelations.add(relation);
+                                break;
+                            }
+                        }
+                        if (lastSize == targetRelations.size()) {
+                            selectFieldPathCrash(tableName, from, to);
+                        }
+                    } else {
+                        selectFieldPathCrash(tableName, from, to);
+                    }
+                }
+                return getRelation(new FineBusinessTableRelationPathImp(targetRelations));
+            } catch (Exception e) {
+                SwiftLoggers.getLogger().error("Cannot find relation, use default. ", e);
+            }
         }
         List<FineBusinessTableRelationPath> relation = relationProvider.getRelationPaths(table, baseTable);
         if (relation == null || relation.isEmpty()) {
@@ -261,6 +311,19 @@ class EtlAdaptor {
         }
         FineBusinessTableRelationPath p = relation.get(0);
         return getRelation(p);
+    }
+
+    private static void selectFieldPathCrash(String tableName, List<String> from, List<String> to) {
+        StringBuilder builder = new StringBuilder("Cannot find relation: ").append(tableName).append("{");
+        StringBuilder foreign = new StringBuilder();
+        for (int i = 0; i < from.size(); i++) {
+            builder.append(from.get(i)).append(",");
+            foreign.append(to.get(i)).append(",");
+        }
+        builder.setLength(builder.length() - 1);
+        foreign.setLength(foreign.length() - 1);
+        builder.append("}->").append(foreign).append("}");
+        Crasher.crash(builder.toString());
     }
 
     private static RelationSource getRelation(FineBusinessTableRelationPath path) {
@@ -328,7 +391,8 @@ class EtlAdaptor {
                 return path.get(path.size() - 1).getTable();
             }
         }
-        for (FineBusinessTableRelationPath path : relationProvider.getAllRelationPaths()) {
+        List<FineBusinessTableRelationPath> allPaths = relationProvider.getAllRelationPaths();
+        for (FineBusinessTableRelationPath path : allPaths) {
             if (tables.size() == 1) {
                 break;
             }
@@ -530,20 +594,20 @@ class EtlAdaptor {
         String ip = bean.getIp();
         int port = bean.getPort();
         String tableName = bean.getTableName();
-        if(needExecute) {
+        if (needExecute) {
             String commands = bean.getCommands();
-            if(null != commands && !"".equals(commands)) {
-                if(null != dataSource) {
+            if (null != commands && !"".equals(commands)) {
+                if (null != dataSource) {
                     try {
                         DataProvider dataProvider = new SwiftDataProvider();
                         List<Segment> segments = dataProvider.getPreviewData(dataSource);
                         return new RCompileOperator(commands, needExecute, ip, port, tableName,
                                 segments.toArray(new Segment[segments.size()]), null);
-                    } catch(Exception e) {
+                    } catch (Exception e) {
                         SwiftLoggers.getLogger().error(e);
                     }
                 }
-            } else{
+            } else {
                 return null;
             }
         } else {

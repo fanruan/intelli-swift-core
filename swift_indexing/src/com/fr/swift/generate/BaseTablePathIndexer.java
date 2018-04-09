@@ -1,14 +1,11 @@
 package com.fr.swift.generate;
 
 
-import com.fr.swift.bitmap.BitMaps;
-import com.fr.swift.bitmap.ImmutableBitMap;
-import com.fr.swift.bitmap.impl.BitMapOrHelper;
-import com.fr.swift.bitmap.traversal.BreakTraversalAction;
 import com.fr.swift.cube.io.Releasable;
 import com.fr.swift.cube.nio.NIOConstant;
 import com.fr.swift.cube.task.Task;
 import com.fr.swift.cube.task.impl.BaseWorker;
+import com.fr.swift.generate.history.index.RelationIndexHelper;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.relation.CubeMultiRelationPath;
@@ -16,11 +13,10 @@ import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.SwiftSegmentManager;
 import com.fr.swift.segment.relation.RelationIndex;
 import com.fr.swift.source.SourceKey;
-import com.fr.swift.structure.array.IntArray;
-import com.fr.swift.structure.array.IntListFactory;
+import com.fr.swift.structure.array.LongArray;
+import com.fr.swift.structure.array.LongListFactory;
 import com.fr.swift.util.Crasher;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -55,15 +51,34 @@ public abstract class BaseTablePathIndexer extends BaseWorker {
             List<Segment> primary = getPrimaryTableSegments();
             List<Segment> pre = getPreTableSegments();
             List<Segment> target = getTargetTableSegments();
-            for (int i = 0, primaryLen = primary.size(); i < primaryLen; i++) {
-                Segment pSeg = primary.get(i);
-                for (int j = 0, preLen = pre.size(); j < preLen; j++) {
-                    Segment preSeg = pre.get(j);
-                    for (int k = 0, targetLen = target.size(); k < targetLen; k++) {
-                        LOGGER.info(String.format("Start build primary segment: [%d], pre segment: [%d], target segment: [%d]", i, j, k));
-                        buildIndexPerSegment(pSeg, preSeg, target.get(k));
-                        LOGGER.info(String.format("Build primary segment: [%d], pre segment: [%d], target segment: [%d] success", i, j, k));
+            int primaryPos = 0;
+            for (Segment segment : primary) {
+                primaryPos += segment.getRowCount();
+                releaseIfNeed(segment);
+            }
+            primaryPos += primary.size();
+            for (int i = 0; i < target.size(); i++) {
+                Segment tSegment = target.get(i);
+                RelationIndex lastRelationReader = tSegment.getRelation(relationPath.getLastRelation());
+                RelationIndex targetTableRelationIndex = tSegment.getRelation(relationPath);
+                RelationIndex preTableRelationIndex = null;
+                Segment preSegment = null;
+                try {
+                    int reversePos = 0;
+                    for (int j = 0; j < pre.size(); j++) {
+                        preSegment = pre.get(j);
+                        preTableRelationIndex = preSegment.getRelation(getPrePath());
+                        reversePos = buildIndexPerSegment(preTableRelationIndex, targetTableRelationIndex, lastRelationReader, tSegment.getRowCount(), primaryPos, reversePos);
                     }
+                    targetTableRelationIndex.putReverseCount(reversePos);
+                } catch (Exception e) {
+                    LOGGER.error("build path index error");
+                } finally {
+                    releaseIfNeed(preTableRelationIndex);
+                    releaseIfNeed(lastRelationReader);
+                    releaseIfNeed(targetTableRelationIndex);
+                    releaseIfNeed(tSegment);
+                    releaseIfNeed(preSegment);
                 }
             }
         }
@@ -104,79 +119,58 @@ public abstract class BaseTablePathIndexer extends BaseWorker {
         return getSegments(getTargetTable());
     }
 
-    private void buildIndexPerSegment(Segment primaryTableSegment, Segment preTableSegment, Segment targetTableSegment) {
-        RelationIndex preTableRelationIndex = preTableSegment.getRelation(getPrePath());
-        RelationIndex lastRelationReader = targetTableSegment.getRelation(relationPath.getLastRelation());
-        RelationIndex targetTableRelationIndex = targetTableSegment.getRelation(relationPath);
+    private int buildIndexPerSegment(RelationIndex preTableRelationIndex, RelationIndex targetTableRelationIndex, RelationIndex lastRelationReader, int reverseSize, int totalPos, int reversePos) {
+
         try {
-            int rowCount = primaryTableSegment.getRowCount();
-            IntArray reverse = IntListFactory.createIntArray(targetTableSegment.getRowCount(), NIOConstant.INTEGER.NULL_VALUE);
-            BitMapOrHelper helper = new BitMapOrHelper();
-            for (int i = 0; i < rowCount; i++) {
-                ImmutableBitMap preTableIndex = preTableRelationIndex.getIndex(i + 1);
-                ImmutableBitMap resultIndex = getTableLinkedOrGVI(preTableIndex, lastRelationReader);
-                helper.add(resultIndex);
+            LongArray reverse = LongListFactory.createLongArray(reverseSize, NIOConstant.LONG.NULL_VALUE);
+//            BitMapOrHelper helper = new BitMapOrHelper();
+            for (int i = 0; i < totalPos; i++) {
+                LongArray preTableIndex = preTableRelationIndex.getIndex(i + 1);
+                LongArray resultIndex = getTableLinkedOrGVI(preTableIndex, lastRelationReader);
+//                helper.add(resultIndex);
                 targetTableRelationIndex.putIndex(i + 1, resultIndex);
                 initReverse(reverse, i, resultIndex);
             }
-            buildReverseIndex(targetTableRelationIndex, reverse);
-            targetTableRelationIndex.putNullIndex(0, helper.compute().getNot(reverse.size()));
+            return buildReverseIndex(targetTableRelationIndex, reverse, reversePos);
+//            targetTableRelationIndex.putNullIndex(0, helper.compute().getNot(reverse.size()));
         } catch (Exception e) {
-            Crasher.crash(e);
-        } finally {
-            if (null != preTableRelationIndex) {
-                preTableRelationIndex.release();
-            }
-
-            if (null != lastRelationReader) {
-                lastRelationReader.release();
-            }
-
-            if (null != targetTableRelationIndex) {
-                targetTableRelationIndex.release();
-            }
-            primaryTableSegment.release();
-            preTableSegment.release();
-            targetTableSegment.release();
+            return Crasher.crash(e);
         }
     }
 
-    private void buildReverseIndex(RelationIndex targetTableRelationIndex, IntArray reverse) {
+    private int buildReverseIndex(RelationIndex targetTableRelationIndex, LongArray reverse, int reversePos) {
         for (int i = 0, len = reverse.size(); i < len; i++) {
-            targetTableRelationIndex.putReverseIndex(i + 1, reverse.get(i));
+            targetTableRelationIndex.putReverseIndex(reversePos++, reverse.get(i));
         }
+        return reversePos;
     }
 
-    ImmutableBitMap getTableLinkedOrGVI(ImmutableBitMap currentIndex, final RelationIndex relationIndex) {
+    LongArray getTableLinkedOrGVI(LongArray currentIndex, final RelationIndex relationIndex) {
+        RelationIndexHelper helper = new RelationIndexHelper();
         if (null != currentIndex) {
-            final List<ImmutableBitMap> bitMaps = new ArrayList<ImmutableBitMap>();
-            currentIndex.breakableTraversal(new BreakTraversalAction() {
-                @Override
-                public boolean actionPerformed(int row) {
+            for (int i = 0; i < currentIndex.size(); i++) {
+                long value = currentIndex.get(i);
+                if (value != NIOConstant.LONG.NULL_VALUE) {
+                    int[] result = RelationIndexHelper.reverse2SegAndRow(value);
                     try {
-                        bitMaps.add(relationIndex.getIndex(row + 1));
+                        helper.addNullIndex(relationIndex.getIndex(result[1] + 1));
                     } catch (Exception ignore) {
-                        bitMaps.add(BitMaps.EMPTY_IMMUTABLE);
+                        helper.addNullIndex(LongListFactory.createEmptyLongArray());
                     }
-                    return false;
                 }
-            });
-            ImmutableBitMap result = BitMaps.newRoaringMutable();
-            for (ImmutableBitMap bitMap : bitMaps) {
-                result = result.getOr(bitMap);
             }
-            return result;
+            return helper.getNullIndex();
         }
-        return null;
+        return LongListFactory.createEmptyLongArray();
     }
 
-    private void initReverse(final IntArray reverse, final int indexRow, ImmutableBitMap index) {
-        index.breakableTraversal(new BreakTraversalAction() {
-            @Override
-            public boolean actionPerformed(int row) {
-                reverse.put(row, indexRow);
-                return false;
+    private void initReverse(final LongArray reverse, final int indexRow, LongArray index) {
+        for (int i = 0; i < index.size(); i++) {
+            long value = index.get(i);
+            if (value != NIOConstant.LONG.NULL_VALUE) {
+                int[] result = RelationIndexHelper.reverse2SegAndRow(value);
+                reverse.put(result[i], RelationIndexHelper.merge2Long(result[0], indexRow));
             }
-        });
+        }
     }
 }

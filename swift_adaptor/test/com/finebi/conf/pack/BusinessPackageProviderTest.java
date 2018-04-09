@@ -7,6 +7,7 @@ import com.finebi.conf.exception.FinePackageDuplicateException;
 import com.finebi.conf.internalimp.pack.FineBusinessPackageImp;
 import com.finebi.conf.provider.SwiftPackageConfProvider;
 import com.finebi.conf.structure.bean.pack.FineBusinessPackage;
+import com.fr.swift.config.TestConfDb;
 import junit.framework.TestCase;
 
 /**
@@ -21,7 +22,7 @@ public class BusinessPackageProviderTest extends TestCase {
     @Override
     protected void setUp() throws Exception {
         super.setUp();
-
+        TestConfDb.setConfDb();
     }
 
     public void testWritePackage() throws FineEngineException {
