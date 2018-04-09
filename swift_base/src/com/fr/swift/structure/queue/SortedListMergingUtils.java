@@ -74,6 +74,17 @@ public class SortedListMergingUtils {
         return new StreamCombinerIterator<E>(iterator, comparator, combiner);
     }
 
+    /**
+     * 只进行流式合并，不组合相同元素
+     * @param iterators 多个有序迭代器
+     * @param comparator 元素比较器
+     * @param <E> 元素
+     * @return 返回丝般顺滑的迭代器
+     */
+    public static <E> Iterator<E> mergeIterator(List<Iterator<E>> iterators, Comparator<E> comparator) {
+        return new ElementIterator<E>(iterators, comparator);
+    }
+
     private static class StreamCombinerIterator<E> implements Iterator<E> {
 
         private Iterator<E> iterator;
