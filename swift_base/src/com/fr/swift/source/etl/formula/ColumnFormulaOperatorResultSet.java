@@ -111,14 +111,6 @@ public class ColumnFormulaOperatorResultSet implements SwiftResultSet {
         }
     }
 
-//    private Long object2Date(Object value) {
-//        if(DateUtils.object2Date(value, true) == null) {
-//            return null;
-//        } else {
-//            return DateUtils.object2Date(value, true).getTime();
-//        }
-//    }
-
     private Long object2Date(Object value) {
         if (value instanceof Number) {
             return ((Number) value).longValue();
@@ -129,13 +121,6 @@ public class ColumnFormulaOperatorResultSet implements SwiftResultSet {
             return DateUtils.object2Date(value, true).getTime();
         }
     }
-//    private Double objectToNumber(Object value){
-//        if(Utils.objectToNumber(value, true) == null) {
-//            return null;
-//        } else {
-//            return Utils.objectToNumber(value, true).doubleValue();
-//        }
-//    }
 
     private Double object2Number(Object value) {
         if (value instanceof Date) {
