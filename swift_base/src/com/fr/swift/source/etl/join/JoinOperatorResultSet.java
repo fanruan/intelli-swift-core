@@ -74,15 +74,15 @@ public class JoinOperatorResultSet implements SwiftResultSet {
         } catch (SwiftMetaDataException e) {
             LOGGER.error(e);
         }
-        lKeyValue = lValueIterator.next();
-        rKeyValue = rValueIterator.next();
+        lKeyValue = lValueIterator.hasNext() ? lValueIterator.next() : null;
+        rKeyValue = rValueIterator.hasNext() ? rValueIterator.next() : null;
         leftRows = new LinkedList<Row>();
         moveToNextRows();
     }
 
     private void moveToNextRows() {
         //如果左边的没了，就只移动右边
-        if (lKeyValue == null) {
+        if (lKeyValue == null || lKeyValue.getKey() == null) {
             moverIter();
         } else {
             move2Iter();
@@ -95,26 +95,26 @@ public class JoinOperatorResultSet implements SwiftResultSet {
         //相同，就写几行，左右都往下移动
         if (result == 0) {
             createNewLeftRows(lKeyValue, rKeyValue);
-            lKeyValue = lValueIterator.next();
-            rKeyValue = rValueIterator.next();
+            lKeyValue = lValueIterator.hasNext() ? lValueIterator.next() : null;
+            rKeyValue = rValueIterator.hasNext() ? rValueIterator.next() : null;
         } else if (result > 0) {
             //左边的快了，就看看是否需要写右边剩下的，移动右边
-            if (writeRightLeftValue){
+            if (writeRightLeftValue) {
                 createNewLeftRows(null, rKeyValue);
             }
-            rKeyValue = rValueIterator.next();
+            rKeyValue = rValueIterator.hasNext() ? rValueIterator.next() : null;
         } else {
             //右边的快了就看看要不要写左边有值右边是空值的情况，fulljoin这种不用写，其他的都要写
             if (writeDifferentValue) {
                 createNewLeftRows(lKeyValue, null);
             }
-            lKeyValue = lValueIterator.next();
+            lKeyValue = lValueIterator.hasNext() ? lValueIterator.next() : null;
         }
     }
 
     private int compareValues() {
         Object[] leftValues = lKeyValue.getKey().getKey();
-        if (rKeyValue == null) {
+        if (rKeyValue == null || rKeyValue.getKey() == null) {
             return -1;
         }
         Object[] rightValues = rKeyValue.getKey().getKey();
@@ -131,7 +131,7 @@ public class JoinOperatorResultSet implements SwiftResultSet {
         //如果不需要写右边剩下的，就结束
         if (writeRightLeftValue && rKeyValue != null) {
             createNewLeftRows(null, rKeyValue);
-            rKeyValue = rValueIterator.next();
+            rKeyValue = rValueIterator.hasNext() ? rValueIterator.next() : null;
         } else {
             leftRows = null;
         }
