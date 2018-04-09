@@ -38,7 +38,7 @@ public class MergerGroupByTest extends TestCase {
             public boolean matches(SwiftNode node) {
                 return false;
             }
-        }, cursor, asc);
+        }, cursor, asc, true);
         MultiGroupByValues multiGroupByValues1 = new MultiGroupByValues(dimensions1, new DetailFilter() {
             @Override
             public ImmutableBitMap createFilterIndex() {
@@ -61,7 +61,7 @@ public class MergerGroupByTest extends TestCase {
             public boolean matches(SwiftNode node) {
                 return false;
             }
-        }, cursor, asc);
+        }, cursor, asc, true);
         MultiGroupByValues multiGroupByValues2 = new MultiGroupByValues(dimensions2, new DetailFilter() {
             @Override
             public ImmutableBitMap createFilterIndex() {

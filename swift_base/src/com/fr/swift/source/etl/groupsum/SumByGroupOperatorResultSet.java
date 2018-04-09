@@ -67,9 +67,9 @@ public class SumByGroupOperatorResultSet implements SwiftResultSet {
 
     @Override
     public Row getRowData() throws SQLException {
-        KeyValue<RowIndexKey<Object>, List<RowTraversal[]>> kv = mergerGroupByValues.next();
+        KeyValue<RowIndexKey<Object[]>, List<RowTraversal[]>> kv = mergerGroupByValues.next();
         List valueList = new ArrayList();
-        Object[] dimensionsValues = (Object[]) kv.getKey().getKey();
+        Object[] dimensionsValues = kv.getKey().getKey();
         for (int i = 0; i < dimensionsValues.length; i++) {
             valueList.add(dimensionsValues[i]);
         }
