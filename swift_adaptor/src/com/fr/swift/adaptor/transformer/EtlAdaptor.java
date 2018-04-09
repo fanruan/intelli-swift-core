@@ -213,6 +213,13 @@ class EtlAdaptor {
         return fieldInfo.isEmpty() ? sourceFieldsInfo : fieldInfo;
     }
 
+    /**
+     * 选字段
+     * fixme 多表选择路径有问题
+     * @param analysis
+     * @return
+     * @throws Exception
+     */
     private static DataSource adaptSelectField(FineAnalysisTable analysis) throws Exception {
         Map<String, List<ColumnKey>> sourceKeyColumnMap = new LinkedHashMap<String, List<ColumnKey>>();
         Map<String, DataSource> sourceKeyDataSourceMap = new LinkedHashMap<String, DataSource>();
