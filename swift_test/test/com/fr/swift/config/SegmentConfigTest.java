@@ -27,23 +27,7 @@
 //
 //    public void setUp() throws Exception {
 //        super.setUp();
-//        DBOption dbOption = new DBOption();
-//        dbOption.setPassword("");
-//        dbOption.setDialectClass("com.fr.third.org.hibernate.dialect.H2Dialect");
-//        dbOption.setDriverClass("org.h2.Driver");
-//        dbOption.setUsername("sa");
-//        dbOption.setUrl("jdbc:h2:~/config/db");
-//        dbOption.addRawProperty("hibernate.show_sql", true)
-//                .addRawProperty("hibernate.format_sql", true).addRawProperty("hibernate.connection.autocommit", true);
-//        DBContext dbProvider = DBContext.create();
-//        dbProvider.addEntityClass(Entity.class);
-//        dbProvider.addEntityClass(XmlEntity.class);
-//        dbProvider.addEntityClass(ClassHelper.class);
-//        dbProvider.init(dbOption);
-//        DBEnv.setDBContext(dbProvider);
-//        DaoContext.setClassHelperDao(new HibernateClassHelperDao());
-//        DaoContext.setXmlEntityDao(new HibernateXmlEnityDao());
-//        DaoContext.setEntityDao(new HibernateEntityDao());
+//        TestConfDb.setConfDb();
 //        configService = SwiftConfigServiceProvider.getInstance();
 //    }
 //
