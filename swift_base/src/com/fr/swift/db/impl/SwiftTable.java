@@ -3,12 +3,15 @@ package com.fr.swift.db.impl;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.db.Table;
 import com.fr.swift.db.Where;
+import com.fr.swift.segment.Segment;
+import com.fr.swift.segment.operator.Deleter;
 import com.fr.swift.segment.operator.Inserter;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftResultSet;
 
 import java.sql.SQLException;
+import java.util.List;
 
 /**
  * @author anchore
@@ -58,8 +61,19 @@ public class SwiftTable implements Table {
     }
 
     @Override
-    public int delete(Where where) {
-        return 0;
+    public int delete(Where where) throws SQLException {
+        SwiftResultSet rowSet = select(where);
+        try {
+            List<Segment> segments = SwiftContext.getInstance().getSegmentProvider().getSegment(key);
+            // fixme 应传入整个segments
+            Deleter deleter = SwiftContext.getInstance().getSwiftDataOperatorProvider().getSwiftDeleter(segments.get(0));
+            deleter.deleteData(rowSet);
+        } catch (Exception e) {
+            throw new SQLException(e);
+        } finally {
+            rowSet.close();
+        }
+        return -1;
     }
 
     @Override
