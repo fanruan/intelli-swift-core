@@ -5,6 +5,7 @@ import com.finebi.base.constant.FineEngineType;
 import com.finebi.conf.exception.FineEngineException;
 import com.finebi.conf.internalimp.analysis.operator.circulate.CirculateOneFieldOperator;
 import com.finebi.conf.internalimp.analysis.operator.circulate.CirculateTwoFieldOperator;
+import com.finebi.conf.internalimp.analysis.operator.circulate.FloorItem;
 import com.finebi.conf.internalimp.analysis.operator.trans.ColumnRowTransOperator;
 import com.finebi.conf.internalimp.analysis.operator.trans.NameText;
 import com.finebi.conf.internalimp.basictable.previewdata.FineCirculatePreviewData;
@@ -38,15 +39,11 @@ import com.fr.swift.adaptor.struct.SwiftEmptyResult;
 import com.fr.swift.adaptor.struct.SwiftSegmentDetailResult;
 import com.fr.swift.adaptor.transformer.DataSourceFactory;
 import com.fr.swift.adaptor.transformer.FieldFactory;
-import com.fr.swift.bitmap.ImmutableBitMap;
-import com.fr.swift.bitmap.traversal.BreakTraversalAction;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.provider.DataProvider;
 import com.fr.swift.provider.impl.SwiftDataProvider;
 import com.fr.swift.segment.Segment;
-import com.fr.swift.segment.column.ColumnKey;
-import com.fr.swift.segment.column.DictionaryEncodedColumn;
 import com.fr.swift.source.DataSource;
 import com.fr.swift.source.db.ConnectionInfo;
 import com.fr.swift.source.db.ConnectionManager;
@@ -183,36 +180,6 @@ public class SwiftTableEngineExecutor implements FineTableEngineExecutor {
         return engineConfProduceData;
     }
 
-    private void dealWithID(final int cl, final int i, final List list,
-                            final Segment segment, final ColumnKey idCIndex,
-                            final ColumnKey pidCIndex, final Segment[] segments) {
-
-        DictionaryEncodedColumn get1 = segment.getColumn(idCIndex).getDictionaryEncodedColumn();
-        Object id = get1.getValue(get1.getIndexByRow(i));
-        if (id != null && list.size() < cl) {
-            list.add(id);
-            DictionaryEncodedColumn get2 = segment.getColumn(pidCIndex).getDictionaryEncodedColumn();
-            Object pid = get2.getValue(get2.getIndexByRow(i));
-            if (pid != null) {
-                for (int k = 0; k < segments.length; k++) {
-                    DictionaryEncodedColumn gts = segments[k].getColumn(idCIndex).getDictionaryEncodedColumn();
-                    int index = gts.getIndex(pid);
-                    ImmutableBitMap bitMap = segments[k].getColumn(idCIndex).getBitmapIndex().getBitMapIndex(index);
-                    final int indexOfSeg = k;
-                    if (bitMap != null) {
-                        bitMap.breakableTraversal(new BreakTraversalAction() {
-                            @Override
-                            public boolean actionPerformed(int row) {
-                                dealWithID(cl, row, list, segments[indexOfSeg], idCIndex, pidCIndex, segments);
-                                return true;
-                            }
-                        });
-                    }
-                }
-            }
-        }
-    }
-
     private EngineConfProduceData getProduceDataForCirculateTwo(CirculateTwoFieldOperator op, FineBusinessTable preTable, FineBusinessTable table) throws Exception {
         final String tempName = "层级";
         List<String> fieldList = new ArrayList<String>();
@@ -238,6 +205,7 @@ public class SwiftTableEngineExecutor implements FineTableEngineExecutor {
         int columnSize = dm.getColumnCount();
         int rowSize = dm.getRowCount();
         int k = 1;
+        Iterator<FloorItem> iterator = op.getFloors().iterator();
         List<FloorPreviewItem> previewData = new ArrayList<FloorPreviewItem>();
         for (int i = 2; i < columnSize; i++) {
             Set set = new HashSet();
@@ -255,7 +223,13 @@ public class SwiftTableEngineExecutor implements FineTableEngineExecutor {
                 dataList.add(iter.next().toString());
             }
             // TODO length
-            previewData.add(new FloorPreviewItem((tempName + k), dataList, 0));
+            if(iterator.hasNext()) {
+                FloorItem floorItem = iterator.next();
+                previewData.add(new FloorPreviewItem((floorItem.getName()), dataList, 0));
+            } else {
+                previewData.add(new FloorPreviewItem((tempName + k), dataList, 0));
+            }
+            k ++;
         }
         FineCirculatePreviewData engineConfProduceData = new FineCirculatePreviewData();
         engineConfProduceData.setPreviewData(previewData);

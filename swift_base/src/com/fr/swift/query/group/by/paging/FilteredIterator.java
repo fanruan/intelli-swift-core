@@ -46,7 +46,7 @@ public class FilteredIterator<T> implements Iterator<T> {
         while (iterator.hasNext()) {
             T o = iterator.next();
 
-            if (filter.matches(o)) {
+            if (filter.accept(o)) {
                 hasNext = true;
                 nextElement = o;
 
@@ -62,10 +62,5 @@ public class FilteredIterator<T> implements Iterator<T> {
     @Override
     public void remove() {
         throw new UnsupportedOperationException();
-    }
-
-    public interface Filter<T> {
-
-        boolean matches(T element);
     }
 }

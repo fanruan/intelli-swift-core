@@ -42,8 +42,8 @@ public class JoinOperatorResultSet implements SwiftResultSet {
     private SwiftMetaData metaData;
     private MergerGroupByValues lValueIterator;
     private MergerGroupByValues rValueIterator;
-    private KeyValue<RowIndexKey<Object>, List<RowTraversal[]>> lKeyValue;
-    private KeyValue<RowIndexKey<Object>, List<RowTraversal[]>> rKeyValue;
+    private KeyValue<RowIndexKey<Object[]>, List<RowTraversal[]>> lKeyValue;
+    private KeyValue<RowIndexKey<Object[]>, List<RowTraversal[]>> rKeyValue;
     private Comparator[] comparators;
     private LinkedList<Row> leftRows;
 
@@ -113,11 +113,11 @@ public class JoinOperatorResultSet implements SwiftResultSet {
     }
 
     private int compareValues() {
-        Object[] leftValues = (Object[]) lKeyValue.getKey().getKey();
+        Object[] leftValues = lKeyValue.getKey().getKey();
         if (rKeyValue == null) {
             return -1;
         }
-        Object[] rightValues = (Object[]) rKeyValue.getKey().getKey();
+        Object[] rightValues = rKeyValue.getKey().getKey();
         for (int i = 0; i < leftValues.length; i++) {
             int result = comparators[i].compare(leftValues[i], rightValues[i]);
             if (result != 0) {
@@ -160,10 +160,11 @@ public class JoinOperatorResultSet implements SwiftResultSet {
         return leftRows.poll();
     }
 
-    private void createNewLeftRows(KeyValue<RowIndexKey<Object>, List<RowTraversal[]>> lKeyValue, final KeyValue<RowIndexKey<Object>, List<RowTraversal[]>> rKeyValue) {
+    private void createNewLeftRows(KeyValue<RowIndexKey<Object[]>, List<RowTraversal[]>> lKeyValue,
+                                   final KeyValue<RowIndexKey<Object[]>, List<RowTraversal[]>> rKeyValue) {
         leftRows = new LinkedList<Row>();
         if (lKeyValue != null) {
-            Object[] lValues = (Object[]) lKeyValue.getKey().getKey();
+            Object[] lValues = lKeyValue.getKey().getKey();
             for (int i = 0; i < lKeyValue.getValue().size(); i++) {
                 RowTraversal[] traversals = lKeyValue.getValue().get(i);
                 if (traversals != null && traversals[lValues.length] != null) {
@@ -181,9 +182,10 @@ public class JoinOperatorResultSet implements SwiftResultSet {
         }
     }
 
-    private void dealWithRightSegments(final int leftSegIndex, final int leftRow, final KeyValue<RowIndexKey<Object>, List<RowTraversal[]>> rKeyValue) {
+    private void dealWithRightSegments(final int leftSegIndex, final int leftRow,
+                                       final KeyValue<RowIndexKey<Object[]>, List<RowTraversal[]>> rKeyValue) {
         if (rKeyValue != null) {
-            Object[] lValues = (Object[]) rKeyValue.getKey().getKey();
+            Object[] lValues = rKeyValue.getKey().getKey();
             for (int i = 0; i < rKeyValue.getValue().size(); i++) {
                 RowTraversal[] traversals = rKeyValue.getValue().get(i);
                 if (traversals != null && traversals[lValues.length] != null) {
