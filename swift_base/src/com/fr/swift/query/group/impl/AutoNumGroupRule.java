@@ -53,7 +53,7 @@ public class AutoNumGroupRule extends CustomNumGroupRule {
         }
 
         private static String getIntervalName(double floor, double ceil) {
-            return NUMBER_FORMAT.format(floor) + " - " + NUMBER_FORMAT.format(ceil);
+            return FORMATTER.format(floor) + " - " + FORMATTER.format(ceil);
         }
     }
 }
