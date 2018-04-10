@@ -26,6 +26,8 @@ public class TablePathIndexer extends BaseTablePathIndexer {
 
     @Override
     protected void releaseIfNeed(Releasable releasable) {
-        releasable.release();
+        if (null != releasable) {
+            releasable.release();
+        }
     }
 }

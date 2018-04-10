@@ -2,6 +2,8 @@ package com.fr.swift.generate;
 
 import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.bitmap.impl.BitMapOrHelper;
+import com.fr.swift.bitmap.traversal.BreakTraversalAction;
+import com.fr.swift.cube.nio.NIOConstant;
 import com.fr.swift.cube.task.Task;
 import com.fr.swift.generate.history.index.RelationIndexHelper;
 import com.fr.swift.relation.CubeLogicColumnKey;
@@ -12,10 +14,14 @@ import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.segment.column.DictionaryEncodedColumn;
 import com.fr.swift.segment.relation.RelationIndex;
+import com.fr.swift.structure.array.LongArray;
+import com.fr.swift.structure.array.LongListFactory;
+import com.fr.swift.util.Crasher;
 
 import java.util.List;
 
 /**
+ * TODO NullIndex
  * @author yee
  * @date 2018/1/17
  */
@@ -27,15 +33,25 @@ public abstract class BaseFieldPathIndexer extends BaseTablePathIndexer {
         this.logicColumnKey = logicColumnKey;
     }
 
-
     @Override
     public void work() {
         try {
             List<Segment> primarySegment = getPrimaryTableSegments();
             List<Segment> targetSegment = getTargetTableSegments();
-            for (Segment primary : primarySegment) {
-                for (Segment target : targetSegment) {
-                    buildIndexPerSegment(primary, target);
+            for (Segment target : targetSegment) {
+                int pos = 1;
+                RelationIndex targetReader = getTargetReadIndex(target);
+                RelationIndex targetWriter = getTargetWriteIndex(target);
+                try {
+                    for (int i = 0; i < primarySegment.size(); i++) {
+                        buildIndexPerSegment(targetReader, targetWriter, primarySegment.get(i), i, pos);
+                    }
+                } catch (Exception e) {
+                    Crasher.crash(e);
+                } finally {
+                    releaseIfNeed(targetReader);
+                    releaseIfNeed(targetWriter);
+                    releaseIfNeed(target);
                 }
             }
             workOver(Task.Result.SUCCEEDED);
@@ -43,13 +59,19 @@ public abstract class BaseFieldPathIndexer extends BaseTablePathIndexer {
             LOGGER.error("Build field path index error", e);
             workOver(Task.Result.FAILED);
         }
+
     }
 
-    private void buildIndexPerSegment(Segment primary, Segment segment) {
-        RelationIndex targetReader = getTargetReadIndex(segment);
-        RelationIndex targetWriter = getTargetWriteIndex(segment);
+    /**
+     * TODO NullIndex暂时没想好
+     * @param targetReader
+     * @param targetWriter
+     * @param primary
+     * @param primarySegIndex
+     * @param pos
+     */
+    private void buildIndexPerSegment(RelationIndex targetReader, RelationIndex targetWriter, Segment primary, int primarySegIndex, int pos) {
         try {
-            int targetRowCount = segment.getRowCount();
             List<ColumnKey> columnKeys = logicColumnKey.getKeyFields();
             ImmutableBitMap allShow = primary.getAllShowIndex();
             RelationIndexHelper indexHelper = new RelationIndexHelper();
@@ -57,35 +79,33 @@ public abstract class BaseFieldPathIndexer extends BaseTablePathIndexer {
                 Column primaryColumn = primary.getColumn(columnKey);
                 DictionaryEncodedColumn dicColumn = primaryColumn.getDictionaryEncodedColumn();
                 int size = dicColumn.size();
-                ImmutableBitMap[] index = new ImmutableBitMap[size - 1];
-                BitMapOrHelper helper = new BitMapOrHelper();
+                LongArray[] index = new LongArray[size - 1];
+//                BitMapOrHelper helper = new BitMapOrHelper();
                 for (int i = 1; i < size; i++) {
                     ImmutableBitMap primaryIndex = primaryColumn.getBitmapIndex().getBitMapIndex(i);
                     primaryIndex = primaryIndex.getAnd(allShow);
-                    index[i - 1] = buildIndexPerColumn(targetReader, helper, primaryIndex);
+                    index[i - 1] = buildIndexPerColumn(targetReader, primaryIndex, primarySegIndex, primary.getRowCount());
                 }
                 indexHelper.addIndex(index);
-                indexHelper.addNullIndex(helper.compute().getNot(targetRowCount));
+//                indexHelper.addNullIndex(helper.compute().getNot(targetRowCount));
             }
-            writeTargetIndex(targetWriter, indexHelper);
+            writeTargetIndex(targetWriter, indexHelper, pos);
             targetWriter.putNullIndex(0, indexHelper.getNullIndex());
         } finally {
-            if (null != targetReader) {
-                targetReader.release();
-            }
-
-            if (null != targetWriter) {
-                targetWriter.release();
-            }
-
-            primary.release();
-            segment.release();
+            releaseIfNeed(primary);
         }
     }
 
-    private ImmutableBitMap buildIndexPerColumn(RelationIndex targetReader, BitMapOrHelper helper, ImmutableBitMap index) {
-        ImmutableBitMap result = getTableLinkedOrGVI(index, targetReader);
-        helper.add(result);
+    private LongArray buildIndexPerColumn(RelationIndex targetReader, ImmutableBitMap index, final int primarySegIndex, int primaryRowCount) {
+        final LongArray primaryArray = LongListFactory.createLongArray(primaryRowCount, NIOConstant.LONG.NULL_VALUE);
+        index.breakableTraversal(new BreakTraversalAction() {
+            @Override
+            public boolean actionPerformed(int row) {
+                primaryArray.put(row, RelationIndexHelper.merge2Long(primarySegIndex, row));
+                return false;
+            }
+        });
+        LongArray result = getTableLinkedOrGVI(primaryArray, targetReader);
         return result;
     }
 
@@ -97,10 +117,10 @@ public abstract class BaseFieldPathIndexer extends BaseTablePathIndexer {
         return targetSegment.getRelation(logicColumnKey);
     }
 
-    private void writeTargetIndex(RelationIndex targetWriter, RelationIndexHelper helper) {
-        ImmutableBitMap[] targetIndex = helper.getIndex();
-        for (int i = 0, len = targetIndex.length; i < len; i++) {
-            targetWriter.putIndex(i + 1, targetIndex[i]);
+    private void writeTargetIndex(RelationIndex targetWriter, RelationIndexHelper helper, int pos) {
+        LongArray[] targetIndex = helper.getIndex();
+        for (int i = 0, len = targetIndex.length; i < len; i++, pos++) {
+            targetWriter.putIndex(pos, targetIndex[i]);
         }
     }
 }

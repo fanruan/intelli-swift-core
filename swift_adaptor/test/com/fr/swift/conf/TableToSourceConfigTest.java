@@ -3,7 +3,6 @@ package com.fr.swift.conf;
 import com.fr.swift.conf.business.table2source.TableToSource;
 import com.fr.swift.conf.business.table2source.dao.TableToSourceConfigDao;
 import com.fr.swift.conf.business.table2source.dao.TableToSourceConfigDaoImpl;
-import com.fr.swift.conf.business.table2source.dao.TableToSourceMemConfigDao;
 import com.fr.swift.config.TestConfDb;
 import org.junit.Before;
 import org.junit.Test;
@@ -31,7 +30,7 @@ public class TableToSourceConfigTest {
 
     @Parameterized.Parameters
     public static List<TableToSourceConfigDao> data() {
-        return Arrays.asList(new TableToSourceMemConfigDao(), new TableToSourceConfigDaoImpl());
+        return Arrays.asList(new TableToSourceConfigDao[] {new TableToSourceConfigDaoImpl()});
     }
 
     public TableToSourceConfigTest(TableToSourceConfigDao config) {
