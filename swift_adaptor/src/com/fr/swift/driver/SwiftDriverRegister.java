@@ -5,7 +5,6 @@ import com.finebi.common.internalimp.config.driver.CommonAnalysisDataSourceDrive
 import com.finebi.common.internalimp.config.driver.CommonCircleDataSourceDriver;
 import com.finebi.common.internalimp.config.driver.CommonConfAnalysisDataSourceDriver;
 import com.finebi.common.internalimp.config.driver.CommonDataSourceDriverFactory;
-import com.finebi.common.internalimp.config.driver.CommonDatabaseDataSourceDriver;
 import com.finebi.common.internalimp.config.driver.CommonSqlDataSourceDriver;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
@@ -34,7 +33,7 @@ public class SwiftDriverRegister {
         CommonDataSourceDriverFactory.getInstance(FineEngineType.Cube).update(new SwiftDataSourceDriverWrapper(new CommonCircleDataSourceDriver(FineEngineType.Cube)));
         CommonDataSourceDriverFactory.getInstance(FineEngineType.Cube).update(new SwiftDataSourceDriverWrapper(new CommonConfAnalysisDataSourceDriver(FineEngineType.Cube)));
         CommonDataSourceDriverFactory.getInstance(FineEngineType.Cube).update(new SwiftDataSourceDriverWrapper(new CommonSqlDataSourceDriver(FineEngineType.Cube)));
-        CommonDataSourceDriverFactory.getInstance(FineEngineType.Cube).update(new SwiftDataSourceDriverWrapper(new CommonDatabaseDataSourceDriver(FineEngineType.Cube)));
-        logger.info("Drives registration success");
+        CommonDataSourceDriverFactory.getInstance(FineEngineType.Cube).update(new SwiftDatabaseDataSourceDriver());
+        logger.info("Swift drives register success");
     }
 }
