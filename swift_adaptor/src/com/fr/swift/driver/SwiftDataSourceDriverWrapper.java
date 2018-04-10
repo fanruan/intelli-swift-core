@@ -1,7 +1,7 @@
 package com.fr.swift.driver;
 
 import com.finebi.base.constant.FineEngineType;
-import com.finebi.common.internalimp.config.fieldinfo.SimpleFieldInfoPersist;
+import com.finebi.common.internalimp.config.fieldinfo.SimpleFieldPersist;
 import com.finebi.common.structure.config.driver.CommonDataSourceDriver;
 import com.finebi.common.structure.config.driver.PersistDriver;
 import com.finebi.common.structure.config.entryinfo.EntryInfo;
@@ -51,13 +51,9 @@ public class SwiftDataSourceDriverWrapper implements CommonDataSourceDriver {
         driver.init();
     }
 
-    /**
-     * TODO 返回simple
-     * @return
-     */
     @Override
     public FieldInfoPersist getFieldInfoPersist() {
-        return SimpleFieldInfoPersist.INSTANCE;
+        return SimpleFieldPersist.INSTANCE;
     }
 
     @Override

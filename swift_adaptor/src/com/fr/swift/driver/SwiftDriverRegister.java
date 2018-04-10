@@ -1,5 +1,6 @@
 package com.fr.swift.driver;
 
+import com.finebi.base.constant.FineEngineType;
 import com.finebi.common.internalimp.config.driver.CommonAnalysisDataSourceDriver;
 import com.finebi.common.internalimp.config.driver.CommonCircleDataSourceDriver;
 import com.finebi.common.internalimp.config.driver.CommonConfAnalysisDataSourceDriver;
@@ -26,17 +27,14 @@ public class SwiftDriverRegister {
                 }
             }
         }
-        logger.debug("Drives registration success");
     }
 
-    /**
-     * TODO 注册驱动逻辑
-     */
     public void init() {
-        CommonDataSourceDriverFactory.getInstance().registerDriver(new SwiftDataSourceDriverWrapper(new CommonAnalysisDataSourceDriver()));
-        CommonDataSourceDriverFactory.getInstance().registerDriver(new SwiftDataSourceDriverWrapper(new CommonCircleDataSourceDriver()));
-        CommonDataSourceDriverFactory.getInstance().registerDriver(new SwiftDataSourceDriverWrapper(new CommonConfAnalysisDataSourceDriver()));
-        CommonDataSourceDriverFactory.getInstance().registerDriver(new SwiftDataSourceDriverWrapper(new CommonSqlDataSourceDriver()));
-        CommonDataSourceDriverFactory.getInstance().registerDriver(new SwiftDataSourceDriverWrapper(new CommonDatabaseDataSourceDriver()));
+        CommonDataSourceDriverFactory.getInstance(FineEngineType.Cube).update(new SwiftDataSourceDriverWrapper(new CommonAnalysisDataSourceDriver(FineEngineType.Cube)));
+        CommonDataSourceDriverFactory.getInstance(FineEngineType.Cube).update(new SwiftDataSourceDriverWrapper(new CommonCircleDataSourceDriver(FineEngineType.Cube)));
+        CommonDataSourceDriverFactory.getInstance(FineEngineType.Cube).update(new SwiftDataSourceDriverWrapper(new CommonConfAnalysisDataSourceDriver(FineEngineType.Cube)));
+        CommonDataSourceDriverFactory.getInstance(FineEngineType.Cube).update(new SwiftDataSourceDriverWrapper(new CommonSqlDataSourceDriver(FineEngineType.Cube)));
+        CommonDataSourceDriverFactory.getInstance(FineEngineType.Cube).update(new SwiftDataSourceDriverWrapper(new CommonDatabaseDataSourceDriver(FineEngineType.Cube)));
+        logger.info("Drives registration success");
     }
 }

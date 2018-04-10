@@ -129,8 +129,8 @@ public class TableRelationReader {
                 // 如果当前表和新增表相同则遍历所有表加关联
                 for (DatabaseEntryInfo info : oldTableSources) {
                     if (ComparatorUtils.equals(info.getDataSourceName(), connectionName) && ComparatorUtils.equals(relation.getFkTable(), info.getDbTableName())) {
-                        RelationFieldId primaryFieldId = RelationFieldIdUtils.create(relation.getForeignColumnName());
-                        RelationFieldId foreignFieldId = RelationFieldIdUtils.create(relation.getPrimaryColumnName());
+                        RelationFieldId primaryFieldId = RelationFieldIdUtils.create(relation.getPrimaryColumnName());
+                        RelationFieldId foreignFieldId = RelationFieldIdUtils.create(relation.getForeignColumnName());
                         relationsSet.add(createRelation(dbEntry.getID(), primaryFieldId, info.getID(), foreignFieldId));
                     }
                 }
