@@ -1,6 +1,5 @@
 package com.fr.swift.source.etl.utils;
 
-import com.finebi.conf.constant.BICommonConstants;
 import com.fr.script.Calculator;
 import com.fr.stable.Primitive;
 import com.fr.stable.UtilEvalError;
