@@ -56,7 +56,7 @@ public abstract class BaseTablePathIndexer extends BaseWorker {
                 primaryPos += segment.getRowCount();
                 releaseIfNeed(segment);
             }
-            primaryPos += primary.size();
+//            primaryPos += primary.size();
             for (int i = 0; i < target.size(); i++) {
                 Segment tSegment = target.get(i);
                 RelationIndex lastRelationReader = tSegment.getRelation(relationPath.getLastRelation());
@@ -72,7 +72,7 @@ public abstract class BaseTablePathIndexer extends BaseWorker {
                     }
                     targetTableRelationIndex.putReverseCount(reversePos);
                 } catch (Exception e) {
-                    LOGGER.error("build path index error");
+                    LOGGER.error("build path index error", e);
                 } finally {
                     releaseIfNeed(preTableRelationIndex);
                     releaseIfNeed(lastRelationReader);
@@ -134,6 +134,7 @@ public abstract class BaseTablePathIndexer extends BaseWorker {
             return buildReverseIndex(targetTableRelationIndex, reverse, reversePos);
 //            targetTableRelationIndex.putNullIndex(0, helper.compute().getNot(reverse.size()));
         } catch (Exception e) {
+            e.printStackTrace();
             return Crasher.crash(e);
         }
     }
@@ -155,13 +156,13 @@ public abstract class BaseTablePathIndexer extends BaseWorker {
                     try {
                         helper.addNullIndex(relationIndex.getIndex(result[1] + 1));
                     } catch (Exception ignore) {
-                        helper.addNullIndex(LongListFactory.createEmptyLongArray());
+                        helper.addNullIndex(LongListFactory.createLongArray(1, NIOConstant.LONG.NULL_VALUE));
                     }
                 }
             }
             return helper.getNullIndex();
         }
-        return LongListFactory.createEmptyLongArray();
+        return LongListFactory.createLongArray(1, NIOConstant.LONG.NULL_VALUE);
     }
 
     private void initReverse(final LongArray reverse, final int indexRow, LongArray index) {
@@ -169,7 +170,7 @@ public abstract class BaseTablePathIndexer extends BaseWorker {
             long value = index.get(i);
             if (value != NIOConstant.LONG.NULL_VALUE) {
                 int[] result = RelationIndexHelper.reverse2SegAndRow(value);
-                reverse.put(result[i], RelationIndexHelper.merge2Long(result[0], indexRow));
+                reverse.put(result[1], RelationIndexHelper.merge2Long(result[0], indexRow));
             }
         }
     }

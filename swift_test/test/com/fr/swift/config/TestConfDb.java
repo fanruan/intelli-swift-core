@@ -23,7 +23,7 @@ public class TestConfDb {
         dbOption.setPassword("");
         dbOption.setDriverClass("org.h2.Driver");
         dbOption.setDialectClass("com.fr.third.org.hibernate.dialect.H2Dialect");
-        dbOption.addRawProperty("hibernate.show_sql", true)
+        dbOption.addRawProperty("hibernate.show_sql", false)
                 .addRawProperty("hibernate.format_sql", true).addRawProperty("hibernate.connection.autocommit", true);
         DBContext dbProvider = DBContext.create();
         dbProvider.addEntityClass(Entity.class);

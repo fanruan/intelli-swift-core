@@ -2,6 +2,7 @@ package com.fr.swift.generate.history;
 
 import com.fr.general.ComparatorUtils;
 import com.fr.swift.config.TestConfDb;
+import com.fr.swift.cube.nio.NIOConstant;
 import com.fr.swift.cube.queue.CubeTasks;
 import com.fr.swift.cube.task.SchedulerTask;
 import com.fr.swift.cube.task.Task;
@@ -14,14 +15,17 @@ import com.fr.swift.cube.task.impl.SchedulerTaskPool;
 import com.fr.swift.cube.task.impl.WorkerTaskImpl;
 import com.fr.swift.cube.task.impl.WorkerTaskPool;
 import com.fr.swift.generate.history.index.MultiRelationIndexer;
+import com.fr.swift.generate.history.index.RelationIndexHelper;
 import com.fr.swift.generate.history.index.TablePathIndexer;
 import com.fr.swift.manager.LocalSegmentProvider;
+import com.fr.swift.relation.CubeMultiRelation;
 import com.fr.swift.relation.CubeMultiRelationPath;
 import com.fr.swift.relation.utils.RelationPathHelper;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.segment.column.DetailColumn;
 import com.fr.swift.segment.relation.RelationIndex;
+import com.fr.swift.segment.relation.column.RelationColumn;
 import com.fr.swift.service.LocalSwiftServerService;
 import com.fr.swift.source.DataSource;
 import com.fr.swift.source.RelationSource;
@@ -192,31 +196,25 @@ public class TablePathIndexerTest extends TestCase {
 
         RelationIndex index = third.getRelation(path);
         int firstRow = first.getRowCount();
-        int secondRow = second.getRowCount();
-        int thirdRow = second.getRowCount();
-//        ImmutableBitMap nullIndex = index.getNullIndex(0);
         List<ColumnKey> firstRelationPrimaryKeys = path.getFirstRelation().getPrimaryField().getKeyFields();
-        List<ColumnKey> firstRelationForeignKeys = path.getFirstRelation().getForeignField().getKeyFields();
-        List<ColumnKey> lastRelationPrimaryKeys = path.getLastRelation().getPrimaryField().getKeyFields();
-        List<ColumnKey> lastRelationForeignKeys = path.getLastRelation().getForeignField().getKeyFields();
         DetailColumn primary1 = first.getColumn(firstRelationPrimaryKeys.get(0)).getDetailColumn();
-        DetailColumn foreign1 = second.getColumn(firstRelationForeignKeys.get(0)).getDetailColumn();
-        DetailColumn primary2 = second.getColumn(lastRelationPrimaryKeys.get(0)).getDetailColumn();
-        DetailColumn foreign2 = third.getColumn(lastRelationForeignKeys.get(0)).getDetailColumn();
+        CubeMultiRelation firstRelation = path.getFirstRelation();
+        RelationIndex firstIndex = second.getRelation(firstRelation);
+        CubeMultiRelation lastRelation = path.getLastRelation();
+        RelationIndex lastIndex = third.getRelation(lastRelation);
+        RelationColumn firstColumn = new RelationColumn(firstIndex, firstSegments, new ColumnKey("客户ID"));
+        RelationColumn lastColumn = new RelationColumn(lastIndex, secondSegments, new ColumnKey("合同ID"));
+        int pos = 1;
         for (int i = 0; i < firstRow; i++) {
             Object p1 = primary1.get(i);
-            LongArray targetIndex = index.getIndex(i + 1);
-            for (int j = 0; j < secondRow; j++) {
-                Object f1 = foreign1.get(j);
-                if (ComparatorUtils.equals(p1, f1)) {
-                    Object p2 = primary2.get(j);
-                    for (int k = 0; k < thirdRow; k++) {
-                        Object f2 = foreign2.get(k);
-                        if (ComparatorUtils.equals(p2, f2)) {
-//                            assertTrue(targetIndex.contains(k));
-//                            assertFalse(nullIndex.contains(k));
-                        }
-                    }
+            LongArray targetIndex = index.getIndex(pos++);
+            for (int j = 0; j < targetIndex.size(); j++) {
+                long value = targetIndex.get(j);
+                if (NIOConstant.LONG.NULL_VALUE != value) {
+                    int[] result = RelationIndexHelper.reverse2SegAndRow(value);
+                    int[] secondInfo = lastColumn.getPrimarySegAndRow(result[1]);
+                    Object p2 = firstColumn.getValue(secondInfo[1]);
+                    assertEquals(p1, p2);
                 }
             }
         }
