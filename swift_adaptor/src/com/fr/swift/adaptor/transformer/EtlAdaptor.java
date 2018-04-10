@@ -34,11 +34,8 @@ import com.finebi.conf.internalimp.analysis.bean.operator.circulate.CirculateOne
 import com.finebi.conf.internalimp.analysis.bean.operator.circulate.CirculateTwoFieldValue;
 import com.finebi.conf.internalimp.analysis.bean.operator.datamining.AlgorithmBean;
 import com.finebi.conf.internalimp.analysis.bean.operator.datamining.DataMiningBean;
-<<<<<<< HEAD
-import com.finebi.conf.internalimp.analysis.bean.operator.datamining.rcompile.RCompileBeanValue;
-=======
 import com.finebi.conf.internalimp.analysis.bean.operator.datamining.rcompile.RCompileBean;
->>>>>>> b2017b9693e6dcf112d01ce8232fc701281242e4
+import com.finebi.conf.internalimp.analysis.bean.operator.datamining.rcompile.RCompileBeanValue;
 import com.finebi.conf.internalimp.analysis.bean.operator.filter.FilterOperatorBean;
 import com.finebi.conf.internalimp.analysis.bean.operator.group.CustomGroupValueItemBean;
 import com.finebi.conf.internalimp.analysis.bean.operator.group.DimensionSelectValue;
@@ -613,7 +610,6 @@ class EtlAdaptor {
         String ip = bean.getIp();
         int port = bean.getPort();
         String tableName = bean.getTableName();
-<<<<<<< HEAD
         if(null != dataSource) {
             try {
                 DataProvider dataProvider = new SwiftDataProvider();
@@ -623,19 +619,6 @@ class EtlAdaptor {
                     if(null != commands && !"".equals(commands)) {
                         return new RCompileOperator(commands, needExecute, null, tableName,
                                 segments.toArray(new Segment[segments.size()]), null, null, cancelPrevious, init);
-=======
-        if (needExecute) {
-            String commands = bean.getCommands();
-            if (null != commands && !"".equals(commands)) {
-                if (null != dataSource) {
-                    try {
-                        DataProvider dataProvider = new SwiftDataProvider();
-                        List<Segment> segments = dataProvider.getPreviewData(dataSource);
-                        return new RCompileOperator(commands, needExecute, ip, port, tableName,
-                                segments.toArray(new Segment[segments.size()]), null);
-                    } catch (Exception e) {
-                        SwiftLoggers.getLogger().error(e);
->>>>>>> b2017b9693e6dcf112d01ce8232fc701281242e4
                     }
                 } else {
                     String[] columns = bean.getColumns();
@@ -643,13 +626,8 @@ class EtlAdaptor {
                     return new RCompileOperator(null, needExecute, null, tableName,
                             segments.toArray(new Segment[segments.size()]), columnType, columns, cancelPrevious, init);
                 }
-<<<<<<< HEAD
             } catch(Exception e) {
                 SwiftLoggers.getLogger().error(e);
-=======
-            } else {
-                return null;
->>>>>>> b2017b9693e6dcf112d01ce8232fc701281242e4
             }
         }
         return null;
