@@ -16,15 +16,21 @@ import java.io.Serializable;
  * Created by Handsome on 2017/12/8 0008 14:36
  */
 public class SumByGroupDimension implements CoreService, Serializable {
-
     private static final SwiftLogger LOGGER = SwiftLoggers.getLogger(SumByGroupDimension.class);
-    //维度字段名
+    /**
+     * 维度字段名
+     */
     @CoreField
     private String name;
+
     @CoreField
     private Group group;
-    //改名之后的字段，不需要算md5
+
+    /**
+     * 改名之后的字段，不需要算md5
+     */
     private String nameText;
+
     @CoreField
     private ColumnType columnType;
 
@@ -50,10 +56,6 @@ public class SumByGroupDimension implements CoreService, Serializable {
 
     public void setGroup(Group group) {
         this.group = group;
-    }
-
-    public Object getKeyValue(Object value) {
-        return value;
     }
 
     @Override
@@ -85,12 +87,11 @@ public class SumByGroupDimension implements CoreService, Serializable {
     }
 
 
-
     @Override
     public Core fetchObjectCore() {
         try {
             return new CoreGenerator(this).fetchObjectCore();
-        } catch(Exception e) {
+        } catch (Exception e) {
             LOGGER.error(e.getMessage(), e);
         }
         return Core.EMPTY_CORE;

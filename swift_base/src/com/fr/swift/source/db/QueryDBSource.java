@@ -3,7 +3,7 @@ package com.fr.swift.source.db;
 import com.fr.swift.source.ColumnTypeConstants.ColumnType;
 import com.fr.swift.source.core.CoreField;
 
-import java.util.Map;
+import java.util.LinkedHashMap;
 
 public class QueryDBSource extends AbstractDBDataSource {
 
@@ -17,7 +17,7 @@ public class QueryDBSource extends AbstractDBDataSource {
         this.connection = connection;
     }
 
-    public QueryDBSource(String query, String connection, Map<String, ColumnType> fieldColumnTypes) {
+    public QueryDBSource(String query, String connection, LinkedHashMap<String, ColumnType> fieldColumnTypes) {
         super(fieldColumnTypes);
         this.query = query;
         this.connection = connection;

@@ -53,6 +53,6 @@ public class DetailTransferOperatorTest extends TestCase {
         while (resultSet.next()) {
             list.add(resultSet.getRowData());
         }
-        assertEquals(list.size(), 5);
+        assertEquals(list.size(), 2);
     }
 }
