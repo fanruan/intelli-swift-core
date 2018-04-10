@@ -37,7 +37,7 @@ public class SwiftTableManager extends AbstractEngineTableManager {
     private SwiftLogger logger = SwiftLoggers.getLogger(SwiftTableManager.class);
 
     public SwiftTableManager() {
-        SwiftDriverRegister.register();
+        SwiftDriverRegister.registerIfNeed();
         tableToSourceConfigDao = new TableToSourceConfigDaoImpl();
     }
 

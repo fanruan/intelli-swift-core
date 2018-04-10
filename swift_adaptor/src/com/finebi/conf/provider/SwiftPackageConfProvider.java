@@ -15,7 +15,7 @@ import com.fr.swift.driver.SwiftDriverRegister;
 public class SwiftPackageConfProvider extends AbstractEnginePackageManager {
 
     public SwiftPackageConfProvider() {
-        SwiftDriverRegister.register();
+        SwiftDriverRegister.registerIfNeed();
     }
 
     @Override

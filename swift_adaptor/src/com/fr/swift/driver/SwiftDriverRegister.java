@@ -18,7 +18,7 @@ public class SwiftDriverRegister {
     private static SwiftDriverRegister instance;
     private static SwiftLogger logger = SwiftLoggers.getLogger(SwiftDriverRegister.class);
 
-    public static void register() {
+    public static void registerIfNeed() {
         if (null == instance) {
             synchronized (SwiftDriverRegister.class) {
                 if (null == instance) {

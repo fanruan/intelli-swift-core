@@ -3,7 +3,6 @@ package com.finebi.conf.provider;
 import com.finebi.base.constant.FineEngineType;
 import com.finebi.common.service.engine.relation.AbstractDirectRelationPathManager;
 import com.finebi.conf.constant.BICommonConstants;
-import com.finebi.conf.exception.FineRelationAbsentException;
 import com.finebi.conf.structure.path.FineBusinessTableRelationPath;
 import com.finebi.conf.structure.relation.FineBusinessTableRelation;
 import com.fr.general.ComparatorUtils;
@@ -21,7 +20,7 @@ public class SwiftRelationPathConfProvider extends AbstractDirectRelationPathMan
 
 
     public SwiftRelationPathConfProvider() {
-        SwiftDriverRegister.register();
+        SwiftDriverRegister.registerIfNeed();
     }
 
     @Override
