@@ -34,6 +34,7 @@ import com.finebi.conf.internalimp.analysis.bean.operator.circulate.CirculateOne
 import com.finebi.conf.internalimp.analysis.bean.operator.circulate.CirculateTwoFieldValue;
 import com.finebi.conf.internalimp.analysis.bean.operator.datamining.AlgorithmBean;
 import com.finebi.conf.internalimp.analysis.bean.operator.datamining.DataMiningBean;
+import com.finebi.conf.internalimp.analysis.bean.operator.datamining.rcompile.RCompileBean;
 import com.finebi.conf.internalimp.analysis.bean.operator.filter.FilterOperatorBean;
 import com.finebi.conf.internalimp.analysis.bean.operator.group.CustomGroupValueItemBean;
 import com.finebi.conf.internalimp.analysis.bean.operator.group.DimensionSelectValue;
@@ -43,7 +44,6 @@ import com.finebi.conf.internalimp.analysis.bean.operator.group.GroupBean;
 import com.finebi.conf.internalimp.analysis.bean.operator.group.GroupSingleValueBean;
 import com.finebi.conf.internalimp.analysis.bean.operator.group.GroupValueBean;
 import com.finebi.conf.internalimp.analysis.bean.operator.group.ViewBean;
-import com.finebi.conf.internalimp.analysis.bean.operator.datamining.rcompile.RCompileBean;
 import com.finebi.conf.internalimp.analysis.bean.operator.group.custom.CustomGroupValueContent;
 import com.finebi.conf.internalimp.analysis.bean.operator.join.JoinBean;
 import com.finebi.conf.internalimp.analysis.bean.operator.join.JoinBeanValue;
@@ -641,7 +641,7 @@ class EtlAdaptor {
         }
 
         SumByGroupDimension[] groupDimensions = null;
-        SumByGroupTarget[] groupTargets = null;
+        SumByGroupTarget[] groupTargets = new SumByGroupTarget[0];
         if (null != views) {
             groupTargets = new SumByGroupTarget[views.size()];
         }
