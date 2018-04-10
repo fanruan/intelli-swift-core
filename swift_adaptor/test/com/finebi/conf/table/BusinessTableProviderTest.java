@@ -1,6 +1,7 @@
 package com.finebi.conf.table;
 
 import com.finebi.base.constant.FineEngineType;
+import com.finebi.conf.exception.FineTableAbsentException;
 import com.finebi.conf.internalimp.basictable.table.FineDBBusinessTable;
 import com.finebi.conf.provider.SwiftTableManager;
 import com.finebi.conf.structure.bean.table.FineBusinessTable;
@@ -18,7 +19,7 @@ import java.util.List;
  */
 public class BusinessTableProviderTest extends TestCase {
 
-    public void testBusinessTable() {
+    public void testBusinessTable() throws FineTableAbsentException {
         SwiftTableManager provider = new SwiftTableManager();
         List<String> tableIdList = new ArrayList<String>();
         for (FineBusinessTable fineBusinessTable : provider.getAllTable()) {

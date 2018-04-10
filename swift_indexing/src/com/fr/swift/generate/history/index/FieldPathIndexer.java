@@ -26,6 +26,8 @@ public class FieldPathIndexer extends BaseFieldPathIndexer {
 
     @Override
     protected void releaseIfNeed(Releasable releasable) {
-        releasable.release();
+        if (null != releasable) {
+            releasable.release();
+        }
     }
 }

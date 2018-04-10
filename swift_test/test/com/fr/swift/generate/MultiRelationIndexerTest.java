@@ -33,6 +33,7 @@ import com.fr.swift.source.db.TableDBSource;
 import com.fr.swift.source.db.TestConnectionProvider;
 import com.fr.swift.source.relation.RelationSourceImpl;
 import com.fr.swift.structure.Pair;
+import com.fr.swift.structure.array.LongArray;
 import junit.framework.TestCase;
 import org.junit.Before;
 import org.junit.FixMethodOrder;
@@ -161,8 +162,6 @@ public class MultiRelationIndexerTest  {
                 TestCase.assertTrue(segment instanceof HistorySegmentImpl);
                 TestCase.assertTrue(foreign instanceof HistorySegmentImpl);
                 int primaryRow = segment.getRowCount();
-                int foreignRow = foreign.getRowCount();
-                ImmutableBitMap nullIndex = index.getNullIndex(pi);
 
                 DetailColumn primary1 = segment.getColumn(primaryKeys.get(0)).getDetailColumn();
                 DetailColumn primary2 = segment.getColumn(primaryKeys.get(1)).getDetailColumn();
@@ -170,18 +169,19 @@ public class MultiRelationIndexerTest  {
                 for (int i = 0; i < primaryRow; i++) {
                     Object p1 = primary1.get(i);
                     Object p2 = primary2.get(i);
-                    ImmutableBitMap targetIndex = index.getIndex(pos++);
-                    for (int j = 0; j < foreignRow; j++) {
-                        Object f1 = foreign1.get(j);
-                        Object f2 = foreign2.get(j);
-                        if (ComparatorUtils.equals(p1, f1) && ComparatorUtils.equals(p2, f2)) {
-                            TestCase.assertTrue(targetIndex.contains(j));
-                            TestCase.assertFalse(nullIndex.contains(j));
+                    LongArray targetIndex = index.getIndex(pos++);
+                    for (int j = 0; j < targetIndex.size(); j++) {
+                        long longValue = targetIndex.get(j);
+                        if (!ComparatorUtils.equals(longValue, NIOConstant.LONG.NULL_VALUE)) {
+                            int[] target = long2IntArray(longValue);
+                            Object f1 = foreign1.get(target[1]);
+                            Object f2 = foreign2.get(target[1]);
+                            TestCase.assertEquals(p1, f1);
+                            TestCase.assertEquals(p2, f2);
                         }
                     }
                 }
             }
-//            System.err.println(pos);
         }
     }
 
@@ -216,7 +216,7 @@ public class MultiRelationIndexerTest  {
     private int[] long2IntArray(long reverse) {
         int[] result = new int[2];
         result[0] = (int) ((reverse & 0xFFFFFFFF00000000L) >> 32);
-        result[1] = (int) (0xFFFFFFFFl & reverse);
+        result[1] = (int) (0xFFFFFFFFL & reverse);
         return result;
     }
 }
