@@ -11,14 +11,19 @@ import com.fr.config.entity.XmlEntity;
 import com.fr.stable.db.DBContext;
 import com.fr.stable.db.option.DBOption;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
 /**
  * @author anchore
  * @date 2018/4/8
  */
 public class TestConfDb {
+    private static final Path PATH = Paths.get(System.getProperty("user.dir") + "/config");
+
     public static void setConfDb() throws Exception {
         DBOption dbOption = new DBOption();
-        dbOption.setUrl("jdbc:h2:" + System.getProperty("user.dir") + "/config");
+        dbOption.setUrl("jdbc:h2:" + PATH.toString());
         dbOption.setUsername("sa");
         dbOption.setPassword("");
         dbOption.setDriverClass("org.h2.Driver");

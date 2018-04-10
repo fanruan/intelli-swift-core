@@ -20,17 +20,6 @@ abstract class BaseCustomGroupRule<Base> extends BaseGroupRule implements Custom
     DictionaryEncodedColumn<Base> dictColumn;
 
     /**
-     * 初始化映射关系
-     */
-    abstract void initMap();
-
-    @Override
-    public void setOriginDict(DictionaryEncodedColumn<Base> dict) {
-        this.dictColumn = dict;
-        initMap();
-    }
-
-    /**
      * 新分组序号 -> (新分组名, 旧分组序号)
      */
     Map<Integer, Pair<String, IntList>> map = new HashMap<Integer, Pair<String, IntList>>();
@@ -44,6 +33,17 @@ abstract class BaseCustomGroupRule<Base> extends BaseGroupRule implements Custom
 
     BaseCustomGroupRule(String otherGroupName) {
         this.otherGroupName = otherGroupName;
+    }
+
+    /**
+     * 初始化映射关系
+     */
+    abstract void initMap();
+
+    @Override
+    public void setOriginDict(DictionaryEncodedColumn<Base> dict) {
+        this.dictColumn = dict;
+        initMap();
     }
 
     @Override
@@ -76,8 +76,7 @@ abstract class BaseCustomGroupRule<Base> extends BaseGroupRule implements Custom
         return map.size();
     }
 
-    @Override
-    public boolean hasOtherGroup() {
+    boolean hasOtherGroup() {
         return StringUtils.isNotEmpty(otherGroupName);
     }
 
@@ -89,7 +88,35 @@ abstract class BaseCustomGroupRule<Base> extends BaseGroupRule implements Custom
             indices.add(oldIndex);
             map.put(newIndex, Pair.of(groupName, indices));
         }
-        
+
         reverseMap[oldIndex] = newIndex;
+    }
+
+    void compactMap(int oldSize) {
+        // 压缩map，没分到值的分组要去掉
+        for (int i = 1, j = 1; i < oldSize; i++, j++) {
+            while (!map.containsKey(i)) {
+                i++;
+            }
+            if (i == j) {
+                continue;
+            }
+            map.put(j, map.get(i));
+            updateReverseMap(i, j);
+            if (i > j) {
+                map.remove(i);
+            }
+        }
+    }
+
+    private void updateReverseMap(int oldIndex, int newIndex) {
+        if (oldIndex == newIndex) {
+            return;
+        }
+        for (int i = 0; i < reverseMap.length; i++) {
+            if (reverseMap[i] == oldIndex) {
+                reverseMap[i] = newIndex;
+            }
+        }
     }
 }
