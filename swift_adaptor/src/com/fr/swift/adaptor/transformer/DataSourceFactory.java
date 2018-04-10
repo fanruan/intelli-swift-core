@@ -40,7 +40,7 @@ import com.fr.swift.source.etl.datamining.rcompile.RCompileOperator;
 import com.fr.swift.source.etl.datamining.rcompile.RCompileTransferOperator;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -153,18 +153,18 @@ public class DataSourceFactory {
 
     private static DataSource transformTableDBSource(FineDBBusinessTable table) throws Exception {
         String connectionName = table.getConnName();
-        Map<String, ColumnType> fieldColumnTypes = checkFieldTypes(table.getOperators());
+        LinkedHashMap<String, ColumnType> fieldColumnTypes = checkFieldTypes(table.getOperators());
         TableDBSource tableDBSource = fieldColumnTypes == null ?
                 new TableDBSource(table.getTableName(), connectionName) : new TableDBSource(table.getTableName(), connectionName, fieldColumnTypes);
         return checkETL(tableDBSource, table);
     }
 
-    private static Map<String, ColumnType> checkFieldTypes(List<FineOperator> operators) {
+    private static LinkedHashMap<String, ColumnType> checkFieldTypes(List<FineOperator> operators) {
         if (operators != null && !operators.isEmpty()) {
             FineOperator op = operators.get(0);
             if (op.getType() == ConfConstant.AnalysisType.CONF_SELECT) {
                 List<ConfSelectBeanItem> items = ((ConfSelectOperator) op).getFields();
-                Map<String, ColumnType> fieldsTypes = new HashMap<String, ColumnType>();
+                LinkedHashMap<String, ColumnType> fieldsTypes = new LinkedHashMap<String, ColumnType>();
                 for (ConfSelectBeanItem item : items) {
                     if (item.isUsable()) {
                         fieldsTypes.put(item.getName(), FieldFactory.transformBIColumnType2SwiftColumnType(item.getType()));
@@ -178,7 +178,7 @@ public class DataSourceFactory {
 
     private static DataSource transformQueryDBSource(FineSQLBusinessTable table) throws Exception {
 
-        Map<String, ColumnType> fieldColumnTypes = checkFieldTypes(table.getOperators());
+        LinkedHashMap<String, ColumnType> fieldColumnTypes = checkFieldTypes(table.getOperators());
 
         String sql = table.getSql();
         List<FineSQLTableParameter> sqlTableParameters = table.getParamSetting();
