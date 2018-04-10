@@ -4,17 +4,19 @@ import com.fr.swift.query.filter.detail.DetailFilter;
 import com.fr.swift.query.filter.detail.impl.GeneralAndFilter;
 import com.fr.swift.query.filter.detail.impl.GeneralOrFilter;
 import com.fr.swift.segment.Segment;
+import com.fr.swift.source.core.CoreField;
 
 import java.util.List;
 
 /**
  * Created by pony on 2017/12/21.
  */
-public class GeneralFilterInfo implements FilterInfo {
+public class GeneralFilterInfo extends AbstractFilterInfo {
     public static final int OR = 0;
     public static final int AND = 1;
+    @CoreField
     private List<FilterInfo> children;
-
+    @CoreField
     private int type;
 
     public GeneralFilterInfo(List<FilterInfo> children, int type) {
