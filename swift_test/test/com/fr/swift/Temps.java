@@ -12,80 +12,89 @@ import java.util.Comparator;
  * 主要是避免底层接口更改，导致多处代码修改
  * 写一个临时类，把修改点缩小到一个类
  * 也避免重复代码，很多时候只需要调用到部分方法，其他方法没用到
+ *
+ * 正式开发还是不要用，不然堆栈看不懂
  */
 public final class Temps {
     public static class TempDictColumn<T> implements DictionaryEncodedColumn<T> {
         @Override
         public void putSize(int size) {
+            throw new UnsupportedOperationException();
         }
 
         @Override
         public int size() {
-            return 0;
+            throw new UnsupportedOperationException();
         }
 
         @Override
         public void putGlobalSize(int globalSize) {
+            throw new UnsupportedOperationException();
         }
 
         @Override
         public int globalSize() {
-            return 0;
+            throw new UnsupportedOperationException();
         }
 
         @Override
         public void putValue(int index, T val) {
+            throw new UnsupportedOperationException();
         }
 
         @Override
         public T getValue(int index) {
-            return null;
+            throw new UnsupportedOperationException();
         }
 
         @Override
         public int getIndex(Object value) {
-            return 0;
+            throw new UnsupportedOperationException();
         }
 
         @Override
         public void putIndex(int row, int index) {
+            throw new UnsupportedOperationException();
         }
 
         @Override
         public int getIndexByRow(int row) {
-            return 0;
+            throw new UnsupportedOperationException();
         }
 
         @Override
         public void putGlobalIndex(int index, int globalIndex) {
+            throw new UnsupportedOperationException();
         }
 
         @Override
         public int getGlobalIndexByIndex(int index) {
-            return 0;
+            throw new UnsupportedOperationException();
         }
 
         @Override
         public int getGlobalIndexByRow(int row) {
-            return 0;
+            throw new UnsupportedOperationException();
         }
 
         @Override
         public Comparator<T> getComparator() {
-            return null;
+            throw new UnsupportedOperationException();
         }
 
         @Override
         public T convertValue(Object value) {
-            return null;
+            throw new UnsupportedOperationException();
         }
 
         @Override
         public void flush() {
+            throw new UnsupportedOperationException();
         }
 
         @Override
         public void release() {
+            throw new UnsupportedOperationException();
         }
     }
 }

@@ -12,8 +12,7 @@ import java.util.Calendar;
  * 日期分组用
  */
 public class DateDerivers {
-    @SuppressWarnings("unchecked")
-    public static <Derive> Function<Long, Derive> newDeriver(GroupType type) {
+    public static Function<Long, Long> newDeriver(GroupType type) {
         switch (type) {
             case YEAR:
             case QUARTER:
@@ -24,14 +23,14 @@ public class DateDerivers {
             case MINUTE:
             case SECOND:
             case WEEK_OF_YEAR:
-                return (Function<Long, Derive>) newSingleFieldDeriver(toDateType(type));
+                return newSingleFieldDeriver(toDateType(type));
             default:
-                return (Function<Long, Derive>) newTruncDeriver(toMixDateType(type));
+                return newTruncDeriver(toMixDateType(type));
         }
     }
 
     public static Function<Long, Long> newSingleFieldDeriver(final DateType dateType) {
-        return new BaseDateDeriver<Long>() {
+        return new BaseDateDeriver() {
             @Override
             public Long apply(Long millis) {
                 c.setTimeInMillis(millis);
@@ -41,7 +40,7 @@ public class DateDerivers {
     }
 
     public static Function<Long, Long> newTruncDeriver(final MixDateType type) {
-        return new BaseDateDeriver<Long>() {
+        return new BaseDateDeriver() {
             @Override
             public Long apply(Long millis) {
                 c.setTimeInMillis(millis);
@@ -50,7 +49,7 @@ public class DateDerivers {
         };
     }
 
-    private static abstract class BaseDateDeriver<Derive> implements Function<Long, Derive> {
+    private static abstract class BaseDateDeriver implements Function<Long, Long> {
         Calendar c = Calendar.getInstance();
     }
 
