@@ -102,7 +102,7 @@ public abstract class AbstractBlockInserter implements Inserter {
                 // fixme 为啥这里要传后两个参数？
                 // 为了以后特殊的分块逻辑
                 int size = segments.size();
-                int index = alloter.allot(count, allotColumn, rowData.getValue(swiftMetaData.getColumnIndex(allotColumn))) + startSegIndex;
+                int index = alloter.allot(count, allotColumn, rowData.getValue(0)) + startSegIndex;
                 if (index >= size) {
                     for (int i = size; i <= index; i++) {
                         segmentIndexCache.putSegRow(i, 0);
