@@ -119,6 +119,16 @@ public abstract class BaseTablePathIndexer extends BaseWorker {
         return getSegments(getTargetTable());
     }
 
+    /**
+     * TODO NullIndex暂时没想好
+     * @param preTableRelationIndex
+     * @param targetTableRelationIndex
+     * @param lastRelationReader
+     * @param reverseSize
+     * @param totalPos
+     * @param reversePos
+     * @return
+     */
     private int buildIndexPerSegment(RelationIndex preTableRelationIndex, RelationIndex targetTableRelationIndex, RelationIndex lastRelationReader, int reverseSize, int totalPos, int reversePos) {
 
         try {
