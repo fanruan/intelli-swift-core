@@ -2,6 +2,7 @@ package com.fr.swift.adaptor.transformer;
 
 import com.finebi.base.constant.FineEngineType;
 import com.finebi.base.stable.StableManager;
+import com.finebi.conf.constant.BICommonConstants;
 import com.finebi.conf.constant.BIConfConstants;
 import com.finebi.conf.constant.ConfConstant.AnalysisType;
 import com.finebi.conf.exception.FineAnalysisOperationUnSafe;
@@ -145,6 +146,7 @@ class EtlAdaptor {
     static DataSource adaptEtlDataSource(FineBusinessTable table) throws Exception {
         FineAnalysisTable analysis = ((FineAnalysisTable) table);
         FineOperator op = analysis.getOperator();
+
         if (op.getType() == AnalysisType.SELECT_FIELD) {
             return adaptSelectField(analysis);
         }
@@ -613,6 +615,26 @@ class EtlAdaptor {
         return new SumByGroupOperator(groupTargets, groupDimensions);
     }
 
+    //fieldType为将被转换的字段类型
+    public static ColumnTypeConstants.ColumnType getColumnType(int fieldType) {
+        if(fieldType == BICommonConstants.FORMULA_GENERATE_TYPE.DATE) {
+            return ColumnTypeConstants.ColumnType.DATE;
+        } else if(fieldType == BICommonConstants.FORMULA_GENERATE_TYPE.NUMBER) {
+            return ColumnTypeConstants.ColumnType.NUMBER;
+        } else {
+            return ColumnTypeConstants.ColumnType.STRING;
+        }
+    }
+
+    private static ColumnFormulaOperator getColumnFormulaOperator(AddNewColumnValueBean value, DataSource source) {
+        String expression = ((AddExpressionValueBean) value).getValue();
+        int fieldType = ((AddExpressionValueBean) value).getFieldType();
+        if(fieldType != BICommonConstants.FORMULA_GENERATE_TYPE.AUTO) {
+            return new ColumnFormulaOperator(value.getName(), getColumnType(fieldType), expression);
+        }
+        return new ColumnFormulaOperator(value.getName(), FormulaUtils.getColumnType(source.getMetadata(), expression), expression);
+    }
+
     private static AccumulateRowOperator getAccumulateRowOperator(AddNewColumnValueBean value) {
         AccumulativeItemBean tempBean = ((AddAllAccumulativeValueBean) value).getValue();
         String columnName = value.getName();
@@ -742,8 +764,7 @@ class EtlAdaptor {
         DataSource source = adaptEtlDataSource(((FineAnalysisTableImpl) table).getBaseTable());
         switch (value.getType()) {
             case BIConfConstants.CONF.ADD_COLUMN.FORMULA.TYPE: {
-                String expression = ((AddExpressionValueBean) value).getValue();
-                return new ColumnFormulaOperator(value.getName(), FormulaUtils.getColumnType(source.getMetadata(), expression), expression);
+                return getColumnFormulaOperator(value, source);
             }
             case BIConfConstants.CONF.ADD_COLUMN.ACCUMULATIVE_VALUE.TYPE: {
                 return getAccumulateRowOperator(value);
