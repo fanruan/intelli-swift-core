@@ -266,46 +266,7 @@ class EtlAdaptor {
             List<FineBusinessTableRelation> targetRelations = new ArrayList<FineBusinessTableRelation>();
             try {
                 for (SelectFieldPathItem item : path) {
-                    String tableName = item.getTable();
-                    RelationshipBean bean = item.getRelationship();
-                    List<String> from = bean.getFrom();
-                    List<String> to = bean.getTo();
-                    FineBusinessTable foreignTable = FineTableUtils.getTableByFieldId(to.get(0));
-                    List<FineBusinessTableRelation> relations = relationProvider.getRelationsByTables(tableName, foreignTable.getName());
-                    if (!relations.isEmpty()) {
-                        int lastSize = targetRelations.size();
-                        for (FineBusinessTableRelation relation : relations) {
-                            List<FineBusinessField> primaryFields;
-                            List<FineBusinessField> foreignFields;
-                            if (relation.getRelationType() == BICommonConstants.RELATION_TYPE.MANY_TO_ONE) {
-                                primaryFields = relation.getForeignBusinessField();
-                                foreignFields = relation.getPrimaryBusinessField();
-                            } else {
-                                primaryFields = relation.getPrimaryBusinessField();
-                                foreignFields = relation.getForeignBusinessField();
-                            }
-                            if (from.size() != primaryFields.size() || to.size() != foreignFields.size()) {
-                                continue;
-                            }
-                            boolean equals = true;
-                            for (int i = 0; i < from.size(); i++) {
-                                // 按照常理主表字段和子表字段数是一样的
-                                if (!ComparatorUtils.equals(from.get(i), primaryFields.get(i).getId()) || !ComparatorUtils.equals(to.get(i), foreignFields.get(i).getId())) {
-                                    equals = false;
-                                    break;
-                                }
-                            }
-                            if (equals) {
-                                targetRelations.add(relation);
-                                break;
-                            }
-                        }
-                        if (lastSize == targetRelations.size()) {
-                            selectFieldPathCrash(tableName, from, to);
-                        }
-                    } else {
-                        selectFieldPathCrash(tableName, from, to);
-                    }
+                    handleSelectFieldPath(relationProvider, item, targetRelations);
                 }
                 return getRelation(new FineBusinessTableRelationPathImp(targetRelations));
             } catch (Exception e) {
@@ -320,8 +281,51 @@ class EtlAdaptor {
         return getRelation(p);
     }
 
-    private static void selectFieldPathCrash(String tableName, List<String> from, List<String> to) {
-        StringBuilder builder = new StringBuilder("Cannot find relation: ").append(tableName).append("{");
+    private static void handleSelectFieldPath(SwiftRelationPathConfProvider relationProvider, SelectFieldPathItem item, List<FineBusinessTableRelation> targetRelations) throws FineEngineException {
+        RelationshipBean bean = item.getRelationship();
+        List<String> from = bean.getFrom();
+        List<String> to = bean.getTo();
+        FineBusinessTable fromTable = FineTableUtils.getTableByFieldId(from.get(0));
+        FineBusinessTable toTable = FineTableUtils.getTableByFieldId(to.get(0));
+        List<FineBusinessTableRelation> relations = relationProvider.getRelationsByTables(fromTable.getName(), toTable.getName());
+        if (!relations.isEmpty()) {
+            int lastSize = targetRelations.size();
+            for (FineBusinessTableRelation relation : relations) {
+                List<FineBusinessField> primaryFields;
+                List<FineBusinessField> foreignFields;
+                if (relation.getRelationType() == BICommonConstants.RELATION_TYPE.MANY_TO_ONE) {
+                    primaryFields = relation.getForeignBusinessField();
+                    foreignFields = relation.getPrimaryBusinessField();
+                } else {
+                    primaryFields = relation.getPrimaryBusinessField();
+                    foreignFields = relation.getForeignBusinessField();
+                }
+                if (from.size() != primaryFields.size() || to.size() != foreignFields.size()) {
+                    continue;
+                }
+                boolean equals = true;
+                for (int i = 0; i < from.size(); i++) {
+                    // 按照常理主表字段和子表字段数是一样的
+                    if (!ComparatorUtils.equals(from.get(i), primaryFields.get(i).getId()) || !ComparatorUtils.equals(to.get(i), foreignFields.get(i).getId())) {
+                        equals = false;
+                        break;
+                    }
+                }
+                if (equals) {
+                    targetRelations.add(relation);
+                    break;
+                }
+            }
+            if (lastSize == targetRelations.size()) {
+                selectFieldPathCrash(from, to);
+            }
+        } else {
+            selectFieldPathCrash(from, to);
+        }
+    }
+
+    private static void selectFieldPathCrash(List<String> from, List<String> to) {
+        StringBuilder builder = new StringBuilder("Cannot find relation: ").append("{");
         StringBuilder foreign = new StringBuilder();
         for (int i = 0; i < from.size(); i++) {
             builder.append(from.get(i)).append(",");
