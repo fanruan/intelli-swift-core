@@ -1,6 +1,7 @@
 package com.fr.swift.query.group.impl;
 
 import com.fr.swift.query.group.GroupType;
+import com.fr.swift.source.core.CoreField;
 
 /**
  * @author anchore
@@ -10,6 +11,7 @@ import com.fr.swift.query.group.GroupType;
  * 两种情况：普通列、日期子列
  */
 public class NoGroupRule extends BaseGroupRule {
+    @CoreField
     private GroupType type;
 
     public NoGroupRule() {

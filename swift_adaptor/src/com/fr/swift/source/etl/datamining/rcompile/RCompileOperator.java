@@ -21,47 +21,55 @@ public class RCompileOperator extends AbstractOperator {
 
     private String[] columns;
     private int[] columnTypes;
-    private List dataList;
+    private static List dataList;
     private List<SwiftMetaDataColumn> columnList;
     private String commands;
     private boolean needExecute;
-    private String ip;
-    private int port;
     private RConnection conn;
     private String tableName;
     private Segment[] segments;
+    private boolean cancelPreviousStep;
+    private boolean init;
 
-    public RCompileOperator(String commands, boolean needExecute, String ip,
-                            int port, String tableName, Segment[] segments, String[] columns) {
-        if(needExecute) {
+    public RCompileOperator(String commands, boolean needExecute, RConnection conn,
+                            String tableName, Segment[] segments, int[] columnTypes,
+                            String[] columns, boolean cancelPreviousStep, boolean init) {
+        if(!init) {
             this.columns = (String[]) dataList.get(0);
             this.columnTypes = (int[]) dataList.get(1);
         } else {
             this.columns = columns;
+            this.columnTypes = columnTypes;
         }
+        this.conn = conn;
+        this.init = init;
+        this.cancelPreviousStep = cancelPreviousStep;
         this.commands = commands;
         this.needExecute = needExecute;
-        this.ip = ip;
-        this.port = port;
         this.tableName = tableName;
         this.segments = segments;
-        init(commands, needExecute, ip, port, tableName, segments);
+        init(commands, init, tableName, segments, needExecute);
     }
 
-    private void init(String commands, boolean needExecute, String ip, int port, String tableName, Segment[] segments) {
-        if(null != ip) {
-            if(port > 0) {
-                conn = new CreateRConnect(ip, port).getConnection();
+    private void init(String commands, boolean init, String tableName,
+                      Segment[] segments, boolean needExecute) {
+        if(!init) {
+            if(needExecute) {
+                List list = RExecute.process(conn, commands, tableName);
+                if(null != list) {
+                    dataList = list;
+                    this.columns = (String[]) dataList.get(0);
+                    this.columnTypes = (int[]) dataList.get(1);
+                }
             } else {
-                conn = new CreateRConnect(ip).getConnection();
-            }
-        } else {
-            conn = new CreateRConnect().getConnection();
-        }
-        if(needExecute) {
-            List list = RExecute.process(conn, commands, tableName);
-            if(null != list) {
-                dataList = list;
+                if(cancelPreviousStep) {
+                    List list = RExecute.cancelPreviousStep(conn, tableName);
+                    if(null != list) {
+                        dataList = list;
+                        this.columns = (String[]) dataList.get(0);
+                        this.columnTypes = (int[]) dataList.get(1);
+                    }
+                }
             }
         } else {
             ColumnKey[] columnKeys = new ColumnKey[columns.length];
@@ -69,6 +77,7 @@ public class RCompileOperator extends AbstractOperator {
                 columnKeys[i] = new ColumnKey(columns[i]);
             }
             RExecute.processAssignment(conn, segments, columnKeys, tableName);
+            dataList = RExecute.getPreviousDataList(conn);
         }
     }
 
@@ -87,12 +96,19 @@ public class RCompileOperator extends AbstractOperator {
 
     @Override
     public List<SwiftMetaDataColumn> getColumns(SwiftMetaData[] metaDatas) {
-        columns = (String[]) dataList.get(0);
-        columnTypes = (int[]) dataList.get(1);
-        columnList = new ArrayList<SwiftMetaDataColumn>();
-        for(int i = 0; i < columns.length; i++) {
-            columnList.add(new MetaDataColumn(columns[i], columns[i], columnTypes[i],
-                    ColumnTypeUtils.MAX_LONG_COLUMN_SIZE, 0, fetchObjectCore().getValue()));
+        if(!init) {
+            columns = (String[]) dataList.get(0);
+            columnTypes = (int[]) dataList.get(1);
+            columnList = new ArrayList<SwiftMetaDataColumn>();
+            for(int i = 0; i < columns.length; i++) {
+                columnList.add(new MetaDataColumn(columns[i], columns[i], columnTypes[i],
+                        ColumnTypeUtils.MAX_LONG_COLUMN_SIZE, 0, fetchObjectCore().getValue()));
+            }
+        } else {
+            for(int i = 0; i < columns.length; i++) {
+                columnList.add(new MetaDataColumn(columns[i], columns[i], columnTypes[i],
+                        ColumnTypeUtils.MAX_LONG_COLUMN_SIZE, 0, fetchObjectCore().getValue()));
+            }
         }
         return columnList;
     }

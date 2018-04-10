@@ -21,13 +21,13 @@ abstract class BaseGroup<Base, Derive> implements Group<Base, Derive> {
     }
 
     @Override
-    public GroupType getGroupType() {
-        return rule.getGroupType();
+    public GroupOperator<Base, Derive> getGroupOperator() {
+        return new PlainGroupOperator<Base, Derive>(rule);
     }
 
     @Override
-    public GroupOperator<Base, Derive> getGroupOperator() {
-        return new PlainGroupOperator<Base, Derive>(rule);
+    public GroupType getGroupType() {
+        return rule.getGroupType();
     }
 
     @Override

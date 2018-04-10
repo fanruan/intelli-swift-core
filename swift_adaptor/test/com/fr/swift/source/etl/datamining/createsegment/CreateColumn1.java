@@ -1,6 +1,5 @@
 package com.fr.swift.source.etl.datamining.createsegment;
 
-import com.fr.swift.Temps;
 import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.bitmap.MutableBitMap;
 import com.fr.swift.bitmap.impl.BitSetMutableBitMap;
