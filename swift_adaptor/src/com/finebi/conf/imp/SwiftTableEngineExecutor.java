@@ -94,8 +94,8 @@ public class SwiftTableEngineExecutor implements FineTableEngineExecutor {
 
     @Override
     public List<FineBusinessField> getFieldList(FineBusinessTable table) throws Exception {
-        DataSource dataSource = DataSourceFactory.getDataSource(table);
         try {
+            DataSource dataSource = DataSourceFactory.getDataSource(table);
             List<FineBusinessField> fieldsList = FieldFactory.transformColumns2Fields(dataSource.getMetadata(), table.getId());
             return fieldsList;
         } catch (Exception e) {
