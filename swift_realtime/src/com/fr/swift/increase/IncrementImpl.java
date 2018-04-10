@@ -32,7 +32,7 @@ public class IncrementImpl implements Increment {
     private List<String> incrementAppendFiles;
     private String firstName;
 
-    private int updateType = UPDATE_TYPE.ALL;
+    private UpdateType updateType = UpdateType.ALL;
 
     public IncrementImpl(String[] columnNames, ColumnTypeConstants.ColumnType[] columnTypes, List<String> appendedFileNames) throws Exception {
         try {
@@ -51,7 +51,7 @@ public class IncrementImpl implements Increment {
         this.targetSourceKey = targetSourceKey;
     }
 
-    public IncrementImpl(String increaseQuery, String decreaseQuery, String modifyQuery, SourceKey targetSourceKey, String connectionName, int updateType) {
+    public IncrementImpl(String increaseQuery, String decreaseQuery, String modifyQuery, SourceKey targetSourceKey, String connectionName, UpdateType updateType) {
         this.increaseSource = createTempQueryDBSource(increaseQuery, connectionName);
         this.decreaseSource = createTempQueryDBSource(decreaseQuery, connectionName);
         this.modifySource = createTempQueryDBSource(modifyQuery, connectionName);
@@ -80,7 +80,7 @@ public class IncrementImpl implements Increment {
     }
 
     @Override
-    public int getUpdateType() {
+    public UpdateType getUpdateType() {
         return updateType;
     }
 

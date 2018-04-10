@@ -7,5 +7,10 @@ import com.fr.swift.source.core.CoreService;
  * @date 2018/1/29
  */
 public interface GroupRule extends CoreService {
+    /**
+     * 分组类型
+     *
+     * @return 类型
+     */
     GroupType getGroupType();
 }

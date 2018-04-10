@@ -8,9 +8,8 @@ import junit.framework.TestCase;
 import org.junit.Test;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by pony on 2017/12/28.
@@ -34,7 +33,7 @@ public class ExcelTransferTest extends TestCase {
         }
         resultSet.close();
         assertEquals(list.size(), 9);
-        Map<String, ColumnType> fields = new HashMap<>();
+        LinkedHashMap<String, ColumnType> fields = new LinkedHashMap<>();
         fields.put("B", ColumnType.STRING);
         ExcelDataSource partSource = new ExcelDataSource(path, names, types, fields);
         ExcelTransfer excelPartTransfer = new ExcelTransfer(paths, partSource.getMetadata(), partSource.getOuterMetadata());

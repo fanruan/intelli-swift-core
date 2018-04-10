@@ -20,14 +20,12 @@ public interface Increment {
 
     ExcelDataSource getIncreaseExcelSource();
 
-    int getUpdateType();
+    UpdateType getUpdateType();
 
     /**
      * 更新类型
      */
-    final class UPDATE_TYPE {
-        public static final int ALL = 0x0;
-        public static final int PART = 0x1;
-        public static final int NEVER = 0x2;
+    enum UpdateType {
+        ALL, PART, NEVER
     }
 }

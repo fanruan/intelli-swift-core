@@ -1,7 +1,8 @@
 package com.fr.swift.adaptor.widget.group;
 
 import com.finebi.conf.constant.BICommonConstants.GROUP;
-import com.finebi.conf.constant.BIConfConstants;
+import com.finebi.conf.constant.BIConfConstants.CONF.ADD_COLUMN.TIME;
+import com.finebi.conf.constant.BIConfConstants.CONF.ADD_COLUMN.TIME_GAP;
 import com.fr.swift.query.group.GroupType;
 
 import static com.finebi.conf.constant.BIConfConstants.CONF.GROUP.DATE;
@@ -51,12 +52,8 @@ public class GroupTypeAdaptor {
                 return GroupType.Y_Q;
             case GROUP.YM:
                 return GroupType.Y_M;
-//            case GROUP.YD:
-//                return GroupType.Y_D;
             case GROUP.YW:
                 return GroupType.Y_W;
-//            case GROUP.MD:
-//                return GroupType.M_D;
             default:
                 return null;
         }
@@ -109,35 +106,35 @@ public class GroupTypeAdaptor {
      */
     public static GroupType adaptDateUnit(int unit) {
         switch (unit) {
-            case BIConfConstants.CONF.ADD_COLUMN.TIME.UNITS.YEAR:
+            case TIME.UNITS.YEAR:
                 return GroupType.YEAR;
-            case BIConfConstants.CONF.ADD_COLUMN.TIME.UNITS.QUARTER:
+            case TIME.UNITS.QUARTER:
                 return GroupType.QUARTER;
-            case BIConfConstants.CONF.ADD_COLUMN.TIME.UNITS.MONTH:
+            case TIME.UNITS.MONTH:
                 return GroupType.MONTH;
-            case BIConfConstants.CONF.ADD_COLUMN.TIME.UNITS.WEEKDAY:
+            case TIME.UNITS.WEEKDAY:
                 return GroupType.WEEK;
-            case BIConfConstants.CONF.ADD_COLUMN.TIME.UNITS.DAY:
+            case TIME.UNITS.DAY:
                 return GroupType.DAY;
-            case BIConfConstants.CONF.ADD_COLUMN.TIME.UNITS.WEEK_COUNT:
+            case TIME.UNITS.WEEK_COUNT:
                 return GroupType.WEEK_OF_YEAR;
-            case BIConfConstants.CONF.ADD_COLUMN.TIME.UNITS.HOUR:
+            case TIME.UNITS.HOUR:
                 return GroupType.HOUR;
-            case BIConfConstants.CONF.ADD_COLUMN.TIME.UNITS.MINUTE:
+            case TIME.UNITS.MINUTE:
                 return GroupType.MINUTE;
-            case BIConfConstants.CONF.ADD_COLUMN.TIME.UNITS.SECOND:
+            case TIME.UNITS.SECOND:
                 return GroupType.SECOND;
-            case BIConfConstants.CONF.ADD_COLUMN.TIME.UNITS.YQ:
+            case TIME.UNITS.YQ:
                 return GroupType.Y_Q;
-            case BIConfConstants.CONF.ADD_COLUMN.TIME.UNITS.YM:
+            case TIME.UNITS.YM:
                 return GroupType.Y_M;
-            case BIConfConstants.CONF.ADD_COLUMN.TIME.UNITS.YW:
+            case TIME.UNITS.YW:
                 return GroupType.Y_W;
-            case BIConfConstants.CONF.ADD_COLUMN.TIME.UNITS.YMDH:
+            case TIME.UNITS.YMDH:
                 return GroupType.Y_M_D_H;
-            case BIConfConstants.CONF.ADD_COLUMN.TIME.UNITS.YMDHM:
+            case TIME.UNITS.YMDHM:
                 return GroupType.Y_M_D_H_M;
-            case BIConfConstants.CONF.ADD_COLUMN.TIME.UNITS.YMDHMS:
+            case TIME.UNITS.YMDHMS:
                 return GroupType.Y_M_D_H_M_S;
             default:
                 return null;
@@ -149,21 +146,21 @@ public class GroupTypeAdaptor {
      */
     public static GroupType adaptDateGapUnit(int unit) {
         switch (unit) {
-            case BIConfConstants.CONF.ADD_COLUMN.TIME_GAP.UNITS.YEAR:
+            case TIME_GAP.UNITS.YEAR:
                 return GroupType.YEAR;
-            case BIConfConstants.CONF.ADD_COLUMN.TIME_GAP.UNITS.QUARTER:
+            case TIME_GAP.UNITS.QUARTER:
                 return GroupType.QUARTER;
-            case BIConfConstants.CONF.ADD_COLUMN.TIME_GAP.UNITS.MONTH:
+            case TIME_GAP.UNITS.MONTH:
                 return GroupType.MONTH;
-            case BIConfConstants.CONF.ADD_COLUMN.TIME_GAP.UNITS.WEEK:
+            case TIME_GAP.UNITS.WEEK:
                 return GroupType.WEEK;
-            case BIConfConstants.CONF.ADD_COLUMN.TIME_GAP.UNITS.DAY:
+            case TIME_GAP.UNITS.DAY:
                 return GroupType.DAY;
-            case BIConfConstants.CONF.ADD_COLUMN.TIME_GAP.UNITS.HOUR:
+            case TIME_GAP.UNITS.HOUR:
                 return GroupType.HOUR;
-            case BIConfConstants.CONF.ADD_COLUMN.TIME_GAP.UNITS.MINUTE:
+            case TIME_GAP.UNITS.MINUTE:
                 return GroupType.MINUTE;
-            case BIConfConstants.CONF.ADD_COLUMN.TIME_GAP.UNITS.SECOND:
+            case TIME_GAP.UNITS.SECOND:
                 return GroupType.SECOND;
             default:
                 return null;

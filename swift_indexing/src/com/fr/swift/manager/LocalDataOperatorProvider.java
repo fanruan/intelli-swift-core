@@ -1,5 +1,6 @@
 package com.fr.swift.manager;
 
+import com.fr.swift.db.Table;
 import com.fr.swift.exception.meta.SwiftMetaDataException;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.SwiftDataOperatorProvider;
@@ -14,6 +15,8 @@ import com.fr.swift.segment.operator.insert.RealtimeBlockSwiftInserter;
 import com.fr.swift.segment.operator.insert.RealtimeSwiftInserter;
 import com.fr.swift.source.DataSource;
 import com.fr.swift.utils.DataSourceUtils;
+
+import java.sql.SQLException;
 
 public class LocalDataOperatorProvider implements SwiftDataOperatorProvider {
 
@@ -60,10 +63,23 @@ public class LocalDataOperatorProvider implements SwiftDataOperatorProvider {
     }
 
     @Override
+    public Inserter getHistoryInserter(Table table) throws SQLException {
+        return new HistoryBlockSwiftInserter(table.getSourceKey(), table.getSourceKey().getId(), table.getMeta());
+    }
+
+
+    @Override
     public Inserter getRealtimeBlockSwiftInserter(DataSource dataSource) {
         return new RealtimeBlockSwiftInserter(new LineSegmentManager().getSegment(dataSource.getSourceKey()),
                 dataSource.getSourceKey(), DataSourceUtils.getSwiftSourceKey(dataSource),
                 dataSource.getMetadata());
+    }
+
+    @Override
+    public Inserter getRealtimeInserter(Table table) throws SQLException {
+        return new RealtimeBlockSwiftInserter(
+                new LineSegmentManager().getSegment(table.getSourceKey()),
+                table.getSourceKey(), table.getSourceKey().getId(), table.getMeta());
     }
 
     @Override
