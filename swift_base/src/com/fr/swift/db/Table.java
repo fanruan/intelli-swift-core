@@ -29,12 +29,20 @@ public interface Table extends Source {
     void setMeta(SwiftMetaData meta) throws SQLException;
 
     /**
-     * 增
+     * 增：插入
      *
      * @param rowSet 结果集
      * @throws SQLException 异常
      */
     void insert(SwiftResultSet rowSet) throws SQLException;
+
+    /**
+     * 增：导入
+     *
+     * @param rowSet 结果及
+     * @throws SQLException 异常
+     */
+    void importFrom(SwiftResultSet rowSet) throws SQLException;
 
     /**
      * 删

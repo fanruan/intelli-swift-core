@@ -6,10 +6,11 @@ import com.fr.swift.source.core.CoreField;
 import com.fr.swift.source.core.CoreGenerator;
 import com.fr.swift.source.core.CoreService;
 import com.fr.swift.structure.Pair;
+import com.fr.swift.structure.array.IntList;
 import com.fr.swift.structure.array.IntListFactory;
 
 import java.text.DecimalFormat;
-import java.text.NumberFormat;
+import java.text.Format;
 import java.util.List;
 
 /**
@@ -17,7 +18,8 @@ import java.util.List;
  * @date 2018/2/28
  */
 public class CustomNumGroupRule extends BaseCustomGroupRule<Number> {
-    static final NumberFormat NUMBER_FORMAT = new DecimalFormat("#.##");
+    static final Format FORMATTER = new DecimalFormat("#.##");
+
     @CoreField
     private List<NumInterval> intervals;
 
@@ -33,9 +35,12 @@ public class CustomNumGroupRule extends BaseCustomGroupRule<Number> {
         int dictSize = dictColumn.size();
         reverseMap = new int[dictSize];
 
+        // 0号为null
+        map.put(0, Pair.of((String) null, IntListFactory.newSingleList(0)));
+
         for (int i = 1; i < dictSize; i++) {
             Number num = dictColumn.getValue(i);
-            int index = findIndex(num);
+            int index = findIndexByValue(num);
 
             String groupName;
             if (index != -1) {
@@ -49,7 +54,7 @@ public class CustomNumGroupRule extends BaseCustomGroupRule<Number> {
                 } else {
                     // 不在区间里，又没有其他分组，则单独为一组
                     index = lastIndex++;
-                    groupName = NUMBER_FORMAT.format(num);
+                    groupName = FORMATTER.format(num);
                 }
             }
 
@@ -59,9 +64,9 @@ public class CustomNumGroupRule extends BaseCustomGroupRule<Number> {
         compactMap(lastIndex);
     }
 
-    private int findIndex(Number num) {
+    private int findIndexByValue(Number num) {
         for (int i = 0, size = intervals.size(); i < size; i++) {
-            if (intervals.get(i).contains(num.doubleValue())) {
+            if (intervals.get(i).contains(num)) {
                 // 有效字典序号从1开始
                 return i + 1;
             }
@@ -69,45 +74,47 @@ public class CustomNumGroupRule extends BaseCustomGroupRule<Number> {
         return -1;
     }
 
-    private void compactMap(int oldSize) {
-        // 压缩map，没分到值得区间要去掉
-        for (int i = 1, j = 1; i < oldSize; i++, j++) {
-            while (!map.containsKey(i)) {
-                i++;
-            }
-            if (i == j) {
-                continue;
-            }
-            map.put(j, map.get(i));
-            updateReverseMap(i, j);
-            if (i > j) {
-                map.remove(i);
+    private int findIndexByName(String name) {
+        for (int i = 0, size = intervals.size(); i < size; i++) {
+            if (intervals.get(i).name.equals(name)) {
+                // 有效字典序号从1开始
+                return i + 1;
             }
         }
-
-        // 0号为null
-        map.put(0, Pair.of((String) null, IntListFactory.newSingleList(0)));
+        return -1;
     }
 
-    private void updateReverseMap(int oldIndex, int newIndex) {
-        if (oldIndex == newIndex) {
-            return;
+    @Override
+    public int getGlobalIndexByIndex(int index) {
+        if (index == 0) {
+            return 0;
         }
-        for (int i = 0; i < reverseMap.length; i++) {
-            if (reverseMap[i] == oldIndex) {
-                reverseMap[i] = newIndex;
-            }
+
+        String name = getValue(index);
+        int i = findIndexByName(name);
+        // 在功能传来的分组里
+        if (i != -1) {
+            return i;
         }
+        //
+        if (hasOtherGroup()) {
+            return intervals.size() + 1;
+        }
+
+        IntList indices = map(index);
+        assert indices.size() == 1;
+        Number val = dictColumn.getValue(indices.get(0));
+
+        // 算全局字典偏移
+        int offset = 0;
+        offset += intervals.size();
+
+        return dictColumn.getGlobalIndexByIndex(dictColumn.getIndex(val)) + offset;
     }
 
     @Override
     public GroupType getGroupType() {
         return GroupType.CUSTOM_NUMBER;
-    }
-
-    @Override
-    public int originalSize() {
-        return intervals.size();
     }
 
     public static class NumInterval implements CoreService {
@@ -143,7 +150,8 @@ public class CustomNumGroupRule extends BaseCustomGroupRule<Number> {
             this.name = name;
         }
 
-        private boolean contains(double val) {
+        private boolean contains(Number value) {
+            double val = value.doubleValue();
             if (Double.compare(val, floor) == 0 && greaterOrEq) {
                 return true;
             }
@@ -158,9 +166,8 @@ public class CustomNumGroupRule extends BaseCustomGroupRule<Number> {
             try {
                 return new CoreGenerator(this).fetchObjectCore();
             } catch (Exception ignore) {
-
+                return Core.EMPTY_CORE;
             }
-            return Core.EMPTY_CORE;
         }
     }
 }

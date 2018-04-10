@@ -14,6 +14,7 @@ import com.finebi.conf.structure.bean.table.FineBusinessTable;
 import com.fr.swift.cache.SourceCache;
 import com.fr.swift.increase.IncrementImpl;
 import com.fr.swift.increment.Increment;
+import com.fr.swift.increment.Increment.UpdateType;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.manager.ConnectionProvider;
@@ -64,7 +65,7 @@ public class DataSourceFactory {
                 return new DataMiningTransferOperator(((DataMiningOperator) operator).getAlgorithmBean());
             }
         });
-        EtlTransferOperatorFactory.register(RCompileOperator.class,new EtlTransferOperatorFactory.ETLTransferCreator(){
+        EtlTransferOperatorFactory.register(RCompileOperator.class, new EtlTransferOperatorFactory.ETLTransferCreator() {
 
             @Override
             public ETLTransferOperator createTransferOperator(ETLOperator operator) {
@@ -206,8 +207,21 @@ public class DataSourceFactory {
         return new EtlSource(baseSource, EtlAdaptor.adaptEtlOperator(operators.get(operators.size() - 1), table));
     }
 
-    public static Increment transformIncrement(TableUpdateInfo tableUpdateInfo, SourceKey sourceKey, String connectionName) {
-        Increment increment = new IncrementImpl(tableUpdateInfo.getAddSql(), tableUpdateInfo.getDeleteSql(), tableUpdateInfo.getModifySql(), sourceKey, connectionName, tableUpdateInfo.getUpdateType());
+    private static Increment transformIncrement(TableUpdateInfo tableUpdateInfo, SourceKey sourceKey, String connectionName) {
+        Increment increment = new IncrementImpl(tableUpdateInfo.getAddSql(), tableUpdateInfo.getDeleteSql(), tableUpdateInfo.getModifySql(), sourceKey, connectionName, adaptUpdateType(tableUpdateInfo.getUpdateType()));
         return increment;
+    }
+
+    private static UpdateType adaptUpdateType(int type) {
+        switch (type) {
+            case 1:
+                return UpdateType.ALL;
+            case 2:
+                return UpdateType.PART;
+            case 3:
+                return UpdateType.NEVER;
+            default:
+                return null;
+        }
     }
 }
