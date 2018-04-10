@@ -7,7 +7,6 @@ import com.finebi.conf.constant.BIConfConstants;
 import com.finebi.conf.constant.ConfConstant.AnalysisType;
 import com.finebi.conf.exception.FineAnalysisOperationUnSafe;
 import com.finebi.conf.exception.FineEngineException;
-import com.finebi.conf.exception.FineRelationAbsentException;
 import com.finebi.conf.internalimp.analysis.bean.operator.add.AddNewColumnBean;
 import com.finebi.conf.internalimp.analysis.bean.operator.add.AddNewColumnValueBean;
 import com.finebi.conf.internalimp.analysis.bean.operator.add.EmptyAddNewColumnBean;
@@ -231,7 +230,7 @@ class EtlAdaptor {
         SwiftRelationPathConfProvider relationProvider = (SwiftRelationPathConfProvider) fineConfManageCenter.getRelationPathProvider().get(FineEngineType.Cube);
         String baseTable = getBaseTable(relationProvider, selectFieldBeanItemList);
         for (SelectFieldBeanItem selectFieldBeanItem : selectFieldBeanItemList) {
-            FineBusinessTable fineBusinessTable = FineTableUtils.getTableByFieldId(selectFieldBeanItem.getField());
+            FineBusinessTable fineBusinessTable = FineTableUtils.getTableByName(getTableNameByFieldId(selectFieldBeanItem.getField()));
             FineBusinessField fineBusinessField = fineBusinessTable.getFieldByFieldId(selectFieldBeanItem.getField());
             DataSource baseDataSource = DataSourceFactory.getDataSource(fineBusinessTable);
             List<SelectFieldPathItem> path = selectFieldBeanItem.getPath();
@@ -263,6 +262,10 @@ class EtlAdaptor {
         }
     }
 
+    private static String getTableNameByFieldId(String fieldId) {
+        return SwiftEncryption.decryptFieldId(fieldId)[0];
+    }
+
     private static RelationSource getRelation(List<SelectFieldPathItem> path, String baseTable, String table, SwiftRelationPathConfProvider relationProvider) {
         if (path != null) {
             List<FineBusinessTableRelation> targetRelations = new ArrayList<FineBusinessTableRelation>();
@@ -287,8 +290,8 @@ class EtlAdaptor {
         RelationshipBean bean = item.getRelationship();
         List<String> from = bean.getFrom();
         List<String> to = bean.getTo();
-        FineBusinessTable fromTable = FineTableUtils.getTableByFieldId(from.get(0));
-        FineBusinessTable toTable = FineTableUtils.getTableByFieldId(to.get(0));
+        FineBusinessTable fromTable = FineTableUtils.getTableByName(getTableNameByFieldId(from.get(0)));
+        FineBusinessTable toTable = FineTableUtils.getTableByName(getTableNameByFieldId(to.get(0)));
         List<FineBusinessTableRelation> relations = relationProvider.getRelationsByTables(fromTable.getName(), toTable.getName());
         if (!relations.isEmpty()) {
             int lastSize = targetRelations.size();
