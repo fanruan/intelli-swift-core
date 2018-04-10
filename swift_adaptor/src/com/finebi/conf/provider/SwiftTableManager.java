@@ -1,8 +1,11 @@
 package com.finebi.conf.provider;
 
 import com.finebi.base.constant.FineEngineType;
+import com.finebi.common.internalimp.config.driver.CommonDataSourceDriverFactory;
 import com.finebi.common.internalimp.config.session.CommonConfigManager;
 import com.finebi.common.service.engine.table.AbstractEngineTableManager;
+import com.finebi.common.structure.config.driver.CommonDBDataSourceDriver;
+import com.finebi.common.structure.config.driver.CommonDataSourceDriver;
 import com.finebi.common.structure.config.entryinfo.EntryInfo;
 import com.finebi.common.structure.config.fieldinfo.FieldInfo;
 import com.finebi.common.structure.config.relation.Relation;
@@ -86,10 +89,4 @@ public class SwiftTableManager extends AbstractEngineTableManager {
         }
     }
 
-    @Override
-    protected List<Relation> developDatabaseRelations(EntryInfo entryInfo, String packageId) {
-        List<Relation> dbTableRelations  = TableRelationReader.create(packageId, entryInfo).build();
-        CommonConfigManager.getRelationConfigurationSession(this.getEngineType()).updateRelation(entryInfo.getID(), dbTableRelations);
-        return dbTableRelations;
-    }
 }
