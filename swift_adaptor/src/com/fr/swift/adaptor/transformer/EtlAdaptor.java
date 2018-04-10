@@ -32,6 +32,7 @@ import com.finebi.conf.internalimp.analysis.bean.operator.circulate.CirculateOne
 import com.finebi.conf.internalimp.analysis.bean.operator.circulate.CirculateTwoFieldValue;
 import com.finebi.conf.internalimp.analysis.bean.operator.datamining.AlgorithmBean;
 import com.finebi.conf.internalimp.analysis.bean.operator.datamining.DataMiningBean;
+import com.finebi.conf.internalimp.analysis.bean.operator.datamining.rcompile.RCompileBeanValue;
 import com.finebi.conf.internalimp.analysis.bean.operator.filter.FilterOperatorBean;
 import com.finebi.conf.internalimp.analysis.bean.operator.group.CustomGroupValueItemBean;
 import com.finebi.conf.internalimp.analysis.bean.operator.group.DimensionSelectValue;
@@ -516,40 +517,42 @@ class EtlAdaptor {
                 return fromSumByGroupBean(op.<GroupBean>getValue());
             case AnalysisType.DATA_MINING:
                 return fromDataMiningBean(op.<DataMiningBean>getValue());
-            /* case AnalysisType.R_Compile: {
+            case AnalysisType.R_COMPILE: {
                 DataSource source = adaptEtlDataSource(((FineAnalysisTableImpl) table).getBaseTable());
                 return fromRCompileOperator(op.<RCompileBean>getValue(), source);
-            }*/
+            }
             default:
         }
         return null;
     }
 
-    private static RCompileOperator fromRCompileOperator(RCompileBean bean, DataSource dataSource) {
+    private static RCompileOperator fromRCompileOperator(RCompileBean value, DataSource dataSource) {
+        RCompileBeanValue bean = value.getValue();
         boolean needExecute = bean.isNeedExecute();
+        boolean init = bean.isInit();
+        boolean cancelPrevious = bean.isCancelPreviousStep();
         String ip = bean.getIp();
         int port = bean.getPort();
         String tableName = bean.getTableName();
-        if(needExecute) {
-            String commands = bean.getCommands();
-            if(null != commands && !"".equals(commands)) {
-                if(null != dataSource) {
-                    try {
-                        DataProvider dataProvider = new SwiftDataProvider();
-                        List<Segment> segments = dataProvider.getPreviewData(dataSource);
-                        return new RCompileOperator(commands, needExecute, ip, port, tableName,
-                                segments.toArray(new Segment[segments.size()]), null);
-                    } catch(Exception e) {
-                        SwiftLoggers.getLogger().error(e);
+        if(null != dataSource) {
+            try {
+                DataProvider dataProvider = new SwiftDataProvider();
+                List<Segment> segments = dataProvider.getPreviewData(dataSource);
+                if(!init) {
+                    String commands = bean.getCommands();
+                    if(null != commands && !"".equals(commands)) {
+                        return new RCompileOperator(commands, needExecute, null, tableName,
+                                segments.toArray(new Segment[segments.size()]), null, null, cancelPrevious, init);
                     }
+                } else {
+                    String[] columns = bean.getColumns();
+                    int[] columnType = bean.getColumnType();
+                    return new RCompileOperator(null, needExecute, null, tableName,
+                            segments.toArray(new Segment[segments.size()]), columnType, columns, cancelPrevious, init);
                 }
-            } else{
-                return null;
+            } catch(Exception e) {
+                SwiftLoggers.getLogger().error(e);
             }
-        } else {
-            //String[] columns = bean.getColumns();
-            //return new RCompileOperator(null, needExecute, ip, port, tableName, null, columns);
-            return null;
         }
         return null;
     }

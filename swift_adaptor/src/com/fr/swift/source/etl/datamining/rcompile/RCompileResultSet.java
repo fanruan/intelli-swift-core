@@ -27,7 +27,7 @@ public class RCompileResultSet implements SwiftResultSet {
         this.columnType = columnType;
         this.dataList = dataList;
         this.metaData = metaData;
-        rowCount = ((Object[]) dataList.get(2)).length;
+        rowCount = getArrayLength(dataList.get(2));
         rowCursor = 0;
         tempValue = new TempValue();
     }
@@ -47,10 +47,17 @@ public class RCompileResultSet implements SwiftResultSet {
                     case Types.DOUBLE: {
                         double v = ((double[]) dataList.get(i + 2))[rowCursor];
                         list.add(v);
+                        break;
                     }
                     case Types.INTEGER: {
                         int v = ((int[]) dataList.get(i + 2))[rowCursor];
                         list.add(v);
+                        break;
+                    }
+                    case Types.BIT: {
+                        byte v = ((byte[]) dataList.get(i + 2))[rowCursor];
+                        list.add(v);
+                        break;
                     }
                     default: {
                         String v = ((String[]) dataList.get(i + 2))[rowCursor];
@@ -58,6 +65,7 @@ public class RCompileResultSet implements SwiftResultSet {
                     }
                 }
             }
+            rowCursor ++;
             tempValue.setRow(new ListBasedRow(list));
             return true;
         }
@@ -85,6 +93,18 @@ public class RCompileResultSet implements SwiftResultSet {
 
         ListBasedRow row;
 
+    }
+
+    private int getArrayLength(Object object) {
+        if(object instanceof int[]) {
+            return ((int[]) object).length;
+        } else if(object instanceof double[]) {
+            return ((double[]) object).length;
+        } else if(object instanceof byte[]) {
+            return ((byte[]) object).length;
+        } else {
+            return ((String[]) object).length;
+        }
     }
 
 }
