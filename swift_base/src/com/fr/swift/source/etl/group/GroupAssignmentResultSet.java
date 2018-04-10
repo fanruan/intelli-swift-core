@@ -69,7 +69,7 @@ public class GroupAssignmentResultSet implements SwiftResultSet {
             Object ob = getter.getValue(getter.getIndexByRow(rowCursor));
             Object value = resMap.get(ob);
             if(value == null) {
-                value = StringUtils.isEmpty(otherName) ? value : otherName;
+                value = StringUtils.isEmpty(otherName) ? ob : otherName;
             }
             List<Object> dataList = new ArrayList<Object>();
             dataList.add(value);

@@ -1,18 +1,18 @@
 package com.fr.swift.segment.relation;
 
-import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.cube.io.BuildConf;
 import com.fr.swift.cube.io.ResourceDiscovery;
 import com.fr.swift.cube.io.ResourceDiscoveryImpl;
 import com.fr.swift.cube.io.Types.DataType;
 import com.fr.swift.cube.io.Types.IoType;
-import com.fr.swift.cube.io.input.BitMapReader;
 import com.fr.swift.cube.io.input.IntReader;
+import com.fr.swift.cube.io.input.LongArrayReader;
 import com.fr.swift.cube.io.input.LongReader;
 import com.fr.swift.cube.io.location.IResourceLocation;
-import com.fr.swift.cube.io.output.BitMapWriter;
 import com.fr.swift.cube.io.output.IntWriter;
+import com.fr.swift.cube.io.output.LongArrayWriter;
 import com.fr.swift.cube.io.output.LongWriter;
+import com.fr.swift.structure.array.LongArray;
 
 /**
  * @author anchore
@@ -23,18 +23,15 @@ public class RelationIndexImpl implements RelationIndex {
     private static final String INDEX = "index";
     private static final String REVERSE = "reverse";
     private static final String RELATIONS_KEY = "relations";
-    private static final String SEG_INDEX = "seg_index";
     private static final String REVERSE_COUNT = "reverse_count";
 
     private static final ResourceDiscovery DISCOVERY = ResourceDiscoveryImpl.getInstance();
 
     private IResourceLocation location;
-    private BitMapWriter indexWriter, nullIndexWriter;
+    private LongArrayWriter indexWriter, nullIndexWriter;
     private LongWriter reverseIndexWriter;
-    private BitMapReader indexReader, nullIndexReader;
+    private LongArrayReader indexReader, nullIndexReader;
     private LongReader reverseIndexReader;
-    private IntWriter segIndexWriter;
-    private IntReader segIndexReader;
     private IntWriter reverseCountWriter;
     private IntReader reverseCountReader;
 
@@ -52,33 +49,33 @@ public class RelationIndexImpl implements RelationIndex {
     }
 
     @Override
-    public void putIndex(int pos, ImmutableBitMap bitmap) {
+    public void putIndex(int pos, LongArray bitmap) {
         if (indexWriter == null) {
-            indexWriter = DISCOVERY.getWriter(location.buildChildLocation(INDEX), new BuildConf(IoType.WRITE, DataType.BITMAP));
+            indexWriter = DISCOVERY.getWriter(location.buildChildLocation(INDEX), new BuildConf(IoType.WRITE, DataType.LONG_ARRAY));
         }
         indexWriter.put(pos, bitmap);
     }
 
     @Override
-    public ImmutableBitMap getIndex(int pos) {
+    public LongArray getIndex(int pos) {
         if (indexReader == null) {
-            indexReader = DISCOVERY.getReader(location.buildChildLocation(INDEX), new BuildConf(IoType.READ, DataType.BITMAP));
+            indexReader = DISCOVERY.getReader(location.buildChildLocation(INDEX), new BuildConf(IoType.READ, DataType.LONG_ARRAY));
         }
         return indexReader.get(pos);
     }
 
     @Override
-    public void putNullIndex(int pos, ImmutableBitMap bitmap) {
+    public void putNullIndex(int pos, LongArray bitmap) {
         if (nullIndexWriter == null) {
-            nullIndexWriter = DISCOVERY.getWriter(location.buildChildLocation(NULL_INDEX), new BuildConf(IoType.WRITE, DataType.BITMAP));
+            nullIndexWriter = DISCOVERY.getWriter(location.buildChildLocation(NULL_INDEX), new BuildConf(IoType.WRITE, DataType.LONG_ARRAY));
         }
         nullIndexWriter.put(pos, bitmap);
     }
 
     @Override
-    public ImmutableBitMap getNullIndex(int pos) {
+    public LongArray getNullIndex(int pos) {
         if (nullIndexReader == null) {
-            nullIndexReader = DISCOVERY.getReader(location.buildChildLocation(NULL_INDEX), new BuildConf(IoType.READ, DataType.BITMAP));
+            nullIndexReader = DISCOVERY.getReader(location.buildChildLocation(NULL_INDEX), new BuildConf(IoType.READ, DataType.LONG_ARRAY));
         }
         return nullIndexReader.get(pos);
     }
@@ -97,22 +94,6 @@ public class RelationIndexImpl implements RelationIndex {
             reverseIndexReader = DISCOVERY.getReader(location.buildChildLocation(REVERSE), new BuildConf(IoType.READ, DataType.LONG));
         }
         return reverseIndexReader.get(fPos);
-    }
-
-    @Override
-    public void putSegIndex(int fPos, int tPos) {
-        if (segIndexWriter == null) {
-            segIndexWriter = DISCOVERY.getWriter(location.buildChildLocation(SEG_INDEX), new BuildConf(IoType.WRITE, DataType.INT));
-        }
-        segIndexWriter.put(tPos, fPos);
-    }
-
-    @Override
-    public int getSegIndex(int fPos) {
-        if (segIndexReader == null) {
-            segIndexReader = DISCOVERY.getReader(location.buildChildLocation(SEG_INDEX), new BuildConf(IoType.READ, DataType.INT));
-        }
-        return segIndexReader.get(fPos);
     }
 
     @Override
@@ -155,10 +136,6 @@ public class RelationIndexImpl implements RelationIndex {
             reverseIndexWriter.release();
             reverseIndexWriter = null;
         }
-        if (segIndexWriter != null) {
-            segIndexWriter.release();
-            segIndexWriter = null;
-        }
         if (reverseCountWriter != null) {
             reverseCountWriter.release();
             reverseCountWriter = null;
@@ -178,10 +155,6 @@ public class RelationIndexImpl implements RelationIndex {
         if (reverseCountReader != null) {
             reverseCountReader.release();
             reverseCountReader = null;
-        }
-        if (segIndexReader != null) {
-            segIndexReader.release();
-            segIndexReader = null;
         }
         if (nullIndexReader != null) {
             nullIndexReader.release();

@@ -1,6 +1,9 @@
 package com.fr.swift.structure.array;
 
+import com.fr.swift.cube.nio.NIOConstant;
+
 import java.util.Arrays;
+import java.util.List;
 
 /**
  *
@@ -13,6 +16,20 @@ public class HeapLongArray implements LongArray {
     public HeapLongArray(int capacity, long defaultValue) {
         items = new long[capacity];
         Arrays.fill(items, defaultValue);
+    }
+
+    public HeapLongArray(int capacity) {
+        items = new long[capacity];
+        if (capacity > 0) {
+            Arrays.fill(items, NIOConstant.LONG.NULL_VALUE);
+        }
+    }
+
+    public HeapLongArray(List<Long> list) {
+        items = new long[list.size()];
+        for (int i = 0; i < list.size(); i++) {
+            items[i] = list.get(i);
+        }
     }
 
     @Override
@@ -33,5 +50,15 @@ public class HeapLongArray implements LongArray {
     @Override
     public void release() {
         items = null;
+    }
+
+    @Override
+    public LongArray clone() {
+        int size = items.length;
+        LongArray array = new HeapLongArray(size);
+        for (int i = 0; i < size; i++) {
+            array.put(i, items[i]);
+        }
+        return array;
     }
 }

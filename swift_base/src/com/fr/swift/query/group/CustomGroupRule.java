@@ -9,11 +9,18 @@ import com.fr.swift.structure.array.IntList;
  */
 public interface CustomGroupRule<Base, Derive> extends GroupRule {
     /**
+     * 序号拿值
      * @param index 新分组号
      * @return 新分组值
      */
     Derive getValue(int index);
 
+    /**
+     * 根据值拿序号
+     *
+     * @param val 新分组值
+     * @return 字典序号
+     */
     int getIndex(Object val);
 
     /**
@@ -38,16 +45,10 @@ public interface CustomGroupRule<Base, Derive> extends GroupRule {
      */
     int newSize();
 
-    /**
-     * 获取功能传来的分组数
-     *
-     * @return 功能传来的分组数
-     */
-    int originalSize();
-
-    boolean hasOtherGroup();
+    int getGlobalIndexByIndex(int index);
 
     /**
+     * 设置原始分组
      * @param dict 原始分组
      */
     void setOriginDict(DictionaryEncodedColumn<Base> dict);

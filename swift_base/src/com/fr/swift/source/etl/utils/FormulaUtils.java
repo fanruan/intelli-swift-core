@@ -117,6 +117,8 @@ public class FormulaUtils {
         return names;
     }
 
+
+    //取得字段原本的类型
     public static ColumnType getColumnType(SwiftMetaData metadata, String expression) {
         Calculator c = Calculator.createCalculator();
         String formula = getParameterIndexEncodedFormula(expression);

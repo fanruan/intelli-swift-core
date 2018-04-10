@@ -6,8 +6,7 @@ import com.fr.swift.source.SwiftMetaData;
 import junit.framework.TestCase;
 
 import java.sql.Types;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.LinkedHashMap;
 
 /**
  * Created by pony on 2017/12/28.
@@ -21,7 +20,7 @@ public class ExcelDataSourceTest extends TestCase {
         String[] names = {"A", "B"};
         ColumnType[] types = {ColumnType.STRING, ColumnType.NUMBER};
         dataSource = new ExcelDataSource(path, names, types);
-        Map<String, ColumnType> fields = new HashMap<>();
+        LinkedHashMap<String, ColumnType> fields = new LinkedHashMap<>();
         fields.put("B", ColumnType.STRING);
         partSource = new ExcelDataSource(path, names, types, fields);
     }
