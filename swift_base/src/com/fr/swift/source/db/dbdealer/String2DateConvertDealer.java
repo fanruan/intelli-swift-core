@@ -12,6 +12,9 @@ public class String2DateConvertDealer extends AbstractConvertDealer<Long, String
 
     @Override
     protected Long convert(String s) {
-        return DateUtils.string2Date(s, false).getTime();
+        if(DateUtils.string2Date(s, true) != null) {
+            return DateUtils.string2Date(s, true).getTime();
+        }
+        return null;
     }
 }
