@@ -150,6 +150,7 @@ import java.util.TreeMap;
  * Created by Handsome on 2018/1/30 0030 16:38
  */
 class EtlAdaptor {
+    private static RConnection conn;
     static DataSource adaptEtlDataSource(FineBusinessTable table) throws Exception {
         FineAnalysisTable analysis = ((FineAnalysisTable) table);
         FineOperator op = analysis.getOperator();
@@ -612,25 +613,33 @@ class EtlAdaptor {
         boolean init = bean.isInit();
         boolean cancelPrevious = bean.isCancelPreviousStep();
         String tableName = bean.getTableName();
-        RConnection conn = null;
-        try {
-            FineSaveRLinkService service = StableManager.getContext().getObject("fineSaveRLinkServiceImpl");
-            RInfoBean infoBean = service.getRLink();
-            boolean needPasswd = infoBean.isNeedPasswd();
-            String ip = infoBean.getIp();
-            int port = infoBean.getPort();
-            if(needPasswd) {
-                String userName = infoBean.getUserName();
-                String passwd = infoBean.getPasswd();
-                conn = new RConnector().getNewConnection(true, ip, port, userName, passwd);
-            } else {
-                conn = new RConnector().getNewConnection(true, ip, port);
+        if(null == conn) {
+            try {
+                FineSaveRLinkService service = StableManager.getContext().getObject("fineSaveRLinkServiceImpl");
+                RInfoBean infoBean = service.getRLink();
+                if(null != infoBean) {
+                    boolean needPasswd = infoBean.isNeedPasswd();
+                    String ip = infoBean.getIp();
+                    int port = infoBean.getPort();
+                    if(null != ip && port > 0) {
+                        if(needPasswd) {
+                            String userName = infoBean.getUserName();
+                            String passwd = infoBean.getPasswd();
+                            conn = new RConnector().getNewConnection(true, ip, port, userName, passwd);
+                        } else {
+                            conn = new RConnector().getNewConnection(true, ip, port);
+                        }
+                    }
+                }
+            } catch(Exception e) {
+                SwiftLoggers.getLogger().error("failed to get R link information", e);
             }
-            if(null == conn) {
-                conn = new RConnector().getNewConnection(true);
+            try {
+                if(null == conn) {
+                    conn = new RConnector().getNewConnection(true);
+                }
+            } catch(Exception e) {
             }
-        } catch(Exception e) {
-            SwiftLoggers.getLogger().error("failed to get R link information", e);
         }
         if(null != dataSource) {
             try {

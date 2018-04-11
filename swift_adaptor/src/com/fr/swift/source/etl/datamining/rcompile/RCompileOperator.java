@@ -12,6 +12,7 @@ import org.rosuda.REngine.Rserve.RConnection;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -96,18 +97,22 @@ public class RCompileOperator extends AbstractOperator {
 
     @Override
     public List<SwiftMetaDataColumn> getColumns(SwiftMetaData[] metaDatas) {
+        columnList = new ArrayList<SwiftMetaDataColumn>();
         if(!init) {
             columns = (String[]) dataList.get(0);
             columnTypes = (int[]) dataList.get(1);
-            columnList = new ArrayList<SwiftMetaDataColumn>();
             for(int i = 0; i < columns.length; i++) {
                 columnList.add(new MetaDataColumn(columns[i], columns[i], columnTypes[i],
                         ColumnTypeUtils.MAX_LONG_COLUMN_SIZE, 0, fetchObjectCore().getValue()));
             }
         } else {
             for(int i = 0; i < columns.length; i++) {
-                columnList.add(new MetaDataColumn(columns[i], columns[i], columnTypes[i],
-                        ColumnTypeUtils.MAX_LONG_COLUMN_SIZE, 0, fetchObjectCore().getValue()));
+                try {
+                    columnList.add(new MetaDataColumn(columns[i], columns[i], columnTypes[i],
+                            ColumnTypeUtils.MAX_LONG_COLUMN_SIZE, 0, fetchObjectCore().getValue()));
+                } catch(Exception e) {
+                    e.printStackTrace();
+                }
             }
         }
         return columnList;
@@ -120,6 +125,12 @@ public class RCompileOperator extends AbstractOperator {
 
     @Override
     public List<String> getNewAddedName() {
-        return Arrays.asList(columns);
+        List<String> list = new ArrayList<String>(columnList.size());
+        Iterator<SwiftMetaDataColumn> iterator = columnList.iterator();
+        while(iterator.hasNext()) {
+            SwiftMetaDataColumn column = iterator.next();
+            list.add(column.getName());
+        }
+        return list;
     }
 }
