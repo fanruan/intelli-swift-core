@@ -15,11 +15,9 @@ import java.util.concurrent.ConcurrentHashMap;
  * @since Advanced FineBI Analysis 1.0
  */
 public class SegmentIndexCache {
-
     private Map<Integer, Map<String, MutableBitMap>> nullMap = new ConcurrentHashMap<Integer, Map<String, MutableBitMap>>();
     private Map<Integer, Integer> segIndexRowMap = new HashMap<Integer, Integer>();
-    private Map<Integer, Segment> SegmentIndexMap = new HashMap<Integer, Segment>();
-
+    private Map<Integer, Segment> segmentIndexMap = new HashMap<Integer, Segment>();
 
     public void putSegRow(int index, int row) {
         segIndexRowMap.put(index, row);
@@ -30,13 +28,13 @@ public class SegmentIndexCache {
     }
 
     public void putSegment(int index, Segment segment) {
-        if (!SegmentIndexMap.containsKey(index)) {
-            SegmentIndexMap.put(index, segment);
+        if (!segmentIndexMap.containsKey(index)) {
+            segmentIndexMap.put(index, segment);
         }
     }
 
     public Segment getSegmentByIndex(int index) {
-        return SegmentIndexMap.get(index);
+        return segmentIndexMap.get(index);
     }
 
     public void putSegFieldNull(int index, String field, int rowIndex) {
@@ -59,22 +57,19 @@ public class SegmentIndexCache {
     }
 
     public Map<Integer, Segment> getNewSegMap() {
-        return this.SegmentIndexMap;
+        return this.segmentIndexMap;
     }
 
     public MutableBitMap getNullBySegAndField(int index, String field) {
-        try {
-            if (nullMap.get(index).get(field) != null) {
-                return nullMap.get(index).get(field);
-            } else {
-                return BitMaps.newRoaringMutable();
-            }
-        } catch (NullPointerException npe) {
+        Map<String, MutableBitMap> bitmaps = nullMap.get(index);
+        if (bitmaps == null) {
             return BitMaps.newRoaringMutable();
         }
+        MutableBitMap bitmap = bitmaps.get(field);
+        return bitmap != null ? bitmap : BitMaps.newRoaringMutable();
     }
 
     public int getNewSegSize() {
-        return SegmentIndexMap.size();
+        return segmentIndexMap.size();
     }
 }
