@@ -17,11 +17,11 @@ import java.util.List;
  * @author anchore
  * @date 2018/3/28
  */
-public class SwiftTable implements Table {
+class SwiftTable implements Table {
     private SourceKey key;
     private SwiftMetaData meta;
 
-    public SwiftTable(SourceKey key, SwiftMetaData meta) {
+    SwiftTable(SourceKey key, SwiftMetaData meta) {
         this.key = key;
         this.meta = meta;
     }
@@ -62,7 +62,8 @@ public class SwiftTable implements Table {
 
     @Override
     public int delete(Where where) throws SQLException {
-        SwiftResultSet rowSet = select(where);
+        // todo 这里应该是从数据库查出来的结果集
+        SwiftResultSet rowSet = null;
         try {
             List<Segment> segments = SwiftContext.getInstance().getSegmentProvider().getSegment(key);
             // fixme 应传入整个segments
