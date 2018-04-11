@@ -31,6 +31,7 @@ import com.fr.swift.source.container.SourceContainerManager;
 import com.fr.swift.source.db.ConnectionManager;
 import com.fr.swift.source.db.QueryDBSource;
 import com.fr.swift.source.db.TableDBSource;
+import com.fr.swift.source.empty.EmptyDataSource;
 import com.fr.swift.source.etl.ETLOperator;
 import com.fr.swift.source.etl.ETLTransferOperator;
 import com.fr.swift.source.etl.EtlSource;
@@ -123,14 +124,33 @@ public class DataSourceFactory {
         return dataSourceList;
     }
 
+
     /**
+     * 外部和接口调用
      * 转换table->datasource
      *
      * @param table
      * @return
      * @throws Exception
      */
-    public static DataSource getDataSource(FineBusinessTable table) throws Exception {
+    public static DataSource transformDataSource(FineBusinessTable table) throws Exception {
+        try {
+            return getDataSource(table);
+        } catch (Exception e) {
+            LOGGER.error(e);
+            return new EmptyDataSource();
+        }
+    }
+
+    /**
+     * 内部和包内调用
+     * 转换table->datasource
+     *
+     * @param table
+     * @return
+     * @throws Exception
+     */
+    protected static DataSource getDataSource(FineBusinessTable table) throws Exception {
         DataSource dataSource = null;
         switch (table.getType()) {
             case BICommonConstants.TABLE.DATABASE:

@@ -44,7 +44,7 @@ public class SwiftDatabaseDataSourceDriver extends CommonDatabaseDataSourceDrive
         entryInfo.setName(dbBusinessTable.getName());
         Map<String, String> escapeMap = new HashMap<String, String>();
         try {
-            SwiftMetaData metaData = DataSourceFactory.getDataSource(table).getMetadata();
+            SwiftMetaData metaData = DataSourceFactory.transformDataSource(table).getMetadata();
             String tableRemark = metaData.getRemark();
             if (!StringUtils.isEmpty(tableRemark)) {
                 escapeMap.put(entryInfo.getID(), tableRemark);

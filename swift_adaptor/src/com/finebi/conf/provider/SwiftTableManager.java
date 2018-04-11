@@ -76,7 +76,7 @@ public class SwiftTableManager extends AbstractEngineTableManager {
         try {
             while (iterator.hasNext()) {
                 FineBusinessTable table = (FineBusinessTable) iterator.next();
-                tableToSourceConfigDao.addConfig(table.getId(), DataSourceFactory.getDataSource(table).getSourceKey().getId());
+                tableToSourceConfigDao.addConfig(table.getId(), DataSourceFactory.transformDataSource(table).getSourceKey().getId());
                 EntryInfo entryInfo = this.createEntryInfo(table);
                 this.addEntryInfo(entryInfo, entry.getKey());
                 this.saveFieldInfo(FieldInfoHelper.createFieldInfo(entryInfo, table));

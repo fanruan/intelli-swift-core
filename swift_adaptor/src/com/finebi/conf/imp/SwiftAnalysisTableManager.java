@@ -75,7 +75,7 @@ public class SwiftAnalysisTableManager implements EngineAnalysisTableManager {
         try {
             if (table.getOperator() != null && table.getOperator().getType() == ConfConstant.AnalysisType.FIELD_SETTING) {
                 List<FieldSettingBeanItem> fieldSettings = ((FieldSettingOperator) table.getOperator()).getValue().getValue();
-                List<FineBusinessField> pFields = FieldFactory.transformColumns2Fields(DataSourceFactory.getDataSource(table.getBaseTable()).getMetadata(), table.getId());
+                List<FineBusinessField> pFields = FieldFactory.transformColumns2Fields(DataSourceFactory.transformDataSource(table.getBaseTable()).getMetadata(), table.getId());
                 for (int i = 0; i < pFields.size(); i++) {
                     if (!fieldSettings.isEmpty()) {
                         ((FineBusinessFieldImp) (pFields.get(i))).setEnable(fieldSettings.get(i).isUsed());
@@ -85,7 +85,7 @@ public class SwiftAnalysisTableManager implements EngineAnalysisTableManager {
                 }
                 return pFields;
             }
-            return FieldFactory.transformColumns2Fields(DataSourceFactory.getDataSource(table).getMetadata(), table.getId());
+            return FieldFactory.transformColumns2Fields(DataSourceFactory.transformDataSource(table).getMetadata(), table.getId());
         } catch (Exception e) {
             LOGGER.error(e);
         }
@@ -106,7 +106,7 @@ public class SwiftAnalysisTableManager implements EngineAnalysisTableManager {
     public NumberMaxAndMinValue getNumberMaxAndMinValue(FineAnalysisTable table, String fieldName) {
 
         try {
-            DataSource dataSource = DataSourceFactory.getDataSource(table);
+            DataSource dataSource = DataSourceFactory.transformDataSource(table);
             return dataProvider.getNumberMaxAndMinValue(dataSource, fieldName);
         } catch (Exception ignore) {
         }
@@ -116,7 +116,7 @@ public class SwiftAnalysisTableManager implements EngineAnalysisTableManager {
     @Override
     public List<Object> getColumnValue(FineAnalysisTable table, String fieldName) {
         try {
-            DataSource dataSource = DataSourceFactory.getDataSource(table);
+            DataSource dataSource = DataSourceFactory.transformDataSource(table);
             return dataProvider.getGroupPreviewByFields(dataSource, fieldName);
         } catch (Exception e) {
             LOGGER.error(e);
