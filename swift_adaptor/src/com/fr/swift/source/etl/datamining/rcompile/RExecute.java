@@ -65,7 +65,7 @@ public class RExecute {
                 statement.append(",");
             }
         }
-        statement.append(")");
+        statement.append(",stringsAsFactors = FALSE)");
         try {
             conn.eval(statement.toString());
             conn.eval(PREVIOUS + "<- " + tableName);

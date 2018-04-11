@@ -34,6 +34,7 @@ import com.finebi.conf.internalimp.analysis.bean.operator.circulate.CirculateTwo
 import com.finebi.conf.internalimp.analysis.bean.operator.datamining.AlgorithmBean;
 import com.finebi.conf.internalimp.analysis.bean.operator.datamining.DataMiningBean;
 import com.finebi.conf.internalimp.analysis.bean.operator.datamining.rcompile.RCompileBean;
+import com.finebi.conf.internalimp.analysis.bean.operator.datamining.rcompile.RCompileBeanValue;
 import com.finebi.conf.internalimp.analysis.bean.operator.filter.FilterOperatorBean;
 import com.finebi.conf.internalimp.analysis.bean.operator.group.CustomGroupValueItemBean;
 import com.finebi.conf.internalimp.analysis.bean.operator.group.DimensionSelectValue;
@@ -101,6 +102,7 @@ import com.fr.swift.source.etl.columnfilter.ColumnFilterOperator;
 import com.fr.swift.source.etl.columnrowtrans.ColumnRowTransOperator;
 import com.fr.swift.source.etl.datamining.DataMiningOperator;
 import com.fr.swift.source.etl.datamining.rcompile.RCompileOperator;
+import com.fr.swift.source.etl.datamining.rcompile.RConnectionFactory;
 import com.fr.swift.source.etl.date.GetFromDateOperator;
 import com.fr.swift.source.etl.datediff.DateDiffOperator;
 import com.fr.swift.source.etl.detail.DetailOperator;
@@ -612,26 +614,7 @@ class EtlAdaptor {
         boolean init = bean.isInit();
         boolean cancelPrevious = bean.isCancelPreviousStep();
         String tableName = bean.getTableName();
-        RConnection conn = null;
-        try {
-            FineSaveRLinkService service = StableManager.getContext().getObject("fineSaveRLinkServiceImpl");
-            RInfoBean infoBean = service.getRLink();
-            boolean needPasswd = infoBean.isNeedPasswd();
-            String ip = infoBean.getIp();
-            int port = infoBean.getPort();
-            if(needPasswd) {
-                String userName = infoBean.getUserName();
-                String passwd = infoBean.getPasswd();
-                conn = new RConnector().getNewConnection(true, ip, port, userName, passwd);
-            } else {
-                conn = new RConnector().getNewConnection(true, ip, port);
-            }
-            if(null == conn) {
-                conn = new RConnector().getNewConnection(true);
-            }
-        } catch(Exception e) {
-            SwiftLoggers.getLogger().error("failed to get R link information", e);
-        }
+        RConnection conn = RConnectionFactory.getRConnection();
         if(null != dataSource) {
             try {
                 DataProvider dataProvider = new SwiftDataProvider();
