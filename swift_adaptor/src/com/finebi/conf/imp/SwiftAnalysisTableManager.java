@@ -78,6 +78,7 @@ public class SwiftAnalysisTableManager implements EngineAnalysisTableManager {
                 List<FineBusinessField> pFields = FieldFactory.transformColumns2Fields(DataSourceFactory.getDataSource(table.getBaseTable()).getMetadata(), table.getId());
                 for (int i = 0; i < pFields.size(); i++) {
                     if (!fieldSettings.isEmpty()) {
+                        ((FineBusinessFieldImp) (pFields.get(i))).setEnable(fieldSettings.get(i).isUsed());
                         ((FineBusinessFieldImp) (pFields.get(i))).setUsable(fieldSettings.get(i).isUsed());
                         ((FineBusinessFieldImp) (pFields.get(i))).setName(fieldSettings.get(i).getName());
                     }
