@@ -62,9 +62,11 @@ import com.finebi.conf.internalimp.analysis.operator.circulate.FloorItem;
 import com.finebi.conf.internalimp.analysis.operator.select.SelectFieldOperator;
 import com.finebi.conf.internalimp.analysis.operator.setting.FieldSettingOperator;
 import com.finebi.conf.internalimp.analysis.table.FineAnalysisTableImpl;
+import com.finebi.conf.internalimp.bean.rinfo.RInfoBean;
 import com.finebi.conf.internalimp.path.FineBusinessTableRelationPathImp;
 import com.finebi.conf.internalimp.service.pack.FineConfManageCenter;
 import com.finebi.conf.provider.SwiftRelationPathConfProvider;
+import com.finebi.conf.service.rlink.FineSaveRLinkService;
 import com.finebi.conf.structure.analysis.operator.FineOperator;
 import com.finebi.conf.structure.analysis.table.FineAnalysisTable;
 import com.finebi.conf.structure.bean.field.FineBusinessField;
@@ -105,6 +107,7 @@ import com.fr.swift.source.etl.columnfilter.ColumnFilterOperator;
 import com.fr.swift.source.etl.columnrowtrans.ColumnRowTransOperator;
 import com.fr.swift.source.etl.datamining.DataMiningOperator;
 import com.fr.swift.source.etl.datamining.rcompile.RCompileOperator;
+import com.fr.swift.source.etl.datamining.rcompile.RConnector;
 import com.fr.swift.source.etl.date.GetFromDateOperator;
 import com.fr.swift.source.etl.datediff.DateDiffOperator;
 import com.fr.swift.source.etl.detail.DetailOperator;
@@ -130,6 +133,7 @@ import com.fr.swift.source.relation.RelationPathSourceImpl;
 import com.fr.swift.source.relation.RelationSourceImpl;
 import com.fr.swift.structure.Pair;
 import com.fr.swift.util.Crasher;
+import org.rosuda.REngine.Rserve.RConnection;
 
 import java.sql.Types;
 import java.util.ArrayList;
@@ -610,9 +614,27 @@ class EtlAdaptor {
         boolean needExecute = bean.isNeedExecute();
         boolean init = bean.isInit();
         boolean cancelPrevious = bean.isCancelPreviousStep();
-        String ip = bean.getIp();
-        int port = bean.getPort();
         String tableName = bean.getTableName();
+        RConnection conn = null;
+        try {
+            FineSaveRLinkService service = StableManager.getContext().getObject("fineSaveRLinkServiceImpl");
+            RInfoBean infoBean = service.getRLink();
+            boolean needPasswd = infoBean.isNeedPasswd();
+            String ip = infoBean.getIp();
+            int port = infoBean.getPort();
+            if(needPasswd) {
+                String userName = infoBean.getUserName();
+                String passwd = infoBean.getPasswd();
+                conn = new RConnector().getNewConnection(true, ip, port, userName, passwd);
+            } else {
+                conn = new RConnector().getNewConnection(true, ip, port);
+            }
+            if(null == conn) {
+                conn = new RConnector().getNewConnection(true);
+            }
+        } catch(Exception e) {
+            SwiftLoggers.getLogger().error("failed to get R link information", e);
+        }
         if(null != dataSource) {
             try {
                 DataProvider dataProvider = new SwiftDataProvider();
@@ -620,13 +642,13 @@ class EtlAdaptor {
                 if(!init) {
                     String commands = bean.getCommands();
                     if(null != commands && !"".equals(commands)) {
-                        return new RCompileOperator(commands, needExecute, null, tableName,
+                        return new RCompileOperator(commands, needExecute, conn, tableName,
                                 segments.toArray(new Segment[segments.size()]), null, null, cancelPrevious, init);
                     }
                 } else {
                     String[] columns = bean.getColumns();
                     int[] columnType = bean.getColumnType();
-                    return new RCompileOperator(null, needExecute, null, tableName,
+                    return new RCompileOperator(null, needExecute, conn, tableName,
                             segments.toArray(new Segment[segments.size()]), columnType, columns, cancelPrevious, init);
                 }
             } catch(Exception e) {

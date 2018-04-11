@@ -4,9 +4,9 @@ import com.fr.swift.segment.Segment;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SwiftResultSet;
 import com.fr.swift.source.etl.datamining.createsegment.CreateSegment;
-import com.fr.swift.source.etl.datamining.rcompile.CreateRConnect;
 import com.fr.swift.source.etl.datamining.rcompile.RCompileOperator;
 import com.fr.swift.source.etl.datamining.rcompile.RCompileTransferOperator;
+import com.fr.swift.source.etl.datamining.rcompile.RConnector;
 import junit.framework.TestCase;
 import org.rosuda.REngine.Rserve.RConnection;
 
@@ -16,7 +16,8 @@ import org.rosuda.REngine.Rserve.RConnection;
 public class TestRCompileOperator extends TestCase{
     public void testRCompile() {
         try {
-            RConnection conn = new CreateRConnect().getConnection();
+            RConnector connector = new RConnector();
+            RConnection conn = connector.getNewConnection(true);
             String[] columns = new String[]{"column1", "column2"};
             Segment[] segments = new Segment[2];
             segments[0] = new CreateSegment().getSegment();
@@ -25,8 +26,6 @@ public class TestRCompileOperator extends TestCase{
             String commands = tableName + "$column1 <- "+ tableName + "$column1 + 1;";
             commands += tableName + "$column2 <- "+ tableName + "$column2 + 100;";
             commands += ";exhibit table";
-            String ip = null;
-            int port = -1;
             int[] columnType = new int[]{4, 4};
             String[][] str = new String[][]{{"1", "18"}, {"1", "19"}, {"1", "20"},
                     {"1", "21"}, {"1", "22"}, {"1", "22"}, {"2", "17"}, {"2", "20"}};
