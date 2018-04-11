@@ -6,8 +6,8 @@ import com.fr.swift.result.RowIndexKey;
 import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.DictionaryEncodedColumn;
 import com.fr.swift.structure.iterator.RowTraversal;
-import com.fr.swift.structure.stack.ArrayStack;
-import com.fr.swift.structure.stack.Stack;
+import com.fr.swift.structure.stack.ArrayLimitedStack;
+import com.fr.swift.structure.stack.LimitedStack;
 
 import java.util.Arrays;
 import java.util.Iterator;
@@ -24,7 +24,7 @@ class MultiDimensionGroupBy implements Iterator<KeyValue<RowIndexKey<int[]>, Row
     private DetailFilter detailFilter;
     private int[] cursor;
     private boolean[] asc;
-    private Stack<GroupByResult> iterators;
+    private LimitedStack<GroupByResult> iterators;
     private KeyValue<RowIndexKey<int[]>, RowTraversal> next = null;
     private int[] groupIndexes;
 
@@ -33,7 +33,7 @@ class MultiDimensionGroupBy implements Iterator<KeyValue<RowIndexKey<int[]>, Row
         this.detailFilter = detailFilter;
         this.cursor = cursor;
         this.asc = asc;
-        this.iterators = new ArrayStack<GroupByResult>(dimensions.size());
+        this.iterators = new ArrayLimitedStack<GroupByResult>(dimensions.size());
         this.groupIndexes = new int[dimensions.size()];
         Arrays.fill(groupIndexes, -1);
         init();
@@ -87,7 +87,7 @@ class MultiDimensionGroupBy implements Iterator<KeyValue<RowIndexKey<int[]>, Row
                 RowTraversal traversal = entry.getTraversal();
                 // 更新当前维度的groupIndex
                 updateGroupIndex(iterators.size() - 1, entry.getIndex());
-                next = new KeyValue<RowIndexKey<int[]>, RowTraversal>(new RowIndexKey(createRowIndexKey()), traversal);
+                next = new KeyValue<RowIndexKey<int[]>, RowTraversal>(new RowIndexKey<int[]>(createRowIndexKey()), traversal);
                 if (iterators.size() != iterators.limit()) {
                     // 要继续group by下一个维度
                     GroupByResult result = GroupBy.createGroupByResult(dimensions.get(iterators.size()), traversal,

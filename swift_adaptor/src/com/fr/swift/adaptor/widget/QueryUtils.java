@@ -57,7 +57,7 @@ public class QueryUtils {
             SingleTableGroupQueryInfo valueInfo = new SingleTableGroupQueryInfo(new AllCursor(), id, new Dimension[]{groupDimension}, new Metric[0], new GroupTarget[0], filterInfo, null);
             GroupByResultSet<int[]> valuesResultSet = (GroupByResultSet<int[]>) QueryRunnerProvider.getInstance().executeQuery(valueInfo);
             Iterator<KeyValue<RowIndexKey<int[]>, AggregatorValue[]>> it = valuesResultSet.getResultList().iterator();
-            Map<Integer, Object> dic = valuesResultSet.getGlobalDictionaries().get(0);
+            Map<Integer, Object> dic = valuesResultSet.getRowGlobalDictionaries().get(0);
             List values = new ArrayList();
             while (it.hasNext()) {
                 RowIndexKey<int[]> indexKey = it.next().getKey();

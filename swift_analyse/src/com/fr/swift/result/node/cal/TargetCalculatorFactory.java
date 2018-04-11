@@ -2,10 +2,14 @@ package com.fr.swift.result.node.cal;
 
 import com.fr.swift.query.adapter.target.cal.CalTargetType;
 import com.fr.swift.query.adapter.target.cal.TargetCalculatorInfo;
+import com.fr.swift.query.aggregator.AggregatorValue;
 import com.fr.swift.result.node.GroupNode;
 import com.fr.swift.result.node.iterator.LastDimensionIterator;
+import com.fr.swift.result.node.iterator.NodeMapperUtils;
+import com.fr.swift.result.node.xnode.XLeftNode;
 
 import java.util.Iterator;
+import java.util.List;
 
 /**
  * Created by Lyon on 2018/4/8.
@@ -14,11 +18,22 @@ public class TargetCalculatorFactory {
 
     public static TargetCalculator create(TargetCalculatorInfo info, GroupNode groupNode) {
         CalTargetType type = info.getType();
-        Iterator<Number[]> iterator = createIterator(type, groupNode);
+        Iterator<List<AggregatorValue[]>> iterator = createIterator(type, groupNode);
         switch (type) {
-            case ALL_SUM_OF_ALL:
-                Double value = groupNode.getSummaryValue()[info.getParamIndex()].doubleValue();
-                return new AllSumOfAllCalculator(info.getParamIndex(), info.getResultIndex(), iterator, value);
+            case ALL_SUM_OF_ALL: {
+                Double[] values;
+                if (groupNode instanceof XLeftNode) {
+                    List<AggregatorValue[]> aggregatorValues = ((XLeftNode) groupNode).getValueArrayList();
+                    values = new Double[aggregatorValues.size()];
+                    for (int i = 0; i < aggregatorValues.size(); i++) {
+                        values[i] = aggregatorValues.get(i)[info.getParamIndex()].calculate();
+                    }
+                } else {
+                    Double value = groupNode.getAggregatorValue()[info.getParamIndex()].calculate();
+                    values = new Double[] { value };
+                }
+                return new AllSumOfAllCalculator(info.getParamIndex(), info.getResultIndex(), iterator, values);
+            }
             case ALL_AVG:
                 return new AllAverageCalculator(info.getParamIndex(), info.getResultIndex(), iterator);
             case ALL_SUM_OF_ABOVE:
@@ -35,7 +50,7 @@ public class TargetCalculatorFactory {
         return null;
     }
 
-    private static Iterator<Number[]> createIterator(CalTargetType type, GroupNode root) {
+    private static Iterator<List<AggregatorValue[]>> createIterator(CalTargetType type, GroupNode root) {
         switch (type) {
             case ALL_SUM_OF_ALL:
             case ALL_AVG:
@@ -43,9 +58,13 @@ public class TargetCalculatorFactory {
             case ALL_MAX:
             case ALL_MIN:
             case ALL_RANK_ASC:
-            case ALL_RANK_DEC:
-                return new LastDimensionIterator(root);
+            case ALL_RANK_DEC: {
+                if (root instanceof XLeftNode) {
+                    return new LastDimensionIterator(root, NodeMapperUtils.mapper((XLeftNode) root));
+                }
+                return new LastDimensionIterator(root, NodeMapperUtils.mapper(root));
+            }
         }
-        return new LastDimensionIterator(root);
+        return new LastDimensionIterator(root, NodeMapperUtils.mapper(root));
     }
 }

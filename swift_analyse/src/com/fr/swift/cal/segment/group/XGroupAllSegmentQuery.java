@@ -28,7 +28,9 @@ public class XGroupAllSegmentQuery extends GroupAllSegmentQuery {
 
     @Override
     public GroupByResultSet getQueryResult() {
-        xCursor = new int[dimensions.size()];
+        cursor = new int[dimensions.size()];
+        Arrays.fill(cursor, DictionaryEncodedColumn.NOT_NULL_START_INDEX);
+        xCursor = new int[colDimensions.size()];
         Arrays.fill(xCursor, DictionaryEncodedColumn.NOT_NULL_START_INDEX);
         return XGroupByUtils.query(dimensions, colDimensions, metrics, aggregators, filter, indexSorts, xIndexSorts,
                 cursor, xCursor, -1, -1);

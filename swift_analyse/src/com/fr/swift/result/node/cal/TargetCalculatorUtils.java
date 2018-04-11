@@ -2,9 +2,11 @@ package com.fr.swift.result.node.cal;
 
 import com.fr.swift.query.adapter.target.cal.ResultTarget;
 import com.fr.swift.query.adapter.target.cal.TargetCalculatorInfo;
+import com.fr.swift.query.aggregator.AggregatorValue;
 import com.fr.swift.query.group.by.paging.MapperIterator;
 import com.fr.swift.result.node.GroupNode;
-import com.fr.swift.result.node.iterator.GroupNodeIterator;
+import com.fr.swift.result.node.iterator.BFTGroupNodeIterator;
+import com.fr.swift.result.node.xnode.XLeftNode;
 import com.fr.swift.util.function.Function;
 
 import java.util.ArrayList;
@@ -18,6 +20,9 @@ public class TargetCalculatorUtils {
 
     public static GroupNode calculate(GroupNode root, List<TargetCalculatorInfo> infoList,
                                       final List<ResultTarget> targetsForShowList) throws Exception {
+        if (infoList.size() == 0) {
+            return root;
+        }
         List<TargetCalculator> calculators = new ArrayList<TargetCalculator>();
         for (TargetCalculatorInfo info : infoList) {
             calculators.add(TargetCalculatorFactory.create(info, root));
@@ -25,19 +30,48 @@ public class TargetCalculatorUtils {
         for (TargetCalculator calculator : calculators) {
             calculator.call();
         }
-        if (infoList.size() == 0) {
-            return root;
+        if (root instanceof XLeftNode) {
+            return getShowTargetsForGroupNode((XLeftNode) root, targetsForShowList);
         }
+        return getShowTargetsForGroupNode(root, targetsForShowList);
+    }
+
+    private static GroupNode getShowTargetsForGroupNode(XLeftNode root, final List<ResultTarget> targetsForShowList) {
         // 从计算结果中提取要展示的结果集
-        Iterator<GroupNode> iterator = new MapperIterator<GroupNode, GroupNode>(new GroupNodeIterator(root), new Function<GroupNode, GroupNode>() {
+        Iterator<GroupNode> iterator = new MapperIterator<GroupNode, GroupNode>(new BFTGroupNodeIterator(root), new Function<GroupNode, GroupNode>() {
             @Override
             public GroupNode apply(GroupNode p) {
-                Number[] showValues = new Number[targetsForShowList.size()];
-                Number[] allValues = p.getSummaryValue();
+                List<AggregatorValue[]> allValues = ((XLeftNode) p).getValueArrayList();
+                List<AggregatorValue[]> showValues = new ArrayList<AggregatorValue[]>();
+                for (int i = 0; i < allValues.size(); i++) {
+                    showValues.add(new AggregatorValue[targetsForShowList.size()]);
+                }
+                for (int i = 0; i < allValues.size(); i++) {
+                    AggregatorValue[] values = allValues.get(i);
+                    for (int j = 0; j < values.length; j++) {
+                        showValues.get(i)[j] = allValues.get(i)[targetsForShowList.get(j).getResultFetchIndex()];
+                    }
+                }
+                return p;
+            }
+        });
+        while (iterator.hasNext()) {
+            iterator.next();
+        }
+        return root;
+    }
+
+    private static GroupNode getShowTargetsForGroupNode(GroupNode root, final List<ResultTarget> targetsForShowList) {
+        // 从计算结果中提取要展示的结果集
+        Iterator<GroupNode> iterator = new MapperIterator<GroupNode, GroupNode>(new BFTGroupNodeIterator(root), new Function<GroupNode, GroupNode>() {
+            @Override
+            public GroupNode apply(GroupNode p) {
+                AggregatorValue[] showValues = new AggregatorValue[targetsForShowList.size()];
+                AggregatorValue[] allValues = p.getAggregatorValue();
                 for (int i = 0; i < showValues.length; i++) {
                     showValues[i] = allValues[targetsForShowList.get(i).getResultFetchIndex()];
                 }
-                p.setSummaryValue(showValues);
+                p.setAggregatorValue(showValues);
                 return p;
             }
         });
