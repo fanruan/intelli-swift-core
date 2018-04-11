@@ -1,7 +1,5 @@
 package com.fr.swift.util;
 
-import com.fr.stable.CommonUtils;
-
 import java.io.File;
 
 /**
@@ -10,13 +8,31 @@ import java.io.File;
  */
 public class FileUtil {
     /**
+     * CommonUtils.deleteFile删文件有问题。。。
      * @param f 文件或目录
      */
-    public static boolean delete(File f) {
-        return CommonUtils.deleteFile(f);
+    public static void delete(File f) {
+        if (f == null || !f.exists()) {
+            return;
+        }
+
+        if (f.isDirectory()) {
+            File[] children = f.listFiles();
+
+            if (children == null) {
+                f.delete();
+                return;
+            }
+
+            for (File child : children) {
+                delete(child);
+            }
+        }
+
+        f.delete();
     }
 
-    public static boolean delete(String path) {
-        return delete(new File(path));
+    public static void delete(String path) {
+        delete(new File(path));
     }
 }

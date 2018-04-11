@@ -12,7 +12,6 @@ import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftMetaData;
 
-import java.sql.SQLException;
 import java.util.Map;
 
 /**
@@ -24,7 +23,7 @@ import java.util.Map;
  */
 public class RealtimeBlockSwiftMerger extends AbstractMerger {
 
-    public RealtimeBlockSwiftMerger(SourceKey sourceKey, SwiftMetaData metaData, String cubeSourceKey) throws SQLException {
+    public RealtimeBlockSwiftMerger(SourceKey sourceKey, SwiftMetaData metaData, String cubeSourceKey) {
         super(sourceKey, metaData, cubeSourceKey);
     }
 
@@ -41,6 +40,7 @@ public class RealtimeBlockSwiftMerger extends AbstractMerger {
         return new HistorySegmentImpl(location, metaData);
     }
 
+    @Override
     public void release() {
         super.release();
         for (Map.Entry<Integer, Segment> entry : segmentIndexCache.getNewSegMap().entrySet()) {

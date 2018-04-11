@@ -1,17 +1,14 @@
 package com.fr.swift.segment.operator.insert;
 
 import com.fr.swift.config.IConfigSegment;
-import com.fr.swift.config.IMetaData;
 import com.fr.swift.config.ISegmentKey;
-import com.fr.swift.config.conf.MetaDataConfig;
-import com.fr.swift.config.conf.MetaDataConvertUtil;
 import com.fr.swift.config.conf.SegmentConfig;
 import com.fr.swift.config.unique.SegmentKeyUnique;
 import com.fr.swift.config.unique.SegmentUnique;
 import com.fr.swift.cube.io.Types;
 import com.fr.swift.cube.io.location.IResourceLocation;
 import com.fr.swift.cube.io.location.ResourceLocation;
-import com.fr.swift.exception.meta.SwiftMetaDataException;
+import com.fr.swift.db.impl.SwiftDatabase;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.segment.Segment;
@@ -30,6 +27,7 @@ import com.fr.swift.source.SwiftSourceAlloter;
 import com.fr.swift.source.SwiftSourceAlloterFactory;
 import com.fr.swift.util.Crasher;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,8 +39,7 @@ import java.util.List;
  * @since Advanced FineBI Analysis 1.0
  */
 public abstract class AbstractBlockInserter implements Inserter {
-
-    private SwiftLogger logger = SwiftLoggers.getLogger(AbstractBlockInserter.class);
+    private static final SwiftLogger LOGGER = SwiftLoggers.getLogger(AbstractBlockInserter.class);
 
     protected SourceKey sourceKey;
     protected String cubeSourceKey;
@@ -166,10 +163,11 @@ public abstract class AbstractBlockInserter implements Inserter {
 
     protected void persistMeta() {
         try {
-            IMetaData metaData = MetaDataConvertUtil.convert2ConfigMetaData(this.swiftMetaData);
-            MetaDataConfig.getInstance().addMetaData(sourceKey.getId(), metaData);
-        } catch (SwiftMetaDataException e) {
-            logger.error("save metadata failed! ", e);
+            if (!SwiftDatabase.getInstance().existsTable(sourceKey)) {
+                SwiftDatabase.getInstance().createTable(sourceKey, swiftMetaData);
+            }
+        } catch (SQLException e) {
+            LOGGER.error("save metadata failed! ", e);
             Crasher.crash(e);
         }
     }

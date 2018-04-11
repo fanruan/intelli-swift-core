@@ -32,6 +32,7 @@ public class SegmentUnique extends UniqueKey implements IConfigSegment {
 
     }
 
+    @Override
     public List<ISegmentKey> getSegments() {
         Map<Integer, ISegmentKey> map = segments.get();
         int size = map.size();
@@ -43,6 +44,7 @@ public class SegmentUnique extends UniqueKey implements IConfigSegment {
         return result;
     }
 
+    @Override
     public void setSegments(List<ISegmentKey> segments) {
         int size = segments.size();
         for (int i = 0; i < size; i++) {
@@ -50,10 +52,12 @@ public class SegmentUnique extends UniqueKey implements IConfigSegment {
         }
     }
 
+    @Override
     public String getSourceKey() {
         return sourceKey.get();
     }
 
+    @Override
     public void setSourceKey(String sourceKey) {
         this.sourceKey.set(sourceKey);
     }

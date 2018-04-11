@@ -19,7 +19,7 @@ import java.util.Map.Entry;
  */
 public class SwiftDatabase implements Database {
     @Override
-    public Table createTable(SourceKey tableKey, SwiftMetaData meta) throws SQLException {
+    public synchronized Table createTable(SourceKey tableKey, SwiftMetaData meta) throws SQLException {
         if (existsTable(tableKey)) {
             throw new SQLException("table already existed");
         }
@@ -30,7 +30,7 @@ public class SwiftDatabase implements Database {
     }
 
     @Override
-    public Table getTable(SourceKey tableKey) throws SQLException {
+    public synchronized Table getTable(SourceKey tableKey) throws SQLException {
         if (!existsTable(tableKey)) {
             throw new SQLException("table not exists");
         }
@@ -39,7 +39,7 @@ public class SwiftDatabase implements Database {
     }
 
     @Override
-    public List<Table> getAllTables() {
+    public synchronized List<Table> getAllTables() {
         List<Table> tables = new ArrayList<Table>();
         for (Entry<String, IMetaData> entry : MetaDataConfig.getInstance().getAllMetaData().entrySet()) {
             SourceKey tableKey = new SourceKey(entry.getKey());
@@ -55,7 +55,7 @@ public class SwiftDatabase implements Database {
     }
 
     @Override
-    public void alterTable(SourceKey tableKey, SwiftMetaData meta) throws SQLException {
+    public synchronized void alterTable(SourceKey tableKey, SwiftMetaData meta) throws SQLException {
         if (!existsTable(tableKey)) {
             throw new SQLException("table not exists");
         }
@@ -63,7 +63,7 @@ public class SwiftDatabase implements Database {
     }
 
     @Override
-    public void dropTable(SourceKey tableKey) throws SQLException {
+    public synchronized void dropTable(SourceKey tableKey) throws SQLException {
         if (!existsTable(tableKey)) {
             throw new SQLException("table not exists");
         }
@@ -71,6 +71,9 @@ public class SwiftDatabase implements Database {
     }
 
     private static final Database INSTANCE = new SwiftDatabase();
+
+    private SwiftDatabase() {
+    }
 
     public static Database getInstance() {
         return INSTANCE;
