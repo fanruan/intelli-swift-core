@@ -10,8 +10,11 @@ import com.finebi.common.structure.config.entryinfo.EntryInfo;
 import com.finebi.common.structure.config.fieldinfo.FieldInfo;
 import com.finebi.common.structure.config.relation.Relation;
 import com.finebi.conf.constant.BICommonConstants;
+import com.finebi.conf.exception.FineEngineException;
+import com.finebi.conf.exception.FineTableAbsentException;
 import com.finebi.conf.internalimp.analysis.table.FineAnalysisTableImpl;
 import com.finebi.conf.internalimp.response.bean.FineTableResponed;
+import com.finebi.conf.structure.bean.field.FineBusinessField;
 import com.finebi.conf.structure.bean.table.FineBusinessTable;
 import com.fr.general.ComparatorUtils;
 import com.fr.swift.adaptor.transformer.DataSourceFactory;
@@ -89,4 +92,26 @@ public class SwiftTableManager extends AbstractEngineTableManager {
         }
     }
 
+    @Override
+    public boolean updateTables(List<FineBusinessTable> needUpdateTables) throws FineEngineException {
+        try {
+            Iterator iterator = needUpdateTables.iterator();
+
+            while(iterator.hasNext()) {
+                FineBusinessTable table = (FineBusinessTable)iterator.next();
+                EntryInfo entryInfo = this.createEntryInfo(table);
+                this.updateEntryInfo(entryInfo);
+                this.saveFieldInfo(FieldInfoHelper.createFieldInfo(entryInfo, table));
+            }
+
+            return true;
+        } catch (Exception var5) {
+            throw new FineTableAbsentException();
+        }
+    }
+
+    @Override
+    public boolean updateField(String tableName, FineBusinessField field) throws FineTableAbsentException {
+        return super.updateField(tableName, field);
+    }
 }
