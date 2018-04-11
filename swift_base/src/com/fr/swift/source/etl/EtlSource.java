@@ -77,6 +77,11 @@ public class EtlSource extends AbstractDataSource implements EtlDataSource {
     }
 
     @Override
+    public List<SourceKey> getBasedSourceKeys() {
+        return basedKeys;
+    }
+
+    @Override
     public List<DataSource> getBasedSources() {
         return basedSources;
     }
@@ -104,12 +109,11 @@ public class EtlSource extends AbstractDataSource implements EtlDataSource {
         List<SwiftMetaDataColumn> originColumns = operator.getBaseColumns(metaDatas);
         List<SwiftMetaDataColumn> addColumnList = operator.getColumns(metaDatas);
 
-        // TODO: 2018/3/20 by lucifer  字段顺序先是新增字段，再是原始字段了，不然目前会挂。
-//        List<SwiftMetaDataColumn> columnList = new ArrayList<SwiftMetaDataColumn>();
-//        columnList.addAll(originColumns);
-//        columnList.addAll(addColumnList);
-        addColumnList.addAll(originColumns);
-        metaData = new SwiftMetaDataImpl(getSourceKey().getId(), addColumnList);
+        //新增字段放在原始字段之后
+        List<SwiftMetaDataColumn> columnList = new ArrayList<SwiftMetaDataColumn>();
+        columnList.addAll(originColumns);
+        columnList.addAll(addColumnList);
+        metaData = new SwiftMetaDataImpl(getSourceKey().getId(), columnList);
         checkFieldsInfo();
     }
 

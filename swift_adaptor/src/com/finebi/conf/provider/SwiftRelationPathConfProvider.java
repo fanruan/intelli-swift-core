@@ -84,6 +84,14 @@ public class SwiftRelationPathConfProvider extends AbstractDirectRelationPathMan
     }
 
     @Override
+    public boolean isRelationPathExist(String fromTableId, String toTableId) {
+        List<FineBusinessTableRelation> relations = getRelationsByTables(fromTableId, toTableId);
+        return !relations.isEmpty();
+    }
+
+
+
+    @Override
     public FineEngineType getEngineType() {
         return FineEngineType.Cube;
     }

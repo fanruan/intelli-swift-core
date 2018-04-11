@@ -7,7 +7,6 @@ import com.finebi.conf.constant.BIConfConstants;
 import com.finebi.conf.constant.ConfConstant.AnalysisType;
 import com.finebi.conf.exception.FineAnalysisOperationUnSafe;
 import com.finebi.conf.exception.FineEngineException;
-import com.finebi.conf.exception.FineRelationAbsentException;
 import com.finebi.conf.internalimp.analysis.bean.operator.add.AddNewColumnBean;
 import com.finebi.conf.internalimp.analysis.bean.operator.add.AddNewColumnValueBean;
 import com.finebi.conf.internalimp.analysis.bean.operator.add.EmptyAddNewColumnBean;
@@ -35,7 +34,6 @@ import com.finebi.conf.internalimp.analysis.bean.operator.circulate.CirculateTwo
 import com.finebi.conf.internalimp.analysis.bean.operator.datamining.AlgorithmBean;
 import com.finebi.conf.internalimp.analysis.bean.operator.datamining.DataMiningBean;
 import com.finebi.conf.internalimp.analysis.bean.operator.datamining.rcompile.RCompileBean;
-import com.finebi.conf.internalimp.analysis.bean.operator.datamining.rcompile.RCompileBeanValue;
 import com.finebi.conf.internalimp.analysis.bean.operator.filter.FilterOperatorBean;
 import com.finebi.conf.internalimp.analysis.bean.operator.group.CustomGroupValueItemBean;
 import com.finebi.conf.internalimp.analysis.bean.operator.group.DimensionSelectValue;
@@ -73,7 +71,6 @@ import com.finebi.conf.structure.bean.table.FineBusinessTable;
 import com.finebi.conf.structure.conf.base.EngineComplexConfTable;
 import com.finebi.conf.structure.path.FineBusinessTableRelationPath;
 import com.finebi.conf.structure.relation.FineBusinessTableRelation;
-import com.finebi.conf.utils.FineTableUtils;
 import com.fr.general.ComparatorUtils;
 import com.fr.stable.StringUtils;
 import com.fr.swift.adaptor.encrypt.SwiftEncryption;
@@ -82,8 +79,6 @@ import com.fr.swift.adaptor.widget.group.GroupTypeAdaptor;
 import com.fr.swift.exception.meta.SwiftMetaDataException;
 import com.fr.swift.generate.preview.MinorSegmentManager;
 import com.fr.swift.log.SwiftLoggers;
-import com.fr.swift.provider.DataProvider;
-import com.fr.swift.provider.impl.SwiftDataProvider;
 import com.fr.swift.query.aggregator.AggregatorFactory;
 import com.fr.swift.query.aggregator.AggregatorType;
 import com.fr.swift.query.filter.info.FilterInfo;
@@ -106,7 +101,10 @@ import com.fr.swift.source.etl.columnfilter.ColumnFilterOperator;
 import com.fr.swift.source.etl.columnrowtrans.ColumnRowTransOperator;
 import com.fr.swift.source.etl.datamining.DataMiningOperator;
 import com.fr.swift.source.etl.datamining.rcompile.RCompileOperator;
+<<<<<<< HEAD
 import com.fr.swift.source.etl.datamining.rcompile.RConnectionFactory;
+=======
+>>>>>>> f42b57051a5fa267ab7b477158ec45742c2c1955
 import com.fr.swift.source.etl.date.GetFromDateOperator;
 import com.fr.swift.source.etl.datediff.DateDiffOperator;
 import com.fr.swift.source.etl.detail.DetailOperator;
@@ -132,7 +130,7 @@ import com.fr.swift.source.relation.RelationPathSourceImpl;
 import com.fr.swift.source.relation.RelationSourceImpl;
 import com.fr.swift.structure.Pair;
 import com.fr.swift.util.Crasher;
-import org.rosuda.REngine.Rserve.RConnection;
+import com.fr.swift.utils.BusinessTableUtils;
 
 import java.sql.Types;
 import java.util.ArrayList;
@@ -143,6 +141,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
+
+import com.finebi.conf.internalimp.bean.rinfo.RInfoBean;
+import com.finebi.conf.service.rlink.FineSaveRLinkService;
+import com.fr.swift.provider.DataProvider;
+import com.fr.swift.provider.impl.SwiftDataProvider;
+import com.fr.swift.source.etl.datamining.rcompile.RConnector;
+import org.rosuda.REngine.Rserve.RConnection;
 
 /**
  * Created by Handsome on 2018/1/30 0030 16:38
@@ -220,6 +225,7 @@ class EtlAdaptor {
     /**
      * 选字段
      * fixme 多表选择路径有问题
+     *
      * @param analysis
      * @return
      * @throws Exception
@@ -233,7 +239,7 @@ class EtlAdaptor {
         SwiftRelationPathConfProvider relationProvider = (SwiftRelationPathConfProvider) fineConfManageCenter.getRelationPathProvider().get(FineEngineType.Cube);
         String baseTable = getBaseTable(relationProvider, selectFieldBeanItemList);
         for (SelectFieldBeanItem selectFieldBeanItem : selectFieldBeanItemList) {
-            FineBusinessTable fineBusinessTable = FineTableUtils.getTableByFieldId(selectFieldBeanItem.getField());
+            FineBusinessTable fineBusinessTable = BusinessTableUtils.getTableByFieldId(selectFieldBeanItem.getField());
             FineBusinessField fineBusinessField = fineBusinessTable.getFieldByFieldId(selectFieldBeanItem.getField());
             DataSource baseDataSource = DataSourceFactory.getDataSource(fineBusinessTable);
             List<SelectFieldPathItem> path = selectFieldBeanItem.getPath();
@@ -259,7 +265,7 @@ class EtlAdaptor {
             //选字段只选了一张表的情况
             return getSingleTableSelectFieldSource(sourceKeyColumnMap, sourceKeyDataSourceMap, baseDatas);
         } else {
-            FineBusinessTable table = FineTableUtils.getTableByName(baseTable);
+            FineBusinessTable table = BusinessTableUtils.getTableByTableName(baseTable);
             DataSource baseDataSource = DataSourceFactory.getDataSource(table);
             return getMultiTableSelectFieldSource(sourceKeyColumnMap, sourceKeyDataSourceMap, baseDatas, baseDataSource.getSourceKey().getId());
         }
@@ -289,8 +295,8 @@ class EtlAdaptor {
         RelationshipBean bean = item.getRelationship();
         List<String> from = bean.getFrom();
         List<String> to = bean.getTo();
-        FineBusinessTable fromTable = FineTableUtils.getTableByFieldId(from.get(0));
-        FineBusinessTable toTable = FineTableUtils.getTableByFieldId(to.get(0));
+        FineBusinessTable fromTable = BusinessTableUtils.getTableByFieldId(from.get(0));
+        FineBusinessTable toTable = BusinessTableUtils.getTableByFieldId((to.get(0)));
         List<FineBusinessTableRelation> relations = relationProvider.getRelationsByTables(fromTable.getName(), toTable.getName());
         if (!relations.isEmpty()) {
             int lastSize = targetRelations.size();
@@ -467,7 +473,7 @@ class EtlAdaptor {
         switch (op.getType()) {
             case AnalysisType.JOIN: {
                 JoinBeanValue jbv = op.<JoinBean>getValue().getValue();
-                FineBusinessTable busiTable = FineTableUtils.getTableByName(jbv.getTable().getName());
+                FineBusinessTable busiTable = BusinessTableUtils.getTableByTableName(jbv.getTable().getName());
                 dataSources.add(DataSourceFactory.getDataSource(busiTable));
                 break;
             }
@@ -475,7 +481,7 @@ class EtlAdaptor {
                 UnionBeanValue ubv = op.<UnionBean>getValue().getValue();
                 for (UnionBeanValueTable table : ubv.getTables()) {
                     try {
-                        FineBusinessTable busiTable = FineTableUtils.getTableByName(table.getName());
+                        FineBusinessTable busiTable = BusinessTableUtils.getTableByTableName(table.getName());
                         dataSources.add(DataSourceFactory.getDataSource(busiTable));
                     } catch (Exception e) {
                         continue;
@@ -695,9 +701,9 @@ class EtlAdaptor {
 
     //fieldType为将被转换的字段类型
     public static ColumnTypeConstants.ColumnType getColumnType(int fieldType) {
-        if(fieldType == BICommonConstants.FORMULA_GENERATE_TYPE.DATE) {
+        if (fieldType == BICommonConstants.FORMULA_GENERATE_TYPE.DATE) {
             return ColumnTypeConstants.ColumnType.DATE;
-        } else if(fieldType == BICommonConstants.FORMULA_GENERATE_TYPE.NUMBER) {
+        } else if (fieldType == BICommonConstants.FORMULA_GENERATE_TYPE.NUMBER) {
             return ColumnTypeConstants.ColumnType.NUMBER;
         } else {
             return ColumnTypeConstants.ColumnType.STRING;
@@ -707,7 +713,7 @@ class EtlAdaptor {
     private static ColumnFormulaOperator getColumnFormulaOperator(AddNewColumnValueBean value, DataSource source) {
         String expression = ((AddExpressionValueBean) value).getValue();
         int fieldType = ((AddExpressionValueBean) value).getFieldType();
-        if(fieldType != BICommonConstants.FORMULA_GENERATE_TYPE.AUTO) {
+        if (fieldType != BICommonConstants.FORMULA_GENERATE_TYPE.AUTO) {
             return new ColumnFormulaOperator(value.getName(), getColumnType(fieldType), expression);
         }
         return new ColumnFormulaOperator(value.getName(), FormulaUtils.getColumnType(source.getMetadata(), expression), expression);

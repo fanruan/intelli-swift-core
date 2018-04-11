@@ -41,4 +41,14 @@ public class SwiftNumberInRangeFilterValue {
     public void setMaxIncluded(boolean maxIncluded) {
         this.maxIncluded = maxIncluded;
     }
+
+    @Override
+    public String toString() {
+        return "SwiftNumberInRangeFilterValue{" +
+                "min=" + min +
+                ", max=" + max +
+                ", minIncluded=" + minIncluded +
+                ", maxIncluded=" + maxIncluded +
+                '}';
+    }
 }

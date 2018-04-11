@@ -6,6 +6,7 @@ import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.query.filter.info.FilterInfo;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftMetaDataColumn;
+import com.fr.swift.source.core.CoreField;
 import com.fr.swift.source.etl.AbstractOperator;
 import com.fr.swift.source.etl.OperatorType;
 
@@ -18,7 +19,7 @@ import java.util.List;
 public class ColumnFilterOperator extends AbstractOperator {
 
     private static final SwiftLogger LOGGER = SwiftLoggers.getLogger(ColumnFilterOperator.class);
-
+    @CoreField
     private FilterInfo filterInfo;
 
     public ColumnFilterOperator(FilterInfo filterInfo) {
