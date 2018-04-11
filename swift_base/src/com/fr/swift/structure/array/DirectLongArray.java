@@ -89,4 +89,13 @@ public class DirectLongArray implements LongArray {
         }
     }
 
+    @Override
+    public LongArray clone() {
+        LongArray array = new DirectLongArray(maxLen);
+        for (int i = 0; i < maxLen; i++) {
+            array.put(i, get(i));
+        }
+        return array;
+    }
+
 }

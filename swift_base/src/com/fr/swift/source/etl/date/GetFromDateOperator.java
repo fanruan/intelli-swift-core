@@ -72,6 +72,7 @@ public class GetFromDateOperator extends AbstractOperator {
             case HOUR:
             case MINUTE:
             case SECOND:
+            case WEEK_OF_YEAR:
                 return Types.BIGINT;
             default:
                 return Types.DATE;

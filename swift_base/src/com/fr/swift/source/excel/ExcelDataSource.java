@@ -11,8 +11,8 @@ import com.fr.swift.source.core.CoreField;
 import com.fr.swift.util.Util;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by pony on 2017/11/15.
@@ -35,7 +35,7 @@ public class ExcelDataSource extends AbstractOuterDataSource {
         this.columnTypes = columnTypes;
     }
 
-    public ExcelDataSource(String fullFileName, String[] columnNames, ColumnType[] columnTypes, Map<String, ColumnType> fieldColumnTypes) {
+    public ExcelDataSource(String fullFileName, String[] columnNames, ColumnType[] columnTypes, LinkedHashMap<String, ColumnType> fieldColumnTypes) {
         super(fieldColumnTypes);
         Util.requireNonNull(fullFileName, columnNames, columnTypes);
         this.fullFileName = fullFileName;
@@ -51,7 +51,7 @@ public class ExcelDataSource extends AbstractOuterDataSource {
         this.appendedFileNames = appendedFileNames;
     }
 
-    public ExcelDataSource(String fullFileName, List<String> appendedFileNames, String[] columnNames, ColumnType[] columnTypes, Map<String, ColumnType> fieldColumnTypes) {
+    public ExcelDataSource(String fullFileName, List<String> appendedFileNames, String[] columnNames, ColumnType[] columnTypes, LinkedHashMap<String, ColumnType> fieldColumnTypes) {
         super(fieldColumnTypes);
         Util.requireNonNull(fullFileName, columnNames, columnTypes, appendedFileNames);
         this.fullFileName = fullFileName;

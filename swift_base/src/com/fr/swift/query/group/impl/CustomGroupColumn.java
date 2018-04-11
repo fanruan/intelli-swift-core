@@ -18,7 +18,9 @@ import java.util.Comparator;
  */
 class CustomGroupColumn<Base, Derive> implements Column<Derive> {
     private CustomGroupRule<Base, Derive> groupRule;
+
     private ImmutableBitMap[] groupedBitmaps;
+
     private Column<Base> originColumn;
 
     CustomGroupColumn(Column<Base> originColumn, CustomGroupRule<Base, Derive> groupRule) {

@@ -66,7 +66,7 @@ public class JoinOperator extends AbstractOperator {
         for (JoinColumn joinColumn : this.columns) {
             try {
                 SwiftMetaDataColumn originColumn = joinColumn.isLeft() ? leftT.getColumn(joinColumn.getColumnName()) : rightT.getColumn(joinColumn.getColumnName());
-                columnList.add(new MetaDataColumn(joinColumn.getName(), originColumn.getRemark(), originColumn.getType(), originColumn.getScale(), originColumn.getPrecision(), originColumn.getColumnId()));
+                columnList.add(new MetaDataColumn(joinColumn.getName(), originColumn.getRemark(), originColumn.getType(), originColumn.getScale(), originColumn.getPrecision(), joinColumn.getName()));
             } catch (SwiftMetaDataException e) {
                 LOGGER.error("the field " + joinColumn.getColumnName() + " get meta failed", e);
             }

@@ -3,7 +3,6 @@ package com.fr.swift.adaptor.widget;
 import com.finebi.conf.structure.bean.field.FineBusinessField;
 import com.finebi.conf.structure.bean.table.FineBusinessTable;
 import com.finebi.conf.structure.dashboard.widget.dimension.FineDimension;
-import com.finebi.conf.utils.FineTableUtils;
 import com.fr.swift.adaptor.transformer.DataSourceFactory;
 import com.fr.swift.adaptor.widget.group.GroupAdaptor;
 import com.fr.swift.cal.QueryInfo;
@@ -27,6 +26,7 @@ import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.service.QueryRunnerProvider;
 import com.fr.swift.source.DataSource;
 import com.fr.swift.source.SwiftResultSet;
+import com.fr.swift.utils.BusinessTableUtils;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -50,9 +50,9 @@ public class QueryUtils {
     public static List getOneDimensionFilterValues(FineDimension dimension, FilterInfo filterInfo, String id) {
         try {
             String fieldId = dimension.getFieldId();
-            FineBusinessTable fineBusinessTable = FineTableUtils.getTableByFieldId(fieldId);
+            FineBusinessTable fineBusinessTable = BusinessTableUtils.getTableByFieldId(fieldId);
             FineBusinessField fineBusinessField = fineBusinessTable.getFieldByFieldId(fieldId);
-            DataSource baseDataSource = DataSourceFactory.getDataSource(fineBusinessTable);
+            DataSource baseDataSource = DataSourceFactory.transformDataSource(fineBusinessTable);
             GroupDimension groupDimension = new GroupDimension(0, baseDataSource.getSourceKey(), new ColumnKey(fineBusinessField.getName()), GroupAdaptor.adaptGroup(dimension.getGroup()), null, null);
             SingleTableGroupQueryInfo valueInfo = new SingleTableGroupQueryInfo(new AllCursor(), id, new Dimension[]{groupDimension}, new Metric[0], new GroupTarget[0], filterInfo, null);
             GroupByResultSet<int[]> valuesResultSet = (GroupByResultSet<int[]>) QueryRunnerProvider.getInstance().executeQuery(valueInfo);
@@ -95,15 +95,15 @@ public class QueryUtils {
 
     private static DataSource getDataSource(FineDimension fineDimension) throws Exception {
         String fieldId = fineDimension.getFieldId();
-        FineBusinessTable fineBusinessTable = FineTableUtils.getTableByFieldId(fieldId);
-        return DataSourceFactory.getDataSource(fineBusinessTable);
+        FineBusinessTable fineBusinessTable = BusinessTableUtils.getTableByFieldId(fieldId);
+        return DataSourceFactory.transformDataSource(fineBusinessTable);
     }
 
     private static List<Dimension> createGroupDimension(List<FineDimension> fineDimensions) throws Exception {
         List<Dimension> dimensionList = new ArrayList<Dimension>();
         for (int i = 0; i < fineDimensions.size(); i++) {
             String fieldId = fineDimensions.get(i).getFieldId();
-            String fieldName = FineTableUtils.getFieldNameByFieldId(fieldId);
+            String fieldName = BusinessTableUtils.getFieldNameByFieldId(fieldId);
             DataSource dataSource = getDataSource(fineDimensions.get(i));
             GroupDimension groupDimension = new GroupDimension(i, dataSource.getSourceKey(),
                     new ColumnKey(fieldName),

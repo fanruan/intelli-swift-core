@@ -6,7 +6,6 @@ import com.finebi.conf.structure.bean.field.FineBusinessField;
 import com.finebi.conf.structure.bean.table.FineBusinessTable;
 import com.finebi.conf.structure.dashboard.widget.dimension.FineDimension;
 import com.finebi.conf.structure.result.control.number.BISingleSliderResult;
-import com.finebi.conf.utils.FineTableUtils;
 import com.fr.swift.adaptor.transformer.DataSourceFactory;
 import com.fr.swift.adaptor.transformer.FilterInfoFactory;
 import com.fr.swift.cal.info.DetailQueryInfo;
@@ -23,6 +22,7 @@ import com.fr.swift.service.QueryRunnerProvider;
 import com.fr.swift.source.DataSource;
 import com.fr.swift.structure.array.IntList;
 import com.fr.swift.structure.array.IntListFactory;
+import com.fr.swift.utils.BusinessTableUtils;
 
 import java.util.List;
 
@@ -38,9 +38,9 @@ public class SingleSliderWidgetAdaptor {
             List<FineDimension> dimensions = widget.getDimensionList();
             for (FineDimension dimension : dimensions) {
                 String fieldId = dimension.getFieldId();
-                FineBusinessTable fineBusinessTable = FineTableUtils.getTableByFieldId(fieldId);
+                FineBusinessTable fineBusinessTable = BusinessTableUtils.getTableByFieldId(fieldId);
                 FineBusinessField fineBusinessField = fineBusinessTable.getFieldByFieldId(fieldId);
-                DataSource baseDataSource = DataSourceFactory.getDataSource(fineBusinessTable);
+                DataSource baseDataSource = DataSourceFactory.transformDataSource(fineBusinessTable);
                 FilterInfo filterInfo = FilterInfoFactory.transformFineFilter(widget.getFilters());
                 //先通过明细表排序查最小
                 DetailDimension ascDimension = new DetailDimension(0, baseDataSource.getSourceKey(), new ColumnKey(fineBusinessField.getName()),

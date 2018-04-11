@@ -4,8 +4,7 @@ import com.fr.swift.source.ColumnTypeConstants.ColumnType;
 import com.fr.swift.source.SwiftResultSet;
 import junit.framework.TestCase;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.LinkedHashMap;
 
 /**
  * Created by pony on 2017/12/29.
@@ -29,7 +28,7 @@ public class TableDBSourceTransferTest extends TestCase {
 
     public void testCreatePartResultSet() throws Exception{
         ConnectionInfo connectionInfo = TestConnectionProvider.createConnection();
-        Map<String, ColumnType> fields = new HashMap<>();
+        LinkedHashMap<String, ColumnType> fields = new LinkedHashMap<>();
         fields.put("JGID", ColumnType.STRING);
         TableDBSource source = new TableDBSource("BANK", "demo", fields);
         TableDBSourceTransfer transfer = new TableDBSourceTransfer(connectionInfo, source.getMetadata(), source.getOuterMetadata(), source.getDBTableName());

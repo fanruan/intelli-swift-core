@@ -65,7 +65,7 @@ public class RExecute {
                 statement.append(",");
             }
         }
-        statement.append(")");
+        statement.append(",stringsAsFactors = FALSE)");
         try {
             conn.eval(statement.toString());
             conn.eval(PREVIOUS + "<- " + tableName);
@@ -73,6 +73,16 @@ public class RExecute {
         } catch(REngineException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public static List getPreviousDataList(RConnection conn) {
+        try {
+            REXP rexp = conn.eval(PREVIOUS);
+            return convertingResultSet(rexp);
+        } catch(RserveException e) {
+            LOGGER.error("failed to get previous result set!", e);
+        }
+        return null;
     }
 
 
@@ -157,44 +167,18 @@ public class RExecute {
         if(null == rexp) {
             return null;
         }
-        List dataList = new ArrayList();
-        if(rexp.isVector()) {
-            try {
-                RList rList = rexp.asList();
-                String[] columns = rList.keys();
-                int[] columnTypes = new int[columns.length];
-                dataList.add(columns);
-                dataList.add(columnTypes);
-                for(int i = 0; i < columns.length; i++) {
-                    REXP temp = (REXP)rList.get(columns[i]);
-                    if (temp.isInteger()) {
-                        dataList.add(temp.asIntegers());
-                        columnTypes[i] = Types.INTEGER;
-                    }else if(temp.isNumeric()) {
-                        dataList.add(temp.asDoubles());
-                        columnTypes[i] = Types.DOUBLE;
-                    }  else {
-                        dataList.add(temp.asStrings());
-                        columnTypes[i] = Types.VARCHAR;
-                    }
-                }
-            } catch(REXPMismatchException e) {
-                LOGGER.error("Converting R data to Java data failed!", e);
-                return null;
-            }
-        }
-        return dataList;
+        return convertingResultSet(rexp);
     }
 
-    public static boolean cancelPreviousStep(RConnection conn, String tableName) {
+    public static List cancelPreviousStep(RConnection conn, String tableName) {
         try {
             conn.eval(NEXT + " <- " + PREVIOUS);
-            conn.eval(tableName + " <- " + NEXT);
+            REXP rexp = conn.eval(tableName + " <- " + NEXT);
+            return convertingResultSet(rexp);
         } catch(RserveException e) {
             LOGGER.error("Cancelling previous step failed", e);
-            return false;
         }
-        return true;
+        return null;
     }
 
 
@@ -255,6 +239,36 @@ public class RExecute {
         }
     }
 
+    private static List convertingResultSet(REXP rexp) {
+        List dataList = new ArrayList();
+        if(rexp.isVector()) {
+            try {
+                RList rList = rexp.asList();
+                String[] columns = rList.keys();
+                int[] columnTypes = new int[columns.length];
+                dataList.add(columns);
+                dataList.add(columnTypes);
+                for(int i = 0; i < columns.length; i++) {
+                    REXP temp = (REXP)rList.get(columns[i]);
+                    if (temp.isInteger()) {
+                        dataList.add(temp.asIntegers());
+                        columnTypes[i] = Types.INTEGER;
+                    }else if(temp.isNumeric()) {
+                        dataList.add(temp.asDoubles());
+                        columnTypes[i] = Types.DOUBLE;
+                    }  else {
+                        dataList.add(temp.asStrings());
+                        columnTypes[i] = Types.VARCHAR;
+                    }
+                }
+            } catch(REXPMismatchException e) {
+                LOGGER.error("Converting R data to Java data failed!", e);
+                return null;
+            }
+        }
+        return dataList;
+    }
+
     private static int getColumnType(SwiftMetaData metaData, String columnName) throws Exception{
         int index = 0;
         for(int i = 1; i <= metaData.getColumnCount(); i ++) {
@@ -268,6 +282,33 @@ public class RExecute {
         } else {
             throw new RuntimeException("not found column:" + columnName);
         }
+    }
+
+    public static boolean executeVoidFunction(RConnection conn, String function, String[] parameters) {
+        // create request
+        try {
+            String request = "try(" + function + "(";
+            if (parameters.length != 0) {
+                for (String parameter : parameters) {
+                    request += parameter + ",";
+                }
+                // remove last ","
+                request = request.substring(0, request.length() - 1);
+                request += "))";
+            }
+            // execute function
+            REXP xp = conn.parseAndEval(request);
+            if (xp.inherits("try-error")) {
+                //close(conn);
+                //throw new IOException("failed to execute function '" + function + "'; \nrequest: " + request
+                        //+ "; \nError: " + xp.asString());
+            }
+            return true;
+        }
+        catch (Exception e) {
+            return false;
+        }
+
     }
 
     private static void assignment(String columnName, int columnType, RConnection conn, Object[] object) {

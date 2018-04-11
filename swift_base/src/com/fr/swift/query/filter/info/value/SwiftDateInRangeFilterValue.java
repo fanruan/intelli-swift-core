@@ -23,4 +23,12 @@ public class SwiftDateInRangeFilterValue {
     public void setEnd(long end) {
         this.endIncluded = end;
     }
+
+    @Override
+    public String toString() {
+        return "SwiftDateInRangeFilterValue{" +
+                "startIncluded=" + startIncluded +
+                ", endIncluded=" + endIncluded +
+                '}';
+    }
 }

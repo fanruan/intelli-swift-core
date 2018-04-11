@@ -9,9 +9,8 @@ import com.fr.swift.source.excel.ExcelTableData;
 import junit.framework.TestCase;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by pony on 2017/12/29.
@@ -38,7 +37,7 @@ public class TableDataTransferTest extends TestCase {
         String path = ResourceUtils.getFileAbsolutePath("com/fr/swift/resource/excel/test.xlsx");
         String[] names = {"A", "B"};
         ColumnType[] types = {ColumnType.STRING, ColumnType.NUMBER};
-        Map<String, ColumnType> fields = new HashMap<>();
+        LinkedHashMap<String, ColumnType> fields = new LinkedHashMap<>();
         fields.put("B", ColumnType.STRING);
         ExcelDataSource source = new ExcelDataSource(path, names, types, fields);
         TableDataTransfer excelTransfer = new TableDataTransfer(new ExcelTableData(path, names, types), source.getMetadata(), source.getOuterMetadata());

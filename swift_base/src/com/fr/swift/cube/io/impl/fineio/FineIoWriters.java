@@ -9,6 +9,7 @@ import com.fr.swift.cube.io.impl.fineio.output.ByteArrayFineIoWriter;
 import com.fr.swift.cube.io.impl.fineio.output.ByteFineIoWriter;
 import com.fr.swift.cube.io.impl.fineio.output.DoubleFineIoWriter;
 import com.fr.swift.cube.io.impl.fineio.output.IntFineIoWriter;
+import com.fr.swift.cube.io.impl.fineio.output.LongArrayFineIoWriter;
 import com.fr.swift.cube.io.impl.fineio.output.LongFineIoWriter;
 import com.fr.swift.cube.io.impl.fineio.output.StringFineIoWriter;
 import com.fr.swift.cube.io.location.IResourceLocation;
@@ -37,6 +38,8 @@ public final class FineIoWriters {
                     return StringFineIoWriter.build(location, isOverwrite);
                 case BITMAP:
                     return BitMapFineIoWriter.build(location, isOverwrite);
+                case LONG_ARRAY:
+                    return LongArrayFineIoWriter.build(location, isOverwrite);
                 default:
             }
         }

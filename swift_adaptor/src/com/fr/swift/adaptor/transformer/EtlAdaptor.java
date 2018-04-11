@@ -2,6 +2,7 @@ package com.fr.swift.adaptor.transformer;
 
 import com.finebi.base.constant.FineEngineType;
 import com.finebi.base.stable.StableManager;
+import com.finebi.conf.constant.BICommonConstants;
 import com.finebi.conf.constant.BIConfConstants;
 import com.finebi.conf.constant.ConfConstant.AnalysisType;
 import com.finebi.conf.exception.FineAnalysisOperationUnSafe;
@@ -32,6 +33,8 @@ import com.finebi.conf.internalimp.analysis.bean.operator.circulate.CirculateOne
 import com.finebi.conf.internalimp.analysis.bean.operator.circulate.CirculateTwoFieldValue;
 import com.finebi.conf.internalimp.analysis.bean.operator.datamining.AlgorithmBean;
 import com.finebi.conf.internalimp.analysis.bean.operator.datamining.DataMiningBean;
+import com.finebi.conf.internalimp.analysis.bean.operator.datamining.rcompile.RCompileBean;
+import com.finebi.conf.internalimp.analysis.bean.operator.datamining.rcompile.RCompileBeanValue;
 import com.finebi.conf.internalimp.analysis.bean.operator.filter.FilterOperatorBean;
 import com.finebi.conf.internalimp.analysis.bean.operator.group.CustomGroupValueItemBean;
 import com.finebi.conf.internalimp.analysis.bean.operator.group.DimensionSelectValue;
@@ -41,11 +44,11 @@ import com.finebi.conf.internalimp.analysis.bean.operator.group.GroupBean;
 import com.finebi.conf.internalimp.analysis.bean.operator.group.GroupSingleValueBean;
 import com.finebi.conf.internalimp.analysis.bean.operator.group.GroupValueBean;
 import com.finebi.conf.internalimp.analysis.bean.operator.group.ViewBean;
-import com.finebi.conf.internalimp.analysis.bean.operator.datamining.rcompile.RCompileBean;
 import com.finebi.conf.internalimp.analysis.bean.operator.group.custom.CustomGroupValueContent;
 import com.finebi.conf.internalimp.analysis.bean.operator.join.JoinBean;
 import com.finebi.conf.internalimp.analysis.bean.operator.join.JoinBeanValue;
 import com.finebi.conf.internalimp.analysis.bean.operator.join.JoinNameItem;
+import com.finebi.conf.internalimp.analysis.bean.operator.select.RelationshipBean;
 import com.finebi.conf.internalimp.analysis.bean.operator.select.SelectFieldBeanItem;
 import com.finebi.conf.internalimp.analysis.bean.operator.select.SelectFieldPathItem;
 import com.finebi.conf.internalimp.analysis.bean.operator.setting.FieldSettingBeanItem;
@@ -59,6 +62,7 @@ import com.finebi.conf.internalimp.analysis.operator.circulate.FloorItem;
 import com.finebi.conf.internalimp.analysis.operator.select.SelectFieldOperator;
 import com.finebi.conf.internalimp.analysis.operator.setting.FieldSettingOperator;
 import com.finebi.conf.internalimp.analysis.table.FineAnalysisTableImpl;
+import com.finebi.conf.internalimp.path.FineBusinessTableRelationPathImp;
 import com.finebi.conf.internalimp.service.pack.FineConfManageCenter;
 import com.finebi.conf.provider.SwiftRelationPathConfProvider;
 import com.finebi.conf.structure.analysis.operator.FineOperator;
@@ -68,18 +72,14 @@ import com.finebi.conf.structure.bean.table.FineBusinessTable;
 import com.finebi.conf.structure.conf.base.EngineComplexConfTable;
 import com.finebi.conf.structure.path.FineBusinessTableRelationPath;
 import com.finebi.conf.structure.relation.FineBusinessTableRelation;
-import com.finebi.conf.utils.FineTableUtils;
 import com.fr.general.ComparatorUtils;
 import com.fr.stable.StringUtils;
 import com.fr.swift.adaptor.encrypt.SwiftEncryption;
 import com.fr.swift.adaptor.widget.group.GroupAdaptor;
 import com.fr.swift.adaptor.widget.group.GroupTypeAdaptor;
-import com.fr.swift.conf.business.relation.RelationType;
 import com.fr.swift.exception.meta.SwiftMetaDataException;
 import com.fr.swift.generate.preview.MinorSegmentManager;
 import com.fr.swift.log.SwiftLoggers;
-import com.fr.swift.provider.DataProvider;
-import com.fr.swift.provider.impl.SwiftDataProvider;
 import com.fr.swift.query.aggregator.AggregatorFactory;
 import com.fr.swift.query.aggregator.AggregatorType;
 import com.fr.swift.query.filter.info.FilterInfo;
@@ -102,6 +102,7 @@ import com.fr.swift.source.etl.columnfilter.ColumnFilterOperator;
 import com.fr.swift.source.etl.columnrowtrans.ColumnRowTransOperator;
 import com.fr.swift.source.etl.datamining.DataMiningOperator;
 import com.fr.swift.source.etl.datamining.rcompile.RCompileOperator;
+import com.fr.swift.source.etl.datamining.rcompile.RConnectionFactory;
 import com.fr.swift.source.etl.date.GetFromDateOperator;
 import com.fr.swift.source.etl.datediff.DateDiffOperator;
 import com.fr.swift.source.etl.detail.DetailOperator;
@@ -127,6 +128,7 @@ import com.fr.swift.source.relation.RelationPathSourceImpl;
 import com.fr.swift.source.relation.RelationSourceImpl;
 import com.fr.swift.structure.Pair;
 import com.fr.swift.util.Crasher;
+import com.fr.swift.utils.BusinessTableUtils;
 
 import java.sql.Types;
 import java.util.ArrayList;
@@ -138,6 +140,13 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
+import com.finebi.conf.internalimp.bean.rinfo.RInfoBean;
+import com.finebi.conf.service.rlink.FineSaveRLinkService;
+import com.fr.swift.provider.DataProvider;
+import com.fr.swift.provider.impl.SwiftDataProvider;
+import com.fr.swift.source.etl.datamining.rcompile.RConnector;
+import org.rosuda.REngine.Rserve.RConnection;
+
 /**
  * Created by Handsome on 2018/1/30 0030 16:38
  */
@@ -145,6 +154,7 @@ class EtlAdaptor {
     static DataSource adaptEtlDataSource(FineBusinessTable table) throws Exception {
         FineAnalysisTable analysis = ((FineAnalysisTable) table);
         FineOperator op = analysis.getOperator();
+
         if (op.getType() == AnalysisType.SELECT_FIELD) {
             return adaptSelectField(analysis);
         }
@@ -210,6 +220,14 @@ class EtlAdaptor {
         return fieldInfo.isEmpty() ? sourceFieldsInfo : fieldInfo;
     }
 
+    /**
+     * 选字段
+     * fixme 多表选择路径有问题
+     *
+     * @param analysis
+     * @return
+     * @throws Exception
+     */
     private static DataSource adaptSelectField(FineAnalysisTable analysis) throws Exception {
         Map<String, List<ColumnKey>> sourceKeyColumnMap = new LinkedHashMap<String, List<ColumnKey>>();
         Map<String, DataSource> sourceKeyDataSourceMap = new LinkedHashMap<String, DataSource>();
@@ -219,7 +237,7 @@ class EtlAdaptor {
         SwiftRelationPathConfProvider relationProvider = (SwiftRelationPathConfProvider) fineConfManageCenter.getRelationPathProvider().get(FineEngineType.Cube);
         String baseTable = getBaseTable(relationProvider, selectFieldBeanItemList);
         for (SelectFieldBeanItem selectFieldBeanItem : selectFieldBeanItemList) {
-            FineBusinessTable fineBusinessTable = FineTableUtils.getTableByFieldId(selectFieldBeanItem.getField());
+            FineBusinessTable fineBusinessTable = BusinessTableUtils.getTableByFieldId(selectFieldBeanItem.getField());
             FineBusinessField fineBusinessField = fineBusinessTable.getFieldByFieldId(selectFieldBeanItem.getField());
             DataSource baseDataSource = DataSourceFactory.getDataSource(fineBusinessTable);
             List<SelectFieldPathItem> path = selectFieldBeanItem.getPath();
@@ -245,7 +263,7 @@ class EtlAdaptor {
             //选字段只选了一张表的情况
             return getSingleTableSelectFieldSource(sourceKeyColumnMap, sourceKeyDataSourceMap, baseDatas);
         } else {
-            FineBusinessTable table = FineTableUtils.getTableByName(baseTable);
+            FineBusinessTable table = BusinessTableUtils.getTableByTableName(baseTable);
             DataSource baseDataSource = DataSourceFactory.getDataSource(table);
             return getMultiTableSelectFieldSource(sourceKeyColumnMap, sourceKeyDataSourceMap, baseDatas, baseDataSource.getSourceKey().getId());
         }
@@ -253,7 +271,15 @@ class EtlAdaptor {
 
     private static RelationSource getRelation(List<SelectFieldPathItem> path, String baseTable, String table, SwiftRelationPathConfProvider relationProvider) {
         if (path != null) {
-            //@yee todo 暂时不知道path穿过来是什么样子的
+            List<FineBusinessTableRelation> targetRelations = new ArrayList<FineBusinessTableRelation>();
+            try {
+                for (SelectFieldPathItem item : path) {
+                    handleSelectFieldPath(relationProvider, item, targetRelations);
+                }
+                return getRelation(new FineBusinessTableRelationPathImp(targetRelations));
+            } catch (Exception e) {
+                SwiftLoggers.getLogger().error("Cannot find relation, use default. ", e);
+            }
         }
         List<FineBusinessTableRelationPath> relation = relationProvider.getRelationPaths(table, baseTable);
         if (relation == null || relation.isEmpty()) {
@@ -261,6 +287,62 @@ class EtlAdaptor {
         }
         FineBusinessTableRelationPath p = relation.get(0);
         return getRelation(p);
+    }
+
+    private static void handleSelectFieldPath(SwiftRelationPathConfProvider relationProvider, SelectFieldPathItem item, List<FineBusinessTableRelation> targetRelations) throws FineEngineException {
+        RelationshipBean bean = item.getRelationship();
+        List<String> from = bean.getFrom();
+        List<String> to = bean.getTo();
+        FineBusinessTable fromTable = BusinessTableUtils.getTableByFieldId(from.get(0));
+        FineBusinessTable toTable = BusinessTableUtils.getTableByFieldId((to.get(0)));
+        List<FineBusinessTableRelation> relations = relationProvider.getRelationsByTables(fromTable.getName(), toTable.getName());
+        if (!relations.isEmpty()) {
+            int lastSize = targetRelations.size();
+            for (FineBusinessTableRelation relation : relations) {
+                List<FineBusinessField> primaryFields;
+                List<FineBusinessField> foreignFields;
+                if (relation.getRelationType() == BICommonConstants.RELATION_TYPE.MANY_TO_ONE) {
+                    primaryFields = relation.getForeignBusinessField();
+                    foreignFields = relation.getPrimaryBusinessField();
+                } else {
+                    primaryFields = relation.getPrimaryBusinessField();
+                    foreignFields = relation.getForeignBusinessField();
+                }
+                if (from.size() != primaryFields.size() || to.size() != foreignFields.size()) {
+                    continue;
+                }
+                boolean equals = true;
+                for (int i = 0; i < from.size(); i++) {
+                    // 按照常理主表字段和子表字段数是一样的
+                    if (!ComparatorUtils.equals(from.get(i), primaryFields.get(i).getId()) || !ComparatorUtils.equals(to.get(i), foreignFields.get(i).getId())) {
+                        equals = false;
+                        break;
+                    }
+                }
+                if (equals) {
+                    targetRelations.add(relation);
+                    break;
+                }
+            }
+            if (lastSize == targetRelations.size()) {
+                selectFieldPathCrash(from, to);
+            }
+        } else {
+            selectFieldPathCrash(from, to);
+        }
+    }
+
+    private static void selectFieldPathCrash(List<String> from, List<String> to) {
+        StringBuilder builder = new StringBuilder("Cannot find relation: ").append("{");
+        StringBuilder foreign = new StringBuilder();
+        for (int i = 0; i < from.size(); i++) {
+            builder.append(from.get(i)).append(",");
+            foreign.append(to.get(i)).append(",");
+        }
+        builder.setLength(builder.length() - 1);
+        foreign.setLength(foreign.length() - 1);
+        builder.append("}->").append(foreign).append("}");
+        Crasher.crash(builder.toString());
     }
 
     private static RelationSource getRelation(FineBusinessTableRelationPath path) {
@@ -286,7 +368,7 @@ class EtlAdaptor {
             FineBusinessTable foreignTable;
             List<FineBusinessField> primaryFields;
             List<FineBusinessField> foreignFields;
-            if (relation.getRelationType() == RelationType.MORE_TO_ONE) {
+            if (relation.getRelationType() == BICommonConstants.RELATION_TYPE.MANY_TO_ONE) {
                 primaryTable = relation.getForeignBusinessTable();
                 foreignTable = relation.getPrimaryBusinessTable();
                 primaryFields = relation.getForeignBusinessField();
@@ -328,7 +410,8 @@ class EtlAdaptor {
                 return path.get(path.size() - 1).getTable();
             }
         }
-        for (FineBusinessTableRelationPath path : relationProvider.getAllRelationPaths()) {
+        List<FineBusinessTableRelationPath> allPaths = relationProvider.getAllRelationPaths();
+        for (FineBusinessTableRelationPath path : allPaths) {
             if (tables.size() == 1) {
                 break;
             }
@@ -336,13 +419,13 @@ class EtlAdaptor {
             FineBusinessTableRelation firstRelation = relations.get(0);
             FineBusinessTableRelation lastRelation = relations.get(relations.size() - 1);
             String prim;
-            if (firstRelation.getRelationType() == RelationType.MORE_TO_ONE) {
+            if (firstRelation.getRelationType() == BICommonConstants.RELATION_TYPE.MANY_TO_ONE) {
                 prim = firstRelation.getForeignBusinessTable().getId();
             } else {
                 prim = firstRelation.getPrimaryBusinessTable().getId();
             }
             String foreign;
-            if (lastRelation.getRelationType() == RelationType.MORE_TO_ONE) {
+            if (lastRelation.getRelationType() == BICommonConstants.RELATION_TYPE.MANY_TO_ONE) {
                 foreign = lastRelation.getPrimaryBusinessTable().getId();
             } else {
                 foreign = lastRelation.getForeignBusinessTable().getId();
@@ -388,7 +471,7 @@ class EtlAdaptor {
         switch (op.getType()) {
             case AnalysisType.JOIN: {
                 JoinBeanValue jbv = op.<JoinBean>getValue().getValue();
-                FineBusinessTable busiTable = FineTableUtils.getTableByName(jbv.getTable().getName());
+                FineBusinessTable busiTable = BusinessTableUtils.getTableByTableName(jbv.getTable().getName());
                 dataSources.add(DataSourceFactory.getDataSource(busiTable));
                 break;
             }
@@ -396,7 +479,7 @@ class EtlAdaptor {
                 UnionBeanValue ubv = op.<UnionBean>getValue().getValue();
                 for (UnionBeanValueTable table : ubv.getTables()) {
                     try {
-                        FineBusinessTable busiTable = FineTableUtils.getTableByName(table.getName());
+                        FineBusinessTable busiTable = BusinessTableUtils.getTableByTableName(table.getName());
                         dataSources.add(DataSourceFactory.getDataSource(busiTable));
                     } catch (Exception e) {
                         continue;
@@ -516,40 +599,41 @@ class EtlAdaptor {
                 return fromSumByGroupBean(op.<GroupBean>getValue());
             case AnalysisType.DATA_MINING:
                 return fromDataMiningBean(op.<DataMiningBean>getValue());
-            /* case AnalysisType.R_Compile: {
+            case AnalysisType.R_COMPILE: {
                 DataSource source = adaptEtlDataSource(((FineAnalysisTableImpl) table).getBaseTable());
                 return fromRCompileOperator(op.<RCompileBean>getValue(), source);
-            }*/
+            }
             default:
         }
         return null;
     }
 
-    private static RCompileOperator fromRCompileOperator(RCompileBean bean, DataSource dataSource) {
+    private static RCompileOperator fromRCompileOperator(RCompileBean value, DataSource dataSource) {
+        RCompileBeanValue bean = value.getValue();
         boolean needExecute = bean.isNeedExecute();
-        String ip = bean.getIp();
-        int port = bean.getPort();
+        boolean init = bean.isInit();
+        boolean cancelPrevious = bean.isCancelPreviousStep();
         String tableName = bean.getTableName();
-        if(needExecute) {
-            String commands = bean.getCommands();
-            if(null != commands && !"".equals(commands)) {
-                if(null != dataSource) {
-                    try {
-                        DataProvider dataProvider = new SwiftDataProvider();
-                        List<Segment> segments = dataProvider.getPreviewData(dataSource);
-                        return new RCompileOperator(commands, needExecute, ip, port, tableName,
-                                segments.toArray(new Segment[segments.size()]), null);
-                    } catch(Exception e) {
-                        SwiftLoggers.getLogger().error(e);
+        RConnection conn = RConnectionFactory.getRConnection();
+        if(null != dataSource) {
+            try {
+                DataProvider dataProvider = new SwiftDataProvider();
+                List<Segment> segments = dataProvider.getPreviewData(dataSource);
+                if(!init) {
+                    String commands = bean.getCommands();
+                    if(null != commands && !"".equals(commands)) {
+                        return new RCompileOperator(commands, needExecute, conn, tableName,
+                                segments.toArray(new Segment[segments.size()]), null, null, cancelPrevious, init);
                     }
+                } else {
+                    String[] columns = bean.getColumns();
+                    int[] columnType = bean.getColumnType();
+                    return new RCompileOperator(null, needExecute, conn, tableName,
+                            segments.toArray(new Segment[segments.size()]), columnType, columns, cancelPrevious, init);
                 }
-            } else{
-                return null;
+            } catch(Exception e) {
+                SwiftLoggers.getLogger().error(e);
             }
-        } else {
-            //String[] columns = bean.getColumns();
-            //return new RCompileOperator(null, needExecute, ip, port, tableName, null, columns);
-            return null;
         }
         return null;
     }
@@ -565,7 +649,7 @@ class EtlAdaptor {
         }
 
         SumByGroupDimension[] groupDimensions = null;
-        SumByGroupTarget[] groupTargets = null;
+        SumByGroupTarget[] groupTargets = new SumByGroupTarget[0];
         if (null != views) {
             groupTargets = new SumByGroupTarget[views.size()];
         }
@@ -611,6 +695,26 @@ class EtlAdaptor {
             groupTargets[i] = sumByGroupTarget;
         }
         return new SumByGroupOperator(groupTargets, groupDimensions);
+    }
+
+    //fieldType为将被转换的字段类型
+    public static ColumnTypeConstants.ColumnType getColumnType(int fieldType) {
+        if (fieldType == BICommonConstants.FORMULA_GENERATE_TYPE.DATE) {
+            return ColumnTypeConstants.ColumnType.DATE;
+        } else if (fieldType == BICommonConstants.FORMULA_GENERATE_TYPE.NUMBER) {
+            return ColumnTypeConstants.ColumnType.NUMBER;
+        } else {
+            return ColumnTypeConstants.ColumnType.STRING;
+        }
+    }
+
+    private static ColumnFormulaOperator getColumnFormulaOperator(AddNewColumnValueBean value, DataSource source) {
+        String expression = ((AddExpressionValueBean) value).getValue();
+        int fieldType = ((AddExpressionValueBean) value).getFieldType();
+        if (fieldType != BICommonConstants.FORMULA_GENERATE_TYPE.AUTO) {
+            return new ColumnFormulaOperator(value.getName(), getColumnType(fieldType), expression);
+        }
+        return new ColumnFormulaOperator(value.getName(), FormulaUtils.getColumnType(source.getMetadata(), expression), expression);
     }
 
     private static AccumulateRowOperator getAccumulateRowOperator(AddNewColumnValueBean value) {
@@ -742,8 +846,7 @@ class EtlAdaptor {
         DataSource source = adaptEtlDataSource(((FineAnalysisTableImpl) table).getBaseTable());
         switch (value.getType()) {
             case BIConfConstants.CONF.ADD_COLUMN.FORMULA.TYPE: {
-                String expression = ((AddExpressionValueBean) value).getValue();
-                return new ColumnFormulaOperator(value.getName(), FormulaUtils.getColumnType(source.getMetadata(), expression), expression);
+                return getColumnFormulaOperator(value, source);
             }
             case BIConfConstants.CONF.ADD_COLUMN.ACCUMULATIVE_VALUE.TYPE: {
                 return getAccumulateRowOperator(value);

@@ -1,6 +1,8 @@
 package com.fr.swift.query.group;
 
+import com.fr.general.ComparatorUtils;
 import com.fr.swift.Temps.TempDictColumn;
+import com.fr.swift.compare.Comparators;
 import com.fr.swift.query.group.impl.AutoNumGroupRule;
 import com.fr.swift.query.group.impl.AutoNumGroupRule.Partition;
 import com.fr.swift.query.group.impl.CustomNumGroupRule;
@@ -11,6 +13,7 @@ import com.fr.swift.structure.array.IntList;
 import org.junit.Test;
 
 import java.util.Arrays;
+import java.util.Comparator;
 
 import static org.junit.Assert.assertEquals;
 
@@ -38,6 +41,11 @@ public class GroupRuleTest {
                 return values[index];
             }
         });
+
+        assertEquals(0, rule.getGlobalIndexByIndex(0));
+        assertEquals(1, rule.getGlobalIndexByIndex(1));
+        assertEquals(2, rule.getGlobalIndexByIndex(2));
+        assertEquals(3, rule.getGlobalIndexByIndex(3));
 
         assertEquals(4, rule.newSize());
 
@@ -342,5 +350,92 @@ public class GroupRuleTest {
         assertEquals(2, rule.reverseMap(8));
         assertEquals(3, rule.reverseMap(9));
         assertEquals(3, rule.reverseMap(10));
+    }
+
+    @Test
+    public void testNumGlobalIndex() {
+        CustomGroupRule rule = new CustomNumGroupRule(Arrays.asList(
+                new NumInterval("g0", 0, true, 2.1, false),
+                new NumInterval("g1", 4, true, 6, false),
+                new NumInterval("g2", 7, true, 10, false)
+        ), null);
+        rule.setOriginDict(new TempDictColumn<Number>() {
+            Number[] numbers = {null, 3.0, 6.1};
+
+            @Override
+            public int size() {
+                return numbers.length;
+            }
+
+            @Override
+            public Number getValue(int index) {
+                return numbers[index];
+            }
+
+            @Override
+            public int getIndex(Object value) {
+                for (int i = 0; i < numbers.length; i++) {
+                    if (ComparatorUtils.equals(numbers[i], value)) {
+                        return i;
+                    }
+                }
+                return -1;
+            }
+
+            @Override
+            public int getGlobalIndexByIndex(int index) {
+                return index;
+            }
+        });
+
+        assertEquals(0, rule.getGlobalIndexByIndex(0));
+        assertEquals(4, rule.getGlobalIndexByIndex(1));
+        assertEquals(5, rule.getGlobalIndexByIndex(2));
+    }
+
+    @Test
+    public void testStrGlobalIndex() {
+        CustomGroupRule rule = new CustomStrGroupRule(Arrays.asList(
+                new StringGroup("g0", Arrays.asList("1", "2")),
+                new StringGroup("g1", Arrays.asList("3", "4", "6", "7")),
+                new StringGroup("g2", Arrays.asList("8", "9"))
+        ), null);
+        rule.setOriginDict(new TempDictColumn<String>() {
+            String[] values = {null, "5"};
+            int[] globalIndices = {0, 5};
+
+            @Override
+            public int size() {
+                return values.length;
+            }
+
+            @Override
+            public String getValue(int index) {
+                return values[index];
+            }
+
+            @Override
+            public int getIndex(Object value) {
+                for (int i = 0; i < values.length; i++) {
+                    if (ComparatorUtils.equals(values[i], value)) {
+                        return i;
+                    }
+                }
+                return -1;
+            }
+
+            @Override
+            public int getGlobalIndexByIndex(int index) {
+                return globalIndices[index];
+            }
+
+            @Override
+            public Comparator<String> getComparator() {
+                return Comparators.PINYIN_ASC;
+            }
+        });
+
+        assertEquals(0, rule.getGlobalIndexByIndex(0));
+        assertEquals(4, rule.getGlobalIndexByIndex(1));
     }
 }

@@ -97,7 +97,7 @@ public class ShowResultSet implements SwiftResultSet {
                     return null;
                 }
                 if (dateColumnIndices != null && dateColumnIndices.contains(index)) {
-                    return (V) new java.sql.Date((Long) val);
+                    return (V) new java.util.Date((Long) val);
                 }
                 return (V) val;
             }

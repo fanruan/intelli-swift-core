@@ -14,6 +14,7 @@ import com.finebi.conf.structure.bean.table.FineBusinessTable;
 import com.fr.swift.cache.SourceCache;
 import com.fr.swift.increase.IncrementImpl;
 import com.fr.swift.increment.Increment;
+import com.fr.swift.increment.Increment.UpdateType;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.manager.ConnectionProvider;
@@ -30,6 +31,7 @@ import com.fr.swift.source.container.SourceContainerManager;
 import com.fr.swift.source.db.ConnectionManager;
 import com.fr.swift.source.db.QueryDBSource;
 import com.fr.swift.source.db.TableDBSource;
+import com.fr.swift.source.empty.EmptyDataSource;
 import com.fr.swift.source.etl.ETLOperator;
 import com.fr.swift.source.etl.ETLTransferOperator;
 import com.fr.swift.source.etl.EtlSource;
@@ -40,7 +42,7 @@ import com.fr.swift.source.etl.datamining.rcompile.RCompileOperator;
 import com.fr.swift.source.etl.datamining.rcompile.RCompileTransferOperator;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -64,7 +66,7 @@ public class DataSourceFactory {
                 return new DataMiningTransferOperator(((DataMiningOperator) operator).getAlgorithmBean());
             }
         });
-        EtlTransferOperatorFactory.register(RCompileOperator.class,new EtlTransferOperatorFactory.ETLTransferCreator(){
+        EtlTransferOperatorFactory.register(RCompileOperator.class, new EtlTransferOperatorFactory.ETLTransferCreator() {
 
             @Override
             public ETLTransferOperator createTransferOperator(ETLOperator operator) {
@@ -122,14 +124,33 @@ public class DataSourceFactory {
         return dataSourceList;
     }
 
+
     /**
+     * 外部和接口调用
      * 转换table->datasource
      *
      * @param table
      * @return
      * @throws Exception
      */
-    public static DataSource getDataSource(FineBusinessTable table) throws Exception {
+    public static DataSource transformDataSource(FineBusinessTable table) throws Exception {
+        try {
+            return getDataSource(table);
+        } catch (Exception e) {
+            LOGGER.error(e);
+            return new EmptyDataSource();
+        }
+    }
+
+    /**
+     * 内部和包内调用
+     * 转换table->datasource
+     *
+     * @param table
+     * @return
+     * @throws Exception
+     */
+    protected static DataSource getDataSource(FineBusinessTable table) throws Exception {
         DataSource dataSource = null;
         switch (table.getType()) {
             case BICommonConstants.TABLE.DATABASE:
@@ -153,18 +174,18 @@ public class DataSourceFactory {
 
     private static DataSource transformTableDBSource(FineDBBusinessTable table) throws Exception {
         String connectionName = table.getConnName();
-        Map<String, ColumnType> fieldColumnTypes = checkFieldTypes(table.getOperators());
+        LinkedHashMap<String, ColumnType> fieldColumnTypes = checkFieldTypes(table.getOperators());
         TableDBSource tableDBSource = fieldColumnTypes == null ?
                 new TableDBSource(table.getTableName(), connectionName) : new TableDBSource(table.getTableName(), connectionName, fieldColumnTypes);
         return checkETL(tableDBSource, table);
     }
 
-    private static Map<String, ColumnType> checkFieldTypes(List<FineOperator> operators) {
+    private static LinkedHashMap<String, ColumnType> checkFieldTypes(List<FineOperator> operators) {
         if (operators != null && !operators.isEmpty()) {
             FineOperator op = operators.get(0);
             if (op.getType() == ConfConstant.AnalysisType.CONF_SELECT) {
                 List<ConfSelectBeanItem> items = ((ConfSelectOperator) op).getFields();
-                Map<String, ColumnType> fieldsTypes = new HashMap<String, ColumnType>();
+                LinkedHashMap<String, ColumnType> fieldsTypes = new LinkedHashMap<String, ColumnType>();
                 for (ConfSelectBeanItem item : items) {
                     if (item.isUsable()) {
                         fieldsTypes.put(item.getName(), FieldFactory.transformBIColumnType2SwiftColumnType(item.getType()));
@@ -178,7 +199,7 @@ public class DataSourceFactory {
 
     private static DataSource transformQueryDBSource(FineSQLBusinessTable table) throws Exception {
 
-        Map<String, ColumnType> fieldColumnTypes = checkFieldTypes(table.getOperators());
+        LinkedHashMap<String, ColumnType> fieldColumnTypes = checkFieldTypes(table.getOperators());
 
         String sql = table.getSql();
         List<FineSQLTableParameter> sqlTableParameters = table.getParamSetting();
@@ -206,8 +227,21 @@ public class DataSourceFactory {
         return new EtlSource(baseSource, EtlAdaptor.adaptEtlOperator(operators.get(operators.size() - 1), table));
     }
 
-    public static Increment transformIncrement(TableUpdateInfo tableUpdateInfo, SourceKey sourceKey, String connectionName) {
-        Increment increment = new IncrementImpl(tableUpdateInfo.getAddSql(), tableUpdateInfo.getDeleteSql(), tableUpdateInfo.getModifySql(), sourceKey, connectionName, tableUpdateInfo.getUpdateType());
+    private static Increment transformIncrement(TableUpdateInfo tableUpdateInfo, SourceKey sourceKey, String connectionName) {
+        Increment increment = new IncrementImpl(tableUpdateInfo.getAddSql(), tableUpdateInfo.getDeleteSql(), tableUpdateInfo.getModifySql(), sourceKey, connectionName, adaptUpdateType(tableUpdateInfo.getUpdateType()));
         return increment;
+    }
+
+    private static UpdateType adaptUpdateType(int type) {
+        switch (type) {
+            case 1:
+                return UpdateType.ALL;
+            case 2:
+                return UpdateType.PART;
+            case 3:
+                return UpdateType.NEVER;
+            default:
+                return null;
+        }
     }
 }

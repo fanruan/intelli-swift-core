@@ -7,6 +7,7 @@ import com.fr.swift.source.ColumnTypeConstants.ColumnType;
 import com.fr.swift.source.core.CoreField;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -19,9 +20,10 @@ public abstract class AbstractOuterDataSource extends AbstractDataSource impleme
 
     /**
      * 保存使用的字段与columnType类型,空或者null表示没变
+     * 强制要求linkhashmap，保存顺序
      */
     @CoreField
-    protected Map<String, ColumnType> fieldColumnTypes;
+    protected LinkedHashMap<String, ColumnType> fieldColumnTypes;
 
     /**
      * 外部数据源的meta
@@ -31,7 +33,7 @@ public abstract class AbstractOuterDataSource extends AbstractDataSource impleme
     public AbstractOuterDataSource() {
     }
 
-    public AbstractOuterDataSource(Map<String, ColumnType> fieldColumnTypes) {
+    public AbstractOuterDataSource(LinkedHashMap<String, ColumnType> fieldColumnTypes) {
         this.fieldColumnTypes = fieldColumnTypes;
     }
 

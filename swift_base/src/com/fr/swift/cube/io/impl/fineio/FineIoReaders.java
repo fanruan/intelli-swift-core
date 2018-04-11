@@ -8,6 +8,7 @@ import com.fr.swift.cube.io.impl.fineio.input.ByteArrayFineIoReader;
 import com.fr.swift.cube.io.impl.fineio.input.ByteFineIoReader;
 import com.fr.swift.cube.io.impl.fineio.input.DoubleFineIoReader;
 import com.fr.swift.cube.io.impl.fineio.input.IntFineIoReader;
+import com.fr.swift.cube.io.impl.fineio.input.LongArrayFineIoReader;
 import com.fr.swift.cube.io.impl.fineio.input.LongFineIoReader;
 import com.fr.swift.cube.io.impl.fineio.input.StringFineIoReader;
 import com.fr.swift.cube.io.input.Reader;
@@ -35,6 +36,8 @@ public final class FineIoReaders {
                     return StringFineIoReader.build(location);
                 case BITMAP:
                     return BitMapFineIoReader.build(location);
+                case LONG_ARRAY:
+                    return LongArrayFineIoReader.build(location);
                 default:
             }
         }
