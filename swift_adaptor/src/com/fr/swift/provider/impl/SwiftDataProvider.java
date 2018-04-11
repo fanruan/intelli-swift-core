@@ -62,7 +62,7 @@ public class SwiftDataProvider implements DataProvider {
     @Override
     public BIDetailTableResult getDetailPreviewByFields(FineBusinessTable table, int rowCount) throws SQLException {
         try {
-            DataSource dataSource = DataSourceFactory.getDataSource(table);
+            DataSource dataSource = DataSourceFactory.transformDataSource(table);
             IntList sortIndex = IntListFactory.createHeapIntList();
             List<SortType> sorts = new ArrayList<SortType>();
             //分析表排序加上属性

@@ -87,7 +87,7 @@ public class SwiftTableEngineExecutor implements FineTableEngineExecutor {
 
     @Override
     public BIDetailTableResult getRealData(FineBusinessTable table) throws Exception {
-        DataSource dataSource = DataSourceFactory.getDataSource(table);
+        DataSource dataSource = DataSourceFactory.transformDataSource(table);
         List<Segment> segmentList = dataProvider.getRealData(dataSource);
         return new SwiftSegmentDetailResult(segmentList, dataSource.getMetadata());
     }
@@ -95,7 +95,7 @@ public class SwiftTableEngineExecutor implements FineTableEngineExecutor {
     @Override
     public List<FineBusinessField> getFieldList(FineBusinessTable table) throws Exception {
         try {
-            DataSource dataSource = DataSourceFactory.getDataSource(table);
+            DataSource dataSource = DataSourceFactory.transformDataSource(table);
             List<FineBusinessField> fieldsList = FieldFactory.transformColumns2Fields(dataSource.getMetadata(), table.getId());
             return fieldsList;
         } catch (Exception e) {
@@ -108,7 +108,7 @@ public class SwiftTableEngineExecutor implements FineTableEngineExecutor {
     public boolean isAvailable(FineResourceItem item) {
         try {
             FineBusinessTable fineBusinessTable = tableManager.getSingleTable(item.getName());
-            DataSource dataSource = DataSourceFactory.getDataSource(fineBusinessTable);
+            DataSource dataSource = DataSourceFactory.transformDataSource(fineBusinessTable);
             return dataProvider.isSwiftAvailable(dataSource);
         } catch (FineEngineException e) {
             LOGGER.error(e);

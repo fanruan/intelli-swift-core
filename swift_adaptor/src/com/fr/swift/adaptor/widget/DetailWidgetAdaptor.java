@@ -69,7 +69,7 @@ public class DetailWidgetAdaptor {
         String queryId = widget.getWidgetId();
         Dimension[] dimensions = getDimension(widget);
         FineBusinessTable table = new SwiftTableManager().getSingleTable(widget.getTableName());
-        SourceKey target = DataSourceFactory.getDataSource(table).getSourceKey();
+        SourceKey target = DataSourceFactory.transformDataSource(table).getSourceKey();
         SwiftMetaData swiftMetaData = MetaDataConvertUtil.getSwiftMetaDataBySourceKey(target.toString());
         SwiftMetaData metaData = getMetaData(widget, swiftMetaData);
         DetailTarget[] targets = getTargets(widget);
