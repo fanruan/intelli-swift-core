@@ -63,11 +63,9 @@ import com.finebi.conf.internalimp.analysis.operator.circulate.FloorItem;
 import com.finebi.conf.internalimp.analysis.operator.select.SelectFieldOperator;
 import com.finebi.conf.internalimp.analysis.operator.setting.FieldSettingOperator;
 import com.finebi.conf.internalimp.analysis.table.FineAnalysisTableImpl;
-import com.finebi.conf.internalimp.bean.rinfo.RInfoBean;
 import com.finebi.conf.internalimp.path.FineBusinessTableRelationPathImp;
 import com.finebi.conf.internalimp.service.pack.FineConfManageCenter;
 import com.finebi.conf.provider.SwiftRelationPathConfProvider;
-import com.finebi.conf.service.rlink.FineSaveRLinkService;
 import com.finebi.conf.structure.analysis.operator.FineOperator;
 import com.finebi.conf.structure.analysis.table.FineAnalysisTable;
 import com.finebi.conf.structure.bean.field.FineBusinessField;
@@ -108,7 +106,7 @@ import com.fr.swift.source.etl.columnfilter.ColumnFilterOperator;
 import com.fr.swift.source.etl.columnrowtrans.ColumnRowTransOperator;
 import com.fr.swift.source.etl.datamining.DataMiningOperator;
 import com.fr.swift.source.etl.datamining.rcompile.RCompileOperator;
-import com.fr.swift.source.etl.datamining.rcompile.RConnector;
+import com.fr.swift.source.etl.datamining.rcompile.RConnectionFactory;
 import com.fr.swift.source.etl.date.GetFromDateOperator;
 import com.fr.swift.source.etl.datediff.DateDiffOperator;
 import com.fr.swift.source.etl.detail.DetailOperator;
@@ -150,7 +148,6 @@ import java.util.TreeMap;
  * Created by Handsome on 2018/1/30 0030 16:38
  */
 class EtlAdaptor {
-    private static RConnection conn;
     static DataSource adaptEtlDataSource(FineBusinessTable table) throws Exception {
         FineAnalysisTable analysis = ((FineAnalysisTable) table);
         FineOperator op = analysis.getOperator();
@@ -613,34 +610,7 @@ class EtlAdaptor {
         boolean init = bean.isInit();
         boolean cancelPrevious = bean.isCancelPreviousStep();
         String tableName = bean.getTableName();
-        if(null == conn) {
-            try {
-                FineSaveRLinkService service = StableManager.getContext().getObject("fineSaveRLinkServiceImpl");
-                RInfoBean infoBean = service.getRLink();
-                if(null != infoBean) {
-                    boolean needPasswd = infoBean.isNeedPasswd();
-                    String ip = infoBean.getIp();
-                    int port = infoBean.getPort();
-                    if(null != ip && port > 0) {
-                        if(needPasswd) {
-                            String userName = infoBean.getUserName();
-                            String passwd = infoBean.getPasswd();
-                            conn = new RConnector().getNewConnection(true, ip, port, userName, passwd);
-                        } else {
-                            conn = new RConnector().getNewConnection(true, ip, port);
-                        }
-                    }
-                }
-            } catch(Exception e) {
-                SwiftLoggers.getLogger().error("failed to get R link information", e);
-            }
-            try {
-                if(null == conn) {
-                    conn = new RConnector().getNewConnection(true);
-                }
-            } catch(Exception e) {
-            }
-        }
+        RConnection conn = RConnectionFactory.getRConnection();
         if(null != dataSource) {
             try {
                 DataProvider dataProvider = new SwiftDataProvider();
