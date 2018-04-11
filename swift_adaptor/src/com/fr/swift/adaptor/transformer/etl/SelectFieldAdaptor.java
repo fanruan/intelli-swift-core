@@ -79,14 +79,14 @@ public class SelectFieldAdaptor {
         }
     }
 
-    public static DataSource getSingleTableSelectFieldSource(Map<String, List<ColumnKey>> sourceKeyColumnMap, Map<String, DataSource> sourceKeyDataSourceMap, List<DataSource> baseDatas) {
+    private static DataSource getSingleTableSelectFieldSource(Map<String, List<ColumnKey>> sourceKeyColumnMap, Map<String, DataSource> sourceKeyDataSourceMap, List<DataSource> baseDatas) {
         List<ColumnKey> fields = sourceKeyColumnMap.values().iterator().next();
         ETLOperator operator = new DetailOperator(new ArrayList<ColumnKey[]>(), fields, new ArrayList<SwiftMetaData>());
         baseDatas.add(sourceKeyDataSourceMap.values().iterator().next());
         return new EtlSource(baseDatas, operator);
     }
 
-    public static DataSource getMultiTableSelectFieldSource(Map<String, List<ColumnKey>> sourceKeyColumnMap, Map<String, DataSource> sourceKeyDataSourceMap, List<DataSource> baseDatas, String baseSoruceKey) {
+    private static DataSource getMultiTableSelectFieldSource(Map<String, List<ColumnKey>> sourceKeyColumnMap, Map<String, DataSource> sourceKeyDataSourceMap, List<DataSource> baseDatas, String baseSoruceKey) {
         List<SwiftMetaData> swiftMetaDatas = new ArrayList<SwiftMetaData>();
         List<ColumnKey[]> fields = new ArrayList<ColumnKey[]>();
         List<ColumnKey> baseFields = sourceKeyColumnMap.get(baseSoruceKey);

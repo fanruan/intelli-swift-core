@@ -7,6 +7,7 @@ import com.finebi.conf.structure.bean.field.FineBusinessField;
 import com.finebi.conf.structure.bean.table.FineBusinessTable;
 import com.finebi.conf.structure.conf.base.EngineComplexConfTable;
 import com.fr.general.ComparatorUtils;
+import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.source.etl.selfrelation.OneUnionRelationOperator;
 import com.fr.swift.source.etl.selfrelation.TwoUnionRelationOperator;
 
@@ -43,7 +44,7 @@ public class SelfCirculateAdaptor {
             try {
                 tempName = fields.get(findFieldName(fields, item.getName())).getName();
             } catch (Exception e) {
-
+                SwiftLoggers.getLogger().error(e);
             }
             columns.put(tempName, item.getLength());
         }
@@ -68,7 +69,7 @@ public class SelfCirculateAdaptor {
             try {
                 tempName = fields.get(findFieldName(fields, item.getName())).getName();
             } catch (Exception e) {
-
+                SwiftLoggers.getLogger().error(e);
             }
             columns.put(tempName, item.getLength());
         }

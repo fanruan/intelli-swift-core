@@ -108,7 +108,7 @@ public class EtlAdaptor {
         return new SwiftMetaDataImpl(name, columns);
     }
 
-    public static ETLOperator adaptEtlOperator(FineOperator op, FineBusinessTable table) throws Exception {
+    static ETLOperator adaptEtlOperator(FineOperator op, FineBusinessTable table) throws Exception {
         switch (op.getType()) {
             case AnalysisType.JOIN:
                 return JoinAdaptor.fromJoinBean(op.<JoinBean>getValue());

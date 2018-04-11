@@ -61,8 +61,10 @@ import java.util.List;
  * @date 2018/4/11
  */
 public class AddColumnAdaptor {
-    //fieldType为将被转换的字段类型
-    public static ColumnTypeConstants.ColumnType getColumnType(int fieldType) {
+    /**
+     * fieldType为将被转换的字段类型
+     */
+    private static ColumnTypeConstants.ColumnType getColumnType(int fieldType) {
         if (fieldType == BICommonConstants.FORMULA_GENERATE_TYPE.DATE) {
             return ColumnTypeConstants.ColumnType.DATE;
         } else if (fieldType == BICommonConstants.FORMULA_GENERATE_TYPE.NUMBER) {
@@ -156,16 +158,12 @@ public class AddColumnAdaptor {
         String field = bean.getField();
         List<CustomGroupValueContent> details = bean.getDetails();
         List<SingleGroup> group = new ArrayList<SingleGroup>();
-        Iterator<CustomGroupValueContent> iterator = details.iterator();
-        while (iterator.hasNext()) {
-            CustomGroupValueContent content = iterator.next();
+        for (CustomGroupValueContent content : details) {
             String id = content.getId();
             String name = content.getValue();
             List<CustomGroupValueItemBean> itemBean = content.getContent();
             List<String> dataList = new ArrayList<String>();
-            Iterator<CustomGroupValueItemBean> iter = itemBean.iterator();
-            while (iter.hasNext()) {
-                CustomGroupValueItemBean tempValue = iter.next();
+            for (CustomGroupValueItemBean tempValue : itemBean) {
                 dataList.add(tempValue.getValue());
             }
             SingleGroup singleGroup = new SingleGroup();

@@ -52,8 +52,7 @@ public class FieldSettingAdaptor {
         for (int i = fieldSettingOperatorList.size() - 1; i >= 0; i--) {
             List<FieldSettingBeanItem> fieldSettings = fieldSettingOperatorList.get(i).getValue().getValue();
             Iterator<Entry<Integer, String>> fullFieldInfoIter = sourceFullFieldInfo.entrySet().iterator();
-            for (int j = 0; j < fieldSettings.size(); j++) {
-                FieldSettingBeanItem setting = fieldSettings.get(j);
+            for (FieldSettingBeanItem setting : fieldSettings) {
                 Entry<Integer, String> entry = fullFieldInfoIter.next();
                 if (setting.isUsed()) {
                     fieldInfo.put(entry.getKey(), setting.getName());

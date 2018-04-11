@@ -30,8 +30,8 @@ import java.util.Set;
  * @author anchore
  * @date 2018/4/11
  */
-public class RelationAdaptor {
-    public static String getBaseTable(SwiftRelationPathConfProvider relationProvider, List<SelectFieldBeanItem> selectFieldBeanItemList) {
+class RelationAdaptor {
+    static String getBaseTable(SwiftRelationPathConfProvider relationProvider, List<SelectFieldBeanItem> selectFieldBeanItemList) {
         Set<String> tables = new HashSet<String>();
         for (SelectFieldBeanItem selectFieldBeanItem : selectFieldBeanItemList) {
             tables.add(selectFieldBeanItem.getTableName());
@@ -75,7 +75,7 @@ public class RelationAdaptor {
         return tables.iterator().next();
     }
 
-    public static RelationSource getRelation(List<SelectFieldPathItem> path, String baseTable, String table, SwiftRelationPathConfProvider relationProvider) {
+    static RelationSource getRelation(List<SelectFieldPathItem> path, String baseTable, String table, SwiftRelationPathConfProvider relationProvider) {
         if (path != null) {
             List<FineBusinessTableRelation> targetRelations = new ArrayList<FineBusinessTableRelation>();
             try {

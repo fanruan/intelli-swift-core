@@ -6,6 +6,7 @@ import com.finebi.conf.structure.bean.table.FineBusinessTable;
 import com.fr.swift.adaptor.transformer.EtlAdaptor;
 import com.fr.swift.adaptor.transformer.FilterInfoFactory;
 import com.fr.swift.generate.preview.MinorSegmentManager;
+import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.query.filter.info.FilterInfo;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.source.DataSource;
@@ -26,7 +27,7 @@ public class ColumnFilterAdaptor {
             // TODO: 2018/3/16 这边直接通过minor来拿有问题。不能区分当前是部分数据还是全部数据的预览。需要anchore在上层处理:)
             segments = MinorSegmentManager.getInstance().getSegment(source.getSourceKey());
         } catch (Exception e) {
-
+            SwiftLoggers.getLogger().error(e);
         }
         FilterInfo filterInfo = FilterInfoFactory.transformFilterBean(bean.getValue(), segments);
         return new ColumnFilterOperator(filterInfo);
