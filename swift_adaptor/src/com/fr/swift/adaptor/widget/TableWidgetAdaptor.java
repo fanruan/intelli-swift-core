@@ -10,7 +10,6 @@ import com.finebi.conf.structure.dashboard.widget.dimension.FineDimension;
 import com.finebi.conf.structure.dashboard.widget.dimension.FineDimensionSort;
 import com.finebi.conf.structure.dashboard.widget.target.FineTarget;
 import com.finebi.conf.structure.result.table.BIGroupNode;
-import com.finebi.conf.utils.FineTableUtils;
 import com.fr.swift.adaptor.encrypt.SwiftEncryption;
 import com.fr.swift.adaptor.struct.node.BIGroupNodeAdaptor;
 import com.fr.swift.adaptor.transformer.DataSourceFactory;
@@ -48,6 +47,7 @@ import com.fr.swift.service.QueryRunnerProvider;
 import com.fr.swift.source.DataSource;
 import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftResultSet;
+import com.fr.swift.utils.BusinessTableUtils;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -91,8 +91,8 @@ public class TableWidgetAdaptor {
         fieldId = fieldId == null ?
                 widget.getTargetList().isEmpty() ? null : widget.getTargetList().get(0).getFieldId()
                 : fieldId;
-        FineBusinessTable fineBusinessTable = FineTableUtils.getTableByFieldId(fieldId);
-        DataSource baseDataSource = DataSourceFactory.getDataSource(fineBusinessTable);
+        FineBusinessTable fineBusinessTable = BusinessTableUtils.getTableByFieldId(fieldId);
+        DataSource baseDataSource = DataSourceFactory.transformDataSource(fineBusinessTable);
         TableGroupQueryInfo tableGroupQueryInfo = new TableGroupQueryInfo(
                 dimensions.toArray(new Dimension[dimensions.size()]),
                 metrics.toArray(new Metric[metrics.size()]),
