@@ -107,12 +107,8 @@ public class RCompileOperator extends AbstractOperator {
             }
         } else {
             for(int i = 0; i < columns.length; i++) {
-                try {
-                    columnList.add(new MetaDataColumn(columns[i], columns[i], columnTypes[i],
-                            ColumnTypeUtils.MAX_LONG_COLUMN_SIZE, 0, fetchObjectCore().getValue()));
-                } catch(Exception e) {
-                    e.printStackTrace();
-                }
+                columnList.add(new MetaDataColumn(columns[i], columns[i], columnTypes[i],
+                        ColumnTypeUtils.MAX_LONG_COLUMN_SIZE, 0, fetchObjectCore().getValue()));
             }
         }
         return columnList;
