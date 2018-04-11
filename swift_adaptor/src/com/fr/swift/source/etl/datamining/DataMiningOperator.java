@@ -2,16 +2,17 @@ package com.fr.swift.source.etl.datamining;
 
 import com.finebi.conf.algorithm.DMAbstractAlgorithm;
 import com.finebi.conf.algorithm.DMAlgorithmFactory;
+import com.finebi.conf.internalimp.analysis.bean.operator.datamining.AlgorithmBean;
 import com.finebi.conf.algorithm.DMColMetaData;
 import com.finebi.conf.algorithm.DMDataModel;
 import com.finebi.conf.algorithm.DMRowMetaData;
 import com.finebi.conf.algorithm.DMType;
-import com.finebi.conf.internalimp.analysis.bean.operator.datamining.AlgorithmBean;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.source.MetaDataColumn;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftMetaDataColumn;
+import com.fr.swift.source.core.CoreField;
 import com.fr.swift.source.etl.AbstractOperator;
 import com.fr.swift.source.etl.OperatorType;
 
@@ -24,6 +25,7 @@ import java.util.List;
 public class DataMiningOperator extends AbstractOperator {
     private static final SwiftLogger LOGGER = SwiftLoggers.getLogger(DataMiningOperator.class);
 
+    @CoreField
     private AlgorithmBean algorithmBean = null;
 
     private DMAbstractAlgorithm algorithm;
