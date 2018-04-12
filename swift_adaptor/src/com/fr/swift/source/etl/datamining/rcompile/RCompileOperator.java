@@ -1,11 +1,10 @@
 package com.fr.swift.source.etl.datamining.rcompile;
 
+import com.fr.swift.adaptor.transformer.ColumnTypeAdaptor;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.column.ColumnKey;
-import com.fr.swift.source.ColumnTypeUtils;
-import com.fr.swift.source.MetaDataColumn;
-import com.fr.swift.source.SwiftMetaData;
-import com.fr.swift.source.SwiftMetaDataColumn;
+import com.fr.swift.source.*;
+import com.fr.swift.source.core.CoreField;
 import com.fr.swift.source.etl.AbstractOperator;
 import com.fr.swift.source.etl.OperatorType;
 import org.rosuda.REngine.Rserve.RConnection;
@@ -19,17 +18,27 @@ import java.util.List;
  * Created by Handsome on 2018/3/29 0029 15:59
  */
 public class RCompileOperator extends AbstractOperator {
-
+    @CoreField
     private String[] columns;
+    @CoreField
     private int[] columnTypes;
+    @CoreField
     private static List dataList;
+    @CoreField
     private List<SwiftMetaDataColumn> columnList;
+    @CoreField
     private String commands;
+    @CoreField
     private boolean needExecute;
+    @CoreField
     private RConnection conn;
+    @CoreField
     private String tableName;
+    @CoreField
     private Segment[] segments;
+    @CoreField
     private boolean cancelPreviousStep;
+    @CoreField
     private boolean init;
 
     public RCompileOperator(String commands, boolean needExecute, RConnection conn,
@@ -107,7 +116,8 @@ public class RCompileOperator extends AbstractOperator {
             }
         } else {
             for(int i = 0; i < columns.length; i++) {
-                columnList.add(new MetaDataColumn(columns[i], columns[i], columnTypes[i],
+                ColumnTypeConstants.ColumnType type = ColumnTypeAdaptor.adaptColumnType(columnTypes[i]);
+                columnList.add(new MetaDataColumn(columns[i], columns[i], ColumnTypeUtils.columnTypeToSqlType(type),
                         ColumnTypeUtils.MAX_LONG_COLUMN_SIZE, 0, fetchObjectCore().getValue()));
             }
         }
