@@ -73,7 +73,7 @@ public class CrossTableWidgetAdaptor {
                 widget.getTargetList().isEmpty() ? null : widget.getTargetList().get(0).getFieldId()
                 : fieldId;
         FineBusinessTable fineBusinessTable = FineTableUtils.getTableByFieldId(fieldId);
-        DataSource baseDataSource = DataSourceFactory.getDataSource(fineBusinessTable);
+        DataSource baseDataSource = DataSourceFactory.transformDataSource(fineBusinessTable);
         XTableGroupQueryInfo tableGroupQueryInfo = new XTableGroupQueryInfo(
                 rowDimensions.toArray(new Dimension[colDimensions.size()]),
                 colDimensions.toArray(new Dimension[colDimensions.size()]),
