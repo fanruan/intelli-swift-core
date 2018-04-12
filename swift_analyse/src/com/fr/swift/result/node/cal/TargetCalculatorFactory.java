@@ -5,9 +5,10 @@ import com.fr.swift.query.adapter.target.cal.TargetCalculatorInfo;
 import com.fr.swift.query.aggregator.AggregatorValue;
 import com.fr.swift.result.node.GroupNode;
 import com.fr.swift.result.node.iterator.LastDimensionIterator;
-import com.fr.swift.result.node.iterator.NodeMapperUtils;
 import com.fr.swift.result.node.xnode.XLeftNode;
+import com.fr.swift.util.function.Function;
 
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
@@ -60,11 +61,29 @@ public class TargetCalculatorFactory {
             case ALL_RANK_ASC:
             case ALL_RANK_DEC: {
                 if (root instanceof XLeftNode) {
-                    return new LastDimensionIterator(root, NodeMapperUtils.mapper((XLeftNode) root));
+                    return new LastDimensionIterator(root, xLeftNodeMapper());
                 }
-                return new LastDimensionIterator(root, NodeMapperUtils.mapper(root));
+                return new LastDimensionIterator(root, groupNodeMapper());
             }
         }
-        return new LastDimensionIterator(root, NodeMapperUtils.mapper(root));
+        return new LastDimensionIterator(root, groupNodeMapper());
+    }
+
+    private static Function<GroupNode, List<AggregatorValue[]>> groupNodeMapper() {
+        return new Function<GroupNode, List<AggregatorValue[]>>() {
+            @Override
+            public List<AggregatorValue[]> apply(final GroupNode p) {
+                return Arrays.<AggregatorValue[]>asList(p.getAggregatorValue());
+            }
+        };
+    }
+
+    private static Function<GroupNode, List<AggregatorValue[]>> xLeftNodeMapper() {
+        return new Function<GroupNode, List<AggregatorValue[]>>() {
+            @Override
+            public List<AggregatorValue[]> apply(final GroupNode p) {
+                return ((XLeftNode) p).getValueArrayList();
+            }
+        };
     }
 }
