@@ -83,6 +83,7 @@ public class CrossTableWidgetAdaptor {
         return new XGroupQueryInfo(cursor, queryId, filterInfo,
                 new TableGroupQueryInfo[]{tableGroupQueryInfo},
                 rowDimensions.toArray(new Dimension[rowDimensions.size()]),
+                colDimensions.toArray(new Dimension[colDimensions.size()]),
                 metrics.toArray(new Metric[metrics.size()]),
                 targets, expander);
     }

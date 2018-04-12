@@ -95,7 +95,7 @@ public class GroupResultQueryTest extends TestCase {
                 public boolean matches(SwiftNode node) {
                     return false;
                 }
-            });
+            }, new ArrayList<>());
             queryList.add(query);
             aggregators = cubeData.getAggregators();
             expectedResultList.add(cubeData.getAggregationResult());

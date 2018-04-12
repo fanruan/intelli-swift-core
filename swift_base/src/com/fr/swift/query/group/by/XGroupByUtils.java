@@ -73,7 +73,7 @@ public class XGroupByUtils {
                                                                                        int[] cursor,
                                                                                        List<Sort> sorts) {
         Iterator<KeyValue<RowIndexKey<int[]>, RowTraversal>> iterator =
-                new MultiDimensionGroupBy(dimensions, filter, cursor, getAsc(sorts, dimensions.size()));
+                new MultiDimensionGroupBy(dimensions, filter, cursor, GroupByUtils.getSorts(sorts, dimensions.size()));
         iterator = new FilteredIterator<KeyValue<RowIndexKey<int[]>, RowTraversal>>(iterator, new Filter<KeyValue<RowIndexKey<int[]>, RowTraversal>>() {
             @Override
             public boolean accept(KeyValue<RowIndexKey<int[]>, RowTraversal> kv) {
@@ -86,17 +86,6 @@ public class XGroupByUtils {
             }
         });
         return iterator;
-    }
-
-    private static boolean[] getAsc(List<Sort> sorts, int dimensionSize) {
-        boolean[] asc;
-        if (sorts == null) {
-            asc = new boolean[dimensionSize];
-            Arrays.fill(asc, true);
-        } else {
-            asc = GroupByUtils.getSorts(sorts, dimensionSize);
-        }
-        return asc;
     }
 
     /**

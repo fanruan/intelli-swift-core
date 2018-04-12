@@ -17,13 +17,15 @@ import java.util.List;
 public class XGroupAllSegmentQuery extends GroupAllSegmentQuery {
 
     private List<Column> colDimensions;
-    private List<Sort> xIndexSorts;
+    private List<Sort> colIndexSorts;
     private int[] xCursor;
 
     public XGroupAllSegmentQuery(List<Column> rowDimensions, List<Column> colDimensions, List<Column> metrics,
-                                 List<Aggregator> aggregators, DetailFilter filter) {
-        super(rowDimensions, metrics, aggregators, filter);
+                                 List<Aggregator> aggregators, DetailFilter filter,
+                                 List<Sort> rowIndexSorts, List<Sort> colIndexSorts) {
+        super(rowDimensions, metrics, aggregators, filter, rowIndexSorts);
         this.colDimensions = colDimensions;
+        this.colIndexSorts = colIndexSorts;
     }
 
     @Override
@@ -32,7 +34,7 @@ public class XGroupAllSegmentQuery extends GroupAllSegmentQuery {
         Arrays.fill(cursor, DictionaryEncodedColumn.NOT_NULL_START_INDEX);
         xCursor = new int[colDimensions.size()];
         Arrays.fill(xCursor, DictionaryEncodedColumn.NOT_NULL_START_INDEX);
-        return XGroupByUtils.query(dimensions, colDimensions, metrics, aggregators, filter, indexSorts, xIndexSorts,
+        return XGroupByUtils.query(dimensions, colDimensions, metrics, aggregators, filter, indexSorts, colIndexSorts,
                 cursor, xCursor, -1, -1);
     }
 }

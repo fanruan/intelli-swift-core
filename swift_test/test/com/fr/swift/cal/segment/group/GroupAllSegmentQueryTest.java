@@ -14,6 +14,7 @@ import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.DictionaryEncodedColumn;
 import junit.framework.TestCase;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -71,7 +72,7 @@ public class GroupAllSegmentQueryTest extends TestCase {
             public boolean matches(SwiftNode node) {
                 return false;
             }
-        });
+        }, new ArrayList<>());
         GroupByResultSet collector = null;
         try {
             collector = query.getQueryResult();

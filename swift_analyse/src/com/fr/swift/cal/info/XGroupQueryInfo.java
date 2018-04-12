@@ -14,11 +14,17 @@ public class XGroupQueryInfo extends GroupQueryInfo {
 
     // TODO: 2018/4/1 占坑
     private Expander xExpander;
+    private Dimension[] colDimensions;
 
     public XGroupQueryInfo(Cursor cursor, String queryID, FilterInfo filterInfo,
-                           TableGroupQueryInfo[] tablesGroups, Dimension[] dimensions,
+                           TableGroupQueryInfo[] tablesGroups, Dimension[] dimensions, Dimension[] colDimensions,
                            Metric[] metrics, GroupTarget[] targets, Expander expander) {
         super(cursor, queryID, filterInfo, tablesGroups, dimensions, metrics, targets, expander);
+        this.colDimensions = colDimensions;
+    }
+
+    public Dimension[] getColDimensions() {
+        return colDimensions;
     }
 
     @Override

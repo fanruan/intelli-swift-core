@@ -126,7 +126,8 @@ public class GroupBy {
 
     private static GroupByResult getAllShowDescResult(final DictionaryEncodedColumn dictionaryEncodedColumn, final BitmapIndexedColumn bitMapColumn, final int startIndex) {
         return new GroupByResult() {
-            private int index = dictionaryEncodedColumn.size() - 1 - startIndex;
+            // 因为字典0位置被空值占用了，所以dictionaryEncodedColumn.size()不用减一了
+            private int index = dictionaryEncodedColumn.size() - startIndex;
 
             @Override
             public void remove() {
@@ -135,7 +136,7 @@ public class GroupBy {
 
             @Override
             public boolean hasNext() {
-                return index >= 0;
+                return index >= DictionaryEncodedColumn.NOT_NULL_START_INDEX;
             }
 
             @Override

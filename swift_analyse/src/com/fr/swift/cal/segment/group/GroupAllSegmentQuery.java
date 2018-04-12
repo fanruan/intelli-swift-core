@@ -19,8 +19,10 @@ public class GroupAllSegmentQuery extends AbstractGroupSegmentQuery{
     protected List<Sort> indexSorts;
     protected int[] cursor;
 
-    public GroupAllSegmentQuery(List<Column> dimensions, List<Column> metrics, List<Aggregator> aggregators, DetailFilter filter) {
+    public GroupAllSegmentQuery(List<Column> dimensions, List<Column> metrics, List<Aggregator> aggregators,
+                                DetailFilter filter, List<Sort> indexSorts) {
         super(dimensions, metrics, aggregators, filter);
+        this.indexSorts = indexSorts;
     }
 
     @Override
