@@ -10,7 +10,6 @@ import com.fr.swift.source.etl.OperatorType;
 import org.rosuda.REngine.Rserve.RConnection;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
@@ -82,6 +81,8 @@ public class RCompileOperator extends AbstractOperator {
                 }
             }
         } else {
+            RCodeFactory factory = new RCodeFactory();
+            factory.getRCode(tableName);
             ColumnKey[] columnKeys = new ColumnKey[columns.length];
             for(int i = 0; i < columns.length; i++) {
                 columnKeys[i] = new ColumnKey(columns[i]);
