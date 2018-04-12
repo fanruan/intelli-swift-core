@@ -35,7 +35,8 @@ public class GroupQueryInfo extends AbstractQueryInfo<GroupByResultSet> {
      */
     private Expander expander;
 
-    public GroupQueryInfo(Cursor cursor, String queryID, SourceKey table, FilterInfo filterInfo, Dimension[] dimensions, Metric[] metrics, GroupTarget[] targets, Expander expander) {
+    public GroupQueryInfo(Cursor cursor, String queryID, SourceKey table, FilterInfo filterInfo, Dimension[] dimensions,
+                          Metric[] metrics, GroupTarget[] targets, Expander expander) {
         super(cursor, queryID, table, filterInfo);
         this.dimensions = dimensions;
         this.metrics = metrics;

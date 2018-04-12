@@ -16,12 +16,12 @@ public class GroupNode<T extends GroupNode> extends AbstractSwiftNode<T> {
     public GroupNode(int sumLength, int deep, Object data) {
         super(sumLength);
         this.deep = deep;
-        this.data = data;
+        this.data = data == null ? "" : data;
     }
 
     public GroupNode(int deep, Object data) {
         this.deep = deep;
-        this.data = data;
+        this.data = data == null ? "" : data;
     }
 
     protected GroupNode() {}

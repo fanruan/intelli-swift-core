@@ -45,13 +45,13 @@ public class AllRankCalculator extends AbstractTargetCalculator {
                 }
             }
         }
-        int count = 0;
+        int rank = 1;
         for (Map<Double, Integer> map : maps) {
             for (Map.Entry<Double, Integer> entry : map.entrySet()) {
                 // 算一下排名
                 int value = entry.getValue();
-                entry.setValue(count == 0 ? 1 : count + value);
-                count += value;
+                entry.setValue(rank);
+                rank += value;
             }
         }
         for (List<AggregatorValue[]> row : rows) {

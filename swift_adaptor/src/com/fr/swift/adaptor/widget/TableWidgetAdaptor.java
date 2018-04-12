@@ -66,7 +66,7 @@ public class TableWidgetAdaptor {
     private static final SwiftLogger LOGGER = SwiftLoggers.getLogger(TableWidgetAdaptor.class);
 
     public static BIGroupNode calculate(TableWidget widget) {
-        BIGroupNode resultNode = new BIGroupNodeAdaptor(new GroupNode(0,0,null,new Number[0]));
+        BIGroupNode resultNode;
         SwiftResultSet resultSet;
         try {
             TargetInfo targetInfo = CalTargetParseUtils.parseCalTarget(widget);

@@ -46,7 +46,7 @@ public class GroupNodeAggregateUtils {
     }
 
     /**
-     * 合并XLeftNode或者TopGroupNode
+     * 汇总XLeftNode或者TopGroupNode
      *
      * @param type
      * @param groupNode
@@ -82,7 +82,7 @@ public class GroupNodeAggregateUtils {
     }
 
     /**
-     * 合并GroupNode
+     * 汇总GroupNode
      *
      * @param groupNode
      * @param aggregators

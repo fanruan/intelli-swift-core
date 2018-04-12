@@ -10,6 +10,7 @@ import com.fr.swift.adaptor.transformer.FilterInfoFactory;
 import com.fr.swift.adaptor.widget.target.CalTargetParseUtils;
 import com.fr.swift.cal.QueryInfo;
 import com.fr.swift.cal.info.Expander;
+import com.fr.swift.cal.info.XGroupQueryInfo;
 import com.fr.swift.cal.info.XTableGroupQueryInfo;
 import com.fr.swift.cal.result.group.Cursor;
 import com.fr.swift.log.SwiftLogger;
@@ -72,17 +73,10 @@ public class CrossTableWidgetAdaptor {
                 : fieldId;
         FineBusinessTable fineBusinessTable = FineTableUtils.getTableByFieldId(fieldId);
         DataSource baseDataSource = DataSourceFactory.transformDataSource(fineBusinessTable);
-        XTableGroupQueryInfo tableGroupQueryInfo = new XTableGroupQueryInfo(
-                rowDimensions.toArray(new Dimension[colDimensions.size()]),
+        return new XGroupQueryInfo(cursor, queryId, baseDataSource.getSourceKey(), filterInfo,
+                rowDimensions.toArray(new Dimension[rowDimensions.size()]),
                 colDimensions.toArray(new Dimension[colDimensions.size()]),
                 metrics.toArray(new Metric[metrics.size()]),
-                baseDataSource.getSourceKey()
-        );
-//        return new XGroupQueryInfo(cursor, queryId, filterInfo,
-//                new TableGroupQueryInfo[]{tableGroupQueryInfo},
-//                rowDimensions.toArray(new Dimension[rowDimensions.size()]),
-//                metrics.toArray(new Metric[metrics.size()]),
-//                targets, expander);
-        return null;
+                targets, expander);
     }
 }

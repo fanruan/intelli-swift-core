@@ -2,6 +2,8 @@ package com.fr.swift.cal.builder;
 
 import com.fr.swift.cal.Query;
 import com.fr.swift.cal.info.GroupQueryInfo;
+import com.fr.swift.cal.info.XGroupQueryInfo;
+import com.fr.swift.cal.info.XTableGroupQueryInfo;
 import com.fr.swift.cal.result.group.GroupResultQuery;
 import com.fr.swift.cal.result.group.XGroupResultQuery;
 import com.fr.swift.cal.segment.group.GroupAllSegmentQuery;
@@ -35,13 +37,15 @@ public class LocalGroupAllQueryBuilder extends AbstractLocalGroupQueryBuilder {
                 List<Column> dimensionSegments = getDimensionSegments(segment, info.getDimensions());
                 List<Column> metricSegments = getMetricSegments(segment, info.getMetrics());
                 List<Aggregator> aggregators = getAggregators(info.getMetrics());
+                List<Sort> rowIndexSorts = getSegmentIndexSorts(info.getDimensions());
                 if (type == QueryType.CROSS_GROUP) {
-                    List<Column> colDimension = getDimensionSegments(segment, info.getDimensions());
+                    List<Column> colDimension = getDimensionSegments(segment, ((XGroupQueryInfo) info).getColDimensions());
+                    List<Sort> colIndexSorts = getSegmentIndexSorts(((XGroupQueryInfo) info).getColDimensions());
                     queries.add(new XGroupAllSegmentQuery(dimensionSegments, colDimension, metricSegments, aggregators,
-                            FilterBuilder.buildDetailFilter(segment, info.getFilterInfo())));
+                            FilterBuilder.buildDetailFilter(segment, info.getFilterInfo()), rowIndexSorts, colIndexSorts));
                 } else {
                     queries.add(new GroupAllSegmentQuery(dimensionSegments, metricSegments, aggregators,
-                            FilterBuilder.buildDetailFilter(segment, info.getFilterInfo())));
+                            FilterBuilder.buildDetailFilter(segment, info.getFilterInfo()), rowIndexSorts));
                 }
             }
         if (type == QueryType.CROSS_GROUP) {
@@ -60,6 +64,23 @@ public class LocalGroupAllQueryBuilder extends AbstractLocalGroupQueryBuilder {
         return new GroupResultQuery(queries, getAggregators(info.getMetrics()), getTargets(info.getTargets()), getIndexSorts(info.getDimensions()), getDimensionMatchFilters(info.getDimensions()));
     }
 
+    /**
+     * 维度的明细排序，按照维度值的字典排序
+     */
+    private List<Sort> getSegmentIndexSorts(Dimension[] dimensions) {
+        List<Sort> indexSorts = new ArrayList<Sort>();
+        for (Dimension dimension : dimensions) {
+            Sort sort = dimension.getSort();
+            if (sort != null && sort.getTargetIndex() == dimension.getIndex()) {
+                indexSorts.add(sort);
+            }
+        }
+        return indexSorts;
+    }
+
+    /**
+     * 维度根据结果（比如聚合之后的指标）排序
+     */
     private List<Sort> getIndexSorts(Dimension[] dimensions) {
         List<Sort> indexSorts = new ArrayList<Sort>();
         for (Dimension dimension : dimensions) {

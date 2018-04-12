@@ -18,7 +18,8 @@ import java.util.List;
  */
 class MultiDimensionGroupBy implements Iterator<KeyValue<RowIndexKey<int[]>, RowTraversal>> {
 
-    private static final int START_INDEX = DictionaryEncodedColumn.NOT_NULL_START_INDEX;
+    // 根据字典位置0的空值是否有对应的指标来决定空值是否要参与groupBy，这个判断在底层组件GroupBy里面做了，这里设置为0
+    private static final int START_INDEX = 0;
 
     private List<Column> dimensions;
     private DetailFilter detailFilter;

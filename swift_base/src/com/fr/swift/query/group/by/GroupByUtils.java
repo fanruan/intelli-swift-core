@@ -29,13 +29,7 @@ public class GroupByUtils {
 
     public static GroupByResultSet query(List<Column> dimensions, List<Column> metrics, List<Aggregator> aggregators,
                                          DetailFilter filter, List<Sort> indexSorts, int[] cursor, int pageSize) {
-        boolean[] asc;
-        if (indexSorts == null) {
-            asc = new boolean[dimensions.size()];
-            Arrays.fill(asc, true);
-        } else {
-            asc = getSorts(indexSorts, dimensions.size());
-        }
+        boolean[] asc = getSorts(indexSorts, dimensions.size());
         Iterator<KeyValue<RowIndexKey<int[]>, RowTraversal>> groupByIterator = new MultiDimensionGroupBy(dimensions, filter, cursor, asc);
         if (pageSize != -1) {
             // 分页的情况
@@ -55,12 +49,12 @@ public class GroupByUtils {
     }
 
     static boolean[] getSorts(List<Sort> sorts, int dimensionSize) {
-        // 这边sorts的size能保证和维度的size相同吗？
         boolean[] asc = new boolean[dimensionSize];
-        Arrays.fill(asc, false);
-        for (int i = 0; i < asc.length; i++) {
-            if (sorts.get(i).getSortType() == SortType.ASC) {
-                asc[i] = true;
+        // 默认为字典的升序
+        Arrays.fill(asc, true);
+        for (int i = 0; i < sorts.size(); i++) {
+            if (sorts.get(i).getSortType() == SortType.DESC) {
+                asc[sorts.get(i).getTargetIndex()] = false;
             }
         }
         return asc;

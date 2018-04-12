@@ -8,6 +8,8 @@ import com.fr.swift.result.node.GroupNode;
 import java.util.Iterator;
 
 /**
+ * 第N层node的迭代器
+ *
  * Created by Lyon on 2018/4/11.
  */
 public class NLevelGroupNodeIterator implements Iterator<GroupNode> {

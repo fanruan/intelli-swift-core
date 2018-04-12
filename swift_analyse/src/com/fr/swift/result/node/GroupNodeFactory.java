@@ -37,6 +37,13 @@ public class GroupNodeFactory {
         return root;
     }
 
+    /**
+     * 将聚合指标数组转为配置类（根据结果计算的类型）计算需要的指标的长度
+     *
+     * @param values 聚合指标数组
+     * @param targetLength 指标计算中间过程所用到的各类指标组成的数组的长度
+     * @return
+     */
     public static AggregatorValue[] createAggregatorValueArray(AggregatorValue[] values, int targetLength) {
         AggregatorValue[] result = new AggregatorValue[targetLength];
         for (int i = 0; i < targetLength; i++) {
