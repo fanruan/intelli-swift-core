@@ -64,7 +64,7 @@ public abstract class BaseColumnIndexer<T> extends BaseWorker {
         }
     }
 
-    private void buildIndex() throws SwiftMetaDataException {
+    private void buildIndex() throws Exception {
         List<Segment> segments = getSegments();
         for (Segment segment : segments) {
             Column<T> column = getColumn(segment);
@@ -90,7 +90,7 @@ public abstract class BaseColumnIndexer<T> extends BaseWorker {
      */
     protected abstract void releaseIfNeed(Releasable baseColumn);
 
-    private void buildColumnIndex(Column<T> column, int rowCount) throws SwiftMetaDataException {
+    private void buildColumnIndex(Column<T> column, int rowCount) throws Exception {
         Map<T, IntList> map;
         IResourceLocation location = column.getLocation();
 
@@ -146,6 +146,7 @@ public abstract class BaseColumnIndexer<T> extends BaseWorker {
     private void iterateBuildIndex(Iterable<Entry<T, IntList>> iterable, Column<T> column, int rowCount) {
         DictionaryEncodedColumn<T> dictColumn = column.getDictionaryEncodedColumn();
         BitmapIndexedColumn indexColumn = column.getBitmapIndex();
+        ImmutableBitMap nullIndex = indexColumn.getNullIndex();
 
         // row -> index， 0作为null值行号的对应序号
         int[] rowToIndex = new int[rowCount];
@@ -153,9 +154,15 @@ public abstract class BaseColumnIndexer<T> extends BaseWorker {
         // 有效值序号从1开始
         int pos = 1;
         for (Entry<T, IntList> entry : iterable) {
-            dictColumn.putValue(pos, entry.getKey());
-
+            T val = entry.getKey();
             IntList rows = entry.getValue();
+            // 考虑到外排map会写入NULL_VALUE，这里判断下
+            if (isNullValue(val) && nullIndex.contains(rows.get(0))) {
+                continue;
+            }
+
+            dictColumn.putValue(pos, val);
+
             MutableBitMap bitmap = BitMaps.newRoaringMutable();
 
             for (int i = 0, len = rows.size(), row; i < len; i++) {
