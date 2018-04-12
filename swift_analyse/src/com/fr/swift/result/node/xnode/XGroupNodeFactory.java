@@ -26,6 +26,14 @@ import java.util.Map;
  */
 public class XGroupNodeFactory {
 
+    /**
+     * 构建交叉表node，并且处理计算指标
+     *
+     * @param resultSet 交叉表聚合的行结果集
+     * @param targetInfo 交叉表计算指标相关属性
+     * @return 交叉表计算结果的node根节点
+     * @throws Exception
+     */
     public static XGroupNode createXGroupNode(XGroupByResultSet resultSet, TargetInfo targetInfo) throws Exception {
         // 构建节点
         XLeftNode xLeftNode = XLeftNodeFactory.createXLeftNode(resultSet, targetInfo.getTargetLength());
