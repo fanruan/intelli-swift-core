@@ -1,8 +1,12 @@
 package com.fr.swift.adaptor.struct.node;
 
 import com.finebi.conf.structure.result.table.BIGroupNode;
+import com.fr.swift.query.aggregator.AggregatorValue;
+import com.fr.swift.query.aggregator.DoubleAmountAggregatorValue;
 import com.fr.swift.result.ChildMap;
 import com.fr.swift.result.node.GroupNode;
+
+import static com.fr.swift.cube.io.IOConstant.NULL_DOUBLE;
 
 /**
  * Created by Lyon on 2018/4/8.
@@ -98,21 +102,30 @@ public class BIGroupNodeAdaptor implements BIGroupNode {
 
     @Override
     public void setSummaryValue(int index, Number value) {
-        node.setSummaryValue(index, value);
+        node.setAggregatorValue(index, new DoubleAmountAggregatorValue(value.doubleValue()));
     }
 
     @Override
     public Number getSummaryValue(int index) {
-        return node.getSummaryValue(index);
+        Double value = node.getAggregatorValue(index).calculate();
+        return Double.isNaN(value) ? null : value;
     }
 
     @Override
     public Number[] getSummaryValue() {
-        return node.getSummaryValue();
+        Number[] values = new Number[node.getAggregatorValue().length];
+        for (int i = 0; i < values.length; i++) {
+            Double value = node.getAggregatorValue(i).calculate();
+            values[i] = Double.isNaN(value) ? null : value ;
+        }
+        return values;
     }
 
     @Override
     public void setSummaryValue(Number[] summaryValue) {
-        node.setSummaryValue(summaryValue);
+        AggregatorValue[] values = new AggregatorValue[summaryValue.length];
+        for (int i = 0; i < values.length; i++) {
+            values[i] = new DoubleAmountAggregatorValue(summaryValue[i].doubleValue());
+        }
     }
 }

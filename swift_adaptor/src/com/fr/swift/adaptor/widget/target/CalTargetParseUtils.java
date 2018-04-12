@@ -2,19 +2,20 @@ package com.fr.swift.adaptor.widget.target;
 
 import com.finebi.conf.constant.BIDesignConstants;
 import com.finebi.conf.internalimp.bean.dashboard.widget.field.value.AbstractOriginValueBean;
-import com.finebi.conf.internalimp.dashboard.widget.table.TableWidget;
+import com.finebi.conf.internalimp.dashboard.widget.table.AbstractTableWidget;
 import com.finebi.conf.structure.dashboard.widget.field.WidgetBeanFieldValue;
 import com.finebi.conf.structure.dashboard.widget.target.FineTarget;
 import com.fr.swift.adaptor.encrypt.SwiftEncryption;
 import com.fr.swift.query.adapter.metric.GroupMetric;
 import com.fr.swift.query.adapter.metric.Metric;
+import com.fr.swift.query.adapter.target.cal.CalTargetType;
 import com.fr.swift.query.adapter.target.cal.ResultTarget;
+import com.fr.swift.query.adapter.target.cal.TargetCalculatorInfo;
 import com.fr.swift.query.adapter.target.cal.TargetInfo;
 import com.fr.swift.query.aggregator.Aggregator;
+import com.fr.swift.query.aggregator.DummyAggregator;
 import com.fr.swift.query.aggregator.SumAggregate;
 import com.fr.swift.query.filter.info.FilterInfo;
-import com.fr.swift.query.adapter.target.cal.CalTargetType;
-import com.fr.swift.query.adapter.target.cal.TargetCalculatorInfo;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.source.SourceKey;
 
@@ -36,7 +37,7 @@ public class CalTargetParseUtils {
      * @return
      * @throws Exception
      */
-    public static TargetInfo parseCalTarget(TableWidget widget) throws Exception {
+    public static TargetInfo parseCalTarget(AbstractTableWidget widget) throws Exception {
         List<String> metricFieldIds = parseMetricTargetFieldIds(widget);
         List<String> relatedMetricFieldIds = parseRelatedFieldIds(widget, metricFieldIds);
         List<String> calTargetFieldIds = parseCalTargetFieldIds(widget);
@@ -45,6 +46,7 @@ public class CalTargetParseUtils {
         allTargetFieldIds.addAll(relatedMetricFieldIds);
         allTargetFieldIds.addAll(calTargetFieldIds);
         List<ResultTarget> targetsForShowList = new ArrayList<ResultTarget>();
+        List<Aggregator> aggregatorListOfTargetsForShow = new ArrayList<Aggregator>();
         List<TargetCalculatorInfo> calculatorInfoList = new ArrayList<TargetCalculatorInfo>();
         List<FineTarget> targets = widget.getTargetList();
         for (int i = 0; i < targets.size(); i++) {
@@ -59,10 +61,20 @@ public class CalTargetParseUtils {
                 int paramIndex = allTargetFieldIds.indexOf(originFieldId);
                 calculatorInfoList.add(parseCalInfo(value.getType(), paramIndex, resultIndex));
             }
+
+            // TODO: 2018/4/11 指标结果合并用到的Aggregator，配置类计算的结果如何合并还没定
+            if (value == null) {
+                // 聚合指标，暂时都是SumAggregate
+                aggregatorListOfTargetsForShow.add(new SumAggregate());
+            } else {
+                // 配置类计算的结果指标不汇总
+                aggregatorListOfTargetsForShow.add(new DummyAggregator());
+            }
         }
         metricFieldIds.addAll(relatedMetricFieldIds);
         List<Metric> metrics = createMetrics(metricFieldIds);
-        return new TargetInfo(metrics, calculatorInfoList, targetsForShowList);
+        // TODO: 2018/4/11 这边需要提供targetsFowShowList对应的Aggregator，用于结果的聚合
+        return new TargetInfo(metrics, calculatorInfoList, targetsForShowList, aggregatorListOfTargetsForShow);
     }
 
     private static List<Metric> createMetrics(List<String> fieldIds) {
@@ -73,7 +85,7 @@ public class CalTargetParseUtils {
         return metrics;
     }
 
-    private static List<String> parseCalTargetFieldIds(TableWidget widget) throws Exception {
+    private static List<String> parseCalTargetFieldIds(AbstractTableWidget widget) throws Exception {
         List<String> calTargetFieldIds = new ArrayList<String>();
         List<FineTarget> targets = widget.getTargetList();
         for (int i = 0; i < targets.size(); i++) {
@@ -86,7 +98,7 @@ public class CalTargetParseUtils {
         return calTargetFieldIds;
     }
 
-    private static List<String> parseRelatedFieldIds(TableWidget widget, List<String> metricFieldIds) throws Exception {
+    private static List<String> parseRelatedFieldIds(AbstractTableWidget widget, List<String> metricFieldIds) throws Exception {
         List<String> relatedFieldIds = new ArrayList<String>();
         List<FineTarget> targets = widget.getTargetList();
         for (int i = 0; i < targets.size(); i++) {
@@ -104,7 +116,7 @@ public class CalTargetParseUtils {
         return relatedFieldIds;
     }
 
-    private static List<String> parseMetricTargetFieldIds(TableWidget widget) throws Exception {
+    private static List<String> parseMetricTargetFieldIds(AbstractTableWidget widget) throws Exception {
         List<String> metrics = new ArrayList<String>();
         List<FineTarget> targets = widget.getTargetList();
         for (int i = 0; i < targets.size(); i++) {

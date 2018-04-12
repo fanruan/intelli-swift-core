@@ -1,7 +1,6 @@
 package com.fr.swift.query.aggregator;
 
 import java.util.Map;
-import java.util.TreeMap;
 
 /**
  * @author Xiaolei.liu

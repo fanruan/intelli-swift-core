@@ -61,7 +61,7 @@ public class SwiftEngineWidgetExecutorManager implements EngineWidgetExecutorMan
 
     @Override
     public BICrossNode visit(CrossTableWidget tableWidget) {
-        return null;
+        return CrossTableWidgetAdaptor.calculate(tableWidget);
     }
 
     @Override

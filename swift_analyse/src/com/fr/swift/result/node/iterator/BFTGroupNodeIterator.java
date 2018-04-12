@@ -10,11 +10,11 @@ import java.util.Iterator;
  * 广度优先的node迭代器
  * Created by Lyon on 2018/4/4.
  */
-public class GroupNodeIterator implements Iterator<GroupNode> {
+public class BFTGroupNodeIterator implements Iterator<GroupNode> {
 
     FIFOQueue<GroupNode> queue = new LinkedListFIFOQueue<GroupNode>();
 
-    public GroupNodeIterator(GroupNode root) {
+    public BFTGroupNodeIterator(GroupNode root) {
         queue.add(root);
     }
 

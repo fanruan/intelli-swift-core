@@ -1,5 +1,7 @@
 package com.fr.swift.source.etl.datamining.rcompile;
 
+import com.finebi.base.stable.StableManager;
+import com.finebi.conf.service.rlink.RLogContext;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.segment.Segment;
@@ -65,7 +67,7 @@ public class RExecute {
                 statement.append(",");
             }
         }
-        statement.append(")");
+        statement.append(",stringsAsFactors = FALSE)");
         try {
             conn.eval(statement.toString());
             conn.eval(PREVIOUS + "<- " + tableName);
@@ -105,6 +107,7 @@ public class RExecute {
 
 
     private static REXP processCommands(RConnection conn, String[] commands, boolean returnTable, String tableName) {
+        RLogFactory logFactory = RLogFactory.getInstance();
         REXP rexp = null;
         String intermediate = "DFHCKH_NLOP_HWYG_DMGJS_TBJ_HKQOX09K";
         if(returnTable) {
@@ -126,6 +129,7 @@ public class RExecute {
                     String[] log = tempRexp.asStrings();
                     for(int k = 0; k < log.length; k ++) {
                         LOGGER.info(log[k]);
+                        logFactory.writeLog(log[k]);
                     }
                 } catch(Exception e) {
                     LOGGER.error("This R command: " + expression + " executed failed!", e);
@@ -140,6 +144,8 @@ public class RExecute {
                 }
             }
         }
+        RLogContext context = StableManager.getContext().getObject("rLogContext");
+        context.setService(logFactory);
         try {
             if(returnTable) {
                 conn.eval(NEXT + " <- " + tableName);
@@ -177,21 +183,6 @@ public class RExecute {
             return convertingResultSet(rexp);
         } catch(RserveException e) {
             LOGGER.error("Cancelling previous step failed", e);
-        }
-        return null;
-    }
-
-
-    /**
-     * 默认只能取最后一条命令的日志，其他的日志都记录在日志文件中了
-     */
-    public static String[] getRealtimeRLog(RConnection conn) {
-        try {
-            REXP tempRexp = conn.eval("capture.output(" + TEMPVALUE + ")");
-            String[] log = tempRexp.asStrings();
-            return log;
-        } catch(Exception e) {
-            LOGGER.error("Getting realtime R log failed", e);
         }
         return null;
     }

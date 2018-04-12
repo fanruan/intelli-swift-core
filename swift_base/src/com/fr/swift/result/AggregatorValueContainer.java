@@ -8,9 +8,9 @@ import com.fr.swift.query.aggregator.AggregatorValue;
  */
 public interface AggregatorValueContainer {
 
-    void setAggregatorValue(TargetGettingKey key, AggregatorValue value);
+    void setAggregatorValue(int key, AggregatorValue value);
 
-    AggregatorValue getAggregatorValue(TargetGettingKey key);
+    AggregatorValue getAggregatorValue(int key);
 
     AggregatorValue[] getAggregatorValue();
 

@@ -5,15 +5,15 @@ import java.util.NoSuchElementException;
 /**
  * Created by Lyon on 2018/3/1.
  */
-public class ArrayStack<T> implements Stack<T> {
+public class ArrayLimitedStack<T> implements LimitedStack<T> {
 
     private int limit;
     private int size = 0;
-    private T[] items;
+    private Object[] items;
 
-    public ArrayStack(int limit) {
+    public ArrayLimitedStack(int limit) {
         this.limit = limit;
-        items = (T[]) new Object[limit];
+        items = new Object[limit];
     }
 
     @Override
@@ -34,7 +34,7 @@ public class ArrayStack<T> implements Stack<T> {
     @Override
     public void push(T item) {
         if (size >= limit) {
-            throw new IndexOutOfBoundsException("Stack overflow");
+            throw new IndexOutOfBoundsException("LimitedStack overflow");
         }
         items[size] = item;
         size += 1;
@@ -43,19 +43,21 @@ public class ArrayStack<T> implements Stack<T> {
     @Override
     public T pop() {
         if (isEmpty()) {
-            throw new NoSuchElementException("Stack underflow");
+            throw new NoSuchElementException("LimitedStack underflow");
         }
-        T item = items[size - 1];
+        @SuppressWarnings("unchecked")
+        T item = (T) items[size - 1];
         items[size - 1] = null;
         size -= 1;
         return item;
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public T peek() {
         if (isEmpty()) {
-            throw new NoSuchElementException("Stack underflow");
+            throw new NoSuchElementException("LimitedStack underflow");
         }
-        return items[size - 1];
+        return (T) items[size - 1];
     }
 }

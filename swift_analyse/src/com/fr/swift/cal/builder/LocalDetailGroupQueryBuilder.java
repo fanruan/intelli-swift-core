@@ -32,7 +32,7 @@ public class LocalDetailGroupQueryBuilder implements LocalDetailQueryBuilder {
     @Override
     public Query<DetailResultSet> buildLocalQuery(DetailQueryInfo info) {
         List<Query<DetailResultSet>> queries = new ArrayList<Query<DetailResultSet>>();
-        List<Segment> segments = LocalSegmentProvider.getInstance().getSegment(info.getTarget());
+        List<Segment> segments = LocalSegmentProvider.getInstance().getSegment(info.getTable());
         IntList list = info.getSortIndex();
         List<SortType> sortTypes = new ArrayList<SortType>();
         Dimension[] dimensions = info.getDimensions();
