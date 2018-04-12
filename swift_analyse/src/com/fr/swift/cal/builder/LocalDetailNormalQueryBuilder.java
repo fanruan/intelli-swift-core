@@ -27,7 +27,7 @@ public class LocalDetailNormalQueryBuilder implements LocalDetailQueryBuilder {
     @Override
     public Query<DetailResultSet> buildLocalQuery(DetailQueryInfo info) {
         List<Query<DetailResultSet>> queries = new ArrayList<Query<DetailResultSet>>();
-        List<Segment> segments = LocalSegmentProvider.getInstance().getSegment(info.getTarget());
+        List<Segment> segments = LocalSegmentProvider.getInstance().getSegment(info.getTable());
         for (Segment segment : segments) {
             List<FilterInfo> filterInfos = new ArrayList<FilterInfo>();
             Dimension[] dimensions = info.getDimensions();

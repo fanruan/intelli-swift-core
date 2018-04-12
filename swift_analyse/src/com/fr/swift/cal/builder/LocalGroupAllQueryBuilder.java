@@ -2,9 +2,6 @@ package com.fr.swift.cal.builder;
 
 import com.fr.swift.cal.Query;
 import com.fr.swift.cal.info.GroupQueryInfo;
-import com.fr.swift.cal.info.TableGroupQueryInfo;
-import com.fr.swift.cal.info.XGroupQueryInfo;
-import com.fr.swift.cal.info.XTableGroupQueryInfo;
 import com.fr.swift.cal.result.group.GroupResultQuery;
 import com.fr.swift.cal.result.group.XGroupResultQuery;
 import com.fr.swift.cal.segment.group.GroupAllSegmentQuery;
@@ -33,14 +30,13 @@ public class LocalGroupAllQueryBuilder extends AbstractLocalGroupQueryBuilder {
     public Query<GroupByResultSet> buildLocalQuery(GroupQueryInfo info) {
         List<Query<GroupByResultSet>> queries = new ArrayList<Query<GroupByResultSet>>();
         QueryType type = info.getType();
-        for (TableGroupQueryInfo groupQueryInfo : info.getTableGroups()) {
-            List<Segment> segments = LocalSegmentProvider.getInstance().getSegment(groupQueryInfo.getTable());
+            List<Segment> segments = LocalSegmentProvider.getInstance().getSegment(info.getTable());
             for (Segment segment : segments) {
-                List<Column> dimensionSegments = getDimensionSegments(segment, groupQueryInfo.getDimensions());
-                List<Column> metricSegments = getMetricSegments(segment, groupQueryInfo.getMetrics());
-                List<Aggregator> aggregators = getAggregators(groupQueryInfo.getMetrics());
+                List<Column> dimensionSegments = getDimensionSegments(segment, info.getDimensions());
+                List<Column> metricSegments = getMetricSegments(segment, info.getMetrics());
+                List<Aggregator> aggregators = getAggregators(info.getMetrics());
                 if (type == QueryType.CROSS_GROUP) {
-                    List<Column> colDimension = getDimensionSegments(segment, ((XTableGroupQueryInfo) groupQueryInfo).getColDimensions());
+                    List<Column> colDimension = getDimensionSegments(segment, info.getDimensions());
                     queries.add(new XGroupAllSegmentQuery(dimensionSegments, colDimension, metricSegments, aggregators,
                             FilterBuilder.buildDetailFilter(segment, info.getFilterInfo())));
                 } else {
@@ -48,7 +44,6 @@ public class LocalGroupAllQueryBuilder extends AbstractLocalGroupQueryBuilder {
                             FilterBuilder.buildDetailFilter(segment, info.getFilterInfo())));
                 }
             }
-        }
         if (type == QueryType.CROSS_GROUP) {
             return new XGroupResultQuery(queries, getAggregators(info.getMetrics()), getTargets(info.getTargets()));
         }
