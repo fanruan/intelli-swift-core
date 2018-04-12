@@ -74,14 +74,7 @@ public class CrossTableWidgetAdaptor {
                 : fieldId;
         FineBusinessTable fineBusinessTable = FineTableUtils.getTableByFieldId(fieldId);
         DataSource baseDataSource = DataSourceFactory.transformDataSource(fineBusinessTable);
-        XTableGroupQueryInfo tableGroupQueryInfo = new XTableGroupQueryInfo(
-                rowDimensions.toArray(new Dimension[colDimensions.size()]),
-                colDimensions.toArray(new Dimension[colDimensions.size()]),
-                metrics.toArray(new Metric[metrics.size()]),
-                baseDataSource.getSourceKey()
-        );
-        return new XGroupQueryInfo(cursor, queryId, filterInfo,
-                new TableGroupQueryInfo[]{tableGroupQueryInfo},
+        return new XGroupQueryInfo(cursor, queryId, baseDataSource.getSourceKey(), filterInfo,
                 rowDimensions.toArray(new Dimension[rowDimensions.size()]),
                 colDimensions.toArray(new Dimension[colDimensions.size()]),
                 metrics.toArray(new Metric[metrics.size()]),

@@ -131,9 +131,8 @@ public class DataSourceFactory {
      *
      * @param table
      * @return
-     * @throws Exception
      */
-    public static DataSource transformDataSource(FineBusinessTable table) throws Exception {
+    public static DataSource transformDataSource(FineBusinessTable table) {
         try {
             return getDataSource(table);
         } catch (Exception e) {
@@ -150,7 +149,7 @@ public class DataSourceFactory {
      * @return
      * @throws Exception
      */
-    protected static DataSource getDataSource(FineBusinessTable table) throws Exception {
+    public static DataSource getDataSource(FineBusinessTable table) throws Exception {
         DataSource dataSource = null;
         switch (table.getType()) {
             case BICommonConstants.TABLE.DATABASE:

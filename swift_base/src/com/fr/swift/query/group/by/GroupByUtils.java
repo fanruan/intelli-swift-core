@@ -52,9 +52,9 @@ public class GroupByUtils {
         boolean[] asc = new boolean[dimensionSize];
         // 默认为字典的升序
         Arrays.fill(asc, true);
-        for (int i = 0; i < asc.length; i++) {
+        for (int i = 0; i < sorts.size(); i++) {
             if (sorts.get(i).getSortType() == SortType.DESC) {
-                asc[i] = false;
+                asc[sorts.get(i).getTargetIndex()] = false;
             }
         }
         return asc;

@@ -10,6 +10,7 @@ import com.fr.swift.query.filter.info.FilterInfo;
 import com.fr.swift.query.sort.Sort;
 import com.fr.swift.query.sort.SortType;
 import com.fr.swift.result.GroupByResultSet;
+import com.fr.swift.source.SourceKey;
 
 import java.util.TreeSet;
 
@@ -18,7 +19,6 @@ import java.util.TreeSet;
  * @date 2017/12/11
  */
 public class GroupQueryInfo extends AbstractQueryInfo<GroupByResultSet> {
-    protected TableGroupQueryInfo[] tablesGroups;
     //分组表的维度
     private Dimension[] dimensions;
     /**
@@ -35,9 +35,9 @@ public class GroupQueryInfo extends AbstractQueryInfo<GroupByResultSet> {
      */
     private Expander expander;
 
-    public GroupQueryInfo(Cursor cursor, String queryID, FilterInfo filterInfo, TableGroupQueryInfo[] tablesGroups, Dimension[] dimensions, Metric[] metrics, GroupTarget[] targets, Expander expander) {
-        super(cursor, queryID, filterInfo);
-        this.tablesGroups = tablesGroups;
+    public GroupQueryInfo(Cursor cursor, String queryID, SourceKey table, FilterInfo filterInfo, Dimension[] dimensions,
+                          Metric[] metrics, GroupTarget[] targets, Expander expander) {
+        super(cursor, queryID, table, filterInfo);
         this.dimensions = dimensions;
         this.metrics = metrics;
         this.targets = targets;
@@ -47,10 +47,6 @@ public class GroupQueryInfo extends AbstractQueryInfo<GroupByResultSet> {
     @Override
     public QueryType getType() {
         return QueryType.GROUP;
-    }
-
-    public TableGroupQueryInfo[] getTableGroups() {
-        return tablesGroups;
     }
 
     public Dimension[] getDimensions() {

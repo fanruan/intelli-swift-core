@@ -1,6 +1,8 @@
 package com.fr.swift.adaptor.widget;
 
 import com.finebi.conf.constant.BIReportConstant.SORT;
+import com.finebi.conf.internalimp.dashboard.widget.filter.ClickValue;
+import com.finebi.conf.internalimp.dashboard.widget.filter.ClickValueItem;
 import com.finebi.conf.internalimp.dashboard.widget.filter.CustomLinkConfItem;
 import com.finebi.conf.internalimp.dashboard.widget.filter.WidgetLinkItem;
 import com.finebi.conf.internalimp.dashboard.widget.table.TableWidget;
@@ -19,7 +21,6 @@ import com.fr.swift.adaptor.widget.target.CalTargetParseUtils;
 import com.fr.swift.cal.QueryInfo;
 import com.fr.swift.cal.info.Expander;
 import com.fr.swift.cal.info.GroupQueryInfo;
-import com.fr.swift.cal.info.TableGroupQueryInfo;
 import com.fr.swift.cal.result.group.Cursor;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
@@ -65,7 +66,7 @@ public class TableWidgetAdaptor {
     private static final SwiftLogger LOGGER = SwiftLoggers.getLogger(TableWidgetAdaptor.class);
 
     public static BIGroupNode calculate(TableWidget widget) {
-        BIGroupNode resultNode = null;
+        BIGroupNode resultNode;
         SwiftResultSet resultSet;
         try {
             TargetInfo targetInfo = CalTargetParseUtils.parseCalTarget(widget);
@@ -79,6 +80,7 @@ public class TableWidgetAdaptor {
         }
         return resultNode;
     }
+
 
     static QueryInfo buildQueryInfo(TableWidget widget, List<Metric> metrics) throws Exception {
         Cursor cursor = null;
@@ -96,13 +98,7 @@ public class TableWidgetAdaptor {
                 : fieldId;
         FineBusinessTable fineBusinessTable = BusinessTableUtils.getTableByFieldId(fieldId);
         DataSource baseDataSource = DataSourceFactory.transformDataSource(fineBusinessTable);
-        TableGroupQueryInfo tableGroupQueryInfo = new TableGroupQueryInfo(
-                dimensions.toArray(new Dimension[dimensions.size()]),
-                metrics.toArray(new Metric[metrics.size()]),
-                baseDataSource.getSourceKey()
-        );
-        return new GroupQueryInfo(cursor, queryId, filterInfo,
-                new TableGroupQueryInfo[]{tableGroupQueryInfo},
+        return new GroupQueryInfo(cursor, queryId, baseDataSource.getSourceKey(), filterInfo,
                 dimensions.toArray(new Dimension[dimensions.size()]),
                 metrics.toArray(new Metric[metrics.size()]),
                 targets, expander);
@@ -124,9 +120,10 @@ public class TableWidgetAdaptor {
                 List<CustomLinkConfItem> itemList = linkConf.get(id);
                 for (CustomLinkConfItem confItem : itemList) {
                     String columnName = SwiftEncryption.decryptFieldId(confItem.getTo())[1];
-                    List<Map<String, String>> clickedList = (List<Map<String, String>>) widgetLinkItem.getClicked().get("value");
-                    for (Map<String, String> clicked : clickedList) {
-                        String value = clicked.get("text");
+                    ClickValue clickValue = widgetLinkItem.getClicked();
+                    List<ClickValueItem> clickedList = clickValue.getValue();
+                    for (ClickValueItem clickValueItem : clickedList) {
+                        String value = clickValueItem.getText();
                         Set<String> values = new HashSet<String>();
                         values.add(value);
                         filterInfos.add(new SwiftDetailFilterInfo<Set<String>>(columnName, values, SwiftDetailFilterType.STRING_IN));
