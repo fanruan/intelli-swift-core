@@ -133,12 +133,17 @@ public abstract class BaseFilterTest extends TestCase {
                     }
 
                     @Override
-                    public void setAggregatorValue(TargetGettingKey key, AggregatorValue value) {
+                    public int getDeep() {
+                        return 0;
+                    }
+
+                    @Override
+                    public void setAggregatorValue(int key, AggregatorValue value) {
 
                     }
 
                     @Override
-                    public AggregatorValue getAggregatorValue(TargetGettingKey key) {
+                    public AggregatorValue getAggregatorValue(int key) {
                         return null;
                     }
 
@@ -170,12 +175,17 @@ public abstract class BaseFilterTest extends TestCase {
             }
 
             @Override
-            public void setAggregatorValue(TargetGettingKey key, AggregatorValue value) {
+            public int getDeep() {
+                return 0;
+            }
+
+            @Override
+            public void setAggregatorValue(int key, AggregatorValue value) {
 
             }
 
             @Override
-            public AggregatorValue getAggregatorValue(TargetGettingKey key) {
+            public AggregatorValue getAggregatorValue(int key) {
                 return null;
             }
 
@@ -243,12 +253,12 @@ public abstract class BaseFilterTest extends TestCase {
             }
 
             @Override
-            public void setAggregatorValue(TargetGettingKey key, AggregatorValue value) {
+            public void setAggregatorValue(int key, AggregatorValue value) {
 
             }
 
             @Override
-            public AggregatorValue getAggregatorValue(TargetGettingKey key) {
+            public AggregatorValue getAggregatorValue(int key) {
                 return null;
             }
 
@@ -264,6 +274,11 @@ public abstract class BaseFilterTest extends TestCase {
 
             @Override
             public int getIndex() {
+                return 0;
+            }
+
+            @Override
+            public int getDeep() {
                 return 0;
             }
         };

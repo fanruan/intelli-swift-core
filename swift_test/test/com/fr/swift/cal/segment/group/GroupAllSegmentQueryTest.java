@@ -80,7 +80,7 @@ public class GroupAllSegmentQueryTest extends TestCase {
         }
         checkResult(collector, expectedResult);
         // 测试字典map
-        List<Map<Integer, Object>> dictionaries = collector.getGlobalDictionaries();
+        List<Map<Integer, Object>> dictionaries = collector.getRowGlobalDictionaries();
         assertEquals(dictionaries.size(), dimensions.size());
         for (int i = 0; i < dimensions.size(); i++) {
             assertEquals(dictionaries.get(i).size(), dimensions.get(i).getDictionaryEncodedColumn().size() - 1);

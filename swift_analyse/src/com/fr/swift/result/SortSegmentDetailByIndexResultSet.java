@@ -16,7 +16,6 @@ import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.structure.array.IntList;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 
 

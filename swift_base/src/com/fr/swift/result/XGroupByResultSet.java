@@ -1,7 +1,6 @@
 package com.fr.swift.result;
 
 import com.fr.swift.query.aggregator.AggregatorValue;
-import com.fr.swift.query.sort.Sort;
 
 import java.util.List;
 import java.util.Map;
@@ -23,9 +22,5 @@ public interface XGroupByResultSet<T> extends GroupByResultSet<T> {
      */
     List<Map<Integer, Object>> getColGlobalDictionaries();
 
-    /**
-     * 表头排序
-     * @return
-     */
-    List<Sort> getColIndexSorts();
+    int colDimensionSize();
 }

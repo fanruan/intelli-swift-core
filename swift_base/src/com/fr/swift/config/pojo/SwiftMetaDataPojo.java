@@ -2,7 +2,6 @@ package com.fr.swift.config.pojo;
 
 import com.fr.swift.config.IMetaData;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**

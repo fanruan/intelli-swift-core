@@ -18,6 +18,7 @@ public class QueryBuilder {
     public static <T extends SwiftResultSet> Query<T> buildQuery(QueryInfo<T> info) throws SQLException{
         switch (info.getType()) {
             case GROUP:
+            case CROSS_GROUP:
                 return (Query<T>) buildGroupQuery((GroupQueryInfo) info);
             default:
                 return (Query<T>) buildDetailQuery((DetailQueryInfo) info);

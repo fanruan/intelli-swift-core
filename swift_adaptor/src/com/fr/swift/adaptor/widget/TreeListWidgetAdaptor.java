@@ -11,8 +11,6 @@ import com.fr.swift.query.filter.info.FilterInfo;
 
 import java.util.List;
 
-import static com.fr.swift.adaptor.widget.TreeWidgetAdaptor.createTreeItems;
-
 /**
  * Created by Lyon on 2018/3/27.
  */
@@ -28,7 +26,7 @@ public class TreeListWidgetAdaptor {
             FineDimension dimension = treeListWidget.getDimensionList().get(0);
             FilterInfo filterInfo = FilterInfoFactory.transformFineFilter(treeListWidget.getFilters());
             List values = QueryUtils.getOneDimensionFilterValues(dimension, filterInfo, treeListWidget.getWidgetId());
-            return new TreeListResult(true, createTreeItems(values, treeListWidget.getSelectedValues()));
+            return new TreeListResult(true, TreeWidgetAdaptor.createTreeItems(values, treeListWidget.getSelectedValues()));
         } catch (Exception e) {
             LOGGER.error(e);
         }

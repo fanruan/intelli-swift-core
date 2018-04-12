@@ -3,9 +3,8 @@ package com.fr.swift.structure.stack;
 /**
  * Created by Lyon on 2018/3/1.
  *
- * todo 其实java.util.Deque就满足lifo，不用再写个接口
  */
-public interface Stack<T> {
+public interface LimitedStack<T> {
 
     /**
      * 是否为空
@@ -15,6 +14,7 @@ public interface Stack<T> {
 
     /**
      * 栈允许的最大值
+     * 类库提供的java.util.Deque实现都是自动无限增长
      * @return
      */
     int limit();

@@ -1,5 +1,6 @@
 package com.fr.swift.result.node.iterator;
 
+import com.fr.swift.query.aggregator.AggregatorValue;
 import com.fr.swift.query.group.by.paging.Filter;
 import com.fr.swift.query.group.by.paging.FilteredIterator;
 import com.fr.swift.query.group.by.paging.MapperIterator;
@@ -7,34 +8,30 @@ import com.fr.swift.result.node.GroupNode;
 import com.fr.swift.util.function.Function;
 
 import java.util.Iterator;
+import java.util.List;
 
 /**
  * 用于“所有值”类的计算指标计算。比如根据所有值累计、求和、平均等。
  *
  * Created by Lyon on 2018/4/4.
  */
-public class LastDimensionIterator implements Iterator<Number[]> {
+public class LastDimensionIterator implements Iterator<List<AggregatorValue[]>> {
 
-    private Iterator<Number[]> rows;
+    private Iterator<List<AggregatorValue[]>> rows;
 
-    public LastDimensionIterator(GroupNode root) {
-        init(root);
+    public LastDimensionIterator(GroupNode root, Function<GroupNode, List<AggregatorValue[]>> fn) {
+        init(root, fn);
     }
 
-    private void init(GroupNode root) {
-        Iterator<GroupNode> iterator = new GroupNodeIterator(root);
+    private void init(GroupNode root, Function<GroupNode, List<AggregatorValue[]>> fn) {
+        Iterator<GroupNode> iterator = new BFTGroupNodeIterator(root);
         FilteredIterator<GroupNode> filteredIterator = new FilteredIterator<GroupNode>(iterator, new Filter<GroupNode>() {
             @Override
             public boolean accept(GroupNode biGroupNode) {
                 return biGroupNode.getChildrenSize() == 0;
             }
         });
-        rows = new MapperIterator<GroupNode, Number[]>(filteredIterator, new Function<GroupNode, Number[]>() {
-            @Override
-            public Number[] apply(GroupNode p) {
-                return p.getSummaryValue();
-            }
-        });
+        rows = new MapperIterator<GroupNode, List<AggregatorValue[]>>(filteredIterator, fn);
     }
 
     @Override
@@ -43,7 +40,7 @@ public class LastDimensionIterator implements Iterator<Number[]> {
     }
 
     @Override
-    public Number[] next() {
+    public List<AggregatorValue[]> next() {
         return rows.next();
     }
 
