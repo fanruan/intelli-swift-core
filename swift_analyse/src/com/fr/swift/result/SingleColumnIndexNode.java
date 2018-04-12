@@ -22,4 +22,9 @@ public class SingleColumnIndexNode extends IndexNode {
     protected Object createKey() {
         return index;
     }
+
+    @Override
+    public int getDeep() {
+        return 0;
+    }
 }

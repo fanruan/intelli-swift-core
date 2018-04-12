@@ -3,7 +3,6 @@ package com.fr.swift.source.etl.detail;
 import com.fr.swift.relation.utils.RelationPathHelper;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.column.ColumnKey;
-import com.fr.swift.segment.column.DictionaryEncodedColumn;
 import com.fr.swift.segment.relation.RelationIndex;
 import com.fr.swift.segment.relation.column.RelationColumn;
 import com.fr.swift.source.ListBasedRow;

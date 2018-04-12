@@ -19,6 +19,8 @@ public abstract class AbstractSwiftNode<T extends SwiftNode> implements SwiftNod
         this.aggregatorValues = new AggregatorValue[sumLength];
     }
 
+    protected AbstractSwiftNode() {}
+
     @Override
     public T getSibling() {
         return sibling;
@@ -40,13 +42,13 @@ public abstract class AbstractSwiftNode<T extends SwiftNode> implements SwiftNod
     }
 
     @Override
-    public void setAggregatorValue(TargetGettingKey key, AggregatorValue value) {
-        aggregatorValues[key.getTargetIndex()] = value;
+    public void setAggregatorValue(int key, AggregatorValue value) {
+        aggregatorValues[key] = value;
     }
 
     @Override
-    public AggregatorValue getAggregatorValue(TargetGettingKey key) {
-        return aggregatorValues[key.getTargetIndex()];
+    public AggregatorValue getAggregatorValue(int key) {
+        return aggregatorValues[key];
     }
 
     @Override

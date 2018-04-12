@@ -1,7 +1,6 @@
 package com.fr.swift.result;
 
 import com.fr.swift.query.aggregator.AggregatorValue;
-import com.fr.swift.query.sort.Sort;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SwiftMetaData;
 
@@ -15,19 +14,19 @@ import java.util.Map;
 public class XGroupByResultSetImpl implements XGroupByResultSet<int[]> {
 
     private List<KeyValue<RowIndexKey<int[]>, List<KeyValue<RowIndexKey<int[]>, AggregatorValue[]>>>> resultList;
-    private List<Map<Integer, Object>> globalDictionaries;
+    private List<Map<Integer, Object>> rowGlobalDictionaries;
     private List<Map<Integer, Object>> colGlobalDictionaries;
-    private List<Sort> indexSorts;
-    private List<Sort> colIndexSorts;
+    private int rowDimensionSize;
+    private int colDimensionSize;
 
     public XGroupByResultSetImpl(List<KeyValue<RowIndexKey<int[]>, List<KeyValue<RowIndexKey<int[]>, AggregatorValue[]>>>> resultList,
-                                 List<Map<Integer, Object>> globalDictionaries, List<Map<Integer, Object>> colGlobalDictionaries,
-                                 List<Sort> indexSorts, List<Sort> colIndexSorts) {
+                                 List<Map<Integer, Object>> rowGlobalDictionaries, List<Map<Integer, Object>> colGlobalDictionaries,
+                                 int rowDimensionSize, int colDimensionSize) {
         this.resultList = resultList;
-        this.globalDictionaries = globalDictionaries;
+        this.rowGlobalDictionaries = rowGlobalDictionaries;
         this.colGlobalDictionaries = colGlobalDictionaries;
-        this.indexSorts = indexSorts;
-        this.colIndexSorts = colIndexSorts;
+        this.rowDimensionSize = rowDimensionSize;
+        this.colDimensionSize = colDimensionSize;
     }
 
     @Override
@@ -41,23 +40,23 @@ public class XGroupByResultSetImpl implements XGroupByResultSet<int[]> {
     }
 
     @Override
-    public List<Sort> getColIndexSorts() {
-        return colIndexSorts;
-    }
-
-    @Override
     public List<KeyValue<RowIndexKey<int[]>, AggregatorValue[]>> getResultList() {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public List<Map<Integer, Object>> getGlobalDictionaries() {
-        return globalDictionaries;
+    public List<Map<Integer, Object>> getRowGlobalDictionaries() {
+        return rowGlobalDictionaries;
     }
 
     @Override
-    public List<Sort> getIndexSorts() {
-        return indexSorts;
+    public int colDimensionSize() {
+        return colDimensionSize;
+    }
+
+    @Override
+    public int rowDimensionSize() {
+        return rowDimensionSize;
     }
 
     @Override

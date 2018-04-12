@@ -14,14 +14,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import static com.fr.swift.cal.result.group.GroupByResultSetMergingUtils.addDictionaries;
-import static com.fr.swift.cal.result.group.GroupByResultSetMergingUtils.convertType;
-
 /**
  * Created by Lyon on 2018/4/2.
  */
 public class XGroupByResultSetMergingUtils {
 
+    @SuppressWarnings("unchecked")
     public static XGroupByResultSet merge(List<XGroupByResultSet<int[]>> xGroupByResultSets, List<Aggregator> aggregators,
                                           List<Sort> rowSorts, List<Sort> colSorts) {
         List<Map<Integer, Object>> rowGlobalDictionaries = new ArrayList<Map<Integer, Object>>();
@@ -29,14 +27,18 @@ public class XGroupByResultSetMergingUtils {
         List<List<KeyValue<RowIndexKey<int[]>, List<KeyValue<RowIndexKey<int[]>, AggregatorValue[]>>>>> lists = new ArrayList<List<KeyValue<RowIndexKey<int[]>, List<KeyValue<RowIndexKey<int[]>, AggregatorValue[]>>>>>();
         for (XGroupByResultSet<int[]> resultSet : xGroupByResultSets) {
             lists.add(resultSet.getXResultList());
-            addDictionaries(resultSet.getGlobalDictionaries(), rowGlobalDictionaries);
-            addDictionaries(resultSet.getColGlobalDictionaries(), colGlobalDictionaries);
+            GroupByResultSetMergingUtils.addDictionaries(resultSet.getRowGlobalDictionaries(), rowGlobalDictionaries);
+            GroupByResultSetMergingUtils.addDictionaries(resultSet.getColGlobalDictionaries(), colGlobalDictionaries);
         }
         // 合并行表头对应的聚合值，列表头聚合值(list)在KVListCombiner里面合并
         List<KeyValue<RowIndexKey<int[]>, List<KeyValue<RowIndexKey<int[]>, AggregatorValue[]>>>> result =
                 SortedListMergingUtils.merge(lists, new GroupByResultSetMergingUtils.IndexKeyComparator(rowSorts),
                         new KVListCombiner(colSorts, aggregators));
-        return new XGroupByResultSetImpl(result, rowGlobalDictionaries, colGlobalDictionaries, rowSorts, colSorts);
+        XGroupByResultSet set = xGroupByResultSets.isEmpty() ? null : xGroupByResultSets.get(0);
+        int rowDimensionSize = set == null ? 0 : set.rowDimensionSize();
+        int colDimensionSize = set == null ? 0 : set.colDimensionSize();
+        return new XGroupByResultSetImpl(result, rowGlobalDictionaries, colGlobalDictionaries,
+                rowDimensionSize, colDimensionSize);
     }
 
     private static class KVListCombiner implements
@@ -59,7 +61,8 @@ public class XGroupByResultSetMergingUtils {
             // 合并列表头对应的聚合值
             List<KeyValue<RowIndexKey<int[]>, AggregatorValue[]>> mergedResult = SortedListMergingUtils.merge(lists,
                     new GroupByResultSetMergingUtils.IndexKeyComparator<AggregatorValue[]>(sorts),
-                    new GroupByResultSetMergingUtils.KVCombiner<AggregatorValue>(convertType(aggregators)));
+                    new GroupByResultSetMergingUtils.KVCombiner<AggregatorValue>(
+                            GroupByResultSetMergingUtils.convertType(aggregators)));
             // 清空current，然后把mergedResult加到current
             current.getValue().clear();
             current.getValue().addAll(mergedResult);

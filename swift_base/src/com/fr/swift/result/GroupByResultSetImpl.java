@@ -1,12 +1,10 @@
 package com.fr.swift.result;
 
 import com.fr.swift.query.aggregator.AggregatorValue;
-import com.fr.swift.query.sort.Sort;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SwiftMetaData;
 
 import java.sql.SQLException;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -14,13 +12,14 @@ public class GroupByResultSetImpl implements GroupByResultSet<int[]> {
 
     private List<KeyValue<RowIndexKey<int[]>, AggregatorValue[]>> resultList;
     private List<Map<Integer, Object>> globalDictionaries;
-    private List<Sort> indexSorts;
+    private int rowDimensionSize;
 
     public GroupByResultSetImpl(List<KeyValue<RowIndexKey<int[]>, AggregatorValue[]>> resultList,
-                                List<Map<Integer, Object>> globalDictionaries, List<Sort> indexSorts) {
+                                List<Map<Integer, Object>> globalDictionaries,
+                                int rowDimensionSize) {
         this.resultList = resultList;
         this.globalDictionaries = globalDictionaries;
-        this.indexSorts = indexSorts;
+        this.rowDimensionSize = rowDimensionSize;
     }
 
     @Override
@@ -29,13 +28,13 @@ public class GroupByResultSetImpl implements GroupByResultSet<int[]> {
     }
 
     @Override
-    public List<Map<Integer, Object>> getGlobalDictionaries() {
+    public List<Map<Integer, Object>> getRowGlobalDictionaries() {
         return globalDictionaries;
     }
 
     @Override
-    public List<Sort> getIndexSorts() {
-        return indexSorts;
+    public int rowDimensionSize() {
+        return rowDimensionSize;
     }
 
     @Override

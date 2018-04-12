@@ -71,10 +71,11 @@ public class TableWidgetAdaptor {
         try {
             TargetInfo targetInfo = CalTargetParseUtils.parseCalTarget(widget);
             resultSet = QueryRunnerProvider.getInstance().executeQuery(buildQueryInfo(widget, targetInfo.getMetrics()));
-            GroupNode groupNode = GroupNodeFactory.createFromSortedList((GroupByResultSet) resultSet, targetInfo.getTargetLength());
+            GroupNode groupNode = GroupNodeFactory.createNode((GroupByResultSet) resultSet, targetInfo.getTargetLength());
             TargetCalculatorUtils.calculate(groupNode, targetInfo.getTargetCalculatorInfoList(), targetInfo.getTargetsForShowList());
             resultNode = new BIGroupNodeAdaptor(groupNode);
         } catch (Exception e) {
+            resultNode = new BIGroupNodeAdaptor(new GroupNode(-1, null));
             LOGGER.error(e);
         }
         return resultNode;
@@ -84,12 +85,14 @@ public class TableWidgetAdaptor {
     static QueryInfo buildQueryInfo(TableWidget widget, List<Metric> metrics) throws Exception {
         Cursor cursor = null;
         String queryId = widget.getWidgetId();
+
+        List<Dimension> dimensions = getDimensions(widget.getDimensionList());
         FilterInfo filterInfo = getFilterInfo(widget);
-        List<Dimension> dimensions = getDimensions(widget);
 
         GroupTarget[] targets = getTargets(widget);
         Expander expander = null;
         String fieldId = widget.getDimensionList().isEmpty() ? null : widget.getDimensionList().get(0).getFieldId();
+        fieldId = fieldId != null ? fieldId : metrics.isEmpty() ? null : metrics.get(0).getSourceKey().getId();
         fieldId = fieldId == null ?
                 widget.getTargetList().isEmpty() ? null : widget.getTargetList().get(0).getFieldId()
                 : fieldId;
@@ -131,9 +134,8 @@ public class TableWidgetAdaptor {
         return new GeneralFilterInfo(filterInfos, GeneralFilterInfo.AND);
     }
 
-    private static List<Dimension> getDimensions(FineWidget widget) throws Exception {
+    static List<Dimension> getDimensions(List<FineDimension> fineDims) throws Exception {
         List<Dimension> dimensions = new ArrayList<Dimension>();
-        List<FineDimension> fineDims = widget.getDimensionList();
         for (int i = 0, size = fineDims.size(); i < size; i++) {
             FineDimension fineDim = fineDims.get(i);
             dimensions.add(toDimension(fineDim, i));
@@ -141,7 +143,7 @@ public class TableWidgetAdaptor {
         return dimensions;
     }
 
-    private static GroupTarget[] getTargets(FineWidget widget) throws Exception {
+    static GroupTarget[] getTargets(FineWidget widget) throws Exception {
         List<FineTarget> fineTargets = widget.getTargetList();
         fineTargets = fineTargets == null ? new ArrayList<FineTarget>() : fineTargets;
         GroupTarget[] targets = new GroupTarget[fineTargets.size()];
@@ -151,7 +153,7 @@ public class TableWidgetAdaptor {
         return targets;
     }
 
-    private static Dimension toDimension(FineDimension fineDim, int index) {
+    static Dimension toDimension(FineDimension fineDim, int index) {
         SourceKey key = new SourceKey(fineDim.getId());
         String columnName = SwiftEncryption.decryptFieldId(fineDim.getFieldId())[1];
         ColumnKey colKey = new ColumnKey(columnName);
@@ -164,7 +166,7 @@ public class TableWidgetAdaptor {
                 fineDim.getSort() == null ? new AscSort(index) : adaptSort(fineDim.getSort(), index), filterInfo);
     }
 
-    private static Sort adaptSort(FineDimensionSort sort, int index) {
+    static Sort adaptSort(FineDimensionSort sort, int index) {
         switch (sort.getType()) {
             case SORT.ASC:
                 return new AscSort(index);

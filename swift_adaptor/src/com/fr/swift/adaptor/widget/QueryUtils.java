@@ -52,7 +52,7 @@ public class QueryUtils {
             GroupQueryInfo valueInfo = new GroupQueryInfo(new AllCursor(), id, baseDataSource.getSourceKey(), filterInfo, new Dimension[]{groupDimension}, new Metric[0], new GroupTarget[0], null);
             GroupByResultSet<int[]> valuesResultSet = (GroupByResultSet<int[]>) QueryRunnerProvider.getInstance().executeQuery(valueInfo);
             Iterator<KeyValue<RowIndexKey<int[]>, AggregatorValue[]>> it = valuesResultSet.getResultList().iterator();
-            Map<Integer, Object> dic = valuesResultSet.getGlobalDictionaries().get(0);
+            Map<Integer, Object> dic = valuesResultSet.getRowGlobalDictionaries().get(0);
             List values = new ArrayList();
             while (it.hasNext()) {
                 RowIndexKey<int[]> indexKey = it.next().getKey();

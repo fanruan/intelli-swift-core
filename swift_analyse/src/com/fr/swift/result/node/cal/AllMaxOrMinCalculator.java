@@ -1,6 +1,8 @@
 package com.fr.swift.result.node.cal;
 
 import com.fr.swift.compare.Comparators;
+import com.fr.swift.query.aggregator.AggregatorValue;
+import com.fr.swift.query.aggregator.DoubleAmountAggregatorValue;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -13,31 +15,38 @@ import java.util.List;
 public class AllMaxOrMinCalculator extends AbstractTargetCalculator {
 
     private Comparator<Double> comparator;
-    private Double value = null;
 
     public AllMaxOrMinCalculator(int paramIndex, int resultIndex,
-                                 Iterator<Number[]> iterator, boolean isMax) {
+                                 Iterator<List<AggregatorValue[]>> iterator, boolean isMax) {
         super(paramIndex, resultIndex, iterator);
         this.comparator = isMax ? Comparators.<Double>asc() : Comparators.<Double>desc();
     }
 
     @Override
     public Object call() throws Exception {
-        List<Number[]> rows = new ArrayList<Number[]>();
+        List<List<AggregatorValue[]>> rows = new ArrayList<List<AggregatorValue[]>>();
+        Double[] values = null;
         while (iterator.hasNext()) {
-            Number[] row = iterator.next();
+            List<AggregatorValue[]> row = iterator.next();
             rows.add(row);
-            Double v = row[paramIndex].doubleValue();
-            if (value == null) {
-                value = v;
-                continue;
+            if (values == null) {
+                values = row.isEmpty() ? null : new Double[row.size()];
             }
-            if (comparator.compare(value, v) < 0) {
-                value = v;
+            for (int i = 0; i < row.size(); i++) {
+                Double v = row.get(i)[paramIndex].calculate();
+                if (values[i] == null) {
+                    values[i] = v;
+                    continue;
+                }
+                if (comparator.compare(values[i], v) < 0) {
+                    values[i] = v;
+                }
             }
         }
-        for (Number[] row : rows) {
-            row[resultIndex] = value;
+        for (List<AggregatorValue[]> row : rows) {
+            for (int i = 0; i < row.size(); i++) {
+                row.get(i)[resultIndex] = new DoubleAmountAggregatorValue(values[i]);
+            }
         }
         return null;
     }
