@@ -33,6 +33,7 @@ public class KmeansResultSet implements SwiftResultSet {
     private int totalRowCount;
     private int rowCursor;
     private TempValue tempValue;
+    private double[] clusterSize;
 
     public KmeansResultSet(AlgorithmBean algorithmBean, SwiftMetaData metaData, Segment[] segments) {
         this.algorithmBean = algorithmBean;
@@ -65,6 +66,7 @@ public class KmeansResultSet implements SwiftResultSet {
             }
             kmeans.setDontReplaceMissingValues(false);
             kmeans.buildClusterer(instances);
+            clusterSize = kmeans.getClusterSizes();
             createData(kmeans.getClusterCentroids());
         } catch(Exception e) {
             throw new RuntimeException("Number of clusters must be > 0");
@@ -137,11 +139,12 @@ public class KmeansResultSet implements SwiftResultSet {
         if(rowCursor < totalRowCount) {
             List dataList = new ArrayList();
             if(rowCursor < cluster) {
+                dataList.add(clusterSize[rowCursor]);
                 for(int i = 0; i < dimensions.length; i++) {
                     dataList.add(data[rowCursor][i]);
                 }
             } else {
-                for(int i = 0; i < dimensions.length; i++) {
+                for(int i = 0; i < dimensions.length + 1; i++) {
                     dataList.add(null);
                 }
             }

@@ -15,31 +15,35 @@ public class RConnectionFactory {
 
     public static RConnection getRConnection() {
         if(null == conn) {
-            try {
-                FineSaveRLinkService service = StableManager.getContext().getObject("fineSaveRLinkServiceImpl");
-                RInfoBean infoBean = service.getRLink();
-                if(null != infoBean) {
-                    boolean needPasswd = infoBean.isNeedPasswd();
-                    String ip = infoBean.getIp();
-                    int port = infoBean.getPort();
-                    if(null != ip && port > 0) {
-                        if(needPasswd) {
-                            String userName = infoBean.getUserName();
-                            String passwd = infoBean.getPasswd();
-                            conn = new RConnector().getNewConnection(true, ip, port, userName, passwd);
-                        } else {
-                            conn = new RConnector().getNewConnection(true, ip, port);
+            synchronized (RConnectionFactory.class) {
+                if(null == conn) {
+                    try {
+                        FineSaveRLinkService service = StableManager.getContext().getObject("fineSaveRLinkServiceImpl");
+                        RInfoBean infoBean = service.getRLink();
+                        if(null != infoBean) {
+                            boolean needPasswd = infoBean.isNeedPasswd();
+                            String ip = infoBean.getIp();
+                            int port = infoBean.getPort();
+                            if(null != ip && port > 0) {
+                                if(needPasswd) {
+                                    String userName = infoBean.getUserName();
+                                    String passwd = infoBean.getPasswd();
+                                    conn = new RConnector().getNewConnection(true, ip, port, userName, passwd);
+                                } else {
+                                    conn = new RConnector().getNewConnection(true, ip, port);
+                                }
+                            }
                         }
+                    } catch(Exception e) {
+                        SwiftLoggers.getLogger().error("failed to get R link information", e);
+                    }
+                    try {
+                        if(null == conn) {
+                            conn = new RConnector().getNewConnection(true);
+                        }
+                    } catch(Exception e) {
                     }
                 }
-            } catch(Exception e) {
-                SwiftLoggers.getLogger().error("failed to get R link information", e);
-            }
-            try {
-                if(null == conn) {
-                    conn = new RConnector().getNewConnection(true);
-                }
-            } catch(Exception e) {
             }
         }
         return conn;
