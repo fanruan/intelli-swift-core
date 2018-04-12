@@ -3,6 +3,7 @@ package com.fr.swift.adaptor.connection;
 import com.finebi.base.stable.StableManager;
 import com.finebi.conf.exception.FineConnectRejectException;
 import com.finebi.conf.service.connection.FineConnectionService;
+import com.fr.data.impl.JDBCDatabaseConnection;
 import com.fr.engine.bi.connection.ConnectionAdapter;
 import com.fr.engine.constant.Null;
 
@@ -22,5 +23,11 @@ public class SwiftConnectionAdaptor implements ConnectionAdapter {
             throw new FineConnectRejectException(dbName);
         }
         return fineConnection.createConnection();
+    }
+
+    @Override
+    public String getSchema(String dbName) throws Exception{
+        com.fr.data.impl.Connection fineConnection = fineConnectionService.getConnectionByName(dbName);
+        return ((JDBCDatabaseConnection)fineConnection).getSchema();
     }
 }
