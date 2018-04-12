@@ -31,20 +31,12 @@ public class TestRExecute extends TestCase {
             testExecuteCommand(conn, command1, tableName);
             testNoReturnCommand(conn, command2, tableName);
             testCancelPreviousStep(conn, tableName);
-            testGetRealtimeLog(conn);
             conn.eval("");
             conn.eval("");
             String temp = "library(nutshell);data(field.goals);hist(field.goals$yards)";
             RExecute.executePlot(conn, temp, tableName);
         } catch(Exception e) {
             e.printStackTrace();
-        }
-    }
-
-    private void testGetRealtimeLog(RConnection conn) {
-        String[] str = RExecute.getRealtimeRLog(conn);
-        for(int i = 0; i < str.length; i ++) {
-            System.out.print(str[i] + " ");
         }
     }
 

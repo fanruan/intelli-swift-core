@@ -10,8 +10,6 @@ import com.fr.swift.adaptor.transformer.FilterInfoFactory;
 import com.fr.swift.adaptor.widget.target.CalTargetParseUtils;
 import com.fr.swift.cal.QueryInfo;
 import com.fr.swift.cal.info.Expander;
-import com.fr.swift.cal.info.TableGroupQueryInfo;
-import com.fr.swift.cal.info.XGroupQueryInfo;
 import com.fr.swift.cal.info.XTableGroupQueryInfo;
 import com.fr.swift.cal.result.group.Cursor;
 import com.fr.swift.log.SwiftLogger;
@@ -80,10 +78,11 @@ public class CrossTableWidgetAdaptor {
                 metrics.toArray(new Metric[metrics.size()]),
                 baseDataSource.getSourceKey()
         );
-        return new XGroupQueryInfo(cursor, queryId, filterInfo,
-                new TableGroupQueryInfo[]{tableGroupQueryInfo},
-                rowDimensions.toArray(new Dimension[rowDimensions.size()]),
-                metrics.toArray(new Metric[metrics.size()]),
-                targets, expander);
+//        return new XGroupQueryInfo(cursor, queryId, filterInfo,
+//                new TableGroupQueryInfo[]{tableGroupQueryInfo},
+//                rowDimensions.toArray(new Dimension[rowDimensions.size()]),
+//                metrics.toArray(new Metric[metrics.size()]),
+//                targets, expander);
+        return null;
     }
 }

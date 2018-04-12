@@ -30,10 +30,6 @@ public class DetailQueryInfo extends AbstractQueryInfo<DetailResultSet> {
      */
     private Dimension[] dimensions;
     /**
-     * 公共子表
-     */
-    private SourceKey target;
-    /**
      * 排序的顺序
      */
     private IntList sortIndex;
@@ -44,10 +40,9 @@ public class DetailQueryInfo extends AbstractQueryInfo<DetailResultSet> {
 
     SwiftMetaData metaData;
 
-    public DetailQueryInfo(Cursor cursor, String queryID, Dimension[] dimensions, SourceKey target, DetailTarget[] targets, IntList sortIndex, FilterInfo filterInfo, SwiftMetaData metaData) {
-        super(cursor, queryID, filterInfo);
+    public DetailQueryInfo(Cursor cursor, String queryID, Dimension[] dimensions, SourceKey table, DetailTarget[] targets, IntList sortIndex, FilterInfo filterInfo, SwiftMetaData metaData) {
+        super(cursor, queryID, table, filterInfo);
         this.dimensions = dimensions;
-        this.target = target;
         this.sortIndex = sortIndex;
         this.targets = targets;
         this.metaData = metaData;
@@ -55,10 +50,6 @@ public class DetailQueryInfo extends AbstractQueryInfo<DetailResultSet> {
 
     public Dimension[] getDimensions() {
         return dimensions;
-    }
-
-    public SourceKey getTarget() {
-        return target;
     }
 
     public DetailTarget[] getTargets() {
@@ -96,7 +87,7 @@ public class DetailQueryInfo extends AbstractQueryInfo<DetailResultSet> {
         private List<Column> columns;
         public DetailSortComparator() {
             columns = new ArrayList<Column>();
-            List<Segment> segments = LocalSegmentProvider.getInstance().getSegment(getTarget());
+            List<Segment> segments = LocalSegmentProvider.getInstance().getSegment(getTable());
             if(segments.size() > 0) {
                 for (int i = 0; i < dimensions.length; i++) {
                     columns.add(segments.get(0).getColumn(dimensions[i].getColumnKey()));
