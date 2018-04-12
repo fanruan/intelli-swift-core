@@ -50,7 +50,7 @@ public abstract class BaseColumnDictMerger<T> extends BaseWorker {
         }
     }
 
-    private void mergeDict() throws SwiftMetaDataException {
+    private void mergeDict() throws Exception {
         List<Segment> segments = getSegments();
 
         if (segments.isEmpty()) {
