@@ -1,6 +1,7 @@
 package com.fr.swift.compare;
 
-import java.math.BigDecimal;
+import com.fr.swift.util.Crasher;
+
 import java.util.Comparator;
 
 /**
@@ -64,8 +65,27 @@ public class Comparators {
     public static <T extends Number> Comparator<T> numberAsc() {
         return new Comparator<T>() {
             @Override
-            public int compare(T a, T b){
-                return new BigDecimal(a.toString()).compareTo(new BigDecimal(b.toString()));
+            public int compare(T a, T b) {
+                if (a == b) {
+                    return 0;
+                }
+                if (a == null) {
+                    return -1;
+                }
+                if (b == null) {
+                    return 1;
+                }
+                // 和数字运算类似，转成精度大的比较，默认最大为Double啦
+                if (a instanceof Double || b instanceof Double) {
+                    return Double.compare(a.doubleValue(), b.doubleValue());
+                }
+                if (a instanceof Long || b instanceof Long) {
+                    return (((Long) a.longValue())).compareTo(b.longValue());
+                }
+                if (a instanceof Integer || b instanceof Integer) {
+                    return ((Integer) a.intValue()).compareTo(b.intValue());
+                }
+                return Crasher.crash("cannot compare " + a.getClass() + " with " + b.getClass());
             }
         };
     }
