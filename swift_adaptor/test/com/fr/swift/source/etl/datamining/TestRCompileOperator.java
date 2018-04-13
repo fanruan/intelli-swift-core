@@ -10,6 +10,8 @@ import com.fr.swift.source.etl.datamining.rcompile.RConnector;
 import junit.framework.TestCase;
 import org.rosuda.REngine.Rserve.RConnection;
 
+import java.util.List;
+
 /**
  * Created by Handsome on 2018/4/10 0010 09:57
  */
@@ -29,24 +31,22 @@ public class TestRCompileOperator extends TestCase{
             int[] columnType = new int[]{4, 4};
             String[][] str = new String[][]{{"1", "18"}, {"1", "19"}, {"1", "20"},
                     {"1", "21"}, {"1", "22"}, {"1", "22"}, {"2", "17"}, {"2", "20"}};
-            init(segments, conn, tableName, null, columnType,
-                    columns, false, true, false, str);//初始化
-            init(segments, conn, tableName, commands, columnType, columns,
-                    true, false, false, str);//测试执行R语言命令
-            init(segments, conn ,tableName, null, columnType,
-                    columns, false, false, true, null);//撤销上一步操作
+            init(segments, conn, tableName, null);//初始化
+            //init(segments, conn, tableName, commands);//测试执行R语言命令
+            //init(segments, conn ,tableName, null);//撤销上一步操作
         } catch(Exception e) {
             e.printStackTrace();
         }
     }
 
     private void init(Segment[] segments, RConnection conn, String tableName,
-                      String commands, int[] columnType, String[] columns, boolean needExecute,
-                      boolean init, boolean cancel, String[][] str) throws Exception{
-        RCompileOperator operator = new RCompileOperator(commands, needExecute, conn, tableName,
-                segments, columnType, columns, cancel, init);
-        RCompileTransferOperator transfer = new RCompileTransferOperator(operator.getColumns(),
-                operator.getColumnTypes(), operator.getDataList());
+                      String commands) throws Exception{
+        RCompileOperator operator = new RCompileOperator(commands, conn, tableName,
+                segments);
+        List dataList = operator.getDataList();
+        String[] column = (String[]) dataList.get(0);
+        int[] columnType = (int[]) dataList.get(1);
+        RCompileTransferOperator transfer = new RCompileTransferOperator(column, columnType, dataList);
         SwiftResultSet rs = transfer.createResultSet(null, null, null);
         int index = 0;
         while(rs.next()) {
