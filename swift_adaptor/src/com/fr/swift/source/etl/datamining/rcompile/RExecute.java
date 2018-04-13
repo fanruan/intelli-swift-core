@@ -1,7 +1,7 @@
 package com.fr.swift.source.etl.datamining.rcompile;
 
 import com.finebi.base.stable.StableManager;
-import com.finebi.conf.service.rlink.RLogContext;
+import com.finebi.conf.internalimp.service.rlink.RLogContext;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.segment.Segment;
@@ -144,8 +144,13 @@ public class RExecute {
                 }
             }
         }
-        RLogContext context = StableManager.getContext().getObject("rLogContext");
-        context.setService(logFactory);
+        try {
+            RLogContext context = StableManager.getContext().getObject("rLogContext");
+            context.setService(logFactory);
+        } catch(Exception e) {
+            LOGGER.error("failed to write R log!", e);
+        }
+
         try {
             if(returnTable) {
                 conn.eval(NEXT + " <- " + tableName);
