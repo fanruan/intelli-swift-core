@@ -32,10 +32,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
 
-import static com.fr.swift.cube.io.IOConstant.NULL_DOUBLE;
-import static com.fr.swift.cube.io.IOConstant.NULL_INT;
-import static com.fr.swift.cube.io.IOConstant.NULL_LONG;
-import static com.fr.swift.cube.io.IOConstant.NULL_STRING;
 import static com.fr.swift.segment.column.impl.base.FakeStringDetailColumn.EXTERNAL_STRING;
 import static com.fr.swift.source.ColumnTypeConstants.ClassType.STRING;
 
@@ -126,7 +122,7 @@ public abstract class BaseColumnIndexer<T> extends BaseWorker {
         Map<T, IntList> map = newIntListSortedMap(column);
         for (int i = 0; i < rowCount; i++) {
             T val = detailColumn.get(i);
-            if (isNullValue(val) && nullIndex.contains(i)) {
+            if (nullIndex.contains(i)) {
                 continue;
             }
             if (map.containsKey(val)) {
@@ -157,7 +153,7 @@ public abstract class BaseColumnIndexer<T> extends BaseWorker {
             T val = entry.getKey();
             IntList rows = entry.getValue();
             // 考虑到外排map会写入NULL_VALUE，这里判断下
-            if (isNullValue(val) && nullIndex.contains(rows.get(0))) {
+            if (nullIndex.contains(rows.get(0))) {
                 continue;
             }
 
@@ -200,14 +196,6 @@ public abstract class BaseColumnIndexer<T> extends BaseWorker {
     private ExternalMap<T, IntList> newIntListExternalMap(Comparator<T> c, String path) throws SwiftMetaDataException {
         SwiftMetaDataColumn columnMeta = dataSource.getMetadata().getColumn(key.getName());
         return IntListExternalMapFactory.getIntListExternalMap(ColumnTypeUtils.getClassType(columnMeta), c, path, true);
-    }
-
-    private static <V> boolean isNullValue(V val) {
-        return val == null ||
-                val.equals(NULL_INT) ||
-                val.equals(NULL_LONG) ||
-                val.equals(NULL_DOUBLE) ||
-                val.equals(NULL_STRING);
     }
 
     private static <V> Iterable<Entry<V, IntList>> toIterable(Map<V, IntList> map) {
