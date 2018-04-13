@@ -85,6 +85,12 @@ public class Comparators {
                 if (a instanceof Integer || b instanceof Integer) {
                     return ((Integer) a.intValue()).compareTo(b.intValue());
                 }
+                if (a instanceof Short || b instanceof Short) {
+                    return ((Short) a.shortValue()).compareTo(b.shortValue());
+                }
+                if (a instanceof Byte || b instanceof Byte) {
+                    return ((Byte) a.byteValue()).compareTo(b.byteValue());
+                }
                 return Crasher.crash("cannot compare " + a.getClass() + " with " + b.getClass());
             }
         };
