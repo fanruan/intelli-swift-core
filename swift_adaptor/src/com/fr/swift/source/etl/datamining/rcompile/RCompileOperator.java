@@ -1,6 +1,8 @@
 package com.fr.swift.source.etl.datamining.rcompile;
 
 import com.fr.swift.adaptor.transformer.ColumnTypeAdaptor;
+import com.fr.swift.log.SwiftLogger;
+import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.column.ColumnKey;
 import com.fr.swift.source.*;
@@ -17,88 +19,27 @@ import java.util.List;
  * Created by Handsome on 2018/3/29 0029 15:59
  */
 public class RCompileOperator extends AbstractOperator {
+
+    private static final SwiftLogger LOGGER = SwiftLoggers.getLogger(RCompileOperator.class);
+
     @CoreField
-    private String[] columns;
-    @CoreField
-    private int[] columnTypes;
-    @CoreField
-    private static List dataList;
+    private List dataList;
     @CoreField
     private List<SwiftMetaDataColumn> columnList;
     @CoreField
     private String commands;
     @CoreField
-    private boolean needExecute;
+    private String tableName;
     @CoreField
     private RConnection conn;
     @CoreField
-    private String tableName;
-    @CoreField
-    private Segment[] segments;
-    @CoreField
-    private boolean cancelPreviousStep;
-    @CoreField
-    private boolean init;
+    private Segment[] segment;
 
-    public RCompileOperator(String commands, boolean needExecute, RConnection conn,
-                            String tableName, Segment[] segments, int[] columnTypes,
-                            String[] columns, boolean cancelPreviousStep, boolean init) {
-        if(!init) {
-            this.columns = (String[]) dataList.get(0);
-            this.columnTypes = (int[]) dataList.get(1);
-        } else {
-            this.columns = columns;
-            this.columnTypes = columnTypes;
-        }
-        this.conn = conn;
-        this.init = init;
-        this.cancelPreviousStep = cancelPreviousStep;
+    public RCompileOperator(String commands, RConnection conn, String tableName, Segment[] segment) {
         this.commands = commands;
-        this.needExecute = needExecute;
+        this.conn = conn;
         this.tableName = tableName;
-        this.segments = segments;
-        init(commands, init, tableName, segments, needExecute);
-    }
-
-    private void init(String commands, boolean init, String tableName,
-                      Segment[] segments, boolean needExecute) {
-        if(!init) {
-            if(needExecute) {
-                List list = RExecute.process(conn, commands, tableName);
-                if(null != list) {
-                    dataList = list;
-                    this.columns = (String[]) dataList.get(0);
-                    this.columnTypes = (int[]) dataList.get(1);
-                }
-            } else {
-                if(cancelPreviousStep) {
-                    List list = RExecute.cancelPreviousStep(conn, tableName);
-                    if(null != list) {
-                        dataList = list;
-                        this.columns = (String[]) dataList.get(0);
-                        this.columnTypes = (int[]) dataList.get(1);
-                    }
-                }
-            }
-        } else {
-            RCodeFactory factory = new RCodeFactory();
-            factory.getRCode(tableName);
-            ColumnKey[] columnKeys = new ColumnKey[columns.length];
-            for(int i = 0; i < columns.length; i++) {
-                columnKeys[i] = new ColumnKey(columns[i]);
-            }
-            RExecute.processAssignment(conn, segments, columnKeys, tableName);
-            dataList = RExecute.getPreviousDataList(conn);
-        }
-    }
-
-
-    public String[] getColumns() {
-        return columns;
-    }
-
-    public int[] getColumnTypes() {
-        return columnTypes;
+        this.segment = segment;
     }
 
     public List getDataList() {
@@ -108,21 +49,33 @@ public class RCompileOperator extends AbstractOperator {
     @Override
     public List<SwiftMetaDataColumn> getColumns(SwiftMetaData[] metaDatas) {
         columnList = new ArrayList<SwiftMetaDataColumn>();
-        if(!init) {
-            columns = (String[]) dataList.get(0);
-            columnTypes = (int[]) dataList.get(1);
-            for(int i = 0; i < columns.length; i++) {
-                columnList.add(new MetaDataColumn(columns[i], columns[i], columnTypes[i],
-                        ColumnTypeUtils.MAX_LONG_COLUMN_SIZE, 0, fetchObjectCore().getValue()));
+        SwiftMetaData metaData = metaDatas[0];
+        int count = 0;
+        ColumnKey[] columnKeys = null;
+        try {
+            count = metaData.getColumnCount();
+            columnKeys = new ColumnKey[count];
+            for(int i = 0; i < count; i ++) {
+                String name = metaData.getColumnName(i + 1);
+                int type = metaData.getColumnType(i + 1);
+                columnKeys[i] = new ColumnKey(name);
+                columnList.add(new MetaDataColumn(name, name, type, ColumnTypeUtils.MAX_LONG_COLUMN_SIZE,
+                        0, name));
             }
-        } else {
-            for(int i = 0; i < columns.length; i++) {
-                ColumnTypeConstants.ColumnType type = ColumnTypeAdaptor.adaptColumnType(columnTypes[i]);
-                columnList.add(new MetaDataColumn(columns[i], columns[i], ColumnTypeUtils.columnTypeToSqlType(type),
-                        ColumnTypeUtils.MAX_LONG_COLUMN_SIZE, 0, fetchObjectCore().getValue()));
-            }
+        } catch(Exception e) {
+            LOGGER.error("falied to get metaData's column", e);
         }
+        init(columnKeys);
         return columnList;
+    }
+
+    private void init(ColumnKey[] columnKeys) {
+        RExecute.processAssignment(conn, segment, columnKeys, tableName);
+        if(null == commands) {
+            dataList = RExecute.getPreviousDataList(conn);
+        } else {
+            dataList = RExecute.process(conn, commands, tableName);
+        }
     }
 
     @Override

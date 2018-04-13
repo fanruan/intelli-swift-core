@@ -27,7 +27,7 @@ public class RCompileResultSet implements SwiftResultSet {
         this.columnType = columnType;
         this.dataList = dataList;
         this.metaData = metaData;
-        rowCount = getArrayLength(dataList.get(2));
+        rowCount = getArrayLength(dataList.get(3));
         rowCursor = 0;
         tempValue = new TempValue();
     }
@@ -50,7 +50,8 @@ public class RCompileResultSet implements SwiftResultSet {
                         break;
                     }
                     case Types.INTEGER: {
-                        int v = ((int[]) dataList.get(i + 2))[rowCursor];
+                        Long v = ((Long[]) dataList.get(i + 2))[rowCursor];
+                        //Long value = Long.parseLong(v + "");
                         list.add(v);
                         break;
                     }

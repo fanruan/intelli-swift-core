@@ -242,9 +242,14 @@ public class RExecute {
                 for(int i = 0; i < columns.length; i++) {
                     REXP temp = (REXP)rList.get(columns[i]);
                     if (temp.isInteger()) {
-                        dataList.add(temp.asIntegers());
+                        int[] array = temp.asIntegers();
+                        Long[] value = new Long[array.length];
+                        for(int j = 0; j < array.length; j++) {
+                            value[j] = Long.parseLong(array[j] + "");
+                        }
+                        dataList.add(value);
                         columnTypes[i] = Types.INTEGER;
-                    }else if(temp.isNumeric()) {
+                    } else if(temp.isNumeric()) {
                         dataList.add(temp.asDoubles());
                         columnTypes[i] = Types.DOUBLE;
                     }  else {
@@ -323,11 +328,12 @@ public class RExecute {
                     conn.assign(columnName, parseByteArray(object));
                     break;
                 }
-                default: {
+                default :{
                     conn.assign(columnName, parseStringArray(object));
+                    break;
                 }
             }
-        } catch(REngineException e) {
+        } catch(Exception e) {
             throw new RuntimeException(e);
         }
     }
