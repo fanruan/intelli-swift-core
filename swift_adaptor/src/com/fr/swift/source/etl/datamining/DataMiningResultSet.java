@@ -68,7 +68,7 @@ public class DataMiningResultSet implements SwiftResultSet {
         DMDataModel dmDataModel = new DMDataModel(inputData, inputMetaData);
 
         DMAbstractAlgorithm algorithm = DMAlgorithmFactory.create(algorithmBean.getAlgorithmName());
-        algorithm.init(algorithmBean, new DMDataModel[]{dmDataModel});
+        algorithm.init(algorithmBean, dmDataModel);
         DMDataModel outputData = algorithm.run();
         predictTableData = outputData.getData();
     }
