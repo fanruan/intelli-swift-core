@@ -60,7 +60,7 @@ public class SubDateColumn extends BaseColumn<Long> {
     }
 
     private class SubDetailColumn implements DetailColumn<Long> {
-        private DetailColumn<Long> baseDetail = origin.getDetailColumn();
+        private DictionaryEncodedColumn<Long> baseDict = origin.getDictionaryEncodedColumn();
 
         private Function<Long, Long> deriver = DateDerivers.newDeriver(type);
 
@@ -86,17 +86,18 @@ public class SubDateColumn extends BaseColumn<Long> {
 
         @Override
         public Long get(int pos) {
-            return deriver.apply(baseDetail.get(pos));
+            Long originVal = baseDict.getValue(baseDict.getIndexByRow(pos));
+            return originVal == null ? null : deriver.apply(originVal);
         }
 
         @Override
         public void release() {
-            baseDetail.release();
+            baseDict.release();
         }
 
         @Override
         public void flush() {
-            baseDetail.flush();
+            baseDict.flush();
         }
     }
 

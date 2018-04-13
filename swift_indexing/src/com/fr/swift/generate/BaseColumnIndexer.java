@@ -203,7 +203,8 @@ public abstract class BaseColumnIndexer<T> extends BaseWorker {
     }
 
     private static <V> boolean isNullValue(V val) {
-        return val.equals(NULL_INT) ||
+        return val == null ||
+                val.equals(NULL_INT) ||
                 val.equals(NULL_LONG) ||
                 val.equals(NULL_DOUBLE) ||
                 val.equals(NULL_STRING);
