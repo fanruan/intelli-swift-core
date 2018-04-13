@@ -5,9 +5,7 @@ import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.DictionaryEncodedColumn;
 import com.fr.swift.structure.iterator.RowTraversal;
 
-
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.TreeMap;
 

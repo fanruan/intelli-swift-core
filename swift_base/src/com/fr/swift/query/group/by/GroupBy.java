@@ -92,17 +92,14 @@ public class GroupBy {
     }
 
     private static GroupByResult getAllShowResult(DictionaryEncodedColumn dictionaryEncodedColumn, BitmapIndexedColumn bitMapColumn, int startIndex, boolean asc) {
-        //null值如果没有，就去掉
-        if (startIndex == 0 && bitMapColumn.getBitMapIndex(0).isEmpty()){
-            startIndex = 1;
-        }
         return asc ? getAllShowAscResult(dictionaryEncodedColumn, bitMapColumn, startIndex) :
                 getAllShowDescResult(dictionaryEncodedColumn, bitMapColumn, startIndex);
     }
 
     private static GroupByResult getAllShowAscResult(final DictionaryEncodedColumn dictionaryEncodedColumn, final BitmapIndexedColumn bitMapColumn, final int startIndex) {
         return new GroupByResult() {
-            private int index = startIndex;
+            // 如果null值没有对应的指标，就从1开始
+            private int index = startIndex == 0 && bitMapColumn.getBitMapIndex(0).isEmpty() ? 1 : startIndex;
             private int groupSize = dictionaryEncodedColumn.size();
 
             @Override
@@ -127,6 +124,8 @@ public class GroupBy {
     private static GroupByResult getAllShowDescResult(final DictionaryEncodedColumn dictionaryEncodedColumn, final BitmapIndexedColumn bitMapColumn, final int startIndex) {
         return new GroupByResult() {
             private int index = dictionaryEncodedColumn.size() - 1 - startIndex;
+            // 如果null值没有对应的指标，index减到1结束
+            private int endIndex = startIndex == 0 && bitMapColumn.getBitMapIndex(0).isEmpty() ? 1 : 0;
 
             @Override
             public void remove() {
@@ -135,7 +134,7 @@ public class GroupBy {
 
             @Override
             public boolean hasNext() {
-                return index >= 0;
+                return index >= endIndex;
             }
 
             @Override

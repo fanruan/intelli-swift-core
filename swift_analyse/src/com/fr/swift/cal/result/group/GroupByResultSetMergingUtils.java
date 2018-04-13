@@ -35,19 +35,22 @@ public class GroupByResultSetMergingUtils {
      * @param indexSorts
      * @return
      */
+    @SuppressWarnings("unchecked")
     public static GroupByResultSet merge(List<GroupByResultSet> groupByResultSets,
                                          List<Aggregator> aggregators, List<Sort> indexSorts) {
         List<Map<Integer, Object>> globalDictionaries = new ArrayList<Map<Integer, Object>>();
         List<List<KeyValue<RowIndexKey<int[]>, AggregatorValue[]>>> lists = new ArrayList<List<KeyValue<RowIndexKey<int[]>, AggregatorValue[]>>>();
         for (GroupByResultSet resultSet : groupByResultSets) {
             lists.add(resultSet.getResultList());
-            addDictionaries(resultSet.getGlobalDictionaries(), globalDictionaries);
+            addDictionaries(resultSet.getRowGlobalDictionaries(), globalDictionaries);
         }
         List<KeyValue<RowIndexKey<int[]>, AggregatorValue[]>> mergedResult = SortedListMergingUtils.merge(lists,
                 new IndexKeyComparator<AggregatorValue[]>(indexSorts), new KVCombiner<AggregatorValue>(convertType(aggregators)));
-        return new GroupByResultSetImpl(mergedResult, globalDictionaries, indexSorts);
+        int rowDimensionSize = globalDictionaries.isEmpty() ? 0 : groupByResultSets.get(0).rowDimensionSize();
+        return new GroupByResultSetImpl(mergedResult, globalDictionaries, rowDimensionSize);
     }
 
+    @SuppressWarnings("unchecked")
     static List<Aggregator<AggregatorValue>> convertType(List<Aggregator> aggregators) {
         List<Aggregator<AggregatorValue>> aggregatorList = new ArrayList<Aggregator<AggregatorValue>>();
         for (Aggregator aggregator : aggregators) {

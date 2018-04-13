@@ -62,8 +62,8 @@ public class SingleColumnIndexNodeTest extends TestCase {
 
     public void testGetAggregatorValue() {
         AggregatorValue value = new DoubleAmountAggregatorValue();
-        node.setAggregatorValue(new TargetGettingKey(0), value);
-        assertEquals(value, node.getAggregatorValue(new TargetGettingKey(0)));
+        node.setAggregatorValue(0, value);
+        assertEquals(value, node.getAggregatorValue(0));
         AggregatorValue value1 = new DoubleAmountAggregatorValue();
         AggregatorValue[] values = new AggregatorValue[]{value1};
         node.setAggregatorValue(values);

@@ -1,5 +1,6 @@
 package com.fr.swift.result.node.iterator;
 
+import com.fr.swift.query.aggregator.AggregatorValue;
 import com.fr.swift.query.group.by.paging.MapperIterator;
 import com.fr.swift.result.node.GroupNode;
 import com.fr.swift.util.function.Function;
@@ -11,7 +12,7 @@ import java.util.Iterator;
  *
  * Created by Lyon on 2018/4/4.
  */
-public class LastButOneDimensionIterator implements Iterator<Iterator<Number[]>> {
+public class LastButOneDimensionIterator implements Iterator<Iterator<AggregatorValue[]>> {
 
     private GroupNode lastButOneNode;
 
@@ -33,11 +34,11 @@ public class LastButOneDimensionIterator implements Iterator<Iterator<Number[]>>
     }
 
     @Override
-    public Iterator<Number[]> next() {
-        Iterator<Number[]> iterator = new MapperIterator<GroupNode, Number[]>(new ChildIterator(lastButOneNode), new Function<GroupNode, Number[]>() {
+    public Iterator<AggregatorValue[]> next() {
+        Iterator<AggregatorValue[]> iterator = new MapperIterator<GroupNode, AggregatorValue[]>(new ChildIterator(lastButOneNode), new Function<GroupNode, AggregatorValue[]>() {
             @Override
-            public Number[] apply(GroupNode p) {
-                return p.getSummaryValue();
+            public AggregatorValue[] apply(GroupNode p) {
+                return p.getAggregatorValue();
             }
         });
         lastButOneNode = getNextNode();

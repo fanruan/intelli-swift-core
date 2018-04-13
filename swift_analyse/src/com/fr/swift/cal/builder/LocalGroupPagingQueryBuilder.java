@@ -2,7 +2,6 @@ package com.fr.swift.cal.builder;
 
 import com.fr.swift.cal.Query;
 import com.fr.swift.cal.info.GroupQueryInfo;
-import com.fr.swift.cal.info.TableGroupQueryInfo;
 import com.fr.swift.cal.result.group.GroupPagingResultQuery;
 import com.fr.swift.cal.segment.group.GroupPagingSegmentQuery;
 import com.fr.swift.manager.LocalSegmentProvider;
@@ -22,14 +21,12 @@ public class LocalGroupPagingQueryBuilder extends AbstractLocalGroupQueryBuilder
     @Override
     public Query<GroupByResultSet> buildLocalQuery(GroupQueryInfo info) {
         List<Query<GroupByResultSet>> queries = new ArrayList<Query<com.fr.swift.result.GroupByResultSet>>();
-        for (TableGroupQueryInfo groupQueryInfo : info.getTableGroups()) {
-            List<Segment> segments = LocalSegmentProvider.getInstance().getSegment(groupQueryInfo.getTable());
-            for (Segment segment : segments) {
-                List<Column> dimensionSegments = getDimensionSegments(segment, groupQueryInfo.getDimensions());
-                List<Column> metricSegments = getMetricSegments(segment, groupQueryInfo.getMetrics());
-                List<Aggregator> aggregators = getAggregators(groupQueryInfo.getMetrics());
-                queries.add(new GroupPagingSegmentQuery(dimensionSegments, metricSegments, aggregators, FilterBuilder.buildDetailFilter(segment, info.getFilterInfo()), info.getExpander()));
-            }
+        List<Segment> segments = LocalSegmentProvider.getInstance().getSegment(info.getTable());
+        for (Segment segment : segments) {
+            List<Column> dimensionSegments = getDimensionSegments(segment, info.getDimensions());
+            List<Column> metricSegments = getMetricSegments(segment, info.getMetrics());
+            List<Aggregator> aggregators = getAggregators(info.getMetrics());
+            queries.add(new GroupPagingSegmentQuery(dimensionSegments, metricSegments, aggregators, FilterBuilder.buildDetailFilter(segment, info.getFilterInfo()), info.getExpander()));
         }
         return new GroupPagingResultQuery(queries, getAggregators(info.getMetrics()), getTargets(info.getTargets()));
     }

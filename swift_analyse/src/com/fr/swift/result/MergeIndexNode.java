@@ -26,4 +26,9 @@ public class MergeIndexNode extends IndexNode {
     protected Object createKey() {
         return ((long)dicIndex << 31) + index;
     }
+
+    @Override
+    public int getDeep() {
+        return 0;
+    }
 }

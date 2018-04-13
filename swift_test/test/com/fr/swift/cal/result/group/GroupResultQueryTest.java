@@ -58,13 +58,13 @@ public class GroupResultQueryTest extends TestCase {
     public void testQueryWithOnlyOneSegment() {
         prepareGroupResultQuery(1, 3, 2, 100);
         GroupAllSegmentQueryTest.checkResult(collector, expectedResult);
-        checkDictionaryMerging(collector.getGlobalDictionaries());
+        checkDictionaryMerging(collector.getRowGlobalDictionaries());
     }
 
     public void testQuery() {
         prepareGroupResultQuery(3, 3, 2, 100);
         GroupAllSegmentQueryTest.checkResult(collector, expectedResult);
-        checkDictionaryMerging(collector.getGlobalDictionaries());
+        checkDictionaryMerging(collector.getRowGlobalDictionaries());
     }
 
     public void checkDictionaryMerging(List<Map<Integer, Object>> actualDictionaries) {
@@ -95,7 +95,7 @@ public class GroupResultQueryTest extends TestCase {
                 public boolean matches(SwiftNode node) {
                     return false;
                 }
-            });
+            }, new ArrayList<>());
             queryList.add(query);
             aggregators = cubeData.getAggregators();
             expectedResultList.add(cubeData.getAggregationResult());

@@ -1,6 +1,8 @@
 package com.fr.swift.adaptor.widget;
 
 import com.finebi.conf.constant.BIReportConstant.SORT;
+import com.finebi.conf.internalimp.dashboard.widget.filter.ClickValue;
+import com.finebi.conf.internalimp.dashboard.widget.filter.ClickValueItem;
 import com.finebi.conf.internalimp.dashboard.widget.filter.CustomLinkConfItem;
 import com.finebi.conf.internalimp.dashboard.widget.filter.WidgetLinkItem;
 import com.finebi.conf.internalimp.dashboard.widget.table.TableWidget;
@@ -19,7 +21,6 @@ import com.fr.swift.adaptor.widget.target.CalTargetParseUtils;
 import com.fr.swift.cal.QueryInfo;
 import com.fr.swift.cal.info.Expander;
 import com.fr.swift.cal.info.GroupQueryInfo;
-import com.fr.swift.cal.info.TableGroupQueryInfo;
 import com.fr.swift.cal.result.group.Cursor;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
@@ -65,41 +66,39 @@ public class TableWidgetAdaptor {
     private static final SwiftLogger LOGGER = SwiftLoggers.getLogger(TableWidgetAdaptor.class);
 
     public static BIGroupNode calculate(TableWidget widget) {
-        BIGroupNode resultNode = null;
+        BIGroupNode resultNode;
         SwiftResultSet resultSet;
         try {
             TargetInfo targetInfo = CalTargetParseUtils.parseCalTarget(widget);
             resultSet = QueryRunnerProvider.getInstance().executeQuery(buildQueryInfo(widget, targetInfo.getMetrics()));
-            GroupNode groupNode = GroupNodeFactory.createFromSortedList((GroupByResultSet) resultSet, targetInfo.getTargetLength());
+            GroupNode groupNode = GroupNodeFactory.createNode((GroupByResultSet) resultSet, targetInfo.getTargetLength());
             TargetCalculatorUtils.calculate(groupNode, targetInfo.getTargetCalculatorInfoList(), targetInfo.getTargetsForShowList());
             resultNode = new BIGroupNodeAdaptor(groupNode);
         } catch (Exception e) {
+            resultNode = new BIGroupNodeAdaptor(new GroupNode(-1, null));
             LOGGER.error(e);
         }
         return resultNode;
     }
 
+
     static QueryInfo buildQueryInfo(TableWidget widget, List<Metric> metrics) throws Exception {
         Cursor cursor = null;
         String queryId = widget.getWidgetId();
+
+        List<Dimension> dimensions = getDimensions(widget.getDimensionList());
         FilterInfo filterInfo = getFilterInfo(widget);
-        List<Dimension> dimensions = getDimensions(widget);
 
         GroupTarget[] targets = getTargets(widget);
         Expander expander = null;
         String fieldId = widget.getDimensionList().isEmpty() ? null : widget.getDimensionList().get(0).getFieldId();
+        fieldId = fieldId != null ? fieldId : metrics.isEmpty() ? null : metrics.get(0).getSourceKey().getId();
         fieldId = fieldId == null ?
                 widget.getTargetList().isEmpty() ? null : widget.getTargetList().get(0).getFieldId()
                 : fieldId;
         FineBusinessTable fineBusinessTable = BusinessTableUtils.getTableByFieldId(fieldId);
         DataSource baseDataSource = DataSourceFactory.transformDataSource(fineBusinessTable);
-        TableGroupQueryInfo tableGroupQueryInfo = new TableGroupQueryInfo(
-                dimensions.toArray(new Dimension[dimensions.size()]),
-                metrics.toArray(new Metric[metrics.size()]),
-                baseDataSource.getSourceKey()
-        );
-        return new GroupQueryInfo(cursor, queryId, filterInfo,
-                new TableGroupQueryInfo[]{tableGroupQueryInfo},
+        return new GroupQueryInfo(cursor, queryId, baseDataSource.getSourceKey(), filterInfo,
                 dimensions.toArray(new Dimension[dimensions.size()]),
                 metrics.toArray(new Metric[metrics.size()]),
                 targets, expander);
@@ -121,9 +120,10 @@ public class TableWidgetAdaptor {
                 List<CustomLinkConfItem> itemList = linkConf.get(id);
                 for (CustomLinkConfItem confItem : itemList) {
                     String columnName = SwiftEncryption.decryptFieldId(confItem.getTo())[1];
-                    List<Map<String, String>> clickedList = (List<Map<String, String>>) widgetLinkItem.getClicked().get("value");
-                    for (Map<String, String> clicked : clickedList) {
-                        String value = clicked.get("text");
+                    ClickValue clickValue = widgetLinkItem.getClicked();
+                    List<ClickValueItem> clickedList = clickValue.getValue();
+                    for (ClickValueItem clickValueItem : clickedList) {
+                        String value = clickValueItem.getText();
                         Set<String> values = new HashSet<String>();
                         values.add(value);
                         filterInfos.add(new SwiftDetailFilterInfo<Set<String>>(columnName, values, SwiftDetailFilterType.STRING_IN));
@@ -134,9 +134,8 @@ public class TableWidgetAdaptor {
         return new GeneralFilterInfo(filterInfos, GeneralFilterInfo.AND);
     }
 
-    private static List<Dimension> getDimensions(FineWidget widget) throws Exception {
+    static List<Dimension> getDimensions(List<FineDimension> fineDims) throws Exception {
         List<Dimension> dimensions = new ArrayList<Dimension>();
-        List<FineDimension> fineDims = widget.getDimensionList();
         for (int i = 0, size = fineDims.size(); i < size; i++) {
             FineDimension fineDim = fineDims.get(i);
             dimensions.add(toDimension(fineDim, i));
@@ -144,7 +143,7 @@ public class TableWidgetAdaptor {
         return dimensions;
     }
 
-    private static GroupTarget[] getTargets(FineWidget widget) throws Exception {
+    static GroupTarget[] getTargets(FineWidget widget) throws Exception {
         List<FineTarget> fineTargets = widget.getTargetList();
         fineTargets = fineTargets == null ? new ArrayList<FineTarget>() : fineTargets;
         GroupTarget[] targets = new GroupTarget[fineTargets.size()];
@@ -154,7 +153,7 @@ public class TableWidgetAdaptor {
         return targets;
     }
 
-    private static Dimension toDimension(FineDimension fineDim, int index) {
+    static Dimension toDimension(FineDimension fineDim, int index) {
         SourceKey key = new SourceKey(fineDim.getId());
         String columnName = SwiftEncryption.decryptFieldId(fineDim.getFieldId())[1];
         ColumnKey colKey = new ColumnKey(columnName);
@@ -167,7 +166,7 @@ public class TableWidgetAdaptor {
                 fineDim.getSort() == null ? new AscSort(index) : adaptSort(fineDim.getSort(), index), filterInfo);
     }
 
-    private static Sort adaptSort(FineDimensionSort sort, int index) {
+    static Sort adaptSort(FineDimensionSort sort, int index) {
         switch (sort.getType()) {
             case SORT.ASC:
                 return new AscSort(index);

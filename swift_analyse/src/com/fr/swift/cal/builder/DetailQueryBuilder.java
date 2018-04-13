@@ -28,7 +28,7 @@ public class DetailQueryBuilder {
 
 
     private static Query<DetailResultSet> buildQuery(DetailQueryInfo info, LocalDetailQueryBuilder builder) throws SQLException{
-        SourceKey key = info.getTarget();
+        SourceKey key = info.getTable();
         Set<URI> uris = SegmentLocationProvider.getInstance().getURI(key);
         if (uris == null || uris.isEmpty()){
             throw new SwiftSegmentAbsentException("no such table");

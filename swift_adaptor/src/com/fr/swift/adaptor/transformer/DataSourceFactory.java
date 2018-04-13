@@ -71,9 +71,13 @@ public class DataSourceFactory {
             @Override
             public ETLTransferOperator createTransferOperator(ETLOperator operator) {
                 RCompileOperator op = (RCompileOperator) operator;
-                return new RCompileTransferOperator(op.getColumns(), op.getColumnTypes(), op.getDataList());
+                List dataList = op.getDataList();
+                String[] column = (String[]) dataList.get(0);
+                int[] columnType = (int[]) dataList.get(1);
+                return new RCompileTransferOperator(column, columnType, op.getDataList());
             }
         });
+
         try {
             new LocalSwiftServerService().start();
             new SwiftAnalyseService().start();
@@ -131,9 +135,8 @@ public class DataSourceFactory {
      *
      * @param table
      * @return
-     * @throws Exception
      */
-    public static DataSource transformDataSource(FineBusinessTable table) throws Exception {
+    public static DataSource transformDataSource(FineBusinessTable table) {
         try {
             return getDataSource(table);
         } catch (Exception e) {
@@ -150,7 +153,7 @@ public class DataSourceFactory {
      * @return
      * @throws Exception
      */
-    protected static DataSource getDataSource(FineBusinessTable table) throws Exception {
+    public static DataSource getDataSource(FineBusinessTable table) throws Exception {
         DataSource dataSource = null;
         switch (table.getType()) {
             case BICommonConstants.TABLE.DATABASE:

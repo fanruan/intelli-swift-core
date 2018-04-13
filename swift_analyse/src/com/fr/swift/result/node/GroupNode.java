@@ -1,46 +1,46 @@
 package com.fr.swift.result.node;
 
+import com.fr.swift.query.aggregator.AggregatorValue;
 import com.fr.swift.result.AbstractSwiftNode;
 import com.fr.swift.result.ChildMap;
 
 /**
  * Created by Lyon on 2018/4/4.
  */
-public class GroupNode extends AbstractSwiftNode<GroupNode> {
+public class GroupNode<T extends GroupNode> extends AbstractSwiftNode<T> {
 
-    private int deep;
-    private Object data;
-    private Number[] values;
-    private ChildMap<GroupNode> childMap = new ChildMap<GroupNode>();
+    protected int deep;
+    protected Object data;
+    protected ChildMap<T> childMap = new ChildMap<T>();
 
-    public GroupNode(int sumLength, int deep, Object data, Number[] values) {
+    public GroupNode(int sumLength, int deep, Object data) {
         super(sumLength);
         this.deep = deep;
-        this.data = data;
-        this.values = values;
+        this.data = data == null ? "" : data;
     }
 
-    // TODO: 2018/4/8 SwiftNode接口有待调整。当前所有聚合结构都是按行保存的，只有聚合完处理计算指标之前才转为node结构
-    public ChildMap<GroupNode> getChildMap() {
+    public GroupNode(int deep, Object data) {
+        this.deep = deep;
+        this.data = data == null ? "" : data;
+    }
+
+    protected GroupNode() {}
+
+    public ChildMap<T> getChildMap() {
         return childMap;
     }
 
-    public void setSummaryValue(int index, Number value) {
-        values[index] = value;
+    @Override
+    public T getSibling() {
+        return super.getSibling();
     }
 
-    public Number getSummaryValue(int index) {
-        return values[index];
+    @Override
+    public T getParent() {
+        return super.getParent();
     }
 
-    public Number[] getSummaryValue() {
-        return values;
-    }
-
-    public void setSummaryValue(Number[] summaryValue) {
-        this.values = summaryValue;
-    }
-
+    @Override
     public int getDeep() {
         return deep;
     }
@@ -56,12 +56,12 @@ public class GroupNode extends AbstractSwiftNode<GroupNode> {
     }
 
     @Override
-    public GroupNode getChild(int index) {
+    public T getChild(int index) {
         return childMap.get(index);
     }
 
     @Override
-    public void addChild(GroupNode child) {
+    public void addChild(T child) {
         if (getLastChild() != null) {
             getLastChild().sibling = child;
         }
@@ -81,5 +81,13 @@ public class GroupNode extends AbstractSwiftNode<GroupNode> {
     @Override
     public int getIndex() {
         return 0;
+    }
+
+    public static Number[] toNumberArray(AggregatorValue[] values) {
+        Number[] result = new Number[values.length];
+        for (int i = 0; i < result.length; i++) {
+            result[i] = (Number) values[i].calculateValue();
+        }
+        return result;
     }
 }

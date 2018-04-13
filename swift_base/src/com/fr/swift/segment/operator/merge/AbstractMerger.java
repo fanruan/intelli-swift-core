@@ -2,14 +2,11 @@ package com.fr.swift.segment.operator.merge;
 
 import com.fr.general.ComparatorUtils;
 import com.fr.swift.config.IConfigSegment;
-import com.fr.swift.config.IMetaData;
-import com.fr.swift.config.conf.MetaDataConfig;
-import com.fr.swift.config.conf.MetaDataConvertUtil;
 import com.fr.swift.config.conf.SegmentConfig;
 import com.fr.swift.config.unique.SegmentUnique;
 import com.fr.swift.context.SwiftContext;
 import com.fr.swift.cube.io.Types;
-import com.fr.swift.exception.meta.SwiftMetaDataException;
+import com.fr.swift.db.impl.SwiftDatabase;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.segment.Segment;
@@ -48,7 +45,7 @@ public abstract class AbstractMerger implements Merger {
     protected SegmentIndexCache segmentIndexCache;
     protected IConfigSegment configSegment;
 
-    public AbstractMerger(SourceKey sourceKey, SwiftMetaData metaData, String cubeSourceKey) throws SQLException {
+    public AbstractMerger(SourceKey sourceKey, SwiftMetaData metaData, String cubeSourceKey) {
         this.sourceKey = sourceKey;
         this.metaData = metaData;
         this.alloter = SwiftSourceAlloterFactory.createSourceAlloter(sourceKey);
@@ -115,9 +112,10 @@ public abstract class AbstractMerger implements Merger {
 
     protected void persistMeta() {
         try {
-            IMetaData metaData = MetaDataConvertUtil.convert2ConfigMetaData(this.metaData);
-            MetaDataConfig.getInstance().addMetaData(sourceKey.getId(), metaData);
-        } catch (SwiftMetaDataException e) {
+            if (!SwiftDatabase.getInstance().existsTable(sourceKey)) {
+                SwiftDatabase.getInstance().createTable(sourceKey, metaData);
+            }
+        } catch (SQLException e) {
             LOGGER.error("save metadata failed! ", e);
             Crasher.crash(e);
         }
