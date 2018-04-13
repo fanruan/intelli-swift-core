@@ -1,4 +1,4 @@
-package com.fr.swift.utils;
+package com.fr.swift.util;
 
 import com.fr.general.ComparatorUtils;
 import com.fr.swift.log.SwiftLogger;
@@ -31,7 +31,7 @@ public class DataSourceUtils {
      * @param dataSource
      * @return
      */
-    public static String getSwiftSourceKey(DataSource dataSource) {
+    public static SourceKey getSwiftSourceKey(DataSource dataSource) {
         try {
             if (dataSource instanceof EtlSource) {
                 EtlSource etlSource = (EtlSource) dataSource;
@@ -41,10 +41,10 @@ public class DataSourceUtils {
                     return getSwiftSourceKey(baseDataSource);
                 }
             }
-            return dataSource.getSourceKey().getId();
+            return dataSource.getSourceKey();
         } catch (Exception e) {
             LOGGER.error(e.getMessage(), e);
-            return dataSource.getSourceKey().getId();
+            return dataSource.getSourceKey();
         }
     }
 
@@ -100,13 +100,13 @@ public class DataSourceUtils {
     /**
      *
      * @param baseSourceKeys 需要计算依赖的sourcekeys
-     * @param dataSourceList 计算样本
+     * @param allDataSourceList 计算样本
      * @return
      */
-    public static List<DataSource> calculateReliances(List<SourceKey> baseSourceKeys, List<DataSource> dataSourceList) {
+    public static List<DataSource> calculateReliances(List<SourceKey> baseSourceKeys, List<DataSource> allDataSourceList) {
         Map<SourceKey, DataSource> relianceSourceMap = new HashMap<SourceKey, DataSource>();
         for (SourceKey baseSourceKey : baseSourceKeys) {
-            for (DataSource dataSource : dataSourceList) {
+            for (DataSource dataSource : allDataSourceList) {
                 List<Set<DataSource>> sourceList = datasourceReliance(dataSource);
                 for (Set<DataSource> sourceSet : sourceList) {
                     Iterator<DataSource> iterator = sourceSet.iterator();
@@ -126,12 +126,12 @@ public class DataSourceUtils {
 
     /**
      * @param baseSourceKey  需要计算依赖的sourcekey
-     * @param dataSourceList 计算样本
+     * @param allDataSourceList 计算样本
      */
-    public static List<DataSource> calculateReliance(SourceKey baseSourceKey, List<DataSource> dataSourceList) {
+    public static List<DataSource> calculateReliance(SourceKey baseSourceKey, List<DataSource> allDataSourceList) {
         Map<SourceKey, DataSource> relianceSourceMap = new HashMap<SourceKey, DataSource>();
 
-        for (DataSource dataSource : dataSourceList) {
+        for (DataSource dataSource : allDataSourceList) {
             List<Set<DataSource>> sourceList = datasourceReliance(dataSource);
             for (Set<DataSource> sourceSet : sourceList) {
                 Iterator<DataSource> iterator = sourceSet.iterator();

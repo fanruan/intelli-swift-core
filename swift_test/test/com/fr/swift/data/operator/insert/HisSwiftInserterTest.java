@@ -31,16 +31,17 @@ public class HisSwiftInserterTest extends BaseTest {
 
     @Test
     public void testInsertDataNullIndex() {
-        DataSource dataSource = new QueryDBSource("select USER_NUMBER from DEMO_HR_USER", "HisSwiftInserterTest");
-
-        SwiftSourceTransfer transfer = SwiftSourceTransferFactory.createSourceTransfer(dataSource);
-        SwiftResultSet resultSet = transfer.createResultSet();
-
-        String cubePath = System.getProperty("user.dir") + "/cubes/" + dataSource.getSourceKey().getId() + "/seg0";
-        IResourceLocation location = new ResourceLocation(cubePath);
-        Segment segment = new HistorySegmentImpl(location, dataSource.getMetadata());
-        List<Row> rowList = new ArrayList<Row>();
         try {
+            DataSource dataSource = new QueryDBSource("select USER_NUMBER from DEMO_HR_USER", "HisSwiftInserterTest");
+
+            SwiftSourceTransfer transfer = SwiftSourceTransferFactory.createSourceTransfer(dataSource);
+            SwiftResultSet resultSet = transfer.createResultSet();
+
+            String cubePath = System.getProperty("user.dir") + "/cubes/" + dataSource.getSourceKey().getId() + "/seg0";
+            IResourceLocation location = new ResourceLocation(cubePath);
+            Segment segment = new HistorySegmentImpl(location, dataSource.getMetadata());
+            List<Row> rowList = new ArrayList<Row>();
+
             while (resultSet.next()) {
                 Row row = resultSet.getRowData();
                 rowList.add(row);
@@ -48,18 +49,17 @@ public class HisSwiftInserterTest extends BaseTest {
 
             HistorySwiftInserter swiftInserter = new HistorySwiftInserter(segment);
             swiftInserter.insertData(rowList);
-
+            for (int i = 0; i < 42; i++) {
+                assertTrue(segment.getColumn(new ColumnKey("USER_NUMBER")).getBitmapIndex().getNullIndex().contains(i));
+                assertTrue(segment.getColumn(new ColumnKey("USER_NUMBER")).getBitmapIndex().getBitMapIndex(0).contains(i));
+                assertTrue(segment.getAllShowIndex().contains(i));
+            }
+            assertEquals(segment.getRowCount(), 42);
+            assertTrue(true);
         } catch (Exception e) {
             LOGGER.error(e.getMessage(), e);
             assertTrue(false);
         }
-        for (int i = 0; i < 42; i++) {
-            assertTrue(segment.getColumn(new ColumnKey("USER_NUMBER")).getBitmapIndex().getNullIndex().contains(i));
-            assertTrue(segment.getColumn(new ColumnKey("USER_NUMBER")).getBitmapIndex().getBitMapIndex(0).contains(i));
-            assertTrue(segment.getAllShowIndex().contains(i));
-        }
-        assertEquals(segment.getRowCount(), 42);
-        assertTrue(true);
     }
 
     @Test

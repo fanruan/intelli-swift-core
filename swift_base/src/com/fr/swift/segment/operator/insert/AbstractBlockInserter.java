@@ -91,42 +91,44 @@ public abstract class AbstractBlockInserter implements Inserter {
 
     @Override
     public boolean insertData(SwiftResultSet swiftResultSet) throws Exception {
-        try {
-            long count = 0;
-            String allotColumn = fields.get(0);
-            while (swiftResultSet.next()) {
-                Row rowData = swiftResultSet.getRowData();
-                // fixme 为啥这里要传后两个参数？
-                // 为了以后特殊的分块逻辑
-                int size = segments.size();
-                int index = alloter.allot(count, allotColumn, rowData.getValue(0)) + startSegIndex;
-                if (index >= size) {
-                    for (int i = size; i <= index; i++) {
-                        segmentIndexCache.putSegRow(i, 0);
-                        segments.add(createSegment(i));
+        if (!fields.isEmpty()) {
+            try {
+                long count = 0;
+                String allotColumn = fields.get(0);
+                while (swiftResultSet.next()) {
+                    Row rowData = swiftResultSet.getRowData();
+                    // fixme 为啥这里要传后两个参数？
+                    // 为了以后特殊的分块逻辑
+                    int size = segments.size();
+                    int index = alloter.allot(count, allotColumn, rowData.getValue(0)) + startSegIndex;
+                    if (index >= size) {
+                        for (int i = size; i <= index; i++) {
+                            segmentIndexCache.putSegRow(i, 0);
+                            segments.add(createSegment(i));
+                        }
+                    } else if (index == -1) {
+                        index = segments.size() - 1;
                     }
-                } else if (index == -1) {
-                    index = segments.size() - 1;
-                }
-                int segmentRow = segmentIndexCache.getSegRowByIndex(index);
+                    int segmentRow = segmentIndexCache.getSegRowByIndex(index);
 
-                Segment segment = segments.get(index);
-                segmentIndexCache.putSegment(index, segment);
-                for (int i = 0; i < fields.size(); i++) {
-                    if (InserterUtils.isBusinessNullValue(rowData.getValue(i))) {
-                        SwiftMetaDataColumn metaDataColumn = swiftMetaData.getColumn(fields.get(i));
-                        ColumnTypeConstants.ClassType clazz = ColumnTypeUtils.getClassType(metaDataColumn);
-                        segment.getColumn(new ColumnKey(fields.get(i))).getDetailColumn().put(segmentRow, InserterUtils.getNullValue(clazz));
-                        segmentIndexCache.putSegFieldNull(index, fields.get(i), segmentRow);
-                    } else {
-                        segment.getColumn(new ColumnKey(fields.get(i))).getDetailColumn().put(segmentRow, rowData.getValue(i));
+                    Segment segment = segments.get(index);
+                    segmentIndexCache.putSegment(index, segment);
+                    for (int i = 0; i < fields.size(); i++) {
+                        if (InserterUtils.isBusinessNullValue(rowData.getValue(i))) {
+                            SwiftMetaDataColumn metaDataColumn = swiftMetaData.getColumn(fields.get(i));
+                            ColumnTypeConstants.ClassType clazz = ColumnTypeUtils.getClassType(metaDataColumn);
+                            segment.getColumn(new ColumnKey(fields.get(i))).getDetailColumn().put(segmentRow, InserterUtils.getNullValue(clazz));
+                            segmentIndexCache.putSegFieldNull(index, fields.get(i), segmentRow);
+                        } else {
+                            segment.getColumn(new ColumnKey(fields.get(i))).getDetailColumn().put(segmentRow, rowData.getValue(i));
+                        }
                     }
+                    segmentIndexCache.putSegRow(index, ++segmentRow);
+                    count++;
                 }
-                segmentIndexCache.putSegRow(index, ++segmentRow);
-                count++;
+            } finally {
+                swiftResultSet.close();
             }
-        } finally {
-            swiftResultSet.close();
         }
         release();
         return true;

@@ -1,9 +1,10 @@
-package com.fr.swift.struct;
+package com.fr.swift.reliance;
 
 import com.fr.swift.source.DataSource;
 import com.fr.swift.source.SourceKey;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -17,7 +18,7 @@ import java.util.Map;
  */
 public class SourceReliance {
 
-    private List<SourceChain> heads;
+    private Map<SourceKey, SourceNode> sourceNodes;
 
     private Map<SourceKey, DataSource> reliances;
 
@@ -25,9 +26,8 @@ public class SourceReliance {
 
     public SourceReliance(List<DataSource> origins, List<DataSource> reliances) {
         this.reliances = new HashMap<SourceKey, DataSource>();
-        this.heads = new ArrayList<SourceChain>();
         this.origins = new HashMap<SourceKey, DataSource>();
-
+        this.sourceNodes = new HashMap<SourceKey, SourceNode>();
         for (DataSource origin : origins) {
             addOrigin(origin);
         }
@@ -36,8 +36,28 @@ public class SourceReliance {
         }
     }
 
-    public void addChain(SourceChain sourceChain) {
-        this.heads.add(sourceChain);
+    public Map<SourceKey, SourceNode> getNodes() {
+        return Collections.unmodifiableMap(sourceNodes);
+    }
+
+    public void addNode(SourceNode sourceNode) {
+        sourceNodes.put(sourceNode.getSourceKey(), sourceNode);
+    }
+
+    public void removeNode(SourceNode sourceNode) {
+        sourceNodes.remove(sourceNode.getSourceKey());
+    }
+
+    public boolean containNode(SourceKey sourceKey) {
+        return sourceNodes.containsKey(sourceKey);
+    }
+
+    public SourceNode getNode(SourceKey sourceKey) {
+        return sourceNodes.get(sourceKey);
+    }
+
+    public boolean containReliance(SourceKey sourceKey) {
+        return reliances.containsKey(sourceKey);
     }
 
     public void addReliance(DataSource reliance) {
@@ -50,10 +70,6 @@ public class SourceReliance {
         if (!origins.containsKey(origin.getSourceKey())) {
             origins.put(origin.getSourceKey(), origin);
         }
-    }
-
-    public List<SourceChain> getHeads() {
-        return new ArrayList<SourceChain>(heads);
     }
 
     public List<DataSource> getReliances() {
