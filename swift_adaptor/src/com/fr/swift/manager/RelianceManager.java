@@ -1,7 +1,7 @@
 package com.fr.swift.manager;
 
 import com.fr.swift.source.DataSource;
-import com.fr.swift.struct.SourceReliance;
+import com.fr.swift.reliance.SourceReliance;
 
 import java.util.List;
 

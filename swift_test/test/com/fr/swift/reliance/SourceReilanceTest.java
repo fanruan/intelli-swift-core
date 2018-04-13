@@ -4,18 +4,12 @@ import com.fr.swift.source.ColumnTypeConstants;
 import com.fr.swift.source.DataSource;
 import com.fr.swift.source.EtlDataSource;
 import com.fr.swift.source.SourceKey;
-import com.fr.swift.source.SwiftMetaData;
-import com.fr.swift.source.SwiftMetaDataColumn;
-import com.fr.swift.source.core.BasicCore;
-import com.fr.swift.source.core.Core;
 import com.fr.swift.source.db.QueryDBSource;
 import com.fr.swift.source.db.TableDBSource;
 import com.fr.swift.source.etl.ETLOperator;
 import com.fr.swift.source.etl.EtlSource;
-import com.fr.swift.source.etl.OperatorType;
 import com.fr.swift.source.etl.formula.ColumnFormulaOperator;
-import com.fr.swift.struct.SourceReliance;
-import com.fr.swift.utils.DataSourceUtils;
+import com.fr.swift.util.DataSourceUtils;
 import junit.framework.TestCase;
 
 import java.util.ArrayList;
@@ -172,33 +166,6 @@ public class SourceReilanceTest extends TestCase {
         sourceReliance = new SourceReliance(origins, relianceSources);
         assertEquals(sourceReliance.getOrigins().size(), 1);
         assertEquals(sourceReliance.getReliances().size(), 4);
-    }
-
-    private class TestOperator implements ETLOperator {
-        @Override
-        public List<SwiftMetaDataColumn> getColumns(SwiftMetaData[] metaDatas) {
-            return null;
-        }
-
-        @Override
-        public List<SwiftMetaDataColumn> getBaseColumns(SwiftMetaData[] metaDatas) {
-            return null;
-        }
-
-        @Override
-        public OperatorType getOperatorType() {
-            return null;
-        }
-
-        @Override
-        public List<String> getNewAddedName() {
-            return null;
-        }
-
-        @Override
-        public Core fetchObjectCore() {
-            return new BasicCore();
-        }
     }
 }
 
