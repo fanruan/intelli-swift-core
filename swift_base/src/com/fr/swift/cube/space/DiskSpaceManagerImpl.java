@@ -1,4 +1,4 @@
-package com.fr.swift.util;
+package com.fr.swift.cube.space;
 
 import com.fr.swift.setting.PerformancePlugManager;
 

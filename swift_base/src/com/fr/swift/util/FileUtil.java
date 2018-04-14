@@ -1,5 +1,7 @@
 package com.fr.swift.util;
 
+import com.fr.swift.util.function.Consumer;
+
 import java.io.File;
 
 /**
@@ -11,7 +13,20 @@ public class FileUtil {
      * CommonUtils.deleteFile删文件有问题。。。
      * @param f 文件或目录
      */
-    public static void delete(File f) {
+    public static void delete(final File f) {
+        walk(f, new Consumer<File>() {
+            @Override
+            public void accept(File file) {
+                file.delete();
+            }
+        });
+    }
+
+    public static void delete(String path) {
+        delete(new File(path));
+    }
+
+    public static void walk(File f, Consumer<File> consumer) {
         if (f == null || !f.exists()) {
             return;
         }
@@ -20,19 +35,15 @@ public class FileUtil {
             File[] children = f.listFiles();
 
             if (children == null) {
-                f.delete();
+                consumer.accept(f);
                 return;
             }
 
             for (File child : children) {
-                delete(child);
+                walk(child, consumer);
             }
         }
 
-        f.delete();
-    }
-
-    public static void delete(String path) {
-        delete(new File(path));
+        consumer.accept(f);
     }
 }
