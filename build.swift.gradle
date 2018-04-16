@@ -8,7 +8,7 @@ tasks.withType(JavaCompile){
 
 
 repositories {
-    mavenCentral()
+    mavenCentral();
 }
 
 //sourceCompatibility=1.5
@@ -77,6 +77,7 @@ test {
 //声明外部依赖
 dependencies{
 	compile fileTree(dir:"${libDir}",include:'**/*.jar')
+	compile group:"com.fineio",name:"fineio",version:"1.0"
 	testCompile 'junit:junit:4.12'
 }
 //指明无法编译文件所在路径
