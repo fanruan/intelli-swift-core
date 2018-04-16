@@ -11,6 +11,7 @@ import com.finebi.conf.structure.dashboard.widget.FineWidget;
 import com.finebi.conf.structure.dashboard.widget.dimension.FineDimension;
 import com.finebi.conf.structure.dashboard.widget.dimension.FineDimensionSort;
 import com.finebi.conf.structure.dashboard.widget.target.FineTarget;
+import com.finebi.conf.structure.filter.FineFilter;
 import com.finebi.conf.structure.result.table.BIGroupNode;
 import com.fr.swift.adaptor.encrypt.SwiftEncryption;
 import com.fr.swift.adaptor.struct.node.BIGroupNodeAdaptor;
@@ -105,9 +106,9 @@ public class TableWidgetAdaptor {
     }
 
     private static FilterInfo getFilterInfo(TableWidget widget) throws Exception {
-        List<FilterInfo> filterInfos = new ArrayList<FilterInfo>();
+        List<FilterInfo> filterInfoList = new ArrayList<FilterInfo>();
         FilterInfo filterInfo = FilterInfoFactory.transformFineFilter(widget.getFilters());
-        filterInfos.add(filterInfo);
+        filterInfoList.add(filterInfo);
         //联动设置
         Map<String, WidgetLinkItem> linkItemMap = widget.getValue().getLinkage();
         //联动配置
@@ -126,12 +127,12 @@ public class TableWidgetAdaptor {
                         String value = clickValueItem.getText();
                         Set<String> values = new HashSet<String>();
                         values.add(value);
-                        filterInfos.add(new SwiftDetailFilterInfo<Set<String>>(columnName, values, SwiftDetailFilterType.STRING_IN));
+                        filterInfoList.add(new SwiftDetailFilterInfo<Set<String>>(columnName, values, SwiftDetailFilterType.STRING_IN));
                     }
                 }
             }
         }
-        return new GeneralFilterInfo(filterInfos, GeneralFilterInfo.AND);
+        return new GeneralFilterInfo(filterInfoList, GeneralFilterInfo.AND);
     }
 
     static List<Dimension> getDimensions(List<FineDimension> fineDims) throws Exception {
@@ -160,7 +161,10 @@ public class TableWidgetAdaptor {
 
         Group group = GroupAdaptor.adaptGroup(fineDim.getGroup());
 
-        FilterInfo filterInfo = null;
+        List<FineFilter> fineFilters = fineDim.getFilters();
+        fineFilters = fineFilters == null ? new ArrayList<FineFilter>() : fineFilters;
+        // TODO: 2018/4/13 维度过滤的FineFilter里面没有设置fieldId，虽然FineDimension能取到，但是容易把适配的代码写得太乱
+        FilterInfo filterInfo = FilterInfoFactory.transformFineFilter(fineFilters);
 
         return new GroupDimension(index, key, colKey, group,
                 fineDim.getSort() == null ? new AscSort(index) : adaptSort(fineDim.getSort(), index), filterInfo);
