@@ -8,23 +8,23 @@ public interface SpaceUsage {
     /**
      * 已占用
      *
-     * @return MB
+     * @return bytes
      */
-    double getUsed();
+    long getUsed();
 
     /**
      * 剩余
      *
-     * @return MB
+     * @return bytes
      */
-    double getUsable();
+    long getUsable();
 
     /**
      * 总容量
      *
-     * @return MB
+     * @return bytes
      */
-    double getCapacity();
+    long getTotal();
 
     enum SpaceUnit {
         B(0), KB(10), MB(20), GB(30), TB(40);

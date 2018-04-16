@@ -18,14 +18,23 @@ public class SpaceUsageServiceImpl implements SpaceUsageService {
     private SwiftSegmentManager segmentManager;
 
     @Override
-    public double getTableUsedSpace(SourceKey key) {
-        List<Segment> segs = segmentManager.getSegment(key);
+    public double getTableUsedSpace(SourceKey table) throws Exception {
+        List<Segment> segs = segmentManager.getSegment(table);
 
         double size = 0;
         for (Segment seg : segs) {
             size += detector.detect(seg.getLocation().getUri()).getUsed();
         }
         return size;
+    }
+
+    @Override
+    public double getTableUsedSpace(List<SourceKey> tables) throws Exception {
+        double used = 0;
+        for (SourceKey table : tables) {
+            used += getTableUsedSpace(table);
+        }
+        return used;
     }
 
     @Override

@@ -12,6 +12,7 @@ public interface SpaceUsageDetector {
      *
      * @param uri uri
      * @return 使用情况
+     * @throws Exception 异常
      */
-    SpaceUsage detect(URI uri);
+    SpaceUsage detect(URI uri) throws Exception;
 }

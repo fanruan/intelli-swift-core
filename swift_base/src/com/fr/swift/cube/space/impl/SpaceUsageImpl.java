@@ -7,26 +7,26 @@ import com.fr.swift.cube.space.SpaceUsage;
  * @date 2018/4/14
  */
 class SpaceUsageImpl implements SpaceUsage {
-    private double used, usable, capacity;
+    private long used, usable, total;
 
-    SpaceUsageImpl(double used, double usable, double capacity) {
+    SpaceUsageImpl(long used, long usable, long total) {
         this.used = used;
         this.usable = usable;
-        this.capacity = capacity;
+        this.total = total;
     }
 
     @Override
-    public double getUsed() {
+    public long getUsed() {
         return used;
     }
 
     @Override
-    public double getUsable() {
+    public long getUsable() {
         return usable;
     }
 
     @Override
-    public double getCapacity() {
-        return capacity;
+    public long getTotal() {
+        return total;
     }
 }
