@@ -5,6 +5,11 @@ tasks.withType(JavaCompile) {
     destinationDir = file('build/classes/test')
 }
 
+repositories {
+    mavenCentral();
+    maven {url  "http://mvn.finedevelop.com/repository/maven-public/"};
+}
+
 //指定构建的jdk版本
 //sourceCompatibility=1.5
 //指定jar包版本
@@ -32,6 +37,7 @@ dependencies {
     compile fileTree(dir: "../lib-core", include: '**/*.jar')
     compile fileTree(dir: "../lib-other", include: '**/*.jar')
     compile fileTree(dir: "build/libs", include: "**/*.jar")
+    compile group:"com.fineio",name:"fineio",version:"1.0"
     testCompile "junit:junit:4.12"
 }
 
@@ -81,6 +87,7 @@ task test_jar(dependsOn: compileJava) << {
             }
         }
 
+
         jacocoCoverage(destfile: "reports/jacoco/jacoco.exec", append: "true") {
             junit(printsummary: "on", fork: "true", haltonfailure: "false", failureproperty: "tests.failed", showoutput: "true") {
                 classpath() {
@@ -97,6 +104,7 @@ task test_jar(dependsOn: compileJava) << {
                 }
                 classpath(path: "build/classes/test")
                 formatter(type: "xml")
+                classpath(group:"com.fineio",name:"fineio",version:"1.0")
                 batchtest(todir: "test_result") {
                     fileset(dir: "build/classes/test") {
                         include(name: "**/*Test.class")
