@@ -24,7 +24,6 @@ import com.fr.swift.manager.ProviderManager;
 import com.fr.swift.provider.IndexStuffInfoProvider;
 import com.fr.swift.source.DataSource;
 import com.fr.swift.source.Row;
-import com.fr.swift.source.SourceKey;
 import com.fr.swift.source.SwiftMetaData;
 import com.fr.swift.source.SwiftResultSet;
 import com.fr.swift.source.SwiftSourceTransfer;
@@ -33,13 +32,11 @@ import com.fr.swift.source.db.QueryDBSource;
 import com.fr.swift.source.manager.IndexStuffProvider;
 import com.fr.swift.stuff.HistoryIndexStuffImpl;
 import com.fr.swift.stuff.IndexingStuff;
-import com.fr.swift.utils.DataSourceUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * This class created on 2018-1-12 14:17:13
@@ -207,5 +204,13 @@ public class SwiftUpdateManager implements EngineUpdateManager {
             LOGGER.error(e.getMessage(), e);
             return new UpdatePreview();
         }
+    }
+
+    public String getUpdatePath() throws Exception{
+        return "";
+    }
+
+    public void updatePath(String newPath) throws Exception{
+
     }
 }
