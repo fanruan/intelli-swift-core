@@ -1,12 +1,24 @@
 package com.finebi.conf.imp;
 
 import com.finebi.base.constant.FineEngineType;
+import com.finebi.conf.constant.BIConfConstants;
 import com.finebi.conf.constant.ConfConstant;
+import com.finebi.conf.internalimp.analysis.bean.operator.add.AddNewColumnBean;
+import com.finebi.conf.internalimp.analysis.bean.operator.add.AddNewColumnValueBean;
+import com.finebi.conf.internalimp.analysis.bean.operator.add.gettime.GetFieldTimeValueBean;
+import com.finebi.conf.internalimp.analysis.bean.operator.add.gettime.GetFieldTimeValueItem;
 import com.finebi.conf.internalimp.analysis.bean.operator.add.group.custom.number.NumberMaxAndMinValue;
+import com.finebi.conf.internalimp.analysis.bean.operator.group.DimensionSelectValue;
+import com.finebi.conf.internalimp.analysis.bean.operator.group.DimensionValueBean;
+import com.finebi.conf.internalimp.analysis.bean.operator.group.GroupBean;
+import com.finebi.conf.internalimp.analysis.bean.operator.group.GroupDoubleValueBean;
+import com.finebi.conf.internalimp.analysis.bean.operator.group.GroupValueBean;
+import com.finebi.conf.internalimp.analysis.bean.operator.group.ViewBean;
 import com.finebi.conf.internalimp.analysis.bean.operator.setting.FieldSettingBeanItem;
 import com.finebi.conf.internalimp.analysis.operator.setting.FieldSettingOperator;
 import com.finebi.conf.internalimp.field.FineBusinessFieldImp;
 import com.finebi.conf.service.engine.analysis.EngineAnalysisTableManager;
+import com.finebi.conf.structure.analysis.operator.FineOperator;
 import com.finebi.conf.structure.analysis.table.FineAnalysisTable;
 import com.finebi.conf.structure.bean.field.FineBusinessField;
 import com.finebi.conf.structure.filter.FineFilter;
@@ -20,7 +32,9 @@ import com.fr.swift.provider.impl.SwiftDataProvider;
 import com.fr.swift.source.DataSource;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * This class created on 2018-1-29 10:28:24
@@ -73,23 +87,83 @@ public class SwiftAnalysisTableManager implements EngineAnalysisTableManager {
         //nice job foundation
         //字段设置居然要返回上一层的结果
         try {
+            Map<String, Integer> groupMap = checkGroupByOperator(table);
+            List<FineBusinessField> fields;
             if (table.getOperator() != null && table.getOperator().getType() == ConfConstant.AnalysisType.FIELD_SETTING) {
                 List<FieldSettingBeanItem> fieldSettings = ((FieldSettingOperator) table.getOperator()).getValue().getValue();
-                List<FineBusinessField> pFields = FieldFactory.transformColumns2Fields(DataSourceFactory.transformDataSource(table.getBaseTable()).getMetadata(), table.getId());
-                for (int i = 0; i < pFields.size(); i++) {
+                fields = FieldFactory.transformColumns2Fields(DataSourceFactory.transformDataSource(table.getBaseTable()).getMetadata(), table.getId());
+                for (int i = 0; i < fields.size(); i++) {
                     if (!fieldSettings.isEmpty()) {
-                        ((FineBusinessFieldImp) (pFields.get(i))).setEnable(fieldSettings.get(i).isUsed());
-                        ((FineBusinessFieldImp) (pFields.get(i))).setUsable(fieldSettings.get(i).isUsed());
-                        ((FineBusinessFieldImp) (pFields.get(i))).setName(fieldSettings.get(i).getName());
+                        ((FineBusinessFieldImp) (fields.get(i))).setEnable(fieldSettings.get(i).isUsed());
+                        ((FineBusinessFieldImp) (fields.get(i))).setUsable(fieldSettings.get(i).isUsed());
+                        ((FineBusinessFieldImp) (fields.get(i))).setName(fieldSettings.get(i).getName());
                     }
                 }
-                return pFields;
+            } else {
+                fields = FieldFactory.transformColumns2Fields(DataSourceFactory.transformDataSource(table).getMetadata(), table.getId());
             }
-            return FieldFactory.transformColumns2Fields(DataSourceFactory.transformDataSource(table).getMetadata(), table.getId());
+            if (!groupMap.isEmpty()) {
+                for (FineBusinessField field : fields) {
+                    if (groupMap.containsKey(field.getName())) {
+                        field.setFieldGroupType(groupMap.get(field.getName()));
+                    }
+                }
+            }
+            return fields;
         } catch (Exception e) {
             LOGGER.error(e);
         }
         return new ArrayList<FineBusinessField>();
+    }
+
+    /**
+     * nice job 居然要引擎处理格式。。。
+     *
+     * @param table
+     * @return
+     */
+    private Map<String, Integer> checkGroupByOperator(FineAnalysisTable table) {
+        Map<String, Integer> groupMap = new HashMap<String, Integer>();
+        List<FineOperator> operators = table.getOperators();
+        for (int i = 0; i < operators.size(); i++) {
+            FineOperator op = operators.get(i);
+            if (op.getType() == ConfConstant.AnalysisType.GROUP) {
+                GroupBean bean = op.getValue();
+                GroupValueBean valueBean = bean.getValue();
+                Map<String, DimensionValueBean> dimensionBean = valueBean.getDimensions();
+                ViewBean viewBean = valueBean.getView();
+                List<String> dimensions = viewBean.getDimension();
+                if (!dimensionBean.isEmpty() && dimensions != null) {
+                    for (int j = 0; j < dimensions.size(); j++) {
+                        DimensionValueBean tempBean = dimensionBean.get(dimensions.get(j));
+                        List<DimensionSelectValue> value = tempBean.getValue();
+                        DimensionSelectValue selectValue = value.get(0);
+                        if (selectValue.getType() == BIConfConstants.CONF.GROUP.TYPE.DOUBLE) {
+                            groupMap.put(tempBean.getName(), ((GroupDoubleValueBean) selectValue).getChildValue());
+                        }
+                    }
+                }
+
+            }
+            if (op.getType() == ConfConstant.AnalysisType.ADD_COLUMN) {
+                AddNewColumnBean bean = op.getValue();
+                AddNewColumnValueBean value = bean.getValue();
+                if (value.getType() == BIConfConstants.CONF.ADD_COLUMN.TIME.TYPE) {
+                    GetFieldTimeValueItem tempBean = ((GetFieldTimeValueBean) value).getValue();
+                    groupMap.put(value.getName(), tempBean.getUnit());
+                }
+            }
+            if (op.getType() == ConfConstant.AnalysisType.FIELD_SETTING) {
+                List<FieldSettingBeanItem> fieldSettings = ((FieldSettingOperator) op).getValue().getValue();
+                for (FieldSettingBeanItem item: fieldSettings){
+                    if (groupMap.containsKey(item.getoName())){
+                        groupMap.put(item.getName(), groupMap.get(item.getoName()));
+                        groupMap.remove(item.getoName());
+                    }
+                }
+            }
+        }
+        return groupMap;
     }
 
     @Override
