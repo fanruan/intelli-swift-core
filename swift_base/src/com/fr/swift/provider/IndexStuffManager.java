@@ -1,6 +1,7 @@
 package com.fr.swift.provider;
 
 import com.fr.swift.increment.Increment;
+import com.fr.swift.reliance.SourceReliance;
 import com.fr.swift.source.DataSource;
 import com.fr.swift.source.RelationSource;
 import com.fr.swift.source.SourcePath;
@@ -70,5 +71,10 @@ public class IndexStuffManager implements IndexStuffProvider {
     @Override
     public List<Increment> getIncrementBySourceId(String sourceId) {
         return provider.getIncrementBySourceId(sourceId);
+    }
+
+    @Override
+    public SourceReliance getSourceReliance() {
+        return provider.getSourceReliance();
     }
 }

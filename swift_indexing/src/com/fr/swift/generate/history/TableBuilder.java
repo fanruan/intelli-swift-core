@@ -67,6 +67,9 @@ public class TableBuilder extends BaseTableBuilder {
             }
 
             private void initColumnIndexTask() throws SwiftMetaDataException {
+                if(transporter.getIndexFieldsList().isEmpty()) {
+                    transportTask.addNext(end);
+                }
                 for (String indexField : transporter.getIndexFieldsList()) {
                     ColumnIndexer<?> indexer = new ColumnIndexer(dataSource, new ColumnKey(indexField));
 

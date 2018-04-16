@@ -32,9 +32,9 @@ public class DataMiningOperator extends AbstractOperator {
 
     public DataMiningOperator(AlgorithmBean algorithmBean) {
         this.algorithmBean = algorithmBean;
-        try{
+        try {
             this.algorithm = DMAlgorithmFactory.create(algorithmBean.getAlgorithmName());
-        }catch (Exception e){
+        } catch (Exception e) {
             LOGGER.error(e);
         }
     }
@@ -54,7 +54,8 @@ public class DataMiningOperator extends AbstractOperator {
                 inputData.addColMeta(new DMColMetaData(column.getName(), DMType.fromSwiftInt(column.getType())));
             }
 
-            algorithm.init(algorithmBean, new DMDataModel(null, inputData));
+            DMDataModel inputModel = new DMDataModel(null, inputData);
+            algorithm.init(algorithmBean, inputModel);
             DMRowMetaData outputMetaData = algorithm.getOutputMetaData();
             for (DMColMetaData colMetaData : outputMetaData.getColMetas()) {
                 columnList.add(new MetaDataColumn(colMetaData.getColName(), colMetaData.getColType().toSwiftInt()));

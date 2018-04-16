@@ -1,6 +1,7 @@
 package com.fr.swift.provider;
 
 import com.fr.swift.increment.Increment;
+import com.fr.swift.reliance.SourceReliance;
 import com.fr.swift.source.DataSource;
 import com.fr.swift.source.RelationSource;
 import com.fr.swift.source.SourcePath;
@@ -24,6 +25,7 @@ public class IndexStuffInfoProvider implements IndexStuffProvider {
     private IndexingStuff indexingStuff;
     private SourceContainerManager sourceContainer;
     private Map<String, List<Increment>> incrementMap;
+    private SourceReliance sourceReliance;
 
     public IndexStuffInfoProvider(IndexingStuff indexingStuff, SourceContainerManager sourceContainer) {
         this.indexingStuff = indexingStuff;
@@ -31,10 +33,12 @@ public class IndexStuffInfoProvider implements IndexStuffProvider {
         this.incrementMap = new HashMap<String, List<Increment>>();
     }
 
-    public IndexStuffInfoProvider(IndexingStuff indexingStuff, SourceContainerManager sourceContainer, Map<String, List<Increment>> incrementMap) {
+    public IndexStuffInfoProvider(IndexingStuff indexingStuff, SourceContainerManager sourceContainer,
+                                  Map<String, List<Increment>> incrementMap, SourceReliance sourceReliance) {
         this.indexingStuff = indexingStuff;
         this.sourceContainer = sourceContainer;
         this.incrementMap = incrementMap;
+        this.sourceReliance = sourceReliance;
     }
 
     @Override
@@ -85,5 +89,10 @@ public class IndexStuffInfoProvider implements IndexStuffProvider {
     @Override
     public List<Increment> getIncrementBySourceId(String sourceId) {
         return new ArrayList<Increment>(incrementMap.get(sourceId));
+    }
+
+    @Override
+    public SourceReliance getSourceReliance() {
+        return sourceReliance;
     }
 }
