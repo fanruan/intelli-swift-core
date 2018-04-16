@@ -102,9 +102,9 @@ public class SwiftAnalysisTableManager implements EngineAnalysisTableManager {
             } else {
                 fields = FieldFactory.transformColumns2Fields(DataSourceFactory.transformDataSource(table).getMetadata(), table.getId());
             }
-            if (!groupMap.isEmpty()){
-                for (FineBusinessField field : fields){
-                    if (groupMap.containsKey(field.getName())){
+            if (!groupMap.isEmpty()) {
+                for (FineBusinessField field : fields) {
+                    if (groupMap.containsKey(field.getName())) {
                         field.setFieldGroupType(groupMap.get(field.getName()));
                     }
                 }
@@ -118,40 +118,50 @@ public class SwiftAnalysisTableManager implements EngineAnalysisTableManager {
 
     /**
      * nice job 居然要引擎处理格式。。。
+     *
      * @param table
      * @return
      */
     private Map<String, Integer> checkGroupByOperator(FineAnalysisTable table) {
         Map<String, Integer> groupMap = new HashMap<String, Integer>();
-        while (table != null && table.getOperator() != null){
-            FineOperator op = table.getOperator();
-            if (op.getType() == ConfConstant.AnalysisType.GROUP){
+        List<FineOperator> operators = table.getOperators();
+        for (int i = 0; i < operators.size(); i++) {
+            FineOperator op = operators.get(i);
+            if (op.getType() == ConfConstant.AnalysisType.GROUP) {
                 GroupBean bean = op.getValue();
                 GroupValueBean valueBean = bean.getValue();
                 Map<String, DimensionValueBean> dimensionBean = valueBean.getDimensions();
                 ViewBean viewBean = valueBean.getView();
                 List<String> dimensions = viewBean.getDimension();
                 if (!dimensionBean.isEmpty() && dimensions != null) {
-                    for (int i = 0; i < dimensions.size(); i++){
-                        DimensionValueBean tempBean = dimensionBean.get(dimensions.get(i));
+                    for (int j = 0; j < dimensions.size(); j++) {
+                        DimensionValueBean tempBean = dimensionBean.get(dimensions.get(j));
                         List<DimensionSelectValue> value = tempBean.getValue();
                         DimensionSelectValue selectValue = value.get(0);
-                        if (selectValue.getType() == BIConfConstants.CONF.GROUP.TYPE.DOUBLE){
+                        if (selectValue.getType() == BIConfConstants.CONF.GROUP.TYPE.DOUBLE) {
                             groupMap.put(tempBean.getName(), ((GroupDoubleValueBean) selectValue).getChildValue());
                         }
                     }
                 }
 
             }
-            if (op.getType() == ConfConstant.AnalysisType.ADD_COLUMN){
+            if (op.getType() == ConfConstant.AnalysisType.ADD_COLUMN) {
                 AddNewColumnBean bean = op.getValue();
                 AddNewColumnValueBean value = bean.getValue();
-                if (value.getType() == BIConfConstants.CONF.ADD_COLUMN.TIME.TYPE){
+                if (value.getType() == BIConfConstants.CONF.ADD_COLUMN.TIME.TYPE) {
                     GetFieldTimeValueItem tempBean = ((GetFieldTimeValueBean) value).getValue();
                     groupMap.put(value.getName(), tempBean.getUnit());
                 }
             }
-            table = table.getBaseTable();
+            if (op.getType() == ConfConstant.AnalysisType.FIELD_SETTING) {
+                List<FieldSettingBeanItem> fieldSettings = ((FieldSettingOperator) op).getValue().getValue();
+                for (FieldSettingBeanItem item: fieldSettings){
+                    if (groupMap.containsKey(item.getoName())){
+                        groupMap.put(item.getName(), groupMap.get(item.getoName()));
+                        groupMap.remove(item.getoName());
+                    }
+                }
+            }
         }
         return groupMap;
     }
