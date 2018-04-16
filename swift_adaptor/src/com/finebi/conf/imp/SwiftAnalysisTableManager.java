@@ -117,7 +117,7 @@ public class SwiftAnalysisTableManager implements EngineAnalysisTableManager {
     }
 
     /**
-     * nice job 居然要引擎处理格式。。。
+     * nice job! foundation  居然要引擎处理格式。。。
      *
      * @param table
      * @return
