@@ -91,6 +91,7 @@ task test_jar(dependsOn: compileJava) << {
         jacocoCoverage(destfile: "reports/jacoco/jacoco.exec", append: "true") {
             junit(printsummary: "on", fork: "true", haltonfailure: "false", failureproperty: "tests.failed", showoutput: "true") {
                 classpath() {
+                    pathelement(path:configurations.compile.asPath)
                     fileset(dir: ".") {
                         include(name: "build/libs/*.jar")
 
@@ -104,7 +105,6 @@ task test_jar(dependsOn: compileJava) << {
                 }
                 classpath(path: "build/classes/test")
                 formatter(type: "xml")
-                classpath(group:"com.fineio",name:"fineio",version:"1.0")
                 batchtest(todir: "test_result") {
                     fileset(dir: "build/classes/test") {
                         include(name: "**/*Test.class")
