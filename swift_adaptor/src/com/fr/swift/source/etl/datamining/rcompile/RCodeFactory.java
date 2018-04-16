@@ -4,6 +4,8 @@ import com.finebi.base.stable.StableManager;
 import com.finebi.conf.internalimp.analysis.table.FineAnalysisTableImpl;
 import com.finebi.conf.internalimp.service.rlink.FineGetRCodeServiceImpl;
 import com.finebi.conf.provider.SwiftTableManager;
+import com.finebi.conf.service.table.FineTableService;
+import com.finebi.conf.structure.analysis.table.FineAnalysisTable;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
 
