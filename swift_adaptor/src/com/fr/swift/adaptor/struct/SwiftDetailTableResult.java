@@ -51,6 +51,10 @@ public class SwiftDetailTableResult implements BIDetailTableResult {
             Row row = swiftResultSet.getRowData();
             for (int i = 0; i < columnSize; i++) {
                 BIDetailCell detailCell = new SwiftDetailCell(row.getValue(i));
+                //todo 临时处理，这个应该和SwiftSegmentDetailResult一样，不处理null值吧。。
+                if (detailCell.getData() == null) {
+                    detailCell = new SwiftDetailCell("");
+                }
                 detailCellList.add(detailCell);
             }
             return detailCellList;

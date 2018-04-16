@@ -26,7 +26,7 @@ public class EtlTransferFactory {
         List<DataSource> baseDataSourceList = source.getBasedSources();
         List<Segment[]> basedSegments = new ArrayList<Segment[]>();
         for (DataSource dataSource : baseDataSourceList) {
-            if (!SwiftContext.getInstance().getSegmentProvider().isSegmentsExist(DataSourceUtils.getSwiftSourceKey(dataSource))) {
+            if (!SwiftContext.getInstance().getSegmentProvider().isSegmentsExist(dataSource.getSourceKey())) {
                 throw new SegmentAbsentException(dataSource);
             }
             List<Segment> segments = SwiftContext.getInstance().getSegmentProvider().getSegment(DataSourceUtils.getSwiftSourceKey(dataSource));

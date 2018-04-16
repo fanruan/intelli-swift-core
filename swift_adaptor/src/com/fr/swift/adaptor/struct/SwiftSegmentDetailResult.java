@@ -69,7 +69,7 @@ public class SwiftSegmentDetailResult implements BIDetailTableResult {
                 ColumnKey columnKey = new ColumnKey(columnName);
                 columnList.add(segment.getColumn(columnKey));
             }
-            if(comparator == null) {
+            if (comparator == null) {
                 comparator = new DetailSortComparator(columnList, sortIndex, sorts);
             }
             queryList.add(new SortDetailSegmentQuery(columnList, new AllShowFilter(segment.getAllShowIndex()), sortIndex, sorts, swiftMetaData));
@@ -203,6 +203,7 @@ public class SwiftSegmentDetailResult implements BIDetailTableResult {
             this.sortIndex = sortIndex;
             this.sorts = sorts;
         }
+
         @Override
         public int compare(Row o1, Row o2) {
 

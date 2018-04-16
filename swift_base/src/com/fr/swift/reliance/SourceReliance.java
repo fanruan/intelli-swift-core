@@ -18,7 +18,9 @@ import java.util.Map;
  */
 public class SourceReliance {
 
-    private Map<SourceKey, SourceNode> sourceNodes;
+    private Map<SourceKey, SourceNode> headSourceNodes;
+
+    private Map<SourceKey, SourceNode> allSourceNodes;
 
     private Map<SourceKey, DataSource> reliances;
 
@@ -27,7 +29,8 @@ public class SourceReliance {
     public SourceReliance(List<DataSource> origins, List<DataSource> reliances) {
         this.reliances = new HashMap<SourceKey, DataSource>();
         this.origins = new HashMap<SourceKey, DataSource>();
-        this.sourceNodes = new HashMap<SourceKey, SourceNode>();
+        this.headSourceNodes = new HashMap<SourceKey, SourceNode>();
+        this.allSourceNodes = new HashMap<SourceKey, SourceNode>();
         for (DataSource origin : origins) {
             addOrigin(origin);
         }
@@ -36,24 +39,36 @@ public class SourceReliance {
         }
     }
 
-    public Map<SourceKey, SourceNode> getNodes() {
-        return Collections.unmodifiableMap(sourceNodes);
+    public Map<SourceKey, SourceNode> getHeadNodes() {
+        return Collections.unmodifiableMap(headSourceNodes);
+    }
+
+    public void addHeadNode(SourceNode sourceNode) {
+        headSourceNodes.put(sourceNode.getSourceKey(), sourceNode);
+    }
+
+    public void removeHeadNode(SourceNode sourceNode) {
+        headSourceNodes.remove(sourceNode.getSourceKey());
+    }
+
+    public boolean containHeadNode(SourceKey sourceKey) {
+        return headSourceNodes.containsKey(sourceKey);
+    }
+
+    public SourceNode getHeadNode(SourceKey sourceKey) {
+        return headSourceNodes.get(sourceKey);
     }
 
     public void addNode(SourceNode sourceNode) {
-        sourceNodes.put(sourceNode.getSourceKey(), sourceNode);
-    }
-
-    public void removeNode(SourceNode sourceNode) {
-        sourceNodes.remove(sourceNode.getSourceKey());
-    }
-
-    public boolean containNode(SourceKey sourceKey) {
-        return sourceNodes.containsKey(sourceKey);
+        allSourceNodes.put(sourceNode.getSourceKey(), sourceNode);
     }
 
     public SourceNode getNode(SourceKey sourceKey) {
-        return sourceNodes.get(sourceKey);
+        return allSourceNodes.get(sourceKey);
+    }
+
+    public boolean containNode(SourceNode sourceNode) {
+        return allSourceNodes.containsKey(sourceNode.getSourceKey());
     }
 
     public boolean containReliance(SourceKey sourceKey) {
