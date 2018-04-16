@@ -29,27 +29,15 @@ public class DataMiningAdaptor {
 
     public static RCompileOperator fromRCompileOperator(RCompileBean value, DataSource dataSource) {
         RCompileBeanValue bean = value.getValue();
-        boolean needExecute = bean.isNeedExecute();
-        boolean init = bean.isInit();
-        boolean cancelPrevious = bean.isCancelPreviousStep();
         String tableName = bean.getTableName();
+        String commands = bean.getCommands();
         RConnection conn = RConnectionFactory.getRConnection();
         if (null != dataSource) {
             try {
                 DataProvider dataProvider = new SwiftDataProvider();
                 List<Segment> segments = dataProvider.getPreviewData(dataSource);
-                if (!init) {
-                    String commands = bean.getCommands();
-                    if (null != commands && !"".equals(commands)) {
-                        return new RCompileOperator(commands, needExecute, conn, tableName,
-                                segments.toArray(new Segment[segments.size()]), null, null, cancelPrevious, init);
-                    }
-                } else {
-                    String[] columns = bean.getColumns();
-                    int[] columnType = bean.getColumnType();
-                    return new RCompileOperator(null, needExecute, conn, tableName,
-                            segments.toArray(new Segment[segments.size()]), columnType, columns, cancelPrevious, init);
-                }
+                return new RCompileOperator(commands, conn, tableName,
+                        segments.toArray(new Segment[segments.size()]));
             } catch (Exception e) {
                 SwiftLoggers.getLogger().error(e);
             }

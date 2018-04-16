@@ -53,11 +53,9 @@ public class DataMiningOperator extends AbstractOperator {
                 SwiftMetaDataColumn column = table.getColumn(i + 1);
                 inputData.addColMeta(new DMColMetaData(column.getName(), DMType.fromSwiftInt(column.getType())));
             }
-            // 1： train/ 2：test
-            DMDataModel[] dataModels = new DMDataModel[2];
-            dataModels[0] = new DMDataModel(null, inputData);
-            dataModels[1] = new DMDataModel(null, inputData);
-            algorithm.init(algorithmBean, dataModels);
+
+            DMDataModel inputModel = new DMDataModel(null, inputData);
+            algorithm.init(algorithmBean, inputModel);
             DMRowMetaData outputMetaData = algorithm.getOutputMetaData();
             for (DMColMetaData colMetaData : outputMetaData.getColMetas()) {
                 columnList.add(new MetaDataColumn(colMetaData.getColName(), colMetaData.getColType().toSwiftInt()));

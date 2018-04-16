@@ -26,7 +26,7 @@ import com.fr.swift.source.SwiftResultSet;
 import com.fr.swift.source.etl.ETLOperator;
 import com.fr.swift.source.etl.OperatorType;
 import com.fr.swift.source.etl.detail.DetailOperator;
-import com.fr.swift.utils.DataSourceUtils;
+import com.fr.swift.util.DataSourceUtils;
 
 import java.util.Collections;
 import java.util.List;
@@ -139,7 +139,7 @@ public class MinorUpdater {
     }
 
     private Segment createSegment(DataSource dataSource) {
-        String cubeSourceKey = DataSourceUtils.getSwiftSourceKey(dataSource);
+        String cubeSourceKey = DataSourceUtils.getSwiftSourceKey(dataSource).getId();
         String path = String.format("/%s/cubes/%s/minor_seg",
                 System.getProperty("user.dir"),
                 cubeSourceKey);

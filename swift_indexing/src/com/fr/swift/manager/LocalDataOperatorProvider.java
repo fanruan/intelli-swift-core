@@ -14,7 +14,7 @@ import com.fr.swift.segment.operator.insert.HistorySwiftInserter;
 import com.fr.swift.segment.operator.insert.RealtimeBlockSwiftInserter;
 import com.fr.swift.segment.operator.insert.RealtimeSwiftInserter;
 import com.fr.swift.source.DataSource;
-import com.fr.swift.utils.DataSourceUtils;
+import com.fr.swift.util.DataSourceUtils;
 
 import java.sql.SQLException;
 
@@ -55,10 +55,10 @@ public class LocalDataOperatorProvider implements SwiftDataOperatorProvider {
     @Override
     public Inserter getHistoryBlockSwiftInserter(DataSource dataSource) {
         if (DataSourceUtils.isAddColumn(dataSource)) {
-            return new HistoryBlockSwiftInserter(dataSource.getSourceKey(), DataSourceUtils.getSwiftSourceKey(dataSource),
+            return new HistoryBlockSwiftInserter(dataSource.getSourceKey(), DataSourceUtils.getSwiftSourceKey(dataSource).getId(),
                     dataSource.getMetadata(), DataSourceUtils.getAddFields(dataSource));
         }
-        return new HistoryBlockSwiftInserter(dataSource.getSourceKey(), DataSourceUtils.getSwiftSourceKey(dataSource),
+        return new HistoryBlockSwiftInserter(dataSource.getSourceKey(), DataSourceUtils.getSwiftSourceKey(dataSource).getId(),
                 dataSource.getMetadata());
     }
 
@@ -71,7 +71,7 @@ public class LocalDataOperatorProvider implements SwiftDataOperatorProvider {
     @Override
     public Inserter getRealtimeBlockSwiftInserter(DataSource dataSource) {
         return new RealtimeBlockSwiftInserter(new LineSegmentManager().getSegment(dataSource.getSourceKey()),
-                dataSource.getSourceKey(), DataSourceUtils.getSwiftSourceKey(dataSource),
+                dataSource.getSourceKey(), DataSourceUtils.getSwiftSourceKey(dataSource).getId(),
                 dataSource.getMetadata());
     }
 
