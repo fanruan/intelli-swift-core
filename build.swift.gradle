@@ -9,6 +9,7 @@ tasks.withType(JavaCompile){
 
 repositories {
     mavenCentral();
+    maven {url : "http://mvn.finedevelop.com/repository/maven-public/"};
 }
 
 //sourceCompatibility=1.5
