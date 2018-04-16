@@ -210,4 +210,12 @@ public class SwiftUpdateManager implements EngineUpdateManager {
             return new UpdatePreview();
         }
     }
+
+    public String getUpdatePath() throws Exception{
+        return "";
+    }
+
+    public void updatePath(String newPath) throws Exception{
+
+    }
 }

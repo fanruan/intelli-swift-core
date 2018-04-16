@@ -52,8 +52,8 @@ public class DataMiningFilterResultSet implements SwiftResultSet {
     private void init() throws Exception {
         Segment segment = basedSegment[0];
         DMRowMetaData inputMetaData = new DMRowMetaData();
-        List<List<Object>> trainData = new ArrayList<List<Object>>();
-        List<List<Object>> testData = new ArrayList<List<Object>>();
+        List<List<Object>> inputData = new ArrayList<List<Object>>();
+        List<List<Object>> filterData = new ArrayList<List<Object>>();
         for (int i = 0; i < segment.getRowCount(); i++) {
             List<Object> row = new ArrayList<Object>();
             for (int j = 0; j < baseMetaData.getColumnCount(); j++) {
@@ -64,7 +64,7 @@ public class DataMiningFilterResultSet implements SwiftResultSet {
                 Object cellValue = getCellValueFromSegment(segment, column.getName(), i);
                 row.add(cellValue);
             }
-            testData.add(row);
+            inputData.add(row);
         }
 
         AbstractFilterBean filterBean = (AbstractFilterBean) algorithmBean;
@@ -79,17 +79,15 @@ public class DataMiningFilterResultSet implements SwiftResultSet {
                 Object value = rowData.getValue(i);
                 row.add(value);
             }
-            trainData.add(row);
+            filterData.add(row);
         }
 
         // MetaData 相同
-        DMDataModel trainDataModel = new DMDataModel(trainData, inputMetaData);
-        DMDataModel testDataModel = new DMDataModel(testData, inputMetaData);
-        DMDataModel[] dataModels = new DMDataModel[2];
-        dataModels[0] = trainDataModel;
-        dataModels[1] = testDataModel;
+        DMDataModel inputModel = new DMDataModel(inputData, inputMetaData);
+        DMDataModel filterModel = new DMDataModel(filterData, inputMetaData);
+        inputModel.setFilterData(filterModel);
         DMAbstractAlgorithm algorithm = DMAlgorithmFactory.create(algorithmBean.getAlgorithmName());
-        algorithm.init(algorithmBean, dataModels);
+        algorithm.init(algorithmBean, inputModel);
         DMDataModel outputData = algorithm.run();
         predictTableData = outputData.getData();
     }
