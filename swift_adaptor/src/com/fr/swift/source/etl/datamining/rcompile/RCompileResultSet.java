@@ -50,7 +50,7 @@ public class RCompileResultSet implements SwiftResultSet {
                         break;
                     }
                     case Types.INTEGER: {
-                        int v = ((int[]) dataList.get(i + 2))[rowCursor];
+                        Long v = ((Long[]) dataList.get(i + 2))[rowCursor];
                         list.add(v);
                         break;
                     }

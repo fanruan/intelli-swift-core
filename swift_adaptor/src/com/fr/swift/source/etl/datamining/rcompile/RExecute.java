@@ -1,7 +1,7 @@
 package com.fr.swift.source.etl.datamining.rcompile;
 
 import com.finebi.base.stable.StableManager;
-import com.finebi.conf.service.rlink.RLogContext;
+import com.finebi.conf.internalimp.service.rlink.RLogContext;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.segment.Segment;
@@ -144,8 +144,13 @@ public class RExecute {
                 }
             }
         }
-        RLogContext context = StableManager.getContext().getObject("rLogContext");
-        context.setService(logFactory);
+        try {
+            RLogContext context = StableManager.getContext().getObject("rLogContext");
+            context.setService(logFactory);
+        } catch(Exception e) {
+            LOGGER.error("failed to write R log!", e);
+        }
+
         try {
             if(returnTable) {
                 conn.eval(NEXT + " <- " + tableName);
@@ -242,9 +247,14 @@ public class RExecute {
                 for(int i = 0; i < columns.length; i++) {
                     REXP temp = (REXP)rList.get(columns[i]);
                     if (temp.isInteger()) {
-                        dataList.add(temp.asIntegers());
+                        int[] array = temp.asIntegers();
+                        Long[] value = new Long[array.length];
+                        for(int j = 0; j < array.length; j++) {
+                            value[j] = Long.parseLong(array[j] + "");
+                        }
+                        dataList.add(value);
                         columnTypes[i] = Types.INTEGER;
-                    }else if(temp.isNumeric()) {
+                    } else if(temp.isNumeric()) {
                         dataList.add(temp.asDoubles());
                         columnTypes[i] = Types.DOUBLE;
                     }  else {
@@ -323,11 +333,12 @@ public class RExecute {
                     conn.assign(columnName, parseByteArray(object));
                     break;
                 }
-                default: {
+                default :{
                     conn.assign(columnName, parseStringArray(object));
+                    break;
                 }
             }
-        } catch(REngineException e) {
+        } catch(Exception e) {
             throw new RuntimeException(e);
         }
     }

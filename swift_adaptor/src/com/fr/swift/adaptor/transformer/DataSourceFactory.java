@@ -71,9 +71,13 @@ public class DataSourceFactory {
             @Override
             public ETLTransferOperator createTransferOperator(ETLOperator operator) {
                 RCompileOperator op = (RCompileOperator) operator;
-                return new RCompileTransferOperator(op.getColumns(), op.getColumnTypes(), op.getDataList());
+                List dataList = op.getDataList();
+                String[] column = (String[]) dataList.get(0);
+                int[] columnType = (int[]) dataList.get(1);
+                return new RCompileTransferOperator(column, columnType, op.getDataList());
             }
         });
+
         try {
             new LocalSwiftServerService().start();
             new SwiftAnalyseService().start();

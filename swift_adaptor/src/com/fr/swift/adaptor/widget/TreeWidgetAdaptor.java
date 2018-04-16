@@ -1,18 +1,28 @@
 package com.fr.swift.adaptor.widget;
 
+import com.finebi.conf.internalimp.bean.dashboard.widget.control.tree.TreeOptionsBean;
 import com.finebi.conf.internalimp.dashboard.widget.control.tree.TreeWidget;
 import com.finebi.conf.structure.dashboard.widget.dimension.FineDimension;
+import com.finebi.conf.structure.filter.FineFilter;
 import com.finebi.conf.structure.result.control.tree.BITreeItem;
 import com.finebi.conf.structure.result.control.tree.BITreeResult;
 import com.fr.stable.StringUtils;
+import com.fr.swift.adaptor.encrypt.SwiftEncryption;
 import com.fr.swift.adaptor.transformer.FilterInfoFactory;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
+import com.fr.swift.query.filter.SwiftDetailFilterType;
 import com.fr.swift.query.filter.info.FilterInfo;
+import com.fr.swift.query.filter.info.GeneralFilterInfo;
+import com.fr.swift.query.filter.info.SwiftDetailFilterInfo;
+import edu.emory.mathcs.backport.java.util.Arrays;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Created by Lyon on 2018/3/26.
@@ -22,40 +32,165 @@ public class TreeWidgetAdaptor {
     private static final SwiftLogger LOGGER = SwiftLoggers.getLogger(TreeWidgetAdaptor.class);
 
     public static BITreeResult calculate(TreeWidget treeWidget) {
+        BITreeResult result = null;
         try {
-            // TODO: 2018/3/27 当前功能hasNext属性设置无效。
-            // BITreeResult是一个列表结构，通过parentValues构造对当前floor分组值的过滤
-            // 当前功能没法点击展开操作
-            FineDimension dimension = treeWidget.getDimensionList().get(0);
-            FilterInfo filterInfo = FilterInfoFactory.transformFineFilter(treeWidget.getFilters());
-            // selectedValues是一个嵌套的map，如何确定是第几层的分组值呢？
-            List values = QueryUtils.getOneDimensionFilterValues(dimension, filterInfo, treeWidget.getWidgetId());
-            return new TreeResult(true, createTreeItems(values, treeWidget.getSelectedValues()));
+            TreeOptionsBean bean = treeWidget.getValue().getOptions().getTreeOptions();
+            List<BITreeItem> treeItems;
+            String keyWord = bean.getKeyword();
+            if (StringUtils.isEmpty(keyWord)) {
+                treeItems = createTreeItemList(treeWidget.getWidgetId(), bean, treeWidget.getFilters(),
+                        treeWidget.getDimensionList());
+            } else {
+                treeItems = createSearchItemList(0, treeWidget.getWidgetId(), keyWord, "0", bean.getSelectedValues(),
+                        new String[0], treeWidget.getFilters(), treeWidget.getDimensionList());
+            }
+            // TODO: 2018/4/13 BITreeResult暂时不分页
+            result = new TreeResult(false, treeItems);
         } catch (Exception e) {
             LOGGER.error(e);
         }
-        return null;
+        return result;
     }
 
-    static List<BITreeItem> createTreeItems(List values, Map selectedValues) {
+    static List<BITreeItem> createSearchItemList(int dimensionIndex, String widgetId, String keyWord, String pId,
+                                                         Map selectedValues, String[] parentArray,
+                                                         List<FineFilter> fineFilters, List<FineDimension> dimensions) {
         List<BITreeItem> items = new ArrayList<BITreeItem>();
-        for (Object value : values) {
-            BITreeItem item = new BITreeItem();
-            item.setId("1");
-            item.setParent(true);
-            item.setValue(value == null ? StringUtils.EMPTY : value.toString());
-            item.setText(value == null ? StringUtils.EMPTY : value.toString());
-            item.setTitle(value == null ? StringUtils.EMPTY : value.toString());
-            item.setTimes(1);
-            items.add(item);
-            boolean checked = selectedValues.containsKey(value);
-            item.setChecked(checked);
+        List<String> parents = Arrays.asList(Arrays.copyOf(parentArray, parentArray.length));
+        selectedValues = selectedValues == null ? new LinkedHashMap() : selectedValues;
+        List values = getValues(widgetId, dimensions.get(dimensionIndex), fineFilters, parents, dimensions);
+        for (int j = 0; j < values.size(); j++) {
+            String value = values.get(j).toString();
+            String id = pId + "_" + j;
+            if (!value.contains(keyWord)) {
+                List<BITreeItem> childrenItems = new ArrayList<BITreeItem>();
+                if (dimensionIndex < dimensions.size() - 1) {
+                    // 当前value不匹配keyWord，继续查找子节点
+                    List<String> copy = new ArrayList<String>(Arrays.asList(Arrays.copyOf(parentArray, parentArray.length)));
+                    copy.add(value);
+                    String[] copyArray = copy.toArray(new String[copy.size()]);
+                    childrenItems = createSearchItemList(dimensionIndex + 1, widgetId,
+                            keyWord, id, selectedValues, copyArray, fineFilters, dimensions);
+                }
+                if (childrenItems.isEmpty()) {
+                    // 因为子节点里面没有找到符合keyWord的item，所以当前value不添加展示了
+                    continue;
+                }
+                items.addAll(childrenItems);
+            }
+            boolean isParent = parentArray.length < dimensions.size() - 1;
+            boolean isChildrenChecked = isChildrenChecked(parents, selectedValues);
+            items.add(createItem(isParent, isChildrenChecked, value, id, getSelectedChildren(parents, selectedValues)));
         }
         return items;
     }
 
-    private static class TreeResult implements BITreeResult {
+    private static List getValues(String widgetId, FineDimension dimension, List<FineFilter> fineFilters,
+                                  List<String> parents, List<FineDimension> dimensions) {
+        FilterInfo filterInfo = parents2FilterInfo(fineFilters, parents, dimensions);
+        List values = QueryUtils.getOneDimensionFilterValues(dimension, filterInfo, widgetId);
+        return values;
+    }
 
+    static List<BITreeItem> createTreeItemList(String widgetId, TreeOptionsBean bean, List<FineFilter> fineFilters, List<FineDimension> dimensions) {
+        List<String> parents = bean.getParentValues();
+        parents = parents == null ? new ArrayList<String>() : parents;
+        Map selectedValues = bean.getSelectedValues();
+        selectedValues = selectedValues == null ? new LinkedHashMap() : selectedValues;
+        // 根据有多少个父节点来判断要加载哪个维度的子节点
+        FineDimension dimension = dimensions.get(parents.size());
+        FilterInfo filterInfo = parents2FilterInfo(fineFilters, parents, dimensions);
+        List values = QueryUtils.getOneDimensionFilterValues(dimension, filterInfo, widgetId);
+        boolean isParent = parents.size() < bean.getFloors() - 1;
+        // 父节点是否被选中，如果被选中，则有的子节点可能被选中，否则所有子节点没有被选中
+        // 父节点被选中同时selectedChildren.size() == 0，说明子节点被全选
+        boolean isChildrenChecked = isChildrenChecked(parents, selectedValues);
+        Map selectedChildren = getSelectedChildren(parents, selectedValues);
+        return createTreeItems(isParent, isChildrenChecked, "0", values, selectedChildren);
+    }
+
+    private static Map getSelectedChildren(List<String> parents, Map selectedValues) {
+        Map tmpMap = selectedValues;
+        for (int i = 0; i < parents.size(); i++) {
+            if (!tmpMap.containsKey(parents.get(i))) {
+                // 说明父节点没有被选中
+                return new LinkedHashMap();
+            }
+            tmpMap = (Map) tmpMap.get(parents.get(i));
+        }
+        return tmpMap;
+    }
+
+    private static boolean isChildrenChecked(List<String> parents, Map selectedValues) {
+        if (parents.isEmpty()) {
+            return false;
+        }
+        Map tmpMap = selectedValues;
+        for (int i = 0; i < parents.size(); i++) {
+            if (!tmpMap.containsKey(parents.get(i))) {
+                // 说明父节点没有被选中
+                return false;
+            }
+            tmpMap = (Map) tmpMap.get(parents.get(i));
+        }
+        return tmpMap.isEmpty();
+    }
+
+    private static FilterInfo parents2FilterInfo(List<FineFilter> fineFilters, List<String> parents, List<FineDimension> dimensions) {
+        List<FilterInfo> infoList = new ArrayList<FilterInfo>();
+        infoList.add(FilterInfoFactory.transformFineFilter(fineFilters));
+        for (int i = 0; i < parents.size(); i++) {
+            FineDimension dimension = dimensions.get(i);
+            String fieldName = SwiftEncryption.decryptFieldId(dimension.getFieldId())[1];
+            final String data = parents.get(i);
+            infoList.add(new SwiftDetailFilterInfo<Set<String>>(fieldName,
+                    new HashSet<String>() {{ add(data); }}, SwiftDetailFilterType.STRING_IN));
+        }
+        return new GeneralFilterInfo(infoList, GeneralFilterInfo.AND);
+    }
+
+    private static List<BITreeItem> createTreeItems(boolean isParent, boolean isChildrenChecked, String pId,
+                                                    List values, Map selectedChildren) {
+        List<BITreeItem> items = new ArrayList<BITreeItem>();
+        for (int i = 0; i < values.size(); i++) {
+            items.add(createItem(isParent, isChildrenChecked, values.get(i).toString(), pId + "_" + i, selectedChildren));
+        }
+        return items;
+    }
+
+    private static BITreeItem createItem(boolean isParent, boolean isChildrenChecked,
+                                         String value, String id, Map selectedChildren) {
+        BITreeItem item = new BITreeItem();
+        item.setId(id);
+        item.setParent(isParent);
+        item.setValue(value);
+        item.setText(value);
+        item.setTitle(value);
+        item.setTimes(1);
+        /**
+         * 如果父节点是选中状态且selectedValues.isEmpty，则items为选中状态
+         * 1、如果selectedChildren.size() == 0，则所有item都是不选状态
+         * 2、如果selectedChildren.size() == k，则设置该节点为halfChecked或者checked状态
+         */
+        if (isChildrenChecked) {
+            item.setChecked(true);
+        } else {
+            Map mapOfChild = (Map) selectedChildren.get(value);
+            if (mapOfChild == null) {
+                item.setChecked(false);
+            } else if (mapOfChild.isEmpty()) {
+                // item被选了 && item没有子节点被选中，这种情况定item为选中，如果展开item的子节点，那么所有子节点选中
+                item.setChecked(true);
+            } else {
+                // item被选了 && item有子节点被选中了，这种情况item有可能是全选或者半选状态，这个状态前端能判断的
+                item.setHalfCheck(true);
+            }
+        }
+        return item;
+    }
+
+    private static class TreeResult implements BITreeResult {
+        // 分页
         private boolean hasNext;
         private List<BITreeItem> items;
 

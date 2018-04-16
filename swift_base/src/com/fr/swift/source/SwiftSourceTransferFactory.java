@@ -1,5 +1,6 @@
 package com.fr.swift.source;
 
+import com.fr.swift.exception.SegmentAbsentException;
 import com.fr.swift.source.db.ConnectionManager;
 import com.fr.swift.source.db.QueryDBSource;
 import com.fr.swift.source.db.QuerySourceTransfer;
@@ -20,7 +21,7 @@ import java.util.List;
  * @date 2017/11/22
  */
 public class SwiftSourceTransferFactory {
-    public static SwiftSourceTransfer createSourceTransfer(DataSource dataSource) {
+    public static SwiftSourceTransfer createSourceTransfer(DataSource dataSource) throws SegmentAbsentException {
         SwiftSourceTransfer transfer = null;
         if (dataSource instanceof TableDBSource) {
             transfer = new TableDBSourceTransfer(ConnectionManager.getInstance().getConnectionInfo(((TableDBSource) dataSource).getConnectionName())
