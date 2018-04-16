@@ -5,6 +5,7 @@ import com.fr.swift.config.ISegmentKey;
 import com.fr.swift.config.conf.SegmentConfig;
 import com.fr.swift.config.unique.SegmentKeyUnique;
 import com.fr.swift.config.unique.SegmentUnique;
+import com.fr.swift.context.SwiftContext;
 import com.fr.swift.cube.io.Types;
 import com.fr.swift.cube.io.location.IResourceLocation;
 import com.fr.swift.cube.io.location.ResourceLocation;
@@ -128,6 +129,12 @@ public abstract class AbstractBlockInserter implements Inserter {
                 }
             } finally {
                 swiftResultSet.close();
+            }
+        } else {
+            List<Segment> cubeSourceSegments = SwiftContext.getInstance().getSegmentProvider().getSegment(new SourceKey(cubeSourceKey));
+            for (int i = 0; i < cubeSourceSegments.size(); i++) {
+                Segment segment = cubeSourceSegments.get(i);
+                createSegment(i, segment.isHistory() ? Types.StoreType.FINE_IO : Types.StoreType.MEMORY);
             }
         }
         release();

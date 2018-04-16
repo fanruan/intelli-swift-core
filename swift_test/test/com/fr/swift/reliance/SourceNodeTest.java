@@ -78,7 +78,7 @@ public class SourceNodeTest extends TestCase {
 
         SourceReliance sourceReliance = new SourceReliance(origins, reliances);
         SourceNodeUtils.calculateSourceNode(sourceReliance);
-        Map<SourceKey, SourceNode> map = sourceReliance.getNodes();
+        Map<SourceKey, SourceNode> map = sourceReliance.getHeadNodes();
         assertEquals(map.size(), 1);
         assertTrue(map.containsKey(dataSourceA.getSourceKey()));
 

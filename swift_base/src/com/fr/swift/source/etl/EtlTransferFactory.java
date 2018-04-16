@@ -5,7 +5,6 @@ import com.fr.swift.exception.SegmentAbsentException;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.source.DataSource;
 import com.fr.swift.source.SwiftMetaData;
-import com.fr.swift.util.DataSourceUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,10 +25,10 @@ public class EtlTransferFactory {
         List<DataSource> baseDataSourceList = source.getBasedSources();
         List<Segment[]> basedSegments = new ArrayList<Segment[]>();
         for (DataSource dataSource : baseDataSourceList) {
-            if (!SwiftContext.getInstance().getSegmentProvider().isSegmentsExist(DataSourceUtils.getSwiftSourceKey(dataSource))) {
+            if (!SwiftContext.getInstance().getSegmentProvider().isSegmentsExist(dataSource.getSourceKey())) {
                 throw new SegmentAbsentException(dataSource);
             }
-            List<Segment> segments = SwiftContext.getInstance().getSegmentProvider().getSegment(DataSourceUtils.getSwiftSourceKey(dataSource));
+            List<Segment> segments = SwiftContext.getInstance().getSegmentProvider().getSegment(dataSource.getSourceKey());
             basedSegments.add(segments.toArray(new Segment[segments.size()]));
         }
         return new EtlTransfer(transferOperator, metaData, basedMetas, basedSegments, source.getFieldsInfo());
