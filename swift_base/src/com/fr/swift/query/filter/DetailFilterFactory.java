@@ -41,8 +41,8 @@ public class DetailFilterFactory {
 
     public static DetailFilter createFilter(Segment segment, SwiftDetailFilterInfo filterInfo) {
         // 通用过滤器没有fieldName
-        Column column = filterInfo.getFieldName() == null ? null : segment.getColumn(new ColumnKey(filterInfo.getFieldName()));
-        final int rowCount = segment.getRowCount();
+        Column column = filterInfo.getFieldName() == null || segment == null ? null : segment.getColumn(new ColumnKey(filterInfo.getFieldName()));
+        final int rowCount = segment == null ? 0 : segment.getRowCount();
         switch (filterInfo.getType()) {
             case STRING_IN:
                 return new StringInFilter((Set<String>) filterInfo.getFilterValue(), column);

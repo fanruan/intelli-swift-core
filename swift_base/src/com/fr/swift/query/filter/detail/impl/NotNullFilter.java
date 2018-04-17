@@ -13,7 +13,7 @@ public class NotNullFilter extends AbstractNotOperatorFilter {
     }
 
     @Override
-    public boolean matches(SwiftNode node) {
+    public boolean matches(SwiftNode node, int targetIndex) {
         throw new UnsupportedOperationException();
     }
 }

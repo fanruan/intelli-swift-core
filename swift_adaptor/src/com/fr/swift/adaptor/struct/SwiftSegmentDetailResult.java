@@ -2,17 +2,15 @@ package com.fr.swift.adaptor.struct;
 
 import com.finebi.conf.structure.result.BIDetailCell;
 import com.finebi.conf.structure.result.BIDetailTableResult;
-import com.fr.swift.bitmap.ImmutableBitMap;
 import com.fr.swift.cal.Query;
 import com.fr.swift.cal.result.detail.NormalDetailResultQuery;
 import com.fr.swift.cal.result.detail.SortDetailResultQuery;
 import com.fr.swift.cal.segment.detail.NormalDetailSegmentQuery;
 import com.fr.swift.cal.segment.detail.SortDetailSegmentQuery;
 import com.fr.swift.compare.Comparators;
-import com.fr.swift.query.filter.detail.DetailFilter;
+import com.fr.swift.query.filter.detail.impl.AllShowDetailFilter;
 import com.fr.swift.query.sort.SortType;
 import com.fr.swift.result.DetailResultSet;
-import com.fr.swift.result.SwiftNode;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.segment.column.Column;
 import com.fr.swift.segment.column.ColumnKey;
@@ -69,10 +67,10 @@ public class SwiftSegmentDetailResult implements BIDetailTableResult {
                 ColumnKey columnKey = new ColumnKey(columnName);
                 columnList.add(segment.getColumn(columnKey));
             }
-            if(comparator == null) {
+            if (comparator == null) {
                 comparator = new DetailSortComparator(columnList, sortIndex, sorts);
             }
-            queryList.add(new SortDetailSegmentQuery(columnList, new AllShowFilter(segment.getAllShowIndex()), sortIndex, sorts, swiftMetaData));
+            queryList.add(new SortDetailSegmentQuery(columnList, new AllShowDetailFilter(segment), sortIndex, sorts, swiftMetaData));
         }
         Query<DetailResultSet> query = null;
         if (queryList.size() == 1) {
@@ -95,7 +93,7 @@ public class SwiftSegmentDetailResult implements BIDetailTableResult {
                 ColumnKey columnKey = new ColumnKey(columnName);
                 columnList.add(segment.getColumn(columnKey));
             }
-            queryList.add(new NormalDetailSegmentQuery(columnList, new AllShowFilter(segment.getAllShowIndex()), swiftMetaData));
+            queryList.add(new NormalDetailSegmentQuery(columnList, new AllShowDetailFilter(segment), swiftMetaData));
         }
         Query<DetailResultSet> query = null;
         if (queryList.size() == 1) {
@@ -135,24 +133,6 @@ public class SwiftSegmentDetailResult implements BIDetailTableResult {
     @Override
     public ResultType getResultType() {
         return ResultType.DETAIL;
-    }
-
-    private class AllShowFilter implements DetailFilter {
-        private ImmutableBitMap bitMap;
-
-        public AllShowFilter(ImmutableBitMap bitMap) {
-            this.bitMap = bitMap;
-        }
-
-        @Override
-        public ImmutableBitMap createFilterIndex() {
-            return bitMap;
-        }
-
-        @Override
-        public boolean matches(SwiftNode node) {
-            return true;
-        }
     }
 
     private class DetailResultIterator implements Iterator<List<BIDetailCell>> {
@@ -203,6 +183,7 @@ public class SwiftSegmentDetailResult implements BIDetailTableResult {
             this.sortIndex = sortIndex;
             this.sorts = sorts;
         }
+
         @Override
         public int compare(Row o1, Row o2) {
 

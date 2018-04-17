@@ -1,6 +1,6 @@
 package com.fr.swift.query.filter.detail.impl.date;
 
-import com.fr.swift.query.filter.detail.impl.AbstractFilter;
+import com.fr.swift.query.filter.detail.impl.AbstractDetailFilter;
 import com.fr.swift.query.filter.detail.impl.util.LookupFactory;
 import com.fr.swift.result.SwiftNode;
 import com.fr.swift.segment.column.Column;
@@ -14,7 +14,7 @@ import com.fr.swift.util.MatchAndIndex;
 /**
  * Created by Lyon on 2017/11/29.
  */
-public class DateInRangeFilter extends AbstractFilter<Long> {
+public class DateInRangeFilter extends AbstractDetailFilter<Long> {
 
     private Long startIncluded;
     private Long endIncluded;
@@ -47,7 +47,7 @@ public class DateInRangeFilter extends AbstractFilter<Long> {
     }
 
     @Override
-    public boolean matches(SwiftNode node) {
+    public boolean matches(SwiftNode node, int targetIndex) {
         Long date = (Long) node.getData();
         if (date == null){
             return false;

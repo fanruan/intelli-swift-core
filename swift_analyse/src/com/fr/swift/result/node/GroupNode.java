@@ -90,4 +90,8 @@ public class GroupNode<T extends GroupNode> extends AbstractSwiftNode<T> {
         }
         return result;
     }
+
+    public void clearChildMap(){
+        childMap = new ChildMap<T>();
+    }
 }

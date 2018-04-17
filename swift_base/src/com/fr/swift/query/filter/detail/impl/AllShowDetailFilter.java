@@ -20,7 +20,7 @@ public class AllShowDetailFilter implements DetailFilter {
     }
 
     @Override
-    public boolean matches(SwiftNode node) {
+    public boolean matches(SwiftNode node, int targetIndex) {
         return false;
     }
 }

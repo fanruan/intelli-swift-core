@@ -211,13 +211,9 @@ public class SwiftUpdateManager implements EngineUpdateManager {
         }
     }
 
-    @Override
-    public String getUpdatePath() throws Exception {
-        return null;
+    public String getUpdatePath() throws Exception{
+        return "";
     }
 
-    @Override
-    public void updatePath(String newPath) throws Exception {
-
-    }
+    public void updatePath(String newPath) throws Exception{}
 }

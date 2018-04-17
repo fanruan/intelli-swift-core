@@ -69,7 +69,7 @@ public class GroupAllSegmentQueryTest extends TestCase {
             }
 
             @Override
-            public boolean matches(SwiftNode node) {
+            public boolean matches(SwiftNode node, int targetIndex) {
                 return false;
             }
         }, new ArrayList<>());

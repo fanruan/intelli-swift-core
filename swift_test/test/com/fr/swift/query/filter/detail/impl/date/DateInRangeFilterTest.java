@@ -22,10 +22,10 @@ public class DateInRangeFilterTest extends BaseDateFilterTest {
 
     @Override
     public void testMatch() {
-        assertTrue(filter.matches(createNode(startDate, comparator)));
-        assertTrue(filter.matches(createNode(endDate, comparator)));
-        assertTrue(filter.matches(createNode(getRandomMatchedDetail(details, expectedIndexes), comparator)));
-        assertTrue(!filter.matches(createNode(getRandomNotMatchedDetail(details, expectedIndexes), comparator)));
+        assertTrue(filter.matches(createNode(startDate, comparator), 0));
+        assertTrue(filter.matches(createNode(endDate, comparator), 0));
+        assertTrue(filter.matches(createNode(getRandomMatchedDetail(details, expectedIndexes), comparator), 0));
+        assertTrue(!filter.matches(createNode(getRandomNotMatchedDetail(details, expectedIndexes), comparator), 0));
     }
 
     private void init() {

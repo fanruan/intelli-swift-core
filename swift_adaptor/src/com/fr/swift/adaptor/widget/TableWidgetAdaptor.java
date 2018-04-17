@@ -27,7 +27,6 @@ import com.fr.swift.log.SwiftLoggers;
 import com.fr.swift.query.adapter.dimension.Dimension;
 import com.fr.swift.query.adapter.dimension.GroupDimension;
 import com.fr.swift.query.adapter.metric.Metric;
-import com.fr.swift.query.adapter.target.GroupFormulaTarget;
 import com.fr.swift.query.adapter.target.GroupTarget;
 import com.fr.swift.query.adapter.target.cal.TargetInfo;
 import com.fr.swift.query.filter.SwiftDetailFilterType;
@@ -86,7 +85,7 @@ public class TableWidgetAdaptor {
         Cursor cursor = null;
         String queryId = widget.getWidgetId();
 
-        List<Dimension> dimensions = getDimensions(widget.getDimensionList());
+        List<Dimension> dimensions = getDimensions(widget.getDimensionList(), widget.getTargetList());
         FilterInfo filterInfo = getFilterInfo(widget);
 
         GroupTarget[] targets = getTargets(widget);
@@ -105,9 +104,9 @@ public class TableWidgetAdaptor {
     }
 
     private static FilterInfo getFilterInfo(TableWidget widget) throws Exception {
-        List<FilterInfo> filterInfos = new ArrayList<FilterInfo>();
+        List<FilterInfo> filterInfoList = new ArrayList<FilterInfo>();
         FilterInfo filterInfo = FilterInfoFactory.transformFineFilter(widget.getFilters());
-        filterInfos.add(filterInfo);
+        filterInfoList.add(filterInfo);
         //联动设置
         Map<String, WidgetLinkItem> linkItemMap = widget.getValue().getLinkage();
         //联动配置
@@ -126,19 +125,19 @@ public class TableWidgetAdaptor {
                         String value = clickValueItem.getText();
                         Set<String> values = new HashSet<String>();
                         values.add(value);
-                        filterInfos.add(new SwiftDetailFilterInfo<Set<String>>(columnName, values, SwiftDetailFilterType.STRING_IN));
+                        filterInfoList.add(new SwiftDetailFilterInfo<Set<String>>(columnName, values, SwiftDetailFilterType.STRING_IN));
                     }
                 }
             }
         }
-        return new GeneralFilterInfo(filterInfos, GeneralFilterInfo.AND);
+        return new GeneralFilterInfo(filterInfoList, GeneralFilterInfo.AND);
     }
 
-    static List<Dimension> getDimensions(List<FineDimension> fineDims) throws Exception {
+    static List<Dimension> getDimensions(List<FineDimension> fineDims, List<FineTarget> targets) throws Exception {
         List<Dimension> dimensions = new ArrayList<Dimension>();
         for (int i = 0, size = fineDims.size(); i < size; i++) {
             FineDimension fineDim = fineDims.get(i);
-            dimensions.add(toDimension(fineDim, i));
+            dimensions.add(toDimension(fineDim, i, targets));
         }
         return dimensions;
     }
@@ -146,21 +145,22 @@ public class TableWidgetAdaptor {
     static GroupTarget[] getTargets(FineWidget widget) throws Exception {
         List<FineTarget> fineTargets = widget.getTargetList();
         fineTargets = fineTargets == null ? new ArrayList<FineTarget>() : fineTargets;
-        GroupTarget[] targets = new GroupTarget[fineTargets.size()];
-        for (int i = 0, size = fineTargets.size(); i < size; i++) {
-            targets[i] = new GroupFormulaTarget(i);
-        }
+        GroupTarget[] targets = new GroupTarget[0];
+        //先注释掉，加进来挂了
+//        for (int i = 0, size = fineTargets.size(); i < size; i++) {
+//            targets[i] = new GroupFormulaTarget(i);
+//        }
         return targets;
     }
 
-    static Dimension toDimension(FineDimension fineDim, int index) {
+    static Dimension toDimension(FineDimension fineDim, int index, List<FineTarget> targets) {
         SourceKey key = new SourceKey(fineDim.getId());
         String columnName = SwiftEncryption.decryptFieldId(fineDim.getFieldId())[1];
         ColumnKey colKey = new ColumnKey(columnName);
 
-        Group group = GroupAdaptor.adaptGroup(fineDim.getGroup());
+        Group group = GroupAdaptor.adaptDashboardGroup(fineDim.getGroup());
 
-        FilterInfo filterInfo = null;
+        FilterInfo filterInfo = FilterInfoFactory.transformDimensionFineFilter(fineDim.getFilters(), fineDim.getId(), targets);
 
         return new GroupDimension(index, key, colKey, group,
                 fineDim.getSort() == null ? new AscSort(index) : adaptSort(fineDim.getSort(), index), filterInfo);

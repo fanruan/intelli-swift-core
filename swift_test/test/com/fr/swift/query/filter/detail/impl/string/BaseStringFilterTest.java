@@ -51,9 +51,9 @@ public abstract class BaseStringFilterTest extends BaseFilterTest {
     }
 
     public void testMatch() {
-        assertTrue(filter.matches(createNode(getRandomMatchedDetail(details, expectedIndexes))));
-        assertTrue(!filter.matches(createNode(getRandomNotMatchedDetail(details, expectedIndexes))));
-        assertTrue(!filter.matches(createNode(null)));
+        assertTrue(filter.matches(createNode(getRandomMatchedDetail(details, expectedIndexes)), 0));
+        assertTrue(!filter.matches(createNode(getRandomNotMatchedDetail(details, expectedIndexes)), 0));
+        assertTrue(!filter.matches(createNode(null), 0));
     }
 
     private static String getWord() {

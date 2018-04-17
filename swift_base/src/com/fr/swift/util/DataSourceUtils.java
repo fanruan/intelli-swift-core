@@ -78,10 +78,11 @@ public class DataSourceUtils {
                     List<String> names = etlOperator.getNewAddedName();
                     if (etlSource.getFieldsInfo() != null) {
                         for (int i = 0; i < names.size(); i++) {
-                            if (ComparatorUtils.equals(etlSource.getFieldsInfo().get(i), names.get(i))) {
+                            int originColumnSize = etlSource.getFieldsInfo().size() - names.size();
+                            if (ComparatorUtils.equals(etlSource.getFieldsInfo().get(i + originColumnSize), names.get(i))) {
                                 fields.add(names.get(i));
                             } else {
-                                fields.add(etlSource.getFieldsInfo().get(i));
+                                fields.add(etlSource.getFieldsInfo().get(i + originColumnSize));
                             }
                         }
                     } else {
@@ -98,8 +99,7 @@ public class DataSourceUtils {
 
 
     /**
-     *
-     * @param baseSourceKeys 需要计算依赖的sourcekeys
+     * @param baseSourceKeys    需要计算依赖的sourcekeys
      * @param allDataSourceList 计算样本
      * @return
      */
@@ -125,7 +125,7 @@ public class DataSourceUtils {
     }
 
     /**
-     * @param baseSourceKey  需要计算依赖的sourcekey
+     * @param baseSourceKey     需要计算依赖的sourcekey
      * @param allDataSourceList 计算样本
      */
     public static List<DataSource> calculateReliance(SourceKey baseSourceKey, List<DataSource> allDataSourceList) {
