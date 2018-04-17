@@ -1,6 +1,5 @@
 package com.fr.swift.cube.space.impl;
 
-import com.fr.swift.cube.space.SpaceUsage;
 import com.fr.swift.cube.space.SpaceUsageDetector;
 import com.fr.swift.util.FileUtil;
 import com.fr.swift.util.function.Consumer;
@@ -14,13 +13,6 @@ import java.net.URISyntaxException;
  * @date 2018/4/13
  */
 public class LocalSpaceUsageDetector implements SpaceUsageDetector {
-    @Override
-    public SpaceUsage detectUsage(URI uri) throws Exception {
-        return new SpaceUsageImpl(
-                detectUsed(uri),
-                detectUsable(uri),
-                detectTotal(uri));
-    }
 
     @Override
     public long detectUsed(URI uri) throws Exception {

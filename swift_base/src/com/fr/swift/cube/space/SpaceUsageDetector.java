@@ -8,15 +8,6 @@ import java.net.URI;
  */
 public interface SpaceUsageDetector {
     /**
-     * 通过uri拿使用情况
-     *
-     * @param uri uri
-     * @return 使用情况
-     * @throws Exception 异常
-     */
-    SpaceUsage detectUsage(URI uri) throws Exception;
-
-    /**
      * 占用
      *
      * @param uri 地址

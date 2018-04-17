@@ -5,7 +5,7 @@ import com.finebi.conf.internalimp.space.SpaceInfo;
 import com.finebi.conf.provider.SwiftAnalysisConfManager;
 import com.finebi.conf.service.engine.space.EngineSpaceManager;
 import com.finebi.conf.structure.bean.table.FineBusinessTable;
-import com.fr.swift.cube.space.SpaceUsage.SpaceUnit;
+import com.fr.swift.cube.space.SpaceUnit;
 import com.fr.swift.cube.space.SpaceUsageService;
 import com.fr.swift.cube.space.impl.SpaceUsageServiceImpl;
 import com.fr.swift.source.SourceKey;
