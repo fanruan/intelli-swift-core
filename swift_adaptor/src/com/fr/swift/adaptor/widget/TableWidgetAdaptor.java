@@ -158,9 +158,9 @@ public class TableWidgetAdaptor {
         String columnName = SwiftEncryption.decryptFieldId(fineDim.getFieldId())[1];
         ColumnKey colKey = new ColumnKey(columnName);
 
-        Group group = GroupAdaptor.adaptGroup(fineDim.getGroup());
+        Group group = GroupAdaptor.adaptDashboardGroup(fineDim.getGroup());
 
-        FilterInfo filterInfo = null;
+        FilterInfo filterInfo = FilterInfoFactory.transformFineFilter(fineDim.getFilters());
 
         return new GroupDimension(index, key, colKey, group,
                 fineDim.getSort() == null ? new AscSort(index) : adaptSort(fineDim.getSort(), index), filterInfo);
