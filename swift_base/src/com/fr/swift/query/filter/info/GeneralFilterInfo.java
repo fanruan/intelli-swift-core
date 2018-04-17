@@ -3,9 +3,13 @@ package com.fr.swift.query.filter.info;
 import com.fr.swift.query.filter.detail.DetailFilter;
 import com.fr.swift.query.filter.detail.impl.GeneralAndFilter;
 import com.fr.swift.query.filter.detail.impl.GeneralOrFilter;
+import com.fr.swift.query.filter.match.GeneralAndMatchFilter;
+import com.fr.swift.query.filter.match.GeneralOrMatchFilter;
+import com.fr.swift.query.filter.match.MatchFilter;
 import com.fr.swift.segment.Segment;
 import com.fr.swift.source.core.CoreField;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -26,11 +30,11 @@ public class GeneralFilterInfo extends AbstractFilterInfo {
 
     @Override
     public boolean isMatchFilter() {
-        if (children == null){
+        if (children == null) {
             return false;
         }
-        for (FilterInfo filterInfo : children){
-            if (filterInfo != null && filterInfo.isMatchFilter()){
+        for (FilterInfo filterInfo : children) {
+            if (filterInfo != null && filterInfo.isMatchFilter()) {
                 return true;
             }
         }
@@ -40,5 +44,16 @@ public class GeneralFilterInfo extends AbstractFilterInfo {
     @Override
     public DetailFilter createDetailFilter(Segment segment) {
         return type == OR ? new GeneralOrFilter(children, segment) : new GeneralAndFilter(children, segment);
+    }
+
+    @Override
+    public MatchFilter createMatchFilter() {
+        List<MatchFilter> matchFilters = new ArrayList<MatchFilter>();
+        if (children != null) {
+            for (FilterInfo info : children) {
+                matchFilters.add(info.createMatchFilter());
+            }
+        }
+        return type == OR ? new GeneralAndMatchFilter(matchFilters) : new GeneralOrMatchFilter(matchFilters);
     }
 }

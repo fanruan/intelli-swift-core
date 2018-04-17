@@ -3,14 +3,15 @@ package com.fr.swift.result;
 import com.fr.swift.query.aggregator.AggregatorValue;
 import com.fr.swift.source.Row;
 import com.fr.swift.source.SwiftMetaData;
-import com.fr.swift.source.SwiftResultSet;
 
 import java.sql.SQLException;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by pony on 2017/12/8.
  */
-public abstract class AbstractSwiftNode<T extends SwiftNode> implements SwiftNode<T>, SwiftResultSet {
+public abstract class AbstractSwiftNode<T extends SwiftNode> implements SwiftNode<T>, GroupByResultSet {
     protected T parent;
     protected T sibling;
     protected AggregatorValue[] aggregatorValues;
@@ -79,5 +80,20 @@ public abstract class AbstractSwiftNode<T extends SwiftNode> implements SwiftNod
     @Override
     public Row getRowData() throws SQLException {
         return null;
+    }
+
+    @Override
+    public List<KeyValue<RowIndexKey, AggregatorValue[]>> getResultList() {
+        return null;
+    }
+
+    @Override
+    public List<Map<Integer, Object>> getRowGlobalDictionaries() {
+        return null;
+    }
+
+    @Override
+    public int rowDimensionSize() {
+        return 0;
     }
 }

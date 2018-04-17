@@ -36,7 +36,9 @@ import com.finebi.conf.internalimp.bean.filtervalue.number.NumberSelectedFilterV
 import com.finebi.conf.internalimp.bean.filtervalue.number.NumberValue;
 import com.finebi.conf.structure.bean.filter.DateFilterBean;
 import com.finebi.conf.structure.bean.filter.FilterBean;
+import com.finebi.conf.structure.dashboard.widget.target.FineTarget;
 import com.finebi.conf.structure.filter.FineFilter;
+import com.fr.general.ComparatorUtils;
 import com.fr.stable.StringUtils;
 import com.fr.swift.adaptor.encrypt.SwiftEncryption;
 import com.fr.swift.adaptor.transformer.cal.AvgUtils;
@@ -44,10 +46,12 @@ import com.fr.swift.adaptor.transformer.date.DateUtils;
 import com.fr.swift.query.filter.SwiftDetailFilterType;
 import com.fr.swift.query.filter.info.FilterInfo;
 import com.fr.swift.query.filter.info.GeneralFilterInfo;
+import com.fr.swift.query.filter.info.MatchFilterInfo;
 import com.fr.swift.query.filter.info.SwiftDetailFilterInfo;
 import com.fr.swift.query.filter.info.value.SwiftDateInRangeFilterValue;
 import com.fr.swift.query.filter.info.value.SwiftNumberInRangeFilterValue;
 import com.fr.swift.segment.Segment;
+import com.fr.swift.util.Crasher;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -62,11 +66,43 @@ public class FilterInfoFactory {
     public static FilterInfo transformFineFilter(List<FineFilter> filters) {
         List<FilterBean> beans = new ArrayList<FilterBean>();
         for (FineFilter filter : filters) {
-            if (filter.getValue() != null){
+            if (filter.getValue() != null) {
                 beans.add((FilterBean) filter.getValue());
             }
         }
         return transformFilterBean(beans, new ArrayList<Segment>());
+    }
+
+    public static FilterInfo transformDimensionFineFilter(List<FineFilter> filters, String dimId, List<FineTarget> targets) {
+        if (filters == null) {
+            return null;
+        }
+        List<FilterBean> beans = new ArrayList<FilterBean>();
+        for (FineFilter filter : filters) {
+            if (filter.getValue() != null) {
+                beans.add((FilterBean) filter.getValue());
+            }
+        }
+        List<FilterInfo> filterInfoList = new ArrayList<FilterInfo>();
+        for (FilterBean bean : beans) {
+            AbstractFilterBean filterBean = (AbstractFilterBean) bean;
+            FilterInfo info = createFilterInfo(filterBean, new ArrayList<Segment>());
+            if (!ComparatorUtils.equals(filterBean.getTargetId(), dimId)) {
+                filterInfoList.add(new MatchFilterInfo(info, getIndex(filterBean.getTargetId(), targets)));
+            } else {
+                filterInfoList.add(info);
+            }
+        }
+        return new GeneralFilterInfo(filterInfoList, GeneralFilterInfo.AND);
+    }
+
+    private static int getIndex(String targetId, List<FineTarget> targets) {
+        for (int i = 0; i < targets.size(); i++) {
+            if (ComparatorUtils.equals(targetId, targets.get(i).getId())) {
+                return i;
+            }
+        }
+        return Crasher.crash("invalid target filter id :" + targetId);
     }
 
     public static FilterInfo transformFilterBean(List<FilterBean> beans, List<Segment> segments) {
@@ -77,7 +113,7 @@ public class FilterInfoFactory {
         return new GeneralFilterInfo(filterInfoList, GeneralFilterInfo.AND);
     }
 
-    private static SwiftDetailFilterInfo createFilterInfo(FilterBean bean, List<Segment> segments) {
+    public static SwiftDetailFilterInfo createFilterInfo(FilterBean bean, List<Segment> segments) {
         String fieldId = ((AbstractFilterBean) bean).getFieldId();
         // 分析表这边的bean暂时没有FieldId，所以还是取FieldName
         String fieldName = StringUtils.isEmpty(fieldId) ?
@@ -158,12 +194,16 @@ public class FilterInfoFactory {
             }
             case BICommonConstants.ANALYSIS_FILTER_NUMBER.EQUAL_TO: {
                 final Double value = ((NumberEqualFilterBean) bean).getFilterValue();
-                return new SwiftDetailFilterInfo<Set<Double>>(fieldName, new HashSet<Double>() {{ add(value); }},
+                return new SwiftDetailFilterInfo<Set<Double>>(fieldName, new HashSet<Double>() {{
+                    add(value);
+                }},
                         SwiftDetailFilterType.NUMBER_CONTAIN);
             }
             case BICommonConstants.ANALYSIS_FILTER_NUMBER.NOT_EQUAL_TO: {
                 final Double value = ((NumberNoEqualFilterBean) bean).getFilterValue();
-                return new SwiftDetailFilterInfo<Set<Double>>(fieldName, new HashSet<Double>() {{ add(value); }},
+                return new SwiftDetailFilterInfo<Set<Double>>(fieldName, new HashSet<Double>() {{
+                    add(value);
+                }},
                         SwiftDetailFilterType.NUMBER_NOT_CONTAIN);
             }
             case BICommonConstants.ANALYSIS_FILTER_NUMBER.LARGE: {

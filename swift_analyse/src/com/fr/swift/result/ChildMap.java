@@ -3,6 +3,7 @@ package com.fr.swift.result;
 import com.fr.swift.util.Clearable;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 
 /**
@@ -10,7 +11,7 @@ import java.util.LinkedHashMap;
  *
  * @author Daniel
  */
-public class ChildMap<T> implements Clearable {
+public class ChildMap<T> implements Clearable,Iterable<T> {
 
     /**
      *
@@ -72,5 +73,14 @@ public class ChildMap<T> implements Clearable {
 
     public int getIndex(Object key) {
         return lmp.get(key);
+    }
+
+    @Override
+    public Iterator<T> iterator() {
+        return list.iterator();
+    }
+
+    public boolean isEmpty() {
+        return list.isEmpty();
     }
 }

@@ -35,9 +35,9 @@ public class TopNFilterTest extends BaseNumberFilterTest {
     }
 
     public void testMatch() {
-        assertTrue(filter.matches(createNode(random.nextInt(topN), 0)));
-        assertTrue(!filter.matches(createNode(topN, 0)));
-        assertTrue(filter.matches(createNode(topN - 1, 0)));
+        assertTrue(filter.matches(createNode(random.nextInt(topN), 0), 0));
+        assertTrue(!filter.matches(createNode(topN, 0), 0));
+        assertTrue(filter.matches(createNode(topN - 1, 0), 0));
     }
 
     @Override

@@ -24,7 +24,8 @@ public abstract class AbstractNotOperatorFilter implements DetailFilter {
     }
 
     @Override
-    public boolean matches(SwiftNode node) {
-        return node.getData() == null ? false : !filter.matches(node);
+    public boolean matches(SwiftNode node, int targetIndex) {
+        return node.getData() == null ? false : !filter.matches(node, targetIndex);
     }
+
 }

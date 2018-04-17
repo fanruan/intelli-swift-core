@@ -5,7 +5,10 @@ import com.fr.swift.query.adapter.target.GroupTarget;
 import com.fr.swift.query.aggregator.Aggregator;
 import com.fr.swift.query.filter.match.MatchFilter;
 import com.fr.swift.query.sort.Sort;
+import com.fr.swift.result.ChildMap;
 import com.fr.swift.result.GroupByResultSet;
+import com.fr.swift.result.node.GroupNode;
+import com.fr.swift.result.node.GroupNodeFactory;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -40,6 +43,79 @@ public class GroupResultQuery extends AbstractGroupResultQuery {
         for (Query<GroupByResultSet> query : queryList) {
             groupByResultSets.add(query.getQueryResult());
         }
-        return GroupByResultSetMergingUtils.merge(groupByResultSets, aggregators, indexSorts);
+        GroupByResultSet resultSet = GroupByResultSetMergingUtils.merge(groupByResultSets, aggregators, indexSorts);
+        if (hasDimensionFilter()) {
+            GroupNode groupNode = GroupNodeFactory.createNode(resultSet, aggregators.size() + targets.size());
+            filter(groupNode, 0);
+            return groupNode;
+        }
+        return resultSet;
     }
+
+    private boolean hasDimensionFilter() {
+        if (dimensionMatchFilter == null) {
+            return false;
+        }
+        for (int i = 0; i < dimensionMatchFilter.size(); i++) {
+            if (dimensionMatchFilter.get(i) != null) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private void filter(GroupNode node, int deep) {
+        if (deep < dimensionMatchFilter.size()) {
+            MatchFilter filter = dimensionMatchFilter.get(deep);
+            if (filter != null) {
+                ChildMap<GroupNode> children = filter(node.getChildMap(), deep);
+                node.clearChildMap();
+                if (children == null || children.isEmpty()) {
+                    clearEmptyNode(node);
+                } else {
+                    for (GroupNode n : children) {
+                        node.addChild(n);
+                    }
+                }
+            }
+            ChildMap<GroupNode> children = node.getChildMap();
+            for (GroupNode n : children) {
+                filter(n, deep + 1);
+            }
+        }
+    }
+
+
+    private void clearEmptyNode(GroupNode node) {
+
+        GroupNode parent = node.getParent();
+        if (parent != null) {
+            ChildMap<GroupNode> children = parent.getChildMap();
+            parent.clearChildMap();
+            for (GroupNode child : children) {
+                if (child != node) {
+                    parent.addChild(child);
+                }
+            }
+            if (parent.getChildrenSize() == 0) {
+                clearEmptyNode(parent);
+            }
+        }
+    }
+
+    private ChildMap<GroupNode> filter(ChildMap<GroupNode> children, final int deep) {
+        MatchFilter filter = dimensionMatchFilter.get(deep);
+        ChildMap<GroupNode> results = new ChildMap<GroupNode>();
+        if (filter == null) {
+            results = children;
+        } else {
+            for (GroupNode result : children) {
+                if (filter.matches(result)) {
+                    results.put(result.getData(), result);
+                }
+            }
+        }
+        return results;
+    }
+
 }

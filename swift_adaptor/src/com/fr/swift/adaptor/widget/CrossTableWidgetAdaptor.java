@@ -11,7 +11,6 @@ import com.fr.swift.adaptor.widget.target.CalTargetParseUtils;
 import com.fr.swift.cal.QueryInfo;
 import com.fr.swift.cal.info.Expander;
 import com.fr.swift.cal.info.XGroupQueryInfo;
-import com.fr.swift.cal.info.XTableGroupQueryInfo;
 import com.fr.swift.cal.result.group.Cursor;
 import com.fr.swift.log.SwiftLogger;
 import com.fr.swift.log.SwiftLoggers;
@@ -62,8 +61,8 @@ public class CrossTableWidgetAdaptor {
         String queryId = widget.getWidgetId();
         FilterInfo filterInfo = FilterInfoFactory.transformFineFilter(widget.getFilters());
 
-        List<Dimension> rowDimensions = TableWidgetAdaptor.getDimensions(widget.getDimensionList());
-        List<Dimension> colDimensions = TableWidgetAdaptor.getDimensions(widget.getColDimensionList());
+        List<Dimension> rowDimensions = TableWidgetAdaptor.getDimensions(widget.getDimensionList(), widget.getTargetList());
+        List<Dimension> colDimensions = TableWidgetAdaptor.getDimensions(widget.getColDimensionList(), widget.getTargetList());
 
         GroupTarget[] targets = TableWidgetAdaptor.getTargets(widget);
         Expander expander = null;
